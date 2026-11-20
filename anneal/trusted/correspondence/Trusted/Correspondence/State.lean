@@ -270,9 +270,10 @@ noncomputable def refEnumAdmitted (ety : EnumTy) : Bool :=
 
 /-- Independent $M_{\text{ref}}$ check that every unprojected
 `Assign(dst, Discriminant(src))` in `rbody` whose `src` has an admitted
-fieldless enum type `.enum ety` and whose `dst` is in bounds has destination
-type `.int ety.discrWidth ety.discrSigned`, matching `rustc`'s MIR
-well-typedness invariant for `Rvalue::Discriminant`. -/
+fieldless enum type `.enum ety` (or the type `core::cmp::Ordering`) and whose
+`dst` is in bounds has destination type `.int ety.discrWidth ety.discrSigned`
+(`.int .i8 true` for `Ordering`), matching `rustc`'s MIR well-typedness
+invariant for `Rvalue::Discriminant`. -/
 noncomputable def refDiscriminantTypesValid (localTys : List MirTy)
     (rbody : RefBody) : Bool :=
   rbody.basicBlocks.all (fun bb =>
@@ -293,7 +294,37 @@ noncomputable def refDiscriminantTypesValid (localTys : List MirTy)
                   else
                     true
                 | none => true
+              | .ordering =>
+                match MirSemantics.getElem? localTys dst.localId with
+                | some dstTy => MirTy.beq dstTy (.int .i8 true)
+                | none => true
               | _ => true
+            | none => true
+          else
+            true
+        | _ => true
+      | _ => true))
+
+/-- Independent $M_{\text{ref}}$ check that every unprojected
+`Assign(dst, Cast(IntToInt, _, castTy))` in `rbody` whose `dst` is in bounds
+has destination type `castTy` (`RefRvalue.cast` carries `castTy` as a `TyId`
+into `types`; an out-of-bounds `castTy` fails the check), matching `rustc`'s
+MIR well-typedness invariant that an assignment's place and rvalue have the
+same type. -/
+noncomputable def refCastTypesValid (types localTys : List MirTy)
+    (rbody : RefBody) : Bool :=
+  rbody.basicBlocks.all (fun bb =>
+    bb.statements.all (fun stmt =>
+      match stmt with
+      | .assign dst rv =>
+        match rv with
+        | .cast .intToInt _ castTyId =>
+          if dst.projection.isEmpty then
+            match MirSemantics.getElem? localTys dst.localId with
+            | some dstTy =>
+              match MirSemantics.getElem? types castTyId with
+              | some castTy => MirTy.beq dstTy castTy
+              | none => false
             | none => true
           else
             true
@@ -323,10 +354,17 @@ noncomputable def refFindDiscrVariant? (discrBits : BitVec 128)
     (ds : List Nat) : Option Nat :=
   refFindDiscrVariantAux 0 discrBits ds
 
+/-- Independent $M_{\text{ref}}$ check for the `(T, bool)` result type
+`.tuple [.int w s, .bool]` of `BinOp::{Add,Sub,Mul}WithOverflow`. -/
+noncomputable def refIsOverflowPairTy : MirTy → Bool
+  | .tuple [.int _ _, .bool] => true
+  | _ => false
+
 /-- Independent $M_{\text{ref}}$ supported local-type check. -/
 noncomputable def refIsSupportedLocalTy : MirTy → Bool
-  | .bool | .int _ _ | .unit | .never => true
+  | .bool | .int _ _ | .char | .ordering | .unit | .never => true
   | .enum ety => refEnumAdmitted ety
+  | .tuple fs => refIsOverflowPairTy (.tuple fs)
   | _ => false
 
 /-- Independent $M_{\text{ref}}$ initial live slot for `ty` (inhabited for
@@ -454,6 +492,40 @@ noncomputable def refBoolLayoutData : Miri.ABI.LayoutData :=
       (validRange := ⟨BitVec.ofNat 128 0, BitVec.ofNat 128 1⟩)))
     (Miri.ABI.Size.ofBytes 1)
 
+/-- Construct the initialized 4-byte `Miri.ABI.LayoutData` for `char`
+(`validRange := [0, 0x10ffff]`, matching `rustc`'s `char` layout; the
+surrogate gap is rejected by validation's `Scalar.toChar`, not by the range).
+-/
+noncomputable def refCharLayoutData : Miri.ABI.LayoutData :=
+  refBaseLayoutData
+    (.Scalar (.Initialized (value := .Int .I32 false)
+      (validRange := ⟨BitVec.ofNat 128 0, BitVec.ofNat 128 0x10ffff⟩)))
+    (Miri.ABI.Size.ofBytes 4)
+
+/-- Construct the `Miri.ABI.LayoutData` of the overflow pair `(T, bool)` for an
+integer `T` of `(w, signed)`: a `BackendRepr.ScalarPair` of the initialized
+integer scalar and the initialized `bool` scalar at offset `toMiriSize w`
+(`b_offset = a.size(dl).align_to(b_align)` with `bool`'s alignment 1, as in
+`LayoutData::scalar_pair` in `compiler/rustc_abi/src/layout/simple.rs`,
+`rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`), fields
+`.Arbitrary #[0, toMiriSize w] #[0, 1]`, and size `2 * w.byteSize` (the
+natural-alignment size; every $M_{\text{ref}}$ layout keeps alignment
+`Align.ONE`). -/
+noncomputable def refOverflowPairLayoutData (w : IntWidth) (s : Bool) :
+    Miri.ABI.LayoutData :=
+  let sz := toMiriSize w
+  {
+    refBaseLayoutData
+      (.ScalarPair
+        (a := .Initialized (value := .Int (toMiriInteger w) s)
+          (validRange := refFullWrappingRangeSize sz))
+        (b := .Initialized (value := .Int .I8 false)
+          (validRange := ⟨BitVec.ofNat 128 0, BitVec.ofNat 128 1⟩))
+        (bOffset := sz))
+      (Miri.ABI.Size.ofBytes (2 * sz.bytes)) with
+    fields := .Arbitrary (Array.mk [Miri.ABI.Size.ZERO, sz]) (Array.mk [0, 1])
+  }
+
 /-- Construct the 0-byte fieldless aggregate `Miri.ABI.LayoutData` for `()` and
 1-variant ZST enums (`FieldsShape.Arbitrary #[] #[]`, `Variants.Single 0`). -/
 noncomputable def refUnitLayoutData : Miri.ABI.LayoutData := {
@@ -522,13 +594,30 @@ noncomputable def refEnumLayoutData (ety : EnumTy) : Miri.ABI.LayoutData :=
       variants := .Multiple tag .Direct 0 variants
     }
 
+/-- `core::cmp::Ordering` as a fieldless enum descriptor: a `#[repr(i8)]`
+enum with the signed `i8` tag and discriminant bit patterns `255` (`Less`,
+`-1_i8`), `0` (`Equal`), and `1` (`Greater`) (`library/core/src/cmp.rs`,
+`rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`). $M_{\text{ref}}$
+lays out, validates, and reads the discriminant of `MirTy.ordering` through
+this descriptor; `id` is never consulted. -/
+noncomputable def refOrderingEnumTy : EnumTy := {
+  id := 0
+  discrWidth := .i8
+  discrSigned := true
+  tagRepr := .scalar .i8 true
+  discriminants := [255, 0, 1]
+}
+
 /-- Canonical `Miri.ABI.LayoutData` for any `MirTy` in $M_{\text{ref}}$. -/
 noncomputable def refLayoutDataForTy : MirTy → Miri.ABI.LayoutData
   | .int w s => refScalarLayoutData w s
   | .bool => refBoolLayoutData
+  | .char => refCharLayoutData
+  | .ordering => refEnumLayoutData refOrderingEnumTy
   | .unit => refUnitLayoutData
   | .never => refNeverLayoutData
   | .enum ety => refEnumLayoutData ety
+  | .tuple [.int w s, .bool] => refOverflowPairLayoutData w s
   | _ => refUnitLayoutData
 
 /-- Canonical `Miri.Interpreter.LocalLayout` pairing `tyIdFor types ty` with
@@ -571,6 +660,7 @@ noncomputable def toMiriBinOp : BinOp → Miri.MIR.BinOp
   | .ne => .Ne
   | .ge => .Ge
   | .gt => .Gt
+  | .cmp => .Cmp
   | .offset => .Offset
 
 /-- Map `RefPlace` to `Miri.MIR.Place` (preserving `localId` and marking any
@@ -595,8 +685,10 @@ noncomputable def toMiriOperand (types : List MirTy) :
       | .zeroSized => .ZeroSized
     .Constant ⟨⟨0⟩, none, .Val cv (canonicalTyId types c.ty)⟩
 
-/-- Map `RefRvalue` to `Miri.MIR.Rvalue`. Day-1 unmodeled rvalues (`.ref`,
-`.addressOf`, `.aggregateTuple`, and `.unsupported`) map to the fail-closed
+/-- Map `RefRvalue` to `Miri.MIR.Rvalue`. `.cast .intToInt` maps to
+`.Cast .IntToInt` with the canonicalized target `TyId`. Day-1 unmodeled
+rvalues (`.cast .unsupported`, `.ref`, `.addressOf`, `.aggregateTuple`, and
+`.unsupported`) map to the fail-closed
 sentinel `.CopyForDeref ⟨0, Array.empty⟩` that `evalRvalueIntoPlace` rejects
 immediately with `.invalidProgram` (`.blocked`), without evaluating unmodeled
 operands or forcing stack allocations. -/
@@ -608,8 +700,11 @@ noncomputable def toMiriRvalue (types : List MirTy) :
       (toMiriOperand types rhs)
   | .unaryOp op opnd =>
     .UnaryOp (toMiriUnOp op) (toMiriOperand types opnd)
+  | .cast .intToInt opnd ty =>
+    .Cast .IntToInt (toMiriOperand types opnd) (canonicalTyId types ty)
   | .discriminant rp => .Discriminant (toMiriPlace rp)
-  | .ref _ _ | .addressOf _ _ | .aggregateTuple _ | .unsupported =>
+  | .cast .unsupported _ _ | .ref _ _ | .addressOf _ _ | .aggregateTuple _
+  | .unsupported =>
     .CopyForDeref ⟨0, Array.empty⟩
 
 /-- Map `RefStatementKind` to `Miri.MIR.Statement`. `.unsupported` lowers to
@@ -672,6 +767,24 @@ noncomputable def toMiriBody (types : List MirTy) (rbody : RefBody) :
 
 /-! ## Constant Decoding, Value Encoding, and Entry Initialization -/
 
+/-- The `core::cmp::Ordering` value whose `i8` tag bit pattern is `tag`
+(`refOrderingEnumTy.discriminants`: `255` for `Less`, `0` for `Equal`, `1` for
+`Greater`), resolved through `refFindDiscrVariant?`, or `none` for an invalid
+tag. -/
+noncomputable def refOrderingOfTag (tag : BitVec 128) : Option OrderingVal :=
+  match refFindDiscrVariant? tag refOrderingEnumTy.discriminants with
+  | some 0 => some .less
+  | some 1 => some .equal
+  | some 2 => some .greater
+  | _ => none
+
+/-- The `i8` value of a `core::cmp::Ordering` (`-1`, `0`, or `1`), as
+`Miri.Interpreter.ScalarOps.finish` computes it for `BinOp::Cmp`. -/
+noncomputable def refOrderingToInt : OrderingVal → Int
+  | .less => Neg.neg 1
+  | .equal => 0
+  | .greater => 1
+
 /-- Reference constant-literal decoder calling
 `Miri.Memory.ScalarInt.tryFromUInt` and `Miri.Memory.ScalarInt.tryToBool`
 (`vendor/lean-miri/Miri/Memory/ScalarInt.lean`) and `refMiriTagToDiscrBits` /
@@ -693,6 +806,21 @@ noncomputable def evalRefConstLit : MirTy → ConstLit → Except FaultKind Val
       | .error _ => .error .unsupported
     | _ => .error .unsupported
   | .unit, .zeroSized => .ok .unit
+  | .char, .scalar bits =>
+    match Miri.Memory.ScalarInt.tryFromUInt bits (Miri.ABI.Size.ofBytes 4) with
+    | .ok (some sc) =>
+      match sc.toChar with
+      | .ok c => .ok (.char c)
+      | .error (.invalidChar _) => .error .undefined
+      | .error _ => .error .unsupported
+    | _ => .error .unsupported
+  | .ordering, .scalar bits =>
+    match Miri.Memory.ScalarInt.tryFromUInt bits (Miri.ABI.Size.ofBytes 1) with
+    | .ok (some sc) =>
+      match refOrderingOfTag sc.data with
+      | some ord => .ok (.ordering ord)
+      | none => .error .undefined
+    | _ => .error .unsupported
   | .enum ety, .zeroSized =>
     if refIsZstEnumTy ety then .ok (.enumVal ety 0) else .error .unsupported
   | .enum ety, .scalar bits =>
@@ -714,7 +842,8 @@ noncomputable def evalRefConstLit : MirTy → ConstLit → Except FaultKind Val
   | _, _ => .error .unsupported
 
 /-- Reference value validity and type check calling
-`Miri.Memory.ScalarInt.tryFromUInt` and `Miri.Memory.ScalarInt.ofBool`. -/
+`Miri.Memory.ScalarInt.tryFromUInt`, `Miri.Memory.ScalarInt.ofBool`, and
+`Miri.Memory.ScalarInt.{ofChar,toChar}`. -/
 noncomputable def checkRefVal (v : Val) (ty : MirTy) : Bool :=
   match v, ty with
   | .scalar sv, .int w s =>
@@ -725,10 +854,19 @@ noncomputable def checkRefVal (v : Val) (ty : MirTy) : Bool :=
     match (Miri.Memory.ScalarInt.ofBool b).tryToBool with
     | .ok _ => true
     | .error _ => false
+  | .char c, .char =>
+    match (Miri.Memory.ScalarInt.ofChar c).toChar with
+    | .ok _ => true
+    | .error _ => false
+  | .ordering _, .ordering => true
   | .unit, .unit => true
   | .enumVal ety v, .enum ety' =>
     (refEnumAdmitted ety && Nat.blt v ety.discriminants.length) &&
       EnumTy.beq ety ety'
+  | .tuple [.scalar sv, .bool _], .tuple [.int w s, .bool] =>
+    match Miri.Memory.ScalarInt.tryFromUInt sv.bits (toMiriSize sv.width) with
+    | .ok (some _) => IntWidth.beq sv.width w && (sv.signed == s)
+    | _ => false
   | _, _ => false
 
 /-- Check that argument list `vs` matches parameter types `tys` under
@@ -742,15 +880,28 @@ noncomputable def checkRefArgsMatch : List Val → List MirTy → Bool
 `Miri.Interpreter.Immediate Miri.Memory.Provenance`:
 - `.scalar sv` -> `.scalar (.fromScalarInt (miriScalar sv.width sv.bits))`
 - `.bool b` -> `.scalar (.fromBool b)`
+- `.char c` -> `.scalar (.fromChar c)`
+- `.ordering ord` -> the 1-byte scalar of `refOrderingToInt ord`
+  (`Scalar.fromInt`, as `ScalarOps.finish` builds a `BinOp::Cmp` result)
 - `.unit` and `.zeroSized` `.enumVal` -> `.uninit` (canonical ZST immediate)
 - `.scalar tagW _` `.enumVal ety v` -> `.scalar (.fromScalarInt (miriScalar
-  tagW (BitVec.ofNat 128 disc)))` for `ety.discriminants[v]`. -/
+  tagW (BitVec.ofNat 128 disc)))` for `ety.discriminants[v]`
+- overflow pair `.tuple [.scalar sv, .bool b]` -> `.scalarPair (.fromScalarInt
+  (miriScalar w sv.bits)) (.fromBool b)`, as `ScalarOps.finish` builds a
+  `BinOp::*WithOverflow` result. -/
 noncomputable def valToMiriImmediate :
     MirTy → Val → Miri.Interpreter.Immediate Miri.Memory.Provenance
   | .int w _, .scalar sv =>
     .scalar (.fromScalarInt (miriScalar w sv.bits))
   | .bool, .bool b =>
     .scalar (.fromBool b)
+  | .char, .char c =>
+    .scalar (.fromChar c)
+  | .ordering, .ordering ord =>
+    match Miri.Memory.Scalar.fromInt (refOrderingToInt ord)
+        (Miri.ABI.Size.ofBytes 1) with
+    | .ok sc => .scalar sc
+    | .error _ => .uninit
   | .unit, .unit => .uninit
   | .enum ety, .enumVal _ v =>
     match ety.tagRepr with
@@ -760,6 +911,8 @@ noncomputable def valToMiriImmediate :
       | some disc =>
         .scalar (.fromScalarInt (miriScalar tagW (BitVec.ofNat 128 disc)))
       | none => .uninit
+  | .tuple [.int w _, .bool], .tuple [.scalar sv, .bool b] =>
+    .scalarPair (.fromScalarInt (miriScalar w sv.bits)) (.fromBool b)
   | _, _ => .uninit
 
 /-- Encode an $M_{\text{anneal}}$ `MemPlace` into the real
@@ -830,7 +983,8 @@ noncomputable def refInitMemoryAndRetPlace (types : List MirTy)
 /-- Decode the entry function's returned `Val` out of the caller-owned return
 allocation `retPlace` in `memory` after `Return` pops the root frame and
 `ExecutionControl.hooks.copyReturn` writes and validates `_0` into `retPlace`.
--/
+An overflow pair reads the integer at offset `0` and the `bool` at offset
+`toMiriSize w` (the `ScalarPair`'s `bOffset`), ignoring the padding. -/
 noncomputable def refReadReturnVal
     (memory : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
@@ -903,6 +1057,78 @@ noncomputable def refReadReturnVal
             match sci.tryToBool with
             | .ok b => .ok (.bool b)
             | .error (.invalidBool _) => .error .undefined
+            | .error _ => .error .unsupported
+          | _ => .error .unsupported
+        | .error (.invalidUninitBytes _) => .error .undefined
+        | .error _ => .error .unsupported
+    | _ => .error .unsupported
+  | .char =>
+    match retPlace.mplace.ptr.provenance with
+    | some (.concrete allocId _) =>
+      match memory.live.find? (fun entry => entry.1 == allocId) with
+      | none => .error .unsupported
+      | some (_, localAlloc) =>
+        let range := Miri.Memory.allocRange Miri.ABI.Size.ZERO
+          (Miri.ABI.Size.ofBytes 4)
+        match localAlloc.allocation.readScalar
+            Miri.ABI.RuntimeTargetDataLayout.default.base range false with
+        | .ok sc =>
+          match sc.tryToScalarInt with
+          | .ok (.integer sci) =>
+            match sci.toChar with
+            | .ok c => .ok (.char c)
+            | .error (.invalidChar _) => .error .undefined
+            | .error _ => .error .unsupported
+          | _ => .error .unsupported
+        | .error (.invalidUninitBytes _) => .error .undefined
+        | .error _ => .error .unsupported
+    | _ => .error .unsupported
+  | .ordering =>
+    match retPlace.mplace.ptr.provenance with
+    | some (.concrete allocId _) =>
+      match memory.live.find? (fun entry => entry.1 == allocId) with
+      | none => .error .unsupported
+      | some (_, localAlloc) =>
+        let range := Miri.Memory.allocRange Miri.ABI.Size.ZERO
+          (Miri.ABI.Size.ofBytes 1)
+        match localAlloc.allocation.readScalar
+            Miri.ABI.RuntimeTargetDataLayout.default.base range false with
+        | .ok sc =>
+          match sc.tryToScalarInt with
+          | .ok (.integer sci) =>
+            match refOrderingOfTag sci.data with
+            | some ord => .ok (.ordering ord)
+            | none => .error .undefined
+          | _ => .error .unsupported
+        | .error (.invalidUninitBytes _) => .error .undefined
+        | .error _ => .error .unsupported
+    | _ => .error .unsupported
+  | .tuple [.int w s, .bool] =>
+    match retPlace.mplace.ptr.provenance with
+    | some (.concrete allocId _) =>
+      match memory.live.find? (fun entry => entry.1 == allocId) with
+      | none => .error .unsupported
+      | some (_, localAlloc) =>
+        let intRange := Miri.Memory.allocRange Miri.ABI.Size.ZERO (toMiriSize w)
+        let boolRange := Miri.Memory.allocRange (toMiriSize w)
+          (Miri.ABI.Size.ofBytes 1)
+        match localAlloc.allocation.readScalar
+            Miri.ABI.RuntimeTargetDataLayout.default.base intRange false with
+        | .ok intSc =>
+          match intSc.tryToScalarInt with
+          | .ok (.integer intSci) =>
+            match localAlloc.allocation.readScalar
+                Miri.ABI.RuntimeTargetDataLayout.default.base boolRange
+                false with
+            | .ok boolSc =>
+              match boolSc.tryToScalarInt with
+              | .ok (.integer boolSci) =>
+                match boolSci.tryToBool with
+                | .ok b => .ok (.tuple [.scalar ⟨w, s, intSci.data⟩, .bool b])
+                | .error (.invalidBool _) => .error .undefined
+                | .error _ => .error .unsupported
+              | _ => .error .unsupported
+            | .error (.invalidUninitBytes _) => .error .undefined
             | .error _ => .error .unsupported
           | _ => .error .unsupported
         | .error (.invalidUninitBytes _) => .error .undefined
@@ -991,10 +1217,11 @@ noncomputable def mkRefMiriState
 /-- Entry initialization of $M_{\text{ref}}$ (`initRefState rp q maxSteps`):
 validates 64-bit target layout, MIR profile version 1, empty `callerMem`,
 entry body existence, non-empty basic blocks, `argumentCount < locals.length`,
-in-bounds storage annotations, well-typed `Discriminant` destinations,
-supported local types, and matching arguments; allocates the caller-owned
-return buffer in `MemoryState.empty`; and initializes a single-frame
-`Miri.Interpreter.MachineHooks.State` ready for `ExecutionMachine.step`. -/
+in-bounds storage annotations, well-typed `Discriminant` and `Cast`
+destinations, supported local types, and matching arguments; allocates the
+caller-owned return buffer in `MemoryState.empty`; and initializes a
+single-frame `Miri.Interpreter.MachineHooks.State` ready for
+`ExecutionMachine.step`. -/
 noncomputable def initRefState (rp : RefProg) (q : Query)
     (maxSteps : Nat) : Except FaultKind RefState :=
   if !Nat.beq rp.pointerWidthBits 64 || !Nat.beq rp.mirProfileVersion 1 then
@@ -1015,6 +1242,8 @@ noncomputable def initRefState (rp : RefProg) (q : Query)
         else if !refStorageAnnotationsInBounds rbody then
           .error .unsupported
         else if !refDiscriminantTypesValid localTys rbody then
+          .error .unsupported
+        else if !refCastTypesValid rp.types localTys rbody then
           .error .unsupported
         else if !localTys.all refIsSupportedLocalTy then
           .error .unsupported

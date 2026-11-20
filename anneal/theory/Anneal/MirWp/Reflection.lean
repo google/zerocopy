@@ -152,26 +152,30 @@ mutual
         | true =>
           rw [hw] at h
           rw [IntWidth.beq_iff.mp hw, eq_of_beq h]
-      | bool | unit | never | enum _ | tuple _ | ref _ _ | rawPtr _ _
-      | unsupported => cases h
+      | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
+      | rawPtr _ _ | unsupported => cases h
     | .unit => fun t₂ h => by
       cases t₂ <;> first | rfl | cases h
     | .never => fun t₂ h => by
+      cases t₂ <;> first | rfl | cases h
+    | .char => fun t₂ h => by
+      cases t₂ <;> first | rfl | cases h
+    | .ordering => fun t₂ h => by
       cases t₂ <;> first | rfl | cases h
     | .enum ety₁ => fun t₂ h => by
       cases t₂ with
       | enum ety₂ =>
         change EnumTy.beq ety₁ ety₂ = true at h
         rw [EnumTy.beq_iff.mp h]
-      | bool | int _ _ | unit | never | tuple _ | ref _ _ | rawPtr _ _
-      | unsupported => cases h
+      | bool | int _ _ | unit | never | char | ordering | tuple _ | ref _ _
+      | rawPtr _ _ | unsupported => cases h
     | .tuple fs₁ => fun t₂ h => by
       cases t₂ with
       | tuple fs₂ =>
         change MirTy.beqList fs₁ fs₂ = true at h
         rw [mirTy_beqList_sound fs₁ fs₂ h]
-      | bool | int _ _ | unit | never | enum _ | ref _ _ | rawPtr _ _
-      | unsupported => cases h
+      | bool | int _ _ | unit | never | char | ordering | enum _ | ref _ _
+      | rawPtr _ _ | unsupported => cases h
     | .ref m₁ p₁ => fun t₂ h => by
       cases t₂ with
       | ref m₂ p₂ =>
@@ -181,8 +185,8 @@ mutual
         | true =>
           rw [hm] at h
           rw [Mutability.beq_iff.mp hm, mirTy_beq_sound p₁ p₂ h]
-      | bool | int _ _ | unit | never | enum _ | tuple _ | rawPtr _ _
-      | unsupported => cases h
+      | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
+      | rawPtr _ _ | unsupported => cases h
     | .rawPtr m₁ p₁ => fun t₂ h => by
       cases t₂ with
       | rawPtr m₂ p₂ =>
@@ -192,8 +196,8 @@ mutual
         | true =>
           rw [hm] at h
           rw [Mutability.beq_iff.mp hm, mirTy_beq_sound p₁ p₂ h]
-      | bool | int _ _ | unit | never | enum _ | tuple _ | ref _ _
-      | unsupported => cases h
+      | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
+      | ref _ _ | unsupported => cases h
     | .unsupported => fun t₂ h => by
       cases t₂ <;> first | rfl | cases h
 
@@ -227,6 +231,8 @@ mutual
       rfl
     | .unit => rfl
     | .never => rfl
+    | .char => rfl
+    | .ordering => rfl
     | .enum ety => EnumTy.beq_iff.mpr rfl
     | .tuple fs => mirTy_beqList_refl fs
     | .ref m p => by
@@ -270,6 +276,29 @@ theorem checkVal_iff_ty? {v : Val} {ty : MirTy} :
       injection h with hEq
       subst hEq
       exact MirTy.beq_iff.mpr rfl
+
+/-- A tuple value has, if any, a tuple type: only an overflow pair
+`.tuple [.scalar sv, .bool b]` has a type (`Val.ty?`). -/
+theorem Val.ty?_tuple_some {fs : List Val} {ty : MirTy}
+    (h : (Val.tuple fs).ty? = some ty) : ∃ ts, ty = .tuple ts := by
+  cases fs with
+  | nil => cases h
+  | cons x xs =>
+    cases xs with
+    | nil => cases x <;> cases h
+    | cons y ys =>
+      cases ys with
+      | cons _ _ => cases x <;> cases y <;> cases h
+      | nil =>
+        cases x <;> cases y <;> first
+          | cases h
+          | (dsimp only [Val.ty?] at h
+             cases hWf : ScalarVal.wf _ with
+             | false => rw [hWf] at h; cases h
+             | true =>
+               rw [hWf] at h
+               injection h with hTy
+               exact ⟨_, hTy.symm⟩)
 
 /-- Width- and signedness-parametric `checkVal` introduction for truncated
 128-bit scalar payloads across all 12 integer types. -/
@@ -322,7 +351,10 @@ theorem checkVal_int_iff {v : Val} {w : IntWidth} {s : Bool} :
       dsimp only [Val.ty?] at h
       cases hAdm : (enumAdmitted ety && Nat.blt idx ety.discriminants.length)
         <;> rw [hAdm] at h <;> cases h
-    | ptr _ | bool _ | unit | tuple _ | bytes _ => cases h
+    | ptr _ | bool _ | char _ | ordering _ | unit | bytes _ => cases h
+    | tuple _ =>
+      let ⟨_, hTs⟩ := Val.ty?_tuple_some h
+      cases hTs
   · intro h
     let ⟨bits, hv, hTrunc⟩ := h
     subst hv
@@ -349,7 +381,10 @@ theorem checkVal_bool_iff {v : Val} :
       dsimp only [Val.ty?] at h
       cases hAdm : (enumAdmitted ety && Nat.blt idx ety.discriminants.length)
         <;> rw [hAdm] at h <;> cases h
-    | ptr _ | unit | tuple _ | bytes _ => cases h
+    | ptr _ | char _ | ordering _ | unit | bytes _ => cases h
+    | tuple _ =>
+      let ⟨_, hTs⟩ := Val.ty?_tuple_some h
+      cases hTs
   · intro h
     let ⟨b, hb⟩ := h
     subst hb
@@ -370,7 +405,10 @@ theorem checkVal_unit_iff {v : Val} :
       dsimp only [Val.ty?] at h
       cases hAdm : (enumAdmitted ety && Nat.blt idx ety.discriminants.length)
         <;> rw [hAdm] at h <;> cases h
-    | ptr _ | bool _ | tuple _ | bytes _ => cases h
+    | ptr _ | bool _ | char _ | ordering _ | bytes _ => cases h
+    | tuple _ =>
+      let ⟨_, hTs⟩ := Val.ty?_tuple_some h
+      cases hTs
   · intro h
     subst h
     rfl
@@ -389,7 +427,10 @@ theorem checkVal_never_false (v : Val) : checkVal v .never = false := by
       dsimp only [Val.ty?] at hTy
       cases hAdm : (enumAdmitted ety && Nat.blt idx ety.discriminants.length)
         <;> rw [hAdm] at hTy <;> cases hTy
-    | ptr _ | bool _ | unit | tuple _ | bytes _ => cases hTy
+    | ptr _ | bool _ | char _ | ordering _ | unit | bytes _ => cases hTy
+    | tuple _ =>
+      let ⟨_, hTs⟩ := Val.ty?_tuple_some hTy
+      cases hTs
 
 /-- Exact inversion and introduction law for `checkVal` at fieldless `.enum ety`
 for arbitrary `EnumTy` and arbitrary variant count `ety.discriminants.length`.
@@ -420,7 +461,10 @@ theorem checkVal_enum_iff {v : Val} {ety : EnumTy} :
     | scalar sv =>
       dsimp only [Val.ty?] at h
       cases hWf : sv.wf <;> rw [hWf] at h <;> cases h
-    | ptr _ | bool _ | unit | tuple _ | bytes _ => cases h
+    | ptr _ | bool _ | char _ | ordering _ | unit | bytes _ => cases h
+    | tuple _ =>
+      let ⟨_, hTs⟩ := Val.ty?_tuple_some h
+      cases hTs
   · intro h
     let ⟨hAdm, ⟨idx, hEq⟩⟩ := h
     subst hEq
@@ -546,8 +590,9 @@ theorem initState_eq_ok {p : Program} {body : Body} {args : List Val}
     cases h4 : Nat.blt body.argumentCount body.locals.length <;>
     cases h5 : storageAnnotationsInBounds body <;>
     cases h5d : discriminantTypesValid body <;>
+    cases h5c : castTypesValid body <;>
     cases h6 : body.locals.all isSupportedScalarOrUnitTy <;>
-    rw [h1, h2, hid, h3, h4, h5, h5d, h6] at h_adm <;>
+    rw [h1, h2, hid, h3, h4, h5, h5d, h5c, h6] at h_adm <;>
     cases h_adm
   rfl
 

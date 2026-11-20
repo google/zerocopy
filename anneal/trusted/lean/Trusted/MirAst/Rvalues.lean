@@ -37,9 +37,17 @@ Binary operators, unary operators, and right-hand-side expressions for captured
 > }"
 
 Every variant in `BinOp` corresponds 1-to-1 with the same-named variant in
-`rustc_middle::mir::BinOp`; upstream `BinOp::Cmp` (three-way `Ordering`
-comparison, which returns the `core::cmp::Ordering` ADT) lowers at the enclosing
-`Rvalue` level to `Rvalue.unsupported`. -/
+`rustc_middle::mir::BinOp`. Upstream documents `BinOp::Cmp` as follows:
+
+> "The `<=>` operator (three-way comparison, like `Ord::cmp`)
+>
+> This is supported only on the integer types and `char`, always returning
+> [`LangItem::OrderingEnum`] (aka [`std::cmp::Ordering`])."
+
+and `BinOp::AddWithOverflow` as follows:
+
+> "Like `Add`, but returns `(T, bool)` of both the wrapped result
+> and a bool indicating whether it overflowed." -/
 inductive BinOp where
   | add | addUnchecked | addWithOverflow
   | sub | subUnchecked | subWithOverflow
@@ -48,7 +56,7 @@ inductive BinOp where
   | bitXor | bitAnd | bitOr
   | shl | shlUnchecked | shr | shrUnchecked
   | eq | lt | le | ne | ge | gt
-  | offset
+  | cmp | offset
 
 namespace BinOp
 
@@ -75,7 +83,48 @@ noncomputable def isUnchecked : BinOp → Bool
   | .shlUnchecked | .shrUnchecked => true
   | _ => false
 
+/-- Whether `op` is an overflowing arithmetic operator that returns the
+wrapped result together with an overflow flag
+(`compiler/rustc_middle/src/mir/syntax.rs`, `rust-lang/rust`
+`8144389c895da997dbdecaa635e41d6a50be6ffd`):
+
+> "Like `Add`, but returns `(T, bool)` of both the wrapped result
+> and a bool indicating whether it overflowed." -/
+noncomputable def isOverflowing : BinOp → Bool
+  | .addWithOverflow | .subWithOverflow | .mulWithOverflow => true
+  | _ => false
+
 end BinOp
+
+/-- MIR cast kinds (`rustc_middle::mir::CastKind` in
+`compiler/rustc_middle/src/mir/syntax.rs`, `rust-lang/rust`
+`8144389c895da997dbdecaa635e41d6a50be6ffd`):
+
+> "pub enum CastKind {
+>     ...
+>     PointerExposeProvenance,
+>     ...
+>     PointerWithExposedProvenance,
+>     ...
+>     PointerCoercion(PointerCoercion, CoercionSource),
+>     IntToInt,
+>     FloatToInt,
+>     FloatToFloat,
+>     IntToFloat,
+>     PtrToPtr,
+>     FnPtrToPtr,
+>     ...
+>     Transmute,
+>     ...
+>     BoxDerefTransmute,
+>     ..."
+
+- `.intToInt` corresponds to `CastKind::IntToInt`.
+- `.unsupported` represents every other `CastKind` variant, causing
+  $M_{\text{anneal}}$ to fail closed with `FaultKind.unsupported`. -/
+inductive CastKind where
+  | intToInt
+  | unsupported
 
 /-- MIR unary operators (`rustc_middle::mir::UnOp` in
 `compiler/rustc_middle/src/mir/syntax.rs`, `rust-lang/rust`
@@ -126,6 +175,11 @@ Constructor correspondence:
   `.unsupported` until stacked/tree-borrows retagging is modeled.
 - `.binaryOp op lhs rhs` corresponds to `Rvalue::BinaryOp(op, (lhs, rhs))`.
 - `.unaryOp op opnd` corresponds to `Rvalue::UnaryOp(op, opnd)`.
+- `.cast kind opnd ty` corresponds to `Rvalue::Cast(kind, opnd, ty)`
+  (`compiler/rustc_middle/src/mir/syntax.rs`, `rust-lang/rust`
+  `8144389c895da997dbdecaa635e41d6a50be6ffd`):
+
+  > "Performs essentially all of the casts that can be performed via `as`."
 - `.discriminant place` corresponds to `Rvalue::Discriminant(place)`
   (`compiler/rustc_middle/src/mir/syntax.rs`, `rust-lang/rust`
   `8144389c895da997dbdecaa635e41d6a50be6ffd`):
@@ -139,7 +193,7 @@ Constructor correspondence:
 - `.aggregateTuple fields` corresponds to
   `Rvalue::Aggregate(AggregateKind::Tuple, fields)`.
 - `.unsupported` represents all other `Rvalue` variants (`Repeat`,
-  `ThreadLocalRef`, `Cast`, non-tuple `Aggregate` (including direct fieldless
+  `ThreadLocalRef`, non-tuple `Aggregate` (including direct fieldless
   enum construction `Rvalue::Aggregate(AggregateKind::Adt, [])`, which is
   intentionally out of scope and lowers fail-closed to `.unsupported` in favor
   of constant and discriminant operations), `CopyForDeref`,
@@ -150,6 +204,7 @@ inductive Rvalue where
   | use (op : Operand)
   | binaryOp (op : BinOp) (lhs rhs : Operand)
   | unaryOp (op : UnOp) (opnd : Operand)
+  | cast (kind : CastKind) (opnd : Operand) (ty : MirTy)
   | discriminant (place : Place)
   | ref (mutability : Mutability) (place : Place)
   | addressOf (mutability : Mutability) (place : Place)

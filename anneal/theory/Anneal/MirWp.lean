@@ -41,7 +41,7 @@ machinery over `Trusted.MirAst` and `Trusted.MirSemantics`:
    wpFaultProg`).
 2. **Width-Parametric Bitvector, Scalar, and Operator Adequacy:** Exact modular
    characterization and idempotence of `truncateBits`, totality and
-   well-formedness of `truncateScalar`, all 20 Pass 1 non-vacuity and
+   well-formedness of `truncateScalar`, all 25 Pass 1 non-vacuity and
    parameter-boundary canaries, and width/signedness-parametric operator
    totality across all six `IntWidth` variants.
 3. **Lawful Type Equality and `checkVal` / `ValidEntryArgs` Inversion:**
@@ -132,5 +132,25 @@ theorem canary_crate_and_body_verified_anneal : CanaryCrateAndBodyVerifiedAnneal
 
 theorem canary_memory_lifecycle_anneal : CanaryMemoryLifecycleAnnealClaim :=
   canary_memory_lifecycle_anneal_base
+
+theorem canary_positive_char_and_cmp_anneal :
+    CanaryPositiveCharAndCmpAnnealClaim :=
+  canary_positive_char_and_cmp_anneal_base
+
+theorem canary_negative_char_and_cmp_anneal :
+    CanaryNegativeCharAndCmpAnnealClaim :=
+  canary_negative_char_and_cmp_anneal_base
+
+theorem canary_positive_overflow_ops_anneal :
+    CanaryPositiveOverflowOpsAnnealClaim :=
+  canary_positive_overflow_ops_anneal_base
+
+theorem canary_positive_int_to_int_cast_anneal :
+    CanaryPositiveIntToIntCastAnnealClaim :=
+  canary_positive_int_to_int_cast_anneal_base
+
+theorem canary_negative_int_to_int_cast_anneal :
+    CanaryNegativeIntToIntCastAnnealClaim :=
+  canary_negative_int_to_int_cast_anneal_base
 
 end Anneal.MirWp

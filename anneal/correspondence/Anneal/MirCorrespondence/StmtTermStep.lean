@@ -191,6 +191,10 @@ private theorem discriminantTypesValid_stmt {body : Body} {bb : BasicBlock}
               MirTy.beq dstTy (.int ety.discrWidth ety.discrSigned)
             else true
           | none => true
+        | .ordering =>
+          match MirSemantics.getElem? body.locals dst.localId with
+          | some dstTy => MirTy.beq dstTy (.int .i8 true)
+          | none => true
         | _ => true
       | none => true
     else true) = true at h_st_ok
@@ -209,6 +213,81 @@ private theorem discriminantTypesValid_stmt {body : Body} {bb : BasicBlock}
       MirTy.beq dstTy (.int ety.discrWidth ety.discrSigned)
     else true) = true at h_st_ok
   rw [h_adm, ite_true_eq] at h_st_ok
+  exact MirTy.eq_of_beq h_st_ok
+
+private theorem discriminantTypesValid_stmt_ordering {body : Body}
+    {bb : BasicBlock} {blockIdx : BasicBlockId} {stmtIdx : Nat} {dst : Place}
+    {rv : Rvalue}
+    (h_dv : discriminantTypesValid body = true)
+    (h_bb : MirSemantics.getElem? body.basicBlocks blockIdx = some bb)
+    (h_st :
+      MirSemantics.getElem? bb.statements stmtIdx = some (.assign dst rv)) :
+    ∀ (src : Place) (dstTy : MirTy),
+      rv = .discriminant src →
+      dst.projection.isEmpty = true →
+      src.projection.isEmpty = true →
+      MirSemantics.getElem? body.locals src.localId = some .ordering →
+      MirSemantics.getElem? body.locals dst.localId = some dstTy →
+      dstTy = .int .i8 true := by
+  intro src dstTy h_rv h_dpe h_spe h_sty h_dty
+  subst h_rv
+  have h_bb_ok := list_all_mirGetElem? h_dv h_bb
+  have h_st_ok := list_all_mirGetElem? h_bb_ok h_st
+  change
+    (if (dst.projection.isEmpty && src.projection.isEmpty) = true then
+      match MirSemantics.getElem? body.locals src.localId with
+      | some srcTy =>
+        match srcTy with
+        | .enum ety =>
+          match MirSemantics.getElem? body.locals dst.localId with
+          | some dstTy =>
+            if enumAdmitted ety then
+              MirTy.beq dstTy (.int ety.discrWidth ety.discrSigned)
+            else true
+          | none => true
+        | .ordering =>
+          match MirSemantics.getElem? body.locals dst.localId with
+          | some dstTy => MirTy.beq dstTy (.int .i8 true)
+          | none => true
+        | _ => true
+      | none => true
+    else true) = true at h_st_ok
+  rw [h_dpe, h_spe, Bool.and_self, ite_true_eq] at h_st_ok
+  rw [h_sty] at h_st_ok
+  change
+    (match MirSemantics.getElem? body.locals dst.localId with
+     | some dstTy => MirTy.beq dstTy (.int .i8 true)
+     | none => true) = true at h_st_ok
+  rw [h_dty] at h_st_ok
+  exact MirTy.eq_of_beq h_st_ok
+
+private theorem castTypesValid_stmt {body : Body} {bb : BasicBlock}
+    {blockIdx : BasicBlockId} {stmtIdx : Nat} {dst : Place} {rv : Rvalue}
+    (h_cv : castTypesValid body = true)
+    (h_bb : MirSemantics.getElem? body.basicBlocks blockIdx = some bb)
+    (h_st :
+      MirSemantics.getElem? bb.statements stmtIdx = some (.assign dst rv)) :
+    ∀ (opnd : Operand) (castTy dstTy : MirTy),
+      rv = .cast .intToInt opnd castTy →
+      dst.projection.isEmpty = true →
+      MirSemantics.getElem? body.locals dst.localId = some dstTy →
+      dstTy = castTy := by
+  intro opnd castTy dstTy h_rv h_dpe h_dty
+  subst h_rv
+  have h_bb_ok := list_all_mirGetElem? h_cv h_bb
+  have h_st_ok := list_all_mirGetElem? h_bb_ok h_st
+  change
+    (if dst.projection.isEmpty = true then
+      match MirSemantics.getElem? body.locals dst.localId with
+      | some dstTy => MirTy.beq dstTy castTy
+      | none => true
+    else true) = true at h_st_ok
+  rw [h_dpe, ite_true_eq] at h_st_ok
+  change
+    (match MirSemantics.getElem? body.locals dst.localId with
+     | some dstTy => MirTy.beq dstTy castTy
+     | none => true) = true at h_st_ok
+  rw [h_dty] at h_st_ok
   exact MirTy.eq_of_beq h_st_ok
 
 /-- Under `SlotsMatchTys`, replacing a local's value never deallocates:
@@ -394,7 +473,22 @@ theorem evalTerminator_step_inv {body : Body} {bb : BasicBlock}
         · cases h_step
         · injection h_step with h_eq
           refine ⟨_, h_eq.symm, rfl, h_inv₁, h_pc0 _ localsAfterDiscr⟩
-      | unit | enumVal _ _ | tuple _ | ptr _ | bytes _ => cases h_step
+      | char ch =>
+        dsimp only at h_step
+        cases h_sw : evalCharSwitchBranches ch targets.otherwise
+            targets.branches <;>
+          rw [h_sw] at h_step
+        · cases h_step
+        · injection h_step with h_eq
+          refine ⟨_, h_eq.symm, rfl, h_inv₁, h_pc0 _ localsAfterDiscr⟩
+      | unit | enumVal _ _ | tuple _ | ptr _ | bytes _ | ordering _ =>
+        dsimp only at h_step
+        cases h_br : targets.branches with
+        | cons _ _ => rw [h_br] at h_step; cases h_step
+        | nil =>
+          rw [h_br] at h_step
+          injection h_step with h_eq
+          refine ⟨_, h_eq.symm, rfl, h_inv₁, h_pc0 _ localsAfterDiscr⟩
 
 theorem evalStep_step_inv {p : Program} {c : Choice} {s s' : State}
     {f : FrameState} {body : Body}
@@ -655,7 +749,21 @@ private theorem step_evalStatement_ref_eq (rp : RefProg) (c : Choice)
         MirSemantics.getElem? body.locals src.localId = some (.enum ety) →
         MirSemantics.getElem? body.locals dst.localId = some dstTy →
         enumAdmitted ety = true →
-        dstTy = .int ety.discrWidth ety.discrSigned) :
+        dstTy = .int ety.discrWidth ety.discrSigned)
+    (h_ord_discr_ty :
+      ∀ (dst src : Place) (dstTy : MirTy),
+        stmt = .assign dst (.discriminant src) →
+        dst.projection.isEmpty = true →
+        src.projection.isEmpty = true →
+        MirSemantics.getElem? body.locals src.localId = some .ordering →
+        MirSemantics.getElem? body.locals dst.localId = some dstTy →
+        dstTy = .int .i8 true)
+    (h_cast_ty :
+      ∀ (dst : Place) (opnd : Operand) (castTy dstTy : MirTy),
+        stmt = .assign dst (.cast .intToInt opnd castTy) →
+        dst.projection.isEmpty = true →
+        MirSemantics.getElem? body.locals dst.localId = some dstTy →
+        dstTy = castTy) :
     let st := mkSimState rp defId rbody f.blockIdx f.stmtIdx body.locals f.locals
       retPlace mem ctrl cm
     let res := Miri.Interpreter.Step.evalStatement
@@ -774,6 +882,10 @@ private theorem step_evalStatement_ref_eq (rp : RefProg) (c : Choice)
           f.stmtIdx f.locals amem retPlace mem ctrl cm rdst dst rrv rv h_bdec h_supp
           h_inv h_pl h_rv (fun src ety dstTy h_eq_rv =>
             h_discr_ty dst src ety dstTy (by rw [h_eq_rv]))
+          (fun src dstTy h_eq_rv =>
+            h_ord_discr_ty dst src dstTy (by rw [h_eq_rv]))
+          (fun opnd castTy dstTy h_eq_rv =>
+            h_cast_ty dst opnd castTy dstTy (by rw [h_eq_rv]))
         have h_res :
             res = Miri.Interpreter.MachineHooks.run
               (Miri.Interpreter.evalRvalueIntoPlace
@@ -838,6 +950,7 @@ private theorem step_evalStatement_ref_eq (rp : RefProg) (c : Choice)
     have h_ev := evalRvalueIntoPlace_ref_eq rp c defId rbody body f.blockIdx
       f.stmtIdx f.locals amem retPlace mem ctrl cm ⟨0, []⟩ ⟨0, []⟩ .unsupported
       .unsupported h_bdec h_supp h_inv rfl rfl (fun _ _ _ h => by cases h)
+      (fun _ _ h => by cases h) (fun _ _ _ h => by cases h)
     have h_res :
         res = Miri.Interpreter.MachineHooks.run
           (Miri.Interpreter.evalRvalueIntoPlace
@@ -1323,6 +1436,7 @@ private theorem compareSwitchCase_scalar_ref_eq (rp : RefProg) (c : Choice)
       rw [IntWidth.beq_refl]; cases s <;> rfl
     have h_bin := scalarOps_binary_ref_eq rp c .eq (.int w s) (.int w s)
       (.scalar ⟨w, s, bits⟩) (.scalar ⟨w, s, caseBits⟩) st h_lcv rfl h_rcv rfl
+      (resolveTy_tyIdFor_int rp.types w s)
     have h_ev : evalBinOp .eq (.scalar ⟨w, s, bits⟩) (.scalar ⟨w, s, caseBits⟩) =
         .ok (.bool (truncateBits w bits == truncateBits w caseBits)) := by
       dsimp only [evalBinOp]
@@ -1841,6 +1955,457 @@ private theorem switchInt_forIn_bool (rp : RefProg) (c : Choice)
         · exact ih
         · rfl
 
+private theorem scalar_toChar_miriScalar_i32 (bits : BitVec 128)
+    (h_tr : truncateBits .i32 bits = bits) :
+    (Miri.Memory.Scalar.fromScalarInt (Prov := Miri.Memory.Provenance)
+      (miriScalar .i32 bits)).toChar =
+    if isUnicodeScalar bits.toNat then .ok (Char.ofNat bits.toNat)
+    else .error (.scalarInt (.invalidChar (UInt32.ofNat bits.toNat))) := by
+  dsimp only [Miri.Memory.Scalar.toChar, Miri.Memory.Scalar.toScalarInt,
+    Miri.Memory.Scalar.tryToScalarInt, Miri.Memory.Scalar.fromScalarInt,
+    bind, Bind.bind, Except.bind, pure, Pure.pure, Except.pure]
+  rw [miriScalar_i32_toChar h_tr]
+  cases isUnicodeScalar bits.toNat <;> rfl
+
+private theorem char_beq_eq_nat_beq (a b : Char) :
+    (a == b) = Nat.beq a.toNat b.toNat := by
+  cases h : Nat.beq a.toNat b.toNat with
+  | true =>
+    have h_eq : a = b :=
+      Char.ext (UInt32.toNat_inj.mp (Nat.eq_of_beq_eq_true h))
+    rw [h_eq]; exact beq_self_eq_true b
+  | false =>
+    apply beq_false_of_ne
+    intro h_eq
+    rw [h_eq, Nat.beq_refl] at h
+    cases h
+
+private theorem scalarOps_classify_char' (rp : RefProg) (c : Choice)
+    (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
+    (h_res : resolveTy rp.types (tyIdFor rp.types .char) = some .char) :
+    (Miri.Interpreter.ExecutionMachine.scalarHooks (refExecCfg rp)).classify c
+        (tyIdFor rp.types .char) st = .ok .character st := by
+  dsimp only [Miri.Interpreter.ExecutionMachine.scalarHooks,
+    Miri.Interpreter.ExecutionScalar.hooks, refExecCfg,
+    Miri.Interpreter.ExecutionMachine.withValidation, refExecutionConfig,
+    refScalarLeaves]
+  rw [h_res]
+
+private theorem compareSwitchCase_char_ref_eq (rp : RefProg) (c : Choice)
+    (ch : Char) (caseBits : BitVec 128)
+    (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
+    (h_res : resolveTy rp.types (tyIdFor rp.types .char) = some .char) :
+    let h := refExecCfg rp
+    let val : RvalueImmTy Miri.Memory.Provenance :=
+      ⟨.scalar (.fromChar ch), refLocalLayoutForTy rp.types .char⟩
+    let res : Miri.Interpreter.StepResult
+        (Miri.Interpreter.MachineHooks.State Unit RefUser) Bool :=
+      Miri.Interpreter.MachineHooks.run
+        (EStateM.bind
+          (match (Miri.Memory.Scalar.fromUInt (Prov := Miri.Memory.Provenance)
+              (BitVec.ofNat 128 caseBits.toNat) val.layout.layout.size).mapError
+              Miri.Interpreter.ScalarOps.scalarError with
+           | .ok v => EStateM.pure v | .error e => EStateM.throw e)
+          (fun caseScalar =>
+            EStateM.bind
+              (Miri.Interpreter.ScalarOps.binary
+                (Miri.Interpreter.ExecutionMachine.scalarHooks h) c .Eq
+                val ⟨.scalar caseScalar, val.layout⟩)
+              (fun result =>
+                EStateM.bind
+                  (match result.imm.toScalar.mapError
+                      Miri.Interpreter.ScalarOps.immediateError with
+                   | .ok v => EStateM.pure v | .error e => EStateM.throw e)
+                  (fun sc =>
+                    match sc.toBool.mapError
+                        Miri.Interpreter.ScalarOps.scalarError with
+                    | .ok v => EStateM.pure v | .error e => EStateM.throw e))))
+        st
+    match evalConstLit .char (.scalar caseBits) with
+    | .error k =>
+      ∃ err, res = (st, .error err) ∧ stepErrorFaultKind err = k
+    | .ok (.char cc) =>
+      res = (st, .ok (Nat.beq ch.toNat cc.toNat))
+    | .ok _ => False := by
+  intro h val res
+  have h_from :
+      Miri.Memory.Scalar.fromUInt (Prov := Miri.Memory.Provenance)
+        (BitVec.ofNat 128 caseBits.toNat) val.layout.layout.size =
+      if truncateBits .i32 caseBits != caseBits then
+        .error (.scalarInt (.integerConversionOverflow caseBits.toNat))
+      else
+        .ok (.fromScalarInt (miriScalar .i32 caseBits)) := by
+    rw [bitVec_ofNat_toNat_128]
+    have h_sz : val.layout.layout.size = toMiriSize .i32 := rfl
+    rw [h_sz]
+    dsimp only [Miri.Memory.Scalar.fromUInt]
+    rw [tryFromUInt_eq_truncateFromUInt,
+      truncateFromUInt_eq_miriScalar .i32 caseBits]
+    cases (truncateBits .i32 caseBits != caseBits) <;> rfl
+  dsimp only [evalConstLit]
+  cases h_ne : (truncateBits .i32 caseBits != caseBits) with
+  | true =>
+    rw [h_ne] at h_from
+    dsimp only [ite_true_eq] at h_from
+    dsimp only [ite_true_eq]
+    refine ⟨Miri.Interpreter.ScalarOps.scalarError
+      (.scalarInt (.integerConversionOverflow caseBits.toNat)), ?_, rfl⟩
+    dsimp only [res, Miri.Interpreter.MachineHooks.run,
+      Miri.Interpreter.Call.run]
+    rw [h_from]
+    rfl
+  | false =>
+    rw [h_ne] at h_from
+    dsimp only [ite_false_eq] at h_from
+    dsimp only [ite_false_eq]
+    have h_tr := truncateBits_eq_of_beq_false h_ne
+    have h_rc := scalar_toChar_miriScalar_i32 caseBits h_tr
+    have h_step_bin :
+        Miri.Interpreter.ScalarOps.binary
+          (Miri.Interpreter.ExecutionMachine.scalarHooks h) c .Eq
+          val ⟨.scalar (.fromScalarInt (miriScalar .i32 caseBits)),
+            val.layout⟩ st =
+        if isUnicodeScalar caseBits.toNat then
+          .ok ⟨.scalar (.fromBool (ch == Char.ofNat caseBits.toNat)),
+            refLocalLayoutForTy rp.types .bool⟩ st
+        else
+          .error (Miri.Interpreter.ScalarOps.scalarError
+            (.scalarInt (.invalidChar (UInt32.ofNat caseBits.toNat)))) st := by
+      dsimp only [Miri.Interpreter.ScalarOps.binary, bind, Bind.bind, val]
+      change (EStateM.bind
+        ((Miri.Interpreter.ExecutionMachine.scalarHooks h).classify c
+          (tyIdFor rp.types .char))
+        _ st) = _
+      rw [eStateM_bind_ok (scalarOps_classify_char' rp c st h_res)]
+      dsimp only
+      change (EStateM.bind
+        (if (tyIdFor rp.types .char == tyIdFor rp.types .char) = true then
+          EStateM.pure ()
+        else EStateM.throw
+          (StepError.invalidProgram "asymmetric scalar operand types"))
+        _ st) = _
+      rw [beq_self_eq_true, ite_true_eq, eStateM_bind_pure]
+      change (EStateM.bind (EStateM.pure _) _ st) = _
+      rw [eStateM_bind_pure]
+      change (EStateM.bind (EStateM.pure _) _ st) = _
+      rw [eStateM_bind_pure]
+      rw [scalar_toChar_fromChar, h_rc]
+      cases isUnicodeScalar caseBits.toNat <;> rfl
+    dsimp only [res, Miri.Interpreter.MachineHooks.run,
+      Miri.Interpreter.Call.run]
+    rw [h_from]
+    dsimp only [Except.mapError]
+    rw [eStateM_bind_pure]
+    cases h_u : isUnicodeScalar caseBits.toNat with
+    | false =>
+      rw [h_u, ite_false_eq] at h_step_bin
+      dsimp only [ite_false_eq]
+      rw [eStateM_bind_error h_step_bin]
+      exact ⟨_, rfl, rfl⟩
+    | true =>
+      rw [h_u, ite_true_eq] at h_step_bin
+      dsimp only [ite_true_eq]
+      rw [eStateM_bind_ok h_step_bin, char_beq_eq_nat_beq]
+      cases Nat.beq ch.toNat (Char.ofNat caseBits.toNat).toNat <;> rfl
+
+private theorem scalar_fromUInt_toMiriSize (w : IntWidth) (v : BitVec 128) :
+    Miri.Memory.Scalar.fromUInt (Prov := Miri.Memory.Provenance) v
+        (toMiriSize w) =
+      if truncateBits w v != v then
+        .error (.scalarInt (.integerConversionOverflow v.toNat))
+      else
+        .ok (.fromScalarInt (miriScalar w v)) := by
+  dsimp only [Miri.Memory.Scalar.fromUInt]
+  rw [tryFromUInt_eq_truncateFromUInt, truncateFromUInt_eq_miriScalar w v]
+  cases (truncateBits w v != v) <;> rfl
+
+private theorem scalar_fromUInt_pair_err_unsupported (rp : RefProg)
+    (w : IntWidth) (s : Bool) (v : BitVec 128) (e : ScalarError)
+    (h : Miri.Memory.Scalar.fromUInt (Prov := Miri.Memory.Provenance) v
+        (refLocalLayoutForTy rp.types (.tuple [.int w s, .bool])).layout.size =
+      .error e) :
+    stepErrorFaultKind (Miri.Interpreter.ScalarOps.scalarError e) =
+      .unsupported := by
+  have h_gen : ∀ w' : IntWidth,
+      Miri.Memory.Scalar.fromUInt (Prov := Miri.Memory.Provenance) v
+          (toMiriSize w') = .error e →
+      stepErrorFaultKind (Miri.Interpreter.ScalarOps.scalarError e) =
+        .unsupported := by
+    intro w' h'
+    rw [scalar_fromUInt_toMiriSize] at h'
+    cases h_ne : (truncateBits w' v != v) with
+    | true =>
+      rw [h_ne, ite_true_eq] at h'
+      injection h' with h_e
+      rw [← h_e]
+      rfl
+    | false =>
+      rw [h_ne, ite_false_eq] at h'
+      cases h'
+  cases w with
+  | i8 => exact h_gen .i16 h
+  | i16 => exact h_gen .i32 h
+  | i32 => exact h_gen .i64 h
+  | i64 => exact h_gen .i128 h
+  | isize => exact h_gen .i128 h
+  | i128 =>
+    have h32 : Miri.Memory.Scalar.fromUInt (Prov := Miri.Memory.Provenance) v
+        (Miri.ABI.Size.ofBytes 32) =
+        .error (.scalarInt (.sizeTooLarge (Miri.ABI.Size.ofBytes 32))) := rfl
+    have h_sz : (refLocalLayoutForTy rp.types
+        (.tuple [.int .i128 s, .bool])).layout.size =
+        Miri.ABI.Size.ofBytes 32 := rfl
+    rw [h_sz, h32] at h
+    injection h with h_e
+    rw [← h_e]
+    rfl
+
+private theorem scalarOps_classify_pair' (rp : RefProg) (c : Choice)
+    (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
+    (w : IntWidth) (s : Bool)
+    (h_res : resolveTy rp.types (tyIdFor rp.types (.tuple [.int w s, .bool])) =
+      some (.tuple [.int w s, .bool])) :
+    (Miri.Interpreter.ExecutionMachine.scalarHooks (refExecCfg rp)).classify c
+        (tyIdFor rp.types (.tuple [.int w s, .bool])) st =
+      .error (.invalidProgram "non-scalar operand type") st := by
+  dsimp only [Miri.Interpreter.ExecutionMachine.scalarHooks,
+    Miri.Interpreter.ExecutionScalar.hooks, refExecCfg,
+    Miri.Interpreter.ExecutionMachine.withValidation, refExecutionConfig,
+    refScalarLeaves]
+  rw [h_res]
+
+private theorem compareSwitchCase_pair_ref_eq (rp : RefProg) (c : Choice)
+    (w : IntWidth) (s : Bool) (bits : BitVec 128) (b : Bool) (caseNat : Nat)
+    (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
+    (h_res : resolveTy rp.types (tyIdFor rp.types (.tuple [.int w s, .bool])) =
+      some (.tuple [.int w s, .bool])) :
+    let h := refExecCfg rp
+    let val : RvalueImmTy Miri.Memory.Provenance :=
+      ⟨.scalarPair (.fromScalarInt (miriScalar w bits)) (.fromBool b),
+        refLocalLayoutForTy rp.types (.tuple [.int w s, .bool])⟩
+    let res : Miri.Interpreter.StepResult
+        (Miri.Interpreter.MachineHooks.State Unit RefUser) Bool :=
+      Miri.Interpreter.MachineHooks.run
+        (EStateM.bind
+          (match (Miri.Memory.Scalar.fromUInt (Prov := Miri.Memory.Provenance)
+              (BitVec.ofNat 128 caseNat) val.layout.layout.size).mapError
+              Miri.Interpreter.ScalarOps.scalarError with
+           | .ok v => EStateM.pure v | .error e => EStateM.throw e)
+          (fun caseScalar =>
+            EStateM.bind
+              (Miri.Interpreter.ScalarOps.binary
+                (Miri.Interpreter.ExecutionMachine.scalarHooks h) c .Eq
+                val ⟨.scalar caseScalar, val.layout⟩)
+              (fun result =>
+                EStateM.bind
+                  (match result.imm.toScalar.mapError
+                      Miri.Interpreter.ScalarOps.immediateError with
+                   | .ok v => EStateM.pure v | .error e => EStateM.throw e)
+                  (fun sc =>
+                    match sc.toBool.mapError
+                        Miri.Interpreter.ScalarOps.scalarError with
+                    | .ok v => EStateM.pure v | .error e => EStateM.throw e))))
+        st
+    ∃ err, res = (st, .error err) ∧ stepErrorFaultKind err = .unsupported := by
+  intro h val res
+  dsimp only [res, Miri.Interpreter.MachineHooks.run, Miri.Interpreter.Call.run]
+  cases h_fu : Miri.Memory.Scalar.fromUInt (Prov := Miri.Memory.Provenance)
+      (BitVec.ofNat 128 caseNat) val.layout.layout.size with
+  | error e =>
+    refine ⟨Miri.Interpreter.ScalarOps.scalarError e, rfl,
+      scalar_fromUInt_pair_err_unsupported rp w s _ e h_fu⟩
+  | ok caseScalar =>
+    dsimp only [Except.mapError]
+    rw [eStateM_bind_pure]
+    have h_bin :
+        Miri.Interpreter.ScalarOps.binary
+          (Miri.Interpreter.ExecutionMachine.scalarHooks h) c .Eq
+          val ⟨.scalar caseScalar, val.layout⟩ st =
+        .error (.invalidProgram "non-scalar operand type") st := by
+      dsimp only [Miri.Interpreter.ScalarOps.binary, bind, Bind.bind, val]
+      change (EStateM.bind
+        ((Miri.Interpreter.ExecutionMachine.scalarHooks h).classify c
+          (tyIdFor rp.types (.tuple [.int w s, .bool])))
+        _ st) = _
+      rw [eStateM_bind_error (scalarOps_classify_pair' rp c st w s h_res)]
+    rw [eStateM_bind_error h_bin]
+    exact ⟨_, rfl, rfl⟩
+
+
+private theorem switchInt_forIn_char (rp : RefProg) (c : Choice)
+    (st : MiriStepState) (ch : Char) (otherwise : BasicBlockId)
+    (branches : List (BitVec 128 × BasicBlockId))
+    (h_res : resolveTy rp.types (tyIdFor rp.types .char) = some .char) :
+    let h := refExecCfg rp
+    let val : RvalueImmTy Miri.Memory.Provenance :=
+      ⟨.scalar (.fromChar ch), refLocalLayoutForTy rp.types .char⟩
+    let cmp : Nat → MiriStepState →
+        Miri.Interpreter.StepResult MiriStepState Bool :=
+      fun caseNat state =>
+        Miri.Interpreter.MachineHooks.run
+          (EStateM.bind
+            (match (Miri.Memory.Scalar.fromUInt (Prov := Miri.Memory.Provenance)
+                (BitVec.ofNat 128 caseNat) val.layout.layout.size).mapError
+                Miri.Interpreter.ScalarOps.scalarError with
+             | .ok v => EStateM.pure v | .error e => EStateM.throw e)
+            (fun caseScalar =>
+              EStateM.bind
+                (Miri.Interpreter.ScalarOps.binary
+                  (Miri.Interpreter.ExecutionMachine.scalarHooks h) c .Eq
+                  val ⟨.scalar caseScalar, val.layout⟩)
+                (fun result =>
+                  EStateM.bind
+                    (match result.imm.toScalar.mapError
+                        Miri.Interpreter.ScalarOps.immediateError with
+                     | .ok v => EStateM.pure v | .error e => EStateM.throw e)
+                    (fun sc =>
+                      match sc.toBool.mapError
+                          Miri.Interpreter.ScalarOps.scalarError with
+                      | .ok v => EStateM.pure v
+                      | .error e => EStateM.throw e))))
+          state
+    let loopRes :=
+      forIn (m := Id)
+        (branches.map (fun b => Miri.MIR.SwitchTarget.Case b.1.toNat b.2))
+        ((none : Option (Miri.Interpreter.StepResult MiriStepState Unit)),
+          st, otherwise)
+        (fun case __s =>
+          have __s := __s.snd
+          have state := __s.fst
+          have target := __s.snd
+          match case with
+          | Miri.MIR.SwitchTarget.Case bits block =>
+            match cmp bits state with
+            | (next, comparison) =>
+              have state := next
+              match comparison with
+              | Except.error error =>
+                pure (ForInStep.done
+                  (some (state, Except.error error), state, target))
+              | Except.ok true =>
+                have target := block
+                pure (ForInStep.done (none, state, target))
+              | Except.ok false =>
+                pure (ForInStep.yield (none, state, target)))
+    match evalCharSwitchBranches ch otherwise branches with
+    | .error k =>
+      ∃ err, loopRes = (some (st, .error err), st, otherwise) ∧
+        stepErrorFaultKind err = k
+    | .ok target =>
+      loopRes = (none, st, target) := by
+  intro h val cmp
+  induction branches with
+  | nil =>
+    dsimp only [evalCharSwitchBranches]
+    rw [List.map_nil, List.forIn_nil]
+    rfl
+  | cons hd rest ih =>
+    cases hd with
+    | mk caseBits target =>
+      dsimp only
+      rw [switchInt_forIn_cons (cmp := cmp)]
+      have h_cmp := compareSwitchCase_char_ref_eq rp c ch caseBits st h_res
+      dsimp only [evalCharSwitchBranches]
+      cases h_cl : evalConstLit .char (.scalar caseBits) with
+      | error k =>
+        rw [h_cl] at h_cmp
+        let ⟨err, h_err, h_fk⟩ := h_cmp
+        dsimp only [cmp]
+        rw [h_err]
+        exact ⟨err, rfl, h_fk⟩
+      | ok v =>
+        rw [h_cl] at h_cmp
+        cases v with
+        | char cc =>
+          dsimp only [cmp]
+          rw [h_cmp]
+          cases Nat.beq ch.toNat cc.toNat
+          · exact ih
+          · rfl
+        | scalar _ | ptr _ | bool _ | ordering _ | unit | enumVal _ _
+        | tuple _ | bytes _ =>
+          exact False.elim h_cmp
+
+private theorem switchInt_forIn_pair (rp : RefProg) (c : Choice)
+    (st : MiriStepState) (w : IntWidth) (s : Bool) (bits : BitVec 128)
+    (b : Bool) (otherwise : BasicBlockId)
+    (branches : List (BitVec 128 × BasicBlockId))
+    (h_res : resolveTy rp.types (tyIdFor rp.types (.tuple [.int w s, .bool])) =
+      some (.tuple [.int w s, .bool])) :
+    let h := refExecCfg rp
+    let val : RvalueImmTy Miri.Memory.Provenance :=
+      ⟨.scalarPair (.fromScalarInt (miriScalar w bits)) (.fromBool b),
+        refLocalLayoutForTy rp.types (.tuple [.int w s, .bool])⟩
+    let cmp : Nat → MiriStepState →
+        Miri.Interpreter.StepResult MiriStepState Bool :=
+      fun caseNat state =>
+        Miri.Interpreter.MachineHooks.run
+          (EStateM.bind
+            (match (Miri.Memory.Scalar.fromUInt (Prov := Miri.Memory.Provenance)
+                (BitVec.ofNat 128 caseNat) val.layout.layout.size).mapError
+                Miri.Interpreter.ScalarOps.scalarError with
+             | .ok v => EStateM.pure v | .error e => EStateM.throw e)
+            (fun caseScalar =>
+              EStateM.bind
+                (Miri.Interpreter.ScalarOps.binary
+                  (Miri.Interpreter.ExecutionMachine.scalarHooks h) c .Eq
+                  val ⟨.scalar caseScalar, val.layout⟩)
+                (fun result =>
+                  EStateM.bind
+                    (match result.imm.toScalar.mapError
+                        Miri.Interpreter.ScalarOps.immediateError with
+                     | .ok v => EStateM.pure v | .error e => EStateM.throw e)
+                    (fun sc =>
+                      match sc.toBool.mapError
+                          Miri.Interpreter.ScalarOps.scalarError with
+                      | .ok v => EStateM.pure v
+                      | .error e => EStateM.throw e))))
+          state
+    let loopRes :=
+      forIn (m := Id)
+        (branches.map (fun b => Miri.MIR.SwitchTarget.Case b.1.toNat b.2))
+        ((none : Option (Miri.Interpreter.StepResult MiriStepState Unit)),
+          st, otherwise)
+        (fun case __s =>
+          have __s := __s.snd
+          have state := __s.fst
+          have target := __s.snd
+          match case with
+          | Miri.MIR.SwitchTarget.Case bits block =>
+            match cmp bits state with
+            | (next, comparison) =>
+              have state := next
+              match comparison with
+              | Except.error error =>
+                pure (ForInStep.done
+                  (some (state, Except.error error), state, target))
+              | Except.ok true =>
+                have target := block
+                pure (ForInStep.done (none, state, target))
+              | Except.ok false =>
+                pure (ForInStep.yield (none, state, target)))
+    match branches with
+    | [] => loopRes = (none, st, otherwise)
+    | _ :: _ =>
+      ∃ err, loopRes = (some (st, .error err), st, otherwise) ∧
+        stepErrorFaultKind err = .unsupported := by
+  intro h val cmp
+  cases branches with
+  | nil =>
+    dsimp only
+    rw [List.map_nil, List.forIn_nil]
+    rfl
+  | cons hd rest =>
+    cases hd with
+    | mk caseBits target =>
+      dsimp only
+      rw [switchInt_forIn_cons (cmp := cmp)]
+      let ⟨err, h_err, h_fk⟩ :=
+        compareSwitchCase_pair_ref_eq rp c w s bits b caseBits.toNat st h_res
+      dsimp only [cmp]
+      rw [h_err]
+      exact ⟨err, rfl, h_fk⟩
+
 private theorem evalTerminator_ref_eq (rp : RefProg) (c : Choice)
     (defId : DefId) (rbody : RefBody) (body : Body) (rbb : RefBasicBlock)
     (bb : BasicBlock) (f : FrameState) (retTy : MirTy)
@@ -1954,7 +2519,9 @@ private theorem evalTerminator_ref_eq (rp : RefProg) (c : Choice)
       have h_evD := evalPrimitiveOperand_ref_eq rp c defId rbody f.blockIdx
         f.stmtIdx body.locals f.locals amem retPlace mem ctrl cm
         (Miri.Interpreter.OperandPath.instruction "discriminant")
-        rdiscr discr none h_inv h_d
+        rdiscr discr none h_inv h_d (fun _ _ h_ty =>
+          let ⟨_, _, h_ts⟩ := decodeBody_local_mem_types h_bdec h_ty
+          (resolveTy_tyIdFor_of_mem h_ts).2)
       cases h_pD : evalPrimitiveOperand body.locals f.locals amem discr with
       | error k =>
         rw [h_pD] at h_evD
@@ -1987,7 +2554,7 @@ private theorem evalTerminator_ref_eq (rp : RefProg) (c : Choice)
             (evalPrimitiveOperand_slotsMatchTys h_inv h_pD).2
           rw [h_pD] at h_evD
           dsimp only
-          let ⟨discrTy, h_dcv, h_dpr, h_okD⟩ := h_evD
+          let ⟨discrTy, h_dcv, h_dpr, h_dres, h_okD⟩ := h_evD
           let st₁ := mkSimState rp defId rbody f.blockIdx f.stmtIdx body.locals
             slotsAfterDiscr retPlace mem ctrl cm
           have h_after_discr :
@@ -2267,7 +2834,58 @@ private theorem evalTerminator_ref_eq (rp : RefProg) (c : Choice)
             | inr h_rest2 =>
               cases h_rest2 with
               | inl h_u => rw [h_u.1] at h_dpr; cases h_dpr
-              | inr h_e => let ⟨_, _, h_ty_eq, _, _, _⟩ := h_e; rw [h_ty_eq] at h_dpr; cases h_dpr
+              | inr h_rest3 =>
+              cases h_rest3 with
+              | inl h_e =>
+                let ⟨_, _, h_ty_eq, _, _, _⟩ := h_e
+                rw [h_ty_eq] at h_dpr; cases h_dpr
+              | inr h_rest4 =>
+              cases h_rest4 with
+              | inl h_c =>
+                let ⟨ch, h_ty_eq, h_val_eq⟩ := h_c
+                subst h_ty_eq h_val_eq
+                have h_loop := switchInt_forIn_char rp c st₁ ch
+                  targets.otherwise targets.branches h_dres
+                dsimp only [valToMiriImmediate]
+                cases h_sw : evalCharSwitchBranches ch targets.otherwise
+                    targets.branches with
+                | error k =>
+                  rw [h_sw] at h_loop
+                  dsimp only
+                  let ⟨err, h_lr, h_fk⟩ := h_loop
+                  rw [h_lr]
+                  exact ⟨err, st₁, rfl, h_fk⟩
+                | ok tgt =>
+                  rw [h_sw] at h_loop
+                  dsimp only
+                  rw [h_loop]
+                  exact ⟨tgt, slotsAfterDiscr, by rw [h_amem], rfl⟩
+              | inr h_rest5 =>
+              cases h_rest5 with
+              | inl h_o =>
+                let ⟨_, h_ty_eq, _⟩ := h_o
+                rw [h_ty_eq] at h_dpr; cases h_dpr
+              | inr h_p =>
+                let ⟨w, s, bits, b, h_ty_eq, h_val_eq, _⟩ := h_p
+                subst h_ty_eq h_val_eq
+                have h_loop := switchInt_forIn_pair rp c st₁ w s bits b
+                  targets.otherwise targets.branches h_dres
+                dsimp only [valToMiriImmediate]
+                cases h_br : targets.branches with
+                | nil =>
+                  rw [h_br] at h_loop
+                  dsimp only at h_loop
+                  dsimp only
+                  rw [h_loop]
+                  exact ⟨targets.otherwise, slotsAfterDiscr, by rw [h_amem],
+                    rfl⟩
+                | cons hd tl =>
+                  rw [h_br] at h_loop
+                  dsimp only at h_loop
+                  let ⟨err, h_lr, h_fk⟩ := h_loop
+                  dsimp only
+                  rw [h_lr]
+                  exact ⟨err, st₁, rfl, h_fk⟩
 
 /-! ## Section 4: `ExecutionMachine.step` Simulation (`EvalRefStepEqClaim`) -/
 
@@ -2293,7 +2911,7 @@ theorem evalRefStep_eq_base : EvalRefStepEqClaim := by
   rw [hs] at hs_sim
   injection hs_sim with hf_eq
   subst hf_eq
-  let ⟨body_sim, rbody_sim, h_bs, h_rbs, h_bdec, h_arg, _, h_dv, h_supp,
+  let ⟨body_sim, rbody_sim, h_bs, h_rbs, h_bdec, h_arg, _, h_dv, h_cv, h_supp,
     h_inv, h_pc, h_rf⟩ := h_fsim
   rw [h_body] at h_bs; injection h_bs with hb_eq; subst hb_eq
   rw [h_rbody] at h_rbs; injection h_rbs with hrb_eq; subst hrb_eq
@@ -2379,6 +2997,12 @@ theorem evalRefStep_eq_base : EvalRefStepEqClaim := by
         h_rstmt_dec (fun dst src ety dstTy h_st_eq =>
           discriminantTypesValid_stmt h_dv h_bb (by rw [← h_st_eq]; exact h_st)
             src ety dstTy rfl)
+        (fun dst src dstTy h_st_eq =>
+          discriminantTypesValid_stmt_ordering h_dv h_bb
+            (by rw [← h_st_eq]; exact h_st) src dstTy rfl)
+        (fun dst opnd castTy dstTy h_st_eq =>
+          castTypesValid_stmt h_cv h_bb (by rw [← h_st_eq]; exact h_st)
+            opnd castTy dstTy rfl)
       have h_step_stmt_err :
           ∀ (err : Miri.Interpreter.StepError) (st₁ : MiriStepState),
             Miri.Interpreter.Step.evalStatement

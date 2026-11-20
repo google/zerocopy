@@ -542,6 +542,143 @@ noncomputable def progMemNonPrimitiveUnOp : Program where
     }]
   }]
 
+/-- Construct a `char` `Val` from its Unicode scalar value `n`. -/
+noncomputable def charVal (n : Nat) : Val := .char (Char.ofNat n)
+
+/-- The `(T, bool)` result type of `BinOp::{Add,Sub,Mul}WithOverflow` on the
+integer type `ty`. -/
+noncomputable def overflowPairTy (ty : MirTy) : MirTy := .tuple [ty, .bool]
+
+/-- Single-block integer-cast test program:
+`fn cast(a: srcTy) -> dstTy { _0 = copy _1 as dstTy (IntToInt); return }` -/
+noncomputable def mkIntToIntCastProg (srcTy dstTy : MirTy) : Program where
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 1
+    locals := [dstTy, srcTy]
+    basicBlocks := [{
+      statements := [
+        .assign ⟨0, []⟩ (.cast .intToInt (.copy ⟨1, []⟩) dstTy)
+      ]
+      terminator := .return_
+    }]
+  }]
+
+/-- Three-way comparison followed by a discriminant read:
+`fn f(a: ty, b: ty) -> i8 { _3 = Cmp(copy _1, copy _2);
+_0 = discriminant(_3); return }` -/
+noncomputable def mkCmpDiscriminantProg (ty : MirTy) : Program where
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 2
+    locals := [i8Ty, ty, ty, .ordering]
+    basicBlocks := [{
+      statements := [
+        .assign ⟨3, []⟩ (.binaryOp .cmp (.copy ⟨1, []⟩) (.copy ⟨2, []⟩)),
+        .assign ⟨0, []⟩ (.discriminant ⟨3, []⟩)
+      ]
+      terminator := .return_
+    }]
+  }]
+
+/-- `char` switch program:
+`fn f(c: char) -> u32 { switchInt(copy _1) -> [97 ('a'): bb1, otherwise: bb2] }`
+where `bb1` returns `1u32` and `bb2` returns `2u32`. -/
+noncomputable def progCharSwitch : Program where
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 1
+    locals := [u32Ty, .char]
+    basicBlocks := [
+      {
+        statements := []
+        terminator := .switchInt (.copy ⟨1, []⟩) {
+          branches := [(BitVec.ofNat 128 97, 1)]
+          otherwise := 2
+        }
+      },
+      {
+        statements := [
+          .assign ⟨0, []⟩
+            (.use (.constant ⟨u32Ty, .scalar (BitVec.ofNat 128 1)⟩))
+        ]
+        terminator := .return_
+      },
+      {
+        statements := [
+          .assign ⟨0, []⟩
+            (.use (.constant ⟨u32Ty, .scalar (BitVec.ofNat 128 2)⟩))
+        ]
+        terminator := .return_
+      }
+    ]
+  }]
+
+/-- Negative UB canary: the surrogate code point `0xD800` is not a Unicode
+scalar value, so the constant `_0 = const 0xD800 as char` is an invalid `char`
+and faults with `.undefined`. -/
+noncomputable def progInvalidCharConstUb : Program where
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 0
+    locals := [.char]
+    basicBlocks := [{
+      statements := [
+        .assign ⟨0, []⟩
+          (.use (.constant ⟨.char, .scalar (BitVec.ofNat 128 0xd800)⟩))
+      ]
+      terminator := .return_
+    }]
+  }]
+
+/-- Negative UB canary: a `char` switch whose case value `0xD800` is not a
+Unicode scalar value faults with `.undefined` when the case is compared. -/
+noncomputable def progInvalidCharSwitchCaseUb : Program where
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 1
+    locals := [u32Ty, .char]
+    basicBlocks := [
+      {
+        statements := []
+        terminator := .switchInt (.copy ⟨1, []⟩) {
+          branches := [(BitVec.ofNat 128 0xd800, 1)]
+          otherwise := 1
+        }
+      },
+      {
+        statements := [
+          .assign ⟨0, []⟩
+            (.use (.constant ⟨u32Ty, .scalar (BitVec.ofNat 128 1)⟩))
+        ]
+        terminator := .return_
+      }
+    ]
+  }]
+
+/-- Negative UB canary: casting an uninitialized `u8` local
+(`fn f() -> u32 { StorageLive(_1); _0 = copy _1 as u32; return }`) faults with
+`.undefined`. -/
+noncomputable def progCastUninitSourceUb : Program where
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 0
+    locals := [u32Ty, u8Ty]
+    basicBlocks := [{
+      statements := [
+        .storageLive 1,
+        .assign ⟨0, []⟩ (.cast .intToInt (.copy ⟨1, []⟩) u32Ty)
+      ]
+      terminator := .return_
+    }]
+  }]
+
 /-- Safe 0-arg unit body for `CanaryCrateAndBodyVerifiedAnnealClaim`. -/
 noncomputable def canarySafeUnitBody : Body := {
   argumentCount := 0

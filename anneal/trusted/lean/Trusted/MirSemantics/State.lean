@@ -91,8 +91,10 @@ noncomputable def storageAnnotationsInBounds (body : Body) : Bool :=
       | _ => true))
 
 /-- Check that every unprojected `Assign(dst, Discriminant(src))` in `body`
-whose `src` has an admitted fieldless enum type `.enum ety` and whose `dst`
-is in bounds has destination type `.int ety.discrWidth ety.discrSigned`,
+whose `src` has an admitted fieldless enum type `.enum ety` (or the type
+`core::cmp::Ordering`) and whose `dst` is in bounds has destination type
+`.int ety.discrWidth ety.discrSigned` (`.int .i8 true` for `Ordering`, whose
+discriminant type is its `#[repr(i8)]`),
 matching `rustc`'s MIR well-typedness invariant for `Rvalue::Discriminant`
 (`compiler/rustc_const_eval/src/interpret/step.rs` and
 `compiler/rustc_const_eval/src/interpret/discriminant.rs`, `rust-lang/rust`
@@ -130,7 +132,41 @@ noncomputable def discriminantTypesValid (body : Body) : Bool :=
                   else
                     true
                 | none => true
+              | .ordering =>
+                match getElem? body.locals dst.localId with
+                | some dstTy => MirTy.beq dstTy (.int .i8 true)
+                | none => true
               | _ => true
+            | none => true
+          else
+            true
+        | _ => true
+      | _ => true))
+
+/-- Check that every unprojected `Assign(dst, Cast(IntToInt, _, castTy))` in
+`body` whose `dst` is in bounds has destination type `castTy`, matching
+`rustc`'s MIR well-typedness invariant that an assignment's place and rvalue
+have the same type (`StatementKind::Assign` in
+`compiler/rustc_middle/src/mir/syntax.rs`, `rust-lang/rust`
+`8144389c895da997dbdecaa635e41d6a50be6ffd`):
+
+> "Assignments in which the types of the place and rvalue differ are not
+> well-formed."
+
+`Miri.Interpreter.Cast.cast` resolves the cast target layout from `castTy`
+only when it differs from the destination type, and `write_immediate` does
+not re-check the destination type, so rejecting ill-typed casts statically at
+entry keeps both $M_{\text{anneal}}$ and $M_{\text{ref}}$ fail-closed. -/
+noncomputable def castTypesValid (body : Body) : Bool :=
+  body.basicBlocks.all (fun bb =>
+    bb.statements.all (fun stmt =>
+      match stmt with
+      | .assign dst rv =>
+        match rv with
+        | .cast .intToInt _ castTy =>
+          if dst.projection.isEmpty then
+            match getElem? body.locals dst.localId with
+            | some dstTy => MirTy.beq dstTy castTy
             | none => true
           else
             true
@@ -179,7 +215,8 @@ noncomputable def initLocalsLoop (body : Body) (args : List Val) :
 Validates the 64-bit target layout (`p.pointerWidthBits = 64`), the MIR
 semantic profile version (`p.mirProfileVersion = 1`; see
 `Trusted.MirAst.Program`), entry body existence, non-empty basic blocks,
-in-bounds storage annotations, supported local types, empty `callerMem`, and
+in-bounds storage annotations, well-typed `Discriminant` and `Cast`
+destinations, supported local types, empty `callerMem`, and
 well-typed `q.args`. Returns `.error .unsupported` if any static/entry
 precondition fails. The entry state's memory is `entryMemory`. -/
 noncomputable def initState (p : Program) (q : Query) :
@@ -199,6 +236,8 @@ noncomputable def initState (p : Program) (q : Query) :
       else if !storageAnnotationsInBounds body then
         .error .unsupported
       else if !discriminantTypesValid body then
+        .error .unsupported
+      else if !castTypesValid body then
         .error .unsupported
       else if !body.locals.all isSupportedScalarOrUnitTy then
         .error .unsupported

@@ -112,7 +112,7 @@ vendor/lean-miri/               Vendored lean-miri reference model
                                 `CopyNonOverlapping` move sequencing
 
 trusted/correspondence/Trusted/ Correspondence TCB specification (Pass 2)
-  Correspondence.lean           Hub + locked *Claim constants (34 claims:
+  Correspondence.lean           Hub + locked *Claim constants (37 claims:
   Correspondence/               Codec, State, Config, Eval, Simulation,
                                 CanaryFixtures;
                                 -- anneal-trust-tier: candidate:mir_semantics)
@@ -121,7 +121,7 @@ correspondence/Anneal/          Untrusted correspondence proof (Pass 2)
   MirCorrespondence/            Modular proofs (Codec, SimHelpers, ScalarEquiv,
                                 EnumEquiv, MemRoundTrip, RvalueStep,
                                 StmtTermStep, InitAndSim, Canaries)
-  MirCorrespondenceProof.lean   Public re-exports of all 34 locked witnesses
+  MirCorrespondenceProof.lean   Public re-exports of all 37 locked witnesses
 
 trusted/audit/                  anneal-audit CLI, auditor library, and inspector
   TrustedBoundary.lean          Syntactic preflight, namespace and
@@ -226,8 +226,9 @@ Placing `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and
    on the human-audited `Trusted.*` surface (`Trusted.MirSemantics`), while
    only the proofs (`wellFormed_and_spec_of_wp`,
    `reaches_fault_and_exclusive_of_wpFault`, and all 15 Day-1 scalar/bool/unit
-   or 20 full Phase 1 canary theorems once fieldless enums, `!`, crate/unit
-   scope, and byte-level memory land, including
+   or 25 full canary theorems once fieldless enums, `!`, crate/unit scope,
+   byte-level memory, `char`, `BinOp.cmp`, `BinOp.*WithOverflow`, and
+   `CastKind.intToInt` land, including
    `CanaryCrateAndBodyVerifiedAnnealClaim` and
    `CanaryMemoryLifecycleAnnealClaim`) live in
    untrusted `Anneal.MirWp` and are verified against those exact trusted
@@ -364,7 +365,7 @@ Placing `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and
      to reside inside those isolated submodules in a modular layout. It then
      computes the transitive constant cone of
      `[Trusted.Correspondence.evalRefStep,
-     Trusted.Correspondence.initRefState]` via `closureCorr`, requiring all 34
+     Trusted.Correspondence.initRefState]` via `closureCorr`, requiring all 39
      live `ExecutionMachine` `Miri.Interpreter.*` / `Miri.Memory.ScalarInt.*`
      primitives listed in Section 1.3 to be reachable directly from the live
      evaluator (never masked by `RefAllowedStep`), separately requires
@@ -405,7 +406,7 @@ Placing `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and
      all of `Miri/Input/`—is reachable), and that the only reachable axioms
      belong to `{propext, Classical.choice, Quot.sound}`. Within
      `verifyCorrConesAndClaims`, `verifyCorrespondenceClaims` enforces
-     Statement-Origin Separation by locking all 34 `(claim, proof)` pairs in
+     Statement-Origin Separation by locking all 37 `(claim, proof)` pairs in
      `Anneal.MirCorrespondenceProof` against the exact `Prop` constants defined
      in `Trusted.Correspondence` (whose referenced program, query, and
      expected-outcome fixture definitions likewise live on `Trusted.*`, with
@@ -420,8 +421,8 @@ Placing `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and
      codec claims (`DecodeProgEncodeProgClaim` through
      `EncodeStmtAssignIffClaim`), the 11 uniqueness and simulation claims
      (`StateUniqueOfSimulationInvClaim` through `DivergesIffRefDivergesClaim`),
-     and the 8 `D6`–`D13` canary claims (`CanaryD6UseAfterMoveUbClaim` through
-     `CanaryD13EnumInvalidTagAndUninitUbClaim`), plus non-empty required
+     and the 11 `D6`–`D16` canary claims (`CanaryD6UseAfterMoveUbClaim` through
+     `CanaryD16WithOverflowOkClaim`), plus non-empty required
      constant cones on every claim.
    - **Pass 2 negative audit tests:** `trusted/audit/tests/boundary_audit.rs`
      (and unit tests in `trusted/audit/src/lib.rs`) must exercise fail-closed
@@ -564,7 +565,7 @@ together with every later change to those definitions:
 | | `CrateTheorem`, `UnitTheorem`, `entryProgForBody`, |
 | | `bodiesHaveUniqueIdentities` (Section 4.5) |
 | | `WpSoundnessClaim`, `WpFaultSoundnessClaim`, |
-| | `prog*`, `Canary*Claim` (15 Day-1; 20 with Phase 1 and memory) |
+| | `prog*`, `Canary*Claim` (15 Day-1; 25 with Phase 1, memory, and casts) |
 | `Trusted.Correspondence` | Codec (`RefProg`, `encodeProg`, `decodeProg`), |
 | | reference machine & staged support gate |
 | | (`initRefState`, `refIsSupportedLocalTy`, |
@@ -575,10 +576,10 @@ together with every later change to those definitions:
 | | Reference predicates (`RefWellFormed`, |
 | | `RefBehavior`, `RefDiverges`, `RefReachesOutcome`, |
 | | `*AtChoices`, `faultToRefOutcome`), `SimulationInv` |
-| | Locked `*Claim` constants (34 locked Pass 2 |
+| | Locked `*Claim` constants (37 locked Pass 2 |
 | | claims: aggregate & choice-coupled top-level, |
 | | wiring, `AllowedStep` soundness, codec, |
-| | byte codec, simulation, and `CanaryD6–D13`) |
+| | byte codec, simulation, and `CanaryD6–D16`) |
 | `vendor/lean-miri/` | Pinned 160-module `ExecutionMachine` slice and |
 | | 10-file `deinitMovedPlace` patch (`UPSTREAM_PIN.json`) |
 
@@ -594,7 +595,8 @@ together with every later change to those definitions:
   `Anneal.MirWp` (15 Day-1 baseline; 20 once fieldless enums, `!`, crate/unit
   scope, and byte-level memory land, including
   `CanaryCrateAndBodyVerifiedAnnealClaim` and
-  `CanaryMemoryLifecycleAnnealClaim`).
+  `CanaryMemoryLifecycleAnnealClaim`; 25 with `char`, `BinOp.cmp`,
+  `BinOp.*WithOverflow`, and `CastKind.intToInt`).
   `SatisfiesPost` is the contract that per-function specifications discharge
   through `Anneal.MirWp`. The correspondence theorems cross-check the execution
   rules inside `initState` and `evalStep` against $M_{\text{ref}}$, but they
@@ -611,14 +613,14 @@ together with every later change to those definitions:
   `RefReachesAtChoices`, `RefValidPrefixAtChoices`,
   `RefReachesOutcomeAtChoices`, `RefBehaviorAtChoices`,
   `RefDivergesAtChoices`, `faultToRefOutcome`, and `SimulationInv`); and the
-  locked `*Claim` propositions (34 locked Pass 2 claims: `CorrespondenceClaim`,
+  locked `*Claim` propositions (37 locked Pass 2 claims: `CorrespondenceClaim`,
   `FaultEquivalenceClaim`, `CorrespondenceAtChoicesClaim`,
   `FaultEquivalenceAtChoicesClaim`, `MiriMoveDeinitWiringClaim`,
   `RefStepSoundForAllowedStepClaim`, `BytesCodecMatchesMiriClaim`, the 6 codec
   claims, the 11 uniqueness and simulation claims, and
-  `CanaryD6*Claim`–`CanaryD13*Claim`).
+  `CanaryD6*Claim`–`CanaryD16*Claim`).
 - **`vendor/lean-miri/`:** `Trusted.Correspondence` drives `evalRefStep`
-  directly through `Miri.Interpreter.ExecutionMachine.step`, reaching all 34
+  directly through `Miri.Interpreter.ExecutionMachine.step`, reaching all 39
   required live `ExecutionMachine` primitives (`ExecutionMachine.{step,
   withValidation,stepHooks,rvalueHooks,operandHooks,projectionHooks,
   discriminantHooks,scalarHooks}`, `Step.{step,evalStatement}`,
@@ -628,9 +630,10 @@ together with every later change to those definitions:
   `PlaceMachine.{readImmediate,writeMemory}`,
   `ValidityVisitor.validatePlace`, `ValidityMemory.bind`,
   `evalRvalueIntoPlace`, `TerminatorMachine.beforeTerminatorWithChoice`,
-  `ScalarOps.{binary,unary}`, `IntegerOps.{binary,binaryBool,unary}`,
+  `ScalarOps.{binary,unary}`, `IntegerOps.{binary,binaryBool,binaryChar,
+  unary}`, `Cast.cast`, `IntegerCast.cast`,
   `Discriminant.{readDiscriminant,discriminantForVariant}`, and
-  `ScalarInt.{truncateFromUInt,tryFromUInt,tryToBool}`), while
+  `ScalarInt.{truncateFromUInt,tryFromUInt,tryToBool,toChar,ofChar}`), while
   `RefAllowedStep` separately instantiates `ExecutionMachine.AllowedStep` and
   is tied to `RefStep` by `RefStepSoundForAllowedStepClaim` (all verified by
   `verifyRefEvaluatorIndependence` and `verifyCorrespondenceClaims`,
@@ -1067,6 +1070,8 @@ inductive MirTy where
   | int (width : IntWidth) (signed : Bool)
   | unit
   | never
+  | char
+  | ordering
   | enum (ty : EnumTy)
   | tuple (fields : List MirTy)
   | ref (mutability : Mutability) (pointee : MirTy)
@@ -1074,7 +1079,8 @@ inductive MirTy where
   | unsupported
 ```
 
-`MirTy.never` types the uninhabited `!`, and `MirTy.enum ety` types a
+`MirTy.never` types the uninhabited `!`, `MirTy.char` types `char`,
+`MirTy.ordering` types `core::cmp::Ordering`, and `MirTy.enum ety` types a
 fieldless enum. `EnumTy` records the enum's nominal identity (`id`), its
 discriminant type (`discrWidth`, `discrSigned`), its tag encoding (`tagRepr`:
 `.zeroSized` for a one-variant enum, or `.scalar tagW tagS`), and its declared
@@ -1272,10 +1278,17 @@ structure ScalarVal where
   signed : Bool
   bits : BitVec 128
 
+inductive OrderingVal where
+  | less
+  | equal
+  | greater
+
 inductive Val where
   | scalar (v : ScalarVal)
   | ptr (p : PtrVal)
   | bool (b : Bool)
+  | char (c : Char)
+  | ordering (ord : OrderingVal)
   | unit
   | enumVal (ty : EnumTy) (variant : Nat)
   | tuple (fields : List Val)
@@ -1307,20 +1320,25 @@ function $\pi : \text{Out}_{\text{anneal}} \to \text{Out}_{\text{ref}}$ from the
 correspondence theorem statement, preventing a constant or lossy projection from
 hiding disagreements in return values or memory state. Inside
 `Trusted.Correspondence`, `initRefState` and `evalRefStep` bridge boundary
-`Val`s (`Val.scalar ⟨w, s, bits⟩`, `Val.bool b`, `Val.unit`, and
-`Val.enumVal ety v`) to and from `lean-miri`'s `Immediate` and `MemoryState`
-representations: `checkRefVal` validates entry arguments with
+`Val`s (`Val.scalar ⟨w, s, bits⟩`, `Val.bool b`, `Val.char c`,
+`Val.ordering ord`, `Val.unit`, `Val.enumVal ety v`, and overflow-pair
+`Val.tuple [.scalar sv, .bool b]`) to and from `lean-miri`'s `Immediate` and
+`MemoryState` representations: `checkRefVal` validates entry arguments with
 `ScalarInt.tryFromUInt bits (toMiriSize w)` (rejecting any out-of-width bit
-pattern rather than truncating), `evalRefConstLit` decodes constants with
-`ScalarInt.tryFromUInt`, `ScalarInt.tryToBool`, and
-`Discriminant.readDiscriminant`, and `ExecutionMachine.scalarHooks` invokes
-`Miri.Interpreter.ScalarOps.{binary,unary}` (`IntegerOps.{binary,binaryBool,
-unary}`) directly on `Immediate` operands.
+pattern rather than truncating) alongside Unicode scalar / ordering /
+overflow-pair checks, `evalRefConstLit` decodes constants with
+`ScalarInt.tryFromUInt`, `ScalarInt.tryToBool`, `ScalarInt.toChar`, and
+`Discriminant.readDiscriminant`, `ExecutionMachine.scalarHooks` invokes
+`Miri.Interpreter.ScalarOps.{binary,unary}`
+(`IntegerOps.{binary,binaryBool,binaryChar,unary}`) directly on `Immediate`
+operands, and `ExecutionMachine.castHooks` drives `Miri.Interpreter.Cast.cast`
+(`Miri.Interpreter.IntegerCast.cast` for `CastKind.intToInt`).
 `Anneal.MirCorrespondence.{ScalarEquiv,EnumEquiv,RvalueStep}` prove
 unconditional agreement lemmas between these Miri operations and
 $M_{\text{anneal}}$ (`checkRefVal_eq`, `checkRefArgsMatch_eq`,
 `evalRefConstLit_eq`, `evalRefBinOp_eq`, `evalRefUnOp_eq`,
-`scalarOps_binary_ref_eq`, `scalarOps_unary_ref_eq`, and
+`scalarOps_binary_ref_eq`, `scalarOps_unary_ref_eq`,
+`integerCast_u128_to_{int,char}`, `cast_intToInt_local_eq`, and
 `match_tryFromUInt_eq`, which shows that a validated `ScalarInt` preserves
 `sc.data = bits` with zero truncation or signedness mutation).
 
@@ -1493,13 +1511,22 @@ aligns its operational checks with `lean-miri`'s evaluation order:
      consumers check the type before touching memory.
    - **Stage 2A (`evalPrimitiveOperand`):** Used by `Rvalue.binaryOp`,
      `Rvalue.unaryOp`, and `TerminatorKind.switchInt`. Checks
-     `isPrimitiveReadableTy ty` (`.bool` or `.int w s`) *before* checking
-     whether `optVal` is `some v`, matching `MemoryOperand.readImmediate`
-     (which checks `BackendRepr.Scalar` on the static layout before inspecting
-     the runtime `Immediate` for `.uninit`).
+     `isPrimitiveReadableTy ty` (`.bool`, `.int w s`, `.char`, or overflow pairs
+     `.tuple [.int w s, .bool]`) *before* checking whether `optVal` is
+     `some v`, matching `MemoryOperand.readImmediate` (which checks
+     `BackendRepr.Scalar` / `BackendRepr.ScalarPair` on the static layout
+     before inspecting the runtime `Immediate` for `.uninit`).
    - **Stage 2B (`Rvalue.use` inside `evalRvalue`):** Calls `evalOperandToSlot`,
      checks `srcTy = dstTy` first (matching `copyRuntimePlaceNoValidate`), and
      then checks `optVal = some v` (matching `h.validate`).
+   - **Stage 2C (`Rvalue.cast .intToInt` inside `evalRvalue`):** Calls
+     `evalOperandToSlot ... isIntLikeTy`, checks `isIntLikeTy srcTy` (`.bool`,
+     `.int _ _`, or `.char`) first (matching `enforceValidity`'s `typeInfo`),
+     then checks `optVal = some v` (matching `readImmediate` `.uninit` UB), and
+     finally applies `evalIntToIntCast` (`intLikeBits` + target width
+     truncation or `u8`-range `≤ 255` check for `.char`, matching `Cast.cast` /
+     `IntegerCast.cast`), with `castTypesValid` enforcing `dstTy = castTy`
+     statically on unprojected assignments.
    - In $M_{\text{ref}}$, the corresponding unified pipeline is
      `Miri.Interpreter.OperandMachine.evalOperand` (Stage 1) and
      `Miri.Interpreter.PlaceMachine.readImmediate` /
@@ -1515,14 +1542,21 @@ aligns its operational checks with `lean-miri`'s evaluation order:
    `writePlace` runs after `evalRvalue`, self-moves (`_1 = move _1`) first
    deinitialize `_1` during `evalRvalue` and then write the extracted value back
    into `_1`.
-4. **Six-width integer and boolean operations (`evalBinOp` and `evalUnOp`):**
+4. **Six-width integer, `bool`, `char`, `Ordering`, and overflow-pair
+   operations (`evalBinOp`, `evalUnOp`, `evalIntToIntCast`):**
    - Non-shift integer binary operators require matching width and signedness
      (`l.width = r.width ∧ l.signed = r.signed`), faulting with `.unsupported`
      on mismatched types.
    - Wrapping `.add`, `.sub`, and `.mul` wrap modulo $2^{\text{bitWidth}}$;
      `.addUnchecked`, `.subUnchecked`, and `.mulUnchecked` fault with
      `.undefined` when the mathematical result falls outside the target signed
-     or unsigned range.
+     or unsigned range; `.addWithOverflow`, `.subWithOverflow`, and
+     `.mulWithOverflow` return `.tuple [.scalar wrapped, .bool overflowed]` of
+     overflow-pair type `.tuple [.int w s, .bool]`.
+   - `.cmp` compares equal-typed integers (signed or unsigned) and `char`
+     values, returning `.ordering` (`OrderingVal.{less,equal,greater}`, `i8`
+     tags `255 / 0 / 1` read via `Rvalue.discriminant`); `.cmp` on `bool`
+     faults with `.unsupported`.
    - `.div` and `.rem` fault with `.undefined` on division/remainder by zero and
      on signed `INT_MIN / -1` and `INT_MIN % -1`.
    - Shift operators (`.shl`, `.shr`, `.shlUnchecked`, `.shrUnchecked`) accept
@@ -1530,15 +1564,25 @@ aligns its operational checks with `lean-miri`'s evaluation order:
      `l.width.bitWidth`, perform arithmetic right shift on signed `l`, and fault
      with `.undefined` on `.shlUnchecked`/`.shrUnchecked` when `r.toInt < 0` or
      `r.toInt ≥ l.width.bitWidth`.
+   - `char` comparisons (`Eq..Ge` and `Cmp`) compare Unicode scalar values; all
+     unary operators on `.char` fault with `.unsupported`.
    - `UnOp.not` complements booleans and bitwise-inverts integers; `UnOp.neg`
      wraps signed integers (`-INT_MIN == INT_MIN`) and faults with
      `.unsupported` on unsigned integers or booleans.
+   - `evalIntToIntCast` sign-extends signed sources, zero-extends unsigned
+     sources, and maps `bool` / `char` to `128`-bit integers, truncating to
+     integer targets or converting `≤ 255` values to `char` (`.unsupported`
+     for larger values or non-int/non-char targets).
 5. **Terminator evaluation and block-bounds checking (`evalTerminator`):**
    - `.goto target` and `.switchInt discr targets` update `frame.blockIdx :=
      target, stmtIdx := 0` (with `.switchInt` also storing the post-discriminant
-     `localsAfterDiscr` into the frame). Target basic-block existence is checked
-     once at the start of the next step in `evalStep` (faulting with
-     `.unsupported` if `body.basicBlocks[frame.blockIdx]? = none`), matching
+     `localsAfterDiscr` into the frame). `evalCharSwitchBranches` checks each
+     case bit pattern via `evalConstLit .char`, faulting `.unsupported` above 4
+     bytes or `.undefined` on non-Unicode-scalar cases; overflow-pair
+     discriminants succeed only on empty branch lists (`otherwise`). Target
+     basic-block existence is checked once at the start of the next step in
+     `evalStep` (faulting with `.unsupported` if
+     `body.basicBlocks[frame.blockIdx]? = none`), matching
      `ControlFlow.goToBlock` and `Step.step` in `lean-miri`.
    - `.return_` faults with `.unsupported` if `bb.cleanup` is `true`, returns
      `.done (.returned ⟨retVal, callerMem⟩)` if `_0` holds `retVal`
@@ -1556,8 +1600,9 @@ uninhabited-parameter bodies, and fails closed on `.crate` vs. `.unit` scope
 mismatches, `Trusted.MirAst` defines `VerificationScope` (with `Body` carrying
 `isUnsafe : Bool := false` and `identity : String := ""`), and
 `Trusted.MirSemantics` defines the exact top-level verification judgments below
-(where `isSupportedScalarOrUnitTy` admits Phase 1 scalar integers, `bool`, `()`,
-`!`, and admitted fieldless enums, and `Trusted` re-exports `Trusted.Crate`,
+(where `isSupportedScalarOrUnitTy` admits Phase 1 scalar integers, `bool`,
+`char`, `Ordering`, overflow pairs `.tuple [.int w s, .bool]`, `()`, `!`, and
+admitted fieldless enums, and `Trusted` re-exports `Trusted.Crate`,
 `Trusted.CrateTheorem`, and `Trusted.UnitTheorem` as top-level `abbrev`s):
 
 ```lean
@@ -2008,7 +2053,7 @@ fault equivalence (`FaultEquivalenceAtChoicesClaim`), and the vendored
 `OperandMachine.evalOperand` and `LocalAccess.evalOperand`, `MachineHooks`, and
 `Call.deinitInPlaceArg`). All five top-level claims (together with
 `RefStepSoundForAllowedStepClaim`, `BytesCodecMatchesMiriClaim`, the 6 codec
-claims, 11 uniqueness and simulation claims, and 8 `D6`–`D13` canary claims—34
+claims, 11 uniqueness and simulation claims, and 11 `D6`–`D16` canary claims—37
 locked Pass 2 claims in total) are proved with zero `sorry` in
 `Anneal.MirCorrespondenceProof` and enforced by `TrustedBoundary.lean`
 (`verifyCorrespondenceClaims`).
@@ -2338,8 +2383,9 @@ kernel.
 
 The Pass 1 canaries in `Anneal.MirWp` (15 in the Day-1 scalar/bool/unit
 baseline, growing to 19 once fieldless enums, `!`, and crate/unit scope land,
-and to 20 with byte-level memory's `canary_memory_lifecycle_anneal`, Section
-4.6) check $M_{\text{anneal}}$ directly:
+to 20 with byte-level memory's `canary_memory_lifecycle_anneal`, Section
+4.6, and to 25 with `char`, `BinOp.cmp`, `BinOp.*WithOverflow`, and
+`CastKind.intToInt`) check $M_{\text{anneal}}$ directly:
 
 - **`canary_positive_add_anneal`:** `_0 = copy _1 + copy _2; return`
   (`30u32 + 12u32`) is `WellFormed` and returns `42u32`.
@@ -2416,6 +2462,28 @@ and to 20 with byte-level memory's `canary_memory_lifecycle_anneal`, Section
   mismatched `p.bodies[defId]` bindings, empty `bodies`, out-of-bounds
   `entryDefId`, duplicate `identity` keys, an unverified second body, false
   `specs.property`, and `.unit`/`.crate` scope mismatches.
+- **`canary_positive_char_and_cmp_anneal` and
+  `canary_negative_char_and_cmp_anneal`:** `char` comparisons compare Unicode
+  scalar values; `BinOp.cmp` returns `core::cmp::Ordering` (`Val.ordering`)
+  on `char` and on signed and unsigned integers (`-1i8.cmp(1i8)` is `Less`
+  although its bits `255` exceed `1`); `Rvalue.discriminant` of `Less` is
+  `-1i8`; and `switchInt` on a `char` takes the matching case or falls
+  through. A surrogate `char` constant (`0xD800`) and a surrogate `char`
+  switch case reach `.fault .undefined`, while `BinOp.cmp` on `bool` (as in
+  `IntegerOps.binaryBool`) and `UnOp.not` on `char` reach `.fault
+  .unsupported`.
+- **`canary_positive_overflow_ops_anneal`:**
+  `BinOp.{addWithOverflow,subWithOverflow,mulWithOverflow}` return the wrapped
+  result and overflow flag as a `(T, bool)` tuple on `u8`, `i8`, `u32`, and
+  `i128` (including signed `i128` multiplication overflow).
+- **`canary_positive_int_to_int_cast_anneal` and
+  `canary_negative_int_to_int_cast_anneal`:** `CastKind.intToInt` sign-extends
+  signed sources, zero-extends unsigned sources, truncates to the target width,
+  converts `bool` and `char` to integers, and converts `u8` to `char`; casting
+  any other integer value to `char` (`300u32`, or `-1i8` whose sign-extended
+  intermediate exceeds `255`) or casting to `bool` reaches `.fault
+  .unsupported`, and casting an uninitialized local reaches `.fault
+  .undefined`.
 
 The Pass 2 canaries in `Anneal.MirCorrespondenceProof` check both models:
 
@@ -2442,6 +2510,20 @@ The Pass 2 canaries in `Anneal.MirCorrespondenceProof` check both models:
   (`Miri.Interpreter.Discriminant`) across explicit-repr and signed-tag
   fieldless enums, 1-variant zero-sized enums, invalid scalar enum tags, and
   uninitialized enum discriminant reads.
+- **`canary_D14_char_cmp_and_switch_ok`:** `'b'.cmp('a')` returns
+  `Ordering::Greater` (`IntegerOps.binaryChar` in $M_{\text{ref}}$),
+  `Rvalue.discriminant` of `(-1i8).cmp(1i8)` returns `-1i8`, and `switchInt`
+  on the `char` `'a'` takes its matching case and returns `1u32`, in both
+  models.
+- **`canary_D15_int_to_int_cast`:** `-1i8 as u32` returns `0xFFFF_FFFF` and
+  `200u8 as char` returns `'\u{c8}'` in both models (`Cast.cast` and
+  `IntegerCast.cast` in $M_{\text{ref}}$), while `300u32 as char` reaches
+  `.fault .unsupported` in $M_{\text{anneal}}$ and `.blocked` in
+  $M_{\text{ref}}$.
+- **`canary_D16_with_overflow_ok`:** `BinOp.addWithOverflow` on
+  `(255u8, 1u8)` returns `(0, true)` and `BinOp.subWithOverflow` on
+  `(-128i8, 1i8)` returns `(127, true)` through the return place in both
+  models.
 
 ---
 

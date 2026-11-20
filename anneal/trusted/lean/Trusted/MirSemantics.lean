@@ -39,7 +39,7 @@ and `FaultEquivalenceClaim` in `Trusted.Correspondence`, the per-body,
 program, proof-unit, and crate verification judgments (`BodyStaticAdmitted`,
 `BodyVerified`, `Specs`, `Crate`, `ProgramVerified`, `CrateTheorem`, and
 `UnitTheorem`), and the Pass 1 audited claim propositions (`WpSoundnessClaim`,
-`WpFaultSoundnessClaim`, and the 20 `Canary*Claim` propositions).
+`WpFaultSoundnessClaim`, and the 25 `Canary*Claim` propositions).
 
 Human comprehension is therefore the primary design requirement for every
 definition in this module:
@@ -193,6 +193,16 @@ Key semantic correspondence points:
    Profile version 1 has no statement that forces an allocation, so
    `CanaryMemoryLifecycleAnnealClaim` applies `forceAllocation` between steps
    to exercise these rules.
+
+7. **`char`, `core::cmp::Ordering`, overflow pairs, and integer casts:**
+   `MirTy.char` values are Lean `Char`s (exactly the Unicode scalar values),
+   and an invalid `char` constant, memory value, or `switchInt` case is
+   `.undefined`. `BinOp.cmp` returns `MirTy.ordering` values on integers and
+   `char`s (`.unsupported` on `bool`), and `Rvalue.discriminant` of an
+   `Ordering` is its `i8` tag. `BinOp.{add,sub,mul}WithOverflow` return the
+   overflow pair `.tuple [.int w s, .bool]` (the only executable tuple type).
+   `Rvalue.cast .intToInt` converts integers, `bool`, and `char` to integers
+   and `u8`-range values to `char`; every other cast kind is `.unsupported`.
 -/
 
 /-!
@@ -665,6 +675,124 @@ def CanaryMemoryLifecycleAnnealClaim : Prop :=
     deallocateStack x₂.mem place = .ok m ∧
     evalStep progMemNonPrimitiveUnOp 0 { x₂ with mem := m } =
       .fault .unsupported)
+
+/-- Trusted claim for `Anneal.MirWp.canary_positive_char_and_cmp_anneal`:
+1. `char` comparisons compare Unicode scalar values (`'a' < 'b'`,
+   `'a' == 'a'`, and `'a' >= '\u{1f600}'` is `false`).
+2. `BinOp.cmp` returns `core::cmp::Ordering` on `char` (`'b'.cmp('a')` is
+   `Greater`), on signed integers (`-1i8.cmp(1i8)` is `Less`, distinguishing
+   signed from unsigned comparison of the bits `255`), on unsigned integers
+   (`255u8.cmp(1u8)` is `Greater`), and on equal values (`Equal`).
+3. `Rvalue.discriminant` of the `Ordering` `Less` is `-1i8` (raw bits `255`).
+4. `switchInt` on a `char` takes the matching case (`'a'` returns `1u32`) and
+   otherwise falls through (`'b'` returns `2u32`). -/
+noncomputable def CanaryPositiveCharAndCmpAnnealClaim : Prop :=
+  PositiveCanaryClaim (mkBinOpProg .lt .bool .char .char)
+    { args := [charVal 97, charVal 98] } (.bool true) ∧
+  PositiveCanaryClaim (mkBinOpProg .eq .bool .char .char)
+    { args := [charVal 97, charVal 97] } (.bool true) ∧
+  PositiveCanaryClaim (mkBinOpProg .ge .bool .char .char)
+    { args := [charVal 97, charVal 0x1f600] } (.bool false) ∧
+  PositiveCanaryClaim (mkBinOpProg .cmp .ordering .char .char)
+    { args := [charVal 98, charVal 97] } (.ordering .greater) ∧
+  PositiveCanaryClaim (mkBinOpProg .cmp .ordering i8Ty i8Ty)
+    { args := [i8Val 255, i8Val 1] } (.ordering .less) ∧
+  PositiveCanaryClaim (mkBinOpProg .cmp .ordering u8Ty u8Ty)
+    { args := [u8Val 255, u8Val 1] } (.ordering .greater) ∧
+  PositiveCanaryClaim (mkBinOpProg .cmp .ordering u32Ty u32Ty)
+    { args := [u32Val 7, u32Val 7] } (.ordering .equal) ∧
+  PositiveCanaryClaim (mkCmpDiscriminantProg i8Ty)
+    { args := [i8Val 255, i8Val 1] } (i8Val 255) ∧
+  PositiveCanaryClaim progCharSwitch { args := [charVal 97] } (u32Val 1) ∧
+  PositiveCanaryClaim progCharSwitch { args := [charVal 98] } (u32Val 2)
+
+/-- Trusted claim for `Anneal.MirWp.canary_negative_char_and_cmp_anneal`:
+1. The constant `0xD800 as char` (a surrogate) is an invalid `char` and
+   faults with `.undefined`.
+2. A `char` switch case `0xD800` faults with `.undefined` when compared.
+3. `BinOp.cmp` on `bool` faults with `.unsupported`, as in
+   `Miri.Interpreter.IntegerOps.binaryBool`.
+4. `UnOp.not` on `char` faults with `.unsupported`. -/
+noncomputable def CanaryNegativeCharAndCmpAnnealClaim : Prop :=
+  NegativeCanaryClaim progInvalidCharConstUb queryEmpty
+    .undefined .unsupported ∧
+  NegativeCanaryClaim progInvalidCharSwitchCaseUb { args := [charVal 97] }
+    .undefined .unsupported ∧
+  NegativeCanaryClaim (mkBinOpProg .cmp .ordering .bool .bool)
+    { args := [.bool false, .bool true] } .unsupported .undefined ∧
+  NegativeCanaryClaim (mkUnOpProg .not .char) { args := [charVal 97] }
+    .unsupported .undefined
+
+/-- Trusted claim for `Anneal.MirWp.canary_positive_overflow_ops_anneal`:
+`BinOp.{addWithOverflow, subWithOverflow, mulWithOverflow}` return the wrapped
+result and the overflow flag as a `(T, bool)` pair:
+1. `255u8 + 1` is `(0, true)` and `200u8 + 55` is `(255, false)`.
+2. `-128i8 - 1` is `(127, true)` (raw bits `128 - 1 = 127`).
+3. `65536u32 * 65536` is `(0, true)`, and `-6i8 * 5` is `(-30, false)` (raw
+   bits `250 * 5 = 226`).
+4. `2^126 * 2` on `i128` overflows the signed 128-bit range and is
+   `(-2^127, true)` (raw bits `2^127`). -/
+noncomputable def CanaryPositiveOverflowOpsAnnealClaim : Prop :=
+  PositiveCanaryClaim
+    (mkBinOpProg .addWithOverflow (overflowPairTy u8Ty) u8Ty u8Ty)
+    { args := [u8Val 255, u8Val 1] } (.tuple [u8Val 0, .bool true]) ∧
+  PositiveCanaryClaim
+    (mkBinOpProg .addWithOverflow (overflowPairTy u8Ty) u8Ty u8Ty)
+    { args := [u8Val 200, u8Val 55] } (.tuple [u8Val 255, .bool false]) ∧
+  PositiveCanaryClaim
+    (mkBinOpProg .subWithOverflow (overflowPairTy i8Ty) i8Ty i8Ty)
+    { args := [i8Val 128, i8Val 1] } (.tuple [i8Val 127, .bool true]) ∧
+  PositiveCanaryClaim
+    (mkBinOpProg .mulWithOverflow (overflowPairTy u32Ty) u32Ty u32Ty)
+    { args := [u32Val 65536, u32Val 65536] } (.tuple [u32Val 0, .bool true]) ∧
+  PositiveCanaryClaim
+    (mkBinOpProg .mulWithOverflow (overflowPairTy i8Ty) i8Ty i8Ty)
+    { args := [i8Val 250, i8Val 5] } (.tuple [i8Val 226, .bool false]) ∧
+  PositiveCanaryClaim
+    (mkBinOpProg .mulWithOverflow (overflowPairTy (.int .i128 true))
+      (.int .i128 true) (.int .i128 true))
+    { args := [scalarNatVal .i128 true (Nat.pow 2 126),
+        scalarNatVal .i128 true 2] }
+    (.tuple [scalarNatVal .i128 true (Nat.pow 2 127), .bool true])
+
+/-- Trusted claim for `Anneal.MirWp.canary_positive_int_to_int_cast_anneal`:
+`CastKind.intToInt` sign-extends signed sources (`-1i8 as u32` is
+`0xFFFF_FFFF` and `-1i64 as i128` is `-1i128`), zero-extends unsigned sources
+(`255u8 as i32` is `255`), truncates to the target width (`300u32 as u8` is
+`44`), converts `bool` (`true as i32` is `1`) and `char` (`'\u{1f600}' as u8` is
+`0`), and converts `u8` to `char` (`200u8 as char` is `'\u{c8}'`). -/
+noncomputable def CanaryPositiveIntToIntCastAnnealClaim : Prop :=
+  PositiveCanaryClaim (mkIntToIntCastProg i8Ty u32Ty) { args := [i8Val 255] }
+    (u32Val 4294967295) ∧
+  PositiveCanaryClaim (mkIntToIntCastProg (.int .i64 true) (.int .i128 true))
+    { args := [scalarNatVal .i64 true (Nat.pow 2 64 - 1)] }
+    (scalarNatVal .i128 true (Nat.pow 2 128 - 1)) ∧
+  PositiveCanaryClaim (mkIntToIntCastProg u8Ty (.int .i32 true))
+    { args := [u8Val 255] } (scalarNatVal .i32 true 255) ∧
+  PositiveCanaryClaim (mkIntToIntCastProg u32Ty u8Ty) { args := [u32Val 300] }
+    (u8Val 44) ∧
+  PositiveCanaryClaim (mkIntToIntCastProg .bool (.int .i32 true))
+    { args := [.bool true] } (scalarNatVal .i32 true 1) ∧
+  PositiveCanaryClaim (mkIntToIntCastProg .char u8Ty)
+    { args := [charVal 0x1f600] } (u8Val 0) ∧
+  PositiveCanaryClaim (mkIntToIntCastProg u8Ty .char) { args := [u8Val 200] }
+    (charVal 200)
+
+/-- Trusted claim for `Anneal.MirWp.canary_negative_int_to_int_cast_anneal`:
+1. `300u32 as char` faults with `.unsupported`: only `u8` values convert to
+   `char`, and `u8::try_from(300).unwrap()` panics.
+2. `-1i8 as char` faults with `.unsupported` (its sign-extended intermediate
+   exceeds `255`).
+3. An `IntToInt` cast to `bool` faults with `.unsupported`.
+4. Casting an uninitialized `u8` local faults with `.undefined`. -/
+noncomputable def CanaryNegativeIntToIntCastAnnealClaim : Prop :=
+  NegativeCanaryClaim (mkIntToIntCastProg u32Ty .char) { args := [u32Val 300] }
+    .unsupported .undefined ∧
+  NegativeCanaryClaim (mkIntToIntCastProg i8Ty .char) { args := [i8Val 255] }
+    .unsupported .undefined ∧
+  NegativeCanaryClaim (mkIntToIntCastProg u8Ty .bool) { args := [u8Val 1] }
+    .unsupported .undefined ∧
+  NegativeCanaryClaim progCastUninitSourceUb queryEmpty .undefined .unsupported
 
 end Trusted.MirSemantics
 

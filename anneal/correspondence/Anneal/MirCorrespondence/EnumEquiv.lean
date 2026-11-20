@@ -419,11 +419,254 @@ theorem miriScalar_data (w : IntWidth) (bits : BitVec 128) :
     cases w <;> rfl
   rw [h, size_truncate_eq]
 
+theorem tryFromUInt_eq_miriScalar (w : IntWidth) (raw : BitVec 128) :
+    ScalarInt.tryFromUInt raw (toMiriSize w) =
+      .ok (if truncateBits w raw != raw then none
+        else some (miriScalar w raw)) := by
+  rw [tryFromUInt_eq_truncateFromUInt, truncateFromUInt_eq_miriScalar]
+  cases (truncateBits w raw != raw) <;> rfl
+
+theorem bitVec128_ofNat_toNat (bits : BitVec 128) :
+    BitVec.ofNat 128 bits.toNat = bits := by
+  apply BitVec.eq_of_toNat_eq
+  rw [BitVec.toNat_ofNat]
+  exact Nat.mod_eq_of_lt bits.isLt
+
+theorem tryFromUInt_i32_eq (raw : BitVec 128) :
+    ScalarInt.tryFromUInt raw (Size.ofBytes 4) =
+      .ok (if truncateBits .i32 raw != raw then none
+        else some (miriScalar .i32 raw)) :=
+  tryFromUInt_eq_miriScalar .i32 raw
+
+theorem tryFromUInt_i8_eq (raw : BitVec 128) :
+    ScalarInt.tryFromUInt raw (Size.ofBytes 1) =
+      .ok (if truncateBits .i8 raw != raw then none
+        else some (miriScalar .i8 raw)) :=
+  tryFromUInt_eq_miriScalar .i8 raw
+
+theorem ite_not_bool_eq {α : Type} (b : Bool) (e o : α) :
+    (if (!b) = true then e else o) = (if b = true then o else e) := by
+  cases b <;> rfl
+
+theorem decide_nat_le_eq_ble (n m : Nat) : decide (n ≤ m) = Nat.ble n m := by
+  cases h : Nat.ble n m with
+  | true => exact decide_eq_true (Nat.le_of_ble_eq_true h)
+  | false =>
+    exact decide_eq_false (fun h' => by
+      rw [Nat.ble_eq_true_of_le h'] at h
+      cases h)
+
+theorem toNat_lt_of_truncateBits_eq {w : IntWidth} {bits : BitVec 128}
+    (h : truncateBits w bits = bits) :
+    bits.toNat < Nat.pow 2 w.bitWidth := by
+  have h_n := congrArg BitVec.toNat h
+  rw [toNat_truncateBits] at h_n
+  rw [← h_n]
+  exact Nat.mod_lt bits.toNat (intWidth_modulus_pos w)
+
+theorem uint32_toNat_ofNat_of_truncate {bits : BitVec 128}
+    (h : truncateBits .i32 bits = bits) :
+    (UInt32.ofNat bits.toNat).toNat = bits.toNat :=
+  UInt32.toNat_ofNat_of_lt' (toNat_lt_of_truncateBits_eq h)
+
+/-- `ScalarInt.toChar` on a well-formed 4-byte scalar checks the Unicode
+scalar range as `isUnicodeScalar` does. -/
+theorem miriScalar_i32_toChar {bits : BitVec 128}
+    (h : truncateBits .i32 bits = bits) :
+    (miriScalar .i32 bits).toChar =
+      if isUnicodeScalar bits.toNat then .ok (Char.ofNat bits.toNat)
+      else .error (.invalidChar (UInt32.ofNat bits.toNat)) := by
+  change (if (!(decide ((UInt32.ofNat (miriScalar .i32 bits).data.toNat).toNat
+        ≤ 0x10ffff) &&
+      !(decide (0xd800 ≤ (UInt32.ofNat (miriScalar .i32 bits).data.toNat).toNat)
+        && decide ((UInt32.ofNat (miriScalar .i32 bits).data.toNat).toNat ≤
+          0xdfff)))) = true then
+      Except.error (ScalarIntError.invalidChar
+        (UInt32.ofNat (miriScalar .i32 bits).data.toNat))
+    else Except.ok (Char.ofNat
+      (UInt32.ofNat (miriScalar .i32 bits).data.toNat).toNat)) = _
+  rw [miriScalar_data, h, uint32_toNat_ofNat_of_truncate h,
+    decide_nat_le_eq_ble, decide_nat_le_eq_ble, decide_nat_le_eq_ble]
+  dsimp only [isUnicodeScalar]
+  exact ite_not_bool_eq _ _ _
+
+theorem bitVec128_ofNat_beq (n : Nat) (hn : n < Nat.pow 2 128)
+    (tag : BitVec 128) :
+    (BitVec.ofNat 128 n == tag) = Nat.beq tag.toNat n := by
+  cases h : Nat.beq tag.toNat n with
+  | true =>
+    have h_eq : tag = BitVec.ofNat 128 n := by
+      apply BitVec.eq_of_toNat_eq
+      rw [BitVec.toNat_ofNat, Nat.eq_of_beq_eq_true h]
+      exact (Nat.mod_eq_of_lt hn).symm
+    rw [h_eq]
+    exact beq_self_eq_true _
+  | false =>
+    cases h_b : (BitVec.ofNat 128 n == tag) with
+    | false => rfl
+    | true =>
+      have h_eq : BitVec.ofNat 128 n = tag := eq_of_beq h_b
+      have h_n : tag.toNat = n := by
+        rw [← h_eq, BitVec.toNat_ofNat]
+        exact Nat.mod_eq_of_lt hn
+      exact absurd h_n (Nat.ne_of_beq_eq_false h)
+
+theorem refOrderingOfTag_eq (tag : BitVec 128) :
+    refOrderingOfTag tag = orderingOfTagBits tag.toNat := by
+  dsimp only [refOrderingOfTag, refFindDiscrVariant?, refFindDiscrVariantAux,
+    refOrderingEnumTy, orderingOfTagBits]
+  rw [bitVec128_ofNat_beq 255 (by decide), bitVec128_ofNat_beq 0 (by decide),
+    bitVec128_ofNat_beq 1 (by decide)]
+  cases Nat.beq tag.toNat 255 <;> cases Nat.beq tag.toNat 0 <;>
+    cases Nat.beq tag.toNat 1 <;> rfl
+
+theorem refOrderingOfTag_orderingTagBits (o : OrderingVal) :
+    refOrderingOfTag (BitVec.ofNat 128 (orderingTagBits o)) = some o := by
+  rw [refOrderingOfTag_eq]
+  cases o <;> rfl
+
+theorem orderingOfTagBits_orderingTagBits (o : OrderingVal) :
+    orderingOfTagBits (orderingTagBits o) = some o := by
+  cases o <;> rfl
+
+theorem scalar_fromInt_refOrderingToInt (o : OrderingVal) :
+    (Miri.Memory.Scalar.fromInt (refOrderingToInt o) (Size.ofBytes 1) :
+      Except Miri.Memory.ScalarError
+        (Miri.Memory.Scalar Miri.Memory.Provenance)) =
+      .ok (.fromScalarInt
+        (miriScalar .i8 (BitVec.ofNat 128 (orderingTagBits o)))) := by
+  cases o <;> rfl
+
+theorem uint32_ofNat_char_toNat (c : Char) :
+    (UInt32.ofNat c.toNat).toNat = c.toNat :=
+  UInt32.toNat_ofNat_of_lt' c.val.toNat_lt
+
+theorem scalarInt_toChar_ofChar (c : Char) :
+    ScalarInt.toChar (ScalarInt.ofChar c) = .ok c := by
+  have h_nat : (UInt32.ofNat
+      (BitVec.ofNat 128 (UInt32.ofNat c.toNat).toNat).toNat).toNat =
+      c.toNat := by
+    rw [uint32_ofNat_char_toNat, BitVec.toNat_ofNat,
+      (Nat.mod_eq_of_lt (Nat.lt_trans (UInt32.toNat_lt c.val)
+        (by decide : HPow.hPow 2 32 < HPow.hPow 2 128)) :
+        HMod.hMod c.toNat (HPow.hPow 2 128) = c.toNat)]
+    exact uint32_ofNat_char_toNat c
+  change (if (!(decide ((UInt32.ofNat
+        (BitVec.ofNat 128 (UInt32.ofNat c.toNat).toNat).toNat).toNat ≤
+          0x10ffff) &&
+      !(decide (0xd800 ≤ (UInt32.ofNat
+          (BitVec.ofNat 128 (UInt32.ofNat c.toNat).toNat).toNat).toNat) &&
+        decide ((UInt32.ofNat
+          (BitVec.ofNat 128 (UInt32.ofNat c.toNat).toNat).toNat).toNat ≤
+            0xdfff)))) = true then
+      Except.error (ScalarIntError.invalidChar (UInt32.ofNat
+        (BitVec.ofNat 128 (UInt32.ofNat c.toNat).toNat).toNat))
+    else Except.ok (Char.ofNat (UInt32.ofNat
+      (BitVec.ofNat 128 (UInt32.ofNat c.toNat).toNat).toNat).toNat)) = _
+  rw [h_nat, Char.ofNat_toNat]
+  have hv : c.toNat < 0xd800 ∨ (0xdfff < c.toNat ∧ c.toNat < 0x110000) :=
+    c.valid
+  cases hv with
+  | inl h =>
+    rw [decide_eq_true (Nat.le_of_lt (Nat.lt_trans h (by decide))),
+      decide_eq_false (Nat.not_le_of_gt h)]
+    rfl
+  | inr h =>
+    rw [decide_eq_true (Nat.le_of_lt_succ h.2),
+      decide_eq_false (Nat.not_le_of_gt h.1)]
+    cases decide (0xd800 ≤ c.toNat) <;> rfl
+
+theorem scalar_toChar_fromChar {Prov : Type} [PointerProvenance Prov]
+    (c : Char) : (Scalar.fromChar c : Scalar Prov).toChar = .ok c := by
+  change (ScalarInt.toChar (ScalarInt.ofChar c)).mapError _ = _
+  rw [scalarInt_toChar_ofChar]
+  rfl
+
+theorem scalar_toBool_fromBool {Prov : Type} [PointerProvenance Prov]
+    (b : Bool) : (Scalar.fromBool b : Scalar Prov).toBool = .ok b := by
+  cases b <;> rfl
+
+/-- `CastKind::IntToInt` of a `u128` intermediate to an integer target
+(`Miri.Interpreter.IntegerCast.cast`). -/
+theorem integerCast_u128_to_int (bits : BitVec 128) (w : IntWidth)
+    (s : Bool) :
+    Miri.Interpreter.IntegerCast.cast
+      (.integer ⟨Miri.ABI.Size.ofBytes 16, .u128⟩)
+      (Miri.Memory.ScalarInt.ofUInt128 bits)
+      (.integer ⟨toMiriSize w, toMiriIntKind w s⟩) =
+      .ok (miriScalar w bits) := by
+  change bind (Except.ok bits.toNat) (fun decoded =>
+      bind ((ScalarInt.truncateFromUInt (BitVec.ofNat 128 decoded)
+        (toMiriSize w)).mapError IntegerCastError.scalar)
+        (fun (p : ScalarInt × Bool) => pure p.1)) = _
+  dsimp only [bind, Except.bind]
+  rw [bitVec128_ofNat_toNat, truncateFromUInt_eq_miriScalar]
+  rfl
+
+/-- `CastKind::IntToInt` of a `u128` intermediate to `char`
+(`Miri.Interpreter.IntegerCast.cast`; `u8::try_from(v).unwrap()` panics above
+`255`). -/
+theorem integerCast_u128_to_char (bits : BitVec 128) :
+    Miri.Interpreter.IntegerCast.cast
+      (.integer ⟨Miri.ABI.Size.ofBytes 16, .u128⟩)
+      (Miri.Memory.ScalarInt.ofUInt128 bits) .character =
+      if Nat.ble bits.toNat 255 then
+        .ok (Miri.Memory.ScalarInt.ofChar (Char.ofNat bits.toNat))
+      else .error (.integerToCharTryFromPanicked bits.toNat) := by
+  change (if bits.toNat > 255 then
+      Except.error (IntegerCastError.integerToCharTryFromPanicked bits.toNat)
+    else Except.ok (ScalarInt.ofChar (Char.ofNat bits.toNat))) = _
+  cases h : Nat.ble bits.toNat 255 with
+  | true =>
+    rw [ite_eq_right_of_eq_false _ _
+      (eq_false (Nat.not_lt_of_le (Nat.le_of_ble_eq_true h)))]
+    rfl
+  | false =>
+    rw [ite_eq_left_of_eq_true _ _ (eq_true (Nat.gt_of_not_le (fun h' =>
+      absurd (Nat.ble_eq_true_of_le h')
+        (by rw [h]; exact Bool.false_ne_true))))]
+    rfl
+
 theorem evalRefConstLit_eq (ty : MirTy) (lit : ConstLit) :
     evalRefConstLit ty lit = evalConstLit ty lit := by
   cases ty with
   | unit | never | tuple _ | ref _ _ | rawPtr _ _ | unsupported =>
     cases lit <;> rfl
+  | char =>
+    cases lit with
+    | zeroSized => rfl
+    | scalar bits =>
+      dsimp only [evalRefConstLit, evalConstLit]
+      rw [tryFromUInt_i32_eq]
+      cases h_ov : (truncateBits .i32 bits != bits) with
+      | true => rfl
+      | false =>
+        change (match (miriScalar .i32 bits).toChar with
+          | .ok c => Except.ok (Val.char c)
+          | .error (.invalidChar _) => Except.error FaultKind.undefined
+          | .error _ => Except.error FaultKind.unsupported) =
+          (if isUnicodeScalar bits.toNat = true then
+            Except.ok (Val.char (Char.ofNat bits.toNat))
+          else Except.error FaultKind.undefined)
+        rw [miriScalar_i32_toChar (truncateBits_eq_of_beq_false h_ov)]
+        cases isUnicodeScalar bits.toNat <;> rfl
+  | ordering =>
+    cases lit with
+    | zeroSized => rfl
+    | scalar bits =>
+      dsimp only [evalRefConstLit, evalConstLit]
+      rw [tryFromUInt_i8_eq]
+      cases h_ov : (truncateBits .i8 bits != bits) with
+      | true => rfl
+      | false =>
+        change (match refOrderingOfTag (miriScalar .i8 bits).data with
+          | some ord => Except.ok (Val.ordering ord)
+          | none => Except.error FaultKind.undefined) =
+          (match orderingOfTagBits bits.toNat with
+          | some ord => Except.ok (Val.ordering ord)
+          | none => Except.error FaultKind.undefined)
+        rw [miriScalar_data, truncateBits_eq_of_beq_false h_ov,
+          refOrderingOfTag_eq]
   | int w s =>
     cases lit with
     | zeroSized => rfl
@@ -477,11 +720,106 @@ theorem checkRefVal_int_aux (b : Bool) (vw w : IntWidth) (vs s : Bool) :
     | none => false) := by
   cases b <;> rfl
 
+theorem checkRefVal_pair_aux (b : Bool) (vw w : IntWidth) (vs s : Bool) :
+    (if (!b) = true then false else IntWidth.beq vw w && (vs == s)) =
+    (match if b = true then some (MirTy.tuple [.int vw vs, .bool])
+        else none with
+    | some vTy => MirTy.beq vTy (.tuple [.int w s, .bool])
+    | none => false) := by
+  cases b with
+  | false => rfl
+  | true =>
+    change (IntWidth.beq vw w && (vs == s)) =
+      ((IntWidth.beq vw w && (vs == s)) && true)
+    rw [Bool.and_true]
+
+theorem checkRefVal_tuple_eq (fs : List Val) (ty : MirTy) :
+    checkRefVal (.tuple fs) ty = checkVal (.tuple fs) ty := by
+  cases fs with
+  | nil => cases ty <;> rfl
+  | cons f fs₁ =>
+    cases f with
+    | scalar sv =>
+      cases fs₁ with
+      | nil => cases ty <;> rfl
+      | cons g fs₂ =>
+        cases g with
+        | bool b =>
+          cases fs₂ with
+          | cons _ _ => cases ty <;> rfl
+          | nil =>
+            cases sv with
+            | mk vw vs vbits =>
+              have h_wf : ∀ (k : MirTy), checkVal
+                  (.tuple [.scalar ⟨vw, vs, vbits⟩, .bool b]) k =
+                  (match if ScalarVal.wf ⟨vw, vs, vbits⟩ = true then
+                      some (MirTy.tuple [.int vw vs, .bool]) else none with
+                  | some vTy => MirTy.beq vTy k
+                  | none => false) := fun _ => rfl
+              rw [h_wf]
+              cases ty with
+              | tuple tys =>
+                cases tys with
+                | nil => cases (ScalarVal.wf ⟨vw, vs, vbits⟩) <;> rfl
+                | cons t tys₁ =>
+                  cases t with
+                  | int w s =>
+                    cases tys₁ with
+                    | nil =>
+                      cases (ScalarVal.wf ⟨vw, vs, vbits⟩) with
+                      | false => rfl
+                      | true =>
+                        change false =
+                          ((IntWidth.beq vw w && (vs == s)) && false)
+                        rw [Bool.and_false]
+                    | cons t₂ tys₂ =>
+                      cases t₂ with
+                      | bool =>
+                        cases tys₂ with
+                        | nil =>
+                          have h_m :
+                              (match ScalarInt.tryFromUInt vbits
+                                  (toMiriSize vw) with
+                              | .ok (some _) => IntWidth.beq vw w && (vs == s)
+                              | _ => false) =
+                              if truncateBits vw vbits != vbits then false
+                              else IntWidth.beq vw w && (vs == s) :=
+                            @match_tryFromUInt_eq Bool vw vbits
+                              (fun _ => IntWidth.beq vw w && (vs == s)) false
+                          exact h_m.trans (checkRefVal_pair_aux
+                            (truncateBits vw vbits == vbits) vw w vs s)
+                        | cons _ _ =>
+                          cases (ScalarVal.wf ⟨vw, vs, vbits⟩) with
+                          | false => rfl
+                          | true =>
+                            change false =
+                              ((IntWidth.beq vw w && (vs == s)) && false)
+                            rw [Bool.and_false]
+                      | _ =>
+                        cases (ScalarVal.wf ⟨vw, vs, vbits⟩) with
+                        | false => rfl
+                        | true =>
+                          change false =
+                            ((IntWidth.beq vw w && (vs == s)) && false)
+                          rw [Bool.and_false]
+                  | _ => cases (ScalarVal.wf ⟨vw, vs, vbits⟩) <;> rfl
+              | _ => cases (ScalarVal.wf ⟨vw, vs, vbits⟩) <;> rfl
+        | _ => cases ty <;> rfl
+    | _ => cases ty <;> rfl
+
 theorem checkRefVal_eq (v : Val) (ty : MirTy) :
     checkRefVal v ty = checkVal v ty := by
   cases v with
-  | unit | ptr _ | tuple _ | bytes _ => cases ty <;> rfl
+  | unit | ptr _ | bytes _ | ordering _ => cases ty <;> rfl
   | bool b => cases ty <;> cases b <;> rfl
+  | char c =>
+    cases ty with
+    | char =>
+      dsimp only [checkRefVal]
+      rw [scalarInt_toChar_ofChar]
+      rfl
+    | _ => rfl
+  | tuple fs => exact checkRefVal_tuple_eq fs ty
   | enumVal ety v =>
     cases ty with
     | enum ety' =>
@@ -495,8 +833,8 @@ theorem checkRefVal_eq (v : Val) (ty : MirTy) :
     cases sv with
     | mk vw vs vbits =>
       cases ty with
-      | bool | unit | never | enum _ | tuple _ | ref _ _ | rawPtr _ _
-      | unsupported =>
+      | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
+      | rawPtr _ _ | unsupported =>
         dsimp only [checkRefVal, checkVal, Val.ty?]
         cases (ScalarVal.wf ⟨vw, vs, vbits⟩) <;> rfl
       | int w s =>
@@ -521,12 +859,6 @@ theorem checkRefArgsMatch_eq (vs : List Val) (tys : List MirTy) :
     | cons ty tys' =>
       dsimp only [checkRefArgsMatch, checkArgsMatch]
       rw [checkRefVal_eq, ih]
-
-theorem bitVec128_ofNat_toNat (bits : BitVec 128) :
-    BitVec.ofNat 128 bits.toNat = bits := by
-  apply BitVec.eq_of_toNat_eq
-  rw [BitVec.toNat_ofNat]
-  exact Nat.mod_eq_of_lt bits.isLt
 
 private theorem nat_mod_eq_of_lt {a b : Nat} (h : a < b) : Nat.mod a b = a :=
   Nat.mod_eq_of_lt h
@@ -846,6 +1178,36 @@ theorem findDiscrVariant?_of_enumAdmitted {ety : EnumTy} {v d : Nat}
   rw [Nat.zero_add] at h0
   exact h0
 
+theorem checkVal_tuple_inv {fs : List Val} {ty : MirTy}
+    (h : checkVal (.tuple fs) ty = true) :
+    ∃ w s bits b, ty = .tuple [.int w s, .bool] ∧
+      fs = [.scalar ⟨w, s, bits⟩, .bool b] ∧ truncateBits w bits = bits := by
+  cases fs with
+  | nil => cases h
+  | cons f fs₁ =>
+    cases f with
+    | scalar sv =>
+      cases fs₁ with
+      | nil => cases h
+      | cons g fs₂ =>
+        cases g with
+        | bool b =>
+          cases fs₂ with
+          | cons _ _ => cases h
+          | nil =>
+            cases sv with
+            | mk w s bits =>
+              dsimp only [checkVal, Val.ty?] at h
+              cases h_wf : (ScalarVal.wf ⟨w, s, bits⟩) with
+              | false => rw [h_wf] at h; cases h
+              | true =>
+                rw [h_wf] at h
+                have h_ty : MirTy.tuple [.int w s, .bool] = ty :=
+                  MirTy.eq_of_beq h
+                exact ⟨w, s, bits, b, h_ty.symm, rfl, eq_of_beq h_wf⟩
+        | _ => cases h
+    | _ => cases h
+
 theorem checkVal_eq_true_inv {v : Val} {ty : MirTy}
     (h : checkVal v ty = true) :
     (∃ w s bits, ty = .int w s ∧ v = .scalar ⟨w, s, bits⟩ ∧
@@ -853,7 +1215,12 @@ theorem checkVal_eq_true_inv {v : Val} {ty : MirTy}
     (∃ b, ty = .bool ∧ v = .bool b) ∨
     (ty = .unit ∧ v = .unit) ∨
     (∃ ety k, ty = .enum ety ∧ v = .enumVal ety k ∧
-      enumAdmitted ety = true ∧ k < ety.discriminants.length) := by
+      enumAdmitted ety = true ∧ k < ety.discriminants.length) ∨
+    (∃ c, ty = .char ∧ v = .char c) ∨
+    (∃ o, ty = .ordering ∧ v = .ordering o) ∨
+    (∃ w s bits b, ty = .tuple [.int w s, .bool] ∧
+      v = .tuple [.scalar ⟨w, s, bits⟩, .bool b] ∧
+      truncateBits w bits = bits) := by
   cases v with
   | scalar sv =>
     cases sv with
@@ -881,9 +1248,158 @@ theorem checkVal_eq_true_inv {v : Val} {ty : MirTy}
       rw [h_e] at h
       have h_ty : MirTy.enum ety = ty := MirTy.eq_of_beq h
       let ⟨h_adm, h_k⟩ := bool_and_split h_e
-      exact Or.inr (Or.inr (Or.inr
-        ⟨ety, k, h_ty.symm, rfl, h_adm, Nat.blt_eq.mp h_k⟩))
-  | ptr _ | tuple _ | bytes _ => cases h
+      exact Or.inr (Or.inr (Or.inr (Or.inl
+        ⟨ety, k, h_ty.symm, rfl, h_adm, Nat.blt_eq.mp h_k⟩)))
+  | char c =>
+    dsimp only [checkVal, Val.ty?] at h
+    have h_ty : MirTy.char = ty := MirTy.eq_of_beq h
+    exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inl ⟨c, h_ty.symm, rfl⟩))))
+  | ordering o =>
+    dsimp only [checkVal, Val.ty?] at h
+    have h_ty : MirTy.ordering = ty := MirTy.eq_of_beq h
+    exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl
+      ⟨o, h_ty.symm, rfl⟩)))))
+  | tuple fs =>
+    let ⟨w, s, bits, b, h_ty, h_fs, h_tr⟩ := checkVal_tuple_inv h
+    subst h_fs
+    exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr
+      ⟨w, s, bits, b, h_ty, rfl, h_tr⟩)))))
+  | ptr _ | bytes _ => cases h
+
+theorem checkVal_int_inv {v : Val} {w : IntWidth} {s : Bool}
+    (h : checkVal v (.int w s) = true) :
+    ∃ bits, v = .scalar ⟨w, s, bits⟩ ∧ truncateBits w bits = bits := by
+  cases checkVal_eq_true_inv h with
+  | inl hi =>
+    let ⟨_, _, bits, hty, hv, htr⟩ := hi
+    injection hty with hw hs; subst hw; subst hs
+    exact ⟨bits, hv, htr⟩
+  | inr h => cases h with
+    | inl hb => let ⟨_, hty, _⟩ := hb; cases hty
+    | inr h => cases h with
+      | inl hu => cases hu.1
+      | inr h => cases h with
+        | inl he => let ⟨_, _, hty, _⟩ := he; cases hty
+        | inr h => cases h with
+          | inl hc => let ⟨_, hty, _⟩ := hc; cases hty
+          | inr h => cases h with
+            | inl ho => let ⟨_, hty, _⟩ := ho; cases hty
+            | inr hp => let ⟨_, _, _, _, hty, _⟩ := hp; cases hty
+
+theorem checkVal_bool_inv {v : Val} (h : checkVal v .bool = true) :
+    ∃ b, v = .bool b := by
+  cases checkVal_eq_true_inv h with
+  | inl hi => let ⟨_, _, _, hty, _⟩ := hi; cases hty
+  | inr h => cases h with
+    | inl hb => let ⟨b, _, hv⟩ := hb; exact ⟨b, hv⟩
+    | inr h => cases h with
+      | inl hu => cases hu.1
+      | inr h => cases h with
+        | inl he => let ⟨_, _, hty, _⟩ := he; cases hty
+        | inr h => cases h with
+          | inl hc => let ⟨_, hty, _⟩ := hc; cases hty
+          | inr h => cases h with
+            | inl ho => let ⟨_, hty, _⟩ := ho; cases hty
+            | inr hp => let ⟨_, _, _, _, hty, _⟩ := hp; cases hty
+
+theorem checkVal_unit_inv {v : Val} (h : checkVal v .unit = true) :
+    v = .unit := by
+  cases checkVal_eq_true_inv h with
+  | inl hi => let ⟨_, _, _, hty, _⟩ := hi; cases hty
+  | inr h => cases h with
+    | inl hb => let ⟨_, hty, _⟩ := hb; cases hty
+    | inr h => cases h with
+      | inl hu => exact hu.2
+      | inr h => cases h with
+        | inl he => let ⟨_, _, hty, _⟩ := he; cases hty
+        | inr h => cases h with
+          | inl hc => let ⟨_, hty, _⟩ := hc; cases hty
+          | inr h => cases h with
+            | inl ho => let ⟨_, hty, _⟩ := ho; cases hty
+            | inr hp => let ⟨_, _, _, _, hty, _⟩ := hp; cases hty
+
+theorem checkVal_enum_inv {v : Val} {ety : EnumTy}
+    (h : checkVal v (.enum ety) = true) :
+    ∃ k, v = .enumVal ety k ∧ enumAdmitted ety = true ∧
+      k < ety.discriminants.length := by
+  cases checkVal_eq_true_inv h with
+  | inl hi => let ⟨_, _, _, hty, _⟩ := hi; cases hty
+  | inr h => cases h with
+    | inl hb => let ⟨_, hty, _⟩ := hb; cases hty
+    | inr h => cases h with
+      | inl hu => cases hu.1
+      | inr h => cases h with
+        | inl he =>
+          let ⟨_, k, hty, hv, h_adm, hk⟩ := he
+          injection hty with h_e; subst h_e
+          exact ⟨k, hv, h_adm, hk⟩
+        | inr h => cases h with
+          | inl hc => let ⟨_, hty, _⟩ := hc; cases hty
+          | inr h => cases h with
+            | inl ho => let ⟨_, hty, _⟩ := ho; cases hty
+            | inr hp => let ⟨_, _, _, _, hty, _⟩ := hp; cases hty
+
+theorem checkVal_char_inv {v : Val} (h : checkVal v .char = true) :
+    ∃ c, v = .char c := by
+  cases checkVal_eq_true_inv h with
+  | inl hi => let ⟨_, _, _, hty, _⟩ := hi; cases hty
+  | inr h => cases h with
+    | inl hb => let ⟨_, hty, _⟩ := hb; cases hty
+    | inr h => cases h with
+      | inl hu => cases hu.1
+      | inr h => cases h with
+        | inl he => let ⟨_, _, hty, _⟩ := he; cases hty
+        | inr h => cases h with
+          | inl hc => let ⟨c, _, hv⟩ := hc; exact ⟨c, hv⟩
+          | inr h => cases h with
+            | inl ho => let ⟨_, hty, _⟩ := ho; cases hty
+            | inr hp => let ⟨_, _, _, _, hty, _⟩ := hp; cases hty
+
+theorem checkVal_ordering_inv {v : Val} (h : checkVal v .ordering = true) :
+    ∃ o, v = .ordering o := by
+  cases checkVal_eq_true_inv h with
+  | inl hi => let ⟨_, _, _, hty, _⟩ := hi; cases hty
+  | inr h => cases h with
+    | inl hb => let ⟨_, hty, _⟩ := hb; cases hty
+    | inr h => cases h with
+      | inl hu => cases hu.1
+      | inr h => cases h with
+        | inl he => let ⟨_, _, hty, _⟩ := he; cases hty
+        | inr h => cases h with
+          | inl hc => let ⟨_, hty, _⟩ := hc; cases hty
+          | inr h => cases h with
+            | inl ho => let ⟨o, _, hv⟩ := ho; exact ⟨o, hv⟩
+            | inr hp => let ⟨_, _, _, _, hty, _⟩ := hp; cases hty
+
+theorem checkVal_pair_inv {v : Val} {w : IntWidth} {s : Bool}
+    (h : checkVal v (.tuple [.int w s, .bool]) = true) :
+    ∃ bits b, v = .tuple [.scalar ⟨w, s, bits⟩, .bool b] ∧
+      truncateBits w bits = bits := by
+  cases checkVal_eq_true_inv h with
+  | inl hi => let ⟨_, _, _, hty, _⟩ := hi; cases hty
+  | inr h => cases h with
+    | inl hb => let ⟨_, hty, _⟩ := hb; cases hty
+    | inr h => cases h with
+      | inl hu => cases hu.1
+      | inr h => cases h with
+        | inl he => let ⟨_, _, hty, _⟩ := he; cases hty
+        | inr h => cases h with
+          | inl hc => let ⟨_, hty, _⟩ := hc; cases hty
+          | inr h => cases h with
+            | inl ho => let ⟨_, hty, _⟩ := ho; cases hty
+            | inr hp =>
+              let ⟨_, _, bits, b, hty, hv, htr⟩ := hp
+              injection hty with h_l
+              injection h_l with h_i
+              injection h_i with hw hs; subst hw; subst hs
+              exact ⟨bits, b, hv, htr⟩
+
+theorem miriScalar_eq_bits {w : IntWidth} {b₁ b₂ : BitVec 128}
+    (htr₁ : truncateBits w b₁ = b₁) (htr₂ : truncateBits w b₂ = b₂)
+    (h : miriScalar w b₁ = miriScalar w b₂) : b₁ = b₂ := by
+  have h_d := congrArg Miri.Memory.ScalarInt.data h
+  rw [miriScalar_data, miriScalar_data, htr₁, htr₂] at h_d
+  exact h_d
 
 theorem valToMiriImmediate_inj {ty : MirTy} {v₁ v₂ : Val}
     (h₁ : checkVal v₁ ty = true) (h₂ : checkVal v₂ ty = true)
@@ -893,135 +1409,128 @@ theorem valToMiriImmediate_inj {ty : MirTy} {v₁ v₂ : Val}
   | inl hi₁ =>
     let ⟨w, s, b₁, hty₁, hv₁, htr₁⟩ := hi₁
     subst hty₁; subst hv₁
-    cases checkVal_eq_true_inv h₂ with
-    | inl hi₂ =>
-      let ⟨w₂, s₂, b₂, hty₂, hv₂, htr₂⟩ := hi₂
-      injection hty₂ with hw hs; subst hw; subst hs; subst hv₂
-      dsimp only [valToMiriImmediate] at h_eq
-      injection h_eq with h_sc
-      injection h_sc with h_pl
-      injection h_pl with h_si
-      have h_d := congrArg Miri.Memory.ScalarInt.data h_si
-      rw [miriScalar_data, miriScalar_data, htr₁, htr₂] at h_d
-      subst h_d
-      rfl
-    | inr hr =>
-      cases hr with
-      | inl hb => let ⟨_, hty₂, _⟩ := hb; cases hty₂
-      | inr hr2 =>
-        cases hr2 with
-        | inl hu => cases hu.1
-        | inr he => let ⟨_, _, hty₂, _, _, _⟩ := he; cases hty₂
-  | inr hr₁ =>
-    cases hr₁ with
+    let ⟨b₂, hv₂, htr₂⟩ := checkVal_int_inv h₂
+    subst hv₂
+    dsimp only [valToMiriImmediate] at h_eq
+    injection h_eq with h_sc
+    injection h_sc with h_pl
+    injection h_pl with h_si
+    rw [miriScalar_eq_bits htr₁ htr₂ h_si]
+  | inr hr₁ => cases hr₁ with
     | inl hb₁ =>
       let ⟨b₁, hty₁, hv₁⟩ := hb₁
       subst hty₁; subst hv₁
-      cases checkVal_eq_true_inv h₂ with
-      | inl hi => let ⟨_, _, _, hty₂, _, _⟩ := hi; cases hty₂
-      | inr hr =>
-        cases hr with
-        | inl hb₂ =>
-          let ⟨b₂, _, hv₂⟩ := hb₂
-          subst hv₂
-          cases b₁ <;> cases b₂ <;> first | rfl | cases h_eq
-        | inr hr2 =>
-          cases hr2 with
-          | inl hu => cases hu.1
-          | inr he => let ⟨_, _, hty₂, _, _, _⟩ := he; cases hty₂
-    | inr hr₁' =>
-      cases hr₁' with
+      let ⟨b₂, hv₂⟩ := checkVal_bool_inv h₂
+      subst hv₂
+      cases b₁ <;> cases b₂ <;> first | rfl | cases h_eq
+    | inr hr₁ => cases hr₁ with
       | inl hu₁ =>
         let ⟨hty₁, hv₁⟩ := hu₁
         subst hty₁; subst hv₁
-        cases checkVal_eq_true_inv h₂ with
-        | inl hi => let ⟨_, _, _, hty₂, _, _⟩ := hi; cases hty₂
-        | inr hr =>
-          cases hr with
-          | inl hb => let ⟨_, hty₂, _⟩ := hb; cases hty₂
-          | inr hr2 =>
-            cases hr2 with
-            | inl hu₂ => rw [hu₂.2]
-            | inr he => let ⟨_, _, hty₂, _, _, _⟩ := he; cases hty₂
-      | inr he₁ =>
-        let ⟨ety, k₁, hty₁, hv₁, h_adm, hk₁⟩ := he₁
-        subst hty₁; subst hv₁
-        cases checkVal_eq_true_inv h₂ with
-        | inl hi => let ⟨_, _, _, hty₂, _, _⟩ := hi; cases hty₂
-        | inr hr =>
-          cases hr with
-          | inl hb => let ⟨_, hty₂, _⟩ := hb; cases hty₂
-          | inr hr2 =>
-            cases hr2 with
-            | inl hu => cases hu.1
-            | inr he₂ =>
-              let ⟨ety₂, k₂, hty₂, hv₂, _, hk₂⟩ := he₂
-              injection hty₂ with h_ety; subst h_ety; subst hv₂
-              let ⟨h_bnds, h_pw, h_tag⟩ := enumAdmitted_parts h_adm
-              cases h_tr : ety.tagRepr with
-              | zeroSized =>
-                rw [h_tr] at h_tag
-                have h_len1 : ety.discriminants.length = 1 :=
-                  Nat.eq_of_beq_eq_true h_tag
-                rw [h_len1] at hk₁ hk₂
-                cases k₁ with
-                | zero =>
-                  cases k₂ with
-                  | zero => rfl
-                  | succ m =>
-                    exact False.elim
-                      (Nat.not_lt_zero m (Nat.lt_of_succ_lt_succ hk₂))
-                | succ m =>
-                  exact False.elim
-                    (Nat.not_lt_zero m (Nat.lt_of_succ_lt_succ hk₁))
-              | scalar tagW tagS =>
-                rw [h_tr] at h_tag
-                let ⟨d₁, hd₁⟩ := mirGetElem?_some_of_lt hk₁
-                let ⟨d₂, hd₂⟩ := mirGetElem?_some_of_lt hk₂
-                dsimp only [valToMiriImmediate] at h_eq
-                rw [h_tr, hd₁, hd₂] at h_eq
-                injection h_eq with h_sc
-                injection h_sc with h_pl
-                injection h_pl with h_si
-                have h_d := congrArg Miri.Memory.ScalarInt.data h_si
-                rw [miriScalar_data, miriScalar_data] at h_d
-                have h_rec₁ :
-                    tagBitsToDiscrBits tagW tagS ety.discrWidth
-                      (truncateBits tagW (BitVec.ofNat 128 d₁)) =
-                      BitVec.ofNat 128 d₁ :=
-                  eq_of_beq (list_all_mirGetElem?
-                    (p := fun d =>
-                      tagBitsToDiscrBits tagW tagS ety.discrWidth
-                        (truncateBits tagW (BitVec.ofNat 128 d)) ==
-                        BitVec.ofNat 128 d) h_tag hd₁)
-                have h_rec₂ :
-                    tagBitsToDiscrBits tagW tagS ety.discrWidth
-                      (truncateBits tagW (BitVec.ofNat 128 d₂)) =
-                      BitVec.ofNat 128 d₂ :=
-                  eq_of_beq (list_all_mirGetElem?
-                    (p := fun d =>
-                      tagBitsToDiscrBits tagW tagS ety.discrWidth
-                        (truncateBits tagW (BitVec.ofNat 128 d)) ==
-                        BitVec.ofNat 128 d) h_tag hd₂)
-                have h_bv_eq : BitVec.ofNat 128 d₁ = BitVec.ofNat 128 d₂ := by
-                  rw [← h_rec₁, h_d, h_rec₂]
-                have hd₁_128 : d₁ < Nat.pow 2 128 :=
-                  Nat.lt_of_lt_of_le
-                    (Nat.blt_eq.mp (list_all_mirGetElem?
-                      (p := fun d => Nat.blt d (Nat.pow 2 ety.discrWidth.bitWidth))
-                      h_bnds hd₁))
-                    (intWidth_pow_le_128 ety.discrWidth)
-                have hd₂_128 : d₂ < Nat.pow 2 128 :=
-                  Nat.lt_of_lt_of_le
-                    (Nat.blt_eq.mp (list_all_mirGetElem?
-                      (p := fun d => Nat.blt d (Nat.pow 2 ety.discrWidth.bitWidth))
-                      h_bnds hd₂))
-                    (intWidth_pow_le_128 ety.discrWidth)
-                have h_nat_eq := bitVec128_ofNat_inj hd₁_128 hd₂_128 h_bv_eq
-                subst h_nat_eq
-                have hk_eq := natListPairwiseNe_inj h_pw hd₁ hd₂
-                subst hk_eq
-                rfl
+        rw [checkVal_unit_inv h₂]
+      | inr hr₁ => cases hr₁ with
+        | inl he₁ =>
+          let ⟨ety, k₁, hty₁, hv₁, h_adm, hk₁⟩ := he₁
+          subst hty₁; subst hv₁
+          let ⟨k₂, hv₂, _, hk₂⟩ := checkVal_enum_inv h₂
+          subst hv₂
+          let ⟨h_bnds, h_pw, h_tag⟩ := enumAdmitted_parts h_adm
+          cases h_tr : ety.tagRepr with
+          | zeroSized =>
+            rw [h_tr] at h_tag
+            have h_len1 : ety.discriminants.length = 1 :=
+              Nat.eq_of_beq_eq_true h_tag
+            rw [h_len1] at hk₁ hk₂
+            cases k₁ with
+            | zero =>
+              cases k₂ with
+              | zero => rfl
+              | succ m =>
+                exact False.elim
+                  (Nat.not_lt_zero m (Nat.lt_of_succ_lt_succ hk₂))
+            | succ m =>
+              exact False.elim
+                (Nat.not_lt_zero m (Nat.lt_of_succ_lt_succ hk₁))
+          | scalar tagW tagS =>
+            rw [h_tr] at h_tag
+            let ⟨d₁, hd₁⟩ := mirGetElem?_some_of_lt hk₁
+            let ⟨d₂, hd₂⟩ := mirGetElem?_some_of_lt hk₂
+            dsimp only [valToMiriImmediate] at h_eq
+            rw [h_tr, hd₁, hd₂] at h_eq
+            injection h_eq with h_sc
+            injection h_sc with h_pl
+            injection h_pl with h_si
+            have h_d := congrArg Miri.Memory.ScalarInt.data h_si
+            rw [miriScalar_data, miriScalar_data] at h_d
+            have h_rec₁ :
+                tagBitsToDiscrBits tagW tagS ety.discrWidth
+                  (truncateBits tagW (BitVec.ofNat 128 d₁)) =
+                  BitVec.ofNat 128 d₁ :=
+              eq_of_beq (list_all_mirGetElem?
+                (p := fun d =>
+                  tagBitsToDiscrBits tagW tagS ety.discrWidth
+                    (truncateBits tagW (BitVec.ofNat 128 d)) ==
+                    BitVec.ofNat 128 d) h_tag hd₁)
+            have h_rec₂ :
+                tagBitsToDiscrBits tagW tagS ety.discrWidth
+                  (truncateBits tagW (BitVec.ofNat 128 d₂)) =
+                  BitVec.ofNat 128 d₂ :=
+              eq_of_beq (list_all_mirGetElem?
+                (p := fun d =>
+                  tagBitsToDiscrBits tagW tagS ety.discrWidth
+                    (truncateBits tagW (BitVec.ofNat 128 d)) ==
+                    BitVec.ofNat 128 d) h_tag hd₂)
+            have h_bv_eq : BitVec.ofNat 128 d₁ = BitVec.ofNat 128 d₂ := by
+              rw [← h_rec₁, h_d, h_rec₂]
+            have hd₁_128 : d₁ < Nat.pow 2 128 :=
+              Nat.lt_of_lt_of_le
+                (Nat.blt_eq.mp (list_all_mirGetElem?
+                  (p := fun d => Nat.blt d (Nat.pow 2 ety.discrWidth.bitWidth))
+                  h_bnds hd₁))
+                (intWidth_pow_le_128 ety.discrWidth)
+            have hd₂_128 : d₂ < Nat.pow 2 128 :=
+              Nat.lt_of_lt_of_le
+                (Nat.blt_eq.mp (list_all_mirGetElem?
+                  (p := fun d => Nat.blt d (Nat.pow 2 ety.discrWidth.bitWidth))
+                  h_bnds hd₂))
+                (intWidth_pow_le_128 ety.discrWidth)
+            have h_nat_eq := bitVec128_ofNat_inj hd₁_128 hd₂_128 h_bv_eq
+            subst h_nat_eq
+            have hk_eq := natListPairwiseNe_inj h_pw hd₁ hd₂
+            subst hk_eq
+            rfl
+        | inr hr₁ => cases hr₁ with
+          | inl hc₁ =>
+            let ⟨c₁, hty₁, hv₁⟩ := hc₁
+            subst hty₁; subst hv₁
+            let ⟨c₂, hv₂⟩ := checkVal_char_inv h₂
+            subst hv₂
+            dsimp only [valToMiriImmediate] at h_eq
+            injection h_eq with h_sc
+            injection h_sc with h_pl
+            injection h_pl with h_si
+            have h_c := congrArg ScalarInt.toChar h_si
+            rw [scalarInt_toChar_ofChar, scalarInt_toChar_ofChar] at h_c
+            injection h_c with h_c'
+            rw [h_c']
+          | inr hr₁ => cases hr₁ with
+            | inl ho₁ =>
+              let ⟨o₁, hty₁, hv₁⟩ := ho₁
+              subst hty₁; subst hv₁
+              let ⟨o₂, hv₂⟩ := checkVal_ordering_inv h₂
+              subst hv₂
+              cases o₁ <;> cases o₂ <;> first | rfl | cases h_eq
+            | inr hp₁ =>
+              let ⟨w, s, b₁, x₁, hty₁, hv₁, htr₁⟩ := hp₁
+              subst hty₁; subst hv₁
+              let ⟨b₂, x₂, hv₂, htr₂⟩ := checkVal_pair_inv h₂
+              subst hv₂
+              dsimp only [valToMiriImmediate] at h_eq
+              injection h_eq with h_a h_b
+              injection h_a with h_pl
+              injection h_pl with h_si
+              rw [miriScalar_eq_bits htr₁ htr₂ h_si]
+              cases x₁ <;> cases x₂ <;> first | rfl | cases h_b
 
 theorem valToMiriImmediate_ne_uninit {ty : MirTy} {v : Val}
     (h_chk : checkVal v ty = true)
@@ -1033,28 +1542,39 @@ theorem valToMiriImmediate_ne_uninit {ty : MirTy} {v : Val}
   | inl hi =>
     let ⟨_, _, _, hty, hv, _⟩ := hi
     subst hty; subst hv; cases h_eq
-  | inr hr =>
-    cases hr with
+  | inr hr => cases hr with
     | inl hb =>
       let ⟨_, hty, hv⟩ := hb
       subst hty; subst hv; cases h_eq
-    | inr hr2 =>
-      cases hr2 with
+    | inr hr => cases hr with
       | inl hu => exact h_ne_unit hu.1
-      | inr he =>
-        let ⟨ety, k, hty, hv, h_adm, hk⟩ := he
-        subst hty; subst hv
-        cases h_tr : ety.tagRepr with
-        | zeroSized =>
-          have h_z := h_ne_zst ety rfl
-          dsimp only [isZstEnumTy] at h_z
-          rw [h_tr, h_adm] at h_z
-          cases h_z
-        | scalar tagW tagS =>
-          let ⟨d, hd⟩ := mirGetElem?_some_of_lt hk
-          dsimp only [valToMiriImmediate] at h_eq
-          rw [h_tr, hd] at h_eq
-          cases h_eq
+      | inr hr => cases hr with
+        | inl he =>
+          let ⟨ety, k, hty, hv, h_adm, hk⟩ := he
+          subst hty; subst hv
+          cases h_tr : ety.tagRepr with
+          | zeroSized =>
+            have h_z := h_ne_zst ety rfl
+            dsimp only [isZstEnumTy] at h_z
+            rw [h_tr, h_adm] at h_z
+            cases h_z
+          | scalar tagW tagS =>
+            let ⟨d, hd⟩ := mirGetElem?_some_of_lt hk
+            dsimp only [valToMiriImmediate] at h_eq
+            rw [h_tr, hd] at h_eq
+            cases h_eq
+        | inr hr => cases hr with
+          | inl hc =>
+            let ⟨_, hty, hv⟩ := hc
+            subst hty; subst hv; cases h_eq
+          | inr hr => cases hr with
+            | inl ho =>
+              let ⟨o, hty, hv⟩ := ho
+              subst hty; subst hv
+              cases o <;> cases h_eq
+            | inr hp =>
+              let ⟨_, _, _, _, hty, hv, _⟩ := hp
+              subst hty; subst hv; cases h_eq
 
 theorem slotToMiriLocalValue_inj {ty : MirTy} {s₁ s₂ : LocalSlot}
     (h₁ : SlotMatchesTy ty s₁) (h₂ : SlotMatchesTy ty s₂)
@@ -1126,6 +1646,10 @@ private noncomputable def refDiscrStmtOk (localTys : List MirTy)
                 MirTy.beq dstTy (.int ety.discrWidth ety.discrSigned)
               else true
             | none => true
+          | .ordering =>
+            match MirSemantics.getElem? localTys dst.localId with
+            | some dstTy => MirTy.beq dstTy (.int .i8 true)
+            | none => true
           | _ => true
         | none => true
       else true
@@ -1149,11 +1673,130 @@ private noncomputable def discrStmtOk (localTys : List MirTy)
                 MirTy.beq dstTy (.int ety.discrWidth ety.discrSigned)
               else true
             | none => true
+          | .ordering =>
+            match MirSemantics.getElem? localTys dst.localId with
+            | some dstTy => MirTy.beq dstTy (.int .i8 true)
+            | none => true
           | _ => true
         | none => true
       else true
     | _ => true
   | _ => true
+
+private noncomputable def refCastStmtOk (types localTys : List MirTy)
+    (stmt : RefStatementKind) : Bool :=
+  match stmt with
+  | .assign dst rv =>
+    match rv with
+    | .cast .intToInt _ castTyId =>
+      if dst.projection.isEmpty then
+        match MirSemantics.getElem? localTys dst.localId with
+        | some dstTy =>
+          match MirSemantics.getElem? types castTyId with
+          | some castTy => MirTy.beq dstTy castTy
+          | none => false
+        | none => true
+      else
+        true
+    | _ => true
+  | _ => true
+
+private noncomputable def castStmtOk (localTys : List MirTy)
+    (stmt : StatementKind) : Bool :=
+  match stmt with
+  | .assign dst rv =>
+    match rv with
+    | .cast .intToInt _ castTy =>
+      if dst.projection.isEmpty then
+        match MirSemantics.getElem? localTys dst.localId with
+        | some dstTy => MirTy.beq dstTy castTy
+        | none => true
+      else
+        true
+    | _ => true
+  | _ => true
+
+/-- Lift a per-statement equivalence between an $M_{\text{ref}}$ statement
+predicate `f` and an $M_{\text{anneal}}$ statement predicate `g` (under
+`decodeStmt`) to every statement of a decoded body. -/
+private theorem refBody_stmts_all_eq {ts : List MirTy} {rbody : RefBody}
+    {body : Body} (h_dec : decodeBody ts rbody = some body)
+    (f : RefStatementKind → Bool) (g : StatementKind → Bool)
+    (hfg : ∀ (rs : RefStatementKind) (s : StatementKind),
+      decodeStmt ts rs = some s → f rs = g s) :
+    rbody.basicBlocks.all (fun bb => bb.statements.all f) =
+      body.basicBlocks.all (fun bb => bb.statements.all g) := by
+  dsimp only [decodeBody] at h_dec
+  cases h_locs : decodeLocalTys ts rbody.locals with
+  | none => rw [h_locs] at h_dec; cases h_dec
+  | some locs =>
+    rw [h_locs] at h_dec
+    cases h_bbs : mapOption (decodeBasicBlock ts) rbody.basicBlocks with
+    | none => rw [h_bbs] at h_dec; cases h_dec
+    | some bbs =>
+      rw [h_bbs] at h_dec
+      injection h_dec with h_b
+      subst h_b
+      have h_all_st : ∀ (rsts : List RefStatementKind)
+          (sts : List StatementKind),
+          mapOption (decodeStmt ts) rsts = some sts →
+          rsts.all f = sts.all g := by
+        intro rsts
+        induction rsts with
+        | nil =>
+          intro sts hm
+          dsimp only [mapOption] at hm
+          injection hm with h_n; subst h_n; rfl
+        | cons rs rrest ihs =>
+          intro sts hm
+          dsimp only [mapOption] at hm
+          cases h_s : decodeStmt ts rs with
+          | none => rw [h_s] at hm; cases hm
+          | some s =>
+            rw [h_s] at hm
+            cases h_rr : mapOption (decodeStmt ts) rrest with
+            | none => rw [h_rr] at hm; cases hm
+            | some srest =>
+              rw [h_rr] at hm
+              injection hm with h_c; subst h_c
+              dsimp only [List.all]
+              rw [hfg rs s h_s, ihs srest h_rr]
+      have h_all_bb : ∀ (rbbs : List RefBasicBlock) (bbs' : List BasicBlock),
+          mapOption (decodeBasicBlock ts) rbbs = some bbs' →
+          rbbs.all (fun bb => bb.statements.all f) =
+            bbs'.all (fun bb => bb.statements.all g) := by
+        intro rbbs
+        induction rbbs with
+        | nil =>
+          intro bbs' h_m
+          dsimp only [mapOption] at h_m
+          injection h_m with h_nil; subst h_nil; rfl
+        | cons rbb rest ih =>
+          intro bbs' h_m
+          dsimp only [mapOption] at h_m
+          cases h_bb : decodeBasicBlock ts rbb with
+          | none => rw [h_bb] at h_m; cases h_m
+          | some bb =>
+            rw [h_bb] at h_m
+            cases h_rest : mapOption (decodeBasicBlock ts) rest with
+            | none => rw [h_rest] at h_m; cases h_m
+            | some rest' =>
+              rw [h_rest] at h_m
+              injection h_m with h_cons; subst h_cons
+              dsimp only [List.all]
+              rw [ih rest' h_rest]
+              dsimp only [decodeBasicBlock] at h_bb
+              cases h_st : mapOption (decodeStmt ts) rbb.statements with
+              | none => rw [h_st] at h_bb; cases h_bb
+              | some stmts =>
+                rw [h_st] at h_bb
+                cases h_tm : decodeTerminator ts rbb.terminator with
+                | none => rw [h_tm] at h_bb; cases h_bb
+                | some tm =>
+                  rw [h_tm] at h_bb
+                  injection h_bb with h_bb_eq; subst h_bb_eq
+                  rw [h_all_st rbb.statements stmts h_st]
+      exact h_all_bb rbody.basicBlocks bbs h_bbs
 
 private theorem refDiscrStmtOk_eq {ts : List MirTy} {localTys : List MirTy}
     {rstmt : RefStatementKind} {stmt : StatementKind}
@@ -1203,6 +1846,97 @@ private theorem refDiscrStmtOk_eq {ts : List MirTy} {localTys : List MirTy}
                     dsimp only
                     rw [refEnumAdmitted_eq]
                 | _ => rfl
+        | cast k ro rty =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_o : decodeOperand ts ro with
+          | none => rw [h_o] at h_rv; cases h_rv
+          | some _ =>
+            rw [h_o] at h_rv
+            cases h_t : MirSemantics.getElem? ts rty with
+            | none => rw [h_t] at h_rv; cases h_rv
+            | some _ => rw [h_t] at h_rv; injection h_rv with h; subst h; rfl
+        | use ro =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_o : decodeOperand ts ro with
+          | none => rw [h_o] at h_rv; cases h_rv
+          | some _ => rw [h_o] at h_rv; injection h_rv with h; subst h; rfl
+        | binaryOp _ rl rr =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_l : decodeOperand ts rl with
+          | none => rw [h_l] at h_rv; cases h_rv
+          | some _ =>
+            rw [h_l] at h_rv
+            cases h_r : decodeOperand ts rr with
+            | none => rw [h_r] at h_rv; cases h_rv
+            | some _ => rw [h_r] at h_rv; injection h_rv with h; subst h; rfl
+        | unaryOp _ ro =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_o : decodeOperand ts ro with
+          | none => rw [h_o] at h_rv; cases h_rv
+          | some _ => rw [h_o] at h_rv; injection h_rv with h; subst h; rfl
+        | ref _ rp =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_p : decodePlace ts rp with
+          | none => rw [h_p] at h_rv; cases h_rv
+          | some _ => rw [h_p] at h_rv; injection h_rv with h; subst h; rfl
+        | addressOf _ rp =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_p : decodePlace ts rp with
+          | none => rw [h_p] at h_rv; cases h_rv
+          | some _ => rw [h_p] at h_rv; injection h_rv with h; subst h; rfl
+        | aggregateTuple rops =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_os : mapOption (decodeOperand ts) rops with
+          | none => rw [h_os] at h_rv; cases h_rv
+          | some _ => rw [h_os] at h_rv; injection h_rv with h; subst h; rfl
+        | unsupported => injection h_rv with h; subst h; rfl
+
+private theorem refCastStmtOk_eq {ts : List MirTy} {localTys : List MirTy}
+    {rstmt : RefStatementKind} {stmt : StatementKind}
+    (h_dec : decodeStmt ts rstmt = some stmt) :
+    refCastStmtOk ts localTys rstmt = castStmtOk localTys stmt := by
+  cases rstmt with
+  | nop => injection h_dec with h; subst h; rfl
+  | storageLive _ => injection h_dec with h; subst h; rfl
+  | storageDead _ => injection h_dec with h; subst h; rfl
+  | unsupported => injection h_dec with h; subst h; rfl
+  | assign rdst rrv =>
+    dsimp only [decodeStmt] at h_dec
+    cases h_d : decodePlace ts rdst with
+    | none => rw [h_d] at h_dec; cases h_dec
+    | some dst =>
+      rw [h_d] at h_dec
+      cases h_rv : decodeRvalue ts rrv with
+      | none => rw [h_rv] at h_dec; cases h_dec
+      | some rv =>
+        rw [h_rv] at h_dec
+        injection h_dec with h_s
+        subst h_s
+        cases rrv with
+        | discriminant rsrc =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_sp : decodePlace ts rsrc with
+          | none => rw [h_sp] at h_rv; cases h_rv
+          | some _ =>
+            rw [h_sp] at h_rv; injection h_rv with h; subst h; rfl
+        | cast k ro rty =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_o : decodeOperand ts ro with
+          | none => rw [h_o] at h_rv; cases h_rv
+          | some op =>
+            rw [h_o] at h_rv
+            cases h_t : MirSemantics.getElem? ts rty with
+            | none => rw [h_t] at h_rv; cases h_rv
+            | some castTy =>
+              rw [h_t] at h_rv
+              injection h_rv with h_rv_eq
+              subst h_rv_eq
+              let ⟨h_did, h_demp⟩ := decodePlace_inv h_d
+              cases k with
+              | unsupported => rfl
+              | intToInt =>
+                dsimp only [refCastStmtOk, castStmtOk]
+                rw [h_demp, h_did, h_t]
         | use ro =>
           dsimp only [decodeRvalue] at h_rv
           cases h_o : decodeOperand ts ro with
@@ -1241,81 +1975,15 @@ private theorem refDiscrStmtOk_eq {ts : List MirTy} {localTys : List MirTy}
 
 theorem refDiscriminantTypesValid_eq {ts : List MirTy} {rbody : RefBody}
     {body : Body} (h_dec : decodeBody ts rbody = some body) :
-    refDiscriminantTypesValid body.locals rbody = discriminantTypesValid body := by
-  dsimp only [decodeBody] at h_dec
-  cases h_locs : decodeLocalTys ts rbody.locals with
-  | none => rw [h_locs] at h_dec; cases h_dec
-  | some locs =>
-    rw [h_locs] at h_dec
-    cases h_bbs : mapOption (decodeBasicBlock ts) rbody.basicBlocks with
-    | none => rw [h_bbs] at h_dec; cases h_dec
-    | some bbs =>
-      rw [h_bbs] at h_dec
-      injection h_dec with h_b
-      subst h_b
-      change rbody.basicBlocks.all (fun bb =>
-          bb.statements.all (refDiscrStmtOk locs)) =
-        bbs.all (fun bb => bb.statements.all (discrStmtOk locs))
-      have h_all_st : ∀ (rsts : List RefStatementKind)
-          (sts : List StatementKind),
-          mapOption (decodeStmt ts) rsts = some sts →
-          rsts.all (refDiscrStmtOk locs) = sts.all (discrStmtOk locs) := by
-        intro rsts
-        induction rsts with
-        | nil =>
-          intro sts hm
-          dsimp only [mapOption] at hm
-          injection hm with h_n; subst h_n; rfl
-        | cons rs rrest ihs =>
-          intro sts hm
-          dsimp only [mapOption] at hm
-          cases h_s : decodeStmt ts rs with
-          | none => rw [h_s] at hm; cases hm
-          | some s =>
-            rw [h_s] at hm
-            cases h_rr : mapOption (decodeStmt ts) rrest with
-            | none => rw [h_rr] at hm; cases hm
-            | some srest =>
-              rw [h_rr] at hm
-              injection hm with h_c; subst h_c
-              dsimp only [List.all]
-              rw [refDiscrStmtOk_eq h_s, ihs srest h_rr]
-      have h_all_bb : ∀ (rbbs : List RefBasicBlock) (bbs' : List BasicBlock),
-          mapOption (decodeBasicBlock ts) rbbs = some bbs' →
-          rbbs.all (fun bb => bb.statements.all (refDiscrStmtOk locs)) =
-            bbs'.all (fun bb => bb.statements.all (discrStmtOk locs)) := by
-        intro rbbs
-        induction rbbs with
-        | nil =>
-          intro bbs' h_m
-          dsimp only [mapOption] at h_m
-          injection h_m with h_nil; subst h_nil; rfl
-        | cons rbb rest ih =>
-          intro bbs' h_m
-          dsimp only [mapOption] at h_m
-          cases h_bb : decodeBasicBlock ts rbb with
-          | none => rw [h_bb] at h_m; cases h_m
-          | some bb =>
-            rw [h_bb] at h_m
-            cases h_rest : mapOption (decodeBasicBlock ts) rest with
-            | none => rw [h_rest] at h_m; cases h_m
-            | some rest' =>
-              rw [h_rest] at h_m
-              injection h_m with h_cons; subst h_cons
-              dsimp only [List.all]
-              rw [ih rest' h_rest]
-              dsimp only [decodeBasicBlock] at h_bb
-              cases h_st : mapOption (decodeStmt ts) rbb.statements with
-              | none => rw [h_st] at h_bb; cases h_bb
-              | some stmts =>
-                rw [h_st] at h_bb
-                cases h_tm : decodeTerminator ts rbb.terminator with
-                | none => rw [h_tm] at h_bb; cases h_bb
-                | some tm =>
-                  rw [h_tm] at h_bb
-                  injection h_bb with h_bb_eq; subst h_bb_eq
-                  rw [h_all_st rbb.statements stmts h_st]
-      exact h_all_bb rbody.basicBlocks bbs h_bbs
+    refDiscriminantTypesValid body.locals rbody = discriminantTypesValid body :=
+  refBody_stmts_all_eq h_dec (refDiscrStmtOk body.locals)
+    (discrStmtOk body.locals) (fun _ _ h => refDiscrStmtOk_eq h)
+
+theorem refCastTypesValid_eq {ts : List MirTy} {rbody : RefBody}
+    {body : Body} (h_dec : decodeBody ts rbody = some body) :
+    refCastTypesValid ts body.locals rbody = castTypesValid body :=
+  refBody_stmts_all_eq h_dec (refCastStmtOk ts body.locals)
+    (castStmtOk body.locals) (fun _ _ h => refCastStmtOk_eq h)
 
 end MiriEquiv
 
@@ -1339,8 +2007,10 @@ theorem state_unique_of_simulationInv_base :
   have h_cm : s₁.callerMem = s₂.callerMem := by
     have h_u := congrArg Miri.Interpreter.MachineHooks.MachineState.user h_machine
     exact congrArg RefUser.callerMem h_u
-  let ⟨body₁, rbody₁, hb₁, _, _, _, _, _, _, hsl₁, _, hrf₁⟩ := hframe₁
-  let ⟨body₂, rbody₂, hb₂, _, _, _, _, _, _, hsl₂, _, hrf₂⟩ := hframe₂
+  let ⟨body₁, rbody₁, hb₁, _, _, _, _, _, _, _, hsl₁, _, hrf₁⟩ :=
+    hframe₁
+  let ⟨body₂, rbody₂, hb₂, _, _, _, _, _, _, _, hsl₂, _, hrf₂⟩ :=
+    hframe₂
   have h_rf_eq' := hrf₁.symm.trans hrf₂
   have h_def : f₁.defId = f₂.defId := by
     have h_bi := congrArg Miri.Interpreter.Frame.bodyIdentity h_rf_eq'

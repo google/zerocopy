@@ -72,7 +72,7 @@ This module defines five components:
    `8144389c895da997dbdecaa635e41d6a50be6ffd`) with opt-in runtime move
    deinitialization (`deinitMovedPlace := true`) and shallow validation
    (`ValidityMemory.bind` -> `ValidityVisitor.validatePlace`).
-4. **Top-level correspondence claims (34 locked Pass 2 claims):** States both
+4. **Top-level correspondence claims (37 locked Pass 2 claims):** States both
    aggregate (`CorrespondenceClaim`, `FaultEquivalenceClaim`) and
    choice-coupled (`CorrespondenceAtChoicesClaim`,
    `FaultEquivalenceAtChoicesClaim`) correspondence and fault equivalence,
@@ -82,13 +82,13 @@ This module defines five components:
    `LocalAccess.evalOperand`), `BytesCodecMatchesMiriClaim` (pinning
    $M_{\text{anneal}}$'s byte codec against `lean-miri`'s `Allocation`
    scalar accesses), the 6 codec claims, the 11 simulation/uniqueness claims,
-   and canaries `D6`–`D13`.
+   and canaries `D6`–`D16`.
 5. **Fail-closed target, profile, and stack shape:** `initRefState` rejects
    non-64-bit targets, non-v1 MIR profiles, non-empty `callerMem`, out-of-bounds
-   storage markers, ill-typed `Discriminant` destinations, and unsupported
-   local types, and starts the real `ExecutionMachine` stack with the single
-   entry frame (`returnContinuation := .stop false`, `returnPlace := .memory
-   retPlace`).
+   storage markers, ill-typed `Discriminant` and `Cast` destinations, and
+   unsupported local types, and starts the real `ExecutionMachine` stack with
+   the single entry frame (`returnContinuation := .stop false`,
+   `returnPlace := .memory retPlace`).
 -/
 
 /-! ## Trusted Top-Level Correspondence and Canary Claims -/
@@ -510,6 +510,105 @@ def CanaryD13EnumInvalidTagAndUninitUbClaim : Prop :=
   ¬ WellFormed progEnumUninitDiscrUb queryEmpty ∧
   (∃ maxSteps, RefReachesOutcome (encodeProg progEnumUninitDiscrUb)
     queryEmpty maxSteps .ub)
+
+/-- Trusted claim for
+`Anneal.MirCorrespondenceProof.canary_D14_char_cmp_and_switch_ok`: in both
+$M_{\text{anneal}}$ and $M_{\text{ref}}$,
+1. `'b'.cmp('a')` (`BinOp.cmp` on `char`,
+   `Miri.Interpreter.IntegerOps.binaryChar`) returns
+   `core::cmp::Ordering::Greater` through the return place;
+2. `Rvalue.discriminant` of `(-1i8).cmp(1i8)` (`Ordering::Less`) returns
+   `-1i8` (raw bits `255`); and
+3. `switchInt` on the `char` `'a'` takes its matching case and returns
+   `1u32`. -/
+def CanaryD14CharCmpAndSwitchOkClaim : Prop :=
+  WellFormed (mkBinOpProg .cmp .ordering .char .char)
+    { args := [charVal 98, charVal 97] } ∧
+  Behavior (mkBinOpProg .cmp .ordering .char .char)
+    { args := [charVal 98, charVal 97] }
+    (.returned ⟨.ordering .greater, ⟨[]⟩⟩) ∧
+  RefWellFormed (encodeProg (mkBinOpProg .cmp .ordering .char .char))
+    { args := [charVal 98, charVal 97] } ∧
+  RefBehavior (encodeProg (mkBinOpProg .cmp .ordering .char .char))
+    { args := [charVal 98, charVal 97] }
+    (.returned ⟨.ordering .greater, ⟨[]⟩⟩) ∧
+  WellFormed (mkCmpDiscriminantProg i8Ty) { args := [i8Val 255, i8Val 1] } ∧
+  Behavior (mkCmpDiscriminantProg i8Ty) { args := [i8Val 255, i8Val 1] }
+    (.returned ⟨i8Val 255, ⟨[]⟩⟩) ∧
+  RefWellFormed (encodeProg (mkCmpDiscriminantProg i8Ty))
+    { args := [i8Val 255, i8Val 1] } ∧
+  RefBehavior (encodeProg (mkCmpDiscriminantProg i8Ty))
+    { args := [i8Val 255, i8Val 1] } (.returned ⟨i8Val 255, ⟨[]⟩⟩) ∧
+  WellFormed progCharSwitch { args := [charVal 97] } ∧
+  Behavior progCharSwitch { args := [charVal 97] }
+    (.returned ⟨u32Val 1, ⟨[]⟩⟩) ∧
+  RefWellFormed (encodeProg progCharSwitch) { args := [charVal 97] } ∧
+  RefBehavior (encodeProg progCharSwitch) { args := [charVal 97] }
+    (.returned ⟨u32Val 1, ⟨[]⟩⟩)
+
+/-- Trusted claim for
+`Anneal.MirCorrespondenceProof.canary_D15_int_to_int_cast`: in both
+$M_{\text{anneal}}$ and $M_{\text{ref}}$ (`Miri.Interpreter.Cast.cast` and
+`Miri.Interpreter.IntegerCast.cast`),
+1. `-1i8 as u32` sign-extends and returns `0xFFFF_FFFF`;
+2. `200u8 as char` returns `'\u{c8}'`; and
+3. `300u32 as char` faults with `.unsupported` (`.blocked` in
+   $M_{\text{ref}}$), because only `u8` values convert to `char`. -/
+def CanaryD15IntToIntCastClaim : Prop :=
+  WellFormed (mkIntToIntCastProg i8Ty u32Ty) { args := [i8Val 255] } ∧
+  Behavior (mkIntToIntCastProg i8Ty u32Ty) { args := [i8Val 255] }
+    (.returned ⟨u32Val 4294967295, ⟨[]⟩⟩) ∧
+  RefWellFormed (encodeProg (mkIntToIntCastProg i8Ty u32Ty))
+    { args := [i8Val 255] } ∧
+  RefBehavior (encodeProg (mkIntToIntCastProg i8Ty u32Ty))
+    { args := [i8Val 255] } (.returned ⟨u32Val 4294967295, ⟨[]⟩⟩) ∧
+  WellFormed (mkIntToIntCastProg u8Ty .char) { args := [u8Val 200] } ∧
+  Behavior (mkIntToIntCastProg u8Ty .char) { args := [u8Val 200] }
+    (.returned ⟨charVal 200, ⟨[]⟩⟩) ∧
+  RefWellFormed (encodeProg (mkIntToIntCastProg u8Ty .char))
+    { args := [u8Val 200] } ∧
+  RefBehavior (encodeProg (mkIntToIntCastProg u8Ty .char))
+    { args := [u8Val 200] } (.returned ⟨charVal 200, ⟨[]⟩⟩) ∧
+  ReachesResult (mkIntToIntCastProg u32Ty .char) { args := [u32Val 300] }
+    (.fault .unsupported) ∧
+  ¬ ReachesResult (mkIntToIntCastProg u32Ty .char) { args := [u32Val 300] }
+    (.fault .undefined) ∧
+  ¬ WellFormed (mkIntToIntCastProg u32Ty .char) { args := [u32Val 300] } ∧
+  (∃ maxSteps, RefReachesOutcome (encodeProg (mkIntToIntCastProg u32Ty .char))
+    { args := [u32Val 300] } maxSteps .blocked)
+
+/-- Trusted claim for
+`Anneal.MirCorrespondenceProof.canary_D16_with_overflow_ok`: in both
+$M_{\text{anneal}}$ and $M_{\text{ref}}$
+(`Miri.Interpreter.IntegerOps.binary` and `ScalarOps.finish`'s
+`BackendRepr.ScalarPair` result), `BinOp.addWithOverflow` on
+`(255u8, 1u8)` returns `(0, true)` and `BinOp.subWithOverflow` on
+`(-128i8, 1i8)` returns `(127, true)` through the return place. -/
+def CanaryD16WithOverflowOkClaim : Prop :=
+  WellFormed (mkBinOpProg .addWithOverflow (overflowPairTy u8Ty) u8Ty u8Ty)
+    { args := [u8Val 255, u8Val 1] } ∧
+  Behavior (mkBinOpProg .addWithOverflow (overflowPairTy u8Ty) u8Ty u8Ty)
+    { args := [u8Val 255, u8Val 1] }
+    (.returned ⟨.tuple [u8Val 0, .bool true], ⟨[]⟩⟩) ∧
+  RefWellFormed
+    (encodeProg (mkBinOpProg .addWithOverflow (overflowPairTy u8Ty) u8Ty u8Ty))
+    { args := [u8Val 255, u8Val 1] } ∧
+  RefBehavior
+    (encodeProg (mkBinOpProg .addWithOverflow (overflowPairTy u8Ty) u8Ty u8Ty))
+    { args := [u8Val 255, u8Val 1] }
+    (.returned ⟨.tuple [u8Val 0, .bool true], ⟨[]⟩⟩) ∧
+  WellFormed (mkBinOpProg .subWithOverflow (overflowPairTy i8Ty) i8Ty i8Ty)
+    { args := [i8Val 128, i8Val 1] } ∧
+  Behavior (mkBinOpProg .subWithOverflow (overflowPairTy i8Ty) i8Ty i8Ty)
+    { args := [i8Val 128, i8Val 1] }
+    (.returned ⟨.tuple [i8Val 127, .bool true], ⟨[]⟩⟩) ∧
+  RefWellFormed
+    (encodeProg (mkBinOpProg .subWithOverflow (overflowPairTy i8Ty) i8Ty i8Ty))
+    { args := [i8Val 128, i8Val 1] } ∧
+  RefBehavior
+    (encodeProg (mkBinOpProg .subWithOverflow (overflowPairTy i8Ty) i8Ty i8Ty))
+    { args := [i8Val 128, i8Val 1] }
+    (.returned ⟨.tuple [i8Val 127, .bool true], ⟨[]⟩⟩)
 
 /-- Trusted claim for
 `Anneal.MirCorrespondenceProof.refStep_sound_for_allowedStep_holds`: every

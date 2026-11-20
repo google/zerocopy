@@ -607,8 +607,25 @@ theorem evalTerminator_frame_retag (body : Body) (bb : BasicBlock)
               intro s' hStep
               injection hStep with hEq; subst hEq
               exact ⟨_, rfl, h_id⟩
-          | ptr _ | unit | tuple _ | bytes _ | enumVal _ _ =>
-            exact ⟨(fun _ h => by cases h), rfl⟩
+          | char c =>
+            dsimp only
+            cases evalCharSwitchBranches c targets.otherwise
+                targets.branches with
+            | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
+            | ok tgt =>
+              refine ⟨?_, rfl⟩
+              intro s' hStep
+              injection hStep with hEq; subst hEq
+              exact ⟨_, rfl, h_id⟩
+          | ptr _ | ordering _ | unit | tuple _ | bytes _ | enumVal _ _ =>
+            dsimp only
+            cases targets.branches with
+            | nil =>
+              refine ⟨?_, rfl⟩
+              intro s' hStep
+              injection hStep with hEq; subst hEq
+              exact ⟨_, rfl, h_id⟩
+            | cons _ _ => exact ⟨(fun _ h => by cases h), rfl⟩
   | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _ | unsupported =>
     exact ⟨(fun _ h => by cases h), rfl⟩
 
@@ -863,10 +880,11 @@ theorem initState_entryProgForBody_ok {p : Program} {defId : DefId}
     cases h4 : Nat.blt body.argumentCount body.locals.length <;>
     cases h5 : storageAnnotationsInBounds body <;>
     cases h5d : discriminantTypesValid body <;>
+    cases h5c : castTypesValid body <;>
     cases h6 : body.locals.all isSupportedScalarOrUnitTy <;>
     cases h7 : checkArgsMatch args
       ((body.locals.drop 1).take body.argumentCount) <;>
-    rw [h1, h2, h3, h4, h5, h5d, h6, h7] at h_init <;>
+    rw [h1, h2, h3, h4, h5, h5d, h5c, h6, h7] at h_init <;>
     cases h_init
   exact ⟨rfl, rfl⟩
 

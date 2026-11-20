@@ -64,15 +64,16 @@ transformation to the authoritative post-cleanup runtime MIR syntax
    `mir_pure_lift_correspondence_transfer`,
    `mir_fault_correspondence_transfer`):** proves kernel agreement theorems
    (`mirBodyStaticAdmitted_eq`, `mirCheckVal_eq`, `mirEvalConstLit_eq`,
-   `mirEvalBinOpVal_eq`, `mirEvalUnOpVal_eq`, `mirLiveUninitSlot_eq`)
-   certifying those computable `mir*` evaluators against
+   `mirEvalBinOpVal_eq`, `mirEvalUnOpVal_eq`, `mirEvalIntToIntCast_eq`,
+   `mirLiveUninitSlot_eq`) certifying those computable `mir*` evaluators against
    `Trusted.MirSemantics` (the lifter's other mirrors—`mirTyBeq`,
-   `mirIsPrimitiveReadableTy`, `mirHasStorageAnnotation`, and
-   `mirEvalDiscrVal`—have no agreement theorem; every transfer still checks
-   the run against `Trusted.MirSemantics` through `hSim` or `MirRunsFault`),
-   translates single-block bodies (`StorageLive`, `StorageDead`, `Assign`,
-   `Operand.copy`, `Operand.move`, `ConstOperand`, `UnOp`, `BinOp`,
-   `Rvalue.discriminant`, `Return`) into `FlowPlan Val`, and transfers verified
+   `mirIsPrimitiveReadableTy`, `mirHasStorageAnnotation`, `mirEvalDiscrVal`,
+   and `mirEvalOrderingDiscrVal`—have no agreement theorem; every transfer
+   still checks the run against `Trusted.MirSemantics` through `hSim` or
+   `MirRunsFault`), translates single-block bodies (`StorageLive`,
+   `StorageDead`, `Assign`, `Operand.copy`, `Operand.move`, `ConstOperand`,
+   `UnOp`, `BinOp`, `Rvalue.cast` (`IntToInt`), `Rvalue.discriminant`,
+   `Return`) into `FlowPlan Val`, and transfers verified
    termination and exclusive faults (with guaranteed non-faulting `initState`)
    across `CorrespondenceClaim` and `FaultEquivalenceClaim` to `lean-miri`
    ($M_{\text{ref}}$).
@@ -385,6 +386,8 @@ theorem valDepthOk_mono :
     | ptr _ => rfl
     | bool _ => rfl
     | unit => rfl
+    | char _ => rfl
+    | ordering _ => rfl
     | enumVal _ _ => rfl
     | bytes _ => rfl
   | k + 1, v, h => by
@@ -396,6 +399,8 @@ theorem valDepthOk_mono :
     | ptr _ => rfl
     | bool _ => rfl
     | unit => rfl
+    | char _ => rfl
+    | ordering _ => rfl
     | enumVal _ _ => rfl
     | bytes _ => rfl
 
@@ -451,6 +456,8 @@ theorem mir_getField_setField {d : Nat} (f : FieldIdx) (s a : Val)
   | ptr _ => nomatch hGet
   | bool _ => nomatch hGet
   | unit => nomatch hGet
+  | char _ => nomatch hGet
+  | ordering _ => nomatch hGet
   | enumVal _ _ => nomatch hGet
   | bytes _ => nomatch hGet
 
@@ -485,6 +492,8 @@ theorem mir_setField_getField {d : Nat} (f : FieldIdx) (s a s' : Val)
   | ptr _ => nomatch hPut
   | bool _ => nomatch hPut
   | unit => nomatch hPut
+  | char _ => nomatch hPut
+  | ordering _ => nomatch hPut
   | enumVal _ _ => nomatch hPut
   | bytes _ => nomatch hPut
 
@@ -520,6 +529,8 @@ theorem mir_setField_setField {d : Nat} (f : FieldIdx) (s a1 a2 s1 : Val)
   | ptr _ => nomatch hPut1
   | bool _ => nomatch hPut1
   | unit => nomatch hPut1
+  | char _ => nomatch hPut1
+  | ordering _ => nomatch hPut1
   | enumVal _ _ => nomatch hPut1
   | bytes _ => nomatch hPut1
 
@@ -552,6 +563,8 @@ theorem mir_getField_setField_other {d : Nat} (f g : FieldIdx) (s a s' : Val)
   | ptr _ => nomatch hPut
   | bool _ => nomatch hPut
   | unit => nomatch hPut
+  | char _ => nomatch hPut
+  | ordering _ => nomatch hPut
   | enumVal _ _ => nomatch hPut
   | bytes _ => nomatch hPut
 
@@ -614,6 +627,8 @@ theorem mir_setField_setField_comm {d : Nat} (f g : FieldIdx)
   | ptr _ => nomatch h1
   | bool _ => nomatch h1
   | unit => nomatch h1
+  | char _ => nomatch h1
+  | ordering _ => nomatch h1
   | enumVal _ _ => nomatch h1
   | bytes _ => nomatch h1
 
@@ -751,6 +766,8 @@ theorem mir_decodeRef_getField {d : Nat} (f : FieldIdx) (v : Val)
   | ptr _ => nomatch hDec
   | bool _ => nomatch hDec
   | unit => nomatch hDec
+  | char _ => nomatch hDec
+  | ordering _ => nomatch hDec
   | enumVal _ _ => nomatch hDec
   | tuple _ => nomatch hDec
 
@@ -832,6 +849,8 @@ theorem valDepthOk_remapMirValAt (oldLid newLid : LoanId) :
     | ptr _ => rfl
     | bool _ => rfl
     | unit => rfl
+    | char _ => rfl
+    | ordering _ => rfl
     | enumVal _ _ => rfl
     | bytes _ => rfl
 
@@ -846,6 +865,8 @@ theorem remapMirValAt_eq_succ (oldLid newLid : LoanId) :
     | ptr _ => rfl
     | bool _ => rfl
     | unit => rfl
+    | char _ => rfl
+    | ordering _ => rfl
     | enumVal _ _ => rfl
     | bytes _ => rfl
   | k + 1, v, hOk => by
@@ -878,6 +899,8 @@ theorem remapMirValAt_eq_succ (oldLid newLid : LoanId) :
     | ptr _ => rfl
     | bool _ => rfl
     | unit => rfl
+    | char _ => rfl
+    | ordering _ => rfl
     | enumVal _ _ => rfl
     | bytes _ => rfl
 
@@ -891,6 +914,8 @@ theorem mir_decodeRef_remapRefInVal {d : Nat} (oldLid newLid : LoanId)
   | ptr _ => rfl
   | bool _ => rfl
   | unit => rfl
+  | char _ => rfl
+  | ordering _ => rfl
   | enumVal _ _ => rfl
   | tuple _ => rfl
   | bytes data =>
@@ -952,6 +977,8 @@ theorem mir_getField_remapRefInVal {d : Nat} (oldLid newLid : LoanId)
   | ptr _ => rfl
   | bool _ => rfl
   | unit => rfl
+  | char _ => rfl
+  | ordering _ => rfl
   | enumVal _ _ => rfl
   | bytes _ => rfl
   | tuple fields =>
@@ -1008,6 +1035,8 @@ theorem mir_remapRefInVal_leaf {d : Nat} (oldLid newLid : LoanId) (v : Val)
   | ptr _ => rfl
   | bool _ => rfl
   | unit => rfl
+  | char _ => rfl
+  | ordering _ => rfl
   | enumVal _ _ => rfl
   | tuple fields =>
     change Val.tuple _ = Val.tuple fields
@@ -1066,6 +1095,8 @@ theorem valSizeBoundAt_eq_succ :
     | ptr _ => rfl
     | bool _ => rfl
     | unit => rfl
+    | char _ => rfl
+    | ordering _ => rfl
     | enumVal _ _ => rfl
     | bytes _ => rfl
   | k + 1, v, hOk => by
@@ -1093,6 +1124,8 @@ theorem valSizeBoundAt_eq_succ :
     | ptr _ => rfl
     | bool _ => rfl
     | unit => rfl
+    | char _ => rfl
+    | ordering _ => rfl
     | enumVal _ _ => rfl
     | bytes _ => rfl
 
@@ -1152,6 +1185,8 @@ theorem mir_getField_lt_sizeBound {d : Nat} (f : FieldIdx) (v c : Val)
   | ptr _ => nomatch hGet
   | bool _ => nomatch hGet
   | unit => nomatch hGet
+  | char _ => nomatch hGet
+  | ordering _ => nomatch hGet
   | enumVal _ _ => nomatch hGet
   | bytes _ => nomatch hGet
 
@@ -1743,6 +1778,8 @@ def mirTyBeqAt (d : Nat) (a b : MirTy) : Bool :=
       | .int w₁ s₁, .int w₂ s₂ => mirIntWidthBeq w₁ w₂ && (s₁ == s₂)
       | .unit, .unit => true
       | .never, .never => true
+      | .char, .char => true
+      | .ordering, .ordering => true
       | .enum ety₁, .enum ety₂ => mirEnumTyBeq ety₁ ety₂
       | .unsupported, .unsupported => true
       | _, _ => false)
@@ -1752,6 +1789,8 @@ def mirTyBeqAt (d : Nat) (a b : MirTy) : Bool :=
       | .int w₁ s₁, .int w₂ s₂ => mirIntWidthBeq w₁ w₂ && (s₁ == s₂)
       | .unit, .unit => true
       | .never, .never => true
+      | .char, .char => true
+      | .ordering, .ordering => true
       | .enum ety₁, .enum ety₂ => mirEnumTyBeq ety₁ ety₂
       | .tuple fs₁, .tuple fs₂ =>
         fs₁.foldr
@@ -1904,18 +1943,53 @@ def mirFindDiscrVariant? (discrBits : BitVec 128) (ds : List Nat) :
 def mirScalarWf (sv : ScalarVal) : Bool :=
   mirTruncateBits sv.width sv.bits == sv.bits
 
+/-- Computable Unicode scalar value check matching
+`Trusted.MirSemantics.isUnicodeScalar`. -/
+def mirIsUnicodeScalar (n : Nat) : Bool :=
+  Nat.ble n 0x10ffff && !(Nat.ble 0xd800 n && Nat.ble n 0xdfff)
+
+/-- Computable `core::cmp::Ordering` tag bits matching
+`Trusted.MirSemantics.orderingTagBits`. -/
+def mirOrderingTagBits : OrderingVal → Nat
+  | .less => 255
+  | .equal => 0
+  | .greater => 1
+
+/-- Computable `core::cmp::Ordering` tag decoder matching
+`Trusted.MirSemantics.orderingOfTagBits`. -/
+def mirOrderingOfTagBits (bits : Nat) : Option OrderingVal :=
+  if Nat.beq bits 255 then
+    some .less
+  else if Nat.beq bits 0 then
+    some .equal
+  else if Nat.beq bits 1 then
+    some .greater
+  else
+    none
+
+/-- Computable overflow-pair type check matching
+`Trusted.MirSemantics.isOverflowPairTy`. -/
+def mirIsOverflowPairTy : MirTy → Bool
+  | .tuple [.int _ _, .bool] => true
+  | _ => false
+
 /-- Computable intrinsic runtime type check matching
 `Trusted.MirSemantics.Val.ty?`. -/
 def mirValTy? : Val → Option MirTy
   | .scalar sv =>
     if mirScalarWf sv then some (.int sv.width sv.signed) else none
   | .bool _ => some .bool
+  | .char _ => some .char
+  | .ordering _ => some .ordering
   | .unit => some .unit
   | .enumVal ety v =>
     if mirEnumAdmitted ety && Nat.blt v ety.discriminants.length then
       some (.enum ety)
     else
       none
+  | .tuple [.scalar sv, .bool _] =>
+    if mirScalarWf sv then some (.tuple [.int sv.width sv.signed, .bool])
+    else none
   | _ => none
 
 /-- Computable value-type check matching `Trusted.MirSemantics.checkVal`. -/
@@ -1927,14 +2001,22 @@ def mirCheckVal (v : Val) (ty : MirTy) : Bool :=
 /-- Computable local-type support check matching
 `Trusted.MirSemantics.isSupportedScalarOrUnitTy`. -/
 def mirIsSupportedScalarOrUnitTy : MirTy → Bool
-  | .bool | .int _ _ | .unit | .never => true
+  | .bool | .int _ _ | .char | .ordering | .unit | .never => true
   | .enum ety => mirEnumAdmitted ety
+  | .tuple fs => mirIsOverflowPairTy (.tuple fs)
   | _ => false
 
 /-- Computable primitive-readable type check mirroring
 `Trusted.MirSemantics.isPrimitiveReadableTy` (no agreement theorem). -/
 def mirIsPrimitiveReadableTy : MirTy → Bool
-  | .bool | .int _ _ => true
+  | .bool | .int _ _ | .char => true
+  | .tuple fs => mirIsOverflowPairTy (.tuple fs)
+  | _ => false
+
+/-- Computable integer-like cast source check matching
+`Trusted.MirSemantics.isIntLikeTy`. -/
+def mirIsIntLikeTy : MirTy → Bool
+  | .bool | .int _ _ | .char => true
   | _ => false
 
 /-- Computable initial live-uninitialized slot state matching
@@ -1995,7 +2077,34 @@ def mirDiscriminantTypesValid (body : Body) : Bool :=
                       else
                         true
                     | none => true
+                  | .ordering =>
+                    match mirListGet? body.locals dst.localId with
+                    | some dstTy => mirTyBeq dstTy (.int .i8 true)
+                    | none => true
                   | _ => true
+                | none => true
+              else
+                true
+            | _ => true
+          | _ => true)
+        bb.statements)
+    body.basicBlocks
+
+/-- Computable cast destination type check matching
+`Trusted.MirSemantics.castTypesValid` (exactly when every local type is
+supported; see `mirCastTypesValid_eq`). -/
+def mirCastTypesValid (body : Body) : Bool :=
+  mirListAll
+    (fun bb =>
+      mirListAll
+        (fun stmt =>
+          match stmt with
+          | .assign dst rv =>
+            match rv with
+            | .cast .intToInt _ castTy =>
+              if dst.projection.isEmpty then
+                match mirListGet? body.locals dst.localId with
+                | some dstTy => mirTyBeq dstTy castTy
                 | none => true
               else
                 true
@@ -2014,6 +2123,7 @@ def mirBodyStaticAdmitted (p : Program) (body : Body) : Bool :=
     Nat.blt body.argumentCount body.locals.length &&
     mirStorageAnnotationsInBounds body &&
     mirDiscriminantTypesValid body &&
+    mirCastTypesValid body &&
     mirListAll mirIsSupportedScalarOrUnitTy body.locals
 
 /-- Computable constant-literal evaluator matching
@@ -2038,6 +2148,20 @@ def mirEvalConstLit : MirTy → ConstLit → Except FaultKind Val
       else
         .error .undefined
   | .unit, .zeroSized => .ok .unit
+  | .char, .scalar bits =>
+    if mirTruncateBits .i32 bits != bits then
+      .error .unsupported
+    else if mirIsUnicodeScalar bits.toNat then
+      .ok (.char (Char.ofNat bits.toNat))
+    else
+      .error .undefined
+  | .ordering, .scalar bits =>
+    if mirTruncateBits .i8 bits != bits then
+      .error .unsupported
+    else
+      match mirOrderingOfTagBits bits.toNat with
+      | some ord => .ok (.ordering ord)
+      | none => .error .undefined
   | .enum ety, .zeroSized =>
     if mirIsZstEnumTy ety then .ok (.enumVal ety 0) else .error .unsupported
   | .enum ety, .scalar bits =>
@@ -2067,6 +2191,15 @@ def mirEvalDiscrVal (ety : EnumTy) : Val → Option Val
       none
   | _ => none
 
+/-- Computable `core::cmp::Ordering` discriminant reader mirroring the
+`.ordering` case of the `.discriminant` arm of
+`Trusted.MirSemantics.evalRvalue` (`evalOrderingDiscriminantOfVal`; no
+agreement theorem). -/
+def mirEvalOrderingDiscrVal : Val → Option Val
+  | .ordering ord =>
+    some (.scalar ⟨.i8, true, BitVec.ofNat 128 (mirOrderingTagBits ord)⟩)
+  | _ => none
+
 /-- Computable shift-operator classification matching `BinOp.isShift`. -/
 def mirBinOpIsShift : BinOp → Bool
   | .shl | .shlUnchecked | .shr | .shrUnchecked => true
@@ -2077,6 +2210,12 @@ def mirBinOpIsShift : BinOp → Bool
 def mirBinOpIsUnchecked : BinOp → Bool
   | .addUnchecked | .subUnchecked | .mulUnchecked
   | .shlUnchecked | .shrUnchecked => true
+  | _ => false
+
+/-- Computable overflowing-operator classification matching
+`BinOp.isOverflowing`. -/
+def mirBinOpIsOverflowing : BinOp → Bool
+  | .addWithOverflow | .subWithOverflow | .mulWithOverflow => true
   | _ => false
 
 /-- Computable scalar integer decoder matching
@@ -2136,9 +2275,9 @@ def mirEvalArithOp (op : BinOp) (w : IntWidth) (s : Bool) (l r : Int) :
   else
     let res? : Option Int :=
       match op with
-      | .add | .addUnchecked => some (l + r)
-      | .sub | .subUnchecked => some (l - r)
-      | .mul | .mulUnchecked => some (l * r)
+      | .add | .addUnchecked | .addWithOverflow => some (l + r)
+      | .sub | .subUnchecked | .subWithOverflow => some (l - r)
+      | .mul | .mulUnchecked | .mulWithOverflow => some (l * r)
       | .div => some (mirIntTdiv l r)
       | .rem => some (mirIntTmod l r)
       | _ => none
@@ -2156,8 +2295,20 @@ def mirEvalArithOp (op : BinOp) (w : IntWidth) (s : Bool) (l r : Int) :
       | some (val, lossy) =>
         if (hostOverflow || lossy) && mirBinOpIsUnchecked op then
           none
+        else if mirBinOpIsOverflowing op then
+          some (.tuple [.scalar val, .bool (hostOverflow || lossy)])
         else
           some (.scalar val)
+
+/-- Computable three-way integer comparison matching
+`Trusted.MirSemantics.cmpOrderingOfInt`. -/
+def mirCmpOrderingOfInt (l r : Int) : OrderingVal :=
+  if decide (l < r) then
+    .less
+  else if decide (l = r) then
+    .equal
+  else
+    .greater
 
 /-- Computable binary operator evaluator matching
 `Trusted.MirSemantics.evalBinOp` for `RvalOp.binary`. -/
@@ -2180,6 +2331,7 @@ def mirEvalBinOpVal (op : BinOp) (lhs rhs : Val) : Option Val :=
       | .le => some (.bool (decide (lInt ≤ rInt)))
       | .gt => some (.bool (decide (lInt > rInt)))
       | .ge => some (.bool (decide (lInt ≥ rInt)))
+      | .cmp => some (.ordering (mirCmpOrderingOfInt lInt rInt))
       | .bitAnd =>
         let lb := mirTruncateBits w l.bits
         let rb := mirTruncateBits r.width r.bits
@@ -2193,7 +2345,8 @@ def mirEvalBinOpVal (op : BinOp) (lhs rhs : Val) : Option Val :=
         let rb := mirTruncateBits r.width r.bits
         some (.scalar ⟨w, s, mirTruncateBits w (mirBvXor lb rb)⟩)
       | .add | .sub | .mul | .div | .rem
-      | .addUnchecked | .subUnchecked | .mulUnchecked =>
+      | .addUnchecked | .subUnchecked | .mulUnchecked
+      | .addWithOverflow | .subWithOverflow | .mulWithOverflow =>
         mirEvalArithOp op w s lInt rInt
       | _ => none
   | .bool l, .bool r =>
@@ -2208,7 +2361,48 @@ def mirEvalBinOpVal (op : BinOp) (lhs rhs : Val) : Option Val :=
     | .bitOr => some (.bool (l || r))
     | .bitXor => some (.bool (bne l r))
     | _ => none
+  | .char l, .char r =>
+    let lInt := Int.ofNat l.toNat
+    let rInt := Int.ofNat r.toNat
+    match op with
+    | .eq => some (.bool (lInt == rInt))
+    | .ne => some (.bool (lInt != rInt))
+    | .lt => some (.bool (decide (lInt < rInt)))
+    | .le => some (.bool (decide (lInt ≤ rInt)))
+    | .gt => some (.bool (decide (lInt > rInt)))
+    | .ge => some (.bool (decide (lInt ≥ rInt)))
+    | .cmp => some (.ordering (mirCmpOrderingOfInt lInt rInt))
+    | _ => none
   | _, _ => none
+
+/-- Computable `u128` intermediate of an integer-like cast source matching
+`Trusted.MirSemantics.intLikeBits`. -/
+def mirIntLikeBits : Val → Option Nat
+  | .scalar sv =>
+    if sv.signed then
+      some (mirBvOfInt 128 (mirDecodeScalar sv)).toNat
+    else
+      some (mirTruncateBits sv.width sv.bits).toNat
+  | .bool b => some (if b then 1 else 0)
+  | .char c => some c.toNat
+  | _ => none
+
+/-- Computable `CastKind::IntToInt` evaluator matching
+`Trusted.MirSemantics.evalIntToIntCast` (collapsing error fault kinds to
+`none`). -/
+def mirEvalIntToIntCast (castTy : MirTy) (v : Val) : Option Val :=
+  match mirIntLikeBits v with
+  | none => none
+  | some bits =>
+    match castTy with
+    | .int w s =>
+      some (.scalar ⟨w, s, mirTruncateBits w (BitVec.ofNat 128 bits)⟩)
+    | .char =>
+      if Nat.ble bits 255 then
+        some (.char (Char.ofNat bits))
+      else
+        none
+    | _ => none
 
 /-- Computable unary operator evaluator matching
 `Trusted.MirSemantics.evalUnOp` for `RvalOp.unary`. -/
@@ -2381,6 +2575,23 @@ theorem mirScalarWf_eq (sv : ScalarVal) :
   unfold mirScalarWf ScalarVal.wf
   rw [mirTruncateBits_eq_truncateBits]
 
+theorem mirIsOverflowPairTy_eq (ty : MirTy) :
+    mirIsOverflowPairTy ty = isOverflowPairTy ty := by
+  cases ty with
+  | tuple fs =>
+    cases fs with
+    | nil => rfl
+    | cons t₁ r =>
+      cases t₁ with
+      | int w s =>
+        cases r with
+        | nil => rfl
+        | cons t₂ r' => cases t₂ <;> cases r' <;> rfl
+      | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
+      | rawPtr _ _ | unsupported => rfl
+  | bool | int _ _ | unit | never | char | ordering | enum _ | ref _ _
+  | rawPtr _ _ | unsupported => rfl
+
 theorem mirValTy?_eq (v : Val) : mirValTy? v = v.ty? := by
   cases v with
   | scalar sv =>
@@ -2389,7 +2600,150 @@ theorem mirValTy?_eq (v : Val) : mirValTy? v = v.ty? := by
   | enumVal ety idx =>
     dsimp only [mirValTy?, Val.ty?]
     rw [mirEnumAdmitted_eq ety]
-  | ptr _ | bool _ | unit | tuple _ | bytes _ => rfl
+  | tuple fs =>
+    cases fs with
+    | nil => rfl
+    | cons f r =>
+      cases f with
+      | scalar sv =>
+        cases r with
+        | nil => rfl
+        | cons g r' =>
+          cases g with
+          | bool b =>
+            cases r' with
+            | nil =>
+              change
+                (if mirScalarWf sv = true then
+                  some (MirTy.tuple [.int sv.width sv.signed, .bool])
+                else none) =
+                (if sv.wf = true then
+                  some (MirTy.tuple [.int sv.width sv.signed, .bool])
+                else none)
+              rw [mirScalarWf_eq sv]
+            | cons _ _ => rfl
+          | scalar _ | ptr _ | char _ | ordering _ | unit | enumVal _ _
+          | tuple _ | bytes _ => rfl
+      | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _
+      | bytes _ => rfl
+  | ptr _ | bool _ | char _ | ordering _ | unit | bytes _ => rfl
+
+/-- Every type that `Trusted.MirSemantics.Val.ty?` assigns to a value is in the
+supported local-type fragment `isSupportedScalarOrUnitTy`. -/
+theorem valTy?_supported (v : Val) (vTy : MirTy) (hTy : v.ty? = some vTy) :
+    isSupportedScalarOrUnitTy vTy = true := by
+  cases v with
+  | scalar sv =>
+    revert hTy
+    change (if sv.wf = true then some (MirTy.int sv.width sv.signed)
+      else none) = some vTy → isSupportedScalarOrUnitTy vTy = true
+    cases sv.wf with
+    | false => intro hTy; nomatch hTy
+    | true => intro hTy; cases hTy; rfl
+  | bool _ => cases hTy; rfl
+  | char _ => cases hTy; rfl
+  | ordering _ => cases hTy; rfl
+  | unit => cases hTy; rfl
+  | enumVal ety idx =>
+    revert hTy
+    change (if (enumAdmitted ety && Nat.blt idx ety.discriminants.length) =
+        true then some (MirTy.enum ety) else none) = some vTy →
+      isSupportedScalarOrUnitTy vTy = true
+    cases hAdm : enumAdmitted ety with
+    | false => intro hTy; nomatch hTy
+    | true =>
+      cases Nat.blt idx ety.discriminants.length with
+      | false => intro hTy; nomatch hTy
+      | true => intro hTy; cases hTy; exact hAdm
+  | tuple fs =>
+    cases fs with
+    | nil => nomatch hTy
+    | cons f r =>
+      cases f with
+      | scalar sv =>
+        cases r with
+        | nil => nomatch hTy
+        | cons g r' =>
+          cases g with
+          | bool b =>
+            cases r' with
+            | nil =>
+              revert hTy
+              change
+                (if sv.wf = true then
+                  some (MirTy.tuple [.int sv.width sv.signed, .bool])
+                else none) = some vTy → isSupportedScalarOrUnitTy vTy = true
+              cases sv.wf with
+              | false => intro hTy; nomatch hTy
+              | true => intro hTy; cases hTy; rfl
+            | cons _ _ => nomatch hTy
+          | scalar _ | ptr _ | char _ | ordering _ | unit | enumVal _ _
+          | tuple _ | bytes _ => nomatch hTy
+      | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _
+      | bytes _ => nomatch hTy
+  | ptr _ | bytes _ => nomatch hTy
+
+theorem mirTyBeq_int_eq (w : IntWidth) (s : Bool) (b : MirTy) :
+    mirTyBeq (.int w s) b = MirTy.beq (.int w s) b := by
+  cases b with
+  | int w₂ s₂ =>
+    change (mirIntWidthBeq w w₂ && (s == s₂)) =
+      (IntWidth.beq w w₂ && (s == s₂))
+    rw [mirIntWidthBeq_eq]
+  | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
+  | rawPtr _ _ | unsupported => rfl
+
+theorem mirTyBeq_overflowPair_eq (w : IntWidth) (s : Bool) (b : MirTy) :
+    mirTyBeq (.tuple [.int w s, .bool]) b =
+      MirTy.beq (.tuple [.int w s, .bool]) b := by
+  cases b with
+  | tuple fs =>
+    cases fs with
+    | nil => rfl
+    | cons t₁ r =>
+      cases t₁ with
+      | int w₂ s₂ =>
+        cases r with
+        | nil => cases w <;> cases w₂ <;> rfl
+        | cons t₂ r' => cases t₂ <;> cases r' <;> cases w <;> cases w₂ <;> rfl
+      | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
+      | rawPtr _ _ | unsupported => rfl
+  | bool | int _ _ | unit | never | char | ordering | enum _ | ref _ _
+  | rawPtr _ _ | unsupported => rfl
+
+/-- `mirTyBeq a b` agrees with `MirTy.beq a b` whenever `a` is in the
+supported local-type fragment `isSupportedScalarOrUnitTy` (whose types nest at
+most one level, well within `mirTyBeq`'s depth bound). -/
+theorem mirTyBeq_eq_of_supported (a b : MirTy)
+    (hSup : isSupportedScalarOrUnitTy a = true) :
+    mirTyBeq a b = MirTy.beq a b := by
+  cases a with
+  | int w s => exact mirTyBeq_int_eq w s b
+  | enum ety =>
+    cases b with
+    | enum ety₂ => exact mirEnumTyBeq_eq ety ety₂
+    | bool | int _ _ | unit | never | char | ordering | tuple _ | ref _ _
+    | rawPtr _ _ | unsupported => rfl
+  | tuple fs =>
+    cases fs with
+    | nil => nomatch hSup
+    | cons t₁ r =>
+      cases t₁ with
+      | int w s =>
+        cases r with
+        | nil => nomatch hSup
+        | cons t₂ r' =>
+          cases t₂ with
+          | bool =>
+            cases r' with
+            | nil => exact mirTyBeq_overflowPair_eq w s b
+            | cons _ _ => nomatch hSup
+          | int _ _ | unit | never | char | ordering | enum _ | tuple _
+          | ref _ _ | rawPtr _ _ | unsupported => nomatch hSup
+      | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
+      | rawPtr _ _ | unsupported => nomatch hSup
+  | bool | unit | never | char | ordering => cases b <;> rfl
+  | ref _ _ | rawPtr _ _ | unsupported => nomatch hSup
 
 /-- Exact unconditional agreement between `mirCheckVal` and
 `Trusted.MirSemantics.checkVal` across all runtime `Val`s and all `MirTy`s. -/
@@ -2397,41 +2751,17 @@ theorem mirCheckVal_eq (v : Val) (ty : MirTy) :
     mirCheckVal v ty = checkVal v ty := by
   unfold mirCheckVal checkVal
   rw [mirValTy?_eq v]
-  cases v with
-  | scalar sv =>
-    dsimp only [Val.ty?]
-    cases sv.wf with
-    | false => rfl
-    | true =>
-      cases ty with
-      | int w₂ s₂ =>
-        change (mirIntWidthBeq sv.width w₂ && (sv.signed == s₂)) =
-          (IntWidth.beq sv.width w₂ && (sv.signed == s₂))
-        rw [mirIntWidthBeq_eq]
-      | bool | unit | never | enum _ | tuple _ | ref _ _ | rawPtr _ _
-      | unsupported => rfl
-  | bool _ =>
-    dsimp only [Val.ty?]
-    cases ty <;> rfl
-  | unit =>
-    dsimp only [Val.ty?]
-    cases ty <;> rfl
-  | enumVal ety idx =>
-    dsimp only [Val.ty?]
-    cases (enumAdmitted ety && Nat.blt idx ety.discriminants.length) with
-    | false => rfl
-    | true =>
-      cases ty with
-      | enum ety₂ => exact mirEnumTyBeq_eq ety ety₂
-      | bool | int _ _ | unit | never | tuple _ | ref _ _ | rawPtr _ _
-      | unsupported => rfl
-  | ptr _ | tuple _ | bytes _ => rfl
+  cases hTy : v.ty? with
+  | none => rfl
+  | some vTy =>
+    exact mirTyBeq_eq_of_supported vTy ty (valTy?_supported v vTy hTy)
 
 theorem mirIsSupportedScalarOrUnitTy_eq (ty : MirTy) :
     mirIsSupportedScalarOrUnitTy ty = isSupportedScalarOrUnitTy ty := by
   cases ty with
   | enum ety => exact mirEnumAdmitted_eq ety
-  | bool | int _ _ | unit | never | tuple _ | ref _ _ | rawPtr _ _
+  | tuple fs => exact mirIsOverflowPairTy_eq (.tuple fs)
+  | bool | int _ _ | unit | never | char | ordering | ref _ _ | rawPtr _ _
   | unsupported => rfl
 
 theorem mirLiveUninitSlot_eq (ty : MirTy) :
@@ -2440,8 +2770,8 @@ theorem mirLiveUninitSlot_eq (ty : MirTy) :
   | enum ety =>
     dsimp only [mirLiveUninitSlot, liveUninitSlot]
     rw [mirIsZstEnumTy_eq ety]
-  | bool | int _ _ | unit | never | tuple _ | ref _ _ | rawPtr _ _
-  | unsupported => rfl
+  | bool | int _ _ | unit | never | char | ordering | tuple _ | ref _ _
+  | rawPtr _ _ | unsupported => rfl
 
 theorem mirStorageAnnotationsInBounds_eq (body : Body) :
     mirStorageAnnotationsInBounds body = storageAnnotationsInBounds body := by
@@ -2471,6 +2801,10 @@ theorem mirDiscriminantTypesValid_eq (body : Body) :
                   mirTyBeq dstTy (.int ety.discrWidth ety.discrSigned)
                 else true
               | none => true
+            | .ordering =>
+              match mirListGet? body.locals dst.localId with
+              | some dstTy => mirTyBeq dstTy (.int .i8 true)
+              | none => true
             | _ => true
           | none => true
         else true) =
@@ -2484,6 +2818,10 @@ theorem mirDiscriminantTypesValid_eq (body : Body) :
                 if enumAdmitted ety then
                   MirTy.beq dstTy (.int ety.discrWidth ety.discrSigned)
                 else true
+              | none => true
+            | .ordering =>
+              match Trusted.MirSemantics.getElem? body.locals dst.localId with
+              | some dstTy => MirTy.beq dstTy (.int .i8 true)
               | none => true
             | _ => true
           | none => true
@@ -2518,12 +2856,91 @@ theorem mirDiscriminantTypesValid_eq (body : Body) :
                     (IntWidth.beq w ety.discrWidth &&
                       (s == ety.discrSigned))
                   rw [mirIntWidthBeq_eq]
-                | bool | unit | never | enum _ | tuple _ | ref _ _
-                | rawPtr _ _ | unsupported => rfl
-          | bool | int _ _ | unit | never | tuple _ | ref _ _ | rawPtr _ _
-          | unsupported => rfl
-    | use _ | binaryOp _ _ _ | unaryOp _ _ | ref _ _ | addressOf _ _
-    | aggregateTuple _ | unsupported => rfl
+                | bool | unit | never | char | ordering | enum _ | tuple _
+                | ref _ _ | rawPtr _ _ | unsupported => rfl
+          | ordering =>
+            cases Trusted.MirSemantics.getElem? body.locals dst.localId with
+            | none => rfl
+            | some dstTy =>
+              cases dstTy with
+              | int w s => cases w <;> rfl
+              | bool | unit | never | char | ordering | enum _ | tuple _
+              | ref _ _ | rawPtr _ _ | unsupported => rfl
+          | bool | int _ _ | unit | never | char | tuple _ | ref _ _
+          | rawPtr _ _ | unsupported => rfl
+    | use _ | binaryOp _ _ _ | unaryOp _ _ | cast _ _ _ | ref _ _
+    | addressOf _ _ | aggregateTuple _ | unsupported => rfl
+  | storageLive _ | storageDead _ | nop | unsupported => rfl
+
+/-- Every element of a list satisfying `xs.all pred` satisfies `pred`. -/
+theorem listAll_getElem? {α : Type} (pred : α → Bool) :
+    ∀ (xs : List α) (i : Nat) (x : α),
+      xs.all pred = true →
+      Trusted.MirSemantics.getElem? xs i = some x →
+      pred x = true
+  | [], _, _, _, hGet => nomatch hGet
+  | y :: ys, 0, x, hAll, hGet => by
+    change some y = some x at hGet
+    injection hGet with hEq
+    subst hEq
+    change (pred y && ys.all pred) = true at hAll
+    cases hP : pred y with
+    | false =>
+      rw [hP] at hAll
+      nomatch hAll
+    | true => rfl
+  | y :: ys, i + 1, x, hAll, hGet => by
+    change Trusted.MirSemantics.getElem? ys i = some x at hGet
+    change (pred y && ys.all pred) = true at hAll
+    cases hP : pred y with
+    | false =>
+      rw [hP] at hAll
+      nomatch hAll
+    | true =>
+      rw [hP] at hAll
+      exact listAll_getElem? pred ys i x hAll hGet
+
+/-- Agreement between computable `mirCastTypesValid` and
+`Trusted.MirSemantics.castTypesValid` on bodies whose local types are all
+supported (`isSupportedScalarOrUnitTy`), which `BodyStaticAdmitted` also
+requires. -/
+theorem mirCastTypesValid_eq (body : Body)
+    (hSup : body.locals.all isSupportedScalarOrUnitTy = true) :
+    mirCastTypesValid body = castTypesValid body := by
+  unfold mirCastTypesValid castTypesValid
+  refine mirListAll_eq _ _ (fun bb =>
+    mirListAll_eq _ _ (fun stmt => ?_) bb.statements) body.basicBlocks
+  cases stmt with
+  | assign dst rv =>
+    cases rv with
+    | cast kind opnd castTy =>
+      cases kind with
+      | intToInt =>
+        change
+          (if dst.projection.isEmpty = true then
+            match mirListGet? body.locals dst.localId with
+            | some dstTy => mirTyBeq dstTy castTy
+            | none => true
+          else true) =
+          (if dst.projection.isEmpty = true then
+            match Trusted.MirSemantics.getElem? body.locals dst.localId with
+            | some dstTy => MirTy.beq dstTy castTy
+            | none => true
+          else true)
+        rw [mirListGet?_eq_getElem?]
+        cases dst.projection.isEmpty with
+        | false => rfl
+        | true =>
+          cases hGet :
+              Trusted.MirSemantics.getElem? body.locals dst.localId with
+          | none => rfl
+          | some dstTy =>
+            exact mirTyBeq_eq_of_supported dstTy castTy
+              (listAll_getElem? isSupportedScalarOrUnitTy body.locals
+                dst.localId dstTy hSup hGet)
+      | unsupported => rfl
+    | use _ | binaryOp _ _ _ | unaryOp _ _ | discriminant _ | ref _ _
+    | addressOf _ _ | aggregateTuple _ | unsupported => rfl
   | storageLive _ | storageDead _ | nop | unsupported => rfl
 
 /-- Exact kernel agreement between computable `mirBodyStaticAdmitted` and
@@ -2541,6 +2958,9 @@ theorem mirBodyStaticAdmitted_eq (p : Program) (body : Body) :
   rw [hStr, mirStorageAnnotationsInBounds_eq body,
       mirDiscriminantTypesValid_eq body,
       mirListAll_eq _ _ mirIsSupportedScalarOrUnitTy_eq body.locals]
+  cases hSup : body.locals.all isSupportedScalarOrUnitTy with
+  | false => rw [Bool.and_false, Bool.and_false]
+  | true => rw [mirCastTypesValid_eq body hSup]
 
 theorem mirFindDiscrVariantAux_eq (discrBits : BitVec 128) :
     ∀ (ds : List Nat) (idx : Nat),
@@ -2557,6 +2977,16 @@ theorem mirFindDiscrVariantAux_eq (discrBits : BitVec 128) :
 theorem mirFindDiscrVariant?_eq (discrBits : BitVec 128) (ds : List Nat) :
     mirFindDiscrVariant? discrBits ds = findDiscrVariant? discrBits ds :=
   mirFindDiscrVariantAux_eq discrBits ds 0
+
+theorem mirIsUnicodeScalar_eq (n : Nat) :
+    mirIsUnicodeScalar n = isUnicodeScalar n := rfl
+
+theorem mirOrderingTagBits_eq (ord : OrderingVal) :
+    mirOrderingTagBits ord = orderingTagBits ord := by
+  cases ord <;> rfl
+
+theorem mirOrderingOfTagBits_eq (bits : Nat) :
+    mirOrderingOfTagBits bits = orderingOfTagBits bits := rfl
 
 /-- Exact kernel agreement between computable `mirEvalConstLit` and
 `Trusted.MirSemantics.evalConstLit`. -/
@@ -2577,6 +3007,19 @@ theorem mirEvalConstLit_eq (ty : MirTy) (lit : ConstLit) :
     | zeroSized => rfl
   | unit =>
     cases lit <;> rfl
+  | char =>
+    cases lit with
+    | scalar bits =>
+      dsimp only [mirEvalConstLit, evalConstLit]
+      rw [mirTruncateBits_eq_truncateBits, mirIsUnicodeScalar_eq]
+    | zeroSized => rfl
+  | ordering =>
+    cases lit with
+    | scalar bits =>
+      dsimp only [mirEvalConstLit, evalConstLit]
+      rw [mirTruncateBits_eq_truncateBits, mirOrderingOfTagBits_eq]
+      rfl
+    | zeroSized => rfl
   | enum ety =>
     cases lit with
     | zeroSized =>
@@ -2637,7 +3080,8 @@ theorem mirEvalUnOpVal_eq (op : UnOp) (v : Val) :
       cases truncateScalar sv.width sv.signed (intNot (decodeScalar sv)) with
       | error _ => rfl
       | ok pair => cases pair; rfl
-    | ptr _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
+    | ptr _ | char _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ =>
+      rfl
   | neg =>
     cases v with
     | scalar sv =>
@@ -2650,7 +3094,8 @@ theorem mirEvalUnOpVal_eq (op : UnOp) (v : Val) :
         cases truncateScalar sv.width true (Neg.neg (decodeScalar sv)) with
         | error _ => rfl
         | ok pair => cases pair; rfl
-    | bool _ | ptr _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
+    | bool _ | ptr _ | char _ | ordering _ | unit | enumVal _ _ | tuple _
+    | bytes _ => rfl
   | ptrMetadata =>
     cases v <;> rfl
 
@@ -2677,7 +3122,7 @@ theorem mirEvalShiftOp_eq (op : BinOp) (w : IntWidth) (s : Bool) (l r : Int) :
   | add | addUnchecked | addWithOverflow | sub | subUnchecked
   | subWithOverflow | mul | mulUnchecked | mulWithOverflow | div | rem
   | bitXor | bitAnd | bitOr | shr | shrUnchecked | eq | lt | le | ne | ge | gt
-  | offset =>
+  | cmp | offset =>
     dsimp only
     rw [mirIntShiftRight_eq, mirTruncateScalar_eq]
     cases truncateScalar w s
@@ -2695,10 +3140,13 @@ theorem mirEvalArithOp_eq (op : BinOp) (w : IntWidth) (s : Bool) (l r : Int) :
       | .error _ => none := by
   have hUnch : mirBinOpIsUnchecked op = op.isUnchecked := by
     cases op <;> rfl
+  have hOvf : mirBinOpIsOverflowing op = op.isOverflowing := by
+    cases op <;> rfl
   unfold mirEvalArithOp evalArithOp
-  rw [mirSignedMinInt_eq w, hUnch]
+  rw [mirSignedMinInt_eq w, hUnch, hOvf]
   cases op with
-  | add | sub | mul | addUnchecked | subUnchecked | mulUnchecked =>
+  | add | sub | mul | addUnchecked | subUnchecked | mulUnchecked
+  | addWithOverflow | subWithOverflow | mulWithOverflow =>
     dsimp only
     cases (s && false && (l == signedMinInt w && r == Neg.neg 1)) with
     | true => rfl
@@ -2740,9 +3188,8 @@ theorem mirEvalArithOp_eq (op : BinOp) (w : IntWidth) (s : Bool) (l r : Int) :
           cases pair
           dsimp only
           cases (_ && _) <;> rfl
-  | addWithOverflow | subWithOverflow | mulWithOverflow
   | bitXor | bitAnd | bitOr | shl | shlUnchecked | shr | shrUnchecked
-  | eq | lt | le | ne | ge | gt | offset =>
+  | eq | lt | le | ne | ge | gt | cmp | offset =>
     dsimp only
     cases (false && r == 0) with
     | true => rfl
@@ -2774,7 +3221,7 @@ theorem mirEvalBinOpVal_eq (op : BinOp) (lhs rhs : Val) :
         | true => rfl
         | false =>
           cases op with
-          | eq | ne | lt | le | gt | ge => rfl
+          | eq | ne | lt | le | gt | ge | cmp => rfl
           | bitAnd | bitOr | bitXor =>
             dsimp only
             rw [mirTruncateBits_eq_truncateBits,
@@ -2782,18 +3229,57 @@ theorem mirEvalBinOpVal_eq (op : BinOp) (lhs rhs : Val) :
                 mirTruncateBits_eq_truncateBits]
             rfl
           | add | sub | mul | div | rem
-          | addUnchecked | subUnchecked | mulUnchecked =>
+          | addUnchecked | subUnchecked | mulUnchecked
+          | addWithOverflow | subWithOverflow | mulWithOverflow =>
             rw [mirEvalArithOp_eq]
             rfl
-          | addWithOverflow | subWithOverflow | mulWithOverflow
           | shl | shlUnchecked | shr | shrUnchecked | offset => rfl
-    | ptr _ | bool _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
+    | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _
+    | bytes _ => rfl
   | bool l =>
     cases rhs with
     | bool r =>
       cases op <;> rfl
-    | scalar _ | ptr _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
-  | ptr _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
+    | scalar _ | ptr _ | char _ | ordering _ | unit | enumVal _ _ | tuple _
+    | bytes _ => rfl
+  | char l =>
+    cases rhs with
+    | char r =>
+      cases op <;> rfl
+    | scalar _ | ptr _ | bool _ | ordering _ | unit | enumVal _ _ | tuple _
+    | bytes _ => rfl
+  | ptr _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
+
+theorem mirIntLikeBits_eq (v : Val) : mirIntLikeBits v = intLikeBits v := by
+  cases v with
+  | scalar sv =>
+    dsimp only [mirIntLikeBits, intLikeBits]
+    rw [mirBvOfInt_eq, mirDecodeScalar_eq, mirTruncateBits_eq_truncateBits]
+  | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _
+  | bytes _ => rfl
+
+/-- Success/failure agreement between computable `mirEvalIntToIntCast` and
+`Trusted.MirSemantics.evalIntToIntCast` (collapsing error fault kinds to
+`none`). -/
+theorem mirEvalIntToIntCast_eq (castTy : MirTy) (v : Val) :
+    mirEvalIntToIntCast castTy v =
+      match evalIntToIntCast v castTy with
+      | .ok res => some res
+      | .error _ => none := by
+  unfold mirEvalIntToIntCast evalIntToIntCast
+  rw [mirIntLikeBits_eq v]
+  cases intLikeBits v with
+  | none => rfl
+  | some bits =>
+    cases castTy with
+    | int w s =>
+      dsimp only
+      rw [mirTruncateBits_eq_truncateBits]
+    | char =>
+      dsimp only
+      cases Nat.ble bits 255 <;> rfl
+    | bool | unit | never | ordering | enum _ | tuple _ | ref _ _
+    | rawPtr _ _ | unsupported => rfl
 
 /-! ## Algorithmic Straight-Line MIR Lifter (`liftStraightLineMir`)
 
@@ -3024,8 +3510,9 @@ def liftMirOperand (bodyLocals : List MirTy) (numLocals scratch : Nat)
           caps)
       | .error .unsupported => none
 
-/-- Lift an `Rvalue` (including `Rvalue.discriminant` on admitted fieldless
-enums) so its evaluated result lands in `mirOp1Slot numLocals`. -/
+/-- Lift an `Rvalue` (including `Rvalue.cast` with `CastKind.intToInt` and
+`Rvalue.discriminant` on admitted fieldless enums and `core::cmp::Ordering`) so
+its evaluated result lands in `mirOp1Slot numLocals`. -/
 def liftMirRvalue (numLocals : Nat) (bodyLocals : List MirTy) (dstTy : MirTy)
     (caps : List SlotCapState) (rval : Rvalue) :
     Option (List (PrimAction Val) × List SlotCapState) :=
@@ -3061,6 +3548,18 @@ def liftMirRvalue (numLocals : Nat) (bodyLocals : List MirTy) (dstTy : MirTy)
           (.unary (mirEvalUnOpVal op) (.localSub (mirOp1Slot numLocals) []))
       some (opActs ++ [computeAct], caps1)
     | none => none
+  | .cast .intToInt opnd castTy =>
+    match liftMirOperand bodyLocals numLocals (mirOp1Slot numLocals) true caps
+        opnd with
+    | some (srcTy, opActs, caps1) =>
+      if !mirIsIntLikeTy srcTy then none
+      else
+        let computeAct : PrimAction Val :=
+          .assign (.localSub (mirOp1Slot numLocals) [])
+            (.unary (mirEvalIntToIntCast castTy)
+              (.localSub (mirOp1Slot numLocals) []))
+        some (opActs ++ [computeAct], caps1)
+    | none => none
   | .discriminant place =>
     if !place.projection.isEmpty then none
     else
@@ -3076,6 +3575,18 @@ def liftMirRvalue (numLocals : Nat) (bodyLocals : List MirTy) (dstTy : MirTy)
           let discrAct : PrimAction Val :=
             .assign (.localSub (mirOp1Slot numLocals) [])
               (.unary (mirEvalDiscrVal ety)
+                (.localSub (mirOp1Slot numLocals) []))
+          some ([readAct, discrAct], caps)
+      | some .ordering =>
+        if !mirTyBeq (.int .i8 true) dstTy then
+          none
+        else
+          let readAct : PrimAction Val :=
+            .assign (.localSub (mirOp1Slot numLocals) [])
+              (.use (.derefSub (mirInitCap numLocals place.localId) []))
+          let discrAct : PrimAction Val :=
+            .assign (.localSub (mirOp1Slot numLocals) [])
+              (.unary mirEvalOrderingDiscrVal
                 (.localSub (mirOp1Slot numLocals) []))
           some ([readAct, discrAct], caps)
       | _ => none

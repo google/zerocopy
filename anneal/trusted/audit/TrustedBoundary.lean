@@ -107,7 +107,7 @@ this file across six JSON IPC modes (`run` and `main`):
   `correspondence/`) directly on top of that replayed vendor kernel
   environment, checks that the 36-root `Miri.Interpreter.ExecutionMachine` cone
   and correspondence cone are free of `unsafe`, `partial`, `.vendorMiri`
-  `opaque`, and unapproved axioms, and verifies all 34 Pass 2 correspondence,
+  `opaque`, and unapproved axioms, and verifies all 37 Pass 2 correspondence,
   wiring, and canary claims plus reference-evaluator independence checks.
 - **`"target-audit"` (external target crate verification):**
   Loads compiled target `.olean` artifacts (`TargetOrigin`: `.foundation`,
@@ -1540,7 +1540,7 @@ def verifyAndCollectLocals (env : Environment)
 `.repo (.trusted _)` modules and `Anneal.MirWp` is loaded as a `.repo .theory`
 module (whenever `requireMirWp` is `true` or any MIR/`PureLift` module is
 loaded), and that the core weakest-precondition adequacy and
-fault-characterization theorems and all 20 non-vacuity and parameter-boundary
+fault-characterization theorems and all 25 non-vacuity and parameter-boundary
 canaries in `Anneal.MirWp` prove the exact `*Claim` propositions defined in
 `Trusted.MirSemantics`. -/
 def verifyMirWpCoreTheorems (env : Environment)
@@ -1628,7 +1628,39 @@ def verifyMirWpCoreTheorems (env : Environment)
           [posClaim, `Trusted.MirSemantics.initState,
             `Trusted.MirSemantics.evalStep,
             `Trusted.MirSemantics.forceAllocation,
-            `Trusted.MirSemantics.readBytes])] do
+            `Trusted.MirSemantics.readBytes]),
+        (`Trusted.MirSemantics.CanaryPositiveCharAndCmpAnnealClaim,
+          `Anneal.MirWp.canary_positive_char_and_cmp_anneal,
+          [posClaim, `Trusted.MirSemantics.mkBinOpProg,
+            `Trusted.MirAst.BinOp.cmp,
+            `Trusted.MirAst.MirTy.char,
+            `Trusted.MirSemantics.charVal,
+            `Trusted.MirSemantics.mkCmpDiscriminantProg,
+            `Trusted.MirSemantics.progCharSwitch]),
+        (`Trusted.MirSemantics.CanaryNegativeCharAndCmpAnnealClaim,
+          `Anneal.MirWp.canary_negative_char_and_cmp_anneal,
+          [negClaim, `Trusted.MirSemantics.progInvalidCharConstUb,
+            `Trusted.MirSemantics.progInvalidCharSwitchCaseUb,
+            `Trusted.MirSemantics.mkBinOpProg,
+            `Trusted.MirAst.BinOp.cmp,
+            `Trusted.MirSemantics.mkUnOpProg]),
+        (`Trusted.MirSemantics.CanaryPositiveOverflowOpsAnnealClaim,
+          `Anneal.MirWp.canary_positive_overflow_ops_anneal,
+          [posClaim, `Trusted.MirSemantics.mkBinOpProg,
+            `Trusted.MirSemantics.overflowPairTy,
+            `Trusted.MirAst.BinOp.addWithOverflow,
+            `Trusted.MirAst.BinOp.subWithOverflow,
+            `Trusted.MirAst.BinOp.mulWithOverflow]),
+        (`Trusted.MirSemantics.CanaryPositiveIntToIntCastAnnealClaim,
+          `Anneal.MirWp.canary_positive_int_to_int_cast_anneal,
+          [posClaim, `Trusted.MirSemantics.mkIntToIntCastProg,
+            `Trusted.MirAst.MirTy.char,
+            `Trusted.MirSemantics.charVal]),
+        (`Trusted.MirSemantics.CanaryNegativeIntToIntCastAnnealClaim,
+          `Anneal.MirWp.canary_negative_int_to_int_cast_anneal,
+          [negClaim, `Trusted.MirSemantics.mkIntToIntCastProg,
+            `Trusted.MirAst.MirTy.char,
+            `Trusted.MirSemantics.progCastUninitSourceUb])] do
       requireClaimProof env locals semMod wpMod claimName none proofName
         reqConsts
 
@@ -1948,14 +1980,16 @@ def requireCorrClaimProof (env : Environment)
   requireClaimProof env corrLocals `Trusted.Correspondence
     `Anneal.MirCorrespondenceProof claimName none proofName reqConsts
 
-/-- Verify that all 34 Pass 2 correspondence, choice-coupled, wiring,
-`AllowedStep` soundness, byte-codec, and canary (`D6`–`D13`) claims—covering
+/-- Verify that all 37 Pass 2 correspondence, choice-coupled, wiring,
+`AllowedStep` soundness, byte-codec, and canary (`D6`–`D16`) claims—covering
 aggregate and choice-coupled correspondence and fault equivalence,
 `ExecutionMachine.step` / `OperandMachine.evalOperand` /
 `LocalAccess.evalOperand` `deinitMovedPlace` wiring, `RefStep` soundness for
 `RefAllowedStep`, codec round-trip, constructor preservation, uniqueness,
 simulation, `Trusted.MirSemantics` byte encoding against `lean-miri`
-`Allocation` scalar accesses, and canaries—are present in
+`Allocation` scalar accesses, and canaries (including `char` comparison,
+`BinOp.cmp`, and `char` `switchInt` in `D14`, `CastKind.intToInt` in `D15`, and
+`BinOp.*WithOverflow` pairs in `D16`)—are present in
 `Trusted.Correspondence`, reference their required semantic definitions (so
 replacing any claim with `True` fails CI), and are proved with exact claim-type
 equality in `Anneal.MirCorrespondenceProof`. -/
@@ -2187,7 +2221,41 @@ def verifyCorrespondenceClaims (env : Environment)
          `Miri.Memory.Allocation.writeScalar,
          `Miri.Memory.Allocation.getBytesUnchecked,
          `Miri.Memory.Allocation.readScalar,
-         `Miri.Memory.Allocation.writeUninit])] do
+         `Miri.Memory.Allocation.writeUninit]),
+      (`Trusted.Correspondence.CanaryD14CharCmpAndSwitchOkClaim,
+       `Anneal.MirCorrespondenceProof.canary_D14_char_cmp_and_switch_ok,
+       [`Trusted.MirSemantics.mkBinOpProg,
+         `Trusted.MirAst.BinOp.cmp,
+         `Trusted.MirAst.MirTy.char,
+         `Trusted.MirSemantics.mkCmpDiscriminantProg,
+         `Trusted.MirSemantics.progCharSwitch,
+         `Trusted.MirSemantics.WellFormed,
+         `Trusted.MirSemantics.Behavior,
+         `Trusted.Correspondence.RefWellFormed,
+         `Trusted.Correspondence.RefBehavior,
+         `Trusted.Correspondence.encodeProg]),
+      (`Trusted.Correspondence.CanaryD15IntToIntCastClaim,
+       `Anneal.MirCorrespondenceProof.canary_D15_int_to_int_cast,
+       [`Trusted.MirSemantics.mkIntToIntCastProg,
+         `Trusted.MirAst.MirTy.char,
+         `Trusted.MirSemantics.WellFormed,
+         `Trusted.MirSemantics.Behavior,
+         `Trusted.MirSemantics.ReachesResult,
+         `Trusted.Correspondence.RefWellFormed,
+         `Trusted.Correspondence.RefBehavior,
+         `Trusted.Correspondence.RefReachesOutcome,
+         `Trusted.Correspondence.encodeProg]),
+      (`Trusted.Correspondence.CanaryD16WithOverflowOkClaim,
+       `Anneal.MirCorrespondenceProof.canary_D16_with_overflow_ok,
+       [`Trusted.MirSemantics.mkBinOpProg,
+         `Trusted.MirSemantics.overflowPairTy,
+         `Trusted.MirAst.BinOp.addWithOverflow,
+         `Trusted.MirAst.BinOp.subWithOverflow,
+         `Trusted.MirSemantics.WellFormed,
+         `Trusted.MirSemantics.Behavior,
+         `Trusted.Correspondence.RefWellFormed,
+         `Trusted.Correspondence.RefBehavior,
+         `Trusted.Correspondence.encodeProg])] do
     requireCorrClaimProof env corrLocals claimName proofName reqConsts
 
 /-- Return `true` when `modName` is an allowlisted `Trusted` module permitted in
@@ -2226,7 +2294,7 @@ def isAllowedRefEvalImportTrustedModule (modName : Name) : Bool :=
 
 /-- Verify that the reference machine `M_ref`
 (`Trusted.Correspondence.evalRefStep` and `Trusted.Correspondence.initRefState`)
-reaches all 34 required live `vendor/lean-miri` `ExecutionMachine` primitives
+reaches all 39 required live `vendor/lean-miri` `ExecutionMachine` primitives
 without relying on `RefAllowedStep`, that `Trusted.Correspondence.RefAllowedStep`
 separately reaches `Miri.Interpreter.ExecutionMachine.AllowedStep`, that every
 isolated `Trusted.Correspondence.*` evaluator submodule never directly or
@@ -2318,11 +2386,16 @@ def verifyRefEvaluatorIndependence (env : Environment)
       `Miri.Interpreter.IntegerOps.binary,
       `Miri.Interpreter.IntegerOps.binaryBool,
       `Miri.Interpreter.IntegerOps.unary,
+      `Miri.Interpreter.IntegerOps.binaryChar,
+      `Miri.Interpreter.Cast.cast,
+      `Miri.Interpreter.IntegerCast.cast,
       `Miri.Interpreter.Discriminant.readDiscriminant,
       `Miri.Interpreter.Discriminant.discriminantForVariant,
       `Miri.Memory.ScalarInt.truncateFromUInt,
       `Miri.Memory.ScalarInt.tryFromUInt,
-      `Miri.Memory.ScalarInt.tryToBool] do
+      `Miri.Memory.ScalarInt.tryToBool,
+      `Miri.Memory.ScalarInt.toChar,
+      `Miri.Memory.ScalarInt.ofChar] do
     unless refCone.contains reqMiri do
       fail (s!"reference evaluator cone is missing required Miri " ++
         s!"primitive {reqMiri}")
@@ -2465,7 +2538,7 @@ def replayCorrAndVendor (sysrootStr : String)
   return (miriReplayed, corrReplayed)
 
 /-- Verify the 36-root `Miri.Interpreter.ExecutionMachine` cone and—when
-Pass 2 correspondence modules are present—all 34 correspondence, choice-coupled,
+Pass 2 correspondence modules are present—all 37 correspondence, choice-coupled,
 wiring, `AllowedStep` soundness, byte-codec, and canary claims,
 reference-evaluator independence, and the correspondence dependency cone in a
 dedicated scope. -/
@@ -2490,7 +2563,7 @@ def verifyCorrConesAndClaims
 /-- Execute Phase 3 (`"correspondence-audit"`) on the Pass 2 correspondence
 and `lean-miri` closure environment.
 
-Pass 2 replays EVERY non-`isPartial` `.vendorMiri` declaration (38,718
+Pass 2 replays EVERY non-`isPartial` `.vendorMiri` declaration (38,728
 declarations across the 160 compiled closure modules) from scratch through the
 standalone Lean kernel onto the authenticated `.foundation` +
 `.sysrootFoundation` base on every run (cold build and warm cache hit alike),

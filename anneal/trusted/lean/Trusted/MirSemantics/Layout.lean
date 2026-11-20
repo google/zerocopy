@@ -105,16 +105,40 @@ noncomputable def intLayout (w : IntWidth) : LayoutData :=
   | .i64 | .isize => ⟨8, 3⟩
   | .i128 => ⟨16, 4⟩
 
+/-- Layout of the overflow pair `(T, bool)` for an integer `T` of width `w`
+(`.tuple [.int w s, .bool]`): the integer at offset `0`, the `bool` at offset
+`w.byteSize`, and padding up to the integer's alignment, so the size is
+`2 * w.byteSize` (`2`, `4`, `8`, `16`, or `32` bytes) and the alignment is the
+integer's.
+
+`rustc` lays out the pair as a `BackendRepr::ScalarPair` whose second scalar
+starts at the first scalar's size rounded up to the second scalar's alignment
+(`LayoutData::scalar_pair` in `compiler/rustc_abi/src/layout/simple.rs`,
+`rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`):
+
+> "let b_align = b.default_align(dl).abi;
+> let align = a.default_align(dl).abi.max(b_align).max(dl.aggregate_align);
+> let b_offset = a.size(dl).align_to(b_align);
+> let size = (b_offset + b.size(dl)).align_to(align);"
+
+A `bool` has alignment 1, so the `bool` starts at `w.byteSize` and the size
+rounds `w.byteSize + 1` up to the integer's (natural) alignment. -/
+noncomputable def overflowPairLayout (w : IntWidth) : LayoutData :=
+  ⟨2 * (intLayout w).size, (intLayout w).alignLog2⟩
+
 /-- Layout of a Day-1 local type, or `none` for a type outside the Day-1
 fragment.
 
 - `.bool`: one byte with alignment 1.
 - `.int w _`: `intLayout w`.
+- `.char`: four bytes with alignment 4, like `u32`.
+- `.ordering`: one byte with alignment 1, like its `#[repr(i8)]` tag.
 - `.unit`, `.never`, and 1-variant `.zeroSized` enums: zero bytes with
   alignment 1 (`()` and `!` are zero-sized with alignment 1, and a
   1-variant fieldless enum has `Variants::Single` with no tag).
 - `.scalar tagW _` enums: the layout of the tag integer (a fieldless enum with
   `TagEncoding::Direct` stores only its tag).
+- Overflow pairs `.tuple [.int w s, .bool]`: `overflowPairLayout w`.
 
 An enum that `enumAdmitted` rejects is outside the Day-1 fragment and has no
 layout, so every memory access at its type fails closed with `.unsupported`.
@@ -122,6 +146,8 @@ layout, so every memory access at its type fails closed with `.unsupported`.
 noncomputable def layoutOfTy : MirTy → Option LayoutData
   | .bool => some ⟨1, 0⟩
   | .int w _ => some (intLayout w)
+  | .char => some ⟨4, 2⟩
+  | .ordering => some ⟨1, 0⟩
   | .unit | .never => some ⟨0, 0⟩
   | .enum ety =>
     if !enumAdmitted ety then
@@ -130,6 +156,7 @@ noncomputable def layoutOfTy : MirTy → Option LayoutData
       match ety.tagRepr with
       | .zeroSized => some ⟨0, 0⟩
       | .scalar tagW _ => some (intLayout tagW)
+  | .tuple [.int w _, .bool] => some (overflowPairLayout w)
   | _ => none
 
 end Trusted.MirSemantics

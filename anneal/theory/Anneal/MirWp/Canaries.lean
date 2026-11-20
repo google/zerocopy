@@ -18,6 +18,7 @@ import Trusted.MirAst
 import Trusted.MirSemantics
 import Anneal.MirWp.Core
 import Anneal.MirWp.Scalars
+import Anneal.MirWp.Reflection
 
 namespace Anneal.MirWp
 
@@ -236,19 +237,8 @@ theorem canary_crate_and_body_verified_anneal_base :
               change (checkVal v .never && checkArgsMatch rest []) = true → _
               cases checkVal v .never <;> intro h <;>
                 first | rfl | exact Bool.noConfusion h
-            cases v with
-            | scalar sv =>
-              revert hCheck
-              dsimp [checkVal, Val.ty?, MirTy.beq]
-              cases sv.wf <;> intro h <;> exact Bool.noConfusion h
-            | ptr _ | bool _ | unit | tuple _ | bytes _ =>
-              exact Bool.noConfusion hCheck
-            | enumVal ety idx =>
-              revert hCheck
-              dsimp [checkVal, Val.ty?, MirTy.beq]
-              cases enumAdmitted ety <;>
-                cases Nat.blt idx ety.discriminants.length <;>
-                intro h <;> exact Bool.noConfusion h
+            rw [checkVal_never_false v] at hCheck
+            exact Bool.noConfusion hCheck
         | succ _ =>
           dsimp [canaryValidCrate, Trusted.MirSemantics.getElem?] at hGet
           cases hGet
@@ -339,5 +329,71 @@ theorem canary_memory_lifecycle_anneal_base :
    ⟨_, _, _, _, _, _, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩,
    ⟨_, _, _, _, _, rfl, rfl, rfl, rfl, rfl⟩,
    ⟨_, _, _, _, _, rfl, rfl, rfl, rfl, rfl⟩⟩
+
+/-- `char` and `BinOp.cmp` canary: `char` comparisons, `Cmp` on `char`, signed
+and unsigned integers, the discriminant of an `Ordering`, and `switchInt` on a
+`char`, all evaluated by the kernel. -/
+theorem canary_positive_char_and_cmp_anneal_base :
+    CanaryPositiveCharAndCmpAnnealClaim :=
+  ⟨positiveCanary_of_exec (fuel := 2) rfl,
+   positiveCanary_of_exec (fuel := 2) rfl,
+   positiveCanary_of_exec (fuel := 2) rfl,
+   positiveCanary_of_exec (fuel := 2) rfl,
+   positiveCanary_of_exec (fuel := 2) rfl,
+   positiveCanary_of_exec (fuel := 2) rfl,
+   positiveCanary_of_exec (fuel := 2) rfl,
+   positiveCanary_of_exec (fuel := 3) rfl,
+   positiveCanary_of_exec (fuel := 3) rfl,
+   positiveCanary_of_exec (fuel := 3) rfl⟩
+
+/-- Negative `char` and `BinOp.cmp` canary: an invalid `char` constant and an
+invalid `char` switch case are UB, while `Cmp` on `bool` and `Not` on `char`
+are unsupported. -/
+theorem canary_negative_char_and_cmp_anneal_base :
+    CanaryNegativeCharAndCmpAnnealClaim :=
+  ⟨negativeCanary_of_execFault (fuel := 1)
+     (fun h => FaultKind.noConfusion h) rfl,
+   negativeCanary_of_execFault (fuel := 1)
+     (fun h => FaultKind.noConfusion h) rfl,
+   negativeCanary_of_execFault (fuel := 1)
+     (fun h => FaultKind.noConfusion h) rfl,
+   negativeCanary_of_execFault (fuel := 1)
+     (fun h => FaultKind.noConfusion h) rfl⟩
+
+/-- Overflowing arithmetic canary (`BinOp.{add,sub,mul}WithOverflow`) across
+unsigned, signed, and 128-bit operands. -/
+theorem canary_positive_overflow_ops_anneal_base :
+    CanaryPositiveOverflowOpsAnnealClaim :=
+  ⟨positiveCanary_of_exec (fuel := 2) rfl,
+   positiveCanary_of_exec (fuel := 2) rfl,
+   positiveCanary_of_exec (fuel := 2) rfl,
+   positiveCanary_of_exec (fuel := 2) rfl,
+   positiveCanary_of_exec (fuel := 2) rfl,
+   positiveCanary_of_exec (fuel := 2) rfl⟩
+
+/-- `CastKind.intToInt` canary: sign extension, zero extension, truncation, and
+`bool`, `char`, and `u8`-to-`char` conversions. -/
+theorem canary_positive_int_to_int_cast_anneal_base :
+    CanaryPositiveIntToIntCastAnnealClaim :=
+  ⟨positiveCanary_of_exec (fuel := 2) rfl,
+   positiveCanary_of_exec (fuel := 2) rfl,
+   positiveCanary_of_exec (fuel := 2) rfl,
+   positiveCanary_of_exec (fuel := 2) rfl,
+   positiveCanary_of_exec (fuel := 2) rfl,
+   positiveCanary_of_exec (fuel := 2) rfl,
+   positiveCanary_of_exec (fuel := 2) rfl⟩
+
+/-- Negative `CastKind.intToInt` canary: non-`u8` values to `char` and casts to
+`bool` are unsupported, and casting an uninitialized local is UB. -/
+theorem canary_negative_int_to_int_cast_anneal_base :
+    CanaryNegativeIntToIntCastAnnealClaim :=
+  ⟨negativeCanary_of_execFault (fuel := 1)
+     (fun h => FaultKind.noConfusion h) rfl,
+   negativeCanary_of_execFault (fuel := 1)
+     (fun h => FaultKind.noConfusion h) rfl,
+   negativeCanary_of_execFault (fuel := 1)
+     (fun h => FaultKind.noConfusion h) rfl,
+   negativeCanary_of_execFault (fuel := 2)
+     (fun h => FaultKind.noConfusion h) rfl⟩
 
 end Anneal.MirWp

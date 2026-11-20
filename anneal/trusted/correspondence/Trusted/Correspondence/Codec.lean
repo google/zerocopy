@@ -57,6 +57,7 @@ inductive RefRvalue where
   | use (op : RefOperand)
   | binaryOp (op : BinOp) (lhs rhs : RefOperand)
   | unaryOp (op : UnOp) (opnd : RefOperand)
+  | cast (kind : CastKind) (opnd : RefOperand) (ty : TyId)
   | discriminant (place : RefPlace)
   | ref (mutability : Mutability) (place : RefPlace)
   | addressOf (mutability : Mutability) (place : RefPlace)
@@ -168,6 +169,8 @@ mutual
     | .int w s => insertTy (.int w s) acc
     | .unit => insertTy .unit acc
     | .never => insertTy .never acc
+    | .char => insertTy .char acc
+    | .ordering => insertTy .ordering acc
     | .enum ety => insertTy (.enum ety) acc
     | .unsupported => insertTy .unsupported acc
     | .ref m p => insertTy (.ref m p) (collectTy acc p)
@@ -221,6 +224,7 @@ noncomputable def collectRvalue (acc : List MirTy) : Rvalue → List MirTy
   | .use op => collectOperand acc op
   | .binaryOp _ l r => collectOperand (collectOperand acc l) r
   | .unaryOp _ op => collectOperand acc op
+  | .cast _ op ty => collectTy (collectOperand acc op) ty
   | .discriminant p | .ref _ p | .addressOf _ p => collectPlace acc p
   | .aggregateTuple ops => ops.foldl collectOperand acc
   | .unsupported => acc
@@ -275,6 +279,7 @@ noncomputable def encodeRvalue (ts : List MirTy) : Rvalue → RefRvalue
   | .use op => .use (encodeOperand ts op)
   | .binaryOp op l r => .binaryOp op (encodeOperand ts l) (encodeOperand ts r)
   | .unaryOp op opnd => .unaryOp op (encodeOperand ts opnd)
+  | .cast k opnd ty => .cast k (encodeOperand ts opnd) (lookupTyId ts ty)
   | .discriminant p => .discriminant (encodePlace ts p)
   | .ref m p => .ref m (encodePlace ts p)
   | .addressOf m p => .addressOf m (encodePlace ts p)
@@ -349,6 +354,9 @@ noncomputable def decodeRvalue (ts : List MirTy) : RefRvalue → Option Rvalue
   | .binaryOp op l r =>
     optMap2 (Rvalue.binaryOp op) (decodeOperand ts l) (decodeOperand ts r)
   | .unaryOp op opnd => optMap (Rvalue.unaryOp op) (decodeOperand ts opnd)
+  | .cast k opnd tyId =>
+    optMap2 (Rvalue.cast k) (decodeOperand ts opnd)
+      (MirSemantics.getElem? ts tyId)
   | .discriminant p => optMap Rvalue.discriminant (decodePlace ts p)
   | .ref m p => optMap (Rvalue.ref m) (decodePlace ts p)
   | .addressOf m p => optMap (Rvalue.addressOf m) (decodePlace ts p)

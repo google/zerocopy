@@ -270,7 +270,8 @@ theorem initRefState_sim_base : InitRefStateSimClaim := by
           dsimp only
           rw [mapOption_isEmpty h_bbs_dec, h_arg,
             refStorageAnnotationsInBounds_eq h_rb_dec,
-            refDiscriminantTypesValid_eq h_rb_dec]
+            refDiscriminantTypesValid_eq h_rb_dec,
+            refCastTypesValid_eq h_rb_dec]
           cases body.basicBlocks.isEmpty
           · cases h_blt : Nat.blt body.argumentCount body.locals.length
             · refine ⟨?_, fun s₀ hs₀ => by cases hs₀⟩
@@ -281,38 +282,45 @@ theorem initRefState_sim_base : InitRefStateSimClaim := by
               · cases h_dv : discriminantTypesValid body
                 · refine ⟨?_, fun s₀ hs₀ => by cases hs₀⟩
                   intro k hk; injection hk with hk_eq; rw [← hk_eq]; rfl
-                · rw [list_all_congr_eq body.locals _ _ refIsSupportedLocalTy_eq]
-                  cases h_supp : body.locals.all isSupportedScalarOrUnitTy
+                · cases h_cv : castTypesValid body
                   · refine ⟨?_, fun s₀ hs₀ => by cases hs₀⟩
                     intro k hk; injection hk with hk_eq; rw [← hk_eq]; rfl
-                  · rw [checkRefArgsMatch_eq]
-                    cases h_args : checkArgsMatch q.args
-                        ((body.locals.drop 1).take body.argumentCount)
+                  · rw [list_all_congr_eq body.locals _ _
+                      refIsSupportedLocalTy_eq]
+                    cases h_supp : body.locals.all isSupportedScalarOrUnitTy
                     · refine ⟨?_, fun s₀ hs₀ => by cases hs₀⟩
                       intro k hk; injection hk with hk_eq; rw [← hk_eq]; rfl
-                    · let ⟨retTy, h_ret⟩ := getElem?_zero_of_blt h_blt
-                      let ⟨mem, retPlace, h_init_mem⟩ :=
-                        refInitMemoryAndRetPlace_ok rp.types retTy
-                      rw [h_ret]
-                      dsimp only
-                      rw [h_init_mem]
-                      dsimp only
-                      refine ⟨?_, ?_⟩
-                      · intro k hk; cases hk
-                      · intro s₀ hs₀
-                        injection hs₀ with h_s₀
-                        subst h_s₀
-                        rw [initRefLocalsLoop_eq h_rb_dec q.args 0 body.locals]
-                        have h_entry_ret : entryRetTy? p = some retTy := by
-                          dsimp only [entryRetTy?]
-                          rw [h_b]
-                          exact h_ret
-                        refine ⟨_, rfl, ?_, rfl, rfl⟩
-                        exact ⟨_, _, retTy, mem, refInitControl, h_dec, rfl, rfl,
-                          rfl, h_entry_ret, rfl, h_init_mem, refControlValid_init, rfl,
-                          body, rbody, h_b, h_rb_get, h_rb_dec, h_blt, h_sa, h_dv,
-                          h_supp, initLocalsLoop_slotsMatchTys body q.args h_args,
-                          fun _ _ => Nat.zero_le _, rfl⟩
+                    · rw [checkRefArgsMatch_eq]
+                      cases h_args : checkArgsMatch q.args
+                          ((body.locals.drop 1).take body.argumentCount)
+                      · refine ⟨?_, fun s₀ hs₀ => by cases hs₀⟩
+                        intro k hk; injection hk with hk_eq; rw [← hk_eq]; rfl
+                      · let ⟨retTy, h_ret⟩ := getElem?_zero_of_blt h_blt
+                        let ⟨mem, retPlace, h_init_mem⟩ :=
+                          refInitMemoryAndRetPlace_ok rp.types retTy
+                        rw [h_ret]
+                        dsimp only
+                        rw [h_init_mem]
+                        dsimp only
+                        refine ⟨?_, ?_⟩
+                        · intro k hk; cases hk
+                        · intro s₀ hs₀
+                          injection hs₀ with h_s₀
+                          subst h_s₀
+                          rw [initRefLocalsLoop_eq h_rb_dec q.args 0
+                            body.locals]
+                          have h_entry_ret : entryRetTy? p = some retTy := by
+                            dsimp only [entryRetTy?]
+                            rw [h_b]
+                            exact h_ret
+                          refine ⟨_, rfl, ?_, rfl, rfl⟩
+                          exact ⟨_, _, retTy, mem, refInitControl, h_dec,
+                            rfl, rfl, rfl, h_entry_ret, rfl, h_init_mem,
+                            refControlValid_init, rfl, body, rbody, h_b,
+                            h_rb_get, h_rb_dec, h_blt, h_sa, h_dv, h_cv,
+                            h_supp,
+                            initLocalsLoop_slotsMatchTys body q.args h_args,
+                            fun _ _ => Nat.zero_le _, rfl⟩
           · refine ⟨?_, fun s₀ hs₀ => by cases hs₀⟩
             intro k hk; injection hk with hk_eq; rw [← hk_eq]; rfl
 
@@ -355,7 +363,7 @@ theorem sim_of_refStep_at_choice {rp : RefProg} {p : Program} {s : State}
       SimulationInv rp p s' rs' := by
   let ⟨f, rf, retTy, mem, ctrl, _, hs, hm, hdef, hert, hrty, hinit, hctrl,
     hmiri, hframe⟩ := h_sim
-  let ⟨body, rbody, hbody, hrbody, hbdec, harg, hsa, hdv, hsupp, hinv, hpc,
+  let ⟨body, rbody, hbody, hrbody, hbdec, harg, hsa, hdv, hcv, hsupp, hinv, hpc,
     hrf⟩ := hframe
   cases h_lt : Nat.blt rs.stepsExecuted rs.maxSteps with
   | false =>
@@ -391,7 +399,7 @@ theorem sim_of_refStep_at_choice {rp : RefProg} {p : Program} {s : State}
           (liftLocals rp.types body.locals f₁.locals) rs.retPlace,
         retTy, mem, nextRefControlForStep body f rs.miri.machine.user.control,
         h_dec, ?_, ?_, hdef₁.trans hdef, hert, hrty, hinit, hctrl', ?_,
-        body, rbody, hbody₁, hrbody₁, hbdec, harg, hsa, hdv, hsupp, hinv₁,
+        body, rbody, hbody₁, hrbody₁, hbdec, harg, hsa, hdv, hcv, hsupp, hinv₁,
         hpc₁, rfl⟩
       · rw [hs₁]
       · rw [hs₁]; exact hm
@@ -452,7 +460,7 @@ theorem refStep_of_step_at_choice {rp : RefProg} {p : Program} {s s' : State}
       rs'.maxSteps = rs.maxSteps := by
   let ⟨f, rf, retTy, mem, ctrl, _, hs, hm, hdef, hert, hrty, hinit, hctrl,
     hmiri, hframe⟩ := h_sim
-  let ⟨body, rbody, hbody, hrbody, hbdec, harg, hsa, hdv, hsupp, hinv, hpc,
+  let ⟨body, rbody, hbody, hrbody, hbdec, harg, hsa, hdv, hcv, hsupp, hinv, hpc,
     hrf⟩ := hframe
   have h_ref_eq := evalRefStep_eq_base h_dec h_sim hs hbody hrbody h_lt c
   let ⟨f', hs', hdef', hinv', hpc'⟩ := evalStep_step_inv hs hbody hinv h_es
@@ -477,7 +485,7 @@ theorem refStep_of_step_at_choice {rp : RefProg} {p : Program} {s s' : State}
   rw [hs']
   refine ⟨f', rf', retTy, mem, ctrl', h_dec, rfl, hm, hdef'.trans hdef, hert,
     hrty, hinit, hctrl', ?_, body, rbody, hbody', hrbody', hbdec, harg, hsa,
-    hdv, hsupp, hinv', hpc', rfl⟩
+    hdv, hcv, hsupp, hinv', hpc', rfl⟩
   dsimp only [rs']
   rw [hmem]
 
@@ -618,7 +626,7 @@ theorem refWellFormed_of_wellFormed_base : RefWellFormedOfWellFormedClaim := by
     let ⟨rs, h_rreach, c, hc, h_reval⟩ := h_ub
     let ⟨s, h_reach, h_sim⟩ := sim_of_refReaches_base h_dec h_sim₀ h_rreach
     let ⟨f, _, _, _, _, _, hs, _, _, _, _, _, _, _, hframe⟩ := h_sim
-    let ⟨body, rbody, hbody, hrbody, _, _, _, _, _, hinv, _, _⟩ := hframe
+    let ⟨body, rbody, hbody, hrbody, _, _, _, _, _, _, hinv, _, _⟩ := hframe
     cases h_lt : Nat.blt rs.stepsExecuted rs.maxSteps with
     | false =>
       unfold evalRefStep at h_reval
@@ -649,7 +657,7 @@ theorem refWellFormed_of_wellFormed_base : RefWellFormedOfWellFormedClaim := by
     let ⟨rs, h_rreach, c, hc, h_reval⟩ := h_blk
     let ⟨s, h_reach, h_sim⟩ := sim_of_refReaches_base h_dec h_sim₀ h_rreach
     let ⟨f, _, _, _, _, _, hs, _, _, _, _, _, _, _, hframe⟩ := h_sim
-    let ⟨body, rbody, hbody, hrbody, _, _, _, _, _, hinv, _, _⟩ := hframe
+    let ⟨body, rbody, hbody, hrbody, _, _, _, _, _, _, hinv, _, _⟩ := hframe
     cases h_lt : Nat.blt rs.stepsExecuted rs.maxSteps with
     | false =>
       unfold evalRefStep at h_reval
@@ -730,7 +738,7 @@ theorem behavior_of_refBehavior_base : BehaviorOfRefBehaviorClaim := by
     let ⟨rs, h_rreach, c, hc, h_reval⟩ := h_out
     let ⟨s, h_reach, h_sim⟩ := sim_of_refReaches_base h_dec h_sim₀ h_rreach
     let ⟨f, _, _, _, _, _, hs, _, _, _, _, _, _, _, hframe⟩ := h_sim
-    let ⟨body, rbody, hbody, hrbody, _, _, _, _, _, hinv, _, _⟩ := hframe
+    let ⟨body, rbody, hbody, hrbody, _, _, _, _, _, _, hinv, _, _⟩ := hframe
     cases h_lt : Nat.blt rs.stepsExecuted rs.maxSteps with
     | false =>
       unfold evalRefStep at h_reval
@@ -874,8 +882,8 @@ theorem diverges_iff_refDiverges_base : DivergesIffRefDivergesClaim := by
         let ⟨c, hc, h_es⟩ := h_step m
         let ⟨f, rf, retTy, mem, ctrl, _, hs, hm, hdef, hert, hrty, hinit, hctrl,
           hmiri, hframe⟩ := ih
-        let ⟨body, rbody, hbody, hrbody, hbdec, harg, hsa, hdv, hsupp, hinv,
-          hpc, hrf⟩ := hframe
+        let ⟨body, rbody, hbody, hrbody, hbdec, harg, hsa, hdv, hcv, hsupp,
+          hinv, hpc, hrf⟩ := hframe
         let ⟨f', hs', hdef', hinv', hpc'⟩ := evalStep_step_inv hs hbody hinv h_es
         have h_next : rtrace (m + 1) =
             { rtrace m with
@@ -903,8 +911,8 @@ theorem diverges_iff_refDiverges_base : DivergesIffRefDivergesClaim := by
           congrArg State.frames hs', (congrArg State.mem hs').trans hm,
           hdef'.trans hdef, hert, hrty, hinit,
           refControlValid_nextRefControlForStep hctrl, by rw [hs'],
-          body, rbody, hbody', hrbody', hbdec, harg, hsa, hdv, hsupp, hinv',
-          hpc', rfl⟩
+          body, rbody, hbody', hrbody', hbdec, harg, hsa, hdv, hcv, hsupp,
+          hinv', hpc', rfl⟩
     refine ⟨rs₀, h_rinit, rtrace, rfl, ?_⟩
     intro n
     have h_sim_n := simulationInv_with_counters n (n + 1) (h_inv_step n)
@@ -913,7 +921,7 @@ theorem diverges_iff_refDiverges_base : DivergesIffRefDivergesClaim := by
     let ⟨c, hc, h_es⟩ := h_step n
     let ⟨f, rf, retTy, mem, ctrl, _, hs, hm, hdef, hert, hrty, hinit, hctrl,
       hmiri, hframe⟩ := h_inv_step n
-    let ⟨body, rbody, hbody, hrbody, _, _, _, _, _, hinv, _, _⟩ := hframe
+    let ⟨body, rbody, hbody, hrbody, _, _, _, _, _, _, hinv, _, _⟩ := hframe
     let ⟨f', hs', _, _, _⟩ := evalStep_step_inv hs hbody hinv h_es
     have h_ref_eq := evalRefStep_eq_base h_dec h_sim_n hs hbody hrbody h_lt c
     rw [h_es, hs'] at h_ref_eq
@@ -1021,7 +1029,7 @@ theorem reachesResult_fault_iff_refReachesOutcome :
       let ⟨rs, h_rreach, c, hc, h_reval⟩ := h_ref
       let ⟨s, h_reach, h_sim⟩ := sim_of_refReaches_base h_dec h_sim₀ h_rreach
       let ⟨f, _, _, _, _, _, hs, _, _, _, _, _, _, _, hframe⟩ := h_sim
-      let ⟨body, rbody, hbody, hrbody, _, _, _, _, _, hinv, _, _⟩ := hframe
+      let ⟨body, rbody, hbody, hrbody, _, _, _, _, _, _, hinv, _, _⟩ := hframe
       cases h_lt : Nat.blt rs.stepsExecuted rs.maxSteps with
       | false =>
         unfold evalRefStep at h_reval
@@ -1084,7 +1092,7 @@ theorem correspondence_at_choices_claim_holds_base :
       let ⟨prefixChoices, c, rs, h_ceq, h_rreach, hc, h_reval⟩ := h_out
       let ⟨s, h_reach, h_sim⟩ := sim_of_refReachesAtChoices h_dec h_sim₀ h_rreach
       let ⟨f, _, _, _, _, _, hs, _, _, _, _, _, _, _, hframe⟩ := h_sim
-      let ⟨body, rbody, hbody, hrbody, _, _, _, _, _, hinv, _, _⟩ := hframe
+      let ⟨body, rbody, hbody, hrbody, _, _, _, _, _, _, hinv, _, _⟩ := hframe
       cases h_lt : Nat.blt rs.stepsExecuted rs.maxSteps with
       | false =>
         unfold evalRefStep at h_reval
@@ -1171,7 +1179,7 @@ theorem fault_equivalence_at_choices_claim_holds_base :
       let ⟨prefixChoices, c, rs, h_ceq, h_rreach, hc, h_reval⟩ := h_ref
       let ⟨s, h_reach, h_sim⟩ := sim_of_refReachesAtChoices h_dec h_sim₀ h_rreach
       let ⟨f, _, _, _, _, _, hs, _, _, _, _, _, _, _, hframe⟩ := h_sim
-      let ⟨body, rbody, hbody, hrbody, _, _, _, _, _, hinv, _, _⟩ := hframe
+      let ⟨body, rbody, hbody, hrbody, _, _, _, _, _, _, hinv, _, _⟩ := hframe
       cases h_lt : Nat.blt rs.stepsExecuted rs.maxSteps with
       | false =>
         unfold evalRefStep at h_reval
