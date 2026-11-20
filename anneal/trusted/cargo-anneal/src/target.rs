@@ -24,10 +24,10 @@ use serde_json::json;
 
 use crate::stage::Checker;
 use crate::toolchain::{
-    AdmittedToolchain, Failure, ImportEdge, Json, PreflightResult,
+    AdmittedToolchain, Failure, ImportEdge, Json, PreflightResult, TOOLCHAIN,
     compute_unpinned_foundation_closure, hash_unpinned_sysroot_module,
-    is_allowed_unpinned_sysroot_module, is_lean_ident, is_sha256_hex, sha256_file,
-    stage_regular_file, topo_sort_modules, verify_installed_module_record,
+    is_allowed_unpinned_sysroot_module, is_lean_ident, is_sha256_hex, sha256_bytes, sha256_file,
+    sha256_file_deref, stage_regular_file, topo_sort_modules, verify_installed_module_record,
 };
 
 /// The authority of a source module in a target verification request.
@@ -669,9 +669,68 @@ impl Checker {
                 .map_err(|e| Failure::operational("target-audit", e.to_string()))?,
         );
         obj.insert("sources".into(), json!(provenance));
-        obj.insert("toolchain".into(), json!(self.admitted()?.version));
+        let adm = self.admitted()?;
+        obj.insert("toolchain".into(), json!(adm.version));
+        if adm.unpinned {
+            let current_lean_sha = sha256_file_deref(self.lean_path(), "target-provenance")
+                .map_err(|e| Failure::operational("target-provenance", e.message))?;
+            let Some(admitted_lean_sha) = adm.lean_binary_sha256.as_deref() else {
+                return Err(Failure::operational(
+                    "target-provenance",
+                    "missing admitted unpinned Lean binary digest",
+                ));
+            };
+            if !current_lean_sha.eq_ignore_ascii_case(admitted_lean_sha) {
+                return Err(Failure::operational(
+                    "target-provenance",
+                    "unpinned Lean executable changed during run",
+                ));
+            }
+            let sysroot_modules_sha256 = unpinned_sysroot_modules_sha256(adm)?;
+            obj.insert(
+                "unpinnedLean".into(),
+                json!({
+                    "expectedToolchain": TOOLCHAIN,
+                    "observedVersion": adm.version,
+                    "leanBinarySha256": admitted_lean_sha,
+                    "foundationModules": adm.foundation_modules(),
+                    "sysrootModulesSha256": sysroot_modules_sha256,
+                    "admittedSysrootModuleCount": adm.unpinned_records.len(),
+                }),
+            );
+        }
         Ok(report)
     }
+}
+
+fn unpinned_sysroot_modules_sha256(adm: &AdmittedToolchain) -> Result<String, Failure> {
+    #[derive(Serialize)]
+    #[serde(rename_all = "camelCase")]
+    struct ModuleRecord<'a> {
+        module: &'a str,
+        parts: BTreeMap<&'a str, &'a str>,
+        source_sha256: Option<&'a str>,
+    }
+
+    let entries: Vec<ModuleRecord<'_>> = adm
+        .unpinned_records
+        .iter()
+        .map(|(module, rec)| {
+            let parts = rec
+                .part_hashes
+                .iter()
+                .map(|(part, sha)| (part.as_str(), sha.as_str()))
+                .collect();
+            ModuleRecord {
+                module: module.as_str(),
+                parts,
+                source_sha256: rec.source_sha256.as_deref(),
+            }
+        })
+        .collect();
+    let bytes = serde_json::to_vec(&entries)
+        .map_err(|e| Failure::operational("target-provenance", e.to_string()))?;
+    Ok(sha256_bytes(&bytes))
 }
 
 fn hash_admitted_module_artifacts(

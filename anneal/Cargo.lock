@@ -115,6 +115,7 @@ version = "0.1.0-alpha.1"
 dependencies = [
  "clap",
  "exocrate",
+ "libc",
  "serde",
  "serde_json",
  "sha2",

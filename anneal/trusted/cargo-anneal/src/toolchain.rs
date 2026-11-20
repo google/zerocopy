@@ -12,8 +12,10 @@
 use std::collections::{BTreeMap, BTreeSet};
 use std::ffi::OsStr;
 use std::fmt::Write as _;
-use std::fs;
-use std::io;
+use std::fs::{self, OpenOptions};
+use std::io::{self, Read as _};
+#[cfg(unix)]
+use std::os::unix::fs::OpenOptionsExt as _;
 use std::path::{Component, Path, PathBuf};
 
 use serde::{Deserialize, Serialize};
@@ -323,6 +325,9 @@ pub struct AdmittedToolchain {
     /// Records the admitted sysroot source and binary part digests in unpinned
     /// mode so `target-provenance` can detect mid-run sysroot mutation.
     pub(crate) unpinned_records: BTreeMap<String, UnpinnedSysrootArtifacts>,
+    /// Records the SHA-256 digest of the unpinned Lean binary at admission so
+    /// `target-provenance` can detect mid-run binary replacement.
+    pub lean_binary_sha256: Option<String>,
 }
 
 impl AdmittedToolchain {
@@ -540,9 +545,15 @@ pub(crate) struct UnpinnedSysrootArtifacts {
     pub part_hashes: Vec<(String, String)>,
 }
 
-/// Hash a file, dereferencing symlinks (for sysroot libraries/sources).
-pub(crate) fn sha256_file_deref(path: &Path, phase: &str) -> Result<String, Failure> {
-    let meta = fs::metadata(path).map_err(|e| {
+fn open_regular_nofollow_nonblock(path: &Path, phase: &str) -> Result<fs::File, Failure> {
+    let mut opts = OpenOptions::new();
+    opts.read(true);
+    #[cfg(unix)]
+    opts.custom_flags(libc::O_NOFOLLOW | libc::O_NONBLOCK);
+    let file = opts
+        .open(path)
+        .map_err(|e| Failure::operational(phase, format!("cannot read {}: {e}", path.display())))?;
+    let meta = file.metadata().map_err(|e| {
         Failure::operational(phase, format!("cannot inspect {}: {e}", path.display()))
     })?;
     if !meta.is_file() {
@@ -551,9 +562,73 @@ pub(crate) fn sha256_file_deref(path: &Path, phase: &str) -> Result<String, Fail
             format!("expected a regular file: {}", path.display()),
         ));
     }
-    let bytes = fs::read(path)
+    Ok(file)
+}
+
+/// Read and SHA-256 hash a regular file, dereferencing symlinks while guarding
+/// against non-regular targets (FIFOs, sockets, devices) and TOCTOU swaps.
+pub fn read_regular_file_deref(path: &Path, phase: &str) -> Result<(Vec<u8>, String), Failure> {
+    let canon = fs::canonicalize(path).map_err(|e| {
+        Failure::operational(phase, format!("cannot inspect {}: {e}", path.display()))
+    })?;
+    let pre_meta = fs::metadata(&canon).map_err(|e| {
+        Failure::operational(phase, format!("cannot inspect {}: {e}", path.display()))
+    })?;
+    if !pre_meta.is_file() {
+        return Err(Failure::policy(
+            phase,
+            format!("expected a regular file: {}", path.display()),
+        ));
+    }
+    let mut file = open_regular_nofollow_nonblock(&canon, phase)?;
+    let mut bytes = Vec::new();
+    file.read_to_end(&mut bytes)
         .map_err(|e| Failure::operational(phase, format!("cannot read {}: {e}", path.display())))?;
-    Ok(sha256_bytes(&bytes))
+    let after = fs::canonicalize(path).map_err(|e| {
+        Failure::operational(phase, format!("cannot inspect {}: {e}", path.display()))
+    })?;
+    if after != canon {
+        return Err(Failure::operational(
+            phase,
+            format!("path changed during read: {}", path.display()),
+        ));
+    }
+    let sha = sha256_bytes(&bytes);
+    Ok((bytes, sha))
+}
+
+/// Read and SHA-256 hash a regular file while rejecting symlinks and
+/// non-regular files, verifying the open fd and post-read canonical path.
+pub fn read_regular_file_strict(
+    path: &Path,
+    expected_canon: Option<&Path>,
+    phase: &str,
+) -> Result<(Vec<u8>, String), Failure> {
+    regular(path, phase)?;
+    let mut file = open_regular_nofollow_nonblock(path, phase)?;
+    let mut bytes = Vec::new();
+    file.read_to_end(&mut bytes)
+        .map_err(|e| Failure::operational(phase, format!("cannot read {}: {e}", path.display())))?;
+    regular(path, phase)?;
+    if let Some(expected) = expected_canon {
+        let canon = fs::canonicalize(path).map_err(|e| {
+            Failure::operational(phase, format!("cannot inspect {}: {e}", path.display()))
+        })?;
+        if canon != expected {
+            return Err(Failure::policy(
+                phase,
+                format!("expected a regular file: {}", path.display()),
+            ));
+        }
+    }
+    let sha = sha256_bytes(&bytes);
+    Ok((bytes, sha))
+}
+
+/// Hash a file, dereferencing symlinks (for sysroot libraries/sources and tool
+/// binaries).
+pub fn sha256_file_deref(path: &Path, phase: &str) -> Result<String, Failure> {
+    read_regular_file_deref(path, phase).map(|(_, sha)| sha)
 }
 
 fn hash_optional_file_deref(path: &Path, phase: &str) -> Result<Option<String>, Failure> {
@@ -739,18 +814,13 @@ pub fn sha256_bytes(data: &[u8]) -> String {
 /// Verify that `path` is a regular file and return its lowercase hex SHA-256
 /// digest.
 pub fn sha256_file(path: &Path, phase: &str) -> Result<String, Failure> {
-    regular(path, phase)?;
-    let bytes = fs::read(path)
-        .map_err(|e| Failure::new(2, phase, format!("cannot read {}: {e}", path.display())))?;
-    Ok(sha256_bytes(&bytes))
+    read_regular_file_strict(path, None, phase).map(|(_, sha)| sha)
 }
 
 /// Copy a regular source file `src` to `dst`, creating parent directories as
 /// needed, and return the SHA-256 digest of the copied bytes.
 pub fn stage_regular_file(src: &Path, dst: &Path, phase: &str) -> Result<String, Failure> {
-    regular(src, phase)?;
-    let bytes = fs::read(src)
-        .map_err(|e| Failure::new(2, phase, format!("cannot read {}: {e}", src.display())))?;
+    let (bytes, sha) = read_regular_file_strict(src, None, phase)?;
     if let Some(parent) = dst.parent() {
         fs::create_dir_all(parent).map_err(|e| {
             Failure::new(2, phase, format!("cannot create {}: {e}", parent.display()))
@@ -758,7 +828,7 @@ pub fn stage_regular_file(src: &Path, dst: &Path, phase: &str) -> Result<String,
     }
     fs::write(dst, &bytes)
         .map_err(|e| Failure::new(2, phase, format!("cannot write {}: {e}", dst.display())))?;
-    Ok(sha256_bytes(&bytes))
+    Ok(sha)
 }
 
 /// Return `true` if `s` is a 64-character ASCII hex digest.
@@ -1349,5 +1419,37 @@ mod unpinned_sysroot_tests {
                 "D".to_string(),
             ])
         );
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn safe_regular_file_primitives_reject_fifos_without_blocking() {
+        use std::os::unix::fs::symlink;
+        use std::process::Command;
+
+        let dir = tempfile::tempdir().unwrap();
+        let fifo = dir.path().join("pipe");
+        let status = Command::new("mkfifo").arg(&fifo).status().unwrap();
+        assert!(status.success());
+
+        let fifo_link = dir.path().join("pipe_link");
+        symlink(&fifo, &fifo_link).unwrap();
+
+        let err_strict = read_regular_file_strict(&fifo, None, "test").unwrap_err();
+        assert_eq!(err_strict.code, 1);
+
+        let err_deref = read_regular_file_deref(&fifo_link, "test").unwrap_err();
+        assert_eq!(err_deref.code, 1);
+
+        let regular_file = dir.path().join("regular.txt");
+        fs::write(&regular_file, b"hello").unwrap();
+        let regular_link = dir.path().join("regular_link.txt");
+        symlink(&regular_file, &regular_link).unwrap();
+
+        assert!(open_regular_nofollow_nonblock(&regular_link, "test").is_err());
+        assert!(read_regular_file_strict(&regular_link, None, "test").is_err());
+        let (bytes, sha) = read_regular_file_deref(&regular_link, "test").unwrap();
+        assert_eq!(bytes, b"hello");
+        assert_eq!(sha, sha256_bytes(b"hello"));
     }
 }

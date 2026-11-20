@@ -65,6 +65,9 @@ tempfile = "3.27"
 thiserror = "2.0"
 walkdir = "2.5"
 
+[target.'cfg(unix)'.dependencies]
+libc = "0.2"
+
 [dev-dependencies]
 tar = "0.4"
 wait-timeout = "0.2"

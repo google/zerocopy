@@ -237,6 +237,17 @@ impl Receipt {
             String::from_utf8_lossy(&self.output.stderr)
         );
         assert_eq!(
+            self.value["schema_version"], 2,
+            "{}: {}",
+            self.name, self.value
+        );
+        assert!(
+            self.value.get("tainted").is_none(),
+            "{}: {}",
+            self.name,
+            self.value
+        );
+        assert_eq!(
             self.value["status"], status,
             "{}: {}",
             self.name, self.value
@@ -868,4 +879,255 @@ fn declared_cfg_cannot_expand_compiler_response_files() {
     let receipt = fixture.run(&tools, "cfg-literal-values", &request);
     receipt.expect(0, "crate_verified", None);
     assert_eq!(receipt.value["configuration"]["cfg"], cfg);
+}
+
+#[cfg(unix)]
+#[test]
+fn rustc_mode_symlinks_replay_export_lean_lib_and_unpinned_taint() {
+    use std::os::unix::fs::symlink;
+
+    let tools = Tools::discover();
+    let fixture = Fixture::new();
+
+    // Place Rust and Lean files in disjoint physical locations and expose them
+    // through Bazel-like runfiles symlinks to verify logical prefix staging.
+    let cas = fixture.path("cas");
+    fs::create_dir(&cas).unwrap();
+    fs::write(
+        cas.join("scalar_lib.rs"),
+        format!("pub mod helper;\n{SOURCE}"),
+    )
+    .unwrap();
+    fs::write(cas.join("helper_phys.rs"), "pub fn unused() -> u64 { 1 }\n").unwrap();
+    fs::write(
+        cas.join("scalar_spec.lean"),
+        SPEC.replace("namespace Spec", "namespace Contract")
+            .replace("end Spec", "end Contract"),
+    )
+    .unwrap();
+    fs::write(
+        cas.join("scalar_proof.lean"),
+        PROOF
+            .replace("namespace Proof", "namespace Spec.Helper")
+            .replace("end Proof", "end Spec.Helper")
+            .replace("theorem verify :", "theorem custom_verify :"),
+    )
+    .unwrap();
+
+    let runfiles = fixture.path("runfiles/pkg/src");
+    fs::create_dir_all(&runfiles).unwrap();
+    symlink(cas.join("scalar_lib.rs"), runfiles.join("lib.rs")).unwrap();
+    symlink(cas.join("helper_phys.rs"), runfiles.join("helper.rs")).unwrap();
+    symlink(cas.join("scalar_spec.lean"), runfiles.join("Contract.lean")).unwrap();
+    symlink(
+        cas.join("scalar_proof.lean"),
+        runfiles.join("Spec.Helper.lean"),
+    )
+    .unwrap();
+
+    // 1. Passing rustc-mode run with symlinked sibling modules, strict roles,
+    //    qualified entrypoints, and --export-lean-lib.
+    let pass_artifacts = fixture.path("rustc-pass");
+    let pass = fixture.execute(
+        "rustc-pass",
+        tools
+            .command()
+            .arg("--artifacts")
+            .arg(&pass_artifacts)
+            .arg("--export-lean-lib")
+            .arg("rustc")
+            .arg(runfiles.join("lib.rs"))
+            .args([
+                "--crate-name",
+                "scalar",
+                "--select",
+                "zero",
+                "--source-file",
+            ])
+            .arg(runfiles.join("helper.rs"))
+            .arg("--spec-file")
+            .arg(format!(
+                "Contract={}",
+                runfiles.join("Contract.lean").display()
+            ))
+            .arg("--proof-file")
+            .arg(format!(
+                "Spec.Helper={}",
+                runfiles.join("Spec.Helper.lean").display()
+            ))
+            .args([
+                "--spec-decl",
+                "Contract:Contract.specs",
+                "--theorem",
+                "Spec.Helper:Spec.Helper.custom_verify",
+            ]),
+    );
+    pass.expect(0, "selected_unit_verified", None);
+    assert_eq!(pass.value["taint_reasons"], json!([]));
+    assert!(pass.output.stderr.is_empty());
+    let lean_lib = pass_artifacts.join("lean-lib");
+    assert!(lean_lib.join("Trusted/MirAst.olean").is_file());
+    assert!(lean_lib.join("Anneal/MirWp.olean").is_file());
+    assert!(lean_lib.join("Captured.olean").is_file());
+    assert!(lean_lib.join("Contract.olean").is_file());
+    assert!(lean_lib.join("Spec/Helper.olean").is_file());
+    assert!(!lean_lib.join("lean-toolchain").exists());
+    assert!(!lean_lib.join("Spec/Helper.ir").exists());
+    assert!(!lean_lib.join("Spec/Helper.ir.sig").exists());
+
+    // 2. Self-contained request.json in <artifacts> replays via --request.
+    let replay = fixture.execute(
+        "rustc-replay",
+        tools
+            .command()
+            .arg("--request")
+            .arg(pass_artifacts.join("request.json"))
+            .arg("--artifacts")
+            .arg(fixture.path("rustc-replay")),
+    );
+    replay.expect(0, "selected_unit_verified", None);
+    assert_eq!(replay.value["request_sha256"], pass.value["request_sha256"]);
+
+    // 3. Proof failure still exports compiled .olean files before Checker drops.
+    let mut bad_proof = PROOF.to_owned();
+    bad_proof = bad_proof.replace(
+        "theorem verify : Expected.claim := by",
+        "theorem verify : True := True.intro\n--",
+    );
+    fs::write(cas.join("bad_proof.lean"), bad_proof).unwrap();
+    let bad_link = runfiles.join("BadProof.lean");
+    symlink(cas.join("bad_proof.lean"), &bad_link).unwrap();
+    let fail_artifacts = fixture.path("rustc-proof-fail");
+    let failed = fixture.execute(
+        "rustc-proof-failed-export",
+        tools
+            .command()
+            .arg("--artifacts")
+            .arg(&fail_artifacts)
+            .arg("--export-lean-lib")
+            .arg("rustc")
+            .arg(runfiles.join("lib.rs"))
+            .args([
+                "--crate-name",
+                "scalar",
+                "--select",
+                "zero",
+                "--source-file",
+            ])
+            .arg(runfiles.join("helper.rs"))
+            .arg("--spec-file")
+            .arg(format!(
+                "Contract={}",
+                runfiles.join("Contract.lean").display()
+            ))
+            .arg("--proof-file")
+            .arg(format!("Proof={}", bad_link.display()))
+            .args(["--spec-decl", "Contract:Contract.specs"]),
+    );
+    failed.expect(1, "proof_failed", Some("audit"));
+    assert!(fail_artifacts.join("lean-lib/Captured.olean").is_file());
+    assert!(fail_artifacts.join("lean-lib/Contract.olean").is_file());
+
+    // 4. Early header error before target-lib exists does not fail with ENOENT.
+    let header_err_link = runfiles.join("BadImportProof.lean");
+    fs::write(
+        cas.join("bad_import.lean"),
+        lean_source("import MissingModule", "def x := 1"),
+    )
+    .unwrap();
+    symlink(cas.join("bad_import.lean"), &header_err_link).unwrap();
+    let early_artifacts = fixture.path("rustc-early-fail");
+    let early = fixture.execute(
+        "rustc-early-fail-export",
+        tools
+            .command()
+            .arg("--artifacts")
+            .arg(&early_artifacts)
+            .arg("--export-lean-lib")
+            .arg("rustc")
+            .arg(runfiles.join("lib.rs"))
+            .args([
+                "--crate-name",
+                "scalar",
+                "--select",
+                "zero",
+                "--source-file",
+            ])
+            .arg(runfiles.join("helper.rs"))
+            .arg("--spec-file")
+            .arg(format!(
+                "Contract={}",
+                runfiles.join("Contract.lean").display()
+            ))
+            .arg("--proof-file")
+            .arg(format!("Proof={}", header_err_link.display()))
+            .args(["--spec-decl", "Contract:Contract.specs"]),
+    );
+    early.expect(1, "proof_failed", Some("audit"));
+    assert!(!early_artifacts.join("lean-lib").exists());
+
+    // 5. Unpinned Lean runtime taint receipt + stderr warning banner.
+    let unpinned = fixture.execute(
+        "unpinned-lean-selected",
+        tools
+            .command()
+            .arg("--allow-unpinned-lean")
+            .arg("rustc")
+            .arg(runfiles.join("lib.rs"))
+            .args([
+                "--crate-name",
+                "scalar",
+                "--select",
+                "zero",
+                "--source-file",
+            ])
+            .arg(runfiles.join("helper.rs"))
+            .arg("--spec-file")
+            .arg(format!(
+                "Contract={}",
+                runfiles.join("Contract.lean").display()
+            ))
+            .arg("--proof-file")
+            .arg(format!(
+                "Spec.Helper={}",
+                runfiles.join("Spec.Helper.lean").display()
+            ))
+            .args([
+                "--spec-decl",
+                "Contract:Contract.specs",
+                "--theorem",
+                "Spec.Helper:Spec.Helper.custom_verify",
+            ]),
+    );
+    unpinned.expect(0, "tainted_selected_unit_verified", None);
+    assert!(
+        String::from_utf8_lossy(&unpinned.output.stderr).contains("TAINTED"),
+        "expected TAINTED banner on stderr"
+    );
+    assert_eq!(unpinned.value["taint_reasons"], json!(["unpinned_lean"]));
+    assert_eq!(
+        unpinned.value["correspondence_provenance"]["applicable"],
+        json!(false)
+    );
+    assert_eq!(
+        unpinned.value["toolchain_identity"]["sha256_locked"],
+        json!([])
+    );
+    assert!(
+        unpinned.value["assumptions"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|a| a == "faithful pinned compiler capture")
+    );
+    let u = &unpinned.value["unpinned_lean"];
+    assert_eq!(u["expected_toolchain"], "leanprover/lean4:v4.34.1");
+    assert_eq!(u["lean_binary_sha256"].as_str().unwrap().len(), 64);
+    assert_eq!(u["sysroot_modules_sha256"].as_str().unwrap().len(), 64);
+    assert_eq!(u["foundation_modules"].as_array().unwrap().len(), 6);
+    assert!(u["admitted_sysroot_module_count"].as_u64().unwrap() >= 6);
+    assert_eq!(
+        u["sysroot_modules_sha256"],
+        unpinned.value["audit"]["unpinnedLean"]["sysrootModulesSha256"]
+    );
 }
