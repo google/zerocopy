@@ -1,0 +1,179 @@
+{
+  "naive_list_uint64": [
+    {
+      "n_steps": 10,
+      "rc": 0,
+      "elapsed_sec": 40.525,
+      "steps_per_sec_incl_startup": 0.2,
+      "peak_rss_mb": 442.07,
+      "axioms": [
+        "'VrustcHonestKernelBench.cert_valid_10' depends on axioms: [propext, Quot.sound]",
+        "'VrustcHonestKernelBench.freeze_elim_sound' depends on axioms: [propext, Quot.sound]"
+      ],
+      "stderr_tail": ""
+    },
+    {
+      "n_steps": 50,
+      "rc": 0,
+      "elapsed_sec": 1.485,
+      "steps_per_sec_incl_startup": 33.7,
+      "peak_rss_mb": 447.47,
+      "axioms": [
+        "'VrustcHonestKernelBench.cert_valid_50' depends on axioms: [propext, Quot.sound]",
+        "'VrustcHonestKernelBench.freeze_elim_sound' depends on axioms: [propext, Quot.sound]"
+      ],
+      "stderr_tail": ""
+    },
+    {
+      "n_steps": 100,
+      "rc": 0,
+      "elapsed_sec": 1.424,
+      "steps_per_sec_incl_startup": 70.2,
+      "peak_rss_mb": 454.69,
+      "axioms": [
+        "'VrustcHonestKernelBench.cert_valid_100' depends on axioms: [propext, Quot.sound]",
+        "'VrustcHonestKernelBench.freeze_elim_sound' depends on axioms: [propext, Quot.sound]"
+      ],
+      "stderr_tail": ""
+    },
+    {
+      "n_steps": 250,
+      "rc": 0,
+      "elapsed_sec": 2.226,
+      "steps_per_sec_incl_startup": 112.3,
+      "peak_rss_mb": 483.43,
+      "axioms": [
+        "'VrustcHonestKernelBench.cert_valid_250' depends on axioms: [propext, Quot.sound]",
+        "'VrustcHonestKernelBench.freeze_elim_sound' depends on axioms: [propext, Quot.sound]"
+      ],
+      "stderr_tail": ""
+    },
+    {
+      "n_steps": 500,
+      "rc": 1,
+      "elapsed_sec": 2.617,
+      "steps_per_sec_incl_startup": 0.0,
+      "peak_rss_mb": 465.25,
+      "axioms": [
+        "'VrustcHonestKernelBench.cert_valid_500' depends on axioms: [propext, sorryAx, Quot.sound]",
+        "'VrustcHonestKernelBench.freeze_elim_sound' depends on axioms: [propext, Quot.sound]"
+      ],
+      "stderr_tail": "Command exited with non-zero status 1\nMAXRSS_KB=476412\n"
+    },
+    {
+      "n_steps": 1000,
+      "rc": 1,
+      "elapsed_sec": 2.215,
+      "steps_per_sec_incl_startup": 0.0,
+      "peak_rss_mb": 474.96,
+      "axioms": [
+        "'VrustcHonestKernelBench.cert_valid_1000' depends on axioms: [propext, sorryAx, Quot.sound]",
+        "'VrustcHonestKernelBench.freeze_elim_sound' depends on axioms: [propext, Quot.sound]"
+      ],
+      "stderr_tail": "Command exited with non-zero status 1\nMAXRSS_KB=486360\n"
+    }
+  ],
+  "naive_list_uint64_n500_error": "/tmp/vrustc_e1_2b_t03/HonestBench_500.lean:640:2: error: maximum recursion depth has been reached\nuse `set_option maxRecDepth <num>` to increase limit\nuse `set_option diagnostics true` to get diagnostic information\n'VrustcHonestKernelBench.cert_valid_500' depends on axioms: [propext, sorryAx, Quot.sound]\n'VrustcHonestKernelBench.freeze_elim_sound' depends on axioms: [propext, Quot.sound]",
+  "balanced_tree_nat_gmp": [
+    {
+      "n_steps": 100,
+      "rc": 1,
+      "elapsed_sec": 0.877,
+      "steps_per_sec_incl_startup": 0.0,
+      "peak_rss_mb": 436.64,
+      "axioms": [
+        "'VrustcHonestKernelV2.cert_valid_v2_100' depends on axioms: [propext, sorryAx]",
+        "'VrustcHonestKernelV2.disjoint_zero_masks_imply_no_overlap' depends on axioms: [propext, sorryAx, Quot.sound]"
+      ],
+      "error": "ft-hand side\n  (checkTree initState tree_100).isSome\nis not definitionally equal to the right-hand side\n  true\n'VrustcHonestKernelV2.cert_valid_v2_100' depends on axioms: [propext, sorryAx]\n'VrustcHonestKernelV2.disjoint_zero_masks_imply_no_overlap' depends on axioms: [propext, sorryAx, Quot.sound]\n"
+    },
+    {
+      "n_steps": 500,
+      "rc": 1,
+      "elapsed_sec": 0.818,
+      "steps_per_sec_incl_startup": 0.0,
+      "peak_rss_mb": 433.7,
+      "axioms": [
+        "'VrustcHonestKernelV2.cert_valid_v2_500' depends on axioms: [propext, sorryAx]",
+        "'VrustcHonestKernelV2.disjoint_zero_masks_imply_no_overlap' depends on axioms: [propext, sorryAx, Quot.sound]"
+      ],
+      "error": "ft-hand side\n  (checkTree initState tree_500).isSome\nis not definitionally equal to the right-hand side\n  true\n'VrustcHonestKernelV2.cert_valid_v2_500' depends on axioms: [propext, sorryAx]\n'VrustcHonestKernelV2.disjoint_zero_masks_imply_no_overlap' depends on axioms: [propext, sorryAx, Quot.sound]\n"
+    },
+    {
+      "n_steps": 1000,
+      "rc": 1,
+      "elapsed_sec": 0.863,
+      "steps_per_sec_incl_startup": 0.0,
+      "peak_rss_mb": 435.91,
+      "axioms": [],
+      "error": "ree\ndue to the absence of the instance above\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.\n/tmp/vrustc_e1_2b_v2/HonestV2_1000.lean:134:8773: error: maximum number of errors (100; from option `maxErrors`) reached, exiting\n"
+    },
+    {
+      "n_steps": 4000,
+      "rc": 1,
+      "elapsed_sec": 1.037,
+      "steps_per_sec_incl_startup": 0.0,
+      "peak_rss_mb": 440.7,
+      "axioms": [],
+      "error": "ree\ndue to the absence of the instance above\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.\n/tmp/vrustc_e1_2b_v2/HonestV2_4000.lean:134:8805: error: maximum number of errors (100; from option `maxErrors`) reached, exiting\n"
+    },
+    {
+      "n_steps": 16000,
+      "rc": 1,
+      "elapsed_sec": 4.601,
+      "steps_per_sec_incl_startup": 0.0,
+      "peak_rss_mb": 462.92,
+      "axioms": [],
+      "error": "ee\ndue to the absence of the instance above\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.\n/tmp/vrustc_e1_2b_v2/HonestV2_16000.lean:134:8838: error: maximum number of errors (100; from option `maxErrors`) reached, exiting\n"
+    }
+  ],
+  "balanced_tree_marginal_steps_per_sec": null,
+  "balanced_tree_nat_gmp_arith": [
+    {
+      "n_steps": 100,
+      "rc": 0,
+      "elapsed_sec": 3.4,
+      "steps_per_sec_incl_startup": 29.4,
+      "peak_rss_mb": 447.18,
+      "axioms": [],
+      "error": ""
+    },
+    {
+      "n_steps": 500,
+      "rc": 0,
+      "elapsed_sec": 4.372,
+      "steps_per_sec_incl_startup": 114.4,
+      "peak_rss_mb": 502.57,
+      "axioms": [],
+      "error": ""
+    },
+    {
+      "n_steps": 1000,
+      "rc": 0,
+      "elapsed_sec": 5.115,
+      "steps_per_sec_incl_startup": 195.5,
+      "peak_rss_mb": 567.23,
+      "axioms": [],
+      "error": ""
+    },
+    {
+      "n_steps": 4000,
+      "rc": 0,
+      "elapsed_sec": 13.475,
+      "steps_per_sec_incl_startup": 296.8,
+      "peak_rss_mb": 855.32,
+      "axioms": [],
+      "error": ""
+    },
+    {
+      "n_steps": 16000,
+      "rc": 1,
+      "elapsed_sec": 30.581,
+      "steps_per_sec_incl_startup": 0.0,
+      "peak_rss_mb": 2006.64,
+      "axioms": [],
+      "error": " reached\n\nNote: Use `set_option maxHeartbeats <num>` to set the limit.\n\nHint: Additional diagnostic information may be available using the `set_option diagnostics true` command.\n'VrustcHonestGmpBench.cert_valid_gmp_16000' does not depend on any axioms\n'VrustcHonestGmpBench.add_nuw_interval_sound' does not depend on any axioms\n'VrustcHonestGmpBench.bce_interval_sound' does not depend on any axioms\n"
+    }
+  ],
+  "balanced_tree_nat_gmp_arith_marginal_steps_per_sec": 387.1
+}

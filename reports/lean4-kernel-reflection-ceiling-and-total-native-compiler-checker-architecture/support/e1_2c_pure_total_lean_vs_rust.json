@@ -1,0 +1,29 @@
+{
+  "benchmark": "E1-2c_T04_pure_total_lean_vs_rust",
+  "runs": 5,
+  "lean_total_wall_ms": 299.696,
+  "rust_total_wall_ms": 120.477,
+  "kernels": {
+    "egraph_uf": {
+      "lean_median_ms": 128.424,
+      "rust_median_ms": 38.247,
+      "lean_over_rust_ratio": 3.36,
+      "checksum_match": true,
+      "checksum": "92554"
+    },
+    "liveness_bs": {
+      "lean_median_ms": 9.407,
+      "rust_median_ms": 0.387,
+      "lean_over_rust_ratio": 24.31,
+      "checksum_match": true,
+      "checksum": "16315244818618830336"
+    },
+    "inst_encode": {
+      "lean_median_ms": 135.514,
+      "rust_median_ms": 62.184,
+      "lean_over_rust_ratio": 2.18,
+      "checksum_match": true,
+      "checksum": "11361685715086791552"
+    }
+  }
+}

@@ -38702,6 +38702,57 @@
         "anneal/trusted-boundary"
       ]
     },
+    "lean4-kernel-reflection-ceiling-and-total-native-compiler-checker-architecture": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "https://github.com/leanprover/lean4",
+            "revision": "3b0f2862196c6a8af9eb0025ee650252694013dd"
+          },
+          "name": "leanprover/lean4 (v4.28.0-rc1)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+          },
+          "name": "leanprover/lean4 (v4.34.1)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/leanprover/lean4",
+            "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc"
+          },
+          "name": "leanprover/lean4 (v4.35.0)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+          },
+          "name": "rust-lang/rust (rustc 1.99.1)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "joshlf/anneal (TrustedBoundary.lean constraints)"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/tcb",
+        "lean",
+        "lean/kernel",
+        "lean/performance",
+        "rust",
+        "verification",
+        "verification/proof-certificates"
+      ]
+    },
     "lean4-kernel-soundness-criticisms-defeq-pathologies-and-lean4lean-checkers": {
       "observed_at": "2026-11-19",
       "subjects": [

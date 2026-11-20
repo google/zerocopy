@@ -1,0 +1,65 @@
+{
+  "leanprover/lean4:v4.28.0-rc1": {
+    "version": "Lean (version 4.28.0-rc1, x86_64-unknown-linux-gnu, commit 3b0f2862196c6a8af9eb0025ee650252694013dd, Release)",
+    "scales": {
+      "100": {
+        "rc": 0,
+        "elapsed_sec": 76.15,
+        "rss_mb": 447.98
+      },
+      "1000": {
+        "rc": 0,
+        "elapsed_sec": 5.104,
+        "rss_mb": 567.85
+      },
+      "4000": {
+        "rc": 0,
+        "elapsed_sec": 15.399,
+        "rss_mb": 855.8
+      }
+    },
+    "marginal_steps_per_sec": null
+  },
+  "leanprover/lean4:v4.34.1": {
+    "version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+    "scales": {
+      "100": {
+        "rc": 0,
+        "elapsed_sec": 0.797,
+        "rss_mb": 502.45
+      },
+      "1000": {
+        "rc": 0,
+        "elapsed_sec": 4.463,
+        "rss_mb": 624.31
+      },
+      "4000": {
+        "rc": 0,
+        "elapsed_sec": 9.562,
+        "rss_mb": 842.52
+      }
+    },
+    "marginal_steps_per_sec": 445.0
+  },
+  "leanprover/lean4:v4.35.0": {
+    "version": "Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+    "scales": {
+      "100": {
+        "rc": 0,
+        "elapsed_sec": 3.96,
+        "rss_mb": 448.12
+      },
+      "1000": {
+        "rc": 0,
+        "elapsed_sec": 3.704,
+        "rss_mb": 567.34
+      },
+      "4000": {
+        "rc": 0,
+        "elapsed_sec": 11.204,
+        "rss_mb": 771.48
+      }
+    },
+    "marginal_steps_per_sec": 538.4
+  }
+}
