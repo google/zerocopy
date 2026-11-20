@@ -11821,6 +11821,71 @@
         "systems/edge-isolates"
       ]
     },
+    "carcara-alethe-lrat-spacer-chc-elaboration-into-pass1-lean-certificates": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "ufmg-smite/carcara",
+            "revision": "819f30914665019898cbad7e09d3962053b6f97a",
+            "version": "1.1.0"
+          },
+          "name": "Carcara Alethe proof checker and elaborator"
+        },
+        {
+          "identity": {
+            "repository": "cvc5/cvc5",
+            "revision": "4cc4e66310f82f49f2e99e722bc74e0bfee41ffb"
+          },
+          "name": "cvc5 SMT solver Alethe proof backend"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 kernel, Init.Core reflection primitives, and BVDecide CompactLRATChecker"
+        },
+        {
+          "identity": {
+            "repository": "Z3Prover/z3",
+            "revision": "24fb9f2f2c3a7745d88e53ad61c39b9d1758899f"
+          },
+          "name": "Z3 Spacer Constrained Horn Clause engine"
+        },
+        {
+          "identity": {
+            "repository": "seahorn/crab",
+            "revision": "b1eeb1a9402ab0664e962f26f89d923f8514284c"
+          },
+          "name": "Crab SplitDBM sparse difference-bound matrix abstract domain"
+        },
+        {
+          "identity": {
+            "repository": "egraphs-good/egglog",
+            "revision": "d89bc58adc9b9a87a8f571c5b9ad75d686d226e6"
+          },
+          "name": "egglog Datalog and equality-saturation engine"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "20aa204315cd36aaf944778b7d33c0d609ced8e8"
+          },
+          "name": "Anneal Pass-1 Lean boundary auditor and foundation lock"
+        }
+      ],
+      "topics": [
+        "verification/smt",
+        "lean/mechanization",
+        "anneal/theory",
+        "verification/automation",
+        "smt/alethe",
+        "smt/sat/lrat",
+        "lean/kernel-reduction"
+      ]
+    },
     "cargo-profile-and-compiler-flag-census-in-the-wild": {
       "observed_at": "2026-11-13",
       "subjects": [
