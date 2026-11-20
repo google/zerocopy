@@ -1,0 +1,9 @@
+name = "toy-sim"
+defaultTargets = ["ToySim"]
+
+[leanOptions]
+autoImplicit = false
+relaxedAutoImplicit = false
+
+[[lean_lib]]
+name = "ToySim"

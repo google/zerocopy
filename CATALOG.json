@@ -67405,6 +67405,74 @@
         "security/utf8-validation"
       ]
     },
+    "simulation-diagrams-and-multi-pass-compiler-correctness": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "a4ad87b17898cf7b7c8638c32ad694a15f7c0032",
+            "version": "v3.16"
+          },
+          "name": "CompCert verified C compiler (Coq development)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1926385.1926393"
+          },
+          "name": "Relaxed-memory concurrency and verified compilation (POPL 2011)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-009-9155-4"
+          },
+          "name": "A Formally Verified Compiler Back-end (Journal of Automated Reasoning, 2009)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1538788.1538814"
+          },
+          "name": "Formal verification of a realistic compiler (Communications of the ACM, 2009)"
+        },
+        {
+          "identity": {
+            "doi": "10.1006/inco.1995.1134"
+          },
+          "name": "Forward and Backward Simulations: Part I: Untimed Systems (Information and Computation, 1995)"
+        },
+        {
+          "identity": {
+            "archive": "https://isa-afp.org/release/afp-VeriComp-2026-10-26.tar.gz",
+            "archive_sha256": "a45a410e58aa9850f2e3195010e9a86c1469c35e5f1846eea44067ee4662a547",
+            "entry": "VeriComp",
+            "release": "Isabelle2026 (2026-10-26)"
+          },
+          "name": "A Generic Framework for Verified Compilers (Archive of Formal Proofs entry VeriComp, first published 2020; release archive for Isabelle2026 dated 2026-10-26)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3622857"
+          },
+          "name": "Stuttering for Free (PACMPL OOPSLA2, 2023)"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/refinement",
+        "verification/simulation-diagrams",
+        "compilers/compiler-correctness",
+        "compilers/multi-pass-compilation"
+      ]
+    },
     "simulation-witness-debuginfo-and-verified-time-travel-observability": {
       "observed_at": "2026-11-19",
       "subjects": [

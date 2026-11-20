@@ -1,0 +1,1261 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Sim.BSimFinal": [],
+    "Toy.Sim.BSimInitExists": [],
+    "Toy.Sim.BSimInitMatch": [],
+    "Toy.Sim.BSimProgress": [],
+    "Toy.Sim.BSimStep": [],
+    "Toy.Sim.Behavior": [],
+    "Toy.Sim.Behavior.casesOn": [],
+    "Toy.Sim.Behavior.ctorElim": [],
+    "Toy.Sim.Behavior.ctorElimType": [],
+    "Toy.Sim.Behavior.ctorIdx": [],
+    "Toy.Sim.Behavior.diverges": [],
+    "Toy.Sim.Behavior.diverges.elim": [],
+    "Toy.Sim.Behavior.diverges.inj": [],
+    "Toy.Sim.Behavior.diverges.injEq": [
+      "propext"
+    ],
+    "Toy.Sim.Behavior.diverges.noConfusion": [],
+    "Toy.Sim.Behavior.diverges.sizeOf_spec": [],
+    "Toy.Sim.Behavior.goesWrong": [],
+    "Toy.Sim.Behavior.goesWrong.elim": [],
+    "Toy.Sim.Behavior.goesWrong.inj": [],
+    "Toy.Sim.Behavior.goesWrong.injEq": [
+      "propext"
+    ],
+    "Toy.Sim.Behavior.goesWrong.noConfusion": [],
+    "Toy.Sim.Behavior.goesWrong.sizeOf_spec": [],
+    "Toy.Sim.Behavior.noConfusion": [],
+    "Toy.Sim.Behavior.noConfusionType": [],
+    "Toy.Sim.Behavior.rec": [],
+    "Toy.Sim.Behavior.recOn": [],
+    "Toy.Sim.Behavior.terminates": [],
+    "Toy.Sim.Behavior.terminates.elim": [],
+    "Toy.Sim.Behavior.terminates.inj": [],
+    "Toy.Sim.Behavior.terminates.injEq": [
+      "propext"
+    ],
+    "Toy.Sim.Behavior.terminates.noConfusion": [],
+    "Toy.Sim.Behavior.terminates.sizeOf_spec": [],
+    "Toy.Sim.Behavior.trace": [],
+    "Toy.Sim.Behavior.trace.eq_1": [],
+    "Toy.Sim.Behavior.trace.eq_2": [],
+    "Toy.Sim.Behavior.trace.eq_3": [],
+    "Toy.Sim.Behavior.trace.match_1": [],
+    "Toy.Sim.Boundary.DoneOrChatter": [],
+    "Toy.Sim.Boundary.DoneWithJunk": [],
+    "Toy.Sim.Boundary.StuckOrDone": [],
+    "Toy.Sim.Boundary.TermOrDiverge": [],
+    "Toy.Sim.Boundary.chooseRel": [],
+    "Toy.Sim.Boundary.doneOrChatter_behavior": [
+      "propext"
+    ],
+    "Toy.Sim.Boundary.flip_conclusion_with_unreachable_nondeterminism": [
+      "propext"
+    ],
+    "Toy.Sim.Boundary.mutual_refinedBy_different_behaviors": [],
+    "Toy.Sim.Boundary.refinedBy_blind_to_infinite_event_runs": [
+      "propext"
+    ],
+    "Toy.Sim.Boundary.refinedBy_may_drop_termination": [
+      "propext"
+    ],
+    "Toy.Sim.Boundary.refinedBy_may_drop_termination.match_1_1": [],
+    "Toy.Sim.Boundary.refinedBy_not_antisymmetric": [],
+    "Toy.Sim.Boundary.resolving_nondeterminism_needs_backward_simulation": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.Chain3": [],
+    "Toy.Sim.Cex.cex_bsim_without_final_clause": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_bsim_without_initExists": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_bsim_without_initMatch": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_bsim_without_progress": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_bsim_without_step_diagram": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_bsim_without_wf": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_compOrd_wf_needs_both": [],
+    "Toy.Sim.Cex.cex_comp_naive_lex_order_fails": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_comp_without_first_final": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_comp_without_first_init": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_comp_without_first_step_diagram": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_comp_without_first_wf": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_comp_without_second_final": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_comp_without_second_init": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_comp_without_second_step_diagram": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_comp_without_second_wf": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_flip_nonreceptive_source": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_flip_target_event_labels_mismatch": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_flip_target_final_state_steps": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_flip_target_labels_mismatch": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_flip_target_not_functional": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_flip_target_two_initial_states": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_flip_target_two_results": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_flip_without_final_clause": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_flip_without_init_clause": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_flip_without_step_diagram": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_flip_without_wf": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_forwardSim_goesWrong_not_preserved": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_forwardSim_goesWrong_target_without_behavior": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_fsim_without_final_clause": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_fsim_without_init_clause": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_fsim_without_init_clause_diverges": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_fsim_without_step_diagram": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_fsim_without_step_diagram_diverges": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_fsim_without_wf_divergence_not_preserved": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_improves_antisymm_needs_both": [],
+    "Toy.Sim.Cex.cex_improves_not_symmetric": [],
+    "Toy.Sim.Cex.cex_improves_trans_needs_both": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_inclusion_needs_source_never_goes_wrong": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_inclusion_without_refinement": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_inclusion_without_target_behavior": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_partial_run_from_non_initial_state": [],
+    "Toy.Sim.Cex.cex_partial_run_without_source_run": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_pipeline_last_event_labels_mismatch": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_pipeline_last_final_state_steps": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_pipeline_last_labels_mismatch": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_pipeline_last_not_functional": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_pipeline_last_two_initial_states": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_pipeline_last_two_results": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_pipeline_nonreceptive_first": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_pipeline_preserves_without_chain": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_pipeline_without_chain": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_preservation_without_source_behavior": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_refinedBy_not_symmetric": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.cex_refinedBy_trans_needs_both": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.chain3_done_isForwardSim": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Cex.chain3_plus": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.chainRel\u2081": [],
+    "Toy.Sim.Cex.chainRel\u2082": [],
+    "Toy.Sim.Cex.compOrd_iff_naiveCompOrd_of_transitive": [],
+    "Toy.Sim.Cex.done_determinate": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.done_has": [],
+    "Toy.Sim.Cex.done_lacks": [],
+    "Toy.Sim.Cex.done_no_event_run": [],
+    "Toy.Sim.Cex.done_no_stuck": [],
+    "Toy.Sim.Cex.done_receptive": [],
+    "Toy.Sim.Cex.emptyOrd": [],
+    "Toy.Sim.Cex.fullOrd": [],
+    "Toy.Sim.Cex.loop_has": [],
+    "Toy.Sim.Cex.loop_lacks": [],
+    "Toy.Sim.Cex.loop_no_stuck": [],
+    "Toy.Sim.Cex.loop_receptive": [],
+    "Toy.Sim.Cex.naiveCompOrd": [],
+    "Toy.Sim.Cex.noInit_determinate": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.not_improves_terminates_0_1": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.not_wf_fullOrd": [],
+    "Toy.Sim.Cex.not_wf_of_refl": [],
+    "Toy.Sim.Cex.oneStep_chain3_isForwardSim": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.oneStep_has": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.oneStep_lacks": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.relBefore": [],
+    "Toy.Sim.Cex.relEq": [],
+    "Toy.Sim.Cex.relFalse": [],
+    "Toy.Sim.Cex.relToFalse": [],
+    "Toy.Sim.Cex.relTrue": [],
+    "Toy.Sim.Cex.succOrd": [],
+    "Toy.Sim.Cex.succOrd_not_transitive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Cex.twoBranch_stepFunctional": [],
+    "Toy.Sim.Cex.twoBranch_stepLabelsMatch": [
+      "propext"
+    ],
+    "Toy.Sim.Cex.wf_emptyOrd": [],
+    "Toy.Sim.Cex.wf_succOrd": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Determinate": [
+      "propext"
+    ],
+    "Toy.Sim.Determinate.casesOn": [
+      "propext"
+    ],
+    "Toy.Sim.Determinate.finalDet": [
+      "propext"
+    ],
+    "Toy.Sim.Determinate.finalNoStep": [
+      "propext"
+    ],
+    "Toy.Sim.Determinate.functional": [
+      "propext"
+    ],
+    "Toy.Sim.Determinate.init": [
+      "propext"
+    ],
+    "Toy.Sim.Determinate.labels": [
+      "propext"
+    ],
+    "Toy.Sim.Determinate.mk": [
+      "propext"
+    ],
+    "Toy.Sim.Determinate.mono": [
+      "propext"
+    ],
+    "Toy.Sim.Determinate.rec": [
+      "propext"
+    ],
+    "Toy.Sim.Determinate.recOn": [
+      "propext"
+    ],
+    "Toy.Sim.Ex.AnyInput": [],
+    "Toy.Sim.Ex.Chatter": [],
+    "Toy.Sim.Ex.Crash": [],
+    "Toy.Sim.Ex.Done": [],
+    "Toy.Sim.Ex.EmitThenStuck": [],
+    "Toy.Sim.Ex.FinalSteps": [],
+    "Toy.Sim.Ex.Loop": [],
+    "Toy.Sim.Ex.Mid": [],
+    "Toy.Sim.Ex.MidSt": [],
+    "Toy.Sim.Ex.MidSt.casesOn": [],
+    "Toy.Sim.Ex.MidSt.ctorElim": [],
+    "Toy.Sim.Ex.MidSt.ctorElimType": [],
+    "Toy.Sim.Ex.MidSt.ctorIdx": [],
+    "Toy.Sim.Ex.MidSt.done": [],
+    "Toy.Sim.Ex.MidSt.done.elim": [],
+    "Toy.Sim.Ex.MidSt.done.inj": [],
+    "Toy.Sim.Ex.MidSt.done.injEq": [
+      "propext"
+    ],
+    "Toy.Sim.Ex.MidSt.done.noConfusion": [],
+    "Toy.Sim.Ex.MidSt.done.sizeOf_spec": [],
+    "Toy.Sim.Ex.MidSt.gotA": [],
+    "Toy.Sim.Ex.MidSt.gotA.elim": [],
+    "Toy.Sim.Ex.MidSt.gotA.inj": [],
+    "Toy.Sim.Ex.MidSt.gotA.injEq": [
+      "propext"
+    ],
+    "Toy.Sim.Ex.MidSt.gotA.noConfusion": [],
+    "Toy.Sim.Ex.MidSt.gotA.sizeOf_spec": [],
+    "Toy.Sim.Ex.MidSt.gotB": [],
+    "Toy.Sim.Ex.MidSt.gotB.elim": [],
+    "Toy.Sim.Ex.MidSt.gotB.inj": [],
+    "Toy.Sim.Ex.MidSt.gotB.injEq": [
+      "propext"
+    ],
+    "Toy.Sim.Ex.MidSt.gotB.noConfusion": [],
+    "Toy.Sim.Ex.MidSt.gotB.sizeOf_spec": [],
+    "Toy.Sim.Ex.MidSt.noConfusion": [],
+    "Toy.Sim.Ex.MidSt.noConfusionType": [],
+    "Toy.Sim.Ex.MidSt.ready": [],
+    "Toy.Sim.Ex.MidSt.ready.elim": [],
+    "Toy.Sim.Ex.MidSt.ready.sizeOf_spec": [],
+    "Toy.Sim.Ex.MidSt.rec": [],
+    "Toy.Sim.Ex.MidSt.recOn": [],
+    "Toy.Sim.Ex.MidStep": [],
+    "Toy.Sim.Ex.MidStep.casesOn": [],
+    "Toy.Sim.Ex.MidStep.readA": [],
+    "Toy.Sim.Ex.MidStep.readB": [],
+    "Toy.Sim.Ex.MidStep.rec": [],
+    "Toy.Sim.Ex.MidStep.recOn": [],
+    "Toy.Sim.Ex.MidStep.retA": [],
+    "Toy.Sim.Ex.MidStep.retB": [],
+    "Toy.Sim.Ex.MidTgtRel": [],
+    "Toy.Sim.Ex.MidTgtRel.casesOn": [],
+    "Toy.Sim.Ex.MidTgtRel.done": [],
+    "Toy.Sim.Ex.MidTgtRel.gotA": [],
+    "Toy.Sim.Ex.MidTgtRel.gotB": [],
+    "Toy.Sim.Ex.MidTgtRel.ready": [],
+    "Toy.Sim.Ex.MidTgtRel.rec": [],
+    "Toy.Sim.Ex.MidTgtRel.recOn": [],
+    "Toy.Sim.Ex.NoInit": [],
+    "Toy.Sim.Ex.OneStep": [],
+    "Toy.Sim.Ex.Spin": [],
+    "Toy.Sim.Ex.Src": [],
+    "Toy.Sim.Ex.SrcMidRel": [],
+    "Toy.Sim.Ex.SrcMidRel.casesOn": [],
+    "Toy.Sim.Ex.SrcMidRel.done": [],
+    "Toy.Sim.Ex.SrcMidRel.ready": [],
+    "Toy.Sim.Ex.SrcMidRel.rec": [],
+    "Toy.Sim.Ex.SrcMidRel.recOn": [],
+    "Toy.Sim.Ex.SrcMidRel.start": [],
+    "Toy.Sim.Ex.SrcSt": [],
+    "Toy.Sim.Ex.SrcSt.casesOn": [],
+    "Toy.Sim.Ex.SrcSt.ctorElim": [],
+    "Toy.Sim.Ex.SrcSt.ctorElimType": [],
+    "Toy.Sim.Ex.SrcSt.ctorIdx": [],
+    "Toy.Sim.Ex.SrcSt.done": [],
+    "Toy.Sim.Ex.SrcSt.done.elim": [],
+    "Toy.Sim.Ex.SrcSt.done.inj": [],
+    "Toy.Sim.Ex.SrcSt.done.injEq": [
+      "propext"
+    ],
+    "Toy.Sim.Ex.SrcSt.done.noConfusion": [],
+    "Toy.Sim.Ex.SrcSt.done.sizeOf_spec": [],
+    "Toy.Sim.Ex.SrcSt.noConfusion": [],
+    "Toy.Sim.Ex.SrcSt.noConfusionType": [],
+    "Toy.Sim.Ex.SrcSt.ready": [],
+    "Toy.Sim.Ex.SrcSt.ready.elim": [],
+    "Toy.Sim.Ex.SrcSt.ready.sizeOf_spec": [],
+    "Toy.Sim.Ex.SrcSt.rec": [],
+    "Toy.Sim.Ex.SrcSt.recOn": [],
+    "Toy.Sim.Ex.SrcSt.start": [],
+    "Toy.Sim.Ex.SrcSt.start.elim": [],
+    "Toy.Sim.Ex.SrcSt.start.sizeOf_spec": [],
+    "Toy.Sim.Ex.SrcStep": [],
+    "Toy.Sim.Ex.SrcStep.boot": [],
+    "Toy.Sim.Ex.SrcStep.casesOn": [],
+    "Toy.Sim.Ex.SrcStep.read": [],
+    "Toy.Sim.Ex.SrcStep.rec": [],
+    "Toy.Sim.Ex.SrcStep.recOn": [],
+    "Toy.Sim.Ex.SrcTgtBackRel": [],
+    "Toy.Sim.Ex.SrcTgtBackRel.casesOn": [],
+    "Toy.Sim.Ex.SrcTgtBackRel.done": [],
+    "Toy.Sim.Ex.SrcTgtBackRel.got": [],
+    "Toy.Sim.Ex.SrcTgtBackRel.ready": [],
+    "Toy.Sim.Ex.SrcTgtBackRel.rec": [],
+    "Toy.Sim.Ex.SrcTgtBackRel.recOn": [],
+    "Toy.Sim.Ex.SrcTgtBackRel.start": [],
+    "Toy.Sim.Ex.SrcTgtRel": [],
+    "Toy.Sim.Ex.SrcTgtRel.casesOn": [],
+    "Toy.Sim.Ex.SrcTgtRel.done": [],
+    "Toy.Sim.Ex.SrcTgtRel.ready": [],
+    "Toy.Sim.Ex.SrcTgtRel.rec": [],
+    "Toy.Sim.Ex.SrcTgtRel.recOn": [],
+    "Toy.Sim.Ex.SrcTgtRel.start": [],
+    "Toy.Sim.Ex.StuckNow": [],
+    "Toy.Sim.Ex.Tgt": [],
+    "Toy.Sim.Ex.TgtSt": [],
+    "Toy.Sim.Ex.TgtSt.casesOn": [],
+    "Toy.Sim.Ex.TgtSt.ctorElim": [],
+    "Toy.Sim.Ex.TgtSt.ctorElimType": [],
+    "Toy.Sim.Ex.TgtSt.ctorIdx": [],
+    "Toy.Sim.Ex.TgtSt.done": [],
+    "Toy.Sim.Ex.TgtSt.done.elim": [],
+    "Toy.Sim.Ex.TgtSt.done.inj": [],
+    "Toy.Sim.Ex.TgtSt.done.injEq": [
+      "propext"
+    ],
+    "Toy.Sim.Ex.TgtSt.done.noConfusion": [],
+    "Toy.Sim.Ex.TgtSt.done.sizeOf_spec": [],
+    "Toy.Sim.Ex.TgtSt.got": [],
+    "Toy.Sim.Ex.TgtSt.got.elim": [],
+    "Toy.Sim.Ex.TgtSt.got.inj": [],
+    "Toy.Sim.Ex.TgtSt.got.injEq": [
+      "propext"
+    ],
+    "Toy.Sim.Ex.TgtSt.got.noConfusion": [],
+    "Toy.Sim.Ex.TgtSt.got.sizeOf_spec": [],
+    "Toy.Sim.Ex.TgtSt.noConfusion": [],
+    "Toy.Sim.Ex.TgtSt.noConfusionType": [],
+    "Toy.Sim.Ex.TgtSt.ready": [],
+    "Toy.Sim.Ex.TgtSt.ready.elim": [],
+    "Toy.Sim.Ex.TgtSt.ready.sizeOf_spec": [],
+    "Toy.Sim.Ex.TgtSt.rec": [],
+    "Toy.Sim.Ex.TgtSt.recOn": [],
+    "Toy.Sim.Ex.TgtStep": [],
+    "Toy.Sim.Ex.TgtStep.casesOn": [],
+    "Toy.Sim.Ex.TgtStep.read": [],
+    "Toy.Sim.Ex.TgtStep.rec": [],
+    "Toy.Sim.Ex.TgtStep.recOn": [],
+    "Toy.Sim.Ex.TgtStep.ret": [],
+    "Toy.Sim.Ex.Three": [],
+    "Toy.Sim.Ex.Three.casesOn": [],
+    "Toy.Sim.Ex.Three.ctorElim": [],
+    "Toy.Sim.Ex.Three.ctorElimType": [],
+    "Toy.Sim.Ex.Three.ctorIdx": [],
+    "Toy.Sim.Ex.Three.left": [],
+    "Toy.Sim.Ex.Three.left.elim": [],
+    "Toy.Sim.Ex.Three.left.sizeOf_spec": [],
+    "Toy.Sim.Ex.Three.noConfusion": [],
+    "Toy.Sim.Ex.Three.noConfusionType": [],
+    "Toy.Sim.Ex.Three.ofNat": [],
+    "Toy.Sim.Ex.Three.ofNat_ctorIdx": [],
+    "Toy.Sim.Ex.Three.rec": [],
+    "Toy.Sim.Ex.Three.recOn": [],
+    "Toy.Sim.Ex.Three.right": [],
+    "Toy.Sim.Ex.Three.right.elim": [],
+    "Toy.Sim.Ex.Three.right.sizeOf_spec": [],
+    "Toy.Sim.Ex.Three.root": [],
+    "Toy.Sim.Ex.Three.root.elim": [],
+    "Toy.Sim.Ex.Three.root.sizeOf_spec": [],
+    "Toy.Sim.Ex.TwoBranch": [],
+    "Toy.Sim.Ex.TwoInits": [],
+    "Toy.Sim.Ex.TwoResults": [],
+    "Toy.Sim.Ex.branchRel": [],
+    "Toy.Sim.Ex.chatter_no_behavior": [
+      "propext"
+    ],
+    "Toy.Sim.Ex.done_all_safe": [],
+    "Toy.Sim.Ex.done_behavior": [],
+    "Toy.Sim.Ex.done_neverGoesWrong": [],
+    "Toy.Sim.Ex.instDecidableEqThree": [],
+    "Toy.Sim.Ex.loop_all_safe": [],
+    "Toy.Sim.Ex.loop_behavior": [],
+    "Toy.Sim.Ex.loop_neverGoesWrong": [],
+    "Toy.Sim.Ex.midTgt_isForwardSim": [
+      "propext"
+    ],
+    "Toy.Sim.Ex.mid_not_stepFunctional": [],
+    "Toy.Sim.Ex.mid_readA_retA": [
+      "propext"
+    ],
+    "Toy.Sim.Ex.noInit_behavior": [],
+    "Toy.Sim.Ex.oneStep_all_safe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Ex.oneStep_behavior": [
+      "propext"
+    ],
+    "Toy.Sim.Ex.oneStep_neverGoesWrong": [],
+    "Toy.Sim.Ex.oneStep_no_stuck": [],
+    "Toy.Sim.Ex.oneStep_star_false": [
+      "propext"
+    ],
+    "Toy.Sim.Ex.oneStep_star_true": [],
+    "Toy.Sim.Ex.oneStep_twoBranch_isForwardSim": [
+      "propext"
+    ],
+    "Toy.Sim.Ex.srcMid_isForwardSim": [
+      "propext"
+    ],
+    "Toy.Sim.Ex.srcTgtRel_sub_srcTgtBackRel": [],
+    "Toy.Sim.Ex.srcTgt_isBackwardSim": [
+      "propext"
+    ],
+    "Toy.Sim.Ex.srcTgt_isForwardSim": [
+      "propext"
+    ],
+    "Toy.Sim.Ex.src_boot_read": [
+      "propext"
+    ],
+    "Toy.Sim.Ex.src_neverGoesWrong": [],
+    "Toy.Sim.Ex.src_no_stuck": [],
+    "Toy.Sim.Ex.src_receptive": [],
+    "Toy.Sim.Ex.stuckNow_behavior": [],
+    "Toy.Sim.Ex.tgt_determinate": [
+      "propext"
+    ],
+    "Toy.Sim.Ex.tgt_read_ret": [
+      "propext"
+    ],
+    "Toy.Sim.Ex.twoBranch_finalDeterminate": [],
+    "Toy.Sim.Ex.twoBranch_finalNoStep": [],
+    "Toy.Sim.Ex.twoBranch_initDeterminate": [],
+    "Toy.Sim.Ex.twoBranch_right_behavior": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.bsimFinal_neg": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.bsimFinal_pos": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.bsimInitExists_neg": [],
+    "Toy.Sim.Examples.bsimInitExists_pos": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.bsimInitMatch_neg": [],
+    "Toy.Sim.Examples.bsimInitMatch_pos": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.bsimProgress_neg": [],
+    "Toy.Sim.Examples.bsimProgress_pos": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.bsimStep_neg": [],
+    "Toy.Sim.Examples.bsimStep_pos": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.cex_matching_lemmas": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Examples.compOrd_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Examples.compOrd_pos": [],
+    "Toy.Sim.Examples.compRel_neg": [],
+    "Toy.Sim.Examples.compRel_pos": [],
+    "Toy.Sim.Examples.determinate_neg": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.determinate_not_antitone": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.determinate_pos": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.finalDeterminate_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Examples.finalDeterminate_pos": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.finalNoStep_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Examples.finalNoStep_pos": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.fsimChain_neg": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.fsimChain_pos": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.fsimFinal_neg": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.fsimFinal_pos": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.fsimInit_neg": [],
+    "Toy.Sim.Examples.fsimInit_pos": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.fsimStep_neg": [],
+    "Toy.Sim.Examples.fsimStep_pos": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.hasBehavior_neg": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.hasBehavior_pos": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.improves_neg": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.improves_pos": [],
+    "Toy.Sim.Examples.initDeterminate_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Examples.initDeterminate_pos": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.isBackwardSim_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Examples.isBackwardSim_pos": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.isForwardSim_neg": [],
+    "Toy.Sim.Examples.isForwardSim_pos": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.labelMatch_neg": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.labelMatch_pos": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.loop_determinate_eq": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.neverGoesWrong_neg": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.neverGoesWrong_pos": [],
+    "Toy.Sim.Examples.noBackwardSim_neg": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.noBackwardSim_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Examples.nonvacuous_backwardSim": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.nonvacuous_comp": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.nonvacuous_comp_transGen": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Examples.nonvacuous_deterministic_target": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.nonvacuous_flip": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.nonvacuous_flip_with_conclusion": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.nonvacuous_isForwardSim_preserves": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.nonvacuous_matching_lemmas": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.nonvacuous_measure_form": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.nonvacuous_partial_run_simulated": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.nonvacuous_pipeline": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.nonvacuous_pipeline_behaviors_iff": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.nonvacuous_pipeline_preserves": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.nonvacuous_preorder": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.nonvacuous_preserve_diverges": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.nonvacuous_preserve_terminates": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.nonvacuous_refinedBy_neverGoesWrong": [],
+    "Toy.Sim.Examples.nonvacuous_refinement_inclusion": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.obs_neg": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.obs_pos": [],
+    "Toy.Sim.Examples.plus_neg": [],
+    "Toy.Sim.Examples.plus_neg.match_1_1": [],
+    "Toy.Sim.Examples.plus_pos": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.positive_control_diverges": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.positive_control_flip": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.positive_control_src_tgt": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.receptive_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Examples.receptive_not_monotone": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Examples.receptive_pos": [],
+    "Toy.Sim.Examples.refinedBy_neg": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.refinedBy_pos": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.refinedBy_vacuous_for_target_without_behavior": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.safe_neg": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.safe_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Examples.silentDiv_neg": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.silentDiv_neg.match_1_1": [],
+    "Toy.Sim.Examples.silentDiv_pos": [],
+    "Toy.Sim.Examples.spinLoop_isForwardSim": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.spinRel": [],
+    "Toy.Sim.Examples.srcMeasure": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.srcMeasure.match_1": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.srcTgtPlainRel": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.srcTgtPlainRel.match_1": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.src_tgt_same_behaviors": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.star_neg": [],
+    "Toy.Sim.Examples.star_pos": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.stepFunctional_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Examples.stepFunctional_pos": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.stepLabelsMatch_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Examples.stepLabelsMatch_pos": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.stuck_neg": [],
+    "Toy.Sim.Examples.stuck_pos": [],
+    "Toy.Sim.Examples.tgt_behavior": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.tgt_star_ready": [
+      "propext"
+    ],
+    "Toy.Sim.Examples.trace_pos": [],
+    "Toy.Sim.Examples.transGen_succOrd_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.FSimChain": [],
+    "Toy.Sim.FSimChain.below": [],
+    "Toy.Sim.FSimChain.below.casesOn": [],
+    "Toy.Sim.FSimChain.below.cons": [],
+    "Toy.Sim.FSimChain.below.nil": [],
+    "Toy.Sim.FSimChain.below.rec": [],
+    "Toy.Sim.FSimChain.brecOn": [],
+    "Toy.Sim.FSimChain.casesOn": [],
+    "Toy.Sim.FSimChain.cons": [],
+    "Toy.Sim.FSimChain.nil": [],
+    "Toy.Sim.FSimChain.rec": [],
+    "Toy.Sim.FSimChain.recOn": [],
+    "Toy.Sim.FSimFinal": [],
+    "Toy.Sim.FSimInit": [],
+    "Toy.Sim.FSimStep": [],
+    "Toy.Sim.FinalDeterminate": [],
+    "Toy.Sim.FinalNoStep": [],
+    "Toy.Sim.HasBehavior": [],
+    "Toy.Sim.Improves": [],
+    "Toy.Sim.Improves.antisymm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Improves.refl": [],
+    "Toy.Sim.Improves.trans": [
+      "propext"
+    ],
+    "Toy.Sim.InitDeterminate": [],
+    "Toy.Sim.IsBackwardSim": [],
+    "Toy.Sim.IsBackwardSim.casesOn": [],
+    "Toy.Sim.IsBackwardSim.final": [],
+    "Toy.Sim.IsBackwardSim.initExists": [],
+    "Toy.Sim.IsBackwardSim.initMatch": [],
+    "Toy.Sim.IsBackwardSim.mk": [],
+    "Toy.Sim.IsBackwardSim.progress": [],
+    "Toy.Sim.IsBackwardSim.rec": [],
+    "Toy.Sim.IsBackwardSim.recOn": [],
+    "Toy.Sim.IsBackwardSim.step": [],
+    "Toy.Sim.IsBackwardSim.wf": [],
+    "Toy.Sim.IsForwardSim": [],
+    "Toy.Sim.IsForwardSim.casesOn": [],
+    "Toy.Sim.IsForwardSim.final": [],
+    "Toy.Sim.IsForwardSim.init": [],
+    "Toy.Sim.IsForwardSim.mk": [],
+    "Toy.Sim.IsForwardSim.rec": [],
+    "Toy.Sim.IsForwardSim.recOn": [],
+    "Toy.Sim.IsForwardSim.step": [],
+    "Toy.Sim.IsForwardSim.wf": [],
+    "Toy.Sim.LTS": [],
+    "Toy.Sim.LTS.State": [],
+    "Toy.Sim.LTS.casesOn": [],
+    "Toy.Sim.LTS.ctorIdx": [],
+    "Toy.Sim.LTS.final": [],
+    "Toy.Sim.LTS.init": [],
+    "Toy.Sim.LTS.mk": [],
+    "Toy.Sim.LTS.mk.inj": [],
+    "Toy.Sim.LTS.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Sim.LTS.mk.noConfusion": [],
+    "Toy.Sim.LTS.mk.sizeOf_spec": [],
+    "Toy.Sim.LTS.noConfusion": [],
+    "Toy.Sim.LTS.noConfusionType": [],
+    "Toy.Sim.LTS.rec": [],
+    "Toy.Sim.LTS.recOn": [],
+    "Toy.Sim.LTS.step": [],
+    "Toy.Sim.LabelMatch": [
+      "propext"
+    ],
+    "Toy.Sim.LabelMatch.match_1": [
+      "propext"
+    ],
+    "Toy.Sim.LabelMatch.mono": [
+      "propext"
+    ],
+    "Toy.Sim.NeverGoesWrong": [],
+    "Toy.Sim.NeverGoesWrong.exists_init": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.NoBackwardSim": [],
+    "Toy.Sim.Plus": [],
+    "Toy.Sim.Plus.single": [
+      "propext"
+    ],
+    "Toy.Sim.Plus.star": [],
+    "Toy.Sim.ProofAux.DivB": [],
+    "Toy.Sim.ProofAux.DivF": [],
+    "Toy.Sim.ProofAux.FIdx": [],
+    "Toy.Sim.ProofAux.FIdx.after": [],
+    "Toy.Sim.ProofAux.FIdx.after.elim": [],
+    "Toy.Sim.ProofAux.FIdx.after.inj": [],
+    "Toy.Sim.ProofAux.FIdx.after.injEq": [
+      "propext"
+    ],
+    "Toy.Sim.ProofAux.FIdx.after.noConfusion": [],
+    "Toy.Sim.ProofAux.FIdx.after.sizeOf_spec": [],
+    "Toy.Sim.ProofAux.FIdx.before": [],
+    "Toy.Sim.ProofAux.FIdx.before.elim": [],
+    "Toy.Sim.ProofAux.FIdx.before.inj": [],
+    "Toy.Sim.ProofAux.FIdx.before.injEq": [
+      "propext"
+    ],
+    "Toy.Sim.ProofAux.FIdx.before.noConfusion": [],
+    "Toy.Sim.ProofAux.FIdx.before.sizeOf_spec": [],
+    "Toy.Sim.ProofAux.FIdx.casesOn": [],
+    "Toy.Sim.ProofAux.FIdx.ctorElim": [],
+    "Toy.Sim.ProofAux.FIdx.ctorElimType": [],
+    "Toy.Sim.ProofAux.FIdx.ctorIdx": [],
+    "Toy.Sim.ProofAux.FIdx.noConfusion": [],
+    "Toy.Sim.ProofAux.FIdx.noConfusionType": [],
+    "Toy.Sim.ProofAux.FIdx.rec": [],
+    "Toy.Sim.ProofAux.FIdx.recOn": [],
+    "Toy.Sim.ProofAux.FOrd": [],
+    "Toy.Sim.ProofAux.FOrd.after": [],
+    "Toy.Sim.ProofAux.FOrd.before": [],
+    "Toy.Sim.ProofAux.FOrd.casesOn": [],
+    "Toy.Sim.ProofAux.FOrd.rec": [],
+    "Toy.Sim.ProofAux.FOrd.recOn": [],
+    "Toy.Sim.ProofAux.FOrd.switch": [],
+    "Toy.Sim.ProofAux.FOrd.wf": [],
+    "Toy.Sim.ProofAux.FRel": [],
+    "Toy.Sim.ProofAux.FRel.after": [],
+    "Toy.Sim.ProofAux.FRel.before": [],
+    "Toy.Sim.ProofAux.FRel.casesOn": [],
+    "Toy.Sim.ProofAux.FRel.rec": [],
+    "Toy.Sim.ProofAux.FRel.recOn": [],
+    "Toy.Sim.ProofAux.Plus.trans_star": [
+      "propext"
+    ],
+    "Toy.Sim.ProofAux.Safe.star": [
+      "propext"
+    ],
+    "Toy.Sim.ProofAux.Star.trans_plus": [
+      "propext"
+    ],
+    "Toy.Sim.ProofAux.StarN": [],
+    "Toy.Sim.ProofAux.StarN.below": [],
+    "Toy.Sim.ProofAux.StarN.below.casesOn": [],
+    "Toy.Sim.ProofAux.StarN.below.rec": [],
+    "Toy.Sim.ProofAux.StarN.below.refl": [],
+    "Toy.Sim.ProofAux.StarN.below.step": [],
+    "Toy.Sim.ProofAux.StarN.brecOn": [],
+    "Toy.Sim.ProofAux.StarN.casesOn": [],
+    "Toy.Sim.ProofAux.StarN.rec": [],
+    "Toy.Sim.ProofAux.StarN.recOn": [],
+    "Toy.Sim.ProofAux.StarN.refl": [],
+    "Toy.Sim.ProofAux.StarN.star": [],
+    "Toy.Sim.ProofAux.StarN.step": [],
+    "Toy.Sim.ProofAux.bsim_diverge": [
+      "Classical.choice",
+      "propext"
+    ],
+    "Toy.Sim.ProofAux.bsim_diverge.match_1_1": [],
+    "Toy.Sim.ProofAux.bsim_star": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.ProofAux.det_event": [
+      "propext"
+    ],
+    "Toy.Sim.ProofAux.det_silent": [
+      "propext"
+    ],
+    "Toy.Sim.ProofAux.det_star_event": [
+      "propext"
+    ],
+    "Toy.Sim.ProofAux.det_star_event_aux": [
+      "propext"
+    ],
+    "Toy.Sim.ProofAux.exists_stuck_of_not_safe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.ProofAux.f2b_trans": [
+      "propext"
+    ],
+    "Toy.Sim.ProofAux.fsim_star": [
+      "propext"
+    ],
+    "Toy.Sim.ProofAux.obs_append_eq_nil": [
+      "propext"
+    ],
+    "Toy.Sim.ProofAux.plus_sim\u2082": [
+      "propext"
+    ],
+    "Toy.Sim.ProofAux.silentDiv_of_coind": [
+      "Classical.choice"
+    ],
+    "Toy.Sim.ProofAux.silentDiv_of_coind.match_1_1": [],
+    "Toy.Sim.ProofAux.starN_of_star": [],
+    "Toy.Sim.ProofAux.star_sim\u2082": [
+      "propext"
+    ],
+    "Toy.Sim.Receptive": [],
+    "Toy.Sim.Receptive.anti": [],
+    "Toy.Sim.RefinedBy": [],
+    "Toy.Sim.RefinedBy.refl": [],
+    "Toy.Sim.RefinedBy.trans": [
+      "propext"
+    ],
+    "Toy.Sim.Safe": [],
+    "Toy.Sim.SilentDiv": [],
+    "Toy.Sim.Star": [],
+    "Toy.Sim.Star.below": [],
+    "Toy.Sim.Star.below.casesOn": [],
+    "Toy.Sim.Star.below.rec": [],
+    "Toy.Sim.Star.below.refl": [],
+    "Toy.Sim.Star.below.step": [],
+    "Toy.Sim.Star.brecOn": [],
+    "Toy.Sim.Star.casesOn": [],
+    "Toy.Sim.Star.inv": [],
+    "Toy.Sim.Star.invariant": [],
+    "Toy.Sim.Star.of_noStep": [],
+    "Toy.Sim.Star.plus_or_refl": [],
+    "Toy.Sim.Star.rec": [],
+    "Toy.Sim.Star.recOn": [],
+    "Toy.Sim.Star.refl": [],
+    "Toy.Sim.Star.single": [
+      "propext"
+    ],
+    "Toy.Sim.Star.step": [],
+    "Toy.Sim.Star.trace_nil_of_silent": [],
+    "Toy.Sim.Star.trans": [
+      "propext"
+    ],
+    "Toy.Sim.StepFunctional": [],
+    "Toy.Sim.StepLabelsMatch": [
+      "propext"
+    ],
+    "Toy.Sim.StepLabelsMatch.refl_symm": [
+      "propext"
+    ],
+    "Toy.Sim.Stuck": [],
+    "Toy.Sim.Stuck.not_safe": [],
+    "Toy.Sim.Unfolded.backward_sim_gives_refinement": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Unfolded.flip_forward_to_backward": [
+      "propext"
+    ],
+    "Toy.Sim.Unfolded.partial_run_simulated": [
+      "propext"
+    ],
+    "Toy.Sim.Unfolded.pipeline_end_to_end_refinement": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.Unfolded.silent_divergence_preserved": [
+      "Classical.choice",
+      "propext"
+    ],
+    "Toy.Sim.Unfolded.step_diagrams_compose": [
+      "propext"
+    ],
+    "Toy.Sim.Unfolded.terminating_behaviours_preserved": [
+      "propext"
+    ],
+    "Toy.Sim.backwardSim_gives_refinedBy": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.backwardSim_neverGoesWrong_behaviors_subset": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.bsimStep_star_of_all_safe": [
+      "propext"
+    ],
+    "Toy.Sim.compOrd": [],
+    "Toy.Sim.compOrd_iff_lex_of_transitive": [],
+    "Toy.Sim.compOrd_wf": [],
+    "Toy.Sim.compRel": [],
+    "Toy.Sim.extra_terminates_no_backwardSim_not_refinedBy": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.forwardSim_deterministic_target_gives_backwardSim": [
+      "propext"
+    ],
+    "Toy.Sim.forwardSim_receptive_determinate_gives_backwardSim": [
+      "propext"
+    ],
+    "Toy.Sim.fsimChain_collapse": [
+      "propext"
+    ],
+    "Toy.Sim.fsimChain_deterministic_last_gives_refinedBy": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.fsimChain_of_isForwardSim": [],
+    "Toy.Sim.fsimChain_preserves_non_goesWrong_behaviors": [
+      "Classical.choice",
+      "propext"
+    ],
+    "Toy.Sim.fsimChain_receptive_first_determinate_last_gives_refinedBy": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.fsimChain_receptive_first_determinate_last_neverGoesWrong_first_behaviors_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.fsimFinal_comp": [],
+    "Toy.Sim.fsimInit_comp": [],
+    "Toy.Sim.fsimInit_fsimStep_fsimFinal_preserve_terminates": [
+      "propext"
+    ],
+    "Toy.Sim.fsimInit_fsimStep_partial_run_simulated": [
+      "propext"
+    ],
+    "Toy.Sim.fsimStep_comp": [
+      "propext"
+    ],
+    "Toy.Sim.improves_goesWrong_nil": [],
+    "Toy.Sim.isForwardSim_comp": [
+      "propext"
+    ],
+    "Toy.Sim.isForwardSim_id": [
+      "propext"
+    ],
+    "Toy.Sim.isForwardSim_measure_iff": [],
+    "Toy.Sim.isForwardSim_of_measure": [],
+    "Toy.Sim.isForwardSim_preserves_non_goesWrong_behaviors": [
+      "Classical.choice",
+      "propext"
+    ],
+    "Toy.Sim.neverGoesWrong_of_no_stuck": [],
+    "Toy.Sim.no_backwardSim_of_extra_terminates": [
+      "propext"
+    ],
+    "Toy.Sim.not_flip_conclusion_of_noBackwardSim": [],
+    "Toy.Sim.not_flip_conclusion_of_noBackwardSim.match_1_1": [],
+    "Toy.Sim.not_refinedBy_of_extra_behavior": [],
+    "Toy.Sim.obs": [],
+    "Toy.Sim.obs.eq_1": [],
+    "Toy.Sim.obs.eq_2": [],
+    "Toy.Sim.obs.match_1": [],
+    "Toy.Sim.obs_eq_nil": [
+      "propext"
+    ],
+    "Toy.Sim.obs_none": [],
+    "Toy.Sim.obs_some": [],
+    "Toy.Sim.pipeline_fails_of_extra_terminates": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.receptive_eq": [],
+    "Toy.Sim.refinedBy_neverGoesWrong_behaviors_subset": [],
+    "Toy.Sim.safe_of_no_stuck": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sim.transGen_of_transitive": [],
+    "Toy.Sim.wf_fsimInit_fsimStep_preserve_diverges": [
+      "Classical.choice",
+      "propext"
+    ],
+    "Toy.Sim.wf_fsimInit_fsimStep_preserve_diverges.match_1_1": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

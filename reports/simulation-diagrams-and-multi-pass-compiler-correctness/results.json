@@ -1,0 +1,1111 @@
+[
+  {
+    "id": "partial-run-simulated",
+    "lean": "Toy.Sim.fsimInit_fsimStep_partial_run_simulated",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Standard: CompCert's `simulation_star` composed with the initial-state clause; restated for labelled transition systems with one event per step.",
+    "plain_claim": "If a relation R between the states of a source LTS L₁ and a target LTS L₂ satisfies the forward initial-state clause and the forward step diagram (for any index order, well-founded or not), then every finite run of L₁ from an initial state s₀, with trace t and ending in s, is matched by a run of L₂ with the same trace t that starts in an initial state related to s₀ and ends in a state related to s.",
+    "hypotheses": [
+      {
+        "name": "FSimInit L₁ L₂ R",
+        "purpose": "supplies a related initial target state for the start of the run",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_fsim_without_init_clause"
+      },
+      {
+        "name": "FSimStep L₁ L₂ ord R",
+        "purpose": "matches each source step by target steps with the same trace",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_fsim_without_step_diagram"
+      },
+      {
+        "name": "L₁.init s₀",
+        "purpose": "the forward clauses only constrain source states reachable from a related initial state",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_partial_run_from_non_initial_state"
+      },
+      {
+        "name": "Star L₁ s₀ t s",
+        "purpose": "the run being simulated",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_partial_run_without_source_run"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Induction on the source run; each step is one use of the step diagram.",
+    "nonvacuity_witness": "Src and Tgt (read one input, return it) with the relation SrcTgtRel and the run start ⟶ done 5 with trace [5].",
+    "nonvacuity_witness_lean": "Toy.Sim.Examples.nonvacuous_partial_run_simulated",
+    "non_claims": [
+      "Says nothing about what the target does after the matched run: if the source is stuck at s, the related target state may step, terminate, or belong to a system with no behaviour at all in this model (Toy.Sim.Cex.cex_forwardSim_goesWrong_not_preserved, Toy.Sim.Cex.cex_forwardSim_goesWrong_target_without_behavior).",
+      "Does not say the target has only such runs: target runs with no source counterpart are possible (Toy.Sim.Cex.cex_flip_target_not_functional).",
+      "Uses neither well-foundedness nor the final-state clause, and by itself yields neither termination nor divergence of the target.",
+      "This is the whole content of a forward simulation for a source behaviour that goes wrong: the trace emitted before going wrong is a trace of a partial target run. It is not claimed that some target behaviour improves on the going-wrong source behaviour.",
+      "Toy model: one event per step (`Option E`), no memory model, no global environment or symbol tables; nothing here is a statement about a production compiler.",
+      "Behaviours with infinitely many events are not modelled; a system whose every run emits events forever has no behaviour at all in this model (Toy.Sim.Ex.chatter_no_behavior).",
+      "Whole programs only: nothing is claimed about separate compilation, linking, or open (contextual) simulations."
+    ],
+    "prior_art": [
+      "CompCert, repository AbsInt/CompCert, release tag v3.16, commit a4ad87b17898cf7b7c8638c32ad694a15f7c0032, file common/Smallstep.v: lemma `simulation_star` (line 937), simulation of a source execution by a target execution with the same trace.",
+      "CompCert, repository AbsInt/CompCert, release tag v3.16, commit a4ad87b17898cf7b7c8638c32ad694a15f7c0032, file common/Smallstep.v: record `fsim_properties` (line 566) has the same four clauses (well-founded index order, initial states, final states, step diagram 'Plus, or Star with a smaller index'), plus a clause about public symbols that has no counterpart in this model."
+    ],
+    "design_question": "In a multi-pass verified compiler, what must each pass prove so that end-to-end correctness follows, and when is a forward simulation (source step implies target steps) enough instead of the backward simulation (target step implies source steps) that end-to-end refinement needs?",
+    "lean_names": [
+      "Toy.Sim.Unfolded.partial_run_simulated"
+    ]
+  },
+  {
+    "id": "terminating-behaviours-preserved",
+    "lean": "Toy.Sim.fsimInit_fsimStep_fsimFinal_preserve_terminates",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Standard: the termination case of CompCert's `forward_simulation_state_behaves` (common/Behaviors.v, line 284) and of Theorem 4 of Leroy (JAR 2009, Section 3.7); here the measure is not needed for this case.",
+    "plain_claim": "With the forward initial-state clause, the forward step diagram (any index order) and the forward final-state clause, every terminating behaviour of the source (trace t, result r) is a terminating behaviour of the target with the same trace and result; well-foundedness of the index order is not needed.",
+    "hypotheses": [
+      {
+        "name": "FSimInit L₁ L₂ R",
+        "purpose": "start of the matched run",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_fsim_without_init_clause"
+      },
+      {
+        "name": "FSimStep L₁ L₂ ord R",
+        "purpose": "matches the source run step by step",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_fsim_without_step_diagram"
+      },
+      {
+        "name": "FSimFinal L₁ L₂ R",
+        "purpose": "the related target state is final with the same result",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_fsim_without_final_clause"
+      },
+      {
+        "name": "HasBehavior L₁ (.terminates t r)",
+        "purpose": "the behaviour being preserved",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_preservation_without_source_behavior"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Partial-run simulation followed by one use of the final-state clause.",
+    "nonvacuity_witness": "Src and Tgt with SrcTgtRel; Src has the behaviour 'read 5, return 5'.",
+    "nonvacuity_witness_lean": "Toy.Sim.Examples.nonvacuous_preserve_terminates",
+    "non_claims": [
+      "No converse: a terminating behaviour of the target need not be a behaviour of the source (Toy.Sim.Cex.cex_flip_target_not_functional).",
+      "Nothing about divergence: preserving silent divergence additionally needs a well-founded index order (Toy.Sim.Cex.cex_fsim_without_wf_divergence_not_preserved).",
+      "The final-state clause requires the related target state to be final itself; a pass whose target needs further silent steps after the source has finished does not satisfy this clause as stated, and no result here covers that weaker clause.",
+      "Toy model: one event per step (`Option E`), no memory model, no global environment or symbol tables; nothing here is a statement about a production compiler.",
+      "Behaviours with infinitely many events are not modelled; a system whose every run emits events forever has no behaviour at all in this model (Toy.Sim.Ex.chatter_no_behavior).",
+      "Whole programs only: nothing is claimed about separate compilation, linking, or open (contextual) simulations."
+    ],
+    "prior_art": [
+      "CompCert, repository AbsInt/CompCert, release tag v3.16, commit a4ad87b17898cf7b7c8638c32ad694a15f7c0032, file common/Behaviors.v: `forward_simulation_state_behaves` (line 284), `forward_simulation_behavior_improves` (line 316) and `forward_simulation_same_safe_behavior` (line 337).",
+      "X. Leroy, 'A formally verified compiler back-end', Journal of Automated Reasoning 43(4):363-446, 2009, doi:10.1007/s10817-009-9155-4. Section 3.7 (Definition 12, Theorem 4): the 'star' forward simulation diagram, with a measure on source states in a well-founded order that must decrease when the target stutters, introduced to rule out the 'infinite stuttering problem'; Theorem 4: under the initial-state, final-state and star-simulation hypotheses, every behaviour of the source that does not go wrong is a behaviour of the target. (Passages checked in the author's version of the article.)"
+    ],
+    "design_question": "In a multi-pass verified compiler, what must each pass prove so that end-to-end correctness follows, and when is a forward simulation (source step implies target steps) enough instead of the backward simulation (target step implies source steps) that end-to-end refinement needs?",
+    "lean_names": [
+      "Toy.Sim.Unfolded.terminating_behaviours_preserved"
+    ]
+  },
+  {
+    "id": "silent-divergence-preserved",
+    "lean": "Toy.Sim.wf_fsimInit_fsimStep_preserve_diverges",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Standard: CompCert's `simulation_forever_silent`; the 'star' simulation with a well-founded measure of Leroy (JAR 2009, Section 3.7, Theorem 4).",
+    "plain_claim": "With a well-founded index order, the forward initial-state clause and the forward step diagram, every behaviour 'emit t, then run silently forever' of the source is a behaviour of the target; the final-state clause is not needed.",
+    "hypotheses": [
+      {
+        "name": "WellFounded ord",
+        "purpose": "rules out infinite stuttering: the target cannot match infinitely many source steps by doing nothing",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_fsim_without_wf_divergence_not_preserved"
+      },
+      {
+        "name": "FSimInit L₁ L₂ R",
+        "purpose": "start of the matched run",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_fsim_without_init_clause_diverges"
+      },
+      {
+        "name": "FSimStep L₁ L₂ ord R",
+        "purpose": "matches the source run step by step",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_fsim_without_step_diagram_diverges"
+      },
+      {
+        "name": "HasBehavior L₁ (.diverges t)",
+        "purpose": "the behaviour being preserved",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_preservation_without_source_behavior"
+      }
+    ],
+    "depth": "substantive",
+    "depth_justification": "Well-founded induction on the index to find the next target step, then a choice principle to assemble the infinite target run as a function.",
+    "nonvacuity_witness": "Spin (a silent step, then a silent self-loop) simulated by Loop: the target stutters once, then follows the loop.",
+    "nonvacuity_witness_lean": "Toy.Sim.Examples.nonvacuous_preserve_diverges",
+    "non_claims": [
+      "Only silent divergence after a finite trace. A source run that emits infinitely many events is not a behaviour in this model and nothing is claimed about it.",
+      "The target's infinite silent run is asserted to exist; it is not claimed to be related step for step to the source run.",
+      "Without a well-founded order the three forward clauses can hold between a diverging source and a target that terminates at once (Toy.Sim.Cex.cex_fsim_without_wf_divergence_not_preserved).",
+      "Well-foundedness of the index order is shown necessary only within this step-diagram formulation; other ways of ruling out infinite stuttering in the literature (for example the 'asynchronous progress' simulations of Cho et al., PACMPL 7(OOPSLA2), 2023) are not covered or compared here.",
+      "Toy model: one event per step (`Option E`), no memory model, no global environment or symbol tables; nothing here is a statement about a production compiler.",
+      "Behaviours with infinitely many events are not modelled; a system whose every run emits events forever has no behaviour at all in this model (Toy.Sim.Ex.chatter_no_behavior).",
+      "Whole programs only: nothing is claimed about separate compilation, linking, or open (contextual) simulations."
+    ],
+    "prior_art": [
+      "CompCert, repository AbsInt/CompCert, release tag v3.16, commit a4ad87b17898cf7b7c8638c32ad694a15f7c0032, file common/Smallstep.v: lemma `simulation_forever_silent` (line 972).",
+      "X. Leroy, 'A formally verified compiler back-end', Journal of Automated Reasoning 43(4):363-446, 2009, doi:10.1007/s10817-009-9155-4. Section 3.7 (Definition 12, Theorem 4): the 'star' forward simulation diagram, with a measure on source states in a well-founded order that must decrease when the target stutters, introduced to rule out the 'infinite stuttering problem'; Theorem 4: under the initial-state, final-state and star-simulation hypotheses, every behaviour of the source that does not go wrong is a behaviour of the target. (Passages checked in the author's version of the article.)",
+      "M. Desharnais-Schäfer, 'A Generic Framework for Verified Compilers', Archive of Formal Proofs, entry `VeriComp`, first published February 10, 2020; read in its release archive for Isabelle2026 dated 2026-10-26, https://isa-afp.org/release/afp-VeriComp-2026-10-26.tar.gz, SHA-256 `a45a410e58aa9850f2e3195010e9a86c1469c35e5f1846eea44067ee4662a547` (Isabelle/HOL; related paper: M. Desharnais and S. Brunthaler, CPP 2021, doi:10.1145/3437992.3439923). Unlabelled transition systems with behaviours Terminates, Diverges and Goes_wrong (no event traces); locales `forward_simulation` and `backward_simulation` with a well-founded order, stuttering being a zero-step move with a smaller index; lemma `forward_simulation_composition` composes forward simulations with the order `lex_prodp order2++ order1` (lexicographic, transitive closure of the second-pass order), the same shape as `compOrd`; lemma `state_behaves_forward_to_backward` transfers behaviours from a safe source state to a right-unique (deterministic) target. Without events there is no receptiveness or event-matching determinacy. (Read in that archive: theories `VeriComp/Behaviour.thy` (datatype `behaviour`, line 5) and `VeriComp/Simulation.thy` (locales `backward_simulation`, line 13, and `forward_simulation`, line 148; lemmas `state_behaves_forward_to_backward`, line 273, and `forward_simulation_composition`, line 699). The release matters: the entry's history dates the addition of the forward-simulation composition lemmas to July 10, 2024, and `forward_simulation_composition` is absent from the entry's release archives dated 2020-02-25 (Isabelle2019) and 2024-05-26 (Isabelle2024) and present from the archive dated 2025-03-17 (Isabelle2025) on.)"
+    ],
+    "design_question": "In a multi-pass verified compiler, what must each pass prove so that end-to-end correctness follows, and when is a forward simulation (source step implies target steps) enough instead of the backward simulation (target step implies source steps) that end-to-end refinement needs?",
+    "lean_names": [
+      "Toy.Sim.Unfolded.silent_divergence_preserved"
+    ]
+  },
+  {
+    "id": "forward-sim-preserves-non-wrong-behaviours",
+    "lean": [
+      "Toy.Sim.isForwardSim_preserves_non_goesWrong_behaviors",
+      "Toy.Sim.fsimChain_preserves_non_goesWrong_behaviors"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Standard: CompCert's `forward_simulation_same_safe_behavior`; Theorem 4 of Leroy (JAR 2009, Section 3.7); property (3) of Leroy (CACM 2009, Section 2.1). The chain form iterates the single-pass form.",
+    "plain_claim": "A forward simulation (well-founded index order, initial, final and step clauses) preserves every behaviour of the source that is not a going-wrong behaviour: it is also a behaviour of the target. The same holds along a pipeline in which every pass has a forward simulation (FSimChain L L'), with no receptiveness or determinacy hypothesis.",
+    "hypotheses": [
+      {
+        "name": "IsForwardSim L₁ L₂ ord R, clause wf (single-pass theorem)",
+        "purpose": "needed for diverging behaviours",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_fsim_without_wf_divergence_not_preserved"
+      },
+      {
+        "name": "IsForwardSim L₁ L₂ ord R, clause init (single-pass theorem)",
+        "purpose": "start of the matched run",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_fsim_without_init_clause"
+      },
+      {
+        "name": "IsForwardSim L₁ L₂ ord R, clause final (single-pass theorem)",
+        "purpose": "needed for terminating behaviours",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_fsim_without_final_clause"
+      },
+      {
+        "name": "IsForwardSim L₁ L₂ ord R, clause step (single-pass theorem)",
+        "purpose": "matches the source run step by step",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_fsim_without_step_diagram"
+      },
+      {
+        "name": "FSimChain L L' (chain theorem)",
+        "purpose": "every pass has a forward simulation",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_pipeline_preserves_without_chain"
+      },
+      {
+        "name": "HasBehavior L₁ b / HasBehavior L b (both theorems)",
+        "purpose": "the behaviour being preserved",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_preservation_without_source_behavior"
+      },
+      {
+        "name": "∀ t, b ≠ .goesWrong t (both theorems)",
+        "purpose": "going-wrong behaviours are not preserved",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_forwardSim_goesWrong_not_preserved"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Case split on the behaviour and the two preservation results; induction on the chain.",
+    "nonvacuity_witness": "Src and Tgt with SrcTgtRel and the behaviour 'read 5, return 5'; the chain Src ⟶ Mid ⟶ Tgt and the same behaviour.",
+    "nonvacuity_witness_lean": [
+      "Toy.Sim.Examples.nonvacuous_isForwardSim_preserves",
+      "Toy.Sim.Examples.nonvacuous_pipeline_preserves"
+    ],
+    "non_claims": [
+      "This is not refinement: the inclusion goes from source behaviours to target behaviours. The target may have additional behaviours that the source does not allow (Toy.Sim.Cex.cex_flip_target_not_functional).",
+      "Unlike CompCert's `forward_simulation_behavior_improves`, nothing is claimed for going-wrong source behaviours: in this model 'some target behaviour improves on it' can fail because the target may have no behaviour at all (Toy.Sim.Cex.cex_forwardSim_goesWrong_target_without_behavior).",
+      "Consequence for compiler design: because every non-going-wrong source behaviour survives, a pass verified by a forward simulation cannot remove observable nondeterminism of a source that never goes wrong (Toy.Sim.Boundary.resolving_nondeterminism_needs_backward_simulation).",
+      "Toy model: one event per step (`Option E`), no memory model, no global environment or symbol tables; nothing here is a statement about a production compiler.",
+      "Behaviours with infinitely many events are not modelled; a system whose every run emits events forever has no behaviour at all in this model (Toy.Sim.Ex.chatter_no_behavior).",
+      "Whole programs only: nothing is claimed about separate compilation, linking, or open (contextual) simulations."
+    ],
+    "prior_art": [
+      "CompCert, repository AbsInt/CompCert, release tag v3.16, commit a4ad87b17898cf7b7c8638c32ad694a15f7c0032, file common/Behaviors.v: `forward_simulation_state_behaves` (line 284), `forward_simulation_behavior_improves` (line 316) and `forward_simulation_same_safe_behavior` (line 337).",
+      "X. Leroy, 'A formally verified compiler back-end', Journal of Automated Reasoning 43(4):363-446, 2009, doi:10.1007/s10817-009-9155-4. Section 3.7 (Definition 12, Theorem 4): the 'star' forward simulation diagram, with a measure on source states in a well-founded order that must decrease when the target stutters, introduced to rule out the 'infinite stuttering problem'; Theorem 4: under the initial-state, final-state and star-simulation hypotheses, every behaviour of the source that does not go wrong is a behaviour of the target. (Passages checked in the author's version of the article.)",
+      "X. Leroy, 'Formal verification of a realistic compiler', Communications of the ACM 52(7):107-115, 2009, doi:10.1145/1538788.1538814. Section 2.1 states whole-program behaviour-preservation properties; for source and target languages that are deterministic and execution environments that are deterministic (so each program has exactly one behaviour), 'S safe implies every behaviour of C is a behaviour of S' is equivalent to the easier 'every non-wrong behaviour of S is a behaviour of C'. Section 2.3 composes compiler passes for any transitive whole-program preservation property; it does not concern step-level simulation diagrams or stuttering orders. (Passages checked in the author's version of the article.)"
+    ],
+    "design_question": "In a multi-pass verified compiler, what must each pass prove so that end-to-end correctness follows, and when is a forward simulation (source step implies target steps) enough instead of the backward simulation (target step implies source steps) that end-to-end refinement needs?"
+  },
+  {
+    "id": "step-diagrams-compose",
+    "lean": "Toy.Sim.fsimStep_comp",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Standard: the simulation clause of CompCert's `compose_forward_simulations`, with the same composite relation and order; VeriComp's `forward_simulation_composition` uses the same order shape.",
+    "plain_claim": "If R₁ satisfies the forward step diagram from L₁ to L₂ with index order ord₁ and R₂ satisfies it from L₂ to L₃ with ord₂, then the relational composite compRel R₁ R₂ satisfies the forward step diagram from L₁ to L₃ for the lexicographic order compOrd ord₁ ord₂ (transitive closure of ord₂ on the first component, then ord₁); no well-foundedness is needed.",
+    "hypotheses": [
+      {
+        "name": "FSimStep L₁ L₂ ord₁ R₁",
+        "purpose": "step diagram of the first pass",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_comp_without_first_step_diagram"
+      },
+      {
+        "name": "FSimStep L₂ L₃ ord₂ R₂",
+        "purpose": "step diagram of the second pass",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_comp_without_second_step_diagram"
+      }
+    ],
+    "depth": "substantive",
+    "depth_justification": "Induction over the middle-language steps produced by the first pass, tracking whether the last system moved and how the second index changed.",
+    "nonvacuity_witness": "Src ⟶ Mid (stuttering first pass) and Mid ⟶ Tgt (lock-step second pass); and OneStep none 0 ⟶ Chain3 ⟶ Done 0, where one source step becomes two middle steps that each stutter in the last system, so that the transitive closure in compOrd is used.",
+    "nonvacuity_witness_lean": [
+      "Toy.Sim.Examples.nonvacuous_comp",
+      "Toy.Sim.Examples.nonvacuous_comp_transGen"
+    ],
+    "non_claims": [
+      "The transitive closure in compOrd cannot be dropped in general: with the plain lexicographic order the same composite relation can fail the step diagram (Toy.Sim.Cex.cex_comp_naive_lex_order_fails).",
+      "Escape hatch: the transitive closure in `compOrd` matters only when ord₂ is not transitive (as for `succOrd` in Toy.Sim.Cex.cex_comp_naive_lex_order_fails); when ord₂ is transitive (for example `<` on `Nat`), `compOrd` coincides with the plain lexicographic order (Toy.Sim.compOrd_iff_lex_of_transitive, Toy.Sim.Cex.compOrd_iff_naiveCompOrd_of_transitive).",
+      "The claim is about this particular composite relation and order; it does not say they are the only or the smallest ones.",
+      "Composition of backward simulations is not addressed.",
+      "Vertical composition only (stacking passes); nothing about composing simulations of separately compiled modules.",
+      "Toy model: one event per step (`Option E`), no memory model, no global environment or symbol tables; nothing here is a statement about a production compiler.",
+      "Behaviours with infinitely many events are not modelled; a system whose every run emits events forever has no behaviour at all in this model (Toy.Sim.Ex.chatter_no_behavior).",
+      "Whole programs only: nothing is claimed about separate compilation, linking, or open (contextual) simulations."
+    ],
+    "prior_art": [
+      "CompCert, repository AbsInt/CompCert, release tag v3.16, commit a4ad87b17898cf7b7c8638c32ad694a15f7c0032, file common/Smallstep.v: lemma `compose_forward_simulations` (line 1003); the composite index order is `lex_ord (clos_trans _ order') order` (line 1011), i.e. lexicographic with the transitive closure of the second-pass order, and the composite relation is relational composition through a middle state.",
+      "M. Desharnais-Schäfer, 'A Generic Framework for Verified Compilers', Archive of Formal Proofs, entry `VeriComp`, first published February 10, 2020; read in its release archive for Isabelle2026 dated 2026-10-26, https://isa-afp.org/release/afp-VeriComp-2026-10-26.tar.gz, SHA-256 `a45a410e58aa9850f2e3195010e9a86c1469c35e5f1846eea44067ee4662a547` (Isabelle/HOL; related paper: M. Desharnais and S. Brunthaler, CPP 2021, doi:10.1145/3437992.3439923). Unlabelled transition systems with behaviours Terminates, Diverges and Goes_wrong (no event traces); locales `forward_simulation` and `backward_simulation` with a well-founded order, stuttering being a zero-step move with a smaller index; lemma `forward_simulation_composition` composes forward simulations with the order `lex_prodp order2++ order1` (lexicographic, transitive closure of the second-pass order), the same shape as `compOrd`; lemma `state_behaves_forward_to_backward` transfers behaviours from a safe source state to a right-unique (deterministic) target. Without events there is no receptiveness or event-matching determinacy. (Read in that archive: theories `VeriComp/Behaviour.thy` (datatype `behaviour`, line 5) and `VeriComp/Simulation.thy` (locales `backward_simulation`, line 13, and `forward_simulation`, line 148; lemmas `state_behaves_forward_to_backward`, line 273, and `forward_simulation_composition`, line 699). The release matters: the entry's history dates the addition of the forward-simulation composition lemmas to July 10, 2024, and `forward_simulation_composition` is absent from the entry's release archives dated 2020-02-25 (Isabelle2019) and 2024-05-26 (Isabelle2024) and present from the archive dated 2025-03-17 (Isabelle2025) on.)",
+      "N. Lynch and F. Vaandrager, 'Forward and Backward Simulations: Part I: Untimed Systems', Information and Computation 121(2):214-233, 1995, doi:10.1006/inco.1995.1134 (Crossref title 'Forward and Backward Simulations'). Section 3.2: forward simulations between automata, without a stuttering measure; Proposition 3.9 (forward simulations form a preorder, by plain relational composition) and Theorem 3.10 (soundness for finite-trace inclusion). There is no divergence preservation and no composite index order. Terminology differs: both of their simulation notions follow the steps of the implementation automaton, and their 'backward simulation' (Section 3.3) matches from post-state to pre-state. (Passages checked in the authors' version of the article.)"
+    ],
+    "design_question": "In a multi-pass verified compiler, what must each pass prove so that end-to-end correctness follows, and when is a forward simulation (source step implies target steps) enough instead of the backward simulation (target step implies source steps) that end-to-end refinement needs?",
+    "lean_names": [
+      "Toy.Sim.Unfolded.step_diagrams_compose"
+    ]
+  },
+  {
+    "id": "forward-simulations-compose",
+    "lean": [
+      "Toy.Sim.isForwardSim_comp",
+      "Toy.Sim.fsimInit_comp",
+      "Toy.Sim.fsimFinal_comp",
+      "Toy.Sim.compOrd_wf"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Standard: CompCert's `compose_forward_simulations`; VeriComp's `forward_simulation_composition`; well-foundedness of lexicographic products and transitive closures is textbook.",
+    "plain_claim": "Forward simulations compose vertically: from a forward simulation (ord₁, R₁) from L₁ to L₂ and a forward simulation (ord₂, R₂) from L₂ to L₃, the pair (compOrd ord₁ ord₂, compRel R₁ R₂) is a forward simulation from L₁ to L₃. Clause by clause: the initial-state clauses compose (fsimInit_comp), the final-state clauses compose (fsimFinal_comp), compOrd ord₁ ord₂ is well-founded when ord₁ and ord₂ are (compOrd_wf), and the step clauses compose as in step-diagrams-compose.",
+    "hypotheses": [
+      {
+        "name": "WellFounded ord₁ (first pass; isForwardSim_comp and compOrd_wf)",
+        "purpose": "well-foundedness of the composite order",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Sim.Cex.cex_comp_without_first_wf",
+          "Toy.Sim.Cex.cex_compOrd_wf_needs_both"
+        ]
+      },
+      {
+        "name": "WellFounded ord₂ (second pass; isForwardSim_comp and compOrd_wf)",
+        "purpose": "well-foundedness of the composite order",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Sim.Cex.cex_comp_without_second_wf",
+          "Toy.Sim.Cex.cex_compOrd_wf_needs_both"
+        ]
+      },
+      {
+        "name": "FSimInit L₁ L₂ R₁ (isForwardSim_comp and fsimInit_comp)",
+        "purpose": "initial clause of the composite",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_comp_without_first_init"
+      },
+      {
+        "name": "FSimInit L₂ L₃ R₂ (isForwardSim_comp and fsimInit_comp)",
+        "purpose": "initial clause of the composite",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_comp_without_second_init"
+      },
+      {
+        "name": "FSimFinal L₁ L₂ R₁ (isForwardSim_comp and fsimFinal_comp)",
+        "purpose": "final clause of the composite",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_comp_without_first_final"
+      },
+      {
+        "name": "FSimFinal L₂ L₃ R₂ (isForwardSim_comp and fsimFinal_comp)",
+        "purpose": "final clause of the composite",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_comp_without_second_final"
+      },
+      {
+        "name": "FSimStep L₁ L₂ ord₁ R₁ (isForwardSim_comp)",
+        "purpose": "step clause of the composite",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_comp_without_first_step_diagram"
+      },
+      {
+        "name": "FSimStep L₂ L₃ ord₂ R₂ (isForwardSim_comp)",
+        "purpose": "step clause of the composite",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_comp_without_second_step_diagram"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Assembles the four clauses; the step clause (step-diagrams-compose) is the substantive one, the others are one-line compositions and a subrelation argument for well-foundedness.",
+    "nonvacuity_witness": "Src ⟶ Mid ⟶ Tgt; and OneStep none 0 ⟶ Chain3 ⟶ Done 0 (second pass with a non-transitive, well-founded order).",
+    "nonvacuity_witness_lean": [
+      "Toy.Sim.Examples.nonvacuous_comp",
+      "Toy.Sim.Examples.nonvacuous_comp_transGen"
+    ],
+    "non_claims": [
+      "The counterexamples show that no hypothesis can be dropped in general; they do not show that the composite fails whenever one pass fails a clause. For example, if R₁ never relates any state to a middle state where R₂ fails a clause, or if one of the index types is empty, the composite can still be a forward simulation.",
+      "The middle language is hidden inside the composite relation; nothing is concluded about it.",
+      "Does not give refinement between L₁ and L₃; see pipeline-end-to-end-refinement for the extra hypotheses that requires.",
+      "Says nothing about the order type of compOrd or about bounds on the number of stuttering steps.",
+      "Toy model: one event per step (`Option E`), no memory model, no global environment or symbol tables; nothing here is a statement about a production compiler.",
+      "Behaviours with infinitely many events are not modelled; a system whose every run emits events forever has no behaviour at all in this model (Toy.Sim.Ex.chatter_no_behavior).",
+      "Whole programs only: nothing is claimed about separate compilation, linking, or open (contextual) simulations."
+    ],
+    "prior_art": [
+      "CompCert, repository AbsInt/CompCert, release tag v3.16, commit a4ad87b17898cf7b7c8638c32ad694a15f7c0032, file common/Smallstep.v: lemma `compose_forward_simulations` (line 1003); the composite index order is `lex_ord (clos_trans _ order') order` (line 1011), i.e. lexicographic with the transitive closure of the second-pass order, and the composite relation is relational composition through a middle state.",
+      "M. Desharnais-Schäfer, 'A Generic Framework for Verified Compilers', Archive of Formal Proofs, entry `VeriComp`, first published February 10, 2020; read in its release archive for Isabelle2026 dated 2026-10-26, https://isa-afp.org/release/afp-VeriComp-2026-10-26.tar.gz, SHA-256 `a45a410e58aa9850f2e3195010e9a86c1469c35e5f1846eea44067ee4662a547` (Isabelle/HOL; related paper: M. Desharnais and S. Brunthaler, CPP 2021, doi:10.1145/3437992.3439923). Unlabelled transition systems with behaviours Terminates, Diverges and Goes_wrong (no event traces); locales `forward_simulation` and `backward_simulation` with a well-founded order, stuttering being a zero-step move with a smaller index; lemma `forward_simulation_composition` composes forward simulations with the order `lex_prodp order2++ order1` (lexicographic, transitive closure of the second-pass order), the same shape as `compOrd`; lemma `state_behaves_forward_to_backward` transfers behaviours from a safe source state to a right-unique (deterministic) target. Without events there is no receptiveness or event-matching determinacy. (Read in that archive: theories `VeriComp/Behaviour.thy` (datatype `behaviour`, line 5) and `VeriComp/Simulation.thy` (locales `backward_simulation`, line 13, and `forward_simulation`, line 148; lemmas `state_behaves_forward_to_backward`, line 273, and `forward_simulation_composition`, line 699). The release matters: the entry's history dates the addition of the forward-simulation composition lemmas to July 10, 2024, and `forward_simulation_composition` is absent from the entry's release archives dated 2020-02-25 (Isabelle2019) and 2024-05-26 (Isabelle2024) and present from the archive dated 2025-03-17 (Isabelle2025) on.)",
+      "N. Lynch and F. Vaandrager, 'Forward and Backward Simulations: Part I: Untimed Systems', Information and Computation 121(2):214-233, 1995, doi:10.1006/inco.1995.1134 (Crossref title 'Forward and Backward Simulations'). Section 3.2: forward simulations between automata, without a stuttering measure; Proposition 3.9 (forward simulations form a preorder, by plain relational composition) and Theorem 3.10 (soundness for finite-trace inclusion). There is no divergence preservation and no composite index order. Terminology differs: both of their simulation notions follow the steps of the implementation automaton, and their 'backward simulation' (Section 3.3) matches from post-state to pre-state. (Passages checked in the authors' version of the article.)"
+    ],
+    "design_question": "In a multi-pass verified compiler, what must each pass prove so that end-to-end correctness follows, and when is a forward simulation (source step implies target steps) enough instead of the backward simulation (target step implies source steps) that end-to-end refinement needs?"
+  },
+  {
+    "id": "flip-forward-to-backward",
+    "lean": [
+      "Toy.Sim.forwardSim_receptive_determinate_gives_backwardSim",
+      "Toy.Sim.forwardSim_deterministic_target_gives_backwardSim"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Standard: Theorem 2 of Ševčík et al. (POPL 2011, Section 4), including the clause 'contains R'; CompCert's `forward_to_backward_simulation` states the version without that clause. Restated with an arbitrary event-matching relation M (in place of 'labels of the same kind' or `match_traces`), with one event per step built into the model (so there is no `single_events` side condition), and with determinacy split into five separately named clauses. The second theorem is the instance M = Eq.",
+    "plain_claim": "If (ord, R) is a forward simulation from L₁ to L₂, L₁ is receptive and L₂ is determinate with respect to the same event-matching relation M, then some backward simulation from L₁ to L₂ exists, and its relation contains every pair of states related by R. In the special case M = Eq every L₁ is receptive, so a forward simulation into an L₂ that is deterministic (determinate for Eq) suffices.",
+    "hypotheses": [
+      {
+        "name": "IsForwardSim L₁ L₂ ord R, clause wf (both theorems)",
+        "purpose": "rules out infinite stuttering",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_flip_without_wf"
+      },
+      {
+        "name": "IsForwardSim L₁ L₂ ord R, clause init (both theorems)",
+        "purpose": "initial states",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_flip_without_init_clause"
+      },
+      {
+        "name": "IsForwardSim L₁ L₂ ord R, clause final (both theorems)",
+        "purpose": "final states and results",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_flip_without_final_clause"
+      },
+      {
+        "name": "IsForwardSim L₁ L₂ ord R, clause step (both theorems)",
+        "purpose": "step diagram",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_flip_without_step_diagram"
+      },
+      {
+        "name": "Receptive M L₁ (first theorem; automatic for M = Eq)",
+        "purpose": "the source accepts every alternative environment response the target may receive",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_flip_nonreceptive_source"
+      },
+      {
+        "name": "Determinate M L₂, clause labels (StepLabelsMatch; both theorems, the second at M = Eq)",
+        "purpose": "two steps from one target state carry matching labels",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Sim.Cex.cex_flip_target_labels_mismatch",
+          "Toy.Sim.Cex.cex_flip_target_event_labels_mismatch"
+        ]
+      },
+      {
+        "name": "Determinate M L₂, clause functional (StepFunctional)",
+        "purpose": "the label determines the target successor",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_flip_target_not_functional"
+      },
+      {
+        "name": "Determinate M L₂, clause init (InitDeterminate)",
+        "purpose": "at most one initial target state",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_flip_target_two_initial_states"
+      },
+      {
+        "name": "Determinate M L₂, clause finalNoStep (FinalNoStep)",
+        "purpose": "final target states do not step",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_flip_target_final_state_steps"
+      },
+      {
+        "name": "Determinate M L₂, clause finalDet (FinalDeterminate)",
+        "purpose": "a final target state has one result",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_flip_target_two_results"
+      }
+    ],
+    "depth": "substantive",
+    "depth_justification": "Needs a new relation that also covers target states in the middle of the steps simulating one source step, a determinacy argument for silent prefixes, and a two-level index order.",
+    "nonvacuity_witness": "Src and Tgt with SrcTgtRel, where any two inputs match (AnyInput): Src accepts every input and Tgt is determinate; in the same instance the conclusion holds with the backward relation SrcTgtBackRel, which contains SrcTgtRel. For M = Eq: Spin simulated by the deterministic one-state system Loop.",
+    "nonvacuity_witness_lean": [
+      "Toy.Sim.Examples.nonvacuous_flip",
+      "Toy.Sim.Examples.nonvacuous_flip_with_conclusion",
+      "Toy.Sim.Examples.nonvacuous_deterministic_target"
+    ],
+    "non_claims": [
+      "Does not say that R itself is a backward simulation. The backward relation is in general a different, larger relation; the statement exposes only its existence and that it contains R.",
+      "Does not allow a pass verified by a forward simulation (or a chain of them) to remove observable nondeterminism of a source or intermediate language: forward simulations preserve every behaviour of the source that does not go wrong (Toy.Sim.fsimChain_preserves_non_goesWrong_behaviors), so if the source has two such behaviours the target has both, whatever its determinacy. A pass that fixes an unspecified choice (for example an evaluation order) must be verified another way, for example by a backward simulation, and composed through `RefinedBy.trans`. Lean instance: Toy.Sim.Boundary.resolving_nondeterminism_needs_backward_simulation (a source that may return 0 or 1 and never goes wrong is refined by the deterministic `Done 0`, and a backward simulation exists, but no forward simulation exists). CompCert's end-to-end theorem for C, `c_semantic_preservation` (driver/Compiler.v, line 419), prepends such a backward simulation from `Csem` to its forward-simulated pipeline.",
+      "Escape hatch (different matching relations): the source and target need not use literally the same relation; if the source is receptive for M₁, the target determinate for M₂, and M₂ ⊆ M₁, then the target is determinate for M₁ (Toy.Sim.Determinate.mono) and the theorem applies with M := M₁. No algebraic axiom on M appears in the statement, but determinacy constrains M on the target's events: M is reflexive on every event the target can emit and symmetric on any two events offered by the same target state (Toy.Sim.StepLabelsMatch.refl_symm); determinacy of an event-emitting target is impossible for an irreflexive M. Receptiveness for a smaller relation is not enough: in Toy.Sim.Cex.cex_flip_nonreceptive_source the source is receptive for Eq while the target is determinate only for AnyInput.",
+      "`Receptive` and `Determinate` quantify over all states, including unreachable ones. Nondeterminism confined to unreachable states need not break the conclusion (Toy.Sim.Boundary.flip_conclusion_with_unreachable_nondeterminism). Whether the theorem holds in general with both conditions restricted to reachable states (or to an invariant) is not proved in this package.",
+      "Unknown (not examined): `FSimFinal` requires a target state related to a final source state to be final itself, with no trailing silent target steps. Whether the flip lemma (and hence end-to-end refinement) still holds when `FSimFinal` is weakened to 'the related target state reaches, by silent steps, a final state with the same result' is not examined in this package.",
+      "One observable event per step (`Option E`) is built into `LTS`. CompCert's `receptive` and `determinate` records include a separate `single_events` condition, and for its multi-event C semantics CompCert flips the forward simulation only after the `atomic` construction (driver/Compiler.v, lines 413-416). Nothing here is claimed for semantics whose steps carry several events.",
+      "`Safe L₁ s₁` in the backward clauses means only that s₁ cannot get stuck along silent steps before its next observable event (as CompCert's `Smallstep.safe`); it does not mean that s₁ never goes wrong after later events, and it is strictly weaker than whole-program `NeverGoesWrong L₁` (Toy.Sim.Examples.safe_pos: the initial state of `EmitThenStuck` is `Safe` although the program goes wrong after the trace [1]). A backward simulation constrains the target only while the related source state is Safe; nothing is concluded about target steps taken after the source has gone wrong.",
+      "Determinate Eq forbids a target state from offering two different events, so a target that reads inputs from the environment is not covered by the M = Eq special case; it needs the general theorem with a receptive source.",
+      "No claim that receptiveness or determinacy hold for any real language.",
+      "Toy model: one event per step (`Option E`), no memory model, no global environment or symbol tables; nothing here is a statement about a production compiler.",
+      "Behaviours with infinitely many events are not modelled; a system whose every run emits events forever has no behaviour at all in this model (Toy.Sim.Ex.chatter_no_behavior).",
+      "Whole programs only: nothing is claimed about separate compilation, linking, or open (contextual) simulations."
+    ],
+    "prior_art": [
+      "J. Ševčík, V. Vafeiadis, F. Zappa Nardelli, S. Jagannathan, P. Sewell, 'Relaxed-memory concurrency and verified compilation', POPL 2011, pp. 43-54, doi:10.1145/1926385.1926393. Section 4 defines labels 'of the same kind' (te ≍ te': they differ only in input values), receptive thread LTSs (Definition 2), determinate thread LTSs (Definition 3: co-enabled labels are of the same kind, and equal labels lead to equal states), threadwise forward and backward simulations with a well-founded order for stuttering (Definitions 4-5), and Theorem 2: 'If R is a threadwise forward simulation from S to T, S is receptive, and T is determinate, then there is a threadwise backward simulation that contains R.' This is the step-level flip theorem, including the clause 'contains R'; their simulations also treat explicit failure labels and are lifted to a concurrent TSO machine, which this package does not model. (Section 4 read in the authors' version of the paper.)",
+      "J. Ševčík, V. Vafeiadis, F. Zappa Nardelli, S. Jagannathan, P. Sewell, 'CompCertTSO: A Verified Compiler for Relaxed-Memory Concurrency', Journal of the ACM 60(3), article 22, pp. 22:1-22:50, 2013, doi:10.1145/2487241.2487248. Journal version of the POPL 2011 paper; bibliographic record verified, the body (including the number of the corresponding theorem) was not examined for this package.",
+      "CompCert, repository AbsInt/CompCert, release tag v3.16, commit a4ad87b17898cf7b7c8638c32ad694a15f7c0032, file common/Smallstep.v: section FORWARD_TO_BACKWARD (line 1608), lemma `forward_to_backward_simulation` (line 1863): `forward_simulation L1 L2 -> receptive L1 -> determinate L2 -> backward_simulation L1 L2`. CompCert's `forward_simulation` and `backward_simulation` hide the simulation relations, so this lemma does not state that the backward relation contains the forward one (the statement here does).",
+      "CompCert, repository AbsInt/CompCert, release tag v3.16, commit a4ad87b17898cf7b7c8638c32ad694a15f7c0032, file common/Smallstep.v: records `receptive` (line 1050) and `determinate` (line 1058), stated with the trace relation `match_traces` and a separate `single_events` field (`sr_traces`, `sd_traces`); CompCert's `sd_determ` bundles the label-matching and functionality clauses that are separate here.",
+      "X. Leroy, 'A formally verified compiler back-end', Journal of Automated Reasoning 43(4):363-446, 2009, doi:10.1007/s10817-009-9155-4. Section 2.1 (Definitions 2-5, Figure 2) relates whole-program behaviour inclusions — 'backward simulation' (every behaviour of the compiled program C is a behaviour of the source S), 'forward simulation' (every behaviour of S is a behaviour of C), and their versions for safe programs — and shows that the forward inclusion implies the backward one when C is deterministic, i.e. admits a single behaviour (target language without internal nondeterminism and a deterministic execution environment). These are behaviour-set statements, not step-level simulation diagrams; the article has no step-level receptiveness or determinacy conditions and no step-level flip theorem. (Passages checked in the author's version of the article.)",
+      "M. Desharnais-Schäfer, 'A Generic Framework for Verified Compilers', Archive of Formal Proofs, entry `VeriComp`, first published February 10, 2020; read in its release archive for Isabelle2026 dated 2026-10-26, https://isa-afp.org/release/afp-VeriComp-2026-10-26.tar.gz, SHA-256 `a45a410e58aa9850f2e3195010e9a86c1469c35e5f1846eea44067ee4662a547` (Isabelle/HOL; related paper: M. Desharnais and S. Brunthaler, CPP 2021, doi:10.1145/3437992.3439923). Unlabelled transition systems with behaviours Terminates, Diverges and Goes_wrong (no event traces); locales `forward_simulation` and `backward_simulation` with a well-founded order, stuttering being a zero-step move with a smaller index; lemma `forward_simulation_composition` composes forward simulations with the order `lex_prodp order2++ order1` (lexicographic, transitive closure of the second-pass order), the same shape as `compOrd`; lemma `state_behaves_forward_to_backward` transfers behaviours from a safe source state to a right-unique (deterministic) target. Without events there is no receptiveness or event-matching determinacy. (Read in that archive: theories `VeriComp/Behaviour.thy` (datatype `behaviour`, line 5) and `VeriComp/Simulation.thy` (locales `backward_simulation`, line 13, and `forward_simulation`, line 148; lemmas `state_behaves_forward_to_backward`, line 273, and `forward_simulation_composition`, line 699). The release matters: the entry's history dates the addition of the forward-simulation composition lemmas to July 10, 2024, and `forward_simulation_composition` is absent from the entry's release archives dated 2020-02-25 (Isabelle2019) and 2024-05-26 (Isabelle2024) and present from the archive dated 2025-03-17 (Isabelle2025) on.)"
+    ],
+    "design_question": "In a multi-pass verified compiler, what must each pass prove so that end-to-end correctness follows, and when is a forward simulation (source step implies target steps) enough instead of the backward simulation (target step implies source steps) that end-to-end refinement needs?",
+    "lean_names": [
+      "Toy.Sim.Unfolded.flip_forward_to_backward"
+    ]
+  },
+  {
+    "id": "backward-sim-gives-refinement",
+    "lean": "Toy.Sim.backwardSim_gives_refinedBy",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Standard: CompCert's `backward_simulation_behavior_improves`, restricted to finite-trace behaviours.",
+    "plain_claim": "If (ord, R) is a backward simulation from L₁ to L₂ — a well-founded index order; if L₁ has an initial state then so does L₂; if L₁ has an initial state then every initial state of L₂ is related to some initial state of L₁; and final-state, progress and step clauses that are required only when the related source state is Safe (cannot get stuck before its next observable event) — then L₂ refines L₁: every behaviour of L₂ is a behaviour of L₁ or extends the trace of a going-wrong behaviour of L₁.",
+    "hypotheses": [
+      {
+        "name": "IsBackwardSim.wf : WellFounded ord",
+        "purpose": "rules out infinite stuttering of the source",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_bsim_without_wf"
+      },
+      {
+        "name": "IsBackwardSim.initExists : BSimInitExists L₁ L₂",
+        "purpose": "if the source can start, so can the target",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_bsim_without_initExists"
+      },
+      {
+        "name": "IsBackwardSim.initMatch : BSimInitMatch L₁ L₂ R",
+        "purpose": "initial target states are related to initial source states (when the source has one)",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_bsim_without_initMatch"
+      },
+      {
+        "name": "IsBackwardSim.final : BSimFinal L₁ L₂ R",
+        "purpose": "a final target state is matched by a silently reachable final source state with the same result",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_bsim_without_final_clause"
+      },
+      {
+        "name": "IsBackwardSim.progress : BSimProgress L₁ L₂ R",
+        "purpose": "the target is not stuck while the source is Safe",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_bsim_without_progress"
+      },
+      {
+        "name": "IsBackwardSim.step : BSimStep L₁ L₂ ord R",
+        "purpose": "target steps are matched by source steps with the same trace",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_bsim_without_step_diagram"
+      }
+    ],
+    "depth": "substantive",
+    "depth_justification": "Classical case analysis on whether the source stays Safe along the target's trace; well-founded induction and a choice principle for the diverging case.",
+    "nonvacuity_witness": "Src and Tgt with the backward relation SrcTgtBackRel, in which the source stutters on the target's last silent step.",
+    "nonvacuity_witness_lean": "Toy.Sim.Examples.nonvacuous_backwardSim",
+    "non_claims": [
+      "`RefinedBy` and `HasBehavior` ignore runs that emit infinitely many events — not only in targets with no modelled behaviour at all (Toy.Sim.Examples.refinedBy_vacuous_for_target_without_behavior), but also in targets that have modelled behaviours plus a run that emits events forever: `DoneOrChatter` has exactly the behaviours of `Done 0` and refines it although one of its runs emits the event 0 forever (Toy.Sim.Boundary.refinedBy_blind_to_infinite_event_runs). So neither `RefinedBy L₁ L₂` nor `∀ b, HasBehavior L₂ b ↔ HasBehavior L₁ b` constrains executions of L₂ that emit infinitely many events.",
+      "A backward simulation constrains every target step, including the steps of runs that emit infinitely many events, but its consequence `RefinedBy` forgets those runs: from `Done 0` to `DoneOrChatter` there is no backward simulation, yet `RefinedBy (Done 0) DoneOrChatter` holds (Toy.Sim.Boundary.refinedBy_blind_to_infinite_event_runs). `RefinedBy` is a strictly weaker guarantee than `IsBackwardSim`.",
+      "Refinement is not behaviour inclusion: if the source can go wrong, the target may have behaviours the source does not have (Toy.Sim.Cex.cex_inclusion_needs_source_never_goes_wrong).",
+      "Refinement is not behaviour equality: the source may have behaviours that the target lacks.",
+      "If the source has no initial state it goes wrong with the empty trace by convention, and then every target is a refinement.",
+      "Does not preserve termination, timing, resource use, or security hyperproperties such as noninterference or constant-time execution. Under `RefinedBy`, a source that goes wrong after trace t permits every target behaviour whose trace extends t (including divergence and further events); and even when the source never goes wrong, a target may drop a terminating behaviour in favour of divergence (Toy.Sim.Boundary.refinedBy_may_drop_termination: `Loop` refines a source that may return 0 or diverge).",
+      "`Safe L₁ s₁` in the backward clauses means only that s₁ cannot get stuck along silent steps before its next observable event (as CompCert's `Smallstep.safe`); it does not mean that s₁ never goes wrong after later events, and it is strictly weaker than whole-program `NeverGoesWrong L₁` (Toy.Sim.Examples.safe_pos: the initial state of `EmitThenStuck` is `Safe` although the program goes wrong after the trace [1]).",
+      "The source behaviour that is improved upon is not exposed and need not be unique.",
+      "Toy model: one event per step (`Option E`), no memory model, no global environment or symbol tables; nothing here is a statement about a production compiler.",
+      "Whole programs only: nothing is claimed about separate compilation, linking, or open (contextual) simulations."
+    ],
+    "prior_art": [
+      "CompCert, repository AbsInt/CompCert, release tag v3.16, commit a4ad87b17898cf7b7c8638c32ad694a15f7c0032, file common/Smallstep.v: definition `safe` (line 1274: every state reachable by silent steps is final or can step) and record `bsim_properties` (line 1289) with the same clauses (well-founded index order, initial states exist, initial states match, final states, progress, step diagram; the last three conditional on `safe`), plus a clause about public symbols that has no counterpart in this model.",
+      "CompCert, repository AbsInt/CompCert, release tag v3.16, commit a4ad87b17898cf7b7c8638c32ad694a15f7c0032, file common/Behaviors.v: `backward_simulation_behavior_improves` (line 493) and `backward_simulation_same_safe_behavior` (line 519).",
+      "CompCert, repository AbsInt/CompCert, release tag v3.16, commit a4ad87b17898cf7b7c8638c32ad694a15f7c0032, file common/Behaviors.v: `behavior_improves` (line 81), `behavior_improves_refl` (line 84), `behavior_improves_trans` (line 90), `behavior_improves_bot` (line 102); `program_behaves` (line 141) includes the constructor `program_goes_initially_wrong` (line 145) for programs without initial state. CompCert's `program_behavior` (line 41) also has a constructor for infinite event traces, which this package omits.",
+      "M. Desharnais-Schäfer, 'A Generic Framework for Verified Compilers', Archive of Formal Proofs, entry `VeriComp`, first published February 10, 2020; read in its release archive for Isabelle2026 dated 2026-10-26, https://isa-afp.org/release/afp-VeriComp-2026-10-26.tar.gz, SHA-256 `a45a410e58aa9850f2e3195010e9a86c1469c35e5f1846eea44067ee4662a547` (Isabelle/HOL; related paper: M. Desharnais and S. Brunthaler, CPP 2021, doi:10.1145/3437992.3439923). Unlabelled transition systems with behaviours Terminates, Diverges and Goes_wrong (no event traces); locales `forward_simulation` and `backward_simulation` with a well-founded order, stuttering being a zero-step move with a smaller index; lemma `forward_simulation_composition` composes forward simulations with the order `lex_prodp order2++ order1` (lexicographic, transitive closure of the second-pass order), the same shape as `compOrd`; lemma `state_behaves_forward_to_backward` transfers behaviours from a safe source state to a right-unique (deterministic) target. Without events there is no receptiveness or event-matching determinacy. (Read in that archive: theories `VeriComp/Behaviour.thy` (datatype `behaviour`, line 5) and `VeriComp/Simulation.thy` (locales `backward_simulation`, line 13, and `forward_simulation`, line 148; lemmas `state_behaves_forward_to_backward`, line 273, and `forward_simulation_composition`, line 699). The release matters: the entry's history dates the addition of the forward-simulation composition lemmas to July 10, 2024, and `forward_simulation_composition` is absent from the entry's release archives dated 2020-02-25 (Isabelle2019) and 2024-05-26 (Isabelle2024) and present from the archive dated 2025-03-17 (Isabelle2025) on.)"
+    ],
+    "design_question": "In a multi-pass verified compiler, what must each pass prove so that end-to-end correctness follows, and when is a forward simulation (source step implies target steps) enough instead of the backward simulation (target step implies source steps) that end-to-end refinement needs?",
+    "lean_names": [
+      "Toy.Sim.Unfolded.backward_sim_gives_refinement"
+    ]
+  },
+  {
+    "id": "refinement-is-inclusion-when-source-never-goes-wrong",
+    "lean": [
+      "Toy.Sim.refinedBy_neverGoesWrong_behaviors_subset",
+      "Toy.Sim.backwardSim_neverGoesWrong_behaviors_subset"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Standard: CompCert's `backward_simulation_same_safe_behavior`; property (2) of Leroy (CACM 2009, Section 2.1); Definition 3 of Leroy (JAR 2009, Section 2.1).",
+    "plain_claim": "If L₂ refines L₁ and L₁ has no going-wrong behaviour (NeverGoesWrong L₁, whole-program absence of going wrong), then every behaviour of L₂ is a behaviour of L₁; in particular this holds when a backward simulation from L₁ to L₂ exists.",
+    "hypotheses": [
+      {
+        "name": "RefinedBy L₁ L₂ (first theorem)",
+        "purpose": "relates target behaviours to source behaviours",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_inclusion_without_refinement"
+      },
+      {
+        "name": "IsBackwardSim L₁ L₂ ord R (second theorem)",
+        "purpose": "gives RefinedBy L₁ L₂. Ledgered here as one structure: the counterexample has no backward simulation at all. Its six clauses are ledgered one by one on `backward-sim-gives-refinement`, whose per-clause counterexamples (Toy.Sim.Cex.cex_bsim_without_wf, Toy.Sim.Cex.cex_bsim_without_initExists, Toy.Sim.Cex.cex_bsim_without_initMatch, Toy.Sim.Cex.cex_bsim_without_final_clause, Toy.Sim.Cex.cex_bsim_without_progress, Toy.Sim.Cex.cex_bsim_without_step_diagram) all take L₁ = Done 0, which never goes wrong (Toy.Sim.Ex.done_neverGoesWrong), and conclude ¬ RefinedBy (Done 0) L₂. Because Improves is reflexive (Toy.Sim.Improves.refl), each such L₂ has a behaviour that is not a behaviour of Done 0, so each counterexample also shows that its clause cannot be dropped from the second theorem; this last step is a short argument from the quoted statements, not a separately stated Lean theorem.",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_inclusion_without_refinement"
+      },
+      {
+        "name": "NeverGoesWrong L₁ (both theorems)",
+        "purpose": "excludes the going-wrong alternative of Improves",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_inclusion_needs_source_never_goes_wrong"
+      },
+      {
+        "name": "HasBehavior L₂ b (both theorems)",
+        "purpose": "the target behaviour being transferred",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_inclusion_without_target_behavior"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Unfolding Improves: the going-wrong alternative is excluded by hypothesis.",
+    "nonvacuity_witness": "Src and Tgt: Tgt refines Src, a backward simulation SrcTgtBackRel exists, Src never goes wrong, and Tgt has the behaviour 'read 5, return 5'.",
+    "nonvacuity_witness_lean": "Toy.Sim.Examples.nonvacuous_refinement_inclusion",
+    "non_claims": [
+      "NeverGoesWrong quantifies over all behaviours of the source, hence over all environment choices; it is a property of the whole source program, not of one run. It is much stronger than the per-state condition Safe used inside backward simulations (Toy.Sim.Examples.safe_pos).",
+      "Gives inclusion, not equality, of behaviour sets.",
+      "`RefinedBy` and `HasBehavior` ignore runs that emit infinitely many events — not only in targets with no modelled behaviour at all (Toy.Sim.Examples.refinedBy_vacuous_for_target_without_behavior), but also in targets that have modelled behaviours plus a run that emits events forever: `DoneOrChatter` has exactly the behaviours of `Done 0` and refines it although one of its runs emits the event 0 forever (Toy.Sim.Boundary.refinedBy_blind_to_infinite_event_runs). So neither `RefinedBy L₁ L₂` nor `∀ b, HasBehavior L₂ b ↔ HasBehavior L₁ b` constrains executions of L₂ that emit infinitely many events. In particular `NeverGoesWrong Chatter` holds and every source is refined by `Chatter` (Toy.Sim.Examples.refinedBy_vacuous_for_target_without_behavior), so the inclusion says nothing about such a target.",
+      "Does not preserve termination, timing, resource use, or security hyperproperties such as noninterference or constant-time execution. Under `RefinedBy`, a source that goes wrong after trace t permits every target behaviour whose trace extends t (including divergence and further events); and even when the source never goes wrong, a target may drop a terminating behaviour in favour of divergence (Toy.Sim.Boundary.refinedBy_may_drop_termination: `Loop` refines a source that may return 0 or diverge).",
+      "Toy model: one event per step (`Option E`), no memory model, no global environment or symbol tables; nothing here is a statement about a production compiler.",
+      "Whole programs only: nothing is claimed about separate compilation, linking, or open (contextual) simulations."
+    ],
+    "prior_art": [
+      "CompCert, repository AbsInt/CompCert, release tag v3.16, commit a4ad87b17898cf7b7c8638c32ad694a15f7c0032, file common/Behaviors.v: `backward_simulation_behavior_improves` (line 493) and `backward_simulation_same_safe_behavior` (line 519).",
+      "X. Leroy, 'Formal verification of a realistic compiler', Communications of the ACM 52(7):107-115, 2009, doi:10.1145/1538788.1538814. Section 2.1 states whole-program behaviour-preservation properties; for source and target languages that are deterministic and execution environments that are deterministic (so each program has exactly one behaviour), 'S safe implies every behaviour of C is a behaviour of S' is equivalent to the easier 'every non-wrong behaviour of S is a behaviour of C'. Section 2.3 composes compiler passes for any transitive whole-program preservation property; it does not concern step-level simulation diagrams or stuttering orders. (Passages checked in the author's version of the article.)",
+      "X. Leroy, 'A formally verified compiler back-end', Journal of Automated Reasoning 43(4):363-446, 2009, doi:10.1007/s10817-009-9155-4. Section 2.1 (Definitions 2-5, Figure 2) relates whole-program behaviour inclusions — 'backward simulation' (every behaviour of the compiled program C is a behaviour of the source S), 'forward simulation' (every behaviour of S is a behaviour of C), and their versions for safe programs — and shows that the forward inclusion implies the backward one when C is deterministic, i.e. admits a single behaviour (target language without internal nondeterminism and a deterministic execution environment). These are behaviour-set statements, not step-level simulation diagrams; the article has no step-level receptiveness or determinacy conditions and no step-level flip theorem. (Passages checked in the author's version of the article.)"
+    ],
+    "design_question": "In a multi-pass verified compiler, what must each pass prove so that end-to-end correctness follows, and when is a forward simulation (source step implies target steps) enough instead of the backward simulation (target step implies source steps) that end-to-end refinement needs?"
+  },
+  {
+    "id": "pipeline-collapses-to-one-forward-simulation",
+    "lean": [
+      "Toy.Sim.fsimChain_collapse",
+      "Toy.Sim.fsimChain_of_isForwardSim"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Standard: iterated use of CompCert's `compose_forward_simulations` in `cstrategy_semantic_preservation`.",
+    "plain_claim": "A finite chain of forward simulations from L to L' (possibly empty) yields a single forward simulation from L to L', for some index type, order and relation (fsimChain_collapse); and a single forward simulation is a one-link chain (fsimChain_of_isForwardSim).",
+    "hypotheses": [
+      {
+        "name": "FSimChain L L' (fsimChain_collapse)",
+        "purpose": "the passes being collapsed",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Examples.isForwardSim_neg"
+      },
+      {
+        "name": "IsForwardSim L₁ L₂ ord R (fsimChain_of_isForwardSim)",
+        "purpose": "the single pass. Ledgered here as one structure: the counterexample has no forward simulation at all. Its four clauses are ledgered one by one on `forward-sim-preserves-non-wrong-behaviours` (single-pass theorem), whose per-clause counterexamples (Toy.Sim.Cex.cex_fsim_without_wf_divergence_not_preserved, Toy.Sim.Cex.cex_fsim_without_init_clause, Toy.Sim.Cex.cex_fsim_without_final_clause, Toy.Sim.Cex.cex_fsim_without_step_diagram) each exhibit a behaviour of L₁ that does not go wrong and is not a behaviour of L₂. A chain FSimChain L₁ L₂ would preserve that behaviour (Toy.Sim.fsimChain_preserves_non_goesWrong_behaviors), so each counterexample also shows that its clause cannot be dropped here; this last step is a short argument from the quoted statements, not a separately stated Lean theorem.",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Examples.fsimChain_neg"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Induction on the chain using the identity simulation and vertical composition.",
+    "nonvacuity_witness": "The two-pass chain Src ⟶ Mid ⟶ Tgt; the forward simulation SrcTgtRel from Src to Tgt.",
+    "nonvacuity_witness_lean": [
+      "Toy.Sim.Examples.fsimChain_pos",
+      "Toy.Sim.Examples.isForwardSim_pos"
+    ],
+    "non_claims": [
+      "The resulting index type, order and relation are not exposed (they are the iterated compOrd and compRel, ending with the identity).",
+      "Nothing is retained about the intermediate languages.",
+      "All languages of a chain share one event type and one result type; passes that change how events or results are represented are not modelled.",
+      "Toy model: one event per step (`Option E`), no memory model, no global environment or symbol tables; nothing here is a statement about a production compiler.",
+      "Behaviours with infinitely many events are not modelled; a system whose every run emits events forever has no behaviour at all in this model (Toy.Sim.Ex.chatter_no_behavior).",
+      "Whole programs only: nothing is claimed about separate compilation, linking, or open (contextual) simulations."
+    ],
+    "prior_art": [
+      "CompCert, repository AbsInt/CompCert, release tag v3.16, commit a4ad87b17898cf7b7c8638c32ad694a15f7c0032, file common/Smallstep.v: lemma `compose_forward_simulations` (line 1003); the composite index order is `lex_ord (clos_trans _ order') order` (line 1011), i.e. lexicographic with the transitive closure of the second-pass order, and the composite relation is relational composition through a middle state.",
+      "CompCert, repository AbsInt/CompCert, release tag v3.16, commit a4ad87b17898cf7b7c8638c32ad694a15f7c0032, file driver/Compiler.v: theorem `cstrategy_semantic_preservation` (line 353) composes the per-pass forward simulations with `compose_forward_simulations` into a forward simulation from `Cstrategy.semantics p` to `Asm.semantics tp`, and flips it once (line 413) — not directly, but after `factor_forward_simulation` (line 414) into a forward simulation from `atomic (Cstrategy.semantics p)`, whose receptiveness comes from `atomic_receptive` and `Cstrategy.semantics_strongly_receptive` (line 415) because Cstrategy steps may carry several events; determinacy of the last language is `Asm.semantics_determinate` (line 416). CompCert's end-to-end theorem for C, `c_semantic_preservation` (line 419), then prepends the backward simulation `Cstrategy.strategy_simulation` from the nondeterministic `Csem` using `compose_backward_simulation` (line 425); `transf_c_program_correct` (line 446) restates it."
+    ],
+    "design_question": "In a multi-pass verified compiler, what must each pass prove so that end-to-end correctness follows, and when is a forward simulation (source step implies target steps) enough instead of the backward simulation (target step implies source steps) that end-to-end refinement needs?"
+  },
+  {
+    "id": "pipeline-end-to-end-refinement",
+    "lean": [
+      "Toy.Sim.fsimChain_receptive_first_determinate_last_gives_refinedBy",
+      "Toy.Sim.fsimChain_deterministic_last_gives_refinedBy"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Standard structure: CompCert's `cstrategy_semantic_preservation` (compose the forward simulations, flip once) followed by `backward_simulation_behavior_improves`; CompCert additionally needs the `atomic` construction because its first language has multi-event steps.",
+    "plain_claim": "If every pass of a pipeline from L to L' has a forward simulation (FSimChain L L'), the first language L is receptive and the last language L' is determinate for the same event-matching relation M, then L' refines L; nothing is assumed about the intermediate languages. In the special case M = Eq no receptiveness hypothesis is needed: a chain into a deterministic last language suffices.",
+    "hypotheses": [
+      {
+        "name": "FSimChain L L' (both theorems)",
+        "purpose": "every pass has a forward simulation",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_pipeline_without_chain"
+      },
+      {
+        "name": "Receptive M L (first theorem; automatic for M = Eq)",
+        "purpose": "the first language accepts every alternative environment response",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_pipeline_nonreceptive_first"
+      },
+      {
+        "name": "Determinate M L', clause labels (both theorems, the second at M = Eq)",
+        "purpose": "two steps from one state of the last language carry matching labels",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Sim.Cex.cex_pipeline_last_labels_mismatch",
+          "Toy.Sim.Cex.cex_pipeline_last_event_labels_mismatch"
+        ]
+      },
+      {
+        "name": "Determinate M L', clause functional",
+        "purpose": "the label determines the successor in the last language",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_pipeline_last_not_functional"
+      },
+      {
+        "name": "Determinate M L', clause init",
+        "purpose": "at most one initial state of the last language",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_pipeline_last_two_initial_states"
+      },
+      {
+        "name": "Determinate M L', clause finalNoStep",
+        "purpose": "final states of the last language do not step",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_pipeline_last_final_state_steps"
+      },
+      {
+        "name": "Determinate M L', clause finalDet",
+        "purpose": "a final state of the last language has one result",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_pipeline_last_two_results"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Shallow given vertical composition, the flip lemma and 'backward simulation gives refinement', which are the substantive ingredients.",
+    "nonvacuity_witness": "The pipeline Src ⟶ Mid ⟶ Tgt, whose intermediate language Mid is not determinate; for M = Eq, the one-pass chain from Spin to the deterministic Loop.",
+    "nonvacuity_witness_lean": [
+      "Toy.Sim.Examples.nonvacuous_pipeline",
+      "Toy.Sim.Examples.nonvacuous_deterministic_target"
+    ],
+    "non_claims": [
+      "Does not allow a pass verified by a forward simulation (or a chain of them) to remove observable nondeterminism of a source or intermediate language: forward simulations preserve every behaviour of the source that does not go wrong (Toy.Sim.fsimChain_preserves_non_goesWrong_behaviors), so if the source has two such behaviours the target has both, whatever its determinacy. A pass that fixes an unspecified choice (for example an evaluation order) must be verified another way, for example by a backward simulation, and composed through `RefinedBy.trans`. Lean instance: Toy.Sim.Boundary.resolving_nondeterminism_needs_backward_simulation (a source that may return 0 or 1 and never goes wrong is refined by the deterministic `Done 0`, and a backward simulation exists, but no forward simulation exists). CompCert's end-to-end theorem for C, `c_semantic_preservation` (driver/Compiler.v, line 419), prepends such a backward simulation from `Csem` to its forward-simulated pipeline.",
+      "Escape hatch for mixed pipelines: a pass verified only by a backward simulation cannot be a link of `FSimChain`, but it yields `RefinedBy` (Toy.Sim.backwardSim_gives_refinedBy), and `RefinedBy` is transitive (Toy.Sim.RefinedBy.trans), so such passes compose end to end with a forward-simulated segment that has been flipped once.",
+      "Escape hatch (different matching relations): the source and target need not use literally the same relation; if the source is receptive for M₁, the target determinate for M₂, and M₂ ⊆ M₁, then the target is determinate for M₁ (Toy.Sim.Determinate.mono) and the theorem applies with M := M₁. No algebraic axiom on M appears in the statement, but determinacy constrains M on the target's events: M is reflexive on every event the target can emit and symmetric on any two events offered by the same target state (Toy.Sim.StepLabelsMatch.refl_symm); determinacy of an event-emitting target is impossible for an irreflexive M.",
+      "`Receptive` and `Determinate` quantify over all states, including unreachable ones. Nondeterminism confined to unreachable states need not break the conclusion (Toy.Sim.Boundary.flip_conclusion_with_unreachable_nondeterminism). Whether the theorem holds in general with both conditions restricted to reachable states (or to an invariant) is not proved in this package.",
+      "Unknown (not examined): `FSimFinal` requires a target state related to a final source state to be final itself, with no trailing silent target steps. Whether the flip lemma (and hence end-to-end refinement) still holds when `FSimFinal` is weakened to 'the related target state reaches, by silent steps, a final state with the same result' is not examined in this package.",
+      "One observable event per step (`Option E`) is built into `LTS`. CompCert's `receptive` and `determinate` records include a separate `single_events` condition, and for its multi-event C semantics CompCert flips the forward simulation only after the `atomic` construction (driver/Compiler.v, lines 413-416). Nothing here is claimed for semantics whose steps carry several events.",
+      "`RefinedBy` and `HasBehavior` ignore runs that emit infinitely many events — not only in targets with no modelled behaviour at all (Toy.Sim.Examples.refinedBy_vacuous_for_target_without_behavior), but also in targets that have modelled behaviours plus a run that emits events forever: `DoneOrChatter` has exactly the behaviours of `Done 0` and refines it although one of its runs emits the event 0 forever (Toy.Sim.Boundary.refinedBy_blind_to_infinite_event_runs). So neither `RefinedBy L₁ L₂` nor `∀ b, HasBehavior L₂ b ↔ HasBehavior L₁ b` constrains executions of L₂ that emit infinitely many events.",
+      "Does not preserve termination, timing, resource use, or security hyperproperties such as noninterference or constant-time execution. Under `RefinedBy`, a source that goes wrong after trace t permits every target behaviour whose trace extends t (including divergence and further events); and even when the source never goes wrong, a target may drop a terminating behaviour in favour of divergence (Toy.Sim.Boundary.refinedBy_may_drop_termination: `Loop` refines a source that may return 0 or diverge).",
+      "All languages of a chain share one event type and one result type; passes that change how events or results are represented are not modelled.",
+      "Intermediate languages are unconstrained: they need be neither receptive nor determinate (witness: Mid). Conversely nothing is concluded about them.",
+      "Per-pass refinement is not concluded: a single pass with a forward simulation into a nondeterministic intermediate language need not refine its source.",
+      "Refinement, not inclusion or equality of behaviours; see pipeline-behaviour-equality-when-first-never-goes-wrong for the extra hypothesis that gives equality.",
+      "A last language that reads inputs from the environment is not determinate for Eq; it needs the general theorem with a receptive first language.",
+      "Toy model: one event per step (`Option E`), no memory model, no global environment or symbol tables; nothing here is a statement about a production compiler.",
+      "Whole programs only: nothing is claimed about separate compilation, linking, or open (contextual) simulations."
+    ],
+    "prior_art": [
+      "CompCert, repository AbsInt/CompCert, release tag v3.16, commit a4ad87b17898cf7b7c8638c32ad694a15f7c0032, file driver/Compiler.v: theorem `cstrategy_semantic_preservation` (line 353) composes the per-pass forward simulations with `compose_forward_simulations` into a forward simulation from `Cstrategy.semantics p` to `Asm.semantics tp`, and flips it once (line 413) — not directly, but after `factor_forward_simulation` (line 414) into a forward simulation from `atomic (Cstrategy.semantics p)`, whose receptiveness comes from `atomic_receptive` and `Cstrategy.semantics_strongly_receptive` (line 415) because Cstrategy steps may carry several events; determinacy of the last language is `Asm.semantics_determinate` (line 416). CompCert's end-to-end theorem for C, `c_semantic_preservation` (line 419), then prepends the backward simulation `Cstrategy.strategy_simulation` from the nondeterministic `Csem` using `compose_backward_simulation` (line 425); `transf_c_program_correct` (line 446) restates it.",
+      "CompCert, repository AbsInt/CompCert, release tag v3.16, commit a4ad87b17898cf7b7c8638c32ad694a15f7c0032, file common/Smallstep.v: section FORWARD_TO_BACKWARD (line 1608), lemma `forward_to_backward_simulation` (line 1863): `forward_simulation L1 L2 -> receptive L1 -> determinate L2 -> backward_simulation L1 L2`. CompCert's `forward_simulation` and `backward_simulation` hide the simulation relations, so this lemma does not state that the backward relation contains the forward one (the statement here does).",
+      "J. Ševčík, V. Vafeiadis, F. Zappa Nardelli, S. Jagannathan, P. Sewell, 'Relaxed-memory concurrency and verified compilation', POPL 2011, pp. 43-54, doi:10.1145/1926385.1926393. Section 4 defines labels 'of the same kind' (te ≍ te': they differ only in input values), receptive thread LTSs (Definition 2), determinate thread LTSs (Definition 3: co-enabled labels are of the same kind, and equal labels lead to equal states), threadwise forward and backward simulations with a well-founded order for stuttering (Definitions 4-5), and Theorem 2: 'If R is a threadwise forward simulation from S to T, S is receptive, and T is determinate, then there is a threadwise backward simulation that contains R.' This is the step-level flip theorem, including the clause 'contains R'; their simulations also treat explicit failure labels and are lifted to a concurrent TSO machine, which this package does not model. (Section 4 read in the authors' version of the paper.)",
+      "CompCert, repository AbsInt/CompCert, release tag v3.16, commit a4ad87b17898cf7b7c8638c32ad694a15f7c0032, file common/Behaviors.v: `backward_simulation_behavior_improves` (line 493) and `backward_simulation_same_safe_behavior` (line 519).",
+      "M. Desharnais-Schäfer, 'A Generic Framework for Verified Compilers', Archive of Formal Proofs, entry `VeriComp`, first published February 10, 2020; read in its release archive for Isabelle2026 dated 2026-10-26, https://isa-afp.org/release/afp-VeriComp-2026-10-26.tar.gz, SHA-256 `a45a410e58aa9850f2e3195010e9a86c1469c35e5f1846eea44067ee4662a547` (Isabelle/HOL; related paper: M. Desharnais and S. Brunthaler, CPP 2021, doi:10.1145/3437992.3439923). Unlabelled transition systems with behaviours Terminates, Diverges and Goes_wrong (no event traces); locales `forward_simulation` and `backward_simulation` with a well-founded order, stuttering being a zero-step move with a smaller index; lemma `forward_simulation_composition` composes forward simulations with the order `lex_prodp order2++ order1` (lexicographic, transitive closure of the second-pass order), the same shape as `compOrd`; lemma `state_behaves_forward_to_backward` transfers behaviours from a safe source state to a right-unique (deterministic) target. Without events there is no receptiveness or event-matching determinacy. (Read in that archive: theories `VeriComp/Behaviour.thy` (datatype `behaviour`, line 5) and `VeriComp/Simulation.thy` (locales `backward_simulation`, line 13, and `forward_simulation`, line 148; lemmas `state_behaves_forward_to_backward`, line 273, and `forward_simulation_composition`, line 699). The release matters: the entry's history dates the addition of the forward-simulation composition lemmas to July 10, 2024, and `forward_simulation_composition` is absent from the entry's release archives dated 2020-02-25 (Isabelle2019) and 2024-05-26 (Isabelle2024) and present from the archive dated 2025-03-17 (Isabelle2025) on.)",
+      "X. Leroy, 'Formal verification of a realistic compiler', Communications of the ACM 52(7):107-115, 2009, doi:10.1145/1538788.1538814. Section 2.1 states whole-program behaviour-preservation properties; for source and target languages that are deterministic and execution environments that are deterministic (so each program has exactly one behaviour), 'S safe implies every behaviour of C is a behaviour of S' is equivalent to the easier 'every non-wrong behaviour of S is a behaviour of C'. Section 2.3 composes compiler passes for any transitive whole-program preservation property; it does not concern step-level simulation diagrams or stuttering orders. (Passages checked in the author's version of the article.)"
+    ],
+    "design_question": "In a multi-pass verified compiler, what must each pass prove so that end-to-end correctness follows, and when is a forward simulation (source step implies target steps) enough instead of the backward simulation (target step implies source steps) that end-to-end refinement needs?",
+    "lean_names": [
+      "Toy.Sim.Unfolded.pipeline_end_to_end_refinement"
+    ]
+  },
+  {
+    "id": "pipeline-behaviour-equality-when-first-never-goes-wrong",
+    "lean": "Toy.Sim.fsimChain_receptive_first_determinate_last_neverGoesWrong_first_behaviors_iff",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Standard: combination of CompCert's `forward_simulation_same_safe_behavior` and `backward_simulation_same_safe_behavior`.",
+    "plain_claim": "If every pass of a pipeline from L to L' has a forward simulation (FSimChain L L'), the first language L is receptive and the last language L' is determinate for the same event-matching relation M, and L has no going-wrong behaviour (NeverGoesWrong L), then L and L' have exactly the same behaviours.",
+    "hypotheses": [
+      {
+        "name": "FSimChain L L'",
+        "purpose": "every pass has a forward simulation",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_pipeline_without_chain"
+      },
+      {
+        "name": "Receptive M L",
+        "purpose": "the first language accepts every alternative environment response",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_pipeline_nonreceptive_first"
+      },
+      {
+        "name": "Determinate M L', clause labels",
+        "purpose": "two steps from one state of the last language carry matching labels",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Sim.Cex.cex_pipeline_last_labels_mismatch",
+          "Toy.Sim.Cex.cex_pipeline_last_event_labels_mismatch"
+        ]
+      },
+      {
+        "name": "Determinate M L', clause functional",
+        "purpose": "the label determines the successor in the last language",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_pipeline_last_not_functional"
+      },
+      {
+        "name": "Determinate M L', clause init",
+        "purpose": "at most one initial state of the last language",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_pipeline_last_two_initial_states"
+      },
+      {
+        "name": "Determinate M L', clause finalNoStep",
+        "purpose": "final states of the last language do not step",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_pipeline_last_final_state_steps"
+      },
+      {
+        "name": "Determinate M L', clause finalDet",
+        "purpose": "a final state of the last language has one result",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_pipeline_last_two_results"
+      },
+      {
+        "name": "NeverGoesWrong L",
+        "purpose": "excludes the going-wrong alternative of refinement",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_inclusion_needs_source_never_goes_wrong"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "The two inclusions are the end-to-end refinement theorem (with NeverGoesWrong) and behaviour preservation along the chain.",
+    "nonvacuity_witness": "The pipeline Src ⟶ Mid ⟶ Tgt; Src never goes wrong; Src and Tgt have the same behaviours (proved directly).",
+    "nonvacuity_witness_lean": "Toy.Sim.Examples.nonvacuous_pipeline_behaviors_iff",
+    "non_claims": [
+      "Consequence, not an extra assumption: under these hypotheses L' exhibits every behaviour of L. So no such pipeline exists from a first language that never goes wrong and has an observable choice into a last language that lacks one of the choices; the pass that fixes the choice needs a different proof method (Toy.Sim.Boundary.resolving_nondeterminism_needs_backward_simulation).",
+      "Equality of behaviour sets, not bisimilarity of the two systems.",
+      "`RefinedBy` and `HasBehavior` ignore runs that emit infinitely many events — not only in targets with no modelled behaviour at all (a system whose every run emits events forever has no behaviour, Toy.Sim.Ex.chatter_no_behavior; such a target refines every source vacuously, Toy.Sim.Examples.refinedBy_vacuous_for_target_without_behavior), but also in targets that have modelled behaviours plus a run that emits events forever: `DoneOrChatter` has exactly the behaviours of `Done 0` and refines it although one of its runs emits the event 0 forever (Toy.Sim.Boundary.refinedBy_blind_to_infinite_event_runs). So neither `RefinedBy L₁ L₂` nor `∀ b, HasBehavior L₂ b ↔ HasBehavior L₁ b` constrains executions of L₂ that emit infinitely many events.",
+      "Escape hatch (different matching relations): the source and target need not use literally the same relation; if the source is receptive for M₁, the target determinate for M₂, and M₂ ⊆ M₁, then the target is determinate for M₁ (Toy.Sim.Determinate.mono) and the theorem applies with M := M₁. No algebraic axiom on M appears in the statement, but determinacy constrains M on the target's events: M is reflexive on every event the target can emit and symmetric on any two events offered by the same target state (Toy.Sim.StepLabelsMatch.refl_symm); determinacy of an event-emitting target is impossible for an irreflexive M.",
+      "NeverGoesWrong is a hypothesis about all behaviours of the first language (all environment choices); the per-state condition Safe is much weaker and does not suffice.",
+      "All languages of a chain share one event type and one result type; passes that change how events or results are represented are not modelled.",
+      "Equality of behaviour sets says nothing about timing, resource use, or security hyperproperties such as noninterference.",
+      "Toy model: one event per step (`Option E`), no memory model, no global environment or symbol tables; nothing here is a statement about a production compiler.",
+      "Whole programs only: nothing is claimed about separate compilation, linking, or open (contextual) simulations."
+    ],
+    "prior_art": [
+      "CompCert, repository AbsInt/CompCert, release tag v3.16, commit a4ad87b17898cf7b7c8638c32ad694a15f7c0032, file common/Behaviors.v: `forward_simulation_state_behaves` (line 284), `forward_simulation_behavior_improves` (line 316) and `forward_simulation_same_safe_behavior` (line 337).",
+      "CompCert, repository AbsInt/CompCert, release tag v3.16, commit a4ad87b17898cf7b7c8638c32ad694a15f7c0032, file common/Behaviors.v: `backward_simulation_behavior_improves` (line 493) and `backward_simulation_same_safe_behavior` (line 519).",
+      "X. Leroy, 'Formal verification of a realistic compiler', Communications of the ACM 52(7):107-115, 2009, doi:10.1145/1538788.1538814. Section 2.1 states whole-program behaviour-preservation properties; for source and target languages that are deterministic and execution environments that are deterministic (so each program has exactly one behaviour), 'S safe implies every behaviour of C is a behaviour of S' is equivalent to the easier 'every non-wrong behaviour of S is a behaviour of C'. Section 2.3 composes compiler passes for any transitive whole-program preservation property; it does not concern step-level simulation diagrams or stuttering orders. (Passages checked in the author's version of the article.)"
+    ],
+    "design_question": "In a multi-pass verified compiler, what must each pass prove so that end-to-end correctness follows, and when is a forward simulation (source step implies target steps) enough instead of the backward simulation (target step implies source steps) that end-to-end refinement needs?"
+  },
+  {
+    "id": "refinement-is-a-preorder",
+    "lean": [
+      "Toy.Sim.Improves.refl",
+      "Toy.Sim.Improves.trans",
+      "Toy.Sim.Improves.antisymm",
+      "Toy.Sim.improves_goesWrong_nil",
+      "Toy.Sim.RefinedBy.refl",
+      "Toy.Sim.RefinedBy.trans"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Standard: CompCert's `behavior_improves_refl`, `behavior_improves_trans` and `behavior_improves_bot`.",
+    "plain_claim": "Improves is a partial order on behaviours (reflexive, transitive and antisymmetric) whose least element is goesWrong [] (it is improved by every behaviour); RefinedBy is reflexive and transitive on labelled transition systems, i.e. a preorder.",
+    "hypotheses": [
+      {
+        "name": "Improves b₁ b₂ (Improves.trans)",
+        "purpose": "first link of the chain",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_improves_trans_needs_both"
+      },
+      {
+        "name": "Improves b₂ b₃ (Improves.trans)",
+        "purpose": "second link of the chain",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_improves_trans_needs_both"
+      },
+      {
+        "name": "Improves b₁ b₂ (Improves.antisymm)",
+        "purpose": "one direction",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_improves_antisymm_needs_both"
+      },
+      {
+        "name": "Improves b₂ b₁ (Improves.antisymm)",
+        "purpose": "the other direction",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_improves_antisymm_needs_both"
+      },
+      {
+        "name": "RefinedBy L₁ L₂ (RefinedBy.trans)",
+        "purpose": "first refinement",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_refinedBy_trans_needs_both"
+      },
+      {
+        "name": "RefinedBy L₂ L₃ (RefinedBy.trans)",
+        "purpose": "second refinement",
+        "tightness": "tight",
+        "counterexample": "Toy.Sim.Cex.cex_refinedBy_trans_needs_both"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Direct from the definitions and transitivity of the list prefix order.",
+    "nonvacuity_witness": "A composable Improves chain goesWrong [] ⟶ goesWrong [1] ⟶ terminates [1, 2] 0, a mutual Improves pair (equal behaviours), and a composable refinement chain StuckNow ⟶ Src ⟶ Tgt.",
+    "nonvacuity_witness_lean": "Toy.Sim.Examples.nonvacuous_preorder",
+    "non_claims": [
+      "RefinedBy is not antisymmetric: StuckNow and NoInit refine each other and are different systems (Toy.Sim.Boundary.refinedBy_not_antisymmetric).",
+      "Mutual refinement does not imply equal behaviour sets: a system with behaviours goesWrong [] and terminates [] 0 and a system with only goesWrong [] refine each other, because goesWrong [] is improved by every behaviour (Toy.Sim.Boundary.mutual_refinedBy_different_behaviors).",
+      "Neither Improves nor RefinedBy is symmetric (Toy.Sim.Cex.cex_improves_not_symmetric, Toy.Sim.Cex.cex_refinedBy_not_symmetric).",
+      "`RefinedBy` and `HasBehavior` ignore runs that emit infinitely many events — not only in targets with no modelled behaviour at all (Toy.Sim.Examples.refinedBy_vacuous_for_target_without_behavior), but also in targets that have modelled behaviours plus a run that emits events forever: `DoneOrChatter` has exactly the behaviours of `Done 0` and refines it although one of its runs emits the event 0 forever (Toy.Sim.Boundary.refinedBy_blind_to_infinite_event_runs). So neither `RefinedBy L₁ L₂` nor `∀ b, HasBehavior L₂ b ↔ HasBehavior L₁ b` constrains executions of L₂ that emit infinitely many events.",
+      "Toy model: one event per step (`Option E`), no memory model, no global environment or symbol tables; nothing here is a statement about a production compiler."
+    ],
+    "prior_art": [
+      "CompCert, repository AbsInt/CompCert, release tag v3.16, commit a4ad87b17898cf7b7c8638c32ad694a15f7c0032, file common/Behaviors.v: `behavior_improves` (line 81), `behavior_improves_refl` (line 84), `behavior_improves_trans` (line 90), `behavior_improves_bot` (line 102); `program_behaves` (line 141) includes the constructor `program_goes_initially_wrong` (line 145) for programs without initial state. CompCert's `program_behavior` (line 41) also has a constructor for infinite event traces, which this package omits."
+    ],
+    "design_question": "In a multi-pass verified compiler, what must each pass prove so that end-to-end correctness follows, and when is a forward simulation (source step implies target steps) enough instead of the backward simulation (target step implies source steps) that end-to-end refinement needs?"
+  },
+  {
+    "id": "cex-no-measure-infinite-stuttering",
+    "lean": "Toy.Sim.Cex.cex_fsim_without_wf_divergence_not_preserved",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "The infinite stuttering problem is described in Leroy (JAR 2009, Section 3.7), which introduces the well-founded measure to rule it out.",
+    "plain_claim": "There is an instance in which the forward initial-state clause, final-state clause and step diagram all hold with an index order that is not well-founded, between the source Loop (which diverges silently) and the target Done 0 (which terminates at once): the target matches every source step by doing nothing, and silent divergence is not preserved.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Finite case analysis on one-state systems.",
+    "positive_control_lean": "Toy.Sim.Examples.positive_control_diverges",
+    "shows_necessity_of": [
+      "silent-divergence-preserved: WellFounded ord",
+      "forward-sim-preserves-non-wrong-behaviours: clause wf",
+      "flip-forward-to-backward: clause wf (through Toy.Sim.Cex.cex_flip_without_wf)"
+    ],
+    "non_claims": [
+      "Shows that the named hypothesis cannot simply be dropped; it does not show that the conclusion fails whenever the hypothesis fails.",
+      "Well-foundedness of the index order is shown necessary only within this step-diagram formulation; other ways of ruling out infinite stuttering in the literature (for example the 'asynchronous progress' simulations of Cho et al., PACMPL 7(OOPSLA2), 2023) are not covered or compared here.",
+      "The systems are toy systems chosen for minimality; nothing is claimed about real languages."
+    ],
+    "prior_art": [
+      "X. Leroy, 'A formally verified compiler back-end', Journal of Automated Reasoning 43(4):363-446, 2009, doi:10.1007/s10817-009-9155-4. Section 3.7 (Definition 12, Theorem 4): the 'star' forward simulation diagram, with a measure on source states in a well-founded order that must decrease when the target stutters, introduced to rule out the 'infinite stuttering problem'; Theorem 4: under the initial-state, final-state and star-simulation hypotheses, every behaviour of the source that does not go wrong is a behaviour of the target. (Passages checked in the author's version of the article.)",
+      "M. Cho, Y. Song, D. Lee, L. Gäher, D. Dreyer, 'Stuttering for Free', Proceedings of the ACM on Programming Languages 7(OOPSLA2):1677-1704, 2023, doi:10.1145/3622857. According to its abstract, soundness of stuttering simulations can be ensured with only 'asynchronous progress' instead of a bounded number of stuttering steps before synchronous progress, and the resulting technique (FreeSim, mechanized in Coq) simplifies the meta-theory of CompCert. (Abstract read; body not examined.)"
+    ],
+    "design_question": "In a multi-pass verified compiler, what must each pass prove so that end-to-end correctness follows, and when is a forward simulation (source step implies target steps) enough instead of the backward simulation (target step implies source steps) that end-to-end refinement needs?"
+  },
+  {
+    "id": "cex-going-wrong-not-preserved",
+    "lean": "Toy.Sim.Cex.cex_forwardSim_goesWrong_not_preserved",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "That compilers must be allowed to remove going-wrong behaviours (and that forward preservation is therefore stated only for behaviours that do not go wrong) is explained in Leroy (JAR 2009, Section 2.1) with dead-code elimination of a division by zero.",
+    "plain_claim": "There is an instance in which a source that is stuck at once (StuckNow) is forward-simulated, vacuously, by a target that terminates normally (Done 0), also as a one-pass chain: the source's going-wrong behaviour is not a behaviour of the target.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Finite case analysis on one-state systems.",
+    "shows_necessity_of": [
+      "forward-sim-preserves-non-wrong-behaviours: ∀ t, b ≠ .goesWrong t (both theorems)"
+    ],
+    "non_claims": [
+      "Shows that the named hypothesis cannot simply be dropped; it does not show that the conclusion fails whenever the hypothesis fails.",
+      "Model-specific limitation, recorded separately: in this model a going-wrong source can even be forward-simulated by a target with no behaviour at all (Toy.Sim.Cex.cex_forwardSim_goesWrong_target_without_behavior: the target emits events forever), so CompCert's `forward_simulation_behavior_improves` ('some target behaviour improves on each source behaviour') has no counterpart here; CompCert's `program_behaves_exists` (common/Behaviors.v, line 264) relies on behaviours with infinitely many events, which are omitted.",
+      "The systems are toy systems chosen for minimality; nothing is claimed about real languages."
+    ],
+    "prior_art": [
+      "X. Leroy, 'A formally verified compiler back-end', Journal of Automated Reasoning 43(4):363-446, 2009, doi:10.1007/s10817-009-9155-4. Section 2.1, motivating Definition 3: a source that would go wrong on an integer division by zero whose result is unused is compiled by dead-code elimination into a program that does not go wrong, so compilers must be allowed to remove going-wrong behaviours. (Passage checked in the author's version of the article.)",
+      "CompCert, repository AbsInt/CompCert, release tag v3.16, commit a4ad87b17898cf7b7c8638c32ad694a15f7c0032, file common/Behaviors.v: `forward_simulation_state_behaves` (line 284), `forward_simulation_behavior_improves` (line 316) and `forward_simulation_same_safe_behavior` (line 337)."
+    ],
+    "design_question": "In a multi-pass verified compiler, what must each pass prove so that end-to-end correctness follows, and when is a forward simulation (source step implies target steps) enough instead of the backward simulation (target step implies source steps) that end-to-end refinement needs?"
+  },
+  {
+    "id": "cex-naive-lexicographic-order",
+    "lean": "Toy.Sim.Cex.cex_comp_naive_lex_order_fails",
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "The need for the transitive closure is built into CompCert's and VeriComp's composite orders; this is a minimal machine-checked instance showing why.",
+    "plain_claim": "There are two forward simulations, OneStep none 0 ⟶ Chain3 and Chain3 ⟶ Done 0 (the second with the non-transitive successor order), whose composite relation fails the step diagram for the lexicographic order without transitive closure, because one source step expands to two middle steps that each stutter in the last system; with compOrd the same composite relation satisfies the step diagram.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Finite case analysis on systems with at most three states.",
+    "shows_necessity_of": [
+      "step-diagrams-compose: the transitive closure in compOrd"
+    ],
+    "non_claims": [
+      "Shows that this particular simpler order fails for this composite relation, not that no other order could work.",
+      "Escape hatch: the transitive closure in `compOrd` matters only when ord₂ is not transitive (as for `succOrd` in Toy.Sim.Cex.cex_comp_naive_lex_order_fails); when ord₂ is transitive (for example `<` on `Nat`), `compOrd` coincides with the plain lexicographic order (Toy.Sim.compOrd_iff_lex_of_transitive, Toy.Sim.Cex.compOrd_iff_naiveCompOrd_of_transitive).",
+      "The systems are toy systems chosen for minimality; nothing is claimed about real languages."
+    ],
+    "prior_art": [
+      "CompCert, repository AbsInt/CompCert, release tag v3.16, commit a4ad87b17898cf7b7c8638c32ad694a15f7c0032, file common/Smallstep.v: lemma `compose_forward_simulations` (line 1003); the composite index order is `lex_ord (clos_trans _ order') order` (line 1011), i.e. lexicographic with the transitive closure of the second-pass order, and the composite relation is relational composition through a middle state.",
+      "M. Desharnais-Schäfer, 'A Generic Framework for Verified Compilers', Archive of Formal Proofs, entry `VeriComp`, first published February 10, 2020; read in its release archive for Isabelle2026 dated 2026-10-26, https://isa-afp.org/release/afp-VeriComp-2026-10-26.tar.gz, SHA-256 `a45a410e58aa9850f2e3195010e9a86c1469c35e5f1846eea44067ee4662a547` (Isabelle/HOL; related paper: M. Desharnais and S. Brunthaler, CPP 2021, doi:10.1145/3437992.3439923). Unlabelled transition systems with behaviours Terminates, Diverges and Goes_wrong (no event traces); locales `forward_simulation` and `backward_simulation` with a well-founded order, stuttering being a zero-step move with a smaller index; lemma `forward_simulation_composition` composes forward simulations with the order `lex_prodp order2++ order1` (lexicographic, transitive closure of the second-pass order), the same shape as `compOrd`; lemma `state_behaves_forward_to_backward` transfers behaviours from a safe source state to a right-unique (deterministic) target. Without events there is no receptiveness or event-matching determinacy. (Read in that archive: theories `VeriComp/Behaviour.thy` (datatype `behaviour`, line 5) and `VeriComp/Simulation.thy` (locales `backward_simulation`, line 13, and `forward_simulation`, line 148; lemmas `state_behaves_forward_to_backward`, line 273, and `forward_simulation_composition`, line 699). The release matters: the entry's history dates the addition of the forward-simulation composition lemmas to July 10, 2024, and `forward_simulation_composition` is absent from the entry's release archives dated 2020-02-25 (Isabelle2019) and 2024-05-26 (Isabelle2024) and present from the archive dated 2025-03-17 (Isabelle2025) on.)"
+    ],
+    "design_question": "In a multi-pass verified compiler, what must each pass prove so that end-to-end correctness follows, and when is a forward simulation (source step implies target steps) enough instead of the backward simulation (target step implies source steps) that end-to-end refinement needs?"
+  },
+  {
+    "id": "cex-non-receptive-source",
+    "lean": [
+      "Toy.Sim.Cex.cex_flip_nonreceptive_source",
+      "Toy.Sim.Cex.cex_pipeline_nonreceptive_first"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "Receptiveness is a hypothesis of Theorem 2 of Ševčík et al. (POPL 2011) and of CompCert's `forward_to_backward_simulation`; this is a minimal machine-checked instance showing that it cannot be dropped.",
+    "plain_claim": "There is an instance in which a source that accepts only the input 0 is forward-simulated by a target that accepts inputs 0 and 1 and is determinate when any two inputs match: the target has the behaviour 'receive 1, return 1' that the source does not allow, no backward simulation exists, and the target does not refine the source (also as a one-pass pipeline whose first language never goes wrong).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Finite case analysis on systems with at most three states.",
+    "positive_control_lean": "Toy.Sim.Examples.positive_control_flip",
+    "shows_necessity_of": [
+      "flip-forward-to-backward: Receptive M L₁",
+      "pipeline-end-to-end-refinement: Receptive M L",
+      "pipeline-behaviour-equality-when-first-never-goes-wrong: Receptive M L"
+    ],
+    "non_claims": [
+      "Shows that the named hypothesis cannot simply be dropped; it does not show that the conclusion fails whenever the hypothesis fails.",
+      "The source here is receptive for Eq but the target is determinate only for AnyInput: receptiveness for a smaller relation than the target's is not enough. (If M₂ ⊆ M₁ the general theorem applies, by Toy.Sim.Determinate.mono.)",
+      "`Receptive` and `Determinate` quantify over all states, including unreachable ones. Nondeterminism confined to unreachable states need not break the conclusion (Toy.Sim.Boundary.flip_conclusion_with_unreachable_nondeterminism). Whether the theorem holds in general with both conditions restricted to reachable states (or to an invariant) is not proved in this package.",
+      "The systems are toy systems chosen for minimality; nothing is claimed about real languages."
+    ],
+    "prior_art": [
+      "J. Ševčík, V. Vafeiadis, F. Zappa Nardelli, S. Jagannathan, P. Sewell, 'Relaxed-memory concurrency and verified compilation', POPL 2011, pp. 43-54, doi:10.1145/1926385.1926393. Section 4 defines labels 'of the same kind' (te ≍ te': they differ only in input values), receptive thread LTSs (Definition 2), determinate thread LTSs (Definition 3: co-enabled labels are of the same kind, and equal labels lead to equal states), threadwise forward and backward simulations with a well-founded order for stuttering (Definitions 4-5), and Theorem 2: 'If R is a threadwise forward simulation from S to T, S is receptive, and T is determinate, then there is a threadwise backward simulation that contains R.' This is the step-level flip theorem, including the clause 'contains R'; their simulations also treat explicit failure labels and are lifted to a concurrent TSO machine, which this package does not model. (Section 4 read in the authors' version of the paper.)",
+      "CompCert, repository AbsInt/CompCert, release tag v3.16, commit a4ad87b17898cf7b7c8638c32ad694a15f7c0032, file common/Smallstep.v: records `receptive` (line 1050) and `determinate` (line 1058), stated with the trace relation `match_traces` and a separate `single_events` field (`sr_traces`, `sd_traces`); CompCert's `sd_determ` bundles the label-matching and functionality clauses that are separate here."
+    ],
+    "design_question": "In a multi-pass verified compiler, what must each pass prove so that end-to-end correctness follows, and when is a forward simulation (source step implies target steps) enough instead of the backward simulation (target step implies source steps) that end-to-end refinement needs?"
+  },
+  {
+    "id": "cex-determinacy-clauses-necessary",
+    "lean": [
+      "Toy.Sim.Cex.cex_flip_target_labels_mismatch",
+      "Toy.Sim.Cex.cex_flip_target_event_labels_mismatch",
+      "Toy.Sim.Cex.cex_flip_target_not_functional",
+      "Toy.Sim.Cex.cex_flip_target_two_initial_states",
+      "Toy.Sim.Cex.cex_flip_target_final_state_steps",
+      "Toy.Sim.Cex.cex_flip_target_two_results",
+      "Toy.Sim.Cex.cex_pipeline_last_labels_mismatch",
+      "Toy.Sim.Cex.cex_pipeline_last_event_labels_mismatch",
+      "Toy.Sim.Cex.cex_pipeline_last_not_functional",
+      "Toy.Sim.Cex.cex_pipeline_last_two_initial_states",
+      "Toy.Sim.Cex.cex_pipeline_last_final_state_steps",
+      "Toy.Sim.Cex.cex_pipeline_last_two_results"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "That a forward simulation into a nondeterministic target admits extra target behaviours is stated at the level of behaviour sets in Leroy (JAR 2009, Section 2.1); the necessity of each of the five determinacy clauses separately is made precise here as minimal machine-checked instances.",
+    "plain_claim": "For each of the five clauses of Determinate M L₂ there is an instance in which a forward simulation exists, the source is receptive, the target satisfies the other four clauses but not this one, the target has a terminating behaviour that the source lacks, no backward simulation exists, and the target does not refine the source. The violations are: a state offering a silent step and an event, or two unmatched events (labels); two silent successors leading to different results (functional); two initial states (init); a final state that can still step (finalNoStep); a final state with two results (finalDet). Each is restated for one-pass pipelines whose first language never goes wrong (Toy.Sim.Cex.cex_pipeline_last_labels_mismatch, Toy.Sim.Cex.cex_pipeline_last_event_labels_mismatch, Toy.Sim.Cex.cex_pipeline_last_not_functional, Toy.Sim.Cex.cex_pipeline_last_two_initial_states, Toy.Sim.Cex.cex_pipeline_last_final_state_steps, Toy.Sim.Cex.cex_pipeline_last_two_results).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Finite case analysis on systems with at most three states.",
+    "positive_control_lean": "Toy.Sim.Examples.positive_control_flip",
+    "shows_necessity_of": [
+      "flip-forward-to-backward: each Determinate clause (both theorems)",
+      "pipeline-end-to-end-refinement: each Determinate clause (through the pipeline restatements)",
+      "pipeline-behaviour-equality-when-first-never-goes-wrong: each Determinate clause"
+    ],
+    "non_claims": [
+      "Shows that the named hypothesis cannot simply be dropped; it does not show that the conclusion fails whenever the hypothesis fails.",
+      "The two-initial-states counterexample uses a target initial state that is related to no source state; it does not show that `InitDeterminate` is needed when the forward initial clause is strengthened to cover every initial target state.",
+      "`Receptive` and `Determinate` quantify over all states, including unreachable ones. Nondeterminism confined to unreachable states need not break the conclusion (Toy.Sim.Boundary.flip_conclusion_with_unreachable_nondeterminism). Whether the theorem holds in general with both conditions restricted to reachable states (or to an invariant) is not proved in this package.",
+      "The systems are toy systems chosen for minimality; nothing is claimed about real languages."
+    ],
+    "prior_art": [
+      "J. Ševčík, V. Vafeiadis, F. Zappa Nardelli, S. Jagannathan, P. Sewell, 'Relaxed-memory concurrency and verified compilation', POPL 2011, pp. 43-54, doi:10.1145/1926385.1926393. Section 4 defines labels 'of the same kind' (te ≍ te': they differ only in input values), receptive thread LTSs (Definition 2), determinate thread LTSs (Definition 3: co-enabled labels are of the same kind, and equal labels lead to equal states), threadwise forward and backward simulations with a well-founded order for stuttering (Definitions 4-5), and Theorem 2: 'If R is a threadwise forward simulation from S to T, S is receptive, and T is determinate, then there is a threadwise backward simulation that contains R.' This is the step-level flip theorem, including the clause 'contains R'; their simulations also treat explicit failure labels and are lifted to a concurrent TSO machine, which this package does not model. (Section 4 read in the authors' version of the paper.)",
+      "CompCert, repository AbsInt/CompCert, release tag v3.16, commit a4ad87b17898cf7b7c8638c32ad694a15f7c0032, file common/Smallstep.v: records `receptive` (line 1050) and `determinate` (line 1058), stated with the trace relation `match_traces` and a separate `single_events` field (`sr_traces`, `sd_traces`); CompCert's `sd_determ` bundles the label-matching and functionality clauses that are separate here.",
+      "X. Leroy, 'A formally verified compiler back-end', Journal of Automated Reasoning 43(4):363-446, 2009, doi:10.1007/s10817-009-9155-4. Section 2.1 (Definitions 2-5, Figure 2) relates whole-program behaviour inclusions — 'backward simulation' (every behaviour of the compiled program C is a behaviour of the source S), 'forward simulation' (every behaviour of S is a behaviour of C), and their versions for safe programs — and shows that the forward inclusion implies the backward one when C is deterministic, i.e. admits a single behaviour (target language without internal nondeterminism and a deterministic execution environment). These are behaviour-set statements, not step-level simulation diagrams; the article has no step-level receptiveness or determinacy conditions and no step-level flip theorem. (Passages checked in the author's version of the article.)"
+    ],
+    "design_question": "In a multi-pass verified compiler, what must each pass prove so that end-to-end correctness follows, and when is a forward simulation (source step implies target steps) enough instead of the backward simulation (target step implies source steps) that end-to-end refinement needs?"
+  },
+  {
+    "id": "cex-refinement-not-symmetric",
+    "lean": [
+      "Toy.Sim.Cex.cex_improves_not_symmetric",
+      "Toy.Sim.Cex.cex_refinedBy_not_symmetric"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "Immediate from the definition of `behavior_improves` in CompCert.",
+    "plain_claim": "There are instances showing that neither Improves nor RefinedBy is symmetric: going wrong at once is improved by terminating normally but not conversely, and a program that goes wrong at once (StuckNow) is refined by a program that terminates normally (Done 0) but not conversely.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Finite case analysis on one-state systems.",
+    "shows_necessity_of": [
+      "refinement-is-a-preorder: the relations are a partial order and a preorder, not equivalences"
+    ],
+    "non_claims": [
+      "Shows only that symmetry fails in these instances; it says nothing about which other pairs refine each other.",
+      "RefinedBy also fails antisymmetry, and mutual refinement does not give equal behaviour sets (Toy.Sim.Boundary.refinedBy_not_antisymmetric, Toy.Sim.Boundary.mutual_refinedBy_different_behaviors).",
+      "The systems are toy systems chosen for minimality; nothing is claimed about real languages."
+    ],
+    "prior_art": [
+      "CompCert, repository AbsInt/CompCert, release tag v3.16, commit a4ad87b17898cf7b7c8638c32ad694a15f7c0032, file common/Behaviors.v: `behavior_improves` (line 81), `behavior_improves_refl` (line 84), `behavior_improves_trans` (line 90), `behavior_improves_bot` (line 102); `program_behaves` (line 141) includes the constructor `program_goes_initially_wrong` (line 145) for programs without initial state. CompCert's `program_behavior` (line 41) also has a constructor for infinite event traces, which this package omits."
+    ],
+    "design_question": "In a multi-pass verified compiler, what must each pass prove so that end-to-end correctness follows, and when is a forward simulation (source step implies target steps) enough instead of the backward simulation (target step implies source steps) that end-to-end refinement needs?"
+  },
+  {
+    "id": "cex-inclusion-needs-source-never-goes-wrong",
+    "lean": [
+      "Toy.Sim.Cex.cex_inclusion_needs_source_never_goes_wrong",
+      "Toy.Sim.Cex.cex_inclusion_without_refinement"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "This is the reason CompCert states behaviour inclusion for source programs that do not go wrong (Leroy, CACM 2009, property (2); Leroy, JAR 2009, Definition 3).",
+    "plain_claim": "There is an instance (source StuckNow, which goes wrong at once; target Done 0) in which refinement holds, a backward simulation exists, and a one-pass chain with receptive first and determinate last language exists, yet the target's behaviour 'return 0' is not a source behaviour and the two behaviour sets differ. And there is an instance in which the source never goes wrong but, without refinement, a target behaviour is not a source behaviour.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Finite case analysis on one-state systems.",
+    "shows_necessity_of": [
+      "refinement-is-inclusion-when-source-never-goes-wrong: NeverGoesWrong L₁, and RefinedBy / IsBackwardSim",
+      "pipeline-behaviour-equality-when-first-never-goes-wrong: NeverGoesWrong L"
+    ],
+    "non_claims": [
+      "Shows that the named hypothesis cannot simply be dropped; it does not show that the conclusion fails whenever the hypothesis fails.",
+      "The hypothesis that cannot be dropped is whole-program NeverGoesWrong; the per-state condition Safe used inside backward simulations is a different, much weaker property.",
+      "The systems are toy systems chosen for minimality; nothing is claimed about real languages."
+    ],
+    "prior_art": [
+      "X. Leroy, 'Formal verification of a realistic compiler', Communications of the ACM 52(7):107-115, 2009, doi:10.1145/1538788.1538814. Section 2.1 states whole-program behaviour-preservation properties; for source and target languages that are deterministic and execution environments that are deterministic (so each program has exactly one behaviour), 'S safe implies every behaviour of C is a behaviour of S' is equivalent to the easier 'every non-wrong behaviour of S is a behaviour of C'. Section 2.3 composes compiler passes for any transitive whole-program preservation property; it does not concern step-level simulation diagrams or stuttering orders. (Passages checked in the author's version of the article.)",
+      "X. Leroy, 'A formally verified compiler back-end', Journal of Automated Reasoning 43(4):363-446, 2009, doi:10.1007/s10817-009-9155-4. Section 2.1 (Definitions 2-5, Figure 2) relates whole-program behaviour inclusions — 'backward simulation' (every behaviour of the compiled program C is a behaviour of the source S), 'forward simulation' (every behaviour of S is a behaviour of C), and their versions for safe programs — and shows that the forward inclusion implies the backward one when C is deterministic, i.e. admits a single behaviour (target language without internal nondeterminism and a deterministic execution environment). These are behaviour-set statements, not step-level simulation diagrams; the article has no step-level receptiveness or determinacy conditions and no step-level flip theorem. (Passages checked in the author's version of the article.)",
+      "CompCert, repository AbsInt/CompCert, release tag v3.16, commit a4ad87b17898cf7b7c8638c32ad694a15f7c0032, file common/Behaviors.v: `backward_simulation_behavior_improves` (line 493) and `backward_simulation_same_safe_behavior` (line 519)."
+    ],
+    "design_question": "In a multi-pass verified compiler, what must each pass prove so that end-to-end correctness follows, and when is a forward simulation (source step implies target steps) enough instead of the backward simulation (target step implies source steps) that end-to-end refinement needs?"
+  }
+]

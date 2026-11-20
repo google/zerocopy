@@ -1,0 +1,545 @@
+{
+  "statements": {
+    "Toy.Sim.Cex.cex_bsim_without_final_clause": {
+      "closure_sha256": "7c0738ba30105bee75413500b840f4f6492b4f399d410175c95020eb8e175eb7",
+      "closure_size": 33,
+      "statement_sha256": "2cc99a15c8fc6460325ff3f793f553ef3ce622f7fb75344bfca32871edac762d"
+    },
+    "Toy.Sim.Cex.cex_bsim_without_initExists": {
+      "closure_sha256": "5ffb949cea97a7ee8d37645b4059972430cead2d6fe20743dd408a7064ca3b4e",
+      "closure_size": 34,
+      "statement_sha256": "242f243ddc5a7cf3724103848df9e73653bca800dbdc6d1756dded5faaa1fe3c"
+    },
+    "Toy.Sim.Cex.cex_bsim_without_initMatch": {
+      "closure_sha256": "e41e624edc1399089fd00191c167580a7fb873dddfe4e7718bfa5ad5f84f0d0e",
+      "closure_size": 33,
+      "statement_sha256": "21f910a47e38105320e17389791d81b86e497c7c864011da2bf006ce745bf629"
+    },
+    "Toy.Sim.Cex.cex_bsim_without_progress": {
+      "closure_sha256": "866feb81bae4afd1dc4a6b4a076ee906baa1790c9994a83ae6ba0c8d448be1e5",
+      "closure_size": 34,
+      "statement_sha256": "2f15c20dcea484ea954fdfc900c5ece9ac0789edac730679dd16557c0fbd768d"
+    },
+    "Toy.Sim.Cex.cex_bsim_without_step_diagram": {
+      "closure_sha256": "c96e41565feff0c7e3d9250de178733526739448cbad217d01a9e88478c5a766",
+      "closure_size": 33,
+      "statement_sha256": "988fe9a7258a6430d67c6b8602c1f36d4d48c5202ab1d2a3af28dd6fc275d46f"
+    },
+    "Toy.Sim.Cex.cex_bsim_without_wf": {
+      "closure_sha256": "87c24023abe2540b234f1dbd7ee7a876db928cecf82eefe1765f6efab0b41bc7",
+      "closure_size": 35,
+      "statement_sha256": "1a3aeb99228ade2290a010abc0b18c952d9508c1a212fbf9e2fed1608170e2af"
+    },
+    "Toy.Sim.Cex.cex_compOrd_wf_needs_both": {
+      "closure_sha256": "76c357f7acee21f4ce53adaa91034dc87ffe52b0da9088759f1d09d6d3821b43",
+      "closure_size": 3,
+      "statement_sha256": "9f69b97debad45b9793a52cab574a7b2a09df0b5200b23da14dcfa5e44f929f0"
+    },
+    "Toy.Sim.Cex.cex_comp_naive_lex_order_fails": {
+      "closure_sha256": "7ba9a58e81fd296a3b5f325c880fc0aaafeba29ce30afb7dc813a5592bde761c",
+      "closure_size": 31,
+      "statement_sha256": "b3120349eb88f26e421e0079ad30597d5caeafff73f78fb09042c0f7c5704ae0"
+    },
+    "Toy.Sim.Cex.cex_comp_without_first_final": {
+      "closure_sha256": "9951a41840416098279c50359bf07129c552171b7d787beca2f057fcba5c7c43",
+      "closure_size": 23,
+      "statement_sha256": "be748e5b65439bd4695e5d647993d10eb063d34e67be930751c8f56f75ddc023"
+    },
+    "Toy.Sim.Cex.cex_comp_without_first_init": {
+      "closure_sha256": "2eeda37a2cfa88131745bfb09a18a7c96d072c77088119b886e2961688147936",
+      "closure_size": 24,
+      "statement_sha256": "ae3ac2ab964d6b5e397ae0fe6ba4f0f11d786ecaa69910a123a2bbc57508c055"
+    },
+    "Toy.Sim.Cex.cex_comp_without_first_step_diagram": {
+      "closure_sha256": "9227fe3935d110b13a1cc6a4cc5af40836429f82da09b769076ccd1652078e51",
+      "closure_size": 24,
+      "statement_sha256": "b8b9086599b7c4f1ecc11237b0e8902cfd4142e2bf6d6743f46220d73672aea9"
+    },
+    "Toy.Sim.Cex.cex_comp_without_first_wf": {
+      "closure_sha256": "0b49d79130600aabe6aa5e737425607ad1e909334d76e5dbeebeeab87ff3be9a",
+      "closure_size": 23,
+      "statement_sha256": "0b7e963ce0224d11452d14ff0e0fa6e38857914ef3fffd45b3a0b00616a72a3a"
+    },
+    "Toy.Sim.Cex.cex_comp_without_second_final": {
+      "closure_sha256": "9951a41840416098279c50359bf07129c552171b7d787beca2f057fcba5c7c43",
+      "closure_size": 23,
+      "statement_sha256": "653df71cfc5ad3e7b1ea34edbd86b644b2b53bc57d6a4d58cbaa74e544fe251f"
+    },
+    "Toy.Sim.Cex.cex_comp_without_second_init": {
+      "closure_sha256": "2eeda37a2cfa88131745bfb09a18a7c96d072c77088119b886e2961688147936",
+      "closure_size": 24,
+      "statement_sha256": "79ee2c8c4c678ab1fef147565b3f9c6048dc2165d5607cc96e68340b7c89ee9c"
+    },
+    "Toy.Sim.Cex.cex_comp_without_second_step_diagram": {
+      "closure_sha256": "9227fe3935d110b13a1cc6a4cc5af40836429f82da09b769076ccd1652078e51",
+      "closure_size": 24,
+      "statement_sha256": "5abe0b45bd8d18fc8afd8eb8df6b0db2e64ff9ee85e74c274233d6c01f66dd23"
+    },
+    "Toy.Sim.Cex.cex_comp_without_second_wf": {
+      "closure_sha256": "0b49d79130600aabe6aa5e737425607ad1e909334d76e5dbeebeeab87ff3be9a",
+      "closure_size": 23,
+      "statement_sha256": "5f3f99b16de3e4bc9d108b950d69645e954efebbda0439e3c81a676851dc1631"
+    },
+    "Toy.Sim.Cex.cex_flip_nonreceptive_source": {
+      "closure_sha256": "c12076fdc4448685a16ff1093e29660c1a938d75aa1f193bc3580d08ead56e87",
+      "closure_size": 60,
+      "statement_sha256": "2ac0784ab4a3bc0e31ca0c18c84329b9ede21cdde08441285a1d733de4edfe78"
+    },
+    "Toy.Sim.Cex.cex_flip_target_event_labels_mismatch": {
+      "closure_sha256": "214cad4c86fec9c3b5533289a378d39348ddf2ba6c24c0d33b3d39fbdc35f20c",
+      "closure_size": 57,
+      "statement_sha256": "288bc9f33245748674632d82622f27469c9822b1ce9e8de83ad7b22bd321d7c0"
+    },
+    "Toy.Sim.Cex.cex_flip_target_final_state_steps": {
+      "closure_sha256": "08c96e97259118108b6dd5afd1114427416f4671cc0a453cb5abaaa1ea5d3d85",
+      "closure_size": 53,
+      "statement_sha256": "c7ed1ba6c31a7e4cfe807ac63f1bbcdfe0b2c92917012bf1a66374f3526bb354"
+    },
+    "Toy.Sim.Cex.cex_flip_target_labels_mismatch": {
+      "closure_sha256": "214cad4c86fec9c3b5533289a378d39348ddf2ba6c24c0d33b3d39fbdc35f20c",
+      "closure_size": 57,
+      "statement_sha256": "ee72ea9308af1154d77e86d88f1ec7a464871f51feb8a28686653928388ad112"
+    },
+    "Toy.Sim.Cex.cex_flip_target_not_functional": {
+      "closure_sha256": "214cad4c86fec9c3b5533289a378d39348ddf2ba6c24c0d33b3d39fbdc35f20c",
+      "closure_size": 57,
+      "statement_sha256": "efb8b483a86d1a385f97b27362a6e8a223a84de11d433213cbbfa3ef398dada4"
+    },
+    "Toy.Sim.Cex.cex_flip_target_two_initial_states": {
+      "closure_sha256": "5cfad22fc2de1c6e5cc6a1e661cd6d7a2d9afba811e1f15b00fec2350a143b99",
+      "closure_size": 53,
+      "statement_sha256": "433d4217231dc7bb4f0742ae60cbcbfa24f3d39a93eaafbe9e5c7f0dbfb07dce"
+    },
+    "Toy.Sim.Cex.cex_flip_target_two_results": {
+      "closure_sha256": "c673dea5da394c367e2e26787f4f631f783bd0ca0e7f8fd741de6b89e5d2624d",
+      "closure_size": 53,
+      "statement_sha256": "34060ebb13337f1b13b51ff0db0d49e98aa7f45459a03cdef9d1bde706be7b6b"
+    },
+    "Toy.Sim.Cex.cex_flip_without_final_clause": {
+      "closure_sha256": "3098f1b14ab914560eab687bcfcb6fbe268c6dbb04f1bcb86841e6c34135ce98",
+      "closure_size": 51,
+      "statement_sha256": "d76921cef83465740e8c91efa7cabf9c91095ab5b1cfae5000651a59e81a4ef6"
+    },
+    "Toy.Sim.Cex.cex_flip_without_init_clause": {
+      "closure_sha256": "e2e96cff432db145aa5c37fcbba2b22be798bc50f2869e74ebda2f850092f25d",
+      "closure_size": 52,
+      "statement_sha256": "106cba64cb7f966dab12f6d61514b824066dba5a4a6e082560ba2da0a80e25e3"
+    },
+    "Toy.Sim.Cex.cex_flip_without_step_diagram": {
+      "closure_sha256": "fae736354ead5e0e3b88cb963d3358236aa999f16417f1561c57af710fbc05f8",
+      "closure_size": 52,
+      "statement_sha256": "e805d6a10542283edb65b9fe3e0cc78b5fb9b22936d2c8137e933eff6908d26a"
+    },
+    "Toy.Sim.Cex.cex_flip_without_wf": {
+      "closure_sha256": "e2da5359077fec8bfd127fc09ecf8b20f666d4b4daf69901bc185379c82dfa9c",
+      "closure_size": 53,
+      "statement_sha256": "3418c14f2314a16c41db2d5749b917b6fc5dd423d60d4342912f30984deee8b5"
+    },
+    "Toy.Sim.Cex.cex_forwardSim_goesWrong_not_preserved": {
+      "closure_sha256": "5f43d86db3214e53c60049068eebf79801feab09db211b137f7e113f3b290508",
+      "closure_size": 34,
+      "statement_sha256": "089eebdf7aa6a8c8f3a7518cb9dab3072e56a22b29645ea25782be225e1b0fde"
+    },
+    "Toy.Sim.Cex.cex_fsim_without_final_clause": {
+      "closure_sha256": "6606cbb7117481f5dc495355167851b980d52cb0595abb163e74681753df66d3",
+      "closure_size": 27,
+      "statement_sha256": "3c80398ec7efab6b8fbdedf1663edd4d419c66d265e3eb3abf4bcbc7054df3b5"
+    },
+    "Toy.Sim.Cex.cex_fsim_without_init_clause": {
+      "closure_sha256": "04862c5b423b143d5d5844a15018d02e6cb23931de94af7ca51383d66e6651b7",
+      "closure_size": 28,
+      "statement_sha256": "12c5ac4be64b21512f2c30f4d0d6b28240eb7aea4ef7a573abc0719fbdea6566"
+    },
+    "Toy.Sim.Cex.cex_fsim_without_init_clause_diverges": {
+      "closure_sha256": "df4ed3d082bc0e8f2448a656094e6c616a02ae12b574f308eaafdb6d092b3502",
+      "closure_size": 27,
+      "statement_sha256": "743d32dc319a34587641f74662e454f39a1661a112489f6aa993ac280ae5afd2"
+    },
+    "Toy.Sim.Cex.cex_fsim_without_step_diagram": {
+      "closure_sha256": "de250fd2a29aa8b96a357dbc4ef060440f4342f4627fe3d4b9b4d160d09118f5",
+      "closure_size": 27,
+      "statement_sha256": "bd5e69c5e4554fb402ae4d2af2ae27f00b34883812d7adecc6c981b9094ced06"
+    },
+    "Toy.Sim.Cex.cex_fsim_without_step_diagram_diverges": {
+      "closure_sha256": "c5965acbc0b54a451f3e002e484c6ad784bab9c9e91195bbde1323e4398ec776",
+      "closure_size": 26,
+      "statement_sha256": "c4eb186939b6d54d3741d576dc918d7dc6107f257aaed54192c418031bce4d1f"
+    },
+    "Toy.Sim.Cex.cex_fsim_without_wf_divergence_not_preserved": {
+      "closure_sha256": "fb30548f92c49b9683a89e910d457854cea305f13f7e61ac0e95f44ba39fde21",
+      "closure_size": 29,
+      "statement_sha256": "bc19b4198607a62f74818c0b843a31174c80cb60460da3d5e77b621f7a0f6964"
+    },
+    "Toy.Sim.Cex.cex_improves_antisymm_needs_both": {
+      "closure_sha256": "58ca24d17e723c5fed7e765a122eb241ba8c7ef57994fa8bc8cc69ae08e2ceb2",
+      "closure_size": 9,
+      "statement_sha256": "a77b3e999be367b81d8e0b040fd8d1514d99d2b36a5cdc310d4d718f37bc5b65"
+    },
+    "Toy.Sim.Cex.cex_improves_not_symmetric": {
+      "closure_sha256": "58ca24d17e723c5fed7e765a122eb241ba8c7ef57994fa8bc8cc69ae08e2ceb2",
+      "closure_size": 9,
+      "statement_sha256": "6f7bb89d357233da0cef20c107647ab2f555ab1c1497821aea44dfb09d3da156"
+    },
+    "Toy.Sim.Cex.cex_improves_trans_needs_both": {
+      "closure_sha256": "58ca24d17e723c5fed7e765a122eb241ba8c7ef57994fa8bc8cc69ae08e2ceb2",
+      "closure_size": 9,
+      "statement_sha256": "aac93420e8094993fa1a152c09349374331813bcfa3dbd15dbc90c17bf1fc658"
+    },
+    "Toy.Sim.Cex.cex_inclusion_needs_source_never_goes_wrong": {
+      "closure_sha256": "e3d9a5a1fbb0bd48622cf1968d0a23db0e909428e6f0f1190a86323a465127c6",
+      "closure_size": 57,
+      "statement_sha256": "1acdc90781060ad66eda924142663904121fc0c42ef6e50b70d55cba252f131e"
+    },
+    "Toy.Sim.Cex.cex_inclusion_without_refinement": {
+      "closure_sha256": "f90113790d4d19c590ffbd0ec0c18e98f1f21e541d66382affc816a4cfe40073",
+      "closure_size": 23,
+      "statement_sha256": "0e23f7734c2c307cceacffbdd6dbfc81ad320da1887082052703c5f7f651a36f"
+    },
+    "Toy.Sim.Cex.cex_inclusion_without_target_behavior": {
+      "closure_sha256": "74dc2973d5351250f1787d073263e6bc6bab8f5bf049bedaa5cf48b201d196de",
+      "closure_size": 37,
+      "statement_sha256": "92c3b44f637b8465be3ed3aa03ee80bb85ac489421a9adcf83b68e51d13ede0f"
+    },
+    "Toy.Sim.Cex.cex_partial_run_from_non_initial_state": {
+      "closure_sha256": "dac8785a59f3781ab91823b8e7128defeb7106fd3450aafe84e3a42cd9670750",
+      "closure_size": 17,
+      "statement_sha256": "9d566f31157a228d6b32d12c85b4ac794207b01def64822d4ebe9645a1011f00"
+    },
+    "Toy.Sim.Cex.cex_partial_run_without_source_run": {
+      "closure_sha256": "7680abafff91a0a2579304fd9e0a27d8b899c3df5c9019250c04b798aa5b4c4d",
+      "closure_size": 16,
+      "statement_sha256": "0c238d37b87b0f74d1c61e9108d298b16b6f3e8c2c28fcd16e3e2e9d562bf52e"
+    },
+    "Toy.Sim.Cex.cex_pipeline_last_event_labels_mismatch": {
+      "closure_sha256": "1dac0a32b0d3585d43007fc2240e10b88d038ea60a1500f7583640e2175f671f",
+      "closure_size": 50,
+      "statement_sha256": "23ac3a33a003eb9295d15f6eeeff24aca9c1bbd0f9e1e95d486153991722cd8c"
+    },
+    "Toy.Sim.Cex.cex_pipeline_last_final_state_steps": {
+      "closure_sha256": "461a4bfc19e83c6e8c18c237092d6a43a20b00526dfb24a7b90163d8a33c3137",
+      "closure_size": 46,
+      "statement_sha256": "b66d68802418f09419195a9641d8f67b485005897c41f890ed38df3d3114d603"
+    },
+    "Toy.Sim.Cex.cex_pipeline_last_labels_mismatch": {
+      "closure_sha256": "1dac0a32b0d3585d43007fc2240e10b88d038ea60a1500f7583640e2175f671f",
+      "closure_size": 50,
+      "statement_sha256": "aa796c684d1b42741a3d1586e491e9a105a6f881699c657e34cefc1fc32bfbfc"
+    },
+    "Toy.Sim.Cex.cex_pipeline_last_not_functional": {
+      "closure_sha256": "1dac0a32b0d3585d43007fc2240e10b88d038ea60a1500f7583640e2175f671f",
+      "closure_size": 50,
+      "statement_sha256": "71677f3692042849fd66534578ba668dce4b1ddadc230c5f5e1f520bf18e165b"
+    },
+    "Toy.Sim.Cex.cex_pipeline_last_two_initial_states": {
+      "closure_sha256": "9fb12d183f0703c0ca0c2fafe147152ab78d5aaee5d0867109bc44a1d725587a",
+      "closure_size": 46,
+      "statement_sha256": "f9905e7ef1dd123da6f7dee30e0289712aa1ac12c811f7c1878ef63068cae479"
+    },
+    "Toy.Sim.Cex.cex_pipeline_last_two_results": {
+      "closure_sha256": "b9c7c5bd2d0debfcaa0af33d25f3ea1e6d820ad8f9db82af41aafe49c8534198",
+      "closure_size": 46,
+      "statement_sha256": "685a99c070e4070d19d61362481b4758e5b4756bd5d85a9ac91c6849961fd240"
+    },
+    "Toy.Sim.Cex.cex_pipeline_nonreceptive_first": {
+      "closure_sha256": "95b8654a0e132b9eb1c9acd3272f8df68d9de782f00040a30cfe381905c1707a",
+      "closure_size": 53,
+      "statement_sha256": "5784ef762159fd701f2470305b0015b183872330634c44d514e6cceee4184963"
+    },
+    "Toy.Sim.Cex.cex_pipeline_preserves_without_chain": {
+      "closure_sha256": "6414467d3d21d627dc414341d69b47e03455720822c9fe55b9b9ae65ed5d5762",
+      "closure_size": 31,
+      "statement_sha256": "b082ba14f527d4f50f9757804387987ae5848df1dbe4e0c0168a06172922d051"
+    },
+    "Toy.Sim.Cex.cex_pipeline_without_chain": {
+      "closure_sha256": "d8326e63cb50bcf152b88aeed47cae541e407428350f2429b62dc51d906b8fe5",
+      "closure_size": 47,
+      "statement_sha256": "5bf836d99509588d781fb901b63f148089dea34ee755b88b350b7ee0ed011427"
+    },
+    "Toy.Sim.Cex.cex_preservation_without_source_behavior": {
+      "closure_sha256": "167822a6c1caeed1997914530e08a8c9466c48b3240d549c086e4aad9a9e8c69",
+      "closure_size": 33,
+      "statement_sha256": "dd9aa0a6c5770eebb41d1bd158480212c45e267eb3c681bf08fa4226f4f58c31"
+    },
+    "Toy.Sim.Cex.cex_refinedBy_not_symmetric": {
+      "closure_sha256": "5035cb0534fc2a892a510b7460f9b849382f66e164587289052386a6df120742",
+      "closure_size": 26,
+      "statement_sha256": "6928fe9daf5d5046bff3ad514ad0bb0d6667e738e614717a96e5e15402a5439a"
+    },
+    "Toy.Sim.Cex.cex_refinedBy_trans_needs_both": {
+      "closure_sha256": "8b4887d96b81a6a4254ba5a12a2335bd7e75a1de1cace759141e055402c1cdc8",
+      "closure_size": 25,
+      "statement_sha256": "d54ab69b12a841804a18bf6a3e211ed945fd97fec89d8d5c7ac83e689688827b"
+    },
+    "Toy.Sim.Examples.fsimChain_neg": {
+      "closure_sha256": "bf3acde0d8c525ea8d4e737c988c864c06128f673cfd2bdf3a3c6bbd9bad08ba",
+      "closure_size": 21,
+      "statement_sha256": "47ca06a145e9e70ec7494fbcba0b51898b4bd571fd3d5d5b9c8ef23b73fd280e"
+    },
+    "Toy.Sim.Examples.fsimChain_pos": {
+      "closure_sha256": "75f99996dc6cb4287a526979c827bc4b54169b370933a0f8d5ff6f37521a2477",
+      "closure_size": 36,
+      "statement_sha256": "a7ac16fb7003af05cedb752805f330bc732757359229e1939bc0b24130dd98d2"
+    },
+    "Toy.Sim.Examples.isForwardSim_neg": {
+      "closure_sha256": "3138ebea88b6db0500be59daca1a4c38c6654516d4da4e6396483030e9ca5651",
+      "closure_size": 19,
+      "statement_sha256": "6d509a7fd6d497abe21739a786adf2a5e6e7459b01cfb8c9a1c578f134378f26"
+    },
+    "Toy.Sim.Examples.isForwardSim_pos": {
+      "closure_sha256": "01da51471cd61bb14048f0deb08c54481a1c641ccb2c882f46c0a0625e1fa68c",
+      "closure_size": 37,
+      "statement_sha256": "7b4a7ecc0486dba23b8a05c680abacb58b5c238d9fcf40c74416f2063c5ab907"
+    },
+    "Toy.Sim.Examples.nonvacuous_backwardSim": {
+      "closure_sha256": "437a79ba960b89a66f169b86770c69a4174f44cbc19e1e4169f0986fbdcb784e",
+      "closure_size": 52,
+      "statement_sha256": "dfbba8167c020d0ea06c62102aad8be7f7a483f4ea9f95858ec541c5362513cd"
+    },
+    "Toy.Sim.Examples.nonvacuous_comp": {
+      "closure_sha256": "47e785bf9c85f1d7bbb2abcea40ea4908ee5208a41900953649e735d5bcb7713",
+      "closure_size": 53,
+      "statement_sha256": "e3b9cfa1591ca1126b1771ec79cf890bc0190712a168ff693b3eb9b2a4f988fb"
+    },
+    "Toy.Sim.Examples.nonvacuous_comp_transGen": {
+      "closure_sha256": "2937c5c4bfffb74ef704d1c8d2ad4bb44dbf6e1782d9d004d71bfa740e1600a2",
+      "closure_size": 30,
+      "statement_sha256": "d7885e3c1a2e89b4b6c978ff584a899d8d106b48366e07053eb8a051490c1e64"
+    },
+    "Toy.Sim.Examples.nonvacuous_deterministic_target": {
+      "closure_sha256": "c02413f2c6220f1f670f5ac854b1e367ad7f1c254f5e3b0798af501c2613f91c",
+      "closure_size": 34,
+      "statement_sha256": "3c5a7afb2943b90edfce53c04be74c1a3e335a407301cb129c04b7343068d368"
+    },
+    "Toy.Sim.Examples.nonvacuous_flip": {
+      "closure_sha256": "bd3eac2d0ba1991bcc9d8507389741c0674d999bd496c08b39b88cff9ae50625",
+      "closure_size": 50,
+      "statement_sha256": "c54e7989f4a2b764147e2f394e54e021b3aba9c2ff899a26b8c4feec1248b1b0"
+    },
+    "Toy.Sim.Examples.nonvacuous_flip_with_conclusion": {
+      "closure_sha256": "f721ff4d17035c1339def1aefff4a4a325387f8460ff3f54eac7620f1a996c4b",
+      "closure_size": 63,
+      "statement_sha256": "4205626726e826370c7ee9eb740512fec934a493c629f0456f01dd6d9d7b7a12"
+    },
+    "Toy.Sim.Examples.nonvacuous_isForwardSim_preserves": {
+      "closure_sha256": "f9928fa2c90806cfed0821bb7f846ed568f6a7b260e825083b71507d1fb4849d",
+      "closure_size": 47,
+      "statement_sha256": "154890df8c7e6e60cfa954299fdacbe96abfd72d194607a535ab34c7a1785d38"
+    },
+    "Toy.Sim.Examples.nonvacuous_partial_run_simulated": {
+      "closure_sha256": "f210979a5e1783397d58d934b82f2d2e9277d5f0c47e22a80089dff42e078a2d",
+      "closure_size": 33,
+      "statement_sha256": "5c8d02c7e15d6eac572afaf73d086b1e98b1603d9937e2ff4fd3687bc581cc49"
+    },
+    "Toy.Sim.Examples.nonvacuous_pipeline": {
+      "closure_sha256": "084eb9791afb849350b55266e09bbfa172d41daa478b9d3d4481022b322ff7be",
+      "closure_size": 80,
+      "statement_sha256": "9580b4fb1b5c5c84ee9ddaa21875da1750d97c41b902b96875cf40f858bbe33a"
+    },
+    "Toy.Sim.Examples.nonvacuous_pipeline_behaviors_iff": {
+      "closure_sha256": "30de7bc839e369285879fcd717381593bbabcf05fcae02c5dd945034d61f3892",
+      "closure_size": 71,
+      "statement_sha256": "294d9978f7e9a097c47391ec317c84ed6adb0276fdb1df3d8ccd718ced6fff8c"
+    },
+    "Toy.Sim.Examples.nonvacuous_pipeline_preserves": {
+      "closure_sha256": "3fe0686c36b416dc1c5795c538dee5b8d080d0c458113ace613a5a5d8da246f9",
+      "closure_size": 46,
+      "statement_sha256": "01aa437b4623eb71b00126644756c182156b98fd4f31153a92a62c116fab2e6f"
+    },
+    "Toy.Sim.Examples.nonvacuous_preorder": {
+      "closure_sha256": "7a026fd4146b14a14a4e33a0a6ed44df9703904346d110ca5c0c4d32501136e2",
+      "closure_size": 41,
+      "statement_sha256": "642f299da94a445abd2d357d0eed02f5d4b11441c1c95dfe47e7529e290337d3"
+    },
+    "Toy.Sim.Examples.nonvacuous_preserve_diverges": {
+      "closure_sha256": "ed4a179725627b518ce2fd4353e33324fed43457d5edc6e622a1312c1d01a968",
+      "closure_size": 27,
+      "statement_sha256": "c0e02985e11621ba2d07c04e38429aaa64d8843e60afa1c5b584e02a5669106f"
+    },
+    "Toy.Sim.Examples.nonvacuous_preserve_terminates": {
+      "closure_sha256": "4f3a0dd41337c3aaa02a120e0efe01f9cbbc8fa1bfbeaff2e07e3217021dc8c9",
+      "closure_size": 45,
+      "statement_sha256": "54164ab083de616176dc467bfb8dad84d4cb81e9bdcf71ac6156b1820e8ac0ef"
+    },
+    "Toy.Sim.Examples.nonvacuous_refinement_inclusion": {
+      "closure_sha256": "02b7680b9de47d85bd30679b65ef1c90b57886824bec2b492d2b7ce5ffc7a16d",
+      "closure_size": 55,
+      "statement_sha256": "e8cfb47d741ce3366579d4ef4c2fb11bf96296646a95160e2be49a024dbe45ce"
+    },
+    "Toy.Sim.Examples.positive_control_diverges": {
+      "closure_sha256": "6bb9b7ab7842edd74cfb6be40f8b7836a84a694a69df69b06121f178c361c37f",
+      "closure_size": 30,
+      "statement_sha256": "7bc9e583c7889db96b298dc2492b5fffb30221bdd9bff6c9d961c36535a7cd1e"
+    },
+    "Toy.Sim.Examples.positive_control_flip": {
+      "closure_sha256": "bfb336486ad61f4b5ef6b90566eb9e8f53530faae73a1dd1597a88fcd9af3875",
+      "closure_size": 77,
+      "statement_sha256": "1aa4854c54b21ce918d9514b4719614ef402e48a60655323c739fab0670b4204"
+    },
+    "Toy.Sim.Improves.antisymm": {
+      "closure_sha256": "58ca24d17e723c5fed7e765a122eb241ba8c7ef57994fa8bc8cc69ae08e2ceb2",
+      "closure_size": 9,
+      "statement_sha256": "10fd361e7251009230eb6365b34db96b068f792adc4f525f3c618e7803a7eeb8"
+    },
+    "Toy.Sim.Improves.refl": {
+      "closure_sha256": "58ca24d17e723c5fed7e765a122eb241ba8c7ef57994fa8bc8cc69ae08e2ceb2",
+      "closure_size": 9,
+      "statement_sha256": "804be681c7e6fcf7f270c243292f7db4997f19a141860e0885802464d921b64c"
+    },
+    "Toy.Sim.Improves.trans": {
+      "closure_sha256": "58ca24d17e723c5fed7e765a122eb241ba8c7ef57994fa8bc8cc69ae08e2ceb2",
+      "closure_size": 9,
+      "statement_sha256": "821d16fe633c38f3a7a009b5f2ea41cf8a2d2efac05c409f42f43f6d418dc0ca"
+    },
+    "Toy.Sim.RefinedBy.refl": {
+      "closure_sha256": "c13fe0e2b363f44517a75fa2477ec48371e540bfbaaefa77e4dca00a72f3d6ea",
+      "closure_size": 24,
+      "statement_sha256": "a92747964bdde5aace7447dcdb5099894c1dd43bf46686f42c234c940a122079"
+    },
+    "Toy.Sim.RefinedBy.trans": {
+      "closure_sha256": "c13fe0e2b363f44517a75fa2477ec48371e540bfbaaefa77e4dca00a72f3d6ea",
+      "closure_size": 24,
+      "statement_sha256": "4849c1b55f037550dcd794c043e6822788a7e5fe65ebc97f405d0c0436a9e53a"
+    },
+    "Toy.Sim.Unfolded.backward_sim_gives_refinement": {
+      "closure_sha256": "3457a380e95c32f75ef5731b4dcd73b153cd1e25c866bdde999b98a6ccf3c9ec",
+      "closure_size": 23,
+      "statement_sha256": "f25434b2ad52f8ae4c5f995838e1a950c0af3930817bbd8515c33933af1aac67"
+    },
+    "Toy.Sim.Unfolded.flip_forward_to_backward": {
+      "closure_sha256": "2ddd93d92aadd0539ca52c41d5e4c3ac26c96eccda419544791ed0f99c5ba43d",
+      "closure_size": 16,
+      "statement_sha256": "717660d36568ef821a1eb495e5c5f68d3fb9e7e18fdc2c8f637f0286739b6889"
+    },
+    "Toy.Sim.Unfolded.partial_run_simulated": {
+      "closure_sha256": "30a45f41983b3dd2f771d906e171a20bd3c02dad37152a9ba5eb0c0b7dd4be2d",
+      "closure_size": 11,
+      "statement_sha256": "e59a0702383a21ccced33b924065efaa1dbb4bb1b56df94e4bcb62d3cc1553d0"
+    },
+    "Toy.Sim.Unfolded.pipeline_end_to_end_refinement": {
+      "closure_sha256": "2f6bfc6122b84182d716f1305d2fd9b2521ce55c553ae06118c890c16afa251e",
+      "closure_size": 35,
+      "statement_sha256": "8ec07dd7957b8fbfad2f0cfb1f9c500901d1072d9ab00640ea5e52456a911b01"
+    },
+    "Toy.Sim.Unfolded.silent_divergence_preserved": {
+      "closure_sha256": "30a45f41983b3dd2f771d906e171a20bd3c02dad37152a9ba5eb0c0b7dd4be2d",
+      "closure_size": 11,
+      "statement_sha256": "156d20bacb9433dd0d8d3ce67bfc602ffd049e375311382f17b1e440345fea8e"
+    },
+    "Toy.Sim.Unfolded.step_diagrams_compose": {
+      "closure_sha256": "a006286439c214e8b25a051be7bd3e892afc31fdfa196d711de0f4f37135f52e",
+      "closure_size": 10,
+      "statement_sha256": "75c82cdfd77dc60167a313d93b442dba0b24401ca6ce0bbec804351cef9be973"
+    },
+    "Toy.Sim.Unfolded.terminating_behaviours_preserved": {
+      "closure_sha256": "62c7431fd46f63759e8763d236c3704193f6d1a2bfced1c21368b1e6965e2993",
+      "closure_size": 12,
+      "statement_sha256": "b898adab2dcb2803964324a49cd62df5fa533fdd842ef3ededba0e8b54711c97"
+    },
+    "Toy.Sim.backwardSim_gives_refinedBy": {
+      "closure_sha256": "6b72c3523be028cb2ecde2930c44e0b67ada813291d42d24ac00b1b61f8783c6",
+      "closure_size": 33,
+      "statement_sha256": "7a9edfe3f95435f140f39a88bf6dc1a2db1fb987223ccab96020caed43b98417"
+    },
+    "Toy.Sim.backwardSim_neverGoesWrong_behaviors_subset": {
+      "closure_sha256": "08d1f5cb915b1f65ac5dc540a800297210bb930cdfbb03b0bf3a8f0baef51b48",
+      "closure_size": 31,
+      "statement_sha256": "8802312e07f849febcbc0bb75b141ce392ec241b4ead01437416fa227327f59b"
+    },
+    "Toy.Sim.compOrd_wf": {
+      "closure_sha256": "d4d958144981a2e504a2289e25907401839efdfde71c0613109b50701951f631",
+      "closure_size": 1,
+      "statement_sha256": "0efd624aa7a11c8d32f62aea6fd5beb4f7618dfa400fd4912f5e40c31d3fbbf4"
+    },
+    "Toy.Sim.forwardSim_deterministic_target_gives_backwardSim": {
+      "closure_sha256": "c423713484fd1901b44d9afeaf400e879947932876ddda371f3fe59214d4a043",
+      "closure_size": 36,
+      "statement_sha256": "ee950f1cc513663f4ab91484520f7b5189cad9c395eb52d3dfd9c57c3cf06fee"
+    },
+    "Toy.Sim.forwardSim_receptive_determinate_gives_backwardSim": {
+      "closure_sha256": "3ed6252a00823c027aa532750868ea6bb7341bc134091cf6c537953c982380a3",
+      "closure_size": 37,
+      "statement_sha256": "c9ba7e77daf10e14327b0ebfb7a8f06cad042b8b5ee50e4732fea55906906a38"
+    },
+    "Toy.Sim.fsimChain_collapse": {
+      "closure_sha256": "146b8b31cb8fd484b1cf17f980fa3f16b71cb739aa667544d09645e2d9f5d91f",
+      "closure_size": 20,
+      "statement_sha256": "6d0f20a81678ae47eaeb28478825d75cc9416c42ba16640c3c6740d4a7d38381"
+    },
+    "Toy.Sim.fsimChain_deterministic_last_gives_refinedBy": {
+      "closure_sha256": "1d3e018888cb829e06f55dca590bb6ddbdf5c841a2461b10eefe898527b02558",
+      "closure_size": 44,
+      "statement_sha256": "4796edf9c820c05824483cbbb28e912c2db999c2efd36aa57af342a1bf41aefb"
+    },
+    "Toy.Sim.fsimChain_of_isForwardSim": {
+      "closure_sha256": "146b8b31cb8fd484b1cf17f980fa3f16b71cb739aa667544d09645e2d9f5d91f",
+      "closure_size": 20,
+      "statement_sha256": "f0feae98568750d1b9a206b5b89cd4b2fc3ed438f5da4552cce05338a49271da"
+    },
+    "Toy.Sim.fsimChain_preserves_non_goesWrong_behaviors": {
+      "closure_sha256": "400396e2325e0a37e38381b75161a1c522541b0b8602057d693bb49de41fb3a4",
+      "closure_size": 30,
+      "statement_sha256": "62a8b802af04f2c52164f609d119f4f79674c2098789f8bbc4f34f1624165ff7"
+    },
+    "Toy.Sim.fsimChain_receptive_first_determinate_last_gives_refinedBy": {
+      "closure_sha256": "838e948d84db002e88b93a111999c749e46306834cdbfc80f69393ec029ba069",
+      "closure_size": 45,
+      "statement_sha256": "91d903ba03e3022498f039822488e7f137cb2308fdc06ba93dd27be726cf14b3"
+    },
+    "Toy.Sim.fsimChain_receptive_first_determinate_last_neverGoesWrong_first_behaviors_iff": {
+      "closure_sha256": "b73a6b582cb99a9938dfd3d8936454ed6c7491e81444a48357a6e2625271d837",
+      "closure_size": 43,
+      "statement_sha256": "995e1b5d17b594bc0bbb2b63794ec1c2271bfd727e009bd45e874c9daa6e032c"
+    },
+    "Toy.Sim.fsimFinal_comp": {
+      "closure_sha256": "2c83e1cf7a24500a53f0abcf854014665a0ee90ae1baa2a4feab574d8e90233b",
+      "closure_size": 6,
+      "statement_sha256": "f3a842e0b27cc6f1a8c6d17161365d8354980f37b9e81447d0ca256691db1725"
+    },
+    "Toy.Sim.fsimInit_comp": {
+      "closure_sha256": "4ff9b8bd38306c2c6368c6fac257dc48bb8fef7a2665de0e4cafa8001c0c0c08",
+      "closure_size": 6,
+      "statement_sha256": "4243db5ef29ecee6330acef77101730cb7475b22f162b0069990ccd8c25555d9"
+    },
+    "Toy.Sim.fsimInit_fsimStep_fsimFinal_preserve_terminates": {
+      "closure_sha256": "dd7426bfdc20c0e424d5ac885cf2a6b7c1baac991f675358ed53df568d9234e8",
+      "closure_size": 25,
+      "statement_sha256": "fb6736ea047b7dea53462a9c874172c8cff2667f7c4e81db67454a514afad4e5"
+    },
+    "Toy.Sim.fsimInit_fsimStep_partial_run_simulated": {
+      "closure_sha256": "2ea06c45dbe211ec98e74d51a2884f963e13acdf920c8aaca151e4a0330ec0b9",
+      "closure_size": 13,
+      "statement_sha256": "576d77970ebee84b30199b9b7b3b980d3cadefedc46239e2771eb3adb4b2bf91"
+    },
+    "Toy.Sim.fsimStep_comp": {
+      "closure_sha256": "65b865db21381638911eee12643cec0c418746193ffd8f81c2a679a788fe54d2",
+      "closure_size": 13,
+      "statement_sha256": "31917a3a3c3c54d6e381838d790d7e849e33fa62facc3c9115fae0f6eb3a7e78"
+    },
+    "Toy.Sim.improves_goesWrong_nil": {
+      "closure_sha256": "58ca24d17e723c5fed7e765a122eb241ba8c7ef57994fa8bc8cc69ae08e2ceb2",
+      "closure_size": 9,
+      "statement_sha256": "fa8c520dba5a91c8d17e136fceb3f4c5570ae2d06a755aca0b4277e9d2ac8d2a"
+    },
+    "Toy.Sim.isForwardSim_comp": {
+      "closure_sha256": "08c66cb60c1ec987b70d27093f367073a5e911a2e50a15a02209b4b8b6ff63aa",
+      "closure_size": 19,
+      "statement_sha256": "0080b57e5739124a2d792e7e4d575723a74a07c4a0bfbecda59bf7cfe256bd17"
+    },
+    "Toy.Sim.isForwardSim_preserves_non_goesWrong_behaviors": {
+      "closure_sha256": "6d74d62d15b4759536a8d1e86e12f5fd36158a40e51291284423d34d1f3ce077",
+      "closure_size": 27,
+      "statement_sha256": "6feb4733f76b4f4d07ee17ce7b3853894f3f4e449f558c2c1511def78ceb5d10"
+    },
+    "Toy.Sim.refinedBy_neverGoesWrong_behaviors_subset": {
+      "closure_sha256": "cb856b7e0c8f4451db8e8dc7d51e4f9573e0c064b6b5e7a8302541c746ece3db",
+      "closure_size": 25,
+      "statement_sha256": "dd41f305b634c06af459145600d9f5cc7ba489f1a6dcc9cb4e4e64403f2db3f2"
+    },
+    "Toy.Sim.wf_fsimInit_fsimStep_preserve_diverges": {
+      "closure_sha256": "33f1325ecaaaf98c771c476d8b219b27ace268da4cf03c2f68da3e5f7955c831",
+      "closure_size": 24,
+      "statement_sha256": "83e736d6aac4a71d540c2e52ddd491aaf45436f7fb1567ddbeaaf870e765b38c"
+    }
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
