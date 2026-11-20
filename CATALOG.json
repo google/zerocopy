@@ -21704,6 +21704,56 @@
         "zerocopy/soundness-policy"
       ]
     },
+    "dual-polar-mutation-refutation-spec-strength-auditing-and-anti-vacuity-harnesses": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal MIR operational semantics, weakest-precondition core, and Pass-1 boundary auditor"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover elaborator and kernel diagnostics"
+        },
+        {
+          "identity": {
+            "repository": "MutDafny/mutdafny",
+            "revision": "07dd5fe075bd6b929af2a530d372294fe6c77c54"
+          },
+          "name": "MutDafny mutation-based specification assessment tool"
+        },
+        {
+          "identity": {
+            "repository": "dafny-lang/dafny",
+            "revision": "75de7486da5a473a5aba2add8ff80fc5bbe8337f"
+          },
+          "name": "Dafny verification toolchain and assumption auditor"
+        },
+        {
+          "identity": {
+            "repository": "verus-lang/verus",
+            "revision": "0dab219272ac2353320bd177ebb3929453b90a9e"
+          },
+          "name": "Verus Rust verification harness and diagnostic test runner"
+        }
+      ],
+      "topics": [
+        "verification/diagnostics",
+        "verification/methodology",
+        "verification/vacuity",
+        "verification/mutation-testing",
+        "anneal/theory",
+        "anneal/audit",
+        "lean/mechanization"
+      ]
+    },
     "duckdb-datafusion-nan-grouping-out-of-core-radix-spills-and-decimal-joins": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -24002,6 +24052,78 @@
         "tooling/hardware-simulators",
         "security/fpga-bitstreams",
         "ffi/hdl-cosimulation"
+      ]
+    },
+    "fixed-arena-capability-forests-transitive-revocation-and-bounded-batch-invariants": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "seL4/seL4",
+            "revision": "08c7e5fddb3111ff377745c8eefb07feb5c4cfb7"
+          },
+          "name": "seL4 microkernel C implementation (CNode capability derivation tree and untyped memory reset)"
+        },
+        {
+          "identity": {
+            "repository": "seL4/l4v",
+            "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e"
+          },
+          "name": "seL4 Isabelle/HOL formal specifications and invariant proofs (l4v)"
+        },
+        {
+          "identity": {
+            "repository": "tock/tock",
+            "revision": "ba6aa7edc014505d2e6f0123b2b6059ba6ee7dec"
+          },
+          "name": "Tock embedded operating system kernel (grant tables and fixed-capacity ring buffers)"
+        },
+        {
+          "identity": {
+            "path": "src/starnix",
+            "repository": "fuchsia/fuchsia",
+            "revision": "823a15538f191b9dbd9ebafaa6ba23220b87d2e1"
+          },
+          "name": "Fuchsia Starnix eBPF and kernel descriptor table subsystem"
+        },
+        {
+          "identity": {
+            "repository": "fitzgen/generational-arena",
+            "revision": "6dbc29e573aa192a2c7ae9c7f968eb8853311294"
+          },
+          "name": "generational-arena safe index-and-generation container"
+        },
+        {
+          "identity": {
+            "repository": "orlp/slotmap",
+            "revision": "eccedefc5e09746944678ddcb854d1d709abb444"
+          },
+          "name": "slotmap parity-tagged generational slot arena"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal MIR verification framework and Pass-1 theory boundary"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and prelude foundation"
+        }
+      ],
+      "topics": [
+        "systems/os-verification",
+        "systems/sel4",
+        "systems/tock",
+        "verification/data-structures",
+        "rust/arenas",
+        "anneal/theory",
+        "lean/mechanization"
       ]
     },
     "flash-ftl-wear-leveling-zns-ssds-and-verified-storage-crash-consistency": {

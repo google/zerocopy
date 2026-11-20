@@ -1,0 +1,50 @@
+{
+  "topics": [
+    "verification/diagnostics",
+    "verification/methodology",
+    "verification/vacuity",
+    "verification/mutation-testing",
+    "anneal/theory",
+    "anneal/audit",
+    "lean/mechanization"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal MIR operational semantics, weakest-precondition core, and Pass-1 boundary auditor",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover elaborator and kernel diagnostics",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "MutDafny mutation-based specification assessment tool",
+      "identity": {
+        "repository": "MutDafny/mutdafny",
+        "revision": "07dd5fe075bd6b929af2a530d372294fe6c77c54"
+      }
+    },
+    {
+      "name": "Dafny verification toolchain and assumption auditor",
+      "identity": {
+        "repository": "dafny-lang/dafny",
+        "revision": "75de7486da5a473a5aba2add8ff80fc5bbe8337f"
+      }
+    },
+    {
+      "name": "Verus Rust verification harness and diagnostic test runner",
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "0dab219272ac2353320bd177ebb3929453b90a9e"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
