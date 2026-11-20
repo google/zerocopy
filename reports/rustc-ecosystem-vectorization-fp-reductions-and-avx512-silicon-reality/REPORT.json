@@ -1,0 +1,90 @@
+{
+  "topics": [
+    "compilers",
+    "compilers/vectorization",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/optimizations",
+    "isa",
+    "isa/aarch64",
+    "isa/x86-64",
+    "llvm",
+    "llvm/codegen",
+    "rust",
+    "rustc",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rust-lang/rust (rustc 1.99.1, LLVM 23.1.1)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "joshlf/anneal (compiler-version-pinned rustc capture driver and trusted MIR/ISA verification boundary)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Frommi/miniz_oxide (miniz_oxide 0.9.1)",
+      "identity": {
+        "repository": "Frommi/miniz_oxide",
+        "revision": "4e582392df3a739d2b0dfd2c537dc33e8942be38",
+        "version": "0.9.1"
+      }
+    },
+    {
+      "name": "BurntSushi/memchr (memchr 2.8.3)",
+      "identity": {
+        "repository": "BurntSushi/memchr",
+        "revision": "5fdb40c054e1fff359a2f7bdf7f87a13b34b465d",
+        "version": "2.8.3"
+      }
+    },
+    {
+      "name": "srijs/rust-crc32fast (crc32fast 1.5.5)",
+      "identity": {
+        "repository": "srijs/rust-crc32fast",
+        "revision": "8a93d2a70c00ab3e72beda42014b18fad8e496ea",
+        "version": "1.5.5"
+      }
+    },
+    {
+      "name": "marshallpierce/rust-base64 (base64 0.23.1)",
+      "identity": {
+        "repository": "marshallpierce/rust-base64",
+        "revision": "069bf7067b949f5c0a92b6ceb82492920502f2c2",
+        "version": "0.23.1"
+      }
+    },
+    {
+      "name": "serde-rs/json (serde_json 1.0.154)",
+      "identity": {
+        "repository": "serde-rs/json",
+        "revision": "20572a6d066958542d79cdd6cf1a7cd9f0c8e1f8",
+        "version": "1.0.154"
+      }
+    },
+    {
+      "name": "rust-lang/regex (regex-automata 0.4.19)",
+      "identity": {
+        "repository": "rust-lang/regex",
+        "revision": "4226f214c56e584304520adb9080bcc4c792390e",
+        "version": "0.4.19"
+      }
+    },
+    {
+      "name": "image-rs/jpeg-decoder (jpeg-decoder 0.1.22)",
+      "identity": {
+        "repository": "image-rs/jpeg-decoder",
+        "revision": "3bf223f7dcaa03cf0422e9e79eaf936ff406686f",
+        "version": "0.1.22"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
