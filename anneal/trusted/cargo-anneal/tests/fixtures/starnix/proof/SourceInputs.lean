@@ -18,7 +18,7 @@ theorem bodyDataWidthVal_of_paramTys (body : Body) (ety : EnumTy)
     (paramTys : (body.locals.drop 1).take body.argumentCount =
       [.bool, .enum ety, .int .i64 false])
     (w : Nat) :
-    bodyDataWidthVal body w = .enumVal ety w := by
+    bodyDataWidthVal body w = .enumVal ety w [] := by
   cases h_loc : body.locals with
   | nil => simp [h_loc] at paramTys
   | cons l0 ls0 =>
@@ -48,6 +48,10 @@ theorem validArgs3_elim (body : Body) (ety : EnumTy)
     (paramTys : (body.locals.drop 1).take body.argumentCount =
       [.bool, .enum ety, .int .i64 false])
     (h_ds : ety.discriminants = [0, 1, 2, 3])
+    (h_vf : hasEnumPayloadFields ety = false)
+    (h_tag : (match ety.tagRepr with
+      | .scalar _ _ | .zeroSized => true
+      | _ => false) = true)
     (p : List Val → Prop)
     (inputs : ∀ flag : Bool, ∀ width : Fin 4, ∀ value : Word,
       p (bodyEndianArgs body flag width.val value)) :
@@ -69,7 +73,8 @@ theorem validArgs3_elim (body : Body) (ety : EnumTy)
         | nil =>
           simp only [checkArgsMatch, Bool.and_eq_true] at valid
           let ⟨flag, hf⟩ := checkVal_bool_iff.mp valid.1
-          let ⟨_, ⟨width, hw⟩⟩ := checkVal_enum_iff.mp valid.2.1
+          let ⟨_, ⟨width, hw⟩⟩ :=
+            (checkVal_enum_iff h_vf h_tag).mp valid.2.1
           have h_len : ety.discriminants.length = 4 := by rw [h_ds]; rfl
           let width4 : Fin 4 := ⟨width.val, h_len ▸ width.isLt⟩
           let ⟨bits, hv, hTrunc⟩ := checkVal_int_iff.mp valid.2.2.1
@@ -80,7 +85,7 @@ theorem validArgs3_elim (body : Body) (ety : EnumTy)
           have h_dw := bodyDataWidthVal_of_paramTys body ety paramTys
             width4.val
           have h_eq :
-              [.bool flag, .enumVal ety width4.val,
+              [.bool flag, .enumVal ety width4.val [],
                 u64Val (bvExtractLsb 63 0 bits)] =
               bodyEndianArgs body flag width4.val (bvExtractLsb 63 0 bits) := by
             unfold bodyEndianArgs
@@ -93,15 +98,18 @@ theorem validEntryArgs_bodyEndianArgs (body : Body) (ety : EnumTy)
       [.bool, .enum ety, .int .i64 false])
     (h_ds : ety.discriminants = [0, 1, 2, 3])
     (h_adm : enumAdmitted ety = true)
+    (h_vf : hasEnumPayloadFields ety = false)
+    (h_tag : (match ety.tagRepr with
+      | .scalar _ _ | .zeroSized => true
+      | _ => false) = true)
     (flag : Bool) (width : Fin 4) (value : Word) :
     ValidEntryArgs body (bodyEndianArgs body flag width.val value) := by
   unfold ValidEntryArgs bodyEndianArgs
   rw [paramTys, bodyDataWidthVal_of_paramTys body ety paramTys width.val]
-  have h_blt : Nat.blt width.val ety.discriminants.length = true := by
-    rw [h_ds]
-    exact Nat.ble_eq_true_of_le width.isLt
-  have h_enum : checkVal (.enumVal ety width.val) (.enum ety) = true := by
-    simp [checkVal, Val.ty?, h_adm, h_blt, MirTy.beq, EnumTy.beq_iff.mpr rfl]
+  have h_len : ety.discriminants.length = 4 := by rw [h_ds]; rfl
+  have h_lt : width.val < ety.discriminants.length := h_len.symm ▸ width.isLt
+  have h_enum : checkVal (.enumVal ety width.val []) (.enum ety) = true :=
+    (checkVal_enum_iff h_vf h_tag).mpr ⟨h_adm, ⟨⟨width.val, h_lt⟩, rfl⟩⟩
   have h_bool : checkVal (.bool flag) .bool = true := rfl
   have h_u64 : checkVal (u64Val value) (.int .i64 false) = true :=
     checkVal_u64_bvZeroExtend value

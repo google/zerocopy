@@ -127,7 +127,7 @@ this file across eight JSON IPC modes (`run` and `main`):
   `correspondence/`) directly on top of that replayed vendor kernel
   environment, checks that the 21-root `Miri.Interpreter.ExecutionMachine` cone
   and correspondence cone are free of `unsafe`, `partial`, `.vendorMiri`
-  `opaque`, and unapproved axioms, and verifies all 41 Pass 2 correspondence,
+  `opaque`, and unapproved axioms, and verifies all 44 Pass 2 correspondence,
   wiring, and canary claims plus reference-evaluator independence checks.
 - **`"target-audit"` (external target crate verification):**
   Loads compiled target `.olean` artifacts (`TargetOrigin`: `.foundation`,
@@ -2128,7 +2128,8 @@ def hasCompoundName : Name → Bool
 
 /-- Return `true` when `s` is a Lean 4 lazily-generated equational, unfolding,
 sparse-cases, functional-induction, congruence, or constructor-injectivity
-theorem suffix (matching Lean 4's `registerReservedNamePredicate` generators). -/
+theorem suffix (matching Lean 4's `registerReservedNamePredicate`
+generators). -/
 def isGeneratedEqTheoremSuffix (s : String) : Bool :=
   s == "eq_def" || s == "eq_unfold" || s == "else_eq" || s == "induct" ||
     s == "induct_unfolding" || s == "fun_cases" ||
@@ -2590,7 +2591,10 @@ def verifyMirWpCoreTheorems (env : Environment)
           `Anneal.MirWp.canary_crate_and_body_verified_anneal,
           [`Trusted.MirSemantics.CrateTheorem,
             `Trusted.MirSemantics.UnitTheorem,
-            `Trusted.MirSemantics.BodyVerified])] do
+            `Trusted.MirSemantics.BodyVerified]),
+        (`Trusted.MirSemantics.CanaryTier2AdtArrayAndBuiltinsAnnealClaim,
+          `Anneal.MirWp.canary_tier2_adt_array_and_builtins_anneal,
+          [posClaim, negClaim])] do
       requireClaimProof env locals semMod wpMod claimName none proofName
         reqConsts
 
@@ -2897,7 +2901,7 @@ def requireCorrClaimProof (env : Environment)
   requireClaimProof env corrLocals `Trusted.Correspondence
     `Anneal.MirCorrespondenceProof claimName none proofName reqConsts
 
-/-- Verify that all 41 Pass 2 correspondence, wiring, and canary (`D6`–`D24`)
+/-- Verify that all 44 Pass 2 correspondence, wiring, and canary (`D6`–`D27`)
 claims—covering top-level correspondence, fault equivalence, `deinitMovedPlace`
 wiring, codec round-trip, constructor preservation, uniqueness, simulation, and
 canaries—are present in `Trusted.Correspondence`, reference their required
@@ -3209,13 +3213,56 @@ def verifyCorrespondenceClaims (env : Environment)
          `Trusted.Correspondence.RefBehavior,
          `Trusted.MirSemantics.ReachesResult,
          `Trusted.Correspondence.RefReachesOutcome,
+         `Trusted.Correspondence.encodeProg]),
+      (`Trusted.Correspondence.CanaryD25StructAndFieldClaim,
+       `Anneal.MirCorrespondenceProof.canary_D25_struct_and_field,
+       [`Trusted.Correspondence.progStructAddAndRewriteD25,
+         `Trusted.Correspondence.progStructFieldUseAfterMoveD25,
+         `Trusted.Correspondence.progStructOverlapAliasD25,
+         `Trusted.MirSemantics.WellFormed,
+         `Trusted.MirSemantics.Behavior,
+         `Trusted.Correspondence.RefWellFormed,
+         `Trusted.Correspondence.RefBehavior,
+         `Trusted.MirSemantics.ReachesResult,
+         `Trusted.Correspondence.RefReachesOutcome,
+         `Trusted.Correspondence.encodeProg]),
+      (`Trusted.Correspondence.CanaryD26PayloadNicheEnumAndCheckedArithClaim,
+       `Anneal.MirCorrespondenceProof.canary_D26_payload_niche_enum_and_checked_arith,
+       [`Trusted.Correspondence.progOptionU64SetDiscrDowncastD26,
+         `Trusted.Correspondence.progOptionBoolNicheDiscrD26,
+         `Trusted.Correspondence.mkBinaryBuiltinProgD22,
+         `Trusted.Correspondence.progUninitDowncastReadBeforeSetDiscrUbD26,
+         `Trusted.Correspondence.progNicheSetDiscrUntaggedOnUninitUbD26,
+         `Trusted.Correspondence.progUnitSetDiscrNoopD26,
+         `Trusted.Correspondence.progUnitSetDiscrBadVariantUbD26,
+         `Trusted.Correspondence.progUninhabitedVariantSetDiscrUbD26,
+         `Trusted.MirSemantics.WellFormed,
+         `Trusted.MirSemantics.Behavior,
+         `Trusted.Correspondence.RefWellFormed,
+         `Trusted.Correspondence.RefBehavior,
+         `Trusted.MirSemantics.ReachesResult,
+         `Trusted.Correspondence.RefReachesOutcome,
+         `Trusted.Correspondence.encodeProg]),
+      (`Trusted.Correspondence.CanaryD27ArrayIndexingAndLeBytesClaim,
+       `Anneal.MirCorrespondenceProof.canary_D27_array_indexing_and_le_bytes,
+       [`Trusted.Correspondence.progArrayAggregateAndIndexD27,
+         `Trusted.Correspondence.progArrayDynamicIndexOobUbD27,
+         `Trusted.Correspondence.progConstIndexFromEndGtMinLenBlockedD27,
+         `Trusted.Correspondence.progConstIndexFromEndLtMinLenUbD27,
+         `Trusted.Correspondence.mkUnaryBuiltinProgD22,
+         `Trusted.MirSemantics.WellFormed,
+         `Trusted.MirSemantics.Behavior,
+         `Trusted.Correspondence.RefWellFormed,
+         `Trusted.Correspondence.RefBehavior,
+         `Trusted.MirSemantics.ReachesResult,
+         `Trusted.Correspondence.RefReachesOutcome,
          `Trusted.Correspondence.encodeProg])] do
     requireCorrClaimProof env corrLocals claimName proofName reqConsts
 
 /-- Verify that the reference machine `M_ref`
 (`Trusted.Correspondence.evalRefStep` and
-`Trusted.Correspondence.initRefState`) reaches the 35 required
-`vendor/lean-miri` primitives and never references any of the 68 named
+`Trusted.Correspondence.initRefState`) reaches the 50 required
+`vendor/lean-miri` primitives and never references any of the 112 named
 `M_anneal` evaluator entry points below. This is a regression check against
 accidental fallback to `M_anneal`; human review of `trusted/correspondence/`
 remains the semantic boundary. -/
@@ -3225,6 +3272,7 @@ def verifyRefEvaluatorIndependence (env : Environment)
   let (_, refCone) ← closureCorr env roles axiomPolicy
     [`Trusted.Correspondence.evalRefStep, `Trusted.Correspondence.initRefState]
   for reqMiri in [
+      `Miri.ABI.WrappingRange.contains,
       `Miri.Interpreter.Step.step,
       `Miri.Interpreter.IntegerOps.binary,
       `Miri.Interpreter.IntegerOps.binaryBool,
@@ -3235,14 +3283,28 @@ def verifyRefEvaluatorIndependence (env : Environment)
       `Miri.Memory.ScalarInt.truncateFromUInt,
       `Miri.Memory.ScalarInt.tryFromUInt,
       `Miri.Memory.ScalarInt.tryToBool,
+      `Miri.Memory.Allocation.fromBytes,
+      `Miri.Memory.Allocation.writeScalar,
+      `Miri.Memory.Allocation.getBytesStripProvenance,
+      `Miri.Memory.Allocation.readScalar,
       `Miri.Interpreter.evalOperand,
       `Miri.Interpreter.evalPlaceToOp,
       `Miri.Interpreter.localToOp,
       `Miri.Interpreter.placeWriteLocalImmediate,
+      `Miri.Interpreter.project,
+      `Miri.Interpreter.projectField,
+      `Miri.Interpreter.projectDowncast,
+      `Miri.Interpreter.projectIndex,
+      `Miri.Interpreter.projectConstantIndex,
+      `Miri.Interpreter.projectArrayFields,
+      `Miri.Interpreter.ProjectionArrayIterator.next,
       `Miri.Interpreter.evalRvalueIntoPlace,
       `Miri.Interpreter.writeAggregate,
+      `Miri.Interpreter.writeRepeat,
       `Miri.Interpreter.runRvalue,
+      `Miri.Interpreter.Discriminant.tagForVariant,
       `Miri.Interpreter.Discriminant.readDiscriminant,
+      `Miri.Interpreter.Discriminant.writeDiscriminant,
       `Miri.Interpreter.Discriminant.discriminantForVariant,
       `Miri.Interpreter.Step.evalStatement,
       `Miri.Interpreter.Frame.storageLive,
@@ -3275,21 +3337,52 @@ def verifyRefEvaluatorIndependence (env : Environment)
       `Trusted.MirSemantics.ScalarVal.wf,
       `Trusted.MirSemantics.Val.ty?,
       `Trusted.MirSemantics.Val.tys?,
+      `Trusted.MirSemantics.Val.checkElemsHaveTy,
+      `Trusted.MirSemantics.wrappingRangeContains,
+      `Trusted.MirSemantics.fieldsForVariant?,
+      `Trusted.MirSemantics.hasEnumPayloadFields,
+      `Trusted.MirSemantics.isTypeUninhabited,
+      `Trusted.MirSemantics.anyFieldUninhabited,
+      `Trusted.MirSemantics.allVariantsUninhabited,
+      `Trusted.MirSemantics.isVariantUninhabited,
+      `Trusted.MirSemantics.isZeroSizedTy,
+      `Trusted.MirSemantics.areAllZeroSizedTys,
+      `Trusted.MirSemantics.variantZeroSizedFlags,
+      `Trusted.MirSemantics.nicheResolveFromTy,
+      `Trusted.MirSemantics.nicheLeafTy?,
+      `Trusted.MirSemantics.nicheLeafMatchesTag,
+      `Trusted.MirSemantics.allNicheTagsInValidRange,
+      `Trusted.MirSemantics.otherVariantsUninhabited,
+      `Trusted.MirSemantics.otherVariantsValidForNiche,
+      `Trusted.MirSemantics.enumAdmittedCore,
+      `Trusted.MirSemantics.areSupportedVariantFieldLists,
       `Trusted.MirSemantics.enumAdmitted,
       `Trusted.MirSemantics.tagBitsToDiscrBits,
       `Trusted.MirSemantics.isZstEnumTy,
+      `Trusted.MirSemantics.findDiscrVariantAux,
       `Trusted.MirSemantics.findDiscrVariant?,
+      `Trusted.MirSemantics.decodeNicheTagBits,
+      `Trusted.MirSemantics.extractValNicheBits,
+      `Trusted.MirSemantics.extractValNicheBitsFromFields,
+      `Trusted.MirSemantics.enumValNicheValid,
       `Trusted.MirSemantics.isSupportedScalarOrUnitTy,
       `Trusted.MirSemantics.areSupportedFieldTys,
+      `Trusted.MirSemantics.replicateVal,
+      `Trusted.MirSemantics.replicateSlotVal,
       `Trusted.MirSemantics.uninitSlotVal,
       `Trusted.MirSemantics.uninitSlotVals,
+      `Trusted.MirSemantics.uninitVariantSlotLists,
       `Trusted.MirSemantics.liveUninitSlot,
       `Trusted.MirSemantics.initLocalsLoop,
       `Trusted.MirSemantics.isPrimitiveReadableTy,
       `Trusted.MirSemantics.evalConstLit,
+      `Trusted.MirSemantics.projectPlaceTy?,
       `Trusted.MirSemantics.projectTy?,
-      `Trusted.MirSemantics.readSlotPath?,
-      `Trusted.MirSemantics.writeSlotPath?,
+      `Trusted.MirSemantics.evalConstantIndex,
+      `Trusted.MirSemantics.resolveStaticProjPath,
+      `Trusted.MirSemantics.resolveProjPath,
+      `Trusted.MirSemantics.readPlaceSlotPath?,
+      `Trusted.MirSemantics.writePlaceSlotPath?,
       `Trusted.MirSemantics.evalPlaceOperand,
       `Trusted.MirSemantics.evalShiftOp,
       `Trusted.MirSemantics.evalArithOp,
@@ -3305,19 +3398,33 @@ def verifyRefEvaluatorIndependence (env : Environment)
       `Trusted.MirSemantics.moveOperandMayOverlapPlace,
       `Trusted.MirSemantics.anyMoveOperandMayOverlapPlace,
       `Trusted.MirSemantics.isTupleTy,
+      `Trusted.MirSemantics.isCompoundOverlapProtectedTy,
       `Trusted.MirSemantics.assignHasUnsupportedOverlap,
-      `Trusted.MirSemantics.writeAggregateTupleFields,
-      `Trusted.MirSemantics.writeAggregateTuple,
+      `Trusted.MirSemantics.extractSlotNicheBits,
+      `Trusted.MirSemantics.extractSlotNicheBitsFromFields,
+      `Trusted.MirSemantics.evalReadDiscriminantVariant,
+      `Trusted.MirSemantics.writePlaceWithLocalTy,
+      `Trusted.MirSemantics.evalSetDiscriminantResolved,
+      `Trusted.MirSemantics.writeAggregateFields,
+      `Trusted.MirSemantics.writeAggregateArrayElems,
+      `Trusted.MirSemantics.writeAggregate,
       `Trusted.MirSemantics.checkVal,
       `Trusted.MirSemantics.checkArgsMatch,
       `Trusted.MirSemantics.bodyEntryAdmitted,
-      `Trusted.MirSemantics.deinitPlace,
+      `Trusted.MirSemantics.deinitPlaceWithLocalTy,
       `Trusted.MirSemantics.evalCallArgs,
       `Trusted.MirSemantics.validateCallArgs,
       `Trusted.MirSemantics.readPrimitiveArgs,
       `Trusted.MirSemantics.evalSaturatingOp,
       `Trusted.MirSemantics.countLeadingZerosNat,
       `Trusted.MirSemantics.countTrailingZerosNat,
+      `Trusted.MirSemantics.readBuiltinArgs,
+      `Trusted.MirSemantics.isOptionEnumForTy,
+      `Trusted.MirSemantics.evalCheckedArithOp,
+      `Trusted.MirSemantics.scalarToLeBytesAux,
+      `Trusted.MirSemantics.u8BytesToVals,
+      `Trusted.MirSemantics.valsToU8Bytes?,
+      `Trusted.MirSemantics.scalarFromLeBytes,
       `Trusted.MirSemantics.evalCoreBuiltin,
       `Trusted.MirSemantics.evalSwitchBranches,
       `Trusted.MirSemantics.evalBoolSwitchBranches,
@@ -3327,11 +3434,13 @@ def verifyRefEvaluatorIndependence (env : Environment)
       `Trusted.MirSemantics.evalOperandToSlot,
       `Trusted.MirSemantics.evalPrimitiveOperand,
       `Trusted.MirSemantics.evalRvalue,
-      `Trusted.MirSemantics.writePlace,
       `Trusted.MirSemantics.evalStatement,
       `Trusted.MirSemantics.evalTerminator,
       `Trusted.MirSemantics.evalStep,
       `Trusted.MirSemantics.initState] do
+    unless env.contains forbiddenAnneal do
+      fail (s!"forbiddenAnneal entry {forbiddenAnneal} is missing from " ++
+        s!"environment")
     if refCone.contains forbiddenAnneal then
       fail (s!"reference evaluator cone illegally references M_anneal " ++
         s!"evaluator {forbiddenAnneal}")
@@ -3450,7 +3559,7 @@ def replayCorrAndVendor (sysrootStr : String)
   return (miriReplayed, corrReplayed)
 
 /-- Verify the 21-root `Miri.Interpreter.ExecutionMachine` cone and—when
-Pass 2 correspondence modules are present—all 41 correspondence claims,
+Pass 2 correspondence modules are present—all 44 correspondence claims,
 reference-evaluator independence, and the correspondence dependency cone in a
 dedicated scope. -/
 def verifyCorrConesAndClaims

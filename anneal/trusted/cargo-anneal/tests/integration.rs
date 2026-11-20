@@ -704,43 +704,12 @@ theorem validArgs2 {args : List Val} {t1 t2 : MirTy}
       subst heq
       exact ⟨v1, v2, rfl, hv1, hv2⟩
 
-theorem mirTy_int_inj {w1 w2 : IntWidth} {s1 s2 : Bool}
-    (h : MirTy.beq (.int w1 s1) (.int w2 s2) = true) :
-    w1 = w2 ∧ s1 = s2 := by
-  cases w1 <;> cases w2 <;> cases s1 <;> cases s2 <;> first | exact ⟨rfl, rfl⟩ | cases h
-
 theorem checkVal_scalar_inv {v : Val} {w : IntWidth} {s : Bool}
     (h : checkVal v (.int w s) = true) :
     ∃ bits : BitVec 128,
       v = .scalar ⟨w, s, bits⟩ ∧ (truncateBits w bits == bits) = true := by
-  unfold checkVal Val.ty? at h
-  cases v with
-  | scalar sv =>
-    cases sv with
-    | mk sw ss bits =>
-      cases hw : ScalarVal.wf ⟨sw, ss, bits⟩ with
-      | false =>
-        change (match (if ScalarVal.wf ⟨sw, ss, bits⟩ then some (MirTy.int sw ss) else none) with | some vTy => vTy.beq (.int w s) | none => false) = true at h
-        rw [hw] at h; cases h
-      | true =>
-        change (match (if ScalarVal.wf ⟨sw, ss, bits⟩ then some (MirTy.int sw ss) else none) with | some vTy => vTy.beq (.int w s) | none => false) = true at h
-        rw [hw] at h
-        let ⟨h_w, h_s⟩ := mirTy_int_inj h
-        subst h_w; subst h_s
-        exact ⟨bits, rfl, hw⟩
-  | ptr _ => cases h
-  | bool _ => cases h
-  | unit => cases h
-  | tuple fields =>
-    cases fields with
-    | nil => cases h
-    | cons f fs =>
-      change (match (match Val.tys? (f :: fs) with | some tys => some (MirTy.tuple tys) | none => none) with | some vTy => vTy.beq (.int w s) | none => false) = true at h
-      cases ht : Val.tys? (f :: fs) <;> rw [ht] at h <;> cases h
-  | bytes _ => cases h
-  | enumVal ety var =>
-    change (match (if enumAdmitted ety && Nat.blt var ety.discriminants.length then some (MirTy.enum ety) else none) with | some vTy => vTy.beq (.int w s) | none => false) = true at h
-    cases he : (enumAdmitted ety && Nat.blt var ety.discriminants.length) <;> rw [he] at h <;> cases h
+  let ⟨bits, hv, h_trunc⟩ := checkVal_int_iff.mp h
+  exact ⟨bits, hv, beq_iff_eq.mpr h_trunc⟩
 
 theorem succ_add_eq (base : Nat) : ∀ k : Nat, base + (k + 1) = (base + 1) + k
   | 0 => rfl
@@ -865,96 +834,25 @@ theorem evalBinOp_u32_add (b1 b2 : BitVec 128) :
   rfl
 "#;
 
-const LEAN_ENUM_HELPERS: &str = r#"theorem natListBeq_eq {xs ys : List Nat} (h : natListBeq xs ys = true) :
-    xs = ys := by
-  induction xs generalizing ys with
-  | nil =>
-    cases ys with
-    | nil => rfl
-    | cons _ _ => cases h
-  | cons x xs ih =>
-    cases ys with
-    | nil => cases h
-    | cons y ys =>
-      change (Nat.beq x y && natListBeq xs ys) = true at h
-      have h1 : Nat.beq x y = true := by
-        cases h_xy : Nat.beq x y
-        · rw [h_xy] at h; cases h
-        · rfl
-      have h2 : natListBeq xs ys = true := by
-        rw [h1] at h; exact h
-      rw [Nat.eq_of_beq_eq_true h1, ih h2]
-
-theorem intWidth_beq_eq {w1 w2 : IntWidth}
-    (h : IntWidth.beq w1 w2 = true) : w1 = w2 := by
-  cases w1 <;> cases w2 <;> first | rfl | cases h
-
-theorem enumTagRepr_beq_eq {r1 r2 : EnumTagRepr}
-    (h : EnumTagRepr.beq r1 r2 = true) : r1 = r2 := by
-  cases r1 with
-  | zeroSized =>
-    cases r2 with
-    | zeroSized => rfl
-    | scalar _ _ => cases h
-  | scalar w1 s1 =>
-    cases r2 with
-    | zeroSized => cases h
-    | scalar w2 s2 =>
-      cases w1 <;> cases w2 <;> cases s1 <;> cases s2 <;> first | rfl | cases h
-
-theorem enumTy_beq_eq {e1 e2 : EnumTy}
-    (h : EnumTy.beq e1 e2 = true) : e1 = e2 := by
-  cases e1 with
-  | mk id1 dw1 ds1 tr1 discs1 =>
-    cases e2 with
-    | mk id2 dw2 ds2 tr2 discs2 =>
-      unfold EnumTy.beq at h
-      dsimp only at h
-      cases h1 : Nat.beq id1 id2 <;>
-        cases h2 : IntWidth.beq dw1 dw2 <;>
-        cases h3 : (ds1 == ds2) <;>
-        cases h4 : EnumTagRepr.beq tr1 tr2 <;>
-        cases h5 : natListBeq discs1 discs2 <;>
-        rw [h1, h2, h3, h4, h5] at h <;>
-        try cases h
-      rw [Nat.eq_of_beq_eq_true h1, intWidth_beq_eq h2, eq_of_beq h3,
-        enumTagRepr_beq_eq h4, natListBeq_eq h5]
-
-theorem checkVal_enum2_inv {ety : EnumTy}
-    (h_ds : ety.discriminants = [0, 1]) {v : Val}
-    (h : checkVal v (.enum ety) = true) :
-    v = .enumVal ety 0 ∨ v = .enumVal ety 1 := by
-  cases v with
-  | enumVal ety' var =>
-    change (match (if enumAdmitted ety' && Nat.blt var ety'.discriminants.length then some (MirTy.enum ety') else none) with | some vTy => vTy.beq (.enum ety) | none => false) = true at h
-    cases h_adm : (enumAdmitted ety' && Nat.blt var ety'.discriminants.length) with
-    | false => rw [h_adm] at h; cases h
-    | true =>
-      rw [h_adm] at h
-      change EnumTy.beq ety' ety = true at h
-      have h_eq := enumTy_beq_eq h
-      subst h_eq
-      rw [h_ds] at h_adm
-      cases h_e : enumAdmitted ety' with
-      | false => rw [h_e] at h_adm; cases h_adm
-      | true =>
-        rw [h_e] at h_adm
-        cases var with
-        | zero => exact .inl rfl
-        | succ n =>
-          cases n with
-          | zero => exact .inr rfl
-          | succ m => cases h_adm
-  | scalar sv =>
-    change (match (if sv.wf then some (MirTy.int sv.width sv.signed) else none) with | some vTy => vTy.beq (.enum ety) | none => false) = true at h
-    cases h_wf : sv.wf <;> rw [h_wf] at h <;> cases h
-  | tuple fields =>
-    cases fields with
-    | nil => cases h
-    | cons f fs =>
-      change (match (match Val.tys? (f :: fs) with | some tys => some (MirTy.tuple tys) | none => none) with | some vTy => vTy.beq (.enum ety) | none => false) = true at h
-      cases ht : Val.tys? (f :: fs) <;> rw [ht] at h <;> cases h
-  | ptr _ | bool _ | unit | bytes _ => cases h
+const LEAN_ENUM_HELPERS: &str = r#"theorem checkVal_enum2_inv {ety : EnumTy}
+    (h_ds : ety.discriminants = [0, 1])
+    {v : Val}
+    (h : checkVal v (.enum ety) = true)
+    (h_vf : hasEnumPayloadFields ety = false := by rfl)
+    (h_tag : (match ety.tagRepr with
+      | .scalar _ _ | .zeroSized => true
+      | _ => false) = true := by rfl) :
+    v = .enumVal ety 0 [] ∨ v = .enumVal ety 1 [] := by
+  let ⟨_, ⟨⟨idx, h_lt⟩, hv⟩⟩ := (checkVal_enum_iff h_vf h_tag).mp h
+  rw [h_ds] at h_lt
+  cases idx with
+  | zero => exact .inl hv
+  | succ n =>
+    cases n with
+    | zero => exact .inr hv
+    | succ m =>
+      cases (Nat.not_lt_zero m
+        (Nat.lt_of_succ_lt_succ (Nat.lt_of_succ_lt_succ h_lt)))
 "#;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -1963,8 +1861,8 @@ end Proof"#,
   let v : Val := .scalar ⟨{w}, {s}, bits⟩
   let sv : SlotVal := .scalar ⟨{w}, {s}, bits⟩
   have s0 : step body{i} (initial body{i} [v]) = .step ⟨[⟨0, 0, 1, [.live sv, .live sv], none⟩], ⟨[]⟩⟩ := by
-    change (match writePlace [.live .uninit, .live sv] ⟨0, []⟩ {ty} v with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 1, l', none⟩], ⟨[]⟩⟩) = _
-    unfold writePlace; rw [hv]; rfl
+    change (match writePlaceWithLocalTy {ty} [.live .uninit, .live sv] ⟨0, []⟩ {ty} v with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 1, l', none⟩], ⟨[]⟩⟩) = _
+    unfold writePlaceWithLocalTy; rw [hv]; rfl
   exact .next s0 (.ret rfl)
 theorem body{i}_safe : BodyVerified Captured.program {i} body{i} (Spec.specs.safety body{i}.identity) :=
   bodyVerified_of_exec1 rfl rfl rfl (fun v hv => ⟨v, body{i}_exec v hv⟩)"#
@@ -2056,11 +1954,11 @@ theorem body{i}_safe : BodyVerified Captured.program {i} body{i} (Spec.specs.saf
   let sv : SlotVal := .scalar ⟨{w}, {s}, bits⟩
   have s0 : step body{i} (initial body{i} [v]) = .step ⟨[⟨0, 0, 1, [.live .uninit, .live sv, .live .uninit], none⟩], ⟨[]⟩⟩ := rfl
   have s1 : step body{i} ⟨[⟨0, 0, 1, [.live .uninit, .live sv, .live .uninit], none⟩], ⟨[]⟩⟩ = .step ⟨[⟨0, 0, 2, [.live .uninit, .live sv, .live sv], none⟩], ⟨[]⟩⟩ := by
-    change (match writePlace [.live .uninit, .live sv, .live .uninit] ⟨2, []⟩ {ty} v with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 2, l', none⟩], ⟨[]⟩⟩) = _
-    unfold writePlace; rw [hv]; rfl
+    change (match writePlaceWithLocalTy {ty} [.live .uninit, .live sv, .live .uninit] ⟨2, []⟩ {ty} v with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 2, l', none⟩], ⟨[]⟩⟩) = _
+    unfold writePlaceWithLocalTy; rw [hv]; rfl
   have s2 : step body{i} ⟨[⟨0, 0, 2, [.live .uninit, .live sv, .live sv], none⟩], ⟨[]⟩⟩ = .step ⟨[⟨0, 0, 3, [.live sv, .live sv, .live sv], none⟩], ⟨[]⟩⟩ := by
-    change (match writePlace [.live .uninit, .live sv, .live sv] ⟨0, []⟩ {ty} v with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 3, l', none⟩], ⟨[]⟩⟩) = _
-    unfold writePlace; rw [hv]; rfl
+    change (match writePlaceWithLocalTy {ty} [.live .uninit, .live sv, .live sv] ⟨0, []⟩ {ty} v with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 3, l', none⟩], ⟨[]⟩⟩) = _
+    unfold writePlaceWithLocalTy; rw [hv]; rfl
   have s3 : step body{i} ⟨[⟨0, 0, 3, [.live sv, .live sv, .live sv], none⟩], ⟨[]⟩⟩ = .step ⟨[⟨0, 0, 4, [.live sv, .live sv, .dead], none⟩], ⟨[]⟩⟩ := rfl
   have s4 : step body{i} ⟨[⟨0, 0, 4, [.live sv, .live sv, .dead], none⟩], ⟨[]⟩⟩ = .done (.returned ⟨v, ⟨[]⟩⟩) := rfl
   exact .next s0 (.next s1 (.next s2 (.next s3 (.ret s4))))
@@ -2101,20 +1999,20 @@ theorem body{i}_safe : BodyVerified Captured.program {i} body{i} (Spec.specs.saf
   have s0 : step body{i} (initial body{i} [v1, v2]) = .step ⟨[⟨0, 0, 1, [.live .uninit, .live sv1, .live sv2, .live .uninit, .dead], none⟩], ⟨[]⟩⟩ := rfl
   have s1 : step body{i} ⟨[⟨0, 0, 1, [.live .uninit, .live sv1, .live sv2, .live .uninit, .dead], none⟩], ⟨[]⟩⟩ =
       .step ⟨[⟨0, 0, 2, [.live .uninit, .live sv1, .live sv2, .live sv1, .dead], none⟩], ⟨[]⟩⟩ := by
-    change (match writePlace [.live .uninit, .live sv1, .live sv2, .live .uninit, .dead] ⟨3, []⟩ (.int .i32 false) v1 with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 2, l', none⟩], ⟨[]⟩⟩) = _
-    unfold writePlace; rw [hv1]; rfl
+    change (match writePlaceWithLocalTy (.int .i32 false) [.live .uninit, .live sv1, .live sv2, .live .uninit, .dead] ⟨3, []⟩ (.int .i32 false) v1 with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 2, l', none⟩], ⟨[]⟩⟩) = _
+    unfold writePlaceWithLocalTy; rw [hv1]; rfl
   have s2 : step body{i} ⟨[⟨0, 0, 2, [.live .uninit, .live sv1, .live sv2, .live sv1, .dead], none⟩], ⟨[]⟩⟩ =
       .step ⟨[⟨0, 0, 3, [.live .uninit, .live sv1, .live sv2, .live sv1, .live .uninit], none⟩], ⟨[]⟩⟩ := rfl
   have s3 : step body{i} ⟨[⟨0, 0, 3, [.live .uninit, .live sv1, .live sv2, .live sv1, .live .uninit], none⟩], ⟨[]⟩⟩ =
       .step ⟨[⟨0, 0, 4, [.live .uninit, .live sv1, .live sv2, .live sv1, .live sv2], none⟩], ⟨[]⟩⟩ := by
-    change (match writePlace [.live .uninit, .live sv1, .live sv2, .live sv1, .live .uninit] ⟨4, []⟩ (.int .i32 false) v2 with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 4, l', none⟩], ⟨[]⟩⟩) = _
-    unfold writePlace; rw [hv2]; rfl
+    change (match writePlaceWithLocalTy (.int .i32 false) [.live .uninit, .live sv1, .live sv2, .live sv1, .live .uninit] ⟨4, []⟩ (.int .i32 false) v2 with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 4, l', none⟩], ⟨[]⟩⟩) = _
+    unfold writePlaceWithLocalTy; rw [hv2]; rfl
   have s4 : step body{i} ⟨[⟨0, 0, 4, [.live .uninit, .live sv1, .live sv2, .live sv1, .live sv2], none⟩], ⟨[]⟩⟩ =
       .step ⟨[⟨0, 0, 5, [.live sout, .live sv1, .live sv2, .live .uninit, .live .uninit], none⟩], ⟨[]⟩⟩ := by
-    change (match (match evalBinOp .add v1 v2 with | .error k => Except.error k | .ok out => (Except.ok (out, [LocalSlot.live .uninit, LocalSlot.live sv1, LocalSlot.live sv2, LocalSlot.live .uninit, LocalSlot.live .uninit]) : Except FaultKind (Val × List LocalSlot))) with | .error k => @StepResult.fault State TerminalOut k | .ok (val, l1) => match writePlace l1 ⟨0, []⟩ (.int .i32 false) val with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 5, l', none⟩], ⟨[]⟩⟩) = _
+    change (match (match evalBinOp .add v1 v2 with | .error k => Except.error k | .ok out => (Except.ok (out, [LocalSlot.live .uninit, LocalSlot.live sv1, LocalSlot.live sv2, LocalSlot.live .uninit, LocalSlot.live .uninit]) : Except FaultKind (Val × List LocalSlot))) with | .error k => @StepResult.fault State TerminalOut k | .ok (val, l1) => match writePlaceWithLocalTy (.int .i32 false) l1 ⟨0, []⟩ (.int .i32 false) val with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 5, l', none⟩], ⟨[]⟩⟩) = _
     rw [evalBinOp_u32_add bits1 bits2]
-    change (match writePlace [.live .uninit, .live sv1, .live sv2, .live .uninit, .live .uninit] ⟨0, []⟩ (.int .i32 false) outVal with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 5, l', none⟩], ⟨[]⟩⟩) = _
-    unfold writePlace; rw [hout]; rfl
+    change (match writePlaceWithLocalTy (.int .i32 false) [.live .uninit, .live sv1, .live sv2, .live .uninit, .live .uninit] ⟨0, []⟩ (.int .i32 false) outVal with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 5, l', none⟩], ⟨[]⟩⟩) = _
+    unfold writePlaceWithLocalTy; rw [hout]; rfl
   have s5 : step body{i} ⟨[⟨0, 0, 5, [.live sout, .live sv1, .live sv2, .live .uninit, .live .uninit], none⟩], ⟨[]⟩⟩ =
       .step ⟨[⟨0, 0, 6, [.live sout, .live sv1, .live sv2, .live .uninit, .dead], none⟩], ⟨[]⟩⟩ := rfl
   have s6 : step body{i} ⟨[⟨0, 0, 6, [.live sout, .live sv1, .live sv2, .live .uninit, .dead], none⟩], ⟨[]⟩⟩ =
@@ -2175,11 +2073,11 @@ theorem body{i}_exec_nonzero (bits : BitVec 128)
       .step ⟨[⟨0, 0, 2, [.live .uninit, .live sv, .live .uninit, .live .uninit], none⟩], ⟨[]⟩⟩ := rfl
   have s2 : step body{i} ⟨[⟨0, 0, 2, [.live .uninit, .live sv, .live .uninit, .live .uninit], none⟩], ⟨[]⟩⟩ =
       .step ⟨[⟨0, 0, 3, [.live .uninit, .live sv, .live .uninit, .live sv], none⟩], ⟨[]⟩⟩ := by
-    change (match writePlace [.live .uninit, .live sv, .live .uninit, .live .uninit] ⟨3, []⟩ (.int .isize false) v with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 3, l', none⟩], ⟨[]⟩⟩) = _
-    unfold writePlace; rw [hv]; rfl
+    change (match writePlaceWithLocalTy (.int .isize false) [.live .uninit, .live sv, .live .uninit, .live .uninit] ⟨3, []⟩ (.int .isize false) v with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 3, l', none⟩], ⟨[]⟩⟩) = _
+    unfold writePlaceWithLocalTy; rw [hv]; rfl
   have s3 : step body{i} ⟨[⟨0, 0, 3, [.live .uninit, .live sv, .live .uninit, .live sv], none⟩], ⟨[]⟩⟩ =
       .step ⟨[⟨0, 0, 4, [.live .uninit, .live sv, .live (.bool false), .live .uninit], none⟩], ⟨[]⟩⟩ := by
-    change (match writePlace [.live .uninit, .live sv, .live .uninit, .live .uninit] ⟨2, []⟩ .bool (.bool (decodeScalar ⟨.isize, false, bits⟩ == decodeScalar ⟨.isize, false, BitVec.ofNat 128 0⟩)) with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 4, l', none⟩], ⟨[]⟩⟩) = _
+    change (match writePlaceWithLocalTy .bool [.live .uninit, .live sv, .live .uninit, .live .uninit] ⟨2, []⟩ .bool (.bool (decodeScalar ⟨.isize, false, bits⟩ == decodeScalar ⟨.isize, false, BitVec.ofNat 128 0⟩)) with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 4, l', none⟩], ⟨[]⟩⟩) = _
     rw [heq_int]; rfl
   have s4 : step body{i} ⟨[⟨0, 0, 4, [.live .uninit, .live sv, .live (.bool false), .live .uninit], none⟩], ⟨[]⟩⟩ =
       .step ⟨[⟨0, 2, 0, [.live .uninit, .live sv, .live .uninit, .live .uninit], none⟩], ⟨[]⟩⟩ := rfl
@@ -2187,8 +2085,8 @@ theorem body{i}_exec_nonzero (bits : BitVec 128)
       .step ⟨[⟨0, 2, 1, [.live .uninit, .live sv, .live .uninit, .dead], none⟩], ⟨[]⟩⟩ := rfl
   have s6 : step body{i} ⟨[⟨0, 2, 1, [.live .uninit, .live sv, .live .uninit, .dead], none⟩], ⟨[]⟩⟩ =
       .step ⟨[⟨0, 2, 2, [.live sv, .live sv, .live .uninit, .dead], none⟩], ⟨[]⟩⟩ := by
-    change (match writePlace [.live .uninit, .live sv, .live .uninit, .dead] ⟨0, []⟩ (.int .isize false) v with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 2, 2, l', none⟩], ⟨[]⟩⟩) = _
-    unfold writePlace; rw [hv]; rfl
+    change (match writePlaceWithLocalTy (.int .isize false) [.live .uninit, .live sv, .live .uninit, .dead] ⟨0, []⟩ (.int .isize false) v with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 2, 2, l', none⟩], ⟨[]⟩⟩) = _
+    unfold writePlaceWithLocalTy; rw [hv]; rfl
   have s7 : step body{i} ⟨[⟨0, 2, 2, [.live sv, .live sv, .live .uninit, .dead], none⟩], ⟨[]⟩⟩ =
       .step ⟨[⟨0, 3, 0, [.live sv, .live sv, .live .uninit, .dead], none⟩], ⟨[]⟩⟩ := rfl
   have s8 : step body{i} ⟨[⟨0, 3, 0, [.live sv, .live sv, .live .uninit, .dead], none⟩], ⟨[]⟩⟩ =
@@ -2261,8 +2159,8 @@ theorem body{i}_safe : BodyVerified Captured.program {i} body{i} (Spec.specs.saf
     rw [htr]; rfl
   have s1 : step body{i} ⟨[⟨0, 2, 0, [.live .uninit, .live sv], none⟩], ⟨[]⟩⟩ =
       .step ⟨[⟨0, 2, 1, [.live sv, .live sv], none⟩], ⟨[]⟩⟩ := by
-    change (match writePlace [.live .uninit, .live sv] ⟨0, []⟩ {ty} v with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 2, 1, l', none⟩], ⟨[]⟩⟩) = _
-    unfold writePlace; rw [hv]; rfl
+    change (match writePlaceWithLocalTy {ty} [.live .uninit, .live sv] ⟨0, []⟩ {ty} v with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 2, 1, l', none⟩], ⟨[]⟩⟩) = _
+    unfold writePlaceWithLocalTy; rw [hv]; rfl
   have s2 : step body{i} ⟨[⟨0, 2, 1, [.live sv, .live sv], none⟩], ⟨[]⟩⟩ =
       .done (.returned ⟨v, ⟨[]⟩⟩) := rfl
   exact .next s0 (.next s1 (.ret s2))
@@ -2321,12 +2219,12 @@ theorem body{i}_safe : BodyVerified Captured.program {i} body{i} (Spec.specs.saf
             BodyPattern::EnumTag => {
                 let _ = writeln!(
                     block,
-                    r#"def body{i}_ety : EnumTy := match body{i}.locals with | _ :: .enum ety :: _ => ety | _ => {{ id := 0, discrWidth := .isize, discrSigned := true, tagRepr := .zeroSized, discriminants := [] }}
+                    r#"def body{i}_ety : EnumTy := match body{i}.locals with | _ :: .enum ety :: _ => ety | _ => {{ id := 0, discrWidth := .isize, discrSigned := true, tagRepr := .zeroSized, discriminants := [], variantFields := [] }}
 theorem body{i}_runs_0 :
-    Runs body{i} 10 [.enumVal body{i}_ety 0]
+    Runs body{i} 10 [.enumVal body{i}_ety 0 []]
       (.scalar ⟨.isize, false, BitVec.ofNat 128 0⟩) := rfl
 theorem body{i}_runs_1 :
-    Runs body{i} 10 [.enumVal body{i}_ety 1]
+    Runs body{i} 10 [.enumVal body{i}_ety 1 []]
       (.scalar ⟨.isize, false, BitVec.ofNat 128 1⟩) := rfl
 theorem body{i}_safe : BodyVerified Captured.program {i} body{i} (Spec.specs.safety body{i}.identity) := by
   refine bodyVerified_of_safe rfl rfl (fun args h_valid _ => ?_)

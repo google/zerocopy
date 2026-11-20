@@ -84,10 +84,19 @@ const CORRESPONDENCE_PROVENANCE_NOTE: &str = "Pass 2 (anneal-audit --require-cor
     kernel-certifies the initState/evalStep execution rules of \
     Trusted/MirSemantics.lean against pinned vendor/lean-miri/ via \
     Trusted/Correspondence.lean (CorrespondenceClaim, FaultEquivalenceClaim) \
-    in blocking repository CI. The theorem-stating surface of \
-    Trusted/MirSemantics.lean (Behavior, BodyVerified, ProgramVerified, \
-    CrateTheorem, UnitTheorem, and the helpers they reference), \
-    vendor/lean-miri/, and Trusted/Correspondence.lean remain human-audited.";
+    in blocking repository CI. For Tier 2 ADTs and arrays, M_ref stores locals \
+    as value trees (SlotVal) rather than byte-level Allocations: Pass 2 \
+    independently cross-checks array index/fromEnd bounds, direct/niche \
+    discriminant decode/write, checked arithmetic overflow, little-endian \
+    Allocation byte codecs, and aggregate/repeat sequencing against \
+    vendor/lean-miri/, while SlotVal field/downcast projection, .enumUntagged \
+    shells, partial-move uninit propagation, niche-path traversal, ZST/\
+    uninhabited predicates, and the overlap guard are adapter-defined and \
+    checked for self-consistency and by human audit. The theorem-stating \
+    surface of Trusted/MirSemantics.lean (Behavior, BodyVerified, \
+    ProgramVerified, CrateTheorem, UnitTheorem, and the helpers they \
+    reference), vendor/lean-miri/, and Trusted/Correspondence.lean remain \
+    human-audited.";
 
 #[derive(Deserialize)]
 struct UpstreamPinProvenance {
@@ -295,7 +304,7 @@ fn verify_correspondence_lean_inventory(
         let entry = entry.map_err(|err| {
             let msg = err.to_string();
             err.into_io_error()
-                .map_or_else(|| BundleError::Policy(msg), BundleError::Io)
+                .map_or(BundleError::Policy(msg), BundleError::Io)
         })?;
         let ft = entry.file_type();
         if ft.is_symlink() {

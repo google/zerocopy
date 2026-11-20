@@ -1165,9 +1165,9 @@ theorem wpSim_det {α : Type} {p : Program}
 
 On a state that holds a symbolic scalar, `evalStep` does not reduce by `rfl`:
 it is stuck on the overflow test inside `evalBinOp`, on the `checkVal` guard of
-`writePlace`, and on the comparison inside `evalSwitchBranches`. The lemmas in
-this part take the results of exactly these calls as hypotheses, so that every
-other part of a step still reduces by `rfl`. -/
+`writePlaceWithLocalTy`, and on the comparison inside `evalSwitchBranches`. The
+lemmas in this part take the results of exactly these calls as hypotheses, so
+that every other part of a step still reduces by `rfl`. -/
 
 /-- Evaluate `Rvalue.binaryOp` from the values of its operands and the result
 of `evalBinOp`. -/
@@ -1196,18 +1196,22 @@ theorem evalRvalue_binaryOp {tys : List MirTy}
          rfl)
     | simp only [evalRvalue, hL, hR, hOp] <;> rfl
 
-/-- Step an assignment of a binary operation from the result of `evalRvalue`
-and the result of `writePlace`. -/
+/-- Step an assignment of a binary operation from the result of
+`resolveProjPath`, `evalRvalue`, and `writePlaceWithLocalTy`. -/
 theorem evalStatement_assign_binaryOp {body : Body} {frame : FrameState}
     {callers : List FrameState} {cm : CallerMemory} {dst : Place} {op : BinOp}
-    {lhs rhs : Operand} {localTy dstTy : MirTy} {val : Val}
+    {lhs rhs : Operand} {localTy dstTy : MirTy}
+    {resolvedProj : List ProjectionElem} {val : Val}
     {ls ls' : List LocalSlot}
     (hLoc : Trusted.MirSemantics.getElem? body.locals dst.localId =
       some localTy)
     (hTy : projectTy? localTy dst.projection = some dstTy)
+    (hRes : resolveProjPath body.locals frame.locals (.ty localTy)
+      dst.projection = .ok resolvedProj)
     (hRv : evalRvalue body.locals frame.locals dstTy
       (.binaryOp op lhs rhs) = .ok (val, ls))
-    (hW : writePlace ls dst dstTy val = .ok ls') :
+    (hW : writePlaceWithLocalTy localTy ls ⟨dst.localId, resolvedProj⟩ dstTy
+      val = .ok ls') :
     evalStatement body frame callers cm (.assign dst (.binaryOp op lhs rhs)) =
       .step {
         frames :=
@@ -1215,30 +1219,20 @@ theorem evalStatement_assign_binaryOp {body : Body} {frame : FrameState}
         callerMem := cm
       } := by
   have hOv :
-      assignHasUnsupportedOverlap dst dstTy (.binaryOp op lhs rhs) =
-        false :=
+      assignHasUnsupportedOverlap dst dstTy (.binaryOp op lhs rhs) = false :=
     rfl
-  first
-    | (unfold evalStatement
-       repeat (dsimp only)
-       rw [hLoc]
-       repeat (dsimp only)
-       rw [hTy]
-       repeat (dsimp only)
-       rw [ite_bool_false hOv]
-       rw [hRv]
-       repeat (dsimp only)
-       cases hE : writePlace ls dst dstTy val with
-       | error k =>
-         rw [hE] at hW
-         cases hW
-       | ok l =>
-         rw [hE] at hW
-         injection hW with hEq
-         subst hEq
-         rfl)
-    | simp only [evalStatement, hLoc, hTy, ite_bool_false hOv, hRv, hW] <;>
-        rfl
+  unfold evalStatement
+  dsimp only
+  rw [hLoc]
+  dsimp only
+  rw [hTy]
+  dsimp only
+  rw [ite_bool_false hOv]
+  rw [hRes]
+  dsimp only
+  rw [hRv]
+  dsimp only
+  rw [hW]
 
 /-- Step a `switchInt` terminator on a scalar discriminant from the result of
 `evalSwitchBranches`. -/
@@ -1596,9 +1590,9 @@ theorem countDown_step_dec (acc : Nat) {k : Nat}
     evalRvalue_binaryOp (lVal := u32Val (k + 1)) (rVal := u32Val 1)
       (ls₁ := [u32Slot acc, u32Slot (k + 1)]) rfl rfl
       (evalBinOp_sub_u32 hk)
-  have hW : writePlace [u32Slot acc, u32Slot (k + 1)] ⟨1, []⟩ u32Ty
-      (u32Val k) = .ok [u32Slot acc, u32Slot k] := by
-    unfold writePlace
+  have hW : writePlaceWithLocalTy u32Ty [u32Slot acc, u32Slot (k + 1)]
+      ⟨1, []⟩ u32Ty (u32Val k) = .ok [u32Slot acc, u32Slot k] := by
+    unfold writePlaceWithLocalTy
     cases hC : checkVal (u32Val k) u32Ty with
     | false =>
       rw [hC] at hChk
@@ -1608,7 +1602,7 @@ theorem countDown_step_dec (acc : Nat) {k : Nat}
       (frameAt 2 0 [u32Slot acc, u32Slot (k + 1)]) [] ⟨[]⟩ countDownDec =
       .step (mkState 2 1 [u32Slot acc, u32Slot k]) :=
     evalStatement_assign_binaryOp (localTy := u32Ty) (dstTy := u32Ty)
-      rfl rfl hRv hW
+      rfl rfl rfl hRv hW
   exact hStmt
 
 /-- Body step: `_0 = Add(copy _0, const 1_u32)` below `u32::MAX`. -/
@@ -1625,9 +1619,9 @@ theorem countDown_step_inc (acc k : Nat) (hAcc : acc + 1 < Nat.pow 2 32) :
     evalRvalue_binaryOp (lVal := u32Val acc) (rVal := u32Val 1)
       (ls₁ := [u32Slot acc, u32Slot k]) rfl rfl
       (evalBinOp_add_u32 hAcc)
-  have hW : writePlace [u32Slot acc, u32Slot k] ⟨0, []⟩ u32Ty
-      (u32Val (acc + 1)) = .ok [u32Slot (acc + 1), u32Slot k] := by
-    unfold writePlace
+  have hW : writePlaceWithLocalTy u32Ty [u32Slot acc, u32Slot k]
+      ⟨0, []⟩ u32Ty (u32Val (acc + 1)) = .ok [u32Slot (acc + 1), u32Slot k] := by
+    unfold writePlaceWithLocalTy
     cases hC : checkVal (u32Val (acc + 1)) u32Ty with
     | false =>
       rw [hC] at hChk
@@ -1637,7 +1631,7 @@ theorem countDown_step_inc (acc k : Nat) (hAcc : acc + 1 < Nat.pow 2 32) :
       (frameAt 2 1 [u32Slot acc, u32Slot k]) [] ⟨[]⟩ countDownInc =
       .step (mkState 2 2 [u32Slot (acc + 1), u32Slot k]) :=
     evalStatement_assign_binaryOp (localTy := u32Ty) (dstTy := u32Ty)
-      rfl rfl hRv hW
+      rfl rfl rfl hRv hW
   exact hStmt
 
 /-- Body step: `goto bb1` returns to the loop header. -/

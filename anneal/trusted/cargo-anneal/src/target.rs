@@ -2684,36 +2684,12 @@ mod unpinned_admission_tests {
                      private theorem check_arg_u32 (v : Trusted.MirSemantics.Val)\n  \
                        (h : Trusted.MirSemantics.checkVal v Captured.u32Ty = true) :\n  \
                        ∃ n, n < Nat.pow 2 32 ∧ v = .scalar ⟨.i32, false, BitVec.ofNat 128 n⟩ := by\n  \
-                       cases v with\n  \
-                       | scalar s =>\n    \
-                         cases s with\n    \
-                         | mk w sg b =>\n      \
-                           cases hwf : Trusted.MirSemantics.ScalarVal.wf ⟨w, sg, b⟩ with\n      \
-                           | false =>\n        \
-                             unfold Trusted.MirSemantics.checkVal Trusted.MirSemantics.Val.ty? at h\n        \
-                             rw [hwf] at h; cases h\n      \
-                           | true =>\n        \
-                             cases w <;> cases sg <;> try (unfold Trusted.MirSemantics.checkVal Trusted.MirSemantics.Val.ty? at h; rw [hwf] at h; cases h)\n        \
-                             have heq : Trusted.MirSemantics.truncateBits .i32 b = b := beq_iff_eq.mp hwf\n        \
-                             have hlt : b.toNat < Nat.pow 2 32 := by\n          \
-                               have h1 : b.toNat = (Trusted.MirSemantics.truncateBits .i32 b).toNat := congrArg BitVec.toNat heq.symm\n          \
-                               rw [h1]\n          \
-                               exact Nat.lt_of_le_of_lt (Nat.mod_le _ _) (Nat.mod_lt _ (Nat.pow_pos (by decide)))\n        \
-                             exact ⟨b.toNat, hlt, congrArg (fun x => Trusted.MirSemantics.Val.scalar ⟨.i32, false, x⟩) (congrArg BitVec.ofFin (Fin.eq_of_val_eq (Nat.mod_eq_of_lt b.isLt))).symm⟩\n  \
-                       | unit => cases h\n  \
-                       | bool _ => cases h\n  \
-                       | enumVal ety variant =>\n    \
-                         unfold Trusted.MirSemantics.checkVal Trusted.MirSemantics.Val.ty? at h\n    \
-                         cases hc : (Trusted.MirSemantics.enumAdmitted ety && Nat.blt variant ety.discriminants.length) <;> (rw [hc] at h; cases h)\n  \
-                       | tuple fields =>\n    \
-                         unfold Trusted.MirSemantics.checkVal Trusted.MirSemantics.Val.ty? at h\n    \
-                         cases hc : fields.isEmpty with\n    \
-                         | true => rw [hc] at h; cases h\n    \
-                         | false =>\n      \
-                           rw [hc] at h\n      \
-                           cases ht : Trusted.MirSemantics.Val.tys? fields <;> (rw [ht] at h; cases h)\n  \
-                       | ptr _ => cases h\n  \
-                       | bytes _ => cases h\n\
+                       let ⟨b, hv, heq⟩ := Anneal.MirWp.checkVal_int_iff.mp h\n  \
+                       have hlt : b.toNat < Nat.pow 2 32 := by\n    \
+                         have h1 : b.toNat = (Trusted.MirSemantics.truncateBits .i32 b).toNat := congrArg BitVec.toNat heq.symm\n    \
+                         rw [h1]\n    \
+                         exact Nat.lt_of_le_of_lt (Nat.mod_le _ _) (Nat.mod_lt _ (Nat.pow_pos (by decide)))\n  \
+                       exact ⟨b.toNat, hlt, hv.trans (congrArg (fun x => Trusted.MirSemantics.Val.scalar ⟨.i32, false, x⟩) (congrArg BitVec.ofFin (Fin.eq_of_val_eq (Nat.mod_eq_of_lt b.isLt))).symm)⟩\n\
                      theorem Proof.verify : Expected.claim := by\n  \
                      refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, ?_⟩\n  \
                      · intro id selected h\n    \

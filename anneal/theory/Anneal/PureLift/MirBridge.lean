@@ -384,23 +384,15 @@ theorem valDepthOk_mono :
   | 0, v, h => by
     cases v with
     | tuple _ => nomatch h
-    | scalar _ => rfl
-    | ptr _ => rfl
-    | bool _ => rfl
-    | unit => rfl
-    | enumVal _ _ => rfl
-    | bytes _ => rfl
+    | scalar _ | ptr _ | bool _ | unit | structVal _ _ | enumVal _ _ _
+    | array _ _ | bytes _ => rfl
   | k + 1, v, h => by
     cases v with
     | tuple fields =>
       exact list_foldr_and_mono (valDepthOk k) (valDepthOk (k + 1))
         (valDepthOk_mono k) fields h
-    | scalar _ => rfl
-    | ptr _ => rfl
-    | bool _ => rfl
-    | unit => rfl
-    | enumVal _ _ => rfl
-    | bytes _ => rfl
+    | scalar _ | ptr _ | bool _ | unit | structVal _ _ | enumVal _ _ _
+    | array _ _ | bytes _ => rfl
 
 /-- Read field `f` of a `Val.tuple` aggregate admitting child values up to
 tuple nesting depth `d` (aggregate depth `d + 1` at the enclosing tuple). -/
@@ -450,12 +442,8 @@ theorem mir_getField_setField {d : Nat} (f : FieldIdx) (s a : Val)
         rw [hOk]
         dsimp
         rw [getElem?_setElem? fields f c hLookup]
-  | scalar _ => nomatch hGet
-  | ptr _ => nomatch hGet
-  | bool _ => nomatch hGet
-  | unit => nomatch hGet
-  | enumVal _ _ => nomatch hGet
-  | bytes _ => nomatch hGet
+  | scalar _ | ptr _ | bool _ | unit | structVal _ _ | enumVal _ _ _
+  | array _ _ | bytes _ => nomatch hGet
 
 /-- Lens law `put_get` for `getMirFieldAt d` and `setMirFieldAt d`. -/
 theorem mir_setField_getField {d : Nat} (f : FieldIdx) (s a s' : Val)
@@ -484,12 +472,8 @@ theorem mir_setField_getField {d : Nat} (f : FieldIdx) (s a s' : Val)
         dsimp
         rw [hOk]
         rfl
-  | scalar _ => nomatch hPut
-  | ptr _ => nomatch hPut
-  | bool _ => nomatch hPut
-  | unit => nomatch hPut
-  | enumVal _ _ => nomatch hPut
-  | bytes _ => nomatch hPut
+  | scalar _ | ptr _ | bool _ | unit | structVal _ _ | enumVal _ _ _
+  | array _ _ | bytes _ => nomatch hPut
 
 /-- Lens law `put_put` for `setMirFieldAt d`. -/
 theorem mir_setField_setField {d : Nat} (f : FieldIdx) (s a1 a2 s1 : Val)
@@ -519,12 +503,8 @@ theorem mir_setField_setField {d : Nat} (f : FieldIdx) (s a1 a2 s1 : Val)
         | true =>
           dsimp
           rw [setElem?_setElem? fields f a1 a2 fields1 hRec]
-  | scalar _ => nomatch hPut1
-  | ptr _ => nomatch hPut1
-  | bool _ => nomatch hPut1
-  | unit => nomatch hPut1
-  | enumVal _ _ => nomatch hPut1
-  | bytes _ => nomatch hPut1
+  | scalar _ | ptr _ | bool _ | unit | structVal _ _ | enumVal _ _ _
+  | array _ _ | bytes _ => nomatch hPut1
 
 /-- Separation law `getField_setField_other` for `getMirFieldAt d` and
 `setMirFieldAt d`. -/
@@ -551,12 +531,8 @@ theorem mir_getField_setField_other {d : Nat} (f g : FieldIdx) (s a s' : Val)
         subst hEq
         dsimp [getMirFieldAt]
         rw [getElem?_setElem?_other fields f g a fields' hNe hRec]
-  | scalar _ => nomatch hPut
-  | ptr _ => nomatch hPut
-  | bool _ => nomatch hPut
-  | unit => nomatch hPut
-  | enumVal _ _ => nomatch hPut
-  | bytes _ => nomatch hPut
+  | scalar _ | ptr _ | bool _ | unit | structVal _ _ | enumVal _ _ _
+  | array _ _ | bytes _ => nomatch hPut
 
 /-- Commutation law `setField_setField_comm` for `setMirFieldAt d`. -/
 theorem mir_setField_setField_comm {d : Nat} (f g : FieldIdx)
@@ -613,12 +589,8 @@ theorem mir_setField_setField_comm {d : Nat} (f g : FieldIdx)
                 rw [hOkA]
                 dsimp
                 rw [hPair.2]
-  | scalar _ => nomatch h1
-  | ptr _ => nomatch h1
-  | bool _ => nomatch h1
-  | unit => nomatch h1
-  | enumVal _ _ => nomatch h1
-  | bytes _ => nomatch h1
+  | scalar _ | ptr _ | bool _ | unit | structVal _ _ | enumVal _ _ _
+  | array _ _ | bytes _ => nomatch h1
 
 /-- Bit width (`8`, `16`, `32`, `64`, or `128`) of `IntWidth` on 64-bit
 targets. -/
@@ -750,12 +722,8 @@ theorem mir_decodeRef_getField {d : Nat} (f : FieldIdx) (v : Val)
     getMirFieldAt d f v = none := by
   cases v with
   | bytes _ => rfl
-  | scalar _ => nomatch hDec
-  | ptr _ => nomatch hDec
-  | bool _ => nomatch hDec
-  | unit => nomatch hDec
-  | enumVal _ _ => nomatch hDec
-  | tuple _ => nomatch hDec
+  | scalar _ | ptr _ | bool _ | unit | structVal _ _ | enumVal _ _ _
+  | tuple _ | array _ _ => nomatch hDec
 
 /-- Rename `oldLid` to `newLid` in an encoded borrow-handle byte list. -/
 def remapMirBytes (oldLid newLid : LoanId) (data : List AllocByte) :
@@ -831,12 +799,8 @@ theorem valDepthOk_remapMirValAt (oldLid newLid : LoanId) :
         | true =>
           dsimp
           rw [valDepthOk_remapMirValAt oldLid newLid k c, hOk]
-    | scalar _ => rfl
-    | ptr _ => rfl
-    | bool _ => rfl
-    | unit => rfl
-    | enumVal _ _ => rfl
-    | bytes _ => rfl
+    | scalar _ | ptr _ | bool _ | unit | structVal _ _ | enumVal _ _ _
+    | array _ _ | bytes _ => rfl
 
 theorem remapMirValAt_eq_succ (oldLid newLid : LoanId) :
     ∀ (k : Nat) (v : Val),
@@ -845,12 +809,8 @@ theorem remapMirValAt_eq_succ (oldLid newLid : LoanId) :
   | 0, v, hOk => by
     cases v with
     | tuple _ => nomatch hOk
-    | scalar _ => rfl
-    | ptr _ => rfl
-    | bool _ => rfl
-    | unit => rfl
-    | enumVal _ _ => rfl
-    | bytes _ => rfl
+    | scalar _ | ptr _ | bool _ | unit | structVal _ _ | enumVal _ _ _
+    | array _ _ | bytes _ => rfl
   | k + 1, v, hOk => by
     cases v with
     | tuple fields =>
@@ -877,12 +837,8 @@ theorem remapMirValAt_eq_succ (oldLid newLid : LoanId) :
           rw [hC1, hC]
           dsimp
           rw [remapMirValAt_eq_succ oldLid newLid k c hC, ihCs hOk]
-    | scalar _ => rfl
-    | ptr _ => rfl
-    | bool _ => rfl
-    | unit => rfl
-    | enumVal _ _ => rfl
-    | bytes _ => rfl
+    | scalar _ | ptr _ | bool _ | unit | structVal _ _ | enumVal _ _ _
+    | array _ _ | bytes _ => rfl
 
 theorem mir_decodeRef_remapRefInVal {d : Nat} (oldLid newLid : LoanId)
     (v : Val) :
@@ -890,12 +846,8 @@ theorem mir_decodeRef_remapRefInVal {d : Nat} (oldLid newLid : LoanId)
       (mirDecodeRef v).map
         (fun r => (if r.1 == oldLid then newLid else r.1, r.2)) := by
   cases v with
-  | scalar _ => rfl
-  | ptr _ => rfl
-  | bool _ => rfl
-  | unit => rfl
-  | enumVal _ _ => rfl
-  | tuple _ => rfl
+  | scalar _ | ptr _ | bool _ | unit | structVal _ _ | enumVal _ _ _
+  | tuple _ | array _ _ => rfl
   | bytes data =>
     cases data with
     | nil => rfl
@@ -951,12 +903,8 @@ theorem mir_getField_remapRefInVal {d : Nat} (oldLid newLid : LoanId)
     getMirFieldAt d f (remapMirValAtDepth d oldLid newLid v) =
       (getMirFieldAt d f v).map (remapMirValAtDepth d oldLid newLid) := by
   cases v with
-  | scalar _ => rfl
-  | ptr _ => rfl
-  | bool _ => rfl
-  | unit => rfl
-  | enumVal _ _ => rfl
-  | bytes _ => rfl
+  | scalar _ | ptr _ | bool _ | unit | structVal _ _ | enumVal _ _ _
+  | array _ _ | bytes _ => rfl
   | tuple fields =>
     change getMirFieldAt d f
       (.tuple (fields.foldr (fun c acc => remapChildAt d oldLid newLid c :: acc)
@@ -1007,11 +955,8 @@ theorem mir_remapRefInVal_leaf {d : Nat} (oldLid newLid : LoanId) (v : Val)
     (hFields : ∀ f, getMirFieldAt d f v = none) :
     remapMirValAtDepth d oldLid newLid v = v := by
   cases v with
-  | scalar _ => rfl
-  | ptr _ => rfl
-  | bool _ => rfl
-  | unit => rfl
-  | enumVal _ _ => rfl
+  | scalar _ | ptr _ | bool _ | unit | structVal _ _ | enumVal _ _ _
+  | array _ _ => rfl
   | tuple fields =>
     change Val.tuple _ = Val.tuple fields
     exact congrArg Val.tuple
@@ -1065,12 +1010,8 @@ theorem valSizeBoundAt_eq_succ :
   | 0, v, hOk => by
     cases v with
     | tuple _ => nomatch hOk
-    | scalar _ => rfl
-    | ptr _ => rfl
-    | bool _ => rfl
-    | unit => rfl
-    | enumVal _ _ => rfl
-    | bytes _ => rfl
+    | scalar _ | ptr _ | bool _ | unit | structVal _ _ | enumVal _ _ _
+    | array _ _ | bytes _ => rfl
   | k + 1, v, hOk => by
     cases v with
     | tuple fields =>
@@ -1092,12 +1033,8 @@ theorem valSizeBoundAt_eq_succ :
           change valSizeBoundAt (k + 1) c + _ + 1 =
             valSizeBoundAt k c + _ + 1
           rw [valSizeBoundAt_eq_succ k c hC, ihCs hOk]
-    | scalar _ => rfl
-    | ptr _ => rfl
-    | bool _ => rfl
-    | unit => rfl
-    | enumVal _ _ => rfl
-    | bytes _ => rfl
+    | scalar _ | ptr _ | bool _ | unit | structVal _ _ | enumVal _ _ _
+    | array _ _ | bytes _ => rfl
 
 theorem mirListGet?_lt_foldr_size (sz : Val → Nat) :
     ∀ (fields : List Val) (f : FieldIdx) (c : Val),
@@ -1151,12 +1088,8 @@ theorem mir_getField_lt_sizeBound {d : Nat} (f : FieldIdx) (v c : Val)
         dsimp [valSizeBoundAtDepth]
         rw [valSizeBoundAt_eq_succ d c0 hOk]
         exact hBounds
-  | scalar _ => nomatch hGet
-  | ptr _ => nomatch hGet
-  | bool _ => nomatch hGet
-  | unit => nomatch hGet
-  | enumVal _ _ => nomatch hGet
-  | bytes _ => nomatch hGet
+  | scalar _ | ptr _ | bool _ | unit | structVal _ _ | enumVal _ _ _
+  | array _ _ | bytes _ => nomatch hGet
 
 /-- Depth-parametric instantiation of `PureLift.ValAlgebra` for
 `Trusted.MirSemantics.Val` at arbitrary child tuple depth `d : Nat` (enclosing
@@ -1725,16 +1658,31 @@ def mirNatListPairwiseNe (xs : List Nat) : Bool :=
 /-- Computable structural equality on `EnumTagRepr`. -/
 def mirEnumTagReprBeq : EnumTagRepr → EnumTagRepr → Bool
   | .zeroSized, .zeroSized => true
+  | .single v₁, .single v₂ => Nat.beq v₁ v₂
   | .scalar w₁ s₁, .scalar w₂ s₂ => mirIntWidthBeq w₁ w₂ && (s₁ == s₂)
+  | .niche w₁ s₁ vs₁ ve₁ np₁ u₁ st₁ l₁ ns₁,
+    .niche w₂ s₂ vs₂ ve₂ np₂ u₂ st₂ l₂ ns₂ =>
+    mirIntWidthBeq w₁ w₂ && (s₁ == s₂) && (vs₁ == vs₂) && (ve₁ == ve₂) &&
+      mirNatListBeq np₁ np₂ && Nat.beq u₁ u₂ && Nat.beq st₁ st₂ &&
+      Nat.beq l₁ l₂ && (ns₁ == ns₂)
   | _, _ => false
 
-/-- Computable structural equality on `EnumTy`. -/
+/-- True iff every variant field list in `vss` is empty (`[]`). -/
+def mirAllEmptyFieldLists (vss : List (List MirTy)) : Bool :=
+  vss.foldr (fun fs ih => fs.isEmpty && ih) true
+
+/-- Computable structural equality on fieldless `EnumTy` descriptors (`EnumTy`
+carrying any non-empty payload `variantFields` entry is rejected with `false`,
+matching `EnumTy.beq a b` whenever `mirAllEmptyFieldLists a.variantFields`). -/
 def mirEnumTyBeq (a b : EnumTy) : Bool :=
   Nat.beq a.id b.id &&
     mirIntWidthBeq a.discrWidth b.discrWidth &&
     (a.discrSigned == b.discrSigned) &&
     mirEnumTagReprBeq a.tagRepr b.tagRepr &&
-    mirNatListBeq a.discriminants b.discriminants
+    mirNatListBeq a.discriminants b.discriminants &&
+    mirAllEmptyFieldLists a.variantFields &&
+    mirAllEmptyFieldLists b.variantFields &&
+    Nat.beq a.variantFields.length b.variantFields.length
 
 /-- Computable structural equality on `MirTy` via `natFold` and `List.foldr`. -/
 def mirTyBeqAt (d : Nat) (a b : MirTy) : Bool :=
@@ -1861,10 +1809,21 @@ def mirTagBitsToDiscrBits (tagW : IntWidth) (tagS : Bool) (discrW : IntWidth)
       mirTruncateBits tagW tagBits
   mirTruncateBits discrW extended
 
-/-- Computable static admission check for fieldless `EnumTy` descriptors,
-matching `Trusted.MirSemantics.enumAdmitted`. -/
+/-- True iff `ety` is a canonical fieldless direct-tag or ZST enum (one `[]`
+field list per discriminant and `tagRepr` is `.zeroSized` or `.scalar`). -/
+def mirIsFieldlessDirectEnumTy (ety : EnumTy) : Bool :=
+  mirAllEmptyFieldLists ety.variantFields &&
+    Nat.beq ety.variantFields.length ety.discriminants.length &&
+    match ety.tagRepr with
+    | .zeroSized | .scalar _ _ => true
+    | _ => false
+
+/-- Computable static admission check for fieldless direct `EnumTy` descriptors,
+matching `Trusted.MirSemantics.enumAdmitted` on the fieldless direct fragment.
+-/
 def mirEnumAdmitted (ety : EnumTy) : Bool :=
-  !ety.discriminants.isEmpty &&
+  mirIsFieldlessDirectEnumTy ety &&
+    !ety.discriminants.isEmpty &&
     Nat.blt ety.discriminants.length (Nat.pow 2 32) &&
     mirListAll (fun d => Nat.blt d (mirModulus ety.discrWidth))
       ety.discriminants &&
@@ -1877,12 +1836,13 @@ def mirEnumAdmitted (ety : EnumTy) : Bool :=
         mirTagBitsToDiscrBits tagW tagS ety.discrWidth
           (mirTruncateBits tagW dBits) == dBits)
         ety.discriminants
+    | _ => false
 
 /-- Computable check for admitted 0-byte ZST 1-variant fieldless enums. -/
 def mirIsZstEnumTy (ety : EnumTy) : Bool :=
   match ety.tagRepr with
   | .zeroSized => mirEnumAdmitted ety
-  | .scalar _ _ => false
+  | _ => false
 
 /-- Computable linear search from `idx` for the variant index matching
 `discrBits`. -/
@@ -1907,30 +1867,32 @@ def mirScalarWf (sv : ScalarVal) : Bool :=
   mirTruncateBits sv.width sv.bits == sv.bits
 
 /-- Computable intrinsic runtime type check matching
-`Trusted.MirSemantics.Val.ty?` on every value except tuples, which this mirror
-rejects with `none` (the straight-line lifter does not model tuples). -/
+`Trusted.MirSemantics.Val.ty?` on the straight-line lifter's supported scalar,
+`bool`, `unit`, and fieldless-direct-enum fragment (rejecting compound Tier 2
+aggregates and tuples with `none`). -/
 def mirValTy? : Val → Option MirTy
   | .scalar sv =>
     if mirScalarWf sv then some (.int sv.width sv.signed) else none
   | .bool _ => some .bool
   | .unit => some .unit
-  | .enumVal ety v =>
+  | .enumVal ety v [] =>
     if mirEnumAdmitted ety && Nat.blt v ety.discriminants.length then
       some (.enum ety)
     else
       none
   | _ => none
 
-/-- Computable value-type check matching `Trusted.MirSemantics.checkVal` on
-every value except tuples, which this mirror rejects with `false`. -/
+/-- Computable value-type check matching `Trusted.MirSemantics.checkVal` on the
+straight-line lifter's supported value fragment. -/
 def mirCheckVal (v : Val) (ty : MirTy) : Bool :=
   match mirValTy? v with
   | some vTy => mirTyBeq vTy ty
   | none => false
 
 /-- Computable local-type support check matching
-`Trusted.MirSemantics.isSupportedScalarOrUnitTy` on every type except tuples,
-which this mirror rejects with `false`. -/
+`Trusted.MirSemantics.isSupportedScalarOrUnitTy` on the straight-line lifter's
+supported type fragment (rejecting tuples, structs, arrays, and payload/niche
+enums with `false`). -/
 def mirIsSupportedScalarOrUnitTy : MirTy → Bool
   | .bool | .int _ _ | .unit | .never => true
   | .enum ety => mirEnumAdmitted ety
@@ -1943,20 +1905,20 @@ def mirIsPrimitiveReadableTy : MirTy → Bool
   | _ => false
 
 /-- Computable initial live-uninitialized slot state matching
-`Trusted.MirSemantics.liveUninitSlot` on every type except tuples, which this
-mirror treats as a single uninitialized slot. -/
+`Trusted.MirSemantics.liveUninitSlot` on the straight-line lifter's supported
+type fragment. -/
 def mirLiveUninitSlot : MirTy → LocalSlot
   | .unit => .live .unit
   | .enum ety =>
-    if mirIsZstEnumTy ety then .live (.enumVal ety 0) else .live .uninit
+    if mirIsZstEnumTy ety then .live (.enumVal ety 0 []) else .live .uninit
   | _ => .live .uninit
 
 /-- Computable read of the zero-sized value that a newly live slot holds:
-`some v` for `SlotVal.unit` and `SlotVal.enumVal`, and `none` for an
+`some v` for `SlotVal.unit` and fieldless `SlotVal.enumVal`, and `none` for an
 uninitialized (or any other) slot. -/
 def mirSlotZstVal? : LocalSlot → Option Val
   | .live .unit => some .unit
-  | .live (.enumVal ety v) => some (.enumVal ety v)
+  | .live (.enumVal ety v []) => some (.enumVal ety v [])
   | _ => none
 
 /-- Computable storage-marker check for a single `StatementKind`. -/
@@ -2020,24 +1982,24 @@ def mirEvalConstLit : MirTy → ConstLit → Except FaultKind Val
         .error .undefined
   | .unit, .zeroSized => .ok .unit
   | .enum ety, .zeroSized =>
-    if mirIsZstEnumTy ety then .ok (.enumVal ety 0) else .error .unsupported
+    if mirIsZstEnumTy ety then .ok (.enumVal ety 0 []) else .error .unsupported
   | .enum ety, .scalar bits =>
     match ety.tagRepr with
-    | .zeroSized => .error .unsupported
     | .scalar tagW tagS =>
       if !mirEnumAdmitted ety || mirTruncateBits tagW bits != bits then
         .error .unsupported
       else
         let discrBits := mirTagBitsToDiscrBits tagW tagS ety.discrWidth bits
         match mirFindDiscrVariant? discrBits ety.discriminants with
-        | some v => .ok (.enumVal ety v)
+        | some v => .ok (.enumVal ety v [])
         | none => .error .undefined
+    | _ => .error .unsupported
   | _, _ => .error .unsupported
 
 /-- Computable fieldless-enum discriminant reader mirroring the `.discriminant`
 arm of `Trusted.MirSemantics.evalRvalue` (no agreement theorem). -/
 def mirEvalDiscrVal (ety : EnumTy) : Val → Option Val
-  | .enumVal ety' v =>
+  | .enumVal ety' v [] =>
     if mirEnumTyBeq ety ety' && Nat.blt v ety.discriminants.length then
       match mirListGet? ety.discriminants v with
       | some disc =>
@@ -2257,17 +2219,129 @@ theorem mirEnumTagReprBeq_eq (r₁ r₂ : EnumTagRepr) :
     mirEnumTagReprBeq r₁ r₂ = EnumTagRepr.beq r₁ r₂ := by
   cases r₁ with
   | zeroSized => cases r₂ <;> rfl
+  | single v₁ => cases r₂ <;> rfl
   | scalar w₁ s₁ =>
     cases r₂ with
-    | zeroSized => rfl
+    | zeroSized | single _ | niche _ _ _ _ _ _ _ _ _ => rfl
     | scalar w₂ s₂ =>
       dsimp only [mirEnumTagReprBeq, EnumTagRepr.beq]
       rw [mirIntWidthBeq_eq w₁ w₂]
+  | niche w₁ s₁ vs₁ ve₁ np₁ u₁ st₁ l₁ ns₁ =>
+    cases r₂ with
+    | zeroSized | single _ | scalar _ _ => rfl
+    | niche w₂ s₂ vs₂ ve₂ np₂ u₂ st₂ l₂ ns₂ =>
+      dsimp only [mirEnumTagReprBeq, EnumTagRepr.beq]
+      rw [mirIntWidthBeq_eq w₁ w₂, mirNatListBeq_eq np₁ np₂]
 
-theorem mirEnumTyBeq_eq (a b : EnumTy) :
+theorem mirAllEmptyFieldLists_beqListList_eq :
+    ∀ (as bs : List (List MirTy)),
+      mirAllEmptyFieldLists as = true →
+      (mirAllEmptyFieldLists bs && Nat.beq as.length bs.length) =
+        MirTy.beqListList as bs
+  | [], [], _ => rfl
+  | [], _ :: bs, _ => by
+    dsimp only [MirTy.beqListList, List.length]
+    have h0 : Nat.beq 0 (bs.length + 1) = false := rfl
+    rw [h0, Bool.and_false]
+  | a :: as, bs, ha => by
+    change (a.isEmpty && mirAllEmptyFieldLists as) = true at ha
+    cases a with
+    | cons _ _ => cases ha
+    | nil =>
+      have has : mirAllEmptyFieldLists as = true := ha
+      cases bs with
+      | nil =>
+        dsimp only [MirTy.beqListList, List.length]
+        have h0 : Nat.beq (as.length + 1) 0 = false := rfl
+        rw [h0, Bool.and_false]
+      | cons b bs =>
+        change ((b.isEmpty && mirAllEmptyFieldLists bs) &&
+            Nat.beq (as.length + 1) (bs.length + 1)) =
+          (MirTy.beqList [] b && MirTy.beqListList as bs)
+        have hSucc :
+            Nat.beq (as.length + 1) (bs.length + 1) =
+              Nat.beq as.length bs.length := by
+          cases h : Nat.beq as.length bs.length with
+          | true =>
+            rw [Nat.eq_of_beq_eq_true h]
+            exact Nat.beq_refl _
+          | false =>
+            cases h2 : Nat.beq (as.length + 1) (bs.length + 1) with
+            | false => rfl
+            | true =>
+              have hEq := Nat.succ.inj (Nat.eq_of_beq_eq_true h2)
+              rw [hEq, Nat.beq_refl] at h
+              cases h
+        rw [hSucc, Bool.and_assoc,
+          mirAllEmptyFieldLists_beqListList_eq as bs has]
+        cases b <;> rfl
+
+theorem mirAllEmptyFieldLists_getElem? :
+    ∀ (vss : List (List MirTy)) (i : Nat),
+      mirAllEmptyFieldLists vss = true →
+      i < vss.length →
+      vss[i]? = some []
+  | [], _, _, hi => False.elim (Nat.not_lt_zero _ hi)
+  | fs :: vss, i, h, hi => by
+    change (fs.isEmpty && mirAllEmptyFieldLists vss) = true at h
+    cases fs with
+    | cons _ _ => cases h
+    | nil =>
+      cases i with
+      | zero => rfl
+      | succ j =>
+        exact mirAllEmptyFieldLists_getElem? vss j h
+          (Nat.lt_of_succ_lt_succ hi)
+
+theorem mirAllEmptyFieldLists_any_nonempty :
+    ∀ (vss : List (List MirTy)),
+      mirAllEmptyFieldLists vss = true →
+      vss.any (fun fs => !fs.isEmpty) = false
+  | [], _ => rfl
+  | fs :: vss, h => by
+    change (fs.isEmpty && mirAllEmptyFieldLists vss) = true at h
+    cases fs with
+    | cons _ _ => cases h
+    | nil =>
+      have hv : mirAllEmptyFieldLists vss = true := h
+      dsimp only [List.any, List.isEmpty, Bool.not_true, Bool.false_or]
+      exact mirAllEmptyFieldLists_any_nonempty vss hv
+
+theorem mirAllEmptyFieldLists_areSupported :
+    ∀ (vss : List (List MirTy)),
+      mirAllEmptyFieldLists vss = true →
+      areSupportedVariantFieldLists vss = true
+  | [], _ => rfl
+  | fs :: vss, h => by
+    change (fs.isEmpty && mirAllEmptyFieldLists vss) = true at h
+    cases fs with
+    | cons _ _ => cases h
+    | nil =>
+      have hv : mirAllEmptyFieldLists vss = true := h
+      dsimp only [areSupportedVariantFieldLists, areSupportedFieldTys,
+        Bool.true_and]
+      exact mirAllEmptyFieldLists_areSupported vss hv
+
+theorem mirIsFieldlessDirectEnumTy_elim {ety : EnumTy}
+    (h : mirIsFieldlessDirectEnumTy ety = true) :
+    mirAllEmptyFieldLists ety.variantFields = true ∧
+    Nat.beq ety.variantFields.length ety.discriminants.length = true ∧
+    (match ety.tagRepr with
+     | .zeroSized | .scalar _ _ => true
+     | _ => false) = true := by
+  unfold mirIsFieldlessDirectEnumTy at h
+  cases h1 : mirAllEmptyFieldLists ety.variantFields <;>
+    cases h2 : Nat.beq ety.variantFields.length ety.discriminants.length <;>
+    rw [h1, h2] at h <;>
+    first | cases h | exact ⟨rfl, rfl, h⟩
+
+theorem mirEnumTyBeq_eq_of_fieldless (a b : EnumTy)
+    (ha : mirAllEmptyFieldLists a.variantFields = true) :
     mirEnumTyBeq a b = EnumTy.beq a b := by
   unfold mirEnumTyBeq EnumTy.beq
-  rw [mirIntWidthBeq_eq, mirEnumTagReprBeq_eq, mirNatListBeq_eq]
+  rw [mirIntWidthBeq_eq, mirEnumTagReprBeq_eq, mirNatListBeq_eq, ha,
+    Bool.and_true, Bool.and_assoc,
+    mirAllEmptyFieldLists_beqListList_eq a.variantFields b.variantFields ha]
 
 theorem mirBitWidth_eq (w : IntWidth) : mirBitWidth w = w.bitWidth := by
   cases w <;> rfl
@@ -2354,25 +2428,46 @@ theorem mirNatListPairwiseNe_eq (xs : List Nat) :
   rw [mirNatListPairwiseNe_foldr xs]
 
 theorem mirEnumAdmitted_eq (ety : EnumTy) :
-    mirEnumAdmitted ety = enumAdmitted ety := by
-  unfold mirEnumAdmitted enumAdmitted
-  rw [mirListAll_eq _ _ (fun d => by rw [mirModulus_eq]) ety.discriminants,
-      mirNatListPairwiseNe_eq ety.discriminants]
-  cases ety.tagRepr with
-  | zeroSized => rfl
-  | scalar tagW tagS =>
-    dsimp only
-    rw [mirListAll_eq _ _
-      (fun d => by
-        rw [mirTagBitsToDiscrBits_eq, mirTruncateBits_eq_truncateBits])
-      ety.discriminants]
+    mirEnumAdmitted ety =
+      (mirIsFieldlessDirectEnumTy ety && enumAdmitted ety) := by
+  cases ety with
+  | mk id dw ds tr d vf =>
+    cases hFl : mirIsFieldlessDirectEnumTy ⟨id, dw, ds, tr, d, vf⟩ with
+    | false =>
+      unfold mirEnumAdmitted
+      rw [hFl]
+      rfl
+    | true =>
+      let ⟨hAllEmp, hLenEq, hTag⟩ := mirIsFieldlessDirectEnumTy_elim hFl
+      have hAnyFalse := mirAllEmptyFieldLists_any_nonempty vf hAllEmp
+      have hSupTrue := mirAllEmptyFieldLists_areSupported vf hAllEmp
+      unfold mirEnumAdmitted enumAdmitted enumAdmittedCore hasEnumPayloadFields
+      rw [hFl]
+      dsimp only
+      rw [hLenEq, hAnyFalse, hSupTrue]
+      simp only [Bool.true_and, Bool.and_true, Bool.not_false]
+      rw [mirListAll_eq _ _ (fun x => by rw [mirModulus_eq]) d,
+          mirNatListPairwiseNe_eq d]
+      cases tr with
+      | zeroSized =>
+        rfl
+      | scalar tagW tagS =>
+        dsimp only
+        rw [mirListAll_eq _ _
+          (fun x => by
+            rw [mirTagBitsToDiscrBits_eq, mirTruncateBits_eq_truncateBits])
+          d]
+      | single _ | niche _ _ _ _ _ _ _ _ _ =>
+        cases hTag
 
 theorem mirIsZstEnumTy_eq (ety : EnumTy) :
-    mirIsZstEnumTy ety = isZstEnumTy ety := by
+    mirIsZstEnumTy ety =
+      (mirIsFieldlessDirectEnumTy ety && isZstEnumTy ety) := by
   unfold mirIsZstEnumTy isZstEnumTy
   cases ety.tagRepr with
   | zeroSized => exact mirEnumAdmitted_eq ety
-  | scalar _ _ => rfl
+  | single _ | scalar _ _ | niche _ _ _ _ _ _ _ _ _ =>
+    cases mirIsFieldlessDirectEnumTy ety <;> rfl
 
 theorem mirScalarWf_eq (sv : ScalarVal) :
     mirScalarWf sv = sv.wf := by
@@ -2380,28 +2475,90 @@ theorem mirScalarWf_eq (sv : ScalarVal) :
   rw [mirTruncateBits_eq_truncateBits]
 
 /-- Exact agreement between `mirValTy?` and `Trusted.MirSemantics.Val.ty?` on
-every non-tuple `Val`; `mirValTy?` rejects tuples. -/
+every value in the straight-line lifter's supported fragment (rejecting tuples,
+structs, arrays, and payload/niche enums with `none`). -/
 theorem mirValTy?_eq (v : Val) :
     mirValTy? v =
       match v with
-      | .tuple _ => none
+      | .structVal _ _ | .tuple _ | .array _ _ => none
+      | .enumVal ety _ fs =>
+        if mirIsFieldlessDirectEnumTy ety && fs.isEmpty then v.ty? else none
       | _ => v.ty? := by
   cases v with
   | scalar sv =>
     dsimp only [mirValTy?, Val.ty?]
     rw [mirScalarWf_eq sv]
-  | enumVal ety idx =>
-    dsimp only [mirValTy?, Val.ty?]
-    rw [mirEnumAdmitted_eq ety]
-  | ptr _ | bool _ | unit | tuple _ | bytes _ => rfl
+  | enumVal ety idx fs =>
+    cases fs with
+    | cons _ _ =>
+      dsimp only [mirValTy?]
+      rw [Anneal.MirWp.list_isEmpty_cons, Bool.and_false,
+        Anneal.MirWp.ite_bool_false (rfl : false = false)]
+    | nil =>
+      dsimp only [mirValTy?]
+      rw [Anneal.MirWp.list_isEmpty_nil, Bool.and_true, mirEnumAdmitted_eq ety]
+      cases hFl : mirIsFieldlessDirectEnumTy ety with
+      | false =>
+        rw [Bool.false_and, Bool.false_and,
+          Anneal.MirWp.ite_bool_false (rfl : false = false),
+          Anneal.MirWp.ite_bool_false (rfl : false = false)]
+      | true =>
+        rw [Bool.true_and, Anneal.MirWp.ite_bool_true (rfl : true = true)]
+        let ⟨hAllEmp, _, hTag⟩ := mirIsFieldlessDirectEnumTy_elim hFl
+        have hNoPay : hasEnumPayloadFields ety = false :=
+          mirAllEmptyFieldLists_any_nonempty ety.variantFields hAllEmp
+        cases hCond : (enumAdmitted ety && Nat.blt idx ety.discriminants.length)
+          with
+        | false =>
+          rw [Anneal.MirWp.ite_bool_false (rfl : false = false)]
+          cases hAdm : enumAdmitted ety with
+          | false =>
+            dsimp only [Val.ty?]
+            rw [hAdm]
+            rfl
+          | true =>
+            rw [hAdm, Bool.true_and] at hCond
+            simp only [Val.ty?, fieldsForVariant?, isVariantUninhabited,
+              hAdm, hCond, Bool.not_true, Bool.not_false, Bool.false_or,
+              Bool.true_or, ite_true]
+        | true =>
+          rw [Anneal.MirWp.ite_bool_true (rfl : true = true)]
+          have hAdm : enumAdmitted ety = true := by
+            cases ha : enumAdmitted ety <;> rw [ha] at hCond <;>
+              first | rfl | cases hCond
+          have hBlt : Nat.blt idx ety.discriminants.length = true := by
+            rw [hAdm, Bool.true_and] at hCond
+            exact hCond
+          have hTag' :
+              (match ety.tagRepr with
+              | .scalar _ _ => true
+              | .zeroSized => true
+              | _ => false) = true := by
+            cases htr : ety.tagRepr <;> rw [htr] at hTag <;> exact hTag
+          have hCheck : checkVal (.enumVal ety idx []) (.enum ety) = true :=
+            (Anneal.MirWp.checkVal_enum_iff hNoPay hTag').mpr
+              ⟨hAdm, ⟨idx, Nat.le_of_ble_eq_true hBlt⟩, rfl⟩
+          unfold checkVal at hCheck
+          cases hTy : (Val.enumVal ety idx []).ty? with
+          | none => rw [hTy] at hCheck; cases hCheck
+          | some rTy =>
+            have hEq := Anneal.MirWp.ty?_enumVal_inv hTy
+            subst hEq
+            rfl
+  | ptr _ | bool _ | unit | structVal _ _ | tuple _ | array _ _ | bytes _ =>
+    rfl
 
 /-- Exact agreement between `mirCheckVal` and `Trusted.MirSemantics.checkVal`
-across all non-tuple runtime `Val`s and all `MirTy`s; `mirCheckVal` rejects
-tuples. -/
+across all runtime `Val`s in the straight-line lifter's supported fragment. -/
 theorem mirCheckVal_eq (v : Val) (ty : MirTy) :
     mirCheckVal v ty =
       match v with
-      | .tuple _ => false
+      | .structVal _ _ | .tuple _ | .array _ _ => false
+      | .enumVal ety _ fs =>
+        if mirIsFieldlessDirectEnumTy ety && fs.isEmpty then
+          checkVal v ty
+        else
+          false
       | _ => checkVal v ty := by
   unfold mirCheckVal checkVal
   rw [mirValTy?_eq v]
@@ -2416,37 +2573,63 @@ theorem mirCheckVal_eq (v : Val) (ty : MirTy) :
         change (mirIntWidthBeq sv.width w₂ && (sv.signed == s₂)) =
           (IntWidth.beq sv.width w₂ && (sv.signed == s₂))
         rw [mirIntWidthBeq_eq]
-      | bool | unit | never | enum _ | tuple _ | ref _ _ | rawPtr _ _
-      | unsupported => rfl
+      | bool | unit | never | adtStruct _ | enum _ | tuple _ | array _ _
+      | ref _ _ | rawPtr _ _ | unsupported => rfl
   | bool _ =>
     dsimp only [Val.ty?]
     cases ty <;> rfl
   | unit =>
     dsimp only [Val.ty?]
     cases ty <;> rfl
-  | enumVal ety idx =>
-    dsimp only [Val.ty?]
-    cases (enumAdmitted ety && Nat.blt idx ety.discriminants.length) with
-    | false => rfl
+  | enumVal ety idx fs =>
+    dsimp only
+    cases hCond : (mirIsFieldlessDirectEnumTy ety && fs.isEmpty) with
+    | false =>
+      rw [Anneal.MirWp.ite_bool_false (rfl : false = false),
+        Anneal.MirWp.ite_bool_false (rfl : false = false)]
     | true =>
-      cases ty with
-      | enum ety₂ => exact mirEnumTyBeq_eq ety ety₂
-      | bool | int _ _ | unit | never | tuple _ | ref _ _ | rawPtr _ _
-      | unsupported => rfl
-  | ptr _ | tuple _ | bytes _ => rfl
+      rw [Anneal.MirWp.ite_bool_true (rfl : true = true),
+        Anneal.MirWp.ite_bool_true (rfl : true = true)]
+      have hAllEmp : mirAllEmptyFieldLists ety.variantFields = true := by
+        cases h1 : mirIsFieldlessDirectEnumTy ety with
+        | false => rw [h1] at hCond; cases hCond
+        | true => exact (mirIsFieldlessDirectEnumTy_elim h1).1
+      cases hTy : (Val.enumVal ety idx fs).ty? with
+      | none => rfl
+      | some vTy =>
+        have hEq := Anneal.MirWp.ty?_enumVal_inv hTy
+        subst hEq
+        dsimp only
+        cases ety with
+        | mk id₁ dw₁ ds₁ tr₁ d₁ vf₁ =>
+          cases ty with
+          | enum ety₂ =>
+            cases ety₂ with
+            | mk id₂ dw₂ ds₂ tr₂ d₂ vf₂ =>
+              exact mirEnumTyBeq_eq_of_fieldless
+                ⟨id₁, dw₁, ds₁, tr₁, d₁, vf₁⟩
+                ⟨id₂, dw₂, ds₂, tr₂, d₂, vf₂⟩ hAllEmp
+          | bool | int _ _ | unit | never | adtStruct _ | tuple _ | array _ _
+          | ref _ _ | rawPtr _ _ | unsupported => rfl
+  | ptr _ | structVal _ _ | tuple _ | array _ _ | bytes _ => rfl
 
 /-- Exact agreement between `mirIsSupportedScalarOrUnitTy` and
-`Trusted.MirSemantics.isSupportedScalarOrUnitTy` on every non-tuple type;
-`mirIsSupportedScalarOrUnitTy` rejects tuple types. -/
+`Trusted.MirSemantics.isSupportedScalarOrUnitTy` on the straight-line lifter's
+supported type fragment. -/
 theorem mirIsSupportedScalarOrUnitTy_eq (ty : MirTy) :
     mirIsSupportedScalarOrUnitTy ty =
       match ty with
-      | .tuple _ => false
+      | .adtStruct _ | .tuple _ | .array _ _ => false
+      | .enum ety =>
+        mirIsFieldlessDirectEnumTy ety && isSupportedScalarOrUnitTy (.enum ety)
       | _ => isSupportedScalarOrUnitTy ty := by
   cases ty with
-  | enum ety => exact mirEnumAdmitted_eq ety
-  | bool | int _ _ | unit | never | tuple _ | ref _ _ | rawPtr _ _
-  | unsupported => rfl
+  | enum ety =>
+    cases ety with
+    | mk id dw ds tr d vf =>
+      exact mirEnumAdmitted_eq ⟨id, dw, ds, tr, d, vf⟩
+  | bool | int _ _ | unit | never | adtStruct _ | tuple _ | array _ _
+  | ref _ _ | rawPtr _ _ | unsupported => rfl
 
 /-- Every type that `mirIsSupportedScalarOrUnitTy` admits is admitted by
 `Trusted.MirSemantics.isSupportedScalarOrUnitTy`. -/
@@ -2455,24 +2638,53 @@ theorem mirIsSupportedScalarOrUnitTy_sound {ty : MirTy}
     isSupportedScalarOrUnitTy ty = true := by
   rw [mirIsSupportedScalarOrUnitTy_eq ty] at h
   cases ty with
-  | tuple _ => cases h
-  | bool | int _ _ | unit | never | enum _ | ref _ _ | rawPtr _ _
-  | unsupported => exact h
+  | adtStruct _ | tuple _ | array _ _ => cases h
+  | enum ety =>
+    dsimp only at h
+    cases hFl : mirIsFieldlessDirectEnumTy ety with
+    | false => rw [hFl] at h; cases h
+    | true => rw [hFl] at h; exact h
+  | bool | int _ _ | unit | never | ref _ _ | rawPtr _ _ | unsupported =>
+    exact h
 
 /-- Exact agreement between `mirLiveUninitSlot` and
-`Trusted.MirSemantics.liveUninitSlot` on every non-tuple type. -/
+`Trusted.MirSemantics.liveUninitSlot` on the straight-line lifter's supported
+type fragment. -/
 theorem mirLiveUninitSlot_eq (ty : MirTy) :
     mirLiveUninitSlot ty =
       match ty with
-      | .tuple _ => .live .uninit
+      | .adtStruct _ | .tuple _ | .array _ _ => .live .uninit
+      | .enum ety =>
+        if mirIsFieldlessDirectEnumTy ety then
+          liveUninitSlot (.enum ety)
+        else
+          .live .uninit
       | _ => liveUninitSlot ty := by
   cases ty with
   | enum ety =>
-    dsimp only [mirLiveUninitSlot, liveUninitSlot, uninitSlotVal]
-    rw [mirIsZstEnumTy_eq ety]
-    cases isZstEnumTy ety <;> rfl
-  | bool | int _ _ | unit | never | tuple _ | ref _ _ | rawPtr _ _
-  | unsupported => rfl
+    cases ety with
+    | mk id dw ds tr d vf =>
+      dsimp only [mirLiveUninitSlot]
+      rw [mirIsZstEnumTy_eq ⟨id, dw, ds, tr, d, vf⟩]
+      cases hFl : mirIsFieldlessDirectEnumTy ⟨id, dw, ds, tr, d, vf⟩ with
+      | false => rfl
+      | true =>
+        unfold mirIsFieldlessDirectEnumTy at hFl
+        cases tr with
+        | zeroSized =>
+          simp only [liveUninitSlot, uninitSlotVal, isZstEnumTy, enumAdmitted,
+            Bool.true_and, ite_true]
+          cases (enumAdmittedCore ⟨id, dw, ds, .zeroSized, d, vf⟩ &&
+            areSupportedVariantFieldLists vf) <;> rfl
+        | scalar _ _ =>
+          simp only [liveUninitSlot, uninitSlotVal, isZstEnumTy, Bool.and_false,
+            ite_true]
+          rw [Anneal.MirWp.ite_bool_false (rfl : false = false)]
+        | single _ | niche _ _ _ _ _ _ _ _ _ =>
+          have hTag := (mirIsFieldlessDirectEnumTy_elim hFl).2.2
+          cases hTag
+  | bool | int _ _ | unit | never | adtStruct _ | tuple _ | array _ _
+  | ref _ _ | rawPtr _ _ | unsupported => rfl
 
 theorem mirStorageAnnotationsInBounds_eq (body : Body) :
     mirStorageAnnotationsInBounds body = storageAnnotationsInBounds body := by
@@ -2524,14 +2736,44 @@ theorem mirFindDiscrVariantAux_eq (discrBits : BitVec 128) :
       else findDiscrVariantAux (idx + 1) discrBits ds)
     rw [mirFindDiscrVariantAux_eq discrBits ds (idx + 1)]
 
+theorem findDiscrVariantAux_lt (discrBits : BitVec 128) :
+    ∀ (ds : List Nat) (idx v : Nat),
+      findDiscrVariantAux idx discrBits ds = some v →
+      v < idx + ds.length
+  | [], _, _, h => by cases h
+  | d :: ds, idx, v, h => by
+    dsimp only [findDiscrVariantAux] at h
+    cases hEq : (BitVec.ofNat 128 d == discrBits) with
+    | true =>
+      rw [hEq, Anneal.MirWp.ite_bool_true rfl] at h
+      injection h with hv
+      subst hv
+      dsimp only [List.length]
+      exact Nat.lt_add_of_pos_right (Nat.succ_pos ds.length)
+    | false =>
+      rw [hEq, Anneal.MirWp.ite_bool_false rfl] at h
+      have hRec := findDiscrVariantAux_lt discrBits ds (idx + 1) v h
+      dsimp only [List.length]
+      rw [Nat.add_succ, ← Nat.succ_add]
+      exact hRec
+
 theorem mirFindDiscrVariant?_eq (discrBits : BitVec 128) (ds : List Nat) :
     mirFindDiscrVariant? discrBits ds = findDiscrVariant? discrBits ds :=
   mirFindDiscrVariantAux_eq discrBits ds 0
 
 /-- Exact kernel agreement between computable `mirEvalConstLit` and
-`Trusted.MirSemantics.evalConstLit`. -/
+`Trusted.MirSemantics.evalConstLit` on the straight-line lifter's supported
+type fragment. -/
 theorem mirEvalConstLit_eq (ty : MirTy) (lit : ConstLit) :
-    mirEvalConstLit ty lit = evalConstLit ty lit := by
+    mirEvalConstLit ty lit =
+      match ty with
+      | .adtStruct _ | .tuple _ | .array _ _ => .error .unsupported
+      | .enum ety =>
+        if mirIsFieldlessDirectEnumTy ety then
+          evalConstLit (.enum ety) lit
+        else
+          .error .unsupported
+      | _ => evalConstLit ty lit := by
   cases ty with
   | int w s =>
     cases lit with
@@ -2548,20 +2790,90 @@ theorem mirEvalConstLit_eq (ty : MirTy) (lit : ConstLit) :
   | unit =>
     cases lit <;> rfl
   | enum ety =>
-    cases lit with
-    | zeroSized =>
-      dsimp only [mirEvalConstLit, evalConstLit]
-      rw [mirIsZstEnumTy_eq ety]
-    | scalar bits =>
-      dsimp only [mirEvalConstLit, evalConstLit]
-      cases ety.tagRepr with
-      | zeroSized => rfl
-      | scalar tagW tagS =>
-        dsimp only
-        rw [mirEnumAdmitted_eq ety, mirTruncateBits_eq_truncateBits,
-            mirTagBitsToDiscrBits_eq, mirFindDiscrVariant?_eq]
-        rfl
-  | never | tuple _ | ref _ _ | rawPtr _ _ | unsupported =>
+    cases ety with
+    | mk id dw ds tr d vf =>
+      cases lit with
+      | zeroSized =>
+        dsimp only [mirEvalConstLit, evalConstLit]
+        rw [mirIsZstEnumTy_eq ⟨id, dw, ds, tr, d, vf⟩]
+        cases hFl : mirIsFieldlessDirectEnumTy ⟨id, dw, ds, tr, d, vf⟩ with
+        | false => rfl
+        | true =>
+          let ⟨_, _, hTag⟩ := mirIsFieldlessDirectEnumTy_elim hFl
+          cases tr with
+          | zeroSized =>
+            cases isZstEnumTy ⟨id, dw, ds, .zeroSized, d, vf⟩ <;> rfl
+          | scalar tagW tagS =>
+            cases isZstEnumTy ⟨id, dw, ds, .scalar tagW tagS, d, vf⟩ <;> rfl
+          | single _ | niche _ _ _ _ _ _ _ _ _ => cases hTag
+      | scalar bits =>
+        dsimp only [mirEvalConstLit, evalConstLit]
+        cases hFl : mirIsFieldlessDirectEnumTy ⟨id, dw, ds, tr, d, vf⟩ with
+        | false =>
+          rw [Anneal.MirWp.ite_bool_false (rfl : false = false)]
+          cases tr with
+          | scalar tagW tagS =>
+            dsimp only
+            rw [mirEnumAdmitted_eq ⟨id, dw, ds, .scalar tagW tagS, d, vf⟩, hFl]
+            rfl
+          | zeroSized | single _ | niche _ _ _ _ _ _ _ _ _ => rfl
+        | true =>
+          rw [Anneal.MirWp.ite_bool_true (rfl : true = true)]
+          let ⟨hAllEmp, hLenEq, hTag⟩ := mirIsFieldlessDirectEnumTy_elim hFl
+          cases tr with
+          | zeroSized =>
+            dsimp only
+            cases enumAdmitted ⟨id, dw, ds, .zeroSized, d, vf⟩ <;> rfl
+          | scalar tagW tagS =>
+            let ety' : EnumTy := ⟨id, dw, ds, .scalar tagW tagS, d, vf⟩
+            dsimp only
+            rw [mirEnumAdmitted_eq ety', hFl, Bool.true_and,
+              mirTruncateBits_eq_truncateBits, mirTagBitsToDiscrBits_eq,
+              mirFindDiscrVariant?_eq]
+            cases hAdm : enumAdmitted ety' with
+            | false => rfl
+            | true =>
+              cases hOv : (truncateBits tagW bits != bits) with
+              | true => rfl
+              | false =>
+                cases hFv :
+                    findDiscrVariant?
+                      (tagBitsToDiscrBits tagW tagS dw bits) d with
+                | none => rfl
+                | some v =>
+                  have hvLt : v < d.length := by
+                    have h := findDiscrVariantAux_lt
+                      (tagBitsToDiscrBits tagW tagS dw bits) d 0 v hFv
+                    rw [Nat.zero_add] at h
+                    exact h
+                  have hLenEq' : vf.length = d.length :=
+                    Nat.eq_of_beq_eq_true hLenEq
+                  have hFields : fieldsForVariant? ety' v = some [] := by
+                    unfold fieldsForVariant?
+                    have hBlt : Nat.blt v d.length = true :=
+                      Nat.ble_eq_true_of_le hvLt
+                    change (if !Nat.blt v d.length ||
+                        !Nat.beq vf.length d.length then none
+                      else vf[v]?) = some []
+                    rw [hBlt, hLenEq]
+                    exact mirAllEmptyFieldLists_getElem? vf v hAllEmp
+                      (hLenEq'.symm ▸ hvLt)
+                  have hUninh : isVariantUninhabited ety' v = false := by
+                    unfold isVariantUninhabited
+                    rw [hFields]
+                    rfl
+                  change Except.ok (Val.enumVal ety' v []) =
+                    (if isVariantUninhabited ety' v = true then
+                      Except.error FaultKind.undefined
+                    else
+                      match fieldsForVariant? ety' v with
+                      | some [] => Except.ok (Val.enumVal ety' v [])
+                      | _ => Except.error FaultKind.unsupported)
+                  rw [hUninh, Anneal.MirWp.ite_bool_false rfl, hFields]
+          | single _ | niche _ _ _ _ _ _ _ _ _ =>
+            cases hTag
+  | never | adtStruct _ | tuple _ | array _ _ | ref _ _ | rawPtr _ _
+  | unsupported =>
     cases lit <;> rfl
 
 theorem mirDecodeScalar_eq (sv : ScalarVal) :
@@ -2607,7 +2919,8 @@ theorem mirEvalUnOpVal_eq (op : UnOp) (v : Val) :
       cases truncateScalar sv.width sv.signed (intNot (decodeScalar sv)) with
       | error _ => rfl
       | ok pair => cases pair; rfl
-    | ptr _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
+    | ptr _ | unit | structVal _ _ | enumVal _ _ _ | tuple _ | array _ _
+    | bytes _ => rfl
   | neg =>
     cases v with
     | scalar sv =>
@@ -2620,7 +2933,8 @@ theorem mirEvalUnOpVal_eq (op : UnOp) (v : Val) :
         cases truncateScalar sv.width true (Neg.neg (decodeScalar sv)) with
         | error _ => rfl
         | ok pair => cases pair; rfl
-    | bool _ | ptr _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
+    | bool _ | ptr _ | unit | structVal _ _ | enumVal _ _ _ | tuple _
+    | array _ _ | bytes _ => rfl
   | ptrMetadata =>
     cases v <;> rfl
 
@@ -2765,13 +3079,16 @@ theorem mirEvalBinOpVal_eq (op : BinOp) (lhs rhs : Val)
           | addWithOverflow | subWithOverflow | mulWithOverflow =>
             cases hOp
           | shl | shlUnchecked | shr | shrUnchecked | offset => rfl
-    | ptr _ | bool _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
+    | ptr _ | bool _ | unit | structVal _ _ | enumVal _ _ _ | tuple _
+    | array _ _ | bytes _ => rfl
   | bool l =>
     cases rhs with
     | bool r =>
       cases op <;> rfl
-    | scalar _ | ptr _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
-  | ptr _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
+    | scalar _ | ptr _ | unit | structVal _ _ | enumVal _ _ _ | tuple _
+    | array _ _ | bytes _ => rfl
+  | ptr _ | unit | structVal _ _ | enumVal _ _ _ | tuple _ | array _ _
+  | bytes _ => rfl
 
 /-! ## Algorithmic Straight-Line MIR Lifter (`liftStraightLineMir`)
 
@@ -3105,7 +3422,7 @@ def liftMirStmt (argCnt numLocals : Nat) (bodyLocals : List MirTy)
             writeDstLocalActions argCnt numLocals dst.localId dstTy caps1
           some (rvalActs ++ written.1, written.2)
         | none => none
-  | .unsupported => none
+  | .setDiscriminant _ _ | .unsupported => none
 
 /-- Lift a sequence of MIR statements into `PrimAction Val` steps via
 `List.foldr`. -/
@@ -4039,6 +4356,7 @@ def mirReprU8EnumTy : EnumTy where
   discrSigned := false
   tagRepr := .scalar .i8 false
   discriminants := [10, 20]
+  variantFields := [[], []]
 
 /-- Computable `u8` type descriptor. -/
 def mirU8Ty : MirTy := .int .i8 false

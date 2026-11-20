@@ -24,7 +24,8 @@ theorem behavior_of_sourceReturns {flag : Bool} {width : Fin 4} {value : Word}
       { args := endianArgs flag width.val value }
       (.returned ⟨ret, ⟨[]⟩⟩) :=
   behavior_of_returns rfl wellFormed
-    (validEntryArgs_bodyEndianArgs sourceBody _ rfl rfl rfl flag width value)
+    (validEntryArgs_bodyEndianArgs sourceBody _ rfl rfl rfl rfl rfl flag width
+      value)
     h_ret
 
 theorem completed :
@@ -43,7 +44,8 @@ theorem completed :
 theorem baseline (safetyPre : List Val → Prop) :
     BodyVerified Captured.program 0 sourceBody safetyPre := by
   refine bodyVerified_of_safe rfl wellFormed (fun args valid _ => ?_)
-  apply validArgs3_elim sourceBody _ rfl rfl (Safe sourceBody) _ args valid
+  apply validArgs3_elim sourceBody _ rfl rfl rfl rfl (Safe sourceBody) _ args
+    valid
   intro flag width value
   exact (completed flag width value).1
 

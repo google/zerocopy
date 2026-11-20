@@ -24,7 +24,7 @@ def isizeVal (n : Nat) : Val :=
 
 def bodyDataWidthVal (body : Body) (width : Nat) : Val :=
   match body.locals with
-  | _ :: _ :: .enum ety :: _ => .enumVal ety width
+  | _ :: _ :: .enum ety :: _ => .enumVal ety width []
   | _ => .unit
 
 def bodyEndianArgs (body : Body) (toBe : Bool) (width : Nat)
