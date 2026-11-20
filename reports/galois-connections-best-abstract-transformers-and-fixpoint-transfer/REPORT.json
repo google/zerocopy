@@ -1,0 +1,98 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "verification/abstract-interpretation",
+    "verification/galois-connections",
+    "verification/fixpoint-iteration",
+    "verification/widening",
+    "pl/static-analysis"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Comparing the Galois connection and widening/narrowing approaches to abstract interpretation",
+      "identity": {
+        "doi": "10.1007/3-540-55844-6_142"
+      }
+    },
+    {
+      "name": "Abstract interpretation frameworks",
+      "identity": {
+        "doi": "10.1093/logcom/2.4.511"
+      }
+    },
+    {
+      "name": "Abstract interpretation: a unified lattice model for static analysis of programs by construction or approximation of fixpoints",
+      "identity": {
+        "doi": "10.1145/512950.512973"
+      }
+    },
+    {
+      "name": "Systematic design of program analysis frameworks",
+      "identity": {
+        "doi": "10.1145/567752.567778"
+      }
+    },
+    {
+      "name": "A lattice-theoretical fixpoint theorem and its applications",
+      "identity": {
+        "doi": "10.2140/pjm.1955.5.285"
+      }
+    },
+    {
+      "name": "Un théorème sur les fonctions d'ensembles",
+      "identity": {
+        "author": "B. Knaster",
+        "journal": "Annales de la Société Polonaise de Mathématique",
+        "volume": "6",
+        "pages": "133-134",
+        "year": "1928"
+      }
+    },
+    {
+      "name": "Galois connexions",
+      "identity": {
+        "doi": "10.1090/S0002-9947-1944-0010555-7"
+      }
+    },
+    {
+      "name": "Concrete Semantics with Isabelle/HOL, Chapter 13: Abstract Interpretation",
+      "identity": {
+        "doi": "10.1007/978-3-319-10542-0_13"
+      }
+    },
+    {
+      "name": "Principles of Program Analysis, Chapter 4: Abstract Interpretation",
+      "identity": {
+        "doi": "10.1007/978-3-662-03811-6_4"
+      }
+    },
+    {
+      "name": "Making abstract interpretations complete",
+      "identity": {
+        "doi": "10.1145/333979.333989"
+      }
+    },
+    {
+      "name": "PostHat and All That: Automating Abstract Interpretation",
+      "identity": {
+        "doi": "10.1016/j.entcs.2015.02.003"
+      }
+    },
+    {
+      "name": "Fixed Points Theorems for Non-Transitive Relations",
+      "identity": {
+        "doi": "10.46298/LMCS-18(1:30)2022"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

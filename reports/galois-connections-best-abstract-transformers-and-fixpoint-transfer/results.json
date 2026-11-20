@@ -1,0 +1,764 @@
+[
+  {
+    "id": "R1-gc-iff",
+    "lean": "Toy.AbsInt.galoisConnection_iff_monotone_extensive_reductive_of_refl_of_trans",
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "If the abstract order is reflexive and transitive (antisymmetry is not assumed), then alpha : Pred sigma -> A and gamma : A -> Pred sigma form a Galois connection (alpha x <= a iff x is included in gamma a) exactly when alpha and gamma are monotone, x is included in gamma (alpha x) for every x, and alpha (gamma a) <= a for every a.",
+    "hypotheses": [
+      {
+        "name": "hrefl : IsRefl A",
+        "purpose": "Used (only in the Galois-connection-to-laws direction) to instantiate the connection at a = alpha x, which yields extensivity and monotonicity of alpha.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.gcIff_tight_refl"
+      },
+      {
+        "name": "htrans : IsTrans A",
+        "purpose": "Used for monotonicity of gamma (forward direction) and to chain alpha x <= alpha (gamma a) <= a (backward direction).",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.gcIff_tight_trans"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "The sign domain (Sign, with its order, signAlpha, signGamma over Pred Int) is reflexive and transitive and is a Galois connection, so both sides of the equivalence are exercised at a true instance.",
+    "nonvacuity_witness_lean": "Toy.AbsInt.gc_nonvacuous",
+    "non_claims": [
+      "Does not say that a Galois connection exists for a given gamma; it characterizes when a given pair is one.",
+      "Does not assume or conclude antisymmetry; uniqueness of alpha given gamma (which needs antisymmetry) is not stated.",
+      "Galois-connection insertion is not established: alpha (gamma a) = a is not claimed, and gamma need not be injective (distinct abstract elements may have the same concretization).",
+      "Does not claim that alpha is computable or definable without classical choice; the abstraction functions on Pred sigma used here (for example signAlpha) are noncomputable.",
+      "Preservation of joins by alpha and of meets by gamma (standard consequences of a Galois connection wherever those bounds exist) is neither stated nor needed.",
+      "Without antisymmetry, alpha (gamma (alpha x)) = alpha x is not established; only the two inequalities alpha (gamma (alpha x)) <= alpha x and alpha x <= alpha (gamma (alpha x)) follow.",
+      "The concrete side is fixed to predicates ordered by inclusion; no claim is made for an arbitrary concrete preorder, although nothing in the statement uses more than reflexivity and transitivity of inclusion.",
+      "Does not require or provide lattice structure (joins, meets, completeness) on A.",
+      "Universe-restricted: sigma and A live in Type (as everywhere in this package)."
+    ],
+    "prior_art": [
+      "P. Cousot and R. Cousot, \"Comparing the Galois connection and widening/narrowing approaches to abstract interpretation\", PLILP 1992, LNCS 631, pp. 269-295, doi:10.1007/3-540-55844-6_142 (author-hosted reprint). Definition 4: Galois connection between posets, alpha(x) <= y iff x <= gamma(y). Appendix Prop. 24: for posets, this is equivalent to extensive gamma . alpha, reductive alpha . gamma, monotone alpha and monotone gamma. This package weakens posets to preorders (R1-gc-iff) and, for the backward direction, to transitive relations.",
+      "O. Ore, \"Galois connexions\", Transactions of the American Mathematical Society 55(3):493-513, 1944, doi:10.1090/S0002-9947-1944-0010555-7. Introduces Galois connections in the antitone form; the definition used here is the isotone form (an adjunction alpha -| gamma).",
+      "Mathlib (leanprover-community/mathlib4, commit 5f78f9ce46fc85fa3cb45561d47b489c4c98cd04), Mathlib/Order/GaloisConnection/Defs.lean: GaloisConnection l u := forall a b, l a <= b <-> a <= u b over [Preorder] on both sides; GaloisConnection.monotone_intro (monotone u, monotone l, a <= u (l a) and l (u a) <= a give a Galois connection), le_u_l, l_u_le, monotone_u, monotone_l. Preorders are assumed on both sides; the necessity of each order law is not addressed.",
+      "G. Struth, \"Properties of Orderings and Lattices\", Archive of Formal Proofs, December 2018, https://isa-afp.org/entries/Order_Lattice_Props.html. Isabelle/HOL theory Galois_Connections defines adjunctions f -| g by (f x <= y) = (x <= g y) and develops their properties; theory Fixpoint_Fusion treats fixpoints under adjunctions.",
+      "D. Darais and D. Van Horn, \"Constructive Galois connections: taming the Galois connection framework for mechanized metatheory\", ICFP 2016, pp. 311-324, doi:10.1145/2951913.2951934; journal version \"Constructive Galois connections\", Journal of Functional Programming 29, e11, 2019, doi:10.1017/S0956796819000066. Agda mechanization of classical and constructive Galois connections and of calculational abstract interpretation; explains why classical abstraction functions on sets (such as signAlpha here) are not computable.",
+      "P. Cousot and R. Cousot, \"Abstract interpretation frameworks\", Journal of Logic and Computation 2(4):511-547, 1992, doi:10.1093/logcom/2.4.511 (author-hosted text). Section 5 (p. 520) motivates modelling precision by a preorder that need not be antisymmetric (when the same property can be expressed by several elements), and Sections 4 and 6-8 relax the Galois connection framework to correspondences given by a soundness relation (Section 4, pp. 515-520), by an abstraction relation or function (Section 6, pp. 520-538), by a concretization relation or function only (Section 7, pp. 538-541), and by both (Section 8, pp. 542-544); page numbers as printed in the author-hosted text."
+    ],
+    "design_question": "Which order laws must an abstract-domain interface require for the Galois-connection condition to be equivalent to the four elementary laws (monotone alpha and gamma, extensive gamma . alpha, reductive alpha . gamma)? A preorder suffices; antisymmetry is never needed. Reading the connection as 'alpha x is a most precise sound description of x' additionally relies on reflexivity (see the GaloisConnection definition).",
+    "module": "Toy.AbsInt.Galois"
+  },
+  {
+    "id": "R1-gc-forward",
+    "lean": "Toy.AbsInt.monotone_extensive_reductive_of_galoisConnection_of_refl_of_trans",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "If the abstract order is reflexive and transitive and alpha, gamma form a Galois connection, then alpha and gamma are monotone, gamma . alpha is extensive, and alpha . gamma is reductive.",
+    "hypotheses": [
+      {
+        "name": "hrefl : IsRefl A",
+        "purpose": "Gives alpha x <= alpha x, hence extensivity x <= gamma (alpha x) and monotonicity of alpha.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.gcForward_tight_refl"
+      },
+      {
+        "name": "htrans : IsTrans A",
+        "purpose": "Gives monotonicity of gamma from alpha (gamma a) <= a <= b.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.gcForward_tight_trans"
+      },
+      {
+        "name": "hgc : GaloisConnection α γ",
+        "purpose": "The premise being unpacked.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.gcForward_tight_gc"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Sign domain: reflexive, transitive, and signAlpha/signGamma form a Galois connection.",
+    "nonvacuity_witness_lean": "Toy.AbsInt.gc_nonvacuous",
+    "non_claims": [
+      "Reference point: this is the forward direction of R1-gc-iff under the same hypotheses; it is kept as a separately citable statement of the laws a client may rely on.",
+      "Reductivity alone needs none of the order laws, and extensivity and monotonicity of alpha need only reflexivity; the statement bundles them and does not separate these finer dependencies (they are recorded in the hypothesis ledger, not as separate Lean theorems).",
+      "Galois-connection insertion is not established: alpha (gamma a) = a is not claimed, and gamma need not be injective (distinct abstract elements may have the same concretization).",
+      "Preservation of joins by alpha and of meets by gamma is not stated."
+    ],
+    "prior_art": [
+      "P. Cousot and R. Cousot, \"Comparing the Galois connection and widening/narrowing approaches to abstract interpretation\", PLILP 1992, LNCS 631, pp. 269-295, doi:10.1007/3-540-55844-6_142 (author-hosted reprint). Appendix Prop. 24 (posets): a Galois connection has monotone alpha and gamma, extensive gamma . alpha and reductive alpha . gamma.",
+      "Mathlib (leanprover-community/mathlib4, commit 5f78f9ce46fc85fa3cb45561d47b489c4c98cd04), Mathlib/Order/GaloisConnection/Defs.lean: GaloisConnection l u := forall a b, l a <= b <-> a <= u b over [Preorder] on both sides; GaloisConnection.monotone_intro (monotone u, monotone l, a <= u (l a) and l (u a) <= a give a Galois connection), le_u_l, l_u_le, monotone_u, monotone_l. Preorders are assumed on both sides; the necessity of each order law is not addressed.",
+      "G. Struth, \"Properties of Orderings and Lattices\", Archive of Formal Proofs, December 2018, https://isa-afp.org/entries/Order_Lattice_Props.html. Isabelle/HOL theory Galois_Connections defines adjunctions f -| g by (f x <= y) = (x <= g y) and develops their properties; theory Fixpoint_Fusion treats fixpoints under adjunctions."
+    ],
+    "design_question": "Reference point. Which derived laws can client code of an abstract domain rely on once a Galois connection is established, and which order law each one costs.",
+    "module": "Toy.AbsInt.Galois"
+  },
+  {
+    "id": "R1-gc-backward",
+    "lean": "Toy.AbsInt.galoisConnection_of_monotone_extensive_reductive_of_trans",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "If the abstract order is transitive (reflexivity not needed), alpha and gamma are monotone, x is included in gamma (alpha x) for all x, and alpha (gamma a) <= a for all a, then alpha and gamma form a Galois connection.",
+    "hypotheses": [
+      {
+        "name": "htrans : IsTrans A",
+        "purpose": "Chains alpha x <= alpha (gamma a) <= a.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.gcBackward_tight_trans"
+      },
+      {
+        "name": "hα : Monotone α",
+        "purpose": "Gives alpha x <= alpha (gamma a) from x included in gamma a.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.gcBackward_tight_monoAlpha"
+      },
+      {
+        "name": "hγ : Monotone γ",
+        "purpose": "Gives gamma (alpha x) included in gamma a from alpha x <= a.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.gcBackward_tight_monoGamma"
+      },
+      {
+        "name": "hext : Extensive α γ",
+        "purpose": "Gives x included in gamma (alpha x).",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.gcBackward_tight_extensive"
+      },
+      {
+        "name": "hred : Reductive α γ",
+        "purpose": "Gives alpha (gamma a) <= a.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.gcBackward_tight_reductive"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Sign domain: transitive, and signAlpha, signGamma satisfy the four laws (derived directly from the proved Galois connection signGC).",
+    "nonvacuity_witness_lean": "Toy.AbsInt.gcBackward_nonvacuous",
+    "non_claims": [
+      "Does not say that the four laws are independent in every setting; tightness is shown only by the five specific two- or three-element counterexamples.",
+      "Does not need or establish reflexivity of the abstract order.",
+      "Although the Galois connection is obtained without reflexivity, reading it as 'alpha x soundly describes x' and the downstream results R2-best-sound and R3-comp-le still require IsRefl A (counterexamples nr2_not_extensive, bestSound_tight_refl, compLe_tight_refl)."
+    ],
+    "prior_art": [
+      "P. Cousot and R. Cousot, \"Comparing the Galois connection and widening/narrowing approaches to abstract interpretation\", PLILP 1992, LNCS 631, pp. 269-295, doi:10.1007/3-540-55844-6_142 (author-hosted reprint). Definition 4: Galois connection between posets, alpha(x) <= y iff x <= gamma(y). Appendix Prop. 24: for posets, this is equivalent to extensive gamma . alpha, reductive alpha . gamma, monotone alpha and monotone gamma. This package weakens posets to preorders (R1-gc-iff) and, for the backward direction, to transitive relations.",
+      "Mathlib (leanprover-community/mathlib4, commit 5f78f9ce46fc85fa3cb45561d47b489c4c98cd04), Mathlib/Order/GaloisConnection/Defs.lean: GaloisConnection l u := forall a b, l a <= b <-> a <= u b over [Preorder] on both sides; GaloisConnection.monotone_intro (monotone u, monotone l, a <= u (l a) and l (u a) <= a give a Galois connection), le_u_l, l_u_le, monotone_u, monotone_l. Preorders are assumed on both sides; the necessity of each order law is not addressed.",
+      "G. Struth, \"Properties of Orderings and Lattices\", Archive of Formal Proofs, December 2018, https://isa-afp.org/entries/Order_Lattice_Props.html. Isabelle/HOL theory Galois_Connections defines adjunctions f -| g by (f x <= y) = (x <= g y) and develops their properties; theory Fixpoint_Fusion treats fixpoints under adjunctions."
+    ],
+    "design_question": "What must an implementer of a new abstract domain prove to obtain a Galois connection, and with how little order structure.",
+    "module": "Toy.AbsInt.Galois"
+  },
+  {
+    "id": "R2-best-sound",
+    "lean": "Toy.AbsInt.bestTransformer_sound_of_galoisConnection_of_refl",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "If alpha, gamma form a Galois connection and the abstract order is reflexive, then for every concrete transformer f (monotone or not) the best abstract transformer alpha . f . gamma is gamma-sound: f (gamma a) is included in gamma (alpha (f (gamma a))) for every a. For non-monotone f this gamma-form constrains f only on the sets gamma a.",
+    "hypotheses": [
+      {
+        "name": "hrefl : IsRefl A",
+        "purpose": "Instantiates the Galois connection at alpha (f (gamma a)) <= alpha (f (gamma a)).",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.bestSound_tight_refl"
+      },
+      {
+        "name": "hgc : GaloisConnection α γ",
+        "purpose": "Turns that inequality into the inclusion.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.bestSound_tight_gc"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "Sign domain: reflexive and a Galois connection; f is arbitrary (e.g. the concrete transformer of x := x + 1).",
+    "nonvacuity_witness_lean": "Toy.AbsInt.bestSound_nonvacuous",
+    "non_claims": [
+      "Does not claim alpha . f . gamma is computable or effectively representable; it is a specification.",
+      "Does not imply soundness on subsets (for all x and a, x included in gamma a implies f x included in gamma (alpha (f (gamma a)))) or on individual states unless f is monotone: for non-monotone f, gamma-soundness constrains f only on the sets gamma a (counterexample sound_not_subset_of_not_monotone; for monotone f the lift holds, sound_le_of_le_gamma_of_monotone).",
+      "Soundness here is the gamma-form (f . gamma included in gamma . f#); the alpha-form (alpha . f <= f# . alpha) is not stated. For f# = alpha . f . gamma the alpha-form follows from a Galois connection over a reflexive order together with monotonicity of f; conversely, deriving gamma-soundness of an arbitrary f# from its alpha-form uses monotonicity of f# and transitivity of A. Neither derivation is formalized here.",
+      "Monotonicity of f is not required for this statement and is not implied by it.",
+      "Does not say that alpha . f . gamma is exact (gamma (f# a) = f (gamma a)); in general it over-approximates."
+    ],
+    "prior_art": [
+      "P. Cousot and R. Cousot, \"Abstract interpretation frameworks\", Journal of Logic and Computation 2(4):511-547, 1992, doi:10.1093/logcom/2.4.511 (author-hosted text). Eq. (4.15) gives the best abstract transformer F# = alpha . F . gamma, attributed there to the 1977 and 1979 POPL papers.",
+      "P. Cousot and R. Cousot, \"Systematic design of program analysis frameworks\", POPL 1979, pp. 269-282, doi:10.1145/567752.567778. Bibliographic record verified; its content is cited only as attributed by Cousot and Cousot (PLILP 1992; Journal of Logic and Computation 1992): the Galois-connection approach and the best abstract transformer alpha . F . gamma.",
+      "P. Cousot and R. Cousot, \"Comparing the Galois connection and widening/narrowing approaches to abstract interpretation\", PLILP 1992, LNCS 631, pp. 269-295, doi:10.1007/3-540-55844-6_142 (author-hosted reprint). Eqs. (4)-(5) and Appendix Prop. 25: functional lifting alpha(phi) = alpha . phi . gamma on monotone maps. Appendix Prop. 26 (posets, monotone F and F#): alpha . F . gamma <= F# iff F . gamma <= gamma . F# iff alpha . F <= F# . alpha. Prop. 26 assumes posets and monotone F and F#; R2-best-sound assumes only a Galois connection over a reflexive abstract order, with no monotonicity of f and no transitivity or antisymmetry (the pointwise characterization R2-best-least needs no order law at all).",
+      "T. Reps, M. Sagiv and G. Yorsh, \"Symbolic implementation of the best transformer\", VMCAI 2004, LNCS 2937, pp. 252-266, doi:10.1007/978-3-540-24622-0_21. Computes best abstract transformers alpha . f . gamma symbolically, for single statements or whole blocks.",
+      "D. Darais and D. Van Horn, \"Constructive Galois connections: taming the Galois connection framework for mechanized metatheory\", ICFP 2016, pp. 311-324, doi:10.1145/2951913.2951934; journal version \"Constructive Galois connections\", Journal of Functional Programming 29, e11, 2019, doi:10.1017/S0956796819000066. Agda mechanization of classical and constructive Galois connections and of calculational abstract interpretation; explains why classical abstraction functions on sets (such as signAlpha here) are not computable.",
+      "P. Cousot, Principles of Abstract Interpretation, MIT Press, 2021, ISBN 978-0-262-04490-5. Monograph; cited as a general reference without section-level attribution."
+    ],
+    "design_question": "Can an analyzer specify each abstract transformer as alpha . f . gamma and rely on its soundness without proving anything about f? For the gamma-form (f (gamma a) included in gamma (f# a)) yes, given a Galois connection over a reflexive order. If the analyzer also relies on soundness for subsets of gamma a (for example individual states), f must be monotone.",
+    "module": "Toy.AbsInt.Transformer"
+  },
+  {
+    "id": "R2-best-least",
+    "lean": "Toy.AbsInt.sound_iff_bestTransformer_le_of_galoisConnection",
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "If alpha, gamma form a Galois connection, then an abstract transformer f# is gamma-sound for f (f (gamma a) included in gamma (f# a) for all a) exactly when alpha (f (gamma a)) <= f# a for all a; hence alpha . f . gamma is a pointwise lower bound of all gamma-sound transformers. No order law and no monotonicity of f or f# is assumed.",
+    "hypotheses": [
+      {
+        "name": "hgc : GaloisConnection α γ",
+        "purpose": "The equivalence is the Galois connection applied pointwise at x = f (gamma a).",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.soundIff_tight_gc"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "Sign domain Galois connection (signAlpha, signGamma).",
+    "nonvacuity_witness_lean": "Toy.AbsInt.bestSound_nonvacuous",
+    "non_claims": [
+      "Without reflexivity of A this shows only that alpha . f . gamma is a pointwise lower bound of the gamma-sound transformers; it need not itself be gamma-sound, even when sound transformers exist and A is transitive (bestTransformer_lowerBound_not_sound_without_refl). It is guaranteed to be gamma-sound itself, hence a least gamma-sound transformer, when A is also reflexive (R2-best-sound, IsRefl A). Such a least element is unique up to the equivalence a <= b and b <= a when A is a preorder (IsRefl A and IsTrans A), and guaranteed to be unique up to equality when A is also antisymmetric.",
+      "Does not imply that the best transformer is exact or complete (gamma (f# a) = f (gamma a), or alpha (f x) = f# (alpha x)); in general it over-approximates.",
+      "Does not imply soundness on subsets of gamma a when f is not monotone (see R2-best-sound).",
+      "Does not say the best transformer is monotone (see R2-best-mono) or that it is the abstraction of f in any functional Galois connection.",
+      "Does not compare transformers that are sound only on part of the abstract domain."
+    ],
+    "prior_art": [
+      "P. Cousot and R. Cousot, \"Comparing the Galois connection and widening/narrowing approaches to abstract interpretation\", PLILP 1992, LNCS 631, pp. 269-295, doi:10.1007/3-540-55844-6_142 (author-hosted reprint). Eqs. (4)-(5) and Appendix Prop. 25: functional lifting alpha(phi) = alpha . phi . gamma on monotone maps. Appendix Prop. 26 (posets, monotone F and F#): alpha . F . gamma <= F# iff F . gamma <= gamma . F# iff alpha . F <= F# . alpha. Prop. 26 assumes monotone F and F#; R2-best-least assumes neither and no order law.",
+      "P. Cousot and R. Cousot, \"Abstract interpretation frameworks\", Journal of Logic and Computation 2(4):511-547, 1992, doi:10.1093/logcom/2.4.511 (author-hosted text). Eq. (4.15) gives the best abstract transformer F# = alpha . F . gamma, attributed there to the 1977 and 1979 POPL papers.",
+      "P. Cousot and R. Cousot, \"Systematic design of program analysis frameworks\", POPL 1979, pp. 269-282, doi:10.1145/567752.567778. Bibliographic record verified; its content is cited only as attributed by Cousot and Cousot (PLILP 1992; Journal of Logic and Computation 1992): the Galois-connection approach and the best abstract transformer alpha . F . gamma.",
+      "D. Darais and D. Van Horn, \"Constructive Galois connections: taming the Galois connection framework for mechanized metatheory\", ICFP 2016, pp. 311-324, doi:10.1145/2951913.2951934; journal version \"Constructive Galois connections\", Journal of Functional Programming 29, e11, 2019, doi:10.1017/S0956796819000066. Agda mechanization of classical and constructive Galois connections and of calculational abstract interpretation; explains why classical abstraction functions on sets (such as signAlpha here) are not computable."
+    ],
+    "design_question": "How should a verified analyzer state the correctness of a hand-written abstract transformer? Proving f# a >= alpha (f (gamma a)) pointwise is equivalent to gamma-soundness, given only a Galois connection.",
+    "module": "Toy.AbsInt.Transformer"
+  },
+  {
+    "id": "R2-best-mono",
+    "lean": "Toy.AbsInt.bestTransformer_monotone_of_galoisConnection_of_refl_of_trans_of_monotone",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "If alpha, gamma form a Galois connection over a reflexive, transitive abstract order and the concrete transformer f is monotone, then the best abstract transformer alpha . f . gamma is monotone.",
+    "hypotheses": [
+      {
+        "name": "hrefl : IsRefl A",
+        "purpose": "Needed for monotonicity of alpha and extensivity.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.bestMono_tight_refl"
+      },
+      {
+        "name": "htrans : IsTrans A",
+        "purpose": "Needed for monotonicity of gamma.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.bestMono_tight_trans"
+      },
+      {
+        "name": "hgc : GaloisConnection α γ",
+        "purpose": "Supplies monotone alpha, gamma.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.bestMono_tight_gc"
+      },
+      {
+        "name": "hf : Monotone f",
+        "purpose": "Among R2-best-sound, R2-best-least and R2-best-mono, the only place where monotonicity of f is used. In the counterexample, f is compl on Pred Unit (implicit argument sigma := Unit, which the pretty-printer does not show in the conjunct stating that compl is not monotone).",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.bestMono_tight_monoF"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Sign domain with f = post incr (the concrete transformer of x := x + 1).",
+    "nonvacuity_witness_lean": "Toy.AbsInt.bestMono_nonvacuous",
+    "non_claims": [
+      "Does not claim that every sound transformer of a monotone f is monotone.",
+      "Monotone does not mean continuous or join-preserving; neither is claimed."
+    ],
+    "prior_art": [
+      "P. Cousot and R. Cousot, \"Comparing the Galois connection and widening/narrowing approaches to abstract interpretation\", PLILP 1992, LNCS 631, pp. 269-295, doi:10.1007/3-540-55844-6_142 (author-hosted reprint). Appendix Prop. 25 and p. 283, where F# = alpha . F . gamma is noted to be monotone for monotone F (posets).",
+      "P. Cousot and R. Cousot, \"Abstract interpretation frameworks\", Journal of Logic and Computation 2(4):511-547, 1992, doi:10.1093/logcom/2.4.511 (author-hosted text). Eq. (4.15) gives the best abstract transformer F# = alpha . F . gamma, attributed there to the 1977 and 1979 POPL papers."
+    ],
+    "design_question": "Does using best transformers automatically discharge the monotonicity premise of Kleene iteration (R4-kleene-acc, R4-kleene-height) and of iteration with widening (R5-widen)? Yes when the concrete transformer is monotone and the domain is a preorder with a Galois connection; the counterexamples show which premise breaks it otherwise.",
+    "module": "Toy.AbsInt.Transformer"
+  },
+  {
+    "id": "R3-comp-le",
+    "lean": "Toy.AbsInt.bestTransformer_comp_le_of_galoisConnection_of_refl_of_monotone",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "If alpha, gamma form a Galois connection over a reflexive abstract order and f is monotone, then for every g and every abstract a, the best transformer of the composition is below the composition of best transformers: (f . g)# a <= f# (g# a). Transitivity and monotonicity of g are not needed.",
+    "hypotheses": [
+      {
+        "name": "hrefl : IsRefl A",
+        "purpose": "Extensivity x included in gamma (alpha x), used twice.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.compLe_tight_refl"
+      },
+      {
+        "name": "hgc : GaloisConnection α γ",
+        "purpose": "Extensivity, and the final conversion of an inclusion into <=.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.compLe_tight_gc"
+      },
+      {
+        "name": "hf : Monotone f",
+        "purpose": "Pushes g (gamma a) included in gamma (alpha (g (gamma a))) through f.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.compLe_tight_monoF"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Sign domain with f = post decr.",
+    "nonvacuity_witness_lean": "Toy.AbsInt.compLe_nonvacuous",
+    "non_claims": [
+      "Does not say composition always loses precision; the inequality can be an equality (positive control bestTransformer_comp_exact_sign_incr).",
+      "Does not bound the amount of precision lost.",
+      "Does not characterize when equality (f . g)# a = f# (g# a) holds; sufficient conditions are listed as escape hatches of R3-comp-strict.",
+      "Applies only to best transformers alpha . f . gamma; it says nothing about how (f . g)# compares with a composite f# . g# of other sound transformers.",
+      "Without monotone f the inequality can fail (compLe_tight_monoF): composing best transformers is then not even an over-approximation of the best transformer of the composition.",
+      "The composition f# . g# of transformers that are sound for f and g is sound for f . g when f is monotone; that fact is not stated here."
+    ],
+    "prior_art": [
+      "R. Giacobazzi, F. Ranzato and F. Scozzari, \"Making abstract interpretations complete\", Journal of the ACM 47(2):361-416, 2000, doi:10.1145/333979.333989. Theory of completeness (no loss of precision in abstract computation) and of refining or simplifying abstract domains to obtain it; the escape hatches of R3-comp-strict are completeness conditions in this sense.",
+      "A. Thakur, A. Lal, J. Lim and T. Reps, \"PostHat and all that: automating abstract interpretation\", Electronic Notes in Theoretical Computer Science 311:15-32, 2015, doi:10.1016/j.entcs.2015.02.003. Example 1.2 (author preprint): for two machine instructions, applying the best transformer of each in sequence yields top, whereas the best transformer of the sequential composition yields eax' = 42, because the intermediate state is not expressible in the abstract domain.",
+      "T. Reps, M. Sagiv and G. Yorsh, \"Symbolic implementation of the best transformer\", VMCAI 2004, LNCS 2937, pp. 252-266, doi:10.1007/978-3-540-24622-0_21. Computes best abstract transformers alpha . f . gamma symbolically, for single statements or whole blocks.",
+      "X. Rival and K. Yi, Introduction to Static Analysis: An Abstract Interpretation Perspective, MIT Press, 2020, ISBN 978-0-262-04341-0. Textbook; cited as a general reference without section-level attribution."
+    ],
+    "design_question": "Should an analyzer abstract whole blocks (one best transformer of the composed concrete semantics) or compose per-statement best transformers? Composition is never more precise and is sometimes strictly less precise.",
+    "module": "Toy.AbsInt.Transformer"
+  },
+  {
+    "id": "R3-comp-strict",
+    "lean": "Toy.AbsInt.bestTransformer_comp_strict_sign",
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "In the sign domain over Int, with g the concrete transformer of x := x + 1 and f that of x := x - 1, all hypotheses of R3-comp-le hold, (f . g)# pos = pos, g# pos = pos and f# pos = top, so (f . g)# pos < f# (g# pos) strictly (pos <= top and not top <= pos).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "The statement is itself a concrete instance.",
+    "nonvacuity_witness_lean": "Toy.AbsInt.bestTransformer_comp_strict_sign",
+    "positive_control_lean": "Toy.AbsInt.bestTransformer_comp_exact_sign_incr",
+    "non_claims": [
+      "Shows strictness for one domain and one pair of statements; it does not say every non-trivial domain exhibits strict loss.",
+      "Does not say relational domains avoid this loss in general.",
+      "Escape hatch (exactness of the inner step): equality (f . g)# a = f# (g# a) holds whenever gamma (g# a) = g (gamma a), since then f# (g# a) = alpha (f (g (gamma a))).",
+      "Escape hatch (completeness of the outer step): more generally, equality holds exactly when alpha (f (gamma (alpha y))) = alpha (f y) for y = g (gamma a), a completeness condition in the sense of Giacobazzi, Ranzato and Scozzari.",
+      "Escape hatch (domain refinement): a different abstract domain can remove the loss for the same statements; for example, in the interval domain x := x + 1 followed by x := x - 1 maps [1, +infinity) to [1, +infinity) both step by step and as a block.",
+      "Escape hatch (whole-block abstraction): computing the best transformer of the composed block f . g directly avoids the intermediate abstraction g# a."
+    ],
+    "prior_art": [
+      "A. Thakur, A. Lal, J. Lim and T. Reps, \"PostHat and all that: automating abstract interpretation\", Electronic Notes in Theoretical Computer Science 311:15-32, 2015, doi:10.1016/j.entcs.2015.02.003. Example 1.2 (author preprint): for two machine instructions, applying the best transformer of each in sequence yields top, whereas the best transformer of the sequential composition yields eax' = 42, because the intermediate state is not expressible in the abstract domain.",
+      "R. Giacobazzi, F. Ranzato and F. Scozzari, \"Making abstract interpretations complete\", Journal of the ACM 47(2):361-416, 2000, doi:10.1145/333979.333989. Theory of completeness (no loss of precision in abstract computation) and of refining or simplifying abstract domains to obtain it; the escape hatches of R3-comp-strict are completeness conditions in this sense.",
+      "A. Miné, \"Tutorial on static inference of numeric invariants by abstract interpretation\", Foundations and Trends in Programming Languages 4(3-4):120-372, 2017, doi:10.1561/2500000034. Tutorial covering Galois connections, the sign and interval domains, and widening."
+    ],
+    "design_question": "Is the inequality of R3-comp-le ever strict in a domain an analyzer would actually use? Yes, already in the sign domain.",
+    "module": "Toy.AbsInt.Transformer"
+  },
+  {
+    "id": "R4-lfp-fix",
+    "lean": "Toy.AbsInt.lfp_eq_of_monotone",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For a monotone concrete transformer f on predicates, the intersection lfp f of all post-fixpoints {x | f x included in x} is a fixpoint: f (lfp f) = lfp f.",
+    "hypotheses": [
+      {
+        "name": "hf : Monotone f",
+        "purpose": "Knaster-Tarski argument. In the counterexample, f is compl on Pred Unit (implicit argument sigma := Unit, which the pretty-printer does not show).",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.lfpEq_tight_monotone"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "counterStep (the concrete transformer of x := 0; while * do x := x + 1) is monotone.",
+    "nonvacuity_witness_lean": "Toy.AbsInt.lfpEq_nonvacuous",
+    "non_claims": [
+      "Stated only for the powerset lattice Pred sigma, not for an arbitrary complete lattice.",
+      "Does not claim that lfp f is the unique fixpoint of f (the identity has every predicate as a fixpoint); together with R4-lfp-least it is the least fixpoint.",
+      "Without continuity of f, lfp f need not equal the countable union of the Kleene iterates f^n (empty); no such characterization or computation method is claimed.",
+      "Equality of predicates is Lean equality of functions; proving it needs function and propositional extensionality."
+    ],
+    "prior_art": [
+      "B. Knaster, \"Un théorème sur les fonctions d'ensembles\", Annales de la Société Polonaise de Mathématique 6:133-134, 1928. The fixpoint theorem for monotone set functions on a powerset, the setting Pred sigma of this package.",
+      "A. Tarski, \"A lattice-theoretical fixpoint theorem and its applications\", Pacific Journal of Mathematics 5(2):285-309, 1955, doi:10.2140/pjm.1955.5.285. The fixpoints of a monotone map on a complete lattice form a complete lattice; the least fixpoint is the infimum of {x | f x <= x}.",
+      "Mathlib (leanprover-community/mathlib4, commit 5f78f9ce46fc85fa3cb45561d47b489c4c98cd04), Mathlib/Order/FixedPoints.lean: OrderHom.lfp f := sInf {a | f a <= a} for a bundled monotone map f on a complete lattice, with map_lfp (f (lfp f) = lfp f) and lfp_le."
+    ],
+    "design_question": "Is the collecting semantics of a loop, defined as an intersection of invariants, actually a fixpoint? Yes for monotone transformers.",
+    "module": "Toy.AbsInt.Fixpoint"
+  },
+  {
+    "id": "R4-lfp-least",
+    "lean": "Toy.AbsInt.lfp_le_of_le",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For every concrete transformer f (monotone or not) and every concrete post-fixpoint x (f x included in x), lfp f is included in x.",
+    "hypotheses": [
+      {
+        "name": "hx : f x ≤ x",
+        "purpose": "Defining condition of the sets that lfp intersects.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.lfpLe_tight_postFixpoint"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "counterStep with x = all naturals. All hypotheses hold, but the conclusion lfp counterStep included in all naturals is trivially true for this x; necessity of the hypothesis is shown separately by lfpLe_tight_postFixpoint (x = empty).",
+    "nonvacuity_witness_lean": "Toy.AbsInt.lfpLe_nonvacuous",
+    "non_claims": [
+      "Reference point: an unfolding of the definition of lfp, kept because R4-transfer and R4-transfer-lfp are stated in terms of it.",
+      "For non-monotone f, lfp f (the intersection of all post-fixpoints) need not itself be a post-fixpoint (lfp_not_postFixpoint_of_not_monotone) or a fixpoint (lfpEq_tight_monotone); it is guaranteed to be the least post-fixpoint and the least fixpoint only when f is monotone (R4-lfp-fix); without monotonicity it need not be a fixpoint."
+    ],
+    "prior_art": [
+      "A. Tarski, \"A lattice-theoretical fixpoint theorem and its applications\", Pacific Journal of Mathematics 5(2):285-309, 1955, doi:10.2140/pjm.1955.5.285. The fixpoints of a monotone map on a complete lattice form a complete lattice; the least fixpoint is the infimum of {x | f x <= x}.",
+      "Mathlib (leanprover-community/mathlib4, commit 5f78f9ce46fc85fa3cb45561d47b489c4c98cd04), Mathlib/Order/FixedPoints.lean: OrderHom.lfp_le is stated for bundled monotone maps; the statement for an arbitrary f is an instance of the complete-lattice fact sInf_le (an infimum is below each member of the set)."
+    ],
+    "design_question": "Reference point. What does an analyzer need to prove about a candidate invariant to conclude it contains lfp f? Only that it is closed under the concrete transformer.",
+    "module": "Toy.AbsInt.Fixpoint"
+  },
+  {
+    "id": "R4-transfer",
+    "lean": "Toy.AbsInt.lfp_le_gamma_of_monotone_gamma_of_sound_of_postFixpoint",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "If gamma is monotone and the abstract transformer f# is gamma-sound for f (f (gamma a) included in gamma (f# a) for all a), then for every abstract post-fixpoint a (f# a <= a), lfp f, the intersection of all concrete post-fixpoints {x | f x included in x}, is included in gamma a. No abstraction function, Galois connection, order law on A, or monotonicity of f or f# is assumed; lfp f is guaranteed to be the concrete least fixpoint only when f is monotone (without monotonicity it need not be a fixpoint; R4-transfer-lfp).",
+    "hypotheses": [
+      {
+        "name": "hγ : Monotone γ",
+        "purpose": "Turns f# a <= a into gamma (f# a) included in gamma a.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.lfpGamma_tight_monoGamma"
+      },
+      {
+        "name": "hs : Sound γ f fs",
+        "purpose": "Gives f (gamma a) included in gamma (f# a), so gamma a is a concrete post-fixpoint.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.lfpGamma_tight_sound"
+      },
+      {
+        "name": "ha : PostFixpoint fs a",
+        "purpose": "The abstract invariant condition f# a <= a.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.lfpGamma_tight_postFixpoint"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Sign domain over Int with the loop x := 1; while * do x := x + 1 (posLoop), its sound abstraction signPosLoop, and the post-fixpoint pos, whose concretization {n | 0 < n} is not the full set.",
+    "nonvacuity_witness_lean": "Toy.AbsInt.lfpGamma_nonvacuous",
+    "non_claims": [
+      "Without monotonicity of f, lfp f is only the intersection of all concrete post-fixpoints: it need not be a fixpoint (lfpEq_tight_monotone) or even a post-fixpoint (lfp_not_postFixpoint_of_not_monotone), and gamma a can miss the unique fixpoint of f even with an exact Galois connection on a poset (transfer_misses_leastFixpoint_of_not_monotone). To conclude that gamma a over-approximates the concrete least fixpoint, use R4-transfer-lfp, which adds monotonicity of f.",
+      "The conclusion is only lfp f included in gamma a. That gamma a is itself a concrete post-fixpoint (f (gamma a) included in gamma a) is an intermediate step of the proof and is not part of the stated conclusion.",
+      "Does not say a post-fixpoint exists or how to find one (see R4-kleene-acc, R4-kleene-height and R5-widen).",
+      "Does not say gamma a is a tight over-approximation; top is always a post-fixpoint when it exists and gives no information.",
+      "Does not establish completeness (gamma a = lfp f) or optimality of a relative to alpha (lfp f), even when a Galois connection exists.",
+      "Does not relate a to the abstract least fixpoint of f#, which need not exist without completeness.",
+      "Soundness here is the gamma-form for all abstract inputs, not only for those reachable during iteration."
+    ],
+    "prior_art": [
+      "T. Nipkow and G. Klein, Concrete Semantics with Isabelle/HOL, Springer 2014, doi:10.1007/978-3-319-10542-0; Chapter 13 \"Abstract Interpretation\", pp. 219-280, doi:10.1007/978-3-319-10542-0_13. The framework uses concretization functions only (no abstraction function, no Galois connection); its correctness theorem (AI_correct in the accompanying Isabelle theories) transfers an abstract post-fixpoint to the collecting semantics using monotonicity of gamma and the lower-bound property of lfp. The book calls x with f x <= x a pre-fixpoint.",
+      "J.-H. Jourdan, V. Laporte, S. Blazy, X. Leroy and D. Pichardie, \"A formally-verified C static analyzer\", POPL 2015, pp. 247-259, doi:10.1145/2676726.2676966. A Coq-verified abstract interpreter (Verasco) whose abstract domains are specified by concretization-based soundness without Galois connections or abstraction functions, and whose post-fixpoint iteration with widening is bounded by fuel rather than justified by a widening termination proof.",
+      "P. Cousot and R. Cousot, \"Comparing the Galois connection and widening/narrowing approaches to abstract interpretation\", PLILP 1992, LNCS 631, pp. 269-295, doi:10.1007/3-540-55844-6_142 (author-hosted reprint). Appendix Prop. 32: on a concrete poset with continuous F, F(A) <= A and bottom <= A imply lfp F <= A. Appendix Prop. 35 (\"preordered upward iteration with widening\"): with the abstract preorder defined by x <= y iff gamma(x) <= gamma(y), continuous F, monotone F#, F . gamma <= gamma . F# and a widening, the stopping iteration (9) ends at A with lfp F <= gamma(A). R4-transfer isolates the transfer step of Prop. 35 and drops continuity, the gamma-induced preorder and the widening.",
+      "P. Cousot and R. Cousot, \"Abstract interpretation frameworks\", Journal of Logic and Computation 2(4):511-547, 1992, doi:10.1093/logcom/2.4.511 (author-hosted text). Section 5 (p. 520) motivates modelling precision by a preorder that need not be antisymmetric (when the same property can be expressed by several elements), and Sections 4 and 6-8 relax the Galois connection framework to correspondences given by a soundness relation (Section 4, pp. 515-520), by an abstraction relation or function (Section 6, pp. 520-538), by a concretization relation or function only (Section 7, pp. 538-541), and by both (Section 8, pp. 542-544); page numbers as printed in the author-hosted text.",
+      "F. Besson, D. Cachera, T. Jensen and D. Pichardie, \"Certified static analysis by abstract interpretation\", Foundations of Security Analysis and Design V, LNCS 5705, pp. 223-257, 2009, doi:10.1007/978-3-642-03829-7_8. Tutorial on building and proving an abstract interpreter (an interval analysis) in Coq.",
+      "T. Nipkow, \"Abstract interpretation of annotated commands\", ITP 2012, LNCS 7406, pp. 116-132, doi:10.1007/978-3-642-32347-8_9, with the Archive of Formal Proofs entry Abs_Int_ITP2012. Isabelle/HOL abstract interpreter with widening and narrowing, the predecessor of the Concrete Semantics development."
+    ],
+    "design_question": "What is the minimal soundness interface an analyzer needs to justify that gamma of a checked abstract invariant contains lfp f? Monotone gamma, gamma-soundness of the transformer, and a checked post-fixpoint; no abstraction function or Galois connection. Identifying lfp f with the concrete least fixpoint (the collecting semantics) additionally needs a monotone concrete transformer (R4-transfer-lfp).",
+    "module": "Toy.AbsInt.Fixpoint"
+  },
+  {
+    "id": "R4-transfer-lfp",
+    "lean": "Toy.AbsInt.isLeastFixpoint_lfp_and_le_gamma_of_monotone_of_monotone_gamma_of_sound_of_postFixpoint",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "If the concrete transformer f is monotone, gamma is monotone, f# is gamma-sound for f, and a is an abstract post-fixpoint (f# a <= a), then lfp f is the least fixpoint of f and every least fixpoint of f is included in gamma a: the abstract invariant over-approximates the concrete least fixpoint (the collecting semantics).",
+    "hypotheses": [
+      {
+        "name": "hf : Monotone f",
+        "purpose": "Makes lfp f a fixpoint (Knaster-Tarski) and hence the least fixpoint; without it gamma a can miss the unique fixpoint of f.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.lfpFixGamma_tight_monotone"
+      },
+      {
+        "name": "hγ : Monotone γ",
+        "purpose": "Turns f# a <= a into gamma (f# a) included in gamma a.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.lfpFixGamma_tight_monoGamma"
+      },
+      {
+        "name": "hs : Sound γ f fs",
+        "purpose": "Makes gamma a a concrete post-fixpoint.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.lfpFixGamma_tight_sound"
+      },
+      {
+        "name": "ha : PostFixpoint fs a",
+        "purpose": "The abstract invariant condition f# a <= a.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.lfpFixGamma_tight_postFixpoint"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Sign domain over Int with the monotone loop transformer posLoop (x := 1; while * do x := x + 1), its sound abstraction signPosLoop, and the post-fixpoint pos, whose concretization {n | 0 < n} is not the full set.",
+    "nonvacuity_witness_lean": "Toy.AbsInt.lfpFixGamma_nonvacuous",
+    "non_claims": [
+      "Monotonicity of the concrete transformer f cannot be dropped: the guarantee that a gamma-sound abstract post-fixpoint bounds the concrete least fixpoint needs f monotone, and without it the conclusion can fail (this does not say it fails for every non-monotone f). For the non-monotone nonMonoUniqueFix on Pred Bool with the exact gamma = id and a = {false}, monotonicity of gamma, gamma-soundness and the post-fixpoint condition hold, but the unique (hence least) fixpoint {true} is not included in gamma a (lfpFixGamma_tight_monotone); moreover lfp f is empty (lfp_nonMonoUniqueFix_eq_empty), which is not a fixpoint because f maps the empty set to the full set (nonMonoUniqueFix_empty). Without monotone f, only R4-transfer applies, and its conclusion concerns lfp f, the intersection of all concrete post-fixpoints, not a fixpoint of f.",
+      "Does not say a post-fixpoint exists or how to find one (see R4-kleene-acc, R4-kleene-height and R5-widen).",
+      "Does not say gamma a is a tight over-approximation (gamma a = lfp f); top-like post-fixpoints give no information.",
+      "Does not require or use an abstraction function, a Galois connection, or any order law on A.",
+      "Concerns the least fixpoint on Pred sigma ordered by inclusion only; no claim is made for other concrete domains.",
+      "Does not identify lfp f with the countable union of the Kleene iterates f^n (empty); no continuity is assumed."
+    ],
+    "prior_art": [
+      "T. Nipkow and G. Klein, Concrete Semantics with Isabelle/HOL, Springer 2014, doi:10.1007/978-3-319-10542-0; Chapter 13 \"Abstract Interpretation\", pp. 219-280, doi:10.1007/978-3-319-10542-0_13. The framework uses concretization functions only (no abstraction function, no Galois connection); its correctness theorem (AI_correct in the accompanying Isabelle theories) transfers an abstract post-fixpoint to the collecting semantics using monotonicity of gamma and the lower-bound property of lfp. The book calls x with f x <= x a pre-fixpoint.",
+      "P. Cousot and R. Cousot, \"Comparing the Galois connection and widening/narrowing approaches to abstract interpretation\", PLILP 1992, LNCS 631, pp. 269-295, doi:10.1007/3-540-55844-6_142 (author-hosted reprint). Appendix Prop. 32: on a concrete poset with continuous F, F(A) <= A and bottom <= A imply lfp F <= A. Appendix Prop. 35 (\"preordered upward iteration with widening\"): with the abstract preorder defined by x <= y iff gamma(x) <= gamma(y), continuous F, monotone F#, F . gamma <= gamma . F# and a widening, the stopping iteration (9) ends at A with lfp F <= gamma(A). R4-transfer-lfp keeps only monotonicity of the concrete transformer f (weaker than the continuity assumed in Prop. 35), drops the gamma-induced preorder (no order law on A is assumed), monotonicity of F# and the widening, and concludes both that lfp f is the least fixpoint of f and that every least fixpoint of f is included in gamma a.",
+      "B. Knaster, \"Un théorème sur les fonctions d'ensembles\", Annales de la Société Polonaise de Mathématique 6:133-134, 1928. The fixpoint theorem for monotone set functions on a powerset, the setting Pred sigma of this package.",
+      "A. Tarski, \"A lattice-theoretical fixpoint theorem and its applications\", Pacific Journal of Mathematics 5(2):285-309, 1955, doi:10.2140/pjm.1955.5.285. The fixpoints of a monotone map on a complete lattice form a complete lattice; the least fixpoint is the infimum of {x | f x <= x}.",
+      "J.-H. Jourdan, V. Laporte, S. Blazy, X. Leroy and D. Pichardie, \"A formally-verified C static analyzer\", POPL 2015, pp. 247-259, doi:10.1145/2676726.2676966. A Coq-verified abstract interpreter (Verasco) whose abstract domains are specified by concretization-based soundness without Galois connections or abstraction functions, and whose post-fixpoint iteration with widening is bounded by fuel rather than justified by a widening termination proof."
+    ],
+    "design_question": "When does a checked abstract post-fixpoint soundly over-approximate the concrete least fixpoint (the collecting semantics)? When the concrete transformer and gamma are monotone and the abstract transformer is gamma-sound; monotonicity of the concrete transformer is necessary for the conclusion to concern its least fixpoint.",
+    "module": "Toy.AbsInt.Fixpoint"
+  },
+  {
+    "id": "R4-kleene-acc",
+    "lean": "Toy.AbsInt.exists_kleene_postFixpoint_of_monotone_of_acc_of_le_apply",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "If f# is monotone, the abstract order has no infinite sequence of consecutive strict steps (ACC), and the start a0 satisfies a0 <= f# a0 (e.g. a0 is a least element), then some Kleene iterate kleene f# a0 n = f#^n(a0) is a post-fixpoint of f#. Reflexivity and transitivity of the order are not needed.",
+    "hypotheses": [
+      {
+        "name": "hmono : Monotone fs",
+        "purpose": "Makes the Kleene sequence ascending.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.kleeneAcc_tight_monotone"
+      },
+      {
+        "name": "hacc : ACC A",
+        "purpose": "Rules out an infinite strictly ascending Kleene sequence.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.kleeneAcc_tight_acc"
+      },
+      {
+        "name": "hstart : a₀ ≤ fs a₀",
+        "purpose": "First step of the ascending sequence. Weaker than a0 being a least element.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.kleeneAcc_tight_start"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Sign domain (ACC via a rank function), the monotone signLoop, start bot.",
+    "nonvacuity_witness_lean": "Toy.AbsInt.kleeneAcc_nonvacuous",
+    "non_claims": [
+      "Gives no bound on n (see R4-kleene-height for a bound under a height bound).",
+      "Does not say the post-fixpoint reached is a fixpoint or the least post-fixpoint; without antisymmetry, f# x <= x together with x <= f# x does not give f# x = x, and later iterates need not be syntactically equal.",
+      "On a non-transitive relation, ACC forbids only infinite sequences of consecutive strict steps: it does not make ascending sequences stabilize (nb_heightLE_one_ascending_not_stabilizing), and a finite non-transitive relation with a strict cycle violates it (cyc3_not_acc).",
+      "Says nothing about soundness by itself; combine with R4-transfer or R4-transfer-lfp.",
+      "The proof is classical; decidability of <= and computability of f# are not assumed, and no algorithm for deciding when to stop is claimed beyond checking f# x <= x."
+    ],
+    "prior_art": [
+      "P. Cousot and R. Cousot, \"Comparing the Galois connection and widening/narrowing approaches to abstract interpretation\", PLILP 1992, LNCS 631, pp. 269-295, doi:10.1007/3-540-55844-6_142 (author-hosted reprint). Sections 2 (p. 273) and 7 (p. 283): Kleene iterates from bottom reach the least fixpoint in finitely many steps when no strictly increasing chain is infinite. (Appendix Prop. 23 is Kleene's theorem for continuous F, assuming the lub of the iterates exists; it is not an ascending-chain termination statement.) No explicit iteration bound in terms of the height is stated there.",
+      "D. Cachera, T. Jensen, D. Pichardie and V. Rusu, \"Extracting a data flow analyser in constructive logic\", Theoretical Computer Science 342(1):56-78, 2005, doi:10.1016/j.tcs.2005.06.004. Coq formalization of lattice-based data-flow analysis with fixpoint iteration justified by an ascending chain condition.",
+      "T. Nipkow and G. Klein, Concrete Semantics with Isabelle/HOL, Springer 2014, doi:10.1007/978-3-319-10542-0; Chapter 13 \"Abstract Interpretation\", pp. 219-280, doi:10.1007/978-3-319-10542-0_13. In the accompanying Isabelle theory Abs_Int0, termination of the iteration pfp is proved with a bounded natural-number measure, not from an abstract ascending chain condition.",
+      "A. Yamada and J. Dubut, \"Complete Non-Orders and Fixed Points\", Archive of Formal Proofs, June 2019, https://isa-afp.org/entries/Complete_Non_Orders.html (ITP 2019), and J. Dubut and A. Yamada, \"Fixed Points Theorems for Non-Transitive Relations\", Logical Methods in Computer Science 18(1):30, 2022, doi:10.46298/LMCS-18(1:30)2022. Isabelle/HOL versions of the Knaster-Tarski and Kleene fixed-point theorems for relations without some of the order axioms. Neither treats abstract-interpretation transfer or widening."
+    ],
+    "design_question": "Which properties of an abstract domain and transformer guarantee that plain Kleene iteration terminates at an abstract invariant?",
+    "module": "Toy.AbsInt.Fixpoint"
+  },
+  {
+    "id": "R4-kleene-height",
+    "lean": "Toy.AbsInt.exists_kleene_postFixpoint_le_of_monotone_of_heightLE_of_le_apply",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "If f# is monotone, the abstract order has height at most h (every sequence of consecutive strict steps has at most h steps), and a0 <= f# a0, then some Kleene iterate kleene f# a0 n with n <= h is a post-fixpoint of f#.",
+    "hypotheses": [
+      {
+        "name": "hmono : Monotone fs",
+        "purpose": "Makes the Kleene sequence ascending.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.kleeneHeight_tight_monotone"
+      },
+      {
+        "name": "hh : HeightLE A h",
+        "purpose": "Bounds the number of strict steps.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.kleeneHeight_tight_height"
+      },
+      {
+        "name": "hstart : a₀ ≤ fs a₀",
+        "purpose": "First step of the ascending sequence.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.kleeneHeight_tight_start"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Sign domain (height 2), signLoop, start bot.",
+    "nonvacuity_witness_lean": "Toy.AbsInt.kleeneHeight_nonvacuous",
+    "non_claims": [
+      "The bound counts iterations of f#, not the cost of evaluating f# or of checking f# x <= x.",
+      "For non-transitive relations, height counts consecutive strict steps (path length), which can differ from chain length; a finite non-transitive relation with a strict cycle has no height bound at all (cyc3_not_heightLE).",
+      "The bound n <= h cannot be improved to n < h in general (R4-kleene-bound), but may be loose for a particular f#.",
+      "Does not say the post-fixpoint reached is a fixpoint (f# x = x) or the least post-fixpoint, in particular when a0 is not a least element or the order is not a partial order.",
+      "Says nothing about soundness with respect to the concrete semantics by itself; combine with R4-transfer or R4-transfer-lfp.",
+      "Decidability of the stopping test f# x <= x and computability of f# are not assumed."
+    ],
+    "prior_art": [
+      "P. Cousot and R. Cousot, \"Comparing the Galois connection and widening/narrowing approaches to abstract interpretation\", PLILP 1992, LNCS 631, pp. 269-295, doi:10.1007/3-540-55844-6_142 (author-hosted reprint). Sections 2 (p. 273) and 7 (p. 283): Kleene iterates from bottom reach the least fixpoint in finitely many steps when no strictly increasing chain is infinite. (Appendix Prop. 23 is Kleene's theorem for continuous F, assuming the lub of the iterates exists; it is not an ascending-chain termination statement.) No explicit iteration bound in terms of the height is stated there.",
+      "F. Nielson, H. R. Nielson and C. Hankin, Principles of Program Analysis, Springer 1999, doi:10.1007/978-3-662-03811-6; Chapter 4 \"Abstract Interpretation\", pp. 211-282, doi:10.1007/978-3-662-03811-6_4. Cited at chapter level (fixpoint iteration and widening operators over complete lattices); no section-level content is relied on.",
+      "D. Cachera, T. Jensen, D. Pichardie and V. Rusu, \"Extracting a data flow analyser in constructive logic\", Theoretical Computer Science 342(1):56-78, 2005, doi:10.1016/j.tcs.2005.06.004. Coq formalization of lattice-based data-flow analysis with fixpoint iteration justified by an ascending chain condition."
+    ],
+    "design_question": "How many iterations can an analyzer over a finite-height domain need before reaching an invariant? At most the height.",
+    "module": "Toy.AbsInt.Fixpoint"
+  },
+  {
+    "id": "R4-kleene-bound",
+    "lean": "Toy.AbsInt.kleeneHeight_bound_attained",
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "For every h, on the chain Fin (h+1) (height h) with the capped successor, every hypothesis of R4-kleene-height holds, the h-th Kleene iterate from 0 is a post-fixpoint, and no earlier iterate is; so the bound n <= h is attained.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "The statement is itself a family of concrete instances.",
+    "nonvacuity_witness_lean": "Toy.AbsInt.kleeneHeight_bound_attained",
+    "positive_control_lean": "Toy.AbsInt.kleeneHeight_bound_not_attained_from_top",
+    "non_claims": [
+      "Does not say every domain of height h needs h iterations.",
+      "Escape hatch: the worst case of h iterations is for plain Kleene iteration from 0 on this chain; on the same chain started from the top element h, the iterate with index 0 is already a post-fixpoint (positive control kleeneHeight_bound_not_attained_from_top, for h >= 1); widening or other iteration strategies (chaotic or worklist iteration over several variables) can also reach a post-fixpoint in fewer steps."
+    ],
+    "prior_art": [
+      "Elementary example; no published statement of the attainment of the height bound is cited, so the result is recorded as folklore made precise. The bound itself is the subject of R4-kleene-height."
+    ],
+    "design_question": "Is the height bound of R4-kleene-height tight?",
+    "module": "Toy.AbsInt.Fixpoint"
+  },
+  {
+    "id": "R4-height-acc",
+    "lean": "Toy.AbsInt.acc_of_heightLE",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "An abstract order of height at most h has no infinite sequence of consecutive strict steps (ACC).",
+    "hypotheses": [
+      {
+        "name": "hh : HeightLE A h",
+        "purpose": "A strictly ascending chain would give h + 1 strict steps.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.accOfHeight_tight"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Sign domain has height 2.",
+    "nonvacuity_witness_lean": "Toy.AbsInt.accOfHeight_nonvacuous",
+    "non_claims": [
+      "Auxiliary bridge: it carries no design content beyond connecting the two chain conditions.",
+      "The converse (ACC implies some finite height) is not claimed; it is false in general and no counterexample is formalized here.",
+      "On a non-transitive relation, neither HeightLE A h nor ACC A implies that ascending sequences stabilize (nb_heightLE_one_ascending_not_stabilizing)."
+    ],
+    "prior_art": [
+      "Elementary; no source is needed.",
+      "F. Nielson, H. R. Nielson and C. Hankin, Principles of Program Analysis, Springer 1999, doi:10.1007/978-3-662-03811-6; Chapter 4 \"Abstract Interpretation\", pp. 211-282, doi:10.1007/978-3-662-03811-6_4. Cited at chapter level (fixpoint iteration and widening operators over complete lattices); no section-level content is relied on."
+    ],
+    "design_question": "Auxiliary bridge: lets the results stated under ACC, namely R4-kleene-acc and the helper widenTerminates_of_acc (statement: ACC A implies WidenTerminates w for every binary operator w : A -> A -> A), be applied to domains of finite height.",
+    "module": "Toy.AbsInt.Fixpoint"
+  },
+  {
+    "id": "R5-widen",
+    "lean": "Toy.AbsInt.exists_widenIter_postFixpoint_of_trans_of_upperLeft_of_upperRight_of_terminates_of_monotone_of_le_apply",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "If the abstract order is transitive, the operator widen satisfies a <= a widen b and b <= a widen b and the termination axiom (for every ascending input sequence the widened chain is not strictly increasing at every step), f# is monotone, and a0 <= f# a0, then some widened iterate (x0 = a0, x(n+1) = x n widen f# (x n)) is a post-fixpoint of f#; equivalently, the loop that widens until the first post-fixpoint terminates. No chain condition on the domain is needed.",
+    "hypotheses": [
+      {
+        "name": "htrans : IsTrans A",
+        "purpose": "Chains f# (x n) <= x (n+1) <= x n.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.widen_tight_trans"
+      },
+      {
+        "name": "hL : WidenUpperLeft w",
+        "purpose": "Makes the widened iterates ascending, hence the input to the termination axiom ascending.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.widen_tight_upperLeft"
+      },
+      {
+        "name": "hR : WidenUpperRight w",
+        "purpose": "Gives f# (x n) <= x (n+1). In the counterexample, w is the left projection fun a x => a on B2 (implicit carrier B2, which the pretty-printer does not show in the WidenUpperLeft, WidenUpperRight and WidenTerminates conjuncts).",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.widen_tight_upperRight"
+      },
+      {
+        "name": "hT : WidenTerminates w",
+        "purpose": "Supplies a step with x (n+1) <= x n. In the counterexample, w is max on Nat (implicit argument A := Nat, which the pretty-printer does not show in the WidenUpperLeft, WidenUpperRight and WidenTerminates conjuncts).",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.widen_tight_terminates"
+      },
+      {
+        "name": "hmono : Monotone fs",
+        "purpose": "Makes the input sequence a0, f# x0, f# x1, ... ascending, as the termination axiom requires.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.widen_tight_monotone"
+      },
+      {
+        "name": "hstart : a₀ ≤ fs a₀",
+        "purpose": "First step of that input sequence.",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.widen_tight_start"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "UB domain with the jump-to-top widening ubWiden, the counter-loop transformer ubIncr, start bot.",
+    "nonvacuity_witness_lean": "Toy.AbsInt.widen_nonvacuous",
+    "non_claims": [
+      "widenIter widens at every step and never stops by itself: being a post-fixpoint is not preserved by later iterates, even on a total order with a widening that also satisfies WidenStabilizes (widenIter_postFixpoint_not_persistent). An analyzer must test f# (x n) <= x n at each step and stop at the first success; the theorem guarantees that this happens.",
+      "On a preorder that is not antisymmetric, WidenTerminates guarantees only one non-strict step of each widened chain of an ascending input, not finitely many strict steps or stabilization up to <= (pbWiden_terminates_infinitely_many_strict). This suffices for the single stopping loop of this theorem; it does not justify widening inside iteration schemes that keep widening after a non-strict step (for example nested loops or chaotic iteration over preorders).",
+      "Does not bound the number of steps.",
+      "Does not claim precision: the post-fixpoint reached may be top.",
+      "Does not say the post-fixpoint reached is a fixpoint or the least post-fixpoint, and does not assume widen is monotone, commutative or associative.",
+      "Covers only stateless binary widening operators w : A -> A -> A, not delayed widening, widening with thresholds, or step-indexed widenings; does not cover narrowing.",
+      "The proof is classical; decidability of <= and computability of f# and widen are not assumed.",
+      "The termination axiom is quantified over ascending inputs only (as in Cousot & Cousot 1992, condition (8)). A variant whose termination axiom quantifies over all input sequences would not need monotonicity of f# or the start condition (by the same argument); that variant is neither stated nor proved here.",
+      "Soundness for the concrete semantics follows only by combining with R4-transfer or R4-transfer-lfp; it is not part of this statement."
+    ],
+    "prior_art": [
+      "P. Cousot and R. Cousot, \"Comparing the Galois connection and widening/narrowing approaches to abstract interpretation\", PLILP 1992, LNCS 631, pp. 269-295, doi:10.1007/3-540-55844-6_142 (author-hosted reprint). Conditions (6)-(8), p. 275, define a widening; (8) reads \"for all increasing chains x0 <= x1 <= ..., the increasing chain defined by y0 = x0, ..., y(i+1) = y(i) widen x(i+1), ... is not strictly increasing\". Eq. (9) is upward iteration that stops at the first post-fixpoint; Prop. 33 (cpo, continuous F, bottom <= F(bottom)) and Prop. 35 (preordered version) show that it is ultimately stationary at a post-fixpoint above lfp F. R5-widen assumes no cpo and no continuity and states termination of the same stopping iteration as the existence of a post-fixpoint iterate.",
+      "T. Nipkow and G. Klein, Concrete Semantics with Isabelle/HOL, Springer 2014, doi:10.1007/978-3-319-10542-0; Chapter 13 \"Abstract Interpretation\", pp. 219-280, doi:10.1007/978-3-319-10542-0_13. Section 13.9 requires x <= x widen y and y <= x widen y and defines iter_widen f = while_option (lambda x. not f x <= x) (lambda x. x widen f x), which stops at the first post-fixpoint. The accompanying Isabelle theory HOL-IMP Abs_Int3 (Isabelle2025 release, https://isabelle.in.tum.de/website-Isabelle2025/dist/library/HOL/HOL-IMP/Abs_Int3.html) proves that a result of iter_widen is a post-fixpoint (lemma iter_widen_pfp) and also mechanizes termination of widening: lemma iter_widen_termination derives termination of iter_widen from an invariant preserved by the step and by widening and a natural-number measure m with m (C1 widen C2) < m C1 whenever not C2 <= C1; locale Measure_wn assumes such a measure on abstract values (m_anti_mono, m_widen); and for intervals the measure m_ivl (lemma m_ivl_widen) yields lemma iter_winden_step_ivl_termination and theorem AI_wn_ivl_termination. The predecessor Archive of Formal Proofs entry Abs_Int_ITP2012 (theory Abs_Int3, Isabelle2025 AFP release branch, mirror https://github.com/isabelle-prover/mirror-afp-2025 at commit 400ee45cf836394b0b35dde6d20ab5ecd2012ee3) likewise proves iter_widen_termination (from a well-foundedness hypothesis) and termination of its interval analyzer (measure m_ivl, lemma m_ivl_widen, theorem AI_ivl'_termination). These are measure-based termination proofs for concrete widenings, not a chain-condition hypothesis on the widening such as WidenTerminates.",
+      "T. Nipkow, \"Abstract interpretation of annotated commands\", ITP 2012, LNCS 7406, pp. 116-132, doi:10.1007/978-3-642-32347-8_9, with the Archive of Formal Proofs entry Abs_Int_ITP2012. Isabelle/HOL abstract interpreter with widening and narrowing, the predecessor of the Concrete Semantics development.",
+      "J.-H. Jourdan, V. Laporte, S. Blazy, X. Leroy and D. Pichardie, \"A formally-verified C static analyzer\", POPL 2015, pp. 247-259, doi:10.1145/2676726.2676966. A Coq-verified abstract interpreter (Verasco) whose abstract domains are specified by concretization-based soundness without Galois connections or abstraction functions, and whose post-fixpoint iteration with widening is bounded by fuel rather than justified by a widening termination proof.",
+      "D. Cachera and D. Pichardie, \"A certified denotational abstract interpreter\", ITP 2010, LNCS 6172, pp. 9-24, doi:10.1007/978-3-642-14052-5_3. Coq-verified abstract interpreter using widening and narrowing with syntax-directed iteration strategies.",
+      "P. Cousot and R. Cousot, \"Abstract interpretation: a unified lattice model for static analysis of programs by construction or approximation of fixpoints\", POPL 1977, pp. 238-252, doi:10.1145/512950.512973. Bibliographic record verified; cited only as the origin of abstract interpretation and of widening as attributed by Cousot and Cousot (PLILP 1992).",
+      "P. Cousot and R. Cousot, \"Abstract interpretation frameworks\", Journal of Logic and Computation 2(4):511-547, 1992, doi:10.1093/logcom/2.4.511 (author-hosted text). Section 5 (p. 520) motivates modelling precision by a preorder that need not be antisymmetric (when the same property can be expressed by several elements), and Sections 4 and 6-8 relax the Galois connection framework to correspondences given by a soundness relation (Section 4, pp. 515-520), by an abstraction relation or function (Section 6, pp. 520-538), by a concretization relation or function only (Section 7, pp. 538-541), and by both (Section 8, pp. 542-544); page numbers as printed in the author-hosted text.",
+      "F. Nielson, H. R. Nielson and C. Hankin, Principles of Program Analysis, Springer 1999, doi:10.1007/978-3-662-03811-6; Chapter 4 \"Abstract Interpretation\", pp. 211-282, doi:10.1007/978-3-662-03811-6_4. Cited at chapter level (fixpoint iteration and widening operators over complete lattices); no section-level content is relied on."
+    ],
+    "design_question": "Which widening axioms are load-bearing for termination of an analyzer on infinite-height domains, and what else must hold of the transformer and the order?",
+    "module": "Toy.AbsInt.Widening"
+  },
+  {
+    "id": "R5-widen-diverge",
+    "lean": "Toy.AbsInt.kleene_diverges_widen_converges_ub",
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "On the infinite-height UB domain, for the monotone counter loop counterStep and its sound monotone abstraction ubIncr, with the jump-to-top widening ubWiden satisfying every widening hypothesis of R5-widen: plain Kleene iteration from bot never reaches a post-fixpoint and no Kleene iterate over-approximates the concrete least fixpoint (so stopping plain iteration at any finite step is unsound here), whereas iteration with ubWiden reaches the post-fixpoint top at step 1, whose concretization contains the least fixpoint.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "The statement is itself a concrete instance.",
+    "nonvacuity_witness_lean": "Toy.AbsInt.kleene_diverges_widen_converges_ub",
+    "positive_control_lean": "Toy.AbsInt.kleene_converges_sign",
+    "non_claims": [
+      "Does not say widening is necessary on every infinite-height domain; only that plain iteration can diverge.",
+      "The widened result top is sound but maximally imprecise; no precision claim is made.",
+      "Escape hatch (bounded loops): even on UB, plain Kleene iteration terminates without widening when the loop is bounded (for a counter capped at K, the iterates reach the post-fixpoint atMost K after K + 1 steps).",
+      "Escape hatch (finite height or ACC): replacing UB by a domain with the ascending chain condition, such as Sign (positive control kleene_converges_sign), restores termination of plain iteration.",
+      "Escape hatch (refined widening): this does not imply that widening on UB must jump to top at the first step; delayed widening, widening with thresholds, or a subsequent narrowing can keep finite bounds for bounded loops."
+    ],
+    "prior_art": [
+      "P. Cousot and R. Cousot, \"Comparing the Galois connection and widening/narrowing approaches to abstract interpretation\", PLILP 1992, LNCS 631, pp. 269-295, doi:10.1007/3-540-55844-6_142 (author-hosted reprint). Example 8 (p. 273): plain iteration on intervals for a bounded loop equation, with iterates bottom, [1, 1], [1, 2], ..., [1, 100], followed by the remark that such a sequence might be infinite and strictly increasing (e.g. for nonterminating programs); Example 11 (pp. 276-277): the interval widening and narrowing applied to the same equation, where the widened iterates stabilize at [1, +infinity] and narrowing then yields [1, 100].",
+      "T. Nipkow and G. Klein, Concrete Semantics with Isabelle/HOL, Springer 2014, doi:10.1007/978-3-319-10542-0; Chapter 13 \"Abstract Interpretation\", pp. 219-280, doi:10.1007/978-3-319-10542-0_13. Section 13.9 requires x <= x widen y and y <= x widen y and defines iter_widen f = while_option (lambda x. not f x <= x) (lambda x. x widen f x), which stops at the first post-fixpoint. The accompanying Isabelle theory HOL-IMP Abs_Int3 (Isabelle2025 release, https://isabelle.in.tum.de/website-Isabelle2025/dist/library/HOL/HOL-IMP/Abs_Int3.html) proves that a result of iter_widen is a post-fixpoint (lemma iter_widen_pfp) and also mechanizes termination of widening: lemma iter_widen_termination derives termination of iter_widen from an invariant preserved by the step and by widening and a natural-number measure m with m (C1 widen C2) < m C1 whenever not C2 <= C1; locale Measure_wn assumes such a measure on abstract values (m_anti_mono, m_widen); and for intervals the measure m_ivl (lemma m_ivl_widen) yields lemma iter_winden_step_ivl_termination and theorem AI_wn_ivl_termination. The predecessor Archive of Formal Proofs entry Abs_Int_ITP2012 (theory Abs_Int3, Isabelle2025 AFP release branch, mirror https://github.com/isabelle-prover/mirror-afp-2025 at commit 400ee45cf836394b0b35dde6d20ab5ecd2012ee3) likewise proves iter_widen_termination (from a well-foundedness hypothesis) and termination of its interval analyzer (measure m_ivl, lemma m_ivl_widen, theorem AI_ivl'_termination). These are measure-based termination proofs for concrete widenings, not a chain-condition hypothesis on the widening such as WidenTerminates."
+    ],
+    "design_question": "Is the chain condition of R4-kleene-acc dispensable in practice? No: without it, plain iteration of a sound monotone transformer can run forever.",
+    "module": "Toy.AbsInt.Widening"
+  },
+  {
+    "id": "R5-widen-bridge",
+    "lean": "Toy.AbsInt.widenTerminates_of_widenStabilizes",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "The textbook termination axiom (the widened chain of every ascending input eventually becomes constant, with constancy meaning equality) implies the termination axiom used in R5-widen (the widened chain is not strictly increasing at every step), with no order law assumed.",
+    "hypotheses": [
+      {
+        "name": "h : WidenStabilizes w",
+        "purpose": "Gives a step N with widenChain (N+1) = widenChain N, which cannot be strict. In the counterexample, w is max on Nat (implicit argument A := Nat, which the pretty-printer does not show).",
+        "tightness": "tight",
+        "counterexample": "Toy.AbsInt.widenBridge_tight"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "ubWiden stabilizes.",
+    "nonvacuity_witness_lean": "Toy.AbsInt.widenBridge_nonvacuous",
+    "non_claims": [
+      "Auxiliary bridge: lets operators verified against the textbook axiom be used with R5-widen.",
+      "The converse fails on preorders that are not antisymmetric: WidenStabilizes requires equality, and a widening whose chains cycle between distinct order-equivalent elements satisfies WidenTerminates (and every axiom used by R5-widen) but not WidenStabilizes (widenTerminates_not_widenStabilizes_preorder).",
+      "Whether the converse holds on partial orders for widenings satisfying a <= a widen b is not formalized here. (Sketch: on a partial order such a widened chain is ascending; if it never stabilized, deleting the inputs at its non-strict steps would give an ascending input whose widened chain is strict at every step.)",
+      "Stabilization up to the preorder (eventually y m <= y N) is not defined or used here."
+    ],
+    "prior_art": [
+      "F. Nielson, H. R. Nielson and C. Hankin, Principles of Program Analysis, Springer 1999, doi:10.1007/978-3-662-03811-6; Chapter 4 \"Abstract Interpretation\", pp. 211-282, doi:10.1007/978-3-662-03811-6_4. Cited at chapter level (fixpoint iteration and widening operators over complete lattices); no section-level content is relied on.",
+      "P. Cousot and R. Cousot, \"Comparing the Galois connection and widening/narrowing approaches to abstract interpretation\", PLILP 1992, LNCS 631, pp. 269-295, doi:10.1007/3-540-55844-6_142 (author-hosted reprint). Condition (8), p. 275: the widened chain of every increasing chain \"is not strictly increasing\"; this is the form of WidenTerminates."
+    ],
+    "design_question": "Auxiliary bridge. Can widening operators proved correct against the textbook stabilization axiom be used with R5-widen? Yes, with no order law.",
+    "module": "Toy.AbsInt.Widening"
+  }
+]

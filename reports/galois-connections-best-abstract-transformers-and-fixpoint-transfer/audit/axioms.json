@@ -1,0 +1,1776 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.AbsInt.ACC": [],
+    "Toy.AbsInt.Ascending": [],
+    "Toy.AbsInt.B2": [],
+    "Toy.AbsInt.B2.acc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.B2.casesOn": [],
+    "Toy.AbsInt.B2.ctorElim": [],
+    "Toy.AbsInt.B2.ctorElimType": [],
+    "Toy.AbsInt.B2.ctorIdx": [],
+    "Toy.AbsInt.B2.hi": [],
+    "Toy.AbsInt.B2.hi.elim": [],
+    "Toy.AbsInt.B2.hi.sizeOf_spec": [],
+    "Toy.AbsInt.B2.isRefl": [],
+    "Toy.AbsInt.B2.isTrans": [],
+    "Toy.AbsInt.B2.le_hi": [],
+    "Toy.AbsInt.B2.leb": [],
+    "Toy.AbsInt.B2.leb.match_1": [],
+    "Toy.AbsInt.B2.lo": [],
+    "Toy.AbsInt.B2.lo.elim": [],
+    "Toy.AbsInt.B2.lo.sizeOf_spec": [],
+    "Toy.AbsInt.B2.lo_le": [],
+    "Toy.AbsInt.B2.noConfusion": [],
+    "Toy.AbsInt.B2.noConfusionType": [],
+    "Toy.AbsInt.B2.ofNat": [],
+    "Toy.AbsInt.B2.ofNat_ctorIdx": [],
+    "Toy.AbsInt.B2.rec": [],
+    "Toy.AbsInt.B2.recOn": [],
+    "Toy.AbsInt.Cyc3": [],
+    "Toy.AbsInt.Cyc3.c0": [],
+    "Toy.AbsInt.Cyc3.c0.elim": [],
+    "Toy.AbsInt.Cyc3.c0.sizeOf_spec": [],
+    "Toy.AbsInt.Cyc3.c1": [],
+    "Toy.AbsInt.Cyc3.c1.elim": [],
+    "Toy.AbsInt.Cyc3.c1.sizeOf_spec": [],
+    "Toy.AbsInt.Cyc3.c2": [],
+    "Toy.AbsInt.Cyc3.c2.elim": [],
+    "Toy.AbsInt.Cyc3.c2.sizeOf_spec": [],
+    "Toy.AbsInt.Cyc3.casesOn": [],
+    "Toy.AbsInt.Cyc3.ctorElim": [],
+    "Toy.AbsInt.Cyc3.ctorElimType": [],
+    "Toy.AbsInt.Cyc3.ctorIdx": [],
+    "Toy.AbsInt.Cyc3.isRefl": [
+      "propext"
+    ],
+    "Toy.AbsInt.Cyc3.leb": [
+      "propext"
+    ],
+    "Toy.AbsInt.Cyc3.leb.match_1": [
+      "propext"
+    ],
+    "Toy.AbsInt.Cyc3.next": [],
+    "Toy.AbsInt.Cyc3.noConfusion": [],
+    "Toy.AbsInt.Cyc3.noConfusionType": [],
+    "Toy.AbsInt.Cyc3.not_isTrans": [
+      "propext"
+    ],
+    "Toy.AbsInt.Cyc3.ofNat": [],
+    "Toy.AbsInt.Cyc3.ofNat_ctorIdx": [],
+    "Toy.AbsInt.Cyc3.rec": [],
+    "Toy.AbsInt.Cyc3.recOn": [],
+    "Toy.AbsInt.Cyc3.strict_next": [
+      "propext"
+    ],
+    "Toy.AbsInt.Dis2": [],
+    "Toy.AbsInt.Dis2.a": [],
+    "Toy.AbsInt.Dis2.a.elim": [],
+    "Toy.AbsInt.Dis2.a.sizeOf_spec": [],
+    "Toy.AbsInt.Dis2.acc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.Dis2.b": [],
+    "Toy.AbsInt.Dis2.b.elim": [],
+    "Toy.AbsInt.Dis2.b.sizeOf_spec": [],
+    "Toy.AbsInt.Dis2.casesOn": [],
+    "Toy.AbsInt.Dis2.ctorElim": [],
+    "Toy.AbsInt.Dis2.ctorElimType": [],
+    "Toy.AbsInt.Dis2.ctorIdx": [],
+    "Toy.AbsInt.Dis2.heightLE": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.Dis2.isRefl": [
+      "propext"
+    ],
+    "Toy.AbsInt.Dis2.isTrans": [
+      "propext"
+    ],
+    "Toy.AbsInt.Dis2.leb": [
+      "propext"
+    ],
+    "Toy.AbsInt.Dis2.leb.match_1": [
+      "propext"
+    ],
+    "Toy.AbsInt.Dis2.noConfusion": [],
+    "Toy.AbsInt.Dis2.noConfusionType": [],
+    "Toy.AbsInt.Dis2.ofNat": [],
+    "Toy.AbsInt.Dis2.ofNat_ctorIdx": [],
+    "Toy.AbsInt.Dis2.rec": [],
+    "Toy.AbsInt.Dis2.recOn": [],
+    "Toy.AbsInt.E": [],
+    "Toy.AbsInt.E2": [],
+    "Toy.AbsInt.E2.a": [],
+    "Toy.AbsInt.E2.a.elim": [],
+    "Toy.AbsInt.E2.a.sizeOf_spec": [],
+    "Toy.AbsInt.E2.b": [],
+    "Toy.AbsInt.E2.b.elim": [],
+    "Toy.AbsInt.E2.b.sizeOf_spec": [],
+    "Toy.AbsInt.E2.casesOn": [],
+    "Toy.AbsInt.E2.ctorElim": [],
+    "Toy.AbsInt.E2.ctorElimType": [],
+    "Toy.AbsInt.E2.ctorIdx": [],
+    "Toy.AbsInt.E2.heightLE": [],
+    "Toy.AbsInt.E2.isRefl": [],
+    "Toy.AbsInt.E2.isTrans": [],
+    "Toy.AbsInt.E2.noConfusion": [],
+    "Toy.AbsInt.E2.noConfusionType": [],
+    "Toy.AbsInt.E2.not_isAntisymm": [],
+    "Toy.AbsInt.E2.ofNat": [],
+    "Toy.AbsInt.E2.ofNat_ctorIdx": [],
+    "Toy.AbsInt.E2.rec": [],
+    "Toy.AbsInt.E2.recOn": [],
+    "Toy.AbsInt.E_le": [],
+    "Toy.AbsInt.Extensive": [],
+    "Toy.AbsInt.Fin4.acc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.GaloisConnection": [],
+    "Toy.AbsInt.HeightLE": [],
+    "Toy.AbsInt.IsAntisymm": [],
+    "Toy.AbsInt.IsBot": [],
+    "Toy.AbsInt.IsLeastFixpoint": [],
+    "Toy.AbsInt.IsRefl": [],
+    "Toy.AbsInt.IsTrans": [],
+    "Toy.AbsInt.Monotone": [],
+    "Toy.AbsInt.NB": [],
+    "Toy.AbsInt.NB.casesOn": [],
+    "Toy.AbsInt.NB.ctorIdx": [],
+    "Toy.AbsInt.NB.heightLE": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.NB.isRefl": [
+      "propext"
+    ],
+    "Toy.AbsInt.NB.le_iff": [
+      "propext"
+    ],
+    "Toy.AbsInt.NB.leb": [],
+    "Toy.AbsInt.NB.leb.eq_1": [],
+    "Toy.AbsInt.NB.mk": [],
+    "Toy.AbsInt.NB.mk.inj": [],
+    "Toy.AbsInt.NB.mk.injEq": [
+      "propext"
+    ],
+    "Toy.AbsInt.NB.mk.noConfusion": [],
+    "Toy.AbsInt.NB.mk.sizeOf_spec": [],
+    "Toy.AbsInt.NB.noConfusion": [],
+    "Toy.AbsInt.NB.noConfusionType": [],
+    "Toy.AbsInt.NB.not_isTrans": [
+      "propext"
+    ],
+    "Toy.AbsInt.NB.rec": [],
+    "Toy.AbsInt.NB.recOn": [],
+    "Toy.AbsInt.NB.strict_tags": [
+      "propext"
+    ],
+    "Toy.AbsInt.NR2": [],
+    "Toy.AbsInt.NR2.casesOn": [],
+    "Toy.AbsInt.NR2.ctorElim": [],
+    "Toy.AbsInt.NR2.ctorElimType": [],
+    "Toy.AbsInt.NR2.ctorIdx": [],
+    "Toy.AbsInt.NR2.hi": [],
+    "Toy.AbsInt.NR2.hi.elim": [],
+    "Toy.AbsInt.NR2.hi.sizeOf_spec": [],
+    "Toy.AbsInt.NR2.isTrans": [],
+    "Toy.AbsInt.NR2.leb": [],
+    "Toy.AbsInt.NR2.leb.match_1": [],
+    "Toy.AbsInt.NR2.lo": [],
+    "Toy.AbsInt.NR2.lo.elim": [],
+    "Toy.AbsInt.NR2.lo.sizeOf_spec": [],
+    "Toy.AbsInt.NR2.noConfusion": [],
+    "Toy.AbsInt.NR2.noConfusionType": [],
+    "Toy.AbsInt.NR2.not_isRefl": [],
+    "Toy.AbsInt.NR2.ofNat": [],
+    "Toy.AbsInt.NR2.ofNat_ctorIdx": [],
+    "Toy.AbsInt.NR2.rec": [],
+    "Toy.AbsInt.NR2.recOn": [],
+    "Toy.AbsInt.NR3": [],
+    "Toy.AbsInt.NR3.casesOn": [],
+    "Toy.AbsInt.NR3.ctorElim": [],
+    "Toy.AbsInt.NR3.ctorElimType": [],
+    "Toy.AbsInt.NR3.ctorIdx": [],
+    "Toy.AbsInt.NR3.hi": [],
+    "Toy.AbsInt.NR3.hi.elim": [],
+    "Toy.AbsInt.NR3.hi.sizeOf_spec": [],
+    "Toy.AbsInt.NR3.isTrans": [
+      "propext"
+    ],
+    "Toy.AbsInt.NR3.leb": [
+      "propext"
+    ],
+    "Toy.AbsInt.NR3.leb.match_1": [
+      "propext"
+    ],
+    "Toy.AbsInt.NR3.lo": [],
+    "Toy.AbsInt.NR3.lo.elim": [],
+    "Toy.AbsInt.NR3.lo.sizeOf_spec": [],
+    "Toy.AbsInt.NR3.mid": [],
+    "Toy.AbsInt.NR3.mid.elim": [],
+    "Toy.AbsInt.NR3.mid.sizeOf_spec": [],
+    "Toy.AbsInt.NR3.noConfusion": [],
+    "Toy.AbsInt.NR3.noConfusionType": [],
+    "Toy.AbsInt.NR3.not_isRefl": [
+      "propext"
+    ],
+    "Toy.AbsInt.NR3.ofNat": [],
+    "Toy.AbsInt.NR3.ofNat_ctorIdx": [],
+    "Toy.AbsInt.NR3.rec": [],
+    "Toy.AbsInt.NR3.recOn": [],
+    "Toy.AbsInt.NT3": [],
+    "Toy.AbsInt.NT3.casesOn": [],
+    "Toy.AbsInt.NT3.ctorElim": [],
+    "Toy.AbsInt.NT3.ctorElimType": [],
+    "Toy.AbsInt.NT3.ctorIdx": [],
+    "Toy.AbsInt.NT3.hi": [],
+    "Toy.AbsInt.NT3.hi.elim": [],
+    "Toy.AbsInt.NT3.hi.sizeOf_spec": [],
+    "Toy.AbsInt.NT3.isRefl": [
+      "propext"
+    ],
+    "Toy.AbsInt.NT3.leb": [
+      "propext"
+    ],
+    "Toy.AbsInt.NT3.leb.match_1": [
+      "propext"
+    ],
+    "Toy.AbsInt.NT3.lo": [],
+    "Toy.AbsInt.NT3.lo.elim": [],
+    "Toy.AbsInt.NT3.lo.sizeOf_spec": [],
+    "Toy.AbsInt.NT3.mid": [],
+    "Toy.AbsInt.NT3.mid.elim": [],
+    "Toy.AbsInt.NT3.mid.sizeOf_spec": [],
+    "Toy.AbsInt.NT3.noConfusion": [],
+    "Toy.AbsInt.NT3.noConfusionType": [],
+    "Toy.AbsInt.NT3.not_isTrans": [
+      "propext"
+    ],
+    "Toy.AbsInt.NT3.ofNat": [],
+    "Toy.AbsInt.NT3.ofNat_ctorIdx": [],
+    "Toy.AbsInt.NT3.rec": [],
+    "Toy.AbsInt.NT3.recOn": [],
+    "Toy.AbsInt.NT4": [],
+    "Toy.AbsInt.NT4.casesOn": [],
+    "Toy.AbsInt.NT4.ctorElim": [],
+    "Toy.AbsInt.NT4.ctorElimType": [],
+    "Toy.AbsInt.NT4.ctorIdx": [],
+    "Toy.AbsInt.NT4.isRefl": [
+      "propext"
+    ],
+    "Toy.AbsInt.NT4.leb": [
+      "propext"
+    ],
+    "Toy.AbsInt.NT4.leb.match_1": [
+      "propext"
+    ],
+    "Toy.AbsInt.NT4.noConfusion": [],
+    "Toy.AbsInt.NT4.noConfusionType": [],
+    "Toy.AbsInt.NT4.not_isTrans": [
+      "propext"
+    ],
+    "Toy.AbsInt.NT4.ofNat": [],
+    "Toy.AbsInt.NT4.ofNat_ctorIdx": [],
+    "Toy.AbsInt.NT4.p": [],
+    "Toy.AbsInt.NT4.p.elim": [],
+    "Toy.AbsInt.NT4.p.sizeOf_spec": [],
+    "Toy.AbsInt.NT4.q": [],
+    "Toy.AbsInt.NT4.q.elim": [],
+    "Toy.AbsInt.NT4.q.sizeOf_spec": [],
+    "Toy.AbsInt.NT4.r": [],
+    "Toy.AbsInt.NT4.r.elim": [],
+    "Toy.AbsInt.NT4.r.sizeOf_spec": [],
+    "Toy.AbsInt.NT4.rec": [],
+    "Toy.AbsInt.NT4.recOn": [],
+    "Toy.AbsInt.NT4.z": [],
+    "Toy.AbsInt.NT4.z.elim": [],
+    "Toy.AbsInt.NT4.z.sizeOf_spec": [],
+    "Toy.AbsInt.NT4w": [],
+    "Toy.AbsInt.NT4w.acc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.NT4w.acc.match_1_1": [],
+    "Toy.AbsInt.NT4w.bot": [],
+    "Toy.AbsInt.NT4w.bot.elim": [],
+    "Toy.AbsInt.NT4w.bot.sizeOf_spec": [],
+    "Toy.AbsInt.NT4w.casesOn": [],
+    "Toy.AbsInt.NT4w.ctorElim": [],
+    "Toy.AbsInt.NT4w.ctorElimType": [],
+    "Toy.AbsInt.NT4w.ctorIdx": [],
+    "Toy.AbsInt.NT4w.isRefl": [
+      "propext"
+    ],
+    "Toy.AbsInt.NT4w.leb": [
+      "propext"
+    ],
+    "Toy.AbsInt.NT4w.leb.match_1": [
+      "propext"
+    ],
+    "Toy.AbsInt.NT4w.noConfusion": [],
+    "Toy.AbsInt.NT4w.noConfusionType": [],
+    "Toy.AbsInt.NT4w.not_isTrans": [
+      "propext"
+    ],
+    "Toy.AbsInt.NT4w.ofNat": [],
+    "Toy.AbsInt.NT4w.ofNat_ctorIdx": [],
+    "Toy.AbsInt.NT4w.rec": [],
+    "Toy.AbsInt.NT4w.recOn": [],
+    "Toy.AbsInt.NT4w.t": [],
+    "Toy.AbsInt.NT4w.t.elim": [],
+    "Toy.AbsInt.NT4w.t.sizeOf_spec": [],
+    "Toy.AbsInt.NT4w.u": [],
+    "Toy.AbsInt.NT4w.u.elim": [],
+    "Toy.AbsInt.NT4w.u.sizeOf_spec": [],
+    "Toy.AbsInt.NT4w.w": [],
+    "Toy.AbsInt.NT4w.w.elim": [],
+    "Toy.AbsInt.NT4w.w.sizeOf_spec": [],
+    "Toy.AbsInt.PB": [],
+    "Toy.AbsInt.PB.casesOn": [],
+    "Toy.AbsInt.PB.ctorElim": [],
+    "Toy.AbsInt.PB.ctorElimType": [],
+    "Toy.AbsInt.PB.ctorIdx": [],
+    "Toy.AbsInt.PB.le_top": [],
+    "Toy.AbsInt.PB.leb": [],
+    "Toy.AbsInt.PB.leb.eq_1": [],
+    "Toy.AbsInt.PB.leb.eq_2": [],
+    "Toy.AbsInt.PB.leb.eq_3": [],
+    "Toy.AbsInt.PB.leb.match_1": [],
+    "Toy.AbsInt.PB.noConfusion": [],
+    "Toy.AbsInt.PB.noConfusionType": [],
+    "Toy.AbsInt.PB.not_top_le_pt": [
+      "propext"
+    ],
+    "Toy.AbsInt.PB.pt": [],
+    "Toy.AbsInt.PB.pt.elim": [],
+    "Toy.AbsInt.PB.pt.inj": [],
+    "Toy.AbsInt.PB.pt.injEq": [
+      "propext"
+    ],
+    "Toy.AbsInt.PB.pt.noConfusion": [],
+    "Toy.AbsInt.PB.pt.sizeOf_spec": [],
+    "Toy.AbsInt.PB.pt_le_pt": [
+      "propext"
+    ],
+    "Toy.AbsInt.PB.rec": [],
+    "Toy.AbsInt.PB.recOn": [],
+    "Toy.AbsInt.PB.top": [],
+    "Toy.AbsInt.PB.top.elim": [],
+    "Toy.AbsInt.PB.top.sizeOf_spec": [],
+    "Toy.AbsInt.PT": [],
+    "Toy.AbsInt.PT.casesOn": [],
+    "Toy.AbsInt.PT.ctorElim": [],
+    "Toy.AbsInt.PT.ctorElimType": [],
+    "Toy.AbsInt.PT.ctorIdx": [],
+    "Toy.AbsInt.PT.isRefl": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.PT.isTrans": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.PT.le_top": [],
+    "Toy.AbsInt.PT.leb": [],
+    "Toy.AbsInt.PT.leb.eq_1": [],
+    "Toy.AbsInt.PT.leb.eq_2": [],
+    "Toy.AbsInt.PT.leb.eq_3": [],
+    "Toy.AbsInt.PT.leb.match_1": [],
+    "Toy.AbsInt.PT.noConfusion": [],
+    "Toy.AbsInt.PT.noConfusionType": [],
+    "Toy.AbsInt.PT.not_top_le_pt": [
+      "propext"
+    ],
+    "Toy.AbsInt.PT.pt": [],
+    "Toy.AbsInt.PT.pt.elim": [],
+    "Toy.AbsInt.PT.pt.inj": [],
+    "Toy.AbsInt.PT.pt.injEq": [
+      "propext"
+    ],
+    "Toy.AbsInt.PT.pt.noConfusion": [],
+    "Toy.AbsInt.PT.pt.sizeOf_spec": [],
+    "Toy.AbsInt.PT.pt_le_pt": [
+      "propext"
+    ],
+    "Toy.AbsInt.PT.rec": [],
+    "Toy.AbsInt.PT.recOn": [],
+    "Toy.AbsInt.PT.top": [],
+    "Toy.AbsInt.PT.top.elim": [],
+    "Toy.AbsInt.PT.top.sizeOf_spec": [],
+    "Toy.AbsInt.PostFixpoint": [],
+    "Toy.AbsInt.PostFixpoint.instDecidable": [],
+    "Toy.AbsInt.Pred": [],
+    "Toy.AbsInt.Pred.empty": [],
+    "Toy.AbsInt.Pred.le_def": [],
+    "Toy.AbsInt.Pred.le_refl": [],
+    "Toy.AbsInt.Pred.le_trans": [],
+    "Toy.AbsInt.Pred.unit_le_iff": [],
+    "Toy.AbsInt.Pred.univ": [],
+    "Toy.AbsInt.Reductive": [],
+    "Toy.AbsInt.Sign": [],
+    "Toy.AbsInt.Sign.acc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.Sign.bot": [],
+    "Toy.AbsInt.Sign.bot.elim": [],
+    "Toy.AbsInt.Sign.bot.sizeOf_spec": [],
+    "Toy.AbsInt.Sign.casesOn": [],
+    "Toy.AbsInt.Sign.ctorElim": [],
+    "Toy.AbsInt.Sign.ctorElimType": [],
+    "Toy.AbsInt.Sign.ctorIdx": [],
+    "Toy.AbsInt.Sign.heightLE": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.Sign.isAntisymm": [
+      "propext"
+    ],
+    "Toy.AbsInt.Sign.isRefl": [
+      "propext"
+    ],
+    "Toy.AbsInt.Sign.isTrans": [
+      "propext"
+    ],
+    "Toy.AbsInt.Sign.leb": [
+      "propext"
+    ],
+    "Toy.AbsInt.Sign.leb.match_1": [
+      "propext"
+    ],
+    "Toy.AbsInt.Sign.neg": [],
+    "Toy.AbsInt.Sign.neg.elim": [],
+    "Toy.AbsInt.Sign.neg.sizeOf_spec": [],
+    "Toy.AbsInt.Sign.noConfusion": [],
+    "Toy.AbsInt.Sign.noConfusionType": [],
+    "Toy.AbsInt.Sign.ofNat": [],
+    "Toy.AbsInt.Sign.ofNat_ctorIdx": [],
+    "Toy.AbsInt.Sign.pos": [],
+    "Toy.AbsInt.Sign.pos.elim": [],
+    "Toy.AbsInt.Sign.pos.sizeOf_spec": [],
+    "Toy.AbsInt.Sign.rank": [
+      "propext"
+    ],
+    "Toy.AbsInt.Sign.rank.match_1": [
+      "propext"
+    ],
+    "Toy.AbsInt.Sign.rank_strict": [
+      "propext"
+    ],
+    "Toy.AbsInt.Sign.rec": [],
+    "Toy.AbsInt.Sign.recOn": [],
+    "Toy.AbsInt.Sign.top": [],
+    "Toy.AbsInt.Sign.top.elim": [],
+    "Toy.AbsInt.Sign.top.sizeOf_spec": [],
+    "Toy.AbsInt.Sign.zero": [],
+    "Toy.AbsInt.Sign.zero.elim": [],
+    "Toy.AbsInt.Sign.zero.sizeOf_spec": [],
+    "Toy.AbsInt.Sound": [],
+    "Toy.AbsInt.StrictLt": [],
+    "Toy.AbsInt.StrictLt.eq_1": [],
+    "Toy.AbsInt.StrictLt.instDecidable": [],
+    "Toy.AbsInt.StrictLt.irrefl": [],
+    "Toy.AbsInt.U": [],
+    "Toy.AbsInt.UB": [],
+    "Toy.AbsInt.UB.atMost": [],
+    "Toy.AbsInt.UB.atMost.elim": [],
+    "Toy.AbsInt.UB.atMost.inj": [],
+    "Toy.AbsInt.UB.atMost.injEq": [
+      "propext"
+    ],
+    "Toy.AbsInt.UB.atMost.noConfusion": [],
+    "Toy.AbsInt.UB.atMost.sizeOf_spec": [],
+    "Toy.AbsInt.UB.atMost_le_atMost": [
+      "propext"
+    ],
+    "Toy.AbsInt.UB.bot": [],
+    "Toy.AbsInt.UB.bot.elim": [],
+    "Toy.AbsInt.UB.bot.sizeOf_spec": [],
+    "Toy.AbsInt.UB.bot_le": [
+      "propext"
+    ],
+    "Toy.AbsInt.UB.casesOn": [],
+    "Toy.AbsInt.UB.ctorElim": [],
+    "Toy.AbsInt.UB.ctorElimType": [],
+    "Toy.AbsInt.UB.ctorIdx": [],
+    "Toy.AbsInt.UB.isRefl": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.UB.isTrans": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.UB.le_top": [
+      "propext"
+    ],
+    "Toy.AbsInt.UB.leb": [
+      "propext"
+    ],
+    "Toy.AbsInt.UB.leb.eq_1": [
+      "propext"
+    ],
+    "Toy.AbsInt.UB.leb.eq_2": [
+      "propext"
+    ],
+    "Toy.AbsInt.UB.leb.eq_3": [
+      "propext"
+    ],
+    "Toy.AbsInt.UB.leb.eq_4": [
+      "propext"
+    ],
+    "Toy.AbsInt.UB.leb.match_1": [
+      "propext"
+    ],
+    "Toy.AbsInt.UB.noConfusion": [],
+    "Toy.AbsInt.UB.noConfusionType": [],
+    "Toy.AbsInt.UB.not_acc": [
+      "propext"
+    ],
+    "Toy.AbsInt.UB.not_atMost_le_bot": [
+      "propext"
+    ],
+    "Toy.AbsInt.UB.not_heightLE": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.UB.not_top_le_atMost": [
+      "propext"
+    ],
+    "Toy.AbsInt.UB.not_top_le_bot": [
+      "propext"
+    ],
+    "Toy.AbsInt.UB.rec": [],
+    "Toy.AbsInt.UB.recOn": [],
+    "Toy.AbsInt.UB.top": [],
+    "Toy.AbsInt.UB.top.elim": [],
+    "Toy.AbsInt.UB.top.sizeOf_spec": [],
+    "Toy.AbsInt.V3": [],
+    "Toy.AbsInt.V3.acc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.V3.bot": [],
+    "Toy.AbsInt.V3.bot.elim": [],
+    "Toy.AbsInt.V3.bot.sizeOf_spec": [],
+    "Toy.AbsInt.V3.casesOn": [],
+    "Toy.AbsInt.V3.ctorElim": [],
+    "Toy.AbsInt.V3.ctorElimType": [],
+    "Toy.AbsInt.V3.ctorIdx": [],
+    "Toy.AbsInt.V3.heightLE": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.V3.isRefl": [
+      "propext"
+    ],
+    "Toy.AbsInt.V3.isTrans": [
+      "propext"
+    ],
+    "Toy.AbsInt.V3.leb": [
+      "propext"
+    ],
+    "Toy.AbsInt.V3.leb.match_1": [
+      "propext"
+    ],
+    "Toy.AbsInt.V3.noConfusion": [],
+    "Toy.AbsInt.V3.noConfusionType": [],
+    "Toy.AbsInt.V3.ofNat": [],
+    "Toy.AbsInt.V3.ofNat_ctorIdx": [],
+    "Toy.AbsInt.V3.rank": [
+      "propext"
+    ],
+    "Toy.AbsInt.V3.rank.match_1": [
+      "propext"
+    ],
+    "Toy.AbsInt.V3.rank_strict": [
+      "propext"
+    ],
+    "Toy.AbsInt.V3.rec": [],
+    "Toy.AbsInt.V3.recOn": [],
+    "Toy.AbsInt.V3.x": [],
+    "Toy.AbsInt.V3.x.elim": [],
+    "Toy.AbsInt.V3.x.sizeOf_spec": [],
+    "Toy.AbsInt.V3.y": [],
+    "Toy.AbsInt.V3.y.elim": [],
+    "Toy.AbsInt.V3.y.sizeOf_spec": [],
+    "Toy.AbsInt.W4": [],
+    "Toy.AbsInt.W4.acc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.W4.casesOn": [],
+    "Toy.AbsInt.W4.ctorElim": [],
+    "Toy.AbsInt.W4.ctorElimType": [],
+    "Toy.AbsInt.W4.ctorIdx": [],
+    "Toy.AbsInt.W4.isRefl": [
+      "propext"
+    ],
+    "Toy.AbsInt.W4.isTrans": [
+      "propext"
+    ],
+    "Toy.AbsInt.W4.leb": [
+      "propext"
+    ],
+    "Toy.AbsInt.W4.leb.match_1": [
+      "propext"
+    ],
+    "Toy.AbsInt.W4.m": [],
+    "Toy.AbsInt.W4.m.elim": [],
+    "Toy.AbsInt.W4.m.sizeOf_spec": [],
+    "Toy.AbsInt.W4.noConfusion": [],
+    "Toy.AbsInt.W4.noConfusionType": [],
+    "Toy.AbsInt.W4.ofNat": [],
+    "Toy.AbsInt.W4.ofNat_ctorIdx": [],
+    "Toy.AbsInt.W4.p": [],
+    "Toy.AbsInt.W4.p.elim": [],
+    "Toy.AbsInt.W4.p.sizeOf_spec": [],
+    "Toy.AbsInt.W4.q": [],
+    "Toy.AbsInt.W4.q.elim": [],
+    "Toy.AbsInt.W4.q.sizeOf_spec": [],
+    "Toy.AbsInt.W4.rec": [],
+    "Toy.AbsInt.W4.recOn": [],
+    "Toy.AbsInt.W4.z": [],
+    "Toy.AbsInt.W4.z.elim": [],
+    "Toy.AbsInt.W4.z.sizeOf_spec": [],
+    "Toy.AbsInt.WidenStabilizes": [],
+    "Toy.AbsInt.WidenTerminates": [],
+    "Toy.AbsInt.WidenUpperLeft": [],
+    "Toy.AbsInt.WidenUpperRight": [],
+    "Toy.AbsInt.accOfHeight_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.accOfHeight_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.acc_example_neg": [
+      "propext"
+    ],
+    "Toy.AbsInt.acc_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.acc_of_heightLE": [],
+    "Toy.AbsInt.acc_of_heightLE.match_1_1": [],
+    "Toy.AbsInt.acc_of_rank": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.acc_of_rank.match_1_1": [],
+    "Toy.AbsInt.ascending_example_neg": [],
+    "Toy.AbsInt.ascending_example_pos": [],
+    "Toy.AbsInt.b2Alpha": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.b2Gamma": [],
+    "Toy.AbsInt.b2Gamma.match_1": [],
+    "Toy.AbsInt.b2GammaRev": [],
+    "Toy.AbsInt.b2GammaRev_not_monotone": [],
+    "Toy.AbsInt.b2Gamma_monotone": [],
+    "Toy.AbsInt.b2_gc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.bestMono_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.bestMono_tight_gc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.bestMono_tight_monoF": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.bestMono_tight_refl": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.bestMono_tight_trans": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.bestSound_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.bestSound_tight_gc": [],
+    "Toy.AbsInt.bestSound_tight_refl": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.bestTransformer": [],
+    "Toy.AbsInt.bestTransformer_comp_exact_sign_incr": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.bestTransformer_comp_exact_sign_incr.match_1_2": [],
+    "Toy.AbsInt.bestTransformer_comp_le_of_galoisConnection_of_refl_of_monotone": [],
+    "Toy.AbsInt.bestTransformer_comp_strict_sign": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.bestTransformer_decr_comp_incr_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.bestTransformer_decr_comp_incr_pos.match_1_2": [],
+    "Toy.AbsInt.bestTransformer_decr_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.bestTransformer_example_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.bestTransformer_example_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.bestTransformer_incr_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.bestTransformer_incr_pos.match_1_2": [],
+    "Toy.AbsInt.bestTransformer_lowerBound_not_sound_without_refl": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.bestTransformer_monotone_of_galoisConnection_of_refl_of_trans_of_monotone": [],
+    "Toy.AbsInt.bestTransformer_sound_of_galoisConnection_of_refl": [],
+    "Toy.AbsInt.boolAlpha": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.boolAlpha_of_empty": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.boolAlpha_of_mem": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.boolGamma": [],
+    "Toy.AbsInt.boolGamma.match_1": [],
+    "Toy.AbsInt.bool_gc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.capSucc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.capTop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.capZero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.compLe_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.compLe_tight_gc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.compLe_tight_monoF": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.compLe_tight_refl": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.compl": [],
+    "Toy.AbsInt.constTrue": [],
+    "Toy.AbsInt.counterStep": [],
+    "Toy.AbsInt.counterStep_monotone": [],
+    "Toy.AbsInt.cyc3Chain": [],
+    "Toy.AbsInt.cyc3_not_acc": [
+      "propext"
+    ],
+    "Toy.AbsInt.cyc3_not_heightLE": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.decr": [],
+    "Toy.AbsInt.dis2Swap": [],
+    "Toy.AbsInt.dis2Swap.match_1": [],
+    "Toy.AbsInt.dis2Swap_monotone": [
+      "propext"
+    ],
+    "Toy.AbsInt.dis2Swap_no_postFixpoint": [
+      "propext"
+    ],
+    "Toy.AbsInt.exists_kleene_postFixpoint_le_of_monotone_of_heightLE_of_le_apply": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.exists_kleene_postFixpoint_of_monotone_of_acc_of_le_apply": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.exists_widenIter_postFixpoint_of_trans_of_upperLeft_of_upperRight_of_terminates_of_monotone_of_le_apply": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.extensive_example_neg": [],
+    "Toy.AbsInt.extensive_example_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.flipWiden": [],
+    "Toy.AbsInt.flipWiden.match_1": [],
+    "Toy.AbsInt.flipWiden_chain_step": [],
+    "Toy.AbsInt.galoisConnection_example_neg": [],
+    "Toy.AbsInt.galoisConnection_example_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.galoisConnection_iff_monotone_extensive_reductive_of_refl_of_trans": [],
+    "Toy.AbsInt.galoisConnection_of_monotone_extensive_reductive_of_trans": [],
+    "Toy.AbsInt.gcBackward_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.gcBackward_tight_extensive": [],
+    "Toy.AbsInt.gcBackward_tight_monoAlpha": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.gcBackward_tight_monoGamma": [],
+    "Toy.AbsInt.gcBackward_tight_reductive": [],
+    "Toy.AbsInt.gcBackward_tight_trans": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.gcForward_tight_gc": [],
+    "Toy.AbsInt.gcForward_tight_refl": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.gcForward_tight_trans": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.gcIff_tight_refl": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.gcIff_tight_trans": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.gc_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.heightLE_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.heightLE_example_neg.match_1_1": [],
+    "Toy.AbsInt.heightLE_example_neg.match_1_3": [
+      "propext"
+    ],
+    "Toy.AbsInt.heightLE_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.heightLE_of_rank": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.incr": [],
+    "Toy.AbsInt.instDecidableEqB2": [],
+    "Toy.AbsInt.instDecidableEqCyc3": [],
+    "Toy.AbsInt.instDecidableEqDis2": [],
+    "Toy.AbsInt.instDecidableEqE2": [],
+    "Toy.AbsInt.instDecidableEqNB": [],
+    "Toy.AbsInt.instDecidableEqNB.decEq": [],
+    "Toy.AbsInt.instDecidableEqNB.decEq.match_1": [],
+    "Toy.AbsInt.instDecidableEqNR2": [],
+    "Toy.AbsInt.instDecidableEqNR3": [],
+    "Toy.AbsInt.instDecidableEqNT3": [],
+    "Toy.AbsInt.instDecidableEqNT4": [],
+    "Toy.AbsInt.instDecidableEqNT4w": [],
+    "Toy.AbsInt.instDecidableEqPB": [],
+    "Toy.AbsInt.instDecidableEqPB.decEq": [],
+    "Toy.AbsInt.instDecidableEqPB.decEq.match_1": [],
+    "Toy.AbsInt.instDecidableEqPT": [],
+    "Toy.AbsInt.instDecidableEqPT.decEq": [],
+    "Toy.AbsInt.instDecidableEqPT.decEq.match_1": [],
+    "Toy.AbsInt.instDecidableEqSign": [],
+    "Toy.AbsInt.instDecidableEqUB": [],
+    "Toy.AbsInt.instDecidableEqUB.decEq": [],
+    "Toy.AbsInt.instDecidableEqUB.decEq.match_1": [],
+    "Toy.AbsInt.instDecidableEqV3": [],
+    "Toy.AbsInt.instDecidableEqW4": [],
+    "Toy.AbsInt.instDecidableLeB2": [],
+    "Toy.AbsInt.instDecidableLeCyc3": [
+      "propext"
+    ],
+    "Toy.AbsInt.instDecidableLeDis2": [
+      "propext"
+    ],
+    "Toy.AbsInt.instDecidableLeE2": [],
+    "Toy.AbsInt.instDecidableLeNB": [],
+    "Toy.AbsInt.instDecidableLeNR2": [],
+    "Toy.AbsInt.instDecidableLeNR3": [
+      "propext"
+    ],
+    "Toy.AbsInt.instDecidableLeNT3": [
+      "propext"
+    ],
+    "Toy.AbsInt.instDecidableLeNT4": [
+      "propext"
+    ],
+    "Toy.AbsInt.instDecidableLeNT4w": [
+      "propext"
+    ],
+    "Toy.AbsInt.instDecidableLePB": [],
+    "Toy.AbsInt.instDecidableLePT": [],
+    "Toy.AbsInt.instDecidableLeSign": [
+      "propext"
+    ],
+    "Toy.AbsInt.instDecidableLeUB": [
+      "propext"
+    ],
+    "Toy.AbsInt.instDecidableLeV3": [
+      "propext"
+    ],
+    "Toy.AbsInt.instDecidableLeW4": [
+      "propext"
+    ],
+    "Toy.AbsInt.instLEB2": [],
+    "Toy.AbsInt.instLECyc3": [
+      "propext"
+    ],
+    "Toy.AbsInt.instLEDis2": [
+      "propext"
+    ],
+    "Toy.AbsInt.instLEE2": [],
+    "Toy.AbsInt.instLENB": [],
+    "Toy.AbsInt.instLENR2": [],
+    "Toy.AbsInt.instLENR3": [
+      "propext"
+    ],
+    "Toy.AbsInt.instLENT3": [
+      "propext"
+    ],
+    "Toy.AbsInt.instLENT4": [
+      "propext"
+    ],
+    "Toy.AbsInt.instLENT4w": [
+      "propext"
+    ],
+    "Toy.AbsInt.instLEPB": [],
+    "Toy.AbsInt.instLEPT": [],
+    "Toy.AbsInt.instLEPred": [],
+    "Toy.AbsInt.instLESign": [
+      "propext"
+    ],
+    "Toy.AbsInt.instLEUB": [
+      "propext"
+    ],
+    "Toy.AbsInt.instLEV3": [
+      "propext"
+    ],
+    "Toy.AbsInt.instLEW4": [
+      "propext"
+    ],
+    "Toy.AbsInt.instReprB2": [],
+    "Toy.AbsInt.instReprB2.repr": [],
+    "Toy.AbsInt.instReprB2.repr.match_1": [],
+    "Toy.AbsInt.instReprCyc3": [],
+    "Toy.AbsInt.instReprCyc3.repr": [],
+    "Toy.AbsInt.instReprCyc3.repr.match_1": [],
+    "Toy.AbsInt.instReprDis2": [],
+    "Toy.AbsInt.instReprDis2.repr": [],
+    "Toy.AbsInt.instReprDis2.repr.match_1": [],
+    "Toy.AbsInt.instReprE2": [],
+    "Toy.AbsInt.instReprE2.repr": [],
+    "Toy.AbsInt.instReprE2.repr.match_1": [],
+    "Toy.AbsInt.instReprNB": [],
+    "Toy.AbsInt.instReprNB.repr": [],
+    "Toy.AbsInt.instReprNB.repr.match_1": [],
+    "Toy.AbsInt.instReprNR2": [],
+    "Toy.AbsInt.instReprNR2.repr": [],
+    "Toy.AbsInt.instReprNR2.repr.match_1": [],
+    "Toy.AbsInt.instReprNR3": [],
+    "Toy.AbsInt.instReprNR3.repr": [],
+    "Toy.AbsInt.instReprNR3.repr.match_1": [],
+    "Toy.AbsInt.instReprNT3": [],
+    "Toy.AbsInt.instReprNT3.repr": [],
+    "Toy.AbsInt.instReprNT3.repr.match_1": [],
+    "Toy.AbsInt.instReprNT4": [],
+    "Toy.AbsInt.instReprNT4.repr": [],
+    "Toy.AbsInt.instReprNT4.repr.match_1": [],
+    "Toy.AbsInt.instReprNT4w": [],
+    "Toy.AbsInt.instReprNT4w.repr": [],
+    "Toy.AbsInt.instReprNT4w.repr.match_1": [],
+    "Toy.AbsInt.instReprPB": [],
+    "Toy.AbsInt.instReprPB.repr": [],
+    "Toy.AbsInt.instReprPB.repr.match_1": [],
+    "Toy.AbsInt.instReprPT": [],
+    "Toy.AbsInt.instReprPT.repr": [],
+    "Toy.AbsInt.instReprPT.repr.match_1": [],
+    "Toy.AbsInt.instReprSign": [],
+    "Toy.AbsInt.instReprSign.repr": [],
+    "Toy.AbsInt.instReprSign.repr.match_1": [],
+    "Toy.AbsInt.instReprUB": [],
+    "Toy.AbsInt.instReprUB.repr": [],
+    "Toy.AbsInt.instReprUB.repr.match_1": [],
+    "Toy.AbsInt.instReprV3": [],
+    "Toy.AbsInt.instReprV3.repr": [],
+    "Toy.AbsInt.instReprV3.repr.match_1": [],
+    "Toy.AbsInt.instReprW4": [],
+    "Toy.AbsInt.instReprW4.repr": [],
+    "Toy.AbsInt.instReprW4.repr.match_1": [],
+    "Toy.AbsInt.isAntisymm_example_neg": [],
+    "Toy.AbsInt.isAntisymm_example_neg_nonTrans": [
+      "propext"
+    ],
+    "Toy.AbsInt.isAntisymm_example_pos": [
+      "propext"
+    ],
+    "Toy.AbsInt.isBot_example_neg": [
+      "propext"
+    ],
+    "Toy.AbsInt.isBot_example_pos": [
+      "propext"
+    ],
+    "Toy.AbsInt.isLeastFixpoint_constU": [],
+    "Toy.AbsInt.isLeastFixpoint_example_neg": [],
+    "Toy.AbsInt.isLeastFixpoint_example_neg.match_1_1": [],
+    "Toy.AbsInt.isLeastFixpoint_example_pos": [],
+    "Toy.AbsInt.isLeastFixpoint_lfp_and_le_gamma_of_monotone_of_monotone_gamma_of_sound_of_postFixpoint": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.isLeastFixpoint_nonMonoUniqueFix_pTrue": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.isRefl_example_neg": [],
+    "Toy.AbsInt.isRefl_example_pos": [],
+    "Toy.AbsInt.isTrans_example_neg": [
+      "propext"
+    ],
+    "Toy.AbsInt.isTrans_example_pos": [],
+    "Toy.AbsInt.ite_of_neg": [
+      "propext"
+    ],
+    "Toy.AbsInt.ite_of_pos": [
+      "propext"
+    ],
+    "Toy.AbsInt.kleene": [],
+    "Toy.AbsInt.kleene.match_1": [],
+    "Toy.AbsInt.kleeneAcc_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.kleeneAcc_tight_acc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.kleeneAcc_tight_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.kleeneAcc_tight_start": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.kleeneHeight_bound_attained": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.kleeneHeight_bound_not_attained_from_top": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.kleeneHeight_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.kleeneHeight_tight_height": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.kleeneHeight_tight_height.match_1_1": [
+      "propext"
+    ],
+    "Toy.AbsInt.kleeneHeight_tight_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.kleeneHeight_tight_monotone.match_1_1": [
+      "propext"
+    ],
+    "Toy.AbsInt.kleeneHeight_tight_start": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.kleeneHeight_tight_start.match_1_1": [
+      "propext"
+    ],
+    "Toy.AbsInt.kleene_capSucc_val": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.kleene_converges_sign": [
+      "propext"
+    ],
+    "Toy.AbsInt.kleene_diverges_widen_converges_ub": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.kleene_example_neg": [],
+    "Toy.AbsInt.kleene_example_pos": [],
+    "Toy.AbsInt.kleene_ubIncr_not_postFixpoint": [
+      "propext"
+    ],
+    "Toy.AbsInt.kleene_ubIncr_succ": [],
+    "Toy.AbsInt.le_U": [],
+    "Toy.AbsInt.lfp": [],
+    "Toy.AbsInt.lfpEq_nonvacuous": [],
+    "Toy.AbsInt.lfpEq_tight_monotone": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.lfpFixGamma_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.lfpFixGamma_tight_monoGamma": [],
+    "Toy.AbsInt.lfpFixGamma_tight_monoGamma.match_1_1": [],
+    "Toy.AbsInt.lfpFixGamma_tight_monotone": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.lfpFixGamma_tight_monotone.match_1_1": [],
+    "Toy.AbsInt.lfpFixGamma_tight_monotone.match_1_3": [],
+    "Toy.AbsInt.lfpFixGamma_tight_postFixpoint": [],
+    "Toy.AbsInt.lfpFixGamma_tight_postFixpoint.match_1_1": [],
+    "Toy.AbsInt.lfpFixGamma_tight_sound": [],
+    "Toy.AbsInt.lfpFixGamma_tight_sound.match_1_1": [],
+    "Toy.AbsInt.lfpGamma_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.lfpGamma_tight_monoGamma": [],
+    "Toy.AbsInt.lfpGamma_tight_postFixpoint": [],
+    "Toy.AbsInt.lfpGamma_tight_sound": [],
+    "Toy.AbsInt.lfpLe_nonvacuous": [],
+    "Toy.AbsInt.lfpLe_tight_postFixpoint": [],
+    "Toy.AbsInt.lfp_counterStep": [],
+    "Toy.AbsInt.lfp_eq_of_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.lfp_example_neg": [],
+    "Toy.AbsInt.lfp_example_pos": [],
+    "Toy.AbsInt.lfp_le_gamma_of_monotone_gamma_of_sound_of_postFixpoint": [],
+    "Toy.AbsInt.lfp_le_of_le": [],
+    "Toy.AbsInt.lfp_nonMonoUniqueFix_eq_empty": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.lfp_not_postFixpoint_of_not_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.monotone_example_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.monotone_example_pos": [],
+    "Toy.AbsInt.monotone_extensive_reductive_of_galoisConnection_of_refl_of_trans": [],
+    "Toy.AbsInt.nbChain": [],
+    "Toy.AbsInt.nbChain.eq_1": [],
+    "Toy.AbsInt.nb_heightLE_one_ascending_not_stabilizing": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.nb_heightLE_one_ascending_not_stabilizing.match_1_1": [],
+    "Toy.AbsInt.nb_heightLE_one_ascending_not_stabilizing.match_1_7": [],
+    "Toy.AbsInt.nonMonoUniqueFix": [],
+    "Toy.AbsInt.nonMonoUniqueFix_empty": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.nonMonoUniqueFix_not_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.nonMonoUniqueFix_pFalse": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.nonMonoUniqueFix_pTrue": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.nonMonoUniqueFix_unique_fixpoint": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.notAtFalse": [],
+    "Toy.AbsInt.not_U_le_E": [],
+    "Toy.AbsInt.not_le_E_of": [],
+    "Toy.AbsInt.nr2Alpha": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.nr2Gamma": [],
+    "Toy.AbsInt.nr2_gc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.nr2_not_extensive": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.nr3Alpha": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.nr3Gamma": [],
+    "Toy.AbsInt.nr3Gamma.match_1": [],
+    "Toy.AbsInt.nr3_gc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.nt3Alpha": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.nt3Gamma": [],
+    "Toy.AbsInt.nt3Gamma.match_1": [],
+    "Toy.AbsInt.nt3_laws": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.nt3_not_gc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.nt4Alpha": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.nt4Gamma": [],
+    "Toy.AbsInt.nt4Gamma.match_1": [],
+    "Toy.AbsInt.nt4_gc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.nt4_not_monotone_gamma": [
+      "propext"
+    ],
+    "Toy.AbsInt.nt4wIter_cases": [],
+    "Toy.AbsInt.nt4wStep": [],
+    "Toy.AbsInt.nt4wStep.match_1": [],
+    "Toy.AbsInt.nt4wWiden": [],
+    "Toy.AbsInt.nt4wWiden.match_1": [],
+    "Toy.AbsInt.pFalse": [],
+    "Toy.AbsInt.pTrue": [],
+    "Toy.AbsInt.pbStutter": [],
+    "Toy.AbsInt.pbStutter.eq_1": [],
+    "Toy.AbsInt.pbStutter_chain": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.pbStutter_chain_val": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.pbWiden": [],
+    "Toy.AbsInt.pbWiden.eq_1": [],
+    "Toy.AbsInt.pbWiden.eq_2": [],
+    "Toy.AbsInt.pbWiden.eq_3": [],
+    "Toy.AbsInt.pbWiden.eq_4": [],
+    "Toy.AbsInt.pbWiden.match_1": [],
+    "Toy.AbsInt.pbWiden_terminates": [
+      "propext"
+    ],
+    "Toy.AbsInt.pbWiden_terminates_infinitely_many_strict": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.pbWiden_terminates_infinitely_many_strict.match_1_3": [],
+    "Toy.AbsInt.pbWiden_top_left": [],
+    "Toy.AbsInt.pbWiden_upperLeft": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.pbWiden_upperRight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.pb_not_strict_from_top": [],
+    "Toy.AbsInt.pb_strict_cases": [
+      "propext"
+    ],
+    "Toy.AbsInt.pb_strict_from_false": [
+      "propext"
+    ],
+    "Toy.AbsInt.posLoop": [],
+    "Toy.AbsInt.posLoop_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.posLoop_example_pos": [],
+    "Toy.AbsInt.posLoop_monotone": [],
+    "Toy.AbsInt.post": [],
+    "Toy.AbsInt.postFixpoint_example_neg": [
+      "propext"
+    ],
+    "Toy.AbsInt.postFixpoint_example_pos": [
+      "propext"
+    ],
+    "Toy.AbsInt.post_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.post_example_neg.match_1_1": [],
+    "Toy.AbsInt.post_example_pos": [],
+    "Toy.AbsInt.post_monotone": [],
+    "Toy.AbsInt.post_monotone.match_1_1": [],
+    "Toy.AbsInt.pred_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.pred_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.ptBadStep": [],
+    "Toy.AbsInt.ptBadStep.eq_1": [],
+    "Toy.AbsInt.ptBadStep.eq_2": [],
+    "Toy.AbsInt.ptBadStep.match_1": [],
+    "Toy.AbsInt.ptBad_iter_inv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.ptBad_not_postFixpoint": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.ptJoin": [
+      "propext"
+    ],
+    "Toy.AbsInt.ptJoin.eq_1": [
+      "propext"
+    ],
+    "Toy.AbsInt.ptJoin.eq_2": [
+      "propext"
+    ],
+    "Toy.AbsInt.ptJoin.match_1": [
+      "propext"
+    ],
+    "Toy.AbsInt.ptShift": [],
+    "Toy.AbsInt.ptShift.eq_1": [],
+    "Toy.AbsInt.ptShift.eq_2": [],
+    "Toy.AbsInt.ptShift_iter": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.ptShift_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.ptWiden": [
+      "propext"
+    ],
+    "Toy.AbsInt.ptWiden_terminates": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.ptWiden_top": [
+      "propext"
+    ],
+    "Toy.AbsInt.ptWiden_upperLeft": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.ptWiden_upperRight": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.reductive_example_neg": [],
+    "Toy.AbsInt.reductive_example_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.signAlpha": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.signAlpha_eq_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.signAlpha_eq_top": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.signGC": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.signGamma": [],
+    "Toy.AbsInt.signGamma.eq_1": [],
+    "Toy.AbsInt.signGamma.eq_2": [],
+    "Toy.AbsInt.signGamma.eq_3": [],
+    "Toy.AbsInt.signGamma.eq_4": [],
+    "Toy.AbsInt.signGamma.eq_5": [],
+    "Toy.AbsInt.signGamma_monotone": [
+      "propext"
+    ],
+    "Toy.AbsInt.signLoop": [
+      "propext"
+    ],
+    "Toy.AbsInt.signLoop.match_1": [
+      "propext"
+    ],
+    "Toy.AbsInt.signLoop_monotone": [
+      "propext"
+    ],
+    "Toy.AbsInt.signPosLoop": [
+      "propext"
+    ],
+    "Toy.AbsInt.signPosLoop.match_1": [
+      "propext"
+    ],
+    "Toy.AbsInt.signPosLoop_example_neg": [
+      "propext"
+    ],
+    "Toy.AbsInt.signPosLoop_example_pos": [
+      "propext"
+    ],
+    "Toy.AbsInt.signPosLoop_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.soundIff_tight_gc": [],
+    "Toy.AbsInt.sound_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.sound_example_pos": [],
+    "Toy.AbsInt.sound_iff_bestTransformer_le_of_galoisConnection": [],
+    "Toy.AbsInt.sound_le_of_le_gamma_of_monotone": [],
+    "Toy.AbsInt.sound_not_subset_of_not_monotone": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.step4": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.strictLt_example_neg": [
+      "propext"
+    ],
+    "Toy.AbsInt.strictLt_example_pos": [
+      "propext"
+    ],
+    "Toy.AbsInt.transfer_misses_leastFixpoint_of_not_monotone": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.ubGamma": [],
+    "Toy.AbsInt.ubGamma.eq_1": [],
+    "Toy.AbsInt.ubGamma.eq_2": [],
+    "Toy.AbsInt.ubGamma.eq_3": [],
+    "Toy.AbsInt.ubGamma_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.ubGamma_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.ubGamma_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.ubIncr": [],
+    "Toy.AbsInt.ubIncr.eq_1": [],
+    "Toy.AbsInt.ubIncr.eq_2": [],
+    "Toy.AbsInt.ubIncr.eq_3": [],
+    "Toy.AbsInt.ubIncr.match_1": [],
+    "Toy.AbsInt.ubIncr_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.ubIncr_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.ubWiden": [
+      "propext"
+    ],
+    "Toy.AbsInt.ubWiden_cases": [
+      "propext"
+    ],
+    "Toy.AbsInt.ubWiden_stabilizes": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.ubWiden_terminates": [
+      "propext"
+    ],
+    "Toy.AbsInt.ubWiden_top": [
+      "propext"
+    ],
+    "Toy.AbsInt.ubWiden_upperLeft": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.ubWiden_upperRight": [
+      "propext"
+    ],
+    "Toy.AbsInt.unitAlpha": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.unitAlpha_E": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.unitAlpha_U": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.unitAlpha_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.unitAlpha_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.unit_le_of_not": [],
+    "Toy.AbsInt.v3Step": [],
+    "Toy.AbsInt.v3Step.match_1": [],
+    "Toy.AbsInt.v3Step_no_postFixpoint": [
+      "propext"
+    ],
+    "Toy.AbsInt.w4Iter_cases": [
+      "propext"
+    ],
+    "Toy.AbsInt.w4Step": [],
+    "Toy.AbsInt.w4Step.match_1": [],
+    "Toy.AbsInt.w4Widen": [
+      "propext"
+    ],
+    "Toy.AbsInt.w4Widen.match_1": [
+      "propext"
+    ],
+    "Toy.AbsInt.widen4": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.widen4_stabilizes": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.widenBridge_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.widenBridge_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.widenChain": [],
+    "Toy.AbsInt.widenChain.match_1": [],
+    "Toy.AbsInt.widenChain_example_neg": [
+      "propext"
+    ],
+    "Toy.AbsInt.widenChain_example_pos": [
+      "propext"
+    ],
+    "Toy.AbsInt.widenChain_max_id": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.widenIter": [],
+    "Toy.AbsInt.widenIter.eq_1": [],
+    "Toy.AbsInt.widenIter.eq_2": [],
+    "Toy.AbsInt.widenIter.eq_def": [],
+    "Toy.AbsInt.widenIter_example_neg": [
+      "propext"
+    ],
+    "Toy.AbsInt.widenIter_example_pos": [
+      "propext"
+    ],
+    "Toy.AbsInt.widenIter_left_const": [],
+    "Toy.AbsInt.widenIter_max_succ": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.widenIter_postFixpoint_not_persistent": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.widenIter_ub_one": [
+      "propext"
+    ],
+    "Toy.AbsInt.widenStabilizes_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.widenStabilizes_example_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.widenTerminates_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.widenTerminates_example_pos": [
+      "propext"
+    ],
+    "Toy.AbsInt.widenTerminates_not_widenStabilizes_preorder": [],
+    "Toy.AbsInt.widenTerminates_of_acc": [],
+    "Toy.AbsInt.widenTerminates_of_widenStabilizes": [],
+    "Toy.AbsInt.widenUpperLeft_example_neg": [],
+    "Toy.AbsInt.widenUpperLeft_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.widenUpperRight_example_neg": [],
+    "Toy.AbsInt.widenUpperRight_example_pos": [
+      "propext"
+    ],
+    "Toy.AbsInt.widen_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.widen_tight_monotone": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.widen_tight_start": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.widen_tight_terminates": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.widen_tight_trans": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.widen_tight_upperLeft": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.AbsInt.widen_tight_upperRight": [
+      "Quot.sound",
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
