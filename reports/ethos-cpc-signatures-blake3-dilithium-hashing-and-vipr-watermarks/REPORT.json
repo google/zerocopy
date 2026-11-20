@@ -1,0 +1,108 @@
+{
+  "topics": [
+    "verification/generic-theory-checkers",
+    "smt/cooperating-proof-calculus",
+    "security/authenticated-proof-streams",
+    "smt/sparse-cutting-plane-certificates"
+  ],
+  "subjects": [
+    {
+      "name": "Ethos proof checker for the Eunoia logical framework (src/)",
+      "identity": {
+        "repository": "cvc5/ethos",
+        "revision": "b02afbe66a4f796043ed3c5b9790cb6e7f00b9cc",
+        "version": "0.2.5 as printed by --show-config"
+      }
+    },
+    {
+      "name": "cvc5 1.4.2 (Cooperating Proof Calculus Eunoia signature under proofs/eo/cpc, and the release binary used to emit proofs)",
+      "identity": {
+        "repository": "cvc5/cvc5",
+        "revision": "282d5e0c84baf49c780704c532f87ba66d8b513d",
+        "version": "cvc5-1.4.2",
+        "artifact": "cvc5-Linux-x86_64-static.zip",
+        "sha256": "7eb18f8c814c36a46c5a7d003983e9cfbc4b0a9828d6dd596239291bd4cc61d8"
+      }
+    },
+    {
+      "name": "VIPR certificate format specification and viprchk checker",
+      "identity": {
+        "repository": "ambros-gleixner/VIPR",
+        "revision": "f221c3fd2274e8e859e8e24505278d6f7c1bb8ff"
+      }
+    },
+    {
+      "name": "VIPR successor repository (example certificates under examples/)",
+      "identity": {
+        "repository": "scipopt/vipr",
+        "revision": "99eec197a49b2bd9ad33c1f4c7afabe93caa6511"
+      }
+    },
+    {
+      "name": "VeriPB pseudo-Boolean proof verifier",
+      "identity": {
+        "repository": "StephanGocht/VeriPB",
+        "revision": "01b7b5088c8a67f1611427174501191bc5f5b365"
+      }
+    },
+    {
+      "name": "BLAKE3 C implementation (c/)",
+      "identity": {
+        "repository": "BLAKE3-team/BLAKE3",
+        "revision": "657284b1fa4c4378aa7422b4450dcb5c2c9052fc",
+        "version": "1.8.7"
+      }
+    },
+    {
+      "name": "CRYSTALS-Dilithium / ML-DSA reference implementation (ref/)",
+      "identity": {
+        "repository": "pq-crystals/dilithium",
+        "revision": "d35ba3fe5449bee3e6d43e1f296c3ca818bd36be"
+      }
+    },
+    {
+      "name": "drat-trim and lrat-check clausal proof checkers",
+      "identity": {
+        "repository": "marijnheule/drat-trim",
+        "revision": "2e3b2dc0ecf938addbd779d42877b6ed69d9a985"
+      }
+    },
+    {
+      "name": "Kissat SAT solver (DRAT proof producer for the LRAT probes)",
+      "identity": {
+        "repository": "arminbiere/kissat",
+        "revision": "8af8e56f174b778aef3aa45af9f739b2a5f492c2",
+        "version": "4.0.4"
+      }
+    },
+    {
+      "name": "GMP 6.2.1 source mirror (arbitrary-precision dependency linked into ethos and viprchk)",
+      "identity": {
+        "repository": "alisw/GMP",
+        "revision": "2bbd52703e5af82509773264bfbd20ff8464804f",
+        "version": "6.2.1"
+      }
+    },
+    {
+      "name": "Reynolds et al., The Cooperating Proof Calculus: Comprehensive Proofs for an SMT Solver, CAV 2026, LNCS 16683, pp. 188-212",
+      "identity": {
+        "doi": "10.1007/978-3-032-32526-6_9"
+      }
+    },
+    {
+      "name": "Cheung, Gleixner and Steffy, Verifying Integer Programming Results, IPCO 2017, LNCS 10328, pp. 148-160",
+      "identity": {
+        "doi": "10.1007/978-3-319-59250-3_13"
+      }
+    },
+    {
+      "name": "NIST FIPS 204, Module-Lattice-Based Digital Signature Standard",
+      "identity": {
+        "standard": "NIST FIPS 204",
+        "version": "published 2024-08-13",
+        "url": "https://csrc.nist.gov/pubs/fips/204/final"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

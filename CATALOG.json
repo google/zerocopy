@@ -7839,6 +7839,137 @@
         "systems/vectorized-execution"
       ]
     },
+    "asl-endpoint-cones-dpdgraph-slicing-and-premise-minimality": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rems-project/sail",
+            "revision": "97aa617dcd4d01575f773cb58ea1e8686858c8c2"
+          },
+          "name": "Sail ISA specification language (source at development head: slicing commands, call graph, documentation back end, REPL)"
+        },
+        {
+          "identity": {
+            "artifact": "sail-Linux-x86_64.tar.gz",
+            "repository": "rems-project/sail",
+            "revision": "60695b1ea377048f0adc39c62671cd099b2ed9f6",
+            "sha256": "8d7cd75624ece407d7001ad32905a13ae111d5cc1a055404f21510e113207e3f",
+            "version": "0.20.3 (tag 0.20.3-binary)"
+          },
+          "name": "Sail 0.20.3 binary release (the executable used for all Sail runs)"
+        },
+        {
+          "identity": {
+            "repository": "riscv/sail-riscv",
+            "revision": "ec5200bdfe0c10afa6dbb1f7b0980db2d236236e"
+          },
+          "name": "Sail RISC-V reference model (model/)"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail-arm",
+            "revision": "5416ef6b43e9527c38dc71fb752259c1d01a47e1"
+          },
+          "name": "Sail Armv8.5-A, Armv9.3-A and Armv9.4-A models translated from Arm ASL"
+        },
+        {
+          "identity": {
+            "repository": "alastairreid/asl-interpreter",
+            "revision": "16260979137c38339743a04b7fd5d9f0fa8a6ee5",
+            "version": "2.0.0 per CHANGES.md"
+          },
+          "name": "ASL interpreter lineage repository (ISA specification language interpreter at the pinned revision)"
+        },
+        {
+          "identity": {
+            "repository": "coq-community/coq-dpdgraph",
+            "revision": "0fe97174151f119f96a0d434f2d1c864ccbc461f"
+          },
+          "name": "coq-dpdgraph dependency-graph plugin for Rocq/Coq"
+        },
+        {
+          "identity": {
+            "repository": "opencompl/sail-riscv-lean",
+            "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+          },
+          "name": "Generated Lean translation of the Sail RISC-V model (published snapshot)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain v4.34.1 (kernel, #print axioms, environment API used by the probes)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/comparator",
+            "revision": "865edc14486c3388e9225daa971da8e157488c3e"
+          },
+          "name": "Comparator statement-comparison judge for Lean proofs"
+        },
+        {
+          "identity": {
+            "repository": "rocq-prover/rocq",
+            "revision": "25f5b18a320e4796f181f938d3b74bebe7db4dc4"
+          },
+          "name": "Rocq prover repository (dev/doc/critical-bugs.md)"
+        },
+        {
+          "identity": {
+            "repository": "agda/agda",
+            "revision": "11f7300c8303608196e620714100a056e8c1ed0f"
+          },
+          "name": "Agda repository (doc/user-manual/language/safe-agda.lagda.rst)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/FMCAD.2016.7886675"
+          },
+          "name": "Reid, Trustworthy Specifications of ARM v8-A and v8-M System Level Architecture, FMCAD 2016"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3290384"
+          },
+          "name": "Armstrong et al., ISA Semantics for ARMv8-A, RISC-V, and CHERI-MIPS, POPL 2019"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3133912"
+          },
+          "name": "Reid, Who Guards the Guards? Formal Validation of the Arm v8-M Architecture Specification, OOPSLA 2017"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-018-9454-8"
+          },
+          "name": "Kuncar and Popescu, A Consistent Foundation for Isabelle/HOL, Journal of Automated Reasoning 2019"
+        },
+        {
+          "identity": {
+            "url": "https://www.kb.cert.org/vuls/id/631579",
+            "version": "published 2018-05-08"
+          },
+          "name": "CERT/CC VU#631579, Hardware debug exception documentation may result in unexpected behavior (CVE-2018-8897)"
+        },
+        {
+          "identity": {
+            "url": "https://xenproject.org/blog/the-intel-sysret-privilege-escalation/",
+            "version": "published 2012-06-13"
+          },
+          "name": "Xen Project, The Intel SYSRET privilege escalation (CVE-2012-0217)"
+        }
+      ],
+      "topics": [
+        "isa/authoritative-specification-cones",
+        "verification/statement-pinning-footprints",
+        "lean/transitive-dependency-auditing",
+        "verification/multi-rule-model-consistency"
+      ]
+    },
     "asl-l3-lnsym-and-isa-verification-frameworks-lean-adaptation": {
       "observed_at": "2026-10-29",
       "subjects": [
@@ -23274,6 +23405,114 @@
         "tooling/live-programming",
         "verification",
         "verification/model-checking"
+      ]
+    },
+    "ethos-cpc-signatures-blake3-dilithium-hashing-and-vipr-watermarks": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "cvc5/ethos",
+            "revision": "b02afbe66a4f796043ed3c5b9790cb6e7f00b9cc",
+            "version": "0.2.5 as printed by --show-config"
+          },
+          "name": "Ethos proof checker for the Eunoia logical framework (src/)"
+        },
+        {
+          "identity": {
+            "artifact": "cvc5-Linux-x86_64-static.zip",
+            "repository": "cvc5/cvc5",
+            "revision": "282d5e0c84baf49c780704c532f87ba66d8b513d",
+            "sha256": "7eb18f8c814c36a46c5a7d003983e9cfbc4b0a9828d6dd596239291bd4cc61d8",
+            "version": "cvc5-1.4.2"
+          },
+          "name": "cvc5 1.4.2 (Cooperating Proof Calculus Eunoia signature under proofs/eo/cpc, and the release binary used to emit proofs)"
+        },
+        {
+          "identity": {
+            "repository": "ambros-gleixner/VIPR",
+            "revision": "f221c3fd2274e8e859e8e24505278d6f7c1bb8ff"
+          },
+          "name": "VIPR certificate format specification and viprchk checker"
+        },
+        {
+          "identity": {
+            "repository": "scipopt/vipr",
+            "revision": "99eec197a49b2bd9ad33c1f4c7afabe93caa6511"
+          },
+          "name": "VIPR successor repository (example certificates under examples/)"
+        },
+        {
+          "identity": {
+            "repository": "StephanGocht/VeriPB",
+            "revision": "01b7b5088c8a67f1611427174501191bc5f5b365"
+          },
+          "name": "VeriPB pseudo-Boolean proof verifier"
+        },
+        {
+          "identity": {
+            "repository": "BLAKE3-team/BLAKE3",
+            "revision": "657284b1fa4c4378aa7422b4450dcb5c2c9052fc",
+            "version": "1.8.7"
+          },
+          "name": "BLAKE3 C implementation (c/)"
+        },
+        {
+          "identity": {
+            "repository": "pq-crystals/dilithium",
+            "revision": "d35ba3fe5449bee3e6d43e1f296c3ca818bd36be"
+          },
+          "name": "CRYSTALS-Dilithium / ML-DSA reference implementation (ref/)"
+        },
+        {
+          "identity": {
+            "repository": "marijnheule/drat-trim",
+            "revision": "2e3b2dc0ecf938addbd779d42877b6ed69d9a985"
+          },
+          "name": "drat-trim and lrat-check clausal proof checkers"
+        },
+        {
+          "identity": {
+            "repository": "arminbiere/kissat",
+            "revision": "8af8e56f174b778aef3aa45af9f739b2a5f492c2",
+            "version": "4.0.4"
+          },
+          "name": "Kissat SAT solver (DRAT proof producer for the LRAT probes)"
+        },
+        {
+          "identity": {
+            "repository": "alisw/GMP",
+            "revision": "2bbd52703e5af82509773264bfbd20ff8464804f",
+            "version": "6.2.1"
+          },
+          "name": "GMP 6.2.1 source mirror (arbitrary-precision dependency linked into ethos and viprchk)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-032-32526-6_9"
+          },
+          "name": "Reynolds et al., The Cooperating Proof Calculus: Comprehensive Proofs for an SMT Solver, CAV 2026, LNCS 16683, pp. 188-212"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-59250-3_13"
+          },
+          "name": "Cheung, Gleixner and Steffy, Verifying Integer Programming Results, IPCO 2017, LNCS 10328, pp. 148-160"
+        },
+        {
+          "identity": {
+            "standard": "NIST FIPS 204",
+            "url": "https://csrc.nist.gov/pubs/fips/204/final",
+            "version": "published 2024-08-13"
+          },
+          "name": "NIST FIPS 204, Module-Lattice-Based Digital Signature Standard"
+        }
+      ],
+      "topics": [
+        "verification/generic-theory-checkers",
+        "smt/cooperating-proof-calculus",
+        "security/authenticated-proof-streams",
+        "smt/sparse-cutting-plane-certificates"
       ]
     },
     "everparse-lowparse-strong-prefix-clens-and-nonmalleable-zero-copy-codecs": {

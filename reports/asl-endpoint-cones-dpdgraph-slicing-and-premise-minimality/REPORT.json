@@ -1,0 +1,131 @@
+{
+  "topics": [
+    "isa/authoritative-specification-cones",
+    "verification/statement-pinning-footprints",
+    "lean/transitive-dependency-auditing",
+    "verification/multi-rule-model-consistency"
+  ],
+  "subjects": [
+    {
+      "name": "Sail ISA specification language (source at development head: slicing commands, call graph, documentation back end, REPL)",
+      "identity": {
+        "repository": "rems-project/sail",
+        "revision": "97aa617dcd4d01575f773cb58ea1e8686858c8c2"
+      }
+    },
+    {
+      "name": "Sail 0.20.3 binary release (the executable used for all Sail runs)",
+      "identity": {
+        "repository": "rems-project/sail",
+        "revision": "60695b1ea377048f0adc39c62671cd099b2ed9f6",
+        "version": "0.20.3 (tag 0.20.3-binary)",
+        "artifact": "sail-Linux-x86_64.tar.gz",
+        "sha256": "8d7cd75624ece407d7001ad32905a13ae111d5cc1a055404f21510e113207e3f"
+      }
+    },
+    {
+      "name": "Sail RISC-V reference model (model/)",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "ec5200bdfe0c10afa6dbb1f7b0980db2d236236e"
+      }
+    },
+    {
+      "name": "Sail Armv8.5-A, Armv9.3-A and Armv9.4-A models translated from Arm ASL",
+      "identity": {
+        "repository": "rems-project/sail-arm",
+        "revision": "5416ef6b43e9527c38dc71fb752259c1d01a47e1"
+      }
+    },
+    {
+      "name": "ASL interpreter lineage repository (ISA specification language interpreter at the pinned revision)",
+      "identity": {
+        "repository": "alastairreid/asl-interpreter",
+        "revision": "16260979137c38339743a04b7fd5d9f0fa8a6ee5",
+        "version": "2.0.0 per CHANGES.md"
+      }
+    },
+    {
+      "name": "coq-dpdgraph dependency-graph plugin for Rocq/Coq",
+      "identity": {
+        "repository": "coq-community/coq-dpdgraph",
+        "revision": "0fe97174151f119f96a0d434f2d1c864ccbc461f"
+      }
+    },
+    {
+      "name": "Generated Lean translation of the Sail RISC-V model (published snapshot)",
+      "identity": {
+        "repository": "opencompl/sail-riscv-lean",
+        "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+      }
+    },
+    {
+      "name": "Lean 4 toolchain v4.34.1 (kernel, #print axioms, environment API used by the probes)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Comparator statement-comparison judge for Lean proofs",
+      "identity": {
+        "repository": "leanprover/comparator",
+        "revision": "865edc14486c3388e9225daa971da8e157488c3e"
+      }
+    },
+    {
+      "name": "Rocq prover repository (dev/doc/critical-bugs.md)",
+      "identity": {
+        "repository": "rocq-prover/rocq",
+        "revision": "25f5b18a320e4796f181f938d3b74bebe7db4dc4"
+      }
+    },
+    {
+      "name": "Agda repository (doc/user-manual/language/safe-agda.lagda.rst)",
+      "identity": {
+        "repository": "agda/agda",
+        "revision": "11f7300c8303608196e620714100a056e8c1ed0f"
+      }
+    },
+    {
+      "name": "Reid, Trustworthy Specifications of ARM v8-A and v8-M System Level Architecture, FMCAD 2016",
+      "identity": {
+        "doi": "10.1109/FMCAD.2016.7886675"
+      }
+    },
+    {
+      "name": "Armstrong et al., ISA Semantics for ARMv8-A, RISC-V, and CHERI-MIPS, POPL 2019",
+      "identity": {
+        "doi": "10.1145/3290384"
+      }
+    },
+    {
+      "name": "Reid, Who Guards the Guards? Formal Validation of the Arm v8-M Architecture Specification, OOPSLA 2017",
+      "identity": {
+        "doi": "10.1145/3133912"
+      }
+    },
+    {
+      "name": "Kuncar and Popescu, A Consistent Foundation for Isabelle/HOL, Journal of Automated Reasoning 2019",
+      "identity": {
+        "doi": "10.1007/s10817-018-9454-8"
+      }
+    },
+    {
+      "name": "CERT/CC VU#631579, Hardware debug exception documentation may result in unexpected behavior (CVE-2018-8897)",
+      "identity": {
+        "url": "https://www.kb.cert.org/vuls/id/631579",
+        "version": "published 2018-05-08"
+      }
+    },
+    {
+      "name": "Xen Project, The Intel SYSRET privilege escalation (CVE-2012-0217)",
+      "identity": {
+        "url": "https://xenproject.org/blog/the-intel-sysret-privilege-escalation/",
+        "version": "published 2012-06-13"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
