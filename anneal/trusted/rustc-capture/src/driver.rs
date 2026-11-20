@@ -45,6 +45,23 @@ impl Callbacks for AnalysisCallbacks {
     }
 }
 
+pub(super) fn resolve_packaged_sysroot() -> Result<std::path::PathBuf, String> {
+    let executable = std::env::current_exe()
+        .map_err(|error| format!("cannot resolve capture executable: {error}"))?;
+    let install_root = executable
+        .parent()
+        .and_then(|bin| bin.parent())
+        .ok_or_else(|| "capture executable has no installation root".to_owned())?;
+    let packaged_sysroot = install_root.join("rust");
+    if !packaged_sysroot.join("lib/rustlib").is_dir() {
+        return Err(format!(
+            "packaged Rust sysroot is missing at {}; pass --sysroot for an unbundled binary",
+            packaged_sysroot.display()
+        ));
+    }
+    Ok(packaged_sysroot)
+}
+
 /// Apply the pinned compiler version and packaged-sysroot policy.
 ///
 /// Both compiler modes call this after rustc has parsed its options, so an
@@ -70,23 +87,8 @@ pub(super) fn configure(config: &mut interface::Config) {
     // so the compiler's build path cannot rescue an incomplete archive.
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_session/src/config.rs#L1343-L1356
     if config.opts.sysroot.explicit.is_none() {
-        let executable = std::env::current_exe().unwrap_or_else(|error| {
-            early_dcx.early_fatal(format!("cannot resolve capture executable: {error}"))
-        });
-        let install_root = executable
-            .parent()
-            .and_then(|bin| bin.parent())
-            .unwrap_or_else(|| {
-                early_dcx.early_fatal("capture executable has no installation root")
-            });
-        let packaged_sysroot = install_root.join("rust");
-        if !packaged_sysroot.join("lib/rustlib").is_dir() {
-            early_dcx.early_fatal(format!(
-                "packaged Rust sysroot is missing at {}; pass --sysroot for an unbundled binary",
-                packaged_sysroot.display()
-            ));
-        }
-        config.opts.sysroot.default = packaged_sysroot;
+        config.opts.sysroot.default =
+            resolve_packaged_sysroot().unwrap_or_else(|message| early_dcx.early_fatal(message));
     }
 }
 

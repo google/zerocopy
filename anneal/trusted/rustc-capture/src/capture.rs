@@ -16,6 +16,7 @@ use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex, OnceLock};
 
 use rustc_abi::Endian;
+use rustc_ast::{Attribute, Crate, MetaItem, MetaItemInner};
 use rustc_data_structures::steal::Steal;
 use rustc_driver::Compilation;
 use rustc_hir::def::DefKind;
@@ -23,21 +24,13 @@ use rustc_interface::interface;
 use rustc_middle::mir;
 use rustc_middle::ty::TyCtxt;
 use rustc_middle::util::Providers;
-use rustc_span::FileName;
+use rustc_session::EarlyDiagCtxt;
+use rustc_session::config::{CrateType, Options};
 use rustc_span::def_id::LocalDefId;
 use rustc_span::source_map::{FileLoader, RealFileLoader};
-use sha2::{Digest, Sha256};
-use std::fmt::Write as _;
+use rustc_span::{FileName, sym};
 
-fn sha256_hex(bytes: &[u8]) -> String {
-    let mut hex = String::with_capacity(64);
-    for byte in Sha256::digest(bytes) {
-        let _ = write!(&mut hex, "{byte:02x}");
-    }
-    hex
-}
-
-use crate::{Args, Failure, extract, ir};
+use crate::{Args, Failure, extract, identity, ir};
 
 // rustc query providers are function pointers, so the hook cannot borrow a
 // callback instance. These cells hold one process's session authority and owned
@@ -87,6 +80,7 @@ fn override_queries(_: &rustc_session::Session, providers: &mut Providers) {
 struct Reads {
     files: BTreeMap<PathBuf, ir::SourceFile>,
     refusals: Vec<String>,
+    tool_errors: Vec<String>,
 }
 
 struct RecordingLoader {
@@ -180,7 +174,7 @@ impl RecordingLoader {
             reads.refusals.push(error.clone());
             return Err(io::Error::other(error));
         }
-        let sha256 = sha256_hex(bytes);
+        let sha256 = identity::sha256_bytes(bytes);
         if let Some(previous) = reads.files.get(&path) {
             if previous.sha256 != sha256 {
                 let error = format!("input changed between compiler reads: {}", path.display());
@@ -321,6 +315,7 @@ fn whole_crate_item(tcx: TyCtxt<'_>, def: LocalDefId, has_body: bool) -> extract
 
 struct Callbacks<'a> {
     args: &'a Args,
+    verified_sysroot: &'a Path,
     scope: &'a ir::Scope,
     reads: Arc<Mutex<Reads>>,
     result: Option<Result<ir::Manifest, Failure>>,
@@ -329,6 +324,12 @@ struct Callbacks<'a> {
 impl rustc_driver::Callbacks for Callbacks<'_> {
     fn config(&mut self, config: &mut interface::Config) {
         crate::driver::configure(config);
+        if let Err(reason) = validate_compiler_options(&config.opts) {
+            if let Ok(mut reads) = self.reads.lock() {
+                reads.tool_errors.push(reason.clone());
+            }
+            EarlyDiagCtxt::new(config.opts.error_format).early_fatal(reason);
+        }
         config.override_queries = Some(override_queries);
         config.file_loader = Some(Box::new(RecordingLoader::new(
             self.reads.clone(),
@@ -336,8 +337,31 @@ impl rustc_driver::Callbacks for Callbacks<'_> {
         )));
     }
 
+    fn after_crate_root_parsing(
+        &mut self,
+        _: &interface::Compiler,
+        krate: &mut Crate,
+    ) -> Compilation {
+        // Reject `#![crate_type]` and `#![feature(rustc_private)]` (including
+        // under `#![cfg_attr]`) before macro expansion so sysroot `rustc-dev`
+        // proc-macro dylibs can never load or execute.
+        if let Err(reason) = validate_crate_root_attrs(&krate.attrs) {
+            if let Ok(mut reads) = self.reads.lock() {
+                reads.refusals.push(reason);
+            }
+            return Compilation::Stop;
+        }
+        Compilation::Continue
+    }
+
     fn after_analysis<'tcx>(&mut self, _: &interface::Compiler, tcx: TyCtxt<'tcx>) -> Compilation {
-        self.result = Some(collect(tcx, self.args, self.scope, &self.reads));
+        self.result = Some(collect(
+            tcx,
+            self.args,
+            self.verified_sysroot,
+            self.scope,
+            &self.reads,
+        ));
         // Continue through metadata/object emission and rustc's final check.
         // A candidate manifest is published only after the session returns
         // successfully, so errors after this callback still prohibit capture.
@@ -347,9 +371,227 @@ impl rustc_driver::Callbacks for Callbacks<'_> {
     }
 }
 
+fn validate_crate_root_meta(meta: &MetaItem) -> Result<(), String> {
+    let last_ident = meta.path.segments.last().map(|seg| seg.ident.name);
+    if last_ident == Some(sym::crate_type) {
+        return Err("crate-level #![crate_type] attributes are unsupported during capture".into());
+    }
+    if last_ident == Some(sym::feature)
+        && let Some(items) = meta.meta_item_list()
+    {
+        for item in items {
+            if item.has_name(sym::rustc_private) {
+                return Err("#![feature(rustc_private)] is unsupported during capture".into());
+            }
+        }
+    }
+    if last_ident == Some(sym::cfg_attr)
+        && let Some(items) = meta.meta_item_list()
+    {
+        for item in items.iter().skip(1) {
+            if let MetaItemInner::MetaItem(nested) = item {
+                validate_crate_root_meta(nested)?;
+            }
+        }
+    }
+    Ok(())
+}
+
+fn validate_crate_root_attrs(attrs: &[Attribute]) -> Result<(), String> {
+    for attr in attrs {
+        if let Some(meta) = attr.meta() {
+            validate_crate_root_meta(&meta)?;
+        } else if attr.has_name(sym::crate_type) {
+            return Err(
+                "crate-level #![crate_type] attributes are unsupported during capture".into(),
+            );
+        }
+    }
+    Ok(())
+}
+
+fn validate_compiler_args(compiler_args: &[String]) -> Result<(), Failure> {
+    for arg in compiler_args {
+        if arg.starts_with('@') {
+            return Err(Failure::tool(
+                "response-file arguments are forbidden during capture",
+            ));
+        }
+        if arg == "--extern" || arg.starts_with("--extern=") || arg == "-L" || arg.starts_with("-L")
+        {
+            return Err(Failure::tool(format!(
+                "external crate and library search arguments are forbidden: {arg}"
+            )));
+        }
+        if arg == "--crate-type"
+            || (arg.starts_with("--crate-type=")
+                && !matches!(arg.as_str(), "--crate-type=lib" | "--crate-type=rlib"))
+        {
+            return Err(Failure::tool(format!(
+                "unsupported crate type during capture: {arg}"
+            )));
+        }
+    }
+    Ok(())
+}
+
+fn validate_compiler_options(opts: &Options) -> Result<(), String> {
+    if opts.externs.iter().next().is_some() {
+        return Err("external crate flags (--extern) are forbidden during capture".into());
+    }
+    if !opts.search_paths.is_empty() {
+        return Err("library search path flags (-L) are forbidden during capture".into());
+    }
+    if opts.crate_types.is_empty()
+        || !opts
+            .crate_types
+            .iter()
+            .all(|ct| matches!(ct, CrateType::Rlib))
+    {
+        return Err("proc-macro and non-library crate types are unsupported during capture".into());
+    }
+    Ok(())
+}
+
+fn collect_sysroot_lib_identities(
+    sysroot: &Path,
+    target: &str,
+) -> Result<BTreeSet<(u64, u64)>, Failure> {
+    let target_lib = sysroot.join("lib/rustlib").join(target).join("lib");
+    if !target_lib.is_dir() {
+        return Err(Failure::tool(format!(
+            "target sysroot library directory missing: {}",
+            target_lib.display()
+        )));
+    }
+    let mut allowed = BTreeSet::new();
+    let entries = std::fs::read_dir(&target_lib).map_err(Failure::io)?;
+    for entry in entries {
+        let entry = entry.map_err(Failure::io)?;
+        if let Ok(dev_ino) = identity::regular_file_dev_ino(&entry.path()) {
+            allowed.insert(dev_ino);
+        }
+    }
+    if allowed.is_empty() {
+        return Err(Failure::tool(format!(
+            "no target libraries found in sysroot {}",
+            target_lib.display()
+        )));
+    }
+    Ok(allowed)
+}
+
+fn admit_external_crate<F>(
+    crate_name: &str,
+    macros_only: bool,
+    has_dylib: bool,
+    has_sdylib: bool,
+    paths: &[&Path],
+    allowed_sysroot_ids: &BTreeSet<(u64, u64)>,
+    stat_dev_ino: F,
+) -> Result<(), Failure>
+where
+    F: Fn(&Path) -> io::Result<(u64, u64)>,
+{
+    if macros_only || crate_name == "proc_macro" {
+        return Err(Failure::unsupported(format!(
+            "proc-macro or macro-only crate is unsupported: {crate_name}"
+        )));
+    }
+    if has_dylib {
+        return Err(Failure::unsupported(format!(
+            "dynamic library or proc-macro crate is unsupported: {crate_name}"
+        )));
+    }
+    if has_sdylib {
+        return Err(Failure::unsupported(format!(
+            "sdylib interface crate is unsupported: {crate_name}"
+        )));
+    }
+    if paths.is_empty() {
+        return Err(Failure::unsupported(format!(
+            "external crate lacks a resolved artifact path: {crate_name}"
+        )));
+    }
+    for path in paths {
+        let dev_ino = stat_dev_ino(path).map_err(|error| {
+            Failure::tool(format!(
+                "cannot stat artifact for crate {crate_name} at {}: {error}",
+                path.display()
+            ))
+        })?;
+        if !allowed_sysroot_ids.contains(&dev_ino) {
+            return Err(Failure::unsupported(format!(
+                "external crate {crate_name} resolved outside target sysroot: {}",
+                path.display()
+            )));
+        }
+    }
+    Ok(())
+}
+
+/// Defense-in-depth sysroot-only and no-proc-macro gate run in
+/// `after_analysis`.
+fn verify_sysroot_only_crates(
+    tcx: TyCtxt<'_>,
+    sysroot: &Path,
+    target: &str,
+) -> Result<(), Failure> {
+    let crate_types = tcx.crate_types();
+    if crate_types.is_empty() || !crate_types.iter().all(|ct| matches!(ct, CrateType::Rlib)) {
+        return Err(Failure::unsupported(
+            "proc-macro and non-library crates are unsupported during capture",
+        ));
+    }
+    if tcx.hir_krate_attrs().iter().any(|attr| {
+        matches!(
+            attr,
+            rustc_hir::Attribute::Parsed(rustc_hir::attrs::AttributeKind::CrateType(_))
+        ) || attr.has_name(rustc_span::sym::crate_type)
+    }) {
+        return Err(Failure::unsupported(
+            "crate-level #![crate_type] attributes are unsupported during capture",
+        ));
+    }
+    if tcx.proc_macro_decls_static(()).is_some() {
+        return Err(Failure::unsupported(
+            "proc-macro declarations are unsupported during capture",
+        ));
+    }
+    if tcx.sess.opts.externs.iter().next().is_some() || !tcx.sess.opts.search_paths.is_empty() {
+        return Err(Failure::tool(
+            "external crate flags and search paths are forbidden during capture",
+        ));
+    }
+    let allowed_ids = collect_sysroot_lib_identities(sysroot, target)?;
+    for &cnum in tcx.crates(()) {
+        let crate_name = tcx.crate_name(cnum);
+        let dep_kind = tcx.crate_dep_kind(cnum);
+        let source = tcx.used_crate_source(cnum);
+        let extern_paths = tcx.crate_extern_paths(cnum);
+        let mut paths: Vec<&Path> = source.paths().map(PathBuf::as_path).collect();
+        for path in extern_paths {
+            if !paths.contains(&path.as_path()) {
+                paths.push(path.as_path());
+            }
+        }
+        admit_external_crate(
+            crate_name.as_str(),
+            dep_kind.macros_only(),
+            source.dylib.is_some(),
+            source.sdylib_interface.is_some(),
+            &paths,
+            &allowed_ids,
+            identity::regular_file_dev_ino,
+        )?;
+    }
+    Ok(())
+}
+
 fn collect(
     tcx: TyCtxt<'_>,
     args: &Args,
+    verified_sysroot: &Path,
     scope: &ir::Scope,
     reads: &Arc<Mutex<Reads>>,
 ) -> Result<ir::Manifest, Failure> {
@@ -379,8 +621,19 @@ fn collect(
             "only 64-bit little-endian targets are modeled",
         ));
     }
-    let sysroot = tcx.sess.opts.sysroot.path().to_path_buf();
-    crate::check_compiler(&sysroot)?;
+    let sysroot = tcx
+        .sess
+        .opts
+        .sysroot
+        .path()
+        .canonicalize()
+        .map_err(Failure::io)?;
+    if sysroot != verified_sysroot {
+        return Err(Failure::tool(
+            "compiler session sysroot diverged from verified sysroot",
+        ));
+    }
+    verify_sysroot_only_crates(tcx, verified_sysroot, &args.target)?;
 
     // `iter_local_def_id` finishes analysis and visits all definitions,
     // including definitions created during enumeration: "Recompute the number
@@ -611,7 +864,7 @@ fn collect(
 fn check_current_inputs(reads: &Reads) -> Result<(), Failure> {
     for file in reads.files.values() {
         let current = std::fs::read(&file.path).map_err(Failure::io)?;
-        if sha256_hex(&current) != file.sha256 {
+        if identity::sha256_bytes(&current) != file.sha256 {
             return Err(Failure::unsupported(format!(
                 "compiler input changed after reading: {}",
                 file.path.display()
@@ -621,7 +874,7 @@ fn check_current_inputs(reads: &Reads) -> Result<(), Failure> {
     Ok(())
 }
 
-pub fn run(args: &Args) -> Result<ir::Manifest, Failure> {
+pub fn run(args: &Args, verified_sysroot: &Path) -> Result<ir::Manifest, Failure> {
     let scope = args.resolved_scope()?;
     SELECTION
         .set(scope.clone())
@@ -671,9 +924,11 @@ pub fn run(args: &Args) -> Result<ir::Manifest, Failure> {
     for cfg in &args.cfg {
         compiler_args.push(format!("--cfg={cfg}"));
     }
+    validate_compiler_args(&compiler_args)?;
     let reads = Arc::new(Mutex::new(Reads::default()));
     let mut callbacks = Callbacks {
         args,
+        verified_sysroot,
         scope: &scope,
         reads: reads.clone(),
         result: None,
@@ -685,6 +940,9 @@ pub fn run(args: &Args) -> Result<ir::Manifest, Failure> {
     let reads = reads
         .lock()
         .map_err(|_| Failure::tool("input read mutex poisoned"))?;
+    if !reads.tool_errors.is_empty() {
+        return Err(Failure::tool(reads.tool_errors.join("; ")));
+    }
     if !reads.refusals.is_empty() {
         return Err(Failure::unsupported(reads.refusals.join("; ")));
     }
@@ -722,4 +980,150 @@ fn compiler_path(path: &Path) -> Result<&str, Failure> {
     path.to_str().ok_or_else(|| {
         Failure::unsupported("non-UTF-8 paths cannot be passed to the compiler driver")
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn compiler_args_gate_rejects_extern_search_paths_response_files_and_proc_macro() {
+        let valid = vec![
+            "anneal-rustc-capture".to_owned(),
+            "lib.rs".to_owned(),
+            "--crate-type=lib".to_owned(),
+            "--crate-name=demo".to_owned(),
+        ];
+        assert!(validate_compiler_args(&valid).is_ok());
+
+        for bad in [
+            vec!["@args.rsp".to_owned()],
+            vec!["--extern".to_owned(), "foo=libfoo.rlib".to_owned()],
+            vec!["--extern=foo=libfoo.rlib".to_owned()],
+            vec!["-L".to_owned(), "/tmp/deps".to_owned()],
+            vec!["-L/tmp/deps".to_owned()],
+            vec!["--crate-type=proc-macro".to_owned()],
+            vec!["--crate-type=dylib".to_owned()],
+            vec!["--crate-type".to_owned(), "proc-macro".to_owned()],
+        ] {
+            assert!(
+                validate_compiler_args(&bad).is_err(),
+                "expected {bad:?} to fail"
+            );
+        }
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn sysroot_only_crate_admission_enforces_sysroot_dev_ino_and_no_proc_macro() {
+        use std::os::unix::fs::symlink;
+
+        let dir = tempfile::tempdir().unwrap();
+        let sysroot = dir.path().join("sysroot");
+        let target_lib = sysroot.join("lib/rustlib/x86_64-unknown-linux-gnu/lib");
+        let host_lib = sysroot.join("lib");
+        let cas = dir.path().join("cas");
+        let outside = dir.path().join("outside");
+        std::fs::create_dir_all(&target_lib).unwrap();
+        std::fs::create_dir_all(&host_lib).unwrap();
+        std::fs::create_dir_all(&cas).unwrap();
+        std::fs::create_dir_all(&outside).unwrap();
+
+        let core_real = cas.join("libcore-123.rmeta");
+        std::fs::write(&core_real, b"core").unwrap();
+        let core_link = target_lib.join("libcore-123.rmeta");
+        symlink(&core_real, &core_link).unwrap();
+
+        let host_only = host_lib.join("libhost_only.rlib");
+        std::fs::write(&host_only, b"host").unwrap();
+
+        let outside_rlib = outside.join("libevil.rlib");
+        std::fs::write(&outside_rlib, b"evil").unwrap();
+
+        let allowed = collect_sysroot_lib_identities(&sysroot, "x86_64-unknown-linux-gnu").unwrap();
+        assert!(
+            admit_external_crate(
+                "core",
+                false,
+                false,
+                false,
+                &[core_link.as_path()],
+                &allowed,
+                identity::regular_file_dev_ino,
+            )
+            .is_ok()
+        );
+        assert!(
+            admit_external_crate(
+                "host_only",
+                false,
+                false,
+                false,
+                &[host_only.as_path()],
+                &allowed,
+                identity::regular_file_dev_ino,
+            )
+            .is_err()
+        );
+        assert!(
+            admit_external_crate(
+                "evil",
+                false,
+                false,
+                false,
+                &[outside_rlib.as_path()],
+                &allowed,
+                identity::regular_file_dev_ino,
+            )
+            .is_err()
+        );
+        assert!(
+            admit_external_crate(
+                "my_macro",
+                true,
+                false,
+                false,
+                &[core_link.as_path()],
+                &allowed,
+                identity::regular_file_dev_ino,
+            )
+            .is_err()
+        );
+        assert!(
+            admit_external_crate(
+                "my_macro",
+                false,
+                true,
+                false,
+                &[core_link.as_path()],
+                &allowed,
+                identity::regular_file_dev_ino,
+            )
+            .is_err()
+        );
+        assert!(
+            admit_external_crate(
+                "proc_macro",
+                false,
+                false,
+                false,
+                &[core_link.as_path()],
+                &allowed,
+                identity::regular_file_dev_ino,
+            )
+            .is_err()
+        );
+        assert!(
+            admit_external_crate(
+                "core",
+                false,
+                false,
+                false,
+                &[],
+                &allowed,
+                identity::regular_file_dev_ino,
+            )
+            .is_err()
+        );
+    }
 }

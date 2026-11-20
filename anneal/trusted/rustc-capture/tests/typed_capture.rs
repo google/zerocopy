@@ -1611,3 +1611,251 @@ fn enum_id_collisions_between_distinct_local_enums_are_refused() {
         fixture.assert_no_capture_artifacts();
     }
 }
+
+#[test]
+fn pre_capture_identity_check_rejects_missing_or_mismatched_sysroot_as_tool_failed() {
+    let fixture = Capture::new(b"pub fn selected(x: u64) -> u64 { x }\n");
+    let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture"))
+        .current_dir(fixture.directory.path())
+        .arg("capture")
+        .arg("--crate-root")
+        .arg(&fixture.source)
+        .arg("--crate-name=session")
+        .arg("--target=x86_64-unknown-linux-gnu")
+        .arg("--out-dir")
+        .arg(&fixture.output)
+        .arg("--select=selected")
+        .arg("--source-file")
+        .arg(&fixture.source)
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(1), "{output:?}");
+    assert_eq!(status(&output)["status"], "tool_failed", "{output:?}");
+    assert!(output.stderr.is_empty(), "{output:?}");
+    fixture.assert_no_capture_artifacts();
+
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::{PermissionsExt, symlink};
+
+        let real_sysroot = sysroot();
+        let fake_sysroot = fixture.directory.path().join("fake-sysroot");
+        std::fs::create_dir_all(fake_sysroot.join("bin")).unwrap();
+        std::fs::create_dir_all(fake_sysroot.join("lib")).unwrap();
+        symlink(
+            real_sysroot.join("lib/rustlib"),
+            fake_sysroot.join("lib/rustlib"),
+        )
+        .unwrap();
+        let fake_rustc = fake_sysroot.join("bin/rustc");
+        std::fs::write(
+            &fake_rustc,
+            "#!/bin/sh\n\
+             printf 'rustc 1.98.0-nightly (f8a08b688 2026-05-30)\\n'\n\
+             printf 'binary: rustc\\n'\n\
+             printf 'commit-hash: 0000000000000000000000000000000000000000\\n'\n\
+             printf 'host: x86_64-unknown-linux-gnu\\n'\n",
+        )
+        .unwrap();
+        std::fs::set_permissions(&fake_rustc, std::fs::Permissions::from_mode(0o755)).unwrap();
+        let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture"))
+            .current_dir(fixture.directory.path())
+            .arg("capture")
+            .arg("--crate-root")
+            .arg(&fixture.source)
+            .arg("--crate-name=session")
+            .arg("--target=x86_64-unknown-linux-gnu")
+            .arg("--out-dir")
+            .arg(&fixture.output)
+            .arg("--sysroot")
+            .arg(&fake_sysroot)
+            .arg("--select=selected")
+            .arg("--source-file")
+            .arg(&fixture.source)
+            .output()
+            .unwrap();
+        assert_eq!(output.status.code(), Some(1), "{output:?}");
+        assert_eq!(status(&output)["status"], "tool_failed", "{output:?}");
+        assert!(output.stderr.is_empty(), "{output:?}");
+        fixture.assert_no_capture_artifacts();
+    }
+}
+
+#[cfg(target_os = "linux")]
+#[test]
+fn linux_residency_accepts_symlinked_sysroot_and_rejects_mismatched_driver_inode() {
+    use std::os::unix::fs::symlink;
+
+    let real_sysroot = sysroot();
+    let fixture = Capture::new(b"pub fn selected(x: u64) -> u64 { x }\n");
+    let link_sysroot = fixture.directory.path().join("symlinked-sysroot");
+    std::fs::create_dir_all(link_sysroot.join("bin")).unwrap();
+    std::fs::create_dir_all(link_sysroot.join("lib/rustlib/x86_64-unknown-linux-gnu/lib")).unwrap();
+    symlink(
+        real_sysroot.join("bin/rustc"),
+        link_sysroot.join("bin/rustc"),
+    )
+    .unwrap();
+    for entry in std::fs::read_dir(real_sysroot.join("lib")).unwrap() {
+        let entry = entry.unwrap();
+        if entry.file_name() == "rustlib" {
+            continue;
+        }
+        symlink(
+            entry.path(),
+            link_sysroot.join("lib").join(entry.file_name()),
+        )
+        .unwrap();
+    }
+    for entry in
+        std::fs::read_dir(real_sysroot.join("lib/rustlib/x86_64-unknown-linux-gnu/lib")).unwrap()
+    {
+        let entry = entry.unwrap();
+        symlink(
+            entry.path(),
+            link_sysroot
+                .join("lib/rustlib/x86_64-unknown-linux-gnu/lib")
+                .join(entry.file_name()),
+        )
+        .unwrap();
+    }
+
+    let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture"))
+        .current_dir(fixture.directory.path())
+        .arg("capture")
+        .arg("--crate-root")
+        .arg(&fixture.source)
+        .arg("--crate-name=session")
+        .arg("--target=x86_64-unknown-linux-gnu")
+        .arg("--out-dir")
+        .arg(&fixture.output)
+        .arg("--sysroot")
+        .arg(&link_sysroot)
+        .arg("--select=selected")
+        .arg("--source-file")
+        .arg(&fixture.source)
+        .output()
+        .unwrap();
+    assert!(output.status.success(), "{output:?}");
+    assert_eq!(fixture.manifest()["schema_version"], 3);
+
+    // Replacing the driver symlink with a distinct regular file inode must fail
+    // closed.
+    let bad_sysroot = fixture.directory.path().join("bad-driver-sysroot");
+    std::fs::create_dir_all(bad_sysroot.join("bin")).unwrap();
+    std::fs::create_dir_all(bad_sysroot.join("lib/rustlib/x86_64-unknown-linux-gnu/lib")).unwrap();
+    symlink(
+        real_sysroot.join("bin/rustc"),
+        bad_sysroot.join("bin/rustc"),
+    )
+    .unwrap();
+    for entry in
+        std::fs::read_dir(real_sysroot.join("lib/rustlib/x86_64-unknown-linux-gnu/lib")).unwrap()
+    {
+        let entry = entry.unwrap();
+        let name = entry.file_name();
+        if let Some(name_str) = name.to_str()
+            && name_str.starts_with("librustc_driver-")
+            && name_str.ends_with(".so")
+        {
+            continue;
+        }
+        symlink(
+            entry.path(),
+            bad_sysroot
+                .join("lib/rustlib/x86_64-unknown-linux-gnu/lib")
+                .join(name),
+        )
+        .unwrap();
+    }
+    std::fs::write(
+        bad_sysroot.join("lib/librustc_driver-0000000000000000.so"),
+        b"not the loaded driver",
+    )
+    .unwrap();
+    let bad_output_dir = fixture.directory.path().join("bad-output");
+    let bad_output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture"))
+        .current_dir(fixture.directory.path())
+        .arg("capture")
+        .arg("--crate-root")
+        .arg(&fixture.source)
+        .arg("--crate-name=session")
+        .arg("--target=x86_64-unknown-linux-gnu")
+        .arg("--out-dir")
+        .arg(&bad_output_dir)
+        .arg("--sysroot")
+        .arg(&bad_sysroot)
+        .arg("--select=selected")
+        .arg("--source-file")
+        .arg(&fixture.source)
+        .output()
+        .unwrap();
+    assert_eq!(bad_output.status.code(), Some(1), "{bad_output:?}");
+    assert_eq!(
+        status(&bad_output)["status"],
+        "tool_failed",
+        "{bad_output:?}"
+    );
+    assert!(!bad_output_dir.exists());
+}
+
+#[test]
+fn sysroot_only_gate_admits_no_std_core_and_refuses_proc_macro_and_extern_crates() {
+    let no_std_fixture = Capture::new(b"#![no_std]\npub fn selected(x: u64) -> u64 { x }\n");
+    let output = no_std_fixture.selected_command().output().unwrap();
+    assert!(output.status.success(), "{output:?}");
+    assert_eq!(no_std_fixture.manifest()["schema_version"], 3);
+
+    let proc_macro_fixture = Capture::new(
+        b"#![crate_type = \"proc-macro\"]\n\
+          pub fn selected(x: u64) -> u64 { x }\n",
+    );
+    let output = proc_macro_fixture.selected_command().output().unwrap();
+    assert_eq!(output.status.code(), Some(1), "{output:?}");
+    assert_ne!(status(&output)["status"], "captured", "{output:?}");
+    proc_macro_fixture.assert_no_capture_artifacts();
+
+    let extern_proc_macro_fixture = Capture::new(
+        b"extern crate proc_macro;\n\
+          pub fn selected(x: u64) -> u64 { x }\n",
+    );
+    let output = extern_proc_macro_fixture
+        .selected_command()
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(1), "{output:?}");
+    assert_ne!(status(&output)["status"], "captured", "{output:?}");
+    extern_proc_macro_fixture.assert_no_capture_artifacts();
+
+    let extern_crate_fixture = Capture::new(
+        b"extern crate nonexistent_external_dep;\n\
+          pub fn selected(x: u64) -> u64 { x }\n",
+    );
+    let output = extern_crate_fixture.selected_command().output().unwrap();
+    assert_eq!(output.status.code(), Some(1), "{output:?}");
+    assert_eq!(status(&output)["status"], "compiler_failed", "{output:?}");
+    extern_crate_fixture.assert_no_capture_artifacts();
+
+    // `#![feature(rustc_private)]` and `#![cfg_attr(..., crate_type = ...)]`
+    // must be rejected before macro expansion so sysroot `rustc-dev` proc
+    // macros can never load or run.
+    for pre_expansion_src in [
+        b"#![feature(rustc_private)]\n\
+          extern crate rustc_macros;\n\
+          pub fn selected(x: u64) -> u64 { x }\n"
+            .as_slice(),
+        b"#![cfg_attr(all(), feature(rustc_private))]\n\
+          extern crate rustc_macros;\n\
+          pub fn selected(x: u64) -> u64 { x }\n"
+            .as_slice(),
+        b"#![cfg_attr(all(), crate_type = \"proc-macro\")]\n\
+          pub fn selected(x: u64) -> u64 { x }\n"
+            .as_slice(),
+    ] {
+        let fixture = Capture::new(pre_expansion_src);
+        let output = fixture.selected_command().output().unwrap();
+        assert_eq!(output.status.code(), Some(1), "{output:?}");
+        assert_eq!(status(&output)["status"], "unsupported", "{output:?}");
+        fixture.assert_no_capture_artifacts();
+    }
+}
