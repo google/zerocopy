@@ -26076,6 +26076,173 @@
         "tooling/code-review"
       ]
     },
+    "falk-wcet-aware-coloring-appel-george-optimal-spills-unison-integrated-scheduling-and-irc-validators": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "paths": "llvm/lib/CodeGen/{RegAllocGreedy.cpp,CalcSpillWeights.cpp,SpillPlacement.cpp,InlineSpiller.cpp,LiveIntervals.cpp,RegAllocEvictionAdvisor.cpp}; llvm/include/llvm/CodeGen/CalcSpillWeights.h; llvm/lib/Transforms/Utils/PromoteMemoryToRegister.cpp",
+            "repository": "llvm/llvm-project",
+            "revision": "0c99e3f432142834a257cd4c3067d7a69373e6d1"
+          },
+          "name": "LLVM greedy register allocator, spill weights, spill placement, inline spiller and mem2reg"
+        },
+        {
+          "identity": {
+            "paths": "src/solvers/gecode/models/{model.cpp,completemodel.cpp,globalmodel.cpp}; doc/objective-parameters.tex",
+            "repository": "unison-code/unison",
+            "revision": "9f9857e742156b51e6314488f4173cd1b42c4aec"
+          },
+          "name": "Unison combinatorial register allocator and instruction scheduler"
+        },
+        {
+          "identity": {
+            "paths": "backend/{IRC.ml,Regalloc.ml,Allocation.v,Allocproof.v}; common/Smallstep.v",
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert register allocation (untrusted IRC and spilling) and verified validator"
+        },
+        {
+          "identity": {
+            "paths": "compiler/backend/reg_alloc/{reg_allocScript.sml,linear_scanScript.sml,proofs/reg_allocProofScript.sml,proofs/linear_scanProofScript.sml}; compiler/backend/{word_allocScript.sml,proofs/word_allocProofScript.sml}",
+            "repository": "CakeML/cakeml",
+            "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+          },
+          "name": "CakeML verified graph-colouring and linear-scan register allocation"
+        },
+        {
+          "identity": {
+            "paths": "src3.0/Transforms/{README,vmem2reg_correct.v}; src3.0/Vellvm/program_sim.v",
+            "repository": "vellvm/vellvm-legacy",
+            "revision": "54a5c641ea94b74f551da1d6345c8f335bb7b227"
+          },
+          "name": "Vellvm (PLDI 2013 development) verified memory-to-register promotion vmem2reg"
+        },
+        {
+          "identity": {
+            "accessed": "2026-11-20",
+            "pages": "ADD_01_R64_R64, ADD_R64_M64, ADD_M64_R64, MOV_R64_M64, MOV_M64_R64, IMUL_R64_R64, IMUL_R64_M64, ADDSD_XMM_XMM, ADDSD_XMM_M64",
+            "url": "https://uops.info/html-instr/"
+          },
+          "name": "uops.info instruction latency, throughput and port-usage measurements"
+        },
+        {
+          "identity": {
+            "arxiv": "1810.04610",
+            "doi": "10.1145/3297858.3304062"
+          },
+          "name": "Abel and Reineke, uops.info: Characterizing Latency, Throughput, and Port Usage of Instructions on Intel Microarchitectures (ASPLOS 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/229542.229546"
+          },
+          "name": "George and Appel, Iterated Register Coalescing (TOPLAS 1996)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/378795.378854",
+            "url": "https://www.cs.princeton.edu/techreports/2000/630.pdf"
+          },
+          "name": "Appel and George, Optimal Spilling for CISC Machines with Few Registers (PLDI 2001)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1629911.1630100"
+          },
+          "name": "Falk, WCET-aware Register Allocation based on Graph Coloring (DAC 2009)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ECRTS.2011.10"
+          },
+          "name": "Falk, Schmitz and Schmoll, WCET-aware Register Allocation Based on Integer-Linear Programming (ECRTS 2011)"
+        },
+        {
+          "identity": {
+            "accessed": "2026-11-20",
+            "page_date": "2017-09-01",
+            "url": "https://www.tuhh.de/es/esd/research/wcc/optimizations/register-allocation"
+          },
+          "name": "TUHH Embedded Systems group, WCET-Aware Register Allocation project page (WCC compiler)"
+        },
+        {
+          "identity": {
+            "accessed": "2026-11-20",
+            "url": "https://www.tuhh.de/es/esd/research/wcc/wcc-compiler-infrastructure"
+          },
+          "name": "TUHH Embedded Systems group, WCC compiler infrastructure page"
+        },
+        {
+          "identity": {
+            "arxiv": "1804.02452v5",
+            "doi": "10.1145/3332373"
+          },
+          "name": "Castaneda Lozano, Carlsson, Hjort Blindell and Schulte, Combinatorial Register Allocation and Instruction Scheduling (TOPLAS 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-11957-6_9",
+            "url": "https://www.cs.princeton.edu/~appel/papers/regalloc.pdf"
+          },
+          "name": "Blazy, Robillard and Appel, Formal Verification of Coalescing Graph-Coloring Register Allocation (ESOP 2010)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-11970-5_13",
+            "url": "https://xavierleroy.org/publi/validation-regalloc.pdf"
+          },
+          "name": "Rideau and Leroy, Validating Register Allocation and Spilling (CC 2010)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2491956.2462164"
+          },
+          "name": "Zhao, Nagarakatte, Martin and Zdancewic, Formal Verification of SSA-Based Optimizations for LLVM (PLDI 2013)"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796818000229"
+          },
+          "name": "Tan, Myreen, Kumar, Fox, Owens and Norrish, The Verified CakeML Compiler Backend (JFP 2019)"
+        },
+        {
+          "identity": {
+            "url": "https://xavierleroy.org/publi/erts2018_compcert.pdf",
+            "venue": "ERTS 2018"
+          },
+          "name": "Kaestner et al., CompCert: Practical Experience on Integrating and Qualifying a Formally Verified Optimizing Compiler (ERTS 2018)"
+        },
+        {
+          "identity": {
+            "url": "https://xavierleroy.org/publi/erts2016_compcert.pdf",
+            "venue": "ERTS 2016"
+          },
+          "name": "Leroy, Blazy, Kaestner, Schommer, Pister and Ferdinand, CompCert - A Formally Verified Optimizing Compiler (ERTS 2016)"
+        },
+        {
+          "identity": {
+            "url": "https://hal.science/hal-00653367/",
+            "venue": "ERTS 2012"
+          },
+          "name": "Bedin Franca, Blazy, Favre-Felix, Leroy, Pantel and Souyris, Formally Verified Optimizing Compilation in ACG-Based Flight Control Software (ERTS 2012; abstract only)"
+        },
+        {
+          "identity": {
+            "cpu": "Intel Xeon CPU @ 2.60GHz, family 6 model 106 stepping 6 (Ice Lake-SP)",
+            "environment": "KVM guest, gcc 15.2.0 -O2"
+          },
+          "name": "Host core used for the spill-latency micro-probe"
+        }
+      ],
+      "topics": [
+        "compilers/wcet-aware-register-allocation",
+        "compilers/optimal-spill-code-placement",
+        "verification/register-allocation-validation",
+        "isa/register-versus-memory-access-latency"
+      ]
+    },
     "fault-injection-resilient-intermittent-and-approximate-compilation": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -57206,6 +57373,140 @@
         "verification/compcert",
         "verification/cakeml",
         "llvm/translation-validation"
+      ]
+    },
+    "reineke-anomaly-taxonomy-llvmta-sic-pipeline-compositionality-and-hard-realtime-multithreaded-cores": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "path": "src/main/scala/Core/",
+            "repository": "pretis/flexpret",
+            "revision": "53af96f5beb22c1bb6a77f455b6ec73066885a12"
+          },
+          "name": "FlexPRET fine-grained multithreaded RISC-V core (Chisel sources)"
+        },
+        {
+          "identity": {
+            "path": "hardware/src/main/scala/patmos/, hardware/src/main/scala/ocp/TdmArbiter.scala, wcet/",
+            "repository": "t-crest/patmos",
+            "revision": "4c72814972c8e19d69c987e3b29d764efb6a7d8c"
+          },
+          "name": "Patmos time-predictable dual-issue processor (Chisel sources and WCET example)"
+        },
+        {
+          "identity": {
+            "path": "lib/arch/patmos.rb, lib/analysis/wca.rb",
+            "repository": "t-crest/patmos-platin",
+            "revision": "f842eecc741a3caef9b7a2a6da2287eed35540ec"
+          },
+          "name": "platin WCET toolkit as built by the Patmos toolchain"
+        },
+        {
+          "identity": {
+            "path": "lib/arch/flexpret.rb, lib/core/pml.yml, lib/tools/pml-config.rb",
+            "repository": "t-crest/platin",
+            "revision": "68257be7fd620da95c62051254753623743de9e7"
+          },
+          "name": "platin WCET toolkit, multi-architecture variant (FlexPRET, RISC-V, ARM models)"
+        },
+        {
+          "identity": {
+            "path": "build.sh",
+            "repository": "t-crest/patmos-misc",
+            "revision": "c62a7eb93c966f1c0b8dc86e77f439e11a3cd56a"
+          },
+          "name": "Patmos toolchain build script (selects the platin repository)"
+        },
+        {
+          "identity": {
+            "path": "include/Util/Options.h, lib/Util/Options.cpp, lib/LLVMPasses/DispatchMemory.cpp, include/LLVMPasses/DispatchPathAnalysis.h, include/Memory/BlockingCyclingMemory.h",
+            "repository": "TU-Dortmund-CS-LS12-DAES-teaching/llvmta",
+            "revision": "c758822aa746aac6e5fa57356733a41a5b333ada"
+          },
+          "name": "LLVMTA static timing analyzer, GitHub mirror maintained at TU Dortmund"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/REAL.1999.818824",
+            "url": "https://tlundqvist.org/Publications/anomalies-rtss99/anomalies-rtss99.pdf",
+            "venue": "RTSS 1999"
+          },
+          "name": "Lundqvist and Stenstrom, Timing Anomalies in Dynamically Scheduled Microprocessors"
+        },
+        {
+          "identity": {
+            "doi": "10.4230/OASIcs.WCET.2006.671",
+            "venue": "WCET 2006"
+          },
+          "name": "Reineke, Wachter, Thesing, Wilhelm, Polian, Eisinger, Becker, A Definition and Classification of Timing Anomalies"
+        },
+        {
+          "identity": {
+            "doi": "10.4230/OASIcs.WCET.2012.1",
+            "venue": "WCET 2012"
+          },
+          "name": "Cassez, Hansen, Olesen, What is a Timing Anomaly?"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2997465.2997471",
+            "url": "https://embedded.cs.uni-saarland.de/publications/EnablingCompositionalityRTNS2016.pdf",
+            "venue": "RTNS 2016"
+          },
+          "name": "Hahn, Jacobs, Reineke, Enabling Compositionality for Multicore Timing Analysis"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/RTSS.2018.00060",
+            "url": "https://embedded.cs.uni-saarland.de/publications/SIC-RTSS2018.pdf",
+            "venue": "RTSS 2018"
+          },
+          "name": "Hahn and Reineke, Design and Analysis of SIC: A Provably Timing-Predictable Pipelined Processor Core"
+        },
+        {
+          "identity": {
+            "doi": "10.4230/LIPIcs.ECRTS.2025.19",
+            "venue": "ECRTS 2025"
+          },
+          "name": "Rouizi, Asavoae, Binder, Rieg, Brandner, Revisiting Timing Anomalies in Predictable In-Order Pipelines"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/RTAS.2014.6925994",
+            "url": "https://ptolemy.berkeley.edu/projects/chess/pubs/1048/zimmer-et-al-2014-flexpret.pdf",
+            "venue": "RTAS 2014"
+          },
+          "name": "Zimmer, Broman, Shaver, Lee, FlexPRET: A Processor Platform for Mixed-Criticality Systems"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2834848.2834862",
+            "url": "https://www-users.york.ac.uk/~rd17/papers/RTNS2015MRTA.pdf",
+            "venue": "RTNS 2015"
+          },
+          "name": "Altmeyer, Davis, Indrusiak, Maiza, Nelis, Reineke, A Generic and Compositional Framework for Multicore Response Time Analysis"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s11241-017-9285-4",
+            "venue": "Real-Time Systems 2018"
+          },
+          "name": "Davis, Altmeyer, Indrusiak, Maiza, Nelis, Reineke, An extensible framework for multicore response time analysis"
+        },
+        {
+          "identity": {
+            "doi": "10.4230/OASIcs.WCET.2022.2",
+            "venue": "WCET 2022"
+          },
+          "name": "Hahn, Jacobs, Hoelscher, Chen, Chen, Reineke, LLVMTA: An LLVM-Based WCET Analysis Tool"
+        }
+      ],
+      "topics": [
+        "systems/timing-anomaly-classification",
+        "verification/compositional-wcet-bounds",
+        "isa/hardware-multithreading-timing-isolation",
+        "tooling/static-timing-analyzers"
       ]
     },
     "relational-logics-simulation-techniques-and-completeness-for-compiler-derivations": {

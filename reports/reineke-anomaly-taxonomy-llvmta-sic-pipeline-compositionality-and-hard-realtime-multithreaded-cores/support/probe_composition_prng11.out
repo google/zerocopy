@@ -1,0 +1,8 @@
+prng=11 trials=20000 n=2 D_S=2 N_SLOTS=2
+blocking rr   violations: iso=23463(max+13) rr=0(max+0) tdm=0(max+0) ilv=0(max+0) sum=0(max+0) indep=8963(max+10)
+blocking fp   violations: iso=19896(max+16) rr=3025(max+14) tdm=1625(max+13) ilv=1545(max+14) sum=0(max+0) indep=5273(max+3)
+blocking tdm  violations: iso=31467(max+16) rr=3926(max+2) tdm=0(max+0) ilv=0(max+0) sum=8264(max+14) indep=0(max+0)
+blocking ilv  violations: iso=38748(max+16) rr=30127(max+8) tdm=12810(max+8) ilv=0(max+0) sum=16966(max+15) indep=0(max+0)
+ooo      rr   violations: iso=25237(max+13) rr=21(max+2) tdm=0(max+0) ilv=16(max+2) sum=28(max+1) indep=7359(max+12)
+ooo      fp   violations: iso=17162(max+16) rr=4969(max+14) tdm=3283(max+13) ilv=4078(max+14) sum=28(max+1) indep=1531(max+2)
+ooo      tdm  violations: iso=30533(max+16) rr=2103(max+3) tdm=2(max+1) ilv=39(max+2) sum=10914(max+15) indep=0(max+0)

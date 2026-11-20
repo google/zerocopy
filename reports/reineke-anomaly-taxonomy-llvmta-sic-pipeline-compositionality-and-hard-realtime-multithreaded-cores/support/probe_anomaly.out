@@ -1,0 +1,8 @@
+prng=1 trials=200000 HIT=1 MISS=3
+ooo: counter_intuitive=216 amplification=215
+inord: counter_intuitive=0 amplification=0
+smallest ooo counter-intuitive witness:
+  res=[0, 1, 1, 1, 0] deps=[[], [], [0], [1], [3]]
+  lat(hit)=[1, 2, 1, 1, 1] -> makespan 5
+  lat(miss)=[3, 2, 1, 1, 1] -> makespan 4
+  inorder on same program: hit 5, miss 6

@@ -1,0 +1,167 @@
+{
+  "topics": [
+    "compilers/wcet-aware-register-allocation",
+    "compilers/optimal-spill-code-placement",
+    "verification/register-allocation-validation",
+    "isa/register-versus-memory-access-latency"
+  ],
+  "subjects": [
+    {
+      "name": "LLVM greedy register allocator, spill weights, spill placement, inline spiller and mem2reg",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "0c99e3f432142834a257cd4c3067d7a69373e6d1",
+        "paths": "llvm/lib/CodeGen/{RegAllocGreedy.cpp,CalcSpillWeights.cpp,SpillPlacement.cpp,InlineSpiller.cpp,LiveIntervals.cpp,RegAllocEvictionAdvisor.cpp}; llvm/include/llvm/CodeGen/CalcSpillWeights.h; llvm/lib/Transforms/Utils/PromoteMemoryToRegister.cpp"
+      }
+    },
+    {
+      "name": "Unison combinatorial register allocator and instruction scheduler",
+      "identity": {
+        "repository": "unison-code/unison",
+        "revision": "9f9857e742156b51e6314488f4173cd1b42c4aec",
+        "paths": "src/solvers/gecode/models/{model.cpp,completemodel.cpp,globalmodel.cpp}; doc/objective-parameters.tex"
+      }
+    },
+    {
+      "name": "CompCert register allocation (untrusted IRC and spilling) and verified validator",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc",
+        "paths": "backend/{IRC.ml,Regalloc.ml,Allocation.v,Allocproof.v}; common/Smallstep.v"
+      }
+    },
+    {
+      "name": "CakeML verified graph-colouring and linear-scan register allocation",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb",
+        "paths": "compiler/backend/reg_alloc/{reg_allocScript.sml,linear_scanScript.sml,proofs/reg_allocProofScript.sml,proofs/linear_scanProofScript.sml}; compiler/backend/{word_allocScript.sml,proofs/word_allocProofScript.sml}"
+      }
+    },
+    {
+      "name": "Vellvm (PLDI 2013 development) verified memory-to-register promotion vmem2reg",
+      "identity": {
+        "repository": "vellvm/vellvm-legacy",
+        "revision": "54a5c641ea94b74f551da1d6345c8f335bb7b227",
+        "paths": "src3.0/Transforms/{README,vmem2reg_correct.v}; src3.0/Vellvm/program_sim.v"
+      }
+    },
+    {
+      "name": "uops.info instruction latency, throughput and port-usage measurements",
+      "identity": {
+        "url": "https://uops.info/html-instr/",
+        "pages": "ADD_01_R64_R64, ADD_R64_M64, ADD_M64_R64, MOV_R64_M64, MOV_M64_R64, IMUL_R64_R64, IMUL_R64_M64, ADDSD_XMM_XMM, ADDSD_XMM_M64",
+        "accessed": "2026-11-20"
+      }
+    },
+    {
+      "name": "Abel and Reineke, uops.info: Characterizing Latency, Throughput, and Port Usage of Instructions on Intel Microarchitectures (ASPLOS 2019)",
+      "identity": {
+        "doi": "10.1145/3297858.3304062",
+        "arxiv": "1810.04610"
+      }
+    },
+    {
+      "name": "George and Appel, Iterated Register Coalescing (TOPLAS 1996)",
+      "identity": {
+        "doi": "10.1145/229542.229546"
+      }
+    },
+    {
+      "name": "Appel and George, Optimal Spilling for CISC Machines with Few Registers (PLDI 2001)",
+      "identity": {
+        "doi": "10.1145/378795.378854",
+        "url": "https://www.cs.princeton.edu/techreports/2000/630.pdf"
+      }
+    },
+    {
+      "name": "Falk, WCET-aware Register Allocation based on Graph Coloring (DAC 2009)",
+      "identity": {
+        "doi": "10.1145/1629911.1630100"
+      }
+    },
+    {
+      "name": "Falk, Schmitz and Schmoll, WCET-aware Register Allocation Based on Integer-Linear Programming (ECRTS 2011)",
+      "identity": {
+        "doi": "10.1109/ECRTS.2011.10"
+      }
+    },
+    {
+      "name": "TUHH Embedded Systems group, WCET-Aware Register Allocation project page (WCC compiler)",
+      "identity": {
+        "url": "https://www.tuhh.de/es/esd/research/wcc/optimizations/register-allocation",
+        "page_date": "2017-09-01",
+        "accessed": "2026-11-20"
+      }
+    },
+    {
+      "name": "TUHH Embedded Systems group, WCC compiler infrastructure page",
+      "identity": {
+        "url": "https://www.tuhh.de/es/esd/research/wcc/wcc-compiler-infrastructure",
+        "accessed": "2026-11-20"
+      }
+    },
+    {
+      "name": "Castaneda Lozano, Carlsson, Hjort Blindell and Schulte, Combinatorial Register Allocation and Instruction Scheduling (TOPLAS 2019)",
+      "identity": {
+        "doi": "10.1145/3332373",
+        "arxiv": "1804.02452v5"
+      }
+    },
+    {
+      "name": "Blazy, Robillard and Appel, Formal Verification of Coalescing Graph-Coloring Register Allocation (ESOP 2010)",
+      "identity": {
+        "doi": "10.1007/978-3-642-11957-6_9",
+        "url": "https://www.cs.princeton.edu/~appel/papers/regalloc.pdf"
+      }
+    },
+    {
+      "name": "Rideau and Leroy, Validating Register Allocation and Spilling (CC 2010)",
+      "identity": {
+        "doi": "10.1007/978-3-642-11970-5_13",
+        "url": "https://xavierleroy.org/publi/validation-regalloc.pdf"
+      }
+    },
+    {
+      "name": "Zhao, Nagarakatte, Martin and Zdancewic, Formal Verification of SSA-Based Optimizations for LLVM (PLDI 2013)",
+      "identity": {
+        "doi": "10.1145/2491956.2462164"
+      }
+    },
+    {
+      "name": "Tan, Myreen, Kumar, Fox, Owens and Norrish, The Verified CakeML Compiler Backend (JFP 2019)",
+      "identity": {
+        "doi": "10.1017/S0956796818000229"
+      }
+    },
+    {
+      "name": "Kaestner et al., CompCert: Practical Experience on Integrating and Qualifying a Formally Verified Optimizing Compiler (ERTS 2018)",
+      "identity": {
+        "url": "https://xavierleroy.org/publi/erts2018_compcert.pdf",
+        "venue": "ERTS 2018"
+      }
+    },
+    {
+      "name": "Leroy, Blazy, Kaestner, Schommer, Pister and Ferdinand, CompCert - A Formally Verified Optimizing Compiler (ERTS 2016)",
+      "identity": {
+        "url": "https://xavierleroy.org/publi/erts2016_compcert.pdf",
+        "venue": "ERTS 2016"
+      }
+    },
+    {
+      "name": "Bedin Franca, Blazy, Favre-Felix, Leroy, Pantel and Souyris, Formally Verified Optimizing Compilation in ACG-Based Flight Control Software (ERTS 2012; abstract only)",
+      "identity": {
+        "url": "https://hal.science/hal-00653367/",
+        "venue": "ERTS 2012"
+      }
+    },
+    {
+      "name": "Host core used for the spill-latency micro-probe",
+      "identity": {
+        "cpu": "Intel Xeon CPU @ 2.60GHz, family 6 model 106 stepping 6 (Ice Lake-SP)",
+        "environment": "KVM guest, gcc 15.2.0 -O2"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

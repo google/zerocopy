@@ -1,0 +1,134 @@
+{
+  "topics": [
+    "systems/timing-anomaly-classification",
+    "verification/compositional-wcet-bounds",
+    "isa/hardware-multithreading-timing-isolation",
+    "tooling/static-timing-analyzers"
+  ],
+  "subjects": [
+    {
+      "name": "FlexPRET fine-grained multithreaded RISC-V core (Chisel sources)",
+      "identity": {
+        "repository": "pretis/flexpret",
+        "revision": "53af96f5beb22c1bb6a77f455b6ec73066885a12",
+        "path": "src/main/scala/Core/"
+      }
+    },
+    {
+      "name": "Patmos time-predictable dual-issue processor (Chisel sources and WCET example)",
+      "identity": {
+        "repository": "t-crest/patmos",
+        "revision": "4c72814972c8e19d69c987e3b29d764efb6a7d8c",
+        "path": "hardware/src/main/scala/patmos/, hardware/src/main/scala/ocp/TdmArbiter.scala, wcet/"
+      }
+    },
+    {
+      "name": "platin WCET toolkit as built by the Patmos toolchain",
+      "identity": {
+        "repository": "t-crest/patmos-platin",
+        "revision": "f842eecc741a3caef9b7a2a6da2287eed35540ec",
+        "path": "lib/arch/patmos.rb, lib/analysis/wca.rb"
+      }
+    },
+    {
+      "name": "platin WCET toolkit, multi-architecture variant (FlexPRET, RISC-V, ARM models)",
+      "identity": {
+        "repository": "t-crest/platin",
+        "revision": "68257be7fd620da95c62051254753623743de9e7",
+        "path": "lib/arch/flexpret.rb, lib/core/pml.yml, lib/tools/pml-config.rb"
+      }
+    },
+    {
+      "name": "Patmos toolchain build script (selects the platin repository)",
+      "identity": {
+        "repository": "t-crest/patmos-misc",
+        "revision": "c62a7eb93c966f1c0b8dc86e77f439e11a3cd56a",
+        "path": "build.sh"
+      }
+    },
+    {
+      "name": "LLVMTA static timing analyzer, GitHub mirror maintained at TU Dortmund",
+      "identity": {
+        "repository": "TU-Dortmund-CS-LS12-DAES-teaching/llvmta",
+        "revision": "c758822aa746aac6e5fa57356733a41a5b333ada",
+        "path": "include/Util/Options.h, lib/Util/Options.cpp, lib/LLVMPasses/DispatchMemory.cpp, include/LLVMPasses/DispatchPathAnalysis.h, include/Memory/BlockingCyclingMemory.h"
+      }
+    },
+    {
+      "name": "Lundqvist and Stenstrom, Timing Anomalies in Dynamically Scheduled Microprocessors",
+      "identity": {
+        "doi": "10.1109/REAL.1999.818824",
+        "venue": "RTSS 1999",
+        "url": "https://tlundqvist.org/Publications/anomalies-rtss99/anomalies-rtss99.pdf"
+      }
+    },
+    {
+      "name": "Reineke, Wachter, Thesing, Wilhelm, Polian, Eisinger, Becker, A Definition and Classification of Timing Anomalies",
+      "identity": {
+        "doi": "10.4230/OASIcs.WCET.2006.671",
+        "venue": "WCET 2006"
+      }
+    },
+    {
+      "name": "Cassez, Hansen, Olesen, What is a Timing Anomaly?",
+      "identity": {
+        "doi": "10.4230/OASIcs.WCET.2012.1",
+        "venue": "WCET 2012"
+      }
+    },
+    {
+      "name": "Hahn, Jacobs, Reineke, Enabling Compositionality for Multicore Timing Analysis",
+      "identity": {
+        "doi": "10.1145/2997465.2997471",
+        "venue": "RTNS 2016",
+        "url": "https://embedded.cs.uni-saarland.de/publications/EnablingCompositionalityRTNS2016.pdf"
+      }
+    },
+    {
+      "name": "Hahn and Reineke, Design and Analysis of SIC: A Provably Timing-Predictable Pipelined Processor Core",
+      "identity": {
+        "doi": "10.1109/RTSS.2018.00060",
+        "venue": "RTSS 2018",
+        "url": "https://embedded.cs.uni-saarland.de/publications/SIC-RTSS2018.pdf"
+      }
+    },
+    {
+      "name": "Rouizi, Asavoae, Binder, Rieg, Brandner, Revisiting Timing Anomalies in Predictable In-Order Pipelines",
+      "identity": {
+        "doi": "10.4230/LIPIcs.ECRTS.2025.19",
+        "venue": "ECRTS 2025"
+      }
+    },
+    {
+      "name": "Zimmer, Broman, Shaver, Lee, FlexPRET: A Processor Platform for Mixed-Criticality Systems",
+      "identity": {
+        "doi": "10.1109/RTAS.2014.6925994",
+        "venue": "RTAS 2014",
+        "url": "https://ptolemy.berkeley.edu/projects/chess/pubs/1048/zimmer-et-al-2014-flexpret.pdf"
+      }
+    },
+    {
+      "name": "Altmeyer, Davis, Indrusiak, Maiza, Nelis, Reineke, A Generic and Compositional Framework for Multicore Response Time Analysis",
+      "identity": {
+        "doi": "10.1145/2834848.2834862",
+        "venue": "RTNS 2015",
+        "url": "https://www-users.york.ac.uk/~rd17/papers/RTNS2015MRTA.pdf"
+      }
+    },
+    {
+      "name": "Davis, Altmeyer, Indrusiak, Maiza, Nelis, Reineke, An extensible framework for multicore response time analysis",
+      "identity": {
+        "doi": "10.1007/s11241-017-9285-4",
+        "venue": "Real-Time Systems 2018"
+      }
+    },
+    {
+      "name": "Hahn, Jacobs, Hoelscher, Chen, Chen, Reineke, LLVMTA: An LLVM-Based WCET Analysis Tool",
+      "identity": {
+        "doi": "10.4230/OASIcs.WCET.2022.2",
+        "venue": "WCET 2022"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

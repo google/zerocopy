@@ -1,0 +1,40 @@
+# Host: Intel Xeon CPU @ 2.60GHz, family 6 model 106 stepping 6 (Ice Lake-SP), KVM guest, Linux 7.1 kernel, gcc 15.2.0 -O2
+# Command: gcc -O2 -o /tmp/spill_latency_probe spill_latency_probe.c && taskset -c <cpu> /tmp/spill_latency_probe
+# Date (UTC): 2026-11-20. Host load average during runs: 203-262 on 96 logical CPUs (shared, heavily loaded host).
+# Lines starting with 'cpu N' name the pinned logical CPU; the two following numeric lines are /proc/loadavg before and after.
+cpu 3
+212.03 164.46 120.50 74/10894 1243219
+iters=2000000 links/iter=8 rounds=101
+A reg-reg add (calibration, 1 cycle by definition)      cycles/link: min-ratio 1.00  p10-ratio 1.00  median-ratio 1.00
+G reg-reg imul (cross-check; uops.info: 3 cycles)       cycles/link: min-ratio 3.01  p10-ratio 2.99  median-ratio 3.00
+B spill+reload via [rsp+64] then add, per link          cycles/link: min-ratio 3.15  p10-ratio 4.19  median-ratio 6.58
+S spill+reload via [rdi] then add, per link             cycles/link: min-ratio 3.19  p10-ratio 5.23  median-ratio 6.74
+C add r64,[mem] with address off the chain, per link    cycles/link: min-ratio 1.00  p10-ratio 1.00  median-ratio 1.02
+D pointer chase mov rax,[rax], per link                 cycles/link: min-ratio 5.01  p10-ratio 5.06  median-ratio 5.08
+M add [mem],rbx read-modify-write chain, per link       cycles/link: min-ratio 6.98  p10-ratio 6.92  median-ratio 7.04
+L load/add/store memory-resident value, per link        cycles/link: min-ratio 3.25  p10-ratio 4.98  median-ratio 6.72
+203.39 165.65 121.83 52/10342 1264849
+cpu 20
+203.39 165.65 121.83 55/10345 1264854
+iters=2000000 links/iter=8 rounds=101
+A reg-reg add (calibration, 1 cycle by definition)      cycles/link: min-ratio 1.00  p10-ratio 1.00  median-ratio 1.00
+G reg-reg imul (cross-check; uops.info: 3 cycles)       cycles/link: min-ratio 3.00  p10-ratio 3.02  median-ratio 3.02
+B spill+reload via [rsp+64] then add, per link          cycles/link: min-ratio 3.18  p10-ratio 3.33  median-ratio 6.44
+S spill+reload via [rdi] then add, per link             cycles/link: min-ratio 3.05  p10-ratio 3.23  median-ratio 6.35
+C add r64,[mem] with address off the chain, per link    cycles/link: min-ratio 1.00  p10-ratio 1.00  median-ratio 1.01
+D pointer chase mov rax,[rax], per link                 cycles/link: min-ratio 5.01  p10-ratio 5.06  median-ratio 5.19
+M add [mem],rbx read-modify-write chain, per link       cycles/link: min-ratio 7.08  p10-ratio 7.27  median-ratio 7.31
+L load/add/store memory-resident value, per link        cycles/link: min-ratio 3.31  p10-ratio 3.66  median-ratio 6.30
+253.78 179.08 127.15 43/12243 1279041
+cpu 40
+253.78 179.08 127.15 41/12244 1279043
+iters=2000000 links/iter=8 rounds=101
+A reg-reg add (calibration, 1 cycle by definition)      cycles/link: min-ratio 1.00  p10-ratio 1.00  median-ratio 1.00
+G reg-reg imul (cross-check; uops.info: 3 cycles)       cycles/link: min-ratio 3.00  p10-ratio 3.03  median-ratio 3.07
+B spill+reload via [rsp+64] then add, per link          cycles/link: min-ratio 3.24  p10-ratio 3.44  median-ratio 4.60
+S spill+reload via [rdi] then add, per link             cycles/link: min-ratio 3.13  p10-ratio 3.40  median-ratio 4.26
+C add r64,[mem] with address off the chain, per link    cycles/link: min-ratio 1.00  p10-ratio 1.00  median-ratio 1.02
+D pointer chase mov rax,[rax], per link                 cycles/link: min-ratio 5.06  p10-ratio 5.13  median-ratio 5.19
+M add [mem],rbx read-modify-write chain, per link       cycles/link: min-ratio 6.84  p10-ratio 7.49  median-ratio 7.57
+L load/add/store memory-resident value, per link        cycles/link: min-ratio 3.35  p10-ratio 3.78  median-ratio 4.89
+261.96 186.05 130.57 302/11172 1294526

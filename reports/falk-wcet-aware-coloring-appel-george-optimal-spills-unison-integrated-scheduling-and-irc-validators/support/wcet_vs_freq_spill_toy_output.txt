@@ -1,0 +1,10 @@
+# Command: python3 wcet_vs_freq_spill_toy.py 20000 1   (Python 3.13, standard library only)
+# TOY MODEL output; see the script docstring for the model.
+worked example: n=2 k=1 L=4 N=100 pA=0.9 cA=20 cB=30 useA=[1,6] useB=[5,0]
+  freq: spill v[0]  WCET bound=5000  expected time=2660.0  worst path=B
+  wcet: spill v[1]  WCET bound=4400  expected time=4260.0  worst path=A
+  (no spill, infeasible with k=1): WCET=3000 worst path=B
+campaign: instances=20000 seed=1
+  freq-optimal spill set has a strictly larger WCET bound than the wcet-optimal set in 6967/20000 instances (34.8%)
+  WCET-bound increase in those instances: median 15.0%  p90 43.2%  max 240.0%
+  expected-time advantage of the freq choice in those instances: median 14.2%  max 84.9%

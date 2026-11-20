@@ -1,0 +1,4 @@
+prng=7 trials=200000
+thread 0: ops=[('S', []), ('S', [0])] T_iso=4 a=2 C_corun=6
+thread 1: ops=[('P', []), ('S', [0]), ('S', []), ('P', [2])] T_iso=4 a=2 C_corun=9
+violating thread 1: C=9 > T+a*(n-1)*D_S = 8
