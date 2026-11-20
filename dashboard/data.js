@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1795211268724,
+  "lastUpdate": 1795219134197,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -24143,6 +24143,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 1842,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Josh Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "2c91616c70beb3a1c4d160dfadff1c7f9c3524bc",
+          "message": "[anneal][ci] Seed Miri .olean cache and tighten CI builds (#3991)\n\nAddress three CI caching and build-configuration bottlenecks in\n`.github/workflows/anneal-current.yml`:\n\n1. Keep the unsigned `?trusted=1` local Nix binary cache restricted\n   strictly to post-merge `push` on `google/zerocopy` `refs/heads/main`\n   (unchanged from base), drop `restore-keys` and the unused\n   `anneal/trusted/audit/**` hash input, wipe\n   `$RUNNER_TEMP/anneal-nix-cache` before repopulating to avoid\n   unbounded cache growth, and raise `nix build` from `--cores 2` to\n   `--cores 4`.\n2. Seed the `refs/heads/main` `vendor/lean-miri` `.olean` cache on\n   canonical `main` pushes when missing while preserving cold-from-source\n   compilation on `main`, `merge_group`, `workflow_dispatch`, and\n   non-`main`/fork pushes: allowlist `pull_request` and canonical `main`\n   `push`, use `actions/cache/restore` with `lookup-only: true` and\n   `rm -rf` before `cargo` on `push`, and publish the verified cache\n   entry via `actions/cache/save` after `anneal-audit` succeeds so pull\n   requests do not suffer a guaranteed cold miss. Update\n   `anneal/docs/trust-model.md`,\n   `anneal/docs/mir-correspondence-design.md`, and\n   `anneal/docs/architecture.md` to match.\n3. Build the bootstrap `cargo-anneal` binary in `installed_cli` into a\n   temporary `--target-dir` outside `CARGO_TARGET_DIR` so switching\n   `RUSTC` and `RUSTFLAGS` to the extracted exocrate compiler in `setup`\n   does not thrash the workspace target directory, raise\n   `CARGO_BUILD_JOBS` from `2` to `4` (`RUST_TEST_THREADS` stays at `2`\n   to fit Pass 2's ~6.5 GiB per-worker RSS inside 16 GiB runners), and\n   raise `test-and-verify` `timeout-minutes` from `45` to `90`.\n4. Add unit tests in `anneal/ci/test_ci_workflow.py` covering the Nix\n   cache `main`-push restriction and Miri `.olean` cold-compile,\n   ambient-env clearing, and seeding branches across `push` (canonical\n   `main`, fork, non-`main`), `merge_group`, `workflow_dispatch`,\n   unknown events, and `pull_request`.\n\nAgent-authored-by: AI agent acting on joshlf's behalf",
+          "timestamp": "2026-11-20T22:26:48Z",
+          "tree_id": "217019185af7ff54ac2eef05d40d1da9f313e176",
+          "url": "https://github.com/google/zerocopy/commit/2c91616c70beb3a1c4d160dfadff1c7f9c3524bc"
+        },
+        "date": 1795219132189,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 1656,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 1800,
             "unit": "seconds"
           }
         ]
