@@ -181,7 +181,9 @@ Dropping **any single condition** among ($\mathrm{SC1}$)–($\mathrm{SC6}$) inva
 
 ### 4. Multi-Level Performance and Resource Footprint (`L1–L6`)
 
-`Basis: source + documentation + execution + derived`
+`Basis: source + documentation + derived`
+
+**Measurement status of this table.** Line counts (L1) and source-slice sizes (L6) were measured from the pinned sources, and the AFP `ROOT` timeout is quoted from the source. `FormalizedFormalLogic/Foundation`, `mirror-afp-devel`, `hydra-battles` and `coq-library-fol` were **not compiled** (see Boundaries), so every build time, elaboration time, kernel-checking time or throughput, peak RSS and compiled-artifact size given for those four repositories in rows L2, L3, L5 and L6 is an **unmeasured order-of-magnitude estimate**, not a measurement, and should not be cited as one.
 
 | Level | Metric / Dimension | `Foundation` (Lean 4) | `mirror-afp-devel` (`Incompleteness` + `Goedel_*`, Isabelle) | `hydra-battles` (`goedel`, Rocq) | `coq-library-fol` (`Incompleteness`, Rocq) | `JasonGross/lob` (Coq + Agda) |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -237,6 +239,7 @@ Even a kernel-checked proof of an incompleteness or checker-impossibility theore
 ## Boundaries
 
 - **`not examined` — Full Clean-Room Recompilation of Upstream Proof Repositories:** Under lightweight capsule execution constraints, we inspected exact pinned upstream `.lean`, `.thy`, `.v`, and `.agda` sources and executed standalone finite-algebra Python probes, rather than compiling `FormalizedFormalLogic/Foundation`, `mirror-afp-devel`, `hydra-battles`, or `coq-library-fol` from scratch locally.
+- **`unsupported` — Build, Checking and Footprint Figures for Uncompiled Repositories:** The L2, L3, L5 and L6 timing, throughput, RSS and artifact-size figures for `Foundation`, `mirror-afp-devel`, `hydra-battles` and `coq-library-fol` in the performance table are estimates; none of these repositories was built for this report.
 - **`not examined` — HOL Light and Metamath Formalizations:** Other mechanized provability developments (such as Maggesi and Perini Brogi's modal completeness of $\mathsf{GL}$ in HOL Light, or Carneiro's `mm0` self-verifier) were not directly inspected at source level; conclusions here are restricted to the five pinned repositories.
 - **`known not to apply` — Naïve Extension of Consistency-Cycle Impossibility to Arbitrary Numerations or Weak Arithmetics:** Evidence establishes (`Basis: normative + source + execution`) that "no consistent ring of $n$ systems can prove one another consistent" **does not hold** without ($\mathrm{SC2}$)–($\mathrm{SC5}$): Feferman $\pi^*$ numerations, Rosser predicates (`kreisel_remark`), and Willard's multiplication-free self-verifying systems $\mathsf{IS}(A)$ all admit consistent self- or mutual-consistency proofs ($n \ge 1$).
 - **`known not to apply` — Interpreting Solovay's Logic $\mathsf{S}$ as Refuting Montague's Theorem:** Although $\mathsf{S} = \mathsf{GL} + (\Box A \to A)$ contains the reflection schema $\Box A \to A$ and is arithmetically sound in $\mathbb{N}$ (`Foundation/ProvabilityLogic/S/Arithmetic.lean:29`), $\mathsf{S}$ drops the Rule of Necessitation (`S` is closed only under Modus Ponens and Substitution, lines 32–41), which is strictly why Montague's collapse does not apply.
