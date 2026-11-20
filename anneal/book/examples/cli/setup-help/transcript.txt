@@ -1,0 +1,8 @@
+$ cargo anneal setup --help
+Install the pinned Anneal toolchain archive
+
+Usage: cargo anneal setup [OPTIONS]
+
+Options:
+      --local-archive <path>  Install a local archive instead of downloading the pinned archive
+  -h, --help                  Print help

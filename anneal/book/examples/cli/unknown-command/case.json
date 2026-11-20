@@ -1,0 +1,8 @@
+{
+  "kind": "cli",
+  "description": "Argument error diagnostic for an unrecognized subcommand",
+  "display_command": "$ cargo anneal unknown",
+  "argv": ["anneal", "unknown"],
+  "expect_exit": 2,
+  "transcript": "transcript.txt"
+}
