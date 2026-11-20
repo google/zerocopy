@@ -44882,6 +44882,201 @@
         "verification/refinement"
       ]
     },
+    "observational-quotient-and-erasable-hidden-state": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "doi": "10.1515/9781400882618-006"
+          },
+          "name": "Gedanken-experiments on sequential machines (Moore, 1956)"
+        },
+        {
+          "identity": {
+            "doi": "10.1090/S0002-9939-1958-0135681-9"
+          },
+          "name": "Linear automaton transformations (Nerode, 1958)"
+        },
+        {
+          "identity": {
+            "doi": "10.1090/S0002-9904-1972-13032-5"
+          },
+          "name": "Minimal realization of machines in closed categories (Goguen, 1972)"
+        },
+        {
+          "identity": {
+            "doi": "10.1137/1016026"
+          },
+          "name": "Machines in a Category: An Expository Introduction (Arbib and Manes, 1974)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/BF00268134"
+          },
+          "name": "An axiomatic proof technique for parallel programs I (Owicki and Gries, 1976)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3-540-10235-3"
+          },
+          "name": "A Calculus of Communicating Systems (Milner, 1980)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/BFb0017309"
+          },
+          "name": "Concurrency and automata on infinite sequences (Park, 1981)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP.1982.10014"
+          },
+          "name": "Security Policies and Security Models (Goguen and Meseguer, 1982)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP.1984.10019"
+          },
+          "name": "Unwinding and Inference Control (Goguen and Meseguer, 1984)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/0304-3975(91)90224-P"
+          },
+          "name": "The existence of refinement mappings (Abadi and Lamport, 1991)"
+        },
+        {
+          "identity": {
+            "technical_report": "CSL-92-02",
+            "url": "http://www.csl.sri.com/papers/csl-92-2/"
+          },
+          "name": "Noninterference, Transitivity, and Channel-Control Security Policies (Rushby, 1992)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/BFb0055624"
+          },
+          "name": "Automata and coinduction (an exercise in coalgebra) (Rutten, 1998)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/S0304-3975(00)00056-6"
+          },
+          "name": "Universal coalgebra: a theory of systems (Rutten, 2000)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/10722599_15"
+          },
+          "name": "Unwinding Possibilistic Security Properties (Mantel, 2000)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-540-30108-0_14"
+          },
+          "name": "Information Flow Control Revisited: Noninfluence = Noninterference + Nonleakage (von Oheimb, 2004)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-540-74835-9_16"
+          },
+          "name": "What, Indeed, Is Intransitive Noninterference? (van der Meyden, ESORICS 2007)"
+        },
+        {
+          "identity": {
+            "doi": "10.3233/JCS-140516"
+          },
+          "name": "What, Indeed, Is Intransitive Noninterference? (van der Meyden, JCS 2015)"
+        },
+        {
+          "identity": {
+            "afp_entry": "Myhill-Nerode",
+            "submitted": "2011-08-26",
+            "url": "https://isa-afp.org/entries/Myhill-Nerode.html"
+          },
+          "name": "The Myhill-Nerode Theorem Based on Regular Expressions (Wu, Zhang, and Urban; Archive of Formal Proofs entry, 2011)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-013-9297-2"
+          },
+          "name": "A Formalisation of the Myhill-Nerode Theorem Based on Regular Expressions (Wu, Zhang, and Urban, Journal of Automated Reasoning, 2014)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-35308-6_12"
+          },
+          "name": "Noninterference for Operating System Kernels (Murray et al., 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-03545-1_6"
+          },
+          "name": "A Constructive Theory of Regular Languages in Coq (Doczkal, Kaiser, and Smolka, 2013)"
+        },
+        {
+          "identity": {
+            "afp_entry": "Finite_Automata_HF",
+            "submitted": "2015-02-05",
+            "url": "https://isa-afp.org/entries/Finite_Automata_HF.html"
+          },
+          "name": "Finite Automata in Hereditarily Finite Set Theory (Paulson; Archive of Formal Proofs entry, 2015)"
+        },
+        {
+          "identity": {
+            "afp_entry": "Noninterference_Generic_Unwinding",
+            "submitted": "2015-06-11",
+            "url": "https://isa-afp.org/entries/Noninterference_Generic_Unwinding.html"
+          },
+          "name": "The Generic Unwinding Theorem for CSP Noninterference Security (Noce; Archive of Formal Proofs entry, 2015)"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/CBO9781316823187",
+            "isbn": "9781107177895"
+          },
+          "name": "Introduction to Coalgebra: Towards Mathematics of States and Observation (Jacobs, 2016)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10703-016-0243-x"
+          },
+          "name": "The spirit of ghost code (Filliatre, Gondelman, and Paskevich, 2016)"
+        },
+        {
+          "identity": {
+            "afp_entry": "Coinductive_Languages",
+            "submitted": "2013-11-15",
+            "url": "https://isa-afp.org/entries/Coinductive_Languages.html"
+          },
+          "name": "A Codatatype of Formal Languages (Traytel; Archive of Formal Proofs entry, 2013)"
+        },
+        {
+          "identity": {
+            "doi": "10.23638/LMCS-13(3:28)2017"
+          },
+          "name": "Formal Languages, Formally and Coinductively (Traytel, 2017)"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "pl/coalgebra",
+        "security/noninterference",
+        "verification/bisimulation",
+        "verification/formalized-results",
+        "verification/hyperproperties",
+        "verification/information-flow",
+        "verification/refinement"
+      ]
+    },
     "octagon-closures-elina-zonotopes-astree-filters-and-widening-operators": {
       "observed_at": "2026-11-19",
       "subjects": [

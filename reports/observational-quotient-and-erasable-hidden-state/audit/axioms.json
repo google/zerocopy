@@ -1,0 +1,419 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Obs.AllReachable": [],
+    "Toy.Obs.BehIgnoresHidden": [],
+    "Toy.Obs.BehInjective": [],
+    "Toy.Obs.BoundedBehIgnoresHidden": [],
+    "Toy.Obs.CoversHidden": [],
+    "Toy.Obs.IsBisim": [],
+    "Toy.Obs.IsHom": [],
+    "Toy.Obs.IsIso": [],
+    "Toy.Obs.Moore": [],
+    "Toy.Obs.Moore.beh": [],
+    "Toy.Obs.Moore.beh.eq_1": [],
+    "Toy.Obs.Moore.beh_cons": [],
+    "Toy.Obs.Moore.beh_nil": [],
+    "Toy.Obs.Moore.beh_run": [
+      "propext"
+    ],
+    "Toy.Obs.Moore.casesOn": [],
+    "Toy.Obs.Moore.ctorIdx": [],
+    "Toy.Obs.Moore.mk": [],
+    "Toy.Obs.Moore.mk.inj": [],
+    "Toy.Obs.Moore.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Obs.Moore.mk.noConfusion": [],
+    "Toy.Obs.Moore.mk.sizeOf_spec": [],
+    "Toy.Obs.Moore.noConfusion": [],
+    "Toy.Obs.Moore.noConfusionType": [],
+    "Toy.Obs.Moore.out": [],
+    "Toy.Obs.Moore.rec": [],
+    "Toy.Obs.Moore.recOn": [],
+    "Toy.Obs.Moore.run": [],
+    "Toy.Obs.Moore.run.match_1": [],
+    "Toy.Obs.Moore.run_append": [],
+    "Toy.Obs.Moore.run_append_singleton": [],
+    "Toy.Obs.Moore.run_cons": [],
+    "Toy.Obs.Moore.run_nil": [],
+    "Toy.Obs.Moore.step": [],
+    "Toy.Obs.ObsEq": [],
+    "Toy.Obs.ObsInjectiveFst": [],
+    "Toy.Obs.OneStepOutIgnoresHidden": [],
+    "Toy.Obs.OutIgnoresHidden": [],
+    "Toy.Obs.PreservesInit": [],
+    "Toy.Obs.PreservesOut": [],
+    "Toy.Obs.PreservesStep": [],
+    "Toy.Obs.Reachable": [],
+    "Toy.Obs.ReachableBeh": [],
+    "Toy.Obs.RelPreservesOut": [],
+    "Toy.Obs.RelStepClosed": [],
+    "Toy.Obs.SameFst": [],
+    "Toy.Obs.StepFstIgnoresHidden": [],
+    "Toy.Obs.Surjective": [],
+    "Toy.Obs.ThreeState": [],
+    "Toy.Obs.ThreeState.casesOn": [],
+    "Toy.Obs.ThreeState.ctorElim": [],
+    "Toy.Obs.ThreeState.ctorElimType": [],
+    "Toy.Obs.ThreeState.ctorIdx": [],
+    "Toy.Obs.ThreeState.noConfusion": [],
+    "Toy.Obs.ThreeState.noConfusionType": [],
+    "Toy.Obs.ThreeState.ofNat": [],
+    "Toy.Obs.ThreeState.ofNat_ctorIdx": [],
+    "Toy.Obs.ThreeState.rec": [],
+    "Toy.Obs.ThreeState.recOn": [],
+    "Toy.Obs.ThreeState.s0": [],
+    "Toy.Obs.ThreeState.s0.elim": [],
+    "Toy.Obs.ThreeState.s0.sizeOf_spec": [],
+    "Toy.Obs.ThreeState.s1": [],
+    "Toy.Obs.ThreeState.s1.elim": [],
+    "Toy.Obs.ThreeState.s1.sizeOf_spec": [],
+    "Toy.Obs.ThreeState.s2": [],
+    "Toy.Obs.ThreeState.s2.elim": [],
+    "Toy.Obs.ThreeState.s2.sizeOf_spec": [],
+    "Toy.Obs.behIgnoresHidden_iff_coversHidden_obsEq": [],
+    "Toy.Obs.behIgnoresHidden_iff_erasable": [
+      "Quot.sound"
+    ],
+    "Toy.Obs.behIgnoresHidden_iff_exists_unwinding_bisim": [
+      "Quot.sound"
+    ],
+    "Toy.Obs.behIgnoresHidden_iff_stepwise_of_obsInjectiveFst": [
+      "Quot.sound"
+    ],
+    "Toy.Obs.bisim_subset_obsEq": [
+      "Quot.sound"
+    ],
+    "Toy.Obs.ce_bisim_subset_obsEq_no_out": [],
+    "Toy.Obs.ce_bisim_subset_obsEq_no_step": [],
+    "Toy.Obs.ce_erase_empty_hidden": [],
+    "Toy.Obs.ce_erase_empty_hidden.match_1_1": [],
+    "Toy.Obs.ce_hom_to_final_no_out": [],
+    "Toy.Obs.ce_hom_to_final_no_step": [],
+    "Toy.Obs.ce_minimal_iso_no_initBeh": [],
+    "Toy.Obs.ce_minimal_iso_no_inj1": [
+      "Quot.sound"
+    ],
+    "Toy.Obs.ce_minimal_iso_no_inj2": [
+      "Quot.sound"
+    ],
+    "Toy.Obs.ce_minimal_iso_no_reach1": [
+      "Quot.sound"
+    ],
+    "Toy.Obs.ce_minimal_iso_no_reach2": [
+      "Quot.sound"
+    ],
+    "Toy.Obs.ce_reachable_maps_onto_minimal_no_initBeh": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Obs.ce_reachable_maps_onto_minimal_no_reach": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Obs.ce_stepwise_erase_no_out": [],
+    "Toy.Obs.ce_stepwise_erase_no_stepFst": [],
+    "Toy.Obs.ce_stepwise_iff_no_obsInjectiveFst": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Obs.ce_stepwise_iff_no_obsInjectiveFst.match_1_1": [],
+    "Toy.Obs.ce_stepwise_no_out": [],
+    "Toy.Obs.ce_stepwise_no_stepFst": [],
+    "Toy.Obs.ce_unwinding_no_coversHidden": [],
+    "Toy.Obs.ce_unwinding_no_out": [],
+    "Toy.Obs.ce_unwinding_no_step": [],
+    "Toy.Obs.constFalseMachine": [],
+    "Toy.Obs.constTrueMachine": [],
+    "Toy.Obs.delayedChannel": [],
+    "Toy.Obs.delayedChannel2": [],
+    "Toy.Obs.delayedChannel2_erasable_for_each_fixed_h": [
+      "Quot.sound"
+    ],
+    "Toy.Obs.delayedChannel2_leaks_at_step_two": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Obs.delayedChannel2_leaks_at_step_two.match_1_1": [],
+    "Toy.Obs.delayedChannelFixed": [],
+    "Toy.Obs.delayedChannel_beh_formula": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Obs.delayedChannel_run_formula": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Obs.delayedDiffMachine": [],
+    "Toy.Obs.dualToggleMachine": [],
+    "Toy.Obs.dualToggleMachine_beh": [],
+    "Toy.Obs.emptyHiddenMachine": [],
+    "Toy.Obs.emptyHiddenMachine.match_1": [],
+    "Toy.Obs.eraseHidden": [],
+    "Toy.Obs.eraseHidden_delayedChannel_beh_formula": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Obs.eraseHidden_delayedChannel_run_formula": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Obs.eraseHidden_redundantTag_beh": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Obs.ex_neg_allReachable": [],
+    "Toy.Obs.ex_neg_behIgnoresHidden": [],
+    "Toy.Obs.ex_neg_behInjective": [
+      "Quot.sound"
+    ],
+    "Toy.Obs.ex_neg_boundedBehIgnoresHidden": [],
+    "Toy.Obs.ex_neg_coversHidden": [],
+    "Toy.Obs.ex_neg_eraseHidden": [],
+    "Toy.Obs.ex_neg_finalMachine": [],
+    "Toy.Obs.ex_neg_isBisim_fails_out": [],
+    "Toy.Obs.ex_neg_isBisim_fails_step": [],
+    "Toy.Obs.ex_neg_isHom": [],
+    "Toy.Obs.ex_neg_isIso": [],
+    "Toy.Obs.ex_neg_minimalIsoFun": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Obs.ex_neg_minimalMachine_step": [
+      "Quot.sound"
+    ],
+    "Toy.Obs.ex_neg_moore_beh": [],
+    "Toy.Obs.ex_neg_obsEq": [],
+    "Toy.Obs.ex_neg_obsInjectiveFst": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Obs.ex_neg_oneStepOutIgnoresHidden": [],
+    "Toy.Obs.ex_neg_outIgnoresHidden": [],
+    "Toy.Obs.ex_neg_preservesInit": [],
+    "Toy.Obs.ex_neg_preservesOut": [],
+    "Toy.Obs.ex_neg_preservesStep": [],
+    "Toy.Obs.ex_neg_reachable": [],
+    "Toy.Obs.ex_neg_reachableBeh": [],
+    "Toy.Obs.ex_neg_relPreservesOut": [],
+    "Toy.Obs.ex_neg_relStepClosed": [],
+    "Toy.Obs.ex_neg_sameFst": [],
+    "Toy.Obs.ex_neg_stepFstIgnoresHidden": [],
+    "Toy.Obs.ex_neg_surjective": [],
+    "Toy.Obs.ex_neg_toMinimalQuotient_not_injective": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Obs.ex_pos_allReachable": [],
+    "Toy.Obs.ex_pos_behIgnoresHidden": [
+      "Quot.sound"
+    ],
+    "Toy.Obs.ex_pos_behInjective": [],
+    "Toy.Obs.ex_pos_boundedBehIgnoresHidden": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Obs.ex_pos_boundedBehIgnoresHidden.match_1_1": [],
+    "Toy.Obs.ex_pos_coversHidden": [],
+    "Toy.Obs.ex_pos_eraseHidden": [
+      "Quot.sound"
+    ],
+    "Toy.Obs.ex_pos_finalMachine": [],
+    "Toy.Obs.ex_pos_isBisim": [
+      "propext"
+    ],
+    "Toy.Obs.ex_pos_isHom": [],
+    "Toy.Obs.ex_pos_isIso": [],
+    "Toy.Obs.ex_pos_minimalIsoFun": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Obs.ex_pos_minimalMachine_step": [
+      "Quot.sound"
+    ],
+    "Toy.Obs.ex_pos_moore_beh": [],
+    "Toy.Obs.ex_pos_obsEq": [
+      "Quot.sound"
+    ],
+    "Toy.Obs.ex_pos_obsInjectiveFst": [],
+    "Toy.Obs.ex_pos_obsInjectiveFst_delayedChannel2": [],
+    "Toy.Obs.ex_pos_obsInjectiveFst_delayedChannel2.match_1_1": [],
+    "Toy.Obs.ex_pos_oneStepOutIgnoresHidden": [],
+    "Toy.Obs.ex_pos_outIgnoresHidden": [],
+    "Toy.Obs.ex_pos_preservesInit": [],
+    "Toy.Obs.ex_pos_preservesOut": [],
+    "Toy.Obs.ex_pos_preservesStep": [],
+    "Toy.Obs.ex_pos_reachable": [],
+    "Toy.Obs.ex_pos_reachableBeh": [],
+    "Toy.Obs.ex_pos_relPreservesOut": [],
+    "Toy.Obs.ex_pos_relStepClosed": [
+      "propext"
+    ],
+    "Toy.Obs.ex_pos_sameFst": [],
+    "Toy.Obs.ex_pos_stepFstIgnoresHidden": [],
+    "Toy.Obs.ex_pos_surjective": [],
+    "Toy.Obs.ex_pos_threeStateToggle_allReachable": [],
+    "Toy.Obs.ex_pos_toMinimalQuotient": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Obs.finalMachine": [],
+    "Toy.Obs.finalMachine.eq_1": [],
+    "Toy.Obs.finalMachine_is_final": [
+      "Quot.sound"
+    ],
+    "Toy.Obs.gatedLeak": [],
+    "Toy.Obs.gatedLeak_reachable_erasable_but_not_global": [
+      "Quot.sound"
+    ],
+    "Toy.Obs.gatedLeak_reachable_erasable_but_not_global.match_1_1": [],
+    "Toy.Obs.hom_to_final_eq_beh": [
+      "Quot.sound"
+    ],
+    "Toy.Obs.idBoolMachine": [],
+    "Toy.Obs.instDecidableEqThreeState": [],
+    "Toy.Obs.isBisim_sameFst_iff": [],
+    "Toy.Obs.iso_without_reachability": [],
+    "Toy.Obs.leakyOutMachine": [],
+    "Toy.Obs.minimalInit": [],
+    "Toy.Obs.minimalIsoFun": [
+      "Classical.choice"
+    ],
+    "Toy.Obs.minimalMachine": [
+      "Quot.sound"
+    ],
+    "Toy.Obs.minimalMachine_spec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Obs.no_leak_under_stepwise_nondependence": [
+      "Quot.sound"
+    ],
+    "Toy.Obs.no_leak_under_stepwise_nondependence.match_1_1": [],
+    "Toy.Obs.no_machine_independent_horizon_certifies_behIgnoresHidden": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Obs.not_stepFst_delayedChannel2": [],
+    "Toy.Obs.nv_behIgnoresHidden_iff_erasable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Obs.nv_behIgnoresHidden_iff_erasable.match_1_1": [],
+    "Toy.Obs.nv_behIgnoresHidden_iff_exists_unwinding_bisim": [],
+    "Toy.Obs.nv_behIgnoresHidden_iff_stepwise_of_obsInjectiveFst": [
+      "Quot.sound"
+    ],
+    "Toy.Obs.nv_bisim_subset_obsEq": [
+      "propext"
+    ],
+    "Toy.Obs.nv_delayedChannel2_nontrivial": [],
+    "Toy.Obs.nv_finalMachine_is_final": [],
+    "Toy.Obs.nv_hom_to_final_eq_beh": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Obs.nv_isBisim_sameFst_iff": [],
+    "Toy.Obs.nv_minimalMachine_spec": [
+      "Quot.sound"
+    ],
+    "Toy.Obs.nv_no_leak_under_stepwise_nondependence": [],
+    "Toy.Obs.nv_no_machine_independent_horizon": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Obs.nv_obsEq_is_greatest_bisim": [
+      "Quot.sound"
+    ],
+    "Toy.Obs.nv_reachable_behInjective_iso": [
+      "Quot.sound"
+    ],
+    "Toy.Obs.nv_reachable_maps_onto_minimalMachine": [
+      "Quot.sound"
+    ],
+    "Toy.Obs.nv_redundantTagMachine_nontrivial": [],
+    "Toy.Obs.nv_stepwise_nondependence_implies_behIgnoresHidden": [],
+    "Toy.Obs.nv_stepwise_nondependence_implies_behIgnoresHidden.match_1_1": [],
+    "Toy.Obs.nv_stepwise_nondependence_preserves_beh": [],
+    "Toy.Obs.nv_unwinding_bisim_implies_behIgnoresHidden": [],
+    "Toy.Obs.obsEq_is_greatest_bisim": [
+      "Quot.sound"
+    ],
+    "Toy.Obs.oneStepLeakMachine": [],
+    "Toy.Obs.pc_bounded_horizon_with_step_consistency": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Obs.pc_leak_when_stepFst_dropped": [],
+    "Toy.Obs.pc_machine_dependent_horizon_detects_leak": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Obs.reachable_behInjective_iso": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Obs.reachable_maps_onto_minimalMachine": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Obs.redundantTagMachine": [],
+    "Toy.Obs.redundantTagMachine_erasable_despite_step_dependence": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Obs.redundantTagMachine_erasable_despite_step_dependence.match_1_1": [],
+    "Toy.Obs.redundantTagUnwindingRel": [],
+    "Toy.Obs.redundantTag_beh": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Obs.redundantTag_has_other_hom": [],
+    "Toy.Obs.redundantToggleMachine": [],
+    "Toy.Obs.stepwise_nondependence_implies_behIgnoresHidden": [
+      "Quot.sound"
+    ],
+    "Toy.Obs.stepwise_nondependence_preserves_beh": [
+      "Quot.sound"
+    ],
+    "Toy.Obs.syntacticIndependentMachine": [],
+    "Toy.Obs.syntacticIndependent_beh": [],
+    "Toy.Obs.threeStateBisimRel": [],
+    "Toy.Obs.threeStateBisimRel.eq_1": [],
+    "Toy.Obs.threeStateToggle": [],
+    "Toy.Obs.threeStateToggle.eq_1": [],
+    "Toy.Obs.threeStateToggle.match_1": [],
+    "Toy.Obs.threeStateToggle.match_3": [],
+    "Toy.Obs.threeStateToggle_beh_eq_toggle": [],
+    "Toy.Obs.threeStateToggle_beh_eq_toggle.match_1": [],
+    "Toy.Obs.threeToTwo": [],
+    "Toy.Obs.toMinimalQuotient": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Obs.toMinimalQuotient_injective_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Obs.toggleClosedForm": [],
+    "Toy.Obs.toggleClosedForm.eq_1": [],
+    "Toy.Obs.toggleMachine": [],
+    "Toy.Obs.toggleMachine.eq_1": [],
+    "Toy.Obs.toggleMachine_beh": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Obs.unwinding_bisim_implies_behIgnoresHidden": [
+      "Quot.sound"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

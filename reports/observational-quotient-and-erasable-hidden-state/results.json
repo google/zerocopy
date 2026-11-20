@@ -1,0 +1,592 @@
+[
+  {
+    "id": "bisim_subset_obsEq",
+    "lean": "Toy.Obs.bisim_subset_obsEq",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For any deterministic Moore machine M and any state relation R that preserves immediate outputs (RelPreservesOut M R) and is closed under single-step transitions (RelStepClosed M R), every R-related pair of states is observationally equivalent (ObsEq M) (unbundled soundness half of obsEq_is_greatest_bisim).",
+    "hypotheses": [
+      {
+        "name": "hOut : RelPreservesOut M R",
+        "purpose": "Ensures R-related states emit identical outputs on the empty word and serves as the base case for word induction.",
+        "tightness": "tight",
+        "counterexample": "Toy.Obs.ce_bisim_subset_obsEq_no_out"
+      },
+      {
+        "name": "hStep : RelStepClosed M R",
+        "purpose": "Preserves R across single-step transitions so output equality extends to arbitrary finite input words.",
+        "tightness": "tight",
+        "counterexample": "Toy.Obs.ce_bisim_subset_obsEq_no_step"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "threeStateToggle with threeStateBisimRel relating the distinct states s0 and s1 while separating them from s2.",
+    "nonvacuity_witness_lean": "Toy.Obs.nv_bisim_subset_obsEq",
+    "non_claims": [
+      "Unbundled soundness half of obsEq_is_greatest_bisim (second conjunct with IsBisim unbundled to expose tightness of each hypothesis); does not establish completeness on its own.",
+      "Does not require R to be reflexive, symmetric, or transitive; conversely, proving ObsEq via this theorem does not show R itself is an equivalence relation.",
+      "Applies only to deterministic, total Moore machines with outputs on every state; does not cover nondeterministic labeled transition systems, partial transitions, silent (tau) moves, or probabilistic systems.",
+      "Relates states within a single machine M rather than across two machines M1 and M2 directly (cross-machine bisimulation requires a heterogeneous relation or disjoint sum)."
+    ],
+    "prior_art": [
+      "David Park, 'Concurrency and automata on infinite sequences', Theoretical Computer Science (5th GI-Conference), LNCS Vol. 104, Springer, 1981, pp. 167-183, DOI: 10.1007/BFb0017309.",
+      "Robin Milner, A Calculus of Communicating Systems, LNCS Vol. 92, Springer, 1980, DOI: 10.1007/3-540-10235-3 (and Communication and Concurrency, Prentice Hall, 1989, ISBN 978-0131150072).",
+      "J. J. M. M. Rutten, 'Automata and coinduction (an exercise in coalgebra)', CONCUR '98, LNCS Vol. 1466, Springer, 1998, pp. 194-218, DOI: 10.1007/BFb0055624.",
+      "J. J. M. M. Rutten, 'Universal coalgebra: a theory of systems', Theoretical Computer Science 249(1), 2000, pp. 3-80, DOI: 10.1016/S0304-3975(00)00056-6 (Section 3, Theorem 9.2, Example 9.5).",
+      "Bart Jacobs, Introduction to Coalgebra: Towards Mathematics of States and Observation, Cambridge University Press, 2016, ISBN 9781107177895, DOI: 10.1017/CBO9781316823187 (Chapter 3).",
+      "Lean Mathlib (leanprover-community/mathlib4, commit 5f78f9ce46fc85fa3cb45561d47b489c4c98cd04): Mathlib/Data/Stream/Init.lean (blob 6e5fe776a42451b6a8135f77ee2c19dac9c9b90c, Stream'.eq_of_bisim) and Mathlib/Data/PFunctor/Univariate/M.lean (blob 7a054f77e3e23d7311a6e070c0c6dee2ff27be27, PFunctor.M.bisim) formalize bisimulation proof principles for streams and coinductive M-types."
+    ],
+    "design_question": "Reference point (unbundled form of obsEq_is_greatest_bisim): provides the local single-step proof principle for showing two semantic states have identical observable behavior without inducting directly over unbounded input traces each time."
+  },
+  {
+    "id": "obsEq_is_greatest_bisim",
+    "lean": "Toy.Obs.obsEq_is_greatest_bisim",
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For every deterministic Moore machine M, observational equivalence (ObsEq M) is itself a bisimulation and contains every bisimulation on M.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "threeStateToggle, where s0 != s1 yet ObsEq threeStateToggle s0 s1 holds while ObsEq threeStateToggle s0 s2 fails, showing ObsEq is neither equality nor the universal relation.",
+    "nonvacuity_witness_lean": "Toy.Obs.nv_obsEq_is_greatest_bisim",
+    "non_claims": [
+      "Does not provide an algorithm or finite decision procedure for computing ObsEq M on infinite or unenumerable state spaces.",
+      "Does not extend to nondeterministic systems where trace equivalence is strictly coarser than bisimilarity.",
+      "Does not assert that a single fixed projection relation (such as SameFst on A x H) equals ObsEq M."
+    ],
+    "prior_art": [
+      "Edward F. Moore, 'Gedanken-experiments on sequential machines', in Automata Studies, Annals of Mathematics Studies No. 34, eds. C. E. Shannon and J. McCarthy, Princeton University Press, 1956, pp. 129-154, DOI: 10.1515/9781400882618-006.",
+      "David Park, 'Concurrency and automata on infinite sequences', LNCS Vol. 104, Springer, 1981, pp. 167-183, DOI: 10.1007/BFb0017309.",
+      "J. J. M. M. Rutten, 'Automata and coinduction (an exercise in coalgebra)', CONCUR '98, LNCS Vol. 1466, Springer, 1998, pp. 194-218, DOI: 10.1007/BFb0055624.",
+      "J. J. M. M. Rutten, 'Universal coalgebra: a theory of systems', Theoretical Computer Science 249(1), 2000, pp. 3-80, DOI: 10.1016/S0304-3975(00)00056-6 (Section 3, Theorem 9.2, Example 9.5).",
+      "Bart Jacobs, Introduction to Coalgebra: Towards Mathematics of States and Observation, Cambridge University Press, 2016, DOI: 10.1017/CBO9781316823187 (Chapter 3)."
+    ],
+    "design_question": "Reference point: establishes that coinductive bisimulation is both sound and complete for observational equivalence of deterministic Moore machines, justifying bisimulation-based quotienting and unwinding criteria."
+  },
+  {
+    "id": "hom_to_final_eq_beh",
+    "lean": "Toy.Obs.hom_to_final_eq_beh",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For any deterministic Moore machine M and any state map h : Q -> (List I -> O) into finalMachine I O that preserves immediate outputs (PreservesOut) and single-step transitions (PreservesStep), h equals M.beh (unbundled uniqueness half of finalMachine_is_final).",
+    "hypotheses": [
+      {
+        "name": "hOut : PreservesOut M (finalMachine I O) h",
+        "purpose": "Fixes the value of h q [] to M.out q at the base case of word induction.",
+        "tightness": "tight",
+        "counterexample": "Toy.Obs.ce_hom_to_final_no_out"
+      },
+      {
+        "name": "hStep : PreservesStep M (finalMachine I O) h",
+        "purpose": "Forces h q (i :: w) = h (M.step q i) w so h agrees with M.beh on all nonempty input words.",
+        "tightness": "tight",
+        "counterexample": "Toy.Obs.ce_hom_to_final_no_step"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "toggleMachine with the explicit closed-form parity map toggleClosedForm (fun q w => if w.length % 2 = 0 then q else !q), which is syntactically distinct from toggleMachine.beh and satisfies both PreservesOut and PreservesStep into finalMachine Unit Bool.",
+    "nonvacuity_witness_lean": "Toy.Obs.nv_hom_to_final_eq_beh",
+    "non_claims": [
+      "Unbundled uniqueness half of finalMachine_is_final (exposing PreservesOut and PreservesStep separately so each has a canonical tightness counterexample).",
+      "Does not claim uniqueness of homomorphisms into arbitrary Moore machines M2 (only into finalMachine I O; uniqueness into a general M2 holds when BehInjective M2, an unformalized sufficient condition that is not necessary when Q is empty).",
+      "Does not assert that h is injective or surjective onto List I -> O.",
+      "Does not apply to coalgebras with different functors (such as Mealy machines without an initial output on [], or nondeterministic automata)."
+    ],
+    "prior_art": [
+      "J. J. M. M. Rutten, 'Automata and coinduction (an exercise in coalgebra)', CONCUR '98, LNCS Vol. 1466, Springer, 1998, pp. 194-218, DOI: 10.1007/BFb0055624.",
+      "J. J. M. M. Rutten, 'Universal coalgebra: a theory of systems', Theoretical Computer Science 249(1), 2000, pp. 3-80, DOI: 10.1016/S0304-3975(00)00056-6 (Section 3, Example 9.5, Example 10.2(5)).",
+      "Bart Jacobs, Introduction to Coalgebra: Towards Mathematics of States and Observation, Cambridge University Press, 2016, DOI: 10.1017/CBO9781316823187 (Chapters 2 and 4).",
+      "Dmitriy Traytel, 'A Codatatype of Formal Languages', Archive of Formal Proofs, entry Coinductive_Languages, submitted 2013-11-15, https://isa-afp.org/entries/Coinductive_Languages.html; and 'Formal Languages, Formally and Coinductively', LMCS 13(3:28), 2017, DOI: 10.23638/LMCS-13(3:28)2017."
+    ],
+    "design_question": "Reference point (unbundled form of finalMachine_is_final): shows that any denotational interpretation into List I -> O respecting one-step observations and derivatives is uniquely determined to be M.beh."
+  },
+  {
+    "id": "finalMachine_is_final",
+    "lean": "Toy.Obs.finalMachine_is_final",
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For every deterministic Moore machine M over inputs I and outputs O, M.beh is a homomorphism from M into finalMachine I O and is the unique homomorphism from M into finalMachine I O.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "toggleMachine, a nontrivial two-state machine whose states have distinct behaviors in finalMachine Unit Bool.",
+    "nonvacuity_witness_lean": "Toy.Obs.nv_finalMachine_is_final",
+    "non_claims": [
+      "Does not claim that finalMachine I O is finite or computable when I or O is nonempty (unformalized background remark: by Cantor's diagonal argument, List I -> O is uncountable whenever I is nonempty and O has at least two elements).",
+      "Does not claim that every behavior in List I -> O is realized by a finite-state Moore machine (regularity requires finitely many left derivatives, as in Myhill-Nerode).",
+      "Does not state uniqueness of final coalgebras up to isomorphism on its own."
+    ],
+    "prior_art": [
+      "J. J. M. M. Rutten, 'Automata and coinduction (an exercise in coalgebra)', CONCUR '98, LNCS Vol. 1466, Springer, 1998, pp. 194-218, DOI: 10.1007/BFb0055624.",
+      "J. J. M. M. Rutten, 'Universal coalgebra: a theory of systems', Theoretical Computer Science 249(1), 2000, pp. 3-80, DOI: 10.1016/S0304-3975(00)00056-6 (Section 3, Example 9.5, Example 10.2(5)).",
+      "Bart Jacobs, Introduction to Coalgebra: Towards Mathematics of States and Observation, Cambridge University Press, 2016, DOI: 10.1017/CBO9781316823187 (Chapters 2 and 4).",
+      "Dmitriy Traytel, 'A Codatatype of Formal Languages', Archive of Formal Proofs, entry Coinductive_Languages, submitted 2013-11-15, https://isa-afp.org/entries/Coinductive_Languages.html.",
+      "Lean Mathlib (leanprover-community/mathlib4, commit 5f78f9ce46fc85fa3cb45561d47b489c4c98cd04): Mathlib/Data/Stream/Init.lean (blob 6e5fe776a42451b6a8135f77ee2c19dac9c9b90c) covers the I = Unit stream coalgebra special case."
+    ],
+    "design_question": "Reference point: identifies List I -> O with left-derivative transitions as the canonical ambient semantic domain in which all Moore-machine semantics compare unambiguously via M.beh."
+  },
+  {
+    "id": "minimalMachine_spec",
+    "lean": "Toy.Obs.minimalMachine_spec",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For any deterministic Moore machine M with an initial state q0, the reachable behavior-image machine (minimalMachine M q0, minimalInit M q0) has initial behavior M.beh q0, is all-reachable from minimalInit M q0, and is behavior-injective.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "threeStateToggle with initial state s0, which is not behavior-injective (s0 and s1 share behavior) and has non-constant alternating output.",
+    "nonvacuity_witness_lean": "Toy.Obs.nv_minimalMachine_spec",
+    "non_claims": [
+      "Does not require M itself to be finite, all-reachable, or behavior-injective, and does not assert that minimalMachine M q0 is finite when Q is infinite.",
+      "Does not provide a constructive finite-state minimization algorithm (such as Moore's partition refinement or Hopcroft's algorithm).",
+      "Does not claim that minimalMachine M q0 preserves unreachable states of M; states unreachable from q0 are discarded.",
+      "Constructs a pointed minimal realization on ReachableBeh M q0 rather than a global split-state erasure on A (for M : Moore I O (A x H), no theorem here identifies minimalMachine M (a0, h0) with eraseHidden M h0)."
+    ],
+    "prior_art": [
+      "Edward F. Moore, 'Gedanken-experiments on sequential machines', in Automata Studies, Princeton University Press, 1956, pp. 129-154, DOI: 10.1515/9781400882618-006.",
+      "John Myhill, 'Finite Automata and the Representation of Events', WADC Technical Report 57-624, 1957, pp. 112-137; Anil Nerode, 'Linear automaton transformations', Proc. AMS 9(4), 1958, pp. 541-544, DOI: 10.1090/S0002-9939-1958-0135681-9.",
+      "Joseph A. Goguen, 'Minimal realization of machines in closed categories', Bull. AMS 78(5), 1972, pp. 777-783, DOI: 10.1090/S0002-9904-1972-13032-5; Michael A. Arbib and Ernest G. Manes, 'Machines in a Category: An Expository Introduction', SIAM Review 16(2), 1974, pp. 163-192, DOI: 10.1137/1016026.",
+      "J. J. M. M. Rutten, 'Automata and coinduction (an exercise in coalgebra)', CONCUR '98, LNCS Vol. 1466, Springer, 1998, pp. 194-218, DOI: 10.1007/BFb0055624.",
+      "Chunhan Wu, Xingyuan Zhang, and Christian Urban, 'The Myhill-Nerode Theorem Based on Regular Expressions', Archive of Formal Proofs, entry Myhill-Nerode, submitted 2011-08-26, https://isa-afp.org/entries/Myhill-Nerode.html (and the journal article 'A Formalisation of the Myhill-Nerode Theorem Based on Regular Expressions', Journal of Automated Reasoning 52(4), 2014, pp. 451-480, DOI: 10.1007/s10817-013-9297-2).",
+      "Lean Mathlib (leanprover-community/mathlib4, commit 5f78f9ce46fc85fa3cb45561d47b489c4c98cd04), Mathlib/Computability/MyhillNerode.lean (blob d1226288f751d8fa1235e5d1727b5cd22ea1aba2) and Mathlib/Computability/DFA.lean (blob 41dbd3003b864976aac26b052797e38f922e9e93): constructs Language.toDFA on Set.range L.leftQuotient for Boolean-accepting DFAs."
+    ],
+    "design_question": "Reference point: constructs an explicit canonical minimal semantics (minimalMachine M q0) for any pointed deterministic transition semantics, eliminating both unreachable states and observationally redundant bookkeeping."
+  },
+  {
+    "id": "reachable_maps_onto_minimalMachine",
+    "lean": "Toy.Obs.reachable_maps_onto_minimalMachine",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For any pointed Moore machine (M, q0) and any all-reachable Moore machine (M', q0') having the same initial behavior (M'.beh q0' = M.beh q0), the explicit map toMinimalQuotient M q0 M' q0' hReach hInitBeh is a surjective, initial-state-preserving homomorphism from M' onto minimalMachine M q0 and is the unique homomorphism M' -> minimalMachine M q0.",
+    "hypotheses": [
+      {
+        "name": "hReach : AllReachable M' q0'",
+        "purpose": "Argument of the exhibited map toMinimalQuotient (so dropping hReach leaves the stated conclusion ill-formed); ensures every state q' of M' has behavior in ReachableBeh M q0 so toMinimalQuotient lands in the subtype. With hReach dropped, Toy.Obs.ce_reachable_maps_onto_minimal_no_reach refutes the strongest formable statement: no homomorphism M' -> minimalMachine M q0 exists at all.",
+        "tightness": "tight",
+        "counterexample": "Toy.Obs.ce_reachable_maps_onto_minimal_no_reach"
+      },
+      {
+        "name": "hInitBeh : M'.beh q0' = M.beh q0",
+        "purpose": "Argument of the exhibited map toMinimalQuotient (so dropping hInitBeh leaves the stated conclusion ill-formed); aligns the reachable behavior derivatives of (M', q0') with ReachableBeh M q0 and aligns the initial states. With hInitBeh dropped, Toy.Obs.ce_reachable_maps_onto_minimal_no_initBeh refutes the strongest formable statement: no homomorphism M' -> minimalMachine M q0 exists at all.",
+        "tightness": "tight",
+        "counterexample": "Toy.Obs.ce_reachable_maps_onto_minimal_no_initBeh"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "M = toggleMachine (at false) and M' = threeStateToggle (at s0): the theorem proves both hypotheses, AllReachable threeStateToggle .s0 and threeStateToggle.beh .s0 = toggleMachine.beh false. The resulting map phi is non-injective (phi s0 = phi s1 != phi s2), proved separately as Toy.Obs.ex_pos_toMinimalQuotient.",
+    "nonvacuity_witness_lean": "Toy.Obs.nv_reachable_maps_onto_minimalMachine",
+    "non_claims": [
+      "Does not require M itself to be all-reachable or behavior-injective (minimalMachine M q0 automatically restricts to the reachable image from q0).",
+      "Does not claim that toMinimalQuotient is injective in general (injectivity holds iff BehInjective M', proved separately as Toy.Obs.toMinimalQuotient_injective_iff).",
+      "Does not establish a homomorphism from an unreachable machine M' that contains dead states with behaviors outside ReachableBeh M q0.",
+      "Does not imply existence of a split/section homomorphism minimalMachine M q0 -> M' in general."
+    ],
+    "prior_art": [
+      "Edward F. Moore, 'Gedanken-experiments on sequential machines', in Automata Studies, Princeton University Press, 1956, pp. 129-154, DOI: 10.1515/9781400882618-006.",
+      "Joseph A. Goguen, 'Minimal realization of machines in closed categories', Bull. AMS 78(5), 1972, pp. 777-783, DOI: 10.1090/S0002-9904-1972-13032-5.",
+      "Michael A. Arbib and Ernest G. Manes, 'Machines in a Category: An Expository Introduction', SIAM Review 16(2), 1974, pp. 163-192, DOI: 10.1137/1016026.",
+      "J. J. M. M. Rutten, 'Universal coalgebra: a theory of systems', Theoretical Computer Science 249(1), 2000, pp. 3-80, DOI: 10.1016/S0304-3975(00)00056-6 (Section 3, Example 9.5, Example 10.2(5)).",
+      "Lean Mathlib (leanprover-community/mathlib4, commit 5f78f9ce46fc85fa3cb45561d47b489c4c98cd04), Mathlib/Computability/MyhillNerode.lean (blob d1226288f751d8fa1235e5d1727b5cd22ea1aba2), comparison only: it constructs the left-quotient automaton Language.toDFA and proves accepts_toDFA and isRegular_iff_finite_range_leftQuotient; it contains no minimality, universal-quotient, or uniqueness-up-to-isomorphism theorem at this commit."
+    ],
+    "design_question": "Reference point: establishes the universal minimality property that every reachable semantic presentation realizing the same initial behavior factors canonically and surjectively onto the minimal observational quotient.",
+    "lean_names": [
+      "Toy.Obs.toMinimalQuotient_injective_iff"
+    ]
+  },
+  {
+    "id": "reachable_behInjective_iso",
+    "lean": "Toy.Obs.reachable_behInjective_iso",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "Any two all-reachable, behavior-injective Moore machines (M1, q1) and (M2, q2) with identical initial behavior (M1.beh q1 = M2.beh q2) are canonically isomorphic via the exhibited inverse pair (minimalIsoFun M1 q1 M2 q2 hReach1, minimalIsoFun M2 q2 M1 q1 hReach2), which preserves initial states, commutes with multi-step runs from the initial states, and is the unique homomorphism M1 -> M2.",
+    "hypotheses": [
+      {
+        "name": "hReach1 : AllReachable M1 q1",
+        "purpose": "Argument of the exhibited map minimalIsoFun M1 q1 M2 q2 hReach1 (so dropping hReach1 leaves the stated conclusion ill-formed); ensures every state of M1 is reached by some input word from q1. With hReach1 dropped, Toy.Obs.ce_minimal_iso_no_reach1 refutes the strongest formable statement: no isomorphism IsIso M1 M2 f g exists at all.",
+        "tightness": "tight",
+        "counterexample": "Toy.Obs.ce_minimal_iso_no_reach1"
+      },
+      {
+        "name": "hReach2 : AllReachable M2 q2",
+        "purpose": "Argument of the exhibited inverse map minimalIsoFun M2 q2 M1 q1 hReach2 (so dropping hReach2 leaves the stated conclusion ill-formed); ensures every state of M2 is reached by some input word from q2. With hReach2 dropped, Toy.Obs.ce_minimal_iso_no_reach2 refutes the strongest formable statement: no isomorphism IsIso M1 M2 f g exists at all.",
+        "tightness": "tight",
+        "counterexample": "Toy.Obs.ce_minimal_iso_no_reach2"
+      },
+      {
+        "name": "hInj1 : BehInjective M1",
+        "purpose": "Ensures distinct states of M1 have distinct behaviors so the inverse map minimalIsoFun M2 q2 M1 q1 is well-defined and left-inverse.",
+        "tightness": "tight",
+        "counterexample": "Toy.Obs.ce_minimal_iso_no_inj1"
+      },
+      {
+        "name": "hInj2 : BehInjective M2",
+        "purpose": "Ensures distinct states of M2 have distinct behaviors so minimalIsoFun M1 q1 M2 q2 is well-defined, right-inverse, and unique.",
+        "tightness": "tight",
+        "counterexample": "Toy.Obs.ce_minimal_iso_no_inj2"
+      },
+      {
+        "name": "hInitBeh : M1.beh q1 = M2.beh q2",
+        "purpose": "Matches the initial behaviors of (M1, q1) and (M2, q2) so matching words reach matching outputs.",
+        "tightness": "tight",
+        "counterexample": "Toy.Obs.ce_minimal_iso_no_initBeh"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "M1 = toggleMachine (at false) and M2 = dualToggleMachine (at true), two distinct state encodings of the same alternating behavior isomorphic via Bool.not.",
+    "nonvacuity_witness_lean": "Toy.Obs.nv_reachable_behInjective_iso",
+    "non_claims": [
+      "Each hypothesis is tight in the sense that a counterexample exists when it is dropped. This does not mean that machines violating it are never isomorphic (for example, idBoolMachine at false fails AllReachable yet is isomorphic to itself via id, proved as Toy.Obs.iso_without_reachability).",
+      "Uses classical choice (Classical.choose) in minimalIsoFun to extract a reaching word from the propositional witness AllReachable; does not provide a computable isomorphism function without constructive reachability witnesses.",
+      "Does not extend to nondeterministic automata, where minimal NFAs for a regular language need not be unique up to isomorphism."
+    ],
+    "prior_art": [
+      "Edward F. Moore, 'Gedanken-experiments on sequential machines', in Automata Studies, Princeton University Press, 1956, pp. 129-154, DOI: 10.1515/9781400882618-006.",
+      "John Myhill, 'Finite Automata and the Representation of Events', WADC Technical Report 57-624, 1957, pp. 112-137; Anil Nerode, 'Linear automaton transformations', Proc. AMS 9(4), 1958, pp. 541-544, DOI: 10.1090/S0002-9939-1958-0135681-9.",
+      "Joseph A. Goguen, 'Minimal realization of machines in closed categories', Bull. AMS 78(5), 1972, pp. 777-783, DOI: 10.1090/S0002-9904-1972-13032-5; Michael A. Arbib and Ernest G. Manes, 'Machines in a Category: An Expository Introduction', SIAM Review 16(2), 1974, pp. 163-192, DOI: 10.1137/1016026.",
+      "Christian Doczkal, Jan-Oliver Kaiser, and Gert Smolka, 'A Constructive Theory of Regular Languages in Coq', Certified Programs and Proofs (CPP 2013), LNCS Vol. 8307, Springer, 2013, pp. 82-97, DOI: 10.1007/978-3-319-03545-1_6 (mechanizes DFA minimization and uniqueness of minimal DFAs up to state renaming in Coq).",
+      "Lawrence C. Paulson, 'Finite Automata in Hereditarily Finite Set Theory', Archive of Formal Proofs, entry Finite_Automata_HF, submitted 2015-02-05, https://isa-afp.org/entries/Finite_Automata_HF.html (mechanizes uniqueness up to isomorphism of minimal DFAs in Isabelle/HOL).",
+      "Lean Mathlib (leanprover-community/mathlib4, commit 5f78f9ce46fc85fa3cb45561d47b489c4c98cd04), Mathlib/Computability/MyhillNerode.lean (blob d1226288f751d8fa1235e5d1727b5cd22ea1aba2), comparison only: left-quotient automaton Language.toDFA only; no minimality or uniqueness-up-to-isomorphism theorem at this commit (unlike the Coq and Isabelle/HOL mechanizations cited above)."
+    ],
+    "design_question": "Reference point: guarantees that a canonical minimal semantics is unique up to a unique isomorphism, so any two fully reduced, reachable semantic models with the same observable behavior are structurally identical.",
+    "lean_names": [
+      "Toy.Obs.iso_without_reachability"
+    ]
+  },
+  {
+    "id": "stepwise_nondependence_implies_behIgnoresHidden",
+    "lean": "Toy.Obs.stepwise_nondependence_implies_behIgnoresHidden",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For any split-state Moore machine M : Moore I O (A x H) (whether or not H is inhabited), if OutIgnoresHidden M and StepFstIgnoresHidden M hold, then BehIgnoresHidden M (two-level deterministic nonleakage of H) holds.",
+    "hypotheses": [
+      {
+        "name": "hOut : OutIgnoresHidden M",
+        "purpose": "Ensures immediate outputs M.out (a, h) do not depend extensionally on h.",
+        "tightness": "tight",
+        "counterexample": "Toy.Obs.ce_stepwise_no_out"
+      },
+      {
+        "name": "hStepFst : StepFstIgnoresHidden M",
+        "purpose": "Ensures the observable transition component (M.step (a, h) i).1 does not depend extensionally on h across each step.",
+        "tightness": "tight",
+        "counterexample": "Toy.Obs.ce_stepwise_no_stepFst"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "syntacticIndependentMachine on Bool x Nat (inhabited H with nontrivial toggling output) and emptyHiddenMachine on Unit x Empty (where H is empty so no h0 : H exists).",
+    "nonvacuity_witness_lean": "Toy.Obs.nv_stepwise_nondependence_implies_behIgnoresHidden",
+    "non_claims": [
+      "Stepwise non-dependence here means one-step extensional independence (out and step.1 return equal values for all h; von Oheimb's functional independence). A code-level syntactic check that the hidden state is not read implies these conditions but is strictly stronger.",
+      "Does not construct a reduced machine M' : Moore I O A when H is empty and O is empty (see Toy.Obs.ce_erase_empty_hidden and stepwise_nondependence_preserves_beh).",
+      "Does not claim that OutIgnoresHidden and StepFstIgnoresHidden are necessary for BehIgnoresHidden when A contains observationally redundant states (refuted by redundantTagMachine_erasable_despite_step_dependence; exact when ObsInjectiveFst M holds, by behIgnoresHidden_iff_stepwise_of_obsInjectiveFst).",
+      "Equivalent to unwinding soundness specialized to R = SameFst (formalized by isBisim_sameFst_iff and unwinding_bisim_implies_behIgnoresHidden).",
+      "Does not cover reachable-only erasability under an invariant linking a and h from a particular initial state."
+    ],
+    "prior_art": [
+      "David von Oheimb, 'Information Flow Control Revisited: Noninfluence = Noninterference + Nonleakage', Computer Security - ESORICS 2004, LNCS Vol. 3193, Springer, 2004, pp. 225-243, DOI: 10.1007/978-3-540-30108-0_14 (two-level functional independence S_L(x1, y) = S_L(x2, y) and nonleakage).",
+      "Susan S. Owicki and David Gries, 'An axiomatic proof technique for parallel programs I', Acta Informatica 6(4), 1976, pp. 319-340, DOI: 10.1007/BF00268134 (auxiliary-variable discipline).",
+      "Joseph A. Goguen and Jose Meseguer, 'Unwinding and Inference Control', Proc. 1984 IEEE Symposium on Security and Privacy, p. 75ff, DOI: 10.1109/SP.1984.10019.",
+      "Jean-Christophe Filliatre, Leon Gondelman, and Andrei Paskevich, 'The spirit of ghost code', Formal Methods in System Design 48(3), 2016, pp. 152-174, DOI: 10.1007/s10703-016-0243-x (type-and-effect non-interference discipline for ghost code, with ghost-code erasure proved sound via bisimulation)."
+    ],
+    "design_question": "Shows without any inhabitant assumption on H that per-step extensional independence of both out and step.1 is a sound sufficient condition for nonleakage of H (BehIgnoresHidden M)."
+  },
+  {
+    "id": "stepwise_nondependence_preserves_beh",
+    "lean": "Toy.Obs.stepwise_nondependence_preserves_beh",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For any split-state Moore machine M : Moore I O (A x H) with a dummy hidden value h0 : H, if OutIgnoresHidden M and StepFstIgnoresHidden M hold, then Prod.fst is a homomorphism M -> eraseHidden M h0, eraseHidden M h0 preserves behavior for every (a, h), BehIgnoresHidden M holds, and eraseHidden M h1 is independent of the dummy value h1 : H.",
+    "hypotheses": [
+      {
+        "name": "h0 : H",
+        "purpose": "Argument of the exhibited machine eraseHidden M h0 in the conclusion (so dropping h0 leaves the stated conclusion ill-formed). BehIgnoresHidden M itself needs no h0 (stepwise_nondependence_implies_behIgnoresHidden), and the choice of h0 is irrelevant (fourth conjunct), but the existence of an inhabitant is necessary for any erased machine on A when O is empty and A is nonempty. With h0 dropped, Toy.Obs.ce_erase_empty_hidden refutes the strongest formable statement: emptyHiddenMachine satisfies OutIgnoresHidden and StepFstIgnoresHidden, yet no machine M' : Moore Unit Empty Unit reproduces its behavior, so in particular none has Prod.fst as a homomorphism onto it.",
+        "tightness": "tight",
+        "counterexample": "Toy.Obs.ce_erase_empty_hidden"
+      },
+      {
+        "name": "hOut : OutIgnoresHidden M",
+        "purpose": "Ensures M.out (a, h) is extensionally independent of h, yielding PreservesOut for Prod.fst.",
+        "tightness": "tight",
+        "counterexample": "Toy.Obs.ce_stepwise_erase_no_out"
+      },
+      {
+        "name": "hStepFst : StepFstIgnoresHidden M",
+        "purpose": "Ensures (M.step (a, h) i).1 is extensionally independent of h, yielding PreservesStep for Prod.fst.",
+        "tightness": "tight",
+        "counterexample": "Toy.Obs.ce_stepwise_erase_no_stepFst"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "syntacticIndependentMachine on Bool x Nat with h0 = 0, where the observable bit toggles while the hidden counter increments independently.",
+    "nonvacuity_witness_lean": "Toy.Obs.nv_stepwise_nondependence_preserves_beh",
+    "non_claims": [
+      "Stepwise non-dependence here means one-step extensional independence (out and step.1 return equal values for all h). A code-level check that the hidden state is not read implies these conditions but is strictly stronger.",
+      "Does not claim that OutIgnoresHidden and StepFstIgnoresHidden are necessary for erasability when A has observationally redundant states; redundantTagMachine_erasable_despite_step_dependence refutes the converse (while behIgnoresHidden_iff_stepwise_of_obsInjectiveFst proves necessity when ObsInjectiveFst M holds).",
+      "Does not cover reachable-only erasability where H is redundant only along an invariant reachable from a particular initial state (a0, h0) (see Toy.Obs.gatedLeak_reachable_erasable_but_not_global).",
+      "Does not guarantee that the erased machine eraseHidden M h0 is minimal (A itself may still contain observationally equivalent states).",
+      "Does not show that stepwise non-dependence alone yields a machine on A: the inhabitant h0 : H is a tight hypothesis, and when H and O are empty but A is not, no erased machine on A exists (Toy.Obs.ce_erase_empty_hidden, with A = Unit); only the choice of h0 is irrelevant."
+    ],
+    "prior_art": [
+      "David von Oheimb, 'Information Flow Control Revisited: Noninfluence = Noninterference + Nonleakage', Computer Security - ESORICS 2004, LNCS Vol. 3193, Springer, 2004, pp. 225-243, DOI: 10.1007/978-3-540-30108-0_14.",
+      "Susan S. Owicki and David Gries, 'An axiomatic proof technique for parallel programs I', Acta Informatica 6(4), 1976, pp. 319-340, DOI: 10.1007/BF00268134.",
+      "Joseph A. Goguen and Jose Meseguer, 'Unwinding and Inference Control', Proc. 1984 IEEE Symposium on Security and Privacy, p. 75ff, DOI: 10.1109/SP.1984.10019.",
+      "Martin Abadi and Leslie Lamport, 'The existence of refinement mappings', Theoretical Computer Science 82(2), 1991, pp. 253-284, DOI: 10.1016/0304-3975(91)90224-P.",
+      "Jean-Christophe Filliatre, Leon Gondelman, and Andrei Paskevich, 'The spirit of ghost code', Formal Methods in System Design 48(3), 2016, pp. 152-174, DOI: 10.1007/s10703-016-0243-x (type-and-effect non-interference discipline for ghost code, with ghost-code erasure proved sound via bisimulation)."
+    ],
+    "design_question": "Gives the local per-step sufficient condition (on both out and step.1) under which hidden state H can be deleted via dummy substitution eraseHidden M h0 with Prod.fst as an explicit Moore homomorphism."
+  },
+  {
+    "id": "isBisim_sameFst_iff",
+    "lean": "Toy.Obs.isBisim_sameFst_iff",
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For every split-state Moore machine M : Moore I O (A x H), the observable-projection relation SameFst satisfies CoversHidden SameFst, and IsBisim M SameFst holds if and only if OutIgnoresHidden M and StepFstIgnoresHidden M both hold.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "syntacticIndependentMachine (where IsBisim SameFst holds) paired with redundantTagMachine (where IsBisim SameFst fails).",
+    "nonvacuity_witness_lean": "Toy.Obs.nv_isBisim_sameFst_iff",
+    "non_claims": [
+      "Purely structural bridge: does not assert that SameFst is the only bisimulation covering hidden state (redundantTagMachine admits redundantTagUnwindingRel while failing IsBisim SameFst).",
+      "Does not construct an erased machine on A without an inhabitant h0 : H."
+    ],
+    "prior_art": [
+      "David von Oheimb, 'Information Flow Control Revisited: Noninfluence = Noninterference + Nonleakage', Computer Security - ESORICS 2004, LNCS Vol. 3193, Springer, 2004, pp. 225-243, DOI: 10.1007/978-3-540-30108-0_14 (equivalence of functional independence S_L(x1, y) = S_L(x2, y) with preservation of low-state equality y = y').",
+      "Joseph A. Goguen and Jose Meseguer, 'Unwinding and Inference Control', Proc. 1984 IEEE Symposium on Security and Privacy, p. 75ff, DOI: 10.1109/SP.1984.10019."
+    ],
+    "design_question": "Formalizes the exact bridge between Results 4a and 5c: per-step extensional non-dependence (OutIgnoresHidden and StepFstIgnoresHidden) is literally unwinding with the fixed relation R = SameFst."
+  },
+  {
+    "id": "redundantTagMachine_erasable_despite_step_dependence",
+    "lean": "Toy.Obs.redundantTagMachine_erasable_despite_step_dependence",
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "The concrete machine redundantTagMachine on (Bool x Bool) x Bool satisfies OutIgnoresHidden, BehIgnoresHidden, and global behavior preservation under eraseHidden for every dummy h0, yet fails StepFstIgnoresHidden (even on states reachable from ((false, false), false)) and admits no reduced machine on Bool x Bool for which Prod.fst is a homomorphism.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "redundantTagMachine has genuinely non-constant behavior (outputting false on [] and true on [false]).",
+    "nonvacuity_witness_lean": "Toy.Obs.nv_redundantTagMachine_nontrivial",
+    "non_claims": [
+      "Does not show that stepwise non-dependence is too strong in general: if a |-> M.beh (a, h) is injective for each h (ObsInjectiveFst M), then BehIgnoresHidden M implies StepFstIgnoresHidden M (behIgnoresHidden_iff_stepwise_of_obsInjectiveFst), so for an observationally reduced A the per-step conditions are necessary and sufficient. The counterexample works only because the tag bit t of A is never observed.",
+      "Does not show that no homomorphism from redundantTagMachine onto a machine on A exists; only Prod.fst fails (((x, t), h) |-> (x, false) is a homomorphism onto eraseHidden redundantTagMachine false, proved as Toy.Obs.redundantTag_has_other_hom).",
+      "Erasability here is uniform and global over all (a, h) : A x H. A machine can fail global BehIgnoresHidden solely because of states unreachable from the initial states of interest (Toy.Obs.gatedLeak_reachable_erasable_but_not_global).",
+      "Does not refute the necessity of OutIgnoresHidden (OutIgnoresHidden is always implied by BehIgnoresHidden by evaluating at [])."
+    ],
+    "prior_art": [
+      "David von Oheimb, 'Information Flow Control Revisited: Noninfluence = Noninterference + Nonleakage', Computer Security - ESORICS 2004, LNCS Vol. 3193, Springer, 2004, pp. 225-243, DOI: 10.1007/978-3-540-30108-0_14.",
+      "Joseph A. Goguen and Jose Meseguer, 'Unwinding and Inference Control', Proc. 1984 IEEE Symposium on Security and Privacy, p. 75ff, DOI: 10.1109/SP.1984.10019.",
+      "Jean-Christophe Filliatre, Leon Gondelman, and Andrei Paskevich, 'The spirit of ghost code', Formal Methods in System Design 48(3), 2016, pp. 152-174, DOI: 10.1007/s10703-016-0243-x."
+    ],
+    "design_question": "Demonstrates that per-step checks forbidding H from affecting step.1 are incomplete when A itself carries observationally redundant states: H can flow into unobserved representation details of A while remaining globally erasable.",
+    "lean_names": [
+      "Toy.Obs.redundantTag_has_other_hom"
+    ]
+  },
+  {
+    "id": "behIgnoresHidden_iff_stepwise_of_obsInjectiveFst",
+    "lean": "Toy.Obs.behIgnoresHidden_iff_stepwise_of_obsInjectiveFst",
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "For any split-state Moore machine M : Moore I O (A x H) whose observable component A has no distinct observationally equivalent states at any fixed hidden state (ObsInjectiveFst M), behavioral non-dependence (BehIgnoresHidden M) holds if and only if both OutIgnoresHidden M and StepFstIgnoresHidden M hold.",
+    "hypotheses": [
+      {
+        "name": "hInjA : ObsInjectiveFst M",
+        "purpose": "Rules out distinct observationally equivalent states in A at a fixed h so equal successor behaviors force equal next A-states.",
+        "tightness": "tight",
+        "counterexample": "Toy.Obs.ce_stepwise_iff_no_obsInjectiveFst"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "syntacticIndependentMachine (satisfying ObsInjectiveFst and both sides of the equivalence) paired with delayedChannel2 (satisfying ObsInjectiveFst while violating both sides).",
+    "nonvacuity_witness_lean": "Toy.Obs.nv_behIgnoresHidden_iff_stepwise_of_obsInjectiveFst",
+    "non_claims": [
+      "Fails when A contains observationally redundant states (tightness witness ce_stepwise_iff_no_obsInjectiveFst using redundantTagMachine).",
+      "ObsInjectiveFst M requires injectivity of a |-> M.beh (a, h) at each fixed h, which is strictly weaker than full BehInjective M on A x H (unformalized remark: BehInjective M implies ObsInjectiveFst M, strictly as witnessed by syntacticIndependentMachine; and when A is inhabited, BehInjective M together with BehIgnoresHidden M forces H to be a subsingleton).",
+      "Characterizes uniform global BehIgnoresHidden over all (a, h), not reachable-only erasability from a fixed initial state."
+    ],
+    "prior_art": [
+      "David von Oheimb, 'Information Flow Control Revisited: Noninfluence = Noninterference + Nonleakage', Computer Security - ESORICS 2004, LNCS Vol. 3193, Springer, 2004, pp. 225-243, DOI: 10.1007/978-3-540-30108-0_14.",
+      "Edward F. Moore, 'Gedanken-experiments on sequential machines', in Automata Studies, Princeton University Press, 1956, pp. 129-154, DOI: 10.1515/9781400882618-006 (reduced machines in which distinct states have distinct behaviors)."
+    ],
+    "design_question": "Identifies the exact boundary of incompleteness in redundantTagMachine_erasable_despite_step_dependence: once the observable state A is observationally reduced (ObsInjectiveFst M), the per-step check OutIgnoresHidden M and StepFstIgnoresHidden M is both necessary and sufficient for BehIgnoresHidden M."
+  },
+  {
+    "id": "no_leak_under_stepwise_nondependence",
+    "lean": "Toy.Obs.no_leak_under_stepwise_nondependence",
+    "kind": "impossibility",
+    "tier": "T0",
+    "plain_claim": "For any alphabets I, O and state components A, H, there does not exist a Moore machine M : Moore I O (A x H) that satisfies both OutIgnoresHidden M and StepFstIgnoresHidden M while failing BehIgnoresHidden M.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "syntacticIndependentMachine satisfies OutIgnoresHidden and StepFstIgnoresHidden, while delayedChannel2 satisfies OutIgnoresHidden and fails BehIgnoresHidden, showing each conjunct is individually satisfiable.",
+    "nonvacuity_witness_lean": "Toy.Obs.nv_no_leak_under_stepwise_nondependence",
+    "positive_control_lean": "Toy.Obs.pc_leak_when_stepFst_dropped",
+    "non_claims": [
+      "Applies only when BOTH OutIgnoresHidden M and StepFstIgnoresHidden M hold; dropping StepFstIgnoresHidden M allows multi-step hidden leaks even when OutIgnoresHidden M and OneStepOutIgnoresHidden M hold (positive control pc_leak_when_stepFst_dropped and delayedChannel2_leaks_at_step_two).",
+      "Does not claim that every machine satisfying BehIgnoresHidden M must satisfy StepFstIgnoresHidden M (refuted when A has redundant states by redundantTagMachine_erasable_despite_step_dependence)."
+    ],
+    "prior_art": [
+      "David von Oheimb, 'Information Flow Control Revisited: Noninfluence = Noninterference + Nonleakage', Computer Security - ESORICS 2004, LNCS Vol. 3193, Springer, 2004, pp. 225-243, DOI: 10.1007/978-3-540-30108-0_14.",
+      "Joseph A. Goguen and Jose Meseguer, 'Unwinding and Inference Control', Proc. 1984 IEEE Symposium on Security and Privacy, p. 75ff, DOI: 10.1109/SP.1984.10019."
+    ],
+    "design_question": "Resolves the ambiguity in 'per-step checks fail to catch hidden channels': a per-step check covering both out and the A-component of step never misses a leak (no machine can satisfy every single-step law including StepFstIgnoresHidden and still leak H); what fails are checks on the output alone at any machine-independent depth, or checks that H is never written."
+  },
+  {
+    "id": "delayedChannel2_leaks_at_step_two",
+    "lean": "Toy.Obs.delayedChannel2_leaks_at_step_two",
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "The concrete two-slot shift register delayedChannel2 on (Bool x Bool) x Bool satisfies OutIgnoresHidden, OneStepOutIgnoresHidden, BoundedBehIgnoresHidden 2, agreement with eraseHidden on all words of length < 2, and read-only H (step.2 = h), yet violates StepFstIgnoresHidden, fails BehIgnoresHidden at the two-step word [(), ()], and admits no uniform reduced machine on Bool x Bool preserving its behavior across all (a, h).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "delayedChannel2 produces distinct outputs on different observable inputs (true at [] and false at [()] from ((true, false), false)).",
+    "nonvacuity_witness_lean": "Toy.Obs.nv_delayedChannel2_nontrivial",
+    "non_claims": [
+      "Does not show that per-step non-dependence checks miss this channel: StepFstIgnoresHidden fails at the first step (proved both as a conjunct of this theorem and in Toy.Obs.ce_stepwise_erase_no_stepFst). Only checks on the output map, on output one step ahead, on bounded-depth output, or that H is never written, are defeated.",
+      "'Admits no reduced machine on A' means no single machine on A matches every (a, h) simultaneously. For any machine, every initial state (a, h) has a pointed minimal realization without a hidden component (minimalMachine, minimalMachine_spec). A reduced machine on A itself for a single fixed h exists for delayedChannel2 (eraseHidden delayedChannel2 h, proved as Toy.Obs.delayedChannel2_erasable_for_each_fixed_h, because H is read-only), but does not exist for arbitrary Moore machines in general.",
+      "Erasability here is global over all (a, h). A machine can fail it solely because of states unreachable from the initial states of interest (Toy.Obs.gatedLeak_reachable_erasable_but_not_global).",
+      "Does not address covert timing or physical side channels outside the deterministic Moore output function out."
+    ],
+    "prior_art": [
+      "David von Oheimb, 'Information Flow Control Revisited: Noninfluence = Noninterference + Nonleakage', Computer Security - ESORICS 2004, LNCS Vol. 3193, Springer, 2004, pp. 225-243, DOI: 10.1007/978-3-540-30108-0_14.",
+      "Joseph A. Goguen and Jose Meseguer, 'Security Policies and Security Models', Proc. 1982 IEEE Symposium on Security and Privacy, pp. 11-20, DOI: 10.1109/SP.1982.10014.",
+      "Joseph A. Goguen and Jose Meseguer, 'Unwinding and Inference Control', Proc. 1984 IEEE Symposium on Security and Privacy, p. 75ff, DOI: 10.1109/SP.1984.10019.",
+      "John Rushby, 'Noninterference, Transitivity, and Channel-Control Security Policies', Technical Report CSL-92-02, SRI International, December 1992."
+    ],
+    "design_question": "Shows concretely why checks on the output alone at 0 or 1 steps, as well as checks that H is read-only, fail to catch hidden channels: H violates StepFstIgnoresHidden on step 1 by flowing into an unexposed buffer bit of A, surfacing at out only on step 2.",
+    "lean_names": [
+      "Toy.Obs.delayedChannel2_erasable_for_each_fixed_h"
+    ]
+  },
+  {
+    "id": "no_machine_independent_horizon_certifies_behIgnoresHidden",
+    "lean": "Toy.Obs.no_machine_independent_horizon_certifies_behIgnoresHidden",
+    "kind": "impossibility",
+    "tier": "T1",
+    "plain_claim": "For every natural number k, the (k + 2)-slot shift register delayedChannel k satisfies OutIgnoresHidden, OneStepOutIgnoresHidden, BoundedBehIgnoresHidden (k + 2), and agreement with eraseHidden on all words of length < k + 2, yet violates StepFstIgnoresHidden, fails BehIgnoresHidden, and admits no uniform behavior-preserving reduced machine on Fin (k + 2) -> Bool.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "delayedChannel 3, a concrete 5-slot shift register passing BoundedBehIgnoresHidden 5 (all words of length < 5) and leaking at the length-5 word [(), (), (), (), ()].",
+    "nonvacuity_witness_lean": "Toy.Obs.nv_no_machine_independent_horizon",
+    "positive_control_lean": [
+      "Toy.Obs.pc_machine_dependent_horizon_detects_leak",
+      "Toy.Obs.pc_bounded_horizon_with_step_consistency"
+    ],
+    "non_claims": [
+      "The quantifier order is forall horizon exists machine: the result rules out a horizon chosen independently of the machine. For a fixed finite machine with n = |A x H| states, checking words of length <= n - 1 suffices to distinguish inequivalent states (unformalized classical remark: Moore 1956, reported via secondary literature as Theorem 6). Within the delayedChannel k family, horizon k + 3 already detects the leak (proved as Toy.Obs.pc_machine_dependent_horizon_detects_leak).",
+      "Does not show that inductive relations are necessary for certifying erasability. The exact characterizations (behIgnoresHidden_iff_erasable and behIgnoresHidden_iff_exists_unwinding_bisim) are behavioral, and for finite machines bounded checks of machine-dependent depth also suffice.",
+      "'Admits no reduced machine on A' means no single machine on A matches every (a, h) simultaneously. Every initial state has a pointed minimal realization without a hidden component (minimalMachine, minimalMachine_spec). For a fixed hidden value h, a reduced machine on A itself exists for delayedChannel2 (proved as Toy.Obs.delayedChannel2_erasable_for_each_fixed_h, where H is read-only; unformalized remark: similarly via eraseHidden (delayedChannel k) h for every k), though not for arbitrary Moore machines in general.",
+      "Erasability here is global over all (a, h). A machine can fail it solely because of states unreachable from the initial states of interest.",
+      "StepFstIgnoresHidden fails at step 1 for every delayedChannel k; restoring StepFstIgnoresHidden in delayedChannelFixed k eliminates the channel across all word lengths (companion positive control Toy.Obs.pc_bounded_horizon_with_step_consistency)."
+    ],
+    "prior_art": [
+      "Edward F. Moore, 'Gedanken-experiments on sequential machines', in Automata Studies, Princeton University Press, 1956, pp. 129-154, DOI: 10.1515/9781400882618-006.",
+      "David von Oheimb, 'Information Flow Control Revisited: Noninfluence = Noninterference + Nonleakage', Computer Security - ESORICS 2004, LNCS Vol. 3193, Springer, 2004, pp. 225-243, DOI: 10.1007/978-3-540-30108-0_14.",
+      "Joseph A. Goguen and Jose Meseguer, 'Unwinding and Inference Control', Proc. 1984 IEEE Symposium on Security and Privacy, p. 75ff, DOI: 10.1109/SP.1984.10019.",
+      "John Rushby, 'Noninterference, Transitivity, and Channel-Control Security Policies', Technical Report CSL-92-02, SRI International, December 1992."
+    ],
+    "design_question": "Shows that no single machine-independent finite horizon k can certify BehIgnoresHidden across machines of unbounded state-buffer depth, because an unexposed shift register of depth k + 2 hides H for k + 1 steps before emitting it."
+  },
+  {
+    "id": "behIgnoresHidden_iff_erasable",
+    "lean": "Toy.Obs.behIgnoresHidden_iff_erasable",
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "For any split-state Moore machine M : Moore I O (A x H) and any inhabitant h0 : H, behavioral non-dependence (BehIgnoresHidden M) holds if and only if the concrete erased machine eraseHidden M h0 preserves behavior uniformly for all (a, h), and also if and only if some reduced machine M' : Moore I O A preserves behavior uniformly for all (a, h).",
+    "hypotheses": [
+      {
+        "name": "h0 : H",
+        "purpose": "Argument of the exhibited machine eraseHidden M h0 in the first equivalence (so dropping h0 leaves the first conjunct ill-formed) and guarantees existence of a reduced machine M' : Moore I O A even when O may be empty. With h0 dropped, Toy.Obs.ce_erase_empty_hidden refutes the second equivalence (when O is empty and A nonempty, no reduced machine M' : Moore I O A exists at all).",
+        "tightness": "tight",
+        "counterexample": "Toy.Obs.ce_erase_empty_hidden"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "redundantTagMachine with h0 = false, where BehIgnoresHidden and global erasure via eraseHidden hold even though StepFstIgnoresHidden fails.",
+    "nonvacuity_witness_lean": "Toy.Obs.nv_behIgnoresHidden_iff_erasable",
+    "non_claims": [
+      "'Some reduced machine M' : Moore I O A' means a machine whose state a reproduces (a, h) for every h simultaneously (uniform in h, with identity correspondence on A). Re-encodings of A, reduced machines on other carriers (such as ReachableBeh M q0), and per-h realizations (such as Toy.Obs.delayedChannel2_erasable_for_each_fixed_h) are not covered.",
+      "Characterizes global erasability across all (a, h) : A x H, including unreachable states, not initial-state-relative erasability under a reachable state invariant (see Toy.Obs.gatedLeak_reachable_erasable_but_not_global).",
+      "Does not claim that Prod.fst is a homomorphism M -> eraseHidden M h0 whenever BehIgnoresHidden M holds (refuted by redundantTagMachine_erasable_despite_step_dependence).",
+      "Does not claim that eraseHidden M h0 = eraseHidden M h1 syntactically when only BehIgnoresHidden M holds (the transition functions may pick different observationally equivalent A-states for different h0, h1, while still yielding identical behaviors).",
+      "h0 is needed for the second equivalence only when O is empty (and A nonempty); if O is inhabited, the second equivalence (BehIgnoresHidden M <-> exists M' : Moore I O A, forall a h, M'.beh a = M.beh (a, h)) holds for every H without supplying h0 : H (unformalized remark)."
+    ],
+    "prior_art": [
+      "David von Oheimb, 'Information Flow Control Revisited: Noninfluence = Noninterference + Nonleakage', Computer Security - ESORICS 2004, LNCS Vol. 3193, Springer, 2004, pp. 225-243, DOI: 10.1007/978-3-540-30108-0_14 (nonleakage as independence of observable behavior from initial high state).",
+      "Joseph A. Goguen and Jose Meseguer, 'Security Policies and Security Models', Proc. 1982 IEEE Symposium on Security and Privacy, pp. 11-20, DOI: 10.1109/SP.1982.10014.",
+      "Martin Abadi and Leslie Lamport, 'The existence of refinement mappings', Theoretical Computer Science 82(2), 1991, pp. 253-284, DOI: 10.1016/0304-3975(91)90224-P.",
+      "Jean-Christophe Filliatre, Leon Gondelman, and Andrei Paskevich, 'The spirit of ghost code', Formal Methods in System Design 48(3), 2016, pp. 152-174, DOI: 10.1007/s10703-016-0243-x."
+    ],
+    "design_question": "Gives the exact necessary and sufficient behavioral condition for uniform global hidden-state erasure onto A, and shows that naive dummy substitution (eraseHidden M h0) works whenever any uniform reduced machine on A exists.",
+    "lean_names": [
+      "Toy.Obs.gatedLeak_reachable_erasable_but_not_global"
+    ]
+  },
+  {
+    "id": "unwinding_bisim_implies_behIgnoresHidden",
+    "lean": "Toy.Obs.unwinding_bisim_implies_behIgnoresHidden",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For any split-state Moore machine M : Moore I O (A x H) and any state relation R on A x H satisfying CoversHidden R, RelPreservesOut M R, and RelStepClosed M R (a bisimulation containing SameFst), behavioral non-dependence (BehIgnoresHidden M, two-level deterministic nonleakage of H) holds (split-state corollary of bisim_subset_obsEq).",
+    "hypotheses": [
+      {
+        "name": "hCov : CoversHidden R",
+        "purpose": "Ensures R contains SameFst, relating every pair (a, h1), (a, h2) sharing the same observable component a.",
+        "tightness": "tight",
+        "counterexample": "Toy.Obs.ce_unwinding_no_coversHidden"
+      },
+      {
+        "name": "hOut : RelPreservesOut M R",
+        "purpose": "Output consistency for R: related states emit the same immediate output.",
+        "tightness": "tight",
+        "counterexample": "Toy.Obs.ce_unwinding_no_out"
+      },
+      {
+        "name": "hStep : RelStepClosed M R",
+        "purpose": "Step consistency for R: single-step transitions preserve R, ruling out delayed multi-step channels.",
+        "tightness": "tight",
+        "counterexample": "Toy.Obs.ce_unwinding_no_step"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "redundantTagMachine with redundantTagUnwindingRel (comparing only the observable bit x), which satisfies all three hypotheses even though StepFstIgnoresHidden (the R = SameFst instance, by isBisim_sameFst_iff) fails.",
+    "nonvacuity_witness_lean": "Toy.Obs.nv_unwinding_bisim_implies_behIgnoresHidden",
+    "non_claims": [
+      "This is the two-level, deterministic instance of nonleakage unwinding (von Oheimb 2004), obtained directly as bisim_subset_obsEq composed with CoversHidden. Dropping the equivalence-relation requirement on R is not new here (Mantel 2000; von Oheimb 2004). Finding R is as hard as deciding BehIgnoresHidden (the canonical witness is ObsEq M, and BehIgnoresHidden M is by definition CoversHidden (ObsEq M)), so 'checkable' means single-step checkable given a candidate R.",
+      "Does not include a 'locally respects' condition for high-only actions because all inputs in Moore I O (A x H) are treated uniformly without action-domain labels.",
+      "Does not provide an automated method for discovering an unwinding relation R coarser than SameFst."
+    ],
+    "prior_art": [
+      "David von Oheimb, 'Information Flow Control Revisited: Noninfluence = Noninterference + Nonleakage', Computer Security - ESORICS 2004, LNCS Vol. 3193, Springer, 2004, pp. 225-243, DOI: 10.1007/978-3-540-30108-0_14 (primary analogue: mechanized state-based nonleakage unwinding without requiring R to be an equivalence relation).",
+      "Heiko Mantel, 'Unwinding Possibilistic Security Properties', Computer Security - ESORICS 2000, LNCS Vol. 1895, Springer, 2000, pp. 238-254, DOI: 10.1007/10722599_15 (unwinding relations without the equivalence-relation restriction).",
+      "Toby Murray, Daniel Matichuk, Matthew Brassil, Peter Gammie, and Gerwin Klein, 'Noninterference for Operating System Kernels', Certified Programs and Proofs (CPP 2012), LNCS Vol. 7679, Springer, 2012, pp. 126-142, DOI: 10.1007/978-3-642-35308-6_12 (mechanized application of nonleakage-style unwinding).",
+      "Joseph A. Goguen and Jose Meseguer, 'Unwinding and Inference Control', Proc. 1984 IEEE Symposium on Security and Privacy, p. 75ff, DOI: 10.1109/SP.1984.10019.",
+      "John Rushby, 'Noninterference, Transitivity, and Channel-Control Security Policies', Technical Report CSL-92-02, SRI International, December 1992."
+    ],
+    "design_question": "Corollary of bisim_subset_obsEq showing that an unwinding relation is simply a bisimulation containing SameFst: given a candidate R coarser than SameFst (compare isBisim_sameFst_iff), checking output and step preservation in a single step certifies BehIgnoresHidden even when A has redundant states."
+  },
+  {
+    "id": "behIgnoresHidden_iff_exists_unwinding_bisim",
+    "lean": "Toy.Obs.behIgnoresHidden_iff_exists_unwinding_bisim",
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For every split-state Moore machine M : Moore I O (A x H), BehIgnoresHidden M holds if and only if there exists a state relation R on A x H satisfying CoversHidden R, RelPreservesOut M R, and RelStepClosed M R (equivalently, some bisimulation on M contains SameFst; corollary of obsEq_is_greatest_bisim).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "redundantTagMachine, witnessed by redundantTagUnwindingRel where fixed-relation SameFst bisimulation (isBisim_sameFst_iff) fails.",
+    "nonvacuity_witness_lean": "Toy.Obs.nv_behIgnoresHidden_iff_exists_unwinding_bisim",
+    "non_claims": [
+      "This is the two-level, deterministic instance of nonleakage unwinding (von Oheimb 2004): an unwinding relation is a bisimulation containing SameFst, soundness is bisim_subset_obsEq, and completeness is definitional via R = ObsEq M because BehIgnoresHidden M is judgmentally equal to CoversHidden (ObsEq M) (Toy.Obs.behIgnoresHidden_iff_coversHidden_obsEq). Dropping the equivalence-relation requirement on R is not new here, and finding R is as hard as deciding BehIgnoresHidden, so 'checkable' means checkable given a candidate R.",
+      "Whether unwinding is complete in richer security models depends on the security definition. Rushby's intransitive unwinding is sound and complete for TA-security (van der Meyden 2007/2015), and Noce (2015) shows that the CSP generic unwinding condition is not necessary. Nothing about intransitive policies or CSP is formalized here.",
+      "Does not require H to be inhabited (when H is empty, both sides hold vacuously), so by itself it does not construct a reduced machine on A without an inhabitant h0 : H."
+    ],
+    "prior_art": [
+      "David von Oheimb, 'Information Flow Control Revisited: Noninfluence = Noninterference + Nonleakage', Computer Security - ESORICS 2004, LNCS Vol. 3193, Springer, 2004, pp. 225-243, DOI: 10.1007/978-3-540-30108-0_14.",
+      "Heiko Mantel, 'Unwinding Possibilistic Security Properties', Computer Security - ESORICS 2000, LNCS Vol. 1895, Springer, 2000, pp. 238-254, DOI: 10.1007/10722599_15.",
+      "Joseph A. Goguen and Jose Meseguer, 'Unwinding and Inference Control', Proc. 1984 IEEE Symposium on Security and Privacy, p. 75ff, DOI: 10.1109/SP.1984.10019.",
+      "John Rushby, 'Noninterference, Transitivity, and Channel-Control Security Policies', Technical Report CSL-92-02, SRI International, December 1992 (completeness of unwinding for transitive MLS security).",
+      "Ron van der Meyden, 'What, Indeed, Is Intransitive Noninterference?', Computer Security - ESORICS 2007, LNCS Vol. 4734, Springer, 2007, pp. 235-250, DOI: 10.1007/978-3-540-74835-9_16; journal version Journal of Computer Security 23(2), 2015, pp. 197-228, DOI: 10.3233/JCS-140516 (proving Rushby's intransitive unwinding sound and complete for TA-security).",
+      "Pasquale Noce, 'The Generic Unwinding Theorem for CSP Noninterference Security', Archive of Formal Proofs, entry Noninterference_Generic_Unwinding, submitted 2015-06-11, https://isa-afp.org/entries/Noninterference_Generic_Unwinding.html (proving a sufficient CSP generic unwinding condition and exhibiting a secure process for which no domain-relation map satisfies it)."
+    ],
+    "design_question": "Corollary of obsEq_is_greatest_bisim comparing fixed-relation SameFst bisimulation (isBisim_sameFst_iff, sufficient only unless ObsInjectiveFst M holds) with general bisimulations containing SameFst (sound and complete for BehIgnoresHidden M).",
+    "lean_names": [
+      "Toy.Obs.behIgnoresHidden_iff_coversHidden_obsEq"
+    ]
+  }
+]
