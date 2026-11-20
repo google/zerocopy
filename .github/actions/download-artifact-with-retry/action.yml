@@ -11,6 +11,10 @@ inputs:
   expected-file:
     description: File expected directly under path after extraction
     required: true
+  github-token:
+    description: Optional GitHub token for public REST artifact download (avoids ACTIONS_RUNTIME_TOKEN)
+    required: false
+    default: ""
 
 runs:
   using: composite
@@ -54,6 +58,7 @@ runs:
       with:
         artifact-ids: ${{ inputs.artifact-id }}
         path: ${{ inputs.path }}
+        github-token: ${{ inputs.github-token }}
 
     - name: Clean up and wait to retry artifact download
       if: ${{ !cancelled() && steps.download_1.outcome == 'failure' }}
@@ -76,6 +81,7 @@ runs:
       with:
         artifact-ids: ${{ inputs.artifact-id }}
         path: ${{ inputs.path }}
+        github-token: ${{ inputs.github-token }}
 
     - name: Clean up and wait to retry artifact download again
       if: ${{ !cancelled() && steps.download_2.outcome == 'failure' }}
@@ -96,6 +102,7 @@ runs:
       with:
         artifact-ids: ${{ inputs.artifact-id }}
         path: ${{ inputs.path }}
+        github-token: ${{ inputs.github-token }}
 
     - name: Verify downloaded artifact
       if: ${{ !cancelled() }}

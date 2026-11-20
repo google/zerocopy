@@ -37,12 +37,44 @@ packages=(
   rust-toolchain
 )
 
-for system in "${systems[@]}"; do
-  for package in "${packages[@]}"; do
-    printf 'Evaluating packages.%s.%s...\n' "$system" "$package"
-    nix eval --raw "$FLAKE#packages.$system.$package.drvPath" >/dev/null
-  done
-done
+# Evaluate all target platforms and release-relevant package derivations in a
+# single Nix invocation so Nix does not reopen the repository tree and
+# re-evaluate nixpkgs 56 separate times.
+eval_json="$(
+  nix eval --json "$FLAKE#packages" \
+    --apply 'builtins.mapAttrs (_: pkgs: builtins.mapAttrs (_: pkg: pkg.drvPath) (builtins.removeAttrs pkgs ["test-ifd"]))'
+)"
+
+EVAL_JSON="$eval_json" \
+EXPECTED_SYSTEMS="${systems[*]}" \
+EXPECTED_PACKAGES="${packages[*]}" \
+python3 -I -B - <<'PY'
+import json
+import os
+import sys
+
+data = json.loads(os.environ["EVAL_JSON"])
+if not isinstance(data, dict):
+    sys.exit(f"expected JSON object for flake packages, got {type(data).__name__}")
+systems = os.environ["EXPECTED_SYSTEMS"].split()
+packages = os.environ["EXPECTED_PACKAGES"].split()
+
+for system in systems:
+    sys_pkgs = data.get(system)
+    if not isinstance(sys_pkgs, dict):
+        sys.exit(f"missing packages.{system} in flake evaluation")
+    for package in packages:
+        drv = sys_pkgs.get(package)
+        if (
+            not isinstance(drv, str)
+            or not drv.startswith("/nix/store/")
+            or not drv.endswith(".drv")
+        ):
+            sys.exit(
+                f"invalid drvPath for packages.{system}.{package}: {drv!r}"
+            )
+        print(f"Verified packages.{system}.{package}: {drv}")
+PY
 
 # `test-ifd` intentionally reads metadata from the output of a derivation to
 # verify that Aeneas metadata can drive downstream derivations. A fresh CI
