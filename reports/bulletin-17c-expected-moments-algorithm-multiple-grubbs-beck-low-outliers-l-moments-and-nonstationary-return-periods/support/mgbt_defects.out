@@ -1,0 +1,27 @@
+== (1) R operator precedence in mgbt.sweeper(): `for(i in j1+1:n2)` ==
+j1+1:n2 evaluates to: 3 4 5 6  (intended (j1+1):n2 = 3 4 )
+default alphain = 0:                 index    sweeps.ix_alphaout     sweeps.ix_alphain 
+                    2                     2                     2 
+sweeps.ix_alphazeroin 
+                    0 
+alphain = 0.01 (every p-value after the outward-sweep index is < alphain):
+[1] "ERROR: missing value where TRUE/FALSE needed"
+
+== (1b) inward sweep j3 stays 0 when no p-value reaches alphazeroin ==
+p = 0.001 0.002 0.008 0.009 | mgbt.sweeper index = 2 sweeps = 2 2 0 | single-loop rule = 4 
+p = 0.001 0.002 0.030 0.050 | mgbt.sweeper index = 2 sweeps = 2 2 0 | single-loop rule = 4 
+p = 0.03 0.04 0.05 0.20 | mgbt.sweeper index = 3 sweeps = 0 0 3 | single-loop rule = 3 
+
+== (2) MGBT17c.verb() when the most central tested order statistic is significant ==
+n = 11  n2 = 5 
+p-values (smallest obs first): 0.2862 0.215 0.1069 0.08494 0.004018 
+MGBT17c      : klow = 5  LOThresh = 15200  sweeps = 5 0 0 
+MGBT17c.verb : klow = 0  LOThresh = 0  sweeps = -1 NA 0 
+MGBTcohn2016 : klow = 5 
+
+== (3) Single-loop rule vs MGBT17c on the record labelled 08165300 in MGBT-package.Rd ==
+MGBT17c       klow = 16  LOThresh = 1110
+MGBT17c.verb  klow = 16  LOThresh = 1110
+MGBTcohn2016  klow = 24  LOThresh = 3200
+MGBTcohn2013  klow = 35  LOThresh = 16600
+MGBTnb        klow = 16  LOThresh = 1110

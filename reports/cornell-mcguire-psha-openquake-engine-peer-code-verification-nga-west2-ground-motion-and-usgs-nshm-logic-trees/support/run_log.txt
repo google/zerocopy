@@ -1,0 +1,70 @@
+Execution log for the OpenQuake measurements in REPORT.md (gathered 2026-11-20 UTC)
+
+Subject: gem/oq-engine at d6042c3ad58401d8eb9d8319d9fc0480b3f8f25d
+  tarball: https://codeload.github.com/gem/oq-engine/tar.gz/d6042c3ad58401d8eb9d8319d9fc0480b3f8f25d
+  size 146771236 bytes, sha256 c826e06457c107dc4dcbc6209f1c2b47e1c8c9900967360eb7b5406a07c094bf
+  extracted size (du -sh): 404M; openquake.baselib.__version__ = '3.27.0'
+
+Host: Linux x86-64, 96 vCPU Intel Xeon @ 2.60GHz, 236 GB RAM
+Python: CPython 3.13.15 in a fresh venv; packages from PyPI (NOT the GEM wheel set):
+  numpy 2.5.4, scipy 1.18.1, numba 0.68.1, pandas 2.3.3, h5py 3.16.0, fiona 1.10.1,
+  pyproj 3.8.0, shapely 2.2.0, h3 4.5.0, alpha_shapes 1.1.1, toml 0.10.2,
+  decorator 5.3.1, psutil 7.2.2, pyzmq, pillow, pytest 9.2.0
+  (pandas 3.1.1 was first installed and then replaced by pandas~=2.2 to match pyproject.toml;
+   the first collection attempts failed with ImportError until fiona and pyzmq were installed)
+
+All commands are run from the extracted tarball root.
+
+1) PEER acceptance tests (PEER 2010/106 Set 1 cases 2, 5, 10, 11 + non-parametric case 2)
+   python -m pytest -q -p no:cacheprovider openquake/hazardlib/tests/acceptance/peer_test.py
+   first successful run:          5 passed in 21.59s
+   rerun (/usr/bin/time):         5 passed in 18.15s   wall=19.49 s maxrss=514868 KB
+   rerun (/usr/bin/time):         5 passed in 16.88s   wall=17.95 s maxrss=515076 KB
+   cold numba cache (NUMBA_CACHE_DIR=<empty dir>):
+                                  5 passed in 72.09s   wall=74.06 s maxrss=840216 KB
+   immediately after (same dir):  5 passed in 14.22s   wall=15.21 s maxrss=521568 KB
+   numba cache written: 8.9M in 116 files
+   (the cold/warm pair ran while one other single-threaded hazard computation was active
+    on the 96-vCPU host)
+
+2) NGA-West2 ground-motion model verification tests
+   python -m pytest -q -p no:cacheprovider \
+     openquake/hazardlib/tests/gsim/abrahamson_2014_test.py \
+     openquake/hazardlib/tests/gsim/boore_2014_test.py \
+     openquake/hazardlib/tests/gsim/campbell_bozorgnia_2014_test.py \
+     openquake/hazardlib/tests/gsim/chiou_youngs_2014_test.py \
+     openquake/hazardlib/tests/gsim/idriss_2014_test.py
+   34 passed in 86.17s (0:01:26)   wall=87.44 s maxrss=478232 KB
+
+3) Probes in this directory
+   python oq_stats_truncation_probe.py <tarball root>      -> oq_stats_truncation_probe.out
+   python normal_tail_accuracy.py <tarball root>           -> normal_tail_accuracy.out
+   python oq_peer_case10_discretization.py <tarball root> 10,5,2,1,0.5
+                                                           -> oq_peer_case10_discretization.out
+
+4) Edge case at truncation_level = 0 (direct hazardlib API)
+   python - <<'EOF'
+   import numpy as np
+   from openquake.hazardlib import stats
+   phi_b = float(stats.ndtr(0.0))
+   print(phi_b, stats.get_tmax(phi_b))
+   print(stats.truncnorm_sf(phi_b, np.array([-1.0, -1e-9, 0.0, 5e-7, 1e-6, 2e-6, 1.0])))
+   EOF
+   output: 0.5 1e-06
+           [ 1.  1. nan  0.  0.  0.  0.]
+
+5) Encoded PEER Set 1 Case 10 magnitude-frequency distribution
+   python - <<'EOF'
+   import math
+   from openquake.hazardlib.tests.acceptance import _peer_test_data as td
+   r = td.SET1_CASE10_MFD.get_annual_occurrence_rates()
+   tot = sum(x for _, x in r)
+   print(len(r), r[0], r[-1], tot, 1 - math.exp(-tot), td.SET1_CASE10_SITE1_POES[0])
+   EOF
+   output: 15 (5.05, 0.007451351362386893) (6.449999999999995, 0.00040948221391063364)
+           0.03803243764531079 0.03731828674323501 0.0387
+   (a = 3.116 instead of 3.1 gives 0.03945973477983668 events/yr for M >= 5)
+
+6) Source pins used for nshmp-haz and OpenSHA (read only, not built)
+   usgs/nshmp-haz   35e140b8eb665e35d373dbd4a96d2204ce7f2592 (archived; last commit 2022-12-08)
+   opensha/opensha  a0bba0d13f3dbd9ec3a3076a7ccea4491cc41393

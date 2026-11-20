@@ -1,0 +1,101 @@
+{
+  "topics": [
+    "domains/probabilistic-seismic-hazard-analysis",
+    "domains/ground-motion-model-implementation",
+    "verification/hazard-code-cross-verification",
+    "tooling/logic-tree-epistemic-uncertainty"
+  ],
+  "subjects": [
+    {
+      "name": "OpenQuake engine (hazardlib, calculators, acceptance and QA tests)",
+      "identity": {
+        "repository": "gem/oq-engine",
+        "revision": "d6042c3ad58401d8eb9d8319d9fc0480b3f8f25d",
+        "version": "openquake.baselib.__version__ = 3.27.0"
+      }
+    },
+    {
+      "name": "nshmp-haz (archived GitHub mirror of the USGS national hazard model code)",
+      "identity": {
+        "repository": "usgs/nshmp-haz",
+        "revision": "35e140b8eb665e35d373dbd4a96d2204ce7f2592"
+      }
+    },
+    {
+      "name": "OpenSHA hazard-curve calculator",
+      "identity": {
+        "repository": "opensha/opensha",
+        "revision": "a0bba0d13f3dbd9ec3a3076a7ccea4491cc41393"
+      }
+    },
+    {
+      "name": "PEER Report 2010/106, Verification of Probabilistic Seismic Hazard Analysis Computer Programs (Thomas, Wong, Abrahamson)",
+      "identity": {
+        "standard": "PEER Report 2010/106",
+        "url": "https://peer.berkeley.edu/sites/default/files/web_peer_10106_patricia_thomas_ivan_wong_norman_abrahamson.pdf"
+      }
+    },
+    {
+      "name": "PEER Report 2018/03, Probabilistic Seismic Hazard Analysis Code Verification (Hale, Abrahamson, Bozorgnia)",
+      "identity": {
+        "standard": "PEER Report 2018/03",
+        "url": "https://peer.berkeley.edu/sites/default/files/publications/2018_03_hale_final_8.13.18.pdf"
+      }
+    },
+    {
+      "name": "Cornell, Engineering Seismic Risk Analysis (BSSA 1968)",
+      "identity": {
+        "doi": "10.1785/BSSA0580051583"
+      }
+    },
+    {
+      "name": "McGuire, Probabilistic Seismic Hazard Analysis: Early History (EESD 2008)",
+      "identity": {
+        "doi": "10.1002/eqe.765"
+      }
+    },
+    {
+      "name": "Bozorgnia et al., NGA-West2 Research Project (Earthquake Spectra 2014)",
+      "identity": {
+        "doi": "10.1193/072113EQS209M"
+      }
+    },
+    {
+      "name": "Bommer and Scherbaum, The Use and Misuse of Logic Trees in PSHA (Earthquake Spectra 2008)",
+      "identity": {
+        "doi": "10.1193/1.2977755"
+      }
+    },
+    {
+      "name": "Field et al., UCERF3 time-independent model (BSSA 2014)",
+      "identity": {
+        "doi": "10.1785/0120130164"
+      }
+    },
+    {
+      "name": "Petersen et al., 2018 update of the US National Seismic Hazard Model (Earthquake Spectra 2020)",
+      "identity": {
+        "doi": "10.1177/8755293019878199"
+      }
+    },
+    {
+      "name": "Petersen et al., 2023 US 50-state National Seismic Hazard Model (Earthquake Spectra 2024)",
+      "identity": {
+        "doi": "10.1177/87552930231215428"
+      }
+    },
+    {
+      "name": "Stein, Geller, Liu, Why earthquake hazard maps often fail (Tectonophysics 2012)",
+      "identity": {
+        "doi": "10.1016/j.tecto.2012.06.047"
+      }
+    },
+    {
+      "name": "Gerstenberger et al., PSHA at regional and national scales (Reviews of Geophysics 2020)",
+      "identity": {
+        "doi": "10.1029/2019RG000653"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

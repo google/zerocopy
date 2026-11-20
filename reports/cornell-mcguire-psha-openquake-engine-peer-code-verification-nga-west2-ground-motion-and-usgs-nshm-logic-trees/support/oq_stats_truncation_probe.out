@@ -1,0 +1,23 @@
+== 1. Truncation at n = 2 sigma: OQ truncnorm_sf vs one-sided form ==
+  eps         OQ    2-sided  upper-only    untrunc  upper/2sided-1
+ -2.5   1.000000   1.000000    0.993646   0.993790         -0.635%
+ -1.0   0.857616   0.857616    0.837651   0.841345         -2.328%
+  0.0   0.500000   0.500000    0.488360   0.500000         -2.328%
+  0.5   0.299411   0.299411    0.292440   0.308538         -2.328%
+  1.0   0.142384   0.142384    0.139069   0.158655         -2.328%
+  1.5   0.046157   0.046157    0.045083   0.066807         -2.328%
+  1.9   0.006251   0.006251    0.006105   0.028717         -2.328%
+  2.0   0.000000   0.000000    0.000000   0.022750           +nan%
+  2.1   0.000000   0.000000    0.000000   0.017864           +nan%
+max |OQ - 2-sided| = 1.1622647289044608e-16
+
+== 2. 'Mean hazard' over logic-tree branches: mean of PoEs vs PoE of mean rate ==
+level 0: mean(PoE)=2.602370e-01  PoE(mean rate)=2.953119e-01  ratio-1=+13.478%
+level 1: mean(PoE)=3.389083e-02  PoE(mean rate)=3.439458e-02  ratio-1=+1.486%
+level 2: mean(PoE)=3.488654e-03  PoE(mean rate)=3.493882e-03  ratio-1=+0.150%
+level 3: mean(PoE)=3.498863e-04  PoE(mean rate)=3.499388e-04  ratio-1=+0.015%
+
+== 3. Fractiles of a 3-branch tree: OQ quantile_curve vs alternatives ==
+q=0.1: OQ=1.0000e-04  linear-weight/log-hazard=1.0000e-04  first-exceeding=1.0000e-04
+q=0.5: OQ=2.5000e-04  linear-weight/log-hazard=2.0000e-04  first-exceeding=4.0000e-04
+q=0.9: OQ=1.0000e-03  linear-weight/log-hazard=8.0000e-04  first-exceeding=1.6000e-03

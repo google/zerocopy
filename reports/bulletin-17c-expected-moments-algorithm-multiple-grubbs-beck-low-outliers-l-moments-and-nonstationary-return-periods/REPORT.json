@@ -1,0 +1,103 @@
+{
+  "topics": [
+    "domains/flood-frequency-analysis",
+    "domains/hydrologic-design-standards",
+    "verification/censored-data-quantile-estimation",
+    "tooling/l-moment-distribution-fitting"
+  ],
+  "subjects": [
+    {
+      "name": "MGBT R package (multiple Grubbs-Beck low-outlier test; ships T. A. Cohn's EMA source inst/sources/P3_089(R).txt), read-only CRAN mirror",
+      "identity": {
+        "repository": "cran/MGBT",
+        "revision": "0994615648a373bd7beb3cf7ebecb19e9edd948c",
+        "version": "1.1.8"
+      }
+    },
+    {
+      "name": "lmomco R package (L-moments and distribution fitting)",
+      "identity": {
+        "repository": "wasquith/lmomco",
+        "revision": "9d49f0a2e6fe1d687af82efe63d4a73caca82b04",
+        "version": "2.5.8"
+      }
+    },
+    {
+      "name": "lmom R package (Hosking's L-moment routines), read-only CRAN mirror",
+      "identity": {
+        "repository": "cran/lmom",
+        "revision": "252d9635c3acaf452d4d497fab2da01fa1edfcd8",
+        "version": "3.3"
+      }
+    },
+    {
+      "name": "lmoments3 Python package",
+      "identity": {
+        "repository": "OpenHydrology/lmoments3",
+        "revision": "7e19f97c23019ca68cbd526b8bd417c412438f1c"
+      }
+    },
+    {
+      "name": "England et al., Guidelines for Determining Flood Flow Frequency, Bulletin 17C (USGS Techniques and Methods 4-B5)",
+      "identity": {
+        "doi": "10.3133/tm4B5",
+        "version": "1.1 (May 2019)"
+      }
+    },
+    {
+      "name": "Asquith, England, Herrmann, MGBT software release (USGS)",
+      "identity": {
+        "doi": "10.5066/P9CW9EF0"
+      }
+    },
+    {
+      "name": "Cohn, Lane, Baier, Expected moments algorithm (WRR 1997)",
+      "identity": {
+        "doi": "10.1029/97WR01640"
+      }
+    },
+    {
+      "name": "Cohn, Lane, Stedinger, Confidence intervals for EMA flood quantiles (WRR 2001)",
+      "identity": {
+        "doi": "10.1029/2001WR900016"
+      }
+    },
+    {
+      "name": "Cohn et al., Generalized Grubbs-Beck test for multiple potentially influential low outliers (WRR 2013)",
+      "identity": {
+        "doi": "10.1002/wrcr.20392"
+      }
+    },
+    {
+      "name": "Lamontagne et al., Robust flood frequency analysis: EMA with multiple Grubbs-Beck outlier tests (WRR 2016)",
+      "identity": {
+        "doi": "10.1002/2015WR018093"
+      }
+    },
+    {
+      "name": "Stedinger and Griffis, Flood frequency analysis in the United States: Time to update (J. Hydrol. Eng. 2008)",
+      "identity": {
+        "doi": "10.1061/(ASCE)1084-0699(2008)13:4(199)"
+      }
+    },
+    {
+      "name": "Hosking, L-moments (JRSS B 1990)",
+      "identity": {
+        "doi": "10.1111/j.2517-6161.1990.tb01775.x"
+      }
+    },
+    {
+      "name": "Milly et al., Stationarity is dead: Whither water management? (Science 2008)",
+      "identity": {
+        "doi": "10.1126/science.1151915"
+      }
+    },
+    {
+      "name": "Salas and Obeysekera, Revisiting return period and risk for nonstationary hydrologic extremes (J. Hydrol. Eng. 2014)",
+      "identity": {
+        "doi": "10.1061/(ASCE)HE.1943-5584.0000820"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

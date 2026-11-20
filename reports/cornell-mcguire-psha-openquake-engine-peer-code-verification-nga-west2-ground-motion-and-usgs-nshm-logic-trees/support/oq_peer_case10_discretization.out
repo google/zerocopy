@@ -1,0 +1,6 @@
+disc_km ruptures secs | lowest-IML rel.err (site1) | max rel.err PoE>=1e-4 [where] | max rel.err PoE>=1e-5 [where] | passes encoded tol | all PoE>=1e-5 within 5%
+  10.0     4635    1.60 | -3.570% | 18.481% [site2/IML=0.2] | 89.317% [site3/IML=0.25] | True | False
+   5.0    18720    7.27 | -3.590% | 15.382% [site3/IML=0.15] | 31.813% [site3/IML=0.25] | True | False
+   2.0   117510   42.15 | -3.588% | 3.822% [site4/IML=0.001] | 10.544% [site3/IML=0.25] | True | False
+   1.0   470565  171.95 | -3.518% | 3.872% [site1/IML=0.05] | 6.781% [site1/IML=0.3] | True | False
+   0.5  1881945  705.73 | -4.356% | 4.812% [site4/IML=0.001] | 6.088% [site1/IML=0.3] | True | False

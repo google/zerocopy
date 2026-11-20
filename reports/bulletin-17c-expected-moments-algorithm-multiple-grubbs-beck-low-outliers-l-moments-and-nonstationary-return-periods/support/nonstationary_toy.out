@@ -1,0 +1,14 @@
+drift: location and scale (all flows scale by (1+g)^t)
+stationary GEV(xi=9483.6, alpha=13327.2, k=-0.4466); Q(AEP 0.01) = 212467
+stationary: T = 1/p = 100 yr; risk over 50 yr = 1-(0.99)^50 = 0.3950
+g=0.000/yr: p(year1)=0.01000 p(year50)=0.01000 | expected waiting time=  100.0 yr | 50-yr risk of exceeding Q100=0.3950 | 50-yr design-life level at stationary risk=212467 (-0.0%)
+g=0.002/yr: p(year1)=0.01004 p(year50)=0.01224 | expected waiting time=   75.8 yr | 50-yr risk of exceeding Q100=0.4279 | 50-yr design-life level at stationary risk=223754 (+5.3%)
+g=0.005/yr: p(year1)=0.01010 p(year50)=0.01649 | expected waiting time=   59.7 yr | 50-yr risk of exceeding Q100=0.4817 | 50-yr design-life level at stationary risk=242505 (+14.1%)
+g=0.010/yr: p(year1)=0.01020 p(year50)=0.02672 | expected waiting time=   46.5 yr | 50-yr risk of exceeding Q100=0.5817 | 50-yr design-life level at stationary risk=279366 (+31.5%)
+drift: location only
+stationary GEV(xi=9483.6, alpha=13327.2, k=-0.4466); Q(AEP 0.01) = 212467
+stationary: T = 1/p = 100 yr; risk over 50 yr = 1-(0.99)^50 = 0.3950
+g=0.000/yr: p(year1)=0.01000 p(year50)=0.01000 | expected waiting time=  100.0 yr | 50-yr risk of exceeding Q100=0.3950 | 50-yr design-life level at stationary risk=212467 (-0.0%)
+g=0.002/yr: p(year1)=0.01000 p(year50)=0.01010 | expected waiting time=   97.8 yr | 50-yr risk of exceeding Q100=0.3965 | 50-yr design-life level at stationary risk=212967 (+0.2%)
+g=0.005/yr: p(year1)=0.01000 p(year50)=0.01026 | expected waiting time=   93.3 yr | 50-yr risk of exceeding Q100=0.3989 | 50-yr design-life level at stationary risk=213785 (+0.6%)
+g=0.010/yr: p(year1)=0.01001 p(year50)=0.01061 | expected waiting time=   84.2 yr | 50-yr risk of exceeding Q100=0.4035 | 50-yr design-life level at stationary risk=215354 (+1.4%)

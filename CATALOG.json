@@ -12368,6 +12368,109 @@
         "systems/compartmentalization"
       ]
     },
+    "bulletin-17c-expected-moments-algorithm-multiple-grubbs-beck-low-outliers-l-moments-and-nonstationary-return-periods": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "cran/MGBT",
+            "revision": "0994615648a373bd7beb3cf7ebecb19e9edd948c",
+            "version": "1.1.8"
+          },
+          "name": "MGBT R package (multiple Grubbs-Beck low-outlier test; ships T. A. Cohn's EMA source inst/sources/P3_089(R).txt), read-only CRAN mirror"
+        },
+        {
+          "identity": {
+            "repository": "wasquith/lmomco",
+            "revision": "9d49f0a2e6fe1d687af82efe63d4a73caca82b04",
+            "version": "2.5.8"
+          },
+          "name": "lmomco R package (L-moments and distribution fitting)"
+        },
+        {
+          "identity": {
+            "repository": "cran/lmom",
+            "revision": "252d9635c3acaf452d4d497fab2da01fa1edfcd8",
+            "version": "3.3"
+          },
+          "name": "lmom R package (Hosking's L-moment routines), read-only CRAN mirror"
+        },
+        {
+          "identity": {
+            "repository": "OpenHydrology/lmoments3",
+            "revision": "7e19f97c23019ca68cbd526b8bd417c412438f1c"
+          },
+          "name": "lmoments3 Python package"
+        },
+        {
+          "identity": {
+            "doi": "10.3133/tm4B5",
+            "version": "1.1 (May 2019)"
+          },
+          "name": "England et al., Guidelines for Determining Flood Flow Frequency, Bulletin 17C (USGS Techniques and Methods 4-B5)"
+        },
+        {
+          "identity": {
+            "doi": "10.5066/P9CW9EF0"
+          },
+          "name": "Asquith, England, Herrmann, MGBT software release (USGS)"
+        },
+        {
+          "identity": {
+            "doi": "10.1029/97WR01640"
+          },
+          "name": "Cohn, Lane, Baier, Expected moments algorithm (WRR 1997)"
+        },
+        {
+          "identity": {
+            "doi": "10.1029/2001WR900016"
+          },
+          "name": "Cohn, Lane, Stedinger, Confidence intervals for EMA flood quantiles (WRR 2001)"
+        },
+        {
+          "identity": {
+            "doi": "10.1002/wrcr.20392"
+          },
+          "name": "Cohn et al., Generalized Grubbs-Beck test for multiple potentially influential low outliers (WRR 2013)"
+        },
+        {
+          "identity": {
+            "doi": "10.1002/2015WR018093"
+          },
+          "name": "Lamontagne et al., Robust flood frequency analysis: EMA with multiple Grubbs-Beck outlier tests (WRR 2016)"
+        },
+        {
+          "identity": {
+            "doi": "10.1061/(ASCE)1084-0699(2008)13:4(199)"
+          },
+          "name": "Stedinger and Griffis, Flood frequency analysis in the United States: Time to update (J. Hydrol. Eng. 2008)"
+        },
+        {
+          "identity": {
+            "doi": "10.1111/j.2517-6161.1990.tb01775.x"
+          },
+          "name": "Hosking, L-moments (JRSS B 1990)"
+        },
+        {
+          "identity": {
+            "doi": "10.1126/science.1151915"
+          },
+          "name": "Milly et al., Stationarity is dead: Whither water management? (Science 2008)"
+        },
+        {
+          "identity": {
+            "doi": "10.1061/(ASCE)HE.1943-5584.0000820"
+          },
+          "name": "Salas and Obeysekera, Revisiting return period and risk for nonstationary hydrologic extremes (J. Hydrol. Eng. 2014)"
+        }
+      ],
+      "topics": [
+        "domains/flood-frequency-analysis",
+        "domains/hydrologic-design-standards",
+        "verification/censored-data-quantile-estimation",
+        "tooling/l-moment-distribution-fitting"
+      ]
+    },
     "burrows-wheeler-fm-indexes-minimap2-minimizers-and-vg-pangenome-graphs": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -20449,6 +20552,107 @@
         "rustc/intrinsics",
         "rustc/mir",
         "verification/rust"
+      ]
+    },
+    "cornell-mcguire-psha-openquake-engine-peer-code-verification-nga-west2-ground-motion-and-usgs-nshm-logic-trees": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "gem/oq-engine",
+            "revision": "d6042c3ad58401d8eb9d8319d9fc0480b3f8f25d",
+            "version": "openquake.baselib.__version__ = 3.27.0"
+          },
+          "name": "OpenQuake engine (hazardlib, calculators, acceptance and QA tests)"
+        },
+        {
+          "identity": {
+            "repository": "usgs/nshmp-haz",
+            "revision": "35e140b8eb665e35d373dbd4a96d2204ce7f2592"
+          },
+          "name": "nshmp-haz (archived GitHub mirror of the USGS national hazard model code)"
+        },
+        {
+          "identity": {
+            "repository": "opensha/opensha",
+            "revision": "a0bba0d13f3dbd9ec3a3076a7ccea4491cc41393"
+          },
+          "name": "OpenSHA hazard-curve calculator"
+        },
+        {
+          "identity": {
+            "standard": "PEER Report 2010/106",
+            "url": "https://peer.berkeley.edu/sites/default/files/web_peer_10106_patricia_thomas_ivan_wong_norman_abrahamson.pdf"
+          },
+          "name": "PEER Report 2010/106, Verification of Probabilistic Seismic Hazard Analysis Computer Programs (Thomas, Wong, Abrahamson)"
+        },
+        {
+          "identity": {
+            "standard": "PEER Report 2018/03",
+            "url": "https://peer.berkeley.edu/sites/default/files/publications/2018_03_hale_final_8.13.18.pdf"
+          },
+          "name": "PEER Report 2018/03, Probabilistic Seismic Hazard Analysis Code Verification (Hale, Abrahamson, Bozorgnia)"
+        },
+        {
+          "identity": {
+            "doi": "10.1785/BSSA0580051583"
+          },
+          "name": "Cornell, Engineering Seismic Risk Analysis (BSSA 1968)"
+        },
+        {
+          "identity": {
+            "doi": "10.1002/eqe.765"
+          },
+          "name": "McGuire, Probabilistic Seismic Hazard Analysis: Early History (EESD 2008)"
+        },
+        {
+          "identity": {
+            "doi": "10.1193/072113EQS209M"
+          },
+          "name": "Bozorgnia et al., NGA-West2 Research Project (Earthquake Spectra 2014)"
+        },
+        {
+          "identity": {
+            "doi": "10.1193/1.2977755"
+          },
+          "name": "Bommer and Scherbaum, The Use and Misuse of Logic Trees in PSHA (Earthquake Spectra 2008)"
+        },
+        {
+          "identity": {
+            "doi": "10.1785/0120130164"
+          },
+          "name": "Field et al., UCERF3 time-independent model (BSSA 2014)"
+        },
+        {
+          "identity": {
+            "doi": "10.1177/8755293019878199"
+          },
+          "name": "Petersen et al., 2018 update of the US National Seismic Hazard Model (Earthquake Spectra 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1177/87552930231215428"
+          },
+          "name": "Petersen et al., 2023 US 50-state National Seismic Hazard Model (Earthquake Spectra 2024)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.tecto.2012.06.047"
+          },
+          "name": "Stein, Geller, Liu, Why earthquake hazard maps often fail (Tectonophysics 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.1029/2019RG000653"
+          },
+          "name": "Gerstenberger et al., PSHA at regional and national scales (Reviews of Geophysics 2020)"
+        }
+      ],
+      "topics": [
+        "domains/probabilistic-seismic-hazard-analysis",
+        "domains/ground-motion-model-implementation",
+        "verification/hazard-code-cross-verification",
+        "tooling/logic-tree-epistemic-uncertainty"
       ]
     },
     "coroutine-state-machine-optimization-and-hybridtrace-scaling": {
