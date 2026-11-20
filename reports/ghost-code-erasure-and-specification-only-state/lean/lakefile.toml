@@ -1,0 +1,6 @@
+name = "toy-ghost"
+version = "0.1.0"
+defaultTargets = ["ToyGhost"]
+
+[[lean_lib]]
+name = "ToyGhost"

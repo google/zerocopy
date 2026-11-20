@@ -1,0 +1,1229 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Ghost.Behaves": [],
+    "Toy.Ghost.Behaves.eq_1": [],
+    "Toy.Ghost.Behaves.eq_2": [],
+    "Toy.Ghost.Behaves.eq_3": [],
+    "Toy.Ghost.Behaves.exists": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.Behaves.exists.match_1_2": [],
+    "Toy.Ghost.Behaves.match_1": [],
+    "Toy.Ghost.Behaves.unique": [
+      "propext"
+    ],
+    "Toy.Ghost.Behaviour": [],
+    "Toy.Ghost.Behaviour.casesOn": [],
+    "Toy.Ghost.Behaviour.ctorElim": [],
+    "Toy.Ghost.Behaviour.ctorElimType": [],
+    "Toy.Ghost.Behaviour.ctorIdx": [],
+    "Toy.Ghost.Behaviour.diverge": [],
+    "Toy.Ghost.Behaviour.diverge.elim": [],
+    "Toy.Ghost.Behaviour.diverge.sizeOf_spec": [],
+    "Toy.Ghost.Behaviour.fail": [],
+    "Toy.Ghost.Behaviour.fail.elim": [],
+    "Toy.Ghost.Behaviour.fail.sizeOf_spec": [],
+    "Toy.Ghost.Behaviour.noConfusion": [],
+    "Toy.Ghost.Behaviour.noConfusionType": [],
+    "Toy.Ghost.Behaviour.real": [],
+    "Toy.Ghost.Behaviour.real.eq_1": [],
+    "Toy.Ghost.Behaviour.real.eq_2": [],
+    "Toy.Ghost.Behaviour.real.eq_3": [],
+    "Toy.Ghost.Behaviour.rec": [],
+    "Toy.Ghost.Behaviour.recOn": [],
+    "Toy.Ghost.Behaviour.term": [],
+    "Toy.Ghost.Behaviour.term.elim": [],
+    "Toy.Ghost.Behaviour.term.inj": [],
+    "Toy.Ghost.Behaviour.term.injEq": [
+      "propext"
+    ],
+    "Toy.Ghost.Behaviour.term.noConfusion": [],
+    "Toy.Ghost.Behaviour.term.sizeOf_spec": [],
+    "Toy.Ghost.Diverges": [],
+    "Toy.Ghost.ErasureAgrees": [],
+    "Toy.Ghost.ErasureExact": [],
+    "Toy.Ghost.Expr": [],
+    "Toy.Ghost.Expr.ReadsOnlyReal": [],
+    "Toy.Ghost.Expr.ReadsOnlyReal.match_1": [],
+    "Toy.Ghost.Expr.add": [],
+    "Toy.Ghost.Expr.add.elim": [],
+    "Toy.Ghost.Expr.add.inj": [],
+    "Toy.Ghost.Expr.add.injEq": [
+      "propext"
+    ],
+    "Toy.Ghost.Expr.add.noConfusion": [],
+    "Toy.Ghost.Expr.add.sizeOf_spec": [],
+    "Toy.Ghost.Expr.below": [],
+    "Toy.Ghost.Expr.brecOn": [],
+    "Toy.Ghost.Expr.brecOn.eq": [],
+    "Toy.Ghost.Expr.brecOn.go": [],
+    "Toy.Ghost.Expr.casesOn": [],
+    "Toy.Ghost.Expr.ctorElim": [],
+    "Toy.Ghost.Expr.ctorElimType": [],
+    "Toy.Ghost.Expr.ctorIdx": [],
+    "Toy.Ghost.Expr.eq": [],
+    "Toy.Ghost.Expr.eq.elim": [],
+    "Toy.Ghost.Expr.eq.inj": [],
+    "Toy.Ghost.Expr.eq.injEq": [
+      "propext"
+    ],
+    "Toy.Ghost.Expr.eq.noConfusion": [],
+    "Toy.Ghost.Expr.eq.sizeOf_spec": [],
+    "Toy.Ghost.Expr.eval": [],
+    "Toy.Ghost.Expr.eval.eq_1": [],
+    "Toy.Ghost.Expr.eval.eq_2": [],
+    "Toy.Ghost.Expr.eval.eq_3": [],
+    "Toy.Ghost.Expr.eval.eq_4": [],
+    "Toy.Ghost.Expr.eval.eq_5": [],
+    "Toy.Ghost.Expr.eval.eq_6": [],
+    "Toy.Ghost.Expr.eval.eq_def": [],
+    "Toy.Ghost.Expr.eval.match_1": [],
+    "Toy.Ghost.Expr.eval_congr_of_readsOnlyReal": [
+      "propext"
+    ],
+    "Toy.Ghost.Expr.lit": [],
+    "Toy.Ghost.Expr.lit.elim": [],
+    "Toy.Ghost.Expr.lit.inj": [],
+    "Toy.Ghost.Expr.lit.injEq": [
+      "propext"
+    ],
+    "Toy.Ghost.Expr.lit.noConfusion": [],
+    "Toy.Ghost.Expr.lit.sizeOf_spec": [],
+    "Toy.Ghost.Expr.lt": [],
+    "Toy.Ghost.Expr.lt.elim": [],
+    "Toy.Ghost.Expr.lt.inj": [],
+    "Toy.Ghost.Expr.lt.injEq": [
+      "propext"
+    ],
+    "Toy.Ghost.Expr.lt.noConfusion": [],
+    "Toy.Ghost.Expr.lt.sizeOf_spec": [],
+    "Toy.Ghost.Expr.noConfusion": [],
+    "Toy.Ghost.Expr.noConfusionType": [],
+    "Toy.Ghost.Expr.rec": [],
+    "Toy.Ghost.Expr.recOn": [],
+    "Toy.Ghost.Expr.sub": [],
+    "Toy.Ghost.Expr.sub.elim": [],
+    "Toy.Ghost.Expr.sub.inj": [],
+    "Toy.Ghost.Expr.sub.injEq": [
+      "propext"
+    ],
+    "Toy.Ghost.Expr.sub.noConfusion": [],
+    "Toy.Ghost.Expr.sub.sizeOf_spec": [],
+    "Toy.Ghost.Expr.var": [],
+    "Toy.Ghost.Expr.var.elim": [],
+    "Toy.Ghost.Expr.var.inj": [],
+    "Toy.Ghost.Expr.var.injEq": [
+      "propext"
+    ],
+    "Toy.Ghost.Expr.var.noConfusion": [],
+    "Toy.Ghost.Expr.var.sizeOf_spec": [],
+    "Toy.Ghost.Fails": [],
+    "Toy.Ghost.GhostBlocksNoDiverge": [],
+    "Toy.Ghost.GhostBlocksNoFail": [],
+    "Toy.Ghost.GhostBlocksSatisfy": [],
+    "Toy.Ghost.GhostNoDivergeFrom": [],
+    "Toy.Ghost.GhostNoFailFrom": [],
+    "Toy.Ghost.GhostReach": [],
+    "Toy.Ghost.GhostReach.eq_1": [],
+    "Toy.Ghost.GhostReach.eq_2": [],
+    "Toy.Ghost.GhostReach.eq_3": [],
+    "Toy.Ghost.GhostReach.eq_4": [],
+    "Toy.Ghost.GhostReach.eq_5": [],
+    "Toy.Ghost.GhostReach.eq_6": [],
+    "Toy.Ghost.GhostReach.eq_7": [],
+    "Toy.Ghost.GhostReach.eq_8": [],
+    "Toy.Ghost.GhostReach.eq_def": [],
+    "Toy.Ghost.GhostReach.match_1": [],
+    "Toy.Ghost.GhostToRealNI": [],
+    "Toy.Ghost.GhostToRealNI_AbortInsensitive": [],
+    "Toy.Ghost.GhostWritesGhost": [],
+    "Toy.Ghost.GhostWritesGhost.match_1": [],
+    "Toy.Ghost.NoGhostCode": [],
+    "Toy.Ghost.NoGhostCode.eq_1": [],
+    "Toy.Ghost.NoGhostCode.eq_2": [],
+    "Toy.Ghost.NoGhostCode.eq_3": [],
+    "Toy.Ghost.NoGhostCode.eq_4": [],
+    "Toy.Ghost.NoGhostCode.eq_5": [],
+    "Toy.Ghost.NoGhostCode.eq_6": [],
+    "Toy.Ghost.NoGhostCode.eq_7": [],
+    "Toy.Ghost.NoGhostCode.eq_8": [],
+    "Toy.Ghost.NoGhostCode.eq_def": [],
+    "Toy.Ghost.NoGhostVars": [],
+    "Toy.Ghost.NoGhostVars.eq_1": [],
+    "Toy.Ghost.NoGhostVars.eq_2": [],
+    "Toy.Ghost.NoGhostVars.eq_3": [],
+    "Toy.Ghost.NoGhostVars.eq_4": [],
+    "Toy.Ghost.NoGhostVars.eq_5": [],
+    "Toy.Ghost.NoGhostVars.eq_6": [],
+    "Toy.Ghost.NoGhostVars.eq_7": [],
+    "Toy.Ghost.NoGhostVars.eq_8": [],
+    "Toy.Ghost.NoGhostVars.eq_def": [],
+    "Toy.Ghost.OutRel": [
+      "propext"
+    ],
+    "Toy.Ghost.OutRel.bind": [
+      "propext"
+    ],
+    "Toy.Ghost.OutRel.bind.match_1_1": [
+      "propext"
+    ],
+    "Toy.Ghost.OutRel.match_1": [
+      "propext"
+    ],
+    "Toy.Ghost.Outcome": [],
+    "Toy.Ghost.Outcome.bind": [],
+    "Toy.Ghost.Outcome.bind.eq_1": [],
+    "Toy.Ghost.Outcome.bind.eq_2": [],
+    "Toy.Ghost.Outcome.bind.eq_3": [],
+    "Toy.Ghost.Outcome.bind.match_1": [],
+    "Toy.Ghost.Outcome.bind_eq_some": [],
+    "Toy.Ghost.Outcome.bind_eq_some.match_1_1": [],
+    "Toy.Ghost.Outcome.casesOn": [],
+    "Toy.Ghost.Outcome.ctorElim": [],
+    "Toy.Ghost.Outcome.ctorElimType": [],
+    "Toy.Ghost.Outcome.ctorIdx": [],
+    "Toy.Ghost.Outcome.fail": [],
+    "Toy.Ghost.Outcome.fail.elim": [],
+    "Toy.Ghost.Outcome.fail.sizeOf_spec": [],
+    "Toy.Ghost.Outcome.noConfusion": [],
+    "Toy.Ghost.Outcome.noConfusionType": [],
+    "Toy.Ghost.Outcome.ok": [],
+    "Toy.Ghost.Outcome.ok.elim": [],
+    "Toy.Ghost.Outcome.ok.inj": [],
+    "Toy.Ghost.Outcome.ok.injEq": [
+      "propext"
+    ],
+    "Toy.Ghost.Outcome.ok.noConfusion": [],
+    "Toy.Ghost.Outcome.ok.sizeOf_spec": [],
+    "Toy.Ghost.Outcome.rec": [],
+    "Toy.Ghost.Outcome.recOn": [],
+    "Toy.Ghost.RBehaves": [],
+    "Toy.Ghost.RBehaves.exists": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.RBehaves.iff_of_behaves": [
+      "propext"
+    ],
+    "Toy.Ghost.RBehaves.of_behaves": [],
+    "Toy.Ghost.RBehaves.unique": [
+      "propext"
+    ],
+    "Toy.Ghost.RBehaviour": [],
+    "Toy.Ghost.RBehaviour.casesOn": [],
+    "Toy.Ghost.RBehaviour.ctorElim": [],
+    "Toy.Ghost.RBehaviour.ctorElimType": [],
+    "Toy.Ghost.RBehaviour.ctorIdx": [],
+    "Toy.Ghost.RBehaviour.diverge": [],
+    "Toy.Ghost.RBehaviour.diverge.elim": [],
+    "Toy.Ghost.RBehaviour.diverge.sizeOf_spec": [],
+    "Toy.Ghost.RBehaviour.fail": [],
+    "Toy.Ghost.RBehaviour.fail.elim": [],
+    "Toy.Ghost.RBehaviour.fail.sizeOf_spec": [],
+    "Toy.Ghost.RBehaviour.noConfusion": [],
+    "Toy.Ghost.RBehaviour.noConfusionType": [],
+    "Toy.Ghost.RBehaviour.rec": [],
+    "Toy.Ghost.RBehaviour.recOn": [],
+    "Toy.Ghost.RBehaviour.term": [],
+    "Toy.Ghost.RBehaviour.term.elim": [],
+    "Toy.Ghost.RBehaviour.term.inj": [],
+    "Toy.Ghost.RBehaviour.term.injEq": [
+      "propext"
+    ],
+    "Toy.Ghost.RBehaviour.term.noConfusion": [],
+    "Toy.Ghost.RBehaviour.term.sizeOf_spec": [],
+    "Toy.Ghost.RStore": [],
+    "Toy.Ghost.RealReadsReal": [],
+    "Toy.Ghost.RealReadsReal.eq_1": [],
+    "Toy.Ghost.RealReadsReal.eq_2": [],
+    "Toy.Ghost.RealReadsReal.eq_3": [],
+    "Toy.Ghost.RealReadsReal.eq_4": [],
+    "Toy.Ghost.RealReadsReal.eq_5": [],
+    "Toy.Ghost.RealReadsReal.eq_6": [],
+    "Toy.Ghost.RealReadsReal.eq_7": [],
+    "Toy.Ghost.RealReadsReal.eq_8": [],
+    "Toy.Ghost.RealReadsReal.eq_def": [],
+    "Toy.Ghost.RefinesUpTo": [],
+    "Toy.Ghost.RefinesUpTo.mono": [],
+    "Toy.Ghost.SafePartialTriple": [],
+    "Toy.Ghost.Stmt": [],
+    "Toy.Ghost.Stmt.assert": [],
+    "Toy.Ghost.Stmt.assert.elim": [],
+    "Toy.Ghost.Stmt.assert.inj": [],
+    "Toy.Ghost.Stmt.assert.injEq": [
+      "propext"
+    ],
+    "Toy.Ghost.Stmt.assert.noConfusion": [],
+    "Toy.Ghost.Stmt.assert.sizeOf_spec": [],
+    "Toy.Ghost.Stmt.assign": [],
+    "Toy.Ghost.Stmt.assign.elim": [],
+    "Toy.Ghost.Stmt.assign.inj": [],
+    "Toy.Ghost.Stmt.assign.injEq": [
+      "propext"
+    ],
+    "Toy.Ghost.Stmt.assign.noConfusion": [],
+    "Toy.Ghost.Stmt.assign.sizeOf_spec": [],
+    "Toy.Ghost.Stmt.below": [],
+    "Toy.Ghost.Stmt.brecOn": [],
+    "Toy.Ghost.Stmt.brecOn.eq": [],
+    "Toy.Ghost.Stmt.brecOn.go": [],
+    "Toy.Ghost.Stmt.casesOn": [],
+    "Toy.Ghost.Stmt.ctorElim": [],
+    "Toy.Ghost.Stmt.ctorElimType": [],
+    "Toy.Ghost.Stmt.ctorIdx": [],
+    "Toy.Ghost.Stmt.ghost": [],
+    "Toy.Ghost.Stmt.ghost.elim": [],
+    "Toy.Ghost.Stmt.ghost.inj": [],
+    "Toy.Ghost.Stmt.ghost.injEq": [
+      "propext"
+    ],
+    "Toy.Ghost.Stmt.ghost.noConfusion": [],
+    "Toy.Ghost.Stmt.ghost.sizeOf_spec": [],
+    "Toy.Ghost.Stmt.ite": [],
+    "Toy.Ghost.Stmt.ite.elim": [],
+    "Toy.Ghost.Stmt.ite.inj": [],
+    "Toy.Ghost.Stmt.ite.injEq": [
+      "propext"
+    ],
+    "Toy.Ghost.Stmt.ite.noConfusion": [],
+    "Toy.Ghost.Stmt.ite.sizeOf_spec": [],
+    "Toy.Ghost.Stmt.loop": [],
+    "Toy.Ghost.Stmt.loop.elim": [],
+    "Toy.Ghost.Stmt.loop.inj": [],
+    "Toy.Ghost.Stmt.loop.injEq": [
+      "propext"
+    ],
+    "Toy.Ghost.Stmt.loop.noConfusion": [],
+    "Toy.Ghost.Stmt.loop.sizeOf_spec": [],
+    "Toy.Ghost.Stmt.noConfusion": [],
+    "Toy.Ghost.Stmt.noConfusionType": [],
+    "Toy.Ghost.Stmt.rec": [],
+    "Toy.Ghost.Stmt.recOn": [],
+    "Toy.Ghost.Stmt.seq": [],
+    "Toy.Ghost.Stmt.seq.elim": [],
+    "Toy.Ghost.Stmt.seq.inj": [],
+    "Toy.Ghost.Stmt.seq.injEq": [
+      "propext"
+    ],
+    "Toy.Ghost.Stmt.seq.noConfusion": [],
+    "Toy.Ghost.Stmt.seq.sizeOf_spec": [],
+    "Toy.Ghost.Stmt.skip": [],
+    "Toy.Ghost.Stmt.skip.elim": [],
+    "Toy.Ghost.Stmt.skip.sizeOf_spec": [],
+    "Toy.Ghost.Store": [],
+    "Toy.Ghost.Store.ofReal": [],
+    "Toy.Ghost.Store.update": [],
+    "Toy.Ghost.Store.update.eq_1": [],
+    "Toy.Ghost.TotalTriple": [],
+    "Toy.Ghost.Var": [],
+    "Toy.Ghost.Var.casesOn": [],
+    "Toy.Ghost.Var.ctorElim": [],
+    "Toy.Ghost.Var.ctorElimType": [],
+    "Toy.Ghost.Var.ctorIdx": [],
+    "Toy.Ghost.Var.ghost": [],
+    "Toy.Ghost.Var.ghost.elim": [],
+    "Toy.Ghost.Var.ghost.inj": [],
+    "Toy.Ghost.Var.ghost.injEq": [
+      "propext"
+    ],
+    "Toy.Ghost.Var.ghost.noConfusion": [],
+    "Toy.Ghost.Var.ghost.sizeOf_spec": [],
+    "Toy.Ghost.Var.noConfusion": [],
+    "Toy.Ghost.Var.noConfusionType": [],
+    "Toy.Ghost.Var.real": [],
+    "Toy.Ghost.Var.real.elim": [],
+    "Toy.Ghost.Var.real.inj": [],
+    "Toy.Ghost.Var.real.injEq": [
+      "propext"
+    ],
+    "Toy.Ghost.Var.real.noConfusion": [],
+    "Toy.Ghost.Var.real.sizeOf_spec": [],
+    "Toy.Ghost.Var.rec": [],
+    "Toy.Ghost.Var.recOn": [],
+    "Toy.Ghost.WeakPartialTriple": [],
+    "Toy.Ghost.WritesOnlyGhost": [],
+    "Toy.Ghost.abortBot": [],
+    "Toy.Ghost.abortBot_example_neg": [],
+    "Toy.Ghost.abortBot_example_pos": [],
+    "Toy.Ghost.assert_not_diverges": [],
+    "Toy.Ghost.assign_not_diverges": [],
+    "Toy.Ghost.assign_not_fails": [],
+    "Toy.Ghost.behaves_example_diverge": [],
+    "Toy.Ghost.behaves_example_fail": [],
+    "Toy.Ghost.behaves_example_fuel_zero": [
+      "propext"
+    ],
+    "Toy.Ghost.behaves_example_skip_never_fails": [
+      "propext"
+    ],
+    "Toy.Ghost.behaves_example_spin_never_terminates": [
+      "propext"
+    ],
+    "Toy.Ghost.behaves_example_spin_never_terminates.match_1_1": [],
+    "Toy.Ghost.behaves_example_term": [],
+    "Toy.Ghost.behaves_skip": [],
+    "Toy.Ghost.ceDataFlow": [],
+    "Toy.Ghost.ceGhostCopiesGhost": [],
+    "Toy.Ghost.ceGhostDiverges": [],
+    "Toy.Ghost.ceGhostDiverges_diverges": [],
+    "Toy.Ghost.ceGhostDiverges_not_behaviour_inclusion": [
+      "propext"
+    ],
+    "Toy.Ghost.ceGhostDiverges_not_refinesUpTo_failBot": [
+      "propext"
+    ],
+    "Toy.Ghost.ceGhostFails": [],
+    "Toy.Ghost.ceGhostFails_fails": [],
+    "Toy.Ghost.ceGhostFails_not_refinesUpTo_divBot": [
+      "propext"
+    ],
+    "Toy.Ghost.ceGhostWritesReal": [],
+    "Toy.Ghost.ceGhostWritesReal_behaves": [],
+    "Toy.Ghost.ceGhostWritesReal_not_refinesUpTo_abortBot": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.ceImplicitFlow": [],
+    "Toy.Ghost.ceImplicitFlow_behaves": [],
+    "Toy.Ghost.ceImplicitFlow_behaves_\u03c30": [],
+    "Toy.Ghost.ceImplicitFlow_not_refinesUpTo_abortBot": [
+      "propext"
+    ],
+    "Toy.Ghost.dataFlow_breaks_erasure": [
+      "propext"
+    ],
+    "Toy.Ghost.demo": [],
+    "Toy.Ghost.demo_behaves": [],
+    "Toy.Ghost.demo_not_fails_and_not_diverges": [
+      "propext"
+    ],
+    "Toy.Ghost.demo_not_ghostBlocksNoFail": [],
+    "Toy.Ghost.demo_satisfies_erasure_hypotheses": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.demo_satisfies_global_erasure_hypotheses": [
+      "propext"
+    ],
+    "Toy.Ghost.divBot": [],
+    "Toy.Ghost.divBot.eq_1": [],
+    "Toy.Ghost.divBot_example_neg": [],
+    "Toy.Ghost.divBot_example_pos": [],
+    "Toy.Ghost.diverges_loop_body": [
+      "propext"
+    ],
+    "Toy.Ghost.diverges_loop_next": [
+      "propext"
+    ],
+    "Toy.Ghost.diverges_loop_next.match_1_1": [],
+    "Toy.Ghost.diverges_seq_left": [
+      "propext"
+    ],
+    "Toy.Ghost.diverges_seq_right": [
+      "propext"
+    ],
+    "Toy.Ghost.diverges_seq_right.match_1_1": [],
+    "Toy.Ghost.erase": [],
+    "Toy.Ghost.erase.eq_1": [],
+    "Toy.Ghost.erase.eq_2": [],
+    "Toy.Ghost.erase.eq_3": [],
+    "Toy.Ghost.erase.eq_4": [],
+    "Toy.Ghost.erase.eq_5": [],
+    "Toy.Ghost.erase.eq_6": [],
+    "Toy.Ghost.erase.eq_7": [],
+    "Toy.Ghost.erase.eq_8": [],
+    "Toy.Ghost.erase.eq_def": [],
+    "Toy.Ghost.erase.match_1": [],
+    "Toy.Ghost.erase_ceImplicitFlow_behaves_\u03c30": [],
+    "Toy.Ghost.erase_eq_self_of_noGhostCode": [
+      "propext"
+    ],
+    "Toy.Ghost.erase_erase": [
+      "propext"
+    ],
+    "Toy.Ghost.erase_example_demo": [],
+    "Toy.Ghost.erase_example_ghost_assign": [],
+    "Toy.Ghost.erase_example_ghost_block": [],
+    "Toy.Ghost.erase_example_keeps_real_assert": [],
+    "Toy.Ghost.erase_example_keeps_real_assign": [],
+    "Toy.Ghost.erase_rbehaves_congr_of_realReadsReal": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.erase_rbehaves_iff_needs_ghostNoDivergeFrom": [
+      "propext"
+    ],
+    "Toy.Ghost.erase_rbehaves_iff_needs_ghostNoFailFrom": [
+      "propext"
+    ],
+    "Toy.Ghost.erase_rbehaves_iff_needs_ghostWritesGhost": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.erase_rbehaves_iff_needs_realReadsReal": [
+      "propext"
+    ],
+    "Toy.Ghost.erase_rbehaves_iff_needs_same_realPart": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.erase_rbehaves_iff_of_ghostWritesGhost_of_realReadsReal_of_ghostNoDivergeFrom_of_ghostNoFailFrom": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.erase_realReadsGhost": [],
+    "Toy.Ghost.erase_refinesUpTo_abortBot_needs_ghostWritesGhost": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.erase_refinesUpTo_abortBot_needs_realReadsReal": [
+      "propext"
+    ],
+    "Toy.Ghost.erase_refinesUpTo_abortBot_needs_same_realPart": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.erase_refinesUpTo_abortBot_of_ghostWritesGhost_of_realReadsReal": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.erase_refinesUpTo_abortBot_of_ghostWritesGhost_of_realReadsReal.match_1_1": [],
+    "Toy.Ghost.erase_refinesUpTo_divBot_needs_ghostNoFailFrom": [
+      "propext"
+    ],
+    "Toy.Ghost.erase_refinesUpTo_divBot_needs_ghostWritesGhost": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.erase_refinesUpTo_divBot_needs_realReadsReal": [
+      "propext"
+    ],
+    "Toy.Ghost.erase_refinesUpTo_divBot_needs_same_realPart": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.erase_refinesUpTo_divBot_of_ghostWritesGhost_of_realReadsReal_of_ghostNoFailFrom": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.erase_refinesUpTo_failBot_needs_ghostNoDivergeFrom": [
+      "propext"
+    ],
+    "Toy.Ghost.erase_refinesUpTo_failBot_needs_ghostWritesGhost": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.erase_refinesUpTo_failBot_needs_realReadsReal": [
+      "propext"
+    ],
+    "Toy.Ghost.erase_refinesUpTo_failBot_needs_same_realPart": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.erase_refinesUpTo_failBot_of_ghostWritesGhost_of_realReadsReal_of_ghostNoDivergeFrom": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.erase_refinesUpTo_failBot_of_ghostWritesGhost_of_realReadsReal_of_ghostNoDivergeFrom.match_1_1": [],
+    "Toy.Ghost.erasureAgrees_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.erasureAgrees_example_pos": [],
+    "Toy.Ghost.erasureAgrees_not_sufficient_for_erasureExact": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.erasureAgrees_pcGhostWritesGhost": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.erasureAgrees_realReadsGhost": [],
+    "Toy.Ghost.erasureExact_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.erasureExact_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.erasureExact_iff_erasureAgrees_needs_realReadsReal": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.erasureExact_iff_erasureAgrees_of_realReadsReal": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.erasureExact_iff_ghostToRealNI_and_erasureAgrees": [],
+    "Toy.Ghost.erasureExact_needs_ghostNoDivergeFrom": [
+      "propext"
+    ],
+    "Toy.Ghost.erasureExact_needs_ghostNoFailFrom": [
+      "propext"
+    ],
+    "Toy.Ghost.erasureExact_needs_ghostWritesGhost": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.erasureExact_needs_realReadsReal": [
+      "propext"
+    ],
+    "Toy.Ghost.erasureExact_of_ghostWritesGhost_of_realReadsReal_of_ghostNoDivergeFrom_of_ghostNoFailFrom": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.erasureExact_of_term": [
+      "propext"
+    ],
+    "Toy.Ghost.exists_of_forall_pre": [],
+    "Toy.Ghost.exists_run_of_erase_finishes": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.failBot": [],
+    "Toy.Ghost.failBot.eq_1": [],
+    "Toy.Ghost.failBot_example_neg": [],
+    "Toy.Ghost.failBot_example_pos": [],
+    "Toy.Ghost.fails_erase_of_run_fail": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.fails_loop_body": [
+      "propext"
+    ],
+    "Toy.Ghost.fails_loop_next": [
+      "propext"
+    ],
+    "Toy.Ghost.fails_seq_left": [
+      "propext"
+    ],
+    "Toy.Ghost.fails_seq_right": [
+      "propext"
+    ],
+    "Toy.Ghost.g": [],
+    "Toy.Ghost.g.eq_1": [],
+    "Toy.Ghost.ghostAssertG": [],
+    "Toy.Ghost.ghostAssertG.eq_1": [],
+    "Toy.Ghost.ghostAssertG_abortInsensitive_not_ghostToRealNI": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.ghostAssertG_term_eq": [],
+    "Toy.Ghost.ghostAssertG_term_eq.match_1_1": [],
+    "Toy.Ghost.ghostAssertX0": [],
+    "Toy.Ghost.ghostAssertX0.eq_1": [],
+    "Toy.Ghost.ghostBlocksNoDiverge_ceGhostFails": [
+      "propext"
+    ],
+    "Toy.Ghost.ghostBlocksNoDiverge_ceGhostWritesReal": [
+      "propext"
+    ],
+    "Toy.Ghost.ghostBlocksNoDiverge_ceImplicitFlow": [
+      "propext"
+    ],
+    "Toy.Ghost.ghostBlocksNoDiverge_demo": [],
+    "Toy.Ghost.ghostBlocksNoDiverge_example_neg": [],
+    "Toy.Ghost.ghostBlocksNoDiverge_example_neg_guarded": [
+      "propext"
+    ],
+    "Toy.Ghost.ghostBlocksNoDiverge_example_pos": [
+      "propext"
+    ],
+    "Toy.Ghost.ghostBlocksNoFail_ceGhostDiverges": [
+      "propext"
+    ],
+    "Toy.Ghost.ghostBlocksNoFail_ceGhostWritesReal": [
+      "propext"
+    ],
+    "Toy.Ghost.ghostBlocksNoFail_ceImplicitFlow": [
+      "propext"
+    ],
+    "Toy.Ghost.ghostBlocksNoFail_example_neg": [],
+    "Toy.Ghost.ghostBlocksNoFail_example_pos": [
+      "propext"
+    ],
+    "Toy.Ghost.ghostBlocksNoFail_ghostSpinOnG": [],
+    "Toy.Ghost.ghostBlocksNoFail_ghostSpinOnG.match_1_1": [],
+    "Toy.Ghost.ghostDivergence_breaks_erasure": [
+      "propext"
+    ],
+    "Toy.Ghost.ghostFailOrSpin": [],
+    "Toy.Ghost.ghostFailOrSpin.eq_1": [],
+    "Toy.Ghost.ghostFailOrSpin_fails": [
+      "propext"
+    ],
+    "Toy.Ghost.ghostFailOrSpin_inner_diverges": [
+      "propext"
+    ],
+    "Toy.Ghost.ghostFailure_breaks_erasure": [
+      "propext"
+    ],
+    "Toy.Ghost.ghostNoDivergeFrom_example_neg": [],
+    "Toy.Ghost.ghostNoDivergeFrom_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.ghostNoDivergeFrom_example_pos_failing": [
+      "propext"
+    ],
+    "Toy.Ghost.ghostNoDivergeFrom_example_pos_guarded": [
+      "propext"
+    ],
+    "Toy.Ghost.ghostNoDivergeFrom_of_ghostBlocksNoDiverge": [],
+    "Toy.Ghost.ghostNoDivergeFrom_of_not_diverges": [
+      "propext"
+    ],
+    "Toy.Ghost.ghostNoFailFrom_demo": [
+      "propext"
+    ],
+    "Toy.Ghost.ghostNoFailFrom_example_neg": [],
+    "Toy.Ghost.ghostNoFailFrom_example_pos": [
+      "propext"
+    ],
+    "Toy.Ghost.ghostNoFailFrom_example_pos_loop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.ghostNoFailFrom_of_ghostBlocksNoFail": [],
+    "Toy.Ghost.ghostNoFailFrom_of_not_fails": [
+      "propext"
+    ],
+    "Toy.Ghost.ghostNoFailFrom_of_not_fails.match_1_1": [],
+    "Toy.Ghost.ghostNoFailFrom_of_safePartialTriple": [
+      "propext"
+    ],
+    "Toy.Ghost.ghostNoFail_loop_part": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.ghostReach_anti": [
+      "propext"
+    ],
+    "Toy.Ghost.ghostReach_assert": [],
+    "Toy.Ghost.ghostReach_assign": [],
+    "Toy.Ghost.ghostReach_ghost": [],
+    "Toy.Ghost.ghostReach_of_ghostBlocksSatisfy": [],
+    "Toy.Ghost.ghostReach_pred_of_succ": [
+      "propext"
+    ],
+    "Toy.Ghost.ghostReach_pred_of_succ.match_1_1": [],
+    "Toy.Ghost.ghostReach_seq": [
+      "propext"
+    ],
+    "Toy.Ghost.ghostReach_skip": [],
+    "Toy.Ghost.ghostSpinOnG": [],
+    "Toy.Ghost.ghostSpinOnG.eq_1": [],
+    "Toy.Ghost.ghostSpinOnG_behaves_\u03c30": [],
+    "Toy.Ghost.ghostSpinOnG_diverges_\u03c30g": [
+      "propext"
+    ],
+    "Toy.Ghost.ghostSpinOnX": [],
+    "Toy.Ghost.ghostSpinOnX.eq_1": [],
+    "Toy.Ghost.ghostSpinOnX_behaves_of_x0": [
+      "propext"
+    ],
+    "Toy.Ghost.ghostSpinOnX_diverges_of_x_ne": [
+      "propext"
+    ],
+    "Toy.Ghost.ghostSpinOnX_ghostToRealNI_not_erasureExact": [
+      "propext"
+    ],
+    "Toy.Ghost.ghostSpinThenSetX": [],
+    "Toy.Ghost.ghostSpinThenSetX.eq_1": [],
+    "Toy.Ghost.ghostThenRealFail": [],
+    "Toy.Ghost.ghostThenRealFail_satisfies_erasure_hypotheses": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.ghostThenSpin": [],
+    "Toy.Ghost.ghostThenSpin_diverges": [
+      "propext"
+    ],
+    "Toy.Ghost.ghostThenSpin_diverges.match_1_1": [],
+    "Toy.Ghost.ghostThenSpin_satisfies_erasure_hypotheses": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.ghostToRealNI_abortInsensitive_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.ghostToRealNI_abortInsensitive_example_pos": [],
+    "Toy.Ghost.ghostToRealNI_abortInsensitive_example_pos_failure_channel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.ghostToRealNI_abortInsensitive_ghostSpinOnG": [],
+    "Toy.Ghost.ghostToRealNI_abortInsensitive_ghostSpinOnG.match_1_1": [],
+    "Toy.Ghost.ghostToRealNI_abortInsensitive_needs_ghostWritesGhost": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.ghostToRealNI_abortInsensitive_needs_realReadsReal": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.ghostToRealNI_abortInsensitive_of_ghostWritesGhost_of_realReadsReal": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.ghostToRealNI_ceGhostWritesReal": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.ghostToRealNI_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.ghostToRealNI_example_neg_termination_channel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.ghostToRealNI_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.ghostToRealNI_needs_ghostNoDivergeFrom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.ghostToRealNI_needs_ghostNoFailFrom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.ghostToRealNI_needs_ghostWritesGhost": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.ghostToRealNI_needs_realReadsReal": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.ghostToRealNI_not_sufficient_for_erasureExact": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.ghostToRealNI_of_erasureExact": [],
+    "Toy.Ghost.ghostToRealNI_of_ghostWritesGhost_of_realReadsReal_of_ghostNoDivergeFrom_of_ghostNoFailFrom": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.ghostTotalFrom_of_totalTriple": [
+      "propext"
+    ],
+    "Toy.Ghost.ghostWriteToReal_breaks_erasure": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.ghostWritesGhost_ceGhostDiverges": [],
+    "Toy.Ghost.ghostWritesGhost_ceGhostFails": [],
+    "Toy.Ghost.ghostWritesGhost_ceImplicitFlow": [],
+    "Toy.Ghost.ghostWritesGhost_demo": [],
+    "Toy.Ghost.ghostWritesGhost_example_neg": [],
+    "Toy.Ghost.ghostWritesGhost_example_neg_nested": [],
+    "Toy.Ghost.ghostWritesGhost_example_pos": [],
+    "Toy.Ghost.ghostWritesGhost_example_pos_real_write_outside_ghost": [],
+    "Toy.Ghost.ghostWritesGhost_ghostSpinOnG": [],
+    "Toy.Ghost.ghostWritesGhost_realReadsReal_not_sufficient_for_ghostToRealNI": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.guardedGhostSpin": [],
+    "Toy.Ghost.implicitFlow_breaks_erasure": [
+      "propext"
+    ],
+    "Toy.Ghost.instDecidableEqVar": [],
+    "Toy.Ghost.instDecidableEqVar.decEq": [],
+    "Toy.Ghost.instDecidableEqVar.decEq.match_1": [],
+    "Toy.Ghost.instReprExpr": [
+      "propext"
+    ],
+    "Toy.Ghost.instReprExpr.repr": [
+      "propext"
+    ],
+    "Toy.Ghost.instReprExpr.repr.match_1": [],
+    "Toy.Ghost.instReprStmt": [
+      "propext"
+    ],
+    "Toy.Ghost.instReprStmt.repr": [
+      "propext"
+    ],
+    "Toy.Ghost.instReprStmt.repr.match_1": [],
+    "Toy.Ghost.instReprVar": [],
+    "Toy.Ghost.instReprVar.repr": [],
+    "Toy.Ghost.instReprVar.repr.match_1": [],
+    "Toy.Ghost.loopBody": [],
+    "Toy.Ghost.loopBody.eq_1": [],
+    "Toy.Ghost.loopBody_assert_behaves": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.loopBody_behaves": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.loopDemo": [],
+    "Toy.Ghost.loopDemo_not_ghostBlocksNoFail": [],
+    "Toy.Ghost.loopDemo_satisfies_global_erasure_hypotheses": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.noGhostCode_erase": [],
+    "Toy.Ghost.noGhostCode_example_neg": [],
+    "Toy.Ghost.noGhostCode_example_neg_ghost_skip": [],
+    "Toy.Ghost.noGhostCode_example_pos": [],
+    "Toy.Ghost.noGhostVars_erase_of_realReadsReal": [
+      "propext"
+    ],
+    "Toy.Ghost.noGhostVars_example_neg": [],
+    "Toy.Ghost.noGhostVars_example_neg_real_reads_ghost": [],
+    "Toy.Ghost.noGhostVars_example_pos": [
+      "propext"
+    ],
+    "Toy.Ghost.noGhostVars_example_pos_ghost_skip": [],
+    "Toy.Ghost.not_diverges_of_fails": [
+      "propext"
+    ],
+    "Toy.Ghost.not_diverges_of_term": [
+      "propext"
+    ],
+    "Toy.Ghost.not_erasureExact_realReadsGhost": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.not_fails_of_diverges": [
+      "propext"
+    ],
+    "Toy.Ghost.not_fails_of_term": [
+      "propext"
+    ],
+    "Toy.Ghost.not_ghostToRealNI_abortInsensitive_ceGhostCopiesGhost": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.not_ghostToRealNI_ceGhostCopiesGhost": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.not_ghostToRealNI_ghostAssertG": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.not_ghostToRealNI_realReadsGhost": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.not_rbehaves_iff_of_behaves": [
+      "propext"
+    ],
+    "Toy.Ghost.not_rbehaves_iff_of_not_refinesUpTo_abortBot": [],
+    "Toy.Ghost.not_refinesUpTo_divBot_of_not_abortBot": [],
+    "Toy.Ghost.not_refinesUpTo_failBot_of_not_abortBot": [],
+    "Toy.Ghost.not_refinesUpTo_of_behaves": [
+      "propext"
+    ],
+    "Toy.Ghost.not_totalTriple_skip_postX1": [
+      "propext"
+    ],
+    "Toy.Ghost.pcGhostPassingAssert": [],
+    "Toy.Ghost.pcGhostPassingAssert_erasureExact": [
+      "propext"
+    ],
+    "Toy.Ghost.pcGhostTerminatingLoop": [],
+    "Toy.Ghost.pcGhostTerminatingLoop_erasureExact": [
+      "propext"
+    ],
+    "Toy.Ghost.pcGhostWritesGhost": [],
+    "Toy.Ghost.pcGhostWritesGhost_erasureExact": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.pcGhostWritesGhost_realReadsReal_erasureAgrees_erasureExact": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.pcRealBranch": [],
+    "Toy.Ghost.pcRealBranch.eq_1": [],
+    "Toy.Ghost.pcRealBranch_erasureExact": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.pcRealDataFlow": [],
+    "Toy.Ghost.pcRealDataFlow_erasureExact": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.postFalse": [],
+    "Toy.Ghost.postTrue": [],
+    "Toy.Ghost.postX1": [],
+    "Toy.Ghost.postY6": [],
+    "Toy.Ghost.preTrue": [],
+    "Toy.Ghost.preX0": [],
+    "Toy.Ghost.rbehaves_congr_of_noGhostVars": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.rbehaves_congr_of_noGhostVars.match_1_1": [
+      "propext"
+    ],
+    "Toy.Ghost.rbehaves_congr_of_noGhostVars.match_1_3": [
+      "propext"
+    ],
+    "Toy.Ghost.rbehaves_congr_of_noGhostVars.match_1_5": [
+      "propext"
+    ],
+    "Toy.Ghost.rbehaves_diverge_iff": [],
+    "Toy.Ghost.rbehaves_example_ghost_write_invisible": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.rbehaves_example_real_write_visible": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.rbehaves_fail_iff": [],
+    "Toy.Ghost.rbehaves_iff_of_refinesUpTo_failBot_of_refinesUpTo_divBot": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.rbehaves_term_iff": [],
+    "Toy.Ghost.readsOnlyReal_example_neg": [],
+    "Toy.Ghost.readsOnlyReal_example_neg_nested": [],
+    "Toy.Ghost.readsOnlyReal_example_pos": [],
+    "Toy.Ghost.realPart": [],
+    "Toy.Ghost.realPart.eq_1": [],
+    "Toy.Ghost.realPart_ceDataFlow_ne": [
+      "propext"
+    ],
+    "Toy.Ghost.realPart_ceGhostWritesReal_ne": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.realPart_ceImplicitFlow_ne": [
+      "propext"
+    ],
+    "Toy.Ghost.realPart_example_ghost_update_invisible": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.realPart_example_real_update_visible": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.realPart_ofReal": [],
+    "Toy.Ghost.realPart_update_congr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.realPart_update_ghost": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.realPart_update_x_ne": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.realPart_\u03c30g": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.realReadsGhost": [],
+    "Toy.Ghost.realReadsReal_ceGhostDiverges": [],
+    "Toy.Ghost.realReadsReal_ceGhostFails": [],
+    "Toy.Ghost.realReadsReal_demo": [],
+    "Toy.Ghost.realReadsReal_example_neg_data_flow": [],
+    "Toy.Ghost.realReadsReal_example_neg_implicit_flow": [],
+    "Toy.Ghost.realReadsReal_example_neg_real_assert": [],
+    "Toy.Ghost.realReadsReal_example_pos": [],
+    "Toy.Ghost.realReadsReal_example_pos_ghost_assign": [],
+    "Toy.Ghost.realReadsReal_ghostSpinOnG": [],
+    "Toy.Ghost.refinesUpTo_abortBot_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.refinesUpTo_example_neg": [
+      "propext"
+    ],
+    "Toy.Ghost.refinesUpTo_example_neg_direction": [
+      "propext"
+    ],
+    "Toy.Ghost.refinesUpTo_example_pos": [],
+    "Toy.Ghost.refinesUpTo_of_rbehaves_iff": [],
+    "Toy.Ghost.refinesUpTo_refl": [],
+    "Toy.Ghost.run": [],
+    "Toy.Ghost.run.eq_1": [],
+    "Toy.Ghost.run.eq_2": [],
+    "Toy.Ghost.run.eq_3": [],
+    "Toy.Ghost.run.eq_4": [],
+    "Toy.Ghost.run.eq_5": [],
+    "Toy.Ghost.run.eq_6": [],
+    "Toy.Ghost.run.eq_7": [],
+    "Toy.Ghost.run.eq_8": [],
+    "Toy.Ghost.run.eq_def": [],
+    "Toy.Ghost.run.match_1": [],
+    "Toy.Ghost.run_congr_of_noGhostVars": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.run_det": [
+      "propext"
+    ],
+    "Toy.Ghost.run_erase_ok_of_run_ok": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.run_loop_skip_none": [
+      "propext"
+    ],
+    "Toy.Ghost.run_loop_skip_not_fail": [],
+    "Toy.Ghost.run_loop_skip_ok": [],
+    "Toy.Ghost.run_mono": [
+      "propext"
+    ],
+    "Toy.Ghost.run_spin": [],
+    "Toy.Ghost.run_succ_of_eq_some": [
+      "propext"
+    ],
+    "Toy.Ghost.safePartialTriple_demo": [
+      "propext"
+    ],
+    "Toy.Ghost.safePartialTriple_erase_hypotheses_satisfiable": [
+      "propext"
+    ],
+    "Toy.Ghost.safePartialTriple_erase_needs_ghostNoDivergeFrom": [
+      "propext"
+    ],
+    "Toy.Ghost.safePartialTriple_erase_needs_ghostWritesGhost": [
+      "propext"
+    ],
+    "Toy.Ghost.safePartialTriple_erase_needs_realReadsReal": [
+      "propext"
+    ],
+    "Toy.Ghost.safePartialTriple_erase_needs_safePartialTriple": [],
+    "Toy.Ghost.safePartialTriple_erase_of_ghostWritesGhost_of_realReadsReal_of_exists_ghostNoDivergeFrom": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.safePartialTriple_erase_of_ghostWritesGhost_of_realReadsReal_of_ghostNoDivergeFrom": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.safePartialTriple_example_neg_post": [],
+    "Toy.Ghost.safePartialTriple_example_neg_safety": [],
+    "Toy.Ghost.safePartialTriple_example_pos": [
+      "propext"
+    ],
+    "Toy.Ghost.safePartialTriple_example_pos_vacuous": [
+      "propext"
+    ],
+    "Toy.Ghost.safePartialTriple_exists_ghostNoDivergeFrom_strictly_weaker": [
+      "propext"
+    ],
+    "Toy.Ghost.safePartialTriple_transfer_without_global_ghostNoFail": [
+      "propext"
+    ],
+    "Toy.Ghost.skip_not_refinesUpTo_abortBot_of_real_ne": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.spin": [],
+    "Toy.Ghost.spin.eq_1": [],
+    "Toy.Ghost.spin_diverges": [],
+    "Toy.Ghost.spin_not_fails": [
+      "propext"
+    ],
+    "Toy.Ghost.term_real_ne": [],
+    "Toy.Ghost.totalTriple_demo": [],
+    "Toy.Ghost.totalTriple_erase_hypotheses_satisfiable": [],
+    "Toy.Ghost.totalTriple_erase_needs_ghostWritesGhost": [
+      "propext"
+    ],
+    "Toy.Ghost.totalTriple_erase_needs_realReadsReal": [
+      "propext"
+    ],
+    "Toy.Ghost.totalTriple_erase_needs_totalTriple": [],
+    "Toy.Ghost.totalTriple_erase_not_converse": [
+      "propext"
+    ],
+    "Toy.Ghost.totalTriple_erase_of_ghostWritesGhost_of_realReadsReal": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.totalTriple_example_neg_divergence": [
+      "propext"
+    ],
+    "Toy.Ghost.totalTriple_example_pos": [],
+    "Toy.Ghost.trivial_ghost_hyps_skip": [],
+    "Toy.Ghost.weakPartialTriple_erase_fails_without_ghostNoFailFrom": [
+      "propext"
+    ],
+    "Toy.Ghost.weakPartialTriple_erase_hypotheses_satisfiable": [
+      "propext"
+    ],
+    "Toy.Ghost.weakPartialTriple_erase_needs_ghostNoDivergeFrom": [
+      "propext"
+    ],
+    "Toy.Ghost.weakPartialTriple_erase_needs_ghostNoFailFrom": [
+      "propext"
+    ],
+    "Toy.Ghost.weakPartialTriple_erase_needs_ghostWritesGhost": [
+      "propext"
+    ],
+    "Toy.Ghost.weakPartialTriple_erase_needs_realReadsReal": [
+      "propext"
+    ],
+    "Toy.Ghost.weakPartialTriple_erase_needs_weakPartialTriple": [],
+    "Toy.Ghost.weakPartialTriple_erase_of_ghostWritesGhost_of_realReadsReal_of_exists_ghostNoDivergeFrom_ghostNoFailFrom": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.weakPartialTriple_erase_split_ghost_conditions_insufficient": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.weakPartialTriple_example_neg_post": [],
+    "Toy.Ghost.weakPartialTriple_example_pos": [
+      "propext"
+    ],
+    "Toy.Ghost.weakPartialTriple_example_pos_vacuous_fail": [
+      "propext"
+    ],
+    "Toy.Ghost.writesOnlyGhost_preserves_realPart": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ghost.x": [],
+    "Toy.Ghost.x.eq_1": [],
+    "Toy.Ghost.y": [],
+    "Toy.Ghost.\u03c30": [],
+    "Toy.Ghost.\u03c30.eq_1": [],
+    "Toy.Ghost.\u03c30g": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

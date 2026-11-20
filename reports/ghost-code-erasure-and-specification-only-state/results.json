@@ -1,0 +1,725 @@
+[
+ {
+  "id": "1.A",
+  "lean": "Toy.Ghost.erase_refinesUpTo_abortBot_of_ghostWritesGhost_of_realReadsReal",
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Re-derivation: the Rocq-mechanized pub_slice_fwd_correct (Security Foundations, StaticIFC) is the same forward simulation between a program and its public slice; here the discipline is R1 + R2 instead of a flow typing, and assertion failure is added and folded into the bottom set.",
+  "plain_claim": "If ghost blocks write only ghost variables (R1) and real statements read no ghost variable (R2), then whenever the original program terminates normally from σ, the erased program started from any τ with the same real part terminates normally with the same final real store; if the original fails or diverges nothing is promised (the erased program refines the original with failure and divergence as bottom).",
+  "hypotheses": [
+   {
+    "name": "hW : GhostWritesGhost P",
+    "purpose": "R1: ghost blocks assign only ghost variables (ghost code must not change real state).",
+    "tightness": "tight",
+    "counterexample": "Toy.Ghost.erase_refinesUpTo_abortBot_needs_ghostWritesGhost"
+   },
+   {
+    "name": "hR : RealReadsReal P",
+    "purpose": "R2: real statements read no ghost variable, through data or control (no implicit flow from ghost to real).",
+    "tightness": "tight",
+    "counterexample": "Toy.Ghost.erase_refinesUpTo_abortBot_needs_realReadsReal"
+   },
+   {
+    "name": "hστ : realPart σ = realPart τ",
+    "purpose": "Both runs start from the same real state; the erased run's ghost part is arbitrary.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ghost.erase_refinesUpTo_abortBot_needs_same_realPart"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "demo = x := 3; ghost { g := x + 1 }; y := x + x; ghost { assert g = x + 1 }, from σ0, erased run from σ0g (different ghost part).",
+  "nonvacuity_witness_lean": "Toy.Ghost.demo_satisfies_erasure_hypotheses",
+  "non_claims": [
+   "Does not say the erased program fails when the original fails, or diverges when the original diverges; both are false (ghostFailure_breaks_erasure, ghostDivergence_breaks_erasure).",
+   "Does not give the converse direction (erased terminates implies original terminates).",
+   "R1 and R2 are syntactic sufficient conditions; they are not claimed necessary for any particular program.",
+   "Unfolds to plain termination preservation only because the language is deterministic (refinesUpTo_abortBot_iff).",
+   "Toy model, and R1, R2, R3a, R3b are not shown sufficient for sound ghost erasure in richer languages or verifiers: deterministic sequential while-language with only inhabited Int variables, total expressions (Expr.eval cannot fail or diverge), fatal uncatchable assert failure, no procedures or recursion (a ghost lemma call is an inline ghost block), no heap, no ghost fields, no ghost functions inside specifications, no nondeterministic choice, no concurrency. It does not address empty or uninhabited ghost types (witness checks), assume statements or unverified axioms, witnessless existential choice, mutable heap aliasing between ghost and real references, catchable exceptions or early exits (return, break) escaping a ghost block, or concurrent interleavings. Transfer to Dafny or Why3 is a modeling bridge, not a kernel-checked fact.",
+   "R1 and R2 are syntactic sufficient conditions: they inspect unreachable code too, and they require an explicit ghost { ... } block around any conditional or loop whose guard reads a ghost variable, so they reject e.g. if g then g := 0 else g := 1, which Dafny's ghost inference (reference manual section 12.3) treats as a ghost statement and a Volpano-Irvine-Smith-style flow typing accepts. R3a and R3b are semantic and constrain only ghost blocks that the run reaches. None of R1, R2, R3a, R3b is claimed necessary for any individual program to be erasable: ghost { x := x }, x := g - g, and unreachable ghost code can be erasable while violating one of them; tightness means only that dropping a restriction admits some counterexample program.",
+   "Erasure is compared only on real-observable behaviour (final real store, failure, divergence); execution step counts, fuel consumption, and timing are not preserved and not compared (a ghost block consumes fuel in the original semantics, its erased skip takes one unit)."
+  ],
+  "prior_art": [
+   "C. Hriţcu, Y. Kim (B. C. Pierce, ed.). Security Foundations. Software Foundations, Volume 7, Version 1.2, electronic textbook, 2026, https://softwarefoundations.cis.upenn.edu/secf-1.2/ (version-pinned release URL; its title page reads 'Version 1.2 (2026-08-24 10:14, Rocq 9.0.0 or later)'; on 2026-11-20 the moving alias secf-current/ served the same text for the title page and the chapters StaticIFC and Noninterference; citation data from its Preface; chapters StaticIFC and Noninterference checked at the source, proofs of the theorems named here end in Qed). Rocq mechanization for the Imp language: pub_slice replaces assignments to secret variables and secret-guarded conditionals and loops by skip; pub_slice_fwd_correct (for programs typed with the noninterference typing, a terminating run of c from s is matched by a terminating run of the slice from any publicly equivalent t, ending in publicly equivalent states); pub_slice_bwd_correct and pub_slice_tsni (the converse correspondence under a termination-sensitive typing); pub_slice_secure_com2_incorrect (a noninterferent program whose slice is not correct); cf_well_typed_noninterferent and ni_well_typed_noninterferent (termination-insensitive noninterference of well-typed programs); ts_well_typed_tsni (termination-sensitive noninterference); termination_leak, tini_secure_termination_leak, tsni_insecure_termination_leak (a secret-guarded diverging loop is termination-insensitively but not termination-sensitively secure). These theorems are stated over terminating evaluations and have no failure outcome; ghost code is modelled there as the secret part of a labelled program.",
+   "J.-C. Filliâtre, L. Gondelman, A. Paskevich. The Spirit of Ghost Code. In: Computer Aided Verification (CAV 2014), LNCS 8559, Springer, pp. 1-16. DOI 10.1007/978-3-319-08867-9_1; HAL hal-00873187. Verified at the publisher and HAL: the abstract states that ghost data cannot participate in regular computations and ghost code cannot mutate regular data or diverge, and that ghost-code erasure is defined for an ML-style language with mutable state and proved safe using bisimulation.",
+   "J.-C. Filliâtre, L. Gondelman, A. Paskevich. The Spirit of Ghost Code. Formal Methods in System Design 48(3):152-174, 2016. DOI 10.1007/s10703-016-0243-x; HAL hal-01396864 (extended version; same abstract claims, verified at HAL).",
+   "R.-J. Back, J. von Wright. Refinement Calculus: A Systematic Introduction. Springer, 1998. DOI 10.1007/978-1-4612-1674-2 (bibliographic data verified at the publisher). Source of the refinement order in which abort is bottom, used here for RefinesUpTo with abortBot."
+  ],
+  "design_question": "What do the two flow restrictions alone (no ghost writes to real state, no ghost reads in real code) guarantee about erasure, and in which refinement direction?"
+ },
+ {
+  "id": "1.B",
+  "lean": "Toy.Ghost.erase_refinesUpTo_failBot_of_ghostWritesGhost_of_realReadsReal_of_ghostNoDivergeFrom",
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Folklore made precise: that ghost code must not diverge and that its assertions must hold is stated by Filliâtre-Gondelman-Paskevich (paper proof by bisimulation for an ML-style language) and enforced by Dafny and Why3; the mechanized slice results in Security Foundations assume a static termination-ensuring typing and have no failure outcome. The graded form (failure and divergence separated as bottoms) with per-run conditions was not found mechanized in the sources checked.",
+  "plain_claim": "Under R1, R2, and R3a (no ghost block that the run of the original from σ starts diverges; ghost blocks may fail), either the original fails from σ, or every real behaviour of the erased program from any τ with the same real part (normal termination with its final real store, failure, divergence) is a real behaviour of the original from σ; because the language is deterministic and total, it follows that divergence of the original is preserved by erasure.",
+  "hypotheses": [
+   {
+    "name": "hW : GhostWritesGhost P",
+    "purpose": "R1: ghost blocks assign only ghost variables (ghost code must not change real state).",
+    "tightness": "tight",
+    "counterexample": "Toy.Ghost.erase_refinesUpTo_failBot_needs_ghostWritesGhost"
+   },
+   {
+    "name": "hR : RealReadsReal P",
+    "purpose": "R2: real statements read no ghost variable, through data or control (no implicit flow from ghost to real).",
+    "tightness": "tight",
+    "counterexample": "Toy.Ghost.erase_refinesUpTo_failBot_needs_realReadsReal"
+   },
+   {
+    "name": "hστ : realPart σ = realPart τ",
+    "purpose": "Both runs start from the same real state; the erased run's ghost part is arbitrary.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ghost.erase_refinesUpTo_failBot_needs_same_realPart"
+   },
+   {
+    "name": "hT : GhostNoDivergeFrom P σ",
+    "purpose": "R3a: no ghost block started on the run of P from σ diverges (it terminates normally or fails).",
+    "tightness": "tight",
+    "counterexample": "Toy.Ghost.erase_refinesUpTo_failBot_needs_ghostNoDivergeFrom"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "demo (terminating) from σ0 with the erased run from σ0g; ghost { g := 1 }; while 1 do skip (diverging, so the divergence case is exercised) from σ0.",
+  "nonvacuity_witness_lean": [
+   "Toy.Ghost.demo_satisfies_erasure_hypotheses",
+   "Toy.Ghost.ghostThenSpin_satisfies_erasure_hypotheses"
+  ],
+  "non_claims": [
+   "Says nothing when the original fails: an erased failing ghost assertion lets the erased program do anything.",
+   "R3a is required only along the actual run from σ, not from every state; it is not claimed to be the weakest sufficient condition. R3a means 'does not diverge', not 'terminates normally': a failing ghost block satisfies it.",
+   "The corollary that divergence of the original is preserved by erasure relies on determinism (Behaves.unique) and totality (Behaves.exists); in a nondeterministic language RefinesUpTo failBot would allow the erased program to drop a possible diverging branch in favour of a terminating one.",
+   "Toy model, and R1, R2, R3a, R3b are not shown sufficient for sound ghost erasure in richer languages or verifiers: deterministic sequential while-language with only inhabited Int variables, total expressions (Expr.eval cannot fail or diverge), fatal uncatchable assert failure, no procedures or recursion (a ghost lemma call is an inline ghost block), no heap, no ghost fields, no ghost functions inside specifications, no nondeterministic choice, no concurrency. It does not address empty or uninhabited ghost types (witness checks), assume statements or unverified axioms, witnessless existential choice, mutable heap aliasing between ghost and real references, catchable exceptions or early exits (return, break) escaping a ghost block, or concurrent interleavings. Transfer to Dafny or Why3 is a modeling bridge, not a kernel-checked fact.",
+   "R1 and R2 are syntactic sufficient conditions: they inspect unreachable code too, and they require an explicit ghost { ... } block around any conditional or loop whose guard reads a ghost variable, so they reject e.g. if g then g := 0 else g := 1, which Dafny's ghost inference (reference manual section 12.3) treats as a ghost statement and a Volpano-Irvine-Smith-style flow typing accepts. R3a and R3b are semantic and constrain only ghost blocks that the run reaches. None of R1, R2, R3a, R3b is claimed necessary for any individual program to be erasable: ghost { x := x }, x := g - g, and unreachable ghost code can be erasable while violating one of them; tightness means only that dropping a restriction admits some counterexample program.",
+   "Erasure is compared only on real-observable behaviour (final real store, failure, divergence); execution step counts, fuel consumption, and timing are not preserved and not compared (a ghost block consumes fuel in the original semantics, its erased skip takes one unit)."
+  ],
+  "prior_art": [
+   "J.-C. Filliâtre, L. Gondelman, A. Paskevich. The Spirit of Ghost Code. In: Computer Aided Verification (CAV 2014), LNCS 8559, Springer, pp. 1-16. DOI 10.1007/978-3-319-08867-9_1; HAL hal-00873187. Verified at the publisher and HAL: the abstract states that ghost data cannot participate in regular computations and ghost code cannot mutate regular data or diverge, and that ghost-code erasure is defined for an ML-style language with mutable state and proved safe using bisimulation.",
+   "J.-C. Filliâtre, L. Gondelman, A. Paskevich. The Spirit of Ghost Code. Formal Methods in System Design 48(3):152-174, 2016. DOI 10.1007/s10703-016-0243-x; HAL hal-01396864 (extended version; same abstract claims, verified at HAL).",
+   "Dafny Reference Manual, v4.11.0 release snapshot, https://dafny.org/v4.11.0/DafnyRef/DafnyRef. Section 12.3 'Ghost Inference': assert statements, calls to ghost methods and lemmas, if/while statements whose condition contains ghost expressions (together with their bodies), and assignments all of whose updated variables are ghost are ghost statements; expect statements are always non-ghost; updating a non-ghost variable in a ghost context is an error. Section 7.1.3 'Decreases Clause': loops and compiled methods, but not functions and not ghost methods (including lemmas), can be declared possibly non-terminating with 'decreases *'. Section 1: specifications and ghost constructs are used only during verification and are omitted from executable code.",
+   "Why3 1.9.0 documentation (https://www.why3.org/doc/; these URLs track the current release, pages observed as 'Why3 1.9.0 documentation'). Chapter 6 'The WhyML Language Reference' (syntaxref.html; extracted text SHA-256 3bd49df651ad5675c198b32ebde82a3118722ecb8433fb12deae604665bda601), section 6.4.1 'Ghost expressions': ghost code is removed from the final code intended for execution, and thus cannot affect the computation of the program results nor the content of the observable memory; section 6.5.5 'Function declarations': program functions marked partial can produce observable effects unaccounted by their specification, and thus cannot be used in ghost code. Chapter 8 'The VC Generators' (vcgen.html; extracted text SHA-256 27a03509f0da8995d6e34942d8f67cf294c1f3a6805937a90efcf19e410f2ecf), section 8.2.2 'Ignoring checks for termination': by default Why3 generates VCs for the termination of loops and recursive calls; section 8.4 'Lemma Functions': a lemma function must have no side effects, be provably terminating, and return unit.",
+   "C. Hriţcu, Y. Kim (B. C. Pierce, ed.). Security Foundations. Software Foundations, Volume 7, Version 1.2, electronic textbook, 2026, https://softwarefoundations.cis.upenn.edu/secf-1.2/ (version-pinned release URL; its title page reads 'Version 1.2 (2026-08-24 10:14, Rocq 9.0.0 or later)'; on 2026-11-20 the moving alias secf-current/ served the same text for the title page and the chapters StaticIFC and Noninterference; citation data from its Preface; chapters StaticIFC and Noninterference checked at the source, proofs of the theorems named here end in Qed). Rocq mechanization for the Imp language: pub_slice replaces assignments to secret variables and secret-guarded conditionals and loops by skip; pub_slice_fwd_correct (for programs typed with the noninterference typing, a terminating run of c from s is matched by a terminating run of the slice from any publicly equivalent t, ending in publicly equivalent states); pub_slice_bwd_correct and pub_slice_tsni (the converse correspondence under a termination-sensitive typing); pub_slice_secure_com2_incorrect (a noninterferent program whose slice is not correct); cf_well_typed_noninterferent and ni_well_typed_noninterferent (termination-insensitive noninterference of well-typed programs); ts_well_typed_tsni (termination-sensitive noninterference); termination_leak, tini_secure_termination_leak, tsni_insecure_termination_leak (a secret-guarded diverging loop is termination-insensitively but not termination-sensitively secure). These theorems are stated over terminating evaluations and have no failure outcome; ghost code is modelled there as the secret part of a labelled program."
+  ],
+  "design_question": "Is non-divergence of ghost code needed for erasure to preserve divergence? Yes; the hypothesis is tight."
+ },
+ {
+  "id": "1.C",
+  "lean": "Toy.Ghost.erase_refinesUpTo_divBot_of_ghostWritesGhost_of_realReadsReal_of_ghostNoFailFrom",
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Folklore made precise: that ghost code must not diverge and that its assertions must hold is stated by Filliâtre-Gondelman-Paskevich (paper proof by bisimulation for an ML-style language) and enforced by Dafny and Why3; the mechanized slice results in Security Foundations assume a static termination-ensuring typing and have no failure outcome. The graded form (failure and divergence separated as bottoms) with per-run conditions was not found mechanized in the sources checked.",
+  "plain_claim": "Under R1, R2, and R3b (no ghost block that the run of the original from σ starts fails; ghost blocks may diverge), either the original diverges from σ, or every real behaviour of the erased program from any τ with the same real part is a real behaviour of the original from σ; because the language is deterministic and total, it follows that failure of the original is preserved by erasure.",
+  "hypotheses": [
+   {
+    "name": "hW : GhostWritesGhost P",
+    "purpose": "R1: ghost blocks assign only ghost variables (ghost code must not change real state).",
+    "tightness": "tight",
+    "counterexample": "Toy.Ghost.erase_refinesUpTo_divBot_needs_ghostWritesGhost"
+   },
+   {
+    "name": "hR : RealReadsReal P",
+    "purpose": "R2: real statements read no ghost variable, through data or control (no implicit flow from ghost to real).",
+    "tightness": "tight",
+    "counterexample": "Toy.Ghost.erase_refinesUpTo_divBot_needs_realReadsReal"
+   },
+   {
+    "name": "hστ : realPart σ = realPart τ",
+    "purpose": "Both runs start from the same real state; the erased run's ghost part is arbitrary.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ghost.erase_refinesUpTo_divBot_needs_same_realPart"
+   },
+   {
+    "name": "hF : GhostNoFailFrom P σ",
+    "purpose": "R3b: no ghost block started on the run of P from σ fails (it terminates normally or diverges).",
+    "tightness": "tight",
+    "counterexample": "Toy.Ghost.erase_refinesUpTo_divBot_needs_ghostNoFailFrom"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "demo (terminating) from σ0 with the erased run from σ0g; ghost { g := 1 }; assert 0 (fails at a real assertion, so the failure case is exercised) from σ0.",
+  "nonvacuity_witness_lean": [
+   "Toy.Ghost.demo_satisfies_erasure_hypotheses",
+   "Toy.Ghost.ghostThenRealFail_satisfies_erasure_hypotheses"
+  ],
+  "non_claims": [
+   "Says nothing when the original diverges: an erased diverging ghost block lets the erased program terminate.",
+   "R3b is required only along the actual run from σ.",
+   "The corollary that failure of the original is preserved relies on determinism and totality. The theorem formalizes no failure-blame relation identifying which assert failed; that the preserved failure comes from a real run-time check is an informal reading of the fact that erase P contains no ghost code (noGhostCode_erase).",
+   "Toy model, and R1, R2, R3a, R3b are not shown sufficient for sound ghost erasure in richer languages or verifiers: deterministic sequential while-language with only inhabited Int variables, total expressions (Expr.eval cannot fail or diverge), fatal uncatchable assert failure, no procedures or recursion (a ghost lemma call is an inline ghost block), no heap, no ghost fields, no ghost functions inside specifications, no nondeterministic choice, no concurrency. It does not address empty or uninhabited ghost types (witness checks), assume statements or unverified axioms, witnessless existential choice, mutable heap aliasing between ghost and real references, catchable exceptions or early exits (return, break) escaping a ghost block, or concurrent interleavings. Transfer to Dafny or Why3 is a modeling bridge, not a kernel-checked fact.",
+   "R1 and R2 are syntactic sufficient conditions: they inspect unreachable code too, and they require an explicit ghost { ... } block around any conditional or loop whose guard reads a ghost variable, so they reject e.g. if g then g := 0 else g := 1, which Dafny's ghost inference (reference manual section 12.3) treats as a ghost statement and a Volpano-Irvine-Smith-style flow typing accepts. R3a and R3b are semantic and constrain only ghost blocks that the run reaches. None of R1, R2, R3a, R3b is claimed necessary for any individual program to be erasable: ghost { x := x }, x := g - g, and unreachable ghost code can be erasable while violating one of them; tightness means only that dropping a restriction admits some counterexample program.",
+   "Erasure is compared only on real-observable behaviour (final real store, failure, divergence); execution step counts, fuel consumption, and timing are not preserved and not compared (a ghost block consumes fuel in the original semantics, its erased skip takes one unit)."
+  ],
+  "prior_art": [
+   "J.-C. Filliâtre, L. Gondelman, A. Paskevich. The Spirit of Ghost Code. In: Computer Aided Verification (CAV 2014), LNCS 8559, Springer, pp. 1-16. DOI 10.1007/978-3-319-08867-9_1; HAL hal-00873187. Verified at the publisher and HAL: the abstract states that ghost data cannot participate in regular computations and ghost code cannot mutate regular data or diverge, and that ghost-code erasure is defined for an ML-style language with mutable state and proved safe using bisimulation.",
+   "J.-C. Filliâtre, L. Gondelman, A. Paskevich. The Spirit of Ghost Code. Formal Methods in System Design 48(3):152-174, 2016. DOI 10.1007/s10703-016-0243-x; HAL hal-01396864 (extended version; same abstract claims, verified at HAL).",
+   "Dafny Reference Manual, v4.11.0 release snapshot, https://dafny.org/v4.11.0/DafnyRef/DafnyRef. Section 12.3 'Ghost Inference': assert statements, calls to ghost methods and lemmas, if/while statements whose condition contains ghost expressions (together with their bodies), and assignments all of whose updated variables are ghost are ghost statements; expect statements are always non-ghost; updating a non-ghost variable in a ghost context is an error. Section 7.1.3 'Decreases Clause': loops and compiled methods, but not functions and not ghost methods (including lemmas), can be declared possibly non-terminating with 'decreases *'. Section 1: specifications and ghost constructs are used only during verification and are omitted from executable code.",
+   "Why3 1.9.0 documentation (https://www.why3.org/doc/; these URLs track the current release, pages observed as 'Why3 1.9.0 documentation'). Chapter 6 'The WhyML Language Reference' (syntaxref.html; extracted text SHA-256 3bd49df651ad5675c198b32ebde82a3118722ecb8433fb12deae604665bda601), section 6.4.1 'Ghost expressions': ghost code is removed from the final code intended for execution, and thus cannot affect the computation of the program results nor the content of the observable memory; section 6.5.5 'Function declarations': program functions marked partial can produce observable effects unaccounted by their specification, and thus cannot be used in ghost code. Chapter 8 'The VC Generators' (vcgen.html; extracted text SHA-256 27a03509f0da8995d6e34942d8f67cf294c1f3a6805937a90efcf19e410f2ecf), section 8.2.2 'Ignoring checks for termination': by default Why3 generates VCs for the termination of loops and recursive calls; section 8.4 'Lemma Functions': a lemma function must have no side effects, be provably terminating, and return unit.",
+   "C. Hriţcu, Y. Kim (B. C. Pierce, ed.). Security Foundations. Software Foundations, Volume 7, Version 1.2, electronic textbook, 2026, https://softwarefoundations.cis.upenn.edu/secf-1.2/ (version-pinned release URL; its title page reads 'Version 1.2 (2026-08-24 10:14, Rocq 9.0.0 or later)'; on 2026-11-20 the moving alias secf-current/ served the same text for the title page and the chapters StaticIFC and Noninterference; citation data from its Preface; chapters StaticIFC and Noninterference checked at the source, proofs of the theorems named here end in Qed). Rocq mechanization for the Imp language: pub_slice replaces assignments to secret variables and secret-guarded conditionals and loops by skip; pub_slice_fwd_correct (for programs typed with the noninterference typing, a terminating run of c from s is matched by a terminating run of the slice from any publicly equivalent t, ending in publicly equivalent states); pub_slice_bwd_correct and pub_slice_tsni (the converse correspondence under a termination-sensitive typing); pub_slice_secure_com2_incorrect (a noninterferent program whose slice is not correct); cf_well_typed_noninterferent and ni_well_typed_noninterferent (termination-insensitive noninterference of well-typed programs); ts_well_typed_tsni (termination-sensitive noninterference); termination_leak, tini_secure_termination_leak, tsni_insecure_termination_leak (a secret-guarded diverging loop is termination-insensitively but not termination-sensitively secure). These theorems are stated over terminating evaluations and have no failure outcome; ghost code is modelled there as the secret part of a labelled program."
+  ],
+  "design_question": "Is 'ghost assertions hold' needed for erasure to preserve failures of real run-time checks? Yes; tight."
+ },
+ {
+  "id": "1.D",
+  "lean": [
+   "Toy.Ghost.erase_rbehaves_iff_of_ghostWritesGhost_of_realReadsReal_of_ghostNoDivergeFrom_of_ghostNoFailFrom",
+   "Toy.Ghost.erasureExact_of_ghostWritesGhost_of_realReadsReal_of_ghostNoDivergeFrom_of_ghostNoFailFrom"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Folklore made precise: that ghost code must not diverge and that its assertions must hold is stated by Filliâtre-Gondelman-Paskevich (paper proof by bisimulation for an ML-style language) and enforced by Dafny and Why3; the mechanized slice results in Security Foundations assume a static termination-ensuring typing and have no failure outcome. The graded form (failure and divergence separated as bottoms) with per-run conditions was not found mechanized in the sources checked. Filliâtre-Gondelman-Paskevich prove the corresponding exactness result on paper for GhostML; Security Foundations mechanizes exactness of public slices (pub_slice_tsni) for terminating, failure-free Imp under a static typing.",
+  "plain_claim": "Under R1, R2, R3a and R3b (the last two along the run of the original from σ), the original program from σ and the erased program from any τ with the same real part have exactly the same real-observable behaviour: both terminate with the same final real store, or both fail, or both diverge. Global form (second Lean name): if R3a and R3b hold on runs from every initial state, then ErasureExact P.",
+  "hypotheses": [
+   {
+    "name": "hW : GhostWritesGhost P",
+    "purpose": "R1: ghost blocks assign only ghost variables (ghost code must not change real state).",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Ghost.erase_rbehaves_iff_needs_ghostWritesGhost",
+     "Toy.Ghost.erasureExact_needs_ghostWritesGhost"
+    ]
+   },
+   {
+    "name": "hR : RealReadsReal P",
+    "purpose": "R2: real statements read no ghost variable, through data or control (no implicit flow from ghost to real).",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Ghost.erase_rbehaves_iff_needs_realReadsReal",
+     "Toy.Ghost.erasureExact_needs_realReadsReal"
+    ]
+   },
+   {
+    "name": "hστ : realPart σ = realPart τ",
+    "purpose": "Both runs start from the same real state; the erased run's ghost part is arbitrary (per-run form only; ErasureExact quantifies over such pairs).",
+    "tightness": "tight",
+    "counterexample": "Toy.Ghost.erase_rbehaves_iff_needs_same_realPart"
+   },
+   {
+    "name": "hT : GhostNoDivergeFrom P σ  (global form: ∀ σ, GhostNoDivergeFrom P σ)",
+    "purpose": "R3a: no ghost block started on the run of P from σ diverges (it terminates normally or fails).",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Ghost.erase_rbehaves_iff_needs_ghostNoDivergeFrom",
+     "Toy.Ghost.erasureExact_needs_ghostNoDivergeFrom"
+    ]
+   },
+   {
+    "name": "hF : GhostNoFailFrom P σ  (global form: ∀ σ, GhostNoFailFrom P σ)",
+    "purpose": "R3b: no ghost block started on the run of P from σ fails (it terminates normally or diverges).",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Ghost.erase_rbehaves_iff_needs_ghostNoFailFrom",
+     "Toy.Ghost.erasureExact_needs_ghostNoFailFrom"
+    ]
+   }
+  ],
+  "depth": "shallow",
+  "depth_note": "Shallow given 1.B and 1.C (combined by rbehaves_iff_of_refinesUpTo_failBot_of_refinesUpTo_divBot, which uses determinism and totality); substantive overall. The global form is a one-line corollary.",
+  "nonvacuity_witness": "demo from σ0 with the erased run from σ0g; demo and loopDemo satisfy the global hypotheses.",
+  "nonvacuity_witness_lean": [
+   "Toy.Ghost.demo_satisfies_erasure_hypotheses",
+   "Toy.Ghost.demo_satisfies_global_erasure_hypotheses",
+   "Toy.Ghost.loopDemo_satisfies_global_erasure_hypotheses"
+  ],
+  "non_claims": [
+   "Compares real behaviours only; final ghost values are not compared.",
+   "Exactness uses determinism and totality; with nondeterministic choice only refinement forms would be expected (not examined).",
+   "In the per-run form R3a and R3b are assumed only on the run from σ; nothing is said about ghost code safety from other states. The global form needs them from every initial state, which is weaker than the static GhostBlocksNoDiverge / GhostBlocksNoFail (these imply it) but stronger than what 3.A needs.",
+   "Toy model, and R1, R2, R3a, R3b are not shown sufficient for sound ghost erasure in richer languages or verifiers: deterministic sequential while-language with only inhabited Int variables, total expressions (Expr.eval cannot fail or diverge), fatal uncatchable assert failure, no procedures or recursion (a ghost lemma call is an inline ghost block), no heap, no ghost fields, no ghost functions inside specifications, no nondeterministic choice, no concurrency. It does not address empty or uninhabited ghost types (witness checks), assume statements or unverified axioms, witnessless existential choice, mutable heap aliasing between ghost and real references, catchable exceptions or early exits (return, break) escaping a ghost block, or concurrent interleavings. Transfer to Dafny or Why3 is a modeling bridge, not a kernel-checked fact.",
+   "R1 and R2 are syntactic sufficient conditions: they inspect unreachable code too, and they require an explicit ghost { ... } block around any conditional or loop whose guard reads a ghost variable, so they reject e.g. if g then g := 0 else g := 1, which Dafny's ghost inference (reference manual section 12.3) treats as a ghost statement and a Volpano-Irvine-Smith-style flow typing accepts. R3a and R3b are semantic and constrain only ghost blocks that the run reaches. None of R1, R2, R3a, R3b is claimed necessary for any individual program to be erasable: ghost { x := x }, x := g - g, and unreachable ghost code can be erasable while violating one of them; tightness means only that dropping a restriction admits some counterexample program.",
+   "Erasure is compared only on real-observable behaviour (final real store, failure, divergence); execution step counts, fuel consumption, and timing are not preserved and not compared (a ghost block consumes fuel in the original semantics, its erased skip takes one unit)."
+  ],
+  "prior_art": [
+   "J.-C. Filliâtre, L. Gondelman, A. Paskevich. The Spirit of Ghost Code. In: Computer Aided Verification (CAV 2014), LNCS 8559, Springer, pp. 1-16. DOI 10.1007/978-3-319-08867-9_1; HAL hal-00873187. Verified at the publisher and HAL: the abstract states that ghost data cannot participate in regular computations and ghost code cannot mutate regular data or diverge, and that ghost-code erasure is defined for an ML-style language with mutable state and proved safe using bisimulation.",
+   "J.-C. Filliâtre, L. Gondelman, A. Paskevich. The Spirit of Ghost Code. Formal Methods in System Design 48(3):152-174, 2016. DOI 10.1007/s10703-016-0243-x; HAL hal-01396864 (extended version; same abstract claims, verified at HAL).",
+   "Dafny Reference Manual, v4.11.0 release snapshot, https://dafny.org/v4.11.0/DafnyRef/DafnyRef. Section 12.3 'Ghost Inference': assert statements, calls to ghost methods and lemmas, if/while statements whose condition contains ghost expressions (together with their bodies), and assignments all of whose updated variables are ghost are ghost statements; expect statements are always non-ghost; updating a non-ghost variable in a ghost context is an error. Section 7.1.3 'Decreases Clause': loops and compiled methods, but not functions and not ghost methods (including lemmas), can be declared possibly non-terminating with 'decreases *'. Section 1: specifications and ghost constructs are used only during verification and are omitted from executable code.",
+   "Why3 1.9.0 documentation (https://www.why3.org/doc/; these URLs track the current release, pages observed as 'Why3 1.9.0 documentation'). Chapter 6 'The WhyML Language Reference' (syntaxref.html; extracted text SHA-256 3bd49df651ad5675c198b32ebde82a3118722ecb8433fb12deae604665bda601), section 6.4.1 'Ghost expressions': ghost code is removed from the final code intended for execution, and thus cannot affect the computation of the program results nor the content of the observable memory; section 6.5.5 'Function declarations': program functions marked partial can produce observable effects unaccounted by their specification, and thus cannot be used in ghost code. Chapter 8 'The VC Generators' (vcgen.html; extracted text SHA-256 27a03509f0da8995d6e34942d8f67cf294c1f3a6805937a90efcf19e410f2ecf), section 8.2.2 'Ignoring checks for termination': by default Why3 generates VCs for the termination of loops and recursive calls; section 8.4 'Lemma Functions': a lemma function must have no side effects, be provably terminating, and return unit.",
+   "C. Hriţcu, Y. Kim (B. C. Pierce, ed.). Security Foundations. Software Foundations, Volume 7, Version 1.2, electronic textbook, 2026, https://softwarefoundations.cis.upenn.edu/secf-1.2/ (version-pinned release URL; its title page reads 'Version 1.2 (2026-08-24 10:14, Rocq 9.0.0 or later)'; on 2026-11-20 the moving alias secf-current/ served the same text for the title page and the chapters StaticIFC and Noninterference; citation data from its Preface; chapters StaticIFC and Noninterference checked at the source, proofs of the theorems named here end in Qed). Rocq mechanization for the Imp language: pub_slice replaces assignments to secret variables and secret-guarded conditionals and loops by skip; pub_slice_fwd_correct (for programs typed with the noninterference typing, a terminating run of c from s is matched by a terminating run of the slice from any publicly equivalent t, ending in publicly equivalent states); pub_slice_bwd_correct and pub_slice_tsni (the converse correspondence under a termination-sensitive typing); pub_slice_secure_com2_incorrect (a noninterferent program whose slice is not correct); cf_well_typed_noninterferent and ni_well_typed_noninterferent (termination-insensitive noninterference of well-typed programs); ts_well_typed_tsni (termination-sensitive noninterference); termination_leak, tini_secure_termination_leak, tsni_insecure_termination_leak (a secret-guarded diverging loop is termination-insensitively but not termination-sensitively secure). These theorems are stated over terminating evaluations and have no failure outcome; ghost code is modelled there as the secret part of a labelled program."
+  ],
+  "design_question": "Which restrictions on ghost code make erasure exactly semantics-preserving? R1, R2, R3a and R3b together; dropping any one admits a counterexample program (this is not necessity for each program)."
+ },
+ {
+  "id": "2.1",
+  "lean": "Toy.Ghost.ghostWriteToReal_breaks_erasure",
+  "kind": "counterexample",
+  "tier": "T0",
+  "tier_justification": "Elementary instance of the restriction 'ghost code cannot mutate regular data' (Filliâtre-Gondelman-Paskevich).",
+  "plain_claim": "The program ghost { x := 1 } satisfies R2, R3a and R3b from every state, yet from the all-zero store the original ends with x = 1 and the erased program with x = 0, so even refinement up to failure and divergence (the conclusion of 1.A) fails: a ghost write to a real variable breaks erasure.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Concrete instance; see plain claim.",
+  "positive_control_lean": "Toy.Ghost.pcGhostWritesGhost_erasureExact",
+  "non_claims": [
+   "Shows only that R1 cannot be dropped; it does not show that every ghost write to real state is observable (a write of the value already present would not be).",
+   "Does not model indirect mutation of real state through mutable heap aliasing (ghost code changing real memory without syntactically assigning a real variable).",
+   "Toy model, and R1, R2, R3a, R3b are not shown sufficient for sound ghost erasure in richer languages or verifiers: deterministic sequential while-language with only inhabited Int variables, total expressions (Expr.eval cannot fail or diverge), fatal uncatchable assert failure, no procedures or recursion (a ghost lemma call is an inline ghost block), no heap, no ghost fields, no ghost functions inside specifications, no nondeterministic choice, no concurrency. It does not address empty or uninhabited ghost types (witness checks), assume statements or unverified axioms, witnessless existential choice, mutable heap aliasing between ghost and real references, catchable exceptions or early exits (return, break) escaping a ghost block, or concurrent interleavings. Transfer to Dafny or Why3 is a modeling bridge, not a kernel-checked fact."
+  ],
+  "prior_art": [
+   "J.-C. Filliâtre, L. Gondelman, A. Paskevich. The Spirit of Ghost Code. In: Computer Aided Verification (CAV 2014), LNCS 8559, Springer, pp. 1-16. DOI 10.1007/978-3-319-08867-9_1; HAL hal-00873187. Verified at the publisher and HAL: the abstract states that ghost data cannot participate in regular computations and ghost code cannot mutate regular data or diverge, and that ghost-code erasure is defined for an ML-style language with mutable state and proved safe using bisimulation.",
+   "Dafny Reference Manual, v4.11.0 release snapshot, https://dafny.org/v4.11.0/DafnyRef/DafnyRef. Section 12.3 'Ghost Inference': assert statements, calls to ghost methods and lemmas, if/while statements whose condition contains ghost expressions (together with their bodies), and assignments all of whose updated variables are ghost are ghost statements; expect statements are always non-ghost; updating a non-ghost variable in a ghost context is an error. Section 7.1.3 'Decreases Clause': loops and compiled methods, but not functions and not ghost methods (including lemmas), can be declared possibly non-terminating with 'decreases *'. Section 1: specifications and ghost constructs are used only during verification and are omitted from executable code."
+  ],
+  "design_question": "What goes wrong when ghost code may write real state."
+ },
+ {
+  "id": "2.2",
+  "lean": [
+   "Toy.Ghost.implicitFlow_breaks_erasure",
+   "Toy.Ghost.dataFlow_breaks_erasure"
+  ],
+  "kind": "counterexample",
+  "tier": "T0",
+  "tier_justification": "Elementary instances of the restriction 'ghost data cannot participate in regular computations' (Filliâtre-Gondelman-Paskevich), through control and through data.",
+  "plain_claim": "A real statement reading a ghost value breaks erasure, through control or through data: ghost { g := 1 }; if g then x := 1 else skip, and ghost { g := 1 }; x := g, satisfy R1, R3a and R3b from every state, yet from the all-zero store refinement up to failure and divergence fails, and erasure is not exact. From the all-zero store each original ends with x = 1 and its erasure, which reads the initial ghost value 0, with x = 0. The control-flow theorem states these two runs and the difference of their real parts as conjuncts; the data-flow theorem states only the resulting failures of refinement and of exactness, and evaluates the two runs inside its proof.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Concrete instances; see plain claim.",
+  "positive_control_lean": [
+   "Toy.Ghost.pcRealBranch_erasureExact",
+   "Toy.Ghost.pcRealDataFlow_erasureExact"
+  ],
+  "non_claims": [
+   "Does not show that every real statement syntactically mentioning a ghost variable breaks erasure: escape hatches include branches with identical real effects (if g then x := 1 else x := 1), ghost-independent expressions (x := g - g), and unreachable code (if 0 then ... ).",
+   "erase P is again a Stmt run on a full Store. For R2-violating programs, erase P still reads ghost variables (erase (x := g) = x := g) and executes at all only because of this encoding; a compiler targeting real stores would reject it. Under R2 the erased program ignores the ghost part of its store (erase_rbehaves_congr_of_realReadsReal).",
+   "Toy model, and R1, R2, R3a, R3b are not shown sufficient for sound ghost erasure in richer languages or verifiers: deterministic sequential while-language with only inhabited Int variables, total expressions (Expr.eval cannot fail or diverge), fatal uncatchable assert failure, no procedures or recursion (a ghost lemma call is an inline ghost block), no heap, no ghost fields, no ghost functions inside specifications, no nondeterministic choice, no concurrency. It does not address empty or uninhabited ghost types (witness checks), assume statements or unverified axioms, witnessless existential choice, mutable heap aliasing between ghost and real references, catchable exceptions or early exits (return, break) escaping a ghost block, or concurrent interleavings. Transfer to Dafny or Why3 is a modeling bridge, not a kernel-checked fact."
+  ],
+  "prior_art": [
+   "J.-C. Filliâtre, L. Gondelman, A. Paskevich. The Spirit of Ghost Code. In: Computer Aided Verification (CAV 2014), LNCS 8559, Springer, pp. 1-16. DOI 10.1007/978-3-319-08867-9_1; HAL hal-00873187. Verified at the publisher and HAL: the abstract states that ghost data cannot participate in regular computations and ghost code cannot mutate regular data or diverge, and that ghost-code erasure is defined for an ML-style language with mutable state and proved safe using bisimulation.",
+   "Dafny Reference Manual, v4.11.0 release snapshot, https://dafny.org/v4.11.0/DafnyRef/DafnyRef. Section 12.3 'Ghost Inference': assert statements, calls to ghost methods and lemmas, if/while statements whose condition contains ghost expressions (together with their bodies), and assignments all of whose updated variables are ghost are ghost statements; expect statements are always non-ghost; updating a non-ghost variable in a ghost context is an error. Section 7.1.3 'Decreases Clause': loops and compiled methods, but not functions and not ghost methods (including lemmas), can be declared possibly non-terminating with 'decreases *'. Section 1: specifications and ghost constructs are used only during verification and are omitted from executable code."
+  ],
+  "design_question": "What goes wrong when real code may read ghost state, through data or through control (implicit flow)."
+ },
+ {
+  "id": "2.3",
+  "lean": "Toy.Ghost.ghostDivergence_breaks_erasure",
+  "kind": "counterexample",
+  "tier": "T0",
+  "tier_justification": "Elementary instance of the restriction 'ghost code cannot diverge' (Filliâtre-Gondelman-Paskevich).",
+  "plain_claim": "The program ghost { while 1 do skip } satisfies R1, R2 and R3b; from every state the original diverges and the erased program terminates, so the erased program has a real behaviour the original lacks: behaviour inclusion, refinement up to failure, and exactness all fail, while refinement up to divergence holds.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Concrete instance.",
+  "positive_control_lean": "Toy.Ghost.pcGhostTerminatingLoop_erasureExact",
+  "non_claims": [
+   "Does not show that every ghost loop breaks erasure: terminating ghost loops are erased exactly (positive control), and a ghost loop that diverges only from states the run never reaches satisfies R3a (ghostNoDivergeFrom_example_pos_guarded), so 1.D applies to it.",
+   "Toy model, and R1, R2, R3a, R3b are not shown sufficient for sound ghost erasure in richer languages or verifiers: deterministic sequential while-language with only inhabited Int variables, total expressions (Expr.eval cannot fail or diverge), fatal uncatchable assert failure, no procedures or recursion (a ghost lemma call is an inline ghost block), no heap, no ghost fields, no ghost functions inside specifications, no nondeterministic choice, no concurrency. It does not address empty or uninhabited ghost types (witness checks), assume statements or unverified axioms, witnessless existential choice, mutable heap aliasing between ghost and real references, catchable exceptions or early exits (return, break) escaping a ghost block, or concurrent interleavings. Transfer to Dafny or Why3 is a modeling bridge, not a kernel-checked fact."
+  ],
+  "prior_art": [
+   "J.-C. Filliâtre, L. Gondelman, A. Paskevich. The Spirit of Ghost Code. In: Computer Aided Verification (CAV 2014), LNCS 8559, Springer, pp. 1-16. DOI 10.1007/978-3-319-08867-9_1; HAL hal-00873187. Verified at the publisher and HAL: the abstract states that ghost data cannot participate in regular computations and ghost code cannot mutate regular data or diverge, and that ghost-code erasure is defined for an ML-style language with mutable state and proved safe using bisimulation.",
+   "Why3 1.9.0 documentation (https://www.why3.org/doc/; these URLs track the current release, pages observed as 'Why3 1.9.0 documentation'). Chapter 6 'The WhyML Language Reference' (syntaxref.html; extracted text SHA-256 3bd49df651ad5675c198b32ebde82a3118722ecb8433fb12deae604665bda601), section 6.4.1 'Ghost expressions': ghost code is removed from the final code intended for execution, and thus cannot affect the computation of the program results nor the content of the observable memory; section 6.5.5 'Function declarations': program functions marked partial can produce observable effects unaccounted by their specification, and thus cannot be used in ghost code. Chapter 8 'The VC Generators' (vcgen.html; extracted text SHA-256 27a03509f0da8995d6e34942d8f67cf294c1f3a6805937a90efcf19e410f2ecf), section 8.2.2 'Ignoring checks for termination': by default Why3 generates VCs for the termination of loops and recursive calls; section 8.4 'Lemma Functions': a lemma function must have no side effects, be provably terminating, and return unit.",
+   "Dafny Reference Manual, v4.11.0 release snapshot, https://dafny.org/v4.11.0/DafnyRef/DafnyRef. Section 12.3 'Ghost Inference': assert statements, calls to ghost methods and lemmas, if/while statements whose condition contains ghost expressions (together with their bodies), and assignments all of whose updated variables are ghost are ghost statements; expect statements are always non-ghost; updating a non-ghost variable in a ghost context is an error. Section 7.1.3 'Decreases Clause': loops and compiled methods, but not functions and not ghost methods (including lemmas), can be declared possibly non-terminating with 'decreases *'. Section 1: specifications and ghost constructs are used only during verification and are omitted from executable code."
+  ],
+  "design_question": "What goes wrong when ghost code may diverge: the erased program terminates where the original diverged."
+ },
+ {
+  "id": "2.4",
+  "lean": "Toy.Ghost.ghostFailure_breaks_erasure",
+  "kind": "counterexample",
+  "tier": "T0",
+  "tier_justification": "Elementary counterexample, companion to 2.1-2.3.",
+  "plain_claim": "The program ghost { assert 0 } satisfies R1, R2 and R3a; from every state the original fails and the erased program terminates, so refinement up to divergence and exactness fail, while refinement up to failure holds.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Concrete instance.",
+  "positive_control_lean": "Toy.Ghost.pcGhostPassingAssert_erasureExact",
+  "non_claims": [
+   "Does not show that every program containing a failing ghost assertion breaks erasure: unreachable ghost assertions (if 0 then ghost { assert 0 } else skip) and assertions masked by earlier real failure or divergence (assert 0; ghost { assert 0 }) do not violate R3b along the run and do not break exact erasure.",
+   "R3a holds for this program because R3a excludes only divergence; a failing ghost block counts as non-diverging.",
+   "Toy model, and R1, R2, R3a, R3b are not shown sufficient for sound ghost erasure in richer languages or verifiers: deterministic sequential while-language with only inhabited Int variables, total expressions (Expr.eval cannot fail or diverge), fatal uncatchable assert failure, no procedures or recursion (a ghost lemma call is an inline ghost block), no heap, no ghost fields, no ghost functions inside specifications, no nondeterministic choice, no concurrency. It does not address empty or uninhabited ghost types (witness checks), assume statements or unverified axioms, witnessless existential choice, mutable heap aliasing between ghost and real references, catchable exceptions or early exits (return, break) escaping a ghost block, or concurrent interleavings. Transfer to Dafny or Why3 is a modeling bridge, not a kernel-checked fact."
+  ],
+  "prior_art": [
+   "J.-C. Filliâtre, L. Gondelman, A. Paskevich. The Spirit of Ghost Code. In: Computer Aided Verification (CAV 2014), LNCS 8559, Springer, pp. 1-16. DOI 10.1007/978-3-319-08867-9_1; HAL hal-00873187. Verified at the publisher and HAL: the abstract states that ghost data cannot participate in regular computations and ghost code cannot mutate regular data or diverge, and that ghost-code erasure is defined for an ML-style language with mutable state and proved safe using bisimulation.",
+   "Dafny Reference Manual, v4.11.0 release snapshot, https://dafny.org/v4.11.0/DafnyRef/DafnyRef. Section 12.3 'Ghost Inference': assert statements, calls to ghost methods and lemmas, if/while statements whose condition contains ghost expressions (together with their bodies), and assignments all of whose updated variables are ghost are ghost statements; expect statements are always non-ghost; updating a non-ghost variable in a ghost context is an error. Section 7.1.3 'Decreases Clause': loops and compiled methods, but not functions and not ghost methods (including lemmas), can be declared possibly non-terminating with 'decreases *'. Section 1: specifications and ghost constructs are used only during verification and are omitted from executable code."
+  ],
+  "design_question": "What goes wrong when ghost assertions may fail: a failure of the original disappears after erasure."
+ },
+ {
+  "id": "3.A",
+  "lean": [
+   "Toy.Ghost.safePartialTriple_erase_of_ghostWritesGhost_of_realReadsReal_of_exists_ghostNoDivergeFrom",
+   "Toy.Ghost.safePartialTriple_erase_of_ghostWritesGhost_of_realReadsReal_of_ghostNoDivergeFrom"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Folklore made precise: auxiliary-variable elimination for partial correctness goes back to Owicki-Gries and earlier work on auxiliary variables, for auxiliary code made of assignments (which always terminate); Filliâtre-Gondelman-Paskevich require ghost code to terminate. The transfer theorem for ghost blocks with loops and assertions, with the exact hypothesis sets below, was not found mechanized in the sources checked.",
+  "plain_claim": "If a partial-correctness triple with safety {Pre} P {Post} about real variables (from precondition states P does not fail, and its normally terminating runs satisfy Post) holds for the original program, possibly thanks to ghost code, and R1 and R2 hold, and for every real precondition state some initial store with that real part has no diverging ghost block on its run (R3a), then the same triple holds for the erased program (corollary: the same with R3a required from every initial store whose real part satisfies Pre). R3b is not a hypothesis because the triple's safety clause implies it on precondition states.",
+  "hypotheses": [
+   {
+    "name": "hW : GhostWritesGhost P",
+    "purpose": "R1: ghost blocks assign only ghost variables (ghost code must not change real state).",
+    "tightness": "tight",
+    "counterexample": "Toy.Ghost.safePartialTriple_erase_needs_ghostWritesGhost"
+   },
+   {
+    "name": "hR : RealReadsReal P",
+    "purpose": "R2: real statements read no ghost variable, through data or control (no implicit flow from ghost to real).",
+    "tightness": "tight",
+    "counterexample": "Toy.Ghost.safePartialTriple_erase_needs_realReadsReal"
+   },
+   {
+    "name": "hT : ∀ r, Pre r → ∃ σ, realPart σ = r ∧ GhostNoDivergeFrom P σ",
+    "purpose": "R3a for one initial store per real precondition state. A diverging ghost 'lemma' makes any partial-correctness triple hold. The stronger all-states obligation (∀ σ, Pre (realPart σ) → GhostNoDivergeFrom P σ), which is what a verifier ignorant of initial ghost values establishes, implies it (exists_of_forall_pre) and gives the corollary safePartialTriple_erase_of_ghostWritesGhost_of_realReadsReal_of_ghostNoDivergeFrom (second Lean name); the existential form is strictly weaker (safePartialTriple_exists_ghostNoDivergeFrom_strictly_weaker). This ledger entry is for the primary (existential) statement; the corollary replaces hT by the ∀ σ obligation.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ghost.safePartialTriple_erase_needs_ghostNoDivergeFrom"
+   },
+   {
+    "name": "h : SafePartialTriple Pre P Post",
+    "purpose": "The triple proved for the original program. It bundles safety (¬ Fails P σ on precondition states); that clause yields R3b on those states (ghostNoFailFrom_of_safePartialTriple), which is why R3b is not a separate hypothesis. With weak partial correctness instead, R3b is needed (3.D, weakPartialTriple_erase_fails_without_ghostNoFailFrom).",
+    "tightness": "tight",
+    "counterexample": "Toy.Ghost.safePartialTriple_erase_needs_safePartialTriple"
+   }
+  ],
+  "depth": "shallow",
+  "depth_note": "Shallow given 1.B; substantive overall.",
+  "nonvacuity_witness": "{True} demo {y = 6}, with R3a from the store with ghost part 0. This witness (safePartialTriple_erase_hypotheses_satisfiable) and the hypothesis ledger of this card, including the tightness counterexamples for hW, hR and h, correspond to the primary statement (safePartialTriple_erase_of_ghostWritesGhost_of_realReadsReal_of_exists_ghostNoDivergeFrom), whose R3a hypothesis is the existential hT : ∀ r, Pre r → ∃ σ, realPart σ = r ∧ GhostNoDivergeFrom P σ. The corollary (safePartialTriple_erase_of_ghostWritesGhost_of_realReadsReal_of_ghostNoDivergeFrom) instead carries the all-states obligation ∀ σ, Pre (realPart σ) → GhostNoDivergeFrom P σ, which is sufficient (it implies hT by exists_of_forall_pre) but not minimal (safePartialTriple_exists_ghostNoDivergeFrom_strictly_weaker); its hypotheses hold for {True} demo {y = 6} by demo_satisfies_global_erasure_hypotheses together with safePartialTriple_demo.",
+  "nonvacuity_witness_lean": "Toy.Ghost.safePartialTriple_erase_hypotheses_satisfiable",
+  "non_claims": [
+   "Does not transfer in the other direction (from the erased program to the original).",
+   "The triple includes safety; for weak partial correctness, in which failure is also vacuous, a failing ghost assertion would 'prove anything' and R3b is needed (3.D).",
+   "R3b holding globally is not implied by the hypotheses (safePartialTriple_transfer_without_global_ghostNoFail); it is only implied on precondition states.",
+   "SafePartialTriple, WeakPartialTriple, and TotalTriple are semantic validity statements, not derivability in a Hoare logic or verification-condition generator; these results do not establish soundness of any proof system or VC translation.",
+   "Because Pre and Post are predicates on RStore only, initial ghost variables are universally quantified (effectively uninitialized) at entry; these results do not transfer specifications whose preconditions or postconditions mention ghost parameters, ghost return values, or ghost model state.",
+   "Toy model, and R1, R2, R3a, R3b are not shown sufficient for sound ghost erasure in richer languages or verifiers: deterministic sequential while-language with only inhabited Int variables, total expressions (Expr.eval cannot fail or diverge), fatal uncatchable assert failure, no procedures or recursion (a ghost lemma call is an inline ghost block), no heap, no ghost fields, no ghost functions inside specifications, no nondeterministic choice, no concurrency. It does not address empty or uninhabited ghost types (witness checks), assume statements or unverified axioms, witnessless existential choice, mutable heap aliasing between ghost and real references, catchable exceptions or early exits (return, break) escaping a ghost block, or concurrent interleavings. Transfer to Dafny or Why3 is a modeling bridge, not a kernel-checked fact.",
+   "R1 and R2 are syntactic sufficient conditions: they inspect unreachable code too, and they require an explicit ghost { ... } block around any conditional or loop whose guard reads a ghost variable, so they reject e.g. if g then g := 0 else g := 1, which Dafny's ghost inference (reference manual section 12.3) treats as a ghost statement and a Volpano-Irvine-Smith-style flow typing accepts. R3a and R3b are semantic and constrain only ghost blocks that the run reaches. None of R1, R2, R3a, R3b is claimed necessary for any individual program to be erasable: ghost { x := x }, x := g - g, and unreachable ghost code can be erasable while violating one of them; tightness means only that dropping a restriction admits some counterexample program."
+  ],
+  "prior_art": [
+   "S. Owicki, D. Gries. An axiomatic proof technique for parallel programs I. Acta Informatica 6:319-340, 1976. DOI 10.1007/BF00268134 (bibliographic data and summary verified at the publisher: Hoare's partial-correctness system extended to parallel programs). Cited as a standard early use of auxiliary variables in program proofs; the wording of its auxiliary-variable rule was not checked at the source. It is not the origin of auxiliary variables: its reference list includes M. Clint, Program proving: Coroutines, Acta Informatica 2:50-63, 1973, DOI 10.1007/BF00571463, and Jones (2010) cites P. Lucas, Two constructive realizations of the block concept and their equivalence, IBM Laboratory Vienna TR 25.085, 1968 (both reference lists verified at the publisher; the earlier works themselves were not read).",
+   "C. B. Jones. The Role of Auxiliary Variables in the Formal Development of Concurrent Programs. In: A. W. Roscoe, C. B. Jones, K. R. Wood (eds.), Reflections on the Work of C.A.R. Hoare, Springer, London, 2010, pp. 167-187. DOI 10.1007/978-1-84882-912-1_8 (abstract verified at the publisher: auxiliary variables are useful but can undermine compositionality; the chapter recommends constraints on their use).",
+   "J.-C. Filliâtre, L. Gondelman, A. Paskevich. The Spirit of Ghost Code. In: Computer Aided Verification (CAV 2014), LNCS 8559, Springer, pp. 1-16. DOI 10.1007/978-3-319-08867-9_1; HAL hal-00873187. Verified at the publisher and HAL: the abstract states that ghost data cannot participate in regular computations and ghost code cannot mutate regular data or diverge, and that ghost-code erasure is defined for an ML-style language with mutable state and proved safe using bisimulation.",
+   "J.-C. Filliâtre, L. Gondelman, A. Paskevich. The Spirit of Ghost Code. Formal Methods in System Design 48(3):152-174, 2016. DOI 10.1007/s10703-016-0243-x; HAL hal-01396864 (extended version; same abstract claims, verified at HAL).",
+   "Why3 1.9.0 documentation (https://www.why3.org/doc/; these URLs track the current release, pages observed as 'Why3 1.9.0 documentation'). Chapter 6 'The WhyML Language Reference' (syntaxref.html; extracted text SHA-256 3bd49df651ad5675c198b32ebde82a3118722ecb8433fb12deae604665bda601), section 6.4.1 'Ghost expressions': ghost code is removed from the final code intended for execution, and thus cannot affect the computation of the program results nor the content of the observable memory; section 6.5.5 'Function declarations': program functions marked partial can produce observable effects unaccounted by their specification, and thus cannot be used in ghost code. Chapter 8 'The VC Generators' (vcgen.html; extracted text SHA-256 27a03509f0da8995d6e34942d8f67cf294c1f3a6805937a90efcf19e410f2ecf), section 8.2.2 'Ignoring checks for termination': by default Why3 generates VCs for the termination of loops and recursive calls; section 8.4 'Lemma Functions': a lemma function must have no side effects, be provably terminating, and return unit."
+  ],
+  "design_question": "What must a verifier check about ghost code so that partial-correctness proofs (with safety) survive erasure: no ghost writes to real state, no ghost reads in real code, and non-divergence of ghost code in context."
+ },
+ {
+  "id": "3.B",
+  "lean": "Toy.Ghost.totalTriple_erase_of_ghostWritesGhost_of_realReadsReal",
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Folklore made precise: auxiliary-variable elimination for partial correctness goes back to Owicki-Gries and earlier work on auxiliary variables, for auxiliary code made of assignments (which always terminate); Filliâtre-Gondelman-Paskevich require ghost code to terminate. The transfer theorem for ghost blocks with loops and assertions, with the exact hypothesis sets below, was not found mechanized in the sources checked.",
+  "plain_claim": "A total-correctness triple about real variables that holds for the original program holds for the erased program under R1 and R2 alone; no separate ghost-termination or ghost-assertion hypothesis is needed, because a valid total triple already forces every ghost block reached from a precondition state to terminate normally (ghostTotalFrom_of_totalTriple).",
+  "hypotheses": [
+   {
+    "name": "hW : GhostWritesGhost P",
+    "purpose": "R1: ghost blocks assign only ghost variables (ghost code must not change real state).",
+    "tightness": "tight",
+    "counterexample": "Toy.Ghost.totalTriple_erase_needs_ghostWritesGhost"
+   },
+   {
+    "name": "hR : RealReadsReal P",
+    "purpose": "R2: real statements read no ghost variable, through data or control (no implicit flow from ghost to real).",
+    "tightness": "tight",
+    "counterexample": "Toy.Ghost.totalTriple_erase_needs_realReadsReal"
+   },
+   {
+    "name": "h : TotalTriple Pre P Post",
+    "purpose": "The total-correctness triple valid for the original program; its termination clause covers the ghost blocks.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ghost.totalTriple_erase_needs_totalTriple"
+   }
+  ],
+  "depth": "shallow",
+  "depth_note": "Shallow given 1.A; substantive overall.",
+  "nonvacuity_witness": "{True} demo {y = 6} in total correctness.",
+  "nonvacuity_witness_lean": "Toy.Ghost.totalTriple_erase_hypotheses_satisfiable",
+  "non_claims": [
+   "Omitting a separate ghost-termination hypothesis does not mean a total-correctness verifier can skip proving termination of ghost code: TotalTriple Pre P Post is semantic termination of P including its ghost blocks, so establishing it still requires every reachable ghost loop or lemma to terminate.",
+   "Transfer is one-way from P to erase P: TotalTriple Pre (erase P) Post does not imply TotalTriple Pre P Post (erase ceGhostDiverges and erase ceGhostFails satisfy {True} · {True} while the originals do not; totalTriple_erase_not_converse).",
+   "Does not license skipping termination checks of ghost code when only partial correctness is proved (3.A's counterexample for hT).",
+   "SafePartialTriple, WeakPartialTriple, and TotalTriple are semantic validity statements, not derivability in a Hoare logic or verification-condition generator; these results do not establish soundness of any proof system or VC translation.",
+   "Because Pre and Post are predicates on RStore only, initial ghost variables are universally quantified (effectively uninitialized) at entry; these results do not transfer specifications whose preconditions or postconditions mention ghost parameters, ghost return values, or ghost model state.",
+   "Toy model, and R1, R2, R3a, R3b are not shown sufficient for sound ghost erasure in richer languages or verifiers: deterministic sequential while-language with only inhabited Int variables, total expressions (Expr.eval cannot fail or diverge), fatal uncatchable assert failure, no procedures or recursion (a ghost lemma call is an inline ghost block), no heap, no ghost fields, no ghost functions inside specifications, no nondeterministic choice, no concurrency. It does not address empty or uninhabited ghost types (witness checks), assume statements or unverified axioms, witnessless existential choice, mutable heap aliasing between ghost and real references, catchable exceptions or early exits (return, break) escaping a ghost block, or concurrent interleavings. Transfer to Dafny or Why3 is a modeling bridge, not a kernel-checked fact.",
+   "R1 and R2 are syntactic sufficient conditions: they inspect unreachable code too, and they require an explicit ghost { ... } block around any conditional or loop whose guard reads a ghost variable, so they reject e.g. if g then g := 0 else g := 1, which Dafny's ghost inference (reference manual section 12.3) treats as a ghost statement and a Volpano-Irvine-Smith-style flow typing accepts. R3a and R3b are semantic and constrain only ghost blocks that the run reaches. None of R1, R2, R3a, R3b is claimed necessary for any individual program to be erasable: ghost { x := x }, x := g - g, and unreachable ghost code can be erasable while violating one of them; tightness means only that dropping a restriction admits some counterexample program."
+  ],
+  "prior_art": [
+   "J.-C. Filliâtre, L. Gondelman, A. Paskevich. The Spirit of Ghost Code. In: Computer Aided Verification (CAV 2014), LNCS 8559, Springer, pp. 1-16. DOI 10.1007/978-3-319-08867-9_1; HAL hal-00873187. Verified at the publisher and HAL: the abstract states that ghost data cannot participate in regular computations and ghost code cannot mutate regular data or diverge, and that ghost-code erasure is defined for an ML-style language with mutable state and proved safe using bisimulation.",
+   "J.-C. Filliâtre, L. Gondelman, A. Paskevich. The Spirit of Ghost Code. Formal Methods in System Design 48(3):152-174, 2016. DOI 10.1007/s10703-016-0243-x; HAL hal-01396864 (extended version; same abstract claims, verified at HAL).",
+   "S. Owicki, D. Gries. An axiomatic proof technique for parallel programs I. Acta Informatica 6:319-340, 1976. DOI 10.1007/BF00268134 (bibliographic data and summary verified at the publisher: Hoare's partial-correctness system extended to parallel programs). Cited as a standard early use of auxiliary variables in program proofs; the wording of its auxiliary-variable rule was not checked at the source. It is not the origin of auxiliary variables: its reference list includes M. Clint, Program proving: Coroutines, Acta Informatica 2:50-63, 1973, DOI 10.1007/BF00571463, and Jones (2010) cites P. Lucas, Two constructive realizations of the block concept and their equivalence, IBM Laboratory Vienna TR 25.085, 1968 (both reference lists verified at the publisher; the earlier works themselves were not read)."
+  ],
+  "design_question": "Once total correctness of the original program, ghost code included, has been established, does erasure need any further ghost hypothesis? No: R1 and R2 suffice. Ghost non-divergence still matters for partial correctness (3.A, 3.D), for exact erasure of non-terminating runs (1.B, 1.D, 2.3), and for termination-sensitive noninterference (4.D, 4.F)."
+ },
+ {
+  "id": "3.D",
+  "lean": "Toy.Ghost.weakPartialTriple_erase_of_ghostWritesGhost_of_realReadsReal_of_exists_ghostNoDivergeFrom_ghostNoFailFrom",
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Folklore made precise: auxiliary-variable elimination for partial correctness goes back to Owicki-Gries and earlier work on auxiliary variables, for auxiliary code made of assignments (which always terminate); Filliâtre-Gondelman-Paskevich require ghost code to terminate. The transfer theorem for ghost blocks with loops and assertions, with the exact hypothesis sets below, was not found mechanized in the sources checked.",
+  "plain_claim": "If a weak partial-correctness triple {Pre} P {Post} about real variables (only normally terminating runs from precondition states must satisfy Post; failure and divergence are vacuous) holds for the original program, and R1 and R2 hold, and for every real precondition state some initial store with that real part has no diverging and no failing ghost block on its run (R3a and R3b at the same store), then the same weak triple holds for the erased program.",
+  "hypotheses": [
+   {
+    "name": "hW : GhostWritesGhost P",
+    "purpose": "R1: ghost blocks assign only ghost variables (ghost code must not change real state).",
+    "tightness": "tight",
+    "counterexample": "Toy.Ghost.weakPartialTriple_erase_needs_ghostWritesGhost"
+   },
+   {
+    "name": "hR : RealReadsReal P",
+    "purpose": "R2: real statements read no ghost variable, through data or control (no implicit flow from ghost to real).",
+    "tightness": "tight",
+    "counterexample": "Toy.Ghost.weakPartialTriple_erase_needs_realReadsReal"
+   },
+   {
+    "name": "hG : ∀ r, Pre r → ∃ σ, realPart σ = r ∧ GhostNoDivergeFrom P σ ∧ GhostNoFailFrom P σ",
+    "purpose": "R3a and R3b at one common initial store per real precondition state. Each half is needed: ghost { assert 0 } satisfies the R3a half and ghost { while 1 do skip } the R3b half, and both refute the conclusion.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Ghost.weakPartialTriple_erase_needs_ghostNoFailFrom",
+     "Toy.Ghost.weakPartialTriple_erase_needs_ghostNoDivergeFrom"
+    ]
+   },
+   {
+    "name": "h : WeakPartialTriple Pre P Post",
+    "purpose": "The weak triple valid for the original program.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ghost.weakPartialTriple_erase_needs_weakPartialTriple"
+   }
+  ],
+  "depth": "shallow",
+  "depth_note": "Shallow given 1.D (hence 1.B and 1.C); substantive overall.",
+  "nonvacuity_witness": "{True} demo {y = 6} weakly, with R3a and R3b from the store with ghost part 0.",
+  "nonvacuity_witness_lean": "Toy.Ghost.weakPartialTriple_erase_hypotheses_satisfiable",
+  "non_claims": [
+   "R3a and R3b at possibly different stores for the same real state are not sufficient (weakPartialTriple_erase_split_ghost_conditions_insufficient: ghost { if g then assert 0 else while 1 do skip }); the common-store form is not claimed minimal.",
+   "Does not transfer in the other direction.",
+   "SafePartialTriple, WeakPartialTriple, and TotalTriple are semantic validity statements, not derivability in a Hoare logic or verification-condition generator; these results do not establish soundness of any proof system or VC translation.",
+   "Because Pre and Post are predicates on RStore only, initial ghost variables are universally quantified (effectively uninitialized) at entry; these results do not transfer specifications whose preconditions or postconditions mention ghost parameters, ghost return values, or ghost model state.",
+   "Toy model, and R1, R2, R3a, R3b are not shown sufficient for sound ghost erasure in richer languages or verifiers: deterministic sequential while-language with only inhabited Int variables, total expressions (Expr.eval cannot fail or diverge), fatal uncatchable assert failure, no procedures or recursion (a ghost lemma call is an inline ghost block), no heap, no ghost fields, no ghost functions inside specifications, no nondeterministic choice, no concurrency. It does not address empty or uninhabited ghost types (witness checks), assume statements or unverified axioms, witnessless existential choice, mutable heap aliasing between ghost and real references, catchable exceptions or early exits (return, break) escaping a ghost block, or concurrent interleavings. Transfer to Dafny or Why3 is a modeling bridge, not a kernel-checked fact.",
+   "R1 and R2 are syntactic sufficient conditions: they inspect unreachable code too, and they require an explicit ghost { ... } block around any conditional or loop whose guard reads a ghost variable, so they reject e.g. if g then g := 0 else g := 1, which Dafny's ghost inference (reference manual section 12.3) treats as a ghost statement and a Volpano-Irvine-Smith-style flow typing accepts. R3a and R3b are semantic and constrain only ghost blocks that the run reaches. None of R1, R2, R3a, R3b is claimed necessary for any individual program to be erasable: ghost { x := x }, x := g - g, and unreachable ghost code can be erasable while violating one of them; tightness means only that dropping a restriction admits some counterexample program."
+  ],
+  "prior_art": [
+   "S. Owicki, D. Gries. An axiomatic proof technique for parallel programs I. Acta Informatica 6:319-340, 1976. DOI 10.1007/BF00268134 (bibliographic data and summary verified at the publisher: Hoare's partial-correctness system extended to parallel programs). Cited as a standard early use of auxiliary variables in program proofs; the wording of its auxiliary-variable rule was not checked at the source. It is not the origin of auxiliary variables: its reference list includes M. Clint, Program proving: Coroutines, Acta Informatica 2:50-63, 1973, DOI 10.1007/BF00571463, and Jones (2010) cites P. Lucas, Two constructive realizations of the block concept and their equivalence, IBM Laboratory Vienna TR 25.085, 1968 (both reference lists verified at the publisher; the earlier works themselves were not read).",
+   "J.-C. Filliâtre, L. Gondelman, A. Paskevich. The Spirit of Ghost Code. In: Computer Aided Verification (CAV 2014), LNCS 8559, Springer, pp. 1-16. DOI 10.1007/978-3-319-08867-9_1; HAL hal-00873187. Verified at the publisher and HAL: the abstract states that ghost data cannot participate in regular computations and ghost code cannot mutate regular data or diverge, and that ghost-code erasure is defined for an ML-style language with mutable state and proved safe using bisimulation.",
+   "J.-C. Filliâtre, L. Gondelman, A. Paskevich. The Spirit of Ghost Code. Formal Methods in System Design 48(3):152-174, 2016. DOI 10.1007/s10703-016-0243-x; HAL hal-01396864 (extended version; same abstract claims, verified at HAL).",
+   "Why3 1.9.0 documentation (https://www.why3.org/doc/; these URLs track the current release, pages observed as 'Why3 1.9.0 documentation'). Chapter 6 'The WhyML Language Reference' (syntaxref.html; extracted text SHA-256 3bd49df651ad5675c198b32ebde82a3118722ecb8433fb12deae604665bda601), section 6.4.1 'Ghost expressions': ghost code is removed from the final code intended for execution, and thus cannot affect the computation of the program results nor the content of the observable memory; section 6.5.5 'Function declarations': program functions marked partial can produce observable effects unaccounted by their specification, and thus cannot be used in ghost code. Chapter 8 'The VC Generators' (vcgen.html; extracted text SHA-256 27a03509f0da8995d6e34942d8f67cf294c1f3a6805937a90efcf19e410f2ecf), section 8.2.2 'Ignoring checks for termination': by default Why3 generates VCs for the termination of loops and recursive calls; section 8.4 'Lemma Functions': a lemma function must have no side effects, be provably terminating, and return unit."
+  ],
+  "design_question": "If the specification logic treats assertion failure as vacuous (classical partial correctness), what must a verifier check about ghost code for proofs to survive erasure? In addition to 3.A's conditions, that ghost assertions hold."
+ },
+ {
+  "id": "4.A",
+  "lean": "Toy.Ghost.erasureExact_iff_ghostToRealNI_and_erasureAgrees",
+  "kind": "characterization",
+  "tier": "T0",
+  "tier_justification": "A definitional congruence: it holds with any program transformation in place of erase and does not unfold the semantics.",
+  "plain_claim": "Exact erasability of a program is equivalent to the conjunction of termination-sensitive noninterference from ghost to real of the program itself (its real behaviour, including failure and divergence, does not depend on initial ghost values) and agreement of the program with its erasure when both start from the same full store.",
+  "hypotheses": [
+   {
+    "name": "GhostToRealNI P (for ⇐)",
+    "purpose": "Ghost inputs do not influence real behaviour.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ghost.erasureAgrees_not_sufficient_for_erasureExact"
+   },
+   {
+    "name": "ErasureAgrees P (for ⇐)",
+    "purpose": "Running the ghost code does not change real behaviour relative to skipping it.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ghost.ghostToRealNI_not_sufficient_for_erasureExact"
+   }
+  ],
+  "depth": "definitional",
+  "nonvacuity_witness": "ghost { g := 1 } satisfies both sides.",
+  "nonvacuity_witness_lean": "Toy.Ghost.pcGhostWritesGhost_erasureExact",
+  "non_claims": [
+   "Noninterference here is a semantic property of the original program only; it is not the syntactic R1 + R2 discipline.",
+   "Does not say that a noninterfering program can always be made erasable.",
+   "This is a definitional encoding equivalence whose right-hand side still mentions erase P, not an erasure-free characterization of erasability.",
+   "ErasureAgrees is meaningful for R2-violating programs (such as x := g) only because erase P is run on a full Store with ghost variables retained; over real stores it would not be expressible without R2. Under R2, ErasureAgrees P alone is equivalent to ErasureExact P (4.G).",
+   "Toy model, and R1, R2, R3a, R3b are not shown sufficient for sound ghost erasure in richer languages or verifiers: deterministic sequential while-language with only inhabited Int variables, total expressions (Expr.eval cannot fail or diverge), fatal uncatchable assert failure, no procedures or recursion (a ghost lemma call is an inline ghost block), no heap, no ghost fields, no ghost functions inside specifications, no nondeterministic choice, no concurrency. It does not address empty or uninhabited ghost types (witness checks), assume statements or unverified axioms, witnessless existential choice, mutable heap aliasing between ghost and real references, catchable exceptions or early exits (return, break) escaping a ghost block, or concurrent interleavings. Transfer to Dafny or Why3 is a modeling bridge, not a kernel-checked fact."
+  ],
+  "prior_art": [
+   "J.-C. Filliâtre, L. Gondelman, A. Paskevich. The Spirit of Ghost Code. In: Computer Aided Verification (CAV 2014), LNCS 8559, Springer, pp. 1-16. DOI 10.1007/978-3-319-08867-9_1; HAL hal-00873187. Verified at the publisher and HAL: the abstract states that ghost data cannot participate in regular computations and ghost code cannot mutate regular data or diverge, and that ghost-code erasure is defined for an ML-style language with mutable state and proved safe using bisimulation.",
+   "C. Hriţcu, Y. Kim (B. C. Pierce, ed.). Security Foundations. Software Foundations, Volume 7, Version 1.2, electronic textbook, 2026, https://softwarefoundations.cis.upenn.edu/secf-1.2/ (version-pinned release URL; its title page reads 'Version 1.2 (2026-08-24 10:14, Rocq 9.0.0 or later)'; on 2026-11-20 the moving alias secf-current/ served the same text for the title page and the chapters StaticIFC and Noninterference; citation data from its Preface; chapters StaticIFC and Noninterference checked at the source, proofs of the theorems named here end in Qed). Rocq mechanization for the Imp language: pub_slice replaces assignments to secret variables and secret-guarded conditionals and loops by skip; pub_slice_fwd_correct (for programs typed with the noninterference typing, a terminating run of c from s is matched by a terminating run of the slice from any publicly equivalent t, ending in publicly equivalent states); pub_slice_bwd_correct and pub_slice_tsni (the converse correspondence under a termination-sensitive typing); pub_slice_secure_com2_incorrect (a noninterferent program whose slice is not correct); cf_well_typed_noninterferent and ni_well_typed_noninterferent (termination-insensitive noninterference of well-typed programs); ts_well_typed_tsni (termination-sensitive noninterference); termination_leak, tini_secure_termination_leak, tsni_insecure_termination_leak (a secret-guarded diverging loop is termination-insensitively but not termination-sensitively secure). These theorems are stated over terminating evaluations and have no failure outcome; ghost code is modelled there as the secret part of a labelled program.",
+   "A. Sabelfeld, A. C. Myers. Language-based information-flow security. IEEE Journal on Selected Areas in Communications 21(1):5-19, 2003. DOI 10.1109/JSAC.2002.806121 (bibliographic data verified at dblp; cited as the standard survey for the termination-insensitive versus termination-sensitive distinction; its content was not re-read at the source)."
+  ],
+  "design_question": "In what precise sense is erasability noninterference from ghost to real?"
+ },
+ {
+  "id": "4.B",
+  "lean": [
+   "Toy.Ghost.ghostToRealNI_not_sufficient_for_erasureExact",
+   "Toy.Ghost.ghostSpinOnX_ghostToRealNI_not_erasureExact"
+  ],
+  "kind": "counterexample",
+  "tier": "T0",
+  "tier_justification": "Analogue of the Rocq-mechanized pub_slice_secure_com2_incorrect (Security Foundations, StaticIFC): a noninterferent program whose public slice is not correct.",
+  "plain_claim": "Noninterference from ghost to real does not imply exact erasability, even together with R1 and R2: ghost { x := 1 } is termination-sensitively noninterfering yet erasing it changes the result; and ghost { while x do skip }, whose termination depends only on the real variable x, satisfies R1, R2 and termination-sensitive noninterference, yet its erasure terminates where it diverges.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Concrete instances.",
+  "positive_control_lean": "Toy.Ghost.pcGhostWritesGhost_erasureExact",
+  "non_claims": [
+   "Does not say noninterference is irrelevant; by 4.A it is one of the two conjuncts of exact erasability.",
+   "Escape hatch: under all of R1, R2, R3a and R3b exact erasure holds (global form of 1.D); R1 alone or R1 with R2 does not close the gap (second program).",
+   "Concerns the syntactic deletion erase, not semantics-aware program transformations.",
+   "Toy model, and R1, R2, R3a, R3b are not shown sufficient for sound ghost erasure in richer languages or verifiers: deterministic sequential while-language with only inhabited Int variables, total expressions (Expr.eval cannot fail or diverge), fatal uncatchable assert failure, no procedures or recursion (a ghost lemma call is an inline ghost block), no heap, no ghost fields, no ghost functions inside specifications, no nondeterministic choice, no concurrency. It does not address empty or uninhabited ghost types (witness checks), assume statements or unverified axioms, witnessless existential choice, mutable heap aliasing between ghost and real references, catchable exceptions or early exits (return, break) escaping a ghost block, or concurrent interleavings. Transfer to Dafny or Why3 is a modeling bridge, not a kernel-checked fact."
+  ],
+  "prior_art": [
+   "C. Hriţcu, Y. Kim (B. C. Pierce, ed.). Security Foundations. Software Foundations, Volume 7, Version 1.2, electronic textbook, 2026, https://softwarefoundations.cis.upenn.edu/secf-1.2/ (version-pinned release URL; its title page reads 'Version 1.2 (2026-08-24 10:14, Rocq 9.0.0 or later)'; on 2026-11-20 the moving alias secf-current/ served the same text for the title page and the chapters StaticIFC and Noninterference; citation data from its Preface; chapters StaticIFC and Noninterference checked at the source, proofs of the theorems named here end in Qed). Rocq mechanization for the Imp language: pub_slice replaces assignments to secret variables and secret-guarded conditionals and loops by skip; pub_slice_fwd_correct (for programs typed with the noninterference typing, a terminating run of c from s is matched by a terminating run of the slice from any publicly equivalent t, ending in publicly equivalent states); pub_slice_bwd_correct and pub_slice_tsni (the converse correspondence under a termination-sensitive typing); pub_slice_secure_com2_incorrect (a noninterferent program whose slice is not correct); cf_well_typed_noninterferent and ni_well_typed_noninterferent (termination-insensitive noninterference of well-typed programs); ts_well_typed_tsni (termination-sensitive noninterference); termination_leak, tini_secure_termination_leak, tsni_insecure_termination_leak (a secret-guarded diverging loop is termination-insensitively but not termination-sensitively secure). These theorems are stated over terminating evaluations and have no failure outcome; ghost code is modelled there as the secret part of a labelled program.",
+   "J.-C. Filliâtre, L. Gondelman, A. Paskevich. The Spirit of Ghost Code. In: Computer Aided Verification (CAV 2014), LNCS 8559, Springer, pp. 1-16. DOI 10.1007/978-3-319-08867-9_1; HAL hal-00873187. Verified at the publisher and HAL: the abstract states that ghost data cannot participate in regular computations and ghost code cannot mutate regular data or diverge, and that ghost-code erasure is defined for an ML-style language with mutable state and proved safe using bisimulation."
+  ],
+  "design_question": "Why erasability needs more than ghost-to-real noninterference: ghost code must also neither write real state nor diverge."
+ },
+ {
+  "id": "4.C",
+  "lean": "Toy.Ghost.erasureAgrees_not_sufficient_for_erasureExact",
+  "kind": "counterexample",
+  "tier": "T0",
+  "tier_justification": "Elementary counterexample.",
+  "plain_claim": "Agreement of a program with its erasure from the same full store does not imply exact erasability: x := g has no ghost statements, so it agrees with its erasure, but its result depends on the ghost input, which no longer exists after erasure.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Concrete instance.",
+  "positive_control_lean": [
+   "Toy.Ghost.pcGhostWritesGhost_realReadsReal_erasureAgrees_erasureExact",
+   "Toy.Ghost.erasureExact_iff_erasureAgrees_of_realReadsReal"
+  ],
+  "non_claims": [
+   "Depends on modelling the erased program's ghost part as arbitrary; under a semantics that kept ghost initial values, this program would count as erasable.",
+   "Escape hatch: under R2, erase P mentions no ghost variable (noGhostVars_erase_of_realReadsReal), so ErasureAgrees P alone implies both GhostToRealNI P and ErasureExact P (4.G).",
+   "erase P is again a Stmt run on a full Store. For R2-violating programs, erase P still reads ghost variables (erase (x := g) = x := g) and executes at all only because of this encoding; a compiler targeting real stores would reject it. Under R2 the erased program ignores the ghost part of its store (erase_rbehaves_congr_of_realReadsReal).",
+   "Toy model, and R1, R2, R3a, R3b are not shown sufficient for sound ghost erasure in richer languages or verifiers: deterministic sequential while-language with only inhabited Int variables, total expressions (Expr.eval cannot fail or diverge), fatal uncatchable assert failure, no procedures or recursion (a ghost lemma call is an inline ghost block), no heap, no ghost fields, no ghost functions inside specifications, no nondeterministic choice, no concurrency. It does not address empty or uninhabited ghost types (witness checks), assume statements or unverified axioms, witnessless existential choice, mutable heap aliasing between ghost and real references, catchable exceptions or early exits (return, break) escaping a ghost block, or concurrent interleavings. Transfer to Dafny or Why3 is a modeling bridge, not a kernel-checked fact."
+  ],
+  "prior_art": [
+   "J.-C. Filliâtre, L. Gondelman, A. Paskevich. The Spirit of Ghost Code. In: Computer Aided Verification (CAV 2014), LNCS 8559, Springer, pp. 1-16. DOI 10.1007/978-3-319-08867-9_1; HAL hal-00873187. Verified at the publisher and HAL: the abstract states that ghost data cannot participate in regular computations and ghost code cannot mutate regular data or diverge, and that ghost-code erasure is defined for an ML-style language with mutable state and proved safe using bisimulation."
+  ],
+  "design_question": "Why real code must not read ghost state even when no ghost statement is erased."
+ },
+ {
+  "id": "4.D",
+  "lean": "Toy.Ghost.ghostToRealNI_of_ghostWritesGhost_of_realReadsReal_of_ghostNoDivergeFrom_of_ghostNoFailFrom",
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Re-derivation: termination-sensitive noninterference under a discipline that also ensures termination of secret-dependent code is mechanized in Rocq (ts_well_typed_tsni, Security Foundations); the failure channel is the analogous case for assertions.",
+  "plain_claim": "R1, R2 and, on runs from every initial state, R3a and R3b imply noninterference from ghost to real that is sensitive to termination and failure: the final real store, failure, and divergence do not depend on initial ghost values.",
+  "hypotheses": [
+   {
+    "name": "hW : GhostWritesGhost P",
+    "purpose": "R1.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ghost.ghostToRealNI_needs_ghostWritesGhost"
+   },
+   {
+    "name": "hR : RealReadsReal P",
+    "purpose": "R2.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ghost.ghostToRealNI_needs_realReadsReal"
+   },
+   {
+    "name": "hT : ∀ σ, GhostNoDivergeFrom P σ",
+    "purpose": "R3a everywhere (closes the termination channel).",
+    "tightness": "tight",
+    "counterexample": "Toy.Ghost.ghostToRealNI_needs_ghostNoDivergeFrom"
+   },
+   {
+    "name": "hF : ∀ σ, GhostNoFailFrom P σ",
+    "purpose": "R3b everywhere (closes the failure channel).",
+    "tightness": "tight",
+    "counterexample": "Toy.Ghost.ghostToRealNI_needs_ghostNoFailFrom"
+   }
+  ],
+  "depth": "definitional",
+  "depth_note": "Definitional given the global form of 1.D and 4.A; substantive overall.",
+  "nonvacuity_witness_lean": "Toy.Ghost.demo_satisfies_global_erasure_hypotheses",
+  "nonvacuity_witness": "demo satisfies all four hypotheses.",
+  "non_claims": [
+   "Noninterference is strictly weaker than erasability (4.B).",
+   "Covers only the final real store, failure, and divergence; not timing, step counts, or other side channels. R1-R3 are not claimed necessary for noninterference of any particular program.",
+   "Toy model, and R1, R2, R3a, R3b are not shown sufficient for sound ghost erasure in richer languages or verifiers: deterministic sequential while-language with only inhabited Int variables, total expressions (Expr.eval cannot fail or diverge), fatal uncatchable assert failure, no procedures or recursion (a ghost lemma call is an inline ghost block), no heap, no ghost fields, no ghost functions inside specifications, no nondeterministic choice, no concurrency. It does not address empty or uninhabited ghost types (witness checks), assume statements or unverified axioms, witnessless existential choice, mutable heap aliasing between ghost and real references, catchable exceptions or early exits (return, break) escaping a ghost block, or concurrent interleavings. Transfer to Dafny or Why3 is a modeling bridge, not a kernel-checked fact."
+  ],
+  "prior_art": [
+   "C. Hriţcu, Y. Kim (B. C. Pierce, ed.). Security Foundations. Software Foundations, Volume 7, Version 1.2, electronic textbook, 2026, https://softwarefoundations.cis.upenn.edu/secf-1.2/ (version-pinned release URL; its title page reads 'Version 1.2 (2026-08-24 10:14, Rocq 9.0.0 or later)'; on 2026-11-20 the moving alias secf-current/ served the same text for the title page and the chapters StaticIFC and Noninterference; citation data from its Preface; chapters StaticIFC and Noninterference checked at the source, proofs of the theorems named here end in Qed). Rocq mechanization for the Imp language: pub_slice replaces assignments to secret variables and secret-guarded conditionals and loops by skip; pub_slice_fwd_correct (for programs typed with the noninterference typing, a terminating run of c from s is matched by a terminating run of the slice from any publicly equivalent t, ending in publicly equivalent states); pub_slice_bwd_correct and pub_slice_tsni (the converse correspondence under a termination-sensitive typing); pub_slice_secure_com2_incorrect (a noninterferent program whose slice is not correct); cf_well_typed_noninterferent and ni_well_typed_noninterferent (termination-insensitive noninterference of well-typed programs); ts_well_typed_tsni (termination-sensitive noninterference); termination_leak, tini_secure_termination_leak, tsni_insecure_termination_leak (a secret-guarded diverging loop is termination-insensitively but not termination-sensitively secure). These theorems are stated over terminating evaluations and have no failure outcome; ghost code is modelled there as the secret part of a labelled program.",
+   "D. Volpano, C. Irvine, G. Smith. A Sound Type System for Secure Flow Analysis. Journal of Computer Security 4(2/3):167-188 (dblp; Crossref lists pp. 167-187), 1996. DOI 10.3233/JCS-1996-42-304 (bibliographic data verified at dblp and Crossref; publisher page not reachable).",
+   "A. Sabelfeld, A. C. Myers. Language-based information-flow security. IEEE Journal on Selected Areas in Communications 21(1):5-19, 2003. DOI 10.1109/JSAC.2002.806121 (bibliographic data verified at dblp; cited as the standard survey for the termination-insensitive versus termination-sensitive distinction; its content was not re-read at the source)."
+  ],
+  "design_question": "The ghost restrictions as an information-flow discipline with ghost = high and real = low."
+ },
+ {
+  "id": "4.E",
+  "lean": "Toy.Ghost.ghostToRealNI_abortInsensitive_of_ghostWritesGhost_of_realReadsReal",
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Re-derivation: soundness of Volpano-Irvine-Smith typing for termination-insensitive noninterference is mechanized in Isabelle/HOL (Snelting-Wasserrab, AFP VolpanoSmith) and in Rocq (cf_well_typed_noninterferent, Security Foundations); R1 + R2 is the analogous discipline here.",
+  "plain_claim": "R1 and R2 alone, the analogue of a Volpano-Irvine-Smith secure-flow discipline with ghost = high and real = low, give abort-insensitive noninterference: two runs from states with the same real part that both terminate normally end with the same real part. Neither the failure channel nor the termination channel is covered.",
+  "hypotheses": [
+   {
+    "name": "hW : GhostWritesGhost P",
+    "purpose": "R1.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ghost.ghostToRealNI_abortInsensitive_needs_ghostWritesGhost"
+   },
+   {
+    "name": "hR : RealReadsReal P",
+    "purpose": "R2.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ghost.ghostToRealNI_abortInsensitive_needs_realReadsReal"
+   }
+  ],
+  "depth": "shallow",
+  "depth_note": "Shallow given 1.A (plus determinism); substantive overall.",
+  "nonvacuity_witness_lean": "Toy.Ghost.demo_satisfies_erasure_hypotheses",
+  "nonvacuity_witness": "demo satisfies R1 and R2.",
+  "non_claims": [
+   "Says nothing about the divergence channel (4.F: ghost { while g do skip }) or the failure channel (ghost { assert g }: ghostAssertG_abortInsensitive_not_ghostToRealNI, ghostToRealNI_needs_ghostNoFailFrom).",
+   "R1 + R2 is an analogue of, not identical to, the Volpano-Irvine-Smith typing: here ghost code is marked explicitly and a real if on a ghost value is rejected outright, whereas a secure-flow typing would accept it when both branches write only high variables.",
+   "Toy model, and R1, R2, R3a, R3b are not shown sufficient for sound ghost erasure in richer languages or verifiers: deterministic sequential while-language with only inhabited Int variables, total expressions (Expr.eval cannot fail or diverge), fatal uncatchable assert failure, no procedures or recursion (a ghost lemma call is an inline ghost block), no heap, no ghost fields, no ghost functions inside specifications, no nondeterministic choice, no concurrency. It does not address empty or uninhabited ghost types (witness checks), assume statements or unverified axioms, witnessless existential choice, mutable heap aliasing between ghost and real references, catchable exceptions or early exits (return, break) escaping a ghost block, or concurrent interleavings. Transfer to Dafny or Why3 is a modeling bridge, not a kernel-checked fact."
+  ],
+  "prior_art": [
+   "D. Volpano, C. Irvine, G. Smith. A Sound Type System for Secure Flow Analysis. Journal of Computer Security 4(2/3):167-188 (dblp; Crossref lists pp. 167-187), 1996. DOI 10.3233/JCS-1996-42-304 (bibliographic data verified at dblp and Crossref; publisher page not reachable).",
+   "G. Snelting, D. Wasserrab. A Correctness Proof for the Volpano/Smith Security Typing System. Archive of Formal Proofs, entry dated 2008-09-02, https://www.isa-afp.org/entries/VolpanoSmith.html (verified: for a while-language, typeability implies noninterference stated as: low-equivalent initial states lead to low-equivalent final states, i.e. a statement about terminating executions).",
+   "C. Hriţcu, Y. Kim (B. C. Pierce, ed.). Security Foundations. Software Foundations, Volume 7, Version 1.2, electronic textbook, 2026, https://softwarefoundations.cis.upenn.edu/secf-1.2/ (version-pinned release URL; its title page reads 'Version 1.2 (2026-08-24 10:14, Rocq 9.0.0 or later)'; on 2026-11-20 the moving alias secf-current/ served the same text for the title page and the chapters StaticIFC and Noninterference; citation data from its Preface; chapters StaticIFC and Noninterference checked at the source, proofs of the theorems named here end in Qed). Rocq mechanization for the Imp language: pub_slice replaces assignments to secret variables and secret-guarded conditionals and loops by skip; pub_slice_fwd_correct (for programs typed with the noninterference typing, a terminating run of c from s is matched by a terminating run of the slice from any publicly equivalent t, ending in publicly equivalent states); pub_slice_bwd_correct and pub_slice_tsni (the converse correspondence under a termination-sensitive typing); pub_slice_secure_com2_incorrect (a noninterferent program whose slice is not correct); cf_well_typed_noninterferent and ni_well_typed_noninterferent (termination-insensitive noninterference of well-typed programs); ts_well_typed_tsni (termination-sensitive noninterference); termination_leak, tini_secure_termination_leak, tsni_insecure_termination_leak (a secret-guarded diverging loop is termination-insensitively but not termination-sensitively secure). These theorems are stated over terminating evaluations and have no failure outcome; ghost code is modelled there as the secret part of a labelled program.",
+   "A. Sabelfeld, A. C. Myers. Language-based information-flow security. IEEE Journal on Selected Areas in Communications 21(1):5-19, 2003. DOI 10.1109/JSAC.2002.806121 (bibliographic data verified at dblp; cited as the standard survey for the termination-insensitive versus termination-sensitive distinction; its content was not re-read at the source)."
+  ],
+  "design_question": "What the flow restrictions give without termination restrictions."
+ },
+ {
+  "id": "4.F",
+  "lean": "Toy.Ghost.ghostWritesGhost_realReadsReal_not_sufficient_for_ghostToRealNI",
+  "kind": "counterexample",
+  "tier": "T0",
+  "tier_justification": "The termination channel of secure-flow typing is textbook: Volpano-Smith 1997 give a typing that eliminates covert flows through nontermination, Sabelfeld-Myers 2003 survey the termination-insensitive versus termination-sensitive distinction, and the channel is mechanized in Rocq (termination_leak, tini_secure_termination_leak, tsni_insecure_termination_leak in Security Foundations).",
+  "plain_claim": "R1 and R2 do not give termination-sensitive noninterference: ghost { while g do skip } satisfies both, its ghost block never fails, and it terminates from σ0 (g = 0) and diverges from σ0g (g = 1), two states with the same real part (a termination channel).",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Concrete instance.",
+  "positive_control_lean": "Toy.Ghost.ghostToRealNI_abortInsensitive_ghostSpinOnG",
+  "non_claims": [
+   "The same program is abort-insensitively noninterfering (positive control); only the termination channel is shown here (the failure channel: ghostToRealNI_needs_ghostNoFailFrom).",
+   "Escape hatch: adding R3a and R3b everywhere restores termination- and failure-sensitive noninterference (4.D).",
+   "Does not show that every diverging ghost loop creates a termination channel: ghost { while x do skip }, guarded by a real variable, is GhostToRealNI while still breaking exact erasure (4.B).",
+   "Toy model, and R1, R2, R3a, R3b are not shown sufficient for sound ghost erasure in richer languages or verifiers: deterministic sequential while-language with only inhabited Int variables, total expressions (Expr.eval cannot fail or diverge), fatal uncatchable assert failure, no procedures or recursion (a ghost lemma call is an inline ghost block), no heap, no ghost fields, no ghost functions inside specifications, no nondeterministic choice, no concurrency. It does not address empty or uninhabited ghost types (witness checks), assume statements or unverified axioms, witnessless existential choice, mutable heap aliasing between ghost and real references, catchable exceptions or early exits (return, break) escaping a ghost block, or concurrent interleavings. Transfer to Dafny or Why3 is a modeling bridge, not a kernel-checked fact."
+  ],
+  "prior_art": [
+   "C. Hriţcu, Y. Kim (B. C. Pierce, ed.). Security Foundations. Software Foundations, Volume 7, Version 1.2, electronic textbook, 2026, https://softwarefoundations.cis.upenn.edu/secf-1.2/ (version-pinned release URL; its title page reads 'Version 1.2 (2026-08-24 10:14, Rocq 9.0.0 or later)'; on 2026-11-20 the moving alias secf-current/ served the same text for the title page and the chapters StaticIFC and Noninterference; citation data from its Preface; chapters StaticIFC and Noninterference checked at the source, proofs of the theorems named here end in Qed). Rocq mechanization for the Imp language: pub_slice replaces assignments to secret variables and secret-guarded conditionals and loops by skip; pub_slice_fwd_correct (for programs typed with the noninterference typing, a terminating run of c from s is matched by a terminating run of the slice from any publicly equivalent t, ending in publicly equivalent states); pub_slice_bwd_correct and pub_slice_tsni (the converse correspondence under a termination-sensitive typing); pub_slice_secure_com2_incorrect (a noninterferent program whose slice is not correct); cf_well_typed_noninterferent and ni_well_typed_noninterferent (termination-insensitive noninterference of well-typed programs); ts_well_typed_tsni (termination-sensitive noninterference); termination_leak, tini_secure_termination_leak, tsni_insecure_termination_leak (a secret-guarded diverging loop is termination-insensitively but not termination-sensitively secure). These theorems are stated over terminating evaluations and have no failure outcome; ghost code is modelled there as the secret part of a labelled program.",
+   "A. Sabelfeld, A. C. Myers. Language-based information-flow security. IEEE Journal on Selected Areas in Communications 21(1):5-19, 2003. DOI 10.1109/JSAC.2002.806121 (bibliographic data verified at dblp; cited as the standard survey for the termination-insensitive versus termination-sensitive distinction; its content was not re-read at the source).",
+   "D. Volpano, G. Smith. Eliminating Covert Flows with Minimum Typings. Proc. 10th IEEE Computer Security Foundations Workshop (CSFW 1997), pp. 156-169 (dblp; IEEE Xplore lists pp. 156-168). DOI 10.1109/CSFW.1997.596807. Abstract verified at IEEE Xplore: a type system that eliminates two kinds of covert flows in an imperative language, one arising from nontermination and one from partial operations that raise exceptions, by limiting the sources of nontermination to constructs with minimum typings; a mutual progress theorem states that no two executions of a well-typed program can be distinguished on the basis of nontermination versus abnormal termination. The body of the paper was not read."
+  ],
+  "design_question": "Why ghost termination is the ghost-code counterpart of closing the termination channel."
+ },
+ {
+  "id": "4.G",
+  "lean": "Toy.Ghost.erasureExact_iff_erasureAgrees_of_realReadsReal",
+  "kind": "characterization",
+  "tier": "T0",
+  "tier_justification": "Restates the standard fact that a program mentioning no high variable is noninterferent, combined with 4.A.",
+  "plain_claim": "Under R2 (real code reads no ghost variable), exact erasability of P is equivalent to agreement of P with erase P from the same full store, because the erased program then mentions no ghost variable and its real behaviour depends only on the real part of its initial store.",
+  "hypotheses": [
+   {
+    "name": "hR : RealReadsReal P",
+    "purpose": "R2: makes the erased program independent of ghost state (erase_rbehaves_congr_of_realReadsReal).",
+    "tightness": "tight",
+    "counterexample": "Toy.Ghost.erasureExact_iff_erasureAgrees_needs_realReadsReal"
+   }
+  ],
+  "depth": "shallow",
+  "depth_note": "Shallow given rbehaves_congr_of_noGhostVars (a fuel induction); substantive overall.",
+  "nonvacuity_witness": "ghost { g := 1 } satisfies R2 and both sides.",
+  "nonvacuity_witness_lean": "Toy.Ghost.pcGhostWritesGhost_realReadsReal_erasureAgrees_erasureExact",
+  "non_claims": [
+   "Does not remove the need for R1 and R3: ErasureAgrees itself fails for ghost writes to real state (2.1), diverging ghost code (2.3), and failing ghost assertions (2.4).",
+   "erase P is again a Stmt run on a full Store. For R2-violating programs, erase P still reads ghost variables (erase (x := g) = x := g) and executes at all only because of this encoding; a compiler targeting real stores would reject it. Under R2 the erased program ignores the ghost part of its store (erase_rbehaves_congr_of_realReadsReal).",
+   "Toy model, and R1, R2, R3a, R3b are not shown sufficient for sound ghost erasure in richer languages or verifiers: deterministic sequential while-language with only inhabited Int variables, total expressions (Expr.eval cannot fail or diverge), fatal uncatchable assert failure, no procedures or recursion (a ghost lemma call is an inline ghost block), no heap, no ghost fields, no ghost functions inside specifications, no nondeterministic choice, no concurrency. It does not address empty or uninhabited ghost types (witness checks), assume statements or unverified axioms, witnessless existential choice, mutable heap aliasing between ghost and real references, catchable exceptions or early exits (return, break) escaping a ghost block, or concurrent interleavings. Transfer to Dafny or Why3 is a modeling bridge, not a kernel-checked fact."
+  ],
+  "prior_art": [
+   "A. Sabelfeld, A. C. Myers. Language-based information-flow security. IEEE Journal on Selected Areas in Communications 21(1):5-19, 2003. DOI 10.1109/JSAC.2002.806121 (bibliographic data verified at dblp; cited as the standard survey for the termination-insensitive versus termination-sensitive distinction; its content was not re-read at the source).",
+   "C. Hriţcu, Y. Kim (B. C. Pierce, ed.). Security Foundations. Software Foundations, Volume 7, Version 1.2, electronic textbook, 2026, https://softwarefoundations.cis.upenn.edu/secf-1.2/ (version-pinned release URL; its title page reads 'Version 1.2 (2026-08-24 10:14, Rocq 9.0.0 or later)'; on 2026-11-20 the moving alias secf-current/ served the same text for the title page and the chapters StaticIFC and Noninterference; citation data from its Preface; chapters StaticIFC and Noninterference checked at the source, proofs of the theorems named here end in Qed). Rocq mechanization for the Imp language: pub_slice replaces assignments to secret variables and secret-guarded conditionals and loops by skip; pub_slice_fwd_correct (for programs typed with the noninterference typing, a terminating run of c from s is matched by a terminating run of the slice from any publicly equivalent t, ending in publicly equivalent states); pub_slice_bwd_correct and pub_slice_tsni (the converse correspondence under a termination-sensitive typing); pub_slice_secure_com2_incorrect (a noninterferent program whose slice is not correct); cf_well_typed_noninterferent and ni_well_typed_noninterferent (termination-insensitive noninterference of well-typed programs); ts_well_typed_tsni (termination-sensitive noninterference); termination_leak, tini_secure_termination_leak, tsni_insecure_termination_leak (a secret-guarded diverging loop is termination-insensitively but not termination-sensitively secure). These theorems are stated over terminating evaluations and have no failure outcome; ghost code is modelled there as the secret part of a labelled program."
+  ],
+  "design_question": "Under R2, the only remaining question for exact erasure is whether running the ghost code changes real behaviour relative to skipping it."
+ }
+]

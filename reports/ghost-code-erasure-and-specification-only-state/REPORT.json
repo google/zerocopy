@@ -1,0 +1,100 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "verification/ghost-code",
+    "verification/refinement",
+    "verification/hoare-logic",
+    "verification/hyperproperties",
+    "security/information-flow",
+    "security/noninterference",
+    "pl/erasure"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "The Spirit of Ghost Code (CAV 2014)",
+      "identity": {
+        "doi": "10.1007/978-3-319-08867-9_1"
+      }
+    },
+    {
+      "name": "The spirit of ghost code (Formal Methods in System Design 48(3), 2016)",
+      "identity": {
+        "doi": "10.1007/s10703-016-0243-x"
+      }
+    },
+    {
+      "name": "Security Foundations (Software Foundations, Volume 7)",
+      "identity": {
+        "url": "https://softwarefoundations.cis.upenn.edu/secf-1.2/",
+        "version": "1.2"
+      }
+    },
+    {
+      "name": "Refinement Calculus: A Systematic Introduction",
+      "identity": {
+        "doi": "10.1007/978-1-4612-1674-2"
+      }
+    },
+    {
+      "name": "Dafny Reference Manual",
+      "identity": {
+        "url": "https://dafny.org/v4.11.0/DafnyRef/DafnyRef",
+        "version": "v4.11.0"
+      }
+    },
+    {
+      "name": "Why3 documentation",
+      "identity": {
+        "url": "https://www.why3.org/doc/",
+        "version": "1.9.0"
+      }
+    },
+    {
+      "name": "An axiomatic proof technique for parallel programs I",
+      "identity": {
+        "doi": "10.1007/BF00268134"
+      }
+    },
+    {
+      "name": "The Role of Auxiliary Variables in the Formal Development of Concurrent Programs",
+      "identity": {
+        "doi": "10.1007/978-1-84882-912-1_8"
+      }
+    },
+    {
+      "name": "Language-based information-flow security",
+      "identity": {
+        "doi": "10.1109/JSAC.2002.806121"
+      }
+    },
+    {
+      "name": "A Sound Type System for Secure Flow Analysis",
+      "identity": {
+        "doi": "10.3233/JCS-1996-42-304"
+      }
+    },
+    {
+      "name": "A Correctness Proof for the Volpano/Smith Security Typing System (Archive of Formal Proofs)",
+      "identity": {
+        "url": "https://www.isa-afp.org/entries/VolpanoSmith.html",
+        "date": "2008-09-02"
+      }
+    },
+    {
+      "name": "Eliminating Covert Flows with Minimum Typings",
+      "identity": {
+        "doi": "10.1109/CSFW.1997.596807"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
