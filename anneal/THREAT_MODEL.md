@@ -140,7 +140,12 @@ procedural macros, compiler plugins, or Lean 4 elaborator I/O (`#eval`,
 `anneal-audit` now confine untrusted Lean 4 elaboration subprocesses inside an
 OS-level sandbox (`ExecSeal`: Tier 1 `bubblewrap` namespaces or Tier 2 Landlock
 + seccomp-BPF, fail-closed unless `--allow-unsandboxed-elaboration` is passed
-with receipt tainting; see `docs/elaborator-containment-design.md`). Host
+with Receipt Schema v3 tainting; see `docs/elaborator-containment-design.md`).
+Specifications additionally undergo batched syntactic `"spec-preflight"` over
+authenticated `Init`/`Std` only before compilation and whole-specification
+Phase 1 `"target-audit"`, while any CLI relaxation (`--allow-sorry-in-proof`,
+`--allow-unpinned-lean`, `--allow-unsandboxed-elaboration`) unconditionally
+taints Receipt Schema v3 (`taint_reasons` + `tainted_*` status). Host
 build-time Rust code (`build.rs`, procedural macros) and unsandboxed runs
 remain outside Anneal's sandbox boundary. (By contrast, non-malicious Rust code
 *generated* by a `build.rs` script or procedural macro is compiled by `rustc`
