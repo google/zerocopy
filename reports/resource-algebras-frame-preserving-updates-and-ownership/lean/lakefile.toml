@@ -1,0 +1,6 @@
+name = "resource-algebras-frame-preserving-updates-and-ownership"
+version = "0.1.0"
+defaultTargets = ["Toy"]
+
+[[lean_lib]]
+name = "Toy"

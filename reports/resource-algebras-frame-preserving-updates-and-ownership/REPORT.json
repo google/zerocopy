@@ -1,0 +1,100 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "verification/separation-logic",
+    "verification/iris",
+    "verification/program-logics",
+    "pl/resource-algebras",
+    "pl/ownership"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Iris higher-order concurrent separation logic framework (Rocq mechanization and LaTeX technical documentation)",
+      "identity": {
+        "repository": "rocq-iris/iris",
+        "version": "iris-4.4.0",
+        "revision": "82dbf5e7a11d7ffaafe78e95186b5b376f4df732"
+      }
+    },
+    {
+      "name": "iris-lean (Lean 4 mechanization of Iris)",
+      "identity": {
+        "repository": "leanprover-community/iris-lean",
+        "revision": "5540ef0110fc8f6d8e495c10c2f238c3ede14f3b"
+      }
+    },
+    {
+      "name": "F* standard library partial commutative monoids (ulib/FStar.PCM.fst)",
+      "identity": {
+        "repository": "FStarLang/FStar",
+        "revision": "6089523e69201bb5844200c74b1eabfc640f31ab"
+      }
+    },
+    {
+      "name": "Iris: Monoids and Invariants as an Orthogonal Basis for Concurrent Reasoning",
+      "identity": {
+        "doi": "10.1145/2676726.2676980",
+        "venue": "POPL 2015"
+      }
+    },
+    {
+      "name": "Iris from the ground up: A modular foundation for higher-order concurrent separation logic",
+      "identity": {
+        "doi": "10.1017/S0956796818000151",
+        "venue": "JFP 28 (2018), e20"
+      }
+    },
+    {
+      "name": "A Fresh Look at Separation Algebras and Share Accounting",
+      "identity": {
+        "doi": "10.1007/978-3-642-10672-9_13",
+        "venue": "APLAS 2009"
+      }
+    },
+    {
+      "name": "Permission accounting in separation logic",
+      "identity": {
+        "doi": "10.1145/1040305.1040327",
+        "venue": "POPL 2005"
+      }
+    },
+    {
+      "name": "Checking Interference with Fractional Permissions",
+      "identity": {
+        "doi": "10.1007/3-540-44898-5_4",
+        "venue": "SAS 2003"
+      }
+    },
+    {
+      "name": "SteelCore: An Extensible Concurrent Separation Logic for Effectful Dependently Typed Programs",
+      "identity": {
+        "doi": "10.1145/3409003",
+        "venue": "PACMPL 4 (ICFP 2020)"
+      }
+    },
+    {
+      "name": "The Essence of Higher-Order Concurrent Separation Logic",
+      "identity": {
+        "doi": "10.1007/978-3-662-54434-1_26",
+        "venue": "ESOP 2017"
+      }
+    },
+    {
+      "name": "Local Action and Abstract Separation Logic",
+      "identity": {
+        "doi": "10.1109/LICS.2007.30",
+        "venue": "LICS 2007"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

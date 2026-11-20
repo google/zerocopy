@@ -1,0 +1,1083 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.RA.Agree": [],
+    "Toy.RA.Agree.ag": [],
+    "Toy.RA.Agree.casesOn": [],
+    "Toy.RA.Agree.ctorIdx": [],
+    "Toy.RA.Agree.ext": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.Agree.ext_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.Agree.mem": [],
+    "Toy.RA.Agree.mk": [],
+    "Toy.RA.Agree.mk.inj": [],
+    "Toy.RA.Agree.mk.injEq": [
+      "propext"
+    ],
+    "Toy.RA.Agree.mk.noConfusion": [],
+    "Toy.RA.Agree.mk.sizeOf_spec": [],
+    "Toy.RA.Agree.noConfusion": [],
+    "Toy.RA.Agree.noConfusionType": [],
+    "Toy.RA.Agree.nonempty": [],
+    "Toy.RA.Agree.rec": [],
+    "Toy.RA.Agree.recOn": [],
+    "Toy.RA.AuthElem": [],
+    "Toy.RA.AuthElem.auth": [],
+    "Toy.RA.AuthElem.casesOn": [],
+    "Toy.RA.AuthElem.ctorIdx": [],
+    "Toy.RA.AuthElem.ext": [],
+    "Toy.RA.AuthElem.ext_iff": [],
+    "Toy.RA.AuthElem.frag": [],
+    "Toy.RA.AuthElem.mk": [],
+    "Toy.RA.AuthElem.mk.inj": [],
+    "Toy.RA.AuthElem.mk.injEq": [
+      "propext"
+    ],
+    "Toy.RA.AuthElem.mk.noConfusion": [],
+    "Toy.RA.AuthElem.mk.sizeOf_spec": [],
+    "Toy.RA.AuthElem.noConfusion": [],
+    "Toy.RA.AuthElem.noConfusionType": [],
+    "Toy.RA.AuthElem.rec": [],
+    "Toy.RA.AuthElem.recOn": [],
+    "Toy.RA.AuthPart": [],
+    "Toy.RA.AuthPart.casesOn": [],
+    "Toy.RA.AuthPart.conflict": [],
+    "Toy.RA.AuthPart.conflict.elim": [],
+    "Toy.RA.AuthPart.conflict.sizeOf_spec": [],
+    "Toy.RA.AuthPart.ctorElim": [],
+    "Toy.RA.AuthPart.ctorElimType": [],
+    "Toy.RA.AuthPart.ctorIdx": [],
+    "Toy.RA.AuthPart.excl": [],
+    "Toy.RA.AuthPart.excl.elim": [],
+    "Toy.RA.AuthPart.excl.inj": [],
+    "Toy.RA.AuthPart.excl.injEq": [
+      "propext"
+    ],
+    "Toy.RA.AuthPart.excl.noConfusion": [],
+    "Toy.RA.AuthPart.excl.sizeOf_spec": [],
+    "Toy.RA.AuthPart.noConfusion": [],
+    "Toy.RA.AuthPart.noConfusionType": [],
+    "Toy.RA.AuthPart.none": [],
+    "Toy.RA.AuthPart.none.elim": [],
+    "Toy.RA.AuthPart.none.sizeOf_spec": [],
+    "Toy.RA.AuthPart.op": [
+      "propext"
+    ],
+    "Toy.RA.AuthPart.op.eq_1": [
+      "propext"
+    ],
+    "Toy.RA.AuthPart.op.eq_2": [
+      "propext"
+    ],
+    "Toy.RA.AuthPart.op.eq_3": [
+      "propext"
+    ],
+    "Toy.RA.AuthPart.op.match_1": [
+      "propext"
+    ],
+    "Toy.RA.AuthPart.op_assoc": [
+      "propext"
+    ],
+    "Toy.RA.AuthPart.op_comm": [
+      "propext"
+    ],
+    "Toy.RA.AuthPart.rec": [],
+    "Toy.RA.AuthPart.recOn": [],
+    "Toy.RA.Excl": [],
+    "Toy.RA.Excl.casesOn": [],
+    "Toy.RA.Excl.ctorElim": [],
+    "Toy.RA.Excl.ctorElimType": [],
+    "Toy.RA.Excl.ctorIdx": [],
+    "Toy.RA.Excl.excl": [],
+    "Toy.RA.Excl.excl.elim": [],
+    "Toy.RA.Excl.excl.inj": [],
+    "Toy.RA.Excl.excl.injEq": [
+      "propext"
+    ],
+    "Toy.RA.Excl.excl.noConfusion": [],
+    "Toy.RA.Excl.excl.sizeOf_spec": [],
+    "Toy.RA.Excl.invalid": [],
+    "Toy.RA.Excl.invalid.elim": [],
+    "Toy.RA.Excl.invalid.sizeOf_spec": [],
+    "Toy.RA.Excl.noConfusion": [],
+    "Toy.RA.Excl.noConfusionType": [],
+    "Toy.RA.Excl.rec": [],
+    "Toy.RA.Excl.recOn": [],
+    "Toy.RA.Five": [],
+    "Toy.RA.Five.casesOn": [],
+    "Toy.RA.Five.ctorElim": [],
+    "Toy.RA.Five.ctorElimType": [],
+    "Toy.RA.Five.ctorIdx": [],
+    "Toy.RA.Five.noConfusion": [],
+    "Toy.RA.Five.noConfusionType": [],
+    "Toy.RA.Five.ofNat": [],
+    "Toy.RA.Five.ofNat_ctorIdx": [],
+    "Toy.RA.Five.rec": [],
+    "Toy.RA.Five.recOn": [],
+    "Toy.RA.Five.z0": [],
+    "Toy.RA.Five.z0.elim": [],
+    "Toy.RA.Five.z0.sizeOf_spec": [],
+    "Toy.RA.Five.z1": [],
+    "Toy.RA.Five.z1.elim": [],
+    "Toy.RA.Five.z1.sizeOf_spec": [],
+    "Toy.RA.Five.z2": [],
+    "Toy.RA.Five.z2.elim": [],
+    "Toy.RA.Five.z2.sizeOf_spec": [],
+    "Toy.RA.Five.z3": [],
+    "Toy.RA.Five.z3.elim": [],
+    "Toy.RA.Five.z3.sizeOf_spec": [],
+    "Toy.RA.Five.z4": [],
+    "Toy.RA.Five.z4.elim": [],
+    "Toy.RA.Five.z4.sizeOf_spec": [],
+    "Toy.RA.Four": [],
+    "Toy.RA.Four.casesOn": [],
+    "Toy.RA.Four.ctorElim": [],
+    "Toy.RA.Four.ctorElimType": [],
+    "Toy.RA.Four.ctorIdx": [],
+    "Toy.RA.Four.e0": [],
+    "Toy.RA.Four.e0.elim": [],
+    "Toy.RA.Four.e0.sizeOf_spec": [],
+    "Toy.RA.Four.e1": [],
+    "Toy.RA.Four.e1.elim": [],
+    "Toy.RA.Four.e1.sizeOf_spec": [],
+    "Toy.RA.Four.e2": [],
+    "Toy.RA.Four.e2.elim": [],
+    "Toy.RA.Four.e2.sizeOf_spec": [],
+    "Toy.RA.Four.e3": [],
+    "Toy.RA.Four.e3.elim": [],
+    "Toy.RA.Four.e3.sizeOf_spec": [],
+    "Toy.RA.Four.noConfusion": [],
+    "Toy.RA.Four.noConfusionType": [],
+    "Toy.RA.Four.ofNat": [],
+    "Toy.RA.Four.ofNat_ctorIdx": [],
+    "Toy.RA.Four.rec": [],
+    "Toy.RA.Four.recOn": [],
+    "Toy.RA.HasLocalRightUnits": [],
+    "Toy.RA.HasRightIdOnValid": [],
+    "Toy.RA.IsCoreFreeRA": [],
+    "Toy.RA.IsExclusive": [],
+    "Toy.RA.IsRightUnit": [],
+    "Toy.RA.LocalUpdate": [],
+    "Toy.RA.OpAssoc": [],
+    "Toy.RA.OpComm": [],
+    "Toy.RA.PosRat": [
+      "propext"
+    ],
+    "Toy.RA.PosRat.add": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.PosRat.add_assoc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.PosRat.add_comm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.PosRat.add_le_add_right": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.PosRat.add_sub_cancel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.PosRat.half": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.PosRat.half_add_half": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.PosRat.half_lt_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.PosRat.le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.PosRat.le_of_add_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.PosRat.le_of_add_le_add_right": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.PosRat.le_of_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.PosRat.le_refl": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.PosRat.le_trans": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.PosRat.lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.PosRat.lt_iff_exists_add": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.PosRat.mk": [
+      "propext"
+    ],
+    "Toy.RA.PosRat.not_add_le_self": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.PosRat.not_two_le_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.PosRat.one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.PosRat.posRat_le_neg_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.PosRat.posRat_le_pos_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.PosRat.posRat_lt_neg_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.PosRat.posRat_lt_pos_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.PosRat.sub": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.PosRat.two": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.RawPosRat": [],
+    "Toy.RA.RawPosRat.casesOn": [],
+    "Toy.RA.RawPosRat.ctorIdx": [],
+    "Toy.RA.RawPosRat.den": [],
+    "Toy.RA.RawPosRat.den_pos": [],
+    "Toy.RA.RawPosRat.equiv": [],
+    "Toy.RA.RawPosRat.equiv_refl": [],
+    "Toy.RA.RawPosRat.equiv_symm": [],
+    "Toy.RA.RawPosRat.equiv_trans": [
+      "propext"
+    ],
+    "Toy.RA.RawPosRat.mk": [],
+    "Toy.RA.RawPosRat.mk.inj": [],
+    "Toy.RA.RawPosRat.mk.injEq": [
+      "propext"
+    ],
+    "Toy.RA.RawPosRat.mk.noConfusion": [],
+    "Toy.RA.RawPosRat.mk.sizeOf_spec": [],
+    "Toy.RA.RawPosRat.noConfusion": [],
+    "Toy.RA.RawPosRat.noConfusionType": [],
+    "Toy.RA.RawPosRat.num": [],
+    "Toy.RA.RawPosRat.num_pos": [],
+    "Toy.RA.RawPosRat.rec": [],
+    "Toy.RA.RawPosRat.recOn": [],
+    "Toy.RA.RawPosRat.setoid": [
+      "propext"
+    ],
+    "Toy.RA.RawRA": [],
+    "Toy.RA.RawRA.casesOn": [],
+    "Toy.RA.RawRA.ctorIdx": [],
+    "Toy.RA.RawRA.mk": [],
+    "Toy.RA.RawRA.mk.inj": [],
+    "Toy.RA.RawRA.mk.injEq": [
+      "propext"
+    ],
+    "Toy.RA.RawRA.mk.noConfusion": [],
+    "Toy.RA.RawRA.mk.sizeOf_spec": [],
+    "Toy.RA.RawRA.noConfusion": [],
+    "Toy.RA.RawRA.noConfusionType": [],
+    "Toy.RA.RawRA.op": [],
+    "Toy.RA.RawRA.rec": [],
+    "Toy.RA.RawRA.recOn": [],
+    "Toy.RA.RawRA.valid": [],
+    "Toy.RA.ThreeRightIdValid": [],
+    "Toy.RA.ThreeRightIdValid.casesOn": [],
+    "Toy.RA.ThreeRightIdValid.ctorElim": [],
+    "Toy.RA.ThreeRightIdValid.ctorElimType": [],
+    "Toy.RA.ThreeRightIdValid.ctorIdx": [],
+    "Toy.RA.ThreeRightIdValid.e": [],
+    "Toy.RA.ThreeRightIdValid.e.elim": [],
+    "Toy.RA.ThreeRightIdValid.e.sizeOf_spec": [],
+    "Toy.RA.ThreeRightIdValid.noConfusion": [],
+    "Toy.RA.ThreeRightIdValid.noConfusionType": [],
+    "Toy.RA.ThreeRightIdValid.ofNat": [],
+    "Toy.RA.ThreeRightIdValid.ofNat_ctorIdx": [],
+    "Toy.RA.ThreeRightIdValid.rec": [],
+    "Toy.RA.ThreeRightIdValid.recOn": [],
+    "Toy.RA.ThreeRightIdValid.w": [],
+    "Toy.RA.ThreeRightIdValid.w.elim": [],
+    "Toy.RA.ThreeRightIdValid.w.sizeOf_spec": [],
+    "Toy.RA.ThreeRightIdValid.z": [],
+    "Toy.RA.ThreeRightIdValid.z.elim": [],
+    "Toy.RA.ThreeRightIdValid.z.sizeOf_spec": [],
+    "Toy.RA.ValidClosedUnderIncluded": [],
+    "Toy.RA.ValidClosedUnderIncludedRefl": [],
+    "Toy.RA.ValidOpL": [],
+    "Toy.RA.agreeRA": [],
+    "Toy.RA.agreeRA.match_1": [],
+    "Toy.RA.agreeRA_bool_no_rightUnit": [],
+    "Toy.RA.agreeRA_isCoreFreeRA": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.agreeRA_opAssoc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.agreeRA_opComm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.agreeRA_validOpL": [],
+    "Toy.RA.agreeRA_valid_neg_example": [],
+    "Toy.RA.agreeRA_valid_pos_example": [],
+    "Toy.RA.agree_ag_fpUpdate_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.agree_ag_idemp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.agree_ag_op_valid_iff": [],
+    "Toy.RA.agree_ag_valid": [],
+    "Toy.RA.agree_distinct_not_fpUpdate": [],
+    "Toy.RA.agree_distinct_not_fpUpdate.match_1_1": [],
+    "Toy.RA.agree_distinct_not_fpUpdate_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.agree_distinct_positive_control_excl": [],
+    "Toy.RA.agree_fpUpdateP_imp_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.agree_fpUpdate_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.agree_fpUpdate_iff_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.agree_hasLocalRightUnits": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.agree_hasRightIdOnValid": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.agree_naive_update_bool_counterexample": [],
+    "Toy.RA.agree_naive_update_witness_frame": [],
+    "Toy.RA.agree_same_fpUpdate_counterexample": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.agree_same_fpUpdate_counterexample.match_1_1": [],
+    "Toy.RA.agree_valid_eq_ag": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.authElem": [],
+    "Toy.RA.authNonAssocRA": [],
+    "Toy.RA.authNonAssocRA.match_1": [],
+    "Toy.RA.authNonAssocRA_localUpdate": [],
+    "Toy.RA.authNonAssocRA_not_opAssoc": [],
+    "Toy.RA.authNonAssocRA_opComm": [],
+    "Toy.RA.authNonAssocRA_validOpL": [],
+    "Toy.RA.authRA": [
+      "propext"
+    ],
+    "Toy.RA.authRA.eq_1": [
+      "propext"
+    ],
+    "Toy.RA.authRA.match_1": [],
+    "Toy.RA.authRA_isCoreFreeRA": [
+      "propext"
+    ],
+    "Toy.RA.authRA_neg_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.authRA_opAssoc": [
+      "propext"
+    ],
+    "Toy.RA.authRA_opComm": [
+      "propext"
+    ],
+    "Toy.RA.authRA_pos_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.authRA_rightUnit": [
+      "propext"
+    ],
+    "Toy.RA.authRA_validOpL": [
+      "propext"
+    ],
+    "Toy.RA.authUnit": [],
+    "Toy.RA.authUnit.eq_1": [],
+    "Toy.RA.auth_auth_exclusive": [
+      "propext"
+    ],
+    "Toy.RA.auth_both_fpUpdate_iff": [
+      "propext"
+    ],
+    "Toy.RA.auth_both_fpUpdate_iff_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.auth_both_fpUpdate_iff_nonvacuity.match_1_3": [],
+    "Toy.RA.auth_both_valid_iff": [
+      "propext"
+    ],
+    "Toy.RA.auth_counter_alloc_only_not_localUpdate": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.auth_counter_both_valid_iff": [
+      "propext"
+    ],
+    "Toy.RA.auth_counter_dec_auth_only_fails": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.auth_counter_inc_fpUpdate": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.auth_counter_inc_fpUpdate_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.auth_counter_inc_frag_only_fails": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.auth_localUpdate_fpUpdate": [
+      "propext"
+    ],
+    "Toy.RA.auth_localUpdate_fpUpdate_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.auth_localUpdate_nonAssoc_counterexample": [
+      "propext"
+    ],
+    "Toy.RA.auth_opComm_alone_not_two_sided": [
+      "propext"
+    ],
+    "Toy.RA.auth_pathCat_localUpdate_breaks_left_frame": [
+      "propext"
+    ],
+    "Toy.RA.boolLeftProjRA": [],
+    "Toy.RA.boolLeftProjRA.eq_1": [],
+    "Toy.RA.cappedNatRA": [],
+    "Toy.RA.cappedNatRA.eq_1": [],
+    "Toy.RA.counterRA": [],
+    "Toy.RA.counterRA_isCoreFreeRA": [],
+    "Toy.RA.counterRA_opAssoc": [],
+    "Toy.RA.counterRA_opComm": [],
+    "Toy.RA.counterRA_rightUnit": [],
+    "Toy.RA.counterRA_validOpL": [],
+    "Toy.RA.counter_dec_both_localUpdate": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.counter_inc_localUpdate": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.counter_includedRefl_iff": [
+      "propext"
+    ],
+    "Toy.RA.counter_included_iff": [
+      "propext"
+    ],
+    "Toy.RA.drop_right_holds_without_opAssoc_example": [
+      "propext"
+    ],
+    "Toy.RA.drop_right_holds_without_opComm_example": [
+      "propext"
+    ],
+    "Toy.RA.exclRA": [],
+    "Toy.RA.exclRA_isCoreFreeRA": [],
+    "Toy.RA.exclRA_opAssoc": [],
+    "Toy.RA.exclRA_opComm": [],
+    "Toy.RA.exclRA_op_neg_example": [],
+    "Toy.RA.exclRA_validOpL": [],
+    "Toy.RA.exclRA_valid_neg_example": [],
+    "Toy.RA.exclRA_valid_pos_example": [],
+    "Toy.RA.exclUnitRA": [],
+    "Toy.RA.exclUnitRA.eq_1": [],
+    "Toy.RA.excl_fpUpdate": [],
+    "Toy.RA.excl_fpUpdate_iff": [],
+    "Toy.RA.excl_fpUpdate_iff_nonvacuity": [],
+    "Toy.RA.excl_invalid_target_fails": [],
+    "Toy.RA.excl_isExclusive": [],
+    "Toy.RA.excl_no_valid_frame": [],
+    "Toy.RA.excl_no_valid_frame_nonvacuity": [],
+    "Toy.RA.excl_no_valid_frame_positive_control": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.exclusive_fpUpdate": [],
+    "Toy.RA.exclusive_fpUpdate_invalid_target_counterexample": [],
+    "Toy.RA.exclusive_fpUpdate_nonvacuity": [],
+    "Toy.RA.exclusive_fpUpdate_not_exclusive_counterexample": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fiveLocalUnitsNoValidOpLRA": [],
+    "Toy.RA.fiveLocalUnitsNoValidOpLRA.eq_1": [],
+    "Toy.RA.fiveLocalUnitsNoValidOpLRA.match_1": [],
+    "Toy.RA.fiveLocalUnitsNoValidOpLRA_hasLocalRightUnits": [],
+    "Toy.RA.fiveLocalUnitsNoValidOpLRA_hasRightIdOnValid": [],
+    "Toy.RA.fiveLocalUnitsNoValidOpLRA_not_validOpL": [],
+    "Toy.RA.fiveLocalUnitsNoValidOpLRA_opAssoc": [],
+    "Toy.RA.fiveLocalUnitsNoValidOpLRA_opComm": [],
+    "Toy.RA.fpUpdate": [],
+    "Toy.RA.fpUpdate2": [],
+    "Toy.RA.fpUpdate2_neg_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fpUpdate2_of_assoc_comm": [],
+    "Toy.RA.fpUpdate2_pos_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fpUpdateBare": [],
+    "Toy.RA.fpUpdateBare_neg_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fpUpdateBare_pos_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fpUpdateP": [],
+    "Toy.RA.fpUpdateP_compose": [],
+    "Toy.RA.fpUpdateP_id": [],
+    "Toy.RA.fpUpdateP_neg_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fpUpdateP_op": [],
+    "Toy.RA.fpUpdateP_op_noPost_counterexample": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fpUpdateP_op_noUpdate1_counterexample": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fpUpdateP_op_noUpdate2_counterexample": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fpUpdateP_op_nonAssoc_counterexample": [
+      "propext"
+    ],
+    "Toy.RA.fpUpdateP_op_nonComm_counterexample": [
+      "propext"
+    ],
+    "Toy.RA.fpUpdateP_op_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fpUpdateP_pos_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fpUpdateP_weaken": [],
+    "Toy.RA.fpUpdate_bare_noRightIdOnValid_counterexample": [],
+    "Toy.RA.fpUpdate_bare_noUnit_counterexample": [],
+    "Toy.RA.fpUpdate_bare_rightIdOnValid_noValidOpL_counterexample": [
+      "propext"
+    ],
+    "Toy.RA.fpUpdate_drop_right": [],
+    "Toy.RA.fpUpdate_drop_right_noValidOpL_counterexample": [
+      "propext"
+    ],
+    "Toy.RA.fpUpdate_drop_right_nonAssoc_counterexample": [
+      "propext"
+    ],
+    "Toy.RA.fpUpdate_drop_right_nonComm_counterexample": [
+      "propext"
+    ],
+    "Toy.RA.fpUpdate_drop_right_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fpUpdate_frame_right": [],
+    "Toy.RA.fpUpdate_frame_right_noUpdate_counterexample": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fpUpdate_frame_right_nonAssoc_counterexample": [
+      "propext"
+    ],
+    "Toy.RA.fpUpdate_frame_right_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fpUpdate_iff_bare_of_idemp_opComm": [],
+    "Toy.RA.fpUpdate_iff_bare_of_rightIdOnValid_validOpL": [],
+    "Toy.RA.fpUpdate_iff_bare_of_rightIdOnValid_validOpL_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fpUpdate_iff_bare_of_rightUnit": [],
+    "Toy.RA.fpUpdate_iff_bare_of_rightUnit_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fpUpdate_iff_fpUpdateP": [],
+    "Toy.RA.fpUpdate_imp_fpUpdateBare": [],
+    "Toy.RA.fpUpdate_neg_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fpUpdate_op": [],
+    "Toy.RA.fpUpdate_op_noUpdate1_counterexample": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fpUpdate_op_noUpdate2_counterexample": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fpUpdate_op_nonAssoc_counterexample": [
+      "propext"
+    ],
+    "Toy.RA.fpUpdate_op_nonComm_counterexample": [
+      "propext"
+    ],
+    "Toy.RA.fpUpdate_op_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fpUpdate_pos_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fpUpdate_preserve_left_of_opComm": [],
+    "Toy.RA.fpUpdate_refl": [],
+    "Toy.RA.fpUpdate_trans": [],
+    "Toy.RA.fracRA": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracRA_isCoreFreeRA": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracRA_opAssoc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracRA_opComm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracRA_validOpL": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracRA_valid_neg_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracRA_valid_pos_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracVal": [
+      "propext"
+    ],
+    "Toy.RA.fracValComplement": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracValRA": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracValRA_isCoreFreeRA": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracValRA_opAssoc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracValRA_opComm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracValRA_validOpL": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracValRA_valid_neg_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracValRA_valid_neg_example.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracValRA_valid_neg_example.match_1_3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracValRA_valid_pos_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracVal_full_ag_fpUpdate_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracVal_full_fpUpdate": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracVal_full_fpUpdate_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracVal_full_fpUpdate_iff_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracVal_full_isExclusive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracVal_full_value_change_control": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracVal_partial_ag_fpUpdate_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracVal_partial_ag_fpUpdate_iff.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracVal_partial_complement_observes_change": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracVal_partial_complement_observes_change.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracVal_partial_fpUpdate_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracVal_partial_fpUpdate_iff_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracVal_partial_iff_full_counterexample": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracVal_partial_iff_full_counterexample.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracVal_partial_iff_overfull_counterexample": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracVal_partial_iff_overfull_counterexample.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracVal_partial_same_value_counterexample": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracVal_partial_value_change_impossible": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracVal_partial_value_change_impossible.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracVal_partial_value_change_impossible_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracVal_recombine_fpUpdate": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracVal_split": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fracVal_valid_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.frac_full_isExclusive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.fragElem": [],
+    "Toy.RA.frame_right_holds_without_opAssoc_example": [
+      "propext"
+    ],
+    "Toy.RA.hasLocalRightUnits_neg_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.hasLocalRightUnits_pos_example": [],
+    "Toy.RA.hasRightIdOnValid_neg_example": [],
+    "Toy.RA.hasRightIdOnValid_of_hasLocalRightUnits": [],
+    "Toy.RA.hasRightIdOnValid_pos_example": [],
+    "Toy.RA.idempotent_noncomm_validOpL_witness": [],
+    "Toy.RA.included": [],
+    "Toy.RA.includedRefl": [],
+    "Toy.RA.includedRefl_iff_included_of_rightUnit": [],
+    "Toy.RA.includedRefl_iff_included_of_rightUnit.match_1_1": [],
+    "Toy.RA.includedRefl_iff_included_of_rightUnit.match_1_3": [],
+    "Toy.RA.includedRefl_neg_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.includedRefl_neg_example.match_1_1": [],
+    "Toy.RA.includedRefl_pos_example": [],
+    "Toy.RA.includedRefl_refl": [],
+    "Toy.RA.included_neg_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.included_neg_example.match_1_1": [],
+    "Toy.RA.included_pos_example": [],
+    "Toy.RA.instDecidableEqAuthElem": [],
+    "Toy.RA.instDecidableEqAuthElem.decEq": [],
+    "Toy.RA.instDecidableEqAuthElem.decEq.match_1": [],
+    "Toy.RA.instDecidableEqAuthPart": [],
+    "Toy.RA.instDecidableEqAuthPart.decEq": [],
+    "Toy.RA.instDecidableEqAuthPart.decEq.match_1": [],
+    "Toy.RA.instDecidableEqExcl": [],
+    "Toy.RA.instDecidableEqExcl.decEq": [],
+    "Toy.RA.instDecidableEqExcl.decEq.match_1": [],
+    "Toy.RA.instDecidableEqFive": [],
+    "Toy.RA.instDecidableEqFour": [],
+    "Toy.RA.instDecidableEqThreeRightIdValid": [],
+    "Toy.RA.instReprAuthElem": [],
+    "Toy.RA.instReprAuthElem.repr": [],
+    "Toy.RA.instReprAuthPart": [],
+    "Toy.RA.instReprAuthPart.repr": [],
+    "Toy.RA.instReprAuthPart.repr.match_1": [],
+    "Toy.RA.instReprExcl": [],
+    "Toy.RA.instReprExcl.repr": [],
+    "Toy.RA.instReprExcl.repr.match_1": [],
+    "Toy.RA.instReprFive": [],
+    "Toy.RA.instReprFive.repr": [],
+    "Toy.RA.instReprFive.repr.match_1": [],
+    "Toy.RA.instReprFour": [],
+    "Toy.RA.instReprFour.repr": [],
+    "Toy.RA.instReprFour.repr.match_1": [],
+    "Toy.RA.instReprThreeRightIdValid": [],
+    "Toy.RA.instReprThreeRightIdValid.repr": [],
+    "Toy.RA.instReprThreeRightIdValid.repr.match_1": [],
+    "Toy.RA.isCoreFreeRA_neg_example": [
+      "propext"
+    ],
+    "Toy.RA.isCoreFreeRA_pos_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.isExclusive_neg_example": [],
+    "Toy.RA.isExclusive_pos_example": [
+      "propext"
+    ],
+    "Toy.RA.isRightUnit_neg_example": [
+      "propext"
+    ],
+    "Toy.RA.isRightUnit_pos_example": [],
+    "Toy.RA.localRightUnits_alone_not_iff_bare": [
+      "propext"
+    ],
+    "Toy.RA.localUpdate_neg_example": [
+      "propext"
+    ],
+    "Toy.RA.localUpdate_pos_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.localUpdate_refl": [],
+    "Toy.RA.localUpdate_trans": [],
+    "Toy.RA.localUpdate_unital_iff": [],
+    "Toy.RA.natAddRA": [],
+    "Toy.RA.natAddRA.eq_1": [],
+    "Toy.RA.natSubRA": [],
+    "Toy.RA.natSubRA.eq_1": [],
+    "Toy.RA.natSuccAddRA": [],
+    "Toy.RA.nonAssocCommValidRA": [],
+    "Toy.RA.nonAssocCommValidRA.eq_1": [],
+    "Toy.RA.nonAssocCommValidRA.match_1": [],
+    "Toy.RA.nonAssocCommValidRA_not_opAssoc": [],
+    "Toy.RA.nonAssocCommValidRA_opComm": [],
+    "Toy.RA.nonAssocCommValidRA_upd_0_1": [
+      "propext"
+    ],
+    "Toy.RA.nonAssocCommValidRA_validOpL": [
+      "propext"
+    ],
+    "Toy.RA.opAssoc_cappedNatRA": [],
+    "Toy.RA.opAssoc_neg_example": [
+      "propext"
+    ],
+    "Toy.RA.opAssoc_pos_example": [],
+    "Toy.RA.opComm_alone_not_two_sided": [
+      "propext"
+    ],
+    "Toy.RA.opComm_cappedNatRA": [],
+    "Toy.RA.opComm_neg_example": [
+      "propext"
+    ],
+    "Toy.RA.opComm_pos_example": [],
+    "Toy.RA.opOpt": [],
+    "Toy.RA.opOpt.eq_1": [],
+    "Toy.RA.opOpt.eq_2": [],
+    "Toy.RA.opOpt.match_1": [],
+    "Toy.RA.opOptL": [],
+    "Toy.RA.opOptL.match_1": [],
+    "Toy.RA.opOpt_none": [],
+    "Toy.RA.opOpt_some": [],
+    "Toy.RA.optOp": [],
+    "Toy.RA.optOp.eq_1": [],
+    "Toy.RA.optOp.eq_2": [],
+    "Toy.RA.optOp.eq_3": [],
+    "Toy.RA.optOp.match_1": [],
+    "Toy.RA.optOp_assoc": [
+      "propext"
+    ],
+    "Toy.RA.optOp_comm": [
+      "propext"
+    ],
+    "Toy.RA.pathCatRA": [
+      "propext"
+    ],
+    "Toy.RA.pathCatRA.eq_1": [
+      "propext"
+    ],
+    "Toy.RA.pathCatRA.match_1": [
+      "propext"
+    ],
+    "Toy.RA.pathCatRA_not_opComm": [
+      "propext"
+    ],
+    "Toy.RA.pathCatRA_opAssoc": [
+      "propext"
+    ],
+    "Toy.RA.pathCatRA_upd_01_11": [
+      "propext"
+    ],
+    "Toy.RA.pathCatRA_validOpL": [
+      "propext"
+    ],
+    "Toy.RA.pathCat_fpUpdate_breaks_left_frame": [
+      "propext"
+    ],
+    "Toy.RA.prodRA": [],
+    "Toy.RA.prodRA.eq_1": [],
+    "Toy.RA.prodRA_isCoreFreeRA": [],
+    "Toy.RA.prodRA_neg_example": [
+      "propext"
+    ],
+    "Toy.RA.prodRA_neg_example.match_1_1": [],
+    "Toy.RA.prodRA_neg_example.match_1_4": [],
+    "Toy.RA.prodRA_opAssoc": [],
+    "Toy.RA.prodRA_opComm": [],
+    "Toy.RA.prodRA_pos_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.prodRA_validOpL": [],
+    "Toy.RA.rightIdOnValidOnlyRA": [
+      "propext"
+    ],
+    "Toy.RA.rightIdOnValidOnlyRA.match_1": [
+      "propext"
+    ],
+    "Toy.RA.rightIdOnValidOnlyRA_props": [
+      "propext"
+    ],
+    "Toy.RA.rightZeroBoolRA": [],
+    "Toy.RA.two_element_comm_validOpL_witness": [],
+    "Toy.RA.validClosedUnderIncludedRefl_neg_example": [
+      "propext"
+    ],
+    "Toy.RA.validClosedUnderIncludedRefl_pos_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.validClosedUnderIncluded_neg_example": [
+      "propext"
+    ],
+    "Toy.RA.validClosedUnderIncluded_pos_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.validOpL_iff_validClosedUnderIncluded": [],
+    "Toy.RA.validOpL_iff_validClosedUnderIncluded.match_1_1": [],
+    "Toy.RA.validOpL_iff_validClosedUnderIncludedRefl": [],
+    "Toy.RA.validOpL_iff_validClosedUnderIncludedRefl.match_1_1": [],
+    "Toy.RA.validOpL_neg_example": [
+      "propext"
+    ],
+    "Toy.RA.validOpL_of_fpUpdate_drop_right_all": [],
+    "Toy.RA.validOpL_pos_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RA.xorValidFalseRA": [],
+    "Toy.RA.xorValidFalseRA.eq_1": [],
+    "Toy.RA.xorValidFalseRA_opAssoc": [],
+    "Toy.RA.xorValidFalseRA_opComm": [],
+    "Toy.RA.zeroBoolRA": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

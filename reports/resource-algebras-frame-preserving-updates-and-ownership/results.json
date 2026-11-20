@@ -1,0 +1,611 @@
+[
+  {
+    "id": "excl_no_valid_frame",
+    "lean": "Toy.RA.excl_no_valid_frame",
+    "kind": "impossibility",
+    "tier": "T0",
+    "plain_claim": "[Reference point] In the discrete non-unital exclusive resource algebra exclRA α, no carrier element f : Excl α composes validly with Excl.excl x.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "Over α = Nat, exclRA Nat satisfies IsCoreFreeRA and both Excl.excl 0 and Excl.excl 1 are individually valid.",
+    "nonvacuity_witness_lean": "Toy.RA.excl_no_valid_frame_nonvacuity",
+    "positive_control_lean": "Toy.RA.excl_no_valid_frame_positive_control",
+    "non_claims": [
+      "Does not apply to the unit-adjoined algebra Option (Excl α), where the empty unit none composes validly with some (Excl.excl x); in that unital setting, exclusivity rules out only non-unit frames.",
+      "Does not establish that owning Excl.excl x prevents aliasing in a physical memory model; any connection to concurrent programs is derived (modeling bridge): if two threads separately held Excl.excl x and f in a sound separation logic, their joint state would compose via R.op and violate validity, which is ruled out here only at the discrete algebra level (no program logic or heap semantics is formalized)."
+    ],
+    "prior_art": [
+      "Jung, Swasey, Sieczkowski, Svendsen, Turon, Birkedal, Dreyer, 'Iris: Monoids and Invariants as an Orthogonal Basis for Concurrent Reasoning', POPL 2015, pp. 637-650, DOI 10.1145/2676726.2676980 (§3.1 EX(X))",
+      "Jung, Krebbers, Jourdan, Bizjak, Birkedal, Dreyer, 'Iris from the ground up: A modular foundation for higher-order concurrent separation logic', JFP 28 (2018), e20, pp. 1-73, DOI 10.1017/S0956796818000151 (§3.1, p. 18)",
+      "Iris (Rocq) tag iris-4.4.0 (commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732): iris/algebra/excl.v (excl_exclusive), https://github.com/rocq-iris/iris/blob/82dbf5e7a11d7ffaafe78e95186b5b376f4df732/iris/algebra/excl.v",
+      "iris-lean (Lean 4) commit 5540ef0110fc8f6d8e495c10c2f238c3ede14f3b: Iris/Iris/Algebra/Excl.lean (anonymous Exclusive instance for Excl carrying rocq_alias excl_exclusive, lines 225-226)"
+    ],
+    "design_question": "Reference point: what frames can coexist with exclusive ownership in a discrete resource algebra, and why does exclusivity rule out composed observers?"
+  },
+  {
+    "id": "excl_fpUpdate_iff",
+    "lean": "Toy.RA.excl_fpUpdate_iff",
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "In exclRA α, Excl.excl x admits a right-frame-preserving update (fpUpdate) to e : Excl α if and only if e = Excl.excl y for some y : α; in particular, excl x ⤳ excl y holds for all x and y while excl x ⤳ invalid fails. Because exclRA α satisfies OpAssoc and OpComm (Toy.RA.exclRA_isCoreFreeRA), right-frame preservation here is equivalent to simultaneous two-sided frame preservation (Toy.RA.fpUpdate2_of_assoc_comm; the converse direction takes the empty left frame ml = none).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Over α = Bool, exclRA Bool satisfies IsCoreFreeRA and both Excl.excl false and Excl.excl true are valid.",
+    "nonvacuity_witness_lean": "Toy.RA.excl_fpUpdate_iff_nonvacuity",
+    "non_claims": [
+      "Does not allow updating Excl.excl x to Excl.invalid; the optional empty frame mf = none enforces validity preservation even without a unit element.",
+      "Does not characterize updates out of Excl.invalid, which vacuously updates to any element because Excl.invalid is incompatible with every optional frame.",
+      "Does not cover step-indexed or OFE-non-expansive exclusive cameras over higher-order payloads."
+    ],
+    "prior_art": [
+      "Jung et al., 'Iris: Monoids and Invariants as an Orthogonal Basis for Concurrent Reasoning', POPL 2015, pp. 637-650, DOI 10.1145/2676726.2676980 (p. 4 FPUPD; §3.1 EX(X))",
+      "Jung et al., 'Iris from the ground up', JFP 28 (2018), e20, DOI 10.1017/S0956796818000151 (§2.1 fn. 6, §3.1)",
+      "Iris technical documentation at commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732: tex/algebra.tex (§RA) and tex/constructions.tex (§Exclusive Camera, ex-update)",
+      "Iris (Rocq) tag iris-4.4.0 (commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732): iris/algebra/excl.v and iris/algebra/updates.v (cmra_update_exclusive)",
+      "iris-lean (Lean 4) commit 5540ef0110fc8f6d8e495c10c2f238c3ede14f3b: Iris/Iris/Algebra/Excl.lean and Iris/Iris/Algebra/Updates.lean (Iris.Update.exclusive)"
+    ],
+    "design_question": "Which updates are frame-preserving under exclusive ownership, and why must the empty frame be checked?"
+  },
+  {
+    "id": "exclusive_fpUpdate",
+    "lean": "Toy.RA.exclusive_fpUpdate",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "In any raw resource algebra R : RawRA α (with no associativity, commutativity, or validity-closure laws required), if a is right-exclusive (IsExclusive R a) and b is valid (R.valid b), then a admits a right-frame-preserving update (fpUpdate R a b) to b.",
+    "hypotheses": [
+      {
+        "name": "hExcl",
+        "purpose": "Guarantees no non-empty right frame f can compose validly with a, discharging the mf = some f branch.",
+        "tightness": "tight",
+        "counterexample": "Toy.RA.exclusive_fpUpdate_not_exclusive_counterexample"
+      },
+      {
+        "name": "hb",
+        "purpose": "Guarantees the target b is valid, discharging the empty-frame branch mf = none.",
+        "tightness": "tight",
+        "counterexample": "Toy.RA.exclusive_fpUpdate_invalid_target_counterexample"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "In exclRA Bool, IsCoreFreeRA holds, Excl.excl false satisfies IsExclusive, and Excl.excl true is valid.",
+    "nonvacuity_witness_lean": "Toy.RA.exclusive_fpUpdate_nonvacuity",
+    "non_claims": [
+      "'No laws required' includes no commutativity. In a non-commutative algebra, IsExclusive R a rules out only right frames, and the resulting update need not preserve left frames (see Toy.RA.fpUpdate_preserve_left_of_opComm and Toy.RA.pathCat_fpUpdate_breaks_left_frame).",
+      "Does not imply that a is itself valid; if a is invalid and exclusive, fpUpdate R a b holds even without hb, whereas hb is necessary whenever a is valid.",
+      "Does not imply that b is exclusive or that the update is reversible.",
+      "Does not generalize to step-indexed validity or OFE cameras without step-indexed exclusivity (✓{0} (a · f) → False)."
+    ],
+    "prior_art": [
+      "Jung et al., 'Iris: Monoids and Invariants as an Orthogonal Basis for Concurrent Reasoning', POPL 2015, pp. 637-650, DOI 10.1145/2676726.2676980 (§3.1 EX(X))",
+      "Jung et al., 'Iris from the ground up', JFP 28 (2018), e20, DOI 10.1017/S0956796818000151 (§3.1 p. 19 EXCLUSIVE-UPDATE)",
+      "Iris technical documentation at commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732: tex/constructions.tex (§Exclusive Camera, ex-update)",
+      "Iris (Rocq) tag iris-4.4.0 (commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732): iris/algebra/updates.v (cmra_update_exclusive)",
+      "iris-lean (Lean 4) commit 5540ef0110fc8f6d8e495c10c2f238c3ede14f3b: Iris/Iris/Algebra/Updates.lean (Iris.Update.exclusive)",
+      "F* standard library FStar.PCM (github.com/FStarLang/FStar, ulib/FStar.PCM.fst at commit 6089523e69201bb5844200c74b1eabfc640f31ab, lines 187-195): unital-PCM special case exclusive_is_frame_preserving (proving only frame_preserving p x p.p.one, an update to the unit, under unital exclusivity where only one composes with x; associated with Swamy et al., SteelCore, PACMPL 4 (ICFP 2020), DOI 10.1145/3409003)"
+    ],
+    "design_question": "What abstract property unifies unrestricted updates for exclusive tokens and full fractional permissions, and which RA laws suffice for right-frame preservation?"
+  },
+  {
+    "id": "agree_fpUpdate_iff",
+    "lean": "Toy.RA.agree_fpUpdate_iff",
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "In the discrete agreement resource algebra agreeRA α (over any type α, without decidable equality), Agree.ag x admits a right-frame-preserving update (fpUpdate) to any carrier target s : Agree α if and only if s = Agree.ag x (with singleton specialization agree_ag_fpUpdate_iff). Because agreeRA α satisfies OpAssoc and OpComm (Toy.RA.agreeRA_isCoreFreeRA), right-frame preservation here is equivalent to simultaneous two-sided frame preservation (Toy.RA.fpUpdate2_of_assoc_comm; the converse direction takes the empty left frame ml = none).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Over α = Bool, agreeRA Bool satisfies IsCoreFreeRA and both Agree.ag false and Agree.ag true are valid.",
+    "nonvacuity_witness_lean": "Toy.RA.agree_fpUpdate_iff_nonvacuity",
+    "non_claims": [
+      "Does not apply to invalid (multi-element) elements of Agree α, which vacuously admit frame-preserving updates to every element.",
+      "Set-valued frame-preserving updates do not escape agreement immutability: Toy.RA.agree_fpUpdateP_imp_mem proves that fpUpdateP (agreeRA α) (Agree.ag x) P forces P (Agree.ag x).",
+      "Does not model step-indexed agreement up to equivalence (≡{n}≡) or OFE non-expansiveness.",
+      "Does not rule out replacing an agreed value in a compound algebra where the agreement lives inside an exclusive or full-fraction component (such as fracValRA at share 1)."
+    ],
+    "prior_art": [
+      "Jung et al., 'Iris from the ground up', JFP 28 (2018), e20, DOI 10.1017/S0956796818000151 (§3.1 p. 18: 'The agreement RA permits no non-trivial frame-preserving updates')",
+      "Iris technical documentation at commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732: tex/constructions.tex (§Agreement: 'There are no interesting frame-preserving updates for Ag')",
+      "Iris (Rocq) tag iris-4.4.0 (commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732): iris/algebra/agree.v (to_agree_op_valid_L, agree_op_inv, agree_idemp)",
+      "iris-lean (Lean 4) commit 5540ef0110fc8f6d8e495c10c2f238c3ede14f3b: Iris/Iris/Algebra/Agree.lean (toAgree_op_valid_iff_eq, Agree.op_inv)",
+      "Background only (defines Ag(X) and ag(x)·ag(y) ∈ V ⇒ x = y without an update-characterization theorem): Krebbers, Jung, Bizjak, Jourdan, Dreyer, Birkedal, 'The Essence of Higher-Order Concurrent Separation Logic', ESOP 2017, LNCS 10201, pp. 696-723, DOI 10.1007/978-3-662-54434-1_26 (§4.2, p. 17)"
+    ],
+    "design_question": "Which updates are permitted on duplicable agreement resources?"
+  },
+  {
+    "id": "agree_distinct_not_fpUpdate",
+    "lean": "Toy.RA.agree_distinct_not_fpUpdate",
+    "kind": "impossibility",
+    "tier": "T0",
+    "plain_claim": "[Reference point] In agreeRA α, whenever x ≠ y, the duplicate right frame Agree.ag x composes validly with Agree.ag x and invalidly with Agree.ag y, refuting right-frame preservation fpUpdate (agreeRA α) (Agree.ag x) (Agree.ag y) (ground Bool instance: Toy.RA.agree_naive_update_bool_counterexample). Since simultaneous two-sided frame preservation with the empty left frame ml = none is right-frame preservation, the update is not two-sided frame-preserving either.",
+    "hypotheses": [
+      {
+        "name": "hxy",
+        "purpose": "Ensures the target value y differs from x so that the duplicate frame ag x conflicts with ag y.",
+        "tightness": "tight",
+        "counterexample": "Toy.RA.agree_same_fpUpdate_counterexample"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Over α = Bool, agreeRA Bool satisfies IsCoreFreeRA and false ≠ true.",
+    "nonvacuity_witness_lean": "Toy.RA.agree_distinct_not_fpUpdate_nonvacuity",
+    "positive_control_lean": "Toy.RA.agree_distinct_positive_control_excl",
+    "non_claims": [
+      "The duplicate frame ag x is a hypothetical frame. The theorem does not assert that any party holds it.",
+      "Immutability is relative to agreeRA alone; the same value placed under an exclusive, full-fraction, or authoritative construction can be changed (as shown by the positive control Toy.RA.agree_distinct_positive_control_excl and Toy.RA.fracVal_full_fpUpdate).",
+      "Set-valued updates do not escape: ag x ⤳: P already requires P (ag x) (Toy.RA.agree_fpUpdateP_imp_mem).",
+      "Does not establish immutability of an invalid agreement element containing multiple distinct values, and does not model step-indexed agreement where two values may agree at index n while differing globally.",
+      "Derived (modeling bridge): interpreting the hypothetical frame ag x as 'another thread holding a duplicate copy' relies on an external separation-logic soundness theorem connecting ghost ownership composition to operational thread safety; no program logic or thread semantics is formalized here."
+    ],
+    "prior_art": [
+      "Jung et al., 'Iris from the ground up', JFP 28 (2018), e20, DOI 10.1017/S0956796818000151 (§3.1 p. 18)",
+      "Iris technical documentation at commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732: tex/constructions.tex (§Agreement)",
+      "Iris (Rocq) tag iris-4.4.0 (commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732): iris/algebra/agree.v (to_agree_op_valid_L, agree_op_inv, agree_idemp)",
+      "iris-lean (Lean 4) commit 5540ef0110fc8f6d8e495c10c2f238c3ede14f3b: Iris/Iris/Algebra/Agree.lean"
+    ],
+    "design_question": "Reference point (impossibility reading of agree_fpUpdate_iff): why does a naive mutation of an agreed value fail frame preservation against duplicate copies (which, under a modeling bridge, represent concurrent observers)?"
+  },
+  {
+    "id": "fracVal_full_fpUpdate_iff",
+    "lean": "Toy.RA.fracVal_full_fpUpdate_iff",
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "In the fractional-value algebra fracValRA α = prodRA fracRA (agreeRA α), a full share fracVal PosRat.one x admits a right-frame-preserving update (fpUpdate) to any carrier target (q', s) : PosRat × Agree α if and only if q' ≤ 1 and s = Agree.ag y for some y : α (with singleton specialization fracVal_full_ag_fpUpdate_iff). Because fracValRA α satisfies OpAssoc and OpComm (Toy.RA.fracValRA_isCoreFreeRA), right-frame preservation here is equivalent to simultaneous two-sided frame preservation (Toy.RA.fpUpdate2_of_assoc_comm; the converse direction takes the empty left frame ml = none).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Over α = Bool, fracValRA Bool satisfies IsCoreFreeRA and both fracVal PosRat.one false and fracVal PosRat.one true are valid.",
+    "nonvacuity_witness_lean": "Toy.RA.fracVal_full_fpUpdate_iff_nonvacuity",
+    "non_claims": [
+      "Does not allow updating a full share to an over-full invalid share q' > 1 or to a non-singleton invalid agreement element.",
+      "Does not cover discardable/persistent fractions (Iris's DFracDiscarded) or fractional unpersisting updates.",
+      "Does not cover step-indexed OFEs or non-expansiveness.",
+      "Derived (modeling bridge): interpreting share 1 as 'exclusive write permission over a shared-read resource' assumes an external program-logic interpretation of fracValRA ownership assertions."
+    ],
+    "prior_art": [
+      "Jung et al., 'Iris: Monoids and Invariants as an Orthogonal Basis for Concurrent Reasoning', POPL 2015, pp. 637-650, DOI 10.1145/2676726.2676980 (§3.2, p. 5 FRAC(X) and '(1, x) ⇝ ...')",
+      "Bornat, Calcagno, O'Hearn, Parkinson, 'Permission accounting in separation logic', POPL 2005, pp. 259-270, DOI 10.1145/1040305.1040327 (fractional/counting permissions for read vs. write/dispose)",
+      "Boyland, 'Checking Interference with Fractional Permissions', SAS 2003, LNCS 2694, pp. 55-72, DOI 10.1007/3-540-44898-5_4 (conceptual origin of fractional read/write permissions)",
+      "Iris technical documentation at commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732: tex/constructions.tex (§Fractions, pair-frac-change '(1, a) ⤳ (1, b)')",
+      "Iris (Rocq) tag iris-4.4.0 (commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732): iris/algebra/frac.v (frac_full_exclusive) and iris/algebra/lib/dfrac_agree.v (dfrac_agreeR at DfracOwn via to_frac_agree, to_dfrac_agree_exclusive, frac_agree_update_2)",
+      "iris-lean (Lean 4) commit 5540ef0110fc8f6d8e495c10c2f238c3ede14f3b: Iris/Iris/Algebra/Frac.lean (instExclusiveQp1) and Iris/Iris/Algebra/Lib/DFracAgree.lean (DFracAgree.mk_exclusive, Frac.update₂)",
+      "Background only (tree-share separation algebras without frame-preserving updates): Dockins, Hobor, Appel, 'A Fresh Look at Separation Algebras and Share Accounting', APLAS 2009, LNCS 5904, pp. 161-177, DOI 10.1007/978-3-642-10672-9_13"
+    ],
+    "design_question": "Why does full fractional ownership (q = 1) permit arbitrary updates to valid targets over the carried agreement value?"
+  },
+  {
+    "id": "fracVal_partial_fpUpdate_iff",
+    "lean": "Toy.RA.fracVal_partial_fpUpdate_iff",
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "In fracValRA α, whenever q < 1 (PosRat.lt q PosRat.one), a partial share fracVal q x admits a right-frame-preserving update (fpUpdate) to any carrier target (q', s) : PosRat × Agree α if and only if q' ≤ q and s = Agree.ag x (with singleton specialization fracVal_partial_ag_fpUpdate_iff). Because fracValRA α satisfies OpAssoc and OpComm (Toy.RA.fracValRA_isCoreFreeRA), right-frame preservation here is equivalent to simultaneous two-sided frame preservation (Toy.RA.fpUpdate2_of_assoc_comm; the converse direction takes the empty left frame ml = none).",
+    "hypotheses": [
+      {
+        "name": "hq",
+        "purpose": "Ensures q is strictly below 1 so the source is valid and admits a positive complementary frame 1 - q that detects both value changes and share increases.",
+        "tightness": "tight",
+        "counterexample": "Toy.RA.fracVal_partial_iff_full_counterexample"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Over α = Bool, fracValRA Bool satisfies IsCoreFreeRA and PosRat.half < PosRat.one.",
+    "nonvacuity_witness_lean": "Toy.RA.fracVal_partial_fpUpdate_iff_nonvacuity",
+    "non_claims": [
+      "Does not hold when q = 1 (full share allows arbitrary value change; Toy.RA.fracVal_partial_iff_full_counterexample) or when q > 1 (invalid over-full share vacuously updates to any value; Toy.RA.fracVal_partial_iff_overfull_counterexample).",
+      "Does not forbid decreasing a partial share (q' < q) while keeping x unchanged.",
+      "Does not model discardable fractions (DFracDiscarded), step-indexed cameras, or share-tree models (such as Dockins-Hobor-Appel binary tree shares), which differ in algebraic structure from ℚ_{>0}."
+    ],
+    "prior_art": [
+      "Jung et al., 'Iris: Monoids and Invariants as an Orthogonal Basis for Concurrent Reasoning', POPL 2015, pp. 637-650, DOI 10.1145/2676726.2676980 (§3.2, p. 5 FRAC(X))",
+      "Bornat et al., 'Permission accounting in separation logic', POPL 2005, pp. 259-270, DOI 10.1145/1040305.1040327",
+      "Boyland, 'Checking Interference with Fractional Permissions', SAS 2003, LNCS 2694, pp. 55-72, DOI 10.1007/3-540-44898-5_4",
+      "Iris technical documentation at commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732: tex/constructions.tex (§Fractions)",
+      "Iris (Rocq) tag iris-4.4.0 (commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732): iris/algebra/frac.v and iris/algebra/lib/dfrac_agree.v (dfrac_agreeR at DfracOwn)",
+      "iris-lean (Lean 4) commit 5540ef0110fc8f6d8e495c10c2f238c3ede14f3b: Iris/Iris/Algebra/Frac.lean and Iris/Iris/Algebra/Lib/DFracAgree.lean",
+      "Background only (tree-share separation algebras without frame-preserving updates): Dockins, Hobor, Appel, APLAS 2009, LNCS 5904, pp. 161-177, DOI 10.1007/978-3-642-10672-9_13"
+    ],
+    "design_question": "What exact updates are allowed or forbidden when a client holds only a partial fractional share?"
+  },
+  {
+    "id": "fracVal_partial_value_change_impossible",
+    "lean": "Toy.RA.fracVal_partial_value_change_impossible",
+    "kind": "impossibility",
+    "tier": "T0",
+    "plain_claim": "[Reference point] In fracValRA α, whenever q < 1 (PosRat.lt q PosRat.one) and x ≠ y, no update from fracVal q x to fracVal q' y (for any q' : PosRat) is right-frame-preserving (fpUpdate); an explicit witness right frame (1 - q, ag x) is given by the companion theorem Toy.RA.fracVal_partial_complement_observes_change. Since simultaneous two-sided frame preservation with the empty left frame ml = none is right-frame preservation, the update is not two-sided frame-preserving either.",
+    "hypotheses": [
+      {
+        "name": "hq",
+        "purpose": "Guarantees q is a strictly partial valid share so the positive complement 1 - q exists; fails both at q = 1 (full write ownership) and at q > 1 (invalid source).",
+        "tightness": "tight",
+        "counterexample": "Toy.RA.fracVal_full_value_change_control"
+      },
+      {
+        "name": "hxy",
+        "purpose": "Ensures the target value differs from x; keeping x unchanged with q' ≤ q is frame-preserving.",
+        "tightness": "tight",
+        "counterexample": "Toy.RA.fracVal_partial_same_value_counterexample"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Over α = Bool, fracValRA Bool satisfies IsCoreFreeRA, PosRat.half < PosRat.one, and false ≠ true.",
+    "nonvacuity_witness_lean": "Toy.RA.fracVal_partial_value_change_impossible_nonvacuity",
+    "positive_control_lean": "Toy.RA.fracVal_full_value_change_control",
+    "non_claims": [
+      "The complementary frame (1 - q, ag x) is hypothetical; nothing asserts that any party holds it. Escape hatches: q = 1 (full share), q > 1 (invalid source, vacuous), x = y, recombining shares that sum to 1 (Toy.RA.fracVal_recombine_fpUpdate), or placing the value in a different construction.",
+      "Does not prevent shrinking the share q' ≤ q while preserving x.",
+      "Does not cover discardable fractions or step-indexed cameras.",
+      "Derived (modeling bridge): interpreting the hypothetical complementary frame (1 - q, ag x) as 'concurrent readers holding the remaining fraction' depends on an external separation-logic adequacy bridge; no thread semantics or heap points-to connective is formalized."
+    ],
+    "prior_art": [
+      "Jung et al., 'Iris: Monoids and Invariants as an Orthogonal Basis for Concurrent Reasoning', POPL 2015, pp. 637-650, DOI 10.1145/2676726.2676980 (§3.2 FRAC(X))",
+      "Bornat et al., 'Permission accounting in separation logic', POPL 2005, pp. 259-270, DOI 10.1145/1040305.1040327",
+      "Boyland, 'Checking Interference with Fractional Permissions', SAS 2003, LNCS 2694, pp. 55-72, DOI 10.1007/3-540-44898-5_4",
+      "Iris (Rocq) tag iris-4.4.0 (commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732): iris/algebra/frac.v and iris/algebra/lib/dfrac_agree.v"
+    ],
+    "design_question": "Reference point (impossibility reading of fracVal_partial_fpUpdate_iff): why does mutating a value under a partial fraction break compatibility with the complementary share (and, under a modeling bridge, concurrent readers)?"
+  },
+  {
+    "id": "auth_both_fpUpdate_iff",
+    "lean": "Toy.RA.auth_both_fpUpdate_iff",
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For any raw resource algebra R : RawRA α (requiring zero algebraic laws on R), authElem a · fragElem b admits a right-frame-preserving update to authElem a' · fragElem b' in authRA R if and only if for every optional external fragment frame mbf : Option α, R.valid a ∧ (b ·? mbf) ≼? a implies R.valid a' ∧ (b' ·? mbf) ≼? a'.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "In authRA counterRA, IsCoreFreeRA holds, auth 2 · frag 1 is valid, and (2, 1) → (3, 1) satisfies the exact frame-inclusion condition even though ¬ LocalUpdate counterRA 2 1 3 1.",
+    "nonvacuity_witness_lean": "Toy.RA.auth_both_fpUpdate_iff_nonvacuity",
+    "non_claims": [
+      "Quantifies over right-composed frames only; without OpComm R, left-composed fragment frames need not be preserved (Toy.RA.auth_pathCat_localUpdate_breaks_left_frame). Under OpComm R, which lifts to OpComm (authRA R) (Toy.RA.authRA_opComm), right-frame preservation also preserves each single left-composed frame (f · x; Toy.RA.fpUpdate_preserve_left_of_opComm applied to authRA R). Simultaneous two-sided contexts l · (x · r) are preserved under OpComm R ∧ OpAssoc R (both laws lift to authRA R by Toy.RA.authRA_opComm and Toy.RA.authRA_opAssoc, and Toy.RA.fpUpdate2_of_assoc_comm then applies to authRA R), not under OpComm R alone (counterexamples: Toy.RA.auth_opComm_alone_not_two_sided in authRA nonAssocCommValidRA, and Toy.RA.opComm_alone_not_two_sided in the base algebra).",
+      "Does not require checking a single concrete remainder (as LocalUpdate does); instead, each external fragment frame mbf may witness inclusion in a' differently.",
+      "Does not cover fractional/persistent authoritative tokens (●{dq} a) or step-indexed view cameras."
+    ],
+    "prior_art": [
+      "iris-lean (Lean 4) commit 5540ef0110fc8f6d8e495c10c2f238c3ede14f3b: Iris/Iris/Algebra/Auth.lean (auth_update_ord, lines 536-542, stating the sufficiency direction; the converse follows directly by instantiating optional fragment frames)",
+      "Background: Jung et al., POPL 2015 §3.6 (AUTH); Iris (Rocq) tag iris-4.4.0 (commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732): iris/algebra/auth.v (auth_both_valid_discrete)"
+    ],
+    "design_question": "What exact, law-free condition on external fragment frames characterizes right-frame-preserving updates of authElem a · fragElem b in authRA R?",
+    "lean_names": [
+      "Toy.RA.auth_opComm_alone_not_two_sided",
+      "Toy.RA.opComm_alone_not_two_sided",
+      "Toy.RA.fpUpdate2_of_assoc_comm"
+    ]
+  },
+  {
+    "id": "auth_localUpdate_fpUpdate",
+    "lean": "Toy.RA.auth_localUpdate_fpUpdate",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For any associative raw resource algebra R : RawRA α (OpAssoc R) — without requiring ValidOpL or a unit in R — if (a, b) admits a local update to (a', b') (LocalUpdate R a b a' b'), then authElem a · fragElem b admits a right-frame-preserving update (fpUpdate (authRA R)) to authElem a' · fragElem b' (which also preserves simultaneous two-sided frames when OpComm R holds alongside OpAssoc R: both laws lift to authRA R by Toy.RA.authRA_opComm and Toy.RA.authRA_opAssoc, and Toy.RA.fpUpdate2_of_assoc_comm then applies to authRA R).",
+    "hypotheses": [
+      {
+        "name": "hAssoc",
+        "purpose": "Reassociates (b · bf) · c into b · (bf · c) so LocalUpdate reduces to the exact frame-inclusion condition of Toy.RA.auth_both_fpUpdate_iff; OpAssoc is needed for this reduction from LocalUpdate rather than for authoritative updates themselves.",
+        "tightness": "tight",
+        "counterexample": "Toy.RA.auth_localUpdate_nonAssoc_counterexample"
+      },
+      {
+        "name": "hLoc",
+        "purpose": "Ensures every valid decomposition of a into b plus a remainder preserves validity and the same remainder when moving to (a', b').",
+        "tightness": "tight",
+        "counterexample": "Toy.RA.auth_counter_dec_auth_only_fails"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Over counterRA (Nat with +), OpAssoc holds, LocalUpdate counterRA 2 1 3 2 holds, and auth 2 · frag 1 is valid in authRA counterRA.",
+    "nonvacuity_witness_lean": "Toy.RA.auth_localUpdate_fpUpdate_nonvacuity",
+    "non_claims": [
+      "Without OpComm, the conclusion protects only right-composed frames. Over the associative, non-commutative pathCatRA, the local update (ff, ff) → (tf, tf) lifts to a right-frame fpUpdate in authRA pathCatRA, but the left-composed fragment frame fragElem ff is invalidated (Toy.RA.auth_pathCat_localUpdate_breaks_left_frame).",
+      "LocalUpdate is one sufficient condition. The exact condition is law-free: auth a · frag b ⤳ auth a' · frag b' iff for every optional fragment frame mbf, valid a ∧ (b ·? mbf) ≼? a implies valid a' ∧ (b' ·? mbf) ≼? a' (Toy.RA.auth_both_fpUpdate_iff, cf. iris-lean auth_update_ord). OpAssoc is needed only to derive this from LocalUpdate. Concrete counterexample: Toy.RA.auth_counter_alloc_only_not_localUpdate.",
+      "'No unit in R' does not generalize Iris. Iris obtains the same statement by instantiating auth at optionUR R and using option_local_update.",
+      "Does not establish that authRA R satisfies OpComm or ValidOpL unless R also satisfies OpComm and ValidOpL.",
+      "Does not cover fractional or persistent authoritative tokens (Iris's ●{dq} a) or step-indexed view cameras."
+    ],
+    "prior_art": [
+      "Iris technical documentation at commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732: tex/constructions.tex (§Authoritative, local update definition and auth-update rule)",
+      "Iris (Rocq) tag iris-4.4.0 (commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732): iris/algebra/auth.v (auth_update, lines 321-327, using only assoc) and iris/algebra/local_updates.v (local_update, option_local_update, lines 191-200)",
+      "iris-lean (Lean 4) commit 5540ef0110fc8f6d8e495c10c2f238c3ede14f3b: Iris/Iris/Algebra/Auth.lean (auth_update, lines 566-567; auth_update_ord, lines 536-542) and Iris/Iris/Algebra/LocalUpdates.lean (LocalUpdate.option)",
+      "Jung et al., 'Iris: Monoids and Invariants as an Orthogonal Basis for Concurrent Reasoning', POPL 2015, pp. 637-650, DOI 10.1145/2676726.2676980 (§3.6 AUTH and AUTHUPD over cancellative monoids, predecessor to local updates)",
+      "Background only (defines Auth(M) over a uRA with heap-specific updates, without general local_update / auth_update): Krebbers et al., ESOP 2017, LNCS 10201, pp. 696-723, DOI 10.1007/978-3-662-54434-1_26 (§3.3, p. 14); Jung et al., JFP 28 (2018), e20 (§6.3.3, p. 49, which defers generic updates to appendix and Coq)"
+    ],
+    "design_question": "What sufficient local-update condition justifies synchronized authoritative/fragment updates, and which base-algebra laws does lifting it to right-frame preservation require?"
+  },
+  {
+    "id": "auth_counter_inc_fpUpdate",
+    "lean": "Toy.RA.auth_counter_inc_fpUpdate",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "In authRA counterRA (where auth a · frag b is valid iff b ≤ a), incrementing both the authoritative counter and an owned fragment by any k : Nat yields a right-frame-preserving update (fpUpdate (authRA counterRA)) authElem a · fragElem b ⤳ authElem (a + k) · fragElem (b + k) (backed by Toy.RA.counter_inc_localUpdate). Because counterRA satisfies OpAssoc and OpComm and these lift to authRA counterRA (Toy.RA.counterRA_isCoreFreeRA, Toy.RA.authRA_isCoreFreeRA), the update also preserves simultaneous two-sided frames (Toy.RA.fpUpdate2_of_assoc_comm).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "authRA counterRA satisfies IsCoreFreeRA, auth 2 · frag 1 is valid, and counter_inc_localUpdate 2 1 3 holds.",
+    "nonvacuity_witness_lean": "Toy.RA.auth_counter_inc_fpUpdate_nonvacuity",
+    "non_claims": [
+      "Does not justify incrementing only the fragment without owning the authoritative snapshot (refuted by Toy.RA.auth_counter_inc_frag_only_fails).",
+      "Does not justify decrementing the authoritative counter without decrementing the owned fragment by the same amount: auth 2 · frag 1 ⤳ auth 1 · frag 1 fails (Toy.RA.auth_counter_dec_auth_only_fails), whereas (2, 1) → (1, 0) is a local update (Toy.RA.counter_dec_both_localUpdate).",
+      "Models an unbounded Nat counter; does not account for fixed-width integer overflow or wrap-around.",
+      "Derived (modeling bridge): interpreting compatibility with all fragment frames as 'without invalidating external fragment holders' relies on an external separation-logic soundness bridge; no concurrent protocol or thread semantics is formalized."
+    ],
+    "prior_art": [
+      "Iris (Rocq) tag iris-4.4.0 (commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732): iris/algebra/auth.v and iris/algebra/local_updates.v (op_local_update_discrete)",
+      "iris-lean (Lean 4) commit 5540ef0110fc8f6d8e495c10c2f238c3ede14f3b: Iris/Iris/Algebra/Auth.lean and Iris/Iris/Algebra/LocalUpdates.lean",
+      "Background: Jung et al., 'Iris from the ground up', JFP 28 (2018), e20, DOI 10.1017/S0956796818000151 (§6.3.3)"
+    ],
+    "design_question": "How does a concrete authoritative/fragment protocol preserve compatibility across all fragment frames during coordinated state growth?"
+  },
+  {
+    "id": "auth_counter_dec_auth_only_fails",
+    "lean": "Toy.RA.auth_counter_dec_auth_only_fails",
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "In counterRA (which satisfies OpAssoc, OpComm, and ValidOpL, lifted to authRA counterRA by Toy.RA.authRA_isCoreFreeRA), decrementing the authoritative counter from 2 to 1 while retaining fragment 1 violates LocalUpdate and breaks compatibility with the right frame fragElem 1, so the right-frame-preserving update (fpUpdate) auth 2 · frag 1 ⤳ auth 1 · frag 1 fails. Since simultaneous two-sided frame preservation with the empty left frame ml = none is right-frame preservation, the update is not two-sided frame-preserving either.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Self-contained ground counterexample on counterRA and authRA counterRA with explicit witness frame fragElem 1.",
+    "nonvacuity_witness_lean": "Toy.RA.auth_counter_dec_auth_only_fails",
+    "non_claims": [
+      "Does not rule out decrementing both auth and frag simultaneously when the owned fragment covers the decrement (Toy.RA.counter_dec_both_localUpdate proves LocalUpdate counterRA 2 1 1 0).",
+      "Does not imply every non-LocalUpdate fails to be frame-preserving in authRA counterRA (see Toy.RA.auth_counter_alloc_only_not_localUpdate).",
+      "Derived (modeling bridge): reading the witness frame fragElem 1 as 'another thread's fragment invariant' relies on an external program-logic interpretation; only the discrete algebraic validity failure is proved."
+    ],
+    "prior_art": [
+      "Iris (Rocq) tag iris-4.4.0 (commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732): iris/algebra/auth.v",
+      "Background: Jung et al., 'Iris from the ground up', JFP 28 (2018), e20, DOI 10.1017/S0956796818000151 (§6.3.3)"
+    ],
+    "design_question": "Which naive authoritative updates break external fragment-frame compatibility even when the locally held fragment remains ≤ the new authoritative value?"
+  },
+  {
+    "id": "fpUpdate_frame_right",
+    "lean": "Toy.RA.fpUpdate_frame_right",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "In any associative raw resource algebra R : RawRA α (OpAssoc R) — with neither OpComm nor ValidOpL needed — a right-frame-preserving update a ⤳ b implies the right-framed update a · c ⤳ b · c for every c : α.",
+    "hypotheses": [
+      {
+        "name": "hAssoc",
+        "purpose": "Reassociates (a · c) · f to a · (c · f) and back to (b · c) · f so the frame c · f can be passed to hab.",
+        "tightness": "tight",
+        "counterexample": "Toy.RA.fpUpdate_frame_right_nonAssoc_counterexample"
+      },
+      {
+        "name": "hab",
+        "purpose": "Supplies the underlying right-frame-preserving update from a to b.",
+        "tightness": "tight",
+        "counterexample": "Toy.RA.fpUpdate_frame_right_noUpdate_counterexample"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "In authRA counterRA (where validity is selective and frag 1 ⤳ frag 2 fails), OpAssoc holds, auth 2 · frag 1 ⤳ auth 3 · frag 2 holds, and right-framing with frag 1 keeps the source valid.",
+    "nonvacuity_witness_lean": "Toy.RA.fpUpdate_frame_right_nonvacuity",
+    "non_claims": [
+      "Does not establish left-framing (c · a ⤳ c · b) or left-frame protection without OpComm; the asymmetry comes from defining fpUpdate via right-composed frames opOpt R a mf (witnessed by Toy.RA.pathCat_fpUpdate_breaks_left_frame). Under OpComm alone, right-frame preservation also preserves each single left-composed frame (f · a; Toy.RA.fpUpdate_preserve_left_of_opComm), whereas simultaneous two-sided contexts l · (a · r) require both OpComm and OpAssoc (Toy.RA.fpUpdate2_of_assoc_comm; refuted under OpComm alone by Toy.RA.opComm_alone_not_two_sided).",
+      "Does not show that OpAssoc is globally necessary for right-framing: in any algebra where every element is valid (such as natSubRA, Toy.RA.frame_right_holds_without_opAssoc_example), universal right-framing holds without OpAssoc. Tightness shows only that OpAssoc cannot be dropped from this general statement.",
+      "Does not require or establish that a, b, or c are valid elements.",
+      "Discrete only: does not cover step-indexed CMRAs, OFE non-expansiveness, or operational program-logic frame rules without a modeling bridge."
+    ],
+    "prior_art": [
+      "Iris (Rocq) tag iris-4.4.0 (commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732): iris/algebra/updates.v (cmra_update_op, lines 93-96, derived from cmra_updateP_op using only assoc and comm)",
+      "iris-lean (Lean 4) commit 5540ef0110fc8f6d8e495c10c2f238c3ede14f3b: Iris/Iris/Algebra/Updates.lean (Iris.Update.op)",
+      "F* standard library FStar.PCM (github.com/FStarLang/FStar, ulib/FStar.PCM.fst at commit 6089523e69201bb5844200c74b1eabfc640f31ab): frame_preserving_subframe (unital PCM analogue of framing an update)",
+      "Background only (separation algebras with frame property for local actions, without resource frame-preserving updates): Calcagno, O'Hearn, Yang, 'Local Action and Abstract Separation Logic', LICS 2007, pp. 366-378, DOI 10.1109/LICS.2007.30; Jung et al., JFP 28 (2018), e20 (§2.1)"
+    ],
+    "design_question": "Which algebraic law suffices to frame a right-frame-preserving update by a sibling resource on the right?",
+    "lean_names": [
+      "Toy.RA.opComm_alone_not_two_sided",
+      "Toy.RA.fpUpdate2_of_assoc_comm"
+    ]
+  },
+  {
+    "id": "fpUpdate_op",
+    "lean": "Toy.RA.fpUpdate_op",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "In any raw resource algebra R : RawRA α satisfying associativity (OpAssoc R) and commutativity (OpComm R) — without requiring ValidOpL — deterministic right-frame-preserving updates (fpUpdate) compose in parallel: a₁ ⤳ b₁ and a₂ ⤳ b₂ imply a₁ · a₂ ⤳ b₁ · b₂. Under the same two laws, the composite update also preserves simultaneous two-sided frames (Toy.RA.fpUpdate2_of_assoc_comm).",
+    "hypotheses": [
+      {
+        "name": "hAssoc",
+        "purpose": "Reassociates nested frames around a₁ · a₂ during both update steps.",
+        "tightness": "tight",
+        "counterexample": "Toy.RA.fpUpdate_op_nonAssoc_counterexample"
+      },
+      {
+        "name": "hComm",
+        "purpose": "Moves a₂ to the left of b₁ so the right-framed update h₂ applies to a₂.",
+        "tightness": "tight",
+        "counterexample": "Toy.RA.fpUpdate_op_nonComm_counterexample"
+      },
+      {
+        "name": "h₁",
+        "purpose": "Supplies the left-component frame-preserving update a₁ ⤳ b₁.",
+        "tightness": "tight",
+        "counterexample": "Toy.RA.fpUpdate_op_noUpdate1_counterexample"
+      },
+      {
+        "name": "h₂",
+        "purpose": "Supplies the right-component frame-preserving update a₂ ⤳ b₂.",
+        "tightness": "tight",
+        "counterexample": "Toy.RA.fpUpdate_op_noUpdate2_counterexample"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "In authRA counterRA, OpAssoc and OpComm hold, auth 2 · frag 1 ⤳ auth 3 · frag 2 holds, frag 1 ⤳ frag 1 holds, their composition with frame frag 1 is valid, and frag 1 ⤳ frag 2 fails.",
+    "nonvacuity_witness_lean": "Toy.RA.fpUpdate_op_nonvacuity",
+    "non_claims": [
+      "Does not show that OpAssoc and OpComm are globally necessary for parallel composition: in universally valid algebras, parallel composition holds without OpComm (boolLeftProjRA) or without either law (natSubRA) (derived: every element of these algebras is valid, so fpUpdate holds for all pairs; no separate Lean declaration is given). Tightness shows only that neither hypothesis can be deleted from this general statement.",
+      "May fail without OpComm (e.g., in pathCatRA, Toy.RA.fpUpdate_op_nonComm_counterexample).",
+      "Does not apply to sequential composition (Toy.RA.fpUpdate_trans), which requires zero algebraic laws on R.",
+      "Does not require or imply ValidOpL, and covers only discrete algebras without step-indexing or OFE metrics."
+    ],
+    "prior_art": [
+      "Iris (Rocq) tag iris-4.4.0 (commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732): iris/algebra/updates.v (cmra_update_op, lines 93-96, proved via cmra_updateP_op using only assoc and comm)",
+      "iris-lean (Lean 4) commit 5540ef0110fc8f6d8e495c10c2f238c3ede14f3b: Iris/Iris/Algebra/Updates.lean (Iris.Update.op)",
+      "Background only (separation algebras with local actions, without resource frame-preserving updates): Calcagno, O'Hearn, Yang, LICS 2007, pp. 366-378, DOI 10.1109/LICS.2007.30; Jung et al., JFP 28 (2018), e20 (§2.1)"
+    ],
+    "design_question": "Which RA laws suffice to compose two independent frame-preserving updates in parallel?"
+  },
+  {
+    "id": "fpUpdateP_op",
+    "lean": "Toy.RA.fpUpdateP_op",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "In any raw resource algebra R : RawRA α satisfying OpAssoc R and OpComm R (without ValidOpL), non-deterministic right-frame-preserving updates (fpUpdateP) a₁ ⤳: P₁ and a₂ ⤳: P₂ compose into a₁ · a₂ ⤳: Q whenever P₁ b₁ and P₂ b₂ imply Q (b₁ · b₂). No two-sided variant of fpUpdateP is defined in this package.",
+    "hypotheses": [
+      {
+        "name": "hAssoc",
+        "purpose": "Reassociates frames during sequential elimination of the two non-deterministic updates.",
+        "tightness": "tight",
+        "counterexample": "Toy.RA.fpUpdateP_op_nonAssoc_counterexample"
+      },
+      {
+        "name": "hComm",
+        "purpose": "Swaps the chosen intermediate b₁ past a₂ so h₂ applies with frame b₁ ·? mf.",
+        "tightness": "tight",
+        "counterexample": "Toy.RA.fpUpdateP_op_nonComm_counterexample"
+      },
+      {
+        "name": "h₁",
+        "purpose": "Produces a frame-compatible target b₁ satisfying P₁.",
+        "tightness": "tight",
+        "counterexample": "Toy.RA.fpUpdateP_op_noUpdate1_counterexample"
+      },
+      {
+        "name": "h₂",
+        "purpose": "Produces a frame-compatible target b₂ satisfying P₂ after b₁ is chosen.",
+        "tightness": "tight",
+        "counterexample": "Toy.RA.fpUpdateP_op_noUpdate2_counterexample"
+      },
+      {
+        "name": "hQ",
+        "purpose": "Transfers P₁ b₁ ∧ P₂ b₂ to the combined target postcondition Q (b₁ · b₂); needed even when Q is inhabited by a valid element.",
+        "tightness": "tight",
+        "counterexample": "Toy.RA.fpUpdateP_op_noPost_counterexample"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "In authRA counterRA, OpAssoc and OpComm hold, singleton updates from auth 2 · frag 1 and frag 1 satisfy the postcondition, the framed source is valid, and frag 1 ⤳: (· = frag 2) fails.",
+    "nonvacuity_witness_lean": "Toy.RA.fpUpdateP_op_nonvacuity",
+    "non_claims": [
+      "Does not show that OpAssoc and OpComm are globally necessary for parallel composition (tightness means irredundancy in this general statement, not necessity in every algebra).",
+      "May fail without OpComm (e.g., in pathCatRA, Toy.RA.fpUpdateP_op_nonComm_counterexample).",
+      "Does not force a single uniform pair (b₁, b₂) across all frames mf; each frame mf may choose different witnesses b₁, b₂ (matching Iris's cmra_updateP).",
+      "Discrete only: does not cover step-indexed non-deterministic updates where target choice may depend on the step index n."
+    ],
+    "prior_art": [
+      "Iris (Rocq) tag iris-4.4.0 (commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732): iris/algebra/updates.v (cmra_updateP_op, lines 78-88, proved using only cmra_op_opM_assoc and comm)",
+      "iris-lean (Lean 4) commit 5540ef0110fc8f6d8e495c10c2f238c3ede14f3b: Iris/Iris/Algebra/Updates.lean (Iris.UpdateP.op)",
+      "Background: Jung et al., 'Iris from the ground up', JFP 28 (2018), e20, DOI 10.1017/S0956796818000151 (§2.1)"
+    ],
+    "design_question": "Does the set-valued generalization of parallel update composition suffice with the same RA laws (associativity and commutativity) as deterministic composition?"
+  },
+  {
+    "id": "fpUpdate_drop_right",
+    "lean": "Toy.RA.fpUpdate_drop_right",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "In any raw resource algebra R : RawRA α satisfying all three discrete core-free RA laws (OpAssoc R, OpComm R, and ValidOpL R), discarding part of a composite resource is always right-frame-preserving: a · b ⤳ a for all a b : α (with ValidOpL R globally necessary for universal dropping via Toy.RA.validOpL_of_fpUpdate_drop_right_all).",
+    "hypotheses": [
+      {
+        "name": "hAssoc",
+        "purpose": "Regroups (a · b) · f into (a · f) · b before projecting validity with ValidOpL.",
+        "tightness": "tight",
+        "counterexample": "Toy.RA.fpUpdate_drop_right_nonAssoc_counterexample"
+      },
+      {
+        "name": "hComm",
+        "purpose": "Moves the discarded piece b past the frame f so b sits on the outside of (a · f) · b; without commutativity, b can act as a compatibility bridge between a and f.",
+        "tightness": "tight",
+        "counterexample": "Toy.RA.fpUpdate_drop_right_nonComm_counterexample"
+      },
+      {
+        "name": "hValidOpL",
+        "purpose": "Projects validity of a · b to validity of a (empty frame) and validity of (a · f) · b to validity of a · f (non-empty frame); globally necessary for universal dropping (Toy.RA.validOpL_of_fpUpdate_drop_right_all).",
+        "tightness": "tight",
+        "counterexample": "Toy.RA.fpUpdate_drop_right_noValidOpL_counterexample"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "authRA counterRA satisfies OpAssoc, OpComm, and ValidOpL simultaneously while distinguishing valid auth 2 · frag 1 from invalid auth 2 · frag 3.",
+    "nonvacuity_witness_lean": "Toy.RA.fpUpdate_drop_right_nonvacuity",
+    "non_claims": [
+      "Does not show that weakening requires OpAssoc or OpComm. ∀ a b, a · b ⤳ a holds in the non-commutative boolLeftProjRA (Toy.RA.drop_right_holds_without_opComm_example) and in the non-associative natSubRA (Toy.RA.drop_right_holds_without_opAssoc_example). ValidOpL is the only globally necessary law: (∀ a b, a · b ⤳ a) → ValidOpL R (Toy.RA.validOpL_of_fpUpdate_drop_right_all).",
+      "May fail without OpComm (e.g., in pathCatRA, Toy.RA.fpUpdate_drop_right_nonComm_counterexample).",
+      "Discrete algebraic frame preservation only: does not imply that discarding resources is sound in linear (non-affine) separation logics where forgetting ownership leaks obligations, and does not cover step-indexed CMRAs without a modeling bridge."
+    ],
+    "prior_art": [
+      "Iris (Rocq) tag iris-4.4.0 (commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732): iris/algebra/updates.v (cmra_update_op_l, cmra_update_included)",
+      "iris-lean (Lean 4) commit 5540ef0110fc8f6d8e495c10c2f238c3ede14f3b: Iris/Iris/Algebra/Updates.lean (Iris.Update.op_l)",
+      "Background: Jung et al., 'Iris from the ground up', JFP 28 (2018), e20, DOI 10.1017/S0956796818000151 (§2.1)"
+    ],
+    "design_question": "Which discrete RA laws suffice for resource dropping (weakening), and which single law is globally necessary?"
+  },
+  {
+    "id": "fpUpdate_iff_bare_of_rightUnit",
+    "lean": "Toy.RA.fpUpdate_iff_bare_of_rightUnit",
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "In any raw resource algebra R : RawRA α possessing a global right identity e (IsRightUnit R e) — with none of OpAssoc, OpComm, ValidOpL, or R.valid e required — optional right-frame fpUpdate R a b is equivalent to bare non-empty right-frame fpUpdateBare R a b.",
+    "hypotheses": [
+      {
+        "name": "hUnit",
+        "purpose": "Supplies a single carrier element e with a · e = a and b · e = b so the empty-frame check reduces to instantiating fpUpdateBare at f = e.",
+        "tightness": "tight",
+        "counterexample": "Toy.RA.fpUpdate_bare_noUnit_counterexample"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "In authRA counterRA, authUnit is a right unit (IsRightUnit (authRA counterRA) authUnit), IsCoreFreeRA holds, auth 2 · frag 1 is valid, and frag 1 ⤳ frag 2 fails.",
+    "nonvacuity_witness_lean": "Toy.RA.fpUpdate_iff_bare_of_rightUnit_nonvacuity",
+    "non_claims": [
+      "The equivalence with the bare form is for right-composed frames only; without OpComm, neither fpUpdate nor fpUpdateBare need protect left-composed frames (and even with OpComm, simultaneous two-sided contexts l · (a · r) additionally require OpAssoc; Toy.RA.opComm_alone_not_two_sided).",
+      "IsRightUnit is sufficient, not necessary, for fpUpdate ↔ fpUpdateBare: non-unital algebras with right identities on valid elements and ValidOpL (such as agreeRA Bool) also satisfy the equivalence via Toy.RA.fpUpdate_iff_bare_of_rightIdOnValid_validOpL.",
+      "Does not permit dropping the optional empty frame in non-unital algebras without right identities on valid elements, such as exclRA or fracValRA, where fpUpdateBare erroneously permits updating valid elements to invalid ones.",
+      "Discrete only: does not cover step-indexed CMRAs (✓{n}) or OFE cameras."
+    ],
+    "prior_art": [
+      "Jung et al., 'Iris from the ground up', JFP 28 (2018), e20, DOI 10.1017/S0956796818000151 (§2.1 fn. 6, p. 12: optional frame needed because non-unital RAs lack a global unit ε)",
+      "Iris technical documentation at commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732: tex/algebra.tex (§RA, lines 149-156)",
+      "Iris (Rocq) tag iris-4.4.0 (commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732): iris/algebra/cmra.v (cmra_unit_cmra_total, line 695) and iris/algebra/updates.v (header comment lines 4-8, cmra_discrete_total_update)",
+      "iris-lean (Lean 4) commit 5540ef0110fc8f6d8e495c10c2f238c3ede14f3b: Iris/Iris/Algebra/Updates.lean (Iris.Update.discrete_total, lines 169-174)"
+    ],
+    "design_question": "When does the bare non-empty right-frame quantifier ∀ f, valid (a · f) → valid (b · f) coincide with optional-frame fpUpdate, and when does omitting the empty frame silently allow valid-to-invalid transitions?"
+  },
+  {
+    "id": "fpUpdate_iff_bare_of_rightIdOnValid_validOpL",
+    "lean": "Toy.RA.fpUpdate_iff_bare_of_rightIdOnValid_validOpL",
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "In any raw resource algebra R : RawRA α where every valid element admits a right identity (HasRightIdOnValid R) and validity is downward closed on the left (ValidOpL R) — without requiring a global unit, right identities on invalid elements, core laws, OpAssoc, or OpComm — optional right-frame fpUpdate R a b is equivalent to bare non-empty right-frame fpUpdateBare R a b.",
+    "hypotheses": [
+      {
+        "name": "hRightId",
+        "purpose": "Supplies a right identity c for a valid source a (a · c = a) so R.valid a triggers fpUpdateBare at f = c to yield R.valid (b · c); weakens HasLocalRightUnits to valid elements only.",
+        "tightness": "tight",
+        "counterexample": "Toy.RA.fpUpdate_bare_noRightIdOnValid_counterexample"
+      },
+      {
+        "name": "hValidOpL",
+        "purpose": "Projects R.valid (b · c) to R.valid b when a's right identity c is not a right identity for b; tight at size 2 under HasRightIdOnValid, OpAssoc, and OpComm (Toy.RA.two_element_comm_validOpL_witness), and tight at size 5 even when HasLocalRightUnits, OpAssoc, and OpComm all hold (witnessed by fiveLocalUnitsNoValidOpLRA; nothing is claimed about smaller witnesses).",
+        "tightness": "tight",
+        "counterexample": "Toy.RA.fpUpdate_bare_rightIdOnValid_noValidOpL_counterexample"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "agreeRA Bool has no global right unit (Toy.RA.agreeRA_bool_no_rightUnit), satisfies HasRightIdOnValid and ValidOpL, and rejects ag false ⤳ ag true.",
+    "nonvacuity_witness_lean": "Toy.RA.fpUpdate_iff_bare_of_rightIdOnValid_validOpL_nonvacuity",
+    "non_claims": [
+      "The equivalence with the bare form is for right-composed frames only; without OpComm, neither fpUpdate nor fpUpdateBare need protect left-composed frames (and even with OpComm, simultaneous two-sided contexts l · (a · r) additionally require OpAssoc; Toy.RA.opComm_alone_not_two_sided). HasRightIdOnValid (and HasLocalRightUnits) is not Iris's CmraTotal: it asks only for some right identity per valid (resp. arbitrary) element, which need not be idempotent, canonical, or monotone. HasLocalRightUnits corresponds to the multi-unit axiom of Dockins-Hobor-Appel (APLAS 2009, axiom (15)), without cancellativity.",
+      "Does not apply to non-total, non-unital algebras without right identities on valid elements (such as exclRA or fracRA), where fpUpdateBare is strictly weaker than fpUpdate.",
+      "When every element is idempotent (x · x = x) and OpComm holds, fpUpdate coincides with fpUpdateBare without ValidOpL (Toy.RA.fpUpdate_iff_bare_of_idemp_opComm). So no commutative algebra in which every element is idempotent is a tightness witness for ValidOpL; a commutative witness may still contain idempotent elements (in zeroBoolRA, false · false = false, and false is the source of the separating pair (false, true) of Toy.RA.two_element_comm_validOpL_witness). Without OpComm, an idempotent, associative 2-element tightness witness with HasLocalRightUnits exists (Toy.RA.idempotent_noncomm_validOpL_witness).",
+      "Does not show that HasLocalRightUnits is required on invalid elements (Toy.RA.rightIdOnValidOnlyRA_props constructs a 3-element commutative, associative, ValidOpL algebra meeting HasRightIdOnValid where HasLocalRightUnits fails).",
+      "Discrete only: does not cover step-indexed CMRAs (✓{n}) or OFE cameras."
+    ],
+    "prior_art": [
+      "Iris (Rocq) tag iris-4.4.0 (commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732): iris/algebra/updates.v (cmra_total_update lines 123-133 and cmra_discrete_total_update line 155, using only cmra_core_r and cmra_validN_op_l)",
+      "iris-lean (Lean 4) commit 5540ef0110fc8f6d8e495c10c2f238c3ede14f3b: Iris/Iris/Algebra/Updates.lean (Iris.Update.discrete_total, lines 169-174)",
+      "Dockins, Hobor, Appel, 'A Fresh Look at Separation Algebras and Share Accounting', APLAS 2009, LNCS 5904, pp. 161-177, DOI 10.1007/978-3-642-10672-9_13 (§2, axiom (15): multi-unit separation algebras ∀ x, ∃ u_x, u_x ⊕ x = x)",
+      "Jung et al., 'Iris from the ground up', JFP 28 (2018), e20, DOI 10.1017/S0956796818000151 (§2.1 fn. 6, p. 12; Fig. 3 p. 9)",
+      "Iris technical documentation at commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732: tex/algebra.tex (§RA, lines 149-156)"
+    ],
+    "design_question": "In non-unital algebras with per-element right identities on valid elements (like agreement), which laws suffice so bare right-frame quantification cannot leak invalid targets?",
+    "lean_names": [
+      "Toy.RA.idempotent_noncomm_validOpL_witness",
+      "Toy.RA.two_element_comm_validOpL_witness"
+    ]
+  }
+]
