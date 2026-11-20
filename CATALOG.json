@@ -51576,6 +51576,97 @@
         "rustc/intrinsics"
       ]
     },
+    "rust-pin-drop-guarantee-mem-forget-leaks-and-async-cancellation-invariants": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "4b5350e87e487aed08ab2f9f0160a4b2616438bc"
+          },
+          "name": "Rust compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07",
+            "rfcs": "1066,2349,3467"
+          },
+          "name": "Rust RFCs (RFC 1066 safe mem::forget, RFC 2349 Pin, RFC 3467 UnsafePinned)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/nomicon",
+            "revision": "b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6"
+          },
+          "name": "The Rustonomicon (Leaking, Drain, Rc, and JoinGuard)"
+        },
+        {
+          "identity": {
+            "repository": "tokio-rs/tokio",
+            "revision": "3f0ffc85f51c71d97bce72e0f8b80ece9b8b4892"
+          },
+          "name": "Tokio async runtime and select! cancellation semantics"
+        },
+        {
+          "identity": {
+            "repository": "proofs-rs/lean-miri",
+            "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+          },
+          "name": "Mechanized Miri and Tree Borrows operational semantics in Lean 4"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal MIR verification framework and PureLift spatial pinning"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3735592",
+            "pages": "1019-1042",
+            "venue": "PACMPL 9(PLDI), Article 188",
+            "year": "2025"
+          },
+          "name": "Villani, Hostert, Dreyer & Jung (2025): Tree Borrows"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371109",
+            "pages": "1-32",
+            "venue": "PACMPL 4(POPL), Article 41",
+            "year": "2020"
+          },
+          "name": "Jung, Dang, Kang & Dreyer (2020): Stacked Borrows: An Aliasing Model for Rust"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3158154",
+            "venue": "PACMPL 2(POPL), Article 66",
+            "year": "2018"
+          },
+          "name": "Jung, Jourdan, Krebbers & Dreyer (2018): RustBelt: Securing the Foundations of the Rust Programming Language"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3656422",
+            "venue": "PACMPL 8(PLDI), Article 195",
+            "year": "2024"
+          },
+          "name": "Gaher, Sammler, Jung, Krebbers & Dreyer (2024): RefinedRust: A Type System for High-Assurance Verification of Rust Programs"
+        }
+      ],
+      "topics": [
+        "rust/async",
+        "rust/unsafe",
+        "rust/pin",
+        "rust/tree-borrows",
+        "anneal/theory",
+        "verification/rust",
+        "lean/mechanization"
+      ]
+    },
     "rust-pointer-read-write-copy-volatile-and-reference-reborrowing": {
       "observed_at": "2026-09-27",
       "subjects": [
