@@ -1,0 +1,1150 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Scc.Audit.allowedSorry": [],
+    "Toy.Scc.Audit.standardAxioms": [],
+    "Toy.Scc.BlockExtremal": [],
+    "Toy.Scc.BlocksMutuallyReachable": [],
+    "Toy.Scc.CalleesFirst": [],
+    "Toy.Scc.Calls": [],
+    "Toy.Scc.CallsInGraph": [],
+    "Toy.Scc.ClosedUnder": [],
+    "Toy.Scc.CondEdge": [],
+    "Toy.Scc.CondensationAcyclic": [],
+    "Toy.Scc.Covers": [],
+    "Toy.Scc.Graph": [],
+    "Toy.Scc.HierSolution": [],
+    "Toy.Scc.HierSolution.fixpoint": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.InterRankDecrease": [],
+    "Toy.Scc.IntraDecrease": [],
+    "Toy.Scc.IsGreatestFixpoint": [],
+    "Toy.Scc.IsLeastFixpoint": [],
+    "Toy.Scc.IsSccDecomp": [],
+    "Toy.Scc.IsSccDecomp.eq_1": [],
+    "Toy.Scc.Le": [],
+    "Toy.Scc.Le.antisymm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.Le.refl": [],
+    "Toy.Scc.Le.trans": [],
+    "Toy.Scc.LexDecreasing": [],
+    "Toy.Scc.LexLt": [],
+    "Toy.Scc.LexLt.eq_1": [],
+    "Toy.Scc.Monotone": [],
+    "Toy.Scc.RankedJustified": [],
+    "Toy.Scc.Reach": [],
+    "Toy.Scc.Reach.below": [],
+    "Toy.Scc.Reach.below.casesOn": [],
+    "Toy.Scc.Reach.below.rec": [],
+    "Toy.Scc.Reach.below.refl": [],
+    "Toy.Scc.Reach.below.step": [],
+    "Toy.Scc.Reach.brecOn": [],
+    "Toy.Scc.Reach.casesOn": [],
+    "Toy.Scc.Reach.mem_of_closed": [],
+    "Toy.Scc.Reach.rec": [],
+    "Toy.Scc.Reach.recOn": [],
+    "Toy.Scc.Reach.refl": [],
+    "Toy.Scc.Reach.single": [],
+    "Toy.Scc.Reach.step": [],
+    "Toy.Scc.Reach.trans": [],
+    "Toy.Scc.RespectsCalls": [],
+    "Toy.Scc.Summ": [],
+    "Toy.Scc.Terminates": [],
+    "Toy.Scc.Transfer": [],
+    "Toy.Scc.Val": [],
+    "Toy.Scc.below": [],
+    "Toy.Scc.below.eq_1": [],
+    "Toy.Scc.bitCount": [],
+    "Toy.Scc.bitCount_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.bitCount_lt_of_le_of_ne": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.blockExtremal_of_solveBlock_eq": [
+      "propext"
+    ],
+    "Toy.Scc.blockExtremal_of_unused": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.blockExtremal_of_update": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.blockExtremal_solveBlock": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.blockInit": [],
+    "Toy.Scc.blockInit.eq_1": [],
+    "Toy.Scc.blockInit_le_of_fixpoint": [
+      "propext"
+    ],
+    "Toy.Scc.blockOp": [],
+    "Toy.Scc.blockOp.eq_1": [],
+    "Toy.Scc.blockOp_congr_outside": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.blockOp_monotone": [
+      "propext"
+    ],
+    "Toy.Scc.bot": [],
+    "Toy.Scc.bot.eq_1": [],
+    "Toy.Scc.botT": [],
+    "Toy.Scc.botT_monotone": [],
+    "Toy.Scc.botT_respectsCalls": [],
+    "Toy.Scc.bot_le": [
+      "propext"
+    ],
+    "Toy.Scc.bottomUp": [],
+    "Toy.Scc.bottomUpGfp": [],
+    "Toy.Scc.bottomUpGfp_isGreatestFixpoint_of_monotone_of_respectsCalls_of_covers_of_calleesFirst_of_height_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.bottomUpGfp_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.bottomUpGfp_tight_calleesFirst": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.bottomUpGfp_tight_covers": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.bottomUpGfp_tight_fuel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.bottomUpGfp_tight_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.bottomUpGfp_tight_respectsCalls": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.bottomUpHier_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.bottomUpHier_tight_calleesFirst": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.bottomUpHier_tight_calleesFirst.match_1_1": [
+      "propext"
+    ],
+    "Toy.Scc.bottomUpHier_tight_covers": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.bottomUpHier_tight_fuel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.bottomUpHier_tight_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.bottomUpHier_tight_respectsCalls": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.bottomUpLfp": [],
+    "Toy.Scc.bottomUpLfp_isLeastFixpoint_of_monotone_of_respectsCalls_of_covers_of_calleesFirst_of_height_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.bottomUpLfp_le_of_monotone_of_prefixpoint": [
+      "propext"
+    ],
+    "Toy.Scc.bottomUpLfp_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.bottomUpLfp_tight_calleesFirst": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.bottomUpLfp_tight_covers": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.bottomUpLfp_tight_fuel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.bottomUpLfp_tight_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.bottomUpLfp_tight_respectsCalls": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.bottomUp_hierSolution_and_unique_of_monotone_of_respectsCalls_of_covers_of_calleesFirst_of_height_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.cCount": [],
+    "Toy.Scc.cCount.eq_1": [],
+    "Toy.Scc.cCycle": [],
+    "Toy.Scc.cCycle.eq_1": [],
+    "Toy.Scc.cJump": [
+      "propext"
+    ],
+    "Toy.Scc.cJump_has_nat_measure": [
+      "propext"
+    ],
+    "Toy.Scc.cLoop": [],
+    "Toy.Scc.cPath": [
+      "propext"
+    ],
+    "Toy.Scc.cUnbounded": [
+      "propext"
+    ],
+    "Toy.Scc.caller_first_order_0_1_0_recovers_lfp_and_gfp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.callsInGraph_gPathLoop1_cUnbounded": [
+      "propext"
+    ],
+    "Toy.Scc.cells": [],
+    "Toy.Scc.cells.eq_1": [],
+    "Toy.Scc.chain3GfpT": [],
+    "Toy.Scc.chain3GfpT_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.chain3GfpT_respectsCalls": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.chain3LfpT": [],
+    "Toy.Scc.chain3LfpT_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.chain3LfpT_respectsCalls": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.chainGfpT": [],
+    "Toy.Scc.chainGfpT_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.chainGfpT_respectsCalls": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.chainGfpT_respectsCalls_gCycle": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.chainLfpT": [],
+    "Toy.Scc.chainLfpT_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.chainLfpT_respectsCalls": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.chainLfpT_respectsCalls_gCycle": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.checkScc": [],
+    "Toy.Scc.checkScc.eq_1": [],
+    "Toy.Scc.checkSccCert": [],
+    "Toy.Scc.checkSccCert.eq_1": [],
+    "Toy.Scc.checkScc_eq_true_iff_isSccDecomp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.checkScc_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.closed_of_checkSccCert": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.condensationAcyclic_iff_exists_nodup_covering_calleesFirst_order": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.condensationAcyclic_of_calleesFirst": [],
+    "Toy.Scc.conjT": [],
+    "Toy.Scc.conjT.eq_1": [],
+    "Toy.Scc.conjT_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.conjT_respectsCalls": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.convexMerge3": [
+      "propext"
+    ],
+    "Toy.Scc.convex_merge_not_scc_still_lfp_and_gfp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.countP_lt_countP_of_imp_of_exists": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.countP_lt_countP_of_imp_of_exists.match_1_1": [],
+    "Toy.Scc.disjT": [],
+    "Toy.Scc.disjT.eq_1": [],
+    "Toy.Scc.disjT_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.disjT_respectsCalls": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.eq_of_pos_eq_of_mem": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.gCycle": [],
+    "Toy.Scc.gCycle.eq_1": [],
+    "Toy.Scc.gEmpty": [],
+    "Toy.Scc.gEmpty.eq_1": [],
+    "Toy.Scc.gLoop": [],
+    "Toy.Scc.gMix": [],
+    "Toy.Scc.gPath": [],
+    "Toy.Scc.gPath3": [],
+    "Toy.Scc.gPathLoop1": [],
+    "Toy.Scc.gPathLoop1.eq_1": [],
+    "Toy.Scc.hierBetween_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.hierBetween_tight_greatest": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.hierBetween_tight_hierSolution": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.hierBetween_tight_least": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.hierCertB": [],
+    "Toy.Scc.hierCertB.eq_1": [],
+    "Toy.Scc.hierSolution_bottomUp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.hierSolution_chainLfpT_top": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.hierSolution_idT_bot_least": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.hierSolution_idT_top_greatest": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.hierSolution_of_hierCertB": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.hierSolution_of_isGreatestFixpoint": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.hierSolution_of_isLeastFixpoint": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.hierSolution_swapT_gCycle_mixSign_not_unique": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.hierSolution_unique": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.idComp": [],
+    "Toy.Scc.idComp.eq_1": [],
+    "Toy.Scc.idT": [],
+    "Toy.Scc.idT.eq_1": [],
+    "Toy.Scc.idT_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.idT_respectsCalls": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.inner_alone_fails_and_no_nat_measure_of_unbounded_cross_block_fanout": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.instDecidableCalleesFirst": [
+      "propext"
+    ],
+    "Toy.Scc.instDecidableClosedUnder": [],
+    "Toy.Scc.instDecidableCovers": [
+      "propext"
+    ],
+    "Toy.Scc.instDecidableEqSumm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.instDecidableLe": [],
+    "Toy.Scc.instDecidableRankedJustified": [],
+    "Toy.Scc.interRankDecrease_cUnbounded": [
+      "propext"
+    ],
+    "Toy.Scc.intraDecrease_cUnbounded": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.isGreatestFixpoint_chainGfpT_bot": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.isGreatestFixpoint_idT_top": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.isGreatestFixpoint_nmGfpT_bot": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.isGreatestFixpoint_of_iter_fixed": [],
+    "Toy.Scc.isGreatestFixpoint_seedCopyT": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.isLeastFixpoint_chainLfpT_top": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.isLeastFixpoint_idT_bot": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.isLeastFixpoint_nmLfpT_top": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.isLeastFixpoint_nmRankT_top": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.isLeastFixpoint_of_iter_fixed": [
+      "propext"
+    ],
+    "Toy.Scc.isLeastFixpoint_of_monotone_of_prefixpoint_of_rankedJustified": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.isLeastFixpoint_seedCopyT": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.isSccDecomp_gCycle_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.isSccDecomp_gMix_id": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.isSccDecomp_gPath3_id": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.isSccDecomp_gPathLoop1_id": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.isSccDecomp_gPath_id": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.isSccDecomp_iff_blocksMutuallyReachable_and_condensationAcyclic": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.isSccDecomp_iff_blocksMutuallyReachable_and_condensationAcyclic.match_1_1": [],
+    "Toy.Scc.isSccDecomp_of_checkSccCert": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.iter": [],
+    "Toy.Scc.iter.eq_1": [],
+    "Toy.Scc.iter.eq_2": [],
+    "Toy.Scc.iter.eq_def": [],
+    "Toy.Scc.iter.match_1": [],
+    "Toy.Scc.iter_ascending_of_postfixpoint": [],
+    "Toy.Scc.iter_ascending_of_postfixpoint.match_1_1": [],
+    "Toy.Scc.iter_blockOp_outside": [
+      "propext"
+    ],
+    "Toy.Scc.iter_blockOp_outside.match_1_1": [],
+    "Toy.Scc.iter_bot_fixed_at_height": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.iter_bot_isLeastFixpoint_of_monotone_of_height_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.iter_bot_le_succ": [
+      "propext"
+    ],
+    "Toy.Scc.iter_bot_le_succ.match_1_1": [],
+    "Toy.Scc.iter_bot_mono": [
+      "propext"
+    ],
+    "Toy.Scc.iter_descending_of_prefixpoint": [],
+    "Toy.Scc.iter_descending_of_prefixpoint.match_1_1": [],
+    "Toy.Scc.iter_fixed_add": [],
+    "Toy.Scc.iter_fixed_add.match_1_1": [],
+    "Toy.Scc.iter_fixed_at_height_of_ascending": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.iter_fixed_at_height_of_descending": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.iter_le_of_prefixpoint": [],
+    "Toy.Scc.iter_succ'": [],
+    "Toy.Scc.iter_succ'.match_1_1": [],
+    "Toy.Scc.iter_top_fixed_at_height": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.iter_top_isGreatestFixpoint_of_monotone_of_height_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.iter_top_succ_le": [],
+    "Toy.Scc.iter_top_succ_le.match_1_1": [],
+    "Toy.Scc.kleeneGfp_tight_fuel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.kleeneGfp_tight_monotone": [
+      "propext"
+    ],
+    "Toy.Scc.kleeneLfp_tight_fuel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.kleeneLfp_tight_monotone": [
+      "propext"
+    ],
+    "Toy.Scc.kleeneRank": [],
+    "Toy.Scc.kleeneRank.eq_1": [],
+    "Toy.Scc.kleeneRank_lt_height": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.kleene_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.le_and_le_of_hierSolution_of_isLeastFixpoint_of_isGreatestFixpoint": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.le_blockInit_of_fixpoint": [
+      "propext"
+    ],
+    "Toy.Scc.le_bottomUpGfp_of_monotone_of_postfixpoint": [
+      "propext"
+    ],
+    "Toy.Scc.le_iter_of_postfixpoint": [],
+    "Toy.Scc.le_of_monotone_of_isGreatestFixpoint_of_postfixpoint": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.le_of_monotone_of_isLeastFixpoint_of_prefixpoint": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.le_top": [],
+    "Toy.Scc.length_cells": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.lexDecreasing_cUnbounded": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.lexDecreasing_iff_intraDecrease_and_interRankDecrease_of_rank_injective_on_used_blocks": [
+      "propext"
+    ],
+    "Toy.Scc.lexDecreasing_iff_intraDecrease_and_interRankDecrease_of_rank_injective_on_used_blocks.match_1_1": [],
+    "Toy.Scc.lexDecreasing_pos_iff_of_covers": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.lexIff_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.lexIff_tight_injective": [
+      "propext"
+    ],
+    "Toy.Scc.lexMeasure": [],
+    "Toy.Scc.lexMeasure.eq_1": [],
+    "Toy.Scc.lexTerminates_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.lexTerminates_tight_lexDecreasing": [
+      "propext"
+    ],
+    "Toy.Scc.mem_cells": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.mergeComp3": [
+      "propext"
+    ],
+    "Toy.Scc.mergeComp3.eq_1": [
+      "propext"
+    ],
+    "Toy.Scc.mixGfpT": [],
+    "Toy.Scc.mixGfpT_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.mixGfpT_respectsCalls": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.mixLfpT": [],
+    "Toy.Scc.mixLfpT_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.mixLfpT_respectsCalls": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.mixResult": [],
+    "Toy.Scc.mixRevT": [],
+    "Toy.Scc.mixRevT_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.mixRevT_respectsCalls": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.mixSign": [],
+    "Toy.Scc.mixT": [],
+    "Toy.Scc.mixT_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.mixT_respectsCalls": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.mixed_gfp_callee_lfp_caller_neither_lfp_nor_gfp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.mixed_lfp_callee_gfp_caller_neither_lfp_nor_gfp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.negT": [],
+    "Toy.Scc.negT.eq_1": [],
+    "Toy.Scc.negT_no_fixpoint": [
+      "propext"
+    ],
+    "Toy.Scc.negT_respectsCalls": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.nmGfpT": [
+      "propext"
+    ],
+    "Toy.Scc.nmGfpT.eq_1": [
+      "propext"
+    ],
+    "Toy.Scc.nmLfpT": [
+      "propext"
+    ],
+    "Toy.Scc.nmLfpT.eq_1": [
+      "propext"
+    ],
+    "Toy.Scc.nmRankT": [
+      "propext"
+    ],
+    "Toy.Scc.no_nat_measure_cUnbounded": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.nonconvex_merge_order_0_1_0_recovers_lfp_and_gfp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.nonconvex_merge_wrong_in_both_orders": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.not_acc_of_always_calls": [],
+    "Toy.Scc.not_calleesFirst_gCycle_id": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.not_calleesFirst_gPath3_merge": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.not_calleesFirst_gPath_omitted_callee": [
+      "propext"
+    ],
+    "Toy.Scc.not_calleesFirst_gPath_omitted_caller": [
+      "propext"
+    ],
+    "Toy.Scc.not_condensationAcyclic_gCycle_id": [
+      "propext"
+    ],
+    "Toy.Scc.not_hierConclusion_of_not_fixpoint": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.not_hierSolution_chainLfpT_bot": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.not_hierSolution_idT_top_least": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.not_isGreatestFixpoint_idT_bot": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.not_isLeastFixpoint_idT_top": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.not_isSccDecomp_gCycle_id": [
+      "propext"
+    ],
+    "Toy.Scc.not_isSccDecomp_gPath3_convexMerge": [
+      "propext"
+    ],
+    "Toy.Scc.not_isSccDecomp_gPath3_merge": [
+      "propext"
+    ],
+    "Toy.Scc.not_isSccDecomp_gPath_one": [
+      "propext"
+    ],
+    "Toy.Scc.not_monotone_negT": [
+      "propext"
+    ],
+    "Toy.Scc.not_monotone_nmGfpT": [
+      "propext"
+    ],
+    "Toy.Scc.not_monotone_nmLfpT": [
+      "propext"
+    ],
+    "Toy.Scc.not_monotone_nmRankT": [
+      "propext"
+    ],
+    "Toy.Scc.not_rankedJustified_idT_top": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.not_reach_gPath3_2_0": [
+      "propext"
+    ],
+    "Toy.Scc.not_respectsCalls_gEmpty_chainGfpT": [
+      "propext"
+    ],
+    "Toy.Scc.not_respectsCalls_gEmpty_chainLfpT": [
+      "propext"
+    ],
+    "Toy.Scc.not_terminates_cCycle": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.not_terminates_cLoop": [
+      "propext"
+    ],
+    "Toy.Scc.oneBitCase": [],
+    "Toy.Scc.oneBitCase_mono": [
+      "propext"
+    ],
+    "Toy.Scc.oneComp": [
+      "propext"
+    ],
+    "Toy.Scc.oneSidedGfp_tight_monotone": [
+      "propext"
+    ],
+    "Toy.Scc.oneSidedGfp_tight_postfixpoint": [
+      "propext"
+    ],
+    "Toy.Scc.oneSidedLfp_tight_monotone": [
+      "propext"
+    ],
+    "Toy.Scc.oneSidedLfp_tight_prefixpoint": [
+      "propext"
+    ],
+    "Toy.Scc.oneSided_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.only0": [],
+    "Toy.Scc.only1": [],
+    "Toy.Scc.pos": [],
+    "Toy.Scc.pos_injective_on_used_blocks_of_covers": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.pos_lt_length_of_mem": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.postfixSound_tight_greatest": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.postfixSound_tight_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.postfixSound_tight_postfixpoint": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.prefixPostfixSound_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.prefixSound_tight_least": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.prefixSound_tight_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.prefixSound_tight_prefixpoint": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.prefix_and_postfix_checks_pass_but_not_extremal": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.prefixpoint_and_rankedJustified_kleeneRank_lt_height_of_monotone_of_isLeastFixpoint": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.rankedCert_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.rankedCert_tight_monotone": [
+      "propext"
+    ],
+    "Toy.Scc.rankedCert_tight_prefixpoint": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.rankedCert_tight_ranking": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.rankedComplete_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.rankedComplete_tight_least": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.rankedComplete_tight_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.reachB": [],
+    "Toy.Scc.reachB.eq_1": [],
+    "Toy.Scc.reachB_of_reach_of_closed": [
+      "propext"
+    ],
+    "Toy.Scc.reachFrom": [],
+    "Toy.Scc.reachFrom.eq_1": [],
+    "Toy.Scc.reachFrom.eq_2": [],
+    "Toy.Scc.reachFrom.eq_def": [],
+    "Toy.Scc.reachFrom.match_1": [],
+    "Toy.Scc.reachFrom_eq_true_iff_reach_of_pred_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.reachFrom_mono": [
+      "propext"
+    ],
+    "Toy.Scc.reachFrom_mono_succ": [
+      "propext"
+    ],
+    "Toy.Scc.reachFrom_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Scc.reachFrom_self": [
+      "propext"
+    ],
+    "Toy.Scc.reachFrom_self.match_1_1": [],
+    "Toy.Scc.reachFrom_succ_eq_of_closed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.reachFrom_tight_fuel": [
+      "propext"
+    ],
+    "Toy.Scc.reachStep": [],
+    "Toy.Scc.reachStep.eq_1": [],
+    "Toy.Scc.reach_gCycle": [
+      "propext"
+    ],
+    "Toy.Scc.reach_gPath3_0_2": [
+      "propext"
+    ],
+    "Toy.Scc.reach_of_reachB": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.reach_of_reachFrom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.reach_of_reachFrom.match_1_1": [],
+    "Toy.Scc.revResult": [],
+    "Toy.Scc.revSign": [],
+    "Toy.Scc.sccChar_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.sccChar_tight_acyclic": [
+      "propext"
+    ],
+    "Toy.Scc.sccChar_tight_mutual": [
+      "propext"
+    ],
+    "Toy.Scc.seedCopyFix": [],
+    "Toy.Scc.seedCopyPost": [],
+    "Toy.Scc.seedCopyPre": [],
+    "Toy.Scc.seedCopyT": [],
+    "Toy.Scc.seedCopyT_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.seedCopyT_respectsCalls": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.solveBlock": [],
+    "Toy.Scc.solveBlock_eq_of_blockExtremal": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.solveBlock_outside": [
+      "propext"
+    ],
+    "Toy.Scc.splitGfpT": [],
+    "Toy.Scc.splitGfpT_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.splitGfpT_respectsCalls": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.splitLfpT": [],
+    "Toy.Scc.splitLfpT_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.splitLfpT_respectsCalls": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.splitOneBitT": [
+      "propext"
+    ],
+    "Toy.Scc.splitOneBitT.eq_1": [
+      "propext"
+    ],
+    "Toy.Scc.splitOneBitT_monotone": [
+      "propext"
+    ],
+    "Toy.Scc.splitOneBitT_respectsCalls": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.split_scc_one_bit_some_duplicate_free_order_correct": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.split_scc_order_0_1_0_recovers_lfp_and_gfp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.split_scc_wrong_lfp_and_gfp_in_both_orders": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.summ12_ext": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.summ12_ext.match_1_1": [],
+    "Toy.Scc.summ12_ext.match_1_3": [],
+    "Toy.Scc.summ12_ext.match_1_6": [
+      "propext"
+    ],
+    "Toy.Scc.summ12_ext_bot": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.summ12_ext_bot.match_1_1": [],
+    "Toy.Scc.summ12_ext_bot.match_1_3": [],
+    "Toy.Scc.summ12_ext_bot.match_1_6": [
+      "propext"
+    ],
+    "Toy.Scc.summEqB": [],
+    "Toy.Scc.summEqB.eq_1": [],
+    "Toy.Scc.summEqB_eq_true_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.swapT": [],
+    "Toy.Scc.swapT_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.swapT_respectsCalls": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.terminates_cCount": [
+      "propext"
+    ],
+    "Toy.Scc.terminates_cCount.match_1_1": [],
+    "Toy.Scc.terminates_cCount.match_1_4": [],
+    "Toy.Scc.terminates_cJump": [
+      "propext"
+    ],
+    "Toy.Scc.terminates_cUnbounded": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.terminates_cUnbounded.match_1_1": [
+      "propext"
+    ],
+    "Toy.Scc.terminates_cUnbounded.match_1_10": [
+      "propext"
+    ],
+    "Toy.Scc.terminates_cUnbounded.match_1_3": [
+      "propext"
+    ],
+    "Toy.Scc.terminates_cUnbounded.match_1_6": [],
+    "Toy.Scc.terminates_cUnbounded.match_1_8": [
+      "propext"
+    ],
+    "Toy.Scc.terminates_of_condensationAcyclic_of_callsInGraph_of_intraDecrease": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.terminates_of_lexDecreasing": [],
+    "Toy.Scc.terminationIntra_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.terminationIntra_tight_acyclic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.terminationIntra_tight_callsInGraph": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.terminationIntra_tight_intraDecrease": [
+      "propext"
+    ],
+    "Toy.Scc.top": [],
+    "Toy.Scc.top.eq_1": [],
+    "Toy.Scc.topT": [],
+    "Toy.Scc.topT_monotone": [],
+    "Toy.Scc.topT_respectsCalls": [],
+    "Toy.Scc.topoOrder_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Scc.transGen_head": [],
+    "Toy.Scc.transGen_trans": [],
+    "Toy.Scc.valid_scc_caller_first_order_wrong_lfp_and_gfp": [
+      "Quot.sound",
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

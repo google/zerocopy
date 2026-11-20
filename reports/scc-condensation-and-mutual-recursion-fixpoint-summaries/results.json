@@ -1,0 +1,868 @@
+[
+  {
+    "id": "scc-check",
+    "lean": [
+      "Toy.Scc.checkScc_eq_true_iff_isSccDecomp",
+      "Toy.Scc.reachFrom_eq_true_iff_reach_of_pred_le"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "Textbook graph theory (reachability by bounded closure; SCCs as classes of mutual reachability), restated as a decidable checker in this vocabulary. Verified SCC algorithms exist in several proof assistants (prior art).",
+    "plain_claim": "For every call graph E on Fin n and every block map comp : Fin n -> Fin k, the Boolean checker checkScc E comp, which compares \"same block\" with mutual reachability computed by the fuel-n closure reachB for all ordered pairs of functions, returns true exactly when comp is a valid SCC decomposition (same block iff mutually reachable); the underlying closure reachFrom E f fuel computes reachability exactly whenever fuel >= n - 1.",
+    "hypotheses": [
+      {
+        "name": "hfuel : n - 1 <= fuel (closure lemma only; the checker theorem has no hypotheses)",
+        "purpose": "A shortest call chain has at most n - 1 edges; with less fuel the closure misses reachable functions.",
+        "tightness": "tight",
+        "counterexample": "Toy.Scc.reachFrom_tight_fuel"
+      }
+    ],
+    "depth": "substantive",
+    "depth_justification": "Completeness of the bounded closure uses a counting argument: the reached sets grow with the fuel, every step that is not closed under calls adds a function, so by fuel n - 1 the set is closed under calls or contains every function. Given that, the checker equivalence is a case analysis.",
+    "nonvacuity_witness": "checkScc accepts the singleton-block decomposition of 0 -> 1, which is a valid SCC decomposition, and rejects both the split 2-cycle and the one-block merge of 0 -> 1, which are invalid; with fuel 2 = n - 1 the closure finds 0 ->* 2 in 0 -> 1 -> 2 and excludes 2 ->* 0.",
+    "nonvacuity_witness_lean": [
+      "Toy.Scc.checkScc_nonvacuous",
+      "Toy.Scc.reachFrom_nonvacuous"
+    ],
+    "non_claims": [
+      "Not an efficient algorithm. checkScc evaluates reachB for all n^2 ordered pairs of functions, and each reachB query re-evaluates unmemoized functional closures across fuel = n steps, costing up to about (n+1)^n operations as written; \"n^2 queries\" counts reachB invocations, not graph-edge inspections. It is a specification-level decision procedure, not Tarjan's algorithm.",
+      "It decides whether a given block map is an SCC decomposition; it does not compute one.",
+      "It checks comp against the given graph E only; it says nothing about whether E over-approximates the calls of a real program.",
+      "Block names need not be contiguous or all used. The checker certifies no processing order (see topo-order).",
+      "For accepting a decomposition for bottom-up fixpoint computation, full SCC validity is stronger than needed (see bottomup-lfp and merge-convex)."
+    ],
+    "prior_art": [
+      "R. E. Tarjan, \"Depth-first search and linear graph algorithms\", SIAM Journal on Computing 1(2):146-160, 1972, doi:10.1137/0201010. Linear-time algorithm for the strongly connected components of a directed graph; the SCC partition itself is the background notion formalized here.",
+      "P. Lammich, \"Verified efficient implementation of Gabow's strongly connected component algorithm\", Interactive Theorem Proving (ITP 2014), LNCS 8558, pp. 325-340, doi:10.1007/978-3-319-08970-6_21; Archive of Formal Proofs entry Gabow_SCC, https://www.isa-afp.org/entries/Gabow_SCC.html (2014). A verified SCC algorithm in Isabelle/HOL; this package verifies no algorithm, only a specification-level checker.",
+      "R. Chen, C. Cohen, J.-J. Levy, S. Merz, L. Thery, \"Formal proofs of Tarjan's strongly connected components algorithm in Why3, Coq and Isabelle\", ITP 2019, LIPIcs 141, article 13, doi:10.4230/LIPIcs.ITP.2019.13. Mechanized correctness proofs of Tarjan's SCC algorithm in three proof systems.",
+      "rocq-community/tarjan, https://github.com/rocq-community/tarjan, commit 34fe042cc482e65d27bc68b455d922d47da81c9d: Coq (Mathematical Components) formalization of Tarjan's and Kosaraju's SCC algorithms.",
+      "P. Lammich, R. Neumann, \"A framework for verifying depth-first search algorithms\", CPP 2015, pp. 137-146, doi:10.1145/2676724.2693165; Archive of Formal Proofs entry DFS_Framework, whose example theories include Tarjan's SCC algorithm. Mechanized DFS-based graph algorithms in Isabelle/HOL.",
+      "S. Merz, V. Trelat, \"Correctness of a set-based algorithm for computing strongly connected components of a graph\", Archive of Formal Proofs entry SCC_Bloemen_Sequential, August 17, 2022. An Isabelle/HOL proof of a set-based sequential SCC algorithm.",
+      "Lean 4, release v4.34.1 (the toolchain of this package): module src/Lean/Util/SCC.lean (Lean.SCC.scc, documented as a simple implementation of Tarjan's algorithm) is used by partitionPreDefs in src/Lean/Elab/PreDefinition/Main.lean to split mutually recursive definitions into SCC blocks. It is unverified program code, not a theorem."
+    ],
+    "design_question": "Which conditions must an SCC-boundary checker verify to accept an untrusted SCC decomposition? This card gives an exact, specification-level decision procedure for SCC validity itself (one reachability check per ordered pair of functions)."
+  },
+  {
+    "id": "scc-char",
+    "lean": "Toy.Scc.isSccDecomp_iff_blocksMutuallyReachable_and_condensationAcyclic",
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "Standard graph theory: the SCC partition is the finest partition into mutually reachable blocks, and its condensation is acyclic.",
+    "plain_claim": "A block map comp is a valid SCC decomposition of E exactly when (a) any two functions in the same block are mutually reachable in the whole graph E and (b) the condensation, the graph on blocks with an edge c -> d whenever c differs from d and some function of block c calls some function of block d, has no cycle.",
+    "hypotheses": [
+      {
+        "name": "right-hand conjunct (b): CondensationAcyclic E comp",
+        "purpose": "Rules out splitting an SCC across several blocks; without it, (a) alone does not characterize SCC decompositions.",
+        "tightness": "tight",
+        "counterexample": "Toy.Scc.sccChar_tight_acyclic"
+      },
+      {
+        "name": "right-hand conjunct (a): BlocksMutuallyReachable E comp",
+        "purpose": "Rules out merging functions that are not mutually reachable; without it, (b) alone does not characterize SCC decompositions.",
+        "tightness": "tight",
+        "counterexample": "Toy.Scc.sccChar_tight_mutual"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Lifting condensation paths to call chains and projecting call chains to condensation paths, one induction each.",
+    "nonvacuity_witness": "The singleton decomposition of 0 -> 0, 0 -> 1, 1 -> 1 satisfies both sides; its condensation has the edge 0 -> 1 and both blocks are recursive.",
+    "nonvacuity_witness_lean": "Toy.Scc.sccChar_nonvacuous",
+    "non_claims": [
+      "Mutual reachability in (a) is taken in the whole graph E, not in the subgraph induced by a block, and (a) alone does not make a block strongly connected as an induced subgraph: in the 3-cycle 0 -> 1 -> 2 -> 0, the block {0, 2} (with {1} a separate block) satisfies (a), but its induced subgraph has only the edge 2 -> 0. Such blocks are excluded by (b). No induced-subgraph characterization is stated.",
+      "CondensationAcyclic ignores intra-block edges and self-loops (CondEdge requires c != d); an acyclic condensation allows arbitrary recursion inside each block.",
+      "No algorithm or complexity bound is given for checking either conjunct.",
+      "The forward direction contains the textbook fact that the condensation of the SCC partition is acyclic. The converse shows that acyclicity alone already forces maximality (no SCC is split).",
+      "It does not say that bottom-up fixpoint computation needs an SCC decomposition; it does not (merge-convex)."
+    ],
+    "prior_art": [
+      "R. E. Tarjan, \"Depth-first search and linear graph algorithms\", SIAM Journal on Computing 1(2):146-160, 1972, doi:10.1137/0201010. Linear-time algorithm for the strongly connected components of a directed graph; the SCC partition itself is the background notion formalized here.",
+      "R. Chen, C. Cohen, J.-J. Levy, S. Merz, L. Thery, \"Formal proofs of Tarjan's strongly connected components algorithm in Why3, Coq and Isabelle\", ITP 2019, LIPIcs 141, article 13, doi:10.4230/LIPIcs.ITP.2019.13. Mechanized correctness proofs of Tarjan's SCC algorithm in three proof systems.",
+      "rocq-community/tarjan, commit 34fe042cc482e65d27bc68b455d922d47da81c9d, theories/acyclic.v, lemma sccs_acyclicE (sccs_acyclic = acyclic g, where sccs_acyclic states that every class of the SCC partition is acyclic): a related mechanized link between SCCs and acyclicity, for the graph itself rather than for a condensation by an arbitrary block map."
+    ],
+    "design_question": "Splits SCC validity into an edge-local part that an order can certify (acyclic condensation, see topo-order) and a reachability part (mutual reachability inside blocks), so a checker can verify only the part it needs."
+  },
+  {
+    "id": "topo-order",
+    "lean": "Toy.Scc.condensationAcyclic_iff_exists_nodup_covering_calleesFirst_order",
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "Existence of a topological order of a finite acyclic graph (Kahn 1962; mechanized in Coq, see prior art), restated for the condensation in callees-first form.",
+    "plain_claim": "The condensation of E under comp is acyclic exactly when there is a duplicate-free list of blocks that contains the block of every function and is callees-first: for every call between functions in different blocks, both blocks occur in the list and the callee's block occurs strictly earlier than the caller's block.",
+    "hypotheses": [
+      {
+        "name": "order.Nodup (inside the existential)",
+        "purpose": "Strengthens the existence side (a duplicate-free order exists); the right-to-left direction does not use it.",
+        "tightness": "harmless"
+      },
+      {
+        "name": "Covers comp order (inside the existential)",
+        "purpose": "Strengthens the existence side (the order lists every function's block); the right-to-left direction does not use it.",
+        "tightness": "harmless"
+      }
+    ],
+    "depth": "substantive",
+    "depth_justification": "Constructs the order: the blocks sorted (List.mergeSort) by their number of strict condensation descendants, a quantity that strictly decreases along every condensation edge when the condensation is acyclic. The right-to-left direction is the helper condensationAcyclic_of_calleesFirst.",
+    "nonvacuity_witness": "For 0 -> 1 with singleton blocks, the condensation is acyclic and [1, 0] is a duplicate-free covering callees-first order; for the split 2-cycle both sides fail.",
+    "nonvacuity_witness_lean": "Toy.Scc.topoOrder_nonvacuous",
+    "non_claims": [
+      "Existence only: the order constructed in the proof (sorted by descendant counts) is not, for example, the order in which Tarjan's algorithm emits components, and nothing is said about efficiency.",
+      "CalleesFirst compares first occurrences (List.idxOf) and requires both blocks of every cross-block call to occur in the list. Blocks that take part in no cross-block call need not occur (Covers requires that separately). Lists with repeated blocks satisfy CalleesFirst when their first occurrences do, but the existence side provides a duplicate-free list.",
+      "The right-to-left direction holds for every callees-first list, covering or not (helper condensationAcyclic_of_calleesFirst).",
+      "Together with scc-char this implies that every valid SCC decomposition has a covering callees-first order; that combination is not stated as a separate theorem.",
+      "For a covering order, the position pos order is injective on the blocks used by comp (pos_injective_on_used_blocks_of_covers), so it can serve as the block rank in lex-iff (lexDecreasing_pos_iff_of_covers)."
+    ],
+    "prior_art": [
+      "A. B. Kahn, \"Topological sorting of large networks\", Communications of the ACM 5(11):558-562, 1962, doi:10.1145/368996.369025. Constructs a topological order of any finite acyclic directed graph.",
+      "R. E. Tarjan, \"Depth-first search and linear graph algorithms\", SIAM Journal on Computing 1(2):146-160, 1972, doi:10.1137/0201010. Linear-time algorithm for the strongly connected components of a directed graph; the SCC partition itself is the background notion formalized here.",
+      "rocq-community/tarjan, commit 34fe042cc482e65d27bc68b455d922d47da81c9d: theories/kosaraju.v, lemma tseq_correct (the computed sequence tseq is topologically sorted and contains every node), and theories/acyclic_tsorted.v, lemma tseq_connect_before (in an acyclic graph, connect g x y implies that x comes before y in tseq). A mechanized existence-and-construction of a topological order on vertices of a finite acyclic graph.",
+      "AbsInt/CompCert, https://github.com/AbsInt/CompCert, commit 2685140bf72c959446981fb99b5e44a8975021bc, lib/Postorder.v (theorem postorder_correct): a Coq-verified postorder numbering of a directed graph.",
+      "F. Bourdoncle, \"Efficient chaotic iteration strategies with widenings\", Formal Methods in Programming and Their Applications (FMPA 1993), LNCS 735, pp. 128-141, doi:10.1007/BFb0039704. Iteration strategies based on weak topological orderings of the dependency graph (nested SCC structure with widening points); the condensation-level callees-first order studied here corresponds to the outermost level of such a strategy, without widening and without nested components."
+    ],
+    "supporting_lean": [
+      "Toy.Scc.condensationAcyclic_of_calleesFirst",
+      "Toy.Scc.pos_injective_on_used_blocks_of_covers",
+      "Toy.Scc.not_calleesFirst_gPath_omitted_caller",
+      "Toy.Scc.not_calleesFirst_gPath_omitted_callee"
+    ],
+    "design_question": "An untrusted producer can supply (comp, order) and a checker can verify CalleesFirst edge-locally (membership and one position comparison per cross-block call) instead of recomputing reachability; this card says that no acyclic decomposition is lost by requiring such an order."
+  },
+  {
+    "id": "kleene-bound",
+    "lean": [
+      "Toy.Scc.iter_bot_isLeastFixpoint_of_monotone_of_height_le",
+      "Toy.Scc.iter_top_isGreatestFixpoint_of_monotone_of_height_le"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Kleene iteration on a finite-height lattice (Kleene 1952; Cousot and Cousot 1979; textbook in Nielson, Nielson and Hankin 1999), restated for summary vectors.",
+    "plain_claim": "For a monotone transfer F on summary vectors Fin n -> (Fin m -> Bool) ordered pointwise, at least n*m rounds of iteration from the all-false vector give the least fixpoint of F, and at least n*m rounds from the all-true vector give the greatest fixpoint (n*m, the number of bits, is the height of this lattice).",
+    "hypotheses": [
+      {
+        "name": "hmono : Monotone F",
+        "purpose": "Without monotonicity a transfer may have no fixpoint at all.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Scc.kleeneLfp_tight_monotone",
+          "Toy.Scc.kleeneGfp_tight_monotone"
+        ]
+      },
+      {
+        "name": "hfuel : n * m <= fuel",
+        "purpose": "n*m is the height of the lattice; fewer rounds can stop before the chain stabilizes.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Scc.kleeneLfp_tight_fuel",
+          "Toy.Scc.kleeneGfp_tight_fuel"
+        ]
+      }
+    ],
+    "depth": "substantive",
+    "depth_justification": "Counting argument: along the monotone Kleene chain every round that is not yet fixed strictly increases (resp. decreases) the number of set bits, which lies between 0 and n*m.",
+    "nonvacuity_witness": "The monotone transfer seedCopyT on 0 -> 1 with two bits per function (n*m = 4): after 4 rounds from either end the iteration reaches the unique fixpoint, after 1 round it has not.",
+    "nonvacuity_witness_lean": "Toy.Scc.kleene_nonvacuous",
+    "non_claims": [
+      "Only for the per-function powerset lattices Fin m -> Bool. Nothing is claimed for other finite lattices, for infinite-height domains, or for widening.",
+      "n*m is a worst-case bound; its tightness is shown only at n = 2, m = 1. Nothing is claimed about typical iteration counts.",
+      "An implementation need not always run all n*m iterations: any earlier iterate k with F(F^k(bot)) = F^k(bot) (resp. from top) is already the exact least (resp. greatest) fixpoint (isLeastFixpoint_of_iter_fixed, isGreatestFixpoint_of_iter_fixed).",
+      "The height bound n*m = log_2(|Summ n m|) relies on Summ n m being a Boolean powerset; arbitrary finite lattices of cardinality N can have chains of length N - 1.",
+      "This is the inner-iteration bound used by bottomup-lfp, bottomup-gfp, bottomup-mixed and ranked-cert-complete."
+    ],
+    "prior_art": [
+      "S. C. Kleene, Introduction to Metamathematics, Van Nostrand, 1952, Section 66, Theorem XXVI (first recursion theorem): the least solution of a recursive functional equation is the union of the iterates of the functional starting from the empty function.",
+      "P. Cousot, R. Cousot, \"Constructive versions of Tarski's fixed point theorems\", Pacific Journal of Mathematics 82(1):43-57, 1979, doi:10.2140/pjm.1979.82.43. Characterizes the extremal fixpoints of a monotone map on a complete lattice as limits of (in general transfinite) iteration sequences; on the finite lattices here the iteration is finite and bounded by the height.",
+      "F. Nielson, H. R. Nielson, C. Hankin, Principles of Program Analysis, Springer, 1999, doi:10.1007/978-3-662-03811-6. Textbook account of monotone frameworks: under the ascending chain condition, iteration from the bottom element stabilizes at the least fixpoint (widening is used otherwise).",
+      "A. Tarski, \"A lattice-theoretical fixpoint theorem and its applications\", Pacific Journal of Mathematics 5(2):285-309, 1955, doi:10.2140/pjm.1955.5.285. Monotone maps on complete lattices have least and greatest fixpoints, the least being the meet of all prefixpoints and the greatest the join of all postfixpoints. It is an existence result; the iteration bound of this card does not come from it."
+    ],
+    "design_question": "Bounds the work of each per-SCC inner iteration and justifies a fixed fuel in a checked implementation."
+  },
+  {
+    "id": "bottomup-lfp",
+    "lean": "Toy.Scc.bottomUpLfp_isLeastFixpoint_of_monotone_of_respectsCalls_of_covers_of_calleesFirst_of_height_le",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Known: solving the SCCs of a dependency graph in reverse topological order, each by fixpoint iteration, yields the least solution of a monotone equation system (Bekic's theorem in DAG form; SCC-structured iteration strategies; block-wise solving of alternation-free equation systems). Restated here for arbitrary block maps, with every hypothesis shown necessary.",
+    "plain_claim": "If F is monotone and the equation of each function reads only the summaries of its callees in E, then for any block map comp and any list of blocks that contains every function's block and is callees-first, one pass over the list (one block solve per list entry), solving each block by at least n*m rounds of Kleene iteration from the empty set with all other summaries frozen and starting from the all-false vector, yields the global least fixpoint of F.",
+    "hypotheses": [
+      {
+        "name": "hmono : Monotone F",
+        "purpose": "Needed for least fixpoints to exist and for the inner iteration to converge to them.",
+        "tightness": "tight",
+        "counterexample": "Toy.Scc.bottomUpLfp_tight_monotone"
+      },
+      {
+        "name": "hresp : RespectsCalls E F",
+        "purpose": "Ties the equations to the call graph; otherwise an equation may read a block that is solved later.",
+        "tightness": "tight",
+        "counterexample": "Toy.Scc.bottomUpLfp_tight_respectsCalls"
+      },
+      {
+        "name": "hcover : Covers comp order",
+        "purpose": "Every block must be solved at least once (a block without cross-block calls is not forced into the order by CalleesFirst).",
+        "tightness": "tight",
+        "counterexample": "Toy.Scc.bottomUpLfp_tight_covers"
+      },
+      {
+        "name": "hfirst : CalleesFirst E comp order",
+        "purpose": "Callee blocks must be final before their callers are solved.",
+        "tightness": "tight",
+        "counterexample": "Toy.Scc.bottomUpLfp_tight_calleesFirst"
+      },
+      {
+        "name": "hfuel : n * m <= fuel",
+        "purpose": "The inner iteration must reach the block's least fixpoint.",
+        "tightness": "tight",
+        "counterexample": "Toy.Scc.bottomUpLfp_tight_fuel"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Depth is measured relative to the other cards of this package. Given bottomup-mixed (the pass computes the unique hierarchical solution), the global least fixpoint (kleene-bound) is an all-least hierarchical solution, because its meet with any block fixpoint is a prefixpoint (prefix-postfix-sound); uniqueness identifies the two. The induction along the order is in bottomup-mixed.",
+    "nonvacuity_witness": "The graph 0 -> 0, 0 -> 1, 1 -> 1 with singleton blocks (a condensation edge and two recursive blocks), order [1, 0], fuel 2, and the monotone callee-local transfer F(0) = sigma(0) union sigma(1), F(1) = {0} union sigma(1).",
+    "nonvacuity_witness_lean": "Toy.Scc.bottomUpLfp_nonvacuous",
+    "non_claims": [
+      "The block map comp need not be an SCC decomposition: any block map with a covering callees-first order works (card merge-convex). Conversely, a valid SCC decomposition processed in an order that is not callees-first fails (card caller-first).",
+      "The claim is about one pass over the list, with one block solve per list entry; a block that occurs twice is solved again, which is harmless under these hypotheses. Nothing is claimed about worklist or chaotic iteration, or about re-processing blocks until stable.",
+      "Transfers are arbitrary monotone maps on the finite powerset lattice Fin n -> (Fin m -> Bool). Although the concrete fixtures in this package are disjunctive transfers with unary-premise rules (disjT, join-preserving) or conjunctive transfers (conjT, meet-preserving), Monotone F also covers non-distributive transfers, such as multi-premise Horn clauses combined disjunctively with other rules (a fact that needs two callee facts simultaneously, or another one). Nothing is claimed for non-monotone transfers or infinite-height domains.",
+      "Under widening on infinite-height domains nothing is claimed; in particular coarsening blocks (merge-convex) is not claimed to preserve results there, since widening operators are in general neither monotone nor associative and their results depend on widening-point placement.",
+      "The model has one summary value per function. It does not model call strings, the IFDS exploded supergraph, or summaries parameterized by calling context. A relational (input-output) summary over a finite domain D can be encoded by letting Fin m index pairs in D x D; the package does not develop this encoding.",
+      "Direction of dependency: RespectsCalls E F requires caller equations to read only callee summaries (bottom-up summary synthesis, where E f g = true means f calls g). Forward caller-to-callee analyses (such as reachable entry states propagated from entry points) depend on callers (the transpose graph E^T) and therefore require callers-first order rather than callees-first.",
+      "Static call-graph assumption: if indirect calls (closures, function pointers, virtual/trait-method calls) are resolved during the fixpoint analysis itself rather than over-approximated ahead of time in E, RespectsCalls E F fails against the incomplete static graph.",
+      "The fuel bound n*m is sufficient, not optimal; a per-block bound (block size times m) would also suffice but is not stated.",
+      "Nothing is claimed about running time or about how the order is produced; RespectsCalls must hold for the same graph E that the order is checked against."
+    ],
+    "prior_art": [
+      "H. Bekic, \"Definable operations in general algebras, and the theory of automata and flowcharts\", 1969 report, reprinted in C. B. Jones (ed.), Programming Languages and Their Definition, LNCS 177, Springer, 1984, pp. 30-55, doi:10.1007/BFb0048939. Source of Bekic's theorem: a simultaneous least fixpoint can be computed as nested single least fixpoints. It concerns least fixpoints only; the per-block decomposition here is a DAG-shaped instance.",
+      "G. Winskel, The Formal Semantics of Programming Languages, MIT Press, 1993, Section 10.1 (Bekic's theorem). Textbook statement and proof of Bekic's theorem for least fixpoints.",
+      "F. Bourdoncle, \"Efficient chaotic iteration strategies with widenings\", Formal Methods in Programming and Their Applications (FMPA 1993), LNCS 735, pp. 128-141, doi:10.1007/BFb0039704. Iteration strategies based on weak topological orderings of the dependency graph (nested SCC structure with widening points); the condensation-level callees-first order studied here corresponds to the outermost level of such a strategy, without widening and without nested components.",
+      "R. Cleaveland, B. Steffen, \"A linear-time model-checking algorithm for the alternation-free modal mu-calculus\", Formal Methods in System Design 2(2):121-147, 1993, doi:10.1007/BF01383878. Model checking by translation into equational blocks of least and greatest fixpoint equations in the alternation-free case, solved block by block.",
+      "M. G. Burke, \"An interval-based approach to exhaustive and incremental interprocedural data-flow analysis\", ACM Transactions on Programming Languages and Systems 12(3):341-395, 1990, doi:10.1145/78969.78963. Interval-based (structure-directed) interprocedural data-flow analysis, as opposed to iterating over the whole program.",
+      "M. Sharir, A. Pnueli, \"Two approaches to interprocedural data flow analysis\", in S. S. Muchnick and N. D. Jones (eds.), Program Flow Analysis: Theory and Applications, Prentice-Hall, 1981, pp. 189-233. The functional approach computes for each procedure a summary function (a transformer on the data-flow lattice, so summaries are context-dependent) as the solution of an equation system, by iterative (worklist-style) solving; the second approach uses call strings. This package abstracts only the shape of per-procedure summary equations, with one summary value per function, and studies a single pass in a fixed block order rather than worklist solving.",
+      "T. Reps, S. Horwitz, M. Sagiv, \"Precise interprocedural dataflow analysis via graph reachability\", POPL 1995, pp. 49-61, doi:10.1145/199448.199462. IFDS: finite distributive subset problems as realizable-path reachability, solved by tabulation over path and summary edges; context sensitivity (the exploded supergraph) is not modeled here.",
+      "P. Cousot, \"Asynchronous iterative methods for solving a fixed point system of monotone equations in a complete lattice\", Research Report R.R. 88, Laboratoire IMAG, Universite scientifique et medicale de Grenoble, September 1977. Asynchronous (chaotic) iteration solves systems of monotone equations; this package instead studies a single pass in a fixed block order, where the order matters.",
+      "J.-H. Jourdan, V. Laporte, S. Blazy, X. Leroy, D. Pichardie, \"A formally-verified C static analyzer\", POPL 2015, pp. 247-259, doi:10.1145/2676726.2676966. A static analyzer (Verasco) proved sound in Coq; fixpoint-based analysis in a verified setting, at the level of a whole analyzer rather than this package's abstract block decomposition."
+    ],
+    "supporting_lean": [
+      "Toy.Scc.hierSolution_of_isLeastFixpoint",
+      "Toy.Scc.hierSolution_bottomUp",
+      "Toy.Scc.hierSolution_unique"
+    ],
+    "design_question": "When is bottom-up composition of per-SCC fixpoints equal to the whole-program fixpoint, and which conditions does an SCC-boundary checker need so that an untrusted decomposition can be accepted? Answer for least fixpoints: monotone, callee-local transfers, a covering callees-first order and sufficient inner fuel suffice; SCC minimality is not needed."
+  },
+  {
+    "id": "bottomup-gfp",
+    "lean": "Toy.Scc.bottomUpGfp_isGreatestFixpoint_of_monotone_of_respectsCalls_of_covers_of_calleesFirst_of_height_le",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Dual of bottomup-lfp; block-wise solving of greatest-fixpoint equation blocks is known from alternation-free equation systems. Restated here with every hypothesis shown necessary.",
+    "plain_claim": "Under the same hypotheses as bottomup-lfp (monotone, callee-local F; a covering callees-first list of blocks; inner fuel at least n*m), one pass over the list (one block solve per list entry), solving each block by Kleene iteration from the full set with all other summaries frozen and starting from the all-true vector, yields the global greatest fixpoint of F.",
+    "hypotheses": [
+      {
+        "name": "hmono : Monotone F",
+        "purpose": "Needed for greatest fixpoints to exist and for the inner iteration to converge to them.",
+        "tightness": "tight",
+        "counterexample": "Toy.Scc.bottomUpGfp_tight_monotone"
+      },
+      {
+        "name": "hresp : RespectsCalls E F",
+        "purpose": "Ties the equations to the call graph.",
+        "tightness": "tight",
+        "counterexample": "Toy.Scc.bottomUpGfp_tight_respectsCalls"
+      },
+      {
+        "name": "hcover : Covers comp order",
+        "purpose": "Every block must be solved at least once.",
+        "tightness": "tight",
+        "counterexample": "Toy.Scc.bottomUpGfp_tight_covers"
+      },
+      {
+        "name": "hfirst : CalleesFirst E comp order",
+        "purpose": "Callee blocks must be final before their callers are solved.",
+        "tightness": "tight",
+        "counterexample": "Toy.Scc.bottomUpGfp_tight_calleesFirst"
+      },
+      {
+        "name": "hfuel : n * m <= fuel",
+        "purpose": "The inner iteration must reach the block's greatest fixpoint.",
+        "tightness": "tight",
+        "counterexample": "Toy.Scc.bottomUpGfp_tight_fuel"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Dual of bottomup-lfp: given bottomup-mixed, the global greatest fixpoint is an all-greatest hierarchical solution because its join with any block fixpoint is a postfixpoint (prefix-postfix-sound).",
+    "nonvacuity_witness": "The graph 0 -> 0, 0 -> 1, 1 -> 1 with singleton blocks, order [1, 0], fuel 2, and the monotone callee-local transfer F(0) = sigma(0) intersect sigma(1), F(1) = empty.",
+    "nonvacuity_witness_lean": "Toy.Scc.bottomUpGfp_nonvacuous",
+    "non_claims": [
+      "The block map comp need not be an SCC decomposition: any block map with a covering callees-first order works (card merge-convex). Conversely, a valid SCC decomposition processed in an order that is not callees-first fails (card caller-first).",
+      "The claim is about one pass over the list, with one block solve per list entry; a block that occurs twice is solved again, which is harmless under these hypotheses. Nothing is claimed about worklist or chaotic iteration, or about re-processing blocks until stable.",
+      "Transfers are arbitrary monotone maps on the finite powerset lattice Fin n -> (Fin m -> Bool). Although the concrete fixtures in this package are disjunctive transfers with unary-premise rules (disjT, join-preserving) or conjunctive transfers (conjT, meet-preserving), Monotone F also covers non-distributive transfers, such as multi-premise Horn clauses combined disjunctively with other rules (a fact that needs two callee facts simultaneously, or another one). Nothing is claimed for non-monotone transfers or infinite-height domains.",
+      "Under widening on infinite-height domains nothing is claimed; in particular coarsening blocks (merge-convex) is not claimed to preserve results there, since widening operators are in general neither monotone nor associative and their results depend on widening-point placement.",
+      "The model has one summary value per function. It does not model call strings, the IFDS exploded supergraph, or summaries parameterized by calling context. A relational (input-output) summary over a finite domain D can be encoded by letting Fin m index pairs in D x D; the package does not develop this encoding.",
+      "Direction of dependency: RespectsCalls E F requires caller equations to read only callee summaries (bottom-up summary synthesis, where E f g = true means f calls g). Forward caller-to-callee analyses (such as reachable entry states propagated from entry points) depend on callers (the transpose graph E^T) and therefore require callers-first order rather than callees-first.",
+      "Static call-graph assumption: if indirect calls (closures, function pointers, virtual/trait-method calls) are resolved during the fixpoint analysis itself rather than over-approximated ahead of time in E, RespectsCalls E F fails against the incomplete static graph.",
+      "The fuel bound n*m is sufficient, not optimal; a per-block bound (block size times m) would also suffice but is not stated.",
+      "Nothing is claimed about running time or about how the order is produced; RespectsCalls must hold for the same graph E that the order is checked against.",
+      "Greatest fixpoints here are lattice objects; whether they are the intended safety invariants of a real program is a modeling question not addressed."
+    ],
+    "prior_art": [
+      "R. Cleaveland, B. Steffen, \"A linear-time model-checking algorithm for the alternation-free modal mu-calculus\", Formal Methods in System Design 2(2):121-147, 1993, doi:10.1007/BF01383878. Model checking by translation into equational blocks of least and greatest fixpoint equations in the alternation-free case, solved block by block.",
+      "A. Mader, Verification of Modal Properties Using Boolean Equation Systems, Edition versal 8, Bertz Verlag, Berlin, 1997, ISBN 3-929470-58-6 (PhD thesis, TU Munchen). Boolean equation systems with least and greatest fixpoint equations, their semantics, and Gauss elimination; the solution in general depends on the order of the equations.",
+      "F. Bourdoncle, \"Efficient chaotic iteration strategies with widenings\", Formal Methods in Programming and Their Applications (FMPA 1993), LNCS 735, pp. 128-141, doi:10.1007/BFb0039704. Iteration strategies based on weak topological orderings of the dependency graph (nested SCC structure with widening points); the condensation-level callees-first order studied here corresponds to the outermost level of such a strategy, without widening and without nested components.",
+      "A. Tarski, \"A lattice-theoretical fixpoint theorem and its applications\", Pacific Journal of Mathematics 5(2):285-309, 1955, doi:10.2140/pjm.1955.5.285. Monotone maps on complete lattices have least and greatest fixpoints, the least being the meet of all prefixpoints and the greatest the join of all postfixpoints."
+    ],
+    "supporting_lean": [
+      "Toy.Scc.hierSolution_of_isGreatestFixpoint",
+      "Toy.Scc.hierSolution_bottomUp",
+      "Toy.Scc.hierSolution_unique"
+    ],
+    "design_question": "When is bottom-up composition of per-SCC greatest fixpoints equal to the whole-program greatest fixpoint? Answer: under the same conditions as for least fixpoints."
+  },
+  {
+    "id": "bottomup-one-sided",
+    "lean": [
+      "Toy.Scc.bottomUpLfp_le_of_monotone_of_prefixpoint",
+      "Toy.Scc.le_bottomUpGfp_of_monotone_of_postfixpoint"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "An instance of Park induction (iterates of a monotone map from the bottom stay below every prefixpoint), applied to the single-pass bottom-up algorithm.",
+    "plain_claim": "For monotone F, the single-pass bottom-up least computation (start all-false) lies below every prefixpoint of F, in particular below the least fixpoint, for every block map, every list of blocks (callees-first or not, covering or not) and every fuel; dually, the single-pass greatest computation (start all-true) lies above every postfixpoint, in particular above the greatest fixpoint.",
+    "hypotheses": [
+      {
+        "name": "hmono : Monotone F",
+        "purpose": "Without it a single application of F can jump above a prefixpoint (or below a postfixpoint).",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Scc.oneSidedLfp_tight_monotone",
+          "Toy.Scc.oneSidedGfp_tight_monotone"
+        ]
+      },
+      {
+        "name": "hpre : F tau <= tau (resp. hpost : tau <= F tau)",
+        "purpose": "Identifies the bound tau; an arbitrary vector is not a bound.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Scc.oneSidedLfp_tight_prefixpoint",
+          "Toy.Scc.oneSidedGfp_tight_postfixpoint"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Induction over the order and the inner iterations, keeping the invariant \"current vector <= tau\" (resp. \">=\").",
+    "nonvacuity_witness": "The monotone transfer seedCopyT on 0 -> 1 with two bits per function, a prefixpoint other than all-true and a postfixpoint other than all-false, exercised at the caller-first order [0, 1], where the single-pass least result is strictly below the least fixpoint and the greatest result strictly above the greatest fixpoint.",
+    "nonvacuity_witness_lean": "Toy.Scc.oneSided_nonvacuous",
+    "non_claims": [
+      "It does not say that the result is close to the fixpoint; with a bad order or decomposition it can be strictly below the least fixpoint (merge-nonconvex, split-scc, caller-first).",
+      "Without Covers, CalleesFirst, and n*m <= fuel, the returned vector need not be a fixpoint or prefixpoint of F; for a may-analysis whose soundness requires F(sigma) <= sigma, an under-approximating result below lfp(F) is unsound.",
+      "One-sidedness relies on starting from bot (for bottomUpLfp) or top (for bottomUpGfp) and resetting each visited block in blockInit; warm-starting bottomUp from a cached arbitrary vector init != bot (resp. init != top) can exceed a prefixpoint (resp. fall below a postfixpoint) when order is non-covering or non-callees-first (for example, with the empty order bottomUp returns init unchanged).",
+      "RespectsCalls is not assumed and not needed.",
+      "Nothing is claimed about mixed sign assignments."
+    ],
+    "prior_art": [
+      "D. M. R. Park, \"Fixpoint induction and proofs of program properties\", in B. Meltzer and D. Michie (eds.), Machine Intelligence 5, Edinburgh University Press, 1969 (some catalogs list 1970), pp. 59-78. Fixpoint induction: the least fixpoint of a monotone map lies below every prefixpoint (Park induction).",
+      "A. Tarski, \"A lattice-theoretical fixpoint theorem and its applications\", Pacific Journal of Mathematics 5(2):285-309, 1955, doi:10.2140/pjm.1955.5.285. Monotone maps on complete lattices have least and greatest fixpoints, the least being the meet of all prefixpoints and the greatest the join of all postfixpoints."
+    ],
+    "design_question": "Tells a checker in which direction an unchecked order or decomposition can go wrong: single-pass least results can only lose facts and single-pass greatest results can only gain facts."
+  },
+  {
+    "id": "bottomup-mixed",
+    "lean": [
+      "Toy.Scc.bottomUp_hierSolution_and_unique_of_monotone_of_respectsCalls_of_covers_of_calleesFirst_of_height_le",
+      "Toy.Scc.le_and_le_of_hierSolution_of_isLeastFixpoint_of_isGreatestFixpoint"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "Alternation-free equation systems with least and greatest blocks solved in dependency order are known (Cleaveland and Steffen 1993; Mader 1997; mechanized operations on such systems in Neele and van de Pol 2024). Restated here for the single-pass bottom-up algorithm and coordinatewise block-extremality.",
+    "plain_claim": "Under the hypotheses of bottomup-lfp, for every per-block sign assignment (least or greatest inner fixpoint per block) and every start vector, single-pass bottom-up computes a vector in which every block is the least (resp. greatest) fixpoint of that block's equations when all other blocks are frozen, as constants, at their values in the same vector (HierSolution, coordinatewise block-extremality), and no other vector has this property. Every vector with this property is a fixpoint of F and lies between the least and the greatest fixpoint of F.",
+    "hypotheses": [
+      {
+        "name": "hmono : Monotone F",
+        "purpose": "Needed for block-level extremal fixpoints to exist.",
+        "tightness": "tight",
+        "counterexample": "Toy.Scc.bottomUpHier_tight_monotone"
+      },
+      {
+        "name": "hresp : RespectsCalls E F",
+        "purpose": "Ties the equations to the call graph.",
+        "tightness": "tight",
+        "counterexample": "Toy.Scc.bottomUpHier_tight_respectsCalls"
+      },
+      {
+        "name": "hcover : Covers comp order",
+        "purpose": "Every block must be solved.",
+        "tightness": "tight",
+        "counterexample": "Toy.Scc.bottomUpHier_tight_covers"
+      },
+      {
+        "name": "hfirst : CalleesFirst E comp order",
+        "purpose": "Callee blocks must be final first; this also excludes cyclic dependencies between blocks of different signs, under which uniqueness fails (shown at a mixed sign assignment).",
+        "tightness": "tight",
+        "counterexample": "Toy.Scc.bottomUpHier_tight_calleesFirst"
+      },
+      {
+        "name": "hfuel : n * m <= fuel",
+        "purpose": "Inner iterations must converge.",
+        "tightness": "tight",
+        "counterexample": "Toy.Scc.bottomUpHier_tight_fuel"
+      },
+      {
+        "name": "betweenness lemma, h : HierSolution F comp sign sigma",
+        "purpose": "Without it sigma need not be a fixpoint, hence need not lie between the extremal fixpoints.",
+        "tightness": "tight",
+        "counterexample": "Toy.Scc.hierBetween_tight_hierSolution"
+      },
+      {
+        "name": "betweenness lemma, hmu : IsLeastFixpoint F mu",
+        "purpose": "Identifies the lower bound; another fixpoint need not be below sigma.",
+        "tightness": "tight",
+        "counterexample": "Toy.Scc.hierBetween_tight_least"
+      },
+      {
+        "name": "betweenness lemma, hnu : IsGreatestFixpoint F nu",
+        "purpose": "Identifies the upper bound; another fixpoint need not be above sigma.",
+        "tightness": "tight",
+        "counterexample": "Toy.Scc.hierBetween_tight_greatest"
+      }
+    ],
+    "depth": "substantive",
+    "depth_justification": "Existence by induction along the order (a block solved at its first occurrence stays solved when later blocks change, because CalleesFirst forbids it from reading them, and re-solving an already solved block changes nothing); uniqueness by strong induction on block positions; both use the inner-iteration bound for arbitrary start vectors. The betweenness lemma is immediate from HierSolution.fixpoint.",
+    "nonvacuity_witness": "The graph 0 -> 0, 0 -> 1, 1 -> 1, singleton blocks, order [1, 0], with the mixed sign assignment mixSign (callee block 1 least, caller block 0 greatest); for the betweenness lemma, the hierarchical solution of mixed-neither, strictly between the least and greatest fixpoint.",
+    "nonvacuity_witness_lean": [
+      "Toy.Scc.bottomUpHier_nonvacuous",
+      "Toy.Scc.hierBetween_nonvacuous"
+    ],
+    "non_claims": [
+      "It does not say that a mixture equals the least or the greatest fixpoint; in general it is neither (mixed-neither).",
+      "The hierarchical solution depends on comp and sign: merging blocks that carry different signs changes the object computed.",
+      "HierSolution defines coordinatewise block-extremality (freezing other blocks to the candidate vector sigma as constants). It coincides with standard nested-substitution Boolean/Fixpoint Equation System semantics (and has a unique solution) only because CalleesFirst + RespectsCalls rules out inter-block cycles; on cyclic cross-sign dependencies (such as nu X_0 = X_1, mu X_1 = X_0), HierSolution admits multiple solutions whereas nested mu/nu semantics has a unique solution. Kernel-checked instance: for F(0) = sigma(1), F(1) = sigma(0) on the 2-cycle with block 0 greatest and block 1 least, both all-false and all-true are hierarchical solutions (hierSolution_swapT_gCycle_mixSign_not_unique); the nested system with X_0 outermost has the single solution all-true.",
+      "Uniqueness is among hierarchical solutions for the given comp and sign, not among all fixpoints of F.",
+      "Nothing is claimed for alternating fixpoints (cyclic dependencies between blocks of different signs, as in the modal mu-calculus or parity games)."
+    ],
+    "prior_art": [
+      "R. Cleaveland, B. Steffen, \"A linear-time model-checking algorithm for the alternation-free modal mu-calculus\", Formal Methods in System Design 2(2):121-147, 1993, doi:10.1007/BF01383878. Model checking by translation into equational blocks of least and greatest fixpoint equations in the alternation-free case, solved block by block.",
+      "A. Mader, Verification of Modal Properties Using Boolean Equation Systems, Edition versal 8, Bertz Verlag, Berlin, 1997, ISBN 3-929470-58-6 (PhD thesis, TU Munchen). Boolean equation systems with least and greatest fixpoint equations, their semantics, and Gauss elimination; the solution in general depends on the order of the equations.",
+      "T. Neele, J. van de Pol, \"Operations on fixpoint equation systems\", Logical Methods in Computer Science 20(3), paper 5, 2024, doi:10.46298/lmcs-20(3:5)2024 (arXiv:2304.07162); replication package with Coq and PVS proofs, doi:10.5281/zenodo.7828484. Operations such as substitution and reordering on fixpoint equation systems with least and greatest equations over complete lattices, with computer-checked proofs.",
+      "H. Seidl, \"Fast and simple nested fixpoints\", Information Processing Letters 59(6):303-308, 1996, doi:10.1016/0020-0190(96)00130-5. Solving nested least/greatest fixpoint equation systems over finite lattices.",
+      "H. Bekic, \"Definable operations in general algebras, and the theory of automata and flowcharts\", 1969 report, reprinted in C. B. Jones (ed.), Programming Languages and Their Definition, LNCS 177, Springer, 1984, pp. 30-55, doi:10.1007/BFb0048939. Source of Bekic's theorem: a simultaneous least fixpoint can be computed as nested single least fixpoints. It concerns least fixpoints only; the per-block decomposition here is a DAG-shaped instance."
+    ],
+    "supporting_lean": [
+      "Toy.Scc.HierSolution.fixpoint",
+      "Toy.Scc.hierSolution_bottomUp",
+      "Toy.Scc.hierSolution_unique",
+      "Toy.Scc.hierSolution_swapT_gCycle_mixSign_not_unique"
+    ],
+    "design_question": "If one SCC is summarized by a least fixpoint and a caller SCC by a greatest fixpoint, what does the combined result mean? It is the unique coordinatewise block-extremal solution: a fixpoint of the whole system between the least and greatest fixpoints, but in general neither.",
+    "lean_names": [
+      "Toy.Scc.HierSolution.fixpoint"
+    ]
+  },
+  {
+    "id": "mixed-neither",
+    "lean": [
+      "Toy.Scc.mixed_lfp_callee_gfp_caller_neither_lfp_nor_gfp",
+      "Toy.Scc.mixed_gfp_callee_lfp_caller_neither_lfp_nor_gfp"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "Concrete, kernel-checked instances of a known pitfall (a sign mixture computes neither global extremal fixpoint), for both mixture directions; the general characterization is bottomup-mixed.",
+    "plain_claim": "On the call graph 0 -> 0, 0 -> 1, 1 -> 1 with one bit per function, singleton blocks (a valid SCC decomposition), the callees-first order [1, 0], inner fuel 2 = n*m and start vector all-false: (i) for F(0) = sigma(0) union sigma(1), F(1) = sigma(1), solving the callee block {1} with its least fixpoint and the caller block {0} with its greatest gives sigma(0) = {0}, sigma(1) = empty; (ii) for F(0) = sigma(0) intersect sigma(1), F(1) = sigma(1), solving the callee block with its greatest fixpoint and the caller block with its least gives sigma(0) = empty, sigma(1) = {0}. In both cases the result is the hierarchical solution and a fixpoint of F, but neither the least fixpoint (all-false) nor the greatest fixpoint (all-true); both transfers are monotone and callee-local.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Finite computations checked by decide plus certified hierarchical solutions.",
+    "nonvacuity_witness": "The instances themselves; all hypotheses of bottomup-mixed hold there (stated in the theorems).",
+    "nonvacuity_witness_lean": [
+      "Toy.Scc.mixed_lfp_callee_gfp_caller_neither_lfp_nor_gfp",
+      "Toy.Scc.mixed_gfp_callee_lfp_caller_neither_lfp_nor_gfp"
+    ],
+    "non_claims": [
+      "Instances only: it does not say that every mixture differs from both extremal fixpoints for every transfer.",
+      "It says nothing about mixtures in which a block depends on a block processed later (cyclic dependencies between blocks of different signs)."
+    ],
+    "prior_art": [
+      "R. Cleaveland, B. Steffen, \"A linear-time model-checking algorithm for the alternation-free modal mu-calculus\", Formal Methods in System Design 2(2):121-147, 1993, doi:10.1007/BF01383878. Model checking by translation into equational blocks of least and greatest fixpoint equations in the alternation-free case, solved block by block.",
+      "A. Mader, Verification of Modal Properties Using Boolean Equation Systems, Edition versal 8, Bertz Verlag, Berlin, 1997, ISBN 3-929470-58-6 (PhD thesis, TU Munchen). Boolean equation systems with least and greatest fixpoint equations, their semantics, and Gauss elimination; the solution in general depends on the order of the equations.",
+      "T. Neele, J. van de Pol, \"Operations on fixpoint equation systems\", Logical Methods in Computer Science 20(3), paper 5, 2024, doi:10.46298/lmcs-20(3:5)2024 (arXiv:2304.07162); replication package with Coq and PVS proofs, doi:10.5281/zenodo.7828484. Operations such as substitution and reordering on fixpoint equation systems with least and greatest equations over complete lattices, with computer-checked proofs."
+    ],
+    "design_question": "Shows concretely that mixing least and greatest per-SCC fixpoints, in either direction, computes neither global fixpoint; the exact object is given by bottomup-mixed."
+  },
+  {
+    "id": "merge-convex",
+    "lean": "Toy.Scc.convex_merge_not_scc_still_lfp_and_gfp",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "Kernel-checked instance refuting the stronger reading that bottom-up composition needs a valid SCC decomposition; the positive statement is bottomup-lfp and bottomup-gfp.",
+    "plain_claim": "On the path 0 -> 1 -> 2, merging 0 and 1 (not mutually reachable) into one block, with 2 in its own block, is not an SCC decomposition, yet [1, 0] is a covering callees-first order with a genuine cross-block call (1 -> 2), and single-pass bottom-up over the merged block map with inner fuel 3 = n*m computes the global least fixpoint of F(2) = {0}, F(1) = sigma(2), F(0) = sigma(1) and the global greatest fixpoint of F(2) = empty, F(1) = sigma(2), F(0) = sigma(1); both transfers are monotone and callee-local.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Finite computation checked by decide plus certified Kleene iterates.",
+    "nonvacuity_witness": "The instance itself.",
+    "nonvacuity_witness_lean": "Toy.Scc.convex_merge_not_scc_still_lfp_and_gfp",
+    "non_claims": [
+      "It shows only that SCC validity is not necessary for correctness. It does not say that coarser blocks are free: inner iterations range over more functions.",
+      "It applies to merges that keep a covering callees-first order. Merges that create a condensation cycle break single-pass bottom-up (merge-nonconvex).",
+      "Nothing is claimed for analyses with widening, where merging blocks can change the result."
+    ],
+    "prior_art": [
+      "F. Bourdoncle, \"Efficient chaotic iteration strategies with widenings\", Formal Methods in Programming and Their Applications (FMPA 1993), LNCS 735, pp. 128-141, doi:10.1007/BFb0039704. Iteration strategies based on weak topological orderings of the dependency graph (nested SCC structure with widening points); the condensation-level callees-first order studied here corresponds to the outermost level of such a strategy, without widening and without nested components."
+    ],
+    "design_question": "An SCC-boundary checker for fixpoint composition need not check minimality (mutual reachability inside blocks); checking a covering callees-first order suffices (bottomup-lfp, bottomup-gfp)."
+  },
+  {
+    "id": "merge-nonconvex",
+    "lean": "Toy.Scc.nonconvex_merge_wrong_in_both_orders",
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "Concrete kernel-checked instance correcting an over-general folk claim (\"merging is always sound, just not minimal\").",
+    "plain_claim": "Merging the endpoints 0 and 2 of the path 0 -> 1 -> 2 (not mutually reachable) into one block, with 1 in its own block, admits no callees-first order; with inner fuel 3 = n*m, single-pass bottom-up then returns a wrong least fixpoint for F(2) = {0}, F(1) = sigma(2), F(0) = sigma(1) and a wrong greatest fixpoint for the dual transfer F(2) = empty, F(1) = sigma(2), F(0) = sigma(1), in both duplicate-free orders [0, 1] and [1, 0], while the SCC decomposition processed in the callees-first order [2, 1, 0] is right.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Finite computation checked by decide; the absence of a callees-first order is a short arithmetic argument over all lists.",
+    "nonvacuity_witness": "The instance itself.",
+    "nonvacuity_witness_lean": "Toy.Scc.nonconvex_merge_wrong_in_both_orders",
+    "positive_control_lean": "Toy.Scc.nonconvex_merge_order_0_1_0_recovers_lfp_and_gfp",
+    "non_claims": [
+      "Only duplicate-free orders are refuted. Re-solving the merged block after the middle block (the list [0, 1, 0]) gives both the least and the greatest fixpoint on this instance (nonconvex_merge_order_0_1_0_recovers_lfp_and_gfp).",
+      "Existential: it does not claim that every non-convex merge fails for every transfer.",
+      "The wrong least result is still below the least fixpoint (bottomup-one-sided): the failure loses facts and never invents them."
+    ],
+    "prior_art": [
+      "F. Bourdoncle, \"Efficient chaotic iteration strategies with widenings\", Formal Methods in Programming and Their Applications (FMPA 1993), LNCS 735, pp. 128-141, doi:10.1007/BFb0039704. Iteration strategies based on weak topological orderings of the dependency graph (nested SCC structure with widening points); the condensation-level callees-first order studied here corresponds to the outermost level of such a strategy, without widening and without nested components.",
+      "P. Cousot, \"Asynchronous iterative methods for solving a fixed point system of monotone equations in a complete lattice\", Research Report R.R. 88, Laboratoire IMAG, Universite scientifique et medicale de Grenoble, September 1977. Asynchronous (chaotic) iteration solves systems of monotone equations; this package instead studies a single pass in a fixed block order, where the order matters."
+    ],
+    "design_question": "Single-pass composition is sound for a merged decomposition only if the merged blocks still admit a covering callees-first order (acyclic condensation); a checker must verify the order, not merely that blocks are unions of SCCs."
+  },
+  {
+    "id": "split-scc",
+    "lean": "Toy.Scc.split_scc_wrong_lfp_and_gfp_in_both_orders",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "Concrete kernel-checked instance of a known pitfall (splitting an SCC breaks one-pass solving).",
+    "plain_claim": "Splitting the 2-cycle 0 <-> 1 into singleton blocks admits no callees-first order; with two bits per function and inner fuel 4 = n*m, single-pass bottom-up gives a wrong least fixpoint in both duplicate-free orders [0, 1] and [1, 0] for the transfer in which function f seeds bit f and copies the other bit from the other function, and a wrong greatest fixpoint in both duplicate-free orders for the dual transfer in which f forbids bit f and copies the other bit; the one-block SCC decomposition gives the right ones.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Finite computation checked by decide.",
+    "nonvacuity_witness": "The instance itself.",
+    "nonvacuity_witness_lean": "Toy.Scc.split_scc_wrong_lfp_and_gfp_in_both_orders",
+    "positive_control_lean": "Toy.Scc.split_scc_order_0_1_0_recovers_lfp_and_gfp",
+    "non_claims": [
+      "Only duplicate-free orders [0, 1] and [1, 0] are refuted; passing the non-duplicate-free list [0, 1, 0] to bottomUpLfp / bottomUpGfp on this instance reaches the exact global least and greatest fixpoints (split_scc_order_0_1_0_recovers_lfp_and_gfp).",
+      "Two bits are used on purpose. With one bit per function on the split 2-cycle, each of the nine transfers F(0) in {empty, full, sigma(1)}, F(1) in {empty, full, sigma(0)} is computed correctly (least and greatest fixpoint) by at least one of the two duplicate-free orders (split_scc_one_bit_some_duplicate_free_order_correct, stated as equality with the Kleene iterate at the height, which is the extremal fixpoint by kleene-bound). That these nine are all the monotone callee-local one-bit transfers on the 2-cycle is a short argument (a monotone map Bool -> Bool is constant or the identity), not a theorem of the package.",
+      "Single pass only; re-processing blocks until stable is not addressed."
+    ],
+    "prior_art": [
+      "R. E. Tarjan, \"Depth-first search and linear graph algorithms\", SIAM Journal on Computing 1(2):146-160, 1972, doi:10.1137/0201010. Linear-time algorithm for the strongly connected components of a directed graph; the SCC partition itself is the background notion formalized here.",
+      "F. Bourdoncle, \"Efficient chaotic iteration strategies with widenings\", Formal Methods in Programming and Their Applications (FMPA 1993), LNCS 735, pp. 128-141, doi:10.1007/BFb0039704. Iteration strategies based on weak topological orderings of the dependency graph (nested SCC structure with widening points); the condensation-level callees-first order studied here corresponds to the outermost level of such a strategy, without widening and without nested components."
+    ],
+    "design_question": "SCCs must not be split. A checker that verifies a covering callees-first order rejects every split automatically, because no such order exists (topo-order, scc-char)."
+  },
+  {
+    "id": "caller-first",
+    "lean": "Toy.Scc.valid_scc_caller_first_order_wrong_lfp_and_gfp",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "Reference point: a minimal kernel-checked instance of a known pitfall. Its content overlaps the hfirst tightness counterexamples of bottomup-lfp and bottomup-gfp; it is kept as a stand-alone card so that the pitfall can be cited directly.",
+    "plain_claim": "With the valid SCC decomposition of 0 -> 1 (singleton blocks), the monotone callee-local transfers F(1) = {0}, F(0) = sigma(1) and F(1) = empty, F(0) = sigma(1), inner fuel 2 = n*m, and the covering but caller-first order [0, 1], single-pass bottom-up gives a wrong least fixpoint for the first transfer and a wrong greatest fixpoint for the second; the callees-first order [1, 0] gives the right ones.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Finite computation checked by decide.",
+    "nonvacuity_witness": "The instance itself.",
+    "nonvacuity_witness_lean": "Toy.Scc.valid_scc_caller_first_order_wrong_lfp_and_gfp",
+    "positive_control_lean": "Toy.Scc.caller_first_order_0_1_0_recovers_lfp_and_gfp",
+    "non_claims": [
+      "A valid SCC decomposition does not make the processing order irrelevant; the order must be checked separately.",
+      "Escape hatches: re-solving the caller after the callee (the list [0, 1, 0]) gives both extremal fixpoints on this instance (caller_first_order_0_1_0_recovers_lfp_and_gfp), and iterating blocks until stable is not addressed. Transfers that read no callee summaries (for example constant transfers) are computed correctly in every order.",
+      "When a caller-first order fails for a monotone F, the least result is still below every prefixpoint and the greatest result above every postfixpoint (bottomup-one-sided)."
+    ],
+    "prior_art": [
+      "F. Bourdoncle, \"Efficient chaotic iteration strategies with widenings\", Formal Methods in Programming and Their Applications (FMPA 1993), LNCS 735, pp. 128-141, doi:10.1007/BFb0039704. Iteration strategies based on weak topological orderings of the dependency graph (nested SCC structure with widening points); the condensation-level callees-first order studied here corresponds to the outermost level of such a strategy, without widening and without nested components.",
+      "M. G. Burke, \"An interval-based approach to exhaustive and incremental interprocedural data-flow analysis\", ACM Transactions on Programming Languages and Systems 12(3):341-395, 1990, doi:10.1145/78969.78963. Interval-based (structure-directed) interprocedural data-flow analysis, as opposed to iterating over the whole program."
+    ],
+    "design_question": "Reference point for SCC-boundary checkers: the order must be checked as well as (or instead of) the decomposition."
+  },
+  {
+    "id": "lex-iff",
+    "lean": [
+      "Toy.Scc.lexDecreasing_iff_intraDecrease_and_interRankDecrease_of_rank_injective_on_used_blocks",
+      "Toy.Scc.terminates_of_lexDecreasing"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "The lexicographic order on pairs of naturals and its well-foundedness are textbook; restated for a (block rank, inner measure) measure on configurations.",
+    "plain_claim": "For a configuration-level call relation C on (function, state) pairs, a block map comp, an inner measure, and a rank on blocks that is injective on the blocks used by comp, the lexicographic measure that maps a configuration (f, x) to (rank of the block of f, inner measure of f at x) strictly decreases along every call exactly when every call within a block strictly decreases the inner measure and every call across blocks goes to a block of strictly smaller rank; and whenever this lexicographic measure decreases along every call, every call chain is finite.",
+    "hypotheses": [
+      {
+        "name": "hinj : forall f g, rank (comp f) = rank (comp g) -> comp f = comp g (rank injective on used blocks; equivalence only)",
+        "purpose": "Otherwise a call between two different blocks of equal rank can be paid for by the inner measure, so the left side holds while the cross-block rank condition fails.",
+        "tightness": "tight",
+        "counterexample": "Toy.Scc.lexIff_tight_injective"
+      },
+      {
+        "name": "h : LexDecreasing rank comp inner C (termination half only)",
+        "purpose": "Without a decreasing measure the call relation can loop.",
+        "tightness": "tight",
+        "counterexample": "Toy.Scc.lexTerminates_tight_lexDecreasing"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "The equivalence is a case analysis on the lexicographic order (close to definitional); the termination half uses well-foundedness of the lexicographic order on Nat x Nat from core Lean.",
+    "nonvacuity_witness": "The call relation cUnbounded on 0 -> 1, 1 -> 1 (block 1 recurses on a decreasing counter, block 0 calls block 1 with any state) with ranks 1 and 0 and inner measure the state: intra-block calls exist and decrease, and the cross-block calls go to the lower rank.",
+    "nonvacuity_witness_lean": [
+      "Toy.Scc.lexIff_nonvacuous",
+      "Toy.Scc.lexTerminates_nonvacuous"
+    ],
+    "non_claims": [
+      "No SCC property of comp is assumed or used.",
+      "Only the left-to-right direction of the equivalence needs injectivity on used blocks; injectivity on unused block names is not required.",
+      "It says nothing about how to find the rank or the inner measure. The static call graph does not appear; termination-intra shows that with an acyclic condensation no rank needs to be supplied.",
+      "The position of a block in a covering order qualifies as a rank (lexDecreasing_pos_iff_of_covers), so an order from topo-order can be used directly.",
+      "Calls n S uses a single Type 0 state space S shared across all Fin n functions and requires termination from every configuration (f, x) : Fin n x S; mutually recursive functions with distinct parameter types must sum-inject them into S, and precondition-dependent termination must restrict the call relation C to states satisfying each function's precondition.",
+      "Measures are pairs of naturals ordered lexicographically; other well-founded orders are not considered."
+    ],
+    "prior_art": [
+      "L. Bulwahn, A. Krauss, T. Nipkow, \"Finding lexicographic orders for termination proofs in Isabelle/HOL\", TPHOLs 2007, LNCS 4732, pp. 38-53, doi:10.1007/978-3-540-74591-4_5. Automated search for lexicographic combinations of measures in termination proofs, including mutual recursion; the lexicographic shape studied here is one such combination.",
+      "A. Krauss, \"Partial and nested recursive function definitions in higher-order logic\", Journal of Automated Reasoning 44(4):303-336, 2010, doi:10.1007/s10817-009-9157-2. The Isabelle/HOL function package, including termination proofs for mutually recursive definitions via well-founded call relations."
+    ],
+    "supporting_lean": [
+      "Toy.Scc.lexDecreasing_pos_iff_of_covers",
+      "Toy.Scc.pos_injective_on_used_blocks_of_covers"
+    ],
+    "design_question": "Termination checking for mutual recursion: exactly which per-call obligations a lexicographic (block rank, inner measure) argument decomposes into, and that such an argument proves termination."
+  },
+  {
+    "id": "termination-intra",
+    "lean": "Toy.Scc.terminates_of_condensationAcyclic_of_callsInGraph_of_intraDecrease",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Known from termination analysis: with dependency graphs, termination can be shown separately per cycle or SCC (Arts and Giesl 2000), mechanized in Isabelle/HOL (IsaFoR/CeTA); restated for configuration-level calls over an arbitrary block map with acyclic condensation.",
+    "plain_claim": "If the condensation of the call graph E under comp is acyclic and every configuration-level call follows an edge of E, then strict decrease of an inner measure on calls within blocks alone implies that every call chain is finite; no rank on blocks has to be supplied or checked.",
+    "hypotheses": [
+      {
+        "name": "hacyc : CondensationAcyclic E comp",
+        "purpose": "Otherwise calls can cycle between blocks without ever being intra-block.",
+        "tightness": "tight",
+        "counterexample": "Toy.Scc.terminationIntra_tight_acyclic"
+      },
+      {
+        "name": "hin : CallsInGraph E C",
+        "purpose": "The call graph must over-approximate the actual calls; otherwise acyclicity of E says nothing about C.",
+        "tightness": "tight",
+        "counterexample": "Toy.Scc.terminationIntra_tight_callsInGraph"
+      },
+      {
+        "name": "hdec : IntraDecrease comp inner C",
+        "purpose": "Recursion within a block must be well-founded.",
+        "tightness": "tight",
+        "counterexample": "Toy.Scc.terminationIntra_tight_intraDecrease"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Depth is measured relative to the other cards of this package: topo-order supplies a covering callees-first order, whose positions form a block rank under which the lexicographic measure decreases, and lex-iff (terminates_of_lexDecreasing) concludes.",
+    "nonvacuity_witness": "The call relation cUnbounded on 0 -> 1, 1 -> 1 with singleton blocks: a condensation edge, a genuinely recursive callee block, and unbounded cross-block fan-out.",
+    "nonvacuity_witness_lean": "Toy.Scc.terminationIntra_nonvacuous",
+    "non_claims": [
+      "Termination of the modeled call relation (finite call chains), not termination of loops or other non-call steps of a program.",
+      "It requires the static call graph to cover all calls (CallsInGraph); unresolved indirect calls break it.",
+      "comp need not be an SCC decomposition; an acyclic condensation suffices, and every SCC decomposition has one (scc-char).",
+      "No bound on the length of call chains is given.",
+      "Calls n S uses a single Type 0 state space S shared across all Fin n functions and requires termination from every configuration (f, x) : Fin n x S; mutually recursive functions with distinct parameter types must sum-inject them into S, and precondition-dependent termination must restrict the call relation C to states satisfying each function's precondition."
+    ],
+    "prior_art": [
+      "T. Arts, J. Giesl, \"Termination of term rewriting using dependency pairs\", Theoretical Computer Science 236(1-2):133-178, 2000, doi:10.1016/S0304-3975(99)00207-8. Dependency graphs: termination can be shown separately for each cycle of an estimated dependency graph (later formulated as a processor on its SCCs); the analogue here is per-block decrease over an acyclic condensation.",
+      "R. Thiemann, C. Sternagel, \"Certification of termination proofs using CeTA\", TPHOLs 2009, LNCS 5674, pp. 452-468, doi:10.1007/978-3-642-03359-9_31. IsaFoR, an Isabelle/HOL formalization including dependency pairs and dependency graphs, from which the certifier CeTA is generated.",
+      "P. Manolios, D. Vroon, \"Termination analysis with calling context graphs\", CAV 2006, LNCS 4144, pp. 401-414, doi:10.1007/11817963_36. Termination analysis of (mutually) recursive functions via calling context graphs and per-context measures.",
+      "A. Krauss, \"Partial and nested recursive function definitions in higher-order logic\", Journal of Automated Reasoning 44(4):303-336, 2010, doi:10.1007/s10817-009-9157-2. The Isabelle/HOL function package, including termination proofs for mutually recursive definitions via well-founded call relations.",
+      "L. Bulwahn, A. Krauss, T. Nipkow, \"Finding lexicographic orders for termination proofs in Isabelle/HOL\", TPHOLs 2007, LNCS 4732, pp. 38-53, doi:10.1007/978-3-540-74591-4_5. Automated search for lexicographic combinations of measures in termination proofs, including mutual recursion; the lexicographic shape studied here is one such combination."
+    ],
+    "design_question": "A verifier that accepts a decomposition with acyclic condensation (for example a checked SCC decomposition) need only check per-SCC measures; the cross-SCC part is implied."
+  },
+  {
+    "id": "inner-alone",
+    "lean": "Toy.Scc.inner_alone_fails_and_no_nat_measure_of_unbounded_cross_block_fanout",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "Concrete kernel-checked instance of a standard fact: a terminating relation with infinite branching can have well-founded height beyond omega, so no measure into Nat exists, while a lexicographic pair does.",
+    "plain_claim": "For the valid SCC decomposition of 0 -> 1, 1 -> 1 and the call relation cUnbounded, in which function 0 at state 0 calls function 1 at every state y and function 1 at state y + 1 calls itself at state y, the inner measure \"state\" decreases on every intra-block call but not on the cross-block calls (for example (0, 0) calls (1, 5)), and no measure from configurations into Nat decreases along every call at all; yet the call relation terminates and the lexicographic measure (block rank, state) with ranks 1 for block 0 and 0 for block 1 decreases along every call.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Short direct proofs; the absence of a Nat-valued measure follows because the measure of (1, y) is at least y while it must stay below the measure of (0, 0) for all y.",
+    "nonvacuity_witness": "The instance itself.",
+    "nonvacuity_witness_lean": "Toy.Scc.inner_alone_fails_and_no_nat_measure_of_unbounded_cross_block_fanout",
+    "positive_control_lean": "Toy.Scc.cJump_has_nat_measure",
+    "non_claims": [
+      "It does not contradict termination-intra: the call relation terminates.",
+      "The absence of a measure into Nat depends on unbounded fan-out across blocks. With bounded branching a measure into Nat can exist even though the unmodified inner measure increases across blocks (cJump_has_nat_measure: a single call from (0, 0) to (1, 5)). A terminating call relation in which every configuration makes only finitely many calls always has a measure into Nat (Konig's lemma); that fact is not formalized here.",
+      "The lexicographic pair avoids bounding how much the state can grow across blocks; it is one sufficient choice, not the only possible global measure (ordinal-valued measures also work).",
+      "Calls n S uses a single Type 0 state space S shared across all Fin n functions and requires termination from every configuration (f, x) : Fin n x S; mutually recursive functions with distinct parameter types must sum-inject them into S, and precondition-dependent termination must restrict the call relation C to states satisfying each function's precondition."
+    ],
+    "prior_art": [
+      "L. Bulwahn, A. Krauss, T. Nipkow, \"Finding lexicographic orders for termination proofs in Isabelle/HOL\", TPHOLs 2007, LNCS 4732, pp. 38-53, doi:10.1007/978-3-540-74591-4_5. Automated search for lexicographic combinations of measures in termination proofs, including mutual recursion; the lexicographic shape studied here is one such combination.",
+      "A. Krauss, \"Partial and nested recursive function definitions in higher-order logic\", Journal of Automated Reasoning 44(4):303-336, 2010, doi:10.1007/s10817-009-9157-2. The Isabelle/HOL function package, including termination proofs for mutually recursive definitions via well-founded call relations."
+    ],
+    "supporting_lean": [
+      "Toy.Scc.no_nat_measure_cUnbounded",
+      "Toy.Scc.terminates_cUnbounded"
+    ],
+    "design_question": "A termination checker that insists on one measure into Nat cannot accept every terminating mutually recursive program with per-SCC measures: unbounded cross-SCC argument growth can rule out every Nat-valued measure, while the pair (block rank, inner measure) still decreases. Per-SCC checking over an acyclic condensation (termination-intra) or a lexicographic measure (lex-iff) avoids this."
+  },
+  {
+    "id": "prefix-postfix-sound",
+    "lean": [
+      "Toy.Scc.le_of_monotone_of_isLeastFixpoint_of_prefixpoint",
+      "Toy.Scc.le_of_monotone_of_isGreatestFixpoint_of_postfixpoint"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Park induction and its dual (Park 1969; Tarski 1955), restated for summary vectors; also available in Lean core and Mathlib for complete lattices.",
+    "plain_claim": "For monotone F on summary vectors, any untrusted vector sigma with F sigma <= sigma (a prefixpoint) lies above the least fixpoint of F, and any sigma with sigma <= F sigma (a postfixpoint) lies below the greatest fixpoint; both checks compare F sigma with sigma function by function and need no decomposition.",
+    "hypotheses": [
+      {
+        "name": "hmono : Monotone F",
+        "purpose": "For non-monotone F a prefixpoint can miss part of the least fixpoint (dually for postfixpoints).",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Scc.prefixSound_tight_monotone",
+          "Toy.Scc.postfixSound_tight_monotone"
+        ]
+      },
+      {
+        "name": "hmu : IsLeastFixpoint F mu (resp. hnu : IsGreatestFixpoint F nu)",
+        "purpose": "Identifies which fixpoint is bounded; another fixpoint need not be.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Scc.prefixSound_tight_least",
+          "Toy.Scc.postfixSound_tight_greatest"
+        ]
+      },
+      {
+        "name": "hpre : F sigma <= sigma (resp. hpost : sigma <= F sigma)",
+        "purpose": "This is the check; an arbitrary vector need not bound the fixpoint.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Scc.prefixSound_tight_prefixpoint",
+          "Toy.Scc.postfixSound_tight_postfixpoint"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "The meet of all prefixpoints is shown to be a fixpoint (and dually the join of all postfixpoints), then compared with the given extremal fixpoint.",
+    "nonvacuity_witness": "The monotone transfer seedCopyT on 0 -> 1 with two bits per function: its least fixpoint is not all-false and the prefixpoint is strictly between it and all-true; its greatest fixpoint is not all-true and the postfixpoint is strictly between all-false and it.",
+    "nonvacuity_witness_lean": "Toy.Scc.prefixPostfixSound_nonvacuous",
+    "non_claims": [
+      "Neither check implies equality with the extremal fixpoint, and passing both checks does not either (checks-not-exact).",
+      "Being above the least fixpoint is soundness only for analyses that read summaries as may-facts; the card states a lattice fact only.",
+      "Dually, passing the postfixpoint check sigma <= F(sigma) guarantees only sigma <= gfp(F) (an under-approximation of the greatest fixpoint), which is conservative only when summaries represent positive safety/must invariants and is unsound if consumed negatively or as a may-summary.",
+      "Both checks validate sigma solely against the mathematical operator F; they do not verify that F soundly abstracts concrete program execution or indirect calls.",
+      "Here the least fixpoint is defined as least among all fixpoints (IsLeastFixpoint), not as the meet of all prefixpoints; the proof shows that for monotone F on this finite lattice the meet of all prefixpoints is a fixpoint, so the two agree."
+    ],
+    "prior_art": [
+      "D. M. R. Park, \"Fixpoint induction and proofs of program properties\", in B. Meltzer and D. Michie (eds.), Machine Intelligence 5, Edinburgh University Press, 1969 (some catalogs list 1970), pp. 59-78. Fixpoint induction: the least fixpoint of a monotone map lies below every prefixpoint (Park induction).",
+      "A. Tarski, \"A lattice-theoretical fixpoint theorem and its applications\", Pacific Journal of Mathematics 5(2):285-309, 1955, doi:10.2140/pjm.1955.5.285. Monotone maps on complete lattices have least and greatest fixpoints, the least being the meet of all prefixpoints and the greatest the join of all postfixpoints.",
+      "Lean 4, release v4.34.1: src/Init/Internal/Order/Basic.lean, theorem Lean.Order.lfp_le_of_le (f x <= x implies lfp f <= x, documented as the Park induction principle) for complete lattices in Lean core.",
+      "Mathlib, https://github.com/leanprover-community/mathlib4, commit a205649cf4e6ce1ae4ef6f0a3466f58a30fcdd22, Mathlib/Order/FixedPoints.lean: OrderHom.lfp_le (f a <= a implies lfp f <= a) and OrderHom.le_gfp (a <= f a implies a <= gfp f).",
+      "AbsInt/CompCert, commit 2685140bf72c959446981fb99b5e44a8975021bc, backend/Kildall.v: a Coq-verified dataflow solver whose result satisfies the dataflow inequations (theorem fixpoint_solution), the inequation form of a summary check."
+    ],
+    "design_question": "Summary checking without recomputation: a prefixpoint check certifies an over-approximation of the least fixpoint and a postfixpoint check an under-approximation of the greatest."
+  },
+  {
+    "id": "checks-not-exact",
+    "lean": "Toy.Scc.prefix_and_postfix_checks_pass_but_not_extremal",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "Reference point: a standard example, checked in the kernel. Its content overlaps the hmu/hnu tightness counterexamples of prefix-postfix-sound and the hrank counterexample of ranked-cert; it is kept as a stand-alone card so that the limitation can be cited directly.",
+    "plain_claim": "For one self-recursive function with the identity equation sigma(0) = sigma(0) over one bit (monotone and callee-local), the all-true and the all-false vector both pass the prefixpoint and the postfixpoint check (both are fixpoints), yet the all-true vector is not the least fixpoint and the all-false vector is not the greatest.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Finite computation checked by decide.",
+    "nonvacuity_witness": "The instance itself.",
+    "nonvacuity_witness_lean": "Toy.Scc.prefix_and_postfix_checks_pass_but_not_extremal",
+    "non_claims": [
+      "It does not say that exact certification is impossible: a ranking certificate pins down the least fixpoint (ranked-cert)."
+    ],
+    "prior_art": [
+      "A. Tarski, \"A lattice-theoretical fixpoint theorem and its applications\", Pacific Journal of Mathematics 5(2):285-309, 1955, doi:10.2140/pjm.1955.5.285. Monotone maps on complete lattices have least and greatest fixpoints, the least being the meet of all prefixpoints and the greatest the join of all postfixpoints.",
+      "D. M. R. Park, \"Fixpoint induction and proofs of program properties\", in B. Meltzer and D. Michie (eds.), Machine Intelligence 5, Edinburgh University Press, 1969 (some catalogs list 1970), pp. 59-78. Fixpoint induction: the least fixpoint of a monotone map lies below every prefixpoint (Park induction)."
+    ],
+    "design_question": "Reference point: one-sided checks cannot replace recomputation or a stronger certificate when exact summaries are required."
+  },
+  {
+    "id": "ranked-cert",
+    "lean": "Toy.Scc.isLeastFixpoint_of_monotone_of_prefixpoint_of_rankedJustified",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Known: well-founded derivations (stages) certify membership in least fixpoints (Aczel 1977), and certifying model checkers use rank-based certificates for least-fixpoint properties (Namjoshi 2001). Restated as a local certificate for summary vectors.",
+    "plain_claim": "For monotone F, if an untrusted summary vector sigma is a prefixpoint (F sigma <= sigma) and comes with a ranking r of its bits such that every set bit (f, i) is produced by F applied to the part of sigma whose bits have rank strictly below r(f, i), then sigma is exactly the least fixpoint of F.",
+    "hypotheses": [
+      {
+        "name": "hmono : Monotone F",
+        "purpose": "Without it, justification from lower-ranked facts does not propagate.",
+        "tightness": "tight",
+        "counterexample": "Toy.Scc.rankedCert_tight_monotone"
+      },
+      {
+        "name": "hpre : F sigma <= sigma",
+        "purpose": "Without it sigma can miss facts of the least fixpoint.",
+        "tightness": "tight",
+        "counterexample": "Toy.Scc.rankedCert_tight_prefixpoint"
+      },
+      {
+        "name": "hrank : RankedJustified F sigma r",
+        "purpose": "Without it sigma can contain unjustified (self-supporting) facts; in the counterexample no ranking at all justifies them.",
+        "tightness": "tight",
+        "counterexample": "Toy.Scc.rankedCert_tight_ranking"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Strong induction on the rank.",
+    "nonvacuity_witness": "The chain transfer on 0 -> 1 with sigma all-true, rank 0 for function 1 and rank 1 for function 0.",
+    "nonvacuity_witness_lean": "Toy.Scc.rankedCert_nonvacuous",
+    "non_claims": [
+      "Only least fixpoints. No certificate for greatest fixpoints is formalized; a dual certificate on unset bits is plausible but not stated.",
+      "Over an opaque whole-vector operator F : Summ n m -> Summ n m, checking RankedJustified invokes F once per set bit of sigma (up to n*m calls, plus one call for F(sigma) <= sigma) - the same worst-case number of whole-vector F evaluations as recomputing lfp(F) from bot via kleene-bound. Certificate checking is asymptotically cheaper than recomputation only when single-coordinate queries F tau f i can be evaluated sparsely/locally. (Evaluations can be shared between bits of equal rank, since below sigma r k depends only on k; no cost model is formalized.)",
+      "Neither RespectsCalls nor any decomposition is assumed."
+    ],
+    "prior_art": [
+      "P. Aczel, \"An introduction to inductive definitions\", in J. Barwise (ed.), Handbook of Mathematical Logic, North-Holland, 1977, pp. 739-782, doi:10.1016/S0049-237X(08)71120-0. Stages of monotone inductive definitions; ranking a fact by the stage at which it first appears is the idea behind kleeneRank.",
+      "K. S. Namjoshi, \"Certifying model checkers\", CAV 2001, LNCS 2102, pp. 2-13, doi:10.1007/3-540-44585-4_2. A model checker emits a deductive proof that is checked independently by simple, non-fixpoint methods; proof system for mu-calculus properties, in which least-fixpoint properties are certified with well-founded ranks.",
+      "L. Tan, R. Cleaveland, \"Evidence-based model checking\", CAV 2002, LNCS 2404, pp. 455-470, doi:10.1007/3-540-45657-0_37. Checker-independent evidence (proof structures) for fixpoint properties.",
+      "A. Tarski, \"A lattice-theoretical fixpoint theorem and its applications\", Pacific Journal of Mathematics 5(2):285-309, 1955, doi:10.2140/pjm.1955.5.285. Monotone maps on complete lattices have least and greatest fixpoints, the least being the meet of all prefixpoints and the greatest the join of all postfixpoints."
+    ],
+    "design_question": "Exact summary checking without running a fixpoint iteration: least-fixpoint summaries can be certified exactly by attaching a rank to each fact (subject to the cost caveat in the non-claims)."
+  },
+  {
+    "id": "ranked-cert-complete",
+    "lean": "Toy.Scc.prefixpoint_and_rankedJustified_kleeneRank_lt_height_of_monotone_of_isLeastFixpoint",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Stage ranking of inductive definitions (Aczel 1977) and completeness of rank-based certificates for least fixpoints (Namjoshi 2001), restated for summary vectors with an explicit bound.",
+    "plain_claim": "For monotone F, the least fixpoint mu has a complete ranking certificate: mu is a prefixpoint, it is ranked-justified by kleeneRank F, and every rank is below n*m. Here kleeneRank F f i is the least k < n*m such that bit (f, i) is set after k + 1 Kleene rounds from all-false, and 0 if there is no such k (in particular for bits that are never set, which the certificate does not use).",
+    "hypotheses": [
+      {
+        "name": "hmono : Monotone F",
+        "purpose": "For non-monotone F Kleene iteration can oscillate, so first-appearance ranks justify nothing.",
+        "tightness": "tight",
+        "counterexample": "Toy.Scc.rankedComplete_tight_monotone"
+      },
+      {
+        "name": "hmu : IsLeastFixpoint F mu",
+        "purpose": "Only the least fixpoint is justified; other fixpoints contain self-supporting facts.",
+        "tightness": "tight",
+        "counterexample": "Toy.Scc.rankedComplete_tight_least"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Given kleene-bound, mu is the Kleene iterate after n*m rounds, and every bit set after k + 1 rounds is produced by F from the bits set after k rounds, which all have smaller kleeneRank; the rest is bookkeeping about List.find?.",
+    "nonvacuity_witness": "The chain transfer on 0 -> 1 with its least fixpoint (all-true), whose two bits get the different ranks 0 and 1.",
+    "nonvacuity_witness_lean": "Toy.Scc.rankedComplete_nonvacuous",
+    "non_claims": [
+      "kleeneRank is computed by Kleene iteration: producing the certificate costs a fixpoint computation; only checking it avoids one.",
+      "Nothing is claimed about greatest fixpoints.",
+      "Ranks are below n*m; no smaller bound is claimed."
+    ],
+    "prior_art": [
+      "P. Aczel, \"An introduction to inductive definitions\", in J. Barwise (ed.), Handbook of Mathematical Logic, North-Holland, 1977, pp. 739-782, doi:10.1016/S0049-237X(08)71120-0. Stages of monotone inductive definitions; ranking a fact by the stage at which it first appears is the idea behind kleeneRank.",
+      "K. S. Namjoshi, \"Certifying model checkers\", CAV 2001, LNCS 2102, pp. 2-13, doi:10.1007/3-540-44585-4_2. A model checker emits a deductive proof that is checked independently by simple, non-fixpoint methods; proof system for mu-calculus properties, in which least-fixpoint properties are certified with well-founded ranks."
+    ],
+    "supporting_lean": [
+      "Toy.Scc.kleeneRank_lt_height"
+    ],
+    "design_question": "Completeness of the ranking certificate: requiring certificates loses no least-fixpoint summary, and ranks fit in [0, n*m)."
+  }
+]

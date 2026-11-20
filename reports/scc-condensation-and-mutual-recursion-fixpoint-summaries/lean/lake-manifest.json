@@ -1,0 +1,6 @@
+{"version": "1.2.0",
+ "packagesDir": ".lake/packages",
+ "packages": [],
+ "name": "«scc-condensation-and-mutual-recursion-fixpoint-summaries»",
+ "lakeDir": ".lake",
+ "fixedToolchain": false}

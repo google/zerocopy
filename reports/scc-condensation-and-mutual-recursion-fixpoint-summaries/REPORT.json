@@ -1,0 +1,144 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "verification/fixpoint-iteration",
+    "verification/scc-decomposition",
+    "verification/certificate-checking",
+    "verification/termination",
+    "pl/static-analysis",
+    "pl/interprocedural-analysis",
+    "pl/mutual-recursion",
+    "compilers/call-graphs"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Depth-first search and linear graph algorithms",
+      "identity": {
+        "doi": "10.1137/0201010"
+      }
+    },
+    {
+      "name": "Topological sorting of large networks",
+      "identity": {
+        "doi": "10.1145/368996.369025"
+      }
+    },
+    {
+      "name": "Efficient chaotic iteration strategies with widenings",
+      "identity": {
+        "doi": "10.1007/BFb0039704"
+      }
+    },
+    {
+      "name": "A lattice-theoretical fixpoint theorem and its applications",
+      "identity": {
+        "doi": "10.2140/pjm.1955.5.285"
+      }
+    },
+    {
+      "name": "Constructive versions of Tarski's fixed point theorems",
+      "identity": {
+        "doi": "10.2140/pjm.1979.82.43"
+      }
+    },
+    {
+      "name": "Introduction to Metamathematics",
+      "identity": {
+        "author": "S. C. Kleene",
+        "publisher": "Van Nostrand",
+        "year": "1952",
+        "section": "66, Theorem XXVI"
+      }
+    },
+    {
+      "name": "Fixpoint induction and proofs of program properties",
+      "identity": {
+        "author": "D. M. R. Park",
+        "collection": "Machine Intelligence 5 (B. Meltzer and D. Michie, eds.), Edinburgh University Press",
+        "pages": "59-78",
+        "year": "1969"
+      }
+    },
+    {
+      "name": "Definable operations in general algebras, and the theory of automata and flowcharts",
+      "identity": {
+        "doi": "10.1007/BFb0048939"
+      }
+    },
+    {
+      "name": "A linear-time model-checking algorithm for the alternation-free modal mu-calculus",
+      "identity": {
+        "doi": "10.1007/BF01383878"
+      }
+    },
+    {
+      "name": "Verification of Modal Properties Using Boolean Equation Systems",
+      "identity": {
+        "author": "A. Mader",
+        "isbn": "3-929470-58-6",
+        "year": "1997"
+      }
+    },
+    {
+      "name": "Operations on fixpoint equation systems",
+      "identity": {
+        "doi": "10.46298/lmcs-20(3:5)2024"
+      }
+    },
+    {
+      "name": "Fast and simple nested fixpoints",
+      "identity": {
+        "doi": "10.1016/0020-0190(96)00130-5"
+      }
+    },
+    {
+      "name": "Two approaches to interprocedural data flow analysis",
+      "identity": {
+        "author": "M. Sharir and A. Pnueli",
+        "collection": "Program Flow Analysis: Theory and Applications (S. S. Muchnick and N. D. Jones, eds.), Prentice-Hall",
+        "pages": "189-233",
+        "year": "1981"
+      }
+    },
+    {
+      "name": "Termination of term rewriting using dependency pairs",
+      "identity": {
+        "doi": "10.1016/S0304-3975(99)00207-8"
+      }
+    },
+    {
+      "name": "Finding lexicographic orders for termination proofs in Isabelle/HOL",
+      "identity": {
+        "doi": "10.1007/978-3-540-74591-4_5"
+      }
+    },
+    {
+      "name": "Partial and nested recursive function definitions in higher-order logic",
+      "identity": {
+        "doi": "10.1007/s10817-009-9157-2"
+      }
+    },
+    {
+      "name": "An introduction to inductive definitions",
+      "identity": {
+        "doi": "10.1016/S0049-237X(08)71120-0"
+      }
+    },
+    {
+      "name": "Certifying model checkers",
+      "identity": {
+        "doi": "10.1007/3-540-44585-4_2"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
