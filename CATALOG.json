@@ -26882,6 +26882,153 @@
         "systems/memory-models"
       ]
     },
+    "google-open-source-ffmpeg-usage-chromium-media3-mediapipe-ossfuzz-and-shaka": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "chromium/chromium",
+            "revision": "648b13abcacc62aac505c43912eccb0ee61fd3e7"
+          },
+          "name": "Chromium browser"
+        },
+        {
+          "identity": {
+            "repository": "https://chromium.googlesource.com/chromium/third_party/ffmpeg",
+            "revision": "09dee08662c5d06155391829174a8fd2e8c0556d"
+          },
+          "name": "Chromium third_party/ffmpeg fork"
+        },
+        {
+          "identity": {
+            "repository": "videolan/dav1d",
+            "revision": "4e3ab21fbbf84a4bd283ea27f96287fcd7c228c1"
+          },
+          "name": "dav1d AV1 decoder pinned in Chromium DEPS"
+        },
+        {
+          "identity": {
+            "mirror": "https://chromium.googlesource.com/external/webrtc",
+            "repository": "https://webrtc.googlesource.com/src",
+            "revision": "abd0f2fdedae0ad4f582b9932887fee9ab6f8741"
+          },
+          "name": "WebRTC native media stack"
+        },
+        {
+          "identity": {
+            "repository": "androidx/media",
+            "revision": "8c6678b657ede1e7883fc164ef73ed483c7796c3"
+          },
+          "name": "AndroidX Media3 (ExoPlayer) FFmpeg decoder module"
+        },
+        {
+          "identity": {
+            "repository": "https://fuchsia.googlesource.com/fuchsia",
+            "revision": "ad6d7483fedc4fc4175815f368b14d22fa3755d2"
+          },
+          "name": "Fuchsia operating system"
+        },
+        {
+          "identity": {
+            "repository": "https://fuchsia.googlesource.com/third_party/ffmpeg",
+            "revision": "affc7077aaa2d3b32e1127a741bd8b8166259b97"
+          },
+          "name": "Fuchsia third_party/ffmpeg fork"
+        },
+        {
+          "identity": {
+            "repository": "youtube/cobalt",
+            "revision": "8eb3fbbbe657b9244eaca91ff6cb2680e87c1b42"
+          },
+          "name": "Cobalt Starboard runtime"
+        },
+        {
+          "identity": {
+            "repository": "https://chromium.googlesource.com/openscreen",
+            "revision": "c0ffd4c7b1535d6c4db05a517d7d9c3cc64e761c"
+          },
+          "name": "OpenScreen Cast Streaming library"
+        },
+        {
+          "identity": {
+            "repository": "google/oss-fuzz",
+            "revision": "cdd107021c20428647db0699c33d6cb1f717474a"
+          },
+          "name": "OSS-Fuzz continuous fuzzing infrastructure"
+        },
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+          },
+          "name": "FFmpeg upstream multimedia framework"
+        },
+        {
+          "identity": {
+            "repository": "google-ai-edge/mediapipe",
+            "revision": "4a9d08e7469d839e398feb61a9f652b1998e79b6"
+          },
+          "name": "MediaPipe cross-platform ML pipeline framework"
+        },
+        {
+          "identity": {
+            "repository": "tensorflow/io",
+            "revision": "874651829d08ebe5079427c99ad8f0f241ef9336"
+          },
+          "name": "TensorFlow I/O extension library"
+        },
+        {
+          "identity": {
+            "repository": "tensorflow/datasets",
+            "revision": "252301af4a62f264bddf16491fd0bfe57db8140f"
+          },
+          "name": "TensorFlow Datasets"
+        },
+        {
+          "identity": {
+            "repository": "shaka-project/static-ffmpeg-binaries",
+            "revision": "10f9959c1ad5afee3030123d15276d505ef3bb0b"
+          },
+          "name": "Shaka static FFmpeg binaries"
+        },
+        {
+          "identity": {
+            "repository": "shaka-project/shaka-packager",
+            "revision": "323ac9edf1720356e5f5da8bca4f8a9801635fcd"
+          },
+          "name": "Shaka Packager media packaging SDK"
+        },
+        {
+          "identity": {
+            "repository": "https://android.googlesource.com/platform/external/qemu",
+            "revision": "ae9d18d2b6261179fbd57fffec720a04f7bfb053"
+          },
+          "name": "Android Emulator QEMU fork"
+        },
+        {
+          "identity": {
+            "repository": "https://chromium.googlesource.com/chromiumos/overlays/chromiumos-overlay",
+            "revision": "87341f8268c9b055c6e78a09a8b638c664f099d3"
+          },
+          "name": "ChromiumOS Gentoo ebuild overlay"
+        },
+        {
+          "identity": {
+            "repository": "google/sandboxed-api",
+            "revision": "46402cf55fe0c199d8a0d84041fde8f3d9b39255"
+          },
+          "name": "Sandboxed API and Sandbox2"
+        }
+      ],
+      "topics": [
+        "systems/ffmpeg",
+        "domains/multimedia",
+        "security/sandboxing",
+        "build/configuration",
+        "ffi/c-abi",
+        "tooling/fuzzing"
+      ]
+    },
     "gotpcrelx-tlsdesc-linker-relaxations-ifunc-ordering-and-linksem-slack": {
       "observed_at": "2026-11-19",
       "subjects": [
