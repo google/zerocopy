@@ -469,17 +469,25 @@ or `vendor/lean-miri/` are present), `anneal-audit` executes Pass 2
    declarations present in the resulting kernel environment
    (`correspondenceReplayedDeclarations`), and `anneal-audit` fails closed
    unless `correspondenceReplay` is `true` and that count equals
-   `correspondenceDeclarations`. Finally, it verifies the 21-root
+   `correspondenceDeclarations`. Finally, it verifies the 36-root
    `Miri.Interpreter.ExecutionMachine` cone (`verifyMiriExecutionMachineCone`)
    and correspondence dependency cone (`closureCorr`) for purity (rejecting any
    reachable `unsafe`, `isPartial`, `.vendorMiri` `opaque`, or unapproved
-   axiom), verifies all 30 correspondence, wiring, and canary (`D6`–`D13`)
-   claims (`verifyCorrespondenceClaims`, enforcing universe monomorphism on
-   every claim and proof and a mechanically checked non-empty
-   required-constants list on every claim), and runs
-   `verifyRefEvaluatorIndependence` (21 required `Miri.*` primitives and closed
-   module-origin isolation restricting `Trusted` dependencies in the
-   reference-evaluator cone to `Trusted.MirAst*`, `Trusted.MirModel`, and
+   axiom), verifies all 33 correspondence, choice-coupled, wiring,
+   `AllowedStep` soundness, and canary (`D6`–`D13`) claims
+   (`verifyCorrespondenceClaims`, enforcing universe monomorphism on every
+   claim and proof and a mechanically checked non-empty required-constants list
+   on every claim), and runs `verifyRefEvaluatorIndependence` (34 required live
+   `ExecutionMachine` `Miri.*` primitives on `[evalRefStep, initRefState]`
+   without relying on `RefAllowedStep`, `ExecutionMachine.AllowedStep` checked
+   separately on `RefAllowedStep`, fail-closed transitive module-level import
+   isolation and modular placement checking on every isolated
+   `Trusted.Correspondence.*` evaluator submodule rejecting any disallowed
+   `Trusted` import—such as `Trusted`, `Trusted.MirSemantics*`,
+   `Trusted.Correspondence`, `Trusted.Correspondence.Simulation`,
+   `Trusted.Correspondence.CanaryFixtures`, or sibling `Trusted.*` modules—and
+   closed module-origin isolation restricting `Trusted` dependencies in both
+   cones to `Trusted.MirAst*`, `Trusted.MirModel`, and
    `Trusted.Correspondence*`, with human review of `trusted/correspondence/`
    and `Trusted.MirModel` remaining the semantic boundary).
 
@@ -511,7 +519,7 @@ tracked for a follow-up PR:
    active in Pass 2 above.
 3. **Standalone vendor and correspondence kernel replay plus cone purity
    (active):** Full standalone kernel replay over all 160 vendored closure
-   modules plus all Pass 1 and Pass 2 repository modules and 21-root cone
+   modules plus all Pass 1 and Pass 2 repository modules and 36-root cone
    purity checks are active in Pass 2 above.
 4. **Correspondence witness locks and evaluator independence (active):**
    Universe-monomorphic claim/proof checking with non-empty required-constants

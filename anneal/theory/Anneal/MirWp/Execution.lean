@@ -825,10 +825,11 @@ theorem initState_entryProgForBody_ok {p : Program} {defId : DefId}
     cases h3 : body.basicBlocks.isEmpty <;>
     cases h4 : Nat.blt body.argumentCount body.locals.length <;>
     cases h5 : storageAnnotationsInBounds body <;>
+    cases h5d : discriminantTypesValid body <;>
     cases h6 : body.locals.all isSupportedScalarOrUnitTy <;>
     cases h7 : checkArgsMatch args
       ((body.locals.drop 1).take body.argumentCount) <;>
-    rw [h1, h2, h3, h4, h5, h6, h7] at h_init <;>
+    rw [h1, h2, h3, h4, h5, h5d, h6, h7] at h_init <;>
     cases h_init
   exact ⟨rfl, rfl⟩
 

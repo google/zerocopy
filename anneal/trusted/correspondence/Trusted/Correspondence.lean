@@ -12,6 +12,7 @@ import Init.NotationExtra
 import Init.Data.BitVec.BasicAux
 import Init.Control.Except
 import Miri.Interpreter.ExecutionMachine
+import Miri.Interpreter.OperandMachine
 import Miri.Interpreter.LocalAccess
 import Miri.Interpreter.Place
 import Miri.Interpreter.Rvalue
@@ -23,6 +24,7 @@ import Trusted.MirModel
 import Trusted.MirSemantics
 import Trusted.Correspondence.Codec
 import Trusted.Correspondence.State
+import Trusted.Correspondence.Config
 import Trusted.Correspondence.Eval
 import Trusted.Correspondence.Simulation
 import Trusted.Correspondence.CanaryFixtures
@@ -35,97 +37,56 @@ open Trusted.MirAst Trusted.MirSemantics
 # MIR Correspondence Specification (`Trusted.Correspondence`)
 
 **HUMAN COMPREHENSION PRIORITY:**
-This module states the top-level MIR correspondence theorem
-(`CorrespondenceClaim`), the bidirectional fault-equivalence theorem
-(`FaultEquivalenceClaim`), the Miri move-deinitialization wiring theorem
-(`MiriMoveDeinitWiringClaim`), and the one-to-one simulation invariant
+This module states the top-level MIR correspondence theorems
+(`CorrespondenceClaim`, `CorrespondenceAtChoicesClaim`), bidirectional
+fault-equivalence theorems (`FaultEquivalenceClaim`,
+`FaultEquivalenceAtChoicesClaim`), the Miri move-deinitialization wiring
+theorem (`MiriMoveDeinitWiringClaim`), and the one-to-one simulation invariant
 (`SimulationInv`) together with all of their adapter definitions. Because this
 file is the human-audited specification bridge between `Trusted.MirSemantics`
 ($M_{\text{anneal}}$) and `vendor/lean-miri/` ($M_{\text{ref}}$), **human
-comprehension takes priority over every other concern** across
-`CorrespondenceClaim` and all of its transitive dependencies
-(`Trusted.Correspondence`, `Trusted.MirSemantics`, and `Trusted.MirAst`). Every
-definition in this module is written to be maximally direct, self-evident to a
-human auditor, and accompanied by explicit boundary documentation so any gap or
-scoping restriction is immediately visible rather than subtle.
+comprehension takes priority over every other concern** across these claims and
+all of their transitive dependencies (`Trusted.Correspondence`,
+`Trusted.MirSemantics`, and `Trusted.MirAst`).
 
 This module defines five components:
 
 1. **Reference-indexed MIR syntax (`RefProg`):** Mirrors `Miri.MIR.Syntax` by
    replacing inline structural `MirTy` values with `TyId := Nat` indices into a
    single deduplicated program type table `RefProg.types : List MirTy`, while
-   carrying explicit `pointerWidthBits : Nat` and `mirProfileVersion : Nat`
-   fields plus `scope : VerificationScope := .unit`.
-2. **Canonical type-interning codec (`encodeProg` / `decodeProg`):** Starts
-   from the empty type table `[]`, interns every structural `MirTy` in
-   bottom-up topological order, and provides an unconditional left-inverse
-   decoder `decodeProg`.
-3. **Reference semantics ($M_{\text{ref}}$) and step-budget quantification:**
-   Defines a hybrid reference evaluator over `RefProg` / `RefState` that
-   resolves `RefProg` bodies, basic blocks, and statements over list-indexed
-   frames and delegates step, statement, terminator, rvalue, operand, and
-   scalar/integer evaluation (plus `_0` `StorageDead` rejection) to
-   `vendor/lean-miri` (pinned at `proofs-rs/lean-miri` commit
+   carrying explicit `pointerWidthBits : Nat`, `mirProfileVersion : Nat`, and
+   `scope : VerificationScope := .unit`.
+2. **Canonical type-interning codec (`encodeProg` / `decodeProg`):** Interns
+   every structural `MirTy` in bottom-up topological order and provides an
+   unconditional left-inverse decoder `decodeProg`.
+3. **Direct `Miri.Interpreter.ExecutionMachine.step` reference semantics
+   ($M_{\text{ref}}$):** Wraps real `Miri.Interpreter.MachineHooks.State Unit
+   RefUser` in `RefState`, allocates the caller-owned return place `retPlace`
+   in `Miri.Memory.MemoryState` (`refInitMemoryAndRetPlace`), lowers each
+   `RefBody` to a real `Miri.MIR.Body` (`toMiriBody`), and drives every
+   statement and terminator directly through
+   `Miri.Interpreter.ExecutionMachine.step (refExecutionConfig rp) refLimits c
+   rs.miri` (`vendor/lean-miri`, pinned at `proofs-rs/lean-miri` commit
    `c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a`, `miri` commit
    `7fa591d7d4dd9af8154becbc8332f8096f8323b1`, `rustc` commit
-   `8144389c895da997dbdecaa635e41d6a50be6ffd`) with explicit
-   `stepsExecuted` and `maxSteps` tracking and runtime `Operand.move`
-   deinitialization (`deinitMovedPlace = true`). Move deinitialization is not
-   upstream behavior: `deinitMovedPlace = true` enables Anneal's own
-   conservative, opt-in patch to ten `vendor/lean-miri` files on top of
-   `lean-miri@c92d1d97` (listed under `patched_files` in
-   `vendor/lean-miri/UPSTREAM_PIN.json`), whereas `eval_operand` at
-   `rustc@8144389c` still evaluates `Move` exactly like `Copy` (see the
-   upstream `FIXME` quoted at `evalRefMiriOperandToSlot`). The evaluator
-   routes:
-   - constant decoding, scalar validity checks, unary/binary integer and boolean
-     arithmetic, and `SwitchInt` case comparisons through
-     `Miri.Memory.ScalarInt` and `Miri.Interpreter.IntegerOps`;
-   - operand evaluation (`evalRefMiriOperandToSlot`, `evalRefPlaceOperand`,
-     `readRefPrimitiveSlot`) through `Miri.Interpreter.evalOperand`;
-   - local place writes (`writeRefPlace`) through
-     `Miri.Interpreter.placeWriteLocalImmediate`;
-   - rvalue dispatch and left-to-right operand sequencing (`evalRefMiriRvalue`)
-     through `Miri.Interpreter.evalRvalueIntoPlace`,
-     `Miri.Interpreter.Discriminant.{readDiscriminant, discriminantForVariant}`,
-     and `Miri.Interpreter.runRvalue`;
-   - outer step and statement dispatch (`evalRefStep`, `evalRefStatement`)
-     through `Miri.Interpreter.Step.step` and
-     `Miri.Interpreter.Step.evalStatement`, delegating `_0` `StorageDead`
-     rejection to `Miri.Interpreter.Frame.storageDead` (while `storageLive`
-     calls `Miri.Interpreter.Frame.storageLive` on a dummy single-local
-     frame, always returning `.ok ()`, because adapter locals are modeled
-     in the wrapper frame); and
-   - basic-block jumps and terminators (`evalRefTerminator`) through
-     `Miri.Interpreter.Step.step`,
-     `Miri.Interpreter.ControlFlow.goToBlock`,
-     `Miri.Interpreter.ControlFlow.evalTerminator`, and
-     `Miri.Interpreter.ControlFlow.returnFromCurrentFrame`:
-
-   > "pub fn step(&mut self) -> InterpResult<'tcx, bool> { ...
-   > if let Some(stmt) = basic_block.statements.get(loc.statement_index) { ...
-   > self.eval_statement(stmt)?; ... return interp_ok(true); } ...
-   > let terminator = basic_block.terminator();
-   > self.eval_terminator(terminator)?; ... interp_ok(true) }"
-   > (`compiler/rustc_const_eval/src/interpret/step.rs`, `rust-lang/rust`
-   > `8144389c895da997dbdecaa635e41d6a50be6ffd`)
-4. **Top-level correspondence claims (`CorrespondenceClaim`,
-   `FaultEquivalenceClaim`, `MiriMoveDeinitWiringClaim`, and core simulation /
-   canary `*Claim` propositions):** States UB transfer together with exact
-   terminal-behavior and divergence equivalence (`WellFormed p q →
-   RefWellFormed (encodeProg p) q ∧ (∀ out, Behavior p q out ↔ RefBehavior
-   (encodeProg p) q out) ∧ (Diverges p q ↔ RefDiverges (encodeProg p) q)`),
-   bidirectional fault equivalence for `.undefined` (`.ub`) and `.unsupported`
-   (`.blocked`), and the direct wiring contract of
-   `Miri.Interpreter.ExecutionMachine.step` (`Miri.Interpreter.Step.step` over
-   `ExecutionMachine.stepHooks`) and `deinitMovedPlace` on
-   `Miri.Interpreter.ExecutionMachine.{withValidation,operandHooks}` and
-   `Miri.Interpreter.evalOperand`.
+   `8144389c895da997dbdecaa635e41d6a50be6ffd`) with opt-in runtime move
+   deinitialization (`deinitMovedPlace := true`) and shallow validation
+   (`ValidityMemory.bind` -> `ValidityVisitor.validatePlace`).
+4. **Top-level correspondence claims (33 locked Pass 2 claims):** States both
+   aggregate (`CorrespondenceClaim`, `FaultEquivalenceClaim`) and
+   choice-coupled (`CorrespondenceAtChoicesClaim`,
+   `FaultEquivalenceAtChoicesClaim`) correspondence and fault equivalence,
+   together with `RefStepSoundForAllowedStepClaim` (tying every non-exhausted
+   `RefStep` transition to `RefAllowedStep` / `ExecutionMachine.AllowedStep`),
+   `MiriMoveDeinitWiringClaim` (covering both `OperandMachine.evalOperand` and
+   `LocalAccess.evalOperand`), the 6 codec claims, the 11 simulation/uniqueness
+   claims, and canaries `D6`–`D13`.
 5. **Fail-closed target, profile, and stack shape:** `initRefState` rejects
-   programs whose `pointerWidthBits` is not 64 or whose `mirProfileVersion` is
-   not 1 (matching `Trusted.MirSemantics.initState`) and starts the reference
-   stack as `[callerSentinelFrame retTy, entryFrame]`, which `evalRefStep`
-   requires and preserves.
+   non-64-bit targets, non-v1 MIR profiles, non-empty `callerMem`, out-of-bounds
+   storage markers, ill-typed `Discriminant` destinations, and unsupported
+   local types, and starts the real `ExecutionMachine` stack with the single
+   entry frame (`returnContinuation := .stop false`, `returnPlace := .memory
+   retPlace`).
 -/
 
 /-! ## Trusted Top-Level Correspondence and Canary Claims -/
@@ -137,11 +98,7 @@ $M_{\text{anneal}}$ (`Trusted.MirSemantics`) and $M_{\text{ref}}$
    (UB transfer);
 2. both machines exhibit exactly the same terminal behaviors; and
 3. `(p, q)` diverges in $M_{\text{anneal}}$ if and only if `encodeProg p`
-   diverges in $M_{\text{ref}}$.
-
-The behavior and divergence equivalences rule out reference executions that
-$M_{\text{anneal}}$ omits, so a postcondition proved over `Behavior` cannot
-miss an outcome that the reference model permits. -/
+   diverges in $M_{\text{ref}}$. -/
 def CorrespondenceClaim : Prop :=
   ∀ (p : Program) (q : Query),
     WellFormed p q →
@@ -158,24 +115,46 @@ def FaultEquivalenceClaim : Prop :=
     ∃ maxSteps,
       RefReachesOutcome (encodeProg p) q maxSteps (faultToRefOutcome k)
 
+/-- Unconditional choice-coupled correspondence claim across every `(p, q)`
+(not gated on `WellFormed p q`), preventing cross-branch outcome permutation
+when nondeterministic choices are introduced:
+1. UB transfer (`WellFormed p q → RefWellFormed (encodeProg p) q`);
+2. unconditional forward totality across all valid finite prefixes
+   (`RefValidPrefixAtChoices → ValidPrefixAtChoices`);
+3. choice-coupled terminal behavior simulation
+   (`RefBehaviorAtChoices → BehaviorAtChoices`); and
+4. choice-coupled divergence simulation
+   (`RefDivergesAtChoices → DivergesAtChoices`). -/
+def CorrespondenceAtChoicesClaim : Prop :=
+  ∀ (p : Program) (q : Query),
+    (WellFormed p q → RefWellFormed (encodeProg p) q) ∧
+    (∀ (choices : List Choice),
+      RefValidPrefixAtChoices (encodeProg p) q choices →
+        ValidPrefixAtChoices p q choices) ∧
+    (∀ (choices : List Choice) (out : TerminalOut),
+      RefBehaviorAtChoices (encodeProg p) q choices out →
+        BehaviorAtChoices p q choices out) ∧
+    (∀ (choiceStream : Nat → Choice),
+      RefDivergesAtChoices (encodeProg p) q choiceStream →
+        DivergesAtChoices p q choiceStream)
+
+/-- Unconditional choice-coupled bidirectional fault equivalence for all
+`(p, q, choices, k : FaultKind)`. -/
+def FaultEquivalenceAtChoicesClaim : Prop :=
+  ∀ (p : Program) (q : Query) (choices : List Choice) (k : FaultKind),
+    ReachesResultAtChoices p q choices (.fault k) ↔
+    ∃ maxSteps : Nat,
+      RefReachesOutcomeAtChoices (encodeProg p) q choices maxSteps
+        (faultToRefOutcome k)
+
 /-- Trusted statement verifying the direct consumer-side wiring of
 `Miri.Interpreter.ExecutionMachine.step` (`Miri.Interpreter.Step.step` over
 `Miri.Interpreter.ExecutionMachine.stepHooks`) and `deinitMovedPlace` in
-`vendor/lean-miri` (`Miri.Interpreter.ExecutionMachine.withValidation`,
-`Miri.Interpreter.ExecutionMachine.operandHooks`, and
-`Miri.Interpreter.evalOperand`).
-
-Its operand-evaluation conjuncts cover the move behavior of
-`Miri.Interpreter.evalOperand`
-(`vendor/lean-miri/Miri/Interpreter/LocalAccess.lean`), the only operand path
-of the reference adapter (`evalRefPlaceOperand`). For
-`Miri.Interpreter.OperandMachine.evalOperand`, the claim fixes only the
-`deinitMovedPlace` flag that `operandHooks` passes to it, not its move
-behavior. `ExecutionMachine` uses `OperandMachine.evalOperand` to build
-`rvalueHooks`, `intrinsicHooks`, and `stepHooks`
-(`vendor/lean-miri/Miri/Interpreter/ExecutionMachine.lean`, lines 182, 267,
-and 403 at the pinned digest); that operand path is trusted by human audit, as
-`docs/mir-correspondence-design.md` Section 2.4 records. -/
+`vendor/lean-miri` (`ExecutionMachine.withValidation`,
+`ExecutionMachine.operandHooks`, `OperandMachine.evalOperand`—the live operand
+path executed by `evalRefStep`—and `LocalAccess.evalOperand`,
+`MachineHooks.{recordPendingMoveDeinit,takeLastPendingMoveDeinit}`, and
+`Call.deinitInPlaceArg`). -/
 def MiriMoveDeinitWiringClaim : Prop :=
   (∀ {K U C O X Host : Type} [DecidableEq K]
       (cfg : Miri.Interpreter.ExecutionMachine.Config K U C O X Host)
@@ -198,6 +177,40 @@ def MiriMoveDeinitWiringClaim : Prop :=
         cfg limits).access.deinitMovedPlace = true ∧
     (Miri.Interpreter.ExecutionMachine.operandHooks
         cfg).deinitMovedPlace = true) ∧
+  (∀ {K U C : Type}
+      (hooks : Miri.Interpreter.OperandMachine.Hooks K U C)
+      (c : C) (localId : Miri.MIR.LocalId)
+      (known : Option Miri.Interpreter.LocalLayout)
+      (state : Miri.Interpreter.MachineHooks.State K U),
+    hooks.deinitMovedPlace = false →
+    Miri.Interpreter.OperandMachine.evalOperand hooks c
+        (.Move ⟨localId, Array.empty⟩) known state =
+      Miri.Interpreter.OperandMachine.evalPlaceToOp hooks c
+        ⟨localId, Array.empty⟩ known state) ∧
+  (∀ {K U C : Type}
+      (hooks : Miri.Interpreter.OperandMachine.Hooks K U C)
+      (c : C) (localId : Miri.MIR.LocalId)
+      (known : Option Miri.Interpreter.LocalLayout)
+      (state state₁ : Miri.Interpreter.MachineHooks.State K U)
+      (frame₁ frame₂ : Miri.Interpreter.Frame Miri.Memory.Provenance
+        Miri.Interpreter.LocalLayout Miri.Interpreter.MachineHooks.FrameExtra)
+      (imm : Miri.Interpreter.Immediate Miri.Memory.Provenance)
+      (layout : Miri.Interpreter.LocalLayout),
+    hooks.deinitMovedPlace = true →
+    Miri.Interpreter.OperandMachine.evalPlaceToOp hooks c
+        ⟨localId, Array.empty⟩ known state =
+      .ok ⟨.immediate imm, layout⟩ state₁ →
+    state₁.stack.currentFrame? = some frame₁ →
+    state₁.stack.frames.isEmpty = false →
+    frame₁.replaceLocalValue localId
+        (.live (if layout.layout.isZst then .immediate imm
+          else .immediate .uninit)) =
+      .ok frame₂ →
+    Miri.Interpreter.OperandMachine.evalOperand hooks c
+        (.Move ⟨localId, Array.empty⟩) known state =
+      .ok ⟨.immediate imm, layout⟩
+        { state₁ with
+          stack := ⟨state₁.stack.frames.pop.push frame₂⟩ }) ∧
   (∀ {Prov Extra State : Type}
       (hooks : Miri.Interpreter.LocalAccessHooks Prov Extra State)
       (frame : Miri.Interpreter.Frame Prov Miri.Interpreter.LocalLayout Extra)
@@ -285,16 +298,17 @@ def EncodeStmtAssignIffClaim : Prop :=
 /-- Trusted claim for
 `Anneal.MirCorrespondenceProof.state_unique_of_simulationInv`. -/
 def StateUniqueOfSimulationInvClaim : Prop :=
-  ∀ {p : Program} {s₁ s₂ : State} {rs : RefState},
-    SimulationInv p s₁ rs → SimulationInv p s₂ rs → s₁ = s₂
+  ∀ {rp : RefProg} {p : Program} {s₁ s₂ : State} {rs : RefState},
+    SimulationInv rp p s₁ rs → SimulationInv rp p s₂ rs → s₁ = s₂
 
 /-- Trusted claim for
 `Anneal.MirCorrespondenceProof.refState_unique_of_simulationInv`. -/
 def RefStateUniqueOfSimulationInvClaim : Prop :=
-  ∀ {p : Program} {s : State} {rs₁ rs₂ : RefState},
-    SimulationInv p s rs₁ → SimulationInv p s rs₂ →
+  ∀ {rp : RefProg} {p : Program} {s : State} {rs₁ rs₂ : RefState},
+    SimulationInv rp p s rs₁ → SimulationInv rp p s rs₂ →
     rs₁.stepsExecuted = rs₂.stepsExecuted →
     rs₁.maxSteps = rs₂.maxSteps →
+    rs₁.miri.machine.user.control = rs₂.miri.machine.user.control →
     rs₁ = rs₂
 
 /-- Trusted claim for `Anneal.MirCorrespondenceProof.initRefState_sim`. -/
@@ -304,42 +318,40 @@ def InitRefStateSimClaim : Prop :=
     (∀ k, initState p q = .error k → initRefState rp q maxSteps = .error k) ∧
     (∀ s₀, initState p q = .ok s₀ →
       ∃ rs₀, initRefState rp q maxSteps = .ok rs₀ ∧
-        SimulationInv p s₀ rs₀ ∧
+        SimulationInv rp p s₀ rs₀ ∧
         rs₀.stepsExecuted = 0 ∧
         rs₀.maxSteps = maxSteps)
 
 /-- Trusted claim for `Anneal.MirCorrespondenceProof.evalRefStep_eq`. -/
 def EvalRefStepEqClaim : Prop :=
   ∀ {rp : RefProg} {p : Program} {s : State} {rs : RefState}
-    {f : FrameState} {rf : RefFrameState} {retTy : MirTy} {body : Body},
+    {f : FrameState} {body : Body} {rbody : RefBody},
     decodeProg rp = some p →
+    SimulationInv rp p s rs →
     s.frames = [f] →
-    rs.frames = [callerSentinelFrame retTy, rf] →
-    rs.callerMem = s.callerMem →
     MirSemantics.getElem? p.bodies f.defId = some body →
-    f.locals.length = body.locals.length →
-    rf = liftFrame body.locals f →
+    MirSemantics.getElem? rp.bodies f.defId = some rbody →
     Nat.blt rs.stepsExecuted rs.maxSteps = true →
     ∀ (c : Choice),
       evalRefStep rp c rs =
-        stepResultToRefOutcome (callerSentinelFrame retTy) rs.stepsExecuted
-          rs.maxSteps (mapStepRes body.locals (evalStep p c s))
+        stepResultToRefOutcome (mapStepRes rp body rbody f rs
+          (evalStep p c s))
 
 /-- Trusted claim for `Anneal.MirCorrespondenceProof.sim_of_refStep`. -/
 def SimOfRefStepClaim : Prop :=
   ∀ {rp : RefProg} {p : Program} {s : State} {rs rs' : RefState},
     decodeProg rp = some p →
-    SimulationInv p s rs →
+    SimulationInv rp p s rs →
     RefStep rp rs (.running rs') →
-    ∃ s' : State, Step p s (.step s') ∧ SimulationInv p s' rs'
+    ∃ s' : State, Step p s (.step s') ∧ SimulationInv rp p s' rs'
 
 /-- Trusted claim for `Anneal.MirCorrespondenceProof.sim_of_refReaches`. -/
 def SimOfRefReachesClaim : Prop :=
   ∀ {rp : RefProg} {p : Program} {s₀ : State} {rs₀ rs : RefState},
     decodeProg rp = some p →
-    SimulationInv p s₀ rs₀ →
+    SimulationInv rp p s₀ rs₀ →
     RefReaches rp rs₀ rs →
-    ∃ s : State, Reaches p s₀ s ∧ SimulationInv p s rs
+    ∃ s : State, Reaches p s₀ s ∧ SimulationInv rp p s rs
 
 /-- Trusted claim for
 `Anneal.MirCorrespondenceProof.refWellFormed_of_wellFormed`. -/
@@ -496,5 +508,24 @@ def CanaryD13EnumInvalidTagAndUninitUbClaim : Prop :=
   ¬ WellFormed progEnumUninitDiscrUb queryEmpty ∧
   (∃ maxSteps, RefReachesOutcome (encodeProg progEnumUninitDiscrUb)
     queryEmpty maxSteps .ub)
+
+/-- Trusted claim for
+`Anneal.MirCorrespondenceProof.refStep_sound_for_allowedStep_holds`: every
+non-exhausted `RefStep` transition (`.running` or `.returned`) is witnessed by
+`RefAllowedStep` (instantiating `Miri.Interpreter.ExecutionMachine.AllowedStep`
+with `refLimits`). -/
+def RefStepSoundForAllowedStepClaim : Prop :=
+  ∀ (rp : RefProg) (rs : RefState) (out : RefOutcome),
+    Nat.blt rs.stepsExecuted rs.maxSteps = true →
+    RefStep rp rs out →
+    (∀ rs', out = .running rs' →
+      RefAllowedStep rp rs.miri rs'.miri (.ok true)) ∧
+    (∀ t, out = .returned t →
+      ∃ miri', RefAllowedStep rp rs.miri miri' (.ok true) ∧
+        miri'.stack.frames.isEmpty = true ∧
+        ∃ retVal,
+          refReadReturnVal miri'.machine.memory rs.retTy rs.retPlace =
+            .ok retVal ∧
+          t = .returned ⟨retVal, miri'.machine.user.callerMem⟩)
 
 end Trusted.Correspondence

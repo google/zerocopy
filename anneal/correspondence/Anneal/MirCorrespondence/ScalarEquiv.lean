@@ -234,8 +234,21 @@ theorem unary_truncate_eq (w : IntWidth) (s : Bool) (resInt : Int) :
   | true => exact unary_truncate_signed_eq w resInt
   | false => exact unary_truncate_unsigned_eq w resInt
 
+/-- Proof-side helper matching `Miri.Interpreter.ScalarOps.unary` over
+`Miri.Interpreter.IntegerOps.unary` for scalar and boolean operands. -/
+noncomputable def evalRefMiriUnOp (op : Miri.MIR.UnOp) (v : Val) :
+    Except FaultKind Val :=
+  match op, v with
+  | .Not, .bool b => .ok (.bool (!b))
+  | _, .scalar sv =>
+    match Miri.Interpreter.IntegerOps.unary op (miriIntValue sv) with
+    | .ok sc => .ok (.scalar ⟨sv.width, sv.signed, sc.data⟩)
+    | .error (.undefinedBehavior _) => .error .undefined
+    | .error _ => .error .unsupported
+  | _, _ => .error .unsupported
+
 /-- Proof-side shorthand lifting `Trusted.MirAst.UnOp` into
-`Trusted.Correspondence.evalRefMiriUnOp`. -/
+`evalRefMiriUnOp`. -/
 noncomputable def evalRefUnOp (op : UnOp) (v : Val) : Except FaultKind Val :=
   evalRefMiriUnOp (toMiriUnOp op) v
 
@@ -713,8 +726,38 @@ theorem bitwise_truncate_eq (w : IntWidth) (s : Bool) (bits : BitVec 128) :
     cases w <;> rfl
   rw [h, size_truncate_eq]
 
+/-- Proof-side helper matching `Miri.Interpreter.ScalarOps.binary` over
+`Miri.Interpreter.IntegerOps.{binary,binaryBool}` for scalar and boolean
+operands. -/
+noncomputable def evalRefMiriBinOp (op : Miri.MIR.BinOp) (lhs rhs : Val) :
+    Except FaultKind Val :=
+  match lhs, rhs with
+  | .scalar l, .scalar r =>
+    match op with
+    | .AddWithOverflow | .SubWithOverflow | .MulWithOverflow | .Offset =>
+      .error .unsupported
+    | _ =>
+      match Miri.Interpreter.IntegerOps.binary op
+          (miriIntValue l) (miriIntValue r) with
+      | .ok (.scalar sc) => .ok (.scalar ⟨l.width, l.signed, sc.data⟩)
+      | .ok (.boolean b) => .ok (.bool b)
+      | .ok _ => .error .unsupported
+      | .error (.undefinedBehavior _) => .error .undefined
+      | .error _ => .error .unsupported
+  | .bool l, .bool r =>
+    match op with
+    | .AddWithOverflow | .SubWithOverflow | .MulWithOverflow | .Offset =>
+      .error .unsupported
+    | _ =>
+      match Miri.Interpreter.IntegerOps.binaryBool op l r with
+      | .ok (.boolean b) => .ok (.bool b)
+      | .ok _ => .error .unsupported
+      | .error (.undefinedBehavior _) => .error .undefined
+      | .error _ => .error .unsupported
+  | _, _ => .error .unsupported
+
 /-- Proof-side shorthand lifting `Trusted.MirAst.BinOp` into
-`Trusted.Correspondence.evalRefMiriBinOp`. -/
+`evalRefMiriBinOp`. -/
 noncomputable def evalRefBinOp (op : BinOp) (lhs rhs : Val) :
     Except FaultKind Val :=
   evalRefMiriBinOp (toMiriBinOp op) lhs rhs

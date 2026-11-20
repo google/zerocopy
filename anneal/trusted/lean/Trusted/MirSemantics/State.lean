@@ -86,6 +86,53 @@ noncomputable def storageAnnotationsInBounds (body : Body) : Bool :=
       | .storageLive id | .storageDead id => Nat.blt id numLocals
       | _ => true))
 
+/-- Check that every unprojected `Assign(dst, Discriminant(src))` in `body`
+whose `src` has an admitted fieldless enum type `.enum ety` and whose `dst`
+is in bounds has destination type `.int ety.discrWidth ety.discrSigned`,
+matching `rustc`'s MIR well-typedness invariant for `Rvalue::Discriminant`
+(`compiler/rustc_const_eval/src/interpret/step.rs` and
+`compiler/rustc_const_eval/src/interpret/discriminant.rs`, `rust-lang/rust`
+`8144389c895da997dbdecaa635e41d6a50be6ffd`):
+
+> "Discriminant(place) => {
+>     let op = self.eval_place_to_op(*place, None)?;
+>     let variant = self.read_discriminant(&op)?;
+>     let discr = self.discriminant_for_variant(op.layout.ty, variant)?;
+>     self.write_immediate(*discr, &dest)?;
+> }"
+> (`compiler/rustc_const_eval/src/interpret/step.rs`, `rust-lang/rust`
+> `8144389c895da997dbdecaa635e41d6a50be6ffd`)
+
+Because `write_immediate` does not re-check the destination local's `MirTy`
+signedness against `op.layout.ty.discriminant_ty(tcx)` (relying on `rustc`'s
+MIR typechecker), rejecting ill-typed `Discriminant` destinations statically
+at entry keeps both $M_{\text{anneal}}$ and $M_{\text{ref}}$ fail-closed. -/
+noncomputable def discriminantTypesValid (body : Body) : Bool :=
+  body.basicBlocks.all (fun bb =>
+    bb.statements.all (fun stmt =>
+      match stmt with
+      | .assign dst rv =>
+        match rv with
+        | .discriminant src =>
+          if dst.projection.isEmpty && src.projection.isEmpty then
+            match getElem? body.locals src.localId with
+            | some srcTy =>
+              match srcTy with
+              | .enum ety =>
+                match getElem? body.locals dst.localId with
+                | some dstTy =>
+                  if enumAdmitted ety then
+                    MirTy.beq dstTy (.int ety.discrWidth ety.discrSigned)
+                  else
+                    true
+                | none => true
+              | _ => true
+            | none => true
+          else
+            true
+        | _ => true
+      | _ => true))
+
 /-- Initialize the local slots of `body` at function entry (`idx = 0 ..
 body.locals.length - 1`), matching `Miri.Interpreter.CallMachine` (`pushRaw`,
 `alwaysLiveVarsAndTemps`, `pushDone`) and
@@ -146,6 +193,8 @@ noncomputable def initState (p : Program) (q : Query) :
       else if !Nat.blt body.argumentCount body.locals.length then
         .error .unsupported
       else if !storageAnnotationsInBounds body then
+        .error .unsupported
+      else if !discriminantTypesValid body then
         .error .unsupported
       else if !body.locals.all isSupportedScalarOrUnitTy then
         .error .unsupported

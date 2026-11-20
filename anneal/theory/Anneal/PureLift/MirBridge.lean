@@ -1565,7 +1565,8 @@ theorem bodyVerified_of_pure_lift
     cases hB : Nat.blt body.argumentCount body.locals.length with
     | true => rfl
     | false =>
-      rw [hB, Bool.and_false, Bool.false_and, Bool.false_and] at hAdm
+      rw [hB, Bool.and_false, Bool.false_and, Bool.false_and,
+        Bool.false_and] at hAdm
       cases hAdm
   refine ⟨hBody, hAdm, fun args hValid hSafe => ?_⟩
   have hEntryBody :
@@ -1970,6 +1971,38 @@ def mirStorageAnnotationsInBounds (body : Body) : Bool :=
         bb.statements)
     body.basicBlocks
 
+/-- Computable discriminant destination type check matching
+`Trusted.MirSemantics.discriminantTypesValid`. -/
+def mirDiscriminantTypesValid (body : Body) : Bool :=
+  mirListAll
+    (fun bb =>
+      mirListAll
+        (fun stmt =>
+          match stmt with
+          | .assign dst rv =>
+            match rv with
+            | .discriminant src =>
+              if dst.projection.isEmpty && src.projection.isEmpty then
+                match mirListGet? body.locals src.localId with
+                | some srcTy =>
+                  match srcTy with
+                  | .enum ety =>
+                    match mirListGet? body.locals dst.localId with
+                    | some dstTy =>
+                      if mirEnumAdmitted ety then
+                        mirTyBeq dstTy (.int ety.discrWidth ety.discrSigned)
+                      else
+                        true
+                    | none => true
+                  | _ => true
+                | none => true
+              else
+                true
+            | _ => true
+          | _ => true)
+        bb.statements)
+    body.basicBlocks
+
 /-- Computable static body admission check matching the 2-argument
 `Trusted.MirSemantics.BodyStaticAdmitted`. -/
 def mirBodyStaticAdmitted (p : Program) (body : Body) : Bool :=
@@ -1979,6 +2012,7 @@ def mirBodyStaticAdmitted (p : Program) (body : Body) : Bool :=
     !body.basicBlocks.isEmpty &&
     Nat.blt body.argumentCount body.locals.length &&
     mirStorageAnnotationsInBounds body &&
+    mirDiscriminantTypesValid body &&
     mirListAll mirIsSupportedScalarOrUnitTy body.locals
 
 /-- Computable constant-literal evaluator matching
@@ -2415,6 +2449,82 @@ theorem mirStorageAnnotationsInBounds_eq (body : Body) :
     (fun bb => mirListAll_eq _ _ (fun _ => rfl) bb.statements)
     body.basicBlocks
 
+theorem mirDiscriminantTypesValid_eq (body : Body) :
+    mirDiscriminantTypesValid body = discriminantTypesValid body := by
+  unfold mirDiscriminantTypesValid discriminantTypesValid
+  refine mirListAll_eq _ _ (fun bb =>
+    mirListAll_eq _ _ (fun stmt => ?_) bb.statements) body.basicBlocks
+  cases stmt with
+  | assign dst rv =>
+    cases rv with
+    | discriminant src =>
+      change
+        (if (dst.projection.isEmpty && src.projection.isEmpty) = true then
+          match mirListGet? body.locals src.localId with
+          | some srcTy =>
+            match srcTy with
+            | .enum ety =>
+              match mirListGet? body.locals dst.localId with
+              | some dstTy =>
+                if mirEnumAdmitted ety then
+                  mirTyBeq dstTy (.int ety.discrWidth ety.discrSigned)
+                else true
+              | none => true
+            | _ => true
+          | none => true
+        else true) =
+        (if (dst.projection.isEmpty && src.projection.isEmpty) = true then
+          match Trusted.MirSemantics.getElem? body.locals src.localId with
+          | some srcTy =>
+            match srcTy with
+            | .enum ety =>
+              match Trusted.MirSemantics.getElem? body.locals dst.localId with
+              | some dstTy =>
+                if enumAdmitted ety then
+                  MirTy.beq dstTy (.int ety.discrWidth ety.discrSigned)
+                else true
+              | none => true
+            | _ => true
+          | none => true
+        else true)
+      cases (dst.projection.isEmpty && src.projection.isEmpty) with
+      | false => rfl
+      | true =>
+        rw [mirListGet?_eq_getElem?, mirListGet?_eq_getElem?]
+        cases Trusted.MirSemantics.getElem? body.locals src.localId with
+        | none => rfl
+        | some srcTy =>
+          cases srcTy with
+          | enum ety =>
+            cases Trusted.MirSemantics.getElem? body.locals dst.localId with
+            | none => rfl
+            | some dstTy =>
+              change
+                (if mirEnumAdmitted ety = true then
+                  mirTyBeq dstTy (.int ety.discrWidth ety.discrSigned)
+                else true) =
+                (if enumAdmitted ety = true then
+                  MirTy.beq dstTy (.int ety.discrWidth ety.discrSigned)
+                else true)
+              rw [mirEnumAdmitted_eq ety]
+              cases enumAdmitted ety with
+              | false => rfl
+              | true =>
+                cases dstTy with
+                | int w s =>
+                  change (mirIntWidthBeq w ety.discrWidth &&
+                    (s == ety.discrSigned)) =
+                    (IntWidth.beq w ety.discrWidth &&
+                      (s == ety.discrSigned))
+                  rw [mirIntWidthBeq_eq]
+                | bool | unit | never | enum _ | tuple _ | ref _ _
+                | rawPtr _ _ | unsupported => rfl
+          | bool | int _ _ | unit | never | tuple _ | ref _ _ | rawPtr _ _
+          | unsupported => rfl
+    | use _ | binaryOp _ _ _ | unaryOp _ _ | ref _ _ | addressOf _ _
+    | aggregateTuple _ | unsupported => rfl
+  | storageLive _ | storageDead _ | nop | unsupported => rfl
+
 /-- Exact kernel agreement between computable `mirBodyStaticAdmitted` and
 `Trusted.MirSemantics.BodyStaticAdmitted`. -/
 theorem mirBodyStaticAdmitted_eq (p : Program) (body : Body) :
@@ -2428,6 +2538,7 @@ theorem mirBodyStaticAdmitted_eq (p : Program) (body : Body) :
     rw [hEmpty]
     cases body.identity.toByteArray.data.toList <;> rfl
   rw [hStr, mirStorageAnnotationsInBounds_eq body,
+      mirDiscriminantTypesValid_eq body,
       mirListAll_eq _ _ mirIsSupportedScalarOrUnitTy_eq body.locals]
 
 theorem mirFindDiscrVariantAux_eq (discrBits : BitVec 128) :

@@ -25,10 +25,11 @@ Concrete programs and queries (`D6`–`D9`) referenced by the locked Pass 2
 correspondence canary claims in `Trusted.Correspondence`.
 
 `D6`–`D9` are self-consistency canaries of Anneal's deliberately stricter
-move-deinitialization rule (see `evalRefMiriOperandToSlot`): `eval_operand` at
-`rustc@8144389c` evaluates `Move` like `Copy`, so these canaries check that
-$M_{\text{anneal}}$ and $M_{\text{ref}}$ agree on the stricter rule rather than
-anchoring either model independently against upstream Miri or MiniRust.
+move-deinitialization rule (`deinitMovedPlace := true` in `refExecutionConfig`,
+verified by `MiriMoveDeinitWiringClaim`): `eval_operand` at `rustc@8144389c`
+evaluates `Move` like `Copy`, so these canaries check that $M_{\text{anneal}}$
+and $M_{\text{ref}}$ agree on the stricter rule rather than anchoring either
+model independently against upstream Miri or MiniRust.
 -/
 
 /-- `D6` (Use-After-Move UB):

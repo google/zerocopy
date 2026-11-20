@@ -112,15 +112,16 @@ vendor/lean-miri/               Vendored lean-miri reference model
                                 `CopyNonOverlapping` move sequencing
 
 trusted/correspondence/Trusted/ Correspondence TCB specification (Pass 2)
-  Correspondence.lean           Hub + locked *Claim constants (30 claims:
-  Correspondence/               Codec, State, Eval, Simulation, CanaryFixtures;
+  Correspondence.lean           Hub + locked *Claim constants (32 claims:
+  Correspondence/               Codec, State, Config, Eval, Simulation,
+                                CanaryFixtures;
                                 -- anneal-trust-tier: candidate:mir_semantics)
 
 correspondence/Anneal/          Untrusted correspondence proof (Pass 2)
   MirCorrespondence/            Modular proofs (Codec, SimHelpers, ScalarEquiv,
-                                EnumEquiv, RvalueStep, StmtTermStep, InitAndSim,
-                                Canaries)
-  MirCorrespondenceProof.lean   Public re-exports of all 30 locked witnesses
+                                EnumEquiv, MemRoundTrip, RvalueStep,
+                                StmtTermStep, InitAndSim, Canaries)
+  MirCorrespondenceProof.lean   Public re-exports of all 33 locked witnesses
 
 trusted/audit/                  anneal-audit CLI, auditor library, and inspector
   TrustedBoundary.lean          Syntactic preflight, namespace and
@@ -196,10 +197,12 @@ $M_{\text{anneal}}$ execution rules out of the human-audited semantic TCB in
 accordance with [`docs/architecture.md`](architecture.md) and
 [`docs/mir-correspondence-strategy.md`](mir-correspondence-strategy.md). While
 `evalStep` cross-checks against `vendor/lean-miri/`'s interpreter primitives,
-entry validation in `initRefState` (matching `initState`) and Day-1
-uninitialized-read checks on adapter-frame locals (Section 2.2) are authored in
-the `Trusted/Correspondence.lean` wrapper and human-audited alongside
-`vendor/lean-miri/` as part of the correspondence TCB (Section 1.3).
+entry validation in `initRefState` (matching `initState`) and the Day-1
+`ExecutionMachine.Config` hooks in `Trusted/Correspondence/` (Section 2.2) are
+authored in the correspondence wrapper and human-audited alongside
+`vendor/lean-miri/` as part of the correspondence TCB (Section 1.3), while Miri
+natively enforces uninitialized reads and shallow validity via
+`ExecutionMachine.step` and `ValidityVisitor.validatePlace`.
 
 Placing `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and
 `Anneal.MirCorrespondenceProof` in `trusted/correspondence/` and
@@ -317,7 +320,7 @@ Placing `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and
      compiler-reflection primitives (`Lean.ofReduceBool`, `Lean.ofReduceNat`,
      `Lean.trustCompiler`, `Lean.reduceBool`, `Lean.reduceNat`), and any
      `.vendorMiri` `isPartial` or `.opaqueInfo` (`partial def`) constant
-     reachable in the 21-root `Miri.Interpreter.ExecutionMachine` cone or the
+     reachable in the 36-root `Miri.Interpreter.ExecutionMachine` cone or the
      full dependency cone of the locked correspondence claims (tested end-to-end
      by `rejects_vendor_miri_skip_kernel_tc_during_replay`). Neither a scoped
      `set_option debug.skipKernelTC true` inside a vendored `.lean` file nor a
@@ -347,12 +350,26 @@ Placing `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and
      module, so neither the vendored tree nor the toolchain sysroot can inject
      declarations or axioms into the audited namespaces.
    - **Reference-evaluator independence (`verifyRefEvaluatorIndependence`):**
-     Computes the transitive constant cone of
-     `[Trusted.Correspondence.evalRefStep, Trusted.Correspondence.initRefState]`
-     via `closureCorr`, requiring all 21 `Miri.Interpreter.*` /
-     `Miri.Memory.ScalarInt.*` primitives listed in Section 1.3 to be reachable
-     and restricting every `.repo (.trusted _)` dependency in that cone to
-     `Trusted.MirAst*`, `Trusted.MirModel`, or `Trusted.Correspondence*` (so
+     Enforces fail-closed transitive module-level import isolation on every
+     isolated `Trusted.Correspondence.*` evaluator submodule (every
+     `Trusted.Correspondence.*` module outside the umbrella
+     `Trusted.Correspondence` and `{Simulation,CanaryFixtures}`)—rejecting any
+     direct or transitive import of a disallowed `Trusted` module (including
+     `Trusted`, `Trusted.MirSemantics*`, `Trusted.Correspondence`,
+     `Trusted.Correspondence.Simulation`,
+     `Trusted.Correspondence.CanaryFixtures`, or sibling `Trusted.*`
+     modules)—and requires `evalRefStep`, `initRefState`, and `RefAllowedStep`
+     to reside inside those isolated submodules in a modular layout. It then
+     computes the transitive constant cone of
+     `[Trusted.Correspondence.evalRefStep,
+     Trusted.Correspondence.initRefState]` via `closureCorr`, requiring all 34
+     live `ExecutionMachine` `Miri.Interpreter.*` / `Miri.Memory.ScalarInt.*`
+     primitives listed in Section 1.3 to be reachable directly from the live
+     evaluator (never masked by `RefAllowedStep`), separately requires
+     `Miri.Interpreter.ExecutionMachine.AllowedStep` in the cone of
+     `Trusted.Correspondence.RefAllowedStep`, and restricts every
+     `.repo (.trusted _)` dependency across both cones to `Trusted.MirAst*`,
+     `Trusted.MirModel`, or `Trusted.Correspondence*` (so
      `Trusted.MirSemantics`, `Trusted.MirSemantics.*`, and any other sibling
      `Trusted.*` module are rejected fail-closed; human review of
      `trusted/correspondence/` and `Trusted.MirModel` remains the semantic
@@ -378,7 +395,7 @@ Placing `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and
      in [`docs/architecture.md`](architecture.md). Finally,
      `verifyCorrConesAndClaims` restores the Pass 2 search path and traverses
      the constant-level dependency graph (`declarationEdges`) across both the
-     21-root `Miri.Interpreter.ExecutionMachine` cone and the full
+     36-root `Miri.Interpreter.ExecutionMachine` cone and the full
      correspondence dependency cone, verifying that no reachable constant is
      `unsafe` or `isPartial`, that no reachable `.vendorMiri` constant is
      `.opaqueInfo` (guaranteeing that none of the 24 `partial def` JSON parser
@@ -386,25 +403,24 @@ Placing `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and
      all of `Miri/Input/`—is reachable), and that the only reachable axioms
      belong to `{propext, Classical.choice, Quot.sound}`. Within
      `verifyCorrConesAndClaims`, `verifyCorrespondenceClaims` enforces
-     Statement-Origin Separation by locking all `(claim, proof)` pairs in
+     Statement-Origin Separation by locking all 32 `(claim, proof)` pairs in
      `Anneal.MirCorrespondenceProof` against the exact `Prop` constants defined
      in `Trusted.Correspondence` (whose referenced program, query, and
      expected-outcome fixture definitions likewise live on `Trusted.*`, with
-     only the proofs in untrusted `correspondence/`; 27 pairs over 27 claims in
-     the Day-1 baseline, expanding to 30 pairs over 30 distinct claims once
-     fieldless enums land): `CorrespondenceClaim` (proved by
-     `correspondence_claim_holds`, re-exporting `anneal_corresponds_to_miri`),
-     `FaultEquivalenceClaim` (proved by `fault_equivalence_claim_holds`,
-     re-exporting `reachesResult_fault_iff_refReachesOutcome`),
+     only the proofs in untrusted `correspondence/`): `CorrespondenceClaim`
+     (`correspondence_claim_holds`, re-exporting `anneal_corresponds_to_miri`),
+     `FaultEquivalenceClaim` (`fault_equivalence_claim_holds`, re-exporting
+     `reachesResult_fault_iff_refReachesOutcome`),
+     `CorrespondenceAtChoicesClaim` (`correspondence_at_choices_claim_holds`),
+     `FaultEquivalenceAtChoicesClaim`
+     (`fault_equivalence_at_choices_claim_holds`),
      `MiriMoveDeinitWiringClaim` (`miri_move_deinit_wiring_claim_holds`), the 6
      codec claims (`DecodeProgEncodeProgClaim` through
      `EncodeStmtAssignIffClaim`), the 11 uniqueness and simulation claims
      (`StateUniqueOfSimulationInvClaim` through `DivergesIffRefDivergesClaim`),
-     and the `D6`–`D13` canary claims (7 `D6`–`D10` canaries in the Day-1
-     baseline, plus `D11`–`D13` once fieldless enums land:
-     `CanaryD6UseAfterMoveUbClaim` through
-     `CanaryD13EnumInvalidTagAndUninitUbClaim`), plus required constant cones
-     on the three top-level claims.
+     and the 8 `D6`–`D13` canary claims (`CanaryD6UseAfterMoveUbClaim` through
+     `CanaryD13EnumInvalidTagAndUninitUbClaim`), plus non-empty required
+     constant cones on every claim.
    - **Pass 2 negative audit tests:** `trusted/audit/tests/boundary_audit.rs`
      (and unit tests in `trusted/audit/src/lib.rs`) must exercise fail-closed
      rejection (policy exit code `1`) for: `UPSTREAM_PIN.json` tampering,
@@ -550,15 +566,17 @@ together with every later change to those definitions:
 | `Trusted.Correspondence` | Codec (`RefProg`, `encodeProg`, `decodeProg`), |
 | | reference machine & staged support gate |
 | | (`initRefState`, `refIsSupportedLocalTy`, |
-| | `refEnumAdmitted`, `evalRefStep`, `refStepHooksFor`, |
-| | `refTerminatorHooksFor`, `refRvalueHooks`, |
+| | `refEnumAdmitted`, `refDiscriminantTypesValid`, |
+| | `refInitMemoryAndRetPlace`, `refExecutionConfig`, |
+| | `refLimits`, `evalRefStep`, `RefAllowedStep`, |
 | | `toMiriBinOp`, `toMiriUnOp`) |
 | | Reference predicates (`RefWellFormed`, |
 | | `RefBehavior`, `RefDiverges`, `RefReachesOutcome`, |
-| | `faultToRefOutcome`), `SimulationInv` |
-| | Locked `*Claim` constants (27 Day-1 baseline; |
-| | 30 with fieldless enums: top-level, codec, |
-| | simulation, and `CanaryD*Claim`) |
+| | `*AtChoices`, `faultToRefOutcome`), `SimulationInv` |
+| | Locked `*Claim` constants (33 locked Pass 2 |
+| | claims: aggregate & choice-coupled top-level, |
+| | wiring, `AllowedStep` soundness, codec, |
+| | simulation, and `CanaryD6–D13`) |
 | `vendor/lean-miri/` | Pinned 160-module `ExecutionMachine` slice and |
 | | 10-file `deinitMovedPlace` patch (`UPSTREAM_PIN.json`) |
 
@@ -580,39 +598,47 @@ together with every later change to those definitions:
 - **`Trusted.Correspondence` (`trusted/correspondence/`):** This module defines
   the codec (`RefProg`, `encodeProg`, and `decodeProg`); the reference machine
   and staged support gate that the claims observe (`initRefState`,
-  `refIsSupportedLocalTy`, `refEnumAdmitted`, `callerSentinelFrame`,
-  `evalRefStep`, `refStepHooksFor`, `refTerminatorHooksFor`, `refRvalueHooks`,
-  `ValidRefChoice`, `RefStep`, `RefReaches`, and the operator tables
-  `toMiriBinOp` and `toMiriUnOp`); the reference predicates and simulation
-  invariant (`RefReachesOutcome`, `RefWellFormed`, `RefBehavior`, `RefDiverges`,
-  `faultToRefOutcome`, and `SimulationInv`); and the locked `*Claim`
-  propositions (27 in the Day-1 baseline, growing to 30 once fieldless enums
-  land: `CorrespondenceClaim`, `FaultEquivalenceClaim`,
-  `MiriMoveDeinitWiringClaim`, the 6 codec claims, the 11 uniqueness and
+  `refIsSupportedLocalTy`, `refEnumAdmitted`, `refDiscriminantTypesValid`,
+  `refInitMemoryAndRetPlace`, `refExecutionConfig`, `refLimits`,
+  `evalRefStep`, `RefAllowedStep`, `ValidRefChoice`, `RefStep`, `RefReaches`,
+  and the operator tables `toMiriBinOp` and `toMiriUnOp`); the aggregate and
+  choice-coupled reference predicates and simulation invariant
+  (`RefReachesOutcome`, `RefWellFormed`, `RefBehavior`, `RefDiverges`,
+  `RefReachesAtChoices`, `RefValidPrefixAtChoices`,
+  `RefReachesOutcomeAtChoices`, `RefBehaviorAtChoices`,
+  `RefDivergesAtChoices`, `faultToRefOutcome`, and `SimulationInv`); and the
+  locked `*Claim` propositions (33 locked Pass 2 claims: `CorrespondenceClaim`,
+  `FaultEquivalenceClaim`, `CorrespondenceAtChoicesClaim`,
+  `FaultEquivalenceAtChoicesClaim`, `MiriMoveDeinitWiringClaim`,
+  `RefStepSoundForAllowedStepClaim`, the 6 codec claims, the 11 uniqueness and
   simulation claims, and `CanaryD6*Claim`–`CanaryD13*Claim`).
 - **`vendor/lean-miri/`:** `Trusted.Correspondence` drives `evalRefStep`
-  through `lean-miri`'s interpreter modules (`Miri.Interpreter.Step.step`,
-  `Miri.Interpreter.Step.evalStatement`, `Miri.Interpreter.evalOperand`,
-  `Miri.Interpreter.evalPlaceToOp`, `Miri.Interpreter.localToOp`,
-  `Miri.Interpreter.evalRvalueIntoPlace`, `Miri.Interpreter.runRvalue`,
-  `Miri.Interpreter.Discriminant.{readDiscriminant,discriminantForVariant}`,
-  `Miri.Interpreter.placeWriteLocalImmediate`,
-  `Miri.Interpreter.Frame.storageLive`, `Miri.Interpreter.Frame.storageDead`,
-  `Miri.Interpreter.ControlFlow.evalTerminator`,
-  `Miri.Interpreter.ControlFlow.goToBlock`,
-  `Miri.Interpreter.ControlFlow.returnFromCurrentFrame`,
-  `Miri.Interpreter.IntegerOps.{binary,binaryBool,unary}`, and
-  `Miri.Memory.ScalarInt.{truncateFromUInt,tryFromUInt,tryToBool}`—19 required
-  by `verifyRefEvaluatorIndependence` in the Day-1 baseline and all 21 once
-  fieldless-enum discriminant support lands, Section 1.1) and states the
-  wiring of `Miri.Interpreter.ExecutionMachine` in `MiriMoveDeinitWiringClaim`
-  (Section 5.2), so those definitions control the meaning of the reference
-  machine. The vendored tree is therefore part of the pinned, human-audited
-  correspondence TCB, not merely an input checked for forbidden axioms.
-  `UPSTREAM_PIN.json` pins every file to its audited digest, any change to a
-  pinned digest (including a new patch) requires the same human audit as a
-  change to `trusted/`, and `verifyAndCollectCorrLocals` keeps vendored
-  declarations out of the `Trusted` and `Anneal` namespaces.
+  directly through `Miri.Interpreter.ExecutionMachine.step`, reaching all 34
+  required live `ExecutionMachine` primitives (`ExecutionMachine.{step,
+  withValidation,stepHooks,rvalueHooks,operandHooks,projectionHooks,
+  discriminantHooks,scalarHooks}`, `Step.{step,evalStatement}`,
+  `ControlFlow.{goToBlock,evalTerminator,returnFromCurrentFrame}`,
+  `ExecutionControl.hooks`, `MachineHooks.{storageLiveDyn,storageDead}`,
+  `OperandMachine.{evalOperand,evalPlaceToOp}`,
+  `PlaceMachine.{readImmediate,writeMemory}`,
+  `ValidityVisitor.validatePlace`, `ValidityMemory.bind`,
+  `evalRvalueIntoPlace`, `TerminatorMachine.beforeTerminatorWithChoice`,
+  `ScalarOps.{binary,unary}`, `IntegerOps.{binary,binaryBool,unary}`,
+  `Discriminant.{readDiscriminant,discriminantForVariant}`, and
+  `ScalarInt.{truncateFromUInt,tryFromUInt,tryToBool}`), while
+  `RefAllowedStep` separately instantiates `ExecutionMachine.AllowedStep` and
+  is tied to `RefStep` by `RefStepSoundForAllowedStepClaim` (all verified by
+  `verifyRefEvaluatorIndependence` and `verifyCorrespondenceClaims`,
+  Section 1.1), and states the wiring of `ExecutionMachine.step`,
+  `OperandMachine.evalOperand`, and `LocalAccess.evalOperand` in
+  `MiriMoveDeinitWiringClaim` (Section 5.2), so
+  those definitions control the meaning of the reference machine. The vendored
+  tree is therefore part of the pinned, human-audited correspondence TCB, not
+  merely an input checked for forbidden axioms. `UPSTREAM_PIN.json` pins every
+  file to its audited digest, any change to a pinned digest (including a new
+  patch) requires the same human audit as a change to `trusted/`, and
+  `verifyAndCollectCorrLocals` keeps vendored declarations out of the `Trusted`
+  and `Anneal` namespaces.
 
 ---
 
@@ -653,8 +679,8 @@ quantified in `MiriMoveDeinitWiringClaim`), taking a nondeterminism oracle
 (`choice : Choice`) and a reference state and returning one of five outcomes:
 
 - `.running nextState`: the statement or terminator stepped normally.
-- `.returned out`: the root frame executed `TerminatorKind.Return` and popped
-  into the caller sentinel frame.
+- `.returned out`: the root frame executed `TerminatorKind.Return`, copied `_0`
+  into the caller-owned return allocation `retPlace`, and popped.
 - `.exhaustedStepLimit`: the execution reached its configured step budget
   (`stepsExecuted ≥ maxSteps`).
 - `.ub`: the execution triggered modeled Rust Undefined Behavior (such as
@@ -682,31 +708,22 @@ structure RefProg where
 
 Every `TyId` in a reference program resolves through `rp.types[tyId]?`:
 `initRefState` resolves the entry body's local declarations once
-(`decodeLocalTys`) and caches each local's `MirTy` in
-`RefLocalState.cachedLayout`, and a constant operand resolves its `TyId` when it
-is evaluated. An out-of-bounds `TyId` makes the step `.blocked`.
+(`decodeLocalTys`) and pre-caches each local's `Miri.Interpreter.LocalLayout`
+in the real `Miri.Interpreter.Frame`, while constant operands resolve their
+`TyId` through `refExecutionConfig rp` (`evalConst`). An out-of-bounds `TyId`
+makes the step `.blocked`.
 
-The adapters derive type-specific `lean-miri` layouts from that cached `MirTy`
-where semantics depend on them, and use the fixed 8-byte placeholder
-`refSizedLocalLayout` (`ty := 0`, `isZst = false`) elsewhere:
+The `ExecutionMachine.Config` adapters in
+`Trusted/Correspondence/{State,Config}.lean` derive real `lean-miri` layouts
+from `rp.types[tyId]?`:
 
-- `refLocalLayoutForTy` (called only in `evalRefPlaceOperand` when building
-  `mkSingleLocalMiriFrameWithLayout` for `Miri.Interpreter.evalOperand`) gives
-  `()` and admitted one-variant zero-sized enums the 0-byte layout
-  `refLocalLayoutZst` (`isZst = true`) and every other supported local type—
-  including non-ZST types and uninhabited `!` (`MirTy.never`)—the sized
-  placeholder `refSizedLocalLayout` (`isZst = false`), so moving a `!` local
-  takes Miri's non-ZST deinitialization branch (`.live none`). Locals stay
-  `Operand.immediate` values in a single-local `lean-miri` frame and are never
-  read through memory, so the placeholder only has to be non-zero sized;
-  zero-sizedness decides whether a move leaves a local initialized (Section
-  2.4). `StorageLive` (`refStepHooksFor.storageLive`) does not use
-  `refLocalLayoutForTy`: it runs `Miri.Interpreter.Frame.storageLive` on a
-  dummy dead local `0` (where `refLocalStorageHooks.veryTriviallySized` returns
-  `.ok true`, skipping `refLocalStorageHooks.layout` so the call succeeds
-  uniformly), discards the resulting Miri frame, and writes
-  `refLiveUninitSlot localTy` directly into `RefStepMachine.locals` (whose
-  catch-all arm initializes `!` to `.live none`).
+- `refLocalLayoutForTy` gives `()` and admitted one-variant zero-sized enums
+  their 0-byte `Layout` (`isZst = true`), scalar integers and `bool` their
+  exact scalar byte widths and signedness (`refScalarLayoutData`), non-ZST
+  admitted fieldless enums their `Variants.Multiple` scalar tag layout
+  (`refEnumLayoutData`), and uninhabited `!` (`MirTy.never`) an uninhabited
+  0-byte/non-ZST-marked layout (`refNeverLayoutData`) so moving a `!` local
+  takes Miri's deinitialization branch and reading it faults with `.ub`.
 - `refScalarLayoutData w signed` gives an integer or discriminant value the
   scalar layout of `toMiriSize w` bytes (`1`, `2`, `4`, `8`, or `16`) with
   signedness `signed`. Because `isize` and `usize` use 8 bytes, which is
@@ -715,65 +732,48 @@ where semantics depend on them, and use the fixed 8-byte placeholder
 - `refEnumLayoutData ety` gives a fieldless enum the layout
   `Variants.Single 0` (0 bytes) when its tag is zero-sized and
   `Variants.Multiple tag .Direct 0 variants` over its scalar tag otherwise,
-  which `Miri.Interpreter.Discriminant` decodes (in `evalRefConstLit`,
-  `encodeRefEnumTagOp`, and `evalRefEnumPlaceToOp`).
-- The fixed placeholder `refSizedLocalLayout` is used at adapter sites that do
-  not branch on per-type size: frame construction for `storageLive`,
-  `storageDead`, `popFrame`, and `mkRefStepStateWith`, destination writes in
-  `writeRefPlace` (`placeWriteLocalImmediate`, including for `()` and ZST
-  enums), `refLocalAccessHooks.layout`, `refLocalStorageHooks.layout`, and
-  `refRvalueHooks.{placeLayout,evalOperand,readImmediate,binaryOp,unaryOp}`.
+  which `Miri.Interpreter.Discriminant` decodes directly inside
+  `ExecutionMachine.discriminantHooks`.
 
-In `lean-miri`, `localToOp` caches a local's layout in `frame.locals` on its
-first read. The adapters build each `lean-miri` frame with that layout already
-cached (`mkSingleLocalMiriFrameWithLayout`), so read-only operand evaluations
-(`Operand.copy`) never mutate `frame.locals`. Furthermore,
-`slotToMiriLocalValue` stores every live adapter local—including uninitialized
-`.live none` slots—as an initialized pointer immediate carrying `optVal :
-Option Val` as provenance (`none` when uninitialized), so Miri's own `.uninit`
-check does not fire on adapter frames and uninitialized-read UB is enforced
-explicitly by the adapter hooks (`readRefPrimitiveSlot`,
-`refRvalueHooks.copyOp`, `refTerminatorHooksFor.copyReturn` for uninitialized
-`_0` on `Return`, and `encodeRefEnumTagOp` ->
-`Miri.Interpreter.Discriminant.readDiscriminant`).
+In `lean-miri`, `OperandMachine.localToOp` caches a local's layout in
+`frame.locals` on its first read. Because `initRefState` pre-caches every
+local's `LocalLayout` in `Miri.Interpreter.LocalState` (and uninitialized
+non-ZST locals are stored directly as real `.live (.immediate .uninit)`),
+read-only operand evaluations (`Operand.copy`) leave `frame.locals` unchanged
+and Miri's own `.uninit` read and validity checks (`PlaceMachine.readImmediate`,
+`ValidityVisitor.validatePlace`, and `Discriminant.readDiscriminant`) enforce
+uninitialized-read and invalid-tag UB natively.
 
-### 2.3 Two-Frame Call-Stack Sentinel Protocol
+### 2.3 Real `ExecutionMachine` Return-Place Ownership
 
 In `lean-miri`, the entry function's return place belongs to its caller:
 `MainThread.callMain` (`vendor/lean-miri/Miri/Interpreter/MainThread.lean`)
-allocates the return place before it calls the entry function, so that place
-outlives the entry frame. On `TerminatorKind.Return`,
-`ControlFlow.returnFromCurrentFrame` reads `_0`, pops the returning frame, and
-copies the value into that caller-owned place.
+allocates the return place in `Miri.Memory.MemoryState` before pushing the
+entry frame, so that place outlives the entry frame. On
+`TerminatorKind.Return`, `ControlFlow.returnFromCurrentFrame` reads `_0`,
+validates and copies it into `frame.returnPlace`, pops the returning frame, and
+observes `frame.returnContinuation = .stop false`.
 
-`Trusted.Correspondence` mirrors this ownership with an explicit sentinel
-frame:
+`Trusted.Correspondence` mirrors this ownership directly in real
+`Miri.Memory.MemoryState` (`refInitMemoryAndRetPlace` in
+`Trusted/Correspondence/State.lean`):
 
-```lean
-def callerSentinelFrame (retTy : MirTy) : RefFrameState
-```
-
-`callerSentinelFrame retTy` never executes. Its only local is the caller's
-live destination slot (`local 0`) of type `retTy`, and it is marked
-`isCallerSentinel := true`, whereas the executing entry frame has
-`isCallerSentinel := false`. `initRefState`
-builds every initial reference state with the two-frame stack
-`frames := [callerSentinelFrame retTy, rframe]`, where `retTy` is the entry
-body's return-place type (`localTys[0]`) and `rframe` begins executing
-`rp.bodies[rp.entryDefId]` at block `0`, statement `0`.
-
-`evalRefStep` steps the top frame `rframe` of a two-frame stack
-`[sentinel, rframe]`, leaving the sentinel unchanged, and returns `.blocked`
-for any other stack shape. When `rframe` executes `Return` with an initialized
-`_0`, `evalRefStep` returns the terminal `RefOutcome`
-`.returned (.returned ⟨retVal, callerMem⟩)` (wrapping `TerminalOut.returned
-⟨retVal, callerMem⟩`), matching `lean-miri`, which validates and copies `_0`
-into the sentinel's slot `0`, pops the root frame, and halts with `.returned`.
-Because `Return` is terminal in both machines (`evalStep` returns
-`.done (.returned ⟨retVal, callerMem⟩)`), no running state ever holds the
-one-frame stack that would remain after the pop, and `SimulationInv` (Section
-5.3) relates every running $M_{\text{anneal}}$ state to a two-frame reference
-stack.
+- `initRefState` allocates a fresh caller-owned return allocation `retPlace :
+  Miri.Interpreter.MPlaceTy Miri.Memory.Provenance` sized to the entry body's
+  return type `retTy = localTys[0]` in `Miri.Memory.MemoryState` and starts the
+  real `Miri.Interpreter.MachineHooks.State Unit RefUser` with the single entry
+  frame (`returnPlace := .memory retPlace`, `returnContinuation := .stop
+  false`).
+- On `TerminatorKind.Return`, `ExecutionMachine.step` runs Miri's real
+  `ControlFlow.returnFromCurrentFrame` (`copyRuntimePlace` into `retPlace`,
+  `ValidityVisitor.validatePlace`, frame pop) and returns `(miri', .ok true)`
+  with an empty stack (`miri'.stack.frames.isEmpty = true`), after which
+  `evalRefStep` reads the validated return value back from `retPlace` in
+  `miri'.machine.memory` (`refReadReturnVal`) to construct
+  `.returned (.returned ⟨retVal, callerMem⟩)`.
+- `SimulationInv` (Section 5.3) relates every running $M_{\text{anneal}}$ state
+  to that single-frame `ExecutionMachine` state together with its unchanged
+  caller-owned `retPlace` allocation in `miri.machine.memory`.
 
 ### 2.4 Runtime Move Deinitialization
 
@@ -809,22 +809,27 @@ configuration flag `deinitMovedPlace : Bool := false` across 10 files in
 `vendor/lean-miri/Miri/`
 (`MachineHooks.lean`, `LocalAccess.lean`, `OperandMachine.lean`, `Place.lean`,
 `PlaceMachine.lean`, `Cast.lean`, `ExecutionCast.lean`, `Call.lean`,
-`ExecutionCalls.lean`, and `ExecutionMachine.lean`). The reference adapter
-enables the flag on its only operand path: `Trusted.Correspondence` evaluates
-every `copy` and `move` operand through `Miri.Interpreter.evalOperand` with
-`refLocalAccessHooks true`. `MiriMoveDeinitWiringClaim` (Section 5.2)
-kernel-proves `ExecutionMachine.step`'s `pendingMoveDeinit` clearing, the
-`deinitMovedPlace` flags on `ExecutionMachine.withValidation(...).access` and
-`ExecutionMachine.operandHooks`, `LocalAccess.evalOperand`'s unprojected
-immediate move behavior, `recordPendingMoveDeinit`/`takeLastPendingMoveDeinit`,
+`ExecutionCalls.lean`, and `ExecutionMachine.lean`). `Trusted.Correspondence`
+sets `deinitMovedPlace := true` on `refExecutionConfig rp`, driving every
+`copy` and `move` operand directly through `ExecutionMachine.step` ->
+`ExecutionMachine.operandHooks` ->
+`Miri.Interpreter.OperandMachine.evalOperand`.
+`MiriMoveDeinitWiringClaim` (Section 5.2) kernel-proves
+`ExecutionMachine.step`'s `pendingMoveDeinit` clearing, the `deinitMovedPlace`
+flags on `ExecutionMachine.withValidation(...).access` and
+`ExecutionMachine.operandHooks`, both `OperandMachine.evalOperand` (the live
+operand path executed by `evalRefStep`) and `LocalAccess.evalOperand` for
+unprojected immediate moves,
+`recordPendingMoveDeinit`/`takeLastPendingMoveDeinit`,
 and `FnArg.copyFnArg`/`Call.deinitInPlaceArg` (kernel-checking those wiring
-entries in `ExecutionMachine`, `MachineHooks`, and `Call`, while `LocalAccess`
-and `Place` enter `correspondence_claim_holds` directly). The remaining call,
-cast, operand, place-machine, and intrinsic propagation (`ExecutionCalls`,
-`ExecutionCast`, `Cast`, `OperandMachine`, `PlaceMachine`,
-`evalCopyNonOverlappingDeinit`, and the unverified arms of `ExecutionMachine`,
-`MachineHooks`, and `Call`) is trusted by human audit and pinned against drift
-by `UPSTREAM_PIN.json` digests rather than proved by a kernel theorem.
+entries in `ExecutionMachine`, `OperandMachine`, `LocalAccess`, `MachineHooks`,
+and `Call`, while `ExecutionMachine`, `OperandMachine`, `PlaceMachine`, and
+`Place` enter `correspondence_claim_holds` directly). The remaining call, cast,
+indirect-move, and intrinsic propagation (`ExecutionCalls`, `ExecutionCast`,
+`Cast`, `evalCopyNonOverlappingDeinit`, and the unverified arms of
+`ExecutionMachine`, `MachineHooks`, and `Call`) is trusted by human audit and
+pinned against drift by `UPSTREAM_PIN.json` digests rather than proved by a
+kernel theorem.
 
 In `lean-miri`, `OperandMachine.evalOperand` evaluates a `Place` via
 `evalPlaceToOp` into an `OpTy` whose runtime payload is either:
@@ -989,90 +994,51 @@ In `lean-miri`, `OperandMachine.evalOperand` evaluates a `Place` via
     and after every statement or terminator step so no unconsumed flag can leak
     into a subsequent step.
 
-### 2.5 Reference Step, Rvalue, and `SwitchInt` Hook Protocol
+### 2.5 Direct `ExecutionMachine.step` Protocol (`Config.lean` and `Eval.lean`)
 
 Inside `Trusted.Correspondence`, `evalRefStep` drives every statement and
-terminator through `Miri.Interpreter.Step.step` over a minimal single-frame
-`Miri.Interpreter.StepState` whose machine component is `RefStepMachine`
-(`locals : List RefLocalState` plus `terminal : Option (StepResult RefState
-TerminalOut)` for root `Return`), passing real translated `Miri.MIR` terms:
+terminator directly through
+`Miri.Interpreter.ExecutionMachine.step (refExecutionConfig rp) refLimits c
+rs.miri` over real `Miri.Interpreter.MachineHooks.State Unit RefUser`, passing
+a real translated `Miri.MIR.Body` (`toMiriBody`):
 
-- **Operand and rvalue translation (`toMiriOperand`, `toMiriRvalue`):**
-  `toMiriOperand` maps `RefOperand` to `Miri.MIR.Operand`, encoding scalar
-  constants as `.Scalar (.Int bits.toNat 16)` (using `sizeBytes := 16` as a
-  uniform 128-bit `BitVec` carrier whose width is determined by resolving the
-  real `RefProg.types` index `c.ty`) and zero-sized constants as `.ZeroSized`.
-  `toMiriRvalue` maps `.use`, `.binaryOp`, `.unaryOp`, `.discriminant`, `.ref`,
-  `.addressOf`, and `.aggregateTuple` to their real `Miri.MIR.Rvalue`
-  constructors (`Use`, `BinaryOp`, `UnaryOp`, `Discriminant`, `Ref`, `RawPtr`,
-  `Aggregate`) with real translated operands and places, so unsupported Day-1
-  rvalues fire `forceAllocation` (`.ref`/`.addressOf`) and `writeAggregate`
-  (`.aggregateTuple`). Because `Miri.MIR.Rvalue` has no generic `.Unsupported`
-  constructor, `RefRvalue.unsupported` routes to the sentinel
-  `.CopyForDeref ⟨0, Array.empty⟩`, which `evalRvalueIntoPlace` rejects
-  directly with `.invalidProgram` (mapped to `.fault .unsupported`).
-- **Unified operand evaluation (`evalRefMiriOperandToSlot` and
-  `readRefPrimitiveSlot`):** Both `refRvalueHooks.evalOperand` and
-  `refTerminatorHooksFor.evalDiscriminant` share a single Stage-1 evaluator
-  `evalRefMiriOperandToSlot` (which delegates `.Copy`/`.Move` to
-  `Miri.Interpreter.evalOperand` with `deinitMovedPlace = true` and decodes
-  `.Constant` via `types[tyId]?` and `evalRefConstLit`), and both
-  `refRvalueHooks.readImmediate` and `refTerminatorHooksFor.evalDiscriminant`
-  share Stage-2A `readRefPrimitiveSlot` (which enforces
-  `refIsPrimitiveReadableTy` before checking for `.uninit` UB, matching
-  `MemoryOperand.readImmediate`).
-- **Rvalue evaluation (`evalRefMiriRvalue` and `refRvalueHooks`):**
-  `refStepHooksFor.assign` passes Miri's real translated destination `Place`
-  and `Rvalue` directly to `evalRefMiriRvalue`, which runs
-  `Miri.Interpreter.evalRvalueIntoPlace` with `refRvalueHooks types` over plain
-  state `List RefLocalState` (recording only post-move slots and destination
-  writes, with no call-order side-channel fields). Because `Immediate` and
-  `evalRvalueIntoPlace` are polymorphic over provenance `P`, `refRvalueHooks`
-  instantiates `P := MirTy × Option Val` and destination `V := LocalId ×
-  MirTy`: `evalOperand` and `readImmediate` transport real `(MirTy, Option
-  Val)` payloads directly inside Miri's `Immediate` carrier via
-  `payloadToMiriImmediate` / `miriImmediateToPayload?`; `binaryOp` and
-  `unaryOp` decode the actual `Immediate` arguments Miri passes them, invoke
-  `evalRefMiriBinOp` / `evalRefMiriUnOp`, and tag the result with its real
-  `MirTy` (`.bool` for comparison ops, `lTy` for arithmetic/bitwise ops, and
-  the operand's `MirTy` for `unaryOp`); `copyOp` checks `MirTy.beq` and writes
-  to `(localId, dstTy)` via `writeRefPlace`; and `writeImmediate` validates the
-  result `Val` against `dest.2` via `writeRefPlace` (`checkRefVal`). For
-  `.Discriminant`, `evalPlaceToOp` (`evalRefEnumPlaceToOp`) returns layout
-  `⟨enumTyId, refEnumLayoutData ety⟩` using the enum's real `RefProg.types`
-  index, `readDiscriminant` delegates to
-  `Miri.Interpreter.Discriminant.readDiscriminant`, and `discriminantForVariant`
-  resolves `types[ty]?` from the `op.layout.ty` that Miri forwards before
-  calling `Miri.Interpreter.Discriminant.discriminantForVariant` at the closed
-  hook's private `TyId 0`. Unreachable Day-1 `RvalueHooks` callbacks
-  (`writePointer`, `threadLocalPointer`, `copyOpAllowTransmute`, `writeRepeat`,
-  `toRef`, `enforceValidity`, `retagPtrValue`, `normalize`, `cast`) fail closed
-  or stay inert behind unreachable arms (`toRef`, `enforceValidity`, and
-  `retagPtrValue` are gated behind `forceAllocation`).
-- **Terminator and `SwitchInt` delegation (`toMiriTerminatorForDispatch` and
-  `refTerminatorHooksFor`):** `toMiriTerminatorForDispatch` translates `.goto`,
-  `.switchInt`, `.return_`, and `.unreachable` to their real
-  `Miri.MIR.TerminatorKind` constructors. All Day-1 unmodeled terminators
-  (`.unwindResume`, `.assert`, `.call`, and `.unsupported`) route to the
-  fail-closed sentinel `.UnwindTerminate .Abi` (firing `unwindTerminate`, which
-  returns `.unsupported`): this avoids placeholder message/callee fields for
-  `.assert`/`.call` that no Day-1 path reads, and avoids `.UnwindResume`'s
-  `returnFromCurrentFrame ... true` UB on Day 1's single-frame `StepState`.
-  Unreachable Day-1 `TerminatorHooks` callbacks (`call`, `tailCall`, `drop`,
-  `readAssertCondition`, `assertPanic`) fail closed with `.unsupported`.
-  For `.switchInt discr targets`, `toMiriTerminatorForDispatch` passes the real
-  `toMiriOperand discr` and encodes each `(caseBits : BitVec 128, target)`
-  branch losslessly as `Miri.MIR.SwitchTarget.Case caseBits.toNat target`.
-  `Miri.Interpreter.ControlFlow.evalTerminator` then drives `evalDiscriminant`
-  (reading Miri's passed operand via `evalRefMiriOperandToSlot` +
-  `readRefPrimitiveSlot` and threading post-move locals in
-  `RefStepMachine.locals`), runs its first-match `for` loop calling
-  `compareSwitchCase`—which delegates both scalar and boolean comparisons to
-  `evalRefConstLit` and `evalRefMiriBinOp .Eq`
-  (`Miri.Interpreter.IntegerOps.binary` / `binaryBool`), matching upstream
-  `compareSwitchCase` in `ExecutionMachine.stepHooks`'s `terminators` record
-  (`Miri/Interpreter/ExecutionMachine.lean:321` at `c92d1d97`)—and transfers
-  control via `ControlFlow.goToBlock`.
+- **Body, operand, rvalue, and terminator translation (`toMiriBody`,
+  `toMiriOperand`, `toMiriRvalue`, `toMiriTerminator`):** `toMiriOperand` maps
+  `RefOperand` to `Miri.MIR.Operand`, encoding scalar constants with their real
+  `RefProg.types` index `c.ty` and 128-bit payload carrier and zero-sized
+  constants as `.ZeroSized`. `toMiriRvalue` maps `.use`, `.binaryOp`,
+  `.unaryOp`, and `.discriminant` to their real `Miri.MIR.Rvalue` constructors
+  (`Use`, `BinaryOp`, `UnaryOp`, `Discriminant`) with real translated operands
+  and places, while unmodeled Day-1 rvalues (`.ref`, `.addressOf`,
+  `.aggregateTuple`, `.unsupported`) route to `.CopyForDeref ⟨0, #[]⟩`, which
+  `evalRvalueIntoPlace` rejects fail-closed with `.invalidProgram` (mapped to
+  `.blocked`). Likewise, `.goto`, `.switchInt`, `.return_`, and `.unreachable`
+  translate directly to their real `Miri.MIR.TerminatorKind` constructors,
+  while unmodeled Day-1 terminators (`.unwindResume`, `.assert`, `.call`,
+  `.unsupported`) route to `.CoroutineDrop`, which `ControlFlow.evalTerminator`
+  rejects fail-closed with `.invalidProgram` (`.blocked`).
+- **Real `ExecutionMachine.Config` (`refExecutionConfig rp`):** Sets
+  `deinitMovedPlace := true`, `enforceValidity := true` (shallow validation via
+  `ValidityMemory.bind` -> `ValidityVisitor.validatePlace`), disables Tree
+  Borrows and data-race trackers (which are inactive on Day-1 register-only
+  programs with no pointers), wires `layoutOf` / `evalConst` / `discriminant`
+  leaves against `rp.types`, and leaves unmodeled Day-1 callbacks (`cast`,
+  `call`, `drop`, `intrinsic`, `ref`) fail-closed with `.unsupported`.
+- **Single-step execution and allowed-step predicate (`evalRefStep`,
+  `RefAllowedStep`):** `evalRefStep` enforces `rs.stepsExecuted < rs.maxSteps`
+  (returning `.exhaustedStepLimit` at the budget), runs
+  `ExecutionMachine.step (refExecutionConfig rp) refLimits c rs.miri`, and
+  classifies the result: `(_, .ok true)` with non-empty stack returns
+  `.running` (incrementing `stepsExecuted`), `(_, .ok true)` with empty stack
+  reads the validated return value from `rs.retPlace` in `miri'.machine.memory`
+  (`refReadReturnVal`), `(_, .error (.undefinedBehavior _))` and
+  `(_, .error (.stack (.localExpectedLive _)))` return `.ub`, and all other
+  errors or `(_, .ok false)` return `.blocked`. `RefAllowedStep` instantiates
+  `Miri.Interpreter.ExecutionMachine.AllowedStep` directly over
+  `refExecutionConfig rp` and admissible choices `c = 0`, and
+  `RefStepSoundForAllowedStepClaim` kernel-proves that every non-exhausted
+  `RefStep` transition (`.running` or `.returned`) satisfies `RefAllowedStep`
+  at `refLimits`.
 
 ---
 
@@ -1198,12 +1164,13 @@ provides a pure, total codec between `Program` (with inline `MirTy`) and
 1. **Unseeded initial type table (`collectProgTypes`):**
    `collectProgTypes p := p.bodies.foldl collectBody []` starts from the empty
    table `[]` and interns each `MirTy` in first-occurrence, bottom-up order via
-   `insertTy`. Consequently, no `TyId` has a fixed cross-program meaning:
-   `RefProg.types` contains only types that appear syntactically in `p`, and
-   the adapter's synthetic `ty := 0` placeholder (`refSizedLocalLayout` and
-   `refLocalLayoutZst`) and private local discriminant sentinels `0` and `1`
-   (`refDiscriminantHooks`, spanning `ety` and its discriminant integer type
-   within a single `Discriminant` call) never index `RefProg.types`.
+   `insertTy`. Consequently, no `TyId` in `RefProg.types` has a fixed
+   cross-program meaning: `RefProg.types` contains only types that appear
+   syntactically in `p`, while `ExecutionMachine` built-in layout queries
+   (`boolLayout`, `usizeLayout`, `unitLayout`, and enum discriminant layouts)
+   resolve through `tyIdFor` / `auxTyCode` (`resolveTy` dispatches indices
+   `< types.length` into `types` and synthetic codes `≥ types.length` to
+   built-in primitive types without mutating `RefProg.types`).
 2. **Recursive bottom-up sub-type interning (`collectTy`):**
    `collectTy` traverses every `MirTy` appearing in `Body.locals`,
    `ConstOperand.ty`, and `ProjectionElem.field`, recursively interning child
@@ -1336,24 +1303,21 @@ correspondence theorem statement, preventing a constant or lossy projection from
 hiding disagreements in return values or memory state. Inside
 `Trusted.Correspondence`, `initRefState` and `evalRefStep` bridge boundary
 `Val`s (`Val.scalar ⟨w, s, bits⟩`, `Val.bool b`, `Val.unit`, and
-`Val.enumVal ety v`) to and from `lean-miri`'s representations:
-`checkRefVal` validates arguments and written values with
+`Val.enumVal ety v`) to and from `lean-miri`'s `Immediate` and `MemoryState`
+representations: `checkRefVal` validates entry arguments with
 `ScalarInt.tryFromUInt bits (toMiriSize w)` (rejecting any out-of-width bit
 pattern rather than truncating), `evalRefConstLit` decodes constants with
 `ScalarInt.tryFromUInt`, `ScalarInt.tryToBool`, and
-`Discriminant.readDiscriminant`, and `evalRefMiriBinOp` / `evalRefMiriUnOp`
-(called by `refRvalueHooks.{binaryOp, unaryOp}`) lift operator inputs through
-`miriIntValue` into `Miri.Interpreter.IntegerValue`, returning results as
-`sc.data` at the operand's static width and signedness.
-`Anneal.MirCorrespondence.ScalarEquiv` defines proof-side shorthands
-`evalRefBinOp` and `evalRefUnOp` over `evalRefMiriBinOp (toMiriBinOp op)` /
-`evalRefMiriUnOp (toMiriUnOp op)` and proves unconditional agreement lemmas
-for these boundary adapters (`checkRefVal_eq : checkRefVal v ty = checkVal v
-ty`, `checkRefArgsMatch_eq : checkRefArgsMatch vs tys = checkArgsMatch vs
-tys`, `evalRefConstLit_eq`, `evalRefBinOp_eq`, `evalRefUnOp_eq`,
-`evalRefSwitchScalarCase_eq`, and `match_tryFromUInt_eq`, which shows that a
-validated `ScalarInt` preserves `sc.data = bits` with zero truncation or
-signedness mutation).
+`Discriminant.readDiscriminant`, and `ExecutionMachine.scalarHooks` invokes
+`Miri.Interpreter.ScalarOps.{binary,unary}` (`IntegerOps.{binary,binaryBool,
+unary}`) directly on `Immediate` operands.
+`Anneal.MirCorrespondence.{ScalarEquiv,EnumEquiv,RvalueStep}` prove
+unconditional agreement lemmas between these Miri operations and
+$M_{\text{anneal}}$ (`checkRefVal_eq`, `checkRefArgsMatch_eq`,
+`evalRefConstLit_eq`, `evalRefBinOp_eq`, `evalRefUnOp_eq`,
+`scalarOps_binary_ref_eq`, `scalarOps_unary_ref_eq`, and
+`match_tryFromUInt_eq`, which shows that a validated `ScalarInt` preserves
+`sc.data = bits` with zero truncation or signedness mutation).
 
 ### 4.2 Factored Entry Initialization and Small-Step State Machine
 
@@ -1518,9 +1482,10 @@ aligns its operational checks with `lean-miri`'s evaluation order:
      checks `srcTy = dstTy` first (matching `copyRuntimePlaceNoValidate`), and
      then checks `optVal = some v` (matching `h.validate`).
    - In $M_{\text{ref}}$, the corresponding unified pipeline is
-     `evalRefMiriOperandToSlot` (Stage 1) and `readRefPrimitiveSlot`
-     (Stage 2A), driven by `Miri.Interpreter.evalRvalueIntoPlace` and
-     `Miri.Interpreter.ControlFlow.evalTerminator` (Section 2.5).
+     `Miri.Interpreter.OperandMachine.evalOperand` (Stage 1) and
+     `Miri.Interpreter.PlaceMachine.readImmediate` /
+     `Miri.Interpreter.Place.copyRuntimePlace` (Stage 2A/2B), driven directly
+     by `Miri.Interpreter.ExecutionMachine.step` (Section 2.5).
 3. **Assignment evaluation order (`StatementKind.assign`):**
    `evalStatement` checks that `dst.projection` is empty and looks up `dstTy :=
    body.locals[dst.localId]?` first, then evaluates `evalRvalue` (producing
@@ -1944,9 +1909,20 @@ def RefDiverges (rp : RefProg) (q : Query) : Prop :=
 
 ### 5.2 Correspondence, Fault-Equivalence, and Move-Deinit Wiring Theorems
 
-`Trusted.Correspondence` states three top-level claims: correspondence for
-well-formed programs, unconditional bidirectional fault equivalence, and the
-vendored `ExecutionMachine` move-deinitialization wiring contract:
+`Trusted.Correspondence` states five top-level locked claims: aggregate
+correspondence for well-formed programs (`CorrespondenceClaim`), unconditional
+bidirectional fault equivalence (`FaultEquivalenceClaim`), choice-coupled
+correspondence (`CorrespondenceAtChoicesClaim`), choice-coupled bidirectional
+fault equivalence (`FaultEquivalenceAtChoicesClaim`), and the vendored
+`ExecutionMachine` move-deinitialization wiring contract
+(`MiriMoveDeinitWiringClaim`, covering `ExecutionMachine.step`,
+`ExecutionMachine.{withValidation,operandHooks}`, both live
+`OperandMachine.evalOperand` and `LocalAccess.evalOperand`, `MachineHooks`, and
+`Call.deinitInPlaceArg`). All five top-level claims (together with the 6 codec
+claims, 11 uniqueness and simulation claims, and 8 `D6`–`D13` canary claims—32
+locked Pass 2 claims in total) are proved with zero `sorry` in
+`Anneal.MirCorrespondenceProof` and enforced by `TrustedBoundary.lean`
+(`verifyCorrespondenceClaims`).
 
 ```lean
 def CorrespondenceClaim : Prop :=
@@ -1962,95 +1938,23 @@ def FaultEquivalenceClaim : Prop :=
     ReachesResult p q (.fault k) ↔
       ∃ maxSteps : Nat,
         RefReachesOutcome (encodeProg p) q maxSteps (faultToRefOutcome k)
-
-def MiriMoveDeinitWiringClaim : Prop :=
-  (∀ {K U C O X Host : Type} [DecidableEq K]
-      (cfg : Miri.Interpreter.ExecutionMachine.Config K U C O X Host)
-      (limits : Miri.Interpreter.ExecutionMachine.Limits)
-      (c : C)
-      (state : Miri.Interpreter.MachineHooks.State K U),
-    Miri.Interpreter.ExecutionMachine.step cfg limits c state =
-      let (state', out) := Miri.Interpreter.Step.step
-        (Miri.Interpreter.ExecutionMachine.stepHooks cfg limits) c
-        { state with
-          machine := { state.machine with pendingMoveDeinit := false } }
-      ( { state' with
-          machine := { state'.machine with pendingMoveDeinit := false } },
-        out )) ∧
-  (∀ {K U C O X Host : Type} [DecidableEq K]
-      (cfg : Miri.Interpreter.ExecutionMachine.Config K U C O X Host)
-      (limits : Miri.Interpreter.ExecutionMachine.Limits),
-    cfg.deinitMovedPlace = true →
-    (Miri.Interpreter.ExecutionMachine.withValidation
-        cfg limits).access.deinitMovedPlace = true ∧
-    (Miri.Interpreter.ExecutionMachine.operandHooks
-        cfg).deinitMovedPlace = true) ∧
-  (∀ {Prov Extra State : Type}
-      (hooks : Miri.Interpreter.LocalAccessHooks Prov Extra State)
-      (frame : Miri.Interpreter.Frame Prov Miri.Interpreter.LocalLayout Extra)
-      (state : State)
-      (localId : Miri.MIR.LocalId)
-      (known : Option Miri.Interpreter.LocalLayout),
-    hooks.deinitMovedPlace = false →
-    Miri.Interpreter.evalOperand hooks frame state
-        (.Move ⟨localId, Array.empty⟩) known =
-      Miri.Interpreter.evalPlaceToOp hooks frame state
-        ⟨localId, Array.empty⟩ known) ∧
-  (∀ {Prov Extra State : Type}
-      (hooks : Miri.Interpreter.LocalAccessHooks Prov Extra State)
-      (frame frame₁ frame₂ :
-        Miri.Interpreter.Frame Prov Miri.Interpreter.LocalLayout Extra)
-      (state state₁ : State)
-      (localId : Miri.MIR.LocalId)
-      (known : Option Miri.Interpreter.LocalLayout)
-      (imm : Miri.Interpreter.Immediate Prov)
-      (layout : Miri.Interpreter.LocalLayout),
-    hooks.deinitMovedPlace = true →
-    Miri.Interpreter.evalPlaceToOp hooks frame state
-        ⟨localId, Array.empty⟩ known =
-      ⟨frame₁, state₁, .ok ⟨.immediate imm, layout⟩⟩ →
-    frame₁.replaceLocalValue localId
-        (.live (if layout.layout.isZst then .immediate imm
-          else .immediate .uninit)) =
-      .ok frame₂ →
-    Miri.Interpreter.evalOperand hooks frame state
-        (.Move ⟨localId, Array.empty⟩) known =
-      ⟨frame₂, state₁, .ok ⟨.immediate imm, layout⟩⟩) ∧
-  (∀ {K U : Type}
-      (m : Miri.Interpreter.MachineHooks.MachineState K U) (isMove : Bool),
-    (Miri.Interpreter.MachineHooks.takeLastPendingMoveDeinit
-       (Miri.Interpreter.MachineHooks.recordPendingMoveDeinit m isMove)).2 =
-      isMove) ∧
-  (∀ {P S C E Other Extern FnABI ArgABI : Type}
-      (h : Miri.Interpreter.CallHooks P S C E Other Extern FnABI ArgABI)
-      (choice : C)
-      (place : Miri.Interpreter.MPlaceTy P)
-      (snap : Miri.Interpreter.OpTy P),
-    Miri.Interpreter.FnArg.copyFnArg (.InPlace place (some snap)) = snap ∧
-    Miri.Interpreter.Call.deinitInPlaceArg h choice place (some snap) =
-      Bind.bind (h.restoreInPlaceMovedBytes choice snap place)
-        (fun _ => h.deinitInPlaceArgument choice place))
 ```
 
 where `faultToRefOutcome .undefined = .ub` and
-`faultToRefOutcome .unsupported = .blocked`. `Anneal.MirCorrespondenceProof`
-proves all three claims with zero `sorry`. `anneal_corresponds_to_miri` and
-`reachesResult_fault_iff_refReachesOutcome` directly have exact types
-`CorrespondenceClaim` and `FaultEquivalenceClaim`, and
-`correspondence_claim_holds : CorrespondenceClaim`,
-`fault_equivalence_claim_holds : FaultEquivalenceClaim`, and
-`miri_move_deinit_wiring_claim_holds : MiriMoveDeinitWiringClaim` export the
-audited witness names; `TrustedBoundary.lean` (`verifyCorrespondenceClaims`)
-locks `correspondence_claim_holds`, `fault_equivalence_claim_holds`, and
-`miri_move_deinit_wiring_claim_holds` directly against the
-`Trusted.Correspondence` claim definitions.
+`faultToRefOutcome .unsupported = .blocked`, and `MiriMoveDeinitWiringClaim`
+in `trusted/correspondence/Trusted/Correspondence.lean` adds the two
+`OperandMachine.evalOperand` move-deinitialization conjuncts alongside
+`ExecutionMachine.step`, `ExecutionMachine.{withValidation,operandHooks}`,
+`LocalAccess.evalOperand`,
+`MachineHooks.{recordPendingMoveDeinit,takeLastPendingMoveDeinit}`, and
+`FnArg.copyFnArg`/`Call.deinitInPlaceArg`.
 
 On Day 1, both $M_{\text{anneal}}$ and $M_{\text{ref}}$ are deterministic
 (`ValidChoice _ _ c := c = 0` and `ValidRefChoice _ _ c := c = 0`), so there is
 at most one execution path from `(p, q)` and the unconditional contract below
 reduces cleanly to `CorrespondenceClaim` (gated on `WellFormed p q`) plus
 unconditional bidirectional fault-reachability equivalence
-`FaultEquivalenceClaim`. When Phase 2 introduces nondeterministic choices (such
+`FaultEquivalenceClaim`. As Phase 2 introduces nondeterministic choices (such
 as base-address allocation draws `c : Choice` along a choice trace
 `choices : List Choice`), comparing aggregate behavior sets, existential
 divergence predicates, or existential fault sets across unrelated branches—or
@@ -2064,17 +1968,12 @@ relation with (a) unconditional forward totality
 ($M_{\text{ref}} \to M_{\text{anneal}}$) across **all** valid executions
 (faulting and non-faulting), (b) unconditional reverse totality on faulting
 executions ($M_{\text{anneal}} \to M_{\text{ref}}$), and (c) optional reverse
-totality on non-faulting executions. When both models share the same choice
-trace `choices : List Choice` / `choiceStream : Nat → Choice`—or when reverse
-totality also holds across all valid executions—Cases 2–4 of Section 4.6
-strengthen to exact two-way equivalence across every `(p, q)` (including
-mixed-faulting inputs), while true behavioral over-approximation belongs in
-Stage 3 `StableAst`/`Abstracts`/`MirWp`. To enforce unconditional forward
-totality across **every** valid execution prefix (not only completed returns,
-divergences, or faults), Phase 2 defines explicit choice-coupled finite
-execution-prefix predicates `ValidPrefixAtChoices` and
-`RefValidPrefixAtChoices` and includes an explicit forward-totality conjunct in
-`CorrespondenceAtChoicesClaim`:
+totality on non-faulting executions. To enforce unconditional forward totality
+across **every** valid execution prefix (not only completed returns,
+divergences, or faults), `Trusted.MirSemantics.Boundary` and
+`Trusted.Correspondence` define and lock `ValidPrefixAtChoices`,
+`RefValidPrefixAtChoices`, `CorrespondenceAtChoicesClaim`, and
+`FaultEquivalenceAtChoicesClaim`:
 
 ```lean
 inductive ReachesAtChoices (p : Program) :
@@ -2172,61 +2071,69 @@ Each conjunct of `CorrespondenceClaim` closes a distinct gap:
 ### 5.3 One-to-One Simulation Invariant (`SimulationInv`)
 
 Because both $M_{\text{anneal}}$ and $M_{\text{ref}}$ deinitialize moved locals
-in lockstep via `liveUninitSlot` and pre-cache local types via
-`zipRefLocals`, the simulation relation `SimulationInv p s rs`—defined in
-`Trusted.Correspondence` so the 11 locked uniqueness and simulation claims
-(`StateUniqueOfSimulationInvClaim`, `RefStateUniqueOfSimulationInvClaim`,
-`InitRefStateSimClaim`, `EvalRefStepEqClaim`, `SimOfRefStepClaim`,
-`SimOfRefReachesClaim`, `RefWellFormedOfWellFormedClaim`,
-`RefBehaviorOfBehaviorClaim`, `BehaviorOfRefBehaviorClaim`,
-`BehaviorIffRefBehaviorClaim`, and `DivergesIffRefDivergesClaim`, all checked
-by `verifyCorrespondenceClaims`) can name it—requires no slack or ghost state
-and pins the entire `RefState` structure (up to the explicit step counters
-`stepsExecuted` and `maxSteps`):
+in lockstep (`liveUninitSlot` / `OperandMachine.evalOperand` with
+`deinitMovedPlace := true`) and pre-cache local layouts via `liftLocals`, the
+simulation relation `SimulationInv rp p s rs`—defined in
+`Trusted.Correspondence.Simulation` so the 11 locked uniqueness and simulation
+claims (`StateUniqueOfSimulationInvClaim`,
+`RefStateUniqueOfSimulationInvClaim`, `InitRefStateSimClaim`,
+`EvalRefStepEqClaim`, `SimOfRefStepClaim`, `SimOfRefReachesClaim`,
+`RefWellFormedOfWellFormedClaim`, `RefBehaviorOfBehaviorClaim`,
+`BehaviorOfRefBehaviorClaim`, `BehaviorIffRefBehaviorClaim`, and
+`DivergesIffRefDivergesClaim`, all checked by `verifyCorrespondenceClaims`) can
+name it—pins every semantic field of `s` and the real `ExecutionMachine` state
+`rs` (up to `stepsExecuted`, `maxSteps`, and `miri.machine.user.control`):
 
 ```lean
-def liftFrame (bodyLocals : List MirTy) (f : FrameState) : RefFrameState :=
-  { defId := f.defId
-    blockIdx := f.blockIdx
-    stmtIdx := f.stmtIdx
-    locals := zipRefLocals bodyLocals f.locals
-    isCallerSentinel := false }
-
-def FrameSimInv (p : Program) (f : FrameState) (rf : RefFrameState) : Prop :=
-  ∃ body : Body,
+def FrameSimInv (rp : RefProg) (p : Program) (f : FrameState)
+    (retPlace : Miri.Interpreter.MPlaceTy Miri.Memory.Provenance)
+    (rf : Miri.Interpreter.Frame Miri.Memory.Provenance
+      Miri.Interpreter.LocalLayout
+      Miri.Interpreter.MachineHooks.FrameExtra) : Prop :=
+  ∃ (body : Body) (rbody : RefBody),
     MirSemantics.getElem? p.bodies f.defId = some body ∧
-    f.locals.length = body.locals.length ∧
-    rf = liftFrame body.locals f
+    MirSemantics.getElem? rp.bodies f.defId = some rbody ∧
+    decodeBody rp.types rbody = some body ∧
+    Nat.blt body.argumentCount body.locals.length = true ∧
+    storageAnnotationsInBounds body = true ∧
+    discriminantTypesValid body = true ∧
+    body.locals.all isSupportedScalarOrUnitTy = true ∧
+    SlotsMatchTys body.locals f.locals ∧
+    FramePcInBounds body f ∧
+    rf = mkRefMiriFrame rp.types f.defId rbody f.blockIdx f.stmtIdx
+      (liftLocals rp.types body.locals f.locals) retPlace
 
-def entryRetTy? (p : Program) : Option MirTy :=
-  match MirSemantics.getElem? p.bodies p.entryDefId with
-  | some body => MirSemantics.getElem? body.locals 0
-  | none => none
-
-def SimulationInv (p : Program) (s : State) (rs : RefState) : Prop :=
-  ∃ f : FrameState, ∃ rf : RefFrameState, ∃ retTy : MirTy,
+def SimulationInv (rp : RefProg) (p : Program) (s : State) (rs : RefState) :
+    Prop :=
+  ∃ (f : FrameState)
+    (rf : Miri.Interpreter.Frame Miri.Memory.Provenance
+      Miri.Interpreter.LocalLayout
+      Miri.Interpreter.MachineHooks.FrameExtra)
+    (retTy : MirTy)
+    (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
+      Miri.TreeBorrows.BorrowTree Unit)
+    (ctrl : Miri.Interpreter.TerminatorMachine.Control Unit),
+    decodeProg rp = some p ∧
     s.frames = [f] ∧
     f.defId = p.entryDefId ∧
-    rs.frames = [callerSentinelFrame retTy, rf] ∧
-    rs.callerMem = s.callerMem ∧
     entryRetTy? p = some retTy ∧
-    FrameSimInv p f rf
+    rs.retTy = retTy ∧
+    refInitMemoryAndRetPlace rp.types retTy = .ok (mem, rs.retPlace) ∧
+    RefControlValid ctrl ∧
+    rs.miri = mkRefMiriState rf mem ctrl s.callerMem ∧
+    FrameSimInv rp p f rs.retPlace rf
 ```
 
-`SimulationInv` constrains every semantic field of `s` and `rs` (`frames` and
-`callerMem`, up to the explicit step counters `rs.stepsExecuted` and
-`rs.maxSteps`). No `lean-miri` state persists outside `RefState`: each
-`evalRefStep` rebuilds every `Miri.Interpreter` frame and step state that it
-uses from the current `RefState` (`mkSingleLocalMiriFrameWithLayout` and
-`mkRefStepStateWith`) and projects the result back into `RefState`, so no
-leftover pending-deinitialization flag, frame metadata, or other hidden machine
-state can carry between steps. Binding `f.defId = p.entryDefId` in the
-single-frame Phase 1 model (before multi-frame `TerminatorKind.call` support
-generalizes `SimulationInv` to a frame-stack invariant in Phase 2) guarantees
-that the executing frame's return place `_0` always has the entry body's return
-type `retTy`, matching `callerSentinelFrame retTy` even on multi-body programs
-and keeping `SimulationInv` a one-to-one correspondence (unique in both
-directions on related running states at fixed step counters; proved in
+`SimulationInv` constrains every semantic field of `s` and `rs` (the single
+active `Miri.Interpreter.Frame`, the fresh caller-owned return allocation
+`retPlace` in `miri.machine.memory`, disabled borrow/race trackers,
+`pendingMoveDeinit = false`, `callerMem`, and `RefControlValid`). Binding
+`f.defId = p.entryDefId` in the single-frame Phase 1 model (before multi-frame
+`TerminatorKind.call` support generalizes `SimulationInv` to a frame-stack
+invariant) guarantees that the executing frame's return place `_0` always has
+the entry body's return type `retTy`, matching `rs.retPlace` even on multi-body
+programs and keeping `SimulationInv` unique in both directions on related
+running states at fixed `(stepsExecuted, maxSteps, control)` (proved in
 `Anneal.MirCorrespondence.SimHelpers` and exported in
 `Anneal.MirCorrespondenceProof` against `StateUniqueOfSimulationInvClaim` and
 `RefStateUniqueOfSimulationInvClaim`):
@@ -2657,20 +2564,17 @@ representation artifacts:
    value in `Trusted.MirAst` and deduplicating during `encodeProg` eliminates
    both issues by construction.
 
-#### Pre-Seeded Primitive Type Table (Deferred to Phase 2)
+#### Pre-Seeded Primitive Type Table
 
 We considered pre-seeding `collectProgTypes` with primitive types such as
 `[.unit, .bool, .int .isize false]` at fixed `TyId`s `0`, `1`, and `2` instead
-of starting from `[]`. We deferred this for Phase 1 because the Phase 1
-adapters never look up `RefProg.types` through built-in layout queries
-(`refSizedLocalLayout` and `refLocalLayoutZst` carry an unused `ty := 0`
-placeholder, and `refDiscriminantHooks` uses private local sentinels `0` and
-`1` scoped to a single `Discriminant` call). Starting `collectProgTypes` from
-`[]` keeps `RefProg.types` minimal and strictly faithful to the types appearing
-in `p`; if Phase 2 widens `ExecutionMachine` hook delegation to built-in layout
-queries (`unitLayout`, `boolLayout`, or `usizeLayout`) that expect fixed
-in-bounds `TyId`s in `RefProg.types`, pre-seeding can be added alongside that
-delegation.
+of starting from `[]`. Starting `collectProgTypes` from `[]` keeps
+`RefProg.types` minimal and strictly faithful to the types appearing in `p`,
+while `tyIdFor` / `auxTyCode` / `resolveTy` cleanly serve `ExecutionMachine`
+built-in layout queries (`unitLayout`, `boolLayout`, `usizeLayout`, and
+discriminant integer layouts) via out-of-band auxiliary `TyId` codes
+`≥ types.length` without polluting `RefProg.types` or breaking
+`typesAreCanonical`.
 
 ### A.3 State Machine and Step-Budget Alternatives
 

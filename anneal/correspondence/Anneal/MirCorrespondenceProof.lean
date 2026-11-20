@@ -15,6 +15,7 @@ import Anneal.MirCorrespondence.Codec
 import Anneal.MirCorrespondence.SimHelpers
 import Anneal.MirCorrespondence.ScalarEquiv
 import Anneal.MirCorrespondence.EnumEquiv
+import Anneal.MirCorrespondence.MemRoundTrip
 import Anneal.MirCorrespondence.RvalueStep
 import Anneal.MirCorrespondence.StmtTermStep
 import Anneal.MirCorrespondence.InitAndSim
@@ -28,7 +29,7 @@ open Anneal.MirCorrespondence
 /-!
 # MIR Correspondence Proof Hub (`Anneal.MirCorrespondenceProof`)
 
-Thin Pass 2 entry module forwarding all 30 locked correspondence, wiring,
+Thin Pass 2 entry module forwarding all 32 locked correspondence, wiring,
 codec, simulation, and non-vacuity canary (`D6`–`D13`) theorems to their modular
 proof implementations under `Anneal.MirCorrespondence.*`.
 -/
@@ -41,6 +42,17 @@ theorem correspondence_claim_holds : CorrespondenceClaim :=
 (`FaultEquivalenceClaim`). -/
 theorem fault_equivalence_claim_holds : FaultEquivalenceClaim :=
   reachesResult_fault_iff_refReachesOutcome
+
+/-- Top-level choice-coupled correspondence witness theorem
+(`CorrespondenceAtChoicesClaim`). -/
+theorem correspondence_at_choices_claim_holds : CorrespondenceAtChoicesClaim :=
+  correspondence_at_choices_claim_holds_base
+
+/-- Top-level choice-coupled bidirectional fault-equivalence witness theorem
+(`FaultEquivalenceAtChoicesClaim`). -/
+theorem fault_equivalence_at_choices_claim_holds :
+    FaultEquivalenceAtChoicesClaim :=
+  fault_equivalence_at_choices_claim_holds_base
 
 /-- Vendored `ExecutionMachine` move-deinitialization wiring witness
 (`MiriMoveDeinitWiringClaim`). -/
@@ -144,5 +156,8 @@ theorem canary_D12_zst_enum_move_and_discr_ok : CanaryD12ZstEnumMoveAndDiscrOkCl
 
 theorem canary_D13_enum_invalid_tag_and_uninit_ub : CanaryD13EnumInvalidTagAndUninitUbClaim :=
   canary_D13_enum_invalid_tag_and_uninit_ub_base
+
+theorem refStep_sound_for_allowedStep_holds : RefStepSoundForAllowedStepClaim :=
+  refStep_sound_for_allowedStep_base
 
 end Anneal.MirCorrespondenceProof

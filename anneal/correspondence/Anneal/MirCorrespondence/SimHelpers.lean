@@ -22,155 +22,129 @@ namespace Anneal.MirCorrespondence
 
 open Trusted Trusted.MirAst Trusted.MirSemantics Trusted.Correspondence
 
-/-! ## One-to-One Simulation Invariant (`SimulationInv`) -/
+/-!
+# Simulation Invariant and Type-Table Helpers
+(`Anneal.MirCorrespondence.SimHelpers`)
 
-/-- Project the runtime `LocalSlot` list from a `RefLocalState` list. -/
-noncomputable def unzipRefSlots
-    (rlocals : List RefLocalState) : List LocalSlot :=
-  rlocals.map (·.slot)
+Proves canonical `TyId` resolution (`tyIdFor` / `resolveTy` / `canonicalTyId`),
+`SlotsMatchTys` and `liftLocals` structural lemmas, `Array` / `MirSemantics`
+indexing bridges, `SlotsMatchTys` preservation across `evalOperandToSlot`,
+`evalPrimitiveOperand`, `evalRvalue`, and `writePlace`, and right-injectivity
+of `SimulationInv` (`refState_unique_of_simulationInv_base`).
+-/
 
-theorem unzipRefSlots_zipRefLocals {bodyLocals : List MirTy}
-    {slots : List LocalSlot}
-    (h_len : slots.length = bodyLocals.length) :
-    unzipRefSlots (zipRefLocals bodyLocals slots) = slots := by
-  induction bodyLocals generalizing slots with
-  | nil =>
-    cases slots with
-    | nil => rfl
-    | cons _ _ => cases h_len
-  | cons ty tys ih =>
-    cases slots with
-    | nil => cases h_len
-    | cons s ss =>
-      simp only [List.length_cons, Nat.add_right_cancel_iff] at h_len
-      exact congrArg (s :: ·) (ih h_len)
+/-! ## Generic `MirSemantics.getElem?` / `setElem?` / `Array` Bridges -/
 
-/-- One-to-one uniqueness of `SimulationInv` (left-injective): any `RefState`
-`rs` corresponds to at most one $M_{\text{anneal}}$ `State`. -/
-theorem state_unique_of_simulationInv_base :
-    StateUniqueOfSimulationInvClaim := by
-  intro p s₁ s₂ rs h₁ h₂
-  let ⟨f₁, rf₁, _, hs₁, hrs₁, hcm₁, _, _, body₁, _, hlen₁, hrf₁⟩ := h₁
-  let ⟨f₂, rf₂, _, hs₂, hrs₂, hcm₂, _, _, body₂, _, hlen₂, hrf₂⟩ := h₂
-  rw [hrs₁] at hrs₂
-  injection hrs₂ with _ h_tail
-  injection h_tail with h_rf_eq
-  subst h_rf_eq
-  have h_def : f₁.defId = f₂.defId := by
-    have := congrArg RefFrameState.defId (hrf₁.symm.trans hrf₂)
-    exact this
-  have h_blk : f₁.blockIdx = f₂.blockIdx := by
-    have := congrArg RefFrameState.blockIdx (hrf₁.symm.trans hrf₂)
-    exact this
-  have h_stmt : f₁.stmtIdx = f₂.stmtIdx := by
-    have := congrArg RefFrameState.stmtIdx (hrf₁.symm.trans hrf₂)
-    exact this
-  have h_loc_eq : zipRefLocals body₁.locals f₁.locals =
-      zipRefLocals body₂.locals f₂.locals := by
-    have := congrArg RefFrameState.locals (hrf₁.symm.trans hrf₂)
-    exact this
-  have h_slots : f₁.locals = f₂.locals := by
-    have h_u := congrArg unzipRefSlots h_loc_eq
-    rw [unzipRefSlots_zipRefLocals hlen₁,
-      unzipRefSlots_zipRefLocals hlen₂] at h_u
-    exact h_u
-  have h_f : f₁ = f₂ := by
-    cases f₁; cases f₂
-    simp only [ FrameState.mk.injEq]
-    exact ⟨h_def, h_blk, h_stmt, h_slots⟩
-  subst h_f
-  cases s₁; cases s₂
-  simp only [State.mk.injEq]
-  exact ⟨hs₁.trans hs₂.symm, hcm₁.symm.trans hcm₂⟩
+theorem mirGetElem?_lt_of_some {α : Type} {xs : List α} {i : Nat} {x : α}
+    (h : MirSemantics.getElem? xs i = some x) : i < xs.length := by
+  induction xs generalizing i with
+  | nil => cases h
+  | cons _ rest ih =>
+    cases i with
+    | zero => exact Nat.zero_lt_succ rest.length
+    | succ j => exact Nat.succ_lt_succ (ih h)
 
-/-- One-to-one uniqueness of `SimulationInv` (right-injective at fixed step
-counters): any $M_{\text{anneal}}$ `State` `s` and step counters
-`(stepsExecuted, maxSteps)` uniquely determine `rs`, including its caller
-sentinel frame. -/
-theorem refState_unique_of_simulationInv_base :
-    RefStateUniqueOfSimulationInvClaim := by
-  intro p s rs₁ rs₂ h₁ h₂ h_steps h_max
-  let ⟨f₁, rf₁, retTy₁, hs₁, hrs₁, hcm₁, hret₁, _, body₁, hbody₁, _, hrf₁⟩ := h₁
-  let ⟨f₂, rf₂, retTy₂, hs₂, hrs₂, hcm₂, hret₂, _, body₂, hbody₂, _, hrf₂⟩ := h₂
-  rw [hs₁] at hs₂
-  injection hs₂ with h_f_eq
-  subst h_f_eq
-  rw [hbody₁] at hbody₂
-  injection hbody₂ with h_b_eq
-  subst h_b_eq
-  rw [hret₁] at hret₂
-  injection hret₂ with h_ret_eq
-  subst h_ret_eq
-  subst hrf₁; subst hrf₂
-  cases rs₁; cases rs₂
-  simp only [RefState.mk.injEq]
-  exact ⟨hrs₁.trans hrs₂.symm, hcm₁.trans hcm₂.symm, h_steps, h_max⟩
-
-theorem getElem?_zipRefLocals_some {bodyLocals : List MirTy}
-    {slots : List LocalSlot}
-    {i : Nat} {ty : MirTy} {slot : LocalSlot}
-    (h_ty : MirSemantics.getElem? bodyLocals i = some ty)
-    (h_slot : MirSemantics.getElem? slots i = some slot) :
-    MirSemantics.getElem? (zipRefLocals bodyLocals slots) i =
-      some ⟨slot, some ty⟩ := by
-  induction bodyLocals generalizing slots i with
-  | nil => cases h_ty
-  | cons t ts ih =>
-    cases slots with
-    | nil => cases h_slot
-    | cons s ss =>
-      cases i with
-      | zero =>
-        injection h_ty with h_t
-        injection h_slot with h_s
-        subst h_t; subst h_s
-        rfl
-      | succ j =>
-        exact ih h_ty h_slot
-
-theorem getElem?_zipRefLocals_none_left {bodyLocals : List MirTy}
-    {slots : List LocalSlot}
-    {i : Nat} (h_ty : MirSemantics.getElem? bodyLocals i = none) :
-    MirSemantics.getElem? (zipRefLocals bodyLocals slots) i = none := by
-  induction bodyLocals generalizing slots i with
+theorem mirGetElem?_none_of_ge {α : Type} {xs : List α} {i : Nat}
+    (h : xs.length ≤ i) : MirSemantics.getElem? xs i = none := by
+  induction xs generalizing i with
   | nil => rfl
-  | cons t ts ih =>
-    cases slots with
-    | nil => rfl
-    | cons s ss =>
-      cases i with
-      | zero => cases h_ty
-      | succ j => exact ih h_ty
+  | cons _ rest ih =>
+    cases i with
+    | zero => exact False.elim (Nat.not_lt_zero _ h)
+    | succ j => exact ih (Nat.le_of_succ_le_succ h)
 
-theorem getElem?_zipRefLocals_none_right {bodyLocals : List MirTy}
-    {slots : List LocalSlot}
-    {i : Nat} (h_slot : MirSemantics.getElem? slots i = none) :
-    MirSemantics.getElem? (zipRefLocals bodyLocals slots) i = none := by
-  induction bodyLocals generalizing slots i with
-  | nil => rfl
-  | cons t ts ih =>
-    cases slots with
-    | nil => rfl
-    | cons s ss =>
-      cases i with
-      | zero => cases h_slot
-      | succ j => exact ih h_slot
+theorem mirGetElem?_some_of_lt {α : Type} {xs : List α} {i : Nat}
+    (h : i < xs.length) : ∃ x : α, MirSemantics.getElem? xs i = some x := by
+  induction xs generalizing i with
+  | nil => exact False.elim (Nat.not_lt_zero _ h)
+  | cons a rest ih =>
+    cases i with
+    | zero => exact ⟨a, rfl⟩
+    | succ j => exact ih (Nat.lt_of_succ_lt_succ h)
 
-theorem getElem?_some_of_length_eq {α β : Type} {xs : List α} {ys : List β}
+theorem mirGetElem?_ge_of_none {α : Type} {xs : List α} {i : Nat}
+    (h : MirSemantics.getElem? xs i = none) : xs.length ≤ i := by
+  induction xs generalizing i with
+  | nil => exact Nat.zero_le i
+  | cons _ rest ih =>
+    cases i with
+    | zero => cases h
+    | succ j => exact Nat.succ_le_succ (ih h)
+
+theorem list_all_mirGetElem? {α : Type} {xs : List α} {p : α → Bool}
     {i : Nat} {x : α}
-    (h_len : xs.length = ys.length)
-    (h_x : MirSemantics.getElem? xs i = some x) :
-    ∃ y : β, MirSemantics.getElem? ys i = some y := by
-  induction xs generalizing ys i with
-  | nil => cases h_x
-  | cons a as ih =>
-    cases ys with
-    | nil => cases h_len
-    | cons b bs =>
-      simp only [List.length_cons, Nat.add_right_cancel_iff] at h_len
-      cases i with
-      | zero => exact ⟨b, rfl⟩
-      | succ j => exact @ih bs j h_len h_x
+    (h_all : xs.all p = true)
+    (h_get : MirSemantics.getElem? xs i = some x) :
+    p x = true := by
+  induction xs generalizing i with
+  | nil => cases h_get
+  | cons a rest ih =>
+    change (p a && rest.all p) = true at h_all
+    cases h_pa : p a <;> rw [h_pa] at h_all
+    · cases h_all
+    · cases i with
+      | zero =>
+        injection h_get with h_eq
+        subst h_eq
+        exact h_pa
+      | succ j => exact ih h_all h_get
+
+theorem mirGetElem?_map {α β : Type} (f : α → β) (xs : List α) (i : Nat) :
+    MirSemantics.getElem? (xs.map f) i =
+      (MirSemantics.getElem? xs i).map f := by
+  induction xs generalizing i with
+  | nil => rfl
+  | cons a rest ih =>
+    cases i with
+    | zero => rfl
+    | succ j => exact ih j
+
+theorem list_get_eq_mirGetElem? {α : Type} (xs : List α) (i : Nat)
+    (h : i < xs.length) :
+    some (xs.get ⟨i, h⟩) = MirSemantics.getElem? xs i := by
+  induction xs generalizing i with
+  | nil => exact False.elim (Nat.not_lt_zero _ h)
+  | cons _ rest ih =>
+    cases i with
+    | zero => rfl
+    | succ j => exact ih j (Nat.lt_of_succ_lt_succ h)
+
+theorem array_getElem?_eq_mirGetElem? {α : Type} (xs : List α) (i : Nat) :
+    (Array.mk xs)[i]? = MirSemantics.getElem? xs i := by
+  dsimp only [GetElem?.getElem?, Array.instGetElem?NatLtSize, decidableGetElem?,
+    Array.size, GetElem.getElem, Array.instGetElemNatLtSize, Array.getInternal]
+  cases h_dec : decide (i < xs.length) with
+  | true =>
+    have h_lt : i < xs.length := of_decide_eq_true h_dec
+    rw [dite_eq_left h_lt]
+    exact list_get_eq_mirGetElem? xs i h_lt
+  | false =>
+    have h_not : ¬ (i < xs.length) := of_decide_eq_false h_dec
+    rw [dite_eq_right h_not]
+    exact (mirGetElem?_none_of_ge (Nat.le_of_not_lt h_not)).symm
+
+theorem mirSetElem?_eq_list_set {α : Type} (xs : List α) (i : Nat) (v : α)
+    (h : i < xs.length) :
+    MirSemantics.setElem? xs i v = some (xs.set i v) := by
+  induction xs generalizing i with
+  | nil => exact False.elim (Nat.not_lt_zero _ h)
+  | cons x rest ih =>
+    cases i with
+    | zero => rfl
+    | succ j =>
+      dsimp only [MirSemantics.setElem?, List.set]
+      rw [ih j (Nat.lt_of_succ_lt_succ h)]
+
+theorem array_set_eq_mirSetElem? {α : Type} {xs xs' : List α} {i : Nat}
+    {v : α} (h_lt : i < (Array.mk xs).size)
+    (h_set : MirSemantics.setElem? xs i v = some xs') :
+    (Array.mk xs).set i v h_lt = Array.mk xs' := by
+  have h1 : MirSemantics.setElem? xs i v = some (xs.set i v) :=
+    mirSetElem?_eq_list_set xs i v h_lt
+  rw [h1] at h_set
+  injection h_set with h_eq
+  subst h_eq
+  rfl
 
 theorem setElem?_length {α : Type} {xs xs' : List α} {i : Nat} {v : α}
     (h : MirSemantics.setElem? xs i v = some xs') :
@@ -193,19 +167,380 @@ theorem setElem?_length {α : Type} {xs xs' : List α} {i : Nat} {v : α}
         subst h_eq
         simp only [List.length_cons, ih h_rest]
 
-theorem setElem?_zipRefLocals_some {bodyLocals : List MirTy}
-    {slots slots' : List LocalSlot}
+theorem getElem?_some_of_length_eq {α β : Type} {xs : List α} {ys : List β}
+    {i : Nat} {x : α}
+    (h_len : xs.length = ys.length)
+    (h_x : MirSemantics.getElem? xs i = some x) :
+    ∃ y : β, MirSemantics.getElem? ys i = some y := by
+  induction xs generalizing ys i with
+  | nil => cases h_x
+  | cons a as ih =>
+    cases ys with
+    | nil => cases h_len
+    | cons b bs =>
+      simp only [List.length_cons, Nat.add_right_cancel_iff] at h_len
+      cases i with
+      | zero => exact ⟨b, rfl⟩
+      | succ j => exact @ih bs j h_len h_x
+
+/-! ## Canonical `TyId` Resolution (`tyIdFor`, `resolveTy`, `canonicalTyId`) -/
+
+theorem auxTyOfCode_auxTyCode {ty : MirTy} {code : Nat}
+    (h : auxTyCode ty = some code) :
+    auxTyOfCode code = some ty := by
+  cases ty with
+  | bool => injection h with hc; subst hc; rfl
+  | unit => injection h with hc; subst hc; rfl
+  | int w s =>
+    cases w <;> cases s <;> (injection h with hc; subst hc; rfl)
+  | never | enum _ | tuple _ | ref _ _ | rawPtr _ _ | unsupported => cases h
+
+theorem indexOfTy_some_getElem? {ts : List MirTy} {ty : MirTy} {idx : TyId}
+    (h : indexOfTy ts ty = some idx) :
+    MirSemantics.getElem? ts idx = some ty ∧ idx < ts.length := by
+  induction ts generalizing idx with
+  | nil => cases h
+  | cons t rest ih =>
+    dsimp only [indexOfTy] at h
+    cases h_eq : MirTy.beq t ty with
+    | true =>
+      rw [h_eq] at h
+      injection h with h_idx
+      subst h_idx
+      rw [MirTy.eq_of_beq h_eq]
+      exact ⟨rfl, Nat.zero_lt_succ rest.length⟩
+    | false =>
+      rw [h_eq] at h
+      cases h_rest : indexOfTy rest ty with
+      | none => rw [h_rest] at h; cases h
+      | some j =>
+        rw [h_rest] at h
+        injection h with h_idx
+        subst h_idx
+        let ⟨h_g, h_lt⟩ := ih h_rest
+        exact ⟨h_g, Nat.succ_lt_succ h_lt⟩
+
+theorem indexOfTy_some_of_mirGetElem? {ts : List MirTy} {i : Nat} {ty : MirTy}
+    (h : MirSemantics.getElem? ts i = some ty) :
+    ∃ idx : TyId, indexOfTy ts ty = some idx := by
+  induction ts generalizing i with
+  | nil => cases h
+  | cons t rest ih =>
+    dsimp only [indexOfTy]
+    cases h_eq : MirTy.beq t ty with
+    | true => exact ⟨0, rfl⟩
+    | false =>
+      cases i with
+      | zero =>
+        injection h with h_t
+        subst h_t
+        rw [MirTy.beq_refl] at h_eq
+        cases h_eq
+      | succ j =>
+        let ⟨idx, h_idx⟩ := ih h
+        rw [h_idx]
+        exact ⟨idx + 1, rfl⟩
+
+theorem resolveTy_tyIdFor_of_mem {ts : List MirTy} {i : Nat} {ty : MirTy}
+    (h : MirSemantics.getElem? ts i = some ty) :
+    MirSemantics.getElem? ts (tyIdFor ts ty) = some ty ∧
+    resolveTy ts (tyIdFor ts ty) = some ty := by
+  let ⟨idx, h_idx⟩ := indexOfTy_some_of_mirGetElem? h
+  have h_ty : tyIdFor ts ty = idx := by
+    dsimp only [tyIdFor]
+    rw [h_idx]
+  let ⟨h_g, _⟩ := indexOfTy_some_getElem? h_idx
+  rw [h_ty]
+  refine ⟨h_g, ?_⟩
+  dsimp only [resolveTy]
+  rw [h_g]
+
+theorem resolveTy_tyIdFor_of_aux {ts : List MirTy} {ty : MirTy} {code : Nat}
+    (h : auxTyCode ty = some code) :
+    resolveTy ts (tyIdFor ts ty) = some ty := by
+  dsimp only [tyIdFor]
+  cases h_idx : indexOfTy ts ty with
+  | some idx =>
+    let ⟨h_g, _⟩ := indexOfTy_some_getElem? h_idx
+    dsimp only [resolveTy]
+    rw [h_g]
+  | none =>
+    rw [h]
+    dsimp only [resolveTy]
+    have h_le : ts.length ≤ ts.length + code := Nat.le_add_right ts.length code
+    rw [mirGetElem?_none_of_ge h_le]
+    have h_ble : Nat.ble ts.length (ts.length + code) = true :=
+      Nat.ble_eq.mpr h_le
+    rw [h_ble, Nat.add_sub_cancel_left]
+    exact auxTyOfCode_auxTyCode h
+
+theorem tyIdFor_eq_iff_of_resolve {ts : List MirTy} {ty₁ ty₂ : MirTy}
+    (h₁ : resolveTy ts (tyIdFor ts ty₁) = some ty₁)
+    (h₂ : resolveTy ts (tyIdFor ts ty₂) = some ty₂) :
+    tyIdFor ts ty₁ = tyIdFor ts ty₂ ↔ ty₁ = ty₂ := by
+  constructor
+  · intro h_eq
+    have h_res : some ty₁ = some ty₂ := by
+      rw [← h₁, h_eq, h₂]
+    injection h_res
+  · intro h_eq
+    subst h_eq
+    rfl
+
+theorem canonicalTyId_of_some {ts : List MirTy} {tyId : TyId} {ty : MirTy}
+    (h : MirSemantics.getElem? ts tyId = some ty) :
+    canonicalTyId ts tyId = tyIdFor ts ty ∧
+    MirSemantics.getElem? ts (canonicalTyId ts tyId) = some ty ∧
+    resolveTy ts (canonicalTyId ts tyId) = some ty := by
+  have h_c : canonicalTyId ts tyId = tyIdFor ts ty := by
+    dsimp only [canonicalTyId]
+    rw [h]
+  rw [h_c]
+  let ⟨h_g, h_r⟩ := resolveTy_tyIdFor_of_mem h
+  exact ⟨rfl, h_g, h_r⟩
+
+theorem canonicalTyId_of_none {ts : List MirTy} {tyId : TyId}
+    (h : MirSemantics.getElem? ts tyId = none) :
+    canonicalTyId ts tyId = tyId ∧
+    MirSemantics.getElem? ts (canonicalTyId ts tyId) = none := by
+  have h_c : canonicalTyId ts tyId = tyId := by
+    dsimp only [canonicalTyId]
+    rw [h]
+  rw [h_c]
+  exact ⟨rfl, h⟩
+
+theorem decodeLocalTys_mirGetElem? {ts : List MirTy} {tids : List TyId}
+    {tys : List MirTy} {i : Nat} {ty : MirTy}
+    (h_dec : decodeLocalTys ts tids = some tys)
+    (h_get : MirSemantics.getElem? tys i = some ty) :
+    ∃ tid : TyId,
+      MirSemantics.getElem? tids i = some tid ∧
+      MirSemantics.getElem? ts tid = some ty := by
+  induction tids generalizing tys i with
+  | nil =>
+    dsimp only [decodeLocalTys, mapOption] at h_dec
+    injection h_dec with h_nil
+    subst h_nil
+    cases h_get
+  | cons tid rest ih =>
+    dsimp only [decodeLocalTys, mapOption] at h_dec
+    cases h_t : MirSemantics.getElem? ts tid with
+    | none => rw [h_t] at h_dec; cases h_dec
+    | some t =>
+      rw [h_t] at h_dec
+      cases h_r : mapOption (MirSemantics.getElem? ts) rest with
+      | none => rw [h_r] at h_dec; cases h_dec
+      | some restTys =>
+        rw [h_r] at h_dec
+        injection h_dec with h_eq
+        subst h_eq
+        cases i with
+        | zero =>
+          injection h_get with h_ty
+          subst h_ty
+          exact ⟨tid, rfl, h_t⟩
+        | succ j => exact ih h_r h_get
+
+theorem decodeBody_local_mem_types {ts : List MirTy} {rbody : RefBody}
+    {body : Body} {i : Nat} {ty : MirTy}
+    (h_dec : decodeBody ts rbody = some body)
+    (h_get : MirSemantics.getElem? body.locals i = some ty) :
+    ∃ tid : TyId,
+      MirSemantics.getElem? rbody.locals i = some tid ∧
+      MirSemantics.getElem? ts tid = some ty := by
+  dsimp only [decodeBody] at h_dec
+  cases h_locs : decodeLocalTys ts rbody.locals with
+  | none => rw [h_locs] at h_dec; cases h_dec
+  | some locs =>
+    rw [h_locs] at h_dec
+    cases h_bbs : mapOption (decodeBasicBlock ts) rbody.basicBlocks with
+    | none => rw [h_bbs] at h_dec; cases h_dec
+    | some bbs =>
+      rw [h_bbs] at h_dec
+      injection h_dec with h_b
+      subst h_b
+      exact decodeLocalTys_mirGetElem? h_locs h_get
+
+theorem refLayoutOfTyId_tyIdFor_of_resolve {ts : List MirTy} {ty : MirTy}
+    (h : resolveTy ts (tyIdFor ts ty) = some ty) :
+    refLayoutOfTyId ts (tyIdFor ts ty) = .ok (refLocalLayoutForTy ts ty) := by
+  dsimp only [refLayoutOfTyId]
+  rw [h]
+
+/-! ## `SlotMatchesTy`, `SlotsMatchTys`, and `liftLocals` Lemmas -/
+
+theorem SlotsMatchTys.length_eq {tys : List MirTy} {slots : List LocalSlot}
+    (h : SlotsMatchTys tys slots) : slots.length = tys.length := by
+  induction h with
+  | nil => rfl
+  | cons _ _ ih => simp only [List.length_cons, ih]
+
+theorem SlotsMatchTys.getElem? {tys : List MirTy} {slots : List LocalSlot}
+    {i : Nat} {ty : MirTy} {slot : LocalSlot}
+    (h : SlotsMatchTys tys slots)
+    (h_ty : MirSemantics.getElem? tys i = some ty)
+    (h_sl : MirSemantics.getElem? slots i = some slot) :
+    SlotMatchesTy ty slot := by
+  induction h generalizing i with
+  | nil => cases h_ty
+  | cons h_hd _ ih =>
+    cases i with
+    | zero =>
+      injection h_ty with h_t
+      injection h_sl with h_s
+      subst h_t; subst h_s
+      exact h_hd
+    | succ j => exact ih h_ty h_sl
+
+theorem SlotsMatchTys.setElem? {tys : List MirTy} {slots slots' : List LocalSlot}
     {i : Nat} {ty : MirTy} {slot' : LocalSlot}
-    (h_ty : MirSemantics.getElem? bodyLocals i = some ty)
+    (h : SlotsMatchTys tys slots)
+    (h_ty : MirSemantics.getElem? tys i = some ty)
+    (h_match : SlotMatchesTy ty slot')
     (h_set : MirSemantics.setElem? slots i slot' = some slots') :
-    MirSemantics.setElem? (zipRefLocals bodyLocals slots) i ⟨slot', some ty⟩ =
-      some (zipRefLocals bodyLocals slots') := by
-  induction bodyLocals generalizing slots slots' i with
+    SlotsMatchTys tys slots' := by
+  induction h generalizing slots' i with
+  | nil => cases h_ty
+  | cons h_hd h_tl ih =>
+    cases i with
+    | zero =>
+      injection h_ty with h_t
+      subst h_t
+      injection h_set with h_s
+      subst h_s
+      exact SlotsMatchTys.cons h_match h_tl
+    | succ j =>
+      dsimp only [MirSemantics.setElem?] at h_set
+      cases h_rest : MirSemantics.setElem? _ j slot' with
+      | none => rw [h_rest] at h_set; cases h_set
+      | some rest' =>
+        rw [h_rest] at h_set
+        injection h_set with h_s
+        subst h_s
+        exact SlotsMatchTys.cons h_hd (ih h_ty h_rest)
+
+private theorem checkVal_of_ty?_some {v : Val} {vTy ty : MirTy}
+    (h : v.ty? = some vTy) : checkVal v ty = MirTy.beq vTy ty := by
+  change (match v.ty? with | some t => MirTy.beq t ty | none => false) = _
+  rw [h]
+
+theorem slotMatchesTy_liveUninitSlot (ty : MirTy) :
+    SlotMatchesTy ty (liveUninitSlot ty) := by
+  cases ty with
+  | unit => rfl
+  | bool | int _ _ | never | tuple _ | ref _ _ | rawPtr _ _ | unsupported =>
+    exact ⟨fun h => (by cases h), fun _ h => (by cases h)⟩
+  | enum ety =>
+    dsimp only [liveUninitSlot]
+    cases h_zst : isZstEnumTy ety with
+    | false =>
+      dsimp only [SlotMatchesTy]
+      refine ⟨fun h => (by cases h), fun ety' h_eq => ?_⟩
+      injection h_eq with h_e
+      subst h_e
+      exact h_zst
+    | true =>
+      dsimp only [isZstEnumTy] at h_zst
+      cases h_tr : ety.tagRepr with
+      | scalar _ _ => rw [h_tr] at h_zst; cases h_zst
+      | zeroSized =>
+        rw [h_tr] at h_zst
+        have h_adm : enumAdmitted ety = true := h_zst
+        dsimp only [enumAdmitted] at h_zst
+        rw [h_tr] at h_zst
+        cases h_len1 : Nat.beq ety.discriminants.length 1 with
+        | false =>
+          rw [h_len1] at h_zst
+          simp only [Bool.and_false] at h_zst
+          cases h_zst
+        | true =>
+          have h_len_eq : ety.discriminants.length = 1 :=
+            Nat.eq_of_beq_eq_true h_len1
+          have h_ty : (Val.enumVal ety 0).ty? = some (.enum ety) := by
+            dsimp only [Val.ty?]
+            rw [h_adm, h_len_eq]
+            rfl
+          change checkVal (.enumVal ety 0) (.enum ety) = true
+          rw [checkVal_of_ty?_some h_ty]
+          dsimp only [MirTy.beq]
+          exact EnumTy.beq_refl ety
+
+theorem liftLocals_length (types : List MirTy) {bodyLocals : List MirTy}
+    {slots : List LocalSlot} (h_len : slots.length = bodyLocals.length) :
+    (liftLocals types bodyLocals slots).length = bodyLocals.length := by
+  induction bodyLocals generalizing slots with
+  | nil => rfl
+  | cons _ _ ih =>
+    cases slots with
+    | nil => cases h_len
+    | cons _ _ =>
+      simp only [List.length_cons, Nat.add_right_cancel_iff] at h_len
+      dsimp only [liftLocals]
+      rw [List.length_cons, List.length_cons, ih h_len]
+
+theorem getElem?_liftLocals_some (types : List MirTy)
+    {bodyLocals : List MirTy} {slots : List LocalSlot}
+    {i : Nat} {ty : MirTy} {slot : LocalSlot}
+    (h_ty : MirSemantics.getElem? bodyLocals i = some ty)
+    (h_slot : MirSemantics.getElem? slots i = some slot) :
+    MirSemantics.getElem? (liftLocals types bodyLocals slots) i =
+      some (refLocalStateOfSlot types ty slot) := by
+  induction bodyLocals generalizing slots i with
   | nil => cases h_ty
   | cons t ts ih =>
     cases slots with
-    | nil => cases h_set
+    | nil => cases h_slot
     | cons s ss =>
+      cases i with
+      | zero =>
+        injection h_ty with h_t
+        injection h_slot with h_s
+        subst h_t; subst h_s
+        rfl
+      | succ j => exact ih h_ty h_slot
+
+theorem getElem?_liftLocals_none_left (types : List MirTy)
+    {bodyLocals : List MirTy} {slots : List LocalSlot} {i : Nat}
+    (h_ty : MirSemantics.getElem? bodyLocals i = none) :
+    MirSemantics.getElem? (liftLocals types bodyLocals slots) i = none := by
+  induction bodyLocals generalizing slots i with
+  | nil => rfl
+  | cons _ _ ih =>
+    cases slots with
+    | nil => rfl
+    | cons _ _ =>
+      cases i with
+      | zero => cases h_ty
+      | succ j => exact ih h_ty
+
+theorem getElem?_liftLocals_none_right (types : List MirTy)
+    {bodyLocals : List MirTy} {slots : List LocalSlot} {i : Nat}
+    (h_slot : MirSemantics.getElem? slots i = none) :
+    MirSemantics.getElem? (liftLocals types bodyLocals slots) i = none := by
+  induction bodyLocals generalizing slots i with
+  | nil => rfl
+  | cons _ _ ih =>
+    cases slots with
+    | nil => rfl
+    | cons _ _ =>
+      cases i with
+      | zero => cases h_slot
+      | succ j => exact ih h_slot
+
+theorem setElem?_liftLocals_some (types : List MirTy)
+    {bodyLocals : List MirTy} {slots slots' : List LocalSlot}
+    {i : Nat} {ty : MirTy} {slot' : LocalSlot}
+    (h_ty : MirSemantics.getElem? bodyLocals i = some ty)
+    (h_set : MirSemantics.setElem? slots i slot' = some slots') :
+    MirSemantics.setElem? (liftLocals types bodyLocals slots) i
+        (refLocalStateOfSlot types ty slot') =
+      some (liftLocals types bodyLocals slots') := by
+  induction bodyLocals generalizing slots slots' i with
+  | nil => cases h_ty
+  | cons _ _ ih =>
+    cases slots with
+    | nil => cases h_set
+    | cons _ _ =>
       cases i with
       | zero =>
         injection h_ty with h_t
@@ -214,100 +549,252 @@ theorem setElem?_zipRefLocals_some {bodyLocals : List MirTy}
         rfl
       | succ j =>
         dsimp only [MirSemantics.setElem?] at h_set
-        cases h_ss : MirSemantics.setElem? ss j slot' with
+        cases h_ss : MirSemantics.setElem? _ j slot' with
         | none => rw [h_ss] at h_set; cases h_set
         | some ss' =>
           rw [h_ss] at h_set
           injection h_set with h_s
           subst h_s
-          dsimp only [zipRefLocals, MirSemantics.setElem?]
+          dsimp only [liftLocals, MirSemantics.setElem?]
           rw [ih h_ty h_ss]
 
-theorem setElem?_zipRefLocals_none {bodyLocals : List MirTy}
-    {slots : List LocalSlot}
-    {i : Nat} {rval : RefLocalState} {slot' : LocalSlot}
+theorem setElem?_liftLocals_none (types : List MirTy)
+    {bodyLocals : List MirTy} {slots : List LocalSlot} {i : Nat}
+    {rval : Miri.Interpreter.LocalState Miri.Memory.Provenance
+      Miri.Interpreter.LocalLayout}
+    {slot' : LocalSlot}
     (h_set : MirSemantics.setElem? slots i slot' = none) :
-    MirSemantics.setElem? (zipRefLocals bodyLocals slots) i rval = none := by
+    MirSemantics.setElem? (liftLocals types bodyLocals slots) i rval = none := by
   induction bodyLocals generalizing slots i with
   | nil => rfl
-  | cons t ts ih =>
+  | cons _ _ ih =>
     cases slots with
     | nil => rfl
-    | cons s ss =>
+    | cons _ _ =>
       cases i with
       | zero => cases h_set
       | succ j =>
         dsimp only [MirSemantics.setElem?] at h_set
-        cases h_ss : MirSemantics.setElem? ss j slot' with
+        cases h_ss : MirSemantics.setElem? _ j slot' with
         | some _ => rw [h_ss] at h_set; cases h_set
         | none =>
-          dsimp only [zipRefLocals, MirSemantics.setElem?]
+          dsimp only [liftLocals, MirSemantics.setElem?]
           rw [ih h_ss]
 
-theorem evalOperandToSlot_length {bodyLocals : List MirTy}
-    {locals locals' : List LocalSlot}
-    {op : Operand} {ty : MirTy} {optVal : Option Val}
+/-! ## Preservation of `SlotsMatchTys` Across `evalStatement` / `evalRvalue` -/
+
+theorem evalConstLit_checkVal {ty : MirTy} {lit : ConstLit} {v : Val}
+    (h : evalConstLit ty lit = .ok v) : checkVal v ty = true := by
+  cases ty with
+  | unit =>
+    cases lit with
+    | zeroSized =>
+      injection h with hv; subst hv; rfl
+    | scalar _ => cases h
+  | never | tuple _ | ref _ _ | rawPtr _ _ | unsupported =>
+    cases lit <;> cases h
+  | int w s =>
+    cases lit with
+    | zeroSized => cases h
+    | scalar bits =>
+      dsimp only [evalConstLit] at h
+      cases h_tr : (truncateBits w bits != bits) with
+      | true => rw [h_tr] at h; cases h
+      | false =>
+        rw [h_tr] at h
+        injection h with hv
+        subst hv
+        cases h_beq : (truncateBits w bits == bits) with
+        | true =>
+          have h_eq : truncateBits w bits = bits := eq_of_beq h_beq
+          have h_wf :
+              ({ width := w, signed := s, bits := truncateBits w bits } :
+                ScalarVal).wf = true := by
+            dsimp only [ScalarVal.wf]
+            rw [h_eq]
+            exact h_beq
+          have h_ty :
+              (Val.scalar { width := w, signed := s, bits := truncateBits w bits }).ty? =
+                some (.int w s) := by
+            dsimp only [Val.ty?]
+            rw [h_wf]
+            rfl
+          rw [checkVal_of_ty?_some h_ty]
+          dsimp only [MirTy.beq]
+          rw [IntWidth.beq_refl]
+          cases s <;> rfl
+        | false =>
+          dsimp only [bne] at h_tr
+          rw [h_beq] at h_tr
+          cases h_tr
+  | bool =>
+    cases lit with
+    | zeroSized => cases h
+    | scalar bits =>
+      dsimp only [evalConstLit] at h
+      cases h_tr : (truncateBits .i8 bits != bits) with
+      | true => rw [h_tr] at h; cases h
+      | false =>
+        rw [h_tr] at h
+        cases h0 : (UInt8.ofNat (truncateBits .i8 bits).toNat == 0) with
+        | true =>
+          rw [h0] at h; injection h with hv; subst hv; rfl
+        | false =>
+          rw [h0] at h
+          cases h1 : (UInt8.ofNat (truncateBits .i8 bits).toNat == 1) with
+          | true =>
+            rw [h1] at h; injection h with hv; subst hv; rfl
+          | false => rw [h1] at h; cases h
+  | enum ety =>
+    cases lit with
+    | zeroSized =>
+      dsimp only [evalConstLit] at h
+      cases h_zst : isZstEnumTy ety with
+      | false => rw [h_zst] at h; cases h
+      | true =>
+        rw [h_zst] at h
+        injection h with hv
+        subst hv
+        have h_s := slotMatchesTy_liveUninitSlot (.enum ety)
+        dsimp only [liveUninitSlot] at h_s
+        rw [h_zst] at h_s
+        exact h_s
+    | scalar bits =>
+      dsimp only [evalConstLit] at h
+      cases h_tr : ety.tagRepr with
+      | zeroSized => rw [h_tr] at h; cases h
+      | scalar tagW tagS =>
+        rw [h_tr] at h
+        dsimp only at h
+        cases h_adm : enumAdmitted ety with
+        | false => rw [h_adm] at h; cases h
+        | true =>
+          rw [h_adm] at h
+          cases h_ov : (truncateBits tagW bits != bits) with
+          | true => rw [h_ov] at h; cases h
+          | false =>
+            rw [h_ov] at h
+            cases h_f : findDiscrVariant?
+                (tagBitsToDiscrBits tagW tagS ety.discrWidth bits)
+                ety.discriminants with
+            | none => rw [h_f] at h; cases h
+            | some k =>
+              rw [h_f] at h
+              injection h with hv
+              subst hv
+              have h_lt_aux : ∀ idx ds k,
+                  findDiscrVariantAux idx
+                    (tagBitsToDiscrBits tagW tagS ety.discrWidth bits) ds =
+                    some k → k < idx + ds.length := by
+                intro idx ds
+                induction ds generalizing idx with
+                | nil => intro _ hk; cases hk
+                | cons d rest ih =>
+                  intro k hk
+                  dsimp only [findDiscrVariantAux] at hk
+                  cases h_eq : (BitVec.ofNat 128 d ==
+                      tagBitsToDiscrBits tagW tagS ety.discrWidth bits) with
+                  | true =>
+                    rw [h_eq] at hk
+                    injection hk with hk_eq
+                    subst hk_eq
+                    exact Nat.lt_add_of_pos_right (Nat.succ_pos rest.length)
+                  | false =>
+                    rw [h_eq] at hk
+                    have h_sub := ih (idx + 1) k hk
+                    have h_ar : idx + 1 + rest.length = idx + (rest.length + 1) :=
+                      Nat.add_right_comm idx 1 rest.length
+                    dsimp only [List.length]
+                    rw [← h_ar]
+                    exact h_sub
+              have h_lt : k < ety.discriminants.length := by
+                have h0 := h_lt_aux 0 ety.discriminants k h_f
+                rw [Nat.zero_add] at h0
+                exact h0
+              have h_ty : (Val.enumVal ety k).ty? = some (.enum ety) := by
+                dsimp only [Val.ty?]
+                rw [h_adm, Nat.blt_eq.mpr h_lt]
+                rfl
+              rw [checkVal_of_ty?_some h_ty]
+              dsimp only [MirTy.beq]
+              exact EnumTy.beq_refl ety
+
+theorem evalOperandToSlot_slotsMatchTys {bodyLocals : List MirTy}
+    {locals locals' : List LocalSlot} {op : Operand}
+    {ty : MirTy} {optVal : Option Val}
+    (h_inv : SlotsMatchTys bodyLocals locals)
     (h : evalOperandToSlot bodyLocals locals op = .ok (ty, optVal, locals')) :
-    locals'.length = locals.length := by
+    SlotsMatchTys bodyLocals locals' ∧ SlotMatchesTy ty (.live optVal) := by
   cases op with
   | copy p =>
     dsimp only [evalOperandToSlot] at h
-    cases h_emp : p.projection.isEmpty <;> rw [h_emp] at h
-    · cases h
-    · cases h_ty : MirSemantics.getElem? bodyLocals p.localId with
-      | none => rw [h_ty] at h; cases h
-      | some ty₀ =>
-        cases h_sl : MirSemantics.getElem? locals p.localId with
-        | none => rw [h_ty, h_sl] at h; cases h
-        | some slot =>
-        rw [h_ty, h_sl] at h
+    cases h_ty : MirSemantics.getElem? bodyLocals p.localId with
+    | none => rw [h_ty] at h; cases h
+    | some ty₀ =>
+      rw [h_ty] at h
+      cases h_sl : MirSemantics.getElem? locals p.localId with
+      | none => rw [h_sl] at h; cases h
+      | some slot =>
+        rw [h_sl] at h
         cases slot with
         | dead => cases h
         | live opt =>
-          injection h with h_tup
-          injection h_tup with _ h_rest
-          injection h_rest with _ h_loc
-          subst h_loc
-          rfl
+          cases h_emp : p.projection.isEmpty with
+          | false => rw [h_emp] at h; cases h
+          | true =>
+            rw [h_emp] at h
+            injection h with h_tup
+            injection h_tup with h_ty_eq h_rest
+            injection h_rest with h_opt_eq h_loc_eq
+            subst h_ty_eq; subst h_opt_eq; subst h_loc_eq
+            exact ⟨h_inv, SlotsMatchTys.getElem? h_inv h_ty h_sl⟩
   | move p =>
     dsimp only [evalOperandToSlot] at h
-    cases h_emp : p.projection.isEmpty <;> rw [h_emp] at h
-    · cases h
-    · cases h_ty : MirSemantics.getElem? bodyLocals p.localId with
-      | none => rw [h_ty] at h; cases h
-      | some ty₀ =>
-        cases h_sl : MirSemantics.getElem? locals p.localId with
-        | none => rw [h_ty, h_sl] at h; cases h
-        | some slot =>
-        rw [h_ty, h_sl] at h
+    cases h_ty : MirSemantics.getElem? bodyLocals p.localId with
+    | none => rw [h_ty] at h; cases h
+    | some ty₀ =>
+      rw [h_ty] at h
+      cases h_sl : MirSemantics.getElem? locals p.localId with
+      | none => rw [h_sl] at h; cases h
+      | some slot =>
+        rw [h_sl] at h
         cases slot with
         | dead => cases h
         | live opt =>
-          dsimp only at h
-          cases h_set :
-              MirSemantics.setElem? locals p.localId (liveUninitSlot ty₀) <;>
-            rw [h_set] at h
-          · cases h
-          · injection h with h_tup
-            injection h_tup with _ h_rest
-            injection h_rest with _ h_loc
-            subst h_loc
-            exact setElem?_length h_set
+          cases h_emp : p.projection.isEmpty with
+          | false => rw [h_emp] at h; cases h
+          | true =>
+            rw [h_emp] at h
+            dsimp only at h
+            cases h_set :
+                MirSemantics.setElem? locals p.localId (liveUninitSlot ty₀) with
+            | none => rw [h_set] at h; cases h
+            | some locs₁ =>
+              rw [h_set] at h
+              injection h with h_tup
+              injection h_tup with h_ty_eq h_rest
+              injection h_rest with h_opt_eq h_loc_eq
+              subst h_ty_eq; subst h_opt_eq; subst h_loc_eq
+              exact ⟨SlotsMatchTys.setElem? h_inv h_ty
+                (slotMatchesTy_liveUninitSlot ty₀) h_set,
+                SlotsMatchTys.getElem? h_inv h_ty h_sl⟩
   | constant c =>
     dsimp only [evalOperandToSlot] at h
-    cases h_lit : evalConstLit c.ty c.lit <;> rw [h_lit] at h
-    · cases h
-    · injection h with h_tup
-      injection h_tup with _ h_rest
-      injection h_rest with _ h_loc
-      subst h_loc
-      rfl
+    cases h_lit : evalConstLit c.ty c.lit with
+    | error _ => rw [h_lit] at h; cases h
+    | ok v =>
+      rw [h_lit] at h
+      injection h with h_tup
+      injection h_tup with h_ty_eq h_rest
+      injection h_rest with h_opt_eq h_loc_eq
+      subst h_ty_eq; subst h_opt_eq; subst h_loc_eq
+      exact ⟨h_inv, evalConstLit_checkVal h_lit⟩
 
-theorem evalPrimitiveOperand_length {bodyLocals : List MirTy}
-    {locals locals' : List LocalSlot}
-    {opnd : Operand} {v : Val}
+theorem evalPrimitiveOperand_slotsMatchTys {bodyLocals : List MirTy}
+    {locals locals' : List LocalSlot} {opnd : Operand} {v : Val}
+    (h_inv : SlotsMatchTys bodyLocals locals)
     (h : evalPrimitiveOperand bodyLocals locals opnd = .ok (v, locals')) :
-    locals'.length = locals.length := by
+    SlotsMatchTys bodyLocals locals' := by
   unfold evalPrimitiveOperand at h
   cases h_op : evalOperandToSlot bodyLocals locals opnd with
   | error _ => rw [h_op] at h; cases h
@@ -315,21 +802,23 @@ theorem evalPrimitiveOperand_length {bodyLocals : List MirTy}
     let ⟨ty, optVal, l₁⟩ := res
     rw [h_op] at h
     dsimp only at h
-    cases h_pr : isPrimitiveReadableTy ty <;> rw [h_pr] at h
-    · cases h
-    · cases optVal with
+    cases h_pr : isPrimitiveReadableTy ty with
+    | false => rw [h_pr] at h; cases h
+    | true =>
+      rw [h_pr] at h
+      cases optVal with
       | none => cases h
       | some v₀ =>
         injection h with h_tup
         injection h_tup with _ h_loc
         subst h_loc
-        exact evalOperandToSlot_length h_op
+        exact (evalOperandToSlot_slotsMatchTys h_inv h_op).1
 
-theorem evalRvalue_length {bodyLocals : List MirTy}
-    {locals locals' : List LocalSlot}
-    {dstTy : MirTy} {rv : Rvalue} {v : Val}
+theorem evalRvalue_slotsMatchTys {bodyLocals : List MirTy}
+    {locals locals' : List LocalSlot} {dstTy : MirTy} {rv : Rvalue} {v : Val}
+    (h_inv : SlotsMatchTys bodyLocals locals)
     (h : evalRvalue bodyLocals locals dstTy rv = .ok (v, locals')) :
-    locals'.length = locals.length := by
+    SlotsMatchTys bodyLocals locals' := by
   cases rv with
   | use opnd =>
     dsimp only [evalRvalue] at h
@@ -339,15 +828,17 @@ theorem evalRvalue_length {bodyLocals : List MirTy}
       let ⟨srcTy, optVal, l₁⟩ := res
       rw [h_op] at h
       dsimp only at h
-      cases h_eq_ty : MirTy.beq srcTy dstTy <;> rw [h_eq_ty] at h
-      · cases h
-      · cases optVal with
+      cases h_eq_ty : MirTy.beq srcTy dstTy with
+      | false => rw [h_eq_ty] at h; cases h
+      | true =>
+        rw [h_eq_ty] at h
+        cases optVal with
         | none => cases h
         | some v₀ =>
           injection h with h_tup
           injection h_tup with _ h_loc
           subst h_loc
-          exact evalOperandToSlot_length h_op
+          exact (evalOperandToSlot_slotsMatchTys h_inv h_op).1
   | binaryOp op lhs rhs =>
     dsimp only [evalRvalue] at h
     cases h_l : evalPrimitiveOperand bodyLocals locals lhs with
@@ -362,13 +853,15 @@ theorem evalRvalue_length {bodyLocals : List MirTy}
         let ⟨rVal, l₂⟩ := resR
         rw [h_r] at h
         dsimp only at h
-        cases h_b : evalBinOp op lVal rVal <;> rw [h_b] at h
-        · cases h
-        · injection h with h_tup
+        cases h_b : evalBinOp op lVal rVal with
+        | error _ => rw [h_b] at h; cases h
+        | ok _ =>
+          rw [h_b] at h
+          injection h with h_tup
           injection h_tup with _ h_loc
           subst h_loc
-          exact (evalPrimitiveOperand_length h_r).trans
-            (evalPrimitiveOperand_length h_l)
+          exact evalPrimitiveOperand_slotsMatchTys
+            (evalPrimitiveOperand_slotsMatchTys h_inv h_l) h_r
   | unaryOp op opnd =>
     dsimp only [evalRvalue] at h
     cases h_op : evalPrimitiveOperand bodyLocals locals opnd with
@@ -377,94 +870,108 @@ theorem evalRvalue_length {bodyLocals : List MirTy}
       let ⟨v₀, l₁⟩ := res
       rw [h_op] at h
       dsimp only at h
-      cases h_u : evalUnOp op v₀ <;> rw [h_u] at h
-      · cases h
-      · injection h with h_tup
+      cases h_u : evalUnOp op v₀ with
+      | error _ => rw [h_u] at h; cases h
+      | ok _ =>
+        rw [h_u] at h
+        injection h with h_tup
         injection h_tup with _ h_loc
         subst h_loc
-        exact evalPrimitiveOperand_length h_op
+        exact evalPrimitiveOperand_slotsMatchTys h_inv h_op
   | discriminant place =>
     dsimp only [evalRvalue] at h
-    cases h_emp : place.projection.isEmpty <;> rw [h_emp] at h
-    · cases h
-    · cases h_ty : MirSemantics.getElem? bodyLocals place.localId with
-      | none => rw [h_ty] at h; cases h
-      | some ty =>
-        rw [h_ty] at h
-        cases ty with
-        | enum ety =>
-          cases h_sl : MirSemantics.getElem? locals place.localId with
-          | none => rw [h_sl] at h; cases h
-          | some slot =>
-            rw [h_sl] at h
-            dsimp only at h
-            cases h_adm : enumAdmitted ety <;> rw [h_adm] at h
-            · cases h
-            · cases h_tr : ety.tagRepr <;> rw [h_tr] at h
-              · cases slot with
-                | dead => cases h
-                | live opt =>
+    cases h_ty : MirSemantics.getElem? bodyLocals place.localId with
+    | none => rw [h_ty] at h; cases h
+    | some ty =>
+      rw [h_ty] at h
+      cases h_sl : MirSemantics.getElem? locals place.localId with
+      | none => rw [h_sl] at h; cases h
+      | some slot =>
+        rw [h_sl] at h
+        cases slot with
+        | dead => cases h
+        | live opt =>
+          cases h_emp : place.projection.isEmpty with
+          | false => rw [h_emp] at h; cases h
+          | true =>
+            rw [h_emp] at h
+            cases ty with
+            | enum ety =>
+              dsimp only at h
+              cases h_adm : enumAdmitted ety with
+              | false => rw [h_adm] at h; cases h
+              | true =>
+                rw [h_adm] at h
+                cases h_tr : ety.tagRepr with
+                | zeroSized =>
+                  rw [h_tr] at h
                   cases opt with
                   | none =>
                     dsimp only at h
-                    cases h_d : MirSemantics.getElem? ety.discriminants 0 <;>
+                    cases h_d : MirSemantics.getElem? ety.discriminants 0 with
+                    | none => rw [h_d] at h; cases h
+                    | some _ =>
                       rw [h_d] at h
-                    · cases h
-                    · injection h with h_tup
+                      injection h with h_tup
                       injection h_tup with _ h_loc
                       subst h_loc
-                      rfl
+                      exact h_inv
                   | some val =>
                     cases val with
-                    | enumVal ety' v =>
+                    | enumVal ety' idx =>
                       dsimp only at h
-                      cases h_chk : (EnumTy.beq ety ety' && Nat.beq v 0) <;>
+                      cases h_chk : (EnumTy.beq ety ety' && Nat.beq idx 0) with
+                      | false => rw [h_chk] at h; cases h
+                      | true =>
                         rw [h_chk] at h
-                      · cases h
-                      · cases h_d :
-                            MirSemantics.getElem? ety.discriminants 0 <;>
+                        cases h_d : MirSemantics.getElem? ety.discriminants 0 with
+                        | none => rw [h_d] at h; cases h
+                        | some _ =>
                           rw [h_d] at h
-                        · cases h
-                        · injection h with h_tup
+                          injection h with h_tup
                           injection h_tup with _ h_loc
                           subst h_loc
-                          rfl
+                          exact h_inv
                     | _ => cases h
-              · cases slot with
-                | dead => cases h
-                | live opt =>
+                | scalar _ _ =>
+                  rw [h_tr] at h
                   cases opt with
                   | none => cases h
                   | some val =>
                     cases val with
-                    | enumVal ety' v =>
+                    | enumVal ety' idx =>
                       dsimp only at h
                       cases h_chk :
-                        (EnumTy.beq ety ety' &&
-                          Nat.blt v ety.discriminants.length) <;>
+                          (EnumTy.beq ety ety' &&
+                            Nat.blt idx ety.discriminants.length) with
+                      | false => rw [h_chk] at h; cases h
+                      | true =>
                         rw [h_chk] at h
-                      · cases h
-                      · cases h_d :
-                            MirSemantics.getElem? ety.discriminants v <;>
+                        cases h_d : MirSemantics.getElem? ety.discriminants idx with
+                        | none => rw [h_d] at h; cases h
+                        | some _ =>
                           rw [h_d] at h
-                        · cases h
-                        · injection h with h_tup
+                          injection h with h_tup
                           injection h_tup with _ h_loc
                           subst h_loc
-                          rfl
+                          exact h_inv
                     | _ => cases h
-        | _ => cases h
-  | ref _ _ | addressOf _ _ | aggregateTuple _ | unsupported =>
-    cases h
+            | _ => cases h
+  | ref _ _ | addressOf _ _ | aggregateTuple _ | unsupported => cases h
 
-theorem writePlace_length {locals locals' : List LocalSlot}
+theorem writePlace_slotsMatchTys {bodyLocals : List MirTy}
+    {locals locals' : List LocalSlot}
     {dstLocalId : LocalId} {dstTy : MirTy} {val : Val}
+    (h_inv : SlotsMatchTys bodyLocals locals)
+    (h_ty : MirSemantics.getElem? bodyLocals dstLocalId = some dstTy)
     (h : writePlace locals dstLocalId dstTy val = .ok locals') :
-    locals'.length = locals.length := by
+    SlotsMatchTys bodyLocals locals' := by
   unfold writePlace at h
-  cases h_chk : checkVal val dstTy <;> rw [h_chk] at h
-  · cases h
-  · cases h_get : MirSemantics.getElem? locals dstLocalId with
+  cases h_chk : checkVal val dstTy with
+  | false => rw [h_chk] at h; cases h
+  | true =>
+    rw [h_chk] at h
+    cases h_get : MirSemantics.getElem? locals dstLocalId with
     | none => rw [h_get] at h; cases h
     | some slot =>
       rw [h_get] at h
@@ -473,12 +980,14 @@ theorem writePlace_length {locals locals' : List LocalSlot}
       | live _ =>
         dsimp only at h
         cases h_set :
-            MirSemantics.setElem? locals dstLocalId (.live (some val)) <;>
+            MirSemantics.setElem? locals dstLocalId (.live (some val)) with
+        | none => rw [h_set] at h; cases h
+        | some locs' =>
           rw [h_set] at h
-        · cases h
-        · injection h with h_eq
+          injection h with h_eq
           subst h_eq
-          exact setElem?_length h_set
+          exact SlotsMatchTys.setElem? (slot' := .live (some val))
+            h_inv h_ty h_chk h_set
 
 theorem decodePlace_inv {ts : List MirTy} {rp : RefPlace} {p : Place}
     (h : decodePlace ts rp = some p) :
@@ -492,16 +1001,45 @@ theorem decodePlace_inv {ts : List MirTy} {rp : RefPlace} {p : Place}
     subst h_eq
     exact ⟨rfl, mapOption_isEmpty h_proj⟩
 
-noncomputable def mapSlotRes (bodyLocals : List MirTy) :
-    Except FaultKind (MirTy × Option Val × List LocalSlot) →
-    Except FaultKind (MirTy × Option Val × List RefLocalState)
-  | .error k => .error k
-  | .ok (ty, optVal, slots') => .ok (ty, optVal, zipRefLocals bodyLocals slots')
+/-! ## Right-Injectivity of `SimulationInv` -/
 
-noncomputable def mapSlotsRes (bodyLocals : List MirTy) :
-    Except FaultKind (List LocalSlot) →
-    Except FaultKind (List RefLocalState)
-  | .error k => .error k
-  | .ok slots' => .ok (zipRefLocals bodyLocals slots')
+/-- One-to-one uniqueness of `SimulationInv` (right-injective at fixed step
+counters and terminator control): any $M_{\text{anneal}}$ `State` `s` together
+with `(stepsExecuted, maxSteps, control)` uniquely determines `rs`. -/
+theorem refState_unique_of_simulationInv_base :
+    RefStateUniqueOfSimulationInvClaim := by
+  intro rp p s rs₁ rs₂ h₁ h₂ h_steps h_max h_ctrl
+  let ⟨f₁, rf₁, retTy₁, mem₁, ctrl₁, _, hs₁, _, hret₁, hrt₁, hinit₁, _,
+    hmiri₁, hframe₁⟩ := h₁
+  let ⟨f₂, rf₂, retTy₂, mem₂, ctrl₂, _, hs₂, _, hret₂, hrt₂, hinit₂, _,
+    hmiri₂, hframe₂⟩ := h₂
+  rw [hs₁] at hs₂
+  injection hs₂ with h_f_eq
+  subst h_f_eq
+  rw [hret₁] at hret₂
+  injection hret₂ with h_ret_eq
+  subst h_ret_eq
+  rw [hinit₁] at hinit₂
+  injection hinit₂ with h_pair
+  injection h_pair with h_mem_eq h_rp_eq
+  subst h_mem_eq
+  let ⟨body₁, rbody₁, hb₁, hrb₁, _, _, _, _, _, _, _, hrf₁⟩ := hframe₁
+  let ⟨body₂, rbody₂, hb₂, hrb₂, _, _, _, _, _, _, _, hrf₂⟩ := hframe₂
+  rw [hb₁] at hb₂
+  injection hb₂ with h_b_eq
+  subst h_b_eq
+  rw [hrb₁] at hrb₂
+  injection hrb₂ with h_rb_eq
+  subst h_rb_eq
+  have h_ctrl_eq : ctrl₁ = ctrl₂ := by
+    rw [hmiri₁, hmiri₂] at h_ctrl
+    exact h_ctrl
+  subst h_ctrl_eq
+  have h_rf_eq : rf₁ = rf₂ := by
+    rw [hrf₁, hrf₂, h_rp_eq]
+  subst h_rf_eq
+  cases rs₁; cases rs₂
+  dsimp only at hrt₁ hrt₂ h_rp_eq hmiri₁ hmiri₂ h_steps h_max
+  rw [hrt₁, hrt₂, h_rp_eq, hmiri₁, hmiri₂, h_steps, h_max]
 
 end Anneal.MirCorrespondence
