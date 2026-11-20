@@ -1,0 +1,117 @@
+{
+  "topics": [
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/mir",
+    "rust",
+    "rustc",
+    "rustc/mir",
+    "tooling",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rust-lang/rust (rustc 1.93.1, LLVM 21.1.8)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "01f6ddf7588f42ae2d7eb0a2f21d44e8e96674cf",
+        "version": "1.93.1"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.94.0, LLVM 21.1.8)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "4a4ef493e3a1488c6e321570238084b38948f6db",
+        "version": "1.94.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.96.0, LLVM 22.1.2)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96",
+        "version": "1.96.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.98.0-nightly, anneal-rustc-capture compiler pin)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "1.98.0-nightly"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.99.0, LLVM 23.1.1)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "version": "1.99.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.99.1, LLVM 23.1.1)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "rust-lang/rust (2026-10-20 nightly reference cited by Trusted.MirAst and Trusted.MirSemantics)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.100.0, LLVM 23.1.5)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+        "version": "1.100.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.102.0-nightly, LLVM 23.1.5)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly"
+      }
+    },
+    {
+      "name": "joshlf/anneal (compiler-version-pinned rustc-capture driver and Trusted.MirAst/MirSemantics TCB)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "dtolnay/ryu (ryu 1.0.23)",
+      "identity": {
+        "repository": "dtolnay/ryu",
+        "revision": "f0b52bb194befe6fd242154f2182fafd43a819b8",
+        "version": "1.0.23"
+      }
+    },
+    {
+      "name": "dtolnay/itoa (itoa 1.0.19)",
+      "identity": {
+        "repository": "dtolnay/itoa",
+        "revision": "9339ca99a43c550b5ee36e2afe524d1c90413461",
+        "version": "1.0.19"
+      }
+    },
+    {
+      "name": "BurntSushi/memchr (memchr 2.8.3)",
+      "identity": {
+        "repository": "BurntSushi/memchr",
+        "revision": "5fdb40c054e1fff359a2f7bdf7f87a13b34b465d",
+        "version": "2.8.3"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

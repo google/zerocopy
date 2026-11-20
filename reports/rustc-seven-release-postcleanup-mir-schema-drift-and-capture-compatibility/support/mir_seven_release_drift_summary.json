@@ -1,0 +1,2138 @@
+{
+  "probe": "rustc_seven_release_postcleanup_mir_schema_drift",
+  "timestamp_utc": "2026-11-20T21:07:21Z",
+  "toolchains": {
+    "1.93.1": {
+      "toolchain": "1.93.1",
+      "rc": 0,
+      "version_line": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
+      "binary": "rustc",
+      "commit-hash": "01f6ddf7588f42ae2d7eb0a2f21d44e8e96674cf",
+      "commit-date": "2026-02-11",
+      "host": "x86_64-unknown-linux-gnu",
+      "release": "1.93.1",
+      "LLVM version": "21.1.8"
+    },
+    "1.94.0": {
+      "toolchain": "1.94.0",
+      "rc": 0,
+      "version_line": "rustc 1.94.0 (4a4ef493e 2026-03-02)",
+      "binary": "rustc",
+      "commit-hash": "4a4ef493e3a1488c6e321570238084b38948f6db",
+      "commit-date": "2026-03-02",
+      "host": "x86_64-unknown-linux-gnu",
+      "release": "1.94.0",
+      "LLVM version": "21.1.8"
+    },
+    "1.96.0": {
+      "toolchain": "1.96.0",
+      "rc": 0,
+      "version_line": "rustc 1.96.0 (ac68faa20 2026-05-25)",
+      "binary": "rustc",
+      "commit-hash": "ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96",
+      "commit-date": "2026-05-25",
+      "host": "x86_64-unknown-linux-gnu",
+      "release": "1.96.0",
+      "LLVM version": "22.1.2"
+    },
+    "1.99.0": {
+      "toolchain": "1.99.0",
+      "rc": 0,
+      "version_line": "rustc 1.99.0 (b940084d7 2026-09-28)",
+      "binary": "rustc",
+      "commit-hash": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+      "commit-date": "2026-09-28",
+      "host": "x86_64-unknown-linux-gnu",
+      "release": "1.99.0",
+      "LLVM version": "23.1.1"
+    },
+    "1.99.1": {
+      "toolchain": "1.99.1",
+      "rc": 0,
+      "version_line": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+      "binary": "rustc",
+      "commit-hash": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+      "commit-date": "2026-10-13",
+      "host": "x86_64-unknown-linux-gnu",
+      "release": "1.99.1",
+      "LLVM version": "23.1.1"
+    },
+    "1.100.0": {
+      "toolchain": "1.100.0",
+      "rc": 0,
+      "version_line": "rustc 1.100.0 (0ef1bc386 2026-11-09)",
+      "binary": "rustc",
+      "commit-hash": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+      "commit-date": "2026-11-09",
+      "host": "x86_64-unknown-linux-gnu",
+      "release": "1.100.0",
+      "LLVM version": "23.1.5"
+    },
+    "nightly": {
+      "toolchain": "nightly",
+      "rc": 0,
+      "version_line": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+      "binary": "rustc",
+      "commit-hash": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+      "commit-date": "2026-11-11",
+      "host": "x86_64-unknown-linux-gnu",
+      "release": "1.102.0-nightly",
+      "LLVM version": "23.1.5"
+    }
+  },
+  "corpora": {
+    "feature_probe": {
+      "crate_label": "feature_probe",
+      "vcs_sha1": null,
+      "extra_flags": [
+        "--edition=2021"
+      ],
+      "disambiguator_progression": {},
+      "per_toolchain": {
+        "1.93.1": {
+          "rc": 0,
+          "post_cleanup_fns": 37,
+          "total_mir_files": 3914,
+          "elapsed_sec": 0.246,
+          "pass_patterns": {
+            "3-2-000.runtime-post-cleanup.after": 37
+          },
+          "err_head": ""
+        },
+        "1.94.0": {
+          "rc": 0,
+          "post_cleanup_fns": 37,
+          "total_mir_files": 3982,
+          "elapsed_sec": 0.234,
+          "pass_patterns": {
+            "3-2-000.runtime-post-cleanup.after": 37
+          },
+          "err_head": ""
+        },
+        "1.96.0": {
+          "rc": 0,
+          "post_cleanup_fns": 37,
+          "total_mir_files": 4050,
+          "elapsed_sec": 0.239,
+          "pass_patterns": {
+            "3-2-000.runtime-post-cleanup.after": 37
+          },
+          "err_head": ""
+        },
+        "1.99.0": {
+          "rc": 0,
+          "post_cleanup_fns": 37,
+          "total_mir_files": 4056,
+          "elapsed_sec": 0.237,
+          "pass_patterns": {
+            "3-2-000.runtime-post-cleanup.after": 37
+          },
+          "err_head": ""
+        },
+        "1.99.1": {
+          "rc": 0,
+          "post_cleanup_fns": 37,
+          "total_mir_files": 4056,
+          "elapsed_sec": 0.25,
+          "pass_patterns": {
+            "3-2-000.runtime-post-cleanup.after": 37
+          },
+          "err_head": ""
+        },
+        "1.100.0": {
+          "rc": 0,
+          "post_cleanup_fns": 37,
+          "total_mir_files": 4056,
+          "elapsed_sec": 0.27,
+          "pass_patterns": {
+            "3-2-000.runtime-post-cleanup.after": 37
+          },
+          "err_head": ""
+        },
+        "nightly": {
+          "rc": 0,
+          "post_cleanup_fns": 37,
+          "total_mir_files": 4056,
+          "elapsed_sec": 0.487,
+          "pass_patterns": {
+            "3-2-000.runtime-post-cleanup.after": 37
+          },
+          "err_head": ""
+        }
+      },
+      "transitions": [
+        {
+          "from": "1.93.1",
+          "to": "1.94.0",
+          "common_fns": 37,
+          "only_in_from": [],
+          "only_in_to": [],
+          "raw_changed": 0,
+          "span_changed": 0,
+          "span_changed_pct": 0.0,
+          "after_disamb_only_changed": 0,
+          "after_alloc_only_changed": 0,
+          "semantic_changed": 0,
+          "semantic_changed_pct": 0.0,
+          "semantic_category_combos": {},
+          "semantic_tag_counts": {},
+          "diff_samples": {},
+          "span_only_samples": {}
+        },
+        {
+          "from": "1.94.0",
+          "to": "1.96.0",
+          "common_fns": 37,
+          "only_in_from": [],
+          "only_in_to": [],
+          "raw_changed": 5,
+          "span_changed": 5,
+          "span_changed_pct": 13.51,
+          "after_disamb_only_changed": 5,
+          "after_alloc_only_changed": 5,
+          "semantic_changed": 5,
+          "semantic_changed_pct": 13.51,
+          "semantic_category_combos": {
+            "generic_atomic": 5
+          },
+          "semantic_tag_counts": {
+            "generic_atomic": 5
+          },
+          "diff_samples": {
+            "feature_probe.f25_atomic_load_acquire": [
+              "--- 1.94.0:feature_probe.f25_atomic_load_acquire",
+              "+++ 1.96.0:feature_probe.f25_atomic_load_acquire",
+              "@@ -1,5 +1,5 @@",
+              "-fn f25_atomic_load_acquire(_1: &AtomicU64) -> u64 {",
+              "+fn f25_atomic_load_acquire(_1: &Atomic<u64>) -> u64 {",
+              "     debug a => _1;",
+              "     let mut _0: u64;",
+              "-    let mut _2: &std::sync::atomic::AtomicU64;",
+              "+    let mut _2: &std::sync::atomic::Atomic<u64>;",
+              "     let mut _3: std::sync::atomic::Ordering;",
+              "@@ -10,3 +10,3 @@",
+              "         _3 = std::sync::atomic::Ordering::Acquire;",
+              "-        _0 = AtomicU64::load(move _2, move _3) -> [return: bb1, unwind continue];",
+              "+        _0 = Atomic::<u64>::load(move _2, move _3) -> [return: bb1, unwind continue];",
+              "     }"
+            ],
+            "feature_probe.f26_atomic_store_release": [
+              "--- 1.94.0:feature_probe.f26_atomic_store_release",
+              "+++ 1.96.0:feature_probe.f26_atomic_store_release",
+              "@@ -1,2 +1,2 @@",
+              "-fn f26_atomic_store_release(_1: &AtomicU64, _2: u64) -> () {",
+              "+fn f26_atomic_store_release(_1: &Atomic<u64>, _2: u64) -> () {",
+              "     debug a => _1;",
+              "@@ -5,3 +5,3 @@",
+              "     let _3: ();",
+              "-    let mut _4: &std::sync::atomic::AtomicU64;",
+              "+    let mut _4: &std::sync::atomic::Atomic<u64>;",
+              "     let mut _5: u64;",
+              "@@ -16,3 +16,3 @@",
+              "         _6 = std::sync::atomic::Ordering::Release;",
+              "-        _3 = AtomicU64::store(move _4, move _5, move _6) -> [return: bb1, unwind continue];",
+              "+        _3 = Atomic::<u64>::store(move _4, move _5, move _6) -> [return: bb1, unwind continue];",
+              "     }"
+            ],
+            "feature_probe.f27_atomic_rmw_acqrel": [
+              "--- 1.94.0:feature_probe.f27_atomic_rmw_acqrel",
+              "+++ 1.96.0:feature_probe.f27_atomic_rmw_acqrel",
+              "@@ -1,2 +1,2 @@",
+              "-fn f27_atomic_rmw_acqrel(_1: &AtomicU32, _2: u32) -> u32 {",
+              "+fn f27_atomic_rmw_acqrel(_1: &Atomic<u32>, _2: u32) -> u32 {",
+              "     debug a => _1;",
+              "@@ -4,3 +4,3 @@",
+              "     let mut _0: u32;",
+              "-    let mut _3: &std::sync::atomic::AtomicU32;",
+              "+    let mut _3: &std::sync::atomic::Atomic<u32>;",
+              "     let mut _4: u32;",
+              "@@ -14,3 +14,3 @@",
+              "         _5 = std::sync::atomic::Ordering::AcqRel;",
+              "-        _0 = AtomicU32::fetch_add(move _3, move _4, move _5) -> [return: bb1, unwind continue];",
+              "+        _0 = Atomic::<u32>::fetch_add(move _3, move _4, move _5) -> [return: bb1, unwind continue];",
+              "     }"
+            ],
+            "feature_probe.f28_atomic_cas_seqcst": [
+              "--- 1.94.0:feature_probe.f28_atomic_cas_seqcst",
+              "+++ 1.96.0:feature_probe.f28_atomic_cas_seqcst",
+              "@@ -1,2 +1,2 @@",
+              "-fn f28_atomic_cas_seqcst(_1: &AtomicU64, _2: u64, _3: u64) -> Result<u64, u64> {",
+              "+fn f28_atomic_cas_seqcst(_1: &Atomic<u64>, _2: u64, _3: u64) -> Result<u64, u64> {",
+              "     debug a => _1;",
+              "@@ -5,3 +5,3 @@",
+              "     let mut _0: std::result::Result<u64, u64>;",
+              "-    let mut _4: &std::sync::atomic::AtomicU64;",
+              "+    let mut _4: &std::sync::atomic::Atomic<u64>;",
+              "     let mut _5: u64;",
+              "@@ -21,3 +21,3 @@",
+              "         _8 = std::sync::atomic::Ordering::Acquire;",
+              "-        _0 = AtomicU64::compare_exchange(move _4, move _5, move _6, move _7, move _8) -> [return: bb1, unwind continue];",
+              "+        _0 = Atomic::<u64>::compare_exchange(move _4, move _5, move _6, move _7, move _8) -> [return: bb1, unwind continue];",
+              "     }"
+            ]
+          },
+          "span_only_samples": {}
+        },
+        {
+          "from": "1.96.0",
+          "to": "1.99.0",
+          "common_fns": 37,
+          "only_in_from": [],
+          "only_in_to": [],
+          "raw_changed": 2,
+          "span_changed": 2,
+          "span_changed_pct": 5.41,
+          "after_disamb_only_changed": 2,
+          "after_alloc_only_changed": 2,
+          "semantic_changed": 2,
+          "semantic_changed_pct": 5.41,
+          "semantic_category_combos": {
+            "no_retag_copy": 2
+          },
+          "semantic_tag_counts": {
+            "no_retag_copy": 2
+          },
+          "diff_samples": {
+            "feature_probe.f24_closure_capture-{closure#0}": [
+              "--- 1.96.0:feature_probe.f24_closure_capture-{closure#0}",
+              "+++ 1.99.0:feature_probe.f24_closure_capture-{closure#0}",
+              "@@ -16,3 +16,3 @@",
+              "         StorageLive(_5);",
+              "-        _7 = copy ((*_1).0: &u32);",
+              "+        _7 = no_retag copy ((*_1).0: &u32);",
+              "         _5 = copy (*_7);",
+              "@@ -24,3 +24,3 @@",
+              "         StorageLive(_6);",
+              "-        _8 = copy ((*_1).1: &u32);",
+              "+        _8 = no_retag copy ((*_1).1: &u32);",
+              "         _6 = copy (*_8);"
+            ],
+            "feature_probe.{impl#0}-drop": [
+              "--- 1.96.0:feature_probe.{impl#0}-drop",
+              "+++ 1.99.0:feature_probe.{impl#0}-drop",
+              "@@ -11,3 +11,3 @@",
+              "         StorageLive(_3);",
+              "-        _5 = copy ((*_1).0: &mut u32);",
+              "+        _5 = no_retag copy ((*_1).0: &mut u32);",
+              "         _3 = copy (*_5);",
+              "@@ -20,3 +20,3 @@",
+              "         StorageDead(_3);",
+              "-        _6 = copy ((*_1).0: &mut u32);",
+              "+        _6 = no_retag copy ((*_1).0: &mut u32);",
+              "         (*_6) = move _2;"
+            ]
+          },
+          "span_only_samples": {}
+        },
+        {
+          "from": "1.99.0",
+          "to": "1.99.1",
+          "common_fns": 37,
+          "only_in_from": [],
+          "only_in_to": [],
+          "raw_changed": 0,
+          "span_changed": 0,
+          "span_changed_pct": 0.0,
+          "after_disamb_only_changed": 0,
+          "after_alloc_only_changed": 0,
+          "semantic_changed": 0,
+          "semantic_changed_pct": 0.0,
+          "semantic_category_combos": {},
+          "semantic_tag_counts": {},
+          "diff_samples": {},
+          "span_only_samples": {}
+        },
+        {
+          "from": "1.99.1",
+          "to": "1.100.0",
+          "common_fns": 37,
+          "only_in_from": [],
+          "only_in_to": [],
+          "raw_changed": 0,
+          "span_changed": 0,
+          "span_changed_pct": 0.0,
+          "after_disamb_only_changed": 0,
+          "after_alloc_only_changed": 0,
+          "semantic_changed": 0,
+          "semantic_changed_pct": 0.0,
+          "semantic_category_combos": {},
+          "semantic_tag_counts": {},
+          "diff_samples": {},
+          "span_only_samples": {}
+        },
+        {
+          "from": "1.100.0",
+          "to": "nightly",
+          "common_fns": 37,
+          "only_in_from": [],
+          "only_in_to": [],
+          "raw_changed": 0,
+          "span_changed": 0,
+          "span_changed_pct": 0.0,
+          "after_disamb_only_changed": 0,
+          "after_alloc_only_changed": 0,
+          "semantic_changed": 0,
+          "semantic_changed_pct": 0.0,
+          "semantic_category_combos": {},
+          "semantic_tag_counts": {},
+          "diff_samples": {},
+          "span_only_samples": {}
+        }
+      ],
+      "cumulative_first_to_last": {
+        "from": "1.93.1",
+        "to": "nightly",
+        "common_fns": 37,
+        "only_in_from": [],
+        "only_in_to": [],
+        "raw_changed": 7,
+        "span_changed": 7,
+        "span_changed_pct": 18.92,
+        "after_disamb_only_changed": 7,
+        "after_alloc_only_changed": 7,
+        "semantic_changed": 7,
+        "semantic_changed_pct": 18.92,
+        "semantic_category_combos": {
+          "no_retag_copy": 2,
+          "generic_atomic": 5
+        },
+        "semantic_tag_counts": {
+          "no_retag_copy": 2,
+          "generic_atomic": 5
+        },
+        "diff_samples": {
+          "feature_probe.f24_closure_capture-{closure#0}": [
+            "--- 1.93.1:feature_probe.f24_closure_capture-{closure#0}",
+            "+++ nightly:feature_probe.f24_closure_capture-{closure#0}",
+            "@@ -16,3 +16,3 @@",
+            "         StorageLive(_5);",
+            "-        _7 = copy ((*_1).0: &u32);",
+            "+        _7 = no_retag copy ((*_1).0: &u32);",
+            "         _5 = copy (*_7);",
+            "@@ -24,3 +24,3 @@",
+            "         StorageLive(_6);",
+            "-        _8 = copy ((*_1).1: &u32);",
+            "+        _8 = no_retag copy ((*_1).1: &u32);",
+            "         _6 = copy (*_8);"
+          ],
+          "feature_probe.f25_atomic_load_acquire": [
+            "--- 1.93.1:feature_probe.f25_atomic_load_acquire",
+            "+++ nightly:feature_probe.f25_atomic_load_acquire",
+            "@@ -1,5 +1,5 @@",
+            "-fn f25_atomic_load_acquire(_1: &AtomicU64) -> u64 {",
+            "+fn f25_atomic_load_acquire(_1: &Atomic<u64>) -> u64 {",
+            "     debug a => _1;",
+            "     let mut _0: u64;",
+            "-    let mut _2: &std::sync::atomic::AtomicU64;",
+            "+    let mut _2: &std::sync::atomic::Atomic<u64>;",
+            "     let mut _3: std::sync::atomic::Ordering;",
+            "@@ -10,3 +10,3 @@",
+            "         _3 = std::sync::atomic::Ordering::Acquire;",
+            "-        _0 = AtomicU64::load(move _2, move _3) -> [return: bb1, unwind continue];",
+            "+        _0 = Atomic::<u64>::load(move _2, move _3) -> [return: bb1, unwind continue];",
+            "     }"
+          ],
+          "feature_probe.f26_atomic_store_release": [
+            "--- 1.93.1:feature_probe.f26_atomic_store_release",
+            "+++ nightly:feature_probe.f26_atomic_store_release",
+            "@@ -1,2 +1,2 @@",
+            "-fn f26_atomic_store_release(_1: &AtomicU64, _2: u64) -> () {",
+            "+fn f26_atomic_store_release(_1: &Atomic<u64>, _2: u64) -> () {",
+            "     debug a => _1;",
+            "@@ -5,3 +5,3 @@",
+            "     let _3: ();",
+            "-    let mut _4: &std::sync::atomic::AtomicU64;",
+            "+    let mut _4: &std::sync::atomic::Atomic<u64>;",
+            "     let mut _5: u64;",
+            "@@ -16,3 +16,3 @@",
+            "         _6 = std::sync::atomic::Ordering::Release;",
+            "-        _3 = AtomicU64::store(move _4, move _5, move _6) -> [return: bb1, unwind continue];",
+            "+        _3 = Atomic::<u64>::store(move _4, move _5, move _6) -> [return: bb1, unwind continue];",
+            "     }"
+          ],
+          "feature_probe.f27_atomic_rmw_acqrel": [
+            "--- 1.93.1:feature_probe.f27_atomic_rmw_acqrel",
+            "+++ nightly:feature_probe.f27_atomic_rmw_acqrel",
+            "@@ -1,2 +1,2 @@",
+            "-fn f27_atomic_rmw_acqrel(_1: &AtomicU32, _2: u32) -> u32 {",
+            "+fn f27_atomic_rmw_acqrel(_1: &Atomic<u32>, _2: u32) -> u32 {",
+            "     debug a => _1;",
+            "@@ -4,3 +4,3 @@",
+            "     let mut _0: u32;",
+            "-    let mut _3: &std::sync::atomic::AtomicU32;",
+            "+    let mut _3: &std::sync::atomic::Atomic<u32>;",
+            "     let mut _4: u32;",
+            "@@ -14,3 +14,3 @@",
+            "         _5 = std::sync::atomic::Ordering::AcqRel;",
+            "-        _0 = AtomicU32::fetch_add(move _3, move _4, move _5) -> [return: bb1, unwind continue];",
+            "+        _0 = Atomic::<u32>::fetch_add(move _3, move _4, move _5) -> [return: bb1, unwind continue];",
+            "     }"
+          ],
+          "feature_probe.f28_atomic_cas_seqcst": [
+            "--- 1.93.1:feature_probe.f28_atomic_cas_seqcst",
+            "+++ nightly:feature_probe.f28_atomic_cas_seqcst",
+            "@@ -1,2 +1,2 @@",
+            "-fn f28_atomic_cas_seqcst(_1: &AtomicU64, _2: u64, _3: u64) -> Result<u64, u64> {",
+            "+fn f28_atomic_cas_seqcst(_1: &Atomic<u64>, _2: u64, _3: u64) -> Result<u64, u64> {",
+            "     debug a => _1;",
+            "@@ -5,3 +5,3 @@",
+            "     let mut _0: std::result::Result<u64, u64>;",
+            "-    let mut _4: &std::sync::atomic::AtomicU64;",
+            "+    let mut _4: &std::sync::atomic::Atomic<u64>;",
+            "     let mut _5: u64;",
+            "@@ -21,3 +21,3 @@",
+            "         _8 = std::sync::atomic::Ordering::Acquire;",
+            "-        _0 = AtomicU64::compare_exchange(move _4, move _5, move _6, move _7, move _8) -> [return: bb1, unwind continue];",
+            "+        _0 = Atomic::<u64>::compare_exchange(move _4, move _5, move _6, move _7, move _8) -> [return: bb1, unwind continue];",
+            "     }"
+          ],
+          "feature_probe.f29_atomic_fence_and_compiler_fence": [
+            "--- 1.93.1:feature_probe.f29_atomic_fence_and_compiler_fence",
+            "+++ nightly:feature_probe.f29_atomic_fence_and_compiler_fence",
+            "@@ -1,2 +1,2 @@",
+            "-fn f29_atomic_fence_and_compiler_fence(_1: &AtomicU8, _2: u8) -> u8 {",
+            "+fn f29_atomic_fence_and_compiler_fence(_1: &Atomic<u8>, _2: u8) -> u8 {",
+            "     debug a => _1;",
+            "@@ -5,3 +5,3 @@",
+            "     let _3: ();",
+            "-    let mut _4: &std::sync::atomic::AtomicU8;",
+            "+    let mut _4: &std::sync::atomic::Atomic<u8>;",
+            "     let mut _5: u8;",
+            "@@ -12,3 +12,3 @@",
+            "     let mut _10: std::sync::atomic::Ordering;",
+            "-    let mut _11: &std::sync::atomic::AtomicU8;",
+            "+    let mut _11: &std::sync::atomic::Atomic<u8>;",
+            "     let mut _12: std::sync::atomic::Ordering;",
+            "@@ -22,3 +22,3 @@",
+            "         _6 = std::sync::atomic::Ordering::Relaxed;",
+            "-        _3 = AtomicU8::store(move _4, move _5, move _6) -> [return: bb1, unwind continue];",
+            "+        _3 = Atomic::<u8>::store(move _4, move _5, move _6) -> [return: bb1, unwind continue];",
+            "     }",
+            "@@ -49,3 +49,3 @@"
+          ]
+        },
+        "span_only_samples": {}
+      }
+    },
+    "ryu": {
+      "crate_label": "ryu-1.0.23",
+      "vcs_sha1": "f0b52bb194befe6fd242154f2182fafd43a819b8",
+      "extra_flags": [
+        "--edition=2018"
+      ],
+      "disambiguator_progression": {
+        "1.93.1": [
+          "ryu[0a04]"
+        ],
+        "1.94.0": [
+          "ryu[0867]"
+        ],
+        "1.96.0": [
+          "ryu[d41f]"
+        ],
+        "1.99.0": [
+          "ryu[2f3d]"
+        ],
+        "1.99.1": [
+          "ryu[0d70]"
+        ],
+        "1.100.0": [
+          "ryu[c6b2]"
+        ],
+        "nightly": [
+          "ryu[58e3]"
+        ]
+      },
+      "per_toolchain": {
+        "1.93.1": {
+          "rc": 0,
+          "post_cleanup_fns": 45,
+          "total_mir_files": 4558,
+          "elapsed_sec": 0.866,
+          "pass_patterns": {
+            "3-2-000.runtime-post-cleanup.after": 45
+          },
+          "err_head": ""
+        },
+        "1.94.0": {
+          "rc": 0,
+          "post_cleanup_fns": 45,
+          "total_mir_files": 4634,
+          "elapsed_sec": 1.071,
+          "pass_patterns": {
+            "3-2-000.runtime-post-cleanup.after": 45
+          },
+          "err_head": ""
+        },
+        "1.96.0": {
+          "rc": 0,
+          "post_cleanup_fns": 45,
+          "total_mir_files": 4710,
+          "elapsed_sec": 0.95,
+          "pass_patterns": {
+            "3-2-000.runtime-post-cleanup.after": 45
+          },
+          "err_head": ""
+        },
+        "1.99.0": {
+          "rc": 0,
+          "post_cleanup_fns": 45,
+          "total_mir_files": 4724,
+          "elapsed_sec": 1.244,
+          "pass_patterns": {
+            "3-2-000.runtime-post-cleanup.after": 45
+          },
+          "err_head": ""
+        },
+        "1.99.1": {
+          "rc": 0,
+          "post_cleanup_fns": 45,
+          "total_mir_files": 4724,
+          "elapsed_sec": 1.196,
+          "pass_patterns": {
+            "3-2-000.runtime-post-cleanup.after": 45
+          },
+          "err_head": ""
+        },
+        "1.100.0": {
+          "rc": 0,
+          "post_cleanup_fns": 45,
+          "total_mir_files": 4724,
+          "elapsed_sec": 0.968,
+          "pass_patterns": {
+            "3-2-000.runtime-post-cleanup.after": 45
+          },
+          "err_head": ""
+        },
+        "nightly": {
+          "rc": 0,
+          "post_cleanup_fns": 45,
+          "total_mir_files": 4724,
+          "elapsed_sec": 1.531,
+          "pass_patterns": {
+            "3-2-000.runtime-post-cleanup.after": 45
+          },
+          "err_head": ""
+        }
+      },
+      "transitions": [
+        {
+          "from": "1.93.1",
+          "to": "1.94.0",
+          "common_fns": 45,
+          "only_in_from": [],
+          "only_in_to": [],
+          "raw_changed": 4,
+          "span_changed": 4,
+          "span_changed_pct": 8.89,
+          "after_disamb_only_changed": 0,
+          "after_alloc_only_changed": 4,
+          "semantic_changed": 0,
+          "semantic_changed_pct": 0.0,
+          "semantic_category_combos": {},
+          "semantic_tag_counts": {},
+          "diff_samples": {},
+          "span_only_samples": {
+            "ryu.pretty-exponent-write_exponent2": [
+              "--- 1.93.1:ryu.pretty-exponent-write_exponent2",
+              "+++ 1.94.0:ryu.pretty-exponent-write_exponent2",
+              "@@ -123,3 +123,3 @@",
+              "         StorageLive(_22);",
+              "-        _22 = const <static(DefId(0:101 ~ ryu[0a04]::digit_table::DIGIT_TABLE))>;",
+              "+        _22 = const <static(DefId(0:101 ~ ryu[0867]::digit_table::DIGIT_TABLE))>;",
+              "         _21 = &(*_22);"
+            ],
+            "ryu.pretty-exponent-write_exponent3": [
+              "--- 1.93.1:ryu.pretty-exponent-write_exponent3",
+              "+++ 1.94.0:ryu.pretty-exponent-write_exponent3",
+              "@@ -183,3 +183,3 @@",
+              "         StorageLive(_33);",
+              "-        _33 = const <static(DefId(0:101 ~ ryu[0a04]::digit_table::DIGIT_TABLE))>;",
+              "+        _33 = const <static(DefId(0:101 ~ ryu[0867]::digit_table::DIGIT_TABLE))>;",
+              "         _32 = &(*_33);",
+              "@@ -243,3 +243,3 @@",
+              "         StorageLive(_48);",
+              "-        _48 = const <static(DefId(0:101 ~ ryu[0a04]::digit_table::DIGIT_TABLE))>;",
+              "+        _48 = const <static(DefId(0:101 ~ ryu[0867]::digit_table::DIGIT_TABLE))>;",
+              "         _47 = &(*_48);"
+            ]
+          }
+        },
+        {
+          "from": "1.94.0",
+          "to": "1.96.0",
+          "common_fns": 45,
+          "only_in_from": [],
+          "only_in_to": [],
+          "raw_changed": 4,
+          "span_changed": 4,
+          "span_changed_pct": 8.89,
+          "after_disamb_only_changed": 0,
+          "after_alloc_only_changed": 4,
+          "semantic_changed": 0,
+          "semantic_changed_pct": 0.0,
+          "semantic_category_combos": {},
+          "semantic_tag_counts": {},
+          "diff_samples": {},
+          "span_only_samples": {
+            "ryu.pretty-exponent-write_exponent2": [
+              "--- 1.94.0:ryu.pretty-exponent-write_exponent2",
+              "+++ 1.96.0:ryu.pretty-exponent-write_exponent2",
+              "@@ -123,3 +123,3 @@",
+              "         StorageLive(_22);",
+              "-        _22 = const <static(DefId(0:101 ~ ryu[0867]::digit_table::DIGIT_TABLE))>;",
+              "+        _22 = const <static(DefId(0:101 ~ ryu[d41f]::digit_table::DIGIT_TABLE))>;",
+              "         _21 = &(*_22);"
+            ],
+            "ryu.pretty-exponent-write_exponent3": [
+              "--- 1.94.0:ryu.pretty-exponent-write_exponent3",
+              "+++ 1.96.0:ryu.pretty-exponent-write_exponent3",
+              "@@ -183,3 +183,3 @@",
+              "         StorageLive(_33);",
+              "-        _33 = const <static(DefId(0:101 ~ ryu[0867]::digit_table::DIGIT_TABLE))>;",
+              "+        _33 = const <static(DefId(0:101 ~ ryu[d41f]::digit_table::DIGIT_TABLE))>;",
+              "         _32 = &(*_33);",
+              "@@ -243,3 +243,3 @@",
+              "         StorageLive(_48);",
+              "-        _48 = const <static(DefId(0:101 ~ ryu[0867]::digit_table::DIGIT_TABLE))>;",
+              "+        _48 = const <static(DefId(0:101 ~ ryu[d41f]::digit_table::DIGIT_TABLE))>;",
+              "         _47 = &(*_48);"
+            ]
+          }
+        },
+        {
+          "from": "1.96.0",
+          "to": "1.99.0",
+          "common_fns": 45,
+          "only_in_from": [],
+          "only_in_to": [],
+          "raw_changed": 4,
+          "span_changed": 4,
+          "span_changed_pct": 8.89,
+          "after_disamb_only_changed": 0,
+          "after_alloc_only_changed": 4,
+          "semantic_changed": 0,
+          "semantic_changed_pct": 0.0,
+          "semantic_category_combos": {},
+          "semantic_tag_counts": {},
+          "diff_samples": {},
+          "span_only_samples": {
+            "ryu.pretty-exponent-write_exponent2": [
+              "--- 1.96.0:ryu.pretty-exponent-write_exponent2",
+              "+++ 1.99.0:ryu.pretty-exponent-write_exponent2",
+              "@@ -123,3 +123,3 @@",
+              "         StorageLive(_22);",
+              "-        _22 = const <static(DefId(0:101 ~ ryu[d41f]::digit_table::DIGIT_TABLE))>;",
+              "+        _22 = const <static(DefId(0:101 ~ ryu[2f3d]::digit_table::DIGIT_TABLE))>;",
+              "         _21 = &(*_22);"
+            ],
+            "ryu.pretty-exponent-write_exponent3": [
+              "--- 1.96.0:ryu.pretty-exponent-write_exponent3",
+              "+++ 1.99.0:ryu.pretty-exponent-write_exponent3",
+              "@@ -183,3 +183,3 @@",
+              "         StorageLive(_33);",
+              "-        _33 = const <static(DefId(0:101 ~ ryu[d41f]::digit_table::DIGIT_TABLE))>;",
+              "+        _33 = const <static(DefId(0:101 ~ ryu[2f3d]::digit_table::DIGIT_TABLE))>;",
+              "         _32 = &(*_33);",
+              "@@ -243,3 +243,3 @@",
+              "         StorageLive(_48);",
+              "-        _48 = const <static(DefId(0:101 ~ ryu[d41f]::digit_table::DIGIT_TABLE))>;",
+              "+        _48 = const <static(DefId(0:101 ~ ryu[2f3d]::digit_table::DIGIT_TABLE))>;",
+              "         _47 = &(*_48);"
+            ]
+          }
+        },
+        {
+          "from": "1.99.0",
+          "to": "1.99.1",
+          "common_fns": 45,
+          "only_in_from": [],
+          "only_in_to": [],
+          "raw_changed": 4,
+          "span_changed": 4,
+          "span_changed_pct": 8.89,
+          "after_disamb_only_changed": 0,
+          "after_alloc_only_changed": 4,
+          "semantic_changed": 0,
+          "semantic_changed_pct": 0.0,
+          "semantic_category_combos": {},
+          "semantic_tag_counts": {},
+          "diff_samples": {},
+          "span_only_samples": {
+            "ryu.pretty-exponent-write_exponent2": [
+              "--- 1.99.0:ryu.pretty-exponent-write_exponent2",
+              "+++ 1.99.1:ryu.pretty-exponent-write_exponent2",
+              "@@ -123,3 +123,3 @@",
+              "         StorageLive(_22);",
+              "-        _22 = const <static(DefId(0:101 ~ ryu[2f3d]::digit_table::DIGIT_TABLE))>;",
+              "+        _22 = const <static(DefId(0:101 ~ ryu[0d70]::digit_table::DIGIT_TABLE))>;",
+              "         _21 = &(*_22);"
+            ],
+            "ryu.pretty-exponent-write_exponent3": [
+              "--- 1.99.0:ryu.pretty-exponent-write_exponent3",
+              "+++ 1.99.1:ryu.pretty-exponent-write_exponent3",
+              "@@ -183,3 +183,3 @@",
+              "         StorageLive(_33);",
+              "-        _33 = const <static(DefId(0:101 ~ ryu[2f3d]::digit_table::DIGIT_TABLE))>;",
+              "+        _33 = const <static(DefId(0:101 ~ ryu[0d70]::digit_table::DIGIT_TABLE))>;",
+              "         _32 = &(*_33);",
+              "@@ -243,3 +243,3 @@",
+              "         StorageLive(_48);",
+              "-        _48 = const <static(DefId(0:101 ~ ryu[2f3d]::digit_table::DIGIT_TABLE))>;",
+              "+        _48 = const <static(DefId(0:101 ~ ryu[0d70]::digit_table::DIGIT_TABLE))>;",
+              "         _47 = &(*_48);"
+            ]
+          }
+        },
+        {
+          "from": "1.99.1",
+          "to": "1.100.0",
+          "common_fns": 45,
+          "only_in_from": [],
+          "only_in_to": [],
+          "raw_changed": 4,
+          "span_changed": 4,
+          "span_changed_pct": 8.89,
+          "after_disamb_only_changed": 0,
+          "after_alloc_only_changed": 4,
+          "semantic_changed": 0,
+          "semantic_changed_pct": 0.0,
+          "semantic_category_combos": {},
+          "semantic_tag_counts": {},
+          "diff_samples": {},
+          "span_only_samples": {
+            "ryu.pretty-exponent-write_exponent2": [
+              "--- 1.99.1:ryu.pretty-exponent-write_exponent2",
+              "+++ 1.100.0:ryu.pretty-exponent-write_exponent2",
+              "@@ -123,3 +123,3 @@",
+              "         StorageLive(_22);",
+              "-        _22 = const <static(DefId(0:101 ~ ryu[0d70]::digit_table::DIGIT_TABLE))>;",
+              "+        _22 = const <static(DefId(0:101 ~ ryu[c6b2]::digit_table::DIGIT_TABLE))>;",
+              "         _21 = &(*_22);"
+            ],
+            "ryu.pretty-exponent-write_exponent3": [
+              "--- 1.99.1:ryu.pretty-exponent-write_exponent3",
+              "+++ 1.100.0:ryu.pretty-exponent-write_exponent3",
+              "@@ -183,3 +183,3 @@",
+              "         StorageLive(_33);",
+              "-        _33 = const <static(DefId(0:101 ~ ryu[0d70]::digit_table::DIGIT_TABLE))>;",
+              "+        _33 = const <static(DefId(0:101 ~ ryu[c6b2]::digit_table::DIGIT_TABLE))>;",
+              "         _32 = &(*_33);",
+              "@@ -243,3 +243,3 @@",
+              "         StorageLive(_48);",
+              "-        _48 = const <static(DefId(0:101 ~ ryu[0d70]::digit_table::DIGIT_TABLE))>;",
+              "+        _48 = const <static(DefId(0:101 ~ ryu[c6b2]::digit_table::DIGIT_TABLE))>;",
+              "         _47 = &(*_48);"
+            ]
+          }
+        },
+        {
+          "from": "1.100.0",
+          "to": "nightly",
+          "common_fns": 45,
+          "only_in_from": [],
+          "only_in_to": [],
+          "raw_changed": 4,
+          "span_changed": 4,
+          "span_changed_pct": 8.89,
+          "after_disamb_only_changed": 0,
+          "after_alloc_only_changed": 4,
+          "semantic_changed": 0,
+          "semantic_changed_pct": 0.0,
+          "semantic_category_combos": {},
+          "semantic_tag_counts": {},
+          "diff_samples": {},
+          "span_only_samples": {
+            "ryu.pretty-exponent-write_exponent2": [
+              "--- 1.100.0:ryu.pretty-exponent-write_exponent2",
+              "+++ nightly:ryu.pretty-exponent-write_exponent2",
+              "@@ -123,3 +123,3 @@",
+              "         StorageLive(_22);",
+              "-        _22 = const <static(DefId(0:101 ~ ryu[c6b2]::digit_table::DIGIT_TABLE))>;",
+              "+        _22 = const <static(DefId(0:101 ~ ryu[58e3]::digit_table::DIGIT_TABLE))>;",
+              "         _21 = &(*_22);"
+            ],
+            "ryu.pretty-exponent-write_exponent3": [
+              "--- 1.100.0:ryu.pretty-exponent-write_exponent3",
+              "+++ nightly:ryu.pretty-exponent-write_exponent3",
+              "@@ -183,3 +183,3 @@",
+              "         StorageLive(_33);",
+              "-        _33 = const <static(DefId(0:101 ~ ryu[c6b2]::digit_table::DIGIT_TABLE))>;",
+              "+        _33 = const <static(DefId(0:101 ~ ryu[58e3]::digit_table::DIGIT_TABLE))>;",
+              "         _32 = &(*_33);",
+              "@@ -243,3 +243,3 @@",
+              "         StorageLive(_48);",
+              "-        _48 = const <static(DefId(0:101 ~ ryu[c6b2]::digit_table::DIGIT_TABLE))>;",
+              "+        _48 = const <static(DefId(0:101 ~ ryu[58e3]::digit_table::DIGIT_TABLE))>;",
+              "         _47 = &(*_48);"
+            ]
+          }
+        }
+      ],
+      "cumulative_first_to_last": {
+        "from": "1.93.1",
+        "to": "nightly",
+        "common_fns": 45,
+        "only_in_from": [],
+        "only_in_to": [],
+        "raw_changed": 4,
+        "span_changed": 4,
+        "span_changed_pct": 8.89,
+        "after_disamb_only_changed": 0,
+        "after_alloc_only_changed": 4,
+        "semantic_changed": 0,
+        "semantic_changed_pct": 0.0,
+        "semantic_category_combos": {},
+        "semantic_tag_counts": {},
+        "diff_samples": {},
+        "span_only_samples": {
+          "ryu.pretty-exponent-write_exponent2": [
+            "--- 1.93.1:ryu.pretty-exponent-write_exponent2",
+            "+++ nightly:ryu.pretty-exponent-write_exponent2",
+            "@@ -123,3 +123,3 @@",
+            "         StorageLive(_22);",
+            "-        _22 = const <static(DefId(0:101 ~ ryu[0a04]::digit_table::DIGIT_TABLE))>;",
+            "+        _22 = const <static(DefId(0:101 ~ ryu[58e3]::digit_table::DIGIT_TABLE))>;",
+            "         _21 = &(*_22);"
+          ],
+          "ryu.pretty-exponent-write_exponent3": [
+            "--- 1.93.1:ryu.pretty-exponent-write_exponent3",
+            "+++ nightly:ryu.pretty-exponent-write_exponent3",
+            "@@ -183,3 +183,3 @@",
+            "         StorageLive(_33);",
+            "-        _33 = const <static(DefId(0:101 ~ ryu[0a04]::digit_table::DIGIT_TABLE))>;",
+            "+        _33 = const <static(DefId(0:101 ~ ryu[58e3]::digit_table::DIGIT_TABLE))>;",
+            "         _32 = &(*_33);",
+            "@@ -243,3 +243,3 @@",
+            "         StorageLive(_48);",
+            "-        _48 = const <static(DefId(0:101 ~ ryu[0a04]::digit_table::DIGIT_TABLE))>;",
+            "+        _48 = const <static(DefId(0:101 ~ ryu[58e3]::digit_table::DIGIT_TABLE))>;",
+            "         _47 = &(*_48);"
+          ]
+        }
+      }
+    },
+    "itoa": {
+      "crate_label": "itoa-1.0.19",
+      "vcs_sha1": "9339ca99a43c550b5ee36e2afe524d1c90413461",
+      "extra_flags": [
+        "--edition=2021"
+      ],
+      "disambiguator_progression": {},
+      "per_toolchain": {
+        "1.93.1": {
+          "rc": 0,
+          "post_cleanup_fns": 59,
+          "total_mir_files": 4494,
+          "elapsed_sec": 0.818,
+          "pass_patterns": {
+            "3-2-000.runtime-post-cleanup.after": 59
+          },
+          "err_head": ""
+        },
+        "1.94.0": {
+          "rc": 0,
+          "post_cleanup_fns": 59,
+          "total_mir_files": 4546,
+          "elapsed_sec": 0.641,
+          "pass_patterns": {
+            "3-2-000.runtime-post-cleanup.after": 59
+          },
+          "err_head": ""
+        },
+        "1.96.0": {
+          "rc": 0,
+          "post_cleanup_fns": 59,
+          "total_mir_files": 4598,
+          "elapsed_sec": 0.656,
+          "pass_patterns": {
+            "3-2-000.runtime-post-cleanup.after": 59
+          },
+          "err_head": ""
+        },
+        "1.99.0": {
+          "rc": 0,
+          "post_cleanup_fns": 59,
+          "total_mir_files": 4664,
+          "elapsed_sec": 0.667,
+          "pass_patterns": {
+            "3-2-000.runtime-post-cleanup.after": 59
+          },
+          "err_head": ""
+        },
+        "1.99.1": {
+          "rc": 0,
+          "post_cleanup_fns": 59,
+          "total_mir_files": 4664,
+          "elapsed_sec": 0.655,
+          "pass_patterns": {
+            "3-2-000.runtime-post-cleanup.after": 59
+          },
+          "err_head": ""
+        },
+        "1.100.0": {
+          "rc": 0,
+          "post_cleanup_fns": 59,
+          "total_mir_files": 4664,
+          "elapsed_sec": 0.645,
+          "pass_patterns": {
+            "3-2-000.runtime-post-cleanup.after": 59
+          },
+          "err_head": ""
+        },
+        "nightly": {
+          "rc": 0,
+          "post_cleanup_fns": 59,
+          "total_mir_files": 4664,
+          "elapsed_sec": 0.758,
+          "pass_patterns": {
+            "3-2-000.runtime-post-cleanup.after": 59
+          },
+          "err_head": ""
+        }
+      },
+      "transitions": [
+        {
+          "from": "1.93.1",
+          "to": "1.94.0",
+          "common_fns": 59,
+          "only_in_from": [],
+          "only_in_to": [],
+          "raw_changed": 13,
+          "span_changed": 13,
+          "span_changed_pct": 22.03,
+          "after_disamb_only_changed": 13,
+          "after_alloc_only_changed": 0,
+          "semantic_changed": 0,
+          "semantic_changed_pct": 0.0,
+          "semantic_category_combos": {},
+          "semantic_tag_counts": {},
+          "diff_samples": {},
+          "span_only_samples": {
+            "itoa.DECIMAL_PAIRS": [
+              "--- 1.93.1:itoa.DECIMAL_PAIRS",
+              "+++ 1.94.0:itoa.DECIMAL_PAIRS",
+              "@@ -15,3 +15,3 @@",
+              " }",
+              "-alloc92 (size: 200, align: 1) {",
+              "+alloc107 (size: 200, align: 1) {",
+              "     0x00 \u2502 30 30 30 31 30 32 30 33 30 34 30 35 30 36 30 37 \u2502 0001020304050607"
+            ],
+            "itoa._": [
+              "--- 1.93.1:itoa._",
+              "+++ 1.94.0:itoa._",
+              "@@ -73,3 +73,3 @@",
+              " }",
+              "-alloc71 (size: 17, align: 1) {",
+              "+alloc86 (size: 17, align: 1) {",
+              "     0x00 \u2502 6e 65 65 64 20 63 6f 75 6e 74 65 72 70 61 72 74 \u2502 need counterpart",
+              "@@ -77,6 +77,6 @@",
+              " }",
+              "-alloc70 (size: 13, align: 1) {",
+              "+alloc85 (size: 13, align: 1) {",
+              "     6e 65 65 64 20 75 6e 73 69 67 6e 65 64          \u2502 need unsigned",
+              " }",
+              "-alloc69 (size: 11, align: 1) {",
+              "+alloc84 (size: 11, align: 1) {",
+              "     6e 65 65 64 20 73 69 67 6e 65 64                \u2502 need signed"
+            ]
+          }
+        },
+        {
+          "from": "1.94.0",
+          "to": "1.96.0",
+          "common_fns": 59,
+          "only_in_from": [],
+          "only_in_to": [],
+          "raw_changed": 13,
+          "span_changed": 13,
+          "span_changed_pct": 22.03,
+          "after_disamb_only_changed": 13,
+          "after_alloc_only_changed": 0,
+          "semantic_changed": 0,
+          "semantic_changed_pct": 0.0,
+          "semantic_category_combos": {},
+          "semantic_tag_counts": {},
+          "diff_samples": {},
+          "span_only_samples": {
+            "itoa.DECIMAL_PAIRS": [
+              "--- 1.94.0:itoa.DECIMAL_PAIRS",
+              "+++ 1.96.0:itoa.DECIMAL_PAIRS",
+              "@@ -15,3 +15,3 @@",
+              " }",
+              "-alloc107 (size: 200, align: 1) {",
+              "+alloc117 (size: 200, align: 1) {",
+              "     0x00 \u2502 30 30 30 31 30 32 30 33 30 34 30 35 30 36 30 37 \u2502 0001020304050607"
+            ],
+            "itoa._": [
+              "--- 1.94.0:itoa._",
+              "+++ 1.96.0:itoa._",
+              "@@ -73,3 +73,3 @@",
+              " }",
+              "-alloc86 (size: 17, align: 1) {",
+              "+alloc96 (size: 17, align: 1) {",
+              "     0x00 \u2502 6e 65 65 64 20 63 6f 75 6e 74 65 72 70 61 72 74 \u2502 need counterpart",
+              "@@ -77,6 +77,6 @@",
+              " }",
+              "-alloc85 (size: 13, align: 1) {",
+              "+alloc95 (size: 13, align: 1) {",
+              "     6e 65 65 64 20 75 6e 73 69 67 6e 65 64          \u2502 need unsigned",
+              " }",
+              "-alloc84 (size: 11, align: 1) {",
+              "+alloc94 (size: 11, align: 1) {",
+              "     6e 65 65 64 20 73 69 67 6e 65 64                \u2502 need signed"
+            ]
+          }
+        },
+        {
+          "from": "1.96.0",
+          "to": "1.99.0",
+          "common_fns": 59,
+          "only_in_from": [],
+          "only_in_to": [],
+          "raw_changed": 0,
+          "span_changed": 0,
+          "span_changed_pct": 0.0,
+          "after_disamb_only_changed": 0,
+          "after_alloc_only_changed": 0,
+          "semantic_changed": 0,
+          "semantic_changed_pct": 0.0,
+          "semantic_category_combos": {},
+          "semantic_tag_counts": {},
+          "diff_samples": {},
+          "span_only_samples": {}
+        },
+        {
+          "from": "1.99.0",
+          "to": "1.99.1",
+          "common_fns": 59,
+          "only_in_from": [],
+          "only_in_to": [],
+          "raw_changed": 0,
+          "span_changed": 0,
+          "span_changed_pct": 0.0,
+          "after_disamb_only_changed": 0,
+          "after_alloc_only_changed": 0,
+          "semantic_changed": 0,
+          "semantic_changed_pct": 0.0,
+          "semantic_category_combos": {},
+          "semantic_tag_counts": {},
+          "diff_samples": {},
+          "span_only_samples": {}
+        },
+        {
+          "from": "1.99.1",
+          "to": "1.100.0",
+          "common_fns": 59,
+          "only_in_from": [],
+          "only_in_to": [],
+          "raw_changed": 1,
+          "span_changed": 1,
+          "span_changed_pct": 1.69,
+          "after_disamb_only_changed": 1,
+          "after_alloc_only_changed": 1,
+          "semantic_changed": 1,
+          "semantic_changed_pct": 1.69,
+          "semantic_category_combos": {
+            "never_type_local_elision": 1
+          },
+          "semantic_tag_counts": {
+            "never_type_local_elision": 1
+          },
+          "diff_samples": {
+            "itoa.{impl#3}-format": [
+              "--- 1.99.1:itoa.{impl#3}-format",
+              "+++ 1.100.0:itoa.{impl#3}-format",
+              "@@ -17,4 +17,3 @@",
+              "     let mut _16: !;",
+              "-    let _17: ();",
+              "-    let mut _18: !;",
+              "+    let _17: !;",
+              "     scope 1 {",
+              "@@ -73,4 +72,3 @@",
+              "         StorageLive(_17);",
+              "-        StorageLive(_18);",
+              "-        _18 = unreachable_unchecked() -> unwind continue;",
+              "+        _17 = unreachable_unchecked() -> unwind continue;",
+              "     }"
+            ]
+          },
+          "span_only_samples": {}
+        },
+        {
+          "from": "1.100.0",
+          "to": "nightly",
+          "common_fns": 59,
+          "only_in_from": [],
+          "only_in_to": [],
+          "raw_changed": 0,
+          "span_changed": 0,
+          "span_changed_pct": 0.0,
+          "after_disamb_only_changed": 0,
+          "after_alloc_only_changed": 0,
+          "semantic_changed": 0,
+          "semantic_changed_pct": 0.0,
+          "semantic_category_combos": {},
+          "semantic_tag_counts": {},
+          "diff_samples": {},
+          "span_only_samples": {}
+        }
+      ],
+      "cumulative_first_to_last": {
+        "from": "1.93.1",
+        "to": "nightly",
+        "common_fns": 59,
+        "only_in_from": [],
+        "only_in_to": [],
+        "raw_changed": 14,
+        "span_changed": 14,
+        "span_changed_pct": 23.73,
+        "after_disamb_only_changed": 14,
+        "after_alloc_only_changed": 1,
+        "semantic_changed": 1,
+        "semantic_changed_pct": 1.69,
+        "semantic_category_combos": {
+          "never_type_local_elision": 1
+        },
+        "semantic_tag_counts": {
+          "never_type_local_elision": 1
+        },
+        "diff_samples": {
+          "itoa.{impl#3}-format": [
+            "--- 1.93.1:itoa.{impl#3}-format",
+            "+++ nightly:itoa.{impl#3}-format",
+            "@@ -17,4 +17,3 @@",
+            "     let mut _16: !;",
+            "-    let _17: ();",
+            "-    let mut _18: !;",
+            "+    let _17: !;",
+            "     scope 1 {",
+            "@@ -73,4 +72,3 @@",
+            "         StorageLive(_17);",
+            "-        StorageLive(_18);",
+            "-        _18 = unreachable_unchecked() -> unwind continue;",
+            "+        _17 = unreachable_unchecked() -> unwind continue;",
+            "     }"
+          ]
+        },
+        "span_only_samples": {
+          "itoa.DECIMAL_PAIRS": [
+            "--- 1.93.1:itoa.DECIMAL_PAIRS",
+            "+++ nightly:itoa.DECIMAL_PAIRS",
+            "@@ -15,3 +15,3 @@",
+            " }",
+            "-alloc92 (size: 200, align: 1) {",
+            "+alloc117 (size: 200, align: 1) {",
+            "     0x00 \u2502 30 30 30 31 30 32 30 33 30 34 30 35 30 36 30 37 \u2502 0001020304050607"
+          ],
+          "itoa._": [
+            "--- 1.93.1:itoa._",
+            "+++ nightly:itoa._",
+            "@@ -73,3 +73,3 @@",
+            " }",
+            "-alloc71 (size: 17, align: 1) {",
+            "+alloc96 (size: 17, align: 1) {",
+            "     0x00 \u2502 6e 65 65 64 20 63 6f 75 6e 74 65 72 70 61 72 74 \u2502 need counterpart",
+            "@@ -77,6 +77,6 @@",
+            " }",
+            "-alloc70 (size: 13, align: 1) {",
+            "+alloc95 (size: 13, align: 1) {",
+            "     6e 65 65 64 20 75 6e 73 69 67 6e 65 64          \u2502 need unsigned",
+            " }",
+            "-alloc69 (size: 11, align: 1) {",
+            "+alloc94 (size: 11, align: 1) {",
+            "     6e 65 65 64 20 73 69 67 6e 65 64                \u2502 need signed"
+          ]
+        }
+      }
+    },
+    "memchr": {
+      "crate_label": "memchr-2.8.3",
+      "vcs_sha1": "5fdb40c054e1fff359a2f7bdf7f87a13b34b465d",
+      "extra_flags": [
+        "--edition=2021",
+        "--cfg",
+        "feature=\"alloc\"",
+        "--cfg",
+        "feature=\"std\""
+      ],
+      "disambiguator_progression": {},
+      "per_toolchain": {
+        "1.93.1": {
+          "rc": 0,
+          "post_cleanup_fns": 641,
+          "total_mir_files": 67138,
+          "elapsed_sec": 5.613,
+          "pass_patterns": {
+            "3-2-000.runtime-post-cleanup.after": 641
+          },
+          "err_head": ""
+        },
+        "1.94.0": {
+          "rc": 0,
+          "post_cleanup_fns": 641,
+          "total_mir_files": 68318,
+          "elapsed_sec": 6.759,
+          "pass_patterns": {
+            "3-2-000.runtime-post-cleanup.after": 641
+          },
+          "err_head": ""
+        },
+        "1.96.0": {
+          "rc": 0,
+          "post_cleanup_fns": 641,
+          "total_mir_files": 69498,
+          "elapsed_sec": 5.101,
+          "pass_patterns": {
+            "3-2-000.runtime-post-cleanup.after": 641
+          },
+          "err_head": ""
+        },
+        "1.99.0": {
+          "rc": 0,
+          "post_cleanup_fns": 641,
+          "total_mir_files": 69536,
+          "elapsed_sec": 5.31,
+          "pass_patterns": {
+            "3-2-000.runtime-post-cleanup.after": 641
+          },
+          "err_head": ""
+        },
+        "1.99.1": {
+          "rc": 0,
+          "post_cleanup_fns": 641,
+          "total_mir_files": 69536,
+          "elapsed_sec": 6.106,
+          "pass_patterns": {
+            "3-2-000.runtime-post-cleanup.after": 641
+          },
+          "err_head": ""
+        },
+        "1.100.0": {
+          "rc": 0,
+          "post_cleanup_fns": 641,
+          "total_mir_files": 69536,
+          "elapsed_sec": 7.771,
+          "pass_patterns": {
+            "3-2-000.runtime-post-cleanup.after": 641
+          },
+          "err_head": ""
+        },
+        "nightly": {
+          "rc": 0,
+          "post_cleanup_fns": 639,
+          "total_mir_files": 69462,
+          "elapsed_sec": 6.944,
+          "pass_patterns": {
+            "3-2-000.runtime-post-cleanup.after": 639
+          },
+          "err_head": ""
+        }
+      },
+      "transitions": [
+        {
+          "from": "1.93.1",
+          "to": "1.94.0",
+          "common_fns": 641,
+          "only_in_from": [],
+          "only_in_to": [],
+          "raw_changed": 0,
+          "span_changed": 0,
+          "span_changed_pct": 0.0,
+          "after_disamb_only_changed": 0,
+          "after_alloc_only_changed": 0,
+          "semantic_changed": 0,
+          "semantic_changed_pct": 0.0,
+          "semantic_category_combos": {},
+          "semantic_tag_counts": {},
+          "diff_samples": {},
+          "span_only_samples": {}
+        },
+        {
+          "from": "1.94.0",
+          "to": "1.96.0",
+          "common_fns": 640,
+          "only_in_from": [
+            "memchr.arch-all-rabinkarp-{impl#12}-assert_receiver_is_total_eq"
+          ],
+          "only_in_to": [
+            "memchr.arch-all-rabinkarp-{impl#12}-assert_fields_are_eq"
+          ],
+          "raw_changed": 116,
+          "span_changed": 116,
+          "span_changed_pct": 18.12,
+          "after_disamb_only_changed": 116,
+          "after_alloc_only_changed": 46,
+          "semantic_changed": 46,
+          "semantic_changed_pct": 7.19,
+          "semantic_category_combos": {
+            "assert_failed_trimmed_path": 16,
+            "doc_hidden_trimmed_path": 7,
+            "generic_atomic": 15,
+            "generic_atomic+doc_hidden_trimmed_path": 6,
+            "ptr_to_ptr_coercion_temp": 2
+          },
+          "semantic_tag_counts": {
+            "assert_failed_trimmed_path": 16,
+            "doc_hidden_trimmed_path": 13,
+            "generic_atomic": 21,
+            "ptr_to_ptr_coercion_temp": 2
+          },
+          "diff_samples": {
+            "memchr.arch-all-memchr-{impl#0}-find_raw": [
+              "--- 1.94.0:memchr.arch-all-memchr-{impl#0}-find_raw",
+              "+++ 1.96.0:memchr.arch-all-memchr-{impl#0}-find_raw",
+              "@@ -482,3 +482,3 @@",
+              "         _90 = Option::<Arguments<'_>>::None;",
+              "-        _84 = assert_failed::<usize, usize>(move _85, move _86, move _88, move _90) -> unwind continue;",
+              "+        _84 = core::panicking::assert_failed::<usize, usize>(move _85, move _86, move _88, move _90) -> unwind continue;",
+              "     }"
+            ],
+            "memchr.arch-all-memchr-{impl#0}-rfind_raw": [
+              "--- 1.94.0:memchr.arch-all-memchr-{impl#0}-rfind_raw",
+              "+++ 1.96.0:memchr.arch-all-memchr-{impl#0}-rfind_raw",
+              "@@ -460,3 +460,3 @@",
+              "         _85 = Option::<Arguments<'_>>::None;",
+              "-        _79 = assert_failed::<usize, usize>(move _80, move _81, move _83, move _85) -> unwind continue;",
+              "+        _79 = core::panicking::assert_failed::<usize, usize>(move _80, move _81, move _83, move _85) -> unwind continue;",
+              "     }"
+            ],
+            "memchr.arch-all-memchr-{impl#3}-find_raw": [
+              "--- 1.94.0:memchr.arch-all-memchr-{impl#3}-find_raw",
+              "+++ 1.96.0:memchr.arch-all-memchr-{impl#3}-find_raw",
+              "@@ -435,3 +435,3 @@",
+              "         _83 = Option::<Arguments<'_>>::None;",
+              "-        _77 = assert_failed::<usize, usize>(move _78, move _79, move _81, move _83) -> unwind continue;",
+              "+        _77 = core::panicking::assert_failed::<usize, usize>(move _78, move _79, move _81, move _83) -> unwind continue;",
+              "     }"
+            ],
+            "memchr.arch-all-memchr-{impl#3}-rfind_raw": [
+              "--- 1.94.0:memchr.arch-all-memchr-{impl#3}-rfind_raw",
+              "+++ 1.96.0:memchr.arch-all-memchr-{impl#3}-rfind_raw",
+              "@@ -411,3 +411,3 @@",
+              "         _78 = Option::<Arguments<'_>>::None;",
+              "-        _72 = assert_failed::<usize, usize>(move _73, move _74, move _76, move _78) -> unwind continue;",
+              "+        _72 = core::panicking::assert_failed::<usize, usize>(move _73, move _74, move _76, move _78) -> unwind continue;",
+              "     }"
+            ],
+            "memchr.arch-all-packedpair-{impl#0}-find_prefilter": [
+              "--- 1.94.0:memchr.arch-all-packedpair-{impl#0}-find_prefilter",
+              "+++ 1.96.0:memchr.arch-all-packedpair-{impl#0}-find_prefilter",
+              "@@ -139,3 +139,3 @@",
+              "         _16 = &(*_17);",
+              "-        _14 = memchr::memchr(move _15, move _16) -> [return: bb7, unwind continue];",
+              "+        _14 = memchr(move _15, move _16) -> [return: bb7, unwind continue];",
+              "     }"
+            ],
+            "memchr.arch-x86_64-memchr-count_raw": [
+              "--- 1.94.0:memchr.arch-x86_64-memchr-count_raw",
+              "+++ 1.96.0:memchr.arch-x86_64-memchr-count_raw",
+              "@@ -5,4 +5,4 @@",
+              "     let mut _0: usize;",
+              "-    let mut _5: &core::sync::atomic::AtomicPtr<()>;",
+              "-    let _6: &core::sync::atomic::AtomicPtr<()>;",
+              "+    let mut _5: &core::sync::atomic::Atomic<*mut ()>;",
+              "+    let _6: &core::sync::atomic::Atomic<*mut ()>;",
+              "     let mut _7: core::sync::atomic::Ordering;",
+              "@@ -23,3 +23,3 @@",
+              "         StorageLive(_6);",
+              "-        _6 = const {allocN: &AtomicPtr<()>};",
+              "+        _6 = const {allocN: &Atomic<*mut ()>};",
+              "         _5 = &(*_6);",
+              "@@ -27,3 +27,3 @@",
+              "         _7 = core::sync::atomic::Ordering::Relaxed;",
+              "-        _4 = AtomicPtr::<()>::load(move _5, move _7) -> [return: bb1, unwind continue];",
+              "+        _4 = Atomic::<*mut ()>::load(move _5, move _7) -> [return: bb1, unwind continue];",
+              "     }"
+            ],
+            "memchr.arch-x86_64-memchr-memchr2_raw-FN": [
+              "--- 1.94.0:memchr.arch-x86_64-memchr-memchr2_raw-FN",
+              "+++ 1.96.0:memchr.arch-x86_64-memchr-memchr2_raw-FN",
+              "@@ -1,3 +1,3 @@",
+              "-static arch::x86_64::memchr::memchr2_raw::FN: AtomicPtr<()> = {",
+              "-    let mut _0: core::sync::atomic::AtomicPtr<()>;",
+              "+static arch::x86_64::memchr::memchr2_raw::FN: Atomic<*mut ()> = {",
+              "+    let mut _0: core::sync::atomic::Atomic<*mut ()>;",
+              "     let mut _1: *mut ();",
+              "@@ -10,3 +10,3 @@",
+              "         StorageDead(_2);",
+              "-        _0 = AtomicPtr::<()>::new(move _1) -> [return: bb1, unwind continue];",
+              "+        _0 = Atomic::<*mut ()>::new(move _1) -> [return: bb1, unwind continue];",
+              "     }"
+            ],
+            "memchr.ext-{impl#1}-as_usize": [
+              "--- 1.94.0:memchr.ext-{impl#1}-as_usize",
+              "+++ 1.96.0:memchr.ext-{impl#1}-as_usize",
+              "@@ -5,3 +5,4 @@",
+              "     let mut _3: *const T;",
+              "-    let mut _4: *mut T;",
+              "+    let mut _4: *const T;",
+              "+    let mut _5: *mut T;",
+              "     bb0: {",
+              "@@ -10,7 +11,9 @@",
+              "         StorageLive(_4);",
+              "-        _4 = copy _1;",
+              "+        StorageLive(_5);",
+              "+        _5 = copy _1;",
+              "+        _4 = move _5 as *const T (PtrToPtr);",
+              "+        StorageDead(_5);",
+              "         _3 = move _4 as *const T (PtrToPtr);",
+              "+        _2 = copy _3;",
+              "         StorageDead(_4);",
+              "-        _2 = move _3 as *const T (PtrToPtr);",
+              "-        StorageDead(_3);",
+              "         _0 = <*const T as ext::Pointer>::as_usize(move _2) -> [return: bb1, unwind continue];",
+              "@@ -19,2 +22,3 @@"
+            ]
+          },
+          "span_only_samples": {
+            "memchr.arch-all-memchr-{impl#12}-fmt": [
+              "--- 1.94.0:memchr.arch-all-memchr-{impl#12}-fmt",
+              "+++ 1.96.0:memchr.arch-all-memchr-{impl#12}-fmt",
+              "@@ -67,9 +67,9 @@",
+              " }",
+              "-alloc46 (size: 2, align: 1) {",
+              "+alloc39 (size: 2, align: 1) {",
+              "     76 31                                           \u2502 v1",
+              " }",
+              "-alloc45 (size: 2, align: 1) {",
+              "+alloc38 (size: 2, align: 1) {",
+              "     73 31                                           \u2502 s1",
+              " }",
+              "-alloc44 (size: 3, align: 1) {",
+              "+alloc37 (size: 3, align: 1) {",
+              "     4f 6e 65                                        \u2502 One"
+            ],
+            "memchr.arch-all-memchr-{impl#14}-fmt": [
+              "--- 1.94.0:memchr.arch-all-memchr-{impl#14}-fmt",
+              "+++ 1.96.0:memchr.arch-all-memchr-{impl#14}-fmt",
+              "@@ -67,9 +67,9 @@",
+              " }",
+              "-alloc53 (size: 2, align: 1) {",
+              "+alloc46 (size: 2, align: 1) {",
+              "     69 74                                           \u2502 it",
+              " }",
+              "-alloc52 (size: 8, align: 1) {",
+              "+alloc45 (size: 8, align: 1) {",
+              "     73 65 61 72 63 68 65 72                         \u2502 searcher",
+              " }",
+              "-alloc51 (size: 7, align: 1) {",
+              "+alloc44 (size: 7, align: 1) {",
+              "     4f 6e 65 49 74 65 72                            \u2502 OneIter"
+            ]
+          }
+        },
+        {
+          "from": "1.96.0",
+          "to": "1.99.0",
+          "common_fns": 641,
+          "only_in_from": [],
+          "only_in_to": [],
+          "raw_changed": 125,
+          "span_changed": 125,
+          "span_changed_pct": 19.5,
+          "after_disamb_only_changed": 125,
+          "after_alloc_only_changed": 125,
+          "semantic_changed": 125,
+          "semantic_changed_pct": 19.5,
+          "semantic_category_combos": {
+            "no_retag_copy": 119,
+            "no_retag_copy+box_deref_transmute": 5,
+            "dead_discriminant_elision": 1
+          },
+          "semantic_tag_counts": {
+            "no_retag_copy": 124,
+            "box_deref_transmute": 5,
+            "dead_discriminant_elision": 1
+          },
+          "diff_samples": {
+            "memchr.arch-all-memchr-{impl#0}-find-{closure#0}": [
+              "--- 1.96.0:memchr.arch-all-memchr-{impl#0}-find-{closure#0}",
+              "+++ 1.99.0:memchr.arch-all-memchr-{impl#0}-find-{closure#0}",
+              "@@ -11,3 +11,3 @@",
+              "         StorageLive(_4);",
+              "-        _7 = copy ((*_1).0: &arch::all::memchr::One);",
+              "+        _7 = no_retag copy ((*_1).0: &arch::all::memchr::One);",
+              "         _4 = &(*_7);"
+            ],
+            "memchr.arch-all-memchr-{impl#0}-find_raw-{closure#0}": [
+              "--- 1.96.0:memchr.arch-all-memchr-{impl#0}-find_raw-{closure#0}",
+              "+++ 1.99.0:memchr.arch-all-memchr-{impl#0}-find_raw-{closure#0}",
+              "@@ -9,3 +9,3 @@",
+              "         StorageLive(_3);",
+              "-        _5 = copy ((*_1).0: &arch::all::memchr::One);",
+              "+        _5 = no_retag copy ((*_1).0: &arch::all::memchr::One);",
+              "         _3 = &(*_5);"
+            ],
+            "memchr.arch-all-memchr-{impl#0}-rfind-{closure#0}": [
+              "--- 1.96.0:memchr.arch-all-memchr-{impl#0}-rfind-{closure#0}",
+              "+++ 1.99.0:memchr.arch-all-memchr-{impl#0}-rfind-{closure#0}",
+              "@@ -11,3 +11,3 @@",
+              "         StorageLive(_4);",
+              "-        _7 = copy ((*_1).0: &arch::all::memchr::One);",
+              "+        _7 = no_retag copy ((*_1).0: &arch::all::memchr::One);",
+              "         _4 = &(*_7);"
+            ],
+            "memchr.arch-all-memchr-{impl#0}-rfind_raw-{closure#0}": [
+              "--- 1.96.0:memchr.arch-all-memchr-{impl#0}-rfind_raw-{closure#0}",
+              "+++ 1.99.0:memchr.arch-all-memchr-{impl#0}-rfind_raw-{closure#0}",
+              "@@ -9,3 +9,3 @@",
+              "         StorageLive(_3);",
+              "-        _5 = copy ((*_1).0: &arch::all::memchr::One);",
+              "+        _5 = no_retag copy ((*_1).0: &arch::all::memchr::One);",
+              "         _3 = &(*_5);"
+            ],
+            "memchr.arch-all-shiftor-{impl#0}-find": [
+              "--- 1.96.0:memchr.arch-all-shiftor-{impl#0}-find",
+              "+++ 1.99.0:memchr.arch-all-shiftor-{impl#0}-find",
+              "@@ -116,3 +116,3 @@",
+              "         StorageLive(_22);",
+              "-        _37 = copy (((_16 as Some).0: (usize, &u8)).1: &u8);",
+              "+        _37 = no_retag copy (((_16 as Some).0: (usize, &u8)).1: &u8);",
+              "         _22 = copy (*_37);",
+              "@@ -142,4 +142,4 @@",
+              "     bb12: {",
+              "-        _38 = copy ((*_1).0: std::boxed::Box<[u16; 256]>);",
+              "-        _39 = copy ((_38.0: core::ptr::Unique<[u16; 256]>).0: core::ptr::NonNull<[u16; 256]>) as *const [u16; 256] (Transmute);",
+              "+        _38 = no_retag copy ((*_1).0: std::boxed::Box<[u16; 256]>);",
+              "+        _39 = copy (_38.0: core::ptr::Unique<[u16; 256]>) as *const [u16; 256] (BoxDerefTransmute);",
+              "         _23 = copy (*_39)[_24];"
+            ],
+            "memchr.cow-{impl#1}-into_owned": [
+              "--- 1.96.0:memchr.cow-{impl#1}-into_owned",
+              "+++ 1.99.0:memchr.cow-{impl#1}-into_owned",
+              "@@ -10,6 +10,2 @@",
+              "     let mut _8: bool;",
+              "-    let mut _9: isize;",
+              "-    let mut _10: isize;",
+              "-    let mut _11: isize;",
+              "-    let mut _12: isize;",
+              "     scope 1 {",
+              "@@ -59,3 +55,2 @@",
+              "     bb7: {",
+              "-        _10 = discriminant((_1.0: cow::Imp<'_>));",
+              "         return;",
+              "@@ -63,3 +58,2 @@",
+              "     bb8 (cleanup): {",
+              "-        _12 = discriminant((_1.0: cow::Imp<'_>));",
+              "         resume;"
+            ]
+          },
+          "span_only_samples": {}
+        },
+        {
+          "from": "1.99.0",
+          "to": "1.99.1",
+          "common_fns": 641,
+          "only_in_from": [],
+          "only_in_to": [],
+          "raw_changed": 0,
+          "span_changed": 0,
+          "span_changed_pct": 0.0,
+          "after_disamb_only_changed": 0,
+          "after_alloc_only_changed": 0,
+          "semantic_changed": 0,
+          "semantic_changed_pct": 0.0,
+          "semantic_category_combos": {},
+          "semantic_tag_counts": {},
+          "diff_samples": {},
+          "span_only_samples": {}
+        },
+        {
+          "from": "1.99.1",
+          "to": "1.100.0",
+          "common_fns": 641,
+          "only_in_from": [],
+          "only_in_to": [],
+          "raw_changed": 42,
+          "span_changed": 42,
+          "span_changed_pct": 6.55,
+          "after_disamb_only_changed": 42,
+          "after_alloc_only_changed": 42,
+          "semantic_changed": 42,
+          "semantic_changed_pct": 6.55,
+          "semantic_category_combos": {
+            "closure_upvar_debug_name": 28,
+            "option_try_residual_never": 14
+          },
+          "semantic_tag_counts": {
+            "closure_upvar_debug_name": 28,
+            "option_try_residual_never": 14
+          },
+          "diff_samples": {
+            "memchr.arch-all-memchr-{impl#1}-count": [
+              "--- 1.99.1:memchr.arch-all-memchr-{impl#1}-count",
+              "+++ 1.100.0:memchr.arch-all-memchr-{impl#1}-count",
+              "@@ -14,3 +14,3 @@",
+              "         _4 = &(*_5);",
+              "-        _3 = {closure@<SRC_ROOT>/src/arch/all/memchr.rs:323:23: 323:29} { self: move _4 };",
+              "+        _3 = {closure@<SRC_ROOT>/src/arch/all/memchr.rs:323:23: 323:29} { self__searcher: move _4 };",
+              "         StorageDead(_4);"
+            ],
+            "memchr.arch-all-memchr-{impl#1}-next": [
+              "--- 1.99.1:memchr.arch-all-memchr-{impl#1}-next",
+              "+++ 1.100.0:memchr.arch-all-memchr-{impl#1}-next",
+              "@@ -14,3 +14,3 @@",
+              "         _4 = &(*_5);",
+              "-        _3 = {closure@<SRC_ROOT>/src/arch/all/memchr.rs:318:31: 318:37} { self: move _4 };",
+              "+        _3 = {closure@<SRC_ROOT>/src/arch/all/memchr.rs:318:31: 318:37} { self__searcher: move _4 };",
+              "         StorageDead(_4);"
+            ],
+            "memchr.arch-all-memchr-{impl#2}-next_back": [
+              "--- 1.99.1:memchr.arch-all-memchr-{impl#2}-next_back",
+              "+++ 1.100.0:memchr.arch-all-memchr-{impl#2}-next_back",
+              "@@ -14,3 +14,3 @@",
+              "         _4 = &(*_5);",
+              "-        _3 = {closure@<SRC_ROOT>/src/arch/all/memchr.rs:342:36: 342:42} { self: move _4 };",
+              "+        _3 = {closure@<SRC_ROOT>/src/arch/all/memchr.rs:342:36: 342:42} { self__searcher: move _4 };",
+              "         StorageDead(_4);"
+            ],
+            "memchr.arch-all-memchr-{impl#4}-next": [
+              "--- 1.99.1:memchr.arch-all-memchr-{impl#4}-next",
+              "+++ 1.100.0:memchr.arch-all-memchr-{impl#4}-next",
+              "@@ -14,3 +14,3 @@",
+              "         _4 = &(*_5);",
+              "-        _3 = {closure@<SRC_ROOT>/src/arch/all/memchr.rs:583:31: 583:37} { self: move _4 };",
+              "+        _3 = {closure@<SRC_ROOT>/src/arch/all/memchr.rs:583:31: 583:37} { self__searcher: move _4 };",
+              "         StorageDead(_4);"
+            ],
+            "memchr.arch-all-packedpair-{impl#0}-find_prefilter": [
+              "--- 1.99.1:memchr.arch-all-packedpair-{impl#0}-find_prefilter",
+              "+++ 1.100.0:memchr.arch-all-packedpair-{impl#0}-find_prefilter",
+              "@@ -12,3 +12,3 @@",
+              "     let mut _12: usize;",
+              "-    let mut _13: core::ops::ControlFlow<core::option::Option<core::convert::Infallible>, usize>;",
+              "+    let mut _13: core::ops::ControlFlow<core::option::Option<!>, usize>;",
+              "     let mut _14: core::option::Option<usize>;",
+              "@@ -23,3 +23,3 @@",
+              "     let mut _24: !;",
+              "-    let mut _25: core::option::Option<core::convert::Infallible>;",
+              "+    let mut _25: core::option::Option<!>;",
+              "     let mut _29: core::option::Option<usize>;",
+              "@@ -51,3 +51,3 @@",
+              "                 debug index2 => _7;",
+              "-                let _23: core::option::Option<core::convert::Infallible>;",
+              "+                let _23: core::option::Option<!>;",
+              "                 let _26: usize;",
+              "@@ -177,6 +177,6 @@",
+              "         StorageLive(_23);",
+              "-        _23 = copy ((_13 as Break).0: core::option::Option<core::convert::Infallible>);",
+              "+        _23 = copy ((_13 as Break).0: core::option::Option<!>);",
+              "         StorageLive(_25);"
+            ]
+          },
+          "span_only_samples": {}
+        },
+        {
+          "from": "1.100.0",
+          "to": "nightly",
+          "common_fns": 639,
+          "only_in_from": [
+            "memchr.arch-all-memchr-{impl#24}-fmt-promoted[0]",
+            "memchr.arch-generic-memchr-{impl#14}-fmt-promoted[0]"
+          ],
+          "only_in_to": [],
+          "raw_changed": 101,
+          "span_changed": 101,
+          "span_changed_pct": 15.81,
+          "after_disamb_only_changed": 101,
+          "after_alloc_only_changed": 72,
+          "semantic_changed": 72,
+          "semantic_changed_pct": 11.27,
+          "semantic_category_combos": {
+            "derive_debug_concat_names": 53,
+            "empty_try_scope_elision": 14,
+            "box_deref_transmute+box_raw_field_type": 5
+          },
+          "semantic_tag_counts": {
+            "derive_debug_concat_names": 53,
+            "empty_try_scope_elision": 14,
+            "box_deref_transmute": 5,
+            "box_raw_field_type": 5
+          },
+          "diff_samples": {
+            "memchr.arch-all-memchr-{impl#12}-fmt": [
+              "--- 1.100.0:memchr.arch-all-memchr-{impl#12}-fmt",
+              "+++ nightly:memchr.arch-all-memchr-{impl#12}-fmt",
+              "@@ -7,13 +7,9 @@",
+              "     let _5: &str;",
+              "-    let mut _6: &str;",
+              "-    let _7: &str;",
+              "-    let mut _8: &dyn core::fmt::Debug;",
+              "-    let mut _9: &u8;",
+              "-    let _10: &u8;",
+              "-    let mut _11: &str;",
+              "-    let _12: &str;",
+              "-    let mut _13: &dyn core::fmt::Debug;",
+              "-    let mut _14: &&usize;",
+              "-    let _15: &&usize;",
+              "-    let _16: &usize;",
+              "+    let mut _6: &dyn core::fmt::Debug;",
+              "+    let mut _7: &u8;",
+              "+    let _8: &u8;",
+              "+    let mut _9: &dyn core::fmt::Debug;",
+              "+    let mut _10: &&usize;",
+              "+    let _11: &&usize;",
+              "+    let _12: &usize;"
+            ],
+            "memchr.arch-all-memchr-{impl#14}-fmt": [
+              "--- 1.100.0:memchr.arch-all-memchr-{impl#14}-fmt",
+              "+++ nightly:memchr.arch-all-memchr-{impl#14}-fmt",
+              "@@ -7,13 +7,9 @@",
+              "     let _5: &str;",
+              "-    let mut _6: &str;",
+              "-    let _7: &str;",
+              "-    let mut _8: &dyn core::fmt::Debug;",
+              "-    let mut _9: &&arch::all::memchr::One;",
+              "-    let _10: &&arch::all::memchr::One;",
+              "-    let mut _11: &str;",
+              "-    let _12: &str;",
+              "-    let mut _13: &dyn core::fmt::Debug;",
+              "-    let mut _14: &&arch::generic::memchr::Iter<'_>;",
+              "-    let _15: &&arch::generic::memchr::Iter<'_>;",
+              "-    let _16: &arch::generic::memchr::Iter<'_>;",
+              "+    let mut _6: &dyn core::fmt::Debug;",
+              "+    let mut _7: &&arch::all::memchr::One;",
+              "+    let _8: &&arch::all::memchr::One;",
+              "+    let mut _9: &dyn core::fmt::Debug;",
+              "+    let mut _10: &&arch::generic::memchr::Iter<'_>;",
+              "+    let _11: &&arch::generic::memchr::Iter<'_>;",
+              "+    let _12: &arch::generic::memchr::Iter<'_>;"
+            ],
+            "memchr.arch-all-memchr-{impl#18}-fmt": [
+              "--- 1.100.0:memchr.arch-all-memchr-{impl#18}-fmt",
+              "+++ nightly:memchr.arch-all-memchr-{impl#18}-fmt",
+              "@@ -7,23 +7,15 @@",
+              "     let _5: &str;",
+              "-    let mut _6: &str;",
+              "-    let _7: &str;",
+              "-    let mut _8: &dyn core::fmt::Debug;",
+              "-    let mut _9: &u8;",
+              "-    let _10: &u8;",
+              "-    let mut _11: &str;",
+              "-    let _12: &str;",
+              "-    let mut _13: &dyn core::fmt::Debug;",
+              "-    let mut _14: &u8;",
+              "-    let _15: &u8;",
+              "-    let mut _16: &str;",
+              "-    let _17: &str;",
+              "-    let mut _18: &dyn core::fmt::Debug;",
+              "-    let mut _19: &usize;",
+              "-    let _20: &usize;",
+              "-    let mut _21: &str;",
+              "-    let _22: &str;",
+              "-    let mut _23: &dyn core::fmt::Debug;"
+            ],
+            "memchr.arch-all-memchr-{impl#20}-fmt": [
+              "--- 1.100.0:memchr.arch-all-memchr-{impl#20}-fmt",
+              "+++ nightly:memchr.arch-all-memchr-{impl#20}-fmt",
+              "@@ -7,13 +7,9 @@",
+              "     let _5: &str;",
+              "-    let mut _6: &str;",
+              "-    let _7: &str;",
+              "-    let mut _8: &dyn core::fmt::Debug;",
+              "-    let mut _9: &&arch::all::memchr::Two;",
+              "-    let _10: &&arch::all::memchr::Two;",
+              "-    let mut _11: &str;",
+              "-    let _12: &str;",
+              "-    let mut _13: &dyn core::fmt::Debug;",
+              "-    let mut _14: &&arch::generic::memchr::Iter<'_>;",
+              "-    let _15: &&arch::generic::memchr::Iter<'_>;",
+              "-    let _16: &arch::generic::memchr::Iter<'_>;",
+              "+    let mut _6: &dyn core::fmt::Debug;",
+              "+    let mut _7: &&arch::all::memchr::Two;",
+              "+    let _8: &&arch::all::memchr::Two;",
+              "+    let mut _9: &dyn core::fmt::Debug;",
+              "+    let mut _10: &&arch::generic::memchr::Iter<'_>;",
+              "+    let _11: &&arch::generic::memchr::Iter<'_>;",
+              "+    let _12: &arch::generic::memchr::Iter<'_>;"
+            ],
+            "memchr.arch-all-packedpair-{impl#0}-find_prefilter": [
+              "--- 1.100.0:memchr.arch-all-packedpair-{impl#0}-find_prefilter",
+              "+++ nightly:memchr.arch-all-packedpair-{impl#0}-find_prefilter",
+              "@@ -56,11 +56,7 @@",
+              "                     debug residual => _23;",
+              "-                    scope 5 {",
+              "-                    }",
+              "+                }",
+              "+                scope 5 {",
+              "+                    debug val => _26;",
+              "                 }",
+              "                 scope 6 {",
+              "-                    debug val => _26;",
+              "-                    scope 7 {",
+              "-                    }",
+              "-                }",
+              "-                scope 8 {",
+              "                     debug found => _27;",
+              "@@ -68,3 +64,3 @@",
+              "                     let _34: usize;",
+              "-                    scope 9 {",
+              "+                    scope 7 {",
+              "                         debug aligned1 => _28;"
+            ],
+            "memchr.arch-all-shiftor-{impl#0}-find": [
+              "--- 1.100.0:memchr.arch-all-shiftor-{impl#0}-find",
+              "+++ nightly:memchr.arch-all-shiftor-{impl#0}-find",
+              "@@ -143,3 +143,3 @@",
+              "         _38 = no_retag copy ((*_1).0: std::boxed::Box<[u16; 256]>);",
+              "-        _39 = copy (_38.0: core::ptr::Unique<[u16; 256]>) as *const [u16; 256] (BoxDerefTransmute);",
+              "+        _39 = copy (_38.0: std::boxed::BoxRaw<[u16; 256]>) as *const [u16; 256] (BoxDerefTransmute);",
+              "         _23 = copy (*_39)[_24];"
+            ]
+          },
+          "span_only_samples": {
+            "memchr.arch-all-memchr-{impl#0}-find_raw": [
+              "--- 1.100.0:memchr.arch-all-memchr-{impl#0}-find_raw",
+              "+++ nightly:memchr.arch-all-memchr-{impl#0}-find_raw",
+              "@@ -627,3 +627,3 @@",
+              " }",
+              "-alloc41 (size: 51, align: 1) {",
+              "+alloc39 (size: 51, align: 1) {",
+              "     0x00 \u2502 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 \u2502 assertion failed",
+              "@@ -633,3 +633,3 @@",
+              " }",
+              "-alloc40 (size: 29, align: 1) {",
+              "+alloc38 (size: 29, align: 1) {",
+              "     0x00 \u2502 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 \u2502 assertion failed"
+            ],
+            "memchr.arch-all-memchr-{impl#0}-rfind_raw": [
+              "--- 1.100.0:memchr.arch-all-memchr-{impl#0}-rfind_raw",
+              "+++ nightly:memchr.arch-all-memchr-{impl#0}-rfind_raw",
+              "@@ -616,3 +616,3 @@",
+              " }",
+              "-alloc43 (size: 44, align: 1) {",
+              "+alloc41 (size: 44, align: 1) {",
+              "     0x00 \u2502 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 \u2502 assertion failed"
+            ]
+          }
+        }
+      ],
+      "cumulative_first_to_last": {
+        "from": "1.93.1",
+        "to": "nightly",
+        "common_fns": 638,
+        "only_in_from": [
+          "memchr.arch-all-memchr-{impl#24}-fmt-promoted[0]",
+          "memchr.arch-all-rabinkarp-{impl#12}-assert_receiver_is_total_eq",
+          "memchr.arch-generic-memchr-{impl#14}-fmt-promoted[0]"
+        ],
+        "only_in_to": [
+          "memchr.arch-all-rabinkarp-{impl#12}-assert_fields_are_eq"
+        ],
+        "raw_changed": 245,
+        "span_changed": 245,
+        "span_changed_pct": 38.4,
+        "after_disamb_only_changed": 245,
+        "after_alloc_only_changed": 232,
+        "semantic_changed": 232,
+        "semantic_changed_pct": 36.36,
+        "semantic_category_combos": {
+          "no_retag_copy": 86,
+          "assert_failed_trimmed_path": 8,
+          "derive_debug_concat_names": 53,
+          "no_retag_copy+closure_upvar_debug_name": 21,
+          "doc_hidden_trimmed_path+option_try_residual_never+empty_try_scope_elision": 1,
+          "option_try_residual_never+empty_try_scope_elision": 11,
+          "assert_failed_trimmed_path+no_retag_copy": 8,
+          "no_retag_copy+box_deref_transmute+box_raw_field_type": 5,
+          "generic_atomic": 15,
+          "generic_atomic+doc_hidden_trimmed_path": 6,
+          "dead_discriminant_elision": 1,
+          "ptr_to_ptr_coercion_temp": 2,
+          "doc_hidden_trimmed_path": 4,
+          "doc_hidden_trimmed_path+no_retag_copy": 2,
+          "closure_upvar_debug_name": 7,
+          "no_retag_copy+option_try_residual_never+empty_try_scope_elision": 2
+        },
+        "semantic_tag_counts": {
+          "no_retag_copy": 124,
+          "assert_failed_trimmed_path": 16,
+          "derive_debug_concat_names": 53,
+          "closure_upvar_debug_name": 28,
+          "doc_hidden_trimmed_path": 13,
+          "option_try_residual_never": 14,
+          "empty_try_scope_elision": 14,
+          "box_deref_transmute": 5,
+          "box_raw_field_type": 5,
+          "generic_atomic": 21,
+          "dead_discriminant_elision": 1,
+          "ptr_to_ptr_coercion_temp": 2
+        },
+        "diff_samples": {
+          "memchr.arch-all-memchr-{impl#0}-find-{closure#0}": [
+            "--- 1.93.1:memchr.arch-all-memchr-{impl#0}-find-{closure#0}",
+            "+++ nightly:memchr.arch-all-memchr-{impl#0}-find-{closure#0}",
+            "@@ -11,3 +11,3 @@",
+            "         StorageLive(_4);",
+            "-        _7 = copy ((*_1).0: &arch::all::memchr::One);",
+            "+        _7 = no_retag copy ((*_1).0: &arch::all::memchr::One);",
+            "         _4 = &(*_7);"
+          ],
+          "memchr.arch-all-memchr-{impl#0}-find_raw": [
+            "--- 1.93.1:memchr.arch-all-memchr-{impl#0}-find_raw",
+            "+++ nightly:memchr.arch-all-memchr-{impl#0}-find_raw",
+            "@@ -482,3 +482,3 @@",
+            "         _90 = Option::<Arguments<'_>>::None;",
+            "-        _84 = assert_failed::<usize, usize>(move _85, move _86, move _88, move _90) -> unwind continue;",
+            "+        _84 = core::panicking::assert_failed::<usize, usize>(move _85, move _86, move _88, move _90) -> unwind continue;",
+            "     }"
+          ],
+          "memchr.arch-all-memchr-{impl#0}-find_raw-{closure#0}": [
+            "--- 1.93.1:memchr.arch-all-memchr-{impl#0}-find_raw-{closure#0}",
+            "+++ nightly:memchr.arch-all-memchr-{impl#0}-find_raw-{closure#0}",
+            "@@ -9,3 +9,3 @@",
+            "         StorageLive(_3);",
+            "-        _5 = copy ((*_1).0: &arch::all::memchr::One);",
+            "+        _5 = no_retag copy ((*_1).0: &arch::all::memchr::One);",
+            "         _3 = &(*_5);"
+          ],
+          "memchr.arch-all-memchr-{impl#0}-rfind-{closure#0}": [
+            "--- 1.93.1:memchr.arch-all-memchr-{impl#0}-rfind-{closure#0}",
+            "+++ nightly:memchr.arch-all-memchr-{impl#0}-rfind-{closure#0}",
+            "@@ -11,3 +11,3 @@",
+            "         StorageLive(_4);",
+            "-        _7 = copy ((*_1).0: &arch::all::memchr::One);",
+            "+        _7 = no_retag copy ((*_1).0: &arch::all::memchr::One);",
+            "         _4 = &(*_7);"
+          ],
+          "memchr.arch-all-memchr-{impl#0}-rfind_raw": [
+            "--- 1.93.1:memchr.arch-all-memchr-{impl#0}-rfind_raw",
+            "+++ nightly:memchr.arch-all-memchr-{impl#0}-rfind_raw",
+            "@@ -460,3 +460,3 @@",
+            "         _85 = Option::<Arguments<'_>>::None;",
+            "-        _79 = assert_failed::<usize, usize>(move _80, move _81, move _83, move _85) -> unwind continue;",
+            "+        _79 = core::panicking::assert_failed::<usize, usize>(move _80, move _81, move _83, move _85) -> unwind continue;",
+            "     }"
+          ],
+          "memchr.arch-all-memchr-{impl#0}-rfind_raw-{closure#0}": [
+            "--- 1.93.1:memchr.arch-all-memchr-{impl#0}-rfind_raw-{closure#0}",
+            "+++ nightly:memchr.arch-all-memchr-{impl#0}-rfind_raw-{closure#0}",
+            "@@ -9,3 +9,3 @@",
+            "         StorageLive(_3);",
+            "-        _5 = copy ((*_1).0: &arch::all::memchr::One);",
+            "+        _5 = no_retag copy ((*_1).0: &arch::all::memchr::One);",
+            "         _3 = &(*_5);"
+          ],
+          "memchr.arch-all-memchr-{impl#12}-fmt": [
+            "--- 1.93.1:memchr.arch-all-memchr-{impl#12}-fmt",
+            "+++ nightly:memchr.arch-all-memchr-{impl#12}-fmt",
+            "@@ -7,13 +7,9 @@",
+            "     let _5: &str;",
+            "-    let mut _6: &str;",
+            "-    let _7: &str;",
+            "-    let mut _8: &dyn core::fmt::Debug;",
+            "-    let mut _9: &u8;",
+            "-    let _10: &u8;",
+            "-    let mut _11: &str;",
+            "-    let _12: &str;",
+            "-    let mut _13: &dyn core::fmt::Debug;",
+            "-    let mut _14: &&usize;",
+            "-    let _15: &&usize;",
+            "-    let _16: &usize;",
+            "+    let mut _6: &dyn core::fmt::Debug;",
+            "+    let mut _7: &u8;",
+            "+    let _8: &u8;",
+            "+    let mut _9: &dyn core::fmt::Debug;",
+            "+    let mut _10: &&usize;",
+            "+    let _11: &&usize;",
+            "+    let _12: &usize;"
+          ],
+          "memchr.arch-all-memchr-{impl#1}-count": [
+            "--- 1.93.1:memchr.arch-all-memchr-{impl#1}-count",
+            "+++ nightly:memchr.arch-all-memchr-{impl#1}-count",
+            "@@ -12,5 +12,5 @@",
+            "         StorageLive(_4);",
+            "-        _5 = copy (_1.0: &arch::all::memchr::One);",
+            "+        _5 = no_retag copy (_1.0: &arch::all::memchr::One);",
+            "         _4 = &(*_5);",
+            "-        _3 = {closure@<SRC_ROOT>/src/arch/all/memchr.rs:323:23: 323:29} { self: move _4 };",
+            "+        _3 = {closure@<SRC_ROOT>/src/arch/all/memchr.rs:323:23: 323:29} { self__searcher: move _4 };",
+            "         StorageDead(_4);"
+          ],
+          "memchr.arch-all-packedpair-{impl#0}-find_prefilter": [
+            "--- 1.93.1:memchr.arch-all-packedpair-{impl#0}-find_prefilter",
+            "+++ nightly:memchr.arch-all-packedpair-{impl#0}-find_prefilter",
+            "@@ -12,3 +12,3 @@",
+            "     let mut _12: usize;",
+            "-    let mut _13: core::ops::ControlFlow<core::option::Option<core::convert::Infallible>, usize>;",
+            "+    let mut _13: core::ops::ControlFlow<core::option::Option<!>, usize>;",
+            "     let mut _14: core::option::Option<usize>;",
+            "@@ -23,3 +23,3 @@",
+            "     let mut _24: !;",
+            "-    let mut _25: core::option::Option<core::convert::Infallible>;",
+            "+    let mut _25: core::option::Option<!>;",
+            "     let mut _29: core::option::Option<usize>;",
+            "@@ -51,3 +51,3 @@",
+            "                 debug index2 => _7;",
+            "-                let _23: core::option::Option<core::convert::Infallible>;",
+            "+                let _23: core::option::Option<!>;",
+            "                 let _26: usize;",
+            "@@ -56,11 +56,7 @@",
+            "                     debug residual => _23;",
+            "-                    scope 5 {",
+            "-                    }",
+            "+                }"
+          ],
+          "memchr.arch-all-packedpair-{impl#0}-new": [
+            "--- 1.93.1:memchr.arch-all-packedpair-{impl#0}-new",
+            "+++ nightly:memchr.arch-all-packedpair-{impl#0}-new",
+            "@@ -5,3 +5,3 @@",
+            "     let mut _3: arch::all::packedpair::Pair;",
+            "-    let mut _4: core::ops::ControlFlow<core::option::Option<core::convert::Infallible>, arch::all::packedpair::Pair>;",
+            "+    let mut _4: core::ops::ControlFlow<core::option::Option<!>, arch::all::packedpair::Pair>;",
+            "     let mut _5: core::option::Option<arch::all::packedpair::Pair>;",
+            "@@ -9,5 +9,5 @@",
+            "     let mut _7: isize;",
+            "-    let _8: core::option::Option<core::convert::Infallible>;",
+            "+    let _8: core::option::Option<!>;",
+            "     let mut _9: !;",
+            "-    let mut _10: core::option::Option<core::convert::Infallible>;",
+            "+    let mut _10: core::option::Option<!>;",
+            "     let _11: arch::all::packedpair::Pair;",
+            "@@ -15,9 +15,5 @@",
+            "         debug residual => _8;",
+            "-        scope 2 {",
+            "-        }",
+            "     }",
+            "-    scope 3 {",
+            "+    scope 2 {"
+          ]
+        },
+        "span_only_samples": {
+          "memchr.arch-all-twoway-{impl#26}-fmt": [
+            "--- 1.93.1:memchr.arch-all-twoway-{impl#26}-fmt",
+            "+++ nightly:memchr.arch-all-twoway-{impl#26}-fmt",
+            "@@ -42,6 +42,6 @@",
+            " }",
+            "-alloc93 (size: 7, align: 1) {",
+            "+alloc65 (size: 7, align: 1) {",
+            "     4d 61 78 69 6d 61 6c                            \u2502 Maximal",
+            " }",
+            "-alloc92 (size: 7, align: 1) {",
+            "+alloc64 (size: 7, align: 1) {",
+            "     4d 69 6e 69 6d 61 6c                            \u2502 Minimal"
+          ],
+          "memchr.arch-all-twoway-{impl#30}-fmt": [
+            "--- 1.93.1:memchr.arch-all-twoway-{impl#30}-fmt",
+            "+++ nightly:memchr.arch-all-twoway-{impl#30}-fmt",
+            "@@ -50,9 +50,9 @@",
+            " }",
+            "-alloc96 (size: 4, align: 1) {",
+            "+alloc68 (size: 4, align: 1) {",
+            "     50 75 73 68                                     \u2502 Push",
+            " }",
+            "-alloc95 (size: 4, align: 1) {",
+            "+alloc67 (size: 4, align: 1) {",
+            "     53 6b 69 70                                     \u2502 Skip",
+            " }",
+            "-alloc94 (size: 6, align: 1) {",
+            "+alloc66 (size: 6, align: 1) {",
+            "     41 63 63 65 70 74                               \u2502 Accept"
+          ]
+        }
+      }
+    }
+  },
+  "total_elapsed_sec": 75.43
+}
