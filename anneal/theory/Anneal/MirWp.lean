@@ -16,6 +16,7 @@ import Init.Control.Except
 import Trusted
 import Trusted.MirAst
 import Trusted.MirSemantics
+import Anneal.NatBitwise
 
 namespace Anneal.MirWp
 
@@ -3165,55 +3166,8 @@ private theorem nat_mod_mod_mul_left (n a b : Nat) :
 
 private theorem nat_bitwise_lt_two_pow (f : Bool → Bool → Bool) :
     ∀ (n a b : Nat), a < Nat.pow 2 n → b < Nat.pow 2 n →
-      Nat.bitwise f a b < Nat.pow 2 n
-  | 0, a, b, ha, hb => by
-    have ha0 : a = 0 := Nat.eq_zero_of_le_zero (Nat.le_of_lt_succ ha)
-    have hb0 : b = 0 := Nat.eq_zero_of_le_zero (Nat.le_of_lt_succ hb)
-    subst ha0 hb0
-    unfold Nat.bitwise
-    cases f false true <;> exact Nat.zero_lt_one
-  | n + 1, a, b, ha, hb => by
-    have hPow : Nat.pow 2 (n + 1) = Nat.pow 2 n + Nat.pow 2 n := by
-      change Nat.pow 2 n * 2 = Nat.pow 2 n + Nat.pow 2 n
-      exact Nat.mul_two (Nat.pow 2 n)
-    cases ha0 : Nat.beq a 0 with
-    | true =>
-      have haEq : a = 0 := Nat.eq_of_beq_eq_true ha0
-      subst haEq
-      unfold Nat.bitwise
-      dsimp only
-      cases f false true
-      · exact Nat.two_pow_pos (n + 1)
-      · exact hb
-    | false =>
-      have haNe : a ≠ 0 := fun h => by subst h; cases ha0
-      cases hb0 : Nat.beq b 0 with
-      | true =>
-        have hbEq : b = 0 := Nat.eq_of_beq_eq_true hb0
-        subst hbEq
-        unfold Nat.bitwise
-        rw [ite_prop_false haNe]
-        dsimp only
-        cases f true false
-        · exact Nat.two_pow_pos (n + 1)
-        · exact ha
-      | false =>
-        have hbNe : b ≠ 0 := fun h => by subst h; cases hb0
-        have haHalf : Nat.div a 2 < Nat.pow 2 n :=
-          (Nat.div_lt_iff_lt_mul (by decide : 0 < 2)).mpr ha
-        have hbHalf : Nat.div b 2 < Nat.pow 2 n :=
-          (Nat.div_lt_iff_lt_mul (by decide : 0 < 2)).mpr hb
-        have hRec := nat_bitwise_lt_two_pow f n (Nat.div a 2) (Nat.div b 2)
-          haHalf hbHalf
-        unfold Nat.bitwise
-        rw [ite_prop_false haNe, ite_prop_false hbNe]
-        dsimp only
-        rw [hPow]
-        cases f (decide (Nat.mod a 2 = 1)) (decide (Nat.mod b 2 = 1))
-        · exact Nat.add_lt_add hRec hRec
-        · rw [Nat.add_assoc]
-          exact Nat.lt_of_lt_of_le (Nat.add_lt_add_right hRec _)
-            (Nat.add_le_add_left hRec _)
+      Nat.bitwise f a b < Nat.pow 2 n :=
+  Anneal.NatBitwise.lt_two_pow f
 
 /-- Zero-extending a 64-bit bitvector to 128 bits preserves `.toNat`. -/
 theorem bvZeroExtend_128_toNat (w : BitVec 64) :
