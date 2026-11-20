@@ -68,9 +68,9 @@ never proves defect absence or substitutes for CI or merge gates.
   execute, include, import, or load as trusted code/config (`include!`,
   `#[path]`, Nix imports, workflow `run:`), or any `-- anneal-trust-tier:`
   directive in a `.lean` file. Paths that CI or `anneal-audit` only scan, hash,
-  or audit as untrusted inputs (`theory/`, `docs/`) do not trigger Pass 2; skip
-  Pass 2 immediately as inapplicable when untriggered. Finish Pass 1 and any
-  triggered Pass 2 before the general pass.
+  or audit as untrusted inputs (`theory/`, `correspondence/`, `docs/`) do not
+  trigger Pass 2; skip Pass 2 immediately as inapplicable when untriggered.
+  Finish Pass 1 and any triggered Pass 2 before the general pass.
 - **Pass 1, filesystem hygiene, untrusted contents, and specifications:**
   - *Filesystem, Unicode, and config hygiene (every path):* Reject symlinks,
     hardlinks, gitlinks/submodules, checked-in build/cache outputs (`target/`,
@@ -94,26 +94,27 @@ never proves defect absence or substitutes for CI or merge gates.
     `build.rs`, proc-macro, `Makefile`, `GNUmakefile`, `Justfile`, `lakefile*`,
     `lean-toolchain`, `.nix`, workflow, `.pre-commit-config.yaml`, shell/Python
     script (except unexecuted pinned `vendor/lean-miri/` provenance files), or
-    `.lean` file outside `theory/` and pinned `vendor/lean-miri/`.
-  - *`theory/` purity and `TrustedBoundary.lean` exclusions:* `theory/` `.lean`
-    files must use only pure declarations and tactics admitted by
-    `TrustedBoundary.lean`'s allowlists (`trusted/lean/` stays tactic-free).
-    Reject constructs excluded by `TrustedBoundary.lean`'s preflight allowlists
-    or audit phase—or attempting metaprogramming, file/env I/O, or
-    compiler/elaborator overrides, even if preflight missed them—including
-    `axiom`, `sorry`, `admit`, `opaque` (rejected in `theory/` during audit;
-    also forbidden in `trusted/lean/` in Pass 2), `unsafe`, `partial`,
-    `native_decide`, `decide!`, `bv_decide`, `rfl'`, `grind`, tactic flags
-    (`+native`, `+kernel`), `by_elab`, `run_tac`, `run_cmd`, `include_str`,
-    `#eval`, `#reduce`, `set_option`, `initialize`, `builtin_initialize`,
-    `macro`, `elab`, `syntax`, `local`/`scoped` attribute overrides,
-    `@[implemented_by]`, `@[extern]`, `@[csimp]`, `Lean.ofReduceBool`,
-    `Lean.trustCompiler`, silent `_unsafe_rec`/`isPartial` auxiliaries, and
-    `noncomputable section` (`TrustedBoundary.lean` admits `noncomputable`
-    declaration modifiers; flag redundant `noncomputable` on `: Prop` only as a
-    non-blocking hygiene note). Never declare constants in the `Trusted` root
-    namespace or place `-- anneal-trust-tier:` directives outside
-    `trusted/lean/`.
+    `.lean` file outside `theory/`, `correspondence/`, and pinned
+    `vendor/lean-miri/`.
+  - *`theory/`/`correspondence/` purity and `TrustedBoundary.lean` exclusions:*
+    Use only pure declarations and tactics admitted by `TrustedBoundary.lean`'s
+    allowlists (`trusted/{lean,correspondence}/` stay tactic-free). Reject
+    constructs excluded by preflight or audit—or attempting metaprogramming,
+    file/env I/O, or compiler/elaborator overrides, even if preflight missed
+    them—including `axiom`, `sorry`, `admit`, `opaque` (rejected here during
+    audit; also forbidden in `trusted/{lean,correspondence}/` in Pass 2),
+    `unsafe`, `partial`, `native_decide`, `decide!`, `bv_decide`, `rfl'`,
+    `grind`, tactic flags (`+native`, `+kernel`), `by_elab`, `run_tac`,
+    `run_cmd`, `include_str`, `#eval`, `#reduce`, `set_option`, `initialize`,
+    `builtin_initialize`, `macro`, `elab`, `syntax`, `local`/`scoped` attribute
+    overrides, `@[implemented_by]`, `@[extern]`, `@[csimp]`,
+    `Lean.ofReduceBool`, `Lean.trustCompiler`, silent `_unsafe_rec`/`isPartial`
+    auxiliaries, and `noncomputable section` (`TrustedBoundary.lean` admits
+    `noncomputable` modifiers; `correspondence/` may use `noncomputable def`;
+    flag redundant `noncomputable` on `: Prop` as a non-blocking note). Never
+    declare constants in the `Trusted` root namespace or place
+    `-- anneal-trust-tier:` directives outside
+    `trusted/{lean,correspondence}/`.
   - *Specifications, `theory/` seams, and waivers:* Even when `trusted/` is
     untouched, audit stated specs (`requires`, `ensures`, spec types), helper
     predicates, constants, types, or trait impls specs depend on,
@@ -176,16 +177,18 @@ never proves defect absence or substitutes for CI or merge gates.
       `graph`, `modules`, `schema`, `toolchain`, digests).
     - Preserve `.olean` audit-mode loading (`trustLevel := 0`, `plugins := #[]`,
       `extensions := false` / `loadExts := false`, restricting `extensions :=
-      true` to locked-foundation `"preflight"` parsing), fresh kernel replay
-      (`base.toKernelEnv.replay`), synchronous flags (`-DElab.async=false`,
-      `-Ddebug.skipKernelTC=false`), `check_cargo_boundary`, `scan_lean_tree`,
-      and env stripping (`env_clear` and `LEAN_*`/`LAKE_*`/`ELAN_*`/`LD_*`).
-      Syntactic/preflight analyzers must resolve namespaces and imports
-      strictly within the checked file's import closure.
+      true` to locked `"preflight"`/`"correspondence-preflight"` parsing),
+      fresh kernel replay (`base.toKernelEnv.replay`), synchronous flags
+      (`-DElab.async=false`, `-Ddebug.skipKernelTC=false`),
+      `check_cargo_boundary`, `scan_lean_tree`, and env stripping (`env_clear`
+      and `LEAN_*`/`LAKE_*`/`ELAN_*`/`LD_*`). Syntactic/preflight analyzers
+      must resolve namespaces and imports strictly within the checked file's
+      import closure.
     - Require new or updated negative tests in
-      `trusted/audit/tests/boundary_audit.rs` asserting exit code `1` and the
-      target diagnostic for every added/modified admission, syntax, or tier
-      guard, verified to fail if the guard is disabled.
+      `trusted/audit/tests/boundary_audit.rs` asserting exit code `1` (or `2`
+      for kernel-replay rejections) and the target diagnostic for every
+      added/modified admission, syntax, or tier guard, verified to fail if the
+      guard is disabled.
     - Verify `cargo-anneal` allows no ambient env var, target-crate config, or
       CLI flag to skip kernel checking, suppress verification errors, bypass
       audits, or silently substitute an unverified toolchain from repo or

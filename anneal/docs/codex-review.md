@@ -16,46 +16,97 @@ by a GitHub ruleset.
 ## Merge gates
 
 Do not merge a pull request—and never use admin-bypass merges such as
-`gh pr merge --admin`—until all five gates below pass on the exact final
-`(target_base, head)` with `merge_base == target_base` and full review history
-preserved (for stacked PRs, land bottom-up so each PR meets Gate 4 on `main`
-before merging). Re-confirm every affected gate after any code, history, or
-base edit:
+`gh pr merge --admin`—until all five gates below pass for the PR's current
+**identity** with full review history preserved (for stacked PRs, land
+bottom-up so each PR meets Gate 4 on `main` before merging). A PR's identity
+is the content it would land:
+
+- For a PR with one commit on top of its target base, the identity is the
+  triple (tree of the commit's parent, tree of the commit, full commit
+  message).
+- For a PR with several commits, the identity is the exact
+  `(target_base, head)` SHA pair.
+
+In both cases `merge_base == target_base`: the PR's commits sit directly on
+the head of its target base, which is `main` for a lone PR or the bottom PR of
+a stack, and the head of the PR directly below it otherwise.
+
+Review evidence recorded on this PR for one identity (review receipts, Codex
+reviews, and human approvals) remains valid for every later head of the same
+PR with that identity, however that head was produced, and for no other,
+subject to the Gate 5 rules for the PR description. Evidence never transfers
+between pull requests. In particular, when a lower stack PR is squash-merged
+and the PR above it is rebased onto that squash commit (whose tree equals the
+lower PR's reviewed head tree), the upper PR's identity—and its review
+evidence—is unchanged. The identity omits author and committer metadata, and
+GitHub reports CI per commit SHA, so every new head still needs its own
+SHA-bound deterministic preflight (including the authorship and trailer checks
+in [`AGENTS.md`](../AGENTS.md#standing-rules)) and its own Gate 3 CI. Any
+change to either tree or to the commit message changes a one-commit PR's
+identity, and any change of SHA changes a multi-commit PR's identity;
+re-confirm every affected gate whenever the identity changes:
 
 1. **Gate 1 — Local review and receipt:** Local
    [`change-review`](../skills/change-review/SKILL.md) and
    [`trust-review`](../skills/trust-review/SKILL.md) have converged on the
-   final `(target_base, head)`, every open trust question is resolved by
-   evidence or explicit human maintainer disposition, no confirmed in-scope
-   defect remains unresolved, the PR description opens with an accurate `Human
-   review surface` block, and the PR author or acting agent has posted a Review
-   Receipt comment covering the exact final `head` SHA.
-2. **Gate 2 — Genuine Codex approval:** An authentic
-   `chatgpt-codex-connector[bot]` review summary covers the current PR head and
-   comparison base on GitHub with no unresolved Codex findings. Resolving
-   review threads never satisfies Gate 2 without addressing the underlying
-   finding and obtaining fresh Codex approval, and a green `codex-review.yml`
-   diagnostic workflow run is never Codex approval. Because GitHub Codex
+   current identity, every open trust question is resolved by evidence or
+   explicit human maintainer disposition, no confirmed in-scope defect remains
+   unresolved, the PR description opens with an accurate `Human review surface`
+   block, and the PR author or acting agent has posted a Review Receipt comment
+   naming a reviewed `head` SHA with the current identity.
+2. **Gate 2 — Codex coverage and finding dispositions:** At least one complete
+   code review by an authentic `chatgpt-codex-connector[bot]`, posted on this
+   PR, covers the current identity; a request answered with an error, or a run
+   that has not completed, is not a review, and no Codex review requested on
+   this PR, for any identity, may still be running at merge time. Every
+   finding that Codex posts on this PR, for any identity and including
+   findings from incomplete or errored runs, is resolved in exactly one of two
+   ways:
+   - **Fixed:** after the finding, the surface it concerns changes (the PR's
+     tree; its commit message; or, for a finding about something outside the
+     identity, such as the PR description, that surface), and Gate 1 confirms
+     on the PR's current state that the fix is still present and still
+     addresses the finding, mapping it to the fixing hunk or edit in the
+     Review Receipt. Any later edit to that surface reopens the finding until
+     Gate 1 confirms the fix again. A finding anchored to code or describing
+     the tree's behavior concerns the tree, and an ambiguous finding counts as
+     a tree finding. A finding about the tree or commit message that was
+     raised on the current identity cannot be fixed without a new identity.
+   - **Dispositioned:** the finding appears in a `Codex finding dispositions`
+     list inside the PR description's `Human review surface` block, with a
+     proposed disposition and its evidence, and the maintainer's Gate 5
+     approval, newer than the list's last edit, accepts it. A disposition may
+     refute a finding with falsifiable evidence or defer an out-of-scope
+     finding (handling pre-existing hazards as
+     [`trust-review`](../skills/trust-review/SKILL.md#report-findings-and-pre-existing-hazards)
+     requires); a confirmed in-scope trust or soundness defect must be fixed,
+     never deferred.
+
+   Codex review is nondeterministic: repeated reviews of identical content
+   regularly raise new findings, so a later review's silence about a finding
+   never resolves it. Requesting several reviews of one identity, including in
+   parallel, is permitted and only adds findings to resolve. Resolving a review
+   thread never resolves a finding by itself, and a green `codex-review.yml`
+   diagnostic workflow run is never a Codex review. Because GitHub Codex
    defaults to flagging P0 and P1 issues (per the
    [Codex GitHub integration docs][codex-github]; re-verify periodically if
    provider behavior changes), Gate 1 owns open trust questions and
    lower-severity defects. If a PR added or modified an unauthorized nested
    `AGENTS.md` or any `AGENTS.override.md` that tainted Codex's review, remove
-   it and require a fresh Codex review; when a PR edits root policy files
-   (prefer dedicated policy-only PRs so Codex does not review product code
-   under modified rules), policy-stability verification against the base rules
-   comes from Gate 1 (local review against `<target_base>`) and Gate 5, not
-   Gate 2 alone. If a Codex finding is demonstrably refuted by falsifiable
-   evidence (for example requesting a TCB-violating edit), when authorized
-   reply inline with the verification evidence and request a fresh Codex
-   review, escalating to a human maintainer if the hosted reviewer remains
-   stuck; an acting agent never waives Gate 2 or declares Gate 2 passed without
-   genuine Codex approval.
+   it and require a new complete Codex review of the resulting identity; when a
+   PR edits root policy files (prefer dedicated policy-only PRs so Codex does
+   not review product code under modified rules), policy-stability
+   verification against the base rules comes from Gate 1 (local review against
+   `<target_base>`) and Gate 5, not Gate 2 alone. An acting agent may propose
+   dispositions, but never waives Gate 2, declares it passed with an
+   unresolved finding, or authors, edits, or simulates the maintainer's
+   acceptance.
 3. **Gate 3 — Green required CI:** All required GitHub Actions checks pass on
    GitHub's current pull-request test-merge commit for the exact final
    `(target_base, head)` (reported on `head` by `pull_request`-triggered
    workflows), or on the merge queue's `merge_group` commit when merging via
-   GitHub's merge queue.
+   GitHub's merge queue. GitHub reports checks per commit SHA, so a rewrite
+   that preserves the identity still needs green checks on the new `head`.
 4. **Gate 4 — Bottom-of-stack ordering:** For stacked PRs, every lower PR in
    the stack has merged and this PR is rebased onto `main` so
    `merge_base == target_base` before merging or entering GitHub's merge queue
@@ -65,18 +116,21 @@ base edit:
    every item listed in the `Human review surface` block (defined in
    [`AGENTS.md`](../AGENTS.md#code-review-rules), including stated specs and
    every definition their meaning transitively depends on, plus any editor or
-   agent config or intentional policy relaxation). An approval holds across a
-   pure rebase only if no subsequent push changes this PR's own Human review
-   surface, no rebased-over commit modifies a definition in a stated spec's
-   transitive dependency closure (verified via `git range-diff` and inspecting
-   touched dependencies), and no subsequent edit modifies the PR description's
-   `Human review surface` block or relevant commit bodies. Verify that the
+   agent config, intentional policy relaxation, or proposed Codex finding
+   disposition). An approval holds across a pure rebase only if no subsequent
+   push changes this PR's own Human review surface, no rebased-over commit
+   modifies a definition in a stated spec's transitive dependency closure
+   (verified via `git range-diff` and inspecting touched dependencies), and no
+   subsequent edit modifies the PR description's `Human review surface` block
+   or relevant commit bodies. An unchanged identity satisfies the first two
+   conditions, and a push that leaves the identity unchanged affects none of
+   those surfaces; the PR-description condition still applies. Verify that the
    approval's timestamp is newer than both the last push affecting those
    surfaces and the last edit to the `Human review surface` block (via GitHub's
    PR description edit history); any later change requires fresh human
    maintainer approval. Because agents may act under credentials matching a
    human account, agents must never self-approve pull requests or author, edit,
-   or simulate maintainer dispositions.
+   or simulate maintainer dispositions or acceptance.
 
 ## Hosted reviewers and skill boundaries
 
@@ -131,7 +185,7 @@ The evaluator reads live PRs, summaries, historical deletion records, and merge
 queue state, then prints proposed verdicts. Its freshness rules can reject a
 completed review when Codex edits an older summary or supplies only a prose
 receipt; deletion records are no longer updated automatically. Treat its output
-strictly as diagnostic evidence and inspect Codex's actual approval before
+strictly as diagnostic evidence and inspect Codex's actual reviews before
 making a manual merge decision.
 
 ## Preserve the evaluator and re-enablement criteria
