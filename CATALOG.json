@@ -61500,6 +61500,115 @@
         "rustc/target-codegen"
       ]
     },
+    "sabelfeld-sands-scheduler-noninterference-presampling-tapes-and-convex-powerset-monads": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "logsem/clutch",
+            "revision": "cc81450edd699bfcd9fa806d628a57d16c48f75d"
+          },
+          "name": "Clutch project Rocq development (Clutch, Eris, Coneris, Foxtrot logics; prob_lang and con_prob_lang)"
+        },
+        {
+          "identity": {
+            "repository": "jtassarotti/polaris",
+            "revision": "c7873f05214351d54cacf3d8482625ee33ad3288"
+          },
+          "name": "Polaris Coq development (concurrent randomized program logic; indexed valuation library)"
+        },
+        {
+          "identity": {
+            "repository": "affeldt-aist/monae",
+            "revision": "66f2b98c7cb29059f88380245e1d43046780d523"
+          },
+          "name": "monae (monadic equational reasoning in Rocq; altProbMonad interface and geometrically convex monad model)"
+        },
+        {
+          "identity": {
+            "journal_doi": "10.3233/JCS-1999-72-305",
+            "url": "https://hdl.handle.net/10945/7187",
+            "version": "corrected version of the CSFW-11 (1998) paper, pp. 34-43"
+          },
+          "name": "Volpano and Smith, Probabilistic Noninterference in a Concurrent Language"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/CSFW.2000.856937",
+            "url": "https://research.chalmers.se/publication/18076"
+          },
+          "name": "Sabelfeld and Sands, Probabilistic Noninterference for Multi-Threaded Programs (CSFW-13, 2000)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/JSAC.2002.806121"
+          },
+          "name": "Sabelfeld and Myers, Language-Based Information-Flow Security (IEEE JSAC 21(1), 2003)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/CSFW.2006.29",
+            "url": "https://www.cse.chalmers.se/~andrei/russo-sabelfeld-csfw06.pdf"
+          },
+          "name": "Russo and Sabelfeld, Securing Interaction between Threads and the Scheduler (CSFW-19, 2006)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-03545-1_17",
+            "url": "https://www.andreipopescu.uk/pdf/PROB.pdf"
+          },
+          "name": "Popescu, Hoelzl and Nipkow, Formalizing Probabilistic Noninterference (CPP 2013)"
+        },
+        {
+          "identity": {
+            "arxiv": "1802.02951",
+            "doi": "10.1145/3290377"
+          },
+          "name": "Tassarotti and Harper, A Separation Logic for Concurrent Randomized Programs (POPL 2019)"
+        },
+        {
+          "identity": {
+            "arxiv": "1811.06460v2",
+            "doi": "10.1109/LICS.2019.8785707"
+          },
+          "name": "Zwart and Marsden, No-Go Theorems for Distributive Laws (LICS 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3373718.3394795",
+            "url": "https://agoy.fr/publication/goypetr-dp/"
+          },
+          "name": "Goy and Petrisan, Combining Probabilistic and Non-Deterministic Choice via Weak Distributive Laws (LICS 2020)"
+        },
+        {
+          "identity": {
+            "arxiv": "2301.10061",
+            "doi": "10.1145/3632868"
+          },
+          "name": "Gregersen et al., Asynchronous Probabilistic Couplings in Higher-Order Separation Logic (POPL 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2404.14223",
+            "doi": "10.1145/3674635"
+          },
+          "name": "Aguirre et al., Error Credits: Resourceful Reasoning about Error Bounds for Higher-Order Probabilistic Programs (ICFP 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2503.04512",
+            "doi": "10.1145/3747514"
+          },
+          "name": "Li et al., Modular Reasoning about Error Bounds for Concurrent Probabilistic Programs (ICFP 2025, extended version)"
+        }
+      ],
+      "topics": [
+        "security/probabilistic-noninterference",
+        "pl/probability-nondeterminism-monads",
+        "verification/presampling-tapes",
+        "pl/scheduler-semantics"
+      ]
+    },
     "safe-for-space-compilation-and-amortized-complexity-verification": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -64845,6 +64954,102 @@
         "agents/methodology/swarm-orchestration",
         "rust/mir-verification",
         "verification/program-verification"
+      ]
+    },
+    "small-scope-hypothesis-korat-feat-enumeration-and-skeletal-typechecker-fuzzing": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "racket/redex",
+            "revision": "df9e634fe6f48487b8e611b23fcc5945c5c77a6f"
+          },
+          "name": "PLT Redex (seeded-bug benchmark models and benchmark documentation)"
+        },
+        {
+          "identity": {
+            "repository": "hephaestus-compiler-project/hephaestus",
+            "revision": "4123d504b15686a3e7a0bb28c8614cc7fe53f47a"
+          },
+          "name": "Hephaestus (program generator and mutators for testing JVM-language type checkers; reported-bug database)"
+        },
+        {
+          "identity": {
+            "repository": "Bodigrim/smallcheck",
+            "revision": "433ada587bf4ff898031aaa5530c0b7aaab10e3a"
+          },
+          "name": "SmallCheck (depth-bounded exhaustive property testing for Haskell)"
+        },
+        {
+          "identity": {
+            "repository": "rudymatela/leancheck",
+            "revision": "1723ba7f4e8d1381d93797bf333d57aae9432f8f"
+          },
+          "name": "LeanCheck (size-ordered enumerative property testing for Haskell)"
+        },
+        {
+          "identity": {
+            "repository": "JonasDuregard/testing-feat",
+            "revision": "a1b32842a8cc8ab467d93a9f97f2365330a02113"
+          },
+          "name": "testing-feat (functional enumeration of algebraic types)"
+        },
+        {
+          "identity": {
+            "repository": "rocq-prover/rocq",
+            "revision": "25f5b18a320e4796f181f938d3b74bebe7db4dc4"
+          },
+          "name": "Rocq prover (dev/doc/critical-bugs.md, compilation of critical bugs in stable releases)"
+        },
+        {
+          "identity": {
+            "url": "https://groups.csail.mit.edu/sdg/pubs/2002/SSH.pdf"
+          },
+          "name": "Andoni, Daniliuc, Khurshid and Marinov, Evaluating the Small Scope Hypothesis (MIT LCS report, no DOI)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/566172.566191"
+          },
+          "name": "Boyapati, Khurshid and Marinov, Korat: Automated Testing Based on Java Predicates (ISSTA 2002)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2364506.2364515"
+          },
+          "name": "Duregard, Jansson and Wang, Feat: Functional Enumeration of Algebraic Types (Haskell Symposium 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2103656.2103691"
+          },
+          "name": "Klein et al., Run Your Research: On the Effectiveness of Lightweight Mechanization (POPL 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796817000107"
+          },
+          "name": "New, Fetscher, Findler and McCarthy, Fair Enumeration Combinators (JFP 27, 2017)"
+        },
+        {
+          "identity": {
+            "arxiv": "1610.03148",
+            "doi": "10.1145/3062341.3062379"
+          },
+          "name": "Zhang, Sun and Su, Skeletal Program Enumeration for Rigorous Compiler Testing (PLDI 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3519939.3523427"
+          },
+          "name": "Chaliasos et al., Finding Typing Compiler Bugs (PLDI 2022)"
+        }
+      ],
+      "topics": [
+        "verification/bounded-exhaustive-testing",
+        "tooling/term-enumeration",
+        "compilers/typechecker-bug-depth",
+        "verification/small-scope-evidence"
       ]
     },
     "smart-pointer-and-custom-type-validity-invariant-propagation": {

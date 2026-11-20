@@ -1,0 +1,96 @@
+{
+  "topics": [
+    "verification/bounded-exhaustive-testing",
+    "tooling/term-enumeration",
+    "compilers/typechecker-bug-depth",
+    "verification/small-scope-evidence"
+  ],
+  "subjects": [
+    {
+      "name": "PLT Redex (seeded-bug benchmark models and benchmark documentation)",
+      "identity": {
+        "repository": "racket/redex",
+        "revision": "df9e634fe6f48487b8e611b23fcc5945c5c77a6f"
+      }
+    },
+    {
+      "name": "Hephaestus (program generator and mutators for testing JVM-language type checkers; reported-bug database)",
+      "identity": {
+        "repository": "hephaestus-compiler-project/hephaestus",
+        "revision": "4123d504b15686a3e7a0bb28c8614cc7fe53f47a"
+      }
+    },
+    {
+      "name": "SmallCheck (depth-bounded exhaustive property testing for Haskell)",
+      "identity": {
+        "repository": "Bodigrim/smallcheck",
+        "revision": "433ada587bf4ff898031aaa5530c0b7aaab10e3a"
+      }
+    },
+    {
+      "name": "LeanCheck (size-ordered enumerative property testing for Haskell)",
+      "identity": {
+        "repository": "rudymatela/leancheck",
+        "revision": "1723ba7f4e8d1381d93797bf333d57aae9432f8f"
+      }
+    },
+    {
+      "name": "testing-feat (functional enumeration of algebraic types)",
+      "identity": {
+        "repository": "JonasDuregard/testing-feat",
+        "revision": "a1b32842a8cc8ab467d93a9f97f2365330a02113"
+      }
+    },
+    {
+      "name": "Rocq prover (dev/doc/critical-bugs.md, compilation of critical bugs in stable releases)",
+      "identity": {
+        "repository": "rocq-prover/rocq",
+        "revision": "25f5b18a320e4796f181f938d3b74bebe7db4dc4"
+      }
+    },
+    {
+      "name": "Andoni, Daniliuc, Khurshid and Marinov, Evaluating the Small Scope Hypothesis (MIT LCS report, no DOI)",
+      "identity": {
+        "url": "https://groups.csail.mit.edu/sdg/pubs/2002/SSH.pdf"
+      }
+    },
+    {
+      "name": "Boyapati, Khurshid and Marinov, Korat: Automated Testing Based on Java Predicates (ISSTA 2002)",
+      "identity": {
+        "doi": "10.1145/566172.566191"
+      }
+    },
+    {
+      "name": "Duregard, Jansson and Wang, Feat: Functional Enumeration of Algebraic Types (Haskell Symposium 2012)",
+      "identity": {
+        "doi": "10.1145/2364506.2364515"
+      }
+    },
+    {
+      "name": "Klein et al., Run Your Research: On the Effectiveness of Lightweight Mechanization (POPL 2012)",
+      "identity": {
+        "doi": "10.1145/2103656.2103691"
+      }
+    },
+    {
+      "name": "New, Fetscher, Findler and McCarthy, Fair Enumeration Combinators (JFP 27, 2017)",
+      "identity": {
+        "doi": "10.1017/S0956796817000107"
+      }
+    },
+    {
+      "name": "Zhang, Sun and Su, Skeletal Program Enumeration for Rigorous Compiler Testing (PLDI 2017)",
+      "identity": {
+        "doi": "10.1145/3062341.3062379",
+        "arxiv": "1610.03148"
+      }
+    },
+    {
+      "name": "Chaliasos et al., Finding Typing Compiler Bugs (PLDI 2022)",
+      "identity": {
+        "doi": "10.1145/3519939.3523427"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
