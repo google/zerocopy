@@ -32855,6 +32855,167 @@
         "compilers/sparse-ldlt-regularization"
       ]
     },
+    "hol-zero-pollack-audits-doc-gen4-rendered-code-leanblueprint-statement-links-and-minif2f-putnambench-corrections": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+            "version": "v4.35.0"
+          },
+          "name": "Lean 4 toolchain and core library (Init, Std) used for the round-trip measurement"
+        },
+        {
+          "identity": {
+            "path": "Mathlib/Tactic/Linter/PPRoundtrip.lean",
+            "repository": "leanprover-community/mathlib4",
+            "revision": "5fc503cdd50c2c198f54ccc97121ec82919e2930"
+          },
+          "name": "Mathlib ppRoundtrip linter"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/doc-gen4",
+            "revision": "43c98922de00e9f215d2f3fe027cd2f99873212f"
+          },
+          "name": "doc-gen4 rendered code and signature printing"
+        },
+        {
+          "identity": {
+            "repository": "PatrickMassot/leanblueprint",
+            "revision": "56e066d30fb7b608a63f4241fee80982d7eae3ef"
+          },
+          "name": "leanblueprint"
+        },
+        {
+          "identity": {
+            "repository": "PatrickMassot/checkdecls",
+            "revision": "3d425859e73fcfbef85b9638c2a91708ef4a22d4"
+          },
+          "name": "checkdecls (declaration-existence checker used by leanblueprint)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover-community/lean-liquid",
+            "revision": "ee4795874a99ea5f9d85bd0b364425f07b932377"
+          },
+          "name": "Liquid Tensor Experiment (challenge statement and examples)"
+        },
+        {
+          "identity": {
+            "repository": "isabelle-prover/mirror-isabelle",
+            "revision": "20d6a3f7ffbaaa82e77f341d90db5070b3428fbe"
+          },
+          "name": "Isabelle PIDE markup (mirror)"
+        },
+        {
+          "identity": {
+            "repository": "trishullab/PutnamBench",
+            "revision": "a635813f5edf297d928f9bd5ef8324a26bdde09c"
+          },
+          "name": "PutnamBench"
+        },
+        {
+          "identity": {
+            "repository": "openai/miniF2F",
+            "revision": "4e433ff5cadff23f9911a2bb5bbab2d351ce5554"
+          },
+          "name": "miniF2F (original repository)"
+        },
+        {
+          "identity": {
+            "repository": "facebookresearch/miniF2F",
+            "revision": "e4f113090ad82d64f8ce064d2f55b613a9b6bded"
+          },
+          "name": "miniF2F (maintained fork)"
+        },
+        {
+          "identity": {
+            "repository": "yangky11/miniF2F-lean4",
+            "revision": "5746b7d6c47855ce1294bed87329618ff7f1bc31"
+          },
+          "name": "miniF2F Lean 4 port"
+        },
+        {
+          "identity": {
+            "url": "http://www.proof-technologies.com/holzero/unsoundnesses.html",
+            "version": "HOL Zero 0.6.3 (released 2016-04-25)"
+          },
+          "name": "HOL Zero project pages (design statement and unsoundness/bounty list)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.entcs.2012.06.008"
+          },
+          "name": "Wiedijk, Pollack-inconsistency (ENTCS 285, 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-15582-6_25"
+          },
+          "name": "Adams, Introducing HOL Zero (ICMS 2010)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-43144-4_2"
+          },
+          "name": "Adams, HOL Zero's Solutions for Pollack-Inconsistency (ITP 2016)"
+        },
+        {
+          "identity": {
+            "doi": "10.6092/issn.1972-5787/4576"
+          },
+          "name": "Adams, Proof Auditing Formalised Mathematics (JFR 9(1), 2016)"
+        },
+        {
+          "identity": {
+            "arxiv": "1501.02155",
+            "doi": "10.1017/fmp.2017.1"
+          },
+          "name": "Hales et al., A Formal Proof of the Kepler Conjecture (Forum of Mathematics, Pi, 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-31374-5_38"
+          },
+          "name": "Wenzel, Isabelle/jEdit - a Prover IDE within the PIDE framework (CICM 2012)"
+        },
+        {
+          "identity": {
+            "arxiv": "2309.14870",
+            "doi": "10.1090/bull/1831"
+          },
+          "name": "Commelin and Topaz, Abstraction boundaries and spec driven development in pure mathematics"
+        },
+        {
+          "identity": {
+            "arxiv": "2109.00110"
+          },
+          "name": "Zheng, Han, Polu, miniF2F (ICLR 2022)"
+        },
+        {
+          "identity": {
+            "arxiv": "2407.11214"
+          },
+          "name": "Tsoukalas et al., PutnamBench"
+        },
+        {
+          "identity": {
+            "arxiv": "2406.03847"
+          },
+          "name": "Ying et al., Lean Workbook"
+        }
+      ],
+      "topics": [
+        "verification/pollack-consistent-printing",
+        "lean/rendered-statement-to-declaration-links",
+        "tooling/library-scale-print-comparison-audits",
+        "agents/formal-statement-misformalization-audits",
+        "lean/delaborator-round-trip-fidelity",
+        "verification/statement-audit-trust-boundary"
+      ]
+    },
     "homomorphic-encryption-compilers-and-differential-privacy-types": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -44947,6 +45108,185 @@
         "verification/timed-automata",
         "systems/safety-critical",
         "pl/statecharts"
+      ]
+    },
+    "meld3-kdri-epts-allocation-scores-transplantr-unit-conversions-srtr-simulators-and-pief-kidney-exchange": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "johnasher/transplantr",
+            "revision": "9662038338390be81ef91a46131e7ddfb348ca9c",
+            "version": "0.2.0"
+          },
+          "name": "transplantr R package (v0.2.0)"
+        },
+        {
+          "identity": {
+            "repository": "jamestrimble/kidney_solver",
+            "revision": "1ce13402b61f8131fad4c06eabc4f34c30e34e6e"
+          },
+          "name": "kidney_solver kidney-exchange IP formulations"
+        },
+        {
+          "identity": {
+            "repository": "JohnDickerson/KidneyExchange",
+            "revision": "ed9596f2c310fa0110bbf60cf92ee150b4691405"
+          },
+          "name": "KidneyExchange (CMU kidney paired donation solvers)"
+        },
+        {
+          "identity": {
+            "standard": "OPTN Policy 9.1.D/9.1.E change notice",
+            "url": "https://www.hrsa.gov/sites/default/files/hrsa/optn/policy-guid-change_impr-liv-alloc-meld-peld-sta-1a-sta-1b_liv.pdf",
+            "version": "Board approved 2022-06-27; MELD 3.0 effective 2023-07-13"
+          },
+          "name": "OPTN policy notice: Improving Liver Allocation: MELD, PELD, Status 1A, Status 1B (Policy 9.1.D, 9.1.E)"
+        },
+        {
+          "identity": {
+            "url": "https://www.hrsa.gov/sites/default/files/hrsa/optn/kdpi_guide.pdf",
+            "version": "Updated 2026-04-23 (refit without race and HCV implemented 2024-10-31)"
+          },
+          "name": "OPTN A Guide to Calculating and Interpreting the Kidney Donor Profile Index (KDPI)"
+        },
+        {
+          "identity": {
+            "url": "https://www.hrsa.gov/sites/default/files/hrsa/optn/epts_guide.pdf",
+            "version": "Updated 2026-04-07"
+          },
+          "name": "OPTN A Guide to Calculating and Interpreting the Estimated Post-Transplant Survival (EPTS) Score"
+        },
+        {
+          "identity": {
+            "doi": "10.1053/he.2000.5852"
+          },
+          "name": "Malinchoc et al., A model to predict poor survival in patients undergoing TIPS (Hepatology 2000)"
+        },
+        {
+          "identity": {
+            "doi": "10.1056/NEJMoa0801209"
+          },
+          "name": "Kim et al., Hyponatremia and Mortality among Patients on the Liver-Transplant Waiting List (NEJM 2008)"
+        },
+        {
+          "identity": {
+            "doi": "10.1053/j.gastro.2021.08.050"
+          },
+          "name": "Kim et al., MELD 3.0: The Model for End-Stage Liver Disease Updated for the Modern Era (Gastroenterology 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1097/TP.0b013e3181ac620b"
+          },
+          "name": "Rao et al., A Comprehensive Risk Quantification Score for Deceased Donor Kidneys: The KDRI (Transplantation 2009)"
+        },
+        {
+          "identity": {
+            "doi": "10.1111/j.1600-6143.2008.02400.x"
+          },
+          "name": "Rana et al., Survival Outcomes Following Liver Transplantation (SOFT) Score (AJT 2008)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10729-004-7541-3"
+          },
+          "name": "Thompson et al., Simulating the Allocation of Organs for Transplantation (Health Care Manag Sci 2004)"
+        },
+        {
+          "identity": {
+            "doi": "10.1681/ASN.2013070784"
+          },
+          "name": "Israni et al., New National Allocation Policy for Deceased Donor Kidneys in the United States and Possible Effect on Patient Outcomes (JASN 2014)"
+        },
+        {
+          "identity": {
+            "citation": "Am J Transplant 2016;16 (suppl 3), abstract C72",
+            "url": "https://atcmeetingabstracts.com/abstract/projection-versus-reality-kpsam-and-kas/"
+          },
+          "name": "Gustafson et al., Projection versus Reality: KPSAM and KAS (ATC 2016 abstract C72)"
+        },
+        {
+          "identity": {
+            "doi": "10.1111/ajt.13770"
+          },
+          "name": "Stewart et al., Changes in Deceased Donor Kidney Transplantation One Year After KAS Implementation (AJT 2016)"
+        },
+        {
+          "identity": {
+            "doi": "10.1111/ajt.16621"
+          },
+          "name": "Wood et al., Liver simulated allocation model does not effectively predict organ offer decisions for pediatric liver transplant candidates (AJT 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.healun.2024.04.063"
+          },
+          "name": "Rose et al., A modular simulation framework for organ allocation (JHLT 2024)"
+        },
+        {
+          "identity": {
+            "doi": "10.1097/TXD.0000000000001780"
+          },
+          "name": "Pivo et al., Modernizing the Design Process for US Organ Allocation Policy (Transplant Direct 2025)"
+        },
+        {
+          "identity": {
+            "doi": "10.1162/0033553041382157"
+          },
+          "name": "Roth, Sonmez and Unver, Kidney Exchange (QJE 2004)"
+        },
+        {
+          "identity": {
+            "doi": "10.1257/aer.97.3.828"
+          },
+          "name": "Roth, Sonmez and Unver, Efficient Kidney Exchange (AER 2007)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1250910.1250954"
+          },
+          "name": "Abraham, Blum and Sandholm, Clearing Algorithms for Barter Exchange Markets (EC 2007)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.ejor.2013.05.025"
+          },
+          "name": "Constantino et al., New insights on integer-programming models for the kidney exchange problem (EJOR 2013)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2670129",
+            "url": "https://www.dcs.gla.ac.uk/~davidm/pubs/9383.pdf"
+          },
+          "name": "Manlove and O'Malley, Paired and Altruistic Kidney Donation in the UK: Algorithms and Experimentation (JEA 2015; technical report TR-2012-330)"
+        },
+        {
+          "identity": {
+            "arxiv": "1606.01623v2",
+            "doi": "10.1145/2940716.2940759"
+          },
+          "name": "Dickerson et al., Position-Indexed Formulations for Kidney Exchange (EC 2016)"
+        },
+        {
+          "identity": {
+            "doi": "10.1097/TP.0000000000002432"
+          },
+          "name": "Biro et al., Building Kidney Exchange Programmes in Europe: An Overview of Exchange Practice and Activities (Transplantation)"
+        },
+        {
+          "identity": {
+            "url": "https://www.ibm.com/docs/en/icos/22.1.1?topic=parameters-relative-mip-gap-tolerance",
+            "version": "CPLEX 22.1.1"
+          },
+          "name": "IBM ILOG CPLEX relative MIP gap tolerance parameter"
+        }
+      ],
+      "topics": [
+        "domains/transplant-allocation-scores",
+        "domains/deceased-donor-organ-allocation-policy",
+        "domains/kidney-paired-donation-matching",
+        "verification/allocation-policy-simulation-validity"
       ]
     },
     "memory-allocator-architectures-hardened-heaps-and-virtual-page-quarantines": {

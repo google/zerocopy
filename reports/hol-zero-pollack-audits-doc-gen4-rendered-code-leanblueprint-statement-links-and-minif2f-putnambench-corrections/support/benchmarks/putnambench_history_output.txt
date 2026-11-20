@@ -1,0 +1,19 @@
+commits touching lean4/src (incl. merges): 273
+non-merge commits: 219
+statement-fix (heuristic): 102
+infrastructure (heuristic): 25
+other (additions, edits): 92
+distinct problems named in statement-fix messages: 97
+  messages mentioning disprovable: 37
+  messages mentioning counterexample: 2
+  messages mentioning trivially provable / vacuous: 4
+  messages mentioning issue reference: 13
+  messages mentioning optParam: 2
+  messages mentioning Euclidean / sup-norm metric: 6
+  messages mentioning parentheses / precedence: 5
+  messages mentioning off-by-one: 2
+  messages mentioning informal statement: 6
+statement-fix commits with an explanatory body: 76
+author-date range of statement-fix commits: 2024-07-12 .. 2026-09-20
+distinct commit authors of statement-fix commits: 14
+largest single-author share: 71

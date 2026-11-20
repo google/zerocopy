@@ -1,0 +1,30 @@
+1d7f88636b9c2378f0827ab9289968697205f8b275f44c0f2323644127e1d3d3  MD-00001-00000100.input
+59b9d0e4df16f4ac507da2a37d702a7e4abb2b5cfe1a1319f2d683169c1a052d  two_2cycles.input
+instance=MD-00001-00000100.input (induced on first 32 vertices) vertices=32 edges=183 cycle_cap=3 cycles=20
+optimum=11 distinct_optimal_cycle_sets=5 enumerated=5
+vertices matched in every enumerated optimum=9; in at least one=12; tie-dependent=3
+  [0.01 s, 11136 KB max RSS]
+instance=MD-00001-00000100.input (induced on first 40 vertices) vertices=40 edges=274 cycle_cap=3 cycles=34
+optimum=15 distinct_optimal_cycle_sets=2 enumerated=2
+vertices matched in every enumerated optimum=14; in at least one=16; tie-dependent=2
+  [0.02 s, 11096 KB max RSS]
+instance=MD-00001-00000100.input (induced on first 48 vertices) vertices=48 edges=457 cycle_cap=3 cycles=93
+optimum=22 distinct_optimal_cycle_sets=28 enumerated=28
+vertices matched in every enumerated optimum=19; in at least one=28; tie-dependent=9
+  [0.10 s, 33304 KB max RSS]
+instance=MD-00001-00000100.input (induced on first 24 vertices) vertices=24 edges=97 cycle_cap=4 cycles=19
+optimum=7 distinct_optimal_cycle_sets=4 enumerated=4
+vertices matched in every enumerated optimum=7; in at least one=7; tie-dependent=0
+  [0.01 s, 11900 KB max RSS]
+instance=MD-00001-00000100.input (induced on first 32 vertices) vertices=32 edges=183 cycle_cap=4 cycles=43
+optimum=12 distinct_optimal_cycle_sets=18 enumerated=18
+vertices matched in every enumerated optimum=10; in at least one=13; tie-dependent=3
+  [0.02 s, 11084 KB max RSS]
+instance=MD-00001-00000100.input (induced on first 40 vertices) vertices=40 edges=274 cycle_cap=4 cycles=82
+optimum=15 distinct_optimal_cycle_sets=56 enumerated=56
+vertices matched in every enumerated optimum=13; in at least one=18; tie-dependent=5
+  [0.02 s, 12636 KB max RSS]
+instance=two_2cycles.input vertices=3 edges=4 cycle_cap=3 cycles=2
+optimum=40 distinct_optimal_cycle_sets=1 enumerated=1
+vertices matched in every enumerated optimum=2; in at least one=2; tie-dependent=0
+  [0.01 s, 10316 KB max RSS]

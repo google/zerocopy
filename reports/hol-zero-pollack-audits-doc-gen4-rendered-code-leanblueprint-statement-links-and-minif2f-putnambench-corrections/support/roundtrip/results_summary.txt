@@ -1,0 +1,185 @@
+Round-trip probe results: Lean 4 v4.35.0, Init+Std theorems, observed 2026-11-20
+Host class: x86_64 Linux, 96 vCPUs, 236 GiB RAM; up to four probe processes concurrently.
+Per-declaration heartbeat budget: RT_HEARTBEATS=200000 (Lean default maxHeartbeats).
+
+== compare_variants.py ==
+variant       exact%    ok% MISMATCH  mvars  elabF parseF mean_len  len_x ms/decl fixes_default_MISMATCH
+default        77.80  80.59      412   5793   1981    752    175.8   1.00   4.902            0/412
+docgenopts     79.24  81.82      372   5700   1549    750    178.9   1.02   5.366           39/412
+numerals       78.30  81.04      223   5782   1973    752    178.3   1.01   5.275          154/412
+coe            64.43  80.64      262   5815   2084    752    179.4   1.02   5.620           38/412
+coetypes       78.26  81.05      244   5643   2086    752    176.1   1.00   5.332          136/412
+numcoetypes    78.65  81.38      115   5608   2098    752    178.6   1.02   5.353          246/412
+proofs         84.89  88.93      414   1913   2016    755    182.5   1.04   5.809            0/412
+explicit       86.50  90.30      234   1805   1674    753    192.2   1.09   5.487           75/412
+ppexplicit     69.12  88.15        0   5435     20      2    505.5   2.88   4.572          394/412
+all            99.85  99.98        0      0      2      5    686.2   3.90   4.228          412/412
+
+  110 A:numeral-literal-type
+   92 B:coercion-target
+   44 C:either-option
+  153 E:needs-pp.explicit
+   13 F:needs-pp.all
+
+== summarize.py (per variant, timing in ms) ==
+=== rt_default.jsonl: n=46041
+  exact          35822   77.80%
+  elab_mvars      5793   12.58%
+  elab_fail       1981    4.30%
+  defeq_red       1100    2.39%
+  parse_fail       752    1.63%
+  MISMATCH         412    0.89%
+  defeq_def        181    0.39%
+  pp_ns     sum=   60.39s mean=  1.312ms p50=  1.105 p90=  2.241 p99=   5.057 max=     50.4
+  parse_ns  sum=   13.42s mean=  0.292ms p50=  0.249 p90=  0.478 p99=   1.023 max=     12.1
+  elab_ns   sum=  149.12s mean=  3.239ms p50=  1.544 p90=  4.020 p99=  46.279 max=    289.1
+  cmp_ns    sum=    2.78s mean=  0.060ms p50=  0.041 p90=  0.108 p99=   0.461 max=     12.9
+  total     sum=  225.71s mean=  4.902ms p50=  3.017 p90=  6.929 p99=  48.740 max=    291.9
+  pp_len mean=175.8 p50=149 p90=314 p99=726 max=18732
+=== rt_docgenopts.jsonl: n=46041
+  exact          36483   79.24%
+  elab_mvars      5700   12.38%
+  elab_fail       1549    3.36%
+  defeq_red       1012    2.20%
+  parse_fail       750    1.63%
+  MISMATCH         372    0.81%
+  defeq_def        175    0.38%
+  pp_ns     sum=   68.88s mean=  1.496ms p50=  1.274 p90=  2.650 p99=   4.991 max=     72.8
+  parse_ns  sum=   15.45s mean=  0.336ms p50=  0.289 p90=  0.575 p99=   1.123 max=     10.8
+  elab_ns   sum=  159.59s mean=  3.466ms p50=  1.741 p90=  4.609 p99=  52.359 max=    293.9
+  cmp_ns    sum=    3.13s mean=  0.068ms p50=  0.047 p90=  0.120 p99=   0.518 max=      8.6
+  total     sum=  247.05s mean=  5.366ms p50=  3.473 p90=  8.004 p99=  55.960 max=    296.3
+  pp_len mean=178.9 p50=150 p90=323 p99=746 max=18732
+=== rt_numerals.jsonl: n=46041
+  exact          36052   78.30%
+  elab_mvars      5782   12.56%
+  elab_fail       1973    4.29%
+  defeq_red       1104    2.40%
+  parse_fail       752    1.63%
+  MISMATCH         223    0.48%
+  defeq_def        155    0.34%
+  pp_ns     sum=   65.57s mean=  1.424ms p50=  1.194 p90=  2.525 p99=   5.166 max=     83.4
+  parse_ns  sum=   14.54s mean=  0.316ms p50=  0.269 p90=  0.532 p99=   1.154 max=     16.9
+  elab_ns   sum=  159.78s mean=  3.470ms p50=  1.602 p90=  4.192 p99=  56.758 max=    420.0
+  cmp_ns    sum=    2.96s mean=  0.064ms p50=  0.044 p90=  0.117 p99=   0.466 max=      9.4
+  total     sum=  242.84s mean=  5.275ms p50=  3.206 p90=  7.455 p99=  59.285 max=    423.5
+  pp_len mean=178.3 p50=151 p90=315 p99=728 max=18926
+=== rt_coe.jsonl: n=46041
+  exact          29662   64.43%
+  defeq_red       7320   15.90%
+  elab_mvars      5815   12.63%
+  elab_fail       2084    4.53%
+  parse_fail       752    1.63%
+  MISMATCH         262    0.57%
+  defeq_def        146    0.32%
+  pp_ns     sum=   65.21s mean=  1.416ms p50=  1.206 p90=  2.471 p99=   5.244 max=     76.3
+  parse_ns  sum=   14.56s mean=  0.316ms p50=  0.271 p90=  0.530 p99=   1.132 max=     31.9
+  elab_ns   sum=  175.13s mean=  3.804ms p50=  1.691 p90=  4.458 p99=  62.412 max=    315.4
+  cmp_ns    sum=    3.86s mean=  0.084ms p50=  0.052 p90=  0.177 p99=   0.569 max=     10.1
+  total     sum=  258.76s mean=  5.620ms p50=  3.352 p90=  7.615 p99=  65.503 max=    317.0
+  pp_len mean=179.4 p50=152 p90=315 p99=729 max=19054
+=== rt_coetypes.jsonl: n=46041
+  exact          36032   78.26%
+  elab_mvars      5643   12.26%
+  elab_fail       2086    4.53%
+  defeq_red       1109    2.41%
+  parse_fail       752    1.63%
+  MISMATCH         244    0.53%
+  defeq_def        175    0.38%
+  pp_ns     sum=   64.97s mean=  1.411ms p50=  1.207 p90=  2.491 p99=   4.923 max=     49.8
+  parse_ns  sum=   14.43s mean=  0.313ms p50=  0.269 p90=  0.533 p99=   1.116 max=     20.6
+  elab_ns   sum=  163.00s mean=  3.540ms p50=  1.652 p90=  4.348 p99=  57.120 max=    333.2
+  cmp_ns    sum=    3.10s mean=  0.067ms p50=  0.047 p90=  0.121 p99=   0.484 max=     12.3
+  total     sum=  245.50s mean=  5.332ms p50=  3.268 p90=  7.549 p99=  60.154 max=    336.3
+  pp_len mean=176.1 p50=149 p90=314 p99=726 max=18732
+=== rt_numcoetypes.jsonl: n=46041
+  exact          36211   78.65%
+  elab_mvars      5608   12.18%
+  elab_fail       2098    4.56%
+  defeq_red       1113    2.42%
+  parse_fail       752    1.63%
+  defeq_def        144    0.31%
+  MISMATCH         115    0.25%
+  pp_ns     sum=   66.40s mean=  1.442ms p50=  1.228 p90=  2.535 p99=   5.055 max=     48.2
+  parse_ns  sum=   14.72s mean=  0.320ms p50=  0.275 p90=  0.539 p99=   1.132 max=     19.3
+  elab_ns   sum=  162.33s mean=  3.526ms p50=  1.617 p90=  4.280 p99=  57.189 max=    327.7
+  cmp_ns    sum=    3.00s mean=  0.065ms p50=  0.046 p90=  0.120 p99=   0.450 max=      7.6
+  total     sum=  246.45s mean=  5.353ms p50=  3.254 p90=  7.516 p99=  59.964 max=    332.2
+  pp_len mean=178.6 p50=151 p90=315 p99=728 max=18926
+=== rt_proofs.jsonl: n=46041
+  exact          39082   84.89%
+  elab_fail       2016    4.38%
+  elab_mvars      1913    4.15%
+  defeq_red       1663    3.61%
+  parse_fail       755    1.64%
+  MISMATCH         414    0.90%
+  defeq_def        198    0.43%
+  pp_ns     sum=   65.59s mean=  1.425ms p50=  1.175 p90=  2.540 p99=   5.223 max=    118.1
+  parse_ns  sum=   14.58s mean=  0.317ms p50=  0.267 p90=  0.541 p99=   1.154 max=     21.4
+  elab_ns   sum=  183.50s mean=  3.986ms p50=  1.672 p90=  4.628 p99=  56.422 max=   1333.0
+  cmp_ns    sum=    3.77s mean=  0.082ms p50=  0.053 p90=  0.149 p99=   0.598 max=      6.7
+  total     sum=  267.45s mean=  5.809ms p50=  3.286 p90=  7.908 p99=  59.414 max=   1348.6
+  pp_len mean=182.5 p50=151 p90=330 p99=783 max=18732
+=== rt_explicit.jsonl: n=46041
+  exact          39826   86.50%
+  elab_mvars      1805    3.92%
+  elab_fail       1674    3.64%
+  defeq_red       1598    3.47%
+  parse_fail       753    1.64%
+  MISMATCH         234    0.51%
+  defeq_def        151    0.33%
+  pp_ns     sum=   64.33s mean=  1.397ms p50=  1.157 p90=  2.441 p99=   5.164 max=     87.6
+  parse_ns  sum=   14.40s mean=  0.313ms p50=  0.262 p90=  0.536 p99=   1.069 max=     18.8
+  elab_ns   sum=  170.56s mean=  3.705ms p50=  1.603 p90=  4.208 p99=  47.999 max=   1675.7
+  cmp_ns    sum=    3.33s mean=  0.072ms p50=  0.048 p90=  0.129 p99=   0.499 max=      9.0
+  total     sum=  252.62s mean=  5.487ms p50=  3.159 p90=  7.427 p99=  50.982 max=   1686.2
+  pp_len mean=192.2 p50=158 p90=342 p99=803 max=19268
+=== rt_ppexplicit.jsonl: n=46041
+  exact          31825   69.12%
+  defeq_red       8759   19.02%
+  elab_mvars      5435   11.80%
+  elab_fail         20    0.04%
+  parse_fail         2    0.00%
+  pp_ns     sum=   91.74s mean=  1.993ms p50=  1.493 p90=  3.565 p99=   9.646 max=    214.8
+  parse_ns  sum=   29.04s mean=  0.631ms p50=  0.459 p90=  1.145 p99=   3.193 max=     89.9
+  elab_ns   sum=   85.59s mean=  1.859ms p50=  1.255 p90=  3.532 p99=  10.673 max=    201.9
+  cmp_ns    sum=    4.12s mean=  0.089ms p50=  0.046 p90=  0.225 p99=   0.618 max=      3.7
+  total     sum=  210.49s mean=  4.572ms p50=  3.292 p90=  8.413 p99=  23.778 max=    421.1
+  pp_len mean=505.5 p50=351 p90=918 p99=2827 max=78969
+=== rt_all.jsonl: n=46041
+  exact          45971   99.85%
+  defeq_red         63    0.14%
+  parse_fail         5    0.01%
+  elab_fail          2    0.00%
+  pp_ns     sum=   94.30s mean=  2.048ms p50=  1.466 p90=  3.759 p99=  10.470 max=    156.1
+  parse_ns  sum=   36.96s mean=  0.803ms p50=  0.538 p90=  1.496 p99=   4.486 max=     94.4
+  elab_ns   sum=   60.35s mean=  1.311ms p50=  0.900 p90=  2.485 p99=   6.860 max=     92.9
+  cmp_ns    sum=    3.04s mean=  0.066ms p50=  0.049 p90=  0.120 p99=   0.321 max=      3.4
+  total     sum=  194.66s mean=  4.228ms p50=  2.967 p90=  7.846 p99=  22.012 max=    302.0
+  pp_len mean=686.2 p50=439 p90=1298 p99=3955 max=104090
+
+== run logs (wall time of the loop over all theorems; peak RSS) ==
+default: imported Std in 907 ms | done 46041 in 234889 ms | VmHWM: 2257404 kB
+docgenopts: imported Std in 831 ms | done 46041 in 257827 ms | VmHWM: 2327344 kB
+numerals: imported Std in 837 ms | done 46041 in 252603 ms | VmHWM: 2326244 kB
+coe: imported Std in 863 ms | done 46041 in 276515 ms | VmHWM: 2261084 kB
+coetypes: imported Std in 809 ms | done 46041 in 255741 ms | VmHWM: 2321564 kB
+numcoetypes: imported Std in 838 ms | done 46041 in 256882 ms | VmHWM: 2317232 kB
+proofs: imported Std in 881 ms | done 46041 in 278462 ms | VmHWM: 2258640 kB
+explicit: imported Std in 852 ms | done 46041 in 262630 ms | VmHWM: 2323548 kB
+ppexplicit: imported Std in 853 ms | done 46041 in 245351 ms | VmHWM: 2323648 kB
+all: imported Std in 907 ms | done 46041 in 200508 ms | VmHWM: 2265712 kB
+
+== earlier run at RT_HEARTBEATS=200 (1/1000 of the default budget), default variant ==
+=== run1_hb200/rt_default.jsonl: n=46041
+  exact          35799   77.75%
+  elab_mvars      5569   12.10%
+  elab_fail       1456    3.16%
+  defeq_red       1019    2.21%
+  timeout          862    1.87%
+  parse_fail       752    1.63%
+  MISMATCH         405    0.88%
+  defeq_def        174    0.38%
+  cmp_timeout        5    0.01%
+  pp_ns     sum=   58.59s mean=  1.273ms p50=  1.114 p90=  2.167 p99=   4.389 max=     69.9
+  parse_ns  sum=   13.41s mean=  0.291ms p50=  0.257 p90=  0.482 p99=   0.974 max=     16.4

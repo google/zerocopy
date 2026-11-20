@@ -1,0 +1,161 @@
+{
+  "topics": [
+    "verification/pollack-consistent-printing",
+    "lean/rendered-statement-to-declaration-links",
+    "tooling/library-scale-print-comparison-audits",
+    "agents/formal-statement-misformalization-audits",
+    "lean/delaborator-round-trip-fidelity",
+    "verification/statement-audit-trust-boundary"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain and core library (Init, Std) used for the round-trip measurement",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+        "version": "v4.35.0"
+      }
+    },
+    {
+      "name": "Mathlib ppRoundtrip linter",
+      "identity": {
+        "repository": "leanprover-community/mathlib4",
+        "revision": "5fc503cdd50c2c198f54ccc97121ec82919e2930",
+        "path": "Mathlib/Tactic/Linter/PPRoundtrip.lean"
+      }
+    },
+    {
+      "name": "doc-gen4 rendered code and signature printing",
+      "identity": {
+        "repository": "leanprover/doc-gen4",
+        "revision": "43c98922de00e9f215d2f3fe027cd2f99873212f"
+      }
+    },
+    {
+      "name": "leanblueprint",
+      "identity": {
+        "repository": "PatrickMassot/leanblueprint",
+        "revision": "56e066d30fb7b608a63f4241fee80982d7eae3ef"
+      }
+    },
+    {
+      "name": "checkdecls (declaration-existence checker used by leanblueprint)",
+      "identity": {
+        "repository": "PatrickMassot/checkdecls",
+        "revision": "3d425859e73fcfbef85b9638c2a91708ef4a22d4"
+      }
+    },
+    {
+      "name": "Liquid Tensor Experiment (challenge statement and examples)",
+      "identity": {
+        "repository": "leanprover-community/lean-liquid",
+        "revision": "ee4795874a99ea5f9d85bd0b364425f07b932377"
+      }
+    },
+    {
+      "name": "Isabelle PIDE markup (mirror)",
+      "identity": {
+        "repository": "isabelle-prover/mirror-isabelle",
+        "revision": "20d6a3f7ffbaaa82e77f341d90db5070b3428fbe"
+      }
+    },
+    {
+      "name": "PutnamBench",
+      "identity": {
+        "repository": "trishullab/PutnamBench",
+        "revision": "a635813f5edf297d928f9bd5ef8324a26bdde09c"
+      }
+    },
+    {
+      "name": "miniF2F (original repository)",
+      "identity": {
+        "repository": "openai/miniF2F",
+        "revision": "4e433ff5cadff23f9911a2bb5bbab2d351ce5554"
+      }
+    },
+    {
+      "name": "miniF2F (maintained fork)",
+      "identity": {
+        "repository": "facebookresearch/miniF2F",
+        "revision": "e4f113090ad82d64f8ce064d2f55b613a9b6bded"
+      }
+    },
+    {
+      "name": "miniF2F Lean 4 port",
+      "identity": {
+        "repository": "yangky11/miniF2F-lean4",
+        "revision": "5746b7d6c47855ce1294bed87329618ff7f1bc31"
+      }
+    },
+    {
+      "name": "HOL Zero project pages (design statement and unsoundness/bounty list)",
+      "identity": {
+        "url": "http://www.proof-technologies.com/holzero/unsoundnesses.html",
+        "version": "HOL Zero 0.6.3 (released 2016-04-25)"
+      }
+    },
+    {
+      "name": "Wiedijk, Pollack-inconsistency (ENTCS 285, 2012)",
+      "identity": {
+        "doi": "10.1016/j.entcs.2012.06.008"
+      }
+    },
+    {
+      "name": "Adams, Introducing HOL Zero (ICMS 2010)",
+      "identity": {
+        "doi": "10.1007/978-3-642-15582-6_25"
+      }
+    },
+    {
+      "name": "Adams, HOL Zero's Solutions for Pollack-Inconsistency (ITP 2016)",
+      "identity": {
+        "doi": "10.1007/978-3-319-43144-4_2"
+      }
+    },
+    {
+      "name": "Adams, Proof Auditing Formalised Mathematics (JFR 9(1), 2016)",
+      "identity": {
+        "doi": "10.6092/issn.1972-5787/4576"
+      }
+    },
+    {
+      "name": "Hales et al., A Formal Proof of the Kepler Conjecture (Forum of Mathematics, Pi, 2017)",
+      "identity": {
+        "doi": "10.1017/fmp.2017.1",
+        "arxiv": "1501.02155"
+      }
+    },
+    {
+      "name": "Wenzel, Isabelle/jEdit - a Prover IDE within the PIDE framework (CICM 2012)",
+      "identity": {
+        "doi": "10.1007/978-3-642-31374-5_38"
+      }
+    },
+    {
+      "name": "Commelin and Topaz, Abstraction boundaries and spec driven development in pure mathematics",
+      "identity": {
+        "doi": "10.1090/bull/1831",
+        "arxiv": "2309.14870"
+      }
+    },
+    {
+      "name": "Zheng, Han, Polu, miniF2F (ICLR 2022)",
+      "identity": {
+        "arxiv": "2109.00110"
+      }
+    },
+    {
+      "name": "Tsoukalas et al., PutnamBench",
+      "identity": {
+        "arxiv": "2407.11214"
+      }
+    },
+    {
+      "name": "Ying et al., Lean Workbook",
+      "identity": {
+        "arxiv": "2406.03847"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

@@ -1,0 +1,187 @@
+Commits whose message matches /fix|misformal|wrong|incorrect|correct|typo|mistake|error/i (non-merge),
+read via the GitHub REST API on 2026-11-20 from the pinned revisions:
+  openai/miniF2F 4e433ff5cadf, facebookresearch/miniF2F e4f113090ad8, yangky11/miniF2F-lean4 5746b7d6c478
+Fields: short commit, author date, first line of message. Message text only; not a semantic review.
+
+== openai/miniF2F: 161 non-merge commits (2021-05-04 .. 2022-06-02), 57 keyword matches
+7b4566e80ce0 2022-06-02 Fix test.lean (finsets, factorials, digits, ...)
+1e6b1c96d51c 2022-06-02 Fixing factorials and two statements
+cf093713e91b 2022-06-01 Fix valid.lean
+886dcc24b2b3 2022-06-01 Fix test.lean - real.logb
+2bd14907c749 2022-05-31 Fix test.lean
+f372417f79c4 2022-04-30 fix mathd_algebra_96 (isabelle)
+b286620dd4cd 2022-04-29 fix mathd_algebra_96 (lean)
+f832dde7c049 2022-04-18 fixed a few erroneous statements
+92440f6f706a 2022-04-07 fix
+77d49cb968cf 2022-04-07 fix
+01e647ecd922 2022-04-07 fix
+27e1b0270883 2022-04-07 fix
+cea46a514dcd 2022-04-07 fix
+06ff3efe4e21 2022-04-07 fix
+7be172d20430 2022-04-02 fix
+c1a94e558e5d 2022-04-02 fix mathd-algebra-482
+0010ebbbd26a 2022-04-02 fix mathd-algebra-131
+2b1daad502d9 2022-04-02 fix 2013 p8
+a48a5a17382c 2022-04-02 fix#75
+d84e52902197 2022-04-02 fix hollight
+fde873f87523 2022-04-02 fix #73
+5b5dbae0f1b0 2022-03-22 fix: amc12a_2017_p7
+b2c2bde6b23e 2022-02-23 fix mathd-algebra-141
+8a78f938e0e6 2022-02-04 fix mathd_algebra_13
+61df04023efb 2022-02-03 finish proof aside from fixing the ring_nf's
+7283bd196813 2022-01-25 Correct the installation instructions
+7660d5bfb653 2021-11-14 fix
+1c4b8bffebdf 2021-10-06 fix amc12a_2021_p25
+6050aae7ab0d 2021-10-01 fix imo 1977 q6
+569e09d1319b 2021-09-21 Fix to IMO 1960 p2
+2e01907b81da 2021-09-03 fix
+f79238731acf 2021-09-01 v1 hyp naming fix
+5d55f2e8f18a 2021-08-18 fix link
+43b3e178b340 2021-08-18 fix typo
+78b01aa1dfaa 2021-08-18 fix text
+d9a0038aa93f 2021-08-18 fix typo
+f2205d3a1117 2021-08-18 fix typo
+61a6e0dbc171 2021-08-12 [Lean] fix name & ring_nf (#44)
+9105ad30839c 2021-08-12 Fix duplicated statements (#43)
+b18f56f03e71 2021-08-11 [Metamath] Fix (#42)
+651e941967f7 2021-08-10 [Metamath] Fix typo in mathd-algebra-598.mm (#40)
+60980e7370ea 2021-07-29 [Lean & Metamath] fix statement (#38)
+c913c38ea8d1 2021-07-02 [Lean] fix mathd_algebra_304 (#34)
+5e06a19312c2 2021-06-15 [Lean] Fix natural type (#27)
+60d1d5e92258 2021-06-11 [Lean-Metamath] Statements & Proofs (#22)
+8191524a97d3 2021-06-10 [lean] fix mathd_algebra_289
+9557e0a0eaf6 2021-06-08 [lean] fix name of amc12b_2020_p21
+e218380495ad 2021-06-08 [Fix] Lean statement (#19)
+a57b554ca668 2021-06-08 [Fix] Lean proof (#18)
+831bfdac600e 2021-06-08 [Metamath-Lean] new statements & fix (#17)
+49248477bff5 2021-06-07 [Lean] Fix theorem name (#15)
+2d0a56ddc068 2021-06-07 fix readme (#14)
+92e0c3fd3d6c 2021-06-07 [Lean] Fix formatting (#13)
+be624dff1e50 2021-06-01 [aime_1984_p1] fix proof (was broken in mathlib update)
+43cefd76c285 2021-06-01 [lean] more renaming + fixes/sorry due to mathlib bump
+e169bb5bfa28 2021-06-01 [lean] more renaming, and fix
+c1ba9629559c 2021-05-10 README: fix typo
+
+== facebookresearch/miniF2F: 215 non-merge commits (2021-05-04 .. 2025-01-03), 98 keyword matches
+ea7192451b96 2025-01-03 fix typo
+cb334db00012 2022-11-09 fix amc12a_2011_p18
+368ffedd8e5f 2022-10-16 [Metamath Fix] aime_1987_p8(#46)
+813260e0e628 2022-10-16 [Lean Metamath Fix] imo_1966_p5 (#44)
+30e293ac8bb1 2022-10-16 [Lean Metamath HOL Light Fix] Amc12a 2021 p12 (#43)
+2b19c833f7a4 2022-10-16 [Lean Metamath HOL Light Fix] mathd_numbertheory_155 (#42)
+af3e097b20e8 2022-10-16 [Lean Metamath HOL Light Fix] Mathd_algebra_421 & Proof Mathd algebra 451 (#41)
+f9d644c4e94d 2022-10-16 [Lean Metamath HOL Light Fix] mathd_algebra_421 (#40)
+73758a52602b 2022-10-16 [Lean Metamath HOL Light Fix] mathd_algebra_77 (#39)
+caa41cfdd6e5 2022-10-16 Lean Fix (#38)
+5ff269cff302 2022-10-16 [Lean Metamath Fix] imo_1974_p5 (#37)
+641289ac2058 2022-10-16 [Lean Fix] imo_1974_p3 & amc12b_2021_p4 (#32)
+f8391267b440 2022-10-16 [Lean Metamath Fix] imo_1962_p4 (#36)
+34d81dee0018 2022-10-16 [Lean Metamath Isabelle Fix] amc12a_2020_p21 -> amc12a_2020_p22 (#35)
+ce9f566aa22e 2022-10-16 [Lean Metamath Fix] amc12a_2011_p18 (#34)
+b3e8e01a4e1f 2022-10-16 fix (#31)
+38b213e219ee 2022-10-16 fix mathd_algebra_17: adding the assumption 1 + a > 0 (#29)
+6114b49e34f1 2022-10-16 [Lean Metamath HOL Light Fix] mathd_algebra_276 & Lean Proof (#28)
+977bd2fad7b2 2022-10-16 [Metamath HOL Light Fix][Lean Proof] mathd_algebra_17 (#30)
+438e27c0598f 2022-10-15 fix & proof (#26)
+834863d2be6f 2022-10-15 fix (#27)
+bd4ef841436e 2022-10-15 fix (#25)
+397dc67f852d 2022-10-15 [Lean Metamath Isabelle HOL Light Fix] Mathd algebra 332 & Lean proof (#24)
+dc1ae19f0209 2022-10-14 [Lean Metamath HOL Light Fix] Mathd algebra 487 (#22)
+32555cd99391 2022-10-14 fix (#21)
+dcf253e78bdc 2022-10-14 [Lean ]Fix & Proof numbertheory_notequiv2i2jasqbsqdiv8 (#20)
+c9335112844e 2022-10-13 informal statement and proof. The list of checked pb for this commit can be found in [path elided]
+fdfa6e2296c9 2022-10-13 fix (#19)
+3a2a06dec3f7 2022-10-12 fix (#17)
+20956855a81d 2022-10-12 fix (#16)
+b49cd9fe6f8b 2022-10-12 fix (#18)
+56a31a86f70f 2022-10-12 fix
+e29096f35cba 2022-10-12 fix
+0978fdd124a4 2022-10-12 fix
+f3e0313ad9cc 2022-10-12 fix
+6140ebfa7892 2022-10-10 fixing the right problem
+f08ada441b13 2022-10-10 fixing some further problems
+5674ec097afb 2022-10-07 fixes for Yutaka and Daniel's follow-up reports
+360b370efab8 2022-10-07 fixed 17 Isabelle cases
+00ca53be2726 2022-10-07 fix 6 problems
+f6504f620928 2022-10-07 fixing problme misidentification issues
+7b4566e80ce0 2022-06-02 Fix test.lean (finsets, factorials, digits, ...)
+1e6b1c96d51c 2022-06-02 Fixing factorials and two statements
+cf093713e91b 2022-06-01 Fix valid.lean
+886dcc24b2b3 2022-06-01 Fix test.lean - real.logb
+2bd14907c749 2022-05-31 Fix test.lean
+f372417f79c4 2022-04-30 fix mathd_algebra_96 (isabelle)
+b286620dd4cd 2022-04-29 fix mathd_algebra_96 (lean)
+f832dde7c049 2022-04-18 fixed a few erroneous statements
+92440f6f706a 2022-04-07 fix
+77d49cb968cf 2022-04-07 fix
+01e647ecd922 2022-04-07 fix
+27e1b0270883 2022-04-07 fix
+cea46a514dcd 2022-04-07 fix
+06ff3efe4e21 2022-04-07 fix
+7be172d20430 2022-04-02 fix
+c1a94e558e5d 2022-04-02 fix mathd-algebra-482
+0010ebbbd26a 2022-04-02 fix mathd-algebra-131
+2b1daad502d9 2022-04-02 fix 2013 p8
+a48a5a17382c 2022-04-02 fix#75
+d84e52902197 2022-04-02 fix hollight
+fde873f87523 2022-04-02 fix #73
+5b5dbae0f1b0 2022-03-22 fix: amc12a_2017_p7
+b2c2bde6b23e 2022-02-23 fix mathd-algebra-141
+8a78f938e0e6 2022-02-04 fix mathd_algebra_13
+61df04023efb 2022-02-03 finish proof aside from fixing the ring_nf's
+7283bd196813 2022-01-25 Correct the installation instructions
+7660d5bfb653 2021-11-14 fix
+1c4b8bffebdf 2021-10-06 fix amc12a_2021_p25
+6050aae7ab0d 2021-10-01 fix imo 1977 q6
+569e09d1319b 2021-09-21 Fix to IMO 1960 p2
+2e01907b81da 2021-09-03 fix
+f79238731acf 2021-09-01 v1 hyp naming fix
+5d55f2e8f18a 2021-08-18 fix link
+43b3e178b340 2021-08-18 fix typo
+78b01aa1dfaa 2021-08-18 fix text
+d9a0038aa93f 2021-08-18 fix typo
+f2205d3a1117 2021-08-18 fix typo
+61a6e0dbc171 2021-08-12 [Lean] fix name & ring_nf (#44)
+9105ad30839c 2021-08-12 Fix duplicated statements (#43)
+b18f56f03e71 2021-08-11 [Metamath] Fix (#42)
+651e941967f7 2021-08-10 [Metamath] Fix typo in mathd-algebra-598.mm (#40)
+60980e7370ea 2021-07-29 [Lean & Metamath] fix statement (#38)
+c913c38ea8d1 2021-07-02 [Lean] fix mathd_algebra_304 (#34)
+5e06a19312c2 2021-06-15 [Lean] Fix natural type (#27)
+60d1d5e92258 2021-06-11 [Lean-Metamath] Statements & Proofs (#22)
+8191524a97d3 2021-06-10 [lean] fix mathd_algebra_289
+9557e0a0eaf6 2021-06-08 [lean] fix name of amc12b_2020_p21
+e218380495ad 2021-06-08 [Fix] Lean statement (#19)
+a57b554ca668 2021-06-08 [Fix] Lean proof (#18)
+831bfdac600e 2021-06-08 [Metamath-Lean] new statements & fix (#17)
+49248477bff5 2021-06-07 [Lean] Fix theorem name (#15)
+2d0a56ddc068 2021-06-07 fix readme (#14)
+92e0c3fd3d6c 2021-06-07 [Lean] Fix formatting (#13)
+be624dff1e50 2021-06-01 [aime_1984_p1] fix proof (was broken in mathlib update)
+43cefd76c285 2021-06-01 [lean] more renaming + fixes/sorry due to mathlib bump
+e169bb5bfa28 2021-06-01 [lean] more renaming, and fix
+c1ba9629559c 2021-05-10 README: fix typo
+
+== yangky11/miniF2F-lean4: 77 non-merge commits (2023-08-28 .. 2026-02-28), 22 keyword matches
+1be24b76c89e 2026-02-28 Fix 7 erroneous theorem formalizations in the test split
+f0a244e1aefe 2025-07-03 Valid: correct the name of `imo_2006_p6` to `imo_2006_p3`
+08d88b209b78 2025-06-04 undo fix import
+be1732497464 2025-06-04 Rebuild jsonl & fix imports & bump to v4.20.0
+1f8e11a35044 2025-06-02 Fix mathd_numbertheory_35, induction_sum_odd, mathd_algebra_247
+53bae3dff5c9 2025-04-17 Fix imo_1960_p2 and imo_1981_p6 theorem goals
+9505034a2aef 2025-03-26 Fix hypothesis name in amc12b_2002_p4 to avoid shadowing.
+eddb5ca1fa7d 2025-01-21 Fixed mathd_numbertheory_247
+5b48aaf2aa14 2025-01-21 Fixed mathd_numbertheory_35
+bb479263cc94 2025-01-03 fix typo https://github.com/openai/miniF2F/issues/129#issue-2650577254
+1646bd5843b7 2024-10-28 correcting factorial notation
+6bcf0b4940fb 2024-07-14 fix a few statements
+1e9c5f9dd02b 2024-07-12 bump and fix
+9e445f543540 2024-05-19 minor fix
+5ca54ec1462d 2024-04-24 fix minor bugs
+a8fa7f42aa74 2024-04-24 add test, clear all errors
+f81948888510 2024-02-02 minor fix
+76f8b890d996 2023-12-04 minor fix
+2a3828d112a3 2023-11-28 minor fix
+652d5feef13a 2023-11-16 fix typo
+a2fed697d0b1 2023-11-06 minor fix
+14deb67b3d28 2023-10-19 fix

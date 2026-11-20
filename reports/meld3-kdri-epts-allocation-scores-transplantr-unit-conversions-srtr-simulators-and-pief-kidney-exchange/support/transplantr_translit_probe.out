@@ -1,0 +1,37 @@
+parsed kdpi_lookup thresholds: 101 (values 0..100)
+parsed epts_lookup thresholds: 99; last explicit bin (3.1633656423, 98); missing percentile values in 0..100: [99]
+
+[1] MELD rounding: transplantr test fixture meld(INR=2.0, bili=54 umol/L, creat=170 umol/L)
+    transplantr = 24.798; OPTN MELD(i) rounded to tenth then x10 = 25.0
+
+[2] Creatinine 6.0 mg/dL, not on dialysis, INR 1.5, bili 3.0 mg/dL, Na 137 (US units)
+    transplantr meld = 28.391; meld_na = 32.851; OPTN pre-2023 MELD-Na = 28.000
+
+[3] Sodium handling, INR 1.8, bili 2 mg/dL, creat 2 mg/dL (transplantr test fixture uses Na 131)
+    Na=120: transplantr meld_na = 31.133   OPTN pre-2023 MELD-Na = 29.128   diff = +2.005
+    Na=125: transplantr meld_na = 28.917   OPTN pre-2023 MELD-Na = 29.128   diff = -0.211
+    Na=131: transplantr meld_na = 26.257   OPTN pre-2023 MELD-Na = 25.564   diff = +0.693
+    Na=137: transplantr meld_na = 23.597   OPTN pre-2023 MELD-Na = 22.000   diff = +1.597
+    Na=140: transplantr meld_na = 22.267   OPTN pre-2023 MELD-Na = 22.000   diff = +0.267
+    Na=145: transplantr meld_na = 20.050   OPTN pre-2023 MELD-Na = 22.000   diff = -1.950
+
+[4] UKELD unit handling: SI fixture ukeld(1.0, 212, 54, 126) and the same patient in US units
+    ukeld SI = 63.22; ukeld(units='US') = 32.13; ukeld_US = 32.13
+    correct conversion (mg/dL x 17.1, x 88.4) would give 63.22
+
+[5] EPTS: vector call raw_epts(age = c(30, 60), dm = 0, prev_tx = 0, dx = 0)
+    vector call -> [1.775, 1.775]; scalar calls -> [0.365, 1.775]
+    raw EPTS just above the last explicit threshold (3.1633656423) maps to 100
+
+[6] KDRI/KDPI: OPTN KDPI-guide worked example (age 52, 183 cm, 81 kg, HTN, no DM, CVA, creat 1.7 mg/dL, DCD)
+    OPTN refit: Xb = 0.53787, KDRI_RAO = 1.71235565748, scaled = 1.21930679808 (guide: 0.53787, 1.71235565748184, 1.21930679808076 -> KDPI 72%)
+    transplantr uskdri (Rao 2009 coefficients, non-black, HCV-) = 1.77532; scaled by 2024 factor = 1.26414; kdpi_lookup(scaled) = 74; kdpi_lookup(refit scaled) = 70
+    transplantr kdpi() with its default scaling = 1 -> kdpi_lookup(1.77532) = 95; with the 2018 factor 1.250609 named in its documentation -> kdpi_lookup(1.41956) = 83
+    same donor with eth='black': transplantr scaled = 1.51194, kdpi_lookup = 87
+
+[7] SOFT unit double conversion: soft(Albumin = 30 g/L, DonorSCr = 140 umol/L)
+    albumin seen by p_soft = 0.300 g/dL -> 2 points (3.0 g/dL intended -> 0); creatinine seen by soft2 = 0.0179 mg/dL -> 0 points (1.58 mg/dL intended -> 2)
+
+[8] Rank order: two adult candidates, transplantr meld_na vs OPTN MELD 3.0
+    A: {'INR': 1.6, 'bili': 2.5, 'creat': 1.0, 'Na': 137, 'albumin': 2.0, 'female': 1} -> transplantr meld_na = 17.02; OPTN MELD 3.0 = 19 (unrounded 18.56)
+    B: {'INR': 1.7, 'bili': 3.0, 'creat': 1.1, 'Na': 137, 'albumin': 3.5, 'female': 0} -> transplantr meld_na = 19.13; OPTN MELD 3.0 = 17 (unrounded 16.89)

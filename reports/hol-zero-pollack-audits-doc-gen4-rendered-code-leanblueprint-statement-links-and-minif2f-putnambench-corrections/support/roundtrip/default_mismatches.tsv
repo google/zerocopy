@@ -1,0 +1,413 @@
+name	module	class	printed_default	reelaborated_then_printed
+Array.mapFinIdx_eq_iff	Init.Data.Array.MapIdx	F:needs-pp.all	∀ {α : Type u_1} {β : Type u_2} {xs : Array α} {f : (i : Nat) → α → i < xs.size → β} {ys : Array β},   xs.mapFinIdx f = ys ↔ ∃ h, ∀ (i : Nat) (h_1 : i < xs.size), ys[i] = f i xs[i] h_1	∀ {α : Type u_1} {β : Type u_2} {xs : Array α} {f : (i : Nat) → α → i < xs.size → β} {ys : Array β},   xs.mapFinIdx f = ys ↔ ∃ h, ∀ (i : Nat) (h_1 : i < xs.size), ys[i] = f i xs[i] h_1
+Array.mapFinIdx_induction	Init.Data.Array.MapIdx	F:needs-pp.all	∀ {α : Type u_1} {β : Type u_2} (xs : Array α) (f : (i : Nat) → α → i < xs.size → β)   (motive : Nat → Prop),   motive 0 →     ∀ (p : (i : Nat) → β → i < xs.size → Prop),       (∀ (i : Nat) (h : i < xs.size), motive i → p i (f i xs[i] h) h ∧ motive (i + 1)) →         motive xs.size ∧ ∃ eq, ∀ (i : Nat) (h : i < xs.size), p i (xs.mapFinIdx f)[i] h	∀ {α : Type u_1} {β : Type u_2} (xs : Array α) (f : (i : Nat) → α → i < xs.size → β)   (motive : Nat → Prop),   motive 0 →     ∀ (p : (i : Nat) → β → i < xs.size → Prop),       (∀ (i : Nat) (h : i < xs.size), motive i → p i (f i xs[i] h) h ∧ motive (i + 1)) →         motive xs.size ∧ ∃ eq, ∀ (i : Nat) (h : i < xs.size), p i (xs.mapFinIdx f)[i] h
+Array.mapFinIdx_spec	Init.Data.Array.MapIdx	F:needs-pp.all	∀ {α : Type u_1} {β : Type u_2} {xs : Array α} {f : (i : Nat) → α → i < xs.size → β}   {p : (i : Nat) → β → i < xs.size → Prop},   (∀ (i : Nat) (h : i < xs.size), p i (f i xs[i] h) h) →     ∃ eq, ∀ (i : Nat) (h : i < xs.size), p i (xs.mapFinIdx f)[i] h	∀ {α : Type u_1} {β : Type u_2} {xs : Array α} {f : (i : Nat) → α → i < xs.size → β}   {p : (i : Nat) → β → i < xs.size → Prop},   (∀ (i : Nat) (h : i < xs.size), p i (f i xs[i] h) h) →     ∃ eq, ∀ (i : Nat) (h : i < xs.size), p i (xs.mapFinIdx f)[i] h
+Array.mapIdx_induction	Init.Data.Array.MapIdx	F:needs-pp.all	∀ {α : Type u_1} {β : Type u_2} {f : Nat → α → β} {xs : Array α} {motive : Nat → Prop},   motive 0 →     ∀ {p : (i : Nat) → β → i < xs.size → Prop},       (∀ (i : Nat) (h : i < xs.size), motive i → p i (f i xs[i]) h ∧ motive (i + 1)) →         motive xs.size ∧ ∃ eq, ∀ (i : Nat) (h : i < xs.size), p i (Array.mapIdx f xs)[i] h	∀ {α : Type u_1} {β : Type u_2} {f : Nat → α → β} {xs : Array α} {motive : Nat → Prop},   motive 0 →     ∀ {p : (i : Nat) → β → i < xs.size → Prop},       (∀ (i : Nat) (h : i < xs.size), motive i → p i (f i xs[i]) h ∧ motive (i + 1)) →         motive xs.size ∧ ∃ eq, ∀ (i : Nat) (h : i < xs.size), p i (Array.mapIdx f xs)[i] h
+Array.mapIdx_spec	Init.Data.Array.MapIdx	F:needs-pp.all	∀ {α : Type u_1} {β : Type u_2} {f : Nat → α → β} {xs : Array α}   {p : (i : Nat) → β → i < xs.size → Prop},   (∀ (i : Nat) (h : i < xs.size), p i (f i xs[i]) h) →     ∃ eq, ∀ (i : Nat) (h : i < xs.size), p i (Array.mapIdx f xs)[i] h	∀ {α : Type u_1} {β : Type u_2} {f : Nat → α → β} {xs : Array α}   {p : (i : Nat) → β → i < xs.size → Prop},   (∀ (i : Nat) (h : i < xs.size), p i (f i xs[i]) h) →     ∃ eq, ∀ (i : Nat) (h : i < xs.size), p i (Array.mapIdx f xs)[i] h
+Array.mem_extract_iff_getElem	Init.Data.Array.Extract	F:needs-pp.all	∀ {α : Type u_1} {as : Array α} {a : α} {i j : Nat}, a ∈ as.extract i j ↔ ∃ k hm, as[i + k] = a	∀ {α : Type u_1} {as : Array α} {a : α} {i j : Nat}, a ∈ as.extract i j ↔ ∃ k hm, as[i + k] = a
+Array.prod_empty	Init.Data.Array.Lemmas	A:numeral-literal-type	∀ {α : Type u_1} [inst : Mul α] [inst_1 : One α], #[].prod = 1	∀ {α : Type u_1} [inst : Mul α] [inst_1 : One α], #[].prod = 1
+Array.prod_singleton	Init.Data.Array.Lemmas	E:needs-pp.explicit	∀ {α : Type u_1} [inst : Mul α] [inst_1 : One α] [Std.LawfulRightIdentity (fun x1 x2 => x1 * x2) 1]   {x : α}, #[x].prod = x	∀ {α : Type u_1} [inst : Mul α] [inst_1 : One α] [Std.LawfulRightIdentity (fun x1 x2 => x1 * x2) 1]   {x : α}, #[x].prod = x
+Array.sum_empty	Init.Data.Array.Lemmas	A:numeral-literal-type	∀ {α : Type u_1} [inst : Add α] [inst_1 : Zero α], #[].sum = 0	∀ {α : Type u_1} [inst : Add α] [inst_1 : Zero α], #[].sum = 0
+Array.sum_singleton	Init.Data.Array.Lemmas	E:needs-pp.explicit	∀ {α : Type u_1} [inst : Add α] [inst_1 : Zero α] [Std.LawfulRightIdentity (fun x1 x2 => x1 + x2) 0]   {x : α}, #[x].sum = x	∀ {α : Type u_1} [inst : Add α] [inst_1 : Zero α] [Std.LawfulRightIdentity (fun x1 x2 => x1 + x2) 0]   {x : α}, #[x].sum = x
+BitVec.toNat_mod_cancel'	Init.Data.BitVec.Lemmas	B:coercion-target	∀ {n : Nat} {x : BitVec n}, ↑x.toNat % ↑(2 ^ n) = ↑x.toNat	∀ {n : Nat} {x : BitVec n}, x.toNat % 2 ^ n = x.toNat
+Fin.and_val	Init.Data.Fin.Bitwise	B:coercion-target	∀ {n : Nat} (a b : Fin n), ↑(a &&& b) = ↑a &&& ↑b	∀ {n : Nat} (a b : Fin n), a &&& b = a &&& b
+Fin.coe_sub_iff_le	Init.Data.Fin.Lemmas	B:coercion-target	∀ {n : Nat} {a b : Fin n}, ↑(a - b) = ↑a - ↑b ↔ b ≤ a	∀ {n : Nat} {a b : Fin n}, a - b = a - b ↔ b ≤ a
+Fin.dite_val	Init.Data.Fin.Lemmas	B:coercion-target	∀ {n : Nat} {c : Prop} [inst : Decidable c] {x y : Fin n},   ↑(if c then x else y) = if c then ↑x else ↑y	∀ {n : Nat} {c : Prop} [inst : Decidable c] {x y : Fin n}, (if c then x else y) = if c then x else y
+Fin.div_val	Init.Data.Fin.Lemmas	B:coercion-target	∀ {n : Nat} (a b : Fin n), ↑(a / b) = ↑a / ↑b	∀ {n : Nat} (a b : Fin n), a / b = a / b
+Fin.ext	Init.Data.Fin.Lemmas	B:coercion-target	∀ {n : Nat} {a b : Fin n}, ↑a = ↑b → a = b	∀ {n : Nat} {a b : Fin n}, a = b → a = b
+Fin.ext_iff	Init.Data.Fin.Lemmas	B:coercion-target	∀ {n : Nat} {a b : Fin n}, a = b ↔ ↑a = ↑b	∀ {n : Nat} {a b : Fin n}, a = b ↔ a = b
+Fin.instLawfulIdentityHMulOfNat	Init.Data.Fin.Lemmas	A:numeral-literal-type	∀ {n : Nat} [inst : NeZero n], Std.LawfulIdentity (fun x1 x2 => x1 * x2) 1	∀ {n : Nat} [inst : NeZero n], Std.LawfulIdentity (fun x1 x2 => x1 * x2) 1
+Fin.ite_val	Init.Data.Fin.Lemmas	B:coercion-target	∀ {n : Nat} {c : Prop} [inst : Decidable c] {x : c → Fin n} (y : ¬c → Fin n),   ↑(if h : c then x h else y h) = if h : c then ↑(x h) else ↑(y h)	∀ {n : Nat} {c : Prop} [inst : Decidable c] {x : c → Fin n} (y : ¬c → Fin n),   (if h : c then x h else y h) = if h : c then x h else y h
+Fin.least?_eq	Init.Data.Range.Polymorphic.Fin	A:numeral-literal-type	∀ {n : Nat} [inst : NeZero n], Std.PRange.least? = some 0	∀ {n : Nat} [inst : NeZero n], Std.PRange.least? = some 0
+Fin.mod_val	Init.Data.Fin.Lemmas	B:coercion-target	∀ {n : Nat} (a b : Fin n), ↑(a % b) = ↑a % ↑b	∀ {n : Nat} (a b : Fin n), a % b = a % b
+Fin.ne_of_val_ne	Init.Data.Fin.Basic	B:coercion-target	∀ {n : Nat} {i j : Fin n}, ↑i ≠ ↑j → i ≠ j	∀ {n : Nat} {i j : Fin n}, i ≠ j → i ≠ j
+Fin.one_eq_zero_iff	Init.Data.Fin.Lemmas	A:numeral-literal-type	∀ {n : Nat} [inst : NeZero n], 1 = 0 ↔ n = 1	∀ {n : Nat} [inst : NeZero n], 1 = 0 ↔ n = 1
+Fin.or_val_of_two_pow	Init.Data.Fin.Bitwise	B:coercion-target	∀ {w : Nat} (a b : Fin (2 ^ w)), ↑(a ||| b) = ↑a ||| ↑b	∀ {w : Nat} (a b : Fin (2 ^ w)), a ||| b = a ||| b
+Fin.or_val_of_uInt16Size	Init.Data.Fin.Bitwise	B:coercion-target	∀ (a b : Fin UInt16.size), ↑(a ||| b) = ↑a ||| ↑b	∀ (a b : Fin UInt16.size), a ||| b = a ||| b
+Fin.or_val_of_uInt32Size	Init.Data.Fin.Bitwise	B:coercion-target	∀ (a b : Fin UInt32.size), ↑(a ||| b) = ↑a ||| ↑b	∀ (a b : Fin UInt32.size), a ||| b = a ||| b
+Fin.or_val_of_uInt64Size	Init.Data.Fin.Bitwise	B:coercion-target	∀ (a b : Fin UInt64.size), ↑(a ||| b) = ↑a ||| ↑b	∀ (a b : Fin UInt64.size), a ||| b = a ||| b
+Fin.or_val_of_uInt8Size	Init.Data.Fin.Bitwise	B:coercion-target	∀ (a b : Fin UInt8.size), ↑(a ||| b) = ↑a ||| ↑b	∀ (a b : Fin UInt8.size), a ||| b = a ||| b
+Fin.or_val_of_uSizeSize	Init.Data.Fin.Bitwise	B:coercion-target	∀ (a b : Fin USize.size), ↑(a ||| b) = ↑a ||| ↑b	∀ (a b : Fin USize.size), a ||| b = a ||| b
+Fin.rxcHasSize_eq	Init.Data.Range.Polymorphic.Fin	E:needs-pp.explicit	∀ {n : Nat}, Std.Rxc.HasSize.size = fun lo hi => ↑hi + 1 - ↑lo	∀ {n : Nat}, Std.Rxc.HasSize.size = fun lo hi => hi + 1 - lo
+Fin.shiftRight_val	Init.Data.Fin.Bitwise	B:coercion-target	∀ {n : Nat} (a b : Fin n), ↑(a >>> b) = ↑a >>> ↑b	∀ {n : Nat} (a b : Fin n), a >>> b = a >>> b
+Fin.sub_val_of_le	Init.Data.Fin.Lemmas	B:coercion-target	∀ {n : Nat} {a b : Fin n}, b ≤ a → ↑(a - b) = ↑a - ↑b	∀ {n : Nat} {a b : Fin n}, b ≤ a → a - b = a - b
+Fin.val_add_one	Init.Data.Fin.Lemmas	C:either-option	∀ {n : Nat} (i : Fin (n + 1)), ↑(i + 1) = if i = Fin.last n then 0 else ↑i + 1	∀ {n : Nat} (i : Fin (n + 1)), i + 1 = if i = Fin.last n then 0 else i + 1
+Fin.val_add_one_of_lt	Init.Data.Fin.Lemmas	C:either-option	∀ {n : Nat} {i : Fin n.succ}, i < Fin.last n → ↑(i + 1) = ↑i + 1	∀ {n : Nat} {i : Fin n.succ}, i < Fin.last n → i + 1 = i + 1
+Fin.val_congr	Init.Data.Fin.Basic	B:coercion-target	∀ {n : Nat} {a b : Fin n}, a = b → ↑a = ↑b	∀ {n : Nat} {a b : Fin n}, a = b → a = b
+Fin.val_eq_of_eq	Init.Prelude	B:coercion-target	∀ {n : Nat} {i j : Fin n}, i = j → ↑i = ↑j	∀ {n : Nat} {i j : Fin n}, i = j → i = j
+Fin.val_eq_zero	Init.Data.Fin.Lemmas	C:either-option	∀ (a : Fin 1), ↑a = 0	∀ (a : Fin 1), a = 0
+Fin.val_eq_zero_iff	Init.Data.Fin.Lemmas	C:either-option	∀ {n : Nat} [inst : NeZero n] {a : Fin n}, ↑a = 0 ↔ a = 0	∀ {n : Nat} [inst : NeZero n] {a : Fin n}, a = 0 ↔ a = 0
+Fin.val_inj	Init.Data.Fin.Basic	B:coercion-target	∀ {n : Nat} {a b : Fin n}, ↑a = ↑b ↔ a = b	∀ {n : Nat} {a b : Fin n}, a = b ↔ a = b
+Fin.val_mod	Init.Data.Fin.Lemmas	B:coercion-target	∀ {n : Nat} (a m : Fin n), ↑(a % m) = ↑a % ↑m	∀ {n : Nat} (a m : Fin n), a % m = a % m
+Fin.val_ne_iff	Init.Data.Fin.Lemmas	B:coercion-target	∀ {n : Nat} {a b : Fin n}, ↑a ≠ ↑b ↔ a ≠ b	∀ {n : Nat} {a b : Fin n}, a ≠ b ↔ a ≠ b
+Fin.val_ne_of_ne	Init.Data.Fin.Basic	B:coercion-target	∀ {n : Nat} {i j : Fin n}, i ≠ j → ↑i ≠ ↑j	∀ {n : Nat} {i j : Fin n}, i ≠ j → i ≠ j
+Fin.val_ne_zero_iff	Init.Data.Fin.Lemmas	C:either-option	∀ {n : Nat} [inst : NeZero n] {a : Fin n}, ↑a ≠ 0 ↔ a ≠ 0	∀ {n : Nat} [inst : NeZero n] {a : Fin n}, a ≠ 0 ↔ a ≠ 0
+Fin.xor_val_of_two_pow	Init.Data.Fin.Bitwise	B:coercion-target	∀ {w : Nat} (a b : Fin (2 ^ w)), ↑(a ^^^ b) = ↑a ^^^ ↑b	∀ {w : Nat} (a b : Fin (2 ^ w)), a ^^^ b = a ^^^ b
+Fin.xor_val_of_uInt16Size	Init.Data.Fin.Bitwise	B:coercion-target	∀ (a b : Fin UInt16.size), ↑(a ^^^ b) = ↑a ^^^ ↑b	∀ (a b : Fin UInt16.size), a ^^^ b = a ^^^ b
+Fin.xor_val_of_uInt32Size	Init.Data.Fin.Bitwise	B:coercion-target	∀ (a b : Fin UInt32.size), ↑(a ^^^ b) = ↑a ^^^ ↑b	∀ (a b : Fin UInt32.size), a ^^^ b = a ^^^ b
+Fin.xor_val_of_uInt64Size	Init.Data.Fin.Bitwise	B:coercion-target	∀ (a b : Fin UInt64.size), ↑(a ^^^ b) = ↑a ^^^ ↑b	∀ (a b : Fin UInt64.size), a ^^^ b = a ^^^ b
+Fin.xor_val_of_uInt8Size	Init.Data.Fin.Bitwise	B:coercion-target	∀ (a b : Fin UInt8.size), ↑(a ^^^ b) = ↑a ^^^ ↑b	∀ (a b : Fin UInt8.size), a ^^^ b = a ^^^ b
+Fin.xor_val_of_uSizeSize	Init.Data.Fin.Bitwise	B:coercion-target	∀ (a b : Fin USize.size), ↑(a ^^^ b) = ↑a ^^^ ↑b	∀ (a b : Fin USize.size), a ^^^ b = a ^^^ b
+Fin.zero_eq_one_iff	Init.Data.Fin.Lemmas	A:numeral-literal-type	∀ {n : Nat} [inst : NeZero n], 0 = 1 ↔ n = 1	∀ {n : Nat} [inst : NeZero n], 0 = 1 ↔ n = 1
+Fin.zero_ne_one	Init.Data.Fin.Lemmas	A:numeral-literal-type	∀ {n : Nat}, 0 ≠ 1	∀ {n : Nat}, 0 ≠ 1
+ISize.neg_zero	Init.Data.SInt.Lemmas	A:numeral-literal-type	-0 = 0	-0 = 0
+ISize.not_neg_one	Init.Data.SInt.Bitwise	A:numeral-literal-type	~~~(-1) = 0	~~~(-1) = 0
+ISize.not_zero	Init.Data.SInt.Bitwise	A:numeral-literal-type	~~~0 = -1	~~~0 = -1
+ISize.toInt16_ofNat	Init.Data.SInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, (OfNat.ofNat n).toInt16 = OfNat.ofNat n	∀ {n : Nat}, Nat.toInt16 (OfNat.ofNat n) = OfNat.ofNat n
+ISize.toInt32_ofNat	Init.Data.SInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, (OfNat.ofNat n).toInt32 = OfNat.ofNat n	∀ {n : Nat}, Nat.toInt32 (OfNat.ofNat n) = OfNat.ofNat n
+ISize.toInt64_ofNat	Init.Data.SInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, n ≤ 2147483647 → (OfNat.ofNat n).toInt64 = OfNat.ofNat n	∀ {n : Nat}, n ≤ 2147483647 → Nat.toInt64 (OfNat.ofNat n) = OfNat.ofNat n
+ISize.toInt8_ofNat	Init.Data.SInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, (OfNat.ofNat n).toInt8 = OfNat.ofNat n	∀ {n : Nat}, Nat.toInt8 (OfNat.ofNat n) = OfNat.ofNat n
+ISize.zero_lt_one	Init.Data.SInt.Lemmas	A:numeral-literal-type	0 < 1	0 < 1
+ISize.zero_ne_one	Init.Data.SInt.Lemmas	A:numeral-literal-type	0 ≠ 1	0 ≠ 1
+Int.NonNeg.elim	Init.Data.Int.Order	E:needs-pp.explicit	∀ {a : Int}, a.NonNeg → ∃ n, a = ↑n	∀ {a : Int}, a.NonNeg → ∃ n, a = n
+Int.Nonneg.natCast	Init.Data.Int.OfNat	A:numeral-literal-type	∀ (a : Nat), ↑a ≥ 0	∀ (a : Nat), a ≥ 0
+Int.cast_ofNat_Int	Init.Data.Int.Lemmas	B:coercion-target	∀ {n : Nat}, ↑(OfNat.ofNat n) = OfNat.ofNat n	∀ {n : Nat}, OfNat.ofNat n = OfNat.ofNat n
+Int.default_eq_zero	Init.Data.Int.Basic	A:numeral-literal-type	default = 0	default = 0
+Int.exists_add_of_le	Init.Data.Int.DivMod.Lemmas	E:needs-pp.explicit	∀ {a b : Int}, a ≤ b → ∃ c, b = a + ↑c	∀ {a b : Int}, a ≤ b → ∃ c, b = a + c
+Int.exists_eq_neg_ofNat	Init.Data.Int.Order	E:needs-pp.explicit	∀ {a : Int}, a ≤ 0 → ∃ n, a = -↑n	∀ {a : Int}, a ≤ 0 → ∃ n, a = -n
+Int.instLawfulIdentityHAddOfNat	Init.Data.Int.Lemmas	A:numeral-literal-type	Std.LawfulIdentity (fun x1 x2 => x1 + x2) 0	Std.LawfulIdentity (fun x1 x2 => x1 + x2) 0
+Int.instLawfulIdentityHMulOfNat	Init.Data.Int.Lemmas	A:numeral-literal-type	Std.LawfulIdentity (fun x1 x2 => x1 * x2) 1	Std.LawfulIdentity (fun x1 x2 => x1 * x2) 1
+Int.instNeZeroCastOfNat	Init.Data.Int.DivMod.Lemmas	B:coercion-target	∀ {n : Nat} [NeZero n], NeZero ↑n	∀ {n : Nat} [NeZero n], NeZero n
+Int.instNeZeroOfNatOfNat	Init.Data.Int.DivMod.Lemmas	E:needs-pp.explicit	∀ {n : Nat} [NeZero n], NeZero (OfNat.ofNat n)	∀ {n : Nat} [NeZero n], NeZero (OfNat.ofNat n)
+Int.le.dest	Init.Data.Int.Order	E:needs-pp.explicit	∀ {a b : Int}, a ≤ b → ∃ n, a + ↑n = b	∀ {a b : Int}, a ≤ b → ∃ n, a + n = b
+Int.le.dest_sub	Init.Data.Int.Order	E:needs-pp.explicit	∀ {a b : Int}, a ≤ b → ∃ n, b - a = ↑n	∀ {a b : Int}, a ≤ b → ∃ n, b - a = n
+Int.natCast_add	Init.Data.Int.Lemmas	B:coercion-target	∀ (n m : Nat), ↑(n + m) = ↑n + ↑m	∀ (n m : Nat), n + m = n + m
+Int.natCast_add_one	Init.Data.Int.Lemmas	C:either-option	∀ (n : Nat), ↑(n + 1) = ↑n + 1	∀ (n : Nat), n + 1 = n + 1
+Int.natCast_dvd_natCast	Init.Data.Int.DivMod.Lemmas	B:coercion-target	∀ {m n : Nat}, ↑m ∣ ↑n ↔ m ∣ n	∀ {m n : Nat}, m ∣ n ↔ m ∣ n
+Int.natCast_ediv	Init.Data.Int.DivMod.Basic	B:coercion-target	∀ (m n : Nat), ↑(m / n) = ↑m / ↑n	∀ (m n : Nat), m / n = m / n
+Int.natCast_emod	Init.Data.Int.DivMod.Bootstrap	B:coercion-target	∀ (m n : Nat), ↑(m % n) = ↑m % ↑n	∀ (m n : Nat), m % n = m % n
+Int.natCast_eq_zero	Init.Data.Int.DivMod.Lemmas	C:either-option	∀ {n : Nat}, ↑n = 0 ↔ n = 0	∀ {n : Nat}, n = 0 ↔ n = 0
+Int.natCast_inj	Init.Data.Int.LemmasAux	B:coercion-target	∀ {m n : Nat}, ↑m = ↑n ↔ m = n	∀ {m n : Nat}, m = n ↔ m = n
+Int.natCast_le_zero	Init.Data.Int.LemmasAux	C:either-option	∀ {n : Nat}, ↑n ≤ 0 ↔ n = 0	∀ {n : Nat}, n ≤ 0 ↔ n = 0
+Int.natCast_mul	Init.Data.Int.Lemmas	B:coercion-target	∀ (n m : Nat), ↑(n * m) = ↑n * ↑m	∀ (n m : Nat), n * m = n * m
+Int.natCast_ne_zero	Init.Data.Int.LemmasAux	C:either-option	∀ {n : Nat}, ↑n ≠ 0 ↔ n ≠ 0	∀ {n : Nat}, n ≠ 0 ↔ n ≠ 0
+Int.natCast_ne_zero_iff_pos	Init.Data.Int.LemmasAux	C:either-option	∀ {n : Nat}, ↑n ≠ 0 ↔ 0 < n	∀ {n : Nat}, n ≠ 0 ↔ 0 < n
+Int.natCast_nonneg	Init.Data.Int.Order	C:either-option	∀ (n : Nat), 0 ≤ ↑n	∀ (n : Nat), 0 ≤ n
+Int.natCast_nonpos_iff	Init.Data.Int.LemmasAux	C:either-option	∀ {n : Nat}, ↑n ≤ 0 ↔ n = 0	∀ {n : Nat}, n ≤ 0 ↔ n = 0
+Int.natCast_one	Init.Data.Int.Lemmas	C:either-option	↑1 = 1	1 = 1
+Int.natCast_pos	Init.Data.Int.Order	C:either-option	∀ {n : Nat}, 0 < ↑n ↔ 0 < n	∀ {n : Nat}, 0 < n ↔ 0 < n
+Int.natCast_pow	Init.Data.Int.Pow	B:coercion-target	∀ (m n : Nat), ↑(m ^ n) = ↑m ^ n	∀ (m n : Nat), m ^ n = m ^ n
+Int.natCast_shiftLeft	Init.Data.Int.Bitwise.Lemmas	B:coercion-target	∀ (n s : Nat), ↑(n <<< s) = ↑n <<< s	∀ (n s : Nat), n <<< s = n <<< s
+Int.natCast_shiftRight	Init.Data.Int.Bitwise.Lemmas	B:coercion-target	∀ (n s : Nat), ↑(n >>> s) = ↑n >>> s	∀ (n s : Nat), n >>> s = n >>> s
+Int.natCast_sub	Init.Data.Int.LemmasAux	B:coercion-target	∀ {n m : Nat}, n ≤ m → ↑(m - n) = ↑m - ↑n	∀ {n m : Nat}, n ≤ m → m - n = m - n
+Int.natCast_succ	Init.Data.Int.Lemmas	C:either-option	∀ (n : Nat), ↑n.succ = ↑n + 1	∀ (n : Nat), n.succ = n + 1
+Int.natCast_succ_pos	Init.Data.Int.LemmasAux	C:either-option	∀ (n : Nat), 0 < ↑n.succ	∀ (n : Nat), 0 < n.succ
+Int.natCast_zero	Init.Data.Int.Lemmas	C:either-option	↑0 = 0	0 = 0
+Int.nonneg_def	Init.Data.Int.Order	E:needs-pp.explicit	∀ {a : Int}, a.NonNeg ↔ ∃ n, a = ↑n	∀ {a : Int}, a.NonNeg ↔ ∃ n, a = n
+Int.not_ofNat_neg	Init.Data.Int.Order	C:either-option	∀ (n : Nat), ¬↑n < 0	∀ (n : Nat), ¬n < 0
+Int.ofNat_add_ofNat	Init.Data.Int.Lemmas	B:coercion-target	∀ (m n : Nat), ↑m + ↑n = ↑(m + n)	∀ (m n : Nat), m + n = m + n
+Int.ofNat_add_one_out	Init.Data.Int.LemmasAux	C:either-option	∀ (n : Nat), ↑n + 1 = ↑n.succ	∀ (n : Nat), n + 1 = n.succ
+Int.ofNat_add_out	Init.Data.Int.LemmasAux	B:coercion-target	∀ (m n : Nat), ↑m + ↑n = ↑(m + n)	∀ (m n : Nat), m + n = m + n
+Int.ofNat_dvd	Init.Data.Int.DivMod.Bootstrap	B:coercion-target	∀ {m n : Nat}, ↑m ∣ ↑n ↔ m ∣ n	∀ {m n : Nat}, m ∣ n ↔ m ∣ n
+Int.ofNat_ediv_ofNat	Init.Data.Int.DivMod.Basic	B:coercion-target	∀ {a b : Nat}, ↑a / ↑b = ↑(a / b)	∀ {a b : Nat}, a / b = a / b
+Int.ofNat_eq_zero	Init.Data.Int.Lemmas	C:either-option	∀ {n : Nat}, ↑n = 0 ↔ n = 0	∀ {n : Nat}, n = 0 ↔ n = 0
+Int.ofNat_inj	Init.Data.Int.Lemmas	B:coercion-target	∀ {m n : Nat}, ↑m = ↑n ↔ m = n	∀ {m n : Nat}, m = n ↔ m = n
+Int.ofNat_le	Init.Data.Int.Order	B:coercion-target	∀ {m n : Nat}, ↑m ≤ ↑n ↔ m ≤ n	∀ {m n : Nat}, m ≤ n ↔ m ≤ n
+Int.ofNat_lt	Init.Data.Int.Order	B:coercion-target	∀ {n m : Nat}, ↑n < ↑m ↔ n < m	∀ {n m : Nat}, n < m ↔ n < m
+Int.ofNat_max_zero	Init.Data.Int.Order	C:either-option	∀ (n : Nat), max (↑n) 0 = ↑n	∀ (n : Nat), max n 0 = n
+Int.ofNat_mod_ofNat	Init.Data.Int.DivMod.Lemmas	B:coercion-target	∀ (m n : Nat), ↑m % ↑n = ↑(m % n)	∀ (m n : Nat), m % n = m % n
+Int.ofNat_mul_ofNat	Init.Data.Int.Lemmas	B:coercion-target	∀ (m n : Nat), ↑m * ↑n = ↑(m * n)	∀ (m n : Nat), m * n = m * n
+Int.ofNat_mul_out	Init.Data.Int.LemmasAux	B:coercion-target	∀ (m n : Nat), ↑m * ↑n = ↑(m * n)	∀ (m n : Nat), m * n = m * n
+Int.ofNat_ne_zero	Init.Data.Int.Lemmas	C:either-option	∀ {n : Nat}, ↑n ≠ 0 ↔ n ≠ 0	∀ {n : Nat}, n ≠ 0 ↔ n ≠ 0
+Int.ofNat_nonneg	Init.Data.Int.Order	C:either-option	∀ (n : Nat), 0 ≤ ↑n	∀ (n : Nat), 0 ≤ n
+Int.ofNat_one	Init.Data.Int.Basic	C:either-option	↑1 = 1	1 = 1
+Int.ofNat_sub	Init.Data.Int.Lemmas	B:coercion-target	∀ {m n : Nat}, m ≤ n → ↑(n - m) = ↑n - ↑m	∀ {m n : Nat}, m ≤ n → n - m = n - m
+Int.ofNat_succ_pos	Init.Data.Int.Order	C:either-option	∀ (n : Nat), 0 < ↑n.succ	∀ (n : Nat), 0 < n.succ
+Int.ofNat_two	Init.Data.Int.Basic	C:either-option	↑2 = 2	2 = 2
+Int.ofNat_zero	Init.Data.Int.Basic	C:either-option	↑0 = 0	0 = 0
+Int.ofNat_zero_le	Init.Data.Int.Order	C:either-option	∀ (n : Nat), 0 ≤ ↑n	∀ (n : Nat), 0 ≤ n
+Int.one_ne_zero	Init.Data.Int.Order	A:numeral-literal-type	1 ≠ 0	1 ≠ 0
+Int.one_nonneg	Init.Data.Int.Order	A:numeral-literal-type	0 ≤ 1	0 ≤ 1
+Int.one_pos	Init.Data.Int.Order	A:numeral-literal-type	0 < 1	0 < 1
+Int.one_pow	Init.Data.Int.Pow	A:numeral-literal-type	∀ {n : Nat}, 1 ^ n = 1	∀ {n : Nat}, 1 ^ n = 1
+Int.succ_ofNat_pos	Init.Data.Int.Order	C:either-option	∀ (n : Nat), 0 < ↑n + 1	∀ (n : Nat), 0 < n + 1
+Int.zero_le_ofNat	Init.Data.Int.LemmasAux	A:numeral-literal-type	∀ (n : Nat), 0 ≤ OfNat.ofNat n	∀ (n : Nat), 0 ≤ OfNat.ofNat n
+Int.zero_lt_one	Init.Data.Int.Order	A:numeral-literal-type	0 < 1	0 < 1
+Int.zero_max_ofNat	Init.Data.Int.Order	C:either-option	∀ (n : Nat), max 0 ↑n = ↑n	∀ (n : Nat), max 0 n = n
+Int.zero_ne_one	Init.Data.Int.Basic	A:numeral-literal-type	0 ≠ 1	0 ≠ 1
+Int.zero_pow	Init.Data.Int.Pow	A:numeral-literal-type	∀ {n : Nat}, n ≠ 0 → 0 ^ n = 0	∀ {n : Nat}, n ≠ 0 → 0 ^ n = 0
+Int.zero_shiftLeft	Init.Data.Int.Bitwise.Lemmas	A:numeral-literal-type	∀ (n : Nat), 0 <<< n = 0	∀ (n : Nat), 0 <<< n = 0
+Int.zero_shiftRight	Init.Data.Int.Bitwise.Lemmas	A:numeral-literal-type	∀ (n : Nat), 0 >>> n = 0	∀ (n : Nat), 0 >>> n = 0
+Int16.neg_zero	Init.Data.SInt.Lemmas	A:numeral-literal-type	-0 = 0	-0 = 0
+Int16.not_neg_one	Init.Data.SInt.Bitwise	A:numeral-literal-type	~~~(-1) = 0	~~~(-1) = 0
+Int16.not_zero	Init.Data.SInt.Bitwise	A:numeral-literal-type	~~~0 = -1	~~~0 = -1
+Int16.toISize_ofNat	Init.Data.SInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, n ≤ 32767 → (OfNat.ofNat n).toISize = OfNat.ofNat n	∀ {n : Nat}, n ≤ 32767 → Nat.toISize (OfNat.ofNat n) = OfNat.ofNat n
+Int16.toInt32_ofNat	Init.Data.SInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, n ≤ 32767 → (OfNat.ofNat n).toInt32 = OfNat.ofNat n	∀ {n : Nat}, n ≤ 32767 → Nat.toInt32 (OfNat.ofNat n) = OfNat.ofNat n
+Int16.toInt64_ofNat	Init.Data.SInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, n ≤ 32767 → (OfNat.ofNat n).toInt64 = OfNat.ofNat n	∀ {n : Nat}, n ≤ 32767 → Nat.toInt64 (OfNat.ofNat n) = OfNat.ofNat n
+Int16.toInt8_ofNat	Init.Data.SInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, (OfNat.ofNat n).toInt8 = OfNat.ofNat n	∀ {n : Nat}, Nat.toInt8 (OfNat.ofNat n) = OfNat.ofNat n
+Int16.zero_lt_one	Init.Data.SInt.Lemmas	A:numeral-literal-type	0 < 1	0 < 1
+Int16.zero_ne_one	Init.Data.SInt.Lemmas	A:numeral-literal-type	0 ≠ 1	0 ≠ 1
+Int32.neg_zero	Init.Data.SInt.Lemmas	A:numeral-literal-type	-0 = 0	-0 = 0
+Int32.not_neg_one	Init.Data.SInt.Bitwise	A:numeral-literal-type	~~~(-1) = 0	~~~(-1) = 0
+Int32.not_zero	Init.Data.SInt.Bitwise	A:numeral-literal-type	~~~0 = -1	~~~0 = -1
+Int32.toISize_ofNat	Init.Data.SInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, n ≤ 2147483647 → (OfNat.ofNat n).toISize = OfNat.ofNat n	∀ {n : Nat}, n ≤ 2147483647 → Nat.toISize (OfNat.ofNat n) = OfNat.ofNat n
+Int32.toInt16_ofNat	Init.Data.SInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, (OfNat.ofNat n).toInt16 = OfNat.ofNat n	∀ {n : Nat}, Nat.toInt16 (OfNat.ofNat n) = OfNat.ofNat n
+Int32.toInt64_ofNat	Init.Data.SInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, n ≤ 2147483647 → (OfNat.ofNat n).toInt64 = OfNat.ofNat n	∀ {n : Nat}, n ≤ 2147483647 → Nat.toInt64 (OfNat.ofNat n) = OfNat.ofNat n
+Int32.toInt8_ofNat	Init.Data.SInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, (OfNat.ofNat n).toInt8 = OfNat.ofNat n	∀ {n : Nat}, Nat.toInt8 (OfNat.ofNat n) = OfNat.ofNat n
+Int32.zero_lt_one	Init.Data.SInt.Lemmas	A:numeral-literal-type	0 < 1	0 < 1
+Int32.zero_ne_one	Init.Data.SInt.Lemmas	A:numeral-literal-type	0 ≠ 1	0 ≠ 1
+Int64.neg_zero	Init.Data.SInt.Lemmas	A:numeral-literal-type	-0 = 0	-0 = 0
+Int64.not_neg_one	Init.Data.SInt.Bitwise	A:numeral-literal-type	~~~(-1) = 0	~~~(-1) = 0
+Int64.not_zero	Init.Data.SInt.Bitwise	A:numeral-literal-type	~~~0 = -1	~~~0 = -1
+Int64.toISize_ofNat	Init.Data.SInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, (OfNat.ofNat n).toISize = OfNat.ofNat n	∀ {n : Nat}, Nat.toISize (OfNat.ofNat n) = OfNat.ofNat n
+Int64.toInt16_ofNat	Init.Data.SInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, (OfNat.ofNat n).toInt16 = OfNat.ofNat n	∀ {n : Nat}, Nat.toInt16 (OfNat.ofNat n) = OfNat.ofNat n
+Int64.toInt32_ofNat	Init.Data.SInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, (OfNat.ofNat n).toInt32 = OfNat.ofNat n	∀ {n : Nat}, Nat.toInt32 (OfNat.ofNat n) = OfNat.ofNat n
+Int64.toInt8_ofNat	Init.Data.SInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, (OfNat.ofNat n).toInt8 = OfNat.ofNat n	∀ {n : Nat}, Nat.toInt8 (OfNat.ofNat n) = OfNat.ofNat n
+Int64.zero_lt_one	Init.Data.SInt.Lemmas	A:numeral-literal-type	0 < 1	0 < 1
+Int64.zero_ne_one	Init.Data.SInt.Lemmas	A:numeral-literal-type	0 ≠ 1	0 ≠ 1
+Int8.neg_zero	Init.Data.SInt.Lemmas	A:numeral-literal-type	-0 = 0	-0 = 0
+Int8.not_neg_one	Init.Data.SInt.Bitwise	A:numeral-literal-type	~~~(-1) = 0	~~~(-1) = 0
+Int8.not_zero	Init.Data.SInt.Bitwise	A:numeral-literal-type	~~~0 = -1	~~~0 = -1
+Int8.toISize_ofNat	Init.Data.SInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, n ≤ 127 → (OfNat.ofNat n).toISize = OfNat.ofNat n	∀ {n : Nat}, n ≤ 127 → Nat.toISize (OfNat.ofNat n) = OfNat.ofNat n
+Int8.toInt16_ofNat	Init.Data.SInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, n ≤ 127 → (OfNat.ofNat n).toInt16 = OfNat.ofNat n	∀ {n : Nat}, n ≤ 127 → Nat.toInt16 (OfNat.ofNat n) = OfNat.ofNat n
+Int8.toInt32_ofNat	Init.Data.SInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, n ≤ 127 → (OfNat.ofNat n).toInt32 = OfNat.ofNat n	∀ {n : Nat}, n ≤ 127 → Nat.toInt32 (OfNat.ofNat n) = OfNat.ofNat n
+Int8.toInt64_ofNat	Init.Data.SInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, n ≤ 127 → (OfNat.ofNat n).toInt64 = OfNat.ofNat n	∀ {n : Nat}, n ≤ 127 → Nat.toInt64 (OfNat.ofNat n) = OfNat.ofNat n
+Int8.zero_lt_one	Init.Data.SInt.Lemmas	A:numeral-literal-type	0 < 1	0 < 1
+Int8.zero_ne_one	Init.Data.SInt.Lemmas	A:numeral-literal-type	0 ≠ 1	0 ≠ 1
+Lean.Grind.AddCommGroup.neg_zero	Init.Grind.Module.Basic	A:numeral-literal-type	∀ {M : Type u} [inst : Lean.Grind.AddCommGroup M], -0 = 0	∀ {M : Type u} [inst : Lean.Grind.AddCommGroup M], -0 = 0
+Lean.Grind.CommRing.Poly.normEq0_eq	Init.Grind.Ring.CommSolver	E:needs-pp.explicit	∀ {α : Type u_1} [inst : Lean.Grind.CommRing α] (ctx : Lean.Grind.CommRing.Context α)   (p : Lean.Grind.CommRing.Poly) (c : Nat),   ↑↑c = 0 →     Lean.Grind.CommRing.Poly.denote ctx (p.normEq0 c) = Lean.Grind.CommRing.Poly.denote ctx p	∀ {α : Type u_1} [inst : Lean.Grind.CommRing α] (ctx : Lean.Grind.CommRing.Context α)   (p : Lean.Grind.CommRing.Poly) (c : Nat),   c = 0 → Lean.Grind.CommRing.Poly.denote ctx (p.normEq0 c) = Lean.Grind.CommRing.Poly.denote ctx p
+Lean.Grind.CommRing.Stepwise.d_init	Init.Grind.Ring.CommSolver	E:needs-pp.explicit	∀ {α : Type u_1} [inst : Lean.Grind.CommRing α] (ctx : Lean.Grind.CommRing.Context α)   (p : Lean.Grind.CommRing.Poly),   ↑1 * Lean.Grind.CommRing.Poly.denote ctx p = Lean.Grind.CommRing.Poly.denote ctx p	∀ {α : Type u_1} [inst : Lean.Grind.CommRing α] (ctx : Lean.Grind.CommRing.Context α)   (p : Lean.Grind.CommRing.Poly),   1 * Lean.Grind.CommRing.Poly.denote ctx p = Lean.Grind.CommRing.Poly.denote ctx p
+Lean.Grind.CommRing.Stepwise.imp_1eq	Init.Grind.Ring.CommSolver	E:needs-pp.explicit	∀ {α : Type u_1} [inst : Lean.Grind.CommRing α] (ctx : Lean.Grind.CommRing.Context α)   (lhs rhs : Lean.Grind.CommRing.Expr) (p₁ p₂ : Lean.Grind.CommRing.Poly),   Lean.Grind.CommRing.Stepwise.imp_1eq_cert lhs rhs p₁ p₂ = true →     ↑1 * Lean.Grind.CommRing.Poly.denote ctx p₁ = Lean.Grind.CommRing.Poly.denote ctx p₂ →       Lean.Grind.CommRing.Expr.denote ctx lhs = Lean.Grind.CommRing.Expr.denote c…	∀ {α : Type u_1} [inst : Lean.Grind.CommRing α] (ctx : Lean.Grind.CommRing.Context α)   (lhs rhs : Lean.Grind.CommRing.Expr) (p₁ p₂ : Lean.Grind.CommRing.Poly),   Lean.Grind.CommRing.Stepwise.imp_1eq_cert lhs rhs p₁ p₂ = true →     1 * Lean.Grind.CommRing.Poly.denote ctx p₁ = Lean.Grind.CommRing.Poly.denote ctx p₂ →       Lean.Grind.CommRing.Expr.denote ctx lhs = Lean.Grind.CommRing.Expr.d…
+Lean.Grind.CommRing.Stepwise.imp_1eqC	Init.Grind.Ring.CommSolver	E:needs-pp.explicit	∀ {α : Type u_1} {c : Nat} [inst : Lean.Grind.CommRing α] [Lean.Grind.IsCharP α c]   (ctx : Lean.Grind.CommRing.Context α) (lhs rhs : Lean.Grind.CommRing.Expr)   (p₁ p₂ : Lean.Grind.CommRing.Poly),   Lean.Grind.CommRing.Stepwise.imp_1eq_certC lhs rhs p₁ p₂ c = true →     ↑1 * Lean.Grind.CommRing.Poly.denote ctx p₁ = Lean.Grind.CommRing.Poly.denote ctx p₂ →       Lean.Grind.CommRing.Expr.denote ctx…	∀ {α : Type u_1} {c : Nat} [inst : Lean.Grind.CommRing α] [Lean.Grind.IsCharP α c]   (ctx : Lean.Grind.CommRing.Context α) (lhs rhs : Lean.Grind.CommRing.Expr)   (p₁ p₂ : Lean.Grind.CommRing.Poly),   Lean.Grind.CommRing.Stepwise.imp_1eq_certC lhs rhs p₁ p₂ c = true →     1 * Lean.Grind.CommRing.Poly.denote ctx p₁ = Lean.Grind.CommRing.Poly.denote ctx p₂ →       Lean.Grind.CommRing.Expr.den…
+Lean.Grind.CommRing.denoteInt_eq	Init.Grind.Ring.CommSolver	E:needs-pp.explicit	∀ {α : Type u_1} [inst : Lean.Grind.Ring α] (k : Int), Lean.Grind.CommRing.denoteInt k = ↑k	∀ {α : Type u_1} [inst : Lean.Grind.Ring α] (k : Int), Lean.Grind.CommRing.denoteInt k = k
+Lean.Grind.CommRing.gcd_eq_0	Init.Grind.Ring.CommSolver	E:needs-pp.explicit	∀ {α : Type u_1} [inst : Lean.Grind.CommRing α] (g n m a b : Int),   g = a * n + b * m → ↑n = 0 → ↑m = 0 → ↑g = 0	∀ {α : Type u_1} [inst : Lean.Grind.CommRing α] (g n m a b : Int),   g = a * n + b * m → n = 0 → m = 0 → g = 0
+Lean.Grind.CommRing.le_norm0	Init.Grind.Ring.CommSolver	E:needs-pp.explicit	∀ {α : Type u_1} [inst : Lean.Grind.Ring α] [inst_1 : LE α] (lhs rhs : α),   (lhs ≤ rhs) = (lhs ≤ rhs + ↑0)	∀ {α : Type u_1} [inst : Lean.Grind.Ring α] [inst_1 : LE α] (lhs rhs : α),   (lhs ≤ rhs) = (lhs ≤ rhs + 0)
+Lean.Grind.CommRing.lt_norm0	Init.Grind.Ring.CommSolver	E:needs-pp.explicit	∀ {α : Type u_1} [inst : Lean.Grind.Ring α] [inst_1 : LT α] (lhs rhs : α),   (lhs < rhs) = (lhs < rhs + ↑0)	∀ {α : Type u_1} [inst : Lean.Grind.Ring α] [inst_1 : LT α] (lhs rhs : α),   (lhs < rhs) = (lhs < rhs + 0)
+Lean.Grind.Field.intCast_div_of_dvd	Init.Grind.Ring.Field	E:needs-pp.explicit	∀ {α : Type u_1} [inst : Lean.Grind.Field α] {x y : Int}, y ∣ x → ↑y ≠ 0 → ↑(x / y) = ↑x / ↑y	∀ {α : Type u_1} [inst : Lean.Grind.Field α] {x y : Int}, y ∣ x → y ≠ 0 → x / y = x / y
+Lean.Grind.Field.natCast_div_of_dvd	Init.Grind.Ring.Field	E:needs-pp.explicit	∀ {α : Type u_1} [inst : Lean.Grind.Field α] {x y : Nat}, y ∣ x → ↑y ≠ 0 → ↑(x / y) = ↑x / ↑y	∀ {α : Type u_1} [inst : Lean.Grind.Field α] {x y : Nat}, y ∣ x → y ≠ 0 → x / y = x / y
+Lean.Grind.Field.natCast_ne_zero	Init.Grind.Ring.Field	E:needs-pp.explicit	∀ {α : Type u_1} [inst : Lean.Grind.Field α] [Lean.Grind.IsCharP α 0] {n : Nat}, n ≠ 0 → ↑n ≠ 0	∀ {α : Type u_1} [inst : Lean.Grind.Field α] [Lean.Grind.IsCharP α 0] {n : Nat}, n ≠ 0 → n ≠ 0
+Lean.Grind.Field.zero_ne_one	Init.Grind.Ring.Field	A:numeral-literal-type	∀ {α : Type u} [self : Lean.Grind.Field α], 0 ≠ 1	∀ {α : Type u} [self : Lean.Grind.Field α], 0 ≠ 1
+Lean.Grind.Field.zpow_natCast	Init.Grind.Ring.Field	B:coercion-target	∀ {α : Type u_1} [inst : Lean.Grind.Field α] (a : α) (n : Nat), a ^ ↑n = a ^ n	∀ {α : Type u_1} [inst : Lean.Grind.Field α] (a : α) (n : Nat), a ^ n = a ^ n
+Lean.Grind.Field.zpow_one	Init.Grind.Ring.Field	A:numeral-literal-type	∀ {α : Type u_1} [inst : Lean.Grind.Field α] (a : α), a ^ 1 = a	∀ {α : Type u_1} [inst : Lean.Grind.Field α] (a : α), a ^ 1 = a
+Lean.Grind.Field.zpow_succ	Init.Grind.Ring.Field	B:coercion-target	∀ {α : Type u} [self : Lean.Grind.Field α] (a : α) (n : Nat), a ^ (↑n + 1) = a ^ ↑n * a	∀ {α : Type u} [self : Lean.Grind.Field α] (a : α) (n : Nat), a ^ (n + 1) = a ^ n * a
+Lean.Grind.Field.zpow_zero	Init.Grind.Ring.Field	A:numeral-literal-type	∀ {α : Type u} [self : Lean.Grind.Field α] (a : α), a ^ 0 = 1	∀ {α : Type u} [self : Lean.Grind.Field α] (a : α), a ^ 0 = 1
+Lean.Grind.Fin.val_OfNat_ofNat	Init.Grind.Homo.Fin	E:needs-pp.explicit	∀ (n : Nat) [inst : NeZero n] (a : Nat), ↑(OfNat.ofNat a) = a % n	∀ (n : Nat) [inst : NeZero n] (a : Nat), OfNat.ofNat a = a % n
+Lean.Grind.Fin.val_ite	Init.Grind.Homo.Fin	B:coercion-target	∀ {n : Nat} (c : Prop) [inst : Decidable c] (x y : Fin n),   ↑(if c then x else y) = if c then ↑x else ↑y	∀ {n : Nat} (c : Prop) [inst : Decidable c] (x y : Fin n), (if c then x else y) = if c then x else y
+Lean.Grind.IntModule.one_zsmul	Init.Grind.Module.Basic	A:numeral-literal-type	∀ {M : Type u} [self : Lean.Grind.IntModule M] (a : M), 1 • a = a	∀ {M : Type u} [self : Lean.Grind.IntModule M] (a : M), 1 • a = a
+Lean.Grind.IntModule.zero_zsmul	Init.Grind.Module.Basic	A:numeral-literal-type	∀ {M : Type u} [self : Lean.Grind.IntModule M] (a : M), 0 • a = 0	∀ {M : Type u} [self : Lean.Grind.IntModule M] (a : M), 0 • a = 0
+Lean.Grind.IntModule.zsmul_natCast_eq_nsmul	Init.Grind.Module.Basic	B:coercion-target	∀ {M : Type u} [self : Lean.Grind.IntModule M] (n : Nat) (a : M), ↑n • a = n • a	∀ {M : Type u} [self : Lean.Grind.IntModule M] (n : Nat) (a : M), n • a = n • a
+Lean.Grind.IsCharP.intCast_emod	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ (p : Nat) {α : Type u} [inst : Lean.Grind.Ring α] [Lean.Grind.IsCharP α p] (x : Int),   ↑(x % ↑p) = ↑x	∀ (p : Nat) {α : Type u} [inst : Lean.Grind.Ring α] [Lean.Grind.IsCharP α p] (x : Int), x % ↑p = x
+Lean.Grind.IsCharP.intCast_eq_zero_iff	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ (p : Nat) {α : Type u} [inst : Lean.Grind.Ring α] [Lean.Grind.IsCharP α p] (x : Int),   ↑x = 0 ↔ x % ↑p = 0	∀ (p : Nat) {α : Type u} [inst : Lean.Grind.Ring α] [Lean.Grind.IsCharP α p] (x : Int),   x = 0 ↔ x % ↑p = 0
+Lean.Grind.IsCharP.intCast_ext_iff	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ (p : Nat) {α : Type u} [inst : Lean.Grind.Ring α] [Lean.Grind.IsCharP α p] {x y : Int},   ↑x = ↑y ↔ x % ↑p = y % ↑p	∀ (p : Nat) {α : Type u} [inst : Lean.Grind.Ring α] [Lean.Grind.IsCharP α p] {x y : Int},   x = y ↔ x % ↑p = y % ↑p
+Lean.Grind.IsCharP.natCast_emod	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u_1} (p : Nat) [inst : Lean.Grind.Semiring α] [Lean.Grind.IsCharP α p] (x : Nat),   ↑(x % p) = ↑x	∀ {α : Type u_1} (p : Nat) [inst : Lean.Grind.Semiring α] [Lean.Grind.IsCharP α p] (x : Nat),   x % p = x
+Lean.Grind.IsCharP.natCast_eq_iff_of_lt	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u_1} (p : Nat) [inst : Lean.Grind.Semiring α] [Lean.Grind.IsCharP α p] {x y : Nat},   x < p → y < p → (↑x = ↑y ↔ x = y)	∀ {α : Type u_1} (p : Nat) [inst : Lean.Grind.Semiring α] [Lean.Grind.IsCharP α p] {x y : Nat},   x < p → y < p → (x = y ↔ x = y)
+Lean.Grind.IsCharP.natCast_eq_zero_iff	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u_1} (p : Nat) [inst : Lean.Grind.Semiring α] [Lean.Grind.IsCharP α p] (x : Nat),   ↑x = 0 ↔ x % p = 0	∀ {α : Type u_1} (p : Nat) [inst : Lean.Grind.Semiring α] [Lean.Grind.IsCharP α p] (x : Nat),   x = 0 ↔ x % p = 0
+Lean.Grind.IsCharP.natCast_eq_zero_iff_of_lt	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u_1} (p : Nat) [inst : Lean.Grind.Semiring α] [Lean.Grind.IsCharP α p] {x : Nat},   x < p → (↑x = 0 ↔ x = 0)	∀ {α : Type u_1} (p : Nat) [inst : Lean.Grind.Semiring α] [Lean.Grind.IsCharP α p] {x : Nat},   x < p → (x = 0 ↔ x = 0)
+Lean.Grind.IsCharP.natCast_ext	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u_1} (p : Nat) [inst : Lean.Grind.Semiring α] [Lean.Grind.IsCharP α p] {x y : Nat},   x % p = y % p → ↑x = ↑y	∀ {α : Type u_1} (p : Nat) [inst : Lean.Grind.Semiring α] [Lean.Grind.IsCharP α p] {x y : Nat},   x % p = y % p → x = y
+Lean.Grind.IsCharP.natCast_ext_iff	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u_1} (p : Nat) [inst : Lean.Grind.Semiring α] [Lean.Grind.IsCharP α p] {x y : Nat},   ↑x = ↑y ↔ x % p = y % p	∀ {α : Type u_1} (p : Nat) [inst : Lean.Grind.Semiring α] [Lean.Grind.IsCharP α p] {x y : Nat},   x = y ↔ x % p = y % p
+Lean.Grind.IsCharP.ofNat_emod	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u_1} (p : Nat) [inst : Lean.Grind.Semiring α] [Lean.Grind.IsCharP α p] (x : Nat),   OfNat.ofNat (x % p) = OfNat.ofNat x	∀ {α : Type u_1} (p : Nat) [inst : Lean.Grind.Semiring α] [Lean.Grind.IsCharP α p] (x : Nat),   OfNat.ofNat (x % p) = OfNat.ofNat x
+Lean.Grind.IsCharP.ofNat_eq_iff_of_lt	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u_1} (p : Nat) [inst : Lean.Grind.Semiring α] [Lean.Grind.IsCharP α p] {x y : Nat},   x < p → y < p → (OfNat.ofNat x = OfNat.ofNat y ↔ x = y)	∀ {α : Type u_1} (p : Nat) [inst : Lean.Grind.Semiring α] [Lean.Grind.IsCharP α p] {x y : Nat},   x < p → y < p → (OfNat.ofNat x = OfNat.ofNat y ↔ x = y)
+Lean.Grind.IsCharP.ofNat_eq_zero_iff	Init.Grind.Ring.Basic	A:numeral-literal-type	∀ {α : Type u_1} (p : Nat) [inst : Lean.Grind.Semiring α] [Lean.Grind.IsCharP α p] (x : Nat),   OfNat.ofNat x = 0 ↔ x % p = 0	∀ {α : Type u_1} (p : Nat) [inst : Lean.Grind.Semiring α] [Lean.Grind.IsCharP α p] (x : Nat),   OfNat.ofNat x = 0 ↔ x % p = 0
+Lean.Grind.IsCharP.ofNat_eq_zero_iff_of_lt	Init.Grind.Ring.Basic	A:numeral-literal-type	∀ {α : Type u_1} (p : Nat) [inst : Lean.Grind.Semiring α] [Lean.Grind.IsCharP α p] {x : Nat},   x < p → (OfNat.ofNat x = 0 ↔ x = 0)	∀ {α : Type u_1} (p : Nat) [inst : Lean.Grind.Semiring α] [Lean.Grind.IsCharP α p] {x : Nat},   x < p → (OfNat.ofNat x = 0 ↔ x = 0)
+Lean.Grind.IsCharP.ofNat_ext	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u_1} (p : Nat) [inst : Lean.Grind.Semiring α] [Lean.Grind.IsCharP α p] {x y : Nat},   x % p = y % p → OfNat.ofNat x = OfNat.ofNat y	∀ {α : Type u_1} (p : Nat) [inst : Lean.Grind.Semiring α] [Lean.Grind.IsCharP α p] {x y : Nat},   x % p = y % p → OfNat.ofNat x = OfNat.ofNat y
+Lean.Grind.IsCharP.ofNat_ext_iff	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u} {inst : Lean.Grind.Semiring α} (p : outParam Nat) [self : Lean.Grind.IsCharP α p]   {x y : Nat}, OfNat.ofNat x = OfNat.ofNat y ↔ x % p = y % p	∀ {α : Type u} {inst : Lean.Grind.Semiring α} (p : outParam Nat) [self : Lean.Grind.IsCharP α p]   {x y : Nat}, OfNat.ofNat x = OfNat.ofNat y ↔ x % p = y % p
+Lean.Grind.NatModule.nsmul_zero	Init.Grind.Module.Basic	A:numeral-literal-type	∀ {M : Type u} [inst : Lean.Grind.NatModule M] (n : Nat), n • 0 = 0	∀ {M : Type u} [inst : Lean.Grind.NatModule M] (n : Nat), n • 0 = 0
+Lean.Grind.Order.le_of_eq_1_k	Init.Grind.Order	E:needs-pp.explicit	∀ {α : Type u_1} [inst : LE α] [inst_1 : LT α] [Std.LawfulOrderLT α] [inst_3 : Std.IsPreorder α]   [inst_4 : Lean.Grind.Ring α] [Lean.Grind.OrderedRing α] {a b : α}, a = b → a ≤ b + ↑0	∀ {α : Type u_1} [inst : LE α] [inst_1 : LT α] [Std.LawfulOrderLT α] [inst_3 : Std.IsPreorder α]   [inst_4 : Lean.Grind.Ring α] [Lean.Grind.OrderedRing α] {a b : α}, a = b → a ≤ b + 0
+Lean.Grind.Order.le_of_eq_2_k	Init.Grind.Order	E:needs-pp.explicit	∀ {α : Type u_1} [inst : LE α] [inst_1 : LT α] [Std.LawfulOrderLT α] [inst_3 : Std.IsPreorder α]   [inst_4 : Lean.Grind.Ring α] [Lean.Grind.OrderedRing α] {a b : α}, a = b → b ≤ a + ↑0	∀ {α : Type u_1} [inst : LE α] [inst_1 : LT α] [Std.LawfulOrderLT α] [inst_3 : Std.IsPreorder α]   [inst_4 : Lean.Grind.Ring α] [Lean.Grind.OrderedRing α] {a b : α}, a = b → b ≤ a + 0
+Lean.Grind.OrderedRing.le_of_intCast_le_intCast	Init.Grind.Ordered.Ring	E:needs-pp.explicit	∀ {R : Type u} [inst : Lean.Grind.Ring R] [inst_1 : LE R] [inst_2 : LT R] [Std.LawfulOrderLT R]   [inst_4 : Std.IsPreorder R] [Lean.Grind.OrderedRing R] (a b : Int), ↑a ≤ ↑b → a ≤ b	∀ {R : Type u} [inst : Lean.Grind.Ring R] [inst_1 : LE R] [inst_2 : LT R] [Std.LawfulOrderLT R]   [inst_4 : Std.IsPreorder R] [Lean.Grind.OrderedRing R] (a b : Int), a ≤ b → a ≤ b
+Lean.Grind.OrderedRing.le_of_natCast_le_natCast	Init.Grind.Ordered.Ring	E:needs-pp.explicit	∀ {R : Type u} [inst : Lean.Grind.Ring R] [inst_1 : LE R] [inst_2 : LT R] [Std.LawfulOrderLT R]   [inst_4 : Std.IsPreorder R] [Lean.Grind.OrderedRing R] (a b : Nat), ↑a ≤ ↑b → a ≤ b	∀ {R : Type u} [inst : Lean.Grind.Ring R] [inst_1 : LE R] [inst_2 : LT R] [Std.LawfulOrderLT R]   [inst_4 : Std.IsPreorder R] [Lean.Grind.OrderedRing R] (a b : Nat), a ≤ b → a ≤ b
+Lean.Grind.OrderedRing.lt_of_intCast_lt_intCast	Init.Grind.Ordered.Ring	E:needs-pp.explicit	∀ {R : Type u} [inst : Lean.Grind.Ring R] [inst_1 : LE R] [inst_2 : LT R] [Std.LawfulOrderLT R]   [inst_4 : Std.IsPreorder R] [Lean.Grind.OrderedRing R] (a b : Int), ↑a < ↑b → a < b	∀ {R : Type u} [inst : Lean.Grind.Ring R] [inst_1 : LE R] [inst_2 : LT R] [Std.LawfulOrderLT R]   [inst_4 : Std.IsPreorder R] [Lean.Grind.OrderedRing R] (a b : Int), a < b → a < b
+Lean.Grind.OrderedRing.lt_of_natCast_lt_natCast	Init.Grind.Ordered.Ring	E:needs-pp.explicit	∀ {R : Type u} [inst : Lean.Grind.Ring R] [inst_1 : LE R] [inst_2 : LT R] [Std.LawfulOrderLT R]   [inst_4 : Std.IsPreorder R] [Lean.Grind.OrderedRing R] (a b : Nat), ↑a < ↑b → a < b	∀ {R : Type u} [inst : Lean.Grind.Ring R] [inst_1 : LE R] [inst_2 : LT R] [Std.LawfulOrderLT R]   [inst_4 : Std.IsPreorder R] [Lean.Grind.OrderedRing R] (a b : Nat), a < b → a < b
+Lean.Grind.OrderedRing.natCast_le_natCast_of_le	Init.Grind.Ordered.Ring	E:needs-pp.explicit	∀ {R : Type u} [inst : Lean.Grind.Ring R] [inst_1 : LE R] [inst_2 : LT R] [Std.LawfulOrderLT R]   [inst_4 : Std.IsPreorder R] [Lean.Grind.OrderedRing R] (a b : Nat), a ≤ b → ↑a ≤ ↑b	∀ {R : Type u} [inst : Lean.Grind.Ring R] [inst_1 : LE R] [inst_2 : LT R] [Std.LawfulOrderLT R]   [inst_4 : Std.IsPreorder R] [Lean.Grind.OrderedRing R] (a b : Nat), a ≤ b → a ≤ b
+Lean.Grind.OrderedRing.natCast_lt_natCast_of_lt	Init.Grind.Ordered.Ring	E:needs-pp.explicit	∀ {R : Type u} [inst : Lean.Grind.Ring R] [inst_1 : LE R] [inst_2 : LT R] [Std.LawfulOrderLT R]   [inst_4 : Std.IsPreorder R] [Lean.Grind.OrderedRing R] (a b : Nat), a < b → ↑a < ↑b	∀ {R : Type u} [inst : Lean.Grind.Ring R] [inst_1 : LE R] [inst_2 : LT R] [Std.LawfulOrderLT R]   [inst_4 : Std.IsPreorder R] [Lean.Grind.OrderedRing R] (a b : Nat), a < b → a < b
+Lean.Grind.OrderedRing.natCast_nonneg	Init.Grind.Ordered.Ring	E:needs-pp.explicit	∀ {R : Type u} [inst : Lean.Grind.Ring R] [inst_1 : LE R] [inst_2 : LT R] [Std.LawfulOrderLT R]   [inst_4 : Std.IsPreorder R] [Lean.Grind.OrderedRing R] {a : Nat}, 0 ≤ ↑a	∀ {R : Type u} [inst : Lean.Grind.Ring R] [inst_1 : LE R] [inst_2 : LT R] [Std.LawfulOrderLT R]   [inst_4 : Std.IsPreorder R] [Lean.Grind.OrderedRing R] {a : Nat}, 0 ≤ a
+Lean.Grind.OrderedRing.neg_intCast_of_neg	Init.Grind.Ordered.Ring	E:needs-pp.explicit	∀ {R : Type u} [inst : Lean.Grind.Ring R] [inst_1 : LE R] [inst_2 : LT R] [Std.LawfulOrderLT R]   [inst_4 : Std.IsPreorder R] [Lean.Grind.OrderedRing R] (a : Int), a < 0 → ↑a < 0	∀ {R : Type u} [inst : Lean.Grind.Ring R] [inst_1 : LE R] [inst_2 : LT R] [Std.LawfulOrderLT R]   [inst_4 : Std.IsPreorder R] [Lean.Grind.OrderedRing R] (a : Int), a < 0 → a < 0
+Lean.Grind.OrderedRing.neg_one_lt_zero	Init.Grind.Ordered.Ring	A:numeral-literal-type	∀ {R : Type u} [inst : Lean.Grind.Ring R] [inst_1 : LE R] [inst_2 : LT R] [Std.LawfulOrderLT R]   [inst_4 : Std.IsPreorder R] [Lean.Grind.OrderedRing R], -1 < 0	∀ {R : Type u} [inst : Lean.Grind.Ring R] [inst_1 : LE R] [inst_2 : LT R] [Std.LawfulOrderLT R]   [inst_4 : Std.IsPreorder R] [Lean.Grind.OrderedRing R], -1 < 0
+Lean.Grind.OrderedRing.nonneg_intCast_of_nonneg	Init.Grind.Ordered.Ring	E:needs-pp.explicit	∀ {R : Type u} [inst : Lean.Grind.Ring R] [inst_1 : LE R] [inst_2 : LT R] [Std.LawfulOrderLT R]   [inst_4 : Std.IsPreorder R] [Lean.Grind.OrderedRing R] (a : Int), 0 ≤ a → 0 ≤ ↑a	∀ {R : Type u} [inst : Lean.Grind.Ring R] [inst_1 : LE R] [inst_2 : LT R] [Std.LawfulOrderLT R]   [inst_4 : Std.IsPreorder R] [Lean.Grind.OrderedRing R] (a : Int), 0 ≤ a → 0 ≤ a
+Lean.Grind.OrderedRing.nonpos_intCast_of_nonpos	Init.Grind.Ordered.Ring	E:needs-pp.explicit	∀ {R : Type u} [inst : Lean.Grind.Ring R] [inst_1 : LE R] [inst_2 : LT R] [Std.LawfulOrderLT R]   [inst_4 : Std.IsPreorder R] [Lean.Grind.OrderedRing R] (a : Int), a ≤ 0 → ↑a ≤ 0	∀ {R : Type u} [inst : Lean.Grind.Ring R] [inst_1 : LE R] [inst_2 : LT R] [Std.LawfulOrderLT R]   [inst_4 : Std.IsPreorder R] [Lean.Grind.OrderedRing R] (a : Int), a ≤ 0 → a ≤ 0
+Lean.Grind.OrderedRing.not_one_lt_zero	Init.Grind.Ordered.Ring	A:numeral-literal-type	∀ {R : Type u} [inst : Lean.Grind.Ring R] [inst_1 : LE R] [inst_2 : LT R] [Std.LawfulOrderLT R]   [inst_4 : Std.IsPreorder R] [Lean.Grind.OrderedRing R], ¬1 < 0	∀ {R : Type u} [inst : Lean.Grind.Ring R] [inst_1 : LE R] [inst_2 : LT R] [Std.LawfulOrderLT R]   [inst_4 : Std.IsPreorder R] [Lean.Grind.OrderedRing R], ¬1 < 0
+Lean.Grind.OrderedRing.ofNat_nonneg	Init.Grind.Ordered.Ring	A:numeral-literal-type	∀ {R : Type u} [inst : Lean.Grind.Ring R] [inst_1 : LE R] [inst_2 : LT R] [Std.LawfulOrderLT R]   [inst_4 : Std.IsPreorder R] [Lean.Grind.OrderedRing R] (x : Nat), OfNat.ofNat x ≥ 0	∀ {R : Type u} [inst : Lean.Grind.Ring R] [inst_1 : LE R] [inst_2 : LT R] [Std.LawfulOrderLT R]   [inst_4 : Std.IsPreorder R] [Lean.Grind.OrderedRing R] (x : Nat), OfNat.ofNat x ≥ 0
+Lean.Grind.OrderedRing.pos_intCast_of_pos	Init.Grind.Ordered.Ring	E:needs-pp.explicit	∀ {R : Type u} [inst : Lean.Grind.Ring R] [inst_1 : LE R] [inst_2 : LT R] [Std.LawfulOrderLT R]   [inst_4 : Std.IsPreorder R] [Lean.Grind.OrderedRing R] (a : Int), 0 < a → 0 < ↑a	∀ {R : Type u} [inst : Lean.Grind.Ring R] [inst_1 : LE R] [inst_2 : LT R] [Std.LawfulOrderLT R]   [inst_4 : Std.IsPreorder R] [Lean.Grind.OrderedRing R] (a : Int), 0 < a → 0 < a
+Lean.Grind.OrderedRing.pos_natCast_of_pos	Init.Grind.Ordered.Ring	E:needs-pp.explicit	∀ {R : Type u} [inst : Lean.Grind.Ring R] [inst_1 : LE R] [inst_2 : LT R] [Std.LawfulOrderLT R]   [inst_4 : Std.IsPreorder R] [Lean.Grind.OrderedRing R] (a : Nat), 0 < a → 0 < ↑a	∀ {R : Type u} [inst : Lean.Grind.Ring R] [inst_1 : LE R] [inst_2 : LT R] [Std.LawfulOrderLT R]   [inst_4 : Std.IsPreorder R] [Lean.Grind.OrderedRing R] (a : Nat), 0 < a → 0 < a
+Lean.Grind.OrderedRing.zero_le_one	Init.Grind.Ordered.Ring	A:numeral-literal-type	∀ {R : Type u} [inst : Lean.Grind.Ring R] [inst_1 : LE R] [inst_2 : LT R] [Std.LawfulOrderLT R]   [inst_4 : Std.IsPreorder R] [Lean.Grind.OrderedRing R], 0 ≤ 1	∀ {R : Type u} [inst : Lean.Grind.Ring R] [inst_1 : LE R] [inst_2 : LT R] [Std.LawfulOrderLT R]   [inst_4 : Std.IsPreorder R] [Lean.Grind.OrderedRing R], 0 ≤ 1
+Lean.Grind.OrderedRing.zero_lt_one	Init.Grind.Ordered.Ring	A:numeral-literal-type	∀ {R : Type u} {inst : Lean.Grind.Semiring R} {inst_1 : LE R} {inst_2 : LT R}   {inst_3 : Std.IsPreorder R} [self : Lean.Grind.OrderedRing R], 0 < 1	∀ {R : Type u} {inst : Lean.Grind.Semiring R} {inst_1 : LE R} {inst_2 : LT R}   {inst_3 : Std.IsPreorder R} [self : Lean.Grind.OrderedRing R], 0 < 1
+Lean.Grind.Ring.OfSemiring.toQ_add	Init.Grind.Ring.Envelope	E:needs-pp.explicit	∀ {α : Type u} [inst : Lean.Grind.Semiring α] (a b : α), ↑(a + b) = ↑a + ↑b	∀ {α : Type u} [inst : Lean.Grind.Semiring α] (a b : α), a + b = a + b
+Lean.Grind.Ring.OfSemiring.toQ_inj	Init.Grind.Ring.Envelope	E:needs-pp.explicit	∀ {α : Type u} [inst : Lean.Grind.Semiring α] [Lean.Grind.AddRightCancel α] {a b : α},   ↑a = ↑b → a = b	∀ {α : Type u} [inst : Lean.Grind.Semiring α] [Lean.Grind.AddRightCancel α] {a b : α}, a = b → a = b
+Lean.Grind.Ring.OfSemiring.toQ_le	Init.Grind.Ring.Envelope	E:needs-pp.explicit	∀ {α : Type u} [inst : Lean.Grind.Semiring α] [inst_1 : LE α] [inst_2 : Std.IsPreorder α]   [inst_3 : Lean.Grind.OrderedAdd α] {a b : α}, ↑a ≤ ↑b ↔ a ≤ b	∀ {α : Type u} [inst : Lean.Grind.Semiring α] [inst_1 : LE α] [inst_2 : Std.IsPreorder α]   [inst_3 : Lean.Grind.OrderedAdd α] {a b : α}, a ≤ b ↔ a ≤ b
+Lean.Grind.Ring.OfSemiring.toQ_lt	Init.Grind.Ring.Envelope	E:needs-pp.explicit	∀ {α : Type u} [inst : Lean.Grind.Semiring α] [inst_1 : LE α] [inst_2 : LT α] [Std.LawfulOrderLT α]   [inst_4 : Std.IsPreorder α] [inst_5 : Lean.Grind.OrderedAdd α] {a b : α}, ↑a < ↑b ↔ a < b	∀ {α : Type u} [inst : Lean.Grind.Semiring α] [inst_1 : LE α] [inst_2 : LT α] [Std.LawfulOrderLT α]   [inst_4 : Std.IsPreorder α] [inst_5 : Lean.Grind.OrderedAdd α] {a b : α}, a < b ↔ a < b
+Lean.Grind.Ring.OfSemiring.toQ_mul	Init.Grind.Ring.Envelope	E:needs-pp.explicit	∀ {α : Type u} [inst : Lean.Grind.Semiring α] (a b : α), ↑(a * b) = ↑a * ↑b	∀ {α : Type u} [inst : Lean.Grind.Semiring α] (a b : α), a * b = a * b
+Lean.Grind.Ring.OfSemiring.toQ_ofNat	Init.Grind.Ring.Envelope	E:needs-pp.explicit	∀ {α : Type u} [inst : Lean.Grind.Semiring α] (n : Nat), ↑(OfNat.ofNat n) = OfNat.ofNat n	∀ {α : Type u} [inst : Lean.Grind.Semiring α] (n : Nat), OfNat.ofNat n = OfNat.ofNat n
+Lean.Grind.Ring.OfSemiring.toQ_pow	Init.Grind.Ring.Envelope	E:needs-pp.explicit	∀ {α : Type u} [inst : Lean.Grind.Semiring α] (a : α) (n : Nat), ↑(a ^ n) = ↑a ^ n	∀ {α : Type u} [inst : Lean.Grind.Semiring α] (a : α) (n : Nat), a ^ n = a ^ n
+Lean.Grind.Ring.OfSemiring.toQ_zero	Init.Grind.Ring.Envelope	E:needs-pp.explicit	∀ {α : Type u} [inst : Lean.Grind.Semiring α], ↑0 = 0	∀ {α : Type u} [inst : Lean.Grind.Semiring α], 0 = 0
+Lean.Grind.Ring.intCast_add	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u} [inst : Lean.Grind.Ring α] (x y : Int), ↑(x + y) = ↑x + ↑y	∀ {α : Type u} [inst : Lean.Grind.Ring α] (x y : Int), x + y = x + y
+Lean.Grind.Ring.intCast_eq_ofNat_of_nonpos	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u} [inst : Lean.Grind.Ring α] (x : Int),   x.ble' 0 = true → IntCast.intCast x = -OfNat.ofNat x.natAbs	∀ {α : Type u} [inst : Lean.Grind.Ring α] (x : Int),   x.ble' 0 = true → IntCast.intCast x = -OfNat.ofNat x.natAbs
+Lean.Grind.Ring.intCast_mul	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u} [inst : Lean.Grind.Ring α] (x y : Int), ↑(x * y) = ↑x * ↑y	∀ {α : Type u} [inst : Lean.Grind.Ring α] (x y : Int), x * y = x * y
+Lean.Grind.Ring.intCast_natCast	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u} [inst : Lean.Grind.Ring α] (n : Nat), ↑↑n = ↑n	∀ {α : Type u} [inst : Lean.Grind.Ring α] (n : Nat), n = n
+Lean.Grind.Ring.intCast_natCast_add_one	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u} [inst : Lean.Grind.Ring α] (n : Nat), ↑(↑n + 1) = ↑n + 1	∀ {α : Type u} [inst : Lean.Grind.Ring α] (n : Nat), n + 1 = n + 1
+Lean.Grind.Ring.intCast_nat_add	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u} [inst : Lean.Grind.Ring α] {x y : Nat}, ↑(↑x + ↑y) = ↑x + ↑y	∀ {α : Type u} [inst : Lean.Grind.Ring α] {x y : Nat}, x + y = x + y
+Lean.Grind.Ring.intCast_nat_sub	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u} [inst : Lean.Grind.Ring α] {x y : Nat}, x ≥ y → ↑↑(x - y) = ↑x - ↑y	∀ {α : Type u} [inst : Lean.Grind.Ring α] {x y : Nat}, x ≥ y → x - y = x - y
+Lean.Grind.Ring.intCast_neg	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u} [self : Lean.Grind.Ring α] (i : Int), ↑(-i) = -↑i	∀ {α : Type u} [self : Lean.Grind.Ring α] (i : Int), -i = -i
+Lean.Grind.Ring.intCast_neg_one	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u} [inst : Lean.Grind.Ring α], ↑(-1) = -1	∀ {α : Type u} [inst : Lean.Grind.Ring α], -1 = -1
+Lean.Grind.Ring.intCast_ofNat	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u} [self : Lean.Grind.Ring α] (n : Nat), ↑(OfNat.ofNat n) = OfNat.ofNat n	∀ {α : Type u} [self : Lean.Grind.Ring α] (n : Nat), OfNat.ofNat n = OfNat.ofNat n
+Lean.Grind.Ring.intCast_one	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u} [inst : Lean.Grind.Ring α], ↑1 = 1	∀ {α : Type u} [inst : Lean.Grind.Ring α], 1 = 1
+Lean.Grind.Ring.intCast_pow	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u} [inst : Lean.Grind.Ring α] (x : Int) (k : Nat), ↑(x ^ k) = ↑x ^ k	∀ {α : Type u} [inst : Lean.Grind.Ring α] (x : Int) (k : Nat), x ^ k = x ^ k
+Lean.Grind.Ring.intCast_sub	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u} [inst : Lean.Grind.Ring α] (x y : Int), ↑(x - y) = ↑x - ↑y	∀ {α : Type u} [inst : Lean.Grind.Ring α] (x y : Int), x - y = x - y
+Lean.Grind.Ring.intCast_zero	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u} [inst : Lean.Grind.Ring α], ↑0 = 0	∀ {α : Type u} [inst : Lean.Grind.Ring α], 0 = 0
+Lean.Grind.Ring.neg_ofNat_sub	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u} [inst : Lean.Grind.Ring α] {x y : Nat},   y ≤ x → -OfNat.ofNat (x - y) = OfNat.ofNat y - OfNat.ofNat x	∀ {α : Type u} [inst : Lean.Grind.Ring α] {x y : Nat},   y ≤ x → -OfNat.ofNat (x - y) = OfNat.ofNat y - OfNat.ofNat x
+Lean.Grind.Ring.ofNat_sub	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u} [inst : Lean.Grind.Ring α] {x y : Nat},   y ≤ x → OfNat.ofNat (x - y) = OfNat.ofNat x - OfNat.ofNat y	∀ {α : Type u} [inst : Lean.Grind.Ring α] {x y : Nat},   y ≤ x → OfNat.ofNat (x - y) = OfNat.ofNat x - OfNat.ofNat y
+Lean.Grind.Ring.zsmul_natCast_eq_nsmul	Init.Grind.Ring.Basic	B:coercion-target	∀ {α : Type u} [self : Lean.Grind.Ring α] (n : Nat) (a : α), ↑n • a = n • a	∀ {α : Type u} [self : Lean.Grind.Ring α] (n : Nat) (a : α), n • a = n • a
+Lean.Grind.Semiring.natCast_add	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u} [inst : Lean.Grind.Semiring α] (a b : Nat), ↑(a + b) = ↑a + ↑b	∀ {α : Type u} [inst : Lean.Grind.Semiring α] (a b : Nat), a + b = a + b
+Lean.Grind.Semiring.natCast_eq_ofNat	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u} [inst : Lean.Grind.Semiring α] (n : Nat), ↑n = OfNat.ofNat n	∀ {α : Type u} [inst : Lean.Grind.Semiring α] (n : Nat), n = OfNat.ofNat n
+Lean.Grind.Semiring.natCast_mul	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u} [inst : Lean.Grind.Semiring α] (a b : Nat), ↑(a * b) = ↑a * ↑b	∀ {α : Type u} [inst : Lean.Grind.Semiring α] (a b : Nat), a * b = a * b
+Lean.Grind.Semiring.natCast_one	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u} [inst : Lean.Grind.Semiring α], ↑1 = 1	∀ {α : Type u} [inst : Lean.Grind.Semiring α], 1 = 1
+Lean.Grind.Semiring.natCast_pow	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u} [inst : Lean.Grind.Semiring α] (x k : Nat), ↑(x ^ k) = ↑x ^ k	∀ {α : Type u} [inst : Lean.Grind.Semiring α] (x k : Nat), x ^ k = x ^ k
+Lean.Grind.Semiring.natCast_succ	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u} [inst : Lean.Grind.Semiring α] (n : Nat), ↑(n + 1) = ↑n + 1	∀ {α : Type u} [inst : Lean.Grind.Semiring α] (n : Nat), n + 1 = n + 1
+Lean.Grind.Semiring.natCast_zero	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u} [inst : Lean.Grind.Semiring α], ↑0 = 0	∀ {α : Type u} [inst : Lean.Grind.Semiring α], 0 = 0
+Lean.Grind.Semiring.ofNat_add	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u} [inst : Lean.Grind.Semiring α] (a b : Nat),   OfNat.ofNat (a + b) = OfNat.ofNat a + OfNat.ofNat b	∀ {α : Type u} [inst : Lean.Grind.Semiring α] (a b : Nat),   OfNat.ofNat (a + b) = OfNat.ofNat a + OfNat.ofNat b
+Lean.Grind.Semiring.ofNat_eq_natCast	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u} [self : Lean.Grind.Semiring α] (n : Nat), OfNat.ofNat n = ↑n	∀ {α : Type u} [self : Lean.Grind.Semiring α] (n : Nat), OfNat.ofNat n = n
+Lean.Grind.Semiring.ofNat_mul	Init.Grind.Ring.Basic	E:needs-pp.explicit	∀ {α : Type u} [inst : Lean.Grind.Semiring α] (a b : Nat),   OfNat.ofNat (a * b) = OfNat.ofNat a * OfNat.ofNat b	∀ {α : Type u} [inst : Lean.Grind.Semiring α] (a b : Nat),   OfNat.ofNat (a * b) = OfNat.ofNat a * OfNat.ofNat b
+Lean.Grind.Semiring.ofNat_succ	Init.Grind.Ring.Basic	A:numeral-literal-type	∀ {α : Type u} [self : Lean.Grind.Semiring α] (a : Nat), OfNat.ofNat (a + 1) = OfNat.ofNat a + 1	∀ {α : Type u} [self : Lean.Grind.Semiring α] (a : Nat), OfNat.ofNat (a + 1) = OfNat.ofNat a + 1
+Lean.Grind.Semiring.one_pow	Init.Grind.Ring.Basic	A:numeral-literal-type	∀ {α : Type u} [inst : Lean.Grind.Semiring α] (n : Nat), 1 ^ n = 1	∀ {α : Type u} [inst : Lean.Grind.Semiring α] (n : Nat), 1 ^ n = 1
+Lean.Grind.natCast_add	Init.Grind.Norm	E:needs-pp.explicit	∀ (a b : Nat), ↑(a + b) = ↑a + ↑b	∀ (a b : Nat), a + b = a + b
+Lean.Grind.natCast_div	Init.Grind.Norm	E:needs-pp.explicit	∀ (a b : Nat), ↑(a / b) = ↑a / ↑b	∀ (a b : Nat), a / b = a / b
+Lean.Grind.natCast_mod	Init.Grind.Norm	E:needs-pp.explicit	∀ (a b : Nat), ↑(a % b) = ↑a % ↑b	∀ (a b : Nat), a % b = a % b
+Lean.Grind.natCast_mul	Init.Grind.Norm	E:needs-pp.explicit	∀ (a b : Nat), ↑(a * b) = ↑a * ↑b	∀ (a b : Nat), a * b = a * b
+Lean.Grind.natCast_pow	Init.Grind.Norm	E:needs-pp.explicit	∀ (a b : Nat), ↑(a ^ b) = ↑a ^ b	∀ (a b : Nat), a ^ b = a ^ b
+Lean.Omega.Fin.ofNat_val_add	Init.Omega.Int	B:coercion-target	∀ {n : Nat} {x y : Fin n}, ↑↑(x + y) = (↑↑x + ↑↑y) % ↑n	∀ {n : Nat} {x y : Fin n}, ↑(x + y) = (↑x + ↑y) % n
+Lean.Omega.Fin.ofNat_val_mul	Init.Omega.Int	B:coercion-target	∀ {n : Nat} {x y : Fin n}, ↑↑(x * y) = ↑↑x * ↑↑y % ↑n	∀ {n : Nat} {x y : Fin n}, ↑(x * y) = ↑x * ↑y % n
+Lean.Omega.Fin.ofNat_val_natCast	Init.Omega.Int	F:needs-pp.all	∀ {n x y : Nat}, y = x % (n + 1) → ↑↑(OfNat.ofNat x) = OfNat.ofNat y	∀ {n x y : Nat}, y = x % (n + 1) → OfNat.ofNat x = OfNat.ofNat y
+Lean.Omega.Fin.ofNat_val_sub	Init.Omega.Int	B:coercion-target	∀ {n : Nat} {x y : Fin n}, ↑↑(x - y) = (↑(n - ↑y) + ↑↑x) % ↑n	∀ {n : Nat} {x y : Fin n}, ↑(x - y) = (n - ↑y + ↑x) % n
+Lean.Omega.Int.natCast_ofNat	Init.Omega.Int	B:coercion-target	∀ {x : Nat}, ↑(OfNat.ofNat x) = OfNat.ofNat x	∀ {x : Nat}, OfNat.ofNat x = OfNat.ofNat x
+Lean.Omega.Int.ofNat_congr	Init.Omega.Int	B:coercion-target	∀ {a b : Nat}, a = b → ↑a = ↑b	∀ {a b : Nat}, a = b → a = b
+Lean.Omega.Int.ofNat_fst_mk	Init.Omega.Int	B:coercion-target	∀ {β : Type u_1} {x : Nat} {y : β}, ↑(x, y).fst = ↑x	∀ {β : Type u_1} {x : Nat} {y : β}, (x, y).fst = x
+Lean.Omega.Int.ofNat_le_of_le	Init.Omega.Int	B:coercion-target	∀ {x y : Nat}, x ≤ y → ↑x ≤ ↑y	∀ {x y : Nat}, x ≤ y → x ≤ y
+Lean.Omega.Int.ofNat_lt_of_lt	Init.Omega.Int	B:coercion-target	∀ {x y : Nat}, x < y → ↑x < ↑y	∀ {x y : Nat}, x < y → x < y
+Lean.Omega.Int.ofNat_max	Init.Omega.Int	B:coercion-target	∀ (a b : Nat), ↑(max a b) = max ↑a ↑b	∀ (a b : Nat), max a b = max a b
+Lean.Omega.Int.ofNat_min	Init.Omega.Int	B:coercion-target	∀ (a b : Nat), ↑(min a b) = min ↑a ↑b	∀ (a b : Nat), min a b = min a b
+Lean.Omega.Int.ofNat_mul_nonneg	Init.Omega.Int	C:either-option	∀ {a b : Nat}, 0 ≤ ↑a * ↑b	∀ {a b : Nat}, 0 ≤ a * b
+Lean.Omega.Int.ofNat_pos	Init.Omega.Int	C:either-option	∀ {a : Nat}, 0 < ↑a ↔ 0 < a	∀ {a : Nat}, 0 < a ↔ 0 < a
+Lean.Omega.Int.ofNat_pos_of_pos	Init.Omega.Int	C:either-option	∀ {a : Nat}, 0 < a → 0 < ↑a	∀ {a : Nat}, 0 < a → 0 < a
+Lean.Omega.Int.ofNat_pow	Init.Omega.Int	B:coercion-target	∀ (a b : Nat), ↑(a ^ b) = ↑a ^ b	∀ (a b : Nat), a ^ b = a ^ b
+Lean.Omega.Int.ofNat_shiftLeft_eq	Init.Omega.Int	B:coercion-target	∀ {x y : Nat}, ↑(x <<< y) = ↑x * ↑(2 ^ y)	∀ {x y : Nat}, x <<< y = x * 2 ^ y
+Lean.Omega.Int.ofNat_shiftRight_eq_div_pow	Init.Omega.Int	B:coercion-target	∀ {x y : Nat}, ↑(x >>> y) = ↑x / ↑(2 ^ y)	∀ {x y : Nat}, x >>> y = x / 2 ^ y
+Lean.Omega.Int.ofNat_snd_mk	Init.Omega.Int	B:coercion-target	∀ {α : Type u_1} {x : α} {y : Nat}, ↑(x, y).snd = ↑y	∀ {α : Type u_1} {x : α} {y : Nat}, (x, y).snd = y
+Lean.Omega.Int.ofNat_sub_dichotomy	Init.Omega.Int	B:coercion-target	∀ {a b : Nat}, b ≤ a ∧ ↑(a - b) = ↑a - ↑b ∨ a < b ∧ ↑(a - b) = 0	∀ {a b : Nat}, b ≤ a ∧ a - b = a - b ∨ a < b ∧ a - b = 0
+Lean.Omega.Int.ofNat_sub_eq_zero	Init.Omega.Int	C:either-option	∀ {b a : Nat}, ¬b ≤ a → ↑(a - b) = 0	∀ {b a : Nat}, ¬b ≤ a → a - b = 0
+Lean.Omega.Int.ofNat_sub_sub	Init.Omega.Int	B:coercion-target	∀ {a b c : Nat}, ↑(a - b - c) = ↑(a - (b + c))	∀ {a b c : Nat}, a - b - c = a - (b + c)
+Lean.Omega.IntList.gcd_cons_div_right'	Init.Omega.IntList	B:coercion-target	∀ {x : Int} {xs : List Int}, ↑(Lean.Omega.IntList.gcd (x :: xs)) ∣ ↑(Lean.Omega.IntList.gcd xs)	∀ {x : Int} {xs : List Int}, Lean.Omega.IntList.gcd (x :: xs) ∣ Lean.Omega.IntList.gcd xs
+List.mapFinIdx_eq_iff	Init.Data.List.MapIdx	F:needs-pp.all	∀ {α : Type u_1} {β : Type u_2} {l' : List β} {l : List α} {f : (i : Nat) → α → i < l.length → β},   l.mapFinIdx f = l' ↔ ∃ h, ∀ (i : Nat) (h_1 : i < l.length), l'[i] = f i l[i] h_1	∀ {α : Type u_1} {β : Type u_2} {l' : List β} {l : List α} {f : (i : Nat) → α → i < l.length → β},   l.mapFinIdx f = l' ↔ ∃ h, ∀ (i : Nat) (h_1 : i < l.length), l'[i] = f i l[i] h_1
+List.mem_drop_iff_getElem	Init.Data.List.Nat.TakeDrop	F:needs-pp.all	∀ {α : Type u_1} {i : Nat} {l : List α} {a : α}, a ∈ List.drop i l ↔ ∃ j hm, l[i + j] = a	∀ {α : Type u_1} {i : Nat} {l : List α} {a : α}, a ∈ List.drop i l ↔ ∃ j hm, l[i + j] = a
+List.prefix_iff_getElem	Init.Data.List.Sublist	F:needs-pp.all	∀ {α : Type u_1} {l₁ l₂ : List α}, l₁ <+: l₂ ↔ ∃ h, ∀ (i : Nat) (hx : i < l₁.length), l₁[i] = l₂[i]	∀ {α : Type u_1} {l₁ l₂ : List α}, l₁ <+: l₂ ↔ ∃ h, ∀ (i : Nat) (hx : i < l₁.length), l₁[i] = l₂[i]
+List.prod_nil	Init.Data.List.Basic	A:numeral-literal-type	∀ {α : Type u} [inst : Mul α] [inst_1 : One α], [].prod = 1	∀ {α : Type u} [inst : Mul α] [inst_1 : One α], [].prod = 1
+List.prod_singleton	Init.Data.List.Lemmas	E:needs-pp.explicit	∀ {α : Type u_1} [inst : Mul α] [inst_1 : One α] [Std.LawfulRightIdentity (fun x1 x2 => x1 * x2) 1]   {x : α}, [x].prod = x	∀ {α : Type u_1} [inst : Mul α] [inst_1 : One α] [Std.LawfulRightIdentity (fun x1 x2 => x1 * x2) 1]   {x : α}, [x].prod = x
+List.sum_nil	Init.Data.List.Basic	A:numeral-literal-type	∀ {α : Type u} [inst : Add α] [inst_1 : Zero α], [].sum = 0	∀ {α : Type u} [inst : Add α] [inst_1 : Zero α], [].sum = 0
+List.sum_singleton	Init.Data.List.Lemmas	E:needs-pp.explicit	∀ {α : Type u_1} [inst : Add α] [inst_1 : Zero α] [Std.LawfulRightIdentity (fun x1 x2 => x1 + x2) 0]   {x : α}, [x].sum = x	∀ {α : Type u_1} [inst : Add α] [inst_1 : Zero α] [Std.LawfulRightIdentity (fun x1 x2 => x1 + x2) 0]   {x : α}, [x].sum = x
+Nat.ToInt.natCast_ofNat	Init.Data.Int.OfNat	E:needs-pp.explicit	∀ (n : Nat), ↑(OfNat.ofNat n) = OfNat.ofNat n	∀ (n : Nat), OfNat.ofNat n = OfNat.ofNat n
+Rat.instLawfulIdentityHAddOfNat	Init.Data.Rat.Lemmas	A:numeral-literal-type	Std.LawfulIdentity (fun x1 x2 => x1 + x2) 0	Std.LawfulIdentity (fun x1 x2 => x1 + x2) 0
+Rat.intCast_add	Init.Data.Rat.Lemmas	B:coercion-target	∀ (a b : Int), ↑(a + b) = ↑a + ↑b	∀ (a b : Int), a + b = a + b
+Rat.intCast_eq_zero_iff	Init.Data.Rat.Lemmas	C:either-option	∀ {a : Int}, ↑a = 0 ↔ a = 0	∀ {a : Int}, a = 0 ↔ a = 0
+Rat.intCast_inj	Init.Data.Rat.Lemmas	B:coercion-target	∀ {a b : Int}, ↑a = ↑b ↔ a = b	∀ {a b : Int}, a = b ↔ a = b
+Rat.intCast_le_intCast	Init.Data.Rat.Lemmas	B:coercion-target	∀ {a b : Int}, ↑a ≤ ↑b ↔ a ≤ b	∀ {a b : Int}, a ≤ b ↔ a ≤ b
+Rat.intCast_lt_intCast	Init.Data.Rat.Lemmas	B:coercion-target	∀ {a b : Int}, ↑a < ↑b ↔ a < b	∀ {a b : Int}, a < b ↔ a < b
+Rat.intCast_mul	Init.Data.Rat.Lemmas	B:coercion-target	∀ (a b : Int), ↑(a * b) = ↑a * ↑b	∀ (a b : Int), a * b = a * b
+Rat.intCast_natCast	Init.Data.Rat.Lemmas	B:coercion-target	∀ (n : Nat), ↑↑n = ↑n	∀ (n : Nat), n = n
+Rat.intCast_neg	Init.Data.Rat.Lemmas	B:coercion-target	∀ (a : Int), ↑(-a) = -↑a	∀ (a : Int), -a = -a
+Rat.intCast_neg_iff	Init.Data.Rat.Lemmas	C:either-option	∀ {a : Int}, ↑a < 0 ↔ a < 0	∀ {a : Int}, a < 0 ↔ a < 0
+Rat.intCast_nonneg	Init.Data.Rat.Lemmas	C:either-option	∀ {a : Int}, 0 ≤ ↑a ↔ 0 ≤ a	∀ {a : Int}, 0 ≤ a ↔ 0 ≤ a
+Rat.intCast_nonpos	Init.Data.Rat.Lemmas	C:either-option	∀ {a : Int}, ↑a ≤ 0 ↔ a ≤ 0	∀ {a : Int}, a ≤ 0 ↔ a ≤ 0
+Rat.intCast_ofNat	Init.Data.Rat.Lemmas	B:coercion-target	∀ {a : Nat}, ↑(OfNat.ofNat a) = OfNat.ofNat a	∀ {a : Nat}, OfNat.ofNat a = OfNat.ofNat a
+Rat.intCast_one	Init.Data.Rat.Lemmas	C:either-option	↑1 = 1	1 = 1
+Rat.intCast_pos	Init.Data.Rat.Lemmas	C:either-option	∀ {a : Int}, 0 < ↑a ↔ 0 < a	∀ {a : Int}, 0 < a ↔ 0 < a
+Rat.intCast_pow	Init.Data.Rat.Lemmas	B:coercion-target	∀ (a : Int) (n : Nat), ↑(a ^ n) = ↑a ^ n	∀ (a : Int) (n : Nat), a ^ n = a ^ n
+Rat.intCast_sub	Init.Data.Rat.Lemmas	B:coercion-target	∀ (a b : Int), ↑(a - b) = ↑a - ↑b	∀ (a b : Int), a - b = a - b
+Rat.intCast_zero	Init.Data.Rat.Lemmas	C:either-option	↑0 = 0	0 = 0
+Rat.mkRat_num_den	Init.Data.Rat.Lemmas	A:numeral-literal-type	∀ {d : Nat} {n n' : Int} {d' : Nat} {z' : d' ≠ 0} {c : n'.natAbs.Coprime d'},   d ≠ 0 →     mkRat n d = { num := n', den := d', den_nz := z', reduced := c } →       ∃ m, m ≠ 0 ∧ n = n' * ↑m ∧ d = d' * m	∀ {d : Nat} {n n' : Int} {d' : Nat} {z' : d' ≠ 0} {c : n'.natAbs.Coprime d'},   d ≠ 0 →     mkRat n d = { num := n', den := d', den_nz := z', reduced := c } →       ∃ m, m ≠ 0 ∧ n = n' * m ∧ ↑d = ↑d' * m
+Rat.natCast_add	Init.Data.Rat.Lemmas	B:coercion-target	∀ (a b : Nat), ↑(a + b) = ↑a + ↑b	∀ (a b : Nat), a + b = a + b
+Rat.natCast_eq_zero_iff	Init.Data.Rat.Lemmas	C:either-option	∀ {a : Nat}, ↑a = 0 ↔ a = 0	∀ {a : Nat}, a = 0 ↔ a = 0
+Rat.natCast_inj	Init.Data.Rat.Lemmas	B:coercion-target	∀ {a b : Nat}, ↑a = ↑b ↔ a = b	∀ {a b : Nat}, a = b ↔ a = b
+Rat.natCast_le_natCast	Init.Data.Rat.Lemmas	B:coercion-target	∀ {a b : Nat}, ↑a ≤ ↑b ↔ a ≤ b	∀ {a b : Nat}, a ≤ b ↔ a ≤ b
+Rat.natCast_lt_natCast	Init.Data.Rat.Lemmas	B:coercion-target	∀ {a b : Nat}, ↑a < ↑b ↔ a < b	∀ {a b : Nat}, a < b ↔ a < b
+Rat.natCast_mul	Init.Data.Rat.Lemmas	B:coercion-target	∀ (a b : Nat), ↑(a * b) = ↑a * ↑b	∀ (a b : Nat), a * b = a * b
+Rat.natCast_nonneg	Init.Data.Rat.Lemmas	C:either-option	∀ {a : Nat}, 0 ≤ ↑a	∀ {a : Nat}, 0 ≤ a
+Rat.natCast_ofNat	Init.Data.Rat.Lemmas	B:coercion-target	∀ {a : Nat}, ↑(OfNat.ofNat a) = OfNat.ofNat a	∀ {a : Nat}, OfNat.ofNat a = OfNat.ofNat a
+Rat.natCast_pos	Init.Data.Rat.Lemmas	C:either-option	∀ {a : Nat}, 0 < ↑a ↔ 0 < a	∀ {a : Nat}, 0 < a ↔ 0 < a
+Rat.natCast_pow	Init.Data.Rat.Lemmas	B:coercion-target	∀ (a b : Nat), ↑(a ^ b) = ↑a ^ b	∀ (a b : Nat), a ^ b = a ^ b
+Rat.neg_zero	Init.Data.Rat.Lemmas	A:numeral-literal-type	-0 = 0	-0 = 0
+Rat.normalize_num_den	Init.Data.Rat.Lemmas	A:numeral-literal-type	∀ {n : Int} {d : Nat} {z : d ≠ 0} {n' : Int} {d' : Nat} {z' : d' ≠ 0} {c : n'.natAbs.Coprime d'},   Rat.normalize n d z = { num := n', den := d', den_nz := z', reduced := c } →     ∃ m, m ≠ 0 ∧ n = n' * ↑m ∧ d = d' * m	∀ {n : Int} {d : Nat} {z : d ≠ 0} {n' : Int} {d' : Nat} {z' : d' ≠ 0} {c : n'.natAbs.Coprime d'},   Rat.normalize n d z = { num := n', den := d', den_nz := z', reduced := c } →     ∃ m, m ≠ 0 ∧ n = n' * m ∧ ↑d = ↑d' * m
+Rat.normalize_num_den'	Init.Data.Rat.Lemmas	A:numeral-literal-type	∀ (num : Int) (den : Nat) (nz : den ≠ 0),   ∃ d, d ≠ 0 ∧ num = (Rat.normalize num den nz).num * ↑d ∧ den = (Rat.normalize num den nz).den * d	∀ (num : Int) (den : Nat) (nz : den ≠ 0),   ∃ d, d ≠ 0 ∧ num = (Rat.normalize num den nz).num * d ∧ ↑den = ↑(Rat.normalize num den nz).den * d
+Rat.ofNat_eq_ofNat	Init.Data.Rat.Lemmas	E:needs-pp.explicit	∀ {a b : Nat}, OfNat.ofNat a = OfNat.ofNat b ↔ a = b	∀ {a b : Nat}, OfNat.ofNat a = OfNat.ofNat b ↔ a = b
+Std.DTreeMap.Internal.Impl.Ordered.reverse	Std.Data.DTreeMap.Internal.WF.Lemmas	E:needs-pp.explicit	∀ {α : Type u} {β : α → Type v} [inst : Ord α] {t : Std.DTreeMap.Internal.Impl α β},   t.Ordered → t.reverse.Ordered	∀ {α : Type u} {β : α → Type v} [inst : Ord α] {t : Std.DTreeMap.Internal.Impl α β},   t.Ordered → t.reverse.Ordered
+Std.DTreeMap.Internal.Impl.getEntryLE?_eq_getEntryGE?_reverse	Std.Data.DTreeMap.Internal.Model	E:needs-pp.explicit	∀ {α : Type u} {β : α → Type v} [o : Ord α] [Std.TransOrd α] {t : Std.DTreeMap.Internal.Impl α β}   {k : α},   Std.DTreeMap.Internal.Impl.getEntryLE? k t = Std.DTreeMap.Internal.Impl.getEntryGE? k t.reverse	∀ {α : Type u} {β : α → Type v} [o : Ord α] [Std.TransOrd α] {t : Std.DTreeMap.Internal.Impl α β}   {k : α},   Std.DTreeMap.Internal.Impl.getEntryLE? k t = Std.DTreeMap.Internal.Impl.getEntryGE? k t.reverse
+Std.DTreeMap.Internal.Impl.getEntryLT?_eq_getEntryGT?_reverse	Std.Data.DTreeMap.Internal.Model	E:needs-pp.explicit	∀ {α : Type u} {β : α → Type v} [o : Ord α] [Std.TransOrd α] {t : Std.DTreeMap.Internal.Impl α β}   {k : α},   Std.DTreeMap.Internal.Impl.getEntryLT? k t = Std.DTreeMap.Internal.Impl.getEntryGT? k t.reverse	∀ {α : Type u} {β : α → Type v} [o : Ord α] [Std.TransOrd α] {t : Std.DTreeMap.Internal.Impl α β}   {k : α},   Std.DTreeMap.Internal.Impl.getEntryLT? k t = Std.DTreeMap.Internal.Impl.getEntryGT? k t.reverse
+Std.DTreeMap.Internal.Impl.maxEntry?_eq_minEntry?	Std.Data.DTreeMap.Internal.WF.Lemmas	E:needs-pp.explicit	∀ {α : Type u} {β : α → Type v} [o : Ord α] [to : Std.TransOrd α]   {t : Std.DTreeMap.Internal.Impl α β},   t.Ordered → t.maxEntry? = Std.Internal.List.minEntry? t.toListModel	∀ {α : Type u} {β : α → Type v} [o : Ord α] [to : Std.TransOrd α]   {t : Std.DTreeMap.Internal.Impl α β},   t.Ordered → t.maxEntry? = Std.Internal.List.minEntry? t.toListModel
+Std.LawfulBEqOrd.opposite	Init.Data.Order.Ord	E:needs-pp.explicit	∀ {α : Type u} [inst : BEq α] [inst_1 : Ord α] [Std.OrientedOrd α] [Std.LawfulBEqOrd α],   Std.LawfulBEqOrd α	∀ {α : Type u} [inst : BEq α] [inst_1 : Ord α] [Std.OrientedOrd α] [Std.LawfulBEqOrd α],   Std.LawfulBEqOrd α
+Std.LawfulEqOrd.opposite	Init.Data.Order.Ord	E:needs-pp.explicit	∀ {α : Type u} [inst : Ord α] [Std.OrientedOrd α] [Std.LawfulEqOrd α], Std.LawfulEqOrd α	∀ {α : Type u} [inst : Ord α] [Std.OrientedOrd α] [Std.LawfulEqOrd α], Std.LawfulEqOrd α
+Std.OrientedOrd.opposite	Init.Data.Order.Ord	E:needs-pp.explicit	∀ {α : Type u} [inst : Ord α] [Std.OrientedOrd α], Std.OrientedOrd α	∀ {α : Type u} [inst : Ord α] [Std.OrientedOrd α], Std.OrientedOrd α
+Std.TransOrd.opposite	Init.Data.Order.Ord	E:needs-pp.explicit	∀ {α : Type u} [inst : Ord α] [Std.TransOrd α], Std.TransOrd α	∀ {α : Type u} [inst : Ord α] [Std.TransOrd α], Std.TransOrd α
+Std.WP.WP.le_wp_of_frameClosure_eq	Std.WP.Frame	E:needs-pp.explicit	∀ {Prog : Type u} {Value : Type v} {Pred : Type w} {EPred : Type z} [inst : Std.WP.Assertion Pred]   [inst_1 : Std.WP.Assertion EPred] {R : Type t} {op : R → Pred → Pred}   [inst_2 : ∀ (r : R), Lean.Order.PreservesSup (op r)] {base I : Std.WP.WP Prog Value Pred EPred},   I = Std.WP.WP.of_frameClosure op base →     ∀ {x : Prog} {Q : Value → Pred} {E : EPred} {pre : Pred},       (∀ (r : R), Lean.Ord…	∀ {Prog : Type u} {Value : Type v} {Pred : Type w} {EPred : Type z} [inst : Std.WP.Assertion Pred]   [inst_1 : Std.WP.Assertion EPred] {R : Type t} {op : R → Pred → Pred}   [inst_2 : ∀ (r : R), Lean.Order.PreservesSup (op r)] {base I : Std.WP.WP Prog Value Pred EPred},   I = Std.WP.WP.of_frameClosure op base →     ∀ {x : Prog} {Q : Value → Pred} {E : EPred} {pre : Pred},       (∀ (r : R), …
+Std.WP.WP.of_frameClosure_le_wp_iff	Std.WP.Frame	E:needs-pp.explicit	∀ {Prog : Type u} {Value : Type v} {Pred : Type w} {EPred : Type z} [inst : Std.WP.Assertion Pred]   [inst_1 : Std.WP.Assertion EPred] {R : Type t} (op : R → Pred → Pred)   [inst_2 : ∀ (r : R), Lean.Order.PreservesSup (op r)] (base : Std.WP.WP Prog Value Pred EPred)   (x : Prog) (Q : Value → Pred) (E : EPred) (pre : Pred),   Lean.Order.PartialOrder.rel pre (Std.WP.wp x Q E) ↔     ∀ (r : R), Lean.O…	∀ {Prog : Type u} {Value : Type v} {Pred : Type w} {EPred : Type z} [inst : Std.WP.Assertion Pred]   [inst_1 : Std.WP.Assertion EPred] {R : Type t} (op : R → Pred → Pred)   [inst_2 : ∀ (r : R), Lean.Order.PreservesSup (op r)] (base : Std.WP.WP Prog Value Pred EPred)   (x : Prog) (Q : Value → Pred) (E : EPred) (pre : Pred),   Lean.Order.PartialOrder.rel pre (Std.WP.wp x Q E) ↔     ∀ (r : R)…
+System.Platform.two_pow_numBits_ne_zero	Init.Data.UInt.Lemmas	A:numeral-literal-type	2 ^ System.Platform.numBits ≠ 0	2 ^ System.Platform.numBits ≠ 0
+System.Platform.two_pow_numBits_nonneg	Init.Data.UInt.Lemmas	A:numeral-literal-type	0 ≤ 2 ^ System.Platform.numBits	0 ≤ 2 ^ System.Platform.numBits
+UInt16.neg_one_eq	Init.Data.UInt.Lemmas	A:numeral-literal-type	-1 = 65535	-1 = 65535
+UInt16.neg_zero	Init.Data.UInt.Lemmas	A:numeral-literal-type	-0 = 0	-0 = 0
+UInt16.not_neg_one	Init.Data.UInt.Bitwise	A:numeral-literal-type	~~~(-1) = 0	~~~(-1) = 0
+UInt16.not_zero	Init.Data.UInt.Bitwise	A:numeral-literal-type	~~~0 = -1	~~~0 = -1
+UInt16.toUInt32_ofNat	Init.Data.UInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, n < 65536 → (OfNat.ofNat n).toUInt32 = OfNat.ofNat n	∀ {n : Nat}, n < 65536 → Nat.toUInt32 (OfNat.ofNat n) = OfNat.ofNat n
+UInt16.toUInt64_ofNat	Init.Data.UInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, n < 65536 → (OfNat.ofNat n).toUInt64 = OfNat.ofNat n	∀ {n : Nat}, n < 65536 → Nat.toUInt64 (OfNat.ofNat n) = OfNat.ofNat n
+UInt16.toUInt8_ofNat	Init.Data.UInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, (OfNat.ofNat n).toUInt8 = OfNat.ofNat n	∀ {n : Nat}, Nat.toUInt8 (OfNat.ofNat n) = OfNat.ofNat n
+UInt16.toUSize_ofNat	Init.Data.UInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, n < 65536 → (OfNat.ofNat n).toUSize = OfNat.ofNat n	∀ {n : Nat}, n < 65536 → Nat.toUSize (OfNat.ofNat n) = OfNat.ofNat n
+UInt16.zero_ne_one	Init.Data.UInt.Lemmas	A:numeral-literal-type	0 ≠ 1	0 ≠ 1
+UInt32.neg_one_eq	Init.Data.UInt.Lemmas	A:numeral-literal-type	-1 = 4294967295	-1 = 4294967295
+UInt32.neg_zero	Init.Data.UInt.Lemmas	A:numeral-literal-type	-0 = 0	-0 = 0
+UInt32.not_neg_one	Init.Data.UInt.Bitwise	A:numeral-literal-type	~~~(-1) = 0	~~~(-1) = 0
+UInt32.not_zero	Init.Data.UInt.Bitwise	A:numeral-literal-type	~~~0 = -1	~~~0 = -1
+UInt32.toUInt16_ofNat	Init.Data.UInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, (OfNat.ofNat n).toUInt16 = OfNat.ofNat n	∀ {n : Nat}, Nat.toUInt16 (OfNat.ofNat n) = OfNat.ofNat n
+UInt32.toUInt64_ofNat	Init.Data.UInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, n < 4294967296 → (OfNat.ofNat n).toUInt64 = OfNat.ofNat n	∀ {n : Nat}, n < 4294967296 → Nat.toUInt64 (OfNat.ofNat n) = OfNat.ofNat n
+UInt32.toUInt8_ofNat	Init.Data.UInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, (OfNat.ofNat n).toUInt8 = OfNat.ofNat n	∀ {n : Nat}, Nat.toUInt8 (OfNat.ofNat n) = OfNat.ofNat n
+UInt32.toUSize_ofNat	Init.Data.UInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, n < 4294967296 → (OfNat.ofNat n).toUSize = OfNat.ofNat n	∀ {n : Nat}, n < 4294967296 → Nat.toUSize (OfNat.ofNat n) = OfNat.ofNat n
+UInt32.zero_ne_one	Init.Data.UInt.Lemmas	A:numeral-literal-type	0 ≠ 1	0 ≠ 1
+UInt64.neg_one_eq	Init.Data.UInt.Lemmas	A:numeral-literal-type	-1 = 18446744073709551615	-1 = 18446744073709551615
+UInt64.neg_zero	Init.Data.UInt.Lemmas	A:numeral-literal-type	-0 = 0	-0 = 0
+UInt64.not_neg_one	Init.Data.UInt.Bitwise	A:numeral-literal-type	~~~(-1) = 0	~~~(-1) = 0
+UInt64.not_zero	Init.Data.UInt.Bitwise	A:numeral-literal-type	~~~0 = -1	~~~0 = -1
+UInt64.toUInt16_ofNat	Init.Data.UInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, (OfNat.ofNat n).toUInt16 = OfNat.ofNat n	∀ {n : Nat}, Nat.toUInt16 (OfNat.ofNat n) = OfNat.ofNat n
+UInt64.toUInt32_ofNat	Init.Data.UInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, (OfNat.ofNat n).toUInt32 = OfNat.ofNat n	∀ {n : Nat}, Nat.toUInt32 (OfNat.ofNat n) = OfNat.ofNat n
+UInt64.toUInt8_ofNat	Init.Data.UInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, (OfNat.ofNat n).toUInt8 = OfNat.ofNat n	∀ {n : Nat}, Nat.toUInt8 (OfNat.ofNat n) = OfNat.ofNat n
+UInt64.toUSize_ofNat	Init.Data.UInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, (OfNat.ofNat n).toUSize = OfNat.ofNat n	∀ {n : Nat}, Nat.toUSize (OfNat.ofNat n) = OfNat.ofNat n
+UInt64.zero_ne_one	Init.Data.UInt.Lemmas	A:numeral-literal-type	0 ≠ 1	0 ≠ 1
+UInt8.neg_one_eq	Init.Data.UInt.Lemmas	A:numeral-literal-type	-1 = 255	-1 = 255
+UInt8.neg_zero	Init.Data.UInt.Lemmas	A:numeral-literal-type	-0 = 0	-0 = 0
+UInt8.not_neg_one	Init.Data.UInt.Bitwise	A:numeral-literal-type	~~~(-1) = 0	~~~(-1) = 0
+UInt8.not_zero	Init.Data.UInt.Bitwise	A:numeral-literal-type	~~~0 = -1	~~~0 = -1
+UInt8.toUInt16_ofNat	Init.Data.UInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, n < 256 → (OfNat.ofNat n).toUInt16 = OfNat.ofNat n	∀ {n : Nat}, n < 256 → Nat.toUInt16 (OfNat.ofNat n) = OfNat.ofNat n
+UInt8.toUInt32_ofNat	Init.Data.UInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, n < 256 → (OfNat.ofNat n).toUInt32 = OfNat.ofNat n	∀ {n : Nat}, n < 256 → Nat.toUInt32 (OfNat.ofNat n) = OfNat.ofNat n
+UInt8.toUInt64_ofNat	Init.Data.UInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, n < 256 → (OfNat.ofNat n).toUInt64 = OfNat.ofNat n	∀ {n : Nat}, n < 256 → Nat.toUInt64 (OfNat.ofNat n) = OfNat.ofNat n
+UInt8.toUSize_ofNat	Init.Data.UInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, n < 256 → (OfNat.ofNat n).toUSize = OfNat.ofNat n	∀ {n : Nat}, n < 256 → Nat.toUSize (OfNat.ofNat n) = OfNat.ofNat n
+UInt8.zero_ne_one	Init.Data.UInt.Lemmas	A:numeral-literal-type	0 ≠ 1	0 ≠ 1
+USize.neg_zero	Init.Data.UInt.Lemmas	A:numeral-literal-type	-0 = 0	-0 = 0
+USize.not_neg_one	Init.Data.UInt.Bitwise	A:numeral-literal-type	~~~(-1) = 0	~~~(-1) = 0
+USize.not_zero	Init.Data.UInt.Bitwise	A:numeral-literal-type	~~~0 = -1	~~~0 = -1
+USize.toUInt16_ofNat	Init.Data.UInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, (OfNat.ofNat n).toUInt16 = OfNat.ofNat n	∀ {n : Nat}, Nat.toUInt16 (OfNat.ofNat n) = OfNat.ofNat n
+USize.toUInt32_ofNat	Init.Data.UInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, (OfNat.ofNat n).toUInt32 = OfNat.ofNat n	∀ {n : Nat}, Nat.toUInt32 (OfNat.ofNat n) = OfNat.ofNat n
+USize.toUInt64_ofNat	Init.Data.UInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, n < 4294967296 → (OfNat.ofNat n).toUInt64 = OfNat.ofNat n	∀ {n : Nat}, n < 4294967296 → Nat.toUInt64 (OfNat.ofNat n) = OfNat.ofNat n
+USize.toUInt8_ofNat	Init.Data.UInt.Lemmas	E:needs-pp.explicit	∀ {n : Nat}, (OfNat.ofNat n).toUInt8 = OfNat.ofNat n	∀ {n : Nat}, Nat.toUInt8 (OfNat.ofNat n) = OfNat.ofNat n
+USize.zero_lt_one	Init.Data.UInt.Lemmas	A:numeral-literal-type	0 < 1	0 < 1
+USize.zero_ne_one	Init.Data.UInt.Lemmas	A:numeral-literal-type	0 ≠ 1	0 ≠ 1
+Vector.mem_extract_iff_getElem	Init.Data.Vector.Extract	F:needs-pp.all	∀ {α : Type u_1} {n : Nat} {xs : Vector α n} {a : α} {i j : Nat},   a ∈ xs.extract i j ↔ ∃ k hm, xs[i + k] = a	∀ {α : Type u_1} {n : Nat} {xs : Vector α n} {a : α} {i j : Nat},   a ∈ xs.extract i j ↔ ∃ k hm, xs[i + k] = a
+Vector.neg_zero	Init.Data.Vector.Algebra	A:numeral-literal-type	∀ {α : Type u_1} {n : Nat} [inst : Zero α] [inst_1 : Neg α], -0 = 0 → -0 = 0	∀ {α : Type u_1} {n : Nat} [inst : Zero α] [inst_1 : Neg α], -0 = 0 → -0 = 0
+Vector.prod_empty	Init.Data.Vector.Lemmas	A:numeral-literal-type	∀ {α : Type u_1} [inst : Mul α] [inst_1 : One α], #v[].prod = 1	∀ {α : Type u_1} [inst : Mul α] [inst_1 : One α], #v[].prod = 1
+Vector.prod_singleton	Init.Data.Vector.Lemmas	F:needs-pp.all	∀ {α : Type u_1} [inst : Mul α] [inst_1 : One α] [Std.LawfulRightIdentity (fun x1 x2 => x1 * x2) 1]   {x : α}, #v[x].prod = x	∀ {α : Type u_1} [inst : Mul α] [inst_1 : One α] [Std.LawfulRightIdentity (fun x1 x2 => x1 * x2) 1]   {x : α}, #v[x].prod = x
+Vector.sum_empty	Init.Data.Vector.Lemmas	A:numeral-literal-type	∀ {α : Type u_1} [inst : Add α] [inst_1 : Zero α], #v[].sum = 0	∀ {α : Type u_1} [inst : Add α] [inst_1 : Zero α], #v[].sum = 0
+Vector.sum_singleton	Init.Data.Vector.Lemmas	F:needs-pp.all	∀ {α : Type u_1} [inst : Add α] [inst_1 : Zero α] [Std.LawfulRightIdentity (fun x1 x2 => x1 + x2) 0]   {x : α}, #v[x].sum = x	∀ {α : Type u_1} [inst : Add α] [inst_1 : Zero α] [Std.LawfulRightIdentity (fun x1 x2 => x1 + x2) 0]   {x : α}, #v[x].sum = x
+dite.congr_simp	Init.Data.Nat.Div.Basic	E:needs-pp.explicit	∀ {α : Sort u} (c : Prop) {h : Decidable c} [h_1 : Decidable c] (t t_1 : c → α),   t = t_1 → ∀ (e e_1 : ¬c → α), e = e_1 → dite c t e = dite c t_1 e_1	∀ {α : Sort u} (c : Prop) {h : Decidable c} [h_1 : Decidable c] (t t_1 : c → α),   t = t_1 → ∀ (e e_1 : ¬c → α), e = e_1 → dite c t e = dite c t_1 e_1
+instLawfulIdentityISizeHAddOfNat	Init.Data.SInt.Lemmas	A:numeral-literal-type	Std.LawfulIdentity (fun x1 x2 => x1 + x2) 0	Std.LawfulIdentity (fun x1 x2 => x1 + x2) 0
+instLawfulIdentityInt16HAddOfNat	Init.Data.SInt.Lemmas	A:numeral-literal-type	Std.LawfulIdentity (fun x1 x2 => x1 + x2) 0	Std.LawfulIdentity (fun x1 x2 => x1 + x2) 0
+instLawfulIdentityInt32HAddOfNat	Init.Data.SInt.Lemmas	A:numeral-literal-type	Std.LawfulIdentity (fun x1 x2 => x1 + x2) 0	Std.LawfulIdentity (fun x1 x2 => x1 + x2) 0
+instLawfulIdentityInt64HAddOfNat	Init.Data.SInt.Lemmas	A:numeral-literal-type	Std.LawfulIdentity (fun x1 x2 => x1 + x2) 0	Std.LawfulIdentity (fun x1 x2 => x1 + x2) 0
+instLawfulIdentityInt8HAddOfNat	Init.Data.SInt.Lemmas	A:numeral-literal-type	Std.LawfulIdentity (fun x1 x2 => x1 + x2) 0	Std.LawfulIdentity (fun x1 x2 => x1 + x2) 0
+instLawfulIdentityUInt16HAddOfNat	Init.Data.UInt.Lemmas	A:numeral-literal-type	Std.LawfulIdentity (fun x1 x2 => x1 + x2) 0	Std.LawfulIdentity (fun x1 x2 => x1 + x2) 0
+instLawfulIdentityUInt32HAddOfNat	Init.Data.UInt.Lemmas	A:numeral-literal-type	Std.LawfulIdentity (fun x1 x2 => x1 + x2) 0	Std.LawfulIdentity (fun x1 x2 => x1 + x2) 0
+instLawfulIdentityUInt64HAddOfNat	Init.Data.UInt.Lemmas	A:numeral-literal-type	Std.LawfulIdentity (fun x1 x2 => x1 + x2) 0	Std.LawfulIdentity (fun x1 x2 => x1 + x2) 0
+instLawfulIdentityUInt8HAddOfNat	Init.Data.UInt.Lemmas	A:numeral-literal-type	Std.LawfulIdentity (fun x1 x2 => x1 + x2) 0	Std.LawfulIdentity (fun x1 x2 => x1 + x2) 0
+instLawfulIdentityUSizeHAddOfNat	Init.Data.UInt.Lemmas	A:numeral-literal-type	Std.LawfulIdentity (fun x1 x2 => x1 + x2) 0	Std.LawfulIdentity (fun x1 x2 => x1 + x2) 0
+ite_decide_not_self_left	Init.PropLemmas	E:needs-pp.explicit	∀ (p : Prop) [h : Decidable p] {w : Decidable p} (q : Bool),   (if p then !decide p else q) = (!decide p && q)	∀ (p : Prop) [h : Decidable p] {w : Decidable p} (q : Bool),   (if p then !decide p else q) = (!decide p && q)
+ite_decide_not_self_right	Init.PropLemmas	E:needs-pp.explicit	∀ (p : Prop) [h : Decidable p] {w : Decidable p} (q : Bool),   (if p then q else !decide p) = (!decide p || q)	∀ (p : Prop) [h : Decidable p] {w : Decidable p} (q : Bool),   (if p then q else !decide p) = (!decide p || q)
+ite_decide_self_left	Init.PropLemmas	E:needs-pp.explicit	∀ (p : Prop) [h : Decidable p] {w : Decidable p} (q : Bool),   (if p then decide p else q) = (decide p || q)	∀ (p : Prop) [h : Decidable p] {w : Decidable p} (q : Bool),   (if p then decide p else q) = (decide p || q)
+ite_decide_self_right	Init.PropLemmas	E:needs-pp.explicit	∀ (p : Prop) [h : Decidable p] {w : Decidable p} (q : Bool),   (if p then q else decide p) = (decide p && q)	∀ (p : Prop) [h : Decidable p] {w : Decidable p} (q : Bool),   (if p then q else decide p) = (decide p && q)
+ite_else_decide_not_self	Init.PropLemmas	E:needs-pp.explicit	∀ (p : Prop) [h : Decidable p] {w : Decidable p} (q : Bool),   (if p then q else !decide p) = (!decide p || q)	∀ (p : Prop) [h : Decidable p] {w : Decidable p} (q : Bool),   (if p then q else !decide p) = (!decide p || q)
+ite_else_decide_self	Init.PropLemmas	E:needs-pp.explicit	∀ (p : Prop) [h : Decidable p] {w : Decidable p} (q : Bool),   (if p then q else decide p) = (decide p && q)	∀ (p : Prop) [h : Decidable p] {w : Decidable p} (q : Bool),   (if p then q else decide p) = (decide p && q)
+ite_eq_ite	Init.PropLemmas	E:needs-pp.explicit	∀ {α : Sort u_1} (p : Prop) {h h' : Decidable p} (x y : α),   ((if p then x else y) = if p then x else y) ↔ True	∀ {α : Sort u_1} (p : Prop) {h : Decidable p} {h' : Decidable p} (x y : α),   ((if p then x else y) = if p then x else y) ↔ True
+ite_iff_ite	Init.PropLemmas	E:needs-pp.explicit	∀ (p : Prop) {h h' : Decidable p} (x y : Prop), ((if p then x else y) ↔ if p then x else y) ↔ True	∀ (p : Prop) {h : Decidable p} {h' : Decidable p} (x y : Prop),   ((if p then x else y) ↔ if p then x else y) ↔ True
+ite_then_decide_not_self	Init.PropLemmas	E:needs-pp.explicit	∀ (p : Prop) [h : Decidable p] {w : Decidable p} (q : Bool),   (if p then !decide p else q) = (!decide p && q)	∀ (p : Prop) [h : Decidable p] {w : Decidable p} (q : Bool),   (if p then !decide p else q) = (!decide p && q)
+ite_then_decide_self	Init.PropLemmas	E:needs-pp.explicit	∀ (p : Prop) [h : Decidable p] {w : Decidable p} (q : Bool),   (if p then decide p else q) = (decide p || q)	∀ (p : Prop) [h : Decidable p] {w : Decidable p} (q : Bool),   (if p then decide p else q) = (decide p || q)
+neZero_zero_iff_false	Init.Data.NeZero	A:numeral-literal-type	∀ {α : Type u_1} [inst : Zero α], NeZero 0 ↔ False	∀ {α : Type u_1} [inst : Zero α], NeZero 0 ↔ False
