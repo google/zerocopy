@@ -2178,4 +2178,133 @@ mod unpinned_admission_tests {
         assert!(sources_both.contains("Anneal.BitVec"), "{sources_both:?}");
         assert!(!sources_both.contains("Anneal.Unused"), "{sources_both:?}");
     }
+
+    #[test]
+    fn live_demand_driven_lebytes_and_listchunks_three_axiom_proof() {
+        let lean = installed_lean();
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        let nat_bitwise_path = repo_root().join("theory/Anneal/NatBitwise.lean");
+        let nat_bitwise_sha = sha256_file(&nat_bitwise_path, "fixture").unwrap();
+        let bitvec_path = repo_root().join("theory/Anneal/BitVec.lean");
+        let bitvec_sha = sha256_file(&bitvec_path, "fixture").unwrap();
+        let lebytes_path = repo_root().join("theory/Anneal/LeBytes.lean");
+        let lebytes_sha = sha256_file(&lebytes_path, "fixture").unwrap();
+        let listchunks_path = repo_root().join("theory/Anneal/ListChunks.lean");
+        let listchunks_sha = sha256_file(&listchunks_path, "fixture").unwrap();
+
+        let mut req = write_target_request(
+            &base.join("lebytes-listchunks"),
+            vec![
+                (
+                    "Model",
+                    TargetRole::Model,
+                    "prelude\nimport Init.Data.BitVec.Basic\nimport Init.Data.List.Basic\n\
+                     namespace Trusted.MirSemantics\n\
+                     structure Crate where\n  program : Nat\n  specs : Nat → Prop\n\
+                     def UnitTheorem (c : Crate) : Prop := c.specs c.program\n",
+                ),
+                (
+                    "Captured",
+                    TargetRole::Capture,
+                    "prelude\nimport Model\ndef Captured.program : Nat := 4\n",
+                ),
+                (
+                    "Spec",
+                    TargetRole::Specification,
+                    "prelude\nimport Model\n\
+                     def Spec.specs (k : Nat) : Prop :=\n  \
+                     (∀ (a1 a2 : BitVec 32) (b1 b2 : BitVec 64),\n    \
+                       [BitVec.ofNat 8 a1.toNat, BitVec.ofNat 8 (a1.toNat / 2 ^ 8),\n     \
+                        BitVec.ofNat 8 (a1.toNat / 2 ^ 16), BitVec.ofNat 8 (a1.toNat / 2 ^ 24)] ++\n    \
+                       [BitVec.ofNat 8 b1.toNat, BitVec.ofNat 8 (b1.toNat / 2 ^ 8),\n     \
+                        BitVec.ofNat 8 (b1.toNat / 2 ^ 16), BitVec.ofNat 8 (b1.toNat / 2 ^ 24),\n     \
+                        BitVec.ofNat 8 (b1.toNat / 2 ^ 32), BitVec.ofNat 8 (b1.toNat / 2 ^ 40),\n     \
+                        BitVec.ofNat 8 (b1.toNat / 2 ^ 48), BitVec.ofNat 8 (b1.toNat / 2 ^ 56)] =\n    \
+                       [BitVec.ofNat 8 a2.toNat, BitVec.ofNat 8 (a2.toNat / 2 ^ 8),\n     \
+                        BitVec.ofNat 8 (a2.toNat / 2 ^ 16), BitVec.ofNat 8 (a2.toNat / 2 ^ 24)] ++\n    \
+                       [BitVec.ofNat 8 b2.toNat, BitVec.ofNat 8 (b2.toNat / 2 ^ 8),\n     \
+                        BitVec.ofNat 8 (b2.toNat / 2 ^ 16), BitVec.ofNat 8 (b2.toNat / 2 ^ 24),\n     \
+                        BitVec.ofNat 8 (b2.toNat / 2 ^ 32), BitVec.ofNat 8 (b2.toNat / 2 ^ 40),\n     \
+                        BitVec.ofNat 8 (b2.toNat / 2 ^ 48), BitVec.ofNat 8 (b2.toNat / 2 ^ 56)] →\n    \
+                       a1 = a2 ∧ b1 = b2) ∧\n  \
+                     (∀ (n : Nat), 1 < n → 1 < k → (n + k - 1) / k < n)\n",
+                ),
+                (
+                    "Expected",
+                    TargetRole::Expected,
+                    "prelude\nimport Captured\nimport Spec\n\
+                     def Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem \
+                     (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+                ),
+                (
+                    "Proof",
+                    TargetRole::Proof,
+                    "prelude\nimport Expected\nimport Anneal.LeBytes\nimport Anneal.ListChunks\n\
+                     theorem Proof.verify : Expected.claim := by\n  \
+                     constructor\n  \
+                     · intro a1 a2 b1 b2 h\n    \
+                       rw [← Anneal.LeBytes.toLeBytes_u32_eq a1, ← Anneal.LeBytes.toLeBytes_u64_eq b1,\n        \
+                           ← Anneal.LeBytes.toLeBytes_u32_eq a2, ← Anneal.LeBytes.toLeBytes_u64_eq b2] at h\n    \
+                       exact Anneal.LeBytes.toLeBytes_append_injective h\n  \
+                     · intro n hn hk\n    \
+                       have hk0 : 0 < Captured.program := by decide\n    \
+                       dsimp only [Expected.claim, Trusted.MirSemantics.UnitTheorem, Spec.specs] at hk ⊢\n    \
+                       rw [← Anneal.ListChunks.divCeil_eq_add_sub_div hk0]\n    \
+                       exact Anneal.ListChunks.divCeil_lt_self hn hk\n",
+                ),
+            ],
+        );
+        req.modules.push(TargetModule {
+            module: "Anneal.NatBitwise".to_owned(),
+            source: nat_bitwise_path,
+            expected_sha256: nat_bitwise_sha,
+            role: TargetRole::Proof,
+        });
+        req.modules.push(TargetModule {
+            module: "Anneal.BitVec".to_owned(),
+            source: bitvec_path,
+            expected_sha256: bitvec_sha,
+            role: TargetRole::Proof,
+        });
+        req.modules.push(TargetModule {
+            module: "Anneal.LeBytes".to_owned(),
+            source: lebytes_path,
+            expected_sha256: lebytes_sha,
+            role: TargetRole::Proof,
+        });
+        req.modules.push(TargetModule {
+            module: "Anneal.ListChunks".to_owned(),
+            source: listchunks_path,
+            expected_sha256: listchunks_sha,
+            role: TargetRole::Proof,
+        });
+
+        let mut checker = Checker::new(&repo_root(), Some(&lean)).unwrap();
+        let report = checker.run_target(&req).unwrap();
+        assert_eq!(report["replay"], Json::Bool(true));
+        assert_eq!(report["exactType"], Json::Bool(true));
+        let sources: BTreeSet<&str> = report["sources"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|s| s["module"].as_str().unwrap())
+            .collect();
+        assert!(sources.contains("Anneal.LeBytes"), "{sources:?}");
+        assert!(sources.contains("Anneal.ListChunks"), "{sources:?}");
+        assert!(!sources.contains("Anneal.BitVec"), "{sources:?}");
+        assert!(!sources.contains("Anneal.NatBitwise"), "{sources:?}");
+        let allowed_axioms: BTreeSet<&str> =
+            BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
+        let used_axioms: BTreeSet<&str> = report["axioms"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|a| a.as_str().unwrap())
+            .collect();
+        assert!(
+            used_axioms.is_subset(&allowed_axioms),
+            "unexpected axioms: {used_axioms:?}"
+        );
+    }
 }

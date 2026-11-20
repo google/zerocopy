@@ -11,6 +11,8 @@ import Init.NotationExtra
 import Trusted
 import Anneal.NatBitwise
 import Anneal.BitVec
+import Anneal.LeBytes
+import Anneal.ListChunks
 import Anneal.MirWp
 import Anneal.PureLift
 
@@ -20,9 +22,9 @@ namespace Anneal
 # Anneal Theory Umbrella
 
 Umbrella module for Anneal's untrusted proof theory (`theory/`), re-exporting
-`Trusted`, the reusable 3-axiom bit-vector proof library (`Anneal.BitVec`), the
-fuel-bounded MIR weakest-precondition machinery (`Anneal.MirWp`), and
-`Anneal.PureLift`.
+`Trusted`, the reusable 3-axiom proof libraries (`Anneal.BitVec`,
+`Anneal.LeBytes`, and `Anneal.ListChunks`), the fuel-bounded MIR
+weakest-precondition machinery (`Anneal.MirWp`), and `Anneal.PureLift`.
 -/
 
 end Anneal
