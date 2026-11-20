@@ -60384,6 +60384,49 @@
         "lean/mechanization"
       ]
     },
+    "rust-coroutines-gen-blocks-async-drop-and-self-referential-generator-pinning": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "560abf7946ae41fd210edac5dfe829d7eff86eec"
+          },
+          "name": "rust-lang/rust compiler, core library, and Miri Tree Borrows"
+        },
+        {
+          "identity": {
+            "llvm_version": "22.1.6",
+            "release": "1.98.0-nightly",
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "target": "x86_64-unknown-linux-gnu"
+          },
+          "name": "rustc nightly execution toolchain"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "Rust RFCs (2033, 2349, 2394, 3467, 3513)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference"
+        }
+      ],
+      "topics": [
+        "rust/async",
+        "rust/mir",
+        "rust/pinning",
+        "rust/tree-borrows",
+        "rustc/mir"
+      ]
+    },
     "rust-drop-check-eyepatch-dangling-generics-and-phantomdata-variance-rules": {
       "observed_at": "2026-11-20",
       "subjects": [
@@ -61555,6 +61598,49 @@
         "charon/llbc",
         "rust/tree-borrows",
         "rust/unsafe"
+      ]
+    },
+    "rust-no-std-panic-abort-eh-personality-and-cross-crate-unwinding-abi-contracts": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "560abf7946ae41fd210edac5dfe829d7eff86eec"
+          },
+          "name": "rust-lang/rust compiler, core/std panic runtimes, and ABI lowering"
+        },
+        {
+          "identity": {
+            "llvm_version": "22.1.6",
+            "release": "1.98.0-nightly",
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "target": "x86_64-unknown-linux-gnu"
+          },
+          "name": "rustc nightly execution toolchain"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "Rust RFCs (1513, 2070, 2945)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference"
+        }
+      ],
+      "topics": [
+        "rust/abi",
+        "rust/safety",
+        "rust/no-std",
+        "rustc/abi",
+        "rustc/mir"
       ]
     },
     "rust-normative-authority-map-and-rustc-deviations": {
