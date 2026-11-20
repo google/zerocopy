@@ -25994,6 +25994,88 @@
         "ffi/host-device"
       ]
     },
+    "grad-usage-erasure-uniqueness-polarity-and-duoidal-peak-aara": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "granule-project/granule",
+            "revision": "85a463f18914353669ff291677c47190fff43b23"
+          },
+          "name": "Granule"
+        },
+        {
+          "identity": {
+            "repository": "sweirich/pi-forall",
+            "revision": "75feff0f86f10d02c9e69999f0a112d0d289c948"
+          },
+          "name": "pi-forall"
+        },
+        {
+          "identity": {
+            "repository": "idris-lang/Idris2",
+            "revision": "cf66cb4ccb8f0df7876fd07842f056f6222b9dce"
+          },
+          "name": "Idris 2"
+        },
+        {
+          "identity": {
+            "repository": "tweag/linear-base",
+            "revision": "bb5182a76c84eedcf78536c9ce24cb900882b2f3"
+          },
+          "name": "linear-base"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3209108.3209189",
+            "venue": "LICS 2018"
+          },
+          "name": "Syntax and Semantics of Quantitative Type Theory (Atkey 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3434331",
+            "venue": "POPL 2021"
+          },
+          "name": "A Graded Dependent Type System with a Usage-Aware Semantics (Choudhury et al. 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-99336-8_13",
+            "venue": "ESOP 2022"
+          },
+          "name": "Linearity and Uniqueness: An Entente Cordiale (Marshall, Vollmer, and Orchard 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/604131.604148",
+            "venue": "POPL 2003"
+          },
+          "name": "Static Prediction of Heap Space Usage for First-Order Functional Programs (Hofmann and Jost 2003)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3009837.3009842",
+            "venue": "POPL 2017"
+          },
+          "name": "Towards Automatic Resource Bound Analysis for OCaml (Hoffmann, Das, and Weng 2017)"
+        },
+        {
+          "identity": {
+            "arxiv": "2210.01962v2",
+            "doi": "10.48550/arXiv.2210.01962",
+            "url": "https://arxiv.org/abs/2210.01962"
+          },
+          "name": "Duoidal Structures for Compositional Dependence (Shapiro and Spivak 2022/2025)"
+        }
+      ],
+      "topics": [
+        "pl/graded-dependent-types",
+        "pl/uniqueness-versus-linearity",
+        "pl/duoidal-resource-algebras",
+        "verification/high-water-mark-bounds"
+      ]
+    },
     "gradual-typing-sound-interoperability-and-blame-performance-cliffs": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -36097,6 +36179,87 @@
         "verification/compcert",
         "verification/compiler-verification",
         "verification/isa-coverage"
+      ]
+    },
+    "mariposa-query-brittleness-instantiation-cycles-and-komodo-ratios": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "secure-foundations/mariposa",
+            "revision": "8646e7b1c601f7154e93d85ebb1083ce1ed47f95"
+          },
+          "name": "Mariposa"
+        },
+        {
+          "identity": {
+            "repository": "viperproject/axiom-profiler-2",
+            "revision": "03e43597e7ac5969e721647c894f35ffb46adb46"
+          },
+          "name": "Axiom Profiler 2 (redirect repository)"
+        },
+        {
+          "identity": {
+            "repository": "viperproject/smt-scope",
+            "revision": "665f9263c6102ff63494dafb39976d015c675951"
+          },
+          "name": "SMT-Scope (renamed Axiom Profiler 2)"
+        },
+        {
+          "identity": {
+            "repository": "verus-lang/verus",
+            "revision": "0dab219272ac2353320bd177ebb3929453b90a9e"
+          },
+          "name": "Verus"
+        },
+        {
+          "identity": {
+            "repository": "dafny-lang/dafny",
+            "revision": "75de7486da5a473a5aba2add8ff80fc5bbe8337f"
+          },
+          "name": "Dafny"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/komodo",
+            "revision": "de1865c8bd0d85cdfd9a980ad7131448acfaf136"
+          },
+          "name": "Komodo"
+        },
+        {
+          "identity": {
+            "doi": "10.34727/2023/isbn.978-3-85448-060-0_26",
+            "venue": "FMCAD 2023"
+          },
+          "name": "Mariposa: Measuring SMT Instability in Automated Program Verification (Zhou et al. 2023)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-17462-0_6",
+            "venue": "TACAS 2019"
+          },
+          "name": "The Axiom Profiler: Understanding and Debugging SMT Quantifier Instantiations (Becker, Muller, and Summers 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3586037",
+            "venue": "OOPSLA 2023"
+          },
+          "name": "Verus: Verifying Rust Programs using Linear Ghost Types (Lattuada et al. 2023)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3132747.3132748",
+            "venue": "SOSP 2017"
+          },
+          "name": "Komodo: Using Verification to Disentangle Secure-Enclave Hardware from Software (Ferraiuolo et al. 2017)"
+        }
+      ],
+      "topics": [
+        "smt/query-instability-measurement",
+        "smt/quantifier-matching-cycles",
+        "verification/proof-maintenance-effort",
+        "tooling/smt-context-pruning"
       ]
     },
     "maritime-colregs-velocity-obstacles-ais-spoofing-and-undervoltage-blackouts": {

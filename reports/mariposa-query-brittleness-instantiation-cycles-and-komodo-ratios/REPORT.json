@@ -1,0 +1,81 @@
+{
+  "topics": [
+    "smt/query-instability-measurement",
+    "smt/quantifier-matching-cycles",
+    "verification/proof-maintenance-effort",
+    "tooling/smt-context-pruning"
+  ],
+  "subjects": [
+    {
+      "name": "Mariposa",
+      "identity": {
+        "repository": "secure-foundations/mariposa",
+        "revision": "8646e7b1c601f7154e93d85ebb1083ce1ed47f95"
+      }
+    },
+    {
+      "name": "Axiom Profiler 2 (redirect repository)",
+      "identity": {
+        "repository": "viperproject/axiom-profiler-2",
+        "revision": "03e43597e7ac5969e721647c894f35ffb46adb46"
+      }
+    },
+    {
+      "name": "SMT-Scope (renamed Axiom Profiler 2)",
+      "identity": {
+        "repository": "viperproject/smt-scope",
+        "revision": "665f9263c6102ff63494dafb39976d015c675951"
+      }
+    },
+    {
+      "name": "Verus",
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "0dab219272ac2353320bd177ebb3929453b90a9e"
+      }
+    },
+    {
+      "name": "Dafny",
+      "identity": {
+        "repository": "dafny-lang/dafny",
+        "revision": "75de7486da5a473a5aba2add8ff80fc5bbe8337f"
+      }
+    },
+    {
+      "name": "Komodo",
+      "identity": {
+        "repository": "microsoft/komodo",
+        "revision": "de1865c8bd0d85cdfd9a980ad7131448acfaf136"
+      }
+    },
+    {
+      "name": "Mariposa: Measuring SMT Instability in Automated Program Verification (Zhou et al. 2023)",
+      "identity": {
+        "doi": "10.34727/2023/isbn.978-3-85448-060-0_26",
+        "venue": "FMCAD 2023"
+      }
+    },
+    {
+      "name": "The Axiom Profiler: Understanding and Debugging SMT Quantifier Instantiations (Becker, Muller, and Summers 2019)",
+      "identity": {
+        "doi": "10.1007/978-3-030-17462-0_6",
+        "venue": "TACAS 2019"
+      }
+    },
+    {
+      "name": "Verus: Verifying Rust Programs using Linear Ghost Types (Lattuada et al. 2023)",
+      "identity": {
+        "doi": "10.1145/3586037",
+        "venue": "OOPSLA 2023"
+      }
+    },
+    {
+      "name": "Komodo: Using Verification to Disentangle Secure-Enclave Hardware from Software (Ferraiuolo et al. 2017)",
+      "identity": {
+        "doi": "10.1145/3132747.3132748",
+        "venue": "SOSP 2017"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

@@ -1,0 +1,82 @@
+{
+  "topics": [
+    "pl/graded-dependent-types",
+    "pl/uniqueness-versus-linearity",
+    "pl/duoidal-resource-algebras",
+    "verification/high-water-mark-bounds"
+  ],
+  "subjects": [
+    {
+      "name": "Granule",
+      "identity": {
+        "repository": "granule-project/granule",
+        "revision": "85a463f18914353669ff291677c47190fff43b23"
+      }
+    },
+    {
+      "name": "pi-forall",
+      "identity": {
+        "repository": "sweirich/pi-forall",
+        "revision": "75feff0f86f10d02c9e69999f0a112d0d289c948"
+      }
+    },
+    {
+      "name": "Idris 2",
+      "identity": {
+        "repository": "idris-lang/Idris2",
+        "revision": "cf66cb4ccb8f0df7876fd07842f056f6222b9dce"
+      }
+    },
+    {
+      "name": "linear-base",
+      "identity": {
+        "repository": "tweag/linear-base",
+        "revision": "bb5182a76c84eedcf78536c9ce24cb900882b2f3"
+      }
+    },
+    {
+      "name": "Syntax and Semantics of Quantitative Type Theory (Atkey 2018)",
+      "identity": {
+        "doi": "10.1145/3209108.3209189",
+        "venue": "LICS 2018"
+      }
+    },
+    {
+      "name": "A Graded Dependent Type System with a Usage-Aware Semantics (Choudhury et al. 2021)",
+      "identity": {
+        "doi": "10.1145/3434331",
+        "venue": "POPL 2021"
+      }
+    },
+    {
+      "name": "Linearity and Uniqueness: An Entente Cordiale (Marshall, Vollmer, and Orchard 2022)",
+      "identity": {
+        "doi": "10.1007/978-3-030-99336-8_13",
+        "venue": "ESOP 2022"
+      }
+    },
+    {
+      "name": "Static Prediction of Heap Space Usage for First-Order Functional Programs (Hofmann and Jost 2003)",
+      "identity": {
+        "doi": "10.1145/604131.604148",
+        "venue": "POPL 2003"
+      }
+    },
+    {
+      "name": "Towards Automatic Resource Bound Analysis for OCaml (Hoffmann, Das, and Weng 2017)",
+      "identity": {
+        "doi": "10.1145/3009837.3009842",
+        "venue": "POPL 2017"
+      }
+    },
+    {
+      "name": "Duoidal Structures for Compositional Dependence (Shapiro and Spivak 2022/2025)",
+      "identity": {
+        "arxiv": "2210.01962v2",
+        "doi": "10.48550/arXiv.2210.01962",
+        "url": "https://arxiv.org/abs/2210.01962"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
