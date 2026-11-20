@@ -1,0 +1,491 @@
+[
+  {
+    "id": "incremental-fetch-agrees",
+    "lean": [
+      "Toy.RedGreen.fetch_agrees_with_eval_of_ordered_replay",
+      "Toy.RedGreen.fetch_agrees_with_eval_during_revision_of_ordered_replay",
+      "Toy.RedGreen.fetch_eventually_eq_eval_during_revision_of_ordered_replay",
+      "Toy.RedGreen.fetch_eventually_finishes_during_revision_of_terminates",
+      "Toy.RedGreen.fetch_simulation_invariant"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "status": "proved",
+    "tier_justification": "Soundness of trace-based re-validation with dynamic dependencies is folklore for build systems and incremental compilers (rustc-dev-guide, Build Systems à la Carte) and has pen-and-paper proofs for related models (the OOPSLA 2015 build system, Adapton's declarative semantics); the mechanized formalizations found (Twelf for self-adjusting computation, Agda for forward build systems, a Coq port of the Build Systems à la Carte abstractions without completed proofs, a mechanized build-language verification) do not cover demand-driven verifying-trace replay with early cutoff. Made precise here in a toy model.",
+    "plain_claim": "With ordered replay of recorded dependencies (early cutoff on or off), collision-free fingerprints, unchanged query code (the code that produced the database is the code that runs now), and a database whose every entry is the trace and result of a from-scratch execution in the old input state, every incremental fetch made during the revision (from the start database, or from any working database produced from it by earlier fetches of this algorithm) agrees with from-scratch evaluation in the new input state: whenever it finishes, its outcome (value or panic) is a from-scratch outcome, and it finishes with any fuel at which from-scratch evaluation finishes. Consequently, for each such fetch the two fuel-indexed outcomes are equal for all large fuel, and the fetch finishes for all large fuel when the key terminates from scratch in the new state. All of this follows from a simulation invariant: one ordered-replay fetch from any working database satisfying Inv (old slots consistent with the old state, done slots consistent with the new state) returns a database satisfying Inv and agrees with from-scratch evaluation in the same sense. Termination of the new state is not a hypothesis of agreement: if the key does not terminate from scratch, both sides are stuck at every fuel.",
+    "hypotheses": [
+      {
+        "name": "hord : cfg.replay = .ordered (all five theorems)",
+        "purpose": "Replaying recorded dependencies in recorded order and stopping at the first changed one guarantees that every replayed dependency is a genuine dependency of the query in the new state; other orders can execute dependencies that the new inputs have made dead. The panic counterexamples refute agreement and the invariant; the divergence counterexamples refute every theorem of the card, including eventual equality and termination transfer.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.RedGreen.reversed_replay_executes_dead_dependency_and_panics",
+          "Toy.RedGreen.exhaustive_replay_executes_dead_dependency_and_panics",
+          "Toy.RedGreen.reversed_replay_diverges_on_dead_code_cycle",
+          "Toy.RedGreen.exhaustive_replay_diverges_on_dead_code_cycle"
+        ]
+      },
+      {
+        "name": "hsame : rulesOld = rulesNew (unchanged query code across revisions; the four theorems with a database)",
+        "purpose": "The database must have been produced by the code that runs now. Intra-revision determinism is structural (a Prog is a deterministic function of fetched values); this hypothesis excludes untracked changes between revisions, such as a changed revision-wide parameter. The wrong-value counterexample refutes agreement; the divergence counterexample refutes agreement, eventual equality and termination transfer.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.RedGreen.ambient_dependent_code_matches_no_from_scratch_eval",
+          "Toy.RedGreen.untracked_code_change_diverges_although_new_state_terminates"
+        ]
+      },
+      {
+        "name": "hfp : FpInjective fp (all five theorems)",
+        "purpose": "Equal fingerprints must imply equal values; otherwise a changed dependency is taken as unchanged and a stale result is reused, or a stale trace is followed into a cycle. The wrong-value counterexample refutes agreement and the invariant (its start database satisfies Inv by inv_start); the divergence counterexample refutes every theorem of the card.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.RedGreen.fp_collision_reuses_stale_result",
+          "Toy.RedGreen.fp_collision_diverges_although_new_state_terminates"
+        ]
+      },
+      {
+        "name": "hcons : DBConsistent rulesOld fp oldInp odb (the four theorems with a database)",
+        "purpose": "Reused results are only as good as the recorded entries; an entry that is not the trace and result of a from-scratch execution in the old state can be reused verbatim, or can send replay into a cycle. The wrong-value counterexample refutes agreement; the divergence counterexample refutes agreement, eventual equality and termination transfer.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.RedGreen.inconsistent_db_reuses_wrong_result",
+          "Toy.RedGreen.inconsistent_db_diverges_although_new_state_terminates"
+        ]
+      },
+      {
+        "name": "hreach : Reachable cfg rulesNew fp newInp (start odb) db (revision theorems only)",
+        "purpose": "Restricts the revision theorems to working databases produced by fetches of this algorithm from the start database. Both counterexamples prove non-reachability: a done slot holding an old-state entry violates Inv, which every reachable database satisfies (inv_of_reachable, fully proved); an old slot absent from the start database cannot be created by fetches (reachable_noNewOld). The first returns a stale value; the second is stuck at every fuel although the key terminates, refuting all three revision theorems.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.RedGreen.stale_done_slot_returns_wrong_result",
+          "Toy.RedGreen.unreachable_db_diverges_although_new_state_terminates"
+        ]
+      },
+      {
+        "name": "hinv : Inv rules fp oldInp newInp db (fetch_simulation_invariant only)",
+        "purpose": "The invariant's own hypothesis: old slots consistent with the old state, done slots with the new state. A working database whose done slot holds an old-state entry makes the fetch return a value that from-scratch evaluation never returns (at fuel 6 the invariant's second conjunct fails).",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.RedGreen.stale_done_slot_returns_wrong_result"
+        ]
+      },
+      {
+        "name": "hterm : Terminates rulesNew newInp k (termination transfer only)",
+        "purpose": "Needed only for the conclusion that the incremental fetch eventually finishes; agreement and eventual equality hold without it.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.RedGreen.cyclic_new_state_both_diverge"
+        ]
+      }
+    ],
+    "depth": "substantive",
+    "depth_justification": "The invariant needs a path-agreement argument: ordered replay only visits dependencies that the query's code reaches in the new state, because each earlier dependency reproduced its fingerprint, hence (by injectivity) its value, hence the code took the same branch; panics must be matched and adequacy at equal fuel needs the same argument with fuel accounting. Inv preservation and value soundness alone are fully proved for every replay order (every-replay-order-is-value-sound); given the invariant, the other theorems of the card are shallow.",
+    "nonvacuity_witness": "Example C (three queries, one input x changing from 5 to 0; identity fingerprints; database recorded from scratch at x = 5), for either cutoff mode: it exercises a changed recorded dependency (guard), a recorded dependency that becomes dead (risky), and a code-level cycle top -> risky -> top that is live in neither state; ordered replay returns the from-scratch value 0; after fetching top the working database is reachable, satisfies Inv with a done slot for top, and a fetch of risky from it (which terminates from scratch) agrees.",
+    "nonvacuity_witness_lean": [
+      "Toy.RedGreen.fetch_agrees_with_eval_nonvacuous",
+      "Toy.RedGreen.fetch_during_revision_nonvacuous",
+      "Toy.RedGreen.fetch_simulation_invariant_nonvacuous"
+    ],
+    "non_claims": [
+      "Per-edge fingerprint traces, not node colours or revision stamps: an Entry stores (dependency, fingerprint) pairs per edge, and markGreen fetches each recorded dependency's current value and compares its fingerprint with the recorded one. rustc instead propagates value-free per-node colours (try_mark_previous_green), and Salsa and Shake compare revision stamps (Salsa with value comparison for backdating). Any correspondence is a modeling bridge (derived, not proved), argued only for databases in which every query recorded as a dependency also has its own entry. For partial caches the model's own behaviour is shown in Toy.RedGreen.partial_cache_example (an entry for top but none for its dependency a, unchanged inputs: cutoff mode executes a and marks top green; no-cutoff mode re-executes top); how a production system treats such a cache is not examined. Change-and-revert sequences across several revisions, which separate verifying traces from step traces (Build Systems à la Carte, JFP 2020, Fig. 7), are outside the single-revision scope.",
+      "Slot.done e true means that the query's code ran to completion in this revision, also when early cutoff then finds its result unchanged; it is not a node colour.",
+      "Agreement is about outcomes only. It says nothing about how many queries are executed, that each query executes at most once per revision, or about time or space; see early-cutoff-skips-cached-query-with-unchanged-dependencies for re-execution.",
+      "Partial correctness is stated as 'equals the from-scratch outcome at some fuel': the incremental fetch can finish with less fuel than from-scratch evaluation (validated slots short-circuit).",
+      "Fuel bounds nesting depth, not work: each nested fetch receives one less fuel independently (including both markGreen and exec when a query turns red, and successive fetches inside one program). Equal-fuel adequacy is a property of this accounting; under a shared step budget it would not hold, because a failed replay followed by re-execution does more work than from-scratch evaluation. No complexity bound is claimed.",
+      "Panicking and fuel-exhausted executions are not memoized: they write no done slot for the aborting query (done slots committed by its sub-fetches before the abort are kept), so demanding such a query again in the same revision executes it again.",
+      "Termination is well-foundedness of the dynamic dependencies of the new state: Q need not be finite, and over an infinite query type an acyclic but unbounded dependency chain also fails Terminates (both sides then diverge). 'Acyclic' is a sufficient description only for finite query types.",
+      "No cycle detection, cycle errors or fixpoint cycle recovery is modeled. In systems that report cycles as errors or compute fixpoints (for example Salsa's cycle_fn/cycle_initial), which member of a cycle is entered first, and what was cached earlier in the revision, could make incremental and from-scratch results differ unless the recovery semantics is independent of entry order (not examined).",
+      "Collision-freedom is exact injectivity of fp on all of V. Nothing is claimed about probabilistic hashing; injectivity on the values of each key would suffice for the arguments used (derived from the proofs, not formalized).",
+      "Unchanged query code is modeled as equality of the old and new rule sets. Untracked reads of revision-wide parameters, side effects, interior mutability, concurrency and per-call non-determinism are not modeled.",
+      "Panics abort: a panicking dependency makes its dependent panic. Systems that catch failures as values are a different model.",
+      "Only one revision is covered: nothing is proved about turning the end-of-revision database into the next revision's start database (garbage collection of unvalidated entries, persistence, eviction, durability levels).",
+      "Ordered replay is required for panics and termination. Other replay orders are value-sound (every-replay-order-is-value-sound); which other orders preserve full agreement for particular program classes (for example static dependencies) is not examined.",
+      "The revision theorems cover only working databases reachable by fetches of this algorithm, with the same configuration, from the start database; databases changed in other ways are excluded, and the hypothesis is needed (see the hreach counterexamples).",
+      "No side outputs: queries produce only an outcome. Diagnostics, warnings or accumulated side outputs emitted during execution are not modeled; a system that reuses green results must persist and replay such outputs separately.",
+      "Keys are compared by exact equality: no hashing or interning of keys across sessions is modeled (rustc identifies dependency-graph nodes by a fingerprint of the query key), and per-query modifiers of production systems (such as rustc's eval_always or no_hash) are not modeled."
+    ],
+    "prior_art": [
+      "rustc-dev-guide (rust-lang/rustc-dev-guide) at commit d946d7402d269990f3b64baabaf6592409791c11, src/queries/incremental-compilation.md: \"it is important that we visit each node in `reads(Q)` in same order as they occurred in the original compilation\", and of an out-of-order visit: \"it might visit `subquery2` before `subquery1`, and hence execute it. This can lead to ICEs and other problems in the compiler.\" src/queries/incremental-compilation-in-detail.md at the same commit: \"two different results could have the same fingerprint and the system would erroneously assume that the result hasn't changed, leading to a missed update\"; the same file states that nodes in the dependency graph \"are identified by a fingerprint of the query key\". Documentation, prose only.",
+      "rust-lang/rust at commit 5c56312f346d7cc8209d9fc0fd660c72e6fc6950, compiler/rustc_middle/src/dep_graph/graph.rs, fn try_mark_previous_green (called from fn try_mark_green): iterates over the previous session's edge targets of the node in order; a dependency already Green is accepted, a Red dependency ends the attempt (`DepNodeColor::Red => return None`), and a dependency of unknown colour is first recursively tried and otherwise forced (re-executed) and its colour re-read. Colours are per node; the dependent compares no dependency values. Source, prose only.",
+      "salsa-rs/salsa at commit 496752ea3879af8cf3d71d1e28d76447a0cf6482: book/src/plumbing/maybe_changed_after.md (for a derived query, iterate over each dependency and check whether it may have changed; if so re-execute, possibly backdating) and book/src/plumbing/terminology/backdate.md (\"*Backdating* is when we mark a value that was computed in revision R as having last changed in some earlier revision\", done when the old and new values compare equal: early cutoff by value comparison, with revision stamps). Documentation, prose only.",
+      "A. Mokhov, N. Mitchell, S. Peyton Jones, \"Build systems à la carte\", Proc. ACM Program. Lang. 2(ICFP), Article 79, pp. 79:1-79:29, 2018, doi:10.1145/3236774. Defines minimality (Def. 2.1, p. 79:3: a build system is minimal if it \"executes tasks at most once per build and only if they transitively depend on inputs that changed since the previous build\"), correctness (Def. 3.1, p. 79:11), monadic tasks with dynamic dependencies, early cutoff, and verifying and constructive traces; the models are executable Haskell specifications and the paper gives no proofs.",
+      "A. Mokhov, N. Mitchell, S. Peyton Jones, \"Build systems à la carte: Theory and practice\", J. Funct. Program. 30, e11, 2020, doi:10.1017/S0956796820000088. Extended version of the conference paper; no proofs. Sec. 5.2 states that for monadic tasks the recorded dependencies are known only from previous executions and that, after a common first request, later requests may differ; Sec. 5.2.2 \"Verifying step traces\" (p. 25) describes Shake's step traces, which have \"slightly different early cutoff semantics\" from verifying traces, illustrated by Fig. 7 (p. 26): after a change and a revert, verifying traces skip a rebuild that step traces perform. Sec. 8.3 \"Impure computations\" (pp. 43-44) and Sec. 8.8 \"Self-tracking\" (p. 48) correspond to Secs. 6.3 and 6.5 of the conference version.",
+      "S. Erdweg, M. Lichter, M. Weiel, \"A sound and optimal incremental build system with dynamic dependencies\", OOPSLA 2015, pp. 89-106, doi:10.1145/2814270.2814316. Pen-and-paper proofs (Appendix A) of soundness (Thm. 5.3: results are totally consistent and form a well-formed dependency graph) and optimality (Thms. 5.7, 5.8: minimal builder executions and consistency checks) for a build algorithm with dynamically discovered dependencies that checks requirements in their recorded order; the formal algorithm excludes cyclic builds and optimality relies on a stability assumption (Assumption 4.2). Not duplicated here: this package proves no optimality and models demand-driven queries with fingerprint traces rather than file stamps.",
+      "M. A. Hammer, Khoo Yit Phang, M. Hicks, J. S. Foster, \"Adapton: composable, demand-driven incremental computation\", PLDI 2014, pp. 156-166, doi:10.1145/2594291.2594324 (the second author's name as printed in the paper's byline). Sec. 5: dirty outgoing edges are traversed in the order they were added; at the first inconsistent edge the thunk is re-evaluated and its remaining edges need not be checked, which avoids re-evaluating conditionally forced thunks. Soundness (Thm. 4.3, from-scratch consistency) is proved pen-and-paper for a declarative incremental semantics, not for the traversal algorithm.",
+      "M. Abadi, B. Lampson, J.-J. Lévy, \"Analysis and caching of dependencies\", ICFP 1996, pp. 83-91, doi:10.1145/232627.232638. Early work on recording the dependencies of functional computations for caching; cited as background, not compared in detail here.",
+      "A. Heydon, R. Levin, Y. Yu, \"Caching function calls using precise dependencies\", PLDI 2000, pp. 311-320, doi:10.1145/349299.349341. The Vesta build system's functional language caches expensive function calls by recording, in the abstract's words, \"precise dependencies that are both dynamic and fine-grained\"; dynamic-dependency caching for builds; not compared in detail here.",
+      "N. Mitchell, \"Shake before building: replacing make with Haskell\", ICFP 2012, pp. 55-66, doi:10.1145/2364527.2364538. Introduces the Shake build system with monadic (dynamic) dependencies and early cutoff; the JFP 2020 version of Build Systems à la Carte (Sec. 5.2.2) attributes Shake's verifying step traces to it.",
+      "G. Konat, S. Erdweg, E. Visser, \"Scalable incremental building with dynamic task dependencies\", ASE 2018, pp. 76-86, doi:10.1145/3238147.3238196. An incremental build algorithm for dynamic task dependencies, following the OOPSLA 2015 system; not compared in detail here.",
+      "U. A. Acar, \"Self-Adjusting Computation\", Ph.D. thesis, Carnegie Mellon University, 2005, technical report CMU-CS-05-129. According to its abstract, formalizes change propagation over dynamic dependence graphs and proves it correct; a different model, not compared in detail here.",
+      "U. A. Acar, G. E. Blelloch, R. Harper, \"Adaptive functional programming\", POPL 2002, pp. 247-259, doi:10.1145/503272.503296. Change propagation over dynamic dependence graphs; cited for context, not compared in detail here.",
+      "U. A. Acar, M. Blume, J. Donham, \"A consistent semantics of self-adjusting computation\", J. Funct. Program. 23(3):249-292, 2013, doi:10.1017/S0956796813000099. According to its abstract, proves consistency of change propagation with memoization against from-scratch evaluation, with mechanized proofs in Twelf; a different model, not compared in detail here.",
+      "S. Spall, N. Mitchell, S. Tobin-Hochstadt, \"Forward build systems, formally\", CPP 2022, pp. 130-142, doi:10.1145/3497775.3503687. Agda proofs for forward build systems (Rattle); a different model without demand-driven re-validation of recorded query traces.",
+      "G. Lukyanov, A. Mokhov, \"Towards a Coq Formalisation of Build Systems\", talk with extended abstract at CoqPL 2019 (workshop co-located with POPL 2019; not an archival publication). Per its abstract, translates the Build Systems à la Carte abstractions to Coq with adjustments for task acyclicity, as ongoing work without completed correctness proofs.",
+      "M. Christakis, K. R. M. Leino, W. Schulte, \"Formalizing and verifying a modern build language\", FM 2014, LNCS vol. 8442, pp. 643-657, doi:10.1007/978-3-319-06410-9_43. Mechanized formalization and verification of a build language (CloudMake); a different model (no demand-driven re-validation of recorded traces), not compared in detail here."
+    ],
+    "design_question": "Incremental compilers and build systems memoize demand-driven queries and, after an input change, re-validate a query by replaying its recorded dependency trace (red-green marking with early cutoff). Under which conditions does an incremental fetch equal from-scratch evaluation, and which shortcuts break it? This card gives sufficient conditions (ordered replay, collision-free fingerprints, unchanged code, a consistent database, reachable working databases) and shows that termination of the new state is not one of them."
+  },
+  {
+    "id": "early-cutoff-agrees-with-reexecution",
+    "lean": "Toy.RedGreen.early_cutoff_agrees_with_reexecution_of_ordered_replay",
+    "kind": "theorem",
+    "tier": "T1",
+    "status": "proved",
+    "tier_justification": "Early cutoff (backdating) is standard in Build Systems à la Carte, Shake, Salsa and rustc and is informally known to be sound; made precise here as agreement of the two cutoff modes of the same toy algorithm. A reference corollary of incremental-fetch-agrees.",
+    "plain_claim": "Reference corollary of incremental-fetch-agrees. With ordered replay, collision-free fingerprints, unchanged query code and a database consistent with the old input state, the first incremental fetch of a revision (from the start database) returns the same outcome with early cutoff (a re-executed dependency that reproduces its recorded fingerprint counts as unchanged) and without it (a re-executed dependency always counts as changed): whenever both finish, at any fuels, their outcomes are equal, and for all large fuel their outcomes are equal (no termination hypothesis). The theorem compares the two modes with each other; that each agrees with from-scratch evaluation is incremental-fetch-agrees. Its distinct content is the sharpness of its hypotheses: dropping any one of them separates the two modes.",
+    "hypotheses": [
+      {
+        "name": "hord : r = .ordered",
+        "purpose": "With reversed replay, early cutoff can continue past a re-executed dependency that reproduced its fingerprint and reach a dead dependency that panics, while without early cutoff the same dependency stops the replay and the query is re-executed.",
+        "tightness": "tight",
+        "counterexample": "Toy.RedGreen.reversed_replay_breaks_early_cutoff_agreement"
+      },
+      {
+        "name": "hsame : rulesOld = rulesNew (unchanged query code across revisions)",
+        "purpose": "If the code changed between revisions, marking a dependent green reuses a result of the old code while re-executing it uses the new code.",
+        "tightness": "tight",
+        "counterexample": "Toy.RedGreen.ambient_dependent_code_breaks_early_cutoff"
+      },
+      {
+        "name": "hfp : FpInjective fp",
+        "purpose": "Early cutoff decides 'unchanged' by fingerprint equality of a re-executed query's result; a collision there reuses a stale dependent even when the inputs' fingerprints do not collide.",
+        "tightness": "tight",
+        "counterexample": "Toy.RedGreen.fp_collision_breaks_early_cutoff"
+      },
+      {
+        "name": "hcons : DBConsistent rulesOld fp oldInp odb",
+        "purpose": "Early cutoff reuses the recorded result of the dependent; a wrong recorded result is returned in cutoff mode but recomputed without cutoff.",
+        "tightness": "tight",
+        "counterexample": "Toy.RedGreen.inconsistent_db_breaks_early_cutoff"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Corollary of the simulation invariant applied to both cutoff modes, plus fuel monotonicity of from-scratch evaluation and a classical case split on termination.",
+    "nonvacuity_witness": "Example K: query a reads x (1 -> 3) and always returns 0; top returns a + y. With early cutoff top is marked green; without it top is re-executed; both return 2.",
+    "nonvacuity_witness_lean": "Toy.RedGreen.early_cutoff_agrees_nonvacuous",
+    "non_claims": [
+      "Mode equivalence, not standalone soundness: the theorem states only that the two cutoff modes agree with each other; agreement of either mode with from-scratch evaluation is incremental-fetch-agrees. Two unsound configurations can also agree with each other (reversed replay with and without early cutoff both panic on example D, Toy.RedGreen.reversed_replay_executes_dead_dependency_and_panics).",
+      "Outcomes of the first fetch only: only the outcome of a fetch from the start database is compared. The working databases the two modes leave behind differ (cutoff mode keeps the old entry marked green, done e false; no-cutoff mode stores a fresh trace, done e' true; Toy.RedGreen.early_cutoff_agrees_nonvacuous), and multi-fetch sessions are not compared directly.",
+      "Per-fuel equality is not claimed: the two modes use different amounts of fuel; only 'whenever both finish' and 'for all large fuel'.",
+      "Says nothing about how much work early cutoff saves; see early-cutoff-skips-cached-query-with-unchanged-dependencies.",
+      "Early cutoff is modeled by fingerprint comparison against the recorded trace; Salsa's backdating compares values and revision stamps. The correspondence is a modeling bridge.",
+      "Inherits the toy-model non-claims of incremental-fetch-agrees (per-edge traces, single revision, fuel as call depth, exact key equality)."
+    ],
+    "prior_art": [
+      "A. Mokhov, N. Mitchell, S. Peyton Jones, \"Build systems à la carte\", Proc. ACM Program. Lang. 2(ICFP), Article 79, pp. 79:1-79:29, 2018, doi:10.1145/3236774. Defines minimality (Def. 2.1, p. 79:3: a build system is minimal if it \"executes tasks at most once per build and only if they transitively depend on inputs that changed since the previous build\"), correctness (Def. 3.1, p. 79:11), monadic tasks with dynamic dependencies, early cutoff, and verifying and constructive traces; the models are executable Haskell specifications and the paper gives no proofs.",
+      "A. Mokhov, N. Mitchell, S. Peyton Jones, \"Build systems à la carte: Theory and practice\", J. Funct. Program. 30, e11, 2020, doi:10.1017/S0956796820000088. Extended version of the conference paper; no proofs. Sec. 5.2 states that for monadic tasks the recorded dependencies are known only from previous executions and that, after a common first request, later requests may differ; Sec. 5.2.2 \"Verifying step traces\" (p. 25) describes Shake's step traces, which have \"slightly different early cutoff semantics\" from verifying traces, illustrated by Fig. 7 (p. 26): after a change and a revert, verifying traces skip a rebuild that step traces perform. Sec. 8.3 \"Impure computations\" (pp. 43-44) and Sec. 8.8 \"Self-tracking\" (p. 48) correspond to Secs. 6.3 and 6.5 of the conference version.",
+      "N. Mitchell, \"Shake before building: replacing make with Haskell\", ICFP 2012, pp. 55-66, doi:10.1145/2364527.2364538. Introduces the Shake build system with monadic (dynamic) dependencies and early cutoff; the JFP 2020 version of Build Systems à la Carte (Sec. 5.2.2) attributes Shake's verifying step traces to it.",
+      "salsa-rs/salsa at commit 496752ea3879af8cf3d71d1e28d76447a0cf6482: book/src/plumbing/maybe_changed_after.md (for a derived query, iterate over each dependency and check whether it may have changed; if so re-execute, possibly backdating) and book/src/plumbing/terminology/backdate.md (\"*Backdating* is when we mark a value that was computed in revision R as having last changed in some earlier revision\", done when the old and new values compare equal: early cutoff by value comparison, with revision stamps). Documentation, prose only.",
+      "rustc-dev-guide (rust-lang/rustc-dev-guide) at commit d946d7402d269990f3b64baabaf6592409791c11, src/queries/incremental-compilation.md: \"it is important that we visit each node in `reads(Q)` in same order as they occurred in the original compilation\", and of an out-of-order visit: \"it might visit `subquery2` before `subquery1`, and hence execute it. This can lead to ICEs and other problems in the compiler.\" src/queries/incremental-compilation-in-detail.md at the same commit: \"two different results could have the same fingerprint and the system would erroneously assume that the result hasn't changed, leading to a missed update\"; the same file states that nodes in the dependency graph \"are identified by a fingerprint of the query key\". Documentation, prose only.",
+      "rust-lang/rust at commit 5c56312f346d7cc8209d9fc0fd660c72e6fc6950, compiler/rustc_middle/src/dep_graph/graph.rs, fn try_mark_previous_green (called from fn try_mark_green): iterates over the previous session's edge targets of the node in order; a dependency already Green is accepted, a Red dependency ends the attempt (`DepNodeColor::Red => return None`), and a dependency of unknown colour is first recursively tried and otherwise forced (re-executed) and its colour re-read. Colours are per node; the dependent compares no dependency values. Source, prose only."
+    ],
+    "design_question": "Incremental compilers and build systems memoize demand-driven queries and, after an input change, re-validate a query by replaying its recorded dependency trace (red-green marking with early cutoff). Under which conditions does an incremental fetch equal from-scratch evaluation, and which shortcuts break it? Reference point: it states that, under the hypotheses of incremental-fetch-agrees, switching early cutoff on or off does not change the first fetch's outcome, and its counterexamples show which hypotheses make the early-cutoff shortcut unsafe."
+  },
+  {
+    "id": "every-replay-order-is-value-sound",
+    "lean": "Toy.RedGreen.fetch_value_sound_of_any_replay",
+    "kind": "theorem",
+    "tier": "T1",
+    "status": "proved",
+    "tier_justification": "That a verifying-trace check which requires every recorded dependency to reproduce its fingerprint can only reuse correct results, whatever the checking order, is implicit in the rustc-dev-guide's description of out-of-order checking as a cause of ICEs (crashes) rather than wrong results; made precise and mechanized here in a toy model.",
+    "plain_claim": "For every replay order (recorded order stopping at the first changed dependency, reversed order, or checking all recorded dependencies) and either cutoff mode, with collision-free fingerprints, unchanged query code and a database consistent with the old input state, every incremental fetch made during the revision (from the start database, or from any working database produced from it by earlier fetches with the same configuration) that returns a value returns a value that from-scratch evaluation in the new state returns at some fuel. Out-of-order replay can therefore fail only by panicking or by not finishing (ordered-replay-necessary), never by returning a wrong value.",
+    "hypotheses": [
+      {
+        "name": "hsame : rulesOld = rulesNew (unchanged query code across revisions)",
+        "purpose": "A result of the old code can be reused next to a re-executed result of the new code; the combination is a value that neither rule set produces.",
+        "tightness": "tight",
+        "counterexample": "Toy.RedGreen.ambient_dependent_code_matches_no_from_scratch_eval"
+      },
+      {
+        "name": "hfp : FpInjective fp",
+        "purpose": "With a collision a changed dependency looks unchanged and a stale value is reused.",
+        "tightness": "tight",
+        "counterexample": "Toy.RedGreen.fp_collision_reuses_stale_result"
+      },
+      {
+        "name": "hcons : DBConsistent rulesOld fp oldInp odb",
+        "purpose": "A wrong recorded result is reused verbatim when its trace replays unchanged.",
+        "tightness": "tight",
+        "counterexample": "Toy.RedGreen.inconsistent_db_reuses_wrong_result"
+      },
+      {
+        "name": "hreach : Reachable cfg rulesNew fp newInp (start odb) db",
+        "purpose": "A working database not produced by the algorithm (a done slot holding an old-state entry, proved unreachable) returns the stale value.",
+        "tightness": "tight",
+        "counterexample": "Toy.RedGreen.stale_done_slot_returns_wrong_result"
+      },
+      {
+        "name": "hv : (fetch cfg rulesNew fp newInp m db k).1 = .val v (the fetch returns the value v)",
+        "purpose": "Selects the fetches the theorem is about: those that return a value, and binds v to that value. Without it v is unconstrained and the conclusion fails whenever the fetch panics or does not finish. In the counterexample every other hypothesis holds (ordered replay with either cutoff mode, unchanged code, identity fingerprints, a database recorded from scratch, the start database), the fetch is stuck at every fuel, and from-scratch evaluation is stuck at every fuel, so no v is a from-scratch value.",
+        "tightness": "tight",
+        "counterexample": "Toy.RedGreen.cyclic_new_state_both_diverge"
+      }
+    ],
+    "depth": "substantive",
+    "depth_justification": "Fully proved by a mutual induction over fuel, programs and dependency lists: one fetch preserves Inv and returns only from-scratch values (fetch_inv_and_value_sound); the key step is that a green verdict, in any order, means every recorded dependency reproduced its fingerprint, so (by injectivity and fuel monotonicity) the old entry's code runs along its recorded trace in the new state.",
+    "nonvacuity_witness": "Example K, for every replay order and cutoff mode: after fetching a, the working database is reachable, and fetching top returns the from-scratch value 2.",
+    "nonvacuity_witness_lean": "Toy.RedGreen.fetch_value_sound_nonvacuous",
+    "non_claims": [
+      "Values only: with out-of-order replay a fetch may panic or never finish where from-scratch evaluation returns a value (ordered-replay-necessary); the theorem says nothing about panics, termination or fuel.",
+      "Reachable includes working databases left behind by earlier fetches that panicked or ran out of fuel (Reachable.step does not require the earlier fetch to finish), so value soundness also holds for every later fetch of the revision after an out-of-order fetch has aborted; it says nothing about the outcome of the aborted fetch itself.",
+      "The all-edges variant is a sequential stand-in for checking all recorded edges without stopping at the first change; concurrent scheduling is not modeled.",
+      "Collision-freedom is exact injectivity of fp on all of V.",
+      "Inherits the toy-model non-claims of incremental-fetch-agrees (per-edge traces, single revision, fuel as call depth, exact key equality)."
+    ],
+    "prior_art": [
+      "rustc-dev-guide (rust-lang/rustc-dev-guide) at commit d946d7402d269990f3b64baabaf6592409791c11, src/queries/incremental-compilation.md: \"it is important that we visit each node in `reads(Q)` in same order as they occurred in the original compilation\", and of an out-of-order visit: \"it might visit `subquery2` before `subquery1`, and hence execute it. This can lead to ICEs and other problems in the compiler.\" src/queries/incremental-compilation-in-detail.md at the same commit: \"two different results could have the same fingerprint and the system would erroneously assume that the result hasn't changed, leading to a missed update\"; the same file states that nodes in the dependency graph \"are identified by a fingerprint of the query key\". Documentation, prose only.",
+      "rust-lang/rust at commit 5c56312f346d7cc8209d9fc0fd660c72e6fc6950, compiler/rustc_middle/src/dep_graph/graph.rs, fn try_mark_previous_green (called from fn try_mark_green): iterates over the previous session's edge targets of the node in order; a dependency already Green is accepted, a Red dependency ends the attempt (`DepNodeColor::Red => return None`), and a dependency of unknown colour is first recursively tried and otherwise forced (re-executed) and its colour re-read. Colours are per node; the dependent compares no dependency values. Source, prose only.",
+      "A. Mokhov, N. Mitchell, S. Peyton Jones, \"Build systems à la carte\", Proc. ACM Program. Lang. 2(ICFP), Article 79, pp. 79:1-79:29, 2018, doi:10.1145/3236774. Defines minimality (Def. 2.1, p. 79:3: a build system is minimal if it \"executes tasks at most once per build and only if they transitively depend on inputs that changed since the previous build\"), correctness (Def. 3.1, p. 79:11), monadic tasks with dynamic dependencies, early cutoff, and verifying and constructive traces; the models are executable Haskell specifications and the paper gives no proofs.",
+      "A. Mokhov, N. Mitchell, S. Peyton Jones, \"Build systems à la carte: Theory and practice\", J. Funct. Program. 30, e11, 2020, doi:10.1017/S0956796820000088. Extended version of the conference paper; no proofs. Sec. 5.2 states that for monadic tasks the recorded dependencies are known only from previous executions and that, after a common first request, later requests may differ; Sec. 5.2.2 \"Verifying step traces\" (p. 25) describes Shake's step traces, which have \"slightly different early cutoff semantics\" from verifying traces, illustrated by Fig. 7 (p. 26): after a change and a revert, verifying traces skip a rebuild that step traces perform. Sec. 8.3 \"Impure computations\" (pp. 43-44) and Sec. 8.8 \"Self-tracking\" (p. 48) correspond to Secs. 6.3 and 6.5 of the conference version.",
+      "M. A. Hammer, Khoo Yit Phang, M. Hicks, J. S. Foster, \"Adapton: composable, demand-driven incremental computation\", PLDI 2014, pp. 156-166, doi:10.1145/2594291.2594324 (the second author's name as printed in the paper's byline). Sec. 5: dirty outgoing edges are traversed in the order they were added; at the first inconsistent edge the thunk is re-evaluated and its remaining edges need not be checked, which avoids re-evaluating conditionally forced thunks. Soundness (Thm. 4.3, from-scratch consistency) is proved pen-and-paper for a declarative incremental semantics, not for the traversal algorithm."
+    ],
+    "design_question": "Incremental compilers and build systems memoize demand-driven queries and, after an input change, re-validate a query by replaying its recorded dependency trace (red-green marking with early cutoff). Under which conditions does an incremental fetch equal from-scratch evaluation, and which shortcuts break it? This card shows that reordering or parallelizing dependency checks affects only panics and termination: the values returned remain from-scratch values."
+  },
+  {
+    "id": "ordered-replay-necessary",
+    "lean": [
+      "Toy.RedGreen.reversed_replay_executes_dead_dependency_and_panics",
+      "Toy.RedGreen.exhaustive_replay_executes_dead_dependency_and_panics",
+      "Toy.RedGreen.reversed_replay_diverges_on_dead_code_cycle",
+      "Toy.RedGreen.exhaustive_replay_diverges_on_dead_code_cycle"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "status": "proved",
+    "tier_justification": "The rustc-dev-guide states informally that try-mark-green must visit reads in their original order and that out-of-order visits can execute queries and lead to ICEs; Adapton and the OOPSLA 2015 build system also check dependencies in order. Made precise here with concrete instances satisfying every other hypothesis of incremental-fetch-agrees.",
+    "plain_claim": "Ordered replay cannot be dropped from incremental-fetch-agrees: in concrete instances satisfying every other hypothesis (unchanged code, identity fingerprints, a database recorded from scratch in the old state, the start database), replaying a query's recorded dependencies in reverse order, or checking all of them past the first changed one, executes a recorded dependency that the new inputs have made dead. When that dependency panics, the incremental fetch panics although from scratch the query returns 0. When it closes a code-level cycle that is live in neither state (every query terminates in both states), the incremental fetch is stuck at every fuel although from scratch the query returns 0, so agreement, eventual equality and termination transfer all fail. This holds for both variants and either cutoff mode; on the same instances ordered replay returns 0.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Kernel evaluation of concrete instances, plus short strong inductions on fuel for divergence at every fuel.",
+    "nonvacuity_witness": "Example D (panic) and example C (divergence); each satisfies every hypothesis of incremental-fetch-agrees except ordered replay, proved in the same theorems.",
+    "nonvacuity_witness_lean": [
+      "Toy.RedGreen.reversed_replay_executes_dead_dependency_and_panics",
+      "Toy.RedGreen.exhaustive_replay_executes_dead_dependency_and_panics",
+      "Toy.RedGreen.reversed_replay_diverges_on_dead_code_cycle",
+      "Toy.RedGreen.exhaustive_replay_diverges_on_dead_code_cycle"
+    ],
+    "positive_control_lean": "Toy.RedGreen.ordered_replay_returns_from_scratch_value_on_dead_dependency",
+    "non_claims": [
+      "The failures are panics and divergence, not wrong values: no replay order returns a wrong value (every-replay-order-is-value-sound, proved).",
+      "Only two variants are covered: reverse recorded order with stop-at-first-change, and recorded order without stopping (a sequential stand-in for checking all recorded edges, for example in parallel). Other orders and real concurrent scheduling are not modeled.",
+      "Escape hatch (derived, not proved here): if a query issues independent requests together as one unconditional batch, then whenever the batch is reached in the new state with all earlier batches unchanged, all of its members are live dependencies. Checking the members of one batch in any order or concurrently, while proceeding across batches in recorded order and stopping at the first batch containing a changed dependency, therefore cannot execute a dead dependency. This model has no batches.",
+      "Escape hatch (derived, not proved here): a concurrent checker that isolates panics of speculatively started dependency checks, never waits on a speculative check before all earlier recorded dependencies are confirmed unchanged, and cancels outstanding checks once a confirmed-prefix dependency is found changed avoids both failure modes shown here; in both examples the first recorded dependency (guard) is already found changed before the dead dependency would have to be awaited.",
+      "Escape hatch (derived, not proved for such models): if query code has no static cycles, the divergence instance cannot be built; if errors are ordinary values rather than panics, the panic instance only wastes the computation of an error value. In both cases out-of-order checking in these instances costs work, not correctness.",
+      "If failures of dead dependencies were caught and treated as 'changed', the panic variant would disappear; the divergence variant would remain (not proved for such a model).",
+      "Nothing is claimed for programs with static dependencies, where every recorded dependency is live whenever the query runs."
+    ],
+    "prior_art": [
+      "rustc-dev-guide (rust-lang/rustc-dev-guide) at commit d946d7402d269990f3b64baabaf6592409791c11, src/queries/incremental-compilation.md: \"it is important that we visit each node in `reads(Q)` in same order as they occurred in the original compilation\", and of an out-of-order visit: \"it might visit `subquery2` before `subquery1`, and hence execute it. This can lead to ICEs and other problems in the compiler.\" src/queries/incremental-compilation-in-detail.md at the same commit: \"two different results could have the same fingerprint and the system would erroneously assume that the result hasn't changed, leading to a missed update\"; the same file states that nodes in the dependency graph \"are identified by a fingerprint of the query key\". Documentation, prose only.",
+      "rust-lang/rust at commit 5c56312f346d7cc8209d9fc0fd660c72e6fc6950, compiler/rustc_middle/src/dep_graph/graph.rs, fn try_mark_previous_green (called from fn try_mark_green): iterates over the previous session's edge targets of the node in order; a dependency already Green is accepted, a Red dependency ends the attempt (`DepNodeColor::Red => return None`), and a dependency of unknown colour is first recursively tried and otherwise forced (re-executed) and its colour re-read. Colours are per node; the dependent compares no dependency values. Source, prose only.",
+      "A. Mokhov, N. Mitchell, S. Peyton Jones, \"Build systems à la carte: Theory and practice\", J. Funct. Program. 30, e11, 2020, doi:10.1017/S0956796820000088. Extended version of the conference paper; no proofs. Sec. 5.2 states that for monadic tasks the recorded dependencies are known only from previous executions and that, after a common first request, later requests may differ; Sec. 5.2.2 \"Verifying step traces\" (p. 25) describes Shake's step traces, which have \"slightly different early cutoff semantics\" from verifying traces, illustrated by Fig. 7 (p. 26): after a change and a revert, verifying traces skip a rebuild that step traces perform. Sec. 8.3 \"Impure computations\" (pp. 43-44) and Sec. 8.8 \"Self-tracking\" (p. 48) correspond to Secs. 6.3 and 6.5 of the conference version.",
+      "M. A. Hammer, Khoo Yit Phang, M. Hicks, J. S. Foster, \"Adapton: composable, demand-driven incremental computation\", PLDI 2014, pp. 156-166, doi:10.1145/2594291.2594324 (the second author's name as printed in the paper's byline). Sec. 5: dirty outgoing edges are traversed in the order they were added; at the first inconsistent edge the thunk is re-evaluated and its remaining edges need not be checked, which avoids re-evaluating conditionally forced thunks. Soundness (Thm. 4.3, from-scratch consistency) is proved pen-and-paper for a declarative incremental semantics, not for the traversal algorithm.",
+      "S. Erdweg, M. Lichter, M. Weiel, \"A sound and optimal incremental build system with dynamic dependencies\", OOPSLA 2015, pp. 89-106, doi:10.1145/2814270.2814316. Pen-and-paper proofs (Appendix A) of soundness (Thm. 5.3: results are totally consistent and form a well-formed dependency graph) and optimality (Thms. 5.7, 5.8: minimal builder executions and consistency checks) for a build algorithm with dynamically discovered dependencies that checks requirements in their recorded order; the formal algorithm excludes cyclic builds and optimality relies on a stability assumption (Assumption 4.2). Not duplicated here: this package proves no optimality and models demand-driven queries with fingerprint traces rather than file stamps.",
+      "A. Heydon, R. Levin, Y. Yu, \"Caching function calls using precise dependencies\", PLDI 2000, pp. 311-320, doi:10.1145/349299.349341. The Vesta build system's functional language caches expensive function calls by recording, in the abstract's words, \"precise dependencies that are both dynamic and fine-grained\"; dynamic-dependency caching for builds; not compared in detail here.",
+      "G. Konat, S. Erdweg, E. Visser, \"Scalable incremental building with dynamic task dependencies\", ASE 2018, pp. 76-86, doi:10.1145/3238147.3238196. An incremental build algorithm for dynamic task dependencies, following the OOPSLA 2015 system; not compared in detail here."
+    ],
+    "design_question": "Incremental compilers and build systems memoize demand-driven queries and, after an input change, re-validate a query by replaying its recorded dependency trace (red-green marking with early cutoff). Under which conditions does an incremental fetch equal from-scratch evaluation, and which shortcuts break it? This card shows why replay must follow recorded order and stop at the first changed dependency (the dynamic-dependency sharpness result), and which failures (panics, divergence) out-of-order checking causes."
+  },
+  {
+    "id": "fingerprint-collision-breaks-reuse",
+    "lean": [
+      "Toy.RedGreen.fp_collision_reuses_stale_result",
+      "Toy.RedGreen.fp_collision_breaks_early_cutoff",
+      "Toy.RedGreen.fp_collision_diverges_although_new_state_terminates",
+      "Toy.RedGreen.fp_collision_reexecutes_query_with_unchanged_recorded_dependencies"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "status": "proved",
+    "tier_justification": "That fingerprint collisions cause missed updates is stated in the rustc-dev-guide; restated with concrete instances.",
+    "plain_claim": "Collision-freedom cannot be dropped. (1) With parity fingerprints, a query returning input x is marked green when x changes from 1 to 3 and returns the stale 1 (either cutoff mode; every other hypothesis of incremental-fetch-agrees and of every-replay-order-is-value-sound holds). (2) With fingerprints min v 10, under which the inputs do not collide but a re-executed query's results 11 and 12 do, early cutoff returns the stale 11 while re-execution returns 12. (3) With parity fingerprints, an input change invisible to the fingerprints makes ordered replay follow a dependency that closes a cycle in the new state, so the fetch is stuck at every fuel although the new state terminates. (4) With fingerprints colliding on 1 and 3, an upstream collision makes early cutoff execute a cached query all of whose recorded dependencies are unchanged in the new state.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Kernel evaluation of concrete instances, plus a strong induction on fuel for divergence at every fuel.",
+    "nonvacuity_witness": "Examples H, S, the parity divergence instance and example F; database consistency (and Inv) is proved in the same theorems.",
+    "nonvacuity_witness_lean": [
+      "Toy.RedGreen.fp_collision_reuses_stale_result",
+      "Toy.RedGreen.fp_collision_breaks_early_cutoff",
+      "Toy.RedGreen.fp_collision_diverges_although_new_state_terminates",
+      "Toy.RedGreen.fp_collision_reexecutes_query_with_unchanged_recorded_dependencies"
+    ],
+    "non_claims": [
+      "Says nothing about the probability of collisions with real hash functions.",
+      "Does not show that every collision is harmful; only that injectivity cannot be dropped entirely.",
+      "Escape hatch: systems that keep values and compare them by a lawful equality (as in Salsa's backdating) correspond to fp = id, for which FpInjective holds.",
+      "FpInjective requires injectivity on all of V; injectivity on the values of each key would suffice for the arguments used (derived from the proofs, not formalized), so per-key or domain-separated fingerprints are not excluded by these counterexamples.",
+      "Only result fingerprints are modeled; keys are compared exactly. Systems that identify dependency-graph nodes by a fingerprint of the query key (rustc-dev-guide, incremental-compilation-in-detail.md) can also suffer key-fingerprint collisions, which are not covered here."
+    ],
+    "prior_art": [
+      "rustc-dev-guide (rust-lang/rustc-dev-guide) at commit d946d7402d269990f3b64baabaf6592409791c11, src/queries/incremental-compilation.md: \"it is important that we visit each node in `reads(Q)` in same order as they occurred in the original compilation\", and of an out-of-order visit: \"it might visit `subquery2` before `subquery1`, and hence execute it. This can lead to ICEs and other problems in the compiler.\" src/queries/incremental-compilation-in-detail.md at the same commit: \"two different results could have the same fingerprint and the system would erroneously assume that the result hasn't changed, leading to a missed update\"; the same file states that nodes in the dependency graph \"are identified by a fingerprint of the query key\". Documentation, prose only.",
+      "salsa-rs/salsa at commit 496752ea3879af8cf3d71d1e28d76447a0cf6482: book/src/plumbing/maybe_changed_after.md (for a derived query, iterate over each dependency and check whether it may have changed; if so re-execute, possibly backdating) and book/src/plumbing/terminology/backdate.md (\"*Backdating* is when we mark a value that was computed in revision R as having last changed in some earlier revision\", done when the old and new values compare equal: early cutoff by value comparison, with revision stamps). Documentation, prose only."
+    ],
+    "design_question": "Incremental compilers and build systems memoize demand-driven queries and, after an input change, re-validate a query by replaying its recorded dependency trace (red-green marking with early cutoff). Under which conditions does an incremental fetch equal from-scratch evaluation, and which shortcuts break it? This card shows that fingerprint equality must imply value equality, for agreement, for early cutoff, for termination, and for the re-execution savings of early cutoff."
+  },
+  {
+    "id": "untracked-change-breaks-reuse",
+    "lean": [
+      "Toy.RedGreen.ambient_dependent_code_matches_no_from_scratch_eval",
+      "Toy.RedGreen.ambient_dependent_code_breaks_early_cutoff",
+      "Toy.RedGreen.untracked_code_change_diverges_although_new_state_terminates"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "status": "proved",
+    "tier_justification": "Build Systems à la Carte (Sec. 6.3) lists untracked dependencies (such as a compiler version) as a source of incorrect builds; restated here with concrete instances in this model.",
+    "plain_claim": "Unchanged query code cannot be dropped. If the query code depends on a revision-wide parameter that is not a tracked input (for example a compiler version or a global build flag; 0 when the database was recorded, 1 in the current revision), the code that produced the database (rulesN 0) differs from the code that runs now (rulesN 1). In the new input state the current code gives top = 111 and the recording code gives top = 1, and the incremental fetch returns 101, which neither rule set produces at any fuel: it combines a reused result of the old code with a re-executed result of the new. For another such program early cutoff returns 0 (recorded by the old code) while re-execution returns 1. And a code change between revisions can make the incremental fetch stuck at every fuel although the new state terminates. Every other hypothesis holds in each instance.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Kernel evaluation of concrete instances, fuel monotonicity of from-scratch evaluation (to exclude 101 at every fuel), and a strong induction on fuel for divergence.",
+    "nonvacuity_witness": "Examples N and M and the code-change divergence instance; all other hypotheses of incremental-fetch-agrees, every-replay-order-is-value-sound and early-cutoff-agrees-with-reexecution are proved in the same theorems.",
+    "nonvacuity_witness_lean": [
+      "Toy.RedGreen.ambient_dependent_code_matches_no_from_scratch_eval",
+      "Toy.RedGreen.ambient_dependent_code_breaks_early_cutoff",
+      "Toy.RedGreen.untracked_code_change_diverges_although_new_state_terminates"
+    ],
+    "non_claims": [
+      "Models an untracked change between revisions, not per-call or relational non-determinism: rulesN 0 and rulesN 1 are two deterministic rule sets, each fixed for a whole revision. Under per-invocation non-determinism (as in the non-deterministic task model of Build Systems à la Carte, Sec. 6.3, where each execution may produce any result from a possible set), 101 (a computed with parameter 0, top with parameter 1) is a valid from-scratch outcome (Toy.RedGreen.per_query_parameter_choice_gives_101), and that paper states that most of the build systems it studies can deal with non-determinism.",
+      "Escape hatch: promoting the parameter to a tracked input (so that its change is replayed like any input change), or discarding the database when the code or its parameters change (compare self-tracking, Build Systems à la Carte Sec. 6.5), restores the hypothesis rulesOld = rulesNew (derived). Marking an impure query as always re-executed is a further option, not modeled.",
+      "Does not quantify how far the incremental result can be from any from-scratch result."
+    ],
+    "prior_art": [
+      "A. Mokhov, N. Mitchell, S. Peyton Jones, \"Build systems à la carte\", Proc. ACM Program. Lang. 2(ICFP), Article 79, 2018, doi:10.1145/3236774, Sec. 6.3 \"Impure Computations\" (pp. 79:23-79:24) and Sec. 6.5 \"Self-tracking\" (p. 79:25). Sec. 6.3 separates untracked dependencies (\"C compilation will explicitly list the source.c file as a dependency, but it may not record that the version of gcc is also a dependency\"), non-determinism (tasks producing a result from a possible set, with an adjusted correctness definition; \"Most of the implementations in §5 can deal with non-determinism, apart from Buck\") and volatility. Sec. 6.5 describes build systems that recompute a task when the task itself changes. The untracked-change instances here are of the first kind, not of the second.",
+      "A. Mokhov, N. Mitchell, S. Peyton Jones, \"Build systems à la carte: Theory and practice\", J. Funct. Program. 30, e11, 2020, doi:10.1017/S0956796820000088. Extended version of the conference paper; no proofs. Sec. 5.2 states that for monadic tasks the recorded dependencies are known only from previous executions and that, after a common first request, later requests may differ; Sec. 5.2.2 \"Verifying step traces\" (p. 25) describes Shake's step traces, which have \"slightly different early cutoff semantics\" from verifying traces, illustrated by Fig. 7 (p. 26): after a change and a revert, verifying traces skip a rebuild that step traces perform. Sec. 8.3 \"Impure computations\" (pp. 43-44) and Sec. 8.8 \"Self-tracking\" (p. 48) correspond to Secs. 6.3 and 6.5 of the conference version."
+    ],
+    "design_question": "Incremental compilers and build systems memoize demand-driven queries and, after an input change, re-validate a query by replaying its recorded dependency trace (red-green marking with early cutoff). Under which conditions does an incremental fetch equal from-scratch evaluation, and which shortcuts break it? This card shows that the code that produced the cache must be the code that runs: every input of a query, including revision-wide parameters, must be tracked."
+  },
+  {
+    "id": "inconsistent-database-breaks-reuse",
+    "lean": [
+      "Toy.RedGreen.inconsistent_db_reuses_wrong_result",
+      "Toy.RedGreen.inconsistent_db_breaks_early_cutoff",
+      "Toy.RedGreen.inconsistent_db_diverges_although_new_state_terminates",
+      "Toy.RedGreen.stale_done_slot_returns_wrong_result",
+      "Toy.RedGreen.unreachable_db_diverges_although_new_state_terminates"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "status": "proved",
+    "tier_justification": "That a cache must hold correct entries is a re-derivation; included to show the consistency and reachability hypotheses are necessary.",
+    "plain_claim": "Neither consistency of the recorded database nor reachability of the working database can be dropped. An entry with the right trace but a wrong result (99 instead of 0; the database is consistent with no input state) is reused verbatim when no recorded dependency changed (either cutoff mode), and with early cutoff also after its dependency was re-executed and reproduced its fingerprint; an inconsistent database whose entries record top as their only dependency makes the fetch stuck at every fuel although the new state terminates. For a consistent recorded database, a working database not reachable from the start database by fetches makes the fetch return a stale result (a done slot holding an old-state entry) or get stuck at every fuel (an old slot recording a self-dependency).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Kernel evaluation of concrete instances; inconsistency via uniqueness of consistent entries; non-reachability via Inv preservation and the fact that fetches never create old slots; divergence by induction on fuel.",
+    "nonvacuity_witness": "Example B, the self-dependency database, and the unreachable working databases for examples D and the constant program.",
+    "nonvacuity_witness_lean": [
+      "Toy.RedGreen.inconsistent_db_reuses_wrong_result",
+      "Toy.RedGreen.inconsistent_db_breaks_early_cutoff",
+      "Toy.RedGreen.inconsistent_db_diverges_although_new_state_terminates",
+      "Toy.RedGreen.stale_done_slot_returns_wrong_result",
+      "Toy.RedGreen.unreachable_db_diverges_although_new_state_terminates"
+    ],
+    "non_claims": [
+      "Does not model partial writes, corruption detection, or recovery.",
+      "Partial and evicted caches are consistent: DBConsistent constrains only queries with an entry, and a missing entry (odb q = none) does not violate it (Toy.RedGreen.dbConsistent_partial_cache).",
+      "In the two reachability counterexamples the recorded database is consistent; what fails is reachability of the working database (and, for the stale done slot, the invariant Inv). Non-reachability is proved, via inv_of_reachable and via the fact that fetches never create old slots respectively."
+    ],
+    "prior_art": [
+      "A. Mokhov, N. Mitchell, S. Peyton Jones, \"Build systems à la carte\", Proc. ACM Program. Lang. 2(ICFP), Article 79, pp. 79:1-79:29, 2018, doi:10.1145/3236774. Defines minimality (Def. 2.1, p. 79:3: a build system is minimal if it \"executes tasks at most once per build and only if they transitively depend on inputs that changed since the previous build\"), correctness (Def. 3.1, p. 79:11), monadic tasks with dynamic dependencies, early cutoff, and verifying and constructive traces; the models are executable Haskell specifications and the paper gives no proofs."
+    ],
+    "design_question": "Incremental compilers and build systems memoize demand-driven queries and, after an input change, re-validate a query by replaying its recorded dependency trace (red-green marking with early cutoff). Under which conditions does an incremental fetch equal from-scratch evaluation, and which shortcuts break it? This card shows that recorded entries must be faithful from-scratch traces and that the working database must be the one the algorithm produced."
+  },
+  {
+    "id": "cyclic-new-state-both-diverge",
+    "lean": "Toy.RedGreen.cyclic_new_state_both_diverge",
+    "kind": "counterexample",
+    "tier": "T0",
+    "status": "proved",
+    "tier_justification": "That cycles make demand-driven evaluation diverge is folklore; that agreement survives them in this fuel-indexed model is a precise restatement rather than a new result.",
+    "plain_claim": "Termination of the new state is not needed for agreement but is needed for termination transfer: when top fetches itself in the new state (x = 0) but not in the old (x = 1), with a database recorded from scratch, identity fingerprints, unchanged code and ordered replay, from-scratch evaluation and the incremental fetch (either cutoff mode) are both stuck at every fuel, so AgreesWithEval holds while 'the fetch eventually finishes' fails.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Two short inductions on fuel for a concrete self-dependent program.",
+    "nonvacuity_witness": "Example L; consistency and old-state termination are proved in the same theorem.",
+    "nonvacuity_witness_lean": [
+      "Toy.RedGreen.cyclic_new_state_both_diverge"
+    ],
+    "non_claims": [
+      "Termination is well-foundedness of the dynamic dependencies of the new state: Q need not be finite, and over an infinite query type an acyclic but unbounded dependency chain also fails Terminates (both sides then diverge). 'Acyclic' is a sufficient description only for finite query types.",
+      "No cycle detection, cycle errors or fixpoint cycle recovery is modeled. In systems that report cycles as errors or compute fixpoints (for example Salsa's cycle_fn/cycle_initial), which member of a cycle is entered first, and what was cached earlier in the revision, could make incremental and from-scratch results differ unless the recovery semantics is independent of entry order (not examined).",
+      "Does not show that divergence is the only effect of cycles in other models."
+    ],
+    "prior_art": [
+      "S. Erdweg, M. Lichter, M. Weiel, \"A sound and optimal incremental build system with dynamic dependencies\", OOPSLA 2015, pp. 89-106, doi:10.1145/2814270.2814316. Pen-and-paper proofs (Appendix A) of soundness (Thm. 5.3: results are totally consistent and form a well-formed dependency graph) and optimality (Thms. 5.7, 5.8: minimal builder executions and consistency checks) for a build algorithm with dynamically discovered dependencies that checks requirements in their recorded order; the formal algorithm excludes cyclic builds and optimality relies on a stability assumption (Assumption 4.2). Not duplicated here: this package proves no optimality and models demand-driven queries with fingerprint traces rather than file stamps.",
+      "A. Mokhov, N. Mitchell, S. Peyton Jones, \"Build systems à la carte\", Proc. ACM Program. Lang. 2(ICFP), Article 79, pp. 79:1-79:29, 2018, doi:10.1145/3236774. Defines minimality (Def. 2.1, p. 79:3: a build system is minimal if it \"executes tasks at most once per build and only if they transitively depend on inputs that changed since the previous build\"), correctness (Def. 3.1, p. 79:11), monadic tasks with dynamic dependencies, early cutoff, and verifying and constructive traces; the models are executable Haskell specifications and the paper gives no proofs.",
+      "salsa-rs/salsa at commit 496752ea3879af8cf3d71d1e28d76447a0cf6482, book/src/cycles.md: \"Salsa also supports recovering from query cycles via fixed-point iteration, using `cycle_fn` and `cycle_initial` or explicitly defining a fallback value with `cycle_result`.\" Documentation; cited for the cycle-recovery boundary only."
+    ],
+    "design_question": "Incremental compilers and build systems memoize demand-driven queries and, after an input change, re-validate a query by replaying its recorded dependency trace (red-green marking with early cutoff). Under which conditions does an incremental fetch equal from-scratch evaluation, and which shortcuts break it? This card shows that termination of the new state (acyclicity, for finite query types) is a liveness hypothesis, not a soundness hypothesis, in this model."
+  },
+  {
+    "id": "early-cutoff-skips-cached-query-with-unchanged-dependencies",
+    "lean": [
+      "Toy.RedGreen.early_cutoff_never_executes_cached_query_with_unchanged_recorded_deps",
+      "Toy.RedGreen.no_cutoff_reexecutes_query_with_unchanged_recorded_dependencies",
+      "Toy.RedGreen.early_cutoff_reexecutes_query_whose_value_is_unchanged"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "status": "proved",
+    "tier_justification": "The informal descriptions of early cutoff and backdating (Build Systems à la Carte, Salsa, rustc) state that propagation stops at queries whose dependencies' results did not change; made precise here. Different from the minimality notion of Build Systems à la Carte (Def. 2.1) and the optimality theorems of the OOPSLA 2015 build system, which are not claimed.",
+    "plain_claim": "With early cutoff and any replay order, collision-free fingerprints, and a working database satisfying the simulation invariant Inv, a query q holding a cached entry e, all of whose recorded dependencies have in the new state values with the recorded fingerprints, is never executed during the rest of the revision: for every working database reachable from the given one by fetches, q's slot is still e unvalidated or e marked green, and no fetch from it executes q, not even an execution that panics or runs out of fuel (executions are observed through the execution log execLog of an instrumented copy of fetch that is proved to have the same outcomes and databases). Without early cutoff this fails (q is executed because a dependency was re-executed, although that dependency reproduced its fingerprint), and even with early cutoff a cached query whose own value is unchanged is executed when one of its recorded dependencies changed.",
+    "hypotheses": [
+      {
+        "name": "cutoff = true (fixed in the statement) (main theorem early_cutoff_never_executes_cached_query_with_unchanged_recorded_deps only)",
+        "purpose": "Without early cutoff a re-executed dependency counts as changed even when it reproduces its fingerprint, so its dependents are executed.",
+        "tightness": "tight",
+        "counterexample": "Toy.RedGreen.no_cutoff_reexecutes_query_with_unchanged_recorded_dependencies"
+      },
+      {
+        "name": "hunch : every recorded dependency of e has a new-state value with the recorded fingerprint (main theorem early_cutoff_never_executes_cached_query_with_unchanged_recorded_deps only)",
+        "purpose": "The precise 'nothing it read changed' condition; a query with a changed recorded dependency is executed even if its own value turns out unchanged.",
+        "tightness": "tight",
+        "counterexample": "Toy.RedGreen.early_cutoff_reexecutes_query_whose_value_is_unchanged"
+      },
+      {
+        "name": "hinv : Inv rules fp oldInp newInp db₀ (main theorem early_cutoff_never_executes_cached_query_with_unchanged_recorded_deps only)",
+        "purpose": "Fetched dependency values must be new-state values; a stale done slot can make an unchanged dependency look changed.",
+        "tightness": "tight",
+        "counterexample": "Toy.RedGreen.stale_db_reexecutes_query_with_unchanged_recorded_dependencies"
+      },
+      {
+        "name": "hfp : FpInjective fp (main theorem early_cutoff_never_executes_cached_query_with_unchanged_recorded_deps only)",
+        "purpose": "With a collision upstream, a dependency can be recomputed from a stale value to a result with a different fingerprint, although its new-state value has the recorded one.",
+        "tightness": "tight",
+        "counterexample": "Toy.RedGreen.fp_collision_reexecutes_query_with_unchanged_recorded_dependencies"
+      },
+      {
+        "name": "hq : db₀ q = .old e (main theorem early_cutoff_never_executes_cached_query_with_unchanged_recorded_deps only)",
+        "purpose": "Scopes the claim to a query with a cached entry. A query without an entry (slot none) is executed on first demand even when e's recorded dependencies are unchanged.",
+        "tightness": "tight",
+        "counterexample": "Toy.RedGreen.uncached_query_with_unchanged_recorded_dependencies_executes"
+      },
+      {
+        "name": "hreach : Reachable ⟨r, true⟩ rules fp newInp db₀ db (main theorem early_cutoff_never_executes_cached_query_with_unchanged_recorded_deps only)",
+        "purpose": "Restricts the claim to working databases produced by fetches from db₀. A database outside this set (proved unreachable: it violates Inv) can make the query execute although its slot is still the cached entry.",
+        "tightness": "tight",
+        "counterexample": "Toy.RedGreen.unreachable_db_reexecutes_query_with_unchanged_recorded_dependencies"
+      }
+    ],
+    "depth": "substantive",
+    "depth_justification": "Needs Inv preservation and value soundness for every replay order (fully proved, every-replay-order-is-value-sound), an argument that the replay of q's recorded dependencies never returns red, and the corresponding argument for the execution log through the instrumented algorithm. The failure instances are kernel evaluations.",
+    "nonvacuity_witness": "Example K, for every replay order: x changes, a is executed and reproduces 0, y is unchanged; top satisfies every hypothesis, fetching top executes only a, and top is marked green.",
+    "nonvacuity_witness_lean": "Toy.RedGreen.early_cutoff_skips_nonvacuous",
+    "non_claims": [
+      "Scope of the hypothesis ledger: the hypotheses listed for this card are those of the main theorem early_cutoff_never_executes_cached_query_with_unchanged_recorded_deps. The other two theorems listed under this card (no_cutoff_reexecutes_query_with_unchanged_recorded_dependencies and early_cutoff_reexecutes_query_whose_value_is_unchanged) are hypothesis-free statements about the concrete example K and serve as the counterexamples for dropping early cutoff and hunch.",
+      "Not minimality in the sense of Build Systems à la Carte (Def. 2.1: tasks executed at most once per build and only if they transitively depend on changed inputs) and not optimality: it does not say that the algorithm executes the fewest queries possible, that each query executes at most once (an aborted execution is executed again on the next demand), or that queries outside the demanded key's dependencies are untouched.",
+      "Recorded dependencies are still fetched and compared: not executing q's code does not skip validating q when q is demanded; while q's slot is old e, markGreen still fetches every recorded dependency of q (no coarse-grained skipping such as durability levels is modeled). Once a fetch has marked q green (slot done e false), later demands of q in the same revision return the stored value immediately, without running markGreen again.",
+      "Uncached queries execute on demand: the theorem applies only to queries with a cached entry in the starting working database; a query without an entry is executed when demanded (Toy.RedGreen.uncached_query_with_unchanged_recorded_dependencies_executes).",
+      "Executions are observed through execLog, the log of an instrumented copy of fetch proved to have the same outcomes and working databases as fetch (Toy.RedGreen.fetchX_eq). Slots alone do not record executions that panic or run out of fuel (Toy.RedGreen.execLog_example_aborted_execution).",
+      "The converse (a demanded query with a changed recorded dependency is executed) is not stated.",
+      "It is about direct recorded dependencies; transitive formulations follow only by reasoning not given here.",
+      "Inherits the toy-model non-claims of incremental-fetch-agrees (per-edge traces, single revision, fuel as call depth, exact key equality)."
+    ],
+    "prior_art": [
+      "A. Mokhov, N. Mitchell, S. Peyton Jones, \"Build systems à la carte\", Proc. ACM Program. Lang. 2(ICFP), Article 79, pp. 79:1-79:29, 2018, doi:10.1145/3236774. Defines minimality (Def. 2.1, p. 79:3: a build system is minimal if it \"executes tasks at most once per build and only if they transitively depend on inputs that changed since the previous build\"), correctness (Def. 3.1, p. 79:11), monadic tasks with dynamic dependencies, early cutoff, and verifying and constructive traces; the models are executable Haskell specifications and the paper gives no proofs.",
+      "salsa-rs/salsa at commit 496752ea3879af8cf3d71d1e28d76447a0cf6482: book/src/plumbing/maybe_changed_after.md (for a derived query, iterate over each dependency and check whether it may have changed; if so re-execute, possibly backdating) and book/src/plumbing/terminology/backdate.md (\"*Backdating* is when we mark a value that was computed in revision R as having last changed in some earlier revision\", done when the old and new values compare equal: early cutoff by value comparison, with revision stamps). Documentation, prose only.",
+      "rustc-dev-guide (rust-lang/rustc-dev-guide) at commit d946d7402d269990f3b64baabaf6592409791c11, src/queries/incremental-compilation.md: \"it is important that we visit each node in `reads(Q)` in same order as they occurred in the original compilation\", and of an out-of-order visit: \"it might visit `subquery2` before `subquery1`, and hence execute it. This can lead to ICEs and other problems in the compiler.\" src/queries/incremental-compilation-in-detail.md at the same commit: \"two different results could have the same fingerprint and the system would erroneously assume that the result hasn't changed, leading to a missed update\"; the same file states that nodes in the dependency graph \"are identified by a fingerprint of the query key\". Documentation, prose only.",
+      "rust-lang/rust at commit 5c56312f346d7cc8209d9fc0fd660c72e6fc6950, compiler/rustc_middle/src/dep_graph/graph.rs, fn try_mark_previous_green (called from fn try_mark_green): iterates over the previous session's edge targets of the node in order; a dependency already Green is accepted, a Red dependency ends the attempt (`DepNodeColor::Red => return None`), and a dependency of unknown colour is first recursively tried and otherwise forced (re-executed) and its colour re-read. Colours are per node; the dependent compares no dependency values. Source, prose only.",
+      "S. Erdweg, M. Lichter, M. Weiel, \"A sound and optimal incremental build system with dynamic dependencies\", OOPSLA 2015, pp. 89-106, doi:10.1145/2814270.2814316. Pen-and-paper proofs (Appendix A) of soundness (Thm. 5.3: results are totally consistent and form a well-formed dependency graph) and optimality (Thms. 5.7, 5.8: minimal builder executions and consistency checks) for a build algorithm with dynamically discovered dependencies that checks requirements in their recorded order; the formal algorithm excludes cyclic builds and optimality relies on a stability assumption (Assumption 4.2). Not duplicated here: this package proves no optimality and models demand-driven queries with fingerprint traces rather than file stamps."
+    ],
+    "design_question": "Incremental compilers and build systems memoize demand-driven queries and, after an input change, re-validate a query by replaying its recorded dependency trace (red-green marking with early cutoff). Under which conditions does an incremental fetch equal from-scratch evaluation, and which shortcuts break it? This card states exactly how far early cutoff limits re-execution (cached queries whose recorded dependencies are unchanged are never executed), and what it does not limit."
+  }
+]

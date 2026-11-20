@@ -25178,6 +25178,73 @@
         "compilers"
       ]
     },
+    "demand-driven-red-green-query-memoization-and-early-cutoff-soundness": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3236774"
+          },
+          "name": "Build systems \u00e0 la carte"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796820000088"
+          },
+          "name": "Build systems \u00e0 la carte: Theory and practice"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2814270.2814316"
+          },
+          "name": "A sound and optimal incremental build system with dynamic dependencies"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2594291.2594324"
+          },
+          "name": "Adapton: composable, demand-driven incremental computation"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rustc-dev-guide",
+            "revision": "d946d7402d269990f3b64baabaf6592409791c11"
+          },
+          "name": "rustc-dev-guide"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "5c56312f346d7cc8209d9fc0fd660c72e6fc6950"
+          },
+          "name": "Rust compiler"
+        },
+        {
+          "identity": {
+            "repository": "salsa-rs/salsa",
+            "revision": "496752ea3879af8cf3d71d1e28d76447a0cf6482"
+          },
+          "name": "Salsa"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/simulation-invariants",
+        "compilers/incremental-compilation",
+        "pl/incremental-computation",
+        "pl/memoization",
+        "pl/build-systems"
+      ]
+    },
     "deterministic-distributed-verification-and-remote-build-cache-integration": {
       "observed_at": "2026-11-14",
       "subjects": [

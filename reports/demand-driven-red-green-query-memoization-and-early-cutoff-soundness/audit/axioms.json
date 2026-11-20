@@ -1,0 +1,1039 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.RedGreen.AgreesWithEval": [
+      "propext"
+    ],
+    "Toy.RedGreen.Audit.standardAxioms": [],
+    "Toy.RedGreen.Config": [],
+    "Toy.RedGreen.Config.casesOn": [],
+    "Toy.RedGreen.Config.ctorIdx": [],
+    "Toy.RedGreen.Config.cutoff": [],
+    "Toy.RedGreen.Config.mk": [],
+    "Toy.RedGreen.Config.mk.inj": [],
+    "Toy.RedGreen.Config.mk.injEq": [
+      "propext"
+    ],
+    "Toy.RedGreen.Config.mk.noConfusion": [],
+    "Toy.RedGreen.Config.mk.sizeOf_spec": [],
+    "Toy.RedGreen.Config.noConfusion": [],
+    "Toy.RedGreen.Config.noConfusionType": [],
+    "Toy.RedGreen.Config.rec": [],
+    "Toy.RedGreen.Config.recOn": [],
+    "Toy.RedGreen.Config.replay": [],
+    "Toy.RedGreen.DB": [],
+    "Toy.RedGreen.DB.set": [],
+    "Toy.RedGreen.DB.set.eq_1": [],
+    "Toy.RedGreen.DBConsistent": [],
+    "Toy.RedGreen.Entry": [],
+    "Toy.RedGreen.Entry.casesOn": [],
+    "Toy.RedGreen.Entry.ctorIdx": [],
+    "Toy.RedGreen.Entry.deps": [],
+    "Toy.RedGreen.Entry.mk": [],
+    "Toy.RedGreen.Entry.mk.inj": [],
+    "Toy.RedGreen.Entry.mk.injEq": [
+      "propext"
+    ],
+    "Toy.RedGreen.Entry.mk.noConfusion": [],
+    "Toy.RedGreen.Entry.mk.sizeOf_spec": [],
+    "Toy.RedGreen.Entry.noConfusion": [],
+    "Toy.RedGreen.Entry.noConfusionType": [],
+    "Toy.RedGreen.Entry.rec": [],
+    "Toy.RedGreen.Entry.recOn": [],
+    "Toy.RedGreen.Entry.value": [],
+    "Toy.RedGreen.EntryConsistent": [],
+    "Toy.RedGreen.FpInjective": [],
+    "Toy.RedGreen.IK": [],
+    "Toy.RedGreen.IK.casesOn": [],
+    "Toy.RedGreen.IK.ctorElim": [],
+    "Toy.RedGreen.IK.ctorElimType": [],
+    "Toy.RedGreen.IK.ctorIdx": [],
+    "Toy.RedGreen.IK.noConfusion": [],
+    "Toy.RedGreen.IK.noConfusionType": [],
+    "Toy.RedGreen.IK.ofNat": [],
+    "Toy.RedGreen.IK.ofNat_ctorIdx": [],
+    "Toy.RedGreen.IK.rec": [],
+    "Toy.RedGreen.IK.recOn": [],
+    "Toy.RedGreen.IK.x": [],
+    "Toy.RedGreen.IK.x.elim": [],
+    "Toy.RedGreen.IK.x.sizeOf_spec": [],
+    "Toy.RedGreen.IK.y": [],
+    "Toy.RedGreen.IK.y.elim": [],
+    "Toy.RedGreen.IK.y.sizeOf_spec": [],
+    "Toy.RedGreen.Inv": [],
+    "Toy.RedGreen.Key": [],
+    "Toy.RedGreen.LDB": [],
+    "Toy.RedGreen.NoNewOld": [],
+    "Toy.RedGreen.NoNewOld.refl": [],
+    "Toy.RedGreen.NoNewOld.trans": [],
+    "Toy.RedGreen.OldDB": [],
+    "Toy.RedGreen.Out": [],
+    "Toy.RedGreen.Out.casesOn": [],
+    "Toy.RedGreen.Out.ctorElim": [],
+    "Toy.RedGreen.Out.ctorElimType": [],
+    "Toy.RedGreen.Out.ctorIdx": [],
+    "Toy.RedGreen.Out.noConfusion": [],
+    "Toy.RedGreen.Out.noConfusionType": [],
+    "Toy.RedGreen.Out.panic": [],
+    "Toy.RedGreen.Out.panic.elim": [],
+    "Toy.RedGreen.Out.panic.sizeOf_spec": [],
+    "Toy.RedGreen.Out.rec": [],
+    "Toy.RedGreen.Out.recOn": [],
+    "Toy.RedGreen.Out.stuck": [],
+    "Toy.RedGreen.Out.stuck.elim": [],
+    "Toy.RedGreen.Out.stuck.sizeOf_spec": [],
+    "Toy.RedGreen.Out.val": [],
+    "Toy.RedGreen.Out.val.elim": [],
+    "Toy.RedGreen.Out.val.inj": [],
+    "Toy.RedGreen.Out.val.injEq": [
+      "propext"
+    ],
+    "Toy.RedGreen.Out.val.noConfusion": [],
+    "Toy.RedGreen.Out.val.sizeOf_spec": [],
+    "Toy.RedGreen.Prog": [],
+    "Toy.RedGreen.Prog.below": [],
+    "Toy.RedGreen.Prog.brecOn": [],
+    "Toy.RedGreen.Prog.brecOn.eq": [],
+    "Toy.RedGreen.Prog.brecOn.go": [],
+    "Toy.RedGreen.Prog.casesOn": [],
+    "Toy.RedGreen.Prog.ctorElim": [],
+    "Toy.RedGreen.Prog.ctorElimType": [],
+    "Toy.RedGreen.Prog.ctorIdx": [],
+    "Toy.RedGreen.Prog.fetch": [],
+    "Toy.RedGreen.Prog.fetch.elim": [],
+    "Toy.RedGreen.Prog.fetch.inj": [],
+    "Toy.RedGreen.Prog.fetch.injEq": [
+      "propext"
+    ],
+    "Toy.RedGreen.Prog.fetch.noConfusion": [],
+    "Toy.RedGreen.Prog.fetch.sizeOf_spec": [],
+    "Toy.RedGreen.Prog.noConfusion": [],
+    "Toy.RedGreen.Prog.noConfusionType": [],
+    "Toy.RedGreen.Prog.panic": [],
+    "Toy.RedGreen.Prog.panic.elim": [],
+    "Toy.RedGreen.Prog.panic.sizeOf_spec": [],
+    "Toy.RedGreen.Prog.rec": [],
+    "Toy.RedGreen.Prog.recOn": [],
+    "Toy.RedGreen.Prog.ret": [],
+    "Toy.RedGreen.Prog.ret.elim": [],
+    "Toy.RedGreen.Prog.ret.inj": [],
+    "Toy.RedGreen.Prog.ret.injEq": [
+      "propext"
+    ],
+    "Toy.RedGreen.Prog.ret.noConfusion": [],
+    "Toy.RedGreen.Prog.ret.sizeOf_spec": [],
+    "Toy.RedGreen.Prog.run": [],
+    "Toy.RedGreen.Prog.run.eq_1": [],
+    "Toy.RedGreen.Prog.run.eq_2": [],
+    "Toy.RedGreen.Prog.run.eq_3": [],
+    "Toy.RedGreen.Prog.run.eq_def": [],
+    "Toy.RedGreen.Prog.run.match_1": [],
+    "Toy.RedGreen.Prog.runSt": [],
+    "Toy.RedGreen.Prog.runSt.eq_1": [],
+    "Toy.RedGreen.Prog.runSt.eq_2": [],
+    "Toy.RedGreen.Prog.runSt.eq_3": [],
+    "Toy.RedGreen.Prog.runSt.eq_def": [],
+    "Toy.RedGreen.Prog.runSt.match_1": [],
+    "Toy.RedGreen.Prog.runSt.match_3": [],
+    "Toy.RedGreen.Prog.runSt.match_5": [],
+    "Toy.RedGreen.Prog.runT": [],
+    "Toy.RedGreen.Prog.runT.eq_1": [],
+    "Toy.RedGreen.Prog.runT.eq_2": [],
+    "Toy.RedGreen.Prog.runT.eq_3": [],
+    "Toy.RedGreen.Prog.runT.eq_def": [],
+    "Toy.RedGreen.Prog.runT.match_1": [],
+    "Toy.RedGreen.Prog.runT_congr_of_ne_stuck": [],
+    "Toy.RedGreen.Prog.runT_congr_of_ne_stuck.match_1_1": [],
+    "Toy.RedGreen.Prog.runT_fst": [],
+    "Toy.RedGreen.Prog.runT_fst.match_1_1": [],
+    "Toy.RedGreen.Prog.runT_of_trace_match": [
+      "propext"
+    ],
+    "Toy.RedGreen.Prog.runT_of_trace_match.match_1_1": [],
+    "Toy.RedGreen.Prog.run_congr_of_ne_stuck": [],
+    "Toy.RedGreen.Prog.run_congr_of_ne_stuck.match_1_1": [],
+    "Toy.RedGreen.Q3": [],
+    "Toy.RedGreen.Q3.a": [],
+    "Toy.RedGreen.Q3.a.elim": [],
+    "Toy.RedGreen.Q3.a.sizeOf_spec": [],
+    "Toy.RedGreen.Q3.b": [],
+    "Toy.RedGreen.Q3.b.elim": [],
+    "Toy.RedGreen.Q3.b.sizeOf_spec": [],
+    "Toy.RedGreen.Q3.casesOn": [],
+    "Toy.RedGreen.Q3.ctorElim": [],
+    "Toy.RedGreen.Q3.ctorElimType": [],
+    "Toy.RedGreen.Q3.ctorIdx": [],
+    "Toy.RedGreen.Q3.noConfusion": [],
+    "Toy.RedGreen.Q3.noConfusionType": [],
+    "Toy.RedGreen.Q3.ofNat": [],
+    "Toy.RedGreen.Q3.ofNat_ctorIdx": [],
+    "Toy.RedGreen.Q3.rec": [],
+    "Toy.RedGreen.Q3.recOn": [],
+    "Toy.RedGreen.Q3.top": [],
+    "Toy.RedGreen.Q3.top.elim": [],
+    "Toy.RedGreen.Q3.top.sizeOf_spec": [],
+    "Toy.RedGreen.Q4": [],
+    "Toy.RedGreen.Q4.a": [],
+    "Toy.RedGreen.Q4.a.elim": [],
+    "Toy.RedGreen.Q4.a.sizeOf_spec": [],
+    "Toy.RedGreen.Q4.casesOn": [],
+    "Toy.RedGreen.Q4.ctorElim": [],
+    "Toy.RedGreen.Q4.ctorElimType": [],
+    "Toy.RedGreen.Q4.ctorIdx": [],
+    "Toy.RedGreen.Q4.guard": [],
+    "Toy.RedGreen.Q4.guard.elim": [],
+    "Toy.RedGreen.Q4.guard.sizeOf_spec": [],
+    "Toy.RedGreen.Q4.noConfusion": [],
+    "Toy.RedGreen.Q4.noConfusionType": [],
+    "Toy.RedGreen.Q4.ofNat": [],
+    "Toy.RedGreen.Q4.ofNat_ctorIdx": [],
+    "Toy.RedGreen.Q4.rec": [],
+    "Toy.RedGreen.Q4.recOn": [],
+    "Toy.RedGreen.Q4.risky": [],
+    "Toy.RedGreen.Q4.risky.elim": [],
+    "Toy.RedGreen.Q4.risky.sizeOf_spec": [],
+    "Toy.RedGreen.Q4.top": [],
+    "Toy.RedGreen.Q4.top.elim": [],
+    "Toy.RedGreen.Q4.top.sizeOf_spec": [],
+    "Toy.RedGreen.QK": [],
+    "Toy.RedGreen.QK.casesOn": [],
+    "Toy.RedGreen.QK.ctorElim": [],
+    "Toy.RedGreen.QK.ctorElimType": [],
+    "Toy.RedGreen.QK.ctorIdx": [],
+    "Toy.RedGreen.QK.guard": [],
+    "Toy.RedGreen.QK.guard.elim": [],
+    "Toy.RedGreen.QK.guard.sizeOf_spec": [],
+    "Toy.RedGreen.QK.noConfusion": [],
+    "Toy.RedGreen.QK.noConfusionType": [],
+    "Toy.RedGreen.QK.ofNat": [],
+    "Toy.RedGreen.QK.ofNat_ctorIdx": [],
+    "Toy.RedGreen.QK.rec": [],
+    "Toy.RedGreen.QK.recOn": [],
+    "Toy.RedGreen.QK.risky": [],
+    "Toy.RedGreen.QK.risky.elim": [],
+    "Toy.RedGreen.QK.risky.sizeOf_spec": [],
+    "Toy.RedGreen.QK.top": [],
+    "Toy.RedGreen.QK.top.elim": [],
+    "Toy.RedGreen.QK.top.sizeOf_spec": [],
+    "Toy.RedGreen.Reachable": [
+      "propext"
+    ],
+    "Toy.RedGreen.Reachable.below": [
+      "propext"
+    ],
+    "Toy.RedGreen.Reachable.below.casesOn": [
+      "propext"
+    ],
+    "Toy.RedGreen.Reachable.below.rec": [
+      "propext"
+    ],
+    "Toy.RedGreen.Reachable.below.refl": [
+      "propext"
+    ],
+    "Toy.RedGreen.Reachable.below.step": [
+      "propext"
+    ],
+    "Toy.RedGreen.Reachable.brecOn": [
+      "propext"
+    ],
+    "Toy.RedGreen.Reachable.casesOn": [
+      "propext"
+    ],
+    "Toy.RedGreen.Reachable.rec": [
+      "propext"
+    ],
+    "Toy.RedGreen.Reachable.recOn": [
+      "propext"
+    ],
+    "Toy.RedGreen.Reachable.refl": [],
+    "Toy.RedGreen.Reachable.step": [
+      "propext"
+    ],
+    "Toy.RedGreen.Replay": [],
+    "Toy.RedGreen.Replay.casesOn": [],
+    "Toy.RedGreen.Replay.ctorElim": [],
+    "Toy.RedGreen.Replay.ctorElimType": [],
+    "Toy.RedGreen.Replay.ctorIdx": [],
+    "Toy.RedGreen.Replay.exhaustive": [],
+    "Toy.RedGreen.Replay.exhaustive.elim": [],
+    "Toy.RedGreen.Replay.exhaustive.sizeOf_spec": [],
+    "Toy.RedGreen.Replay.noConfusion": [],
+    "Toy.RedGreen.Replay.noConfusionType": [],
+    "Toy.RedGreen.Replay.ofNat": [],
+    "Toy.RedGreen.Replay.ofNat_ctorIdx": [],
+    "Toy.RedGreen.Replay.ordered": [],
+    "Toy.RedGreen.Replay.ordered.elim": [],
+    "Toy.RedGreen.Replay.ordered.sizeOf_spec": [],
+    "Toy.RedGreen.Replay.rec": [],
+    "Toy.RedGreen.Replay.recOn": [],
+    "Toy.RedGreen.Replay.reversed": [],
+    "Toy.RedGreen.Replay.reversed.elim": [],
+    "Toy.RedGreen.Replay.reversed.sizeOf_spec": [],
+    "Toy.RedGreen.Rules": [],
+    "Toy.RedGreen.Slot": [],
+    "Toy.RedGreen.Slot.casesOn": [],
+    "Toy.RedGreen.Slot.ctorElim": [],
+    "Toy.RedGreen.Slot.ctorElimType": [],
+    "Toy.RedGreen.Slot.ctorIdx": [],
+    "Toy.RedGreen.Slot.done": [],
+    "Toy.RedGreen.Slot.done.elim": [],
+    "Toy.RedGreen.Slot.done.inj": [],
+    "Toy.RedGreen.Slot.done.injEq": [
+      "propext"
+    ],
+    "Toy.RedGreen.Slot.done.noConfusion": [],
+    "Toy.RedGreen.Slot.done.sizeOf_spec": [],
+    "Toy.RedGreen.Slot.noConfusion": [],
+    "Toy.RedGreen.Slot.noConfusionType": [],
+    "Toy.RedGreen.Slot.none": [],
+    "Toy.RedGreen.Slot.none.elim": [],
+    "Toy.RedGreen.Slot.none.sizeOf_spec": [],
+    "Toy.RedGreen.Slot.old": [],
+    "Toy.RedGreen.Slot.old.elim": [],
+    "Toy.RedGreen.Slot.old.inj": [],
+    "Toy.RedGreen.Slot.old.injEq": [
+      "propext"
+    ],
+    "Toy.RedGreen.Slot.old.noConfusion": [],
+    "Toy.RedGreen.Slot.old.sizeOf_spec": [],
+    "Toy.RedGreen.Slot.rec": [],
+    "Toy.RedGreen.Slot.recOn": [],
+    "Toy.RedGreen.Terminates": [],
+    "Toy.RedGreen.Tracks": [],
+    "Toy.RedGreen.Verdict": [],
+    "Toy.RedGreen.Verdict.casesOn": [],
+    "Toy.RedGreen.Verdict.ctorElim": [],
+    "Toy.RedGreen.Verdict.ctorElimType": [],
+    "Toy.RedGreen.Verdict.ctorIdx": [],
+    "Toy.RedGreen.Verdict.green": [],
+    "Toy.RedGreen.Verdict.green.elim": [],
+    "Toy.RedGreen.Verdict.green.sizeOf_spec": [],
+    "Toy.RedGreen.Verdict.noConfusion": [],
+    "Toy.RedGreen.Verdict.noConfusionType": [],
+    "Toy.RedGreen.Verdict.ofNat": [],
+    "Toy.RedGreen.Verdict.ofNat_ctorIdx": [],
+    "Toy.RedGreen.Verdict.panic": [],
+    "Toy.RedGreen.Verdict.panic.elim": [],
+    "Toy.RedGreen.Verdict.panic.sizeOf_spec": [],
+    "Toy.RedGreen.Verdict.rec": [],
+    "Toy.RedGreen.Verdict.recOn": [],
+    "Toy.RedGreen.Verdict.red": [],
+    "Toy.RedGreen.Verdict.red.elim": [],
+    "Toy.RedGreen.Verdict.red.sizeOf_spec": [],
+    "Toy.RedGreen.Verdict.stuck": [],
+    "Toy.RedGreen.Verdict.stuck.elim": [],
+    "Toy.RedGreen.Verdict.stuck.sizeOf_spec": [],
+    "Toy.RedGreen.agreesWithEval_example": [
+      "propext"
+    ],
+    "Toy.RedGreen.agreesWithEval_rejects_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.ambient_dependent_code_breaks_early_cutoff": [
+      "propext"
+    ],
+    "Toy.RedGreen.ambient_dependent_code_matches_no_from_scratch_eval": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.changedAt": [
+      "propext"
+    ],
+    "Toy.RedGreen.changedAt.congr_simp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.changedAt.eq_1": [
+      "propext"
+    ],
+    "Toy.RedGreen.changedAt_cutoff_example": [
+      "propext"
+    ],
+    "Toy.RedGreen.changedAt_fingerprint_example": [
+      "propext"
+    ],
+    "Toy.RedGreen.changedAt_no_cutoff_example": [
+      "propext"
+    ],
+    "Toy.RedGreen.checkDeps": [
+      "propext"
+    ],
+    "Toy.RedGreen.checkDeps.eq_1": [
+      "propext"
+    ],
+    "Toy.RedGreen.checkDeps.eq_2": [
+      "propext"
+    ],
+    "Toy.RedGreen.checkDeps.eq_def": [
+      "propext"
+    ],
+    "Toy.RedGreen.checkDeps.match_1": [],
+    "Toy.RedGreen.checkDeps.match_3": [],
+    "Toy.RedGreen.checkDepsX": [
+      "propext"
+    ],
+    "Toy.RedGreen.checkDepsX.eq_1": [
+      "propext"
+    ],
+    "Toy.RedGreen.checkDepsX.eq_2": [
+      "propext"
+    ],
+    "Toy.RedGreen.checkDepsX.eq_def": [
+      "propext"
+    ],
+    "Toy.RedGreen.checkDepsX.match_1": [],
+    "Toy.RedGreen.checkDepsX.match_3": [],
+    "Toy.RedGreen.checkDeps_noNewOld": [
+      "propext"
+    ],
+    "Toy.RedGreen.checkDeps_noNewOld.match_1_1": [],
+    "Toy.RedGreen.checkDeps_tracks": [
+      "propext"
+    ],
+    "Toy.RedGreen.checkDeps_tracks.match_1_1": [],
+    "Toy.RedGreen.checkDeps_value_sound": [
+      "propext"
+    ],
+    "Toy.RedGreen.checkDeps_value_sound.match_1_1": [],
+    "Toy.RedGreen.cyclic_new_state_both_diverge": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.dbC_guardDone": [],
+    "Toy.RedGreen.dbC_guardDone.eq_1": [],
+    "Toy.RedGreen.dbC_guardDone_guard": [],
+    "Toy.RedGreen.dbC_guardDone_risky": [],
+    "Toy.RedGreen.dbC_guardDone_top": [],
+    "Toy.RedGreen.dbConsistent_example": [],
+    "Toy.RedGreen.dbConsistent_partial_cache": [],
+    "Toy.RedGreen.eF": [],
+    "Toy.RedGreen.eF.eq_1": [],
+    "Toy.RedGreen.eK": [],
+    "Toy.RedGreen.eK.eq_1": [],
+    "Toy.RedGreen.eK_deps_unchanged": [
+      "propext"
+    ],
+    "Toy.RedGreen.eKa": [],
+    "Toy.RedGreen.eKa.eq_1": [],
+    "Toy.RedGreen.eKa_deps_changed": [
+      "propext"
+    ],
+    "Toy.RedGreen.early_cutoff_agrees_nonvacuous": [
+      "propext"
+    ],
+    "Toy.RedGreen.early_cutoff_agrees_with_reexecution_of_ordered_replay": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.early_cutoff_never_executes_cached_query_with_unchanged_recorded_deps": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.early_cutoff_reexecutes_query_whose_value_is_unchanged": [
+      "propext"
+    ],
+    "Toy.RedGreen.early_cutoff_skips_nonvacuous": [
+      "propext"
+    ],
+    "Toy.RedGreen.entryConsistent_example": [],
+    "Toy.RedGreen.entryConsistent_of_deps_match": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.entryConsistent_rejects_other_state": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.entryConsistent_rejects_reordered_trace": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.entryConsistent_rejects_wrong_fingerprint": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.entryConsistent_unique": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.eval": [],
+    "Toy.RedGreen.eval.eq_1": [],
+    "Toy.RedGreen.eval.eq_2": [],
+    "Toy.RedGreen.eval.eq_3": [],
+    "Toy.RedGreen.eval.eq_def": [],
+    "Toy.RedGreen.eval.match_1": [],
+    "Toy.RedGreen.eval_L_stuck": [
+      "propext"
+    ],
+    "Toy.RedGreen.eval_common_fuel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.eval_common_fuel.match_1_1": [],
+    "Toy.RedGreen.eval_eq_of_ne_stuck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.eval_example_dead_dependency_not_evaluated": [],
+    "Toy.RedGreen.eval_example_panic": [],
+    "Toy.RedGreen.eval_example_value": [],
+    "Toy.RedGreen.eval_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.eval_mono.match_1_1": [],
+    "Toy.RedGreen.eval_ne_of_eval_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.eventually_eq_eval_of_agrees": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.exec": [],
+    "Toy.RedGreen.exec.eq_1": [],
+    "Toy.RedGreen.exec.match_1": [],
+    "Toy.RedGreen.execLog": [
+      "propext"
+    ],
+    "Toy.RedGreen.execLog.congr_simp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.execLog.eq_1": [
+      "propext"
+    ],
+    "Toy.RedGreen.execLog_example_aborted_execution": [
+      "propext"
+    ],
+    "Toy.RedGreen.execLog_example_cutoff": [
+      "propext"
+    ],
+    "Toy.RedGreen.execLog_example_no_cutoff": [
+      "propext"
+    ],
+    "Toy.RedGreen.execX": [],
+    "Toy.RedGreen.execX.match_1": [],
+    "Toy.RedGreen.exec_noNewOld": [
+      "propext"
+    ],
+    "Toy.RedGreen.exec_tracks": [
+      "propext"
+    ],
+    "Toy.RedGreen.exec_value_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.exhaustive_replay_diverges_on_dead_code_cycle": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.exhaustive_replay_executes_dead_dependency_and_panics": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.fetch": [
+      "propext"
+    ],
+    "Toy.RedGreen.fetch.eq_1": [
+      "propext"
+    ],
+    "Toy.RedGreen.fetch.eq_2": [
+      "propext"
+    ],
+    "Toy.RedGreen.fetch.eq_3": [
+      "propext"
+    ],
+    "Toy.RedGreen.fetch.eq_def": [
+      "propext"
+    ],
+    "Toy.RedGreen.fetch.match_1": [],
+    "Toy.RedGreen.fetch.match_3": [],
+    "Toy.RedGreen.fetch.match_5": [],
+    "Toy.RedGreen.fetchX": [
+      "propext"
+    ],
+    "Toy.RedGreen.fetchX.eq_1": [
+      "propext"
+    ],
+    "Toy.RedGreen.fetchX.eq_2": [
+      "propext"
+    ],
+    "Toy.RedGreen.fetchX.eq_3": [
+      "propext"
+    ],
+    "Toy.RedGreen.fetchX.eq_def": [
+      "propext"
+    ],
+    "Toy.RedGreen.fetchX.match_1": [],
+    "Toy.RedGreen.fetchX.match_3": [],
+    "Toy.RedGreen.fetchX.match_5": [],
+    "Toy.RedGreen.fetchX_eq": [
+      "propext"
+    ],
+    "Toy.RedGreen.fetchX_tracks": [
+      "propext"
+    ],
+    "Toy.RedGreen.fetchX_tracks.match_1_1": [],
+    "Toy.RedGreen.fetch_L_stuck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.fetch_L_stuck.match_1_1": [
+      "propext"
+    ],
+    "Toy.RedGreen.fetch_agrees_with_eval_during_revision_of_ordered_replay": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.fetch_agrees_with_eval_nonvacuous": [
+      "propext"
+    ],
+    "Toy.RedGreen.fetch_agrees_with_eval_of_ordered_replay": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.fetch_during_revision_nonvacuous": [
+      "propext"
+    ],
+    "Toy.RedGreen.fetch_eventually_eq_eval_during_revision_of_ordered_replay": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.fetch_eventually_finishes_during_revision_of_terminates": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.fetch_example_exhaustive_touches_dead_dependency": [
+      "propext"
+    ],
+    "Toy.RedGreen.fetch_example_ordered": [
+      "propext"
+    ],
+    "Toy.RedGreen.fetch_example_rejects_stale": [
+      "propext"
+    ],
+    "Toy.RedGreen.fetch_exhaustive_C_guardDone_stuck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.fetch_exhaustive_C_guardDone_stuck.match_1_1": [
+      "propext"
+    ],
+    "Toy.RedGreen.fetch_exhaustive_C_stuck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.fetch_exhaustive_C_stuck.match_1_1": [],
+    "Toy.RedGreen.fetch_fpLoop_stuck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.fetch_fpLoop_stuck.match_1_1": [
+      "propext"
+    ],
+    "Toy.RedGreen.fetch_inv_and_value_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.fetch_inv_and_value_sound.match_1_1": [],
+    "Toy.RedGreen.fetch_loopDb_stuck": [
+      "propext"
+    ],
+    "Toy.RedGreen.fetch_noNewOld": [
+      "propext"
+    ],
+    "Toy.RedGreen.fetch_noNewOld.match_1_1": [],
+    "Toy.RedGreen.fetch_odbLoop_stuck": [
+      "propext"
+    ],
+    "Toy.RedGreen.fetch_reversed_C_stuck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.fetch_reversed_C_stuck.match_1_1": [
+      "propext"
+    ],
+    "Toy.RedGreen.fetch_sameLoop_stuck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.fetch_sameLoop_stuck.match_1_1": [
+      "propext"
+    ],
+    "Toy.RedGreen.fetch_simulation_invariant": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.fetch_simulation_invariant.match_1_1": [],
+    "Toy.RedGreen.fetch_simulation_invariant_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.fetch_value_sound_nonvacuous": [
+      "propext"
+    ],
+    "Toy.RedGreen.fetch_value_sound_of_any_replay": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.fpCollide13": [],
+    "Toy.RedGreen.fpCollide13_not_injective": [],
+    "Toy.RedGreen.fpId": [],
+    "Toy.RedGreen.fpId.eq_1": [],
+    "Toy.RedGreen.fpId_injective": [],
+    "Toy.RedGreen.fpParity": [],
+    "Toy.RedGreen.fpParity.eq_1": [],
+    "Toy.RedGreen.fpParity_not_injective": [],
+    "Toy.RedGreen.fpSat": [],
+    "Toy.RedGreen.fpSat_not_injective": [],
+    "Toy.RedGreen.fp_collision_breaks_early_cutoff": [
+      "propext"
+    ],
+    "Toy.RedGreen.fp_collision_diverges_although_new_state_terminates": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.fp_collision_reexecutes_query_with_unchanged_recorded_dependencies": [
+      "propext"
+    ],
+    "Toy.RedGreen.fp_collision_reuses_stale_result": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.inconsistent_db_breaks_early_cutoff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.inconsistent_db_diverges_although_new_state_terminates": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.inconsistent_db_reuses_wrong_result": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.inpXY": [],
+    "Toy.RedGreen.inpXY.eq_1": [],
+    "Toy.RedGreen.inpXY.eq_2": [],
+    "Toy.RedGreen.instDecidableEqConfig": [],
+    "Toy.RedGreen.instDecidableEqConfig.decEq": [],
+    "Toy.RedGreen.instDecidableEqConfig.decEq.match_1": [],
+    "Toy.RedGreen.instDecidableEqEntry": [],
+    "Toy.RedGreen.instDecidableEqEntry.decEq": [],
+    "Toy.RedGreen.instDecidableEqEntry.decEq.match_1": [],
+    "Toy.RedGreen.instDecidableEqIK": [],
+    "Toy.RedGreen.instDecidableEqOut": [],
+    "Toy.RedGreen.instDecidableEqOut.decEq": [],
+    "Toy.RedGreen.instDecidableEqOut.decEq.match_1": [],
+    "Toy.RedGreen.instDecidableEqQ3": [],
+    "Toy.RedGreen.instDecidableEqQ4": [],
+    "Toy.RedGreen.instDecidableEqQK": [],
+    "Toy.RedGreen.instDecidableEqReplay": [],
+    "Toy.RedGreen.instDecidableEqSlot": [],
+    "Toy.RedGreen.instDecidableEqSlot.decEq": [],
+    "Toy.RedGreen.instDecidableEqSlot.decEq.match_1": [],
+    "Toy.RedGreen.instDecidableEqVerdict": [],
+    "Toy.RedGreen.instReprConfig": [],
+    "Toy.RedGreen.instReprConfig.repr": [],
+    "Toy.RedGreen.instReprEntry": [
+      "propext"
+    ],
+    "Toy.RedGreen.instReprEntry.repr": [
+      "propext"
+    ],
+    "Toy.RedGreen.instReprIK": [],
+    "Toy.RedGreen.instReprIK.repr": [],
+    "Toy.RedGreen.instReprIK.repr.match_1": [],
+    "Toy.RedGreen.instReprOut": [],
+    "Toy.RedGreen.instReprOut.repr": [],
+    "Toy.RedGreen.instReprOut.repr.match_1": [],
+    "Toy.RedGreen.instReprQ3": [],
+    "Toy.RedGreen.instReprQ3.repr": [],
+    "Toy.RedGreen.instReprQ3.repr.match_1": [],
+    "Toy.RedGreen.instReprQ4": [],
+    "Toy.RedGreen.instReprQ4.repr": [],
+    "Toy.RedGreen.instReprQ4.repr.match_1": [],
+    "Toy.RedGreen.instReprQK": [],
+    "Toy.RedGreen.instReprQK.repr": [],
+    "Toy.RedGreen.instReprQK.repr.match_1": [],
+    "Toy.RedGreen.instReprReplay": [],
+    "Toy.RedGreen.instReprReplay.repr": [],
+    "Toy.RedGreen.instReprReplay.repr.match_1": [],
+    "Toy.RedGreen.instReprSlot": [
+      "propext"
+    ],
+    "Toy.RedGreen.instReprSlot.repr": [
+      "propext"
+    ],
+    "Toy.RedGreen.instReprSlot.repr.match_1": [],
+    "Toy.RedGreen.instReprVerdict": [],
+    "Toy.RedGreen.instReprVerdict.repr": [],
+    "Toy.RedGreen.instReprVerdict.repr.match_1": [],
+    "Toy.RedGreen.inv_K": [],
+    "Toy.RedGreen.inv_example": [],
+    "Toy.RedGreen.inv_of_reachable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.inv_rejects_stale_done_slot": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.inv_rejects_stale_done_slot.match_1": [
+      "propext"
+    ],
+    "Toy.RedGreen.inv_start": [],
+    "Toy.RedGreen.loopDb": [],
+    "Toy.RedGreen.loopDb.eq_1": [],
+    "Toy.RedGreen.markGreen": [
+      "propext"
+    ],
+    "Toy.RedGreen.markGreen.eq_1": [
+      "propext"
+    ],
+    "Toy.RedGreen.markGreenX": [
+      "propext"
+    ],
+    "Toy.RedGreen.markGreenX.match_1": [],
+    "Toy.RedGreen.markGreen_noNewOld": [
+      "propext"
+    ],
+    "Toy.RedGreen.markGreen_tracks": [
+      "propext"
+    ],
+    "Toy.RedGreen.newB": [],
+    "Toy.RedGreen.newD": [],
+    "Toy.RedGreen.newD_x": [],
+    "Toy.RedGreen.newF": [],
+    "Toy.RedGreen.newFpLoop": [],
+    "Toy.RedGreen.newFpLoop_x": [],
+    "Toy.RedGreen.newFpLoop_y": [],
+    "Toy.RedGreen.newH": [],
+    "Toy.RedGreen.newK": [],
+    "Toy.RedGreen.newK.eq_1": [],
+    "Toy.RedGreen.newL": [],
+    "Toy.RedGreen.newL_x": [],
+    "Toy.RedGreen.newM": [],
+    "Toy.RedGreen.newN": [],
+    "Toy.RedGreen.newP": [],
+    "Toy.RedGreen.newS": [],
+    "Toy.RedGreen.noNewOld_set_done": [
+      "propext"
+    ],
+    "Toy.RedGreen.no_cutoff_reexecutes_query_with_unchanged_recorded_dependencies": [
+      "propext"
+    ],
+    "Toy.RedGreen.not_agrees_of_stuck": [
+      "propext"
+    ],
+    "Toy.RedGreen.not_agrees_of_wrong_outcome": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.not_eventually_eq_of_stuck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.not_eventually_eq_of_stuck.match_1_1": [
+      "propext"
+    ],
+    "Toy.RedGreen.not_eventually_finishes_of_stuck": [
+      "propext"
+    ],
+    "Toy.RedGreen.not_eventually_finishes_of_stuck.match_1_1": [
+      "propext"
+    ],
+    "Toy.RedGreen.odbB": [],
+    "Toy.RedGreen.odbB_not_consistent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.odbC": [],
+    "Toy.RedGreen.odbC_risky": [],
+    "Toy.RedGreen.odbC_top": [],
+    "Toy.RedGreen.odbD": [],
+    "Toy.RedGreen.odbD_guard": [],
+    "Toy.RedGreen.odbD_risky": [],
+    "Toy.RedGreen.odbD_top": [],
+    "Toy.RedGreen.odbEmpty": [],
+    "Toy.RedGreen.odbF": [],
+    "Toy.RedGreen.odbFpLoop": [],
+    "Toy.RedGreen.odbH": [],
+    "Toy.RedGreen.odbK": [],
+    "Toy.RedGreen.odbK_a": [],
+    "Toy.RedGreen.odbK_top": [],
+    "Toy.RedGreen.odbKnoTop": [],
+    "Toy.RedGreen.odbKnoTop_consistent": [],
+    "Toy.RedGreen.odbL": [],
+    "Toy.RedGreen.odbL_top": [],
+    "Toy.RedGreen.odbLoop": [],
+    "Toy.RedGreen.odbLoop.eq_1": [],
+    "Toy.RedGreen.odbM": [],
+    "Toy.RedGreen.odbN": [],
+    "Toy.RedGreen.odbOldLoop": [],
+    "Toy.RedGreen.odbP": [],
+    "Toy.RedGreen.odbPC": [],
+    "Toy.RedGreen.odbR": [],
+    "Toy.RedGreen.odbS": [],
+    "Toy.RedGreen.oldB": [],
+    "Toy.RedGreen.oldD": [],
+    "Toy.RedGreen.oldF": [],
+    "Toy.RedGreen.oldFpLoop": [],
+    "Toy.RedGreen.oldH": [],
+    "Toy.RedGreen.oldK": [],
+    "Toy.RedGreen.oldL": [],
+    "Toy.RedGreen.oldM": [],
+    "Toy.RedGreen.oldN": [],
+    "Toy.RedGreen.oldP": [],
+    "Toy.RedGreen.oldS": [],
+    "Toy.RedGreen.ordered_replay_returns_from_scratch_value_on_dead_dependency": [
+      "propext"
+    ],
+    "Toy.RedGreen.partial_cache_example": [
+      "propext"
+    ],
+    "Toy.RedGreen.per_query_parameter_choice_gives_101": [],
+    "Toy.RedGreen.per_query_parameter_choice_gives_101.match_1": [],
+    "Toy.RedGreen.reachable_example": [
+      "propext"
+    ],
+    "Toy.RedGreen.reachable_noNewOld": [
+      "propext"
+    ],
+    "Toy.RedGreen.reachable_rejects_new_old_slot": [
+      "propext"
+    ],
+    "Toy.RedGreen.recordAll": [],
+    "Toy.RedGreen.recordAll.match_1": [],
+    "Toy.RedGreen.recordAll_consistent": [],
+    "Toy.RedGreen.reexecutedIn": [
+      "propext"
+    ],
+    "Toy.RedGreen.reexecutedIn.eq_1": [
+      "propext"
+    ],
+    "Toy.RedGreen.reexecutedIn.eq_2": [
+      "propext"
+    ],
+    "Toy.RedGreen.reexecutedIn.match_1": [
+      "propext"
+    ],
+    "Toy.RedGreen.reexecutedIn.match_5": [],
+    "Toy.RedGreen.reversed_replay_breaks_early_cutoff_agreement": [
+      "propext"
+    ],
+    "Toy.RedGreen.reversed_replay_diverges_on_dead_code_cycle": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.reversed_replay_executes_dead_dependency_and_panics": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.rulesB": [],
+    "Toy.RedGreen.rulesC": [],
+    "Toy.RedGreen.rulesC.eq_1": [],
+    "Toy.RedGreen.rulesC.eq_2": [],
+    "Toy.RedGreen.rulesC.eq_3": [],
+    "Toy.RedGreen.rulesD": [],
+    "Toy.RedGreen.rulesD.match_1": [],
+    "Toy.RedGreen.rulesF": [],
+    "Toy.RedGreen.rulesFpLoop": [],
+    "Toy.RedGreen.rulesFpLoop.eq_1": [],
+    "Toy.RedGreen.rulesFpLoop.eq_2": [],
+    "Toy.RedGreen.rulesFpLoop.eq_3": [],
+    "Toy.RedGreen.rulesH": [],
+    "Toy.RedGreen.rulesK": [],
+    "Toy.RedGreen.rulesK.match_1": [],
+    "Toy.RedGreen.rulesL": [],
+    "Toy.RedGreen.rulesL.eq_1": [],
+    "Toy.RedGreen.rulesL.eq_2": [],
+    "Toy.RedGreen.rulesL.eq_3": [],
+    "Toy.RedGreen.rulesM": [],
+    "Toy.RedGreen.rulesM_ne": [],
+    "Toy.RedGreen.rulesN": [],
+    "Toy.RedGreen.rulesN_ne": [],
+    "Toy.RedGreen.rulesNewLoop": [],
+    "Toy.RedGreen.rulesNewLoop.eq_1": [],
+    "Toy.RedGreen.rulesNewLoop.eq_2": [],
+    "Toy.RedGreen.rulesNewLoop.eq_3": [],
+    "Toy.RedGreen.rulesOldLoop": [],
+    "Toy.RedGreen.rulesP": [],
+    "Toy.RedGreen.rulesPC": [],
+    "Toy.RedGreen.rulesR": [],
+    "Toy.RedGreen.rulesR.match_1": [],
+    "Toy.RedGreen.rulesS": [],
+    "Toy.RedGreen.rulesZ": [],
+    "Toy.RedGreen.rulesZ.eq_1": [],
+    "Toy.RedGreen.runSt_noNewOld": [],
+    "Toy.RedGreen.runSt_noNewOld.match_1_1": [],
+    "Toy.RedGreen.runSt_tracks": [
+      "propext"
+    ],
+    "Toy.RedGreen.runSt_tracks.match_1_1": [],
+    "Toy.RedGreen.runSt_value_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.runSt_value_sound.match_1_1": [],
+    "Toy.RedGreen.runT_example_dead_dependency_not_recorded": [],
+    "Toy.RedGreen.runT_example_ordered_trace": [],
+    "Toy.RedGreen.staleDbD": [],
+    "Toy.RedGreen.staleDbK": [],
+    "Toy.RedGreen.staleDbK_not_inv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.stale_db_reexecutes_query_with_unchanged_recorded_dependencies": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.stale_done_slot_returns_wrong_result": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.start": [],
+    "Toy.RedGreen.start.eq_1": [],
+    "Toy.RedGreen.start.match_1": [],
+    "Toy.RedGreen.start_example": [],
+    "Toy.RedGreen.start_odbC_risky": [],
+    "Toy.RedGreen.start_odbC_top": [],
+    "Toy.RedGreen.start_odbFpLoop_a": [],
+    "Toy.RedGreen.start_odbFpLoop_top": [],
+    "Toy.RedGreen.start_odbK_a": [],
+    "Toy.RedGreen.start_odbK_top": [],
+    "Toy.RedGreen.start_odbL_top": [],
+    "Toy.RedGreen.start_odbOldLoop_a": [],
+    "Toy.RedGreen.start_odbOldLoop_top": [],
+    "Toy.RedGreen.terminates_example_dead_code_cycle": [],
+    "Toy.RedGreen.terminates_example_live_cycle": [
+      "propext"
+    ],
+    "Toy.RedGreen.terminates_example_live_cycle.match_1_1": [],
+    "Toy.RedGreen.uncached_query_with_unchanged_recorded_dependencies_executes": [
+      "propext"
+    ],
+    "Toy.RedGreen.unreachable_db_diverges_although_new_state_terminates": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.unreachable_db_reexecutes_query_with_unchanged_recorded_dependencies": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RedGreen.untracked_code_change_diverges_although_new_state_terminates": [
+      "Quot.sound",
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
