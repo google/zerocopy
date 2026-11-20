@@ -44,7 +44,20 @@ For related architectural details, see:
 
 ## 1. The `trusted/` boundary and how verification stays sound
 
-Anneal divides its repository into three zones with strictly separated roles:
+The [correctness promise](../PRINCIPLES.md#anneals-promise-to-its-users)
+defines the contract a verification result must meet. The result asserts
+that its TCB satisfies its trust policy. It also asserts that the covered
+code is free of undefined behavior and satisfies its stated specifications
+if the trusted code is correct and the logged assumptions are jointly valid.
+
+First-party verifier code on which those assertions rely without checked
+evidence belongs in `trusted/`. The build manifests and external toolchain
+inputs are pinned. The repository audit also relies on reviewed enforcement
+code in `ci/` and the
+[Zerocopy Anneal workflow](../../.github/workflows/anneal-current.yml).
+The vendored reference model and its replay support the correspondence audit.
+
+The current workspace divides verification and audit code into three zones.
 
 | Zone | Directory | Role | Trust status |
 | :--- | :--- | :--- | :--- |

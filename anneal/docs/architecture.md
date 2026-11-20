@@ -448,26 +448,20 @@ mechanism that Pass 2 applies to `correspondence/`.
 
 ## Repository layout
 
-Anneal's directory structure reflects both the **trust boundary** (`trusted/`
-vs. `theory/`) and the planned separation between **language-agnostic
-verification machinery** (`Framework/`) and **Rust-specific semantics**
-(`Rust/`). The tree below shows the **target repository layout** for the MIR
-pipeline and correspondence stack. Currently [`trusted/`](../trusted) houses
-the CI boundary auditor (`trusted/audit/`), CLI orchestrator
-(`trusted/cargo-anneal/`), capture entrypoint (`trusted/rustc-capture/`), and
-foundational Lean prelude (`trusted/lean/`), while [`theory/`](../theory)
-already includes `theory/Anneal/PureLift/`. The captured MIR AST
-(`Trusted/MirAst.lean`), MIR semantics (`Trusted/MirSemantics.lean`), reference
-correspondence adapter (`trusted/correspondence/`), pinned `vendor/lean-miri/`,
-correspondence proofs (`correspondence/`), and `theory/Anneal/MirWp.lean` land
-incrementally across the MIR correspondence implementation; entries marked
-`[planned]` denote later-phase layout subdivisions beyond that stack:
+The current MIR-based workspace is rooted at [`anneal/`](../). The
+independent [V1 workspace](../v1/) contains the Charon/Aeneas verifier. The
+historical [V2 workspace](../v2/) retains its prototype code and builds the
+Aeneas toolchain used by V1.
+
+The layout below shows where trust-boundary components, proof theory, and
+correspondence checks live. Entries marked `[planned]` show future
+subdivisions for language-agnostic machinery and Rust-specific semantics.
 
 ```text
 anneal/
 ├── trusted/                        # Human-audited Trusted Computing Base (TCB)
 │   ├── root-manifest.sha256        # SHA-256 pins for workspace & Nix manifests
-│   ├── rustc-capture/              # Stage 1: rustc_driver MIR & spec extractor
+│   ├── rustc-capture/              # Stage 1: rustc_driver scaffold
 │   │   ├── Cargo.toml
 │   │   ├── src/                    # CLI & rustc_driver capture session
 │   │   └── crates/                 # [planned] Per-rustc-version thin backends
@@ -488,14 +482,16 @@ anneal/
 │   ├── audit/                      # CI .olean replay & boundary auditor
 │   │   ├── src/                    # anneal-audit binary & UPSTREAM_PIN pin
 │   │   └── TrustedBoundary.lean    # Syntactic preflight & kernel DAG inspector
-│   └── cargo-anneal/               # CLI orchestrator (cargo anneal)
+│   └── cargo-anneal/               # Current toolchain setup CLI
 ├── vendor/
-│   └── lean-miri/                  # [planned] Pinned lean-miri snapshot (M_ref)
+│   └── lean-miri/                  # Pinned lean-miri snapshot (M_ref)
 │       └── UPSTREAM_PIN.json       # Upstream & patch digests (pinned in audit)
-├── correspondence/                 # [planned] Stage 3 (Pass 2) proofs
+├── correspondence/                 # Stage 3 (Pass 2) proofs
 │   └── Anneal/
 │       ├── MirCorrespondenceBase.lean
 │       └── MirCorrespondenceProof.lean
+├── v1/                             # Charon/Aeneas verifier
+├── v2/                             # Historical prototype and toolchain build
 └── theory/                         # Stage 3 (Pass 1): Untrusted proofs
     ├── Anneal.lean
     ├── Anneal/
@@ -506,13 +502,9 @@ anneal/
     └── Rust/                       # [planned] StableAst/, Passes/, Wp/
 ```
 
-Because repository review policy (`AGENTS.md`, `.gemini/styleguide.md`, and
-`skills/trust-review/SKILL.md`) restricts `.lean` files outside `trusted/`,
-`ci/`, and `.github/` to `theory/` by default, the Pass 2 PRs that introduce
-`vendor/lean-miri/` and `correspondence/` explicitly revise those governing
-policy files and `anneal-audit`'s root checks in lockstep to admit those two
-Pass 2-audited roots while keeping Pass 1 restricted to `trusted/lean/` and
-`theory/`.
+Pass 1 audits `trusted/lean/` and `theory/`. Pass 2 adds the pinned vendor
+model, the trusted correspondence adapter, and the correspondence proofs.
+See [Developing Anneal](README.md) for build commands and CI entry points.
 
 ### Separating `Framework/` from `Rust/`
 
