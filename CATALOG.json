@@ -6516,6 +6516,52 @@
         "rustc/monomorphization"
       ]
     },
+    "anneal-mirwp-proof-scaling-normalization-and-f1-checker-overhead": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "https://github.com/joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "joshlf/anneal (Trusted.MirAst, Trusted.MirSemantics, Anneal.MirWp, TrustedBoundary.lean)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "leanprover/lean4 (v4.34.1)"
+        },
+        {
+          "identity": {
+            "path": "reports/anneal-trusted-mir-movetocopy-and-storage-elision-refinement-bridge/support/AnnealTrustedMirMoveToCopyStorage.lean",
+            "repository": "https://github.com/google/zerocopy",
+            "revision": "6e24ad128d7f29afc0f47733eb42ec4d3392ba63",
+            "sha256": "79d0c63cfe045233d1dcc491529b585981c7afe715bb876f52d314d0a7c91a5c"
+          },
+          "name": "google/zerocopy (AnnealTrustedMirMoveToCopyStorage.lean VrustcFormal.F1_1b transport checker)"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/theory",
+        "anneal/trusted-boundary",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/mir",
+        "lean",
+        "lean/kernel",
+        "lean/performance",
+        "rust",
+        "rustc",
+        "rustc/mir",
+        "verification",
+        "verification/proof-certificates",
+        "verification/translation-validation"
+      ]
+    },
     "anneal-nix-toolchain-packaging-and-binary-relocation": {
       "observed_at": "2026-11-12",
       "subjects": [
