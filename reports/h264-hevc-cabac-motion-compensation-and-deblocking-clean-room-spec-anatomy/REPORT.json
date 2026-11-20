@@ -1,0 +1,50 @@
+{
+  "topics": [
+    "domains/video-codecs",
+    "verification/parsers",
+    "isa/simd",
+    "security/memory-safety",
+    "rust/safety",
+    "compilers/optimization"
+  ],
+  "subjects": [
+    {
+      "name": "FFmpeg libavcodec H.264 and HEVC implementation",
+      "identity": {
+        "repository": "FFmpeg/FFmpeg",
+        "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+      }
+    },
+    {
+      "name": "ITU-T Recommendation H.264 / ISO/IEC 14496-10 (Advanced Video Coding)",
+      "identity": {
+        "standard": "ITU-T Rec. H.264 | ISO/IEC 14496-10",
+        "version": "V15 (2024-08) / V16 (2026-06)",
+        "url": "https://www.itu.int/rec/T-REC-H.264"
+      }
+    },
+    {
+      "name": "ITU-T Recommendation H.265 / ISO/IEC 23008-2 (High Efficiency Video Coding)",
+      "identity": {
+        "standard": "ITU-T Rec. H.265 | ISO/IEC 23008-2",
+        "version": "V10 (2024-07) / V11 (2026-01)",
+        "url": "https://www.itu.int/rec/T-REC-H.265"
+      }
+    },
+    {
+      "name": "Context-Based Adaptive Binary Arithmetic Coding in the H.264/AVC Video Compression Standard",
+      "identity": {
+        "doi": "10.1109/TCSVT.2003.815173",
+        "publication": "IEEE Transactions on Circuits and Systems for Video Technology, Vol. 13, No. 7, pp. 620-636 (2003)"
+      }
+    },
+    {
+      "name": "Overview of the High Efficiency Video Coding (HEVC) Standard",
+      "identity": {
+        "doi": "10.1109/TCSVT.2012.2221191",
+        "publication": "IEEE Transactions on Circuits and Systems for Video Technology, Vol. 22, No. 12, pp. 1649-1668 (2012)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
