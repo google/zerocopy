@@ -1,0 +1,83 @@
+{
+  "topics": [
+    "verification/lean4",
+    "isa/riscv",
+    "verification/audit",
+    "isa/sail",
+    "isa/aarch64",
+    "lean/kernel"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 kernel declaration, WHNF reduction, and axiom collector",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5b6d9d25edb59b0f9264ecd3136c44cca7cfafe0"
+      }
+    },
+    {
+      "name": "Sail ISA specification compiler and Lean 4 backend",
+      "identity": {
+        "repository": "rems-project/sail",
+        "revision": "97aa617dcd4d01575f773cb58ea1e8686858c8c2"
+      }
+    },
+    {
+      "name": "Sail Lean 4 concurrency and sequential state monad library",
+      "identity": {
+        "repository": "rems-project/lean-sail",
+        "revision": "e4745c82fe329f162700020dcd31da6b342473b9"
+      }
+    },
+    {
+      "name": "Official Sail RISC-V architectural specification",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "76f1ce3c184797178864b9869963e8b44465889e"
+      }
+    },
+    {
+      "name": "Auto-generated Lean 4 RISC-V RV64D Sail model",
+      "identity": {
+        "repository": "opencompl/sail-riscv-lean",
+        "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+      }
+    },
+    {
+      "name": "LNSym Armv8-A Lean 4 symbolic simulator",
+      "identity": {
+        "repository": "leanprover/LNSym",
+        "revision": "49f8a1d9e46f8dcfc345f4bc15d35b0ba845ff5c"
+      }
+    },
+    {
+      "name": "L3 ISA specification language and HOL4 exporter",
+      "identity": {
+        "repository": "8l/L3",
+        "revision": "2535115de385c00ca80c1f5b17a65d932de0d257"
+      }
+    },
+    {
+      "name": "ASL reference interpreter and typechecker (herdtools7 asllib)",
+      "identity": {
+        "repository": "herd/herdtools7",
+        "revision": "1ae595498c7af7d9d2f00e29aea328b36663104c"
+      }
+    },
+    {
+      "name": "SafeVerify Lean 4 environment replay and target auditor",
+      "identity": {
+        "repository": "GasStationManager/SafeVerify",
+        "revision": "b291b588a53999a7e837dda61c7dbfe8c550c814"
+      }
+    },
+    {
+      "name": "Lean FRO exported-environment proof judge (comparator)",
+      "identity": {
+        "repository": "leanprover/comparator",
+        "revision": "865edc14486c3388e9225daa971da8e157488c3e"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
