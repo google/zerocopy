@@ -1,0 +1,115 @@
+{
+  "topics": [
+    "verification/a-posteriori-certified-linear-algebra",
+    "verification/rigorous-ode-enclosures",
+    "verification/mechanized-floating-point-accuracy-proofs",
+    "runtimes/certified-numerics-cost-overhead",
+    "verification/interval-and-ball-arithmetic",
+    "verification/error-free-transformations",
+    "compilers/floating-point-contraction-and-rounding-mode"
+  ],
+  "subjects": [
+    {
+      "name": "FLINT (Arb ball arithmetic and arb_mat verified linear solvers)",
+      "identity": {
+        "repository": "flintlib/flint",
+        "revision": "66efe60ea72b922d2537fa1344c1c997bb7b5bf3"
+      }
+    },
+    {
+      "name": "CAPD (rigorous ODE integration, CAPD::DynSys)",
+      "identity": {
+        "repository": "CAPDGroup/CAPD",
+        "revision": "37057e5899bccaa6cd5701057b7e6ea5e232ef8b"
+      }
+    },
+    {
+      "name": "IntervalLinearAlgebra.jl",
+      "identity": {
+        "repository": "JuliaIntervals/IntervalLinearAlgebra.jl",
+        "revision": "3940007c1ceb989099e626412bd8d5534da49c1f",
+        "version": "0.2.0"
+      }
+    },
+    {
+      "name": "IntervalArithmetic.jl",
+      "identity": {
+        "repository": "JuliaIntervals/IntervalArithmetic.jl",
+        "revision": "63cf591feb1bb775aea9ce10aa032c0ff19dc907",
+        "version": "1.0.14"
+      }
+    },
+    {
+      "name": "Julia base rounding API (base/rounding.jl)",
+      "identity": {
+        "repository": "JuliaLang/julia",
+        "revision": "2aa7c9fd5bf14ef95960c44bf2fcf5370f7123a1"
+      }
+    },
+    {
+      "name": "LAProof (mechanized accuracy proofs for linear algebra kernels)",
+      "identity": {
+        "repository": "VeriNum/LAProof",
+        "revision": "86a9a74a55bd1ac15f1dab41e430e7498543d016"
+      }
+    },
+    {
+      "name": "VerifiedLeapfrog (verified float32 leapfrog C program)",
+      "identity": {
+        "repository": "VeriNum/VerifiedLeapfrog",
+        "revision": "720f093e1aad26c21f1425e91dd52a8c3435983b"
+      }
+    },
+    {
+      "name": "NumPy (host build used for probes)",
+      "identity": {
+        "repository": "numpy/numpy",
+        "revision": "c3d60fc8393f3ca3306b8ce8b6453d43737e3d90",
+        "version": "v2.3.5"
+      }
+    },
+    {
+      "name": "Reference LAPACK/BLAS (host BLAS used by numpy)",
+      "identity": {
+        "repository": "Reference-LAPACK/lapack",
+        "revision": "6ec7f2bc4ecf4c4a93496aa2fa519575bc0e39ca",
+        "version": "v3.12.1"
+      }
+    },
+    {
+      "name": "GCC (compiler used for contraction and rounding probes)",
+      "identity": {
+        "repository": "gcc-mirror/gcc",
+        "revision": "5115c7e447fc07457443df874bf57840e8316d5f",
+        "version": "releases/gcc-15.2.0"
+      }
+    },
+    {
+      "name": "Accurate Sum and Dot Product (Ogita, Rump, Oishi)",
+      "identity": {
+        "doi": "10.1137/030601818"
+      }
+    },
+    {
+      "name": "Arb: Efficient Arbitrary-Precision Midpoint-Radius Interval Arithmetic",
+      "identity": {
+        "doi": "10.1109/TC.2017.2690633",
+        "arxiv": "1611.02831"
+      }
+    },
+    {
+      "name": "Mechanized proof of a C program for the 1D acoustic wave equation (Boldo et al.)",
+      "identity": {
+        "doi": "10.1007/s10817-012-9255-4",
+        "arxiv": "1112.1795"
+      }
+    },
+    {
+      "name": "LAProof paper (ARITH 2023)",
+      "identity": {
+        "doi": "10.1109/ARITH58626.2023.00021"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

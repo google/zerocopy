@@ -1,0 +1,8 @@
+# gcc -O2 -march=x86-64-v3 eft_contract.c          (FMA instructions present in the binary)
+pairs=2000000 not_error_free=0 (0.0000%)
+# gcc -O2 -march=x86-64-v3 -ffp-contract=off eft_contract.c
+pairs=2000000 not_error_free=0 (0.0000%)
+# gcc -O2 -march=x86-64-v3 -std=c17 eft_contract.c
+pairs=2000000 not_error_free=0 (0.0000%)
+# gcc -O2 eft_contract.c   (baseline x86-64, no FMA)
+pairs=2000000 not_error_free=0 (0.0000%)

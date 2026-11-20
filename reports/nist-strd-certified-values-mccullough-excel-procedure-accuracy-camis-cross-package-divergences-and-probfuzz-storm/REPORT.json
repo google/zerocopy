@@ -1,0 +1,108 @@
+{
+  "topics": [
+    "verification/statistical-software-reference-datasets",
+    "tooling/cross-implementation-statistical-comparisons",
+    "verification/probabilistic-programming-system-testing",
+    "domains/statistical-certification-gates",
+    "verification/test-oracle-defects",
+    "runtimes/floating-point-input-representation-limits"
+  ],
+  "subjects": [
+    {
+      "name": "NIST Statistical Reference Datasets (StRD)",
+      "identity": {
+        "url": "https://www.itl.nist.gov/div898/strd/",
+        "retrieved": "2026-11-20",
+        "input_manifest_sha256": "28091bea1072db9390a12c4e0211046997d840e8b1c2fd1bbb9329c4d58daf57"
+      }
+    },
+    {
+      "name": "SciPy (embedded StRD tests)",
+      "identity": {
+        "repository": "scipy/scipy",
+        "revision": "73d740ca203cd4ce087a1a818fb2db576646eacc"
+      }
+    },
+    {
+      "name": "statsmodels (Longley regression tests)",
+      "identity": {
+        "repository": "statsmodels/statsmodels",
+        "revision": "b96a618f835b5b0c306e9b8b93efdbb4b0f6e59c"
+      }
+    },
+    {
+      "name": "NumPy (executed on StRD)",
+      "identity": {
+        "repository": "numpy/numpy",
+        "revision": "c3d60fc8393f3ca3306b8ce8b6453d43737e3d90",
+        "version": "v2.3.5"
+      }
+    },
+    {
+      "name": "CPython statistics module (executed on StRD)",
+      "identity": {
+        "repository": "python/cpython",
+        "revision": "4061bc4c35f7c26f25264666d4ba083b93d2f6f9",
+        "version": "v3.13.15"
+      }
+    },
+    {
+      "name": "Reference LAPACK (host LAPACK behind numpy)",
+      "identity": {
+        "repository": "Reference-LAPACK/lapack",
+        "revision": "6ec7f2bc4ecf4c4a93496aa2fa519575bc0e39ca",
+        "version": "v3.12.1"
+      }
+    },
+    {
+      "name": "CAMIS (R/SAS/Python method comparisons)",
+      "identity": {
+        "repository": "PSIAIMS/CAMIS",
+        "revision": "a08825e2fa4d6db76714d4e43923a6d647bfcbec"
+      }
+    },
+    {
+      "name": "riskmetric",
+      "identity": {
+        "repository": "pharmaR/riskmetric",
+        "revision": "fd07e38635ddd2ba675c6afa4fa1ba4ff787fd19",
+        "version": "0.2.7"
+      }
+    },
+    {
+      "name": "ProbFuzz artifact",
+      "identity": {
+        "repository": "uiuc-arc/probfuzz",
+        "revision": "29144130466ec20debdf7bddbfd82300ca33c0db"
+      }
+    },
+    {
+      "name": "Storm artifact",
+      "identity": {
+        "repository": "uiuc-arc/storm",
+        "revision": "57a0445227e74fcb4f6059c927f03e76b3fc52d2"
+      }
+    },
+    {
+      "name": "Storm: Program Reduction for Testing and Debugging Probabilistic Programming Systems",
+      "identity": {
+        "doi": "10.1145/3338906.3338972"
+      }
+    },
+    {
+      "name": "A Formally Verified Proof of the Central Limit Theorem",
+      "identity": {
+        "doi": "10.1007/s10817-017-9404-x",
+        "arxiv": "1405.7012"
+      }
+    },
+    {
+      "name": "R: Regulatory Compliance and Validation Issues (R Foundation)",
+      "identity": {
+        "url": "https://www.r-project.org/doc/R-FDA.pdf",
+        "version": "March 12, 2026"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

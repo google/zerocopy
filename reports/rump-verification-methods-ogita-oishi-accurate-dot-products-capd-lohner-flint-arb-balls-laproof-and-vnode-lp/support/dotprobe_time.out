@@ -1,0 +1,21 @@
+== dot_strict  (gcc -O2 -std=c99 -march=x86-64-v3 -ffp-contract=off)
+naive        n=1000 ns/element=1.144 ratio_to_naive=1.00
+dot2_fma     n=1000 ns/element=1.833 ratio_to_naive=1.60
+dot2_dekker  n=1000 ns/element=3.813 ratio_to_naive=3.33
+naive        n=4000000 ns/element=1.398 ratio_to_naive=1.00
+dot2_fma     n=4000000 ns/element=2.146 ratio_to_naive=1.53
+dot2_dekker  n=4000000 ns/element=3.986 ratio_to_naive=2.85
+== dot_gnu  (gcc -O2 -std=gnu99 -march=x86-64-v3)
+naive        n=1000 ns/element=1.126 ratio_to_naive=1.00
+dot2_fma     n=1000 ns/element=1.844 ratio_to_naive=1.64
+dot2_dekker  n=1000 ns/element=2.915 ratio_to_naive=2.59
+naive        n=4000000 ns/element=1.389 ratio_to_naive=1.00
+dot2_fma     n=4000000 ns/element=2.038 ratio_to_naive=1.47
+dot2_dekker  n=4000000 ns/element=3.140 ratio_to_naive=2.26
+== dot_fastmath  (gcc -O2 -std=c99 -march=x86-64-v3 -ffast-math)
+naive        n=1000 ns/element=0.265 ratio_to_naive=1.00
+dot2_fma     n=1000 ns/element=0.302 ratio_to_naive=1.14
+dot2_dekker  n=1000 ns/element=0.269 ratio_to_naive=1.01
+naive        n=4000000 ns/element=1.099 ratio_to_naive=1.00
+dot2_fma     n=4000000 ns/element=1.053 ratio_to_naive=0.96
+dot2_dekker  n=4000000 ns/element=1.110 ratio_to_naive=1.01

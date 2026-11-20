@@ -52334,6 +52334,114 @@
         "security"
       ]
     },
+    "nist-strd-certified-values-mccullough-excel-procedure-accuracy-camis-cross-package-divergences-and-probfuzz-storm": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "input_manifest_sha256": "28091bea1072db9390a12c4e0211046997d840e8b1c2fd1bbb9329c4d58daf57",
+            "retrieved": "2026-11-20",
+            "url": "https://www.itl.nist.gov/div898/strd/"
+          },
+          "name": "NIST Statistical Reference Datasets (StRD)"
+        },
+        {
+          "identity": {
+            "repository": "scipy/scipy",
+            "revision": "73d740ca203cd4ce087a1a818fb2db576646eacc"
+          },
+          "name": "SciPy (embedded StRD tests)"
+        },
+        {
+          "identity": {
+            "repository": "statsmodels/statsmodels",
+            "revision": "b96a618f835b5b0c306e9b8b93efdbb4b0f6e59c"
+          },
+          "name": "statsmodels (Longley regression tests)"
+        },
+        {
+          "identity": {
+            "repository": "numpy/numpy",
+            "revision": "c3d60fc8393f3ca3306b8ce8b6453d43737e3d90",
+            "version": "v2.3.5"
+          },
+          "name": "NumPy (executed on StRD)"
+        },
+        {
+          "identity": {
+            "repository": "python/cpython",
+            "revision": "4061bc4c35f7c26f25264666d4ba083b93d2f6f9",
+            "version": "v3.13.15"
+          },
+          "name": "CPython statistics module (executed on StRD)"
+        },
+        {
+          "identity": {
+            "repository": "Reference-LAPACK/lapack",
+            "revision": "6ec7f2bc4ecf4c4a93496aa2fa519575bc0e39ca",
+            "version": "v3.12.1"
+          },
+          "name": "Reference LAPACK (host LAPACK behind numpy)"
+        },
+        {
+          "identity": {
+            "repository": "PSIAIMS/CAMIS",
+            "revision": "a08825e2fa4d6db76714d4e43923a6d647bfcbec"
+          },
+          "name": "CAMIS (R/SAS/Python method comparisons)"
+        },
+        {
+          "identity": {
+            "repository": "pharmaR/riskmetric",
+            "revision": "fd07e38635ddd2ba675c6afa4fa1ba4ff787fd19",
+            "version": "0.2.7"
+          },
+          "name": "riskmetric"
+        },
+        {
+          "identity": {
+            "repository": "uiuc-arc/probfuzz",
+            "revision": "29144130466ec20debdf7bddbfd82300ca33c0db"
+          },
+          "name": "ProbFuzz artifact"
+        },
+        {
+          "identity": {
+            "repository": "uiuc-arc/storm",
+            "revision": "57a0445227e74fcb4f6059c927f03e76b3fc52d2"
+          },
+          "name": "Storm artifact"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3338906.3338972"
+          },
+          "name": "Storm: Program Reduction for Testing and Debugging Probabilistic Programming Systems"
+        },
+        {
+          "identity": {
+            "arxiv": "1405.7012",
+            "doi": "10.1007/s10817-017-9404-x"
+          },
+          "name": "A Formally Verified Proof of the Central Limit Theorem"
+        },
+        {
+          "identity": {
+            "url": "https://www.r-project.org/doc/R-FDA.pdf",
+            "version": "March 12, 2026"
+          },
+          "name": "R: Regulatory Compliance and Validation Issues (R Foundation)"
+        }
+      ],
+      "topics": [
+        "verification/statistical-software-reference-datasets",
+        "tooling/cross-implementation-statistical-comparisons",
+        "verification/probabilistic-programming-system-testing",
+        "domains/statistical-certification-gates",
+        "verification/test-oracle-defects",
+        "runtimes/floating-point-input-representation-limits"
+      ]
+    },
     "nix-guix-immutable-closures-mutable-roots-and-toolchain-archive-equivalence": {
       "observed_at": "2026-10-15",
       "subjects": [
@@ -66283,6 +66391,121 @@
         "domains/inverse-kinematics-dls-singularities",
         "systems/ethercat-distributed-clock-sync",
         "verification/kinematic-root-and-servo-envelopes"
+      ]
+    },
+    "rump-verification-methods-ogita-oishi-accurate-dot-products-capd-lohner-flint-arb-balls-laproof-and-vnode-lp": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "flintlib/flint",
+            "revision": "66efe60ea72b922d2537fa1344c1c997bb7b5bf3"
+          },
+          "name": "FLINT (Arb ball arithmetic and arb_mat verified linear solvers)"
+        },
+        {
+          "identity": {
+            "repository": "CAPDGroup/CAPD",
+            "revision": "37057e5899bccaa6cd5701057b7e6ea5e232ef8b"
+          },
+          "name": "CAPD (rigorous ODE integration, CAPD::DynSys)"
+        },
+        {
+          "identity": {
+            "repository": "JuliaIntervals/IntervalLinearAlgebra.jl",
+            "revision": "3940007c1ceb989099e626412bd8d5534da49c1f",
+            "version": "0.2.0"
+          },
+          "name": "IntervalLinearAlgebra.jl"
+        },
+        {
+          "identity": {
+            "repository": "JuliaIntervals/IntervalArithmetic.jl",
+            "revision": "63cf591feb1bb775aea9ce10aa032c0ff19dc907",
+            "version": "1.0.14"
+          },
+          "name": "IntervalArithmetic.jl"
+        },
+        {
+          "identity": {
+            "repository": "JuliaLang/julia",
+            "revision": "2aa7c9fd5bf14ef95960c44bf2fcf5370f7123a1"
+          },
+          "name": "Julia base rounding API (base/rounding.jl)"
+        },
+        {
+          "identity": {
+            "repository": "VeriNum/LAProof",
+            "revision": "86a9a74a55bd1ac15f1dab41e430e7498543d016"
+          },
+          "name": "LAProof (mechanized accuracy proofs for linear algebra kernels)"
+        },
+        {
+          "identity": {
+            "repository": "VeriNum/VerifiedLeapfrog",
+            "revision": "720f093e1aad26c21f1425e91dd52a8c3435983b"
+          },
+          "name": "VerifiedLeapfrog (verified float32 leapfrog C program)"
+        },
+        {
+          "identity": {
+            "repository": "numpy/numpy",
+            "revision": "c3d60fc8393f3ca3306b8ce8b6453d43737e3d90",
+            "version": "v2.3.5"
+          },
+          "name": "NumPy (host build used for probes)"
+        },
+        {
+          "identity": {
+            "repository": "Reference-LAPACK/lapack",
+            "revision": "6ec7f2bc4ecf4c4a93496aa2fa519575bc0e39ca",
+            "version": "v3.12.1"
+          },
+          "name": "Reference LAPACK/BLAS (host BLAS used by numpy)"
+        },
+        {
+          "identity": {
+            "repository": "gcc-mirror/gcc",
+            "revision": "5115c7e447fc07457443df874bf57840e8316d5f",
+            "version": "releases/gcc-15.2.0"
+          },
+          "name": "GCC (compiler used for contraction and rounding probes)"
+        },
+        {
+          "identity": {
+            "doi": "10.1137/030601818"
+          },
+          "name": "Accurate Sum and Dot Product (Ogita, Rump, Oishi)"
+        },
+        {
+          "identity": {
+            "arxiv": "1611.02831",
+            "doi": "10.1109/TC.2017.2690633"
+          },
+          "name": "Arb: Efficient Arbitrary-Precision Midpoint-Radius Interval Arithmetic"
+        },
+        {
+          "identity": {
+            "arxiv": "1112.1795",
+            "doi": "10.1007/s10817-012-9255-4"
+          },
+          "name": "Mechanized proof of a C program for the 1D acoustic wave equation (Boldo et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ARITH58626.2023.00021"
+          },
+          "name": "LAProof paper (ARITH 2023)"
+        }
+      ],
+      "topics": [
+        "verification/a-posteriori-certified-linear-algebra",
+        "verification/rigorous-ode-enclosures",
+        "verification/mechanized-floating-point-accuracy-proofs",
+        "runtimes/certified-numerics-cost-overhead",
+        "verification/interval-and-ball-arithmetic",
+        "verification/error-free-transformations",
+        "compilers/floating-point-contraction-and-rounding-mode"
       ]
     },
     "runtime-ownership-monitoring-soundness-and-precision": {

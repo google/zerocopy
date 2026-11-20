@@ -1,0 +1,41 @@
+# numpy 2.3.5 | python 3.13.15
+
+## Univariate summary statistics (LRE; mean / sd / r1)
+dataset   numpy(mean,std ddof=1)   statistics(mean,stdev)   toy one-pass sd          toy two-pass r1         
+PiDigits   15.0  15.0              15.0  15.0               15.0                    13.0   [repr-limit sd LRE 15.0; sha256 e9421a2f4c0a31c5; exact-recompute-matches=True]
+Lottery    15.0  15.0              15.0  15.0               15.0                    15.0   [repr-limit sd LRE 15.0; sha256 956cb33392ee2868; exact-recompute-matches=True]
+Lew        15.0  15.0              15.0  15.0               15.0                    15.0   [repr-limit sd LRE 15.0; sha256 081b231f686d01fa; exact-recompute-matches=True]
+Mavro      15.0  13.1              15.0  13.1                9.4                    14.1   [repr-limit sd LRE 13.1; sha256 6b967538d6a607fd; exact-recompute-matches=True]
+Michelso   15.0  13.8              15.0  13.8                8.3                    13.4   [repr-limit sd LRE 13.8; sha256 68cad435641539ca; exact-recompute-matches=True]
+NumAcc1    15.0  15.0              15.0  15.0               15.0                    15.0   [repr-limit sd LRE 15.0; sha256 ce7c7a0fc6d7cedd; exact-recompute-matches=True]
+NumAcc2    15.0  15.0              15.0  15.0               11.6                    14.4   [repr-limit sd LRE 15.0; sha256 5be29522dfbe2995; exact-recompute-matches=True]
+NumAcc3    15.0   9.5              15.0   9.5                1.1                    11.9   [repr-limit sd LRE  9.5; sha256 66df1b9659673593; exact-recompute-matches=True]
+NumAcc4    15.0   8.3              15.0   8.3                0.0                    10.7   [repr-limit sd LRE  8.3; sha256 ca310dc767f5130f; exact-recompute-matches=True]
+
+## One-way ANOVA F statistic (LRE)
+dataset  toy 2-pass toy 1-pass exact      notes
+SiRstv   12.4       8.5        14.7       repr-limit 13.1 k=5 N=25 sha256=c7dc09da0d6a9f37
+SmLs01   14.4       12.6       15.0       repr-limit 15.0 k=9 N=189 sha256=29d9c979d46d845e
+SmLs02   14.9       11.9       15.0       repr-limit 15.0 k=9 N=1809 sha256=9c23f2c51935740a
+SmLs03   14.9       10.4       15.0       repr-limit 15.0 k=9 N=18009 sha256=eb23c78904a4d0a2
+AtmWtAg  8.5        1.6        14.8       repr-limit 10.2 k=2 N=48 sha256=41d7748bb1f870d8
+SmLs04   8.7        2.4        15.0       repr-limit 10.4 k=9 N=189 sha256=7c8f87a60245f5c7
+SmLs05   9.3        0.3        15.0       repr-limit 10.2 k=9 N=1809 sha256=8894da0165059fb0
+SmLs06   9.3        0.0        15.0       repr-limit 10.2 k=9 N=18009 sha256=ae23a4613f8b4609
+SmLs07   2.7        0.0        15.0       repr-limit  4.4 k=9 N=189 sha256=42d492d7577ebe45
+SmLs08   3.3        0.0        15.0       repr-limit  4.2 k=9 N=1809 sha256=aabc5043423a8278
+SmLs09   3.3        0.0        15.0       repr-limit  4.2 k=9 N=18009 sha256=aa610b390c8d947e
+
+## Linear least squares: minimum LRE over coefficients
+dataset   numpy lstsq      toy normal-eq  toy QR       exact        notes
+Norris    12.2(rank  2) 12.1           13.3         14.3         lstsq(rcond=0) 12.2(rank  2) repr-limit 14.1 p=2 cond2(X)=8.6e+02 sha256=5ab6906c68a9c4b2
+Pontius    6.2(rank  3) 11.2           12.4         15.0         lstsq(rcond=0)  6.2(rank  3) repr-limit 13.5 p=3 cond2(X)=1.4e+13 sha256=de60baa5dc66fd80
+NoInt1    14.7(rank  1) 14.7           14.7         14.7         lstsq(rcond=0) 14.7(rank  1) repr-limit 14.7 p=1 cond2(X)=1.0e+00 sha256=d8234c428dedaa9d
+NoInt2    15.0(rank  1) 15.0           15.0         15.0         lstsq(rcond=0) 15.0(rank  1) repr-limit 15.0 p=1 cond2(X)=1.0e+00 sha256=a71c2810b1edcef8
+Filip      0.0(rank 10) 0.0            7.5          14.3         lstsq(rcond=0)  5.6(rank 11) repr-limit  7.7 p=11 cond2(X)=1.8e+15 sha256=403b34689e401d91
+Longley   10.9(rank  7) 7.4            10.9         14.6         lstsq(rcond=0) 10.9(rank  7) repr-limit 14.6 p=7 cond2(X)=4.9e+09 sha256=fc4b0c824f8f0b83
+Wampler1   9.3(rank  6) 6.1            9.5          15.0         lstsq(rcond=0)  9.3(rank  6) repr-limit 15.0 p=6 cond2(X)=6.4e+06 sha256=8bcd6f00dbe8c307
+Wampler2  10.1(rank  6) 9.3            13.0         15.0         lstsq(rcond=0) 10.1(rank  6) repr-limit 13.2 p=6 cond2(X)=6.4e+06 sha256=01ba5f08b5b9f844
+Wampler3   9.7(rank  6) 6.1            9.5          15.0         lstsq(rcond=0)  9.7(rank  6) repr-limit 15.0 p=6 cond2(X)=6.4e+06 sha256=c5b025f6ebf0365d
+Wampler4   7.8(rank  6) 6.1            7.8          15.0         lstsq(rcond=0)  7.8(rank  6) repr-limit 15.0 p=6 cond2(X)=6.4e+06 sha256=dcff32075a52ecf3
+Wampler5   5.8(rank  6) 6.1            5.8          15.0         lstsq(rcond=0)  5.8(rank  6) repr-limit 15.0 p=6 cond2(X)=6.4e+06 sha256=c4e260a6638db612

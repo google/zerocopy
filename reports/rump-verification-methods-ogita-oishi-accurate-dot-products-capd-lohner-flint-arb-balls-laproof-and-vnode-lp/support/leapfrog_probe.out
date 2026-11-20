@@ -1,0 +1,14 @@
+## Part A: N=1000, h=1/32, t=31.25, binary32
+total error     1.292e-03
+discretization  1.291e-03 (exact-arithmetic recurrence vs exact solution)
+round-off       4.263e-07 (binary32 recurrence vs exact-arithmetic recurrence)
+mechanized a priori bound 0.0308; bound/total = 23.85
+
+## Part B: initial box half-width 1/1000000 around (q,p)=(1,0); exact arithmetic, no rounding
+# step, naive-interval width(q), affine-form width(q), ratio
+    1  2.062e-06  2.062e-06  1.000e+00
+   10  2.708e-06  2.518e-06  1.075e+00
+  100  4.137e-05  2.033e-06  2.035e+01
+  250  3.892e-03  2.081e-06  1.871e+03
+  500  7.575e+00  2.158e-06  3.511e+06
+ 1000  2.869e+07  2.301e-06  1.247e+13

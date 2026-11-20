@@ -1,0 +1,8 @@
+assert_allclose([1.0001], [1.0], 4): passed
+assert_allclose([2], [1.0], 4): passed
+assert_allclose([4.9], [1.0], 4): passed
+assert_allclose([5.1], [1.0], 4): FAILED
+assert_allclose([1.0002], [1.0], rtol=1e-4): FAILED (intended strictness)
+float64 <= '0.1' -> UFuncTypeError: ufunc 'less_equal' did not contain a loop with signature matching types (<class 'numpy.dtypes.Float64DType'>, <class 'numpy.dtypes.StrDType'>) -> None
+float <= '0.1' -> TypeError: '<=' not supported between instances of 'float' and 'str'
+numpy 2.3.5
