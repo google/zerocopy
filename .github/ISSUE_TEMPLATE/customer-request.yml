@@ -1,0 +1,40 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+name: Customer request
+description: Describe what features you'd like from zerocopy for your project
+title: "Features to support <project>"
+type: Feature
+labels:
+  - zerocopy
+  - customer-request
+body:
+  - type: input
+    id: project-name
+    attributes:
+      label: What is the name of your project?
+    validations:
+      required: true
+  - type: input
+    id: project-link
+    attributes:
+      label: >-
+        Please provide a link to your project (GitHub repository, crates.io
+        page, etc).
+  - type: textarea
+    id: features
+    attributes:
+      label: What features would you like from zerocopy?
+      description: |
+        For each feature:
+        - Describe why it would be useful to your project, providing any useful
+          context (GitHub links, etc).
+        - If there is an existing zerocopy GitHub issue describing this feature,
+          link to it.
+    validations:
+      required: true
