@@ -1,0 +1,594 @@
+[
+ {
+  "id": "R1a",
+  "lean": "Toy.Relax.relaxLoop_returns_relax_within_numBranches_succ",
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "For every program, encoding parameters and start assignment a, the grow-only relaxation loop (each pass promotes, simultaneously, every short branch that is out of reach in the current layout; the loop stops when a pass would change nothing) stops within numBranches + 1 passes and returns exactly relax prm p a, the numBranches-fold iterate of the grow-only step; no hypothesis on sizes or alignment is needed.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Two-branch promotion chain [fixed 2, branch 0, branch 1], short 1/long 2/reach 1: all-short is invalid and the returned assignment has both branches long.",
+  "nonvacuity_witness_lean": "Toy.Relax.relax_nonvacuity_chain",
+  "positive_control_lean": "Toy.Relax.relaxLoop_numBranches_passes_insufficient",
+  "non_claims": [
+   "Does not say the result is least or of minimum total size; leastness needs monotone distances (R1c) and minimum size needs monotone distances and shortSize <= longSize (R4a).",
+   "The bound counts all branches and is attained (relaxLoop_numBranches_passes_insufficient). A sharper bound (the number of short branch positions in the start, plus one) is stated separately as the auxiliary lemma Toy.Relax.relaxLoop_spec.",
+   "Grow-only termination does not extend to grow-and-shrink relaxation (each branch i re-decided from the counterfactual layout setShort a i, long branches may be demoted), which can oscillate forever (from a non-bottom start with monotone sizes, R3a; from all-short without monotone distances, R3c).",
+   "Simultaneous (Jacobi) updates only. A sequential pass that re-lays out the program after each promotion is not part of the model; a support check (Search/Sequential.lean, kernel-checked by decide, not a library result) shows that on [branch 3, branch 3, align 4] with short 1, long 2, reach 2 it stops at a different valid assignment (only branch 0 long) than the simultaneous passes (branches 0 and 1 long).",
+   "Two encodings per branch with unbounded long reach only: instruction sets with more than two branch sizes (where more passes can be needed) and long forms with a finite reach (where relaxation can fail) are not modeled.",
+   "No convergence or validity claim is made about LLVM's MCAssembler::relaxOnce, which updates offsets in place during a pass, also relaxes non-branch fragments (LEB128 values, CFI advance deltas, alignment), and stops a section after a pass count derived from its fragment count.",
+   "Toy model only: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates); no property of a real assembler or linker is established by the Lean proofs, and every connection to a real toolchain is a separately labeled derived modeling bridge."
+  ],
+  "prior_art": [
+   "T. G. Szymanski, \"Assembling code for machines with span-dependent instructions\", Communications of the ACM 21(4):300-308, April 1978, doi:10.1145/359460.359474. Abstract: an efficient solution is presented for the case in which the operand of every span-dependent instruction is a label or an assembly-time expression of a restricted form; with more general assembly-time expressions the length-minimization problem is NP-complete.",
+   "J. Boender and C. Sacerdoti Coen, \"On the Correctness of a Branch Displacement Algorithm\", TACAS 2014, LNCS 8413, pp. 605-619, Springer, doi:10.1007/978-3-642-54862-8_53 (preprint arXiv:1209.5920). Abstract: within the CerCo verified C compiler project the authors implemented and proved correct an algorithm for choosing among jump instructions of different sizes, a problem they describe as NP-hard for minimal program size. Prior mechanized correctness proof of a branch-displacement algorithm; this package does not claim that its toy statements coincide with theirs.",
+   "Y. K. Tan, M. O. Myreen, R. Kumar, A. Fox, S. Owens, M. Norrish, \"The verified CakeML compiler backend\", Journal of Functional Programming 29 (2019), e2, doi:10.1017/S0956796818000229. Source: CakeML/cakeml commit 2874b664e10939a3ee462215b2e068c89c1f70eb, compiler/backend/lab_to_targetScript.sml: enc_lines_again (line 118; a re-encoded instruction gets length MAX (LENGTH bs) l, so lengths never shrink inside the loop), enc_line (line 39; label padding is held at skip_len during the loop), upd_lab_len (line 156; label padding is recomputed only after the loop has stabilized), remove_labels_loop (line 285; fuel-bounded, returns NONE when the clock runs out); compiler/backend/proofs/lab_to_targetProofScript.sml: remove_labels_thm (line 6299; when remove_labels returns SOME (code2, labs), all_enc_ok holds for code2 and every label resolves to its position in code2). A mechanized (HOL4) grow-only relaxation loop with an encodability-and-label-position theorem.",
+   "CompCert, AbsInt/CompCert commit 2685140bf72c959446981fb99b5e44a8975021bc, backend/Asmexpandaux.ml lines 191-249 (module Branch_relaxation): each pass computes all label positions from the current code (set_label_positions), decides every instruction against those positions and the pass-start program counters (do_relaxation), replaces each instruction that needs relaxation by its relaxed instruction list, and repeats until no instruction needs relaxation. Unverified OCaml outside the Coq proofs. Derived (modeling bridge): decisions within a pass use the layout at the start of the pass, as in the simultaneous updates of the toy model; no pass bound is coded.",
+   "LLVM MC assembler, llvm/llvm-project commit ef02d46bb33d10383f6ba5a5d9a5511416ee790c, llvm/lib/MC/MCAssembler.cpp: MCAssembler::layout (lines 699-709, \"Layout until everything fits.\" loop over relaxOnce); MCAssembler::relaxOnce (lines 1137-1176: one forward pass per section that updates fragment offsets in place with a Stretch correction, and stops a section after more passes than its fragment count, comment \"Assume each iteration finalizes at least one extra fragment. If the layout does not converge after N+1 iterations, bail out.\", lines 1164-1167); MCAssembler::relaxInstruction (lines 879-910, replaces an instruction by its relaxed form, never the reverse); relaxLEB (comment at line 941: an LEB fragment is only ever grown, \"See PR35809\"); relaxDwarfCallFrameFragment (lines 1043-1061, re-encodes CFI advance deltas during relaxation). Derived (modeling bridge): grow-only relaxation of instructions with recomputed alignment padding corresponds to the non-monotone setting of this package; LLVM's pass is sequential, while the toy model updates all branches simultaneously; nothing is proved here about LLVM's pass cap."
+  ],
+  "design_question": "Assemblers/linkers choosing short or long span-dependent encodings: when does iterative relaxation converge, to which fixpoint, and is the result correct?"
+ },
+ {
+  "id": "R1b",
+  "lean": "Toy.Relax.relax_valid_and_above_start",
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "For every program, encoding parameters and start assignment a, the grow-only relaxation result relax prm p a is valid (every short branch reaches its target) and is pointwise above a in Asg.Le; no hypothesis on sizes or alignment is needed.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Two-branch promotion chain [fixed 2, branch 0, branch 1] with short 1, long 2, reach 1: all-short is invalid, and the relaxation result from all-short is valid with both branches long.",
+  "nonvacuity_witness_lean": "Toy.Relax.relax_nonvacuity_chain",
+  "non_claims": [
+   "Validity is only the reach constraint of the toy model; encodability of the long form, relocations and linker behavior are outside the model.",
+   "Valid does not mean least or smallest (R2e, R4b).",
+   "Asg.Le compares every index i : Nat; at non-branch positions and indices >= p.length relax keeps the values of a unchanged.",
+   "Two encodings per branch with unbounded long reach only: instruction sets with more than two branch sizes (where more passes can be needed) and long forms with a finite reach (where relaxation can fail) are not modeled.",
+   "Toy model only: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates); no property of a real assembler or linker is established by the Lean proofs, and every connection to a real toolchain is a separately labeled derived modeling bridge."
+  ],
+  "prior_art": [
+   "T. G. Szymanski, \"Assembling code for machines with span-dependent instructions\", Communications of the ACM 21(4):300-308, April 1978, doi:10.1145/359460.359474. Abstract: an efficient solution is presented for the case in which the operand of every span-dependent instruction is a label or an assembly-time expression of a restricted form; with more general assembly-time expressions the length-minimization problem is NP-complete.",
+   "J. Boender and C. Sacerdoti Coen, \"On the Correctness of a Branch Displacement Algorithm\", TACAS 2014, LNCS 8413, pp. 605-619, Springer, doi:10.1007/978-3-642-54862-8_53 (preprint arXiv:1209.5920). Abstract: within the CerCo verified C compiler project the authors implemented and proved correct an algorithm for choosing among jump instructions of different sizes, a problem they describe as NP-hard for minimal program size. Prior mechanized correctness proof of a branch-displacement algorithm; this package does not claim that its toy statements coincide with theirs.",
+   "Y. K. Tan, M. O. Myreen, R. Kumar, A. Fox, S. Owens, M. Norrish, \"The verified CakeML compiler backend\", Journal of Functional Programming 29 (2019), e2, doi:10.1017/S0956796818000229. Source: CakeML/cakeml commit 2874b664e10939a3ee462215b2e068c89c1f70eb, compiler/backend/lab_to_targetScript.sml: enc_lines_again (line 118; a re-encoded instruction gets length MAX (LENGTH bs) l, so lengths never shrink inside the loop), enc_line (line 39; label padding is held at skip_len during the loop), upd_lab_len (line 156; label padding is recomputed only after the loop has stabilized), remove_labels_loop (line 285; fuel-bounded, returns NONE when the clock runs out); compiler/backend/proofs/lab_to_targetProofScript.sml: remove_labels_thm (line 6299; when remove_labels returns SOME (code2, labs), all_enc_ok holds for code2 and every label resolves to its position in code2). A mechanized (HOL4) grow-only relaxation loop with an encodability-and-label-position theorem.",
+   "LLVM MC assembler, llvm/llvm-project commit ef02d46bb33d10383f6ba5a5d9a5511416ee790c, llvm/lib/MC/MCAssembler.cpp: MCAssembler::layout (lines 699-709, \"Layout until everything fits.\" loop over relaxOnce); MCAssembler::relaxOnce (lines 1137-1176: one forward pass per section that updates fragment offsets in place with a Stretch correction, and stops a section after more passes than its fragment count, comment \"Assume each iteration finalizes at least one extra fragment. If the layout does not converge after N+1 iterations, bail out.\", lines 1164-1167); MCAssembler::relaxInstruction (lines 879-910, replaces an instruction by its relaxed form, never the reverse); relaxLEB (comment at line 941: an LEB fragment is only ever grown, \"See PR35809\"); relaxDwarfCallFrameFragment (lines 1043-1061, re-encodes CFI advance deltas during relaxation). Derived (modeling bridge): grow-only relaxation of instructions with recomputed alignment padding corresponds to the non-monotone setting of this package; LLVM's pass is sequential, while the toy model updates all branches simultaneously; nothing is proved here about LLVM's pass cap."
+  ],
+  "design_question": "Assemblers/linkers choosing short or long span-dependent encodings: when does iterative relaxation converge, to which fixpoint, and is the result correct?"
+ },
+ {
+  "id": "R1c",
+  "lean": "Toy.Relax.relax_le_of_valid_of_le_of_distMonotone",
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "If every branch's distance is monotone in the assignment (DistMonotone), then for every valid b with a <= b in Asg.Le, the grow-only relaxation result from a satisfies relax prm p a <= b; together with R1b, relax prm p a is the least valid assignment above a. Asg.Le is the pointwise order at every index i : Nat, including positions that hold no branch.",
+  "hypotheses": [
+   {
+    "name": "hmono : DistMonotone prm p",
+    "purpose": "a branch that is out of reach under a stays out of reach under any b above a, so every promotion is forced",
+    "tightness": "tight",
+    "counterexample": "Toy.Relax.align_padding_breaks_leastness"
+   },
+   {
+    "name": "hb : Valid prm p b",
+    "purpose": "b is a candidate fixpoint",
+    "tightness": "tight",
+    "counterexample": "Toy.Relax.leastness_needs_valid_upper_bound"
+   },
+   {
+    "name": "hab : Asg.Le a b",
+    "purpose": "relaxation never demotes, so it cannot go below its start",
+    "tightness": "tight",
+    "counterexample": "Toy.Relax.leastness_needs_upper_bound_above_start"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "chainExtraProg = [fixed 2, branch 0, branch 1, branch 3], short 1/long 2/reach 1, a = all-short, b = chainExtraB (exactly positions 1-3 long): DistMonotone holds, b is valid and above a, and the conclusion is not trivial because the relaxation result keeps branch 3 short while b has it long.",
+  "nonvacuity_witness_lean": "Toy.Relax.relax_least_nonvacuity",
+  "non_claims": [
+   "Least in the pointwise order on assignments; minimum total size additionally needs shortSize <= longSize (R4a).",
+   "Without DistMonotone (e.g. with alignment padding) relaxation still terminates with a valid result; only leastness fails (R2e).",
+   "Asg.Le compares total functions Nat -> Bool at every index, including non-branch and out-of-range indices that relax copies from a; a valid b that dominates a at every branch position but not at some irrelevant index does not satisfy a <= b (asgLe_compares_nonbranch_positions). The branch-restricted form is stated separately as the auxiliary lemma Toy.Relax.relax_leOnBranches_of_valid_of_leOnBranches_of_distMonotone.",
+   "A concrete sufficient condition for DistMonotone is no alignment directives together with shortSize <= longSize (R2b with R2c); the composed statement is the auxiliary lemma Toy.Relax.relax_le_of_valid_of_le_of_noAlign_of_short_le_long.",
+   "Says nothing about the assignment reached from a start that is not below b.",
+   "Toy model only: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates); no property of a real assembler or linker is established by the Lean proofs, and every connection to a real toolchain is a separately labeled derived modeling bridge."
+  ],
+  "prior_art": [
+   "T. G. Szymanski, \"Assembling code for machines with span-dependent instructions\", Communications of the ACM 21(4):300-308, April 1978, doi:10.1145/359460.359474. Abstract: an efficient solution is presented for the case in which the operand of every span-dependent instruction is a label or an assembly-time expression of a restricted form; with more general assembly-time expressions the length-minimization problem is NP-complete.",
+   "A. Tarski, \"A lattice-theoretical fixpoint theorem and its applications\", Pacific Journal of Mathematics 5(2):285-309, 1955, doi:10.2140/pjm.1955.5.285: a monotone function on a complete lattice has a least fixpoint. Derived (background): under DistMonotone the grow-only step is monotone and inflationary on assignments, the valid assignments are exactly its fixpoints, and this result (R1c) is the corresponding least-fixpoint statement above a start, reached after finitely many steps.",
+   "J. Boender and C. Sacerdoti Coen, \"On the Correctness of a Branch Displacement Algorithm\", TACAS 2014, LNCS 8413, pp. 605-619, Springer, doi:10.1007/978-3-642-54862-8_53 (preprint arXiv:1209.5920). Abstract: within the CerCo verified C compiler project the authors implemented and proved correct an algorithm for choosing among jump instructions of different sizes, a problem they describe as NP-hard for minimal program size. Prior mechanized correctness proof of a branch-displacement algorithm; this package does not claim that its toy statements coincide with theirs."
+  ],
+  "design_question": "Assemblers/linkers choosing short or long span-dependent encodings: when does iterative relaxation converge, to which fixpoint, and is the result correct?"
+ },
+ {
+  "id": "R1d",
+  "lean": "Toy.Relax.relaxLoop_numBranches_passes_insufficient",
+  "kind": "counterexample",
+  "tier": "T0",
+  "plain_claim": "The numBranches + 1 pass bound of R1a is attained: on [fixed 2, branch 0, branch 1] with short 1, long 2, reach 1 (numBranches = 2), relaxLoop with 2 passes from all-short returns none, although the 2-fold iterate of the grow-only step is already valid; the third pass is the one that observes that nothing changes.",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "The instance itself.",
+  "nonvacuity_witness_lean": "Toy.Relax.relaxLoop_numBranches_passes_insufficient",
+  "positive_control_lean": "Toy.Relax.relax_nonvacuity_chain",
+  "non_claims": [
+   "Shows the bound is attained for one program, not for every program.",
+   "No convergence or validity claim is made about LLVM's MCAssembler::relaxOnce, which updates offsets in place during a pass, also relaxes non-branch fragments (LEB128 values, CFI advance deltas, alignment), and stops a section after a pass count derived from its fragment count.",
+   "Toy model only: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates); no property of a real assembler or linker is established by the Lean proofs, and every connection to a real toolchain is a separately labeled derived modeling bridge."
+  ],
+  "prior_art": [
+   "LLVM MC assembler, llvm/llvm-project commit ef02d46bb33d10383f6ba5a5d9a5511416ee790c, llvm/lib/MC/MCAssembler.cpp: MCAssembler::layout (lines 699-709, \"Layout until everything fits.\" loop over relaxOnce); MCAssembler::relaxOnce (lines 1137-1176: one forward pass per section that updates fragment offsets in place with a Stretch correction, and stops a section after more passes than its fragment count, comment \"Assume each iteration finalizes at least one extra fragment. If the layout does not converge after N+1 iterations, bail out.\", lines 1164-1167); MCAssembler::relaxInstruction (lines 879-910, replaces an instruction by its relaxed form, never the reverse); relaxLEB (comment at line 941: an LEB fragment is only ever grown, \"See PR35809\"); relaxDwarfCallFrameFragment (lines 1043-1061, re-encodes CFI advance deltas during relaxation). Derived (modeling bridge): grow-only relaxation of instructions with recomputed alignment padding corresponds to the non-monotone setting of this package; LLVM's pass is sequential, while the toy model updates all branches simultaneously; nothing is proved here about LLVM's pass cap."
+  ],
+  "design_question": "Assemblers/linkers choosing short or long span-dependent encodings: when does iterative relaxation converge, to which fixpoint, and is the result correct?"
+ },
+ {
+  "id": "R2a",
+  "lean": "Toy.Relax.dist_le_dist_of_size_le_between",
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "The distance between the start of the instruction at i and the start of the instruction at t depends only on the sizes of the instructions in [min i t, max i t), and is monotone in them: if each of those sizes under a is at most its size under b, the distance under a is at most the distance under b.",
+  "hypotheses": [
+   {
+    "name": "h : ∀ j, min i t ≤ j → j < max i t → size prm p a j ≤ size prm p b j",
+    "purpose": "the in-between sizes grow",
+    "tightness": "tight",
+    "counterexample": "Toy.Relax.dist_decreases_when_size_between_decreases"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "Chain program: promoting branch 1 grows the only in-between size of branch 2 and strictly grows its distance.",
+  "nonvacuity_witness_lean": "Toy.Relax.dist_mono_nonvacuity",
+  "non_claims": [
+   "Uses the start-of-instruction displacement convention, under which a forward branch's own size lies in its interval; an end-of-instruction convention shifts which instruction's own size is in the interval (not formalized).",
+   "Indices >= p.length are clamped: the address of any such index is the end address of the program, so the distance to a target t >= p.length is the distance to the end.",
+   "Says nothing about how sizes depend on the assignment (R2b, R2c).",
+   "Toy model only: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates); no property of a real assembler or linker is established by the Lean proofs, and every connection to a real toolchain is a separately labeled derived modeling bridge."
+  ],
+  "prior_art": [
+   "T. G. Szymanski, \"Assembling code for machines with span-dependent instructions\", Communications of the ACM 21(4):300-308, April 1978, doi:10.1145/359460.359474. Abstract: an efficient solution is presented for the case in which the operand of every span-dependent instruction is a label or an assembly-time expression of a restricted form; with more general assembly-time expressions the length-minimization problem is NP-complete."
+  ],
+  "design_question": "Assemblers/linkers choosing short or long span-dependent encodings: when does iterative relaxation converge, to which fixpoint, and is the result correct?"
+ },
+ {
+  "id": "R2b",
+  "lean": "Toy.Relax.distMonotone_of_sizesMonotone",
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "If every instruction size is monotone in the assignment (SizesMonotone), then every branch distance is monotone in the assignment (DistMonotone).",
+  "hypotheses": [
+   {
+    "name": "h : SizesMonotone prm p",
+    "purpose": "feeds R2a",
+    "tightness": "tight",
+    "counterexample": "Toy.Relax.distMonotone_example_neg_align"
+   }
+  ],
+  "depth": "definitional",
+  "nonvacuity_witness": "Chain program (no alignment, short <= long), on which some distance actually grows.",
+  "nonvacuity_witness_lean": "Toy.Relax.distMonotone_nonvacuity",
+  "non_claims": [
+   "The converse is not claimed: DistMonotone can hold while some size that no branch spans is non-monotone (distMonotone_short_le_long_without_sizesMonotone).",
+   "Toy model only: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates); no property of a real assembler or linker is established by the Lean proofs, and every connection to a real toolchain is a separately labeled derived modeling bridge."
+  ],
+  "prior_art": [
+   "T. G. Szymanski, \"Assembling code for machines with span-dependent instructions\", Communications of the ACM 21(4):300-308, April 1978, doi:10.1145/359460.359474. Abstract: an efficient solution is presented for the case in which the operand of every span-dependent instruction is a label or an assembly-time expression of a restricted form; with more general assembly-time expressions the length-minimization problem is NP-complete.",
+   "J. Boender and C. Sacerdoti Coen, \"On the Correctness of a Branch Displacement Algorithm\", TACAS 2014, LNCS 8413, pp. 605-619, Springer, doi:10.1007/978-3-642-54862-8_53 (preprint arXiv:1209.5920). Abstract: within the CerCo verified C compiler project the authors implemented and proved correct an algorithm for choosing among jump instructions of different sizes, a problem they describe as NP-hard for minimal program size. Prior mechanized correctness proof of a branch-displacement algorithm; this package does not claim that its toy statements coincide with theirs."
+  ],
+  "design_question": "Assemblers/linkers choosing short or long span-dependent encodings: when does iterative relaxation converge, to which fixpoint, and is the result correct?"
+ },
+ {
+  "id": "R2c",
+  "lean": "Toy.Relax.sizesMonotone_of_noAlign_of_short_le_long",
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "A program without alignment directives, under parameters with shortSize <= longSize, has every instruction size monotone in the assignment.",
+  "hypotheses": [
+   {
+    "name": "hna : NoAlign p",
+    "purpose": "alignment padding can shrink when earlier code grows",
+    "tightness": "tight",
+    "counterexample": "Toy.Relax.noAlign_needed_for_sizesMonotone"
+   },
+   {
+    "name": "hsl : prm.shortSize ≤ prm.longSize",
+    "purpose": "promotion must not shrink a branch",
+    "tightness": "tight",
+    "counterexample": "Toy.Relax.short_le_long_needed_for_sizesMonotone"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "Chain program: promoting branch 1 strictly grows its size.",
+  "nonvacuity_witness_lean": "Toy.Relax.sizesMonotone_nonvacuity",
+  "non_claims": [
+   "Alignment is the only address-dependent size in the toy; other address-dependent encodings (e.g. linker relaxation that deletes bytes) are not modeled.",
+   "Assemblers that hold alignment padding at a fixed upper bound until branch relaxation has stabilized and only then recompute it (as CakeML's lab_to_target does with label padding) do not face this non-monotonicity inside the loop; that strategy is not modeled.",
+   "Toy model only: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates); no property of a real assembler or linker is established by the Lean proofs, and every connection to a real toolchain is a separately labeled derived modeling bridge."
+  ],
+  "prior_art": [
+   "T. G. Szymanski, \"Assembling code for machines with span-dependent instructions\", Communications of the ACM 21(4):300-308, April 1978, doi:10.1145/359460.359474. Abstract: an efficient solution is presented for the case in which the operand of every span-dependent instruction is a label or an assembly-time expression of a restricted form; with more general assembly-time expressions the length-minimization problem is NP-complete.",
+   "Y. K. Tan, M. O. Myreen, R. Kumar, A. Fox, S. Owens, M. Norrish, \"The verified CakeML compiler backend\", Journal of Functional Programming 29 (2019), e2, doi:10.1017/S0956796818000229. Source: CakeML/cakeml commit 2874b664e10939a3ee462215b2e068c89c1f70eb, compiler/backend/lab_to_targetScript.sml: enc_lines_again (line 118; a re-encoded instruction gets length MAX (LENGTH bs) l, so lengths never shrink inside the loop), enc_line (line 39; label padding is held at skip_len during the loop), upd_lab_len (line 156; label padding is recomputed only after the loop has stabilized), remove_labels_loop (line 285; fuel-bounded, returns NONE when the clock runs out); compiler/backend/proofs/lab_to_targetProofScript.sml: remove_labels_thm (line 6299; when remove_labels returns SOME (code2, labs), all_enc_ok holds for code2 and every label resolves to its position in code2). A mechanized (HOL4) grow-only relaxation loop with an encodability-and-label-position theorem."
+  ],
+  "design_question": "Assemblers/linkers choosing short or long span-dependent encodings: when does iterative relaxation converge, to which fixpoint, and is the result correct?"
+ },
+ {
+  "id": "R2e",
+  "lean": [
+   "Toy.Relax.align_padding_breaks_leastness",
+   "Toy.Relax.align_counterexample_still_terminates_valid"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "With an alignment directive, leastness fails while termination and validity still hold: on [branch 1, align 4, branch 1] (short 1, long 2, reach 2; shortSize <= longSize), relaxation from all-short stops within numBranches + 1 passes at a valid assignment that promotes branch 2, yet promoting only branch 0 is also valid (it shrinks the alignment padding and brings branch 2 into reach), and the relaxation result is not below it.",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "The instance itself.",
+  "nonvacuity_witness_lean": "Toy.Relax.align_counterexample_still_terminates_valid",
+  "positive_control_lean": "Toy.Relax.relax_le_of_valid_of_le_of_noAlign_of_short_le_long",
+  "non_claims": [
+   "Does not show non-termination or invalidity; in this model grow-only relaxation always terminates with a valid result (R1a, R1b).",
+   "Simultaneous (Jacobi) updates only. A sequential pass that re-lays out the program after each promotion is not part of the model; a support check (Search/Sequential.lean, kernel-checked by decide, not a library result) shows that on [branch 3, branch 3, align 4] with short 1, long 2, reach 2 it stops at a different valid assignment (only branch 0 long) than the simultaneous passes (branches 0 and 1 long).",
+   "Assemblers that hold alignment padding at a fixed upper bound until branch relaxation has stabilized and only then recompute it (as CakeML's lab_to_target does with label padding) do not face this non-monotonicity inside the loop; that strategy is not modeled.",
+   "Does not show that any real assembler produces this layout.",
+   "Toy model only: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates); no property of a real assembler or linker is established by the Lean proofs, and every connection to a real toolchain is a separately labeled derived modeling bridge."
+  ],
+  "prior_art": [
+   "LLVM MC assembler, llvm/llvm-project commit ef02d46bb33d10383f6ba5a5d9a5511416ee790c, llvm/lib/MC/MCAssembler.cpp: MCAssembler::layout (lines 699-709, \"Layout until everything fits.\" loop over relaxOnce); MCAssembler::relaxOnce (lines 1137-1176: one forward pass per section that updates fragment offsets in place with a Stretch correction, and stops a section after more passes than its fragment count, comment \"Assume each iteration finalizes at least one extra fragment. If the layout does not converge after N+1 iterations, bail out.\", lines 1164-1167); MCAssembler::relaxInstruction (lines 879-910, replaces an instruction by its relaxed form, never the reverse); relaxLEB (comment at line 941: an LEB fragment is only ever grown, \"See PR35809\"); relaxDwarfCallFrameFragment (lines 1043-1061, re-encodes CFI advance deltas during relaxation). Derived (modeling bridge): grow-only relaxation of instructions with recomputed alignment padding corresponds to the non-monotone setting of this package; LLVM's pass is sequential, while the toy model updates all branches simultaneously; nothing is proved here about LLVM's pass cap.",
+   "Y. K. Tan, M. O. Myreen, R. Kumar, A. Fox, S. Owens, M. Norrish, \"The verified CakeML compiler backend\", Journal of Functional Programming 29 (2019), e2, doi:10.1017/S0956796818000229. Source: CakeML/cakeml commit 2874b664e10939a3ee462215b2e068c89c1f70eb, compiler/backend/lab_to_targetScript.sml: enc_lines_again (line 118; a re-encoded instruction gets length MAX (LENGTH bs) l, so lengths never shrink inside the loop), enc_line (line 39; label padding is held at skip_len during the loop), upd_lab_len (line 156; label padding is recomputed only after the loop has stabilized), remove_labels_loop (line 285; fuel-bounded, returns NONE when the clock runs out); compiler/backend/proofs/lab_to_targetProofScript.sml: remove_labels_thm (line 6299; when remove_labels returns SOME (code2, labs), all_enc_ok holds for code2 and every label resolves to its position in code2). A mechanized (HOL4) grow-only relaxation loop with an encodability-and-label-position theorem.",
+   "T. G. Szymanski, \"Assembling code for machines with span-dependent instructions\", Communications of the ACM 21(4):300-308, April 1978, doi:10.1145/359460.359474. Abstract: an efficient solution is presented for the case in which the operand of every span-dependent instruction is a label or an assembly-time expression of a restricted form; with more general assembly-time expressions the length-minimization problem is NP-complete."
+  ],
+  "design_question": "Assemblers/linkers choosing short or long span-dependent encodings: when does iterative relaxation converge, to which fixpoint, and is the result correct?"
+ },
+ {
+  "id": "R3a",
+  "lean": "Toy.Relax.growShrink_two_cycle_from_nonbottom_start",
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "Grow-and-shrink relaxation, in which each branch i is re-decided from the counterfactual layout setShort a i (branch i tentatively short, every other position as in a) and long branches may be demoted, can oscillate forever even with monotone sizes when started from a non-bottom assignment: on [fixed 1, branch 3, branch 0] (short 1, long 2, reach 2), started from 'branch 1 long', it alternates forever between 'branch 1 long, branch 2 short' and 'branch 1 short, branch 2 long'.",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "The instance itself; on it grow-only relaxation from the same start converges and grow-and-shrink from all-short is already at a fixpoint.",
+  "nonvacuity_witness_lean": "Toy.Relax.growShrink_two_cycle_controls",
+  "positive_control_lean": "Toy.Relax.growShrink_two_cycle_controls",
+  "non_claims": [
+   "The oscillation uses a start that is not all-short; from all-short and under monotone distances grow-and-shrink cannot oscillate (R3b), while without monotone distances it can oscillate from all-short as well (R3c).",
+   "The counterfactual reading matters: reading branch i's distance from the current layout a instead differs on forward long branches, whose own size lies in their span; from the start of this instance, branch 1 is out of short reach in the current layout but fits when tentatively short (stepGS_decides_from_counterfactual_layout). The contrast definition stepGSCurrent, which reads the current layout, does not oscillate on this instance: from the same start it makes both branches long, a valid fixpoint (osc_stepGSCurrent_reaches_valid_fixpoint). No general result about stepGSCurrent is stated.",
+   "Two branches is the minimum number for any oscillation: with one branch, setShort a i makes the layout independent of a, so its decision is constant after one step - derived argument, not formalized; minimality in instruction count is not claimed.",
+   "Toy model only: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates); no property of a real assembler or linker is established by the Lean proofs, and every connection to a real toolchain is a separately labeled derived modeling bridge."
+  ],
+  "prior_art": [
+   "LLVM MC assembler, llvm/llvm-project commit ef02d46bb33d10383f6ba5a5d9a5511416ee790c, llvm/lib/MC/MCAssembler.cpp: MCAssembler::layout (lines 699-709, \"Layout until everything fits.\" loop over relaxOnce); MCAssembler::relaxOnce (lines 1137-1176: one forward pass per section that updates fragment offsets in place with a Stretch correction, and stops a section after more passes than its fragment count, comment \"Assume each iteration finalizes at least one extra fragment. If the layout does not converge after N+1 iterations, bail out.\", lines 1164-1167); MCAssembler::relaxInstruction (lines 879-910, replaces an instruction by its relaxed form, never the reverse); relaxLEB (comment at line 941: an LEB fragment is only ever grown, \"See PR35809\"); relaxDwarfCallFrameFragment (lines 1043-1061, re-encodes CFI advance deltas during relaxation). Derived (modeling bridge): grow-only relaxation of instructions with recomputed alignment padding corresponds to the non-monotone setting of this package; LLVM's pass is sequential, while the toy model updates all branches simultaneously; nothing is proved here about LLVM's pass cap."
+  ],
+  "design_question": "Assemblers/linkers choosing short or long span-dependent encodings: when does iterative relaxation converge, to which fixpoint, and is the result correct?"
+ },
+ {
+  "id": "R3b",
+  "lean": "Toy.Relax.iter_stepGS_allShort_eq_iter_step_of_distMonotone",
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "If distances are monotone in the assignment (DistMonotone), every iterate of grow-and-shrink relaxation (each branch i re-decided from the counterfactual layout setShort a i) started from all-short equals the corresponding iterate of grow-only relaxation; so from all-short it never demotes and its numBranches-th iterate is the grow-only result relax prm p allShort.",
+  "hypotheses": [
+   {
+    "name": "hmono : DistMonotone prm p",
+    "purpose": "a branch promoted once stays out of short reach",
+    "tightness": "tight",
+    "counterexample": "Toy.Relax.align_growShrink_differs_from_growOnly"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "Chain program: after two grow-and-shrink steps branch 2 is long, exactly as in grow-only.",
+  "nonvacuity_witness_lean": "Toy.Relax.growShrink_allShort_nonvacuity",
+  "non_claims": [
+   "Only for the all-short start; from other starts grow-and-shrink can oscillate even with monotone sizes (R3a).",
+   "Without DistMonotone, grow-and-shrink from all-short can demote and stop at a different valid fixpoint (align_growShrink_differs_from_growOnly, on [fixed 1, align 4, branch 0, align 4, branch 3] with short 1, long 2, reach 2) and can oscillate forever (R3c).",
+   "Toy model only: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates); no property of a real assembler or linker is established by the Lean proofs, and every connection to a real toolchain is a separately labeled derived modeling bridge."
+  ],
+  "prior_art": [
+   "A. Tarski, \"A lattice-theoretical fixpoint theorem and its applications\", Pacific Journal of Mathematics 5(2):285-309, 1955, doi:10.2140/pjm.1955.5.285: a monotone function on a complete lattice has a least fixpoint. Derived (background): under DistMonotone the grow-only step is monotone and inflationary on assignments, so its iterates from all-short form an ascending chain that reaches its least fixpoint (bottom-up iteration). This result (R3b) says that grow-and-shrink relaxation from all-short follows exactly that ascending chain: under DistMonotone every long branch of an iterate stays out of short reach in its counterfactual layout setShort a i, so no branch is ever demoted.",
+   "LLVM MC assembler, llvm/llvm-project commit ef02d46bb33d10383f6ba5a5d9a5511416ee790c, llvm/lib/MC/MCAssembler.cpp: MCAssembler::layout (lines 699-709, \"Layout until everything fits.\" loop over relaxOnce); MCAssembler::relaxOnce (lines 1137-1176: one forward pass per section that updates fragment offsets in place with a Stretch correction, and stops a section after more passes than its fragment count, comment \"Assume each iteration finalizes at least one extra fragment. If the layout does not converge after N+1 iterations, bail out.\", lines 1164-1167); MCAssembler::relaxInstruction (lines 879-910, replaces an instruction by its relaxed form, never the reverse); relaxLEB (comment at line 941: an LEB fragment is only ever grown, \"See PR35809\"); relaxDwarfCallFrameFragment (lines 1043-1061, re-encodes CFI advance deltas during relaxation). Derived (modeling bridge): grow-only relaxation of instructions with recomputed alignment padding corresponds to the non-monotone setting of this package; LLVM's pass is sequential, while the toy model updates all branches simultaneously; nothing is proved here about LLVM's pass cap."
+  ],
+  "design_question": "Assemblers/linkers choosing short or long span-dependent encodings: when does iterative relaxation converge, to which fixpoint, and is the result correct?"
+ },
+ {
+  "id": "R3c",
+  "lean": [
+   "Toy.Relax.align_growShrink_four_cycle_from_allShort",
+   "Toy.Relax.inverted_growShrink_two_cycle_from_allShort"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "Grow-and-shrink relaxation stepGS, in which each branch i is re-decided from the counterfactual layout setShort a i (branch i tentatively short, every other position as in a; branch i becomes long iff that short encoding would be out of reach) and long branches may be demoted, can oscillate forever from all-short when distances are not monotone: on [branch 2, branch 3, align 4] with short 1, long 2, reach 2 (shortSize <= longSize; the alignment directive breaks DistMonotone) it cycles with period 4 through all-short, {1}, {0, 1}, {0}, and no iterate is a fixpoint; on [fixed 2, branch 3, branch 0] with short 2, long 1, reach 3 (no alignment, but shortSize > longSize, which also breaks DistMonotone) it alternates forever between all-short and {1, 2}.",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "The instances themselves.",
+  "nonvacuity_witness_lean": "Toy.Relax.align_growShrink_four_cycle_from_allShort",
+  "positive_control_lean": "Toy.Relax.iter_stepGS_allShort_eq_iter_step_of_distMonotone",
+  "non_claims": [
+   "Grow-only relaxation on the same programs still terminates with a valid result (R1a, R1b); the oscillation needs demotion.",
+   "The aligned 4-cycle depends on the counterfactual reading of stepGS: at {0}, branch 0's distance to its target is 3 in the current layout {0} (out of short reach 2) but 2 in the counterfactual layout setShort {0} 0 (within reach), so stepGS demotes branch 0 and returns to all-short (alignOsc_counterfactual_vs_current). A grow-and-shrink step that reads every distance from the current layout a instead (the contrast definition stepGSCurrent) does not oscillate on this program: from all-short it follows all-short, {1}, {0, 1}, {0} and then stays at {0}, a valid fixpoint, after 3 steps (alignOsc_stepGSCurrent_reaches_valid_fixpoint). The inverted-size 2-cycle on [fixed 2, branch 3, branch 0] also occurs under the current-layout reading (invOsc_stepGSCurrent_two_cycle). No general result about stepGSCurrent is stated.",
+   "Minimality is not claimed. Bounded search, not a proof (Search/LeastnessOptimality.lean): over all 3-instruction programs over {fixed 1, fixed 2, fixed 3, align 2, align 4} and branch targets 0-3, with 10 parameter sets all having shortSize <= longSize, the only oscillations from all-short are this program with long size 2 or 3 (short 1, reach 2).",
+   "Does not show that any real assembler uses grow-and-shrink relaxation; LLVM's relaxInstruction never demotes.",
+   "Toy model only: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates); no property of a real assembler or linker is established by the Lean proofs, and every connection to a real toolchain is a separately labeled derived modeling bridge."
+  ],
+  "prior_art": [
+   "LLVM MC assembler, llvm/llvm-project commit ef02d46bb33d10383f6ba5a5d9a5511416ee790c, llvm/lib/MC/MCAssembler.cpp: MCAssembler::layout (lines 699-709, \"Layout until everything fits.\" loop over relaxOnce); MCAssembler::relaxOnce (lines 1137-1176: one forward pass per section that updates fragment offsets in place with a Stretch correction, and stops a section after more passes than its fragment count, comment \"Assume each iteration finalizes at least one extra fragment. If the layout does not converge after N+1 iterations, bail out.\", lines 1164-1167); MCAssembler::relaxInstruction (lines 879-910, replaces an instruction by its relaxed form, never the reverse); relaxLEB (comment at line 941: an LEB fragment is only ever grown, \"See PR35809\"); relaxDwarfCallFrameFragment (lines 1043-1061, re-encodes CFI advance deltas during relaxation). Derived (modeling bridge): grow-only relaxation of instructions with recomputed alignment padding corresponds to the non-monotone setting of this package; LLVM's pass is sequential, while the toy model updates all branches simultaneously; nothing is proved here about LLVM's pass cap."
+  ],
+  "design_question": "Assemblers/linkers choosing short or long span-dependent encodings: when does iterative relaxation converge, to which fixpoint, and is the result correct?"
+ },
+ {
+  "id": "R4a",
+  "lean": "Toy.Relax.relax_allShort_totalSize_le_of_valid_of_distMonotone_of_short_le_long",
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "If every branch's distance is monotone in the assignment (DistMonotone) and shortSize <= longSize, the grow-only relaxation result from all-short has the minimum total size among all valid assignments. Alignment directives are allowed as long as DistMonotone holds (the end address of an alignment directive is monotone in its start address).",
+  "hypotheses": [
+   {
+    "name": "hmono : DistMonotone prm p",
+    "purpose": "gives leastness of the relaxation result (R1c)",
+    "tightness": "tight",
+    "counterexample": "Toy.Relax.size_optimality_needs_distMonotone"
+   },
+   {
+    "name": "hsl : prm.shortSize ≤ prm.longSize",
+    "purpose": "makes every address, hence total size, monotone in the assignment",
+    "tightness": "tight",
+    "counterexample": "Toy.Relax.size_optimality_needs_short_le_long"
+   },
+   {
+    "name": "hb : Valid prm p b",
+    "purpose": "competitors must be valid",
+    "tightness": "tight",
+    "counterexample": "Toy.Relax.size_optimality_needs_valid"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "chainExtraProg = [fixed 2, branch 0, branch 1, branch 3], short 1/long 2/reach 1, b = chainExtraB: all hypotheses hold and the relaxation result (total size 7) is strictly smaller than b (total size 8).",
+  "nonvacuity_witness_lean": "Toy.Relax.size_optimality_nonvacuity",
+  "non_claims": [
+   "Optimality is for this toy cost (sum of sizes) and reach model; it does not contradict NP-completeness results for general assembly-time operand expressions or jump chaining (Szymanski 1978; Leverett & Szymanski 1980), which are outside the model.",
+   "SizesMonotone (e.g. no alignment and shortSize <= longSize) is a sufficient single hypothesis, stated separately as the auxiliary lemma Toy.Relax.relax_allShort_totalSize_le_of_valid_of_sizesMonotone; DistMonotone with shortSize <= longSize is strictly weaker (distMonotone_short_le_long_without_sizesMonotone).",
+   "No complexity claim is made for programs without monotone distances.",
+   "Toy model only: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates); no property of a real assembler or linker is established by the Lean proofs, and every connection to a real toolchain is a separately labeled derived modeling bridge."
+  ],
+  "prior_art": [
+   "T. G. Szymanski, \"Assembling code for machines with span-dependent instructions\", Communications of the ACM 21(4):300-308, April 1978, doi:10.1145/359460.359474. Abstract: an efficient solution is presented for the case in which the operand of every span-dependent instruction is a label or an assembly-time expression of a restricted form; with more general assembly-time expressions the length-minimization problem is NP-complete.",
+   "G. Frieder and H. J. Saal, \"A process for the determination of addresses in variable length addressing\", Communications of the ACM 19(6):335-338, June 1976, doi:10.1145/360238.360241. Abstract: an algorithm assigns instruction addresses and formats when instruction length depends on the distance to the target, under an optimality criterion such as the smallest number of long instructions, which minimizes total code length.",
+   "B. W. Leverett and T. G. Szymanski, \"Chaining span-dependent jump instructions\", ACM TOPLAS 2(3):274-289, July 1980, doi:10.1145/357103.357105. Abstract: minimizing object length by chaining jumps with the same target is NP-complete in its most general form; several restricted forms have efficient solutions. Not modeled here (no jump chaining).",
+   "J. Boender and C. Sacerdoti Coen, \"On the Correctness of a Branch Displacement Algorithm\", TACAS 2014, LNCS 8413, pp. 605-619, Springer, doi:10.1007/978-3-642-54862-8_53 (preprint arXiv:1209.5920). Abstract: within the CerCo verified C compiler project the authors implemented and proved correct an algorithm for choosing among jump instructions of different sizes, a problem they describe as NP-hard for minimal program size. Prior mechanized correctness proof of a branch-displacement algorithm; this package does not claim that its toy statements coincide with theirs."
+  ],
+  "design_question": "Assemblers/linkers choosing short or long span-dependent encodings: when does iterative relaxation converge, to which fixpoint, and is the result correct?"
+ },
+ {
+  "id": "R4b",
+  "lean": "Toy.Relax.align_padding_breaks_size_optimality",
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "With alignment padding, the grow-only fixpoint from all-short need not have minimum total size: on [branch 1, align 4, branch 1] (short 1, long 2, reach 2; shortSize <= longSize) it has total size 6, while the valid assignment with only branch 0 long has total size 5.",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "The instance itself.",
+  "nonvacuity_witness_lean": "Toy.Relax.align_padding_breaks_size_optimality",
+  "positive_control_lean": "Toy.Relax.relax_allShort_totalSize_le_of_valid_of_distMonotone_of_short_le_long",
+  "non_claims": [
+   "Does not claim NP-hardness of the alignment case.",
+   "Simultaneous (Jacobi) updates only. A sequential pass that re-lays out the program after each promotion is not part of the model; a support check (Search/Sequential.lean, kernel-checked by decide, not a library result) shows that on [branch 3, branch 3, align 4] with short 1, long 2, reach 2 it stops at a different valid assignment (only branch 0 long) than the simultaneous passes (branches 0 and 1 long).",
+   "Assemblers that hold alignment padding at a fixed upper bound until branch relaxation has stabilized and only then recompute it (as CakeML's lab_to_target does with label padding) do not face this non-monotonicity inside the loop; that strategy is not modeled.",
+   "Toy model only: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates); no property of a real assembler or linker is established by the Lean proofs, and every connection to a real toolchain is a separately labeled derived modeling bridge."
+  ],
+  "prior_art": [
+   "T. G. Szymanski, \"Assembling code for machines with span-dependent instructions\", Communications of the ACM 21(4):300-308, April 1978, doi:10.1145/359460.359474. Abstract: an efficient solution is presented for the case in which the operand of every span-dependent instruction is a label or an assembly-time expression of a restricted form; with more general assembly-time expressions the length-minimization problem is NP-complete.",
+   "LLVM MC assembler, llvm/llvm-project commit ef02d46bb33d10383f6ba5a5d9a5511416ee790c, llvm/lib/MC/MCAssembler.cpp: MCAssembler::layout (lines 699-709, \"Layout until everything fits.\" loop over relaxOnce); MCAssembler::relaxOnce (lines 1137-1176: one forward pass per section that updates fragment offsets in place with a Stretch correction, and stops a section after more passes than its fragment count, comment \"Assume each iteration finalizes at least one extra fragment. If the layout does not converge after N+1 iterations, bail out.\", lines 1164-1167); MCAssembler::relaxInstruction (lines 879-910, replaces an instruction by its relaxed form, never the reverse); relaxLEB (comment at line 941: an LEB fragment is only ever grown, \"See PR35809\"); relaxDwarfCallFrameFragment (lines 1043-1061, re-encodes CFI advance deltas during relaxation). Derived (modeling bridge): grow-only relaxation of instructions with recomputed alignment padding corresponds to the non-monotone setting of this package; LLVM's pass is sequential, while the toy model updates all branches simultaneously; nothing is proved here about LLVM's pass cap.",
+   "Y. K. Tan, M. O. Myreen, R. Kumar, A. Fox, S. Owens, M. Norrish, \"The verified CakeML compiler backend\", Journal of Functional Programming 29 (2019), e2, doi:10.1017/S0956796818000229. Source: CakeML/cakeml commit 2874b664e10939a3ee462215b2e068c89c1f70eb, compiler/backend/lab_to_targetScript.sml: enc_lines_again (line 118; a re-encoded instruction gets length MAX (LENGTH bs) l, so lengths never shrink inside the loop), enc_line (line 39; label padding is held at skip_len during the loop), upd_lab_len (line 156; label padding is recomputed only after the loop has stabilized), remove_labels_loop (line 285; fuel-bounded, returns NONE when the clock runs out); compiler/backend/proofs/lab_to_targetProofScript.sml: remove_labels_thm (line 6299; when remove_labels returns SOME (code2, labs), all_enc_ok holds for code2 and every label resolves to its position in code2). A mechanized (HOL4) grow-only relaxation loop with an encodability-and-label-position theorem."
+  ],
+  "design_question": "Assemblers/linkers choosing short or long span-dependent encodings: when does iterative relaxation converge, to which fixpoint, and is the result correct?"
+ },
+ {
+  "id": "R5",
+  "lean": "Toy.Relax.promote_relax_landsExactly_of_valid_of_sizesPositiveAt",
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "Let a be a valid assignment, promote any position j to long and re-run grow-only relaxation, obtaining r = relax prm p (promote a j). If every instruction inside the program has positive size in layout a and in layout r, then for every branch i with target t, in each of the two layouts the branch has an encodable displacement (emitDisp: the branch is long, or short and within reach) and that displacement, recomputed from its own layout, lands on an instruction index k <= p.length exactly when k = min t p.length; in particular the two displacements land on the same instruction indices.",
+  "hypotheses": [
+   {
+    "name": "hv : Valid prm p a",
+    "purpose": "every branch of the original layout must be encodable",
+    "tightness": "tight",
+    "counterexample": "Toy.Relax.promote_relax_landsExactly_needs_valid"
+   },
+   {
+    "name": "hposA : SizesPositiveAt prm p a",
+    "purpose": "distinct instruction indices have distinct addresses in layout a",
+    "tightness": "tight",
+    "counterexample": "Toy.Relax.promote_relax_landsExactly_needs_sizesPositiveAt_before"
+   },
+   {
+    "name": "hposR : SizesPositiveAt prm p (relax prm p (promote a j))",
+    "purpose": "distinct instruction indices have distinct addresses in layout r; promotion can shrink alignment padding to 0 bytes",
+    "tightness": "tight",
+    "counterexample": "Toy.Relax.promote_relax_landsExactly_needs_sizesPositiveAt_after"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "[branch 2, fixed 1, fixed 1], short 1/long 2/reach 5, a = all-short (valid), j = 0: sizes are positive in both layouts and the promotion is not a no-op; promote_relax_nonvacuity_aligned gives an instance with an alignment directive.",
+  "nonvacuity_witness_lean": "Toy.Relax.promote_relax_nonvacuity",
+  "positive_control_lean": [
+   "Toy.Relax.promote_without_relax_breaks_emitDisp",
+   "Toy.Relax.stale_displacement_lands_elsewhere"
+  ],
+  "non_claims": [
+   "Re-relaxation is needed: promoting without re-relaxing can leave another short branch out of reach, with no encodable displacement (promote_without_relax_breaks_emitDisp).",
+   "Displacements must be recomputed from the new layout: a displacement computed in the old layout lands on a different instruction in the new one (stale_displacement_lands_elsewhere).",
+   "The result factors through two facts: r is valid (R1b), and in any valid layout with positive sizes every branch lands exactly on its target (auxiliary lemma Toy.Relax.landsExactly_of_valid_of_sizesPositiveAt). The position j need not hold a short branch.",
+   "Landing is stated for indices k <= p.length; a target index t >= p.length denotes the end of the program.",
+   "Says nothing about execution semantics beyond the landing index of each branch.",
+   "Two encodings per branch with unbounded long reach only: instruction sets with more than two branch sizes (where more passes can be needed) and long forms with a finite reach (where relaxation can fail) are not modeled.",
+   "Toy model only: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates); no property of a real assembler or linker is established by the Lean proofs, and every connection to a real toolchain is a separately labeled derived modeling bridge."
+  ],
+  "prior_art": [
+   "Y. K. Tan, M. O. Myreen, R. Kumar, A. Fox, S. Owens, M. Norrish, \"The verified CakeML compiler backend\", Journal of Functional Programming 29 (2019), e2, doi:10.1017/S0956796818000229. Source: CakeML/cakeml commit 2874b664e10939a3ee462215b2e068c89c1f70eb, compiler/backend/lab_to_targetScript.sml: enc_lines_again (line 118; a re-encoded instruction gets length MAX (LENGTH bs) l, so lengths never shrink inside the loop), enc_line (line 39; label padding is held at skip_len during the loop), upd_lab_len (line 156; label padding is recomputed only after the loop has stabilized), remove_labels_loop (line 285; fuel-bounded, returns NONE when the clock runs out); compiler/backend/proofs/lab_to_targetProofScript.sml: remove_labels_thm (line 6299; when remove_labels returns SOME (code2, labs), all_enc_ok holds for code2 and every label resolves to its position in code2). A mechanized (HOL4) grow-only relaxation loop with an encodability-and-label-position theorem.",
+   "J. Boender and C. Sacerdoti Coen, \"On the Correctness of a Branch Displacement Algorithm\", TACAS 2014, LNCS 8413, pp. 605-619, Springer, doi:10.1007/978-3-642-54862-8_53 (preprint arXiv:1209.5920). Abstract: within the CerCo verified C compiler project the authors implemented and proved correct an algorithm for choosing among jump instructions of different sizes, a problem they describe as NP-hard for minimal program size. Prior mechanized correctness proof of a branch-displacement algorithm; this package does not claim that its toy statements coincide with theirs.",
+   "LLVM MC assembler, llvm/llvm-project commit ef02d46bb33d10383f6ba5a5d9a5511416ee790c, llvm/lib/MC/MCAssembler.cpp: MCAssembler::layout (lines 699-709, \"Layout until everything fits.\" loop over relaxOnce); MCAssembler::relaxOnce (lines 1137-1176: one forward pass per section that updates fragment offsets in place with a Stretch correction, and stops a section after more passes than its fragment count, comment \"Assume each iteration finalizes at least one extra fragment. If the layout does not converge after N+1 iterations, bail out.\", lines 1164-1167); MCAssembler::relaxInstruction (lines 879-910, replaces an instruction by its relaxed form, never the reverse); relaxLEB (comment at line 941: an LEB fragment is only ever grown, \"See PR35809\"); relaxDwarfCallFrameFragment (lines 1043-1061, re-encodes CFI advance deltas during relaxation). Derived (modeling bridge): grow-only relaxation of instructions with recomputed alignment padding corresponds to the non-monotone setting of this package; LLVM's pass is sequential, while the toy model updates all branches simultaneously; nothing is proved here about LLVM's pass cap."
+  ],
+  "design_question": "Assemblers/linkers choosing short or long span-dependent encodings: when does iterative relaxation converge, to which fixpoint, and is the result correct?"
+ },
+ {
+  "id": "R6a",
+  "lean": "Toy.Unwind.genTable_correct_of_no_undefined",
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "If the abstract interpretation (tracking the sp delta, register contents and stack-slot contents symbolically) assigns no caller-visible register the rule undefined at any offset, then the table it generates is correct: at every offset it recovers the caller's sp (CFA) and the entry values of all caller-visible registers, for every entry state.",
+  "hypotheses": [
+   {
+    "name": "h : ∀ i ≤ body.length, ∀ r ∈ cs, (genTable body i).rule r ≠ .undefined",
+    "purpose": "every caller-visible register is recoverable at every offset",
+    "tightness": "tight",
+    "counterexample": "Toy.Unwind.genTable_with_undefined_incorrect"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "Body [subSp 2, saveAt 3 1, setReg 3 7, addSp 1, pop 3], cs = [3].",
+  "nonvacuity_witness_lean": "Toy.Unwind.genTable_no_undefined_nonvacuity",
+  "non_claims": [
+   "Straight-line bodies only; no branches, loops, calls, frame-pointer-based CFA, register-to-register saves, val_offset rules or DWARF expressions.",
+   "Word-addressed stack with one word per push; no return-address slot.",
+   "Says nothing about unwinding through more than one frame.",
+   "Single-frame virtual unwinding only: TableCorrect does not forbid the body from writing into the caller's frame (addresses >= entry sp; tableCorrect_permits_caller_frame_write) and does not require the body to restore sp or any register by its end (tableCorrect_permits_unrestored_sp).",
+   "TableCorrect quantifies over every entry state, including ones a real ABI excludes (unaligned sp, arbitrary memory); registers and stack words are unbounded integers.",
+   "Does not claim the generator succeeds whenever a correct table exists (not stated; checker completeness R7b is about checking, not generation).",
+   "The relaxation model and the unwind-table model are independent: Toy.Unwind indexes table rows by operation count, not byte offset, so the effect of branch relaxation on CFI advance-location deltas (which real assemblers re-encode during relaxation) is not modeled.",
+   "Toy model only: the results apply to the Lean model Toy.Unwind (one straight-line body, word-addressed downward stack, no return-address slot, CFA = entry sp); no property of real compiler-emitted CFI or of a real unwinder is established by the Lean proofs."
+  ],
+  "prior_art": [
+   "DWARF Debugging Information Format Version 5 (February 13, 2017), Section 6.4 \"Call Frame Information\", pp. 171-173 (CFA: \"Typically, the CFA is defined to be the value of the stack pointer at the call site in the previous frame\"; register rules \"undefined\", \"same value\", \"offset(N)\": \"The previous value of this register is saved at the address CFA+N\"), and Section 6.4.2.3 \"Register Rule Instructions\": DW_CFA_same_value sets a register's rule to \"same value\"; DW_CFA_restore (item 11, p. 180) sets it to the rule assigned by the CIE's initial instructions, which need not be \"same value\". The toy rule savedAt off corresponds to offset(-off) (opposite sign), and a toy table is one materialized row per offset, not a CIE/FDE instruction stream.",
+   "T. Bastian, S. Kell, F. Zappa Nardelli, \"Reliable and fast DWARF-based stack unwinding\", Proc. ACM Program. Lang. 3(OOPSLA), Article 146 (October 2019), 24 pages (146:1-146:24), doi:10.1145/3360572. Section 2.1 (pp. 146:6-146:8) validates .eh_frame tables dynamically along one execution path (single-stepping under gdb and comparing each row with tracked addresses); Section 2.2 (from p. 146:8) synthesizes tables statically; Section 4 (p. 146:18) discusses the Linux kernel's objtool and ORC tables, which are derived statically from object code. No mechanized proofs. Contrast: checkTable here is a static check over all entry states of a straight-line toy body, proved sound and complete for that language.",
+   "CompCert, AbsInt/CompCert commit 2685140bf72c959446981fb99b5e44a8975021bc: backend/Mach.v lines 39-50 and 97-100 (Mgetstack/Msetstack are loads/stores relative to the stack pointer, the analogue of saveAt and of reloads); x86/Asm.v line 266 declares \"Pcfi_adjust (n: int)\", listed at lines 979-992 among \"instructions and directives not generated directly by [Asmgen], so we do not model them\" (their step is Stuck). Derived: CompCert's verified semantics does not cover CFI directives.",
+   "Y. Wang, P. Wilke, Z. Shao, \"An abstract stack based approach to verified compositional compilation to machine code\", Proc. ACM Program. Lang. 3(POPL), Article 62 (January 2019), 30 pages, doi:10.1145/3290375. Abstract: enriches CompCert's memory model with an abstract stack that bounds stack consumption and enforces a stack access policy through fine-grained permissions on stack memory. A mechanized stack-frame discipline of the kind that TableCorrect does not express (caller-frame protection); it does not treat unwind tables."
+  ],
+  "design_question": "What does it mean for a CFA/register-rule unwind table to be correct with respect to the code it describes, and which simple checks are sound?"
+ },
+ {
+  "id": "R6b",
+  "lean": "Toy.Unwind.offByOne_push_tables_incorrect",
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "For the body [push 3, setReg 3 0] with caller-visible register 3, the table that places the post-push CFA row one instruction late (offset 1 keeps the entry row) and the table that places it one instruction early (offset 0 already uses the post-push row) are both incorrect: at the misplaced offset the computed CFA is one word below (late) or above (early) the caller's sp, for every entry state.",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "Body [push 3, setReg 3 0], cs = [3]; its generated table is correct.",
+  "nonvacuity_witness_lean": "Toy.Unwind.tableCorrect_example_pos",
+  "positive_control_lean": "Toy.Unwind.tableCorrect_example_pos",
+  "non_claims": [
+   "One concrete body; not a classification of all off-by-one faults.",
+   "Toy model only: the results apply to the Lean model Toy.Unwind (one straight-line body, word-addressed downward stack, no return-address slot, CFA = entry sp); no property of real compiler-emitted CFI or of a real unwinder is established by the Lean proofs."
+  ],
+  "prior_art": [
+   "DWARF Debugging Information Format Version 5 (February 13, 2017), Section 6.4 \"Call Frame Information\", pp. 171-173 (CFA: \"Typically, the CFA is defined to be the value of the stack pointer at the call site in the previous frame\"; register rules \"undefined\", \"same value\", \"offset(N)\": \"The previous value of this register is saved at the address CFA+N\"), and Section 6.4.2.3 \"Register Rule Instructions\": DW_CFA_same_value sets a register's rule to \"same value\"; DW_CFA_restore (item 11, p. 180) sets it to the rule assigned by the CIE's initial instructions, which need not be \"same value\". The toy rule savedAt off corresponds to offset(-off) (opposite sign), and a toy table is one materialized row per offset, not a CIE/FDE instruction stream.",
+   "T. Bastian, S. Kell, F. Zappa Nardelli, \"Reliable and fast DWARF-based stack unwinding\", Proc. ACM Program. Lang. 3(OOPSLA), Article 146 (October 2019), 24 pages (146:1-146:24), doi:10.1145/3360572. Section 2.1 (pp. 146:6-146:8) validates .eh_frame tables dynamically along one execution path (single-stepping under gdb and comparing each row with tracked addresses); Section 2.2 (from p. 146:8) synthesizes tables statically; Section 4 (p. 146:18) discusses the Linux kernel's objtool and ORC tables, which are derived statically from object code. No mechanized proofs. Contrast: checkTable here is a static check over all entry states of a straight-line toy body, proved sound and complete for that language. Relevant to this result: Fig. 4 of the paper (p. 146:8, in Section 2.1) shows hand-written .eh_frame bytecode in glibc's lowlevellock.h with an off-by-one error in a return-address offset (an off-by-one in a rule's value, a related but different fault from the misplaced rows of this result)."
+  ],
+  "design_question": "What does it mean for a CFA/register-rule unwind table to be correct with respect to the code it describes, and which simple checks are sound?"
+ },
+ {
+  "id": "R6c",
+  "lean": "Toy.Unwind.missing_row_after_pop_incorrect",
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "For the body [push 3, setReg 3 0, pop 3] with caller-visible register 3, the table whose offset 3 (after the pop) keeps the row of offset 2 is incorrect: after the pop the computed CFA is one word above the caller's sp, for every entry state.",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "Body [push 3, setReg 3 0, pop 3], cs = [3]; its generated table is correct.",
+  "nonvacuity_witness_lean": "Toy.Unwind.tableCorrect_example_pos_pop",
+  "positive_control_lean": "Toy.Unwind.tableCorrect_example_pos_pop",
+  "non_claims": [
+   "The fault here is the stale CFA rule; a stale register rule alone is not immediately wrong (R6d).",
+   "One concrete body.",
+   "Toy model only: the results apply to the Lean model Toy.Unwind (one straight-line body, word-addressed downward stack, no return-address slot, CFA = entry sp); no property of real compiler-emitted CFI or of a real unwinder is established by the Lean proofs."
+  ],
+  "prior_art": [
+   "DWARF Debugging Information Format Version 5 (February 13, 2017), Section 6.4 \"Call Frame Information\", pp. 171-173 (CFA: \"Typically, the CFA is defined to be the value of the stack pointer at the call site in the previous frame\"; register rules \"undefined\", \"same value\", \"offset(N)\": \"The previous value of this register is saved at the address CFA+N\"), and Section 6.4.2.3 \"Register Rule Instructions\": DW_CFA_same_value sets a register's rule to \"same value\"; DW_CFA_restore (item 11, p. 180) sets it to the rule assigned by the CIE's initial instructions, which need not be \"same value\". The toy rule savedAt off corresponds to offset(-off) (opposite sign), and a toy table is one materialized row per offset, not a CIE/FDE instruction stream.",
+   "T. Bastian, S. Kell, F. Zappa Nardelli, \"Reliable and fast DWARF-based stack unwinding\", Proc. ACM Program. Lang. 3(OOPSLA), Article 146 (October 2019), 24 pages (146:1-146:24), doi:10.1145/3360572. Section 2.1 (pp. 146:6-146:8) validates .eh_frame tables dynamically along one execution path (single-stepping under gdb and comparing each row with tracked addresses); Section 2.2 (from p. 146:8) synthesizes tables statically; Section 4 (p. 146:18) discusses the Linux kernel's objtool and ORC tables, which are derived statically from object code. No mechanized proofs. Contrast: checkTable here is a static check over all entry states of a straight-line toy body, proved sound and complete for that language. Relevant to this result: Fig. 3 of the paper (p. 146:6, in Section 2.1) shows a clang 3.8 table whose row after \"pop %rbx\" still gives CFA = rsp+16 instead of rsp+8, the real counterpart of the missing row after a pop in this result."
+  ],
+  "design_question": "What does it mean for a CFA/register-rule unwind table to be correct with respect to the code it describes, and which simple checks are sound?"
+ },
+ {
+  "id": "R6d",
+  "lean": [
+   "Toy.Unwind.stale_savedAt_after_pop_incorrect_after_slot_reuse",
+   "Toy.Unwind.stale_savedAt_after_pop_correct_without_reuse"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "For the body [push 3, setReg 3 0, pop 3, push 4] with caller-visible register 3, the table that updates the CFA after the pop but keeps register 3's rule savedAt 1 (instead of sameValue) is incorrect: at offset 4, after push 4 has overwritten the freed slot, the unwinder reports register 4's entry value for register 3, for every entry state. For the body [push 3, setReg 3 0, pop 3] without the later push, the same stale rule gives a correct table, because a pop does not erase memory.",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "Bodies [push 3, setReg 3 0, pop 3, push 4] and [push 3, setReg 3 0, pop 3], cs = [3]; the generated table of the first body is correct.",
+  "nonvacuity_witness_lean": "Toy.Unwind.tableCorrect_example_pos_reuse",
+  "positive_control_lean": "Toy.Unwind.tableCorrect_example_pos_reuse",
+  "non_claims": [
+   "Concrete bodies only; not every later push makes the stale rule wrong (a push that stores the value register 3 had at entry leaves it correct).",
+   "Known not to apply where the freed slot below sp can be written without an operation of the body (for example by an asynchronous signal or interrupt frame on a stack without a protected red zone): the toy semantics has no such writes, and any write of a different value into the freed slot makes the stale rule wrong by the same mechanism as the first body. Derived (modeling bridge).",
+   "Does not say DW_CFA_restore or DW_CFA_same_value is unnecessary in practice.",
+   "Toy model only: the results apply to the Lean model Toy.Unwind (one straight-line body, word-addressed downward stack, no return-address slot, CFA = entry sp); no property of real compiler-emitted CFI or of a real unwinder is established by the Lean proofs."
+  ],
+  "prior_art": [
+   "DWARF Debugging Information Format Version 5 (February 13, 2017), Section 6.4 \"Call Frame Information\", pp. 171-173 (CFA: \"Typically, the CFA is defined to be the value of the stack pointer at the call site in the previous frame\"; register rules \"undefined\", \"same value\", \"offset(N)\": \"The previous value of this register is saved at the address CFA+N\"), and Section 6.4.2.3 \"Register Rule Instructions\": DW_CFA_same_value sets a register's rule to \"same value\"; DW_CFA_restore (item 11, p. 180) sets it to the rule assigned by the CIE's initial instructions, which need not be \"same value\". The toy rule savedAt off corresponds to offset(-off) (opposite sign), and a toy table is one materialized row per offset, not a CIE/FDE instruction stream."
+  ],
+  "design_question": "What does it mean for a CFA/register-rule unwind table to be correct with respect to the code it describes, and which simple checks are sound?"
+ },
+ {
+  "id": "R7a",
+  "lean": "Toy.Unwind.checkTable_sound",
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "If the decidable checker that replays the abstract interpretation accepts a table for a body and a caller-visible register set, the table is correct (TableCorrect).",
+  "hypotheses": [
+   {
+    "name": "h : checkTable body cs tbl = true",
+    "purpose": "the premise of soundness",
+    "tightness": "tight",
+    "counterexample": "Toy.Unwind.checker_premise_needed"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "Frame body [subSp 2, saveAt 3 1, setReg 3 7, addSp 1, pop 3] with its generated table.",
+  "nonvacuity_witness_lean": "Toy.Unwind.checkTable_nonvacuity",
+  "non_claims": [
+   "Sound for the toy language only; any extension (calls, branches, computed addresses) needs a new proof.",
+   "The checker checks only registers in cs; rules for other registers are ignored.",
+   "Single-frame virtual unwinding only: TableCorrect does not forbid the body from writing into the caller's frame (addresses >= entry sp; tableCorrect_permits_caller_frame_write) and does not require the body to restore sp or any register by its end (tableCorrect_permits_unrestored_sp).",
+   "TableCorrect quantifies over every entry state, including ones a real ABI excludes (unaligned sp, arbitrary memory); registers and stack words are unbounded integers.",
+   "The relaxation model and the unwind-table model are independent: Toy.Unwind indexes table rows by operation count, not byte offset, so the effect of branch relaxation on CFI advance-location deltas (which real assemblers re-encode during relaxation) is not modeled.",
+   "Toy model only: the results apply to the Lean model Toy.Unwind (one straight-line body, word-addressed downward stack, no return-address slot, CFA = entry sp); no property of real compiler-emitted CFI or of a real unwinder is established by the Lean proofs."
+  ],
+  "prior_art": [
+   "DWARF Debugging Information Format Version 5 (February 13, 2017), Section 6.4 \"Call Frame Information\", pp. 171-173 (CFA: \"Typically, the CFA is defined to be the value of the stack pointer at the call site in the previous frame\"; register rules \"undefined\", \"same value\", \"offset(N)\": \"The previous value of this register is saved at the address CFA+N\"), and Section 6.4.2.3 \"Register Rule Instructions\": DW_CFA_same_value sets a register's rule to \"same value\"; DW_CFA_restore (item 11, p. 180) sets it to the rule assigned by the CIE's initial instructions, which need not be \"same value\". The toy rule savedAt off corresponds to offset(-off) (opposite sign), and a toy table is one materialized row per offset, not a CIE/FDE instruction stream.",
+   "T. Bastian, S. Kell, F. Zappa Nardelli, \"Reliable and fast DWARF-based stack unwinding\", Proc. ACM Program. Lang. 3(OOPSLA), Article 146 (October 2019), 24 pages (146:1-146:24), doi:10.1145/3360572. Section 2.1 (pp. 146:6-146:8) validates .eh_frame tables dynamically along one execution path (single-stepping under gdb and comparing each row with tracked addresses); Section 2.2 (from p. 146:8) synthesizes tables statically; Section 4 (p. 146:18) discusses the Linux kernel's objtool and ORC tables, which are derived statically from object code. No mechanized proofs. Contrast: checkTable here is a static check over all entry states of a straight-line toy body, proved sound and complete for that language."
+  ],
+  "design_question": "What does it mean for a CFA/register-rule unwind table to be correct with respect to the code it describes, and which simple checks are sound?"
+ },
+ {
+  "id": "R7b",
+  "lean": "Toy.Unwind.checkTable_complete",
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "Every table that is correct (TableCorrect) for a body and caller-visible register set is accepted by the checker: for this straight-line toy language the abstract interpretation is exact. With R7a, the checker decides TableCorrect (auxiliary lemma Toy.Unwind.checkTable_iff_tableCorrect).",
+  "hypotheses": [
+   {
+    "name": "h : TableCorrect body cs tbl",
+    "purpose": "the premise of completeness",
+    "tightness": "tight",
+    "counterexample": "Toy.Unwind.checker_premise_needed"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "The generated table of the frame body [subSp 2, saveAt 3 1, setReg 3 7, addSp 1, pop 3] is correct; the table with a missing row after a pop is not.",
+  "nonvacuity_witness_lean": "Toy.Unwind.tableCorrect_nonvacuity",
+  "non_claims": [
+   "Exactness depends on the toy language: entry values can only be copied, never computed, so a single entry state with pairwise distinct register values above every constant the body writes separates all abstract distinctions. With arithmetic on registers, memory loads through computed addresses or control flow, completeness is not claimed.",
+   "The proof uses unbounded integers for registers and stack words; fixed-width machine words are not modeled. Whether completeness transfers to them is not examined (it needs an entry state whose register values avoid every constant the body writes).",
+   "Straight-line bodies only; no branches, loops, calls, frame-pointer-based CFA, register-to-register saves, val_offset rules or DWARF expressions.",
+   "Not a statement about real CFI validators.",
+   "Toy model only: the results apply to the Lean model Toy.Unwind (one straight-line body, word-addressed downward stack, no return-address slot, CFA = entry sp); no property of real compiler-emitted CFI or of a real unwinder is established by the Lean proofs."
+  ],
+  "prior_art": [
+   "DWARF Debugging Information Format Version 5 (February 13, 2017), Section 6.4 \"Call Frame Information\", pp. 171-173 (CFA: \"Typically, the CFA is defined to be the value of the stack pointer at the call site in the previous frame\"; register rules \"undefined\", \"same value\", \"offset(N)\": \"The previous value of this register is saved at the address CFA+N\"), and Section 6.4.2.3 \"Register Rule Instructions\": DW_CFA_same_value sets a register's rule to \"same value\"; DW_CFA_restore (item 11, p. 180) sets it to the rule assigned by the CIE's initial instructions, which need not be \"same value\". The toy rule savedAt off corresponds to offset(-off) (opposite sign), and a toy table is one materialized row per offset, not a CIE/FDE instruction stream.",
+   "T. Bastian, S. Kell, F. Zappa Nardelli, \"Reliable and fast DWARF-based stack unwinding\", Proc. ACM Program. Lang. 3(OOPSLA), Article 146 (October 2019), 24 pages (146:1-146:24), doi:10.1145/3360572. Section 2.1 (pp. 146:6-146:8) validates .eh_frame tables dynamically along one execution path (single-stepping under gdb and comparing each row with tracked addresses); Section 2.2 (from p. 146:8) synthesizes tables statically; Section 4 (p. 146:18) discusses the Linux kernel's objtool and ORC tables, which are derived statically from object code. No mechanized proofs. Contrast: checkTable here is a static check over all entry states of a straight-line toy body, proved sound and complete for that language."
+  ],
+  "design_question": "What does it mean for a CFA/register-rule unwind table to be correct with respect to the code it describes, and which simple checks are sound?"
+ }
+]

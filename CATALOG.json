@@ -12301,6 +12301,112 @@
         "verification/liveness"
       ]
     },
+    "branch-relaxation-fixpoints-and-unwind-table-frame-restoration": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/359460.359474"
+          },
+          "name": "Assembling code for machines with span-dependent instructions (Szymanski 1978)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/357103.357105"
+          },
+          "name": "Chaining span-dependent jump instructions (Leverett and Szymanski 1980)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/360238.360241"
+          },
+          "name": "A process for the determination of addresses in variable length addressing (Frieder and Saal 1976)"
+        },
+        {
+          "identity": {
+            "doi": "10.2140/pjm.1955.5.285"
+          },
+          "name": "A lattice-theoretical fixpoint theorem and its applications (Tarski 1955)"
+        },
+        {
+          "identity": {
+            "arxiv": "1209.5920",
+            "doi": "10.1007/978-3-642-54862-8_53"
+          },
+          "name": "On the Correctness of a Branch Displacement Algorithm (Boender and Sacerdoti Coen 2014)"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796818000229"
+          },
+          "name": "The verified CakeML compiler backend (Tan et al. 2019)"
+        },
+        {
+          "identity": {
+            "repository": "CakeML/cakeml",
+            "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+          },
+          "name": "CakeML compiler source"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert source"
+        },
+        {
+          "identity": {
+            "path": "llvm/lib/MC/MCAssembler.cpp",
+            "repository": "llvm/llvm-project",
+            "revision": "ef02d46bb33d10383f6ba5a5d9a5511416ee790c"
+          },
+          "name": "LLVM MC assembler source"
+        },
+        {
+          "identity": {
+            "date": "2017-02-13",
+            "url": "https://dwarfstd.org/doc/DWARF5.pdf",
+            "version": "5"
+          },
+          "name": "DWARF Debugging Information Format Version 5"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3360572"
+          },
+          "name": "Reliable and fast DWARF-based stack unwinding (Bastian, Kell and Zappa Nardelli 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3290375"
+          },
+          "name": "An abstract stack based approach to verified compositional compilation to machine code (Wang, Wilke and Shao 2019)"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/branch-relaxation",
+        "compilers/span-dependent-instructions",
+        "compilers/assemblers",
+        "compilers/unwind-tables",
+        "compilers/dwarf-cfi",
+        "lean",
+        "lean/mechanization",
+        "verification",
+        "verification/formalized-results",
+        "verification/fixpoints",
+        "verification/abstract-interpretation"
+      ]
+    },
     "browser-site-isolation-v8-heap-sandboxes-and-webidl-membrane-security": {
       "observed_at": "2026-11-19",
       "subjects": [
