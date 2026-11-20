@@ -22614,6 +22614,126 @@
         "zerocopy/soundness-policy"
       ]
     },
+    "dpj-region-path-lists-legion-partition-trees-and-pedigree-splitmix-keys": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "dpj/DPJ",
+            "revision": "bffe77a8e83ddb82a59d50f24435081b7c762f40"
+          },
+          "name": "Deterministic Parallel Java compiler and runtime (region path lists, Partition)"
+        },
+        {
+          "identity": {
+            "repository": "StanfordLegion/legion",
+            "revision": "aea587e157abff12f7d089c81f29cd3a8b993a2b"
+          },
+          "name": "Legion runtime and Regent language (region trees, partitions, disjointness checks)"
+        },
+        {
+          "identity": {
+            "repository": "rayon-rs/rayon",
+            "revision": "599425d4a4c64714632817f48496dbc53f656a90"
+          },
+          "name": "Rayon data-parallelism library (join, slice producers)"
+        },
+        {
+          "identity": {
+            "repository": "OpenCilk/cheetah",
+            "revision": "33ac0d586cdbafe4e400f3741c4ce4ff07e61c26"
+          },
+          "name": "OpenCilk Cheetah runtime (pedigrees and DotMix DPRNG)"
+        },
+        {
+          "identity": {
+            "repository": "haskellari/splitmix",
+            "revision": "66ca2edbe935582cb66fd1fd36d1cd06366d9779"
+          },
+          "name": "splitmix Haskell package (SplitMix splittable generator)"
+        },
+        {
+          "identity": {
+            "repository": "jax-ml/jax",
+            "revision": "715e767052bc29ff65400e576b58dc37d1ad179f"
+          },
+          "name": "JAX PRNG design, Threefry implementation and experimental key-reuse checker"
+        },
+        {
+          "identity": {
+            "repository": "MPLLang/mpl",
+            "revision": "254325b5946f609f76458f0d9509a3206e0521cd"
+          },
+          "name": "MPL runtime fork-path task identifiers (entanglement checking)"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796800000988"
+          },
+          "name": "Augustsson, Rittri and Synek, On Generating Unique Names (JFP 1994)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1640089.1640097"
+          },
+          "name": "Bocchino et al., A Type and Effect System for Deterministic Parallel Java (OOPSLA 2009)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2063384.2063405"
+          },
+          "name": "Salmon, Moraes, Dror and Shaw, Parallel Random Numbers: As Easy as 1, 2, 3 (SC 2011)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2145816.2145841"
+          },
+          "name": "Leiserson, Schardl and Sukha, Deterministic Parallel Random-Number Generation for Dynamic-Multithreading Platforms (PPoPP 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SC.2012.71"
+          },
+          "name": "Bauer, Treichler, Slaughter and Aiken, Legion: Expressing Locality and Independence with Logical Regions (SC 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2509136.2509545"
+          },
+          "name": "Treichler, Bauer and Aiken, Language Support for Dynamic, Hierarchical Data Partitioning (OOPSLA 2013)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2503778.2503784"
+          },
+          "name": "Claessen and Palka, Splittable Pseudorandom Number Generators Using Cryptographic Hashing (Haskell 2013)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2660193.2660195"
+          },
+          "name": "Steele, Lea and Flood, Fast Splittable Pseudorandom Number Generators (OOPSLA 2014)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2983990.2984016"
+          },
+          "name": "Treichler, Bauer, Sharma, Slaughter and Aiken, Dependent Partitioning (OOPSLA 2016)"
+        },
+        {
+          "identity": {
+            "url": "https://www.pcg-random.org/posts/bugs-in-splitmix.html"
+          },
+          "name": "O'Neill, Bugs in SplitMix(es) (blog post, 2017-08-10)"
+        }
+      ],
+      "topics": [
+        "pl/hierarchical-region-names",
+        "runtimes/fork-join-pedigrees",
+        "security/splittable-random-keys",
+        "verification/parallel-disjointness-proofs"
+      ]
+    },
     "dual-polar-mutation-refutation-spec-strength-auditing-and-anti-vacuity-harnesses": {
       "observed_at": "2026-11-20",
       "subjects": [
@@ -43458,6 +43578,122 @@
         "zerocopy/sbe-wire-codecs",
         "systems/mechanical-sympathy",
         "verification/conservation-invariants"
+      ]
+    },
+    "nesl-cost-graphs-work-stealing-space-bounds-and-mpl-disentangled-heaps": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "MPLLang/mpl",
+            "revision": "254325b5946f609f76458f0d9509a3206e0521cd"
+          },
+          "name": "MPL (MaPLe) compiler and runtime: hierarchical heaps, entanglement checking, spork scheduler"
+        },
+        {
+          "identity": {
+            "repository": "cmuparlay/parlaylib",
+            "revision": "51017699dcc421f80479cdb238d3092233ad0d26"
+          },
+          "name": "ParlayLib work-stealing fork-join scheduler"
+        },
+        {
+          "identity": {
+            "repository": "calfproject/agda-calf",
+            "revision": "10f1ba616e1ade017e4048324ae894281379ce08"
+          },
+          "name": "calf cost-aware logical framework (Agda), parallel cost monoids"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/232627.232650"
+          },
+          "name": "Blelloch and Greiner, A Provable Time and Space Efficient Implementation of NESL (ICFP 1996)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/301970.301974"
+          },
+          "name": "Blelloch, Gibbons and Matias, Provably Efficient Scheduling for Languages with Fine-Grained Parallelism (JACM 1999)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/324133.324234"
+          },
+          "name": "Blumofe and Leiserson, Scheduling Multithreaded Computations by Work Stealing (JACM 1999)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/314602.314607"
+          },
+          "name": "Narlikar and Blelloch, Space-Efficient Scheduling of Nested Parallelism (TOPLAS 1999)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1411204.1411240"
+          },
+          "name": "Spoonhower, Blelloch, Harper and Gibbons, Space Profiling for Parallel Functional Programs (ICFP 2008)"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796810000146"
+          },
+          "name": "Spoonhower, Blelloch, Harper and Gibbons, Space Profiling for Parallel Functional Programs (JFP 2010)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-662-46669-8_6"
+          },
+          "name": "Hoffmann and Shao, Automatic Static Cost Analysis for Parallel Programs (ESOP 2015)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2951913.2951935"
+          },
+          "name": "Raghunathan, Muller, Acar and Blelloch, Hierarchical Memory Management for Parallel Programs (ICFP 2016)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371115"
+          },
+          "name": "Westrick, Yadav, Fluet and Acar, Disentanglement in Nested-Parallel Programs (POPL 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3434299"
+          },
+          "name": "Arora, Westrick and Acar, Provably Space-Efficient Parallel Functional Programming (POPL 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3498670"
+          },
+          "name": "Niu, Sterling, Grodin and Harper, A Cost-Aware Logical Framework (POPL 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3547646"
+          },
+          "name": "Westrick, Arora and Acar, Entanglement Detection with Near-Zero Cost (ICFP 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3591284"
+          },
+          "name": "Arora, Westrick and Acar, Efficient Parallel Functional Programming with Effects (PLDI 2023)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3632852"
+          },
+          "name": "Grodin, Niu, Sterling and Harper, Decalf: A Directed, Effectful Cost-Aware Logical Framework (POPL 2024)"
+        }
+      ],
+      "topics": [
+        "pl/parallel-cost-semantics",
+        "runtimes/work-stealing-schedulers",
+        "verification/schedule-dependent-space",
+        "runtimes/hierarchical-heaps"
       ]
     },
     "network-control-plane-verification-routing-algebras-and-transport-specs": {

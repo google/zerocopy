@@ -1,0 +1,116 @@
+{
+  "topics": [
+    "pl/parallel-cost-semantics",
+    "runtimes/work-stealing-schedulers",
+    "verification/schedule-dependent-space",
+    "runtimes/hierarchical-heaps"
+  ],
+  "subjects": [
+    {
+      "name": "MPL (MaPLe) compiler and runtime: hierarchical heaps, entanglement checking, spork scheduler",
+      "identity": {
+        "repository": "MPLLang/mpl",
+        "revision": "254325b5946f609f76458f0d9509a3206e0521cd"
+      }
+    },
+    {
+      "name": "ParlayLib work-stealing fork-join scheduler",
+      "identity": {
+        "repository": "cmuparlay/parlaylib",
+        "revision": "51017699dcc421f80479cdb238d3092233ad0d26"
+      }
+    },
+    {
+      "name": "calf cost-aware logical framework (Agda), parallel cost monoids",
+      "identity": {
+        "repository": "calfproject/agda-calf",
+        "revision": "10f1ba616e1ade017e4048324ae894281379ce08"
+      }
+    },
+    {
+      "name": "Blelloch and Greiner, A Provable Time and Space Efficient Implementation of NESL (ICFP 1996)",
+      "identity": {
+        "doi": "10.1145/232627.232650"
+      }
+    },
+    {
+      "name": "Blelloch, Gibbons and Matias, Provably Efficient Scheduling for Languages with Fine-Grained Parallelism (JACM 1999)",
+      "identity": {
+        "doi": "10.1145/301970.301974"
+      }
+    },
+    {
+      "name": "Blumofe and Leiserson, Scheduling Multithreaded Computations by Work Stealing (JACM 1999)",
+      "identity": {
+        "doi": "10.1145/324133.324234"
+      }
+    },
+    {
+      "name": "Narlikar and Blelloch, Space-Efficient Scheduling of Nested Parallelism (TOPLAS 1999)",
+      "identity": {
+        "doi": "10.1145/314602.314607"
+      }
+    },
+    {
+      "name": "Spoonhower, Blelloch, Harper and Gibbons, Space Profiling for Parallel Functional Programs (ICFP 2008)",
+      "identity": {
+        "doi": "10.1145/1411204.1411240"
+      }
+    },
+    {
+      "name": "Spoonhower, Blelloch, Harper and Gibbons, Space Profiling for Parallel Functional Programs (JFP 2010)",
+      "identity": {
+        "doi": "10.1017/S0956796810000146"
+      }
+    },
+    {
+      "name": "Hoffmann and Shao, Automatic Static Cost Analysis for Parallel Programs (ESOP 2015)",
+      "identity": {
+        "doi": "10.1007/978-3-662-46669-8_6"
+      }
+    },
+    {
+      "name": "Raghunathan, Muller, Acar and Blelloch, Hierarchical Memory Management for Parallel Programs (ICFP 2016)",
+      "identity": {
+        "doi": "10.1145/2951913.2951935"
+      }
+    },
+    {
+      "name": "Westrick, Yadav, Fluet and Acar, Disentanglement in Nested-Parallel Programs (POPL 2020)",
+      "identity": {
+        "doi": "10.1145/3371115"
+      }
+    },
+    {
+      "name": "Arora, Westrick and Acar, Provably Space-Efficient Parallel Functional Programming (POPL 2021)",
+      "identity": {
+        "doi": "10.1145/3434299"
+      }
+    },
+    {
+      "name": "Niu, Sterling, Grodin and Harper, A Cost-Aware Logical Framework (POPL 2022)",
+      "identity": {
+        "doi": "10.1145/3498670"
+      }
+    },
+    {
+      "name": "Westrick, Arora and Acar, Entanglement Detection with Near-Zero Cost (ICFP 2022)",
+      "identity": {
+        "doi": "10.1145/3547646"
+      }
+    },
+    {
+      "name": "Arora, Westrick and Acar, Efficient Parallel Functional Programming with Effects (PLDI 2023)",
+      "identity": {
+        "doi": "10.1145/3591284"
+      }
+    },
+    {
+      "name": "Grodin, Niu, Sterling and Harper, Decalf: A Directed, Effectful Cost-Aware Logical Framework (POPL 2024)",
+      "identity": {
+        "doi": "10.1145/3632852"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

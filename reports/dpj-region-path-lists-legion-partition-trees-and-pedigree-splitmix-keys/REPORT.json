@@ -1,0 +1,120 @@
+{
+  "topics": [
+    "pl/hierarchical-region-names",
+    "runtimes/fork-join-pedigrees",
+    "security/splittable-random-keys",
+    "verification/parallel-disjointness-proofs"
+  ],
+  "subjects": [
+    {
+      "name": "Deterministic Parallel Java compiler and runtime (region path lists, Partition)",
+      "identity": {
+        "repository": "dpj/DPJ",
+        "revision": "bffe77a8e83ddb82a59d50f24435081b7c762f40"
+      }
+    },
+    {
+      "name": "Legion runtime and Regent language (region trees, partitions, disjointness checks)",
+      "identity": {
+        "repository": "StanfordLegion/legion",
+        "revision": "aea587e157abff12f7d089c81f29cd3a8b993a2b"
+      }
+    },
+    {
+      "name": "Rayon data-parallelism library (join, slice producers)",
+      "identity": {
+        "repository": "rayon-rs/rayon",
+        "revision": "599425d4a4c64714632817f48496dbc53f656a90"
+      }
+    },
+    {
+      "name": "OpenCilk Cheetah runtime (pedigrees and DotMix DPRNG)",
+      "identity": {
+        "repository": "OpenCilk/cheetah",
+        "revision": "33ac0d586cdbafe4e400f3741c4ce4ff07e61c26"
+      }
+    },
+    {
+      "name": "splitmix Haskell package (SplitMix splittable generator)",
+      "identity": {
+        "repository": "haskellari/splitmix",
+        "revision": "66ca2edbe935582cb66fd1fd36d1cd06366d9779"
+      }
+    },
+    {
+      "name": "JAX PRNG design, Threefry implementation and experimental key-reuse checker",
+      "identity": {
+        "repository": "jax-ml/jax",
+        "revision": "715e767052bc29ff65400e576b58dc37d1ad179f"
+      }
+    },
+    {
+      "name": "MPL runtime fork-path task identifiers (entanglement checking)",
+      "identity": {
+        "repository": "MPLLang/mpl",
+        "revision": "254325b5946f609f76458f0d9509a3206e0521cd"
+      }
+    },
+    {
+      "name": "Augustsson, Rittri and Synek, On Generating Unique Names (JFP 1994)",
+      "identity": {
+        "doi": "10.1017/S0956796800000988"
+      }
+    },
+    {
+      "name": "Bocchino et al., A Type and Effect System for Deterministic Parallel Java (OOPSLA 2009)",
+      "identity": {
+        "doi": "10.1145/1640089.1640097"
+      }
+    },
+    {
+      "name": "Salmon, Moraes, Dror and Shaw, Parallel Random Numbers: As Easy as 1, 2, 3 (SC 2011)",
+      "identity": {
+        "doi": "10.1145/2063384.2063405"
+      }
+    },
+    {
+      "name": "Leiserson, Schardl and Sukha, Deterministic Parallel Random-Number Generation for Dynamic-Multithreading Platforms (PPoPP 2012)",
+      "identity": {
+        "doi": "10.1145/2145816.2145841"
+      }
+    },
+    {
+      "name": "Bauer, Treichler, Slaughter and Aiken, Legion: Expressing Locality and Independence with Logical Regions (SC 2012)",
+      "identity": {
+        "doi": "10.1109/SC.2012.71"
+      }
+    },
+    {
+      "name": "Treichler, Bauer and Aiken, Language Support for Dynamic, Hierarchical Data Partitioning (OOPSLA 2013)",
+      "identity": {
+        "doi": "10.1145/2509136.2509545"
+      }
+    },
+    {
+      "name": "Claessen and Palka, Splittable Pseudorandom Number Generators Using Cryptographic Hashing (Haskell 2013)",
+      "identity": {
+        "doi": "10.1145/2503778.2503784"
+      }
+    },
+    {
+      "name": "Steele, Lea and Flood, Fast Splittable Pseudorandom Number Generators (OOPSLA 2014)",
+      "identity": {
+        "doi": "10.1145/2660193.2660195"
+      }
+    },
+    {
+      "name": "Treichler, Bauer, Sharma, Slaughter and Aiken, Dependent Partitioning (OOPSLA 2016)",
+      "identity": {
+        "doi": "10.1145/2983990.2984016"
+      }
+    },
+    {
+      "name": "O'Neill, Bugs in SplitMix(es) (blog post, 2017-08-10)",
+      "identity": {
+        "url": "https://www.pcg-random.org/posts/bugs-in-splitmix.html"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
