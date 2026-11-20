@@ -1,0 +1,6 @@
+name = "KInd"
+version = "0.1.0"
+defaultTargets = ["KInd"]
+
+[[lean_lib]]
+name = "KInd"

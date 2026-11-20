@@ -1,0 +1,966 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.KInd.AllInitChain.I": [],
+    "Toy.KInd.AllInitChain.T": [],
+    "Toy.KInd.BMC": [],
+    "Toy.KInd.Base": [],
+    "Toy.KInd.Branch4.I": [],
+    "Toy.KInd.Branch4.P": [],
+    "Toy.KInd.Branch4.T": [],
+    "Toy.KInd.Chain.I": [],
+    "Toy.KInd.Chain.P": [],
+    "Toy.KInd.Chain.T": [],
+    "Toy.KInd.Consecution": [],
+    "Toy.KInd.FinChain.I": [],
+    "Toy.KInd.FinChain.P": [],
+    "Toy.KInd.FinChain.T": [],
+    "Toy.KInd.FutureSafe": [],
+    "Toy.KInd.FutureSafe.of_step": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.Initiation": [],
+    "Toy.KInd.Invariant": [],
+    "Toy.KInd.IsPath": [],
+    "Toy.KInd.IsPath.cons": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.IsPath.mono": [],
+    "Toy.KInd.IsPath.shift": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.IsReachDiameter": [],
+    "Toy.KInd.IsReachRecurrenceDiameter": [],
+    "Toy.KInd.IsSimple": [],
+    "Toy.KInd.IsSimple.lt_card": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.IsSimple.mono": [],
+    "Toy.KInd.IsSimple.nodup_map_range": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.IsSimple.shift": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.IsSimple.surj_of_card": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.IsolatedInitChain.I": [],
+    "Toy.KInd.IsolatedInitChain.P": [],
+    "Toy.KInd.IsolatedInitChain.T": [],
+    "Toy.KInd.Ladder.I": [],
+    "Toy.KInd.Ladder.P": [],
+    "Toy.KInd.Ladder.T": [],
+    "Toy.KInd.NatDescent.I": [],
+    "Toy.KInd.NatDescent.P": [],
+    "Toy.KInd.NatDescent.T": [],
+    "Toy.KInd.NatSucc.I": [],
+    "Toy.KInd.NatSucc.T": [],
+    "Toy.KInd.NoInitChain.I": [],
+    "Toy.KInd.NoInitChain.P": [],
+    "Toy.KInd.NoInitChain.T": [],
+    "Toy.KInd.OneEdge.I": [],
+    "Toy.KInd.OneEdge.P": [],
+    "Toy.KInd.OneEdge.T": [],
+    "Toy.KInd.ReachDiameterBound": [],
+    "Toy.KInd.ReachDiameterBound.mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.ReachIn": [],
+    "Toy.KInd.ReachIn.succ": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.ReachRecurrenceBound": [],
+    "Toy.KInd.ReachRecurrenceBound.mono": [],
+    "Toy.KInd.ReachWithin": [],
+    "Toy.KInd.Reachable": [],
+    "Toy.KInd.Reachable.step": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.SelfLoop.I": [],
+    "Toy.KInd.SelfLoop.P": [],
+    "Toy.KInd.SelfLoop.T": [],
+    "Toy.KInd.SimpleStep": [],
+    "Toy.KInd.SimpleStep.mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.SimpleStep.succ": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.StarChain.I": [],
+    "Toy.KInd.StarChain.T": [],
+    "Toy.KInd.Step": [],
+    "Toy.KInd.Step.mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.Step.simpleStep": [],
+    "Toy.KInd.Step.succ": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.Stuck.I": [],
+    "Toy.KInd.Stuck.P": [],
+    "Toy.KInd.Stuck.T": [],
+    "Toy.KInd.Triangle.I": [],
+    "Toy.KInd.Triangle.T": [],
+    "Toy.KInd.TriangleN.I": [],
+    "Toy.KInd.TriangleN.T": [],
+    "Toy.KInd.TwoCycle.I": [],
+    "Toy.KInd.TwoCycle.P": [],
+    "Toy.KInd.TwoCycle.T": [],
+    "Toy.KInd.TwoInd.I": [],
+    "Toy.KInd.TwoInd.P": [],
+    "Toy.KInd.TwoInd.T": [],
+    "Toy.KInd.allInitChain_reachDiameter_zero_reachRecurrenceDiameter_pred": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.base_at_recurrence_diameter_unsound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.base_iff_exactBase_of_total": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.base_iff_reachIn": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.base_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.base_of_invariant": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.base_one_iff_exactBase_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.base_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.base_zero_vacuous": [],
+    "Toy.KInd.bmc_complete_all_props_iff_reachDiameterBound": [],
+    "Toy.KInd.bmc_complete_fin": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.bmc_complete_fin_depth_tight": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.bmc_complete_fin_depth_tight_all": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.bmc_complete_of_reachDiameterBound": [],
+    "Toy.KInd.bmc_complete_of_reachDiameterBound.match_1_1": [],
+    "Toy.KInd.bmc_complete_of_reachRecurrenceBound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.bmc_iff_reachIn": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.bmc_iff_reachWithin": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.bmc_incomplete_every_depth_infinite": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.bmc_incomplete_needs_not_reachDiameterBound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.bmc_incomplete_of_not_reachDiameterBound": [],
+    "Toy.KInd.bmc_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.bmc_of_invariant": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.bmc_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.bmc_reachDiameter_needs_hb": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.bmc_reachDiameter_needs_hd": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.bmc_reachDiameter_needs_hk": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.bmc_reachRecurrence_needs_hb": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.bmc_reachRecurrence_needs_hk": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.bmc_reachRecurrence_needs_hr": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.bmc_reachWithin_self": [],
+    "Toy.KInd.branch4_futureSafe_inductive_without_simpleStep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.branch4_futureSafe_one_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.chainPath": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.chain_bmc_below_diameter": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.chain_bmc_below_reachRecurrenceBound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.chain_bmc_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.chain_isReachDiameter_two": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.chain_not_bmc_two": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.chain_not_invariant": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.chain_not_reachDiameterBound_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.chain_not_reachRecurrenceBound_one": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.chain_not_reachWithin_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.chain_reachDiameterBound_two": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.chain_reachIn_two": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.chain_reachRecurrenceBound_two": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.chain_reachWithin_two_invariant": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.chain_step_three_of_acyclic": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.consecution_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.consecution_pos": [],
+    "Toy.KInd.countUpTo": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.countUpTo.congr_simp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.countUpTo_simple": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.countUpTo_val": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.endpoint_only_exact_base_unsound_even_when_total": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.exact_length_base_unsound_without_totality": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.exists_simple_reachIn": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.finChain_path_val": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.futureSafe_forever_weakest_inductive_strengthening": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.futureSafe_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.futureSafe_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.futureSafe_strengthening_needs_base": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.futureSafe_strengthening_needs_base.match_1_1": [],
+    "Toy.KInd.futureSafe_strengthening_needs_base_k1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.futureSafe_strengthening_needs_base_k1.match_1_1": [],
+    "Toy.KInd.futureSafe_strengthening_needs_step": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.futureSafe_strengthening_needs_step.match_1_1": [],
+    "Toy.KInd.futureSafe_strengthening_needs_step_k1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.futureSafe_strengthening_needs_step_k1.match_1_1": [],
+    "Toy.KInd.initiation_neg": [],
+    "Toy.KInd.initiation_pos": [],
+    "Toy.KInd.invariant_iff_exists_inductive_strengthening": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.invariant_iff_reachable_strengthening_inductive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.invariant_iff_reachable_strengthening_inductive.match_1_1": [],
+    "Toy.KInd.invariant_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.invariant_of_inductive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.invariant_of_inductive_strengthening": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.invariant_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.isPath_neg": [
+      "propext"
+    ],
+    "Toy.KInd.isPath_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.isPath_zero_any": [],
+    "Toy.KInd.isReachDiameter_le_needs_hd": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.isReachDiameter_le_needs_hr": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.isReachDiameter_le_of_isReachRecurrenceDiameter": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.isReachDiameter_le_of_reachRecurrenceBound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.isReachDiameter_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.isReachDiameter_no_init": [],
+    "Toy.KInd.isReachDiameter_no_init.match_1_1": [],
+    "Toy.KInd.isReachDiameter_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.isReachRecurrenceDiameter_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.isReachRecurrenceDiameter_no_init": [],
+    "Toy.KInd.isReachRecurrenceDiameter_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.isSimple_neg": [
+      "propext"
+    ],
+    "Toy.KInd.isSimple_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.kind_simple_sound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.kind_simple_sound.match_1_4": [],
+    "Toy.KInd.kind_simple_sound_base_depth_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.kind_simple_sound_needs_base": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.kind_simple_sound_needs_base_k2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.kind_simple_sound_needs_step_k2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.kind_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.kind_sound.match_1_4": [],
+    "Toy.KInd.kind_sound_base_depth_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.kind_sound_needs_base": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.kind_sound_needs_step": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.kind_sound_of_simple": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.kind_success_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.kind_success_mono_needs_base": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.kind_success_mono_needs_base.match_1_1": [],
+    "Toy.KInd.kind_success_mono_needs_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.kind_success_mono_needs_le.match_1_1": [],
+    "Toy.KInd.kind_success_mono_needs_step": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.kind_success_mono_needs_step.match_1_1": [],
+    "Toy.KInd.kind_success_mono_needs_step_invariant": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.kind_success_mono_needs_step_invariant.match_1_1": [],
+    "Toy.KInd.kinductive_futureSafe_strengthening": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.ladder_inductive_strengthening": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.ladder_kind_succeeds_at_depth_succ": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.ladder_needs_depth_succ": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.ladder_needs_depth_succ.match_1_3": [],
+    "Toy.KInd.ladder_path_val": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.ladder_path_val.match_1_1": [],
+    "Toy.KInd.ladder_reachDiameterBound_zero_bmc_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.le_of_reachDiameter_lower_bound_of_reachRecurrenceBound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.loop_removal_needs_reachIn": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.natDescent_bmc_zero_proves_invariant": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.natDescent_reachable_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.natSucc_path_val": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.natSucc_reachIn_self": [],
+    "Toy.KInd.nodup_length_le_fin": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.nonvacuity_base_iff_exactBase_of_total": [],
+    "Toy.KInd.nonvacuity_bmc_complete_fin": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.nonvacuity_bmc_complete_of_reachDiameterBound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.nonvacuity_bmc_complete_of_reachRecurrenceBound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.nonvacuity_bmc_complete_of_reachRecurrenceBound_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.nonvacuity_exists_simple_reachIn": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.nonvacuity_inductive_strengthening": [],
+    "Toy.KInd.nonvacuity_isReachDiameter_le_of_reachRecurrenceBound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.nonvacuity_kind_simple_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.nonvacuity_kind_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.nonvacuity_kind_success_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.nonvacuity_simpleStep_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.nonvacuity_simpleStep_of_card_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.nonvacuity_simple_kind_complete_fin": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.nonvacuity_simple_kinductive_futureSafe_strengthening": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.nonvacuity_step_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.not_isSimple_two_bool": [],
+    "Toy.KInd.not_reachDiameterBound_of_lt_isReachDiameter": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.oneEdge_base_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.oneEdge_isReachRecurrenceDiameter_one": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.oneEdge_not_base_two": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.oneEdge_not_invariant": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.oneEdge_not_reachRecurrenceBound_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.oneEdge_reachable_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.one_induction_fails_two_induction_succeeds": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.plain_kind_incomplete_every_depth": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.projected_simple_step_unsound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.reachDiameterBound_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.reachDiameterBound_of_reachRecurrenceBound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.reachDiameterBound_of_reachRecurrenceBound_needs_hr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.reachDiameterBound_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.reachDiameter_lt_reachRecurrenceDiameter_family": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.reachIn_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.reachIn_of_path": [],
+    "Toy.KInd.reachIn_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.reachIn_succ_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.reachIn_zero_iff": [],
+    "Toy.KInd.reachRecurrenceBound_fin": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.reachRecurrenceBound_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.reachRecurrenceBound_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.reachWithin_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.reachWithin_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.reachWithin_succ_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.reachWithin_zero_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.reachable_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.reachable_of_init": [],
+    "Toy.KInd.reachable_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.reachable_strongest_inductive_invariant": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.selfLoop_invariant": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.selfLoop_reachDiameterBound_zero_bmc_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.selfLoop_reachRecurrenceBound_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.selfLoop_reach_diameters_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.selfLoop_reachable_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.selfLoop_simple_kind_succeeds_at_two": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.simpleStep_mono_needs_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.simpleStep_mono_needs_step": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.simpleStep_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.simpleStep_not_step": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.simpleStep_of_card_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.simpleStep_one_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.simpleStep_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.simpleStep_two_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.simple_kind_complete_fin": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.simple_kind_complete_fin_needs_invariant": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.simple_kind_complete_fin_needs_invariant.match_1_1": [],
+    "Toy.KInd.simple_kind_complete_fin_pred_of_init": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.simple_kind_complete_fin_pred_of_init_needs_invariant": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.simple_kind_depth_card_optimal_without_init": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.simple_kind_depth_pred_optimal_with_init": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.simple_kind_incomplete_every_depth_infinite": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.simple_kinductive_futureSafe_strengthening": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.starChain_reachDiameter_one_no_reachRecurrenceBound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.step_card_of_acyclic": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.step_mono_needs_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.step_mono_needs_step": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.step_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.step_one_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.step_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.step_two_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.step_zero_iff": [],
+    "Toy.KInd.step_zero_of_invariant_of_all_reachable": [],
+    "Toy.KInd.strengthening_needs_consecution": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.strengthening_needs_init_P": [],
+    "Toy.KInd.strengthening_needs_init_Q": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.stuck_not_invariant": [],
+    "Toy.KInd.stuck_step_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.triangleN_isReachDiameter_one": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.triangleN_isReachRecurrenceDiameter": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.triangle_isReachDiameter_one": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.triangle_isReachRecurrenceDiameter_two": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.triangle_reachDiameter_one_reachRecurrenceDiameter_two": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KInd.twoInd_futureSafe_one_iff": [
+      "Quot.sound",
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

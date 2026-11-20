@@ -1,0 +1,77 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "verification/model-checking",
+    "verification/k-induction",
+    "verification/bounded-model-checking",
+    "verification/completeness-thresholds",
+    "verification/inductive-invariants",
+    "verification/transition-systems"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Checking Safety Properties Using Induction and a SAT-Solver (Sheeran, Singh, Stålmarck, FMCAD 2000)",
+      "identity": {
+        "doi": "10.1007/3-540-40922-X_8"
+      }
+    },
+    {
+      "name": "Symbolic Model Checking without BDDs (Biere, Cimatti, Clarke, Zhu, TACAS 1999)",
+      "identity": {
+        "doi": "10.1007/3-540-49059-0_14"
+      }
+    },
+    {
+      "name": "Efficient Computation of Recurrence Diameters (Kroening, Strichman, VMCAI 2003)",
+      "identity": {
+        "doi": "10.1007/3-540-36384-X_24"
+      }
+    },
+    {
+      "name": "Temporal Induction by Incremental SAT Solving (Eén, Sörensson, BMC 2003, ENTCS 89(4))",
+      "identity": {
+        "doi": "10.1016/S1571-0661(05)82542-3"
+      }
+    },
+    {
+      "name": "SAT-Based Model Checking without Unrolling (Bradley, VMCAI 2011)",
+      "identity": {
+        "doi": "10.1007/978-3-642-18275-4_7"
+      }
+    },
+    {
+      "name": "Property-Directed k-Induction (Jovanović, Dutertre, FMCAD 2016)",
+      "identity": {
+        "doi": "10.1109/FMCAD.2016.7886665"
+      }
+    },
+    {
+      "name": "K-Induction without Unrolling (Gurfinkel, Ivrii, FMCAD 2017)",
+      "identity": {
+        "doi": "10.23919/FMCAD.2017.8102253"
+      }
+    },
+    {
+      "name": "Latticed k-Induction with an Application to Probabilistic Programs (Batz et al., CAV 2021)",
+      "identity": {
+        "doi": "10.1007/978-3-030-81688-9_25"
+      }
+    },
+    {
+      "name": "Formalizing the Soundness of the Encoding Methods of SAT-based Model Checking (Ishii, Fujii, TASE 2020)",
+      "identity": {
+        "doi": "10.1109/TASE49443.2020.00023"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

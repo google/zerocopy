@@ -1,0 +1,887 @@
+[
+  {
+    "id": "kind-sound",
+    "lean": "Toy.KInd.kind_sound",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Standard soundness of k-induction (Sheeran, Singh and Stålmarck 2000), restated in this package's depth convention, which is that of Jovanović and Dutertre 2016 (Definition II.2). Soundness of k-induction encodings was mechanized earlier in Coq (Ishii and Fujii 2020).",
+    "plain_claim": "For every transition system (finite or infinite, with or without dead-end states) and every depth k: if every path from an initial state with at most k states stays in P (Base k: all path lengths below k are checked, not only the longest) and every path of k+1 states whose first k states satisfy P ends in P (Step k), then every reachable state satisfies P.",
+    "unfolded": "(∀ j < k, ∀ π, I (π 0) → (∀ i < j, T (π i) (π (i+1))) → ∀ i ≤ j, P (π i)) → (∀ π, (∀ i < k, T (π i) (π (i+1))) → (∀ i < k, P (π i)) → P (π k)) → ∀ s, (∃ m π, I (π 0) ∧ (∀ i < m, T (π i) (π (i+1))) ∧ π m = s) → P s",
+    "hypotheses": [
+      {
+        "name": "hbase : Base I T P k",
+        "purpose": "Establishes P on every state reachable in fewer than k transitions, which the step assumes without proof (vacuous at k = 0, where Step 0 alone says P holds everywhere).",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.KInd.kind_sound_needs_base",
+          "Toy.KInd.kind_sound_base_depth_tight"
+        ]
+      },
+      {
+        "name": "hstep : Step T P k",
+        "purpose": "Propagates P beyond the depth covered by the base.",
+        "tightness": "tight",
+        "counterexample": "Toy.KInd.kind_sound_needs_step"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "TwoInd (states Fin 3, 0 initial with a self-loop, unreachable edge 1 -> 2, P excludes 2) at depth k = 2.",
+    "nonvacuity_witness_lean": "Toy.KInd.nonvacuity_kind_sound",
+    "non_claims": [
+      "Does not say Base k and Step k ever hold together for a given invariant: plain k-induction can fail at every depth even on a finite system (plain-kind-incomplete-every-depth).",
+      "The base depth matters: Base (k-1) together with Step k is not sound (kind_sound_base_depth_tight, k = 2). Literature depth indices differ by one in various ways; translate before comparing.",
+      "Base k checks every prefix length j < k, not only paths with exactly k-1 transitions. A base check over paths of exact length k-1 only (a single fixed-length unrolling, as in SAT encodings that assume a total transition relation) is unsound when some states have no successor (exact_length_base_unsound_without_totality); it is equivalent to Base k when every state has a successor (exact-length-base-needs-totality).",
+      "At k = 0, Base 0 is vacuous (it covers no state, not even the initial ones) and Step 0 says that P holds in every state.",
+      "Step quantifies over all paths, including paths through unreachable states and paths that revisit initial states. Of the variants that add constraints to the step, only the simple-path constraint is modelled (kind-simple-sound). A 'no initial state after position 0' constraint on the step (Eén and Sörensson note that intermediate states of a shortest counterexample are not initial) and the separate termination check of Sheeran et al. (which applies that constraint to loop-free paths from initial states) are not modelled.",
+      "Toy model only: an abstract transition system (a state type in any universe, an initial-state predicate, and a transition relation that need not be total) and a state property; paths are explicit finite state sequences. No symbolic encoding, SAT/SMT solving, incremental algorithms, input variables, fairness, or liveness. Transfer to a real model checker is a separate modelling argument this package does not provide."
+    ],
+    "prior_art": [
+      "M. Sheeran, S. Singh, G. Stålmarck, 'Checking Safety Properties Using Induction and a SAT-Solver', FMCAD 2000, LNCS 1954, pp. 127-144 (pages as on the publisher's page; the dblp record conf/fmcad/SheeranSS00 lists pp. 108-125), doi:10.1007/3-540-40922-X_8. Assumes that every state has a successor (Section 2.2). Defines a path of length n as n transitions and loopFree paths (pairwise distinct states). 'Induction with depth i' checks that after i+1 P-states in a row the next state satisfies P; 'strengthened induction with depth' restricts this step to loop-free paths, and the paper states that without this restriction induction with depth is incomplete. The constraint that no state after position 0 is initial (all.¬I(s[1..i])) appears only in its forward termination check (Algorithms 2-5), not in the induction step. Its depth index i corresponds to depth i+1 here.",
+      "D. Jovanović, B. Dutertre, 'Property-Directed k-Induction', FMCAD 2016, pp. 85-92, doi:10.1109/FMCAD.2016.7886665. Definition II.2 (k-induction: the base checks paths from initial states of each length l < k, the step assumes k consecutive P-states; the same depth convention as Base k and Step k here). Footnote 3 (Section II): 'If P is k-inductive then P ∧ ◦P ∧ ◦◦P ∧ ... ∧ ◦◦···◦P [k-1 operators] is inductive, where ◦ stands for \"next state\"'; reading ◦ as 'in every successor state', this conjunction is FutureSafe T P (k-1). The footnote has no proof and concerns plain (not simple-path) k-induction. Lemma III.1: there are N-inductive properties whose shortest inductive strengthening has size larger than N; Lemma III.2: there is a property that is k-inductive for some k > 1 but has no inductive strengthening (its example lives in the quantifier-free fragment of a theory of arrays).",
+      "N. Eén, N. Sörensson, 'Temporal Induction by Incremental SAT Solving', BMC 2003 (workshop), ENTCS 89(4), pp. 543-560, doi:10.1016/S1571-0661(05)82542-3 (content read from its reprint as Chapter 4 of N. Sörensson's 2008 doctoral thesis). Incremental SAT k-induction: the step assumes n+1 consecutive P-states and is strengthened with a uniqueness constraint (all states pairwise distinct), which makes the method complete for finite systems; the base is checked one exact length at a time as n increases, so all lengths up to n are covered. Notes that intermediate states of a shortest counterexample are neither initial nor bad, and that the step they use includes the uniqueness constraints but not 'not initial' constraints.",
+      "D. Ishii, S. Fujii, 'Formalizing the Soundness of the Encoding Methods of SAT-based Model Checking', TASE 2020, pp. 105-112, doi:10.1109/TASE49443.2020.00023 (arXiv:2006.13613; Coq development at https://github.com/dsksh/coq-smc). Earlier mechanization, in Coq, of the soundness of BMC and k-induction encodings (its k-induction step uses plain paths), of Sheeran et al.'s loop-free forward and backward encodings, of a reduction of safety to loop-free paths (its Lemma 1), and of a simplified PDR. The paper states that completeness is not formalized.",
+      "K. Batz, B. L. Kaminski, L. Kehrer, G. Klein, H. Urbat, T. Schmid, 'The Algebra of Iterative Constructions', Archive of Formal Proofs, April 29, 2026, https://www.isa-afp.org/entries/Iteration_Algebra.html. Isabelle/HOL mechanization; its abstract lists 'a fixed point-theoretic generalization of k-induction' among its results. Lattice-level, not the path-based statements here.",
+      "A. Gurfinkel, A. Ivrii, 'K-Induction without Unrolling', FMCAD 2017, pp. 148-155, doi:10.23919/FMCAD.2017.8102253. Defines k-invariants (eq. 4: all states reachable in at most k steps satisfy the formula) and k-inductive invariants (eq. 5: the step assumes k+1 consecutive states, i.e. depth k+1 here). States that neither induction nor k-induction is complete and that k-induction restricted to loop-free paths is complete (citing Sheeran et al.). Its Lemma 2: if the K-Ind procedure returns BLOCKED, the returned G is an inductive strengthening of the clause relative to a 0-invariant F0; its Theorem 1, under the stated assumption that Generalize(¬s) always returns ¬s, characterizes when K-Ind returns BLOCKED (the clause is k-inductive relative to F0).",
+      "P. Bjesse, K. Claessen, 'SAT-Based Verification without State Space Traversal', FMCAD 2000, LNCS 1954, pp. 372-389, doi:10.1007/3-540-40922-X_23. SAT-based induction contemporaneous with Sheeran et al.; bibliographic data verified on dblp, text not consulted here.",
+      "L. de Moura, H. Rueß, M. Sorea, 'Bounded Model Checking and Induction: From Refutation to Verification', CAV 2003, LNCS 2725, pp. 14-26, doi:10.1007/978-3-540-45069-6_2. k-induction with decision procedures for infinite-state systems (per its abstract); bibliographic data verified on dblp, full text not consulted here.",
+      "A. F. Donaldson, L. Haller, D. Kroening, P. Rümmer, 'Software Verification Using k-Induction', SAS 2011, LNCS 6887, pp. 351-368, doi:10.1007/978-3-642-23702-7_26. k-induction applied to software verification; bibliographic data verified on dblp, text not consulted here."
+    ],
+    "design_question": "When is a k-induction proof sound? Answer: always, for every transition system, provided the base covers every path from an initial state with at most k states (every length, not one fixed length, unless the transition relation is total)."
+  },
+  {
+    "id": "kind-simple-sound",
+    "lean": "Toy.KInd.kind_simple_sound",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Soundness of strengthened (loop-free) induction with depth (Sheeran, Singh and Stålmarck 2000; unique-state induction of Eén and Sörensson 2003), restated.",
+    "plain_claim": "For every transition system (finite or infinite) and every depth k: if Base k holds and the step holds on every path of k+1 pairwise distinct states (a simple path) whose first k states satisfy P, then every reachable state satisfies P. Distinctness is required of the full states.",
+    "unfolded": "Base I T P k → (∀ π, IsPath T k π → (∀ i j, i ≤ k → j ≤ k → π i = π j → i = j) → (∀ i < k, P (π i)) → P (π k)) → ∀ s, Reachable I T s → P s",
+    "hypotheses": [
+      {
+        "name": "hbase : Base I T P k",
+        "purpose": "Establishes P on every state reachable in fewer than k transitions (vacuous at k = 0).",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.KInd.kind_simple_sound_needs_base",
+          "Toy.KInd.kind_simple_sound_needs_base_k2",
+          "Toy.KInd.kind_simple_sound_base_depth_tight"
+        ]
+      },
+      {
+        "name": "hstep : SimpleStep T P k",
+        "purpose": "Step restricted to simple paths; strictly weaker than Step from depth 2 on (at depth 1 the two coincide), so soundness is not inherited from kind-sound.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.KInd.kind_sound_needs_step",
+          "Toy.KInd.kind_simple_sound_needs_step_k2"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "SelfLoop (states Fin 3, 0 initial with a self-loop, unreachable 1 with a self-loop and edge 1 -> 2, P excludes 2) at depth 2, where plain Step 2 fails.",
+    "nonvacuity_witness_lean": "Toy.KInd.nonvacuity_kind_simple_sound",
+    "non_claims": [
+      "The proof is shallow only given loop removal (loop-removal): a shortest path to a state is simple.",
+      "Distinctness must be imposed on full states. Imposing it only on a projection of the state (for example on some of the state variables) is unsound in general (projected_simple_step_unsound: Base 2 and the projected step at depth 2 hold on Chain, P is not invariant); any such reduction needs its own argument.",
+      "As for plain k-induction, the base depth cannot be lowered: Base (k-1) together with SimpleStep k is unsound (kind_simple_sound_base_depth_tight, k = 2), and a base check of exact length k-1 only is unsound without a total transition relation (exact_length_base_unsound_without_totality).",
+      "Does not claim any depth at which SimpleStep holds for infinite systems; there it can fail at every depth even when only one state is reachable (simple-kind-incomplete-infinite).",
+      "Toy model only: an abstract transition system (a state type in any universe, an initial-state predicate, and a transition relation that need not be total) and a state property; paths are explicit finite state sequences. No symbolic encoding, SAT/SMT solving, incremental algorithms, input variables, fairness, or liveness. Transfer to a real model checker is a separate modelling argument this package does not provide."
+    ],
+    "prior_art": [
+      "M. Sheeran, S. Singh, G. Stålmarck, 'Checking Safety Properties Using Induction and a SAT-Solver', FMCAD 2000, LNCS 1954, pp. 127-144 (pages as on the publisher's page; the dblp record conf/fmcad/SheeranSS00 lists pp. 108-125), doi:10.1007/3-540-40922-X_8. Assumes that every state has a successor (Section 2.2). Defines a path of length n as n transitions and loopFree paths (pairwise distinct states). 'Induction with depth i' checks that after i+1 P-states in a row the next state satisfies P; 'strengthened induction with depth' restricts this step to loop-free paths, and the paper states that without this restriction induction with depth is incomplete. The constraint that no state after position 0 is initial (all.¬I(s[1..i])) appears only in its forward termination check (Algorithms 2-5), not in the induction step. Its depth index i corresponds to depth i+1 here.",
+      "N. Eén, N. Sörensson, 'Temporal Induction by Incremental SAT Solving', BMC 2003 (workshop), ENTCS 89(4), pp. 543-560, doi:10.1016/S1571-0661(05)82542-3 (content read from its reprint as Chapter 4 of N. Sörensson's 2008 doctoral thesis). Incremental SAT k-induction: the step assumes n+1 consecutive P-states and is strengthened with a uniqueness constraint (all states pairwise distinct), which makes the method complete for finite systems; the base is checked one exact length at a time as n increases, so all lengths up to n are covered. Notes that intermediate states of a shortest counterexample are neither initial nor bad, and that the step they use includes the uniqueness constraints but not 'not initial' constraints.",
+      "D. Ishii, S. Fujii, 'Formalizing the Soundness of the Encoding Methods of SAT-based Model Checking', TASE 2020, pp. 105-112, doi:10.1109/TASE49443.2020.00023 (arXiv:2006.13613; Coq development at https://github.com/dsksh/coq-smc). Earlier mechanization, in Coq, of the soundness of BMC and k-induction encodings (its k-induction step uses plain paths), of Sheeran et al.'s loop-free forward and backward encodings, of a reduction of safety to loop-free paths (its Lemma 1), and of a simplified PDR. The paper states that completeness is not formalized.",
+      "A. Gurfinkel, A. Ivrii, 'K-Induction without Unrolling', FMCAD 2017, pp. 148-155, doi:10.23919/FMCAD.2017.8102253. Defines k-invariants (eq. 4: all states reachable in at most k steps satisfy the formula) and k-inductive invariants (eq. 5: the step assumes k+1 consecutive states, i.e. depth k+1 here). States that neither induction nor k-induction is complete and that k-induction restricted to loop-free paths is complete (citing Sheeran et al.). Its Lemma 2: if the K-Ind procedure returns BLOCKED, the returned G is an inductive strengthening of the clause relative to a 0-invariant F0; its Theorem 1, under the stated assumption that Generalize(¬s) always returns ¬s, characterizes when K-Ind returns BLOCKED (the clause is k-inductive relative to F0)."
+    ],
+    "design_question": "Is it safe to add the simple-path (all-different) constraint to the k-induction step? Answer: yes, soundness is preserved for every system, provided distinctness is imposed on full states."
+  },
+  {
+    "id": "loop-removal",
+    "lean": "Toy.KInd.exists_simple_reachIn",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Standard graph fact: every state reachable from an initial state is reachable from an initial state along a simple path that is no longer. A reduction of safety to loop-free paths was mechanized in Coq by Ishii and Fujii 2020 (their Lemma 1).",
+    "plain_claim": "For every transition system, if a state s is reachable from an initial state in m transitions, then s is reachable from an initial state along a simple path (pairwise distinct states) with at most m transitions.",
+    "unfolded": "ReachIn I T m s → ∃ m' ≤ m, ∃ π, I (π 0) ∧ IsPath T m' π ∧ IsSimple m' π ∧ π m' = s",
+    "hypotheses": [
+      {
+        "name": "h : ReachIn I T m s",
+        "purpose": "The state must be reachable at all.",
+        "tightness": "tight",
+        "counterexample": "Toy.KInd.loop_removal_needs_reachIn"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "In SelfLoop, the initial state 0 is reached in 3 transitions around its self-loop (a non-simple path).",
+    "nonvacuity_witness_lean": "Toy.KInd.nonvacuity_exists_simple_reachIn",
+    "non_claims": [
+      "The statement takes only ReachIn I T m s, not a witness path, so it promises only some initial start state, not the start state of a given path, and it does not promise that the simple path uses only states or transitions of a given path or that it preserves a state predicate along the way (the construction in the proof cuts cycles out of a given path and does all of this, but that is not part of the statement).",
+      "Says nothing about shortest paths being unique or computable.",
+      "Toy model only: an abstract transition system (a state type in any universe, an initial-state predicate, and a transition relation that need not be total) and a state property; paths are explicit finite state sequences. No symbolic encoding, SAT/SMT solving, incremental algorithms, input variables, fairness, or liveness. Transfer to a real model checker is a separate modelling argument this package does not provide."
+    ],
+    "prior_art": [
+      "A. Biere, A. Cimatti, E. M. Clarke, Y. Zhu, 'Symbolic Model Checking without BDDs', TACAS 1999, LNCS 1579, pp. 193-207, doi:10.1007/3-540-49059-0_14. Statement numbers follow the technical-report version (CMU-CS-99-101) and may differ in the published version. Definition 19 (diameter: the least d such that whenever a state v is reachable from a state u, it is reachable via a path of length at most d); Definition 22 (recurrence diameter: the least d such that every sequence of states s0, ..., s_{d+1} along transitions has s_{d+1} = s_j for some j <= d); Theorem 18 (for ECTL, a bound equal to the number of states suffices), Theorems 20 and 23 (the diameter suffices for EF p, the recurrence diameter for ECTL). These diameters range over all start states, so they are never smaller than the initialized notions used here.",
+      "D. Kroening, O. Strichman, 'Efficient Computation of Recurrence Diameters', VMCAI 2003, LNCS 2575, pp. 298-309, doi:10.1007/3-540-36384-X_24. Definition 1 (completeness threshold CT(M, phi) = min{i | M |=_i phi -> M |= phi}), Definition 2 (reachability diameter rd(M): least i such that every reachable state is reachable within i steps), Definition 3 (reachability recurrence diameter rrd(M): longest loop-free path from an initial state). States (p. 300) that the completeness threshold for Gp formulas is the reachability diameter, and shows (Fig. 1) that rd(M) does not suffice for Fp formulas, for which rrd(M) is used. ReachDiameterBound/IsReachDiameter and ReachRecurrenceBound/IsReachRecurrenceDiameter here correspond to rd(M) and rrd(M).",
+      "D. Ishii, S. Fujii, 'Formalizing the Soundness of the Encoding Methods of SAT-based Model Checking', TASE 2020, pp. 105-112, doi:10.1109/TASE49443.2020.00023 (arXiv:2006.13613; Coq development at https://github.com/dsksh/coq-smc). Earlier mechanization, in Coq, of the soundness of BMC and k-induction encodings (its k-induction step uses plain paths), of Sheeran et al.'s loop-free forward and backward encodings, of a reduction of safety to loop-free paths (its Lemma 1), and of a simplified PDR. The paper states that completeness is not formalized."
+    ],
+    "design_question": "Why are simple-path bounds (reachability recurrence diameters) valid completeness thresholds? Because every reachable state is reachable along a simple path."
+  },
+  {
+    "id": "depth-monotonicity",
+    "lean": [
+      "Toy.KInd.kind_success_mono",
+      "Toy.KInd.Step.mono",
+      "Toy.KInd.SimpleStep.mono"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Folklore property of k-induction (success persists at larger depths), made explicit for both the plain and the simple-path step.",
+    "plain_claim": "For every transition system and depths k <= k': if Base k and Step k hold then Base k' and Step k' hold; Step k alone implies Step k'; and SimpleStep k alone implies SimpleStep k'.",
+    "unfolded": "Base I T P k → Step T P k → k ≤ k' → Base I T P k' ∧ Step T P k';   Step T P k → k ≤ k' → Step T P k';   SimpleStep T P k → k ≤ k' → SimpleStep T P k'",
+    "hypotheses": [
+      {
+        "name": "hb : Base I T P k (kind_success_mono)",
+        "purpose": "Needed for Base k' (soundness turns Base k ∧ Step k into invariance, which gives every base check).",
+        "tightness": "tight",
+        "counterexample": "Toy.KInd.kind_success_mono_needs_base"
+      },
+      {
+        "name": "hs : Step T P k (kind_success_mono)",
+        "purpose": "Needed for each conjunct separately: without it Base k' can fail (OneEdge), and even for an invariant P, Step k' can fail (SelfLoop).",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.KInd.kind_success_mono_needs_step",
+          "Toy.KInd.kind_success_mono_needs_step_invariant"
+        ]
+      },
+      {
+        "name": "hk : k ≤ k' (kind_success_mono)",
+        "purpose": "Monotonicity is upward only.",
+        "tightness": "tight",
+        "counterexample": "Toy.KInd.kind_success_mono_needs_le"
+      },
+      {
+        "name": "h : Step T P k (Step.mono)",
+        "purpose": "The step must hold at the smaller depth.",
+        "tightness": "tight",
+        "counterexample": "Toy.KInd.step_mono_needs_step"
+      },
+      {
+        "name": "hk : k ≤ k' (Step.mono)",
+        "purpose": "Step is not antitone: TwoInd passes Step 2 but not Step 1.",
+        "tightness": "tight",
+        "counterexample": "Toy.KInd.step_mono_needs_le"
+      },
+      {
+        "name": "h : SimpleStep T P k (SimpleStep.mono)",
+        "purpose": "The simple-path step must hold at the smaller depth.",
+        "tightness": "tight",
+        "counterexample": "Toy.KInd.simpleStep_mono_needs_step"
+      },
+      {
+        "name": "hk : k ≤ k' (SimpleStep.mono)",
+        "purpose": "SimpleStep is not antitone: SelfLoop passes SimpleStep 2 but not SimpleStep 1.",
+        "tightness": "tight",
+        "counterexample": "Toy.KInd.simpleStep_mono_needs_le"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "TwoInd with k = 2, k' = 3 (Base 2, Step 2); SelfLoop with k = 2, k' = 3 for SimpleStep (where Step 2 fails).",
+    "nonvacuity_witness_lean": [
+      "Toy.KInd.nonvacuity_kind_success_mono",
+      "Toy.KInd.nonvacuity_step_mono",
+      "Toy.KInd.nonvacuity_simpleStep_mono"
+    ],
+    "non_claims": [
+      "Base alone is antitone, not monotone, in the depth: Base (k+1) implies Base k, not conversely.",
+      "Monotonicity means iterating k upward never loses a success; it gives no bound on the first successful depth.",
+      "Monotonicity of success is proved for plain k-induction (Base k ∧ Step k); for the simple-path variant only the step check is shown monotone (SimpleStep.mono), which together with soundness gives the same conclusion.",
+      "Does not cover k-induction relative to changing auxiliary information (for example frames or strengthenings that change with k, as in IC3-style or property-directed k-induction); those checks are not modelled and their monotonicity is not claimed.",
+      "Toy model only: an abstract transition system (a state type in any universe, an initial-state predicate, and a transition relation that need not be total) and a state property; paths are explicit finite state sequences. No symbolic encoding, SAT/SMT solving, incremental algorithms, input variables, fairness, or liveness. Transfer to a real model checker is a separate modelling argument this package does not provide."
+    ],
+    "prior_art": [
+      "M. Sheeran, S. Singh, G. Stålmarck, 'Checking Safety Properties Using Induction and a SAT-Solver', FMCAD 2000, LNCS 1954, pp. 127-144 (pages as on the publisher's page; the dblp record conf/fmcad/SheeranSS00 lists pp. 108-125), doi:10.1007/3-540-40922-X_8. Assumes that every state has a successor (Section 2.2). Defines a path of length n as n transitions and loopFree paths (pairwise distinct states). 'Induction with depth i' checks that after i+1 P-states in a row the next state satisfies P; 'strengthened induction with depth' restricts this step to loop-free paths, and the paper states that without this restriction induction with depth is incomplete. The constraint that no state after position 0 is initial (all.¬I(s[1..i])) appears only in its forward termination check (Algorithms 2-5), not in the induction step. Its depth index i corresponds to depth i+1 here.",
+      "D. Jovanović, B. Dutertre, 'Property-Directed k-Induction', FMCAD 2016, pp. 85-92, doi:10.1109/FMCAD.2016.7886665. Definition II.2 (k-induction: the base checks paths from initial states of each length l < k, the step assumes k consecutive P-states; the same depth convention as Base k and Step k here). Footnote 3 (Section II): 'If P is k-inductive then P ∧ ◦P ∧ ◦◦P ∧ ... ∧ ◦◦···◦P [k-1 operators] is inductive, where ◦ stands for \"next state\"'; reading ◦ as 'in every successor state', this conjunction is FutureSafe T P (k-1). The footnote has no proof and concerns plain (not simple-path) k-induction. Lemma III.1: there are N-inductive properties whose shortest inductive strengthening has size larger than N; Lemma III.2: there is a property that is k-inductive for some k > 1 but has no inductive strengthening (its example lives in the quantifier-free fragment of a theory of arrays).",
+      "N. Eén, N. Sörensson, 'Temporal Induction by Incremental SAT Solving', BMC 2003 (workshop), ENTCS 89(4), pp. 543-560, doi:10.1016/S1571-0661(05)82542-3 (content read from its reprint as Chapter 4 of N. Sörensson's 2008 doctoral thesis). Incremental SAT k-induction: the step assumes n+1 consecutive P-states and is strengthened with a uniqueness constraint (all states pairwise distinct), which makes the method complete for finite systems; the base is checked one exact length at a time as n increases, so all lengths up to n are covered. Notes that intermediate states of a shortest counterexample are neither initial nor bad, and that the step they use includes the uniqueness constraints but not 'not initial' constraints."
+    ],
+    "design_question": "Can a k-induction loop that increases k skip depths or restart? Yes: success at depth k persists at all larger depths, for the plain and for the simple-path step."
+  },
+  {
+    "id": "one-induction-fails-two-induction-succeeds",
+    "lean": "Toy.KInd.one_induction_fails_two_induction_succeeds",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "The standard motivating example for k-induction (an unreachable predecessor of a bad state), checked by decide. Reference point: it is the case k = 1 of fixed-depth-kind-incomplete (TwoInd is Ladder 1), kept as the smallest instance.",
+    "plain_claim": "In the system TwoInd (states Fin 3; initial state 0 with a self-loop; an unreachable transition 1 -> 2; P excludes 2), P is invariant and passes Base 2 and Step 2, but is not preserved by one transition (Step 1 fails).",
+    "unfolded": "¬ Step TwoInd.T TwoInd.P 1 ∧ Base TwoInd.I TwoInd.T TwoInd.P 2 ∧ Step TwoInd.T TwoInd.P 2 ∧ Invariant TwoInd.I TwoInd.T TwoInd.P",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "The statement is itself a concrete instance.",
+    "nonvacuity_witness_lean": "Toy.KInd.one_induction_fails_two_induction_succeeds",
+    "non_claims": [
+      "One concrete system, a reference point; the general separation at every depth is fixed-depth-kind-incomplete.",
+      "Does not say 2-induction is always enough when 1-induction fails, and does not characterize when k-induction succeeds.",
+      "Toy model only: an abstract transition system (a state type in any universe, an initial-state predicate, and a transition relation that need not be total) and a state property; paths are explicit finite state sequences. No symbolic encoding, SAT/SMT solving, incremental algorithms, input variables, fairness, or liveness. Transfer to a real model checker is a separate modelling argument this package does not provide."
+    ],
+    "prior_art": [
+      "M. Sheeran, S. Singh, G. Stålmarck, 'Checking Safety Properties Using Induction and a SAT-Solver', FMCAD 2000, LNCS 1954, pp. 127-144 (pages as on the publisher's page; the dblp record conf/fmcad/SheeranSS00 lists pp. 108-125), doi:10.1007/3-540-40922-X_8. Assumes that every state has a successor (Section 2.2). Defines a path of length n as n transitions and loopFree paths (pairwise distinct states). 'Induction with depth i' checks that after i+1 P-states in a row the next state satisfies P; 'strengthened induction with depth' restricts this step to loop-free paths, and the paper states that without this restriction induction with depth is incomplete. The constraint that no state after position 0 is initial (all.¬I(s[1..i])) appears only in its forward termination check (Algorithms 2-5), not in the induction step. Its depth index i corresponds to depth i+1 here.",
+      "D. Jovanović, B. Dutertre, 'Property-Directed k-Induction', FMCAD 2016, pp. 85-92, doi:10.1109/FMCAD.2016.7886665. Definition II.2 (k-induction: the base checks paths from initial states of each length l < k, the step assumes k consecutive P-states; the same depth convention as Base k and Step k here). Footnote 3 (Section II): 'If P is k-inductive then P ∧ ◦P ∧ ◦◦P ∧ ... ∧ ◦◦···◦P [k-1 operators] is inductive, where ◦ stands for \"next state\"'; reading ◦ as 'in every successor state', this conjunction is FutureSafe T P (k-1). The footnote has no proof and concerns plain (not simple-path) k-induction. Lemma III.1: there are N-inductive properties whose shortest inductive strengthening has size larger than N; Lemma III.2: there is a property that is k-inductive for some k > 1 but has no inductive strengthening (its example lives in the quantifier-free fragment of a theory of arrays)."
+    ],
+    "design_question": "Reference point: what does k-induction buy over 1-induction? Here the bad state's only P-predecessor (state 1) has no predecessor, so any path of two transitions into the bad state already violates the step's assumption."
+  },
+  {
+    "id": "fixed-depth-kind-incomplete",
+    "lean": "Toy.KInd.ladder_needs_depth_succ",
+    "kind": "impossibility",
+    "tier": "T0",
+    "tier_justification": "Incompleteness of induction at a fixed depth (Sheeran et al. 2000; Gurfinkel and Ivrii 2017), made precise with an explicit family that defeats the plain and the simple-path step.",
+    "plain_claim": "For every k there is a finite system, Ladder k (states Fin (k+2); initial state 0 with a self-loop; an unreachable chain 1 -> 2 -> ... -> k+1; P excludes k+1), whose property P is invariant and passes Base (k+1) and Step (k+1), while the step fails at every depth j <= k even when restricted to simple paths (SimpleStep j fails, hence Step j fails).",
+    "unfolded": "∀ k, Invariant (Ladder.I k) (Ladder.T k) (Ladder.P k) ∧ Base … (k+1) ∧ Step … (k+1) ∧ ∀ j ≤ k, ¬ SimpleStep (Ladder.T k) (Ladder.P k) j",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "The statement is a parametric family of concrete systems.",
+    "nonvacuity_witness_lean": "Toy.KInd.ladder_needs_depth_succ",
+    "positive_control_lean": [
+      "Toy.KInd.ladder_kind_succeeds_at_depth_succ",
+      "Toy.KInd.ladder_inductive_strengthening",
+      "Toy.KInd.ladder_reachDiameterBound_zero_bmc_zero"
+    ],
+    "non_claims": [
+      "Fixed-depth incompleteness applies to the simple-path step as well as to the plain step: the witness chain 1 -> ... -> k+1 in Ladder k is already simple. The simple-path constraint restores completeness on finite systems only when the depth may grow with the number of states (simple-kind-complete-fin: depth n for n states), not at any fixed depth.",
+      "Does not say that k-induction fails at every depth on one system; for plain Step that is plain-kind-incomplete-every-depth (finite), for SimpleStep it needs an infinite state type (simple-kind-incomplete-infinite).",
+      "The systems grow with k (k+2 states). It does not say how the required depth relates to the number of states in general, beyond the bounds of simple-kind-complete-fin and simple-kind-complete-fin-pred-of-init.",
+      "Escape hatches (each proves the invariant of Ladder k): a depth that depends on the system (Base (k+1) and Step (k+1) succeed, ladder_kind_succeeds_at_depth_succ); a 1-inductive strengthening (Q := state = 0, ladder_inductive_strengthening, used with inductive-strengthening); BMC at a reachability-diameter bound (only state 0 is reachable, so BMC 0 suffices, ladder_reachDiameterBound_zero_bmc_zero).",
+      "Toy model only: an abstract transition system (a state type in any universe, an initial-state predicate, and a transition relation that need not be total) and a state property; paths are explicit finite state sequences. No symbolic encoding, SAT/SMT solving, incremental algorithms, input variables, fairness, or liveness. Transfer to a real model checker is a separate modelling argument this package does not provide."
+    ],
+    "prior_art": [
+      "M. Sheeran, S. Singh, G. Stålmarck, 'Checking Safety Properties Using Induction and a SAT-Solver', FMCAD 2000, LNCS 1954, pp. 127-144 (pages as on the publisher's page; the dblp record conf/fmcad/SheeranSS00 lists pp. 108-125), doi:10.1007/3-540-40922-X_8. Assumes that every state has a successor (Section 2.2). Defines a path of length n as n transitions and loopFree paths (pairwise distinct states). 'Induction with depth i' checks that after i+1 P-states in a row the next state satisfies P; 'strengthened induction with depth' restricts this step to loop-free paths, and the paper states that without this restriction induction with depth is incomplete. The constraint that no state after position 0 is initial (all.¬I(s[1..i])) appears only in its forward termination check (Algorithms 2-5), not in the induction step. Its depth index i corresponds to depth i+1 here.",
+      "A. Gurfinkel, A. Ivrii, 'K-Induction without Unrolling', FMCAD 2017, pp. 148-155, doi:10.23919/FMCAD.2017.8102253. Defines k-invariants (eq. 4: all states reachable in at most k steps satisfy the formula) and k-inductive invariants (eq. 5: the step assumes k+1 consecutive states, i.e. depth k+1 here). States that neither induction nor k-induction is complete and that k-induction restricted to loop-free paths is complete (citing Sheeran et al.). Its Lemma 2: if the K-Ind procedure returns BLOCKED, the returned G is an inductive strengthening of the clause relative to a 0-invariant F0; its Theorem 1, under the stated assumption that Generalize(¬s) always returns ¬s, characterizes when K-Ind returns BLOCKED (the clause is k-inductive relative to F0).",
+      "D. Jovanović, B. Dutertre, 'Property-Directed k-Induction', FMCAD 2016, pp. 85-92, doi:10.1109/FMCAD.2016.7886665. Definition II.2 (k-induction: the base checks paths from initial states of each length l < k, the step assumes k consecutive P-states; the same depth convention as Base k and Step k here). Footnote 3 (Section II): 'If P is k-inductive then P ∧ ◦P ∧ ◦◦P ∧ ... ∧ ◦◦···◦P [k-1 operators] is inductive, where ◦ stands for \"next state\"'; reading ◦ as 'in every successor state', this conjunction is FutureSafe T P (k-1). The footnote has no proof and concerns plain (not simple-path) k-induction. Lemma III.1: there are N-inductive properties whose shortest inductive strengthening has size larger than N; Lemma III.2: there is a property that is k-inductive for some k > 1 but has no inductive strengthening (its example lives in the quantifier-free fragment of a theory of arrays)."
+    ],
+    "design_question": "Is any fixed depth k enough for k-induction, plain or simple-path? No: for every k some finite system needs depth k+1."
+  },
+  {
+    "id": "plain-kind-incomplete-every-depth",
+    "lean": "Toy.KInd.plain_kind_incomplete_every_depth",
+    "kind": "impossibility",
+    "tier": "T0",
+    "tier_justification": "Sheeran et al. 2000 state that induction with depth without the loop-free restriction is incomplete; this is an explicit finite witness.",
+    "plain_claim": "In the finite system SelfLoop (states Fin 3; initial state 0 with a self-loop; an unreachable state 1 with a self-loop and an edge 1 -> 2; P excludes 2), P is invariant but plain Step k fails for every k, so plain k-induction cannot prove it at any depth.",
+    "unfolded": "Invariant SelfLoop.I SelfLoop.T SelfLoop.P ∧ ∀ k, ¬ Step SelfLoop.T SelfLoop.P k",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "The statement is itself a concrete instance.",
+    "nonvacuity_witness_lean": "Toy.KInd.plain_kind_incomplete_every_depth",
+    "positive_control_lean": [
+      "Toy.KInd.selfLoop_simple_kind_succeeds_at_two",
+      "Toy.KInd.step_zero_of_invariant_of_all_reachable",
+      "Toy.KInd.step_card_of_acyclic"
+    ],
+    "non_claims": [
+      "Concerns plain Step only. On the same system the simple-path step succeeds at depth 2 (selfLoop_simple_kind_succeeds_at_two), BMC to depth 0 with reachability-diameter bound 0 proves the invariant (selfLoop_reachDiameterBound_zero_bmc_zero), and so does 1-induction with the strengthening Reachable (reachable-strongest-inductive-invariant).",
+      "Finiteness alone does not rescue plain k-induction; adding the simple-path constraint is one standard way to restore completeness on finite systems, inductive strengthening and BMC at a reachability-diameter bound are others.",
+      "Escape hatches: the impossibility needs unreachable states and a cycle. If every state is reachable, every invariant passes Step 0 and hence every Step k (step_zero_of_invariant_of_all_reachable with Step.mono); if the transition relation of an n-state system has no cycle, Step n holds for every property (step_card_of_acyclic). A sharper characterization of when plain k-induction eventually succeeds is not formalized.",
+      "Toy model only: an abstract transition system (a state type in any universe, an initial-state predicate, and a transition relation that need not be total) and a state property; paths are explicit finite state sequences. No symbolic encoding, SAT/SMT solving, incremental algorithms, input variables, fairness, or liveness. Transfer to a real model checker is a separate modelling argument this package does not provide."
+    ],
+    "prior_art": [
+      "M. Sheeran, S. Singh, G. Stålmarck, 'Checking Safety Properties Using Induction and a SAT-Solver', FMCAD 2000, LNCS 1954, pp. 127-144 (pages as on the publisher's page; the dblp record conf/fmcad/SheeranSS00 lists pp. 108-125), doi:10.1007/3-540-40922-X_8. Assumes that every state has a successor (Section 2.2). Defines a path of length n as n transitions and loopFree paths (pairwise distinct states). 'Induction with depth i' checks that after i+1 P-states in a row the next state satisfies P; 'strengthened induction with depth' restricts this step to loop-free paths, and the paper states that without this restriction induction with depth is incomplete. The constraint that no state after position 0 is initial (all.¬I(s[1..i])) appears only in its forward termination check (Algorithms 2-5), not in the induction step. Its depth index i corresponds to depth i+1 here.",
+      "A. Gurfinkel, A. Ivrii, 'K-Induction without Unrolling', FMCAD 2017, pp. 148-155, doi:10.23919/FMCAD.2017.8102253. Defines k-invariants (eq. 4: all states reachable in at most k steps satisfy the formula) and k-inductive invariants (eq. 5: the step assumes k+1 consecutive states, i.e. depth k+1 here). States that neither induction nor k-induction is complete and that k-induction restricted to loop-free paths is complete (citing Sheeran et al.). Its Lemma 2: if the K-Ind procedure returns BLOCKED, the returned G is an inductive strengthening of the clause relative to a 0-invariant F0; its Theorem 1, under the stated assumption that Generalize(¬s) always returns ¬s, characterizes when K-Ind returns BLOCKED (the clause is k-inductive relative to F0).",
+      "N. Eén, N. Sörensson, 'Temporal Induction by Incremental SAT Solving', BMC 2003 (workshop), ENTCS 89(4), pp. 543-560, doi:10.1016/S1571-0661(05)82542-3 (content read from its reprint as Chapter 4 of N. Sörensson's 2008 doctoral thesis). Incremental SAT k-induction: the step assumes n+1 consecutive P-states and is strengthened with a uniqueness constraint (all states pairwise distinct), which makes the method complete for finite systems; the base is checked one exact length at a time as n increases, so all lengths up to n are covered. Notes that intermediate states of a shortest counterexample are neither initial nor bad, and that the step they use includes the uniqueness constraints but not 'not initial' constraints."
+    ],
+    "design_question": "Why do k-induction engines add all-different (simple-path) constraints? Without them, a cycle through unreachable P-states that can reach a bad state defeats every depth."
+  },
+  {
+    "id": "simple-step-vacuous-at-card",
+    "lean": "Toy.KInd.simpleStep_of_card_le",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Pigeonhole: a simple path in an n-state system has at most n-1 transitions.",
+    "plain_claim": "In every system with n states (state type Fin n), for every transition relation T, every property P and every depth k >= n, the simple-path step SimpleStep T P k holds, because no simple path has k transitions.",
+    "unfolded": "n ≤ k → ∀ π : Nat → Fin n, IsPath T k π → IsSimple k π → (∀ i < k, P (π i)) → P (π k)",
+    "hypotheses": [
+      {
+        "name": "hk : n ≤ k",
+        "purpose": "Depth at least the number of states makes simple paths of that length impossible.",
+        "tightness": "tight",
+        "counterexample": "Toy.KInd.simple_kind_depth_card_optimal_without_init"
+      },
+      {
+        "name": "state type Fin n (parameter)",
+        "purpose": "Finiteness gives the pigeonhole bound; the counterexample is the infinite analogue (no finite n exists for state type Nat).",
+        "tightness": "tight",
+        "counterexample": "Toy.KInd.simple_kind_incomplete_every_depth_infinite"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "SelfLoop with n = k = 3.",
+    "nonvacuity_witness_lean": "Toy.KInd.nonvacuity_simpleStep_of_card_le",
+    "non_claims": [
+      "Vacuity, not insight: at depth n the step check carries no information, so 'Base n and SimpleStep n' is equivalent to Base n alone, i.e. BMC to depth n-1.",
+      "In practice simple-path k-induction often succeeds far below n; this result says nothing about when.",
+      "Finiteness of the whole state type is what matters: a finite set of reachable states does not suffice (simple-kind-incomplete-infinite).",
+      "Toy model only: an abstract transition system (a state type in any universe, an initial-state predicate, and a transition relation that need not be total) and a state property; paths are explicit finite state sequences. No symbolic encoding, SAT/SMT solving, incremental algorithms, input variables, fairness, or liveness. Transfer to a real model checker is a separate modelling argument this package does not provide."
+    ],
+    "prior_art": [
+      "M. Sheeran, S. Singh, G. Stålmarck, 'Checking Safety Properties Using Induction and a SAT-Solver', FMCAD 2000, LNCS 1954, pp. 127-144 (pages as on the publisher's page; the dblp record conf/fmcad/SheeranSS00 lists pp. 108-125), doi:10.1007/3-540-40922-X_8. Assumes that every state has a successor (Section 2.2). Defines a path of length n as n transitions and loopFree paths (pairwise distinct states). 'Induction with depth i' checks that after i+1 P-states in a row the next state satisfies P; 'strengthened induction with depth' restricts this step to loop-free paths, and the paper states that without this restriction induction with depth is incomplete. The constraint that no state after position 0 is initial (all.¬I(s[1..i])) appears only in its forward termination check (Algorithms 2-5), not in the induction step. Its depth index i corresponds to depth i+1 here.",
+      "N. Eén, N. Sörensson, 'Temporal Induction by Incremental SAT Solving', BMC 2003 (workshop), ENTCS 89(4), pp. 543-560, doi:10.1016/S1571-0661(05)82542-3 (content read from its reprint as Chapter 4 of N. Sörensson's 2008 doctoral thesis). Incremental SAT k-induction: the step assumes n+1 consecutive P-states and is strengthened with a uniqueness constraint (all states pairwise distinct), which makes the method complete for finite systems; the base is checked one exact length at a time as n increases, so all lengths up to n are covered. Notes that intermediate states of a shortest counterexample are neither initial nor bad, and that the step they use includes the uniqueness constraints but not 'not initial' constraints."
+    ],
+    "design_question": "Why is simple-path k-induction complete for finite systems, and what does that completeness cost? At depth n the step is vacuous, so completeness reduces to exhaustive bounded checking."
+  },
+  {
+    "id": "simple-kind-complete-fin",
+    "lean": "Toy.KInd.simple_kind_complete_fin",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Completeness of strengthened induction with depth for finite systems (Sheeran et al. 2000; Eén and Sörensson 2003), restated at depth n.",
+    "plain_claim": "For every system whose state type is finite with n states (Fin n) and every property P that holds in all reachable states, Base n and SimpleStep n both hold: k-induction with the simple-path constraint succeeds at depth n.",
+    "unfolded": "Invariant I T P → Base I T P n ∧ SimpleStep T P n   (I T P over Fin n)",
+    "hypotheses": [
+      {
+        "name": "h : Invariant I T P",
+        "purpose": "Completeness only for true invariants (soundness gives the converse).",
+        "tightness": "tight",
+        "counterexample": "Toy.KInd.simple_kind_complete_fin_needs_invariant"
+      },
+      {
+        "name": "state type Fin n (parameter)",
+        "purpose": "The whole state type must be finite, not just the reachable part; the counterexample is the infinite analogue, with one reachable state.",
+        "tightness": "tight",
+        "counterexample": "Toy.KInd.simple_kind_incomplete_every_depth_infinite"
+      },
+      {
+        "name": "depth k = n, not n-1 (parameter)",
+        "purpose": "Without initial states depth n-1 can fail; with an initial state see simple-kind-complete-fin-pred-of-init.",
+        "tightness": "tight",
+        "counterexample": "Toy.KInd.simple_kind_depth_card_optimal_without_init"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "SelfLoop (an invariant on which plain k-induction fails at every depth).",
+    "nonvacuity_witness_lean": "Toy.KInd.nonvacuity_simple_kind_complete_fin",
+    "non_claims": [
+      "The step half is vacuous at depth n (simple-step-vacuous-at-card); the result does not say simple-path k-induction is efficient, only that it terminates by depth n.",
+      "Plain Step is not complete at any depth, even for finite systems (plain-kind-incomplete-every-depth).",
+      "Finiteness of the reachable state space (or a finite reachability diameter or reachability recurrence diameter) is NOT enough when the state type is infinite: NatDescent has exactly one reachable state and both bounds 0, yet SimpleStep fails at every depth (simple-kind-incomplete-infinite).",
+      "Does not model the 'no initial state after position 0' constraint or the termination check of Sheeran et al.",
+      "Toy model only: an abstract transition system (a state type in any universe, an initial-state predicate, and a transition relation that need not be total) and a state property; paths are explicit finite state sequences. No symbolic encoding, SAT/SMT solving, incremental algorithms, input variables, fairness, or liveness. Transfer to a real model checker is a separate modelling argument this package does not provide."
+    ],
+    "prior_art": [
+      "M. Sheeran, S. Singh, G. Stålmarck, 'Checking Safety Properties Using Induction and a SAT-Solver', FMCAD 2000, LNCS 1954, pp. 127-144 (pages as on the publisher's page; the dblp record conf/fmcad/SheeranSS00 lists pp. 108-125), doi:10.1007/3-540-40922-X_8. Assumes that every state has a successor (Section 2.2). Defines a path of length n as n transitions and loopFree paths (pairwise distinct states). 'Induction with depth i' checks that after i+1 P-states in a row the next state satisfies P; 'strengthened induction with depth' restricts this step to loop-free paths, and the paper states that without this restriction induction with depth is incomplete. The constraint that no state after position 0 is initial (all.¬I(s[1..i])) appears only in its forward termination check (Algorithms 2-5), not in the induction step. Its depth index i corresponds to depth i+1 here.",
+      "N. Eén, N. Sörensson, 'Temporal Induction by Incremental SAT Solving', BMC 2003 (workshop), ENTCS 89(4), pp. 543-560, doi:10.1016/S1571-0661(05)82542-3 (content read from its reprint as Chapter 4 of N. Sörensson's 2008 doctoral thesis). Incremental SAT k-induction: the step assumes n+1 consecutive P-states and is strengthened with a uniqueness constraint (all states pairwise distinct), which makes the method complete for finite systems; the base is checked one exact length at a time as n increases, so all lengths up to n are covered. Notes that intermediate states of a shortest counterexample are neither initial nor bad, and that the step they use includes the uniqueness constraints but not 'not initial' constraints.",
+      "A. Gurfinkel, A. Ivrii, 'K-Induction without Unrolling', FMCAD 2017, pp. 148-155, doi:10.23919/FMCAD.2017.8102253. Defines k-invariants (eq. 4: all states reachable in at most k steps satisfy the formula) and k-inductive invariants (eq. 5: the step assumes k+1 consecutive states, i.e. depth k+1 here). States that neither induction nor k-induction is complete and that k-induction restricted to loop-free paths is complete (citing Sheeran et al.). Its Lemma 2: if the K-Ind procedure returns BLOCKED, the returned G is an inductive strengthening of the clause relative to a 0-invariant F0; its Theorem 1, under the stated assumption that Generalize(¬s) always returns ¬s, characterizes when K-Ind returns BLOCKED (the clause is k-inductive relative to F0)."
+    ],
+    "design_question": "Which constraint makes k-induction complete for finite systems? The simple-path constraint; with it, depth n always suffices when the state type has n elements."
+  },
+  {
+    "id": "simple-kind-complete-fin-pred-of-init",
+    "lean": "Toy.KInd.simple_kind_complete_fin_pred_of_init",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "An easy sharpening of finite-state completeness, closely related to the loop-free termination check of Sheeran et al. 2000; the n-1 bound with matching optimality families was not found stated in the sources checked. Not claimed novel.",
+    "plain_claim": "For every system whose state type is finite with m+1 states (Fin (m+1)) and that has at least one initial state, and every property P holding in all reachable states, Base m and SimpleStep m both hold: depth n-1 suffices when an initial state exists.",
+    "unfolded": "(∃ s, I s) → Invariant I T P → Base I T P m ∧ SimpleStep T P m   (I T P over Fin (m+1))",
+    "hypotheses": [
+      {
+        "name": "hI : ∃ s, I s",
+        "purpose": "A simple path with m transitions visits every state, hence an initial one, so its end is reachable.",
+        "tightness": "tight",
+        "counterexample": "Toy.KInd.simple_kind_depth_card_optimal_without_init"
+      },
+      {
+        "name": "h : Invariant I T P",
+        "purpose": "Completeness only for true invariants.",
+        "tightness": "tight",
+        "counterexample": "Toy.KInd.simple_kind_complete_fin_pred_of_init_needs_invariant"
+      },
+      {
+        "name": "state type Fin (m+1) (parameter)",
+        "purpose": "The whole state type must be finite; the counterexample is the infinite analogue and has an initial state.",
+        "tightness": "tight",
+        "counterexample": "Toy.KInd.simple_kind_incomplete_every_depth_infinite"
+      },
+      {
+        "name": "depth m = n-1, not n-2 (parameter, n >= 2)",
+        "purpose": "Optimal: with an isolated initial state, depth n-2 can fail; the counterexample family has n = m+2 >= 2 states.",
+        "tightness": "tight",
+        "counterexample": "Toy.KInd.simple_kind_depth_pred_optimal_with_init"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "SelfLoop (Fin (2+1), initial state 0).",
+    "nonvacuity_witness_lean": "Toy.KInd.nonvacuity_simple_kind_complete_fin",
+    "non_claims": [
+      "The bound n-1 is optimal only as a bound over all n-state systems; individual systems often need much less.",
+      "At depth n-1 the step is not vacuous in general (simple paths with n-1 transitions may exist), but its proof does not use the step's assumption that the first n-1 states satisfy P: it uses only that such a path visits an initial state, so its last state is reachable. Sharper bounds in terms of the number of reachable states are not established here.",
+      "The optimality statement 'not n-2' is meaningful only for n >= 2.",
+      "Finiteness of the reachable state space is not enough when the state type is infinite (simple-kind-incomplete-infinite).",
+      "Toy model only: an abstract transition system (a state type in any universe, an initial-state predicate, and a transition relation that need not be total) and a state property; paths are explicit finite state sequences. No symbolic encoding, SAT/SMT solving, incremental algorithms, input variables, fairness, or liveness. Transfer to a real model checker is a separate modelling argument this package does not provide."
+    ],
+    "prior_art": [
+      "M. Sheeran, S. Singh, G. Stålmarck, 'Checking Safety Properties Using Induction and a SAT-Solver', FMCAD 2000, LNCS 1954, pp. 127-144 (pages as on the publisher's page; the dblp record conf/fmcad/SheeranSS00 lists pp. 108-125), doi:10.1007/3-540-40922-X_8. Assumes that every state has a successor (Section 2.2). Defines a path of length n as n transitions and loopFree paths (pairwise distinct states). 'Induction with depth i' checks that after i+1 P-states in a row the next state satisfies P; 'strengthened induction with depth' restricts this step to loop-free paths, and the paper states that without this restriction induction with depth is incomplete. The constraint that no state after position 0 is initial (all.¬I(s[1..i])) appears only in its forward termination check (Algorithms 2-5), not in the induction step. Its depth index i corresponds to depth i+1 here.",
+      "N. Eén, N. Sörensson, 'Temporal Induction by Incremental SAT Solving', BMC 2003 (workshop), ENTCS 89(4), pp. 543-560, doi:10.1016/S1571-0661(05)82542-3 (content read from its reprint as Chapter 4 of N. Sörensson's 2008 doctoral thesis). Incremental SAT k-induction: the step assumes n+1 consecutive P-states and is strengthened with a uniqueness constraint (all states pairwise distinct), which makes the method complete for finite systems; the base is checked one exact length at a time as n increases, so all lengths up to n are covered. Notes that intermediate states of a shortest counterexample are neither initial nor bad, and that the step they use includes the uniqueness constraints but not 'not initial' constraints."
+    ],
+    "design_question": "What is the worst-case depth for simple-path k-induction on n-state systems? n-1 if some initial state exists, n otherwise; both bounds are attained."
+  },
+  {
+    "id": "simple-kind-incomplete-infinite",
+    "lean": "Toy.KInd.simple_kind_incomplete_every_depth_infinite",
+    "kind": "impossibility",
+    "tier": "T0",
+    "tier_justification": "Simple-path k-induction is complete only for finite state spaces (Sheeran et al. 2000; Eén and Sörensson 2003 attribute completeness to finiteness); this is an explicit infinite witness with a single reachable state.",
+    "plain_claim": "In the infinite system NatDescent (states Nat; initial state 0 with a self-loop; unreachable transitions s -> s-1 for every s >= 2; P excludes 1), there is an initial state, exactly one state (0) is reachable, 0 bounds both the reachability diameter and the reachability recurrence diameter, P is invariant and passes Base k for every k, yet SimpleStep k fails for every k: simple-path k-induction never proves this invariant.",
+    "unfolded": "(∃ s, NatDescent.I s) ∧ (∀ s, Reachable NatDescent.I NatDescent.T s ↔ s = 0) ∧ ReachDiameterBound … 0 ∧ ReachRecurrenceBound … 0 ∧ Invariant NatDescent.I NatDescent.T NatDescent.P ∧ ∀ k, Base NatDescent.I NatDescent.T NatDescent.P k ∧ ¬ SimpleStep NatDescent.T NatDescent.P k",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "The statement is itself a concrete instance.",
+    "nonvacuity_witness_lean": "Toy.KInd.simple_kind_incomplete_every_depth_infinite",
+    "positive_control_lean": [
+      "Toy.KInd.selfLoop_simple_kind_succeeds_at_two",
+      "Toy.KInd.natDescent_bmc_zero_proves_invariant"
+    ],
+    "non_claims": [
+      "The obstruction is the infinite unreachable part (the simple paths k+1 -> k -> ... -> 1), not the reachable part: finiteness of the reachable states, a finite reachability diameter, or a finite reachability recurrence diameter does not make simple-path k-induction complete.",
+      "Other methods prove this invariant: BMC at depth 0 (natDescent_bmc_zero_proves_invariant, since 0 bounds the reachability diameter) and 1-induction with the strengthening Q := (state = 0). On a finite system of similar shape simple-path k-induction succeeds (selfLoop_simple_kind_succeeds_at_two; in general simple-kind-complete-fin).",
+      "Does not say that k-induction is useless for infinite-state systems; it says no depth is guaranteed to work without a strengthening.",
+      "Toy model only: an abstract transition system (a state type in any universe, an initial-state predicate, and a transition relation that need not be total) and a state property; paths are explicit finite state sequences. No symbolic encoding, SAT/SMT solving, incremental algorithms, input variables, fairness, or liveness. Transfer to a real model checker is a separate modelling argument this package does not provide."
+    ],
+    "prior_art": [
+      "M. Sheeran, S. Singh, G. Stålmarck, 'Checking Safety Properties Using Induction and a SAT-Solver', FMCAD 2000, LNCS 1954, pp. 127-144 (pages as on the publisher's page; the dblp record conf/fmcad/SheeranSS00 lists pp. 108-125), doi:10.1007/3-540-40922-X_8. Assumes that every state has a successor (Section 2.2). Defines a path of length n as n transitions and loopFree paths (pairwise distinct states). 'Induction with depth i' checks that after i+1 P-states in a row the next state satisfies P; 'strengthened induction with depth' restricts this step to loop-free paths, and the paper states that without this restriction induction with depth is incomplete. The constraint that no state after position 0 is initial (all.¬I(s[1..i])) appears only in its forward termination check (Algorithms 2-5), not in the induction step. Its depth index i corresponds to depth i+1 here.",
+      "N. Eén, N. Sörensson, 'Temporal Induction by Incremental SAT Solving', BMC 2003 (workshop), ENTCS 89(4), pp. 543-560, doi:10.1016/S1571-0661(05)82542-3 (content read from its reprint as Chapter 4 of N. Sörensson's 2008 doctoral thesis). Incremental SAT k-induction: the step assumes n+1 consecutive P-states and is strengthened with a uniqueness constraint (all states pairwise distinct), which makes the method complete for finite systems; the base is checked one exact length at a time as n increases, so all lengths up to n are covered. Notes that intermediate states of a shortest counterexample are neither initial nor bad, and that the step they use includes the uniqueness constraints but not 'not initial' constraints.",
+      "L. de Moura, H. Rueß, M. Sorea, 'Bounded Model Checking and Induction: From Refutation to Verification', CAV 2003, LNCS 2725, pp. 14-26, doi:10.1007/978-3-540-45069-6_2. k-induction with decision procedures for infinite-state systems (per its abstract); bibliographic data verified on dblp, full text not consulted here."
+    ],
+    "design_question": "When verifying a program whose state type is infinite but whose reachable states are few, can one rely on simple-path k-induction terminating? No: unreachable infinite simple paths can defeat every depth; use a strengthening or a reachability-diameter argument instead."
+  },
+  {
+    "id": "bmc-complete-of-diameter-bound",
+    "lean": "Toy.KInd.bmc_complete_of_reachDiameterBound",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "The reachability diameter is a completeness threshold of BMC for invariants (Kroening and Strichman 2003; with the uninitialized diameter, Biere et al. 1999).",
+    "plain_claim": "For every transition system, if every reachable state is reachable from an initial state within d transitions (d bounds the reachability diameter, the initialized notion), d <= k, and BMC to depth k finds no path from an initial state with at most k transitions ending outside P, then every reachable state satisfies P.",
+    "unfolded": "(∀ s, Reachable I T s → ∃ j ≤ d, ReachIn I T j s) → d ≤ k → (∀ j ≤ k, ∀ s, ReachIn I T j s → P s) → Invariant I T P",
+    "hypotheses": [
+      {
+        "name": "hd : ReachDiameterBound I T d",
+        "purpose": "Every reachable state appears within the explored depth.",
+        "tightness": "tight",
+        "counterexample": "Toy.KInd.bmc_reachDiameter_needs_hd"
+      },
+      {
+        "name": "hk : d ≤ k",
+        "purpose": "The BMC depth must reach the bound. (d and hk together are equivalent to ReachDiameterBound I T k, by ReachDiameterBound.mono; the statement with d = k loses nothing.)",
+        "tightness": "tight",
+        "counterexample": "Toy.KInd.bmc_reachDiameter_needs_hk"
+      },
+      {
+        "name": "hb : BMC I T P k",
+        "purpose": "No counterexample of length at most k.",
+        "tightness": "tight",
+        "counterexample": "Toy.KInd.bmc_reachDiameter_needs_hb"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "Triangle with d = 1, k = 2 and P := True; also SelfLoop with d = k = 0 and its non-trivial P (selfLoop_reachDiameterBound_zero_bmc_zero).",
+    "nonvacuity_witness_lean": [
+      "Toy.KInd.nonvacuity_bmc_complete_of_reachDiameterBound",
+      "Toy.KInd.selfLoop_reachDiameterBound_zero_bmc_zero"
+    ],
+    "non_claims": [
+      "Applies only to safety invariants (always P). The reachability diameter is not a completeness threshold for eventualities (Fp; Kroening and Strichman 2003, Fig. 1) or for general LTL properties, which are not modelled here.",
+      "Uses the reachability diameter (paths from initial states), not the graph-theoretic diameter over all pairs of states; the latter is never smaller, so it is also a valid but possibly wasteful bound. With no initial state, 0 is a reachability-diameter bound (nothing is reachable).",
+      "BMC k here means at most k transitions (k+1 states), i.e. Base (k+1). With 'at most k states' the same claim is false at k equal to the reachability recurrence diameter (base-at-recurrence-diameter-off-by-one).",
+      "Computing or certifying a reachability-diameter bound is not addressed (Biere et al. 1999 note that the diameter needs a quantified formula).",
+      "For a particular property the threshold can be smaller than the reachability diameter.",
+      "On an infinite state type no finite bound need exist, and then no BMC depth is complete in general (bmc_incomplete_every_depth_infinite).",
+      "Toy model only: an abstract transition system (a state type in any universe, an initial-state predicate, and a transition relation that need not be total) and a state property; paths are explicit finite state sequences. No symbolic encoding, SAT/SMT solving, incremental algorithms, input variables, fairness, or liveness. Transfer to a real model checker is a separate modelling argument this package does not provide."
+    ],
+    "prior_art": [
+      "D. Kroening, O. Strichman, 'Efficient Computation of Recurrence Diameters', VMCAI 2003, LNCS 2575, pp. 298-309, doi:10.1007/3-540-36384-X_24. Definition 1 (completeness threshold CT(M, phi) = min{i | M |=_i phi -> M |= phi}), Definition 2 (reachability diameter rd(M): least i such that every reachable state is reachable within i steps), Definition 3 (reachability recurrence diameter rrd(M): longest loop-free path from an initial state). States (p. 300) that the completeness threshold for Gp formulas is the reachability diameter, and shows (Fig. 1) that rd(M) does not suffice for Fp formulas, for which rrd(M) is used. ReachDiameterBound/IsReachDiameter and ReachRecurrenceBound/IsReachRecurrenceDiameter here correspond to rd(M) and rrd(M).",
+      "A. Biere, A. Cimatti, E. M. Clarke, Y. Zhu, 'Symbolic Model Checking without BDDs', TACAS 1999, LNCS 1579, pp. 193-207, doi:10.1007/3-540-49059-0_14. Statement numbers follow the technical-report version (CMU-CS-99-101) and may differ in the published version. Definition 19 (diameter: the least d such that whenever a state v is reachable from a state u, it is reachable via a path of length at most d); Definition 22 (recurrence diameter: the least d such that every sequence of states s0, ..., s_{d+1} along transitions has s_{d+1} = s_j for some j <= d); Theorem 18 (for ECTL, a bound equal to the number of states suffices), Theorems 20 and 23 (the diameter suffices for EF p, the recurrence diameter for ECTL). These diameters range over all start states, so they are never smaller than the initialized notions used here.",
+      "A. Biere, A. Cimatti, E. M. Clarke, O. Strichman, Y. Zhu, 'Bounded Model Checking', Advances in Computers 58, pp. 117-148, 2003, doi:10.1016/S0065-2458(03)58003-2. Survey of bounded model checking; bibliographic data verified on dblp, text not consulted here (cited as a general reference).",
+      "A. Biere, 'Bounded Model Checking', in Handbook of Satisfiability, 2nd ed., FAIA 336, pp. 739-764, IOS Press, 2021, doi:10.3233/FAIA201002 (1st ed. 2009, FAIA 185, pp. 457-481, doi:10.3233/978-1-58603-929-5-457). Handbook chapter on bounded model checking; bibliographic data verified on dblp, text not consulted here (cited as a general reference).",
+      "F. Kurz, M. Abdulaziz, 'Upper Bounding Diameters of State Spaces of Factored Transition Systems', Archive of Formal Proofs, October 12, 2018, https://www.isa-afp.org/entries/Factored_Transition_System_Bounding.html. Isabelle/HOL development (ported from HOL4) treating the diameter as a completeness threshold for bounded model checking of safety properties and for planning, with compositional upper bounds for factored systems. Its diameter is the uninitialized one (shortest paths between all pairs of states), not the reachability diameter used here."
+    ],
+    "design_question": "What does 'BMC found no counterexample up to depth k' establish? Safety of the invariant whenever k bounds the reachability diameter."
+  },
+  {
+    "id": "recurrence-bound-is-diameter-bound",
+    "lean": [
+      "Toy.KInd.bmc_complete_of_reachRecurrenceBound",
+      "Toy.KInd.reachDiameterBound_of_reachRecurrenceBound"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "The (reachability) recurrence diameter over-approximates the (reachability) diameter as a BMC threshold (Biere et al. 1999; Kroening and Strichman 2003).",
+    "plain_claim": "For every transition system, if every simple path from an initial state has at most r transitions (r bounds the reachability recurrence diameter), then every reachable state is reachable from an initial state within r transitions; hence BMC to any depth k >= r implies that every reachable state satisfies P.",
+    "unfolded": "(∀ j π, I (π 0) → IsPath T j π → IsSimple j π → j ≤ r) → r ≤ k → BMC I T P k → Invariant I T P;   ReachRecurrenceBound I T r → ReachDiameterBound I T r",
+    "hypotheses": [
+      {
+        "name": "hr : ReachRecurrenceBound I T r (both theorems)",
+        "purpose": "Bounds simple paths from initial states.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.KInd.bmc_reachRecurrence_needs_hr",
+          "Toy.KInd.reachDiameterBound_of_reachRecurrenceBound_needs_hr"
+        ]
+      },
+      {
+        "name": "hk : r ≤ k (bmc_complete_of_reachRecurrenceBound)",
+        "purpose": "Depth must reach the bound.",
+        "tightness": "tight",
+        "counterexample": "Toy.KInd.bmc_reachRecurrence_needs_hk"
+      },
+      {
+        "name": "hb : BMC I T P k (bmc_complete_of_reachRecurrenceBound)",
+        "purpose": "No counterexample up to depth k.",
+        "tightness": "tight",
+        "counterexample": "Toy.KInd.bmc_reachRecurrence_needs_hb"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Triangle with r = 2, k = 3 and P := True (also witnesses reachDiameterBound_of_reachRecurrenceBound with r = 2).",
+    "nonvacuity_witness_lean": "Toy.KInd.nonvacuity_bmc_complete_of_reachRecurrenceBound",
+    "non_claims": [
+      "The reachability recurrence diameter can be much larger than the reachability diameter (diameter-below-recurrence-diameter: gap n-2 in an n-state system), so this threshold can be wasteful.",
+      "Initialized notions only (paths from initial states); the uninitialized notions of Biere et al. 1999 are never smaller.",
+      "On an infinite state type a finite reachability diameter does not imply that any reachability recurrence bound exists (starChain_reachDiameter_one_no_reachRecurrenceBound).",
+      "Applies only to safety invariants; for eventualities Kroening and Strichman 2003 use the reachability recurrence diameter for a different reason, not modelled here.",
+      "Toy model only: an abstract transition system (a state type in any universe, an initial-state predicate, and a transition relation that need not be total) and a state property; paths are explicit finite state sequences. No symbolic encoding, SAT/SMT solving, incremental algorithms, input variables, fairness, or liveness. Transfer to a real model checker is a separate modelling argument this package does not provide."
+    ],
+    "prior_art": [
+      "A. Biere, A. Cimatti, E. M. Clarke, Y. Zhu, 'Symbolic Model Checking without BDDs', TACAS 1999, LNCS 1579, pp. 193-207, doi:10.1007/3-540-49059-0_14. Statement numbers follow the technical-report version (CMU-CS-99-101) and may differ in the published version. Definition 19 (diameter: the least d such that whenever a state v is reachable from a state u, it is reachable via a path of length at most d); Definition 22 (recurrence diameter: the least d such that every sequence of states s0, ..., s_{d+1} along transitions has s_{d+1} = s_j for some j <= d); Theorem 18 (for ECTL, a bound equal to the number of states suffices), Theorems 20 and 23 (the diameter suffices for EF p, the recurrence diameter for ECTL). These diameters range over all start states, so they are never smaller than the initialized notions used here.",
+      "D. Kroening, O. Strichman, 'Efficient Computation of Recurrence Diameters', VMCAI 2003, LNCS 2575, pp. 298-309, doi:10.1007/3-540-36384-X_24. Definition 1 (completeness threshold CT(M, phi) = min{i | M |=_i phi -> M |= phi}), Definition 2 (reachability diameter rd(M): least i such that every reachable state is reachable within i steps), Definition 3 (reachability recurrence diameter rrd(M): longest loop-free path from an initial state). States (p. 300) that the completeness threshold for Gp formulas is the reachability diameter, and shows (Fig. 1) that rd(M) does not suffice for Fp formulas, for which rrd(M) is used. ReachDiameterBound/IsReachDiameter and ReachRecurrenceBound/IsReachRecurrenceDiameter here correspond to rd(M) and rrd(M).",
+      "D. Ishii, S. Fujii, 'Formalizing the Soundness of the Encoding Methods of SAT-based Model Checking', TASE 2020, pp. 105-112, doi:10.1109/TASE49443.2020.00023 (arXiv:2006.13613; Coq development at https://github.com/dsksh/coq-smc). Earlier mechanization, in Coq, of the soundness of BMC and k-induction encodings (its k-induction step uses plain paths), of Sheeran et al.'s loop-free forward and backward encodings, of a reduction of safety to loop-free paths (its Lemma 1), and of a simplified PDR. The paper states that completeness is not formalized."
+    ],
+    "design_question": "Can a BMC engine use the (propositionally checkable) reachability recurrence diameter as its threshold for invariants? Yes, soundly, at the price of possibly exploring deeper than needed."
+  },
+  {
+    "id": "reach-diameter-le-reach-recurrence-bound",
+    "lean": "Toy.KInd.isReachDiameter_le_of_reachRecurrenceBound",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Kroening and Strichman 2003 note that rrd(M) over-approximates rd(M); restated with any reachability recurrence bound in place of the least one.",
+    "plain_claim": "For every transition system, if d is the reachability diameter and every simple path from an initial state has at most r transitions, then d <= r. In particular the reachability diameter is at most the reachability recurrence diameter whenever both exist.",
+    "unfolded": "(ReachDiameterBound I T d ∧ ∀ d', ReachDiameterBound I T d' → d ≤ d') → (∀ j π, I (π 0) → IsPath T j π → IsSimple j π → j ≤ r) → d ≤ r",
+    "hypotheses": [
+      {
+        "name": "hd : IsReachDiameter I T d",
+        "purpose": "d must be the least reachability-diameter bound. Only the minimality half is used; the general form with just that half is le_of_reachDiameter_lower_bound_of_reachRecurrenceBound.",
+        "tightness": "tight",
+        "counterexample": "Toy.KInd.isReachDiameter_le_needs_hd"
+      },
+      {
+        "name": "hr : ReachRecurrenceBound I T r",
+        "purpose": "r must bound simple paths from initial states (any such bound, not necessarily the least).",
+        "tightness": "tight",
+        "counterexample": "Toy.KInd.isReachDiameter_le_needs_hr"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Triangle: reachability diameter 1, reachability recurrence bound 2.",
+    "nonvacuity_witness_lean": "Toy.KInd.nonvacuity_isReachDiameter_le_of_reachRecurrenceBound",
+    "non_claims": [
+      "Assumes the reachability diameter exists (some finite bound is least). On an infinite state type a finite reachability diameter can exist while no reachability recurrence bound does (starChain_reachDiameter_one_no_reachRecurrenceBound); then the hypothesis hr cannot be met.",
+      "The inequality can be strict: by up to n-2 in an n-state system when the reachability diameter is at least 1 (diameter-below-recurrence-diameter), and by n-1 when several initial states make the reachability diameter 0 (on the chain 0 -> 1 -> ... -> m with every state initial, rd = 0 and rrd = m; supporting theorem allInitChain_reachDiameter_zero_reachRecurrenceDiameter_pred). It can also be an equality (both are 1 on the single edge 0 -> 1, the m = 0 instance of reachDiameter_lt_reachRecurrenceDiameter_family).",
+      "The proof is short only given reachDiameterBound_of_reachRecurrenceBound, which rests on loop removal (exists_simple_reachIn, card loop-removal, substantive); unlike the zero-axiom definitional cards (bmc-complete-of-diameter-bound, bmc-threshold-characterization) it depends on propext, Classical.choice and Quot.sound.",
+      "Initialized notions only; with no initial state both are 0.",
+      "Toy model only: an abstract transition system (a state type in any universe, an initial-state predicate, and a transition relation that need not be total) and a state property; paths are explicit finite state sequences. No symbolic encoding, SAT/SMT solving, incremental algorithms, input variables, fairness, or liveness. Transfer to a real model checker is a separate modelling argument this package does not provide."
+    ],
+    "prior_art": [
+      "D. Kroening, O. Strichman, 'Efficient Computation of Recurrence Diameters', VMCAI 2003, LNCS 2575, pp. 298-309, doi:10.1007/3-540-36384-X_24. Definition 1 (completeness threshold CT(M, phi) = min{i | M |=_i phi -> M |= phi}), Definition 2 (reachability diameter rd(M): least i such that every reachable state is reachable within i steps), Definition 3 (reachability recurrence diameter rrd(M): longest loop-free path from an initial state). States (p. 300) that the completeness threshold for Gp formulas is the reachability diameter, and shows (Fig. 1) that rd(M) does not suffice for Fp formulas, for which rrd(M) is used. ReachDiameterBound/IsReachDiameter and ReachRecurrenceBound/IsReachRecurrenceDiameter here correspond to rd(M) and rrd(M).",
+      "A. Biere, A. Cimatti, E. M. Clarke, Y. Zhu, 'Symbolic Model Checking without BDDs', TACAS 1999, LNCS 1579, pp. 193-207, doi:10.1007/3-540-49059-0_14. Statement numbers follow the technical-report version (CMU-CS-99-101) and may differ in the published version. Definition 19 (diameter: the least d such that whenever a state v is reachable from a state u, it is reachable via a path of length at most d); Definition 22 (recurrence diameter: the least d such that every sequence of states s0, ..., s_{d+1} along transitions has s_{d+1} = s_j for some j <= d); Theorem 18 (for ECTL, a bound equal to the number of states suffices), Theorems 20 and 23 (the diameter suffices for EF p, the recurrence diameter for ECTL). These diameters range over all start states, so they are never smaller than the initialized notions used here."
+    ],
+    "design_question": "Is the reachability diameter ever larger than a recurrence bound? No; the recurrence bound is always a safe (over-approximating) stand-in."
+  },
+  {
+    "id": "bmc-complete-fin",
+    "lean": "Toy.KInd.bmc_complete_fin",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Corollary: the reachability recurrence diameter of an n-state system is at most n-1 (cf. Biere et al. 1999, Theorem 18 in the report numbering, a bound by the number of states).",
+    "plain_claim": "For every system whose state type is finite with n states (Fin n), if no path from an initial state with at most n-1 transitions reaches a state outside P, then every reachable state satisfies P.",
+    "unfolded": "BMC I T P (n - 1) → Invariant I T P   (I T P over Fin n; n - 1 is truncated subtraction, so n = 0 gives depth 0, where the claim holds vacuously)",
+    "hypotheses": [
+      {
+        "name": "hb : BMC I T P (n - 1)",
+        "purpose": "Exhaustive bounded check up to n-1 transitions; depth n-2 is not enough, for every n >= 2.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.KInd.bmc_complete_fin_depth_tight_all",
+          "Toy.KInd.bmc_complete_fin_depth_tight"
+        ]
+      },
+      {
+        "name": "state type Fin n (parameter)",
+        "purpose": "Finiteness bounds simple paths; on the infinite counter NatSucc no BMC depth k is complete (the property s <= k passes BMC k and is not invariant). This is the infinite analogue; the finite statement cannot be instantiated there.",
+        "tightness": "tight",
+        "counterexample": "Toy.KInd.bmc_incomplete_every_depth_infinite"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "SelfLoop (n = 3) passes BMC 2.",
+    "nonvacuity_witness_lean": "Toy.KInd.nonvacuity_bmc_complete_fin",
+    "non_claims": [
+      "n is the number of states, typically exponential in the number of state variables; this is a worst-case bound, not a practical one.",
+      "At n = 0 the depth n - 1 is 0 by truncated subtraction; the statement is then vacuous (no states).",
+      "Only safety invariants; not a threshold for other temporal properties.",
+      "Toy model only: an abstract transition system (a state type in any universe, an initial-state predicate, and a transition relation that need not be total) and a state property; paths are explicit finite state sequences. No symbolic encoding, SAT/SMT solving, incremental algorithms, input variables, fairness, or liveness. Transfer to a real model checker is a separate modelling argument this package does not provide."
+    ],
+    "prior_art": [
+      "A. Biere, A. Cimatti, E. M. Clarke, Y. Zhu, 'Symbolic Model Checking without BDDs', TACAS 1999, LNCS 1579, pp. 193-207, doi:10.1007/3-540-49059-0_14. Statement numbers follow the technical-report version (CMU-CS-99-101) and may differ in the published version. Definition 19 (diameter: the least d such that whenever a state v is reachable from a state u, it is reachable via a path of length at most d); Definition 22 (recurrence diameter: the least d such that every sequence of states s0, ..., s_{d+1} along transitions has s_{d+1} = s_j for some j <= d); Theorem 18 (for ECTL, a bound equal to the number of states suffices), Theorems 20 and 23 (the diameter suffices for EF p, the recurrence diameter for ECTL). These diameters range over all start states, so they are never smaller than the initialized notions used here.",
+      "D. Kroening, O. Strichman, 'Efficient Computation of Recurrence Diameters', VMCAI 2003, LNCS 2575, pp. 298-309, doi:10.1007/3-540-36384-X_24. Definition 1 (completeness threshold CT(M, phi) = min{i | M |=_i phi -> M |= phi}), Definition 2 (reachability diameter rd(M): least i such that every reachable state is reachable within i steps), Definition 3 (reachability recurrence diameter rrd(M): longest loop-free path from an initial state). States (p. 300) that the completeness threshold for Gp formulas is the reachability diameter, and shows (Fig. 1) that rd(M) does not suffice for Fp formulas, for which rrd(M) is used. ReachDiameterBound/IsReachDiameter and ReachRecurrenceBound/IsReachRecurrenceDiameter here correspond to rd(M) and rrd(M)."
+    ],
+    "design_question": "What is the trivial completeness threshold for BMC on finite systems? n-1 transitions, and no smaller depth works for all n-state systems."
+  },
+  {
+    "id": "bmc-threshold-characterization",
+    "lean": [
+      "Toy.KInd.bmc_complete_all_props_iff_reachDiameterBound",
+      "Toy.KInd.bmc_incomplete_of_not_reachDiameterBound"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "Kroening and Strichman 2003 state that the reachability diameter is the completeness threshold for Gp; this makes precise in which sense (the least depth that works uniformly for every state predicate) and exposes the witness property.",
+    "plain_claim": "For every transition system and depth k, BMC to depth k implies safety for every state predicate P if and only if every reachable state is reachable within k transitions (k bounds the reachability diameter); when k fails this, the property 'reachable within k transitions' passes BMC k but is not invariant.",
+    "unfolded": "(∀ P, BMC I T P k → Invariant I T P) ↔ ReachDiameterBound I T k;   ¬ ReachDiameterBound I T k → BMC I T (ReachWithin I T k) k ∧ ¬ Invariant I T (ReachWithin I T k)",
+    "hypotheses": [
+      {
+        "name": "h : ¬ ReachDiameterBound I T k (bmc_incomplete_of_not_reachDiameterBound)",
+        "purpose": "Below a reachability-diameter bound some property fools BMC.",
+        "tightness": "tight",
+        "counterexample": "Toy.KInd.bmc_incomplete_needs_not_reachDiameterBound"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "Chain: k = 1 is below its reachability diameter 2 (¬ ReachDiameterBound 1); at k = 2 the iff's right side holds.",
+    "nonvacuity_witness_lean": [
+      "Toy.KInd.chain_not_reachDiameterBound_one",
+      "Toy.KInd.chain_reachDiameterBound_two"
+    ],
+    "positive_control_lean": "Toy.KInd.chain_reachWithin_two_invariant",
+    "non_claims": [
+      "Definitional: Invariant I T (ReachWithin I T k) unfolds to ReachDiameterBound I T k, so both directions are short unfoldings; the content is the choice of the witness property ReachWithin I T k.",
+      "Quantifies over all state predicates P : σ → Prop. For a restricted class of properties (a syntactic fragment, a fixed set of atomic propositions, or a single P) the least uniformly complete depth can be smaller; for example, for the class {True} it is 0.",
+      "Only safety invariants; for eventualities and general LTL the reachability diameter does not suffice (Kroening and Strichman 2003, Fig. 1; Clarke et al. 2004).",
+      "Does not say BMC below the reachability diameter is useless: it is still sound for finding counterexamples and may prove specific properties via other arguments.",
+      "Concrete instance of incompleteness below the reachability diameter: chain_bmc_below_diameter (Chain, reachability diameter 2, BMC 1 holds, P not invariant).",
+      "Toy model only: an abstract transition system (a state type in any universe, an initial-state predicate, and a transition relation that need not be total) and a state property; paths are explicit finite state sequences. No symbolic encoding, SAT/SMT solving, incremental algorithms, input variables, fairness, or liveness. Transfer to a real model checker is a separate modelling argument this package does not provide."
+    ],
+    "prior_art": [
+      "D. Kroening, O. Strichman, 'Efficient Computation of Recurrence Diameters', VMCAI 2003, LNCS 2575, pp. 298-309, doi:10.1007/3-540-36384-X_24. Definition 1 (completeness threshold CT(M, phi) = min{i | M |=_i phi -> M |= phi}), Definition 2 (reachability diameter rd(M): least i such that every reachable state is reachable within i steps), Definition 3 (reachability recurrence diameter rrd(M): longest loop-free path from an initial state). States (p. 300) that the completeness threshold for Gp formulas is the reachability diameter, and shows (Fig. 1) that rd(M) does not suffice for Fp formulas, for which rrd(M) is used. ReachDiameterBound/IsReachDiameter and ReachRecurrenceBound/IsReachRecurrenceDiameter here correspond to rd(M) and rrd(M).",
+      "A. Biere, A. Cimatti, E. M. Clarke, Y. Zhu, 'Symbolic Model Checking without BDDs', TACAS 1999, LNCS 1579, pp. 193-207, doi:10.1007/3-540-49059-0_14. Statement numbers follow the technical-report version (CMU-CS-99-101) and may differ in the published version. Definition 19 (diameter: the least d such that whenever a state v is reachable from a state u, it is reachable via a path of length at most d); Definition 22 (recurrence diameter: the least d such that every sequence of states s0, ..., s_{d+1} along transitions has s_{d+1} = s_j for some j <= d); Theorem 18 (for ECTL, a bound equal to the number of states suffices), Theorems 20 and 23 (the diameter suffices for EF p, the recurrence diameter for ECTL). These diameters range over all start states, so they are never smaller than the initialized notions used here.",
+      "E. M. Clarke, D. Kroening, J. Ouaknine, O. Strichman, 'Completeness and Complexity of Bounded Model Checking', VMCAI 2004, LNCS 2937, pp. 85-96, doi:10.1007/978-3-540-24622-0_9. Per its abstract, computes an over-approximation of the completeness threshold for general LTL properties via Büchi automata and analyses the complexity of SAT-based BMC; only safety invariants are treated here.",
+      "A. Biere, 'Bounded Model Checking', in Handbook of Satisfiability, 2nd ed., FAIA 336, pp. 739-764, IOS Press, 2021, doi:10.3233/FAIA201002 (1st ed. 2009, FAIA 185, pp. 457-481, doi:10.3233/978-1-58603-929-5-457). Handbook chapter on bounded model checking; bibliographic data verified on dblp, text not consulted here (cited as a general reference)."
+    ],
+    "design_question": "Is the reachability diameter the right property-independent BMC threshold for invariants? Yes, exactly: no smaller depth works for all state predicates."
+  },
+  {
+    "id": "base-at-recurrence-diameter-off-by-one",
+    "lean": "Toy.KInd.base_at_recurrence_diameter_unsound",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "Reference point: a concrete check of a depth convention, by decide. It records a pitfall (counting states instead of transitions at the threshold) rather than a new result.",
+    "plain_claim": "In OneEdge (states Fin 2; initial state 0; one transition 0 -> 1; P = {0}), the reachability recurrence diameter is 1 and Base 1 (paths with at most one state) holds, yet P is not invariant; BMC 1 (paths with at most one transition) correctly fails.",
+    "unfolded": "IsReachRecurrenceDiameter OneEdge.I OneEdge.T 1 ∧ Base OneEdge.I OneEdge.T OneEdge.P 1 ∧ ¬ Invariant … ∧ ¬ BMC OneEdge.I OneEdge.T OneEdge.P 1",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "The statement is itself a concrete instance.",
+    "nonvacuity_witness_lean": "Toy.KInd.base_at_recurrence_diameter_unsound",
+    "non_claims": [
+      "Not a flaw in BMC: it shows that a threshold stated in transitions must be checked over paths with that many transitions (k+1 states).",
+      "A reference point for the conventions of this package; the mathematical content is in bmc-complete-of-diameter-bound and recurrence-bound-is-diameter-bound.",
+      "Toy model only: an abstract transition system (a state type in any universe, an initial-state predicate, and a transition relation that need not be total) and a state property; paths are explicit finite state sequences. No symbolic encoding, SAT/SMT solving, incremental algorithms, input variables, fairness, or liveness. Transfer to a real model checker is a separate modelling argument this package does not provide."
+    ],
+    "prior_art": [
+      "D. Kroening, O. Strichman, 'Efficient Computation of Recurrence Diameters', VMCAI 2003, LNCS 2575, pp. 298-309, doi:10.1007/3-540-36384-X_24. Definition 1 (completeness threshold CT(M, phi) = min{i | M |=_i phi -> M |= phi}), Definition 2 (reachability diameter rd(M): least i such that every reachable state is reachable within i steps), Definition 3 (reachability recurrence diameter rrd(M): longest loop-free path from an initial state). States (p. 300) that the completeness threshold for Gp formulas is the reachability diameter, and shows (Fig. 1) that rd(M) does not suffice for Fp formulas, for which rrd(M) is used. ReachDiameterBound/IsReachDiameter and ReachRecurrenceBound/IsReachRecurrenceDiameter here correspond to rd(M) and rrd(M)."
+    ],
+    "design_question": "Reference point: which off-by-one is safe when wiring a completeness threshold into a BMC loop? Depth counts transitions; checking only paths of r states at threshold r is unsound."
+  },
+  {
+    "id": "diameter-below-recurrence-diameter",
+    "lean": "Toy.KInd.reachDiameter_lt_reachRecurrenceDiameter_family",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "Kroening and Strichman 2003 give a system with rd(M) < rrd(M); Biere et al. 1999 note that in a fully connected structure the diameter is 1 while the recurrence diameter equals the number of states (uninitialized notions, their counting). This is a parametric family for the initialized notions on transitive tournaments (complete DAGs).",
+    "plain_claim": "For every n >= 2 there is an n-state system, TriangleN m with n = m+2 (states Fin (m+2); initial state 0; transitions s -> t for every s < t), whose reachability diameter is 1 while its reachability recurrence diameter is n-1; so the gap can be n-2.",
+    "unfolded": "∀ m, IsReachDiameter (TriangleN.I m) (TriangleN.T m) 1 ∧ IsReachRecurrenceDiameter (TriangleN.I m) (TriangleN.T m) (m + 1)",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "The statement is a parametric family of concrete systems; Triangle (triangle_reachDiameter_one_reachRecurrenceDiameter_two) is the 3-state instance.",
+    "nonvacuity_witness_lean": [
+      "Toy.KInd.reachDiameter_lt_reachRecurrenceDiameter_family",
+      "Toy.KInd.triangle_reachDiameter_one_reachRecurrenceDiameter_two"
+    ],
+    "non_claims": [
+      "Shows only that the two thresholds can differ by n-2 in an n-state system; that is the largest possible gap when the reachability diameter is at least 1 (the recurrence diameter is at most n-1). It says nothing about typical systems or about the cost of computing either quantity.",
+      "With several initial states the reachability diameter can be 0 and the gap n-1: on the chain 0 -> 1 -> ... -> m (n = m+1 states) with every state initial, rd = 0 and rrd = m = n-1 (supporting theorem allInitChain_reachDiameter_zero_reachRecurrenceDiameter_pred). The family TriangleN has a single initial state.",
+      "Within the family, rd < rrd holds only for n >= 3 (m >= 1). At m = 0 (n = 2; TriangleN 0 is the single edge 0 -> 1) the statement gives IsReachDiameter 1 and IsReachRecurrenceDiameter 1, so both thresholds equal 1 and the gap n-2 is 0.",
+      "Whether computing the reachability diameter (which needs a quantified formula) pays off against using the propositionally checkable recurrence bound is a cost question not addressed here.",
+      "The family is a complete DAG, not the fully connected (complete digraph) example of Biere et al. 1999; both have a longest simple path visiting all states.",
+      "Toy model only: an abstract transition system (a state type in any universe, an initial-state predicate, and a transition relation that need not be total) and a state property; paths are explicit finite state sequences. No symbolic encoding, SAT/SMT solving, incremental algorithms, input variables, fairness, or liveness. Transfer to a real model checker is a separate modelling argument this package does not provide."
+    ],
+    "prior_art": [
+      "D. Kroening, O. Strichman, 'Efficient Computation of Recurrence Diameters', VMCAI 2003, LNCS 2575, pp. 298-309, doi:10.1007/3-540-36384-X_24. Definition 1 (completeness threshold CT(M, phi) = min{i | M |=_i phi -> M |= phi}), Definition 2 (reachability diameter rd(M): least i such that every reachable state is reachable within i steps), Definition 3 (reachability recurrence diameter rrd(M): longest loop-free path from an initial state). States (p. 300) that the completeness threshold for Gp formulas is the reachability diameter, and shows (Fig. 1) that rd(M) does not suffice for Fp formulas, for which rrd(M) is used. ReachDiameterBound/IsReachDiameter and ReachRecurrenceBound/IsReachRecurrenceDiameter here correspond to rd(M) and rrd(M).",
+      "A. Biere, A. Cimatti, E. M. Clarke, Y. Zhu, 'Symbolic Model Checking without BDDs', TACAS 1999, LNCS 1579, pp. 193-207, doi:10.1007/3-540-49059-0_14. Statement numbers follow the technical-report version (CMU-CS-99-101) and may differ in the published version. Definition 19 (diameter: the least d such that whenever a state v is reachable from a state u, it is reachable via a path of length at most d); Definition 22 (recurrence diameter: the least d such that every sequence of states s0, ..., s_{d+1} along transitions has s_{d+1} = s_j for some j <= d); Theorem 18 (for ECTL, a bound equal to the number of states suffices), Theorems 20 and 23 (the diameter suffices for EF p, the recurrence diameter for ECTL). These diameters range over all start states, so they are never smaller than the initialized notions used here."
+    ],
+    "design_question": "How much can BMC save by using the reachability diameter instead of the reachability recurrence diameter as its threshold? Up to n-2 steps in an n-state system when the reachability diameter is at least 1 (strictly positive savings need n >= 3), and up to n-1 steps when several initial states make the reachability diameter 0 (as when every state of an n-state chain is initial)."
+  },
+  {
+    "id": "inductive-strengthening",
+    "lean": "Toy.KInd.invariant_of_inductive_strengthening",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "The invariance rule with a strengthening (Bradley 2011, Section 3; standard textbook material, Manna and Pnueli 1995).",
+    "plain_claim": "For every transition system, if every initial state satisfies P and Q, and every transition from a state satisfying P and Q leads to a state satisfying P and Q, then every reachable state satisfies P.",
+    "unfolded": "(∀ s, I s → P s) → (∀ s, I s → Q s) → (∀ s t, P s ∧ Q s → T s t → P t ∧ Q t) → Invariant I T P",
+    "hypotheses": [
+      {
+        "name": "hIP : Initiation I P",
+        "purpose": "P must hold initially; initiation of Q and joint consecution do not imply it.",
+        "tightness": "tight",
+        "counterexample": "Toy.KInd.strengthening_needs_init_P"
+      },
+      {
+        "name": "hIQ : Initiation I Q",
+        "purpose": "The strengthening must hold initially.",
+        "tightness": "tight",
+        "counterexample": "Toy.KInd.strengthening_needs_init_Q"
+      },
+      {
+        "name": "hcons : Consecution T (P ∧ Q)",
+        "purpose": "Joint preservation by transitions.",
+        "tightness": "tight",
+        "counterexample": "Toy.KInd.strengthening_needs_consecution"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "TwoInd with Q := (state ≠ 1): P alone is not preserved, P ∧ Q is.",
+    "nonvacuity_witness_lean": "Toy.KInd.nonvacuity_inductive_strengthening",
+    "non_claims": [
+      "Says nothing about how to find Q; IC3 is cited only as the main algorithmic context.",
+      "Consecution is required of the conjunction only; neither P nor Q needs to be preserved alone.",
+      "Requires plain joint consecution Consecution T (P ∧ Q). It does not model relative inductiveness (Q is inductive relative to G when I => Q and G ∧ Q ∧ T => Q', for a frame G that need not itself be inductive), the notion IC3 works with.",
+      "Toy model only: an abstract transition system (a state type in any universe, an initial-state predicate, and a transition relation that need not be total) and a state property; paths are explicit finite state sequences. No symbolic encoding, SAT/SMT solving, incremental algorithms, input variables, fairness, or liveness. Transfer to a real model checker is a separate modelling argument this package does not provide."
+    ],
+    "prior_art": [
+      "A. R. Bradley, 'SAT-Based Model Checking without Unrolling', VMCAI 2011, LNCS 6538, pp. 70-87, doi:10.1007/978-3-642-18275-4_7. Section 3 defines initiation (I => F) and consecution (F and T => F'), calls F an inductive strengthening of P when F and P together are inductive, notes that iterative post-image (respectively pre-image) computation yields the strongest (respectively weakest) inductive strengthening of P, and defines F to be inductive relative to G when I => F and G and F and T => F' (citing Manna and Pnueli 1995 for relative inductiveness). IC3 builds such relatively inductive clauses; IC3 itself is not modelled here.",
+      "Z. Manna, A. Pnueli, 'Temporal Verification of Reactive Systems: Safety', Springer, 1995, ISBN 978-0-387-94459-3, doi:10.1007/978-1-4612-4222-2. Standard textbook treatment of invariance proofs for transition systems (cited by Bradley 2011 for relative inductiveness). Bibliographic data verified on the publisher's page; the book's text was not consulted, so no specific rule or page is cited."
+    ],
+    "design_question": "What exactly does an inductive strengthening buy? Initiation of both conjuncts plus joint consecution suffice for P, and each is needed."
+  },
+  {
+    "id": "reachable-strongest-inductive-invariant",
+    "lean": [
+      "Toy.KInd.reachable_strongest_inductive_invariant",
+      "Toy.KInd.invariant_iff_reachable_strengthening_inductive",
+      "Toy.KInd.invariant_iff_exists_inductive_strengthening",
+      "Toy.KInd.futureSafe_forever_weakest_inductive_strengthening"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "Completeness of the invariance rule: the reachable set is the least inductive set containing the initial states, and 'every path from here stays in P' is the weakest inductive strengthening (strongest and weakest inductive strengthenings, Bradley 2011, Section 3; textbook material, Manna and Pnueli 1995).",
+    "plain_claim": "For every transition system (finite or infinite): the reachable set contains the initial states, is preserved by transitions, and is contained in every such set; consequently P is invariant if and only if P ∧ Reachable satisfies initiation and consecution, if and only if some Q with initiation and consecution implies P. Dually, 'every path from s, of any length, ends in P' is preserved by transitions, implies P, contains every predicate that is preserved by transitions and implies P, and holds initially exactly when P is invariant.",
+    "unfolded": "Initiation I R ∧ Consecution T R ∧ ∀ Q, Initiation I Q → Consecution T Q → ∀ s, R s → Q s  (R = Reachable I T);   Invariant I T P ↔ Initiation I (P ∧ R) ∧ Consecution T (P ∧ R);   Invariant I T P ↔ ∃ Q, Initiation I Q ∧ Consecution T Q ∧ ∀ s, Q s → P s;   with W s := ∀ m, FutureSafe T P m s: Consecution T W ∧ (∀ s, W s → P s) ∧ (∀ Q, Consecution T Q → (∀ s, Q s → P s) → ∀ s, Q s → W s) ∧ (Initiation I W ↔ Invariant I T P)",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "SelfLoop, where the reachable set is exactly {0}.",
+    "nonvacuity_witness_lean": "Toy.KInd.selfLoop_reachable_iff",
+    "non_claims": [
+      "Finiteness is not needed: every invariant of every transition system, finite or infinite, has these 1-inductive strengthenings.",
+      "P ∧ Reachable is the strongest (least) and 'every path from here stays in P' the weakest (greatest) 1-inductive strengthening; many others lie in between, and none of them is claimed canonical for proof search.",
+      "These strengthenings may not be expressible in a given assertion language (for example a quantifier-free theory; Jovanović and Dutertre 2016, Lemma III.2, give a k-inductive property with no expressible inductive strengthening); this result is about sets, not formulas.",
+      "Does not say the reachable set or the weakest strengthening is computable.",
+      "Toy model only: an abstract transition system (a state type in any universe, an initial-state predicate, and a transition relation that need not be total) and a state property; paths are explicit finite state sequences. No symbolic encoding, SAT/SMT solving, incremental algorithms, input variables, fairness, or liveness. Transfer to a real model checker is a separate modelling argument this package does not provide."
+    ],
+    "prior_art": [
+      "A. R. Bradley, 'SAT-Based Model Checking without Unrolling', VMCAI 2011, LNCS 6538, pp. 70-87, doi:10.1007/978-3-642-18275-4_7. Section 3 defines initiation (I => F) and consecution (F and T => F'), calls F an inductive strengthening of P when F and P together are inductive, notes that iterative post-image (respectively pre-image) computation yields the strongest (respectively weakest) inductive strengthening of P, and defines F to be inductive relative to G when I => F and G and F and T => F' (citing Manna and Pnueli 1995 for relative inductiveness). IC3 builds such relatively inductive clauses; IC3 itself is not modelled here.",
+      "Z. Manna, A. Pnueli, 'Temporal Verification of Reactive Systems: Safety', Springer, 1995, ISBN 978-0-387-94459-3, doi:10.1007/978-1-4612-4222-2. Standard textbook treatment of invariance proofs for transition systems (cited by Bradley 2011 for relative inductiveness). Bibliographic data verified on the publisher's page; the book's text was not consulted, so no specific rule or page is cited.",
+      "D. Jovanović, B. Dutertre, 'Property-Directed k-Induction', FMCAD 2016, pp. 85-92, doi:10.1109/FMCAD.2016.7886665. Definition II.2 (k-induction: the base checks paths from initial states of each length l < k, the step assumes k consecutive P-states; the same depth convention as Base k and Step k here). Footnote 3 (Section II): 'If P is k-inductive then P ∧ ◦P ∧ ◦◦P ∧ ... ∧ ◦◦···◦P [k-1 operators] is inductive, where ◦ stands for \"next state\"'; reading ◦ as 'in every successor state', this conjunction is FutureSafe T P (k-1). The footnote has no proof and concerns plain (not simple-path) k-induction. Lemma III.1: there are N-inductive properties whose shortest inductive strengthening has size larger than N; Lemma III.2: there is a property that is k-inductive for some k > 1 but has no inductive strengthening (its example lives in the quantifier-free fragment of a theory of arrays)."
+    ],
+    "design_question": "Is every invariant provable by 1-induction with a suitable strengthening? Yes, semantically; the practical question is only expressibility and search."
+  },
+  {
+    "id": "k-inductive-has-explicit-1-inductive-strengthening",
+    "lean": "Toy.KInd.simple_kinductive_futureSafe_strengthening",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Re-derivation of Jovanović and Dutertre 2016, footnote 3 (if P is k-inductive then P ∧ ◦P ∧ ... ∧ ◦^(k-1) P is inductive), stated there without proof for plain k-induction. The version here assumes only the simple-path step, a small generalization (the plain-step form is the corollary kinductive_futureSafe_strengthening); not claimed novel. Batz et al. 2021 give a different explicit strengthening built from predecessors.",
+    "plain_claim": "For every transition system and every k: if P passes Base (k+1) and the simple-path step SimpleStep (k+1) (in particular, if P is (k+1)-inductive in the plain sense, Base (k+1) and Step (k+1)), then FutureSafe T P k, 'every path of at most k transitions from the state ends in P', holds in every initial state, is preserved by every transition, and implies P.",
+    "unfolded": "Base I T P (k+1) → SimpleStep T P (k+1) → Initiation I F ∧ Consecution T F ∧ ∀ s, F s → P s, where F s := ∀ j ≤ k, ∀ π, π 0 = s → IsPath T j π → P (π j)",
+    "hypotheses": [
+      {
+        "name": "hb : Base I T P (k+1)",
+        "purpose": "Needed for initiation of the strengthening (Initiation I (FutureSafe T P k) is equivalent to Base (k+1)).",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.KInd.futureSafe_strengthening_needs_base_k1",
+          "Toy.KInd.futureSafe_strengthening_needs_base"
+        ]
+      },
+      {
+        "name": "hs : SimpleStep T P (k+1)",
+        "purpose": "Needed for consecution of the strengthening; strictly weaker than Step (k+1) for k >= 1, so the plain-step version follows.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.KInd.futureSafe_strengthening_needs_step_k1",
+          "Toy.KInd.futureSafe_strengthening_needs_step"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "SelfLoop with k = 1: Base 2 and SimpleStep 2 hold while Step 2 fails; also TwoInd with k = 1, where FutureSafe T P 1 is exactly {0} (twoInd_futureSafe_one_iff).",
+    "nonvacuity_witness_lean": [
+      "Toy.KInd.nonvacuity_simple_kinductive_futureSafe_strengthening",
+      "Toy.KInd.nonvacuity_kind_sound"
+    ],
+    "non_claims": [
+      "Depth convention: 'k-inductive' in the card id means passing Base and Step at depth k+1 here, i.e. (k+1)-inductive in the sense of Jovanović and Dutertre; the strengthening looks k steps ahead.",
+      "The converse fails: FutureSafe T P k can be a 1-inductive strengthening of P while SimpleStep (k+1) fails (branch4_futureSafe_inductive_without_simpleStep). More generally, having some 1-inductive strengthening does not make P pass plain k-induction at any depth, even on a finite system (plain-kind-incomplete-every-depth); for the simple-path step it does on finite systems (simple-kind-complete-fin) but not on infinite ones (simple-kind-incomplete-infinite).",
+      "A semantic set. As a formula it unrolls k steps of the transition relation and, unless the assertion language admits quantifier elimination, need not be expressible at all; Jovanović and Dutertre 2016 (Lemmas III.1 and III.2) show that inductive strengthenings can be larger than N for N-inductive properties or inexpressible. No size bound is claimed.",
+      "Not the only explicit strengthening: Batz et al. 2021 give one built from predecessors (the (k-1)-fold iterate of G -> (I ∪ Succs(G)) ∩ P applied to P); it is not formalized here.",
+      "Toy model only: an abstract transition system (a state type in any universe, an initial-state predicate, and a transition relation that need not be total) and a state property; paths are explicit finite state sequences. No symbolic encoding, SAT/SMT solving, incremental algorithms, input variables, fairness, or liveness. Transfer to a real model checker is a separate modelling argument this package does not provide."
+    ],
+    "prior_art": [
+      "D. Jovanović, B. Dutertre, 'Property-Directed k-Induction', FMCAD 2016, pp. 85-92, doi:10.1109/FMCAD.2016.7886665. Definition II.2 (k-induction: the base checks paths from initial states of each length l < k, the step assumes k consecutive P-states; the same depth convention as Base k and Step k here). Footnote 3 (Section II): 'If P is k-inductive then P ∧ ◦P ∧ ◦◦P ∧ ... ∧ ◦◦···◦P [k-1 operators] is inductive, where ◦ stands for \"next state\"'; reading ◦ as 'in every successor state', this conjunction is FutureSafe T P (k-1). The footnote has no proof and concerns plain (not simple-path) k-induction. Lemma III.1: there are N-inductive properties whose shortest inductive strengthening has size larger than N; Lemma III.2: there is a property that is k-inductive for some k > 1 but has no inductive strengthening (its example lives in the quantifier-free fragment of a theory of arrays).",
+      "K. Batz, M. Chen, B. L. Kaminski, J.-P. Katoen, C. Matheja, P. Schröer, 'Latticed k-Induction with an Application to Probabilistic Programs', CAV 2021, LNCS 12760, pp. 524-549, doi:10.1007/978-3-030-81688-9_25. Lattice-theoretic k-induction. Lemma 2: Phi(Psi_f^k(f)) <= f iff Phi(Psi_f^k(f)) <= Psi_f^k(f), where Psi_f(g) = Phi(g) meet f, so the iterate Psi_f^k(f) is an inductive invariant stronger than f; Theorem 4 instantiates Phi(F) = I ∪ Succs(F) and recovers classical k-induction. For transition systems this gives another explicit 1-inductive strengthening of a k-inductive P, the (k-1)-fold iterate of G -> (I ∪ Succs(G)) ∩ P applied to P, built from predecessors rather than from successors as FutureSafe is. Section 4 requires a total transition relation and warns that without totality the classical SAT formulation of k-induction, whose base is a single fixed-length formula, is unsound.",
+      "K. Batz, B. L. Kaminski, L. Kehrer, G. Klein, H. Urbat, T. Schmid, 'The Algebra of Iterative Constructions', Archive of Formal Proofs, April 29, 2026, https://www.isa-afp.org/entries/Iteration_Algebra.html. Isabelle/HOL mechanization; its abstract lists 'a fixed point-theoretic generalization of k-induction' among its results. Lattice-level, not the path-based statements here.",
+      "A. Gurfinkel, A. Ivrii, 'K-Induction without Unrolling', FMCAD 2017, pp. 148-155, doi:10.23919/FMCAD.2017.8102253. Defines k-invariants (eq. 4: all states reachable in at most k steps satisfy the formula) and k-inductive invariants (eq. 5: the step assumes k+1 consecutive states, i.e. depth k+1 here). States that neither induction nor k-induction is complete and that k-induction restricted to loop-free paths is complete (citing Sheeran et al.). Its Lemma 2: if the K-Ind procedure returns BLOCKED, the returned G is an inductive strengthening of the clause relative to a 0-invariant F0; its Theorem 1, under the stated assumption that Generalize(¬s) always returns ¬s, characterizes when K-Ind returns BLOCKED (the clause is k-inductive relative to F0).",
+      "A. R. Bradley, 'SAT-Based Model Checking without Unrolling', VMCAI 2011, LNCS 6538, pp. 70-87, doi:10.1007/978-3-642-18275-4_7. Section 3 defines initiation (I => F) and consecution (F and T => F'), calls F an inductive strengthening of P when F and P together are inductive, notes that iterative post-image (respectively pre-image) computation yields the strongest (respectively weakest) inductive strengthening of P, and defines F to be inductive relative to G when I => F and G and F and T => F' (citing Manna and Pnueli 1995 for relative inductiveness). IC3 builds such relatively inductive clauses; IC3 itself is not modelled here."
+    ],
+    "design_question": "How do k-induction and inductive invariants relate? A property that passes (simple-path) k-induction at depth k+1 has the explicit 1-inductive strengthening 'P holds for the next k steps on every path', but not conversely."
+  },
+  {
+    "id": "exact-length-base-needs-totality",
+    "lean": "Toy.KInd.base_iff_exactBase_of_total",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Folklore made explicit: SAT encodings of k-induction with a single fixed-length base formula assume a total transition relation (Sheeran et al. 2000, Section 2.2); Batz et al. 2021 (Section 4) warn that the classical formulation is unsound without totality.",
+    "plain_claim": "For every transition system in which every state has a successor and every k, checking that every path from an initial state with exactly k transitions satisfies P at every position is equivalent to Base (k+1) (every path with at most k transitions). Without totality, the exact-length check can be strictly weaker than Base (k+1) and unsound as a k-induction base, as proved at k = 2 on a concrete system with a dead end; at k = 0 the two checks coincide for every transition relation.",
+    "unfolded": "(∀ s, ∃ t, T s t) → (Base I T P (k+1) ↔ ∀ π, I (π 0) → IsPath T k π → ∀ i ≤ k, P (π i))",
+    "hypotheses": [
+      {
+        "name": "htot : ∀ s, ∃ t, T s t",
+        "purpose": "Shorter paths extend to length k only if every state has a successor.",
+        "tightness": "tight",
+        "counterexample": "Toy.KInd.exact_length_base_unsound_without_totality"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "NatSucc (the infinite counter, every state has a successor).",
+    "nonvacuity_witness_lean": "Toy.KInd.nonvacuity_base_iff_exactBase_of_total",
+    "non_claims": [
+      "The counterexample is concrete: in OneEdge (state 1 has no successor) at depth 3, the exact-length base over 2-transition paths and Step 3 both hold vacuously, yet P is not invariant (exact_length_base_unsound_without_totality).",
+      "Even when every state has a successor, the exact-length check must assert P at every position 0 <= i <= k of the path, not only at its last state. Checking only P (π k) is unsound: on the two-state cycle 0 <-> 1 with I = {0} and P = {0}, every path from 0 with exactly 2 transitions ends in 0 and Step 3 holds, yet state 1 is reachable and violates P (supporting theorem endpoint_only_exact_base_unsound_even_when_total).",
+      "The totality hypothesis is not needed at k = 0: Base 1 and the exact-length check over paths with 0 transitions agree for every transition relation (supporting theorem base_one_iff_exactBase_zero). The counterexample for htot is at k = 2, and no theorem here covers any other depth k >= 1. That the exact-length check can be weaker and unsound at every k >= 1 (for example on Stuck, where for k >= 1 no path has k or k + 1 transitions, so the exact-length check and Step (k+1) hold vacuously while Base (k+1) fails at the initial state) is unproved commentary, not a result of this package.",
+      "Incremental formulations that check every length up to k (as k grows) do not need totality; Base in this package is of that kind.",
+      "Making a relation total by adding self-loops to dead ends changes the system; whether that preserves the property of interest is a separate question not addressed here.",
+      "Toy model only: an abstract transition system (a state type in any universe, an initial-state predicate, and a transition relation that need not be total) and a state property; paths are explicit finite state sequences. No symbolic encoding, SAT/SMT solving, incremental algorithms, input variables, fairness, or liveness. Transfer to a real model checker is a separate modelling argument this package does not provide."
+    ],
+    "prior_art": [
+      "M. Sheeran, S. Singh, G. Stålmarck, 'Checking Safety Properties Using Induction and a SAT-Solver', FMCAD 2000, LNCS 1954, pp. 127-144 (pages as on the publisher's page; the dblp record conf/fmcad/SheeranSS00 lists pp. 108-125), doi:10.1007/3-540-40922-X_8. Assumes that every state has a successor (Section 2.2). Defines a path of length n as n transitions and loopFree paths (pairwise distinct states). 'Induction with depth i' checks that after i+1 P-states in a row the next state satisfies P; 'strengthened induction with depth' restricts this step to loop-free paths, and the paper states that without this restriction induction with depth is incomplete. The constraint that no state after position 0 is initial (all.¬I(s[1..i])) appears only in its forward termination check (Algorithms 2-5), not in the induction step. Its depth index i corresponds to depth i+1 here.",
+      "K. Batz, M. Chen, B. L. Kaminski, J.-P. Katoen, C. Matheja, P. Schröer, 'Latticed k-Induction with an Application to Probabilistic Programs', CAV 2021, LNCS 12760, pp. 524-549, doi:10.1007/978-3-030-81688-9_25. Lattice-theoretic k-induction. Lemma 2: Phi(Psi_f^k(f)) <= f iff Phi(Psi_f^k(f)) <= Psi_f^k(f), where Psi_f(g) = Phi(g) meet f, so the iterate Psi_f^k(f) is an inductive invariant stronger than f; Theorem 4 instantiates Phi(F) = I ∪ Succs(F) and recovers classical k-induction. For transition systems this gives another explicit 1-inductive strengthening of a k-inductive P, the (k-1)-fold iterate of G -> (I ∪ Succs(G)) ∩ P applied to P, built from predecessors rather than from successors as FutureSafe is. Section 4 requires a total transition relation and warns that without totality the classical SAT formulation of k-induction, whose base is a single fixed-length formula, is unsound.",
+      "N. Eén, N. Sörensson, 'Temporal Induction by Incremental SAT Solving', BMC 2003 (workshop), ENTCS 89(4), pp. 543-560, doi:10.1016/S1571-0661(05)82542-3 (content read from its reprint as Chapter 4 of N. Sörensson's 2008 doctoral thesis). Incremental SAT k-induction: the step assumes n+1 consecutive P-states and is strengthened with a uniqueness constraint (all states pairwise distinct), which makes the method complete for finite systems; the base is checked one exact length at a time as n increases, so all lengths up to n are covered. Notes that intermediate states of a shortest counterexample are neither initial nor bad, and that the step they use includes the uniqueness constraints but not 'not initial' constraints.",
+      "D. Jovanović, B. Dutertre, 'Property-Directed k-Induction', FMCAD 2016, pp. 85-92, doi:10.1109/FMCAD.2016.7886665. Definition II.2 (k-induction: the base checks paths from initial states of each length l < k, the step assumes k consecutive P-states; the same depth convention as Base k and Step k here). Footnote 3 (Section II): 'If P is k-inductive then P ∧ ◦P ∧ ◦◦P ∧ ... ∧ ◦◦···◦P [k-1 operators] is inductive, where ◦ stands for \"next state\"'; reading ◦ as 'in every successor state', this conjunction is FutureSafe T P (k-1). The footnote has no proof and concerns plain (not simple-path) k-induction. Lemma III.1: there are N-inductive properties whose shortest inductive strengthening has size larger than N; Lemma III.2: there is a property that is k-inductive for some k > 1 but has no inductive strengthening (its example lives in the quantifier-free fragment of a theory of arrays)."
+    ],
+    "design_question": "When implementing the k-induction base as one fixed-length unrolling, what must hold? The transition relation must be total; otherwise check every length below k."
+  }
+]
