@@ -54486,6 +54486,103 @@
         "verification"
       ]
     },
+    "rust-media-codec-rewrites-perf-and-safety-rav1d-symphonia-wuffs-zune-nihav": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "memorysafety/rav1d",
+            "revision": "2e7216c20ac2a75de204d6c8d7268b75a45959b4",
+            "version": "1.1.1"
+          },
+          "name": "rav1d AV1 decoder"
+        },
+        {
+          "identity": {
+            "repository": "videolan/dav1d",
+            "revision": "9af5ae4eb5204706c7f381ec62635237179f172e"
+          },
+          "name": "dav1d C AV1 decoder"
+        },
+        {
+          "identity": {
+            "repository": "pdeljanov/Symphonia",
+            "revision": "5f879df0bf309246a48d57caae457fd8c0e2a5cb",
+            "version": "0.6.1"
+          },
+          "name": "Symphonia audio decoding and demuxing workspace"
+        },
+        {
+          "identity": {
+            "repository": "google/wuffs",
+            "revision": "a87f0bb85b9406d29f48a1c03b6f42c4585145f6",
+            "version": "0.3"
+          },
+          "name": "Wuffs language and standard codec library"
+        },
+        {
+          "identity": {
+            "repository": "etemesi254/zune-image",
+            "revision": "2cdbbf554e7da373d3418ab327a0db7c4abb50cd"
+          },
+          "name": "zune-image codec workspace"
+        },
+        {
+          "identity": {
+            "repository": "rust-av/rav1e",
+            "revision": "d2af1842f6e4b826e528ef4bf16c2454e177cd3f",
+            "version": "0.5.0"
+          },
+          "name": "rav1e AV1 encoder"
+        },
+        {
+          "identity": {
+            "repository": "mozilla/mp4parse-rust",
+            "revision": "d3a9abfc93b22687e5e5cd9df86697adcb7d5887",
+            "version": "0.17.0"
+          },
+          "name": "mp4parse-rust ISO-BMFF parser"
+        },
+        {
+          "identity": {
+            "repository": "image-rs/image",
+            "revision": "e70e9fe5073f4b298a33b72993847241a8eaaca6",
+            "version": "0.25.9"
+          },
+          "name": "image-rs unified Rust imaging library"
+        },
+        {
+          "identity": {
+            "repository": "https://git.nihav.org/nihav.git",
+            "revision": "904a660eca4a646b4618d11bb6ef025a6e50f725"
+          },
+          "name": "NihAV multimedia framework"
+        },
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+          },
+          "name": "FFmpeg multimedia framework"
+        },
+        {
+          "identity": {
+            "llvm": "22.1.6",
+            "target": "x86_64-unknown-linux-gnu",
+            "toolchain": "rustc 1.98.0-nightly (14210df0e 2026-05-31)"
+          },
+          "name": "Rust nightly compiler toolchain"
+        }
+      ],
+      "topics": [
+        "rust/performance",
+        "domains/multimedia",
+        "compilers/simd",
+        "verification/panic-freedom",
+        "rust/unsafe",
+        "llvm/vectorization"
+      ]
+    },
     "rust-mutable-borrow-lifting-prophecies-backward-functions-and-lenses": {
       "observed_at": "2026-11-19",
       "subjects": [
