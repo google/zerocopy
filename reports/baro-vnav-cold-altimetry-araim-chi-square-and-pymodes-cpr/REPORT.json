@@ -1,0 +1,78 @@
+{
+  "topics": [
+    "domains/baro-vnav-altimetry-safety",
+    "domains/araim-integrity-monitoring",
+    "systems/adsb-mode-s-cpr-decoding",
+    "verification/airborne-navigation-envelopes"
+  ],
+  "subjects": [
+    {
+      "name": "JSBSim flight dynamics standard atmosphere models",
+      "identity": {
+        "repository": "JSBSim-Team/jsbsim",
+        "revision": "3f153c18a2518f8472e37c89e70444b1c671b700"
+      }
+    },
+    {
+      "name": "Stanford GPS Lab MAAST SBAS/WAAS L1/L5 DFMC availability simulation tool",
+      "identity": {
+        "repository": "Stanford-GPS-Lab/MAAST",
+        "revision": "7d32b049c62d55f90478248de04bec956fdeeeb4"
+      }
+    },
+    {
+      "name": "pyModeS Mode-S and 1090ES ADS-B CPR decoder",
+      "identity": {
+        "repository": "junzis/pyModeS",
+        "revision": "4bf083284c0d9878ca0c88f16b9b5f6514ca194a"
+      }
+    },
+    {
+      "name": "Paparazzi UAV airborne ISA altimetry, geodetic, and INS vertical navigation stack",
+      "identity": {
+        "repository": "paparazzi/paparazzi",
+        "revision": "2c5465fb589367e67caddf002d8aa2a658c9e95f"
+      }
+    },
+    {
+      "name": "RAIM with Optimal Integrity and Continuity Allocations Under Multiple Failures (Blanch, Walter & Enge, IEEE TAES 2010)",
+      "identity": {
+        "doi": "10.1109/TAES.2010.5545186",
+        "venue": "IEEE Transactions on Aerospace and Electronic Systems 46(3), pp. 1235-1247, July 2010"
+      }
+    },
+    {
+      "name": "Baseline Advanced RAIM User Algorithm and Possible Improvements (Blanch et al., IEEE TAES 2015)",
+      "identity": {
+        "doi": "10.1109/TAES.2014.130739",
+        "venue": "IEEE Transactions on Aerospace and Electronic Systems 51(1), pp. 713-732, January 2015"
+      }
+    },
+    {
+      "name": "pyModeS: Decoding Mode-S Surveillance Data for Open Air Transportation Research (Sun et al., IEEE TITS 2019)",
+      "identity": {
+        "doi": "10.1109/TITS.2019.2914770",
+        "venue": "IEEE Transactions on Intelligent Transportation Systems 21(7), 2019"
+      }
+    },
+    {
+      "name": "ICAO Doc 8168 PANS-OPS Volume III (Cold Temperature Altitude Corrections and Baro-VNAV)",
+      "identity": {
+        "standard": "ICAO Doc 8168 (PANS-OPS, Volume III, Part II, Chapter 4)"
+      }
+    },
+    {
+      "name": "RTCA DO-229 WAAS/SBAS MOPS and EUROCAE ED-259A DFMC SBAS MOPS",
+      "identity": {
+        "standard": "RTCA DO-229 / EUROCAE ED-259A"
+      }
+    },
+    {
+      "name": "RTCA DO-260B / DO-260C 1090 MHz Extended Squitter ADS-B MOPS (CPR Algorithm)",
+      "identity": {
+        "standard": "RTCA DO-260B / DO-260C (Section A.1.7)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

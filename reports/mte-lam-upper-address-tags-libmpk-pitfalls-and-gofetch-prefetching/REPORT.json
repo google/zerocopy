@@ -1,0 +1,74 @@
+{
+  "topics": [
+    "isa/upper-address-pointer-tagging",
+    "security/data-memory-dependent-prefetchers",
+    "systems/mpk-pku-domain-isolation",
+    "verification/silicon-tagging-contracts"
+  ],
+  "subjects": [
+    {
+      "name": "GoFetch DMP reverse-engineering and cryptographic PoC artifact",
+      "identity": {
+        "repository": "FPSG-UIUC/gofetch",
+        "revision": "13e2533b930f1ece5f0cee4969c0f0f184f65854"
+      }
+    },
+    {
+      "name": "Augury Apple Silicon DMP probe suite",
+      "identity": {
+        "repository": "FPSG-UIUC/augury",
+        "revision": "e38f7232e579c071f195fb4320fc013c7a56e443"
+      }
+    },
+    {
+      "name": "libmpk Intel MPK virtualization library and kernel patch",
+      "identity": {
+        "repository": "sslab-gatech/libmpk",
+        "revision": "a0c86673783643aa9e9045606cf7a35b30488bc6"
+      }
+    },
+    {
+      "name": "Linux kernel AArch64 TBI/MTE/PAC and x86-64 LA57/LAM/PKRU subsystems",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "65e4fd942f72a9dba0e4e257290c4fa1aa756854"
+      }
+    },
+    {
+      "name": "Arm AArch64 ELF PAuthABI and MemtagABI specifications",
+      "identity": {
+        "repository": "ARM-software/abi-aa",
+        "revision": "9f9e067e6c6a5d3c5c8326756500cdbd940b8ff7"
+      }
+    },
+    {
+      "name": "Augury: Using Data Memory-Dependent Prefetchers to Leak Data at Rest (Vicarte et al., IEEE S&P 2022)",
+      "identity": {
+        "doi": "10.1109/SP46214.2022.9833570",
+        "venue": "IEEE Symposium on Security and Privacy 2022, pp. 1491-1505"
+      }
+    },
+    {
+      "name": "GoFetch: Breaking Constant-Time Cryptographic Implementations Using Data Memory-Dependent Prefetchers (Chen et al., USENIX Security 2024)",
+      "identity": {
+        "venue": "33rd USENIX Security Symposium (USENIX Security 2024)",
+        "url": "https://gofetch.fail/"
+      }
+    },
+    {
+      "name": "libmpk: Software Abstraction for Intel Memory Protection Keys (Park et al., USENIX ATC 2019)",
+      "identity": {
+        "venue": "2019 USENIX Annual Technical Conference (USENIX ATC 19), pp. 241-254",
+        "url": "https://www.usenix.org/conference/atc19/presentation/park-soyeon"
+      }
+    },
+    {
+      "name": "PKU Pitfalls: Attacks on PKU-based Memory Isolation Systems (Connor et al., USENIX Security 2020)",
+      "identity": {
+        "venue": "29th USENIX Security Symposium (USENIX Security 20), pp. 1409-1426",
+        "url": "https://www.usenix.org/conference/usenixsecurity20/presentation/connor"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

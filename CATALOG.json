@@ -9613,6 +9613,84 @@
         "tooling/stpa-hazard-analysis"
       ]
     },
+    "baro-vnav-cold-altimetry-araim-chi-square-and-pymodes-cpr": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "JSBSim-Team/jsbsim",
+            "revision": "3f153c18a2518f8472e37c89e70444b1c671b700"
+          },
+          "name": "JSBSim flight dynamics standard atmosphere models"
+        },
+        {
+          "identity": {
+            "repository": "Stanford-GPS-Lab/MAAST",
+            "revision": "7d32b049c62d55f90478248de04bec956fdeeeb4"
+          },
+          "name": "Stanford GPS Lab MAAST SBAS/WAAS L1/L5 DFMC availability simulation tool"
+        },
+        {
+          "identity": {
+            "repository": "junzis/pyModeS",
+            "revision": "4bf083284c0d9878ca0c88f16b9b5f6514ca194a"
+          },
+          "name": "pyModeS Mode-S and 1090ES ADS-B CPR decoder"
+        },
+        {
+          "identity": {
+            "repository": "paparazzi/paparazzi",
+            "revision": "2c5465fb589367e67caddf002d8aa2a658c9e95f"
+          },
+          "name": "Paparazzi UAV airborne ISA altimetry, geodetic, and INS vertical navigation stack"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TAES.2010.5545186",
+            "venue": "IEEE Transactions on Aerospace and Electronic Systems 46(3), pp. 1235-1247, July 2010"
+          },
+          "name": "RAIM with Optimal Integrity and Continuity Allocations Under Multiple Failures (Blanch, Walter & Enge, IEEE TAES 2010)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TAES.2014.130739",
+            "venue": "IEEE Transactions on Aerospace and Electronic Systems 51(1), pp. 713-732, January 2015"
+          },
+          "name": "Baseline Advanced RAIM User Algorithm and Possible Improvements (Blanch et al., IEEE TAES 2015)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TITS.2019.2914770",
+            "venue": "IEEE Transactions on Intelligent Transportation Systems 21(7), 2019"
+          },
+          "name": "pyModeS: Decoding Mode-S Surveillance Data for Open Air Transportation Research (Sun et al., IEEE TITS 2019)"
+        },
+        {
+          "identity": {
+            "standard": "ICAO Doc 8168 (PANS-OPS, Volume III, Part II, Chapter 4)"
+          },
+          "name": "ICAO Doc 8168 PANS-OPS Volume III (Cold Temperature Altitude Corrections and Baro-VNAV)"
+        },
+        {
+          "identity": {
+            "standard": "RTCA DO-229 / EUROCAE ED-259A"
+          },
+          "name": "RTCA DO-229 WAAS/SBAS MOPS and EUROCAE ED-259A DFMC SBAS MOPS"
+        },
+        {
+          "identity": {
+            "standard": "RTCA DO-260B / DO-260C (Section A.1.7)"
+          },
+          "name": "RTCA DO-260B / DO-260C 1090 MHz Extended Squitter ADS-B MOPS (CPR Algorithm)"
+        }
+      ],
+      "topics": [
+        "domains/baro-vnav-altimetry-safety",
+        "domains/araim-integrity-monitoring",
+        "systems/adsb-mode-s-cpr-decoding",
+        "verification/airborne-navigation-envelopes"
+      ]
+    },
     "bazel-reapi-merkle-action-caches-symlink-sandboxes-and-content-defined-cas": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -40969,6 +41047,80 @@
         "verification/equivalence",
         "verification/parsers",
         "compilers/codegen"
+      ]
+    },
+    "mte-lam-upper-address-tags-libmpk-pitfalls-and-gofetch-prefetching": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "FPSG-UIUC/gofetch",
+            "revision": "13e2533b930f1ece5f0cee4969c0f0f184f65854"
+          },
+          "name": "GoFetch DMP reverse-engineering and cryptographic PoC artifact"
+        },
+        {
+          "identity": {
+            "repository": "FPSG-UIUC/augury",
+            "revision": "e38f7232e579c071f195fb4320fc013c7a56e443"
+          },
+          "name": "Augury Apple Silicon DMP probe suite"
+        },
+        {
+          "identity": {
+            "repository": "sslab-gatech/libmpk",
+            "revision": "a0c86673783643aa9e9045606cf7a35b30488bc6"
+          },
+          "name": "libmpk Intel MPK virtualization library and kernel patch"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "65e4fd942f72a9dba0e4e257290c4fa1aa756854"
+          },
+          "name": "Linux kernel AArch64 TBI/MTE/PAC and x86-64 LA57/LAM/PKRU subsystems"
+        },
+        {
+          "identity": {
+            "repository": "ARM-software/abi-aa",
+            "revision": "9f9e067e6c6a5d3c5c8326756500cdbd940b8ff7"
+          },
+          "name": "Arm AArch64 ELF PAuthABI and MemtagABI specifications"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP46214.2022.9833570",
+            "venue": "IEEE Symposium on Security and Privacy 2022, pp. 1491-1505"
+          },
+          "name": "Augury: Using Data Memory-Dependent Prefetchers to Leak Data at Rest (Vicarte et al., IEEE S&P 2022)"
+        },
+        {
+          "identity": {
+            "url": "https://gofetch.fail/",
+            "venue": "33rd USENIX Security Symposium (USENIX Security 2024)"
+          },
+          "name": "GoFetch: Breaking Constant-Time Cryptographic Implementations Using Data Memory-Dependent Prefetchers (Chen et al., USENIX Security 2024)"
+        },
+        {
+          "identity": {
+            "url": "https://www.usenix.org/conference/atc19/presentation/park-soyeon",
+            "venue": "2019 USENIX Annual Technical Conference (USENIX ATC 19), pp. 241-254"
+          },
+          "name": "libmpk: Software Abstraction for Intel Memory Protection Keys (Park et al., USENIX ATC 2019)"
+        },
+        {
+          "identity": {
+            "url": "https://www.usenix.org/conference/usenixsecurity20/presentation/connor",
+            "venue": "29th USENIX Security Symposium (USENIX Security 20), pp. 1409-1426"
+          },
+          "name": "PKU Pitfalls: Attacks on PKU-based Memory Isolation Systems (Connor et al., USENIX Security 2020)"
+        }
+      ],
+      "topics": [
+        "isa/upper-address-pointer-tagging",
+        "security/data-memory-dependent-prefetchers",
+        "systems/mpk-pku-domain-isolation",
+        "verification/silicon-tagging-contracts"
       ]
     },
     "multi-logic-and-multi-paradigm-verification-composition": {
