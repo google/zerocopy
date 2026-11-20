@@ -1,0 +1,113 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "verification/refinement",
+    "pl/subtyping-and-variance",
+    "pl/memory-reinterpretation",
+    "rust/transmute",
+    "rust/validity-invariant",
+    "rust/interior-mutability",
+    "rustc/transmutability",
+    "zerocopy/transmute",
+    "security/memory-safety"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "rustc transmutability checker (rustc_transmute)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "5b216e01a117532b30f061f3dff8a61408113c77",
+        "path": "compiler/rustc_transmute/src/maybe_transmutable/mod.rs"
+      }
+    },
+    {
+      "name": "rustc UI test for transmutations between references to UnsafeCell",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "5b216e01a117532b30f061f3dff8a61408113c77",
+        "path": "tests/ui/transmutability/references/unsafecell.rs"
+      }
+    },
+    {
+      "name": "zerocopy transmute and try_transmute macros",
+      "identity": {
+        "crate": "zerocopy",
+        "version": "0.8.63",
+        "crate_checksum_sha256": "e5fe1f8f1b06191a00962174c61aa5005e0bb391a6d80d07e24d115c01a92ed8",
+        "url": "https://docs.rs/zerocopy/0.8.63/zerocopy/"
+      }
+    },
+    {
+      "name": "The Rust Reference: Behavior considered undefined",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "e24eecf97b0c9a6dbac67191098204dc8a190aaa",
+        "path": "src/behavior-considered-undefined.md",
+        "release": "Rust 1.100.0",
+        "url": "https://doc.rust-lang.org/reference/behavior-considered-undefined.html"
+      }
+    },
+    {
+      "name": "The Rust Reference: Subtyping and variance",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "e24eecf97b0c9a6dbac67191098204dc8a190aaa",
+        "path": "src/subtyping.md",
+        "release": "Rust 1.100.0",
+        "url": "https://doc.rust-lang.org/reference/subtyping.html"
+      }
+    },
+    {
+      "name": "core::mem::TransmuteFrom and core::mem::Assume (unstable; nightly documentation)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "6905905bb7727fd0f9223f5fdc9ad4e62236d5a2",
+        "path": "library/core/src/mem/transmutability.rs",
+        "version": "1.102.0-nightly (6905905bb 2026-11-19)",
+        "url": "https://doc.rust-lang.org/nightly/core/mem/trait.TransmuteFrom.html"
+      }
+    },
+    {
+      "name": "MiniRust specification: representation relation",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "063d784186d3252bee242217f218223205c0b568",
+        "path": "spec/lang/representation.md"
+      }
+    },
+    {
+      "name": "Rust Unsafe Code Guidelines glossary: validity and safety invariant",
+      "identity": {
+        "repository": "rust-lang/unsafe-code-guidelines",
+        "revision": "d809f91e62968913d808e53397fbcf7cea762cce",
+        "path": "reference/src/glossary.md",
+        "url": "https://rust-lang.github.io/unsafe-code-guidelines/glossary.html#validity-and-safety-invariant"
+      }
+    },
+    {
+      "name": "RustHornBelt Coq development (artifact of the PLDI 2022 paper 'RustHornBelt: A Semantic Foundation for Functional Verification of Rust Programs with Unsafe Code')",
+      "identity": {
+        "doi": "10.1145/3519939.3523704",
+        "repository": "dewert99/rust-horn-belt",
+        "revision": "af47b28f38dd0cbeb620c2cb9ade29f0aad24c27"
+      }
+    },
+    {
+      "name": "The Java Language Specification, Java SE 21 edition",
+      "identity": {
+        "edition": "Java SE 21",
+        "url": "https://docs.oracle.com/javase/specs/jls/se21/html/"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

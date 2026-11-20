@@ -1,0 +1,550 @@
+{
+  "statements": {
+    "Toy.Transmute.boolV_to_byteV_im_sound_without_writes_unsound_with_dst_writes": {
+      "closure_sha256": "69f2a35eb42c213d6efd8a7361d03cff7c0d1c167cbdb4c8be36955435f20bfc",
+      "closure_size": 32,
+      "statement_sha256": "cdc9bac7c8fcf5da12b5e710212a038d198ace2765a69a12f150da7f0c47148d"
+    },
+    "Toy.Transmute.boolV_to_byteV_mut_violating_run": {
+      "closure_sha256": "4b726078e7ace860ae1d4dbccdba5f598a1ade5c690d9a4a0b5a855a9911f6b8",
+      "closure_size": 28,
+      "statement_sha256": "636baafd746a0c098d90a68679591de1743f794f9087b16a635311db8a783c65"
+    },
+    "Toy.Transmute.boolV_to_byteV_value_and_shared_sound": {
+      "closure_sha256": "a8351b4620851ad5aafd6b4b6f91a39c14570046995ee1fb8a955da82820b3bd",
+      "closure_size": 32,
+      "statement_sha256": "7f475a1dde2cba45bea2618ff3d257bf9232798c771d0247f5c95cf4319db52b"
+    },
+    "Toy.Transmute.byteV_to_boolV_unsound_even_by_value": {
+      "closure_sha256": "ac9a6d6cb1b8fc6fa6ebe1964d1488332cf95e989f34d5162aa7d25bc2e5b473",
+      "closure_size": 35,
+      "statement_sha256": "29d0503a9858f2d8a861d25656b2f818e8cefd14193fb19bab46f3d3536139f5"
+    },
+    "Toy.Transmute.checkedSound_mutProtocol_iff_satisfiable_meet_imp_includes_rev": {
+      "closure_sha256": "d29276313e75ec3dc99535c2378ea537f31531890fe214a3f085c1ceca299633",
+      "closure_size": 26,
+      "statement_sha256": "f3a70810bf5ec631380079b325d5343c1755bfd19ac0c3519fac516c896426bd"
+    },
+    "Toy.Transmute.checkedSound_mut_escapes_impossibility": {
+      "closure_sha256": "fa1f78bcaf457747e897a9e3df1467dc7bab3b2561a8af0821ff60bced0ceebd",
+      "closure_size": 31,
+      "statement_sha256": "666b0c2fbc9813dd407ed27dd4d2d37a7375d2c1996f6540e113b19878b92271"
+    },
+    "Toy.Transmute.checkedSound_mut_needs_includes_rev": {
+      "closure_sha256": "048004635b0b689743cf426d13022959d264cafc38bb3eddf89e28acfad23616",
+      "closure_size": 30,
+      "statement_sha256": "67f3643746b445df65f4bedcefb52d890a0009fa9ec1f318e1afe6b0328f07b6"
+    },
+    "Toy.Transmute.checkedSound_mut_nonvacuous": {
+      "closure_sha256": "048004635b0b689743cf426d13022959d264cafc38bb3eddf89e28acfad23616",
+      "closure_size": 30,
+      "statement_sha256": "be9d4126d4fc613fa1447cc1dc7b550dfc98827b6c6177041b574f5ceb9c17bc"
+    },
+    "Toy.Transmute.checkedSound_mut_rhs_needs_satisfiable_meet_guard": {
+      "closure_sha256": "73c83c62457c18346d837246902dc054881de47b7a73ffef6d4ba958b72c2caf",
+      "closure_size": 30,
+      "statement_sha256": "f73880c0eefe9dfd0884f5208528dd0266e7883f30e37c13269eb8bc05b5223a"
+    },
+    "Toy.Transmute.checkedSound_sharedIM_iff_satisfiable_meet_imp_srcWrites_includes_and_dstWrites_includes_rev": {
+      "closure_sha256": "a00df1e3ea31b8847bad294166a7bfc970fca26c82c5f67acb759f8e93785f0a",
+      "closure_size": 27,
+      "statement_sha256": "400adbd776d2a7b052ca254988eb87fa886b5decb855f70191b4e3cd9c23a340"
+    },
+    "Toy.Transmute.checkedSound_sharedIM_needs_dstWrites_includes_rev": {
+      "closure_sha256": "b8a0d0d81f950419f56d86e5494e63e99da06bf7ac3e261acc597b2ce8a0af9b",
+      "closure_size": 31,
+      "statement_sha256": "22ec66ccb30d29da285fdcf1f49507c4d0b88173636614df54be923ec05df4e1"
+    },
+    "Toy.Transmute.checkedSound_sharedIM_needs_srcWrites_includes": {
+      "closure_sha256": "b8a0d0d81f950419f56d86e5494e63e99da06bf7ac3e261acc597b2ce8a0af9b",
+      "closure_size": 31,
+      "statement_sha256": "de22e5e734786990e8b2a7d397c18ef795a3699a4d2a0c5190c62581f2eca1b3"
+    },
+    "Toy.Transmute.checkedSound_sharedIM_nonvacuous": {
+      "closure_sha256": "56597aa6b73ae335167598e538bef7c803cd246ec8bcb79b4cedba4563b7ef5d",
+      "closure_size": 32,
+      "statement_sha256": "3df9b39155857677e257c9bc925586c1882dfb8c125bc8df30c44898e261d904"
+    },
+    "Toy.Transmute.checkedSound_sharedIM_rhs_needs_dstWrites_guard": {
+      "closure_sha256": "b8a0d0d81f950419f56d86e5494e63e99da06bf7ac3e261acc597b2ce8a0af9b",
+      "closure_size": 31,
+      "statement_sha256": "782249652b9297e93a864be1dc957b797248e73fe3205d9a6076b7ed0178d728"
+    },
+    "Toy.Transmute.checkedSound_sharedIM_rhs_needs_satisfiable_meet_guard": {
+      "closure_sha256": "2740667fae57de7db235e391c679dd678664d0de782b449789ab40a5e139f34d",
+      "closure_size": 31,
+      "statement_sha256": "71662e6d192cb333d56ecf6c77148a7477cf4c3a6669a326996eb125e788ba49"
+    },
+    "Toy.Transmute.checkedSound_sharedIM_rhs_needs_srcWrites_guard": {
+      "closure_sha256": "b8a0d0d81f950419f56d86e5494e63e99da06bf7ac3e261acc597b2ce8a0af9b",
+      "closure_size": 31,
+      "statement_sha256": "665ae7d3520a88b8f37e8346147e93c34e6f9da7f3a2146583fe93982ff8f76b"
+    },
+    "Toy.Transmute.checkedSound_sharedProtocol": {
+      "closure_sha256": "7aac799046a8e6b18bddbffd7a1c158024b08930dc5f06d09b037dff6251a3d6",
+      "closure_size": 23,
+      "statement_sha256": "51b534ddebb96570146b7d52218b24b1a88d3aef5bdcfec0e0f37b5fa9cca947"
+    },
+    "Toy.Transmute.checkedSound_sharedProtocol_nonvacuous": {
+      "closure_sha256": "f392a3b7fc746753d3c2a1129fac271b2c2d0a2773e6cb05266bd9e19e7443fe",
+      "closure_size": 31,
+      "statement_sha256": "36c2e224f6d932d5e43c08fe7a42bdcf9e110f26d7096e4e513e168d3a79bd82"
+    },
+    "Toy.Transmute.checkedSound_valueProtocol": {
+      "closure_sha256": "701dfa795d1a0e43549a70391f336b6cbc96cb24d27d6dcee53784bcbcc77160",
+      "closure_size": 23,
+      "statement_sha256": "cd121ad2973c63dbd217c42e2445c4057c47c7ca9590a89ffceb3475a7104c3a"
+    },
+    "Toy.Transmute.checkedSound_valueProtocol_nonvacuous": {
+      "closure_sha256": "f6e07be2fe46cfdea6403cdb6d0d1f2857cbf4ffa6baccd297a3bc24a6c3a235",
+      "closure_size": 31,
+      "statement_sha256": "f16c728fbb646b32e18c823baac2c96ad1b48cb3b3ea032f5ecc17be130f0a81"
+    },
+    "Toy.Transmute.mutSound_boolV_boolV'": {
+      "closure_sha256": "a68c72599fb77d172f47dd7f9cf2444f2090d0641b5b17c8ab525f091154f01d",
+      "closure_size": 28,
+      "statement_sha256": "aaf8a25579530670c8e7c6e47657ecf1c8588b54fb1395c4a37fa2e38faf2375"
+    },
+    "Toy.Transmute.mutSound_eq_needs_satisfiable": {
+      "closure_sha256": "2ba9bdec6bb38e2531971d7e431aefd189bf28774829058ecc65048be66107c3",
+      "closure_size": 28,
+      "statement_sha256": "b9e50517db3ead1de29518e23c01be8964e4f7e33ac068cedadce83beb2995df"
+    },
+    "Toy.Transmute.mutSound_eq_nonvacuous": {
+      "closure_sha256": "d7b0dc773bcc6119feed576219f0f2b464bd427ca5b94809868a9faa6a64ef63",
+      "closure_size": 30,
+      "statement_sha256": "31a2ae375c149e3ffed504986fe1ccc01bee1bd1a998c497dab5d090523c904f"
+    },
+    "Toy.Transmute.mutSound_exact_nonvacuous": {
+      "closure_sha256": "a30fada57e40734a69ee8d368bc324cb09f3b59207633ed601a87da5468c6fed",
+      "closure_size": 31,
+      "statement_sha256": "6941b99fb59dedfe4773ed17fa9a421c8258970f5947e1be3a8efb001abc163b"
+    },
+    "Toy.Transmute.mutSound_from_meet_fails_example": {
+      "closure_sha256": "3318ac68ea207c41d6f975cd002385d9d0fb22a73b98fd06aeffbe0252531f41",
+      "closure_size": 31,
+      "statement_sha256": "4c4d7ab56a393de9563f5f939c4166f017bd3978a022da933f1aa54d5ae7d857"
+    },
+    "Toy.Transmute.mutSound_from_meet_left_iff_includes_of_satisfiable_meet": {
+      "closure_sha256": "db5aba04ae434324a78caccfdc80ebeaaa73f72685980327169065ab2ab7171d",
+      "closure_size": 27,
+      "statement_sha256": "dd487e1f5b8e0b8d7adf761452a76f12e13b27292afcdc2ea81481c279a9386d"
+    },
+    "Toy.Transmute.mutSound_from_meet_needs_joint_satisfiable": {
+      "closure_sha256": "8aea55bb82af920f42393abe36ff83b0d40874a84be3ca337ce3bd7418ca369f",
+      "closure_size": 31,
+      "statement_sha256": "1545c2a7a2f5b7bf46db5c3fb5277c5dca0d7e6359cff676a1ea2d47a09ea1a8"
+    },
+    "Toy.Transmute.mutSound_from_meet_needs_satisfiable": {
+      "closure_sha256": "9ecc87200315755fca06332b05c11684e772937560d021197968de3151e9c718",
+      "closure_size": 29,
+      "statement_sha256": "bf039dad6dbd338640cfa36275129171cc8820dfaf5a1f0bb828478f1012ae76"
+    },
+    "Toy.Transmute.mutSound_from_meet_nonvacuous": {
+      "closure_sha256": "fd5c456ee21752d40d949ddb65b545b17b5f11a2d0f6913fdfbc50f572f6cdb6",
+      "closure_size": 32,
+      "statement_sha256": "c3b8ae421539067c4625cc74dca04dc72f6f19db1b4b130758b84ca4636398d0"
+    },
+    "Toy.Transmute.mutSound_iff_includes_and_satisfiable_imp_includes_rev": {
+      "closure_sha256": "acaf543265400fb2c446a3b33890cd5a6d239a4c69cc29dbf669fdf95f70e9f0",
+      "closure_size": 26,
+      "statement_sha256": "b558dac72952e46c2d0bea7ac353e4d3819e29d5d589c33d81bf4c9ebd5f759e"
+    },
+    "Toy.Transmute.mutSound_iff_sharedIMSound_dstWrites": {
+      "closure_sha256": "855a26592433dd84a86d8b7b13da58bcd9baa7afad308562f86bfa4bc7a5b9cb",
+      "closure_size": 28,
+      "statement_sha256": "69875a46be367c0eb905b974b98ab396c753a0547471af47025481453b5f6413"
+    },
+    "Toy.Transmute.mutSound_iff_sharedIM_needs_dstWrites": {
+      "closure_sha256": "8b57bc39f097f59594fef227a4b5f3216e9ab0440221847107f8fb57adb29a05",
+      "closure_size": 32,
+      "statement_sha256": "6b0ae6da4618cbdf7cf4b1aadbc44f5b54915e00c35cf37ea0c93d49b3a87f06"
+    },
+    "Toy.Transmute.mutSound_iff_sharedIM_nonvacuous": {
+      "closure_sha256": "49afbf4f10768e6b73d595fa66dbc7c3cf02c8bd52d19088d7c67ae6de36007a",
+      "closure_size": 32,
+      "statement_sha256": "a711269315835b1908ef237347b77ca49adb55110a1b485f6b49be72eafbcfc3"
+    },
+    "Toy.Transmute.mutSound_iff_validityEq_of_satisfiable": {
+      "closure_sha256": "450e5496d6dcc27afb2a8ffc2ffa6e8a5ce4462ae6ace7b3bac89c3bc5e9705f",
+      "closure_size": 26,
+      "statement_sha256": "e9386db9b7bcd2987878038c505cedadd2534ea47f5c2a5cdbe2ed9b7bd1bf4c"
+    },
+    "Toy.Transmute.mutSound_needs_includes_rev": {
+      "closure_sha256": "b6bdc8ddb563be8c0cd415a5ada3e257635f2173b47e6d25b7f1d2affaf2878c",
+      "closure_size": 30,
+      "statement_sha256": "7f4a59d335cd9b836b1603ac29362f092fc0a5ee49e555a2cc019e5d4246f249"
+    },
+    "Toy.Transmute.mutSound_rhs_needs_satisfiable_guard": {
+      "closure_sha256": "5f935770e0c51ab5a42cde8f1353fe80b5c9be5df7fbacea9f69aee0f0ca51a4",
+      "closure_size": 28,
+      "statement_sha256": "0a1ac8511d23ac9bf76c9a4b0c75e39438d428776985089dbe3934e838289724"
+    },
+    "Toy.Transmute.mutSound_symm_needs_mutSound": {
+      "closure_sha256": "884975d0d856bdd3c47ad3916819971f0470f3d8e418f826f06eea8c6e732e6f",
+      "closure_size": 29,
+      "statement_sha256": "623f85b1c1d9f694249c107f6ed70831fc1a5cccf034e7ea35bd887310dccea4"
+    },
+    "Toy.Transmute.mutSound_symm_needs_satisfiable": {
+      "closure_sha256": "00b38f700f8b3dab7b1b05f662a8aa5c35c675fe00d4b7eca1d16e4fdfcc7abb",
+      "closure_size": 27,
+      "statement_sha256": "ec62ecaf81f62fe9856c8caaffb5a88037676bf16d9d27f0d4f4c1de8ce41100"
+    },
+    "Toy.Transmute.mutSound_symm_nonvacuous": {
+      "closure_sha256": "36ac454a7b5eec88663718afcedb01807ab1fbb3d017034b1c44544c70d99c9c",
+      "closure_size": 29,
+      "statement_sha256": "f5cfa609a0639a59d65827981c09799f99847729ab80d061e8c6829e0785caec"
+    },
+    "Toy.Transmute.mutSound_symm_of_satisfiable": {
+      "closure_sha256": "c6307d934d54744641068a5bea467143830e9efb88f4a8dac53ff7e28a6c4d7c",
+      "closure_size": 25,
+      "statement_sha256": "230f324af41c09a9b446b32a1435ea9f319749ec90ea4d925371c467fc954480"
+    },
+    "Toy.Transmute.mutSound_to_join_left_iff_includes_rev_of_satisfiable": {
+      "closure_sha256": "1e9c409ad5059e3a0987110eab8fa444202b57b4ab1e3670a269e0a3297ff15d",
+      "closure_size": 27,
+      "statement_sha256": "bed7c8ed5d9b37484fce05a333ebd6eff39ce3da8ab78936e5fe94b31a25b64c"
+    },
+    "Toy.Transmute.mutSound_to_join_needs_includes_rev": {
+      "closure_sha256": "7800909411d9ff3d6ee0820cc1d4072daacc3a158f70be7393b3402fc97ec5fe",
+      "closure_size": 31,
+      "statement_sha256": "022bb9ddca14b7614162ed0f5ab02087fc50b631cdb663947e9af4f792cac6f3"
+    },
+    "Toy.Transmute.mutSound_to_join_needs_satisfiable": {
+      "closure_sha256": "361bb7d73d091ce3a69a4e09db811979c97b3245e7c83e408ba349f698ad197d",
+      "closure_size": 29,
+      "statement_sha256": "ceb71fe9350f9e6553e0571667404027888daba3e464a0ffa67bea18a539d8f8"
+    },
+    "Toy.Transmute.mutSound_to_join_nonvacuous": {
+      "closure_sha256": "3274e818883fcb0d0bfa69375513c3e91c2237d7c368933c78ef15ef51a50972",
+      "closure_size": 31,
+      "statement_sha256": "c518851441936a0bc3841b5c3231f89e00bc48d8cfd2943e6b942941b238f304"
+    },
+    "Toy.Transmute.mutSound_trans": {
+      "closure_sha256": "4bd61699a2cbebc6c7a5f771f6c51e833fe698234c6061f04af9d6c4e573d620",
+      "closure_size": 24,
+      "statement_sha256": "6d32d1106be9dbf7109a99992269f57047b2114be0cbfa3108835d018c2372bf"
+    },
+    "Toy.Transmute.mutSound_trans_needs_first": {
+      "closure_sha256": "dda29a32c6fe1365e8cffe8451986425719103796a4bd4ea10b5dcacc1587b6a",
+      "closure_size": 28,
+      "statement_sha256": "90eabebadd1aa4405c92b8adf24606e396169a7d6b536d32e4863dd56a0525bd"
+    },
+    "Toy.Transmute.mutSound_trans_needs_second": {
+      "closure_sha256": "dda29a32c6fe1365e8cffe8451986425719103796a4bd4ea10b5dcacc1587b6a",
+      "closure_size": 28,
+      "statement_sha256": "110be2b23f182a96c3de37d6a118ea19ca0b921583e1a85f63fb18539d48c0c8"
+    },
+    "Toy.Transmute.mutSound_trans_nonvacuous": {
+      "closure_sha256": "566c9c224ebdff7cb5a2ee2ecd860d0266800df8cd8caca591c63f7277fa26f4",
+      "closure_size": 30,
+      "statement_sha256": "fcddf1330b056261e4ba71a092fb1fd711e554ca8d53455221d4e95ae3151321"
+    },
+    "Toy.Transmute.mutSound_trans_uninhabited_nonvacuous": {
+      "closure_sha256": "be772b41d6e00d0c8ae33e07159e6f77f77d2b3c97dd962e71cf31035e087970",
+      "closure_size": 31,
+      "statement_sha256": "297e411bba6ad6eeb1ff3ae2663b3c64f91234eed63136ef8af1b24c940fb5ae"
+    },
+    "Toy.Transmute.not_mutSound_needs_not_validityEq": {
+      "closure_sha256": "d7b0dc773bcc6119feed576219f0f2b464bd427ca5b94809868a9faa6a64ef63",
+      "closure_size": 30,
+      "statement_sha256": "8a602da29f0af7fffc990527ccb1d082dd2182919e4b3f02b59b1c6c1eb531fc"
+    },
+    "Toy.Transmute.not_mutSound_needs_satisfiable": {
+      "closure_sha256": "2ba9bdec6bb38e2531971d7e431aefd189bf28774829058ecc65048be66107c3",
+      "closure_size": 28,
+      "statement_sha256": "884eee943b0994b708e7062b752149ff4f05bdd1ea2dd3e66391f4791f0b3cd0"
+    },
+    "Toy.Transmute.not_mutSound_nonvacuous": {
+      "closure_sha256": "7e1a556571b45bd5e187db6e1e25ddca8aec048ec9ba492cdfb3df930c612ff1",
+      "closure_size": 30,
+      "statement_sha256": "3530b274224e35858ceb80f35c83389242a1748b0980af962f5b9492c43b1302"
+    },
+    "Toy.Transmute.not_mutSound_of_satisfiable_of_not_validityEq": {
+      "closure_sha256": "450e5496d6dcc27afb2a8ffc2ffa6e8a5ce4462ae6ace7b3bac89c3bc5e9705f",
+      "closure_size": 26,
+      "statement_sha256": "5514a9dcf338223264ad1ba8275d1e4ec34130413d89e02c66fb469d5349647a"
+    },
+    "Toy.Transmute.not_mutSound_positive_control_weaker_casts": {
+      "closure_sha256": "8e4226ffa15df1800fc8db8003c7b3f364594d41b16a31eb8373ce1f9b9a535d",
+      "closure_size": 37,
+      "statement_sha256": "65b67c5a4ac5cf94f4a8ffb8492ff193c139280cee9c58f4260be7ed8b4d7f1c"
+    },
+    "Toy.Transmute.not_sharedSound_byteV_boolV": {
+      "closure_sha256": "7b9db16168d24a34dcba0d3c3c924ff161ac08ac5d2522ad80dfd780edc1ca48",
+      "closure_size": 28,
+      "statement_sha256": "020009b66ba8f185100dc1fa357f851db8b15919d82271a8b3b8a4648d7b9478"
+    },
+    "Toy.Transmute.not_valueSound_byteV_boolV": {
+      "closure_sha256": "af4e36fcd35a65e0e00b0a7d478024e405fe6212057604d653005d655d60cbff",
+      "closure_size": 28,
+      "statement_sha256": "c82f443c19f87c0c4f82e3d4d6e154a0e4da3d7bbb6752ba6c77e70825a45a7b"
+    },
+    "Toy.Transmute.sharedIMSound_dstWrites_iff_validityEq_of_satisfiable": {
+      "closure_sha256": "c9c2a973cf149afd7feb43ed296f8c2e535942a68421ee87f4c9b998b9717924",
+      "closure_size": 27,
+      "statement_sha256": "9dae542c39555ed31abc7dda445d14dee143374b33d022004fed37f6210bcb0b"
+    },
+    "Toy.Transmute.sharedIMSound_eq_needs_dstWrites": {
+      "closure_sha256": "155827f8e0d94547bba5a64185e77f434363bc96bb2a1a8d784025222f70243f",
+      "closure_size": 31,
+      "statement_sha256": "09af8c8dc1bd73e43eaf5cfb808b0ee2cf7585852e10b547b5cdc676dbb99554"
+    },
+    "Toy.Transmute.sharedIMSound_eq_needs_satisfiable": {
+      "closure_sha256": "2262424bae698b232556feb7120739cb5b379e0e651a12a9583087bd6a9e4188",
+      "closure_size": 29,
+      "statement_sha256": "98f22932aa83f40c71c15e5207f86a911ffbc0a9cbcad95ea2e617a648c0f405"
+    },
+    "Toy.Transmute.sharedIMSound_eq_nonvacuous": {
+      "closure_sha256": "aa0533907222466e19aeebea164707dfe37c90b23afa8beb7e52b1a59f164de4",
+      "closure_size": 31,
+      "statement_sha256": "f9a2f1d5cf2692a73ffab66b508e54c51925ef29bdcfdfb874b976dc35552172"
+    },
+    "Toy.Transmute.sharedIMSound_exact_nonvacuous": {
+      "closure_sha256": "28b2cb04fcb3f32d82ea55f2a564f7b56193dd4c053b00a52ea25d648ecd77ab",
+      "closure_size": 32,
+      "statement_sha256": "2f6d49be2d6eaf7cb60a2cf82e05a5c9d91cdc2019c21acf081ffc6c08d712c6"
+    },
+    "Toy.Transmute.sharedIMSound_iff_includes_and_dstWrites_imp_satisfiable_imp_includes_rev": {
+      "closure_sha256": "8bccd5aaec08e798be74f53daf8589b09aa7767c1e97819731c2f06fe4874720",
+      "closure_size": 27,
+      "statement_sha256": "2578bd25e372ae87935843fccf4abec28936a2a519d67fa08ce3ac89e14dc2d1"
+    },
+    "Toy.Transmute.sharedIMSound_needs_includes": {
+      "closure_sha256": "aa0a2fd1a263803503674ad61f3795433d14175b4e3aab4e6a6cd0803c45de3a",
+      "closure_size": 30,
+      "statement_sha256": "594066fd35fea343baddd4a4df78d5cee7c8904d9fabc9f97da4c138ba5cbb27"
+    },
+    "Toy.Transmute.sharedIMSound_needs_includes_canonical": {
+      "closure_sha256": "a6394e84c2205f03ac67751bb974238e81facb7328ec8e0af05d78f10c577f3e",
+      "closure_size": 31,
+      "statement_sha256": "6f7be7df2d5a10eb104cdbc3774fc4ca11a8f7da3069d9eed129a49dd76264d8"
+    },
+    "Toy.Transmute.sharedIMSound_needs_includes_rev_canonical": {
+      "closure_sha256": "a6394e84c2205f03ac67751bb974238e81facb7328ec8e0af05d78f10c577f3e",
+      "closure_size": 31,
+      "statement_sha256": "d5757d0b7c258ce0ff88f801a730ac1875ff3a3e6c19c82c00d278658271a0be"
+    },
+    "Toy.Transmute.sharedIMSound_noDstWrites_iff_includes": {
+      "closure_sha256": "ca1de2d46f33afa6ba5c13766345634d3ff9f6da8f5a611ff596482310cb3557",
+      "closure_size": 26,
+      "statement_sha256": "cd8042f85726c4c741843667e7ec16ada67a89307375839a9ca23f57480c1054"
+    },
+    "Toy.Transmute.sharedIMSound_noDst_needs_noDstWrites": {
+      "closure_sha256": "aa0a2fd1a263803503674ad61f3795433d14175b4e3aab4e6a6cd0803c45de3a",
+      "closure_size": 30,
+      "statement_sha256": "39be4f38490545db0882a2c5295e892dde20fee4cbb5911371dcdb8e7b782784"
+    },
+    "Toy.Transmute.sharedIMSound_noDst_nonvacuous": {
+      "closure_sha256": "aa0a2fd1a263803503674ad61f3795433d14175b4e3aab4e6a6cd0803c45de3a",
+      "closure_size": 30,
+      "statement_sha256": "a548435588ea24e9ecdc8edd1d734c9dc2786da08fb8ddecb02e66776fd9b871"
+    },
+    "Toy.Transmute.sharedIMSound_noDst_trans_strict_nonvacuous": {
+      "closure_sha256": "1ae3229ea60293b05ad0ff522d25ab70f3ebbcbc1a6278e68f459c70c86f0ab3",
+      "closure_size": 31,
+      "statement_sha256": "17b1f5f80c1c97c05e15194a10132e57673e249d48bf255c82dc13d41aebfdd2"
+    },
+    "Toy.Transmute.sharedIMSound_rhs_needs_dstWrites_guard": {
+      "closure_sha256": "a6394e84c2205f03ac67751bb974238e81facb7328ec8e0af05d78f10c577f3e",
+      "closure_size": 31,
+      "statement_sha256": "dfed9dcdfef59614550078d2cb95e916c7e2424a0273d68fcc23628bf5a0d34e"
+    },
+    "Toy.Transmute.sharedIMSound_rhs_needs_satisfiable_guard": {
+      "closure_sha256": "2beb48e4ae9ecdfb96aa14b39922b0c7bec6fdc098f1783ef94849ca37f5b7f2",
+      "closure_size": 29,
+      "statement_sha256": "0f826238dd758473d69d68a2b1ae6356bec6f8c78ffcd1bdf57d4415174a2bcb"
+    },
+    "Toy.Transmute.sharedIMSound_trans": {
+      "closure_sha256": "c66f27a0f53353cdc441bcb2def413947076ccc2aede0e2dcc03ffc57b118f4d",
+      "closure_size": 25,
+      "statement_sha256": "b5a9f6efb08c463d15a02a1ce57f91754db86decbcb63d3bd2726b796a053d7e"
+    },
+    "Toy.Transmute.sharedIMSound_trans_needs_first": {
+      "closure_sha256": "5281af42ca66467dc4e8806672fdc9b2440087eda38ef3b1c12bd74e06555649",
+      "closure_size": 29,
+      "statement_sha256": "46b114e8ef636afb42c6c6925ea3c8c1adaaf31cba67abb1773985c7e992cd96"
+    },
+    "Toy.Transmute.sharedIMSound_trans_needs_second": {
+      "closure_sha256": "5281af42ca66467dc4e8806672fdc9b2440087eda38ef3b1c12bd74e06555649",
+      "closure_size": 29,
+      "statement_sha256": "c565107d36fe3d8f9111fafbca5e6e4529234e12ed499762ad74d53f9ef053a7"
+    },
+    "Toy.Transmute.sharedIMSound_trans_nonvacuous": {
+      "closure_sha256": "cc9dd18370e76f8f56d3509c870621253be8ee7c4fad6a34c5cc8d862f9ddcf4",
+      "closure_size": 31,
+      "statement_sha256": "b7206af6e8888e81fee005ac931618fcd5b24a33d2ecd059b17d8d85c2ac0d9f"
+    },
+    "Toy.Transmute.sharedIMSound_trans_uninhabited_nonvacuous": {
+      "closure_sha256": "86af1c71652b4a8bdb71c3d32da3aa87497fd426f1ba6061d7516fa396f7d9c6",
+      "closure_size": 32,
+      "statement_sha256": "1875024a182534725c5dd1104850937b030fc53471d608efdd21b0a5952178db"
+    },
+    "Toy.Transmute.sharedSound_boolV_byteV": {
+      "closure_sha256": "7b9db16168d24a34dcba0d3c3c924ff161ac08ac5d2522ad80dfd780edc1ca48",
+      "closure_size": 28,
+      "statement_sha256": "7f55e9d96f7ee3c849133c92ff6d6fb1425516db8c6de977c22bbf8366b1fa64"
+    },
+    "Toy.Transmute.sharedSound_from_meet_left": {
+      "closure_sha256": "70a9d88646c436793b539fb4196f2f087fd02851ada9c8c46aa112f33609fca0",
+      "closure_size": 25,
+      "statement_sha256": "bcbca9ad95efac059cc7e10e1dfcf6e270fb25d7ade3d9060f532780c0ec74be"
+    },
+    "Toy.Transmute.sharedSound_from_meet_left_nonvacuous": {
+      "closure_sha256": "958467c618fcf69be59fb4e118d750b45570c077947513ad0a4f263ebb2038b9",
+      "closure_size": 30,
+      "statement_sha256": "4f8b2ad9f62186f5e096e9bcd85a30f16c6ac2c84a345c9fe8b397e38e46d547"
+    },
+    "Toy.Transmute.sharedSound_from_meet_right": {
+      "closure_sha256": "70a9d88646c436793b539fb4196f2f087fd02851ada9c8c46aa112f33609fca0",
+      "closure_size": 25,
+      "statement_sha256": "c48dc4086007c94ce7c3e8afabb9cb408d31d1afe3ff543f6bba048a1c59f515"
+    },
+    "Toy.Transmute.sharedSound_from_meet_right_nonvacuous": {
+      "closure_sha256": "958467c618fcf69be59fb4e118d750b45570c077947513ad0a4f263ebb2038b9",
+      "closure_size": 30,
+      "statement_sha256": "2ccdca8fa6d674a9d4a3eda70bf96217635bbfc06ae2257025f34906368416e9"
+    },
+    "Toy.Transmute.sharedSound_iff_includes": {
+      "closure_sha256": "89d30311606cfa939e11203824972b06e062d2b053041883bf814e9519b79378",
+      "closure_size": 25,
+      "statement_sha256": "9f3bb8a97b105d5622bdbe2c48979a30d8a7bceee2e7ed4f69dd149140d64afa"
+    },
+    "Toy.Transmute.sharedSound_iff_includes_nonvacuous": {
+      "closure_sha256": "7a233629a0ce5a1c7fe4e36fd0c035d796a54f4c01fb9653508d7a063c1cf7c4",
+      "closure_size": 29,
+      "statement_sha256": "37d2232747bb5ba47b4f0916cc2a6e0efff110a78a794e1baa9411903b65105d"
+    },
+    "Toy.Transmute.sharedSound_join_iff": {
+      "closure_sha256": "35bd9632212475d298a1610be7444915210a29273f05d6de2d2bb07ef15ac7d1",
+      "closure_size": 25,
+      "statement_sha256": "fdcbeb915423ebbe39a9959ae9e1684e4e145e643dd5621baf50b00f8c50840f"
+    },
+    "Toy.Transmute.sharedSound_join_iff_needs_left": {
+      "closure_sha256": "60659b31dd57732a7bb2e622ee2ffc85238ec9885ba0a63c2a071a911068ba50",
+      "closure_size": 29,
+      "statement_sha256": "2008dfdcb5f160856d906c3ca5a4451553908d7b93fba74304bf75a272e32d6a"
+    },
+    "Toy.Transmute.sharedSound_join_iff_needs_right": {
+      "closure_sha256": "60659b31dd57732a7bb2e622ee2ffc85238ec9885ba0a63c2a071a911068ba50",
+      "closure_size": 29,
+      "statement_sha256": "cd41ae30200e89aa3d29f8f74d8e393f7d261b3de66142d89204236e01d65f02"
+    },
+    "Toy.Transmute.sharedSound_join_iff_nonvacuous": {
+      "closure_sha256": "56bc6c5e634bc2940b33551566c94118d4942e6176c6195a653d29fbe3325d6c",
+      "closure_size": 30,
+      "statement_sha256": "64d42281ae816d11913bff01d00169e7cd85d02b361b4aebf83b92055b53b315"
+    },
+    "Toy.Transmute.sharedSound_meet_iff": {
+      "closure_sha256": "70a9d88646c436793b539fb4196f2f087fd02851ada9c8c46aa112f33609fca0",
+      "closure_size": 25,
+      "statement_sha256": "f396d1487f32c9941183e4198de1b66306f14f30d05bb445b31ecf3d6da771d8"
+    },
+    "Toy.Transmute.sharedSound_meet_iff_needs_left": {
+      "closure_sha256": "8237c3c77f0a3820019bc7f62b7e939f744e18d91b34de6d6d9f97f857da0244",
+      "closure_size": 30,
+      "statement_sha256": "d849fdbb704f2d4cdeb35638c970df417588c89353d28cc8df2c5e74594608b1"
+    },
+    "Toy.Transmute.sharedSound_meet_iff_needs_right": {
+      "closure_sha256": "8237c3c77f0a3820019bc7f62b7e939f744e18d91b34de6d6d9f97f857da0244",
+      "closure_size": 30,
+      "statement_sha256": "eae1554db054485bcfd76904c43727a74b94aae730d42ca2d44b1943070820c1"
+    },
+    "Toy.Transmute.sharedSound_meet_iff_nonvacuous": {
+      "closure_sha256": "023c5dd555b43b7afdd87b249810734d4a83d5d45cc928a8fd40f48077e8c044",
+      "closure_size": 33,
+      "statement_sha256": "d8ada44c9f685e2c8c87be3eaa64f9c4e8bacaeac6fb396db90c160b6de62b3a"
+    },
+    "Toy.Transmute.sharedSound_of_mutSound": {
+      "closure_sha256": "b5edd5f1b2a2d56ba2161cac2dc48de03a6fc6bdb812c140ab746f5856a8f24b",
+      "closure_size": 27,
+      "statement_sha256": "c42bc904566724c5a4ba31fd38704ad4116d5f365b98c953179203409b214613"
+    },
+    "Toy.Transmute.sharedSound_of_valueSound": {
+      "closure_sha256": "003104975ddddd288b41482b7666a60ef35d4c7d71408cee027361212e2c8c8b",
+      "closure_size": 27,
+      "statement_sha256": "e4986812747e978f620df715343b375de315478551421bfc6d07b37239bd5160"
+    },
+    "Toy.Transmute.sharedSound_to_join_left": {
+      "closure_sha256": "35bd9632212475d298a1610be7444915210a29273f05d6de2d2bb07ef15ac7d1",
+      "closure_size": 25,
+      "statement_sha256": "aecb0623a4cc709710004467286faf62236d4867037b7318e4e1ba256156c889"
+    },
+    "Toy.Transmute.sharedSound_to_join_left_nonvacuous": {
+      "closure_sha256": "0a8f56cdf357cd01766f01bc6830fbb450527bec4e1c2649fa51f81b97b7ad45",
+      "closure_size": 30,
+      "statement_sha256": "df67ec05834da898d42b60ce5d1a4fb80490a46e3f7cdf9584f0ddf63e760e0e"
+    },
+    "Toy.Transmute.sharedSound_to_join_right": {
+      "closure_sha256": "35bd9632212475d298a1610be7444915210a29273f05d6de2d2bb07ef15ac7d1",
+      "closure_size": 25,
+      "statement_sha256": "ad87a4cfcffe56b9331416396cf7cc38bdc02a2392a7b8994f63c3d83f03fa25"
+    },
+    "Toy.Transmute.sharedSound_to_join_right_nonvacuous": {
+      "closure_sha256": "0a8f56cdf357cd01766f01bc6830fbb450527bec4e1c2649fa51f81b97b7ad45",
+      "closure_size": 30,
+      "statement_sha256": "afca034559254da335ec789b1492e60b78af886656e5a548a9626f2f0a3b6d2d"
+    },
+    "Toy.Transmute.sharedSound_trans": {
+      "closure_sha256": "7b3816b4e9b458db30e98cab47ffa34df6e84a57b8508914c4e3970f878feaa2",
+      "closure_size": 24,
+      "statement_sha256": "1368169a212f0ae38afc020106ef8a43fc0ce5afaaf3dc55bfde51908f1db636"
+    },
+    "Toy.Transmute.sharedSound_trans_needs_first": {
+      "closure_sha256": "7b9db16168d24a34dcba0d3c3c924ff161ac08ac5d2522ad80dfd780edc1ca48",
+      "closure_size": 28,
+      "statement_sha256": "90f55c1d6d890833f6290415440d953554649e4a00d3e88bd1311070b5ff5225"
+    },
+    "Toy.Transmute.sharedSound_trans_needs_second": {
+      "closure_sha256": "7b9db16168d24a34dcba0d3c3c924ff161ac08ac5d2522ad80dfd780edc1ca48",
+      "closure_size": 28,
+      "statement_sha256": "b5449bc3895240cc824407178191f3f0966091a4231558b489ccbd43daf9e7b4"
+    },
+    "Toy.Transmute.sharedSound_trans_nonvacuous": {
+      "closure_sha256": "75115e51a0b5c8d1dbc7aabbf4d98399519f28417b58b723eb78d9ead9aa7ffa",
+      "closure_size": 29,
+      "statement_sha256": "46810c4830c10c103ee26f45f159c3643b193c9d04b7a7c26c3199e62aa97f14"
+    },
+    "Toy.Transmute.valueSound_boolV_byteV": {
+      "closure_sha256": "af4e36fcd35a65e0e00b0a7d478024e405fe6212057604d653005d655d60cbff",
+      "closure_size": 28,
+      "statement_sha256": "6bda92740ddaddacb052b7c79e6ccc5953225c8d48572daea6663aca01134033"
+    },
+    "Toy.Transmute.valueSound_iff_includes": {
+      "closure_sha256": "39ed16ba270a9d8f9a869ed787f63e04dd1020be211976e6788a60f90a32acbe",
+      "closure_size": 25,
+      "statement_sha256": "0ecc3e02f7c2b865b6f65f3554f0fec7cfe128c59eeae22e19a0768ca02d7fd5"
+    },
+    "Toy.Transmute.valueSound_iff_includes_nonvacuous": {
+      "closure_sha256": "e594456521961c853842e5b7423375c63f5391bdf18482e35f0e253e3292f49a",
+      "closure_size": 29,
+      "statement_sha256": "725b3e6f9e49ea647d9b34078d869a7389f8633d968c253b14c6c99c7c1a53b8"
+    },
+    "Toy.Transmute.valueSound_of_sharedSound": {
+      "closure_sha256": "003104975ddddd288b41482b7666a60ef35d4c7d71408cee027361212e2c8c8b",
+      "closure_size": 27,
+      "statement_sha256": "9e87258410355ca618628c989c9f6e50c05e8a4f6a8ed362d53b6338a65e4a0c"
+    },
+    "Toy.Transmute.valueSound_trans": {
+      "closure_sha256": "aa9872928055eac42cbfa19f73214a23308e30e2cd78cd0f12473e547a4ddbe1",
+      "closure_size": 24,
+      "statement_sha256": "5892f9df14abdc01aff0f7c7f448bf20965f6649894ad52ea8b32b5c7f47e5ba"
+    },
+    "Toy.Transmute.valueSound_trans_needs_first": {
+      "closure_sha256": "af4e36fcd35a65e0e00b0a7d478024e405fe6212057604d653005d655d60cbff",
+      "closure_size": 28,
+      "statement_sha256": "00b42c5d607bc01348baa569246d92766c6a9249f72c799dfc806bd9ac008a00"
+    },
+    "Toy.Transmute.valueSound_trans_needs_second": {
+      "closure_sha256": "af4e36fcd35a65e0e00b0a7d478024e405fe6212057604d653005d655d60cbff",
+      "closure_size": 28,
+      "statement_sha256": "13ee731648f38fc5368ab5ab202a3ffe373dd425eadf451ce2d2b021c311e9df"
+    },
+    "Toy.Transmute.valueSound_trans_nonvacuous": {
+      "closure_sha256": "5b5cd6a71c84bd697be68f9c0dca1edd760776ab723a044aa8988f08e12661e0",
+      "closure_size": 29,
+      "statement_sha256": "6d36c120f8b4154bedf6246ae8ee78cff1984d4adb34ae28341d28a39f1fb732"
+    }
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

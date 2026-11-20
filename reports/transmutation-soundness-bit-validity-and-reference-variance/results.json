@@ -1,0 +1,1073 @@
+[
+  {
+    "id": "R1",
+    "lean": "Toy.Transmute.valueSound_iff_includes",
+    "kind": "characterization",
+    "status": "proved",
+    "module": "ToyTransmute/Results.lean",
+    "tier": "T1",
+    "tier_justification": "The value-transmute condition is stated informally in the Rust safe-transmute design documents (MCP 411) and elsewhere; this is a mechanized statement of it in a small operational model.",
+    "plain_claim": "A value transmute from T to U, two types of the same size, is sound (no permitted, well-typed use of the destination value ever reads bytes that are invalid at U) if and only if every T-valid byte sequence is U-valid.",
+    "hypotheses": [
+      {
+        "name": "(none: an equivalence with no hypotheses)",
+        "purpose": "The statement is universally quantified over all byte alphabets, sizes and validity predicates (source and destination share the size index n).",
+        "tightness": "harmless"
+      },
+      {
+        "name": "right-hand side: Includes T U",
+        "purpose": "Needed by the very first read of the transmuted value at U.",
+        "tightness": "tight",
+        "counterexample": "Toy.Transmute.byteV_to_boolV_unsound_even_by_value",
+        "counterexample_note": "byte -> bool: Includes fails and ValueSound fails (transmuting the byte 2)."
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "Necessity: the one-step run readDst (not_sound_of_read_dst). Sufficiency: induction over the run with invariant U.",
+    "nonvacuity_witness": "Both sides true for bool -> byte, both false for byte -> bool.",
+    "nonvacuity_witness_lean": "Toy.Transmute.valueSound_iff_includes_nonvacuous",
+    "related_witnesses_lean": [
+      "Toy.Transmute.noInvalidRead_unchecked_until_read"
+    ],
+    "related_witnesses_note": "Validity is checked at reads: an unused or overwritten transmuted value is not checked by an individual run; Sound recovers cast-time validity by quantifying over the run that reads immediately.",
+    "non_claims": [
+      "All statements are about the toy model of this package: a type is a bit-validity predicate on byte sequences of one fixed size n, both views cover the same n-byte region, reads and writes act on the whole region, and values are flat byte sequences. Nothing is said about alignment, size-changing (prefix, sub-slice or unsized) casts, provenance, uninitialised or padding bytes, pointer metadata or the memory a pointer refers to, aliasing models, concurrency, destructors or auto traits, or library-level safety invariants; see the modeling bridge in the Applicability section of the package report.",
+      "Does not cover transmutes between types of different sizes: such casts cannot be expressed (sizes are a type index).",
+      "Values are flat byte sequences. For a type whose bytes contain a reference, box or other pointer, Includes on the pointer's own bytes says nothing about the memory it points to: `&mut bool` and `&mut u8` have the same pointer bit patterns, yet reinterpreting one as the other is a mutable-reference cast whose referents are governed by R3. Value transmutes of pointer-containing types are not covered.",
+      "Characterizes unchecked casts, which accept every T-valid value without inspecting it. A conversion that checks validity at U once, at cast time (zerocopy's try_transmute! and try_transmute_ref!), is sound in this model for every pair of equal-size types (R8-value-shared), even when T ⊆ U fails.",
+      "Bytes here are always initialised, so the all-bytes validity (byteV) includes every T. Do not read this as 'a destination that accepts every initialised byte sequence can receive any source': with uninitialised or padding bytes the source must also consist of initialised bytes only, which is what zerocopy's Src: IntoBytes requires in addition to Dst: FromBytes.",
+      "Only bit validity is modelled; destructors and auto traits are not. Even when T ≡ U, a value transmute does not run T's destructor (zerocopy's transmute! documents that the source 'will not be dropped') and U's destructor may later run on the bytes; through a mutable-reference cast a value written at U may later be dropped at T and vice versa; and reinterpreting between types that differ in Send or Sync can break thread-safety guarantees. None of this is captured here.",
+      "Does not claim that value transmutes and shared-reference casts have the same requirements in a real language: in this model they coincide (R5-hier), but real reference casts additionally involve alignment, size relations for unsized types, and interior-mutability/aliasing rules.",
+      "Says nothing about the source after the transmute: a copied source is an independent region and is not modelled.",
+      "Soundness quantifies over all permitted runs; an individual run that never reads the value observes nothing (noInvalidRead_unchecked_until_read). This matches eager cast-time validity only at the level of Sound, not run by run."
+    ],
+    "prior_art": [
+      "Rust compiler-team major change proposal 411, 'Lang Item for Transmutability', https://github.com/rust-lang/compiler-team/issues/411 (opened 2021-03-04, accepted), section 'When is a bit-reinterpretation cast sound?': 'A transmutation is well-defined if any possible values of type Src are a valid instance of Dst.' Informal statement of the value-transmute condition.",
+      "J. Wrenn. 'Safety Goggles for Alchemists: The Path Towards Safer Transmute', blog post, 2024-09-30, https://jack.wrenn.fyi/blog/safety-goggles-for-alchemists/, section 'Theory of Alchemy': 'A type, Src, is transmutable into a type, Dst, if every possible value of Src is a valid value of Dst.'",
+      "The Rust Reference, 'Behavior considered undefined', https://doc.rust-lang.org/reference/behavior-considered-undefined.html (read 2026-11-20; the quoted rules were verified verbatim in the source file src/behavior-considered-undefined.md of rust-lang/reference at commit e24eecf97b0c9a6dbac67191098204dc8a190aaa, the Reference revision of the Rust 1.100.0 release, the latest stable release on that date): rule [undefined.invalid] 'Producing an invalid value.'; rule [undefined.validity.def] 'The Rust compiler assumes that all values produced during program execution are “valid”, and producing an invalid value is hence immediate UB.'; rule [undefined.validity.bool] 'A bool value must be false (0) or true (1).'; rule [undefined.validity.reference-box] 'A reference or Box<T> must be aligned and non-null, it cannot be dangling, and it must point to a valid value', followed by the note that 'the last point (about pointing to a valid value) remains a subject of some debate.' Normative basis for modelling a read of invalid bytes as undefined behaviour and for the bool fixture.",
+      "MiniRust (github.com/minirust/minirust, branch master at commit 063d784186d3252bee242217f218223205c0b568), file spec/lang/representation.md, section 'MiniRust representation relation': '`decode` converts a list of bytes into a (potentially not well-formed) value; this operation can fail if the byte list is not a valid representation for the given type.' Section 'Transmutation': a transmute whose bytes do not decode raises UB ('transmuted value is not valid at new type'). Abstract bytes (spec/mem/interface.md, 'Abstract Bytes') are Uninit or Init(u8, optional provenance fragment). In this package, `Validity T` plays the role of 'decode at T succeeds' restricted to initialised, provenance-free bytes; MiniRust's richer bytes are not modelled. MiniRust was announced by R. Jung, 'Announcing: MiniRust', 2022-08-08, https://www.ralfj.de/blog/2022/08/08/minirust.html.",
+      "zerocopy 0.8.63 documentation (crates.io release published 2026-10-13, crate checksum SHA-256 e5fe1f8f1b06191a00962174c61aa5005e0bb391a6d80d07e24d115c01a92ed8), https://docs.rs/zerocopy/0.8.63/zerocopy/ (read 2026-11-20). Macro transmute! behaves like `const fn transmute<Src, Dst>(src: Src) -> Dst where Src: IntoBytes, Dst: FromBytes, size_of::<Src>() == size_of::<Dst>()` (an `#![allow(shrink)]` form also permits shrinking), and 'the Src produced by the expression $e will not be dropped'. Macro transmute_ref! behaves like `fn transmute_ref<'src, 'dst, Src, Dst>(src: &'src Src) -> &'dst Dst where 'src: 'dst, Src: IntoBytes + Immutable + ?Sized, Dst: FromBytes + Immutable + ?Sized, align_of::<Src>() >= align_of::<Dst>(), size_compatible::<Src, Dst>()`. Macro transmute_mut! behaves like `const fn transmute_mut<'src, 'dst, Src, Dst>(src: &'src mut Src) -> &'dst mut Dst where 'src: 'dst, Src: FromBytes + IntoBytes + ?Sized, Dst: FromBytes + IntoBytes + ?Sized, align_of::<Src>() >= align_of::<Dst>(), size_compatible::<Src, Dst>()`. Checked forms: try_transmute! (`Src: IntoBytes, Dst: TryFromBytes, size_of::<Src>() == size_of::<Dst>()`), try_transmute_ref! (`Src: IntoBytes + Immutable + ?Sized, Dst: TryFromBytes + Immutable + ?Sized`, plus the alignment and size-compatibility bounds) and try_transmute_mut! (`Src: FromBytes + IntoBytes + ?Sized, Dst: TryFromBytes + IntoBytes + ?Sized`, plus the alignment and size-compatibility bounds; 'while the value of the referent is checked for validity at runtime, the size and alignment are checked at compile time'; its examples convert `&mut 0u8` to `Ok(&mut false)` and reject `&mut 2u8`). Trait summaries: FromBytes 'Types for which any bit pattern is valid.'; TryFromBytes 'Types for which some bit patterns are valid.'; IntoBytes 'Types that can be converted to an immutable slice of initialized bytes.'; Immutable 'Types which are free from interior mutability.' Relation to this package (derived): over bytes that may be uninitialised, Src: IntoBytes says every Src-valid byte sequence is initialised and Dst: FromBytes says every initialised byte sequence is Dst-valid, so together they give T ⊆ U by transitivity through the set of initialised byte sequences; requiring both traits on both sides (transmute_mut!) makes both validities equal to that set, a special case of T ≡ U. In this package bytes are always initialised, so that intermediate set is the all-bytes validity and Src: IntoBytes has no counterpart. try_transmute_mut! is an instance of a checked mutable cast (R8-mut): Src: FromBytes and Dst: IntoBytes give U ⊆ T, and the run-time check supplies validity at U for the initial contents. For try_transmute_mut!, the bound Src: IntoBytes makes the source referent's bytes initialised, so that the run-time check can read them; Src: FromBytes alone does not exclude padding bytes.",
+      "Unstable trait core::mem::TransmuteFrom, nightly documentation https://doc.rust-lang.org/nightly/core/mem/trait.TransmuteFrom.html (core 1.102.0-nightly, built from rust-lang/rust commit 6905905bb7727fd0f9223f5fdc9ad4e62236d5a2 of 2026-11-19; read 2026-11-20; the quoted documentation comments were verified verbatim in library/core/src/mem/transmutability.rs at that commit; tracking issue rust-lang/rust#99571), declared as `pub unsafe trait TransmuteFrom<Src, const ASSUME: Assume = { Assume::NOTHING }> where Src: ?Sized`; it is implemented when 'the compiler has proved that the bits of a value of type Src can be soundly reinterpreted as a Self'. The companion struct core::mem::Assume (https://doc.rust-lang.org/nightly/core/mem/struct.Assume.html) has fields alignment, lifetimes, safety and validity; its documentation states two reference rules: with alignment false, 'TransmuteFrom is not implemented for transmutations that might violate the alignment requirements of references', and with lifetimes false, it 'is not implemented for transmutations that extend the lifetimes of references'. These pages do not state the mutable-reference (reverse validity) or interior-mutability rules. The trait was renamed from BikeshedIntrinsicFrom in rust-lang/rust pull request #129657 (merged 2024-08-28).",
+      "Rust Unsafe Code Guidelines, glossary entry 'Validity and safety invariant', https://rust-lang.github.io/unsafe-code-guidelines/glossary.html#validity-and-safety-invariant (read 2026-11-20; verified in reference/src/glossary.md of rust-lang/unsafe-code-guidelines at commit d809f91e62968913d808e53397fbcf7cea762cce, the head of its master branch on that date): 'The validity invariant is an invariant that all data must uphold any time it is accessed or copied in a typed manner.' and 'The safety invariant is an invariant that safe code may assume all data to uphold.' The predicate `Validity` of this package models the former only.",
+      "R. Jung, 'Two Kinds of Invariants: Safety and Validity', blog post, 2018-08-22, https://www.ralfj.de/blog/2018/08/22/two-kinds-of-invariants.html. Distinguishes the validity invariant (modelled here) from the safety invariant (not modelled).",
+      "R. Jung, J.-H. Jourdan, R. Krebbers, D. Dreyer. RustBelt: Securing the Foundations of the Rust Programming Language. Proc. ACM Program. Lang. 2(POPL), Article 66, pp. 1-34, January 2018. doi:10.1145/3158154. Its semantic model works by 'interpreting λRust types as predicates on values expressed in a rich program logic'; `Validity` here is a drastically simplified, logic-free analogue (types as predicates on byte sequences).",
+      "rustc source, rust-lang/rust commit 5b216e01a117532b30f061f3dff8a61408113c77, file compiler/rustc_transmute/src/maybe_transmutable/mod.rs: lines 92-93, comment 'mutable destination references also generate a reverse transmutability obligation for their referents'; lines 112-119: if the source layout is uninhabited the answer is Yes ('because instances of the `src` type do not exist'); lines 244-259: a reference transition is rejected if the destination reference is mutable and the source reference is not, if the destination referent is more strictly aligned (unless alignment is assumed), or if the destination referent is larger than the source referent; lines 276-282: the referents must be transmutable from source to destination, and if the destination reference is mutable also from destination to source; otherwise (shared destination reference) the condition `Condition::Immutable { ty: dst_ref.referent }` is added. No interior-mutability condition is placed on the source referent. The UI test tests/ui/transmutability/references/unsafecell.rs at the same commit rejects `&'static UnsafeCell<u8> -> &'static UnsafeCell<u8>` (line 29; comment at lines 25-26: 'We forbid `UnsafeCell`-containing ref-to-ref transmutations, because the two types may use different, incompatible synchronization strategies.') and accepts `&'static mut UnsafeCell<bool> -> &'static u8` (line 42). Implementation counterpart of the mutable-reference rule; for shared references it requires the destination referent to be free of interior mutability instead of characterising the interior-mutable case.",
+      "AeneasVerif/aeneas pull request #1447, '[WIP] Layouts, machine types, low-level representations.' (open draft, created 2026-10-15; head JoJoDeveloping:layouts at commit 2a1dd75567517e078f90b1df746af7373fe24cbc), files under backends/lean/Aeneas/Data/Layout/: a Lean model of MiniRust-style abstract bytes `uninit | init b` without provenance (Bytes.lean), per-layout `encode`/`decode` (EncodeDecode.lean, 'Following MiniRust's spec/lang/representation.md (\"Generic properties\")'), and proofs of the monotonicity and round-trip laws for valid layouts (GaloisConnection.lean). Its description states the work is in progress. Related Lean prototype of the byte-representation layer that this package abstracts away; it does not state cast-soundness conditions for references.",
+      "RFC 2835 'project-safe-transmute', https://rust-lang.github.io/rfcs/2835-project-safe-transmute.html: forms a project group 'with the purpose of designing subsequent RFCs around the topic of safe transmute between types.' Context only; it states no soundness conditions.",
+      "R. Krebbers. A Formal C Memory Model for Separation Logic. Journal of Automated Reasoning 57(4):319-387, 2016. doi:10.1007/s10817-016-9369-1; R. Krebbers. Aliasing Restrictions of C11 Formalized in Coq. CPP 2013, LNCS 8307, pp. 50-65. doi:10.1007/978-3-319-03545-1_4. Mechanizations of C's effective types (type-based restrictions on which types may access an object), a different axis from bit validity.",
+      "H. Tuch, G. Klein, M. Norrish. Types, Bytes, and Separation Logic. POPL 2007, pp. 97-108. doi:10.1145/1190216.1190234. Typed views of byte-addressed C memory with separation logic, mechanized in Isabelle/HOL; it does not address reference-cast variance.",
+      "M. Sammler, R. Lepigre, R. Krebbers, K. Memarian, D. Dreyer, D. Garg. RefinedC: Automating the Foundational Verification of C Code with Refined Ownership Types. PLDI 2021, pp. 158-174. doi:10.1145/3453483.3454036. A refinement and ownership type system for C whose soundness is proved in Coq, following the semantic approach of RustBelt.",
+      "L. Gäher, M. Sammler, R. Jung, R. Krebbers, D. Dreyer. RefinedRust: A Type System for High-Assurance Verification of Rust Programs. Proc. ACM Program. Lang. 8(PLDI), pp. 1115-1139, 2024. doi:10.1145/3656422. A refinement type system for safe and unsafe Rust proven sound in Coq; it does not state cast-soundness characterizations of the kind given here."
+    ],
+    "design_question": "A library offering safe reinterpretation of memory (value transmutes, shared-reference casts, mutable-reference casts) must decide which validity relationship between source and destination type each cast kind requires; too permissive is unsound, too restrictive rejects useful casts. Which conditions are exactly necessary and sufficient, and how does interior mutability change them?"
+  },
+  {
+    "id": "R2",
+    "lean": "Toy.Transmute.sharedSound_iff_includes",
+    "kind": "characterization",
+    "status": "proved",
+    "module": "ToyTransmute/Results.lean",
+    "tier": "T1",
+    "tier_justification": "Folklore (a read-only reinterpretation needs exactly the value-transmute condition); the sufficiency direction has a mechanized analogue for semantic subtyping (shr_subtype in the RustHornBelt Coq development). Stated here as an exact characterization for an operational model with interleaved reads through both views.",
+    "plain_claim": "A shared-reference cast from T to U, two types of the same size whose views cover the same region, where the original and the cast reference may both read in any interleaving and nobody writes, never reads invalid bytes if and only if every T-valid byte sequence is U-valid.",
+    "hypotheses": [
+      {
+        "name": "(none: an equivalence with no hypotheses)",
+        "purpose": "The statement is universally quantified over all byte alphabets, sizes and validity predicates (source and destination share the size index n).",
+        "tightness": "harmless"
+      },
+      {
+        "name": "right-hand side: Includes T U",
+        "purpose": "Needed by a read through the cast reference.",
+        "tightness": "tight",
+        "counterexample": "Toy.Transmute.byteV_to_boolV_unsound_even_by_value",
+        "counterexample_note": "byte -> bool: Includes fails and SharedSound fails."
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "Necessity: readDst. Sufficiency: invariant T (no writes, so the contents never change).",
+    "nonvacuity_witness": "Both sides true for bool -> byte, both false for byte -> bool.",
+    "nonvacuity_witness_lean": "Toy.Transmute.sharedSound_iff_includes_nonvacuous",
+    "non_claims": [
+      "All statements are about the toy model of this package: a type is a bit-validity predicate on byte sequences of one fixed size n, both views cover the same n-byte region, reads and writes act on the whole region, and values are flat byte sequences. Nothing is said about alignment, size-changing (prefix, sub-slice or unsized) casts, provenance, uninitialised or padding bytes, pointer metadata or the memory a pointer refers to, aliasing models, concurrency, destructors or auto traits, or library-level safety invariants; see the modeling bridge in the Applicability section of the package report.",
+      "Assumes no writes through either reference while the cast is in effect; with interior mutability see R4.",
+      "Both views cover exactly the same n bytes. Reference casts to a smaller referent (prefix casts, sub-slices, `&mut [u8; 4] → &mut [u8; 2]`), which rustc's checker accepts when the destination referent is no larger than the source referent, are outside the model: whole-type validity equality would wrongly reject `&mut [u8; 4] → &mut [u8; 2]`, and equality of the prefix's own validity would wrongly accept a write that breaks an invariant coupling the viewed bytes with the unviewed ones (for example two bytes required to sum to zero).",
+      "Characterizes unchecked casts, which accept every T-valid value without inspecting it. A conversion that checks validity at U once, at cast time (zerocopy's try_transmute! and try_transmute_ref!), is sound in this model for every pair of equal-size types (R8-value-shared), even when T ⊆ U fails.",
+      "Bytes here are always initialised, so the all-bytes validity (byteV) includes every T. Do not read this as 'a destination that accepts every initialised byte sequence can receive any source': with uninitialised or padding bytes the source must also consist of initialised bytes only, which is what zerocopy's Src: IntoBytes requires in addition to Dst: FromBytes.",
+      "Does not address alignment: a real &T -> &U cast also needs the address to be suitably aligned for U.",
+      "The original reference's reads always succeed here only because nobody writes; this is not a claim about aliasing-model legality of keeping both references."
+    ],
+    "prior_art": [
+      "Rust compiler-team major change proposal 411, 'Lang Item for Transmutability', https://github.com/rust-lang/compiler-team/issues/411 (opened 2021-03-04, accepted), section 'When is a bit-reinterpretation cast sound?': 'A transmutation is well-defined if any possible values of type Src are a valid instance of Dst.' Informal statement of the value-transmute condition.",
+      "rustc source, rust-lang/rust commit 5b216e01a117532b30f061f3dff8a61408113c77, file compiler/rustc_transmute/src/maybe_transmutable/mod.rs: lines 92-93, comment 'mutable destination references also generate a reverse transmutability obligation for their referents'; lines 112-119: if the source layout is uninhabited the answer is Yes ('because instances of the `src` type do not exist'); lines 244-259: a reference transition is rejected if the destination reference is mutable and the source reference is not, if the destination referent is more strictly aligned (unless alignment is assumed), or if the destination referent is larger than the source referent; lines 276-282: the referents must be transmutable from source to destination, and if the destination reference is mutable also from destination to source; otherwise (shared destination reference) the condition `Condition::Immutable { ty: dst_ref.referent }` is added. No interior-mutability condition is placed on the source referent. The UI test tests/ui/transmutability/references/unsafecell.rs at the same commit rejects `&'static UnsafeCell<u8> -> &'static UnsafeCell<u8>` (line 29; comment at lines 25-26: 'We forbid `UnsafeCell`-containing ref-to-ref transmutations, because the two types may use different, incompatible synchronization strategies.') and accepts `&'static mut UnsafeCell<bool> -> &'static u8` (line 42). Implementation counterpart of the mutable-reference rule; for shared references it requires the destination referent to be free of interior mutability instead of characterising the interior-mutable case.",
+      "zerocopy 0.8.63 documentation (crates.io release published 2026-10-13, crate checksum SHA-256 e5fe1f8f1b06191a00962174c61aa5005e0bb391a6d80d07e24d115c01a92ed8), https://docs.rs/zerocopy/0.8.63/zerocopy/ (read 2026-11-20). Macro transmute! behaves like `const fn transmute<Src, Dst>(src: Src) -> Dst where Src: IntoBytes, Dst: FromBytes, size_of::<Src>() == size_of::<Dst>()` (an `#![allow(shrink)]` form also permits shrinking), and 'the Src produced by the expression $e will not be dropped'. Macro transmute_ref! behaves like `fn transmute_ref<'src, 'dst, Src, Dst>(src: &'src Src) -> &'dst Dst where 'src: 'dst, Src: IntoBytes + Immutable + ?Sized, Dst: FromBytes + Immutable + ?Sized, align_of::<Src>() >= align_of::<Dst>(), size_compatible::<Src, Dst>()`. Macro transmute_mut! behaves like `const fn transmute_mut<'src, 'dst, Src, Dst>(src: &'src mut Src) -> &'dst mut Dst where 'src: 'dst, Src: FromBytes + IntoBytes + ?Sized, Dst: FromBytes + IntoBytes + ?Sized, align_of::<Src>() >= align_of::<Dst>(), size_compatible::<Src, Dst>()`. Checked forms: try_transmute! (`Src: IntoBytes, Dst: TryFromBytes, size_of::<Src>() == size_of::<Dst>()`), try_transmute_ref! (`Src: IntoBytes + Immutable + ?Sized, Dst: TryFromBytes + Immutable + ?Sized`, plus the alignment and size-compatibility bounds) and try_transmute_mut! (`Src: FromBytes + IntoBytes + ?Sized, Dst: TryFromBytes + IntoBytes + ?Sized`, plus the alignment and size-compatibility bounds; 'while the value of the referent is checked for validity at runtime, the size and alignment are checked at compile time'; its examples convert `&mut 0u8` to `Ok(&mut false)` and reject `&mut 2u8`). Trait summaries: FromBytes 'Types for which any bit pattern is valid.'; TryFromBytes 'Types for which some bit patterns are valid.'; IntoBytes 'Types that can be converted to an immutable slice of initialized bytes.'; Immutable 'Types which are free from interior mutability.' Relation to this package (derived): over bytes that may be uninitialised, Src: IntoBytes says every Src-valid byte sequence is initialised and Dst: FromBytes says every initialised byte sequence is Dst-valid, so together they give T ⊆ U by transitivity through the set of initialised byte sequences; requiring both traits on both sides (transmute_mut!) makes both validities equal to that set, a special case of T ≡ U. In this package bytes are always initialised, so that intermediate set is the all-bytes validity and Src: IntoBytes has no counterpart. try_transmute_mut! is an instance of a checked mutable cast (R8-mut): Src: FromBytes and Dst: IntoBytes give U ⊆ T, and the run-time check supplies validity at U for the initial contents. For try_transmute_mut!, the bound Src: IntoBytes makes the source referent's bytes initialised, so that the run-time check can read them; Src: FromBytes alone does not exclude padding bytes.",
+      "The Rust Reference, 'Subtyping and variance', https://doc.rust-lang.org/reference/subtyping.html (read 2026-11-20; verified in src/subtyping.md of rust-lang/reference at commit e24eecf97b0c9a6dbac67191098204dc8a190aaa, the Reference revision of the Rust 1.100.0 release), rule [subtyping.variance.builtin-types]: the table lists &'a T as covariant in T, &'a mut T as invariant in T, and std::cell::UnsafeCell<T> as invariant in T. The same read/write argument applied to lifetime subtyping rather than to bit validity; Cell<T> is invariant by the composite-type rule [subtyping.variance.user-composite-types], not by the table.",
+      "Y. Matsushita, X. Denis, J.-H. Jourdan, D. Dreyer. RustHornBelt: A Semantic Foundation for Functional Verification of Rust Programs with Unsafe Code. PLDI 2022, pp. 841-856. doi:10.1145/3519939.3523704. Its Coq development (GitHub repository dewert99/rust-horn-belt, commit af47b28f38dd0cbeb620c2cb9ade29f0aad24c27, whose README reads 'This is the Coq development for \"RustHornBelt: ...\"') defines semantic subtyping `subtype E L ty ty' f` (theories/typing/type.v lines 933-934) and `eqtype` as subtyping in both directions (type.v lines 937-938), and proves `shr_subtype` (theories/typing/shr_bor.v lines 77-79: subtyping of referents gives subtyping of shared references), `uniq_subtype` (theories/typing/uniq_bor.v lines 153-155: eqtype of referents gives subtyping of unique borrows) and `cell_subtype` (theories/typing/lib/cell.v lines 104-105: eqtype gives subtyping of cells). These are mechanized sufficiency results of the same shape as the sufficiency directions of R2, R3 and R4 with destination writes, for a semantic subtyping relation rather than byte-level bit validity; they do not state the converse (necessity) direction or the satisfiability edge case.",
+      "R. Jung, J.-H. Jourdan, R. Krebbers, D. Dreyer. RustBelt: Securing the Foundations of the Rust Programming Language. Proc. ACM Program. Lang. 2(POPL), Article 66, pp. 1-34, January 2018. doi:10.1145/3158154. Its semantic model works by 'interpreting λRust types as predicates on values expressed in a rich program logic'; `Validity` here is a drastically simplified, logic-free analogue (types as predicates on byte sequences).",
+      "J. C. Reynolds. Design of the Programming Language Forsythe. In P. W. O'Hearn and R. D. Tennent (eds.), Algol-like Languages, pp. 173-233, Birkhäuser, 1997. doi:10.1007/978-1-4612-4118-8_9. Forsythe's phrase types separate expressions (which can be read), acceptors (which can be assigned to) and variables (both), the classic decomposition of a read-write location into read and write capabilities.",
+      "B. Pierce, D. Sangiorgi. Typing and Subtyping for Mobile Processes. Mathematical Structures in Computer Science 6(5):409-453, 1996. doi:10.1017/S096012950007002X. Refines channel types of the pi-calculus by distinguishing the capabilities to read, to write, and to both read and write, which gives rise to a subtype relation on channels.",
+      "Unstable trait core::mem::TransmuteFrom, nightly documentation https://doc.rust-lang.org/nightly/core/mem/trait.TransmuteFrom.html (core 1.102.0-nightly, built from rust-lang/rust commit 6905905bb7727fd0f9223f5fdc9ad4e62236d5a2 of 2026-11-19; read 2026-11-20; the quoted documentation comments were verified verbatim in library/core/src/mem/transmutability.rs at that commit; tracking issue rust-lang/rust#99571), declared as `pub unsafe trait TransmuteFrom<Src, const ASSUME: Assume = { Assume::NOTHING }> where Src: ?Sized`; it is implemented when 'the compiler has proved that the bits of a value of type Src can be soundly reinterpreted as a Self'. The companion struct core::mem::Assume (https://doc.rust-lang.org/nightly/core/mem/struct.Assume.html) has fields alignment, lifetimes, safety and validity; its documentation states two reference rules: with alignment false, 'TransmuteFrom is not implemented for transmutations that might violate the alignment requirements of references', and with lifetimes false, it 'is not implemented for transmutations that extend the lifetimes of references'. These pages do not state the mutable-reference (reverse validity) or interior-mutability rules. The trait was renamed from BikeshedIntrinsicFrom in rust-lang/rust pull request #129657 (merged 2024-08-28)."
+    ],
+    "design_question": "A library offering safe reinterpretation of memory (value transmutes, shared-reference casts, mutable-reference casts) must decide which validity relationship between source and destination type each cast kind requires; too permissive is unsound, too restrictive rejects useful casts. Which conditions are exactly necessary and sufficient, and how does interior mutability change them?"
+  },
+  {
+    "id": "R3",
+    "lean": "Toy.Transmute.mutSound_iff_includes_and_satisfiable_imp_includes_rev",
+    "kind": "characterization",
+    "status": "proved",
+    "module": "ToyTransmute/Results.lean",
+    "tier": "T1",
+    "tier_justification": "The two-direction requirement for mutable references is stated informally in the Safer Transmute RFC text and implemented in rustc's transmutability checker; its sufficiency direction has a mechanized analogue for semantic subtyping (uniq_subtype in the RustHornBelt Coq development), and the read/write capability decomposition is classic (Reynolds; Pierce and Sangiorgi). The exact characterization with the satisfiability side condition is folklore made precise.",
+    "plain_claim": "An unchecked mutable-reference cast from T to U, two types of the same size whose views cover the same region (the cast reference is used exclusively, then the owner resumes at T), is sound if and only if every T-valid byte sequence is U-valid and, provided T has at least one valid byte sequence, every U-valid byte sequence is T-valid.",
+    "hypotheses": [
+      {
+        "name": "(none: an equivalence with no hypotheses)",
+        "purpose": "The statement is universally quantified over all byte alphabets, sizes and validity predicates (source and destination share the size index n).",
+        "tightness": "harmless"
+      },
+      {
+        "name": "right-hand side: Includes T U (read side)",
+        "purpose": "Needed by a read through the cast reference before any write.",
+        "tightness": "tight",
+        "counterexample": "Toy.Transmute.byteV_to_boolV_unsound_even_by_value",
+        "counterexample_note": "byte -> bool: the write-side condition holds (bool ⊆ byte), the read-side condition fails, and MutSound fails."
+      },
+      {
+        "name": "right-hand side: Satisfiable T -> Includes U T (write side)",
+        "purpose": "Needed because a U-valid value written through the cast reference is later read at T by the owner.",
+        "tightness": "tight",
+        "counterexample": "Toy.Transmute.mutSound_needs_includes_rev",
+        "counterexample_note": "bool -> byte: the read-side condition holds, bool is satisfiable, byte ⊈ bool, and MutSound fails (explicit run: boolV_to_byteV_mut_violating_run)."
+      },
+      {
+        "name": "right-hand side: the guard 'Satisfiable T ->' on the write side",
+        "purpose": "Exactness: without the guard the right-hand side would read T ⊆ U ∧ U ⊆ T, which is false for an uninhabited T whose casts are vacuously sound.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transmute.mutSound_rhs_needs_satisfiable_guard",
+          "Toy.Transmute.mutSound_eq_needs_satisfiable"
+        ],
+        "counterexample_note": "never -> byte: MutSound holds and never ⊆ byte holds, but byte ⊈ never, so the unguarded equivalence fails."
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "Necessity: runs readDst and writeDstReadSrc u. Sufficiency: if T is satisfiable both inclusions give T ≡ U and the invariant T works across both periods; otherwise vacuous.",
+    "nonvacuity_witness": "Both sides true for bool -> bool' (same validity, different definitions); both false for bool -> byte.",
+    "nonvacuity_witness_lean": "Toy.Transmute.mutSound_exact_nonvacuous",
+    "non_claims": [
+      "All statements are about the toy model of this package: a type is a bit-validity predicate on byte sequences of one fixed size n, both views cover the same n-byte region, reads and writes act on the whole region, and values are flat byte sequences. Nothing is said about alignment, size-changing (prefix, sub-slice or unsized) casts, provenance, uninitialised or padding bytes, pointer metadata or the memory a pointer refers to, aliasing models, concurrency, destructors or auto traits, or library-level safety invariants; see the modeling bridge in the Applicability section of the package report.",
+      "Characterizes unchecked mutable-reference casts, which must accept every T-valid initial value without inspecting it. A cast that checks validity at U once, at cast time, and then hands out an ordinary unchecked `&mut U` (as zerocopy's try_transmute_mut! does) is a different discipline: by R8-mut it is sound iff (some byte sequence is valid at both T and U) → U ⊆ T; neither T ⊆ U nor T ≡ U is required (checkedSound_mut_escapes_impossibility: byte → bool).",
+      "Both views cover exactly the same n bytes. Reference casts to a smaller referent (prefix casts, sub-slices, `&mut [u8; 4] → &mut [u8; 2]`), which rustc's checker accepts when the destination referent is no larger than the source referent, are outside the model: whole-type validity equality would wrongly reject `&mut [u8; 4] → &mut [u8; 2]`, and equality of the prefix's own validity would wrongly accept a write that breaks an invariant coupling the viewed bytes with the unviewed ones (for example two bytes required to sum to zero).",
+      "Writes are whole-region writes of arbitrary U-valid values. If an API only lets the holder write a restricted set of values (for example because U has a stronger safety invariant or private fields), the write-side requirement weakens accordingly; this is not modelled.",
+      "Vacuous soundness from an unsatisfiable source holds here only because Sound assumes the region already holds a T-valid value. The Rust Reference ([undefined.validity.reference-box]) requires a reference to point to a valid value, noting that this point 'remains a subject of some debate'; under that requirement a reference to an uninhabited type is never valid, so this edge case does not license creating, say, a `&mut` to an empty enum and casting it to `&mut u8`. rustc's checker likewise answers Yes for uninhabited source types (mod.rs lines 112-119).",
+      "Only bit validity is modelled; destructors and auto traits are not. Even when T ≡ U, a value transmute does not run T's destructor (zerocopy's transmute! documents that the source 'will not be dropped') and U's destructor may later run on the bytes; through a mutable-reference cast a value written at U may later be dropped at T and vice versa; and reinterpreting between types that differ in Send or Sync can break thread-safety guarantees. None of this is captured here.",
+      "Does not model reborrowing chains with more than two live views, nor two-phase borrows."
+    ],
+    "prior_art": [
+      "'Safer Transmute' RFC, rust-lang/rfcs pull request #2981 (closed without merging on 2021-03-31; text as of the pull request's head commit ee1204c23320c33437107ff222e09afd9d5fef1d, file text/0000-safer-transmute.md), section 'Requirements on References' / 'Mutate-able References Must Preserve Validity': mutate-able references are all &mut T plus 'all shared (i.e., &T) references whose referent type contain any bytes produced by the contents of UnsafeCell', and 'the transmutation of a mutate-able reference may also not expand the bit-validity of the referenced type.' Closest informal prior statement of the mutable-reference and interior-mutability rules.",
+      "rustc source, rust-lang/rust commit 5b216e01a117532b30f061f3dff8a61408113c77, file compiler/rustc_transmute/src/maybe_transmutable/mod.rs: lines 92-93, comment 'mutable destination references also generate a reverse transmutability obligation for their referents'; lines 112-119: if the source layout is uninhabited the answer is Yes ('because instances of the `src` type do not exist'); lines 244-259: a reference transition is rejected if the destination reference is mutable and the source reference is not, if the destination referent is more strictly aligned (unless alignment is assumed), or if the destination referent is larger than the source referent; lines 276-282: the referents must be transmutable from source to destination, and if the destination reference is mutable also from destination to source; otherwise (shared destination reference) the condition `Condition::Immutable { ty: dst_ref.referent }` is added. No interior-mutability condition is placed on the source referent. The UI test tests/ui/transmutability/references/unsafecell.rs at the same commit rejects `&'static UnsafeCell<u8> -> &'static UnsafeCell<u8>` (line 29; comment at lines 25-26: 'We forbid `UnsafeCell`-containing ref-to-ref transmutations, because the two types may use different, incompatible synchronization strategies.') and accepts `&'static mut UnsafeCell<bool> -> &'static u8` (line 42). Implementation counterpart of the mutable-reference rule; for shared references it requires the destination referent to be free of interior mutability instead of characterising the interior-mutable case.",
+      "zerocopy 0.8.63 documentation (crates.io release published 2026-10-13, crate checksum SHA-256 e5fe1f8f1b06191a00962174c61aa5005e0bb391a6d80d07e24d115c01a92ed8), https://docs.rs/zerocopy/0.8.63/zerocopy/ (read 2026-11-20). Macro transmute! behaves like `const fn transmute<Src, Dst>(src: Src) -> Dst where Src: IntoBytes, Dst: FromBytes, size_of::<Src>() == size_of::<Dst>()` (an `#![allow(shrink)]` form also permits shrinking), and 'the Src produced by the expression $e will not be dropped'. Macro transmute_ref! behaves like `fn transmute_ref<'src, 'dst, Src, Dst>(src: &'src Src) -> &'dst Dst where 'src: 'dst, Src: IntoBytes + Immutable + ?Sized, Dst: FromBytes + Immutable + ?Sized, align_of::<Src>() >= align_of::<Dst>(), size_compatible::<Src, Dst>()`. Macro transmute_mut! behaves like `const fn transmute_mut<'src, 'dst, Src, Dst>(src: &'src mut Src) -> &'dst mut Dst where 'src: 'dst, Src: FromBytes + IntoBytes + ?Sized, Dst: FromBytes + IntoBytes + ?Sized, align_of::<Src>() >= align_of::<Dst>(), size_compatible::<Src, Dst>()`. Checked forms: try_transmute! (`Src: IntoBytes, Dst: TryFromBytes, size_of::<Src>() == size_of::<Dst>()`), try_transmute_ref! (`Src: IntoBytes + Immutable + ?Sized, Dst: TryFromBytes + Immutable + ?Sized`, plus the alignment and size-compatibility bounds) and try_transmute_mut! (`Src: FromBytes + IntoBytes + ?Sized, Dst: TryFromBytes + IntoBytes + ?Sized`, plus the alignment and size-compatibility bounds; 'while the value of the referent is checked for validity at runtime, the size and alignment are checked at compile time'; its examples convert `&mut 0u8` to `Ok(&mut false)` and reject `&mut 2u8`). Trait summaries: FromBytes 'Types for which any bit pattern is valid.'; TryFromBytes 'Types for which some bit patterns are valid.'; IntoBytes 'Types that can be converted to an immutable slice of initialized bytes.'; Immutable 'Types which are free from interior mutability.' Relation to this package (derived): over bytes that may be uninitialised, Src: IntoBytes says every Src-valid byte sequence is initialised and Dst: FromBytes says every initialised byte sequence is Dst-valid, so together they give T ⊆ U by transitivity through the set of initialised byte sequences; requiring both traits on both sides (transmute_mut!) makes both validities equal to that set, a special case of T ≡ U. In this package bytes are always initialised, so that intermediate set is the all-bytes validity and Src: IntoBytes has no counterpart. try_transmute_mut! is an instance of a checked mutable cast (R8-mut): Src: FromBytes and Dst: IntoBytes give U ⊆ T, and the run-time check supplies validity at U for the initial contents. For try_transmute_mut!, the bound Src: IntoBytes makes the source referent's bytes initialised, so that the run-time check can read them; Src: FromBytes alone does not exclude padding bytes.",
+      "The Rust Reference, 'Subtyping and variance', https://doc.rust-lang.org/reference/subtyping.html (read 2026-11-20; verified in src/subtyping.md of rust-lang/reference at commit e24eecf97b0c9a6dbac67191098204dc8a190aaa, the Reference revision of the Rust 1.100.0 release), rule [subtyping.variance.builtin-types]: the table lists &'a T as covariant in T, &'a mut T as invariant in T, and std::cell::UnsafeCell<T> as invariant in T. The same read/write argument applied to lifetime subtyping rather than to bit validity; Cell<T> is invariant by the composite-type rule [subtyping.variance.user-composite-types], not by the table.",
+      "Y. Matsushita, X. Denis, J.-H. Jourdan, D. Dreyer. RustHornBelt: A Semantic Foundation for Functional Verification of Rust Programs with Unsafe Code. PLDI 2022, pp. 841-856. doi:10.1145/3519939.3523704. Its Coq development (GitHub repository dewert99/rust-horn-belt, commit af47b28f38dd0cbeb620c2cb9ade29f0aad24c27, whose README reads 'This is the Coq development for \"RustHornBelt: ...\"') defines semantic subtyping `subtype E L ty ty' f` (theories/typing/type.v lines 933-934) and `eqtype` as subtyping in both directions (type.v lines 937-938), and proves `shr_subtype` (theories/typing/shr_bor.v lines 77-79: subtyping of referents gives subtyping of shared references), `uniq_subtype` (theories/typing/uniq_bor.v lines 153-155: eqtype of referents gives subtyping of unique borrows) and `cell_subtype` (theories/typing/lib/cell.v lines 104-105: eqtype gives subtyping of cells). These are mechanized sufficiency results of the same shape as the sufficiency directions of R2, R3 and R4 with destination writes, for a semantic subtyping relation rather than byte-level bit validity; they do not state the converse (necessity) direction or the satisfiability edge case.",
+      "R. Jung, J.-H. Jourdan, R. Krebbers, D. Dreyer. RustBelt: Securing the Foundations of the Rust Programming Language. Proc. ACM Program. Lang. 2(POPL), Article 66, pp. 1-34, January 2018. doi:10.1145/3158154. Its semantic model works by 'interpreting λRust types as predicates on values expressed in a rich program logic'; `Validity` here is a drastically simplified, logic-free analogue (types as predicates on byte sequences).",
+      "R. Jung. Understanding and Evolving the Rust Programming Language. PhD thesis, Universität des Saarlandes, 2020. doi:10.22028/D291-31946. Presents RustBelt and Stacked Borrows together.",
+      "J. C. Reynolds. Design of the Programming Language Forsythe. In P. W. O'Hearn and R. D. Tennent (eds.), Algol-like Languages, pp. 173-233, Birkhäuser, 1997. doi:10.1007/978-1-4612-4118-8_9. Forsythe's phrase types separate expressions (which can be read), acceptors (which can be assigned to) and variables (both), the classic decomposition of a read-write location into read and write capabilities.",
+      "B. Pierce, D. Sangiorgi. Typing and Subtyping for Mobile Processes. Mathematical Structures in Computer Science 6(5):409-453, 1996. doi:10.1017/S096012950007002X. Refines channel types of the pi-calculus by distinguishing the capabilities to read, to write, and to both read and write, which gives rise to a subtype relation on channels.",
+      "The Java Language Specification, Java SE 21 edition: section 4.10.3 'Subtyping among Array Types' ('If S and T are both reference types, then S[] >1 T[] iff S >1 T.') and section 10.5 'Array Store Exception' ('If the type of the value being assigned is not assignment-compatible (§5.2) with the component type, an ArrayStoreException is thrown.'), https://docs.oracle.com/javase/specs/jls/se21/html/. The classic covariant mutable container: the write-side obligation is discharged by a run-time check instead of being required statically.",
+      "The Rust Reference, 'Behavior considered undefined', https://doc.rust-lang.org/reference/behavior-considered-undefined.html (read 2026-11-20; the quoted rules were verified verbatim in the source file src/behavior-considered-undefined.md of rust-lang/reference at commit e24eecf97b0c9a6dbac67191098204dc8a190aaa, the Reference revision of the Rust 1.100.0 release, the latest stable release on that date): rule [undefined.invalid] 'Producing an invalid value.'; rule [undefined.validity.def] 'The Rust compiler assumes that all values produced during program execution are “valid”, and producing an invalid value is hence immediate UB.'; rule [undefined.validity.bool] 'A bool value must be false (0) or true (1).'; rule [undefined.validity.reference-box] 'A reference or Box<T> must be aligned and non-null, it cannot be dangling, and it must point to a valid value', followed by the note that 'the last point (about pointing to a valid value) remains a subject of some debate.' Normative basis for modelling a read of invalid bytes as undefined behaviour and for the bool fixture."
+    ],
+    "design_question": "A library offering safe reinterpretation of memory (value transmutes, shared-reference casts, mutable-reference casts) must decide which validity relationship between source and destination type each cast kind requires; too permissive is unsound, too restrictive rejects useful casts. Which conditions are exactly necessary and sufficient, and how does interior mutability change them?"
+  },
+  {
+    "id": "R3-eq",
+    "lean": "Toy.Transmute.mutSound_iff_validityEq_of_satisfiable",
+    "kind": "characterization",
+    "status": "proved",
+    "module": "ToyTransmute/Results.lean",
+    "tier": "T1",
+    "tier_justification": "Same status as R3; this is the commonly quoted 'mutable casts need equal validity' form, with its hidden satisfiability hypothesis made explicit.",
+    "plain_claim": "If the source type T has at least one valid byte sequence, an unchecked mutable-reference cast from T to a type U of the same size (both views covering the same region) is sound if and only if T and U have exactly the same valid byte sequences.",
+    "hypotheses": [
+      {
+        "name": "hT : Satisfiable T",
+        "purpose": "Excludes the uninhabited source, for which every mutable cast is vacuously sound.",
+        "tightness": "tight",
+        "counterexample": "Toy.Transmute.mutSound_eq_needs_satisfiable",
+        "counterexample_note": "never -> byte: not satisfiable; MutSound holds; validities differ; so the equivalence fails."
+      }
+    ],
+    "depth": "definitional",
+    "depth_note": "Propositional corollary of R3 (one or two lines given R3).",
+    "nonvacuity_witness": "bool -> bool' (satisfiable, sound, equal validity).",
+    "nonvacuity_witness_lean": "Toy.Transmute.mutSound_eq_nonvacuous",
+    "non_claims": [
+      "All statements are about the toy model of this package: a type is a bit-validity predicate on byte sequences of one fixed size n, both views cover the same n-byte region, reads and writes act on the whole region, and values are flat byte sequences. Nothing is said about alignment, size-changing (prefix, sub-slice or unsized) casts, provenance, uninitialised or padding bytes, pointer metadata or the memory a pointer refers to, aliasing models, concurrency, destructors or auto traits, or library-level safety invariants; see the modeling bridge in the Applicability section of the package report.",
+      "Equality is extensional (same accepted byte sequences), not equality of type names or definitions.",
+      "Does not say a sound mutable cast is the identity on values; only that both views accept the same bytes.",
+      "Characterizes unchecked mutable-reference casts, which must accept every T-valid initial value without inspecting it. A cast that checks validity at U once, at cast time, and then hands out an ordinary unchecked `&mut U` (as zerocopy's try_transmute_mut! does) is a different discipline: by R8-mut it is sound iff (some byte sequence is valid at both T and U) → U ⊆ T; neither T ⊆ U nor T ≡ U is required (checkedSound_mut_escapes_impossibility: byte → bool).",
+      "Both views cover exactly the same n bytes. Reference casts to a smaller referent (prefix casts, sub-slices, `&mut [u8; 4] → &mut [u8; 2]`), which rustc's checker accepts when the destination referent is no larger than the source referent, are outside the model: whole-type validity equality would wrongly reject `&mut [u8; 4] → &mut [u8; 2]`, and equality of the prefix's own validity would wrongly accept a write that breaks an invariant coupling the viewed bytes with the unviewed ones (for example two bytes required to sum to zero).",
+      "Only bit validity is modelled; destructors and auto traits are not. Even when T ≡ U, a value transmute does not run T's destructor (zerocopy's transmute! documents that the source 'will not be dropped') and U's destructor may later run on the bytes; through a mutable-reference cast a value written at U may later be dropped at T and vice versa; and reinterpreting between types that differ in Send or Sync can break thread-safety guarantees. None of this is captured here.",
+      "Vacuous soundness from an unsatisfiable source holds here only because Sound assumes the region already holds a T-valid value. The Rust Reference ([undefined.validity.reference-box]) requires a reference to point to a valid value, noting that this point 'remains a subject of some debate'; under that requirement a reference to an uninhabited type is never valid, so this edge case does not license creating, say, a `&mut` to an empty enum and casting it to `&mut u8`. rustc's checker likewise answers Yes for uninhabited source types (mod.rs lines 112-119)."
+    ],
+    "prior_art": [
+      "'Safer Transmute' RFC, rust-lang/rfcs pull request #2981 (closed without merging on 2021-03-31; text as of the pull request's head commit ee1204c23320c33437107ff222e09afd9d5fef1d, file text/0000-safer-transmute.md), section 'Requirements on References' / 'Mutate-able References Must Preserve Validity': mutate-able references are all &mut T plus 'all shared (i.e., &T) references whose referent type contain any bytes produced by the contents of UnsafeCell', and 'the transmutation of a mutate-able reference may also not expand the bit-validity of the referenced type.' Closest informal prior statement of the mutable-reference and interior-mutability rules.",
+      "rustc source, rust-lang/rust commit 5b216e01a117532b30f061f3dff8a61408113c77, file compiler/rustc_transmute/src/maybe_transmutable/mod.rs: lines 92-93, comment 'mutable destination references also generate a reverse transmutability obligation for their referents'; lines 112-119: if the source layout is uninhabited the answer is Yes ('because instances of the `src` type do not exist'); lines 244-259: a reference transition is rejected if the destination reference is mutable and the source reference is not, if the destination referent is more strictly aligned (unless alignment is assumed), or if the destination referent is larger than the source referent; lines 276-282: the referents must be transmutable from source to destination, and if the destination reference is mutable also from destination to source; otherwise (shared destination reference) the condition `Condition::Immutable { ty: dst_ref.referent }` is added. No interior-mutability condition is placed on the source referent. The UI test tests/ui/transmutability/references/unsafecell.rs at the same commit rejects `&'static UnsafeCell<u8> -> &'static UnsafeCell<u8>` (line 29; comment at lines 25-26: 'We forbid `UnsafeCell`-containing ref-to-ref transmutations, because the two types may use different, incompatible synchronization strategies.') and accepts `&'static mut UnsafeCell<bool> -> &'static u8` (line 42). Implementation counterpart of the mutable-reference rule; for shared references it requires the destination referent to be free of interior mutability instead of characterising the interior-mutable case.",
+      "zerocopy 0.8.63 documentation (crates.io release published 2026-10-13, crate checksum SHA-256 e5fe1f8f1b06191a00962174c61aa5005e0bb391a6d80d07e24d115c01a92ed8), https://docs.rs/zerocopy/0.8.63/zerocopy/ (read 2026-11-20). Macro transmute! behaves like `const fn transmute<Src, Dst>(src: Src) -> Dst where Src: IntoBytes, Dst: FromBytes, size_of::<Src>() == size_of::<Dst>()` (an `#![allow(shrink)]` form also permits shrinking), and 'the Src produced by the expression $e will not be dropped'. Macro transmute_ref! behaves like `fn transmute_ref<'src, 'dst, Src, Dst>(src: &'src Src) -> &'dst Dst where 'src: 'dst, Src: IntoBytes + Immutable + ?Sized, Dst: FromBytes + Immutable + ?Sized, align_of::<Src>() >= align_of::<Dst>(), size_compatible::<Src, Dst>()`. Macro transmute_mut! behaves like `const fn transmute_mut<'src, 'dst, Src, Dst>(src: &'src mut Src) -> &'dst mut Dst where 'src: 'dst, Src: FromBytes + IntoBytes + ?Sized, Dst: FromBytes + IntoBytes + ?Sized, align_of::<Src>() >= align_of::<Dst>(), size_compatible::<Src, Dst>()`. Checked forms: try_transmute! (`Src: IntoBytes, Dst: TryFromBytes, size_of::<Src>() == size_of::<Dst>()`), try_transmute_ref! (`Src: IntoBytes + Immutable + ?Sized, Dst: TryFromBytes + Immutable + ?Sized`, plus the alignment and size-compatibility bounds) and try_transmute_mut! (`Src: FromBytes + IntoBytes + ?Sized, Dst: TryFromBytes + IntoBytes + ?Sized`, plus the alignment and size-compatibility bounds; 'while the value of the referent is checked for validity at runtime, the size and alignment are checked at compile time'; its examples convert `&mut 0u8` to `Ok(&mut false)` and reject `&mut 2u8`). Trait summaries: FromBytes 'Types for which any bit pattern is valid.'; TryFromBytes 'Types for which some bit patterns are valid.'; IntoBytes 'Types that can be converted to an immutable slice of initialized bytes.'; Immutable 'Types which are free from interior mutability.' Relation to this package (derived): over bytes that may be uninitialised, Src: IntoBytes says every Src-valid byte sequence is initialised and Dst: FromBytes says every initialised byte sequence is Dst-valid, so together they give T ⊆ U by transitivity through the set of initialised byte sequences; requiring both traits on both sides (transmute_mut!) makes both validities equal to that set, a special case of T ≡ U. In this package bytes are always initialised, so that intermediate set is the all-bytes validity and Src: IntoBytes has no counterpart. try_transmute_mut! is an instance of a checked mutable cast (R8-mut): Src: FromBytes and Dst: IntoBytes give U ⊆ T, and the run-time check supplies validity at U for the initial contents. For try_transmute_mut!, the bound Src: IntoBytes makes the source referent's bytes initialised, so that the run-time check can read them; Src: FromBytes alone does not exclude padding bytes.",
+      "Y. Matsushita, X. Denis, J.-H. Jourdan, D. Dreyer. RustHornBelt: A Semantic Foundation for Functional Verification of Rust Programs with Unsafe Code. PLDI 2022, pp. 841-856. doi:10.1145/3519939.3523704. Its Coq development (GitHub repository dewert99/rust-horn-belt, commit af47b28f38dd0cbeb620c2cb9ade29f0aad24c27, whose README reads 'This is the Coq development for \"RustHornBelt: ...\"') defines semantic subtyping `subtype E L ty ty' f` (theories/typing/type.v lines 933-934) and `eqtype` as subtyping in both directions (type.v lines 937-938), and proves `shr_subtype` (theories/typing/shr_bor.v lines 77-79: subtyping of referents gives subtyping of shared references), `uniq_subtype` (theories/typing/uniq_bor.v lines 153-155: eqtype of referents gives subtyping of unique borrows) and `cell_subtype` (theories/typing/lib/cell.v lines 104-105: eqtype gives subtyping of cells). These are mechanized sufficiency results of the same shape as the sufficiency directions of R2, R3 and R4 with destination writes, for a semantic subtyping relation rather than byte-level bit validity; they do not state the converse (necessity) direction or the satisfiability edge case.",
+      "R. Jung, J.-H. Jourdan, R. Krebbers, D. Dreyer. RustBelt: Securing the Foundations of the Rust Programming Language. Proc. ACM Program. Lang. 2(POPL), Article 66, pp. 1-34, January 2018. doi:10.1145/3158154. Its semantic model works by 'interpreting λRust types as predicates on values expressed in a rich program logic'; `Validity` here is a drastically simplified, logic-free analogue (types as predicates on byte sequences)."
+    ],
+    "design_question": "A library offering safe reinterpretation of memory (value transmutes, shared-reference casts, mutable-reference casts) must decide which validity relationship between source and destination type each cast kind requires; too permissive is unsound, too restrictive rejects useful casts. Which conditions are exactly necessary and sufficient, and how does interior mutability change them?"
+  },
+  {
+    "id": "R3-imp",
+    "lean": "Toy.Transmute.not_mutSound_of_satisfiable_of_not_validityEq",
+    "kind": "impossibility",
+    "status": "proved",
+    "module": "ToyTransmute/Results.lean",
+    "tier": "T1",
+    "tier_justification": "Impossibility reading of R3-eq.",
+    "plain_claim": "No unchecked mutable-reference cast from a type T with at least one valid byte sequence to a type U of the same size (both views covering the same region) whose validity differs from T's is sound.",
+    "hypotheses": [
+      {
+        "name": "hT : Satisfiable T",
+        "purpose": "Excludes the vacuously sound uninhabited source.",
+        "tightness": "tight",
+        "counterexample": "Toy.Transmute.not_mutSound_needs_satisfiable",
+        "counterexample_note": "never -> byte: validities differ and the mutable cast is sound."
+      },
+      {
+        "name": "hne : ¬ ValidityEq T U",
+        "purpose": "The validities must differ.",
+        "tightness": "tight",
+        "counterexample": "Toy.Transmute.not_mutSound_needs_not_validityEq",
+        "counterexample_note": "bool -> bool': equal validity, sound."
+      }
+    ],
+    "depth": "definitional",
+    "depth_note": "Contrapositive of R3-eq.",
+    "nonvacuity_witness": "bool -> byte satisfies both hypotheses (and is confirmed unsound directly).",
+    "nonvacuity_witness_lean": "Toy.Transmute.not_mutSound_nonvacuous",
+    "positive_control_lean": [
+      "Toy.Transmute.not_mutSound_positive_control_weaker_casts",
+      "Toy.Transmute.not_mutSound_needs_satisfiable",
+      "Toy.Transmute.checkedSound_mut_escapes_impossibility"
+    ],
+    "positive_control_note": "Weakening the cast kind: for the same bool -> byte pair the value transmute, the shared cast, and the shared cast with source-only writes are sound. Dropping satisfiability: never -> byte is a sound mutable cast with different validity. Checking at cast time: byte -> bool checked once at cast time is sound although the validities differ.",
+    "non_claims": [
+      "All statements are about the toy model of this package: a type is a bit-validity predicate on byte sequences of one fixed size n, both views cover the same n-byte region, reads and writes act on the whole region, and values are flat byte sequences. Nothing is said about alignment, size-changing (prefix, sub-slice or unsized) casts, provenance, uninitialised or padding bytes, pointer metadata or the memory a pointer refers to, aliasing models, concurrency, destructors or auto traits, or library-level safety invariants; see the modeling bridge in the Applicability section of the package report.",
+      "Escape hatches, each defeating the impossibility: the cast checks validity at U once at cast time (R8-mut; the condition then becomes (some byte sequence is valid at both T and U) → U ⊆ T, as for zerocopy's try_transmute_mut!); the cast reference cannot write arbitrary U-valid values (not modelled); the owner never reads again (not a property of a reference cast); or the source type is uninhabited.",
+      "Does not forbid other checked designs either, such as re-validating on every read or a run-time check on every store (as for Java arrays); those are outside the model.",
+      "Both views cover exactly the same n bytes. Reference casts to a smaller referent (prefix casts, sub-slices, `&mut [u8; 4] → &mut [u8; 2]`), which rustc's checker accepts when the destination referent is no larger than the source referent, are outside the model: whole-type validity equality would wrongly reject `&mut [u8; 4] → &mut [u8; 2]`, and equality of the prefix's own validity would wrongly accept a write that breaks an invariant coupling the viewed bytes with the unviewed ones (for example two bytes required to sum to zero)."
+    ],
+    "prior_art": [
+      "'Safer Transmute' RFC, rust-lang/rfcs pull request #2981 (closed without merging on 2021-03-31; text as of the pull request's head commit ee1204c23320c33437107ff222e09afd9d5fef1d, file text/0000-safer-transmute.md), section 'Requirements on References' / 'Mutate-able References Must Preserve Validity': mutate-able references are all &mut T plus 'all shared (i.e., &T) references whose referent type contain any bytes produced by the contents of UnsafeCell', and 'the transmutation of a mutate-able reference may also not expand the bit-validity of the referenced type.' Closest informal prior statement of the mutable-reference and interior-mutability rules.",
+      "rustc source, rust-lang/rust commit 5b216e01a117532b30f061f3dff8a61408113c77, file compiler/rustc_transmute/src/maybe_transmutable/mod.rs: lines 92-93, comment 'mutable destination references also generate a reverse transmutability obligation for their referents'; lines 112-119: if the source layout is uninhabited the answer is Yes ('because instances of the `src` type do not exist'); lines 244-259: a reference transition is rejected if the destination reference is mutable and the source reference is not, if the destination referent is more strictly aligned (unless alignment is assumed), or if the destination referent is larger than the source referent; lines 276-282: the referents must be transmutable from source to destination, and if the destination reference is mutable also from destination to source; otherwise (shared destination reference) the condition `Condition::Immutable { ty: dst_ref.referent }` is added. No interior-mutability condition is placed on the source referent. The UI test tests/ui/transmutability/references/unsafecell.rs at the same commit rejects `&'static UnsafeCell<u8> -> &'static UnsafeCell<u8>` (line 29; comment at lines 25-26: 'We forbid `UnsafeCell`-containing ref-to-ref transmutations, because the two types may use different, incompatible synchronization strategies.') and accepts `&'static mut UnsafeCell<bool> -> &'static u8` (line 42). Implementation counterpart of the mutable-reference rule; for shared references it requires the destination referent to be free of interior mutability instead of characterising the interior-mutable case.",
+      "zerocopy 0.8.63 documentation (crates.io release published 2026-10-13, crate checksum SHA-256 e5fe1f8f1b06191a00962174c61aa5005e0bb391a6d80d07e24d115c01a92ed8), https://docs.rs/zerocopy/0.8.63/zerocopy/ (read 2026-11-20). Macro transmute! behaves like `const fn transmute<Src, Dst>(src: Src) -> Dst where Src: IntoBytes, Dst: FromBytes, size_of::<Src>() == size_of::<Dst>()` (an `#![allow(shrink)]` form also permits shrinking), and 'the Src produced by the expression $e will not be dropped'. Macro transmute_ref! behaves like `fn transmute_ref<'src, 'dst, Src, Dst>(src: &'src Src) -> &'dst Dst where 'src: 'dst, Src: IntoBytes + Immutable + ?Sized, Dst: FromBytes + Immutable + ?Sized, align_of::<Src>() >= align_of::<Dst>(), size_compatible::<Src, Dst>()`. Macro transmute_mut! behaves like `const fn transmute_mut<'src, 'dst, Src, Dst>(src: &'src mut Src) -> &'dst mut Dst where 'src: 'dst, Src: FromBytes + IntoBytes + ?Sized, Dst: FromBytes + IntoBytes + ?Sized, align_of::<Src>() >= align_of::<Dst>(), size_compatible::<Src, Dst>()`. Checked forms: try_transmute! (`Src: IntoBytes, Dst: TryFromBytes, size_of::<Src>() == size_of::<Dst>()`), try_transmute_ref! (`Src: IntoBytes + Immutable + ?Sized, Dst: TryFromBytes + Immutable + ?Sized`, plus the alignment and size-compatibility bounds) and try_transmute_mut! (`Src: FromBytes + IntoBytes + ?Sized, Dst: TryFromBytes + IntoBytes + ?Sized`, plus the alignment and size-compatibility bounds; 'while the value of the referent is checked for validity at runtime, the size and alignment are checked at compile time'; its examples convert `&mut 0u8` to `Ok(&mut false)` and reject `&mut 2u8`). Trait summaries: FromBytes 'Types for which any bit pattern is valid.'; TryFromBytes 'Types for which some bit patterns are valid.'; IntoBytes 'Types that can be converted to an immutable slice of initialized bytes.'; Immutable 'Types which are free from interior mutability.' Relation to this package (derived): over bytes that may be uninitialised, Src: IntoBytes says every Src-valid byte sequence is initialised and Dst: FromBytes says every initialised byte sequence is Dst-valid, so together they give T ⊆ U by transitivity through the set of initialised byte sequences; requiring both traits on both sides (transmute_mut!) makes both validities equal to that set, a special case of T ≡ U. In this package bytes are always initialised, so that intermediate set is the all-bytes validity and Src: IntoBytes has no counterpart. try_transmute_mut! is an instance of a checked mutable cast (R8-mut): Src: FromBytes and Dst: IntoBytes give U ⊆ T, and the run-time check supplies validity at U for the initial contents. For try_transmute_mut!, the bound Src: IntoBytes makes the source referent's bytes initialised, so that the run-time check can read them; Src: FromBytes alone does not exclude padding bytes.",
+      "The Java Language Specification, Java SE 21 edition: section 4.10.3 'Subtyping among Array Types' ('If S and T are both reference types, then S[] >1 T[] iff S >1 T.') and section 10.5 'Array Store Exception' ('If the type of the value being assigned is not assignment-compatible (§5.2) with the component type, an ArrayStoreException is thrown.'), https://docs.oracle.com/javase/specs/jls/se21/html/. The classic covariant mutable container: the write-side obligation is discharged by a run-time check instead of being required statically."
+    ],
+    "design_question": "A library offering safe reinterpretation of memory (value transmutes, shared-reference casts, mutable-reference casts) must decide which validity relationship between source and destination type each cast kind requires; too permissive is unsound, too restrictive rejects useful casts. Which conditions are exactly necessary and sufficient, and how does interior mutability change them?"
+  },
+  {
+    "id": "R4",
+    "lean": "Toy.Transmute.sharedIMSound_iff_includes_and_dstWrites_imp_satisfiable_imp_includes_rev",
+    "kind": "characterization",
+    "status": "proved",
+    "module": "ToyTransmute/Results.lean",
+    "tier": "T1",
+    "tier_justification": "The interior-mutability rule is stated informally in the Safer Transmute RFC text (shared references to UnsafeCell bytes are 'mutate-able'); capability-indexed read/write subtyping is classic (Pierce and Sangiorgi). Folklore made precise, parametrically in which side may write, which exposes that source-side writes add no validity requirement.",
+    "plain_claim": "An unchecked shared-reference cast from T to U (one that accepts every T-valid value without inspecting it), two types of the same size whose views cover the same region, in which both references stay live, the source side may write T-valid values iff srcWrites and the destination side may write U-valid values iff dstWrites, is sound for bit validity in this model (aliasing rules are not modelled) if and only if every T-valid byte sequence is U-valid and, when the destination side may write and T has a valid byte sequence, every U-valid byte sequence is T-valid; srcWrites does not matter.",
+    "hypotheses": [
+      {
+        "name": "(none: an equivalence with no hypotheses)",
+        "purpose": "The statement is universally quantified over all byte alphabets, sizes and validity predicates (source and destination share the size index n).",
+        "tightness": "harmless"
+      },
+      {
+        "name": "right-hand side: Includes T U",
+        "purpose": "Needed by reads through the cast reference (of the initial value, or of values written by the source side).",
+        "tightness": "tight",
+        "counterexample": "Toy.Transmute.sharedIMSound_needs_includes_canonical",
+        "counterexample_note": "byte -> bool, every pair of flags: the other conjunct holds, Includes fails, the cast is unsound."
+      },
+      {
+        "name": "right-hand side: dstWrites = true -> Satisfiable T -> Includes U T",
+        "purpose": "Needed because a value written through the cast reference is read back at T through the original reference.",
+        "tightness": "tight",
+        "counterexample": "Toy.Transmute.sharedIMSound_needs_includes_rev_canonical",
+        "counterexample_note": "bool -> byte with the destination flag set: Includes T U holds, bool is satisfiable, byte ⊈ bool, the cast is unsound."
+      },
+      {
+        "name": "right-hand side: the guard 'dstWrites = true ->'",
+        "purpose": "Exactness: with only source-side writes, inclusion suffices.",
+        "tightness": "tight",
+        "counterexample": "Toy.Transmute.sharedIMSound_rhs_needs_dstWrites_guard",
+        "counterexample_note": "bool -> byte without destination writes, either source flag: sound, but the unguarded right-hand side is false."
+      },
+      {
+        "name": "right-hand side: the guard 'Satisfiable T ->'",
+        "purpose": "Exactness for uninhabited sources.",
+        "tightness": "tight",
+        "counterexample": "Toy.Transmute.sharedIMSound_rhs_needs_satisfiable_guard",
+        "counterexample_note": "never -> byte with the destination flag set, either source flag: sound, but the unguarded right-hand side is false."
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "Necessity: readDst and writeDstReadSrc u (the latter is permitted exactly when dstWrites). Sufficiency: invariant T.",
+    "nonvacuity_witness": "Both sides true for bool -> bool' (both flags) and bool -> byte (source flag only); both false for bool -> byte (destination flag set).",
+    "nonvacuity_witness_lean": "Toy.Transmute.sharedIMSound_exact_nonvacuous",
+    "non_claims": [
+      "All statements are about the toy model of this package: a type is a bit-validity predicate on byte sequences of one fixed size n, both views cover the same n-byte region, reads and writes act on the whole region, and values are flat byte sequences. Nothing is said about alignment, size-changing (prefix, sub-slice or unsized) casts, provenance, uninitialised or padding bytes, pointer metadata or the memory a pointer refers to, aliasing models, concurrency, destructors or auto traits, or library-level safety invariants; see the modeling bridge in the Applicability section of the package report.",
+      "Bit validity only. The source-only-writes case (an interior-mutable source viewed through a read-only destination) is validity-sound here, but in Rust writing through one reference while a shared reference without interior mutability to the same bytes is in use is governed by the aliasing model (Stacked Borrows, Tree Borrows), independently of validity. zerocopy's transmute_ref! excludes the case by requiring Immutable on both Src and Dst. rustc's transmutability checker (at the cited commit) requires only the destination referent of a shared-reference cast to be free of interior mutability and places no such condition on the source referent.",
+      "The write flags are per side and cover the whole region; they do not track which bytes lie inside an `UnsafeCell`. In Rust, `&(UnsafeCell<u8>, u8) → &(u8, UnsafeCell<u8>)` has equal validities and interior mutability on both sides, yet the destination may mutate a byte that the source type does not mark as interior-mutable; nothing here says such a cast is sound.",
+      "Validity equality says nothing about whether two interior-mutable types use compatible synchronization or borrow-tracking protocols (for example an atomic integer versus `Cell<u8>`, or the borrow flag of a `RefCell`). rustc's transmutability checker rejects even `&UnsafeCell<u8> → &UnsafeCell<u8>` (its UI test comment: 'the two types may use different, incompatible synchronization strategies'), and zerocopy's transmute_ref! requires both sides to be free of interior mutability.",
+      "Both views cover exactly the same n bytes. Reference casts to a smaller referent (prefix casts, sub-slices, `&mut [u8; 4] → &mut [u8; 2]`), which rustc's checker accepts when the destination referent is no larger than the source referent, are outside the model: whole-type validity equality would wrongly reject `&mut [u8; 4] → &mut [u8; 2]`, and equality of the prefix's own validity would wrongly accept a write that breaks an invariant coupling the viewed bytes with the unviewed ones (for example two bytes required to sum to zero).",
+      "Does not model concurrent (racing) writes; runs are sequential interleavings.",
+      "Unchecked casts only. For a cast checked once at cast time, source-side writes do matter (R8-im)."
+    ],
+    "prior_art": [
+      "'Safer Transmute' RFC, rust-lang/rfcs pull request #2981 (closed without merging on 2021-03-31; text as of the pull request's head commit ee1204c23320c33437107ff222e09afd9d5fef1d, file text/0000-safer-transmute.md), section 'Requirements on References' / 'Mutate-able References Must Preserve Validity': mutate-able references are all &mut T plus 'all shared (i.e., &T) references whose referent type contain any bytes produced by the contents of UnsafeCell', and 'the transmutation of a mutate-able reference may also not expand the bit-validity of the referenced type.' Closest informal prior statement of the mutable-reference and interior-mutability rules.",
+      "rustc source, rust-lang/rust commit 5b216e01a117532b30f061f3dff8a61408113c77, file compiler/rustc_transmute/src/maybe_transmutable/mod.rs: lines 92-93, comment 'mutable destination references also generate a reverse transmutability obligation for their referents'; lines 112-119: if the source layout is uninhabited the answer is Yes ('because instances of the `src` type do not exist'); lines 244-259: a reference transition is rejected if the destination reference is mutable and the source reference is not, if the destination referent is more strictly aligned (unless alignment is assumed), or if the destination referent is larger than the source referent; lines 276-282: the referents must be transmutable from source to destination, and if the destination reference is mutable also from destination to source; otherwise (shared destination reference) the condition `Condition::Immutable { ty: dst_ref.referent }` is added. No interior-mutability condition is placed on the source referent. The UI test tests/ui/transmutability/references/unsafecell.rs at the same commit rejects `&'static UnsafeCell<u8> -> &'static UnsafeCell<u8>` (line 29; comment at lines 25-26: 'We forbid `UnsafeCell`-containing ref-to-ref transmutations, because the two types may use different, incompatible synchronization strategies.') and accepts `&'static mut UnsafeCell<bool> -> &'static u8` (line 42). Implementation counterpart of the mutable-reference rule; for shared references it requires the destination referent to be free of interior mutability instead of characterising the interior-mutable case.",
+      "zerocopy 0.8.63 documentation (crates.io release published 2026-10-13, crate checksum SHA-256 e5fe1f8f1b06191a00962174c61aa5005e0bb391a6d80d07e24d115c01a92ed8), https://docs.rs/zerocopy/0.8.63/zerocopy/ (read 2026-11-20). Macro transmute! behaves like `const fn transmute<Src, Dst>(src: Src) -> Dst where Src: IntoBytes, Dst: FromBytes, size_of::<Src>() == size_of::<Dst>()` (an `#![allow(shrink)]` form also permits shrinking), and 'the Src produced by the expression $e will not be dropped'. Macro transmute_ref! behaves like `fn transmute_ref<'src, 'dst, Src, Dst>(src: &'src Src) -> &'dst Dst where 'src: 'dst, Src: IntoBytes + Immutable + ?Sized, Dst: FromBytes + Immutable + ?Sized, align_of::<Src>() >= align_of::<Dst>(), size_compatible::<Src, Dst>()`. Macro transmute_mut! behaves like `const fn transmute_mut<'src, 'dst, Src, Dst>(src: &'src mut Src) -> &'dst mut Dst where 'src: 'dst, Src: FromBytes + IntoBytes + ?Sized, Dst: FromBytes + IntoBytes + ?Sized, align_of::<Src>() >= align_of::<Dst>(), size_compatible::<Src, Dst>()`. Checked forms: try_transmute! (`Src: IntoBytes, Dst: TryFromBytes, size_of::<Src>() == size_of::<Dst>()`), try_transmute_ref! (`Src: IntoBytes + Immutable + ?Sized, Dst: TryFromBytes + Immutable + ?Sized`, plus the alignment and size-compatibility bounds) and try_transmute_mut! (`Src: FromBytes + IntoBytes + ?Sized, Dst: TryFromBytes + IntoBytes + ?Sized`, plus the alignment and size-compatibility bounds; 'while the value of the referent is checked for validity at runtime, the size and alignment are checked at compile time'; its examples convert `&mut 0u8` to `Ok(&mut false)` and reject `&mut 2u8`). Trait summaries: FromBytes 'Types for which any bit pattern is valid.'; TryFromBytes 'Types for which some bit patterns are valid.'; IntoBytes 'Types that can be converted to an immutable slice of initialized bytes.'; Immutable 'Types which are free from interior mutability.' Relation to this package (derived): over bytes that may be uninitialised, Src: IntoBytes says every Src-valid byte sequence is initialised and Dst: FromBytes says every initialised byte sequence is Dst-valid, so together they give T ⊆ U by transitivity through the set of initialised byte sequences; requiring both traits on both sides (transmute_mut!) makes both validities equal to that set, a special case of T ≡ U. In this package bytes are always initialised, so that intermediate set is the all-bytes validity and Src: IntoBytes has no counterpart. try_transmute_mut! is an instance of a checked mutable cast (R8-mut): Src: FromBytes and Dst: IntoBytes give U ⊆ T, and the run-time check supplies validity at U for the initial contents. For try_transmute_mut!, the bound Src: IntoBytes makes the source referent's bytes initialised, so that the run-time check can read them; Src: FromBytes alone does not exclude padding bytes.",
+      "The Rust Reference, 'Subtyping and variance', https://doc.rust-lang.org/reference/subtyping.html (read 2026-11-20; verified in src/subtyping.md of rust-lang/reference at commit e24eecf97b0c9a6dbac67191098204dc8a190aaa, the Reference revision of the Rust 1.100.0 release), rule [subtyping.variance.builtin-types]: the table lists &'a T as covariant in T, &'a mut T as invariant in T, and std::cell::UnsafeCell<T> as invariant in T. The same read/write argument applied to lifetime subtyping rather than to bit validity; Cell<T> is invariant by the composite-type rule [subtyping.variance.user-composite-types], not by the table.",
+      "Y. Matsushita, X. Denis, J.-H. Jourdan, D. Dreyer. RustHornBelt: A Semantic Foundation for Functional Verification of Rust Programs with Unsafe Code. PLDI 2022, pp. 841-856. doi:10.1145/3519939.3523704. Its Coq development (GitHub repository dewert99/rust-horn-belt, commit af47b28f38dd0cbeb620c2cb9ade29f0aad24c27, whose README reads 'This is the Coq development for \"RustHornBelt: ...\"') defines semantic subtyping `subtype E L ty ty' f` (theories/typing/type.v lines 933-934) and `eqtype` as subtyping in both directions (type.v lines 937-938), and proves `shr_subtype` (theories/typing/shr_bor.v lines 77-79: subtyping of referents gives subtyping of shared references), `uniq_subtype` (theories/typing/uniq_bor.v lines 153-155: eqtype of referents gives subtyping of unique borrows) and `cell_subtype` (theories/typing/lib/cell.v lines 104-105: eqtype gives subtyping of cells). These are mechanized sufficiency results of the same shape as the sufficiency directions of R2, R3 and R4 with destination writes, for a semantic subtyping relation rather than byte-level bit validity; they do not state the converse (necessity) direction or the satisfiability edge case.",
+      "R. Jung, H.-H. Dang, J. Kang, D. Dreyer. Stacked Borrows: An Aliasing Model for Rust. Proc. ACM Program. Lang. 4(POPL), pp. 1-32, 2020. doi:10.1145/3371109. An operational aliasing model for Rust; aliasing is outside this package's model.",
+      "N. Villani, J. Hostert, D. Dreyer, R. Jung. Tree Borrows. Proc. ACM Program. Lang. 9(PLDI), pp. 1019-1042, 2025. doi:10.1145/3735592. A later operational aliasing model for Rust; aliasing is outside this package's model.",
+      "R. Jung. Understanding and Evolving the Rust Programming Language. PhD thesis, Universität des Saarlandes, 2020. doi:10.22028/D291-31946. Presents RustBelt and Stacked Borrows together.",
+      "B. Pierce, D. Sangiorgi. Typing and Subtyping for Mobile Processes. Mathematical Structures in Computer Science 6(5):409-453, 1996. doi:10.1017/S096012950007002X. Refines channel types of the pi-calculus by distinguishing the capabilities to read, to write, and to both read and write, which gives rise to a subtype relation on channels."
+    ],
+    "design_question": "A library offering safe reinterpretation of memory (value transmutes, shared-reference casts, mutable-reference casts) must decide which validity relationship between source and destination type each cast kind requires; too permissive is unsound, too restrictive rejects useful casts. Which conditions are exactly necessary and sufficient, and how does interior mutability change them?"
+  },
+  {
+    "id": "R4-eq",
+    "lean": "Toy.Transmute.sharedIMSound_dstWrites_iff_validityEq_of_satisfiable",
+    "kind": "characterization",
+    "status": "proved",
+    "module": "ToyTransmute/Results.lean",
+    "tier": "T1",
+    "tier_justification": "The interior-mutability rule of the Safer Transmute RFC text, made precise, with its two hidden hypotheses (destination-side writes, satisfiable source) explicit.",
+    "plain_claim": "If the destination side of an unchecked shared cast with interior mutability between two types T and U of the same size (both views covering the same region) may write and T has a valid byte sequence, the cast is sound for bit validity in this model if and only if T and U accept exactly the same byte sequences, regardless of whether the source side may write.",
+    "hypotheses": [
+      {
+        "name": "dstWrites = true (instantiated in the statement)",
+        "purpose": "Destination-side writes are what force the reverse inclusion.",
+        "tightness": "tight",
+        "counterexample": "Toy.Transmute.sharedIMSound_eq_needs_dstWrites",
+        "counterexample_note": "With only source-side writes, bool -> byte is sound but the validities differ. This refutes the reading 'shared casts where either side can write need equality'."
+      },
+      {
+        "name": "hT : Satisfiable T",
+        "purpose": "Excludes the vacuously sound uninhabited source.",
+        "tightness": "tight",
+        "counterexample": "Toy.Transmute.sharedIMSound_eq_needs_satisfiable",
+        "counterexample_note": "never -> byte, both flags set: sound, validities differ."
+      }
+    ],
+    "depth": "definitional",
+    "depth_note": "Specialization of R4 at dstWrites = true.",
+    "nonvacuity_witness": "bool -> bool' with both flags set.",
+    "nonvacuity_witness_lean": "Toy.Transmute.sharedIMSound_eq_nonvacuous",
+    "non_claims": [
+      "All statements are about the toy model of this package: a type is a bit-validity predicate on byte sequences of one fixed size n, both views cover the same n-byte region, reads and writes act on the whole region, and values are flat byte sequences. Nothing is said about alignment, size-changing (prefix, sub-slice or unsized) casts, provenance, uninitialised or padding bytes, pointer metadata or the memory a pointer refers to, aliasing models, concurrency, destructors or auto traits, or library-level safety invariants; see the modeling bridge in the Applicability section of the package report.",
+      "Does not say that interior mutability on the source side alone forces equality; it does not (sharedIMSound_eq_needs_dstWrites).",
+      "The write flags are per side and cover the whole region; they do not track which bytes lie inside an `UnsafeCell`. In Rust, `&(UnsafeCell<u8>, u8) → &(u8, UnsafeCell<u8>)` has equal validities and interior mutability on both sides, yet the destination may mutate a byte that the source type does not mark as interior-mutable; nothing here says such a cast is sound.",
+      "Validity equality says nothing about whether two interior-mutable types use compatible synchronization or borrow-tracking protocols (for example an atomic integer versus `Cell<u8>`, or the borrow flag of a `RefCell`). rustc's transmutability checker rejects even `&UnsafeCell<u8> → &UnsafeCell<u8>` (its UI test comment: 'the two types may use different, incompatible synchronization strategies'), and zerocopy's transmute_ref! requires both sides to be free of interior mutability.",
+      "Bit validity only; aliasing rules are not modelled (see R4).",
+      "Unchecked casts only. For a cast checked once at cast time, equality is not required: with only destination-side writes, R8-im requires just (some byte sequence is valid at both T and U) → U ⊆ T. For example byte is satisfiable and the validities of byte and bool differ (checkedSound_mut_escapes_impossibility), yet byte → bool checked once at cast time with only destination-side writes is sound (checkedSound_sharedIM_nonvacuous). With source-side writes as well, the checked cast needs both inclusions whenever the meet is satisfiable (R8-im)."
+    ],
+    "prior_art": [
+      "'Safer Transmute' RFC, rust-lang/rfcs pull request #2981 (closed without merging on 2021-03-31; text as of the pull request's head commit ee1204c23320c33437107ff222e09afd9d5fef1d, file text/0000-safer-transmute.md), section 'Requirements on References' / 'Mutate-able References Must Preserve Validity': mutate-able references are all &mut T plus 'all shared (i.e., &T) references whose referent type contain any bytes produced by the contents of UnsafeCell', and 'the transmutation of a mutate-able reference may also not expand the bit-validity of the referenced type.' Closest informal prior statement of the mutable-reference and interior-mutability rules.",
+      "rustc source, rust-lang/rust commit 5b216e01a117532b30f061f3dff8a61408113c77, file compiler/rustc_transmute/src/maybe_transmutable/mod.rs: lines 92-93, comment 'mutable destination references also generate a reverse transmutability obligation for their referents'; lines 112-119: if the source layout is uninhabited the answer is Yes ('because instances of the `src` type do not exist'); lines 244-259: a reference transition is rejected if the destination reference is mutable and the source reference is not, if the destination referent is more strictly aligned (unless alignment is assumed), or if the destination referent is larger than the source referent; lines 276-282: the referents must be transmutable from source to destination, and if the destination reference is mutable also from destination to source; otherwise (shared destination reference) the condition `Condition::Immutable { ty: dst_ref.referent }` is added. No interior-mutability condition is placed on the source referent. The UI test tests/ui/transmutability/references/unsafecell.rs at the same commit rejects `&'static UnsafeCell<u8> -> &'static UnsafeCell<u8>` (line 29; comment at lines 25-26: 'We forbid `UnsafeCell`-containing ref-to-ref transmutations, because the two types may use different, incompatible synchronization strategies.') and accepts `&'static mut UnsafeCell<bool> -> &'static u8` (line 42). Implementation counterpart of the mutable-reference rule; for shared references it requires the destination referent to be free of interior mutability instead of characterising the interior-mutable case.",
+      "Y. Matsushita, X. Denis, J.-H. Jourdan, D. Dreyer. RustHornBelt: A Semantic Foundation for Functional Verification of Rust Programs with Unsafe Code. PLDI 2022, pp. 841-856. doi:10.1145/3519939.3523704. Its Coq development (GitHub repository dewert99/rust-horn-belt, commit af47b28f38dd0cbeb620c2cb9ade29f0aad24c27, whose README reads 'This is the Coq development for \"RustHornBelt: ...\"') defines semantic subtyping `subtype E L ty ty' f` (theories/typing/type.v lines 933-934) and `eqtype` as subtyping in both directions (type.v lines 937-938), and proves `shr_subtype` (theories/typing/shr_bor.v lines 77-79: subtyping of referents gives subtyping of shared references), `uniq_subtype` (theories/typing/uniq_bor.v lines 153-155: eqtype of referents gives subtyping of unique borrows) and `cell_subtype` (theories/typing/lib/cell.v lines 104-105: eqtype gives subtyping of cells). These are mechanized sufficiency results of the same shape as the sufficiency directions of R2, R3 and R4 with destination writes, for a semantic subtyping relation rather than byte-level bit validity; they do not state the converse (necessity) direction or the satisfiability edge case."
+    ],
+    "design_question": "A library offering safe reinterpretation of memory (value transmutes, shared-reference casts, mutable-reference casts) must decide which validity relationship between source and destination type each cast kind requires; too permissive is unsound, too restrictive rejects useful casts. Which conditions are exactly necessary and sufficient, and how does interior mutability change them?"
+  },
+  {
+    "id": "R4-src",
+    "lean": "Toy.Transmute.sharedIMSound_noDstWrites_iff_includes",
+    "kind": "characterization",
+    "status": "proved",
+    "module": "ToyTransmute/Results.lean",
+    "tier": "T1",
+    "tier_justification": "Direct consequence of the read/write argument; not found stated explicitly in the sources consulted, but too elementary to claim as novel.",
+    "plain_claim": "If the destination side of an unchecked shared cast between two types T and U of the same size (both views covering the same region) may not write, the cast is sound for bit validity in this model (aliasing rules are not modelled) if and only if every T-valid byte sequence is U-valid, even when the source side writes T-valid values.",
+    "hypotheses": [
+      {
+        "name": "dstWrites = false (instantiated in the statement)",
+        "purpose": "With destination-side writes the reverse inclusion is also needed.",
+        "tightness": "tight",
+        "counterexample": "Toy.Transmute.sharedIMSound_noDst_needs_noDstWrites",
+        "counterexample_note": "bool -> byte with the destination flag set: Includes holds, the cast is unsound."
+      },
+      {
+        "name": "right-hand side: Includes T U",
+        "purpose": "Reads through the cast reference.",
+        "tightness": "tight",
+        "counterexample": "Toy.Transmute.sharedIMSound_needs_includes"
+      }
+    ],
+    "depth": "definitional",
+    "depth_note": "Specialization of R4 at dstWrites = false.",
+    "nonvacuity_witness": "bool -> byte with only the source flag set.",
+    "nonvacuity_witness_lean": "Toy.Transmute.sharedIMSound_noDst_nonvacuous",
+    "non_claims": [
+      "All statements are about the toy model of this package: a type is a bit-validity predicate on byte sequences of one fixed size n, both views cover the same n-byte region, reads and writes act on the whole region, and values are flat byte sequences. Nothing is said about alignment, size-changing (prefix, sub-slice or unsized) casts, provenance, uninitialised or padding bytes, pointer metadata or the memory a pointer refers to, aliasing models, concurrency, destructors or auto traits, or library-level safety invariants; see the modeling bridge in the Applicability section of the package report.",
+      "Bit validity only. The source-only-writes case (an interior-mutable source viewed through a read-only destination) is validity-sound here, but in Rust writing through one reference while a shared reference without interior mutability to the same bytes is in use is governed by the aliasing model (Stacked Borrows, Tree Borrows), independently of validity. zerocopy's transmute_ref! excludes the case by requiring Immutable on both Src and Dst. rustc's transmutability checker (at the cited commit) requires only the destination referent of a shared-reference cast to be free of interior mutability and places no such condition on the source referent.",
+      "In particular this does not license `&Cell<T> → &U` casts in Rust: mutating bytes through the cell while a shared reference without interior mutability to them is in use is governed by the aliasing model regardless of validity.",
+      "Unchecked casts only. A cast checked once at cast time with source-side writes needs T ⊆ U as well (R8-im)."
+    ],
+    "prior_art": [
+      "rustc source, rust-lang/rust commit 5b216e01a117532b30f061f3dff8a61408113c77, file compiler/rustc_transmute/src/maybe_transmutable/mod.rs: lines 92-93, comment 'mutable destination references also generate a reverse transmutability obligation for their referents'; lines 112-119: if the source layout is uninhabited the answer is Yes ('because instances of the `src` type do not exist'); lines 244-259: a reference transition is rejected if the destination reference is mutable and the source reference is not, if the destination referent is more strictly aligned (unless alignment is assumed), or if the destination referent is larger than the source referent; lines 276-282: the referents must be transmutable from source to destination, and if the destination reference is mutable also from destination to source; otherwise (shared destination reference) the condition `Condition::Immutable { ty: dst_ref.referent }` is added. No interior-mutability condition is placed on the source referent. The UI test tests/ui/transmutability/references/unsafecell.rs at the same commit rejects `&'static UnsafeCell<u8> -> &'static UnsafeCell<u8>` (line 29; comment at lines 25-26: 'We forbid `UnsafeCell`-containing ref-to-ref transmutations, because the two types may use different, incompatible synchronization strategies.') and accepts `&'static mut UnsafeCell<bool> -> &'static u8` (line 42). Implementation counterpart of the mutable-reference rule; for shared references it requires the destination referent to be free of interior mutability instead of characterising the interior-mutable case.",
+      "'Safer Transmute' RFC, rust-lang/rfcs pull request #2981 (closed without merging on 2021-03-31; text as of the pull request's head commit ee1204c23320c33437107ff222e09afd9d5fef1d, file text/0000-safer-transmute.md), section 'Requirements on References' / 'Mutate-able References Must Preserve Validity': mutate-able references are all &mut T plus 'all shared (i.e., &T) references whose referent type contain any bytes produced by the contents of UnsafeCell', and 'the transmutation of a mutate-able reference may also not expand the bit-validity of the referenced type.' Closest informal prior statement of the mutable-reference and interior-mutability rules.",
+      "zerocopy 0.8.63 documentation (crates.io release published 2026-10-13, crate checksum SHA-256 e5fe1f8f1b06191a00962174c61aa5005e0bb391a6d80d07e24d115c01a92ed8), https://docs.rs/zerocopy/0.8.63/zerocopy/ (read 2026-11-20). Macro transmute! behaves like `const fn transmute<Src, Dst>(src: Src) -> Dst where Src: IntoBytes, Dst: FromBytes, size_of::<Src>() == size_of::<Dst>()` (an `#![allow(shrink)]` form also permits shrinking), and 'the Src produced by the expression $e will not be dropped'. Macro transmute_ref! behaves like `fn transmute_ref<'src, 'dst, Src, Dst>(src: &'src Src) -> &'dst Dst where 'src: 'dst, Src: IntoBytes + Immutable + ?Sized, Dst: FromBytes + Immutable + ?Sized, align_of::<Src>() >= align_of::<Dst>(), size_compatible::<Src, Dst>()`. Macro transmute_mut! behaves like `const fn transmute_mut<'src, 'dst, Src, Dst>(src: &'src mut Src) -> &'dst mut Dst where 'src: 'dst, Src: FromBytes + IntoBytes + ?Sized, Dst: FromBytes + IntoBytes + ?Sized, align_of::<Src>() >= align_of::<Dst>(), size_compatible::<Src, Dst>()`. Checked forms: try_transmute! (`Src: IntoBytes, Dst: TryFromBytes, size_of::<Src>() == size_of::<Dst>()`), try_transmute_ref! (`Src: IntoBytes + Immutable + ?Sized, Dst: TryFromBytes + Immutable + ?Sized`, plus the alignment and size-compatibility bounds) and try_transmute_mut! (`Src: FromBytes + IntoBytes + ?Sized, Dst: TryFromBytes + IntoBytes + ?Sized`, plus the alignment and size-compatibility bounds; 'while the value of the referent is checked for validity at runtime, the size and alignment are checked at compile time'; its examples convert `&mut 0u8` to `Ok(&mut false)` and reject `&mut 2u8`). Trait summaries: FromBytes 'Types for which any bit pattern is valid.'; TryFromBytes 'Types for which some bit patterns are valid.'; IntoBytes 'Types that can be converted to an immutable slice of initialized bytes.'; Immutable 'Types which are free from interior mutability.' Relation to this package (derived): over bytes that may be uninitialised, Src: IntoBytes says every Src-valid byte sequence is initialised and Dst: FromBytes says every initialised byte sequence is Dst-valid, so together they give T ⊆ U by transitivity through the set of initialised byte sequences; requiring both traits on both sides (transmute_mut!) makes both validities equal to that set, a special case of T ≡ U. In this package bytes are always initialised, so that intermediate set is the all-bytes validity and Src: IntoBytes has no counterpart. try_transmute_mut! is an instance of a checked mutable cast (R8-mut): Src: FromBytes and Dst: IntoBytes give U ⊆ T, and the run-time check supplies validity at U for the initial contents. For try_transmute_mut!, the bound Src: IntoBytes makes the source referent's bytes initialised, so that the run-time check can read them; Src: FromBytes alone does not exclude padding bytes.",
+      "R. Jung, H.-H. Dang, J. Kang, D. Dreyer. Stacked Borrows: An Aliasing Model for Rust. Proc. ACM Program. Lang. 4(POPL), pp. 1-32, 2020. doi:10.1145/3371109. An operational aliasing model for Rust; aliasing is outside this package's model.",
+      "N. Villani, J. Hostert, D. Dreyer, R. Jung. Tree Borrows. Proc. ACM Program. Lang. 9(PLDI), pp. 1019-1042, 2025. doi:10.1145/3735592. A later operational aliasing model for Rust; aliasing is outside this package's model."
+    ],
+    "design_question": "A library offering safe reinterpretation of memory (value transmutes, shared-reference casts, mutable-reference casts) must decide which validity relationship between source and destination type each cast kind requires; too permissive is unsound, too restrictive rejects useful casts. Which conditions are exactly necessary and sufficient, and how does interior mutability change them?"
+  },
+  {
+    "id": "R4-mut",
+    "lean": "Toy.Transmute.mutSound_iff_sharedIMSound_dstWrites",
+    "kind": "characterization",
+    "status": "proved",
+    "module": "ToyTransmute/Results.lean",
+    "tier": "T1",
+    "tier_justification": "Makes precise the informal grouping of &mut T with interior-mutable &T as 'mutate-able references'.",
+    "plain_claim": "For two types T and U of the same size whose views cover the same region, an unchecked mutable-reference cast from T to U is sound exactly when the unchecked shared cast with interior mutability from T to U in which the destination side may write is sound for bit validity (whether or not the source side may also write).",
+    "hypotheses": [
+      {
+        "name": "dstWrites = true (instantiated in the statement)",
+        "purpose": "Mutable soundness coincides with the destination-writable shared discipline only.",
+        "tightness": "tight",
+        "counterexample": "Toy.Transmute.mutSound_iff_sharedIM_needs_dstWrites",
+        "counterexample_note": "bool -> byte: MutSound fails but the source-only-writes shared cast is sound."
+      }
+    ],
+    "depth": "definitional",
+    "depth_note": "Both sides have the same characterization (R3, R4); the two disciplines are different sets of runs (phased vs interleaved).",
+    "nonvacuity_witness": "bool -> bool' is sound under all three disciplines.",
+    "nonvacuity_witness_lean": "Toy.Transmute.mutSound_iff_sharedIM_nonvacuous",
+    "non_claims": [
+      "All statements are about the toy model of this package: a type is a bit-validity predicate on byte sequences of one fixed size n, both views cover the same n-byte region, reads and writes act on the whole region, and values are flat byte sequences. Nothing is said about alignment, size-changing (prefix, sub-slice or unsized) casts, provenance, uninitialised or padding bytes, pointer metadata or the memory a pointer refers to, aliasing models, concurrency, destructors or auto traits, or library-level safety invariants; see the modeling bridge in the Applicability section of the package report.",
+      "Equal soundness conditions do not mean the disciplines permit the same programs: the mutable discipline forbids the owner from acting while the cast reference is live, the shared one does not.",
+      "Says nothing about aliasing-model legality, which differs between the two in real languages.",
+      "The write flags are per side and cover the whole region; they do not track which bytes lie inside an `UnsafeCell`. In Rust, `&(UnsafeCell<u8>, u8) → &(u8, UnsafeCell<u8>)` has equal validities and interior mutability on both sides, yet the destination may mutate a byte that the source type does not mark as interior-mutable; nothing here says such a cast is sound.",
+      "Validity equality says nothing about whether two interior-mutable types use compatible synchronization or borrow-tracking protocols (for example an atomic integer versus `Cell<u8>`, or the borrow flag of a `RefCell`). rustc's transmutability checker rejects even `&UnsafeCell<u8> → &UnsafeCell<u8>` (its UI test comment: 'the two types may use different, incompatible synchronization strategies'), and zerocopy's transmute_ref! requires both sides to be free of interior mutability.",
+      "Unchecked casts only. For casts checked once at cast time, the mutable cast does not correspond to the destination-writable shared cast with interior mutability when the source side may also write: checked once at cast time, byte → bool is sound as a mutable cast (checkedSound_mut_byteV_boolV) but unsound as a shared cast with interior mutability in which both sides may write (checkedSound_sharedIM_needs_srcWrites_includes), because the source-side writes happen after the check. (Without source-side writes the right-hand sides of R8-mut and R8-im coincide; that is a derived consequence of those two results, not a separate theorem.)"
+    ],
+    "prior_art": [
+      "'Safer Transmute' RFC, rust-lang/rfcs pull request #2981 (closed without merging on 2021-03-31; text as of the pull request's head commit ee1204c23320c33437107ff222e09afd9d5fef1d, file text/0000-safer-transmute.md), section 'Requirements on References' / 'Mutate-able References Must Preserve Validity': mutate-able references are all &mut T plus 'all shared (i.e., &T) references whose referent type contain any bytes produced by the contents of UnsafeCell', and 'the transmutation of a mutate-able reference may also not expand the bit-validity of the referenced type.' Closest informal prior statement of the mutable-reference and interior-mutability rules.",
+      "The Rust Reference, 'Subtyping and variance', https://doc.rust-lang.org/reference/subtyping.html (read 2026-11-20; verified in src/subtyping.md of rust-lang/reference at commit e24eecf97b0c9a6dbac67191098204dc8a190aaa, the Reference revision of the Rust 1.100.0 release), rule [subtyping.variance.builtin-types]: the table lists &'a T as covariant in T, &'a mut T as invariant in T, and std::cell::UnsafeCell<T> as invariant in T. The same read/write argument applied to lifetime subtyping rather than to bit validity; Cell<T> is invariant by the composite-type rule [subtyping.variance.user-composite-types], not by the table."
+    ],
+    "design_question": "A library offering safe reinterpretation of memory (value transmutes, shared-reference casts, mutable-reference casts) must decide which validity relationship between source and destination type each cast kind requires; too permissive is unsound, too restrictive rejects useful casts. Which conditions are exactly necessary and sufficient, and how does interior mutability change them?"
+  },
+  {
+    "id": "R5-trans",
+    "lean": [
+      "Toy.Transmute.valueSound_trans",
+      "Toy.Transmute.sharedSound_trans",
+      "Toy.Transmute.mutSound_trans",
+      "Toy.Transmute.sharedIMSound_trans"
+    ],
+    "kind": "theorem",
+    "status": "proved",
+    "module": "ToyTransmute/Results.lean",
+    "tier": "T1",
+    "tier_justification": "Composability of transmutability is folklore; the mutable case is checked here including chains that start at an unsatisfiable type.",
+    "plain_claim": "For each cast kind (value, shared, unchecked mutable, and shared with interior mutability for fixed write permissions) and types T, U, V of the same size, if the casts T -> U and U -> V are sound then the cast T -> V is sound.",
+    "hypotheses": [
+      {
+        "name": "h₁ : Sound(T -> U)",
+        "purpose": "First leg.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transmute.valueSound_trans_needs_first",
+          "Toy.Transmute.sharedSound_trans_needs_first",
+          "Toy.Transmute.mutSound_trans_needs_first",
+          "Toy.Transmute.sharedIMSound_trans_needs_first"
+        ],
+        "counterexample_note": "(T, U, V) = (byte, bool, bool): the second leg bool -> bool is sound, the composite byte -> bool is not."
+      },
+      {
+        "name": "h₂ : Sound(U -> V)",
+        "purpose": "Second leg.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transmute.valueSound_trans_needs_second",
+          "Toy.Transmute.sharedSound_trans_needs_second",
+          "Toy.Transmute.mutSound_trans_needs_second",
+          "Toy.Transmute.sharedIMSound_trans_needs_second"
+        ],
+        "counterexample_note": "(T, U, V) = (byte, byte, bool): the first leg is sound, the composite is not."
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "From the characterizations R1-R4 (transitivity of inclusion; for the guarded reverse inclusion, satisfiability of T transfers to U through T ⊆ U).",
+    "nonvacuity_witness": "value/shared: the strict chain zero-only -> bool -> byte; mutable: the satisfiable chain bool' -> bool -> bool ⊔ zero-only (for a satisfiable source every sound mutable chain has extensionally equal validities) and the chain never -> bool -> bool' whose end points differ; interior mutability: the same two chains for every pair of flags, and the strict chain zero-only -> bool -> byte without destination writes.",
+    "nonvacuity_witness_lean": [
+      "Toy.Transmute.valueSound_trans_nonvacuous",
+      "Toy.Transmute.sharedSound_trans_nonvacuous",
+      "Toy.Transmute.mutSound_trans_nonvacuous",
+      "Toy.Transmute.mutSound_trans_uninhabited_nonvacuous",
+      "Toy.Transmute.sharedIMSound_trans_nonvacuous",
+      "Toy.Transmute.sharedIMSound_trans_uninhabited_nonvacuous",
+      "Toy.Transmute.sharedIMSound_noDst_trans_strict_nonvacuous"
+    ],
+    "non_claims": [
+      "All statements are about the toy model of this package: a type is a bit-validity predicate on byte sequences of one fixed size n, both views cover the same n-byte region, reads and writes act on the whole region, and values are flat byte sequences. Nothing is said about alignment, size-changing (prefix, sub-slice or unsized) casts, provenance, uninitialised or padding bytes, pointer metadata or the memory a pointer refers to, aliasing models, concurrency, destructors or auto traits, or library-level safety invariants; see the modeling bridge in the Applicability section of the package report.",
+      "Transitivity of the pairwise soundness predicates. Not proved: that a chain of casts with three simultaneously live views (T-, U- and V-typed) is sound as a single operational scenario; the model only has two views.",
+      "Does not mix kinds: e.g. a shared cast followed by a mutable cast is not covered.",
+      "Transitivity of unchecked soundness. Composing casts checked at cast time (R8) needs the intermediate check and is not stated here."
+    ],
+    "prior_art": [
+      "Rust compiler-team major change proposal 411, 'Lang Item for Transmutability', https://github.com/rust-lang/compiler-team/issues/411 (opened 2021-03-04, accepted), section 'When is a bit-reinterpretation cast sound?': 'A transmutation is well-defined if any possible values of type Src are a valid instance of Dst.' Informal statement of the value-transmute condition.",
+      "J. Wrenn. 'Safety Goggles for Alchemists: The Path Towards Safer Transmute', blog post, 2024-09-30, https://jack.wrenn.fyi/blog/safety-goggles-for-alchemists/, section 'Theory of Alchemy': 'A type, Src, is transmutable into a type, Dst, if every possible value of Src is a valid value of Dst.'"
+    ],
+    "design_question": "A library offering safe reinterpretation of memory (value transmutes, shared-reference casts, mutable-reference casts) must decide which validity relationship between source and destination type each cast kind requires; too permissive is unsound, too restrictive rejects useful casts. Which conditions are exactly necessary and sufficient, and how does interior mutability change them?"
+  },
+  {
+    "id": "R5-hier",
+    "lean": [
+      "Toy.Transmute.valueSound_of_sharedSound",
+      "Toy.Transmute.sharedSound_of_valueSound",
+      "Toy.Transmute.sharedSound_of_mutSound"
+    ],
+    "kind": "theorem",
+    "status": "proved",
+    "module": "ToyTransmute/Results.lean",
+    "tier": "T1",
+    "tier_justification": "Folklore ordering of cast kinds by strength, made precise; the value/shared coincidence is a property of this model.",
+    "plain_claim": "For two types T and U of the same size, a sound unchecked mutable-reference cast from T to U implies a sound shared-reference cast, and in this model shared-reference soundness and value-transmute soundness coincide.",
+    "hypotheses": [
+      {
+        "name": "h (the stronger soundness)",
+        "purpose": "Each implication needs its premise.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transmute.not_valueSound_byteV_boolV",
+          "Toy.Transmute.not_sharedSound_byteV_boolV"
+        ],
+        "counterexample_note": "Without the premise the conclusion fails for byte -> bool."
+      }
+    ],
+    "depth": "definitional",
+    "depth_note": "Transports across R1, R2 and the first conjunct of R3.",
+    "nonvacuity_witness": "bool -> byte (shared and value); bool -> bool' (mutable).",
+    "nonvacuity_witness_lean": [
+      "Toy.Transmute.sharedSound_boolV_byteV",
+      "Toy.Transmute.valueSound_boolV_byteV",
+      "Toy.Transmute.mutSound_boolV_boolV'"
+    ],
+    "related_witnesses_lean": [
+      "Toy.Transmute.sharedSound_not_imp_mutSound"
+    ],
+    "related_witnesses_note": "Strictness: bool -> byte is shared-sound but not mutable-sound, so the converse of sharedSound_of_mutSound fails.",
+    "non_claims": [
+      "All statements are about the toy model of this package: a type is a bit-validity predicate on byte sequences of one fixed size n, both views cover the same n-byte region, reads and writes act on the whole region, and values are flat byte sequences. Nothing is said about alignment, size-changing (prefix, sub-slice or unsized) casts, provenance, uninitialised or padding bytes, pointer metadata or the memory a pointer refers to, aliasing models, concurrency, destructors or auto traits, or library-level safety invariants; see the modeling bridge in the Applicability section of the package report.",
+      "The coincidence of value and shared soundness is an artefact of omitting alignment, size changes for unsized types and aliasing; in a real language a value transmute can be fine while the corresponding reference cast is not (e.g. under-aligned destination).",
+      "Values are flat byte sequences. For a type whose bytes contain a reference, box or other pointer, Includes on the pointer's own bytes says nothing about the memory it points to: `&mut bool` and `&mut u8` have the same pointer bit patterns, yet reinterpreting one as the other is a mutable-reference cast whose referents are governed by R3. Value transmutes of pointer-containing types are not covered."
+    ],
+    "prior_art": [
+      "zerocopy 0.8.63 documentation (crates.io release published 2026-10-13, crate checksum SHA-256 e5fe1f8f1b06191a00962174c61aa5005e0bb391a6d80d07e24d115c01a92ed8), https://docs.rs/zerocopy/0.8.63/zerocopy/ (read 2026-11-20). Macro transmute! behaves like `const fn transmute<Src, Dst>(src: Src) -> Dst where Src: IntoBytes, Dst: FromBytes, size_of::<Src>() == size_of::<Dst>()` (an `#![allow(shrink)]` form also permits shrinking), and 'the Src produced by the expression $e will not be dropped'. Macro transmute_ref! behaves like `fn transmute_ref<'src, 'dst, Src, Dst>(src: &'src Src) -> &'dst Dst where 'src: 'dst, Src: IntoBytes + Immutable + ?Sized, Dst: FromBytes + Immutable + ?Sized, align_of::<Src>() >= align_of::<Dst>(), size_compatible::<Src, Dst>()`. Macro transmute_mut! behaves like `const fn transmute_mut<'src, 'dst, Src, Dst>(src: &'src mut Src) -> &'dst mut Dst where 'src: 'dst, Src: FromBytes + IntoBytes + ?Sized, Dst: FromBytes + IntoBytes + ?Sized, align_of::<Src>() >= align_of::<Dst>(), size_compatible::<Src, Dst>()`. Checked forms: try_transmute! (`Src: IntoBytes, Dst: TryFromBytes, size_of::<Src>() == size_of::<Dst>()`), try_transmute_ref! (`Src: IntoBytes + Immutable + ?Sized, Dst: TryFromBytes + Immutable + ?Sized`, plus the alignment and size-compatibility bounds) and try_transmute_mut! (`Src: FromBytes + IntoBytes + ?Sized, Dst: TryFromBytes + IntoBytes + ?Sized`, plus the alignment and size-compatibility bounds; 'while the value of the referent is checked for validity at runtime, the size and alignment are checked at compile time'; its examples convert `&mut 0u8` to `Ok(&mut false)` and reject `&mut 2u8`). Trait summaries: FromBytes 'Types for which any bit pattern is valid.'; TryFromBytes 'Types for which some bit patterns are valid.'; IntoBytes 'Types that can be converted to an immutable slice of initialized bytes.'; Immutable 'Types which are free from interior mutability.' Relation to this package (derived): over bytes that may be uninitialised, Src: IntoBytes says every Src-valid byte sequence is initialised and Dst: FromBytes says every initialised byte sequence is Dst-valid, so together they give T ⊆ U by transitivity through the set of initialised byte sequences; requiring both traits on both sides (transmute_mut!) makes both validities equal to that set, a special case of T ≡ U. In this package bytes are always initialised, so that intermediate set is the all-bytes validity and Src: IntoBytes has no counterpart. try_transmute_mut! is an instance of a checked mutable cast (R8-mut): Src: FromBytes and Dst: IntoBytes give U ⊆ T, and the run-time check supplies validity at U for the initial contents. For try_transmute_mut!, the bound Src: IntoBytes makes the source referent's bytes initialised, so that the run-time check can read them; Src: FromBytes alone does not exclude padding bytes.",
+      "rustc source, rust-lang/rust commit 5b216e01a117532b30f061f3dff8a61408113c77, file compiler/rustc_transmute/src/maybe_transmutable/mod.rs: lines 92-93, comment 'mutable destination references also generate a reverse transmutability obligation for their referents'; lines 112-119: if the source layout is uninhabited the answer is Yes ('because instances of the `src` type do not exist'); lines 244-259: a reference transition is rejected if the destination reference is mutable and the source reference is not, if the destination referent is more strictly aligned (unless alignment is assumed), or if the destination referent is larger than the source referent; lines 276-282: the referents must be transmutable from source to destination, and if the destination reference is mutable also from destination to source; otherwise (shared destination reference) the condition `Condition::Immutable { ty: dst_ref.referent }` is added. No interior-mutability condition is placed on the source referent. The UI test tests/ui/transmutability/references/unsafecell.rs at the same commit rejects `&'static UnsafeCell<u8> -> &'static UnsafeCell<u8>` (line 29; comment at lines 25-26: 'We forbid `UnsafeCell`-containing ref-to-ref transmutations, because the two types may use different, incompatible synchronization strategies.') and accepts `&'static mut UnsafeCell<bool> -> &'static u8` (line 42). Implementation counterpart of the mutable-reference rule; for shared references it requires the destination referent to be free of interior mutability instead of characterising the interior-mutable case."
+    ],
+    "design_question": "A library offering safe reinterpretation of memory (value transmutes, shared-reference casts, mutable-reference casts) must decide which validity relationship between source and destination type each cast kind requires; too permissive is unsound, too restrictive rejects useful casts. Which conditions are exactly necessary and sufficient, and how does interior mutability change them?"
+  },
+  {
+    "id": "R5-symm",
+    "lean": "Toy.Transmute.mutSound_symm_of_satisfiable",
+    "kind": "theorem",
+    "status": "proved",
+    "module": "ToyTransmute/Results.lean",
+    "tier": "T0",
+    "tier_justification": "Symmetry of validity equality transported across R3-eq: a re-derivation of a known fact in this vocabulary.",
+    "plain_claim": "If the source type T has a valid byte sequence and the unchecked mutable-reference cast from T to a type U of the same size is sound, then the reverse mutable-reference cast from U to T is sound.",
+    "hypotheses": [
+      {
+        "name": "hT : Satisfiable T",
+        "purpose": "Excludes the uninhabited source.",
+        "tightness": "tight",
+        "counterexample": "Toy.Transmute.mutSound_symm_needs_satisfiable",
+        "counterexample_note": "never -> byte is sound, byte -> never is not."
+      },
+      {
+        "name": "h : MutSound T U",
+        "purpose": "The forward cast must be sound.",
+        "tightness": "tight",
+        "counterexample": "Toy.Transmute.mutSound_symm_needs_mutSound",
+        "counterexample_note": "(T, U) = (bool, byte): bool is satisfiable, the conclusion byte -> bool fails."
+      }
+    ],
+    "depth": "definitional",
+    "depth_note": "From R3-eq and R3.",
+    "nonvacuity_witness": "bool -> bool'.",
+    "nonvacuity_witness_lean": "Toy.Transmute.mutSound_symm_nonvacuous",
+    "related_witnesses_lean": [
+      "Toy.Transmute.mutSound_not_iff_symm_of_satisfiable_left"
+    ],
+    "related_witnesses_note": "The implication is one-way under Satisfiable T: byte -> never is unsound while never -> byte is sound.",
+    "non_claims": [
+      "All statements are about the toy model of this package: a type is a bit-validity predicate on byte sequences of one fixed size n, both views cover the same n-byte region, reads and writes act on the whole region, and values are flat byte sequences. Nothing is said about alignment, size-changing (prefix, sub-slice or unsized) casts, provenance, uninitialised or padding bytes, pointer metadata or the memory a pointer refers to, aliasing models, concurrency, destructors or auto traits, or library-level safety invariants; see the modeling bridge in the Applicability section of the package report.",
+      "Satisfiable T yields the one-way implication MutSound T U → MutSound U T, not MutSound T U ↔ MutSound U T: for (T, U) = (byte, never), never → byte is (vacuously) sound and byte → never is not (mutSound_not_iff_symm_of_satisfiable_left). The biconditional needs both T and U satisfiable.",
+      "Symmetry concerns bit validity only. Real mutable-reference casts also require the destination to be no more strictly aligned than the source, which is not symmetric unless the alignments are equal.",
+      "Only bit validity is modelled; destructors and auto traits are not. Even when T ≡ U, a value transmute does not run T's destructor (zerocopy's transmute! documents that the source 'will not be dropped') and U's destructor may later run on the bytes; through a mutable-reference cast a value written at U may later be dropped at T and vice versa; and reinterpreting between types that differ in Send or Sync can break thread-safety guarantees. None of this is captured here."
+    ],
+    "prior_art": [
+      "'Safer Transmute' RFC, rust-lang/rfcs pull request #2981 (closed without merging on 2021-03-31; text as of the pull request's head commit ee1204c23320c33437107ff222e09afd9d5fef1d, file text/0000-safer-transmute.md), section 'Requirements on References' / 'Mutate-able References Must Preserve Validity': mutate-able references are all &mut T plus 'all shared (i.e., &T) references whose referent type contain any bytes produced by the contents of UnsafeCell', and 'the transmutation of a mutate-able reference may also not expand the bit-validity of the referenced type.' Closest informal prior statement of the mutable-reference and interior-mutability rules.",
+      "rustc source, rust-lang/rust commit 5b216e01a117532b30f061f3dff8a61408113c77, file compiler/rustc_transmute/src/maybe_transmutable/mod.rs: lines 92-93, comment 'mutable destination references also generate a reverse transmutability obligation for their referents'; lines 112-119: if the source layout is uninhabited the answer is Yes ('because instances of the `src` type do not exist'); lines 244-259: a reference transition is rejected if the destination reference is mutable and the source reference is not, if the destination referent is more strictly aligned (unless alignment is assumed), or if the destination referent is larger than the source referent; lines 276-282: the referents must be transmutable from source to destination, and if the destination reference is mutable also from destination to source; otherwise (shared destination reference) the condition `Condition::Immutable { ty: dst_ref.referent }` is added. No interior-mutability condition is placed on the source referent. The UI test tests/ui/transmutability/references/unsafecell.rs at the same commit rejects `&'static UnsafeCell<u8> -> &'static UnsafeCell<u8>` (line 29; comment at lines 25-26: 'We forbid `UnsafeCell`-containing ref-to-ref transmutations, because the two types may use different, incompatible synchronization strategies.') and accepts `&'static mut UnsafeCell<bool> -> &'static u8` (line 42). Implementation counterpart of the mutable-reference rule; for shared references it requires the destination referent to be free of interior mutability instead of characterising the interior-mutable case."
+    ],
+    "design_question": "A library offering safe reinterpretation of memory (value transmutes, shared-reference casts, mutable-reference casts) must decide which validity relationship between source and destination type each cast kind requires; too permissive is unsound, too restrictive rejects useful casts. Which conditions are exactly necessary and sufficient, and how does interior mutability change them?"
+  },
+  {
+    "id": "R6-bool-byte",
+    "lean": [
+      "Toy.Transmute.boolV_to_byteV_value_and_shared_sound",
+      "Toy.Transmute.boolV_to_byteV_mut_violating_run",
+      "Toy.Transmute.mutSound_needs_includes_rev"
+    ],
+    "kind": "counterexample",
+    "status": "proved",
+    "module": "ToyTransmute/Counterexamples.lean",
+    "tier": "T1",
+    "tier_justification": "The bool/byte example is the standard illustration (bool validity is normative in the Rust Reference); here it is fully mechanized.",
+    "plain_claim": "For a bool-like type (valid bytes 0 and 1) and a raw byte (all bytes valid): the value transmute and the shared cast bool -> byte are sound, but the mutable cast is unsound, witnessed by writing 2 through the byte view and then reading the bool.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "depth_note": "Concrete computation plus the invariant tool.",
+    "nonvacuity_witness": "(a counterexample; the instance itself is the witness)",
+    "non_claims": [
+      "All statements are about the toy model of this package: a type is a bit-validity predicate on byte sequences of one fixed size n, both views cover the same n-byte region, reads and writes act on the whole region, and values are flat byte sequences. Nothing is said about alignment, size-changing (prefix, sub-slice or unsized) casts, provenance, uninitialised or padding bytes, pointer metadata or the memory a pointer refers to, aliasing models, concurrency, destructors or auto traits, or library-level safety invariants; see the modeling bridge in the Applicability section of the package report.",
+      "Says nothing about other pairs of types beyond what R1-R3 state."
+    ],
+    "prior_art": [
+      "The Rust Reference, 'Behavior considered undefined', https://doc.rust-lang.org/reference/behavior-considered-undefined.html (read 2026-11-20; the quoted rules were verified verbatim in the source file src/behavior-considered-undefined.md of rust-lang/reference at commit e24eecf97b0c9a6dbac67191098204dc8a190aaa, the Reference revision of the Rust 1.100.0 release, the latest stable release on that date): rule [undefined.invalid] 'Producing an invalid value.'; rule [undefined.validity.def] 'The Rust compiler assumes that all values produced during program execution are “valid”, and producing an invalid value is hence immediate UB.'; rule [undefined.validity.bool] 'A bool value must be false (0) or true (1).'; rule [undefined.validity.reference-box] 'A reference or Box<T> must be aligned and non-null, it cannot be dangling, and it must point to a valid value', followed by the note that 'the last point (about pointing to a valid value) remains a subject of some debate.' Normative basis for modelling a read of invalid bytes as undefined behaviour and for the bool fixture.",
+      "zerocopy 0.8.63 documentation (crates.io release published 2026-10-13, crate checksum SHA-256 e5fe1f8f1b06191a00962174c61aa5005e0bb391a6d80d07e24d115c01a92ed8), https://docs.rs/zerocopy/0.8.63/zerocopy/ (read 2026-11-20). Macro transmute! behaves like `const fn transmute<Src, Dst>(src: Src) -> Dst where Src: IntoBytes, Dst: FromBytes, size_of::<Src>() == size_of::<Dst>()` (an `#![allow(shrink)]` form also permits shrinking), and 'the Src produced by the expression $e will not be dropped'. Macro transmute_ref! behaves like `fn transmute_ref<'src, 'dst, Src, Dst>(src: &'src Src) -> &'dst Dst where 'src: 'dst, Src: IntoBytes + Immutable + ?Sized, Dst: FromBytes + Immutable + ?Sized, align_of::<Src>() >= align_of::<Dst>(), size_compatible::<Src, Dst>()`. Macro transmute_mut! behaves like `const fn transmute_mut<'src, 'dst, Src, Dst>(src: &'src mut Src) -> &'dst mut Dst where 'src: 'dst, Src: FromBytes + IntoBytes + ?Sized, Dst: FromBytes + IntoBytes + ?Sized, align_of::<Src>() >= align_of::<Dst>(), size_compatible::<Src, Dst>()`. Checked forms: try_transmute! (`Src: IntoBytes, Dst: TryFromBytes, size_of::<Src>() == size_of::<Dst>()`), try_transmute_ref! (`Src: IntoBytes + Immutable + ?Sized, Dst: TryFromBytes + Immutable + ?Sized`, plus the alignment and size-compatibility bounds) and try_transmute_mut! (`Src: FromBytes + IntoBytes + ?Sized, Dst: TryFromBytes + IntoBytes + ?Sized`, plus the alignment and size-compatibility bounds; 'while the value of the referent is checked for validity at runtime, the size and alignment are checked at compile time'; its examples convert `&mut 0u8` to `Ok(&mut false)` and reject `&mut 2u8`). Trait summaries: FromBytes 'Types for which any bit pattern is valid.'; TryFromBytes 'Types for which some bit patterns are valid.'; IntoBytes 'Types that can be converted to an immutable slice of initialized bytes.'; Immutable 'Types which are free from interior mutability.' Relation to this package (derived): over bytes that may be uninitialised, Src: IntoBytes says every Src-valid byte sequence is initialised and Dst: FromBytes says every initialised byte sequence is Dst-valid, so together they give T ⊆ U by transitivity through the set of initialised byte sequences; requiring both traits on both sides (transmute_mut!) makes both validities equal to that set, a special case of T ≡ U. In this package bytes are always initialised, so that intermediate set is the all-bytes validity and Src: IntoBytes has no counterpart. try_transmute_mut! is an instance of a checked mutable cast (R8-mut): Src: FromBytes and Dst: IntoBytes give U ⊆ T, and the run-time check supplies validity at U for the initial contents. For try_transmute_mut!, the bound Src: IntoBytes makes the source referent's bytes initialised, so that the run-time check can read them; Src: FromBytes alone does not exclude padding bytes."
+    ],
+    "design_question": "A library offering safe reinterpretation of memory (value transmutes, shared-reference casts, mutable-reference casts) must decide which validity relationship between source and destination type each cast kind requires; too permissive is unsound, too restrictive rejects useful casts. Which conditions are exactly necessary and sufficient, and how does interior mutability change them?"
+  },
+  {
+    "id": "R6-byte-bool",
+    "lean": "Toy.Transmute.byteV_to_boolV_unsound_even_by_value",
+    "kind": "counterexample",
+    "status": "proved",
+    "module": "ToyTransmute/Counterexamples.lean",
+    "tier": "T1",
+    "tier_justification": "Standard example.",
+    "plain_claim": "The reverse direction byte -> bool is unsound for unchecked value transmutes, unchecked shared-reference casts and unchecked mutable-reference casts, already because transmuting the byte 2 produces an invalid bool (this card does not cover the shared cast with interior mutability, for which see R4, nor checked casts, which are sound for byte -> bool by R8-value-shared and R8-mut).",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "(a counterexample)",
+    "non_claims": [
+      "All statements are about the toy model of this package: a type is a bit-validity predicate on byte sequences of one fixed size n, both views cover the same n-byte region, reads and writes act on the whole region, and values are flat byte sequences. Nothing is said about alignment, size-changing (prefix, sub-slice or unsized) casts, provenance, uninitialised or padding bytes, pointer metadata or the memory a pointer refers to, aliasing models, concurrency, destructors or auto traits, or library-level safety invariants; see the modeling bridge in the Applicability section of the package report.",
+      "Does not say that byte -> bool is unusable: a conversion checked at cast time is sound (R8-value-shared, R8-mut).",
+      "Covers the value, shared and mutable disciplines only. The shared cast with interior mutability is not part of this theorem; for byte → bool it is unsound under every pair of write flags by R4 (sharedIMSound_needs_includes_canonical)."
+    ],
+    "prior_art": [
+      "The Rust Reference, 'Behavior considered undefined', https://doc.rust-lang.org/reference/behavior-considered-undefined.html (read 2026-11-20; the quoted rules were verified verbatim in the source file src/behavior-considered-undefined.md of rust-lang/reference at commit e24eecf97b0c9a6dbac67191098204dc8a190aaa, the Reference revision of the Rust 1.100.0 release, the latest stable release on that date): rule [undefined.invalid] 'Producing an invalid value.'; rule [undefined.validity.def] 'The Rust compiler assumes that all values produced during program execution are “valid”, and producing an invalid value is hence immediate UB.'; rule [undefined.validity.bool] 'A bool value must be false (0) or true (1).'; rule [undefined.validity.reference-box] 'A reference or Box<T> must be aligned and non-null, it cannot be dangling, and it must point to a valid value', followed by the note that 'the last point (about pointing to a valid value) remains a subject of some debate.' Normative basis for modelling a read of invalid bytes as undefined behaviour and for the bool fixture.",
+      "zerocopy 0.8.63 documentation (crates.io release published 2026-10-13, crate checksum SHA-256 e5fe1f8f1b06191a00962174c61aa5005e0bb391a6d80d07e24d115c01a92ed8), https://docs.rs/zerocopy/0.8.63/zerocopy/ (read 2026-11-20). Macro transmute! behaves like `const fn transmute<Src, Dst>(src: Src) -> Dst where Src: IntoBytes, Dst: FromBytes, size_of::<Src>() == size_of::<Dst>()` (an `#![allow(shrink)]` form also permits shrinking), and 'the Src produced by the expression $e will not be dropped'. Macro transmute_ref! behaves like `fn transmute_ref<'src, 'dst, Src, Dst>(src: &'src Src) -> &'dst Dst where 'src: 'dst, Src: IntoBytes + Immutable + ?Sized, Dst: FromBytes + Immutable + ?Sized, align_of::<Src>() >= align_of::<Dst>(), size_compatible::<Src, Dst>()`. Macro transmute_mut! behaves like `const fn transmute_mut<'src, 'dst, Src, Dst>(src: &'src mut Src) -> &'dst mut Dst where 'src: 'dst, Src: FromBytes + IntoBytes + ?Sized, Dst: FromBytes + IntoBytes + ?Sized, align_of::<Src>() >= align_of::<Dst>(), size_compatible::<Src, Dst>()`. Checked forms: try_transmute! (`Src: IntoBytes, Dst: TryFromBytes, size_of::<Src>() == size_of::<Dst>()`), try_transmute_ref! (`Src: IntoBytes + Immutable + ?Sized, Dst: TryFromBytes + Immutable + ?Sized`, plus the alignment and size-compatibility bounds) and try_transmute_mut! (`Src: FromBytes + IntoBytes + ?Sized, Dst: TryFromBytes + IntoBytes + ?Sized`, plus the alignment and size-compatibility bounds; 'while the value of the referent is checked for validity at runtime, the size and alignment are checked at compile time'; its examples convert `&mut 0u8` to `Ok(&mut false)` and reject `&mut 2u8`). Trait summaries: FromBytes 'Types for which any bit pattern is valid.'; TryFromBytes 'Types for which some bit patterns are valid.'; IntoBytes 'Types that can be converted to an immutable slice of initialized bytes.'; Immutable 'Types which are free from interior mutability.' Relation to this package (derived): over bytes that may be uninitialised, Src: IntoBytes says every Src-valid byte sequence is initialised and Dst: FromBytes says every initialised byte sequence is Dst-valid, so together they give T ⊆ U by transitivity through the set of initialised byte sequences; requiring both traits on both sides (transmute_mut!) makes both validities equal to that set, a special case of T ≡ U. In this package bytes are always initialised, so that intermediate set is the all-bytes validity and Src: IntoBytes has no counterpart. try_transmute_mut! is an instance of a checked mutable cast (R8-mut): Src: FromBytes and Dst: IntoBytes give U ⊆ T, and the run-time check supplies validity at U for the initial contents. For try_transmute_mut!, the bound Src: IntoBytes makes the source referent's bytes initialised, so that the run-time check can read them; Src: FromBytes alone does not exclude padding bytes."
+    ],
+    "design_question": "A library offering safe reinterpretation of memory (value transmutes, shared-reference casts, mutable-reference casts) must decide which validity relationship between source and destination type each cast kind requires; too permissive is unsound, too restrictive rejects useful casts. Which conditions are exactly necessary and sufficient, and how does interior mutability change them?"
+  },
+  {
+    "id": "R6-im",
+    "lean": "Toy.Transmute.boolV_to_byteV_im_sound_without_writes_unsound_with_dst_writes",
+    "kind": "counterexample",
+    "status": "proved",
+    "module": "ToyTransmute/Counterexamples.lean",
+    "tier": "T1",
+    "tier_justification": "Standard argument, mechanized.",
+    "plain_claim": "The shared cast bool -> byte is sound without writes but becomes unsound once the destination side may write (with or without source-side writes).",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "(a counterexample)",
+    "non_claims": [
+      "All statements are about the toy model of this package: a type is a bit-validity predicate on byte sequences of one fixed size n, both views cover the same n-byte region, reads and writes act on the whole region, and values are flat byte sequences. Nothing is said about alignment, size-changing (prefix, sub-slice or unsized) casts, provenance, uninitialised or padding bytes, pointer metadata or the memory a pointer refers to, aliasing models, concurrency, destructors or auto traits, or library-level safety invariants; see the modeling bridge in the Applicability section of the package report.",
+      "Bit validity only. Even the version without destination writes is subject to aliasing rules in a real language (see R4-src)."
+    ],
+    "prior_art": [
+      "'Safer Transmute' RFC, rust-lang/rfcs pull request #2981 (closed without merging on 2021-03-31; text as of the pull request's head commit ee1204c23320c33437107ff222e09afd9d5fef1d, file text/0000-safer-transmute.md), section 'Requirements on References' / 'Mutate-able References Must Preserve Validity': mutate-able references are all &mut T plus 'all shared (i.e., &T) references whose referent type contain any bytes produced by the contents of UnsafeCell', and 'the transmutation of a mutate-able reference may also not expand the bit-validity of the referenced type.' Closest informal prior statement of the mutable-reference and interior-mutability rules."
+    ],
+    "design_question": "A library offering safe reinterpretation of memory (value transmutes, shared-reference casts, mutable-reference casts) must decide which validity relationship between source and destination type each cast kind requires; too permissive is unsound, too restrictive rejects useful casts. Which conditions are exactly necessary and sufficient, and how does interior mutability change them?"
+  },
+  {
+    "id": "R6-src-writes",
+    "lean": "Toy.Transmute.sharedIMSound_eq_needs_dstWrites",
+    "kind": "counterexample",
+    "status": "proved",
+    "module": "ToyTransmute/Counterexamples.lean",
+    "tier": "T1",
+    "tier_justification": "Elementary; recorded because it corrects a tempting over-statement.",
+    "plain_claim": "Source-side writes alone do not force validity equality: the shared cast bool -> byte where only the source side may write is sound for bit validity in this model (aliasing rules are not modelled) although the validities differ.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "(a counterexample)",
+    "non_claims": [
+      "All statements are about the toy model of this package: a type is a bit-validity predicate on byte sequences of one fixed size n, both views cover the same n-byte region, reads and writes act on the whole region, and values are flat byte sequences. Nothing is said about alignment, size-changing (prefix, sub-slice or unsized) casts, provenance, uninitialised or padding bytes, pointer metadata or the memory a pointer refers to, aliasing models, concurrency, destructors or auto traits, or library-level safety invariants; see the modeling bridge in the Applicability section of the package report.",
+      "Bit validity only; in Rust a write through the source while a shared reference without interior mutability to the same bytes is in use is governed by the aliasing model (see R4-src).",
+      "Unchecked casts only; checked at cast time, source-side writes do require T ⊆ U (R8-im)."
+    ],
+    "prior_art": [
+      "rustc source, rust-lang/rust commit 5b216e01a117532b30f061f3dff8a61408113c77, file compiler/rustc_transmute/src/maybe_transmutable/mod.rs: lines 92-93, comment 'mutable destination references also generate a reverse transmutability obligation for their referents'; lines 112-119: if the source layout is uninhabited the answer is Yes ('because instances of the `src` type do not exist'); lines 244-259: a reference transition is rejected if the destination reference is mutable and the source reference is not, if the destination referent is more strictly aligned (unless alignment is assumed), or if the destination referent is larger than the source referent; lines 276-282: the referents must be transmutable from source to destination, and if the destination reference is mutable also from destination to source; otherwise (shared destination reference) the condition `Condition::Immutable { ty: dst_ref.referent }` is added. No interior-mutability condition is placed on the source referent. The UI test tests/ui/transmutability/references/unsafecell.rs at the same commit rejects `&'static UnsafeCell<u8> -> &'static UnsafeCell<u8>` (line 29; comment at lines 25-26: 'We forbid `UnsafeCell`-containing ref-to-ref transmutations, because the two types may use different, incompatible synchronization strategies.') and accepts `&'static mut UnsafeCell<bool> -> &'static u8` (line 42). Implementation counterpart of the mutable-reference rule; for shared references it requires the destination referent to be free of interior mutability instead of characterising the interior-mutable case.",
+      "R. Jung, H.-H. Dang, J. Kang, D. Dreyer. Stacked Borrows: An Aliasing Model for Rust. Proc. ACM Program. Lang. 4(POPL), pp. 1-32, 2020. doi:10.1145/3371109. An operational aliasing model for Rust; aliasing is outside this package's model.",
+      "N. Villani, J. Hostert, D. Dreyer, R. Jung. Tree Borrows. Proc. ACM Program. Lang. 9(PLDI), pp. 1019-1042, 2025. doi:10.1145/3735592. A later operational aliasing model for Rust; aliasing is outside this package's model."
+    ],
+    "design_question": "A library offering safe reinterpretation of memory (value transmutes, shared-reference casts, mutable-reference casts) must decide which validity relationship between source and destination type each cast kind requires; too permissive is unsound, too restrictive rejects useful casts. Which conditions are exactly necessary and sufficient, and how does interior mutability change them?"
+  },
+  {
+    "id": "R6-never",
+    "lean": [
+      "Toy.Transmute.mutSound_eq_needs_satisfiable",
+      "Toy.Transmute.sharedIMSound_eq_needs_satisfiable"
+    ],
+    "kind": "counterexample",
+    "status": "proved",
+    "module": "ToyTransmute/Counterexamples.lean",
+    "tier": "T1",
+    "tier_justification": "Edge case made explicit.",
+    "plain_claim": "For the uninhabited type never and the raw byte type, the unchecked mutable cast never -> byte and the unchecked shared cast with interior mutability never -> byte in which both sides may write are (vacuously) sound although the two validities differ, so 'mutable (or destination-writable) casts are sound iff the validities are equal' fails without assuming the source is inhabited (in general every cast from an uninhabited type is vacuously sound in this model: the proof tool sound_of_not_satisfiable).",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "(a counterexample)",
+    "non_claims": [
+      "All statements are about the toy model of this package: a type is a bit-validity predicate on byte sequences of one fixed size n, both views cover the same n-byte region, reads and writes act on the whole region, and values are flat byte sequences. Nothing is said about alignment, size-changing (prefix, sub-slice or unsized) casts, provenance, uninitialised or padding bytes, pointer metadata or the memory a pointer refers to, aliasing models, concurrency, destructors or auto traits, or library-level safety invariants; see the modeling bridge in the Applicability section of the package report.",
+      "Vacuous soundness from an unsatisfiable source holds here only because Sound assumes the region already holds a T-valid value. The Rust Reference ([undefined.validity.reference-box]) requires a reference to point to a valid value, noting that this point 'remains a subject of some debate'; under that requirement a reference to an uninhabited type is never valid, so this edge case does not license creating, say, a `&mut` to an empty enum and casting it to `&mut u8`. rustc's checker likewise answers Yes for uninhabited source types (mod.rs lines 112-119)."
+    ],
+    "prior_art": [
+      "Rust Unsafe Code Guidelines, glossary entry 'Validity and safety invariant', https://rust-lang.github.io/unsafe-code-guidelines/glossary.html#validity-and-safety-invariant (read 2026-11-20; verified in reference/src/glossary.md of rust-lang/unsafe-code-guidelines at commit d809f91e62968913d808e53397fbcf7cea762cce, the head of its master branch on that date): 'The validity invariant is an invariant that all data must uphold any time it is accessed or copied in a typed manner.' and 'The safety invariant is an invariant that safe code may assume all data to uphold.' The predicate `Validity` of this package models the former only.",
+      "MiniRust (github.com/minirust/minirust, branch master at commit 063d784186d3252bee242217f218223205c0b568), file spec/lang/representation.md, section 'MiniRust representation relation': '`decode` converts a list of bytes into a (potentially not well-formed) value; this operation can fail if the byte list is not a valid representation for the given type.' Section 'Transmutation': a transmute whose bytes do not decode raises UB ('transmuted value is not valid at new type'). Abstract bytes (spec/mem/interface.md, 'Abstract Bytes') are Uninit or Init(u8, optional provenance fragment). In this package, `Validity T` plays the role of 'decode at T succeeds' restricted to initialised, provenance-free bytes; MiniRust's richer bytes are not modelled. MiniRust was announced by R. Jung, 'Announcing: MiniRust', 2022-08-08, https://www.ralfj.de/blog/2022/08/08/minirust.html.",
+      "rustc source, rust-lang/rust commit 5b216e01a117532b30f061f3dff8a61408113c77, file compiler/rustc_transmute/src/maybe_transmutable/mod.rs: lines 92-93, comment 'mutable destination references also generate a reverse transmutability obligation for their referents'; lines 112-119: if the source layout is uninhabited the answer is Yes ('because instances of the `src` type do not exist'); lines 244-259: a reference transition is rejected if the destination reference is mutable and the source reference is not, if the destination referent is more strictly aligned (unless alignment is assumed), or if the destination referent is larger than the source referent; lines 276-282: the referents must be transmutable from source to destination, and if the destination reference is mutable also from destination to source; otherwise (shared destination reference) the condition `Condition::Immutable { ty: dst_ref.referent }` is added. No interior-mutability condition is placed on the source referent. The UI test tests/ui/transmutability/references/unsafecell.rs at the same commit rejects `&'static UnsafeCell<u8> -> &'static UnsafeCell<u8>` (line 29; comment at lines 25-26: 'We forbid `UnsafeCell`-containing ref-to-ref transmutations, because the two types may use different, incompatible synchronization strategies.') and accepts `&'static mut UnsafeCell<bool> -> &'static u8` (line 42). Implementation counterpart of the mutable-reference rule; for shared references it requires the destination referent to be free of interior mutability instead of characterising the interior-mutable case.",
+      "The Rust Reference, 'Behavior considered undefined', https://doc.rust-lang.org/reference/behavior-considered-undefined.html (read 2026-11-20; the quoted rules were verified verbatim in the source file src/behavior-considered-undefined.md of rust-lang/reference at commit e24eecf97b0c9a6dbac67191098204dc8a190aaa, the Reference revision of the Rust 1.100.0 release, the latest stable release on that date): rule [undefined.invalid] 'Producing an invalid value.'; rule [undefined.validity.def] 'The Rust compiler assumes that all values produced during program execution are “valid”, and producing an invalid value is hence immediate UB.'; rule [undefined.validity.bool] 'A bool value must be false (0) or true (1).'; rule [undefined.validity.reference-box] 'A reference or Box<T> must be aligned and non-null, it cannot be dangling, and it must point to a valid value', followed by the note that 'the last point (about pointing to a valid value) remains a subject of some debate.' Normative basis for modelling a read of invalid bytes as undefined behaviour and for the bool fixture."
+    ],
+    "design_question": "A library offering safe reinterpretation of memory (value transmutes, shared-reference casts, mutable-reference casts) must decide which validity relationship between source and destination type each cast kind requires; too permissive is unsound, too restrictive rejects useful casts. Which conditions are exactly necessary and sufficient, and how does interior mutability change them?"
+  },
+  {
+    "id": "R7-shared-lattice",
+    "lean": [
+      "Toy.Transmute.sharedSound_to_join_left",
+      "Toy.Transmute.sharedSound_to_join_right",
+      "Toy.Transmute.sharedSound_from_meet_left",
+      "Toy.Transmute.sharedSound_from_meet_right",
+      "Toy.Transmute.sharedSound_join_iff",
+      "Toy.Transmute.sharedSound_meet_iff"
+    ],
+    "kind": "theorem",
+    "status": "proved",
+    "module": "ToyTransmute/Results.lean",
+    "tier": "T0",
+    "tier_justification": "Standard facts about the inclusion lattice of predicates, transported to shared-cast soundness via R2.",
+    "plain_claim": "For types T, U, V of the same size, ordered by inclusion of their validities, shared casts from T or from U into the join T ⊔ U, and from the meet T ⊓ U into T or into U, are always sound; a shared cast out of T ⊔ U into V is sound iff both T -> V and U -> V are; a shared cast from V into T ⊓ U is sound iff both V -> T and V -> U are.",
+    "hypotheses": [
+      {
+        "name": "(none: unconditional statements and equivalences without hypotheses)",
+        "purpose": "All six statements are universally quantified over byte alphabets, sizes and validity predicates.",
+        "tightness": "harmless"
+      },
+      {
+        "name": "sharedSound_join_iff, right-hand conjunct SharedSound T V",
+        "purpose": "The join contains T.",
+        "tightness": "tight",
+        "counterexample": "Toy.Transmute.sharedSound_join_iff_needs_left",
+        "counterexample_note": "(T, U, V) = (two-only, bool, bool): the other conjunct holds, T -> V fails, the join cast fails."
+      },
+      {
+        "name": "sharedSound_join_iff, right-hand conjunct SharedSound U V",
+        "purpose": "The join contains U.",
+        "tightness": "tight",
+        "counterexample": "Toy.Transmute.sharedSound_join_iff_needs_right",
+        "counterexample_note": "(T, U, V) = (bool, two-only, bool)."
+      },
+      {
+        "name": "sharedSound_meet_iff, right-hand conjunct SharedSound V T",
+        "purpose": "The meet is contained in T.",
+        "tightness": "tight",
+        "counterexample": "Toy.Transmute.sharedSound_meet_iff_needs_left",
+        "counterexample_note": "(T, U, V) = (zero-only, byte, bool)."
+      },
+      {
+        "name": "sharedSound_meet_iff, right-hand conjunct SharedSound V U",
+        "purpose": "The meet is contained in U.",
+        "tightness": "tight",
+        "counterexample": "Toy.Transmute.sharedSound_meet_iff_needs_right",
+        "counterexample_note": "(T, U, V) = (byte, zero-only, bool)."
+      }
+    ],
+    "depth": "definitional",
+    "depth_note": "From R2 and elementary predicate logic.",
+    "nonvacuity_witness": "bool -> bool ⊔ two-only and two-only -> bool ⊔ two-only (strictly larger targets); bool ⊓ zero-only -> bool and zero-only ⊓ bool -> bool (strictly smaller sources); the join characterization with both sides true and both false; the meet characterization with both sides true for three pairwise different types and both sides false.",
+    "nonvacuity_witness_lean": [
+      "Toy.Transmute.sharedSound_to_join_left_nonvacuous",
+      "Toy.Transmute.sharedSound_to_join_right_nonvacuous",
+      "Toy.Transmute.sharedSound_from_meet_left_nonvacuous",
+      "Toy.Transmute.sharedSound_from_meet_right_nonvacuous",
+      "Toy.Transmute.sharedSound_join_iff_nonvacuous",
+      "Toy.Transmute.sharedSound_meet_iff_nonvacuous"
+    ],
+    "non_claims": [
+      "All statements are about the toy model of this package: a type is a bit-validity predicate on byte sequences of one fixed size n, both views cover the same n-byte region, reads and writes act on the whole region, and values are flat byte sequences. Nothing is said about alignment, size-changing (prefix, sub-slice or unsized) casts, provenance, uninitialised or padding bytes, pointer metadata or the memory a pointer refers to, aliasing models, concurrency, destructors or auto traits, or library-level safety invariants; see the modeling bridge in the Applicability section of the package report.",
+      "The join is the validity of a hypothetical 'either T or U' type of the same size. It is not the validity of a Rust union, whose validity requirements may be weaker, nor of a tagged enum (which has a different layout)."
+    ],
+    "prior_art": [
+      "Rust Unsafe Code Guidelines, glossary entry 'Validity and safety invariant', https://rust-lang.github.io/unsafe-code-guidelines/glossary.html#validity-and-safety-invariant (read 2026-11-20; verified in reference/src/glossary.md of rust-lang/unsafe-code-guidelines at commit d809f91e62968913d808e53397fbcf7cea762cce, the head of its master branch on that date): 'The validity invariant is an invariant that all data must uphold any time it is accessed or copied in a typed manner.' and 'The safety invariant is an invariant that safe code may assume all data to uphold.' The predicate `Validity` of this package models the former only.",
+      "A. Frisch, G. Castagna, V. Benzaken. Semantic Subtyping: Dealing Set-Theoretically with Function, Union, Intersection, and Negation Types. Journal of the ACM 55(4), Article 19, pp. 1-64, 2008. doi:10.1145/1391289.1391293. Types as sets ordered by inclusion, with union and intersection; the lattice reading of R7 is this standard set-theoretic one."
+    ],
+    "design_question": "A library offering safe reinterpretation of memory (value transmutes, shared-reference casts, mutable-reference casts) must decide which validity relationship between source and destination type each cast kind requires; too permissive is unsound, too restrictive rejects useful casts. Which conditions are exactly necessary and sufficient, and how does interior mutability change them?"
+  },
+  {
+    "id": "R7-mut-join",
+    "lean": "Toy.Transmute.mutSound_to_join_left_iff_includes_rev_of_satisfiable",
+    "kind": "characterization",
+    "status": "proved",
+    "module": "ToyTransmute/Results.lean",
+    "tier": "T0",
+    "tier_justification": "Beyond R3-eq the only content is the lattice identity (T ⊔ U ≡ T) ↔ U ⊆ T: a re-derivation in this vocabulary of the familiar problem with covariant mutable containers.",
+    "plain_claim": "For a source type T with a valid byte sequence and a type U of the same size, the unchecked mutable cast from T into the join T ⊔ U is sound if and only if the join adds nothing, that is every U-valid byte sequence is already T-valid (the reverse inclusion U ⊆ T).",
+    "hypotheses": [
+      {
+        "name": "hT : Satisfiable T",
+        "purpose": "Excludes the vacuous uninhabited source.",
+        "tightness": "tight",
+        "counterexample": "Toy.Transmute.mutSound_to_join_needs_satisfiable",
+        "counterexample_note": "never -> never ⊔ byte is sound but byte ⊄ never."
+      },
+      {
+        "name": "right-hand side: Includes U T",
+        "purpose": "A value valid only at U, written through the join view, is read back at T.",
+        "tightness": "tight",
+        "counterexample": "Toy.Transmute.mutSound_to_join_needs_includes_rev",
+        "counterexample_note": "bool -> bool ⊔ two-only: bool is satisfiable, two-only ⊈ bool, the mutable cast is unsound."
+      }
+    ],
+    "depth": "definitional",
+    "depth_note": "From R3-eq and the lattice identity.",
+    "nonvacuity_witness": "bool -> bool ⊔ zero-only: bool is satisfiable, the join adds nothing, the cast is sound; the forward inclusion bool ⊆ zero-only fails there, so the right-hand side is the reverse inclusion.",
+    "nonvacuity_witness_lean": "Toy.Transmute.mutSound_to_join_nonvacuous",
+    "related_witnesses_lean": [
+      "Toy.Transmute.mutSound_to_join_fails_example"
+    ],
+    "related_witnesses_note": "bool -> bool ⊔ two-only is shared-sound but not mutable-sound.",
+    "non_claims": [
+      "All statements are about the toy model of this package: a type is a bit-validity predicate on byte sequences of one fixed size n, both views cover the same n-byte region, reads and writes act on the whole region, and values are flat byte sequences. Nothing is said about alignment, size-changing (prefix, sub-slice or unsized) casts, provenance, uninitialised or padding bytes, pointer metadata or the memory a pointer refers to, aliasing models, concurrency, destructors or auto traits, or library-level safety invariants; see the modeling bridge in the Applicability section of the package report.",
+      "Not a statement about Rust unions or enums (see R7-shared-lattice).",
+      "Characterizes unchecked mutable-reference casts, which must accept every T-valid initial value without inspecting it. A cast that checks validity at U once, at cast time, and then hands out an ordinary unchecked `&mut U` (as zerocopy's try_transmute_mut! does) is a different discipline: by R8-mut it is sound iff (some byte sequence is valid at both T and U) → U ⊆ T; neither T ⊆ U nor T ≡ U is required (checkedSound_mut_escapes_impossibility: byte → bool)."
+    ],
+    "prior_art": [
+      "The Java Language Specification, Java SE 21 edition: section 4.10.3 'Subtyping among Array Types' ('If S and T are both reference types, then S[] >1 T[] iff S >1 T.') and section 10.5 'Array Store Exception' ('If the type of the value being assigned is not assignment-compatible (§5.2) with the component type, an ArrayStoreException is thrown.'), https://docs.oracle.com/javase/specs/jls/se21/html/. The classic covariant mutable container: the write-side obligation is discharged by a run-time check instead of being required statically.",
+      "The Rust Reference, 'Subtyping and variance', https://doc.rust-lang.org/reference/subtyping.html (read 2026-11-20; verified in src/subtyping.md of rust-lang/reference at commit e24eecf97b0c9a6dbac67191098204dc8a190aaa, the Reference revision of the Rust 1.100.0 release), rule [subtyping.variance.builtin-types]: the table lists &'a T as covariant in T, &'a mut T as invariant in T, and std::cell::UnsafeCell<T> as invariant in T. The same read/write argument applied to lifetime subtyping rather than to bit validity; Cell<T> is invariant by the composite-type rule [subtyping.variance.user-composite-types], not by the table.",
+      "J. C. Reynolds. Design of the Programming Language Forsythe. In P. W. O'Hearn and R. D. Tennent (eds.), Algol-like Languages, pp. 173-233, Birkhäuser, 1997. doi:10.1007/978-1-4612-4118-8_9. Forsythe's phrase types separate expressions (which can be read), acceptors (which can be assigned to) and variables (both), the classic decomposition of a read-write location into read and write capabilities."
+    ],
+    "design_question": "A library offering safe reinterpretation of memory (value transmutes, shared-reference casts, mutable-reference casts) must decide which validity relationship between source and destination type each cast kind requires; too permissive is unsound, too restrictive rejects useful casts. Which conditions are exactly necessary and sufficient, and how does interior mutability change them?"
+  },
+  {
+    "id": "R7-mut-meet",
+    "lean": "Toy.Transmute.mutSound_from_meet_left_iff_includes_of_satisfiable_meet",
+    "kind": "characterization",
+    "status": "proved",
+    "module": "ToyTransmute/Results.lean",
+    "tier": "T0",
+    "tier_justification": "Beyond R3-eq the only content is the lattice identity (T ⊓ U ≡ T) ↔ T ⊆ U: a re-derivation in this vocabulary.",
+    "plain_claim": "For types T and U of the same size such that some byte sequence is valid at both (satisfiability of T and of U separately is not enough), the unchecked mutable cast from the meet T ⊓ U into T is sound if and only if the meet removes nothing from T, that is every T-valid byte sequence is U-valid.",
+    "hypotheses": [
+      {
+        "name": "h : Satisfiable (T ⊓ U)",
+        "purpose": "Excludes the vacuous case of an empty meet; it cannot be weakened to satisfiability of T, nor of T and U separately.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transmute.mutSound_from_meet_needs_joint_satisfiable",
+          "Toy.Transmute.mutSound_from_meet_needs_satisfiable"
+        ],
+        "counterexample_note": "zero-only and two-only are both satisfiable but disjoint: the cast out of the empty meet is sound while zero-only ⊈ two-only; also byte ⊓ never -> byte."
+      },
+      {
+        "name": "right-hand side: Includes T U",
+        "purpose": "A T-valid value written through the T view is read back at the meet.",
+        "tightness": "tight",
+        "counterexample": "Toy.Transmute.mutSound_from_meet_fails_example",
+        "counterexample_note": "bool ⊓ zero-only -> bool: the meet is satisfiable, bool ⊈ zero-only, the cast is unsound."
+      }
+    ],
+    "depth": "definitional",
+    "depth_note": "From R3-eq and the lattice identity.",
+    "nonvacuity_witness": "zero-only ⊓ bool -> zero-only: the meet is satisfiable, bool is strictly larger than zero-only, the meet removes nothing, the cast is sound.",
+    "nonvacuity_witness_lean": "Toy.Transmute.mutSound_from_meet_nonvacuous",
+    "non_claims": [
+      "All statements are about the toy model of this package: a type is a bit-validity predicate on byte sequences of one fixed size n, both views cover the same n-byte region, reads and writes act on the whole region, and values are flat byte sequences. Nothing is said about alignment, size-changing (prefix, sub-slice or unsized) casts, provenance, uninitialised or padding bytes, pointer metadata or the memory a pointer refers to, aliasing models, concurrency, destructors or auto traits, or library-level safety invariants; see the modeling bridge in the Applicability section of the package report.",
+      "Not a statement about Rust unions or enums (see R7-shared-lattice).",
+      "Characterizes unchecked mutable-reference casts, which must accept every T-valid initial value without inspecting it. A cast that checks validity at U once, at cast time, and then hands out an ordinary unchecked `&mut U` (as zerocopy's try_transmute_mut! does) is a different discipline: by R8-mut it is sound iff (some byte sequence is valid at both T and U) → U ⊆ T; neither T ⊆ U nor T ≡ U is required (checkedSound_mut_escapes_impossibility: byte → bool)."
+    ],
+    "prior_art": [
+      "'Safer Transmute' RFC, rust-lang/rfcs pull request #2981 (closed without merging on 2021-03-31; text as of the pull request's head commit ee1204c23320c33437107ff222e09afd9d5fef1d, file text/0000-safer-transmute.md), section 'Requirements on References' / 'Mutate-able References Must Preserve Validity': mutate-able references are all &mut T plus 'all shared (i.e., &T) references whose referent type contain any bytes produced by the contents of UnsafeCell', and 'the transmutation of a mutate-able reference may also not expand the bit-validity of the referenced type.' Closest informal prior statement of the mutable-reference and interior-mutability rules."
+    ],
+    "design_question": "A library offering safe reinterpretation of memory (value transmutes, shared-reference casts, mutable-reference casts) must decide which validity relationship between source and destination type each cast kind requires; too permissive is unsound, too restrictive rejects useful casts. Which conditions are exactly necessary and sufficient, and how does interior mutability change them?"
+  },
+  {
+    "id": "R8-value-shared",
+    "lean": [
+      "Toy.Transmute.checkedSound_valueProtocol",
+      "Toy.Transmute.checkedSound_sharedProtocol"
+    ],
+    "kind": "theorem",
+    "status": "proved",
+    "module": "ToyTransmute/Results.lean",
+    "tier": "T1",
+    "tier_justification": "Checked conversions are an established design (zerocopy's try_transmute! and try_transmute_ref!); that a successful check makes value and read-only casts safe for bit validity is folklore, made precise here.",
+    "plain_claim": "A value transmute, or a shared-reference cast without interior mutability, between two types T and U of the same size that is checked once at cast time (it goes ahead only if the bytes are valid at U) is sound for bit validity in this model, for every T and U.",
+    "hypotheses": [
+      {
+        "name": "(none: unconditional statements)",
+        "purpose": "Universally quantified over byte alphabets, sizes and validity predicates.",
+        "tightness": "harmless"
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "Invariant U (value) or T ⊓ U (shared) with the checked invariant tool.",
+    "nonvacuity_witness": "For byte -> bool some contents pass the check, the checked casts are sound, and the unchecked ones are not.",
+    "nonvacuity_witness_lean": [
+      "Toy.Transmute.checkedSound_valueProtocol_nonvacuous",
+      "Toy.Transmute.checkedSound_sharedProtocol_nonvacuous"
+    ],
+    "non_claims": [
+      "All statements are about the toy model of this package: a type is a bit-validity predicate on byte sequences of one fixed size n, both views cover the same n-byte region, reads and writes act on the whole region, and values are flat byte sequences. Nothing is said about alignment, size-changing (prefix, sub-slice or unsized) casts, provenance, uninitialised or padding bytes, pointer metadata or the memory a pointer refers to, aliasing models, concurrency, destructors or auto traits, or library-level safety invariants; see the modeling bridge in the Applicability section of the package report.",
+      "Soundness of the successful path only: the check costs run time and can fail; what happens on failure is not modelled.",
+      "The check is on bit validity only; library safety invariants of U (for example a private field that must be even) need their own checks.",
+      "Shared casts with interior mutability are not covered: with source-side writes after the check, T ⊆ U is needed again (R8-im).",
+      "Values are flat byte sequences. For a type whose bytes contain a reference, box or other pointer, validating or comparing the pointer's own bytes says nothing about the memory it points to: `&mut bool` and `&mut u8` have the same pointer bit patterns, yet reinterpreting one as the other is a mutable-reference cast whose referents are governed by R3. Value transmutes of pointer-containing types are not covered.",
+      "Bytes here are always initialised, so the check can always read the source bytes. With uninitialised or padding bytes, performing the run-time check at U means reading the source value's bytes, so the source must consist of initialised bytes only; zerocopy's try_transmute! and try_transmute_ref! require Src: IntoBytes for this. The unconditional 'for every T and U' of this result does not remove that requirement.",
+      "Only bit validity is modelled; destructors are not. On success, zerocopy's try_transmute! does not run the source's destructor (its documentation: 'the Src produced by the expression $e will not be dropped. Semantically, its bits will be copied into a new value of type Dst, the original Src will be forgotten'), and the destination's destructor may later run on the bytes. None of this is captured here."
+    ],
+    "prior_art": [
+      "zerocopy 0.8.63 documentation (crates.io release published 2026-10-13, crate checksum SHA-256 e5fe1f8f1b06191a00962174c61aa5005e0bb391a6d80d07e24d115c01a92ed8), https://docs.rs/zerocopy/0.8.63/zerocopy/ (read 2026-11-20). Macro transmute! behaves like `const fn transmute<Src, Dst>(src: Src) -> Dst where Src: IntoBytes, Dst: FromBytes, size_of::<Src>() == size_of::<Dst>()` (an `#![allow(shrink)]` form also permits shrinking), and 'the Src produced by the expression $e will not be dropped'. Macro transmute_ref! behaves like `fn transmute_ref<'src, 'dst, Src, Dst>(src: &'src Src) -> &'dst Dst where 'src: 'dst, Src: IntoBytes + Immutable + ?Sized, Dst: FromBytes + Immutable + ?Sized, align_of::<Src>() >= align_of::<Dst>(), size_compatible::<Src, Dst>()`. Macro transmute_mut! behaves like `const fn transmute_mut<'src, 'dst, Src, Dst>(src: &'src mut Src) -> &'dst mut Dst where 'src: 'dst, Src: FromBytes + IntoBytes + ?Sized, Dst: FromBytes + IntoBytes + ?Sized, align_of::<Src>() >= align_of::<Dst>(), size_compatible::<Src, Dst>()`. Checked forms: try_transmute! (`Src: IntoBytes, Dst: TryFromBytes, size_of::<Src>() == size_of::<Dst>()`), try_transmute_ref! (`Src: IntoBytes + Immutable + ?Sized, Dst: TryFromBytes + Immutable + ?Sized`, plus the alignment and size-compatibility bounds) and try_transmute_mut! (`Src: FromBytes + IntoBytes + ?Sized, Dst: TryFromBytes + IntoBytes + ?Sized`, plus the alignment and size-compatibility bounds; 'while the value of the referent is checked for validity at runtime, the size and alignment are checked at compile time'; its examples convert `&mut 0u8` to `Ok(&mut false)` and reject `&mut 2u8`). Trait summaries: FromBytes 'Types for which any bit pattern is valid.'; TryFromBytes 'Types for which some bit patterns are valid.'; IntoBytes 'Types that can be converted to an immutable slice of initialized bytes.'; Immutable 'Types which are free from interior mutability.' Relation to this package (derived): over bytes that may be uninitialised, Src: IntoBytes says every Src-valid byte sequence is initialised and Dst: FromBytes says every initialised byte sequence is Dst-valid, so together they give T ⊆ U by transitivity through the set of initialised byte sequences; requiring both traits on both sides (transmute_mut!) makes both validities equal to that set, a special case of T ≡ U. In this package bytes are always initialised, so that intermediate set is the all-bytes validity and Src: IntoBytes has no counterpart. try_transmute_mut! is an instance of a checked mutable cast (R8-mut): Src: FromBytes and Dst: IntoBytes give U ⊆ T, and the run-time check supplies validity at U for the initial contents. For try_transmute_mut!, the bound Src: IntoBytes makes the source referent's bytes initialised, so that the run-time check can read them; Src: FromBytes alone does not exclude padding bytes.",
+      "Rust compiler-team major change proposal 411, 'Lang Item for Transmutability', https://github.com/rust-lang/compiler-team/issues/411 (opened 2021-03-04, accepted), section 'When is a bit-reinterpretation cast sound?': 'A transmutation is well-defined if any possible values of type Src are a valid instance of Dst.' Informal statement of the value-transmute condition."
+    ],
+    "design_question": "A library offering safe reinterpretation of memory (value transmutes, shared-reference casts, mutable-reference casts) must decide which validity relationship between source and destination type each cast kind requires; too permissive is unsound, too restrictive rejects useful casts. Which conditions are exactly necessary and sufficient, and how does interior mutability change them?"
+  },
+  {
+    "id": "R8-mut",
+    "lean": "Toy.Transmute.checkedSound_mutProtocol_iff_satisfiable_meet_imp_includes_rev",
+    "kind": "characterization",
+    "status": "proved",
+    "module": "ToyTransmute/Results.lean",
+    "tier": "T1",
+    "tier_justification": "Checked mutable reinterpretation exists in practice (zerocopy's try_transmute_mut!); the exact condition, including the empty-meet edge case, is folklore made precise.",
+    "plain_claim": "A mutable-reference cast between two types T and U of the same size (both views covering the same region) that is checked once at cast time (it goes ahead only if the bytes are valid at U) and then used without further checks, after which the owner resumes at T, is sound if and only if, provided some byte sequence is valid at both T and U, every U-valid byte sequence is T-valid; the read-side condition T ⊆ U of the unchecked cast (R3) is not needed.",
+    "hypotheses": [
+      {
+        "name": "(none: an equivalence with no hypotheses)",
+        "purpose": "The statement is universally quantified over all byte alphabets, sizes and validity predicates (source and destination share the size index n).",
+        "tightness": "harmless"
+      },
+      {
+        "name": "right-hand side: Includes U T",
+        "purpose": "A U-valid value written through the cast reference is later read at T by the owner; the check does not cover later writes.",
+        "tightness": "tight",
+        "counterexample": "Toy.Transmute.checkedSound_mut_needs_includes_rev",
+        "counterexample_note": "bool -> byte: the meet is satisfiable, byte ⊈ bool, the checked cast is unsound."
+      },
+      {
+        "name": "right-hand side: the guard 'Satisfiable (T ⊓ U) ->'",
+        "purpose": "If no byte sequence is valid at both types the check never succeeds and the cast is vacuously sound; the guard cannot be weakened to satisfiability of T or of U.",
+        "tightness": "tight",
+        "counterexample": "Toy.Transmute.checkedSound_mut_rhs_needs_satisfiable_meet_guard",
+        "counterexample_note": "zero-only -> two-only: both satisfiable, the meet is empty, the checked cast is sound, two-only ⊈ zero-only."
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "Necessity: the run writeDstReadSrc u from contents that pass the check. Sufficiency: a two-phase invariant (U while the cast reference is used, T afterwards).",
+    "nonvacuity_witness": "Both sides true for byte -> bool; both false for bool -> byte.",
+    "nonvacuity_witness_lean": "Toy.Transmute.checkedSound_mut_nonvacuous",
+    "related_witnesses_lean": [
+      "Toy.Transmute.checkedSound_mut_escapes_impossibility",
+      "Toy.Transmute.checkedSound_mut_byteV_boolV"
+    ],
+    "related_witnesses_note": "byte -> bool: the unchecked mutable cast is unsound (R3-imp), the checked one is sound.",
+    "non_claims": [
+      "All statements are about the toy model of this package: a type is a bit-validity predicate on byte sequences of one fixed size n, both views cover the same n-byte region, reads and writes act on the whole region, and values are flat byte sequences. Nothing is said about alignment, size-changing (prefix, sub-slice or unsized) casts, provenance, uninitialised or padding bytes, pointer metadata or the memory a pointer refers to, aliasing models, concurrency, destructors or auto traits, or library-level safety invariants; see the modeling bridge in the Applicability section of the package report.",
+      "The check happens exactly once, when the cast is made; later contents are not re-checked. Designs that re-check on every read or on every store (as Java arrays do on stores) are different disciplines, not modelled.",
+      "The check is on bit validity only; library safety invariants of U are not checked, and an API that restricts what may be written through the cast reference weakens the write-side requirement (not modelled).",
+      "Concurrent modification of the bytes between the check and the use is not modelled.",
+      "Soundness of the successful path only: the check costs run time and can fail; what happens on failure is not modelled.",
+      "Bytes here are always initialised, so the check can always read the source bytes. With uninitialised or padding bytes, performing the run-time check at U means reading the source referent's bytes, so the source must consist of initialised bytes only; zerocopy's try_transmute_mut! requires Src: IntoBytes for this, in addition to the Src: FromBytes and Dst: IntoBytes bounds that give U ⊆ T (Src: FromBytes alone does not exclude padding bytes in the source). The 'if and only if' of this result does not remove that requirement.",
+      "Both views cover exactly the same n bytes. Reference casts to a smaller referent (prefix casts, sub-slices, `&mut [u8; 4] → &mut [u8; 2]`), which rustc's checker accepts when the destination referent is no larger than the source referent, are outside the model: whole-type validity equality would wrongly reject `&mut [u8; 4] → &mut [u8; 2]`, and equality of the prefix's own validity would wrongly accept a write that breaks an invariant coupling the viewed bytes with the unviewed ones (for example two bytes required to sum to zero).",
+      "Only bit validity is modelled; destructors and auto traits are not. Even when T ≡ U, a value transmute does not run T's destructor (zerocopy's transmute! documents that the source 'will not be dropped') and U's destructor may later run on the bytes; through a mutable-reference cast a value written at U may later be dropped at T and vice versa; and reinterpreting between types that differ in Send or Sync can break thread-safety guarantees. None of this is captured here."
+    ],
+    "prior_art": [
+      "zerocopy 0.8.63 documentation (crates.io release published 2026-10-13, crate checksum SHA-256 e5fe1f8f1b06191a00962174c61aa5005e0bb391a6d80d07e24d115c01a92ed8), https://docs.rs/zerocopy/0.8.63/zerocopy/ (read 2026-11-20). Macro transmute! behaves like `const fn transmute<Src, Dst>(src: Src) -> Dst where Src: IntoBytes, Dst: FromBytes, size_of::<Src>() == size_of::<Dst>()` (an `#![allow(shrink)]` form also permits shrinking), and 'the Src produced by the expression $e will not be dropped'. Macro transmute_ref! behaves like `fn transmute_ref<'src, 'dst, Src, Dst>(src: &'src Src) -> &'dst Dst where 'src: 'dst, Src: IntoBytes + Immutable + ?Sized, Dst: FromBytes + Immutable + ?Sized, align_of::<Src>() >= align_of::<Dst>(), size_compatible::<Src, Dst>()`. Macro transmute_mut! behaves like `const fn transmute_mut<'src, 'dst, Src, Dst>(src: &'src mut Src) -> &'dst mut Dst where 'src: 'dst, Src: FromBytes + IntoBytes + ?Sized, Dst: FromBytes + IntoBytes + ?Sized, align_of::<Src>() >= align_of::<Dst>(), size_compatible::<Src, Dst>()`. Checked forms: try_transmute! (`Src: IntoBytes, Dst: TryFromBytes, size_of::<Src>() == size_of::<Dst>()`), try_transmute_ref! (`Src: IntoBytes + Immutable + ?Sized, Dst: TryFromBytes + Immutable + ?Sized`, plus the alignment and size-compatibility bounds) and try_transmute_mut! (`Src: FromBytes + IntoBytes + ?Sized, Dst: TryFromBytes + IntoBytes + ?Sized`, plus the alignment and size-compatibility bounds; 'while the value of the referent is checked for validity at runtime, the size and alignment are checked at compile time'; its examples convert `&mut 0u8` to `Ok(&mut false)` and reject `&mut 2u8`). Trait summaries: FromBytes 'Types for which any bit pattern is valid.'; TryFromBytes 'Types for which some bit patterns are valid.'; IntoBytes 'Types that can be converted to an immutable slice of initialized bytes.'; Immutable 'Types which are free from interior mutability.' Relation to this package (derived): over bytes that may be uninitialised, Src: IntoBytes says every Src-valid byte sequence is initialised and Dst: FromBytes says every initialised byte sequence is Dst-valid, so together they give T ⊆ U by transitivity through the set of initialised byte sequences; requiring both traits on both sides (transmute_mut!) makes both validities equal to that set, a special case of T ≡ U. In this package bytes are always initialised, so that intermediate set is the all-bytes validity and Src: IntoBytes has no counterpart. try_transmute_mut! is an instance of a checked mutable cast (R8-mut): Src: FromBytes and Dst: IntoBytes give U ⊆ T, and the run-time check supplies validity at U for the initial contents. For try_transmute_mut!, the bound Src: IntoBytes makes the source referent's bytes initialised, so that the run-time check can read them; Src: FromBytes alone does not exclude padding bytes.",
+      "The Java Language Specification, Java SE 21 edition: section 4.10.3 'Subtyping among Array Types' ('If S and T are both reference types, then S[] >1 T[] iff S >1 T.') and section 10.5 'Array Store Exception' ('If the type of the value being assigned is not assignment-compatible (§5.2) with the component type, an ArrayStoreException is thrown.'), https://docs.oracle.com/javase/specs/jls/se21/html/. The classic covariant mutable container: the write-side obligation is discharged by a run-time check instead of being required statically.",
+      "'Safer Transmute' RFC, rust-lang/rfcs pull request #2981 (closed without merging on 2021-03-31; text as of the pull request's head commit ee1204c23320c33437107ff222e09afd9d5fef1d, file text/0000-safer-transmute.md), section 'Requirements on References' / 'Mutate-able References Must Preserve Validity': mutate-able references are all &mut T plus 'all shared (i.e., &T) references whose referent type contain any bytes produced by the contents of UnsafeCell', and 'the transmutation of a mutate-able reference may also not expand the bit-validity of the referenced type.' Closest informal prior statement of the mutable-reference and interior-mutability rules."
+    ],
+    "design_question": "A library offering safe reinterpretation of memory (value transmutes, shared-reference casts, mutable-reference casts) must decide which validity relationship between source and destination type each cast kind requires; too permissive is unsound, too restrictive rejects useful casts. Which conditions are exactly necessary and sufficient, and how does interior mutability change them?"
+  },
+  {
+    "id": "R8-im",
+    "lean": "Toy.Transmute.checkedSound_sharedIM_iff_satisfiable_meet_imp_srcWrites_includes_and_dstWrites_includes_rev",
+    "kind": "characterization",
+    "status": "proved",
+    "module": "ToyTransmute/Results.lean",
+    "tier": "T1",
+    "tier_justification": "Elementary consequence of the read/write argument for casts checked once; recorded because it shows that a check at cast time does not make source-side interior mutability harmless. Not found stated in the sources consulted, but too elementary to claim as novel.",
+    "plain_claim": "A shared-reference cast with interior mutability between two types T and U of the same size (both views covering the same region), checked once at cast time, in which both references stay live, the source side may write T-valid values iff srcWrites and the destination side may write U-valid values iff dstWrites, is sound for bit validity in this model (aliasing rules are not modelled) if and only if, provided some byte sequence is valid at both T and U, source-side writes require every T-valid byte sequence to be U-valid and destination-side writes require every U-valid byte sequence to be T-valid; unlike the unchecked case (R4), source-side writes matter because they happen after the check.",
+    "hypotheses": [
+      {
+        "name": "(none: an equivalence with no hypotheses)",
+        "purpose": "The statement is universally quantified over all byte alphabets, sizes and validity predicates (source and destination share the size index n).",
+        "tightness": "harmless"
+      },
+      {
+        "name": "right-hand side: srcWrites = true -> Includes T U",
+        "purpose": "A T-valid value written through the source after the check is read at U through the cast reference.",
+        "tightness": "tight",
+        "counterexample": "Toy.Transmute.checkedSound_sharedIM_needs_srcWrites_includes",
+        "counterexample_note": "byte -> bool with both flags: the meet is satisfiable, the other conjunct (bool ⊆ byte) holds, byte ⊈ bool, the checked cast is unsound."
+      },
+      {
+        "name": "right-hand side: dstWrites = true -> Includes U T",
+        "purpose": "A U-valid value written through the cast reference is read at T through the original reference.",
+        "tightness": "tight",
+        "counterexample": "Toy.Transmute.checkedSound_sharedIM_needs_dstWrites_includes_rev",
+        "counterexample_note": "bool -> byte with both flags: the meet is satisfiable, the other conjunct holds, byte ⊈ bool, the checked cast is unsound."
+      },
+      {
+        "name": "right-hand side: the guard 'srcWrites = true ->'",
+        "purpose": "Exactness: without source-side writes after the check, T ⊆ U is not needed: the check establishes validity at U for the initial contents, and every later value is written at U.",
+        "tightness": "tight",
+        "counterexample": "Toy.Transmute.checkedSound_sharedIM_rhs_needs_srcWrites_guard",
+        "counterexample_note": "byte -> bool with only destination-side writes: the meet is satisfiable, bool ⊆ byte, the checked cast is sound, but the right-hand side without this guard demands byte ⊆ bool, which fails."
+      },
+      {
+        "name": "right-hand side: the guard 'dstWrites = true ->'",
+        "purpose": "Exactness: without destination-side writes, U ⊆ T is not needed: the contents are then the checked initial value (valid at T and at U) or T-valid values written through the source.",
+        "tightness": "tight",
+        "counterexample": "Toy.Transmute.checkedSound_sharedIM_rhs_needs_dstWrites_guard",
+        "counterexample_note": "bool -> byte with only source-side writes: the meet is satisfiable, bool ⊆ byte, the checked cast is sound, but the right-hand side without this guard demands byte ⊆ bool, which fails."
+      },
+      {
+        "name": "right-hand side: the guard 'Satisfiable (T ⊓ U) ->'",
+        "purpose": "If the check never succeeds the cast is vacuously sound.",
+        "tightness": "tight",
+        "counterexample": "Toy.Transmute.checkedSound_sharedIM_rhs_needs_satisfiable_meet_guard",
+        "counterexample_note": "zero-only -> two-only with both flags: both satisfiable, the meet is empty, the checked cast is sound, the unguarded right-hand side is false."
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "Necessity: the runs writeSrcReadDst v and writeDstReadSrc u from contents that pass the check. Sufficiency: the single invariant T ⊓ U for every pair of flags, with the checked invariant tool: the check establishes it, a permitted source write stays in it because T ⊆ U, and a permitted destination write because U ⊆ T.",
+    "nonvacuity_witness": "Both sides true: both flags with bool -> bool'; destination-only writes with byte -> bool; source-only writes with bool -> byte. Both sides false: source-only writes with byte -> bool.",
+    "nonvacuity_witness_lean": "Toy.Transmute.checkedSound_sharedIM_nonvacuous",
+    "non_claims": [
+      "All statements are about the toy model of this package: a type is a bit-validity predicate on byte sequences of one fixed size n, both views cover the same n-byte region, reads and writes act on the whole region, and values are flat byte sequences. Nothing is said about alignment, size-changing (prefix, sub-slice or unsized) casts, provenance, uninitialised or padding bytes, pointer metadata or the memory a pointer refers to, aliasing models, concurrency, destructors or auto traits, or library-level safety invariants; see the modeling bridge in the Applicability section of the package report.",
+      "Bit validity only; aliasing rules are not modelled. zerocopy's try_transmute_ref! requires both sides to be free of interior mutability, so it never relies on this case.",
+      "The write flags are per side and cover the whole region; they do not track which bytes lie inside an `UnsafeCell`. In Rust, `&(UnsafeCell<u8>, u8) → &(u8, UnsafeCell<u8>)` has equal validities and interior mutability on both sides, yet the destination may mutate a byte that the source type does not mark as interior-mutable; nothing here says such a cast is sound.",
+      "Validity equality says nothing about whether two interior-mutable types use compatible synchronization or borrow-tracking protocols (for example an atomic integer versus `Cell<u8>`, or the borrow flag of a `RefCell`). rustc's transmutability checker rejects even `&UnsafeCell<u8> → &UnsafeCell<u8>` (its UI test comment: 'the two types may use different, incompatible synchronization strategies'), and zerocopy's transmute_ref! requires both sides to be free of interior mutability.",
+      "The check happens exactly once, when the cast is made; later contents are not re-checked. Designs that re-check on every read or on every store are different disciplines, not modelled.",
+      "Concurrent modification of the bytes between the check and later use is not modelled: runs are sequential interleavings and the check is atomic with the cast. Because both references stay live under interior mutability, a real implementation must also exclude source-side writes that race with the check itself (a time-of-check-to-time-of-use hazard); nothing here addresses that.",
+      "Soundness of the successful path only: the check costs run time and can fail; what happens on failure is not modelled.",
+      "Bytes here are always initialised, so the check can always read the source bytes. With uninitialised or padding bytes, performing the run-time check at U means reading the source referent's bytes, so the source must consist of initialised bytes only (zerocopy's checked casts require Src: IntoBytes for this). The characterization does not remove that requirement.",
+      "The check is on bit validity only; library safety invariants of U need their own checks."
+    ],
+    "prior_art": [
+      "zerocopy 0.8.63 documentation (crates.io release published 2026-10-13, crate checksum SHA-256 e5fe1f8f1b06191a00962174c61aa5005e0bb391a6d80d07e24d115c01a92ed8), https://docs.rs/zerocopy/0.8.63/zerocopy/ (read 2026-11-20). Macro transmute! behaves like `const fn transmute<Src, Dst>(src: Src) -> Dst where Src: IntoBytes, Dst: FromBytes, size_of::<Src>() == size_of::<Dst>()` (an `#![allow(shrink)]` form also permits shrinking), and 'the Src produced by the expression $e will not be dropped'. Macro transmute_ref! behaves like `fn transmute_ref<'src, 'dst, Src, Dst>(src: &'src Src) -> &'dst Dst where 'src: 'dst, Src: IntoBytes + Immutable + ?Sized, Dst: FromBytes + Immutable + ?Sized, align_of::<Src>() >= align_of::<Dst>(), size_compatible::<Src, Dst>()`. Macro transmute_mut! behaves like `const fn transmute_mut<'src, 'dst, Src, Dst>(src: &'src mut Src) -> &'dst mut Dst where 'src: 'dst, Src: FromBytes + IntoBytes + ?Sized, Dst: FromBytes + IntoBytes + ?Sized, align_of::<Src>() >= align_of::<Dst>(), size_compatible::<Src, Dst>()`. Checked forms: try_transmute! (`Src: IntoBytes, Dst: TryFromBytes, size_of::<Src>() == size_of::<Dst>()`), try_transmute_ref! (`Src: IntoBytes + Immutable + ?Sized, Dst: TryFromBytes + Immutable + ?Sized`, plus the alignment and size-compatibility bounds) and try_transmute_mut! (`Src: FromBytes + IntoBytes + ?Sized, Dst: TryFromBytes + IntoBytes + ?Sized`, plus the alignment and size-compatibility bounds; 'while the value of the referent is checked for validity at runtime, the size and alignment are checked at compile time'; its examples convert `&mut 0u8` to `Ok(&mut false)` and reject `&mut 2u8`). Trait summaries: FromBytes 'Types for which any bit pattern is valid.'; TryFromBytes 'Types for which some bit patterns are valid.'; IntoBytes 'Types that can be converted to an immutable slice of initialized bytes.'; Immutable 'Types which are free from interior mutability.' Relation to this package (derived): over bytes that may be uninitialised, Src: IntoBytes says every Src-valid byte sequence is initialised and Dst: FromBytes says every initialised byte sequence is Dst-valid, so together they give T ⊆ U by transitivity through the set of initialised byte sequences; requiring both traits on both sides (transmute_mut!) makes both validities equal to that set, a special case of T ≡ U. In this package bytes are always initialised, so that intermediate set is the all-bytes validity and Src: IntoBytes has no counterpart. try_transmute_mut! is an instance of a checked mutable cast (R8-mut): Src: FromBytes and Dst: IntoBytes give U ⊆ T, and the run-time check supplies validity at U for the initial contents. For try_transmute_mut!, the bound Src: IntoBytes makes the source referent's bytes initialised, so that the run-time check can read them; Src: FromBytes alone does not exclude padding bytes.",
+      "rustc source, rust-lang/rust commit 5b216e01a117532b30f061f3dff8a61408113c77, file compiler/rustc_transmute/src/maybe_transmutable/mod.rs: lines 92-93, comment 'mutable destination references also generate a reverse transmutability obligation for their referents'; lines 112-119: if the source layout is uninhabited the answer is Yes ('because instances of the `src` type do not exist'); lines 244-259: a reference transition is rejected if the destination reference is mutable and the source reference is not, if the destination referent is more strictly aligned (unless alignment is assumed), or if the destination referent is larger than the source referent; lines 276-282: the referents must be transmutable from source to destination, and if the destination reference is mutable also from destination to source; otherwise (shared destination reference) the condition `Condition::Immutable { ty: dst_ref.referent }` is added. No interior-mutability condition is placed on the source referent. The UI test tests/ui/transmutability/references/unsafecell.rs at the same commit rejects `&'static UnsafeCell<u8> -> &'static UnsafeCell<u8>` (line 29; comment at lines 25-26: 'We forbid `UnsafeCell`-containing ref-to-ref transmutations, because the two types may use different, incompatible synchronization strategies.') and accepts `&'static mut UnsafeCell<bool> -> &'static u8` (line 42). Implementation counterpart of the mutable-reference rule; for shared references it requires the destination referent to be free of interior mutability instead of characterising the interior-mutable case.",
+      "'Safer Transmute' RFC, rust-lang/rfcs pull request #2981 (closed without merging on 2021-03-31; text as of the pull request's head commit ee1204c23320c33437107ff222e09afd9d5fef1d, file text/0000-safer-transmute.md), section 'Requirements on References' / 'Mutate-able References Must Preserve Validity': mutate-able references are all &mut T plus 'all shared (i.e., &T) references whose referent type contain any bytes produced by the contents of UnsafeCell', and 'the transmutation of a mutate-able reference may also not expand the bit-validity of the referenced type.' Closest informal prior statement of the mutable-reference and interior-mutability rules.",
+      "R. Jung, H.-H. Dang, J. Kang, D. Dreyer. Stacked Borrows: An Aliasing Model for Rust. Proc. ACM Program. Lang. 4(POPL), pp. 1-32, 2020. doi:10.1145/3371109. An operational aliasing model for Rust; aliasing is outside this package's model.",
+      "N. Villani, J. Hostert, D. Dreyer, R. Jung. Tree Borrows. Proc. ACM Program. Lang. 9(PLDI), pp. 1019-1042, 2025. doi:10.1145/3735592. A later operational aliasing model for Rust; aliasing is outside this package's model."
+    ],
+    "design_question": "A library offering safe reinterpretation of memory (value transmutes, shared-reference casts, mutable-reference casts) must decide which validity relationship between source and destination type each cast kind requires; too permissive is unsound, too restrictive rejects useful casts. Which conditions are exactly necessary and sufficient, and how does interior mutability change them?"
+  }
+]

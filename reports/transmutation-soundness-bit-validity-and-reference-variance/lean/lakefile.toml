@@ -1,0 +1,6 @@
+name = "toy_transmute"
+version = "0.1.0"
+defaultTargets = ["ToyTransmute"]
+
+[[lean_lib]]
+name = "ToyTransmute"

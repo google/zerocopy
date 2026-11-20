@@ -1,0 +1,791 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Transmute.Bytes": [],
+    "Toy.Transmute.CheckedSound": [],
+    "Toy.Transmute.Includes": [],
+    "Toy.Transmute.MutSound": [],
+    "Toy.Transmute.NoInvalidRead": [],
+    "Toy.Transmute.NoInvalidRead.match_1": [],
+    "Toy.Transmute.Op": [],
+    "Toy.Transmute.Op.IsRead": [],
+    "Toy.Transmute.Op.PermittedIM": [],
+    "Toy.Transmute.Op.PermittedIM.eq_1": [],
+    "Toy.Transmute.Op.PermittedIM.eq_2": [],
+    "Toy.Transmute.Op.PermittedIM.eq_3": [],
+    "Toy.Transmute.Op.PermittedIM.match_1": [],
+    "Toy.Transmute.Op.Preserves": [],
+    "Toy.Transmute.Op.Preserves.match_1": [],
+    "Toy.Transmute.Op.WellTyped": [],
+    "Toy.Transmute.Op.casesOn": [],
+    "Toy.Transmute.Op.ctorElim": [],
+    "Toy.Transmute.Op.ctorElimType": [],
+    "Toy.Transmute.Op.ctorIdx": [],
+    "Toy.Transmute.Op.noConfusion": [],
+    "Toy.Transmute.Op.noConfusionType": [],
+    "Toy.Transmute.Op.read": [],
+    "Toy.Transmute.Op.read.elim": [],
+    "Toy.Transmute.Op.read.inj": [],
+    "Toy.Transmute.Op.read.injEq": [
+      "propext"
+    ],
+    "Toy.Transmute.Op.read.noConfusion": [],
+    "Toy.Transmute.Op.read.sizeOf_spec": [],
+    "Toy.Transmute.Op.rec": [],
+    "Toy.Transmute.Op.recOn": [],
+    "Toy.Transmute.Op.side": [],
+    "Toy.Transmute.Op.side.eq_1": [],
+    "Toy.Transmute.Op.side.eq_2": [],
+    "Toy.Transmute.Op.side.match_1": [],
+    "Toy.Transmute.Op.write": [],
+    "Toy.Transmute.Op.write.elim": [],
+    "Toy.Transmute.Op.write.inj": [],
+    "Toy.Transmute.Op.write.injEq": [
+      "propext"
+    ],
+    "Toy.Transmute.Op.write.noConfusion": [],
+    "Toy.Transmute.Op.write.sizeOf_spec": [],
+    "Toy.Transmute.Protocol": [],
+    "Toy.Transmute.Satisfiable": [],
+    "Toy.Transmute.SharedIMSound": [],
+    "Toy.Transmute.SharedSound": [],
+    "Toy.Transmute.Side": [],
+    "Toy.Transmute.Side.casesOn": [],
+    "Toy.Transmute.Side.ctorElim": [],
+    "Toy.Transmute.Side.ctorElimType": [],
+    "Toy.Transmute.Side.ctorIdx": [],
+    "Toy.Transmute.Side.dst": [],
+    "Toy.Transmute.Side.dst.elim": [],
+    "Toy.Transmute.Side.dst.sizeOf_spec": [],
+    "Toy.Transmute.Side.noConfusion": [],
+    "Toy.Transmute.Side.noConfusionType": [],
+    "Toy.Transmute.Side.ofNat": [],
+    "Toy.Transmute.Side.ofNat_ctorIdx": [],
+    "Toy.Transmute.Side.rec": [],
+    "Toy.Transmute.Side.recOn": [],
+    "Toy.Transmute.Side.src": [],
+    "Toy.Transmute.Side.src.elim": [],
+    "Toy.Transmute.Side.src.sizeOf_spec": [],
+    "Toy.Transmute.Side.ty": [],
+    "Toy.Transmute.Sound": [],
+    "Toy.Transmute.Validity": [],
+    "Toy.Transmute.Validity.join": [],
+    "Toy.Transmute.Validity.meet": [],
+    "Toy.Transmute.ValidityEq": [],
+    "Toy.Transmute.ValueSound": [],
+    "Toy.Transmute.boolV": [
+      "propext"
+    ],
+    "Toy.Transmute.boolV'": [
+      "propext"
+    ],
+    "Toy.Transmute.boolV'_byteSeq_one": [
+      "propext"
+    ],
+    "Toy.Transmute.boolV_byteSeq_one": [
+      "propext"
+    ],
+    "Toy.Transmute.boolV_byteSeq_zero": [
+      "propext"
+    ],
+    "Toy.Transmute.boolV_to_byteV_im_sound_without_writes_unsound_with_dst_writes": [
+      "propext"
+    ],
+    "Toy.Transmute.boolV_to_byteV_mut_violating_run": [
+      "propext"
+    ],
+    "Toy.Transmute.boolV_to_byteV_value_and_shared_sound": [
+      "propext"
+    ],
+    "Toy.Transmute.byteSeq": [],
+    "Toy.Transmute.byteV": [],
+    "Toy.Transmute.byteV_to_boolV_unsound_even_by_value": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.byteV_total": [],
+    "Toy.Transmute.checkedSound_mutProtocol_iff_satisfiable_meet_imp_includes_rev": [
+      "propext"
+    ],
+    "Toy.Transmute.checkedSound_mut_byteV_boolV": [
+      "propext"
+    ],
+    "Toy.Transmute.checkedSound_mut_escapes_impossibility": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.checkedSound_mut_needs_includes_rev": [
+      "propext"
+    ],
+    "Toy.Transmute.checkedSound_mut_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Transmute.checkedSound_mut_of_invariants": [
+      "propext"
+    ],
+    "Toy.Transmute.checkedSound_mut_rhs_needs_satisfiable_meet_guard": [
+      "propext"
+    ],
+    "Toy.Transmute.checkedSound_of_invariant": [
+      "propext"
+    ],
+    "Toy.Transmute.checkedSound_of_not_satisfiable_meet": [],
+    "Toy.Transmute.checkedSound_of_sound": [],
+    "Toy.Transmute.checkedSound_sharedIM_iff_satisfiable_meet_imp_srcWrites_includes_and_dstWrites_includes_rev": [
+      "propext"
+    ],
+    "Toy.Transmute.checkedSound_sharedIM_needs_dstWrites_includes_rev": [
+      "propext"
+    ],
+    "Toy.Transmute.checkedSound_sharedIM_needs_srcWrites_includes": [
+      "propext"
+    ],
+    "Toy.Transmute.checkedSound_sharedIM_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.checkedSound_sharedIM_of_invariant": [
+      "propext"
+    ],
+    "Toy.Transmute.checkedSound_sharedIM_rhs_needs_dstWrites_guard": [
+      "propext"
+    ],
+    "Toy.Transmute.checkedSound_sharedIM_rhs_needs_satisfiable_meet_guard": [
+      "propext"
+    ],
+    "Toy.Transmute.checkedSound_sharedIM_rhs_needs_srcWrites_guard": [
+      "propext"
+    ],
+    "Toy.Transmute.checkedSound_sharedProtocol": [
+      "propext"
+    ],
+    "Toy.Transmute.checkedSound_sharedProtocol_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Transmute.checkedSound_shared_of_invariant": [
+      "propext"
+    ],
+    "Toy.Transmute.checkedSound_valueProtocol": [
+      "propext"
+    ],
+    "Toy.Transmute.checkedSound_valueProtocol_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Transmute.checkedSound_value_of_invariant": [
+      "propext"
+    ],
+    "Toy.Transmute.emptyProtocol": [],
+    "Toy.Transmute.emptyProtocol.eq_1": [],
+    "Toy.Transmute.emptyProtocol_nil": [],
+    "Toy.Transmute.includes_boolV_byteV": [
+      "propext"
+    ],
+    "Toy.Transmute.includes_of_sound_readDst": [
+      "propext"
+    ],
+    "Toy.Transmute.includes_rev_of_sound_writeDstReadSrc": [
+      "propext"
+    ],
+    "Toy.Transmute.instDecidableEqSide": [],
+    "Toy.Transmute.instReprSide": [],
+    "Toy.Transmute.instReprSide.repr": [],
+    "Toy.Transmute.instReprSide.repr.match_1": [],
+    "Toy.Transmute.join_boolV_twoV_two": [
+      "propext"
+    ],
+    "Toy.Transmute.meet_boolV_zeroV_zero": [
+      "propext"
+    ],
+    "Toy.Transmute.mutProtocol": [],
+    "Toy.Transmute.mutProtocol_example": [
+      "propext"
+    ],
+    "Toy.Transmute.mutProtocol_readDst": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.mutProtocol_writeDstReadSrc": [
+      "propext"
+    ],
+    "Toy.Transmute.mutSound_boolV'_boolV": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.mutSound_boolV_boolV'": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.mutSound_eq_needs_satisfiable": [
+      "propext"
+    ],
+    "Toy.Transmute.mutSound_eq_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.mutSound_exact_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.mutSound_from_meet_fails_example": [
+      "propext"
+    ],
+    "Toy.Transmute.mutSound_from_meet_left_iff_includes_of_satisfiable_meet": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.mutSound_from_meet_needs_joint_satisfiable": [
+      "propext"
+    ],
+    "Toy.Transmute.mutSound_from_meet_needs_satisfiable": [
+      "propext"
+    ],
+    "Toy.Transmute.mutSound_from_meet_needs_satisfiable.match_1_1": [],
+    "Toy.Transmute.mutSound_from_meet_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Transmute.mutSound_iff_includes_and_satisfiable_imp_includes_rev": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.mutSound_iff_sharedIMSound_dstWrites": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.mutSound_iff_sharedIM_needs_dstWrites": [
+      "propext"
+    ],
+    "Toy.Transmute.mutSound_iff_sharedIM_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.mutSound_iff_validityEq_of_satisfiable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.mutSound_needs_includes_rev": [
+      "propext"
+    ],
+    "Toy.Transmute.mutSound_not_iff_symm_of_satisfiable_left": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.mutSound_of_invariant": [
+      "propext"
+    ],
+    "Toy.Transmute.mutSound_rhs_needs_satisfiable_guard": [
+      "propext"
+    ],
+    "Toy.Transmute.mutSound_symm_needs_mutSound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.mutSound_symm_needs_satisfiable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.mutSound_symm_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.mutSound_symm_of_satisfiable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.mutSound_to_join_fails_example": [
+      "propext"
+    ],
+    "Toy.Transmute.mutSound_to_join_left_iff_includes_rev_of_satisfiable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.mutSound_to_join_needs_includes_rev": [
+      "propext"
+    ],
+    "Toy.Transmute.mutSound_to_join_needs_satisfiable": [
+      "propext"
+    ],
+    "Toy.Transmute.mutSound_to_join_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Transmute.mutSound_trans": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.mutSound_trans_needs_first": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.mutSound_trans_needs_second": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.mutSound_trans_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.mutSound_trans_uninhabited_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.neverV": [],
+    "Toy.Transmute.neverV_empty": [],
+    "Toy.Transmute.noInvalidRead_append_of_invariants": [
+      "propext"
+    ],
+    "Toy.Transmute.noInvalidRead_example": [
+      "propext"
+    ],
+    "Toy.Transmute.noInvalidRead_of_invariant": [
+      "propext"
+    ],
+    "Toy.Transmute.noInvalidRead_unchecked_until_read": [
+      "propext"
+    ],
+    "Toy.Transmute.not_boolV'_byteSeq_two": [
+      "propext"
+    ],
+    "Toy.Transmute.not_boolV_byteSeq_two": [
+      "propext"
+    ],
+    "Toy.Transmute.not_checkedSound_mut_boolV_byteV": [
+      "propext"
+    ],
+    "Toy.Transmute.not_checkedSound_of_write_dst_read_src": [
+      "propext"
+    ],
+    "Toy.Transmute.not_checkedSound_of_write_src_read_dst": [
+      "propext"
+    ],
+    "Toy.Transmute.not_emptyProtocol_readDst": [
+      "propext"
+    ],
+    "Toy.Transmute.not_includes_byteV_boolV": [
+      "propext"
+    ],
+    "Toy.Transmute.not_join_boolV_twoV_three": [
+      "propext"
+    ],
+    "Toy.Transmute.not_meet_boolV_zeroV_one": [
+      "propext"
+    ],
+    "Toy.Transmute.not_mutProtocol_example": [
+      "propext"
+    ],
+    "Toy.Transmute.not_mutProtocol_interleaved_example": [
+      "propext"
+    ],
+    "Toy.Transmute.not_mutProtocol_interleaved_example.match_1_1": [],
+    "Toy.Transmute.not_mutSound_boolV_byteV": [
+      "propext"
+    ],
+    "Toy.Transmute.not_mutSound_byteV_boolV": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.not_mutSound_needs_not_validityEq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.not_mutSound_needs_satisfiable": [
+      "propext"
+    ],
+    "Toy.Transmute.not_mutSound_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Transmute.not_mutSound_of_satisfiable_of_not_validityEq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.not_mutSound_positive_control_weaker_casts": [
+      "propext"
+    ],
+    "Toy.Transmute.not_noInvalidRead_example": [
+      "propext"
+    ],
+    "Toy.Transmute.not_op_isRead_write_example": [
+      "propext"
+    ],
+    "Toy.Transmute.not_op_preserves_write_dst_example": [
+      "propext"
+    ],
+    "Toy.Transmute.not_permittedIM_example": [
+      "propext"
+    ],
+    "Toy.Transmute.not_satisfiable_neverV": [],
+    "Toy.Transmute.not_satisfiable_neverV.match_1_1": [],
+    "Toy.Transmute.not_satisfiable_zeroV_meet_twoV": [
+      "propext"
+    ],
+    "Toy.Transmute.not_sharedIMProtocol_example": [
+      "propext"
+    ],
+    "Toy.Transmute.not_sharedIMSound_dst_boolV_byteV": [
+      "propext"
+    ],
+    "Toy.Transmute.not_sharedProtocol_example": [
+      "propext"
+    ],
+    "Toy.Transmute.not_sharedSound_byteV_boolV": [
+      "propext"
+    ],
+    "Toy.Transmute.not_sound_of_read_dst": [
+      "propext"
+    ],
+    "Toy.Transmute.not_sound_of_read_dst_needs_invalid": [
+      "propext"
+    ],
+    "Toy.Transmute.not_sound_of_read_dst_needs_permission": [
+      "propext"
+    ],
+    "Toy.Transmute.not_sound_of_read_dst_needs_valid_initial": [
+      "propext"
+    ],
+    "Toy.Transmute.not_sound_of_read_dst_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Transmute.not_sound_of_write_dst_read_src": [
+      "propext"
+    ],
+    "Toy.Transmute.not_sound_of_write_dst_read_src_needs_invalid": [
+      "propext"
+    ],
+    "Toy.Transmute.not_sound_of_write_dst_read_src_needs_permission": [
+      "propext"
+    ],
+    "Toy.Transmute.not_sound_of_write_dst_read_src_needs_valid_initial": [
+      "propext"
+    ],
+    "Toy.Transmute.not_sound_of_write_dst_read_src_needs_wellTyped_write": [
+      "propext"
+    ],
+    "Toy.Transmute.not_sound_of_write_dst_read_src_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Transmute.not_twoV_byteSeq_zero": [
+      "propext"
+    ],
+    "Toy.Transmute.not_validityEq_boolV_byteV": [
+      "propext"
+    ],
+    "Toy.Transmute.not_valueProtocol_example": [
+      "propext"
+    ],
+    "Toy.Transmute.not_valueSound_byteV_boolV": [
+      "propext"
+    ],
+    "Toy.Transmute.not_wellTyped_write_src_two": [
+      "propext"
+    ],
+    "Toy.Transmute.not_zeroV_byteSeq_one": [
+      "propext"
+    ],
+    "Toy.Transmute.op_isRead_read_example": [],
+    "Toy.Transmute.op_preserves_read_dst_example": [
+      "propext"
+    ],
+    "Toy.Transmute.op_side_read_dst_example": [],
+    "Toy.Transmute.op_side_write_src_ne_dst_example": [
+      "propext"
+    ],
+    "Toy.Transmute.permittedIM_example": [
+      "propext"
+    ],
+    "Toy.Transmute.readDst": [],
+    "Toy.Transmute.readDst.eq_1": [],
+    "Toy.Transmute.readDst_violates": [],
+    "Toy.Transmute.readDst_wellTyped": [
+      "propext"
+    ],
+    "Toy.Transmute.satisfiable_boolV": [
+      "propext"
+    ],
+    "Toy.Transmute.satisfiable_boolV_meet_byteV": [
+      "propext"
+    ],
+    "Toy.Transmute.satisfiable_byteV_meet_boolV": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedIMProtocol": [],
+    "Toy.Transmute.sharedIMProtocol_example": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedIMProtocol_false_false": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.sharedIMProtocol_readDst": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedIMProtocol_writeDstReadSrc": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedIMProtocol_writeSrcReadDst": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedIMSound_boolV_boolV'": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.sharedIMSound_dstWrites_iff_validityEq_of_satisfiable": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedIMSound_eq_needs_dstWrites": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedIMSound_eq_needs_satisfiable": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedIMSound_eq_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.sharedIMSound_exact_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.sharedIMSound_iff_includes_and_dstWrites_imp_satisfiable_imp_includes_rev": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedIMSound_needs_includes": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedIMSound_needs_includes_canonical": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedIMSound_needs_includes_rev_canonical": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedIMSound_noDstWrites_iff_includes": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedIMSound_noDst_needs_noDstWrites": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedIMSound_noDst_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedIMSound_noDst_trans_strict_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedIMSound_of_invariant": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedIMSound_rhs_needs_dstWrites_guard": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedIMSound_rhs_needs_satisfiable_guard": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedIMSound_trans": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedIMSound_trans_needs_first": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedIMSound_trans_needs_second": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedIMSound_trans_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.sharedIMSound_trans_uninhabited_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.sharedIMSound_true_false_boolV_byteV": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedProtocol": [],
+    "Toy.Transmute.sharedProtocol_example": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedProtocol_readDst": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedSound_boolV_byteV": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedSound_from_meet_left": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedSound_from_meet_left_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedSound_from_meet_right": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedSound_from_meet_right_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedSound_iff_includes": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedSound_iff_includes_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedSound_join_iff": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedSound_join_iff_needs_left": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedSound_join_iff_needs_right": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedSound_join_iff_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedSound_meet_iff": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedSound_meet_iff_needs_left": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedSound_meet_iff_needs_right": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedSound_meet_iff_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedSound_not_imp_mutSound": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedSound_of_invariant": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedSound_of_mutSound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.sharedSound_of_valueSound": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedSound_to_join_left": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedSound_to_join_left_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedSound_to_join_right": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedSound_to_join_right_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedSound_trans": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedSound_trans_needs_first": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedSound_trans_needs_second": [
+      "propext"
+    ],
+    "Toy.Transmute.sharedSound_trans_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Transmute.side_ty_dst_example": [
+      "propext"
+    ],
+    "Toy.Transmute.side_ty_src_ne_example": [
+      "propext"
+    ],
+    "Toy.Transmute.sound_emptyProtocol": [],
+    "Toy.Transmute.sound_negative_example": [
+      "propext"
+    ],
+    "Toy.Transmute.sound_of_invariant": [
+      "propext"
+    ],
+    "Toy.Transmute.sound_of_not_satisfiable": [],
+    "Toy.Transmute.sound_of_validityEq": [
+      "propext"
+    ],
+    "Toy.Transmute.sound_positive_example": [
+      "propext"
+    ],
+    "Toy.Transmute.sound_refl": [
+      "propext"
+    ],
+    "Toy.Transmute.sound_trans_counterexample_first": [
+      "propext"
+    ],
+    "Toy.Transmute.sound_trans_counterexample_second": [
+      "propext"
+    ],
+    "Toy.Transmute.twoV": [
+      "propext"
+    ],
+    "Toy.Transmute.twoV_byteSeq_two": [
+      "propext"
+    ],
+    "Toy.Transmute.validityEq_boolV_boolV'": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transmute.validityEq_boolV_join_zeroV": [
+      "propext"
+    ],
+    "Toy.Transmute.valueProtocol": [],
+    "Toy.Transmute.valueProtocol_example": [
+      "propext"
+    ],
+    "Toy.Transmute.valueProtocol_readDst": [
+      "propext"
+    ],
+    "Toy.Transmute.valueProtocol_side": [],
+    "Toy.Transmute.valueSound_boolV_byteV": [
+      "propext"
+    ],
+    "Toy.Transmute.valueSound_iff_includes": [
+      "propext"
+    ],
+    "Toy.Transmute.valueSound_iff_includes_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Transmute.valueSound_of_invariant": [
+      "propext"
+    ],
+    "Toy.Transmute.valueSound_of_sharedSound": [
+      "propext"
+    ],
+    "Toy.Transmute.valueSound_trans": [
+      "propext"
+    ],
+    "Toy.Transmute.valueSound_trans_needs_first": [
+      "propext"
+    ],
+    "Toy.Transmute.valueSound_trans_needs_second": [
+      "propext"
+    ],
+    "Toy.Transmute.valueSound_trans_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Transmute.wellTyped_write_dst_two": [
+      "propext"
+    ],
+    "Toy.Transmute.writeDstReadSrc": [],
+    "Toy.Transmute.writeDstReadSrc.eq_1": [],
+    "Toy.Transmute.writeDstReadSrc_violates": [],
+    "Toy.Transmute.writeDstReadSrc_wellTyped": [
+      "propext"
+    ],
+    "Toy.Transmute.writeSrcReadDst": [],
+    "Toy.Transmute.writeSrcReadDst.eq_1": [],
+    "Toy.Transmute.writeSrcReadDst_wellTyped": [
+      "propext"
+    ],
+    "Toy.Transmute.zeroV": [
+      "propext"
+    ],
+    "Toy.Transmute.zeroV_byteSeq_zero": [
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
