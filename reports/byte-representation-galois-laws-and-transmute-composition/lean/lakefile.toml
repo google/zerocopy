@@ -1,0 +1,6 @@
+name = "toy-repr"
+version = "0.1.0"
+defaultTargets = ["ToyRepr"]
+
+[[lean_lib]]
+name = "ToyRepr"

@@ -11069,6 +11069,106 @@
         "zerocopy/succinct-serialization"
       ]
     },
+    "byte-representation-galois-laws-and-transmute-composition": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "path": "spec/lang/representation.md",
+            "repository": "minirust/minirust",
+            "revision": "063d784186d3252bee242217f218223205c0b568"
+          },
+          "name": "MiniRust specification, representation relation"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "6905905bb7727fd0f9223f5fdc9ad4e62236d5a2"
+          },
+          "name": "Rust compiler and core library, transmutability"
+        },
+        {
+          "identity": {
+            "path": "reference/src/glossary.md",
+            "repository": "rust-lang/unsafe-code-guidelines",
+            "revision": "d809f91e62968913d808e53397fbcf7cea762cce"
+          },
+          "name": "Rust Unsafe Code Guidelines Reference, glossary"
+        },
+        {
+          "identity": {
+            "crate": "zerocopy",
+            "crate_sha256": "e5fe1f8f1b06191a00962174c61aa5005e0bb391a6d80d07e24d115c01a92ed8",
+            "repository": "google/zerocopy",
+            "revision": "c55af491426ef53f35fb8c6e83f220fa07712e66",
+            "tag": "v0.8.63",
+            "version": "0.8.63"
+          },
+          "name": "zerocopy crate"
+        },
+        {
+          "identity": {
+            "path": "common/Memdata.v",
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert memory model, memory data"
+        },
+        {
+          "identity": {
+            "doi": "10.1090/S0002-9947-1944-0010555-7"
+          },
+          "name": "Galois connexions"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/567752.567778"
+          },
+          "name": "Systematic design of program analysis frameworks"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1190216.1190234"
+          },
+          "name": "Types, bytes, and separation logic"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3290380"
+          },
+          "name": "Exploring C semantics and pointer provenance"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3276495"
+          },
+          "name": "Reconciling high-level optimizations and low-level code in LLVM"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2737924.2738005"
+          },
+          "name": "A formal C memory model supporting integer-pointer casts"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "pl/memory-models",
+        "pl/value-representation",
+        "pl/pointer-provenance",
+        "pl/transmute",
+        "pl/galois-connections"
+      ]
+    },
     "c-abi-stack-conventions-and-process-interface-archaeology": {
       "observed_at": "2026-11-19",
       "subjects": [

@@ -1,0 +1,100 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "pl/memory-models",
+    "pl/value-representation",
+    "pl/pointer-provenance",
+    "pl/transmute",
+    "pl/galois-connections"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "MiniRust specification, representation relation",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "063d784186d3252bee242217f218223205c0b568",
+        "path": "spec/lang/representation.md"
+      }
+    },
+    {
+      "name": "Rust compiler and core library, transmutability",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "6905905bb7727fd0f9223f5fdc9ad4e62236d5a2"
+      }
+    },
+    {
+      "name": "Rust Unsafe Code Guidelines Reference, glossary",
+      "identity": {
+        "repository": "rust-lang/unsafe-code-guidelines",
+        "revision": "d809f91e62968913d808e53397fbcf7cea762cce",
+        "path": "reference/src/glossary.md"
+      }
+    },
+    {
+      "name": "zerocopy crate",
+      "identity": {
+        "crate": "zerocopy",
+        "version": "0.8.63",
+        "crate_sha256": "e5fe1f8f1b06191a00962174c61aa5005e0bb391a6d80d07e24d115c01a92ed8",
+        "repository": "google/zerocopy",
+        "tag": "v0.8.63",
+        "revision": "c55af491426ef53f35fb8c6e83f220fa07712e66"
+      }
+    },
+    {
+      "name": "CompCert memory model, memory data",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc",
+        "path": "common/Memdata.v"
+      }
+    },
+    {
+      "name": "Galois connexions",
+      "identity": {
+        "doi": "10.1090/S0002-9947-1944-0010555-7"
+      }
+    },
+    {
+      "name": "Systematic design of program analysis frameworks",
+      "identity": {
+        "doi": "10.1145/567752.567778"
+      }
+    },
+    {
+      "name": "Types, bytes, and separation logic",
+      "identity": {
+        "doi": "10.1145/1190216.1190234"
+      }
+    },
+    {
+      "name": "Exploring C semantics and pointer provenance",
+      "identity": {
+        "doi": "10.1145/3290380"
+      }
+    },
+    {
+      "name": "Reconciling high-level optimizations and low-level code in LLVM",
+      "identity": {
+        "doi": "10.1145/3276495"
+      }
+    },
+    {
+      "name": "A formal C memory model supporting integer-pointer casts",
+      "identity": {
+        "doi": "10.1145/2737924.2738005"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

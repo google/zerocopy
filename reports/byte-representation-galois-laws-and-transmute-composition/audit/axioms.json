@@ -1,0 +1,1792 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Repr.AByte": [],
+    "Toy.Repr.AByte.casesOn": [],
+    "Toy.Repr.AByte.ctorElim": [],
+    "Toy.Repr.AByte.ctorElimType": [],
+    "Toy.Repr.AByte.ctorIdx": [],
+    "Toy.Repr.AByte.decLe": [],
+    "Toy.Repr.AByte.eq_of_le_of_isInit": [],
+    "Toy.Repr.AByte.get": [],
+    "Toy.Repr.AByte.get.congr_simp": [],
+    "Toy.Repr.AByte.get.match_1": [],
+    "Toy.Repr.AByte.get_eq_of_eq_init": [],
+    "Toy.Repr.AByte.get_init": [],
+    "Toy.Repr.AByte.init": [],
+    "Toy.Repr.AByte.init.elim": [],
+    "Toy.Repr.AByte.init.inj": [],
+    "Toy.Repr.AByte.init.injEq": [
+      "propext"
+    ],
+    "Toy.Repr.AByte.init.noConfusion": [],
+    "Toy.Repr.AByte.init.sizeOf_spec": [],
+    "Toy.Repr.AByte.init_get": [],
+    "Toy.Repr.AByte.init_le_iff": [],
+    "Toy.Repr.AByte.init_le_init_iff": [],
+    "Toy.Repr.AByte.instDefinedness": [],
+    "Toy.Repr.AByte.isInit": [],
+    "Toy.Repr.AByte.isInit.match_1": [],
+    "Toy.Repr.AByte.isInit_iff_ne_uninit": [],
+    "Toy.Repr.AByte.isInit_init": [],
+    "Toy.Repr.AByte.isInit_uninit": [],
+    "Toy.Repr.AByte.le": [],
+    "Toy.Repr.AByte.le.match_1": [],
+    "Toy.Repr.AByte.leProvInc": [],
+    "Toy.Repr.AByte.leProvInc.eq_1": [],
+    "Toy.Repr.AByte.leProvInc.eq_2": [],
+    "Toy.Repr.AByte.leProvInc.eq_3": [],
+    "Toy.Repr.AByte.leProvInc.eq_4": [],
+    "Toy.Repr.AByte.leProvInc.match_1": [],
+    "Toy.Repr.AByte.le_antisymm": [],
+    "Toy.Repr.AByte.le_def": [],
+    "Toy.Repr.AByte.le_refl": [],
+    "Toy.Repr.AByte.le_trans": [],
+    "Toy.Repr.AByte.le_uninit_iff": [],
+    "Toy.Repr.AByte.noConfusion": [],
+    "Toy.Repr.AByte.noConfusionType": [],
+    "Toy.Repr.AByte.not_init_le_uninit": [],
+    "Toy.Repr.AByte.rec": [],
+    "Toy.Repr.AByte.recOn": [],
+    "Toy.Repr.AByte.uninit": [],
+    "Toy.Repr.AByte.uninit.elim": [],
+    "Toy.Repr.AByte.uninit.sizeOf_spec": [],
+    "Toy.Repr.AByte.uninit_le": [],
+    "Toy.Repr.Byte": [],
+    "Toy.Repr.Bytes": [],
+    "Toy.Repr.Bytes.IsInit": [
+      "propext"
+    ],
+    "Toy.Repr.Bytes.decLe": [
+      "propext"
+    ],
+    "Toy.Repr.Bytes.eq_of_le_of_isInit": [
+      "propext"
+    ],
+    "Toy.Repr.Bytes.exists_ofData_of_isInit": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.Bytes.getElem_congr_idx": [
+      "propext"
+    ],
+    "Toy.Repr.Bytes.getElem_ofData": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.Bytes.getElem_slice": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.Bytes.instDecidableIsInit": [
+      "propext"
+    ],
+    "Toy.Repr.Bytes.isInit_ofData": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.Bytes.isInit_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.Bytes.isInit_two": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.Bytes.le_antisymm": [
+      "propext"
+    ],
+    "Toy.Repr.Bytes.le_def": [
+      "propext"
+    ],
+    "Toy.Repr.Bytes.le_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.Bytes.le_refl": [
+      "propext"
+    ],
+    "Toy.Repr.Bytes.le_trans": [
+      "propext"
+    ],
+    "Toy.Repr.Bytes.le_two": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.Bytes.ofData": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.Bytes.ofData.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.Bytes.ofData_of_toData?": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.Bytes.ofData_pair": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.Bytes.ofData_singleton": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.Bytes.slice": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.Bytes.slice.congr_simp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.Bytes.slice.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.Bytes.slice_isInit": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.Bytes.slice_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.Bytes.toData?": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.Bytes.toData?_eq_none_of_not_isInit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.Bytes.toData?_ofData": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.Bytes.uninit": [
+      "propext"
+    ],
+    "Toy.Repr.Bytes.uninit.eq_1": [
+      "propext"
+    ],
+    "Toy.Repr.Bytes.uninit_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.Definedness": [],
+    "Toy.Repr.Definedness.casesOn": [],
+    "Toy.Repr.Definedness.ctorIdx": [],
+    "Toy.Repr.Definedness.le": [],
+    "Toy.Repr.Definedness.mk": [],
+    "Toy.Repr.Definedness.mk.noConfusion": [],
+    "Toy.Repr.Definedness.noConfusion": [],
+    "Toy.Repr.Definedness.noConfusionType": [],
+    "Toy.Repr.Definedness.rec": [],
+    "Toy.Repr.Definedness.recOn": [],
+    "Toy.Repr.Layout": [],
+    "Toy.Repr.Layout.Covering": [],
+    "Toy.Repr.Layout.Disjoint": [],
+    "Toy.Repr.Layout.InField": [],
+    "Toy.Repr.Layout.casesOn": [],
+    "Toy.Repr.Layout.ctorIdx": [],
+    "Toy.Repr.Layout.fits": [],
+    "Toy.Repr.Layout.inField_of_owner": [
+      "propext"
+    ],
+    "Toy.Repr.Layout.instDecidableInField": [],
+    "Toy.Repr.Layout.mk": [],
+    "Toy.Repr.Layout.mk.inj": [],
+    "Toy.Repr.Layout.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Repr.Layout.mk.noConfusion": [],
+    "Toy.Repr.Layout.mk.sizeOf_spec": [],
+    "Toy.Repr.Layout.noConfusion": [],
+    "Toy.Repr.Layout.noConfusionType": [],
+    "Toy.Repr.Layout.off": [],
+    "Toy.Repr.Layout.owner": [],
+    "Toy.Repr.Layout.owner_eq_none_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.Layout.owner_eq_some_of_disjoint": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.Layout.rec": [],
+    "Toy.Repr.Layout.recOn": [],
+    "Toy.Repr.Layout.size": [],
+    "Toy.Repr.Layout.sub_lt_of_owner": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.OptLe": [],
+    "Toy.Repr.OptLe.antisymm": [],
+    "Toy.Repr.OptLe.decLe": [],
+    "Toy.Repr.OptLe.match_1": [],
+    "Toy.Repr.OptLe.none_le": [],
+    "Toy.Repr.OptLe.refl": [],
+    "Toy.Repr.OptLe.some_le_iff": [],
+    "Toy.Repr.OptLe.trans": [],
+    "Toy.Repr.PBytes": [],
+    "Toy.Repr.PBytesInc": [],
+    "Toy.Repr.PBytesInc.bytes": [],
+    "Toy.Repr.PBytesInc.casesOn": [],
+    "Toy.Repr.PBytesInc.ctorIdx": [],
+    "Toy.Repr.PBytesInc.le_antisymm": [
+      "propext"
+    ],
+    "Toy.Repr.PBytesInc.le_refl": [
+      "propext"
+    ],
+    "Toy.Repr.PBytesInc.le_trans": [
+      "propext"
+    ],
+    "Toy.Repr.PBytesInc.mk": [],
+    "Toy.Repr.PBytesInc.mk.inj": [],
+    "Toy.Repr.PBytesInc.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Repr.PBytesInc.mk.noConfusion": [],
+    "Toy.Repr.PBytesInc.mk.sizeOf_spec": [],
+    "Toy.Repr.PBytesInc.noConfusion": [],
+    "Toy.Repr.PBytesInc.noConfusionType": [],
+    "Toy.Repr.PBytesInc.rec": [],
+    "Toy.Repr.PBytesInc.recOn": [],
+    "Toy.Repr.PtrValLe": [],
+    "Toy.Repr.PtrValLe.match_1": [],
+    "Toy.Repr.Rep": [],
+    "Toy.Repr.Rep.DecodeEncode": [],
+    "Toy.Repr.Rep.DecodeIgnores": [
+      "propext"
+    ],
+    "Toy.Repr.Rep.DecodeMono": [],
+    "Toy.Repr.Rep.DecodeMonoBy": [],
+    "Toy.Repr.Rep.EncodeLeast": [],
+    "Toy.Repr.Rep.FromBytes": [
+      "propext"
+    ],
+    "Toy.Repr.Rep.Image": [],
+    "Toy.Repr.Rep.InitValid": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.Rep.IntoBytes": [
+      "propext"
+    ],
+    "Toy.Repr.Rep.LowerAdjoint": [],
+    "Toy.Repr.Rep.Valid": [],
+    "Toy.Repr.Rep.asBytes": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.Rep.asBytes.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.Rep.casesOn": [],
+    "Toy.Repr.Rep.ctorIdx": [],
+    "Toy.Repr.Rep.decode": [],
+    "Toy.Repr.Rep.decodeMono_iff_decodeMonoBy": [],
+    "Toy.Repr.Rep.encode": [],
+    "Toy.Repr.Rep.encode_injective_of_decodeEncode": [],
+    "Toy.Repr.Rep.fromBytes_iff_tryFrom_total": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.Rep.liftEncode": [
+      "propext"
+    ],
+    "Toy.Repr.Rep.liftEncode.eq_1": [
+      "propext"
+    ],
+    "Toy.Repr.Rep.liftEncode.eq_2": [
+      "propext"
+    ],
+    "Toy.Repr.Rep.liftEncode.match_1": [],
+    "Toy.Repr.Rep.lowerAdjoint_iff_galois_liftEncode": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.Rep.mk": [],
+    "Toy.Repr.Rep.mk.inj": [],
+    "Toy.Repr.Rep.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Repr.Rep.mk.noConfusion": [],
+    "Toy.Repr.Rep.mk.sizeOf_spec": [],
+    "Toy.Repr.Rep.noConfusion": [],
+    "Toy.Repr.Rep.noConfusionType": [],
+    "Toy.Repr.Rep.ofData_asBytes": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.Rep.rec": [],
+    "Toy.Repr.Rep.recOn": [],
+    "Toy.Repr.Rep.tryFrom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.Rep.tryFrom.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.TransmuteTotal": [],
+    "Toy.Repr.boolDec": [],
+    "Toy.Repr.boolEnc": [],
+    "Toy.Repr.boolFields1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.boolNZFields1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.boolNZRep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.boolNZRep.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.boolNZRep_decodeEncode": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.boolNZRep_decodeMono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.boolNZRep_fromBytes": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.boolNZRep_intoBytes": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.boolNZRep_not_encodeLeast": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.boolRep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.boolRep.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.boolRep_decodeEncode": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.boolRep_decodeMono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.boolRep_encodeLeast": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.boolRep_intoBytes": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.boolRep_not_fromBytes": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.boolUninitRep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.boolUninitRep_decodeEncode": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.boolUninitRep_not_decodeMono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.byteRep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.byteRep.match_1": [],
+    "Toy.Repr.byteRep_decode": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.byteRep_decodeEncode_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.byteRep_decodeMono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.byteRep_encodeLeast_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.byteRep_fromBytes_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.byteRep_intoBytes": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.byteRep_tryFrom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.conflictBoolEnc": [],
+    "Toy.Repr.constBoolZeroRep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.decodeIgnores_of_empty": [
+      "propext"
+    ],
+    "Toy.Repr.decodeIgnores_of_encode_uninit_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.decodeIgnores_of_encode_uninit_tight_hDE": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.decodeIgnores_of_encode_uninit_tight_hEL": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.decodeIgnores_of_encode_uninit_tight_hM": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.decodeIgnores_of_encode_uninit_tight_hU": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.decodeIgnores_of_threeLaws_of_encode_getElem_eq_uninit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.decodeMono_of_decode_some_isInit": [
+      "propext"
+    ],
+    "Toy.Repr.decode_eq_iff_threeLaws": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.decode_eq_iff_threeLaws_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.decode_eq_iff_threeLaws_tight_hDE": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.decode_eq_iff_threeLaws_tight_hEL": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.decode_eq_iff_threeLaws_tight_hM": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.encode_eq_iff_decodeEncode_encodeLeast": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.encode_eq_iff_decodeEncode_encodeLeast_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.encode_eq_iff_decodeEncode_encodeLeast_tight_hDE": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.encode_eq_iff_decodeEncode_encodeLeast_tight_hEL": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.encode_getElem_eq_uninit_of_decodeEncode_encodeLeast_of_decodeIgnores": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.encode_getElem_eq_uninit_of_decodeIgnores_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.encode_getElem_eq_uninit_of_decodeIgnores_tight_hDE": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.encode_getElem_eq_uninit_of_decodeIgnores_tight_hEL": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.encode_getElem_eq_uninit_of_decodeIgnores_tight_hIgn": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.eq_of_encode_le_encode_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.eq_of_encode_le_encode_of_decodeMono_decodeEncode": [],
+    "Toy.Repr.eq_of_encode_le_encode_tight_hDE": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.eq_of_encode_le_encode_tight_hM": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.eq_of_leProvInc_empty": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_abyte_le_neg": [],
+    "Toy.Repr.ex_abyte_le_pos": [],
+    "Toy.Repr.ex_asBytes_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_bytes_le_neg": [
+      "propext"
+    ],
+    "Toy.Repr.ex_bytes_le_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_covering_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_covering_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_decodeEncode_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_decodeEncode_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_decodeIgnores_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_decodeIgnores_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_decodeMonoBy_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_decodeMonoBy_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_decodeMono_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_decodeMono_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_disjoint_neg": [
+      "propext"
+    ],
+    "Toy.Repr.ex_disjoint_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_encodeLeast_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_encodeLeast_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_fromBytes_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_fromBytes_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_image_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_image_neg.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_image_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_inField_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_inField_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_initValid_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_initValid_neg.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_initValid_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_intDecodeStrict_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_intDecodeStrict_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_intDecodeStrip_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_intDecodeStrip_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_intoBytes_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_intoBytes_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_isInit_neg": [
+      "propext"
+    ],
+    "Toy.Repr.ex_isInit_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_leProvInc_neg": [],
+    "Toy.Repr.ex_leProvInc_pos": [],
+    "Toy.Repr.ex_liftEncode_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_liftEncode_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_lowerAdjoint_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_lowerAdjoint_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_optLe_neg": [],
+    "Toy.Repr.ex_optLe_pos": [],
+    "Toy.Repr.ex_orUnitDec_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_orUnitDec_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_owner_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_owner_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_prodDecode_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_prodDecode_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_prodDecode_pos.match_1_1": [
+      "propext"
+    ],
+    "Toy.Repr.ex_prodEncode_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_prodEncode_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_provIntRep_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_provIntRep_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_ptrDecodeDegrade_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_ptrDecodeDegrade_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_ptrDecodeReqProv_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_ptrDecodeReqProv_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_ptrDecodeStrict_accepts_duplicated_byte": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_ptrDecodeStrict_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_ptrDecodeStrict_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_ptrValLe_neg": [],
+    "Toy.Repr.ex_ptrValLe_pos": [],
+    "Toy.Repr.ex_reqProvPtrRepInc_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_reqProvPtrRepInc_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_toData?_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_toData?_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_transmuteTotal_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_transmuteTotal_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_transmute_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_transmute_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_tryFrom_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_tryFrom_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_valid_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_valid_neg.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ex_valid_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.exactUnitFields1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.exactUnitRep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.exactUnitRep.match_1": [],
+    "Toy.Repr.exactUnitRep_decodeEncode": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.exactUnitRep_encodeLeast": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.exactUnitRep_not_decodeMono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.exists_ofData_of_leProvInc_ofData": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.extraUnitRep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.getElem_prodEncode_of_owner_none": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.getElem_prodEncode_of_owner_some": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.initZeroUnitRep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.instDecidableEqAByte": [],
+    "Toy.Repr.instDecidableEqAByte.decEq": [],
+    "Toy.Repr.instDecidableEqAByte.decEq.match_1": [],
+    "Toy.Repr.instDefinednessBytes": [
+      "propext"
+    ],
+    "Toy.Repr.instDefinednessOption": [],
+    "Toy.Repr.instDefinednessPBytesInc": [
+      "propext"
+    ],
+    "Toy.Repr.intDecodeStrict": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.intDecodeStrict.match_1": [],
+    "Toy.Repr.intDecodeStrict_eq_some_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.intDecodeStrip": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.intDecodeStrip_eq_none_of_not_isInit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.intDecodeStrip_ofData": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.intDecodeStrip_ptrEncode": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.intDecodeStrip_some_isInit": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.intEncode": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.intEncode.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.intEncodeInc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.intEncodeInc.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.intEncode_eq_ptrEncode_none": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.intEncode_singleton": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.intStrictRep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.intStrictRepInc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.intStrictRepInc_not_decodeMono": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.intStrictRep_decodeEncode": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.intStrictRep_decodeMono": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.intStrictRep_encodeLeast": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.intStripRep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.intStripRep.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.intStripRepInc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.intStripRepInc.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.intStripRepInc_decodeEncode": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.intStripRepInc_decodeMono": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.intStripRepInc_decodes_init": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.intStripRepInc_encodeLeast": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.intStripRep_decodeEncode": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.intStripRep_decodeMono": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.intStripRep_encodeLeast_of_empty": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.intStripRep_fromBytes": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.int_ptr_int_roundtrip_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.int_ptr_int_roundtrip_of_decodeEncode": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.int_ptr_int_roundtrip_tight_hDEi": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.int_ptr_int_roundtrip_tight_hDEp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.intoBytes_of_transmuteTotal_of_intoBytes_of_encodeLeast": [
+      "propext"
+    ],
+    "Toy.Repr.layout1": [],
+    "Toy.Repr.layout1_covering": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.layout1_owner_zero": [
+      "propext"
+    ],
+    "Toy.Repr.layout2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.layout2_covering": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.layout2_disjoint": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.layout3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.layout3_disjoint": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.layout3_owner": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.layoutOverlap": [],
+    "Toy.Repr.layoutOverlap_owner_zero": [
+      "propext"
+    ],
+    "Toy.Repr.layoutPad": [],
+    "Toy.Repr.layoutPad_owner_one": [],
+    "Toy.Repr.leProvInc_init_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.no_int_decoder_encodeLeast_fromBytes_of_provenance": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.no_int_decoder_nonvacuous": [],
+    "Toy.Repr.no_int_decoder_positive_control": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.no_int_decoder_tight_b0": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.no_int_decoder_tight_hn": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.no_int_decoder_tight_p0": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.no_lawful_decoder_for_conflictBoolEnc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.no_lawful_decoder_for_conflictBoolEnc.match_1_1": [
+      "propext"
+    ],
+    "Toy.Repr.no_lawful_encoder_for_monotone_orUnitRep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.no_lawful_encoder_for_monotone_orUnitRep.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.no_optProvPtr_decoder_decodeMono_decodeEncode_of_provInc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.no_ptr_decodeEncode_size_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.no_ptr_decoder_nonvacuous": [],
+    "Toy.Repr.no_ptr_decoder_positive_control": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.no_ptr_decoder_tight_b0": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.no_ptr_decoder_tight_p0": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.no_singleProvInt_decoder_encodeLeast_fromBytes_of_two_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.noneRep": [],
+    "Toy.Repr.noneRep_decodeMono": [],
+    "Toy.Repr.noneRep_encodeLeast": [],
+    "Toy.Repr.noneRep_not_decodeEncode": [],
+    "Toy.Repr.noneU8Fields1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.orUnitDec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.padRep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.padRep_decode": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.padRep_decodeIgnores": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.padRep_decodeMono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.padRep_tryFrom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.padUnitFields1": [],
+    "Toy.Repr.padUnitRep": [],
+    "Toy.Repr.padUnitRep_decodeEncode": [],
+    "Toy.Repr.padUnitRep_decodeMono": [
+      "propext"
+    ],
+    "Toy.Repr.padUnitRep_encodeLeast": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.padUnitRep_fromBytes": [
+      "propext"
+    ],
+    "Toy.Repr.padUnitRep_not_intoBytes": [
+      "propext"
+    ],
+    "Toy.Repr.pairRep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.pairRep.match_1": [
+      "propext"
+    ],
+    "Toy.Repr.pairRep_decode": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.pairRep_decodeEncode": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.pairRep_decodeMono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.pairRep_encodeLeast": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.pairRep_fromBytes": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.pairRep_intoBytes": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.pairRep_tryFrom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.prodDecode": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.prodDecode_eq_none_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.prodDecode_eq_none_iff.match_1_2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.prodDecode_eq_some_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.prodEncode": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.prodEncode.match_1": [],
+    "Toy.Repr.prodRep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.prodRep_decode": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.prodRep_decodeEncode_of_fields_of_disjoint": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.prodRep_decodeEncode_tight_hD": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.prodRep_decodeEncode_tight_hDE": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.prodRep_decodeMono_of_fields": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.prodRep_decodeMono_tight_hM": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.prodRep_encode": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.prodRep_encodeLeast_of_fields": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.prodRep_encodeLeast_tight_hEL": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.prodRep_fromBytes_of_fields": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.prodRep_fromBytes_tight_hFB": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.prodRep_intoBytes_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.prodRep_intoBytes_of_fields_of_covering": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.prodRep_intoBytes_tight_hC": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.prodRep_intoBytes_tight_hIB": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.prodRep_laws_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.provIntRep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.provIntRep_decodeEncode": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.provIntRep_decodeMono": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.provIntRep_encodeLeast": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.provIntRep_escape_hatch": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.provIntRep_fromBytes": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.provIntRep_intoBytes": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ptrDecodeDegrade": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ptrDecodeDegrade_ofData": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ptrDecodeReqProv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ptrDecodeStrict": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ptrDecodeStrict.match_1": [],
+    "Toy.Repr.ptrDecodeStrict_eq_some_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ptrDegradeRepInc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ptrDegradeRepInc_decodeEncode": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ptrDegradeRepInc_decodeMonoBy_ptrValLe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ptrDegradeRepInc_encodeLeast": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ptrDegradeRepInc_lawful_by_ptrValLe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ptrEncode": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ptrEncode.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ptrEncodeInc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ptrEncode_singleton": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ptrReqProvRep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ptrStrictRep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ptrStrictRepInc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ptrStrictRepInc_not_decodeMonoBy_ptrValLe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ptrStrictRep_decodeEncode": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ptrStrictRep_decodeMono": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ptrStrictRep_encodeLeast": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ptr_intStrip_ptr_roundtrip_drops_provenance_of_decodeEncode": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ptr_intStrip_ptr_roundtrip_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.ptr_intStrip_ptr_roundtrip_tight_hDEp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.reqProvPtrRepInc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.reqProvPtrRepInc.match_1": [
+      "propext"
+    ],
+    "Toy.Repr.reqProvPtrRepInc_decode_eq_some_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.reqProvPtrRepInc_threeLaws": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.slice_prodEncode_of_disjoint": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.threeLaws_iff_lowerAdjoint": [
+      "propext"
+    ],
+    "Toy.Repr.threeLaws_iff_lowerAdjoint_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.toData?_eq_some_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.transmute": [],
+    "Toy.Repr.transmuteTotal_iff_image_subset_valid": [],
+    "Toy.Repr.transmuteTotal_iff_image_subset_valid_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.transmuteTotal_iff_image_subset_valid_nonvacuous.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.transmuteTotal_iff_initValid_subset_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.transmuteTotal_iff_initValid_subset_of_intoBytes_decodeEncode_encodeLeast": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.transmuteTotal_iff_initValid_subset_tight_hDE_A": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.transmuteTotal_iff_initValid_subset_tight_hEL_A": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.transmuteTotal_iff_initValid_subset_tight_hIB_A": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.transmuteTotal_iff_valid_subset_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.transmuteTotal_iff_valid_subset_of_laws": [],
+    "Toy.Repr.transmuteTotal_iff_valid_subset_tight_hDE_A": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.transmuteTotal_iff_valid_subset_tight_hEL_A": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.transmuteTotal_iff_valid_subset_tight_hM_B": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.transmuteTotal_of_intoBytes_of_fromBytes": [
+      "propext"
+    ],
+    "Toy.Repr.transmuteTotal_of_intoBytes_of_fromBytes_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.transmuteTotal_of_intoBytes_of_fromBytes_tight_hA": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.transmuteTotal_of_intoBytes_of_fromBytes_tight_hB": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.transmute_bab_roundtrip_of_total_of_intoBytes_encodeLeast_decodeEncode": [
+      "propext"
+    ],
+    "Toy.Repr.transmute_comp_fails_of_provInc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.transmute_comp_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.transmute_comp_of_total_of_encodeLeast_of_intoBytes": [
+      "propext"
+    ],
+    "Toy.Repr.transmute_comp_tight_hEL": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.transmute_comp_tight_hIB": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.transmute_comp_tight_htot": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.transmute_injective_of_bab_hyps_of_decodeEncode_of_encodeLeast": [
+      "propext"
+    ],
+    "Toy.Repr.transmute_ptr_intStrict_eq_none": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.transmute_roundtrip_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.transmute_roundtrip_second_step_not_injective": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.transmute_roundtrip_second_step_not_injective_of_not_decodeEncode": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.transmute_roundtrip_tight_hDE_B": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.transmute_roundtrip_tight_hEL_A": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.transmute_roundtrip_tight_hIB_A": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.transmute_roundtrip_tight_htot": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.u8Fields2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.u8Fields3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.u8FieldsOverlap": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.u8FieldsPad": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.u8PadInitRep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.u8PadInitRep_decodeEncode": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.u8PadInitRep_decodeIgnores_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.u8PadInitRep_decodeMono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.u8PadInitRep_intoBytes": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.u8PadInitRep_not_encodeLeast": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.u8PadRep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.u8PadRep.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.u8PadRep_decodeEncode": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.u8PadRep_decodeIgnores_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.u8PadRep_decodeMono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.u8PadRep_encodeLeast": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.u8PadRep_fromBytes": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.u8PadRep_not_intoBytes": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.u8Rep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.u8Rep.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.u8Rep_decodeEncode": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.u8Rep_decodeMono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.u8Rep_encodeLeast": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.u8Rep_fromBytes": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.u8Rep_intoBytes": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.unitZeroRep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Repr.\u00abterm_\u2291_\u00bb": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
