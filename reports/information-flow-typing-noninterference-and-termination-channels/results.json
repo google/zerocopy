@@ -1,0 +1,550 @@
+[
+  {
+    "id": "cmd-typed-implies-tini",
+    "lean": "Toy.IFC.cmdTyped_implies_tini",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "Under the syntax-directed program-counter (`pc`-label) security type system (`CmdTyped Γ pc c`, matching Nipkow & Klein's `sec_type` specialized to `{low, high}`), any well-typed command satisfies termination-insensitive noninterference (`TINI Γ c`): whenever two `low`-equivalent initial stores both lead to terminating big-step executions, their final stores are `low`-equivalent.",
+    "hypotheses": [
+      {
+        "name": "hTyped (explicit-flow assignment bound)",
+        "purpose": "Certifies that every direct assignment obeys `exprLevel Γ e ≤ Γ x`, blocking explicit flows from `high` expressions to `low` variables.",
+        "tightness": "tight",
+        "counterexample": "Toy.IFC.untyped_explicit_flow_violates_tini",
+        "counterexample_note": "Kernel-checked: `l := h` (`explicitFlowProg .l .h`) is rejected by `CmdTyped` at every `pc` and violates `TINI`. Not kernel-checked: that this program satisfies the remaining (`pc`-tracking) component; this holds by inspection, since at `pc = low` the side condition `pc ≤ Γ l` holds and the program contains no `if` or `while`."
+      },
+      {
+        "name": "hTyped (program-counter tracking at if and while)",
+        "purpose": "Certifies that `pc` is raised by guard security levels at both `if` and `while` and enforced via `pc ≤ Γ x` on assignments, blocking control-flow implicit flows.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.IFC.noPcTyped_violates_tini_witness",
+          "Toy.IFC.whileNoPcTyped_violates_tini_witness"
+        ]
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "Two concrete witnesses under `twoVarEnv` (`l ↦ low`, `h ↦ high`) and `pc = low`: (1) `sampleTypedProg` (`if h then h := h + 1 else h := 0; l := l + 1`), where `storeZero` and `storeHighOne` terminate in distinct final stores with `l = 1`; and (2) `whileHZero` (`while h do h := 0`), a high-guarded loop accepted by `CmdTyped` (and rejected by `TsTyped`) that terminates from both `storeZero` (0 iterations) and `storeHighOne` (1 iteration).",
+    "nonvacuity_witness_lean": [
+      "Toy.IFC.cmdTyped_implies_tini_nonvacuous",
+      "Toy.IFC.cmdTyped_implies_tini_nonvacuous_highLoop"
+    ],
+    "non_claims": [
+      "`CmdTyped` is the syntax-directed program-counter presentation, matching Nipkow & Klein's `sec_type` specialized to two levels. It is not Volpano–Irvine–Smith's original formulation, which uses command types `τ cmd`, contravariant subtyping, and an arbitrary lattice. Equivalence with that formulation is not proved here.",
+      "Does not establish termination-sensitive noninterference (`TSNI`) or co-termination (`CoTerminates`); a well-typed `while` loop guarded by a `high` variable can diverge on one `low`-equivalent input and terminate on another (see `Toy.IFC.cmdTyped_allows_termination_channel`).",
+      "No theorem here states or proves a bound on the information leaked per run. The informal one-bit intuition is derived, not kernel-checked: for a fixed low input, `TINI` (which `CmdTyped` guarantees by Result 1) and determinism of `Eval` leave a low observer only two possible outcomes of a run (divergence, or termination with the single low final state shared by all terminating low-equivalent runs), so the intuition applies at most per run. It does not bound total leakage: an attacker who can rerun a well-typed program with chosen low inputs can recover a secret completely through termination alone. For example, `while l < h do skip` is accepted by `CmdTyped` at every `pc`, and whether it terminates, as a function of the low input `l`, determines `h` exactly.",
+      "The repeated-run termination leak above is kernel-checked in `Toy.IFC.probeProg_cmdTyped` and `Toy.IFC.probeProg_termination_profile_determines_secret`.",
+      "Does not rule out timing or step-count side channels; the big-step semantics `Eval` does not model execution steps or wall-clock time.",
+      "Does not cover interactive or intermediate-output languages (progress-sensitive noninterference), where termination-insensitive noninterference permits leaking all secrets via repeated public outputs prior to divergence, although the best attack is brute force and cannot reliably learn a uniformly distributed secret in polynomial time with more than negligible advantage (Askarov et al. 2008).",
+      "Does not cover partial expressions or runtime exceptions (e.g., division by zero), nondeterminism, concurrency, declassification, flow-sensitive variable labels, or arbitrary multi-level security lattices beyond `{low, high}`.",
+      "Does not claim completeness: `CmdTyped` is a conservative syntactic approximation and rejects semantically noninterfering programs such as `l := h - h` (`Toy.IFC.subSelf_tini_not_cmdTyped`) and `if h then l := 0 else l := 0` (`Toy.IFC.constBranch_tini_not_cmdTyped`)."
+    ],
+    "scope_witnesses_lean": [
+      "Toy.IFC.cmdTyped_allows_termination_channel",
+      "Toy.IFC.probeProg_cmdTyped",
+      "Toy.IFC.probeProg_termination_profile_determines_secret",
+      "Toy.IFC.subSelf_tini_not_cmdTyped",
+      "Toy.IFC.constBranch_tini_not_cmdTyped"
+    ],
+    "prior_art": [
+      "Dorothy E. Denning and Peter J. Denning, \"Certification of programs for secure information flow\", Communications of the ACM 20(7):504–513, July 1977, DOI 10.1145/359636.359712 (origin of the static certification approach; does not contain a noninterference soundness proof).",
+      "Dennis Volpano, Cynthia Irvine, and Geoffrey Smith, \"A sound type system for secure flow analysis\", Journal of Computer Security 4(2–3):167–187, 1996, DOI 10.3233/JCS-1996-42-304 (Theorem 6.8, Type Soundness, in phrase-type/subsumption form).",
+      "Andrei Sabelfeld and Andrew C. Myers, \"Language-based information-flow security\", IEEE Journal on Selected Areas in Communications 21(1):5–19, January 2003, DOI 10.1109/JSAC.2002.806121.",
+      "Gregor Snelting and Daniel Wasserrab, \"A Correctness Proof for the Volpano/Smith Security Typing System\", Archive of Formal Proofs, September 2008, https://isa-afp.org/entries/VolpanoSmith.html.",
+      "Lennart Beringer and Martin Hofmann, \"Secure information flow and program logics\", Archive of Formal Proofs, November 2008, https://isa-afp.org/entries/SIFPL.html.",
+      "Tobias Nipkow and Gerwin Klein, Concrete Semantics: With Isabelle/HOL, Springer, 2014, Chapter 9 (\"Types\", §9.2.2, Theorem 9.14), pp. 115–142, DOI 10.1007/978-3-319-10542-0_9; mechanized in Isabelle/HOL HOL-IMP `Sec_Typing.thy` (`sec_type`, `anti_mono`, `confinement`, `noninterference` for `0 ⊢ c`), https://isabelle.in.tum.de/library/HOL/HOL-IMP/Sec_Typing.html (this package's arbitrary-`pc` statement generalizes `0 ⊢ c` trivially via `CmdTyped.antitone`).",
+      "Cătălin Hriţcu and Yonghyun Kim et al., Security Foundations (Software Foundations Vol. 7, Version 1.2, 2026), chapter `StaticIFC` (`ni_well_typed`, `ni_well_typed_noninterferent`), https://softwarefoundations.cis.upenn.edu/secf-current/."
+    ],
+    "design_question": "Establishes the baseline confidentiality guarantee of the syntax-directed `pc`-label security type system (`TINI`): only terminating runs' final public states are protected, while termination channels remain open (see Result 3, `cmd-typed-termination-channel-counterexample`) and typing is sufficient rather than necessary for `TINI`."
+  },
+  {
+    "id": "no-pc-typed-implicit-flow-counterexample",
+    "lean": "Toy.IFC.noPcTyped_accepts_implicit_flow_violating_tini",
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "For any security labeling `Γ` with `Γ l = low` and `Γ h = high`, the explicit-flow-only typing system `NoPcTyped` (which omits program-counter tracking) accepts `if h then l := 1 else l := 0` (`implicitFlowProg l h`), which violates termination-insensitive noninterference (`¬ TINI Γ (implicitFlowProg l h)`).",
+    "hypotheses": [
+      {
+        "name": "hLow",
+        "purpose": "Ensures the assigned variable `l` is observable to the `low` attacker so differing constant assignments break `LowEq`.",
+        "tightness": "tight",
+        "counterexample": "Toy.IFC.implicitFlowProg_target_high_satisfies_tini"
+      },
+      {
+        "name": "hHigh",
+        "purpose": "Ensures the branch guard `h` is secret so two `low`-equivalent initial stores can take opposite branches.",
+        "tightness": "tight",
+        "counterexample": "Toy.IFC.implicitFlowProg_guard_low_satisfies_tini"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`twoVarEnv` assigns `l ↦ low` and `h ↦ high`.",
+    "nonvacuity_witness_lean": "Toy.IFC.noPcTyped_implicit_flow_nonvacuous",
+    "positive_control_lean": [
+      "Toy.IFC.implicitFlowProg_rejected_by_cmdTyped",
+      "Toy.IFC.noHighGuardTyped_neg_implicit_flow",
+      "Toy.IFC.noHighGuardTyped_implies_cmdTyped_low"
+    ],
+    "non_claims": [
+      "Does not show that a program-counter label is the only sound way to block implicit flows. It shows that omitting control-dependence tracking entirely (`NoPcTyped`) is unsound. Other sound disciplines exist: forbidding high guards in `if` and `while` altogether (no pc label needed; such a system embeds into `CmdTyped Γ .low`), Volpano–Irvine–Smith's original command types `τ cmd` with subsumption, and flow-sensitive security typing (Hunt & Sands 2006).",
+      "The `pc`-free high-guard-forbidding discipline noted above is formalized as `Toy.IFC.NoHighGuardTyped`, with `Toy.IFC.noHighGuardTyped_implies_cmdTyped_low` and `Toy.IFC.noHighGuardTyped_neg_implicit_flow`.",
+      "Does not claim that every program accepted by `NoPcTyped` violates `TINI`; pure low computations and semantically constant branches (e.g., `if h then l := 0 else l := 0`, see `Toy.IFC.constBranch_tini_not_cmdTyped`) satisfy `TINI`.",
+      "Does not claim that `NoPcTyped` omits explicit-flow checks; `NoPcTyped` still rejects direct leaks such as `l := h` (`Toy.IFC.noPcTyped_neg_explicit_flow`).",
+      "Witnesses an implicit flow through `if` (`ite`); omitting `pc` only at `while` while keeping `pc` at `if` is tested separately in `Toy.IFC.whileNoPcTyped_accepts_leak_violating_tini` (id `while-no-pc-typed-implicit-flow-counterexample`)."
+    ],
+    "scope_witnesses_lean": [
+      "Toy.IFC.noHighGuardTyped_implies_cmdTyped_low",
+      "Toy.IFC.noHighGuardTyped_neg_implicit_flow",
+      "Toy.IFC.constBranch_tini_not_cmdTyped",
+      "Toy.IFC.noPcTyped_neg_explicit_flow",
+      "Toy.IFC.whileNoPcTyped_accepts_leak_violating_tini"
+    ],
+    "prior_art": [
+      "Dorothy E. Denning and Peter J. Denning, \"Certification of programs for secure information flow\", Communications of the ACM 20(7):504–513, July 1977, DOI 10.1145/359636.359712 (origin of the static certification approach).",
+      "Dennis Volpano, Cynthia Irvine, and Geoffrey Smith, \"A sound type system for secure flow analysis\", Journal of Computer Security 4(2–3):167–187, 1996, DOI 10.3233/JCS-1996-42-304.",
+      "Andrei Sabelfeld and Andrew C. Myers, \"Language-based information-flow security\", IEEE Journal on Selected Areas in Communications 21(1):5–19, January 2003, DOI 10.1109/JSAC.2002.806121.",
+      "Sebastian Hunt and David Sands, \"On flow-sensitive security types\", Proceedings of the 33rd ACM SIGPLAN-SIGACT Symposium on Principles of Programming Languages (POPL '06), pp. 79–90, January 2006, DOI 10.1145/1111037.1111045.",
+      "Cătălin Hriţcu and Yonghyun Kim et al., Security Foundations (Software Foundations Vol. 7, Version 1.2, 2026), chapter `StaticIFC` (`cf_well_typed`), https://softwarefoundations.cis.upenn.edu/secf-current/."
+    ],
+    "design_question": "Shows that some control-dependence restriction is essential for blocking control-flow implicit flows: omitting control-dependence tracking entirely (`NoPcTyped`) in favor of explicit expression checks alone is unsound."
+  },
+  {
+    "id": "cmd-typed-termination-channel-counterexample",
+    "lean": "Toy.IFC.cmdTyped_allows_termination_channel",
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "For any security labeling `Γ`, program counter `pc`, and `high` variable `h` (`Γ h = high`), the standard type system `CmdTyped Γ pc` accepts `while h do skip` (`termChannelProg h`), which terminates from `zeroStore` and diverges from the `low`-equivalent store `Store.update zeroStore h 1`, refuting termination-sensitive noninterference (`¬ TSNI Γ (termChannelProg h)`).",
+    "hypotheses": [
+      {
+        "name": "hHigh",
+        "purpose": "Ensures the loop guard variable `h` is `high` so two `low`-equivalent initial stores can disagree on whether the loop exits or loops forever.",
+        "tightness": "tight",
+        "counterexample": "Toy.IFC.termChannelProg_low_guard_satisfies_tsni"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`twoVarEnv` assigns `h ↦ high`.",
+    "nonvacuity_witness_lean": "Toy.IFC.high_var_nonvacuous",
+    "positive_control_lean": "Toy.IFC.termChannelProg_rejected_by_tsTyped",
+    "non_claims": [
+      "Does not refute `TINI` for `CmdTyped`: `while h do skip` vacuously preserves `LowEq` whenever both runs terminate (in fact it satisfies `TINI`, see `Toy.IFC.tsni_char_nonvacuous`).",
+      "No theorem here states or proves a bound on the information leaked per run. The informal one-bit intuition is derived, not kernel-checked: for a fixed low input, `TINI` (which `CmdTyped` guarantees by Result 1) and determinism of `Eval` leave a low observer only two possible outcomes of a run (divergence, or termination with the single low final state shared by all terminating low-equivalent runs), so the intuition applies at most per run. It does not bound total leakage: an attacker who can rerun a well-typed program with chosen low inputs can recover a secret completely through termination alone. For example, `while l < h do skip` is accepted by `CmdTyped` at every `pc`, and whether it terminates, as a function of the low input `l`, determines `h` exactly.",
+      "The repeated-run termination leak above is kernel-checked in `Toy.IFC.probeProg_cmdTyped` and `Toy.IFC.probeProg_termination_profile_determines_secret`.",
+      "Does not model interactive languages with intermediate public outputs; Askarov et al. (2008) show that with intermediate outputs TINI permits leaking all secrets, while also proving an upper bound: the best an attacker can do is a brute-force attack, so the attacker cannot reliably learn a secret in polynomial time in the size of the secret (negligible advantage for uniformly distributed secrets).",
+      "Does not claim that forbidding high-guarded `while` loops alone eliminates termination channels; a low-guarded loop nested inside a high conditional still leaks termination unless `pc = low` is also required on `while` (see `Toy.IFC.lowGuardWhileTyped_allows_termination_channel`), and conversely requiring `pc = low` alone without a low guard still admits `while h do skip` (see `Toy.IFC.pcLowWhileTyped_allows_termination_channel`)."
+    ],
+    "scope_witnesses_lean": [
+      "Toy.IFC.tsni_char_nonvacuous",
+      "Toy.IFC.probeProg_cmdTyped",
+      "Toy.IFC.probeProg_termination_profile_determines_secret",
+      "Toy.IFC.lowGuardWhileTyped_allows_termination_channel",
+      "Toy.IFC.pcLowWhileTyped_allows_termination_channel"
+    ],
+    "prior_art": [
+      "Dennis Volpano, Cynthia Irvine, and Geoffrey Smith, \"A sound type system for secure flow analysis\", Journal of Computer Security 4(2–3):167–187, 1996, DOI 10.3233/JCS-1996-42-304.",
+      "Dennis Volpano and Geoffrey Smith, \"Eliminating Covert Flows with Minimum Typings\", Proceedings of the 10th IEEE Computer Security Foundations Workshop (CSFW '97), pp. 156–168, June 1997, DOI 10.1109/CSFW.1997.596807.",
+      "Andrei Sabelfeld and Andrew C. Myers, \"Language-based information-flow security\", IEEE Journal on Selected Areas in Communications 21(1):5–19, January 2003, DOI 10.1109/JSAC.2002.806121 (§IV-C).",
+      "Aslan Askarov, Sebastian Hunt, Andrei Sabelfeld, and David Sands, \"Termination-Insensitive Noninterference Leaks More Than Just a Bit\", ESORICS 2008, LNCS 5283, pp. 333–348, Springer, 2008, DOI 10.1007/978-3-540-88313-5_22.",
+      "Tobias Nipkow and Gerwin Klein, Concrete Semantics: With Isabelle/HOL, Springer, 2014, Chapter 9 (§9.2.6 \"What About Termination?\"), pp. 115–142, DOI 10.1007/978-3-319-10542-0_9.",
+      "Cătălin Hriţcu and Yonghyun Kim et al., Security Foundations (Software Foundations Vol. 7, Version 1.2, 2026), chapter `StaticIFC` (`termination_leak`), https://softwarefoundations.cis.upenn.edu/secf-current/."
+    ],
+    "design_question": "Demonstrates concretely why classic `pc`-label security typing provides only termination-insensitive noninterference and leaves the termination covert channel open."
+  },
+  {
+    "id": "cmd-typed-implies-tini-hyperprop",
+    "lean": "Toy.IFC.cmdTyped_implies_tiniHyperprop",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "As a definitional corollary of `cmdTyped_implies_tini` via `tini_iff_tiniHyperprop`, any command well typed under `CmdTyped Γ pc c` has terminating big-step I/O behavior `ioBehavior c` satisfying the 2-safety hyperproperty `tiniHyperprop Γ`.",
+    "hypotheses": [
+      {
+        "name": "hTyped",
+        "purpose": "Ensures `c` has no explicit or implicit flows from `high` to `low`, guaranteeing pairwise `LowEq` agreement across all pairs of terminating runs in `ioBehavior c`.",
+        "tightness": "tight",
+        "counterexample": "Toy.IFC.untyped_explicit_flow_violates_tiniHyperprop"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "Same two concrete witnesses as `cmd-typed-implies-tini`: `sampleTypedProg` (loop-free high conditional + low write) and `whileHZero` (terminating high-guarded loop) under `twoVarEnv` and `pc = low`.",
+    "nonvacuity_witness_lean": [
+      "Toy.IFC.cmdTyped_implies_tini_nonvacuous",
+      "Toy.IFC.cmdTyped_implies_tini_nonvacuous_highLoop"
+    ],
+    "non_claims": [
+      "Reference point / definitional corollary: proved directly in one line from `Toy.IFC.cmdTyped_implies_tini` by argument permutation (`Toy.IFC.tini_iff_tiniHyperprop`); all substantive semantic induction lives in `Toy.IFC.cmdTyped_implies_tini`.",
+      "Models a command's behavior strictly as its set of terminating `(σ, σ')` pairs (`ioBehavior c`); non-terminating runs do not appear as elements of `ioBehavior c`, so divergence channels are invisible to `tiniHyperprop`.",
+      "Does not establish that `ioBehavior c` satisfies `tsniHyperprop Γ` or any hyperliveness property."
+    ],
+    "scope_witnesses_lean": [
+      "Toy.IFC.cmdTyped_implies_tini",
+      "Toy.IFC.tini_iff_tiniHyperprop"
+    ],
+    "prior_art": [
+      "Gilles Barthe, Pedro R. D'Argenio, and Tamara Rezk, \"Secure Information Flow by Self-Composition\", Proceedings of the 17th IEEE Computer Security Foundations Workshop (CSFW 2004), pp. 100–114, DOI 10.1109/CSFW.2004.1310735 (journal version: Mathematical Structures in Computer Science 21(6):1207–1252, 2011, DOI 10.1017/S0960129511000193).",
+      "Tachio Terauchi and Alex Aiken, \"Secure Information Flow as a Safety Problem\", Static Analysis (SAS 2005), LNCS 3672, pp. 352–367, Springer, 2005, DOI 10.1007/11547662_24.",
+      "Michael R. Clarkson and Fred B. Schneider, \"Hyperproperties\", Journal of Computer Security 18(6):1157–1210, 2010, DOI 10.3233/JCS-2009-0393."
+    ],
+    "design_question": "Reference point (definitional corollary of `cmd-typed-implies-tini`): bridges static security typing into the hyperproperty vocabulary (`tini_iff_tiniHyperprop`, `tiniHyperprop_isTwoSafety`, `tiniHyperprop_subsetClosed`), showing `CmdTyped` enforces a relational 2-safety policy on terminating I/O behaviors."
+  },
+  {
+    "id": "two-safety-implies-subset-closed",
+    "lean": "Toy.IFC.isTwoSafety_implies_subsetClosed",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "Every pairwise-determined hyperproperty over complete observations (`IsTwoSafety H`, proved equivalent to the non-empty bad-pair condition `CSTwoSafety H`) is subset-closed (`SubsetClosed H`), meaning any sub-behavior `S₁ ⊆ S₂` of a compliant trace set `S₂` remains compliant.",
+    "hypotheses": [
+      {
+        "name": "h2",
+        "purpose": "Ensures membership in `H` is completely determined by checking every pair of traces `{t₁, t₂}` in the trace set, which is preserved downward when traces are removed.",
+        "tightness": "tight",
+        "counterexample": "Toy.IFC.nonEmptyTraceSet_not_subsetClosed"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`tiniHyperprop twoVarEnv` satisfies `IsTwoSafety`.",
+    "nonvacuity_witness_lean": "Toy.IFC.isTwoSafety_implies_subsetClosed_nonvacuous",
+    "non_claims": [
+      "The converse is false: `SubsetClosed` is strictly weaker than `IsTwoSafety`, witnessed by the 3-safety cardinality property `atMostTwoTraces` on `Fin 3` (`Toy.IFC.atMostTwoTraces_subsetClosed_not_twoSafety`).",
+      "`IsTwoSafety` is a package-specific pairwise-determinedness notion proved equivalent to the non-empty bad-pair formulation `Toy.IFC.CSTwoSafety` (`Toy.IFC.isTwoSafety_iff_csTwoSafety`) and forcing `H ∅` (`Toy.IFC.isTwoSafety_holds_empty`), so the empty hyperproperty `fun _ => False`, which holds of no trace set, fails it (`Toy.IFC.false_hyperprop_not_isTwoSafety`). Despite its name, that theorem is not about Clarkson & Schneider's (2010) hyperproperty `false`, which they define as `{∅}` (it holds of exactly the empty trace set) and call hypersafety; `{∅}` also satisfies this package's `IsTwoSafety` (derived, not kernel-checked: for a non-empty `S` both sides of the defining equivalence are false, and for the empty `S` both are true). Under a discrete-observation reading (`M ≤ T` iff `M ⊆ T`) plus `H ∅`, `IsTwoSafety` coincides with Clarkson & Schneider 2-hypersafety (not formalized here). The two notions differ on the empty hyperproperty: Clarkson & Schneider's definition admits it as hypersafety with the empty observation `M = ∅` (derived from their definitions, which the paper does not spell out for this case: `Obs = Pfin(Ψfin)` contains `∅`, and `∅ ≤ T` for every `T`). Their prefix-based infinite-trace topology (the lower Vietoris construction applied to the Plotkin topology) is not formalized.",
+      "Differs from Terauchi & Aiken's (2005, Def. 4) notion of 2-safety, which is a set of programs defined with an explicit `⊥` outcome for nontermination."
+    ],
+    "scope_witnesses_lean": [
+      "Toy.IFC.atMostTwoTraces_subsetClosed_not_twoSafety",
+      "Toy.IFC.isTwoSafety_iff_csTwoSafety",
+      "Toy.IFC.isTwoSafety_holds_empty",
+      "Toy.IFC.false_hyperprop_not_isTwoSafety"
+    ],
+    "prior_art": [
+      "Michael R. Clarkson and Fred B. Schneider, \"Hyperproperties\", Journal of Computer Security 18(6):1157–1210, 2010, DOI 10.3233/JCS-2009-0393 (Theorem 1: `SHP ⊂ SSC`)."
+    ],
+    "design_question": "Supporting lemma / reference point (generic hyperproperty fact without information-flow content): formalizes why pairwise-determined 2-safety policies (such as `tiniHyperprop` and `tsniOutHyperprop`) are preserved under trace-set subset refinement."
+  },
+  {
+    "id": "tini-hyperprop-is-two-safety",
+    "lean": [
+      "Toy.IFC.tiniHyperprop_isTwoSafety",
+      "Toy.IFC.tiniHyperprop_subsetClosed"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For every security labeling `Γ : Var → Level`, the batch-job termination-insensitive noninterference hyperproperty `tiniHyperprop Γ` is a 2-safety hyperproperty (`IsTwoSafety (tiniHyperprop Γ)`), and hence subset-closed (`tiniHyperprop_subsetClosed`).",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "`tiniHyperprop twoVarEnv` is a nontrivial hyperproperty: it accepts `ioBehavior .skip` and rejects `ioBehavior (explicitFlowProg .l .h)`.",
+    "nonvacuity_witness_lean": "Toy.IFC.tiniHyperprop_isTwoSafety_nonvacuous",
+    "non_claims": [
+      "Does not make `tiniHyperprop Γ` a 1-safety (single-trace) property; in fact `Toy.IFC.tiniHyperprop_not_oneSafety` proves `¬ IsOneSafety (tiniHyperprop twoVarEnv)` because every singleton trace set satisfies `tiniHyperprop` while `ioBehavior (l := h)` does not.",
+      "Does not extend to terminating-pairs TSNI (`tsniHyperprop Γ`), which fails subset closure and 2-safety whenever any `high` variable exists (see `Toy.IFC.tsniHyperprop_termPairs_not_subsetClosed_of_high_var`).",
+      "`IsTwoSafety` is this package's complete-observation pairwise-determinedness notion (`Toy.IFC.isTwoSafety_iff_csTwoSafety`, `Toy.IFC.isTwoSafety_holds_empty`, `Toy.IFC.false_hyperprop_not_isTwoSafety`; the last concerns the empty hyperproperty `fun _ => False`, not Clarkson & Schneider's hyperproperty `false = {∅}`), coinciding with Clarkson & Schneider (2010) 2-hypersafety under a discrete-observation reading plus `H ∅` (not formalized) and distinct from Terauchi & Aiken's (2005, Def. 4) program-set 2-safety with `⊥`.",
+      "Applies to complete big-step terminating I/O observations (`IOTrace Var`); does not model infinite execution traces or intermediate outputs."
+    ],
+    "scope_witnesses_lean": [
+      "Toy.IFC.tiniHyperprop_not_oneSafety",
+      "Toy.IFC.tsniHyperprop_termPairs_not_subsetClosed_of_high_var",
+      "Toy.IFC.isTwoSafety_iff_csTwoSafety",
+      "Toy.IFC.isTwoSafety_holds_empty",
+      "Toy.IFC.false_hyperprop_not_isTwoSafety"
+    ],
+    "prior_art": [
+      "Tachio Terauchi and Alex Aiken, \"Secure Information Flow as a Safety Problem\", Static Analysis (SAS 2005), LNCS 3672, pp. 352–367, Springer, 2005, DOI 10.1007/11547662_24 (Definition 4 and Theorem 1).",
+      "Michael R. Clarkson and Fred B. Schneider, \"Hyperproperties\", Journal of Computer Security 18(6):1157–1210, 2010, DOI 10.3233/JCS-2009-0393 (§7.2.1)."
+    ],
+    "design_question": "Reference point (definitional unfolding of `tiniHyperprop`): places batch-job TINI in the complete-observation 2-safety and subset-closed classes, contrasting with `tsniHyperprop` over terminating pairs."
+  },
+  {
+    "id": "tsni-hyperprop-not-subset-closed",
+    "lean": [
+      "Toy.IFC.tsniHyperprop_termPairs_not_subsetClosed_of_high_var",
+      "Toy.IFC.tsniHyperprop_termPairs_not_twoSafety_of_high_var"
+    ],
+    "kind": "impossibility",
+    "tier": "T0",
+    "plain_claim": "Whenever a security labeling `Γ : Var → Level` contains at least one `high` variable (`Γ h = high`), termination-sensitive noninterference over terminating-pair I/O trace sets (`tsniHyperprop Γ`, where divergence is represented by absence of a pair) is not subset-closed (`¬ SubsetClosed (tsniHyperprop Γ)`), and therefore is not a 2-safety hyperproperty (`¬ IsTwoSafety (tsniHyperprop Γ)`).",
+    "hypotheses": [
+      {
+        "name": "hHigh",
+        "purpose": "Ensures two distinct stores can be `low`-equivalent, so removing one store's terminating trace from the identity behavior breaks the existential co-termination requirement of `tsniHyperprop` (when all variables are `low`, `tsniHyperprop` is both `SubsetClosed` and `IsTwoSafety`, refuting both `¬ SubsetClosed` and `¬ IsTwoSafety`).",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.IFC.tsniHyperprop_all_low_subsetClosed_witness",
+          "Toy.IFC.tsniHyperprop_all_low_isTwoSafety_witness"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`twoVarEnv` assigns `h ↦ high`.",
+    "nonvacuity_witness_lean": "Toy.IFC.high_var_nonvacuous",
+    "positive_control_lean": [
+      "Toy.IFC.tsniOutHyperprop_isTwoSafety",
+      "Toy.IFC.tsniOutHyperprop_subsetClosed",
+      "Toy.IFC.tsni_iff_tsniOutHyperprop",
+      "Toy.IFC.tsniHyperprop_all_low_subsetClosed"
+    ],
+    "non_claims": [
+      "This result depends on encoding a command's behavior as its set of *terminating* pairs, so that a missing pair means divergence. Under this encoding, `S₁ ⊆ S₂` means `S₁` diverges on at least the inputs where `S₂` does, so removing pairs can create a termination channel. The witness involves no program or type system.",
+      "With divergence represented explicitly (outcomes in `Option (Store Var)`, as in Sabelfeld & Myers's ⊥-based formulation of termination-sensitive noninterference), termination-sensitive noninterference of a deterministic command is a pairwise condition on its total behavior. That hyperproperty satisfies `IsTwoSafety`, and hence `SubsetClosed`, in this package's sense (`Toy.IFC.tsni_iff_tsniOutHyperprop`, `Toy.IFC.tsniOutHyperprop_isTwoSafety`, `Toy.IFC.tsniOutHyperprop_subsetClosed`; id `tsni-out-hyperprop-is-two-safety`). So the failure here concerns the encoding, not TSNI as such.",
+      "Does not imply that TSNI cannot be established by two-run (relational, product-program, or self-composition) reasoning. In this deterministic language, TSNI is equivalent to TINI ∧ CoTerminates (`tsni_iff_tini_and_coterminates`). What resists safety-style checking in a trace model is that divergence is only infinitely observable: Clarkson & Schneider (2010, §7.2.1) show their relational TSNI is neither hypersafety nor hyperliveness, and Terauchi & Aiken (2005) call it '2-liveness'.",
+      "The positive control `tsniHyperprop_all_low_subsetClosed` covers only the case with no secret variables, where every noninterference notion is trivial. It is not evidence that a nontrivial policy escapes the result. For that, see the explicit-divergence encoding (`Toy.IFC.tsniOutHyperprop_isTwoSafety`, `Toy.IFC.tsniOutHyperprop_subsetClosed`, `Toy.IFC.tsni_iff_tsniOutHyperprop`, id `tsni-out-hyperprop-is-two-safety`).",
+      "Modeling-bridge remark (unformalized): this package's result concerns the terminating-pairs (missing-pair) encoding and does not refute Clarkson & Schneider's (2010, §7.2.1) `∀ t₁, t₂` relational TSNI (`TSRNI`) with explicit `s^ω` divergence, which fails hypersafety for a different reason (infinite observability of divergence; footnote 23 suggests \"2-infinite-safety\" in contrast to Terauchi & Aiken's \"2-liveness\").",
+      "Does not claim that `TSNI` is impossible to enforce statically; `TsTyped` enforces `TSNI` soundly for imperative programs (see `Toy.IFC.tsTyped_implies_tsni`)."
+    ],
+    "scope_witnesses_lean": [
+      "Toy.IFC.tsni_iff_tsniOutHyperprop",
+      "Toy.IFC.tsniOutHyperprop_isTwoSafety",
+      "Toy.IFC.tsniOutHyperprop_subsetClosed",
+      "Toy.IFC.tsni_iff_tini_and_coterminates",
+      "Toy.IFC.tsniHyperprop_all_low_subsetClosed",
+      "Toy.IFC.tsTyped_implies_tsni"
+    ],
+    "prior_art": [
+      "Andrei Sabelfeld and Andrew C. Myers, \"Language-based information-flow security\", IEEE Journal on Selected Areas in Communications 21(1):5–19, January 2003, DOI 10.1109/JSAC.2002.806121 (§IV-C explicit-⊥ low-view relation for TSNI).",
+      "Tachio Terauchi and Alex Aiken, \"Secure Information Flow as a Safety Problem\", Static Analysis (SAS 2005), LNCS 3672, pp. 352–367, Springer, 2005, DOI 10.1007/11547662_24 (§1, characterizing TSNI as a \"2-liveness\" property observing up to two possibly infinite traces).",
+      "Michael R. Clarkson and Fred B. Schneider, \"Hyperproperties\", Journal of Computer Security 18(6):1157–1210, 2010, DOI 10.3233/JCS-2009-0393 (§7.2.1 \"Relational systems\" showing `TSRNI` with explicit `s^ω` divergence is neither hypersafety nor hyperliveness for `Rel`, and footnote 23 discussing Terauchi & Aiken's \"2-liveness\" vs. \"2-infinite-safety\")."
+    ],
+    "design_question": "Clarifies an observation-model pitfall over behaviors that record only terminating runs (divergence encoded as a missing pair): under that encoding, `tsniHyperprop Γ` is neither subset-closed nor `IsTwoSafety` whenever any secret exists, whereas switching to explicit-outcome behaviors (`OutTrace Var`, `tsniOutHyperprop`) defeats the impossibility."
+  },
+  {
+    "id": "ts-typed-implies-tsni",
+    "lean": "Toy.IFC.tsTyped_implies_tsni",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "Under the termination-sensitive security type system `TsTyped Γ pc c`—which strengthens `CmdTyped` by requiring both `pc = low` and `exprLevel Γ e = low` at every `while` loop—every well-typed command satisfies termination-sensitive noninterference (`TSNI Γ c`).",
+    "hypotheses": [
+      {
+        "name": "hTyped (base CmdTyped explicit/implicit rules)",
+        "purpose": "Prevents direct explicit flows via `exprLevel Γ e ≤ Γ x` and conditional control-flow implicit flows via `pc ≤ Γ x`.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.IFC.untyped_explicit_flow_violates_tsni",
+          "Toy.IFC.noPcTyped_implicit_flow_violates_tsni_witness"
+        ],
+        "counterexample_note": "For `untyped_explicit_flow_violates_tsni`, kernel-checked: `l := h` is rejected by `TsTyped` and `CmdTyped` at every `pc` and violates `TSNI`; not kernel-checked: that it satisfies the remaining components (`pc` tracking and both `while` conjuncts), which holds by inspection, since at `pc = low` the side condition `pc ≤ Γ l` holds and the program contains no `if` or `while`. For `noPcTyped_implicit_flow_violates_tsni_witness`, acceptance by `NoPcTyped` (the explicit-flow bounds hold) is kernel-checked; the `while` conjuncts hold vacuously because the program is loop-free (by inspection)."
+      },
+      {
+        "name": "hTyped (while guard: exprLevel Γ e = low)",
+        "purpose": "Forbids `high`-dependent loop guards so a loop cannot exit on one `low`-equivalent store and diverge on another, even when `pc = low` at the loop.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.IFC.pcLowWhileTyped_violates_tsni_witness",
+          "Toy.IFC.pcLowWhileTyped_allows_termination_channel"
+        ]
+      },
+      {
+        "name": "hTyped (while context: pc = low)",
+        "purpose": "Forbids `while` loops inside `high`-guarded conditionals so high-`pc` subcommands are loop-free (total and low-preserving), closing divergence leaks from low-guarded loops under secret branches.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.IFC.lowGuardWhileTyped_violates_tsni_witness",
+          "Toy.IFC.lowGuardWhileTyped_allows_termination_channel"
+        ]
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "Under `twoVarEnv` and `pc = low`, the looping program `while l do (if h then h := h - 1 else h := 0; l := l - 1)` (`sampleTsProg`) satisfies `TsTyped`, enters the loop from two `low`-equivalent stores with `l = 1` and distinct `h` values (`0` vs. `5`), executes opposite high branches, and terminates.",
+    "nonvacuity_witness_lean": "Toy.IFC.tsTyped_implies_tsni_nonvacuous",
+    "non_claims": [
+      "Does not guarantee termination itself: `while 1 do skip` is accepted by `TsTyped Γ .low` (though rejected by `TsTyped Γ .high`, see `Toy.IFC.whileOne_tsTyped_low_not_high`) and diverges identically on all inputs.",
+      "Removing `pc = low` from the `while` rule (Result 9), removing the low-guard condition (a pc-only rule accepts `while h do skip`), or removing both (Result 3) each yields a system that accepts a TSNI-violating program. This is necessity within this rule format only. Loops with high guards, or loops under a high `pc`, can be TSNI-safe when they terminate on every input (e.g. `while h do h := 0`). Disciplines that admit such loops on the strength of a termination argument are not ruled out.",
+      "All witnesses in the preceding non-claim are kernel-checked: `Toy.IFC.lowGuardWhileTyped_allows_termination_channel`, `Toy.IFC.pcLowWhileTyped_allows_termination_channel`, `Toy.IFC.cmdTyped_allows_termination_channel` (and `Toy.IFC.cmdTyped_violates_tsni_witness`), and `Toy.IFC.whileHZero_tsni_not_tsTyped`.",
+      "Timing is outside the model: `Eval` has no notion of execution steps or elapsed time, so the package neither proves nor formally refutes timing-channel freedom for `TsTyped` (or for any other system here). A stricter discipline that also forbids high guards on conditionals gives timing agreement in a step-counting semantics (Volpano & Smith 1997, §5, Theorem 5.3); the package neither states nor proves this.",
+      "Does not establish freedom from timing or step-count side channels. Illustration only (informal and unmodeled): `if h then (h := h + 1; h := h + 1) else skip` is accepted by `TsTyped twoVarEnv .low` (only this typing fact is kernel-checked, in `Toy.IFC.timingExample_tsTyped`), and under an informal step-counting reading its two branches execute different numbers of steps depending on `h`. Because `Eval` does not model step counts, this example is not a formal counterexample to any theorem here and does not formally refute timing-channel freedom; it only illustrates that the package's results say nothing about timing.",
+      "Does not cover partial expressions / runtime errors (Volpano & Smith 1997), intermediate public outputs, nondeterminism, or multi-threaded concurrency (Smith & Volpano 1998)."
+    ],
+    "scope_witnesses_lean": [
+      "Toy.IFC.whileOne_tsTyped_low_not_high",
+      "Toy.IFC.lowGuardWhileTyped_allows_termination_channel",
+      "Toy.IFC.pcLowWhileTyped_allows_termination_channel",
+      "Toy.IFC.cmdTyped_allows_termination_channel",
+      "Toy.IFC.cmdTyped_violates_tsni_witness",
+      "Toy.IFC.whileHZero_tsni_not_tsTyped",
+      "Toy.IFC.timingExample_tsTyped"
+    ],
+    "prior_art": [
+      "Dennis Volpano and Geoffrey Smith, \"Eliminating Covert Flows with Minimum Typings\", Proceedings of the 10th IEEE Computer Security Foundations Workshop (CSFW '97), pp. 156–168, June 1997, DOI 10.1109/CSFW.1997.596807 (rule `(WHILE)`, Theorem 3.1 Termination Agreement; §5 Theorem 5.3 Timing Agreement for a stricter timing-sensitive discipline).",
+      "Geoffrey Smith and Dennis Volpano, \"Secure information flow in a multi-threaded imperative language\", Proceedings of the 25th ACM SIGPLAN-SIGACT Symposium on Principles of Programming Languages (POPL '98), pp. 355–364, 1998, DOI 10.1145/268946.268975.",
+      "Johan Agat, \"Transforming out timing leaks\", Proceedings of the 27th ACM SIGPLAN-SIGACT Symposium on Principles of Programming Languages (POPL '00), pp. 40–53, January 2000, DOI 10.1145/325694.325702 (timing-leak transformation pointer).",
+      "Andrei Sabelfeld and Andrew C. Myers, \"Language-based information-flow security\", IEEE Journal on Selected Areas in Communications 21(1):5–19, January 2003, DOI 10.1109/JSAC.2002.806121 (§IV-C).",
+      "Tobias Nipkow and Gerwin Klein, Concrete Semantics: With Isabelle/HOL, Springer, 2014, Chapter 9 (§9.2.6 Fig. 9.10, Lemma 9.21, Theorem 9.22), pp. 115–142, DOI 10.1007/978-3-319-10542-0_9; mechanized in Isabelle/HOL HOL-IMP `Sec_TypingT.thy` (`While`, `termi_if_non0`, `noninterference` for `0 ⊢ c`), https://isabelle.in.tum.de/library/HOL/HOL-IMP/Sec_TypingT.html (this package's arbitrary-`pc` statement generalizes `0 ⊢ c` trivially via `TsTyped.antitone`).",
+      "Cătălin Hriţcu and Yonghyun Kim et al., Security Foundations (Software Foundations Vol. 7, Version 1.2, 2026), chapter `StaticIFC` (`ts_well_typed`, `TSWT_While`), https://softwarefoundations.cis.upenn.edu/secf-current/.",
+      "Pasquale Noce, \"Information Flow Control via Stateful Intransitive Noninterference in Language IMP\", Archive of Formal Proofs, February 2024, https://isa-afp.org/entries/IMP_Noninterference.html."
+    ],
+    "design_question": "Provides the positive control showing a sufficient syntactic restriction on `while` loops (`pc = low` and `exprLevel Γ e = low`) that closes the termination covert channel while still permitting high conditionals and high-variable mutations inside low-guarded loops; each of the two `while` conjuncts is individually necessary within this rule family, though the restriction is not necessary for `TSNI` itself (see `Toy.IFC.whileHZero_tsni_not_tsTyped`)."
+  },
+  {
+    "id": "low-guard-while-typed-termination-channel-counterexample",
+    "lean": "Toy.IFC.lowGuardWhileTyped_allows_termination_channel",
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "For any security labeling `Γ`, program counter `pc`, and `high` variable `h` (`Γ h = high`), restricting only `while` loop guards to `low` without also requiring `pc = low` (`LowGuardWhileTyped Γ pc`) accepts `if h then (while 1 do skip) else skip` (`highIfLowWhileProg h`), which terminates from `zeroStore` and diverges from `Store.update zeroStore h 1`, violating `TSNI Γ`.",
+    "hypotheses": [
+      {
+        "name": "hHigh",
+        "purpose": "Ensures the outer `if` guard `h` is secret so one `low`-equivalent run enters the diverging `low`-guarded loop while the other takes `skip`.",
+        "tightness": "tight",
+        "counterexample": "Toy.IFC.highIfLowWhileProg_low_guard_satisfies_tsni"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`twoVarEnv` assigns `h ↦ high`.",
+    "nonvacuity_witness_lean": "Toy.IFC.high_var_nonvacuous",
+    "positive_control_lean": "Toy.IFC.highIfLowWhileProg_rejected_by_tsTyped",
+    "non_claims": [
+      "Does not show that requiring `pc = low` alone suffices. Keeping `pc = low` but dropping the low-guard condition also admits a termination channel (`while h do skip`).",
+      "The converse ablation noted above is kernel-checked in `Toy.IFC.pcLowWhileTyped_allows_termination_channel` (id `pc-low-while-typed-termination-channel-counterexample`).",
+      "Does not refute `TINI` for `LowGuardWhileTyped`: because `LowGuardWhileTyped Γ pc c → CmdTyped Γ pc c` (`Toy.IFC.lowGuardWhileTyped_implies_cmdTyped`), every `LowGuardWhileTyped` program still satisfies `TINI` (`Toy.IFC.cmdTyped_implies_tini`).",
+      "Does not claim that `LowGuardWhileTyped` allows high-guarded loops; `LowGuardWhileTyped` rejects `while h do skip` (`Toy.IFC.lowGuardWhileTyped_neg_while_h`), showing that high loop guards are not the sole source of termination leaks.",
+      "Does not rule out disciplines that permit provably terminating loops under a high `pc` (see `Toy.IFC.whileHZero_tsni_not_tsTyped`)."
+    ],
+    "scope_witnesses_lean": [
+      "Toy.IFC.pcLowWhileTyped_allows_termination_channel",
+      "Toy.IFC.lowGuardWhileTyped_implies_cmdTyped",
+      "Toy.IFC.cmdTyped_implies_tini",
+      "Toy.IFC.lowGuardWhileTyped_neg_while_h",
+      "Toy.IFC.whileHZero_tsni_not_tsTyped"
+    ],
+    "prior_art": [
+      "Dennis Volpano and Geoffrey Smith, \"Eliminating Covert Flows with Minimum Typings\", Proceedings of the 10th IEEE Computer Security Foundations Workshop (CSFW '97), pp. 156–168, June 1997, DOI 10.1109/CSFW.1997.596807 (contrast §1 prose mentioning only minimum guard type with rule `(WHILE)`, which types the loop itself at the minimum `τ cmd` and thus forbids loops under high branches).",
+      "Andrei Sabelfeld and Andrew C. Myers, \"Language-based information-flow security\", IEEE Journal on Selected Areas in Communications 21(1):5–19, January 2003, DOI 10.1109/JSAC.2002.806121 (§IV-C explicitly noting that Volpano & Smith 1997 disallows both high loops and loops inside high conditionals).",
+      "Tobias Nipkow and Gerwin Klein, Concrete Semantics: With Isabelle/HOL, Springer, 2014, Chapter 9 (§9.2.6 Fig. 9.10), pp. 115–142, DOI 10.1007/978-3-319-10542-0_9; mechanized in Isabelle/HOL HOL-IMP `Sec_TypingT.thy` (`While`), https://isabelle.in.tum.de/library/HOL/HOL-IMP/Sec_TypingT.html.",
+      "Cătălin Hriţcu and Yonghyun Kim et al., Security Foundations (Software Foundations Vol. 7, Version 1.2, 2026), chapter `StaticIFC` (`TSWT_While`, `termination_leak`), https://softwarefoundations.cis.upenn.edu/secf-current/."
+    ],
+    "design_question": "Documents the soundness pitfall of reading informal descriptions of termination-sensitive typing (e.g., \"loop guards must be low\") literally: enforcing `exprLevel Γ e = low` on `while` guards alone is unsound unless `pc = low` is also enforced at every `while` loop."
+  },
+  {
+    "id": "tsni-iff-tini-and-coterminates",
+    "lean": "Toy.IFC.tsni_iff_tini_and_coterminates",
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "In this deterministic big-step imperative semantics, a command `c` satisfies termination-sensitive noninterference (`TSNI Γ c`) if and only if it satisfies both termination-insensitive noninterference (`TINI Γ c`) and co-termination on `low`-equivalent initial stores (`CoTerminates Γ c`).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "`tsni_char_nonvacuous` witnesses all three cases under `twoVarEnv`: `l := l + 1` satisfies `TSNI` (both conjuncts), `while h do skip` satisfies `TINI ∧ ¬ CoTerminates`, and `l := h` satisfies `CoTerminates ∧ ¬ TINI` (`coTerminates_without_tini`), proving the two right-hand conjuncts are mutually independent.",
+    "nonvacuity_witness_lean": "Toy.IFC.tsni_char_nonvacuous",
+    "non_claims": [
+      "Depends critically on determinism of the big-step semantics (`Toy.IFC.eval_deterministic`). For a general nondeterministic input–output relation `R`, existential TSNI does not imply universal pairwise TINI (`Toy.IFC.nondet_existential_tsni_not_tini`).",
+      "Does not include execution time, step counts, or intermediate output traces in either `TINI` or `CoTerminates`."
+    ],
+    "scope_witnesses_lean": [
+      "Toy.IFC.eval_deterministic",
+      "Toy.IFC.nondet_existential_tsni_not_tini"
+    ],
+    "prior_art": [
+      "Dennis Volpano and Geoffrey Smith, \"Eliminating Covert Flows with Minimum Typings\", Proceedings of the 10th IEEE Computer Security Foundations Workshop (CSFW '97), pp. 156–168, June 1997, DOI 10.1109/CSFW.1997.596807 (Theorem 3.1 Termination Agreement and its alternative statement splitting into joint divergence or joint termination with agreeing low memories).",
+      "Cătălin Hriţcu and Yonghyun Kim et al., Security Foundations (Software Foundations Vol. 7, Version 1.2, 2026), chapter `StaticIFC` (`tsni_com_tsni_alt_same : ∀ L c, tsni_com L c ↔ tsni_alt L c`, proved using `ceval_deterministic`), https://softwarefoundations.cis.upenn.edu/secf-current/."
+    ],
+    "design_question": "Pins down the exact logical gap between the classic guarantee (`TINI`) and its termination-sensitive strengthening (`TSNI`) in deterministic sequential languages: co-termination on low-equivalent inputs is both necessary and sufficient to bridge the two."
+  },
+  {
+    "id": "pc-low-while-typed-termination-channel-counterexample",
+    "lean": "Toy.IFC.pcLowWhileTyped_allows_termination_channel",
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "For any security labeling `Γ` and `high` variable `h` (`Γ h = high`), requiring `pc = low` at every `while` loop without also requiring `exprLevel Γ e = low` (`PcLowWhileTyped Γ .low`) accepts `while h do skip` (`termChannelProg h`), which terminates from `zeroStore` and diverges from `Store.update zeroStore h 1`, violating `TSNI Γ`.",
+    "hypotheses": [
+      {
+        "name": "hHigh",
+        "purpose": "Ensures the loop guard `h` is secret so two `low`-equivalent stores disagree on whether the loop terminates or diverges.",
+        "tightness": "tight",
+        "counterexample": "Toy.IFC.termChannelProg_low_guard_satisfies_tsni_pcLow"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`twoVarEnv` assigns `h ↦ high`.",
+    "nonvacuity_witness_lean": "Toy.IFC.high_var_nonvacuous",
+    "positive_control_lean": "Toy.IFC.termChannelProg_rejected_by_tsTyped",
+    "non_claims": [
+      "Does not refute `TINI` for `PcLowWhileTyped`: because `PcLowWhileTyped Γ pc c → CmdTyped Γ pc c` (`Toy.IFC.pcLowWhileTyped_implies_cmdTyped`), every `PcLowWhileTyped` program still satisfies `TINI` (`Toy.IFC.cmdTyped_implies_tini`).",
+      "Does not claim `PcLowWhileTyped` allows loops nested inside high conditionals; `PcLowWhileTyped` rejects `if h then (while 1 do skip) else skip` at every `pc` (`Toy.IFC.pcLowWhileTyped_neg_high_if_low_while`).",
+      "Does not show that requiring `exprLevel Γ e = low` alone suffices (the converse ablation `Toy.IFC.lowGuardWhileTyped_allows_termination_channel` refutes that).",
+      "Necessity of `exprLevel Γ e = low` holds within this rule format only; terminating high-guarded loops such as `while h do h := 0` satisfy `TSNI` (`Toy.IFC.whileHZero_tsni_not_tsTyped`)."
+    ],
+    "scope_witnesses_lean": [
+      "Toy.IFC.pcLowWhileTyped_implies_cmdTyped",
+      "Toy.IFC.cmdTyped_implies_tini",
+      "Toy.IFC.pcLowWhileTyped_neg_high_if_low_while",
+      "Toy.IFC.lowGuardWhileTyped_allows_termination_channel",
+      "Toy.IFC.whileHZero_tsni_not_tsTyped"
+    ],
+    "prior_art": [
+      "Dennis Volpano and Geoffrey Smith, \"Eliminating Covert Flows with Minimum Typings\", Proceedings of the 10th IEEE Computer Security Foundations Workshop (CSFW '97), pp. 156–168, June 1997, DOI 10.1109/CSFW.1997.596807 (rule `(WHILE)`).",
+      "Andrei Sabelfeld and Andrew C. Myers, \"Language-based information-flow security\", IEEE Journal on Selected Areas in Communications 21(1):5–19, January 2003, DOI 10.1109/JSAC.2002.806121 (§IV-C).",
+      "Tobias Nipkow and Gerwin Klein, Concrete Semantics: With Isabelle/HOL, Springer, 2014, Chapter 9 (§9.2.6 Fig. 9.10), pp. 115–142, DOI 10.1007/978-3-319-10542-0_9; HOL-IMP `Sec_TypingT.thy`, https://isabelle.in.tum.de/library/HOL/HOL-IMP/Sec_TypingT.html.",
+      "Cătălin Hriţcu and Yonghyun Kim et al., Security Foundations (Software Foundations Vol. 7, Version 1.2, 2026), chapter `StaticIFC` (`TSWT_While`), https://softwarefoundations.cis.upenn.edu/secf-current/."
+    ],
+    "design_question": "Completes the symmetric ablation of `TsTyped.whileLoop`, isolating the individual necessity of `exprLevel Γ e = low` within this rule family even when `pc = low` is enforced at every `while` loop."
+  },
+  {
+    "id": "while-no-pc-typed-implicit-flow-counterexample",
+    "lean": "Toy.IFC.whileNoPcTyped_accepts_leak_violating_tini",
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "For any security labeling `Γ` with `Γ l = low` and `Γ h = high`, raising `pc` at `if` while omitting `pc` tracking at `while` (`WhileNoPcTyped Γ .low`) accepts `while h do (l := 1; h := 0)` (`whileLeakProg l h`), which terminates on two `low`-equivalent stores with different final values of `l`, violating `TINI Γ`.",
+    "hypotheses": [
+      {
+        "name": "hLow",
+        "purpose": "Ensures the assigned variable `l` is `low`-observable so writing `1` on one run and leaving `0` on the other breaks `LowEq`.",
+        "tightness": "tight",
+        "counterexample": "Toy.IFC.whileLeakProg_target_high_satisfies_tini"
+      },
+      {
+        "name": "hHigh",
+        "purpose": "Ensures the loop guard `h` is secret so two `low`-equivalent initial stores can differ on whether the loop body executes.",
+        "tightness": "tight",
+        "counterexample": "Toy.IFC.whileLeakProg_guard_low_satisfies_tini"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`twoVarEnv` assigns `l ↦ low` and `h ↦ high`.",
+    "nonvacuity_witness_lean": "Toy.IFC.noPcTyped_implicit_flow_nonvacuous",
+    "positive_control_lean": "Toy.IFC.whileLeakProg_rejected_by_cmdTyped",
+    "non_claims": [
+      "Does not claim that `WhileNoPcTyped` drops `pc` tracking on conditionals; `WhileNoPcTyped` still rejects `if h then l := 1 else l := 0` at every `pc` (`Toy.IFC.whileNoPcTyped_neg_implicit_flow`).",
+      "Does not show that a program-counter label is the only sound control-dependence mechanism (for example, `Toy.IFC.NoHighGuardTyped` forbids high guards on both `if` and `while` without a `pc` label and embeds into `CmdTyped Γ .low`).",
+      "Does not claim that every program accepted by `WhileNoPcTyped` violates `TINI`."
+    ],
+    "scope_witnesses_lean": [
+      "Toy.IFC.whileNoPcTyped_neg_implicit_flow"
+    ],
+    "prior_art": [
+      "Dorothy E. Denning and Peter J. Denning, \"Certification of programs for secure information flow\", Communications of the ACM 20(7):504–513, July 1977, DOI 10.1145/359636.359712.",
+      "Dennis Volpano, Cynthia Irvine, and Geoffrey Smith, \"A sound type system for secure flow analysis\", Journal of Computer Security 4(2–3):167–187, 1996, DOI 10.3233/JCS-1996-42-304.",
+      "Tobias Nipkow and Gerwin Klein, Concrete Semantics: With Isabelle/HOL, Springer, 2014, Chapter 9 (§9.2.2), pp. 115–142, DOI 10.1007/978-3-319-10542-0_9; HOL-IMP `Sec_Typing.thy`, https://isabelle.in.tum.de/library/HOL/HOL-IMP/Sec_Typing.html."
+    ],
+    "design_question": "Isolates the `while`-loop control-dependence check in `CmdTyped`, proving that raising `pc` at conditionals alone is insufficient unless `pc` is also raised by the loop guard at `while`."
+  },
+  {
+    "id": "tsni-out-hyperprop-is-two-safety",
+    "lean": [
+      "Toy.IFC.tsni_iff_tsniOutHyperprop",
+      "Toy.IFC.tsniOutHyperprop_isTwoSafety",
+      "Toy.IFC.tsniOutHyperprop_subsetClosed"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "When divergence is represented explicitly as `none : Option (Store Var)` (`OutTrace Var`, `outcomeBehavior c`), command-level `TSNI Γ c` is equivalent to `tsniOutHyperprop Γ (outcomeBehavior c)`, and for every security labeling `Γ` the hyperproperty `tsniOutHyperprop Γ` satisfies `IsTwoSafety` and `SubsetClosed`.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Under the mixed environment `twoVarEnv`, `tsniOutHyperprop twoVarEnv` is nontrivial: it accepts `outcomeBehavior .skip` and rejects `outcomeBehavior (termChannelProg .h)`.",
+    "nonvacuity_witness_lean": "Toy.IFC.tsniOutHyperprop_nonvacuous",
+    "non_claims": [
+      "Serves as the non-degenerate positive control and escape hatch for `tsni-hyperprop-not-subset-closed`: switching from terminating-pair behaviors (`IOTrace Var`) to explicit-outcome behaviors (`OutTrace Var`) defeats the non-subset-closure impossibility even in the presence of secret variables.",
+      "Does not imply that TSNI is hypersafety in Clarkson & Schneider's (2010, §7.2.1) prefix-based infinite-trace topology: because observing divergence (`none` / `s^ω`) requires infinite time, Clarkson & Schneider prove their relational TSNI (`TSRNI`) is neither hypersafety nor hyperliveness for `Rel` (and footnote 23 contrasts Terauchi & Aiken's 2005 §1 \"2-liveness\" with \"2-infinite-safety\"). This infinite-trace distinction is a modeling-bridge remark not formalized here.",
+      "`tsni_iff_tsniOutHyperprop` relies on determinism of `Eval` (`Toy.IFC.eval_deterministic`) and classical case analysis on `Terminates c σ₂`.",
+      "`tsniOutHyperprop_isTwoSafety` uses this package's complete-observation pairwise-determinedness predicate `IsTwoSafety` (`Toy.IFC.isTwoSafety_iff_csTwoSafety`, `Toy.IFC.isTwoSafety_holds_empty`, `Toy.IFC.false_hyperprop_not_isTwoSafety`), not Clarkson & Schneider's infinite-trace hypersafety (whose topology is the lower Vietoris construction applied to the Plotkin topology)."
+    ],
+    "scope_witnesses_lean": [
+      "Toy.IFC.tsni_iff_tsniOutHyperprop",
+      "Toy.IFC.eval_deterministic",
+      "Toy.IFC.tsniOutHyperprop_isTwoSafety",
+      "Toy.IFC.isTwoSafety_iff_csTwoSafety",
+      "Toy.IFC.isTwoSafety_holds_empty",
+      "Toy.IFC.false_hyperprop_not_isTwoSafety"
+    ],
+    "prior_art": [
+      "Andrei Sabelfeld and Andrew C. Myers, \"Language-based information-flow security\", IEEE Journal on Selected Areas in Communications 21(1):5–19, January 2003, DOI 10.1109/JSAC.2002.806121 (§IV-C explicit-⊥ low-view relation for TSNI).",
+      "Tachio Terauchi and Alex Aiken, \"Secure Information Flow as a Safety Problem\", Static Analysis (SAS 2005), LNCS 3672, pp. 352–367, Springer, 2005, DOI 10.1007/11547662_24 (§1).",
+      "Michael R. Clarkson and Fred B. Schneider, \"Hyperproperties\", Journal of Computer Security 18(6):1157–1210, 2010, DOI 10.3233/JCS-2009-0393 (§7.2.1 and footnote 23)."
+    ],
+    "design_question": "Provides the non-degenerate escape hatch for `tsni-hyperprop-not-subset-closed`, showing that over complete explicit-outcome observations (`Option (Store Var)`), deterministic TSNI is a pairwise 2-safety (`IsTwoSafety`) and subset-closed hyperproperty."
+  }
+]

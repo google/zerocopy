@@ -1,0 +1,822 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.IFC.CSTwoSafety": [],
+    "Toy.IFC.Cmd": [],
+    "Toy.IFC.Cmd.assign": [],
+    "Toy.IFC.Cmd.assign.elim": [],
+    "Toy.IFC.Cmd.assign.inj": [],
+    "Toy.IFC.Cmd.assign.injEq": [
+      "propext"
+    ],
+    "Toy.IFC.Cmd.assign.noConfusion": [],
+    "Toy.IFC.Cmd.assign.sizeOf_spec": [],
+    "Toy.IFC.Cmd.below": [],
+    "Toy.IFC.Cmd.brecOn": [],
+    "Toy.IFC.Cmd.brecOn.eq": [],
+    "Toy.IFC.Cmd.brecOn.go": [],
+    "Toy.IFC.Cmd.casesOn": [],
+    "Toy.IFC.Cmd.ctorElim": [],
+    "Toy.IFC.Cmd.ctorElimType": [],
+    "Toy.IFC.Cmd.ctorIdx": [],
+    "Toy.IFC.Cmd.ite": [],
+    "Toy.IFC.Cmd.ite.elim": [],
+    "Toy.IFC.Cmd.ite.inj": [],
+    "Toy.IFC.Cmd.ite.injEq": [
+      "propext"
+    ],
+    "Toy.IFC.Cmd.ite.noConfusion": [],
+    "Toy.IFC.Cmd.ite.sizeOf_spec": [],
+    "Toy.IFC.Cmd.noConfusion": [],
+    "Toy.IFC.Cmd.noConfusionType": [],
+    "Toy.IFC.Cmd.rec": [],
+    "Toy.IFC.Cmd.recOn": [],
+    "Toy.IFC.Cmd.seq": [],
+    "Toy.IFC.Cmd.seq.elim": [],
+    "Toy.IFC.Cmd.seq.inj": [],
+    "Toy.IFC.Cmd.seq.injEq": [
+      "propext"
+    ],
+    "Toy.IFC.Cmd.seq.noConfusion": [],
+    "Toy.IFC.Cmd.seq.sizeOf_spec": [],
+    "Toy.IFC.Cmd.skip": [],
+    "Toy.IFC.Cmd.skip.elim": [],
+    "Toy.IFC.Cmd.skip.sizeOf_spec": [],
+    "Toy.IFC.Cmd.whileLoop": [],
+    "Toy.IFC.Cmd.whileLoop.elim": [],
+    "Toy.IFC.Cmd.whileLoop.inj": [],
+    "Toy.IFC.Cmd.whileLoop.injEq": [
+      "propext"
+    ],
+    "Toy.IFC.Cmd.whileLoop.noConfusion": [],
+    "Toy.IFC.Cmd.whileLoop.sizeOf_spec": [],
+    "Toy.IFC.CmdTyped": [],
+    "Toy.IFC.CmdTyped.antitone": [],
+    "Toy.IFC.CmdTyped.assign": [],
+    "Toy.IFC.CmdTyped.below": [],
+    "Toy.IFC.CmdTyped.below.assign": [],
+    "Toy.IFC.CmdTyped.below.casesOn": [],
+    "Toy.IFC.CmdTyped.below.ite": [],
+    "Toy.IFC.CmdTyped.below.rec": [],
+    "Toy.IFC.CmdTyped.below.seq": [],
+    "Toy.IFC.CmdTyped.below.skip": [],
+    "Toy.IFC.CmdTyped.below.whileLoop": [],
+    "Toy.IFC.CmdTyped.brecOn": [],
+    "Toy.IFC.CmdTyped.casesOn": [],
+    "Toy.IFC.CmdTyped.ite": [],
+    "Toy.IFC.CmdTyped.rec": [],
+    "Toy.IFC.CmdTyped.recOn": [],
+    "Toy.IFC.CmdTyped.seq": [],
+    "Toy.IFC.CmdTyped.skip": [],
+    "Toy.IFC.CmdTyped.whileLoop": [],
+    "Toy.IFC.CoTerminates": [],
+    "Toy.IFC.Eval": [],
+    "Toy.IFC.Eval.assign": [],
+    "Toy.IFC.Eval.below": [],
+    "Toy.IFC.Eval.below.assign": [],
+    "Toy.IFC.Eval.below.casesOn": [],
+    "Toy.IFC.Eval.below.iteFalse": [],
+    "Toy.IFC.Eval.below.iteTrue": [],
+    "Toy.IFC.Eval.below.rec": [],
+    "Toy.IFC.Eval.below.seq": [],
+    "Toy.IFC.Eval.below.skip": [],
+    "Toy.IFC.Eval.below.whileFalse": [],
+    "Toy.IFC.Eval.below.whileTrue": [],
+    "Toy.IFC.Eval.brecOn": [],
+    "Toy.IFC.Eval.casesOn": [],
+    "Toy.IFC.Eval.iteFalse": [],
+    "Toy.IFC.Eval.iteTrue": [],
+    "Toy.IFC.Eval.rec": [],
+    "Toy.IFC.Eval.recOn": [],
+    "Toy.IFC.Eval.seq": [],
+    "Toy.IFC.Eval.skip": [],
+    "Toy.IFC.Eval.whileFalse": [],
+    "Toy.IFC.Eval.whileTrue": [],
+    "Toy.IFC.Expr": [],
+    "Toy.IFC.Expr.add": [],
+    "Toy.IFC.Expr.add.elim": [],
+    "Toy.IFC.Expr.add.inj": [],
+    "Toy.IFC.Expr.add.injEq": [
+      "propext"
+    ],
+    "Toy.IFC.Expr.add.noConfusion": [],
+    "Toy.IFC.Expr.add.sizeOf_spec": [],
+    "Toy.IFC.Expr.below": [],
+    "Toy.IFC.Expr.brecOn": [],
+    "Toy.IFC.Expr.brecOn.eq": [],
+    "Toy.IFC.Expr.brecOn.go": [],
+    "Toy.IFC.Expr.casesOn": [],
+    "Toy.IFC.Expr.ctorElim": [],
+    "Toy.IFC.Expr.ctorElimType": [],
+    "Toy.IFC.Expr.ctorIdx": [],
+    "Toy.IFC.Expr.eq": [],
+    "Toy.IFC.Expr.eq.elim": [],
+    "Toy.IFC.Expr.eq.inj": [],
+    "Toy.IFC.Expr.eq.injEq": [
+      "propext"
+    ],
+    "Toy.IFC.Expr.eq.noConfusion": [],
+    "Toy.IFC.Expr.eq.sizeOf_spec": [],
+    "Toy.IFC.Expr.lit": [],
+    "Toy.IFC.Expr.lit.elim": [],
+    "Toy.IFC.Expr.lit.inj": [],
+    "Toy.IFC.Expr.lit.injEq": [
+      "propext"
+    ],
+    "Toy.IFC.Expr.lit.noConfusion": [],
+    "Toy.IFC.Expr.lit.sizeOf_spec": [],
+    "Toy.IFC.Expr.lt": [],
+    "Toy.IFC.Expr.lt.elim": [],
+    "Toy.IFC.Expr.lt.inj": [],
+    "Toy.IFC.Expr.lt.injEq": [
+      "propext"
+    ],
+    "Toy.IFC.Expr.lt.noConfusion": [],
+    "Toy.IFC.Expr.lt.sizeOf_spec": [],
+    "Toy.IFC.Expr.noConfusion": [],
+    "Toy.IFC.Expr.noConfusionType": [],
+    "Toy.IFC.Expr.not": [],
+    "Toy.IFC.Expr.not.elim": [],
+    "Toy.IFC.Expr.not.inj": [],
+    "Toy.IFC.Expr.not.injEq": [
+      "propext"
+    ],
+    "Toy.IFC.Expr.not.noConfusion": [],
+    "Toy.IFC.Expr.not.sizeOf_spec": [],
+    "Toy.IFC.Expr.rec": [],
+    "Toy.IFC.Expr.recOn": [],
+    "Toy.IFC.Expr.sub": [],
+    "Toy.IFC.Expr.sub.elim": [],
+    "Toy.IFC.Expr.sub.inj": [],
+    "Toy.IFC.Expr.sub.injEq": [
+      "propext"
+    ],
+    "Toy.IFC.Expr.sub.noConfusion": [],
+    "Toy.IFC.Expr.sub.sizeOf_spec": [],
+    "Toy.IFC.Expr.var": [],
+    "Toy.IFC.Expr.var.elim": [],
+    "Toy.IFC.Expr.var.inj": [],
+    "Toy.IFC.Expr.var.injEq": [
+      "propext"
+    ],
+    "Toy.IFC.Expr.var.noConfusion": [],
+    "Toy.IFC.Expr.var.sizeOf_spec": [],
+    "Toy.IFC.Hyperproperty": [],
+    "Toy.IFC.IOTrace": [],
+    "Toy.IFC.IsOneSafety": [],
+    "Toy.IFC.IsTwoSafety": [],
+    "Toy.IFC.Level": [],
+    "Toy.IFC.Level.casesOn": [],
+    "Toy.IFC.Level.ctorElim": [],
+    "Toy.IFC.Level.ctorElimType": [],
+    "Toy.IFC.Level.ctorIdx": [],
+    "Toy.IFC.Level.eq_high_of_high_le": [],
+    "Toy.IFC.Level.eq_low_of_le_low": [],
+    "Toy.IFC.Level.high": [],
+    "Toy.IFC.Level.high.elim": [],
+    "Toy.IFC.Level.high.sizeOf_spec": [],
+    "Toy.IFC.Level.instDecidableRelLe": [],
+    "Toy.IFC.Level.instLE": [],
+    "Toy.IFC.Level.join": [],
+    "Toy.IFC.Level.join.eq_1": [],
+    "Toy.IFC.Level.join.eq_2": [],
+    "Toy.IFC.Level.join.match_1": [],
+    "Toy.IFC.Level.join_eq_low_iff": [
+      "propext"
+    ],
+    "Toy.IFC.Level.join_high_left": [],
+    "Toy.IFC.Level.join_high_right": [],
+    "Toy.IFC.Level.join_le": [],
+    "Toy.IFC.Level.join_low_left": [],
+    "Toy.IFC.Level.join_low_right": [],
+    "Toy.IFC.Level.join_mono": [],
+    "Toy.IFC.Level.le": [],
+    "Toy.IFC.Level.le.eq_1": [],
+    "Toy.IFC.Level.le.eq_2": [],
+    "Toy.IFC.Level.le.eq_3": [],
+    "Toy.IFC.Level.le.match_1": [],
+    "Toy.IFC.Level.le_antisymm": [
+      "propext"
+    ],
+    "Toy.IFC.Level.le_high": [],
+    "Toy.IFC.Level.le_join_left": [],
+    "Toy.IFC.Level.le_join_right": [],
+    "Toy.IFC.Level.le_refl": [],
+    "Toy.IFC.Level.le_trans": [],
+    "Toy.IFC.Level.low": [],
+    "Toy.IFC.Level.low.elim": [],
+    "Toy.IFC.Level.low.sizeOf_spec": [],
+    "Toy.IFC.Level.low_le": [],
+    "Toy.IFC.Level.noConfusion": [],
+    "Toy.IFC.Level.noConfusionType": [],
+    "Toy.IFC.Level.ofNat": [],
+    "Toy.IFC.Level.ofNat_ctorIdx": [],
+    "Toy.IFC.Level.rec": [],
+    "Toy.IFC.Level.recOn": [],
+    "Toy.IFC.LowEq": [],
+    "Toy.IFC.LowEq.refl": [],
+    "Toy.IFC.LowEq.symm": [],
+    "Toy.IFC.LowEq.trans": [],
+    "Toy.IFC.LowEq.update_high": [
+      "propext"
+    ],
+    "Toy.IFC.LowGuardWhileTyped": [],
+    "Toy.IFC.LowGuardWhileTyped.assign": [],
+    "Toy.IFC.LowGuardWhileTyped.below": [],
+    "Toy.IFC.LowGuardWhileTyped.below.assign": [],
+    "Toy.IFC.LowGuardWhileTyped.below.casesOn": [],
+    "Toy.IFC.LowGuardWhileTyped.below.ite": [],
+    "Toy.IFC.LowGuardWhileTyped.below.rec": [],
+    "Toy.IFC.LowGuardWhileTyped.below.seq": [],
+    "Toy.IFC.LowGuardWhileTyped.below.skip": [],
+    "Toy.IFC.LowGuardWhileTyped.below.whileLoop": [],
+    "Toy.IFC.LowGuardWhileTyped.brecOn": [],
+    "Toy.IFC.LowGuardWhileTyped.casesOn": [],
+    "Toy.IFC.LowGuardWhileTyped.ite": [],
+    "Toy.IFC.LowGuardWhileTyped.rec": [],
+    "Toy.IFC.LowGuardWhileTyped.recOn": [],
+    "Toy.IFC.LowGuardWhileTyped.seq": [],
+    "Toy.IFC.LowGuardWhileTyped.skip": [],
+    "Toy.IFC.LowGuardWhileTyped.whileLoop": [],
+    "Toy.IFC.NoHighGuardTyped": [],
+    "Toy.IFC.NoHighGuardTyped.assign": [],
+    "Toy.IFC.NoHighGuardTyped.below": [],
+    "Toy.IFC.NoHighGuardTyped.below.assign": [],
+    "Toy.IFC.NoHighGuardTyped.below.casesOn": [],
+    "Toy.IFC.NoHighGuardTyped.below.ite": [],
+    "Toy.IFC.NoHighGuardTyped.below.rec": [],
+    "Toy.IFC.NoHighGuardTyped.below.seq": [],
+    "Toy.IFC.NoHighGuardTyped.below.skip": [],
+    "Toy.IFC.NoHighGuardTyped.below.whileLoop": [],
+    "Toy.IFC.NoHighGuardTyped.brecOn": [],
+    "Toy.IFC.NoHighGuardTyped.casesOn": [],
+    "Toy.IFC.NoHighGuardTyped.ite": [],
+    "Toy.IFC.NoHighGuardTyped.rec": [],
+    "Toy.IFC.NoHighGuardTyped.recOn": [],
+    "Toy.IFC.NoHighGuardTyped.seq": [],
+    "Toy.IFC.NoHighGuardTyped.skip": [],
+    "Toy.IFC.NoHighGuardTyped.whileLoop": [],
+    "Toy.IFC.NoPcTyped": [],
+    "Toy.IFC.NoPcTyped.assign": [],
+    "Toy.IFC.NoPcTyped.below": [],
+    "Toy.IFC.NoPcTyped.below.assign": [],
+    "Toy.IFC.NoPcTyped.below.casesOn": [],
+    "Toy.IFC.NoPcTyped.below.ite": [],
+    "Toy.IFC.NoPcTyped.below.rec": [],
+    "Toy.IFC.NoPcTyped.below.seq": [],
+    "Toy.IFC.NoPcTyped.below.skip": [],
+    "Toy.IFC.NoPcTyped.below.whileLoop": [],
+    "Toy.IFC.NoPcTyped.brecOn": [],
+    "Toy.IFC.NoPcTyped.casesOn": [],
+    "Toy.IFC.NoPcTyped.ite": [],
+    "Toy.IFC.NoPcTyped.rec": [],
+    "Toy.IFC.NoPcTyped.recOn": [],
+    "Toy.IFC.NoPcTyped.seq": [],
+    "Toy.IFC.NoPcTyped.skip": [],
+    "Toy.IFC.NoPcTyped.whileLoop": [],
+    "Toy.IFC.OutTrace": [],
+    "Toy.IFC.PcLowWhileTyped": [],
+    "Toy.IFC.PcLowWhileTyped.assign": [],
+    "Toy.IFC.PcLowWhileTyped.below": [],
+    "Toy.IFC.PcLowWhileTyped.below.assign": [],
+    "Toy.IFC.PcLowWhileTyped.below.casesOn": [],
+    "Toy.IFC.PcLowWhileTyped.below.ite": [],
+    "Toy.IFC.PcLowWhileTyped.below.rec": [],
+    "Toy.IFC.PcLowWhileTyped.below.seq": [],
+    "Toy.IFC.PcLowWhileTyped.below.skip": [],
+    "Toy.IFC.PcLowWhileTyped.below.whileLoop": [],
+    "Toy.IFC.PcLowWhileTyped.brecOn": [],
+    "Toy.IFC.PcLowWhileTyped.casesOn": [],
+    "Toy.IFC.PcLowWhileTyped.ite": [],
+    "Toy.IFC.PcLowWhileTyped.rec": [],
+    "Toy.IFC.PcLowWhileTyped.recOn": [],
+    "Toy.IFC.PcLowWhileTyped.seq": [],
+    "Toy.IFC.PcLowWhileTyped.skip": [],
+    "Toy.IFC.PcLowWhileTyped.whileLoop": [],
+    "Toy.IFC.Store": [],
+    "Toy.IFC.Store.update": [],
+    "Toy.IFC.Store.update.congr_simp": [
+      "Quot.sound"
+    ],
+    "Toy.IFC.Store.update.eq_1": [],
+    "Toy.IFC.Store.update_eq": [
+      "propext"
+    ],
+    "Toy.IFC.Store.update_ne": [
+      "propext"
+    ],
+    "Toy.IFC.SubsetClosed": [],
+    "Toy.IFC.TINI": [],
+    "Toy.IFC.TSNI": [],
+    "Toy.IFC.Terminates": [],
+    "Toy.IFC.ThreeVar": [],
+    "Toy.IFC.ThreeVar.casesOn": [],
+    "Toy.IFC.ThreeVar.ctorElim": [],
+    "Toy.IFC.ThreeVar.ctorElimType": [],
+    "Toy.IFC.ThreeVar.ctorIdx": [],
+    "Toy.IFC.ThreeVar.h": [],
+    "Toy.IFC.ThreeVar.h.elim": [],
+    "Toy.IFC.ThreeVar.h.sizeOf_spec": [],
+    "Toy.IFC.ThreeVar.l": [],
+    "Toy.IFC.ThreeVar.l.elim": [],
+    "Toy.IFC.ThreeVar.l.sizeOf_spec": [],
+    "Toy.IFC.ThreeVar.m": [],
+    "Toy.IFC.ThreeVar.m.elim": [],
+    "Toy.IFC.ThreeVar.m.sizeOf_spec": [],
+    "Toy.IFC.ThreeVar.noConfusion": [],
+    "Toy.IFC.ThreeVar.noConfusionType": [],
+    "Toy.IFC.ThreeVar.ofNat": [],
+    "Toy.IFC.ThreeVar.ofNat_ctorIdx": [],
+    "Toy.IFC.ThreeVar.rec": [],
+    "Toy.IFC.ThreeVar.recOn": [],
+    "Toy.IFC.TraceSet": [],
+    "Toy.IFC.TsTyped": [],
+    "Toy.IFC.TsTyped.antitone": [],
+    "Toy.IFC.TsTyped.assign": [],
+    "Toy.IFC.TsTyped.below": [],
+    "Toy.IFC.TsTyped.below.assign": [],
+    "Toy.IFC.TsTyped.below.casesOn": [],
+    "Toy.IFC.TsTyped.below.ite": [],
+    "Toy.IFC.TsTyped.below.rec": [],
+    "Toy.IFC.TsTyped.below.seq": [],
+    "Toy.IFC.TsTyped.below.skip": [],
+    "Toy.IFC.TsTyped.below.whileLoop": [],
+    "Toy.IFC.TsTyped.brecOn": [],
+    "Toy.IFC.TsTyped.casesOn": [],
+    "Toy.IFC.TsTyped.ite": [],
+    "Toy.IFC.TsTyped.rec": [],
+    "Toy.IFC.TsTyped.recOn": [],
+    "Toy.IFC.TsTyped.seq": [],
+    "Toy.IFC.TsTyped.skip": [],
+    "Toy.IFC.TsTyped.whileLoop": [],
+    "Toy.IFC.TwoVar": [],
+    "Toy.IFC.TwoVar.casesOn": [],
+    "Toy.IFC.TwoVar.ctorElim": [],
+    "Toy.IFC.TwoVar.ctorElimType": [],
+    "Toy.IFC.TwoVar.ctorIdx": [],
+    "Toy.IFC.TwoVar.h": [],
+    "Toy.IFC.TwoVar.h.elim": [],
+    "Toy.IFC.TwoVar.h.sizeOf_spec": [],
+    "Toy.IFC.TwoVar.l": [],
+    "Toy.IFC.TwoVar.l.elim": [],
+    "Toy.IFC.TwoVar.l.sizeOf_spec": [],
+    "Toy.IFC.TwoVar.noConfusion": [],
+    "Toy.IFC.TwoVar.noConfusionType": [],
+    "Toy.IFC.TwoVar.ofNat": [],
+    "Toy.IFC.TwoVar.ofNat_ctorIdx": [],
+    "Toy.IFC.TwoVar.rec": [],
+    "Toy.IFC.TwoVar.recOn": [],
+    "Toy.IFC.WhileNoPcTyped": [],
+    "Toy.IFC.WhileNoPcTyped.antitone": [],
+    "Toy.IFC.WhileNoPcTyped.assign": [],
+    "Toy.IFC.WhileNoPcTyped.below": [],
+    "Toy.IFC.WhileNoPcTyped.below.assign": [],
+    "Toy.IFC.WhileNoPcTyped.below.casesOn": [],
+    "Toy.IFC.WhileNoPcTyped.below.ite": [],
+    "Toy.IFC.WhileNoPcTyped.below.rec": [],
+    "Toy.IFC.WhileNoPcTyped.below.seq": [],
+    "Toy.IFC.WhileNoPcTyped.below.skip": [],
+    "Toy.IFC.WhileNoPcTyped.below.whileLoop": [],
+    "Toy.IFC.WhileNoPcTyped.brecOn": [],
+    "Toy.IFC.WhileNoPcTyped.casesOn": [],
+    "Toy.IFC.WhileNoPcTyped.ite": [],
+    "Toy.IFC.WhileNoPcTyped.rec": [],
+    "Toy.IFC.WhileNoPcTyped.recOn": [],
+    "Toy.IFC.WhileNoPcTyped.seq": [],
+    "Toy.IFC.WhileNoPcTyped.skip": [],
+    "Toy.IFC.WhileNoPcTyped.whileLoop": [],
+    "Toy.IFC.allLowEnv": [],
+    "Toy.IFC.atMostTwoTraces": [],
+    "Toy.IFC.atMostTwoTraces_subsetClosed_not_twoSafety": [
+      "propext"
+    ],
+    "Toy.IFC.cmdTyped_allows_termination_channel": [
+      "propext"
+    ],
+    "Toy.IFC.cmdTyped_high_preserves_lowEq": [
+      "propext"
+    ],
+    "Toy.IFC.cmdTyped_implies_noPcTyped": [],
+    "Toy.IFC.cmdTyped_implies_tini": [
+      "propext"
+    ],
+    "Toy.IFC.cmdTyped_implies_tiniHyperprop": [
+      "propext"
+    ],
+    "Toy.IFC.cmdTyped_implies_tini_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IFC.cmdTyped_implies_tini_nonvacuous_highLoop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IFC.cmdTyped_implies_whileNoPcTyped": [],
+    "Toy.IFC.cmdTyped_neg_explicit_flow": [],
+    "Toy.IFC.cmdTyped_neg_implicit_flow": [],
+    "Toy.IFC.cmdTyped_pos_sampleTypedProg": [],
+    "Toy.IFC.cmdTyped_pos_while_h": [],
+    "Toy.IFC.cmdTyped_violates_tsni_witness": [
+      "propext"
+    ],
+    "Toy.IFC.coTerminates_neg_while_h": [
+      "propext"
+    ],
+    "Toy.IFC.coTerminates_pos_skip": [],
+    "Toy.IFC.coTerminates_pos_while_l": [
+      "propext"
+    ],
+    "Toy.IFC.coTerminates_pos_while_l.match_1_1": [],
+    "Toy.IFC.coTerminates_without_tini": [
+      "propext"
+    ],
+    "Toy.IFC.constBranch_tini_not_cmdTyped": [
+      "propext"
+    ],
+    "Toy.IFC.csTwoSafety_neg_atMostTwoTraces": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IFC.csTwoSafety_pos_tiniHyperprop": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IFC.eval": [],
+    "Toy.IFC.eval.eq_1": [],
+    "Toy.IFC.eval.eq_2": [],
+    "Toy.IFC.eval.eq_3": [],
+    "Toy.IFC.eval.eq_4": [],
+    "Toy.IFC.eval.eq_5": [],
+    "Toy.IFC.eval.eq_6": [],
+    "Toy.IFC.eval.eq_7": [],
+    "Toy.IFC.eval.eq_def": [],
+    "Toy.IFC.eval_deterministic": [],
+    "Toy.IFC.eval_neg_wrong_final": [
+      "propext"
+    ],
+    "Toy.IFC.eval_pos_while_decrement": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IFC.explicitFlowProg": [],
+    "Toy.IFC.exprLevel": [],
+    "Toy.IFC.exprLevel.eq_1": [],
+    "Toy.IFC.exprLevel.eq_2": [],
+    "Toy.IFC.exprLevel.eq_3": [],
+    "Toy.IFC.exprLevel.eq_4": [],
+    "Toy.IFC.exprLevel.eq_5": [],
+    "Toy.IFC.exprLevel.eq_6": [],
+    "Toy.IFC.exprLevel.eq_7": [],
+    "Toy.IFC.exprLevel.eq_def": [],
+    "Toy.IFC.exprLevel_low_agrees": [
+      "propext"
+    ],
+    "Toy.IFC.false_hyperprop_not_isTwoSafety": [],
+    "Toy.IFC.highIfLowWhileProg": [],
+    "Toy.IFC.highIfLowWhileProg_low_guard_satisfies_tsni": [
+      "propext"
+    ],
+    "Toy.IFC.highIfLowWhileProg_low_guard_satisfies_tsni.match_1_1": [],
+    "Toy.IFC.highIfLowWhileProg_rejected_by_tsTyped": [
+      "propext"
+    ],
+    "Toy.IFC.high_var_nonvacuous": [],
+    "Toy.IFC.implicitFlowProg": [],
+    "Toy.IFC.implicitFlowProg_guard_low_satisfies_tini": [
+      "propext"
+    ],
+    "Toy.IFC.implicitFlowProg_guard_low_satisfies_tini.match_1_1": [],
+    "Toy.IFC.implicitFlowProg_rejected_by_cmdTyped": [],
+    "Toy.IFC.implicitFlowProg_target_high_satisfies_tini": [
+      "propext"
+    ],
+    "Toy.IFC.implicitFlowProg_target_high_satisfies_tini.match_1_1": [],
+    "Toy.IFC.instDecidableEqCmd": [],
+    "Toy.IFC.instDecidableEqCmd.decEq": [],
+    "Toy.IFC.instDecidableEqCmd.decEq.match_1": [],
+    "Toy.IFC.instDecidableEqExpr": [],
+    "Toy.IFC.instDecidableEqExpr.decEq": [],
+    "Toy.IFC.instDecidableEqExpr.decEq.match_1": [],
+    "Toy.IFC.instDecidableEqLevel": [],
+    "Toy.IFC.instDecidableEqThreeVar": [],
+    "Toy.IFC.instDecidableEqTwoVar": [],
+    "Toy.IFC.instReprCmd": [
+      "propext"
+    ],
+    "Toy.IFC.instReprCmd.repr": [
+      "propext"
+    ],
+    "Toy.IFC.instReprCmd.repr.match_1": [],
+    "Toy.IFC.instReprExpr": [
+      "propext"
+    ],
+    "Toy.IFC.instReprExpr.repr": [
+      "propext"
+    ],
+    "Toy.IFC.instReprExpr.repr.match_1": [],
+    "Toy.IFC.instReprLevel": [],
+    "Toy.IFC.instReprLevel.repr": [],
+    "Toy.IFC.instReprLevel.repr.match_1": [],
+    "Toy.IFC.instReprThreeVar": [],
+    "Toy.IFC.instReprThreeVar.repr": [],
+    "Toy.IFC.instReprThreeVar.repr.match_1": [],
+    "Toy.IFC.instReprTwoVar": [],
+    "Toy.IFC.instReprTwoVar.repr": [],
+    "Toy.IFC.instReprTwoVar.repr.match_1": [],
+    "Toy.IFC.ioBehavior": [],
+    "Toy.IFC.ioBehavior.eq_1": [],
+    "Toy.IFC.ioBehavior_neg_wrong_final": [
+      "propext"
+    ],
+    "Toy.IFC.ioBehavior_pos_assign": [],
+    "Toy.IFC.isOneSafety_pos_lowOutputZero": [],
+    "Toy.IFC.isTwoSafety_admits_empty": [],
+    "Toy.IFC.isTwoSafety_holds_empty": [],
+    "Toy.IFC.isTwoSafety_iff_csTwoSafety": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IFC.isTwoSafety_implies_subsetClosed": [
+      "propext"
+    ],
+    "Toy.IFC.isTwoSafety_implies_subsetClosed_nonvacuous": [],
+    "Toy.IFC.isTwoSafety_pos_tiniHyperprop": [],
+    "Toy.IFC.level_le_neg_high_low": [],
+    "Toy.IFC.level_le_pos_low_high": [],
+    "Toy.IFC.lowEq_neg_low_diff": [
+      "propext"
+    ],
+    "Toy.IFC.lowEq_pos_high_diff": [],
+    "Toy.IFC.lowGuardWhileTyped_allows_termination_channel": [
+      "propext"
+    ],
+    "Toy.IFC.lowGuardWhileTyped_implies_cmdTyped": [],
+    "Toy.IFC.lowGuardWhileTyped_neg_while_h": [
+      "propext"
+    ],
+    "Toy.IFC.lowGuardWhileTyped_pos_high_if_low_while": [],
+    "Toy.IFC.lowGuardWhileTyped_violates_tsni_witness": [
+      "propext"
+    ],
+    "Toy.IFC.low_ne_high_var": [],
+    "Toy.IFC.mixedHighEnv": [],
+    "Toy.IFC.mixedLowEnv": [],
+    "Toy.IFC.noHighGuardTyped_implies_cmdTyped_low": [],
+    "Toy.IFC.noHighGuardTyped_neg_implicit_flow": [
+      "propext"
+    ],
+    "Toy.IFC.noHighGuardTyped_pos_low_ite": [],
+    "Toy.IFC.noPcTyped_accepts_implicit_flow_violating_tini": [
+      "propext"
+    ],
+    "Toy.IFC.noPcTyped_implicit_flow_nonvacuous": [],
+    "Toy.IFC.noPcTyped_implicit_flow_violates_tsni_witness": [
+      "propext"
+    ],
+    "Toy.IFC.noPcTyped_neg_explicit_flow": [],
+    "Toy.IFC.noPcTyped_pos_implicit_flow": [],
+    "Toy.IFC.noPcTyped_violates_tini_witness": [
+      "propext"
+    ],
+    "Toy.IFC.nonEmptyTraceSet": [],
+    "Toy.IFC.nonEmptyTraceSet_not_subsetClosed": [
+      "propext"
+    ],
+    "Toy.IFC.nondet_existential_tsni_not_tini": [
+      "propext"
+    ],
+    "Toy.IFC.outcomeBehavior": [],
+    "Toy.IFC.outcomeBehavior.match_1": [],
+    "Toy.IFC.outcomeBehavior_neg_assign_none": [],
+    "Toy.IFC.outcomeBehavior_neg_wrong_final": [
+      "propext"
+    ],
+    "Toy.IFC.outcomeBehavior_pos_assign": [],
+    "Toy.IFC.outcomeBehavior_pos_while_one": [
+      "propext"
+    ],
+    "Toy.IFC.pcLowWhileTyped_allows_termination_channel": [
+      "propext"
+    ],
+    "Toy.IFC.pcLowWhileTyped_implies_cmdTyped": [],
+    "Toy.IFC.pcLowWhileTyped_neg_high_if_low_while": [
+      "propext"
+    ],
+    "Toy.IFC.pcLowWhileTyped_pos_while_h": [],
+    "Toy.IFC.pcLowWhileTyped_violates_tsni_witness": [
+      "propext"
+    ],
+    "Toy.IFC.probeProg": [],
+    "Toy.IFC.probeProg_cmdTyped": [],
+    "Toy.IFC.probeProg_terminates_iff": [
+      "propext"
+    ],
+    "Toy.IFC.probeProg_termination_profile_determines_secret": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IFC.sampleTsProg": [],
+    "Toy.IFC.sampleTypedProg": [],
+    "Toy.IFC.storeHighOne": [],
+    "Toy.IFC.storeHighOne.eq_1": [],
+    "Toy.IFC.storeLowOne": [],
+    "Toy.IFC.storeLowOne.eq_1": [],
+    "Toy.IFC.storeZero": [],
+    "Toy.IFC.storeZero.eq_1": [],
+    "Toy.IFC.subSelf_tini_not_cmdTyped": [
+      "propext"
+    ],
+    "Toy.IFC.subsetClosed_neg_nonEmpty": [],
+    "Toy.IFC.subsetClosed_neg_tsniHyperprop": [
+      "propext"
+    ],
+    "Toy.IFC.subsetClosed_pos_tiniHyperprop": [
+      "propext"
+    ],
+    "Toy.IFC.termChannelProg": [],
+    "Toy.IFC.termChannelProg_low_guard_satisfies_tsni": [],
+    "Toy.IFC.termChannelProg_low_guard_satisfies_tsni.match_1_1": [],
+    "Toy.IFC.termChannelProg_low_guard_satisfies_tsni.match_1_3": [],
+    "Toy.IFC.termChannelProg_low_guard_satisfies_tsni_pcLow": [],
+    "Toy.IFC.termChannelProg_low_guard_satisfies_tsni_pcLow.match_1_1": [],
+    "Toy.IFC.termChannelProg_rejected_by_tsTyped": [
+      "propext"
+    ],
+    "Toy.IFC.terminates_neg_while_one": [
+      "propext"
+    ],
+    "Toy.IFC.terminates_pos_assign": [],
+    "Toy.IFC.timingExample_tsTyped": [],
+    "Toy.IFC.tiniHyperprop": [],
+    "Toy.IFC.tiniHyperprop_isTwoSafety": [],
+    "Toy.IFC.tiniHyperprop_isTwoSafety_nonvacuous": [
+      "propext"
+    ],
+    "Toy.IFC.tiniHyperprop_neg_explicit_flow": [
+      "propext"
+    ],
+    "Toy.IFC.tiniHyperprop_not_oneSafety": [
+      "propext"
+    ],
+    "Toy.IFC.tiniHyperprop_pos_skip": [],
+    "Toy.IFC.tiniHyperprop_subsetClosed": [
+      "propext"
+    ],
+    "Toy.IFC.tiniRel": [],
+    "Toy.IFC.tini_iff_tiniHyperprop": [],
+    "Toy.IFC.tini_neg_explicit_flow": [
+      "propext"
+    ],
+    "Toy.IFC.tini_pos_high_branch_high_write": [
+      "propext"
+    ],
+    "Toy.IFC.tini_two_not_one": [
+      "propext"
+    ],
+    "Toy.IFC.tsTyped_high_total": [],
+    "Toy.IFC.tsTyped_implies_cmdTyped": [],
+    "Toy.IFC.tsTyped_implies_lowGuardWhileTyped": [],
+    "Toy.IFC.tsTyped_implies_pcLowWhileTyped": [],
+    "Toy.IFC.tsTyped_implies_tsni": [
+      "propext"
+    ],
+    "Toy.IFC.tsTyped_implies_tsni_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IFC.tsTyped_neg_high_if_low_while": [
+      "propext"
+    ],
+    "Toy.IFC.tsTyped_neg_while_h": [
+      "propext"
+    ],
+    "Toy.IFC.tsTyped_pos_sampleTsProg": [],
+    "Toy.IFC.tsniHyperprop": [],
+    "Toy.IFC.tsniHyperprop_all_low_isTwoSafety": [
+      "Quot.sound"
+    ],
+    "Toy.IFC.tsniHyperprop_all_low_isTwoSafety_witness": [
+      "Quot.sound"
+    ],
+    "Toy.IFC.tsniHyperprop_all_low_subsetClosed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IFC.tsniHyperprop_all_low_subsetClosed_witness": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IFC.tsniHyperprop_neg_while_h": [
+      "propext"
+    ],
+    "Toy.IFC.tsniHyperprop_pos_skip": [],
+    "Toy.IFC.tsniHyperprop_termPairs_not_subsetClosed_of_high_var": [
+      "propext"
+    ],
+    "Toy.IFC.tsniHyperprop_termPairs_not_subsetClosed_of_high_var.match_1_1": [],
+    "Toy.IFC.tsniHyperprop_termPairs_not_twoSafety_of_high_var": [
+      "propext"
+    ],
+    "Toy.IFC.tsniOutHyperprop": [
+      "propext"
+    ],
+    "Toy.IFC.tsniOutHyperprop_isTwoSafety": [
+      "propext"
+    ],
+    "Toy.IFC.tsniOutHyperprop_neg_while_h": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IFC.tsniOutHyperprop_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IFC.tsniOutHyperprop_pos_skip": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IFC.tsniOutHyperprop_subsetClosed": [
+      "propext"
+    ],
+    "Toy.IFC.tsniOutRel": [
+      "propext"
+    ],
+    "Toy.IFC.tsniOutRel.match_1": [
+      "propext"
+    ],
+    "Toy.IFC.tsni_char_nonvacuous": [
+      "propext"
+    ],
+    "Toy.IFC.tsni_char_nonvacuous.match_1_1": [],
+    "Toy.IFC.tsni_iff_tini_and_coterminates": [],
+    "Toy.IFC.tsni_iff_tsniHyperprop": [],
+    "Toy.IFC.tsni_iff_tsniOutHyperprop": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IFC.tsni_iff_tsniOutHyperprop.match_1_1": [],
+    "Toy.IFC.tsni_neg_while_h": [
+      "propext"
+    ],
+    "Toy.IFC.tsni_pos_low_inc": [
+      "propext"
+    ],
+    "Toy.IFC.twoVarEnv": [],
+    "Toy.IFC.twoVarEnv.eq_1": [],
+    "Toy.IFC.twoVarEnv.eq_2": [],
+    "Toy.IFC.untyped_explicit_flow_violates_tini": [
+      "propext"
+    ],
+    "Toy.IFC.untyped_explicit_flow_violates_tiniHyperprop": [
+      "propext"
+    ],
+    "Toy.IFC.untyped_explicit_flow_violates_tsni": [
+      "propext"
+    ],
+    "Toy.IFC.whileHZero": [],
+    "Toy.IFC.whileHZero_cmdTyped_high": [],
+    "Toy.IFC.whileHZero_tsni_not_tsTyped": [
+      "propext"
+    ],
+    "Toy.IFC.whileLeakProg": [],
+    "Toy.IFC.whileLeakProg_guard_low_satisfies_tini": [
+      "propext"
+    ],
+    "Toy.IFC.whileLeakProg_guard_low_satisfies_tini.match_1_1": [],
+    "Toy.IFC.whileLeakProg_rejected_by_cmdTyped": [],
+    "Toy.IFC.whileLeakProg_target_high_satisfies_tini": [
+      "propext"
+    ],
+    "Toy.IFC.whileLeakProg_target_high_satisfies_tini.match_1_1": [],
+    "Toy.IFC.whileNoPcTyped_accepts_leak_violating_tini": [
+      "propext"
+    ],
+    "Toy.IFC.whileNoPcTyped_implies_noPcTyped": [],
+    "Toy.IFC.whileNoPcTyped_neg_implicit_flow": [],
+    "Toy.IFC.whileNoPcTyped_pos_whileLeakProg": [],
+    "Toy.IFC.whileNoPcTyped_violates_tini_witness": [
+      "propext"
+    ],
+    "Toy.IFC.whileOne_tsTyped_low_not_high": [],
+    "Toy.IFC.while_ablations_incomparable": [
+      "propext"
+    ],
+    "Toy.IFC.while_skip_no_eval": [],
+    "Toy.IFC.zeroStore": [],
+    "Toy.IFC.zeroStore.eq_1": [],
+    "Toy.IFC.\u00abterm_\u2294_\u00bb": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

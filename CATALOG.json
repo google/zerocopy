@@ -31948,6 +31948,146 @@
         "compilers/surface-syntax-diagnostics"
       ]
     },
+    "information-flow-typing-noninterference-and-termination-channels": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/359636.359712"
+          },
+          "name": "Certification of programs for secure information flow (Denning and Denning, CACM 1977)"
+        },
+        {
+          "identity": {
+            "doi": "10.3233/JCS-1996-42-304"
+          },
+          "name": "A sound type system for secure flow analysis (Volpano, Irvine, and Smith, JCS 1996)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/CSFW.1997.596807"
+          },
+          "name": "Eliminating Covert Flows with Minimum Typings (Volpano and Smith, CSFW 1997)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/268946.268975"
+          },
+          "name": "Secure information flow in a multi-threaded imperative language (Smith and Volpano, POPL 1998)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/325694.325702"
+          },
+          "name": "Transforming out timing leaks (Agat, POPL 2000)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/JSAC.2002.806121"
+          },
+          "name": "Language-based information-flow security (Sabelfeld and Myers, IEEE JSAC 2003)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/CSFW.2004.1310735",
+            "journal_doi": "10.1017/S0960129511000193"
+          },
+          "name": "Secure Information Flow by Self-Composition (Barthe, D'Argenio, and Rezk, CSFW 2004 / MSCS 2011)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/11547662_24"
+          },
+          "name": "Secure Information Flow as a Safety Problem (Terauchi and Aiken, SAS 2005)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1111037.1111045"
+          },
+          "name": "On flow-sensitive security types (Hunt and Sands, POPL 2006)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-540-88313-5_22"
+          },
+          "name": "Termination-Insensitive Noninterference Leaks More Than Just a Bit (Askarov, Hunt, Sabelfeld, and Sands, ESORICS 2008)"
+        },
+        {
+          "identity": {
+            "doi": "10.3233/JCS-2009-0393"
+          },
+          "name": "Hyperproperties (Clarkson and Schneider, JCS 2010)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-10542-0_9"
+          },
+          "name": "Concrete Semantics: With Isabelle/HOL, Chapter 9: Types (Nipkow and Klein, Springer 2014)"
+        },
+        {
+          "identity": {
+            "mirror_repository": "isabelle-prover/mirror-afp-devel",
+            "mirror_revision": "523cdc72b5ae4a91c9ab8e1025d4a30b40472720",
+            "path": "thys/VolpanoSmith",
+            "url": "https://isa-afp.org/entries/VolpanoSmith.html"
+          },
+          "name": "A Correctness Proof for the Volpano/Smith Security Typing System (Snelting and Wasserrab, Archive of Formal Proofs 2008)"
+        },
+        {
+          "identity": {
+            "mirror_repository": "isabelle-prover/mirror-afp-devel",
+            "mirror_revision": "523cdc72b5ae4a91c9ab8e1025d4a30b40472720",
+            "path": "thys/SIFPL",
+            "url": "https://isa-afp.org/entries/SIFPL.html"
+          },
+          "name": "Secure information flow and program logics (Beringer and Hofmann, Archive of Formal Proofs 2008)"
+        },
+        {
+          "identity": {
+            "mirror_repository": "isabelle-prover/mirror-afp-devel",
+            "mirror_revision": "523cdc72b5ae4a91c9ab8e1025d4a30b40472720",
+            "path": "thys/IMP_Noninterference",
+            "url": "https://isa-afp.org/entries/IMP_Noninterference.html"
+          },
+          "name": "Information Flow Control via Stateful Intransitive Noninterference in Language IMP (Noce, Archive of Formal Proofs 2024)"
+        },
+        {
+          "identity": {
+            "companion_url": "https://isabelle.in.tum.de/library/HOL/HOL-IMP/Sec_TypingT.html",
+            "mirror_repository": "isabelle-prover/mirror-isabelle",
+            "mirror_revision": "d2ede99d0077d2777ed2b83d084d3aadf93826b5",
+            "path": "src/HOL/IMP",
+            "url": "https://isabelle.in.tum.de/library/HOL/HOL-IMP/Sec_Typing.html"
+          },
+          "name": "Isabelle/HOL HOL-IMP Security Typing Theories (Sec_Typing.thy and Sec_TypingT.thy)"
+        },
+        {
+          "identity": {
+            "url": "https://softwarefoundations.cis.upenn.edu/secf-current/",
+            "version": "1.2 (2026-08-24)"
+          },
+          "name": "Security Foundations, Software Foundations Volume 7, StaticIFC (Hri\u0163cu and Kim et al., Version 1.2)"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/hyperproperties",
+        "security/information-flow",
+        "security/noninterference",
+        "security/covert-channels",
+        "pl/type-systems",
+        "pl/operational-semantics"
+      ]
+    },
     "institution-comorphisms-heterogeneous-logics-and-trace-relating-compilation": {
       "observed_at": "2026-11-19",
       "subjects": [
