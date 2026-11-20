@@ -1,0 +1,847 @@
+[
+  {
+    "id": "R1a",
+    "lean": [
+      "Toy.Farkas.checkFarkas_sound_scaled",
+      "Toy.Farkas.checkFarkas_sound_int",
+      "Toy.Farkas.checkFarkas_sound_scaled_posSupport",
+      "Toy.Farkas.checkFarkas_sound_int_posSupport"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "If the Boolean checker checkFarkas accepts a certificate cert for a finite list S of integer linear constraints (each a . x <= b or a . x < b), then no scaled point (d, p) with d > 0 satisfies S (checkFarkas_sound_scaled), and in particular no integer point satisfies S (checkFarkas_sound_int, the case d = 1); more precisely, already the premises that cert weights positively (posSupport cert S) have no such point (the _posSupport forms).",
+    "modeling_bridge": "derived (modeling bridge): a finite system S mentions finitely many variables, so the restriction of a rational point to them can be written p / d with d > 0; hence for finite S 'no scaled point (d, p) with d > 0 satisfies S' corresponds to 'S has no rational solution'. This is argued in prose (module documentation of ToyFarkas.Constraint), not proved in Lean; no rational number type is used.",
+    "hypotheses": [
+      {
+        "name": "h : checkFarkas S cert = true",
+        "purpose": "the certificate is accepted",
+        "tightness": "tight",
+        "counterexample": "Toy.Farkas.ce_checkFarkas_rejected_satisfiable"
+      },
+      {
+        "name": "hd : 0 < d (scaled forms only)",
+        "purpose": "the scaled pair (d, p) denotes the rational point p / d only for a positive denominator",
+        "tightness": "tight",
+        "counterexample": "Toy.Farkas.ce_farkas_denominator_zero"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "checkFarkas accepts (1, 1) for {x0 <= 1, -x0 <= -2} and for the strictness-dependent {x0 < 1, -x0 <= -1}, and d = 1 > 0; with an extra premise x1 <= -7 weighted 0, the positive support is {x0 <= 1, -x0 <= -2}.",
+    "nonvacuity_witness_lean": [
+      "Toy.Farkas.nv_checkFarkas_sound_scaled",
+      "Toy.Farkas.nv_checkFarkas_sound",
+      "Toy.Farkas.nv_checkFarkas_sound_posSupport"
+    ],
+    "non_claims": [
+      "Does not show completeness: that every system without a scaled solution has an accepted certificate is the separate result R4a.",
+      "Does not reject length-mismatched certificates: multiplier k is paired with constraint k by List.zipWith, so constraints without a multiplier get multiplier 0 and surplus multipliers are ignored by the combination (though still checked to be non-negative).",
+      "The rational reading is by scaling: a point is a pair (d, p) with d > 0 standing for p / d. No rational number type is used; the correspondence with rational points (finite systems only) is the separate modeling-bridge claim, not a Lean theorem.",
+      "Does not concern rational-coefficient input: constraints have Int coefficients and right-hand sides; a rational constraint must first be scaled by a positive integer, and that scaling step is not modeled.",
+      "Does not model equality (=) or disequality (!=) constraints: Rel contains only <= and <. An equality a . x = b must be encoded as two inequalities a . x <= b and -a . x <= -b; disequalities require disjunctive reasoning.",
+      "Does not say anything about bit-vector (machine-integer) semantics; see R6e/R6f for the range facts needed."
+    ],
+    "prior_art": [
+      "Julius Farkas, 'Theorie der einfachen Ungleichungen', Journal für die reine und angewandte Mathematik 124 (1902), pp. 1-27, DOI 10.1515/crll.1902.124.1 (non-strict linear inequalities).",
+      "Theodore S. Motzkin, 'Beiträge zur Theorie der linearen Ungleichungen', doctoral dissertation, University of Basel; printed by Azriel, Jerusalem, 1936 (the transposition theorem for systems mixing strict and non-strict inequalities; bibliographic record checked via secondary sources, the German text was not read).",
+      "Alexander Schrijver, Theory of Linear and Integer Programming, John Wiley & Sons, 1986 (paperback reprint 1998, ISBN 978-0-471-98232-6; chapter list checked on the publisher's page): Chapter 7 'Fundamental concepts and results on polyhedra, linear inequalities, and linear programming' (Farkas' lemma and its variants), Chapter 12 'Primal-dual, elimination, and relaxation methods' (includes elimination), Chapter 23 'Cutting planes'. Specific theorem numbers were not checked against the book.",
+      "Ralph Bottesch, Max W. Haslbeck, René Thiemann, 'Farkas' Lemma and Motzkin's Transposition Theorem', Archive of Formal Proofs, January 17, 2019, https://isa-afp.org/entries/Farkas.html (Isabelle/HOL, via a verified simplex algorithm: a set of linear constraints is unsatisfiable iff some linear combination of them evaluates to a trivially unsatisfiable inequality; covers mixed strict/non-strict systems).",
+      "Ralph Bottesch, Alban Reynaud, René Thiemann, 'Linear Inequalities', Archive of Formal Proofs, June 21, 2019, https://isa-afp.org/entries/Linear_Inequalities.html (Isabelle/HOL: fundamental theorem of linear inequalities, Farkas' lemma, Carathéodory's theorem, Farkas-Minkowsky-Weyl theorem, decomposition theorem of polyhedra, Meyer's integer-hull result).",
+      "Mathlib, leanprover-community/mathlib4 commit b679ac024dccdf39b1be683d5890c072b58ae8d0, Mathlib/Analysis/Convex/Cone/Dual.lean: Farkas' lemma in geometric form for proper cones in locally convex real topological vector spaces (ProperCone.hyperplane_separation, ProperCone.hyperplane_separation_point); real-valued, not a certificate checker.",
+      "Xavier Allamigeon, Ricardo D. Katz, 'A Formalization of Convex Polyhedra Based on the Simplex Method', Journal of Automated Reasoning 63 (2019), pp. 323-345, DOI 10.1007/s10817-018-9477-1 (Coq formalization of convex polyhedra via the simplex method; metadata checked via Crossref, full text not read).",
+      "Mathlib, leanprover-community/mathlib4 commit b679ac024dccdf39b1be683d5890c072b58ae8d0, Mathlib/Tactic/Linarith/Frontend.lean module docstring: an untrusted oracle (simplex by default, Fourier–Motzkin optional) searches for natural-number coefficients k_i with sum k_i t_i = 0 and k_i > 0 for at least one strict hypothesis; the certificate is checked by building a proof term (not by reflection); over Int, linarith 'will fail to prove False on some unsatisfiable problems'.",
+      "Haniel Barbosa, Mathias Fleury, Pascal Fontaine, Hans-Jörg Schurr, 'The Alethe Proof Format: An Evolving Specification and Reference', online specification https://verit.gitlabpages.uliege.be/alethe/specification.pdf (typeset March 31, 2026; accessed 2026-11-20), rule la_generic: one rational coefficient per literal, inequalities multiplied by the coefficient's absolute value; step 4 strengthens each individual (negated, normalized) input literal when all its variables are integer-sorted (a strict bound > d becomes >= d + 1, a non-integer bound is rounded), before the multiplication; the specification remarks that after strengthening the conjunction is unsatisfiable 'even if integer variables are assumed to be real variables'; the sum must be a trivial contradiction. The specification has no Chvátal–Gomory cutting-plane rule.",
+      "Bruno Andreotti, Hanna Lachnitt, Haniel Barbosa, 'Carcara: An Efficient Proof Checker and Elaborator for SMT Proofs in the Alethe Format', TACAS 2023, LNCS 13993, Springer, 2023, pp. 367-386, DOI 10.1007/978-3-031-30823-9_19 (an independent checker for Alethe proofs; metadata checked via Crossref, full text not read).",
+      "Rocq Stdlib, rocq-prover/stdlib commit f50ccefc570f6b815874df96bb3b872611cfaf0e, theories/micromega/ZMicromega.v: certificate type ZArithProof with constructors DoneProof, RatProof, CutProof, SplitProof, deprecated_EnumProof, ExProof; genCuttingPlane divides a constraint by the gcd of its coefficients and rounds the constant, first rewriting a strict e > 0 as e - 1 >= 0; ZChecker_sound proves the checker sound in Coq/Rocq.",
+      "Frédéric Besson, 'Fast Reflexive Arithmetic Tactics the Linear Case and Beyond', in Types for Proofs and Programs (TYPES 2006), LNCS 4502, Springer, 2007, pp. 48-62, DOI 10.1007/978-3-540-74464-1_4 (abstract: certificates of infeasibility for quantifier-free linear and non-linear integer arithmetic are produced by off-the-shelf algorithms and validated in Coq by reflexive checkers; full text not read)."
+    ],
+    "design_question": "What exactly does accepting a Farkas certificate guarantee, and which checker side conditions (non-negative multipliers, a dense zero test, strictness bookkeeping, positive denominators) carry that guarantee?",
+    "tier_justification": "Soundness of Farkas certificates is classical (Farkas 1902 for non-strict systems, Motzkin 1936 for mixed strict/non-strict systems) and mechanized (Isabelle AFP; Rocq micromega checker soundness); restated for this checker and representation. The positive-support form is an immediate strengthening recorded because a verifier only needs facts about the premises a certificate uses."
+  },
+  {
+    "id": "R1c",
+    "lean": "Toy.Farkas.farkas_sound_scaled_of_nonneg_of_lhsVanishes_of_rhsContradicts",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "If the multipliers are non-negative, the combined left-hand side Sum lambda_k a_k is the zero form in the dense semantics, and the combined conclusion 0 <= Sum lambda_k b_k (or 0 < ... when some positively weighted premise is strict) is false, then no scaled point (d, p) with d > 0 satisfies S.",
+    "modeling_bridge": "derived (modeling bridge): a finite system S mentions finitely many variables, so the restriction of a rational point to them can be written p / d with d > 0; hence for finite S 'no scaled point (d, p) with d > 0 satisfies S' corresponds to 'S has no rational solution'. This is argued in prose (module documentation of ToyFarkas.Constraint), not proved in Lean; no rational number type is used.",
+    "hypotheses": [
+      {
+        "name": "hnn : multipliersNonneg cert = true",
+        "purpose": "scaling an inequality by a negative multiplier reverses it",
+        "tightness": "tight",
+        "counterexample": "Toy.Farkas.ce_farkas_negative_multiplier"
+      },
+      {
+        "name": "hlhs : lhsVanishes S cert = true",
+        "purpose": "the combination must be variable-free to be trivially false",
+        "tightness": "tight",
+        "counterexample": "Toy.Farkas.ce_farkas_lhs_not_vanishing"
+      },
+      {
+        "name": "hrhs : rhsContradicts S cert = true",
+        "purpose": "the variable-free conclusion must actually be false (0 <= 0 is not)",
+        "tightness": "tight",
+        "counterexample": "Toy.Farkas.ce_farkas_rhs_not_contradicting"
+      },
+      {
+        "name": "hd : 0 < d",
+        "purpose": "positive denominator",
+        "tightness": "tight",
+        "counterexample": "Toy.Farkas.ce_farkas_denominator_zero"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "All three checker conditions hold for {x0 <= 1, -x0 <= -2} with (1, 1), and d = 1 > 0.",
+    "nonvacuity_witness_lean": "Toy.Farkas.nv_farkas_sound_structured",
+    "non_claims": [
+      "Does not show these are the only sound checker designs; it shows each of the four conditions cannot be dropped from this one.",
+      "Strictness is taken only from premises with a positive multiplier; variants that read strictness from any premise or ignore it are unsound (R3b).",
+      "The rational reading is by scaling: a point is a pair (d, p) with d > 0 standing for p / d. No rational number type is used; the correspondence with rational points (finite systems only) is the separate modeling-bridge claim, not a Lean theorem.",
+      "Does not reject length-mismatched certificates: multiplier k is paired with constraint k by List.zipWith, so constraints without a multiplier get multiplier 0 and surplus multipliers are ignored by the combination (though still checked to be non-negative).",
+      "Does not concern rational-coefficient input: constraints have Int coefficients and right-hand sides; a rational constraint must first be scaled by a positive integer, and that scaling step is not modeled.",
+      "Does not model equality (=) or disequality (!=) constraints: Rel contains only <= and <. An equality a . x = b must be encoded as two inequalities a . x <= b and -a . x <= -b; disequalities require disjunctive reasoning.",
+      "Does not apply to wrapping bit-vector semantics without separate range facts; see R6e/R6f."
+    ],
+    "prior_art": [
+      "Julius Farkas, 'Theorie der einfachen Ungleichungen', Journal für die reine und angewandte Mathematik 124 (1902), pp. 1-27, DOI 10.1515/crll.1902.124.1 (non-strict linear inequalities).",
+      "Theodore S. Motzkin, 'Beiträge zur Theorie der linearen Ungleichungen', doctoral dissertation, University of Basel; printed by Azriel, Jerusalem, 1936 (the transposition theorem for systems mixing strict and non-strict inequalities; bibliographic record checked via secondary sources, the German text was not read).",
+      "Alexander Schrijver, Theory of Linear and Integer Programming, John Wiley & Sons, 1986 (paperback reprint 1998, ISBN 978-0-471-98232-6; chapter list checked on the publisher's page): Chapter 7 'Fundamental concepts and results on polyhedra, linear inequalities, and linear programming' (Farkas' lemma and its variants), Chapter 12 'Primal-dual, elimination, and relaxation methods' (includes elimination), Chapter 23 'Cutting planes'. Specific theorem numbers were not checked against the book.",
+      "Ralph Bottesch, Max W. Haslbeck, René Thiemann, 'Farkas' Lemma and Motzkin's Transposition Theorem', Archive of Formal Proofs, January 17, 2019, https://isa-afp.org/entries/Farkas.html (Isabelle/HOL, via a verified simplex algorithm: a set of linear constraints is unsatisfiable iff some linear combination of them evaluates to a trivially unsatisfiable inequality; covers mixed strict/non-strict systems).",
+      "Ralph Bottesch, Alban Reynaud, René Thiemann, 'Linear Inequalities', Archive of Formal Proofs, June 21, 2019, https://isa-afp.org/entries/Linear_Inequalities.html (Isabelle/HOL: fundamental theorem of linear inequalities, Farkas' lemma, Carathéodory's theorem, Farkas-Minkowsky-Weyl theorem, decomposition theorem of polyhedra, Meyer's integer-hull result).",
+      "Haniel Barbosa, Mathias Fleury, Pascal Fontaine, Hans-Jörg Schurr, 'The Alethe Proof Format: An Evolving Specification and Reference', online specification https://verit.gitlabpages.uliege.be/alethe/specification.pdf (typeset March 31, 2026; accessed 2026-11-20), rule la_generic: one rational coefficient per literal, inequalities multiplied by the coefficient's absolute value; step 4 strengthens each individual (negated, normalized) input literal when all its variables are integer-sorted (a strict bound > d becomes >= d + 1, a non-integer bound is rounded), before the multiplication; the specification remarks that after strengthening the conjunction is unsatisfiable 'even if integer variables are assumed to be real variables'; the sum must be a trivial contradiction. The specification has no Chvátal–Gomory cutting-plane rule.",
+      "Mathlib, leanprover-community/mathlib4 commit b679ac024dccdf39b1be683d5890c072b58ae8d0, Mathlib/Tactic/Linarith/Frontend.lean module docstring: an untrusted oracle (simplex by default, Fourier–Motzkin optional) searches for natural-number coefficients k_i with sum k_i t_i = 0 and k_i > 0 for at least one strict hypothesis; the certificate is checked by building a proof term (not by reflection); over Int, linarith 'will fail to prove False on some unsatisfiable problems'."
+    ],
+    "design_question": "What exactly does accepting a Farkas certificate guarantee, and which checker side conditions (non-negative multipliers, a dense zero test, strictness bookkeeping, positive denominators) carry that guarantee?",
+    "tier_justification": "Known result (Farkas 1902; Motzkin 1936 for strictness) restated for this checker and representation, with each checker condition separated."
+  },
+  {
+    "id": "R2a",
+    "lean": [
+      "Toy.Farkas.SparseVec.eval_eq_denseDotOn_coeff_of_nodup_of_keys_mem",
+      "Toy.Farkas.SparseVec.eval_eq_denseDot_coeff_of_keys_lt"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For a sparse linear form v (an association list that may repeat indices) and any duplicate-free index list ks containing every index of v, evaluating v at x equals the dense dot product Sum_{i in ks} coeff v i * x i, where coeff v i sums all coefficients recorded for i; the corollary takes ks = [0, ..., n-1] when every index of v is < n.",
+    "hypotheses": [
+      {
+        "name": "hnd : ks.Nodup (general form only)",
+        "purpose": "an index listed twice would be counted twice",
+        "tightness": "tight",
+        "counterexample": "Toy.Farkas.ce_eval_eq_denseDotOn_duplicate_index_list"
+      },
+      {
+        "name": "hmem : every index of v occurs in ks (general form only)",
+        "purpose": "an index missing from ks would be dropped",
+        "tightness": "tight",
+        "counterexample": "Toy.Farkas.ce_eval_eq_denseDotOn_missing_index"
+      },
+      {
+        "name": "h : every index of v is < n (range corollary only)",
+        "purpose": "an index >= n would be dropped",
+        "tightness": "tight",
+        "counterexample": "Toy.Farkas.ce_eval_eq_denseDot_index_out_of_range"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "v = [(0,2),(1,-3),(0,1)], ks = [1,0], x i = i + 4; range form with indices < 3.",
+    "nonvacuity_witness_lean": [
+      "Toy.Farkas.nv_eval_eq_denseDotOn",
+      "Toy.Farkas.nv_eval_eq_denseDot"
+    ],
+    "non_claims": [
+      "Does not concern normalization: no canonical sorted or duplicate-free sparse form is defined or claimed.",
+      "Says nothing about efficiency of either representation."
+    ],
+    "prior_art": [
+      "Mathlib, leanprover-community/mathlib4 commit b679ac024dccdf39b1be683d5890c072b58ae8d0, Mathlib/Tactic/Linarith/Datatypes.lean: `abbrev Linexp : Type := List (Nat × Int)`, a sparse linear form as an association list; its docstring states that some functions assume each index occurs at most once and that the list is sorted in decreasing index order, an invariant 'not enforced by the type' but preserved by the operations (Linexp.get stops at the first smaller key).",
+      "Lean 4 core, leanprover/lean4 tag v4.34.1 (commit 5045d0056413266e57c625dcd7c365b10e377c52), src/Init/Omega/Constraint.lean and src/Init/Omega/Coeffs.lean: `Lean.Omega.Constraint.div` divides a two-sided bound constraint by a natural number k, rounding the upper bound down and the lower bound up; `Lean.Omega.Constraint.div_sat` proves the divided constraint holds at t / k when k ≠ 0 divides t, and `div_sat'` uses the gcd of the coefficients (integer GCD tightening inside omega's proof-producing procedure); Coeffs.lean notes that omega uses a dense coefficient list and that a sparse `AssocList Nat Int` representation is an alternative.",
+      "Filip Marić, Mirko Spasić, René Thiemann, 'An Incremental Simplex Algorithm with Unsatisfiable Core Generation', Archive of Formal Proofs, August 24, 2018, https://isa-afp.org/entries/Simplex.html (Isabelle/HOL incremental simplex with unsatisfiable cores; its session includes theories Abstract_Linear_Poly and Linear_Poly_Maps, a representation of linear polynomials; contents of those theories not examined beyond their names).",
+      "René Thiemann (with contributions from Manuel Eberl), 'A Preprocessor for Linear Diophantine Equalities and Inequalities', Archive of Formal Proofs, June 13, 2024, https://isa-afp.org/entries/Linear_Diophantine_Preprocessor.html (abstract: Pugh's technique of tightening linear inequalities, detection of implicit equalities, and elimination of equations; the result either detects unsatisfiability over Z or returns equisatisfiable inequalities; session theories include Linear_Polynomial, Linear_Polynomial_Impl, Diophantine_Tightening)."
+    ],
+    "design_question": "Can a certificate checker work on unnormalized sparse combinations, and which zero test is sound for them?",
+    "tier_justification": "Elementary identity for association-list linear forms; sparse linear-form representations with evaluation are standard in verified and proof-producing arithmetic code (Mathlib Linexp, Lean omega Coeffs, Isabelle AFP Simplex and Linear_Diophantine_Preprocessor). No search for a mechanized statement of exactly this form was made; the tier does not depend on one."
+  },
+  {
+    "id": "R2b",
+    "lean": [
+      "Toy.Farkas.combineLhs_coeff",
+      "Toy.Farkas.combineLhs_eval"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "The unnormalized sparse combination combineLhs S cert (concatenated scaled premises) has, at each index i, dense coefficient Sum_k lambda_k * coeff(a_k, i), and its value at x is Sum_k lambda_k * (a_k . x), with multiplier k paired with constraint k.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Combining {x0 <= 1, -x0 <= -2} with (2, 3) gives coefficient 2*1 + 3*(-1) at index 0 and the expected value at x0 = 5.",
+    "nonvacuity_witness_lean": [
+      "Toy.Farkas.nv_combineLhs_coeff",
+      "Toy.Farkas.nv_combineLhs_eval"
+    ],
+    "non_claims": [
+      "Pairing is List.zipWith: unpaired constraints or multipliers are dropped from the sum.",
+      "Says nothing about the size or normal form of the combined list."
+    ],
+    "prior_art": [
+      "Mathlib, leanprover-community/mathlib4 commit b679ac024dccdf39b1be683d5890c072b58ae8d0, Mathlib/Tactic/Linarith/Datatypes.lean: `abbrev Linexp : Type := List (Nat × Int)`, a sparse linear form as an association list; its docstring states that some functions assume each index occurs at most once and that the list is sorted in decreasing index order, an invariant 'not enforced by the type' but preserved by the operations (Linexp.get stops at the first smaller key).",
+      "Filip Marić, Mirko Spasić, René Thiemann, 'An Incremental Simplex Algorithm with Unsatisfiable Core Generation', Archive of Formal Proofs, August 24, 2018, https://isa-afp.org/entries/Simplex.html (Isabelle/HOL incremental simplex with unsatisfiable cores; its session includes theories Abstract_Linear_Poly and Linear_Poly_Maps, a representation of linear polynomials; contents of those theories not examined beyond their names)."
+    ],
+    "design_question": "Can a certificate checker work on unnormalized sparse combinations, and which zero test is sound for them?",
+    "tier_justification": "Linearity of the dense semantics, restated for this representation."
+  },
+  {
+    "id": "R2d",
+    "lean": "Toy.Farkas.SparseVec.isZero_iff_coeff_eq_zero",
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "The decidable zero test isZero v (every mentioned index has total coefficient 0) holds exactly when the dense coefficient function of v is identically zero.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "[(3,2),(3,-2)] is non-empty yet isZero, and its coefficient at 3 is 0.",
+    "nonvacuity_witness_lean": "Toy.Farkas.nv_isZero_iff",
+    "non_claims": [
+      "Index-blind (sum of all coefficients) and first-match zero tests are not equivalent and are unsound inside a checker (R3f).",
+      "Characterizes vanishing of the integer coefficient function (equivalently, vanishing of eval at all Int points), not vanishing over finite rings or BitVec w: over BitVec 8, the nonzero form 256 * x0 evaluates to 0#8 everywhere while isZero returns false (ex_isZero_not_bitvector_vanishing).",
+      "Says nothing about efficiency (the test is quadratic in the list length)."
+    ],
+    "prior_art": [
+      "Mathlib, leanprover-community/mathlib4 commit b679ac024dccdf39b1be683d5890c072b58ae8d0, Mathlib/Tactic/Linarith/Datatypes.lean: `abbrev Linexp : Type := List (Nat × Int)`, a sparse linear form as an association list; its docstring states that some functions assume each index occurs at most once and that the list is sorted in decreasing index order, an invariant 'not enforced by the type' but preserved by the operations (Linexp.get stops at the first smaller key).",
+      "Filip Marić, Mirko Spasić, René Thiemann, 'An Incremental Simplex Algorithm with Unsatisfiable Core Generation', Archive of Formal Proofs, August 24, 2018, https://isa-afp.org/entries/Simplex.html (Isabelle/HOL incremental simplex with unsatisfiable cores; its session includes theories Abstract_Linear_Poly and Linear_Poly_Maps, a representation of linear polynomials; contents of those theories not examined beyond their names)."
+    ],
+    "design_question": "Can a certificate checker work on unnormalized sparse combinations, and which zero test is sound for them?",
+    "tier_justification": "Elementary property of the dense semantics, restated for this representation."
+  },
+  {
+    "id": "R3a",
+    "lean": "Toy.Farkas.ce_farkas_negative_multiplier",
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "With multipliers (1, -1) the satisfiable system {x0 <= 1, x0 <= 2} combines to 0 <= -1: the left-hand side vanishes and the conclusion contradicts, with d = 1 > 0, yet x0 = 0 is a solution; only the non-negativity check fails.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "",
+    "non_claims": [
+      "Does not show that negative multipliers are useless in other certificate formats: formats with equality constraints allow arbitrary-sign multipliers on equalities; this checker has no equality constraints.",
+      "Alethe's la_generic uses the absolute value of each coefficient for inequalities, a different way to enforce the sign condition; not modeled."
+    ],
+    "prior_art": [
+      "Julius Farkas, 'Theorie der einfachen Ungleichungen', Journal für die reine und angewandte Mathematik 124 (1902), pp. 1-27, DOI 10.1515/crll.1902.124.1 (non-strict linear inequalities).",
+      "Haniel Barbosa, Mathias Fleury, Pascal Fontaine, Hans-Jörg Schurr, 'The Alethe Proof Format: An Evolving Specification and Reference', online specification https://verit.gitlabpages.uliege.be/alethe/specification.pdf (typeset March 31, 2026; accessed 2026-11-20), rule la_generic: one rational coefficient per literal, inequalities multiplied by the coefficient's absolute value; step 4 strengthens each individual (negated, normalized) input literal when all its variables are integer-sorted (a strict bound > d becomes >= d + 1, a non-integer bound is rounded), before the multiplication; the specification remarks that after strengthening the conjunction is unsatisfiable 'even if integer variables are assumed to be real variables'; the sum must be a trivial contradiction. The specification has no Chvátal–Gomory cutting-plane rule.",
+      "Mathlib, leanprover-community/mathlib4 commit b679ac024dccdf39b1be683d5890c072b58ae8d0, Mathlib/Tactic/Linarith/Frontend.lean module docstring: an untrusted oracle (simplex by default, Fourier–Motzkin optional) searches for natural-number coefficients k_i with sum k_i t_i = 0 and k_i > 0 for at least one strict hypothesis; the certificate is checked by building a proof term (not by reflection); over Int, linarith 'will fail to prove False on some unsatisfiable problems'."
+    ],
+    "design_question": "What exactly does accepting a Farkas certificate guarantee, and which checker side conditions (non-negative multipliers, a dense zero test, strictness bookkeeping, positive denominators) carry that guarantee?",
+    "tier_justification": "Textbook necessity of the sign condition, as a concrete instance."
+  },
+  {
+    "id": "R3b",
+    "lean": [
+      "Toy.Farkas.ce_farkas_strictness_ignored",
+      "Toy.Farkas.ce_farkas_strict_flag_from_zero_weight"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "Two strictness-bookkeeping errors make a Farkas checker unsound: (1) treating every combined conclusion as strict accepts 0 <= 0 as contradictory and 'certifies' the satisfiable {x0 <= 1, -x0 <= -1} with (1, 1), which rhsContradicts and checkFarkas both reject; (2) declaring the combination strict whenever some premise is strict, even one with multiplier 0, 'certifies' the satisfiable {x0 <= 1, -x0 <= -1, x1 < 5} with (1, 1, 0), which rhsContradicts rejects, and hence so does checkFarkas (its definition requires rhsContradicts = true; this last step follows by unfolding checkFarkas and is not a separate conjunct of ce_farkas_strict_flag_from_zero_weight).",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "",
+    "non_claims": [
+      "Treating strict premises as non-strict is the opposite mismatch; it is sound but incomplete and is not a counterexample to soundness.",
+      "Does not cover other strictness encodings, such as the infinitesimal-delta bounds used by simplex-based solvers (Dutertre and de Moura 2006)."
+    ],
+    "prior_art": [
+      "Mathlib, leanprover-community/mathlib4 commit b679ac024dccdf39b1be683d5890c072b58ae8d0, Mathlib/Tactic/Linarith/Frontend.lean module docstring: an untrusted oracle (simplex by default, Fourier–Motzkin optional) searches for natural-number coefficients k_i with sum k_i t_i = 0 and k_i > 0 for at least one strict hypothesis; the certificate is checked by building a proof term (not by reflection); over Int, linarith 'will fail to prove False on some unsatisfiable problems'.",
+      "Ralph Bottesch, Max W. Haslbeck, René Thiemann, 'Farkas' Lemma and Motzkin's Transposition Theorem', Archive of Formal Proofs, January 17, 2019, https://isa-afp.org/entries/Farkas.html (Isabelle/HOL, via a verified simplex algorithm: a set of linear constraints is unsatisfiable iff some linear combination of them evaluates to a trivially unsatisfiable inequality; covers mixed strict/non-strict systems).",
+      "Theodore S. Motzkin, 'Beiträge zur Theorie der linearen Ungleichungen', doctoral dissertation, University of Basel; printed by Azriel, Jerusalem, 1936 (the transposition theorem for systems mixing strict and non-strict inequalities; bibliographic record checked via secondary sources, the German text was not read).",
+      "Bruno Dutertre and Leonardo de Moura, 'A Fast Linear-Arithmetic Solver for DPLL(T)', CAV 2006, LNCS 4144, pp. 81-94, DOI 10.1007/11817963_11 (simplex-based solver for DPLL(T); strict inequalities are handled with bounds over rationals extended by a symbolic infinitesimal delta, e.g. x < b as x <= b - delta, rather than by a strictness flag on Farkas combinations; metadata via Crossref, the delta mechanism confirmed from secondary descriptions, full text not read)."
+    ],
+    "design_question": "What exactly does accepting a Farkas certificate guarantee, and which checker side conditions (non-negative multipliers, a dense zero test, strictness bookkeeping, positive denominators) carry that guarantee?",
+    "tier_justification": "The positive-multiplier-on-a-strict-premise condition is part of Motzkin's transposition theorem and of linarith's certificate condition; concrete instances of violating it."
+  },
+  {
+    "id": "R3d",
+    "lean": "Toy.Farkas.checkFarkasTightened_sound_int",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "If checkFarkas accepts a certificate for the integer-tightened system (each strict a . x < b replaced by a . x <= b - 1), then the original system has no integer solution x : Nat -> Int.",
+    "hypotheses": [
+      {
+        "name": "h : checkFarkasTightened S cert = true",
+        "purpose": "the certificate is accepted for the tightened system",
+        "tightness": "tight",
+        "counterexample": "Toy.Farkas.ce_checkFarkasTightened_rejects_satisfiable"
+      },
+      {
+        "name": "x : Nat -> Int (integral variables, by type)",
+        "purpose": "replacing a . x < b by a . x <= b - 1 is valid only at integer points",
+        "tightness": "tight",
+        "counterexample": "Toy.Farkas.ce_tightening_unsound_over_rat"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "{x0 < 1, -x0 < 0} (0 < x0 < 1) is accepted with (1, 1) after tightening.",
+    "nonvacuity_witness_lean": "Toy.Farkas.nv_checkFarkasTightened",
+    "non_claims": [
+      "Not sound over the rationals: the same certificate is accepted for a rationally satisfiable system (R3e).",
+      "Does not make Farkas certificates complete over Int: on systems with no strict constraints such as {2x0 <= 1, -2x0 <= -1}, checkFarkasTightened is identical to checkFarkas and still rejects every certificate (ce_checkFarkasTightened_incomplete_int, R4b).",
+      "Not sound for mixed-integer (MILP / LIRA) systems: the integer step requires every variable with a nonzero coefficient to be integral (the model has only integer variables x : Nat -> Int); continuous variables must be eliminated or handled by mixed-integer cuts.",
+      "Not sound for wrapping bit-vector constraints: over BitVec w, x <u 0 is unsatisfiable while x <=u (0 - 1) = 2^w - 1 is identically true (ce_bv_tightening_unsound; similarly at the signed minimum -2^(w-1)).",
+      "Does not reject length-mismatched certificates: multiplier k is paired with constraint k by List.zipWith, so constraints without a multiplier get multiplier 0 and surplus multipliers are ignored by the combination (though still checked to be non-negative).",
+      "Does not concern rational-coefficient input: constraints have Int coefficients and right-hand sides; a rational constraint must first be scaled by a positive integer, and that scaling step is not modeled."
+    ],
+    "prior_art": [
+      "Haniel Barbosa, Mathias Fleury, Pascal Fontaine, Hans-Jörg Schurr, 'The Alethe Proof Format: An Evolving Specification and Reference', online specification https://verit.gitlabpages.uliege.be/alethe/specification.pdf (typeset March 31, 2026; accessed 2026-11-20), rule la_generic: one rational coefficient per literal, inequalities multiplied by the coefficient's absolute value; step 4 strengthens each individual (negated, normalized) input literal when all its variables are integer-sorted (a strict bound > d becomes >= d + 1, a non-integer bound is rounded), before the multiplication; the specification remarks that after strengthening the conjunction is unsatisfiable 'even if integer variables are assumed to be real variables'; the sum must be a trivial contradiction. The specification has no Chvátal–Gomory cutting-plane rule.",
+      "Rocq Stdlib, rocq-prover/stdlib commit f50ccefc570f6b815874df96bb3b872611cfaf0e, theories/micromega/ZMicromega.v: certificate type ZArithProof with constructors DoneProof, RatProof, CutProof, SplitProof, deprecated_EnumProof, ExProof; genCuttingPlane divides a constraint by the gcd of its coefficients and rounds the constant, first rewriting a strict e > 0 as e - 1 >= 0; ZChecker_sound proves the checker sound in Coq/Rocq.",
+      "René Thiemann (with contributions from Manuel Eberl), 'A Preprocessor for Linear Diophantine Equalities and Inequalities', Archive of Formal Proofs, June 13, 2024, https://isa-afp.org/entries/Linear_Diophantine_Preprocessor.html (abstract: Pugh's technique of tightening linear inequalities, detection of implicit equalities, and elimination of equations; the result either detects unsatisfiability over Z or returns equisatisfiable inequalities; session theories include Linear_Polynomial, Linear_Polynomial_Impl, Diophantine_Tightening)."
+    ],
+    "design_question": "What exactly does accepting a Farkas certificate guarantee, and which checker side conditions (non-negative multipliers, a dense zero test, strictness bookkeeping, positive denominators) carry that guarantee?",
+    "tier_justification": "Integer strengthening of strict bounds is standard (Alethe la_generic for integer-sorted variables; Rocq micromega's genCuttingPlane, mechanized; Pugh-style tightening in AFP Linear_Diophantine_Preprocessor)."
+  },
+  {
+    "id": "R3e",
+    "lean": "Toy.Farkas.ce_tightening_unsound_over_rat",
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "The tightened checker accepts (1, 1) for {x0 < 1, -x0 < 0}, which the scaled point (d, p) = (2, 1) with d > 0 satisfies (read through the rational modeling bridge: x0 = 1/2); the untightened checker rejects the same certificate. So integer tightening is not sound over scaled points; over integer points it is sound (R3d).",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "",
+    "non_claims": [
+      "Does not show that integer tightening is unsound over Int (it is sound, R3d).",
+      "Integral variables alone are not sufficient for tightening: integer coefficients and an integer right-hand side are also required (e.g., over integral x0, (1/2)x0 < 1 holds at x0 = 1 while (1/2)x0 <= 0 fails); in this model coefficients are Int by construction, so a rational constraint must be scaled to integer coefficients before tightening."
+    ],
+    "prior_art": [
+      "Haniel Barbosa, Mathias Fleury, Pascal Fontaine, Hans-Jörg Schurr, 'The Alethe Proof Format: An Evolving Specification and Reference', online specification https://verit.gitlabpages.uliege.be/alethe/specification.pdf (typeset March 31, 2026; accessed 2026-11-20), rule la_generic: one rational coefficient per literal, inequalities multiplied by the coefficient's absolute value; step 4 strengthens each individual (negated, normalized) input literal when all its variables are integer-sorted (a strict bound > d becomes >= d + 1, a non-integer bound is rounded), before the multiplication; the specification remarks that after strengthening the conjunction is unsatisfiable 'even if integer variables are assumed to be real variables'; the sum must be a trivial contradiction. The specification has no Chvátal–Gomory cutting-plane rule."
+    ],
+    "design_question": "What exactly does accepting a Farkas certificate guarantee, and which checker side conditions (non-negative multipliers, a dense zero test, strictness bookkeeping, positive denominators) carry that guarantee?",
+    "tier_justification": "Textbook fact (strict-to-non-strict strengthening needs integrality), as a concrete instance.",
+    "modeling_bridge": "derived (modeling bridge): the scaled point (d, p) = (2, 1) with d > 0 (pt1 1 is the point with x0 = 1 and all other coordinates 0) stands for the rational point p / d, i.e. x0 = 1/2, so the system that the tightened checker accepts is rationally feasible. The correspondence between scaled points and rational points of a finite system is argued in prose (module documentation of ToyFarkas.Constraint), not proved in Lean; no rational number type is used."
+  },
+  {
+    "id": "R3f",
+    "lean": [
+      "Toy.Farkas.ce_zero_test_index_blind",
+      "Toy.Farkas.ce_zero_test_first_match",
+      "Toy.Farkas.ce_zero_test_first_match_dupfree_inputs"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "Zero tests that ignore the dense semantics make the checker unsound: (1) an index-blind test (all coefficients sum to 0) accepts x0 - x1 and 'certifies' the satisfiable {x0 - x1 <= -1} with (1); (2) a first-match test (read only the first entry per index) accepts [(0,0),(0,1)] and 'certifies' the satisfiable {0*x0 + 1*x0 <= -1} with (1); (3) the first-match failure arises even when every input constraint is duplicate-free: for {x0 <= 0, x0 <= -1} with (0, 1) the combination is [(0,0),(0,1)] and x0 = -1 is a solution. checkFarkas rejects all three.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "",
+    "non_claims": [
+      "Does not claim any deployed checker uses these tests; it shows why the dense semantics (R2d) is the right zero test.",
+      "Only relevant when the combined form combineLhs S cert can contain duplicate indices. Duplicate-free input constraints do not make first-match lookup safe, because combineLhs concatenates scaled premises and multiplying by 0 inserts (i, 0) entries ahead of nonzero entries for the same index; first-match lookup is sound only if the combined linear form itself is merged into a duplicate-free normal form."
+    ],
+    "prior_art": [
+      "Mathlib, leanprover-community/mathlib4 commit b679ac024dccdf39b1be683d5890c072b58ae8d0, Mathlib/Tactic/Linarith/Datatypes.lean: `abbrev Linexp : Type := List (Nat × Int)`, a sparse linear form as an association list; its docstring states that some functions assume each index occurs at most once and that the list is sorted in decreasing index order, an invariant 'not enforced by the type' but preserved by the operations (Linexp.get stops at the first smaller key).",
+      "Lean 4 core, leanprover/lean4 tag v4.34.1 (commit 5045d0056413266e57c625dcd7c365b10e377c52), src/Init/Omega/Constraint.lean and src/Init/Omega/Coeffs.lean: `Lean.Omega.Constraint.div` divides a two-sided bound constraint by a natural number k, rounding the upper bound down and the lower bound up; `Lean.Omega.Constraint.div_sat` proves the divided constraint holds at t / k when k ≠ 0 divides t, and `div_sat'` uses the gcd of the coefficients (integer GCD tightening inside omega's proof-producing procedure); Coeffs.lean notes that omega uses a dense coefficient list and that a sparse `AssocList Nat Int` representation is an alternative."
+    ],
+    "design_question": "Can a certificate checker work on unnormalized sparse combinations, and which zero test is sound for them?",
+    "tier_justification": "Implementation folklore (sparse lookups assume a normalized, duplicate-free form; Mathlib's Linexp documents this invariant as not enforced by the type), made precise as concrete instances; no mechanized statement of these pitfalls was located (search limited to the sources listed)."
+  },
+  {
+    "id": "R4a",
+    "lean": "Toy.Farkas.farkas_complete_scaled",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "Every finite list S of integer linear constraints (each a . x <= b or a . x < b) that has no scaled solution (d, p) with d > 0 has a certificate accepted by checkFarkas.",
+    "modeling_bridge": "derived (modeling bridge): a finite system S mentions finitely many variables, so the restriction of a rational point to them can be written p / d with d > 0; hence for finite S 'no scaled point (d, p) with d > 0 satisfies S' corresponds to 'S has no rational solution'. This is argued in prose (module documentation of ToyFarkas.Constraint), not proved in Lean; no rational number type is used. Read through this bridge, R4a is completeness of checkFarkas for rationally infeasible finite systems.",
+    "hypotheses": [
+      {
+        "name": "h : no scaled point (d, p) with d > 0 satisfies S",
+        "purpose": "completeness is only for systems without scaled (rational) solutions",
+        "tightness": "tight",
+        "counterexample": "Toy.Farkas.ce_farkas_complete_feasible_system"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "{x0 <= 1, -x0 <= -2} and {x0 < 1, -x0 <= -1} satisfy the hypothesis (proved from R1a) and have accepted certificates.",
+    "nonvacuity_witness_lean": "Toy.Farkas.nv_farkas_complete_scaled",
+    "non_claims": [
+      "Not true over the integers: R4b.",
+      "Applies only to finite constraint lists S : List Constraint; Farkas' lemma and Motzkin's transposition theorem can fail for infinite systems of linear inequalities.",
+      "Is an existential statement: although the proof follows Fourier-Motzkin elimination, the theorem exports no executable or verified certificate generator, does not assert cert.length = S.length, and does not bound the number of nonzero multipliers, the bit-size of the multipliers, or the cost of finding them.",
+      "Does not model equality (=) or disequality (!=) constraints: Rel contains only <= and <. An equality a . x = b must be encoded as two inequalities a . x <= b and -a . x <= -b; disequalities require disjunctive reasoning.",
+      "The rational reading is by scaling: a point is a pair (d, p) with d > 0 standing for p / d. No rational number type is used; the correspondence with rational points (finite systems only) is the separate modeling-bridge claim, not a Lean theorem."
+    ],
+    "prior_art": [
+      "Julius Farkas, 'Theorie der einfachen Ungleichungen', Journal für die reine und angewandte Mathematik 124 (1902), pp. 1-27, DOI 10.1515/crll.1902.124.1 (non-strict linear inequalities).",
+      "Theodore S. Motzkin, 'Beiträge zur Theorie der linearen Ungleichungen', doctoral dissertation, University of Basel; printed by Azriel, Jerusalem, 1936 (the transposition theorem for systems mixing strict and non-strict inequalities; bibliographic record checked via secondary sources, the German text was not read).",
+      "Alexander Schrijver, Theory of Linear and Integer Programming, John Wiley & Sons, 1986 (paperback reprint 1998, ISBN 978-0-471-98232-6; chapter list checked on the publisher's page): Chapter 7 'Fundamental concepts and results on polyhedra, linear inequalities, and linear programming' (Farkas' lemma and its variants), Chapter 12 'Primal-dual, elimination, and relaxation methods' (includes elimination), Chapter 23 'Cutting planes'. Specific theorem numbers were not checked against the book.",
+      "Ralph Bottesch, Max W. Haslbeck, René Thiemann, 'Farkas' Lemma and Motzkin's Transposition Theorem', Archive of Formal Proofs, January 17, 2019, https://isa-afp.org/entries/Farkas.html (Isabelle/HOL, via a verified simplex algorithm: a set of linear constraints is unsatisfiable iff some linear combination of them evaluates to a trivially unsatisfiable inequality; covers mixed strict/non-strict systems).",
+      "Ralph Bottesch, Alban Reynaud, René Thiemann, 'Linear Inequalities', Archive of Formal Proofs, June 21, 2019, https://isa-afp.org/entries/Linear_Inequalities.html (Isabelle/HOL: fundamental theorem of linear inequalities, Farkas' lemma, Carathéodory's theorem, Farkas-Minkowsky-Weyl theorem, decomposition theorem of polyhedra, Meyer's integer-hull result).",
+      "René Thiemann, 'Duality of Linear Programming', Archive of Formal Proofs, February 3, 2022, https://isa-afp.org/entries/LP_Duality.html (weak and strong LP duality, based on the formalization of Farkas' lemma in 'Linear Inequalities').",
+      "Mathlib, leanprover-community/mathlib4 commit b679ac024dccdf39b1be683d5890c072b58ae8d0, Mathlib/Analysis/Convex/Cone/Dual.lean: Farkas' lemma in geometric form for proper cones in locally convex real topological vector spaces (ProperCone.hyperplane_separation, ProperCone.hyperplane_separation_point); real-valued, not a certificate checker.",
+      "Xavier Allamigeon, Ricardo D. Katz, 'A Formalization of Convex Polyhedra Based on the Simplex Method', Journal of Automated Reasoning 63 (2019), pp. 323-345, DOI 10.1007/s10817-018-9477-1 (Coq formalization of convex polyhedra via the simplex method; metadata checked via Crossref, full text not read)."
+    ],
+    "design_question": "Is a Farkas checker complete for rational infeasibility, and why is it incomplete for integer infeasibility?",
+    "tier_justification": "Motzkin's transposition theorem with rational multipliers cleared to integers; mechanized in Isabelle (AFP Farkas). Proved here by integer-scaled Fourier-Motzkin elimination on the homogenized system (module ToyFarkas.Motzkin)."
+  },
+  {
+    "id": "R4b",
+    "lean": "Toy.Farkas.ce_farkas_incomplete_int",
+    "kind": "impossibility",
+    "tier": "T0",
+    "plain_claim": "The system sysHalf = {2x0 <= 1, -2x0 <= -1} has no integer solution x : Nat -> Int, yet checkFarkas rejects every certificate cert : List Int for it.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "The statement is about one concrete system (sysHalf) and quantifies over all integer points and all certificates; it has no side-condition hypotheses.",
+    "positive_control_lean": [
+      "Toy.Farkas.nv_checkCutCert_sound_int",
+      "Toy.Farkas.sysHalf_refuted_by_case_split"
+    ],
+    "non_claims": [
+      "Does not show that integer infeasibility is uncheckable: the cut-plus-Farkas checker refutes the same system (positive control nv_checkCutCert_sound_int).",
+      "Is a single instance, not a characterization of which integer-infeasible systems lack Farkas certificates.",
+      "Escape hatch (cutting planes and GCD tightening): adding Chvátal–Gomory cuts (checkCutCert) or GCD divisibility/tightening rules (as in Lean's omega, Init/Omega/Constraint.lean) defeats this impossibility: dividing 2x0 <= 1 by 2 and rounding gives x0 <= 0.",
+      "Escape hatch (case splitting): allowing integer case splits (x <= k or x >= k + 1, as in branch-and-bound or Rocq ZMicromega's SplitProof) defeats it without cutting planes: both branches of sysHalf under the split x0 <= 0 or x0 >= 1 have accepted Farkas certificates (sysHalf_refuted_by_case_split).",
+      "Escape hatch (totally unimodular fragments; the integrality step is not formalized here): the impossibility uses a non-unimodular coefficient (2). For a totally unimodular constraint matrix with integer right-hand sides and only non-strict constraints, including difference constraints x_i - x_j <= c, x_i <= c, -x_i <= c, a rationally feasible system has an integer solution (Hoffman–Kruskal 1956), so, combined with R4a, plain Farkas certificates are complete for integer infeasibility on that fragment. With strict constraints this needs integer tightening first: {x0 < 1, -x0 < 0} is totally unimodular, integer infeasible, rationally feasible, and refuted only by the tightened checker (R3d, R3e).",
+      "Escape hatch (rational or real domain): over scaled points (d > 0), {2x0 <= 1, -2x0 <= -1} is feasible at x0 = 1/2, so the integer-infeasibility premise of the impossibility is what fails; for rationally infeasible systems Farkas certificates exist by R4a.",
+      "Non-escape: integer tightening of strict inequalities (R3d, checkFarkasTightened) does not escape this impossibility, because {2x0 <= 1, -2x0 <= -1} contains no strict constraints (ce_checkFarkasTightened_incomplete_int)."
+    ],
+    "prior_art": [
+      "Alexander Schrijver, Theory of Linear and Integer Programming, John Wiley & Sons, 1986 (paperback reprint 1998, ISBN 978-0-471-98232-6; chapter list checked on the publisher's page): Chapter 7 'Fundamental concepts and results on polyhedra, linear inequalities, and linear programming' (Farkas' lemma and its variants), Chapter 12 'Primal-dual, elimination, and relaxation methods' (includes elimination), Chapter 23 'Cutting planes'. Specific theorem numbers were not checked against the book.",
+      "Mathlib, leanprover-community/mathlib4 commit b679ac024dccdf39b1be683d5890c072b58ae8d0, Mathlib/Tactic/Linarith/Frontend.lean module docstring: an untrusted oracle (simplex by default, Fourier–Motzkin optional) searches for natural-number coefficients k_i with sum k_i t_i = 0 and k_i > 0 for at least one strict hypothesis; the certificate is checked by building a proof term (not by reflection); over Int, linarith 'will fail to prove False on some unsatisfiable problems'.",
+      "Ralph E. Gomory, 'Outline of an algorithm for integer solutions to linear programs', Bulletin of the American Mathematical Society 64(5) (1958), pp. 275-278, DOI 10.1090/S0002-9904-1958-10224-4.",
+      "William Pugh, 'A practical algorithm for exact array dependence analysis', Communications of the ACM 35(8) (1992), pp. 102-114, DOI 10.1145/135226.135233 (the Omega test: integer tightening and exact projection with dark shadows and splintering; metadata via Crossref, full text not read).",
+      "Lean 4 core, leanprover/lean4 tag v4.34.1 (commit 5045d0056413266e57c625dcd7c365b10e377c52), src/Init/Omega/Constraint.lean and src/Init/Omega/Coeffs.lean: `Lean.Omega.Constraint.div` divides a two-sided bound constraint by a natural number k, rounding the upper bound down and the lower bound up; `Lean.Omega.Constraint.div_sat` proves the divided constraint holds at t / k when k ≠ 0 divides t, and `div_sat'` uses the gcd of the coefficients (integer GCD tightening inside omega's proof-producing procedure); Coeffs.lean notes that omega uses a dense coefficient list and that a sparse `AssocList Nat Int` representation is an alternative.",
+      "Rocq Stdlib, rocq-prover/stdlib commit f50ccefc570f6b815874df96bb3b872611cfaf0e, theories/micromega/ZMicromega.v: certificate type ZArithProof with constructors DoneProof, RatProof, CutProof, SplitProof, deprecated_EnumProof, ExProof; genCuttingPlane divides a constraint by the gcd of its coefficients and rounds the constant, first rewriting a strict e > 0 as e - 1 >= 0; ZChecker_sound proves the checker sound in Coq/Rocq.",
+      "Alan J. Hoffman, Joseph B. Kruskal, 'Integral boundary points of convex polyhedra', in Linear Inequalities and Related Systems (H. W. Kuhn, A. W. Tucker, eds.), Annals of Mathematics Studies 38, Princeton University Press, 1956, pp. 223-246 (total unimodularity and integral polyhedra; bibliographic record via secondary sources, full text not read)."
+    ],
+    "design_question": "Is a Farkas checker complete for rational infeasibility, and why is it incomplete for integer infeasibility?",
+    "tier_justification": "The textbook integrality gap of the LP relaxation (linarith documents failure on some unsatisfiable problems over Int), as a concrete instance.",
+    "modeling_bridge": "derived (modeling bridge): the reason no certificate is accepted is that sysHalf is satisfied by the scaled point (d, p) = (2, 1) with d > 0 (SatScaled sysHalf 2 (pt1 1) is kernel-checked as a conjunct of ce_cgCut_unsound_over_rat and of ce_checkCutCert_unsound_over_rat, not of ce_farkas_incomplete_int), so R1a rules out every accepted certificate. Read through the rational modeling bridge, that point is x0 = 1/2: sysHalf is rationally feasible but has no integer solution. ce_farkas_incomplete_int itself asserts only integer infeasibility and the rejection of every certificate. The correspondence between scaled points and rational points of a finite system is argued in prose (module documentation of ToyFarkas.Constraint), not proved in Lean; no rational number type is used."
+  },
+  {
+    "id": "R5a",
+    "lean": [
+      "Toy.Farkas.cgCut_sound_int_of_nonneg_of_div_pos_of_divisible",
+      "Toy.Farkas.cgDerive_sound_int"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For a system S and a Chvátal–Gomory step (multipliers lambda paired with the constraints by List.zipWith, divisor g): every strict premise a . x < b is first tightened to a . x <= b - 1; if lambda >= 0, g > 0, and g divides every dense coefficient of Sum lambda_k a_k, then every integer solution of S satisfies the cut (Sum lambda_k a_k / g) . x <= floor((Sum lambda_k b'_k) / g), where b'_k = b_k for <= and b_k - 1 for <. The checked step cgDerive returns this cut exactly when the three conditions hold, so every cut it returns is satisfied by every integer solution (cgDerive_sound_int).",
+    "hypotheses": [
+      {
+        "name": "hnn : multipliersNonneg k.mult = true (cgCut_sound_int_of_nonneg_of_div_pos_of_divisible only)",
+        "purpose": "negative multipliers reverse inequalities",
+        "tightness": "tight",
+        "counterexample": "Toy.Farkas.ce_cgCut_negative_multiplier"
+      },
+      {
+        "name": "hg : 0 < k.div (cgCut_sound_int_of_nonneg_of_div_pos_of_divisible only)",
+        "purpose": "dividing by a negative number reverses the inequality",
+        "tightness": "tight",
+        "counterexample": "Toy.Farkas.ce_cgCut_negative_divisor"
+      },
+      {
+        "name": "hdiv : cgDivisible S k = true (cgCut_sound_int_of_nonneg_of_div_pos_of_divisible only)",
+        "purpose": "rounding is only valid when the divided left-hand side has integer coefficients",
+        "tightness": "tight",
+        "counterexample": "Toy.Farkas.ce_cgCut_not_divisible"
+      },
+      {
+        "name": "hx : SatInt S x",
+        "purpose": "the point must satisfy the premises",
+        "tightness": "tight",
+        "counterexample": "Toy.Farkas.ce_cgCut_point_not_solution"
+      },
+      {
+        "name": "x : Nat -> Int (integral variables, by type)",
+        "purpose": "rounding the right-hand side down, and tightening strict premises, are only valid at integer points (even with divisor 1)",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Farkas.ce_cgCut_unsound_over_rat",
+          "Toy.Farkas.ce_cgCut_div_one_unsound_over_rat"
+        ]
+      },
+      {
+        "name": "h : cgDerive S k = some c (cgDerive_sound_int only)",
+        "purpose": "c must be produced by a validated step",
+        "tightness": "tight",
+        "counterexample": "Toy.Farkas.ce_cgDerive_rejected"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "{2x0 <= 3} with step ((1), 2): the step is valid, cgDerive returns x0 <= 1, and it holds at the integer solution x0 = 1.",
+    "nonvacuity_witness_lean": "Toy.Farkas.nv_cgCut_sound_int",
+    "non_claims": [
+      "Does not claim the cut is non-redundant or that any sequence of cuts reaches the integer hull (Chvátal 1973 / Schrijver 1980 finiteness results are not formalized).",
+      "Divisor 0 is excluded by hg although it would be harmless (Lean's x / 0 = 0 yields 0 <= 0).",
+      "Unsound over the rationals even when div = 1 (no division or rounding) whenever S contains strict constraints, because cgRhs tightens every strict premise before combining (ce_cgCut_div_one_unsound_over_rat).",
+      "Not sound for mixed-integer (MILP / LIRA) systems: the integer step requires every variable with a nonzero coefficient to be integral (the model has only integer variables x : Nat -> Int); continuous variables must be eliminated or handled by mixed-integer cuts.",
+      "Not sound for wrapping bit-vector constraints: over BitVec w, x <u 0 is unsatisfiable while x <=u (0 - 1) = 2^w - 1 is identically true (ce_bv_tightening_unsound; similarly at the signed minimum -2^(w-1)).",
+      "Uses List.zipWith pairing: short multiplier lists give remaining constraints multiplier 0 and surplus multipliers are ignored by the combination (though still checked non-negative).",
+      "Does not say the step is the strongest available cut (no gcd normalization of the derived cut is performed or claimed).",
+      "Does not concern rational-coefficient input: constraints have Int coefficients and right-hand sides; a rational constraint must first be scaled by a positive integer, and that scaling step is not modeled."
+    ],
+    "prior_art": [
+      "Vašek Chvátal, 'Edmonds polytopes and a hierarchy of combinatorial problems', Discrete Mathematics 4(4) (1973), pp. 305-337, DOI 10.1016/0012-365X(73)90167-2 (cutting-plane hierarchy; finitely many rounds of cuts reach the integer hull for bounded rational polytopes).",
+      "Ralph E. Gomory, 'Outline of an algorithm for integer solutions to linear programs', Bulletin of the American Mathematical Society 64(5) (1958), pp. 275-278, DOI 10.1090/S0002-9904-1958-10224-4.",
+      "Alexander Schrijver, Theory of Linear and Integer Programming, John Wiley & Sons, 1986 (paperback reprint 1998, ISBN 978-0-471-98232-6; chapter list checked on the publisher's page): Chapter 7 'Fundamental concepts and results on polyhedra, linear inequalities, and linear programming' (Farkas' lemma and its variants), Chapter 12 'Primal-dual, elimination, and relaxation methods' (includes elimination), Chapter 23 'Cutting planes'. Specific theorem numbers were not checked against the book.",
+      "Rocq Stdlib, rocq-prover/stdlib commit f50ccefc570f6b815874df96bb3b872611cfaf0e, theories/micromega/ZMicromega.v: certificate type ZArithProof with constructors DoneProof, RatProof, CutProof, SplitProof, deprecated_EnumProof, ExProof; genCuttingPlane divides a constraint by the gcd of its coefficients and rounds the constant, first rewriting a strict e > 0 as e - 1 >= 0; ZChecker_sound proves the checker sound in Coq/Rocq.",
+      "Lean 4 core, leanprover/lean4 tag v4.34.1 (commit 5045d0056413266e57c625dcd7c365b10e377c52), src/Init/Omega/Constraint.lean and src/Init/Omega/Coeffs.lean: `Lean.Omega.Constraint.div` divides a two-sided bound constraint by a natural number k, rounding the upper bound down and the lower bound up; `Lean.Omega.Constraint.div_sat` proves the divided constraint holds at t / k when k ≠ 0 divides t, and `div_sat'` uses the gcd of the coefficients (integer GCD tightening inside omega's proof-producing procedure); Coeffs.lean notes that omega uses a dense coefficient list and that a sparse `AssocList Nat Int` representation is an alternative.",
+      "William Pugh, 'A practical algorithm for exact array dependence analysis', Communications of the ACM 35(8) (1992), pp. 102-114, DOI 10.1145/135226.135233 (the Omega test: integer tightening and exact projection with dark shadows and splintering; metadata via Crossref, full text not read).",
+      "René Thiemann (with contributions from Manuel Eberl), 'A Preprocessor for Linear Diophantine Equalities and Inequalities', Archive of Formal Proofs, June 13, 2024, https://isa-afp.org/entries/Linear_Diophantine_Preprocessor.html (abstract: Pugh's technique of tightening linear inequalities, detection of implicit equalities, and elimination of equations; the result either detects unsatisfiability over Z or returns equisatisfiable inequalities; session theories include Linear_Polynomial, Linear_Polynomial_Impl, Diophantine_Tightening)."
+    ],
+    "design_question": "What does a Chvátal–Gomory cut checker guarantee, under which side conditions (non-negative multipliers, positive divisor, integral combined coefficients, integral variables), and what does a cut-plus-Farkas certificate prove?",
+    "tier_justification": "Chvátal–Gomory rounding is classical; Rocq micromega mechanizes soundness of its cutting-plane checker and Lean's omega mechanizes GCD tightening (div_sat)."
+  },
+  {
+    "id": "R5c",
+    "lean": "Toy.Farkas.checkCutCert_sound_int",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "If the cut-plus-Farkas checker accepts (every Chvátal–Gomory step is valid when applied in order to the original system extended by earlier cuts, each step tightening strict premises to <= b - 1 before combining, and checkFarkas, which does not tighten, accepts the final multipliers for the extended system), then S has no integer solution x : Nat -> Int.",
+    "hypotheses": [
+      {
+        "name": "h : checkCutCert S cc = true",
+        "purpose": "the certificate is accepted",
+        "tightness": "tight",
+        "counterexample": "Toy.Farkas.ce_checkCutCert_rejects_satisfiable"
+      },
+      {
+        "name": "x : Nat -> Int (integral variables, by type)",
+        "purpose": "cuts are only valid at integer points",
+        "tightness": "tight",
+        "counterexample": "Toy.Farkas.ce_checkCutCert_unsound_over_rat"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "{2x0 <= 1, -2x0 <= -1} is refuted by deriving x0 <= 0 and -x0 <= -1 and combining with (0, 0, 1, 1); plain Farkas certificates cannot refute it (R4b).",
+    "nonvacuity_witness_lean": "Toy.Farkas.nv_checkCutCert_sound_int",
+    "non_claims": [
+      "Does not claim completeness of cut-plus-Farkas certificates for integer infeasibility (known for bounded rational polytopes by Chvátal 1973 and for arbitrary rational polyhedra by Schrijver 1980; not formalized here).",
+      "Does not prove rational infeasibility: the certificate halfCutCert is accepted for {2x0 <= 1, -2x0 <= -1}, which x0 = 1/2 satisfies (ce_checkCutCert_unsound_over_rat).",
+      "Does not bound the number of cuts (Chvátal rank) or the total certificate size required to refute an integer-infeasible system; moreover, when cc.cuts = [], checkCutCert is plain checkFarkas and does not tighten strict premises, unlike a single CG step with divisor 1 (ex_checkCutCert_no_cuts_no_tightening).",
+      "Not sound for mixed-integer (MILP / LIRA) systems: the integer step requires every variable with a nonzero coefficient to be integral (the model has only integer variables x : Nat -> Int); continuous variables must be eliminated or handled by mixed-integer cuts.",
+      "Not sound for wrapping bit-vector constraints: over BitVec w, x <u 0 is unsatisfiable while x <=u (0 - 1) = 2^w - 1 is identically true (ce_bv_tightening_unsound; similarly at the signed minimum -2^(w-1)).",
+      "Uses List.zipWith pairing in every step and in the final Farkas combination.",
+      "Does not concern rational-coefficient input: constraints have Int coefficients and right-hand sides; a rational constraint must first be scaled by a positive integer, and that scaling step is not modeled."
+    ],
+    "prior_art": [
+      "Vašek Chvátal, 'Edmonds polytopes and a hierarchy of combinatorial problems', Discrete Mathematics 4(4) (1973), pp. 305-337, DOI 10.1016/0012-365X(73)90167-2 (cutting-plane hierarchy; finitely many rounds of cuts reach the integer hull for bounded rational polytopes).",
+      "Alexander Schrijver, 'On cutting planes', in Combinatorics 79, Part II, Annals of Discrete Mathematics, Vol. 9, North-Holland, 1980, pp. 291-296, DOI 10.1016/S0167-5060(08)70085-2 (extends the finiteness of the cutting-plane hierarchy to arbitrary, possibly unbounded, rational polyhedra; metadata via Crossref, volume number via secondary records, full text not read).",
+      "Ralph E. Gomory, 'Outline of an algorithm for integer solutions to linear programs', Bulletin of the American Mathematical Society 64(5) (1958), pp. 275-278, DOI 10.1090/S0002-9904-1958-10224-4.",
+      "Rocq Stdlib, rocq-prover/stdlib commit f50ccefc570f6b815874df96bb3b872611cfaf0e, theories/micromega/ZMicromega.v: certificate type ZArithProof with constructors DoneProof, RatProof, CutProof, SplitProof, deprecated_EnumProof, ExProof; genCuttingPlane divides a constraint by the gcd of its coefficients and rounds the constant, first rewriting a strict e > 0 as e - 1 >= 0; ZChecker_sound proves the checker sound in Coq/Rocq.",
+      "Frédéric Besson, 'Fast Reflexive Arithmetic Tactics the Linear Case and Beyond', in Types for Proofs and Programs (TYPES 2006), LNCS 4502, Springer, 2007, pp. 48-62, DOI 10.1007/978-3-540-74464-1_4 (abstract: certificates of infeasibility for quantifier-free linear and non-linear integer arithmetic are produced by off-the-shelf algorithms and validated in Coq by reflexive checkers; full text not read).",
+      "Lean 4 core, leanprover/lean4 tag v4.34.1 (commit 5045d0056413266e57c625dcd7c365b10e377c52), src/Init/Omega/Constraint.lean and src/Init/Omega/Coeffs.lean: `Lean.Omega.Constraint.div` divides a two-sided bound constraint by a natural number k, rounding the upper bound down and the lower bound up; `Lean.Omega.Constraint.div_sat` proves the divided constraint holds at t / k when k ≠ 0 divides t, and `div_sat'` uses the gcd of the coefficients (integer GCD tightening inside omega's proof-producing procedure); Coeffs.lean notes that omega uses a dense coefficient list and that a sparse `AssocList Nat Int` representation is an alternative.",
+      "René Thiemann (with contributions from Manuel Eberl), 'A Preprocessor for Linear Diophantine Equalities and Inequalities', Archive of Formal Proofs, June 13, 2024, https://isa-afp.org/entries/Linear_Diophantine_Preprocessor.html (abstract: Pugh's technique of tightening linear inequalities, detection of implicit equalities, and elimination of equations; the result either detects unsatisfiability over Z or returns equisatisfiable inequalities; session theories include Linear_Polynomial, Linear_Polynomial_Impl, Diophantine_Tightening)."
+    ],
+    "design_question": "What does a Chvátal–Gomory cut checker guarantee, under which side conditions (non-negative multipliers, positive divisor, integral combined coefficients, integral variables), and what does a cut-plus-Farkas certificate prove?",
+    "tier_justification": "Known result restated for this checker and representation (Rocq micromega mechanizes a checker with cutting-plane steps)."
+  },
+  {
+    "id": "R6a",
+    "lean": "Toy.Farkas.bv_ule_ult_iff_int_of_inUnsignedRange",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For affine expressions e1, e2 with Int coefficients over w-bit variables x, if the integer values of e1 and e2 at the unsigned reading (x i).toNat both lie in [0, 2^w), then e1 <=u e2 (resp. <u) over BitVec w with wrapping evaluation holds iff e1 <= e2 (resp. <) holds over Int.",
+    "hypotheses": [
+      {
+        "name": "h1 : InUnsignedRange w (e1.evalInt (uval x))",
+        "purpose": "the left value must not wrap",
+        "tightness": "tight",
+        "counterexample": "Toy.Farkas.ce_bv_ule_lhs_out_of_range"
+      },
+      {
+        "name": "h2 : InUnsignedRange w (e2.evalInt (uval x))",
+        "purpose": "the right value must not wrap",
+        "tightness": "tight",
+        "counterexample": "Toy.Farkas.ce_bv_ule_rhs_out_of_range"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "w = 8, x0 = 70: x0 + x0 = 140 and 150 are in range and 140 <=u 150.",
+    "nonvacuity_witness_lean": "Toy.Farkas.nv_bv_ule_ult_transfer",
+    "non_claims": [
+      "Only the final values of e1 and e2 must be in range; intermediate values may wrap (R6i). This is specific to wrapping semantics.",
+      "For the forward direction alone (bit-vector comparison implies integer comparison) the one-sided bounds e1 < 2^w and 0 <= e2 suffice (bv_ule_ult_imp_int_of_lhs_lt_of_rhs_nonneg); the biconditional needs all four bounds.",
+      "The reading must match the comparison: unsigned comparison with signed-reading ranges fails, and signed comparison with unsigned-reading ranges fails (R6g).",
+      "Does not license moving terms across the comparison (R6h).",
+      "Covers only <= and < (ule/ult), not equality (=) or disequality (!=). Bit-vector equality implies integer equality only when both sides are in range (whereas integer equality always implies wrapping bit-vector equality).",
+      "Applies to a single fixed bit-width w; mixed-width expressions (zero-extension, sign-extension, truncation) are not modeled.",
+      "Concerns only wrapping (modular) evaluation of +, *, and literals; division, remainder, shifts, and checked or trapping arithmetic (where intermediate overflow matters) are out of scope.",
+      "Does not show how to establish the range facts; they are hypotheses to be discharged by other means (e.g. interval reasoning)."
+    ],
+    "prior_art": [
+      "Lean 4 core, leanprover/lean4 tag v4.34.1 (commit 5045d0056413266e57c625dcd7c365b10e377c52), src/Init/Data/BitVec/Lemmas.lean: BitVec.ofInt_add, BitVec.ofInt_mul (BitVec.ofInt w is additive and multiplicative), BitVec.toNat_ofInt ((ofInt n i).toNat = (i % 2^n).toNat), BitVec.toInt_ofInt ((ofInt n i).toInt = i.bmod (2^n)), BitVec.ule_eq_decide, BitVec.ult_eq_decide, BitVec.sle_eq_decide, BitVec.slt_eq_decide.",
+      "Lean 4 core, leanprover/lean4 tag v4.34.1 (commit 5045d0056413266e57c625dcd7c365b10e377c52), src/Init/Tactics.lean: the `omega` docstring ('not yet a full decision procedure (no \"dark\" or \"grey\" shadows)'); `bv_omega` ('omega with an additional preprocessor that turns statements about BitVec into statements about Nat', via simp lemmas tagged bitvec_to_nat); `bv_decide` (obtains a proof from an external SAT solver and verifies it inside Lean; LRAT proofs per the `bv_check` docstring).",
+      "CompCert, AbsInt/CompCert commit 99627f88db37a7c98e03775741e5048b981d2032, lib/Integers.v: unsigned_repr (0 <= z <= max_unsigned -> unsigned (repr z) = z), signed_repr (min_signed <= z <= max_signed -> signed (repr z) = z), add_unsigned, add_signed (wrapping addition as repr of the integer sum), and the comparisons ltu / lt (Coq mechanization of machine-integer-to-integer transfer).",
+      "Joel Beeren, Matthew Fernandez, Xin Gao, Gerwin Klein, Rafal Kolanski, Japheth Lim, Corey Lewis, Daniel Matichuk, Thomas Sewell, 'Finite Machine Word Library', Archive of Formal Proofs, June 9, 2016, https://isa-afp.org/entries/Word_Lib.html (Isabelle/HOL library of fixed-width machine words, including signed words and an extensive library of properties of generic fixed-width words).",
+      "Yoni Zohar, Ahmed Irfan, Makai Mann, Aina Niemetz, Andres Nötzli, Mathias Preiner, Andrew Reynolds, Clark Barrett, Cesare Tinelli, 'Bit-Precise Reasoning via Int-Blasting', VMCAI 2022, LNCS 13182, Springer, 2022, pp. 496-518, DOI 10.1007/978-3-030-94583-1_24 (translating bit-vector constraints into integer arithmetic in an SMT solver; metadata via Crossref, full text not read).",
+      "Axel Simon, Andy King, 'Taming the Wrapping of Integer Arithmetic', SAS 2007, LNCS 4634, Springer, 2007, pp. 121-136 (pages per Crossref), DOI 10.1007/978-3-540-74061-2_8 (polyhedral analysis of programs over wrapping fixed-width integers; metadata via Crossref, full text not read).",
+      "Jorge A. Navas, Peter Schachte, Harald Søndergaard, Peter J. Stuckey, 'Signedness-Agnostic Program Analysis: Precise Integer Bounds for Low-Level Code', APLAS 2012, LNCS 7705, Springer, 2012, pp. 115-130, DOI 10.1007/978-3-642-35182-2_9 (integer bounds analysis for low-level code where signedness is not known; metadata via Crossref, full text not read)."
+    ],
+    "design_question": "When may constraints over machine integers (BitVec w, unsigned or signed) be reasoned about over unbounded integers, and which range facts must a verifier establish first?",
+    "tier_justification": "The underlying facts (ofInt is a ring homomorphism; toNat (ofInt z) = z on [0, 2^w)) are mechanized in Lean core and in CompCert's Integers.v and Isabelle's Word_Lib; restated here for affine expressions and comparisons with final-value hypotheses."
+  },
+  {
+    "id": "R6b",
+    "lean": "Toy.Farkas.bv_sle_slt_iff_int_of_inSignedRange",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For affine expressions e1, e2 over w-bit variables x, if the integer values of e1 and e2 at the signed reading (x i).toInt both lie in the w-bit two's-complement range (-2^w <= 2z < 2^w), then e1 <=s e2 (resp. <s) over BitVec w with wrapping evaluation holds iff e1 <= e2 (resp. <) over Int.",
+    "hypotheses": [
+      {
+        "name": "h1 : InSignedRange w (e1.evalInt (sval x))",
+        "purpose": "the left value must not wrap",
+        "tightness": "tight",
+        "counterexample": "Toy.Farkas.ce_bv_sle_lhs_out_of_range"
+      },
+      {
+        "name": "h2 : InSignedRange w (e2.evalInt (sval x))",
+        "purpose": "the right value must not wrap",
+        "tightness": "tight",
+        "counterexample": "Toy.Farkas.ce_bv_sle_rhs_out_of_range"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "w = 8, x0 = -50: x0 + x0 = -100 and 0 are in signed range and -100 <=s 0.",
+    "nonvacuity_witness_lean": "Toy.Farkas.nv_bv_sle_slt_transfer",
+    "non_claims": [
+      "At w = 0 the signed range is {0} (the 2z formulation avoids the natural-number pitfall 2^(0-1) = 1); the statement is also checked at w = 0 on 25 constant pairs in check_bv_sle_transfer_w0.",
+      "Only final values must be in range; intermediate wrap is harmless for wrapping semantics (R6i).",
+      "For the forward direction alone the one-sided bounds 2 e1 < 2^w and -2^w <= 2 e2 suffice (bv_sle_slt_imp_int_of_lhs_lt_of_rhs_ge).",
+      "The reading must match the comparison: signed comparison with unsigned-reading ranges is likewise wrong (R6g).",
+      "Covers only <= and < (sle/slt), not equality (=) or disequality (!=).",
+      "Applies to a single fixed bit-width w; mixed-width expressions (zero-extension, sign-extension, truncation) are not modeled.",
+      "Concerns only wrapping (modular) evaluation of +, *, and literals; division, remainder, shifts, and checked or trapping arithmetic (where intermediate overflow matters) are out of scope.",
+      "Does not license moving terms across a signed comparison: at w = 8 and (x0, x1) = (-100, 100) both sides of x0 <=s x1 are in signed range and the comparison holds, but x0 - x1 <=s 0 fails because x0 - x1 = -200 wraps to 56 (R6h, ce_bv_rearrangement_unsound); a rearranged comparison needs range facts for its own sides.",
+      "Does not show how to establish the range facts InSignedRange w (e1.evalInt (sval x)) and InSignedRange w (e2.evalInt (sval x)); they are hypotheses that must be discharged independently (e.g. by interval reasoning), and a range fact about the difference e1 - e2 alone does not suffice (ce_bvS_range_on_difference_insufficient)."
+    ],
+    "prior_art": [
+      "Lean 4 core, leanprover/lean4 tag v4.34.1 (commit 5045d0056413266e57c625dcd7c365b10e377c52), src/Init/Data/BitVec/Lemmas.lean: BitVec.ofInt_add, BitVec.ofInt_mul (BitVec.ofInt w is additive and multiplicative), BitVec.toNat_ofInt ((ofInt n i).toNat = (i % 2^n).toNat), BitVec.toInt_ofInt ((ofInt n i).toInt = i.bmod (2^n)), BitVec.ule_eq_decide, BitVec.ult_eq_decide, BitVec.sle_eq_decide, BitVec.slt_eq_decide.",
+      "Lean 4 core, leanprover/lean4 tag v4.34.1 (commit 5045d0056413266e57c625dcd7c365b10e377c52), src/Init/Tactics.lean: the `omega` docstring ('not yet a full decision procedure (no \"dark\" or \"grey\" shadows)'); `bv_omega` ('omega with an additional preprocessor that turns statements about BitVec into statements about Nat', via simp lemmas tagged bitvec_to_nat); `bv_decide` (obtains a proof from an external SAT solver and verifies it inside Lean; LRAT proofs per the `bv_check` docstring).",
+      "CompCert, AbsInt/CompCert commit 99627f88db37a7c98e03775741e5048b981d2032, lib/Integers.v: unsigned_repr (0 <= z <= max_unsigned -> unsigned (repr z) = z), signed_repr (min_signed <= z <= max_signed -> signed (repr z) = z), add_unsigned, add_signed (wrapping addition as repr of the integer sum), and the comparisons ltu / lt (Coq mechanization of machine-integer-to-integer transfer).",
+      "Joel Beeren, Matthew Fernandez, Xin Gao, Gerwin Klein, Rafal Kolanski, Japheth Lim, Corey Lewis, Daniel Matichuk, Thomas Sewell, 'Finite Machine Word Library', Archive of Formal Proofs, June 9, 2016, https://isa-afp.org/entries/Word_Lib.html (Isabelle/HOL library of fixed-width machine words, including signed words and an extensive library of properties of generic fixed-width words).",
+      "Yoni Zohar, Ahmed Irfan, Makai Mann, Aina Niemetz, Andres Nötzli, Mathias Preiner, Andrew Reynolds, Clark Barrett, Cesare Tinelli, 'Bit-Precise Reasoning via Int-Blasting', VMCAI 2022, LNCS 13182, Springer, 2022, pp. 496-518, DOI 10.1007/978-3-030-94583-1_24 (translating bit-vector constraints into integer arithmetic in an SMT solver; metadata via Crossref, full text not read).",
+      "Axel Simon, Andy King, 'Taming the Wrapping of Integer Arithmetic', SAS 2007, LNCS 4634, Springer, 2007, pp. 121-136 (pages per Crossref), DOI 10.1007/978-3-540-74061-2_8 (polyhedral analysis of programs over wrapping fixed-width integers; metadata via Crossref, full text not read).",
+      "Jorge A. Navas, Peter Schachte, Harald Søndergaard, Peter J. Stuckey, 'Signedness-Agnostic Program Analysis: Precise Integer Bounds for Low-Level Code', APLAS 2012, LNCS 7705, Springer, 2012, pp. 115-130, DOI 10.1007/978-3-642-35182-2_9 (integer bounds analysis for low-level code where signedness is not known; metadata via Crossref, full text not read)."
+    ],
+    "design_question": "When may constraints over machine integers (BitVec w, unsigned or signed) be reasoned about over unbounded integers, and which range facts must a verifier establish first?",
+    "tier_justification": "Signed counterpart of R6a; the underlying facts (toInt (ofInt z) = z.bmod 2^w) are mechanized in Lean core and CompCert (signed_repr)."
+  },
+  {
+    "id": "R6c",
+    "lean": [
+      "Toy.Farkas.bv_ule_ult_iff_int_of_noWrapU",
+      "Toy.Farkas.bv_sle_slt_iff_int_of_noWrapS"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "If every intermediate value of the left-to-right evaluation of e1 and of e2 (each coefficient literal, each product c_i * x_i, each partial sum, the constant, and the final value) lies in [0, 2^w) at the unsigned reading, then e1 <=u e2 (resp. <u) over BitVec w holds iff e1 <= e2 (resp. <) over Int; likewise for the signed reading, the two's-complement range, and <=s / <s. These are corollaries of R6a/R6b; the no-wrap hypotheses are stronger than needed (R6i).",
+    "hypotheses": [
+      {
+        "name": "h1 : NoWrapU w e1 (uval x) (unsigned form only)",
+        "purpose": "no intermediate wrap in e1 (unsigned)",
+        "tightness": "tight",
+        "counterexample": "Toy.Farkas.ce_bv_ule_noWrapU_lhs"
+      },
+      {
+        "name": "h2 : NoWrapU w e2 (uval x) (unsigned form only)",
+        "purpose": "no intermediate wrap in e2 (unsigned)",
+        "tightness": "tight",
+        "counterexample": "Toy.Farkas.ce_bv_ule_noWrapU_rhs"
+      },
+      {
+        "name": "h1 : NoWrapS w e1 (sval x) (signed form only)",
+        "purpose": "no intermediate wrap in e1 (signed)",
+        "tightness": "tight",
+        "counterexample": "Toy.Farkas.ce_bv_sle_noWrapS_lhs"
+      },
+      {
+        "name": "h2 : NoWrapS w e2 (sval x) (signed form only)",
+        "purpose": "no intermediate wrap in e2 (signed)",
+        "tightness": "tight",
+        "counterexample": "Toy.Farkas.ce_bv_sle_noWrapS_rhs"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "w = 8: x0 + x0 at x0 = 70 and the constant 150 (unsigned), x0 + x0 at x0 = -50 and the constant 0 (signed), have no wrapping intermediates.",
+    "nonvacuity_witness_lean": [
+      "Toy.Farkas.nv_bv_ule_ult_noWrapU",
+      "Toy.Farkas.nv_bv_sle_slt_noWrapS"
+    ],
+    "non_claims": [
+      "The hypotheses cannot be dropped but can be weakened to final-value range facts (R6a/R6b); ce_noWrap_not_needed_for_wrapping_eval exhibits intermediate wrap with the wrapping value intact.",
+      "NoWrapU/NoWrapS are toy no-wrap conditions for the evaluation order of SparseVec.evalBv (terms summed left to right, constant added last); a different evaluation order has different intermediates.",
+      "AffExpr has no subtraction: x0 - x1 is x0 + (-1) * x1, so under the unsigned reading any term with a negative coefficient fails NoWrapU even when the machine subtraction would not underflow (ex_noWrapU_rejects_machine_subtraction). NoWrapU is therefore not the LLVM nuw condition.",
+      "Coefficient literals are checked: a literal outside the range (e.g. 1000 at w = 8) violates NoWrapU/NoWrapS even when its variable is 0 (ex_noWrap_checks_coefficient_literals).",
+      "Concerns only wrapping (modular) evaluation of +, *, and literals; division, remainder, shifts, and checked or trapping arithmetic (where intermediate overflow matters) are out of scope."
+    ],
+    "prior_art": [
+      "Lean 4 core, leanprover/lean4 tag v4.34.1 (commit 5045d0056413266e57c625dcd7c365b10e377c52), src/Init/Data/BitVec/Lemmas.lean: BitVec.ofInt_add, BitVec.ofInt_mul (BitVec.ofInt w is additive and multiplicative), BitVec.toNat_ofInt ((ofInt n i).toNat = (i % 2^n).toNat), BitVec.toInt_ofInt ((ofInt n i).toInt = i.bmod (2^n)), BitVec.ule_eq_decide, BitVec.ult_eq_decide, BitVec.sle_eq_decide, BitVec.slt_eq_decide.",
+      "LLVM Language Reference Manual, https://llvm.org/docs/LangRef.html (accessed 2026-11-20), poison-value examples: `sub nuw i32 0, 1` 'Results in a poison value' (with the nuw flag an unsigned wrap of one operation poisons the result, unlike the wrapping semantics modeled here)."
+    ],
+    "design_question": "When may constraints over machine integers (BitVec w, unsigned or signed) be reasoned about over unbounded integers, and which range facts must a verifier establish first?",
+    "tier_justification": "Corollary of R6a/R6b with a stronger, intermediate-value hypothesis, restated for this representation."
+  },
+  {
+    "id": "R6e",
+    "lean": "Toy.Farkas.checkFarkas_refutes_bvU_posSupport_of_lhs_lt_of_rhs_nonneg",
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "Let A be a list of bit-vector atoms e1 <= e2 or e1 < e2 between affine expressions, translated to integer constraints in normal form (e1 - e2 <= 0, resp. < 0). If checkFarkas accepts cert for the translations, then at every w-bit point x at which every atom with a positive multiplier has left-hand integer value (unsigned reading) < 2^w and right-hand integer value >= 0, those positively weighted atoms do not all hold in the unsigned bit-vector reading (so neither does A). The two-sided corollary checkFarkas_refutes_bvU_of_inUnsignedRange assumes [0, 2^w) on both sides of every atom.",
+    "hypotheses": [
+      {
+        "name": "h : checkFarkas (A.map BvAtom.toConstraint) cert = true",
+        "purpose": "the certificate is accepted",
+        "tightness": "tight",
+        "counterexample": "Toy.Farkas.ce_checkFarkas_refutes_bv_rejected"
+      },
+      {
+        "name": "hl : every positively weighted atom has lhs.evalInt (uval x) < 2^w",
+        "purpose": "a left side that wraps past 2^w can make a false integer inequality hold in BitVec",
+        "tightness": "tight",
+        "counterexample": "Toy.Farkas.ce_checkFarkas_bvU_lhs_out_of_range"
+      },
+      {
+        "name": "hr : every positively weighted atom has 0 <= rhs.evalInt (uval x)",
+        "purpose": "a negative right side wraps to a large unsigned value",
+        "tightness": "tight",
+        "counterexample": "Toy.Farkas.ce_checkFarkas_bvU_rhs_out_of_range"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "{x0 <u x1, x1 <=u x0} with certificate (1, 1); both atoms are positively weighted and at x = (5, 9) every one-sided range fact holds.",
+    "nonvacuity_witness_lean": [
+      "Toy.Farkas.nv_checkFarkas_refutes_bvU",
+      "Toy.Farkas.nv_checkFarkas_refutes_bv_two_sided"
+    ],
+    "non_claims": [
+      "Is pointwise: it refutes the bit-vector system only at points where the range facts hold, not globally.",
+      "Lower bounds on left sides, upper bounds on right sides, and any bounds on atoms with multiplier 0 are not needed (ex_one_sided_posSupport_weaker_than_two_sided); the two-sided version is a corollary.",
+      "The translation moves terms across the comparison, which is valid over Int only; the range facts are on the two original sides, not on e1 - e2.",
+      "BvAtom.toConstraint does not emit intrinsic bit-vector domain bounds (0 <= x_i < 2^w). A bit-vector-unsatisfiable system such as {x0 <u 0} translates to {x0 < 0}, which is satisfiable over Int and cannot be refuted unless variable domain bounds are explicitly included in A (ce_bv_domain_bounds_not_emitted).",
+      "Does not show how to establish the range facts hl and hr; they must be discharged independently, without circularly relying on wrapping bit-vector atoms in A (for example, x0 + 1 <u 10 holds at x0 = 255#8 even though x0 + 1 wraps).",
+      "Does not give completeness over BitVec w even when all range facts hold: {2x0 <=u 1, 1 <=u 2x0} fails at every 8-bit point, yet checkFarkas rejects every certificate for its translation (ce_checkFarkas_bv_incomplete, cf. R4b).",
+      "Requires all atoms in A to share a single width w and the unsigned reading; mixed-width and mixed-signedness systems are not modeled.",
+      "Invokes only plain checkFarkas, not checkCutCert or checkFarkasTightened; in particular, tightening a strict bit-vector comparison before translation (a <u b to a <=u b - 1) is unsound at b = 0 (ce_bv_tightening_unsound).",
+      "Concerns only wrapping (modular) evaluation of +, *, and literals; division, remainder, shifts, and checked or trapping arithmetic (where intermediate overflow matters) are out of scope."
+    ],
+    "prior_art": [
+      "Lean 4 core, leanprover/lean4 tag v4.34.1 (commit 5045d0056413266e57c625dcd7c365b10e377c52), src/Init/Data/BitVec/Lemmas.lean: BitVec.ofInt_add, BitVec.ofInt_mul (BitVec.ofInt w is additive and multiplicative), BitVec.toNat_ofInt ((ofInt n i).toNat = (i % 2^n).toNat), BitVec.toInt_ofInt ((ofInt n i).toInt = i.bmod (2^n)), BitVec.ule_eq_decide, BitVec.ult_eq_decide, BitVec.sle_eq_decide, BitVec.slt_eq_decide.",
+      "Lean 4 core, leanprover/lean4 tag v4.34.1 (commit 5045d0056413266e57c625dcd7c365b10e377c52), src/Init/Tactics.lean: the `omega` docstring ('not yet a full decision procedure (no \"dark\" or \"grey\" shadows)'); `bv_omega` ('omega with an additional preprocessor that turns statements about BitVec into statements about Nat', via simp lemmas tagged bitvec_to_nat); `bv_decide` (obtains a proof from an external SAT solver and verifies it inside Lean; LRAT proofs per the `bv_check` docstring).",
+      "Julius Farkas, 'Theorie der einfachen Ungleichungen', Journal für die reine und angewandte Mathematik 124 (1902), pp. 1-27, DOI 10.1515/crll.1902.124.1 (non-strict linear inequalities).",
+      "Yoni Zohar, Ahmed Irfan, Makai Mann, Aina Niemetz, Andres Nötzli, Mathias Preiner, Andrew Reynolds, Clark Barrett, Cesare Tinelli, 'Bit-Precise Reasoning via Int-Blasting', VMCAI 2022, LNCS 13182, Springer, 2022, pp. 496-518, DOI 10.1007/978-3-030-94583-1_24 (translating bit-vector constraints into integer arithmetic in an SMT solver; metadata via Crossref, full text not read).",
+      "Axel Simon, Andy King, 'Taming the Wrapping of Integer Arithmetic', SAS 2007, LNCS 4634, Springer, 2007, pp. 121-136 (pages per Crossref), DOI 10.1007/978-3-540-74061-2_8 (polyhedral analysis of programs over wrapping fixed-width integers; metadata via Crossref, full text not read).",
+      "CompCert, AbsInt/CompCert commit 99627f88db37a7c98e03775741e5048b981d2032, lib/Integers.v: unsigned_repr (0 <= z <= max_unsigned -> unsigned (repr z) = z), signed_repr (min_signed <= z <= max_signed -> signed (repr z) = z), add_unsigned, add_signed (wrapping addition as repr of the integer sum), and the comparisons ltu / lt (Coq mechanization of machine-integer-to-integer transfer)."
+    ],
+    "design_question": "When may constraints over machine integers (BitVec w, unsigned or signed) be reasoned about over unbounded integers, and which range facts must a verifier establish first?",
+    "tier_justification": "Folklore behind translating bit-vector constraints to integers before linear reasoning (e.g. Lean's bv_omega, which adds domain bounds and calls omega; int-blasting in SMT), made precise for Farkas certificates with one-sided, support-restricted range facts; no mechanized statement of this form was located among the sources listed."
+  },
+  {
+    "id": "R6f",
+    "lean": "Toy.Farkas.checkFarkas_refutes_bvS_posSupport_of_lhs_lt_of_rhs_ge",
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "As R6e for the signed reading: if checkFarkas accepts cert for the integer translations of A, then at every w-bit point x at which every positively weighted atom has 2 * lhs < 2^w and -2^w <= 2 * rhs (integer values at the signed reading), those atoms do not all hold in the signed bit-vector reading. The two-sided corollary checkFarkas_refutes_bvS_of_inSignedRange assumes the signed range on both sides of every atom.",
+    "hypotheses": [
+      {
+        "name": "h : checkFarkas (A.map BvAtom.toConstraint) cert = true",
+        "purpose": "the certificate is accepted",
+        "tightness": "tight",
+        "counterexample": "Toy.Farkas.ce_checkFarkas_refutes_bv_rejected"
+      },
+      {
+        "name": "hl : every positively weighted atom has 2 * lhs.evalInt (sval x) < 2^w",
+        "purpose": "a left side above the signed range wraps to a negative value",
+        "tightness": "tight",
+        "counterexample": "Toy.Farkas.ce_checkFarkas_bvS_lhs_out_of_range"
+      },
+      {
+        "name": "hr : every positively weighted atom has -2^w <= 2 * rhs.evalInt (sval x)",
+        "purpose": "a right side below the signed range wraps to a positive value",
+        "tightness": "tight",
+        "counterexample": "Toy.Farkas.ce_checkFarkas_bvS_rhs_out_of_range"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "{x0 <s x1, x1 <=s x0} with certificate (1, 1); at x = (-3, 9) every one-sided signed range fact holds.",
+    "nonvacuity_witness_lean": [
+      "Toy.Farkas.nv_checkFarkas_refutes_bvS",
+      "Toy.Farkas.nv_checkFarkas_refutes_bv_two_sided"
+    ],
+    "non_claims": [
+      "Is pointwise, as R6e.",
+      "The translation moves terms across the comparison, which is valid over Int only; the range facts must hold on the two original sides a.lhs and a.rhs, not on a.lhs - a.rhs: for the atom 150 <= 100 at w = 8 the difference 50 is in signed range, 150 wraps to -106, and 150 <=s 100 holds (ce_bvS_range_on_difference_insufficient).",
+      "BvAtom.toConstraint does not emit intrinsic signed domain bounds (-2^w <= 2*x_i < 2^w, i.e., -2^(w-1) <= x_i < 2^(w-1) for w >= 1 and x_i = 0 for w = 0); they must be included in A explicitly (cf. ce_bv_domain_bounds_not_emitted for the unsigned case).",
+      "Does not show how to establish the range facts; they must be discharged without circularly relying on wrapping atoms in A.",
+      "Does not give completeness over BitVec w even when all range facts hold (cf. ce_checkFarkas_bv_incomplete, R4b).",
+      "Requires a single width w and the signed reading for all atoms; mixed-width and mixed-signedness systems are not modeled.",
+      "Invokes only plain checkFarkas; tightening a strict signed comparison before translation is unsound at the signed minimum -2^(w-1).",
+      "Concerns only wrapping (modular) evaluation of +, *, and literals; division, remainder, shifts, and checked or trapping arithmetic (where intermediate overflow matters) are out of scope."
+    ],
+    "prior_art": [
+      "Lean 4 core, leanprover/lean4 tag v4.34.1 (commit 5045d0056413266e57c625dcd7c365b10e377c52), src/Init/Data/BitVec/Lemmas.lean: BitVec.ofInt_add, BitVec.ofInt_mul (BitVec.ofInt w is additive and multiplicative), BitVec.toNat_ofInt ((ofInt n i).toNat = (i % 2^n).toNat), BitVec.toInt_ofInt ((ofInt n i).toInt = i.bmod (2^n)), BitVec.ule_eq_decide, BitVec.ult_eq_decide, BitVec.sle_eq_decide, BitVec.slt_eq_decide.",
+      "Lean 4 core, leanprover/lean4 tag v4.34.1 (commit 5045d0056413266e57c625dcd7c365b10e377c52), src/Init/Tactics.lean: the `omega` docstring ('not yet a full decision procedure (no \"dark\" or \"grey\" shadows)'); `bv_omega` ('omega with an additional preprocessor that turns statements about BitVec into statements about Nat', via simp lemmas tagged bitvec_to_nat); `bv_decide` (obtains a proof from an external SAT solver and verifies it inside Lean; LRAT proofs per the `bv_check` docstring).",
+      "Julius Farkas, 'Theorie der einfachen Ungleichungen', Journal für die reine und angewandte Mathematik 124 (1902), pp. 1-27, DOI 10.1515/crll.1902.124.1 (non-strict linear inequalities).",
+      "Yoni Zohar, Ahmed Irfan, Makai Mann, Aina Niemetz, Andres Nötzli, Mathias Preiner, Andrew Reynolds, Clark Barrett, Cesare Tinelli, 'Bit-Precise Reasoning via Int-Blasting', VMCAI 2022, LNCS 13182, Springer, 2022, pp. 496-518, DOI 10.1007/978-3-030-94583-1_24 (translating bit-vector constraints into integer arithmetic in an SMT solver; metadata via Crossref, full text not read).",
+      "Axel Simon, Andy King, 'Taming the Wrapping of Integer Arithmetic', SAS 2007, LNCS 4634, Springer, 2007, pp. 121-136 (pages per Crossref), DOI 10.1007/978-3-540-74061-2_8 (polyhedral analysis of programs over wrapping fixed-width integers; metadata via Crossref, full text not read).",
+      "CompCert, AbsInt/CompCert commit 99627f88db37a7c98e03775741e5048b981d2032, lib/Integers.v: unsigned_repr (0 <= z <= max_unsigned -> unsigned (repr z) = z), signed_repr (min_signed <= z <= max_signed -> signed (repr z) = z), add_unsigned, add_signed (wrapping addition as repr of the integer sum), and the comparisons ltu / lt (Coq mechanization of machine-integer-to-integer transfer)."
+    ],
+    "design_question": "When may constraints over machine integers (BitVec w, unsigned or signed) be reasoned about over unbounded integers, and which range facts must a verifier establish first?",
+    "tier_justification": "Signed counterpart of R6e; folklore made precise, no mechanized statement of this form located among the sources listed."
+  },
+  {
+    "id": "R6g",
+    "lean": "Toy.Farkas.ce_bv_reading_mismatch",
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "At w = 8 and x0 = 255#8: under the signed reading both sides of x0 <= 0 are in signed range and -1 <= 0 holds, but the unsigned comparison 255 <=u 0 fails; conversely, under the unsigned reading both sides are in unsigned range and 255 <= 0 fails, but the signed comparison -1 <=s 0 holds. The integer reading must match the comparison's signedness.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "",
+    "non_claims": [
+      "Does not show any mixed-signedness transfer is impossible; only that pairing a comparison with the other signedness's reading is wrong."
+    ],
+    "prior_art": [
+      "Lean 4 core, leanprover/lean4 tag v4.34.1 (commit 5045d0056413266e57c625dcd7c365b10e377c52), src/Init/Data/BitVec/Lemmas.lean: BitVec.ofInt_add, BitVec.ofInt_mul (BitVec.ofInt w is additive and multiplicative), BitVec.toNat_ofInt ((ofInt n i).toNat = (i % 2^n).toNat), BitVec.toInt_ofInt ((ofInt n i).toInt = i.bmod (2^n)), BitVec.ule_eq_decide, BitVec.ult_eq_decide, BitVec.sle_eq_decide, BitVec.slt_eq_decide.",
+      "Jorge A. Navas, Peter Schachte, Harald Søndergaard, Peter J. Stuckey, 'Signedness-Agnostic Program Analysis: Precise Integer Bounds for Low-Level Code', APLAS 2012, LNCS 7705, Springer, 2012, pp. 115-130, DOI 10.1007/978-3-642-35182-2_9 (integer bounds analysis for low-level code where signedness is not known; metadata via Crossref, full text not read)."
+    ],
+    "design_question": "When may constraints over machine integers (BitVec w, unsigned or signed) be reasoned about over unbounded integers, and which range facts must a verifier establish first?",
+    "tier_justification": "Well-known signedness pitfall, as a concrete instance."
+  },
+  {
+    "id": "R6h",
+    "lean": "Toy.Farkas.ce_bv_rearrangement_unsound",
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "Moving terms across a bit-vector comparison is unsound even when the original sides are in range: at w = 8 and (x0, x1) = (0, 1), x0 <=u x1 holds but x0 - x1 <=u 0 fails (x0 - x1 wraps to 255), although the integer -1 <= 0 holds; at (x0, x1) = (-100, 100) in the signed reading, x0 <=s x1 holds but x0 - x1 <=s 0 fails (x0 - x1 = -200 wraps to 56).",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "",
+    "non_claims": [
+      "Does not show rearrangement is always wrong: it is valid when the rearranged sides are themselves in range (then R6a or R6b applies to them)."
+    ],
+    "prior_art": [
+      "Lean 4 core, leanprover/lean4 tag v4.34.1 (commit 5045d0056413266e57c625dcd7c365b10e377c52), src/Init/Data/BitVec/Lemmas.lean: BitVec.ofInt_add, BitVec.ofInt_mul (BitVec.ofInt w is additive and multiplicative), BitVec.toNat_ofInt ((ofInt n i).toNat = (i % 2^n).toNat), BitVec.toInt_ofInt ((ofInt n i).toInt = i.bmod (2^n)), BitVec.ule_eq_decide, BitVec.ult_eq_decide, BitVec.sle_eq_decide, BitVec.slt_eq_decide.",
+      "Axel Simon, Andy King, 'Taming the Wrapping of Integer Arithmetic', SAS 2007, LNCS 4634, Springer, 2007, pp. 121-136 (pages per Crossref), DOI 10.1007/978-3-540-74061-2_8 (polyhedral analysis of programs over wrapping fixed-width integers; metadata via Crossref, full text not read)."
+    ],
+    "design_question": "When may constraints over machine integers (BitVec w, unsigned or signed) be reasoned about over unbounded integers, and which range facts must a verifier establish first?",
+    "tier_justification": "Well-known consequence of wrapping, as concrete instances."
+  },
+  {
+    "id": "R6i",
+    "lean": "Toy.Farkas.ce_noWrap_not_needed_for_wrapping_eval",
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "Intermediate no-wrap is not necessary for wrapping evaluation: for e = x0 + x0 - x0 (written x0 + x0 + (-1) * x0) at w = 8, in the signed reading at x0 = 100 the left-to-right partial sum 200 leaves the signed range while every other intermediate value (literals, products, other partial sums, constant, final value 100) is in range, so NoWrapS fails, yet the wrapping value of e equals its integer value 100; in the unsigned reading at x0 = 200 the partial sum 400 (and the literal -1 and the product -200) leave the unsigned range, so NoWrapU fails, yet the wrapping value equals the integer value 200. Hence comparisons of e with any in-range right-hand side transfer (R6a/R6b).",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "",
+    "non_claims": [
+      "Does not apply to checked or trapping arithmetic, or to poison-on-overflow flags such as LLVM nuw/nsw, where an intermediate overflow changes the result.",
+      "In the unsigned reading, if every coefficient literal lies in [0, 2^w) and the constant is non-negative, products and partial sums are non-negative and bounded by the final value, so an in-range final value implies NoWrapU; unsigned intermediate wrap with an in-range final value therefore needs a negative literal (here -1). Stated for orientation, not proved as a general theorem (bounded check check_noWrapU_of_final_in_range_w3: w = 3, two terms, all such literals, constants, and points)."
+    ],
+    "prior_art": [
+      "Lean 4 core, leanprover/lean4 tag v4.34.1 (commit 5045d0056413266e57c625dcd7c365b10e377c52), src/Init/Data/BitVec/Lemmas.lean: BitVec.ofInt_add, BitVec.ofInt_mul (BitVec.ofInt w is additive and multiplicative), BitVec.toNat_ofInt ((ofInt n i).toNat = (i % 2^n).toNat), BitVec.toInt_ofInt ((ofInt n i).toInt = i.bmod (2^n)), BitVec.ule_eq_decide, BitVec.ult_eq_decide, BitVec.sle_eq_decide, BitVec.slt_eq_decide.",
+      "LLVM Language Reference Manual, https://llvm.org/docs/LangRef.html (accessed 2026-11-20), poison-value examples: `sub nuw i32 0, 1` 'Results in a poison value' (with the nuw flag an unsigned wrap of one operation poisons the result, unlike the wrapping semantics modeled here).",
+      "Nuno P. Lopes, Juneyoung Lee, Chung-Kil Hur, Zhengyang Liu, John Regehr, 'Alive2: bounded translation validation for LLVM', PLDI 2021, ACM, pp. 65-79, DOI 10.1145/3453483.3454030 (translation validation for LLVM IR, including its poison semantics; metadata via Crossref, full text not read)."
+    ],
+    "design_question": "When may constraints over machine integers (BitVec w, unsigned or signed) be reasoned about over unbounded integers, and which range facts must a verifier establish first?",
+    "tier_justification": "Immediate from ofInt being a ring homomorphism (mechanized in Lean core); concrete instances."
+  }
+]

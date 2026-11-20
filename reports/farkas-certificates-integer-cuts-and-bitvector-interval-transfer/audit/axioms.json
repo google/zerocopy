@@ -1,0 +1,1134 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Farkas.AffExpr": [],
+    "Toy.Farkas.AffExpr.casesOn": [],
+    "Toy.Farkas.AffExpr.const": [],
+    "Toy.Farkas.AffExpr.ctorIdx": [],
+    "Toy.Farkas.AffExpr.evalBv": [
+      "propext"
+    ],
+    "Toy.Farkas.AffExpr.evalBv.eq_1": [
+      "propext"
+    ],
+    "Toy.Farkas.AffExpr.evalBv_eq_ofInt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.AffExpr.evalInt": [],
+    "Toy.Farkas.AffExpr.evalInt.eq_1": [],
+    "Toy.Farkas.AffExpr.intermediates": [],
+    "Toy.Farkas.AffExpr.intermediates.eq_1": [],
+    "Toy.Farkas.AffExpr.mk": [],
+    "Toy.Farkas.AffExpr.mk.inj": [],
+    "Toy.Farkas.AffExpr.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Farkas.AffExpr.mk.noConfusion": [],
+    "Toy.Farkas.AffExpr.mk.sizeOf_spec": [],
+    "Toy.Farkas.AffExpr.noConfusion": [],
+    "Toy.Farkas.AffExpr.noConfusionType": [],
+    "Toy.Farkas.AffExpr.rec": [],
+    "Toy.Farkas.AffExpr.recOn": [],
+    "Toy.Farkas.AffExpr.terms": [],
+    "Toy.Farkas.BvAtom": [],
+    "Toy.Farkas.BvAtom.HoldsS": [
+      "propext"
+    ],
+    "Toy.Farkas.BvAtom.HoldsU": [
+      "propext"
+    ],
+    "Toy.Farkas.BvAtom.HoldsU.match_1": [],
+    "Toy.Farkas.BvAtom.casesOn": [],
+    "Toy.Farkas.BvAtom.ctorIdx": [],
+    "Toy.Farkas.BvAtom.holdsInt_of_holdsS_of_lhs_lt_of_rhs_ge": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.BvAtom.holdsInt_of_holdsU_of_lhs_lt_of_rhs_nonneg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.BvAtom.holdsS_iff_holdsInt_of_inSignedRange": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.BvAtom.holdsU_iff_holdsInt_of_inUnsignedRange": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.BvAtom.lhs": [],
+    "Toy.Farkas.BvAtom.mk": [],
+    "Toy.Farkas.BvAtom.mk.inj": [],
+    "Toy.Farkas.BvAtom.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Farkas.BvAtom.mk.noConfusion": [],
+    "Toy.Farkas.BvAtom.mk.sizeOf_spec": [],
+    "Toy.Farkas.BvAtom.noConfusion": [],
+    "Toy.Farkas.BvAtom.noConfusionType": [],
+    "Toy.Farkas.BvAtom.rec": [],
+    "Toy.Farkas.BvAtom.recOn": [],
+    "Toy.Farkas.BvAtom.rel": [],
+    "Toy.Farkas.BvAtom.rhs": [],
+    "Toy.Farkas.BvAtom.toConstraint": [],
+    "Toy.Farkas.BvAtom.toConstraint.eq_1": [],
+    "Toy.Farkas.BvAtom.toConstraint_holdsInt_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.CGStep": [],
+    "Toy.Farkas.CGStep.casesOn": [],
+    "Toy.Farkas.CGStep.ctorIdx": [],
+    "Toy.Farkas.CGStep.div": [],
+    "Toy.Farkas.CGStep.mk": [],
+    "Toy.Farkas.CGStep.mk.inj": [],
+    "Toy.Farkas.CGStep.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Farkas.CGStep.mk.noConfusion": [],
+    "Toy.Farkas.CGStep.mk.sizeOf_spec": [],
+    "Toy.Farkas.CGStep.mult": [],
+    "Toy.Farkas.CGStep.noConfusion": [],
+    "Toy.Farkas.CGStep.noConfusionType": [],
+    "Toy.Farkas.CGStep.rec": [],
+    "Toy.Farkas.CGStep.recOn": [],
+    "Toy.Farkas.Constraint": [],
+    "Toy.Farkas.Constraint.HoldsInt": [],
+    "Toy.Farkas.Constraint.HoldsInt.eq_1": [],
+    "Toy.Farkas.Constraint.HoldsScaled": [],
+    "Toy.Farkas.Constraint.HoldsScaled.eq_1": [],
+    "Toy.Farkas.Constraint.casesOn": [],
+    "Toy.Farkas.Constraint.ctorIdx": [],
+    "Toy.Farkas.Constraint.holdsInt_iff_holdsScaled_one": [
+      "propext"
+    ],
+    "Toy.Farkas.Constraint.holdsInt_tighten_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.Constraint.instDecidableHoldsInt": [],
+    "Toy.Farkas.Constraint.instDecidableHoldsScaled": [],
+    "Toy.Farkas.Constraint.isStrict": [],
+    "Toy.Farkas.Constraint.isStrict.eq_1": [],
+    "Toy.Farkas.Constraint.lhs": [],
+    "Toy.Farkas.Constraint.mk": [],
+    "Toy.Farkas.Constraint.mk.inj": [],
+    "Toy.Farkas.Constraint.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Farkas.Constraint.mk.noConfusion": [],
+    "Toy.Farkas.Constraint.mk.sizeOf_spec": [],
+    "Toy.Farkas.Constraint.noConfusion": [],
+    "Toy.Farkas.Constraint.noConfusionType": [],
+    "Toy.Farkas.Constraint.rec": [],
+    "Toy.Farkas.Constraint.recOn": [],
+    "Toy.Farkas.Constraint.rel": [],
+    "Toy.Farkas.Constraint.rhs": [],
+    "Toy.Farkas.Constraint.tighten": [],
+    "Toy.Farkas.Constraint.tighten.eq_1": [],
+    "Toy.Farkas.Constraint.tighten.match_1": [],
+    "Toy.Farkas.Constraint.tighten_lhs": [],
+    "Toy.Farkas.CutCert": [],
+    "Toy.Farkas.CutCert.casesOn": [],
+    "Toy.Farkas.CutCert.ctorIdx": [],
+    "Toy.Farkas.CutCert.cuts": [],
+    "Toy.Farkas.CutCert.farkas": [],
+    "Toy.Farkas.CutCert.mk": [],
+    "Toy.Farkas.CutCert.mk.inj": [],
+    "Toy.Farkas.CutCert.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Farkas.CutCert.mk.noConfusion": [],
+    "Toy.Farkas.CutCert.mk.sizeOf_spec": [],
+    "Toy.Farkas.CutCert.noConfusion": [],
+    "Toy.Farkas.CutCert.noConfusionType": [],
+    "Toy.Farkas.CutCert.rec": [],
+    "Toy.Farkas.CutCert.recOn": [],
+    "Toy.Farkas.InSignedRange": [],
+    "Toy.Farkas.InUnsignedRange": [],
+    "Toy.Farkas.Motzkin.Deriv": [],
+    "Toy.Farkas.Motzkin.Deriv.add": [],
+    "Toy.Farkas.Motzkin.Deriv.below": [],
+    "Toy.Farkas.Motzkin.Deriv.below.add": [],
+    "Toy.Farkas.Motzkin.Deriv.below.casesOn": [],
+    "Toy.Farkas.Motzkin.Deriv.below.mem": [],
+    "Toy.Farkas.Motzkin.Deriv.below.rec": [],
+    "Toy.Farkas.Motzkin.Deriv.below.smul": [],
+    "Toy.Farkas.Motzkin.Deriv.brecOn": [],
+    "Toy.Farkas.Motzkin.Deriv.casesOn": [],
+    "Toy.Farkas.Motzkin.Deriv.mem": [],
+    "Toy.Farkas.Motzkin.Deriv.rec": [],
+    "Toy.Farkas.Motzkin.Deriv.recOn": [],
+    "Toy.Farkas.Motzkin.Deriv.smul": [],
+    "Toy.Farkas.Motzkin.Deriv.trans": [],
+    "Toy.Farkas.Motzkin.HC": [],
+    "Toy.Farkas.Motzkin.HC.Holds": [],
+    "Toy.Farkas.Motzkin.HC.a": [],
+    "Toy.Farkas.Motzkin.HC.casesOn": [],
+    "Toy.Farkas.Motzkin.HC.ctorIdx": [],
+    "Toy.Farkas.Motzkin.HC.mk": [],
+    "Toy.Farkas.Motzkin.HC.mk.inj": [],
+    "Toy.Farkas.Motzkin.HC.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.HC.mk.noConfusion": [],
+    "Toy.Farkas.Motzkin.HC.mk.sizeOf_spec": [],
+    "Toy.Farkas.Motzkin.HC.noConfusion": [],
+    "Toy.Farkas.Motzkin.HC.noConfusionType": [],
+    "Toy.Farkas.Motzkin.HC.rec": [],
+    "Toy.Farkas.Motzkin.HC.recOn": [],
+    "Toy.Farkas.Motzkin.HC.s": [],
+    "Toy.Farkas.Motzkin.HSat": [],
+    "Toy.Farkas.Motzkin.IsMult": [],
+    "Toy.Farkas.Motzkin.IsMult.casesOn": [],
+    "Toy.Farkas.Motzkin.IsMult.coeff": [],
+    "Toy.Farkas.Motzkin.IsMult.len": [],
+    "Toy.Farkas.Motzkin.IsMult.mk": [],
+    "Toy.Farkas.Motzkin.IsMult.nonneg": [],
+    "Toy.Farkas.Motzkin.IsMult.rec": [],
+    "Toy.Farkas.Motzkin.IsMult.recOn": [],
+    "Toy.Farkas.Motzkin.IsMult.strict": [],
+    "Toy.Farkas.Motzkin.arith_lower_both": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.arith_lower_only": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.arith_upper_both": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.arith_upper_only": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.coeff_comb": [
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.coeff_shift_succ": [
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.coeff_shift_zero": [
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.comb": [],
+    "Toy.Farkas.Motzkin.comb.eq_1": [],
+    "Toy.Farkas.Motzkin.combineRhs_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.combineRhs_neg.match_1_1": [],
+    "Toy.Farkas.Motzkin.complete": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.complete.match_1_1": [],
+    "Toy.Farkas.Motzkin.deriv_of_mem_elim": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.elim": [],
+    "Toy.Farkas.Motzkin.elim.eq_1": [],
+    "Toy.Farkas.Motzkin.elim_extend": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.elim_support": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.eval_comb": [
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.eval_eq_zero_of_coeff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.eval_scale_point": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.eval_shift": [
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.eval_update": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.exists_best_in": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.exists_min_on": [
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.exists_min_on.match_1_1": [],
+    "Toy.Farkas.Motzkin.extend_of_bounds": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.fm_main": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.fm_main.match_1_1": [],
+    "Toy.Farkas.Motzkin.fm_main.match_1_3": [],
+    "Toy.Farkas.Motzkin.frac_trans": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.hden": [],
+    "Toy.Farkas.Motzkin.hden.eq_1": [],
+    "Toy.Farkas.Motzkin.homBound": [],
+    "Toy.Farkas.Motzkin.homBound.eq_1": [],
+    "Toy.Farkas.Motzkin.homC": [],
+    "Toy.Farkas.Motzkin.homC.eq_1": [],
+    "Toy.Farkas.Motzkin.homSys": [],
+    "Toy.Farkas.Motzkin.homSys.eq_1": [],
+    "Toy.Farkas.Motzkin.homSys_sat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.homSys_support": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.isMult_mem": [
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.isMult_mem.match_1_1": [],
+    "Toy.Farkas.Motzkin.isMult_of_deriv": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.le_sum_of_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.lincomb": [],
+    "Toy.Farkas.Motzkin.lincomb.eq_1": [],
+    "Toy.Farkas.Motzkin.lincomb_add": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.lincomb_add.match_1_1": [],
+    "Toy.Farkas.Motzkin.lincomb_cons": [
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.lincomb_replicate_zero": [
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.lincomb_smul": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.lincomb_smul.match_1_1": [],
+    "Toy.Farkas.Motzkin.mem_elim": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.nonneg_zipWith_add": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.nonneg_zipWith_add.match_1_1": [],
+    "Toy.Farkas.Motzkin.rest": [],
+    "Toy.Farkas.Motzkin.rest.eq_1": [],
+    "Toy.Farkas.Motzkin.shift": [],
+    "Toy.Farkas.Motzkin.shift.eq_1": [],
+    "Toy.Farkas.Motzkin.strictPos": [],
+    "Toy.Farkas.Motzkin.strictPos.eq_1": [],
+    "Toy.Farkas.Motzkin.strictPos_add_left": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.strictPos_add_left.match_1_1": [],
+    "Toy.Farkas.Motzkin.strictPos_cons": [
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.strictPos_homC": [
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.strictPos_homC.match_1_1": [],
+    "Toy.Farkas.Motzkin.strictPos_smul": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.strictPos_smul.match_1_1": [],
+    "Toy.Farkas.Motzkin.zipWith_add_comm": [
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.zipWith_map_right_sum": [
+      "propext"
+    ],
+    "Toy.Farkas.Motzkin.zipWith_map_right_sum.match_1_1": [],
+    "Toy.Farkas.NoWrapS": [],
+    "Toy.Farkas.NoWrapU": [],
+    "Toy.Farkas.Rel": [],
+    "Toy.Farkas.Rel.Sat": [],
+    "Toy.Farkas.Rel.Sat.eq_1": [],
+    "Toy.Farkas.Rel.Sat.eq_2": [],
+    "Toy.Farkas.Rel.Sat.match_1": [],
+    "Toy.Farkas.Rel.casesOn": [],
+    "Toy.Farkas.Rel.ctorElim": [],
+    "Toy.Farkas.Rel.ctorElimType": [],
+    "Toy.Farkas.Rel.ctorIdx": [],
+    "Toy.Farkas.Rel.decSat": [],
+    "Toy.Farkas.Rel.le": [],
+    "Toy.Farkas.Rel.le.elim": [],
+    "Toy.Farkas.Rel.le.sizeOf_spec": [],
+    "Toy.Farkas.Rel.lt": [],
+    "Toy.Farkas.Rel.lt.elim": [],
+    "Toy.Farkas.Rel.lt.sizeOf_spec": [],
+    "Toy.Farkas.Rel.noConfusion": [],
+    "Toy.Farkas.Rel.noConfusionType": [],
+    "Toy.Farkas.Rel.ofNat": [],
+    "Toy.Farkas.Rel.ofNat_ctorIdx": [],
+    "Toy.Farkas.Rel.rec": [],
+    "Toy.Farkas.Rel.recOn": [],
+    "Toy.Farkas.SatInt": [],
+    "Toy.Farkas.SatInt.eq_1": [],
+    "Toy.Farkas.SatScaled": [],
+    "Toy.Farkas.SatScaled.eq_1": [],
+    "Toy.Farkas.SparseVec": [],
+    "Toy.Farkas.SparseVec.bound": [],
+    "Toy.Farkas.SparseVec.bound.eq_1": [],
+    "Toy.Farkas.SparseVec.coeff": [],
+    "Toy.Farkas.SparseVec.coeff.eq_1": [],
+    "Toy.Farkas.SparseVec.coeff_append": [
+      "propext"
+    ],
+    "Toy.Farkas.SparseVec.coeff_cons": [
+      "propext"
+    ],
+    "Toy.Farkas.SparseVec.coeff_eq_zero_of_not_mem": [
+      "propext"
+    ],
+    "Toy.Farkas.SparseVec.coeff_nil": [],
+    "Toy.Farkas.SparseVec.coeff_smul": [
+      "propext"
+    ],
+    "Toy.Farkas.SparseVec.eval": [],
+    "Toy.Farkas.SparseVec.eval.eq_1": [],
+    "Toy.Farkas.SparseVec.evalBv": [
+      "propext"
+    ],
+    "Toy.Farkas.SparseVec.evalBv.eq_1": [
+      "propext"
+    ],
+    "Toy.Farkas.SparseVec.evalBv_eq_ofInt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.SparseVec.eval_append": [
+      "propext"
+    ],
+    "Toy.Farkas.SparseVec.eval_cons": [
+      "propext"
+    ],
+    "Toy.Farkas.SparseVec.eval_eq_denseDotOn_coeff_of_nodup_of_keys_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.SparseVec.eval_eq_denseDot_coeff_of_keys_lt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.SparseVec.eval_eq_zero_of_isZero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.SparseVec.eval_nil": [],
+    "Toy.Farkas.SparseVec.eval_smul": [
+      "propext"
+    ],
+    "Toy.Farkas.SparseVec.foldl_evalBv_eq_ofInt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.SparseVec.intermediates": [],
+    "Toy.Farkas.SparseVec.intermediatesFrom": [],
+    "Toy.Farkas.SparseVec.intermediatesFrom.match_1": [],
+    "Toy.Farkas.SparseVec.isZero": [],
+    "Toy.Farkas.SparseVec.isZero_iff_coeff_eq_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.SparseVec.lt_bound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.SparseVec.smul": [],
+    "Toy.Farkas.SparseVec.smul.eq_1": [],
+    "Toy.Farkas.applyCuts": [],
+    "Toy.Farkas.applyCuts.eq_1": [],
+    "Toy.Farkas.applyCuts.eq_2": [],
+    "Toy.Farkas.applyCuts.eq_def": [],
+    "Toy.Farkas.applyCuts.match_1": [],
+    "Toy.Farkas.applyCuts.match_3": [],
+    "Toy.Farkas.applyCuts_satInt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.atomEx": [],
+    "Toy.Farkas.atomsHalfU": [],
+    "Toy.Farkas.atomsLe": [],
+    "Toy.Farkas.atomsLhsUnderflowU": [],
+    "Toy.Farkas.atomsLhsWrapS": [],
+    "Toy.Farkas.atomsLhsWrapU": [],
+    "Toy.Farkas.atomsLtLe": [],
+    "Toy.Farkas.atomsLtZero": [],
+    "Toy.Farkas.atomsRhsWrapS": [],
+    "Toy.Farkas.atomsRhsWrapU": [],
+    "Toy.Farkas.atomsZeroWeight": [],
+    "Toy.Farkas.bvPt2": [],
+    "Toy.Farkas.bv_sle_iff_int_le_of_inSignedRange": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.bv_sle_slt_iff_int_of_inSignedRange": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.bv_sle_slt_iff_int_of_noWrapS": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.bv_sle_slt_imp_int_of_lhs_lt_of_rhs_ge": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.bv_slt_iff_int_lt_of_inSignedRange": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.bv_ule_iff_int_le_of_inUnsignedRange": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.bv_ule_ult_iff_int_of_inUnsignedRange": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.bv_ule_ult_iff_int_of_noWrapU": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.bv_ule_ult_imp_int_of_lhs_lt_of_rhs_nonneg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.bv_ult_iff_int_lt_of_inUnsignedRange": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.ce_bvS_range_on_difference_insufficient": [
+      "propext"
+    ],
+    "Toy.Farkas.ce_bv_domain_bounds_not_emitted": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.ce_bv_reading_mismatch": [
+      "propext"
+    ],
+    "Toy.Farkas.ce_bv_rearrangement_unsound": [
+      "propext"
+    ],
+    "Toy.Farkas.ce_bv_sle_lhs_out_of_range": [
+      "propext"
+    ],
+    "Toy.Farkas.ce_bv_sle_noWrapS_lhs": [
+      "propext"
+    ],
+    "Toy.Farkas.ce_bv_sle_noWrapS_rhs": [
+      "propext"
+    ],
+    "Toy.Farkas.ce_bv_sle_rhs_out_of_range": [
+      "propext"
+    ],
+    "Toy.Farkas.ce_bv_tightening_unsound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.ce_bv_ule_lhs_out_of_range": [
+      "propext"
+    ],
+    "Toy.Farkas.ce_bv_ule_noWrapU_lhs": [
+      "propext"
+    ],
+    "Toy.Farkas.ce_bv_ule_noWrapU_rhs": [
+      "propext"
+    ],
+    "Toy.Farkas.ce_bv_ule_rhs_out_of_range": [
+      "propext"
+    ],
+    "Toy.Farkas.ce_cgCut_div_one_unsound_over_rat": [],
+    "Toy.Farkas.ce_cgCut_negative_divisor": [],
+    "Toy.Farkas.ce_cgCut_negative_multiplier": [],
+    "Toy.Farkas.ce_cgCut_not_divisible": [],
+    "Toy.Farkas.ce_cgCut_point_not_solution": [],
+    "Toy.Farkas.ce_cgCut_unsound_over_rat": [],
+    "Toy.Farkas.ce_cgDerive_rejected": [],
+    "Toy.Farkas.ce_checkCutCert_rejects_satisfiable": [],
+    "Toy.Farkas.ce_checkCutCert_unsound_over_rat": [],
+    "Toy.Farkas.ce_checkFarkasTightened_incomplete_int": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.ce_checkFarkasTightened_rejects_satisfiable": [],
+    "Toy.Farkas.ce_checkFarkas_bvS_lhs_out_of_range": [
+      "propext"
+    ],
+    "Toy.Farkas.ce_checkFarkas_bvS_rhs_out_of_range": [
+      "propext"
+    ],
+    "Toy.Farkas.ce_checkFarkas_bvU_lhs_out_of_range": [
+      "propext"
+    ],
+    "Toy.Farkas.ce_checkFarkas_bvU_rhs_out_of_range": [
+      "propext"
+    ],
+    "Toy.Farkas.ce_checkFarkas_bv_incomplete": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.ce_checkFarkas_refutes_bv_rejected": [
+      "propext"
+    ],
+    "Toy.Farkas.ce_checkFarkas_rejected_satisfiable": [],
+    "Toy.Farkas.ce_eval_eq_denseDotOn_duplicate_index_list": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.ce_eval_eq_denseDotOn_missing_index": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.ce_eval_eq_denseDot_index_out_of_range": [],
+    "Toy.Farkas.ce_farkas_complete_feasible_system": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.ce_farkas_complete_feasible_system.match_1_1": [],
+    "Toy.Farkas.ce_farkas_denominator_zero": [],
+    "Toy.Farkas.ce_farkas_incomplete_int": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.ce_farkas_lhs_not_vanishing": [],
+    "Toy.Farkas.ce_farkas_negative_multiplier": [],
+    "Toy.Farkas.ce_farkas_rhs_not_contradicting": [],
+    "Toy.Farkas.ce_farkas_strict_flag_from_zero_weight": [],
+    "Toy.Farkas.ce_farkas_strictness_ignored": [],
+    "Toy.Farkas.ce_noWrap_not_needed_for_wrapping_eval": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.ce_tightening_unsound_over_rat": [],
+    "Toy.Farkas.ce_zero_test_first_match": [],
+    "Toy.Farkas.ce_zero_test_first_match_dupfree_inputs": [],
+    "Toy.Farkas.ce_zero_test_index_blind": [],
+    "Toy.Farkas.cgCut": [],
+    "Toy.Farkas.cgCut.eq_1": [],
+    "Toy.Farkas.cgCut_sound_int_of_nonneg_of_div_pos_of_divisible": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.cgDerive": [],
+    "Toy.Farkas.cgDerive_sound_int": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.cgDivisible": [],
+    "Toy.Farkas.cgLhs": [],
+    "Toy.Farkas.cgLhs_eval_le_cgRhs": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.cgRhs": [],
+    "Toy.Farkas.cgValid": [],
+    "Toy.Farkas.cgValid.eq_1": [],
+    "Toy.Farkas.checkCutCert": [],
+    "Toy.Farkas.checkCutCert.match_1": [],
+    "Toy.Farkas.checkCutCert_sound_int": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.checkFarkas": [],
+    "Toy.Farkas.checkFarkas.eq_1": [],
+    "Toy.Farkas.checkFarkasTightened": [],
+    "Toy.Farkas.checkFarkasTightened_sound_int": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.checkFarkas_refutes_bvS_of_inSignedRange": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.checkFarkas_refutes_bvS_posSupport_of_lhs_lt_of_rhs_ge": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.checkFarkas_refutes_bvU_of_inUnsignedRange": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.checkFarkas_refutes_bvU_posSupport_of_lhs_lt_of_rhs_nonneg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.checkFarkas_sound_int": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.checkFarkas_sound_int_posSupport": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.checkFarkas_sound_scaled": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.checkFarkas_sound_scaled_posSupport": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.check_bv_sle_transfer_w0": [
+      "propext"
+    ],
+    "Toy.Farkas.check_bv_sle_transfer_w3": [
+      "propext"
+    ],
+    "Toy.Farkas.check_bv_ule_transfer_w3": [
+      "propext"
+    ],
+    "Toy.Farkas.check_noWrapU_of_final_in_range_w3": [],
+    "Toy.Farkas.coeffFirstMatch": [],
+    "Toy.Farkas.coeffFirstMatch.match_1": [],
+    "Toy.Farkas.coeff_flatten": [
+      "propext"
+    ],
+    "Toy.Farkas.combineLhs": [],
+    "Toy.Farkas.combineLhs.eq_1": [],
+    "Toy.Farkas.combineLhs_coeff": [
+      "propext"
+    ],
+    "Toy.Farkas.combineLhs_eval": [
+      "propext"
+    ],
+    "Toy.Farkas.combineLhs_map_tighten": [
+      "propext"
+    ],
+    "Toy.Farkas.combineRhs": [],
+    "Toy.Farkas.combineRhs.eq_1": [],
+    "Toy.Farkas.combineStrict": [],
+    "Toy.Farkas.combineStrict.eq_1": [],
+    "Toy.Farkas.combineStrictAnyPremise": [],
+    "Toy.Farkas.combine_holdsScaled": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.combine_holdsScaled_of_posSupport": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.denseDot": [],
+    "Toy.Farkas.denseDot.eq_1": [],
+    "Toy.Farkas.denseDotOn": [],
+    "Toy.Farkas.denseDotOn.eq_1": [],
+    "Toy.Farkas.denseDotOn_add": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.denseDotOn_congr": [
+      "propext"
+    ],
+    "Toy.Farkas.denseDotOn_cons": [
+      "propext"
+    ],
+    "Toy.Farkas.denseDotOn_mul_right": [
+      "propext"
+    ],
+    "Toy.Farkas.denseDotOn_nil": [],
+    "Toy.Farkas.denseDotOn_single": [
+      "propext"
+    ],
+    "Toy.Farkas.denseDotOn_single_of_not_mem": [
+      "propext"
+    ],
+    "Toy.Farkas.denseDotOn_zero": [
+      "propext"
+    ],
+    "Toy.Farkas.eAddAddSub": [],
+    "Toy.Farkas.eConst": [],
+    "Toy.Farkas.eDouble": [],
+    "Toy.Farkas.eX0": [],
+    "Toy.Farkas.eX1": [],
+    "Toy.Farkas.eval_flatten": [
+      "propext"
+    ],
+    "Toy.Farkas.eval_range_map": [
+      "propext"
+    ],
+    "Toy.Farkas.ex_applyCuts_neg": [],
+    "Toy.Farkas.ex_applyCuts_pos": [],
+    "Toy.Farkas.ex_bound_neg": [],
+    "Toy.Farkas.ex_bound_pos": [],
+    "Toy.Farkas.ex_bvAtom_holdsS_neg": [
+      "propext"
+    ],
+    "Toy.Farkas.ex_bvAtom_holdsS_pos": [
+      "propext"
+    ],
+    "Toy.Farkas.ex_bvAtom_holdsU_neg": [
+      "propext"
+    ],
+    "Toy.Farkas.ex_bvAtom_holdsU_pos": [
+      "propext"
+    ],
+    "Toy.Farkas.ex_bvAtom_holdsU_wrap": [
+      "propext"
+    ],
+    "Toy.Farkas.ex_bvAtom_toConstraint_neg": [],
+    "Toy.Farkas.ex_bvAtom_toConstraint_pos": [],
+    "Toy.Farkas.ex_cgCut_floor_negative": [],
+    "Toy.Farkas.ex_cgCut_neg": [],
+    "Toy.Farkas.ex_cgCut_pos": [],
+    "Toy.Farkas.ex_cgDerive_neg": [],
+    "Toy.Farkas.ex_cgDerive_pos": [],
+    "Toy.Farkas.ex_cgDivisible_duplicates_pos": [],
+    "Toy.Farkas.ex_cgDivisible_neg": [],
+    "Toy.Farkas.ex_cgDivisible_pos": [],
+    "Toy.Farkas.ex_cgLhs_neg": [],
+    "Toy.Farkas.ex_cgLhs_pos": [],
+    "Toy.Farkas.ex_cgRhs_neg": [],
+    "Toy.Farkas.ex_cgRhs_strict_pos": [],
+    "Toy.Farkas.ex_cgValid_neg": [],
+    "Toy.Farkas.ex_cgValid_pos": [],
+    "Toy.Farkas.ex_checkCutCert_neg": [],
+    "Toy.Farkas.ex_checkCutCert_no_cuts_no_tightening": [],
+    "Toy.Farkas.ex_checkCutCert_pos": [],
+    "Toy.Farkas.ex_checkFarkas_neg": [],
+    "Toy.Farkas.ex_checkFarkas_pos": [],
+    "Toy.Farkas.ex_checkFarkas_short_certificate": [],
+    "Toy.Farkas.ex_checkFarkas_strict_pos": [],
+    "Toy.Farkas.ex_checkFarkas_surplus_multipliers": [],
+    "Toy.Farkas.ex_coeffFirstMatch_neg": [],
+    "Toy.Farkas.ex_coeffFirstMatch_pos": [],
+    "Toy.Farkas.ex_coeff_duplicates_add": [],
+    "Toy.Farkas.ex_coeff_not_first_match": [],
+    "Toy.Farkas.ex_combineLhs_neg": [],
+    "Toy.Farkas.ex_combineLhs_pos": [],
+    "Toy.Farkas.ex_combineRhs_neg": [],
+    "Toy.Farkas.ex_combineRhs_pos": [],
+    "Toy.Farkas.ex_combineStrictAnyPremise_neg": [],
+    "Toy.Farkas.ex_combineStrictAnyPremise_pos": [],
+    "Toy.Farkas.ex_combineStrict_neg": [],
+    "Toy.Farkas.ex_combineStrict_pos": [],
+    "Toy.Farkas.ex_denseDotOn_neg": [],
+    "Toy.Farkas.ex_denseDotOn_pos": [],
+    "Toy.Farkas.ex_denseDot_neg": [],
+    "Toy.Farkas.ex_denseDot_pos": [],
+    "Toy.Farkas.ex_evalBv_neg": [
+      "propext"
+    ],
+    "Toy.Farkas.ex_evalBv_pos": [
+      "propext"
+    ],
+    "Toy.Farkas.ex_evalInt_neg": [],
+    "Toy.Farkas.ex_evalInt_pos": [],
+    "Toy.Farkas.ex_eval_neg": [],
+    "Toy.Farkas.ex_eval_pos": [],
+    "Toy.Farkas.ex_holdsInt_neg": [],
+    "Toy.Farkas.ex_holdsInt_pos": [],
+    "Toy.Farkas.ex_holdsInt_strict_neg": [],
+    "Toy.Farkas.ex_holdsScaled_neg": [],
+    "Toy.Farkas.ex_holdsScaled_pos": [],
+    "Toy.Farkas.ex_inSignedRange_neg": [],
+    "Toy.Farkas.ex_inSignedRange_pos": [],
+    "Toy.Farkas.ex_inSignedRange_zero_width": [],
+    "Toy.Farkas.ex_inUnsignedRange_neg": [],
+    "Toy.Farkas.ex_inUnsignedRange_pos": [],
+    "Toy.Farkas.ex_intermediates_neg": [],
+    "Toy.Farkas.ex_intermediates_pos": [],
+    "Toy.Farkas.ex_isStrict_neg": [],
+    "Toy.Farkas.ex_isStrict_pos": [],
+    "Toy.Farkas.ex_isZeroFirstMatch_neg": [],
+    "Toy.Farkas.ex_isZeroFirstMatch_pos": [],
+    "Toy.Farkas.ex_isZeroIndexBlind_neg": [],
+    "Toy.Farkas.ex_isZeroIndexBlind_pos": [],
+    "Toy.Farkas.ex_isZero_neg": [],
+    "Toy.Farkas.ex_isZero_not_bitvector_vanishing": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.ex_isZero_pos": [],
+    "Toy.Farkas.ex_lhsVanishes_neg": [],
+    "Toy.Farkas.ex_lhsVanishes_pos": [],
+    "Toy.Farkas.ex_multipliersNonneg_neg": [],
+    "Toy.Farkas.ex_multipliersNonneg_pos": [],
+    "Toy.Farkas.ex_noWrapS_neg": [],
+    "Toy.Farkas.ex_noWrapS_pos": [],
+    "Toy.Farkas.ex_noWrapU_neg": [],
+    "Toy.Farkas.ex_noWrapU_pos": [],
+    "Toy.Farkas.ex_noWrapU_rejects_machine_subtraction": [],
+    "Toy.Farkas.ex_noWrap_checks_coefficient_literals": [],
+    "Toy.Farkas.ex_one_sided_posSupport_weaker_than_two_sided": [],
+    "Toy.Farkas.ex_rhsContradictsAnyPremise_neg": [],
+    "Toy.Farkas.ex_rhsContradictsAnyPremise_pos": [],
+    "Toy.Farkas.ex_rhsContradictsIgnoringStrictness_neg": [],
+    "Toy.Farkas.ex_rhsContradictsIgnoringStrictness_pos": [],
+    "Toy.Farkas.ex_rhsContradicts_neg": [],
+    "Toy.Farkas.ex_rhsContradicts_pos": [],
+    "Toy.Farkas.ex_satInt_neg": [],
+    "Toy.Farkas.ex_satInt_pos": [],
+    "Toy.Farkas.ex_satScaled_denominator_zero_degenerate": [],
+    "Toy.Farkas.ex_satScaled_neg": [],
+    "Toy.Farkas.ex_satScaled_pos": [],
+    "Toy.Farkas.ex_smul_neg": [],
+    "Toy.Farkas.ex_smul_pos": [],
+    "Toy.Farkas.ex_sparse_evalBv_neg": [
+      "propext"
+    ],
+    "Toy.Farkas.ex_sparse_evalBv_pos": [
+      "propext"
+    ],
+    "Toy.Farkas.ex_sval_neg": [],
+    "Toy.Farkas.ex_sval_pos": [],
+    "Toy.Farkas.ex_tighten_neg": [],
+    "Toy.Farkas.ex_tighten_pos": [],
+    "Toy.Farkas.ex_uval_neg": [],
+    "Toy.Farkas.ex_uval_pos": [],
+    "Toy.Farkas.farkas_complete_scaled": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.farkas_sound_scaled_of_nonneg_of_lhsVanishes_of_rhsContradicts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.halfCutCert": [],
+    "Toy.Farkas.inSignedRange_evalInt_of_noWrapS": [
+      "propext"
+    ],
+    "Toy.Farkas.inUnsignedRange_evalInt_of_noWrapU": [
+      "propext"
+    ],
+    "Toy.Farkas.instDecidableEqAffExpr": [],
+    "Toy.Farkas.instDecidableEqAffExpr.decEq": [],
+    "Toy.Farkas.instDecidableEqAffExpr.decEq.match_1": [],
+    "Toy.Farkas.instDecidableEqBvAtom": [],
+    "Toy.Farkas.instDecidableEqBvAtom.decEq": [],
+    "Toy.Farkas.instDecidableEqBvAtom.decEq.match_1": [],
+    "Toy.Farkas.instDecidableEqCGStep": [],
+    "Toy.Farkas.instDecidableEqCGStep.decEq": [],
+    "Toy.Farkas.instDecidableEqCGStep.decEq.match_1": [],
+    "Toy.Farkas.instDecidableEqConstraint": [],
+    "Toy.Farkas.instDecidableEqConstraint.decEq": [],
+    "Toy.Farkas.instDecidableEqConstraint.decEq.match_1": [],
+    "Toy.Farkas.instDecidableEqCutCert": [],
+    "Toy.Farkas.instDecidableEqCutCert.decEq": [],
+    "Toy.Farkas.instDecidableEqCutCert.decEq.match_1": [],
+    "Toy.Farkas.instDecidableEqRel": [],
+    "Toy.Farkas.instDecidableHoldsS": [
+      "propext"
+    ],
+    "Toy.Farkas.instDecidableHoldsU": [
+      "propext"
+    ],
+    "Toy.Farkas.instDecidableInSignedRange": [],
+    "Toy.Farkas.instDecidableInUnsignedRange": [],
+    "Toy.Farkas.instDecidableNoWrapS": [],
+    "Toy.Farkas.instDecidableNoWrapU": [],
+    "Toy.Farkas.instDecidableSatInt": [],
+    "Toy.Farkas.instDecidableSatScaled": [],
+    "Toy.Farkas.instReprAffExpr": [
+      "propext"
+    ],
+    "Toy.Farkas.instReprAffExpr.repr": [
+      "propext"
+    ],
+    "Toy.Farkas.instReprBvAtom": [
+      "propext"
+    ],
+    "Toy.Farkas.instReprBvAtom.repr": [
+      "propext"
+    ],
+    "Toy.Farkas.instReprCGStep": [
+      "propext"
+    ],
+    "Toy.Farkas.instReprCGStep.repr": [
+      "propext"
+    ],
+    "Toy.Farkas.instReprConstraint": [
+      "propext"
+    ],
+    "Toy.Farkas.instReprConstraint.repr": [
+      "propext"
+    ],
+    "Toy.Farkas.instReprCutCert": [
+      "propext"
+    ],
+    "Toy.Farkas.instReprCutCert.repr": [
+      "propext"
+    ],
+    "Toy.Farkas.instReprRel": [],
+    "Toy.Farkas.instReprRel.repr": [],
+    "Toy.Farkas.instReprRel.repr.match_1": [],
+    "Toy.Farkas.isZeroFirstMatch": [],
+    "Toy.Farkas.isZeroIndexBlind": [],
+    "Toy.Farkas.lhsVanishes": [],
+    "Toy.Farkas.mem_of_mem_posSupport": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.multipliersNonneg": [],
+    "Toy.Farkas.nv_bv_sle_slt_noWrapS": [],
+    "Toy.Farkas.nv_bv_sle_slt_transfer": [
+      "propext"
+    ],
+    "Toy.Farkas.nv_bv_ule_ult_noWrapU": [],
+    "Toy.Farkas.nv_bv_ule_ult_transfer": [
+      "propext"
+    ],
+    "Toy.Farkas.nv_cgCut_sound_int": [],
+    "Toy.Farkas.nv_checkCutCert_sound_int": [],
+    "Toy.Farkas.nv_checkFarkasTightened": [],
+    "Toy.Farkas.nv_checkFarkas_refutes_bvS": [],
+    "Toy.Farkas.nv_checkFarkas_refutes_bvU": [],
+    "Toy.Farkas.nv_checkFarkas_refutes_bv_two_sided": [],
+    "Toy.Farkas.nv_checkFarkas_sound": [],
+    "Toy.Farkas.nv_checkFarkas_sound_posSupport": [],
+    "Toy.Farkas.nv_checkFarkas_sound_scaled": [],
+    "Toy.Farkas.nv_combineLhs_coeff": [],
+    "Toy.Farkas.nv_combineLhs_eval": [],
+    "Toy.Farkas.nv_eval_eq_denseDot": [],
+    "Toy.Farkas.nv_eval_eq_denseDotOn": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.nv_farkas_complete_scaled": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.nv_farkas_sound_structured": [],
+    "Toy.Farkas.nv_isZero_iff": [],
+    "Toy.Farkas.ofInt_sval": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.ofInt_uval": [
+      "propext"
+    ],
+    "Toy.Farkas.posSupport": [],
+    "Toy.Farkas.posSupport.eq_1": [],
+    "Toy.Farkas.posSupport_cons_cons": [
+      "propext"
+    ],
+    "Toy.Farkas.posSupport_map": [
+      "propext"
+    ],
+    "Toy.Farkas.pt1": [],
+    "Toy.Farkas.pt2": [],
+    "Toy.Farkas.rhsContradicts": [],
+    "Toy.Farkas.rhsContradictsAnyPremise": [],
+    "Toy.Farkas.rhsContradictsIgnoringStrictness": [],
+    "Toy.Farkas.satInt_iff_satScaled_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.sval": [],
+    "Toy.Farkas.sval.eq_1": [],
+    "Toy.Farkas.sysEq": [],
+    "Toy.Farkas.sysEqPlusStrict": [],
+    "Toy.Farkas.sysHalf": [],
+    "Toy.Farkas.sysHalf_refuted_by_case_split": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.sysLeGe": [],
+    "Toy.Farkas.sysOpenUnit": [],
+    "Toy.Farkas.sysStrict": [],
+    "Toy.Farkas.sysTwoUpper": [],
+    "Toy.Farkas.sysTwoXLeThree": [],
+    "Toy.Farkas.toInt_ofInt_of_inSignedRange": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Farkas.toNat_ofInt_of_inUnsignedRange": [
+      "propext"
+    ],
+    "Toy.Farkas.uval": [],
+    "Toy.Farkas.uval.eq_1": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

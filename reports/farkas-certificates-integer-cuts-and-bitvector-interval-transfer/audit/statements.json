@@ -1,0 +1,425 @@
+{
+  "statements": {
+    "Toy.Farkas.SparseVec.eval_eq_denseDotOn_coeff_of_nodup_of_keys_mem": {
+      "closure_sha256": "7c23f9e4c58109875ba93c91bb772bbcef1d5b928170142c9300ac4d571ad753",
+      "closure_size": 4,
+      "statement_sha256": "93ff225114bb0e69a3c6f80f47aa10578f01ed3d330618f4f836f95334b607ce"
+    },
+    "Toy.Farkas.SparseVec.eval_eq_denseDot_coeff_of_keys_lt": {
+      "closure_sha256": "fa470dbe7a73e6a39fb3f5f64d43d081eb4a2577de7d52d1f46a986613879e57",
+      "closure_size": 5,
+      "statement_sha256": "65a650da94da9bcc9ddb11eee894bb713c6e85ca0fb15088a6b51e83f3d9a71d"
+    },
+    "Toy.Farkas.SparseVec.isZero_iff_coeff_eq_zero": {
+      "closure_sha256": "dd811bde3b01ec713cb35f7f48274457069ac30415ddd98b227302aec0441b94",
+      "closure_size": 3,
+      "statement_sha256": "59d78355f7cc7638ab6e7b979cef0f63fb36f51e510b9c24bc78c493e0eb768c"
+    },
+    "Toy.Farkas.bv_sle_slt_iff_int_of_inSignedRange": {
+      "closure_sha256": "ac6a680140adc3fe68df63571e7062778a4d04efaababda034e2448efe81fe65",
+      "closure_size": 11,
+      "statement_sha256": "d6b52b517326d074a999ef92afd821d49a42d8dafe6bc74028953a1162448a53"
+    },
+    "Toy.Farkas.bv_sle_slt_iff_int_of_noWrapS": {
+      "closure_sha256": "4348d05e1a67196cad38608dc3af7055dbe0d308367969a0d1f7cd36331e1d67",
+      "closure_size": 17,
+      "statement_sha256": "a65060adfc2c4998c92bfe4ab68f0f2ec5b10825ca86bd9343c46f684d394cc5"
+    },
+    "Toy.Farkas.bv_ule_ult_iff_int_of_inUnsignedRange": {
+      "closure_sha256": "f4cb53da3e399888f29ec674fd5f6b7fcfb09f948c57fb79f3a77aaa9d2b2305",
+      "closure_size": 11,
+      "statement_sha256": "1c95c71e4c2acf52334be4605406d61e5d2848948d4f4f805c06d1dc9bf2dae2"
+    },
+    "Toy.Farkas.bv_ule_ult_iff_int_of_noWrapU": {
+      "closure_sha256": "9e1fd057cc5bd2876e77780e2743c6563b9e1daf83aeae13849fc6c0e738a677",
+      "closure_size": 17,
+      "statement_sha256": "2ff99cb81d9db01beb7f0e13fdb86a040131553a36cbf7e51e0ad76835d7afe0"
+    },
+    "Toy.Farkas.ce_bv_reading_mismatch": {
+      "closure_sha256": "a813edce405478ce986715e1c356d4b737387543c755c15e2dc48f6e4781b13a",
+      "closure_size": 16,
+      "statement_sha256": "49b3af4dc8a17164400e1f8eb73825d6a4d46818237f937eabc275013cb469e9"
+    },
+    "Toy.Farkas.ce_bv_rearrangement_unsound": {
+      "closure_sha256": "0f9893bf7d3c1e017e2b1be87e9421a27995fb945c15c9ce5fa45988dc4a591c",
+      "closure_size": 17,
+      "statement_sha256": "6b33f2c958de00e31cd48c750e30632c7c6121bbfae6df9398c30aa6b03f1988"
+    },
+    "Toy.Farkas.ce_bv_sle_lhs_out_of_range": {
+      "closure_sha256": "2262beab592e7f0f6b2dba5a796cf72c2236e6506e40eda3f3e96f9941b0e9a7",
+      "closure_size": 14,
+      "statement_sha256": "6c67280af7b6f5b713575a5aa0bd2430455bf878f7d17bd65aa9a94add58f6e7"
+    },
+    "Toy.Farkas.ce_bv_sle_noWrapS_lhs": {
+      "closure_sha256": "023ee9447f6fa8a38193c80da9f7d6bad2226f35168e8024486685ae7aeb3d45",
+      "closure_size": 20,
+      "statement_sha256": "dc00c4152205c0a63fad81b843adabf7a7700f5f1d2790a514ca91f2e0258693"
+    },
+    "Toy.Farkas.ce_bv_sle_noWrapS_rhs": {
+      "closure_sha256": "fe0e77779348ded9bb807f0973e0d861ba67e8b7501dbbc77248f86a2ae93515",
+      "closure_size": 20,
+      "statement_sha256": "7c3d1f673767608f13e44dd97db2245f602228b28a99012156d390be07bfbfae"
+    },
+    "Toy.Farkas.ce_bv_sle_rhs_out_of_range": {
+      "closure_sha256": "82d16d52209d27a820634d7152404d7aea6bd27bce3b995b6f04197ae1a7fbd6",
+      "closure_size": 14,
+      "statement_sha256": "d8f78dfce227c87c722f47482f95dfb4e2cd7ef51464714b98ae9ab1fd911de8"
+    },
+    "Toy.Farkas.ce_bv_ule_lhs_out_of_range": {
+      "closure_sha256": "52d1ae6dcdd0cd9ff05b275e4f417cc2aae5cdc8394bf91efd26f79520dc6f27",
+      "closure_size": 14,
+      "statement_sha256": "c674731f6becf49235cd05ee002aacac34c09270b935caac1232088b4304f9b3"
+    },
+    "Toy.Farkas.ce_bv_ule_noWrapU_lhs": {
+      "closure_sha256": "57450e65c5be6864a38a82695088d53f88c0eb6a42fac6d0164fc548729e5ae1",
+      "closure_size": 20,
+      "statement_sha256": "1bdf5d2eb528d595cf44f89a89a7f2bf89ee6da27d99651f996cb42547d04675"
+    },
+    "Toy.Farkas.ce_bv_ule_noWrapU_rhs": {
+      "closure_sha256": "69e47f3215347518726e62b938931b5af734dfc946c161535740863048166ecf",
+      "closure_size": 20,
+      "statement_sha256": "e556860f588a5dc73888515bfeb3f48f74e58f2bec8159b35ba36857e6c60972"
+    },
+    "Toy.Farkas.ce_bv_ule_rhs_out_of_range": {
+      "closure_sha256": "5e43d9789fb55b73900b93b5590eb4ae5f30e43be1f2998f66c23ef1f60ea05a",
+      "closure_size": 14,
+      "statement_sha256": "c143508962cb6fbbf19d939c085c454c7dd73cb54beba0406f008cac79562960"
+    },
+    "Toy.Farkas.ce_cgCut_div_one_unsound_over_rat": {
+      "closure_sha256": "afa900767bb6dc99fbdc05860098013041648338b6388f887ba8ce305b238d5a",
+      "closure_size": 35,
+      "statement_sha256": "296666d962068a02c27f5795cd07dc903a77ca24d3a649f49929ed5fd22406a2"
+    },
+    "Toy.Farkas.ce_cgCut_negative_divisor": {
+      "closure_sha256": "ba3dc02226f7f7b570cb29c8563f1111d8f80bf7ee0d042255fc67263737c6ee",
+      "closure_size": 33,
+      "statement_sha256": "2ccf8000617f0be4b313de1a61d2a6efe26bfb5c64fd8b207145542adad39029"
+    },
+    "Toy.Farkas.ce_cgCut_negative_multiplier": {
+      "closure_sha256": "ba3dc02226f7f7b570cb29c8563f1111d8f80bf7ee0d042255fc67263737c6ee",
+      "closure_size": 33,
+      "statement_sha256": "a0d64a4abc955420f83d8164baa352531b9efe3b4e8f4c0c5dbf4a952c31b83f"
+    },
+    "Toy.Farkas.ce_cgCut_not_divisible": {
+      "closure_sha256": "fada5ca9e67dcf9ea5a11d59736a4841e63ef7f305d36eaa1d57dfaccdeaeca4",
+      "closure_size": 33,
+      "statement_sha256": "c8feab05e562e81c1a6364d762281d1de715e00a581b59c915b0ab6ec9c33f98"
+    },
+    "Toy.Farkas.ce_cgCut_point_not_solution": {
+      "closure_sha256": "3a29ef1bed99e6f9dc6456d1c0b4d9fd1ef60666a0ece9b0e6316ab1504fe4f2",
+      "closure_size": 34,
+      "statement_sha256": "65ef5702537f98cd380524b0a65dd1ae9b29238a2ee0ded9a1588373b573e154"
+    },
+    "Toy.Farkas.ce_cgCut_unsound_over_rat": {
+      "closure_sha256": "1e95c6e07bee16904e79409484fff4e56536c05dc6207d9c88e74176314f5faa",
+      "closure_size": 34,
+      "statement_sha256": "7df21f0894cc6b30cd766d10feb214b1bbca05323fcabe6a1617c33b90109a93"
+    },
+    "Toy.Farkas.ce_cgDerive_rejected": {
+      "closure_sha256": "9acf914dbcdabae9f2be380e8077e4d40c7fdb054073f571f7078a6f8bacb7ce",
+      "closure_size": 35,
+      "statement_sha256": "efe2ed13894d1dc5ba9ea88c956a25797372e7e1e25a3ed0b155f6fe213985d5"
+    },
+    "Toy.Farkas.ce_checkCutCert_rejects_satisfiable": {
+      "closure_sha256": "9611b13b6bd34267877f07fdcd1db8dbf38e6fa5f455eb4eccf4b00d6b08dc19",
+      "closure_size": 53,
+      "statement_sha256": "3ed84d5cd1cd2671211ed49506754c167dd979821ba551261cf6aedf815070df"
+    },
+    "Toy.Farkas.ce_checkCutCert_unsound_over_rat": {
+      "closure_sha256": "5c86ba0e97436c8d6b62a1cd805d42d628175aa6efeb90213d56d3da902e82b0",
+      "closure_size": 54,
+      "statement_sha256": "662cf5569385a69924ddc11666b90d9787e75b18c95de5ec4d47e07f6ea1257a"
+    },
+    "Toy.Farkas.ce_checkFarkasTightened_rejects_satisfiable": {
+      "closure_sha256": "5cd710f70f7eac8695ad6eddb490d99b69a25c7af6f4ce62df2d46ab4512a52b",
+      "closure_size": 33,
+      "statement_sha256": "02b2094034dc6e7b1c2ea43eac2db29cf193c39343ea1526277ce73d0d554d40"
+    },
+    "Toy.Farkas.ce_checkFarkas_bvS_lhs_out_of_range": {
+      "closure_sha256": "ecb705784fdc9903bcdc72c52c0a3cd4221a6604e562fdf2133be1d8781c9148",
+      "closure_size": 43,
+      "statement_sha256": "b78bffb886e8425af787e3ab3dfe976d170fa0475411d7aed56e8e206d036617"
+    },
+    "Toy.Farkas.ce_checkFarkas_bvS_rhs_out_of_range": {
+      "closure_sha256": "a8f9816bd1b6d5fd53c8207ff5d1a53251ebc596fdf7b8ccdb80fe59a50b302f",
+      "closure_size": 43,
+      "statement_sha256": "93e857fc2644337b2e46993095603f5ceb5c0c2fbe384c2dbb5f0ad952e66491"
+    },
+    "Toy.Farkas.ce_checkFarkas_bvU_lhs_out_of_range": {
+      "closure_sha256": "c629856c78dbb2bfb1b17e22d26700078cd8347272ee965b1d92e2fb30a71e5d",
+      "closure_size": 43,
+      "statement_sha256": "c2a3892b04fc22dc2ea5d4d14eaa9dcb8d679a13959d4f683ad8c3098ba7e3e8"
+    },
+    "Toy.Farkas.ce_checkFarkas_bvU_rhs_out_of_range": {
+      "closure_sha256": "8506bfc0db56057016c5ba687bf3a1ec199bb8ab9e18e3f3d9c7ee4df2b2a4ec",
+      "closure_size": 43,
+      "statement_sha256": "b6a2a95db7c10899ce0f9a0a1c847122b9338276962345f23794bafd532cbf58"
+    },
+    "Toy.Farkas.ce_checkFarkas_refutes_bv_rejected": {
+      "closure_sha256": "2ee27d3a7c63c4f5188ba2cea7dbbc78b560e11cc6a8720fce3b9715f53578de",
+      "closure_size": 47,
+      "statement_sha256": "cecfaca1b5d296c8f34304fdac5a4ff7efa83586edb772366a672da46c28a228"
+    },
+    "Toy.Farkas.ce_checkFarkas_rejected_satisfiable": {
+      "closure_sha256": "6bf2b1728fb31485d8ca5c41a0eaef1a798144ec270eaf501f6a4405789f98d1",
+      "closure_size": 33,
+      "statement_sha256": "6d00692e391f1bff4a5079fe6766c2eade88e863223fbcf6334311a3d794bdcd"
+    },
+    "Toy.Farkas.ce_eval_eq_denseDotOn_duplicate_index_list": {
+      "closure_sha256": "7c23f9e4c58109875ba93c91bb772bbcef1d5b928170142c9300ac4d571ad753",
+      "closure_size": 4,
+      "statement_sha256": "8bb6e5da8486396e91ec618485790cb9d8851a5839892d49fb6844e41359ee55"
+    },
+    "Toy.Farkas.ce_eval_eq_denseDotOn_missing_index": {
+      "closure_sha256": "7c23f9e4c58109875ba93c91bb772bbcef1d5b928170142c9300ac4d571ad753",
+      "closure_size": 4,
+      "statement_sha256": "5ec7a40517e8218b767a7b85ed00c1fa90374fd93e50b76a5f2c4a5bc47a1269"
+    },
+    "Toy.Farkas.ce_eval_eq_denseDot_index_out_of_range": {
+      "closure_sha256": "fa470dbe7a73e6a39fb3f5f64d43d081eb4a2577de7d52d1f46a986613879e57",
+      "closure_size": 5,
+      "statement_sha256": "748ef048d38746ad89889d947f94c2bf7abe2b6437e826904d000092fd6e229a"
+    },
+    "Toy.Farkas.ce_farkas_complete_feasible_system": {
+      "closure_sha256": "9ce8aa2fa763900d256fd17c0ace2065397744af8fa3350b838a563a2afd88c7",
+      "closure_size": 30,
+      "statement_sha256": "500eb04892c4f35b46f86ee0abda28e378e1b5a689805234f7c91153cece79a1"
+    },
+    "Toy.Farkas.ce_farkas_denominator_zero": {
+      "closure_sha256": "7916ce0aeaff1e5a308e410357af6ae0bf3f1373c27bebf7485bbecd0b47370c",
+      "closure_size": 28,
+      "statement_sha256": "61264b37ae932ac3f336de8c8e7af11ed0491a42644a7842143b7ed309250c05"
+    },
+    "Toy.Farkas.ce_farkas_incomplete_int": {
+      "closure_sha256": "c590a2ca38f6169e6b265f5870fef2c9f5f0d90b2d0bc6a721692995d9550cee",
+      "closure_size": 29,
+      "statement_sha256": "ef69fb6307737ce663a146ab91e98d99e3637eeabcd1200a24b3e3b436d2dcc0"
+    },
+    "Toy.Farkas.ce_farkas_lhs_not_vanishing": {
+      "closure_sha256": "fd469e29c645633594502632a515ec2347c1f3ee9823180a7ab0dc007a1a4041",
+      "closure_size": 28,
+      "statement_sha256": "4ef1e8f3e92ed91376bde863c02f052a6e7ccb7ab2110b668657fe32f43f035d"
+    },
+    "Toy.Farkas.ce_farkas_negative_multiplier": {
+      "closure_sha256": "e4d034a7193ae7a237977e1096d3dde3b997f618ca2dc42496f442fb5ef78eb9",
+      "closure_size": 31,
+      "statement_sha256": "d08f67b06f95eae31a2b3ca7ed1dae6fd503cd67e67d123c09cecef2f56d48ad"
+    },
+    "Toy.Farkas.ce_farkas_rhs_not_contradicting": {
+      "closure_sha256": "ad78071d72770b172cfacd4f44f9d8ddfce897f987287213ba8839631634bd30",
+      "closure_size": 29,
+      "statement_sha256": "067415216523f66f6b4c3ca0e628f296ab269a1ff9e0f888c5ff22fc0d3ae175"
+    },
+    "Toy.Farkas.ce_farkas_strict_flag_from_zero_weight": {
+      "closure_sha256": "0c1129ddebd8affdec20e4d5a3b36dba30a4c1197003de07f9140760e6456b41",
+      "closure_size": 31,
+      "statement_sha256": "9e8ed671e92ef4a0dac5001ab3c456fff894f1dba9b0a5fbec48d4f7025ec55f"
+    },
+    "Toy.Farkas.ce_farkas_strictness_ignored": {
+      "closure_sha256": "e133c60efaa11117c1ad575d9686f31c0115a1d549661b3b1ccfe6c031628dbd",
+      "closure_size": 33,
+      "statement_sha256": "4b9d7c2f09442699fc5d1526f1de6f889ba641c2d39de56477380913e9d3061c"
+    },
+    "Toy.Farkas.ce_noWrap_not_needed_for_wrapping_eval": {
+      "closure_sha256": "58084a751c4bcbe77ed4d458d205d45081e5117c7e6d2bace0487f8fd6f42b40",
+      "closure_size": 22,
+      "statement_sha256": "9f6079f80e980c4bc3cb7dea6b2a49b63be45795988e24b32eb5b482927718de"
+    },
+    "Toy.Farkas.ce_tightening_unsound_over_rat": {
+      "closure_sha256": "a2c3a03e9133e6f23a294a0af4130b5f79d677c8594b82b9bad3474ea815fe55",
+      "closure_size": 33,
+      "statement_sha256": "833b10c1bf817967ab4eeda3de47329aece2d3f112ff3c8694714cd84411df7c"
+    },
+    "Toy.Farkas.ce_zero_test_first_match": {
+      "closure_sha256": "da0b5e5a124f7af42bd91e361fe05b3eed182758dd6ef576a59e0f261f7a7b63",
+      "closure_size": 32,
+      "statement_sha256": "3fb1b5194bd734362199aee8bd6b9c96c0ff3716bf4a4ee656297ce13549ba83"
+    },
+    "Toy.Farkas.ce_zero_test_first_match_dupfree_inputs": {
+      "closure_sha256": "da0b5e5a124f7af42bd91e361fe05b3eed182758dd6ef576a59e0f261f7a7b63",
+      "closure_size": 32,
+      "statement_sha256": "9681aa6e79ec9dcd80b54ec1637e2c738d1eafcd722dfe2aff43380c2b386ea8"
+    },
+    "Toy.Farkas.ce_zero_test_index_blind": {
+      "closure_sha256": "4d97f71214a81f4f58739e25b0a10978a187a92bf2e1e4c99dddc3aa0a3b374c",
+      "closure_size": 30,
+      "statement_sha256": "4ff91517f5360f01897dc1ced92619c27581aa590ce17723e80180f0946084fc"
+    },
+    "Toy.Farkas.cgCut_sound_int_of_nonneg_of_div_pos_of_divisible": {
+      "closure_sha256": "5ba6f3b4f3a81e0209719a4ec3dbe92a618952d571114ef754e79318d1906dbf",
+      "closure_size": 32,
+      "statement_sha256": "0299622d2c54935222e534b5830630fbcb0062f1964b749979acb4e581daedd0"
+    },
+    "Toy.Farkas.cgDerive_sound_int": {
+      "closure_sha256": "b96652eb16db341ca5397250f55d1c75b286bcff7044482f1934473e181b95e9",
+      "closure_size": 34,
+      "statement_sha256": "855565fd6c8ad7344b3e360c393227cab4f87c2fe1ad616017297a05aca7dbe2"
+    },
+    "Toy.Farkas.checkCutCert_sound_int": {
+      "closure_sha256": "8bf3584558922dededc424413fe4504a5bb21a36057910839b05d160ac28e74a",
+      "closure_size": 51,
+      "statement_sha256": "cf23144cc90bb314523a9103872e8672d3066be0f2057655130a2b3312e521c9"
+    },
+    "Toy.Farkas.checkFarkasTightened_sound_int": {
+      "closure_sha256": "48583f327eb7a722a6a78fb1f321cae01afc95caa29a12ede8b4828fad597ab9",
+      "closure_size": 31,
+      "statement_sha256": "3db4cea93f82a44a653f515af3af7731ad04f7c00f3384fa47ed9cb7c40719a0"
+    },
+    "Toy.Farkas.checkFarkas_refutes_bvS_posSupport_of_lhs_lt_of_rhs_ge": {
+      "closure_sha256": "f8763fb0d6181aa99a40388200b4c7d72c7ea27633808f2b15cf131d1acd6eee",
+      "closure_size": 41,
+      "statement_sha256": "446faadfc4c8216fe30e58b6ba1e98d11f5dd1d584ca230252133b355ba07417"
+    },
+    "Toy.Farkas.checkFarkas_refutes_bvU_posSupport_of_lhs_lt_of_rhs_nonneg": {
+      "closure_sha256": "1428c2b9e5acedc9cc5474f275a30d4d78234dc75ee5646e3ce09e792f35e4ab",
+      "closure_size": 41,
+      "statement_sha256": "808f395ad3ca73b3c36b185eb87e3be2812765c70d82f2d8a4fadc225bd773e5"
+    },
+    "Toy.Farkas.checkFarkas_sound_int": {
+      "closure_sha256": "117424f32bd8d7c2eff962928f84c05e0278b4bc9bf2c2c1759362fe838ebf95",
+      "closure_size": 28,
+      "statement_sha256": "bfabaea03b700e4fbdbac00583014d2ac00f006e8a87d3337f0e23e1500f588d"
+    },
+    "Toy.Farkas.checkFarkas_sound_int_posSupport": {
+      "closure_sha256": "7a101f5745c877e19d419cd8601b902c62aa1d468b3ba0ec02fefbb895809b70",
+      "closure_size": 29,
+      "statement_sha256": "48759b648f7ba34e965d1aa36e92035e1e224793a09048ca142883c99f9ac62a"
+    },
+    "Toy.Farkas.checkFarkas_sound_scaled": {
+      "closure_sha256": "7916ce0aeaff1e5a308e410357af6ae0bf3f1373c27bebf7485bbecd0b47370c",
+      "closure_size": 28,
+      "statement_sha256": "1a507ae10913942459136278d78e0163cc274aec1d790006ceb029644b77e52e"
+    },
+    "Toy.Farkas.checkFarkas_sound_scaled_posSupport": {
+      "closure_sha256": "8c37c15eba03c3da877b42134cdd7eaccc701fc15cf3911fe2c6bd932fed9633",
+      "closure_size": 29,
+      "statement_sha256": "0580d8f07f26890e0571db182ce71814cff6429390d048978db9d3888d06959f"
+    },
+    "Toy.Farkas.combineLhs_coeff": {
+      "closure_sha256": "a3b85b414e16c6714af423a220e8332b9b4ac4499d604c0bea261c9bc6394f1d",
+      "closure_size": 10,
+      "statement_sha256": "9df3d79ba484849a430d1276f6ef8daa2dbabf9e1370d68569886bfd4e80fe18"
+    },
+    "Toy.Farkas.combineLhs_eval": {
+      "closure_sha256": "186797443a83c890d2f260c3c5cacd9770b1e6fc82531e5766b9b7737af0233a",
+      "closure_size": 10,
+      "statement_sha256": "0470a3afa5d4742012308b50eac20ebf4e3778b3d3cc6e0cea1a04c2218cc0ba"
+    },
+    "Toy.Farkas.farkas_complete_scaled": {
+      "closure_sha256": "7916ce0aeaff1e5a308e410357af6ae0bf3f1373c27bebf7485bbecd0b47370c",
+      "closure_size": 28,
+      "statement_sha256": "d15445716dfcae1616478b8d5d3da933e9faece0f221cc48a2a56f0c32cadcbf"
+    },
+    "Toy.Farkas.farkas_sound_scaled_of_nonneg_of_lhsVanishes_of_rhsContradicts": {
+      "closure_sha256": "2fb0f84e0a0bd79ae6389ad1daf50d6c2d3b4584e0ae8dd4d5f7187597ebe3f3",
+      "closure_size": 27,
+      "statement_sha256": "03f76c9863efaf75db20890956faa98e43334f37b48e449bc879550eb1bab36a"
+    },
+    "Toy.Farkas.nv_bv_sle_slt_noWrapS": {
+      "closure_sha256": "1d6d8078dd86badac404c7ee2d7d8cb05f451218c5c6c7bb6c825440bb38445c",
+      "closure_size": 18,
+      "statement_sha256": "b21a626e5444f0a19a392db1d706d9743dc487f16860b62b772beaf98368f9b0"
+    },
+    "Toy.Farkas.nv_bv_sle_slt_transfer": {
+      "closure_sha256": "2262beab592e7f0f6b2dba5a796cf72c2236e6506e40eda3f3e96f9941b0e9a7",
+      "closure_size": 14,
+      "statement_sha256": "d649f6bd71015119dcaa3ba43dc110b4a635a07604a94a7edf27695aaefc10f8"
+    },
+    "Toy.Farkas.nv_bv_ule_ult_noWrapU": {
+      "closure_sha256": "960d3ebd5e8c6df680ce5e20f18983780b2bdcdd43dbfc85480d226107958375",
+      "closure_size": 18,
+      "statement_sha256": "d729ec3ddca3ff5a5f486e0064771aab36e26c6428239c678816be2076203116"
+    },
+    "Toy.Farkas.nv_bv_ule_ult_transfer": {
+      "closure_sha256": "52d1ae6dcdd0cd9ff05b275e4f417cc2aae5cdc8394bf91efd26f79520dc6f27",
+      "closure_size": 14,
+      "statement_sha256": "491f8ba748bbebca711e8e35e9dae603b34c5c58b86fc6dc6251c0f50b470b4a"
+    },
+    "Toy.Farkas.nv_cgCut_sound_int": {
+      "closure_sha256": "4d4d2e1ec9d35dcd4c83e03d3ff57d336e6740d23f3dbbbc7548c38e23c98f8e",
+      "closure_size": 36,
+      "statement_sha256": "ca2ff4a982268e3b99961163c06cc6c96949b0273f88f7b954697384f1cfadca"
+    },
+    "Toy.Farkas.nv_checkCutCert_sound_int": {
+      "closure_sha256": "31cdbe75b3df3cff030c278e9ccd0c990e5a0bf037cdc2cbcaf9c7a2e1affaf6",
+      "closure_size": 48,
+      "statement_sha256": "c7f541c72ed0e0d50c41d0dd8c2fbd4f8509ba608baf80aa814fe4321cb65608"
+    },
+    "Toy.Farkas.nv_checkFarkasTightened": {
+      "closure_sha256": "0b6d27b923eca0cf497abf0835f8a1fbc665bdd6cd62701b7fe29ea3bba9b431",
+      "closure_size": 27,
+      "statement_sha256": "9c1040daa1d80cd4e47c5601cb33d7141165c690963cb897ba6ae127ab884155"
+    },
+    "Toy.Farkas.nv_checkFarkas_refutes_bvS": {
+      "closure_sha256": "f39fb608741c458730264d6a44bfc372ece97c7bfd78faba3279721af9e1530d",
+      "closure_size": 39,
+      "statement_sha256": "27337f1e1df98e7cc71faafd310403b45121ba61895fb9795dab070134f1c44b"
+    },
+    "Toy.Farkas.nv_checkFarkas_refutes_bvU": {
+      "closure_sha256": "469b1257089a0276f049105de3ec42cea0a73c63de4fed4fe71f60f883c8bf3d",
+      "closure_size": 39,
+      "statement_sha256": "99ef88fcdb3e7490740862b4edeb36e1a91a7b5b6ca54e13141b8718925ffba5"
+    },
+    "Toy.Farkas.nv_checkFarkas_refutes_bv_two_sided": {
+      "closure_sha256": "676e773f028f871c008dfc12fb20aa619b7b7c896b5c30a36a442080c2a8d0c9",
+      "closure_size": 41,
+      "statement_sha256": "3b9992e2e9612f6fd0ea02287f65268be8859d37be1fcc98f253938eabc644de"
+    },
+    "Toy.Farkas.nv_checkFarkas_sound": {
+      "closure_sha256": "2e3de4fe1cd591b482c582efb84231a074987396c0a6720c50378bd3bd9f0597",
+      "closure_size": 25,
+      "statement_sha256": "175ee19b9abd92a785889f4bef447608365106887760f4deae84d8065397b9b8"
+    },
+    "Toy.Farkas.nv_checkFarkas_sound_posSupport": {
+      "closure_sha256": "6a384d406b1a2df517195da9408eccddb1c76f93512a34fd28ca3052ec9a92a9",
+      "closure_size": 25,
+      "statement_sha256": "a4ecda5a9700b6f3eda93449561f80ee0305ae507374787e6ec4c483b54dbdb6"
+    },
+    "Toy.Farkas.nv_checkFarkas_sound_scaled": {
+      "closure_sha256": "2e3de4fe1cd591b482c582efb84231a074987396c0a6720c50378bd3bd9f0597",
+      "closure_size": 25,
+      "statement_sha256": "bf0da2faab654f1c06a64ac4c8ee1846384efe917c4eea8e2c275343545654c0"
+    },
+    "Toy.Farkas.nv_combineLhs_coeff": {
+      "closure_sha256": "e35612c114f3a97a487b2eaaa4692f4c58af53ac330fa4a4b9f3016ee81f41d5",
+      "closure_size": 11,
+      "statement_sha256": "49e1dccecd84d4fdca372cd17c17925943947e85f3c7b158a4255126c586a6ee"
+    },
+    "Toy.Farkas.nv_combineLhs_eval": {
+      "closure_sha256": "160cae289b341c3a15c4987248e779cb32414034157d59b5e8f0f938ff623f57",
+      "closure_size": 12,
+      "statement_sha256": "45114c2d3077546be13ad20ac05eb7ac3b0f1d29323c3e6c558fa16ba674e164"
+    },
+    "Toy.Farkas.nv_eval_eq_denseDot": {
+      "closure_sha256": "fa470dbe7a73e6a39fb3f5f64d43d081eb4a2577de7d52d1f46a986613879e57",
+      "closure_size": 5,
+      "statement_sha256": "9c3a4714a77b71a134e6edac6e1e98cdd165b447670951d78c4552221a64390e"
+    },
+    "Toy.Farkas.nv_eval_eq_denseDotOn": {
+      "closure_sha256": "7c23f9e4c58109875ba93c91bb772bbcef1d5b928170142c9300ac4d571ad753",
+      "closure_size": 4,
+      "statement_sha256": "60dc6338366cdc2ae3fde06ccf0b04e26f0b42cea262424ace4314e1c8fe2abb"
+    },
+    "Toy.Farkas.nv_farkas_complete_scaled": {
+      "closure_sha256": "d42fd1ac36bb5cd488849e3b7f9804d7e161ae2d398f0b8f45f7399b1fba575d",
+      "closure_size": 30,
+      "statement_sha256": "1f047efbe2f99dc8911f3bf9c5d82c3da44b1eec5f815758d8204ea2a5b15815"
+    },
+    "Toy.Farkas.nv_farkas_sound_structured": {
+      "closure_sha256": "e67ca3861f02e19f636253e91a35e37d8b2544d9f57eacc75f9d499e79995bc1",
+      "closure_size": 23,
+      "statement_sha256": "52a393e939f790ba6c3a801b47b63a163e98ebeaebaa4047a3415b4dbaa81d34"
+    },
+    "Toy.Farkas.nv_isZero_iff": {
+      "closure_sha256": "dd811bde3b01ec713cb35f7f48274457069ac30415ddd98b227302aec0441b94",
+      "closure_size": 3,
+      "statement_sha256": "0a5826528ad8a040233fe4c2b9eb1e0ac73a03ec06e7e180e31f113e22b2820b"
+    },
+    "Toy.Farkas.sysHalf_refuted_by_case_split": {
+      "closure_sha256": "b39213a37db4e16d8d1154e06e12adada872ef415b035ee3d81dcf61b613b40e",
+      "closure_size": 24,
+      "statement_sha256": "76799bffce2bc0265a25044a0df4c9780d1e3e47ecba3506822f0067aa89d6b9"
+    }
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

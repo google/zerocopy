@@ -27474,6 +27474,54 @@
         "isa/register-versus-memory-access-latency"
       ]
     },
+    "farkas-certificates-integer-cuts-and-bitvector-interval-transfer": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "doi": "10.1515/crll.1902.124.1"
+          },
+          "name": "Theorie der einfachen Ungleichungen (Farkas; J. reine angew. Math. 124, 1902)"
+        },
+        {
+          "identity": {
+            "url": "https://openlibrary.org/works/OL39347129W"
+          },
+          "name": "Beitr\u00e4ge zur Theorie der linearen Ungleichungen (Motzkin; dissertation, Basel; Jerusalem, 1936)"
+        },
+        {
+          "identity": {
+            "doi": "10.1090/S0002-9904-1958-10224-4"
+          },
+          "name": "Outline of an algorithm for integer solutions to linear programs (Gomory; Bull. AMS 64, 1958)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/0012-365X(73)90167-2"
+          },
+          "name": "Edmonds polytopes and a hierarchy of combinatorial problems (Chv\u00e1tal; Discrete Math. 4, 1973)"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/certificate-checking",
+        "verification/farkas-lemma",
+        "verification/linear-arithmetic",
+        "verification/cutting-planes",
+        "verification/bit-vectors",
+        "verification/trusted-computing-base",
+        "pl/machine-integers"
+      ]
+    },
     "fault-injection-resilient-intermittent-and-approximate-compilation": {
       "observed_at": "2026-11-19",
       "subjects": [
