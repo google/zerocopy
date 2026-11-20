@@ -22902,6 +22902,40 @@
         "verification/parallel-disjointness-proofs"
       ]
     },
+    "drop-in-libav-cdylib-symbol-versioning-avpriv-elimination-and-h264-mbaff-interop": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+          },
+          "name": "FFmpeg"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly (2026-05-31)"
+          },
+          "name": "Rust compiler nightly toolchain (rustc 1.98.0-nightly, LLVM 22.1.6, rust-lld)"
+        },
+        {
+          "identity": {
+            "standard": "ITU-T Rec. H.264 | ISO/IEC 14496-10",
+            "version": "08/2021 (Edition 14)"
+          },
+          "name": "ITU-T Recommendation H.264 / ISO/IEC 14496-10 (Advanced Video Coding)"
+        }
+      ],
+      "topics": [
+        "ffi/c-abi",
+        "rust/c-interoperability",
+        "domains/video-codecs",
+        "build/dynamic-linking",
+        "security/media-codecs"
+      ]
+    },
     "dual-polar-mutation-refutation-spec-strength-auditing-and-anti-vacuity-harnesses": {
       "observed_at": "2026-11-20",
       "subjects": [
