@@ -1,0 +1,47 @@
+{
+  "topics": [
+    "verification/rust",
+    "rust/mir",
+    "verification/testing",
+    "rustc/mir",
+    "minirust/semantics"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler MIR transformations, validator, and interpreter core",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "ac7bce92720268483c462f49fadb6cc3a01e73ce"
+      }
+    },
+    {
+      "name": "Miri reference interpreter and Stacked/Tree Borrows trackers",
+      "identity": {
+        "repository": "rust-lang/miri",
+        "revision": "7e679961edcfe2c526f19153bb8b03de346efa5c"
+      }
+    },
+    {
+      "name": "MiniRust operational semantics and well-formedness specification",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "063d784186d3252bee242217f218223205c0b568"
+      }
+    },
+    {
+      "name": "cargo-mutants source-level Rust mutation testing engine",
+      "identity": {
+        "repository": "sourcefrog/cargo-mutants",
+        "revision": "6c720ae82a1784b84cfa06066f7b0d59ed1798d0"
+      }
+    },
+    {
+      "name": "Mull LLVM IR mutation testing framework",
+      "identity": {
+        "repository": "mull-project/mull",
+        "revision": "8d55e80c0782256b4bae0e7793f4e25f35b6dff0"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

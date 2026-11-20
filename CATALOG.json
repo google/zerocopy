@@ -18182,6 +18182,60 @@
         "verification/refinement"
       ]
     },
+    "compositional-olean-shard-auditing-cross-crate-waiver-unions-and-step-bounded-reactive-traces": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "48f4bfec97ce283618d9a798d7fcf8f0798d8103"
+          },
+          "name": "Lean 4 theorem prover kernel, environment replay, and axiom collector"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4checker",
+            "revision": "91a7f0e8e9dffe927089f5a6edcfeeb8a0e07709"
+          },
+          "name": "lean4checker parallel .olean environment replay auditor"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/comparator",
+            "revision": "865edc14486c3388e9225daa971da8e157488c3e"
+          },
+          "name": "comparator sandboxed export-level specification and axiom auditor"
+        },
+        {
+          "identity": {
+            "repository": "digama0/lean4lean",
+            "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+          },
+          "name": "Lean4Lean formalized Lean 4 kernel typechecker"
+        },
+        {
+          "identity": {
+            "repository": "DeepSpec/InteractionTrees",
+            "revision": "284d42248a3c5517cff9f582e335fcee2f6bdc1f"
+          },
+          "name": "Interaction Trees coinductive library for recursive and impure programs"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert verified C compiler small-step and reactive trace behaviors"
+        }
+      ],
+      "topics": [
+        "verification/lean4",
+        "verification/audit",
+        "verification/concurrency",
+        "lean/olean",
+        "lean/kernel"
+      ]
+    },
     "compositional-open-games-mechanism-design-and-incentive-verification": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -32175,6 +32229,53 @@
         "domains/adaptive-platform-trials",
         "domains/graphical-multiplicity-procedures",
         "verification/type-one-error-simulation-checks"
+      ]
+    },
+    "guard-ablation-mutation-testing-and-postcleanup-mir-validation-contracts-for-verified-interpreters": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "ac7bce92720268483c462f49fadb6cc3a01e73ce"
+          },
+          "name": "Rust compiler MIR transformations, validator, and interpreter core"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/miri",
+            "revision": "7e679961edcfe2c526f19153bb8b03de346efa5c"
+          },
+          "name": "Miri reference interpreter and Stacked/Tree Borrows trackers"
+        },
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "063d784186d3252bee242217f218223205c0b568"
+          },
+          "name": "MiniRust operational semantics and well-formedness specification"
+        },
+        {
+          "identity": {
+            "repository": "sourcefrog/cargo-mutants",
+            "revision": "6c720ae82a1784b84cfa06066f7b0d59ed1798d0"
+          },
+          "name": "cargo-mutants source-level Rust mutation testing engine"
+        },
+        {
+          "identity": {
+            "repository": "mull-project/mull",
+            "revision": "8d55e80c0782256b4bae0e7793f4e25f35b6dff0"
+          },
+          "name": "Mull LLVM IR mutation testing framework"
+        }
+      ],
+      "topics": [
+        "verification/rust",
+        "rust/mir",
+        "verification/testing",
+        "rustc/mir",
+        "minirust/semantics"
       ]
     },
     "gz-righting-hydrostatics-tank-sloshing-moments-and-lng-rollover-boiloff": {
