@@ -8090,6 +8090,81 @@
         "verification/nanoda"
       ]
     },
+    "anneal-trusted-mir-movetocopy-and-storage-elision-refinement-bridge": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "https://github.com/joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "joshlf/anneal (Trusted.MirAst, Trusted.MirSemantics, TrustedBoundary.lean, foundation-lock.json)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "leanprover/lean4 (v4.34.1)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/leanprover/lean4",
+            "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+            "version": "v4.35.0"
+          },
+          "name": "leanprover/lean4 (v4.35.0)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/leanprover/lean4export",
+            "revision": "5a9a355dc6c5fd82b69058d433e2ae2e8dfbf8fe",
+            "version": "3.1.0"
+          },
+          "name": "leanprover/lean4export (format 3.1.0)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/ammkrn/nanoda_lib",
+            "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929",
+            "version": "0.4.19"
+          },
+          "name": "ammkrn/nanoda_lib (nanoda_bin 0.4.19)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/rust-lang/rust",
+            "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+          },
+          "name": "rust-lang/rust (rustc_const_eval and rustc_middle::mir baseline pinned by Anneal)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/proofs-rs/lean-miri",
+            "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+          },
+          "name": "proofs-rs/lean-miri (upstream baseline for Anneal deinitMovedPlace = true)"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/theory",
+        "anneal/trusted-boundary",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/mir",
+        "lean",
+        "lean/kernel",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "rustc/mir",
+        "verification",
+        "verification/formalized-results",
+        "verification/translation-validation"
+      ]
+    },
     "anneal-universal-algebra-institutions-and-incompleteness-bounds": {
       "observed_at": "2026-11-02",
       "subjects": [
