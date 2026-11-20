@@ -965,6 +965,20 @@ fn rustc_mode_symlinks_replay_export_lean_lib_and_unpinned_taint() {
     pass.expect(0, "selected_unit_verified", None);
     assert_eq!(pass.value["taint_reasons"], json!([]));
     assert!(pass.output.stderr.is_empty());
+    let sandbox_kind = pass.value["elaboration_sandbox"]
+        .as_str()
+        .expect("receipt includes elaboration_sandbox");
+    assert!(
+        matches!(sandbox_kind, "linux_bwrap" | "linux_landlock_seccomp"),
+        "expected active ExecSeal sandbox, got {sandbox_kind:?}"
+    );
+    assert!(
+        !pass.value["deferred"].as_array().unwrap().iter().any(|d| d
+            .as_str()
+            .is_some_and(|s| s.contains("hostile Lean elaborator"))),
+        "sandboxed run must omit hostile Lean elaborator effects from deferred: {}",
+        pass.value["deferred"]
+    );
     let lean_lib = pass_artifacts.join("lean-lib");
     assert!(lean_lib.join("Trusted/MirAst.olean").is_file());
     assert!(lean_lib.join("Anneal/MirWp.olean").is_file());
@@ -1027,6 +1041,10 @@ fn rustc_mode_symlinks_replay_export_lean_lib_and_unpinned_taint() {
     failed.expect(1, "proof_failed", Some("audit"));
     assert!(fail_artifacts.join("lean-lib/Captured.olean").is_file());
     assert!(fail_artifacts.join("lean-lib/Contract.olean").is_file());
+    assert!(
+        !fail_artifacts.join("lean-lib/Proof.olean").exists(),
+        "authored proof-role .olean must not be exported on proof_failed"
+    );
 
     // 4. Early header error before target-lib exists does not fail with ENOENT.
     let header_err_link = runfiles.join("BadImportProof.lean");
@@ -1129,6 +1147,61 @@ fn rustc_mode_symlinks_replay_export_lean_lib_and_unpinned_taint() {
     assert_eq!(
         u["sysroot_modules_sha256"],
         unpinned.value["audit"]["unpinnedLean"]["sysrootModulesSha256"]
+    );
+
+    // 6. Unsandboxed elaboration taint receipt + stderr warning banner.
+    let unsandboxed = fixture.execute(
+        "unsandboxed-elaboration-selected",
+        tools
+            .command()
+            .arg("--allow-unsandboxed-elaboration")
+            .arg("rustc")
+            .arg(runfiles.join("lib.rs"))
+            .args([
+                "--crate-name",
+                "scalar",
+                "--select",
+                "zero",
+                "--source-file",
+            ])
+            .arg(runfiles.join("helper.rs"))
+            .arg("--spec-file")
+            .arg(format!(
+                "Contract={}",
+                runfiles.join("Contract.lean").display()
+            ))
+            .arg("--proof-file")
+            .arg(format!(
+                "Spec.Helper={}",
+                runfiles.join("Spec.Helper.lean").display()
+            ))
+            .args([
+                "--spec-decl",
+                "Contract:Contract.specs",
+                "--theorem",
+                "Spec.Helper:Spec.Helper.custom_verify",
+            ]),
+    );
+    unsandboxed.expect(0, "tainted_selected_unit_verified", None);
+    assert!(
+        String::from_utf8_lossy(&unsandboxed.output.stderr).contains("TAINTED"),
+        "expected TAINTED banner on stderr"
+    );
+    assert_eq!(
+        unsandboxed.value["taint_reasons"],
+        json!(["unsandboxed_elaboration"])
+    );
+    assert_eq!(unsandboxed.value["elaboration_sandbox"], json!("none"));
+    assert!(
+        unsandboxed.value["deferred"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|d| d
+                .as_str()
+                .is_some_and(|s| s.contains("hostile Lean elaborator"))),
+        "unsandboxed run must keep hostile Lean elaborator effects in deferred: {}",
+        unsandboxed.value["deferred"]
     );
 }
 

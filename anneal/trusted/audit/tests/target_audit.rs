@@ -851,7 +851,7 @@ fn target_library_inventory_case(module: &str, mode: &str, rejection: Option<&st
         .unwrap(),
     )
     .unwrap();
-    let output = checker.stage().join(format!("{module}.olean"));
+    let output = checker.stage().join("lib").join(format!("{module}.olean"));
     let producer = checker.stage().join("ForgeTargetLibrary.lean");
     fs::write(&producer, r#"
 import Lean

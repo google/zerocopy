@@ -13,8 +13,8 @@
 //! staged independently and passed to the compiled-environment auditor.
 
 use cargo_anneal::{
-    Checker, TOOLCHAIN, TargetAuditRequest, TargetBindings, TargetModule, TargetRole,
-    read_regular_file_deref, read_regular_file_strict, sha256_bytes,
+    ActiveSandbox, Checker, SandboxMode, TOOLCHAIN, TargetAuditRequest, TargetBindings,
+    TargetModule, TargetRole, read_regular_file_deref, read_regular_file_strict, sha256_bytes,
 };
 use clap::builder::{OsStringValueParser, TypedValueParser as _};
 use clap::error::ErrorKind;
@@ -115,6 +115,10 @@ pub struct VerifyArgs {
     /// Allow unpinned Lean with explicit `--lean` (taints receipt).
     #[arg(long, global = true)]
     allow_unpinned_lean: bool,
+    /// Disable OS-level elaborator containment (`ExecSeal`) and run Lean
+    /// unsandboxed (taints receipt).
+    #[arg(long, global = true)]
+    allow_unsandboxed_elaboration: bool,
     /// Explicit Lean memory limit in MiB (`-M<MB>`; `resolve-imports` enforces
     /// a 4096 MiB floor).
     #[arg(
@@ -1653,10 +1657,22 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     // a successfully executed checker rejecting a proof.
     let mut checker = Checker::new(&bundle, tools.lean.as_deref()).map_err(|e| io("audit", e))?;
     checker.set_allow_unpinned_lean(args.allow_unpinned_lean);
+    checker.set_sandbox_mode(if args.allow_unsandboxed_elaboration {
+        SandboxMode::Unsandboxed
+    } else {
+        SandboxMode::PreferBwrapOrLandlock
+    });
     checker.set_lean_memory_limit_mb(args.lean_memory_mb);
     let audit_result = checker.run_target(&audit_request);
+    let active_sandbox = checker.active_sandbox().unwrap_or(ActiveSandbox::None);
     let export_result = if args.export_lean_lib {
-        Some(checker.export_target_oleans(&work.join("lean-lib")))
+        match &audit_result {
+            Ok(_) => Some(checker.export_target_oleans_gated(&work.join("lean-lib"), true)),
+            Err(e) if e.code == 1 => {
+                Some(checker.export_target_oleans_gated(&work.join("lean-lib"), false))
+            }
+            Err(_) => None,
+        }
     } else {
         None
     };
@@ -1707,12 +1723,14 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
             "capture executable changed during verification",
         ));
     }
-    let status = request.scope.verified_status(args.allow_unpinned_lean);
-    let taint_reasons: &[&str] = if args.allow_unpinned_lean {
-        &["unpinned_lean"]
-    } else {
-        &[]
-    };
+    let mut taint_reasons: Vec<&'static str> = Vec::new();
+    if args.allow_unpinned_lean {
+        taint_reasons.push("unpinned_lean");
+    }
+    if args.allow_unsandboxed_elaboration {
+        taint_reasons.push("unsandboxed_elaboration");
+    }
+    let status = request.scope.verified_status(!taint_reasons.is_empty());
     let correspondence_provenance: Value = if args.allow_unpinned_lean {
         json!({
             "applicable": false,
@@ -1774,10 +1792,29 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     // reports about itself identifies an unhashed component, so its integrity
     // rests on the uncompromised execution environment assumed by
     // THREAT_MODEL.md section 2.1.
+    let mut assumptions: Vec<&str> = vec![
+        "faithful pinned compiler capture",
+        "experimental pointer-free MIR semantics",
+        lean_assumption,
+        "intact compiler and verification environment",
+    ];
+    if active_sandbox == ActiveSandbox::LinuxLandlockSeccomp {
+        assumptions.push(
+            "Tier 2 Landlock + seccomp containment shares host mount and PID namespaces \
+             (metadata/symlink existence probing remains visible to the elaborator)",
+        );
+    }
+    let mut deferred: Vec<&str> = Vec::new();
+    if active_sandbox == ActiveSandbox::None {
+        deferred.push("hostile Lean elaborator effects");
+    }
+    deferred.push("complete review-surface reporting");
+    deferred.push("source-to-deployed-binary correspondence");
     let mut result = json!({
         "schema_version": RECEIPT_SCHEMA_VERSION,
         "status": status,
         "taint_reasons": taint_reasons,
+        "elaboration_sandbox": active_sandbox.as_str(),
         "experimental": true,
         "request_sha256": request_sha256,
         "capture_sha256": capture_sha256,
@@ -1794,17 +1831,8 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
             "proof_and_audit": proof_ms,
             "total": start.elapsed().as_millis(),
         },
-        "assumptions": [
-            "faithful pinned compiler capture",
-            "experimental pointer-free MIR semantics",
-            lean_assumption,
-            "intact compiler and verification environment",
-        ],
-        "deferred": [
-            "hostile Lean elaborator effects",
-            "complete review-surface reporting",
-            "source-to-deployed-binary correspondence",
-        ]
+        "assumptions": assumptions,
+        "deferred": deferred
     });
     if args.allow_unpinned_lean {
         let Some(unpinned_lean) = audit.get("unpinnedLean").and_then(Value::as_object) else {
@@ -1882,15 +1910,22 @@ fn emit_failure(
 }
 
 pub fn main(args: VerifyArgs) -> ExitCode {
-    let taint_reasons: &[&str] = if args.allow_unpinned_lean {
+    let mut taint_vec: Vec<&'static str> = Vec::new();
+    if args.allow_unpinned_lean {
         eprintln!(
             "WARNING: running with unpinned Lean (--allow-unpinned-lean); \
              verification result is TAINTED"
         );
-        &["unpinned_lean"]
-    } else {
-        &[]
-    };
+        taint_vec.push("unpinned_lean");
+    }
+    if args.allow_unsandboxed_elaboration {
+        eprintln!(
+            "WARNING: running without OS elaborator containment \
+             (--allow-unsandboxed-elaboration); verification result is TAINTED"
+        );
+        taint_vec.push("unsandboxed_elaboration");
+    }
+    let taint_reasons: &[&str] = &taint_vec;
     // Receipts encode the artifact destination as JSON text. Check its exact
     // spelling before staging or retention can create evidence, so an encoding
     // failure cannot leave an export with no receipt. Carry the checked text
@@ -2582,6 +2617,7 @@ mod tests {
             artifacts: None,
             export_lean_lib: false,
             allow_unpinned_lean: false,
+            allow_unsandboxed_elaboration: false,
             lean_memory_mb: None,
             command: None,
         };
@@ -2621,6 +2657,7 @@ mod tests {
                 artifacts: None,
                 export_lean_lib: false,
                 allow_unpinned_lean: false,
+                allow_unsandboxed_elaboration: false,
                 lean_memory_mb: None,
                 command: None,
             };

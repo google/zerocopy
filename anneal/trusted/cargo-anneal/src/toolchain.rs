@@ -328,6 +328,13 @@ pub struct AdmittedToolchain {
     /// Records the SHA-256 digest of the unpinned Lean binary at admission so
     /// `target-provenance` can detect mid-run binary replacement.
     pub lean_binary_sha256: Option<String>,
+    /// Resolved executable Lean binary (`<prefix>/bin/lean` when present, else
+    /// the caller-provided Lean path).
+    pub(crate) exec_lean: PathBuf,
+    /// Expected locked SHA-256 digest of `exec_lean` in pinned mode.
+    pub(crate) expected_lean_sha: Option<String>,
+    /// SHA-256 digest of staged `control/TrustedBoundary.lean` at admission.
+    pub(crate) inspector_sha256: String,
 }
 
 impl AdmittedToolchain {

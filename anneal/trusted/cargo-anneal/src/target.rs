@@ -22,6 +22,7 @@ use std::path::{Path, PathBuf};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
+use crate::sandbox::set_mode;
 use crate::stage::Checker;
 use crate::toolchain::{
     AdmittedToolchain, Failure, ImportEdge, Json, PreflightResult, TOOLCHAIN,
@@ -148,7 +149,7 @@ fn target_name_valid(name: &str) -> bool {
 /// Return whether `module` belongs to the bundled `Anneal` theory namespace
 /// (`Anneal` or `Anneal.*`), which authored proof modules are forbidden from
 /// naming via `reserved_proof_module`.
-fn is_bundled_theory_module(module: &str) -> bool {
+pub(crate) fn is_bundled_theory_module(module: &str) -> bool {
     module == "Anneal" || module.starts_with("Anneal.")
 }
 
@@ -511,7 +512,7 @@ impl Checker {
             }
             let dest = self
                 .stage
-                .join("target-src")
+                .join("ro")
                 .join(format!("{}.lean", module.module.replace('.', "/")));
             stage_regular_file(&module.source, &dest, "target-input")?;
             if !sha256_file(&dest, "target-input")?.eq_ignore_ascii_case(&module.expected_sha256) {
@@ -520,6 +521,7 @@ impl Checker {
                     format!("source digest differs for {}", module.module),
                 ));
             }
+            set_mode(&dest, 0o444)?;
             staged.insert(module.module.clone(), dest);
             roles.insert(module.module.clone(), module.role);
         }
@@ -618,31 +620,28 @@ impl Checker {
             "target import cycle",
         )?;
         // Compilation consumes authenticated private copies and explicit
-        // imported artifacts. Target elaboration remains under the intact-host
-        // assumption; this path does not relax repository syntax admission.
+        // imported artifacts inside `ExecSeal`.
         for module in order {
             self.execution_began = true;
             self.compile_lean_module(
                 &module,
                 &staged[&module],
                 imports[&module].clone(),
-                "target-lib",
+                "lib",
                 false,
                 true,
             )?;
+            self.compiled_roles.insert(module.clone(), roles[&module]);
         }
-        // Authenticate the staged bytes again after elaboration. This catches
-        // accidental source changes; hostile host mutation remains excluded.
-        for module in &filtered_request.modules {
-            if !sha256_file(&staged[&module.module], "target-input")?
-                .eq_ignore_ascii_case(&module.expected_sha256)
-            {
-                return Err(Failure::policy(
-                    "target-input",
-                    "staged source changed during elaboration",
-                ));
-            }
-        }
+        // Re-hash `stage/control/TrustedBoundary.lean`, every staged source
+        // snapshot in `stage/ro/`, and every Door-1-promoted `.olean` in
+        // `stage/lib/` immediately before `"target-audit"` (`ArtifactLedger`).
+        let ledger_sources: Vec<(PathBuf, &str)> = filtered_request
+            .modules
+            .iter()
+            .map(|m| (staged[&m.module].clone(), m.expected_sha256.as_str()))
+            .collect();
+        self.verify_artifact_ledger(&ledger_sources)?;
         // Compilation success alone does not establish the exact theorem
         // type, permitted assumptions, or compiled source roles. Acceptance
         // is a separate inspection of the produced kernel declarations.
@@ -965,7 +964,10 @@ mod admission_tests {
         }
 
         fn checker(&self) -> Checker {
-            Checker::new_with_env(&self.root, Some(self.lean.as_path()), []).unwrap()
+            let mut checker =
+                Checker::new_with_env(&self.root, Some(self.lean.as_path()), []).unwrap();
+            checker.set_sandbox_mode(crate::SandboxMode::Unsandboxed);
+            checker
         }
 
         /// Return a request whose five sources pass target input admission.
@@ -1406,6 +1408,7 @@ mod unpinned_admission_tests {
 
         let mut checker = Checker::new_with_env(&root, Some(&lean), []).unwrap();
         checker.set_allow_unpinned_lean(true);
+        checker.set_sandbox_mode(crate::SandboxMode::Unsandboxed);
         // Control: passes staging and reaches inspector (`Lean exited
         // Some(3)`).
         let control = checker.run_target(&req).unwrap_err();
@@ -1502,6 +1505,7 @@ mod unpinned_admission_tests {
 
         let mut checker = Checker::new(&repo_root(), Some(&wrapper_lean)).unwrap();
         checker.set_allow_unpinned_lean(true);
+        checker.set_sandbox_mode(crate::SandboxMode::Unsandboxed);
 
         // Reject Lean.* and Lake.* imports before compilation.
         for forbidden in ["Lean.Elab", "Lake.Build"] {

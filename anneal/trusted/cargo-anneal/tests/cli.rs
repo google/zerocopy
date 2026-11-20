@@ -972,3 +972,28 @@ fn rustc_mode_rejects_reserved_or_mismatched_proof_modules_before_capture() {
         assert_eq!(receipt["phase"], "proof", "{extra:?}: {receipt}");
     }
 }
+
+#[test]
+fn unsandboxed_elaboration_flag_marks_early_failure_receipt_tainted() {
+    use std::fs;
+
+    let project = tempfile::tempdir().unwrap();
+    let request = project.path().join("request.json");
+    fs::write(&request, b"not JSON\n").unwrap();
+    let mut cmd = command(Route::Direct, project.path());
+    cmd.args(["verify", "--allow-unsandboxed-elaboration", "--request"])
+        .arg(&request);
+    #[cfg(not(feature = "setup"))]
+    cmd.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+    let output = cmd.output().unwrap();
+    assert_result(&output, 1, "", "TAINTED");
+    let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(receipt["schema_version"], 2, "{receipt}");
+    assert_eq!(
+        receipt["taint_reasons"],
+        serde_json::json!(["unsandboxed_elaboration"]),
+        "{receipt}"
+    );
+    assert_eq!(receipt["status"], "unsupported", "{receipt}");
+    assert_eq!(receipt["phase"], "request", "{receipt}");
+}

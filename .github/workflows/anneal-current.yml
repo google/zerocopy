@@ -567,6 +567,41 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 
+  sandbox-aarch64:
+    runs-on: ubuntu-24.04-arm
+    name: ExecSeal aarch64 containment tests
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install bubblewrap
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y bubblewrap
+          if [ ! -f /etc/apparmor.d/bwrap ] && command -v apparmor_parser >/dev/null 2>&1; then
+            sudo tee /etc/apparmor.d/bwrap <<'PROFILE' >/dev/null
+          abi <abi/4.0>,
+          include <tunables/global>
+
+          profile bwrap /usr/bin/bwrap flags=(unconfined) {
+            userns,
+            include if exists <local/bwrap>
+          }
+          PROFILE
+            sudo apparmor_parser -r /etc/apparmor.d/bwrap
+          fi
+      - name: Compile and test ExecSeal on aarch64
+        run: |
+          set -euo pipefail
+          cargo clippy --locked -p cargo-anneal --lib --test sandbox_escape -- -D warnings
+          cargo test --locked -p cargo-anneal --lib sandbox:: -- --test-threads=1
+          cargo test --locked -p cargo-anneal --test sandbox_escape -- --test-threads=1 \
+            sandbox_escape_vectors_blocked_in_tier1_and_tier2 \
+            wall_clock_timeout_kills_process_group_in_tier1_and_tier2 \
+            tier1_as_pid1_prevents_post_exit_out_writes
+
   all-jobs-succeed:
       name: Current Anneal checks succeeded
       # Run even when a dependency fails, is skipped, or is cancelled, then
@@ -574,7 +609,7 @@ jobs:
       # success in branch protection, so this aggregation must fail closed.
       if: ${{ always() }}
       runs-on: ubuntu-latest
-      needs: [static-checks, build-exocrate, test-and-verify]
+      needs: [static-checks, build-exocrate, test-and-verify, sandbox-aarch64]
       steps:
         - name: Reject workflow cancellation
           if: ${{ cancelled() }}

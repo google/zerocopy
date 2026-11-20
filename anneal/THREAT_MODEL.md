@@ -136,7 +136,13 @@ audit log.
 This includes host OS tampering executed during compilation or elaboration by
 build-time code inside the repository—such as Cargo `build.rs` build scripts,
 procedural macros, compiler plugins, or Lean 4 elaborator I/O (`#eval`,
-`run_cmd`, `by_elab`, `initialize`). (By contrast, non-malicious Rust code
+`run_cmd`, `by_elab`, `initialize`). On Linux, `cargo-anneal` and Pass 2 of
+`anneal-audit` now confine untrusted Lean 4 elaboration subprocesses inside an
+OS-level sandbox (`ExecSeal`: Tier 1 `bubblewrap` namespaces or Tier 2 Landlock
++ seccomp-BPF, fail-closed unless `--allow-unsandboxed-elaboration` is passed
+with receipt tainting; see `docs/elaborator-containment-design.md`). Host
+build-time Rust code (`build.rs`, procedural macros) and unsandboxed runs
+remain outside Anneal's sandbox boundary. (By contrast, non-malicious Rust code
 *generated* by a `build.rs` script or procedural macro is compiled by `rustc`
 and verified by Anneal under the same soundness, specification, and TCB rules as
 hand-written code in the crate.)

@@ -2484,11 +2484,14 @@ fn is_proof_lean_file(file_name: &str) -> bool {
     }
     match path.parent() {
         // Bare `"Proof.lean"` has an empty parent; staged Lean sources live
-        // directly under `target-src/Proof.lean` (never a submodule such as
-        // `target-src/Sub/Proof.lean`).
+        // directly under `in/Proof.lean` (per-run input), `ro/Proof.lean`, or
+        // legacy `target-src/Proof.lean` (never `in/Sub/Proof.lean`).
         None => true,
         Some(parent) if parent.as_os_str().is_empty() => true,
-        Some(parent) => parent.file_name().and_then(|n| n.to_str()) == Some("target-src"),
+        Some(parent) => matches!(
+            parent.file_name().and_then(|n| n.to_str()),
+            Some("in" | "ro" | "target-src")
+        ),
     }
 }
 
@@ -3321,7 +3324,7 @@ fn compile_real_verifying_oleans(
     assert_eq!(audit["exactType"], true);
     assert_eq!(audit["replay"], true);
 
-    let target_lib = checker.stage().join("target-lib");
+    let target_lib = checker.stage().join("lib");
     for stem in ["Captured", "Spec", "Expected", "Proof"] {
         let olean = target_lib.join(format!("{stem}.olean"));
         let meta = fs::metadata(&olean)
@@ -3348,7 +3351,13 @@ fn copy_compiled_module_artifacts(src_dir: &Path, dst_dir: &Path, stems: &[&str]
             .iter()
             .any(|stem| name.starts_with(&format!("{stem}.")))
         {
-            fs::copy(entry.path(), dst_dir.join(&name)).unwrap();
+            let dst = dst_dir.join(&name);
+            fs::copy(entry.path(), &dst).unwrap();
+            #[cfg(unix)]
+            {
+                use std::os::unix::fs::PermissionsExt;
+                fs::set_permissions(&dst, fs::Permissions::from_mode(0o644)).unwrap();
+            }
             copied.push(name);
         }
     }
@@ -4277,6 +4286,12 @@ fn parse_proof_failure_matches_diagnostic_file_before_line_attribution() {
     // `Sub/Proof.lean`, or a diagnostic omitting `fileName` must never be
     // attributed to a `Proof.lean` function even when the line number overlaps.
     for other_file in [
+        Some("/work/in/Spec.lean"),
+        Some("/work/in/Expected.lean"),
+        Some("/work/in/Captured.lean"),
+        Some("/work/in/Sub/Proof.lean"),
+        Some("/tmp/anneal-trusted-abc/ro/Spec.lean"),
+        Some("/tmp/anneal-trusted-abc/ro/Sub/Proof.lean"),
         Some("/tmp/anneal-trusted-abc/target-src/Spec.lean"),
         Some("/tmp/anneal-trusted-abc/target-src/Expected.lean"),
         Some("/tmp/anneal-trusted-abc/target-src/Captured.lean"),
