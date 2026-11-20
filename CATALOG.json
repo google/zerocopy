@@ -24758,6 +24758,107 @@
         "runtimes/libos-dataplanes"
       ]
     },
+    "fagan-inspection-rates-perspective-based-reading-and-formal-notation-comprehension-trials": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "NASA-SW-VnV/fret",
+            "revision": "cf0f913cc15c41705e803593297e89cd6056b839"
+          },
+          "name": "NASA FRET formal requirements elicitation tool"
+        },
+        {
+          "identity": {
+            "repository": "google/eng-practices",
+            "revision": "3bb3ec25b3b0199f4940b1aa75f0ac5c5753301c"
+          },
+          "name": "Google engineering practices documentation"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/IEEESTD.2008.4601584",
+            "standard": "IEEE Std 1028-2008"
+          },
+          "name": "IEEE Standard for Software Reviews and Audits"
+        },
+        {
+          "identity": {
+            "standard": "NASA-STD-8739.9",
+            "url": "https://standards.nasa.gov/standard/NASA/NASA-STD-87399",
+            "version": "2013-06-17 with Change 1 (2016-10-07)"
+          },
+          "name": "NASA Software Formal Inspections Standard"
+        },
+        {
+          "identity": {
+            "doi": "10.1147/sj.153.0182"
+          },
+          "name": "Design and code inspections to reduce errors in program development"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TSE.1986.6312976"
+          },
+          "name": "Advances in software inspections"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TSE.2009.27"
+          },
+          "name": "The impact of design and code reviews on software quality (PSP data)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/268411.268421"
+          },
+          "name": "Understanding the sources of variation in software inspections"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/BF00368702"
+          },
+          "name": "The empirical investigation of perspective-based reading"
+        },
+        {
+          "identity": {
+            "doi": "10.1023/A:1009848320066"
+          },
+          "name": "Are the perspectives really different? Further experimentation on scenario-based reading of requirements"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/32.485225"
+          },
+          "name": "Mathematical notation in formal specification: too difficult for the masses?"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.infsof.2004.04.003"
+          },
+          "name": "Experimental comparison of the comprehensibility of a Z specification and its implementation in Java"
+        },
+        {
+          "identity": {
+            "doi": "10.22152/programming-journal.org/2023/7/7"
+          },
+          "name": "Little Tricky Logic: Misconceptions in the Understanding of LTL"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3064176.3064183"
+          },
+          "name": "An empirical study on the correctness of formally verified distributed systems"
+        }
+      ],
+      "topics": [
+        "verification/specification-review-capacity",
+        "tooling/inspection-rate-evidence",
+        "pl/formal-notation-comprehension",
+        "verification/audit-surface-sizing",
+        "tooling/code-review"
+      ]
+    },
     "fault-injection-resilient-intermittent-and-approximate-compilation": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -47705,6 +47806,73 @@
         "runtimes/taxonomy",
         "tooling/taxonomy",
         "verification/survey"
+      ]
+    },
+    "point-kinetics-xenon-feedback-openmc-keff-source-convergence-and-cram-depletion": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "pyrk/pyrk",
+            "revision": "c2bfebf90f5cd36449b6f553675763a23f53aa06"
+          },
+          "name": "pyrk point reactor kinetics solver"
+        },
+        {
+          "identity": {
+            "repository": "openmc-dev/openmc",
+            "revision": "4743daa7f8966096aa866d3742074452225915d9"
+          },
+          "name": "OpenMC Monte Carlo transport and depletion code"
+        },
+        {
+          "identity": {
+            "repository": "mit-crpg/OpenMOC",
+            "revision": "c9ac4e1ecc9c13bacb44fd470f7fce8c9355606f"
+          },
+          "name": "OpenMOC method-of-characteristics solver"
+        },
+        {
+          "identity": {
+            "repository": "njoy/NJOY2016",
+            "revision": "ab27c6414a0f25b173f2b637e6dc7e428fdaff00"
+          },
+          "name": "NJOY2016 nuclear data processing system"
+        },
+        {
+          "identity": {
+            "standard": "NUREG/CR-6698",
+            "url": "https://www.nrc.gov/docs/ML0502/ML050250061.pdf",
+            "version": "January 2001"
+          },
+          "name": "NUREG/CR-6698 Guide for Validation of Nuclear Criticality Safety Calculational Methodology"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.anucene.2012.06.007"
+          },
+          "name": "A highly accurate algorithm for the solution of the point kinetics equations"
+        },
+        {
+          "identity": {
+            "doi": "10.13182/NSE15-26"
+          },
+          "name": "Higher-Order Chebyshev Rational Approximation Method and Application to Burnup Equations"
+        },
+        {
+          "identity": {
+            "arxiv": "1001.4100",
+            "version": "v2"
+          },
+          "name": "A Taylor series solution of the reactor point kinetics equations"
+        }
+      ],
+      "topics": [
+        "domains/reactor-point-kinetics",
+        "domains/monte-carlo-criticality",
+        "verification/subcritical-margin-validation",
+        "systems/burnup-matrix-exponentials",
+        "domains/nuclear-data-processing"
       ]
     },
     "polar-ca-scl-decoders-qc-ldpc-trapping-sets-and-leo-doppler-pll-slips": {

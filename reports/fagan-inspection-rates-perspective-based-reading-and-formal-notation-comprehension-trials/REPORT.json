@@ -1,0 +1,101 @@
+{
+  "topics": [
+    "verification/specification-review-capacity",
+    "tooling/inspection-rate-evidence",
+    "pl/formal-notation-comprehension",
+    "verification/audit-surface-sizing",
+    "tooling/code-review"
+  ],
+  "subjects": [
+    {
+      "name": "NASA FRET formal requirements elicitation tool",
+      "identity": {
+        "repository": "NASA-SW-VnV/fret",
+        "revision": "cf0f913cc15c41705e803593297e89cd6056b839"
+      }
+    },
+    {
+      "name": "Google engineering practices documentation",
+      "identity": {
+        "repository": "google/eng-practices",
+        "revision": "3bb3ec25b3b0199f4940b1aa75f0ac5c5753301c"
+      }
+    },
+    {
+      "name": "IEEE Standard for Software Reviews and Audits",
+      "identity": {
+        "standard": "IEEE Std 1028-2008",
+        "doi": "10.1109/IEEESTD.2008.4601584"
+      }
+    },
+    {
+      "name": "NASA Software Formal Inspections Standard",
+      "identity": {
+        "standard": "NASA-STD-8739.9",
+        "version": "2013-06-17 with Change 1 (2016-10-07)",
+        "url": "https://standards.nasa.gov/standard/NASA/NASA-STD-87399"
+      }
+    },
+    {
+      "name": "Design and code inspections to reduce errors in program development",
+      "identity": {
+        "doi": "10.1147/sj.153.0182"
+      }
+    },
+    {
+      "name": "Advances in software inspections",
+      "identity": {
+        "doi": "10.1109/TSE.1986.6312976"
+      }
+    },
+    {
+      "name": "The impact of design and code reviews on software quality (PSP data)",
+      "identity": {
+        "doi": "10.1109/TSE.2009.27"
+      }
+    },
+    {
+      "name": "Understanding the sources of variation in software inspections",
+      "identity": {
+        "doi": "10.1145/268411.268421"
+      }
+    },
+    {
+      "name": "The empirical investigation of perspective-based reading",
+      "identity": {
+        "doi": "10.1007/BF00368702"
+      }
+    },
+    {
+      "name": "Are the perspectives really different? Further experimentation on scenario-based reading of requirements",
+      "identity": {
+        "doi": "10.1023/A:1009848320066"
+      }
+    },
+    {
+      "name": "Mathematical notation in formal specification: too difficult for the masses?",
+      "identity": {
+        "doi": "10.1109/32.485225"
+      }
+    },
+    {
+      "name": "Experimental comparison of the comprehensibility of a Z specification and its implementation in Java",
+      "identity": {
+        "doi": "10.1016/j.infsof.2004.04.003"
+      }
+    },
+    {
+      "name": "Little Tricky Logic: Misconceptions in the Understanding of LTL",
+      "identity": {
+        "doi": "10.22152/programming-journal.org/2023/7/7"
+      }
+    },
+    {
+      "name": "An empirical study on the correctness of formally verified distributed systems",
+      "identity": {
+        "doi": "10.1145/3064176.3064183"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

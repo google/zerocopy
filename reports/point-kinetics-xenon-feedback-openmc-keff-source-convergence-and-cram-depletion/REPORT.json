@@ -1,0 +1,67 @@
+{
+  "topics": [
+    "domains/reactor-point-kinetics",
+    "domains/monte-carlo-criticality",
+    "verification/subcritical-margin-validation",
+    "systems/burnup-matrix-exponentials",
+    "domains/nuclear-data-processing"
+  ],
+  "subjects": [
+    {
+      "name": "pyrk point reactor kinetics solver",
+      "identity": {
+        "repository": "pyrk/pyrk",
+        "revision": "c2bfebf90f5cd36449b6f553675763a23f53aa06"
+      }
+    },
+    {
+      "name": "OpenMC Monte Carlo transport and depletion code",
+      "identity": {
+        "repository": "openmc-dev/openmc",
+        "revision": "4743daa7f8966096aa866d3742074452225915d9"
+      }
+    },
+    {
+      "name": "OpenMOC method-of-characteristics solver",
+      "identity": {
+        "repository": "mit-crpg/OpenMOC",
+        "revision": "c9ac4e1ecc9c13bacb44fd470f7fce8c9355606f"
+      }
+    },
+    {
+      "name": "NJOY2016 nuclear data processing system",
+      "identity": {
+        "repository": "njoy/NJOY2016",
+        "revision": "ab27c6414a0f25b173f2b637e6dc7e428fdaff00"
+      }
+    },
+    {
+      "name": "NUREG/CR-6698 Guide for Validation of Nuclear Criticality Safety Calculational Methodology",
+      "identity": {
+        "standard": "NUREG/CR-6698",
+        "version": "January 2001",
+        "url": "https://www.nrc.gov/docs/ML0502/ML050250061.pdf"
+      }
+    },
+    {
+      "name": "A highly accurate algorithm for the solution of the point kinetics equations",
+      "identity": {
+        "doi": "10.1016/j.anucene.2012.06.007"
+      }
+    },
+    {
+      "name": "Higher-Order Chebyshev Rational Approximation Method and Application to Burnup Equations",
+      "identity": {
+        "doi": "10.13182/NSE15-26"
+      }
+    },
+    {
+      "name": "A Taylor series solution of the reactor point kinetics equations",
+      "identity": {
+        "arxiv": "1001.4100",
+        "version": "v2"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
