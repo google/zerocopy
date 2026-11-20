@@ -1,0 +1,5 @@
+5c81b5893139e7c906770507cfc89f8421e7b3e0d425a6491489dd4bbb18595c  softboundcets.h
+SPATIAL_TEMPORAL: static assertions hold: sizeof(__softboundcets_trie_entry_t) == 32, __SOFTBOUNDCETS_METADATA_NUM_FIELDS == 4
+-D__SOFTBOUNDCETS_SPATIAL does not compile: softboundcets.h:1293:4: error: too many arguments to function ‘__softboundcets_metadata_load’
+-D__SOFTBOUNDCETS_TEMPORAL does not compile: softboundcets.h:1293:4: error: too many arguments to function ‘__softboundcets_metadata_load’
+gcc (Debian 15.2.0-14) 15.2.0

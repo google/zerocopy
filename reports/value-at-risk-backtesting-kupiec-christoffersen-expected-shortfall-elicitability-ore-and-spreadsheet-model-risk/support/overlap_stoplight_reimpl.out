@@ -1,0 +1,6 @@
+parsed ORE reference table: 387 rows, obs range 1..3690
+samples=400000 seed=42 (numpy PCG64; not ORE's Mersenne-Twister stream)
+  obs=200: reimpl (max green, max amber)=(7, 22)  ORE tabulated=(7, 22)  mean exceptions=2.003 (iid expectation 2.00)
+  obs=250: reimpl (max green, max amber)=(8, 23)  ORE tabulated=(8, 24)  mean exceptions=2.505 (iid expectation 2.50)
+  obs=300: reimpl (max green, max amber)=(9, 25)  ORE tabulated=(9, 26)  mean exceptions=3.003 (iid expectation 3.00)
+  obs=500: reimpl (max green, max amber)=(13, 32)  ORE tabulated=(13, 32)  mean exceptions=4.999 (iid expectation 5.00)

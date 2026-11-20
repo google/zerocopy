@@ -1,0 +1,8 @@
+seed=1 trials=300
+no barrier: min slots == maxlive(A)+maxlive(B) in 300/300
+one barrier, handles confined to a phase: min slots == max_p(maxlive(A_p)+maxlive(B_p)) in 300/300
+slot assignment optimal for the single schedule 'A then B' is invalid under some interleaving in 300/300
+seed=2 trials=300
+no barrier: min slots == maxlive(A)+maxlive(B) in 300/300
+one barrier, handles confined to a phase: min slots == max_p(maxlive(A_p)+maxlive(B_p)) in 300/300
+slot assignment optimal for the single schedule 'A then B' is invalid under some interleaving in 300/300

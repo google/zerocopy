@@ -1,0 +1,24 @@
+625f999935269ab7318a86b15ae5726f66aa52c0d3844767d057996aee4b2551  lowfat-config.c
+9b9d3bf5e0f035f1b0a682180bde2e7731b4bfaf1ae0f57138114f25d12a4af2  sizes.cfg
+e48b47131dd66a4214f61b40c4c713b65a17000d3dd8a19f0089a080f1453ccb  sizes2.cfg
+Region #1: error=0B
+Region #52: error=1B
+Region #61: error=995B
+#define LOWFAT_NUM_REGIONS 61
+#define LOWFAT_REGION_SIZE_SHIFT 35
+#define LOWFAT_MAX_HEAP_ALLOC_SIZE 8589934592
+#define LOWFAT_NUM_REGIONS 30
+#define LOWFAT_REGION_SIZE_SHIFT 35
+#define LOWFAT_MAX_HEAP_ALLOC_SIZE 8589934592
+sizes   | uniform 1..4096            | n=  4096 | sum(alloc)/sum(req)=1.0819 | worst alloc/req=16.0000
+sizes   | uniform 1..65536           | n= 65536 | sum(alloc)/sum(req)=1.3197 | worst alloc/req=16.0000
+sizes   | powers of two 16..4096     | n=     9 | sum(alloc)/sum(req)=1.0176 | worst alloc/req=2.0000
+sizes   | powers of two 16..1048576  | n=    17 | sum(alloc)/sum(req)=1.9923 | worst alloc/req=2.0000
+sizes   | pow2 minus 8 (24..4088)    | n=     8 | sum(alloc)/sum(req)=1.0079 | worst alloc/req=1.3333
+sizes   | spot checks (request alloc region): 16 32 2; 4096 4112 34; 4095 4096 33
+sizes2  | uniform 1..4096            | n=  4096 | sum(alloc)/sum(req)=1.3340 | worst alloc/req=16.0000
+sizes2  | uniform 1..65536           | n= 65536 | sum(alloc)/sum(req)=1.3334 | worst alloc/req=16.0000
+sizes2  | powers of two 16..4096     | n=     9 | sum(alloc)/sum(req)=2.0000 | worst alloc/req=2.0000
+sizes2  | powers of two 16..1048576  | n=    17 | sum(alloc)/sum(req)=2.0000 | worst alloc/req=2.0000
+sizes2  | pow2 minus 8 (24..4088)    | n=     8 | sum(alloc)/sum(req)=1.0079 | worst alloc/req=1.3333
+sizes2  | spot checks (request alloc region): 16 32 2; 4096 8192 10; 4095 4096 9

@@ -1,0 +1,12 @@
+reps=4000000 seed=20261120 alpha=0.025 z_crit=1.959964 fisher c=0.003804 MCSE~0.00008
+P(promising zone, n2 increased) = 0.2855
+[rule A: promising zone 0.5<z1<2.0 -> n2=4n1]
+naive pooled test  type I error = 0.02393
+CHW inverse normal type I error = 0.02498
+[rule B: weak-positive zone 0<z1<1.2 -> n2=4n1] P(increase)=0.3844
+naive pooled test  type I error = 0.02956  (CHW unchanged: 0.02498)
+[rule C: adversarial choice of n2 in {n1, 4n1} given z1] P(increase)=0.8772
+naive pooled test  type I error = 0.03235  (CHW unchanged: 0.02498)
+Fisher product     type I error = 0.02492
+Bauer-Koehne alpha1=0.0102 alpha0=0.5: c = 0.003802; closed-form size = 0.025000; simulated = 0.02493
+  same c with futility ignored (non-binding use): simulated = 0.02755

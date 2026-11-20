@@ -1,0 +1,9 @@
+reps=20000 seed=20261120 N=250 p=0.01; rejection rates at nominal 5% (asymptotic chi2)
+scenario                           LR_uc  LR_ind   LR_cc  mean exc
+iid p=0.01 (correct)              0.0969  0.0147  0.0081     2.497
+iid q=0.02                        0.2404  0.0188  0.1527     5.000
+iid q=0.03                        0.6216  0.0146  0.4991     7.475
+Markov rate 0.01, pi11=0.1        0.1253  0.1542  0.0756     2.506
+Markov rate 0.01, pi11=0.2        0.1690  0.2859  0.1672     2.525
+Markov rate 0.01, pi11=0.4        0.2867  0.4420  0.3410     2.512
+(Monte Carlo standard error of each rate <= 0.0035)

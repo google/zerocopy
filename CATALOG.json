@@ -31627,6 +31627,166 @@
         "tooling/verification"
       ]
     },
+    "group-sequential-alpha-spending-graphical-multiplicity-rpact-gsdesign-and-recovery-platform-trials": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rpact-com/rpact",
+            "revision": "68538fbdd01d25c0516b488d82a5fc09b63362a9",
+            "version": "5.0.0 (DESCRIPTION, dated 2026-11-16)"
+          },
+          "name": "rpact R package"
+        },
+        {
+          "identity": {
+            "repository": "keaven/gsDesign",
+            "revision": "d15fcff2e16f252f4b4e3963c89120abe1fc5cb6",
+            "version": "4.0.0 (DESCRIPTION)"
+          },
+          "name": "gsDesign R package"
+        },
+        {
+          "identity": {
+            "repository": "openpharma/graphicalMCP",
+            "revision": "74f2f31e3e49a209745a54a1b292463c5efeeb3a",
+            "version": "0.3.0.9000 (DESCRIPTION)"
+          },
+          "name": "graphicalMCP R package"
+        },
+        {
+          "identity": {
+            "url": "https://www.fda.gov/media/78495/download",
+            "version": "Final guidance, November 2019"
+          },
+          "name": "FDA guidance: Adaptive Designs for Clinical Trials of Drugs and Biologics"
+        },
+        {
+          "identity": {
+            "url": "https://database.ich.org/sites/default/files/E9_Guideline.pdf",
+            "version": "Step 4, 5 February 1998"
+          },
+          "name": "ICH E9 Statistical Principles for Clinical Trials"
+        },
+        {
+          "identity": {
+            "url": "https://www.recoverytrial.net/files/protocol-archive/recovery-protocol-v2-0-2020-03-23.pdf",
+            "version": "V2.0 2020-03-23"
+          },
+          "name": "RECOVERY trial protocol, version 2.0"
+        },
+        {
+          "identity": {
+            "url": "https://www.recoverytrial.net/files/recovery-protocol-v8-0-2020-07-08.pdf",
+            "version": "V8.0 2020-07-08"
+          },
+          "name": "RECOVERY trial protocol, version 8.0"
+        },
+        {
+          "identity": {
+            "url": "https://www.recoverytrial.net/files/recovery-protocol-v27-0-2023-09-13.pdf",
+            "version": "V27.0 2023-09-13"
+          },
+          "name": "RECOVERY trial protocol, version 27.0"
+        },
+        {
+          "identity": {
+            "doi": "10.1056/NEJMoa2021436"
+          },
+          "name": "RECOVERY Collaborative Group, Dexamethasone in Hospitalized Patients with Covid-19"
+        },
+        {
+          "identity": {
+            "doi": "10.1056/NEJMoa2022926"
+          },
+          "name": "RECOVERY Collaborative Group, Effect of Hydroxychloroquine in Hospitalized Patients with Covid-19"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/S0140-6736(21)00676-0"
+          },
+          "name": "RECOVERY Collaborative Group, Tocilizumab in patients admitted to hospital with COVID-19"
+        },
+        {
+          "identity": {
+            "doi": "10.2307/2343787"
+          },
+          "name": "Armitage, McPherson, Rowe, Repeated Significance Tests on Accumulating Data"
+        },
+        {
+          "identity": {
+            "doi": "10.1093/biomet/64.2.191"
+          },
+          "name": "Pocock, Group Sequential Methods in the Design and Analysis of Clinical Trials"
+        },
+        {
+          "identity": {
+            "doi": "10.2307/2530245"
+          },
+          "name": "O'Brien and Fleming, A Multiple Testing Procedure for Clinical Trials"
+        },
+        {
+          "identity": {
+            "doi": "10.1093/biomet/70.3.659"
+          },
+          "name": "Lan and DeMets, Discrete Sequential Boundaries for Clinical Trials"
+        },
+        {
+          "identity": {
+            "doi": "10.1093/biomet/74.1.149"
+          },
+          "name": "Kim and DeMets, Design and analysis of group sequential tests based on the type I error spending rate function"
+        },
+        {
+          "identity": {
+            "doi": "10.1002/sim.4780091207"
+          },
+          "name": "Hwang, Shih, DeCani, Group sequential designs using a family of type I error probability spending functions"
+        },
+        {
+          "identity": {
+            "doi": "10.2307/2533441"
+          },
+          "name": "Bauer and Koehne, Evaluation of Experiments with Adaptive Interim Analyses"
+        },
+        {
+          "identity": {
+            "doi": "10.1111/j.0006-341X.1999.01286.x"
+          },
+          "name": "Lehmacher and Wassmer, Adaptive Sample Size Calculations in Group Sequential Trials"
+        },
+        {
+          "identity": {
+            "doi": "10.1111/j.0006-341X.1999.00853.x"
+          },
+          "name": "Cui, Hung, Wang, Modification of Sample Size in Group Sequential Clinical Trials"
+        },
+        {
+          "identity": {
+            "doi": "10.1002/sim.3495"
+          },
+          "name": "Bretz, Maurer, Brannath, Posch, A Graphical Approach to Sequentially Rejective Multiple Test Procedures"
+        },
+        {
+          "identity": {
+            "doi": "10.1080/19466315.2013.807748"
+          },
+          "name": "Maurer and Bretz, Multiple Testing in Group Sequential Trials Using Graphical Approaches"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-031-89669-9"
+          },
+          "name": "Wassmer and Brannath (2025) monograph cited in the rpact DESCRIPTION as its methods reference"
+        }
+      ],
+      "topics": [
+        "domains/group-sequential-trial-design",
+        "domains/adaptive-platform-trials",
+        "domains/graphical-multiplicity-procedures",
+        "verification/type-one-error-simulation-checks"
+      ]
+    },
     "gz-righting-hydrostatics-tank-sloshing-moments-and-lng-rollover-boiloff": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -74648,6 +74808,149 @@
         "verification/time-step-sensitivity-of-agent-models"
       ]
     },
+    "softbound-cets-low-fat-pointers-mpx-bounds-tables-compressed-oops-v8-pointer-compression-and-tag-free-collection": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "santoshn/softboundcets-34",
+            "revision": "9a9c09f04e16f2d1ef3a906fd138a7b89df44996"
+          },
+          "name": "SoftBound+CETS runtime and LLVM 3.4 instrumentation"
+        },
+        {
+          "identity": {
+            "repository": "GJDuck/LowFat",
+            "revision": "20f8075dd1fd6588700262353c7ba619d82cea8f"
+          },
+          "name": "LowFat low-fat pointer bounds checker"
+        },
+        {
+          "identity": {
+            "repository": "openjdk/jdk",
+            "revision": "47aa18053c827fea8619ed2f83c34d8328e8dc96"
+          },
+          "name": "OpenJDK HotSpot compressed oops and compressed class pointers"
+        },
+        {
+          "identity": {
+            "artifact": "OpenJDK25U-jdk_x64_linux_hotspot_25.0.5_8.tar.gz",
+            "sha256": "68982529869257d0ee6b824ec5aa270ff8b118bb438670da0b97ebdab178d7fb",
+            "url": "https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25.0.5%2B8/OpenJDK25U-jdk_x64_linux_hotspot_25.0.5_8.tar.gz",
+            "version": "25.0.5+8-LTS"
+          },
+          "name": "Eclipse Temurin JDK 25.0.5+8 (Linux x64 HotSpot archive)"
+        },
+        {
+          "identity": {
+            "repository": "v8/v8",
+            "revision": "712eae40a4db945524e75a38592cb88a1f919df5"
+          },
+          "name": "V8 pointer compression"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "45fc24e89b7cc2e227b2f03d99dda0a2204bf383"
+          },
+          "name": "Linux kernel commit removing Intel MPX from arch/x86"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1542476.1542504"
+          },
+          "name": "SoftBound: Highly Compatible and Complete Spatial Memory Safety for C (PLDI 2009)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1806651.1806657"
+          },
+          "name": "CETS: Compiler Enforced Temporal Safety for C (ISMM 2010)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2508859.2516713"
+          },
+          "name": "Low-Fat Pointers: Compact Encoding and Efficient Gate-Level Implementation of Fat Pointers (CCS 2013)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2892208.2892212"
+          },
+          "name": "Heap Bounds Protection with Low Fat Pointers (CC 2016)"
+        },
+        {
+          "identity": {
+            "doi": "10.14722/ndss.2017.23287"
+          },
+          "name": "Stack Bounds Protection with Low Fat Pointers (NDSS 2017)"
+        },
+        {
+          "identity": {
+            "arxiv": "1702.00719v2",
+            "doi": "10.1145/3224423"
+          },
+          "name": "Intel MPX Explained: A Cross-layer Analysis of the Intel MPX System Stack"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1111583.1111587"
+          },
+          "name": "Transparent Pointer Compression for Linked Data Structures (MSP 2005)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-540-73589-2_5"
+          },
+          "name": "Object-Relative Addressing: Compressed Pointers in 64-Bit Java Virtual Machines (ECOOP 2007)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/BF01811537"
+          },
+          "name": "Runtime Tags Aren't Necessary (Lisp and Symbolic Computation, 1989)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/113445.113460"
+          },
+          "name": "Tag-Free Garbage Collection for Strongly Typed Programming Languages (PLDI 1991)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/182590.182411"
+          },
+          "name": "Tag-Free Garbage Collection Using Explicit Type Parameters (LFP 1994)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/143095.143140"
+          },
+          "name": "Compiler Support for Garbage Collection in a Statically Typed Language (PLDI 1992)"
+        },
+        {
+          "identity": {
+            "date": "2020-03-30",
+            "url": "https://v8.dev/blog/pointer-compression"
+          },
+          "name": "Pointer Compression in V8 (V8 project blog)"
+        },
+        {
+          "identity": {
+            "related_url": "https://openjdk.org/jeps/450",
+            "url": "https://openjdk.org/jeps/519",
+            "version": "JDK 25 (JEP 519, Closed / Delivered)"
+          },
+          "name": "JEP 450 and JEP 519: Compact Object Headers"
+        }
+      ],
+      "topics": [
+        "security/pointer-metadata-space-overhead",
+        "runtimes/compressed-reference-representations",
+        "runtimes/tag-free-collection-metadata-elimination",
+        "isa/compact-bounds-encodings"
+      ]
+    },
     "sound-checker-laws-anchors-allowlists-and-certificates": {
       "observed_at": "2026-11-20",
       "subjects": [
@@ -82440,6 +82743,126 @@
         "isa/pcie6-flit-credit-flow-control",
         "systems/i2c-smbus-timeout-recovery",
         "verification/hardware-link-deadlock-freedom"
+      ]
+    },
+    "value-at-risk-backtesting-kupiec-christoffersen-expected-shortfall-elicitability-ore-and-spreadsheet-model-risk": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "OpenSourceRisk/Engine",
+            "revision": "3d75a69087911a7e2cf1e6882da7bc27135c0762",
+            "version": "v1.8.17.0 (merge commit message)"
+          },
+          "name": "Open Source Risk Engine (ORE) with QuantExt"
+        },
+        {
+          "identity": {
+            "repository": "lballabio/QuantLib",
+            "revision": "1e3cad8eb393e6e92bed91705c25c461197896ca"
+          },
+          "name": "QuantLib"
+        },
+        {
+          "identity": {
+            "repository": "boostorg/accumulators",
+            "revision": "6bd97b3843f3488af28c18aa9d0f06275b6c6c75"
+          },
+          "name": "Boost.Accumulators (tail_quantile estimator used by ORE)"
+        },
+        {
+          "identity": {
+            "standard": "Basel Committee on Banking Supervision, Basel Framework, chapters MAR32 (IMA backtesting and P&L attribution), MAR33 (IMA capital requirements calculation), MAR99 (guidance on use of the IMA)",
+            "url": "https://www.bis.org/basel_framework/chapter/MAR/99.htm?inforce=20230101&published=20200327",
+            "version": "version selected by inforce=20230101&published=20200327"
+          },
+          "name": "Basel Framework market risk chapters MAR32, MAR33 and MAR99"
+        },
+        {
+          "identity": {
+            "doi": "10.3905/jod.1995.407942"
+          },
+          "name": "Kupiec, Techniques for Verifying the Accuracy of Risk Measurement Models"
+        },
+        {
+          "identity": {
+            "doi": "10.2307/2527341"
+          },
+          "name": "Christoffersen, Evaluating Interval Forecasts"
+        },
+        {
+          "identity": {
+            "doi": "10.1111/1467-9965.00068"
+          },
+          "name": "Artzner, Delbaen, Eber, Heath, Coherent Measures of Risk"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/S0378-4266(02)00283-2"
+          },
+          "name": "Acerbi and Tasche, On the Coherence of Expected Shortfall"
+        },
+        {
+          "identity": {
+            "doi": "10.1198/jasa.2011.r10138"
+          },
+          "name": "Gneiting, Making and Evaluating Point Forecasts"
+        },
+        {
+          "identity": {
+            "doi": "10.1214/16-AOS1439"
+          },
+          "name": "Fissler and Ziegel, Higher Order Elicitability and Osband's Principle"
+        },
+        {
+          "identity": {
+            "doi": "10.4018/joeuc.1998040102",
+            "url": "https://scispace.com/pdf/what-we-know-about-spreadsheet-errors-49f2vzgmsq.pdf",
+            "version": "January 2005 revision used for quoted figures"
+          },
+          "name": "Panko, What We Know About Spreadsheet Errors"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ICSE.2015.129"
+          },
+          "name": "Hermans and Murphy-Hill, Enron's Spreadsheets and Related Emails: A Dataset and Analysis"
+        },
+        {
+          "identity": {
+            "doi": "10.1093/cje/bet075",
+            "url": "https://peri.umass.edu/images/WP322.pdf",
+            "version": "PERI working paper 322 (April 15, 2013) used for quoted figures"
+          },
+          "name": "Herndon, Ash, Pollin, Does High Public Debt Consistently Stifle Economic Growth? A Critique of Reinhart and Rogoff"
+        },
+        {
+          "identity": {
+            "url": "https://elischolar.library.yale.edu/cgi/viewcontent.cgi?article=1502&context=ypfs-documents",
+            "version": "January 16, 2013"
+          },
+          "name": "Report of JPMorgan Chase & Co. Management Task Force Regarding 2012 CIO Losses"
+        },
+        {
+          "identity": {
+            "url": "https://www.fdic.gov/news/news/financial/2017/fil17022a.pdf",
+            "version": "SR 11-7 (April 4, 2011) as adopted by the FDIC in 2017"
+          },
+          "name": "Supervisory Guidance on Model Risk Management (SR 11-7 text, FDIC adoption)"
+        },
+        {
+          "identity": {
+            "url": "https://www.federalreserve.gov/supervisionreg/srletters/SR2602.pdf",
+            "version": "April 17, 2026"
+          },
+          "name": "Federal Reserve SR 26-2, Revised Guidance on Model Risk Management"
+        }
+      ],
+      "topics": [
+        "domains/market-risk-measurement",
+        "domains/model-risk-management",
+        "verification/risk-model-backtesting",
+        "tooling/spreadsheet-error-studies"
       ]
     },
     "value-profile-specialization-and-hybridtrace-guard-certificates": {

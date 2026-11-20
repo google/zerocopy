@@ -1,0 +1,160 @@
+{
+  "topics": [
+    "domains/group-sequential-trial-design",
+    "domains/adaptive-platform-trials",
+    "domains/graphical-multiplicity-procedures",
+    "verification/type-one-error-simulation-checks"
+  ],
+  "subjects": [
+    {
+      "name": "rpact R package",
+      "identity": {
+        "repository": "rpact-com/rpact",
+        "revision": "68538fbdd01d25c0516b488d82a5fc09b63362a9",
+        "version": "5.0.0 (DESCRIPTION, dated 2026-11-16)"
+      }
+    },
+    {
+      "name": "gsDesign R package",
+      "identity": {
+        "repository": "keaven/gsDesign",
+        "revision": "d15fcff2e16f252f4b4e3963c89120abe1fc5cb6",
+        "version": "4.0.0 (DESCRIPTION)"
+      }
+    },
+    {
+      "name": "graphicalMCP R package",
+      "identity": {
+        "repository": "openpharma/graphicalMCP",
+        "revision": "74f2f31e3e49a209745a54a1b292463c5efeeb3a",
+        "version": "0.3.0.9000 (DESCRIPTION)"
+      }
+    },
+    {
+      "name": "FDA guidance: Adaptive Designs for Clinical Trials of Drugs and Biologics",
+      "identity": {
+        "url": "https://www.fda.gov/media/78495/download",
+        "version": "Final guidance, November 2019"
+      }
+    },
+    {
+      "name": "ICH E9 Statistical Principles for Clinical Trials",
+      "identity": {
+        "url": "https://database.ich.org/sites/default/files/E9_Guideline.pdf",
+        "version": "Step 4, 5 February 1998"
+      }
+    },
+    {
+      "name": "RECOVERY trial protocol, version 2.0",
+      "identity": {
+        "url": "https://www.recoverytrial.net/files/protocol-archive/recovery-protocol-v2-0-2020-03-23.pdf",
+        "version": "V2.0 2020-03-23"
+      }
+    },
+    {
+      "name": "RECOVERY trial protocol, version 8.0",
+      "identity": {
+        "url": "https://www.recoverytrial.net/files/recovery-protocol-v8-0-2020-07-08.pdf",
+        "version": "V8.0 2020-07-08"
+      }
+    },
+    {
+      "name": "RECOVERY trial protocol, version 27.0",
+      "identity": {
+        "url": "https://www.recoverytrial.net/files/recovery-protocol-v27-0-2023-09-13.pdf",
+        "version": "V27.0 2023-09-13"
+      }
+    },
+    {
+      "name": "RECOVERY Collaborative Group, Dexamethasone in Hospitalized Patients with Covid-19",
+      "identity": {
+        "doi": "10.1056/NEJMoa2021436"
+      }
+    },
+    {
+      "name": "RECOVERY Collaborative Group, Effect of Hydroxychloroquine in Hospitalized Patients with Covid-19",
+      "identity": {
+        "doi": "10.1056/NEJMoa2022926"
+      }
+    },
+    {
+      "name": "RECOVERY Collaborative Group, Tocilizumab in patients admitted to hospital with COVID-19",
+      "identity": {
+        "doi": "10.1016/S0140-6736(21)00676-0"
+      }
+    },
+    {
+      "name": "Armitage, McPherson, Rowe, Repeated Significance Tests on Accumulating Data",
+      "identity": {
+        "doi": "10.2307/2343787"
+      }
+    },
+    {
+      "name": "Pocock, Group Sequential Methods in the Design and Analysis of Clinical Trials",
+      "identity": {
+        "doi": "10.1093/biomet/64.2.191"
+      }
+    },
+    {
+      "name": "O'Brien and Fleming, A Multiple Testing Procedure for Clinical Trials",
+      "identity": {
+        "doi": "10.2307/2530245"
+      }
+    },
+    {
+      "name": "Lan and DeMets, Discrete Sequential Boundaries for Clinical Trials",
+      "identity": {
+        "doi": "10.1093/biomet/70.3.659"
+      }
+    },
+    {
+      "name": "Kim and DeMets, Design and analysis of group sequential tests based on the type I error spending rate function",
+      "identity": {
+        "doi": "10.1093/biomet/74.1.149"
+      }
+    },
+    {
+      "name": "Hwang, Shih, DeCani, Group sequential designs using a family of type I error probability spending functions",
+      "identity": {
+        "doi": "10.1002/sim.4780091207"
+      }
+    },
+    {
+      "name": "Bauer and Koehne, Evaluation of Experiments with Adaptive Interim Analyses",
+      "identity": {
+        "doi": "10.2307/2533441"
+      }
+    },
+    {
+      "name": "Lehmacher and Wassmer, Adaptive Sample Size Calculations in Group Sequential Trials",
+      "identity": {
+        "doi": "10.1111/j.0006-341X.1999.01286.x"
+      }
+    },
+    {
+      "name": "Cui, Hung, Wang, Modification of Sample Size in Group Sequential Clinical Trials",
+      "identity": {
+        "doi": "10.1111/j.0006-341X.1999.00853.x"
+      }
+    },
+    {
+      "name": "Bretz, Maurer, Brannath, Posch, A Graphical Approach to Sequentially Rejective Multiple Test Procedures",
+      "identity": {
+        "doi": "10.1002/sim.3495"
+      }
+    },
+    {
+      "name": "Maurer and Bretz, Multiple Testing in Group Sequential Trials Using Graphical Approaches",
+      "identity": {
+        "doi": "10.1080/19466315.2013.807748"
+      }
+    },
+    {
+      "name": "Wassmer and Brannath (2025) monograph cited in the rpact DESCRIPTION as its methods reference",
+      "identity": {
+        "doi": "10.1007/978-3-031-89669-9"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

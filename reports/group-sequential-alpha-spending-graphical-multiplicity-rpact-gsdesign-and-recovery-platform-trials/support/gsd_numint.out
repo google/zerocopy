@@ -1,0 +1,45 @@
+== Classical O'Brien-Fleming, K=2, t=(0.5,1), alpha=0.025 one-sided
+   C = 1.977431; boundaries = 2.796510, 1.977431; stage-1 alpha = 0.002583
+== Classical Pocock and OBF constants, two-sided alpha=0.05 (symmetric, computed as one-sided 0.025 ignoring the negligible lower-crossing overlap)
+   K=2: Pocock C=2.1783   OBF C_B=1.9774 (final boundary)
+   K=3: Pocock C=2.2895   OBF C_B=2.0040 (final boundary)
+   K=4: Pocock C=2.3613   OBF C_B=2.0243 (final boundary)
+   K=5: Pocock C=2.4132   OBF C_B=2.0401 (final boundary)
+== LD-OF (asOF/sfLDOF), K=3, equally spaced, alpha=0.025
+   cumulative spend: [0.00010351, 0.00604839, 0.025]
+   reference      c=[3.710303, 2.511427, 1.993047] max|c-c_ref|=0.00e+00 alpha(ref-evaluated)=0.025000000 err=-9.71e-17 time=0.08s
+   reference-fine c=[3.710303, 2.511427, 1.993047] max|c-c_ref|=9.97e-12 alpha(ref-evaluated)=0.025000000 err=+4.95e-13 time=0.47s
+   rpact-NC7      c=[3.710303, 2.511427, 1.993047] max|c-c_ref|=1.93e-10 alpha(ref-evaluated)=0.025000000 err=-1.04e-11 time=0.00s
+   gsDesign-JT18  c=[3.710303, 2.511427, 1.993048] max|c-c_ref|=4.67e-07 alpha(ref-evaluated)=0.025000001 err=+1.04e-09 time=0.01s
+== LD-Pocock (asP/sfLDPocock), K=3, equally spaced, alpha=0.025
+   cumulative spend: [0.01132081, 0.01908456, 0.025]
+   reference      c=[2.279428, 2.294911, 2.29594] max|c-c_ref|=0.00e+00 alpha(ref-evaluated)=0.025000000 err=-1.73e-17 time=0.17s
+   reference-fine c=[2.279428, 2.294911, 2.29594] max|c-c_ref|=1.69e-11 alpha(ref-evaluated)=0.025000000 err=+4.57e-13 time=0.50s
+   rpact-NC7      c=[2.279428, 2.294911, 2.29594] max|c-c_ref|=3.58e-09 alpha(ref-evaluated)=0.025000000 err=-8.13e-11 time=0.00s
+   gsDesign-JT18  c=[2.279428, 2.294911, 2.29594] max|c-c_ref|=3.32e-08 alpha(ref-evaluated)=0.024999999 err=-9.14e-10 time=0.01s
+== HSD gamma=-4 (asHSD/sfHSD), K=3, equally spaced, alpha=0.025
+   cumulative spend: [0.00130306, 0.00624645, 0.025]
+   reference      c=[3.010739, 2.546531, 1.999226] max|c-c_ref|=0.00e+00 alpha(ref-evaluated)=0.025000000 err=-4.51e-17 time=0.08s
+   reference-fine c=[3.010739, 2.546531, 1.999226] max|c-c_ref|=9.72e-12 alpha(ref-evaluated)=0.025000000 err=+5.11e-13 time=0.60s
+   rpact-NC7      c=[3.010739, 2.546531, 1.999226] max|c-c_ref|=3.52e-10 alpha(ref-evaluated)=0.025000000 err=+1.12e-11 time=0.00s
+   gsDesign-JT18  c=[3.010739, 2.546531, 1.999226] max|c-c_ref|=2.13e-08 alpha(ref-evaluated)=0.024999999 err=-1.11e-09 time=0.01s
+== LD-OF (asOF/sfLDOF), K=5, equally spaced, alpha=0.025
+   cumulative spend: [5.4e-07, 0.00039415, 0.00380806, 0.01221179, 0.025]
+   reference      c=[4.876885, 3.357012, 2.68028, 2.289817, 2.031032] max|c-c_ref|=0.00e+00 alpha(ref-evaluated)=0.025000000 err=-8.33e-17 time=0.18s
+   rpact-NC7      c=[4.876885, 3.357012, 2.68028, 2.289817, 2.031032] max|c-c_ref|=1.82e-08 alpha(ref-evaluated)=0.024999999 err=-8.01e-10 time=0.01s
+   gsDesign-JT18  c=[4.876885, 3.357011, 2.68028, 2.289817, 2.031032] max|c-c_ref|=8.35e-07 alpha(ref-evaluated)=0.024999993 err=-7.18e-09 time=0.01s
+== LD-Pocock (asP/sfLDPocock), K=5, equally spaced, alpha=0.025
+   cumulative spend: [0.00738486, 0.01307843, 0.01771283, 0.02162099, 0.025]
+   reference      c=[2.437977, 2.426814, 2.410194, 2.396649, 2.386] max|c-c_ref|=0.00e+00 alpha(ref-evaluated)=0.025000000 err=-6.94e-18 time=0.18s
+   rpact-NC7      c=[2.437977, 2.426814, 2.410194, 2.396649, 2.386] max|c-c_ref|=5.10e-08 alpha(ref-evaluated)=0.024999999 err=-9.39e-10 time=0.01s
+   gsDesign-JT18  c=[2.437977, 2.426814, 2.410194, 2.396649, 2.386] max|c-c_ref|=9.95e-08 alpha(ref-evaluated)=0.024999997 err=-2.61e-09 time=0.02s
+== HSD gamma=-4 (asHSD/sfHSD), K=5, equally spaced, alpha=0.025
+   cumulative spend: [0.00057163, 0.00184383, 0.00467515, 0.01097637, 0.025]
+   reference      c=[3.252668, 2.986046, 2.691657, 2.373667, 2.025321] max|c-c_ref|=0.00e+00 alpha(ref-evaluated)=0.025000000 err=+0.00e+00 time=0.26s
+   rpact-NC7      c=[3.252668, 2.986046, 2.691657, 2.373667, 2.025321] max|c-c_ref|=1.67e-08 alpha(ref-evaluated)=0.024999999 err=-8.09e-10 time=0.03s
+   gsDesign-JT18  c=[3.252668, 2.986046, 2.691657, 2.373667, 2.025321] max|c-c_ref|=2.00e-07 alpha(ref-evaluated)=0.024999997 err=-2.86e-09 time=0.01s
+== Per-side cumulative spending of OF-type functions, total two-sided alpha=0.05
+   t=0.25: rpact sided=2 (= gsDesign one-sided 0.025) per side=0.000007; 2-2Phi(z_(alpha/2)/sqrt t) with alpha=0.05, per side=0.000044
+   t=0.5: rpact sided=2 (= gsDesign one-sided 0.025) per side=0.001525; 2-2Phi(z_(alpha/2)/sqrt t) with alpha=0.05, per side=0.002787
+   t=0.75: rpact sided=2 (= gsDesign one-sided 0.025) per side=0.009649; 2-2Phi(z_(alpha/2)/sqrt t) with alpha=0.05, per side=0.011813
+   t=1.0: rpact sided=2 (= gsDesign one-sided 0.025) per side=0.025000; 2-2Phi(z_(alpha/2)/sqrt t) with alpha=0.05, per side=0.025000

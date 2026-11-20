@@ -1,0 +1,36 @@
+jdk.tar.gz: OK
+openjdk version "25.0.5" 2026-10-20 LTS
+OpenJDK Runtime Environment Temurin-25.0.5+8 (build 25.0.5+8-LTS)
+OpenJDK 64-Bit Server VM Temurin-25.0.5+8 (build 25.0.5+8-LTS, mixed mode, sharing)
+== Encoding mode chosen for each maximum heap size (G1, default alignment 8) ==
+-Xmx1g   Heap address: 0x00000000c0000000, size: 1024 MB, Compressed Oops mode: 32-bit  bool UseCompressedOops = true {product lp64_product} {ergonomic} 
+-Xmx3g   Heap address: 0x0000000740000000, size: 3072 MB, Compressed Oops mode: Zero based, Oop shift amount: 3  bool UseCompressedOops = true {product lp64_product} {ergonomic} 
+-Xmx4g   Heap address: 0x0000000700000000, size: 4096 MB, Compressed Oops mode: Zero based, Oop shift amount: 3  bool UseCompressedOops = true {product lp64_product} {ergonomic} 
+-Xmx16g  Heap address: 0x0000000400000000, size: 16384 MB, Compressed Oops mode: Zero based, Oop shift amount: 3  bool UseCompressedOops = true {product lp64_product} {ergonomic} 
+-Xmx31g  Heap address: 0x0000001001000000, size: 31744 MB, Compressed Oops mode: Non-zero disjoint base: 0x0000001000000000, Oop shift amount: 3  bool UseCompressedOops = true {product lp64_product} {ergonomic} 
+-Xmx32g   bool UseCompressedOops = false {product lp64_product} {default} 
+-Xmx33g   bool UseCompressedOops = false {product lp64_product} {default} 
+== ObjectAlignmentInBytes=16 widens the zero-based range ==
+-Xmx33g  align16 Heap address: 0x00000007c0000000, size: 33792 MB, Compressed Oops mode: Zero based, Oop shift amount: 4  bool UseCompressedOops = true {product lp64_product} {ergonomic} 
+-Xmx60g  align16 Heap address: 0x0000000100000000, size: 61440 MB, Compressed Oops mode: Zero based, Oop shift amount: 4  bool UseCompressedOops = true {product lp64_product} {ergonomic} 
+-Xmx64g  align16  bool UseCompressedOops = false {product lp64_product} {default} 
+== Narrow klass encoding (default vs compact object headers) ==
+Narrow klass pointer bits 32, Max shift 3
+Narrow klass base: 0x0000000035000000, Narrow klass shift: 0
+Encoding Range: [0x0000000035000000 - 0x0000000135000000), (4294967296 bytes)
+Narrow klass pointer bits 22, Max shift 10
+Narrow klass base: 0x000000003d000000, Narrow klass shift: 10
+Encoding Range: [0x000000003d000000 - 0x000000013d000000), (4294967296 bytes)
+== Footprint / traversal (N=4000000 nodes, -Xms2g -Xmx2g, -XX:+UseSerialGC, JIT enabled) ==
+flags=[default] rep=1 bytes_per_Node=24.00 bytes_per_Pair=24.00 bytes_per_array_slot=4.00 bytes_per_Object=16.00 traverse_ns_per_node_best=5.446 vm.compressedOopsMode=32-bit 
+flags=[default] rep=2 bytes_per_Node=24.00 bytes_per_Pair=24.00 bytes_per_array_slot=4.00 bytes_per_Object=16.00 traverse_ns_per_node_best=4.246 vm.compressedOopsMode=32-bit 
+flags=[default] rep=3 bytes_per_Node=24.00 bytes_per_Pair=24.00 bytes_per_array_slot=4.00 bytes_per_Object=16.00 traverse_ns_per_node_best=3.365 vm.compressedOopsMode=32-bit 
+flags=[-XX:-UseCompressedOops] rep=1 bytes_per_Node=24.00 bytes_per_Pair=32.00 bytes_per_array_slot=8.00 bytes_per_Object=16.00 traverse_ns_per_node_best=3.528 vm.compressedOopsMode=null 
+flags=[-XX:-UseCompressedOops] rep=2 bytes_per_Node=24.00 bytes_per_Pair=32.00 bytes_per_array_slot=8.00 bytes_per_Object=16.00 traverse_ns_per_node_best=4.254 vm.compressedOopsMode=null 
+flags=[-XX:-UseCompressedOops] rep=3 bytes_per_Node=24.00 bytes_per_Pair=32.00 bytes_per_array_slot=8.00 bytes_per_Object=16.00 traverse_ns_per_node_best=3.503 vm.compressedOopsMode=null 
+flags=[-XX:+UseCompactObjectHeaders] rep=1 bytes_per_Node=16.00 bytes_per_Pair=24.00 bytes_per_array_slot=4.00 bytes_per_Object=8.00 traverse_ns_per_node_best=2.730 vm.compressedOopsMode=32-bit 
+flags=[-XX:+UseCompactObjectHeaders] rep=2 bytes_per_Node=16.00 bytes_per_Pair=24.00 bytes_per_array_slot=4.00 bytes_per_Object=8.00 traverse_ns_per_node_best=2.486 vm.compressedOopsMode=32-bit 
+flags=[-XX:+UseCompactObjectHeaders] rep=3 bytes_per_Node=16.00 bytes_per_Pair=24.00 bytes_per_array_slot=4.00 bytes_per_Object=8.00 traverse_ns_per_node_best=3.379 vm.compressedOopsMode=32-bit 
+flags=[-XX:-UseCompressedOops -XX:+UseCompactObjectHeaders] rep=1 bytes_per_Node=24.00 bytes_per_Pair=32.00 bytes_per_array_slot=8.00 bytes_per_Object=8.00 traverse_ns_per_node_best=3.399 vm.compressedOopsMode=null 
+flags=[-XX:-UseCompressedOops -XX:+UseCompactObjectHeaders] rep=2 bytes_per_Node=24.00 bytes_per_Pair=32.00 bytes_per_array_slot=8.00 bytes_per_Object=8.00 traverse_ns_per_node_best=3.435 vm.compressedOopsMode=null 
+flags=[-XX:-UseCompressedOops -XX:+UseCompactObjectHeaders] rep=3 bytes_per_Node=24.00 bytes_per_Pair=32.00 bytes_per_array_slot=8.00 bytes_per_Object=8.00 traverse_ns_per_node_best=3.280 vm.compressedOopsMode=null 

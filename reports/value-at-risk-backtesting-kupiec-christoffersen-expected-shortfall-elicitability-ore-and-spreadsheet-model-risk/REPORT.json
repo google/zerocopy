@@ -1,0 +1,120 @@
+{
+  "topics": [
+    "domains/market-risk-measurement",
+    "domains/model-risk-management",
+    "verification/risk-model-backtesting",
+    "tooling/spreadsheet-error-studies"
+  ],
+  "subjects": [
+    {
+      "name": "Open Source Risk Engine (ORE) with QuantExt",
+      "identity": {
+        "repository": "OpenSourceRisk/Engine",
+        "revision": "3d75a69087911a7e2cf1e6882da7bc27135c0762",
+        "version": "v1.8.17.0 (merge commit message)"
+      }
+    },
+    {
+      "name": "QuantLib",
+      "identity": {
+        "repository": "lballabio/QuantLib",
+        "revision": "1e3cad8eb393e6e92bed91705c25c461197896ca"
+      }
+    },
+    {
+      "name": "Boost.Accumulators (tail_quantile estimator used by ORE)",
+      "identity": {
+        "repository": "boostorg/accumulators",
+        "revision": "6bd97b3843f3488af28c18aa9d0f06275b6c6c75"
+      }
+    },
+    {
+      "name": "Basel Framework market risk chapters MAR32, MAR33 and MAR99",
+      "identity": {
+        "standard": "Basel Committee on Banking Supervision, Basel Framework, chapters MAR32 (IMA backtesting and P&L attribution), MAR33 (IMA capital requirements calculation), MAR99 (guidance on use of the IMA)",
+        "url": "https://www.bis.org/basel_framework/chapter/MAR/99.htm?inforce=20230101&published=20200327",
+        "version": "version selected by inforce=20230101&published=20200327"
+      }
+    },
+    {
+      "name": "Kupiec, Techniques for Verifying the Accuracy of Risk Measurement Models",
+      "identity": {
+        "doi": "10.3905/jod.1995.407942"
+      }
+    },
+    {
+      "name": "Christoffersen, Evaluating Interval Forecasts",
+      "identity": {
+        "doi": "10.2307/2527341"
+      }
+    },
+    {
+      "name": "Artzner, Delbaen, Eber, Heath, Coherent Measures of Risk",
+      "identity": {
+        "doi": "10.1111/1467-9965.00068"
+      }
+    },
+    {
+      "name": "Acerbi and Tasche, On the Coherence of Expected Shortfall",
+      "identity": {
+        "doi": "10.1016/S0378-4266(02)00283-2"
+      }
+    },
+    {
+      "name": "Gneiting, Making and Evaluating Point Forecasts",
+      "identity": {
+        "doi": "10.1198/jasa.2011.r10138"
+      }
+    },
+    {
+      "name": "Fissler and Ziegel, Higher Order Elicitability and Osband's Principle",
+      "identity": {
+        "doi": "10.1214/16-AOS1439"
+      }
+    },
+    {
+      "name": "Panko, What We Know About Spreadsheet Errors",
+      "identity": {
+        "doi": "10.4018/joeuc.1998040102",
+        "version": "January 2005 revision used for quoted figures",
+        "url": "https://scispace.com/pdf/what-we-know-about-spreadsheet-errors-49f2vzgmsq.pdf"
+      }
+    },
+    {
+      "name": "Hermans and Murphy-Hill, Enron's Spreadsheets and Related Emails: A Dataset and Analysis",
+      "identity": {
+        "doi": "10.1109/ICSE.2015.129"
+      }
+    },
+    {
+      "name": "Herndon, Ash, Pollin, Does High Public Debt Consistently Stifle Economic Growth? A Critique of Reinhart and Rogoff",
+      "identity": {
+        "doi": "10.1093/cje/bet075",
+        "url": "https://peri.umass.edu/images/WP322.pdf",
+        "version": "PERI working paper 322 (April 15, 2013) used for quoted figures"
+      }
+    },
+    {
+      "name": "Report of JPMorgan Chase & Co. Management Task Force Regarding 2012 CIO Losses",
+      "identity": {
+        "url": "https://elischolar.library.yale.edu/cgi/viewcontent.cgi?article=1502&context=ypfs-documents",
+        "version": "January 16, 2013"
+      }
+    },
+    {
+      "name": "Supervisory Guidance on Model Risk Management (SR 11-7 text, FDIC adoption)",
+      "identity": {
+        "url": "https://www.fdic.gov/news/news/financial/2017/fil17022a.pdf",
+        "version": "SR 11-7 (April 4, 2011) as adopted by the FDIC in 2017"
+      }
+    },
+    {
+      "name": "Federal Reserve SR 26-2, Revised Guidance on Model Risk Management",
+      "identity": {
+        "url": "https://www.federalreserve.gov/supervisionreg/srletters/SR2602.pdf",
+        "version": "April 17, 2026"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

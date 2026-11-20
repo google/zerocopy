@@ -1,0 +1,10 @@
+== O'Brien-Fleming kMax=3 alpha=0.025 (rpact getDesignInverseNormal defaults)
+   stage 1: c=3.4710914 (rpact test 3.4710914)  |d|=4.4e-08   alphaSpent=0.0002591737 (rpact test 0.00025917372)  |d|=4.1e-12
+   stage 2: c=2.4544323 (rpact test 2.4544323)  |d|=1.8e-09   alphaSpent=0.0071600594 (rpact test 0.0071600594)  |d|=2.0e-11
+   stage 3: c=2.0040356 (rpact test 2.0040356)  |d|=2.0e-08   alphaSpent=0.0250000000 (rpact test 0.02499999)  |d|=1.0e-08
+== Fisher combination kMax=3 (rpact getDesignFisher defaults), Monte Carlo
+   cumulative rejection by stage 1: 0.012281 +- 0.000048 (95% MC) vs rpact alphaSpent 0.012308547
+   cumulative rejection by stage 2: 0.019598 +- 0.000061 (95% MC) vs rpact alphaSpent 0.01962413
+   cumulative rejection by stage 3: 0.024962 +- 0.000068 (95% MC) vs rpact alphaSpent 0.025
+   reps=20000000 seed=20261120
+3.68 s 213720 KB

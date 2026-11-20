@@ -1,0 +1,4 @@
+graphs=20000 m=4 seed=20261120 alpha=0.025
+graphs with >=1 rejection: 17155
+order-dependence cases (3 random orders each): 0
+shortcut vs closure (Bonferroni) disagreements: 0

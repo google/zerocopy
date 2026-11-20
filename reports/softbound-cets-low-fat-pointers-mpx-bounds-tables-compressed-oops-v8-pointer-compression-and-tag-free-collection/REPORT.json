@@ -1,0 +1,143 @@
+{
+  "topics": [
+    "security/pointer-metadata-space-overhead",
+    "runtimes/compressed-reference-representations",
+    "runtimes/tag-free-collection-metadata-elimination",
+    "isa/compact-bounds-encodings"
+  ],
+  "subjects": [
+    {
+      "name": "SoftBound+CETS runtime and LLVM 3.4 instrumentation",
+      "identity": {
+        "repository": "santoshn/softboundcets-34",
+        "revision": "9a9c09f04e16f2d1ef3a906fd138a7b89df44996"
+      }
+    },
+    {
+      "name": "LowFat low-fat pointer bounds checker",
+      "identity": {
+        "repository": "GJDuck/LowFat",
+        "revision": "20f8075dd1fd6588700262353c7ba619d82cea8f"
+      }
+    },
+    {
+      "name": "OpenJDK HotSpot compressed oops and compressed class pointers",
+      "identity": {
+        "repository": "openjdk/jdk",
+        "revision": "47aa18053c827fea8619ed2f83c34d8328e8dc96"
+      }
+    },
+    {
+      "name": "Eclipse Temurin JDK 25.0.5+8 (Linux x64 HotSpot archive)",
+      "identity": {
+        "artifact": "OpenJDK25U-jdk_x64_linux_hotspot_25.0.5_8.tar.gz",
+        "sha256": "68982529869257d0ee6b824ec5aa270ff8b118bb438670da0b97ebdab178d7fb",
+        "url": "https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25.0.5%2B8/OpenJDK25U-jdk_x64_linux_hotspot_25.0.5_8.tar.gz",
+        "version": "25.0.5+8-LTS"
+      }
+    },
+    {
+      "name": "V8 pointer compression",
+      "identity": {
+        "repository": "v8/v8",
+        "revision": "712eae40a4db945524e75a38592cb88a1f919df5"
+      }
+    },
+    {
+      "name": "Linux kernel commit removing Intel MPX from arch/x86",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "45fc24e89b7cc2e227b2f03d99dda0a2204bf383"
+      }
+    },
+    {
+      "name": "SoftBound: Highly Compatible and Complete Spatial Memory Safety for C (PLDI 2009)",
+      "identity": {
+        "doi": "10.1145/1542476.1542504"
+      }
+    },
+    {
+      "name": "CETS: Compiler Enforced Temporal Safety for C (ISMM 2010)",
+      "identity": {
+        "doi": "10.1145/1806651.1806657"
+      }
+    },
+    {
+      "name": "Low-Fat Pointers: Compact Encoding and Efficient Gate-Level Implementation of Fat Pointers (CCS 2013)",
+      "identity": {
+        "doi": "10.1145/2508859.2516713"
+      }
+    },
+    {
+      "name": "Heap Bounds Protection with Low Fat Pointers (CC 2016)",
+      "identity": {
+        "doi": "10.1145/2892208.2892212"
+      }
+    },
+    {
+      "name": "Stack Bounds Protection with Low Fat Pointers (NDSS 2017)",
+      "identity": {
+        "doi": "10.14722/ndss.2017.23287"
+      }
+    },
+    {
+      "name": "Intel MPX Explained: A Cross-layer Analysis of the Intel MPX System Stack",
+      "identity": {
+        "doi": "10.1145/3224423",
+        "arxiv": "1702.00719v2"
+      }
+    },
+    {
+      "name": "Transparent Pointer Compression for Linked Data Structures (MSP 2005)",
+      "identity": {
+        "doi": "10.1145/1111583.1111587"
+      }
+    },
+    {
+      "name": "Object-Relative Addressing: Compressed Pointers in 64-Bit Java Virtual Machines (ECOOP 2007)",
+      "identity": {
+        "doi": "10.1007/978-3-540-73589-2_5"
+      }
+    },
+    {
+      "name": "Runtime Tags Aren't Necessary (Lisp and Symbolic Computation, 1989)",
+      "identity": {
+        "doi": "10.1007/BF01811537"
+      }
+    },
+    {
+      "name": "Tag-Free Garbage Collection for Strongly Typed Programming Languages (PLDI 1991)",
+      "identity": {
+        "doi": "10.1145/113445.113460"
+      }
+    },
+    {
+      "name": "Tag-Free Garbage Collection Using Explicit Type Parameters (LFP 1994)",
+      "identity": {
+        "doi": "10.1145/182590.182411"
+      }
+    },
+    {
+      "name": "Compiler Support for Garbage Collection in a Statically Typed Language (PLDI 1992)",
+      "identity": {
+        "doi": "10.1145/143095.143140"
+      }
+    },
+    {
+      "name": "Pointer Compression in V8 (V8 project blog)",
+      "identity": {
+        "url": "https://v8.dev/blog/pointer-compression",
+        "date": "2020-03-30"
+      }
+    },
+    {
+      "name": "JEP 450 and JEP 519: Compact Object Headers",
+      "identity": {
+        "url": "https://openjdk.org/jeps/519",
+        "related_url": "https://openjdk.org/jeps/450",
+        "version": "JDK 25 (JEP 519, Closed / Delivered)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

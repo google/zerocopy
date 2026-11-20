@@ -1,0 +1,46 @@
+group=All/All/All N=715
+  p=0.01  n=708  Q_ore=  -874503.346996 Q_reimpl=  -874503.346996 |dQ|=0.00e+00  ES_ore=  -949845.987415 ES_reimpl=  -949845.987415 (mean of 8 samples <= Q) |dES|=1.25e-07  lowTailMean(k=8)=-949845.987415 highTailMean(k=8)=933541.333981
+  p=0.05  n=680  Q_ore=  -629899.117052 Q_reimpl=  -629899.117052 |dQ|=0.00e+00  ES_ore=  -777808.702398 ES_reimpl=  -777808.702398 (mean of 36 samples <= Q) |dES|=2.22e-07  lowTailMean(k=36)=-777808.702398 highTailMean(k=36)=701059.869387
+  p=0.95  n=36   Q_ore=   552878.307798 Q_reimpl=   552878.307798 |dQ|=0.00e+00  ES_ore=   -46660.238115 ES_reimpl=   -46660.238115 (mean of 680 samples <= Q) |dES|=9.12e-08  lowTailMean(k=36)=-777808.702398 highTailMean(k=36)=701059.869387
+  p=0.99  n=8    Q_ore=   846747.819325 Q_reimpl=   846747.819325 |dQ|=0.00e+00  ES_ore=   -19301.225679 ES_reimpl=   -19301.225679 (mean of 708 samples <= Q) |dES|=3.01e-07  lowTailMean(k=8)=-949845.987415 highTailMean(k=8)=933541.333981
+group=All/All/DeltaGamma N=715
+  p=0.01  n=708  Q_ore=  -874503.346996 Q_reimpl=  -874503.346996 |dQ|=0.00e+00  ES_ore=  -949845.987415 ES_reimpl=  -949845.987415 (mean of 8 samples <= Q) |dES|=1.25e-07  lowTailMean(k=8)=-949845.987415 highTailMean(k=8)=933541.333981
+  p=0.05  n=680  Q_ore=  -629899.117052 Q_reimpl=  -629899.117052 |dQ|=0.00e+00  ES_ore=  -777808.702398 ES_reimpl=  -777808.702398 (mean of 36 samples <= Q) |dES|=2.22e-07  lowTailMean(k=36)=-777808.702398 highTailMean(k=36)=701059.869387
+  p=0.95  n=36   Q_ore=   552878.307798 Q_reimpl=   552878.307798 |dQ|=0.00e+00  ES_ore=   -46660.238115 ES_reimpl=   -46660.238115 (mean of 680 samples <= Q) |dES|=9.12e-08  lowTailMean(k=36)=-777808.702398 highTailMean(k=36)=701059.869387
+  p=0.99  n=8    Q_ore=   846747.819325 Q_reimpl=   846747.819325 |dQ|=0.00e+00  ES_ore=   -19301.225679 ES_reimpl=   -19301.225679 (mean of 708 samples <= Q) |dES|=3.01e-07  lowTailMean(k=8)=-949845.987415 highTailMean(k=8)=933541.333981
+group=All/InterestRate/All N=715
+  p=0.01  n=708  Q_ore=   -63274.845054 Q_reimpl=   -63274.845054 |dQ|=0.00e+00  ES_ore=   -68496.179457 ES_reimpl=   -68496.179457 (mean of 8 samples <= Q) |dES|=3.75e-07  lowTailMean(k=8)=-68496.179457 highTailMean(k=8)=118356.802309
+  p=0.05  n=680  Q_ore=   -47022.474291 Q_reimpl=   -47022.474291 |dQ|=0.00e+00  ES_ore=   -56659.032043 ES_reimpl=   -56659.032043 (mean of 36 samples <= Q) |dES|=4.17e-07  lowTailMean(k=36)=-56659.032043 highTailMean(k=36)=94250.241388
+  p=0.95  n=36   Q_ore=    75704.158273 Q_reimpl=    75704.158273 |dQ|=0.00e+00  ES_ore=     2840.589295 ES_reimpl=     2840.589295 (mean of 680 samples <= Q) |dES|=7.06e-08  lowTailMean(k=36)=-56659.032043 highTailMean(k=36)=94250.241388
+  p=0.99  n=8    Q_ore=   103062.448727 Q_reimpl=   103062.448727 |dQ|=0.00e+00  ES_ore=     6221.911416 ES_reimpl=     6221.911416 (mean of 708 samples <= Q) |dES|=9.46e-08  lowTailMean(k=8)=-68496.179457 highTailMean(k=8)=118356.802309
+group=All/InterestRate/DeltaGamma N=715
+  p=0.01  n=708  Q_ore=   -63274.845054 Q_reimpl=   -63274.845054 |dQ|=0.00e+00  ES_ore=   -68496.179457 ES_reimpl=   -68496.179457 (mean of 8 samples <= Q) |dES|=3.75e-07  lowTailMean(k=8)=-68496.179457 highTailMean(k=8)=118356.802309
+  p=0.05  n=680  Q_ore=   -47022.474291 Q_reimpl=   -47022.474291 |dQ|=0.00e+00  ES_ore=   -56659.032043 ES_reimpl=   -56659.032043 (mean of 36 samples <= Q) |dES|=4.17e-07  lowTailMean(k=36)=-56659.032043 highTailMean(k=36)=94250.241388
+  p=0.95  n=36   Q_ore=    75704.158273 Q_reimpl=    75704.158273 |dQ|=0.00e+00  ES_ore=     2840.589295 ES_reimpl=     2840.589295 (mean of 680 samples <= Q) |dES|=7.06e-08  lowTailMean(k=36)=-56659.032043 highTailMean(k=36)=94250.241388
+  p=0.99  n=8    Q_ore=   103062.448727 Q_reimpl=   103062.448727 |dQ|=0.00e+00  ES_ore=     6221.911416 ES_reimpl=     6221.911416 (mean of 708 samples <= Q) |dES|=9.46e-08  lowTailMean(k=8)=-68496.179457 highTailMean(k=8)=118356.802309
+group=All/FX/All N=715
+  p=0.01  n=708  Q_ore=  -884244.095663 Q_reimpl=  -884244.095663 |dQ|=0.00e+00  ES_ore=  -955311.193585 ES_reimpl=  -955311.193585 (mean of 8 samples <= Q) |dES|=1.25e-07  lowTailMean(k=8)=-955311.193585 highTailMean(k=8)=907947.464966
+  p=0.05  n=680  Q_ore=  -636898.798448 Q_reimpl=  -636898.798448 |dQ|=0.00e+00  ES_ore=  -776950.293297 ES_reimpl=  -776950.293297 (mean of 36 samples <= Q) |dES|=3.33e-07  lowTailMean(k=36)=-776950.293297 highTailMean(k=36)=681568.535297
+  p=0.95  n=36   Q_ore=   534980.406779 Q_reimpl=   534980.406779 |dQ|=0.00e+00  ES_ore=   -53409.959864 ES_reimpl=   -53409.959864 (mean of 680 samples <= Q) |dES|=2.21e-07  lowTailMean(k=36)=-776950.293297 highTailMean(k=36)=681568.535297
+  p=0.99  n=8    Q_ore=   806008.993809 Q_reimpl=   806008.993809 |dQ|=0.00e+00  ES_ore=   -26518.158997 ES_reimpl=   -26518.158997 (mean of 708 samples <= Q) |dES|=2.82e-07  lowTailMean(k=8)=-955311.193585 highTailMean(k=8)=907947.464966
+group=All/FX/DeltaGamma N=715
+  p=0.01  n=708  Q_ore=  -884244.095663 Q_reimpl=  -884244.095663 |dQ|=0.00e+00  ES_ore=  -955311.193585 ES_reimpl=  -955311.193585 (mean of 8 samples <= Q) |dES|=1.25e-07  lowTailMean(k=8)=-955311.193585 highTailMean(k=8)=907947.464966
+  p=0.05  n=680  Q_ore=  -636898.798448 Q_reimpl=  -636898.798448 |dQ|=0.00e+00  ES_ore=  -776950.293297 ES_reimpl=  -776950.293297 (mean of 36 samples <= Q) |dES|=3.33e-07  lowTailMean(k=36)=-776950.293297 highTailMean(k=36)=681568.535297
+  p=0.95  n=36   Q_ore=   534980.406779 Q_reimpl=   534980.406779 |dQ|=0.00e+00  ES_ore=   -53409.959864 ES_reimpl=   -53409.959864 (mean of 680 samples <= Q) |dES|=2.21e-07  lowTailMean(k=36)=-776950.293297 highTailMean(k=36)=681568.535297
+  p=0.99  n=8    Q_ore=   806008.993809 Q_reimpl=   806008.993809 |dQ|=0.00e+00  ES_ore=   -26518.158997 ES_reimpl=   -26518.158997 (mean of 708 samples <= Q) |dES|=2.82e-07  lowTailMean(k=8)=-955311.193585 highTailMean(k=8)=907947.464966
+max abs discrepancy vs golden: 4.167e-07
+All/All/All alpha=0.01: mean of floor(N a)=7 smallest=-960609.221760; fractional weight=-958802.804807; mean of ceil(N a)=8 smallest=-949845.987415
+All/All/All alpha=0.05: mean of floor(N a)=35 smallest=-782034.690551; fractional weight=-778843.035163; mean of ceil(N a)=36 smallest=-777808.702398
+All/All/All alpha=0.025: mean of floor(N a)=17 smallest=-880177.881776; fractional weight=-873894.825048; mean of ceil(N a)=18 smallest=-873047.111045
+N=250 p=0.95: N*(1-p)=12.50000000000001 ceil=13 exact=12.5
+N=250 p=0.99: N*(1-p)=2.500000000000002 ceil=3 exact=2.5
+N=250 p=0.975: N*(1-p)=6.250000000000005 ceil=7 exact=6.25
+N=500 p=0.95: N*(1-p)=25.00000000000002 ceil=26 exact=25.0
+N=500 p=0.99: N*(1-p)=5.000000000000004 ceil=6 exact=5.0
+N=500 p=0.975: N*(1-p)=12.50000000000001 ceil=13 exact=12.5
+N=715 p=0.95: N*(1-p)=35.75000000000003 ceil=36 exact=35.75
+N=715 p=0.99: N*(1-p)=7.150000000000007 ceil=8 exact=7.15
+N=715 p=0.975: N*(1-p)=17.875000000000014 ceil=18 exact=17.875
+N=1000 p=0.95: N*(1-p)=50.00000000000004 ceil=51 exact=50.0
+N=1000 p=0.99: N*(1-p)=10.000000000000009 ceil=11 exact=10.0
+N=1000 p=0.975: N*(1-p)=25.00000000000002 ceil=26 exact=25.0

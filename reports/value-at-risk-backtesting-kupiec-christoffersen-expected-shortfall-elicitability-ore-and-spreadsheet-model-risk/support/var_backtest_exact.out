@@ -1,0 +1,69 @@
+== MAR99 Table 1 reproduction (N=250): exact P(X=k) and type1 = P(X>=k) at 99%; type2 = P(X<k) at 98/97/96/95%
+ k | 99% exact  type1 | 98% exact type2 | 97% exact type2 | 96% exact type2 | 95% exact type2
+ 0 |   8.1%  100.0% |   0.6%   0.0% |   0.0%   0.0% |   0.0%   0.0% |   0.0%   0.0%
+ 1 |  20.5%   91.9% |   3.3%   0.6% |   0.4%   0.0% |   0.0%   0.0% |   0.0%   0.0%
+ 2 |  25.7%   71.4% |   8.3%   3.9% |   1.5%   0.4% |   0.2%   0.0% |   0.0%   0.0%
+ 3 |  21.5%   45.7% |  14.0%  12.2% |   3.8%   1.9% |   0.7%   0.2% |   0.1%   0.0%
+ 4 |  13.4%   24.2% |  17.7%  26.2% |   7.2%   5.7% |   1.8%   0.9% |   0.3%   0.1%
+ 5 |   6.7%   10.8% |  17.7%  43.9% |  10.9%  12.8% |   3.6%   2.7% |   0.9%   0.5%
+ 6 |   2.7%    4.1% |  14.8%  61.6% |  13.8%  23.7% |   6.2%   6.3% |   1.8%   1.3%
+ 7 |   1.0%    1.4% |  10.5%  76.4% |  14.9%  37.5% |   9.0%  12.5% |   3.4%   3.1%
+ 8 |   0.3%    0.4% |   6.5%  86.9% |  14.0%  52.4% |  11.3%  21.5% |   5.4%   6.5%
+ 9 |   0.1%    0.1% |   3.6%  93.4% |  11.6%  66.3% |  12.7%  32.8% |   7.6%  11.9%
+10 |   0.0%    0.0% |   1.8%  97.0% |   8.6%  77.9% |  12.8%  45.5% |   9.6%  19.5%
+11 |   0.0%    0.0% |   0.8%  98.7% |   5.8%  86.6% |  11.6%  58.3% |  11.1%  29.1%
+12 |   0.0%    0.0% |   0.3%  99.5% |   3.6%  92.4% |   9.6%  69.9% |  11.6%  40.2%
+13 |   0.0%    0.0% |   0.1%  99.8% |   2.0%  96.0% |   7.3%  79.5% |  11.2%  51.8%
+14 |   0.0%    0.0% |   0.0%  99.9% |   1.1%  98.0% |   5.2%  86.9% |  10.0%  62.9%
+15 |   0.0%    0.0% |   0.0% 100.0% |   0.5%  99.1% |   3.4%  92.1% |   8.2%  72.9%
+== MAR99 Table 2 reproduction: cumulative P(X<=k), p=0.01, N=250
+   k= 0 cum=8.11%
+   k= 1 cum=28.58%
+   k= 2 cum=54.32%
+   k= 3 cum=75.81%
+   k= 4 cum=89.22%
+   k= 5 cum=95.88%
+   k= 6 cum=98.63%
+   k= 7 cum=99.60%
+   k= 8 cum=99.89%
+   k= 9 cum=99.97%
+   k=10 cum=99.99%
+== ORE stopLightBounds iid emulation (levels 0.95, 0.9999), p=0.01
+   N=250: bounds (max green, max amber) = [4, 9]
+   N=500: bounds (max green, max amber) = [8, 14]
+   N=1000: bounds (max green, max amber) = [14, 23]
+== Kupiec POF LR test (chi2_1 critical value 3.8415), p=0.01
+   N=250: non-rejection region 1 <= x <= 6; exact size at nominal 5% = 0.0948
+      true rate 0.02: power = 0.2427
+      true rate 0.03: power = 0.6255
+      true rate 0.04: power = 0.8750
+      true rate 0.05: power = 0.9686
+   N=500: non-rejection region 2 <= x <= 9; exact size at nominal 5% = 0.0709
+      true rate 0.02: power = 0.5438
+      true rate 0.03: power = 0.9331
+      true rate 0.04: power = 0.9956
+      true rate 0.05: power = 0.9998
+   N=1000: non-rejection region 5 <= x <= 16; exact size at nominal 5% = 0.0551
+      true rate 0.02: power = 0.7815
+      true rate 0.03: power = 0.9965
+      true rate 0.04: power = 1.0000
+      true rate 0.05: power = 1.0000
+== Traffic-light zone probabilities (N=250, zones green 0-4, amber 5-9, red >=10)
+   true rate 0.01: P(green)=0.8922 P(amber)=0.1076 P(red)=0.0003
+   true rate 0.02: P(green)=0.4387 P(amber)=0.5309 P(red)=0.0304
+   true rate 0.03: P(green)=0.1282 P(amber)=0.6508 P(red)=0.2210
+   true rate 0.04: P(green)=0.0270 P(amber)=0.4284 P(red)=0.5446
+   true rate 0.05: P(green)=0.0046 P(amber)=0.1900 P(red)=0.8054
+== Order statistic (k-th largest loss) used as empirical 99% / 97.5% VaR
+   N=  100 p=0.99: exact ceil(N(1-p))=  1  ORE/boost n=  2  QuantLib k=  2  (1-p)*N in double=1.0000000000000009
+   N=  100 p=0.975: exact ceil(N(1-p))=  3  ORE/boost n=  3  QuantLib k=  3  (1-p)*N in double=2.500000000000002
+   N=  250 p=0.99: exact ceil(N(1-p))=  3  ORE/boost n=  3  QuantLib k=  3  (1-p)*N in double=2.500000000000002
+   N=  250 p=0.975: exact ceil(N(1-p))=  7  ORE/boost n=  7  QuantLib k=  7  (1-p)*N in double=6.250000000000005
+   N=  500 p=0.99: exact ceil(N(1-p))=  5  ORE/boost n=  6  QuantLib k=  6  (1-p)*N in double=5.000000000000004
+   N=  500 p=0.975: exact ceil(N(1-p))= 13  ORE/boost n= 13  QuantLib k= 13  (1-p)*N in double=12.50000000000001
+   N=  715 p=0.99: exact ceil(N(1-p))=  8  ORE/boost n=  8  QuantLib k=  8  (1-p)*N in double=7.150000000000007
+   N=  715 p=0.975: exact ceil(N(1-p))= 18  ORE/boost n= 18  QuantLib k= 18  (1-p)*N in double=17.875000000000014
+   N= 1000 p=0.99: exact ceil(N(1-p))= 10  ORE/boost n= 11  QuantLib k= 11  (1-p)*N in double=10.000000000000009
+   N= 1000 p=0.975: exact ceil(N(1-p))= 25  ORE/boost n= 26  QuantLib k= 26  (1-p)*N in double=25.00000000000002
+   N= 2000 p=0.99: exact ceil(N(1-p))= 20  ORE/boost n= 21  QuantLib k= 21  (1-p)*N in double=20.000000000000018
+   N= 2000 p=0.975: exact ceil(N(1-p))= 50  ORE/boost n= 51  QuantLib k= 51  (1-p)*N in double=50.00000000000004
