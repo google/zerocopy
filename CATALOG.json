@@ -25930,6 +25930,82 @@
         "systems/memory-models"
       ]
     },
+    "gotpcrelx-tlsdesc-linker-relaxations-ifunc-ordering-and-linksem-slack": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rui314/mold",
+            "revision": "331ac663668dc0b1f4949403854613b9b1913025"
+          },
+          "name": "mold linker (Rust ELF/Mach-O linker)"
+        },
+        {
+          "identity": {
+            "repository": "wild-linker/wild",
+            "revision": "e15f1f9077812d657ee3a3237b6206c430f82eef"
+          },
+          "name": "Wild ELF/Mach-O linker"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "4f6781e188aaae89290d963375341d3886f90945"
+          },
+          "name": "LLVM LLD ELF linker"
+        },
+        {
+          "identity": {
+            "repository": "bminor/glibc",
+            "revision": "04e750e75b73957cf1c791535a3f4319534a52fc"
+          },
+          "name": "GNU C Library (glibc) dynamic linker"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/linksem",
+            "revision": "446412810661b91a39c86425c1e924e35661098c"
+          },
+          "name": "REMS Linksem formal ELF linking model"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2983990.2983996",
+            "venue": "OOPSLA 2016"
+          },
+          "name": "Kell, Mulligan, and Sewell, The Missing Link: Explaining ELF Static Linking, Semantically (OOPSLA 2016)"
+        },
+        {
+          "identity": {
+            "standard": "System V AMD64 psABI",
+            "url": "https://gitlab.com/x86-psABIs/x86-64-ABI"
+          },
+          "name": "System V Application Binary Interface \u2014 AMD64 Architecture Processor Supplement"
+        },
+        {
+          "identity": {
+            "standard": "Arm IHI 0055 (AAPCS64) and Arm IHI 0056 (AAELF64)",
+            "url": "https://github.com/ARM-software/abi-aa"
+          },
+          "name": "Arm Procedure Call Standard (AAPCS64) and ELF for the Arm 64-bit Architecture"
+        },
+        {
+          "identity": {
+            "compiler": "GCC 15.2.0-14",
+            "linker": "GNU ld (Binutils 2.47)",
+            "loader": "Debian GLIBC 2.43-7+gl1",
+            "target": "x86_64-linux-gnu"
+          },
+          "name": "Local x86-64 Linux execution toolchain (Debian GCC 15.2.0, GNU ld 2.47, Debian GLIBC 2.43)"
+        }
+      ],
+      "topics": [
+        "systems/elf-linker-instruction-relaxation",
+        "ffi/red-zone-and-scratch-abi-slack",
+        "runtimes/ifunc-and-tlsdesc-relocations",
+        "verification/post-codegen-binary-linking"
+      ]
+    },
     "government-memory-safety-mandates-oncd-cisa-xz-utils-and-maintainer-economics": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -29442,6 +29518,93 @@
         "security",
         "verification",
         "verification/compiler-verification"
+      ]
+    },
+    "infix-precedence-misunderstandings-rhombus-lattices-and-uax31-joiners": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "carbon-language/carbon-lang",
+            "revision": "534197a3cd35502c1e4e5c159ea2c56fc5818882"
+          },
+          "name": "Carbon language toolchain and design specification"
+        },
+        {
+          "identity": {
+            "repository": "racket/rhombus",
+            "revision": "afef550706d41214775c630b86d63eedcda2e90f"
+          },
+          "name": "Rhombus language and shrubbery enforestation parser"
+        },
+        {
+          "identity": {
+            "repository": "ponylang/ponyc",
+            "revision": "edace5b6997042571088b9aa2cb0034b1e1384f7"
+          },
+          "name": "Pony compiler frontend (ponyc)"
+        },
+        {
+          "identity": {
+            "repository": "dtolnay/unicode-ident",
+            "revision": "28018f288934fa6be60a6e791e071b7a7195643e",
+            "unicode_version": "18.0.0"
+          },
+          "name": "unicode-ident Rust crate"
+        },
+        {
+          "identity": {
+            "repository": "unicode-org/icu4x",
+            "revision": "e1cad3416d4d0b356158942cf76f23ea91cec9ca"
+          },
+          "name": "ICU4X Unicode properties component"
+        },
+        {
+          "identity": {
+            "revision": "45",
+            "standard": "UAX #31",
+            "unicode_version": "18.0.0",
+            "url": "https://www.unicode.org/reports/tr31/tr31-45.html"
+          },
+          "name": "Unicode Standard Annex #31: Unicode Identifiers and Syntax"
+        },
+        {
+          "identity": {
+            "revision": "34",
+            "standard": "UTS #39",
+            "unicode_version": "18.0.0",
+            "url": "https://www.unicode.org/reports/tr39/tr39-34.html"
+          },
+          "name": "Unicode Technical Standard #39: Unicode Security Mechanisms"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3106237.3106264",
+            "venue": "ESEC/FSE 2017"
+          },
+          "name": "Gopstein et al., Understanding Misunderstandings in Source Code (ESEC/FSE 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3622818",
+            "venue": "PACMPL OOPSLA2 2023"
+          },
+          "name": "Flatt et al., Rhombus: A New Spin on Macros without All the Parentheses (OOPSLA 2023)"
+        },
+        {
+          "identity": {
+            "runtime": "CPython",
+            "scope": "/usr/lib/python3.13 non-test modules",
+            "version": "3.13.15"
+          },
+          "name": "CPython standard library corpus (Debian Python 3.13.15)"
+        }
+      ],
+      "topics": [
+        "pl/partial-order-operator-precedence",
+        "pl/empirical-comprehension-studies",
+        "security/uax31-unicode-identifiers",
+        "compilers/surface-syntax-diagnostics"
       ]
     },
     "institution-comorphisms-heterogeneous-logics-and-trace-relating-compilation": {

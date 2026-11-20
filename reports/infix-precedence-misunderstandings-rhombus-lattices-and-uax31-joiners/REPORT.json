@@ -1,0 +1,87 @@
+{
+  "topics": [
+    "pl/partial-order-operator-precedence",
+    "pl/empirical-comprehension-studies",
+    "security/uax31-unicode-identifiers",
+    "compilers/surface-syntax-diagnostics"
+  ],
+  "subjects": [
+    {
+      "name": "Carbon language toolchain and design specification",
+      "identity": {
+        "repository": "carbon-language/carbon-lang",
+        "revision": "534197a3cd35502c1e4e5c159ea2c56fc5818882"
+      }
+    },
+    {
+      "name": "Rhombus language and shrubbery enforestation parser",
+      "identity": {
+        "repository": "racket/rhombus",
+        "revision": "afef550706d41214775c630b86d63eedcda2e90f"
+      }
+    },
+    {
+      "name": "Pony compiler frontend (ponyc)",
+      "identity": {
+        "repository": "ponylang/ponyc",
+        "revision": "edace5b6997042571088b9aa2cb0034b1e1384f7"
+      }
+    },
+    {
+      "name": "unicode-ident Rust crate",
+      "identity": {
+        "repository": "dtolnay/unicode-ident",
+        "revision": "28018f288934fa6be60a6e791e071b7a7195643e",
+        "unicode_version": "18.0.0"
+      }
+    },
+    {
+      "name": "ICU4X Unicode properties component",
+      "identity": {
+        "repository": "unicode-org/icu4x",
+        "revision": "e1cad3416d4d0b356158942cf76f23ea91cec9ca"
+      }
+    },
+    {
+      "name": "Unicode Standard Annex #31: Unicode Identifiers and Syntax",
+      "identity": {
+        "standard": "UAX #31",
+        "revision": "45",
+        "unicode_version": "18.0.0",
+        "url": "https://www.unicode.org/reports/tr31/tr31-45.html"
+      }
+    },
+    {
+      "name": "Unicode Technical Standard #39: Unicode Security Mechanisms",
+      "identity": {
+        "standard": "UTS #39",
+        "revision": "34",
+        "unicode_version": "18.0.0",
+        "url": "https://www.unicode.org/reports/tr39/tr39-34.html"
+      }
+    },
+    {
+      "name": "Gopstein et al., Understanding Misunderstandings in Source Code (ESEC/FSE 2017)",
+      "identity": {
+        "doi": "10.1145/3106237.3106264",
+        "venue": "ESEC/FSE 2017"
+      }
+    },
+    {
+      "name": "Flatt et al., Rhombus: A New Spin on Macros without All the Parentheses (OOPSLA 2023)",
+      "identity": {
+        "doi": "10.1145/3622818",
+        "venue": "PACMPL OOPSLA2 2023"
+      }
+    },
+    {
+      "name": "CPython standard library corpus (Debian Python 3.13.15)",
+      "identity": {
+        "runtime": "CPython",
+        "version": "3.13.15",
+        "scope": "/usr/lib/python3.13 non-test modules"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

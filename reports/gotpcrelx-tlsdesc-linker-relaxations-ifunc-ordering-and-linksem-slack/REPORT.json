@@ -1,0 +1,76 @@
+{
+  "topics": [
+    "systems/elf-linker-instruction-relaxation",
+    "ffi/red-zone-and-scratch-abi-slack",
+    "runtimes/ifunc-and-tlsdesc-relocations",
+    "verification/post-codegen-binary-linking"
+  ],
+  "subjects": [
+    {
+      "name": "mold linker (Rust ELF/Mach-O linker)",
+      "identity": {
+        "repository": "rui314/mold",
+        "revision": "331ac663668dc0b1f4949403854613b9b1913025"
+      }
+    },
+    {
+      "name": "Wild ELF/Mach-O linker",
+      "identity": {
+        "repository": "wild-linker/wild",
+        "revision": "e15f1f9077812d657ee3a3237b6206c430f82eef"
+      }
+    },
+    {
+      "name": "LLVM LLD ELF linker",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "4f6781e188aaae89290d963375341d3886f90945"
+      }
+    },
+    {
+      "name": "GNU C Library (glibc) dynamic linker",
+      "identity": {
+        "repository": "bminor/glibc",
+        "revision": "04e750e75b73957cf1c791535a3f4319534a52fc"
+      }
+    },
+    {
+      "name": "REMS Linksem formal ELF linking model",
+      "identity": {
+        "repository": "rems-project/linksem",
+        "revision": "446412810661b91a39c86425c1e924e35661098c"
+      }
+    },
+    {
+      "name": "Kell, Mulligan, and Sewell, The Missing Link: Explaining ELF Static Linking, Semantically (OOPSLA 2016)",
+      "identity": {
+        "doi": "10.1145/2983990.2983996",
+        "venue": "OOPSLA 2016"
+      }
+    },
+    {
+      "name": "System V Application Binary Interface — AMD64 Architecture Processor Supplement",
+      "identity": {
+        "standard": "System V AMD64 psABI",
+        "url": "https://gitlab.com/x86-psABIs/x86-64-ABI"
+      }
+    },
+    {
+      "name": "Arm Procedure Call Standard (AAPCS64) and ELF for the Arm 64-bit Architecture",
+      "identity": {
+        "standard": "Arm IHI 0055 (AAPCS64) and Arm IHI 0056 (AAELF64)",
+        "url": "https://github.com/ARM-software/abi-aa"
+      }
+    },
+    {
+      "name": "Local x86-64 Linux execution toolchain (Debian GCC 15.2.0, GNU ld 2.47, Debian GLIBC 2.43)",
+      "identity": {
+        "compiler": "GCC 15.2.0-14",
+        "linker": "GNU ld (Binutils 2.47)",
+        "loader": "Debian GLIBC 2.43-7+gl1",
+        "target": "x86_64-linux-gnu"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
