@@ -444,7 +444,12 @@ fn rejects_crate_constructor_outside_model() {
         TargetRole::Expected,
         "prelude\nimport Captured\nimport Spec\ndef Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem 7\n",
     );
-    f.reject_audit("incorrect canonical input origin Trusted.MirSemantics.Crate.mk");
+    // Non-model modules cannot declare constants in the `Trusted` namespace at
+    // all, so defining `Trusted.MirSemantics.Crate` in `Spec` is refused by
+    // the namespace-isolation guard before canonical-input origin validation.
+    f.reject_audit(
+        "non-model target module Spec cannot declare constant Trusted.MirSemantics.Crate",
+    );
 }
 
 /// The inspector pins the original foundation's axiom list itself. A request

@@ -13,6 +13,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::ffi::OsStr;
 use std::fmt::Write as _;
 use std::fs;
+use std::io;
 use std::path::{Component, Path, PathBuf};
 
 use serde::{Deserialize, Serialize};
@@ -24,6 +25,24 @@ pub type Json = serde_json::Value;
 /// Names the pinned Lean 4 toolchain identifier required by
 /// `foundation-lock.json` and `library-lock.json`.
 pub const TOOLCHAIN: &str = "leanprover/lean4:v4.34.1";
+
+/// Lists the six minimal `Init.*` foundation modules forming the transitive
+/// closure of `{Init.Prelude, Init.Core}` in unpinned Lean admission.
+pub const UNPINNED_FOUNDATION_MODULES: [&str; 6] = [
+    "Init.Coe",
+    "Init.Core",
+    "Init.Notation",
+    "Init.Prelude",
+    "Init.SizeOf",
+    "Init.Tactics",
+];
+
+/// Lists the three foundational axioms permitted in target verification.
+pub const FOUNDATION_AXIOMS: [(&str, &str); 3] = [
+    ("Classical.choice", "Init.Prelude"),
+    ("Quot.sound", "Init.Prelude"),
+    ("propext", "Init.Core"),
+];
 
 /// Lists the `.olean` artifact companion suffixes passed in the first array of
 /// `Lean.ImportArtifacts`.
@@ -295,6 +314,15 @@ pub struct AdmittedToolchain {
     /// Tracks already authenticated checked libraries. These never join the
     /// replay foundation base.
     pub library_modules: BTreeSet<String>,
+    /// Indicates whether this toolchain was admitted under unpinned host
+    /// policy (`allow_unpinned_lean = true`) rather than locked SHA-256s.
+    pub unpinned: bool,
+    /// Collects package roots discovered under `<prefix>/lib/lean` in unpinned
+    /// mode (empty in pinned mode).
+    pub sysroot_package_roots: BTreeSet<String>,
+    /// Records the admitted sysroot source and binary part digests in unpinned
+    /// mode so `target-provenance` can detect mid-run sysroot mutation.
+    pub(crate) unpinned_records: BTreeMap<String, UnpinnedSysrootArtifacts>,
 }
 
 impl AdmittedToolchain {
@@ -356,6 +384,234 @@ pub(crate) fn verify_installed_module_record(
     }
 
     ModuleArtifacts::from_available(&available, phase, || format!("missing olean for {module}"))
+}
+
+/// Return `true` if `module` is a valid dotted ASCII Lean module name whose
+/// root component is `"Init"` or `"Std"`.
+pub(crate) fn is_allowed_unpinned_sysroot_module(module: &str) -> bool {
+    !module.is_empty()
+        && module.split('.').all(is_lean_ident)
+        && matches!(module.split('.').next(), Some("Init" | "Std"))
+}
+
+/// Validate that every module and import target in an unpinned sysroot graph
+/// belongs strictly to `Init` or `Std` and is present in `graph`.
+pub(crate) fn validate_unpinned_sysroot_graph(
+    graph: &BTreeMap<String, Vec<ImportEdge>>,
+) -> Result<(), Failure> {
+    for (module, edges) in graph {
+        if !is_allowed_unpinned_sysroot_module(module) {
+            return Err(Failure::policy(
+                "sysroot",
+                format!(
+                    "disallowed unpinned sysroot module {module}: only Init and Std are permitted"
+                ),
+            ));
+        }
+        for edge in edges {
+            if !is_allowed_unpinned_sysroot_module(&edge.module) {
+                return Err(Failure::policy(
+                    "sysroot",
+                    format!(
+                        "disallowed unpinned sysroot import {} in {module}: only Init and Std are permitted",
+                        edge.module
+                    ),
+                ));
+            }
+            if !graph.contains_key(&edge.module) {
+                return Err(Failure::operational(
+                    "sysroot",
+                    format!("missing resolved import {} from {module}", edge.module),
+                ));
+            }
+        }
+    }
+    Ok(())
+}
+
+/// Compute the minimal foundation closure of `{Init.Prelude, Init.Core}` over
+/// `graph`, failing closed if any module in `graph` is outside `Init`/`Std`,
+/// any of the six expected foundation modules is missing, or the foundation
+/// closure leaves `Init.*`.
+pub(crate) fn compute_unpinned_foundation_closure(
+    graph: &BTreeMap<String, Vec<ImportEdge>>,
+) -> Result<BTreeSet<String>, Failure> {
+    validate_unpinned_sysroot_graph(graph)?;
+    let mut closure = BTreeSet::new();
+    let mut pending = vec!["Init.Prelude".to_string(), "Init.Core".to_string()];
+    while let Some(module) = pending.pop() {
+        let Some(edges) = graph.get(&module) else {
+            return Err(Failure::policy(
+                "sysroot",
+                format!("missing required foundation module {module}"),
+            ));
+        };
+        if !closure.insert(module.clone()) {
+            continue;
+        }
+        if module.split('.').next() != Some("Init") {
+            return Err(Failure::policy(
+                "sysroot",
+                format!("foundation closure exceeded Init.*: {module}"),
+            ));
+        }
+        pending.extend(edges.iter().map(|edge| edge.module.clone()));
+    }
+    for required in UNPINNED_FOUNDATION_MODULES {
+        if !closure.contains(required) {
+            return Err(Failure::policy(
+                "sysroot",
+                format!("missing required foundation module {required}"),
+            ));
+        }
+    }
+    Ok(closure)
+}
+
+/// Scan `<prefix>/lib/lean` (dereferencing symlinks) to collect all sysroot
+/// package roots from subdirectories and `.olean` files.
+pub(crate) fn scan_sysroot_package_roots(
+    prefix: &Path,
+    phase: &str,
+) -> Result<BTreeSet<String>, Failure> {
+    let lib_lean = prefix.join("lib/lean");
+    let lib_meta = fs::metadata(&lib_lean).map_err(|e| {
+        Failure::operational(phase, format!("cannot inspect {}: {e}", lib_lean.display()))
+    })?;
+    if !lib_meta.is_dir() {
+        return Err(Failure::operational(
+            phase,
+            format!("expected sysroot library directory: {}", lib_lean.display()),
+        ));
+    }
+    let mut roots = BTreeSet::new();
+    let entries = fs::read_dir(&lib_lean).map_err(|e| {
+        Failure::operational(phase, format!("cannot read {}: {e}", lib_lean.display()))
+    })?;
+    for entry in entries {
+        let entry = entry.map_err(|e| {
+            Failure::operational(phase, format!("cannot read {}: {e}", lib_lean.display()))
+        })?;
+        let path = entry.path();
+        let meta = fs::metadata(&path).map_err(|e| {
+            Failure::operational(phase, format!("cannot inspect {}: {e}", path.display()))
+        })?;
+        let Some(name) = entry.file_name().to_str().map(str::to_owned) else {
+            continue;
+        };
+        if meta.is_dir() && is_lean_ident(&name) {
+            roots.insert(name);
+        } else if meta.is_file()
+            && let Some(stem) = name.strip_suffix(".olean")
+            && is_lean_ident(stem)
+        {
+            roots.insert(stem.to_owned());
+        }
+    }
+    Ok(roots)
+}
+
+/// Compute the transitive import closure of `imports` across `graph`, following
+/// every edge (including `isExported: false` private and `isMeta: true` meta
+/// imports).
+pub(crate) fn transitive_import_closure(
+    graph: &BTreeMap<String, Vec<ImportEdge>>,
+    imports: &[ImportEdge],
+) -> BTreeSet<String> {
+    let mut closure = BTreeSet::new();
+    let mut pending: Vec<String> = imports.iter().map(|e| e.module.clone()).collect();
+    while let Some(module) = pending.pop() {
+        if !closure.insert(module.clone()) {
+            continue;
+        }
+        if let Some(edges) = graph.get(&module) {
+            pending.extend(edges.iter().map(|e| e.module.clone()));
+        }
+    }
+    closure
+}
+
+/// Holds validated paths and in-place SHA-256 digests for an unpinned sysroot
+/// module.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct UnpinnedSysrootArtifacts {
+    pub artifacts: ModuleArtifacts,
+    pub source_sha256: Option<String>,
+    pub part_hashes: Vec<(String, String)>,
+}
+
+/// Hash a file, dereferencing symlinks (for sysroot libraries/sources).
+pub(crate) fn sha256_file_deref(path: &Path, phase: &str) -> Result<String, Failure> {
+    let meta = fs::metadata(path).map_err(|e| {
+        Failure::operational(phase, format!("cannot inspect {}: {e}", path.display()))
+    })?;
+    if !meta.is_file() {
+        return Err(Failure::policy(
+            phase,
+            format!("expected a regular file: {}", path.display()),
+        ));
+    }
+    let bytes = fs::read(path)
+        .map_err(|e| Failure::operational(phase, format!("cannot read {}: {e}", path.display())))?;
+    Ok(sha256_bytes(&bytes))
+}
+
+fn hash_optional_file_deref(path: &Path, phase: &str) -> Result<Option<String>, Failure> {
+    match fs::symlink_metadata(path) {
+        Err(e) if e.kind() == io::ErrorKind::NotFound => Ok(None),
+        Err(e) => Err(Failure::operational(
+            phase,
+            format!("cannot inspect {}: {e}", path.display()),
+        )),
+        Ok(_) => Ok(Some(sha256_file_deref(path, phase)?)),
+    }
+}
+
+/// Hash every present binary artifact part of an unpinned sysroot `module`
+/// under `prefix` (requiring `.olean`) and hash its `.lean` source if present
+/// (`None` when absent).
+pub(crate) fn hash_unpinned_sysroot_module(
+    prefix: &Path,
+    module: &str,
+    phase: &str,
+) -> Result<UnpinnedSysrootArtifacts, Failure> {
+    if !is_allowed_unpinned_sysroot_module(module) {
+        return Err(Failure::policy(
+            phase,
+            format!("disallowed unpinned sysroot module {module}"),
+        ));
+    }
+    let rel_mod = module.replace('.', "/");
+    let source_path = prefix.join("src/lean").join(format!("{rel_mod}.lean"));
+    let source_sha256 = hash_optional_file_deref(&source_path, phase)?;
+
+    let mut available: BTreeMap<&str, String> = BTreeMap::new();
+    let mut hashes_by_part: BTreeMap<&str, (String, String)> = BTreeMap::new();
+    for part in PARTS {
+        let installed = prefix.join("lib/lean").join(format!("{rel_mod}.{part}"));
+        if let Some(sha) = hash_optional_file_deref(&installed, phase)? {
+            let file_name = installed
+                .file_name()
+                .and_then(|s| s.to_str())
+                .ok_or_else(|| Failure::operational(phase, "non-UTF-8 artifact file name"))?
+                .to_owned();
+            available.insert(part, installed.to_string_lossy().into_owned());
+            hashes_by_part.insert(part, (file_name, sha));
+        }
+    }
+    let artifacts = ModuleArtifacts::from_available(&available, phase, || {
+        format!("missing olean for {module}")
+    })?;
+    let part_hashes = OLEAN_PARTS
+        .iter()
+        .chain(IR_PARTS.iter())
+        .filter_map(|p| hashes_by_part.remove(*p))
+        .collect();
+    Ok(UnpinnedSysrootArtifacts {
+        artifacts,
+        source_sha256,
+        part_hashes,
+    })
 }
 
 fn non_empty_path(value: Option<&OsStr>) -> Option<PathBuf> {
@@ -879,6 +1135,219 @@ mod default_lean_path_tests {
         assert_eq!(
             sha256_bytes(b""),
             "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        );
+    }
+}
+
+#[cfg(test)]
+mod unpinned_sysroot_tests {
+    use super::*;
+
+    fn edge_with(module: &str, is_exported: bool, is_meta: bool) -> ImportEdge {
+        ImportEdge {
+            module: module.to_string(),
+            import_all: false,
+            is_exported,
+            is_meta,
+        }
+    }
+
+    fn edge(module: &str) -> ImportEdge {
+        edge_with(module, true, false)
+    }
+
+    fn six_module_graph() -> BTreeMap<String, Vec<ImportEdge>> {
+        BTreeMap::from([
+            ("Init.Prelude".to_string(), Vec::new()),
+            (
+                "Init.Coe".to_string(),
+                vec![edge("Init.Prelude"), edge_with("Init.Prelude", true, true)],
+            ),
+            ("Init.Notation".to_string(), vec![edge("Init.Coe")]),
+            ("Init.Tactics".to_string(), vec![edge("Init.Notation")]),
+            (
+                "Init.SizeOf".to_string(),
+                vec![
+                    edge("Init.Notation"),
+                    edge_with("Init.Tactics", false, false),
+                ],
+            ),
+            (
+                "Init.Core".to_string(),
+                vec![edge("Init.SizeOf"), edge("Init.Tactics")],
+            ),
+        ])
+    }
+
+    #[test]
+    fn foundation_closure_computes_exact_six_modules_and_excludes_libraries() {
+        let mut graph = six_module_graph();
+        graph.insert(
+            "Init.Data.BitVec.Basic".to_string(),
+            vec![edge("Init.Core")],
+        );
+        graph.insert(
+            "Std.Data.HashMap".to_string(),
+            vec![edge("Init.Data.BitVec.Basic")],
+        );
+
+        let closure = compute_unpinned_foundation_closure(&graph).unwrap();
+        let expected: BTreeSet<String> = UNPINNED_FOUNDATION_MODULES
+            .iter()
+            .map(|s| (*s).to_string())
+            .collect();
+        assert_eq!(closure, expected);
+        assert!(!closure.contains("Init.Data.BitVec.Basic"));
+        assert!(!closure.contains("Std.Data.HashMap"));
+    }
+
+    #[test]
+    fn foundation_closure_rejects_missing_core_or_foundation_modules() {
+        for missing in UNPINNED_FOUNDATION_MODULES {
+            let mut graph = six_module_graph();
+            graph.remove(missing);
+            // Also drop incoming edges so failure comes from missing
+            // foundation module, not dangling graph edge.
+            for edges in graph.values_mut() {
+                edges.retain(|e| e.module != missing);
+            }
+            let err = compute_unpinned_foundation_closure(&graph).unwrap_err();
+            assert_eq!(err.code, 1, "{missing}: {err}");
+            assert!(
+                err.message.contains("missing required foundation module"),
+                "{missing}: {err}"
+            );
+        }
+    }
+
+    #[test]
+    fn sysroot_guard_rejects_lean_lake_and_non_init_std_modules() {
+        for forbidden in [
+            "Lean",
+            "Lean.Meta",
+            "Lake",
+            "Lake.Build",
+            "InitFake",
+            "User",
+        ] {
+            let mut graph = six_module_graph();
+            graph.insert(forbidden.to_string(), vec![edge("Init.Core")]);
+            let err = compute_unpinned_foundation_closure(&graph).unwrap_err();
+            assert_eq!(err.code, 1, "{forbidden}: {err}");
+            assert!(
+                err.message.contains("only Init and Std are permitted"),
+                "{forbidden}: {err}"
+            );
+
+            let mut edge_graph = six_module_graph();
+            edge_graph.insert("Std.Wrapper".to_string(), vec![edge(forbidden)]);
+            edge_graph.insert(forbidden.to_string(), Vec::new());
+            let err = compute_unpinned_foundation_closure(&edge_graph).unwrap_err();
+            assert_eq!(err.code, 1, "{forbidden} edge: {err}");
+        }
+
+        // Foundation closure itself cannot escape Init.* into Std.*.
+        let mut std_in_core = six_module_graph();
+        std_in_core.insert("Std.Helper".to_string(), vec![edge("Init.Prelude")]);
+        std_in_core
+            .get_mut("Init.Core")
+            .unwrap()
+            .push(edge("Std.Helper"));
+        let err = compute_unpinned_foundation_closure(&std_in_core).unwrap_err();
+        assert_eq!(err.code, 1);
+        assert!(err.message.contains("exceeded Init.*"), "{err}");
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn scan_sysroot_package_roots_collects_dirs_oleans_and_symlinks() {
+        use std::os::unix::fs::symlink;
+
+        let dir = tempfile::tempdir().unwrap();
+        let prefix = dir.path().join("sysroot");
+        let lib_lean = prefix.join("lib/lean");
+        fs::create_dir_all(lib_lean.join("Init")).unwrap();
+        fs::write(lib_lean.join("Std.olean"), b"std").unwrap();
+        fs::write(lib_lean.join("libInit.a"), b"archive").unwrap();
+        fs::write(lib_lean.join("Ignored.ilean"), b"ilean").unwrap();
+        fs::write(lib_lean.join("Ignored.olean.private"), b"priv").unwrap();
+
+        let ext = dir.path().join("external");
+        fs::create_dir_all(ext.join("LeanPkg")).unwrap();
+        fs::write(ext.join("LakePkg.olean"), b"lake").unwrap();
+        symlink(ext.join("LeanPkg"), lib_lean.join("Lean")).unwrap();
+        symlink(ext.join("LakePkg.olean"), lib_lean.join("Lake.olean")).unwrap();
+
+        let roots = scan_sysroot_package_roots(&prefix, "toolchain").unwrap();
+        assert_eq!(
+            roots,
+            BTreeSet::from([
+                "Init".to_string(),
+                "Lake".to_string(),
+                "Lean".to_string(),
+                "Std".to_string(),
+            ])
+        );
+    }
+
+    #[test]
+    fn hash_unpinned_sysroot_module_allows_absent_lean_and_hashes_present_parts() {
+        let dir = tempfile::tempdir().unwrap();
+        let prefix = dir.path();
+        let lib_dir = prefix.join("lib/lean/Std/Data");
+        fs::create_dir_all(&lib_dir).unwrap();
+        for (suffix, bytes) in [
+            ("olean", b"olean bytes" as &[u8]),
+            ("olean.server", b"server bytes"),
+            ("olean.private", b"private bytes"),
+            ("ir.sig", b"ir sig bytes"),
+            ("ir", b"ir bytes"),
+        ] {
+            fs::write(lib_dir.join(format!("HashMap.{suffix}")), bytes).unwrap();
+        }
+
+        let absent = hash_unpinned_sysroot_module(prefix, "Std.Data.HashMap", "sysroot").unwrap();
+        assert_eq!(absent.source_sha256, None);
+        assert_eq!(absent.artifacts.olean_parts.len(), 3);
+        assert_eq!(absent.artifacts.ir_parts.len(), 2);
+        assert_eq!(absent.part_hashes.len(), 5);
+        assert_eq!(absent.part_hashes[0].0, "HashMap.olean");
+        assert_eq!(absent.part_hashes[0].1, sha256_bytes(b"olean bytes"));
+
+        // Missing primary .olean must fail closed.
+        fs::remove_file(lib_dir.join("HashMap.olean")).unwrap();
+        assert!(hash_unpinned_sysroot_module(prefix, "Std.Data.HashMap", "sysroot").is_err());
+
+        // Present .lean source is hashed.
+        fs::write(lib_dir.join("HashMap.olean"), b"olean bytes").unwrap();
+        let src_dir = prefix.join("src/lean/Std/Data");
+        fs::create_dir_all(&src_dir).unwrap();
+        fs::write(src_dir.join("HashMap.lean"), b"source bytes").unwrap();
+        let present = hash_unpinned_sysroot_module(prefix, "Std.Data.HashMap", "sysroot").unwrap();
+        assert_eq!(present.source_sha256, Some(sha256_bytes(b"source bytes")));
+    }
+
+    #[test]
+    fn transitive_import_closure_follows_private_and_meta_edges() {
+        let graph = BTreeMap::from([
+            (
+                "A".to_string(),
+                vec![edge_with("B", false, false), edge_with("C", true, true)],
+            ),
+            ("B".to_string(), vec![edge("D")]),
+            ("C".to_string(), Vec::new()),
+            ("D".to_string(), Vec::new()),
+            ("Unrelated".to_string(), vec![edge("D")]),
+        ]);
+        let closure = transitive_import_closure(&graph, &[edge("A")]);
+        assert_eq!(
+            closure,
+            BTreeSet::from([
+                "A".to_string(),
+                "B".to_string(),
+                "C".to_string(),
+                "D".to_string(),
+            ])
         );
     }
 }

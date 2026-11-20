@@ -19,13 +19,19 @@ import Lean.Compiler.CSimpAttr
 Pinned to Lean 4.34.1, commit
 `leanprover/lean4@5045d0056413266e57c625dcd7c365b10e377c52`. `anneal-audit`
 (`trusted/audit/`) and `cargo-anneal verify` (`trusted/cargo-anneal/`) invoke
-this file across six JSON IPC modes (`run` and `main`):
+this file across seven JSON IPC modes (`run` and `main`):
 
 - **`"headers"` (target import discovery before elaboration):**
   Parses only module `prelude`/`import` headers via `Parser.parseHeader` so
   `cargo-anneal verify` can validate target module roles, admit the requested
   `library-lock.json` closure, and reject import cycles before compiling any
   target source.
+- **`"resolve-imports"` (unpinned sysroot import-DAG discovery):**
+  Imports requested sysroot modules with `trustLevel := 0`, `plugins := #[]`,
+  and `loadExts := false` (no initializers or extension callbacks) and emits
+  the sorted compiled `.olean` import DAG so `cargo-anneal` can enforce
+  `Init`/`Std`-only sysroot admission and partition the `{Init.Prelude,
+  Init.Core}` foundation closure in unpinned host mode.
 - **`"preflight"` (foundation-parser syntactic admission before compilation):**
   Lean elaboration is Turing-complete and effectful: commands such as `#eval`
   and tactics/terms such as `run_tac`, `by_elab`, `native_decide`, and
@@ -1231,22 +1237,121 @@ def ensureReplayableConstant (unsafeLabel : String) (ctxSuffix : String)
   if ci.hasValue true && (ci.value? true).isNone then
     fail s!"missing stored body {ci.name}"
 
+/-- Top-level namespaces reserved for the Lean kernel and standard library.
+Non-sysroot modules cannot declare definitions or arbitrary theorems under
+these roots because Lean's C++ kernel accelerates primitives such as `Nat.gcd`,
+`Nat.land`, `Nat.lor`, `Nat.xor`, `Nat.shiftLeft`, `Nat.shiftRight`, and
+`String.ofList` by name; shadowing an unimported kernel-accelerated name can
+prove `False` with zero axioms or trigger ill-typed kernel WHNF reduction. -/
+def reservedKernelRoots : List Name :=
+  [`Nat, `String, `Char, `Bool, `Int, `Int8, `Int16, `Int32, `Int64, `ISize,
+   `UInt8, `UInt16, `UInt32, `UInt64, `USize, `BitVec, `Float, `Float32,
+   `ByteArray, `Subarray, `Array, `List, `Option, `Sum, `Prod, `Fin, `Subtype,
+   `Eq, `HEq, `Quot, `Classical, `Lean, `Init, `Std, `Lake, `LeanExport,
+   `LeanIR, `System, `IO, `Task, `Thunk, `Unit, `PUnit, `Empty, `PEmpty, `True,
+   `False, `And, `Or, `Not, `Iff, `Exists, `Sigma, `PSigma, `Decidable,
+   `Nonempty, `Ordering, `Rat, `Except, `EStateM, `StateM]
+
+/-- Kernel-accelerated constant names in Lean's C++ reducer (`reduce_nat` and
+`reduce_string`). Even a `theorem` with one of these names triggers kernel WHNF
+reduction, so non-sysroot modules may never declare them in any form. -/
+def kernelAcceleratedNames : List Name :=
+  [`Nat.zero, `Nat.succ, `Nat.add, `Nat.sub, `Nat.mul, `Nat.pow, `Nat.gcd,
+   `Nat.mod, `Nat.div, `Nat.beq, `Nat.ble, `Nat.land, `Nat.lor, `Nat.xor,
+   `Nat.shiftLeft, `Nat.shiftRight, `String.ofList]
+
+/-- Return `true` when `n` has at least two name components (not a bare root
+like `Nat` or `String`). -/
+def hasCompoundName : Name → Bool
+  | .str .anonymous _ | .num .anonymous _ | .anonymous => false
+  | _ => true
+
+/-- Return `true` when `s` is a Lean 4 lazily-generated equational, unfolding,
+sparse-cases, functional-induction, congruence, or constructor-injectivity
+theorem suffix (matching Lean 4's `registerReservedNamePredicate` generators). -/
+def isGeneratedEqTheoremSuffix (s : String) : Bool :=
+  s == "eq_def" || s == "eq_unfold" || s == "else_eq" || s == "induct" ||
+    s == "induct_unfolding" || s == "fun_cases" ||
+    s == "fun_cases_unfolding" || s == "congr_simp" || s == "hinj" ||
+    match s.toList with
+    | 'e' :: 'q' :: '_' :: d :: ds => d.isDigit && ds.all Char.isDigit
+    | 'h' :: 'c' :: 'o' :: 'n' :: 'g' :: 'r' :: '_' :: d :: ds =>
+      d.isDigit && ds.all Char.isDigit
+    | 'c' :: 'o' :: 'n' :: 'g' :: 'r' :: '_' :: 'e' :: 'q' :: '_' :: d :: ds =>
+      d.isDigit && ds.all Char.isDigit
+    | _ => false
+
+/-- Return `true` when `n` is defined in an imported module whose role in
+`roles` satisfies `pred`. -/
+def constHasRole (env : Environment) (roles : Std.HashMap Name ρ)
+    (pred : ρ → Bool) (n : Name) : Bool :=
+  match env.getModuleIdxFor? n with
+  | some idx =>
+    match env.header.modules[idx]? with
+    | some mod =>
+      match roles.get? mod.module with
+      | some role => pred role
+      | none => false
+    | none => false
+  | none => false
+
+/-- Return `true` when `n` is `<parent>.splitter` or a compiler-generated
+auxiliary nested beneath `<parent>.splitter` (such as
+`<parent>.splitter._sparseCasesOn_8` or `...else_eq`) for an already-imported
+compound constant `parent` satisfying `isOrigin`. -/
+def isGeneratedSplitterSubtree (isOrigin : Name → Bool) : Name → Bool
+  | .str parent "splitter" => hasCompoundName parent && isOrigin parent
+  | .str parent _ => isGeneratedSplitterSubtree isOrigin parent
+  | _ => false
+
+/-- Return `true` when `ci` is a Lean 4 lazily-generated helper attached to an
+already-imported compound constant satisfying `isOrigin`:
+- a `.thmInfo` with a generated equation, induction, or congruence suffix
+  (public or `_private.<mod>.0.<parent>.<suffix>`), or
+- a private `.defnInfo`/`.thmInfo` at or beneath `<parent>.splitter`
+  (`_private.<mod>.0.<parent>.splitter` and its compiler-generated auxiliaries
+  such as `_sparseCasesOn_8`). -/
+def isGeneratedEqHelper (isOrigin : Name → Bool)
+    (ci : ConstantInfo) : Bool :=
+  let userName := privateToUserName ci.name
+  match ci, userName with
+  | .thmInfo _, .str parent suffix =>
+    (hasCompoundName parent && isGeneratedEqTheoremSuffix suffix &&
+      isOrigin parent) ||
+    (isPrivateName ci.name && isGeneratedSplitterSubtree isOrigin userName)
+  | .defnInfo _, _ =>
+    isPrivateName ci.name && isGeneratedSplitterSubtree isOrigin userName
+  | _, _ => false
+
 /-- Enforce per-constant policy invariants on a constant `ci` defined in Anneal
 repository module `m` with `SourceRole` `role` (shared across Pass 1 and
 Pass 2):
 
 - Non-`Trusted` modules cannot declare constants in the `Trusted` root
   namespace (`privateToUserName` strips any `_private.<mod>.0` prefix first so
-  `private` declarations inside `namespace Trusted` are also caught).
+  `private` declarations inside `namespace Trusted` are also caught), except
+  lazily-synthesized equation theorems and private matcher splitters attached
+  to an already-imported compound `Trusted` constant
+  (`isGeneratedEqHelper isTrustedConst`).
+- No repository module may declare any `kernelAcceleratedNames` constant (even
+  as a theorem) or any non-theorem constant in `reservedKernelRoots`
+  (preventing shadowing of kernel-accelerated `Nat.*` and stdlib primitives).
 - Non-`Trusted` modules cannot declare `opaque` constants.
 - No repository module may declare `unsafe`, `partial`, `axiom`, or `quot`
   constants, or omit a definition body. -/
 def validateRepoConstant (m : Name) (role : SourceRole)
-    (ci : ConstantInfo) : IO Unit := do
+    (isTrustedConst : Name → Bool) (ci : ConstantInfo) : IO Unit := do
   let isTrusted := role matches .trusted _
-  if !isTrusted && (privateToUserName ci.name).getRoot == `Trusted then
+  let userRoot := (privateToUserName ci.name).getRoot
+  if !isTrusted && userRoot == `Trusted &&
+      !isGeneratedEqHelper isTrustedConst ci then
     fail (s!"non-Trusted module {m} cannot declare constant {ci.name} " ++
       "in Trusted namespace")
+  if kernelAcceleratedNames.contains ci.name ||
+      (!(ci matches .thmInfo _) &&
+        reservedKernelRoots.contains ci.name.getRoot) then
+    fail (s!"repository module {m} cannot declare constant {ci.name} " ++
+      s!"in reserved kernel namespace {ci.name.getRoot}")
   if !isTrusted && (ci matches .opaqueInfo _) then
     fail s!"opaque declaration {ci.name} in {m} is not allowed outside Trusted"
   if ci.isAxiom then
@@ -1346,8 +1451,9 @@ def inventoryAlternates (stored ci : ConstantInfo) (pinned : Bool) :
 `extraConstNames`) of one Anneal repository module `mName` (`srcRole`) across
 Pass 1 and Pass 2. -/
 def collectRepoModuleConstants (env : Environment) (roles : Std.HashMap Name ρ)
-    (mName : Name) (srcRole : SourceRole) (data : ModuleData)
-    (locals : Std.HashMap Name ConstantInfo) (extraNames : NameSet) :
+    (isTrustedConst : Name → Bool) (mName : Name) (srcRole : SourceRole)
+    (data : ModuleData) (locals : Std.HashMap Name ConstantInfo)
+    (extraNames : NameSet) :
     IO (Std.HashMap Name ConstantInfo × NameSet) := do
   let mut locals := locals
   let mut extraNames := extraNames
@@ -1359,7 +1465,7 @@ def collectRepoModuleConstants (env : Environment) (roles : Std.HashMap Name ρ)
       fail s!"inventory origin mismatch {ci.name}"
     let stored ← lookupConst env ci.name "stored declaration"
     discard <| inventoryAlternates stored ci false
-    validateRepoConstant mName srcRole ci
+    validateRepoConstant mName srcRole isTrustedConst ci
     locals := locals.insert ci.name ci
   for n in data.extraConstNames do
     let (orig, _) ← constProvenance env roles n
@@ -1525,9 +1631,11 @@ def verifyAndCollectLocals (env : Environment)
         unless origRole == .foundation do
           fail s!"IR helper provenance mismatch {n}"
     | .repo srcRole =>
+      let isTrustedConst := constHasRole env roles
+        (fun r => r matches .repo (.trusted _))
       let (nextLocals, nextExtras) ←
-        collectRepoModuleConstants env roles m.module srcRole data locals
-          extraNames
+        collectRepoModuleConstants env roles isTrustedConst m.module srcRole
+          data locals extraNames
       locals := nextLocals
       extraNames := nextExtras
   for (n, _) in env.checked.get.constants do
@@ -1842,8 +1950,11 @@ def verifyAndCollectCorrLocals (env : Environment)
         | none =>
           vendorLocals := vendorLocals.insert ci.name ci
     | .repo srcRole =>
+      let isTrustedConst := constHasRole env roles
+        (fun r => r matches .repo (.trusted _))
       let (nextLocals, _) ←
-        collectRepoModuleConstants env roles m.module srcRole data repoLocals {}
+        collectRepoModuleConstants env roles isTrustedConst m.module srcRole
+          data repoLocals {}
       repoLocals := nextLocals
       if corrModules.contains m.module then
         for ci in data.constants do
@@ -2437,6 +2548,10 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
   validateGraph j env
   let provenance n := constProvenance env roles n "target module"
   let lookup n := lookupConst env n "target dependency"
+  let isSysrootConst := constHasRole env roles
+    (fun r => r matches .foundation | .library)
+  let isModelConst := constHasRole env roles
+    (fun r => r matches .source .model)
   -- Cross-check source inventory and the environment's actual stored values.
   -- Library declarations are checked when reached, so irrelevant metaprogram
   -- implementation constants do not become restrictions on authored proofs.
@@ -2457,10 +2572,19 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
       for ci in data.constants do
         libraryExports := libraryExports.insert ci.name
           ((libraryExports.getD ci.name #[]).push ci)
-    if let .source _ := role then
+    if let .source targetRole := role then
       unless data.constNames == data.constants.map ConstantInfo.name do
         fail s!"invalid target inventory {m.module}"
       for ci in data.constants do
+        let userRoot := (privateToUserName ci.name).getRoot
+        if targetRole != .model && userRoot == `Trusted &&
+            !isGeneratedEqHelper isModelConst ci then
+          fail (s!"non-model target module {m.module} cannot declare " ++
+            s!"constant {ci.name} in Trusted namespace")
+        if reservedKernelRoots.contains ci.name.getRoot &&
+            !isGeneratedEqHelper isSysrootConst ci then
+          fail (s!"target module {m.module} cannot declare constant " ++
+            s!"{ci.name} in reserved kernel namespace {ci.name.getRoot}")
         if sourceInventory.contains ci.name then
           fail s!"duplicate target declaration {ci.name}"
         unless (← origin env ci.name) == m.module do
@@ -2574,7 +2698,16 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
     | .foundation => pure ()
     | .library | .source _ =>
       ensureReplayableConstant "logical dependency" "" ci
-      if let .source _ := role then
+      if let .source targetRole := role then
+        let userRoot := (privateToUserName n).getRoot
+        if targetRole != .model && userRoot == `Trusted &&
+            !isGeneratedEqHelper isModelConst ci then
+          fail (s!"non-model target dependency {n} cannot live in " ++
+            "Trusted namespace")
+        if reservedKernelRoots.contains n.getRoot &&
+            !isGeneratedEqHelper isSysrootConst ci then
+          fail (s!"target dependency {n} cannot live in reserved kernel " ++
+            s!"namespace {n.getRoot}")
         unless sourceInventory.contains n do
           fail s!"uninventoried target dependency {n}"
       -- Parsed imports are only the early authority gate. Recheck the actual
@@ -2667,14 +2800,23 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
 def run (j : Json) : IO Json := do
   let mode ← field (α := String) j "mode"
   let sysrootStr ← field (α := String) j "sysroot"
-  let foundation ← names j "foundation"
   match mode with
   | "headers" =>
     initSearchPath sysrootStr
     let sources ← field (α := Array (String × String)) j "sources"
     let headers ← sources.mapM fun (n, p) => inspectHeader n.toName p
     return Json.mkObj [("headers", .arr headers)]
+  | "resolve-imports" =>
+    initSearchPath sysrootStr
+    let mods ← names j "modules"
+    let env ← importCorrEnv mods
+    let entries := (env.header.modules.zip env.header.moduleData).qsort
+      fun (m₁, _) (m₂, _) => m₁.module.toString < m₂.module.toString
+    let sortedGraph := Json.mkObj <| entries.toList.map fun (m, d) =>
+      (m.module.toString, toJson d.imports)
+    return Json.mkObj [("graph", sortedGraph)]
   | "preflight" =>
+    let foundation ← names j "foundation"
     initSearchPath sysrootStr
     let env ← importEnv j foundation true
     validateGraph j env
@@ -2686,19 +2828,23 @@ def run (j : Json) : IO Json := do
         inspectSource scopedNamespaces scopedPrefixes env n.toName p
     return Json.mkObj [("headers", .arr headers), ("graph", graph env)]
   | "correspondence-preflight" =>
+    let foundation ← names j "foundation"
     let spRaw ← field (α := Array String) j "searchPath"
     initSearchPath sysrootStr (spRaw.toList.map System.FilePath.mk)
     preflightCorrespondence j foundation
   | "audit" =>
+    let foundation ← names j "foundation"
     initSearchPath sysrootStr
     let trusted ← names j "trusted"
     let theory ← names j "theory"
     let env ← importEnv j (foundation ++ trusted ++ theory)
     audit j env foundation trusted theory
   | "target-audit" =>
+    let foundation ← names j "foundation"
     initSearchPath sysrootStr
     targetAudit j foundation
   | "correspondence-audit" =>
+    let foundation ← names j "foundation"
     let spRaw ← field (α := Array String) j "searchPath"
     initSearchPath sysrootStr (spRaw.toList.map System.FilePath.mk)
     auditCorrespondence j sysrootStr spRaw foundation
