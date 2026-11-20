@@ -63351,6 +63351,84 @@
         "verification/reference-models"
       ]
     },
+    "sail-riscv-scoped-smode-regeneration-axiom-patching-and-non-silent-trap-bisimulation": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "riscv/sail-riscv",
+            "revision": "ec5200bdfe0c10afa6dbb1f7b0980db2d236236e"
+          },
+          "name": "RISC-V Sail Architecture Model (HEAD)"
+        },
+        {
+          "identity": {
+            "repository": "riscv/sail-riscv",
+            "revision": "27224ccb2290f022e46213c05b3e72e8a9ea635e",
+            "tag": "0.13.1"
+          },
+          "name": "RISC-V Sail Architecture Model (v0.13.1)"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail",
+            "revision": "97aa617dcd4d01575f773cb58ea1e8686858c8c2"
+          },
+          "name": "Sail Compiler and Lean 4 Backend (sail2)"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/lean-sail",
+            "revision": "e4745c82fe329f162700020dcd31da6b342473b9",
+            "tag": "v10"
+          },
+          "name": "Lean 4 Sail Support Library"
+        },
+        {
+          "identity": {
+            "repository": "opencompl/sail-riscv-lean",
+            "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+          },
+          "name": "opencompl Sail RISC-V Lean Extraction"
+        },
+        {
+          "identity": {
+            "repository": "Verified-zkEVM/riscv-zkvm",
+            "revision": "6810fc14d9c40373101321cefaec59df8d82e3e7"
+          },
+          "name": "Verified-zkEVM RISC-V Model"
+        },
+        {
+          "identity": {
+            "repository": "riscv/riscv-isa-manual",
+            "revision": "c05f1725f25526dd8463bac6ca75cfcfbee17d05"
+          },
+          "name": "RISC-V ISA Manual (Privileged Architecture)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal TrustedBoundary and Correspondence"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 Kernel and Standard Library"
+        }
+      ],
+      "topics": [
+        "isa/risc-v",
+        "verification/correspondence",
+        "lean/mechanization",
+        "systems/kernels",
+        "anneal/theory"
+      ]
+    },
     "saml-xml-signature-wrapping-oauth-pkce-downgrades-and-jwt-confusion": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -68821,6 +68899,71 @@
         "compilers/realtime",
         "verification/wcet",
         "systems/realtime"
+      ]
+    },
+    "syntactic-tactic-allowlists-reflection-certificates-and-omega-free-isa-correspondence": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal TrustedBoundary and MIR correspondence proofs"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 kernel, WF compiler, and Std.Sat.AIG"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+            "version": "v4.35.0"
+          },
+          "name": "Lean 4 v4.35.0 kernel and reflection cross-check"
+        },
+        {
+          "identity": {
+            "repository": "Verified-zkEVM/riscv-zkvm",
+            "revision": "6810fc14d9c40373101321cefaec59df8d82e3e7"
+          },
+          "name": "Verified-zkEVM RISC-V Model"
+        },
+        {
+          "identity": {
+            "repository": "opencompl/riscv-lean",
+            "revision": "0e3365ac7b670d79d70e9b4a8b7fba782607c44f"
+          },
+          "name": "opencompl Lean RISC-V Instruction Model"
+        },
+        {
+          "identity": {
+            "repository": "ufmg-smite/carcara",
+            "revision": "819f30914665019898cbad7e09d3962053b6f97a",
+            "version": "v1.1.0"
+          },
+          "name": "Carcara Alethe Proof Checker"
+        },
+        {
+          "identity": {
+            "repository": "proofs-rs/lean-miri",
+            "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+          },
+          "name": "lean-miri Reference Semantics"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/tcb",
+        "verification/automation",
+        "anneal/theory",
+        "isa/correspondence",
+        "smt/proof-checking"
       ]
     },
     "syzkaller-stateful-syzlang-kcov-kfence-and-redqueen-hypervisor-fuzzing": {

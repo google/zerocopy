@@ -1,0 +1,78 @@
+{
+  "topics": [
+    "isa/risc-v",
+    "verification/correspondence",
+    "lean/mechanization",
+    "systems/kernels",
+    "anneal/theory"
+  ],
+  "subjects": [
+    {
+      "name": "RISC-V Sail Architecture Model (HEAD)",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "ec5200bdfe0c10afa6dbb1f7b0980db2d236236e"
+      }
+    },
+    {
+      "name": "RISC-V Sail Architecture Model (v0.13.1)",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "27224ccb2290f022e46213c05b3e72e8a9ea635e",
+        "tag": "0.13.1"
+      }
+    },
+    {
+      "name": "Sail Compiler and Lean 4 Backend (sail2)",
+      "identity": {
+        "repository": "rems-project/sail",
+        "revision": "97aa617dcd4d01575f773cb58ea1e8686858c8c2"
+      }
+    },
+    {
+      "name": "Lean 4 Sail Support Library",
+      "identity": {
+        "repository": "rems-project/lean-sail",
+        "revision": "e4745c82fe329f162700020dcd31da6b342473b9",
+        "tag": "v10"
+      }
+    },
+    {
+      "name": "opencompl Sail RISC-V Lean Extraction",
+      "identity": {
+        "repository": "opencompl/sail-riscv-lean",
+        "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+      }
+    },
+    {
+      "name": "Verified-zkEVM RISC-V Model",
+      "identity": {
+        "repository": "Verified-zkEVM/riscv-zkvm",
+        "revision": "6810fc14d9c40373101321cefaec59df8d82e3e7"
+      }
+    },
+    {
+      "name": "RISC-V ISA Manual (Privileged Architecture)",
+      "identity": {
+        "repository": "riscv/riscv-isa-manual",
+        "revision": "c05f1725f25526dd8463bac6ca75cfcfbee17d05"
+      }
+    },
+    {
+      "name": "Anneal TrustedBoundary and Correspondence",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 v4.34.1 Kernel and Standard Library",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

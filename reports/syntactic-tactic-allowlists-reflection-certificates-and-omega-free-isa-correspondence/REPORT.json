@@ -1,0 +1,65 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/tcb",
+    "verification/automation",
+    "anneal/theory",
+    "isa/correspondence",
+    "smt/proof-checking"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal TrustedBoundary and MIR correspondence proofs",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 v4.34.1 kernel, WF compiler, and Std.Sat.AIG",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Lean 4 v4.35.0 kernel and reflection cross-check",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+        "version": "v4.35.0"
+      }
+    },
+    {
+      "name": "Verified-zkEVM RISC-V Model",
+      "identity": {
+        "repository": "Verified-zkEVM/riscv-zkvm",
+        "revision": "6810fc14d9c40373101321cefaec59df8d82e3e7"
+      }
+    },
+    {
+      "name": "opencompl Lean RISC-V Instruction Model",
+      "identity": {
+        "repository": "opencompl/riscv-lean",
+        "revision": "0e3365ac7b670d79d70e9b4a8b7fba782607c44f"
+      }
+    },
+    {
+      "name": "Carcara Alethe Proof Checker",
+      "identity": {
+        "repository": "ufmg-smite/carcara",
+        "revision": "819f30914665019898cbad7e09d3962053b6f97a",
+        "version": "v1.1.0"
+      }
+    },
+    {
+      "name": "lean-miri Reference Semantics",
+      "identity": {
+        "repository": "proofs-rs/lean-miri",
+        "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
