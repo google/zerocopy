@@ -1,0 +1,78 @@
+{
+  "topics": [
+    "verification/experimental-corpus-design",
+    "tooling/combinatorial-stratification",
+    "verification/paired-checker-power",
+    "tooling/independent-benchmark-governance"
+  ],
+  "subjects": [
+    {
+      "name": "TOSTER R package (equivalence testing and power)",
+      "identity": {
+        "repository": "Lakens/TOSTER",
+        "revision": "9ea2bf25e1a98ce0713f9aa16294872cb26b75a8",
+        "version": "0.9.0"
+      }
+    },
+    {
+      "name": "PICT pairwise/t-way covering-array generator",
+      "identity": {
+        "repository": "microsoft/pict",
+        "revision": "ab76c2548f551fcb46314e58653a1bd1172f3a72"
+      }
+    },
+    {
+      "name": "NIST combinatorial testing tools (CCMCL coverage measurement)",
+      "identity": {
+        "repository": "usnistgov/combinatorial-testing-tools",
+        "revision": "e4df6c47e251800533610c48446460075fd52e3d"
+      }
+    },
+    {
+      "name": "SMT-COMP rules and historical tools",
+      "identity": {
+        "repository": "SMT-COMP/smt-comp",
+        "revision": "68a5cdc72f8f5e2eb348bdfe7ab4d83842d3b54f"
+      }
+    },
+    {
+      "name": "SMT-COMP competition tooling, selection code and 2026 rules",
+      "identity": {
+        "repository": "SMT-COMP/smt-comp.github.io",
+        "revision": "cd15cbedd4ef312d615448100797a80e922cf575"
+      }
+    },
+    {
+      "name": "SV-Benchmarks verification-task collection (archived GitHub mirror)",
+      "identity": {
+        "repository": "sosy-lab/sv-benchmarks",
+        "revision": "2e1723fde6aa65a250dcb677efa45edaa4b6b631"
+      }
+    },
+    {
+      "name": "Fagerland, Lydersen, Laake: The McNemar test for binary matched-pairs data (BMC Med Res Methodol 2013)",
+      "identity": {
+        "doi": "10.1186/1471-2288-13-91"
+      }
+    },
+    {
+      "name": "Lei, Kacker, Kuhn, Okun, Lawrence: IPOG, a general strategy for t-way software testing (ECBS 2007)",
+      "identity": {
+        "doi": "10.1109/ECBS.2007.47"
+      }
+    },
+    {
+      "name": "Kuhn, Wallace, Gallo: Software fault interactions and implications for software testing (IEEE TSE 2004)",
+      "identity": {
+        "doi": "10.1109/TSE.2004.24"
+      }
+    },
+    {
+      "name": "Beyer, Loewe, Wendler: Reliable benchmarking, requirements and solutions (STTT 2019)",
+      "identity": {
+        "doi": "10.1007/s10009-017-0469-y"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

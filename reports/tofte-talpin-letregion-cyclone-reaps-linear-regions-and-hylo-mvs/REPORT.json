@@ -1,0 +1,99 @@
+{
+  "topics": [
+    "pl/region-based-memory-management",
+    "compilers/tofte-talpin-region-inference",
+    "pl/linear-and-dynamic-regions",
+    "pl/mutable-value-semantics"
+  ],
+  "subjects": [
+    {
+      "name": "MLKit (Standard ML compiler with Tofte-Talpin region inference) source",
+      "identity": {
+        "repository": "melsman/mlkit",
+        "revision": "30d46774b839fe8b6997e902526df65c95de88f4"
+      }
+    },
+    {
+      "name": "MLKit v4.7.26 Linux binary distribution (executed)",
+      "identity": {
+        "repository": "melsman/mlkit",
+        "revision": "6adaef92147764eecd95a8bacb1bfc8c97a7002d",
+        "version": "v4.7.26",
+        "artifact": "mlkit-bin-dist-linux.tgz",
+        "sha256": "c08a210452cc50d2b55c72d7dee67a1882f065114c33c14ca66eff752456314c"
+      }
+    },
+    {
+      "name": "Cyclone compiler and runtime (preservation mirror)",
+      "identity": {
+        "repository": "mingodad/cyclone",
+        "revision": "d6aae7ffc3eb387ccc84d262a9dc983f11b4db66"
+      }
+    },
+    {
+      "name": "Heap Layers allocator infrastructure (ZoneHeap, reap API)",
+      "identity": {
+        "repository": "emeryberger/Heap-Layers",
+        "revision": "0df48633fe9e431ae867543aec5e935ba485802f"
+      }
+    },
+    {
+      "name": "Hylo compiler (mutable value semantics)",
+      "identity": {
+        "repository": "hylo-lang/hylo-new",
+        "revision": "fe703c7dae6c496ad21ae7024957c7e84020ef3c"
+      }
+    },
+    {
+      "name": "Tofte and Talpin, Region-Based Memory Management (Information and Computation 132(2), 1997)",
+      "identity": {
+        "doi": "10.1006/inco.1996.2613"
+      }
+    },
+    {
+      "name": "Elsman and Hallenberg, Integrating region memory management and tag-free generational garbage collection (JFP 31, 2021)",
+      "identity": {
+        "doi": "10.1017/S0956796821000010"
+      }
+    },
+    {
+      "name": "Hicks, Morrisett, Grossman, Jim, Experience with safe manual memory-management in Cyclone (ISMM 2004)",
+      "identity": {
+        "doi": "10.1145/1029873.1029883"
+      }
+    },
+    {
+      "name": "Swamy, Hicks, Morrisett, Grossman, Jim, Safe manual memory management in Cyclone (Science of Computer Programming 62(2), 2006)",
+      "identity": {
+        "doi": "10.1016/j.scico.2006.02.003"
+      }
+    },
+    {
+      "name": "Gay, Memory Management with Explicit Regions (PhD dissertation, UC Berkeley, 2001)",
+      "identity": {
+        "url": "https://theory.stanford.edu/~aiken/publications/theses/gay.pdf",
+        "version": "Fall 2001"
+      }
+    },
+    {
+      "name": "Fluet, Morrisett, Ahmed, Linear Regions Are All You Need (ESOP 2006)",
+      "identity": {
+        "doi": "10.1007/11693024_2"
+      }
+    },
+    {
+      "name": "Racordon, Shabalin, Zheng, Abrahams, Saeta, Implementation Strategies for Mutable Value Semantics (JOT 21(2), 2022)",
+      "identity": {
+        "doi": "10.5381/jot.2022.21.2.a2"
+      }
+    },
+    {
+      "name": "van Kempen and Berger, Reconsidering \"Reconsidering Custom Memory Allocation\" (ISMM 2026 preprint)",
+      "identity": {
+        "arxiv": "2605.17119",
+        "doi": "10.48550/arXiv.2605.17119"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
