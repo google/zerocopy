@@ -1,0 +1,956 @@
+-- Copyright 2026 The Fuchsia Authors
+--
+-- Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+-- <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+-- license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+-- This file may not be copied, modified, or distributed except according to
+-- those terms.
+
+prelude
+import Init.NotationExtra
+import Init.Data.BitVec.BasicAux
+import Init.Data.Int.Basic
+import Init.Data.Nat.Div.Basic
+import Init.Data.Nat.Bitwise.Basic
+import Init.Control.Except
+import Trusted
+import Trusted.MirAst
+import Trusted.MirSemantics
+import Anneal.MirWp.Core
+import Anneal.MirWp.Scalars
+import Anneal.MirWp.Reflection
+
+namespace Anneal.MirWp
+
+open Trusted.MirAst Trusted.MirSemantics
+
+/-! ## Part III: Single-Body Execution, WP Bridge, Productive Invariants, and
+Multi-Body Retagging
+
+This part runs one body as the single-body unit program `bodyProg body`. One
+step is the trusted transition `evalStep (bodyProg body) 0`, and the entry state
+on `args` is `mkState 0 0 (initLocalsLoop body args 0 body.locals)`: one frame
+at `defId := 0`, block `0`, and statement `0`, holding the locals that
+`initState` builds. Every notion below is a proposition over these trusted
+terms. The trusted semantics has no executable code, so a definition that
+computed a step or a run would have to be exempted from code generation, which
+`theory/` never does. Concrete runs therefore state the fuel-bounded weakest
+precondition `RunsFrom` and prove it by `rfl`. -/
+
+/-- Single-body program wrapper for unit-level execution of `body`. -/
+def bodyProg (body : Body) : Program :=
+  { scope := .unit, pointerWidthBits := 64, mirProfileVersion := 1,
+    bodies := [body] }
+
+/-- Finite-step reachability in `body` under `evalStep (bodyProg body) 0`. -/
+inductive Reach (body : Body) : State → State → Prop where
+  | refl {state : State} : Reach body state state
+  | next {start mid next : State} :
+      Reach body start mid →
+      evalStep (bodyProg body) 0 mid = .step next →
+      Reach body start next
+
+/-- Prefix fault-freedom of `body` starting from `start`. -/
+def SafeFrom (body : Body) (start : State) : Prop :=
+  ∀ state kind, Reach body start state →
+    evalStep (bodyProg body) 0 state ≠ .fault kind
+
+/-- Prefix fault-freedom of `body` from its entry state on `args`. -/
+def Safe (body : Body) (args : List Val) : Prop :=
+  SafeFrom body (mkState 0 0 (initLocalsLoop body args 0 body.locals))
+
+/-- Normal return of `output` from `start` in `body`. -/
+def ReturnsFrom (body : Body) (start : State) (output : Val) : Prop :=
+  ∃ state, Reach body start state ∧
+    evalStep (bodyProg body) 0 state = .done (.returned ⟨output, ⟨[]⟩⟩)
+
+/-- Normal return of `output` from the entry state of `body` on `args`. -/
+def Returns (body : Body) (args : List Val) (output : Val) : Prop :=
+  ReturnsFrom body (mkState 0 0 (initLocalsLoop body args 0 body.locals))
+    output
+
+/-- Fuel-bounded run certificate: from `start`, `body` returns `output` within
+`fuel` steps and never faults. It is the deterministic `c = 0` execution
+predicate of `bodyProg body` with an exact return postcondition, so a concrete
+run reduces by `rfl`. -/
+abbrev RunsFrom (body : Body) (fuel : Nat) (start : State) (output : Val) :
+    Prop :=
+  execState (bodyProg body) fuel start
+    (fun out => out = .returned ⟨output, ⟨[]⟩⟩)
+
+/-- Fuel-bounded run certificate from the entry state of `body` on `args`. -/
+abbrev Runs (body : Body) (fuel : Nat) (args : List Val) (output : Val) :
+    Prop :=
+  RunsFrom body fuel (mkState 0 0 (initLocalsLoop body args 0 body.locals))
+    output
+
+/-- Step-by-step normal-return certificate for `body`. Each constructor records
+one rewritten transition, so long symbolic runs never accumulate an unnormalized
+`whnf` term. -/
+inductive Executes (body : Body) : State → Val → Prop where
+  | ret {start : State} {value : Val} :
+      evalStep (bodyProg body) 0 start = .done (.returned ⟨value, ⟨[]⟩⟩) →
+      Executes body start value
+  | next {start next : State} {value : Val} :
+      evalStep (bodyProg body) 0 start = .step next →
+      Executes body next value →
+      Executes body start value
+
+/-- Exact equivalence between program-level `Reaches (bodyProg body)` and
+single-body `Reach body`. -/
+theorem reaches_bodyProg_iff_reach {body : Body} {s₁ s₂ : State} :
+    Reaches (bodyProg body) s₁ s₂ ↔ Reach body s₁ s₂ := by
+  constructor
+  · intro h
+    induction h with
+    | refl => exact .refl
+    | tail _ hStep ih =>
+      let ⟨c, hc, hEval⟩ := hStep
+      subst hc
+      exact .next ih hEval
+  · intro h
+    induction h with
+    | refl => exact .refl _
+    | next _ hStep ih => exact .tail ih ⟨0, rfl, hStep⟩
+
+/-- Prepend a single transition onto a `Reach` chain. -/
+theorem reach_prepend {body : Body} {start next finish : State}
+    (first : evalStep (bodyProg body) 0 start = .step next)
+    (rest : Reach body next finish) :
+    Reach body start finish :=
+  reaches_bodyProg_iff_reach.mp
+    (Reaches.head ⟨0, rfl, first⟩ (reaches_bodyProg_iff_reach.mpr rest))
+
+/-- Case-split a `Reach` chain whose start state steps to `next`. -/
+theorem reach_cases {body : Body} {start next finish : State}
+    (first : evalStep (bodyProg body) 0 start = .step next)
+    (reached : Reach body start finish) :
+    finish = start ∨ Reach body next finish := by
+  induction reached with
+  | refl => exact .inl rfl
+  | @next before after _ transition ih =>
+    cases ih with
+    | inl equal =>
+      subst before
+      have same : StepResult.step next = .step after :=
+        first.symm.trans transition
+      injection same with h_eq
+      subst h_eq
+      exact .inr .refl
+    | inr rest => exact .inr (.next rest transition)
+
+/-- No further states are reachable after a `.done (.returned ...)` step. -/
+theorem reachable_after_return {body : Body} {start finish : State}
+    {value : Val}
+    (returned :
+      evalStep (bodyProg body) 0 start = .done (.returned ⟨value, ⟨[]⟩⟩))
+    (reached : Reach body start finish) :
+    finish = start := by
+  induction reached with
+  | refl => rfl
+  | @next before _ _ transition ih =>
+    subst before
+    rw [returned] at transition
+    cases transition
+
+/-- No further states are reachable after a `.fault` step. -/
+theorem reachable_after_fault {body : Body} {start finish : State}
+    {reason : FaultKind}
+    (faulted : evalStep (bodyProg body) 0 start = .fault reason)
+    (reached : Reach body start finish) :
+    finish = start := by
+  induction reached with
+  | refl => rfl
+  | @next before _ _ transition ih =>
+    subst before
+    rw [faulted] at transition
+    cases transition
+
+/-- A state that immediately returns is prefix-safe (`SafeFrom`). -/
+theorem safeFrom_return {body : Body} {start : State} {value : Val}
+    (returned :
+      evalStep (bodyProg body) 0 start = .done (.returned ⟨value, ⟨[]⟩⟩)) :
+    SafeFrom body start := by
+  intro finish reason reached
+  have same := reachable_after_return returned reached
+  subst finish
+  rw [returned]
+  intro h
+  cases h
+
+/-- Prefix safety steps backward across a deterministic `.step` transition. -/
+theorem safeFrom_next {body : Body} {start next : State}
+    (first : evalStep (bodyProg body) 0 start = .step next)
+    (rest : SafeFrom body next) :
+    SafeFrom body start := by
+  intro finish reason reached
+  cases reach_cases first reached with
+  | inl equal =>
+    subst finish
+    rw [first]
+    intro h
+    cases h
+  | inr tail => exact rest finish reason tail
+
+/-- Prefix safety composes backward across any finite `Reach` prefix. -/
+theorem safeFrom_of_reach {body : Body} {start checkpoint : State}
+    (segment : Reach body start checkpoint)
+    (suffix : SafeFrom body checkpoint) :
+    SafeFrom body start := by
+  induction segment with
+  | refl => exact suffix
+  | next _ transition ih => exact ih (safeFrom_next transition suffix)
+
+/-- Bridge from fuel-bounded `wpState (bodyProg body)` to `SafeFrom`: holds even
+when symbolic branches return distinct values. -/
+theorem safeFrom_of_wpState {body : Body} {fuel : Nat} {start : State}
+    {post : TerminalOut → Prop}
+    (hWp : wpState (bodyProg body) fuel start post) :
+    SafeFrom body start := by
+  intro state kind hReach hFault
+  let ⟨fuel', hWp'⟩ :=
+    wpOutcomeState_of_reaches hWp (reaches_bodyProg_iff_reach.mpr hReach)
+  cases fuel' with
+  | zero => exact hWp'
+  | succ _ =>
+    have hBranch := hWp'.2 0 rfl
+    rw [hFault] at hBranch
+    exact hBranch
+
+/-- Exact equivalence between the step-by-step `Executes` certificate and the
+fuel-bounded `RunsFrom` certificate (unifying single-body certificates with the
+core WP calculus). -/
+theorem executes_iff_wpState {body : Body} {start : State} {value : Val} :
+    Executes body start value ↔ ∃ fuel, RunsFrom body fuel start value := by
+  constructor
+  · intro execution
+    induction execution with
+    | @ret s val hRet =>
+      refine ⟨1, ?_⟩
+      change (match evalStep (bodyProg body) 0 s with
+        | .step st' => False
+        | .done out => out = .returned ⟨val, ⟨[]⟩⟩
+        | .fault _ => False)
+      rw [hRet]
+    | @next s next val hStep _ ih =>
+      let ⟨fuel, hExec⟩ := ih
+      refine ⟨fuel + 1, ?_⟩
+      change (match evalStep (bodyProg body) 0 s with
+        | .step st' =>
+          execState (bodyProg body) fuel st'
+            (fun out => out = .returned ⟨val, ⟨[]⟩⟩)
+        | .done out => out = .returned ⟨val, ⟨[]⟩⟩
+        | .fault _ => False)
+      rw [hStep]
+      exact hExec
+  · intro hEx
+    cases hEx with
+    | intro fuel hExec =>
+      induction fuel generalizing start with
+      | zero => exact False.elim hExec
+      | succ fuel ih =>
+        change (match evalStep (bodyProg body) 0 start with
+          | .step st' =>
+            execState (bodyProg body) fuel st'
+              (fun out => out = .returned ⟨value, ⟨[]⟩⟩)
+          | .done out => out = .returned ⟨value, ⟨[]⟩⟩
+          | .fault _ => False) at hExec
+        cases hStep : evalStep (bodyProg body) 0 start with
+        | step next =>
+          rw [hStep] at hExec
+          exact .next hStep (ih hExec)
+        | done out =>
+          rw [hStep] at hExec
+          dsimp only at hExec
+          subst hExec
+          exact .ret hStep
+        | fault k =>
+          rw [hStep] at hExec
+          exact False.elim hExec
+
+/-- Prepend a `Reach` segment onto an `Executes` suffix. -/
+theorem executes_prepend {body : Body} {start checkpoint : State} {value : Val}
+    (segment : Reach body start checkpoint)
+    (suffix : Executes body checkpoint value) :
+    Executes body start value := by
+  induction segment with
+  | refl => exact suffix
+  | next _ transition ih => exact ih (.next transition suffix)
+
+/-- Every `Executes` certificate establishes `SafeFrom` (derived directly from
+`executes_iff_wpState` and `safeFrom_of_wpState`). -/
+theorem executes_safe {body : Body} {start : State} {value : Val}
+    (execution : Executes body start value) :
+    SafeFrom body start :=
+  let ⟨_, hExec⟩ := executes_iff_wpState.mp execution
+  safeFrom_of_wpState (wpOutcomeState_of_execOutcomeState hExec)
+
+/-- Every `Executes` certificate establishes `ReturnsFrom` (derived directly
+from `executes_iff_wpState` and `exists_terminal_of_wpOutcomeState`). -/
+theorem executes_returns {body : Body} {start : State} {value : Val}
+    (execution : Executes body start value) :
+    ReturnsFrom body start value := by
+  let ⟨_, hExec⟩ := executes_iff_wpState.mp execution
+  let ⟨sEnd, res, hReach, hTerm, hRes⟩ :=
+    exists_terminal_of_wpOutcomeState
+      (wpOutcomeState_of_execOutcomeState hExec)
+  cases res with
+  | step _ => exact False.elim hRes
+  | fault _ => exact False.elim hRes
+  | done out =>
+    dsimp only at hRes
+    subst hRes
+    let ⟨c, hc, hEval⟩ := hTerm
+    subst hc
+    exact ⟨sEnd, reaches_bodyProg_iff_reach.mp hReach, hEval⟩
+
+/-- Determinism of `Executes` against any `ReturnsFrom` witness (derived
+directly from `wpOutcomeState_of_reaches`). -/
+theorem executes_unique {body : Body} {start : State} {left right : Val}
+    (execution : Executes body start left)
+    (returned : ReturnsFrom body start right) :
+    left = right := by
+  let ⟨_, hExec⟩ := executes_iff_wpState.mp execution
+  let ⟨finish, hReach, hRet⟩ := returned
+  let ⟨fuel', hWp'⟩ :=
+    wpOutcomeState_of_reaches (wpOutcomeState_of_execOutcomeState hExec)
+      (reaches_bodyProg_iff_reach.mpr hReach)
+  cases fuel' with
+  | zero => exact False.elim hWp'
+  | succ _ =>
+    have hBranch := hWp'.2 0 rfl
+    rw [hRet] at hBranch
+    injection hBranch with hOut
+    injection hOut with hVal _
+    exact hVal.symm
+
+/-- Every fuel-bounded run certificate yields an `Executes` certificate. -/
+theorem run_executes {body : Body} {fuel : Nat} {start : State} {value : Val}
+    (success : RunsFrom body fuel start value) :
+    Executes body start value :=
+  executes_iff_wpState.mpr ⟨fuel, success⟩
+
+/-- A run certificate establishes prefix safety and normal return. -/
+theorem run_success {body : Body} {fuel : Nat} {start : State} {value : Val}
+    (success : RunsFrom body fuel start value) :
+    SafeFrom body start ∧ ReturnsFrom body start value :=
+  ⟨executes_safe (run_executes success),
+    executes_returns (run_executes success)⟩
+
+/-- A run certificate from the entry state establishes `Safe` and `Returns`. -/
+theorem run_initial_success {body : Body} {fuel : Nat} {args : List Val}
+    {value : Val} (success : Runs body fuel args value) :
+    Safe body args ∧ Returns body args value :=
+  run_success success
+
+/-- A run certificate determines the only value that `body` can return. -/
+theorem run_result_unique {body : Body} {fuel : Nat} {start : State}
+    {left right : Val}
+    (success : RunsFrom body fuel start left)
+    (returned : ReturnsFrom body start right) :
+    left = right :=
+  executes_unique (run_executes success) returned
+
+/-- Inductive preservation of `invariant` across all `Reach` states. -/
+theorem invariant_reachable {body : Body} {start finish : State}
+    (invariant : State → Prop)
+    (entry : invariant start)
+    (closed : ∀ before after, invariant before →
+      evalStep (bodyProg body) 0 before = .step after → invariant after)
+    (reached : Reach body start finish) :
+    invariant finish := by
+  induction reached with
+  | refl => exact entry
+  | next _ transition ih => exact closed _ _ ih transition
+
+/-- Inductive invariant rule for `SafeFrom` (supporting non-terminating loops).
+-/
+theorem safeFrom_invariant {body : Body} {start : State}
+    (invariant : State → Prop)
+    (entry : invariant start)
+    (closed : ∀ before after, invariant before →
+      evalStep (bodyProg body) 0 before = .step after → invariant after)
+    (noFault : ∀ state, invariant state → ∀ reason,
+      evalStep (bodyProg body) 0 state ≠ .fault reason) :
+    SafeFrom body start := by
+  intro finish reason reached
+  have preserved := invariant_reachable invariant entry closed reached
+  exact noFault finish preserved reason
+
+/-- A state self-loop reaches only itself. -/
+theorem reachable_selfLoop {body : Body} {start finish : State}
+    (loop : evalStep (bodyProg body) 0 start = .step start)
+    (reached : Reach body start finish) :
+    finish = start := by
+  induction reached with
+  | refl => rfl
+  | @next before _ _ transition ih =>
+    subst before
+    have equal := loop.symm.trans transition
+    injection equal with h_eq
+    exact h_eq.symm
+
+/-- Any immediate self-loop is prefix-safe. -/
+theorem safeFrom_selfLoop {body : Body} {start : State}
+    (loop : evalStep (bodyProg body) 0 start = .step start) :
+    SafeFrom body start := by
+  intro finish reason reached
+  have same := reachable_selfLoop loop reached
+  subst finish
+  rw [loop]
+  intro h
+  cases h
+
+/-- A productive state invariant holds at `start`, is closed under `.step`, and
+ensures every invariant state takes a `.step` transition (ruling out both
+`.fault` and `.done` simultaneously). -/
+def ProductiveInvariant (body : Body) (start : State)
+    (invariant : State → Prop) : Prop :=
+  invariant start ∧
+  (∀ before after, invariant before →
+    evalStep (bodyProg body) 0 before = .step after → invariant after) ∧
+  (∀ state, invariant state →
+    ∃ next, evalStep (bodyProg body) 0 state = .step next)
+
+/-- Every `ProductiveInvariant` simultaneously establishes `SafeFrom` and
+absence of normal `.done` termination from `start`. -/
+theorem safeFrom_and_no_done_of_productiveInvariant
+    {body : Body} {start : State} {invariant : State → Prop}
+    (hInv : ProductiveInvariant body start invariant) :
+    SafeFrom body start ∧
+    ∀ s out, Reach body start s →
+      evalStep (bodyProg body) 0 s ≠ .done out := by
+  refine ⟨safeFrom_invariant invariant hInv.1 hInv.2.1 ?_, ?_⟩
+  · intro s hs reason hFault
+    let ⟨_, hStep⟩ := hInv.2.2 s hs
+    rw [hStep] at hFault
+    cases hFault
+  · intro s out hReach hDone
+    have hs := invariant_reachable invariant hInv.1 hInv.2.1 hReach
+    let ⟨_, hStep⟩ := hInv.2.2 s hs
+    rw [hStep] at hDone
+    cases hDone
+
+/-! ### Single-Pass Frame Retagging Between `bodyProg` and `entryProgForBody` -/
+
+/-- Rewrite the active single-frame `defId` of `s` to `d`. -/
+def retagDefId (d : DefId) (s : State) : State :=
+  match s.frames with
+  | [f] => { s with frames := [{ f with defId := d }] }
+  | _ => s
+
+/-- True iff `s` has a single active stack frame at `defId = 0`. -/
+def IsSingleFrame0 (s : State) : Prop :=
+  ∃ f : FrameState, s.frames = [f] ∧ f.defId = 0
+
+/-- Every `mkState` at the default `defId` is a single frame at `defId = 0`. -/
+theorem isSingleFrame0_mkState (blockIdx stmtIdx : Nat)
+    (locals : List LocalSlot) :
+    IsSingleFrame0 (mkState blockIdx stmtIdx locals) :=
+  ⟨_, rfl, rfl⟩
+
+/-- Single-pass `evalStatement` frame invariant and `retagDefId` commutation. -/
+theorem evalStatement_frame_retag (body : Body) (defId : DefId)
+    (f : FrameState) (cm : CallerMemory) (stmt : StatementKind)
+    (h_id : f.defId = 0) :
+    (∀ s', evalStatement body f cm stmt = .step s' → IsSingleFrame0 s') ∧
+    evalStatement body { f with defId := defId } cm stmt =
+      match evalStatement body f cm stmt with
+      | .step next => .step (retagDefId defId next)
+      | .done out => .done out
+      | .fault k => .fault k := by
+  unfold evalStatement retagDefId
+  cases stmt with
+  | nop =>
+    refine ⟨?_, rfl⟩
+    intro s' hStep
+    injection hStep with hEq; subst hEq
+    exact ⟨_, rfl, h_id⟩
+  | storageLive lid =>
+    dsimp only
+    cases Trusted.MirSemantics.getElem? body.locals lid with
+    | none => exact ⟨(fun _ h => by cases h), rfl⟩
+    | some ty =>
+      dsimp only
+      cases setElem? f.locals lid (liveUninitSlot ty) with
+      | none => exact ⟨(fun _ h => by cases h), rfl⟩
+      | some l' =>
+        refine ⟨?_, rfl⟩
+        intro s' hStep
+        injection hStep with hEq; subst hEq
+        exact ⟨_, rfl, h_id⟩
+  | storageDead lid =>
+    dsimp only
+    cases Nat.beq lid 0 with
+    | true => exact ⟨(fun _ h => by cases h), rfl⟩
+    | false =>
+      cases setElem? f.locals lid .dead with
+      | none => exact ⟨(fun _ h => by cases h), rfl⟩
+      | some l' =>
+        refine ⟨?_, rfl⟩
+        intro s' hStep
+        injection hStep with hEq; subst hEq
+        exact ⟨_, rfl, h_id⟩
+  | assign dst rv =>
+    dsimp only
+    cases (!dst.projection.isEmpty) with
+    | true => exact ⟨(fun _ h => by cases h), rfl⟩
+    | false =>
+      cases Trusted.MirSemantics.getElem? body.locals dst.localId with
+      | none => exact ⟨(fun _ h => by cases h), rfl⟩
+      | some dstTy =>
+        dsimp only
+        cases evalRvalue body.locals f.locals dstTy rv with
+        | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
+        | ok pair =>
+          dsimp only
+          cases writePlace pair.2 dst.localId dstTy pair.1 with
+          | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
+          | ok l' =>
+            refine ⟨?_, rfl⟩
+            intro s' hStep
+            injection hStep with hEq; subst hEq
+            exact ⟨_, rfl, h_id⟩
+  | unsupported => exact ⟨(fun _ h => by cases h), rfl⟩
+
+/-- Single-pass `evalTerminator` frame invariant and `retagDefId` commutation.
+-/
+theorem evalTerminator_frame_retag (body : Body) (bb : BasicBlock)
+    (defId : DefId) (f : FrameState) (cm : CallerMemory)
+    (h_id : f.defId = 0) :
+    (∀ s', evalTerminator body bb f cm = .step s' → IsSingleFrame0 s') ∧
+    evalTerminator body bb { f with defId := defId } cm =
+      match evalTerminator body bb f cm with
+      | .step next => .step (retagDefId defId next)
+      | .done out => .done out
+      | .fault k => .fault k := by
+  unfold evalTerminator jumpToBlock retagDefId
+  cases bb.terminator with
+  | goto target =>
+    refine ⟨?_, rfl⟩
+    intro s' hStep
+    injection hStep with hEq; subst hEq
+    exact ⟨_, rfl, h_id⟩
+  | return_ =>
+    dsimp only
+    cases bb.cleanup with
+    | true => exact ⟨(fun _ h => by cases h), rfl⟩
+    | false =>
+      cases Trusted.MirSemantics.getElem? f.locals 0 with
+      | none => exact ⟨(fun _ h => by cases h), rfl⟩
+      | some slot =>
+        cases slot with
+        | dead => exact ⟨(fun _ h => by cases h), rfl⟩
+        | live opt =>
+          cases opt <;> exact ⟨(fun _ h => by cases h), rfl⟩
+  | unreachable => exact ⟨(fun _ h => by cases h), rfl⟩
+  | switchInt discr targets =>
+    dsimp only
+    cases evalPrimitiveOperand body.locals f.locals discr with
+    | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
+    | ok pair =>
+      dsimp only
+      cases pair.1 with
+      | scalar sv =>
+        dsimp only
+        cases evalSwitchBranches sv.width sv.bits targets.otherwise
+            targets.branches with
+        | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
+        | ok tgt =>
+          refine ⟨?_, rfl⟩
+          intro s' hStep
+          injection hStep with hEq; subst hEq
+          exact ⟨_, rfl, h_id⟩
+      | bool b =>
+        dsimp only
+        cases evalBoolSwitchBranches b targets.otherwise targets.branches with
+        | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
+        | ok tgt =>
+          refine ⟨?_, rfl⟩
+          intro s' hStep
+          injection hStep with hEq; subst hEq
+          exact ⟨_, rfl, h_id⟩
+      | ptr _ | unit | tuple _ | bytes _ | enumVal _ _ =>
+        exact ⟨(fun _ h => by cases h), rfl⟩
+  | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _ | unsupported =>
+    exact ⟨(fun _ h => by cases h), rfl⟩
+
+/-- Combined single-step `IsSingleFrame0` preservation and `retagDefId`
+simulation between `evalStep (bodyProg body) 0` and
+`evalStep (entryProgForBody p defId) 0`. -/
+theorem evalStep_entryProg_frame {p : Program} {defId : DefId} {body : Body}
+    {s : State}
+    (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
+    (h_f0 : IsSingleFrame0 s) :
+    (∀ s', evalStep (bodyProg body) 0 s = .step s' → IsSingleFrame0 s') ∧
+    evalStep (entryProgForBody p defId) 0 (retagDefId defId s) =
+      match evalStep (bodyProg body) 0 s with
+      | .step next => .step (retagDefId defId next)
+      | .done out => .done out
+      | .fault k => .fault k := by
+  let ⟨f, hf, h_id⟩ := h_f0
+  cases s with
+  | mk frames cm =>
+    dsimp only at hf
+    subst hf
+    unfold bodyProg evalStep retagDefId entryProgForBody
+    dsimp only
+    rw [h_body, h_id]
+    dsimp only [Trusted.MirSemantics.getElem?]
+    cases Trusted.MirSemantics.getElem? body.basicBlocks f.blockIdx with
+    | none => exact ⟨(fun _ h => by cases h), rfl⟩
+    | some bb =>
+      dsimp only
+      cases Trusted.MirSemantics.getElem? bb.statements f.stmtIdx with
+      | some stmt =>
+        exact evalStatement_frame_retag body defId f cm stmt h_id
+      | none =>
+        dsimp only
+        cases Nat.beq f.stmtIdx bb.statements.length with
+        | false => exact ⟨(fun _ h => by cases h), rfl⟩
+        | true =>
+          exact evalTerminator_frame_retag body bb defId f cm h_id
+
+/-- `IsSingleFrame0` is preserved by a single-body step. -/
+theorem isSingleFrame0_of_step {body : Body} {s s' : State}
+    (h_f0 : IsSingleFrame0 s)
+    (h_step : evalStep (bodyProg body) 0 s = .step s') :
+    IsSingleFrame0 s' :=
+  (evalStep_entryProg_frame (p := bodyProg body) (defId := 0) rfl h_f0).1
+    s' h_step
+
+/-- Every state reachable from a single-frame `defId = 0` state is again a
+single frame at `defId = 0`. -/
+theorem isSingleFrame0_of_reach {body : Body} {start s : State}
+    (h_start : IsSingleFrame0 start)
+    (h_reach : Reach body start s) :
+    IsSingleFrame0 s := by
+  induction h_reach with
+  | refl => exact h_start
+  | next _ h_step ih => exact isSingleFrame0_of_step ih h_step
+
+/-- `evalStep (entryProgForBody p defId) 0` commutes with `retagDefId defId` on
+single-frame `defId = 0` states. -/
+theorem evalStep_retagDefId {p : Program} {defId : DefId} {body : Body}
+    {s : State}
+    (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
+    (h_f0 : IsSingleFrame0 s) :
+    evalStep (entryProgForBody p defId) 0 (retagDefId defId s) =
+      match evalStep (bodyProg body) 0 s with
+      | .step next => .step (retagDefId defId next)
+      | .done out => .done out
+      | .fault k => .fault k :=
+  (evalStep_entryProg_frame h_body h_f0).2
+
+/-- Exact equivalence of `execOutcomeState` across `retagDefId` between
+`entryProgForBody p defId` and `bodyProg body`. -/
+theorem execOutcomeState_entryProg_iff {p : Program} {defId : DefId}
+    {body : Body} {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop}
+    (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body) :
+    ∀ {fuel : Nat} {s : State},
+      IsSingleFrame0 s →
+      (execOutcomeState (entryProgForBody p defId) onDone onFault fuel
+        (retagDefId defId s) ↔
+       execOutcomeState (bodyProg body) onDone onFault fuel s)
+  | 0, _, _ => Iff.rfl
+  | fuel + 1, s, h_f0 => by
+    have hFrame := evalStep_entryProg_frame h_body h_f0
+    change (match evalStep (entryProgForBody p defId) 0
+          (retagDefId defId s) with
+        | .step st' =>
+          execOutcomeState (entryProgForBody p defId) onDone onFault fuel st'
+        | .done out => onDone out
+        | .fault k => onFault k) ↔
+      (match evalStep (bodyProg body) 0 s with
+        | .step st' => execOutcomeState (bodyProg body) onDone onFault fuel st'
+        | .done out => onDone out
+        | .fault k => onFault k)
+    rw [hFrame.2]
+    cases hSt : evalStep (bodyProg body) 0 s with
+    | step next =>
+      exact execOutcomeState_entryProg_iff h_body (hFrame.1 next hSt)
+    | done out => exact Iff.rfl
+    | fault k => exact Iff.rfl
+
+/-- Exact equivalence of `wpOutcomeState` across `retagDefId` between
+`entryProgForBody p defId` and `bodyProg body`. -/
+theorem wpOutcomeState_entryProg_iff {p : Program} {defId : DefId}
+    {body : Body} {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop}
+    (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
+    {fuel : Nat} {s : State} (h_f0 : IsSingleFrame0 s) :
+    wpOutcomeState (entryProgForBody p defId) onDone onFault fuel
+      (retagDefId defId s) ↔
+    wpOutcomeState (bodyProg body) onDone onFault fuel s :=
+  wpOutcomeState_iff_execOutcomeState.trans
+    ((execOutcomeState_entryProg_iff h_body h_f0).trans
+      wpOutcomeState_iff_execOutcomeState.symm)
+
+/-- Entry initialization equation specialized to `entryProgForBody p defId`,
+stated as the retagged entry state of `bodyProg body`. -/
+theorem initState_entryProgForBody {p : Program} {defId : DefId} {body : Body}
+    {args : List Val}
+    (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
+    (h_adm : BodyStaticAdmitted p body = true)
+    (h_args : ValidEntryArgs body args) :
+    initState (entryProgForBody p defId) { args := args } =
+      .ok (retagDefId defId
+        (mkState 0 0 (initLocalsLoop body args 0 body.locals))) :=
+  initState_eq_ok (p := entryProgForBody p defId) h_body h_adm h_args
+
+/-- Project a state of `entryProgForBody p defId` reachable from a retagged
+single-frame state back to `Reach body` via `retagDefId`. -/
+theorem reach_of_reaches_entryProg {p : Program} {defId : DefId} {body : Body}
+    {start s_d : State}
+    (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
+    (h_start : IsSingleFrame0 start)
+    (h_reaches :
+      Reaches (entryProgForBody p defId) (retagDefId defId start) s_d) :
+    ∃ s : State, s_d = retagDefId defId s ∧ Reach body start s := by
+  induction h_reaches with
+  | refl => exact ⟨start, rfl, .refl⟩
+  | tail _ h_step ih =>
+    let ⟨s, hs, h_reach_s⟩ := ih
+    let ⟨c, hc, h_eval⟩ := h_step
+    subst hc
+    subst hs
+    have h_f0 := isSingleFrame0_of_reach h_start h_reach_s
+    rw [evalStep_retagDefId h_body h_f0] at h_eval
+    cases h_st : evalStep (bodyProg body) 0 s with
+    | step next =>
+      rw [h_st] at h_eval
+      injection h_eval with h_eq
+      exact ⟨next, h_eq.symm, .next h_reach_s h_st⟩
+    | done _ => rw [h_st] at h_eval; cases h_eval
+    | fault _ => rw [h_st] at h_eval; cases h_eval
+
+/-- Lift a single-body `Reach` trace from a single-frame state to
+`Reaches (entryProgForBody p defId)` via `retagDefId`. -/
+theorem reaches_entryProg_of_reach {p : Program} {defId : DefId} {body : Body}
+    {start s : State}
+    (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
+    (h_start : IsSingleFrame0 start)
+    (h_reach : Reach body start s) :
+    Reaches (entryProgForBody p defId) (retagDefId defId start)
+      (retagDefId defId s) := by
+  induction h_reach with
+  | refl => exact .refl _
+  | next h_prev h_st ih =>
+    have h_f0 := isSingleFrame0_of_reach h_start h_prev
+    refine .tail ih ⟨0, rfl, ?_⟩
+    rw [evalStep_retagDefId h_body h_f0, h_st]
+
+/-- Establish per-invocation `WellFormed (entryProgForBody p defId)` from
+single-body `Safe body args`. -/
+theorem wellFormed_entryProg_of_safe {p : Program} {defId : DefId}
+    {body : Body} {args : List Val}
+    (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
+    (h_adm : BodyStaticAdmitted p body = true)
+    (h_args : ValidEntryArgs body args)
+    (h_safe : Safe body args) :
+    WellFormed (entryProgForBody p defId) { args := args } := by
+  have h_init := initState_entryProgForBody h_body h_adm h_args
+  refine ⟨⟨_, h_init, ?_⟩, ?_⟩
+  · intro _ _
+    exact ⟨0, rfl⟩
+  · intro k h_fault
+    unfold ReachesResult at h_fault
+    rw [h_init] at h_fault
+    let ⟨s_d, h_reaches, c, hc, h_eval⟩ := h_fault
+    subst hc
+    let ⟨s, hs, h_reach_s⟩ :=
+      reach_of_reaches_entryProg h_body (isSingleFrame0_mkState 0 0 _)
+        h_reaches
+    subst hs
+    have h_f0 :=
+      isSingleFrame0_of_reach (isSingleFrame0_mkState 0 0 _) h_reach_s
+    rw [evalStep_retagDefId h_body h_f0] at h_eval
+    cases h_st : evalStep (bodyProg body) 0 s with
+    | step _ => rw [h_st] at h_eval; cases h_eval
+    | done _ => rw [h_st] at h_eval; cases h_eval
+    | fault k' =>
+      rw [h_st] at h_eval
+      injection h_eval with h_k
+      subst h_k
+      exact h_safe s k' h_reach_s h_st
+
+/-- Establish `BodyVerified p defId body safetyPre` from single-body `Safe`. -/
+theorem bodyVerified_of_safe {p : Program} {defId : DefId} {body : Body}
+    {safetyPre : List Val → Prop}
+    (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
+    (h_adm : BodyStaticAdmitted p body = true)
+    (h_safe : ∀ args : List Val,
+      ValidEntryArgs body args →
+      (body.isUnsafe = true → safetyPre args) →
+      Safe body args) :
+    BodyVerified p defId body safetyPre :=
+  ⟨h_body, h_adm, fun args h_args h_req =>
+    wellFormed_entryProg_of_safe h_body h_adm h_args (h_safe args h_args h_req)⟩
+
+/-- Establish `Behavior (entryProgForBody p defId)` from single-body `Returns`.
+-/
+theorem behavior_of_returns {p : Program} {defId : DefId} {body : Body}
+    {args : List Val} {ret : Val}
+    (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
+    (h_adm : BodyStaticAdmitted p body = true)
+    (h_args : ValidEntryArgs body args)
+    (h_ret : Returns body args ret) :
+    Behavior (entryProgForBody p defId) { args := args }
+      (.returned ⟨ret, ⟨[]⟩⟩) := by
+  let ⟨s, h_reach, h_done⟩ := h_ret
+  unfold Behavior ReachesResult
+  rw [initState_entryProgForBody h_body h_adm h_args]
+  refine ⟨retagDefId defId s,
+    reaches_entryProg_of_reach h_body (isSingleFrame0_mkState 0 0 _) h_reach,
+    0, rfl, ?_⟩
+  have h_f0 := isSingleFrame0_of_reach (isSingleFrame0_mkState 0 0 _) h_reach
+  rw [evalStep_retagDefId h_body h_f0, h_done]
+
+/-- Invert `initState (entryProgForBody p defId) { args := args } = .ok s₀` into
+`ValidEntryArgs body args` and the retagged entry state of `body` on `args`. -/
+theorem initState_entryProgForBody_ok {p : Program} {defId : DefId}
+    {body : Body} {args : List Val} {s₀ : State}
+    (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
+    (h_init : initState (entryProgForBody p defId) { args := args } = .ok s₀) :
+    ValidEntryArgs body args ∧
+      s₀ = retagDefId defId
+        (mkState 0 0 (initLocalsLoop body args 0 body.locals)) := by
+  unfold initState entryProgForBody at h_init
+  unfold ValidEntryArgs mkState retagDefId
+  dsimp only at h_init
+  dsimp only
+  rw [h_body] at h_init
+  dsimp only at h_init
+  cases h1 : Nat.beq p.pointerWidthBits 64 <;>
+    cases h2 : Nat.beq p.mirProfileVersion 1 <;>
+    cases h3 : body.basicBlocks.isEmpty <;>
+    cases h4 : Nat.blt body.argumentCount body.locals.length <;>
+    cases h5 : storageAnnotationsInBounds body <;>
+    cases h6 : body.locals.all isSupportedScalarOrUnitTy <;>
+    cases h7 : checkArgsMatch args
+      ((body.locals.drop 1).take body.argumentCount) <;>
+    rw [h1, h2, h3, h4, h5, h6, h7] at h_init <;>
+    cases h_init
+  exact ⟨rfl, rfl⟩
+
+/-- Invert `Behavior (entryProgForBody p defId)` into `ValidEntryArgs` and
+single-body `Returns`. -/
+theorem returns_of_behavior {p : Program} {defId : DefId} {body : Body}
+    {args : List Val} {ret : Val}
+    (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
+    (h_beh : Behavior (entryProgForBody p defId) { args := args }
+      (.returned ⟨ret, ⟨[]⟩⟩)) :
+    ValidEntryArgs body args ∧ Returns body args ret := by
+  unfold Behavior ReachesResult at h_beh
+  cases h_init : initState (entryProgForBody p defId) { args := args } with
+  | error _ => rw [h_init] at h_beh; cases h_beh
+  | ok s₀ =>
+    rw [h_init] at h_beh
+    let ⟨h_args, hs₀⟩ := initState_entryProgForBody_ok h_body h_init
+    subst hs₀
+    let ⟨s_d, h_reaches, c, hc, h_eval⟩ := h_beh
+    subst hc
+    let ⟨s, hs, h_reach⟩ :=
+      reach_of_reaches_entryProg h_body (isSingleFrame0_mkState 0 0 _)
+        h_reaches
+    subst hs
+    have h_f0 := isSingleFrame0_of_reach (isSingleFrame0_mkState 0 0 _) h_reach
+    rw [evalStep_retagDefId h_body h_f0] at h_eval
+    cases h_st : evalStep (bodyProg body) 0 s with
+    | step _ => rw [h_st] at h_eval; cases h_eval
+    | fault _ => rw [h_st] at h_eval; cases h_eval
+    | done out =>
+      rw [h_st] at h_eval
+      injection h_eval with h_out
+      subst h_out
+      exact ⟨h_args, s, h_reach, h_st⟩
+
+/-- Refute `Behavior (entryProgForBody p defId) { args := args } out` when no
+state reachable from the entry state of `body` on `args` steps to
+`.done out`. -/
+theorem not_behavior_of_no_done {p : Program} {defId : DefId} {body : Body}
+    {args : List Val} {out : TerminalOut}
+    (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
+    (h_no_done : ∀ s,
+      Reach body (mkState 0 0 (initLocalsLoop body args 0 body.locals)) s →
+      evalStep (bodyProg body) 0 s ≠ .done out) :
+    ¬ Behavior (entryProgForBody p defId) { args := args } out := by
+  intro h_beh
+  unfold Behavior ReachesResult at h_beh
+  cases h_init : initState (entryProgForBody p defId) { args := args } with
+  | error _ => rw [h_init] at h_beh; cases h_beh
+  | ok s₀ =>
+    rw [h_init] at h_beh
+    let ⟨_, hs₀⟩ := initState_entryProgForBody_ok h_body h_init
+    subst hs₀
+    let ⟨s_d, h_reaches, c, hc, h_eval⟩ := h_beh
+    subst hc
+    let ⟨s, hs, h_reach⟩ :=
+      reach_of_reaches_entryProg h_body (isSingleFrame0_mkState 0 0 _)
+        h_reaches
+    subst hs
+    have h_f0 := isSingleFrame0_of_reach (isSingleFrame0_mkState 0 0 _) h_reach
+    rw [evalStep_retagDefId h_body h_f0] at h_eval
+    cases h_st : evalStep (bodyProg body) 0 s with
+    | step _ => rw [h_st] at h_eval; cases h_eval
+    | fault _ => rw [h_st] at h_eval; cases h_eval
+    | done out' =>
+      rw [h_st] at h_eval
+      injection h_eval with h_out
+      subst h_out
+      exact h_no_done s h_reach h_st
+
+/-- Constructively establish `Diverges (entryProgForBody p defId)` and absence
+of normal `Behavior` from a single-body `ProductiveInvariant` at the entry
+state, with zero `Classical.choice` axioms: the infinite trace iterates the
+deterministic successor selector `next`. -/
+theorem diverges_of_productiveInvariant {p : Program} {defId : DefId}
+    {body : Body} {args : List Val} {invariant : State → Prop}
+    (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
+    (h_adm : BodyStaticAdmitted p body = true)
+    (h_args : ValidEntryArgs body args)
+    (h_inv : ProductiveInvariant body
+      (mkState 0 0 (initLocalsLoop body args 0 body.locals)) invariant) :
+    Diverges (entryProgForBody p defId) { args := args } ∧
+    ∀ out, ¬ Behavior (entryProgForBody p defId) { args := args } out := by
+  let next : State → State := fun s =>
+    match evalStep (bodyProg body) 0 s with
+    | .step s' => s'
+    | _ => s
+  have hNext : ∀ s s', evalStep (bodyProg body) 0 s = .step s' →
+      evalStep (bodyProg body) 0 s = .step (next s) := by
+    intro s s' hs
+    change evalStep (bodyProg body) 0 s =
+      .step (match evalStep (bodyProg body) 0 s with
+        | .step s' => s'
+        | _ => s)
+    rw [hs]
+  let iter : Nat → State :=
+    Nat.rec (mkState 0 0 (initLocalsLoop body args 0 body.locals))
+      (fun _ s => next s)
+  have hIter : ∀ n : Nat,
+      invariant (iter n) ∧
+      Reach body (mkState 0 0 (initLocalsLoop body args 0 body.locals))
+        (iter n) ∧
+      evalStep (bodyProg body) 0 (iter n) = .step (iter (n + 1)) := by
+    intro n
+    induction n with
+    | zero =>
+      let ⟨s', hs'⟩ := h_inv.2.2 _ h_inv.1
+      exact ⟨h_inv.1, .refl, hNext _ s' hs'⟩
+    | succ n ih =>
+      have hNextInv : invariant (iter (n + 1)) := h_inv.2.1 _ _ ih.1 ih.2.2
+      let ⟨s'', hs''⟩ := h_inv.2.2 (iter (n + 1)) hNextInv
+      exact ⟨hNextInv, .next ih.2.1 ih.2.2, hNext _ s'' hs''⟩
+  refine ⟨?_, fun out => not_behavior_of_no_done h_body
+    (fun s hReach =>
+      (safeFrom_and_no_done_of_productiveInvariant h_inv).2 s out hReach)⟩
+  refine ⟨_, initState_entryProgForBody h_body h_adm h_args,
+    fun n => retagDefId defId (iter n), rfl, ?_⟩
+  intro n
+  refine ⟨0, rfl, ?_⟩
+  have hStepN := hIter n
+  have hF0 :=
+    isSingleFrame0_of_reach (isSingleFrame0_mkState 0 0 _) hStepN.2.1
+  rw [evalStep_retagDefId h_body hF0, hStepN.2.2]
+
+end Anneal.MirWp

@@ -63,7 +63,7 @@ The current workspace divides verification and audit code into three zones.
 | :--- | :--- | :--- | :--- |
 | **Trusted foundation** | [`trusted/`](../trusted) | Extracts MIR and emits pure proof scripts (`trusted/rustc-capture/`), defines captured MIR syntax and verification operational semantics (`trusted/lean/`), states MIR correspondence claims and reference-adapter specifications (`trusted/correspondence/`), orchestrates CLI invocation (`trusted/cargo-anneal/`), and audits the Anneal repository in CI (`trusted/audit/`). | **In the TCB.** Audited by humans (alongside external files pinned by hash manifests inside `trusted/`). |
 | **Proof theory & correspondence** | `theory/`, `correspondence/` | Defines the normalized `StableAst`, proves lowering passes (`Abstracts`), provides WP calculi (`theory/Anneal/MirWp.lean`), separation logic, and proof tactics (`theory/`), and proves the MIR correspondence theorems and canaries (`correspondence/`). | **Outside the TCB.** Treated as potentially adversarial; audited mechanically in Anneal's CI and checked by the Lean 4 kernel (`correspondence/` is checked in CI only and is not shipped in the user toolchain archive). |
-| **Vendored reference model** | `vendor/lean-miri/` | Pinned snapshot of `proofs-rs/lean-miri` with a human-audited 10-file opt-in `deinitMovedPlace` delta ([`docs/mir-correspondence-design.md`](mir-correspondence-design.md)). Never shipped in the user toolchain archive. | **In the correspondence TCB.** Pinned byte-for-byte in `vendor/lean-miri/UPSTREAM_PIN.json` (locked by `LOCKED_UPSTREAM_PIN_SHA256` and `LOCKED_PATCHED_MIRI_FILES` in `trusted/audit/`). Only the 160-module `Miri.Interpreter.ExecutionMachine` slice (excluding `Miri.Input.NativeMathHost`) is compiled inside an OS-level `bwrap` sandbox (or restored from a digest-gated cache outside the checkout) and verified by `.olean` SHA-256; every non-`isPartial` vendored declaration (38,728 declarations) is replayed from scratch through the standalone Lean 4 kernel (`toKernelEnv.replay`) onto the authenticated sysroot base on every run, followed directly by replaying `Trusted.Correspondence`, `Anneal.MirCorrespondenceBase`, and `Anneal.MirCorrespondenceProof` on top of that replayed base and checking cone purity. |
+| **Vendored reference model** | `vendor/lean-miri/` | Pinned snapshot of `proofs-rs/lean-miri` with a human-audited 10-file opt-in `deinitMovedPlace` delta ([`docs/mir-correspondence-design.md`](mir-correspondence-design.md)). Never shipped in the user toolchain archive. | **In the correspondence TCB.** Pinned byte-for-byte in `vendor/lean-miri/UPSTREAM_PIN.json` (locked by `LOCKED_UPSTREAM_PIN_SHA256` and `LOCKED_PATCHED_MIRI_FILES` in `trusted/audit/`). Only the 160-module `Miri.Interpreter.ExecutionMachine` slice (excluding `Miri.Input.NativeMathHost`) is compiled inside an OS-level `bwrap` sandbox (or restored from a digest-gated cache outside the checkout) and verified by `.olean` SHA-256; every non-`isPartial` vendored declaration (38,728 declarations) is replayed from scratch through the standalone Lean 4 kernel (`toKernelEnv.replay`) onto the authenticated sysroot base on every run, followed directly by replaying `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and `Anneal.MirCorrespondenceProof` on top of that replayed base and checking cone purity. |
 
 ### How CI auditing and user-machine verification fit together
 
@@ -460,8 +460,8 @@ or `vendor/lean-miri/` are present), `anneal-audit` executes Pass 2
    them fails replay with `unknown constant`) from scratch through the
    standalone Lean 4 kernel (`baseEnv.toKernelEnv.replay`) on every run—cold
    build and warm cache hit alike—followed directly by replaying all repository
-   declarations (Pass 1 plus Pass 2 `Trusted.Correspondence`,
-   `Anneal.MirCorrespondenceBase`, and `Anneal.MirCorrespondenceProof`) onto
+   declarations (Pass 1 plus Pass 2 `Trusted.Correspondence*`,
+   `Anneal.MirCorrespondence.*`, and `Anneal.MirCorrespondenceProof`) onto
    that replayed vendor kernel environment. Before that repository replay, it
    rejects any repository constant whose name already exists in the replayed
    vendor or sysroot environment, so replay never skips a repository
@@ -477,9 +477,11 @@ or `vendor/lean-miri/` are present), `anneal-audit` executes Pass 2
    claims (`verifyCorrespondenceClaims`, enforcing universe monomorphism on
    every claim and proof and a mechanically checked non-empty
    required-constants list on every claim), and runs
-   `verifyRefEvaluatorIndependence` (21 required `Miri.*` primitives and
-   rejection of 25 named `Trusted.MirSemantics` evaluator entry points, with
-   human review of `trusted/correspondence/` remaining the semantic boundary).
+   `verifyRefEvaluatorIndependence` (21 required `Miri.*` primitives and closed
+   module-origin isolation restricting `Trusted` dependencies in the
+   reference-evaluator cone to `Trusted.MirAst*`, `Trusted.MirModel`, and
+   `Trusted.Correspondence*`, with human review of `trusted/correspondence/`
+   and `Trusted.MirModel` remaining the semantic boundary).
 
 ### Pass 2 governance and remaining correspondence controls (`trusted/correspondence/` and `correspondence/`)
 

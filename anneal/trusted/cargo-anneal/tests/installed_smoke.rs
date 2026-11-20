@@ -474,16 +474,16 @@ fn audit_case(name: &str, case: &mut CaseDirectory, root: &Path) -> TestResult {
     case.write("fixture/trusted/lean/Trusted.lean", source.as_bytes())?;
     if name == "audit-accepted" {
         case.copy(
-            &root.join("share/anneal/trusted/lean/Trusted/MirAst.lean"),
-            "fixture/trusted/lean/Trusted/MirAst.lean",
-        )?;
-        case.copy(
-            &root.join("share/anneal/trusted/lean/Trusted/MirSemantics.lean"),
-            "fixture/trusted/lean/Trusted/MirSemantics.lean",
+            &root.join("share/anneal/trusted/lean/Trusted"),
+            "fixture/trusted/lean/Trusted",
         )?;
         case.copy(
             &root.join("share/anneal/theory/Anneal/MirWp.lean"),
             "fixture/theory/Anneal/MirWp.lean",
+        )?;
+        case.copy(
+            &root.join("share/anneal/theory/Anneal/MirWp"),
+            "fixture/theory/Anneal/MirWp",
         )?;
         case.write(
             "fixture/theory/Anneal.lean",

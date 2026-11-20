@@ -1,0 +1,206 @@
+-- Copyright 2026 The Fuchsia Authors
+--
+-- Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+-- <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+-- license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+-- This file may not be copied, modified, or distributed except according to
+-- those terms.
+
+prelude
+import Init.NotationExtra
+import Init.Data.BitVec.BasicAux
+import Init.Data.Int.Basic
+import Init.Data.Nat.Div.Basic
+import Init.Data.Nat.Bitwise.Basic
+import Init.Control.Except
+import Trusted
+import Trusted.Correspondence
+import Anneal.MirWp
+import Anneal.MirCorrespondence.Codec
+import Anneal.MirCorrespondence.SimHelpers
+import Anneal.MirCorrespondence.ScalarEquiv
+import Anneal.MirCorrespondence.EnumEquiv
+import Anneal.MirCorrespondence.RvalueStep
+import Anneal.MirCorrespondence.StmtTermStep
+import Anneal.MirCorrespondence.InitAndSim
+
+namespace Anneal.MirCorrespondence
+
+open Trusted Trusted.MirAst Trusted.MirSemantics Trusted.Correspondence
+open Anneal.MirWp
+
+/-! ## Move Deinitialization, Overflow, and Enum Canaries (`D6`–`D13`) -/
+
+/-- `D6` (Use-After-Move UB):
+`_2 = move _1; _0 = copy _1; return` deinitializes `_1` on `move _1` and
+faults with `.fault .undefined` (`.ub` in $M_{\text{ref}}$) on the subsequent
+`copy _1`. -/
+theorem canary_D6_use_after_move_ub_base : CanaryD6UseAfterMoveUbClaim := by
+  have h_wp : wpFaultProg progUseAfterMoveD6 2 queryU32_42 .undefined := by
+    refine ⟨⟨0, rfl⟩, fun c hc => ?_⟩
+    subst hc
+    refine ⟨⟨0, rfl⟩, fun c hc => ?_⟩
+    subst hc
+    rfl
+  let ⟨h_ub, h_excl, _, _, h_nwf⟩ := reaches_fault_and_exclusive_of_wpFault
+    progUseAfterMoveD6 queryU32_42 2 .undefined h_wp
+  have h_ref_ub := (reachesResult_fault_iff_refReachesOutcome
+    progUseAfterMoveD6 queryU32_42 .undefined).1 h_ub
+  exact ⟨h_ub, h_excl .unsupported (fun h => FaultKind.noConfusion h), h_nwf,
+    h_ref_ub⟩
+
+/-- `D7a` (`BinaryOp` left-to-right `copy _1` then `move _1` succeeds):
+`_0 = BinOp(Add, copy _1, move _1); return` reads `_1` in `lhs`, then reads
+and deinitializes `_1` in `rhs`, and returns `84`. -/
+theorem canary_D7a_binop_copy_then_move_ok_base :
+    CanaryD7aBinopCopyThenMoveOkClaim := by
+  have h_wp : wpProg progBinOpCopyThenMoveD7a 2 queryU32_42
+      (fun out => out = .returned ⟨u32Val 84, ⟨[]⟩⟩) := by
+    refine ⟨⟨0, rfl⟩, fun c hc => ?_⟩
+    subst hc
+    refine ⟨⟨0, rfl⟩, fun c hc => ?_⟩
+    subst hc
+    rfl
+  let ⟨h_sat, _, out, h_beh, h_eq⟩ := wellFormed_and_spec_of_wp
+    progBinOpCopyThenMoveD7a queryU32_42 2 _ h_wp
+  subst h_eq
+  let ⟨h_rwf, h_rbeh, _⟩ := anneal_corresponds_to_miri
+    progBinOpCopyThenMoveD7a queryU32_42 h_sat.1
+  exact ⟨h_sat.1, h_beh, h_rwf, (h_rbeh _).1 h_beh⟩
+
+/-- `D7b` (`BinaryOp` left-to-right `move _1` then `copy _1` faults with UB):
+`_0 = BinOp(Add, move _1, copy _1); return` deinitializes `_1` in
+`lhs = move _1` and faults with `.fault .undefined` (`.ub` in
+$M_{\text{ref}}$) in `rhs = copy _1`. -/
+theorem canary_D7b_binop_move_then_copy_ub_base :
+    CanaryD7bBinopMoveThenCopyUbClaim := by
+  have h_wp :
+      wpFaultProg progBinOpMoveThenCopyD7b 1 queryU32_42 .undefined := by
+    refine ⟨⟨0, rfl⟩, fun c hc => ?_⟩
+    subst hc
+    rfl
+  let ⟨h_ub, h_excl, _, _, h_nwf⟩ := reaches_fault_and_exclusive_of_wpFault
+    progBinOpMoveThenCopyD7b queryU32_42 1 .undefined h_wp
+  have h_ref_ub := (reachesResult_fault_iff_refReachesOutcome
+    progBinOpMoveThenCopyD7b queryU32_42 .undefined).1 h_ub
+  exact ⟨h_ub, h_excl .unsupported (fun h => FaultKind.noConfusion h), h_nwf,
+    h_ref_ub⟩
+
+/-- `D7c` (`BinaryOp` left-to-right `move _1` then `move _1` faults with UB):
+`_0 = BinOp(Add, move _1, move _1); return` deinitializes `_1` in
+`lhs = move _1` and faults with `.fault .undefined` (`.ub` in
+$M_{\text{ref}}$) in `rhs = move _1`. -/
+theorem canary_D7c_binop_move_then_move_ub_base :
+    CanaryD7cBinopMoveThenMoveUbClaim := by
+  have h_wp :
+      wpFaultProg progBinOpMoveThenMoveD7c 1 queryU32_42 .undefined := by
+    refine ⟨⟨0, rfl⟩, fun c hc => ?_⟩
+    subst hc
+    rfl
+  let ⟨h_ub, h_excl, _, _, h_nwf⟩ := reaches_fault_and_exclusive_of_wpFault
+    progBinOpMoveThenMoveD7c queryU32_42 1 .undefined h_wp
+  have h_ref_ub := (reachesResult_fault_iff_refReachesOutcome
+    progBinOpMoveThenMoveD7c queryU32_42 .undefined).1 h_ub
+  exact ⟨h_ub, h_excl .unsupported (fun h => FaultKind.noConfusion h), h_nwf,
+    h_ref_ub⟩
+
+/-- `D8` (Self-move `_1 = move _1` preserves initialized value):
+`_1 = move _1; _0 = copy _1; return` reads `42` from `_1`, deinitializes `_1`
+to `.live none`, and then writes `42` back into `_1`, so the subsequent
+`_0 = copy _1` succeeds and returns `42`. -/
+theorem canary_D8_self_move_ok_base : CanaryD8SelfMoveOkClaim := by
+  have h_wp : wpProg progSelfMoveD8 3 queryU32_42
+      (fun out => out = .returned ⟨u32Val 42, ⟨[]⟩⟩) := by
+    refine ⟨⟨0, rfl⟩, fun c hc => ?_⟩
+    subst hc
+    refine ⟨⟨0, rfl⟩, fun c hc => ?_⟩
+    subst hc
+    refine ⟨⟨0, rfl⟩, fun c hc => ?_⟩
+    subst hc
+    rfl
+  let ⟨h_sat, _, out, h_beh, h_eq⟩ :=
+    wellFormed_and_spec_of_wp progSelfMoveD8 queryU32_42 3 _ h_wp
+  subst h_eq
+  let ⟨h_rwf, h_rbeh, _⟩ :=
+    anneal_corresponds_to_miri progSelfMoveD8 queryU32_42 h_sat.1
+  exact ⟨h_sat.1, h_beh, h_rwf, (h_rbeh _).1 h_beh⟩
+
+/-- `D9` (Move of 0-Byte ZST `MirTy.unit` Remains Initialized):
+`_2 = move _1; _0 = copy _1; return` where `_1 : ()` sets `_1` to
+`liveUninitSlot .unit = .live (some .unit)`, so subsequent `_0 = copy _1`
+succeeds and returns `.unit`. -/
+theorem canary_D9_move_unit_zst_ok_base : CanaryD9MoveUnitZstOkClaim := by
+  have h_wp : wpProg progMoveUnitZstD9 3 queryEmpty
+      (fun out => out = .returned ⟨.unit, ⟨[]⟩⟩) := by
+    refine ⟨⟨0, rfl⟩, fun c hc => ?_⟩
+    subst hc
+    refine ⟨⟨0, rfl⟩, fun c hc => ?_⟩
+    subst hc
+    refine ⟨⟨0, rfl⟩, fun c hc => ?_⟩
+    subst hc
+    rfl
+  let ⟨h_sat, _, out, h_beh, h_eq⟩ :=
+    wellFormed_and_spec_of_wp progMoveUnitZstD9 queryEmpty 3 _ h_wp
+  subst h_eq
+  let ⟨h_rwf, h_rbeh, _⟩ :=
+    anneal_corresponds_to_miri progMoveUnitZstD9 queryEmpty h_sat.1
+  exact ⟨h_sat.1, h_beh, h_rwf, (h_rbeh _).1 h_beh⟩
+
+/-- `D10` (unchecked versus wrapping overflow): on `(u32::MAX, 1)`,
+`_0 = AddUnchecked(_1, _2)` (`progAddUncheckedU32`) reaches UB in both
+machines, while wrapping `_0 = Add(_1, _2)` (`progAddU32`) returns `0` in both
+machines. `encodeRvalue_binaryOp_iff` keeps the codec from exchanging the two
+operators, so a semantics or codec that confused them would falsify one half
+of this canary. -/
+theorem canary_D10_add_unchecked_overflow_ub_base :
+    CanaryD10AddUncheckedOverflowUbClaim := by
+  let ⟨⟨h_ub, _, h_nwf⟩, _, h_beh⟩ :=
+    canary_negative_ub_add_unchecked_overflow_u32
+  have h_ref_ub := (reachesResult_fault_iff_refReachesOutcome
+    progAddUncheckedU32 queryU32MaxPlusOne .undefined).1 h_ub
+  exact ⟨h_ub, h_nwf, h_ref_ub, h_beh,
+    (behavior_iff_refBehavior_base progAddU32 queryU32MaxPlusOne _).1 h_beh⟩
+
+/-- `D11` (explicit-repr non-index fieldless enum constant tag decoding,
+non-`isize` `u8` `Rvalue.discriminant`, and signed `i8` -> `isize` tag
+sign-extension in both $M_{\text{anneal}}$ and $M_{\text{ref}}$). -/
+theorem canary_D11_enum_discriminant_and_const_ok_base :
+    CanaryD11EnumDiscriminantAndConstOkClaim := by
+  let ⟨⟨h_wf₁, h_beh₁⟩, ⟨h_wf₂, h_beh₂⟩⟩ :=
+    Anneal.MirWp.canary_positive_enum_explicit_repr_anneal
+  let ⟨h_rwf₁, h_rbeh₁, _⟩ :=
+    anneal_corresponds_to_miri progEnumExplicitReprU8 queryEmpty h_wf₁
+  let ⟨h_rwf₂, h_rbeh₂, _⟩ :=
+    anneal_corresponds_to_miri progEnumSignedTagIsize queryEmpty h_wf₂
+  exact ⟨h_wf₁, h_beh₁, h_rwf₁, (h_rbeh₁ _).1 h_beh₁,
+    h_wf₂, h_beh₂, h_rwf₂, (h_rbeh₂ _).1 h_beh₂⟩
+
+/-- `D12` (1-variant inhabited ZST enum implicit return, non-deinitializing
+`Operand.move`, `ConstLit.zeroSized`, and `Variants.Single 0`
+`Rvalue.discriminant` in both $M_{\text{anneal}}$ and $M_{\text{ref}}$). -/
+theorem canary_D12_zst_enum_move_and_discr_ok_base :
+    CanaryD12ZstEnumMoveAndDiscrOkClaim := by
+  let ⟨⟨h_wf₁, h_beh₁⟩, ⟨h_wf₂, h_beh₂⟩⟩ :=
+    Anneal.MirWp.canary_positive_zst_single_enum_anneal
+  let ⟨h_rwf₁, h_rbeh₁, _⟩ :=
+    anneal_corresponds_to_miri progZstSingleEnumImplicitRet queryEmpty h_wf₁
+  let ⟨h_rwf₂, h_rbeh₂, _⟩ :=
+    anneal_corresponds_to_miri progZstSingleEnumMoveAndDiscr queryEmpty h_wf₂
+  exact ⟨h_wf₁, h_beh₁, h_rwf₁, (h_rbeh₁ _).1 h_beh₁,
+    h_wf₂, h_beh₂, h_rwf₂, (h_rbeh₂ _).1 h_beh₂⟩
+
+/-- `D13` (invalid scalar enum tag `1` on `ReprU8 { A = 10, B = 20 }` and
+reading `Rvalue.discriminant` from an uninitialized scalar-tagged enum local
+reach UB in both $M_{\text{anneal}}$ and $M_{\text{ref}}$). -/
+theorem canary_D13_enum_invalid_tag_and_uninit_ub_base :
+    CanaryD13EnumInvalidTagAndUninitUbClaim := by
+  let ⟨⟨h_ub₁, h_nunsup₁, h_nwf₁⟩, ⟨h_ub₂, h_nunsup₂, h_nwf₂⟩⟩ :=
+    Anneal.MirWp.canary_negative_ub_enum_invalid_tag_and_uninit_anneal
+  have h_ref_ub₁ := (reachesResult_fault_iff_refReachesOutcome
+    progEnumInvalidTagConstUb queryEmpty .undefined).1 h_ub₁
+  have h_ref_ub₂ := (reachesResult_fault_iff_refReachesOutcome
+    progEnumUninitDiscrUb queryEmpty .undefined).1 h_ub₂
+  exact ⟨h_ub₁, h_nunsup₁, h_nwf₁, h_ref_ub₁,
+    h_ub₂, h_nunsup₂, h_nwf₂, h_ref_ub₂⟩
+
+end Anneal.MirCorrespondence

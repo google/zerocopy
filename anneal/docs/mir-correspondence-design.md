@@ -112,22 +112,15 @@ vendor/lean-miri/               Vendored lean-miri reference model
                                 `CopyNonOverlapping` move sequencing
 
 trusted/correspondence/Trusted/ Correspondence TCB specification (Pass 2)
-  Correspondence.lean           Codec, Miri.Interpreter hook adapters,
-                                reference machine, RefWellFormed,
-                                RefBehavior, RefDiverges, SimulationInv, and
-                                locked *Claim constants (27 Day-1 baseline;
-                                30 with fieldless enums: 3 top-level, 6 codec,
-                                11 uniqueness/simulation, D6-D13)
-                                (-- anneal-trust-tier: candidate:mir_semantics)
+  Correspondence.lean           Hub + locked *Claim constants (30 claims:
+  Correspondence/               Codec, State, Eval, Simulation, CanaryFixtures;
+                                -- anneal-trust-tier: candidate:mir_semantics)
 
 correspondence/Anneal/          Untrusted correspondence proof (Pass 2)
-  MirCorrespondenceBase.lean    Base (*_base) proofs of the 6 codec and 2
-                                SimulationInv uniqueness lemmas, plus Miri
-                                scalar/discriminant bridge lemmas
-  MirCorrespondenceProof.lean   Public re-exports of those 8 base theorems,
-                                per-step simulation and top-level proofs, and
-                                D6-D13 canaries (27 Day-1 baseline; 30 locked
-                                witnesses once fieldless enums land)
+  MirCorrespondence/            Modular proofs (Codec, SimHelpers, ScalarEquiv,
+                                EnumEquiv, RvalueStep, StmtTermStep, InitAndSim,
+                                Canaries)
+  MirCorrespondenceProof.lean   Public re-exports of all 30 locked witnesses
 
 trusted/audit/                  anneal-audit CLI, auditor library, and inspector
   TrustedBoundary.lean          Syntactic preflight, namespace and
@@ -208,7 +201,7 @@ uninitialized-read checks on adapter-frame locals (Section 2.2) are authored in
 the `Trusted/Correspondence.lean` wrapper and human-audited alongside
 `vendor/lean-miri/` as part of the correspondence TCB (Section 1.3).
 
-Placing `Trusted.Correspondence`, `Anneal.MirCorrespondenceBase`, and
+Placing `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and
 `Anneal.MirCorrespondenceProof` in `trusted/correspondence/` and
 `correspondence/` preserves both invariants:
 
@@ -337,11 +330,11 @@ Placing `Trusted.Correspondence`, `Anneal.MirCorrespondenceBase`, and
      `initialize` declaration (`Miri/Input/DecoderValues.lean:918`), and 24
      `partial def`s audited under the SHA-256 `UPSTREAM_PIN.json` pin and
      `LOCKED_PATCHED_MIRI_FILES` allowlist in `trusted/audit/`.
-   - **Syntactic preflight and compilation of `Trusted.Correspondence`,
-     `Anneal.MirCorrespondenceBase`, and `Anneal.MirCorrespondenceProof`:**
+   - **Syntactic preflight and compilation of `Trusted.Correspondence*`,
+     `Anneal.MirCorrespondence.*`, and `Anneal.MirCorrespondenceProof`:**
      Enforces the unmodified `allowedTrustedSyntaxKinds` and
      `allowedTheorySyntaxKinds` allowlists, `prelude`, and explicit
-     root-identifier checks on all three correspondence modules (compiled fresh
+     root-identifier checks on every correspondence module (compiled fresh
      from source at `-M4096`), extending Pass 1's fresh isolated preflight,
      from-source compilation, and kernel replay of `trusted/lean/` and
      `theory/`.
@@ -356,19 +349,14 @@ Placing `Trusted.Correspondence`, `Anneal.MirCorrespondenceBase`, and
    - **Reference-evaluator independence (`verifyRefEvaluatorIndependence`):**
      Computes the transitive constant cone of
      `[Trusted.Correspondence.evalRefStep, Trusted.Correspondence.initRefState]`
-     via `closureCorr`, requiring all required `Miri.Interpreter.*` /
-     `Miri.Memory.ScalarInt.*` primitives listed in Section 1.3 (19 in the
-     Day-1 scalar/bool/unit baseline; 21 once `Miri.Interpreter.Discriminant`
-     fieldless-enum support lands) to be reachable and forbidding the named
-     `Trusted.MirSemantics.*` evaluator functions (21 in the Day-1 baseline; 25
-     once fieldless-enum evaluators land, adding `enumAdmitted`,
-     `tagBitsToDiscrBits`, `isZstEnumTy`, and `findDiscrVariant?` alongside the
-     Day-1 evaluators through `evalStep` and `initState`) from appearing in
-     that cone (with human review of `Trusted/Correspondence.lean` verifying no
-     shared support-rule helpers are called, and full-cone isolation over the
-     entire Anneal execution and support-rule cone—permitting only allowlisted
-     shared boundary data types—tracked as the target hardening in
-     [`docs/trust-model.md`](trust-model.md)).
+     via `closureCorr`, requiring all 21 `Miri.Interpreter.*` /
+     `Miri.Memory.ScalarInt.*` primitives listed in Section 1.3 to be reachable
+     and restricting every `.repo (.trusted _)` dependency in that cone to
+     `Trusted.MirAst*`, `Trusted.MirModel`, or `Trusted.Correspondence*` (so
+     `Trusted.MirSemantics`, `Trusted.MirSemantics.*`, and any other sibling
+     `Trusted.*` module are rejected fail-closed; human review of
+     `trusted/correspondence/` and `Trusted.MirModel` remains the semantic
+     boundary).
    - **Constant-cone purity, statement-origin verification, and kernel replay:**
      `TrustedBoundary.lean` (`auditCorrespondence`, run under `-M8192`) splits
      Pass 2 inspection across `collectCorrEnv`, `replayCorrAndVendor`, and
@@ -383,8 +371,8 @@ Placing `Trusted.Correspondence`, `Anneal.MirCorrespondenceBase`, and
      the unpatched closure; 38,718 once the 10-file `deinitMovedPlace` patch
      lands) onto `baseEnv.toKernelEnv`, and—within the same isolated Pass 2
      staging run—replays every freshly compiled `.repo` declaration
-     (`trusted/lean/`, `theory/`, `Trusted.Correspondence`,
-     `Anneal.MirCorrespondenceBase`, and `Anneal.MirCorrespondenceProof`)
+     (`trusted/lean/`, `theory/`, `Trusted.Correspondence*`,
+     `Anneal.MirCorrespondence.*`, and `Anneal.MirCorrespondenceProof`)
      directly onto that replayed vendor kernel environment, matching the
      end-to-end Pass 1 + Pass 2 isolated staging and kernel-replay architecture
      in [`docs/architecture.md`](architecture.md). Finally,
@@ -504,8 +492,8 @@ allowlists:
   `vendor/lean-miri/`, which places the vendored tree inside the correspondence
   TCB (Section 1.3).
 - **Allowlisted tactics in `theory/` and `correspondence/`:**
-  `Anneal/MirWp.lean`, `Anneal/MirCorrespondenceBase.lean`, and
-  `Anneal/MirCorrespondenceProof.lean` use only the tactics that
+  `Anneal/MirWp.lean`, `Anneal/MirWp/*.lean`, `Anneal/MirCorrespondence/*.lean`,
+  and `Anneal/MirCorrespondenceProof.lean` use only the tactics that
   `allowedTheorySyntaxKinds` admits (such as `let ⟨a, b⟩ := h`, `cases`,
   `induction`, `dsimp`, `simp`, `rw`, `exact`, `apply`, and `decide`, using
   allowlisted `locationHyp` locations including `at h` and `at h ⊢`) and unfold
@@ -1233,7 +1221,7 @@ provides a pure, total codec between `Program` (with inline `MirTy`) and
 
 ### 3.3 Unconditional Anti-Laundering Guarantees
 
-`Anneal.MirCorrespondenceBase` proves the `*_base` codec lemmas and
+`Anneal.MirCorrespondence.Codec` proves the `*_base` codec lemmas and
 `Anneal.MirCorrespondenceProof` exports the six canonical theorems below, each
 locked by `TrustedBoundary.lean` (`verifyCorrespondenceClaims`) against its
 exact `*Claim` constant in `Trusted.Correspondence`
@@ -1357,12 +1345,12 @@ pattern rather than truncating), `evalRefConstLit` decodes constants with
 (called by `refRvalueHooks.{binaryOp, unaryOp}`) lift operator inputs through
 `miriIntValue` into `Miri.Interpreter.IntegerValue`, returning results as
 `sc.data` at the operand's static width and signedness.
-`Anneal.MirCorrespondenceBase` defines proof-side shorthands `evalRefBinOp` and
-`evalRefUnOp` over `evalRefMiriBinOp (toMiriBinOp op)` / `evalRefMiriUnOp
-(toMiriUnOp op)` and proves unconditional agreement lemmas for these boundary
-adapters (`checkRefVal_eq : checkRefVal v ty = checkVal v ty`,
-`checkRefArgsMatch_eq : checkRefArgsMatch vs tys = checkArgsMatch vs tys`,
-`evalRefConstLit_eq`, `evalRefBinOp_eq`, `evalRefUnOp_eq`,
+`Anneal.MirCorrespondence.ScalarEquiv` defines proof-side shorthands
+`evalRefBinOp` and `evalRefUnOp` over `evalRefMiriBinOp (toMiriBinOp op)` /
+`evalRefMiriUnOp (toMiriUnOp op)` and proves unconditional agreement lemmas
+for these boundary adapters (`checkRefVal_eq : checkRefVal v ty = checkVal v
+ty`, `checkRefArgsMatch_eq : checkRefArgsMatch vs tys = checkArgsMatch vs
+tys`, `evalRefConstLit_eq`, `evalRefBinOp_eq`, `evalRefUnOp_eq`,
 `evalRefSwitchScalarCase_eq`, and `match_tryFromUInt_eq`, which shows that a
 validated `ScalarInt` preserves `sc.data = bits` with zero truncation or
 signedness mutation).
@@ -2239,8 +2227,8 @@ that the executing frame's return place `_0` always has the entry body's return
 type `retTy`, matching `callerSentinelFrame retTy` even on multi-body programs
 and keeping `SimulationInv` a one-to-one correspondence (unique in both
 directions on related running states at fixed step counters; proved in
-`Anneal.MirCorrespondenceBase` and exported in `Anneal.MirCorrespondenceProof`
-against `StateUniqueOfSimulationInvClaim` and
+`Anneal.MirCorrespondence.SimHelpers` and exported in
+`Anneal.MirCorrespondenceProof` against `StateUniqueOfSimulationInvClaim` and
 `RefStateUniqueOfSimulationInvClaim`):
 
 ```lean
