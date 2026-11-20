@@ -1,0 +1,77 @@
+{
+  "topics": [
+    "systems/embedded",
+    "verification/concurrency",
+    "rust/unsafe",
+    "anneal/theory",
+    "systems/realtime",
+    "verification/wcet"
+  ],
+  "subjects": [
+    {
+      "name": "RTIC (Real-Time Interrupt-driven Concurrency) framework and procedural macros",
+      "identity": {
+        "repository": "rtic-rs/rtic",
+        "revision": "fed0fa5e9d74c1f1fb27f06582d4387590cbf0a9",
+        "version": "2.4.0"
+      }
+    },
+    {
+      "name": "Embassy async synchronization primitives (embassy-sync zerocopy_channel)",
+      "identity": {
+        "repository": "embassy-rs/embassy",
+        "revision": "bb6ce6898623c65de7ae8f4ad5ef4f795eb1ee18",
+        "version": "0.8.0"
+      }
+    },
+    {
+      "name": "Stack Resource Policy (SRP) real-time scheduling specification",
+      "identity": {
+        "author": "Theodore P. Baker",
+        "doi": "10.1007/BF00365393",
+        "publication": "Stack-Based Scheduling of Realtime Processes, Real-Time Systems 3(1), pp. 67-99 (1991)"
+      }
+    },
+    {
+      "name": "RTFM-core / RTIC priority-ceiling scheduling model",
+      "identity": {
+        "authors": "Per Lindgren, Marcus Lindner, Andreas Lindner, David Pereira, and Luis Miguel Pinho",
+        "doi": "10.1109/ICIEA.2015.7334252",
+        "publication": "RTFM-core: Language and Implementation, IEEE ICIEA 2015"
+      }
+    },
+    {
+      "name": "Worst-case execution-time and static stack-bound analysis literature",
+      "identity": {
+        "authors": "Reinhard Wilhelm, Jakob Engblom, Andreas Ermedahl, Niklas Holsti, Stephan Thesing, David B. Whalley, Guillem Bernat, Christian Ferdinand, Reinhold Heckmann, Tulika Mitra, Frank Mueller, Isabelle Puaut, Peter P. Puschner, Jan Staschulat, and Per Stenstrom",
+        "doi": "10.1145/1347375.1347389",
+        "publication": "The Worst-Case Execution-Time Problem—Overview of Methods and Survey of Tools, ACM TECS 7(3), Article 36, pp. 1-53 (2008)"
+      }
+    },
+    {
+      "name": "Tock OS DMA memory-fence trait specification (DmaFence)",
+      "identity": {
+        "doi": "10.1145/3132747.3132786",
+        "repository": "tock/tock",
+        "revision": "ba6aa7edc014505d2e6f0123b2b6059ba6ee7dec",
+        "version": "0.2.4-dev"
+      }
+    },
+    {
+      "name": "Anneal Rust verification framework (TrustedBoundary, MirAst, and MirSemantics)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "20aa204315cd36aaf944778b7d33c0d609ced8e8"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover (locked Init prelude)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
