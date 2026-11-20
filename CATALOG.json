@@ -61504,6 +61504,113 @@
         "verification/hardware-security"
       ]
     },
+    "simd-dfa-utf8-streaming-transcoders-and-canonical-cbor-quic-varint-bijections": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "hsivonen/encoding_rs",
+            "revision": "e89b7c3371bffe0c260c76a11f32b8a7b6adad4a",
+            "version": "0.8.44"
+          },
+          "name": "encoding_rs WHATWG Encoding Standard SIMD and scalar Rust implementation"
+        },
+        {
+          "identity": {
+            "crate_version": "octets 0.3.7",
+            "repository": "cloudflare/quiche",
+            "revision": "d448b6b239652b09e81c8dde883b98cd5827c31f"
+          },
+          "name": "Cloudflare quiche QUIC and HTTP/3 zero-copy octets codec"
+        },
+        {
+          "identity": {
+            "repository": "enarx/ciborium",
+            "revision": "00279e48e75ecf9546aae36f6d004447c676065b",
+            "version": "0.2.2"
+          },
+          "name": "ciborium Serde CBOR serializer, deserializer, and CanonicalValue library"
+        },
+        {
+          "identity": {
+            "repository": "serde-rs/serde",
+            "revision": "e306b0c7c40ad21d5bdf52bcd20da513904682ae",
+            "version": "1.0.229"
+          },
+          "name": "Serde generic Rust serialization and deserialization framework"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal post-cleanup MIR verification framework and boundary auditor"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 theorem prover and C++ kernel"
+        },
+        {
+          "identity": {
+            "doi": "10.17487/RFC3629",
+            "rfc": "3629"
+          },
+          "name": "RFC 3629: UTF-8, a transformation format of ISO 10646 (Yergeau, November 2003)"
+        },
+        {
+          "identity": {
+            "doi": "10.1002/spe.2920"
+          },
+          "name": "Validating UTF-8 In Less Than One Instruction Per Byte (Keiser & Lemire, Softw. Pract. Exper. 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.17487/RFC9000",
+            "rfc": "9000"
+          },
+          "name": "RFC 9000: QUIC: A UDP-Based Multiplexed and Secure Transport (Iyengar & Thomson, May 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.17487/RFC8949",
+            "rfc": "8949"
+          },
+          "name": "RFC 8949: Concise Binary Object Representation (CBOR) (Bormann & Hoffman, December 2020)"
+        },
+        {
+          "identity": {
+            "isbn": "978-1-939133-06-9",
+            "url": "https://www.usenix.org/conference/usenixsecurity19/presentation/ramananandro"
+          },
+          "name": "EverParse: Verified Secure Zero-Copy Parsers for Authenticated Message Formats (Ramananandro et al., USENIX Security 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3341686"
+          },
+          "name": "Narcissus: Correct-by-Construction Derivation of Decoders and Encoders from Binary Formats (Delaware et al., PACMPL ICFP 2019)"
+        },
+        {
+          "identity": {
+            "architecture": "x86_64",
+            "interpreter": "CPython 3.13.15"
+          },
+          "name": "Python 3.13 UTF-8 DFA, SIMD slop, QUIC varint, and CBOR canonicality probe environment (Linux x86_64)"
+        }
+      ],
+      "topics": [
+        "verification/parsers",
+        "rust/simd",
+        "anneal/theory",
+        "verification/algorithms",
+        "lean/mechanization",
+        "security/malleability"
+      ]
+    },
     "simdjson-carryless-quote-masks-structural-tapes-and-vector-utf8": {
       "observed_at": "2026-11-19",
       "subjects": [
