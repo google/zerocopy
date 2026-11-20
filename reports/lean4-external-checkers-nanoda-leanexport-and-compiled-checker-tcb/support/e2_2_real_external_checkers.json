@@ -1,0 +1,241 @@
+{
+  "benchmark": "E2-2_T03_real_external_checkers",
+  "lean_version": "Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+  "leanexport_version": "3.1.0",
+  "nanoda_version": "0.4.19",
+  "honest_gmp_scales": {
+    "100": {
+      "module": "HonestGmp_100",
+      "steps_n": 100,
+      "olean_bytes": 404064,
+      "lean_kernel": {
+        "rc": 0,
+        "wall_sec": 1.1369,
+        "user_sec": 0.81,
+        "rss_mb": 475.62,
+        "stdout_tail": "",
+        "stderr_tail": ""
+      },
+      "lean4lean": {
+        "rc": 1,
+        "wall_sec": 118.0931,
+        "user_sec": 0.26,
+        "rss_mb": 80.08,
+        "stdout_tail": "",
+        "stderr_tail": "esident set size (kbytes): 82004\n\tAverage resident set size (kbytes): 0\n\tMajor (requiring I/O) page faults: 0\n\tMinor (reclaiming a frame) page faults: 8049\n\tVoluntary context switches: 361\n\tInvoluntary context switches: 54\n\tSwaps: 0\n\tFile system inputs: 3904\n\tFile system outputs: 0\n\tSocket messages sent: 0\n\tSocket messages received: 0\n\tSignals delivered: 0\n\tPage size (bytes): 4096\n\tExit status: 1\n"
+      },
+      "leanexport": {
+        "rc": 0,
+        "wall_sec": 1.2105,
+        "rss_mb": 711.35,
+        "export_bytes": 432619,
+        "export_lines": 7974,
+        "stderr_tail": ""
+      },
+      "nanoda_bin": {
+        "rc": 0,
+        "wall_sec": 0.0631,
+        "user_sec": 0.05,
+        "rss_mb": 13.45,
+        "stdout_tail": "Checked 254 declarations with no typechecker errors, 1 pretty printer errors: [\n    \"Unable to print axioms\",\n]\n",
+        "stderr_tail": ""
+      }
+    },
+    "500": {
+      "module": "HonestGmp_500",
+      "steps_n": 500,
+      "olean_bytes": 480368,
+      "lean_kernel": {
+        "rc": 0,
+        "wall_sec": 2.388,
+        "user_sec": 2.05,
+        "rss_mb": 510.27,
+        "stdout_tail": "",
+        "stderr_tail": ""
+      },
+      "lean4lean": {
+        "rc": 1,
+        "wall_sec": 53.7381,
+        "user_sec": 0.22,
+        "rss_mb": 79.43,
+        "stdout_tail": "",
+        "stderr_tail": " resident set size (kbytes): 81340\n\tAverage resident set size (kbytes): 0\n\tMajor (requiring I/O) page faults: 0\n\tMinor (reclaiming a frame) page faults: 8035\n\tVoluntary context switches: 153\n\tInvoluntary context switches: 110\n\tSwaps: 0\n\tFile system inputs: 0\n\tFile system outputs: 0\n\tSocket messages sent: 0\n\tSocket messages received: 0\n\tSignals delivered: 0\n\tPage size (bytes): 4096\n\tExit status: 1\n"
+      },
+      "leanexport": {
+        "rc": 0,
+        "wall_sec": 0.7674,
+        "rss_mb": 708.75,
+        "export_bytes": 442735,
+        "export_lines": 8142,
+        "stderr_tail": ""
+      },
+      "nanoda_bin": {
+        "rc": 0,
+        "wall_sec": 0.289,
+        "user_sec": 0.26,
+        "rss_mb": 40.8,
+        "stdout_tail": "Checked 254 declarations with no typechecker errors, 1 pretty printer errors: [\n    \"Unable to print axioms\",\n]\n",
+        "stderr_tail": ""
+      }
+    },
+    "1000": {
+      "module": "HonestGmp_1000",
+      "steps_n": 1000,
+      "olean_bytes": 587248,
+      "lean_kernel": {
+        "rc": 0,
+        "wall_sec": 3.5396,
+        "user_sec": 3.25,
+        "rss_mb": 567.4,
+        "stdout_tail": "",
+        "stderr_tail": ""
+      },
+      "lean4lean": {
+        "rc": 1,
+        "wall_sec": 0.5561,
+        "user_sec": 0.17,
+        "rss_mb": 80.89,
+        "stdout_tail": "",
+        "stderr_tail": "mum resident set size (kbytes): 82828\n\tAverage resident set size (kbytes): 0\n\tMajor (requiring I/O) page faults: 0\n\tMinor (reclaiming a frame) page faults: 8034\n\tVoluntary context switches: 54\n\tInvoluntary context switches: 6\n\tSwaps: 0\n\tFile system inputs: 0\n\tFile system outputs: 0\n\tSocket messages sent: 0\n\tSocket messages received: 0\n\tSignals delivered: 0\n\tPage size (bytes): 4096\n\tExit status: 1\n"
+      },
+      "leanexport": {
+        "rc": 0,
+        "wall_sec": 0.6034,
+        "rss_mb": 711.71,
+        "export_bytes": 455927,
+        "export_lines": 8366,
+        "stderr_tail": ""
+      },
+      "nanoda_bin": {
+        "rc": 0,
+        "wall_sec": 0.5423,
+        "user_sec": 0.5,
+        "rss_mb": 77.72,
+        "stdout_tail": "Checked 254 declarations with no typechecker errors, 1 pretty printer errors: [\n    \"Unable to print axioms\",\n]\n",
+        "stderr_tail": ""
+      }
+    },
+    "4000": {
+      "module": "HonestGmp_4000",
+      "steps_n": 4000,
+      "olean_bytes": 600536,
+      "lean_kernel": {
+        "rc": 0,
+        "wall_sec": 9.1589,
+        "user_sec": 8.69,
+        "rss_mb": 772.93,
+        "stdout_tail": "",
+        "stderr_tail": ""
+      },
+      "lean4lean": {
+        "rc": 1,
+        "wall_sec": 0.6724,
+        "user_sec": 0.22,
+        "rss_mb": 80.03,
+        "stdout_tail": "",
+        "stderr_tail": "um resident set size (kbytes): 81952\n\tAverage resident set size (kbytes): 0\n\tMajor (requiring I/O) page faults: 0\n\tMinor (reclaiming a frame) page faults: 8034\n\tVoluntary context switches: 54\n\tInvoluntary context switches: 15\n\tSwaps: 0\n\tFile system inputs: 0\n\tFile system outputs: 0\n\tSocket messages sent: 0\n\tSocket messages received: 0\n\tSignals delivered: 0\n\tPage size (bytes): 4096\n\tExit status: 1\n"
+      },
+      "leanexport": {
+        "rc": 0,
+        "wall_sec": 0.9968,
+        "rss_mb": 711.34,
+        "export_bytes": 456982,
+        "export_lines": 8389,
+        "stderr_tail": ""
+      },
+      "nanoda_bin": {
+        "rc": 0,
+        "wall_sec": 3.2624,
+        "user_sec": 2.43,
+        "rss_mb": 268.53,
+        "stdout_tail": "Checked 254 declarations with no typechecker errors, 1 pretty printer errors: [\n    \"Unable to print axioms\",\n]\n",
+        "stderr_tail": ""
+      }
+    }
+  },
+  "f1_1_formal_theorem": {
+    "module": "F1_1_Proof",
+    "lines": 2446,
+    "public_theorems": 7,
+    "olean_bytes": 10509504,
+    "lean_kernel": {
+      "rc": 0,
+      "wall_sec": 12.8323,
+      "user_sec": 12.57,
+      "rss_mb": 688.57,
+      "stdout_tail": "",
+      "stderr_tail": ""
+    },
+    "lean4lean": {
+      "rc": 1,
+      "wall_sec": 3.1195,
+      "user_sec": 0.21,
+      "rss_mb": 80.04,
+      "stdout_tail": "",
+      "stderr_tail": "mum resident set size (kbytes): 81956\n\tAverage resident set size (kbytes): 0\n\tMajor (requiring I/O) page faults: 0\n\tMinor (reclaiming a frame) page faults: 8035\n\tVoluntary context switches: 57\n\tInvoluntary context switches: 5\n\tSwaps: 0\n\tFile system inputs: 0\n\tFile system outputs: 0\n\tSocket messages sent: 0\n\tSocket messages received: 0\n\tSignals delivered: 0\n\tPage size (bytes): 4096\n\tExit status: 1\n"
+    },
+    "leanexport": {
+      "rc": 0,
+      "wall_sec": 1.5808,
+      "rss_mb": 729.35,
+      "export_bytes": 14883724,
+      "export_lines": 282950,
+      "stderr_tail": ""
+    },
+    "nanoda_bin": {
+      "rc": 101,
+      "wall_sec": 0.6404,
+      "user_sec": 0.42,
+      "rss_mb": 19.73,
+      "stdout_tail": "",
+      "stderr_tail": " resident set size (kbytes): 20200\n\tAverage resident set size (kbytes): 0\n\tMajor (requiring I/O) page faults: 0\n\tMinor (reclaiming a frame) page faults: 3537\n\tVoluntary context switches: 1\n\tInvoluntary context switches: 132\n\tSwaps: 0\n\tFile system inputs: 0\n\tFile system outputs: 0\n\tSocket messages sent: 0\n\tSocket messages received: 0\n\tSignals delivered: 0\n\tPage size (bytes): 4096\n\tExit status: 101\n",
+      "exact_panic": "declaration not found in infer_const, Classical.choice (transitive Init dependency in Lean 4.35.0)"
+    },
+    "nanoda_bin_strict_no_choice": {
+      "rc": 101,
+      "wall_sec": 0.6404,
+      "user_sec": 0.42,
+      "rss_mb": 19.73,
+      "stdout_tail": "",
+      "stderr_tail": " resident set size (kbytes): 20200\n\tAverage resident set size (kbytes): 0\n\tMajor (requiring I/O) page faults: 0\n\tMinor (reclaiming a frame) page faults: 3537\n\tVoluntary context switches: 1\n\tInvoluntary context switches: 132\n\tSwaps: 0\n\tFile system inputs: 0\n\tFile system outputs: 0\n\tSocket messages sent: 0\n\tSocket messages received: 0\n\tSignals delivered: 0\n\tPage size (bytes): 4096\n\tExit status: 101\n",
+      "exact_panic": "declaration not found in infer_const, Classical.choice (transitive Init dependency in Lean 4.35.0)"
+    },
+    "nanoda_bin_with_choice": {
+      "rc": 0,
+      "wall_sec": 0.726,
+      "rss_mb": 33.1,
+      "permitted_axioms": [
+        "propext",
+        "Quot.sound",
+        "Classical.choice"
+      ],
+      "declarations_checked": 3032,
+      "typechecker_errors": 0,
+      "stdout": "Checked 3032 declarations with no typechecker errors"
+    }
+  },
+  "marginal_100_to_4000": {
+    "lean_kernel": {
+      "delta_steps": 3900,
+      "delta_wall_sec": 8.022,
+      "marginal_steps_per_sec": 486.2,
+      "n4000_end_to_end_steps_per_sec": 436.7,
+      "n4000_rss_mb": 772.93
+    },
+    "leanexport": {
+      "delta_steps": 3900,
+      "delta_wall_sec": -0.2137,
+      "marginal_steps_per_sec": null,
+      "n4000_end_to_end_steps_per_sec": 4012.8,
+      "n4000_rss_mb": 711.34
+    },
+    "nanoda_bin": {
+      "delta_steps": 3900,
+      "delta_wall_sec": 3.1993,
+      "marginal_steps_per_sec": 1219.0,
+      "n4000_end_to_end_steps_per_sec": 1226.1,
+      "n4000_rss_mb": 268.53
+    }
+  },
+  "lean4lean_diagnostic": "failed to read file *.olean, incompatible header (installed lean4lean binary targets an older .olean header format than Lean 4.35.0)"
+}

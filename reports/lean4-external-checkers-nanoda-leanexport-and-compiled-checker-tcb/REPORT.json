@@ -1,0 +1,44 @@
+{
+  "observed_at": "2026-11-20",
+  "subjects": [
+    {
+      "identity": {
+        "repository": "https://github.com/leanprover/lean4",
+        "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc"
+      },
+      "name": "leanprover/lean4 (v4.35.0)"
+    },
+    {
+      "identity": {
+        "repository": "https://github.com/leanprover/lean4export",
+        "revision": "5a9a355dc6c5fd82b69058d433e2ae2e8dfbf8fe"
+      },
+      "name": "leanprover/lean4export (v4.35.0 / format 3.1.0)"
+    },
+    {
+      "identity": {
+        "repository": "https://github.com/ammkrn/nanoda_lib",
+        "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929"
+      },
+      "name": "ammkrn/nanoda_lib (nanoda_bin 0.4.19)"
+    },
+    {
+      "identity": {
+        "repository": "https://github.com/joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      },
+      "name": "joshlf/anneal (TrustedBoundary.lean constraints)"
+    }
+  ],
+  "topics": [
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/tcb",
+    "lean",
+    "lean/external-checkers",
+    "lean/kernel",
+    "lean/performance",
+    "verification",
+    "verification/proof-certificates"
+  ]
+}
