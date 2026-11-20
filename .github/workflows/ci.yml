@@ -1252,12 +1252,16 @@ jobs:
           # keeping the uploaded artifact suitable for upload-file-artifact's
           # direct (non-ZIP) transfer.
           outputs: type=docker,dest=${{ runner.temp }}/zerocopy-ci.tar,compression=uncompressed,force-compression=true
+          # Merge-group refs (`gh-readonly-queue/main/...`) are single-use, so
+          # probing an ephemeral tag for them always misses; read `:main` only.
           cache-from: |
-            type=registry,ref=ghcr.io/google/zerocopy/zerocopy-ci-cache:${{ steps.docker_tag.outputs.tag }}
+            ${{ github.event_name != 'merge_group' && format('type=registry,ref=ghcr.io/google/zerocopy/zerocopy-ci-cache:{0}', steps.docker_tag.outputs.tag) || '' }}
             type=registry,ref=ghcr.io/google/zerocopy/zerocopy-ci-cache:main
-          # External pull requests have read-only package permissions, so they
-          # can consume GHCR caches but cannot export updated cache layers.
-          cache-to: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && format('type=registry,ref=ghcr.io/google/zerocopy/zerocopy-ci-cache:{0},mode=max', steps.docker_tag.outputs.tag) || '' }}
+          # External pull requests have read-only package permissions, and
+          # merge-group refs are single-use (never read by future runs), so only
+          # export GHCR cache layers on main pushes, same-repo PRs, and manual
+          # dispatches.
+          cache-to: ${{ github.event_name != 'merge_group' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && format('type=registry,ref=ghcr.io/google/zerocopy/zerocopy-ci-cache:{0},mode=max', steps.docker_tag.outputs.tag) || '' }}
 
       - name: Compress Docker image archive
         env:
