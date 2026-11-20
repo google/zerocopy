@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1795166547200,
+  "lastUpdate": 1795203357908,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -24075,6 +24075,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 1815,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Josh Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "ec75fb464cda7b18581faa83a6a82d0dfdf422d9",
+          "message": "[anneal] Remove Hermes compatibility paths (#3975)\n\nRemove both aliases for Anneal V1 and the Docker and Git LFS rules\nthat refer to them. Drop the unused Rust archive fixture, which\nembeds the old checkout path in its compiler metadata.\n\nAgent-authored-by: AI agent acting on joshlf's behalf",
+          "timestamp": "2026-11-20T17:48:09Z",
+          "tree_id": "008c25d956bceb4926b228449e5c2e1f0030def5",
+          "url": "https://github.com/google/zerocopy/commit/ec75fb464cda7b18581faa83a6a82d0dfdf422d9"
+        },
+        "date": 1795203355221,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 1322,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 1459,
             "unit": "seconds"
           }
         ]
