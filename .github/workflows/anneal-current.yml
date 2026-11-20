@@ -232,7 +232,6 @@ jobs:
     timeout-minutes: 90
     env:
       CARGO_TARGET_DIR: ${{ github.workspace }}/anneal/target
-      ANNEAL_TEST_INSPECTOR: ${{ github.workspace }}/anneal/trusted/audit/TrustedBoundary.lean
       ANNEAL_TEST_JOBS: '2'
       ANNEAL_TEST_TIMEOUT_SECS: '120'
     steps:
@@ -373,7 +372,7 @@ jobs:
               "rustdoc": str(root / "rust/bin/rustdoc"),
               "lean": str(root / "lean/bin/lean"),
               "driver": str(root / "bin/anneal-rustc-capture"),
-              "inspector_source": os.environ["ANNEAL_TEST_INSPECTOR"],
+              "inspector_source": str(root / "share/anneal/trusted/audit/TrustedBoundary.lean"),
           }
           destination = Path(os.environ["ANNEAL_TEST_DIAGNOSTICS"])
           (destination / "installation.json").write_text(

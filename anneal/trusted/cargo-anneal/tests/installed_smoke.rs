@@ -10,8 +10,8 @@
 //! -- --ignored --exact installed_smoke --nocapture`.
 //!
 //! Set `ANNEAL_TEST_SOURCE_REVISION` and supply exact artifact paths through
-//! `ANNEAL_TEST_CARGO_ANNEAL`, `ANNEAL_TEST_AUDITOR`, and
-//! `ANNEAL_TEST_INSPECTOR` for selected cases. `ANNEAL_TEST_ARCHIVE` makes a
+//! `ANNEAL_TEST_CARGO_ANNEAL` and `ANNEAL_TEST_AUDITOR` for selected cases.
+//! `ANNEAL_TEST_ARCHIVE` makes a
 //! fresh test-owned installation shared by the selected cases. The alternative
 //! `ANNEAL_TEST_INSTALL_ROOT` tests an existing explicit installation and does
 //! not establish fresh-archive coverage. Supply exactly one of these inputs.
@@ -78,7 +78,6 @@ fn run_smoke(run: &RunDirectory) -> TestResult {
         "ANNEAL_TEST_INSTALL_ROOT",
         "ANNEAL_TEST_CARGO_ANNEAL",
         "ANNEAL_TEST_AUDITOR",
-        "ANNEAL_TEST_INSPECTOR",
         "ANNEAL_TEST_CASE",
         "ANNEAL_TEST_JOBS",
         "ANNEAL_TEST_TIMEOUT_SECS",
@@ -446,7 +445,6 @@ fn driver_case(case: &mut CaseDirectory, root: &Path) -> TestResult {
 
 fn audit_case(name: &str, case: &mut CaseDirectory, root: &Path) -> TestResult {
     let auditor = required_path("ANNEAL_TEST_AUDITOR")?;
-    let inspector = required_path("ANNEAL_TEST_INSPECTOR")?;
     let lean = root.join("lean/bin/lean");
     version(case, &auditor, "anneal-audit")?;
     if name != "audit-missing-lean" {
@@ -460,7 +458,12 @@ fn audit_case(name: &str, case: &mut CaseDirectory, root: &Path) -> TestResult {
         &root.join("share/anneal/trusted/lean/foundation-lock.json"),
         "fixture/trusted/lean/foundation-lock.json",
     )?;
-    case.copy(&inspector, "fixture/trusted/audit/TrustedBoundary.lean")?;
+    for file in ["TrustedBoundary.lean", "library-lock.json"] {
+        case.copy(
+            &root.join("share/anneal/trusted/audit").join(file),
+            &format!("fixture/trusted/audit/{file}"),
+        )?;
+    }
     let source = if name == "audit-rejected" {
         // This is the existing boundary suite's surface-sorry rejection. Check
         // the policy phase and execution gate, not an arbitrary nonzero exit.

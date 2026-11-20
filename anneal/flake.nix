@@ -280,6 +280,8 @@
             rustcCapture = self.packages.${system}.rustc-capture;
             leanFoundation = ./trusted/lean;
             leanTheory = ./theory;
+            targetInspector = ./trusted/audit/TrustedBoundary.lean;
+            targetLibraryLock = ./trusted/audit/library-lock.json;
             bundledResources = ./trusted/cargo-anneal/src/bundled_resources.rs;
 
             buildPhase = ''
@@ -288,13 +290,15 @@
                 "$TMPDIR/dist_staging/bin" \
                 "$TMPDIR/dist_staging/lean" \
                 "$TMPDIR/dist_staging/rust" \
-                "$TMPDIR/dist_staging/share/anneal/trusted"
+                "$TMPDIR/dist_staging/share/anneal/trusted/audit"
 
               cp -r "$rustToolchain"/* "$TMPDIR/dist_staging/rust/"
               cp -r "$leanToolchain"/* "$TMPDIR/dist_staging/lean/"
               cp "$rustcCapture/bin/anneal-rustc-capture" "$TMPDIR/dist_staging/bin/"
               cp -r "$leanFoundation" "$TMPDIR/dist_staging/share/anneal/trusted/lean"
               cp -r "$leanTheory" "$TMPDIR/dist_staging/share/anneal/theory"
+              cp "$targetInspector" "$TMPDIR/dist_staging/share/anneal/trusted/audit/TrustedBoundary.lean"
+              cp "$targetLibraryLock" "$TMPDIR/dist_staging/share/anneal/trusted/audit/library-lock.json"
 
               # Copy correspondence provenance verbatim from the parity-checked
               # `CORRESPONDENCE_PROVENANCE_JSON` constant embedded in
@@ -342,6 +346,8 @@
                 rust/bin/cargo \
                 rust/bin/rustc \
                 share/anneal/correspondence-provenance.json \
+                share/anneal/trusted/audit/TrustedBoundary.lean \
+                share/anneal/trusted/audit/library-lock.json \
                 share/anneal/trusted/lean/foundation-lock.json \
                 share/anneal/trusted/lean/lean-toolchain \
                 share/anneal/trusted/lean/Trusted/MirAst.lean \
