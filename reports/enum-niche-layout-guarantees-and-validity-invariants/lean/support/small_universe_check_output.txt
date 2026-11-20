@@ -1,0 +1,13 @@
+dec_eq_some_none_iff_eq_zero_of_nonePinned_zero_of_decEnc_of_canonical: 759827 cases
+dec_eq_some_none_iff_eq_zero_of_nonePinned_zero_of_size_eq_...: 759827 cases
+firstNiches_injective_and_isNiche_of_le_numInvalid: 78 cases
+isNiche_enc_none_of_decSomeTransparent_of_decEnc: 759827 cases
+le_numInvalid_iff_exists_lawful_layout_... (exists): 84 cases
+le_numInvalid_iff_exists_lawful_layout_... (witness): 120 cases
+le_numInvalid_of_decEnc_of_size_le: 2529231 cases
+nicheLayoutK_lawful_iff_injective_and_isNiche: 1748 cases
+nonZero_layout_eq_nicheLayout_zero_of_decSomeTransparent_of_decEnc: 161766 cases
+opt_canonical_and_fromBytes_of_size_eq_of_numInvalid_le_one_of_decEnc: 759827 cases
+someTransparent_lawful_iff_eq_nicheLayout: 759827 cases
+failures: 0
+[]

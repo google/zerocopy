@@ -1,0 +1,39 @@
+== sizes (bytes) and alignments ==
+u32: size 4 align 4
+NonZeroU32: size 4 align 4
+Option<NonZeroU32>: size 4 align 4
+u8: size 1
+NonZeroU8: size 1
+Option<NonZeroU8>: size 1
+Option<Option<NonZeroU8>>: size 2
+Option<u8>: size 2
+&u32: size 8
+Option<&u32>: size 8
+Box<u32>: size 8
+Option<Box<u32>>: size 8
+fn(): size 8
+Option<fn()>: size 8
+bool: size 1
+Option<bool>: size 1  (observed; not guaranteed)
+Option<Option<bool>>: size 1  (observed; not guaranteed)
+== Option<NonZeroU32> from bytes (guaranteed cases) ==
+transmute([0u8; 4]) = None
+transmute(None::<NonZeroU32>) = [0, 0, 0, 0]
+transmute(0x00000001.to_ne_bytes()) = Some(1)
+transmute(0x00000002.to_ne_bytes()) = Some(2)
+transmute(0x01020304.to_ne_bytes()) = Some(16909060)
+transmute(0xffffffff.to_ne_bytes()) = Some(4294967295)
+== observed byte patterns (not guaranteed) ==
+Option<bool>: None = 0x02, Some(false) = 0x00, Some(true) = 0x01
+Option<Option<bool>>: None = 0xff, Some(None) = 0x02
+== layout facts referenced by the non-claims (observed; not guaranteed) ==
+Result<u8, Infallible>: size 1
+UnsafeCell<NonZeroU32>: size 4
+Option<UnsafeCell<NonZeroU32>>: size 8
+char: size 4
+Option<char>: size 4
+(bool, bool): size 2
+enum { P(bool), 254 dataless }: size 1
+enum { P(bool), 255 dataless }: size 2
+enum { P((bool, bool)), 254 dataless }: size 2
+enum { P((bool, bool)), 255 dataless }: size 3

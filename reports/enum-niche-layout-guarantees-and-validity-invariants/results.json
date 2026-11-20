@@ -1,0 +1,570 @@
+[
+  {
+    "id": "nicheLayout_lawful_iff_isNiche",
+    "lean": "Toy.Niche.nicheLayout_lawful_iff_isNiche",
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "For any payload validity set V and pattern q, the niche-filled layout of Opt V in the payload's size (None -> q, Some v -> v's pattern, decoder reading q as None first) satisfies both round-trip laws iff q is invalid for V.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "V = nonZeroV 4 (4-byte NonZero validity), q = zeroPat 4: both sides hold.",
+    "nonvacuity_witness_lean": "Toy.Niche.nv_nicheLayout_lawful_iff_isNiche",
+    "related_lean": [
+      "Toy.Niche.ce_nicheLayout_lawful_valid_q",
+      "Toy.Niche.nicheLayout_valid_q_canonical_not_decEnc",
+      "Toy.Niche.lawful_not_nicheLayout"
+    ],
+    "non_claims": [
+      "Concerns one specific decoder (nicheLayout); that no decoder at all works when None sits on a valid pattern and valid patterns decode to Some is isNiche_enc_none_of_decSomeTransparent_of_decEnc.",
+      "When q is valid only decode-after-encode fails: nicheLayout V q is still canonical (nicheLayout_valid_q_canonical_not_decEnc).",
+      "Does not say every lawful n-byte layout of Opt V is a nicheLayout: without Some-transparency, lawful layouts such as swapLayout and permLayout exist outside this family (lawful_not_nicheLayout).",
+      "Does not say rustc uses this layout or this q; rustc only uses values outside a scalar's valid range (Niche::available) and may choose a tagged layout instead.",
+      "The model has no uninitialized bytes, no pointer provenance, no alignment, no padding and no safety invariants; payload values are identified with their unique byte patterns."
+    ],
+    "prior_art": [
+      "Unsafe Code Guidelines, rust-lang/unsafe-code-guidelines commit d809f91e62968913d808e53397fbcf7cea762cce, reference/src/glossary.md section 'Niche' (lines 150-163: the niche of a type determines invalid bit-patterns used by layout optimizations; not all invalid bit-patterns are niches). reference/src/layout/enums.md at that commit is archived as not reflecting current layout guarantees; its earlier text (commit c138499c1de03b908dfe719a41193c84f8146883, section 'Discriminant elision on Option-like enums', from line 296) described option-like enums and niche use. Non-normative.",
+      "rustc layout code, rust-lang/rust commit 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1: compiler/rustc_abi/src/layout/enum_layout.rs fn layout_of_enum (lines 15-58; computes a niche-filling and a tagged layout and keeps the smaller, on equal size the one with the larger niche, otherwise the tagged one) and fn calculate_niche_filling_layout (from line 558; line 605 gives no discriminant value to 'absent' variants, i.e. uninhabited variants whose fields are all 1-ZSTs (fn absent, compiler/rustc_abi/src/layout.rs line 90); line 611 counts the variant-index span to encode; lines 613-615 take the largest niche of the largest variant (a single scalar) and reserve that many values via Niche::reserve; line 618 tries to fit the other variants' data around the niche); compiler/rustc_abi/src/lib.rs struct Niche (line 2105), Niche::available (line 2118: number of values outside the scalar's wrapping valid_range) and Niche::reserve (line 2129: fails when count exceeds available; for count == 1 and a valid range other than 0..=1 it takes the free value closest to zero under signed, sign-extended wrapping distance, lines 2165-2174). Implementation behavior, not a guarantee.",
+      "MiniRust, minirust/minirust commit 063d784186d3252bee242217f218223205c0b568, spec/lang/representation.md lines 758-763 (round-trip properties: decode(encode(val)) == Some(val) for well-formed val; decode(bytes) == Some(val) implies encode(val) <= bytes, '<=' allowing bytes to be more initialized); spec/lang/types.md enum Discriminator (line 113); issue https://github.com/minirust/minirust/issues/288 'Enum well-formedness checks don't guarantee the round-trip properties' (open as of 2026-11-20). DecEnc is the first property; Canonical is the second restricted to fully initialized, provenance-free bytes.",
+      "Mitchell Riley, 'Categories of Optics', arXiv:1809.00738 (v2, 2018), section 4.2 'Prisms': the concrete prism laws Matching . Review = inr and [id_S, Review] . Matching = id_S, which suffice in Set (Proposition 4.2.2). With Review = enc and Matching p = inr x if dec p = some x and inl p otherwise, the first law is DecEnc and the second is Canonical: a Lawful layout is a lawful concrete prism from m-byte patterns to the enum's values.",
+      "Ralf Jung, 'Two Kinds of Invariants: Safety and Validity', blog post, 2018-08-22, https://www.ralfj.de/blog/2018/08/22/two-kinds-of-invariants.html: distinguishes the validity invariant, which 'is exploited by the compiler to perform optimizations (e.g. enum layout optimizations)', from the safety invariant. The model's Validity sets are validity invariants over initialized bytes."
+    ],
+    "design_question": "Which byte patterns may an option-like enum's None occupy without breaking decode/encode round-trips?"
+  },
+  {
+    "id": "isNiche_enc_none_of_decSomeTransparent_of_decEnc",
+    "lean": "Toy.Niche.isNiche_enc_none_of_decSomeTransparent_of_decEnc",
+    "kind": "impossibility",
+    "tier": "T0",
+    "plain_claim": "For a layout of Opt V in the payload's size n in which every valid payload pattern decodes to Some of itself (DecSomeTransparent, the payload-to-option transmute) and decode-after-encode holds (DecEnc), the pattern of None is a niche of V: None cannot sit on a valid payload pattern. Nothing is assumed about how Some is encoded or about canonical decoding.",
+    "hypotheses": [
+      {
+        "name": "hdst",
+        "purpose": "DecSomeTransparent L: every valid payload pattern decodes to Some of itself (the documented transmute t -> Some(t)); the type Layout (Opt V) n also fixes the layout's size to the payload's size n.",
+        "tightness": "tight",
+        "counterexample": "Toy.Niche.ce_isNiche_enc_none_drop_decSomeTransparent"
+      },
+      {
+        "name": "hde",
+        "purpose": "DecEnc L: None's own pattern decodes to None.",
+        "tightness": "tight",
+        "counterexample": "Toy.Niche.ce_isNiche_enc_none_drop_decEnc"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "nicheLayout (nonZeroV 4) (zeroPat 4) satisfies DecSomeTransparent and DecEnc.",
+    "nonvacuity_witness_lean": "Toy.Niche.nv_isNiche_enc_none",
+    "positive_control_lean": "Toy.Niche.pc_isNiche_enc_none",
+    "non_claims": [
+      "Escape hatches: dropping DecSomeTransparent admits a lawful layout with None on a valid pattern (swapLayout: None -> 1, Some 1 -> 0; the positive control); dropping DecEnc admits noneLostLayout (None -> 1 while every valid pattern decodes to Some).",
+      "Does not say L.enc none is the only pattern decoding to None: without Canonical (or the payload's size together with numInvalid V <= 1), other niches may also decode to None (geTwoLooseLayout).",
+      "Does not determine which niche None uses when V has several niches (opt_bool_none_pattern_not_forced_by_someTransparent_lawful).",
+      "DecSomeTransparent models the value-preserving transmute t -> Some(t), which the core::option docs state at the pinned nightly commit; the Rust 1.89.0 docs state only that this transmute is sound, so the hypothesis is not justified by the 1.89.0 docs alone.",
+      "Applies in Rust only where the guarantees it instantiates (the payload's size and the value-preserving transmute t -> Some(t)) are documented: Option<T> for T in the core::option Representation list, or Result<T, E> with a 1-ZST, for which core::result documents the same size and the t -> Ok(t) (or t -> Err(t)) transmute but not Option's zeroed-None guarantee; user-defined option-like enums and enums with explicit repr(C)/repr(u*)/repr(i*) have no documented niche guarantee.",
+      "The model has no uninitialized bytes, no pointer provenance, no alignment, no padding and no safety invariants; payload values are identified with their unique byte patterns."
+    ],
+    "prior_art": [
+      "Rust core library docs, module core::option, section 'Representation', rust-lang/rust commit 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1, library/core/src/option.rs lines 116-158: for the listed T (Box<U>, specifically only Box<U, Global>; &U; &mut U; fn and extern \"abi\" fn pointers including unsafe variants; num::NonZero*; ptr::NonNull<U>; #[repr(transparent)] structs around one of these), Option<T> has the same size, alignment and function call ABI as T, and transmuting t: T to Option<T> produces Some(t) and transmuting Some(t) to T produces t. 'In some of these cases' Rust further guarantees that transmuting [0u8; size_of::<T>()] to Option<T> produces None and None to bytes produces [0u8; size_of::<T>()]; the table's second column restricts this to U: Sized for Box<U, Global>, &U, &mut U and NonNull<U>, gives it always for fn pointers and NonZero*, and for #[repr(transparent)] wrappers when it holds for the inner type. Rust 1.89.0 (tag 1.89.0, library/core/src/option.rs section 'Representation' from line 119; https://doc.rust-lang.org/1.89.0/core/option/index.html#representation) has the same table and zero-bytes bullets but states only that the transmutes are sound, not that t becomes Some(t) and Some(t) becomes t.",
+      "Rust core library docs, module core::result, section 'Representation', rust-lang/rust commit 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1, library/core/src/result.rs lines 232-258: Result<T, E> has Option's size, alignment and ABI guarantees (and the Ok(t)/Err(t) transmutes) when one of T, E qualifies for Option's representation guarantees and the other is a zero-sized type with alignment 1. The section does not state Option's zeroed-None guarantee ([0u8; size_of::<T>()] <-> None) for Result, and RFC 3391 (line 36) grants only 'the same layout (size and alignment) and the same ABI as the primitive form of the data'. The Rust 1.89.0 section (tag 1.89.0, library/core/src/result.rs from line 231) says only that Result<T, E> 'will gain the same size, alignment, and ABI guarantees as [`Option<U>`] has', with no transmute sentence, and also requires the 1-ZST to have no fields and not to be #[non_exhaustive]. RFC 3391 'result_ffi_guarantees', rust-lang/rfcs text/3391-result_ffi_guarantees.md at commit f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4 (the last change to the file), line 94: the guarantees 'could be extended to *all* similar enums in the future', but without an opt-in 'it becomes yet another semver hazard for library authors' and the RFC 'is deliberately limited in scope'. User-defined option-like enums therefore have no documented niche guarantee.",
+      "Unsafe Code Guidelines, rust-lang/unsafe-code-guidelines commit d809f91e62968913d808e53397fbcf7cea762cce, reference/src/glossary.md section 'Niche' (lines 150-163: the niche of a type determines invalid bit-patterns used by layout optimizations; not all invalid bit-patterns are niches). reference/src/layout/enums.md at that commit is archived as not reflecting current layout guarantees; its earlier text (commit c138499c1de03b908dfe719a41193c84f8146883, section 'Discriminant elision on Option-like enums', from line 296) described option-like enums and niche use. Non-normative.",
+      "The Rustonomicon, rust-lang/nomicon commit b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6, src/other-reprs.md line 105: 'Adding an explicit repr(u*), repr(i*), or repr(C) to an enum with fields suppresses the null-pointer optimization'. Descriptive, not normative."
+    ],
+    "design_question": "Given the documented t -> Some(t) transmute, what can be inferred about the byte pattern of None?"
+  },
+  {
+    "id": "someTransparent_lawful_iff_eq_nicheLayout",
+    "lean": "Toy.Niche.someTransparent_lawful_iff_eq_nicheLayout",
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "A layout L of Opt V in the payload's size is Some-transparent (SomeTransparent: Some v -> v's pattern) and lawful iff L's None pattern q is a niche of V and L equals the niche-filled layout nicheLayout V q (encoder and decoder); the choice of niche is the only freedom. For lawful layouts SomeTransparent and DecSomeTransparent are equivalent (someTransparent_iff_decSomeTransparent_of_lawful).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "nicheLayout (nonZeroV 4) (zeroPat 4): both sides hold.",
+    "nonvacuity_witness_lean": "Toy.Niche.nv_someTransparent_lawful_iff_eq_nicheLayout",
+    "related_lean": [
+      "Toy.Niche.lawful_not_nicheLayout",
+      "Toy.Niche.decSomeTransparent_decEnc_not_someTransparent"
+    ],
+    "non_claims": [
+      "Uses canonical decoding: without Canonical, a Some-transparent DecEnc layout may decode extra niches as None (as in geTwoLooseLayout), so the decoder is not determined on niches other than q.",
+      "Does not assert that a Some-transparent lawful layout exists: when numInvalid V = 0 both sides are false.",
+      "Without SomeTransparent, lawful n-byte layouts need not equal nicheLayout V (L.enc none) (lawful_not_nicheLayout: swapLayout, permLayout).",
+      "Says nothing about layouts of a different size (e.g. tagged layouts).",
+      "The model has no uninitialized bytes, no pointer provenance, no alignment, no padding and no safety invariants; payload values are identified with their unique byte patterns."
+    ],
+    "prior_art": [
+      "Rust core library docs, module core::option, section 'Representation', rust-lang/rust commit 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1, library/core/src/option.rs lines 116-158: for the listed T (Box<U>, specifically only Box<U, Global>; &U; &mut U; fn and extern \"abi\" fn pointers including unsafe variants; num::NonZero*; ptr::NonNull<U>; #[repr(transparent)] structs around one of these), Option<T> has the same size, alignment and function call ABI as T, and transmuting t: T to Option<T> produces Some(t) and transmuting Some(t) to T produces t. 'In some of these cases' Rust further guarantees that transmuting [0u8; size_of::<T>()] to Option<T> produces None and None to bytes produces [0u8; size_of::<T>()]; the table's second column restricts this to U: Sized for Box<U, Global>, &U, &mut U and NonNull<U>, gives it always for fn pointers and NonZero*, and for #[repr(transparent)] wrappers when it holds for the inner type. Rust 1.89.0 (tag 1.89.0, library/core/src/option.rs section 'Representation' from line 119; https://doc.rust-lang.org/1.89.0/core/option/index.html#representation) has the same table and zero-bytes bullets but states only that the transmutes are sound, not that t becomes Some(t) and Some(t) becomes t.",
+      "MiniRust, minirust/minirust commit 063d784186d3252bee242217f218223205c0b568, spec/lang/representation.md lines 758-763 (round-trip properties: decode(encode(val)) == Some(val) for well-formed val; decode(bytes) == Some(val) implies encode(val) <= bytes, '<=' allowing bytes to be more initialized); spec/lang/types.md enum Discriminator (line 113); issue https://github.com/minirust/minirust/issues/288 'Enum well-formedness checks don't guarantee the round-trip properties' (open as of 2026-11-20). DecEnc is the first property; Canonical is the second restricted to fully initialized, provenance-free bytes.",
+      "Mitchell Riley, 'Categories of Optics', arXiv:1809.00738 (v2, 2018), section 4.2 'Prisms': the concrete prism laws Matching . Review = inr and [id_S, Review] . Matching = id_S, which suffice in Set (Proposition 4.2.2). With Review = enc and Matching p = inr x if dec p = some x and inl p otherwise, the first law is DecEnc and the second is Canonical: a Lawful layout is a lawful concrete prism from m-byte patterns to the enum's values."
+    ],
+    "design_question": "Once size and Some-transparency are pinned, how much freedom is left in an Option<T> layout?"
+  },
+  {
+    "id": "opt_canonical_and_fromBytes_of_size_eq_of_numInvalid_le_one_of_decEnc",
+    "lean": "Toy.Niche.opt_canonical_and_fromBytes_of_size_eq_of_numInvalid_le_one_of_decEnc",
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "If a layout of Opt V has the payload's size n (hsize), the payload has at most one niche (hV: numInvalid V <= 1) and decode-after-encode holds (hde), then decoding is canonical and every n-byte pattern decodes (FromBytes); neither the pattern of None nor canonical decoding is assumed.",
+    "hypotheses": [
+      {
+        "name": "hsize",
+        "purpose": "m = n: the layout's size is equal to the payload's size (the documented same-size guarantee).",
+        "tightness": "tight",
+        "counterexample": "Toy.Niche.ce_canonical_fromBytes_drop_size"
+      },
+      {
+        "name": "hV",
+        "purpose": "numInvalid V <= 1: the payload's validity set leaves at most one pattern unused.",
+        "tightness": "tight",
+        "counterexample": "Toy.Niche.ce_canonical_fromBytes_drop_numInvalid"
+      },
+      {
+        "name": "hde",
+        "purpose": "DecEnc L: each value has a valid representation and decoding is a function, so the encoder is injective.",
+        "tightness": "tight",
+        "counterexample": "Toy.Niche.ce_canonical_fromBytes_drop_decEnc"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "nicheLayout (nonZeroV 4) (zeroPat 4) with m = n = 4 (numInvalid (nonZeroV 4) = 1).",
+    "nonvacuity_witness_lean": "Toy.Niche.nv_opt_canonical_and_fromBytes",
+    "non_claims": [
+      "If numInvalid V = 0 the hypotheses are unsatisfiable (le_numInvalid_of_decEnc_of_size_le), so the statement is vacuous there.",
+      "Does not say which value a pattern decodes to; that needs None -> 0 for the zero pattern and DecSomeTransparent for valid payload patterns (nonZero_layout_eq_nicheLayout_zero_of_decSomeTransparent_of_decEnc).",
+      "Does not establish zerocopy's IntoBytes or Unaligned: the model has no uninitialized or padding bytes and no alignment (Option<NonZeroU32> has alignment 4); IntoBytes for Option<NonZero*> additionally needs that none of its values contains uninitialized bytes.",
+      "In Rust, the size hypothesis holds only where documented: Option<T> for T in the core::option Representation list, and Result<T, E> with a 1-ZST. It is undocumented or false for user-defined option-like enums, enums with explicit repr(C)/repr(u*)/repr(i*), and Option<UnsafeCell<NonZero*>> (UnsafeCell disables niches; observed size 8 for Option<UnsafeCell<NonZeroU32>> in lean/support/niche_probe_output.txt).",
+      "Does not apply to Option<&T>, Option<Box<T>>, Option<NonNull<T>> or Option<fn()>: their payloads are not modeled by a validity set with at most one invalid initialized pattern, and provenance and alignment are outside the model. For unsized pointees (Option<&[u8]>, Option<Box<dyn Trait>>) not even the zero-bytes <-> None guarantee is documented (core::option restricts it to U: Sized).",
+      "Says nothing about uninitialized bytes: real from-bytes conversions also require initialized input.",
+      "The model has no uninitialized bytes, no pointer provenance, no alignment, no padding and no safety invariants; payload values are identified with their unique byte patterns."
+    ],
+    "prior_art": [
+      "Rust core library docs, NonZero<T> 'Layout', rust-lang/rust commit 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1, library/core/src/num/nonzero.rs lines 81-89: 'NonZero<T> is guaranteed to have the same layout and bit validity as T with the exception that the all-zero bit pattern is invalid'; NonZero<T> and Option<NonZero<T>> have the same size and alignment.",
+      "Rust core library docs, module core::option, section 'Representation', rust-lang/rust commit 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1, library/core/src/option.rs lines 116-158: for the listed T (Box<U>, specifically only Box<U, Global>; &U; &mut U; fn and extern \"abi\" fn pointers including unsafe variants; num::NonZero*; ptr::NonNull<U>; #[repr(transparent)] structs around one of these), Option<T> has the same size, alignment and function call ABI as T, and transmuting t: T to Option<T> produces Some(t) and transmuting Some(t) to T produces t. 'In some of these cases' Rust further guarantees that transmuting [0u8; size_of::<T>()] to Option<T> produces None and None to bytes produces [0u8; size_of::<T>()]; the table's second column restricts this to U: Sized for Box<U, Global>, &U, &mut U and NonNull<U>, gives it always for fn pointers and NonZero*, and for #[repr(transparent)] wrappers when it holds for the inner type. Rust 1.89.0 (tag 1.89.0, library/core/src/option.rs section 'Representation' from line 119; https://doc.rust-lang.org/1.89.0/core/option/index.html#representation) has the same table and zero-bytes bullets but states only that the transmutes are sound, not that t becomes Some(t) and Some(t) becomes t.",
+      "zerocopy, google/zerocopy commit c55af491426ef53f35fb8c6e83f220fa07712e66: zerocopy/src/impls.rs lines 193-254 (NonZeroXxx: IntoBytes but not FromZeros/FromBytes; TryFromBytes validated by NonZero::new), lines 256-295 (Option<NonZeroXxx>: TryFromBytes with no validator, FromZeros, FromBytes, IntoBytes, and Unaligned for the 8-bit ones; SAFETY comment: 'The Rust compiler reuses `0` value to represent `None`, so size_of::<Option<NonZeroXxx>>() == size_of::<xxx>(); see `NonZeroXxx` documentation.'), lines 310-375 (Option<Box<T>>, Option<&T>, Option<&mut T>, Option<NonNull<T>> (with T: Sized) and Option of fn pointers: FromZeros, and TryFromBytes with validator pointer::is_zeroed, which accepts exactly the all-zero bytes); zerocopy/src/lib.rs trait docs: TryFromBytes line 1788 'Types for which some bit patterns are valid.', FromZeros line 3623 'Types for which a sequence of `0` bytes is a valid instance.', FromBytes line 4173 'Types for which any bit pattern is valid.'",
+      "Mathlib, leanprover-community/mathlib4 commit b476d8fd31a353258f27f2e35e8e25b689d6a052, Mathlib/Data/Fintype/Card.lean: Fintype.card_le_of_injective (line 239), Finite.injective_iff_surjective (line 335) and Finite.injective_iff_surjective_of_equiv (line 347): the finite pigeonhole bound and 'an injection between finite types of equal size is surjective', the abstract facts behind this result. This package is Mathlib-free and does not use them.",
+      "Rust core library docs, UnsafeCell<T> 'Memory layout', rust-lang/rust commit 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1, library/core/src/cell.rs lines 2221-2233: UnsafeCell<T> has the same in-memory representation as T, but 'UnsafeCell disables niche optimizations' (Option<NonNull<u8>> is typically 8 bytes on 64-bit platforms while Option<UnsafeCell<NonNull<u8>>> takes 16); compiler/rustc_ty_utils/src/layout.rs lines 713-717 at the same commit select NicheOptimizations::Disabled for UnsafeCell and UnsafePinned. Documentation plus implementation.",
+      "The Rustonomicon, rust-lang/nomicon commit b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6, src/other-reprs.md line 105: 'Adding an explicit repr(u*), repr(i*), or repr(C) to an enum with fields suppresses the null-pointer optimization'. Descriptive, not normative."
+    ],
+    "design_question": "Is FromBytes for Option<NonZero*> justified by the documented same-size guarantee and NonZero's bit validity alone?"
+  },
+  {
+    "id": "dec_eq_some_none_iff_eq_zero_of_nonePinned_zero_of_decEnc_of_canonical",
+    "lean": "Toy.Niche.dec_eq_some_none_iff_eq_zero_of_nonePinned_zero_of_decEnc_of_canonical",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For any layout of an option type (any payload type, any size) with None -> the zero pattern (hnone: NonePinned L 0) and both round-trip laws (hde, hcan), a pattern decodes to None iff it is the zero pattern. A definitional reference point for the canonical-free version.",
+    "hypotheses": [
+      {
+        "name": "hnone",
+        "purpose": "NonePinned L (zeroPat m): the documented None -> [0u8; size] guarantee.",
+        "tightness": "tight",
+        "counterexample": "Toy.Niche.ce_zero_iff_none_drop_nonePinned"
+      },
+      {
+        "name": "hde",
+        "purpose": "DecEnc L: the zero pattern actually decodes to None.",
+        "tightness": "tight",
+        "counterexample": "Toy.Niche.ce_zero_iff_none_drop_decEnc"
+      },
+      {
+        "name": "hcan",
+        "purpose": "Canonical L: no second pattern decodes to None.",
+        "tightness": "tight",
+        "counterexample": "Toy.Niche.ce_zero_iff_none_drop_canonical"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "nicheLayout (nonZeroV 4) (zeroPat 4).",
+    "nonvacuity_witness_lean": "Toy.Niche.nv_zero_iff_none_lawful",
+    "non_claims": [
+      "Canonical decoding is not documented for Rust option types; the version without it is dec_eq_some_none_iff_eq_zero_of_nonePinned_zero_of_size_eq_of_numInvalid_le_one_of_decEnc.",
+      "Does not imply FromBytes or that nonzero patterns are valid: for bool-like payloads or tagged layouts most nonzero patterns decode to nothing (nex_fromBytes, ex_taggedLayout).",
+      "In Rust, the documented None <-> [0u8; size_of::<T>()] guarantee (hnone) holds for NonZero* and fn pointers, and for Box<U, Global>, &U, &mut U and NonNull<U> only when U: Sized; it is not documented for unsized pointees such as Option<&[u8]>.",
+      "For tagged enums whose None leaves payload bytes unconstrained (modeled by taggedLooseLayout with at least one payload byte) Canonical fails and nonzero patterns can also decode to None.",
+      "The model has no uninitialized bytes, no pointer provenance, no alignment, no padding and no safety invariants; payload values are identified with their unique byte patterns."
+    ],
+    "prior_art": [
+      "Rust core library docs, module core::option, section 'Representation', rust-lang/rust commit 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1, library/core/src/option.rs lines 116-158: for the listed T (Box<U>, specifically only Box<U, Global>; &U; &mut U; fn and extern \"abi\" fn pointers including unsafe variants; num::NonZero*; ptr::NonNull<U>; #[repr(transparent)] structs around one of these), Option<T> has the same size, alignment and function call ABI as T, and transmuting t: T to Option<T> produces Some(t) and transmuting Some(t) to T produces t. 'In some of these cases' Rust further guarantees that transmuting [0u8; size_of::<T>()] to Option<T> produces None and None to bytes produces [0u8; size_of::<T>()]; the table's second column restricts this to U: Sized for Box<U, Global>, &U, &mut U and NonNull<U>, gives it always for fn pointers and NonZero*, and for #[repr(transparent)] wrappers when it holds for the inner type. Rust 1.89.0 (tag 1.89.0, library/core/src/option.rs section 'Representation' from line 119; https://doc.rust-lang.org/1.89.0/core/option/index.html#representation) has the same table and zero-bytes bullets but states only that the transmutes are sound, not that t becomes Some(t) and Some(t) becomes t.",
+      "MiniRust, minirust/minirust commit 063d784186d3252bee242217f218223205c0b568, spec/lang/representation.md lines 758-763 (round-trip properties: decode(encode(val)) == Some(val) for well-formed val; decode(bytes) == Some(val) implies encode(val) <= bytes, '<=' allowing bytes to be more initialized); spec/lang/types.md enum Discriminator (line 113); issue https://github.com/minirust/minirust/issues/288 'Enum well-formedness checks don't guarantee the round-trip properties' (open as of 2026-11-20). DecEnc is the first property; Canonical is the second restricted to fully initialized, provenance-free bytes.",
+      "Mitchell Riley, 'Categories of Optics', arXiv:1809.00738 (v2, 2018), section 4.2 'Prisms': the concrete prism laws Matching . Review = inr and [id_S, Review] . Matching = id_S, which suffice in Set (Proposition 4.2.2). With Review = enc and Matching p = inr x if dec p = some x and inl p otherwise, the first law is DecEnc and the second is Canonical: a Lawful layout is a lawful concrete prism from m-byte patterns to the enum's values."
+    ],
+    "design_question": "Reference point (definitional). Informs: when is 'all bytes zero' a complete test for None, and what does canonical decoding contribute compared with the canonical-free route?"
+  },
+  {
+    "id": "dec_eq_some_none_iff_eq_zero_of_nonePinned_zero_of_size_eq_of_numInvalid_le_one_of_decEnc",
+    "lean": "Toy.Niche.dec_eq_some_none_iff_eq_zero_of_nonePinned_zero_of_size_eq_of_numInvalid_le_one_of_decEnc",
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "If a layout of Opt V has the payload's size (hsize), the payload has at most one niche (hV), decode-after-encode holds (hde) and None -> the zero pattern (hnone), then a pattern decodes to None iff it is the zero pattern; canonical decoding is not assumed (it is forced by hsize, hV, hde).",
+    "hypotheses": [
+      {
+        "name": "hsize",
+        "purpose": "m = n: excludes extra bytes that could carry a second None representation.",
+        "tightness": "tight",
+        "counterexample": "Toy.Niche.ce_zero_iff_none_drop_size"
+      },
+      {
+        "name": "hV",
+        "purpose": "numInvalid V <= 1: excludes a spare niche that could also decode as None.",
+        "tightness": "tight",
+        "counterexample": "Toy.Niche.ce_zero_iff_none_drop_numInvalid"
+      },
+      {
+        "name": "hde",
+        "purpose": "DecEnc L.",
+        "tightness": "tight",
+        "counterexample": "Toy.Niche.ce_zero_iff_none_drop_decEnc"
+      },
+      {
+        "name": "hnone",
+        "purpose": "NonePinned L (zeroPat m): the documented None -> [0u8; size] guarantee.",
+        "tightness": "tight",
+        "counterexample": "Toy.Niche.ce_zero_iff_none_drop_nonePinned"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "nicheLayout (nonZeroV 4) (zeroPat 4).",
+    "nonvacuity_witness_lean": "Toy.Niche.nv_zero_iff_none_size_numInvalid",
+    "non_claims": [
+      "If numInvalid V = 0 the hypotheses are unsatisfiable (le_numInvalid_of_decEnc_of_size_le), so the statement is vacuous there.",
+      "Canonical decoding is not assumed but is forced by hsize, hV and hde (opt_canonical_and_fromBytes_of_size_eq_of_numInvalid_le_one_of_decEnc); the theorem is that result combined with dec_eq_some_none_iff_eq_zero_of_nonePinned_zero_of_decEnc_of_canonical. Its depth is shallow although its final proof is a two-step composition: the canonicity step is the counting (pigeonhole) argument of opt_canonical_and_fromBytes_of_size_eq_of_numInvalid_le_one_of_decEnc.",
+      "Does not apply to Option<&T>, Option<Box<T>>, Option<NonNull<T>>, Option<fn()>, Option<bool>, or payloads with padding (e.g. #[repr(C)] struct S(NonZeroU8, u16), where patterns differing only in padding bytes denote the same value): none of these is modeled by a validity set with numInvalid V <= 1.",
+      "Soundness of a validator that accepts only all-zero bytes as None (such as zerocopy's pointer::is_zeroed for Option<&T> and the other pointer options) needs only the <- direction (zero decodes to None), which follows from hnone and hde alone; it needs neither this theorem's -> direction nor canonical decoding, and this theorem does not apply to those pointer options.",
+      "Does not depend on zero being the payload's niche: only numInvalid V <= 1 and None -> 0 are used (documented_niche_identity_not_needed).",
+      "In Rust, hnone (None -> [0u8; size_of::<T>()]) is documented only by core::option's zero-bytes bullets (always for NonZero* and fn pointers; for Box<U, Global>, &U, &mut U and NonNull<U> only when U: Sized). core::result does not state it for Result<T, E> with a 1-ZST: for pointer-like Result<T, ()> it is undocumented, and for Result<NonZero*, ()> it is available only as the in-model derivation from the t -> Ok(t) transmute and decode-after-encode (nonePinned_zero_of_nonZero_of_decSomeTransparent_of_decEnc). User-defined option-like enums and enums with explicit repr(C)/repr(u*)/repr(i*) have no documented niche guarantee.",
+      "Does not say what nonzero patterns decode to (needs DecSomeTransparent; see nonZero_layout_eq_nicheLayout_zero_of_decSomeTransparent_of_decEnc).",
+      "The model has no uninitialized bytes, no pointer provenance, no alignment, no padding and no safety invariants; payload values are identified with their unique byte patterns."
+    ],
+    "prior_art": [
+      "Rust core library docs, module core::option, section 'Representation', rust-lang/rust commit 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1, library/core/src/option.rs lines 116-158: for the listed T (Box<U>, specifically only Box<U, Global>; &U; &mut U; fn and extern \"abi\" fn pointers including unsafe variants; num::NonZero*; ptr::NonNull<U>; #[repr(transparent)] structs around one of these), Option<T> has the same size, alignment and function call ABI as T, and transmuting t: T to Option<T> produces Some(t) and transmuting Some(t) to T produces t. 'In some of these cases' Rust further guarantees that transmuting [0u8; size_of::<T>()] to Option<T> produces None and None to bytes produces [0u8; size_of::<T>()]; the table's second column restricts this to U: Sized for Box<U, Global>, &U, &mut U and NonNull<U>, gives it always for fn pointers and NonZero*, and for #[repr(transparent)] wrappers when it holds for the inner type. Rust 1.89.0 (tag 1.89.0, library/core/src/option.rs section 'Representation' from line 119; https://doc.rust-lang.org/1.89.0/core/option/index.html#representation) has the same table and zero-bytes bullets but states only that the transmutes are sound, not that t becomes Some(t) and Some(t) becomes t.",
+      "Rust core library docs, NonZero<T> 'Layout', rust-lang/rust commit 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1, library/core/src/num/nonzero.rs lines 81-89: 'NonZero<T> is guaranteed to have the same layout and bit validity as T with the exception that the all-zero bit pattern is invalid'; NonZero<T> and Option<NonZero<T>> have the same size and alignment.",
+      "zerocopy, google/zerocopy commit c55af491426ef53f35fb8c6e83f220fa07712e66: zerocopy/src/impls.rs lines 193-254 (NonZeroXxx: IntoBytes but not FromZeros/FromBytes; TryFromBytes validated by NonZero::new), lines 256-295 (Option<NonZeroXxx>: TryFromBytes with no validator, FromZeros, FromBytes, IntoBytes, and Unaligned for the 8-bit ones; SAFETY comment: 'The Rust compiler reuses `0` value to represent `None`, so size_of::<Option<NonZeroXxx>>() == size_of::<xxx>(); see `NonZeroXxx` documentation.'), lines 310-375 (Option<Box<T>>, Option<&T>, Option<&mut T>, Option<NonNull<T>> (with T: Sized) and Option of fn pointers: FromZeros, and TryFromBytes with validator pointer::is_zeroed, which accepts exactly the all-zero bytes); zerocopy/src/lib.rs trait docs: TryFromBytes line 1788 'Types for which some bit patterns are valid.', FromZeros line 3623 'Types for which a sequence of `0` bytes is a valid instance.', FromBytes line 4173 'Types for which any bit pattern is valid.'",
+      "Mathlib, leanprover-community/mathlib4 commit b476d8fd31a353258f27f2e35e8e25b689d6a052, Mathlib/Data/Fintype/Card.lean: Fintype.card_le_of_injective (line 239), Finite.injective_iff_surjective (line 335) and Finite.injective_iff_surjective_of_equiv (line 347): the finite pigeonhole bound and 'an injection between finite types of equal size is surjective', the abstract facts behind this result. This package is Mathlib-free and does not use them.",
+      "The Rustonomicon, rust-lang/nomicon commit b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6, src/other-reprs.md line 105: 'Adding an explicit repr(u*), repr(i*), or repr(C) to an enum with fields suppresses the null-pointer optimization'. Descriptive, not normative."
+    ],
+    "design_question": "Can a validator accept exactly the zero pattern as None for Option<NonZero*> without assuming canonical decoding?"
+  },
+  {
+    "id": "opt_fromBytes_and_zero_iff_none_of_nichePinned_zero_of_numInvalid_le_one_of_decEnc",
+    "lean": "Toy.Niche.opt_fromBytes_and_zero_iff_none_of_nichePinned_zero_of_numInvalid_le_one_of_decEnc",
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "Under the documented guarantee NichePinned L 0 (size n and None -> 0), with at most one payload niche (hV: numInvalid V <= 1) and decode-after-encode (hde), every n-byte pattern decodes and the zero pattern is exactly None. The identity of the payload's niche is not used; for NonZero payloads hV follows from 'zero is the only niche' (numInvalid_le_one_of_only_niche_zero).",
+    "hypotheses": [
+      {
+        "name": "hpin (size component m = n)",
+        "purpose": "Same-size guarantee.",
+        "tightness": "tight",
+        "counterexample": "Toy.Niche.ce_documented_drop_size_pin"
+      },
+      {
+        "name": "hpin (None component NonePinned L (zeroPat m))",
+        "purpose": "None -> [0u8; n]; needed only for the second conjunct.",
+        "tightness": "tight",
+        "counterexample": "Toy.Niche.ce_documented_drop_none_pin"
+      },
+      {
+        "name": "hV",
+        "purpose": "numInvalid V <= 1: at most one invalid payload pattern (for NonZero: exactly the zero pattern).",
+        "tightness": "tight",
+        "counterexample": "Toy.Niche.ce_documented_drop_numInvalid"
+      },
+      {
+        "name": "hde",
+        "purpose": "DecEnc L.",
+        "tightness": "tight",
+        "counterexample": "Toy.Niche.ce_documented_drop_decEnc"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "nicheLayout (nonZeroV 4) (zeroPat 4) (the Option<NonZeroU32> case).",
+    "nonvacuity_witness_lean": "Toy.Niche.nv_documented",
+    "related_lean": [
+      "Toy.Niche.documented_niche_identity_not_needed",
+      "Toy.Niche.numInvalid_le_one_of_only_niche_zero"
+    ],
+    "non_claims": [
+      "If numInvalid V = 0 the hypotheses are unsatisfiable (le_numInvalid_of_decEnc_of_size_le), so the statement is vacuous there.",
+      "Neither conjunct uses that the payload's niche is the zero pattern: documented_niche_identity_not_needed exhibits a payload whose only niche is 1, a lawful layout pinned at zero, and both conclusions.",
+      "The two conjuncts have different minimal hypotheses: FromBytes does not use the None component of hpin (opt_canonical_and_fromBytes_of_size_eq_of_numInvalid_le_one_of_decEnc), the second conjunct is dec_eq_some_none_iff_eq_zero_of_nonePinned_zero_of_size_eq_of_numInvalid_le_one_of_decEnc; each tightness counterexample falsifies one conjunct. This theorem is their conjunction. Its depth is shallow, not definitional: both conjuncts rest on the counting argument of opt_canonical_and_fromBytes_of_size_eq_of_numInvalid_le_one_of_decEnc, and the same convention labels dec_eq_some_none_iff_eq_zero_of_nonePinned_zero_of_size_eq_of_numInvalid_le_one_of_decEnc shallow.",
+      "Does not say what a nonzero pattern decodes to.",
+      "Does not establish zerocopy's IntoBytes or Unaligned: the model has no uninitialized or padding bytes and no alignment (Option<NonZeroU32> has alignment 4); IntoBytes for Option<NonZero*> additionally needs that none of its values contains uninitialized bytes.",
+      "Does not apply to user-defined option-like enums, enums with explicit repr(C)/repr(u*)/repr(i*), or Option<UnsafeCell<NonZero*>>, for which NichePinned is not documented (or false). For Result<T, E> with a 1-ZST, core::result documents the size component of NichePinned but not its None component (zero bytes <-> the dataless variant); for Result<NonZero*, ()> that component follows only inside the model, from the t -> Ok(t) transmute and decode-after-encode (nonePinned_zero_of_nonZero_of_decSomeTransparent_of_decEnc).",
+      "Says nothing about payloads with more than one invalid pattern (references, Box, NonNull, fn pointers, bool).",
+      "The model has no uninitialized bytes, no pointer provenance, no alignment, no padding and no safety invariants; payload values are identified with their unique byte patterns."
+    ],
+    "prior_art": [
+      "Rust core library docs, module core::option, section 'Representation', rust-lang/rust commit 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1, library/core/src/option.rs lines 116-158: for the listed T (Box<U>, specifically only Box<U, Global>; &U; &mut U; fn and extern \"abi\" fn pointers including unsafe variants; num::NonZero*; ptr::NonNull<U>; #[repr(transparent)] structs around one of these), Option<T> has the same size, alignment and function call ABI as T, and transmuting t: T to Option<T> produces Some(t) and transmuting Some(t) to T produces t. 'In some of these cases' Rust further guarantees that transmuting [0u8; size_of::<T>()] to Option<T> produces None and None to bytes produces [0u8; size_of::<T>()]; the table's second column restricts this to U: Sized for Box<U, Global>, &U, &mut U and NonNull<U>, gives it always for fn pointers and NonZero*, and for #[repr(transparent)] wrappers when it holds for the inner type. Rust 1.89.0 (tag 1.89.0, library/core/src/option.rs section 'Representation' from line 119; https://doc.rust-lang.org/1.89.0/core/option/index.html#representation) has the same table and zero-bytes bullets but states only that the transmutes are sound, not that t becomes Some(t) and Some(t) becomes t.",
+      "Rust core library docs, NonZero<T> 'Layout', rust-lang/rust commit 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1, library/core/src/num/nonzero.rs lines 81-89: 'NonZero<T> is guaranteed to have the same layout and bit validity as T with the exception that the all-zero bit pattern is invalid'; NonZero<T> and Option<NonZero<T>> have the same size and alignment.",
+      "Rust core library docs, module core::result, section 'Representation', rust-lang/rust commit 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1, library/core/src/result.rs lines 232-258: Result<T, E> has Option's size, alignment and ABI guarantees (and the Ok(t)/Err(t) transmutes) when one of T, E qualifies for Option's representation guarantees and the other is a zero-sized type with alignment 1. The section does not state Option's zeroed-None guarantee ([0u8; size_of::<T>()] <-> None) for Result, and RFC 3391 (line 36) grants only 'the same layout (size and alignment) and the same ABI as the primitive form of the data'. The Rust 1.89.0 section (tag 1.89.0, library/core/src/result.rs from line 231) says only that Result<T, E> 'will gain the same size, alignment, and ABI guarantees as [`Option<U>`] has', with no transmute sentence, and also requires the 1-ZST to have no fields and not to be #[non_exhaustive]. RFC 3391 'result_ffi_guarantees', rust-lang/rfcs text/3391-result_ffi_guarantees.md at commit f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4 (the last change to the file), line 94: the guarantees 'could be extended to *all* similar enums in the future', but without an opt-in 'it becomes yet another semver hazard for library authors' and the RFC 'is deliberately limited in scope'. User-defined option-like enums therefore have no documented niche guarantee.",
+      "zerocopy, google/zerocopy commit c55af491426ef53f35fb8c6e83f220fa07712e66: zerocopy/src/impls.rs lines 193-254 (NonZeroXxx: IntoBytes but not FromZeros/FromBytes; TryFromBytes validated by NonZero::new), lines 256-295 (Option<NonZeroXxx>: TryFromBytes with no validator, FromZeros, FromBytes, IntoBytes, and Unaligned for the 8-bit ones; SAFETY comment: 'The Rust compiler reuses `0` value to represent `None`, so size_of::<Option<NonZeroXxx>>() == size_of::<xxx>(); see `NonZeroXxx` documentation.'), lines 310-375 (Option<Box<T>>, Option<&T>, Option<&mut T>, Option<NonNull<T>> (with T: Sized) and Option of fn pointers: FromZeros, and TryFromBytes with validator pointer::is_zeroed, which accepts exactly the all-zero bytes); zerocopy/src/lib.rs trait docs: TryFromBytes line 1788 'Types for which some bit patterns are valid.', FromZeros line 3623 'Types for which a sequence of `0` bytes is a valid instance.', FromBytes line 4173 'Types for which any bit pattern is valid.'",
+      "Rust core library docs, UnsafeCell<T> 'Memory layout', rust-lang/rust commit 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1, library/core/src/cell.rs lines 2221-2233: UnsafeCell<T> has the same in-memory representation as T, but 'UnsafeCell disables niche optimizations' (Option<NonNull<u8>> is typically 8 bytes on 64-bit platforms while Option<UnsafeCell<NonNull<u8>>> takes 16); compiler/rustc_ty_utils/src/layout.rs lines 713-717 at the same commit select NicheOptimizations::Disabled for UnsafeCell and UnsafePinned. Documentation plus implementation.",
+      "The Rustonomicon, rust-lang/nomicon commit b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6, src/other-reprs.md line 105: 'Adding an explicit repr(u*), repr(i*), or repr(C) to an enum with fields suppresses the null-pointer optimization'. Descriptive, not normative."
+    ],
+    "design_question": "What do the documented NPO guarantees plus NonZero bit validity buy byte-level code such as zerocopy's FromBytes/FromZeros impls for Option<NonZero*>?"
+  },
+  {
+    "id": "nonePinned_zero_of_nonZero_of_decSomeTransparent_of_decEnc",
+    "lean": "Toy.Niche.nonePinned_zero_of_nonZero_of_decSomeTransparent_of_decEnc",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For the n-byte NonZero payload, any layout of Opt (nonZeroV n) in n bytes in which every valid payload pattern decodes to Some of itself (DecSomeTransparent) and decode-after-encode holds (DecEnc) represents None by the zero pattern.",
+    "hypotheses": [
+      {
+        "name": "hdst",
+        "purpose": "DecSomeTransparent L: every valid payload pattern decodes to Some of itself (the documented transmute t -> Some(t)); the type Layout (Opt V) n also fixes the layout's size to the payload's size n.",
+        "tightness": "tight",
+        "counterexample": "Toy.Niche.ce_nonePinned_zero_drop_decSomeTransparent"
+      },
+      {
+        "name": "hde",
+        "purpose": "DecEnc L.",
+        "tightness": "tight",
+        "counterexample": "Toy.Niche.ce_nonePinned_zero_drop_decEnc"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "nicheLayout (nonZeroV 4) (zeroPat 4).",
+    "nonvacuity_witness_lean": "Toy.Niche.nv_decSomeTransparent_decEnc",
+    "non_claims": [
+      "Specific to payloads with exactly one niche; for bool-like payloads None's pattern is not forced (opt_bool_none_pattern_not_forced_by_someTransparent_lawful).",
+      "Shows that in the model the None -> 0 guarantee for NonZero is derivable from the t -> Some(t) transmute, not that Rust documents it this way; the Rust 1.89.0 docs state only that this transmute is sound, so the derivation is not available from them.",
+      "Does not apply to pointer-like payloads (Option<&T>, Option<Box<T>>, Option<NonNull<T>>, Option<fn()>): they have many invalid patterns, so None -> 0 is not derivable this way and is a separate documented guarantee (for U: Sized).",
+      "Applies in Rust only where the guarantees it instantiates (the payload's size and the value-preserving transmute t -> Some(t)) are documented: Option<T> for T in the core::option Representation list, or Result<T, E> with a 1-ZST, for which core::result documents the same size and the t -> Ok(t) (or t -> Err(t)) transmute but not Option's zeroed-None guarantee; user-defined option-like enums and enums with explicit repr(C)/repr(u*)/repr(i*) have no documented niche guarantee.",
+      "At n = 0, nonZeroV 0 is the empty validity set (not a NonZero integer) and DecSomeTransparent holds vacuously; the statement still holds there.",
+      "The model has no uninitialized bytes, no pointer provenance, no alignment, no padding and no safety invariants; payload values are identified with their unique byte patterns."
+    ],
+    "prior_art": [
+      "Rust core library docs, module core::option, section 'Representation', rust-lang/rust commit 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1, library/core/src/option.rs lines 116-158: for the listed T (Box<U>, specifically only Box<U, Global>; &U; &mut U; fn and extern \"abi\" fn pointers including unsafe variants; num::NonZero*; ptr::NonNull<U>; #[repr(transparent)] structs around one of these), Option<T> has the same size, alignment and function call ABI as T, and transmuting t: T to Option<T> produces Some(t) and transmuting Some(t) to T produces t. 'In some of these cases' Rust further guarantees that transmuting [0u8; size_of::<T>()] to Option<T> produces None and None to bytes produces [0u8; size_of::<T>()]; the table's second column restricts this to U: Sized for Box<U, Global>, &U, &mut U and NonNull<U>, gives it always for fn pointers and NonZero*, and for #[repr(transparent)] wrappers when it holds for the inner type. Rust 1.89.0 (tag 1.89.0, library/core/src/option.rs section 'Representation' from line 119; https://doc.rust-lang.org/1.89.0/core/option/index.html#representation) has the same table and zero-bytes bullets but states only that the transmutes are sound, not that t becomes Some(t) and Some(t) becomes t.",
+      "Rust core library docs, NonZero<T> 'Layout', rust-lang/rust commit 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1, library/core/src/num/nonzero.rs lines 81-89: 'NonZero<T> is guaranteed to have the same layout and bit validity as T with the exception that the all-zero bit pattern is invalid'; NonZero<T> and Option<NonZero<T>> have the same size and alignment.",
+      "The Rustonomicon, rust-lang/nomicon commit b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6, src/other-reprs.md line 105: 'Adding an explicit repr(u*), repr(i*), or repr(C) to an enum with fields suppresses the null-pointer optimization'. Descriptive, not normative."
+    ],
+    "design_question": "Is the documented None -> [0u8; n] guarantee for Option<NonZero*> independent of the t -> Some(t) guarantee?"
+  },
+  {
+    "id": "nonZero_layout_eq_nicheLayout_zero_of_decSomeTransparent_of_decEnc",
+    "lean": "Toy.Niche.nonZero_layout_eq_nicheLayout_zero_of_decSomeTransparent_of_decEnc",
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For the n-byte NonZero payload, any layout of Opt (nonZeroV n) in n bytes in which every valid payload pattern decodes to Some of itself (DecSomeTransparent) and decode-after-encode holds (DecEnc) equals nicheLayout (nonZeroV n) (zeroPat n): zero <-> None and every other pattern p <-> Some p. Neither canonical decoding nor encoder-side transparency is assumed.",
+    "hypotheses": [
+      {
+        "name": "hdst",
+        "purpose": "DecSomeTransparent L: every valid payload pattern decodes to Some of itself (the documented transmute t -> Some(t)); the type Layout (Opt V) n also fixes the layout's size to the payload's size n.",
+        "tightness": "tight",
+        "counterexample": "Toy.Niche.ce_layout_determined_drop_decSomeTransparent"
+      },
+      {
+        "name": "hde",
+        "purpose": "DecEnc L.",
+        "tightness": "tight",
+        "counterexample": "Toy.Niche.ce_layout_determined_drop_decEnc"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "nicheLayout (nonZeroV 4) (zeroPat 4).",
+    "nonvacuity_witness_lean": "Toy.Niche.nv_decSomeTransparent_decEnc",
+    "related_lean": [
+      "Toy.Niche.decSomeTransparent_of_someTransparent_of_decEnc",
+      "Toy.Niche.decSomeTransparent_decEnc_not_someTransparent"
+    ],
+    "non_claims": [
+      "Depends on the value-preserving transmute t -> Some(t) (DecSomeTransparent), stated in the core::option docs at the pinned nightly commit; under the Rust 1.89.0 docs, which state only that the transmutes are sound, permLayout (None -> 0, Some 1 and Some 2 exchanged; lawful) is not excluded.",
+      "Does not extend to Option<&T> etc.; their validity sets are not nonZeroV n in this model.",
+      "Does not establish zerocopy's IntoBytes or Unaligned: the model has no uninitialized or padding bytes and no alignment (Option<NonZeroU32> has alignment 4); IntoBytes for Option<NonZero*> additionally needs that none of its values contains uninitialized bytes.",
+      "Does not apply to Option<UnsafeCell<NonZero*>> (UnsafeCell disables niches), to user-defined option-like enums, or to enums with explicit repr(C)/repr(u*)/repr(i*); none of these has a documented niche guarantee.",
+      "Byte order (which integer a pattern denotes) is outside the model; patterns are little-endian values by convention.",
+      "At n = 0, nonZeroV 0 is the empty validity set (not a NonZero integer) and DecSomeTransparent holds vacuously; the statement still holds there.",
+      "The model has no uninitialized bytes, no pointer provenance, no alignment, no padding and no safety invariants; payload values are identified with their unique byte patterns."
+    ],
+    "prior_art": [
+      "Rust core library docs, module core::option, section 'Representation', rust-lang/rust commit 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1, library/core/src/option.rs lines 116-158: for the listed T (Box<U>, specifically only Box<U, Global>; &U; &mut U; fn and extern \"abi\" fn pointers including unsafe variants; num::NonZero*; ptr::NonNull<U>; #[repr(transparent)] structs around one of these), Option<T> has the same size, alignment and function call ABI as T, and transmuting t: T to Option<T> produces Some(t) and transmuting Some(t) to T produces t. 'In some of these cases' Rust further guarantees that transmuting [0u8; size_of::<T>()] to Option<T> produces None and None to bytes produces [0u8; size_of::<T>()]; the table's second column restricts this to U: Sized for Box<U, Global>, &U, &mut U and NonNull<U>, gives it always for fn pointers and NonZero*, and for #[repr(transparent)] wrappers when it holds for the inner type. Rust 1.89.0 (tag 1.89.0, library/core/src/option.rs section 'Representation' from line 119; https://doc.rust-lang.org/1.89.0/core/option/index.html#representation) has the same table and zero-bytes bullets but states only that the transmutes are sound, not that t becomes Some(t) and Some(t) becomes t.",
+      "Rust core library docs, NonZero<T> 'Layout', rust-lang/rust commit 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1, library/core/src/num/nonzero.rs lines 81-89: 'NonZero<T> is guaranteed to have the same layout and bit validity as T with the exception that the all-zero bit pattern is invalid'; NonZero<T> and Option<NonZero<T>> have the same size and alignment.",
+      "zerocopy, google/zerocopy commit c55af491426ef53f35fb8c6e83f220fa07712e66: zerocopy/src/impls.rs lines 193-254 (NonZeroXxx: IntoBytes but not FromZeros/FromBytes; TryFromBytes validated by NonZero::new), lines 256-295 (Option<NonZeroXxx>: TryFromBytes with no validator, FromZeros, FromBytes, IntoBytes, and Unaligned for the 8-bit ones; SAFETY comment: 'The Rust compiler reuses `0` value to represent `None`, so size_of::<Option<NonZeroXxx>>() == size_of::<xxx>(); see `NonZeroXxx` documentation.'), lines 310-375 (Option<Box<T>>, Option<&T>, Option<&mut T>, Option<NonNull<T>> (with T: Sized) and Option of fn pointers: FromZeros, and TryFromBytes with validator pointer::is_zeroed, which accepts exactly the all-zero bytes); zerocopy/src/lib.rs trait docs: TryFromBytes line 1788 'Types for which some bit patterns are valid.', FromZeros line 3623 'Types for which a sequence of `0` bytes is a valid instance.', FromBytes line 4173 'Types for which any bit pattern is valid.'",
+      "Rust core library docs, UnsafeCell<T> 'Memory layout', rust-lang/rust commit 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1, library/core/src/cell.rs lines 2221-2233: UnsafeCell<T> has the same in-memory representation as T, but 'UnsafeCell disables niche optimizations' (Option<NonNull<u8>> is typically 8 bytes on 64-bit platforms while Option<UnsafeCell<NonNull<u8>>> takes 16); compiler/rustc_ty_utils/src/layout.rs lines 713-717 at the same commit select NicheOptimizations::Disabled for UnsafeCell and UnsafePinned. Documentation plus implementation.",
+      "The Rustonomicon, rust-lang/nomicon commit b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6, src/other-reprs.md line 105: 'Adding an explicit repr(u*), repr(i*), or repr(C) to an enum with fields suppresses the null-pointer optimization'. Descriptive, not normative."
+    ],
+    "design_question": "Do the documented guarantees fully determine the bytes-to-value map of Option<NonZero*>?"
+  },
+  {
+    "id": "opt_bool_lawful_layouts_in_one_and_two_bytes",
+    "lean": "Toy.Niche.opt_bool_lawful_layouts_in_one_and_two_bytes",
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "For the bool-like payload (valid patterns 0 and 1 of 256), both the 1-byte niche-filled layout with None -> 2 and the 2-byte separately tagged layout are lawful, so validity plus lawfulness do not determine the size of Opt bool.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "The statement itself exhibits both layouts.",
+    "nonvacuity_witness_lean": "Toy.Niche.opt_bool_lawful_layouts_in_one_and_two_bytes",
+    "related_lean": [
+      "Toy.Niche.nonZero_lawful_layouts_in_one_and_two_bytes"
+    ],
+    "non_claims": [
+      "Does not say rustc does or will make Option<bool> two bytes; the observed size is 1 on the recorded compiler (lean/support/niche_probe_output.txt), and no documented Rust guarantee forbids a 2-byte layout.",
+      "Validity plus lawfulness do not fix the size of Option<NonZero*> either (nonZero_lawful_layouts_in_one_and_two_bytes: a 1-byte and a 2-byte lawful layout of the 1-byte NonZero option); Option<NonZero*>'s size is fixed only by the documented guarantee.",
+      "The model has no uninitialized bytes, no pointer provenance, no alignment, no padding and no safety invariants; payload values are identified with their unique byte patterns."
+    ],
+    "prior_art": [
+      "The Rust Reference, rust-lang/reference commit a2ae66d7037cbedac68746b9510b24cc34b96d69, src/type-layout.md rules layout.repr.rust.layout and layout.repr.rust.unspecified (the default representation makes no data layout guarantees beyond those listed, none of which concerns niches), and src/types/boolean.md rule type.bool.repr (bool: 0x00 = false, 0x01 = true, any other bit pattern is undefined behavior).",
+      "Rust core library docs, module core::option, section 'Representation', rust-lang/rust commit 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1, library/core/src/option.rs lines 116-158: for the listed T (Box<U>, specifically only Box<U, Global>; &U; &mut U; fn and extern \"abi\" fn pointers including unsafe variants; num::NonZero*; ptr::NonNull<U>; #[repr(transparent)] structs around one of these), Option<T> has the same size, alignment and function call ABI as T, and transmuting t: T to Option<T> produces Some(t) and transmuting Some(t) to T produces t. 'In some of these cases' Rust further guarantees that transmuting [0u8; size_of::<T>()] to Option<T> produces None and None to bytes produces [0u8; size_of::<T>()]; the table's second column restricts this to U: Sized for Box<U, Global>, &U, &mut U and NonNull<U>, gives it always for fn pointers and NonZero*, and for #[repr(transparent)] wrappers when it holds for the inner type. Rust 1.89.0 (tag 1.89.0, library/core/src/option.rs section 'Representation' from line 119; https://doc.rust-lang.org/1.89.0/core/option/index.html#representation) has the same table and zero-bytes bullets but states only that the transmutes are sound, not that t becomes Some(t) and Some(t) becomes t.",
+      "rustc layout code, rust-lang/rust commit 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1: compiler/rustc_abi/src/layout/enum_layout.rs fn layout_of_enum (lines 15-58; computes a niche-filling and a tagged layout and keeps the smaller, on equal size the one with the larger niche, otherwise the tagged one) and fn calculate_niche_filling_layout (from line 558; line 605 gives no discriminant value to 'absent' variants, i.e. uninhabited variants whose fields are all 1-ZSTs (fn absent, compiler/rustc_abi/src/layout.rs line 90); line 611 counts the variant-index span to encode; lines 613-615 take the largest niche of the largest variant (a single scalar) and reserve that many values via Niche::reserve; line 618 tries to fit the other variants' data around the niche); compiler/rustc_abi/src/lib.rs struct Niche (line 2105), Niche::available (line 2118: number of values outside the scalar's wrapping valid_range) and Niche::reserve (line 2129: fails when count exceeds available; for count == 1 and a valid range other than 0..=1 it takes the free value closest to zero under signed, sign-extended wrapping distance, lines 2165-2174). Implementation behavior, not a guarantee."
+    ],
+    "design_question": "May code assume size_of::<Option<bool>>() == 1 from bool's validity invariant alone?"
+  },
+  {
+    "id": "opt_bool_none_pattern_not_forced_by_someTransparent_lawful",
+    "lean": "Toy.Niche.opt_bool_none_pattern_not_forced_by_someTransparent_lawful",
+    "kind": "impossibility",
+    "tier": "T1",
+    "plain_claim": "For every one-byte pattern q, not every lawful Some-transparent 1-byte layout of Opt bool represents None by q (NonePinned L q); even with the size and Some-transparency pinned, bool's validity set does not determine None's byte.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "nicheLayout boolV 2 is lawful and Some-transparent, so the quantified class is nonempty.",
+    "nonvacuity_witness_lean": "Toy.Niche.nv_opt_bool_none_pattern_not_forced",
+    "positive_control_lean": "Toy.Niche.pc_nonZero_none_pattern_forced",
+    "non_claims": [
+      "Does not say that rustc's choice (observed None = 0x02 for Option<bool>) will change; only that it is not derivable from validity.",
+      "Escape hatches: a payload with exactly one niche (the positive control pc_nonZero_none_pattern_forced, NonZero) or an explicit documented None pin (NonePinned, as the core::option docs give for the listed pointer and NonZero types) defeats this impossibility.",
+      "Does not imply that Option<bool> is FromBytes: with canonical decoding only three of the 256 patterns decode (shown for the observed layout nicheLayout boolV 2 by opt_bool_nicheLayout_not_fromBytes; the general count is not proved here).",
+      "The model has no uninitialized bytes, no pointer provenance, no alignment, no padding and no safety invariants; payload values are identified with their unique byte patterns."
+    ],
+    "prior_art": [
+      "The Rust Reference, rust-lang/reference commit a2ae66d7037cbedac68746b9510b24cc34b96d69, src/type-layout.md rules layout.repr.rust.layout and layout.repr.rust.unspecified (the default representation makes no data layout guarantees beyond those listed, none of which concerns niches), and src/types/boolean.md rule type.bool.repr (bool: 0x00 = false, 0x01 = true, any other bit pattern is undefined behavior).",
+      "Rust core library docs, module core::option, section 'Representation', rust-lang/rust commit 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1, library/core/src/option.rs lines 116-158: for the listed T (Box<U>, specifically only Box<U, Global>; &U; &mut U; fn and extern \"abi\" fn pointers including unsafe variants; num::NonZero*; ptr::NonNull<U>; #[repr(transparent)] structs around one of these), Option<T> has the same size, alignment and function call ABI as T, and transmuting t: T to Option<T> produces Some(t) and transmuting Some(t) to T produces t. 'In some of these cases' Rust further guarantees that transmuting [0u8; size_of::<T>()] to Option<T> produces None and None to bytes produces [0u8; size_of::<T>()]; the table's second column restricts this to U: Sized for Box<U, Global>, &U, &mut U and NonNull<U>, gives it always for fn pointers and NonZero*, and for #[repr(transparent)] wrappers when it holds for the inner type. Rust 1.89.0 (tag 1.89.0, library/core/src/option.rs section 'Representation' from line 119; https://doc.rust-lang.org/1.89.0/core/option/index.html#representation) has the same table and zero-bytes bullets but states only that the transmutes are sound, not that t becomes Some(t) and Some(t) becomes t.",
+      "rustc layout code, rust-lang/rust commit 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1: compiler/rustc_abi/src/layout/enum_layout.rs fn layout_of_enum (lines 15-58; computes a niche-filling and a tagged layout and keeps the smaller, on equal size the one with the larger niche, otherwise the tagged one) and fn calculate_niche_filling_layout (from line 558; line 605 gives no discriminant value to 'absent' variants, i.e. uninhabited variants whose fields are all 1-ZSTs (fn absent, compiler/rustc_abi/src/layout.rs line 90); line 611 counts the variant-index span to encode; lines 613-615 take the largest niche of the largest variant (a single scalar) and reserve that many values via Niche::reserve; line 618 tries to fit the other variants' data around the niche); compiler/rustc_abi/src/lib.rs struct Niche (line 2105), Niche::available (line 2118: number of values outside the scalar's wrapping valid_range) and Niche::reserve (line 2129: fails when count exceeds available; for count == 1 and a valid range other than 0..=1 it takes the free value closest to zero under signed, sign-extended wrapping distance, lines 2165-2174). Implementation behavior, not a guarantee."
+    ],
+    "design_question": "May code assume Option<bool>::None is the byte 0x02?"
+  },
+  {
+    "id": "nicheLayoutK_lawful_iff_injective_and_isNiche",
+    "lean": "Toy.Niche.nicheLayoutK_lawful_iff_injective_and_isNiche",
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "Niche filling of k extra dataless (inhabited) variants into the payload's n bytes with tag patterns t (nicheLayoutK V t) is lawful iff t is injective and every t i is a niche of V.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "k = 2, V = geTwoV, tags 0 and 1: injective, both niches, layout lawful.",
+    "nonvacuity_witness_lean": "Toy.Niche.nv_nicheLayoutK",
+    "related_lean": [
+      "Toy.Niche.nex_nicheLayoutK",
+      "Toy.Niche.ex_nicheLayoutK_one"
+    ],
+    "non_claims": [
+      "Concerns the specific decoder of nicheLayoutK (tags looked up first).",
+      "Models only dataless extra variants (ExtEnum k V = Fin k ⊕ Val V); enums with several data-carrying variants are out of scope (rustc can also fit small data-carrying variants around a niche, try_fit_variants_around_niche_tag).",
+      "Does not mean rustc can use any injective niche assignment: rustc reserves a contiguous run of values outside one scalar's wrapping valid range, sized by the variant-index span of the variants that need encoding.",
+      "Does not by itself give FromBytes: a niche that is not a tag decodes to nothing.",
+      "The model has no uninitialized bytes, no pointer provenance, no alignment, no padding and no safety invariants; payload values are identified with their unique byte patterns."
+    ],
+    "prior_art": [
+      "rustc layout code, rust-lang/rust commit 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1: compiler/rustc_abi/src/layout/enum_layout.rs fn layout_of_enum (lines 15-58; computes a niche-filling and a tagged layout and keeps the smaller, on equal size the one with the larger niche, otherwise the tagged one) and fn calculate_niche_filling_layout (from line 558; line 605 gives no discriminant value to 'absent' variants, i.e. uninhabited variants whose fields are all 1-ZSTs (fn absent, compiler/rustc_abi/src/layout.rs line 90); line 611 counts the variant-index span to encode; lines 613-615 take the largest niche of the largest variant (a single scalar) and reserve that many values via Niche::reserve; line 618 tries to fit the other variants' data around the niche); compiler/rustc_abi/src/lib.rs struct Niche (line 2105), Niche::available (line 2118: number of values outside the scalar's wrapping valid_range) and Niche::reserve (line 2129: fails when count exceeds available; for count == 1 and a valid range other than 0..=1 it takes the free value closest to zero under signed, sign-extended wrapping distance, lines 2165-2174). Implementation behavior, not a guarantee.",
+      "Unsafe Code Guidelines, rust-lang/unsafe-code-guidelines commit d809f91e62968913d808e53397fbcf7cea762cce, reference/src/glossary.md section 'Niche' (lines 150-163: the niche of a type determines invalid bit-patterns used by layout optimizations; not all invalid bit-patterns are niches). reference/src/layout/enums.md at that commit is archived as not reflecting current layout guarantees; its earlier text (commit c138499c1de03b908dfe719a41193c84f8146883, section 'Discriminant elision on Option-like enums', from line 296) described option-like enums and niche use. Non-normative."
+    ],
+    "design_question": "Which tag assignments are valid when an enum hides several dataless variants in a payload's niches?"
+  },
+  {
+    "id": "le_numInvalid_of_decEnc_of_size_le",
+    "lean": "Toy.Niche.le_numInvalid_of_decEnc_of_size_le",
+    "kind": "impossibility",
+    "tier": "T0",
+    "plain_claim": "Any layout of an enum with k extra dataless (inhabited) variants over payload V that is no larger than the payload (hsize: m <= n) and satisfies decode-after-encode (hde) needs k <= numInvalid V (pigeonhole).",
+    "hypotheses": [
+      {
+        "name": "hsize",
+        "purpose": "m <= n: the layout is no larger than the payload; the case m < n is inhabited (nv_le_numInvalid_size_lt).",
+        "tightness": "tight",
+        "counterexample": "Toy.Niche.ce_le_numInvalid_drop_size"
+      },
+      {
+        "name": "hde",
+        "purpose": "DecEnc L: injective encoder.",
+        "tightness": "tight",
+        "counterexample": "Toy.Niche.ce_le_numInvalid_drop_decEnc"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "ext1NonZeroLayout: one extra variant over nonZeroV 1 in 1 byte, DecEnc.",
+    "nonvacuity_witness_lean": "Toy.Niche.nv_le_numInvalid",
+    "positive_control_lean": "Toy.Niche.pc_le_numInvalid",
+    "related_lean": [
+      "Toy.Niche.nv_le_numInvalid_size_lt"
+    ],
+    "non_claims": [
+      "Model niches include every invalid initialized pattern, which can exceed what rustc uses: UnsafeCell<NonZero*> (niches disabled), char (the 2048 surrogates 0xD800..=0xDFFF are invalid but inside char's scalar valid range 0..=0x10FFFF), and multi-field payloads such as (bool, bool) (65532 invalid patterns, but only one field's 254 out-of-range values are used: observed sizes 2 and 3 for 254 and 255 extra dataless variants, lean/support/niche_probe_output.txt).",
+      "ExtEnum k V models k inhabited dataless variants. Uninhabited extra variants carry no value and need no niche: size_of::<Result<u8, Infallible>>() == 1 on the recorded compiler although u8 has no invalid pattern (rustc gives no discriminant value to such 'absent' variants).",
+      "Escape hatches in the model: a layout larger than the payload (pc_le_numInvalid) or dropping DecEnc (ce_le_numInvalid_drop_decEnc) defeats the bound.",
+      "Does not apply to payloads with padding (such as #[repr(C)] struct S(u8, u16)), where several initialized patterns denote one value, so values and valid patterns are not in one-to-one correspondence.",
+      "The model has no uninitialized bytes, no pointer provenance, no alignment, no padding and no safety invariants; payload values are identified with their unique byte patterns."
+    ],
+    "prior_art": [
+      "Mathlib, leanprover-community/mathlib4 commit b476d8fd31a353258f27f2e35e8e25b689d6a052, Mathlib/Data/Fintype/Card.lean: Fintype.card_le_of_injective (line 239), Finite.injective_iff_surjective (line 335) and Finite.injective_iff_surjective_of_equiv (line 347): the finite pigeonhole bound and 'an injection between finite types of equal size is surjective', the abstract facts behind this result. This package is Mathlib-free and does not use them.",
+      "rustc layout code, rust-lang/rust commit 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1: compiler/rustc_abi/src/layout/enum_layout.rs fn layout_of_enum (lines 15-58; computes a niche-filling and a tagged layout and keeps the smaller, on equal size the one with the larger niche, otherwise the tagged one) and fn calculate_niche_filling_layout (from line 558; line 605 gives no discriminant value to 'absent' variants, i.e. uninhabited variants whose fields are all 1-ZSTs (fn absent, compiler/rustc_abi/src/layout.rs line 90); line 611 counts the variant-index span to encode; lines 613-615 take the largest niche of the largest variant (a single scalar) and reserve that many values via Niche::reserve; line 618 tries to fit the other variants' data around the niche); compiler/rustc_abi/src/lib.rs struct Niche (line 2105), Niche::available (line 2118: number of values outside the scalar's wrapping valid_range) and Niche::reserve (line 2129: fails when count exceeds available; for count == 1 and a valid range other than 0..=1 it takes the free value closest to zero under signed, sign-extended wrapping distance, lines 2165-2174). Implementation behavior, not a guarantee.",
+      "Ralf Jung, 'Two Kinds of Invariants: Safety and Validity', blog post, 2018-08-22, https://www.ralfj.de/blog/2018/08/22/two-kinds-of-invariants.html: distinguishes the validity invariant, which 'is exploited by the compiler to perform optimizations (e.g. enum layout optimizations)', from the safety invariant. The model's Validity sets are validity invariants over initialized bytes.",
+      "Rust core library docs, UnsafeCell<T> 'Memory layout', rust-lang/rust commit 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1, library/core/src/cell.rs lines 2221-2233: UnsafeCell<T> has the same in-memory representation as T, but 'UnsafeCell disables niche optimizations' (Option<NonNull<u8>> is typically 8 bytes on 64-bit platforms while Option<UnsafeCell<NonNull<u8>>> takes 16); compiler/rustc_ty_utils/src/layout.rs lines 713-717 at the same commit select NicheOptimizations::Disabled for UnsafeCell and UnsafePinned. Documentation plus implementation.",
+      "The Rust Reference, rust-lang/reference commit a2ae66d7037cbedac68746b9510b24cc34b96d69, src/behavior-considered-undefined.md lines 111-200 (r[undefined.validity]: producing an invalid value is immediate undefined behavior; a bool must be 0 or 1, undefined.validity.bool lines 120-121; a char must not be a surrogate 0xD800..=0xDFFF and must be at most char::MAX, undefined.validity.char lines 126-127). rustc, rust-lang/rust commit 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1, compiler/rustc_ty_utils/src/layout.rs lines 418-424: ty::Char is a scalar with valid_range 0..=0x10FFFF, so the surrogates are invalid values but not niche values. Normative (Reference) plus implementation.",
+      "The Rustonomicon, rust-lang/nomicon commit b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6, src/other-reprs.md line 105: 'Adding an explicit repr(u*), repr(i*), or repr(C) to an enum with fields suppresses the null-pointer optimization'. Descriptive, not normative."
+    ],
+    "design_question": "When must an enum be larger than its payload?"
+  },
+  {
+    "id": "le_numInvalid_iff_exists_lawful_layout_iff_lawful_nicheLayoutK_firstNiches",
+    "lean": "Toy.Niche.le_numInvalid_iff_exists_lawful_layout_iff_lawful_nicheLayoutK_firstNiches",
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "For k extra dataless (inhabited) variants over payload V: k <= numInvalid V iff some lawful layout of the enum fits in the payload's n bytes, iff the specific layout nicheLayoutK V (firstNiches V k) (the first k niches, in increasing order, used as tags) is lawful.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "k = 2, V = geTwoV: 2 <= numInvalid geTwoV and nicheLayoutK geTwoV (firstNiches geTwoV 2) is lawful.",
+    "nonvacuity_witness_lean": "Toy.Niche.nv_le_numInvalid_iff",
+    "related_lean": [
+      "Toy.Niche.firstNiches_injective_and_isNiche_of_le_numInvalid",
+      "Toy.Niche.ce_firstNiches_drop_le"
+    ],
+    "non_claims": [
+      "Existence of a lawful layout does not mean rustc uses it (rustc's niche is the complement of a scalar valid range and rustc may prefer a tagged layout of equal size).",
+      "Model niches include every invalid initialized pattern, which can exceed what rustc uses: UnsafeCell<NonZero*> (niches disabled), char (the 2048 surrogates 0xD800..=0xDFFF are invalid but inside char's scalar valid range 0..=0x10FFFF), and multi-field payloads such as (bool, bool) (65532 invalid patterns, but only one field's 254 out-of-range values are used: observed sizes 2 and 3 for 254 and 255 extra dataless variants, lean/support/niche_probe_output.txt).",
+      "Even when k <= numInvalid V and rustc does niche-fill (e.g. Option<Option<bool>>, observed size 1), Rust documents no such layout outside the Option/Result guarantees.",
+      "The direction from a lawful layout to k <= numInvalid V concerns inhabited extra variants only; uninhabited variants (Result<u8, Infallible>) need no niches.",
+      "Only dataless extra variants are modeled; enums with several data-carrying variants are not covered.",
+      "The model has no uninitialized bytes, no pointer provenance, no alignment, no padding and no safety invariants; payload values are identified with their unique byte patterns."
+    ],
+    "prior_art": [
+      "Mathlib, leanprover-community/mathlib4 commit b476d8fd31a353258f27f2e35e8e25b689d6a052, Mathlib/Data/Fintype/Card.lean: Fintype.card_le_of_injective (line 239), Finite.injective_iff_surjective (line 335) and Finite.injective_iff_surjective_of_equiv (line 347): the finite pigeonhole bound and 'an injection between finite types of equal size is surjective', the abstract facts behind this result. This package is Mathlib-free and does not use them.",
+      "rustc layout code, rust-lang/rust commit 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1: compiler/rustc_abi/src/layout/enum_layout.rs fn layout_of_enum (lines 15-58; computes a niche-filling and a tagged layout and keeps the smaller, on equal size the one with the larger niche, otherwise the tagged one) and fn calculate_niche_filling_layout (from line 558; line 605 gives no discriminant value to 'absent' variants, i.e. uninhabited variants whose fields are all 1-ZSTs (fn absent, compiler/rustc_abi/src/layout.rs line 90); line 611 counts the variant-index span to encode; lines 613-615 take the largest niche of the largest variant (a single scalar) and reserve that many values via Niche::reserve; line 618 tries to fit the other variants' data around the niche); compiler/rustc_abi/src/lib.rs struct Niche (line 2105), Niche::available (line 2118: number of values outside the scalar's wrapping valid_range) and Niche::reserve (line 2129: fails when count exceeds available; for count == 1 and a valid range other than 0..=1 it takes the free value closest to zero under signed, sign-extended wrapping distance, lines 2165-2174). Implementation behavior, not a guarantee.",
+      "Rust core library docs, UnsafeCell<T> 'Memory layout', rust-lang/rust commit 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1, library/core/src/cell.rs lines 2221-2233: UnsafeCell<T> has the same in-memory representation as T, but 'UnsafeCell disables niche optimizations' (Option<NonNull<u8>> is typically 8 bytes on 64-bit platforms while Option<UnsafeCell<NonNull<u8>>> takes 16); compiler/rustc_ty_utils/src/layout.rs lines 713-717 at the same commit select NicheOptimizations::Disabled for UnsafeCell and UnsafePinned. Documentation plus implementation.",
+      "The Rust Reference, rust-lang/reference commit a2ae66d7037cbedac68746b9510b24cc34b96d69, src/behavior-considered-undefined.md lines 111-200 (r[undefined.validity]: producing an invalid value is immediate undefined behavior; a bool must be 0 or 1, undefined.validity.bool lines 120-121; a char must not be a surrogate 0xD800..=0xDFFF and must be at most char::MAX, undefined.validity.char lines 126-127). rustc, rust-lang/rust commit 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1, compiler/rustc_ty_utils/src/layout.rs lines 418-424: ty::Char is a scalar with valid_range 0..=0x10FFFF, so the surrogates are invalid values but not niche values. Normative (Reference) plus implementation."
+    ],
+    "design_question": "How many extra variants can a payload absorb without growing, and which layout realizes that?"
+  },
+  {
+    "id": "opt_opt_nonZero_no_decEnc_layout_in_payload_size",
+    "lean": "Toy.Niche.opt_opt_nonZero_no_decEnc_layout_in_payload_size",
+    "kind": "impossibility",
+    "tier": "T0",
+    "plain_claim": "For every n, the two-level option over the n-byte NonZero payload (Option (Opt (nonZeroV n)), modeling Option<Option<NonZeroUN>>; 257 values for n = 1) has no decode-after-encode layout in n bytes.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "For every n the quantified type of n-byte layouts is nonempty.",
+    "nonvacuity_witness_lean": "Toy.Niche.nv_opt_opt_nonZero",
+    "positive_control_lean": "Toy.Niche.pc_opt_opt_nonZero",
+    "related_lean": [
+      "Toy.Niche.pc_opt_nonZero_one_level",
+      "Toy.Niche.opt_opt_two_niches_one_byte",
+      "Toy.Niche.optOptNonZero_two_bytes_not_canonical_and_fromBytes",
+      "Toy.Niche.optOptNonZeroTwoByteLoose_decEnc_fromBytes_not_canonical",
+      "Toy.Niche.optOpt_card_bound_of_canonical_of_fromBytes"
+    ],
+    "non_claims": [
+      "Rules out only size n; it does not say rustc uses n + 1 bytes (observed: Option<Option<NonZeroU8>> has size 2 on the recorded compiler, lean/support/niche_probe_output.txt).",
+      "Escape hatches: one more byte (pc_opt_opt_nonZero), a single level of Option (pc_opt_nonZero_one_level), or dropping DecEnc.",
+      "Does not mean Option<Option<T>> always exceeds size_of::<T>(): a payload with two niches leaves room for two dataless values in its own size. The supporting witness opt_opt_two_niches_one_byte states exactly Lawful (nicheLayoutK geTwoV geTwoTags) ∧ numInvalid geTwoV = 2, i.e. a lawful 1-byte layout of ExtEnum 2 geTwoV (two dataless variants tagged 0 and 1 beside the one-byte payload whose valid patterns are 2..255) for a payload with exactly two niches; it is stated for ExtEnum 2 geTwoV, not for Option (Opt geTwoV), and no theorem transports it along a bijection between the two types. Observed, not derived: size_of::<Option<Option<bool>>>() == 1.",
+      "Says nothing about which patterns are valid for Option<Option<NonZeroU8>> in its observed 2-byte layout; that layout is not documented, and no documented guarantee makes the type FromBytes or FromZeros. In the model, 257 values in 65536 patterns rule out FromBytes only together with canonical decoding (optOptNonZero_two_bytes_not_canonical_and_fromBytes); without Canonical a 2-byte layout satisfying DecEnc and FromBytes exists (optOptNonZeroTwoByteLoose_decEnc_fromBytes_not_canonical, which decodes every surplus pattern as the outer None).",
+      "The model has no uninitialized bytes, no pointer provenance, no alignment, no padding and no safety invariants; payload values are identified with their unique byte patterns."
+    ],
+    "prior_art": [
+      "Mathlib, leanprover-community/mathlib4 commit b476d8fd31a353258f27f2e35e8e25b689d6a052, Mathlib/Data/Fintype/Card.lean: Fintype.card_le_of_injective (line 239), Finite.injective_iff_surjective (line 335) and Finite.injective_iff_surjective_of_equiv (line 347): the finite pigeonhole bound and 'an injection between finite types of equal size is surjective', the abstract facts behind this result. This package is Mathlib-free and does not use them.",
+      "Rust core library docs, NonZero<T> 'Layout', rust-lang/rust commit 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1, library/core/src/num/nonzero.rs lines 81-89: 'NonZero<T> is guaranteed to have the same layout and bit validity as T with the exception that the all-zero bit pattern is invalid'; NonZero<T> and Option<NonZero<T>> have the same size and alignment.",
+      "rustc layout code, rust-lang/rust commit 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1: compiler/rustc_abi/src/layout/enum_layout.rs fn layout_of_enum (lines 15-58; computes a niche-filling and a tagged layout and keeps the smaller, on equal size the one with the larger niche, otherwise the tagged one) and fn calculate_niche_filling_layout (from line 558; line 605 gives no discriminant value to 'absent' variants, i.e. uninhabited variants whose fields are all 1-ZSTs (fn absent, compiler/rustc_abi/src/layout.rs line 90); line 611 counts the variant-index span to encode; lines 613-615 take the largest niche of the largest variant (a single scalar) and reserve that many values via Niche::reserve; line 618 tries to fit the other variants' data around the niche); compiler/rustc_abi/src/lib.rs struct Niche (line 2105), Niche::available (line 2118: number of values outside the scalar's wrapping valid_range) and Niche::reserve (line 2129: fails when count exceeds available; for count == 1 and a valid range other than 0..=1 it takes the free value closest to zero under signed, sign-extended wrapping distance, lines 2165-2174). Implementation behavior, not a guarantee."
+    ],
+    "design_question": "Can nested options over NonZero integers stay the size of the integer?"
+  }
+]

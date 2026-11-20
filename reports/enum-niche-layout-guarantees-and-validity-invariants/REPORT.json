@@ -1,0 +1,96 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "pl/enum-layout",
+    "pl/niche-optimization",
+    "pl/validity-invariants",
+    "pl/optics/prisms",
+    "compilers/type-layout",
+    "verification/pigeonhole"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Rust core library documentation and rustc layout code (nightly)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "version": "1.102.0-nightly",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1"
+      }
+    },
+    {
+      "name": "Rust core library documentation (stable release)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "version": "1.89.0",
+        "revision": "29483883eed69d5fb4db01964cdf2af4d86e9cb2"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "a2ae66d7037cbedac68746b9510b24cc34b96d69"
+      }
+    },
+    {
+      "name": "The Rustonomicon",
+      "identity": {
+        "repository": "rust-lang/nomicon",
+        "revision": "b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6"
+      }
+    },
+    {
+      "name": "Unsafe Code Guidelines",
+      "identity": {
+        "repository": "rust-lang/unsafe-code-guidelines",
+        "revision": "d809f91e62968913d808e53397fbcf7cea762cce"
+      }
+    },
+    {
+      "name": "RFC 3391 result_ffi_guarantees",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4",
+        "path": "text/3391-result_ffi_guarantees.md"
+      }
+    },
+    {
+      "name": "MiniRust specification",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "063d784186d3252bee242217f218223205c0b568"
+      }
+    },
+    {
+      "name": "zerocopy",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "c55af491426ef53f35fb8c6e83f220fa07712e66"
+      }
+    },
+    {
+      "name": "Categories of Optics",
+      "identity": {
+        "doi": "10.48550/arXiv.1809.00738",
+        "arxiv": "1809.00738v2"
+      }
+    },
+    {
+      "name": "Two Kinds of Invariants: Safety and Validity",
+      "identity": {
+        "url": "https://www.ralfj.de/blog/2018/08/22/two-kinds-of-invariants.html",
+        "published": "2018-08-22"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

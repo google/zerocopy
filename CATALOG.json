@@ -26333,6 +26333,102 @@
         "verification/parsers"
       ]
     },
+    "enum-niche-layout-guarantees-and-validity-invariants": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly"
+          },
+          "name": "Rust core library documentation and rustc layout code (nightly)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "29483883eed69d5fb4db01964cdf2af4d86e9cb2",
+            "version": "1.89.0"
+          },
+          "name": "Rust core library documentation (stable release)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "a2ae66d7037cbedac68746b9510b24cc34b96d69"
+          },
+          "name": "The Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/nomicon",
+            "revision": "b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6"
+          },
+          "name": "The Rustonomicon"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/unsafe-code-guidelines",
+            "revision": "d809f91e62968913d808e53397fbcf7cea762cce"
+          },
+          "name": "Unsafe Code Guidelines"
+        },
+        {
+          "identity": {
+            "path": "text/3391-result_ffi_guarantees.md",
+            "repository": "rust-lang/rfcs",
+            "revision": "f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4"
+          },
+          "name": "RFC 3391 result_ffi_guarantees"
+        },
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "063d784186d3252bee242217f218223205c0b568"
+          },
+          "name": "MiniRust specification"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "c55af491426ef53f35fb8c6e83f220fa07712e66"
+          },
+          "name": "zerocopy"
+        },
+        {
+          "identity": {
+            "arxiv": "1809.00738v2",
+            "doi": "10.48550/arXiv.1809.00738"
+          },
+          "name": "Categories of Optics"
+        },
+        {
+          "identity": {
+            "published": "2018-08-22",
+            "url": "https://www.ralfj.de/blog/2018/08/22/two-kinds-of-invariants.html"
+          },
+          "name": "Two Kinds of Invariants: Safety and Validity"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "pl/enum-layout",
+        "pl/niche-optimization",
+        "pl/validity-invariants",
+        "pl/optics/prisms",
+        "compilers/type-layout",
+        "verification/pigeonhole"
+      ]
+    },
     "enzyme-jax-autodiff-cotangent-nan-masking-and-aliasing-hazards": {
       "observed_at": "2026-11-19",
       "subjects": [

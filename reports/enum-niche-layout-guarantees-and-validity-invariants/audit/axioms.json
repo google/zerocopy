@@ -1,0 +1,656 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Niche.Canonical": [],
+    "Toy.Niche.Counting.mem_of_nodup_of_length_ge": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.Counting.nodup_length_le_of_subset": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.Counting.nodup_map_of_injOn": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.Counting.numValid_add_numInvalid": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.Counting.valList": [
+      "propext"
+    ],
+    "Toy.Niche.Counting.valList.eq_1": [
+      "propext"
+    ],
+    "Toy.Niche.Counting.valList_length": [
+      "propext"
+    ],
+    "Toy.Niche.Counting.valList_nodup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.DecEnc": [],
+    "Toy.Niche.DecSomeTransparent": [],
+    "Toy.Niche.ExtEnum": [],
+    "Toy.Niche.FromBytes": [],
+    "Toy.Niche.IsNiche": [],
+    "Toy.Niche.Lawful": [],
+    "Toy.Niche.Layout": [],
+    "Toy.Niche.Layout.casesOn": [],
+    "Toy.Niche.Layout.comap": [],
+    "Toy.Niche.Layout.comap.eq_1": [],
+    "Toy.Niche.Layout.ctorIdx": [],
+    "Toy.Niche.Layout.dec": [],
+    "Toy.Niche.Layout.enc": [],
+    "Toy.Niche.Layout.ext": [],
+    "Toy.Niche.Layout.ext.match_1": [],
+    "Toy.Niche.Layout.ext_iff": [],
+    "Toy.Niche.Layout.mk": [],
+    "Toy.Niche.Layout.mk.inj": [],
+    "Toy.Niche.Layout.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Niche.Layout.mk.noConfusion": [],
+    "Toy.Niche.Layout.mk.sizeOf_spec": [],
+    "Toy.Niche.Layout.noConfusion": [],
+    "Toy.Niche.Layout.noConfusionType": [],
+    "Toy.Niche.Layout.rec": [],
+    "Toy.Niche.Layout.recOn": [],
+    "Toy.Niche.NichePinned": [],
+    "Toy.Niche.NonePinned": [],
+    "Toy.Niche.Opt": [],
+    "Toy.Niche.Pat": [],
+    "Toy.Niche.SomeTransparent": [],
+    "Toy.Niche.Val": [],
+    "Toy.Niche.Validity": [],
+    "Toy.Niche.allV": [],
+    "Toy.Niche.boolV": [],
+    "Toy.Niche.byteAt": [],
+    "Toy.Niche.byteAt.eq_1": [],
+    "Toy.Niche.canonical_of_forall_pat": [
+      "propext"
+    ],
+    "Toy.Niche.ce_canonical_fromBytes_drop_decEnc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.ce_canonical_fromBytes_drop_numInvalid": [
+      "propext"
+    ],
+    "Toy.Niche.ce_canonical_fromBytes_drop_size": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.ce_documented_drop_decEnc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.ce_documented_drop_none_pin": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.ce_documented_drop_numInvalid": [
+      "propext"
+    ],
+    "Toy.Niche.ce_documented_drop_size_pin": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.ce_firstNiches_drop_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.ce_isNiche_enc_none_drop_decEnc": [],
+    "Toy.Niche.ce_isNiche_enc_none_drop_decSomeTransparent": [
+      "propext"
+    ],
+    "Toy.Niche.ce_layout_determined_drop_decEnc": [],
+    "Toy.Niche.ce_layout_determined_drop_decSomeTransparent": [
+      "propext"
+    ],
+    "Toy.Niche.ce_le_numInvalid_drop_decEnc": [
+      "propext"
+    ],
+    "Toy.Niche.ce_le_numInvalid_drop_size": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.ce_nicheLayout_lawful_valid_q": [
+      "propext"
+    ],
+    "Toy.Niche.ce_nonePinned_zero_drop_decEnc": [],
+    "Toy.Niche.ce_nonePinned_zero_drop_decSomeTransparent": [
+      "propext"
+    ],
+    "Toy.Niche.ce_zero_iff_none_drop_canonical": [],
+    "Toy.Niche.ce_zero_iff_none_drop_decEnc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.ce_zero_iff_none_drop_nonePinned": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.ce_zero_iff_none_drop_numInvalid": [],
+    "Toy.Niche.ce_zero_iff_none_drop_size": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.comap_canonical": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.comap_decEnc": [
+      "propext"
+    ],
+    "Toy.Niche.comap_lawful": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.countP_val_eq_zero_finRange": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.decForallOption": [],
+    "Toy.Niche.decForallOption.match_1": [],
+    "Toy.Niche.decForallOption.match_3": [],
+    "Toy.Niche.decForallSum": [],
+    "Toy.Niche.decForallSum.match_1": [],
+    "Toy.Niche.decForallSum.match_3": [],
+    "Toy.Niche.decForallVal": [],
+    "Toy.Niche.decSomeNotSomeLayout": [],
+    "Toy.Niche.decSomeNotSomeLayout.match_1": [],
+    "Toy.Niche.decSomeTransparent_decEnc_not_someTransparent": [],
+    "Toy.Niche.decSomeTransparent_of_someTransparent_of_decEnc": [],
+    "Toy.Niche.dec_eq_some_none_iff_eq_zero_of_nonePinned_zero_of_decEnc_of_canonical": [],
+    "Toy.Niche.dec_eq_some_none_iff_eq_zero_of_nonePinned_zero_of_size_eq_of_numInvalid_le_one_of_decEnc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.div_div_256": [
+      "propext"
+    ],
+    "Toy.Niche.documented_niche_identity_not_needed": [
+      "propext"
+    ],
+    "Toy.Niche.enc_injective_of_decEnc": [],
+    "Toy.Niche.eq_nonZeroV_of_only_niche_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.eq_zeroPat_iff_bytes_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.ex_byteAt": [
+      "propext"
+    ],
+    "Toy.Niche.ex_comap": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.ex_decSomeTransparent": [],
+    "Toy.Niche.ex_firstNiches": [
+      "propext"
+    ],
+    "Toy.Niche.ex_fromBytes": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.ex_invalidPats": [],
+    "Toy.Niche.ex_isNiche": [],
+    "Toy.Niche.ex_lawful": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.ex_nicheLayoutK": [
+      "propext"
+    ],
+    "Toy.Niche.ex_nicheLayoutK_one": [
+      "propext"
+    ],
+    "Toy.Niche.ex_nichePinned": [],
+    "Toy.Niche.ex_nonePinned": [],
+    "Toy.Niche.ex_numInvalid": [],
+    "Toy.Niche.ex_payloadLayout_lawful": [
+      "propext"
+    ],
+    "Toy.Niche.ex_someTransparent": [],
+    "Toy.Niche.ex_taggedLayout": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.ex_taggedLooseLayout": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.ex_validity_sets": [],
+    "Toy.Niche.ex_zeroPat_bytes": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.ext1AllTaggedLayout": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.ext1AllTaggedLayout_lawful": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.ext1AllZeroDecLayout": [],
+    "Toy.Niche.ext1NonZeroLayout": [
+      "propext"
+    ],
+    "Toy.Niche.ext1NonZeroLayout_lawful": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.ext1ToOpt": [],
+    "Toy.Niche.ext1ToOpt.match_1": [],
+    "Toy.Niche.ext1ToOpt_optToExt1": [
+      "propext"
+    ],
+    "Toy.Niche.firstNiches": [
+      "propext"
+    ],
+    "Toy.Niche.firstNiches.eq_1": [
+      "propext"
+    ],
+    "Toy.Niche.firstNiches_injective_and_isNiche_of_le_numInvalid": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.fromBytes_of_forall_pat": [],
+    "Toy.Niche.geTwoLooseLayout": [],
+    "Toy.Niche.geTwoLooseLayout_decEnc": [],
+    "Toy.Niche.geTwoLooseLayout_not_canonical": [],
+    "Toy.Niche.geTwoTags": [],
+    "Toy.Niche.geTwoTags_injective": [],
+    "Toy.Niche.geTwoV": [],
+    "Toy.Niche.instDecidableIsNiche": [],
+    "Toy.Niche.instNeZeroPatCard": [],
+    "Toy.Niche.invalidPats": [],
+    "Toy.Niche.invalidPats.eq_1": [],
+    "Toy.Niche.isNiche_enc_none_of_decSomeTransparent_of_decEnc": [],
+    "Toy.Niche.isNiche_nonZeroV_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.lawful_not_nicheLayout": [
+      "propext"
+    ],
+    "Toy.Niche.le_numInvalid_iff_exists_lawful_layout_iff_lawful_nicheLayoutK_firstNiches": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.le_numInvalid_of_decEnc_of_size_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.mem_valList": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.nex_canonical": [],
+    "Toy.Niche.nex_comap": [],
+    "Toy.Niche.nex_decEnc": [],
+    "Toy.Niche.nex_decSomeTransparent": [],
+    "Toy.Niche.nex_firstNiches": [
+      "propext"
+    ],
+    "Toy.Niche.nex_fromBytes": [],
+    "Toy.Niche.nex_invalidPats": [
+      "propext"
+    ],
+    "Toy.Niche.nex_isNiche": [],
+    "Toy.Niche.nex_lawful": [
+      "propext"
+    ],
+    "Toy.Niche.nex_nicheLayoutK": [
+      "propext"
+    ],
+    "Toy.Niche.nex_nichePinned": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.nex_nichePinned_none": [],
+    "Toy.Niche.nex_nonePinned": [],
+    "Toy.Niche.nex_numInvalid": [],
+    "Toy.Niche.nex_payloadLayout_fromBytes": [],
+    "Toy.Niche.nex_someTransparent": [],
+    "Toy.Niche.nex_validity_sets": [],
+    "Toy.Niche.nex_zeroPat_first_byte": [
+      "propext"
+    ],
+    "Toy.Niche.nicheLayout": [],
+    "Toy.Niche.nicheLayout.eq_1": [],
+    "Toy.Niche.nicheLayout.match_1": [],
+    "Toy.Niche.nicheLayoutK": [],
+    "Toy.Niche.nicheLayoutK.eq_1": [],
+    "Toy.Niche.nicheLayoutK.match_1": [],
+    "Toy.Niche.nicheLayoutK.match_3": [],
+    "Toy.Niche.nicheLayoutK_lawful_iff_injective_and_isNiche": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.nicheLayout_canonical": [
+      "propext"
+    ],
+    "Toy.Niche.nicheLayout_decEnc_of_isNiche": [
+      "propext"
+    ],
+    "Toy.Niche.nicheLayout_decSomeTransparent_of_isNiche": [
+      "propext"
+    ],
+    "Toy.Niche.nicheLayout_geTwoV_zero_not_fromBytes": [],
+    "Toy.Niche.nicheLayout_lawful_iff_isNiche": [
+      "propext"
+    ],
+    "Toy.Niche.nicheLayout_nonZero_lawful": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.nicheLayout_someTransparent": [],
+    "Toy.Niche.nicheLayout_valid_q_canonical_not_decEnc": [
+      "propext"
+    ],
+    "Toy.Niche.nichePinned_admits_valid_pattern": [
+      "propext"
+    ],
+    "Toy.Niche.nodup_getElem_inj": [
+      "propext"
+    ],
+    "Toy.Niche.nonOneV": [],
+    "Toy.Niche.nonZeroV": [],
+    "Toy.Niche.nonZeroV_zero_empty": [],
+    "Toy.Niche.nonZero_lawful_layouts_in_one_and_two_bytes": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.nonZero_layout_eq_nicheLayout_zero_of_decSomeTransparent_of_decEnc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.noneLostLayout": [],
+    "Toy.Niche.noneLostLayout_decSomeTransparent": [],
+    "Toy.Niche.noneLostLayout_not_decEnc": [],
+    "Toy.Niche.nonePinned_zero_of_nonZero_of_decSomeTransparent_of_decEnc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.numInvalid": [],
+    "Toy.Niche.numInvalid_allV_one": [],
+    "Toy.Niche.numInvalid_geTwoV": [],
+    "Toy.Niche.numInvalid_le_one_of_only_niche_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.numInvalid_nonOneV": [],
+    "Toy.Niche.numInvalid_nonZeroV": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.numInvalid_nonZeroV_le_one": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.nv_decSomeTransparent_decEnc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.nv_documented": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.nv_isNiche_enc_none": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.nv_le_numInvalid": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.nv_le_numInvalid_iff": [
+      "propext"
+    ],
+    "Toy.Niche.nv_le_numInvalid_size_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.nv_nicheLayoutK": [
+      "propext"
+    ],
+    "Toy.Niche.nv_nicheLayout_lawful_iff_isNiche": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.nv_opt_bool_none_pattern_not_forced": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.nv_opt_canonical_and_fromBytes": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.nv_opt_opt_nonZero": [],
+    "Toy.Niche.nv_someTransparent_lawful_iff_eq_nicheLayout": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.nv_zero_iff_none_lawful": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.nv_zero_iff_none_size_numInvalid": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.oneNZ": [],
+    "Toy.Niche.optOptNonZeroTwoByteLoose": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.optOptNonZeroTwoByteLoose.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.optOptNonZeroTwoByteLoose.match_1": [],
+    "Toy.Niche.optOptNonZeroTwoByteLoose_decEnc_fromBytes_not_canonical": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.optOptNonZero_two_bytes_not_canonical_and_fromBytes": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.optOpt_card_bound_of_canonical_of_fromBytes": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.optOpt_card_bound_of_canonical_of_fromBytes.match_1_1": [],
+    "Toy.Niche.optToExt1": [
+      "propext"
+    ],
+    "Toy.Niche.optToExt1_ext1ToOpt": [
+      "propext"
+    ],
+    "Toy.Niche.opt_bool_lawful_layouts_in_one_and_two_bytes": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.opt_bool_nicheLayout_not_fromBytes": [],
+    "Toy.Niche.opt_bool_none_pattern_not_forced_by_someTransparent_lawful": [
+      "propext"
+    ],
+    "Toy.Niche.opt_canonical_and_fromBytes_of_size_eq_of_numInvalid_le_one_of_decEnc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.opt_fromBytes_and_zero_iff_none_of_nichePinned_zero_of_numInvalid_le_one_of_decEnc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.opt_opt_nonZero_no_decEnc_layout_in_payload_size": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.opt_opt_nonZero_no_decEnc_layout_in_payload_size.match_1_1": [],
+    "Toy.Niche.opt_opt_nonZero_no_decEnc_layout_in_payload_size.match_1_3": [],
+    "Toy.Niche.opt_opt_nonZero_no_decEnc_layout_in_payload_size.match_1_5": [
+      "propext"
+    ],
+    "Toy.Niche.opt_opt_two_niches_one_byte": [
+      "propext"
+    ],
+    "Toy.Niche.pat_card_pos": [],
+    "Toy.Niche.payloadLayout": [],
+    "Toy.Niche.payloadLayout.eq_1": [],
+    "Toy.Niche.payloadLayout_lawful": [
+      "propext"
+    ],
+    "Toy.Niche.pc_isNiche_enc_none": [
+      "propext"
+    ],
+    "Toy.Niche.pc_le_numInvalid": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.pc_nonZero_none_pattern_forced": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.pc_opt_nonZero_one_level": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.pc_opt_opt_nonZero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.permLayout": [],
+    "Toy.Niche.permLayout_lawful": [
+      "propext"
+    ],
+    "Toy.Niche.someTransparent_iff_decSomeTransparent_of_lawful": [],
+    "Toy.Niche.someTransparent_lawful_iff_eq_nicheLayout": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.someTransparent_not_decSomeTransparent": [],
+    "Toy.Niche.someTransparent_of_decSomeTransparent_of_canonical": [],
+    "Toy.Niche.sparse2In1Byte": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.sparse2In1Byte.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.sparse2In1Byte.match_1": [],
+    "Toy.Niche.sparse2In1Byte_lawful": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.sparse2V": [],
+    "Toy.Niche.sparse2V.eq_1": [],
+    "Toy.Niche.swap01Layout": [],
+    "Toy.Niche.swap01Layout.match_1": [],
+    "Toy.Niche.swap01Layout_lawful": [
+      "propext"
+    ],
+    "Toy.Niche.swap12": [],
+    "Toy.Niche.swapLayout": [],
+    "Toy.Niche.swapLayout.match_1": [],
+    "Toy.Niche.swapLayout_lawful": [
+      "propext"
+    ],
+    "Toy.Niche.tag_dec_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.tag_enc_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.taggedLayout": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.taggedLayout.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.taggedLayout.match_1": [],
+    "Toy.Niche.taggedLayout_canonical": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.taggedLayout_decEnc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.taggedLayout_lawful": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.taggedLooseLayout": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.taggedLooseLayout.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.taggedLooseLayout_decEnc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.taggedLooseLayout_eq_taggedLayout_at_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Niche.zeroDecLayout": [],
+    "Toy.Niche.zeroDecLayout_canonical": [],
+    "Toy.Niche.zeroDecLayout_not_decEnc": [],
+    "Toy.Niche.zeroDecLayout_not_fromBytes": [],
+    "Toy.Niche.zeroDecLayout_someTransparent": [],
+    "Toy.Niche.zeroNonOne": [],
+    "Toy.Niche.zeroPat": [],
+    "Toy.Niche.zeroPat.eq_1": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
