@@ -1,0 +1,101 @@
+{
+  "topics": [
+    "verification/separation-logic",
+    "anneal/theory",
+    "rust/unsafe",
+    "lean/mechanization",
+    "rust/layout",
+    "zerocopy/layout"
+  ],
+  "subjects": [
+    {
+      "name": "Princeton Verified Software Toolchain (VST) and Verifiable C floyd library",
+      "identity": {
+        "repository": "PrincetonUniversity/VST",
+        "revision": "d50ac1969f9f6586621895eb043ccf08a165f731"
+      }
+    },
+    {
+      "name": "Project Everest Steel concurrent separation logic and selector vprop library",
+      "identity": {
+        "repository": "FStarLang/steel",
+        "revision": "ff1acec21b5e7ab864aec9901231a5be06116cdd"
+      }
+    },
+    {
+      "name": "F* theorem prover and integrated Pulse / PulseCore separation logic library",
+      "identity": {
+        "repository": "FStarLang/FStar",
+        "revision": "fc1776afe592ed8eef352c6610614a70d77b3b66"
+      }
+    },
+    {
+      "name": "Project Everest standalone Pulse repository recording migration to FStarLang/FStar",
+      "identity": {
+        "repository": "FStarLang/pulse",
+        "revision": "c35460e00483be17a38397b1594c29a9bf29df15"
+      }
+    },
+    {
+      "name": "zerocopy zero-copy memory conversion and layout-invariant Rust library",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "ec133ce4d7993775413d852f91c9e3eb2a2a0897"
+      }
+    },
+    {
+      "name": "Anneal post-cleanup MIR verification framework, PureLift, and boundary auditor",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 v4.34.1 theorem prover and C++ kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "VST-Floyd: A Separation Logic Tool to Verify Correctness of C Programs (Cao et al., Journal of Automated Reasoning 2018)",
+      "identity": {
+        "doi": "10.1007/s10817-018-9457-5"
+      }
+    },
+    {
+      "name": "Program Logics for Certified Compilers (Appel et al., Cambridge University Press 2014)",
+      "identity": {
+        "doi": "10.1017/CBO9781107256552",
+        "isbn": "978-1-107-04801-0"
+      }
+    },
+    {
+      "name": "Steel: Proof-oriented Programming in a Dependently Typed Concurrent Separation Logic (Fromherz et al., PACMPL ICFP 2021)",
+      "identity": {
+        "doi": "10.1145/3473590"
+      }
+    },
+    {
+      "name": "SteelCore: An Extensible Concurrent Separation Logic for Effectful Dependently Typed Programs (Swamy et al., PACMPL ICFP 2020)",
+      "identity": {
+        "doi": "10.1145/3409003"
+      }
+    },
+    {
+      "name": "PulseCore: An Impredicative Concurrent Separation Logic for Dependently Typed Programs (Ebner et al., PACMPL PLDI 2025)",
+      "identity": {
+        "doi": "10.1145/3729311"
+      }
+    },
+    {
+      "name": "Python 3.13 struct-spacer clobber and canonical-trie selector probe environment (Linux x86_64)",
+      "identity": {
+        "interpreter": "CPython 3.13.15",
+        "architecture": "x86_64"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

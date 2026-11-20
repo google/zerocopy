@@ -1,0 +1,82 @@
+{
+  "topics": [
+    "verification/parsers",
+    "anneal/theory",
+    "rust/zerocopy",
+    "lean/mechanization",
+    "zerocopy/validity",
+    "security/malleability"
+  ],
+  "subjects": [
+    {
+      "name": "Project Everest EverParse and LowParse parser-serializer framework",
+      "identity": {
+        "repository": "project-everest/everparse",
+        "revision": "f3e4ce51d9b68593fd98472cadcdeb8b6abf388f"
+      }
+    },
+    {
+      "name": "MIT Narcissus correct-by-construction binary format combinators (Fiat)",
+      "identity": {
+        "repository": "mit-plv/fiat",
+        "revision": "77f43f5d5408b3543f8dd01d4d43f4c4c70f1213"
+      }
+    },
+    {
+      "name": "MIT Narcissus ICFP 2019 artifact branch (Fiat)",
+      "identity": {
+        "repository": "mit-plv/fiat",
+        "revision": "df1565d187de242fdf822111a23e3f6b71049c9c"
+      }
+    },
+    {
+      "name": "zerocopy zero-copy memory conversion and layout-invariant Rust library",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "ec133ce4d7993775413d852f91c9e3eb2a2a0897"
+      }
+    },
+    {
+      "name": "Anneal post-cleanup MIR verification framework and boundary auditor",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 v4.34.1 theorem prover and C++ kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "EverParse: Verified Secure Zero-Copy Parsers for Authenticated Message Formats (Ramananandro et al., USENIX Security 2019)",
+      "identity": {
+        "url": "https://www.usenix.org/conference/usenixsecurity19/presentation/ramananandro",
+        "isbn": "978-1-939133-06-9"
+      }
+    },
+    {
+      "name": "Hardening Attack Surfaces with Formally Proven Binary Format Parsers (Swamy et al., PLDI 2022)",
+      "identity": {
+        "doi": "10.1145/3519939.3523708"
+      }
+    },
+    {
+      "name": "Narcissus: Correct-by-Construction Derivation of Decoders and Encoders from Binary Formats (Delaware et al., PACMPL ICFP 2019)",
+      "identity": {
+        "doi": "10.1145/3341686"
+      }
+    },
+    {
+      "name": "Python 3.13 finite-codec and prefix-framing probe environment (Linux x86_64)",
+      "identity": {
+        "interpreter": "CPython 3.13.15",
+        "architecture": "x86_64"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
