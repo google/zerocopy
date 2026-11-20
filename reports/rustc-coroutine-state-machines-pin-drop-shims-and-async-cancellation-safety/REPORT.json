@@ -1,0 +1,58 @@
+{
+  "topics": [
+    "rust",
+    "rust/async",
+    "rust/pin",
+    "rust/cancellation-safety",
+    "rustc",
+    "rustc/mir",
+    "anneal",
+    "anneal/theory",
+    "verification",
+    "verification/rust"
+  ],
+  "subjects": [
+    {
+      "name": "The Rust compiler and core library (coroutine lowering, coroutine ABI layout, and core::pin)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+      }
+    },
+    {
+      "name": "Anneal formal verification framework",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "20aa204315cd36aaf944778b7d33c0d609ced8e8"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover and C++ kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Tokio asynchronous runtime (select! macro and cancellation-safety specification)",
+      "identity": {
+        "repository": "tokio-rs/tokio",
+        "revision": "3f0ffc85f51c71d97bce72e0f8b80ece9b8b4892"
+      }
+    },
+    {
+      "name": "RustBelt: Securing the Foundations of the Rust Programming Language",
+      "identity": {
+        "doi": "10.1145/3158154"
+      }
+    },
+    {
+      "name": "Safe Systems Programming in Rust",
+      "identity": {
+        "doi": "10.1145/3418295"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

@@ -1,0 +1,84 @@
+{
+  "topics": [
+    "compilers",
+    "compilers/egraphs",
+    "lean",
+    "lean/mechanization",
+    "lean/kernel",
+    "anneal",
+    "anneal/theory",
+    "smt",
+    "smt/equality-saturation",
+    "verification",
+    "verification/certificates"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal formal verification framework",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "20aa204315cd36aaf944778b7d33c0d609ced8e8"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover and C++ kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "egg equality-saturation library",
+      "identity": {
+        "repository": "egraphs-good/egg",
+        "revision": "73975c9819efb4af2f3c6c1b44fa53f8c5742574"
+      }
+    },
+    {
+      "name": "egglog Datalog and equality-saturation engine",
+      "identity": {
+        "repository": "egraphs-good/egglog",
+        "revision": "d89bc58adc9b9a87a8f571c5b9ad75d686d226e6"
+      }
+    },
+    {
+      "name": "lean-egg Lean 4 equality-saturation tactic",
+      "identity": {
+        "repository": "marcusrossel/lean-egg",
+        "revision": "2605a63b6a78407114c692f5dc626531ff62df55"
+      }
+    },
+    {
+      "name": "Proof-Producing Congruence Closure",
+      "identity": {
+        "doi": "10.1145/1284320.1284324"
+      }
+    },
+    {
+      "name": "egg: Fast and Extensible Equality Saturation",
+      "identity": {
+        "doi": "10.1145/3434304"
+      }
+    },
+    {
+      "name": "Better Together: Unifying Datalog and Equality Saturation",
+      "identity": {
+        "doi": "10.1145/3591239"
+      }
+    },
+    {
+      "name": "Bridging Syntax and Semantics of Lean Expressions in E-Graphs",
+      "identity": {
+        "arxiv": "2405.10188"
+      }
+    },
+    {
+      "name": "Towards Pen-and-Paper-Style Equational Reasoning in Interactive Theorem Provers by Equality Saturation",
+      "identity": {
+        "doi": "10.1145/3776667"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

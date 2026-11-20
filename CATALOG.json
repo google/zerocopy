@@ -21459,6 +21459,90 @@
         "verification/empirical-evaluation"
       ]
     },
+    "egraph-congruence-proof-trees-dag-explanations-and-pass1-rewrite-checkers": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "20aa204315cd36aaf944778b7d33c0d609ced8e8"
+          },
+          "name": "Anneal formal verification framework"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and C++ kernel"
+        },
+        {
+          "identity": {
+            "repository": "egraphs-good/egg",
+            "revision": "73975c9819efb4af2f3c6c1b44fa53f8c5742574"
+          },
+          "name": "egg equality-saturation library"
+        },
+        {
+          "identity": {
+            "repository": "egraphs-good/egglog",
+            "revision": "d89bc58adc9b9a87a8f571c5b9ad75d686d226e6"
+          },
+          "name": "egglog Datalog and equality-saturation engine"
+        },
+        {
+          "identity": {
+            "repository": "marcusrossel/lean-egg",
+            "revision": "2605a63b6a78407114c692f5dc626531ff62df55"
+          },
+          "name": "lean-egg Lean 4 equality-saturation tactic"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1284320.1284324"
+          },
+          "name": "Proof-Producing Congruence Closure"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3434304"
+          },
+          "name": "egg: Fast and Extensible Equality Saturation"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3591239"
+          },
+          "name": "Better Together: Unifying Datalog and Equality Saturation"
+        },
+        {
+          "identity": {
+            "arxiv": "2405.10188"
+          },
+          "name": "Bridging Syntax and Semantics of Lean Expressions in E-Graphs"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3776667"
+          },
+          "name": "Towards Pen-and-Paper-Style Equational Reasoning in Interactive Theorem Provers by Equality Saturation"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/egraphs",
+        "lean",
+        "lean/mechanization",
+        "lean/kernel",
+        "anneal",
+        "anneal/theory",
+        "smt",
+        "smt/equality-saturation",
+        "verification",
+        "verification/certificates"
+      ]
+    },
     "embree-watertight-bvh-traversal-mis-radiance-and-ocio-aces-luts": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -52027,6 +52111,64 @@
         "rustc/mir",
         "anneal/rustc-capture",
         "zerocopy/layout"
+      ]
+    },
+    "rustc-coroutine-state-machines-pin-drop-shims-and-async-cancellation-safety": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+          },
+          "name": "The Rust compiler and core library (coroutine lowering, coroutine ABI layout, and core::pin)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "20aa204315cd36aaf944778b7d33c0d609ced8e8"
+          },
+          "name": "Anneal formal verification framework"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and C++ kernel"
+        },
+        {
+          "identity": {
+            "repository": "tokio-rs/tokio",
+            "revision": "3f0ffc85f51c71d97bce72e0f8b80ece9b8b4892"
+          },
+          "name": "Tokio asynchronous runtime (select! macro and cancellation-safety specification)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3158154"
+          },
+          "name": "RustBelt: Securing the Foundations of the Rust Programming Language"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3418295"
+          },
+          "name": "Safe Systems Programming in Rust"
+        }
+      ],
+      "topics": [
+        "rust",
+        "rust/async",
+        "rust/pin",
+        "rust/cancellation-safety",
+        "rustc",
+        "rustc/mir",
+        "anneal",
+        "anneal/theory",
+        "verification",
+        "verification/rust"
       ]
     },
     "rustc-cross-crate-rmeta-provenance-and-foreign-mir-inlining": {
