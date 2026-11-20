@@ -55,6 +55,7 @@ env:
 jobs:
   build_test:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     # We pre-compute a Docker image containing most dependencies. Each job in
     # the matrix runs in parallel, so without this pre-computation, most jobs
     # would duplicate the work of downloading crates from the internet.
@@ -343,8 +344,24 @@ jobs:
     # artifact name. The ID identifies one immutable artifact from this exact
     # run, so a renamed, stale, or Buildx-generated artifact cannot be selected
     # accidentally. Checkout must remain first because this is a local action.
-    - &download_ci_image
+    # Bound each download step with `timeout-minutes` (composite steps cannot
+    # set `timeout-minutes`) so a single stalled Azure Blob stream cannot hang
+    # a 270-cell merge group for 25+ minutes without retrying on a fresh socket.
+    - &download_ci_image_1
       name: Download prebuilt Docker image
+      id: download_ci_image_1
+      timeout-minutes: 4
+      continue-on-error: true
+      uses: ./.github/actions/download-artifact-with-retry
+      with:
+        artifact-id: ${{ needs.build_docker_env.outputs.image_artifact_id }}
+        path: ${{ runner.temp }}
+        expected-file: ${{ env.ZC_CI_IMAGE_ARCHIVE }}
+
+    - &download_ci_image_2
+      name: Download prebuilt Docker image (timeout retry)
+      if: ${{ success() && steps.download_ci_image_1.outcome != 'success' }}
+      timeout-minutes: 6
       uses: ./.github/actions/download-artifact-with-retry
       with:
         artifact-id: ${{ needs.build_docker_env.outputs.image_artifact_id }}
@@ -614,6 +631,7 @@ jobs:
   miri:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     needs: build_docker_env
     permissions:
       contents: read
@@ -648,7 +666,8 @@ jobs:
 
     steps:
     - *matrix_checkout
-    - *download_ci_image
+    - *download_ci_image_1
+    - *download_ci_image_2
     - *load_ci_image
     - *create_docker_shell
     - *configure_matrix_environment
