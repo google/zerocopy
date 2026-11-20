@@ -274,7 +274,7 @@ fn rejects_non_utf8_artifact_paths_before_staging_or_retention() {
             assert!(output.stderr.is_empty(), "{output:?}");
             let receipt: serde_json::Value = serde_json::from_slice(&output.stdout)
                 .expect("invalid artifact path returns a JSON receipt");
-            assert_eq!(receipt["schema_version"], 2);
+            assert_eq!(receipt["schema_version"], 3);
             assert_eq!(receipt["taint_reasons"], serde_json::json!([]));
             assert!(receipt.get("tainted").is_none(), "{receipt}");
             assert_eq!(receipt["status"], "tool_failed");
@@ -301,7 +301,7 @@ fn rejects_non_utf8_artifact_paths_before_staging_or_retention() {
         let output = cmd.output().unwrap();
         assert_result(&output, 2, "", "");
         let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
-        assert_eq!(receipt["schema_version"], 2);
+        assert_eq!(receipt["schema_version"], 3);
         assert_eq!(receipt["taint_reasons"], serde_json::json!([]));
         assert_eq!(receipt["phase"], "retention");
         assert_eq!(receipt["detail"], "artifact destination path must be UTF-8");
@@ -323,7 +323,7 @@ fn rejects_non_utf8_artifact_paths_before_staging_or_retention() {
         assert_result(&output, 1, "", "");
         assert!(output.stderr.is_empty(), "{output:?}");
         let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
-        assert_eq!(receipt["schema_version"], 2);
+        assert_eq!(receipt["schema_version"], 3);
         assert_eq!(receipt["taint_reasons"], serde_json::json!([]));
         assert_eq!(receipt["status"], "unsupported");
         assert_eq!(receipt["phase"], "request");
@@ -357,7 +357,7 @@ fn early_verification_failures_have_versioned_receipts() {
             assert_result(&output, 2, "", "");
             assert!(output.stderr.is_empty(), "{output:?}");
             let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
-            assert_eq!(receipt["schema_version"], 2, "{receipt}");
+            assert_eq!(receipt["schema_version"], 3, "{receipt}");
             assert_eq!(receipt["taint_reasons"], serde_json::json!([]));
             assert!(receipt.get("tainted").is_none(), "{receipt}");
             assert_eq!(receipt["status"], "tool_failed");
@@ -450,7 +450,7 @@ fn capture_discovery_prefers_explicit_then_installed_then_sibling() {
         let output = child.output().unwrap();
         assert_result(&output, 1, "", "");
         let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
-        assert_eq!(receipt["schema_version"], 2);
+        assert_eq!(receipt["schema_version"], 3);
         assert_eq!(receipt["taint_reasons"], serde_json::json!([]));
         assert_eq!(receipt["phase"], "capture", "{receipt}");
         let detail: serde_json::Value =
@@ -527,7 +527,7 @@ fn cargo_shortcut_declares_only_its_documented_source_namespace() {
     let output = child.output().unwrap();
     assert_result(&output, 2, "", "");
     let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
-    assert_eq!(receipt["schema_version"], 2);
+    assert_eq!(receipt["schema_version"], 3);
     assert_eq!(receipt["taint_reasons"], serde_json::json!([]));
     assert_eq!(receipt["phase"], "capture-tool", "{receipt}");
     let request: serde_json::Value =
@@ -729,7 +729,7 @@ fn host_policy_conflicts_exit_2_on_stderr_with_empty_stdout() {
 }
 
 #[test]
-fn unpinned_policy_taint_emits_stderr_banner_and_v2_failure_receipt() {
+fn unpinned_policy_taint_emits_stderr_banner_and_v3_failure_receipt() {
     use std::fs;
     let project = tempfile::tempdir().unwrap();
     let request = project.path().join("request.json");
@@ -752,7 +752,7 @@ fn unpinned_policy_taint_emits_stderr_banner_and_v2_failure_receipt() {
     let output = cmd.output().unwrap();
     assert_result(&output, 2, "", "TAINTED");
     let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
-    assert_eq!(receipt["schema_version"], 2, "{receipt}");
+    assert_eq!(receipt["schema_version"], 3, "{receipt}");
     assert_eq!(
         receipt["taint_reasons"],
         serde_json::json!(["unpinned_lean"]),
@@ -782,7 +782,7 @@ fn setup_allows_independent_lean_override_without_capture_pair() {
     assert_result(&output, 1, "", "");
     assert!(output.stderr.is_empty(), "{output:?}");
     let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
-    assert_eq!(receipt["schema_version"], 2, "{receipt}");
+    assert_eq!(receipt["schema_version"], 3, "{receipt}");
     assert_eq!(receipt["status"], "unsupported");
     assert_eq!(receipt["phase"], "request");
 }
@@ -844,7 +844,7 @@ fn rustc_mode_stages_symlinks_strict_roles_and_rejects_fifos() {
         .unwrap();
     assert_result(&output, 2, "", "");
     let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
-    assert_eq!(receipt["schema_version"], 2, "{receipt}");
+    assert_eq!(receipt["schema_version"], 3, "{receipt}");
     assert_eq!(receipt["phase"], "capture-tool", "{receipt}");
     let req: serde_json::Value =
         serde_json::from_slice(&fs::read(evidence.join("request.json")).unwrap()).unwrap();
@@ -988,7 +988,7 @@ fn unsandboxed_elaboration_flag_marks_early_failure_receipt_tainted() {
     let output = cmd.output().unwrap();
     assert_result(&output, 1, "", "TAINTED");
     let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
-    assert_eq!(receipt["schema_version"], 2, "{receipt}");
+    assert_eq!(receipt["schema_version"], 3, "{receipt}");
     assert_eq!(
         receipt["taint_reasons"],
         serde_json::json!(["unsandboxed_elaboration"]),
@@ -996,4 +996,54 @@ fn unsandboxed_elaboration_flag_marks_early_failure_receipt_tainted() {
     );
     assert_eq!(receipt["status"], "unsupported", "{receipt}");
     assert_eq!(receipt["phase"], "request", "{receipt}");
+    assert!(
+        receipt.get("elaboration_sandbox").is_none(),
+        "pre-sandbox failure must omit elaboration_sandbox: {receipt}"
+    );
+}
+
+#[test]
+fn taint_monoid_combines_all_three_allow_flags_in_canonical_order() {
+    use std::fs;
+
+    let project = tempfile::tempdir().unwrap();
+    let request = project.path().join("request.json");
+    fs::write(&request, b"not JSON\n").unwrap();
+    let mut cmd = command(Route::Direct, project.path());
+    // Pass relaxation flags in reverse lexicographical order to confirm the
+    // receipt projects a canonical sorted `BTreeSet<VerificationTaint>`.
+    cmd.args([
+        "verify",
+        "--allow-unsandboxed-elaboration",
+        "--allow-unpinned-lean",
+        "--allow-sorry-in-proof",
+        "--lean",
+        "fake-lean",
+        "--request",
+    ])
+    .arg(&request);
+    #[cfg(not(feature = "setup"))]
+    cmd.args(["--capture", "cap", "--sysroot", "sys"]);
+    let output = cmd.output().unwrap();
+    assert_result(&output, 1, "", "TAINTED");
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(stderr.contains("--allow-sorry-in-proof"), "{stderr}");
+    assert!(stderr.contains("--allow-unpinned-lean"), "{stderr}");
+    assert!(
+        stderr.contains("--allow-unsandboxed-elaboration"),
+        "{stderr}"
+    );
+    let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(receipt["schema_version"], 3, "{receipt}");
+    assert_eq!(
+        receipt["taint_reasons"],
+        serde_json::json!(["sorry_in_proof", "unpinned_lean", "unsandboxed_elaboration"]),
+        "{receipt}"
+    );
+    assert_eq!(receipt["status"], "unsupported", "{receipt}");
+    assert_eq!(receipt["phase"], "request", "{receipt}");
+    assert!(
+        receipt.get("elaboration_sandbox").is_none(),
+        "pre-sandbox failure must omit elaboration_sandbox: {receipt}"
+    );
 }
