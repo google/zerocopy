@@ -1,0 +1,909 @@
+[
+ {
+  "id": "K1",
+  "name": "Toy.KernelTrust.accepted_semValid_of_faithful_of_semSound",
+  "lean": [
+   "Toy.KernelTrust.accepted_semValid_of_faithful_of_semSound",
+   "Toy.KernelTrust.not_accepts_bot_of_faithful_of_semSound"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Re-derivation, for a toy logic, of the two-step soundness architecture of verified proof checkers (the implementation accepts only what the inference system derives; the inference system is sound for a semantics), which is mechanised at production scale (Kumar et al. 2016; Candle 2022; Milawa 2015). Tier criterion used throughout: T0 when the statement itself is a published or mechanised theorem; T1 when it is a known observation not previously mechanised in this form.",
+  "plain_claim": "In the toy rules-as-data propositional logic, if a checker accepts only sequents derivable from the rule table R (`Faithful C R`) and every sequent derivable from R is truth-table valid (`SemSound R`), then every sequent the checker accepts, on any proof object, is truth-table valid; in particular it never accepts `[] ⊢ ⊥`.",
+  "hypotheses": [
+   {
+    "name": "hFaithful : Faithful C R",
+    "purpose": "Connects what the implementation accepts to what the rules derive.",
+    "tightness": "tight",
+    "counterexample": "Toy.KernelTrust.unfaithful_checker_for_sound_rules_accepts_bot"
+   },
+   {
+    "name": "hSemSound : SemSound R",
+    "purpose": "Connects what the rules derive to the reference semantics. For the `⊥` part alone, the strictly weaker `Consistent R` suffices (`not_acceptsBot_of_faithful_of_consistent`; strictness: `ex_consistent_not_semSound_anyImpRules`).",
+    "tightness": "tight",
+    "counterexample": "Toy.KernelTrust.faithful_checker_for_unsound_rules_accepts_bot"
+   }
+  ],
+  "depth": "definitional",
+  "depth_justification": "The main statement is the composition of the two definitions (a one-line term). It is recorded as an architectural reference point; the work lies in establishing the hypotheses for a given checker and rule table (`recheckRecompute_faithful`, `traceChecker_faithful`, `stdRules_semSound`; card S-recompute, S-semSound).",
+  "nonvacuity_witness": "The recomputing certificate re-checker for the standard rules is faithful and complete, the standard rules are semantically sound, and the checker accepts a certificate for `[] ⊢ ⊥ → ⊥`.",
+  "nonvacuity_witness_lean": [
+   "Toy.KernelTrust.k1_nonvacuous"
+  ],
+  "non_claims": [
+   "Toy propositional logic only: no binders, dependent types, definitional equality, universes or inductive types. Nothing here is a theorem about Lean, Rocq, HOL Light, Metamath or any production checker.",
+   "Nothing about compiled binaries, compilers, runtimes, memory safety, serialisation, I/O or hardware faults. A `Checker` is a mathematical function; the model cannot express miscompilation.",
+   "`Faithful` is the soundness direction only (accepted implies derivable). It does not say the checker accepts anything; the reject-all checker is faithful to every rule table.",
+   "`SemSound` is relative to the reference truth-table semantics `evalForm`, which is itself trusted and unverified. A misconception shared by the rules and the reference semantics is invisible to every result here.",
+   "Says nothing about which statement was checked: a name may resolve to an unintended formula (K2c, K1-pinned).",
+   "No completeness claim: `stdRules` is intuitionistic natural deduction and does not derive every truth-table-valid sequent."
+  ],
+  "prior_art": [
+   "R. Kumar, R. Arthan, M. O. Myreen, S. Owens. Self-Formalisation of Higher-Order Logic: Semantics, Soundness, and a Verified Implementation. J. Autom. Reason. 56(3):221-259, 2016. doi:10.1007/s10817-015-9357-x.",
+   "O. Abrahamsson, M. O. Myreen, R. Kumar, T. Sewell. Candle: A Verified Implementation of HOL Light. ITP 2022, LIPIcs vol. 237, pp. 3:1-3:17, 2022. doi:10.4230/LIPIcs.ITP.2022.3.",
+   "O. Abrahamsson, M. O. Myreen, R. Kumar, T. Sewell. Candle: A Verified Implementation of HOL Light (Extended Version). J. Autom. Reason. 69(4), 2025. doi:10.1007/s10817-025-09743-8.",
+   "J. Davis, M. O. Myreen. The Reflective Milawa Theorem Prover is Sound (Down to the Machine Code that Runs it). J. Autom. Reason. 55(2):117-183, 2015. doi:10.1007/s10817-015-9324-6.",
+   "J. Harrison. Towards Self-verification of HOL Light. IJCAR 2006, LNCS 4130, pp. 177-191, 2006. doi:10.1007/11814771_17.",
+   "B. Barras. Sets in Coq, Coq in Sets. J. Formaliz. Reason. 3(1):29-48, 2010. doi:10.6092/issn.1972-5787/1695.",
+   "M. Sozeau, S. Boulier, Y. Forster, N. Tabareau, T. Winterhalter. Coq Coq Correct! Verification of Type Checking and Erasure for Coq, in Coq. Proc. ACM Program. Lang. 4(POPL), 8:1-8:28, 2020. doi:10.1145/3371076.",
+   "M. Sozeau, A. Anand, S. Boulier, C. Cohen, Y. Forster, F. Kunze, G. Malecha, N. Tabareau, T. Winterhalter. The MetaCoq Project. J. Autom. Reason. 64(5):947-999, 2020. doi:10.1007/s10817-019-09540-0. (The project is now named MetaRocq.)",
+   "M. Carneiro. Lean4Lean: Verifying a Typechecker for Lean, in Lean. TYPES 2025 (post-proceedings), LIPIcs vol. 384, pp. 2:1-2:23, 2026. doi:10.4230/LIPIcs.TYPES.2025.2. Preprint: arXiv:2403.14064.",
+   "H. Barendregt, F. Wiedijk. The challenge of computer mathematics. Phil. Trans. R. Soc. A 363(1835):2351-2375, 2005. doi:10.1098/rsta.2005.1650.",
+   "A. Abel, J. Öhman, A. Vezzosi. Decidability of conversion for type theory in type theory. Proc. ACM Program. Lang. 2(POPL), 23:1-23:29, 2018. doi:10.1145/3158111."
+  ],
+  "design_question": "Which assurance layers must a proof-checking pipeline have (implementation faithfulness, semantic soundness of the rules, statement pinning, recomputation of derived certificate data), and which class of defect does each one fail to cover?",
+  "grounding_notes": [
+   "Derived (modeling bridge): Lean4Lean, MetaRocq (MetaCoq), Candle and Milawa are efforts to establish the faithfulness layer for real checkers. The MetaCoq POPL 2020 paper describes its checker as 'proven correct in Coq with respect to its formal specification and axiomatisation of part of its metatheory' and states that 'because of Gödel's incompleteness theorem, there is no hope to prove completely the correctness of the specification of Coq inside Coq ... but it is possible to prove the correctness of the implementation assuming the correctness of the specification, thus moving from a trusted code base (TCB) to a trusted theory base (TTB) paradigm'. That is the faithfulness layer, relative to axiomatised metatheory; it is not a semantic-soundness theorem for the rules.",
+   "Derived (modeling bridge): relativised semantic soundness (the `SemSound` layer, established in a stronger metatheory) is what Harrison 2006 (HOL in HOL with an additional axiom), Kumar et al. 2016 and Barras 2010 (set-theoretic models, formalised in Coq, of type theories of the Calculus-of-Constructions family, relative to an axiomatised set theory) establish.",
+   "Derived (modeling bridge): the de Bruijn criterion (Barendregt, Wiedijk 2005) asks for proof objects checked by a small independent checker; K1 says what such a checker must additionally satisfy (faithfulness, and sound rules) for its acceptances to be valid."
+  ],
+  "proof_status": "kernel-checked"
+ },
+ {
+  "id": "K1-pinned",
+  "name": "Toy.KernelTrust.pinned_accepted_name_semValid_of_faithful_of_semSound",
+  "lean": [
+   "Toy.KernelTrust.pinned_accepted_name_semValid_of_faithful_of_semSound"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Comparing the checked statement with an independently held statement is an established practice (Pollack 1998; Adams 2016; the separate specification file of Metamath Zero, Carneiro 2020); not found mechanised in this form.",
+  "plain_claim": "If a checker is faithful to semantically sound rules, and the statement table P shipped with a proof is pinned to the official table on a name (`Pinned official P name`: the name is defined in the official table and P resolves it to the same formula), then whenever the checker accepts a proof object for that name resolved through P (an empty-context sequent), the official meaning of the name is truth-table valid. The conclusion is stated universally (`∀ φ, official.lookup name = some φ → SemValid [] φ`); it is not vacuous because `Pinned` includes the clause that `name` is officially defined, and under `Pinned` it is equivalent to the existential form 'the name has an official meaning and that meaning is valid' (`pinned_official_meaning_forall_iff_exists`). Without the definedness clause the universal conclusion would hold vacuously for an officially undefined name: it needs only that P agrees with the official table on officially defined names (`accepted_name_semValid_of_faithful_of_semSound_of_agreement`).",
+  "hypotheses": [
+   {
+    "name": "hFaithful : Faithful C R",
+    "purpose": "Connects acceptance to derivability.",
+    "tightness": "tight",
+    "counterexample": "Toy.KernelTrust.pinned_name_semValid_fails_without_faithful"
+   },
+   {
+    "name": "hSemSound : SemSound R",
+    "purpose": "Connects derivability to validity.",
+    "tightness": "tight",
+    "counterexample": "Toy.KernelTrust.pinned_name_semValid_fails_without_semSound"
+   },
+   {
+    "name": "hPinned : Pinned official P name",
+    "purpose": "Connects the formula that was checked (resolved through P) to the official formula. It already asserts that `name` has an official meaning; existence is assumed, not deduced from acceptance. Its definedness clause is not used for the universal conclusion (`accepted_name_semValid_of_faithful_of_semSound_of_agreement`); it is what makes that conclusion equivalent to the existential reading (`pinned_official_meaning_forall_iff_exists`), and `decide (Pinned official P name)` also rejects officially undefined names (`ex_pinned_undefined_neg`).",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.KernelTrust.pinned_name_semValid_fails_without_pinned",
+     "Toy.KernelTrust.unpinned_faithful_checker_for_sound_rules_accepts_renamed_False"
+    ]
+   }
+  ],
+  "depth": "shallow",
+  "depth_justification": "Unfold `Pinned` and `acceptsNamed`, then apply K1.",
+  "nonvacuity_witness": "The recomputing re-checker for the standard rules, the official table pinned to itself on the name \"True\", and the certificate topCert, which the checker accepts for that name.",
+  "nonvacuity_witness_lean": [
+   "Toy.KernelTrust.k1_pinned_nonvacuous"
+  ],
+  "non_claims": [
+   "The conclusion `∀ φ, official.lookup name = some φ → SemValid [] φ` is trivially true for a name that the official table does not define; the theorem yields 'the official meaning exists and is valid' only through the definedness clause of `Pinned` (`pinned_official_meaning_forall_iff_exists`). A pipeline that compares tables only on officially defined names, without checking definedness, obtains the universal statement and nothing more (`accepted_name_semValid_of_faithful_of_semSound_of_agreement`).",
+   "Pinning a theorem's top-level name in a flat lookup table does not prevent soundness or meaning-drift attacks via modified definitional dependencies, hidden axioms in the ambient environment, or duplicate-key shadowing (`StmtTable` uses first-binding-wins `List.lookup`).",
+   "`Checker.acceptsNamed` checks empty-context sequents (`[] ⊢ φ`) only; nothing is stated about named statements proved under non-empty assumption contexts or custom axioms.",
+   "Toy propositional logic only: no binders, dependent types, definitional equality, universes or inductive types. Nothing here is a theorem about Lean, Rocq, HOL Light, Metamath or any production checker.",
+   "The model has no notation, elaboration, parsing or pretty-printing; Pollack-inconsistency (parser/printer round trips, Wiedijk 2012) is not modelled.",
+   "A wrong official table is invisible: pinning moves trust to the official table, it does not remove it."
+  ],
+  "prior_art": [
+   "R. Pollack. How to believe a machine-checked proof. In: Twenty-Five Years of Constructive Type Theory, Oxford University Press, 1998. doi:10.1093/oso/9780198501275.003.0013. Earlier version: BRICS Report Series 4(18), RS-97-18, 1997. doi:10.7146/brics.v4i18.18945.",
+   "M. Adams. Proof Auditing Formalised Mathematics. J. Formaliz. Reason. 9(1):3-32, 2016. doi:10.6092/issn.1972-5787/4576.",
+   "M. Carneiro. Metamath Zero: Designing a Theorem Prover Prover. CICM 2020, LNCS 12236, pp. 71-88, 2020. doi:10.1007/978-3-030-53518-6_5.",
+   "F. Wiedijk. Pollack-inconsistency. UITP 2010, Electron. Notes Theor. Comput. Sci. 285:85-100, 2012. doi:10.1016/j.entcs.2012.06.008. (Concerns parser/printer round-trip inconsistency, which is related to but distinct from comparing a checked statement against a statement table.)"
+  ],
+  "design_question": "Which assurance layers must a proof-checking pipeline have (implementation faithfulness, semantic soundness of the rules, statement pinning, recomputation of derived certificate data), and which class of defect does each one fail to cover?",
+  "grounding_notes": [
+   "Derived (modeling bridge): a separate, human-audited specification file for the statements being proved (as in Metamath Zero's split between specification and proof files, Carneiro 2020) is a pinning layer in the sense of this card."
+  ],
+  "proof_status": "kernel-checked"
+ },
+ {
+  "id": "K2a",
+  "name": "Toy.KernelTrust.faithful_checker_for_unsound_rules_accepts_bot",
+  "lean": [
+   "Toy.KernelTrust.faithful_checker_for_unsound_rules_accepts_bot"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "Folklore (a correct implementation of wrong rules is wrong), made precise as a kernel-checked counterexample; under the tier criterion stated on K1 it is T1 because the observation, unlike K1's architecture, is not a published mechanised theorem.",
+  "plain_claim": "The recomputing re-checker for the unsound table `badRules` (standard rules plus 'from A → B infer B → A') is faithful and complete for `badRules`, yet accepts a certificate for `[] ⊢ ⊥`, which is not valid: of K1's hypotheses only `SemSound` fails.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "depth_justification": "Finite evaluation on top of the general faithfulness and completeness theorems of the re-checker.",
+  "nonvacuity_witness": "Not applicable: the statement exhibits its witnesses.",
+  "non_claims": [
+   "Toy propositional logic only: no binders, dependent types, definitional equality, universes or inductive types. Nothing here is a theorem about Lean, Rocq, HOL Light, Metamath or any production checker.",
+   "No claim that any real rule set is unsound.",
+   "The unsound rule is detectable by a truth table; unsoundness arising only from feature interaction is not illustrated."
+  ],
+  "prior_art": [
+   "R. Pollack. How to believe a machine-checked proof. In: Twenty-Five Years of Constructive Type Theory, Oxford University Press, 1998. doi:10.1093/oso/9780198501275.003.0013. Earlier version: BRICS Report Series 4(18), RS-97-18, 1997. doi:10.7146/brics.v4i18.18945.",
+   "R. Kumar, R. Arthan, M. O. Myreen, S. Owens. Self-Formalisation of Higher-Order Logic: Semantics, Soundness, and a Verified Implementation. J. Autom. Reason. 56(3):221-259, 2016. doi:10.1007/s10817-015-9357-x.",
+   "J. Harrison. Towards Self-verification of HOL Light. IJCAR 2006, LNCS 4130, pp. 177-191, 2006. doi:10.1007/11814771_17."
+  ],
+  "design_question": "Which assurance layers must a proof-checking pipeline have (implementation faithfulness, semantic soundness of the rules, statement pinning, recomputation of derived certificate data), and which class of defect does each one fail to cover?",
+  "grounding_notes": [],
+  "proof_status": "kernel-checked",
+  "nonvacuity_witness_lean": []
+ },
+ {
+  "id": "K2b",
+  "name": "Toy.KernelTrust.unfaithful_checker_for_sound_rules_accepts_bot",
+  "lean": [
+   "Toy.KernelTrust.unfaithful_checker_for_sound_rules_accepts_bot",
+   "Toy.KernelTrust.separate_artifact_quorum_of_two_unfaithful_checkers_accepts_bot",
+   "Toy.KernelTrust.shared_artifact_quorum_of_checkers_with_a_shared_defect_accepts_bot"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "Folklore (sound rules do not protect against an implementation bug; agreement of checkers is not evidence by itself), made precise as kernel-checked counterexamples.",
+  "plain_claim": "For the semantically sound standard rules, the re-checker with its hypothesis-membership guard deleted accepts `[] ⊢ ⊥` (only `Faithful` fails). Two quorum variants: a separate-artifact quorum of two differently broken re-checkers accepts `[] ⊢ ⊥` when each member gets its own certificate; and the same-artifact quorum of two different re-checkers that share the missing-guard defect accepts one certificate for `[] ⊢ ⊥`.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "depth_justification": "Finite evaluations of concrete certificates.",
+  "nonvacuity_witness": "Not applicable: the statements exhibit their witnesses.",
+  "non_claims": [
+   "Toy propositional logic only: no binders, dependent types, definitional equality, universes or inductive types. Nothing here is a theorem about Lean, Rocq, HOL Light, Metamath or any production checker.",
+   "`quorum C D` accepts a pair of independent proof objects `(w₁, w₂)`, one per checker; in `separate_artifact_quorum_of_two_unfaithful_checkers_accepts_bot`, the two checkers are given different certificates (`lyingCert .bot` and `bogusHypCert .bot`), each of which the other checker rejects. No single `Cert` is accepted for `[] ⊢ ⊥` by both `recheckTrust stdRules` and `recheckNoHypGuard stdRules` (this follows from `sharedQuorum_recheckTrust_recheckNoHypGuard_faithful`). That theorem therefore does not model two independent checkers accepting the same bogus proof due to a shared defect, nor does it show that disjoint bugs defeat same-artifact N-version checking. The same-artifact cases are `shared_artifact_quorum_of_checkers_with_a_shared_defect_accepts_bot` and `shared_artifact_quorum_of_checkers_with_disjoint_defects_is_faithful`.",
+   "Does not say N-version checking is useless: a shared-artifact quorum of two checkers with disjoint defects is faithful here (card S-shared-quorum). Nothing is said about how likely independent implementations are to share a defect.",
+   "No claim that any real checker is unfaithful."
+  ],
+  "prior_art": [
+   "R. Pollack. How to believe a machine-checked proof. In: Twenty-Five Years of Constructive Type Theory, Oxford University Press, 1998. doi:10.1093/oso/9780198501275.003.0013. Earlier version: BRICS Report Series 4(18), RS-97-18, 1997. doi:10.7146/brics.v4i18.18945.",
+   "H. Barendregt, F. Wiedijk. The challenge of computer mathematics. Phil. Trans. R. Soc. A 363(1835):2351-2375, 2005. doi:10.1098/rsta.2005.1650.",
+   "M. Carneiro. Lean4Lean: Verifying a Typechecker for Lean, in Lean. TYPES 2025 (post-proceedings), LIPIcs vol. 384, pp. 2:1-2:23, 2026. doi:10.4230/LIPIcs.TYPES.2025.2. Preprint: arXiv:2403.14064.",
+   "O. Abrahamsson, M. O. Myreen, R. Kumar, T. Sewell. Candle: A Verified Implementation of HOL Light. ITP 2022, LIPIcs vol. 237, pp. 3:1-3:17, 2022. doi:10.4230/LIPIcs.ITP.2022.3."
+  ],
+  "design_question": "Does re-checking with two independent checkers add assurance, and does it matter whether they re-check the same exported artifact?",
+  "grounding_notes": [
+   "Derived (modeling bridge): repository `leanprover/lean4`, pull request 14807, 'fix: make the kernel `is_prop` check require a sort' (merged 2026-08-18T01:37:02Z, merge commit 7412bc4c852c9a9fafa69b67a11e4bf9f5dcbc24). Its description states 'The bogus proof was also accepted by nanoda, an independent implementation of the Lean kernel. We believe the lean4lean external kernel does not have this bug.' Reasoning: one artifact (a bogus proof of `False`) was accepted by two independently written kernels, so a same-artifact quorum of those two kernels would have accepted it; `shared_artifact_quorum_of_checkers_with_a_shared_defect_accepts_bot` is the toy form of that structure (two different checkers, one shared defect, one artifact). The toy says nothing about the actual defect, the statement about lean4lean is the pull request authors' belief and was not examined, and nothing is inferred about how often independent kernels share defects.",
+   "Derived (modeling bridge): `leanprover/lean4` issue 14484, 'Missing check apparently allows proof of False after adversarial metaprogram' (opened 2026-07-22). Toy analogue: the deleted-guard mutant.",
+   "Derived (modeling bridge): `leanprover/lean4` pull request 14806, 'fix: make kernel `is_def_eq` caching order-independent' (merged 2026-08-18, merge commit d108aae3bf7edbaf705b71c01ddb3b264ef72c44); its description states that both exploits are also caught by nanoda. Toy analogue: an unfaithful checker whose defect another checker does not share (card S-shared-quorum); the toy has no caching."
+  ],
+  "proof_status": "kernel-checked",
+  "nonvacuity_witness_lean": []
+ },
+ {
+  "id": "K2c",
+  "name": "Toy.KernelTrust.unpinned_faithful_checker_for_sound_rules_accepts_renamed_False",
+  "lean": [
+   "Toy.KernelTrust.unpinned_faithful_checker_for_sound_rules_accepts_renamed_False",
+   "Toy.KernelTrust.pinned_False_never_accepted"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "Folklore (compare the checked statement with the intended one), made precise as a kernel-checked counterexample with its positive half.",
+  "plain_claim": "A faithful checker for sound rules accepts a proof of the name \"False\" when the accompanying table renames \"False\" to the provable formula `⊥ → ⊥`, although the official meaning of \"False\" is `⊥`: only `Pinned` fails. Positive half (`pinned_False_never_accepted`, under the hypothesis `Pinned officialTable P \"False\"`): for every shipped table P pinned to the official table on \"False\", the same checker accepts no proof object for that name.",
+  "hypotheses": [
+   {
+    "name": "hPinned : Pinned officialTable P \"False\" (`pinned_False_never_accepted` only; `unpinned_faithful_checker_for_sound_rules_accepts_renamed_False` is a closed statement with no hypotheses)",
+    "purpose": "Forces the shipped table P to resolve \"False\" to its official meaning `⊥`; the recomputing re-checker for the standard rules is faithful and the standard rules are consistent, so it accepts no proof object for `[] ⊢ ⊥`.",
+    "tightness": "tight",
+    "counterexample": "Toy.KernelTrust.unpinned_faithful_checker_for_sound_rules_accepts_renamed_False"
+   }
+  ],
+  "depth": "shallow",
+  "depth_justification": "Finite evaluation plus the K1 `⊥` argument.",
+  "nonvacuity_witness": "`unpinned_faithful_checker_for_sound_rules_accepts_renamed_False`: not applicable (the statement exhibits its witnesses). `pinned_False_never_accepted`: its hypothesis is satisfiable, since the official table is pinned to itself on \"False\" (`ex_pinned_official_pos : Pinned officialTable officialTable \"False\"`).",
+  "non_claims": [
+   "Pinning a theorem's top-level name in a flat lookup table does not prevent soundness or meaning-drift attacks via modified definitional dependencies, hidden axioms in the ambient environment, or duplicate-key shadowing (`StmtTable` uses first-binding-wins `List.lookup`).",
+   "`Checker.acceptsNamed` checks empty-context sequents (`[] ⊢ φ`) only; nothing is stated about named statements proved under non-empty assumption contexts or custom axioms.",
+   "The checker accepted a valid sequent; the model has no definitional dependencies, notation or elaboration."
+  ],
+  "prior_art": [
+   "R. Pollack. How to believe a machine-checked proof. In: Twenty-Five Years of Constructive Type Theory, Oxford University Press, 1998. doi:10.1093/oso/9780198501275.003.0013. Earlier version: BRICS Report Series 4(18), RS-97-18, 1997. doi:10.7146/brics.v4i18.18945.",
+   "M. Adams. Proof Auditing Formalised Mathematics. J. Formaliz. Reason. 9(1):3-32, 2016. doi:10.6092/issn.1972-5787/4576.",
+   "M. Carneiro. Metamath Zero: Designing a Theorem Prover Prover. CICM 2020, LNCS 12236, pp. 71-88, 2020. doi:10.1007/978-3-030-53518-6_5.",
+   "F. Wiedijk. Pollack-inconsistency. UITP 2010, Electron. Notes Theor. Comput. Sci. 285:85-100, 2012. doi:10.1016/j.entcs.2012.06.008. (Concerns parser/printer round-trip inconsistency, which is related to but distinct from comparing a checked statement against a statement table.)"
+  ],
+  "design_question": "Which assurance layers must a proof-checking pipeline have (implementation faithfulness, semantic soundness of the rules, statement pinning, recomputation of derived certificate data), and which class of defect does each one fail to cover?",
+  "grounding_notes": [
+   "Derived (modeling bridge): `leanprover/lean4` issue 15908, 'Kernel accepts an axiom-free proof of `False`: native `Nat.add` reduction trusts the constant's name, not its definition' (opened 2026-10-24). Toy analogue: a name is taken to carry its official meaning without comparison against the official table. In the real report the unpinned name is consumed inside the kernel, so that defect is also a faithfulness defect; the toy separates the two."
+  ],
+  "proof_status": "kernel-checked",
+  "nonvacuity_witness_lean": [
+   "Toy.KernelTrust.ex_pinned_official_pos"
+  ]
+ },
+ {
+  "id": "K2d",
+  "name": "Toy.KernelTrust.trusting_rechecker_accepts_bot_recomputing_rechecker_rejects",
+  "lean": [
+   "Toy.KernelTrust.trusting_rechecker_accepts_bot_recomputing_rechecker_rejects"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "Folklore (a validator must not trust producer-supplied derived data), made precise over one certificate format with a paired positive statement.",
+  "plain_claim": "Over one certificate format with a derived `arity` field and the sound standard rules, the re-checker that trusts the stored field accepts `[] ⊢ ⊥` on a dishonest certificate, the re-checker that recomputes the field rejects every certificate for `[] ⊢ ⊥`, and on honest certificates the two agree.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "depth_justification": "Finite evaluation plus the general agreement theorem on honest certificates.",
+  "nonvacuity_witness": "Not applicable: the statement exhibits its witnesses.",
+  "non_claims": [
+   "Toy propositional logic only: no binders, dependent types, definitional equality, universes or inductive types. Nothing here is a theorem about Lean, Rocq, HOL Light, Metamath or any production checker.",
+   "Not logically independent of K2b: the trusting re-checker is an unfaithful checker; the content is the mechanism and the paired positive statement.",
+   "One derived field in one toy format. The recomputing re-checker ignores the stored field (recompute-and-ignore); it does not validate the field against the recomputed value or report dishonesty (validate-and-reject).",
+   "`Cert.honest` counts steps naming a nonexistent rule as honest, and a stored arity larger than the rule's arity is dishonest but harmless (both re-checkers then behave alike)."
+  ],
+  "prior_art": [
+   "J. Hurd. The OpenTheory Standard Theory Library. NASA Formal Methods (NFM 2011), LNCS 6617, pp. 177-191, 2011. doi:10.1007/978-3-642-20398-5_14.",
+   "M. Carneiro. Metamath Zero: Designing a Theorem Prover Prover. CICM 2020, LNCS 12236, pp. 71-88, 2020. doi:10.1007/978-3-030-53518-6_5.",
+   "R. Pollack. How to believe a machine-checked proof. In: Twenty-Five Years of Constructive Type Theory, Oxford University Press, 1998. doi:10.1093/oso/9780198501275.003.0013. Earlier version: BRICS Report Series 4(18), RS-97-18, 1997. doi:10.7146/brics.v4i18.18945."
+  ],
+  "design_question": "Which assurance layers must a proof-checking pipeline have (implementation faithfulness, semantic soundness of the rules, statement pinning, recomputation of derived certificate data), and which class of defect does each one fail to cover?",
+  "grounding_notes": [
+   "Derived (modeling bridge): `leanprover/lean4` issue 15100, 'leanchecker accepts constructor entries whose map key differs from the embedded name' (opened 2026-09-09): the checker built its replay map from parallel producer-supplied arrays without validating the documented invariant that relates them. Toy analogue: trusting redundant producer-supplied data. The toy's recomputing re-checker avoids the defect by ignoring the redundant field; validating agreement between the redundant fields is the other remedy and is not modelled."
+  ],
+  "proof_status": "kernel-checked",
+  "nonvacuity_witness_lean": []
+ },
+ {
+  "id": "S-shared-quorum",
+  "name": "Toy.KernelTrust.sharedQuorum_recheckTrust_recheckNoHypGuard_faithful",
+  "lean": [
+   "Toy.KernelTrust.sharedQuorum_recheckTrust_recheckNoHypGuard_faithful",
+   "Toy.KernelTrust.shared_artifact_quorum_of_checkers_with_disjoint_defects_is_faithful"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Folklore (diverse checkers re-checking the same artifact catch defects they do not share), made precise for one pair of defects.",
+  "plain_claim": "For every rule table R, the same-artifact quorum of the arity-trusting re-checker and the missing-guard mutant of the recomputing re-checker, both reading the identical certificate (translation of proof objects `tr = id`), is faithful to R, although for the standard rules neither member is faithful and their separate-artifact quorum accepts `[] ⊢ ⊥`.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "depth_justification": "Two routine inductions over the certificate list: a certificate accepted by the trusting re-checker passes every hypothesis guard, and on such certificates the mutant runs exactly like the recomputing re-checker.",
+  "nonvacuity_witness": "For the standard rules: both members are unfaithful, their separate-artifact quorum accepts `[] ⊢ ⊥`, and their shared-artifact quorum accepts the honest certificate for `[] ⊢ ⊥ → ⊥`.",
+  "nonvacuity_witness_lean": [
+   "Toy.KernelTrust.shared_artifact_quorum_of_checkers_with_disjoint_defects_is_faithful"
+  ],
+  "non_claims": [
+   "Toy propositional logic only: no binders, dependent types, definitional equality, universes or inductive types. Nothing here is a theorem about Lean, Rocq, HOL Light, Metamath or any production checker.",
+   "One pair of defects in one format. It does not show that a shared-artifact quorum catches every pair of disjoint defects; here it works because each member enforces exactly the check the other omits.",
+   "Says nothing about how likely real independent implementations are to have disjoint defects (K2b's shared-defect example shows they need not).",
+   "Same-artifact checking also trusts the translation of proof objects between the two checkers (and any translator or exporter shared by both). `sharedQuorum C D tr` is faithful whenever either member is faithful, for every `tr` (`sharedQuorum_faithful_left`, `sharedQuorum_faithful_right`), but the disjoint-defect result `sharedQuorum_recheckTrust_recheckNoHypGuard_faithful` is stated for `tr = id` only. An untrusted translator that shows each member the artifact exploiting its own defect makes the same quorum accept `[] ⊢ ⊥` (`shared_artifact_quorum_of_disjoint_defects_accepts_bot_under_exploit_translator`). A defective translator, exporter or serialiser upstream of both checkers is therefore not covered by this card."
+  ],
+  "prior_art": [
+   "M. Carneiro. Lean4Lean: Verifying a Typechecker for Lean, in Lean. TYPES 2025 (post-proceedings), LIPIcs vol. 384, pp. 2:1-2:23, 2026. doi:10.4230/LIPIcs.TYPES.2025.2. Preprint: arXiv:2403.14064.",
+   "H. Barendregt, F. Wiedijk. The challenge of computer mathematics. Phil. Trans. R. Soc. A 363(1835):2351-2375, 2005. doi:10.1098/rsta.2005.1650.",
+   "D. A. Wheeler. Fully Countering Trusting Trust through Diverse Double-Compiling. PhD thesis, George Mason University, 2009. arXiv:1004.5534."
+  ],
+  "design_question": "Does re-checking with two independent checkers add assurance, and does it matter whether they re-check the same exported artifact?",
+  "grounding_notes": [
+   "Derived (modeling bridge): `leanprover/lean4` pull request 14806 reports that both exploits it fixes are also caught by nanoda, an independent kernel; toy analogue: a defect not shared by the second checker of a same-artifact quorum."
+  ],
+  "proof_status": "kernel-checked"
+ },
+ {
+  "id": "K3a",
+  "name": "Toy.KernelTrust.ring_all_faithful_of_metaSound_anchor_of_faithfulImpliesMetaSound",
+  "lean": [
+   "Toy.KernelTrust.ring_all_faithful_of_metaSound_anchor_of_faithfulImpliesMetaSound",
+   "Toy.KernelTrust.ring_no_node_accepts_bot_of_metaSound_anchor_of_faithfulImpliesMetaSound_of_consistent"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Trust propagation from a trusted base along verified links is folklore (compare the tower of checkers in Milawa); the ring form with the faithfulness-implies-meta-soundness assumption named was not found in the literature. No novelty is claimed.",
+  "plain_claim": "In a ring of n verifier nodes sharing one rule table R in which every node accepts a faithfulness certificate for its successor (`RingClosed`), assuming that every node whose object-level checker is faithful also has sound certificate checking (`FaithfulImpliesMetaSound`), if at least one node's certificate checking is sound for claims about ring members (`MetaSound` anchor) then every node's object-level checker is faithful to R; if moreover R is consistent, no node accepts `[] ⊢ ⊥`.",
+  "hypotheses": [
+   {
+    "name": "hClosed : RingClosed V",
+    "purpose": "Propagation passes only through certified links.",
+    "tightness": "tight",
+    "counterexample": "Toy.KernelTrust.ring_with_uncertified_link_does_not_propagate"
+   },
+   {
+    "name": "hFaithfulImpliesMetaSound : FaithfulImpliesMetaSound V R",
+    "purpose": "Carries the substance: converts faithfulness of a node's object-level checker into soundness of its certificate checking. Not derivable from the `VerifierRing` structure. In a self-hosted ring it follows from claim reflection (`faithfulImpliesMetaSound_of_selfHosted_of_claimReflection`). For n = 1 it is not needed.",
+    "tightness": "tight",
+    "counterexample": "Toy.KernelTrust.metaSound_anchor_ring_fails_without_faithfulImpliesMetaSound"
+   },
+   {
+    "name": "hAnchor : ∃ i₀, MetaSound V R i₀",
+    "purpose": "A ring has no base case of its own. For n = 0 it is unsatisfiable.",
+    "tightness": "tight",
+    "counterexample": "Toy.KernelTrust.three_unfaithful_checkers_close_faithfulness_ring"
+   },
+   {
+    "name": "hConsistent : Consistent R (the `⊥` corollary only)",
+    "purpose": "Turns faithfulness into rejection of `[] ⊢ ⊥`; strictly weaker than `SemSound R`. The counterexample states `¬ SemSound badRules`; that `Consistent badRules` itself fails follows from its `Faithful` and `AcceptsBot` conjuncts (an accepted proof object for `[] ⊢ ⊥` is, by faithfulness, a derivation of `[] ⊢ ⊥`) and is stated directly by `ex_semSound_badRules_neg : ¬ SemSound badRules ∧ ¬ Consistent badRules`.",
+    "tightness": "tight",
+    "counterexample": "Toy.KernelTrust.ring_of_faithful_checkers_over_unsound_rules_accepts_bot"
+   }
+  ],
+  "depth": "shallow",
+  "depth_justification": "Induction around the ring. The substance is in the named assumption. Conversely, for n ≥ 1 the conclusion implies `FaithfulImpliesMetaSound` and every anchor (`ring_metaSound_of_all_faithful`), so under `RingClosed` the two assumptions together are exactly as strong as the conclusion: the theorem transports faithfulness, it does not create it.",
+  "nonvacuity_witness": "`faithfulRing stdRules` (three faithful checkers of different designs: the recomputing certificate re-checker, the trace checker, their separate-artifact quorum) is closed, satisfies `FaithfulImpliesMetaSound`, has a meta-sound node, and the rules are semantically sound and consistent. Its certificate checkers accept every claim; they are meta-sound because every member is faithful.",
+  "nonvacuity_witness_lean": [
+   "Toy.KernelTrust.k3a_nonvacuous"
+  ],
+  "non_claims": [
+   "Not 'rings are useless'; this is what a ring buys under the named assumption.",
+   "Not 'rings are sufficient': the conclusion is faithfulness only and says nothing about the rules (K3c).",
+   "`MetaSound V R i` quantifies only over the fixed nodes `j : Fin n` of the ring `V`, not over arbitrary candidate checkers. Whenever every node of `V` is already faithful to `R` (as in `k3a_nonvacuous` and K3c), `MetaSound` and `FaithfulImpliesMetaSound` hold vacuously even for a rubber-stamp certificate checker or a self-hosted inconsistent rule table such as `badRules` (`ring_metaSound_of_all_faithful`); K3c therefore does not show that an inconsistent logic can serve as a non-trivially meta-sound self-hosted verifier.",
+   "`VerifierRing` fixes a single shared rule table `R` for every node in the ring. K3a models multiple checkers implementing the same specification `R`, not a heterogeneous ring of proof assistants implementing distinct logics (such as Lean, Rocq, and HOL Light certifying each other's faithfulness to separate specifications).",
+   "Closing a cycle adds no assurance over a directed chain when a known anchor is already faithful and meta-sound; the cycle is used only because the anchor is existential (unknown index `i₀`) and assumed `MetaSound` rather than already `Faithful`. (In `ring_with_uncertified_link_does_not_propagate`, with node 1 as the anchor, the missing link is exactly the one back into the anchor, and the anchor's own object-level checker is the unfaithful one.)",
+   "The anchor must be meta-sound for a reason external to the ring; the theorem does not provide one, and without one a closed ring establishes nothing (K3b).",
+   "The discriminating power of `MetaSound` (rejecting a false claim) cannot be exhibited inside any ring that satisfies all of K3a's hypotheses with n ≥ 1, since by K3a every member is then faithful; it is exhibited on rings with an unfaithful member (`ex_metaSound_pos`: node 0 of `rubberStampRing`).",
+   "Toy model; the toy logic cannot state 'checker j is faithful', so claims are opaque encodings.",
+   "Nothing about compiled binaries, compilers, runtimes, memory safety, serialisation, I/O or hardware faults. A `Checker` is a mathematical function; the model cannot express miscompilation."
+  ],
+  "prior_art": [
+   "J. Davis, M. O. Myreen. The Reflective Milawa Theorem Prover is Sound (Down to the Machine Code that Runs it). J. Autom. Reason. 55(2):117-183, 2015. doi:10.1007/s10817-015-9324-6.",
+   "O. Abrahamsson, M. O. Myreen, R. Kumar, T. Sewell. Candle: A Verified Implementation of HOL Light. ITP 2022, LIPIcs vol. 237, pp. 3:1-3:17, 2022. doi:10.4230/LIPIcs.ITP.2022.3.",
+   "M. Carneiro. Lean4Lean: Verifying a Typechecker for Lean, in Lean. TYPES 2025 (post-proceedings), LIPIcs vol. 384, pp. 2:1-2:23, 2026. doi:10.4230/LIPIcs.TYPES.2025.2. Preprint: arXiv:2403.14064.",
+   "M. Sozeau, S. Boulier, Y. Forster, N. Tabareau, T. Winterhalter. Coq Coq Correct! Verification of Type Checking and Erasure for Coq, in Coq. Proc. ACM Program. Lang. 4(POPL), 8:1-8:28, 2020. doi:10.1145/3371076."
+  ],
+  "design_question": "Can mutually certifying or self-certifying checkers establish faithfulness of their implementations, or consistency / soundness of their logics, and under exactly which assumptions?",
+  "grounding_notes": [
+   "Derived (modeling bridge): Milawa's tower of checkers is a directed chain rooted at a base verified in an external system (HOL4); in the terms of this card it has a known anchor and needs no cycle."
+  ],
+  "proof_status": "kernel-checked"
+ },
+ {
+  "id": "K3b",
+  "name": "Toy.KernelTrust.three_unfaithful_checkers_close_faithfulness_ring",
+  "lean": [
+   "Toy.KernelTrust.three_unfaithful_checkers_close_faithfulness_ring",
+   "Toy.KernelTrust.unfaithful_checker_certifies_its_own_faithfulness"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "Folklore (a cycle of mutual certification has no base case), made precise.",
+  "plain_claim": "Three unfaithful checkers for the sound standard rules, each checking faithfulness certificates with its own broken kernel, close a ring of faithfulness certificates and satisfy `FaithfulImpliesMetaSound`, while every node accepts `[] ⊢ ⊥`: only the anchor is missing. One unfaithful checker already certifies its own faithfulness.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "depth_justification": "Finite evaluations.",
+  "nonvacuity_witness": "Not applicable: the statements exhibit their witnesses.",
+  "non_claims": [
+   "The checkers are deliberately broken; the statement is 'a closed ring is possible without any faithful node', not 'closed rings of real checkers are probably broken'.",
+   "Not 'self-verification is worthless': a self-certificate is not evidence by itself.",
+   "Toy propositional logic only: no binders, dependent types, definitional equality, universes or inductive types. Nothing here is a theorem about Lean, Rocq, HOL Light, Metamath or any production checker."
+  ],
+  "prior_art": [
+   "J. Davis, M. O. Myreen. The Reflective Milawa Theorem Prover is Sound (Down to the Machine Code that Runs it). J. Autom. Reason. 55(2):117-183, 2015. doi:10.1007/s10817-015-9324-6.",
+   "J. Harrison. Towards Self-verification of HOL Light. IJCAR 2006, LNCS 4130, pp. 177-191, 2006. doi:10.1007/11814771_17."
+  ],
+  "design_question": "Can mutually certifying or self-certifying checkers establish faithfulness of their implementations, or consistency / soundness of their logics, and under exactly which assumptions?",
+  "grounding_notes": [],
+  "proof_status": "kernel-checked",
+  "nonvacuity_witness_lean": []
+ },
+ {
+  "id": "K3c",
+  "name": "Toy.KernelTrust.ring_of_faithful_checkers_over_unsound_rules_accepts_bot",
+  "lean": [
+   "Toy.KernelTrust.ring_of_faithful_checkers_over_unsound_rules_accepts_bot"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "Folklore (faithfulness is relative to the rules), made precise in the ring setting.",
+  "plain_claim": "A closed ring of three faithful checkers for the unsound table `badRules` satisfies every hypothesis and the conclusion of K3a's faithfulness theorem (`ring_all_faithful_of_metaSound_anchor_of_faithfulImpliesMetaSound`), and every node accepts `[] ⊢ ⊥`. The consistency hypothesis of K3a's `⊥` corollary fails: `badRules` is inconsistent. The statement records `¬ SemSound badRules`; `¬ Consistent badRules` follows from its `Faithful` and `AcceptsBot` conjuncts (an accepted proof object for `[] ⊢ ⊥` is, by faithfulness, a derivation of `[] ⊢ ⊥` from `badRules`) and is stated directly by `ex_semSound_badRules_neg`.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "depth_justification": "Finite evaluations plus the general faithfulness theorems.",
+  "nonvacuity_witness": "Not applicable: the statement exhibits its witnesses.",
+  "non_claims": [
+   "Not 'faithfulness proofs are pointless': with sound rules the same ring rejects `[] ⊢ ⊥`.",
+   "The three checkers share the rule table by construction: the example is about a defect in the shared specification, not about correlated implementation defects.",
+   "`MetaSound V R i` quantifies only over the fixed nodes `j : Fin n` of the ring `V`, not over arbitrary candidate checkers. Whenever every node of `V` is already faithful to `R` (as in `k3a_nonvacuous` and K3c), `MetaSound` and `FaithfulImpliesMetaSound` hold vacuously even for a rubber-stamp certificate checker or a self-hosted inconsistent rule table such as `badRules` (`ring_metaSound_of_all_faithful`); K3c therefore does not show that an inconsistent logic can serve as a non-trivially meta-sound self-hosted verifier.",
+   "Because `badRules` derives every formula (`badRules_derives_every_formula`), the self-hosted certificate checkers of this ring accept every claim, and claim reflection for `badRules` fails as soon as any member is unfaithful (`not_claimReflection_badRules_of_unfaithful`)."
+  ],
+  "prior_art": [
+   "R. Kumar, R. Arthan, M. O. Myreen, S. Owens. Self-Formalisation of Higher-Order Logic: Semantics, Soundness, and a Verified Implementation. J. Autom. Reason. 56(3):221-259, 2016. doi:10.1007/s10817-015-9357-x.",
+   "J. Harrison. Towards Self-verification of HOL Light. IJCAR 2006, LNCS 4130, pp. 177-191, 2006. doi:10.1007/11814771_17."
+  ],
+  "design_question": "Can mutually certifying or self-certifying checkers establish faithfulness of their implementations, or consistency / soundness of their logics, and under exactly which assumptions?",
+  "grounding_notes": [
+   "Derived (modeling bridge): the realistic reading of K3c is a sound external meta-logic verifying that several checkers faithfully implement an unsound object specification; all of them then accept the same invalid statements."
+  ],
+  "proof_status": "kernel-checked",
+  "nonvacuity_witness_lean": []
+ },
+ {
+  "id": "K4a",
+  "name": "Toy.KernelTrust.consistencyRing_all_inconsistent_of_impClosed_godelIIAnchor_crossHBL",
+  "lean": [
+   "Toy.KernelTrust.consistencyRing_all_inconsistent_of_impClosed_godelIIAnchor_crossHBL"
+  ],
+  "kind": "impossibility",
+  "tier": "T1",
+  "tier_justification": "Gödel II and Löb are T0. The two-theory case is folklore, written out informally by Mummert (2013); the n-cycle is the same argument iterated (irreflexivity plus transitivity of 'proves the consistency statement of', compare Mathematics Stack Exchange question 2208419). Polymodal provability logics for several theories (Carlson 1986; Smoryński 1985; Beklemishev 1996; Japaridze, de Jongh 1998) are the classical setting for such arguments; whether the two-theory case is literally a theorem of a specific bimodal logic in those works was not checked against their axiomatisations here, so no such claim is made. Mechanised abstract accounts of Gödel II exist (Popescu, Traytel 2019/2021; Paulson 2015; Saitou, Noguchi 2026 in Lean 4); none of them was found to state the ring form with separately named cross-theory conditions. No novelty is claimed.",
+  "plain_claim": "For n abstract theories with per-theory provability boxes over one shared sentence language: if every theory is implicationally closed (modus ponens, axiom schemes K and S), at least one theory has Gödel's second incompleteness property in Löb form (`GodelII`: proving its own consistency statement makes it prove ⊥), and the family satisfies the cross-theory Hilbert–Bernays–Löb conditions (`CrossHBL`: cross-necessitation, cross-distribution, formalised Σ₁-completeness for provability statements), then whenever each theory proves the consistency statement of its ring successor, every theory proves ⊥.",
+  "hypotheses": [
+   {
+    "name": "hImpClosed : ∀ i, ImpClosed i",
+    "purpose": "Each theory chains implications. Modus ponens is used at every theory, K and S only at the anchor. Ex falso is not assumed.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.KernelTrust.consistencyRing_consistent_without_mp",
+     "Toy.KernelTrust.consistencyRing_consistent_without_axK_axS"
+    ]
+   },
+   {
+    "name": "hGodelII : ∃ i₀, GodelII i₀",
+    "purpose": "Carries the substance of Gödel's second incompleteness theorem, assumed at one node only. For concrete theories it follows from Löb's theorem (`LobRule.godelII`), i.e. from D1–D3 plus the diagonal lemma; the interface has no diagonal lemma, so it is assumed. Unsatisfiable for n = 0.",
+    "tightness": "tight",
+    "counterexample": "Toy.KernelTrust.consistencyRing_consistent_without_godelII"
+   },
+   {
+    "name": "hBridge.nec : ∀ i j, CrossNec i j",
+    "purpose": "Theory i verifies actual proofs of theory j. Used at the anchor and on the ring links `CrossNec i (ringNext i)`.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.KernelTrust.consistencyRing_consistent_without_crossNec",
+     "Toy.KernelTrust.one_unverified_ring_link_leaves_anchor_inconsistent"
+    ]
+   },
+   {
+    "name": "hBridge.distrib : ∀ i j, CrossDistrib i j",
+    "purpose": "Theory i proves theory j closed under modus ponens (cross-theory normality). Used at the anchor only.",
+    "tightness": "tight",
+    "counterexample": "Toy.KernelTrust.consistencyRing_consistent_without_crossDistrib"
+   },
+   {
+    "name": "hBridge.sigma1 : ∀ i j k, CrossSigma1 i j k",
+    "purpose": "Theory i proves that theory j verifies proofs of theory k (formalised Σ₁-completeness for provability statements). Used at the anchor only.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.KernelTrust.consistencyRing_consistent_without_crossSigma1",
+     "Toy.KernelTrust.consistencyRing_consistent_without_crossSigma1_not_proving_own_inconsistency"
+    ]
+   },
+   {
+    "name": "hRing : ∀ i, Thm i (con (ringNext i))",
+    "purpose": "The cycle itself.",
+    "tightness": "tight",
+    "counterexample": "Toy.KernelTrust.consistency_proof_along_open_chain_is_consistent"
+   }
+  ],
+  "depth": "shallow",
+  "depth_justification": "Derived from K4a-local (the anchor proves ⊥) plus backward propagation along the ring (`inconsistent_of_proves_con_of_inconsistent`). The diagonal of `CrossHBL` (each theory's own D1–D3) is not used; the substance of Gödel's theorem is inside the assumed `GodelII`.",
+  "nonvacuity_witness": "All hypotheses hold together in `trivialFamily (Fin n)` for every n ≥ 1 (necessarily an inconsistent family, by the theorem). Each tightness witness is a family in which every other hypothesis holds and every theory is consistent.",
+  "nonvacuity_witness_lean": [
+   "Toy.KernelTrust.k4a_nonvacuous"
+  ],
+  "positive_control_lean": [
+   "Toy.KernelTrust.consistency_proof_along_open_chain_is_consistent",
+   "Toy.KernelTrust.two_consistent_theories_prove_each_others_consistency_without_crossSigma1",
+   "Toy.KernelTrust.consistencyRing_consistent_without_crossSigma1_not_proving_own_inconsistency",
+   "Toy.KernelTrust.one_unverified_ring_link_leaves_anchor_inconsistent"
+  ],
+  "non_claims": [
+   "About abstract `ProvFamily` structures only. The result applies to a concrete formal system only insofar as that system, with a concrete choice of provability predicates and a common sentence language, satisfies every named condition; this package verifies the conditions for no concrete theory.",
+   "Dropping Löb's rule or Gödel's second incompleteness property (or `CrossSigma1`, `CrossNec`, `CrossDistrib`) at a single node or in a single direction does not escape K4a: as soon as even one node `i₀` satisfies the Gödel-II instance (`Thm i₀ (con i₀) → Thm i₀ bot`), implicational closure, and the cross-theory conditions from `i₀` to the other theories, `i₀` proves `⊥` (K4a-local), and `CrossNec` on the ring links together with the ring hypothesis and modus ponens forces every other node to prove `⊥` as well. For every theory of the ring to be consistent, every theory must fail at least one of its own anchor conditions (`ImpClosed`, `GodelII`, `CrossHBLFrom`); breaking a single ring link `CrossNec i (ringNext i)` only shields theory `i` from inheriting an anchor's inconsistency (`one_unverified_ring_link_leaves_anchor_inconsistent`). In K4b's two-theory countermodel `starFamily 2`, both `CrossSigma1 0 1 0` and `CrossSigma1 1 0 1` fail.",
+   "K4a excludes cycles of categorical consistency proofs (`Thm i (con (ringNext i))`); it does not exclude mutual relative consistency proofs or equiconsistency (`Thm i (con i → con j)` and `Thm j (con j → con i)`), nor mutual interpretability between consistent theories of equal consistency strength (such as ZF and ZFC, or PA and ACA₀).",
+   "`ProvFamily` assumes all `n` theories share a single sentence type `Sent` with common `bot`, `imp`, and provability boxes. Applying K4a to distinct concrete formal systems (such as Lean and Rocq) additionally requires translating provability statements into a common syntactic fragment (such as arithmetic) so that the bridge conditions hold across those translations.",
+   "Like K4b's `starFamily`, the abstract models `leafFamily` and `possibilityFamily`, and theory 1 of `oneBrokenNecFamily`, contain consistent theories that prove their own inconsistency statement `□ᵢ⊥` (and in `leafFamily` and `possibilityFamily` every theory proves every `□ⱼ□ₖ⊥`, so `CrossSigma1` holds there vacuously): `finite_countermodels_prove_own_inconsistency`. They establish logical independence of K4a's conditions, not the existence of Σ₁-sound theories exhibiting those behaviours. The positive control `omegaChainFamily` and the K4b variant `omegaStarFamily` contain no theory proving its own inconsistency statement.",
+   "Does not say one theory cannot prove another's consistency (`consistency_proof_along_open_chain_is_consistent`).",
+   "Does not exclude infinite descending sequences of theories each proving the next one's consistency (Pakhomov, Walsh 2021, abstract: 'it is possible to construct descending chains of artificial theories with respect to consistency strength').",
+   "`GodelII` is a hypothesis; the package proves Gödel's second theorem or Löb's theorem for no theory.",
+   "Not a statement about proof checkers or kernels: reading it as 'two type theories cannot prove each other consistent' requires verifying every named condition, and a common sentence language, for those theories.",
+   "About consistency statements `□ⱼ⊥ → ⊥` only; it does not address relativised soundness results (soundness assuming a stronger principle), which is how real self-hosted soundness proofs are stated."
+  ],
+  "prior_art": [
+   "K. Gödel. Über formal unentscheidbare Sätze der Principia Mathematica und verwandter Systeme I. Monatsh. Math. Phys. 38:173-198, 1931. doi:10.1007/BF01700692.",
+   "D. Hilbert, P. Bernays. Grundlagen der Mathematik, Vol. II. Springer, Berlin, 1939. (Bibliographic record only; no DOI.)",
+   "M. H. Löb. Solution of a Problem of Leon Henkin. J. Symb. Log. 20(2):115-118, 1955. doi:10.2307/2266895.",
+   "G. Boolos. The Logic of Provability. Cambridge University Press, 1993. doi:10.1017/CBO9780511625183.",
+   "C. Smoryński. Self-Reference and Modal Logic. Universitext, Springer, 1985. doi:10.1007/978-1-4613-8601-8.",
+   "T. Carlson. Modal logics with several operators and provability interpretations. Israel J. Math. 54(1):14-24, 1986. doi:10.1007/BF02764872.",
+   "L. D. Beklemishev. Bimodal logics for extensions of arithmetical theories. J. Symb. Log. 61(1):91-124, 1996. doi:10.2307/2275600.",
+   "G. Japaridze, D. de Jongh. The Logic of Provability. In: S. R. Buss (ed.), Handbook of Proof Theory, Studies in Logic and the Foundations of Mathematics 137, Elsevier, 1998, pp. 475-546. doi:10.1016/S0049-237X(98)80022-0.",
+   "T. Kurahashi. A note on derivability conditions. J. Symb. Log. 85(3):1224-1253, 2020. doi:10.1017/jsl.2020.33. Preprint: arXiv:1902.00895.",
+   "C. Mummert. Answer 564027 (accepted) to 'Impossibility of theories proving consistency of each other?', Mathematics Stack Exchange question 563641, 2013-11-12. https://math.stackexchange.com/questions/563641",
+   "'Can the \"proves consistent\" relation be proven antisymmetric?', Mathematics Stack Exchange question 2208419, 2017-03-29 (accepted answer 2208896). https://math.stackexchange.com/questions/2208419",
+   "F. Pakhomov, J. Walsh. Reflection ranks and ordinal analysis. J. Symb. Log. 86(4):1350-1384, 2021. doi:10.1017/jsl.2020.9.",
+   "J. D. Hamkins. Nonlinearity and illfoundedness in the hierarchy of large cardinal consistency strength. arXiv:2208.07445, 2022.",
+   "S. Feferman. Arithmetization of metamathematics in a general setting. Fund. Math. 49(1):35-92, 1960. doi:10.4064/fm-49-1-35-92.",
+   "D. E. Willard. Self-Verifying Axiom Systems, the Incompleteness Theorem and Related Reflection Principles. J. Symb. Log. 66(2):536-596, 2001. doi:10.2307/2695030.",
+   "A. Popescu, D. Traytel. A Formally Verified Abstract Account of Gödel's Incompleteness Theorems. CADE 27, LNCS 11716, pp. 442-461, 2019. doi:10.1007/978-3-030-29436-6_26.",
+   "A. Popescu, D. Traytel. Distilling the Requirements of Gödel's Incompleteness Theorems with a Proof Assistant. J. Autom. Reason. 65(7):1027-1070, 2021. doi:10.1007/s10817-021-09599-8.",
+   "L. C. Paulson. A Mechanised Proof of Gödel's Incompleteness Theorems Using Nominal Isabelle. J. Autom. Reason. 55(1):1-37, 2015. doi:10.1007/s10817-015-9322-8.",
+   "S. Saitou, M. Noguchi. Mechanizing Gödel's Incompleteness Theorems and Provability Logic. arXiv:2609.13780, 2026 (Lean 4; repository FormalizedFormalLogic/Foundation).",
+   "R. O'Connor. Essential Incompleteness of Arithmetic Verified by Coq. TPHOLs 2005, LNCS 3603, pp. 245-260, 2005. doi:10.1007/11541868_16.",
+   "D. Kirst, M. Hermes. Synthetic Undecidability and Incompleteness of First-Order Axiom Systems in Coq. J. Autom. Reason. 67(1), 2023. doi:10.1007/s10817-022-09647-x.",
+   "N. Shankar. Metamathematics, Machines and Gödel's Proof. Cambridge University Press, 1994. doi:10.1017/CBO9780511569883.",
+   "P. Lindström. Aspects of Incompleteness. Lecture Notes in Logic 10; Cambridge University Press re-issue, 2017. doi:10.1017/9781316716854."
+  ],
+  "design_question": "Can mutually certifying or self-certifying checkers establish faithfulness of their implementations, or consistency / soundness of their logics, and under exactly which assumptions?",
+  "grounding_notes": [
+   "Derived (modeling bridge): for standard arithmetised provability predicates of sufficiently strong recursively axiomatised theories, textbooks establish D1–D3 and Löb's theorem (Boolos 1993; Smoryński 1985), and the cross-theory conditions are the two-theory versions of the same facts; Kurahashi 2020 classifies which derivability conditions suffice for which forms of Gödel II. None of this is verified in the package."
+  ],
+  "proof_status": "kernel-checked"
+ },
+ {
+  "id": "K4a-local",
+  "name": "Toy.KernelTrust.consistencyRing_anchor_inconsistent_of_impClosed_godelII_crossHBLFrom",
+  "lean": [
+   "Toy.KernelTrust.consistencyRing_anchor_inconsistent_of_impClosed_godelII_crossHBLFrom"
+  ],
+  "kind": "impossibility",
+  "tier": "T1",
+  "tier_justification": "Gödel II and Löb are T0. The two-theory case is folklore, written out informally by Mummert (2013); the n-cycle is the same argument iterated (irreflexivity plus transitivity of 'proves the consistency statement of', compare Mathematics Stack Exchange question 2208419). Polymodal provability logics for several theories (Carlson 1986; Smoryński 1985; Beklemishev 1996; Japaridze, de Jongh 1998) are the classical setting for such arguments; whether the two-theory case is literally a theorem of a specific bimodal logic in those works was not checked against their axiomatisations here, so no such claim is made. Mechanised abstract accounts of Gödel II exist (Popescu, Traytel 2019/2021; Paulson 2015; Saitou, Noguchi 2026 in Lean 4); none of them was found to state the ring form with separately named cross-theory conditions. No novelty is claimed.",
+  "plain_claim": "On a ring of n abstract theories in which each theory proves the consistency statement of its successor, any single theory i₀ that is implicationally closed, has Gödel's second incompleteness property, and satisfies the cross-theory conditions towards every other theory (`CrossHBLFrom i₀`: for every j ≠ i₀, i₀ verifies j's proofs, proves j closed under modus ponens, and proves j Σ₁-complete for provability statements) proves ⊥; nothing is assumed about the other theories beyond the ring, and no D1–D3 condition is assumed for any theory.",
+  "hypotheses": [
+   {
+    "name": "hImpClosed : ImpClosed i₀",
+    "purpose": "The anchor chains implications (syllogism from K and S, and modus ponens). Not needed for n = 1.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.KernelTrust.consistencyRing_consistent_without_mp",
+     "Toy.KernelTrust.consistencyRing_consistent_without_axK_axS"
+    ]
+   },
+   {
+    "name": "hGodelII : GodelII i₀",
+    "purpose": "Carries the substance of Gödel's second incompleteness theorem for the anchor.",
+    "tightness": "tight",
+    "counterexample": "Toy.KernelTrust.consistencyRing_consistent_without_godelII"
+   },
+   {
+    "name": "hFrom.nec : ∀ j ≠ i₀, CrossNec i₀ j",
+    "purpose": "The anchor verifies the other theories' consistency proofs. Not needed for n = 1.",
+    "tightness": "tight",
+    "counterexample": "Toy.KernelTrust.consistencyRing_consistent_without_crossNec"
+   },
+   {
+    "name": "hFrom.distrib : ∀ j ≠ i₀, CrossDistrib i₀ j",
+    "purpose": "The anchor proves the other theories closed under modus ponens. Not needed for n = 1.",
+    "tightness": "tight",
+    "counterexample": "Toy.KernelTrust.consistencyRing_consistent_without_crossDistrib"
+   },
+   {
+    "name": "hFrom.sigma1 : ∀ j k, j ≠ i₀ → CrossSigma1 i₀ j k",
+    "purpose": "The anchor proves that the other theories verify proofs (formalised Σ₁-completeness). Not needed for n = 1.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.KernelTrust.consistencyRing_consistent_without_crossSigma1",
+     "Toy.KernelTrust.consistencyRing_consistent_without_crossSigma1_not_proving_own_inconsistency"
+    ]
+   },
+   {
+    "name": "hRing : ∀ i, Thm i (con (ringNext i))",
+    "purpose": "The cycle itself; every link's consistency proof is verified by the anchor.",
+    "tightness": "tight",
+    "counterexample": "Toy.KernelTrust.consistency_proof_along_open_chain_is_consistent"
+   }
+  ],
+  "depth": "shallow",
+  "depth_justification": "The anchor shows transitivity of 'proves the consistency statement of' along the ring (three lines per step from the cross-theory conditions), reaches its own consistency statement after n steps, and applies Gödel II.",
+  "nonvacuity_witness": "All hypotheses hold together in `trivialFamily (Fin n)` at every node (necessarily inconsistent, by the theorem). Non-degenerate instance: in `oneBrokenNecFamily` (two theories), theory 0 satisfies every hypothesis while theory 1 of the same ring is consistent (`k4a_local_hypotheses_hold_in_mixed_ring`). The positive control `one_unverified_ring_link_leaves_anchor_inconsistent` concerns the same family: at theory 1 every hypothesis of K4a-local holds except `CrossHBLFrom 1` (it fails because `CrossNec 1 0` fails) and the conclusion fails (`Consistent 1`), while theory 0 satisfies every hypothesis and proves `⊥`, as K4a-local requires.",
+  "nonvacuity_witness_lean": [
+   "Toy.KernelTrust.k4a_local_nonvacuous",
+   "Toy.KernelTrust.k4a_local_hypotheses_hold_in_mixed_ring"
+  ],
+  "positive_control_lean": [
+   "Toy.KernelTrust.consistency_proof_along_open_chain_is_consistent",
+   "Toy.KernelTrust.two_consistent_theories_prove_each_others_consistency_without_crossSigma1",
+   "Toy.KernelTrust.consistencyRing_consistent_without_crossSigma1_not_proving_own_inconsistency",
+   "Toy.KernelTrust.one_unverified_ring_link_leaves_anchor_inconsistent"
+  ],
+  "non_claims": [
+   "About abstract `ProvFamily` structures only. The result applies to a concrete formal system only insofar as that system, with a concrete choice of provability predicates and a common sentence language, satisfies every named condition; this package verifies the conditions for no concrete theory.",
+   "Dropping Löb's rule or Gödel's second incompleteness property (or `CrossSigma1`, `CrossNec`, `CrossDistrib`) at a single node or in a single direction does not escape K4a: as soon as even one node `i₀` satisfies the Gödel-II instance (`Thm i₀ (con i₀) → Thm i₀ bot`), implicational closure, and the cross-theory conditions from `i₀` to the other theories, `i₀` proves `⊥` (K4a-local), and `CrossNec` on the ring links together with the ring hypothesis and modus ponens forces every other node to prove `⊥` as well. For every theory of the ring to be consistent, every theory must fail at least one of its own anchor conditions (`ImpClosed`, `GodelII`, `CrossHBLFrom`); breaking a single ring link `CrossNec i (ringNext i)` only shields theory `i` from inheriting an anchor's inconsistency (`one_unverified_ring_link_leaves_anchor_inconsistent`). In K4b's two-theory countermodel `starFamily 2`, both `CrossSigma1 0 1 0` and `CrossSigma1 1 0 1` fail.",
+   "K4a excludes cycles of categorical consistency proofs (`Thm i (con (ringNext i))`); it does not exclude mutual relative consistency proofs or equiconsistency (`Thm i (con i → con j)` and `Thm j (con j → con i)`), nor mutual interpretability between consistent theories of equal consistency strength (such as ZF and ZFC, or PA and ACA₀).",
+   "`ProvFamily` assumes all `n` theories share a single sentence type `Sent` with common `bot`, `imp`, and provability boxes. Applying K4a to distinct concrete formal systems (such as Lean and Rocq) additionally requires translating provability statements into a common syntactic fragment (such as arithmetic) so that the bridge conditions hold across those translations.",
+   "Like K4b's `starFamily`, the abstract models `leafFamily` and `possibilityFamily`, and theory 1 of `oneBrokenNecFamily`, contain consistent theories that prove their own inconsistency statement `□ᵢ⊥` (and in `leafFamily` and `possibilityFamily` every theory proves every `□ⱼ□ₖ⊥`, so `CrossSigma1` holds there vacuously): `finite_countermodels_prove_own_inconsistency`. They establish logical independence of K4a's conditions, not the existence of Σ₁-sound theories exhibiting those behaviours. The positive control `omegaChainFamily` and the K4b variant `omegaStarFamily` contain no theory proving its own inconsistency statement.",
+   "The conclusion concerns the anchor only. Whether the other theories are inconsistent depends on the ring links (`inconsistent_of_proves_con_of_inconsistent`; K4a).",
+   "The diagonal conditions are not needed: the statement holds without any theory satisfying its own D1–D3, but standard concrete theories satisfy them anyway; nothing here suggests that dropping D1–D3 is a realistic escape."
+  ],
+  "prior_art": [
+   "K. Gödel. Über formal unentscheidbare Sätze der Principia Mathematica und verwandter Systeme I. Monatsh. Math. Phys. 38:173-198, 1931. doi:10.1007/BF01700692.",
+   "D. Hilbert, P. Bernays. Grundlagen der Mathematik, Vol. II. Springer, Berlin, 1939. (Bibliographic record only; no DOI.)",
+   "M. H. Löb. Solution of a Problem of Leon Henkin. J. Symb. Log. 20(2):115-118, 1955. doi:10.2307/2266895.",
+   "G. Boolos. The Logic of Provability. Cambridge University Press, 1993. doi:10.1017/CBO9780511625183.",
+   "C. Smoryński. Self-Reference and Modal Logic. Universitext, Springer, 1985. doi:10.1007/978-1-4613-8601-8.",
+   "T. Carlson. Modal logics with several operators and provability interpretations. Israel J. Math. 54(1):14-24, 1986. doi:10.1007/BF02764872.",
+   "L. D. Beklemishev. Bimodal logics for extensions of arithmetical theories. J. Symb. Log. 61(1):91-124, 1996. doi:10.2307/2275600.",
+   "G. Japaridze, D. de Jongh. The Logic of Provability. In: S. R. Buss (ed.), Handbook of Proof Theory, Studies in Logic and the Foundations of Mathematics 137, Elsevier, 1998, pp. 475-546. doi:10.1016/S0049-237X(98)80022-0.",
+   "T. Kurahashi. A note on derivability conditions. J. Symb. Log. 85(3):1224-1253, 2020. doi:10.1017/jsl.2020.33. Preprint: arXiv:1902.00895.",
+   "C. Mummert. Answer 564027 (accepted) to 'Impossibility of theories proving consistency of each other?', Mathematics Stack Exchange question 563641, 2013-11-12. https://math.stackexchange.com/questions/563641",
+   "'Can the \"proves consistent\" relation be proven antisymmetric?', Mathematics Stack Exchange question 2208419, 2017-03-29 (accepted answer 2208896). https://math.stackexchange.com/questions/2208419",
+   "F. Pakhomov, J. Walsh. Reflection ranks and ordinal analysis. J. Symb. Log. 86(4):1350-1384, 2021. doi:10.1017/jsl.2020.9.",
+   "J. D. Hamkins. Nonlinearity and illfoundedness in the hierarchy of large cardinal consistency strength. arXiv:2208.07445, 2022.",
+   "S. Feferman. Arithmetization of metamathematics in a general setting. Fund. Math. 49(1):35-92, 1960. doi:10.4064/fm-49-1-35-92.",
+   "D. E. Willard. Self-Verifying Axiom Systems, the Incompleteness Theorem and Related Reflection Principles. J. Symb. Log. 66(2):536-596, 2001. doi:10.2307/2695030.",
+   "A. Popescu, D. Traytel. A Formally Verified Abstract Account of Gödel's Incompleteness Theorems. CADE 27, LNCS 11716, pp. 442-461, 2019. doi:10.1007/978-3-030-29436-6_26.",
+   "A. Popescu, D. Traytel. Distilling the Requirements of Gödel's Incompleteness Theorems with a Proof Assistant. J. Autom. Reason. 65(7):1027-1070, 2021. doi:10.1007/s10817-021-09599-8.",
+   "L. C. Paulson. A Mechanised Proof of Gödel's Incompleteness Theorems Using Nominal Isabelle. J. Autom. Reason. 55(1):1-37, 2015. doi:10.1007/s10817-015-9322-8.",
+   "S. Saitou, M. Noguchi. Mechanizing Gödel's Incompleteness Theorems and Provability Logic. arXiv:2609.13780, 2026 (Lean 4; repository FormalizedFormalLogic/Foundation).",
+   "R. O'Connor. Essential Incompleteness of Arithmetic Verified by Coq. TPHOLs 2005, LNCS 3603, pp. 245-260, 2005. doi:10.1007/11541868_16.",
+   "D. Kirst, M. Hermes. Synthetic Undecidability and Incompleteness of First-Order Axiom Systems in Coq. J. Autom. Reason. 67(1), 2023. doi:10.1007/s10817-022-09647-x.",
+   "N. Shankar. Metamathematics, Machines and Gödel's Proof. Cambridge University Press, 1994. doi:10.1017/CBO9780511569883.",
+   "P. Lindström. Aspects of Incompleteness. Lecture Notes in Logic 10; Cambridge University Press re-issue, 2017. doi:10.1017/9781316716854.",
+   "G. Kreisel, A. Lévy. Reflection Principles and their Use for Establishing the Complexity of Axiomatic Systems. Z. Math. Logik Grundlagen Math. 14(7-12):97-142, 1968. doi:10.1002/malq.19680140702."
+  ],
+  "design_question": "Can mutually certifying or self-certifying checkers establish faithfulness of their implementations, or consistency / soundness of their logics, and under exactly which assumptions?",
+  "grounding_notes": [
+   "Derived (modeling bridge): a hybrid ring that contains even one standard strong theory which verifies the other members' proofs and proves them Σ₁-complete collapses at that theory; a weak self-verifying theory in the ring (Willard 2001) does not help that theory."
+  ],
+  "proof_status": "kernel-checked"
+ },
+ {
+  "id": "K4b",
+  "name": "Toy.KernelTrust.two_consistent_theories_prove_each_others_consistency_without_crossSigma1",
+  "lean": [
+   "Toy.KernelTrust.two_consistent_theories_prove_each_others_consistency_without_crossSigma1",
+   "Toy.KernelTrust.consistencyRing_consistent_without_crossSigma1",
+   "Toy.KernelTrust.consistencyRing_consistent_without_crossSigma1_not_proving_own_inconsistency",
+   "Toy.KernelTrust.starFamily_proves_own_inconsistency"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "A routine polymodal Kripke countermodel; polymodal provability logics and their Kripke semantics are classical (Carlson 1986; Beklemishev 1996; Smoryński 1985). No source stating this countermodel was found; no novelty is claimed.",
+  "plain_claim": "Dropping only formalised Σ₁-completeness (`CrossSigma1`), two (indeed any n ≥ 2) consistent abstract theories exist that prove each other's (their successor's) consistency statement while satisfying every other hypothesis of K4a and K4a-local, with `CrossSigma1` failing in both directions; a variant exists in which no theory proves its own inconsistency statement.",
+  "hypotheses": [
+   {
+    "name": "hn : 2 ≤ n (`consistencyRing_consistent_without_crossSigma1` and `consistencyRing_consistent_without_crossSigma1_not_proving_own_inconsistency` only; `two_consistent_theories_prove_each_others_consistency_without_crossSigma1` is closed and `starFamily_proves_own_inconsistency` has no hypothesis)",
+    "purpose": "A ring of consistency proofs between distinct theories needs at least two theories. For n = 1 the ring successor of theory 0 is theory 0 itself (`ringNext 0 = 0`), and neither `starFamily 1` nor `omegaStarFamily 1` proves its own consistency statement, so the ring conjunct fails; for n = 0 there is no theory, so the conjunct `¬ ∀ i, Thm i ⊥` fails.",
+    "tightness": "tight",
+    "counterexample": "Toy.KernelTrust.consistencyRing_consistent_without_crossSigma1_fails_below_two"
+   }
+  ],
+  "depth": "shallow",
+  "depth_justification": "Kripke-model evaluations.",
+  "nonvacuity_witness": "Not applicable: the statements exhibit their witnesses (the hypothesis `hn : 2 ≤ n` of the two general-n statements holds, for example, for n = 2).",
+  "non_claims": [
+   "Does not exhibit real formal systems that consistently prove each other's consistency; the theories are artefacts of Kripke models and their boxes are not arithmetised provability predicates.",
+   "In `starFamily` each theory, although consistent, proves its own inconsistency statement `□ᵢ⊥` (`starFamily_proves_own_inconsistency`); `omegaStarFamily` removes that defect, and no theory of `omegaStarFamily n` proves any `□ⱼ□ₖ⊥` (`omegaStarFamily_not_proves_nested_box_bot`), so it has neither of the finite-model artefacts listed under K4a's non-claims.",
+   "Standard provability predicates in theories strong enough to formalize Σ₁-completeness (such as extensions of `IΣ₁`) satisfy `CrossSigma1`, whereas sufficiently weak theories (such as Robinson's `Q`) or non-standard provability predicates can fail it; K4b's abstract Kripke model shows logical necessity of `CrossSigma1` in `ProvFamily`, not how concrete theories fail it.",
+   "Breaking `CrossSigma1` in one direction only would not suffice (K4a-local): both `CrossSigma1 0 1 0` and `CrossSigma1 1 0 1` fail in `starFamily 2`.",
+   "Shows necessity of one condition at a time."
+  ],
+  "prior_art": [
+   "T. Carlson. Modal logics with several operators and provability interpretations. Israel J. Math. 54(1):14-24, 1986. doi:10.1007/BF02764872.",
+   "L. D. Beklemishev. Bimodal logics for extensions of arithmetical theories. J. Symb. Log. 61(1):91-124, 1996. doi:10.2307/2275600.",
+   "C. Smoryński. Self-Reference and Modal Logic. Universitext, Springer, 1985. doi:10.1007/978-1-4613-8601-8.",
+   "G. Boolos. The Logic of Provability. Cambridge University Press, 1993. doi:10.1017/CBO9780511625183.",
+   "R. M. Solovay. Provability interpretations of modal logic. Israel J. Math. 25(3-4):287-304, 1976. doi:10.1007/BF02757006.",
+   "S. Feferman. Arithmetization of metamathematics in a general setting. Fund. Math. 49(1):35-92, 1960. doi:10.4064/fm-49-1-35-92.",
+   "T. Kurahashi. A note on derivability conditions. J. Symb. Log. 85(3):1224-1253, 2020. doi:10.1017/jsl.2020.33. Preprint: arXiv:1902.00895.",
+   "G. Japaridze, D. de Jongh. The Logic of Provability. In: S. R. Buss (ed.), Handbook of Proof Theory, Studies in Logic and the Foundations of Mathematics 137, Elsevier, 1998, pp. 475-546. doi:10.1016/S0049-237X(98)80022-0."
+  ],
+  "design_question": "Can mutually certifying or self-certifying checkers establish faithfulness of their implementations, or consistency / soundness of their logics, and under exactly which assumptions?",
+  "grounding_notes": [],
+  "proof_status": "kernel-checked",
+  "nonvacuity_witness_lean": []
+ },
+ {
+  "id": "K5",
+  "name": "Toy.KernelTrust.inconsistent_proves_every_local_reflection_of_mp_efq",
+  "lean": [
+   "Toy.KernelTrust.inconsistent_proves_every_local_reflection_of_mp_efq",
+   "Toy.KernelTrust.inconsistent_proves_every_con_of_mp_efq"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Ex falso inside the theory; the local reflection schema is classical (Kreisel, Lévy 1968).",
+  "plain_claim": "An abstract theory that is closed under modus ponens, has ex falso, and proves ⊥ proves the local reflection schema `□ⱼA → A` and the consistency statement of every theory in its family, itself included; so an unconditional self-soundness theorem is not evidence of soundness.",
+  "hypotheses": [
+   {
+    "name": "hMp : MpClosed i",
+    "purpose": "Combines the ex falso instance with ⊥. Counterexamples: `local_reflection_fails_without_mp` (reflection form) and `con_fails_without_mp` (consistency form).",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.KernelTrust.local_reflection_fails_without_mp",
+     "Toy.KernelTrust.con_fails_without_mp"
+    ]
+   },
+   {
+    "name": "hEfq : HasEfq i",
+    "purpose": "Supplies `⊥ → (□ⱼA → A)`. Essential for the reflection form (`local_reflection_fails_without_efq`, whose theory has the axiom schemes K and S). For the consistency form it can be replaced by the axiom scheme K (that ex-falso-free witness still proves every consistency statement); `con_fails_without_efq` is a theory with neither ex falso nor K that is closed under modus ponens, proves `⊥`, and proves no consistency statement.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.KernelTrust.local_reflection_fails_without_efq",
+     "Toy.KernelTrust.con_fails_without_efq"
+    ]
+   },
+   {
+    "name": "hInconsistent : Thm i bot",
+    "purpose": "The theory is inconsistent.",
+    "tightness": "tight",
+    "counterexample": "Toy.KernelTrust.local_reflection_fails_without_inconsistency"
+   }
+  ],
+  "depth": "shallow",
+  "depth_justification": "One application of modus ponens to an ex falso instance.",
+  "nonvacuity_witness": "`trivialFamily`.",
+  "nonvacuity_witness_lean": [
+   "Toy.KernelTrust.k5_nonvacuous"
+  ],
+  "non_claims": [
+   "About abstract `ProvFamily` structures only. The result applies to a concrete formal system only insofar as that system, with a concrete choice of provability predicates and a common sentence language, satisfies every named condition; this package verifies the conditions for no concrete theory.",
+   "The implication from inconsistency (`Thm i bot`) to every local reflection schema (`□ⱼA → A`) depends essentially on ex falso quodlibet (`HasEfq`) and does not apply to paraconsistent or minimal-logic theories (`local_reflection_fails_without_efq`); deriving `con j := □ⱼ⊥ → ⊥` from `Thm i bot` requires only modus ponens and either ex falso or the axiom scheme K.",
+   "Proving implementation faithfulness (that a checker accepts only derivations of a specification `R`) inside a system implementing `R` is not a proof of the local reflection schema `□A → A` or of `Con(R)`, and is not forbidden by K5 or Löb's rule.",
+   "K5 alone does not say that a system proving its own soundness is inconsistent; that needs Gödel's second incompleteness property (K5-iff).",
+   "The schema is local reflection `□A → A` over the abstract sentence language; nothing is said about uniform reflection, typed soundness theorems, or soundness proofs carried out in a stronger metatheory.",
+   "Not 'verified or self-verified kernels are worthless': relativised results are untouched."
+  ],
+  "prior_art": [
+   "M. H. Löb. Solution of a Problem of Leon Henkin. J. Symb. Log. 20(2):115-118, 1955. doi:10.2307/2266895.",
+   "G. Kreisel, A. Lévy. Reflection Principles and their Use for Establishing the Complexity of Axiomatic Systems. Z. Math. Logik Grundlagen Math. 14(7-12):97-142, 1968. doi:10.1002/malq.19680140702.",
+   "S. Feferman. Transfinite recursive progressions of axiomatic theories. J. Symb. Log. 27(3):259-316, 1962. doi:10.2307/2964649.",
+   "G. Boolos. The Logic of Provability. Cambridge University Press, 1993. doi:10.1017/CBO9780511625183.",
+   "C. Smoryński. Self-Reference and Modal Logic. Universitext, Springer, 1985. doi:10.1007/978-1-4613-8601-8.",
+   "L. D. Beklemishev. Reflection principles and provability algebras in formal arithmetic. Russian Math. Surveys 60(2):197-268, 2005. doi:10.1070/RM2005v060n02ABEH000823.",
+   "S. Feferman. Arithmetization of metamathematics in a general setting. Fund. Math. 49(1):35-92, 1960. doi:10.4064/fm-49-1-35-92.",
+   "D. E. Willard. Self-Verifying Axiom Systems, the Incompleteness Theorem and Related Reflection Principles. J. Symb. Log. 66(2):536-596, 2001. doi:10.2307/2695030."
+  ],
+  "design_question": "Can mutually certifying or self-certifying checkers establish faithfulness of their implementations, or consistency / soundness of their logics, and under exactly which assumptions?",
+  "grounding_notes": [
+   "Derived (modeling bridge): self-hosted correctness developments such as Lean4Lean and MetaRocq prove faithfulness of an implementation to a specification, which K5 does not concern (see the faithfulness-versus-reflection non-claim); the MetaCoq POPL 2020 paper itself explains why the correctness of the specification cannot be proved completely inside Coq."
+  ],
+  "proof_status": "kernel-checked"
+ },
+ {
+  "id": "K5-iff",
+  "name": "Toy.KernelTrust.proves_own_local_reflection_iff_inconsistent_of_mp_efq_godelII",
+  "lean": [
+   "Toy.KernelTrust.proves_own_local_reflection_iff_inconsistent_of_mp_efq_godelII"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "tier_justification": "The standard consequence of Löb's theorem for local reflection (Löb 1955; Boolos 1993), with Gödel II as a hypothesis.",
+  "plain_claim": "For an abstract theory closed under modus ponens, with ex falso, and with Gödel's second incompleteness property, proving its own local reflection schema is equivalent to proving ⊥.",
+  "hypotheses": [
+   {
+    "name": "hMp : MpClosed i",
+    "purpose": "Used by the direction 'inconsistent ⇒ reflection'.",
+    "tightness": "tight",
+    "counterexample": "Toy.KernelTrust.local_reflection_fails_without_mp"
+   },
+   {
+    "name": "hEfq : HasEfq i",
+    "purpose": "Used by the direction 'inconsistent ⇒ reflection'.",
+    "tightness": "tight",
+    "counterexample": "Toy.KernelTrust.local_reflection_fails_without_efq"
+   },
+   {
+    "name": "hGodelII : GodelII i",
+    "purpose": "Gives the direction 'reflection ⇒ inconsistent' (reflection at A := ⊥ is the consistency statement).",
+    "tightness": "tight",
+    "counterexample": "Toy.KernelTrust.local_reflection_iff_fails_without_godelII"
+   }
+  ],
+  "depth": "shallow",
+  "depth_justification": "K5 plus one use of Gödel II.",
+  "nonvacuity_witness": "`trivialFamily` (both sides true) and theory 0 of `omegaChainFamily` (consistent; both sides false).",
+  "nonvacuity_witness_lean": [
+   "Toy.KernelTrust.k5_iff_nonvacuous",
+   "Toy.KernelTrust.k5_iff_nonvacuous_consistent"
+  ],
+  "non_claims": [
+   "About abstract `ProvFamily` structures only. The result applies to a concrete formal system only insofar as that system, with a concrete choice of provability predicates and a common sentence language, satisfies every named condition; this package verifies the conditions for no concrete theory.",
+   "The implication from inconsistency (`Thm i bot`) to every local reflection schema (`□ⱼA → A`) depends essentially on ex falso quodlibet (`HasEfq`) and does not apply to paraconsistent or minimal-logic theories (`local_reflection_fails_without_efq`); deriving `con j := □ⱼ⊥ → ⊥` from `Thm i bot` requires only modus ponens and either ex falso or the axiom scheme K.",
+   "Proving implementation faithfulness (that a checker accepts only derivations of a specification `R`) inside a system implementing `R` is not a proof of the local reflection schema `□A → A` or of `Con(R)`, and is not forbidden by K5 or Löb's rule.",
+   "`GodelII` is a hypothesis; without it a consistent theory can prove its own local reflection schema (`local_reflection_iff_fails_without_godelII`, a reflexive Kripke point)."
+  ],
+  "prior_art": [
+   "M. H. Löb. Solution of a Problem of Leon Henkin. J. Symb. Log. 20(2):115-118, 1955. doi:10.2307/2266895.",
+   "G. Kreisel, A. Lévy. Reflection Principles and their Use for Establishing the Complexity of Axiomatic Systems. Z. Math. Logik Grundlagen Math. 14(7-12):97-142, 1968. doi:10.1002/malq.19680140702.",
+   "G. Boolos. The Logic of Provability. Cambridge University Press, 1993. doi:10.1017/CBO9780511625183.",
+   "C. Smoryński. Self-Reference and Modal Logic. Universitext, Springer, 1985. doi:10.1007/978-1-4613-8601-8.",
+   "D. E. Willard. Self-Verifying Axiom Systems, the Incompleteness Theorem and Related Reflection Principles. J. Symb. Log. 66(2):536-596, 2001. doi:10.2307/2695030."
+  ],
+  "design_question": "Can mutually certifying or self-certifying checkers establish faithfulness of their implementations, or consistency / soundness of their logics, and under exactly which assumptions?",
+  "grounding_notes": [],
+  "proof_status": "kernel-checked"
+ },
+ {
+  "id": "S-semSound",
+  "name": "Toy.KernelTrust.stdRules_semSound",
+  "lean": [
+   "Toy.KernelTrust.stdRules_semSound",
+   "Toy.KernelTrust.stdRules_consistent"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Textbook soundness of natural deduction for truth tables (van Dalen; Troelstra, Schwichtenberg), restated for the rules-as-data table.",
+  "plain_claim": "Every sequent derivable from the standard natural-deduction rule table is truth-table valid; in particular `[] ⊢ ⊥` is not derivable.",
+  "hypotheses": [],
+  "depth": "substantive",
+  "depth_justification": "Induction over derivations with a case per rule.",
+  "nonvacuity_witness": "Unconditional statement.",
+  "nonvacuity_witness_lean": [
+   "Toy.KernelTrust.ex_semSound_stdRules_pos"
+  ],
+  "non_claims": [
+   "Toy propositional logic only: no binders, dependent types, definitional equality, universes or inductive types. Nothing here is a theorem about Lean, Rocq, HOL Light, Metamath or any production checker.",
+   "No completeness claim."
+  ],
+  "prior_art": [
+   "D. van Dalen. Logic and Structure. Universitext, Springer, 2013. doi:10.1007/978-1-4471-4558-5. (Soundness of propositional natural deduction for truth tables; cited at book level.)",
+   "A. S. Troelstra, H. Schwichtenberg. Basic Proof Theory, 2nd ed. Cambridge University Press, 2000. doi:10.1017/CBO9781139168717. (Cited at book level.)"
+  ],
+  "design_question": "Reference point supporting K1 and the K2 counterexamples.",
+  "grounding_notes": [],
+  "proof_status": "kernel-checked"
+ },
+ {
+  "id": "S-recompute",
+  "name": "Toy.KernelTrust.recheckRecompute_faithful",
+  "lean": [
+   "Toy.KernelTrust.recheckRecompute_faithful",
+   "Toy.KernelTrust.recheck_complete",
+   "Toy.KernelTrust.execCert_trust_eq_recompute_of_honest",
+   "Toy.KernelTrust.traceChecker_faithful"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Correctness of a proof-certificate re-checker that recomputes derived data; standard for stack-machine proof formats (OpenTheory articles, Hurd 2011; Metamath Zero, Carneiro 2020).",
+  "plain_claim": "For every rule table, the recomputing certificate re-checker and the trace checker are faithful, both certificate re-checkers are complete, and on honest certificates (`Cert.honest R c = true`) the trusting and recomputing policies execute identically.",
+  "hypotheses": [
+   {
+    "name": "hc : Cert.honest R c = true (`execCert_trust_eq_recompute_of_honest` only; the other three statements are unconditional in the rule table)",
+    "purpose": "On honest certificates the stored `arity` fields equal the rule table's arities, so both field policies pop the same premises. On the dishonest certificate `lyingCert ⊥` the policies diverge, which is the mechanism of K2d (`trusting_rechecker_accepts_bot_recomputing_rechecker_rejects`).",
+    "tightness": "tight",
+    "counterexample": "Toy.KernelTrust.execCert_trust_eq_recompute_fails_without_honest"
+   }
+  ],
+  "depth": "substantive",
+  "depth_justification": "Inductions over certificates and derivations.",
+  "nonvacuity_witness": "The recomputing re-checker is faithful and complete for the standard rules and accepts topCert; the trace checker accepts topTrace; topCert is honest.",
+  "nonvacuity_witness_lean": [
+   "Toy.KernelTrust.ex_faithful_recheckRecompute_pos",
+   "Toy.KernelTrust.ex_traceChecker_accepts_topTrace_pos",
+   "Toy.KernelTrust.ex_honest_topCert_pos"
+  ],
+  "non_claims": [
+   "Toy propositional logic only: no binders, dependent types, definitional equality, universes or inductive types. Nothing here is a theorem about Lean, Rocq, HOL Light, Metamath or any production checker.",
+   "Nothing about compiled binaries, compilers, runtimes, memory safety, serialisation, I/O or hardware faults. A `Checker` is a mathematical function; the model cannot express miscompilation."
+  ],
+  "prior_art": [
+   "J. Hurd. The OpenTheory Standard Theory Library. NASA Formal Methods (NFM 2011), LNCS 6617, pp. 177-191, 2011. doi:10.1007/978-3-642-20398-5_14.",
+   "M. Carneiro. Metamath Zero: Designing a Theorem Prover Prover. CICM 2020, LNCS 12236, pp. 71-88, 2020. doi:10.1007/978-3-030-53518-6_5."
+  ],
+  "design_question": "Reference point supporting K1, K2d and the rings.",
+  "grounding_notes": [],
+  "proof_status": "kernel-checked"
+ },
+ {
+  "id": "S-naive-interface",
+  "name": "Toy.KernelTrust.NaivePropProv.not_not_prov_false",
+  "lean": [
+   "Toy.KernelTrust.NaivePropProv.not_not_prov_false"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "Interface-design note: conflating truth with theoremhood trivialises Löb-style arguments; folklore, made precise.",
+  "plain_claim": "A provability operator on meta-level propositions with 'every true proposition is provable' (`P → Prov P`) and Löb's rule is never consistent (`¬¬ Prov False`), so an impossibility theorem stated over that interface is vacuous.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "depth_justification": "One application of each of the two fields.",
+  "nonvacuity_witness": "The structure is inhabited (`Prov P := True`).",
+  "nonvacuity_witness_lean": [
+   "Toy.KernelTrust.NaivePropProv.nonempty"
+  ],
+  "non_claims": [
+   "Only the fields `nec` and `lob` are used.",
+   "A statement about this interface, not about provability in any formal system."
+  ],
+  "prior_art": [
+   "G. Boolos. The Logic of Provability. Cambridge University Press, 1993. doi:10.1017/CBO9780511625183.",
+   "C. Smoryński. Self-Reference and Modal Logic. Universitext, Springer, 1985. doi:10.1007/978-1-4613-8601-8."
+  ],
+  "design_question": "How should an abstract provability interface be designed so that impossibility results stated over it are not vacuous?",
+  "grounding_notes": [],
+  "proof_status": "kernel-checked"
+ }
+]

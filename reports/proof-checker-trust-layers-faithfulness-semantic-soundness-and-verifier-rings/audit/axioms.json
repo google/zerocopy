@@ -1,0 +1,1412 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.KernelTrust.Cert": [],
+    "Toy.KernelTrust.Cert.HypsOk": [],
+    "Toy.KernelTrust.Cert.honest": [
+      "propext"
+    ],
+    "Toy.KernelTrust.Cert.honest.eq_1": [
+      "propext"
+    ],
+    "Toy.KernelTrust.CertStep": [],
+    "Toy.KernelTrust.CertStep.casesOn": [],
+    "Toy.KernelTrust.CertStep.ctorElim": [],
+    "Toy.KernelTrust.CertStep.ctorElimType": [],
+    "Toy.KernelTrust.CertStep.ctorIdx": [],
+    "Toy.KernelTrust.CertStep.honest": [
+      "propext"
+    ],
+    "Toy.KernelTrust.CertStep.honest.eq_1": [
+      "propext"
+    ],
+    "Toy.KernelTrust.CertStep.honest.eq_2": [
+      "propext"
+    ],
+    "Toy.KernelTrust.CertStep.hyp": [],
+    "Toy.KernelTrust.CertStep.hyp.elim": [],
+    "Toy.KernelTrust.CertStep.hyp.inj": [],
+    "Toy.KernelTrust.CertStep.hyp.injEq": [
+      "propext"
+    ],
+    "Toy.KernelTrust.CertStep.hyp.noConfusion": [],
+    "Toy.KernelTrust.CertStep.hyp.sizeOf_spec": [],
+    "Toy.KernelTrust.CertStep.noConfusion": [],
+    "Toy.KernelTrust.CertStep.noConfusionType": [],
+    "Toy.KernelTrust.CertStep.rec": [],
+    "Toy.KernelTrust.CertStep.recOn": [],
+    "Toy.KernelTrust.CertStep.rule": [],
+    "Toy.KernelTrust.CertStep.rule.elim": [],
+    "Toy.KernelTrust.CertStep.rule.inj": [],
+    "Toy.KernelTrust.CertStep.rule.injEq": [
+      "propext"
+    ],
+    "Toy.KernelTrust.CertStep.rule.noConfusion": [],
+    "Toy.KernelTrust.CertStep.rule.sizeOf_spec": [],
+    "Toy.KernelTrust.Checker": [],
+    "Toy.KernelTrust.Checker.AcceptsBot": [],
+    "Toy.KernelTrust.Checker.Wit": [],
+    "Toy.KernelTrust.Checker.accepts": [],
+    "Toy.KernelTrust.Checker.acceptsNamed": [],
+    "Toy.KernelTrust.Checker.acceptsNamed.eq_1": [],
+    "Toy.KernelTrust.Checker.acceptsNamed.match_1": [],
+    "Toy.KernelTrust.Checker.casesOn": [],
+    "Toy.KernelTrust.Checker.ctorIdx": [],
+    "Toy.KernelTrust.Checker.mk": [],
+    "Toy.KernelTrust.Checker.mk.inj": [],
+    "Toy.KernelTrust.Checker.mk.injEq": [
+      "propext"
+    ],
+    "Toy.KernelTrust.Checker.mk.noConfusion": [],
+    "Toy.KernelTrust.Checker.mk.sizeOf_spec": [],
+    "Toy.KernelTrust.Checker.noConfusion": [],
+    "Toy.KernelTrust.Checker.noConfusionType": [],
+    "Toy.KernelTrust.Checker.rec": [],
+    "Toy.KernelTrust.Checker.recOn": [],
+    "Toy.KernelTrust.ClaimReflection": [],
+    "Toy.KernelTrust.Complete": [],
+    "Toy.KernelTrust.Consistent": [],
+    "Toy.KernelTrust.Ctx": [],
+    "Toy.KernelTrust.Derivable": [],
+    "Toy.KernelTrust.Derivable.below": [],
+    "Toy.KernelTrust.Derivable.below.casesOn": [],
+    "Toy.KernelTrust.Derivable.below.hyp": [],
+    "Toy.KernelTrust.Derivable.below.rec": [],
+    "Toy.KernelTrust.Derivable.below.step": [],
+    "Toy.KernelTrust.Derivable.brecOn": [],
+    "Toy.KernelTrust.Derivable.casesOn": [],
+    "Toy.KernelTrust.Derivable.hyp": [],
+    "Toy.KernelTrust.Derivable.mono": [
+      "propext"
+    ],
+    "Toy.KernelTrust.Derivable.mono_rules": [],
+    "Toy.KernelTrust.Derivable.rec": [],
+    "Toy.KernelTrust.Derivable.recOn": [],
+    "Toy.KernelTrust.Derivable.step": [],
+    "Toy.KernelTrust.Faithful": [],
+    "Toy.KernelTrust.FaithfulImpliesMetaSound": [],
+    "Toy.KernelTrust.FieldPolicy": [],
+    "Toy.KernelTrust.FieldPolicy.casesOn": [],
+    "Toy.KernelTrust.FieldPolicy.ctorElim": [],
+    "Toy.KernelTrust.FieldPolicy.ctorElimType": [],
+    "Toy.KernelTrust.FieldPolicy.ctorIdx": [],
+    "Toy.KernelTrust.FieldPolicy.noConfusion": [],
+    "Toy.KernelTrust.FieldPolicy.noConfusionType": [],
+    "Toy.KernelTrust.FieldPolicy.ofNat": [],
+    "Toy.KernelTrust.FieldPolicy.ofNat_ctorIdx": [],
+    "Toy.KernelTrust.FieldPolicy.rec": [],
+    "Toy.KernelTrust.FieldPolicy.recOn": [],
+    "Toy.KernelTrust.FieldPolicy.recompute": [],
+    "Toy.KernelTrust.FieldPolicy.recompute.elim": [],
+    "Toy.KernelTrust.FieldPolicy.recompute.sizeOf_spec": [],
+    "Toy.KernelTrust.FieldPolicy.trust": [],
+    "Toy.KernelTrust.FieldPolicy.trust.elim": [],
+    "Toy.KernelTrust.FieldPolicy.trust.sizeOf_spec": [],
+    "Toy.KernelTrust.Form": [],
+    "Toy.KernelTrust.Form.below": [],
+    "Toy.KernelTrust.Form.bot": [],
+    "Toy.KernelTrust.Form.bot.elim": [],
+    "Toy.KernelTrust.Form.bot.sizeOf_spec": [],
+    "Toy.KernelTrust.Form.brecOn": [],
+    "Toy.KernelTrust.Form.brecOn.eq": [],
+    "Toy.KernelTrust.Form.brecOn.go": [],
+    "Toy.KernelTrust.Form.casesOn": [],
+    "Toy.KernelTrust.Form.conj": [],
+    "Toy.KernelTrust.Form.conj.elim": [],
+    "Toy.KernelTrust.Form.conj.inj": [],
+    "Toy.KernelTrust.Form.conj.injEq": [
+      "propext"
+    ],
+    "Toy.KernelTrust.Form.conj.noConfusion": [],
+    "Toy.KernelTrust.Form.conj.sizeOf_spec": [],
+    "Toy.KernelTrust.Form.ctorElim": [],
+    "Toy.KernelTrust.Form.ctorElimType": [],
+    "Toy.KernelTrust.Form.ctorIdx": [],
+    "Toy.KernelTrust.Form.disj": [],
+    "Toy.KernelTrust.Form.disj.elim": [],
+    "Toy.KernelTrust.Form.disj.inj": [],
+    "Toy.KernelTrust.Form.disj.injEq": [
+      "propext"
+    ],
+    "Toy.KernelTrust.Form.disj.noConfusion": [],
+    "Toy.KernelTrust.Form.disj.sizeOf_spec": [],
+    "Toy.KernelTrust.Form.imp": [],
+    "Toy.KernelTrust.Form.imp.elim": [],
+    "Toy.KernelTrust.Form.imp.inj": [],
+    "Toy.KernelTrust.Form.imp.injEq": [
+      "propext"
+    ],
+    "Toy.KernelTrust.Form.imp.noConfusion": [],
+    "Toy.KernelTrust.Form.imp.sizeOf_spec": [],
+    "Toy.KernelTrust.Form.noConfusion": [],
+    "Toy.KernelTrust.Form.noConfusionType": [],
+    "Toy.KernelTrust.Form.rec": [],
+    "Toy.KernelTrust.Form.recOn": [],
+    "Toy.KernelTrust.Form.top": [],
+    "Toy.KernelTrust.Form.top.eq_1": [],
+    "Toy.KernelTrust.Form.var": [],
+    "Toy.KernelTrust.Form.var.elim": [],
+    "Toy.KernelTrust.Form.var.inj": [],
+    "Toy.KernelTrust.Form.var.injEq": [
+      "propext"
+    ],
+    "Toy.KernelTrust.Form.var.noConfusion": [],
+    "Toy.KernelTrust.Form.var.sizeOf_spec": [],
+    "Toy.KernelTrust.LeafWorld": [],
+    "Toy.KernelTrust.LeafWorld.base": [],
+    "Toy.KernelTrust.LeafWorld.base.elim": [],
+    "Toy.KernelTrust.LeafWorld.base.sizeOf_spec": [],
+    "Toy.KernelTrust.LeafWorld.casesOn": [],
+    "Toy.KernelTrust.LeafWorld.ctorElim": [],
+    "Toy.KernelTrust.LeafWorld.ctorElimType": [],
+    "Toy.KernelTrust.LeafWorld.ctorIdx": [],
+    "Toy.KernelTrust.LeafWorld.leaf": [],
+    "Toy.KernelTrust.LeafWorld.leaf.elim": [],
+    "Toy.KernelTrust.LeafWorld.leaf.inj": [],
+    "Toy.KernelTrust.LeafWorld.leaf.injEq": [
+      "propext"
+    ],
+    "Toy.KernelTrust.LeafWorld.leaf.noConfusion": [],
+    "Toy.KernelTrust.LeafWorld.leaf.sizeOf_spec": [],
+    "Toy.KernelTrust.LeafWorld.noConfusion": [],
+    "Toy.KernelTrust.LeafWorld.noConfusionType": [],
+    "Toy.KernelTrust.LeafWorld.rec": [],
+    "Toy.KernelTrust.LeafWorld.recOn": [],
+    "Toy.KernelTrust.LeafWorld.tip": [],
+    "Toy.KernelTrust.LeafWorld.tip.elim": [],
+    "Toy.KernelTrust.LeafWorld.tip.inj": [],
+    "Toy.KernelTrust.LeafWorld.tip.injEq": [
+      "propext"
+    ],
+    "Toy.KernelTrust.LeafWorld.tip.noConfusion": [],
+    "Toy.KernelTrust.LeafWorld.tip.sizeOf_spec": [],
+    "Toy.KernelTrust.LinkCertified": [],
+    "Toy.KernelTrust.MetaSound": [],
+    "Toy.KernelTrust.NaivePropProv": [],
+    "Toy.KernelTrust.NaivePropProv.Prov": [],
+    "Toy.KernelTrust.NaivePropProv.casesOn": [],
+    "Toy.KernelTrust.NaivePropProv.ctorIdx": [],
+    "Toy.KernelTrust.NaivePropProv.lob": [],
+    "Toy.KernelTrust.NaivePropProv.mk": [],
+    "Toy.KernelTrust.NaivePropProv.mk.inj": [],
+    "Toy.KernelTrust.NaivePropProv.mk.injEq": [
+      "propext"
+    ],
+    "Toy.KernelTrust.NaivePropProv.mk.noConfusion": [],
+    "Toy.KernelTrust.NaivePropProv.mk.sizeOf_spec": [],
+    "Toy.KernelTrust.NaivePropProv.nec": [],
+    "Toy.KernelTrust.NaivePropProv.noConfusion": [],
+    "Toy.KernelTrust.NaivePropProv.noConfusionType": [],
+    "Toy.KernelTrust.NaivePropProv.nonempty": [],
+    "Toy.KernelTrust.NaivePropProv.not_not_prov_false": [],
+    "Toy.KernelTrust.NaivePropProv.rec": [],
+    "Toy.KernelTrust.NaivePropProv.recOn": [],
+    "Toy.KernelTrust.NaivePropProv.trivial": [],
+    "Toy.KernelTrust.NoKSThm": [],
+    "Toy.KernelTrust.NoKSThm.match_1": [],
+    "Toy.KernelTrust.NoMpThm": [],
+    "Toy.KernelTrust.NoMpThm.axK": [],
+    "Toy.KernelTrust.NoMpThm.axS": [],
+    "Toy.KernelTrust.NoMpThm.below": [],
+    "Toy.KernelTrust.NoMpThm.below.axK": [],
+    "Toy.KernelTrust.NoMpThm.below.axS": [],
+    "Toy.KernelTrust.NoMpThm.below.casesOn": [],
+    "Toy.KernelTrust.NoMpThm.below.distrib": [],
+    "Toy.KernelTrust.NoMpThm.below.efq": [],
+    "Toy.KernelTrust.NoMpThm.below.nec": [],
+    "Toy.KernelTrust.NoMpThm.below.rec": [],
+    "Toy.KernelTrust.NoMpThm.below.ring": [],
+    "Toy.KernelTrust.NoMpThm.below.sigma1": [],
+    "Toy.KernelTrust.NoMpThm.brecOn": [],
+    "Toy.KernelTrust.NoMpThm.casesOn": [],
+    "Toy.KernelTrust.NoMpThm.distrib": [],
+    "Toy.KernelTrust.NoMpThm.efq": [],
+    "Toy.KernelTrust.NoMpThm.nec": [],
+    "Toy.KernelTrust.NoMpThm.rec": [],
+    "Toy.KernelTrust.NoMpThm.recOn": [],
+    "Toy.KernelTrust.NoMpThm.ring": [],
+    "Toy.KernelTrust.NoMpThm.sigma1": [],
+    "Toy.KernelTrust.Pat": [],
+    "Toy.KernelTrust.Pat.below": [],
+    "Toy.KernelTrust.Pat.bot": [],
+    "Toy.KernelTrust.Pat.bot.elim": [],
+    "Toy.KernelTrust.Pat.bot.sizeOf_spec": [],
+    "Toy.KernelTrust.Pat.brecOn": [],
+    "Toy.KernelTrust.Pat.brecOn.eq": [],
+    "Toy.KernelTrust.Pat.brecOn.go": [],
+    "Toy.KernelTrust.Pat.casesOn": [],
+    "Toy.KernelTrust.Pat.conj": [],
+    "Toy.KernelTrust.Pat.conj.elim": [],
+    "Toy.KernelTrust.Pat.conj.inj": [],
+    "Toy.KernelTrust.Pat.conj.injEq": [
+      "propext"
+    ],
+    "Toy.KernelTrust.Pat.conj.noConfusion": [],
+    "Toy.KernelTrust.Pat.conj.sizeOf_spec": [],
+    "Toy.KernelTrust.Pat.ctorElim": [],
+    "Toy.KernelTrust.Pat.ctorElimType": [],
+    "Toy.KernelTrust.Pat.ctorIdx": [],
+    "Toy.KernelTrust.Pat.disj": [],
+    "Toy.KernelTrust.Pat.disj.elim": [],
+    "Toy.KernelTrust.Pat.disj.inj": [],
+    "Toy.KernelTrust.Pat.disj.injEq": [
+      "propext"
+    ],
+    "Toy.KernelTrust.Pat.disj.noConfusion": [],
+    "Toy.KernelTrust.Pat.disj.sizeOf_spec": [],
+    "Toy.KernelTrust.Pat.imp": [],
+    "Toy.KernelTrust.Pat.imp.elim": [],
+    "Toy.KernelTrust.Pat.imp.inj": [],
+    "Toy.KernelTrust.Pat.imp.injEq": [
+      "propext"
+    ],
+    "Toy.KernelTrust.Pat.imp.noConfusion": [],
+    "Toy.KernelTrust.Pat.imp.sizeOf_spec": [],
+    "Toy.KernelTrust.Pat.noConfusion": [],
+    "Toy.KernelTrust.Pat.noConfusionType": [],
+    "Toy.KernelTrust.Pat.pvar": [],
+    "Toy.KernelTrust.Pat.pvar.elim": [],
+    "Toy.KernelTrust.Pat.pvar.inj": [],
+    "Toy.KernelTrust.Pat.pvar.injEq": [
+      "propext"
+    ],
+    "Toy.KernelTrust.Pat.pvar.noConfusion": [],
+    "Toy.KernelTrust.Pat.pvar.sizeOf_spec": [],
+    "Toy.KernelTrust.Pat.rec": [],
+    "Toy.KernelTrust.Pat.recOn": [],
+    "Toy.KernelTrust.Pinned": [],
+    "Toy.KernelTrust.PointedKripke": [],
+    "Toy.KernelTrust.PointedKripke.GLFrame": [],
+    "Toy.KernelTrust.PointedKripke.World": [],
+    "Toy.KernelTrust.PointedKripke.base": [],
+    "Toy.KernelTrust.PointedKripke.casesOn": [],
+    "Toy.KernelTrust.PointedKripke.ctorIdx": [],
+    "Toy.KernelTrust.PointedKripke.mk": [],
+    "Toy.KernelTrust.PointedKripke.mk.inj": [],
+    "Toy.KernelTrust.PointedKripke.mk.injEq": [
+      "propext"
+    ],
+    "Toy.KernelTrust.PointedKripke.mk.noConfusion": [],
+    "Toy.KernelTrust.PointedKripke.mk.sizeOf_spec": [],
+    "Toy.KernelTrust.PointedKripke.noConfusion": [],
+    "Toy.KernelTrust.PointedKripke.noConfusionType": [],
+    "Toy.KernelTrust.PointedKripke.rec": [],
+    "Toy.KernelTrust.PointedKripke.recOn": [],
+    "Toy.KernelTrust.PointedKripke.rel": [],
+    "Toy.KernelTrust.PointedKripke.toFamily": [],
+    "Toy.KernelTrust.PointedKripke.toFamily_crossDistrib": [],
+    "Toy.KernelTrust.PointedKripke.toFamily_hasEfq": [],
+    "Toy.KernelTrust.PointedKripke.toFamily_impClosed": [],
+    "Toy.KernelTrust.PointedKripke.toFamily_lobRule_of_glFrame": [],
+    "Toy.KernelTrust.PremiseSpec": [],
+    "Toy.KernelTrust.PremiseSpec.addedHyps": [],
+    "Toy.KernelTrust.PremiseSpec.casesOn": [],
+    "Toy.KernelTrust.PremiseSpec.ctorIdx": [],
+    "Toy.KernelTrust.PremiseSpec.goal": [],
+    "Toy.KernelTrust.PremiseSpec.mk": [],
+    "Toy.KernelTrust.PremiseSpec.mk.inj": [],
+    "Toy.KernelTrust.PremiseSpec.mk.injEq": [
+      "propext"
+    ],
+    "Toy.KernelTrust.PremiseSpec.mk.noConfusion": [],
+    "Toy.KernelTrust.PremiseSpec.mk.sizeOf_spec": [],
+    "Toy.KernelTrust.PremiseSpec.noConfusion": [],
+    "Toy.KernelTrust.PremiseSpec.noConfusionType": [],
+    "Toy.KernelTrust.PremiseSpec.rec": [],
+    "Toy.KernelTrust.PremiseSpec.recOn": [],
+    "Toy.KernelTrust.ProvFamily": [],
+    "Toy.KernelTrust.ProvFamily.Consistent": [],
+    "Toy.KernelTrust.ProvFamily.CrossDistrib": [],
+    "Toy.KernelTrust.ProvFamily.CrossHBL": [],
+    "Toy.KernelTrust.ProvFamily.CrossHBL.casesOn": [],
+    "Toy.KernelTrust.ProvFamily.CrossHBL.distrib": [],
+    "Toy.KernelTrust.ProvFamily.CrossHBL.hbl": [],
+    "Toy.KernelTrust.ProvFamily.CrossHBL.mk": [],
+    "Toy.KernelTrust.ProvFamily.CrossHBL.nec": [],
+    "Toy.KernelTrust.ProvFamily.CrossHBL.rec": [],
+    "Toy.KernelTrust.ProvFamily.CrossHBL.recOn": [],
+    "Toy.KernelTrust.ProvFamily.CrossHBL.sigma1": [],
+    "Toy.KernelTrust.ProvFamily.CrossHBL.toFrom": [],
+    "Toy.KernelTrust.ProvFamily.CrossHBLFrom": [],
+    "Toy.KernelTrust.ProvFamily.CrossHBLFrom.casesOn": [],
+    "Toy.KernelTrust.ProvFamily.CrossHBLFrom.distrib": [],
+    "Toy.KernelTrust.ProvFamily.CrossHBLFrom.mk": [],
+    "Toy.KernelTrust.ProvFamily.CrossHBLFrom.nec": [],
+    "Toy.KernelTrust.ProvFamily.CrossHBLFrom.rec": [],
+    "Toy.KernelTrust.ProvFamily.CrossHBLFrom.recOn": [],
+    "Toy.KernelTrust.ProvFamily.CrossHBLFrom.sigma1": [],
+    "Toy.KernelTrust.ProvFamily.CrossNec": [],
+    "Toy.KernelTrust.ProvFamily.CrossSigma1": [],
+    "Toy.KernelTrust.ProvFamily.D1": [],
+    "Toy.KernelTrust.ProvFamily.D2": [],
+    "Toy.KernelTrust.ProvFamily.D3": [],
+    "Toy.KernelTrust.ProvFamily.GodelII": [],
+    "Toy.KernelTrust.ProvFamily.HBL": [],
+    "Toy.KernelTrust.ProvFamily.HBL.casesOn": [],
+    "Toy.KernelTrust.ProvFamily.HBL.d1": [],
+    "Toy.KernelTrust.ProvFamily.HBL.d2": [],
+    "Toy.KernelTrust.ProvFamily.HBL.d3": [],
+    "Toy.KernelTrust.ProvFamily.HBL.mk": [],
+    "Toy.KernelTrust.ProvFamily.HBL.rec": [],
+    "Toy.KernelTrust.ProvFamily.HBL.recOn": [],
+    "Toy.KernelTrust.ProvFamily.HasEfq": [],
+    "Toy.KernelTrust.ProvFamily.ImpClosed": [],
+    "Toy.KernelTrust.ProvFamily.ImpClosed.axK": [],
+    "Toy.KernelTrust.ProvFamily.ImpClosed.axS": [],
+    "Toy.KernelTrust.ProvFamily.ImpClosed.casesOn": [],
+    "Toy.KernelTrust.ProvFamily.ImpClosed.mk": [],
+    "Toy.KernelTrust.ProvFamily.ImpClosed.mp": [],
+    "Toy.KernelTrust.ProvFamily.ImpClosed.rec": [],
+    "Toy.KernelTrust.ProvFamily.ImpClosed.recOn": [],
+    "Toy.KernelTrust.ProvFamily.LobRule": [],
+    "Toy.KernelTrust.ProvFamily.LobRule.godelII": [],
+    "Toy.KernelTrust.ProvFamily.MpClosed": [],
+    "Toy.KernelTrust.ProvFamily.Sent": [],
+    "Toy.KernelTrust.ProvFamily.Thm": [],
+    "Toy.KernelTrust.ProvFamily.bot": [],
+    "Toy.KernelTrust.ProvFamily.box": [],
+    "Toy.KernelTrust.ProvFamily.casesOn": [],
+    "Toy.KernelTrust.ProvFamily.con": [],
+    "Toy.KernelTrust.ProvFamily.ctorIdx": [],
+    "Toy.KernelTrust.ProvFamily.imp": [],
+    "Toy.KernelTrust.ProvFamily.mk": [],
+    "Toy.KernelTrust.ProvFamily.mk.inj": [],
+    "Toy.KernelTrust.ProvFamily.mk.injEq": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ProvFamily.mk.noConfusion": [],
+    "Toy.KernelTrust.ProvFamily.mk.sizeOf_spec": [],
+    "Toy.KernelTrust.ProvFamily.noConfusion": [],
+    "Toy.KernelTrust.ProvFamily.noConfusionType": [],
+    "Toy.KernelTrust.ProvFamily.rec": [],
+    "Toy.KernelTrust.ProvFamily.recOn": [],
+    "Toy.KernelTrust.RingClosed": [],
+    "Toy.KernelTrust.RuleDesc": [],
+    "Toy.KernelTrust.RuleDesc.casesOn": [],
+    "Toy.KernelTrust.RuleDesc.conclusion": [],
+    "Toy.KernelTrust.RuleDesc.ctorIdx": [],
+    "Toy.KernelTrust.RuleDesc.mk": [],
+    "Toy.KernelTrust.RuleDesc.mk.inj": [],
+    "Toy.KernelTrust.RuleDesc.mk.injEq": [
+      "propext"
+    ],
+    "Toy.KernelTrust.RuleDesc.mk.noConfusion": [],
+    "Toy.KernelTrust.RuleDesc.mk.sizeOf_spec": [],
+    "Toy.KernelTrust.RuleDesc.name": [],
+    "Toy.KernelTrust.RuleDesc.noConfusion": [],
+    "Toy.KernelTrust.RuleDesc.noConfusionType": [],
+    "Toy.KernelTrust.RuleDesc.premises": [],
+    "Toy.KernelTrust.RuleDesc.rec": [],
+    "Toy.KernelTrust.RuleDesc.recOn": [],
+    "Toy.KernelTrust.RuleSet": [],
+    "Toy.KernelTrust.SemSound": [],
+    "Toy.KernelTrust.SemSound.consistent": [
+      "propext"
+    ],
+    "Toy.KernelTrust.SemValid": [],
+    "Toy.KernelTrust.Stack": [],
+    "Toy.KernelTrust.StmtTable": [],
+    "Toy.KernelTrust.Subst": [],
+    "Toy.KernelTrust.SynSent": [],
+    "Toy.KernelTrust.SynSent.below": [],
+    "Toy.KernelTrust.SynSent.bot": [],
+    "Toy.KernelTrust.SynSent.bot.elim": [],
+    "Toy.KernelTrust.SynSent.bot.sizeOf_spec": [],
+    "Toy.KernelTrust.SynSent.box": [],
+    "Toy.KernelTrust.SynSent.box.elim": [],
+    "Toy.KernelTrust.SynSent.box.inj": [],
+    "Toy.KernelTrust.SynSent.box.injEq": [
+      "propext"
+    ],
+    "Toy.KernelTrust.SynSent.box.noConfusion": [],
+    "Toy.KernelTrust.SynSent.box.sizeOf_spec": [],
+    "Toy.KernelTrust.SynSent.brecOn": [],
+    "Toy.KernelTrust.SynSent.brecOn.eq": [],
+    "Toy.KernelTrust.SynSent.brecOn.go": [],
+    "Toy.KernelTrust.SynSent.casesOn": [],
+    "Toy.KernelTrust.SynSent.ctorElim": [],
+    "Toy.KernelTrust.SynSent.ctorElimType": [],
+    "Toy.KernelTrust.SynSent.ctorIdx": [],
+    "Toy.KernelTrust.SynSent.imp": [],
+    "Toy.KernelTrust.SynSent.imp.elim": [],
+    "Toy.KernelTrust.SynSent.imp.inj": [],
+    "Toy.KernelTrust.SynSent.imp.injEq": [
+      "propext"
+    ],
+    "Toy.KernelTrust.SynSent.imp.noConfusion": [],
+    "Toy.KernelTrust.SynSent.imp.sizeOf_spec": [],
+    "Toy.KernelTrust.SynSent.noConfusion": [],
+    "Toy.KernelTrust.SynSent.noConfusionType": [],
+    "Toy.KernelTrust.SynSent.rec": [],
+    "Toy.KernelTrust.SynSent.recOn": [],
+    "Toy.KernelTrust.SynSent.size": [],
+    "Toy.KernelTrust.SynSent.size.eq_1": [],
+    "Toy.KernelTrust.SynSent.size.eq_2": [],
+    "Toy.KernelTrust.SynSent.size.eq_3": [],
+    "Toy.KernelTrust.SynSent.size.eq_def": [],
+    "Toy.KernelTrust.SynSent.size.match_1": [],
+    "Toy.KernelTrust.Trace": [],
+    "Toy.KernelTrust.TraceStep": [],
+    "Toy.KernelTrust.TraceStep.casesOn": [],
+    "Toy.KernelTrust.TraceStep.concl": [],
+    "Toy.KernelTrust.TraceStep.ctorIdx": [],
+    "Toy.KernelTrust.TraceStep.ctx": [],
+    "Toy.KernelTrust.TraceStep.isHyp": [],
+    "Toy.KernelTrust.TraceStep.mk": [],
+    "Toy.KernelTrust.TraceStep.mk.inj": [],
+    "Toy.KernelTrust.TraceStep.mk.injEq": [
+      "propext"
+    ],
+    "Toy.KernelTrust.TraceStep.mk.noConfusion": [],
+    "Toy.KernelTrust.TraceStep.mk.sizeOf_spec": [],
+    "Toy.KernelTrust.TraceStep.noConfusion": [],
+    "Toy.KernelTrust.TraceStep.noConfusionType": [],
+    "Toy.KernelTrust.TraceStep.premIdxs": [],
+    "Toy.KernelTrust.TraceStep.rec": [],
+    "Toy.KernelTrust.TraceStep.recOn": [],
+    "Toy.KernelTrust.TraceStep.ruleIdx": [],
+    "Toy.KernelTrust.TraceStep.subst": [],
+    "Toy.KernelTrust.Valuation": [],
+    "Toy.KernelTrust.VerifierRing": [],
+    "Toy.KernelTrust.VerifierRing.MetaCert": [],
+    "Toy.KernelTrust.VerifierRing.acceptsCert": [],
+    "Toy.KernelTrust.VerifierRing.casesOn": [],
+    "Toy.KernelTrust.VerifierRing.checker": [],
+    "Toy.KernelTrust.VerifierRing.ctorIdx": [],
+    "Toy.KernelTrust.VerifierRing.mk": [],
+    "Toy.KernelTrust.VerifierRing.mk.inj": [],
+    "Toy.KernelTrust.VerifierRing.mk.injEq": [
+      "propext"
+    ],
+    "Toy.KernelTrust.VerifierRing.mk.noConfusion": [],
+    "Toy.KernelTrust.VerifierRing.mk.sizeOf_spec": [],
+    "Toy.KernelTrust.VerifierRing.noConfusion": [],
+    "Toy.KernelTrust.VerifierRing.noConfusionType": [],
+    "Toy.KernelTrust.VerifierRing.rec": [],
+    "Toy.KernelTrust.VerifierRing.recOn": [],
+    "Toy.KernelTrust.acceptAll": [],
+    "Toy.KernelTrust.accepted_name_semValid_of_faithful_of_semSound_of_agreement": [],
+    "Toy.KernelTrust.accepted_semValid_of_faithful_of_semSound": [],
+    "Toy.KernelTrust.anyImpRules": [],
+    "Toy.KernelTrust.anyImpRules.eq_1": [],
+    "Toy.KernelTrust.anyImpRules_derives_hyp_or_imp": [
+      "propext"
+    ],
+    "Toy.KernelTrust.badBotCert": [],
+    "Toy.KernelTrust.badBotTrace": [],
+    "Toy.KernelTrust.badRules": [],
+    "Toy.KernelTrust.badRules_derives_bot": [
+      "propext"
+    ],
+    "Toy.KernelTrust.badRules_derives_every_formula": [
+      "propext"
+    ],
+    "Toy.KernelTrust.bogusHypCert": [],
+    "Toy.KernelTrust.bogusHypCert.eq_1": [],
+    "Toy.KernelTrust.brokenLinkRing": [
+      "propext"
+    ],
+    "Toy.KernelTrust.buggyRing": [
+      "propext"
+    ],
+    "Toy.KernelTrust.buggyRing_unfaithful": [
+      "propext"
+    ],
+    "Toy.KernelTrust.checkTraceSteps": [
+      "propext"
+    ],
+    "Toy.KernelTrust.checkTraceSteps.eq_1": [
+      "propext"
+    ],
+    "Toy.KernelTrust.checkTraceSteps.eq_2": [
+      "propext"
+    ],
+    "Toy.KernelTrust.checkTraceSteps.eq_def": [
+      "propext"
+    ],
+    "Toy.KernelTrust.checkTraceSteps.match_1": [],
+    "Toy.KernelTrust.claimReflection_of_encodings_underivable": [],
+    "Toy.KernelTrust.con_fails_without_efq": [
+      "propext"
+    ],
+    "Toy.KernelTrust.con_fails_without_mp": [
+      "propext"
+    ],
+    "Toy.KernelTrust.consistencyRing_all_inconsistent_of_impClosed_godelIIAnchor_crossHBL": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.consistencyRing_anchor_inconsistent_of_impClosed_godelII_crossHBLFrom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.consistencyRing_consistent_without_axK_axS": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.consistencyRing_consistent_without_crossDistrib": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.consistencyRing_consistent_without_crossNec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.consistencyRing_consistent_without_crossSigma1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.consistencyRing_consistent_without_crossSigma1_fails_below_two": [
+      "propext"
+    ],
+    "Toy.KernelTrust.consistencyRing_consistent_without_crossSigma1_not_proving_own_inconsistency": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.consistencyRing_consistent_without_godelII": [],
+    "Toy.KernelTrust.consistencyRing_consistent_without_mp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.consistency_proof_along_open_chain_is_consistent": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.constFamily": [],
+    "Toy.KernelTrust.constFamily_consistent": [],
+    "Toy.KernelTrust.constFamily_lobRule": [],
+    "Toy.KernelTrust.constFamily_not_proves_con": [],
+    "Toy.KernelTrust.constFamily_proves_every_box": [],
+    "Toy.KernelTrust.constModel": [],
+    "Toy.KernelTrust.converseImpRule": [],
+    "Toy.KernelTrust.converseImpRule.eq_1": [],
+    "Toy.KernelTrust.emptyFamily": [],
+    "Toy.KernelTrust.evalCtx": [],
+    "Toy.KernelTrust.evalCtx.eq_1": [],
+    "Toy.KernelTrust.evalCtx.eq_2": [],
+    "Toy.KernelTrust.evalCtx.eq_def": [],
+    "Toy.KernelTrust.evalCtx.match_1": [],
+    "Toy.KernelTrust.evalCtx_mem": [
+      "propext"
+    ],
+    "Toy.KernelTrust.evalForm": [],
+    "Toy.KernelTrust.evalForm.eq_1": [],
+    "Toy.KernelTrust.evalForm.eq_2": [],
+    "Toy.KernelTrust.evalForm.eq_3": [],
+    "Toy.KernelTrust.evalForm.eq_4": [],
+    "Toy.KernelTrust.evalForm.eq_5": [],
+    "Toy.KernelTrust.evalForm.eq_def": [],
+    "Toy.KernelTrust.evalForm.match_1": [],
+    "Toy.KernelTrust.ex_acceptsBot_acceptAll_pos": [],
+    "Toy.KernelTrust.ex_acceptsBot_rejectAll_neg": [],
+    "Toy.KernelTrust.ex_acceptsNamed_neg": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_acceptsNamed_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_badBotCert_neg": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_badBotCert_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_claimReflection_neg": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_claimReflection_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_claimReflection_pos.match_1_1": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_complete_acceptAll_pos": [],
+    "Toy.KernelTrust.ex_complete_rejectAll_neg": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_con_neg": [],
+    "Toy.KernelTrust.ex_con_pos": [],
+    "Toy.KernelTrust.ex_consistent_neg": [],
+    "Toy.KernelTrust.ex_consistent_not_semSound_anyImpRules": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_consistent_pos": [],
+    "Toy.KernelTrust.ex_crossDistrib_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_crossDistrib_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_crossHBLFrom_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_crossHBLFrom_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_crossHBL_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_crossHBL_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_crossNec_neg": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_crossNec_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_crossSigma1_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_crossSigma1_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_d1_neg": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_derivable_empty_neg": [],
+    "Toy.KernelTrust.ex_derivable_hyp_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_derivable_top_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_evalCtx_bot_neg": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_evalCtx_nil_pos": [],
+    "Toy.KernelTrust.ex_evalForm_bot_neg": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_evalForm_top_pos": [],
+    "Toy.KernelTrust.ex_faithfulImpliesMetaSound_neg": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_faithfulImpliesMetaSound_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_faithful_acceptAll_neg": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_faithful_recheckNoHypGuard_neg": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_faithful_recheckRecompute_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_faithful_recheckTrustNoHypGuard_neg": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_faithful_recheckTrust_neg": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_faithful_rejectAll_pos": [],
+    "Toy.KernelTrust.ex_glFrame_neg": [],
+    "Toy.KernelTrust.ex_glFrame_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_godelII_neg": [],
+    "Toy.KernelTrust.ex_godelII_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_hasEfq_neg": [],
+    "Toy.KernelTrust.ex_hasEfq_pos": [],
+    "Toy.KernelTrust.ex_hbl_neg": [],
+    "Toy.KernelTrust.ex_hbl_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_honest_lyingCert_neg": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_honest_topCert_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_hypsOk_bogusHypCert_neg": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_hypsOk_topCert_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_impClosed_neg": [],
+    "Toy.KernelTrust.ex_impClosed_pos": [],
+    "Toy.KernelTrust.ex_instPat_neg": [],
+    "Toy.KernelTrust.ex_instPat_pos": [],
+    "Toy.KernelTrust.ex_lobRule_neg": [],
+    "Toy.KernelTrust.ex_lobRule_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_metaSound_neg": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_metaSound_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_mpClosed_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_mpClosed_pos": [],
+    "Toy.KernelTrust.ex_pinned_official_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_pinned_poisoned_neg": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_pinned_poisoned_true_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_pinned_undefined_neg": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_popPremises_neg": [],
+    "Toy.KernelTrust.ex_popPremises_pos": [],
+    "Toy.KernelTrust.ex_premisesToCheck_neg": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_premisesToCheck_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_quorum_neg": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_quorum_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_recheckNoHypGuard_accepts_topCert_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_recheckRecompute_accepts_topCert_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_recheckRecompute_rejects_topCert_neg": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_recheckTrustNoHypGuard_accepts_topCert_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_recheckTrust_accepts_topCert_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_ringClosed_neg": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_ringClosed_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_ringIter_neg": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_ringIter_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_ringNext_neg": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_ringNext_self_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_ringNext_wrap_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_semSound_badRules_neg": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_semSound_empty_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_semSound_stdRules_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_semValid_peirce_pos": [],
+    "Toy.KernelTrust.ex_semValid_top_pos": [],
+    "Toy.KernelTrust.ex_semValid_var_neg": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_sharedQuorum_neg": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_sharedQuorum_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_substLookup_neg": [],
+    "Toy.KernelTrust.ex_toFamily_neg": [],
+    "Toy.KernelTrust.ex_toFamily_pos": [],
+    "Toy.KernelTrust.ex_traceChecker_accepts_badBotTrace_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_traceChecker_accepts_topTrace_pos": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_traceChecker_rejects_badBotTrace_neg": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ex_traceChecker_rejects_selfCitation_neg": [
+      "propext"
+    ],
+    "Toy.KernelTrust.execCert": [
+      "propext"
+    ],
+    "Toy.KernelTrust.execCert.eq_1": [
+      "propext"
+    ],
+    "Toy.KernelTrust.execCert.eq_2": [
+      "propext"
+    ],
+    "Toy.KernelTrust.execCert.eq_3": [
+      "propext"
+    ],
+    "Toy.KernelTrust.execCert.eq_def": [
+      "propext"
+    ],
+    "Toy.KernelTrust.execCert.match_1": [],
+    "Toy.KernelTrust.execCert.match_3": [],
+    "Toy.KernelTrust.execCert.match_5": [],
+    "Toy.KernelTrust.execCertNoHypGuard": [
+      "propext"
+    ],
+    "Toy.KernelTrust.execCertNoHypGuard.eq_1": [
+      "propext"
+    ],
+    "Toy.KernelTrust.execCertNoHypGuard.eq_2": [
+      "propext"
+    ],
+    "Toy.KernelTrust.execCertNoHypGuard.eq_3": [
+      "propext"
+    ],
+    "Toy.KernelTrust.execCertNoHypGuard.eq_def": [
+      "propext"
+    ],
+    "Toy.KernelTrust.execCertNoHypGuard_eq_of_hypsOk": [
+      "propext"
+    ],
+    "Toy.KernelTrust.execCert_append": [
+      "propext"
+    ],
+    "Toy.KernelTrust.execCert_complete": [
+      "propext"
+    ],
+    "Toy.KernelTrust.execCert_recompute_sound": [
+      "propext"
+    ],
+    "Toy.KernelTrust.execCert_trust_eq_recompute_fails_without_honest": [
+      "propext"
+    ],
+    "Toy.KernelTrust.execCert_trust_eq_recompute_of_honest": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.exploitTranslator": [
+      "propext"
+    ],
+    "Toy.KernelTrust.exploitTranslator.match_1": [
+      "propext"
+    ],
+    "Toy.KernelTrust.faithfulImpliesMetaSound_of_selfHosted_of_claimReflection": [],
+    "Toy.KernelTrust.faithfulRing": [
+      "propext"
+    ],
+    "Toy.KernelTrust.faithfulRing.match_1": [
+      "propext"
+    ],
+    "Toy.KernelTrust.faithfulRing_faithful": [
+      "propext"
+    ],
+    "Toy.KernelTrust.faithfulRing_metaSound": [
+      "propext"
+    ],
+    "Toy.KernelTrust.faithful_checker_for_unsound_rules_accepts_bot": [
+      "propext"
+    ],
+    "Toy.KernelTrust.fin2_cases": [
+      "propext"
+    ],
+    "Toy.KernelTrust.fin2_cases.match_1_1": [
+      "propext"
+    ],
+    "Toy.KernelTrust.fin3_cases": [
+      "propext"
+    ],
+    "Toy.KernelTrust.fin3_cases.match_1_1": [
+      "propext"
+    ],
+    "Toy.KernelTrust.finite_countermodels_prove_own_inconsistency": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.honestEnc": [
+      "propext"
+    ],
+    "Toy.KernelTrust.hypsOk_of_execCert": [
+      "propext"
+    ],
+    "Toy.KernelTrust.inconsistent_of_proves_con_of_inconsistent": [],
+    "Toy.KernelTrust.inconsistent_proves_every_con_of_mp_efq": [],
+    "Toy.KernelTrust.inconsistent_proves_every_local_reflection_of_mp_efq": [],
+    "Toy.KernelTrust.instDecidableEqCertStep": [],
+    "Toy.KernelTrust.instDecidableEqCertStep.decEq": [],
+    "Toy.KernelTrust.instDecidableEqCertStep.decEq.match_1": [],
+    "Toy.KernelTrust.instDecidableEqFieldPolicy": [],
+    "Toy.KernelTrust.instDecidableEqForm": [],
+    "Toy.KernelTrust.instDecidableEqForm.decEq": [],
+    "Toy.KernelTrust.instDecidableEqForm.decEq.match_1": [],
+    "Toy.KernelTrust.instDecidableEqPat": [],
+    "Toy.KernelTrust.instDecidableEqPat.decEq": [],
+    "Toy.KernelTrust.instDecidableEqPat.decEq.match_1": [],
+    "Toy.KernelTrust.instDecidableEqPremiseSpec": [],
+    "Toy.KernelTrust.instDecidableEqPremiseSpec.decEq": [],
+    "Toy.KernelTrust.instDecidableEqPremiseSpec.decEq.match_1": [],
+    "Toy.KernelTrust.instDecidableEqRuleDesc": [],
+    "Toy.KernelTrust.instDecidableEqRuleDesc.decEq": [],
+    "Toy.KernelTrust.instDecidableEqRuleDesc.decEq.match_1": [],
+    "Toy.KernelTrust.instDecidableEqTraceStep": [],
+    "Toy.KernelTrust.instDecidableEqTraceStep.decEq": [],
+    "Toy.KernelTrust.instDecidableEqTraceStep.decEq.match_1": [],
+    "Toy.KernelTrust.instDecidablePinned": [
+      "propext"
+    ],
+    "Toy.KernelTrust.instInhabitedForm": [],
+    "Toy.KernelTrust.instInhabitedForm.default": [],
+    "Toy.KernelTrust.instInhabitedPat": [],
+    "Toy.KernelTrust.instInhabitedPat.default": [],
+    "Toy.KernelTrust.instPat": [],
+    "Toy.KernelTrust.instPat.eq_1": [],
+    "Toy.KernelTrust.instPat.eq_2": [],
+    "Toy.KernelTrust.instPat.eq_3": [],
+    "Toy.KernelTrust.instPat.eq_4": [],
+    "Toy.KernelTrust.instPat.eq_5": [],
+    "Toy.KernelTrust.instPat.eq_def": [],
+    "Toy.KernelTrust.instReprCertStep": [
+      "propext"
+    ],
+    "Toy.KernelTrust.instReprCertStep.repr": [
+      "propext"
+    ],
+    "Toy.KernelTrust.instReprCertStep.repr.match_1": [],
+    "Toy.KernelTrust.instReprFieldPolicy": [],
+    "Toy.KernelTrust.instReprFieldPolicy.repr": [],
+    "Toy.KernelTrust.instReprFieldPolicy.repr.match_1": [],
+    "Toy.KernelTrust.instReprForm": [],
+    "Toy.KernelTrust.instReprForm.repr": [],
+    "Toy.KernelTrust.instReprForm.repr.match_1": [],
+    "Toy.KernelTrust.instReprPat": [],
+    "Toy.KernelTrust.instReprPat.repr": [],
+    "Toy.KernelTrust.instReprPat.repr.match_1": [],
+    "Toy.KernelTrust.instReprPremiseSpec": [
+      "propext"
+    ],
+    "Toy.KernelTrust.instReprPremiseSpec.repr": [
+      "propext"
+    ],
+    "Toy.KernelTrust.instReprRuleDesc": [
+      "propext"
+    ],
+    "Toy.KernelTrust.instReprRuleDesc.repr": [
+      "propext"
+    ],
+    "Toy.KernelTrust.instReprTraceStep": [
+      "propext"
+    ],
+    "Toy.KernelTrust.instReprTraceStep.repr": [
+      "propext"
+    ],
+    "Toy.KernelTrust.k1_nonvacuous": [
+      "propext"
+    ],
+    "Toy.KernelTrust.k1_pinned_nonvacuous": [
+      "propext"
+    ],
+    "Toy.KernelTrust.k3a_nonvacuous": [
+      "propext"
+    ],
+    "Toy.KernelTrust.k4a_local_hypotheses_hold_in_mixed_ring": [
+      "propext"
+    ],
+    "Toy.KernelTrust.k4a_local_nonvacuous": [],
+    "Toy.KernelTrust.k4a_nonvacuous": [],
+    "Toy.KernelTrust.k5_iff_nonvacuous": [],
+    "Toy.KernelTrust.k5_iff_nonvacuous_consistent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.k5_nonvacuous": [],
+    "Toy.KernelTrust.leafFamily": [],
+    "Toy.KernelTrust.leafFamily_consistent": [],
+    "Toy.KernelTrust.leafFamily_crossSigma1": [],
+    "Toy.KernelTrust.leafFamily_d1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.leafFamily_lobRule": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.leafFamily_not_crossNec": [],
+    "Toy.KernelTrust.leafFamily_ring": [],
+    "Toy.KernelTrust.leafModel": [],
+    "Toy.KernelTrust.leafModel_rel_base": [],
+    "Toy.KernelTrust.leafModel_rel_leaf": [],
+    "Toy.KernelTrust.leafModel_rel_tip": [],
+    "Toy.KernelTrust.local_reflection_fails_without_efq": [
+      "propext"
+    ],
+    "Toy.KernelTrust.local_reflection_fails_without_inconsistency": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.local_reflection_fails_without_mp": [
+      "propext"
+    ],
+    "Toy.KernelTrust.local_reflection_iff_fails_without_godelII": [],
+    "Toy.KernelTrust.lyingCert": [],
+    "Toy.KernelTrust.lyingCert.eq_1": [],
+    "Toy.KernelTrust.metaSound_anchor_ring_fails_without_faithfulImpliesMetaSound": [
+      "propext"
+    ],
+    "Toy.KernelTrust.mixedPair": [
+      "propext"
+    ],
+    "Toy.KernelTrust.noEfqBoolFamily": [],
+    "Toy.KernelTrust.noEfqBoolFamily.eq_1": [],
+    "Toy.KernelTrust.noKSFamily": [],
+    "Toy.KernelTrust.noKSFamily.eq_1": [],
+    "Toy.KernelTrust.noMpEfqFamily": [],
+    "Toy.KernelTrust.noMpFamily": [],
+    "Toy.KernelTrust.not_acceptsBot_of_faithful_of_consistent": [],
+    "Toy.KernelTrust.not_acceptsBot_of_faithful_of_consistent.match_1_1": [],
+    "Toy.KernelTrust.not_acceptsNamed_of_pinned_bot": [],
+    "Toy.KernelTrust.not_accepts_bot_of_faithful_of_semSound": [
+      "propext"
+    ],
+    "Toy.KernelTrust.not_claimReflection_badRules_of_unfaithful": [
+      "propext"
+    ],
+    "Toy.KernelTrust.not_semValid_nil_bot": [
+      "propext"
+    ],
+    "Toy.KernelTrust.officialTable": [],
+    "Toy.KernelTrust.officialTable_False_not_valid": [
+      "propext"
+    ],
+    "Toy.KernelTrust.omegaChainFamily": [
+      "propext"
+    ],
+    "Toy.KernelTrust.omegaChainFamily_consistent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.omegaChainFamily_crossHBL": [
+      "propext"
+    ],
+    "Toy.KernelTrust.omegaChainFamily_lobRule": [
+      "propext"
+    ],
+    "Toy.KernelTrust.omegaChainFamily_not_proves_con_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.omegaChainFamily_proves_con_one": [
+      "propext"
+    ],
+    "Toy.KernelTrust.omegaChainModel": [
+      "propext"
+    ],
+    "Toy.KernelTrust.omegaChainModel.eq_1": [
+      "propext"
+    ],
+    "Toy.KernelTrust.omegaChainModel_glFrame": [
+      "propext"
+    ],
+    "Toy.KernelTrust.omegaStarFamily": [],
+    "Toy.KernelTrust.omegaStarFamily_crossNec": [],
+    "Toy.KernelTrust.omegaStarFamily_not_proves_nested_box_bot": [
+      "propext"
+    ],
+    "Toy.KernelTrust.omegaStarModel": [],
+    "Toy.KernelTrust.omegaStarModel.match_1": [],
+    "Toy.KernelTrust.omegaStarModel_glFrame": [
+      "propext"
+    ],
+    "Toy.KernelTrust.oneBrokenNecFamily": [
+      "propext"
+    ],
+    "Toy.KernelTrust.oneBrokenNecModel": [
+      "propext"
+    ],
+    "Toy.KernelTrust.one_unverified_ring_link_leaves_anchor_inconsistent": [
+      "propext"
+    ],
+    "Toy.KernelTrust.one_unverified_ring_link_leaves_anchor_inconsistent.match_1_1": [
+      "propext"
+    ],
+    "Toy.KernelTrust.onlyBotFamily": [
+      "propext"
+    ],
+    "Toy.KernelTrust.pinned_False_never_accepted": [
+      "propext"
+    ],
+    "Toy.KernelTrust.pinned_accepted_name_semValid_of_faithful_of_semSound": [],
+    "Toy.KernelTrust.pinned_iff": [
+      "propext"
+    ],
+    "Toy.KernelTrust.pinned_name_semValid_fails_without_faithful": [
+      "propext"
+    ],
+    "Toy.KernelTrust.pinned_name_semValid_fails_without_pinned": [
+      "propext"
+    ],
+    "Toy.KernelTrust.pinned_name_semValid_fails_without_semSound": [
+      "propext"
+    ],
+    "Toy.KernelTrust.pinned_official_meaning_forall_iff_exists": [],
+    "Toy.KernelTrust.poisonedTable": [],
+    "Toy.KernelTrust.popPremises": [],
+    "Toy.KernelTrust.popPremises.eq_1": [],
+    "Toy.KernelTrust.popPremises.eq_2": [],
+    "Toy.KernelTrust.popPremises.eq_3": [],
+    "Toy.KernelTrust.popPremises.eq_def": [],
+    "Toy.KernelTrust.popPremises.match_1": [],
+    "Toy.KernelTrust.popPremises_sound": [
+      "propext"
+    ],
+    "Toy.KernelTrust.possibilityFamily": [],
+    "Toy.KernelTrust.possibilityFamily_consistent": [],
+    "Toy.KernelTrust.possibilityFamily_crossNec": [],
+    "Toy.KernelTrust.possibilityFamily_crossSigma1": [],
+    "Toy.KernelTrust.possibilityFamily_hbl": [],
+    "Toy.KernelTrust.possibilityFamily_impClosed": [],
+    "Toy.KernelTrust.possibilityFamily_lobRule": [],
+    "Toy.KernelTrust.possibilityFamily_not_crossDistrib": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.possibilityFamily_ring": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.premisesMatch": [
+      "propext"
+    ],
+    "Toy.KernelTrust.premisesMatch.eq_1": [
+      "propext"
+    ],
+    "Toy.KernelTrust.premisesMatch.eq_2": [
+      "propext"
+    ],
+    "Toy.KernelTrust.premisesMatch.eq_3": [
+      "propext"
+    ],
+    "Toy.KernelTrust.premisesMatch.eq_def": [
+      "propext"
+    ],
+    "Toy.KernelTrust.premisesMatch.match_1": [
+      "propext"
+    ],
+    "Toy.KernelTrust.premisesToCheck": [],
+    "Toy.KernelTrust.premisesToCheck.eq_1": [],
+    "Toy.KernelTrust.premisesToCheck.eq_2": [],
+    "Toy.KernelTrust.premisesToCheck_honest": [
+      "propext"
+    ],
+    "Toy.KernelTrust.proves_own_local_reflection_iff_inconsistent_of_mp_efq_godelII": [],
+    "Toy.KernelTrust.quorum": [],
+    "Toy.KernelTrust.quorum.eq_1": [],
+    "Toy.KernelTrust.quorum_acceptsBot_iff": [
+      "propext"
+    ],
+    "Toy.KernelTrust.quorum_faithful_left": [
+      "propext"
+    ],
+    "Toy.KernelTrust.quorum_faithful_right": [
+      "propext"
+    ],
+    "Toy.KernelTrust.recheck": [
+      "propext"
+    ],
+    "Toy.KernelTrust.recheckNoHypGuard": [
+      "propext"
+    ],
+    "Toy.KernelTrust.recheckNoHypGuard_accepts_everything": [
+      "propext"
+    ],
+    "Toy.KernelTrust.recheckRecompute": [
+      "propext"
+    ],
+    "Toy.KernelTrust.recheckRecompute_faithful": [
+      "propext"
+    ],
+    "Toy.KernelTrust.recheckTrust": [
+      "propext"
+    ],
+    "Toy.KernelTrust.recheckTrustNoHypGuard": [
+      "propext"
+    ],
+    "Toy.KernelTrust.recheckTrust_accepts_everything": [
+      "propext"
+    ],
+    "Toy.KernelTrust.recheckTrust_eq_recheckRecompute_of_honest": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.recheck_complete": [
+      "propext"
+    ],
+    "Toy.KernelTrust.reflexiveFamily": [],
+    "Toy.KernelTrust.reflexiveFamily_consistent": [],
+    "Toy.KernelTrust.reflexiveFamily_crossHBL": [],
+    "Toy.KernelTrust.reflexiveFamily_not_godelII": [],
+    "Toy.KernelTrust.reflexiveFamily_not_lobRule": [],
+    "Toy.KernelTrust.reflexiveFamily_proves_con": [],
+    "Toy.KernelTrust.reflexiveModel": [],
+    "Toy.KernelTrust.rejectAll": [],
+    "Toy.KernelTrust.ringIter": [],
+    "Toy.KernelTrust.ringIter.eq_1": [],
+    "Toy.KernelTrust.ringIter.eq_2": [],
+    "Toy.KernelTrust.ringIter.eq_def": [],
+    "Toy.KernelTrust.ringIter.match_1": [],
+    "Toy.KernelTrust.ringIter_ne_self_of_pos_of_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.ringIter_reach": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.ringIter_succ'": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.ringIter_val": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ringNext": [],
+    "Toy.KernelTrust.ringNext.eq_1": [],
+    "Toy.KernelTrust.ringNext_ne_self": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.ring_all_faithful_of_metaSound_anchor_of_faithfulImpliesMetaSound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.ring_metaSound_of_all_faithful": [],
+    "Toy.KernelTrust.ring_no_node_accepts_bot_of_metaSound_anchor_of_faithfulImpliesMetaSound_of_consistent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.ring_of_faithful_checkers_over_unsound_rules_accepts_bot": [
+      "propext"
+    ],
+    "Toy.KernelTrust.ring_with_uncertified_link_does_not_propagate": [
+      "propext"
+    ],
+    "Toy.KernelTrust.rubberStampRing": [
+      "propext"
+    ],
+    "Toy.KernelTrust.rubberStampRing.match_1": [
+      "propext"
+    ],
+    "Toy.KernelTrust.selfHostedRing": [],
+    "Toy.KernelTrust.separate_artifact_quorum_of_two_unfaithful_checkers_accepts_bot": [
+      "propext"
+    ],
+    "Toy.KernelTrust.sharedQuorum": [],
+    "Toy.KernelTrust.sharedQuorum.eq_1": [],
+    "Toy.KernelTrust.sharedQuorum_faithful_left": [
+      "propext"
+    ],
+    "Toy.KernelTrust.sharedQuorum_faithful_right": [
+      "propext"
+    ],
+    "Toy.KernelTrust.sharedQuorum_recheckTrust_recheckNoHypGuard_faithful": [
+      "propext"
+    ],
+    "Toy.KernelTrust.shared_artifact_quorum_of_checkers_with_a_shared_defect_accepts_bot": [
+      "propext"
+    ],
+    "Toy.KernelTrust.shared_artifact_quorum_of_checkers_with_disjoint_defects_is_faithful": [
+      "propext"
+    ],
+    "Toy.KernelTrust.shared_artifact_quorum_of_disjoint_defects_accepts_bot_under_exploit_translator": [
+      "propext"
+    ],
+    "Toy.KernelTrust.starFamily": [],
+    "Toy.KernelTrust.starFamily_consistent": [],
+    "Toy.KernelTrust.starFamily_crossNec": [],
+    "Toy.KernelTrust.starFamily_hbl": [],
+    "Toy.KernelTrust.starFamily_lobRule": [],
+    "Toy.KernelTrust.starFamily_not_crossSigma1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.starFamily_proves_own_inconsistency": [],
+    "Toy.KernelTrust.starFamily_ring": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.starModel": [],
+    "Toy.KernelTrust.starModel_glFrame": [],
+    "Toy.KernelTrust.stdRules": [],
+    "Toy.KernelTrust.stdRules.eq_1": [],
+    "Toy.KernelTrust.stdRules_consistent": [
+      "propext"
+    ],
+    "Toy.KernelTrust.stdRules_semSound": [
+      "propext"
+    ],
+    "Toy.KernelTrust.stdRules_sub_badRules": [],
+    "Toy.KernelTrust.substLookup": [],
+    "Toy.KernelTrust.substLookup.eq_1": [],
+    "Toy.KernelTrust.substLookup.eq_2": [],
+    "Toy.KernelTrust.substLookup.eq_3": [],
+    "Toy.KernelTrust.substLookup.eq_def": [],
+    "Toy.KernelTrust.substLookup.match_1": [],
+    "Toy.KernelTrust.three_unfaithful_checkers_close_faithfulness_ring": [
+      "propext"
+    ],
+    "Toy.KernelTrust.topCert": [],
+    "Toy.KernelTrust.topCert.eq_1": [],
+    "Toy.KernelTrust.topTrace": [],
+    "Toy.KernelTrust.traceChecker": [
+      "propext"
+    ],
+    "Toy.KernelTrust.traceChecker.match_1": [],
+    "Toy.KernelTrust.traceChecker_faithful": [
+      "propext"
+    ],
+    "Toy.KernelTrust.traceStepOk": [
+      "propext"
+    ],
+    "Toy.KernelTrust.traceStepOk.match_1": [],
+    "Toy.KernelTrust.trivialFamily": [],
+    "Toy.KernelTrust.trusting_rechecker_accepts_bot_recomputing_rechecker_rejects": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.two_consistent_theories_prove_each_others_consistency_without_crossSigma1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.KernelTrust.unfaithful_checker_certifies_its_own_faithfulness": [
+      "propext"
+    ],
+    "Toy.KernelTrust.unfaithful_checker_for_sound_rules_accepts_bot": [
+      "propext"
+    ],
+    "Toy.KernelTrust.unpinned_faithful_checker_for_sound_rules_accepts_renamed_False": [
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

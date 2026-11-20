@@ -1,0 +1,6 @@
+name = "KernelTrust"
+version = "0.1.0"
+defaultTargets = ["KernelTrust"]
+
+[[lean_lib]]
+name = "KernelTrust"

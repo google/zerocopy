@@ -51796,6 +51796,139 @@
         "zerocopy/ring-policies"
       ]
     },
+    "proof-checker-trust-layers-faithfulness-semantic-soundness-and-verifier-rings": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "pull_request": "14807",
+            "repository": "leanprover/lean4",
+            "revision": "7412bc4c852c9a9fafa69b67a11e4bf9f5dcbc24"
+          },
+          "name": "Lean 4 kernel soundness fix: make the kernel is_prop check require a sort (pull request 14807, merge commit)"
+        },
+        {
+          "identity": {
+            "pull_request": "14806",
+            "repository": "leanprover/lean4",
+            "revision": "d108aae3bf7edbaf705b71c01ddb3b264ef72c44"
+          },
+          "name": "Lean 4 kernel soundness fix: make kernel is_def_eq caching order-independent (pull request 14806, merge commit)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-015-9357-x"
+          },
+          "name": "Self-Formalisation of Higher-Order Logic: Semantics, Soundness, and a Verified Implementation"
+        },
+        {
+          "identity": {
+            "doi": "10.4230/LIPIcs.ITP.2022.3"
+          },
+          "name": "Candle: A Verified Implementation of HOL Light"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-015-9324-6"
+          },
+          "name": "The Reflective Milawa Theorem Prover is Sound (Down to the Machine Code that Runs it)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371076"
+          },
+          "name": "Coq Coq Correct! Verification of Type Checking and Erasure for Coq, in Coq"
+        },
+        {
+          "identity": {
+            "doi": "10.4230/LIPIcs.TYPES.2025.2"
+          },
+          "name": "Lean4Lean: Verifying a Typechecker for Lean, in Lean"
+        },
+        {
+          "identity": {
+            "doi": "10.1093/oso/9780198501275.003.0013"
+          },
+          "name": "How to believe a machine-checked proof"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-53518-6_5"
+          },
+          "name": "Metamath Zero: Designing a Theorem Prover Prover"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-20398-5_14"
+          },
+          "name": "The OpenTheory Standard Theory Library"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-1-4471-4558-5"
+          },
+          "name": "Logic and Structure"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/CBO9781139168717"
+          },
+          "name": "Basic Proof Theory"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/BF01700692"
+          },
+          "name": "\u00dcber formal unentscheidbare S\u00e4tze der Principia Mathematica und verwandter Systeme I"
+        },
+        {
+          "identity": {
+            "doi": "10.2307/2266895"
+          },
+          "name": "Solution of a Problem of Leon Henkin"
+        },
+        {
+          "identity": {
+            "doi": "10.1002/malq.19680140702"
+          },
+          "name": "Reflection Principles and their Use for Establishing the Complexity of Axiomatic Systems"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/CBO9780511625183"
+          },
+          "name": "The Logic of Provability"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-1-4613-8601-8"
+          },
+          "name": "Self-Reference and Modal Logic"
+        },
+        {
+          "identity": {
+            "url": "https://math.stackexchange.com/questions/563641"
+          },
+          "name": "Impossibility of theories proving consistency of each other? (Mathematics Stack Exchange question 563641, accepted answer 564027)"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/trusted-computing-base",
+        "verification/proof-checkers",
+        "verification/provability-logic",
+        "lean/kernel"
+      ]
+    },
     "proof-fragility-smt-instability-and-verification-scaling-walls": {
       "observed_at": "2026-11-19",
       "subjects": [
