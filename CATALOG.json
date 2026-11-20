@@ -64936,6 +64936,68 @@
         "rustc/codegen"
       ]
     },
+    "rustc-postcleanup-mir-and-llvm-poison-freeze-ground-truth-census": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "rustc, library/core, and tests/mir-opt"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly"
+          },
+          "name": "rustc nightly live-probe toolchain"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "6dfe1677ab8dffbc6ec13d53a1e0215d75147689",
+            "version": "llvmorg-23.1.1"
+          },
+          "name": "LLVM Language Reference and middle-end optimization passes"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145"
+          },
+          "name": "rustc bundled llvm-project submodule"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "9384a926b073a866a3e6b1f7fa3db3925c9485b6",
+            "version": "0.9.0-alpha.1"
+          },
+          "name": "zerocopy crate"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal Trusted.MirSemantics, anneal-audit, and cargo-anneal"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/ir",
+        "llvm",
+        "llvm/ir-semantics",
+        "rust",
+        "rust/miri",
+        "rustc",
+        "rustc/mir"
+      ]
+    },
     "rustc-postcleanup-mir-const-placement-layout-folding-and-ub-checks": {
       "observed_at": "2026-11-12",
       "subjects": [

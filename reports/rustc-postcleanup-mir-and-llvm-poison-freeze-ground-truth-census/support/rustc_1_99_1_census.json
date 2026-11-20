@@ -1,0 +1,1016 @@
+{
+  "mir": {
+    "libcore_1.99.1": {
+      "label": "libcore_1.99.1",
+      "num_files": 1,
+      "total_bodies": 11339,
+      "total_bbs": 40946,
+      "bb_p50": 2,
+      "bb_p95": 9,
+      "bb_p99": 28,
+      "bb_max": 127,
+      "bodies_with": {
+        "fits_unproj_no_unwind_no_rawptr": 6526,
+        "has_transmute": 1241,
+        "has_deref_proj": 3854,
+        "has_raw_ptr": 237,
+        "m3_partial_field_move": 4,
+        "has_loop": 168,
+        "has_mir_intrinsic": 449,
+        "has_unwind_cleanup": 133,
+        "m4_same_stmt_move_alias": 8
+      },
+      "bodies_pct": {
+        "fits_unproj_no_unwind_no_rawptr": 57.55,
+        "has_transmute": 10.94,
+        "has_deref_proj": 33.99,
+        "has_raw_ptr": 2.09,
+        "m3_partial_field_move": 0.04,
+        "has_loop": 1.48,
+        "has_mir_intrinsic": 3.96,
+        "has_unwind_cleanup": 1.17,
+        "m4_same_stmt_move_alias": 0.07
+      },
+      "stmts": {
+        "Assign": 60161,
+        "StorageLive": 49000,
+        "StorageDead": 53665,
+        "Intrinsic": 554
+      },
+      "terms": {
+        "Return": 11055,
+        "Assert": 1395,
+        "Call": 11085,
+        "SwitchInt": 6813,
+        "Goto": 8254,
+        "Unreachable": 932,
+        "Drop": 236,
+        "Resume": 133
+      },
+      "rvals": {
+        "Transmute": 2418,
+        "RawPtr": 356,
+        "PtrMetadata": 405,
+        "CheckedOp": 253
+      },
+      "casts_top20": [
+        [
+          "u8,",
+          1
+        ]
+      ],
+      "unwind": {
+        "unwind_continue": 9089,
+        "unwind_unreachable": 3965,
+        "unwind_terminate": 351
+      },
+      "m2_by_ty_class": {},
+      "m1_samples": [],
+      "m2_samples": [],
+      "m3_samples": [
+        {
+          "file": "core.mir",
+          "fn": "fn f128::<impl at <sysroot>/library/core/src/num",
+          "bb": "bb0",
+          "local": "_3",
+          "ty": "(f128, f128)",
+          "moved_fields": [
+            "(_3.0: f128)"
+          ],
+          "read_field": "(_3.1: f128)",
+          "stmt": "_0 = f128::<impl f128>::clamp::do_panic::compiletime(move (_3.0: f128), move (_3.1: f128)) -> unwind continue;"
+        },
+        {
+          "file": "core.mir",
+          "fn": "fn f16::<impl at <sysroot>/library/core/src/num",
+          "bb": "bb0",
+          "local": "_3",
+          "ty": "(f16, f16)",
+          "moved_fields": [
+            "(_3.0: f16)"
+          ],
+          "read_field": "(_3.1: f16)",
+          "stmt": "_0 = f16::<impl f16>::clamp::do_panic::compiletime(move (_3.0: f16), move (_3.1: f16)) -> unwind continue;"
+        },
+        {
+          "file": "core.mir",
+          "fn": "fn f32::<impl at <sysroot>/library/core/src/num",
+          "bb": "bb0",
+          "local": "_3",
+          "ty": "(f32, f32)",
+          "moved_fields": [
+            "(_3.0: f32)"
+          ],
+          "read_field": "(_3.1: f32)",
+          "stmt": "_0 = f32::<impl f32>::clamp::do_panic::compiletime(move (_3.0: f32), move (_3.1: f32)) -> unwind continue;"
+        },
+        {
+          "file": "core.mir",
+          "fn": "fn f64::<impl at <sysroot>/library/core/src/num",
+          "bb": "bb0",
+          "local": "_3",
+          "ty": "(f64, f64)",
+          "moved_fields": [
+            "(_3.0: f64)"
+          ],
+          "read_field": "(_3.1: f64)",
+          "stmt": "_0 = f64::<impl f64>::clamp::do_panic::compiletime(move (_3.0: f64), move (_3.1: f64)) -> unwind continue;"
+        }
+      ],
+      "m4_samples": [
+        {
+          "file": "core.mir",
+          "fn": "fn parse_decimal_seq(_1: &[u8]) -> DecimalSeq {",
+          "bb": "bb59",
+          "local": "_104",
+          "ty": "usize",
+          "stmt": "_105 = slice_index_fail(const 8_usize, copy _104, move _104) -> unwind continue;"
+        },
+        {
+          "file": "core.mir",
+          "fn": "fn try_parse_digits(_1: &[u8], _2: u64) -> (&[u8], u64) {",
+          "bb": "bb9",
+          "local": "_34",
+          "ty": "usize",
+          "stmt": "_35 = slice_index_fail(const 8_usize, copy _34, move _34) -> unwind continue;"
+        },
+        {
+          "file": "core.mir",
+          "fn": "fn parse_partial_number(_1: &[u8]) -> Option<(Decimal, usize)> {",
+          "bb": "bb41",
+          "local": "_108",
+          "ty": "usize",
+          "stmt": "_109 = slice_index_fail(const 1_usize, copy _108, move _108) -> unwind continue;"
+        },
+        {
+          "file": "core.mir",
+          "fn": "fn dec2flt(_1: &str) -> result::Result<F, ParseFloatError> {",
+          "bb": "bb38",
+          "local": "_42",
+          "ty": "usize",
+          "stmt": "_43 = slice_index_fail(const 1_usize, copy _42, move _42) -> unwind continue;"
+        },
+        {
+          "file": "core.mir",
+          "fn": "fn round_up(_1: &mut [u8]) -> Option<u8> {",
+          "bb": "bb10",
+          "local": "_12",
+          "ty": "usize",
+          "stmt": "_22 = slice_index_fail(move _9, copy _12, move _12) -> unwind continue;"
+        },
+        {
+          "file": "core.mir",
+          "fn": "fn round_up(_1: &mut [u8]) -> Option<u8> {",
+          "bb": "bb13",
+          "local": "_12",
+          "ty": "usize",
+          "stmt": "_32 = slice_index_fail(const 1_usize, copy _12, move _12) -> unwind continue;"
+        },
+        {
+          "file": "core.mir",
+          "fn": "fn digits_to_dec_str(_1: &[u8], _2: i16, _3: usize, _4: &mut [maybe_uninit::MaybeUninit<Part<'_>>]) -> &[Part<'_>] {",
+          "bb": "bb44",
+          "local": "_69",
+          "ty": "usize",
+          "stmt": "_103 = slice_index_fail(move _34, copy _69, move _69) -> unwind continue;"
+        },
+        {
+          "file": "core.mir",
+          "fn": "fn digits_to_exp_str(_1: &[u8], _2: i16, _3: usize, _4: bool, _5: &mut [maybe_uninit::MaybeUninit<Part<'_>>]) -> &[Part<",
+          "bb": "bb31",
+          "local": "_66",
+          "ty": "usize",
+          "stmt": "_77 = slice_index_fail(const 1_usize, copy _66, move _66) -> unwind continue;"
+        },
+        {
+          "file": "core.mir",
+          "fn": "fn num::imp::fmt::<impl at <sysroot>/library/core/src/num",
+          "bb": "bb13",
+          "local": "_56",
+          "ty": "usize",
+          "stmt": "_57 = slice_index_fail(move _18, copy _56, move _56) -> unwind continue;"
+        }
+      ]
+    },
+    "zerocopy_1.99.1": {
+      "label": "zerocopy_1.99.1",
+      "num_files": 1,
+      "total_bodies": 4791,
+      "total_bbs": 15112,
+      "bb_p50": 1,
+      "bb_p95": 11,
+      "bb_p99": 16,
+      "bb_max": 131,
+      "bodies_with": {
+        "fits_unproj_no_unwind_no_rawptr": 3084,
+        "has_loop": 23,
+        "has_transmute": 1396,
+        "has_deref_proj": 1081,
+        "has_unwind_cleanup": 20,
+        "has_raw_ptr": 460,
+        "has_mir_intrinsic": 69,
+        "m3_partial_field_move": 13
+      },
+      "bodies_pct": {
+        "fits_unproj_no_unwind_no_rawptr": 64.37,
+        "has_loop": 0.48,
+        "has_transmute": 29.14,
+        "has_deref_proj": 22.56,
+        "has_unwind_cleanup": 0.42,
+        "has_raw_ptr": 9.6,
+        "has_mir_intrinsic": 1.44,
+        "m3_partial_field_move": 0.27
+      },
+      "stmts": {
+        "Assign": 18360,
+        "StorageLive": 15791,
+        "StorageDead": 16478,
+        "Intrinsic": 419
+      },
+      "terms": {
+        "Return": 4763,
+        "Call": 3790,
+        "SwitchInt": 1941,
+        "Goto": 3205,
+        "Assert": 359,
+        "Resume": 20,
+        "Drop": 48,
+        "Unreachable": 831
+      },
+      "rvals": {
+        "Transmute": 3728,
+        "PtrMetadata": 42,
+        "RawPtr": 497,
+        "CopyNonOverlapping": 4,
+        "CheckedOp": 47
+      },
+      "casts_top20": [
+        [
+          "Transmute",
+          72
+        ],
+        [
+          "move _17, copy _2",
+          1
+        ]
+      ],
+      "unwind": {
+        "unwind_continue": 3205,
+        "unwind_unreachable": 1052,
+        "unwind_terminate": 24
+      },
+      "m2_by_ty_class": {},
+      "m1_samples": [],
+      "m2_samples": [],
+      "m3_samples": [
+        {
+          "file": "zerocopy-1d9b641a4817cd80.mir",
+          "fn": "fn len_of::<impl at src/util/mod.rs:481:5: 483:24>::padding_needed_for(_1: &len_of::MetadataOf<T>) -> usize {",
+          "bb": "bb0",
+          "local": "_2",
+          "ty": "layout::TrailingSliceLayout",
+          "moved_fields": [
+            "(_2.0: usize)"
+          ],
+          "read_field": "(_2.1: usize)",
+          "stmt": "_12 = move (_2.1: usize);"
+        },
+        {
+          "file": "zerocopy-1d9b641a4817cd80.mir",
+          "fn": "fn r#ref::<impl at src/ref.rs:501:1: 504:66>::from_suffix_with_elems(_1: B, _2: usize) -> Result<(B, r#ref::def::Ref<B, ",
+          "bb": "bb8",
+          "local": "_20",
+          "ty": "(B, B)",
+          "moved_fields": [
+            "(_20.0: B)"
+          ],
+          "read_field": "(_20.1: B)",
+          "stmt": "_19 = move (_20.1: B);"
+        },
+        {
+          "file": "zerocopy-1d9b641a4817cd80.mir",
+          "fn": "fn split_at::<impl at src/split_at.rs:297:1: 299:25>::via_immutable(_1: split_at::Split<&T>) -> (&T, &[<T as split_at::S",
+          "bb": "bb0",
+          "local": "_1",
+          "ty": "split_at::Split<&T>) -> (&T",
+          "moved_fields": [
+            "(_1.0: &T)"
+          ],
+          "read_field": "(_1.1: usize)",
+          "stmt": "_12 = move (_1.1: usize);"
+        },
+        {
+          "file": "zerocopy-1d9b641a4817cd80.mir",
+          "fn": "fn split_at::<impl at src/split_at.rs:297:1: 299:25>::via_into_bytes(_1: split_at::Split<&T>) -> (&T, &[<T as split_at::",
+          "bb": "bb0",
+          "local": "_1",
+          "ty": "split_at::Split<&T>) -> (&T",
+          "moved_fields": [
+            "(_1.0: &T)"
+          ],
+          "read_field": "(_1.1: usize)",
+          "stmt": "_12 = move (_1.1: usize);"
+        },
+        {
+          "file": "zerocopy-1d9b641a4817cd80.mir",
+          "fn": "fn split_at::<impl at src/split_at.rs:297:1: 299:25>::via_unaligned(_1: split_at::Split<&T>) -> (&T, &[<T as split_at::S",
+          "bb": "bb0",
+          "local": "_1",
+          "ty": "split_at::Split<&T>) -> (&T",
+          "moved_fields": [
+            "(_1.0: &T)"
+          ],
+          "read_field": "(_1.1: usize)",
+          "stmt": "_12 = move (_1.1: usize);"
+        },
+        {
+          "file": "zerocopy-1d9b641a4817cd80.mir",
+          "fn": "fn split_at::<impl at src/split_at.rs:297:1: 299:25>::via_runtime_check(_1: split_at::Split<&T>) -> Result<(&T, &[<T as ",
+          "bb": "bb0",
+          "local": "_1",
+          "ty": "split_at::Split<&T>",
+          "moved_fields": [
+            "(_1.0: &T)"
+          ],
+          "read_field": "(_1.1: usize)",
+          "stmt": "_18 = move (_1.1: usize);"
+        },
+        {
+          "file": "zerocopy-1d9b641a4817cd80.mir",
+          "fn": "fn split_at::<impl at src/split_at.rs:297:1: 299:25>::via_unchecked(_1: split_at::Split<&T>) -> (&T, &[<T as split_at::S",
+          "bb": "bb0",
+          "local": "_1",
+          "ty": "split_at::Split<&T>) -> (&T",
+          "moved_fields": [
+            "(_1.0: &T)"
+          ],
+          "read_field": "(_1.1: usize)",
+          "stmt": "_12 = move (_1.1: usize);"
+        },
+        {
+          "file": "zerocopy-1d9b641a4817cd80.mir",
+          "fn": "fn split_at::<impl at src/split_at.rs:595:1: 597:25>::via_into_bytes(_1: split_at::Split<&mut T>) -> (&mut T, &mut [<T a",
+          "bb": "bb0",
+          "local": "_1",
+          "ty": "split_at::Split<&mut T>) -> (&mut T",
+          "moved_fields": [
+            "(_1.0: &mut T)"
+          ],
+          "read_field": "(_1.1: usize)",
+          "stmt": "_12 = move (_1.1: usize);"
+        },
+        {
+          "file": "zerocopy-1d9b641a4817cd80.mir",
+          "fn": "fn split_at::<impl at src/split_at.rs:595:1: 597:25>::via_unaligned(_1: split_at::Split<&mut T>) -> (&mut T, &mut [<T as",
+          "bb": "bb0",
+          "local": "_1",
+          "ty": "split_at::Split<&mut T>) -> (&mut T",
+          "moved_fields": [
+            "(_1.0: &mut T)"
+          ],
+          "read_field": "(_1.1: usize)",
+          "stmt": "_12 = move (_1.1: usize);"
+        },
+        {
+          "file": "zerocopy-1d9b641a4817cd80.mir",
+          "fn": "fn split_at::<impl at src/split_at.rs:595:1: 597:25>::via_runtime_check(_1: split_at::Split<&mut T>) -> Result<(&mut T, ",
+          "bb": "bb0",
+          "local": "_1",
+          "ty": "split_at::Split<&mut T>",
+          "moved_fields": [
+            "(_1.0: &mut T)"
+          ],
+          "read_field": "(_1.1: usize)",
+          "stmt": "_18 = move (_1.1: usize);"
+        },
+        {
+          "file": "zerocopy-1d9b641a4817cd80.mir",
+          "fn": "fn split_at::<impl at src/split_at.rs:595:1: 597:25>::via_unchecked(_1: split_at::Split<&mut T>) -> (&mut T, &mut [<T as",
+          "bb": "bb0",
+          "local": "_1",
+          "ty": "split_at::Split<&mut T>) -> (&mut T",
+          "moved_fields": [
+            "(_1.0: &mut T)"
+          ],
+          "read_field": "(_1.1: usize)",
+          "stmt": "_12 = move (_1.1: usize);"
+        },
+        {
+          "file": "zerocopy-1d9b641a4817cd80.mir",
+          "fn": "fn split_at::<impl at src/split_at.rs:800:1: 803:58>::via_runtime_check(_1: split_at::Split<pointer::ptr::def::Ptr<'_, T",
+          "bb": "bb0",
+          "local": "_5",
+          "ty": "layout::TrailingSliceLayout",
+          "moved_fields": [
+            "(_5.0: usize)"
+          ],
+          "read_field": "(_5.1: usize)",
+          "stmt": "_20 = move (_5.1: usize);"
+        },
+        {
+          "file": "zerocopy-1d9b641a4817cd80.mir",
+          "fn": "fn swap(_1: (T, U)) -> (U, T) {",
+          "bb": "bb0",
+          "local": "_1",
+          "ty": "(T",
+          "moved_fields": [
+            "(_1.0: T)"
+          ],
+          "read_field": "(_1.1: U)",
+          "stmt": "_3 = move (_1.1: U);"
+        }
+      ],
+      "m4_samples": []
+    },
+    "anneal_tcb_1.99.1": {
+      "label": "anneal_tcb_1.99.1",
+      "num_files": 2,
+      "total_bodies": 110,
+      "total_bbs": 923,
+      "bb_p50": 2,
+      "bb_p95": 31,
+      "bb_p99": 59,
+      "bb_max": 202,
+      "bodies_with": {
+        "fits_unproj_no_unwind_no_rawptr": 45,
+        "has_unwind_cleanup": 25,
+        "has_mir_intrinsic": 9,
+        "has_deref_proj": 52,
+        "has_raw_ptr": 15,
+        "has_transmute": 17,
+        "has_loop": 1
+      },
+      "bodies_pct": {
+        "fits_unproj_no_unwind_no_rawptr": 40.91,
+        "has_unwind_cleanup": 22.73,
+        "has_mir_intrinsic": 8.18,
+        "has_deref_proj": 47.27,
+        "has_raw_ptr": 13.64,
+        "has_transmute": 15.45,
+        "has_loop": 0.91
+      },
+      "stmts": {
+        "StorageLive": 1328,
+        "StorageDead": 1520,
+        "Assign": 1825,
+        "Intrinsic": 16
+      },
+      "terms": {
+        "Call": 323,
+        "Return": 110,
+        "Drop": 112,
+        "Resume": 25,
+        "Unreachable": 18,
+        "Goto": 188,
+        "SwitchInt": 138,
+        "Assert": 2
+      },
+      "rvals": {
+        "RawPtr": 52,
+        "Transmute": 154,
+        "PtrMetadata": 14,
+        "CopyNonOverlapping": 3,
+        "CheckedOp": 1
+      },
+      "casts_top20": [
+        [
+          "cleanup",
+          2
+        ]
+      ],
+      "unwind": {
+        "unwind_continue": 151,
+        "unwind_terminate": 60,
+        "unwind_unreachable": 5
+      },
+      "m2_by_ty_class": {},
+      "m1_samples": [],
+      "m2_samples": [],
+      "m3_samples": [],
+      "m4_samples": []
+    },
+    "s1991_miropt_runtime_opt": {
+      "label": "s1991_miropt_runtime_opt",
+      "num_files": 139,
+      "total_bodies": 139,
+      "total_bbs": 610,
+      "bb_p50": 3,
+      "bb_p95": 13,
+      "bb_p99": 17,
+      "bb_max": 19,
+      "bodies_with": {
+        "has_deref_proj": 63,
+        "has_loop": 18,
+        "fits_unproj_no_unwind_no_rawptr": 67,
+        "has_mir_intrinsic": 7,
+        "has_transmute": 32,
+        "has_unwind_cleanup": 9,
+        "has_raw_ptr": 13,
+        "m3_partial_field_move": 6
+      },
+      "bodies_pct": {
+        "has_deref_proj": 45.32,
+        "has_loop": 12.95,
+        "fits_unproj_no_unwind_no_rawptr": 48.2,
+        "has_mir_intrinsic": 5.04,
+        "has_transmute": 23.02,
+        "has_unwind_cleanup": 6.47,
+        "has_raw_ptr": 9.35,
+        "m3_partial_field_move": 4.32
+      },
+      "stmts": {
+        "Assign": 906,
+        "StorageLive": 632,
+        "StorageDead": 750,
+        "Intrinsic": 8
+      },
+      "terms": {
+        "SwitchInt": 125,
+        "Call": 82,
+        "Goto": 193,
+        "Drop": 26,
+        "Return": 139,
+        "Assert": 9,
+        "Unreachable": 21,
+        "Resume": 9
+      },
+      "rvals": {
+        "Transmute": 153,
+        "CheckedOp": 3,
+        "RawPtr": 19,
+        "PtrMetadata": 22
+      },
+      "casts_top20": [
+        [
+          "Transmute",
+          8
+        ],
+        [
+          "u32,",
+          4
+        ],
+        [
+          "usize, &T",
+          4
+        ],
+        [
+          "&T,",
+          4
+        ]
+      ],
+      "unwind": {
+        "unwind_unreachable": 64,
+        "unwind_continue": 34,
+        "unwind_terminate": 9
+      },
+      "m2_by_ty_class": {},
+      "m1_samples": [],
+      "m2_samples": [],
+      "m3_samples": [
+        {
+          "file": "slice_index.slice_get_unchecked_mut_range.runtime-optimized.after.panic-abort.mir",
+          "fn": "fn slice_get_unchecked_mut_range(_1: &mut [u32], _2: std::ops::Range<usize>) -> &mut [u32] {",
+          "bb": "bb0",
+          "local": "_2",
+          "ty": "std::ops::Range<usize>",
+          "moved_fields": [
+            "(_2.0: usize)"
+          ],
+          "read_field": "(_2.1: usize)",
+          "stmt": "_4 = move (_2.1: usize);"
+        },
+        {
+          "file": "slice_index.slice_get_unchecked_mut_range.runtime-optimized.after.panic-unwind.mir",
+          "fn": "fn slice_get_unchecked_mut_range(_1: &mut [u32], _2: std::ops::Range<usize>) -> &mut [u32] {",
+          "bb": "bb0",
+          "local": "_2",
+          "ty": "std::ops::Range<usize>",
+          "moved_fields": [
+            "(_2.0: usize)"
+          ],
+          "read_field": "(_2.1: usize)",
+          "stmt": "_4 = move (_2.1: usize);"
+        },
+        {
+          "file": "slice_index.slice_index_range.runtime-optimized.after.panic-abort.mir",
+          "fn": "fn slice_index_range(_1: &[u32], _2: std::ops::Range<usize>) -> &[u32] {",
+          "bb": "bb0",
+          "local": "_2",
+          "ty": "std::ops::Range<usize>",
+          "moved_fields": [
+            "(_2.0: usize)"
+          ],
+          "read_field": "(_2.1: usize)",
+          "stmt": "_4 = move (_2.1: usize);"
+        },
+        {
+          "file": "slice_index.slice_index_range.runtime-optimized.after.panic-unwind.mir",
+          "fn": "fn slice_index_range(_1: &[u32], _2: std::ops::Range<usize>) -> &[u32] {",
+          "bb": "bb0",
+          "local": "_2",
+          "ty": "std::ops::Range<usize>",
+          "moved_fields": [
+            "(_2.0: usize)"
+          ],
+          "read_field": "(_2.1: usize)",
+          "stmt": "_4 = move (_2.1: usize);"
+        },
+        {
+          "file": "slice_index.slice_ptr_get_unchecked_range.runtime-optimized.after.panic-abort.mir",
+          "fn": "fn slice_ptr_get_unchecked_range(_1: *const [u32], _2: std::ops::Range<usize>) -> *const [u32] {",
+          "bb": "bb0",
+          "local": "_2",
+          "ty": "std::ops::Range<usize>",
+          "moved_fields": [
+            "(_2.0: usize)"
+          ],
+          "read_field": "(_2.1: usize)",
+          "stmt": "_4 = move (_2.1: usize);"
+        },
+        {
+          "file": "slice_index.slice_ptr_get_unchecked_range.runtime-optimized.after.panic-unwind.mir",
+          "fn": "fn slice_ptr_get_unchecked_range(_1: *const [u32], _2: std::ops::Range<usize>) -> *const [u32] {",
+          "bb": "bb0",
+          "local": "_2",
+          "ty": "std::ops::Range<usize>",
+          "moved_fields": [
+            "(_2.0: usize)"
+          ],
+          "read_field": "(_2.1: usize)",
+          "stmt": "_4 = move (_2.1: usize);"
+        }
+      ],
+      "m4_samples": []
+    }
+  },
+  "llvm_ir": {
+    "libcore_1.99.1:core.ll": {
+      "file": "/tmp/vrustc_e1_probe/core_ll/core.ll",
+      "num_functions": 543,
+      "total_bbs": 5898,
+      "total_phis": 2292,
+      "bb_p50": 4,
+      "bb_p95": 41,
+      "bb_max": 225,
+      "fn_with_feature": {
+        "noundef": 542,
+        "noalias": 525,
+        "range_attr": 149,
+        "freeze": 19,
+        "undef": 39,
+        "nsw": 238,
+        "nuw": 398,
+        "disjoint": 80,
+        "nneg": 143,
+        "select": 111,
+        "switch": 53,
+        "llvm_lifetime": 210,
+        "llvm_memcpy": 59,
+        "sret": 58,
+        "captures_none": 386,
+        "samesign": 120,
+        "poison": 57,
+        "dead_on_unwind": 46,
+        "llvm_assume": 104,
+        "simd_vec": 54,
+        "exact": 14,
+        "invoke": 1,
+        "landingpad": 1,
+        "atomic": 13,
+        "fast_math": 3,
+        "dead_on_return": 4
+      },
+      "fn_pct_feature": {
+        "noundef": 99.82,
+        "noalias": 96.69,
+        "range_attr": 27.44,
+        "freeze": 3.5,
+        "undef": 7.18,
+        "nsw": 43.83,
+        "nuw": 73.3,
+        "disjoint": 14.73,
+        "nneg": 26.34,
+        "select": 20.44,
+        "switch": 9.76,
+        "llvm_lifetime": 38.67,
+        "llvm_memcpy": 10.87,
+        "sret": 10.68,
+        "captures_none": 71.09,
+        "samesign": 22.1,
+        "poison": 10.5,
+        "dead_on_unwind": 8.47,
+        "llvm_assume": 19.15,
+        "simd_vec": 9.94,
+        "exact": 2.58,
+        "invoke": 0.18,
+        "landingpad": 0.18,
+        "atomic": 2.39,
+        "fast_math": 0.55,
+        "dead_on_return": 0.74
+      },
+      "total_occurrences": {
+        "noundef": 9070,
+        "noalias": 7498,
+        "range_attr": 244,
+        "freeze": 22,
+        "undef": 227,
+        "nsw": 1743,
+        "nuw": 5112,
+        "disjoint": 293,
+        "nneg": 499,
+        "select": 556,
+        "switch": 87,
+        "llvm_lifetime": 1315,
+        "llvm_memcpy": 115,
+        "sret": 91,
+        "captures_none": 674,
+        "samesign": 418,
+        "poison": 102,
+        "dead_on_unwind": 46,
+        "llvm_assume": 369,
+        "simd_vec": 647,
+        "exact": 29,
+        "invoke": 2,
+        "landingpad": 1,
+        "atomic": 13,
+        "fast_math": 3,
+        "dead_on_return": 4
+      },
+      "freeze_examples": [
+        {
+          "fn": "_RINvNtNtCsdVypMZsLRAh_4core3fmt5float29float_to_decimal_common_exactC3f16EB6_",
+          "lines": [
+            "%decoded.sroa.4.0.i.fr.i = freeze i8 %decoded.sroa.4.0.i.i"
+          ]
+        },
+        {
+          "fn": "_RINvNtNtCsdVypMZsLRAh_4core3fmt5float29float_to_decimal_common_exactdEB6_",
+          "lines": [
+            "%decoded.sroa.4.0.i.fr.i = freeze i8 %decoded.sroa.4.0.i.i"
+          ]
+        },
+        {
+          "fn": "_RINvNtNtCsdVypMZsLRAh_4core3fmt5float29float_to_decimal_common_exactfEB6_",
+          "lines": [
+            "%decoded.sroa.4.0.i.fr.i = freeze i8 %decoded.sroa.4.0.i.i"
+          ]
+        },
+        {
+          "fn": "_RINvNtNtCsdVypMZsLRAh_4core3fmt5float32float_to_decimal_common_shortestC3f16EB6_",
+          "lines": [
+            "%decoded.sroa.4.0.i.fr.i = freeze i8 %decoded.sroa.4.0.i.i"
+          ]
+        },
+        {
+          "fn": "_RINvNtNtCsdVypMZsLRAh_4core3fmt5float32float_to_decimal_common_shortestdEB6_",
+          "lines": [
+            "%decoded.sroa.4.0.i.fr.i = freeze i8 %decoded.sroa.4.0.i.i"
+          ]
+        },
+        {
+          "fn": "_RINvNtNtCsdVypMZsLRAh_4core3fmt5float32float_to_decimal_common_shortestfEB6_",
+          "lines": [
+            "%decoded.sroa.4.0.i.fr.i = freeze i8 %decoded.sroa.4.0.i.i"
+          ]
+        },
+        {
+          "fn": "_RINvNtNtCsdVypMZsLRAh_4core3fmt5float33float_to_exponential_common_exactC3f16EB6_",
+          "lines": [
+            "%decoded.sroa.4.0.i.fr.i = freeze i8 %decoded.sroa.4.0.i.i"
+          ]
+        },
+        {
+          "fn": "_RINvNtNtCsdVypMZsLRAh_4core3fmt5float33float_to_exponential_common_exactdEB6_",
+          "lines": [
+            "%decoded.sroa.4.0.i.fr.i = freeze i8 %decoded.sroa.4.0.i.i"
+          ]
+        },
+        {
+          "fn": "_RINvNtNtCsdVypMZsLRAh_4core3fmt5float33float_to_exponential_common_exactfEB6_",
+          "lines": [
+            "%decoded.sroa.4.0.i.fr.i = freeze i8 %decoded.sroa.4.0.i.i"
+          ]
+        },
+        {
+          "fn": "_RINvNtNtCsdVypMZsLRAh_4core3fmt5float36float_to_exponential_common_shortestC3f16EB6_",
+          "lines": [
+            "%decoded.sroa.4.0.i.fr.i = freeze i8 %decoded.sroa.4.0.i.i"
+          ]
+        }
+      ]
+    },
+    "zerocopy_1.99.1:zerocopy-1d9b641a4817cd80.ll": {
+      "file": "/tmp/vrustc_e1_probe/zc_target/release/deps/zerocopy-1d9b641a4817cd80.ll",
+      "num_functions": 0,
+      "total_bbs": 0,
+      "total_phis": 0,
+      "bb_p50": 0,
+      "bb_p95": 0,
+      "bb_max": 0,
+      "fn_with_feature": {},
+      "fn_pct_feature": {},
+      "total_occurrences": {},
+      "freeze_examples": []
+    },
+    "anneal_tcb_1.99.1:anneal_audit-7beda83da10ce6a8.ll": {
+      "file": "/tmp/vrustc_e1_probe/anneal_target/release/deps/anneal_audit-7beda83da10ce6a8.ll",
+      "num_functions": 79,
+      "total_bbs": 1924,
+      "total_phis": 525,
+      "bb_p50": 11,
+      "bb_p95": 94,
+      "bb_max": 445,
+      "fn_with_feature": {
+        "noundef": 79,
+        "noalias": 78,
+        "nuw": 69,
+        "invoke": 33,
+        "landingpad": 33,
+        "llvm_lifetime": 25,
+        "llvm_memcpy": 18,
+        "simd_vec": 4,
+        "range_attr": 55,
+        "captures_none": 68,
+        "freeze": 2,
+        "dead_on_unwind": 13,
+        "nsw": 31,
+        "samesign": 12,
+        "llvm_assume": 26,
+        "undef": 4,
+        "switch": 9,
+        "atomic": 7,
+        "sret": 6,
+        "dead_on_return": 2,
+        "exact": 5,
+        "inline_asm": 1,
+        "select": 9,
+        "poison": 5,
+        "disjoint": 2,
+        "nneg": 2
+      },
+      "fn_pct_feature": {
+        "noundef": 100.0,
+        "noalias": 98.73,
+        "nuw": 87.34,
+        "invoke": 41.77,
+        "landingpad": 41.77,
+        "llvm_lifetime": 31.65,
+        "llvm_memcpy": 22.78,
+        "simd_vec": 5.06,
+        "range_attr": 69.62,
+        "captures_none": 86.08,
+        "freeze": 2.53,
+        "dead_on_unwind": 16.46,
+        "nsw": 39.24,
+        "samesign": 15.19,
+        "llvm_assume": 32.91,
+        "undef": 5.06,
+        "switch": 11.39,
+        "atomic": 8.86,
+        "sret": 7.59,
+        "dead_on_return": 2.53,
+        "exact": 6.33,
+        "inline_asm": 1.27,
+        "select": 11.39,
+        "poison": 6.33,
+        "disjoint": 2.53,
+        "nneg": 2.53
+      },
+      "total_occurrences": {
+        "noundef": 3211,
+        "noalias": 4021,
+        "nuw": 1940,
+        "invoke": 502,
+        "landingpad": 184,
+        "llvm_lifetime": 485,
+        "llvm_memcpy": 252,
+        "simd_vec": 32,
+        "range_attr": 356,
+        "captures_none": 142,
+        "freeze": 2,
+        "dead_on_unwind": 13,
+        "nsw": 77,
+        "samesign": 23,
+        "llvm_assume": 148,
+        "undef": 16,
+        "switch": 17,
+        "atomic": 36,
+        "sret": 33,
+        "dead_on_return": 3,
+        "exact": 11,
+        "inline_asm": 1,
+        "select": 25,
+        "poison": 13,
+        "disjoint": 9,
+        "nneg": 11
+      },
+      "freeze_examples": [
+        {
+          "fn": "_RINvMNtNtCskhBNRZxB7Vj_12clap_builder4util8flat_mapINtB3_7FlatMapNtNtB5_2id2IdNtNtNtNtB7_6parser7matches11matched_arg10MatchedArgE12remove_entryeECs2qHtZXf6Uti_12anneal_audit",
+          "lines": [
+            "%bcmp.i.fr.i.i.i.i = freeze i32 %bcmp.i.i.i.i.i"
+          ]
+        },
+        {
+          "fn": "_RNvXsi_NtNtNtCskADBYZwJmSU_4core4iter8adapters7flattenINtB5_13FlattenCompatINtNtNtCsgFX3jaOk65H_5alloc3vec9into_iter8IntoIterINtB1g_3VecNtNtNtCskhBNRZxB7Vj_12clap_builder4util9any_value8AnyValueEEIB1c_B2a_EENtNtNtB9_6traits8iterator8Iterator4nextCs2qHtZXf6Uti_12anneal_audit",
+          "lines": [
+            "%.fr = freeze ptr %1"
+          ]
+        }
+      ]
+    },
+    "anneal_tcb_1.99.1:cargo_anneal-a159cbf311c93d0c.ll": {
+      "file": "/tmp/vrustc_e1_probe/anneal_target/release/deps/cargo_anneal-a159cbf311c93d0c.ll",
+      "num_functions": 45,
+      "total_bbs": 1040,
+      "total_phis": 159,
+      "bb_p50": 8,
+      "bb_p95": 77,
+      "bb_max": 415,
+      "fn_with_feature": {
+        "noundef": 45,
+        "noalias": 44,
+        "llvm_lifetime": 8,
+        "nsw": 18,
+        "nuw": 35,
+        "exact": 5,
+        "invoke": 17,
+        "landingpad": 17,
+        "atomic": 5,
+        "range_attr": 32,
+        "captures_none": 37,
+        "samesign": 6,
+        "llvm_assume": 12,
+        "switch": 3,
+        "inline_asm": 1,
+        "undef": 3,
+        "select": 7,
+        "freeze": 1,
+        "llvm_memcpy": 5,
+        "simd_vec": 2,
+        "sret": 4,
+        "dead_on_unwind": 2,
+        "disjoint": 1
+      },
+      "fn_pct_feature": {
+        "noundef": 100.0,
+        "noalias": 97.78,
+        "llvm_lifetime": 17.78,
+        "nsw": 40.0,
+        "nuw": 77.78,
+        "exact": 11.11,
+        "invoke": 37.78,
+        "landingpad": 37.78,
+        "atomic": 11.11,
+        "range_attr": 71.11,
+        "captures_none": 82.22,
+        "samesign": 13.33,
+        "llvm_assume": 26.67,
+        "switch": 6.67,
+        "inline_asm": 2.22,
+        "undef": 6.67,
+        "select": 15.56,
+        "freeze": 2.22,
+        "llvm_memcpy": 11.11,
+        "simd_vec": 4.44,
+        "sret": 8.89,
+        "dead_on_unwind": 4.44,
+        "disjoint": 2.22
+      },
+      "total_occurrences": {
+        "noundef": 1574,
+        "noalias": 1915,
+        "llvm_lifetime": 242,
+        "nsw": 63,
+        "nuw": 1051,
+        "exact": 11,
+        "invoke": 315,
+        "landingpad": 125,
+        "atomic": 24,
+        "range_attr": 219,
+        "captures_none": 63,
+        "samesign": 13,
+        "llvm_assume": 46,
+        "switch": 5,
+        "inline_asm": 1,
+        "undef": 14,
+        "select": 11,
+        "freeze": 2,
+        "llvm_memcpy": 117,
+        "simd_vec": 28,
+        "sret": 27,
+        "dead_on_unwind": 2,
+        "disjoint": 6
+      },
+      "freeze_examples": [
+        {
+          "fn": "_RNvCs9BcPRVShZSP_12cargo_anneal4main",
+          "lines": [
+            "%bcmp.i.fr.i.i.i.i.i.i.i.i.i.i.i.i = freeze i32 %240",
+            "%.fr.i.i.i.i.i.i.i = freeze ptr %278"
+          ]
+        }
+      ]
+    }
+  }
+}
