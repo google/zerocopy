@@ -66001,6 +66001,79 @@
         "lean/mechanization"
       ]
     },
+    "safety-liveness-decomposition-and-refinement-with-divergence": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/0020-0190(85)90056-0"
+          },
+          "name": "Defining Liveness (Alpern and Schneider, Information Processing Letters 21(4), 1985)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3-540-15216-4_12"
+          },
+          "name": "Basic concepts (LNCS 190, Distributed Systems: Methods and Tools for Specification, 1985)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/0304-3975(91)90224-P"
+          },
+          "name": "The existence of refinement mappings (Abadi and Lamport, Theoretical Computer Science 82(2), 1991)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3-540-15670-4_14"
+          },
+          "name": "An improved failures model for communicating processes (Brookes and Roscoe, LNCS 197, 1985)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-009-9155-4"
+          },
+          "name": "A Formally Verified Compiler Back-end (Leroy, Journal of Automated Reasoning 43(4), 2009)"
+        },
+        {
+          "identity": {
+            "isbn": "978-0-262-02649-9"
+          },
+          "name": "Principles of Model Checking (Baier and Katoen, MIT Press, 2008)"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert verified compiler (Coq development; common/Behaviors.v)"
+        },
+        {
+          "identity": {
+            "repository": "isabelle-prover/mirror-afp-devel",
+            "revision": "523cdc72b5ae4a91c9ab8e1025d4a30b40472720"
+          },
+          "name": "Isabelle Archive of Formal Proofs, development mirror (HOL-CSP, Topology, Lazy-Lists-II, ConcurrentHOL)"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/mechanization",
+        "verification",
+        "verification/formalized-results",
+        "verification/refinement",
+        "verification/safety-liveness",
+        "verification/machine-closure",
+        "compilers/behavioral-refinement"
+      ]
+    },
     "sail-isa-models-lean-backend-and-rv64d-decoding-framing": {
       "observed_at": "2026-11-20",
       "subjects": [

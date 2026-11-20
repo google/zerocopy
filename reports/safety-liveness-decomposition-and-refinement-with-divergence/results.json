@@ -1,0 +1,554 @@
+[
+  {
+    "id": "alpern-schneider-decomposition",
+    "lean": "Toy.SafetyLiveness.alpernSchneider_decomposition_of_nonempty",
+    "lean_names": [
+      "Toy.SafetyLiveness.alpernSchneider_nonunique_components",
+      "Toy.SafetyLiveness.closure_isSafety",
+      "Toy.SafetyLiveness.emptyAlphabet_no_liveness",
+      "Toy.SafetyLiveness.isLiveness_livenessPart_of_nonempty",
+      "Toy.SafetyLiveness.machineClosed_not_closed_under_propInter",
+      "Toy.SafetyLiveness.propInter_closure_livenessPart_eq",
+      "Toy.SafetyLiveness.stepDiffers_isSafety"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "Over any nonempty alphabet α, every linear-time infinite-trace property P equals the intersection PropInter (Closure P) (LivenessPart P) of its prefix closure Closure P (a safety property) and its explicit liveness component LivenessPart P (a liveness property).",
+    "hypotheses": [
+      {
+        "name": "hα : Nonempty α",
+        "purpose": "Ensures every finite prefix u : List α (in particular the empty prefix []) can be padded into an infinite trace when proving IsLiveness (LivenessPart P) (proved separately as Toy.SafetyLiveness.isLiveness_livenessPart_of_nonempty); the other two conjuncts IsSafety (Closure P) and PropInter (Closure P) (LivenessPart P) = P hold unconditionally over every alphabet α via Toy.SafetyLiveness.closure_isSafety and Toy.SafetyLiveness.propInter_closure_livenessPart_eq.",
+        "tightness": "tight",
+        "counterexample": "Toy.SafetyLiveness.emptyAlphabet_tight_alpernSchneider"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "On the nonempty alphabet Bool, StartsTrueAndEventuallyFalse is a nontrivial property that is neither a safety property nor a liveness property.",
+    "nonvacuity_witness_lean": "Toy.SafetyLiveness.alpernSchneider_nonvacuity",
+    "non_claims": [
+      "Does not claim uniqueness of the decomposition P = PropInter S L: neither the safety component (without machine closure) nor the liveness component (even fixing S = Closure P) is unique in general, as proved by Toy.SafetyLiveness.alpernSchneider_nonunique_components.",
+      "Does not hold over an empty alphabet α = Empty because no property over Empty is live (the empty prefix [] has no infinite extension in InfTrace Empty; Toy.SafetyLiveness.emptyAlphabet_no_liveness), so the conclusion fails for EmptyProp over Empty (Toy.SafetyLiveness.emptyAlphabet_tight_alpernSchneider).",
+      "Does not imply that liveness components are closed under intersection: conjoining liveness properties from two decompositions need not remain live, and whenever α has at least two elements, every property (including EmptyProp and every safety property) is the intersection of two liveness properties (Alpern & Schneider, 1985, Theorem 2; see also Toy.SafetyLiveness.machineClosed_not_closed_under_propInter).",
+      "Does not require properties to be closed under stuttering: IsSafety and IsLiveness follow Alpern and Schneider (1985) over arbitrary predicates on Nat → α, diverging from Lamport (in Alford, Lamport, and Mullery, 1985) and Abadi and Lamport (1991) on non-stuttering-closed properties (see Toy.SafetyLiveness.stepDiffers_isSafety).",
+      "Does not apply to relative liveness (extension restricted to reachable prefixes of a transition system rather than all of List α).",
+      "Does not provide a decidable or automata-theoretic construction (such as Büchi automaton decomposition); LivenessPart P uses classical negation of Closure P.",
+      "Does not apply to hyperproperties (sets of sets of traces) or branching-time properties; it applies strictly to linear-time predicates on InfTrace α."
+    ],
+    "prior_art": [
+      "Bowen Alpern and Fred B. Schneider, 'Defining Liveness', Information Processing Letters 21(4):181-185, 1985, DOI: 10.1016/0020-0190(85)90056-0 (Theorem 1).",
+      "Bowen Alpern and Fred B. Schneider, 'Recognizing safety and liveness', Distributed Computing 2(3):117-126, 1987, DOI: 10.1007/BF01782772 (automata-theoretic decomposition of ω-regular properties).",
+      "Leslie Lamport, 'Proving the Correctness of Multiprocess Programs', IEEE Transactions on Software Engineering SE-3(2):125-143, March 1977, DOI: 10.1109/TSE.1977.229904 (informal origin of the terms safety and liveness).",
+      "Mack W. Alford, Leslie Lamport, and Geoff P. Mullery, 'Basic Concepts', in Distributed Systems: Methods and Tools for Specification, LNCS 190, pp. 7-43, Springer, 1985, DOI: 10.1007/3-540-15216-4_12 (the formal definition of safety that Alpern and Schneider, 1985, cite as 'L. Lamport, Basic concepts'; Alpern, Demers, and Schneider, 1986, give a formalization that also covers properties not invariant under stuttering).",
+      "Bowen Alpern, Alan J. Demers, and Fred B. Schneider, 'Safety without stuttering', Information Processing Letters 23(4):177-180, 1986, DOI: 10.1016/0020-0190(86)90132-8.",
+      "Christel Baier and Joost-Pieter Katoen, Principles of Model Checking, MIT Press, 2008, ISBN 978-0-262-02649-9 (§3.4.2 'Safety vs. Liveness Properties': Theorem 3.37 Decomposition Theorem and Lemma 3.38 Sharpest Decomposition).",
+      "Panagiotis Manolios and Richard Trefler, 'A Lattice-Theoretic Characterization of Safety and Liveness', PODC 2003, pp. 325-333, ACM, 2003, DOI: 10.1145/872035.872083.",
+      "Ekkart Kindler, 'Safety and Liveness Properties: A Survey', Bulletin of the EATCS 53:268-272, June 1994.",
+      "Stefan Friedrich, 'Topology' (theory LList_Topology: itrace_top.alpern_schneider with A ≠ {} and infliveness_empty) and 'Lazy Lists II' (theory LList2: infsafety, infliveness), Archive of Formal Proofs, April 26, 2004, https://isa-afp.org/entries/Topology.html and https://isa-afp.org/entries/Lazy-Lists-II.html.",
+      "Peter Gammie, 'ConcurrentHOL' (theory Safety_Closure: tls.Safe, tls.Live, tls.decomp), Archive of Formal Proofs, April 16, 2024, https://isa-afp.org/entries/ConcurrentHOL.html."
+    ],
+    "design_question": "Separates any target infinite-trace specification into its canonical safety hull Closure P (which survives finite-prefix refinement) and its residual liveness obligation LivenessPart P (which requires stronger refinement semantics)."
+  },
+  {
+    "id": "safety-iff-closure-eq",
+    "lean": "Toy.SafetyLiveness.isSafety_iff_closure_eq",
+    "lean_names": [
+      "Toy.SafetyLiveness.closure_minimal_of_isSafety",
+      "Toy.SafetyLiveness.emptyAlphabet_tight_isLiveness_iff_closure_eq_univ",
+      "Toy.SafetyLiveness.isLiveness_iff_closure_eq_univ_of_nonempty",
+      "Toy.SafetyLiveness.stepDiffers_isSafety"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For any alphabet α (including Empty) and any infinite-trace property P, P is a safety property if and only if P equals its finite-prefix closure Closure P.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "On Bool, AlwaysFalse is a safety property (both sides hold) and EventuallyTrue is not a safety property (both sides fail).",
+    "nonvacuity_witness_lean": "Toy.SafetyLiveness.isSafety_iff_closure_eq_nonvacuity",
+    "non_claims": [
+      "Does not require stuttering invariance: non-stuttering-closed sets such as fun s => s 0 ≠ s 1 satisfy IsSafety here (Toy.SafetyLiveness.stepDiffers_isSafety), whereas Lamport (in Alford, Lamport, and Mullery, 1985) and Abadi and Lamport (1991) restrict safety properties to stuttering-closed sets.",
+      "Does not claim that IsLiveness P ↔ Closure P = UnivProp holds without Nonempty α: that equivalence is proved over every nonempty alphabet (Toy.SafetyLiveness.isLiveness_iff_closure_eq_univ_of_nonempty), but over α = Empty, Closure EmptyProp = UnivProp holds vacuously while IsLiveness EmptyProp is false (Toy.SafetyLiveness.emptyAlphabet_tight_isLiveness_iff_closure_eq_univ).",
+      "Does not claim that every safety property is decidable or expressible by a finite-state invariant; IsSafety captures topological closedness in the prefix topology (with minimality of Closure P established separately in Toy.SafetyLiveness.closure_minimal_of_isSafety).",
+      "Does not apply directly to finite-trace systems without lifting via finPrefixes."
+    ],
+    "prior_art": [
+      "Bowen Alpern and Fred B. Schneider, 'Defining Liveness', Information Processing Letters 21(4):181-185, 1985, DOI: 10.1016/0020-0190(85)90056-0 (§4 topological characterization).",
+      "Bowen Alpern, Alan J. Demers, and Fred B. Schneider, 'Safety without stuttering', Information Processing Letters 23(4):177-180, 1986, DOI: 10.1016/0020-0190(86)90132-8.",
+      "Martín Abadi and Leslie Lamport, 'The existence of refinement mappings', Theoretical Computer Science 82(2):253-284, 1991, DOI: 10.1016/0304-3975(91)90224-P (Section 2.2).",
+      "Christel Baier and Joost-Pieter Katoen, Principles of Model Checking, MIT Press, 2008, ISBN 978-0-262-02649-9 (§3.3.2 'Safety Properties': Definition 3.26 Prefix and Closure, and Lemma 3.27 Alternative Characterization of Safety Properties, P is a safety property iff closure(P) = P).",
+      "Stefan Friedrich, 'Topology' (theory LList_Topology: infsafety_closed_iff) and 'Lazy Lists II' (theory LList2), Archive of Formal Proofs, April 26, 2004, https://isa-afp.org/entries/Topology.html and https://isa-afp.org/entries/Lazy-Lists-II.html.",
+      "Peter Gammie, 'ConcurrentHOL' (theory Safety_Closure), Archive of Formal Proofs, April 16, 2024, https://isa-afp.org/entries/ConcurrentHOL.html."
+    ],
+    "design_question": "Explains why safety properties are completely determined by their finite prefixes (Closure P = P) and therefore survive finite-prefix refinement without divergence or fairness obligations."
+  },
+  {
+    "id": "safety-and-liveness-iff-univ",
+    "lean": "Toy.SafetyLiveness.isSafety_and_isLiveness_iff_eq_univ_of_nonempty",
+    "lean_names": [
+      "Toy.SafetyLiveness.alpernSchneider_nonvacuity",
+      "Toy.SafetyLiveness.alwaysFalse_safety_entails_nontrivial_liveness_eventuallyFalse",
+      "Toy.SafetyLiveness.alwaysFalse_tight_liveness_of_unique",
+      "Toy.SafetyLiveness.eq_univ_of_isSafety_of_isLiveness",
+      "Toy.SafetyLiveness.eventuallyTrue_tight_safety_of_unique",
+      "Toy.SafetyLiveness.propInter_startsTrue_eventuallyFalse_neither_safety_nor_liveness"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "Over any nonempty alphabet α, an infinite-trace property P is both a safety property and a liveness property if and only if P equals the universal property UnivProp.",
+    "hypotheses": [
+      {
+        "name": "hα : Nonempty α",
+        "purpose": "Required for the reverse direction (IsLiveness UnivProp) so that the empty prefix [] extends to an infinite trace; the forward implication IsSafety P → IsLiveness P → P = UnivProp holds over every alphabet α without Nonempty α (proved in Toy.SafetyLiveness.eq_univ_of_isSafety_of_isLiveness).",
+        "tightness": "tight",
+        "counterexample": "Toy.SafetyLiveness.emptyAlphabet_tight_safety_liveness_iff_univ"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "On Bool (nonempty), UnivProp satisfies both sides of the equivalence and AlwaysFalse falsifies both sides.",
+    "nonvacuity_witness_lean": "Toy.SafetyLiveness.isSafety_and_isLiveness_iff_eq_univ_nonvacuity",
+    "non_claims": [
+      "Does not mean that safety facts about a system can never establish a liveness property of that system: a safety property can be contained in a nontrivial liveness property (e.g. AlwaysFalse ⊆ EventuallyFalse, with EventuallyFalse ≠ UnivProp), so a system proved to satisfy AlwaysFalse also satisfies the liveness property EventuallyFalse (proved in Toy.SafetyLiveness.alwaysFalse_safety_entails_nontrivial_liveness_eventuallyFalse). The theorem is about the classes of properties, not about entailment between them.",
+      "The biconditional fails without Nonempty α: over Empty, UnivProp = UnivProp holds trivially while IsLiveness UnivProp is false (though the forward implication IsSafety P → IsLiveness P → P = UnivProp still holds vacuously via Toy.SafetyLiveness.eq_univ_of_isSafety_of_isLiveness, with individual tightness counterexamples Toy.SafetyLiveness.eventuallyTrue_tight_safety_of_unique and Toy.SafetyLiveness.alwaysFalse_tight_liveness_of_unique).",
+      "Does not mean every property is either safety or liveness: mixed properties such as StartsTrueAndEventuallyFalse are neither (Toy.SafetyLiveness.alpernSchneider_nonvacuity).",
+      "Does not mean a specification combining safety and liveness constraints is trivial: PropInter S L can be neither safety nor liveness; for example, the conjunction PropInter StartsTrue EventuallyFalse of the safety property StartsTrue and the liveness property EventuallyFalse is neither (Toy.SafetyLiveness.propInter_startsTrue_eventuallyFalse_neither_safety_nor_liveness).",
+      "Does not apply to relative liveness (liveness restricted to prefixes of a transition system rather than all of List α)."
+    ],
+    "prior_art": [
+      "Bowen Alpern and Fred B. Schneider, 'Defining Liveness', Information Processing Letters 21(4):181-185, 1985, DOI: 10.1016/0020-0190(85)90056-0 (p. 184).",
+      "Nancy A. Lynch, Distributed Algorithms, Morgan Kaufmann, 1996, ISBN 1-55860-348-4 (Section 8.5.3, Theorem 8.8).",
+      "Christel Baier and Joost-Pieter Katoen, Principles of Model Checking, MIT Press, 2008, ISBN 978-0-262-02649-9 (§3.4.2 'Safety vs. Liveness Properties': Lemma 3.35 Intersection of Safety and Liveness Properties).",
+      "Peter Gammie, 'ConcurrentHOL' (theory Safety_Closure: tls.live.inf_safety_eq_top), Archive of Formal Proofs, April 16, 2024, https://isa-afp.org/entries/ConcurrentHOL.html."
+    ],
+    "design_question": "Shows that no nontrivial liveness property is itself a safety property (the two classes meet only in UnivProp), so a nontrivial liveness requirement can never be restated as an equivalent safety requirement and has no finite bad prefix."
+  },
+  {
+    "id": "stream-refines-preserves-all",
+    "lean": "Toy.SafetyLiveness.streamRefines_preserves_all_properties",
+    "lean_names": [
+      "Toy.SafetyLiveness.emptyStreamSystem_refines_all",
+      "Toy.SafetyLiveness.no_nonempty_streamSystem_refines_all_nonempty",
+      "Toy.SafetyLiveness.streamRefines_fails_possibility",
+      "Toy.SafetyLiveness.unit_streamSystem_refines_all_nonempty"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "Baseline reference point: for any alphabet α, stream systems Impl and Spec, and infinite-trace property P, if Impl stream-refines Spec (Impl ⊆ Spec) and Spec satisfies P, then Impl satisfies P.",
+    "hypotheses": [
+      {
+        "name": "hRef : StreamRefines Impl Spec",
+        "purpose": "Provides inclusion Impl ⊆ Spec on infinite traces.",
+        "tightness": "tight",
+        "counterexample": "Toy.SafetyLiveness.streamRefines_preserves_tight_refines"
+      },
+      {
+        "name": "hSpec : Satisfies Spec P",
+        "purpose": "Establishes that every infinite trace of Spec lies in P.",
+        "tightness": "tight",
+        "counterexample": "Toy.SafetyLiveness.streamRefines_preserves_tight_satisfies"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "On Bool, {constTrue} stream-refines EventuallyTrue and EventuallyTrue satisfies EventuallyTrue.",
+    "nonvacuity_witness_lean": "Toy.SafetyLiveness.streamRefines_preserves_nonvacuity",
+    "non_claims": [
+      "Does not prevent a vacuous empty implementation: EmptyProp stream-refines every Spec (Toy.SafetyLiveness.emptyStreamSystem_refines_all) and vacuously satisfies every P unless IsNonemptyStream Impl is established separately.",
+      "Over a one-element alphabet (Unit), every nonempty stream system refines every other nonempty stream system (Toy.SafetyLiveness.unit_streamSystem_refines_all_nonempty); the absence of a universal nonempty refiner (Toy.SafetyLiveness.no_nonempty_streamSystem_refines_all_nonempty) requires at least two distinct observations.",
+      "Does not preserve existential possibility predicates (such as 'some trace starts with true', Toy.SafetyLiveness.streamRefines_fails_possibility) or general multi-trace hyperproperties.",
+      "Does not account for stuttering, internal (silent) steps, or alphabet translation between compiler intermediate languages: StreamRefines compares infinite traces step-for-step over a single shared alphabet α.",
+      "Does not by itself capture terminating or silently diverging executions unless they are explicitly encoded (for example, via ObsBehavior)."
+    ],
+    "prior_art": [
+      "Martín Abadi and Leslie Lamport, 'The existence of refinement mappings', Theoretical Computer Science 82(2):253-284, 1991, DOI: 10.1016/0304-3975(91)90224-P (Section 2).",
+      "Christel Baier and Joost-Pieter Katoen, Principles of Model Checking, MIT Press, 2008, ISBN 978-0-262-02649-9 (§3.2.4 'Trace Equivalence and Linear-Time Properties': Theorem 3.15 Trace Inclusion and LT Properties, for transition systems without terminal states)."
+    ],
+    "design_question": "Baseline reference point contrasting with finite-trace inclusion: stream inclusion preserves every universal linear-time property by definition, and among nonempty systems over alphabets with at least two observations (such as Bool), stream inclusion admits no universal do-nothing refiner (Toy.SafetyLiveness.no_nonempty_streamSystem_refines_all_nonempty)."
+  },
+  {
+    "id": "do-nothing-fin-refines-all",
+    "lean": "Toy.SafetyLiveness.doNothingFin_refines_every_prefixClosed_nonempty",
+    "lean_names": [
+      "Toy.SafetyLiveness.doNothingFin_finRefines_iff_nil_mem",
+      "Toy.SafetyLiveness.doNothingFin_finRefines_without_prefixClosed",
+      "Toy.SafetyLiveness.finPrefixes_refines_preserves_safety",
+      "Toy.SafetyLiveness.finRefinesPreserves_linearTime",
+      "Toy.SafetyLiveness.obsRefines_separates_doNothing_from_finRefines"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "Over any alphabet α, the do-nothing finite-trace system doNothingFin ({[]}) finite-trace refines every finite-trace system Spec that satisfies the traces-model healthiness conditions IsPrefixClosed Spec and IsNonemptyFin Spec.",
+    "hypotheses": [
+      {
+        "name": "hClosed : IsPrefixClosed Spec",
+        "purpose": "Traces-model healthiness condition ensuring any trace in Spec yields [] ∈ Spec; individually tight relative to IsNonemptyFin Spec, while the pair (hClosed, hNonempty) is jointly replaceable by the exact condition Spec [] (Toy.SafetyLiveness.doNothingFin_finRefines_iff_nil_mem, Toy.SafetyLiveness.doNothingFin_finRefines_without_prefixClosed).",
+        "tightness": "tight",
+        "counterexample": "Toy.SafetyLiveness.singletonTrueTrace_tight_prefixClosed"
+      },
+      {
+        "name": "hNonempty : IsNonemptyFin Spec",
+        "purpose": "Traces-model healthiness condition ruling out the vacuously prefix-closed empty set ∅, which omits []; individually tight relative to IsPrefixClosed Spec (and jointly replaceable with hClosed by Spec []).",
+        "tightness": "tight",
+        "counterexample": "Toy.SafetyLiveness.emptyFinSystem_tight_nonempty"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "On Bool, emitTrueFin ({[], [true]}) is both prefix-closed and nonempty.",
+    "nonvacuity_witness_lean": "Toy.SafetyLiveness.doNothingFin_refines_nonvacuity",
+    "non_claims": [
+      "IsPrefixClosed Spec and IsNonemptyFin Spec are sufficient domain healthiness conditions rather than necessary conditions for the conclusion: FinRefines doNothingFin Spec holds if and only if Spec [] (Toy.SafetyLiveness.doNothingFin_finRefines_iff_nil_mem), which also holds for non-prefix-closed sets containing [] (Toy.SafetyLiveness.doNothingFin_finRefines_without_prefixClosed).",
+      "Does not model CSP failures–divergences divergence (⊥ / div): in the CSP traces model STOP has trace set {[]} and trace-refines every process, and under operational prefix projection silent divergence also maps to {[]}, whereas in CSP's failures–divergences model divergence is chaotic (trace set Σ*) and sits at the bottom of the refinement order.",
+      "Does not claim that finite-trace refinement preserves nothing: it preserves every universal linear-time finite-trace predicate (Toy.SafetyLiveness.finRefinesPreserves_linearTime) and every stream safety property (Toy.SafetyLiveness.finPrefixes_refines_preserves_safety).",
+      "Does not apply to refinement relations that record explicit termination, divergence, or refusals (see Toy.SafetyLiveness.obsRefines_separates_doNothing_from_finRefines)."
+    ],
+    "prior_art": [
+      "C. A. R. Hoare, Communicating Sequential Processes, Prentice Hall, 1985, ISBN 0-13-153271-5 (traces model where traces(STOP) = {⟨⟩}).",
+      "Stephen D. Brookes, C. A. R. Hoare, and A. W. Roscoe, 'A Theory of Communicating Sequential Processes', Journal of the ACM 31(3):560-599, 1984, DOI: 10.1145/828.833.",
+      "A. W. Roscoe, The Theory and Practice of Concurrency, Prentice Hall, 1997, ISBN 0-13-674409-5 (Chapters 1-2, STOP trace-refines every process).",
+      "Benoît Ballenghien, Safouan Taha, Burkhart Wolff, and Lina Ye, 'HOL-CSP Version 2.0' (theory CSP_Refinements: leT_STOP and leDT_STOP), Archive of Formal Proofs, April 26, 2019, https://isa-afp.org/entries/HOL-CSP.html."
+    ],
+    "design_question": "Identifies the exact mechanism by which prefix-closed finite-trace refinement silently admits a do-nothing implementation: every healthy specification contains [], so {[]} is a valid refinement of every healthy specification."
+  },
+  {
+    "id": "fin-refines-no-progress-preservation",
+    "lean": "Toy.SafetyLiveness.finRefines_cannot_preserve_property_rejecting_doNothing",
+    "lean_names": [
+      "Toy.SafetyLiveness.finPrefixes_eq_fails_every_nontrivial_liveness",
+      "Toy.SafetyLiveness.finRefinesPreserves_linearTime",
+      "Toy.SafetyLiveness.linearTime_never_meets_impossibility_hyps",
+      "Toy.SafetyLiveness.linearTime_pred_accepts_doNothing_of_accepts_healthy",
+      "Toy.SafetyLiveness.obsRefines_fails_possibility_canEmit",
+      "Toy.SafetyLiveness.streamRefines_fails_possibility"
+    ],
+    "kind": "impossibility",
+    "tier": "T0",
+    "plain_claim": "If a finite-trace system predicate Φ holds for at least one prefix-closed nonempty specification Spec and rejects doNothingFin ({[]}), then Φ is not preserved by finite-trace refinement across prefix-closed nonempty systems.",
+    "hypotheses": [
+      {
+        "name": "hClosed : IsPrefixClosed Spec",
+        "purpose": "Places Spec in the prefix-closed domain of FinRefinesPreserves and ensures [] ∈ Spec.",
+        "tightness": "tight",
+        "counterexample": "Toy.SafetyLiveness.finRefines_impossibility_tight_prefixClosed"
+      },
+      {
+        "name": "hNonempty : IsNonemptyFin Spec",
+        "purpose": "Places Spec in the nonempty domain of FinRefinesPreserves and ensures [] ∈ Spec.",
+        "tightness": "tight",
+        "counterexample": "Toy.SafetyLiveness.finRefines_impossibility_tight_nonempty"
+      },
+      {
+        "name": "hSpec : Φ Spec",
+        "purpose": "Ensures Φ holds on at least one healthy specification (ruling out the vacuously preserved false predicate).",
+        "tightness": "tight",
+        "counterexample": "Toy.SafetyLiveness.finRefines_impossibility_tight_spec"
+      },
+      {
+        "name": "hReject : ¬ Φ doNothingFin",
+        "purpose": "States that Φ rejects the do-nothing system {[]}.",
+        "tightness": "tight",
+        "counterexample": "Toy.SafetyLiveness.finRefines_impossibility_tight_reject"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "On Bool, emitTrueFin is prefix-closed and nonempty, satisfies FinHasNonemptyTrace, and doNothingFin fails FinHasNonemptyTrace.",
+    "nonvacuity_witness_lean": "Toy.SafetyLiveness.finRefines_cannot_preserve_nonvacuity",
+    "positive_control_lean": "Toy.SafetyLiveness.obsRefinesPreserves_emitsEvent_rejects_doNothing",
+    "non_claims": [
+      "Every predicate Φ to which this impossibility applies is necessarily not of universal linear-time form T ↦ ∀ u, T u → Q u: every predicate of that form that accepts a prefix-closed nonempty Spec also accepts doNothingFin (Toy.SafetyLiveness.linearTime_pred_accepts_doNothing_of_accepts_healthy, Toy.SafetyLiveness.linearTime_never_meets_impossibility_hyps), and every such predicate is preserved by finite-trace refinement (Toy.SafetyLiveness.finRefinesPreserves_linearTime).",
+      "Complete observable-behavior refinement (ObsRefines) and stream refinement (StreamRefines) also fail to preserve existential possibility predicates such as FinHasNonemptyTrace or ObsCanEmit ('some execution emits an event') across nonempty systems (Toy.SafetyLiveness.obsRefines_fails_possibility_canEmit, Toy.SafetyLiveness.streamRefines_fails_possibility); switching to ObsRefines resolves the progress problem because explicit termination and divergence turn 'every execution emits an event' (ObsSatisfies · EmitsEvent) into a universal linear-time predicate that holds on emitTrueObs, rejects both silentDivergeObs and immediateHaltObs, and is preserved by ObsRefines across nonempty systems, as proved by the positive control Toy.SafetyLiveness.obsRefinesPreserves_emitsEvent_rejects_doNothing.",
+      "Escape hatch (prefix-closure): dropping IsPrefixClosed and comparing only complete/maximal finite traces defeats the impossibility (because [] is not equal to [true]).",
+      "Escape hatch (bidirectional equivalence): strengthening one-sided inclusion FinRefines T₁ T₂ to finite-trace equality T₁ = T₂ defeats this finite-trace impossibility (since {[]} ≠ {[], [true]}), though finite-trace equality still fails infinite-trace liveness (see Toy.SafetyLiveness.finPrefixes_eq_fails_every_nontrivial_liveness).",
+      "Escape hatch (restricted implementation domain): restricting T₁ in FinRefinesPreserves to implementations separately guaranteed to emit an event (excluding doNothingFin) defeats the impossibility.",
+      "Note on CSP refinements: in CSP, tracking divergences alongside traces without refusals (⊑_DT) still admits STOP: P ⊑_DT STOP holds for every process P (HOL-CSP lemma leDT_STOP); rejecting STOP in CSP requires refusals (⊑_F / ⊑_FD), whereas ObsRefines rejects immediateHaltObs by tagging termination explicitly."
+    ],
+    "prior_art": [
+      "C. A. R. Hoare, Communicating Sequential Processes, Prentice Hall, 1985, ISBN 0-13-153271-5.",
+      "Stephen D. Brookes and A. W. Roscoe, 'An Improved Failures Model for Communicating Processes', Seminar on Concurrency (LNCS 197):281-305, Springer, 1985, DOI: 10.1007/3-540-15670-4_14.",
+      "A. W. Roscoe, The Theory and Practice of Concurrency, Prentice Hall, 1997, ISBN 0-13-674409-5 (Chapters 2-3 & 8, inadequacy of traces refinement for deadlock-freedom and progress).",
+      "Benoît Ballenghien, Safouan Taha, Burkhart Wolff, and Lina Ye, 'HOL-CSP Version 2.0' (theory CSP_Refinements: leT_STOP and leDT_STOP; theory CSP_Assertions: deadlock_free_mono_FD), Archive of Formal Proofs, April 26, 2019, https://isa-afp.org/entries/HOL-CSP.html."
+    ],
+    "design_question": "Shows that in prefix-closed finite-trace semantics, no universal linear-time predicate can reject {[]} for a healthy specification, and any non-universal predicate that rejects {[]} fails downward preservation; preserving event-emission progress by inclusion requires moving to complete behaviors (ObsRefines) or refusals."
+  },
+  {
+    "id": "fin-trace-refines-preserves-safety",
+    "lean": "Toy.SafetyLiveness.finPrefixes_refines_preserves_safety",
+    "lean_names": [
+      "Toy.SafetyLiveness.finPrefixes_refines_fails_every_nontrivial_liveness",
+      "Toy.SafetyLiveness.finPrefixes_refines_fails_of_not_isSafety",
+      "Toy.SafetyLiveness.streamRefines_closure_of_finPrefixes_refines"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For any stream systems Impl and Spec and any safety property P, if every finite prefix of Impl is a finite prefix of Spec (FinRefines (finPrefixes Impl) (finPrefixes Spec)) and Spec satisfies P, then Impl satisfies P.",
+    "hypotheses": [
+      {
+        "name": "hSafe : IsSafety P",
+        "purpose": "Ensures any infinite trace violating P has a finite bad prefix that would be exposed by finPrefixes Impl ⊆ finPrefixes Spec.",
+        "tightness": "tight",
+        "counterexample": "Toy.SafetyLiveness.eventuallyTrue_tight_finPrefixes_safety"
+      },
+      {
+        "name": "hRef : FinRefines (finPrefixes Impl) (finPrefixes Spec)",
+        "purpose": "Forces every finite prefix of every infinite trace in Impl to appear as a finite prefix of some infinite trace in Spec.",
+        "tightness": "tight",
+        "counterexample": "Toy.SafetyLiveness.finPrefixes_safety_tight_refines"
+      },
+      {
+        "name": "hSpec : Satisfies Spec P",
+        "purpose": "Ensures every infinite trace of Spec lies in P, so no bad prefix of P can appear in finPrefixes Spec.",
+        "tightness": "tight",
+        "counterexample": "Toy.SafetyLiveness.finPrefixes_safety_tight_satisfies"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "On Bool, {constFalse} refines AlwaysFalse on finite prefixes, and AlwaysFalse is a safety property satisfying itself.",
+    "nonvacuity_witness_lean": "Toy.SafetyLiveness.finPrefixes_preserves_safety_nonvacuity",
+    "non_claims": [
+      "Does not preserve any non-safety property across all systems (see Toy.SafetyLiveness.finPrefixes_refines_fails_of_not_isSafety and Toy.SafetyLiveness.finPrefixes_refines_fails_every_nontrivial_liveness).",
+      "Does not preserve safety properties of terminating or crashing executions (such as 'if the program halts, its exit status is 0' or 'never halts before emitting an event') unless termination and fault outcomes are explicitly encoded into the finite trace alphabet; Impl and Spec here are purely infinite StreamSystems.",
+      "Does not handle stuttering, silent internal transitions, or alphabet changes across compiler passes: finPrefixes requires step-for-step alignment over one shared alphabet α.",
+      "Guarantees only StreamRefines Impl (Closure Spec) (Toy.SafetyLiveness.streamRefines_closure_of_finPrefixes_refines), not StreamRefines Impl Spec: when Spec = PropInter S L is non-machine-closed, finite-prefix refinement against Spec enforces the strictly stronger hidden safety constraint Closure (PropInter S L), whereas finite-prefix refinement against S alone enforces only S.",
+      "Does not preserve multi-trace hypersafety properties unless lifted to tuples of prefixes, and does not establish IsNonemptyStream Impl (EmptyProp vacuously refines every Spec)."
+    ],
+    "prior_art": [
+      "Bowen Alpern and Fred B. Schneider, 'Defining Liveness', Information Processing Letters 21(4):181-185, 1985, DOI: 10.1016/0020-0190(85)90056-0.",
+      "A. W. Roscoe, The Theory and Practice of Concurrency, Prentice Hall, 1997, ISBN 0-13-674409-5 (traces refinement preserves safety).",
+      "Christel Baier and Joost-Pieter Katoen, Principles of Model Checking, MIT Press, 2008, ISBN 978-0-262-02649-9 (§3.3.3 'Trace Equivalence and Safety Properties': Theorem 3.28 Finite Trace Inclusion and Safety Properties, for transition systems without terminal states)."
+    ],
+    "design_question": "Explains why infinite-stream safety properties ('nothing bad happens at any finite step') are preserved automatically whenever an implementation's finite prefixes are included in a specification's finite prefixes."
+  },
+  {
+    "id": "fin-trace-refines-fails-nontrivial-liveness",
+    "lean": "Toy.SafetyLiveness.finPrefixes_refines_fails_every_nontrivial_liveness",
+    "lean_names": [
+      "Toy.SafetyLiveness.finPrefixes_eq_fails_every_nontrivial_liveness",
+      "Toy.SafetyLiveness.finPrefixes_refines_fails_of_not_isSafety",
+      "Toy.SafetyLiveness.streamRefines_preserves_all_properties"
+    ],
+    "kind": "impossibility",
+    "tier": "T0",
+    "plain_claim": "For every nontrivial liveness property P (satisfying IsLiveness P and rejecting some concrete infinite trace s₀), the explicit nonempty stream systems Impl = {s₀} and Spec = P satisfy Satisfies Spec P and FinRefines (finPrefixes Impl) (finPrefixes Spec), yet Impl fails to satisfy P.",
+    "hypotheses": [
+      {
+        "name": "hLive : IsLiveness P",
+        "purpose": "Forces finPrefixes P to equal all of List α, so every arbitrary s₀ ∉ P satisfies FinRefines (finPrefixes {s₀}) (finPrefixes P); tight only for that universal choice of s₀ ∉ P (existential failure holds for every non-safety property via Toy.SafetyLiveness.finPrefixes_refines_fails_of_not_isSafety).",
+        "tightness": "tight",
+        "counterexample": "Toy.SafetyLiveness.alwaysFalse_tight_finPrefixes_liveness"
+      },
+      {
+        "name": "hNotP : ¬ P s₀",
+        "purpose": "Witnesses nontriviality of P (P ≠ UnivProp) and supplies the concrete violating implementation trace s₀.",
+        "tightness": "tight",
+        "counterexample": "Toy.SafetyLiveness.univ_tight_finPrefixes_liveness"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "On Bool, EventuallyTrue is a liveness property and rejects constFalse.",
+    "nonvacuity_witness_lean": "Toy.SafetyLiveness.finPrefixes_fails_liveness_nonvacuity",
+    "positive_control_lean": "Toy.SafetyLiveness.streamRefines_rejects_constFalse_for_eventuallyTrue",
+    "non_claims": [
+      "Dropping IsLiveness P in favor of a mixed non-safety property (such as StartsTrueAndEventuallyFalse) does NOT rescue finite-trace refinement: preservation across all (Impl, Spec) holds if and only if IsSafety P (see Toy.SafetyLiveness.finPrefixes_refines_fails_of_not_isSafety). The hypothesis IsLiveness P is tight only for the stronger claim that every arbitrary trace s₀ ∉ P yields a counterexample against Spec = P.",
+      "Does not mean bidirectional finite-trace equality rescues liveness: even finPrefixes Impl = finPrefixes Spec fails to preserve every nontrivial liveness property P (over a nonempty alphabet, Impl = UnivProp and Spec = P share the universal prefix set Σ* while Impl violates P; proved in Toy.SafetyLiveness.finPrefixes_eq_fails_every_nontrivial_liveness).",
+      "Escape hatch (tighter specification): restricting Spec to a strict subset of P whose closure lies inside P (Closure Spec ⊆ P, e.g. Spec = {constTrue} for P = EventuallyTrue) defeats the counterexample for that fixed Spec.",
+      "Escape hatch (stronger refinement domain): replacing FinRefines (finPrefixes Impl) (finPrefixes Spec) with full stream refinement StreamRefines Impl Spec (or ObsRefines on embedStreams) defeats the impossibility: StreamRefines preserves every infinite-trace property (Toy.SafetyLiveness.streamRefines_preserves_all_properties), and the positive control Toy.SafetyLiveness.streamRefines_rejects_constFalse_for_eventuallyTrue shows that both StreamRefines and ObsRefines on embedStreams reject the concrete witness pair ({constFalse}, EventuallyTrue) that finite-prefix inclusion accepts.",
+      "Does not apply to the trivial liveness property UnivProp, which rejects no trace, so the hypothesis ¬ P s₀ cannot be met; with s₀ = constFalse and P = UnivProp the conclusion fails (Toy.SafetyLiveness.univ_tight_finPrefixes_liveness)."
+    ],
+    "prior_art": [
+      "Bowen Alpern and Fred B. Schneider, 'Defining Liveness', Information Processing Letters 21(4):181-185, 1985, DOI: 10.1016/0020-0190(85)90056-0 (liveness properties are dense, so their finite-prefix set is universal).",
+      "Martin Rem, 'A Personal Perspective of the Alpern–Schneider Characterization of Safety and Liveness', in Beauty Is Our Business, Springer, 1990, pp. 365-372, DOI: 10.1007/978-1-4612-4476-9_44.",
+      "A. W. Roscoe, The Theory and Practice of Concurrency, Prentice Hall, 1997, ISBN 0-13-674409-5.",
+      "Christel Baier and Joost-Pieter Katoen, Principles of Model Checking, MIT Press, 2008, ISBN 978-0-262-02649-9 (§3.4.1 'Liveness Properties': Definition 3.33, P is a liveness property iff pref(P) = (2^AP)*)."
+    ],
+    "design_question": "Demonstrates that comparing infinite-trace systems solely by their finite prefixes (even up to prefix-set equality) erases every nontrivial liveness guarantee when Spec = P."
+  },
+  {
+    "id": "obs-refines-separates-do-nothing",
+    "lean": "Toy.SafetyLiveness.obsRefines_separates_doNothing_from_finRefines",
+    "lean_names": [
+      "Toy.SafetyLiveness.divergeAfterTrue_separates_sameTrace_terminates",
+      "Toy.SafetyLiveness.finRefines_obsFinPrefixes_of_doNothing",
+      "Toy.SafetyLiveness.mixedSilentAndEmit_not_obsRefines_without_doNothing",
+      "Toy.SafetyLiveness.not_obsRefines_of_silent_behavior",
+      "Toy.SafetyLiveness.obsRefines_fails_possibility_canEmit",
+      "Toy.SafetyLiveness.obsRefines_implies_finRefines",
+      "Toy.SafetyLiveness.obsRefines_separates_diverges_of_obsFinPrefixes_of_not_diverges"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "In complete observable-behavior semantics (explicit terminates, diverges, and reacts constructors), every nonempty implementation Impl whose finite prefixes lie in {[]} passes finite-trace refinement against every nonempty specification Spec satisfying EmitsEvent, yet fails complete-behavior refinement ObsRefines Impl Spec.",
+    "hypotheses": [
+      {
+        "name": "hImplNE : IsNonemptyObs Impl",
+        "purpose": "Serves the ¬ ObsRefines conjunct: rules out the empty/miraculous implementation ∅, which vacuously satisfies ObsRefines ∅ Spec.",
+        "tightness": "tight",
+        "counterexample": "Toy.SafetyLiveness.obsEmpty_tight_implNE"
+      },
+      {
+        "name": "hSpecNE : IsNonemptyObs Spec",
+        "purpose": "Serves the FinRefines conjunct (Toy.SafetyLiveness.finRefines_obsFinPrefixes_of_doNothing): ensures obsFinPrefixes Spec contains [] so finite-trace refinement succeeds.",
+        "tightness": "tight",
+        "counterexample": "Toy.SafetyLiveness.obsSpecEmpty_tight_specNE"
+      },
+      {
+        "name": "hDoNothing : FinRefines (obsFinPrefixes Impl) doNothingFin",
+        "purpose": "Serves both conjuncts: forces obsFinPrefixes Impl ⊆ {[]} for FinRefines acceptance and ensures every behavior in Impl fails EmitsEvent; for ¬ ObsRefines alone, a single silent behavior ∃ b, Impl b ∧ ¬ EmitsEvent b suffices (proved in Toy.SafetyLiveness.not_obsRefines_of_silent_behavior and Toy.SafetyLiveness.mixedSilentAndEmit_not_obsRefines_without_doNothing).",
+        "tightness": "tight",
+        "counterexample": "Toy.SafetyLiveness.obsEmitTrue_tight_doNothing"
+      },
+      {
+        "name": "hProgress : ObsSatisfies Spec EmitsEvent",
+        "purpose": "Serves the ¬ ObsRefines conjunct (Toy.SafetyLiveness.not_obsRefines_of_silent_behavior): requires every behavior of Spec to emit at least one event.",
+        "tightness": "tight",
+        "counterexample": "Toy.SafetyLiveness.obsAllowDiverge_tight_progress"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "On Bool, silentDivergeObs ({.diverges []}) and emitTrueObs ({.terminates [true]}) satisfy all four hypotheses.",
+    "nonvacuity_witness_lean": "Toy.SafetyLiveness.obsRefines_separates_doNothing_nonvacuity",
+    "non_claims": [
+      "Does not protect against an empty/uninhabited implementation Impl = ∅ (see Toy.SafetyLiveness.obsEmpty_tight_implNE): totality/nonemptiness of the compiled semantics must be established separately (e.g., via target determinism or forward-to-backward simulation).",
+      "Does not model return values / exit codes on termination: ObsBehavior.terminates carries only an I/O event trace List α, so pure value-returning programs that emit no I/O events collapse into immediateHaltObs ({.terminates []}) and fail EmitsEvent.",
+      "EmitsEvent does not rule out silent divergence after a nonempty prefix: .diverges (a :: u) satisfies EmitsEvent (forbidding post-prefix divergence requires NoDivergence or ¬ Spec (.diverges u); see Toy.SafetyLiveness.obsRefines_separates_diverges_of_obsFinPrefixes_of_not_diverges).",
+      "Does not itself exercise the distinction between .terminates u and .diverges u: rejecting doNothingFin against EmitsEvent relies only on comparing complete finite traces rather than prefix-closed sets; the terminates-vs.-diverges tag is exercised only when comparing .terminates u against .diverges u on the same trace u (see Toy.SafetyLiveness.obsRefines_separates_diverges_of_obsFinPrefixes_of_not_diverges and Toy.SafetyLiveness.divergeAfterTrue_separates_sameTrace_terminates).",
+      "Does not rule out do-nothing implementations when Spec is nondeterministic and permits .diverges [] (or .terminates []) as one allowed branch alongside event-emitting behaviors (Toy.SafetyLiveness.obsRefines_fails_possibility_canEmit), nor when undefined-behavior wildcards (such as CompCert's Goes_wrong under behavior_improves) allow unsafe source programs to refine to arbitrary target behaviors.",
+      "Does not establish operational simulation soundness for multi-pass compilers: proving ObsRefines via step-by-step pass simulations additionally requires a well-founded stuttering measure to preserve divergence (Leroy, 2009, §3.5) and target determinism to turn forward simulation into backward behavioral inclusion (Leroy, 2009, §2.1).",
+      "Does not provide compositional refinement for open modules, separate compilation, or concurrent linking: ObsBehavior models closed whole-program executions only (contrast Patterson & Ahmed, 2019; CSP failures–divergences). Monotonicity of obsFinPrefixes under ObsRefines is established separately in Toy.SafetyLiveness.obsRefines_implies_finRefines."
+    ],
+    "prior_art": [
+      "Xavier Leroy, 'A Formally Verified Compiler Back-end', Journal of Automated Reasoning 43(4):363-446, 2009, DOI: 10.1007/s10817-009-9155-4 (Section 2.1 Definitions 2-3 backward simulation / behavioral inclusion; Section 3.4 converges / diverges / goeswrong).",
+      "Xavier Leroy et al., CompCert verified C compiler, Coq module common/Behaviors.v (repository AbsInt/CompCert, commit 2685140bf72c959446981fb99b5e44a8975021bc, lines 41-45), https://github.com/AbsInt/CompCert/blob/2685140bf72c959446981fb99b5e44a8975021bc/common/Behaviors.v#L41-L45 (four-constructor program_behavior: Terminates, Diverges, Reacts, Goes_wrong).",
+      "Xavier Leroy and Hervé Grall, 'Coinductive big-step operational semantics', Information and Computation 207(2):284-304, 2009, DOI: 10.1016/j.ic.2007.12.004.",
+      "Daniel Patterson and Amal Ahmed, 'The Next 700 Compiler Correctness Theorems', Proceedings of the ACM on Programming Languages 3(ICFP), 2019, DOI: 10.1145/3341689.",
+      "Li-yao Xia, Yannick Zakowski, Paul He, Chung-Kil Hur, Gregory Malecha, Benjamin C. Pierce, and Steve Zdancewic, 'Interaction Trees: Representing Recursive and Impure Programs in Coq', PACMPL 4(POPL), Article 51, 2020, DOI: 10.1145/3371119.",
+      "A. W. Roscoe, The Theory and Practice of Concurrency, Prentice Hall, 1997, ISBN 0-13-674409-5 (alternative interactive fix via failures–divergences refinement; mechanized in HOL-CSP)."
+    ],
+    "design_question": "Shows how closed-program compiler verification closes the finite-trace do-nothing loophole: recording complete behaviors (rather than prefix-closed finite traces) makes ObsRefines reject both silentDivergeObs and immediateHaltObs against any event-emitting specification whenever Impl is nonempty."
+  },
+  {
+    "id": "obs-refines-rejects-new-divergence",
+    "lean": "Toy.SafetyLiveness.obsRefines_separates_diverges_of_obsFinPrefixes_of_not_diverges",
+    "lean_names": [
+      "Toy.SafetyLiveness.divergeAfterTrue_separates_sameTrace_terminates",
+      "Toy.SafetyLiveness.obsRefines_rejects_divergence_of_noDivergence"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "Whenever some finite trace u is an observable prefix of Spec (obsFinPrefixes Spec u) and Spec forbids silent divergence at u (¬ Spec (.diverges u)), the implementation {ObsBehavior.diverges u} passes finite-trace refinement against Spec on obsFinPrefixes yet fails complete-behavior refinement ObsRefines.",
+    "hypotheses": [
+      {
+        "name": "hPrefix : obsFinPrefixes Spec u",
+        "purpose": "Ensures u (and by prefix-closure every prefix of u) belongs to obsFinPrefixes Spec, so {ObsBehavior.diverges u} passes finite-trace refinement against Spec.",
+        "tightness": "tight",
+        "counterexample": "Toy.SafetyLiveness.obsSeparatesDiverges_tight_prefix"
+      },
+      {
+        "name": "hNotDiv : ¬ Spec (.diverges u)",
+        "purpose": "Minimal point-level condition stating that silent divergence at u is newly introduced relative to Spec (strictly weaker than global ObsSatisfies Spec NoDivergence), making ObsRefines fail.",
+        "tightness": "tight",
+        "counterexample": "Toy.SafetyLiveness.obsSeparatesDiverges_tight_notDiv"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "On Bool with Spec = emitTrueObs ({.terminates [true]}) and u = [true], [true] lies in obsFinPrefixes emitTrueObs and emitTrueObs rejects .diverges [true] (exercising .diverges vs. .terminates on the identical complete trace [true]; see also Toy.SafetyLiveness.divergeAfterTrue_separates_sameTrace_terminates).",
+    "nonvacuity_witness_lean": "Toy.SafetyLiveness.obsSeparatesDiverges_sameTrace_nonvacuity",
+    "non_claims": [
+      "Does not require global divergence-freedom ObsSatisfies Spec NoDivergence: Spec may legitimately diverge after some other trace v ≠ u while still forbidding divergence at u (global NoDivergence rejection is recorded separately as helper Toy.SafetyLiveness.obsRefines_rejects_divergence_of_noDivergence).",
+      "Does not rule out infinite reactive chatter (an infinite stream .reacts s that never reaches a desired event); rejecting chatter requires constraining .reacts s in Spec.",
+      "Does not establish operational simulation soundness without a well-founded stuttering measure (Leroy, 2009, §3.5) and target determinism (Leroy, 2009, §2.1), nor open-module compositionality (Patterson & Ahmed, 2019)."
+    ],
+    "prior_art": [
+      "Xavier Leroy, 'A Formally Verified Compiler Back-end', Journal of Automated Reasoning 43(4):363-446, 2009, DOI: 10.1007/s10817-009-9155-4 (Sections 2.1, 3.4, and 3.5).",
+      "Xavier Leroy et al., CompCert verified C compiler, Coq module common/Behaviors.v (repository AbsInt/CompCert, commit 2685140bf72c959446981fb99b5e44a8975021bc, lines 41-45), https://github.com/AbsInt/CompCert/blob/2685140bf72c959446981fb99b5e44a8975021bc/common/Behaviors.v#L41-L45 (Terminates vs. Diverges on identical finite trace).",
+      "Xavier Leroy and Hervé Grall, 'Coinductive big-step operational semantics', Information and Computation 207(2):284-304, 2009, DOI: 10.1016/j.ic.2007.12.004.",
+      "Stephen D. Brookes and A. W. Roscoe, 'An Improved Failures Model for Communicating Processes', Seminar on Concurrency (LNCS 197):281-305, Springer, 1985, DOI: 10.1007/3-540-15670-4_14."
+    ],
+    "design_question": "Pinpoints why finite-prefix (prefix-closed) tracking is insufficient to reject newly introduced divergence: an implementation that emits a valid trace u and then hangs (.diverges u) has exactly the same finite prefixes as {.terminates u}, so only explicit divergence observation rejects post-prefix hangs. When Spec = {.terminates u}, the result directly exercises the constructor tag distinction between .diverges u and .terminates u on the identical trace u (Toy.SafetyLiveness.divergeAfterTrue_separates_sameTrace_terminates), unlike do-nothing separation at [] against nonempty traces."
+  },
+  {
+    "id": "closure-inter-eq-iff-safety-and-machine-closed",
+    "lean": "Toy.SafetyLiveness.closure_propInter_eq_iff_isSafety_and_machineClosed",
+    "lean_names": [
+      "Toy.SafetyLiveness.eventuallyTrue_tight_machineClosed_iff",
+      "Toy.SafetyLiveness.machineClosed_iff_closure_propInter_eq_of_isSafety",
+      "Toy.SafetyLiveness.machineClosed_not_closed_under_propInter",
+      "Toy.SafetyLiveness.machineClosed_without_liveness_witness"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For arbitrary infinite-trace properties S and L over any alphabet α, Closure (PropInter S L) = S holds if and only if S is a safety property and the pair (S, L) is machine-closed.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "On Bool, (StartsTrue, EventuallyFalse) satisfies both sides while (StartsFalseStaysFalse, EventuallyTrue) falsifies both sides.",
+    "nonvacuity_witness_lean": "Toy.SafetyLiveness.closure_propInter_eq_iff_nonvacuity",
+    "non_claims": [
+      "Does not require or imply IsLiveness L: Closure (PropInter S L) = S can hold when L is itself a safety property (Toy.SafetyLiveness.machineClosed_without_liveness_witness). When IsSafety S is assumed upfront, the specialized equivalence MachineClosed S L ↔ Closure (PropInter S L) = S holds (Toy.SafetyLiveness.machineClosed_iff_closure_propInter_eq_of_isSafety), where IsSafety S is strictly tight (Toy.SafetyLiveness.eventuallyTrue_tight_machineClosed_iff).",
+      "Machine closure is NOT closed under conjunction or specification composition: even when (S, L₁) and (S, L₂) are both machine-closed with live L₁ and L₂, (S, PropInter L₁ L₂) need not be machine-closed (proved in Toy.SafetyLiveness.machineClosed_not_closed_under_propInter).",
+      "Does not detect deadlocked finite executions of an underlying transition system: MachineClosed S L quantifies only over finite prefixes that already extend to some infinite trace in S (so deadlocked prefixes with no infinite continuation in S are invisible unless encoded via infinite stuttering as in Abadi & Lamport, 1991, or explicit finite traces; in particular, S = EmptyProp satisfies both sides vacuously).",
+      "Does not require stuttering invariance of S or L (unlike Abadi & Lamport, 1991, §§2.2–2.3, and Grov & Merz, 2011).",
+      "Does not imply that non-machine-closed specifications are always erroneous: as argued by Abadi et al. (1991, IPL 40:141–142), non-machine-closed specifications remain legitimate at high/abstract specification levels; machine closure is specifically required on the lower-level (implementation) specification in Abadi and Lamport's refinement-mapping completeness theorem (which also requires finite invisible nondeterminism and internal continuity of the abstract specification, plus history and prophecy variables)."
+    ],
+    "prior_art": [
+      "Martín Abadi and Leslie Lamport, 'The existence of refinement mappings', Theoretical Computer Science 82(2):253-284, 1991, DOI: 10.1016/0304-3975(91)90224-P (Section 2.3 'Specifications', machine closure M = Closure(M ∩ L) and Lemma 1; Section 7 completeness theorem).",
+      "Krzysztof R. Apt, Nissim Francez, and Shmuel Katz, 'Appraising fairness in languages for distributed programming', Distributed Computing 2(4):226-241, 1988, DOI: 10.1007/BF01872848 (feasibility of fairness).",
+      "Frank Dederichs and Rainer Weber, 'Safety and liveness from a methodological point of view', Information Processing Letters 36(1):25-30, 1990, DOI: 10.1016/0020-0190(90)90181-V (relative liveness).",
+      "Martín Abadi, Bowen Alpern, Krzysztof R. Apt, Nissim Francez, Shmuel Katz, Leslie Lamport, and Fred B. Schneider, 'Preserving Liveness: Comments on \"Safety and Liveness from a Methodological Point of View\"', Information Processing Letters 40(3):141-142, 1991, DOI: 10.1016/0020-0190(91)90168-H.",
+      "Thomas A. Henzinger, 'Sooner is safer than later', Information Processing Letters 43(3):135-141, 1992, DOI: 10.1016/0020-0190(92)90005-G (congruousness).",
+      "Leslie Lamport, Specifying Systems: The TLA+ Language and Tools for Hardware and Software Engineers, Addison-Wesley, 2002, ISBN 0-321-14306-X (Chapter 8, Liveness and Fairness).",
+      "Gudmund Grov and Stephan Merz, 'A Definitional Encoding of TLA* in Isabelle/HOL', Archive of Formal Proofs, November 19, 2011, https://isa-afp.org/entries/TLA.html."
+    ],
+    "design_question": "Characterizes exactly when layering a fairness or liveness requirement L onto a transition specification S leaves its finite-prefix safety behavior unchanged (Closure (PropInter S L) = S) rather than sneaking in hidden safety constraints."
+  },
+  {
+    "id": "alpern-schneider-machine-closed",
+    "lean": "Toy.SafetyLiveness.alpernSchneider_is_machineClosed",
+    "lean_names": [
+      "Toy.SafetyLiveness.alpernSchneider_nonunique_components",
+      "Toy.SafetyLiveness.emptyAlphabet_no_liveness",
+      "Toy.SafetyLiveness.nonMachineClosed_consistent_spec_counterexample"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "Supporting reference point: for any alphabet α (including Empty) and any infinite-trace property P, the canonical Alpern–Schneider decomposition pair (Closure P, LivenessPart P) is machine-closed.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "On Bool, StartsTrueAndEventuallyFalse is a nontrivial property that is neither safety nor liveness.",
+    "nonvacuity_witness_lean": "Toy.SafetyLiveness.alpernSchneider_is_machineClosed_nonvacuity",
+    "non_claims": [
+      "Holds vacuously when P = EmptyProp (since Closure EmptyProp = EmptyProp admits no infinite traces), and does not detect transition-system deadlocks without infinite continuations in Closure P.",
+      "Does not imply IsLiveness (LivenessPart P) without Nonempty α: over Empty, MachineClosed (Closure P) (LivenessPart P) holds vacuously (this card's theorem Toy.SafetyLiveness.alpernSchneider_is_machineClosed has no hypothesis on α) even though LivenessPart P is not live (Toy.SafetyLiveness.emptyAlphabet_no_liveness).",
+      "Does not provide a computable or constructive repair for non-machine-closed specifications: while (Closure P, LivenessPart P) is always machine-closed semantically, computing Closure (PropInter S L) from an arbitrary specification pair (S, L) is generally undecidable and does not automatically yield an executable state machine.",
+      "Does not imply that every (S, L) decomposition of P with IsSafety S and IsLiveness L is machine-closed (see Toy.SafetyLiveness.nonMachineClosed_consistent_spec_counterexample and Toy.SafetyLiveness.alpernSchneider_nonunique_components)."
+    ],
+    "prior_art": [
+      "Bowen Alpern and Fred B. Schneider, 'Defining Liveness', Information Processing Letters 21(4):181-185, 1985, DOI: 10.1016/0020-0190(85)90056-0.",
+      "Martín Abadi and Leslie Lamport, 'The existence of refinement mappings', Theoretical Computer Science 82(2):253-284, 1991, DOI: 10.1016/0304-3975(91)90224-P (Section 2.3).",
+      "Christel Baier and Joost-Pieter Katoen, Principles of Model Checking, MIT Press, 2008, ISBN 978-0-262-02649-9 (§3.4.2 'Safety vs. Liveness Properties': Lemma 3.38 Sharpest Decomposition)."
+    ],
+    "design_question": "Supporting reference point bridging Alpern–Schneider decomposition and machine closure: decomposing P via its canonical safety hull Closure P never introduces safety/liveness mismatch."
+  },
+  {
+    "id": "non-machine-closed-consistent-spec",
+    "lean": "Toy.SafetyLiveness.nonMachineClosed_consistent_spec_counterexample",
+    "lean_names": [
+      "Toy.SafetyLiveness.closure_propInter_startsFalseStaysFalse_eventuallyTrue_eq_startsTrue",
+      "Toy.SafetyLiveness.startsTrue_eventuallyFalse_machineClosed"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "On Bool, pairing StartsFalseStaysFalse (fun s => s 0 = false → ∀ i, s i = false, a safety property) with EventuallyTrue (fun s => ∃ i, s i = true, a liveness property) yields a satisfiable conjunction explicitly admitting constTrue (fun _ => true), yet the pair is not machine-closed and Closure (PropInter StartsFalseStaysFalse EventuallyTrue) ≠ StartsFalseStaysFalse.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Self-witnessing concrete counterexample on Bool exposing PropInter StartsFalseStaysFalse EventuallyTrue constTrue while refuting extension of prefix [false] from constFalse.",
+    "nonvacuity_witness_lean": "Toy.SafetyLiveness.nonMachineClosed_consistent_spec_counterexample",
+    "non_claims": [
+      "Does not claim that combining safety and liveness always fails machine closure: (StartsTrue, EventuallyFalse) is a nontrivial machine-closed pair (Toy.SafetyLiveness.startsTrue_eventuallyFalse_machineClosed).",
+      "Does not claim that PropInter StartsFalseStaysFalse EventuallyTrue is unimplementable; rather, its effective safety hull is strictly stronger than StartsFalseStaysFalse (namely StartsTrue: the conjunction equals StartsTrue, and so does its closure; Toy.SafetyLiveness.closure_propInter_startsFalseStaysFalse_eventuallyTrue_eq_startsTrue).",
+      "Does not imply that non-machine-closed specifications should always be prohibited: non-machine-closed pairs are useful as high-level abstract specifications (Abadi et al., 1991, IPL 40:141–142), though they violate the machine-closure hypothesis required of lower-level implementations in refinement-mapping completeness theorems (Abadi & Lamport, 1991, Section 2.3 & Section 7)."
+    ],
+    "prior_art": [
+      "Martín Abadi and Leslie Lamport, 'The existence of refinement mappings', Theoretical Computer Science 82(2):253-284, 1991, DOI: 10.1016/0304-3975(91)90224-P (Section 2.3, specifications whose supplementary clause adds safety constraints).",
+      "Frank Dederichs and Rainer Weber, 'Safety and liveness from a methodological point of view', Information Processing Letters 36(1):25-30, 1990, DOI: 10.1016/0020-0190(90)90181-V.",
+      "Martín Abadi, Bowen Alpern, Krzysztof R. Apt, Nissim Francez, Shmuel Katz, Leslie Lamport, and Fred B. Schneider, 'Preserving Liveness: Comments on \"Safety and Liveness from a Methodological Point of View\"', Information Processing Letters 40(3):141-142, 1991, DOI: 10.1016/0020-0190(91)90168-H.",
+      "Krzysztof R. Apt, Nissim Francez, and Shmuel Katz, 'Appraising fairness in languages for distributed programming', Distributed Computing 2(4):226-241, 1988, DOI: 10.1007/BF01872848.",
+      "Leslie Lamport, Specifying Systems: The TLA+ Language and Tools for Hardware and Software Engineers, Addison-Wesley, 2002, ISBN 0-321-14306-X (Chapter 8)."
+    ],
+    "design_question": "Demonstrates on a concrete satisfiable specification how conjoining a liveness requirement with a safety invariant can silently rule out finite prefixes permitted by the safety invariant alone, creating a hidden safety obligation."
+  }
+]

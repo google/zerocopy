@@ -1,0 +1,97 @@
+/-
+Axiom audit for every declaration referenced by `results.json`.
+Run from `lean/` after `lake build`:
+
+    lake env lean RevalidationAudit.lean
+
+This file is not part of the `Toy` library target.
+-/
+import Toy
+
+#print axioms Toy.SafetyLiveness.alpernSchneider_decomposition_of_nonempty
+#print axioms Toy.SafetyLiveness.alpernSchneider_is_machineClosed
+#print axioms Toy.SafetyLiveness.alpernSchneider_is_machineClosed_nonvacuity
+#print axioms Toy.SafetyLiveness.alpernSchneider_nonunique_components
+#print axioms Toy.SafetyLiveness.alpernSchneider_nonvacuity
+#print axioms Toy.SafetyLiveness.alwaysFalse_safety_entails_nontrivial_liveness_eventuallyFalse
+#print axioms Toy.SafetyLiveness.alwaysFalse_tight_finPrefixes_liveness
+#print axioms Toy.SafetyLiveness.alwaysFalse_tight_liveness_of_unique
+#print axioms Toy.SafetyLiveness.closure_isSafety
+#print axioms Toy.SafetyLiveness.closure_minimal_of_isSafety
+#print axioms Toy.SafetyLiveness.closure_propInter_eq_iff_isSafety_and_machineClosed
+#print axioms Toy.SafetyLiveness.closure_propInter_eq_iff_nonvacuity
+#print axioms Toy.SafetyLiveness.closure_propInter_startsFalseStaysFalse_eventuallyTrue_eq_startsTrue
+#print axioms Toy.SafetyLiveness.divergeAfterTrue_separates_sameTrace_terminates
+#print axioms Toy.SafetyLiveness.doNothingFin_finRefines_iff_nil_mem
+#print axioms Toy.SafetyLiveness.doNothingFin_finRefines_without_prefixClosed
+#print axioms Toy.SafetyLiveness.doNothingFin_refines_every_prefixClosed_nonempty
+#print axioms Toy.SafetyLiveness.doNothingFin_refines_nonvacuity
+#print axioms Toy.SafetyLiveness.emptyAlphabet_no_liveness
+#print axioms Toy.SafetyLiveness.emptyAlphabet_tight_alpernSchneider
+#print axioms Toy.SafetyLiveness.emptyAlphabet_tight_isLiveness_iff_closure_eq_univ
+#print axioms Toy.SafetyLiveness.emptyAlphabet_tight_safety_liveness_iff_univ
+#print axioms Toy.SafetyLiveness.emptyFinSystem_tight_nonempty
+#print axioms Toy.SafetyLiveness.emptyStreamSystem_refines_all
+#print axioms Toy.SafetyLiveness.eq_univ_of_isSafety_of_isLiveness
+#print axioms Toy.SafetyLiveness.eventuallyTrue_tight_finPrefixes_safety
+#print axioms Toy.SafetyLiveness.eventuallyTrue_tight_machineClosed_iff
+#print axioms Toy.SafetyLiveness.eventuallyTrue_tight_safety_of_unique
+#print axioms Toy.SafetyLiveness.finPrefixes_eq_fails_every_nontrivial_liveness
+#print axioms Toy.SafetyLiveness.finPrefixes_fails_liveness_nonvacuity
+#print axioms Toy.SafetyLiveness.finPrefixes_preserves_safety_nonvacuity
+#print axioms Toy.SafetyLiveness.finPrefixes_refines_fails_every_nontrivial_liveness
+#print axioms Toy.SafetyLiveness.finPrefixes_refines_fails_of_not_isSafety
+#print axioms Toy.SafetyLiveness.finPrefixes_refines_preserves_safety
+#print axioms Toy.SafetyLiveness.finPrefixes_safety_tight_refines
+#print axioms Toy.SafetyLiveness.finPrefixes_safety_tight_satisfies
+#print axioms Toy.SafetyLiveness.finRefinesPreserves_linearTime
+#print axioms Toy.SafetyLiveness.finRefines_cannot_preserve_nonvacuity
+#print axioms Toy.SafetyLiveness.finRefines_cannot_preserve_property_rejecting_doNothing
+#print axioms Toy.SafetyLiveness.finRefines_impossibility_tight_nonempty
+#print axioms Toy.SafetyLiveness.finRefines_impossibility_tight_prefixClosed
+#print axioms Toy.SafetyLiveness.finRefines_impossibility_tight_reject
+#print axioms Toy.SafetyLiveness.finRefines_impossibility_tight_spec
+#print axioms Toy.SafetyLiveness.finRefines_obsFinPrefixes_of_doNothing
+#print axioms Toy.SafetyLiveness.isLiveness_iff_closure_eq_univ_of_nonempty
+#print axioms Toy.SafetyLiveness.isLiveness_livenessPart_of_nonempty
+#print axioms Toy.SafetyLiveness.isSafety_and_isLiveness_iff_eq_univ_nonvacuity
+#print axioms Toy.SafetyLiveness.isSafety_and_isLiveness_iff_eq_univ_of_nonempty
+#print axioms Toy.SafetyLiveness.isSafety_iff_closure_eq
+#print axioms Toy.SafetyLiveness.isSafety_iff_closure_eq_nonvacuity
+#print axioms Toy.SafetyLiveness.linearTime_never_meets_impossibility_hyps
+#print axioms Toy.SafetyLiveness.linearTime_pred_accepts_doNothing_of_accepts_healthy
+#print axioms Toy.SafetyLiveness.machineClosed_iff_closure_propInter_eq_of_isSafety
+#print axioms Toy.SafetyLiveness.machineClosed_not_closed_under_propInter
+#print axioms Toy.SafetyLiveness.machineClosed_without_liveness_witness
+#print axioms Toy.SafetyLiveness.mixedSilentAndEmit_not_obsRefines_without_doNothing
+#print axioms Toy.SafetyLiveness.no_nonempty_streamSystem_refines_all_nonempty
+#print axioms Toy.SafetyLiveness.nonMachineClosed_consistent_spec_counterexample
+#print axioms Toy.SafetyLiveness.not_obsRefines_of_silent_behavior
+#print axioms Toy.SafetyLiveness.obsAllowDiverge_tight_progress
+#print axioms Toy.SafetyLiveness.obsEmitTrue_tight_doNothing
+#print axioms Toy.SafetyLiveness.obsEmpty_tight_implNE
+#print axioms Toy.SafetyLiveness.obsRefinesPreserves_emitsEvent_rejects_doNothing
+#print axioms Toy.SafetyLiveness.obsRefines_fails_possibility_canEmit
+#print axioms Toy.SafetyLiveness.obsRefines_implies_finRefines
+#print axioms Toy.SafetyLiveness.obsRefines_rejects_divergence_of_noDivergence
+#print axioms Toy.SafetyLiveness.obsRefines_separates_diverges_of_obsFinPrefixes_of_not_diverges
+#print axioms Toy.SafetyLiveness.obsRefines_separates_doNothing_from_finRefines
+#print axioms Toy.SafetyLiveness.obsRefines_separates_doNothing_nonvacuity
+#print axioms Toy.SafetyLiveness.obsSeparatesDiverges_sameTrace_nonvacuity
+#print axioms Toy.SafetyLiveness.obsSeparatesDiverges_tight_notDiv
+#print axioms Toy.SafetyLiveness.obsSeparatesDiverges_tight_prefix
+#print axioms Toy.SafetyLiveness.obsSpecEmpty_tight_specNE
+#print axioms Toy.SafetyLiveness.propInter_closure_livenessPart_eq
+#print axioms Toy.SafetyLiveness.propInter_startsTrue_eventuallyFalse_neither_safety_nor_liveness
+#print axioms Toy.SafetyLiveness.singletonTrueTrace_tight_prefixClosed
+#print axioms Toy.SafetyLiveness.startsTrue_eventuallyFalse_machineClosed
+#print axioms Toy.SafetyLiveness.stepDiffers_isSafety
+#print axioms Toy.SafetyLiveness.streamRefines_closure_of_finPrefixes_refines
+#print axioms Toy.SafetyLiveness.streamRefines_fails_possibility
+#print axioms Toy.SafetyLiveness.streamRefines_preserves_all_properties
+#print axioms Toy.SafetyLiveness.streamRefines_preserves_nonvacuity
+#print axioms Toy.SafetyLiveness.streamRefines_preserves_tight_refines
+#print axioms Toy.SafetyLiveness.streamRefines_preserves_tight_satisfies
+#print axioms Toy.SafetyLiveness.streamRefines_rejects_constFalse_for_eventuallyTrue
+#print axioms Toy.SafetyLiveness.unit_streamSystem_refines_all_nonempty
+#print axioms Toy.SafetyLiveness.univ_tight_finPrefixes_liveness

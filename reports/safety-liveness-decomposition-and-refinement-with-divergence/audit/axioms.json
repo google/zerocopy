@@ -1,0 +1,634 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.SafetyLiveness.AlwaysFalse": [],
+    "Toy.SafetyLiveness.AlwaysFalseOrTwoTrues": [],
+    "Toy.SafetyLiveness.Closure": [],
+    "Toy.SafetyLiveness.EmitsEvent": [],
+    "Toy.SafetyLiveness.EmptyProp": [],
+    "Toy.SafetyLiveness.EventuallyAlwaysFalse": [],
+    "Toy.SafetyLiveness.EventuallyAlwaysTrue": [],
+    "Toy.SafetyLiveness.EventuallyFalse": [],
+    "Toy.SafetyLiveness.EventuallyTrue": [],
+    "Toy.SafetyLiveness.FinHasNonemptyTrace": [],
+    "Toy.SafetyLiveness.FinNeverTrue": [],
+    "Toy.SafetyLiveness.FinRefines": [],
+    "Toy.SafetyLiveness.FinRefinesPreserves": [],
+    "Toy.SafetyLiveness.FinTraceSystem": [],
+    "Toy.SafetyLiveness.HasPrefix": [],
+    "Toy.SafetyLiveness.InfTrace": [],
+    "Toy.SafetyLiveness.IsLiveness": [],
+    "Toy.SafetyLiveness.IsNonemptyFin": [],
+    "Toy.SafetyLiveness.IsNonemptyObs": [],
+    "Toy.SafetyLiveness.IsNonemptyStream": [],
+    "Toy.SafetyLiveness.IsPrefix": [],
+    "Toy.SafetyLiveness.IsPrefixClosed": [],
+    "Toy.SafetyLiveness.IsSafety": [],
+    "Toy.SafetyLiveness.LivenessPart": [],
+    "Toy.SafetyLiveness.MachineClosed": [],
+    "Toy.SafetyLiveness.NoDivergence": [],
+    "Toy.SafetyLiveness.ObsBehavior": [],
+    "Toy.SafetyLiveness.ObsBehavior.casesOn": [],
+    "Toy.SafetyLiveness.ObsBehavior.ctorElim": [],
+    "Toy.SafetyLiveness.ObsBehavior.ctorElimType": [],
+    "Toy.SafetyLiveness.ObsBehavior.ctorIdx": [],
+    "Toy.SafetyLiveness.ObsBehavior.diverges": [],
+    "Toy.SafetyLiveness.ObsBehavior.diverges.elim": [],
+    "Toy.SafetyLiveness.ObsBehavior.diverges.inj": [],
+    "Toy.SafetyLiveness.ObsBehavior.diverges.injEq": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.ObsBehavior.diverges.noConfusion": [],
+    "Toy.SafetyLiveness.ObsBehavior.diverges.sizeOf_spec": [],
+    "Toy.SafetyLiveness.ObsBehavior.noConfusion": [],
+    "Toy.SafetyLiveness.ObsBehavior.noConfusionType": [],
+    "Toy.SafetyLiveness.ObsBehavior.reacts": [],
+    "Toy.SafetyLiveness.ObsBehavior.reacts.elim": [],
+    "Toy.SafetyLiveness.ObsBehavior.reacts.inj": [],
+    "Toy.SafetyLiveness.ObsBehavior.reacts.injEq": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.ObsBehavior.reacts.noConfusion": [],
+    "Toy.SafetyLiveness.ObsBehavior.reacts.sizeOf_spec": [],
+    "Toy.SafetyLiveness.ObsBehavior.rec": [],
+    "Toy.SafetyLiveness.ObsBehavior.recOn": [],
+    "Toy.SafetyLiveness.ObsBehavior.terminates": [],
+    "Toy.SafetyLiveness.ObsBehavior.terminates.elim": [],
+    "Toy.SafetyLiveness.ObsBehavior.terminates.inj": [],
+    "Toy.SafetyLiveness.ObsBehavior.terminates.injEq": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.ObsBehavior.terminates.noConfusion": [],
+    "Toy.SafetyLiveness.ObsBehavior.terminates.sizeOf_spec": [],
+    "Toy.SafetyLiveness.ObsCanEmit": [],
+    "Toy.SafetyLiveness.ObsProp": [],
+    "Toy.SafetyLiveness.ObsRefines": [],
+    "Toy.SafetyLiveness.ObsRefinesPreserves": [],
+    "Toy.SafetyLiveness.ObsSatisfies": [],
+    "Toy.SafetyLiveness.ObsSystem": [],
+    "Toy.SafetyLiveness.PropInter": [],
+    "Toy.SafetyLiveness.Satisfies": [],
+    "Toy.SafetyLiveness.StartsFalseStaysFalse": [],
+    "Toy.SafetyLiveness.StartsTrue": [],
+    "Toy.SafetyLiveness.StartsTrue.eq_1": [],
+    "Toy.SafetyLiveness.StartsTrueAndEventuallyFalse": [],
+    "Toy.SafetyLiveness.StreamRefines": [],
+    "Toy.SafetyLiveness.StreamSystem": [],
+    "Toy.SafetyLiveness.TraceProp": [],
+    "Toy.SafetyLiveness.UnivProp": [],
+    "Toy.SafetyLiveness.alpernSchneider_decomposition_of_nonempty": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.alpernSchneider_is_machineClosed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.alpernSchneider_is_machineClosed_nonvacuity": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.alpernSchneider_nonunique_components": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.alpernSchneider_nonvacuity": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.alwaysFalse_eventuallyTrue_not_machineClosed": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.alwaysFalse_isSafety": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.alwaysFalse_not_isLiveness": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.alwaysFalse_safety_entails_nontrivial_liveness_eventuallyFalse": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.alwaysFalse_tight_finPrefixes_liveness": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.alwaysFalse_tight_finPrefixes_liveness.match_1_1": [],
+    "Toy.SafetyLiveness.alwaysFalse_tight_liveness_of_unique": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.appendPrefix": [],
+    "Toy.SafetyLiveness.appendPrefix.eq_1": [],
+    "Toy.SafetyLiveness.appendPrefix_neg_ne_constFalse": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.appendPrefix_pos_true_constFalse": [],
+    "Toy.SafetyLiveness.behaviorPrefixes": [],
+    "Toy.SafetyLiveness.behaviorPrefixes.match_1": [],
+    "Toy.SafetyLiveness.behaviorPrefixes_isPrefixClosed": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.behaviorPrefixes_neg_diverges": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.behaviorPrefixes_nil": [],
+    "Toy.SafetyLiveness.behaviorPrefixes_pos_terminates": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.closure_isSafety": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.closure_minimal_of_isSafety": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.closure_mono": [],
+    "Toy.SafetyLiveness.closure_neg_alwaysFalse_rejects_constTrue": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.closure_pos_eventuallyTrue_admits_constFalse": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.closure_propInter_eq_iff_isSafety_and_machineClosed": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.closure_propInter_eq_iff_nonvacuity": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.closure_propInter_startsFalseStaysFalse_eventuallyTrue_eq_startsTrue": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.closure_subset_of_isSafety": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.constFalse": [],
+    "Toy.SafetyLiveness.constFalse.eq_1": [],
+    "Toy.SafetyLiveness.constTrue": [],
+    "Toy.SafetyLiveness.constTrue.eq_1": [],
+    "Toy.SafetyLiveness.divergeAfterPrefix_fails_obsRefines_noDivergence": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.divergeAfterTrueObs": [],
+    "Toy.SafetyLiveness.divergeAfterTrue_separates_sameTrace_terminates": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.doNothingFin": [],
+    "Toy.SafetyLiveness.doNothingFin.eq_1": [],
+    "Toy.SafetyLiveness.doNothingFin_finRefines_iff_nil_mem": [],
+    "Toy.SafetyLiveness.doNothingFin_finRefines_without_prefixClosed": [],
+    "Toy.SafetyLiveness.doNothingFin_isNonemptyFin": [],
+    "Toy.SafetyLiveness.doNothingFin_isPrefixClosed": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.doNothingFin_neg_true": [],
+    "Toy.SafetyLiveness.doNothingFin_pos_nil": [],
+    "Toy.SafetyLiveness.doNothingFin_refines_every_prefixClosed_nonempty": [],
+    "Toy.SafetyLiveness.doNothingFin_refines_nonvacuity": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.embedStreams": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.embedStreams.match_1": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.embedStreams_neg": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.embedStreams_pos": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.embedStreams_refines_iff": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.emitTrueFin": [],
+    "Toy.SafetyLiveness.emitTrueFin_isNonemptyFin": [],
+    "Toy.SafetyLiveness.emitTrueFin_isPrefixClosed": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.emitTrueObs": [],
+    "Toy.SafetyLiveness.emitTwoTruesObs": [],
+    "Toy.SafetyLiveness.emitsEvent_neg": [],
+    "Toy.SafetyLiveness.emitsEvent_pos": [],
+    "Toy.SafetyLiveness.emptyAlphabet_no_liveness": [],
+    "Toy.SafetyLiveness.emptyAlphabet_tight_alpernSchneider": [],
+    "Toy.SafetyLiveness.emptyAlphabet_tight_isLiveness_iff_closure_eq_univ": [
+      "Quot.sound"
+    ],
+    "Toy.SafetyLiveness.emptyAlphabet_tight_safety_liveness_iff_univ": [],
+    "Toy.SafetyLiveness.emptyFinSystem_tight_nonempty": [],
+    "Toy.SafetyLiveness.emptyProp_neg_constFalse": [],
+    "Toy.SafetyLiveness.emptyProp_pos_implies_all": [],
+    "Toy.SafetyLiveness.emptyStreamSystem_refines_all": [],
+    "Toy.SafetyLiveness.eq_univ_of_isSafety_of_isLiveness": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.eq_univ_of_isSafety_of_isLiveness_nonvacuity": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.eventuallyFalse_isLiveness": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.eventuallyTrue_isLiveness": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.eventuallyTrue_not_isSafety": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.eventuallyTrue_tight_finPrefixes_safety": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.eventuallyTrue_tight_machineClosed_iff": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.eventuallyTrue_tight_safety_of_unique": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.finPrefixes": [],
+    "Toy.SafetyLiveness.finPrefixes_eq_fails_every_nontrivial_liveness": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.finPrefixes_eq_univ_of_isLiveness": [],
+    "Toy.SafetyLiveness.finPrefixes_fails_liveness_nonvacuity": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.finPrefixes_isNonemptyFin_of_isNonemptyStream": [],
+    "Toy.SafetyLiveness.finPrefixes_isPrefixClosed": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.finPrefixes_neg_alwaysFalse": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.finPrefixes_pos_alwaysFalse": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.finPrefixes_preserves_safety_nonvacuity": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.finPrefixes_refines_fails_every_nontrivial_liveness": [],
+    "Toy.SafetyLiveness.finPrefixes_refines_fails_of_not_isSafety": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.finPrefixes_refines_preserves_safety": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.finPrefixes_safety_tight_refines": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.finPrefixes_safety_tight_satisfies": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.finRefinesPreserves_linearTime": [],
+    "Toy.SafetyLiveness.finRefinesPreserves_neg_hasNonemptyTrace": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.finRefinesPreserves_pos_neverTrue": [],
+    "Toy.SafetyLiveness.finRefines_cannot_preserve_nonvacuity": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.finRefines_cannot_preserve_property_rejecting_doNothing": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.finRefines_impossibility_tight_nonempty": [],
+    "Toy.SafetyLiveness.finRefines_impossibility_tight_prefixClosed": [],
+    "Toy.SafetyLiveness.finRefines_impossibility_tight_reject": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.finRefines_impossibility_tight_spec": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.finRefines_neg_emitTrue_doNothing": [],
+    "Toy.SafetyLiveness.finRefines_obsFinPrefixes_of_doNothing": [],
+    "Toy.SafetyLiveness.finRefines_pos_doNothing_emitTrue": [],
+    "Toy.SafetyLiveness.hasPrefix_appendPrefix": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.hasPrefix_iff_takePrefix_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.hasPrefix_neg_constFalse": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.hasPrefix_nil": [],
+    "Toy.SafetyLiveness.hasPrefix_of_hasPrefix_takePrefix": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.hasPrefix_of_isPrefix": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.hasPrefix_pos_constFalse": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.hasPrefix_pos_constFalse.match_1_1": [],
+    "Toy.SafetyLiveness.hasPrefix_takePrefix": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.hasPrefix_takePrefix_iff": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.immediateHaltObs": [],
+    "Toy.SafetyLiveness.immediateHaltObs_fails_obsRefines_emitTrue": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.immediateHaltObs_neg": [],
+    "Toy.SafetyLiveness.immediateHaltObs_pos": [],
+    "Toy.SafetyLiveness.infTrace_neg_empty": [],
+    "Toy.SafetyLiveness.infTrace_pos_constFalse": [],
+    "Toy.SafetyLiveness.isLiveness_iff_closure_eq_univ_of_nonempty": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.isLiveness_livenessPart_of_nonempty": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.isNonemptyFin_neg_empty": [],
+    "Toy.SafetyLiveness.isNonemptyFin_pos_doNothing": [],
+    "Toy.SafetyLiveness.isNonemptyObs_neg_empty": [],
+    "Toy.SafetyLiveness.isNonemptyObs_pos_silentDiverge": [],
+    "Toy.SafetyLiveness.isNonemptyStream_neg_empty": [],
+    "Toy.SafetyLiveness.isNonemptyStream_pos_alwaysFalse": [],
+    "Toy.SafetyLiveness.isPrefixClosed_neg_singletonTrue": [],
+    "Toy.SafetyLiveness.isPrefixClosed_pos_doNothing": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.isPrefix_neg_example": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.isPrefix_nil": [],
+    "Toy.SafetyLiveness.isPrefix_pos_example": [],
+    "Toy.SafetyLiveness.isPrefix_refl": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.isPrefix_trans": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.isSafety_and_isLiveness_iff_eq_univ_nonvacuity": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.isSafety_and_isLiveness_iff_eq_univ_of_nonempty": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.isSafety_iff_closure_eq": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.isSafety_iff_closure_eq_nonvacuity": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.linearTime_never_meets_impossibility_hyps": [],
+    "Toy.SafetyLiveness.linearTime_pred_accepts_doNothing_of_accepts_healthy": [],
+    "Toy.SafetyLiveness.livenessPart_neg_rejects_constTrue": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.livenessPart_pos_admits_constFalse": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.machineClosed_iff_closure_propInter_eq_of_isSafety": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.machineClosed_iff_nonvacuity": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.machineClosed_not_closed_under_propInter": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.machineClosed_without_liveness_witness": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.mixedSilentAndEmit_not_obsRefines_without_doNothing": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.nil_mem_of_isPrefixClosed_isNonemptyFin": [],
+    "Toy.SafetyLiveness.noDivergence_neg": [],
+    "Toy.SafetyLiveness.noDivergence_pos": [],
+    "Toy.SafetyLiveness.no_nonempty_streamSystem_refines_all_nonempty": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.nonMachineClosed_consistent_spec_counterexample": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.not_obsRefines_of_silent_behavior": [],
+    "Toy.SafetyLiveness.obsAllowDiverge_tight_progress": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.obsBehavior_constructors_distinct": [],
+    "Toy.SafetyLiveness.obsCanEmit_neg_silentDiverge": [],
+    "Toy.SafetyLiveness.obsCanEmit_pos_emitTrue": [],
+    "Toy.SafetyLiveness.obsEmitTrue_tight_doNothing": [],
+    "Toy.SafetyLiveness.obsEmpty_tight_implNE": [],
+    "Toy.SafetyLiveness.obsFinPrefixes": [],
+    "Toy.SafetyLiveness.obsFinPrefixes_immediateHaltObs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.obsFinPrefixes_isNonemptyFin_of_isNonemptyObs": [],
+    "Toy.SafetyLiveness.obsFinPrefixes_isPrefixClosed": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.obsFinPrefixes_neg_silentDiverge": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.obsFinPrefixes_pos_emitTrue": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.obsFinPrefixes_silentDivergeObs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.obsMixed_tight_weakDoNothing": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.obsRefinesPreserves_emitsEvent_rejects_doNothing": [],
+    "Toy.SafetyLiveness.obsRefinesPreserves_linearTime": [],
+    "Toy.SafetyLiveness.obsRefinesPreserves_neg_canEmit": [],
+    "Toy.SafetyLiveness.obsRefinesPreserves_pos_emitsEvent": [],
+    "Toy.SafetyLiveness.obsRefines_fails_possibility_canEmit": [],
+    "Toy.SafetyLiveness.obsRefines_implies_finRefines": [],
+    "Toy.SafetyLiveness.obsRefines_implies_finRefines.match_1_1": [],
+    "Toy.SafetyLiveness.obsRefines_implies_finRefines_tight_ref": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.obsRefines_neg_silentDiverge_emitTrue": [],
+    "Toy.SafetyLiveness.obsRefines_pos_refl": [],
+    "Toy.SafetyLiveness.obsRefines_preserves_obsProp": [],
+    "Toy.SafetyLiveness.obsRefines_rejects_divergence_of_noDivergence": [],
+    "Toy.SafetyLiveness.obsRefines_separates_diverges_of_obsFinPrefixes_of_not_diverges": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.obsRefines_separates_doNothing_from_finRefines": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.obsRefines_separates_doNothing_from_finRefines.match_1_1": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.obsRefines_separates_doNothing_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.obsRefines_trans": [],
+    "Toy.SafetyLiveness.obsSatisfies_neg_silentDiverge_emitsEvent": [],
+    "Toy.SafetyLiveness.obsSatisfies_pos_emitTrue_emitsEvent": [],
+    "Toy.SafetyLiveness.obsSeparatesDiverges_sameTrace_nonvacuity": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.obsSeparatesDiverges_tight_notDiv": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.obsSeparatesDiverges_tight_prefix": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.obsSpecEmpty_tight_specNE": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.propInter_closure_livenessPart_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.propInter_neg_startsTrue_eventuallyFalse": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.propInter_pos_startsTrue_eventuallyFalse": [],
+    "Toy.SafetyLiveness.propInter_startsTrue_eventuallyFalse_neither_safety_nor_liveness": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.satisfies_neg_constTrue": [],
+    "Toy.SafetyLiveness.satisfies_pos_constFalse": [],
+    "Toy.SafetyLiveness.silentDivergeObs": [],
+    "Toy.SafetyLiveness.silentDivergeObs_fails_obsRefines_emitTrue": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.silentDivergeObs_neg": [],
+    "Toy.SafetyLiveness.silentDivergeObs_pos": [],
+    "Toy.SafetyLiveness.singletonTrueTrace_tight_prefixClosed": [],
+    "Toy.SafetyLiveness.startsFalseStaysFalse_eventuallyTrue_not_machineClosed": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.startsFalseStaysFalse_eventuallyTrue_not_machineClosed.match_1_1": [],
+    "Toy.SafetyLiveness.startsFalseStaysFalse_isSafety": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.startsTrueAndEventuallyFalse_neither_safety_nor_liveness": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.startsTrue_eventuallyFalse_machineClosed": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.startsTrue_isSafety": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.stepDiffers_isSafety": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.streamRefines_closure_of_finPrefixes_refines": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.streamRefines_fails_possibility": [],
+    "Toy.SafetyLiveness.streamRefines_neg_singleton": [],
+    "Toy.SafetyLiveness.streamRefines_pos_singleton": [],
+    "Toy.SafetyLiveness.streamRefines_preserves_all_properties": [],
+    "Toy.SafetyLiveness.streamRefines_preserves_nonvacuity": [],
+    "Toy.SafetyLiveness.streamRefines_preserves_tight_refines": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.streamRefines_preserves_tight_satisfies": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.streamRefines_rejects_constFalse_for_eventuallyTrue": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.streamRefines_trans": [],
+    "Toy.SafetyLiveness.streamSystem_neg_singleton": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.streamSystem_pos_singleton": [],
+    "Toy.SafetyLiveness.subset_closure": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.takePrefix": [],
+    "Toy.SafetyLiveness.takePrefix.eq_1": [],
+    "Toy.SafetyLiveness.takePrefix_eq_of_hasPrefix": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SafetyLiveness.takePrefix_getElem": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.takePrefix_length": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.takePrefix_neg_constFalse": [],
+    "Toy.SafetyLiveness.takePrefix_pos_constFalse": [],
+    "Toy.SafetyLiveness.traceProp_neg_alwaysFalse": [],
+    "Toy.SafetyLiveness.traceProp_pos_alwaysFalse": [],
+    "Toy.SafetyLiveness.unit_streamSystem_refines_all_nonempty": [
+      "Quot.sound"
+    ],
+    "Toy.SafetyLiveness.univProp_isLiveness": [
+      "propext"
+    ],
+    "Toy.SafetyLiveness.univProp_isSafety": [],
+    "Toy.SafetyLiveness.univProp_neg_ne_emptyProp": [],
+    "Toy.SafetyLiveness.univProp_pos_constFalse": [],
+    "Toy.SafetyLiveness.univ_tight_finPrefixes_liveness": [
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

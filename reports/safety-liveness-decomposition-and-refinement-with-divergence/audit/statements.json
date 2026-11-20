@@ -1,0 +1,440 @@
+{
+  "statements": {
+    "Toy.SafetyLiveness.alpernSchneider_decomposition_of_nonempty": {
+      "closure_sha256": "036c2d3d288f6317914584d549a12c970e80dd2d7278cb6408dda336fe0fe020",
+      "closure_size": 9,
+      "statement_sha256": "8ec3798b8ddf2a720de981a7845de06110df854a2729761456c121a74160ed99"
+    },
+    "Toy.SafetyLiveness.alpernSchneider_is_machineClosed": {
+      "closure_sha256": "1b55c43d07c78ae25da75db454337a5ff459c460dab97d21ec9a86b30e3ad9dd",
+      "closure_size": 7,
+      "statement_sha256": "acbb2a84da7035adc8569207a7fa4871e8ed864bb25cfff790369015310f506b"
+    },
+    "Toy.SafetyLiveness.alpernSchneider_is_machineClosed_nonvacuity": {
+      "closure_sha256": "dfdfb241b55d18570e7ff1d1ee2cc4c68009509725c1ec0623e04dc75459da26",
+      "closure_size": 7,
+      "statement_sha256": "a349977d7ac646c146b9ad4886244d7b5551d81ffcd14b23ae13e34ceb38663f"
+    },
+    "Toy.SafetyLiveness.alpernSchneider_nonunique_components": {
+      "closure_sha256": "05376b9bd98d6f9e17ceadbe67399a6260720e5e3702a46950a37bd55206f489",
+      "closure_size": 13,
+      "statement_sha256": "84f1fdb2e5cde4c0b2956ca4bc36fa9f91038f96e549c23c9690dd9bcb0182ae"
+    },
+    "Toy.SafetyLiveness.alpernSchneider_nonvacuity": {
+      "closure_sha256": "dfdfb241b55d18570e7ff1d1ee2cc4c68009509725c1ec0623e04dc75459da26",
+      "closure_size": 7,
+      "statement_sha256": "8d76b9d42a792b136e99cabb77ba4b3032761044acbcfae258fac13561d06d7b"
+    },
+    "Toy.SafetyLiveness.alwaysFalse_safety_entails_nontrivial_liveness_eventuallyFalse": {
+      "closure_sha256": "3288cdf5c0690ce2ef11ffdbf152b4fd63956d048117a2edb74b74b458a2621e",
+      "closure_size": 12,
+      "statement_sha256": "55a7798136ad69382da334e73751701dd67eb5614f00075c800f09f37bbe76cf"
+    },
+    "Toy.SafetyLiveness.alwaysFalse_tight_finPrefixes_liveness": {
+      "closure_sha256": "369233d5fc7b9a504f7fdaf04c04e53edc666e73435ae2ce4a64f87482c11422",
+      "closure_size": 11,
+      "statement_sha256": "27ba25f96d8ade6efd0bf5c08d8bde87883ce8ca23a9d0e4282902f54820cdc8"
+    },
+    "Toy.SafetyLiveness.alwaysFalse_tight_liveness_of_unique": {
+      "closure_sha256": "52756bfd568e38187ea50d7bd3410b7afd174ca27da39eb4ab31fc03a19a7347",
+      "closure_size": 7,
+      "statement_sha256": "60ac4ea0df2cd76cedacfddcf88b842c899d491a4f49c86b3f5b9880f56348b8"
+    },
+    "Toy.SafetyLiveness.closure_isSafety": {
+      "closure_sha256": "2cebb585660e760b7db77cfea450178a3e81e6af6be04381e98de2b09b682253",
+      "closure_size": 6,
+      "statement_sha256": "cebf4a771b75462c1fd4f52e84f5a52bb3340fdfe7f0baf28459dcb0feec66a9"
+    },
+    "Toy.SafetyLiveness.closure_minimal_of_isSafety": {
+      "closure_sha256": "2cebb585660e760b7db77cfea450178a3e81e6af6be04381e98de2b09b682253",
+      "closure_size": 6,
+      "statement_sha256": "26df79f18f68b830fdbd9f1a63b70698a8b4b4ebcb3a1cae29d04320495d24e1"
+    },
+    "Toy.SafetyLiveness.closure_propInter_eq_iff_isSafety_and_machineClosed": {
+      "closure_sha256": "171954d8d3f01c5d88a1f90dff15cef26fcf419bb3401f8dd05d4e38bbac428e",
+      "closure_size": 8,
+      "statement_sha256": "8913c624cb83b5f931ca66950f094b049ee3c41cb13a46cad19856445d9f4f32"
+    },
+    "Toy.SafetyLiveness.closure_propInter_eq_iff_nonvacuity": {
+      "closure_sha256": "0d3a00f75ed4bdd76c2d82ce560b22fcc32a9635f95adbe494a6cdd35841e34d",
+      "closure_size": 10,
+      "statement_sha256": "4c611cd44c84a581d364b96b344ec445391e9de2703db5fdab171aae1f947a38"
+    },
+    "Toy.SafetyLiveness.closure_propInter_startsFalseStaysFalse_eventuallyTrue_eq_startsTrue": {
+      "closure_sha256": "372adfe3083f632620026fbefc923ab49af033ae2280d003e95ed02cc280ceb0",
+      "closure_size": 9,
+      "statement_sha256": "42b762e2b7ded7577f2de3b8d176cd1ede2fbd5526cba3597097c52eb55f7446"
+    },
+    "Toy.SafetyLiveness.divergeAfterTrue_separates_sameTrace_terminates": {
+      "closure_sha256": "b62cbe6e39a385928e624ae4abcd8582a39975ae34f7fa5674633df40fe8f491",
+      "closure_size": 17,
+      "statement_sha256": "292baa4fcf63d1381c64b94eed8dd8f02e556ba359cc8b4803b741f2e3c8b36b"
+    },
+    "Toy.SafetyLiveness.doNothingFin_finRefines_iff_nil_mem": {
+      "closure_sha256": "8cd70438f2aff1e215577874ea19fb1cf3a9b34bc76e977d85ad58f0022a7f6f",
+      "closure_size": 3,
+      "statement_sha256": "539e9ce25941e223712cc7d6ec020e224a86923812683faeed7e224c70a0319f"
+    },
+    "Toy.SafetyLiveness.doNothingFin_finRefines_without_prefixClosed": {
+      "closure_sha256": "89ed23ff61f27d76b55c339f6666f4bd9ca68d55f8d293442e53d45f762adf34",
+      "closure_size": 6,
+      "statement_sha256": "e6f8aed53a06e377562081999894647e747606d5cb11d4308a73c63ea6bb738f"
+    },
+    "Toy.SafetyLiveness.doNothingFin_refines_every_prefixClosed_nonempty": {
+      "closure_sha256": "89ed23ff61f27d76b55c339f6666f4bd9ca68d55f8d293442e53d45f762adf34",
+      "closure_size": 6,
+      "statement_sha256": "7956989345b18ffacfb09c835d92e1eb3a6c872c574f0e1bf32376d6c8ad973c"
+    },
+    "Toy.SafetyLiveness.doNothingFin_refines_nonvacuity": {
+      "closure_sha256": "0bbbecda84d19e525d89581d92a798857670e7a18da2a474ac53400a7a426d51",
+      "closure_size": 5,
+      "statement_sha256": "61af6bf86f1d1a93421ffc201e6ee37ba815248c60f0d26b822d729573edfb47"
+    },
+    "Toy.SafetyLiveness.emptyAlphabet_no_liveness": {
+      "closure_sha256": "5ecce43f1744144763f25bb868934529d1968cc82da1fa13fb374b555b274e91",
+      "closure_size": 4,
+      "statement_sha256": "488e903489b75081eb22a213e4a999e92d0962296f5cf48ee5b3e66ef58c241f"
+    },
+    "Toy.SafetyLiveness.emptyAlphabet_tight_alpernSchneider": {
+      "closure_sha256": "8ab5b5ffa9aa5fede76c2c703625b3427af02ddfde9dc4d9e883dfd878b4ead5",
+      "closure_size": 10,
+      "statement_sha256": "8ad6311a27aa9d4dc2db31e17f5dc005601c1873d1b10e5f0f8eb19584e78d06"
+    },
+    "Toy.SafetyLiveness.emptyAlphabet_tight_isLiveness_iff_closure_eq_univ": {
+      "closure_sha256": "b5c27c5c64bdaf96e5809e479ea7816ae09805c40b4c066274eeef4abbb28947",
+      "closure_size": 8,
+      "statement_sha256": "8845c1f1c941538256a8bfdfaf82e65cb9f6af7fe311b5aae6d9bb11d8a572ce"
+    },
+    "Toy.SafetyLiveness.emptyAlphabet_tight_safety_liveness_iff_univ": {
+      "closure_sha256": "37feba165b8c901ffc838fead7a0387baed8dd6d94ff0223e01512184fef1924",
+      "closure_size": 7,
+      "statement_sha256": "5aa23fa2050b469481ed700ad47ed7f21520e8ea6f94b6917448e67f21ecbe8e"
+    },
+    "Toy.SafetyLiveness.emptyFinSystem_tight_nonempty": {
+      "closure_sha256": "4b0ab1e7ad938ff63bdc66dd83da4031a26221a01d6744384dbb9659e66b4820",
+      "closure_size": 5,
+      "statement_sha256": "19975925c003874443d835a714d30071c9ab64b8d8d3419be4bea20e60b29ee7"
+    },
+    "Toy.SafetyLiveness.emptyStreamSystem_refines_all": {
+      "closure_sha256": "f37afee4a48f0919587c38886aa39bfe62e0b7a9b17a7aa821dae9eccd7598f1",
+      "closure_size": 5,
+      "statement_sha256": "3e8b9556d300a51d7b4248cf3bcc75e39e5eabf7b93dfe00461eb5e62c6f3574"
+    },
+    "Toy.SafetyLiveness.eq_univ_of_isSafety_of_isLiveness": {
+      "closure_sha256": "37feba165b8c901ffc838fead7a0387baed8dd6d94ff0223e01512184fef1924",
+      "closure_size": 7,
+      "statement_sha256": "71f318c0fe56d58aa212ed80e86f5c578283d65060692a98fe4e78a28b2ef733"
+    },
+    "Toy.SafetyLiveness.eventuallyTrue_tight_finPrefixes_safety": {
+      "closure_sha256": "e8760b7ff184c13fb2a89ab4e451f4688beaa2b845919bd10ed2778bc4859a9b",
+      "closure_size": 10,
+      "statement_sha256": "60eb011f0d882c026e8e66c476a94c8ccb2c72891b15411fca06d837e9683d18"
+    },
+    "Toy.SafetyLiveness.eventuallyTrue_tight_machineClosed_iff": {
+      "closure_sha256": "2812bde78e9efa34245709a85f601b5c0ef925d916345af236e49d5761a6e7f2",
+      "closure_size": 9,
+      "statement_sha256": "7f4f55e3259342a936e6f1814ee6589bc02187978867d52f10d41547de27c67d"
+    },
+    "Toy.SafetyLiveness.eventuallyTrue_tight_safety_of_unique": {
+      "closure_sha256": "34b6b852ed81a5d39c5ef7824b9f4b1cd785c307b212d08a00dcfc294bc8d77b",
+      "closure_size": 6,
+      "statement_sha256": "760f3648edaa5dab22e1d73b6729ed69c116e999c8aa4f652805507a09a78798"
+    },
+    "Toy.SafetyLiveness.finPrefixes_eq_fails_every_nontrivial_liveness": {
+      "closure_sha256": "1e754fab6a2080b8ff51bb01070b4323cb4d49bb5e0dc1d10d321cf71682eb14",
+      "closure_size": 10,
+      "statement_sha256": "5845f09ba3ef025cb3d573ef44fd505c7f5484945fa8b86e63048a91abd85036"
+    },
+    "Toy.SafetyLiveness.finPrefixes_fails_liveness_nonvacuity": {
+      "closure_sha256": "ae9b42563de23be02121b18c8c90b20eb32004eee629d749b54c49ba61ee5b68",
+      "closure_size": 6,
+      "statement_sha256": "0cd798a270a43847723ef4f8a9fba304b738e58982f00a19d0d9bad1ffa82782"
+    },
+    "Toy.SafetyLiveness.finPrefixes_preserves_safety_nonvacuity": {
+      "closure_sha256": "df6c4c57de1b7a7f2273eb39c814e0224b200acde169e1ec0ddee0ddf49bce22",
+      "closure_size": 12,
+      "statement_sha256": "e97967206e7ce7b38c0ca91b5cff222fd0e3d027e2b5367c069bc195637e2692"
+    },
+    "Toy.SafetyLiveness.finPrefixes_refines_fails_every_nontrivial_liveness": {
+      "closure_sha256": "f9730dc24f29cbb4e6330cb2a4fc188133f4c9c89007304aa09f6f33bb158002",
+      "closure_size": 10,
+      "statement_sha256": "c5217de4866b116640666f8774ba9ad544267a9574b05614c54ab82cbd771848"
+    },
+    "Toy.SafetyLiveness.finPrefixes_refines_fails_of_not_isSafety": {
+      "closure_sha256": "dc80d579718b208c43c5fad0c2bff4698e3965581f9cbc01bd3b332910dac1bb",
+      "closure_size": 11,
+      "statement_sha256": "7a1c71b26af4a5ed3805f0a1e9e2c97a7602b426f05c05a0f5ef6b744f56ae8b"
+    },
+    "Toy.SafetyLiveness.finPrefixes_refines_preserves_safety": {
+      "closure_sha256": "2b10d55d450a820c520af309742b4800505027f51d2d5b2dd1d41c277569ddf4",
+      "closure_size": 10,
+      "statement_sha256": "564e82efa7e8f6645e24c4d8b61d17be38a299e11038448ca64ece0a9c142379"
+    },
+    "Toy.SafetyLiveness.finPrefixes_safety_tight_refines": {
+      "closure_sha256": "d9b8784159e1f014ebb6b5276a5cdbbd81fd1ab361047fd549e01c1e0da6f011",
+      "closure_size": 9,
+      "statement_sha256": "b500385263a8672a5a7de1eb0760c9bd630fd766f457ae1bf910a6e01e4aee42"
+    },
+    "Toy.SafetyLiveness.finPrefixes_safety_tight_satisfies": {
+      "closure_sha256": "6233cd73942e29f7b1e6cec0c66c4452bd1b244049f9392d2ff4692ba7923316",
+      "closure_size": 12,
+      "statement_sha256": "6f0ff92204f41d8393c056c13d79918e61a36b4f3ff266fb6640f560128ad857"
+    },
+    "Toy.SafetyLiveness.finRefinesPreserves_linearTime": {
+      "closure_sha256": "e89ca58d8205fd5d088ec2837b145ca80ca113c43a1601939ae08b0cbd5a1f94",
+      "closure_size": 6,
+      "statement_sha256": "b3536a401ef6e80f55ef72a24c1f04efa1cdd88bd5f69a880761e7d124a21037"
+    },
+    "Toy.SafetyLiveness.finRefines_cannot_preserve_nonvacuity": {
+      "closure_sha256": "13e6813919bec478bab77ad2f34b7fec6f25cb1d3e72dc2cc5b326c30ca3106a",
+      "closure_size": 7,
+      "statement_sha256": "cacd3e499fd9597363a9a2c05c912023f63fdd929bcc03b6e63db41c6d64938b"
+    },
+    "Toy.SafetyLiveness.finRefines_cannot_preserve_property_rejecting_doNothing": {
+      "closure_sha256": "cbe5f57ab484fa818163febd4958a8f56472121476e0678fef61d3c0418447e5",
+      "closure_size": 7,
+      "statement_sha256": "da5add4633a30d9fd728234d3b545962f37083bb59dab27fa439ad769258573f"
+    },
+    "Toy.SafetyLiveness.finRefines_impossibility_tight_nonempty": {
+      "closure_sha256": "cbe5f57ab484fa818163febd4958a8f56472121476e0678fef61d3c0418447e5",
+      "closure_size": 7,
+      "statement_sha256": "2af4d5829f645428499dd27d0531c566f82c816b929a9f09d3ef0899a25ab31f"
+    },
+    "Toy.SafetyLiveness.finRefines_impossibility_tight_prefixClosed": {
+      "closure_sha256": "cbe5f57ab484fa818163febd4958a8f56472121476e0678fef61d3c0418447e5",
+      "closure_size": 7,
+      "statement_sha256": "0ef5d617008edc11b1909e13b5fa01ec845bda782ffe374a1b3dfe46be16b09e"
+    },
+    "Toy.SafetyLiveness.finRefines_impossibility_tight_reject": {
+      "closure_sha256": "cbe5f57ab484fa818163febd4958a8f56472121476e0678fef61d3c0418447e5",
+      "closure_size": 7,
+      "statement_sha256": "6c90f327bb25246cb5dba85aa8cf0f5e26a12bb9bd708d2eada7d202241d8dfd"
+    },
+    "Toy.SafetyLiveness.finRefines_impossibility_tight_spec": {
+      "closure_sha256": "cbe5f57ab484fa818163febd4958a8f56472121476e0678fef61d3c0418447e5",
+      "closure_size": 7,
+      "statement_sha256": "a240b4bf20817deb968d0cdae94e614e2b5c9b7de8041caa26fdac287b8c0d1c"
+    },
+    "Toy.SafetyLiveness.finRefines_obsFinPrefixes_of_doNothing": {
+      "closure_sha256": "3895d2a9a9b7107848b71604969dfa10144a4b33ae95d70a657680f01e9f83a6",
+      "closure_size": 17,
+      "statement_sha256": "46eae9fbbeba52f62cb43fce44f093c5fea21876a6f2d6b9ab2958c049be922f"
+    },
+    "Toy.SafetyLiveness.isLiveness_iff_closure_eq_univ_of_nonempty": {
+      "closure_sha256": "9c579266c89659dfd67aeae67be02f3c9c3ff659376ee915d4243dd9269c0d8a",
+      "closure_size": 7,
+      "statement_sha256": "88fc32eb5c34f532c5197b6ffeac36515508e9a1fa96fb6aefcf8d25e7f15dbc"
+    },
+    "Toy.SafetyLiveness.isLiveness_livenessPart_of_nonempty": {
+      "closure_sha256": "8c5711506299ad8cc13c5e1884900ba42a4085742727ad94f588a6c6b2539063",
+      "closure_size": 7,
+      "statement_sha256": "aa03153119fb03353d93604c5f2797d80be83c9f51cc5fce808332b2c021f8ab"
+    },
+    "Toy.SafetyLiveness.isSafety_and_isLiveness_iff_eq_univ_nonvacuity": {
+      "closure_sha256": "a0857eb69ebccfc72276f3fd59a9139ad76f09f74f8f61fac4d7c9df6e9dad2b",
+      "closure_size": 8,
+      "statement_sha256": "15895b114998c36e7b5caf3598ca714434393e076927f5dd520f5da58adf618a"
+    },
+    "Toy.SafetyLiveness.isSafety_and_isLiveness_iff_eq_univ_of_nonempty": {
+      "closure_sha256": "37feba165b8c901ffc838fead7a0387baed8dd6d94ff0223e01512184fef1924",
+      "closure_size": 7,
+      "statement_sha256": "38f0c402025c8cd77283a79d17a6100e56527b42dc139352a5cba6681e9b0380"
+    },
+    "Toy.SafetyLiveness.isSafety_iff_closure_eq": {
+      "closure_sha256": "2cebb585660e760b7db77cfea450178a3e81e6af6be04381e98de2b09b682253",
+      "closure_size": 6,
+      "statement_sha256": "79e82eb1a3358bc7dc4878cba644feb6b1ef6d02d1ed659dc5330ed731912dde"
+    },
+    "Toy.SafetyLiveness.isSafety_iff_closure_eq_nonvacuity": {
+      "closure_sha256": "570dae84a246d19427c7b92621f57e1215de8798a10c91f76281f3a03a028f3e",
+      "closure_size": 7,
+      "statement_sha256": "7e9721ef37abff53303f509b555b5e330cac7f14304a7dab9302890c7386fc90"
+    },
+    "Toy.SafetyLiveness.linearTime_never_meets_impossibility_hyps": {
+      "closure_sha256": "3e7338b0657d797e6e99e9fc42acd89e6637fe7f576c6c5ad45af652568096f6",
+      "closure_size": 5,
+      "statement_sha256": "5dd22e3fff0ae05269c8b0fddfe635c5c7d0db9db251f7afd0df9664096eba8e"
+    },
+    "Toy.SafetyLiveness.linearTime_pred_accepts_doNothing_of_accepts_healthy": {
+      "closure_sha256": "3e7338b0657d797e6e99e9fc42acd89e6637fe7f576c6c5ad45af652568096f6",
+      "closure_size": 5,
+      "statement_sha256": "45214699726c9c1b13e668a4e791804dafbe4382930491221ce8d990c61e436c"
+    },
+    "Toy.SafetyLiveness.machineClosed_iff_closure_propInter_eq_of_isSafety": {
+      "closure_sha256": "171954d8d3f01c5d88a1f90dff15cef26fcf419bb3401f8dd05d4e38bbac428e",
+      "closure_size": 8,
+      "statement_sha256": "ef8db63276d4f49d8688169aeff98f0fee404e4d62850533db42ea8864c73202"
+    },
+    "Toy.SafetyLiveness.machineClosed_not_closed_under_propInter": {
+      "closure_sha256": "dc5a53b713059de68969418cc168da67f229072217582630ba830a40c320c0f3",
+      "closure_size": 9,
+      "statement_sha256": "0daa19f75b990107d7293ba23ff40315bf3e4473bd23dce9c346ff7b3d3150b4"
+    },
+    "Toy.SafetyLiveness.machineClosed_without_liveness_witness": {
+      "closure_sha256": "9bd966f37f125596f827ba2814d0a042b18b97480f8a827d61ca352640200b59",
+      "closure_size": 8,
+      "statement_sha256": "a8c04b35aacf035f4f6128ce39698a95996208a6edf7fc65f43333965aff2e2f"
+    },
+    "Toy.SafetyLiveness.mixedSilentAndEmit_not_obsRefines_without_doNothing": {
+      "closure_sha256": "a327b51d596602e1a56f8ebded20493f27da00bdc2525be56abad0782d99541d",
+      "closure_size": 20,
+      "statement_sha256": "8d9395b49549e9b7ed43c1af7297b147acd752c9d58f8335a1f29c29b4302ba6"
+    },
+    "Toy.SafetyLiveness.no_nonempty_streamSystem_refines_all_nonempty": {
+      "closure_sha256": "3e11b3ea6f8701908d4409c5262bab309bb5f8c4a81d0bc6198ac2bca7666809",
+      "closure_size": 4,
+      "statement_sha256": "2e60335e7241942b8730ff758c8e512e7ce402d965f9f8acb5c97973cdfbb3cc"
+    },
+    "Toy.SafetyLiveness.nonMachineClosed_consistent_spec_counterexample": {
+      "closure_sha256": "728054ebe48812b2b15f6b0806cd1c7ffc8f5b2ffddc480683b34638fa436a32",
+      "closure_size": 12,
+      "statement_sha256": "e39b6d1552fc778a1d019e7f3154382d8a847abd9fd69206f756bac13e550ff9"
+    },
+    "Toy.SafetyLiveness.not_obsRefines_of_silent_behavior": {
+      "closure_sha256": "4041f467a29c09481a5d8e26cc1e7bd792846d229db9756eb75257e70181d39a",
+      "closure_size": 13,
+      "statement_sha256": "0c4e3fb9eb788176dadfbfbd56ce3e49b29a7d897abb369b4afa40d8a7d1d997"
+    },
+    "Toy.SafetyLiveness.obsAllowDiverge_tight_progress": {
+      "closure_sha256": "38178d733b6607a873aefe10ba9b3f9c11723535587945e338cbb46354166865",
+      "closure_size": 19,
+      "statement_sha256": "8f5228496635bf0fdef126426574fbd2b2bae28b299e09ce8e8b9cda0503920a"
+    },
+    "Toy.SafetyLiveness.obsEmitTrue_tight_doNothing": {
+      "closure_sha256": "6043efc2cfae13c8cedf1fde59c6087d18155f306f593f6134b4cf7919c7f8f7",
+      "closure_size": 21,
+      "statement_sha256": "38b6ea57fa0ef835e169088d2dc1cc507a21d3d24598b927153d7ce17371bb11"
+    },
+    "Toy.SafetyLiveness.obsEmpty_tight_implNE": {
+      "closure_sha256": "e4ad625003d57002449677eff18a2b90afe98d2cde14acfc3144abd96f40f46b",
+      "closure_size": 22,
+      "statement_sha256": "d572829a318dc5e22a919d35e3818c5037fc1194b0db89a32d1f728f1dbb4823"
+    },
+    "Toy.SafetyLiveness.obsRefinesPreserves_emitsEvent_rejects_doNothing": {
+      "closure_sha256": "e29617576d3f898cd2d4c8386d44c20378ea27dc776f257ac0a642b5156ff4a4",
+      "closure_size": 18,
+      "statement_sha256": "2e97a8a0e114e0b5a0f50382be315d3cd90d185c03ff57851855ad68ba5b6203"
+    },
+    "Toy.SafetyLiveness.obsRefines_fails_possibility_canEmit": {
+      "closure_sha256": "bb7e0eccd26461a6834ae88776a1b3a3791347e4ea5d382cbf322e6b658f9b49",
+      "closure_size": 15,
+      "statement_sha256": "a6cf2bd83a119186beaf4ba1b3d4746e50f14447b3887b0e395535b319a03f2f"
+    },
+    "Toy.SafetyLiveness.obsRefines_implies_finRefines": {
+      "closure_sha256": "e896b9584958ce24c14a50f018e822cd5bec2353ced5cec663c89f011f5672ba",
+      "closure_size": 16,
+      "statement_sha256": "3173c8847c5916b00f38f035953897ff367ec9dbbc566d27e602e68d947ba083"
+    },
+    "Toy.SafetyLiveness.obsRefines_rejects_divergence_of_noDivergence": {
+      "closure_sha256": "11ba2a8e97653b3ee87b7a12274c5d98b31a64c8de8e92fa227793986aa36075",
+      "closure_size": 13,
+      "statement_sha256": "df8026378287bd7c1adcf420d73bb0eb3496f5226781682c1a0f54483fc8be75"
+    },
+    "Toy.SafetyLiveness.obsRefines_separates_diverges_of_obsFinPrefixes_of_not_diverges": {
+      "closure_sha256": "e896b9584958ce24c14a50f018e822cd5bec2353ced5cec663c89f011f5672ba",
+      "closure_size": 16,
+      "statement_sha256": "cc89ae166c01b29c9e7c9ed99487bc6fcbf7b4370fe5148396a35716daa5a427"
+    },
+    "Toy.SafetyLiveness.obsRefines_separates_doNothing_from_finRefines": {
+      "closure_sha256": "049ca5357dde38091ae74431264c0b8cd3dd82d68baa95807982a8538d6249ed",
+      "closure_size": 21,
+      "statement_sha256": "b0a91cd3a080fa89e9142162387964fb240981e4dbfa861c6294db2aa96c19d4"
+    },
+    "Toy.SafetyLiveness.obsRefines_separates_doNothing_nonvacuity": {
+      "closure_sha256": "f2121ae70a0fd966bdca1fdc44ad572b8cf02a03b446431cff443ca1c85d54ab",
+      "closure_size": 22,
+      "statement_sha256": "99f9f4268b96e89f824091391d7d48d3e8484411ce1ae11f8c306da7e16299ee"
+    },
+    "Toy.SafetyLiveness.obsSeparatesDiverges_sameTrace_nonvacuity": {
+      "closure_sha256": "1539def1a1be2e2a7361a42cb9c5f8bae81f41fa346ef010667b3dbaa585658f",
+      "closure_size": 15,
+      "statement_sha256": "344af828df2544344361624e1620027675f4ef804130016fbcef6435f972668c"
+    },
+    "Toy.SafetyLiveness.obsSeparatesDiverges_tight_notDiv": {
+      "closure_sha256": "cdbbff8d452047628b1adb11b671a5a8d9d7c4eca9166e733a35aa9dfe7749ad",
+      "closure_size": 17,
+      "statement_sha256": "6d2f8a35e577ba68989c8bb38fdb193925000a7e87ecd1f6e59769d7af332f09"
+    },
+    "Toy.SafetyLiveness.obsSeparatesDiverges_tight_prefix": {
+      "closure_sha256": "b60ab0cbab04cd58c41fc350e2027667bc5398bf96bd2da6552b97a54f9e74c4",
+      "closure_size": 17,
+      "statement_sha256": "b3fe6fe8ecc712baf7fba7cf2f96fce8ce044f7b11bb17d921b81c411d097127"
+    },
+    "Toy.SafetyLiveness.obsSpecEmpty_tight_specNE": {
+      "closure_sha256": "d7b14e3280a0d71f7323bb417748fa9eae582f593e6324c46d6020c59824b561",
+      "closure_size": 22,
+      "statement_sha256": "2e83ce533aad0bbd15f4dfebee4add9495e7a4d1f043a8c72590c3e3214ade33"
+    },
+    "Toy.SafetyLiveness.propInter_closure_livenessPart_eq": {
+      "closure_sha256": "834b0d3c0450d04ad6616277969436808855353c7f8ad66178ff6b4a8caf678e",
+      "closure_size": 7,
+      "statement_sha256": "94704975f6cae40065611bf8049a97ec040944523f6f644cfd78fcafba3fe4ac"
+    },
+    "Toy.SafetyLiveness.propInter_startsTrue_eventuallyFalse_neither_safety_nor_liveness": {
+      "closure_sha256": "11a87b2de1da785090f3bd92ccc759b9bdec5e7226a9006744020f065f143573",
+      "closure_size": 9,
+      "statement_sha256": "5a44b98b00488a6ce2746c21744c7861a97b65354ae3216696948507cec2b005"
+    },
+    "Toy.SafetyLiveness.singletonTrueTrace_tight_prefixClosed": {
+      "closure_sha256": "0a0ecb505d726f72ddc8d01fcaa31dcbecd82b962e194094ec25931a79c6a4c4",
+      "closure_size": 4,
+      "statement_sha256": "0d1a2deb108292a11a302254f2db6fc359a1652f323014df9603354d2ff85bb5"
+    },
+    "Toy.SafetyLiveness.startsTrue_eventuallyFalse_machineClosed": {
+      "closure_sha256": "db9cf7967d75c7d9e582b22b6aaf39ebbd1af6d35ae7022d7b7b14be75d97d2e",
+      "closure_size": 6,
+      "statement_sha256": "8fd42666afede11b7da0a2c92bbba9fd40fcf44ec5eeb22b88d1a64a8222b846"
+    },
+    "Toy.SafetyLiveness.stepDiffers_isSafety": {
+      "closure_sha256": "7a3a57b78b6f6fbcbb06d20e3822236eeee9b912ce9274c48bf142590238eec9",
+      "closure_size": 5,
+      "statement_sha256": "b58743e73db8b23e81f369bbb0691fab6bc879f53f95a78b21021c062c62c384"
+    },
+    "Toy.SafetyLiveness.streamRefines_closure_of_finPrefixes_refines": {
+      "closure_sha256": "268d557afd4257b292e151a86dbed190eb070eabcf7c2926fd33134b9ca3effa",
+      "closure_size": 10,
+      "statement_sha256": "c0e05af6dd6dc694a83b3bf8672ce6635c77dad987ae8e0797a9b72111e0eed6"
+    },
+    "Toy.SafetyLiveness.streamRefines_fails_possibility": {
+      "closure_sha256": "ed0e26ac7de0a52025ddd2ee3830a1268a1e7c0ccb49de3c76b2d8d5cab7f193",
+      "closure_size": 7,
+      "statement_sha256": "06bbf7e0888cd4ce6625e7b52cb95d311a75fa54681da1e5a674c6350e451069"
+    },
+    "Toy.SafetyLiveness.streamRefines_preserves_all_properties": {
+      "closure_sha256": "5834e662ec83ec408c4dff5431dcc359c51e662291da567ea54e667f9fd84d98",
+      "closure_size": 5,
+      "statement_sha256": "f9884ff4cc64f802d65b303f9ced09efa81da8477cfbe67cdafe06a8f2a019db"
+    },
+    "Toy.SafetyLiveness.streamRefines_preserves_nonvacuity": {
+      "closure_sha256": "c71f8c7a54093c40c9255ee21f0d68bc72c8e4e6e2ccb055bc09cf0aa8872cd2",
+      "closure_size": 7,
+      "statement_sha256": "abccb3f49a290116f0fc118927d26b960ea06b6a5ab72a4fc79b9ba688793233"
+    },
+    "Toy.SafetyLiveness.streamRefines_preserves_tight_refines": {
+      "closure_sha256": "3800d127cb39bb3b6c960c117e4dd879fc7bfc68903e87a74d4cb57e7809a565",
+      "closure_size": 6,
+      "statement_sha256": "0133c6b7620ac01a610c0dc79eb62c0890d675261f4e6a635e7d4fa7a5000210"
+    },
+    "Toy.SafetyLiveness.streamRefines_preserves_tight_satisfies": {
+      "closure_sha256": "39917fdd839c1977749525d5d5695a0324f7b309329281b34a5a90bb4fc19fd4",
+      "closure_size": 7,
+      "statement_sha256": "8aa97c3626093f4d0cc0752f8d18f8ee2ccf7cebac8ef4bf62e0048753e582ea"
+    },
+    "Toy.SafetyLiveness.streamRefines_rejects_constFalse_for_eventuallyTrue": {
+      "closure_sha256": "79e09d12361518be96231955bcff6905bb2f34b3ba5f5e47dbc11b14c2871c9e",
+      "closure_size": 22,
+      "statement_sha256": "6a10c401e1ef709b845843d45d6c4bbee81d4782d4b7977c5a2677b8157a467d"
+    },
+    "Toy.SafetyLiveness.unit_streamSystem_refines_all_nonempty": {
+      "closure_sha256": "3e11b3ea6f8701908d4409c5262bab309bb5f8c4a81d0bc6198ac2bca7666809",
+      "closure_size": 4,
+      "statement_sha256": "762b81d0f2619576e89456d02019d97b4bd5fe15fb4651bb2bee736d4f259efd"
+    },
+    "Toy.SafetyLiveness.univ_tight_finPrefixes_liveness": {
+      "closure_sha256": "a70075d67c32a5453dc33bd9a9ee93e0a32523c67d7512b5b9fdf0b9eb1ca094",
+      "closure_size": 12,
+      "statement_sha256": "7a2b515fa7ee101778a337292c748145d83359e31af9d43d793a4164668fa318"
+    }
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
