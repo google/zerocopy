@@ -1,0 +1,19 @@
+# cmd: ~/.local/bin/anneal-lean-run --mode file --memory-max-mb 6144 --timeout 600 -- /usr/bin/time -v ~/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -t0 -M5000  A4_kernelize_bvdecide.lean
+A4_kernelize_bvdecide.lean:30:0: error: (kernel) deep recursion detected, use `set_option maxRecDepth <num>` to increase the limit
+'a4_xor8_k' depends on axioms: [a4_xor8_k, propext, Quot.sound]
+A4_kernelize_bvdecide.lean:34:0: error: (kernel) deep recursion detected, use `set_option maxRecDepth <num>` to increase the limit
+'a4_xor64_k' depends on axioms: [a4_xor64_k, propext, Quot.sound]
+A4_kernelize_bvdecide.lean:38:0: error: (kernel) deep recursion detected, use `set_option maxRecDepth <num>` to increase the limit
+'a4_add_and_or16_k' depends on axioms: [a4_add_and_or16_k, propext, Quot.sound]
+A4_kernelize_bvdecide.lean:42:0: error: (kernel) application type mismatch
+  Std.Tactic.BVDecide.Reflect.unsat_of_verifyBVExpr_eq_true a4_mul3_8._expr_def_1 a4_mul3_8._cert_def_1 (Eq.refl true)
+argument has type
+  true = true
+but function has type
+  Std.Tactic.BVDecide.Reflect.verifyBVExpr a4_mul3_8._expr_def_1 a4_mul3_8._cert_def_1 = true →
+    Std.Tactic.BVDecide.BVLogicalExpr.Unsat a4_mul3_8._expr_def_1
+'a4_mul3_8_k' depends on axioms: [a4_mul3_8_k]
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:15.32
+	Maximum resident set size (kbytes): 2914084
+	Exit status: 1
+# exit: 1

@@ -558,8 +558,8 @@ In the table below:
    `bv_decide` vs `grind`):**
    - Standard `bv_decide` elaborates in `78.14–129.50 ms` and replays in the
      kernel in `0.26–1.47 ms`, but every theorem depends on
-     `_native.bv_decide.ax_1_5` and `Lean.ofReduceBool` (`Lean.trustCompiler`),
-     which `anneal-audit` rejects.
+     the per-invocation axiom `_native.bv_decide.ax_1_5` (not
+     `Lean.ofReduceBool`/`Lean.trustCompiler`), which `anneal-audit` rejects.
    - `bv_decide_kernel` (`support/CoreVCTacticBenchmarkProbe.lean`) reuses
      `Std.Tactic.BVDecide`'s `Normalize.bvNormalize` and `Reflect.reflectBV`
      front-end and discharges `BVLogicalExpr.Unsat` via an in-kernel ROBDD
@@ -679,6 +679,8 @@ during `Kernel.Environment.replay`.
   Machine-readable manifest recording all 10 inspected upstream repositories,
   pinned 40-character commit hashes, inspected file paths, line counts, and
   SHA-256 digests.
+
+- **Correction observed 2026-11-20 (`native_decide`/`bv_decide` axiom mechanism):** on Lean `v4.34.1` (`leanprover/lean4@5045d0056413266e57c625dcd7c365b10e377c52`), both tactics go through `Lean.Meta.nativeEqTrue` (`src/Lean/Meta/Native.lean:37-86`; `native_decide` via `elabNativeDecideCore`, `src/Lean/Elab/Tactic/Decide.lean:57-59`; `bv_decide` via `LratCert.toReflectionProof`, `src/Lean/Meta/Tactic/BVDecide/Prover/Bitblast.lean:26-44`), which evaluates the closed `Bool` term with the compiler and then adds a fresh per-invocation axiom `<theorem>._native.<tactic>.ax_* : e = true`; neither tactic references `Lean.ofReduceBool` or `Lean.trustCompiler`. Executed with `lean -t0`, `#print axioms` reports `[propext, Classical.choice, Quot.sound, <theorem>._native.bv_decide.ax_1_5]` for a 64-bit `bv_decide` proof and `[<theorem>._native.native_decide.ax_1_1]` for `native_decide` (identically on `v4.29.0` and `v4.35.0`); reproduce with `support/A1_axioms.lean` and `support/A6_native_axiom_by_toolchain.lean` in package `lean-kernel-evaluation-symbolic-execution-and-native-axiom-free-isa-proofs`. These axioms lie outside `{propext, Classical.choice, Quot.sound}`, so an axiom allowlist still rejects such proofs.
 
 ## Revalidation
 

@@ -1,0 +1,16 @@
+# cmd: ~/.local/bin/anneal-lean-run --mode file --memory-max-mb 6144 --timeout 600 -- /usr/bin/time -v ~/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -t0 -M2048  E1_safe_bv_identities.lean
+'e1_mul8_shl' depends on axioms: [propext, Quot.sound]
+'e1_udiv8_shr' depends on axioms: [propext]
+'e1_divu_remu' depends on axioms: [propext]
+'e1_remu_lt' depends on axioms: [propext, Quot.sound]
+'e1_mulhu_nat' depends on axioms: [propext]
+'e1_grind_ring' depends on axioms: [propext, Classical.choice, Quot.sound]
+'e1_sub_not' depends on axioms: [propext, Classical.choice, Quot.sound]
+'e1_addw' depends on axioms: [propext, Quot.sound]
+'e1_udiv_zero' depends on axioms: [propext, Quot.sound]
+'e1_and_or' depends on axioms: [propext, Classical.choice, Quot.sound]
+'e1_concat' depends on axioms: [propext, Classical.choice, Quot.sound]
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.48
+	Maximum resident set size (kbytes): 502380
+	Exit status: 0
+# exit: 0

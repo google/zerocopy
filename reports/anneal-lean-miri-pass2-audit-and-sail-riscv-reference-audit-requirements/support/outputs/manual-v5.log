@@ -1,0 +1,8 @@
+OK Sail.BitVec                                 1.66s olean=573a1f77cd5ad7c7.. 1423336 bytes
+OK Sail.IntRange                               0.81s olean=363d6ae9465d9057.. 677128 bytes
+OK Sail.Attr                                   0.95s olean=869db5be57da4f86.. 85696 bytes
+OK Sail.Common                                 1.89s olean=adc968d7d62425b4.. 1153008 bytes
+OK Sail.ArchSem                                2.13s olean=637439342fe7366c.. 1398936 bytes
+OK Sail.ConcurrencyInterfaceV1                 2.33s olean=c172893264ab2e47.. 1591648 bytes
+OK Sail.Sail                                   1.56s olean=c97336b76fcc3186.. 574168 bytes
+OK Sail                                        0.95s olean=2ad88e952fcff177.. 1640 bytes

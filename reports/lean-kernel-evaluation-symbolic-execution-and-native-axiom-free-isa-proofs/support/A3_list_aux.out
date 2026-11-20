@@ -1,0 +1,11 @@
+# cmd: ~/.local/bin/anneal-lean-run --mode file --memory-max-mb 6144 --timeout 600 -- /usr/bin/time -v ~/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -t0 -M2048  A3_list_aux.lean
+a3_xor8._native.bv_decide.ax_1_5
+a3_xor8
+a3_xor8._expr_def_1_1
+a3_xor8._cert_def_1_1
+unsat_of_verifyBVExpr_eq_true : ∀ (bv : Std.Tactic.BVDecide.BVLogicalExpr) (c : String),
+  verifyBVExpr bv c = true → bv.Unsat
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:01.11
+	Maximum resident set size (kbytes): 1621252
+	Exit status: 0
+# exit: 0

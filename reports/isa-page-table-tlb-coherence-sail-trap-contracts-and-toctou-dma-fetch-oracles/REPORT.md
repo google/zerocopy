@@ -20,9 +20,18 @@ Formalizing hardware address translation across architectures exposes recurring 
 
 1. **Three-level `Sv39` in `opencompl/sail-riscv-lean` (`51c635c460125ac87955d061fcd902ce03b8011f`) and RISC-V Priv Spec (`c05f1725f25526dd8463bac6ca75cfcfbee17d05`):** In `LeanRV64D/Vmem.lean` (L256–371, L406–559), `pt_walk` first enforces canonical sign-extension (`L537–539`, top bit 38 extended cleanly through bits 39..63), indexes three 9-bit page-table levels (`lvl ∈ {2, 1, 0}` at bit shifts 30, 21, 12), and enforces superpage alignment at leaf PTEs (`PTW_Misaligned` when `pte.ppn` masked by `levelMask` is nonzero, L310–322). Cache lookup splits into `translate_TLB_hit` (L406–429) and `translate_TLB_miss` (L431–465). Critically, `LeanRV64D/VmemTlb.lean` (L246–351) models a 64-entry flat leaf/superpage `tlb`, where `add_to_TLB` caches resolved leaf translations *only* (omitting intermediate non-leaf Page-Walk Caches) and `flush_TLB_Entry` (L276–289, matching `L279`) filters `(ent.asid == asid) && (not ent.global)`—leaving `G=1` global mappings intact across ASID-scoped flushes! **Basis: source.**
 2. **Four-level x86-64 in `VeriSMo` (`5e1c159aec20491653550e39b00bd0855f543a7e`) and `seL4/l4v` (`b0fe7693ca5943e08c49e038d33fd64dc7dfa72e`):** `VeriSMo` defines 4-level page-table page sizes in `pgtable_e/pte.rs` (L53–152: `lvl_to_size` returning `0x1000`, `0x20_0000`, `0x10_0000_0000`, `0x1_0000_0000_0000` up to `L4_MAX_ADDR`), pairing each entry with `PtePerm` ownership bounds. `seL4/l4v/spec/abstract/X64/ArchVSpace_A.thy` (L32–89, L146–292) models `PML4`/`PDPT`/`PD`/`PT` walks where non-leaf unmapping (`unmap_pdpt`, `unmap_pd`) triggers `flush_pdpt` and `flush_pd` aliasing full ASID/global invalidation (`flush_all` / `invalidateASID`). In contrast, `seL4/l4v/spec/abstract/RISCV64/ArchVSpace_A.thy` (L85–190) distinguishes `unmap_page` from `unmap_page_table` and `delete_asid` paired with `sfence`. **Basis: source.**
-3. **Why omitting non-leaf PWC rules creates soundness holes (Syeda & Klein, JAR 2020, `doi:10.1007/s10817-019-09539-7`):** Hardware CPUs cache intermediate non-leaf directory pointers (`lvl > 0` PWC entries mapping `cur_ppn, va_prefix -> next_ppn`) separately from leaf TLBs. On RISC-V, a targeted `sfence.vma va, asid` (`rs1 ≠ x0, rs2 ≠ x0`) guarantees eviction of non-global leaf entries matching `(va, asid)`, yet **neither** clears `G=1` entries **nor** guarantees eviction of stale non-leaf directory entries in hardware PWCs—requiring `sfence.vma x0, asid` (`va = None`) on intermediate table teardown or `sfence.vma x0, x0` (`va = None, asid = None`) when `G=1` mappings change. Verifying only against a leaf-only `sail-riscv-lean` cache model misses non-leaf stale-PWC bugs unless Anneal explicitly separates `PWC` and `LeafTLB` tiers! Both behaviors are exercised concretely in `reval_pkg2.py`. **Basis: documentation, execution.**
+3. **Why omitting non-leaf PWC rules creates soundness holes (Syeda & Klein, JAR 2020, `doi:10.1007/s10817-019-09539-7`):** Hardware CPUs cache intermediate non-leaf directory pointers (`lvl > 0` PWC entries mapping `cur_ppn, va_prefix -> next_ppn`) separately from leaf TLBs. On RISC-V, a targeted `sfence.vma va, asid` (`rs1 ≠ x0, rs2 ≠ x0`) guarantees eviction of non-global leaf entries matching `(va, asid)`, yet **neither** clears `G=1` entries **nor** guarantees eviction of stale non-leaf directory entries in hardware PWCs—requiring:
+   - `sfence.vma x0, asid` (`va = None`) when an intermediate (non-leaf) table entry changes;
+   - `sfence.vma x0, x0` when a non-leaf entry on a `G=1` path changes;
+   - `sfence.vma va, x0` (`rs1 ≠ x0, rs2 = x0`) when a *leaf* on a `G=1` path changes. This form "invalidates all address-translation cache entries that contain leaf page table entries corresponding to the virtual address in rs1, for all address spaces", global ones included (`src/priv/supervisor.adoc` L1245–1250, L1376–1383 at `c05f1725`). Verifying only against a leaf-only `sail-riscv-lean` cache model misses non-leaf stale-PWC bugs unless Anneal explicitly separates `PWC` and `LeafTLB` tiers! Both behaviors are exercised concretely in `reval_pkg2.py`. **Basis: documentation, execution.**
 
-A distilled `prelude`-compatible Pass-1 module `Anneal.Sys.PageWalk` captures split `WalkEntry` caches and characterizes non-leaf vs. leaf flush equivalence cleanly: **Basis: derived.**
+A distilled `prelude`-compatible Pass-1 module `Anneal.Sys.PageWalk` captures split `WalkEntry` caches and characterizes non-leaf vs. leaf flush equivalence cleanly. It covers all four `sfence.vma` operand forms: `all` = (x0, x0); `byAsid` = (x0, asid); `singleVaAllAsid` = (va, x0), which removes global leaves; `singleVa` = (va, asid), which keeps them. **Basis: derived.**
+
+A compiled model of the same four forms over per-level dirty entries is `riscvKeptAfterSfence` in package `mmu-page-table-walks-tlb-shootdowns-and-icache-barrier-refinement` §5. It also covers the cross-ISA `INVLPG` and `TLBI` contrast.
+
+Two corrections were made on 2026-11-20:
+- An earlier version of this sketch omitted the (va, x0) form. It could therefore not express the standard way to flush a single global page.
+- Its two theorems ended in a redundant `rfl` that fails with "No goals to be solved" under Lean v4.34.1.
 
 ```lean
 /- Module assumes crate prelude + locked Init.* foundation imports from TrustedBoundary. -/
@@ -41,9 +50,10 @@ structure WalkEntry where
   targetPpn : Nat
 
 inductive FlushCmd where
-  | all
-  | byAsid (asid : Nat)
-  | singleVa (va : Nat) (asid : Nat)
+  | all                         -- sfence.vma x0, x0
+  | byAsid (asid : Nat)         -- sfence.vma x0, asid  (keeps global entries)
+  | singleVaAllAsid (va : Nat)  -- sfence.vma va, x0    (all ASIDs, including global leaves)
+  | singleVa (va : Nat) (asid : Nat)  -- sfence.vma va, asid (keeps global entries)
 
 structure CachedTlb where
   pwc : List WalkEntry
@@ -54,6 +64,9 @@ def matchesVaAsid (va asid : Nat) (e : WalkEntry) : Bool :=
 
 def keepNotAsid (a : Nat) (e : WalkEntry) : Bool :=
   e.global || ! (eqNat e.asid a)
+
+def keepNotVa (va : Nat) (e : WalkEntry) : Bool :=
+  ! (eqNat e.vaPrefix va)
 
 def keepNotSingle (va a : Nat) (e : WalkEntry) : Bool :=
   e.global || ! (matchesVaAsid va a e)
@@ -71,6 +84,9 @@ def applyFlush (cmd : FlushCmd) (st : CachedTlb) : CachedTlb :=
   | FlushCmd.byAsid a =>
       { pwc := filterList (keepNotAsid a) st.pwc
       , leaves := filterList (keepNotAsid a) st.leaves }
+  | FlushCmd.singleVaAllAsid va =>
+      { pwc := st.pwc
+      , leaves := filterList (keepNotVa va) st.leaves }
   | FlushCmd.singleVa va a =>
       { pwc := st.pwc
       , leaves := filterList (keepNotSingle va a) st.leaves }
@@ -78,12 +94,10 @@ def applyFlush (cmd : FlushCmd) (st : CachedTlb) : CachedTlb :=
 theorem singleVa_preserves_pwc (va a : Nat) (st : CachedTlb) :
     (applyFlush (FlushCmd.singleVa va a) st).pwc = st.pwc := by
   dsimp only [applyFlush]
-  rfl
 
 theorem flushAll_clears_both (st : CachedTlb) :
     applyFlush FlushCmd.all st = { pwc := [], leaves := [] } := by
   dsimp only [applyFlush]
-  rfl
 
 end Anneal.Sys.PageWalk
 ```
@@ -254,7 +268,10 @@ Integrating `Anneal.Sys.PageWalk`, `Anneal.Sys.ShootdownPcm`, Sail-backed `TrapC
 
 ## Boundaries
 
-- **Live Lean `v4.34.1` compilation of distilled `Anneal.Sys.*` sketches (`not examined`):** `PageWalk`, `ShootdownPcm`, and `TrapContract` were checked syntactically against `trusted/audit/TrustedBoundary.lean` L442–596 (`prelude` + allowed term/tactic subsets) and tested operationally in Python, not elaborated inside an active `lake` project (`not examined`). **Basis: source.**
+- **Lean `v4.34.1` compilation of distilled `Anneal.Sys.*` sketches:** `PageWalk`, `ShootdownPcm`, and `TrapContract` were checked syntactically against `trusted/audit/TrustedBoundary.lean` L442–596 (`prelude` + allowed term/tactic subsets) and tested operationally in Python. **Basis: source.**
+  - On 2026-11-20 the three code blocks of this report, concatenated into one file, were elaborated with plain `lean` v4.34.1 (full `Init`, outside any `lake` project, **not** under `TrustedBoundary.lean`'s prelude-only admission).
+  - The original text failed only in `PageWalk` (two `No goals to be solved` errors from a redundant `rfl`). The corrected text in this report elaborates without errors. **Basis: execution.**
+  - Admission by `TrustedBoundary.lean` remains `not examined`.
 - **Direct MIR execution of `InlineAsm`, `sret`, `invlpg`, `sfence.vma`, and `vmmcall` (`unsupported`):** `Trusted/MirAst.lean` (L782–795) lowers `InlineAsm`, `Drop`, `Yield`, `CoroutineDrop`, and `TailCall` to `TerminatorKind.unsupported`, leaving raw trap instructions `unsupported` in `evalStep` without Sail-backed companion contracts. **Basis: source.**
 - **Speculation, transient execution, and store buffers (`known not to apply`):** Architectural `pt_walk`/`VmemTlb`, `ArchVSpace_A`, and `SharedFetchOracle` omit speculative TLB prefetching and store-buffer reordering; transient leakage is `known not to apply` here (`anneal-memory-bridge-weak-memory-atomics-constant-time-and-bare-metal`). **Basis: documentation.**
 - **`CortenMM`-scale annotation ratio in Lean `v4.34.1` (`unknown`):** Proof-to-code ratios and LSP latencies when scaling non-leaf PWC and SMP `ShootdownPcm` invariants across a full Rust kernel in Anneal remain `unknown` without end-to-end kernel benchmarking. **Basis: derived.**
@@ -272,6 +289,12 @@ Integrating `Anneal.Sys.PageWalk`, `Anneal.Sys.ShootdownPcm`, Sail-backed `TrapC
 | `seL4/l4v` & `seL4/seL4` | `b0fe7693ca5943e08c49e038d33fd64dc7dfa72e`, `08c7e5fddb3111ff377745c8eefb07feb5c4cfb7` | `X64/ArchVSpace_A.thy` L32–89, L146–292; `RISCV64/ArchVSpace_A.thy` L85–190; `src/arch/riscv/traps.S` L24–147 (35-word frame, `scause == 8`) | `source` |
 | `asterinas/vostd` & `asterinas/asterinas` | `eb1a9d044617c2abff58f959ccc50f9571d561e9`, `7fecb4ffabc72d0767277a9ffb66168bc512034c` | `ostd/src/mm/tlb.rs` L68–185 (`OpsStack`, `ACK_REMOTE_FLUSH`, `irq::is_local_enabled` L171); `ostd/specs/mm/tlb.rs` L29–88 | `source` |
 | Double-Fetch Analysis (Wang et al., USENIX'17) | `ISBN 978-1-931971-40-9` | Shared-memory TOCTOU double-fetch taxonomy across kernel/device boundaries | `documentation` |
+
+Additional evidence observed 2026-11-20:
+
+- **normative:** `riscv/riscv-isa-manual@c05f1725f25526dd8463bac6ca75cfcfbee17d05` `src/priv/supervisor.adoc` L1232–1259 (four `sfence.vma` operand forms; rs1≠x0, rs2=x0 invalidates leaf entries for the VA "for all address spaces"); L1376–1383 (for a modified leaf with a G bit on the path, "rs2 must be x0" with rs1 = a VA in the page).
+- **execution:** the `FlushCmd` correction and the Lean elaboration check use `Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)`. The `reval_pkg2.py` script below, including its added `asid is None` branch, still exits `0`.
+- Earlier rows were observed on the dates recorded in their own text.
 
 ## Revalidation
 
@@ -337,6 +360,9 @@ def sfence_vma(va, asid):
     elif va is None:
         tlb = [e for e in tlb if e[3] or e[0] != asid]
         pwc = [e for e in pwc if e[3] or e[0] != asid]
+    elif asid is None:
+        # rs1 != x0, rs2 = x0: leaf entries for va in ALL address spaces, INCLUDING global ones
+        tlb = [e for e in tlb if e[1] != va]
     else:
         # When rs2 != x0 (asid != None), global entries (e[3]==True) are NOT flushed,
         # and non-leaf PWC entries (level > 0) need NOT be flushed by single-VA sfence.vma!

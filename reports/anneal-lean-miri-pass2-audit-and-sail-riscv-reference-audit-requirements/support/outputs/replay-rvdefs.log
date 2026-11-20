@@ -1,0 +1,9 @@
+vendor modules=2 constants=9755 partial=0 unsafe=0 opaque=0 axiom=75 sorryRefs=0 compilerReflRefs=0
+partial: []
+opaque: []
+axioms reachable from non-partial/unsafe vendor constants: [riscv_f32Eq, riscv_f64ToI64, valid_reservation, riscv_f64ToUi32, riscv_f32Le, get_16_random_bits, cancel_reservation, riscv_f64MulAdd, riscv_f32Le_quiet, riscv_ui64ToF32, riscv_f16Mul, Quot.sound, riscv_f16Add, riscv_f32Sqrt, riscv_f64ToF16, riscv_i32ToF32, Classical.choice, riscv_f64Eq, riscv_f16ToUi64, riscv_f64Sub, riscv_ui32ToF16, riscv_f64ToUi64, riscv_f32ToBF16, riscv_f64Le_quiet, riscv_f64roundToInt, load_reservation, riscv_f64ToF32, riscv_f32Div, riscv_f16Sqrt, riscv_f64Lt, riscv_f16MulAdd, riscv_f32ToF64, match_reservation, riscv_i64ToF16, riscv_ui32ToF64, riscv_f16Le, riscv_f16Eq, riscv_f16ToI32, riscv_f32MulAdd, sys_enable_experimental_extensions, riscv_f64Le, riscv_f16Lt, riscv_f16Le_quiet, plat_term_read, riscv_i64ToF64, riscv_f32Add, riscv_f16ToI64, riscv_ui32ToF32, riscv_f16Div, riscv_f32ToF16, propext, riscv_f64Div, riscv_f32Mul, riscv_ui64ToF64, riscv_f32Lt, riscv_f32roundToInt, plat_term_write, riscv_f64ToI32, riscv_i32ToF16, riscv_f16ToUi32, riscv_f32ToUi32, riscv_f32ToI64, riscv_f16Sub, riscv_ui64ToF16, riscv_f32Lt_quiet, riscv_f64Mul, riscv_f16roundToInt, riscv_i64ToF32, riscv_f64Lt_quiet, riscv_f32Sub, riscv_f32ToI32, riscv_f16Lt_quiet, riscv_f32ToUi64, riscv_i32ToF64, riscv_f64Sqrt, riscv_f16ToF32, riscv_f16ToF64, riscv_f64Add]
+replayed 9755/9755 vendor constants onto 2364-module base in 3446 ms
+
+real	0m28.110s
+user	0m24.995s
+sys	0m3.122s

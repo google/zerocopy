@@ -1,0 +1,119 @@
+{
+  "topics": [
+    "isa",
+    "isa/riscv64",
+    "isa/sail",
+    "systems/virtual-memory",
+    "systems/interrupts",
+    "systems/firmware",
+    "systems/bare-metal",
+    "verification/memory-models",
+    "verification/semantic-models/overapproximation"
+  ],
+  "subjects": [
+    {
+      "name": "RISC-V ISA Manual (development snapshot)",
+      "identity": {
+        "repository": "riscv/riscv-isa-manual",
+        "revision": "c05f1725f25526dd8463bac6ca75cfcfbee17d05"
+      }
+    },
+    {
+      "name": "RISC-V ISA Manual (ratified release 20250508)",
+      "identity": {
+        "repository": "riscv/riscv-isa-manual",
+        "revision": "584390d9d872835b1bc45ab9ea946b56db3ad485",
+        "tag": "20250508"
+      }
+    },
+    {
+      "name": "RISC-V ISA Manual (release 20240411, Privileged 1.13)",
+      "identity": {
+        "repository": "riscv/riscv-isa-manual",
+        "revision": "6ee57d8997021aaa8025e208164763fe12e03c19",
+        "tag": "20240411"
+      }
+    },
+    {
+      "name": "RISC-V Privileged Specification 1.12",
+      "identity": {
+        "repository": "riscv/riscv-isa-manual",
+        "revision": "98964261c931d51884f733664b22efe43de93033",
+        "tag": "Priv-v1.12"
+      }
+    },
+    {
+      "name": "Sail RISC-V model",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "ec5200bdfe0c10afa6dbb1f7b0980db2d236236e"
+      }
+    },
+    {
+      "name": "OpenSBI",
+      "identity": {
+        "repository": "riscv-software-src/opensbi",
+        "revision": "61f1973bd50338b36c52dc34006f76d464ca4f34"
+      }
+    },
+    {
+      "name": "RISC-V Supervisor Binary Interface specification",
+      "identity": {
+        "repository": "riscv-non-isa/riscv-sbi-doc",
+        "revision": "c33ad9f414505806f084e8677e04d2744f76c8df",
+        "tag": "v3.0"
+      }
+    },
+    {
+      "name": "Spike RISC-V ISA simulator",
+      "identity": {
+        "repository": "riscv-software-src/riscv-isa-sim",
+        "revision": "e53c8ccf3448ae459877ed3236cb39b2a1d493bf"
+      }
+    },
+    {
+      "name": "QEMU",
+      "identity": {
+        "repository": "qemu/qemu",
+        "revision": "08ed97c33c3818ef51a7c852347a28e9f66807b5"
+      }
+    },
+    {
+      "name": "riscv_axiomatic (research RVWMO + virtual-memory axiomatic model)",
+      "identity": {
+        "repository": "daniellustig/riscv_axiomatic",
+        "revision": "0cc125df660a45160ed1602b61b288d2d6f01b26"
+      }
+    },
+    {
+      "name": "Serval",
+      "identity": {
+        "repository": "uw-unsat/serval",
+        "revision": "72adc4952a1e62330aea527214a26bd0c09cbd05"
+      }
+    },
+    {
+      "name": "Miralis",
+      "identity": {
+        "repository": "CharlyCst/miralis",
+        "revision": "f5ab1955192833ac025a6719a71c6e36a3f643ab"
+      }
+    },
+    {
+      "name": "IBM ACE-RISCV",
+      "identity": {
+        "repository": "IBM/ACE-RISCV",
+        "revision": "42cf582eef21f9ab661ec7008d65c6de141b4be1"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

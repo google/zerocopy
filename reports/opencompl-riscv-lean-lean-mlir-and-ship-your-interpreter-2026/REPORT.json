@@ -17,7 +17,19 @@
         "ref": "main",
         "url": "https://github.com/opencompl/riscv-lean",
         "role": "primary",
-        "summary": "Two-stage RISC-V 64-bit semantics purification bridging LeanRV64D's monadic Sail executors (SailM ExecutionResult) via monadic skeletons (RISCV/Skeleton.lean) and intermediate pure functions (RISCV/SailPure.lean, RISCV/SailToRV64.lean, 61 theorems) to a pure BitVec 64 instruction dialect (RISCV/Instructions.lean, RISCV/SailPureToInstructions.lean, 87 operations, 69 theorems)."
+        "summary": "Two-stage RISC-V 64-bit semantics purification bridging LeanRV64D's monadic Sail executors (SailM ExecutionResult) via monadic skeletons (RISCV/Skeleton.lean) and intermediate pure functions (RISCV/SailPure.lean, RISCV/SailToRV64.lean, 77 theorem declarations) to a pure BitVec 64 instruction dialect (RISCV/Instructions.lean, RISCV/SailPureToInstructions.lean, 87 operations, 104 theorem declarations); 5 bv_decide uses."
+      }
+    },
+    {
+      "name": "opencompl/riscv-lean (main on 2026-11-20)",
+      "identity": {
+        "kind": "git",
+        "repo": "opencompl/riscv-lean",
+        "commit": "0e3365ac7b670d79d70e9b4a8b7fba782607c44f",
+        "ref": "main",
+        "url": "https://github.com/opencompl/riscv-lean",
+        "role": "primary",
+        "summary": "Later revision of the same purification: adds brev8 (zbkb_brev8_eq, reverse_bits_eq), widens immediate-shift shamt to BitVec 6; 184 theorem declarations, 7 bv_decide uses; still register-only (no loads/stores/CSRs/system instructions)."
       }
     },
     {
@@ -79,7 +91,40 @@
         "role": "comparison",
         "summary": "Anneal's trusted verification boundary (trusted/lean/Trusted/Refinement.lean, StepResult.lean, MirSemantics.lean) and TCB auditor (trusted/audit/TrustedBoundary.lean, trusted/lean/foundation-lock.json)."
       }
+    },
+    {
+      "name": "Lean 4 toolchain v4.29.0",
+      "identity": {
+        "kind": "release",
+        "repo": "leanprover/lean4",
+        "version": "v4.29.0",
+        "commit": "98dc76e3c0a9b856c9b98726b713fb04fab16740",
+        "role": "comparison",
+        "summary": "Toolchain on which the bv_decide/native_decide axiom footprint (fresh <thm>._native.<tactic>.ax_* axiom from Lean.Meta.nativeEqTrue, not Lean.ofReduceBool) was observed."
+      }
+    },
+    {
+      "name": "Lean 4 toolchain v4.34.1",
+      "identity": {
+        "kind": "release",
+        "repo": "leanprover/lean4",
+        "version": "v4.34.1",
+        "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "role": "comparison",
+        "summary": "Toolchain on which the bv_decide/native_decide axiom footprint (fresh <thm>._native.<tactic>.ax_* axiom from Lean.Meta.nativeEqTrue, not Lean.ofReduceBool) was observed."
+      }
+    },
+    {
+      "name": "Lean 4 toolchain v4.35.0",
+      "identity": {
+        "kind": "release",
+        "repo": "leanprover/lean4",
+        "version": "v4.35.0",
+        "commit": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+        "role": "comparison",
+        "summary": "Toolchain on which the bv_decide/native_decide axiom footprint (fresh <thm>._native.<tactic>.ax_* axiom from Lean.Meta.nativeEqTrue, not Lean.ofReduceBool) was observed."
+      }
     }
   ],
-  "observed_at": "2026-10-29"
+  "observed_at": "2026-11-20"
 }

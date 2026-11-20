@@ -1,0 +1,10 @@
+# Support material
+
+All probes are standalone. Observed 2026-11-20 on Linux x86-64.
+
+| File | What it checks | Command | Toolchain | Recorded output |
+|---|---|---|---|---|
+| `ForwardSuccessSimVacuity.lean` | A forward, success-only simulation statement (the shape of `riscv-zkvm` `sailStep_run_sim`) is satisfied by a hand model that is stuck everywhere, and by one that is stuck exactly where a total reference machine takes a trap; a "no silent trap" clause rejects both. | `lean -j1 -M768 ForwardSuccessSimVacuity.lean` (the observation wrapped it in a memory-bounded runner; plain `lean` is equivalent) | Lean `v4.34.1` (`leanprover/lean4@5045d0056413266e57c625dcd7c365b10e377c52`), imports only `Init` | `ForwardSuccessSimVacuity.out` (exit 0; five `#print axioms` lines, none beyond `propext`) |
+| `LeanDoShortCircuit.lean` | Lean `do` hoists `(← e)` out of `&&`, so `pure ((← a) && (← b))` runs `b` (and its exceptions/state effects) even when `a` returns `false`; this is the shape of `check_CSR` in pre-`e55d89e7` Sail→Lean extractions. | `lean -j1 -M768 LeanDoShortCircuit.lean` | Lean `v4.34.1`, `Init` only | `LeanDoShortCircuit.out` (exit 0; `hoisted_ne_short` uses no axioms) |
+| `array_repeat_once.rs` | A Rust array-repeat expression `[e; N]` evaluates `e` once, so `[kani::any(); 32]` yields one shared symbolic value (pattern used by Miralis `model_checking/src/symbolic.rs`). | `rustc -O array_repeat_once.rs -o probe && ./probe` | `rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)` | `array_repeat_once.out`: `calls=2 all_regs_equal=true all_pmpaddr_equal=true` |
+| `counts.sh` | Re-derives every count, line coordinate, and quoted excerpt cited from Git sources in `REPORT.md` (riscv-zkvm, riscv-lean at two revisions, sail-riscv-lean, Sail fix containment, Miralis, softcore-rs, Serval, Islaris, l4v, Ibex, ACE-RISCV, xv6iris). Clones blob-less into `$WORK` and reads only pinned revisions with `git show <rev>:<path>`. | `WORK=/tmp/rvpriv-src bash counts.sh > counts.out` | bash, git 2.x, network access to github.com | `counts.out` |

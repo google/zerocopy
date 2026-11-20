@@ -80,6 +80,28 @@
       "identity": {
         "specification": "Intel SDM Vol. 3A §4.10.4.1-4.10.4.2 (INVLPG / INVPCID / Paging-Structure Caches) & Arm ARM DDI 0487 (Stage-1 TLBI / IC IVAU / ISB)"
       }
+    },
+    {
+      "name": "Sail compiler Lean backend (release 0.20.3)",
+      "identity": {
+        "repository": "rems-project/sail",
+        "revision": "3df54034910b31a1e00d948ee965b2e9603d68e0",
+        "tag": "0.20.3"
+      }
+    },
+    {
+      "name": "Sail compiler Lean backend (Lean v4.34.1 target bump)",
+      "identity": {
+        "repository": "rems-project/sail",
+        "revision": "31342bdbb5a3996d4c1f5231d06e7140df5d3288"
+      }
+    },
+    {
+      "name": "Sail compiler (sail2 branch head)",
+      "identity": {
+        "repository": "rems-project/sail",
+        "revision": "97aa617dcd4d01575f773cb58ea1e8686858c8c2"
+      }
     }
   ],
   "observed_at": "2026-11-20"

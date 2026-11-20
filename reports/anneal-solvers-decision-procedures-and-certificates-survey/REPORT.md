@@ -29,12 +29,13 @@ positive per-obligation `VerificationResult`, and `SmallStepMachine` with
 
 1. **Kernel-reducible certificate checking without `native_decide`:**
    `TrustedBoundary.lean` (lines 314–329) forbids `axiom`, `unsafe`, `partial`,
-   `by_elab`, `run_tac`, `native_decide` (`Lean.ofReduceBool`), and
+   `by_elab`, `run_tac`, `native_decide` (native evaluation recorded as an axiom), and
    `decide +native`, and Phase 2 (`"audit"`, line 972) replays every
    non-foundation declaration in a clean `foundation`-only (`Init.*`) kernel
    environment via `base.toKernelEnv.replay locals`. Consequently, unlike
-   Lean 4's upstream `bv_decide` (which relies on `Lean.ofReduceBool` native
-   code execution in standard setups), every Anneal certificate checker in
+   Lean 4's upstream `bv_decide` (which relies on native code execution, recorded
+   as a per-invocation `_native.bv_decide.ax_*` axiom by `Lean.Meta.nativeEqTrue`,
+   in standard setups), every Anneal certificate checker in
    `theory/` must reduce inside Lean's interpreted kernel Whnf reducer (`rfl`)
    using total, structurally terminating functions over `Init.*` types.
 2. **Witness-first certificate formats eliminate kernel search and quadratic
@@ -151,7 +152,8 @@ integrates external decision procedures with its four `trusted/` primitives:
    encounters a sharp kernel-reduction wall unless certificates and data
    structures are engineered specifically for the kernel WHNF reducer.** Because
    Anneal's `trusted/audit/TrustedBoundary.lean` forbids `native_decide` and
-   `decide +native` (`Lean.ofReduceBool`) to exclude the C++/LLVM compiler and
+   `decide +native` (per-invocation `_native.*.ax_*` axioms via
+   `Lean.Meta.nativeEqTrue`) to exclude the C++/LLVM compiler and
    FFI from the Trusted Computing Base (TCB), every certificate check in
    `theory/` must reduce in Lean 4's interpreted kernel WHNF reducer during both
    elaboration and `base.toKernelEnv.replay`. Naive `Array.set` mutations ($O(N)$
@@ -310,7 +312,8 @@ The findings in this report apply to the subjects recorded in `REPORT.json`:
 3. **Lean 4 theorem prover** at
    `leanprover/lean4@5045d0056413266e57c625dcd7c365b10e377c52` (`v4.34.1`),
    specifically contrasting upstream `Std.Tactic.BVDecide` (which outside
-   Anneal uses `Lean.ofReduceBool`) and `omega`/`grind` (which elaborate
+   Anneal relies on a per-invocation native-evaluation axiom
+   `_native.bv_decide.ax_*`) and `omega`/`grind` (which elaborate
    explicit kernel proof terms) against Anneal's `Init.*`-only closed kernel
    environment.
 4. **External solver and certificate-checker ecosystems across Categories 1–7**
@@ -388,12 +391,14 @@ external decision procedures can interact with Lean 4:
    `cargo-anneal` invokes external solvers during proof-script generation and
    serializes their output certificates as pure Lean data declarations or term
    literals inside `.anneal/Proof.lean`.
-2. **Prohibition of `native_decide` (`Lean.ofReduceBool`):**
+2. **Prohibition of `native_decide` (native-evaluation axioms):**
    `inspectSyntax` (`TrustedBoundary.lean:318-329`) explicitly rejects
    `Lean.Parser.Tactic.nativeDecide` (`native_decide`) and `decide +native`.
    Furthermore, in Phase 2 (`"audit"`), `closure` (`L562-578`) rejects any
    reachable axiom outside `{Classical.choice, Quot.sound, propext}`—which
-   blocks `Lean.ofReduceBool` and `Lean.trustCompiler` at the `.olean` kernel
+   blocks the per-invocation `_native.<tactic>.ax_*` axioms emitted by
+   `native_decide`/`bv_decide` (as well as `Lean.ofReduceBool` and
+   `Lean.trustCompiler`) at the `.olean` kernel
    level even if surface syntax checks were bypassed. Consequently, every
    reflective boolean certificate checker `checkCert goal cert = true` must be
    discharged by `rfl` (`Eq.refl true`) inside Lean's interpreted kernel Whnf
@@ -451,9 +456,10 @@ external decision procedures can interact with Lean 4:
      aggressive C++ word-level passes before bit-blasting to `CaDiCaL`/`Kissat`.
      `bv_decide` proves every word-level rewrite, AIG gate sharing step, and
      Tseitin encoding step inside Lean 4 so that no part of the bit-blaster is
-     trusted; however, standard `bv_decide` invokes `Lean.ofReduceBool`
-     (`native_decide`) to run the compiled `LRAT` checker at native C speed—a
-     mechanism forbidden by Anneal's `TrustedBoundary.lean`.
+     trusted; however, standard `bv_decide` runs the compiled `LRAT` checker by
+     native evaluation (`Lean.Meta.nativeEqTrue`, the helper behind
+     `native_decide`) and records the result as a per-invocation axiom
+     `_native.bv_decide.ax_*`—a mechanism forbidden by Anneal's `TrustedBoundary.lean`.
 2. **CDCL SAT Solvers and Clausal Proof Formats (`CaDiCaL`, `Kissat`,
    `drat-trim`, `lrat-trim`, `FRAT-rs`/`frat-elan`, `LIDRUP`):**
    - **Goals & Lineage:** `CaDiCaL` (Biere et al., `arminbiere/cadical`) and
@@ -1705,7 +1711,7 @@ external decision procedures can interact with Lean 4:
 
 - **Engineering Problem (The Meta-Challenge of Multi-Megabyte Certificates
   Without `native_decide`):**
-  Because `TrustedBoundary.lean` forbids `native_decide` (`Lean.ofReduceBool`),
+  Because `TrustedBoundary.lean` forbids `native_decide` (native-evaluation axioms),
   every reflective certificate check in `theory/` is evaluated by Lean's
   interpreted kernel Whnf reducer (twice: during compilation and during
   `base.toKernelEnv.replay`). While 99% of per-function obligations have
@@ -2433,21 +2439,22 @@ inductiveness on at least one clause $c_j$, and `checkCHCCert` will reject it!
 
 ### 5. Kernel Reduction, Memory Walls, and Native-Compilation Trust Gaps
 
-#### 5.1 Why `TrustedBoundary.lean` Forbids `native_decide` (`Lean.ofReduceBool`): The Native-Compiler and FFI Trust Gap
+#### 5.1 Why `TrustedBoundary.lean` Forbids `native_decide` (Native-Evaluation Axioms): The Native-Compiler and FFI Trust Gap
 
 Basis: source + normative (`trusted/audit/TrustedBoundary.lean` lines 312–329,
-972; `trusted/lean/foundation-lock.json`; Lean 4 `Lean.ofReduceBool` /
+972; `trusted/lean/foundation-lock.json`; Lean 4 `Lean.Meta.nativeEqTrue` /
 `Std.Tactic.BVDecide` architecture; Coq `vm_compute` / `native_compute` CVE/bug
 history).
 
 In Lean 4's standard library (`Std.Tactic.BVDecide`), large `LRAT` certificates
-produced by `CaDiCaL` are checked using `native_decide` (which invokes the
-kernel axiom `Lean.ofReduceBool`). When `Lean.ofReduceBool` is evaluated, the
-Lean kernel does **not** reduce the boolean expression using its small,
-auditable WHNF reducer; instead, it compiles the Lean function to C, invokes a
-system C compiler (`clang`/`gcc`), dynamically loads the resulting shared
-library, executes native machine code (including any `@[implemented_by]` or
-`@[extern]` C FFI hooks), and trusts the returned boolean bit!
+produced by `CaDiCaL` are checked by the same native-evaluation helper as
+`native_decide` (`Lean.Meta.nativeEqTrue`; on Lean `v4.34.1` neither tactic
+references `Lean.ofReduceBool`). The boolean expression is **not** reduced by
+the kernel's small, auditable WHNF reducer; instead, the elaborator compiles it
+with Lean's compiler (`addAndCompile`), evaluates it in-process with
+`evalConst` (running compiled code, including any `@[implemented_by]` or
+`@[extern]` C FFI hooks), and trusts the returned boolean bit by adding a fresh
+per-invocation axiom `<theorem>._native.<tactic>.ax_* : e = true`!
 
 Historically, both Coq's `vm_compute` / `native_compute` and Lean's native
 execution path have demonstrated why a high-assurance verifier like Anneal must
@@ -2581,8 +2588,9 @@ Two structural hazards arise for large certificates ($> 10^5$ steps):
    `IC3Check.lean`, etc.) are target architectural designs for `theory/`, not
    yet committed modules on `main`.
 2. **`native_decide` and External FFI Are Known Not to Apply (`unsupported`):**
-   Unlike upstream Lean 4 tactics that invoke `Lean.ofReduceBool`
-   (`Std.Tactic.BVDecide`) or `@[extern]` C bindings, `TrustedBoundary.lean`
+   Unlike upstream Lean 4 tactics that add native-evaluation axioms
+   (`Std.Tactic.BVDecide`'s per-invocation `_native.bv_decide.ax_*`) or use
+   `@[extern]` C bindings, `TrustedBoundary.lean`
    unconditionally rejects `native_decide`, `decide +native`, `@[extern]`,
    `@[implemented_by]`, and `@[csimp]`. Any solver integration that relies on
    unverified native evaluation or FFI inside `.lean` files is **unsupported**
@@ -2601,7 +2609,8 @@ Two structural hazards arise for large certificates ($> 10^5$ steps):
   external solvers (`CaDiCaL`, `cvc5`, `Z3`, `egglog`, `Singular`, `Gappa`,
   `Spacer`) cannot enter `Proof.verify_crate` via `axiom`, `sorryAx`,
   `@[extern]`, `@[implemented_by]`, `native_decide`, or `decide +native`. Any
-  external proof integration that depends on `Lean.ofReduceBool` is rejected
+  external proof integration that depends on `Lean.ofReduceBool` or a
+  `_native.<tactic>.ax_*` axiom is rejected
   during Phase 1 (`"preflight"`, lines 319 and 327–329) and Phase 2 (`"audit"`,
   axiom closure check against `foundation-lock.json`).
 - **Unsupported (`Rat` and `Std.Sat` in `trusted/lean/foundation-lock.json`):**
@@ -2819,6 +2828,8 @@ Two structural hazards arise for large certificates ($> 10^5$ steps):
    - Anvesh Komuravelli, Arie Gurfinkel, and Sagar Chaki, *SMT-Based Model
      Checking for Recursive Programs* (`Spacer`), Formal Methods in System
      Design / JAR 2016, DOI `10.1007/s10817-016-9376-4`.
+
+- **Correction observed 2026-11-20 (`native_decide`/`bv_decide` axiom mechanism):** on Lean `v4.34.1` (`leanprover/lean4@5045d0056413266e57c625dcd7c365b10e377c52`), both tactics go through `Lean.Meta.nativeEqTrue` (`src/Lean/Meta/Native.lean:37-86`; `native_decide` via `elabNativeDecideCore`, `src/Lean/Elab/Tactic/Decide.lean:57-59`; `bv_decide` via `LratCert.toReflectionProof`, `src/Lean/Meta/Tactic/BVDecide/Prover/Bitblast.lean:26-44`), which evaluates the closed `Bool` term with the compiler and then adds a fresh per-invocation axiom `<theorem>._native.<tactic>.ax_* : e = true`; neither tactic references `Lean.ofReduceBool` or `Lean.trustCompiler`. Executed with `lean -t0`, `#print axioms` reports `[propext, Classical.choice, Quot.sound, <theorem>._native.bv_decide.ax_1_5]` for a 64-bit `bv_decide` proof and `[<theorem>._native.native_decide.ax_1_1]` for `native_decide` (identically on `v4.29.0` and `v4.35.0`); reproduce with `support/A1_axioms.lean` and `support/A6_native_axiom_by_toolchain.lean` in package `lean-kernel-evaluation-symbolic-execution-and-native-axiom-free-isa-proofs`. These axioms lie outside `{propext, Classical.choice, Quot.sound}`, so an axiom allowlist still rejects such proofs.
 
 ## Revalidation
 

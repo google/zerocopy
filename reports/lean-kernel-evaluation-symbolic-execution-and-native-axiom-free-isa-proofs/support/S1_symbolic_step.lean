@@ -1,0 +1,84 @@
+/- Probe S1 (derived from B1_fun): SYMBOLIC execution: kernel evaluation of a Sail-style monadic RV64
+   interpreter. Register file representation: fun. Steps: 10. Tactic: decide +kernel. -/
+
+set_option maxRecDepth 100000
+
+abbrev Regs := Nat → BitVec 64
+def Regs.get : Regs → Nat → BitVec 64 := fun r i => if i = 0 then 0 else r i
+def Regs.set : Regs → Nat → BitVec 64 → Regs := fun r i v => fun j => if j = i then v else r j
+def Regs.init : Regs := fun _ => 0
+
+structure St where
+  regs : Regs
+  pc : BitVec 64
+
+inductive Err | fetch | illegal
+
+/-- Sail-V1-style monad: `EStateM (Error) (State)`. -/
+abbrev M := EStateM Err St
+
+def code : List (BitVec 32) := [0x00000293#32, 0x19000313#32, 0x00300393#32, 0x006282b3#32, 0x02728433#32, 0xfff30313#32, 0xfe031ae3#32]
+
+def rdReg (i : Nat) : M (BitVec 64) := do return (← get).regs.get i
+def wrReg (i : Nat) (v : BitVec 64) : M Unit :=
+  if i = 0 then pure () else modify fun s => { s with regs := s.regs.set i v }
+def advance : M Unit := modify fun s => { s with pc := s.pc + 4 }
+
+def step : M Unit := do
+  let s ← get
+  match code[s.pc.toNat / 4]? with
+  | none => throw .fetch
+  | some w =>
+    let opc := w.extractLsb 6 0
+    let rd := (w.extractLsb 11 7).toNat
+    let rs1 := (w.extractLsb 19 15).toNat
+    let rs2 := (w.extractLsb 24 20).toNat
+    let f3 := w.extractLsb 14 12
+    let f7 := w.extractLsb 31 25
+    if opc = 0x13#7 ∧ f3 = 0#3 then
+      let imm : BitVec 64 := (w.extractLsb 31 20).signExtend 64
+      let a ← rdReg rs1
+      wrReg rd (a + imm); advance
+    else if opc = 0x33#7 ∧ f3 = 0#3 ∧ f7 = 0#7 then
+      let a ← rdReg rs1; let b ← rdReg rs2
+      wrReg rd (a + b); advance
+    else if opc = 0x33#7 ∧ f3 = 0#3 ∧ f7 = 1#7 then
+      let a ← rdReg rs1; let b ← rdReg rs2
+      wrReg rd (a * b); advance
+    else if opc = 0x63#7 ∧ f3 = 1#3 then
+      let imm : BitVec 13 :=
+        w.extractLsb 31 31 ++ w.extractLsb 7 7 ++ w.extractLsb 30 25 ++ w.extractLsb 11 8 ++ 0#1
+      let a ← rdReg rs1; let b ← rdReg rs2
+      if a ≠ b then modify fun s => { s with pc := s.pc + imm.signExtend 64 } else advance
+    else throw .illegal
+
+/-- Structural fuel recursion. -/
+def run : Nat → M Unit
+  | 0 => pure ()
+  | n + 1 => do step; run n
+
+
+/-- One concrete instruction word (add x5,x5,x6 at pc 12) on a fully symbolic register file,
+    by `simp` unfolding of the monadic step + BitVec literal simprocs. -/
+theorem s1_add_step (r : Regs) :
+    step.run { regs := r, pc := 12#64 } =
+      .ok () { regs := Regs.set r 5 (Regs.get r 5 + Regs.get r 6), pc := 16#64 } := by
+  simp [step, code, rdReg, wrReg, advance, EStateM.run, bind, EStateM.bind, get, getThe,
+    MonadStateOf.get, EStateM.get, modify, modifyGet, MonadStateOf.modifyGet, EStateM.modifyGet,
+    pure, EStateM.pure]
+#print axioms s1_add_step
+
+/-- Four straight-line steps (pc 12 → bne at 24, taken since x6 ≠ 0 symbolic hypothesis) -/
+theorem s1_three_steps (r : Regs) :
+    (do step; step; step : M Unit).run { regs := r, pc := 12#64 } =
+      .ok () { regs := Regs.set (Regs.set (Regs.set r 5 (Regs.get r 5 + Regs.get r 6)) 8
+                  (Regs.get (Regs.set r 5 (Regs.get r 5 + Regs.get r 6)) 5 *
+                   Regs.get (Regs.set r 5 (Regs.get r 5 + Regs.get r 6)) 7)) 6
+                  (Regs.get (Regs.set (Regs.set r 5 (Regs.get r 5 + Regs.get r 6)) 8
+                  (Regs.get (Regs.set r 5 (Regs.get r 5 + Regs.get r 6)) 5 *
+                   Regs.get (Regs.set r 5 (Regs.get r 5 + Regs.get r 6)) 7)) 6 + 0xffffffffffffffff#64),
+               pc := 24#64 } := by
+  simp [step, code, rdReg, wrReg, advance, EStateM.run, bind, EStateM.bind, get, getThe,
+    MonadStateOf.get, EStateM.get, modify, modifyGet, MonadStateOf.modifyGet, EStateM.modifyGet,
+    pure, EStateM.pure]
+#print axioms s1_three_steps

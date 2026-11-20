@@ -186,11 +186,11 @@
       }
     },
     {
-      "name": "Sail 0.20.3 Lean backend",
+      "name": "Sail Lean backend (development build self-reporting 0.20.3)",
       "identity": {
         "repository": "rems-project/sail",
         "revision": "7e0e53d183cad75b8f36bfbbecc0ef75614a8418",
-        "version": "0.20.3"
+        "describe": "0.20.3-binary-49-g7e0e53d18"
       }
     },
     {
@@ -272,7 +272,54 @@
         "doi": "10.1145/3519939.3523434",
         "publication": "PLDI 2022"
       }
+    },
+    {
+      "name": "Sail compiler release 0.20.3 (source tag)",
+      "identity": {
+        "repository": "rems-project/sail",
+        "revision": "3df54034910b31a1e00d948ee965b2e9603d68e0",
+        "tag": "0.20.3"
+      }
+    },
+    {
+      "name": "Sail compiler release 0.20.3 (binary-release tag)",
+      "identity": {
+        "repository": "rems-project/sail",
+        "revision": "60695b1ea377048f0adc39c62671cd099b2ed9f6",
+        "tag": "0.20.3-binary"
+      }
+    },
+    {
+      "name": "lean-sail support library v6",
+      "identity": {
+        "repository": "rems-project/lean-sail",
+        "revision": "c816ea7ad03cce98d51acee252540fd4215fede8",
+        "tag": "v6"
+      }
+    },
+    {
+      "name": "lean-sail support library v10",
+      "identity": {
+        "repository": "rems-project/lean-sail",
+        "revision": "e4745c82fe329f162700020dcd31da6b342473b9",
+        "tag": "v10"
+      }
+    },
+    {
+      "name": "Sail RISC-V model release 0.13.1",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "27224ccb2290f022e46213c05b3e72e8a9ea635e",
+        "tag": "0.13.1"
+      }
+    },
+    {
+      "name": "Sail RISC-V model (master, 2026-11-19)",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "ec5200bdfe0c10afa6dbb1f7b0980db2d236236e"
+      }
     }
   ],
-  "observed_at": "2026-10-29"
+  "observed_at": "2026-11-20"
 }

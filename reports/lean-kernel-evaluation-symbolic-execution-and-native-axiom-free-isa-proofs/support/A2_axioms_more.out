@@ -1,0 +1,13 @@
+# cmd: ~/.local/bin/anneal-lean-run --mode file --memory-max-mb 6144 --timeout 600 -- /usr/bin/time -v ~/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -t0 -M2048  A2_axioms_more.lean
+'a2_bvdecide_trivial' depends on axioms: [propext, Classical.choice, Quot.sound]
+'a2_grind_nat' depends on axioms: [propext, Classical.choice, Quot.sound]
+'a2_grind_ring' depends on axioms: [propext, Classical.choice, Quot.sound]
+'a2_grind_ring_bv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'a2_grind_lin' depends on axioms: [propext, Classical.choice, Quot.sound]
+'a2_decide_kernel_bv8' depends on axioms: [propext, Quot.sound]
+'a2_simp_arith' depends on axioms: [propext, Quot.sound]
+'a2_toNat_omega' depends on axioms: [propext, Quot.sound]
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:01.47
+	Maximum resident set size (kbytes): 703936
+	Exit status: 0
+# exit: 0

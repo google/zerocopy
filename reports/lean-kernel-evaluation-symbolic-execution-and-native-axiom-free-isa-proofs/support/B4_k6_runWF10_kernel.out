@@ -1,0 +1,26 @@
+# cmd: ~/.local/bin/anneal-lean-run --mode file --memory-max-mb 6144 --timeout 600 -- /usr/bin/time -v ~/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -t0 -M2048  B4_k6_runWF10_kernel.lean
+B4_k6_runWF10_kernel.lean:26:87: error: Tactic `decide` failed for proposition
+  (runWF10 4000 { pc := 0, r0 := 1, r1 := 2 }).pc = 4000
+because its `Decidable` instance
+  instDecidableEqNat (runWF10 4000 { pc := 0, r0 := 1, r1 := 2 }).pc 4000
+did not reduce to `isTrue` or `isFalse`.
+
+After unfolding the instances `instDecidableEqNat` and `Nat.decEq`, reduction got stuck at the `Decidable` instance
+  match h : (runWF10 4000 { pc := 0, r0 := 1, r1 := 2 }).pc.beq 4000 with
+  | true => isTrue ⋯
+  | false => isFalse ⋯
+B4_k6_runWF10_kernel.lean:28:86: error: Tactic `rfl` failed: The left-hand side
+  (runWF10 4000 { pc := 0, r0 := 1, r1 := 2 }).pc
+is not definitionally equal to the right-hand side
+  4000
+
+⊢ (runWF10 4000 { pc := 0, r0 := 1, r1 := 2 }).pc = 4000
+'b4_wf_exec_ok_1000' depends on axioms: [propext, Quot.sound]
+'b4_wf_exec_ok_100000' depends on axioms: [propext, Quot.sound]
+'runWF10' depends on axioms: [propext, Quot.sound]
+@[irreducible] def runWF10 : Nat → MachState → MachState :=
+fun limit => WellFounded.Nat.fix (fun x => limit - x.pc) fun st a => if h : st.pc < limit then a (step10 st) ⋯ else st
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.96
+	Maximum resident set size (kbytes): 597412
+	Exit status: 1
+# exit: 1

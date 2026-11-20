@@ -1,0 +1,2 @@
+'spin' depends on axioms: [propext, Classical.choice, Quot.sound]
+opaque _private.Init.While.0.repeatM.impl (unsafe=false, isPartial=false)

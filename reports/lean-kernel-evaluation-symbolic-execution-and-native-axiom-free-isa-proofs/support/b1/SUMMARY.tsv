@@ -1,0 +1,61 @@
+file	status	wall	maxrss_kb	axioms_or_error
+B1_array_1000_dec.lean	1	0:08.25	2788176	'b1_result' depends on axioms: [b1_result, propext, Quot.sound] error: (deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached
+B1_array_1000_dk.lean	0	0:02.23	833400	'b1_result' depends on axioms: [propext, Quot.sound] 
+B1_array_1000_rfl.lean	1	0:07.77	2788072	'b1_result' depends on axioms: [b1_result, propext, Quot.sound] error: (deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached
+B1_array_100_dec.lean	1	0:07.89	2787492	'b1_result' depends on axioms: [b1_result, propext, Quot.sound] error: (deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached
+B1_array_100_dk.lean	0	0:00.55	540948	'b1_result' depends on axioms: [propext, Quot.sound] 
+B1_array_100_rfl.lean	1	0:07.59	2787416	'b1_result' depends on axioms: [b1_result, propext, Quot.sound] error: (deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached
+B1_array_10_dec.lean	0	0:00.49	541192	'b1_result' depends on axioms: [propext, Quot.sound] 
+B1_array_10_dk.lean	0	0:00.44	508204	'b1_result' depends on axioms: [propext, Quot.sound] 
+B1_array_10_rfl.lean	0	0:00.51	543264	'b1_result' depends on axioms: [propext, Quot.sound] 
+B1_array_1_dec.lean	0	0:00.35	501984	'b1_result' depends on axioms: [propext, Quot.sound] 
+B1_array_1_dk.lean	0	0:00.32	502260	'b1_result' depends on axioms: [propext, Quot.sound] 
+B1_array_1_rfl.lean	0	0:00.33	502104	'b1_result' depends on axioms: [propext, Quot.sound] 
+B1_assoc_1000_dec.lean	1	0:07.19	2788172	'b1_result' depends on axioms: [b1_result, propext, Quot.sound] error: (deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached
+B1_assoc_1000_dk.lean	0	0:01.25	627608	'b1_result' depends on axioms: [propext, Quot.sound] 
+B1_assoc_1000_rfl.lean	1	0:07.62	2788544	'b1_result' depends on axioms: [b1_result, propext, Quot.sound] error: (deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached
+B1_assoc_100_dec.lean	1	0:07.85	2785280	'b1_result' depends on axioms: [b1_result, propext, Quot.sound] error: (deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached
+B1_assoc_100_dk.lean	0	0:00.46	518040	'b1_result' depends on axioms: [propext, Quot.sound] 
+B1_assoc_100_rfl.lean	1	0:07.97	2787624	'b1_result' depends on axioms: [propext, sorryAx, Quot.sound] error: (deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached
+B1_assoc_10_dec.lean	0	0:00.50	540128	'b1_result' depends on axioms: [propext, Quot.sound] 
+B1_assoc_10_dk.lean	0	0:00.34	504180	'b1_result' depends on axioms: [propext, Quot.sound] 
+B1_assoc_10_rfl.lean	0	0:00.49	541292	'b1_result' depends on axioms: [propext, Quot.sound] 
+B1_assoc_1_dec.lean	0	0:00.36	501724	'b1_result' depends on axioms: [propext, Quot.sound] 
+B1_assoc_1_dk.lean	0	0:00.36	501464	'b1_result' depends on axioms: [propext, Quot.sound] 
+B1_assoc_1_rfl.lean	0	0:00.37	500148	'b1_result' depends on axioms: [propext, Quot.sound] 
+B1_exthashmap_1000_dec.lean	1	0:00.44	545764	'b1_result' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound] error: Tactic `decide` failed for proposition
+B1_exthashmap_1000_dk.lean	1	0:00.55	544740	'b1_result' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound] error: Tactic `decide` failed for proposition
+B1_exthashmap_1000_rfl.lean	1	0:00.42	547252	'b1_result' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound] error: Tactic `rfl` failed: The left-hand side
+B1_exthashmap_100_dec.lean	1	0:00.39	548056	'b1_result' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound] error: Tactic `decide` failed for proposition
+B1_exthashmap_100_dk.lean	1	0:00.42	548304	'b1_result' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound] error: Tactic `decide` failed for proposition
+B1_exthashmap_100_rfl.lean	1	0:00.41	548616	'b1_result' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound] error: Tactic `rfl` failed: The left-hand side
+B1_exthashmap_10_dec.lean	1	0:00.44	548816	'b1_result' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound] error: Tactic `decide` failed for proposition
+B1_exthashmap_10_dk.lean	1	0:00.43	547812	'b1_result' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound] error: Tactic `decide` failed for proposition
+B1_exthashmap_10_rfl.lean	1	0:00.48	547040	'b1_result' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound] error: Tactic `rfl` failed: The left-hand side
+B1_exthashmap_1_dec.lean	1	0:00.40	544604	'b1_result' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound] error: Tactic `decide` failed for proposition
+B1_exthashmap_1_dk.lean	1	0:00.36	546016	'b1_result' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound] error: Tactic `decide` failed for proposition
+B1_exthashmap_1_rfl.lean	1	0:00.35	542108	'b1_result' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound] error: Tactic `rfl` failed: The left-hand side
+B1_fun_1000_dec.lean	1	0:08.09	2786464	'b1_result' depends on axioms: [b1_result, propext, Quot.sound] error: (deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached
+B1_fun_1000_dk.lean	0	0:00.99	599436	'b1_result' depends on axioms: [propext, Quot.sound] 
+B1_fun_1000_rfl.lean	1	0:07.30	2788160	'b1_result' depends on axioms: [b1_result, propext, Quot.sound] error: (deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached
+B1_fun_100_dec.lean	1	0:07.80	2787504	'b1_result' depends on axioms: [b1_result, propext, Quot.sound] error: (deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached
+B1_fun_100_dk.lean	0	0:00.43	517396	'b1_result' depends on axioms: [propext, Quot.sound] 
+B1_fun_100_rfl.lean	1	0:07.23	2789272	'b1_result' depends on axioms: [b1_result, propext, Quot.sound] error: (deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached
+B1_fun_10_dec.lean	0	0:00.47	541172	'b1_result' depends on axioms: [propext, Quot.sound] 
+B1_fun_10_dk.lean	0	0:00.37	505008	'b1_result' depends on axioms: [propext, Quot.sound] 
+B1_fun_10_rfl.lean	0	0:00.59	541248	'b1_result' depends on axioms: [propext, Quot.sound] 
+B1_fun_1_dec.lean	0	0:00.42	499932	'b1_result' depends on axioms: [propext, Quot.sound] 
+B1_fun_1_dk.lean	0	0:00.35	502220	'b1_result' depends on axioms: [propext, Quot.sound] 
+B1_fun_1_rfl.lean	0	0:00.35	499844	'b1_result' depends on axioms: [propext, Quot.sound] 
+B1_hashmap_1000_dec.lean	1	0:00.48	641492	'b1_result' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound] error: Tactic `decide` failed for proposition
+B1_hashmap_1000_dk.lean	1	0:00.49	640724	'b1_result' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound] error: Tactic `decide` failed for proposition
+B1_hashmap_1000_rfl.lean	1	0:00.49	645252	'b1_result' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound] error: Tactic `rfl` failed: The left-hand side
+B1_hashmap_100_dec.lean	1	0:00.51	642648	'b1_result' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound] error: Tactic `decide` failed for proposition
+B1_hashmap_100_dk.lean	1	0:00.51	641740	'b1_result' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound] error: Tactic `decide` failed for proposition
+B1_hashmap_100_rfl.lean	1	0:00.47	643636	'b1_result' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound] error: Tactic `rfl` failed: The left-hand side
+B1_hashmap_10_dec.lean	1	0:00.46	642376	'b1_result' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound] error: Tactic `decide` failed for proposition
+B1_hashmap_10_dk.lean	1	0:00.52	642276	'b1_result' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound] error: Tactic `decide` failed for proposition
+B1_hashmap_10_rfl.lean	1	0:00.49	644624	'b1_result' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound] error: Tactic `rfl` failed: The left-hand side
+B1_hashmap_1_dec.lean	1	0:00.51	638228	'b1_result' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound] error: Tactic `decide` failed for proposition
+B1_hashmap_1_dk.lean	1	0:00.45	638888	'b1_result' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound] error: Tactic `decide` failed for proposition
+B1_hashmap_1_rfl.lean	1	0:00.41	638440	'b1_result' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound] error: Tactic `rfl` failed: The left-hand side

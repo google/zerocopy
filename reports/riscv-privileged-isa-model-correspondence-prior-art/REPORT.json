@@ -1,0 +1,203 @@
+{
+  "topics": [
+    "isa",
+    "isa/riscv64",
+    "isa/riscv64/privileged",
+    "isa/sail",
+    "verification",
+    "verification/refinement",
+    "verification/isa-model-correspondence",
+    "verification/model-checking",
+    "lean/mechanization"
+  ],
+  "subjects": [
+    {
+      "name": "riscv-zkvm (Sail RISC-V Lean extraction, hand-written RV64IM model, SailEquiv)",
+      "identity": {
+        "repository": "Verified-zkEVM/riscv-zkvm",
+        "revision": "6810fc14d9c40373101321cefaec59df8d82e3e7"
+      }
+    },
+    {
+      "name": "riscv-lean (Sail-to-BitVec purification), revision previously documented in the corpus",
+      "identity": {
+        "repository": "opencompl/riscv-lean",
+        "revision": "7c6b500c1744f40d928fb131125cd06edf9f4fce"
+      }
+    },
+    {
+      "name": "riscv-lean (Sail-to-BitVec purification), main at observation",
+      "identity": {
+        "repository": "opencompl/riscv-lean",
+        "revision": "0e3365ac7b670d79d70e9b4a8b7fba782607c44f"
+      }
+    },
+    {
+      "name": "sail-riscv-lean (Sail RISC-V RV64D Lean extraction)",
+      "identity": {
+        "repository": "opencompl/sail-riscv-lean",
+        "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+      }
+    },
+    {
+      "name": "Sail compiler (Lean backend short-circuit fix commit)",
+      "identity": {
+        "repository": "rems-project/sail",
+        "revision": "e55d89e79e3e5dfa88a137c73be371fb3671c983"
+      }
+    },
+    {
+      "name": "Sail compiler release 0.20.3",
+      "identity": {
+        "repository": "rems-project/sail",
+        "tag": "0.20.3",
+        "revision": "3df54034910b31a1e00d948ee965b2e9603d68e0"
+      }
+    },
+    {
+      "name": "Sail compiler 0.20.3-binary (revision pinned by riscv-zkvm)",
+      "identity": {
+        "repository": "rems-project/sail",
+        "tag": "0.20.3-binary",
+        "revision": "60695b1ea377048f0adc39c62671cd099b2ed9f6"
+      }
+    },
+    {
+      "name": "xv6iris (xv6-riscv verified in Lean 4 / Iris over Sail RISC-V), lean branch",
+      "identity": {
+        "repository": "mit-pdos/xv6iris",
+        "revision": "5cb9df992c45829f6210b3e4176962d7b7a4c408"
+      }
+    },
+    {
+      "name": "Extending concurrent separation logic to the hardware level to verify the xv6 OS kernel on RISC-V with AI agents",
+      "identity": {
+        "arxiv": "2609.04043"
+      }
+    },
+    {
+      "name": "Ibex RISC-V core (formal trace equivalence against Sail)",
+      "identity": {
+        "repository": "lowRISC/ibex",
+        "revision": "f5b1439295048c6eead73ad4ef8a55cc564e7d6f"
+      }
+    },
+    {
+      "name": "CHERIoT-Ibex core (formal observational correctness against Sail)",
+      "identity": {
+        "repository": "lowRISC/cheriot-ibex",
+        "revision": "56357b6da56b690c608c2cc97a7f9489ae67a3ac"
+      }
+    },
+    {
+      "name": "Comprehensive Formal Verification of Observational Correctness for the CHERIoT-Ibex Processor",
+      "identity": {
+        "arxiv": "2502.04738v1"
+      }
+    },
+    {
+      "name": "Miralis virtual firmware monitor (Kani model checking against Sail-derived Rust)",
+      "identity": {
+        "repository": "CharlyCst/miralis",
+        "revision": "f5ab1955192833ac025a6719a71c6e36a3f643ab"
+      }
+    },
+    {
+      "name": "The Design and Implementation of a Virtual Firmware Monitor (SOSP 2025)",
+      "identity": {
+        "doi": "10.1145/3731569.3764826"
+      }
+    },
+    {
+      "name": "softcore-rs (Sail-to-Rust backend and softcore-rv64)",
+      "identity": {
+        "repository": "CharlyCst/softcore-rs",
+        "revision": "8c238f4103ce43b00078c7b3dc909f7dae05bfc4"
+      }
+    },
+    {
+      "name": "Serval (Rosette verifier framework, RISC-V interpreter)",
+      "identity": {
+        "repository": "uw-unsat/serval",
+        "revision": "72adc4952a1e62330aea527214a26bd0c09cbd05"
+      }
+    },
+    {
+      "name": "Scaling symbolic evaluation for automated verification of systems code with Serval (SOSP 2019)",
+      "identity": {
+        "doi": "10.1145/3341301.3359641"
+      }
+    },
+    {
+      "name": "Komodo: Using verification to disentangle secure-enclave hardware from software (SOSP 2017)",
+      "identity": {
+        "doi": "10.1145/3132747.3132782"
+      }
+    },
+    {
+      "name": "ACE-RISCV confidential-computing security monitor",
+      "identity": {
+        "repository": "IBM/ACE-RISCV",
+        "revision": "42cf582eef21f9ab661ec7008d65c6de141b4be1"
+      }
+    },
+    {
+      "name": "Automatic ISA analysis for Secure Context Switching (Sailor)",
+      "identity": {
+        "arxiv": "2502.06609"
+      }
+    },
+    {
+      "name": "seL4 proofs (RISCV64 machine interface)",
+      "identity": {
+        "repository": "seL4/l4v",
+        "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e"
+      }
+    },
+    {
+      "name": "Islaris (RISC-V configuration and Sail-trace proofs)",
+      "identity": {
+        "repository": "rems-project/islaris",
+        "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9"
+      }
+    },
+    {
+      "name": "riscv-coq",
+      "identity": {
+        "repository": "mit-plv/riscv-coq",
+        "revision": "03881b21aa36115d436e06b9e1a40836e9b927c7"
+      }
+    },
+    {
+      "name": "HOL4 (L3 RISC-V model, examples/l3-machine-code/riscv)",
+      "identity": {
+        "repository": "HOL-Theorem-Prover/HOL",
+        "revision": "0c30bdb71aafd4e6a354f5b0b43fffbff6fa8d47"
+      }
+    },
+    {
+      "name": "sail-cheri-riscv",
+      "identity": {
+        "repository": "CTSRD-CHERI/sail-cheri-riscv",
+        "revision": "cf36cfd4fca0bd10a5906651bf48b9674ccd0a2b"
+      }
+    },
+    {
+      "name": "Lean 4 toolchain used for probes",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "rustc used for the array-repeat probe",
+      "identity": {
+        "toolchain": "rustc 1.102.0-nightly",
+        "commit-prefix": "3ef0c22cd",
+        "date": "2026-11-11"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

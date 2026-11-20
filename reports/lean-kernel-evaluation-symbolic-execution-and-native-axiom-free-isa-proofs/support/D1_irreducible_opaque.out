@@ -1,0 +1,27 @@
+# cmd: ~/.local/bin/anneal-lean-run --mode file --memory-max-mb 6144 --timeout 600 -- /usr/bin/time -v ~/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -t0 -M2048  D1_irreducible_opaque.lean
+'d1_irr_kernel' does not depend on any axioms
+D1_irreducible_opaque.lean:10:39: error: Tactic `decide` failed for proposition
+  fIrr 3 = 4
+because its `Decidable` instance
+  instDecidableEqNat (fIrr 3) 4
+did not reduce to `isTrue` or `isFalse`.
+
+After unfolding the instances `instDecidableEqNat` and `Nat.decEq`, reduction got stuck at the `Decidable` instance
+  match h : (fIrr 3).beq 4 with
+  | true => isTrue ⋯
+  | false => isFalse ⋯
+D1_irreducible_opaque.lean:12:44: error: Tactic `decide` failed for proposition
+  gOpq 3 = 4
+because its `Decidable` instance
+  instDecidableEqNat (gOpq 3) 4
+did not reduce to `isTrue` or `isFalse`.
+
+Reduction got stuck at the `Decidable` instance
+  match h : (gOpq 3).beq 4 with
+  | true => isTrue ⋯
+  | false => isFalse ⋯
+'d1_plain' does not depend on any axioms
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.24
+	Maximum resident set size (kbytes): 490420
+	Exit status: 1
+# exit: 1

@@ -1,0 +1,44 @@
+roots=['try_step'] missing=[] reachable_decls=2240 of 5033 decls
+reachable body LOC ~ 85628 across 113 files
+axioms(74): ['cancel_reservation', 'get_16_random_bits', 'load_reservation', 'match_reservation', 'plat_term_write', 'riscv_f16Add', 'riscv_f16Div', 'riscv_f16Eq', 'riscv_f16Le', 'riscv_f16Le_quiet', 'riscv_f16Lt', 'riscv_f16Lt_quiet', 'riscv_f16Mul', 'riscv_f16MulAdd', 'riscv_f16Sqrt', 'riscv_f16Sub', 'riscv_f16ToF32', 'riscv_f16ToF64', 'riscv_f16ToI32', 'riscv_f16ToI64', 'riscv_f16ToUi32', 'riscv_f16ToUi64'
+
+roots=['execute_SRET'] missing=[] reachable_decls=249 of 5033 decls
+reachable body LOC ~ 2626 across 18 files
+axioms(1): ['sys_enable_experimental_extensions']
+
+roots=['trap_handler'] missing=[] reachable_decls=128 of 5033 decls
+reachable body LOC ~ 1914 across 17 files
+axioms(1): ['sys_enable_experimental_extensions']
+
+roots=['exception_handler'] missing=[] reachable_decls=271 of 5033 decls
+reachable body LOC ~ 2853 across 18 files
+axioms(1): ['sys_enable_experimental_extensions']
+
+roots=['translateAddr'] missing=[] reachable_decls=351 of 5033 decls
+reachable body LOC ~ 4296 across 38 files
+axioms(2): ['plat_term_write', 'sys_enable_experimental_extensions']
+
+roots=['doCSR'] missing=[] reachable_decls=661 of 5033 decls
+reachable body LOC ~ 27275 across 31 files
+axioms(2): ['get_16_random_bits', 'sys_enable_experimental_extensions']
+
+roots=['fetch'] missing=[] reachable_decls=367 of 5033 decls
+reachable body LOC ~ 4448 across 43 files
+axioms(2): ['plat_term_write', 'sys_enable_experimental_extensions']
+
+roots=['ext_decode'] missing=[] reachable_decls=432 of 5033 decls
+reachable body LOC ~ 31594 across 38 files
+axioms(1): ['sys_enable_experimental_extensions']
+
+roots=['dispatchInterrupt'] missing=[] reachable_decls=91 of 5033 decls
+reachable body LOC ~ 1194 across 12 files
+axioms(1): ['sys_enable_experimental_extensions']
+
+roots=['execute_SRET', 'trap_handler', 'exception_handler', 'translateAddr', 'doCSR', 'ext_decode', 'fetch', 'dispatchInterrupt'] missing=[] reachable_decls=1130 of 5033 decls
+reachable body LOC ~ 59845 across 81 files
+axioms(3): ['get_16_random_bits', 'plat_term_write', 'sys_enable_experimental_extensions']
+
+roots=['execute'] missing=[] reachable_decls=1708 of 5033 decls
+reachable body LOC ~ 43579 across 84 files
+axioms(73): ['cancel_reservation', 'get_16_random_bits', 'load_reservation', 'match_reservation', 'plat_term_write', 'riscv_f16Add', 'riscv_f16Div', 'riscv_f16Eq', 'riscv_f16Le', 'riscv_f16Le_quiet', 'riscv_f16Lt', 'riscv_f16Lt_quiet', 'riscv_f16Mul', 'riscv_f16MulAdd', 'riscv_f16Sqrt', 'riscv_f16Sub', 'riscv_f16ToF32', 'riscv_f16ToF64', 'riscv_f16ToI32', 'riscv_f16ToI64', 'riscv_f16ToUi32', 'riscv_f16ToUi64'
+

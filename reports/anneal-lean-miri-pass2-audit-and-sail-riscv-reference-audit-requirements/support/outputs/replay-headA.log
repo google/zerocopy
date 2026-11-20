@@ -1,0 +1,9 @@
+vendor modules=9 constants=1195 partial=15 unsafe=0 opaque=2 axiom=0 sorryRefs=0 compilerReflRefs=0
+partial: [IntRange.forM.loop._unsafe_rec, IntRange.forIn'.loop._unsafe_rec, Sail.Nat.iterate._unsafe_rec, Sail.ArchSem.PreSail.sailTryCatch._unsafe_rec, Sail.ArchSem.PreSail.PreSailME.run._unsafe_rec, Sail.ArchSem.FreeM.bind._unsafe_rec, Sail.ArchSem.FreeM.liftM._unsafe_rec, Sail.ArchSem.instMonadExceptErrorPreSailME.tryCatch._unsafe_rec, Sail.ArchSem.PreSail.instMonadExceptOfErrorPreSailM.tryCatch._unsafe_rec, Sail.ArchSem.PreSail.instMonadLiftPreSailMPreSailME.lift._unsafe_rec, Sail.ArchSem.readBytes._unsafe_rec, Sail.ConcurrencyInterfaceV1.PreSail.readBytesVec._unsafe_rec, Sail.ConcurrencyInterfaceV1.PreSail.readBytes._unsafe_rec, whileFuelM.go._unsafe_rec, untilFuelM.go._unsafe_rec]
+opaque: [ext._@.Sail.Attr.1247458564._hygCtx._hyg.3, extProc._@.Sail.Attr.1247458564._hygCtx._hyg.3]
+axioms reachable from non-partial/unsafe vendor constants: [Quot.sound, Classical.choice, propext]
+replayed 1180/1180 vendor constants onto 2356-module base in 273 ms
+
+real	0m20.024s
+user	0m17.393s
+sys	0m2.603s

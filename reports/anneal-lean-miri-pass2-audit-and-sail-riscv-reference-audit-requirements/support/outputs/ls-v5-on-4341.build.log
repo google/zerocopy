@@ -1,0 +1,18 @@
+✔ [2/13] Built Sail.IntRange (705ms)
+✔ [3/13] Built Sail.Attr (990ms)
+✔ [4/13] Built Sail.BitVec (1.5s)
+✔ [5/13] Built Sail.Common (1.7s)
+✔ [6/13] Built SailTest.VectorConversion (905ms)
+✔ [7/13] Built Sail.ArchSem (1.7s)
+✔ [8/13] Built SailTest (981ms)
+✔ [10/13] Built Sail.ConcurrencyInterfaceV1 (2.2s)
+⚠ [11/13] Built Sail.Sail (1.5s)
+warning: Sail/Sail.lean:34:5: Ambiguous namespace `PreSail`: it is interpreted as `_root_.Sail.ConcurrencyInterfaceV1.PreSail` because this `open` occurs inside `namespace Sail.ConcurrencyInterfaceV1`, while `_root_.PreSail` is silently not opened. Specify the namespace unambiguously, e.g. `_root_.Sail.ConcurrencyInterfaceV1.PreSail`. The warning can sometimes also be addressed by moving the `open` outside of the surrounding `namespace`.
+
+Note: This linter can be disabled with `set_option linter.ambiguousOpen false`
+✔ [12/13] Built Sail (832ms)
+Build completed successfully (13 jobs).
+
+real	0m7.415s
+user	0m11.594s
+sys	0m3.411s

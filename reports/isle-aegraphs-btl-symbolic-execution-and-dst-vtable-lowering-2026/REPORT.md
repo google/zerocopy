@@ -11,8 +11,9 @@ post-cleanup MIR and machine assembly:
    Anneal's `trusted/audit/TrustedBoundary.lean` and
    `trusted/lean/foundation-lock.json` (`joshlf/anneal` at
    `c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b`) permit only `[propext,
-   Classical.choice, Quot.sound]` and explicitly reject `Lean.ofReduceBool`
-   (which rules out `bv_decide` and `native_decide`). We audit Cranelift's ISLE
+   Classical.choice, Quot.sound]` and explicitly reject `Lean.ofReduceBool`;
+   the allowlist also rules out `bv_decide` and `native_decide`, whose
+   per-invocation `_native.<tactic>.ax_*` axioms lie outside it. We audit Cranelift's ISLE
    compiler (`cranelift-isle` `0.132.0`) and acyclic e-graph optimizer
    (`cranelift-codegen` `0.132.0`, `bytecodealliance/wasmtime` at
    `87282b8fd77fa9fbba6caadb0be690bedec2dc64`) alongside VeriISLE/Crocus,
@@ -278,7 +279,8 @@ Every primitive algebraic rewrite rule in Cranelift's `opts/` and
 `isa/riscv64/lower.isle` can be proved once at compiler-construction time over
 all `x y : BitVec 64` using `BitVec.eq_of_toNat_eq`, `bv_omega`, and structural
 bitvector lemmas (`BitVec.not_or`, `BitVec.and_assoc`, `BitVec.add_comm`,
-`BitVec.add_assoc`). Unlike `bv_decide` (which invokes `Lean.ofReduceBool`),
+`BitVec.add_assoc`). Unlike `bv_decide` (which adds a per-invocation
+native-evaluation axiom `_native.bv_decide.ax_*`),
 `bv_omega` translates bitvector linear arithmetic into `Nat`/`Int` modular
 arithmetic solved by Lean's kernel-proof-producing `omega` tactic.
 
@@ -718,10 +720,11 @@ Verified with `lean -j1 -M1024` (exit code `0`, zero `sorryAx`, zero
 
 ## Boundaries
 
-- **Known Not to Apply (`bv_decide` / `Lean.ofReduceBool` Inside Audited
+- **Known Not to Apply (`bv_decide` / `native_decide` Inside Audited
   Proofs):**
-  Invoking `bv_decide` or `native_decide` introduces `Lean.ofReduceBool` into
-  the theorem's kernel axiom footprint, which is **known not to apply** under
+  Invoking `bv_decide` or `native_decide` introduces a per-invocation
+  `_native.<tactic>.ax_*` axiom (not `Lean.ofReduceBool`) into the theorem's
+  kernel axiom footprint, which is **known not to apply** under
   `trusted/audit/TrustedBoundary.lean` and `trusted/lean/foundation-lock.json`.
   All bitvector and integer obligations in this package are proved via
   `BitVec.eq_of_toNat_eq`, `bv_omega`, `omega`, and kernel reduction (`rfl` /
@@ -814,6 +817,8 @@ Verified with `lean -j1 -M1024` (exit code `0`, zero `sorryAx`, zero
      `compiler/rustc_codegen_ssa/src/mir/rvalue.rs:514-605, 920-970`.
    - `compiler-builtins/src/int/mul.rs:1-206` (`UMulo::mulo`, `Mulo::mulo`,
      `__rust_u128_mulo`, and `__rust_i128_mulo`).
+
+- **Correction observed 2026-11-20 (`native_decide`/`bv_decide` axiom mechanism):** on Lean `v4.34.1` (`leanprover/lean4@5045d0056413266e57c625dcd7c365b10e377c52`), both tactics go through `Lean.Meta.nativeEqTrue` (`src/Lean/Meta/Native.lean:37-86`; `native_decide` via `elabNativeDecideCore`, `src/Lean/Elab/Tactic/Decide.lean:57-59`; `bv_decide` via `LratCert.toReflectionProof`, `src/Lean/Meta/Tactic/BVDecide/Prover/Bitblast.lean:26-44`), which evaluates the closed `Bool` term with the compiler and then adds a fresh per-invocation axiom `<theorem>._native.<tactic>.ax_* : e = true`; neither tactic references `Lean.ofReduceBool` or `Lean.trustCompiler`. Executed with `lean -t0`, `#print axioms` reports `[propext, Classical.choice, Quot.sound, <theorem>._native.bv_decide.ax_1_5]` for a 64-bit `bv_decide` proof and `[<theorem>._native.native_decide.ax_1_1]` for `native_decide` (identically on `v4.29.0` and `v4.35.0`); reproduce with `support/A1_axioms.lean` and `support/A6_native_axiom_by_toolchain.lean` in package `lean-kernel-evaluation-symbolic-execution-and-native-axiom-free-isa-proofs`. These axioms lie outside `{propext, Classical.choice, Quot.sound}`, so an axiom allowlist still rejects such proofs.
 
 ## Revalidation
 

@@ -1,0 +1,15 @@
+== v4.29.0 (Lean (version 4.29.0, x86_64-unknown-linux-gnu, commit 98dc76e3c0a9b856c9b98726b713fb04fab16740, Release))
+'a6_bv' depends on axioms: [propext, Classical.choice, Quot.sound, a6_bv._native.bv_decide.ax_1_5]
+'a6_bv_trivial' depends on axioms: [propext]
+'a6_nd' depends on axioms: [a6_nd._native.native_decide.ax_1_1]
+exit=0
+== v4.34.1 (Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release))
+'a6_bv' depends on axioms: [propext, Classical.choice, Quot.sound, a6_bv._native.bv_decide.ax_1_5]
+'a6_bv_trivial' depends on axioms: [propext, Classical.choice, Quot.sound]
+'a6_nd' depends on axioms: [a6_nd._native.native_decide.ax_1_1]
+exit=0
+== v4.35.0 (Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release))
+'a6_bv' depends on axioms: [propext, Classical.choice, Quot.sound, a6_bv._native.bv_decide.ax_1_5]
+'a6_bv_trivial' depends on axioms: [propext, Classical.choice, Quot.sound]
+'a6_nd' depends on axioms: [a6_nd._native.native_decide.ax_1_1]
+exit=0

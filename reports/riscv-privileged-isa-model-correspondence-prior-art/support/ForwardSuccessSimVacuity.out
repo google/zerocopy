@@ -1,0 +1,6 @@
+'T2Probe.trapEverywhere_fwd' does not depend on any axioms
+'T2Probe.hand_fwd' depends on axioms: [propext]
+'T2Probe.hand_ref_disagree_on_trap' does not depend on any axioms
+'T2Probe.trapEverywhere_not_noSilentTrap' depends on axioms: [propext]
+'T2Probe.hand_not_noSilentTrap' depends on axioms: [propext]
+exit=0

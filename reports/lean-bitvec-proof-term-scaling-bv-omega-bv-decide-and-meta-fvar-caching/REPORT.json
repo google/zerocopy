@@ -23,6 +23,14 @@
       }
     },
     {
+      "name": "Lean 4 v4.35.0",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.35.0",
+        "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc"
+      }
+    },
+    {
       "name": "Anneal TrustedBoundary kernel environment and axiom auditor",
       "identity": {
         "repository": "joshlf/anneal",
@@ -44,5 +52,5 @@
       }
     }
   ],
-  "observed_at": "2026-11-12"
+  "observed_at": "2026-11-20"
 }

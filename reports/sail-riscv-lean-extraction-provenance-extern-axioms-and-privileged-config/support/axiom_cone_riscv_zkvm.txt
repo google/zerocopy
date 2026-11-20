@@ -1,0 +1,26 @@
+dir=RiscvZkvm/Sail decl_names=3622 axioms_declared=75
+ROOT try_step: reachable_decls=983 axioms=6 float=0 nonfloat=['get_16_random_bits', 'load_reservation', 'match_reservation', 'plat_term_write', 'sys_enable_experimental_extensions', 'valid_reservation']
+ROOT execute: reachable_decls=851 axioms=5 float=0 nonfloat=['get_16_random_bits', 'load_reservation', 'match_reservation', 'plat_term_write', 'sys_enable_experimental_extensions']
+ROOT ext_decode: reachable_decls=113 axioms=1 float=0 nonfloat=['sys_enable_experimental_extensions']
+ROOT execute_RTYPE: reachable_decls=84 axioms=0 float=0 nonfloat=[]
+ROOT execute_ITYPE: reachable_decls=82 axioms=0 float=0 nonfloat=[]
+ROOT execute_MUL: reachable_decls=80 axioms=0 float=0 nonfloat=[]
+ROOT execute_DIV: reachable_decls=79 axioms=0 float=0 nonfloat=[]
+ROOT execute_LOAD: reachable_decls=432 axioms=3 float=0 nonfloat=['load_reservation', 'plat_term_write', 'sys_enable_experimental_extensions']
+ROOT execute_STORE: reachable_decls=425 axioms=3 float=0 nonfloat=['match_reservation', 'plat_term_write', 'sys_enable_experimental_extensions']
+ROOT execute_LOADRES: NOT FOUND
+ROOT execute_STORECON: NOT FOUND
+ROOT execute_SRET: reachable_decls=130 axioms=1 float=0 nonfloat=['sys_enable_experimental_extensions']
+ROOT execute_MRET: reachable_decls=132 axioms=1 float=0 nonfloat=['sys_enable_experimental_extensions']
+ROOT execute_SFENCE_VMA: reachable_decls=75 axioms=0 float=0 nonfloat=[]
+ROOT execute_FENCEI: NOT FOUND
+ROOT execute_WFI: reachable_decls=54 axioms=0 float=0 nonfloat=[]
+ROOT execute_ECALL: reachable_decls=53 axioms=0 float=0 nonfloat=[]
+ROOT execute_CSRReg: reachable_decls=512 axioms=2 float=0 nonfloat=['get_16_random_bits', 'sys_enable_experimental_extensions']
+ROOT trap_handler: reachable_decls=123 axioms=1 float=0 nonfloat=['sys_enable_experimental_extensions']
+ROOT translateAddr: reachable_decls=344 axioms=2 float=0 nonfloat=['plat_term_write', 'sys_enable_experimental_extensions']
+ROOT vmem_read: reachable_decls=418 axioms=3 float=0 nonfloat=['load_reservation', 'plat_term_write', 'sys_enable_experimental_extensions']
+ROOT vmem_write: reachable_decls=423 axioms=3 float=0 nonfloat=['match_reservation', 'plat_term_write', 'sys_enable_experimental_extensions']
+ROOT dispatchInterrupt: reachable_decls=90 axioms=1 float=0 nonfloat=['sys_enable_experimental_extensions']
+ROOT read_CSR: reachable_decls=142 axioms=2 float=0 nonfloat=['get_16_random_bits', 'sys_enable_experimental_extensions']
+ROOT write_CSR: reachable_decls=418 axioms=1 float=0 nonfloat=['sys_enable_experimental_extensions']

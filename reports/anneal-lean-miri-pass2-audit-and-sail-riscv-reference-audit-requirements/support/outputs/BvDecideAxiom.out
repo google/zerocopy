@@ -1,0 +1,10 @@
+'bv_probe' depends on axioms: [propext, Classical.choice, Quot.sound, bv_probe._native.bv_decide.ax_1_5]
+bv_probe: hasValue=true used=51
+bv_probe [theorem] direct axiom refs: [bv_probe._native.bv_decide.ax_1_5]
+bv_probe._native.bv_decide.ax_1_5: hasValue=false used=6
+bv_probe._native.bv_decide.ax_1_5 [axiom] direct axiom refs: []
+bv_probe._cert_def_1_1: hasValue=true used=1
+bv_probe._cert_def_1_1 [other] direct axiom refs: []
+bv_probe._expr_def_1_1: hasValue=true used=12
+bv_probe._expr_def_1_1 [other] direct axiom refs: []
+any bv_probe.* constant directly references Lean.ofReduceBool: false

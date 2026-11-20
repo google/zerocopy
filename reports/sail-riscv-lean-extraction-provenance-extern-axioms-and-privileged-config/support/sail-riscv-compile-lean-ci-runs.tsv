@@ -1,0 +1,62 @@
+# GET https://api.github.com/repos/riscv/sail-riscv/actions/workflows/compile-lean.yml/runs?per_page=60&branch=master  (fetched 2026-11-20T03:34Z)
+# run_id	created_at	head_sha	conclusion	title
+44645042260	2026-11-20T00:20:13Z	ec5200bdfe0c10afa6dbb1f7b0980db2d236236e	failure	Refactor split access in vmem_utils (#2130)
+44628237027	2026-11-19T22:23:54Z	e2a137920890edae42a437769011933bb2b83ac4	failure	Update GitHub Actions images and build with Clang by default in CI (#…
+44594492513	2026-11-19T19:04:32Z	f57b2ec1e8fc8fe71a09b384c28b17fd806bc2ea	failure	Fix source/dest register group overlap checks for `viota.m`. (#2135)
+44592780793	2026-11-19T18:54:46Z	d9bedb7950bcf0ee630e9525677739e5d9f185bc	cancelled	Adjust `maskmax` and `address_select_matches_all_addresses` configura…
+44587783456	2026-11-19T18:26:17Z	17140cca03af9e488b40aad319d392209c1b5c90	failure	Fix handling of illegal LMUL for `vrgatherei16.vv`. (#2133)
+44587555894	2026-11-19T18:25:01Z	51b682d8304f93564b1f527e3d1e24c27e70a3cf	cancelled	Skip interrupt checks when no interrupts are enabled (#2131)
+44584557794	2026-11-19T18:08:10Z	fb2814d94c0276d0d02059e5fd75b6ea33947190	failure	Pass callback arguments without strings (#2129)
+44387271341	2026-11-18T20:05:15Z	dda378c60fa0ad1bf13af5929bebee344a2e0a75	failure	Refactor the file layout of the Sdtrig code. (#2126)
+44351622802	2026-11-18T16:49:14Z	56ec86034a87fd04aaf04f7e1d92fd5645cd48b9	failure	Report full 32-bit encoding in xtval for non-11 opcodes without Zca (…
+44261709218	2026-11-18T07:48:05Z	f07820481abee82415bf7f62dc2e97856d62542f	failure	Check reserved Svnapot encodings before PTE permission checks (#2124)
+44261082615	2026-11-18T07:43:18Z	c4131b0505d8b22b3ced008ced228f8bc6de8739	cancelled	Add configuration to specify additional PMAs to be overridden for Svp…
+44260866069	2026-11-18T07:41:37Z	a912dcdcc10599481edfbb9849b0f5a9e69dd0b5	cancelled	Use FetchContent for the ELFIO dependency and move to a global `DOWNL…
+44095070251	2026-11-17T13:40:23Z	6e2f7a935b82df6cc5c8eedafa947b8b3cd8d51c	failure	Fix vfwmaccbf16.vf EMUL check and invalid flag when no element is act…
+43545380643	2026-11-14T02:16:38Z	a2ad4b5663c487de12260e9bc9e1bbbc5fcd4eb7	failure	Fix GVA for trigger breakpoints (#2111)
+43488446823	2026-11-13T19:02:53Z	51db103d641674ee14014f33f798b4fdb8a4c59b	failure	Add new Zvl* extensions (#2114)
+43342982039	2026-11-13T01:11:21Z	bcc5a0046052a88543bd4ebf2be3f6b0a8b5cf5f	failure	Fix handling of negative Sdtrig matches for multibyte accesses. (#2095)
+43267705353	2026-11-12T17:16:42Z	097ee41614cd1d36c31f17834810a38e3c0e61a7	failure	Add support for the Smcdeleg and Ssccfg extensions (#2079)
+43244365588	2026-11-12T15:07:24Z	5b27a60b1fdae6062d7e0973c9d4ece75a1f4f73	failure	Set landing pad state only if the indirect jump/call succeeds. (#2103)
+43225917636	2026-11-12T13:17:42Z	390a0784464bb74aad579ba6e9bf2eb55f228350	failure	Fix asserts when accessing double registers without the `D` extension…
+43144379042	2026-11-12T02:52:36Z	bebe427b6dbff92e0e1c07d4c8510115feebecc5	failure	`fli.h` does not depend on an enabled vector unit when Zvfh is suppor…
+43129623251	2026-11-12T00:45:29Z	cc61b60f07c033ef973248b0261a2073d71c27c4	failure	Cache the effective PBMT in the TLB. (#2104)
+42949246687	2026-11-11T02:55:11Z	6877d5150cbbf2e5b9e2c154df4ea30a6831e582	failure	Fix `HLVX.*` instructions accessing VS-stage shadow stack pages. (#2086)
+42836921280	2026-11-10T14:43:07Z	0d1c7cb92c35826405e65fde9f322f1ff4213cac	failure	Add the Ss1p12 and Ss1p13 extensions. (#2085)
+42730987543	2026-11-10T00:47:31Z	0b4d729a026b8910757049cd4bc51e2afaf390f9	failure	Fall back to default HS qualifier rule for fcsr (#2094)
+42726988993	2026-11-10T00:16:06Z	c596bd9dea3780a1e2c5242cef85ab03b6587e16	failure	Apply hstateen mask to sstateen only in VS-mode or VU-mode (#2093)
+42334323097	2026-11-07T03:30:37Z	8118453168a11439fd88318e7e1192eb938efcd1	failure	Check for invalid PTEs on a TLB hit (#2084)
+42307965503	2026-11-06T22:52:54Z	dadc2311a358e815a244ba529076e93c49a3a1aa	failure	Ignore vsip/vsie writes to bits not delegated by hideleg (#2082)
+42195477750	2026-11-06T09:29:50Z	630251a3130133a01be7680892d0d2d1c0bdf28f	action_required	Fix scalar EMUL alignment and overlap checks for vector crypto .vs instructions
+42193664701	2026-11-06T09:15:28Z	13448b88c4902c0d615a4bc7d577446122604551	action_required	Fix scalar EMUL alignment and overlap checks for vector crypto .vs instructions
+41796710380	2026-11-04T08:04:27Z	13448b88c4902c0d615a4bc7d577446122604551	failure	Fix scalar EMUL alignment and overlap checks for vector crypto .vs instructions
+41753538639	2026-11-04T01:21:51Z	dc286e66aecf4f6cc2dd6b2716be1067d1664f99	failure	Add reserved_behavior.illegal_privilege for mstatus.MPP WARL. (#2072)
+41719923186	2026-11-03T21:14:06Z	02cc53657cf89aac322cc19924b3cb34bb8b787e	failure	Add support for the Smcsrind/Sscsrind extensions. (#956)
+41700456482	2026-11-03T19:08:29Z	9ae1a39d122556fccd2d469665841bb54496aae4	success	Allow configuring the read-only `misa.X` bit. (#2070)
+41146975629	2026-10-30T23:52:07Z	a83603b6995428b9df2c464f98e18a7b0ae488fe	success	Apply MXR only to explicit memory accesses (#2066)
+41130463465	2026-10-30T21:21:39Z	a17a0517a283205b74bae5b2949a24815e3bfc46	success	Add configuration for `scontext`/`hcontext` widths. (#2055)
+40974675917	2026-10-29T23:40:01Z	fc074f99f578954376214c4ca9490152d35d0ec2	success	Minor fixes after the switch to upstream softfloat. (#2063)
+40784909707	2026-10-28T23:06:05Z	ac265ffa431b78f866b4d4ac99718160b194da0a	failure	Update SoftFloat and use FetchContent (#2052)
+40757646354	2026-10-28T19:48:49Z	e117471dbb559635e9541125865fa3e7b58cba1a	failure	Support config options for whether `tdata3` and textra are implemented.
+40730273083	2026-10-28T16:52:43Z	09a9c5fba7b0a024e7f4dea18692731acb1c60aa	failure	Add a config option for read-only-one bits in `mideleg` (#2044)
+40552112942	2026-10-27T17:35:58Z	2564cacef5b69da0a705deb332e13d5425e4559b	failure	Add config option to enable `tcontrol` (#2043)
+39999360364	2026-10-23T17:57:42Z	6f886e69efbbcdd5690808bc4aa87dadb17d38fc	failure	Restrict Lean/Rocq CI builds to the master branch for push events. (#…
+39812106834	2026-10-22T16:13:11Z	eb3e896f3ef0db8e21f54fd61a0681d39a9fa266	failure	Cancel in progress CI jobs when new commits are pushed to the same PR…
+39649059304	2026-10-21T18:02:00Z	0aee69e3546c45732918a998fc5319d1f624537c	failure	Support a config option for whether `misa` is implemented. (#2037)
+39646187803	2026-10-21T17:42:31Z	16a7d0ae0410d63a306fa8da7e47f243cde7be54	failure	Fix pre-fetch execute compares for `mcontrol6`. (#2036)
+39641604593	2026-10-21T17:11:45Z	90260852af8e422c40b4d581659764dd14256560	failure	Only create scheduled releases on the riscv/sail-riscv repo (#2031)
+39464236520	2026-10-20T17:13:50Z	2281e8bd877c1c764ba08bcf43de1d4f8e6ad56c	failure	Add a config option for hedeleg[0] (#2028)
+39180783786	2026-10-19T00:26:29Z	cd3f185e3a40cd402632d78a2bc213d62ae6f753	failure	Strengthen types of `vstart` and `vl`. (#2026)
+38930167634	2026-10-16T16:12:57Z	e5acebb04ff573e93203596486b831a5974117c3	failure	Prepare release 0.16. (#2024)
+38919915367	2026-10-16T14:56:57Z	89d923772a54534f952f21c1bbbf6f6f40477b79	failure	Fix reporting of exception addresses in `xtval`. (#2019)
+38840925242	2026-10-16T02:32:07Z	89639e98c025c44f6f7fa1bb154c106df4b45326	failure	Support `mcontrol6` triggers for Sdtrig. (#2018)
+38805604019	2026-10-15T20:53:38Z	0c720e3002f5f1800c2420e23d0881481f38164f	success	Theorem prover target updates (#2023)
+38657484952	2026-10-15T00:00:30Z	7d3c9c2568b77f516783aa2ac63bd9c0e0c6df86	failure	Make stateen0 bits configurable as writable, read-only zero or read-o…
+38485891670	2026-10-13T23:42:43Z	9f192a57f2bae9b6c34ac13bfe1fd75b77b616b1	failure	Add Sdtrig textra32/textra64 support  (#2017)
+38452113772	2026-10-13T19:05:54Z	6bcd8bed84606254e9325455a8ba0d1a87e1255d	failure	Only set GVA when xtval holds a guest virtual address (#2011)
+38331845654	2026-10-13T01:22:46Z	319335c923c91983f2dfd3b18e216a4b7b728e18	failure	Add option to set G-stage D on implicit VS-stage PTE accesses (#2015)
+38331098928	2026-10-13T01:13:30Z	59c6c5b3757c8b66c1ddb5acc92b57b9f52fe1a4	failure	Gate medeleg and hedeleg bit 18 on priv 1.13 or Zicfilp/Zicfiss (#2016)
+37993652598	2026-10-09T21:28:24Z	6136f84326f41dbaf72daf43a3787195ea3bd1c6	failure	Simplify prelude binding for truncating division and modulus (#1994)
+37992491403	2026-10-09T21:17:03Z	94139d1b7413cdbe517a80dcdb8b365b2189af0e	failure	Indexed segment stores should check overlaps against the whole segmen…
+37538866410	2026-10-06T22:10:26Z	549e723031b34b5ffea5bbb56367be15c7a38a9e	failure	Prepare release 0.15 (#2010)
+37527126636	2026-10-06T20:31:43Z	7a335f439278dfff87436dc0fd31b9be3d74a3b7	failure	Make medeleg and hedeleg bit 19 read-only zero before priv 1.13 (#2009)

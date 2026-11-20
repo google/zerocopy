@@ -5006,6 +5006,99 @@
         "domains/aerospace/tcas-acas-x"
       ]
     },
+    "anneal-lean-miri-pass2-audit-and-sail-riscv-reference-audit-requirements": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal Pass 2 correspondence audit"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "ec77c1a2f3a8d2090e650a3c46d291f316e2bad6"
+          },
+          "name": "Anneal commit introducing Pass 2 enforcement"
+        },
+        {
+          "identity": {
+            "miri_tree": "ef473f04eed9bbfed474a7b5f6f91a2f6350c41b",
+            "repository": "proofs-rs/lean-miri",
+            "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+          },
+          "name": "lean-miri (vendored reference model)"
+        },
+        {
+          "identity": {
+            "repository": "opencompl/sail-riscv-lean",
+            "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+          },
+          "name": "sail-riscv-lean generated RV64D model"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/lean-sail",
+            "revision": "e4745c82fe329f162700020dcd31da6b342473b9",
+            "tag": "v10"
+          },
+          "name": "lean-sail runtime"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/lean-sail",
+            "revision": "079463134b9c50450b8393e1566a09fc492a34d9",
+            "tag": "v5"
+          },
+          "name": "lean-sail runtime"
+        },
+        {
+          "identity": {
+            "repository": "Verified-zkEVM/riscv-zkvm",
+            "revision": "6810fc14d9c40373101321cefaec59df8d82e3e7"
+          },
+          "name": "riscv-zkvm scoped Sail extraction"
+        },
+        {
+          "identity": {
+            "repository": "riscv/sail-riscv",
+            "revision": "27224ccb2290f022e46213c05b3e72e8a9ea635e",
+            "tag": "0.13.1"
+          },
+          "name": "Sail RISC-V model"
+        },
+        {
+          "identity": {
+            "repository": "riscv/sail-riscv",
+            "revision": "ec5200bdfe0c10afa6dbb1f7b0980db2d236236e"
+          },
+          "name": "Sail RISC-V model"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "anneal/audit",
+        "anneal/correspondence",
+        "anneal/lean-miri",
+        "anneal/trusted-boundary",
+        "isa/riscv64",
+        "isa/sail",
+        "lean/axioms",
+        "lean/kernel-replay",
+        "lean/olean-reproducibility",
+        "verification/reference-model",
+        "verification/supply-chain"
+      ]
+    },
     "anneal-mcp-editor-shared-authority": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -6326,7 +6419,7 @@
       ]
     },
     "anneal-solvers-decision-procedures-and-certificates-survey": {
-      "observed_at": "2026-10-31",
+      "observed_at": "2026-11-20",
       "subjects": [
         {
           "identity": {
@@ -17837,7 +17930,7 @@
       ]
     },
     "cross-modifying-code-live-binary-patching-and-icache-coherence-models": {
-      "observed_at": "2026-11-19",
+      "observed_at": "2026-11-20",
       "subjects": [
         {
           "identity": {
@@ -17901,6 +17994,28 @@
             "standard": "Arm DDI 0487"
           },
           "name": "Arm Architecture Reference Manual for A-profile Architecture (DDI 0487)"
+        },
+        {
+          "identity": {
+            "repository": "riscv/riscv-isa-manual",
+            "revision": "c05f1725f25526dd8463bac6ca75cfcfbee17d05"
+          },
+          "name": "RISC-V ISA Manual (Ziccif/Ziccid/CMO chapters)"
+        },
+        {
+          "identity": {
+            "repository": "riscv/riscv-isa-manual",
+            "revision": "584390d9d872835b1bc45ab9ea946b56db3ad485",
+            "tag": "20250508"
+          },
+          "name": "RISC-V ISA Manual (ratified release 20250508)"
+        },
+        {
+          "identity": {
+            "repository": "riscv-software-src/riscv-isa-sim",
+            "revision": "e53c8ccf3448ae459877ed3236cb39b2a1d493bf"
+          },
+          "name": "Spike RISC-V ISA simulator"
         }
       ],
       "topics": [
@@ -18073,7 +18188,7 @@
       ]
     },
     "cross-prover-interoperability-verified-checkers-and-tcb-accounting": {
-      "observed_at": "2026-10-31",
+      "observed_at": "2026-11-20",
       "subjects": [
         {
           "identity": {
@@ -30538,7 +30653,7 @@
       ]
     },
     "isle-aegraphs-btl-symbolic-execution-and-dst-vtable-lowering-2026": {
-      "observed_at": "2026-10-30",
+      "observed_at": "2026-11-20",
       "subjects": [
         {
           "identity": {
@@ -32577,7 +32692,7 @@
       ]
     },
     "lean-bitvec-proof-term-scaling-bv-omega-bv-decide-and-meta-fvar-caching": {
-      "observed_at": "2026-11-12",
+      "observed_at": "2026-11-20",
       "subjects": [
         {
           "identity": {
@@ -32594,6 +32709,14 @@
             "version": "v4.34.1"
           },
           "name": "Lean 4 v4.34.1"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+            "version": "v4.35.0"
+          },
+          "name": "Lean 4 v4.35.0"
         },
         {
           "identity": {
@@ -32833,7 +32956,7 @@
       ]
     },
     "lean-external-verification-libraries-cslib-aesop-and-duper": {
-      "observed_at": "2026-11-05",
+      "observed_at": "2026-11-20",
       "subjects": [
         {
           "identity": {
@@ -33065,6 +33188,78 @@
         "verification"
       ]
     },
+    "lean-kernel-evaluation-symbolic-execution-and-native-axiom-free-isa-proofs": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 (kernel, elaborator, Std bv_decide, Std.HashMap, well-founded recursion compiler)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "98dc76e3c0a9b856c9b98726b713fb04fab16740",
+            "version": "v4.29.0"
+          },
+          "name": "Lean 4 v4.29.0 (native-axiom cross-check and frontend source layout)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+            "version": "v4.35.0"
+          },
+          "name": "Lean 4 v4.35.0 (native-axiom cross-check)"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/lean-sail",
+            "revision": "e4745c82fe329f162700020dcd31da6b342473b9"
+          },
+          "name": "lean-sail (Sail Lean support library: FreeM/ArchSem and sequential EStateM interpreters)"
+        },
+        {
+          "identity": {
+            "repository": "Verified-zkEVM/riscv-zkvm",
+            "revision": "6810fc14d9c40373101321cefaec59df8d82e3e7"
+          },
+          "name": "riscv-zkvm (Sail RV64 extraction, computable RV64IM model, SailEquiv proofs, program-logic tactics)"
+        },
+        {
+          "identity": {
+            "repository": "opencompl/riscv-lean",
+            "revision": "0e3365ac7b670d79d70e9b4a8b7fba782607c44f"
+          },
+          "name": "riscv-lean (bitblastable RV64 semantics proven equivalent to Sail RV64D)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal TrustedBoundary auditor (axiom allowlist and compiler-reflection denylist)"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/kernel",
+        "lean/kernel-reduction",
+        "lean/tactics",
+        "lean/symbolic-evaluation",
+        "lean/isa-semantics",
+        "lean/mechanization",
+        "isa",
+        "isa/riscv64",
+        "isa/sail",
+        "anneal/trusted-boundary",
+        "smt/bv",
+        "verification/trusted-computing-base"
+      ]
+    },
     "lean-kernel-memory-ceilings-whnf-scaling-and-validator-architectures": {
       "observed_at": "2026-11-12",
       "subjects": [
@@ -33166,7 +33361,7 @@
       ]
     },
     "lean-large-isa-and-compiler-semantics-scaling": {
-      "observed_at": "2026-11-13",
+      "observed_at": "2026-11-20",
       "subjects": [
         {
           "identity": {
@@ -39108,6 +39303,28 @@
             "specification": "Intel SDM Vol. 3A \u00a74.10.4.1-4.10.4.2 (INVLPG / INVPCID / Paging-Structure Caches) & Arm ARM DDI 0487 (Stage-1 TLBI / IC IVAU / ISB)"
           },
           "name": "Intel 64 SDM Vol. 3A \u00a74.10 and Armv8-A Architecture Reference Manual translation-cache specifications"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail",
+            "revision": "3df54034910b31a1e00d948ee965b2e9603d68e0",
+            "tag": "0.20.3"
+          },
+          "name": "Sail compiler Lean backend (release 0.20.3)"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail",
+            "revision": "31342bdbb5a3996d4c1f5231d06e7140df5d3288"
+          },
+          "name": "Sail compiler Lean backend (Lean v4.34.1 target bump)"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail",
+            "revision": "97aa617dcd4d01575f773cb58ea1e8686858c8c2"
+          },
+          "name": "Sail compiler (sail2 branch head)"
         }
       ],
       "topics": [
@@ -41876,7 +42093,7 @@
       ]
     },
     "opencompl-riscv-lean-lean-mlir-and-ship-your-interpreter-2026": {
-      "observed_at": "2026-10-29",
+      "observed_at": "2026-11-20",
       "subjects": [
         {
           "identity": {
@@ -41885,10 +42102,22 @@
             "ref": "main",
             "repo": "opencompl/riscv-lean",
             "role": "primary",
-            "summary": "Two-stage RISC-V 64-bit semantics purification bridging LeanRV64D's monadic Sail executors (SailM ExecutionResult) via monadic skeletons (RISCV/Skeleton.lean) and intermediate pure functions (RISCV/SailPure.lean, RISCV/SailToRV64.lean, 61 theorems) to a pure BitVec 64 instruction dialect (RISCV/Instructions.lean, RISCV/SailPureToInstructions.lean, 87 operations, 69 theorems).",
+            "summary": "Two-stage RISC-V 64-bit semantics purification bridging LeanRV64D's monadic Sail executors (SailM ExecutionResult) via monadic skeletons (RISCV/Skeleton.lean) and intermediate pure functions (RISCV/SailPure.lean, RISCV/SailToRV64.lean, 77 theorem declarations) to a pure BitVec 64 instruction dialect (RISCV/Instructions.lean, RISCV/SailPureToInstructions.lean, 87 operations, 104 theorem declarations); 5 bv_decide uses.",
             "url": "https://github.com/opencompl/riscv-lean"
           },
           "name": "opencompl/riscv-lean"
+        },
+        {
+          "identity": {
+            "commit": "0e3365ac7b670d79d70e9b4a8b7fba782607c44f",
+            "kind": "git",
+            "ref": "main",
+            "repo": "opencompl/riscv-lean",
+            "role": "primary",
+            "summary": "Later revision of the same purification: adds brev8 (zbkb_brev8_eq, reverse_bits_eq), widens immediate-shift shamt to BitVec 6; 184 theorem declarations, 7 bv_decide uses; still register-only (no loads/stores/CSRs/system instructions).",
+            "url": "https://github.com/opencompl/riscv-lean"
+          },
+          "name": "opencompl/riscv-lean (main on 2026-11-20)"
         },
         {
           "identity": {
@@ -41949,6 +42178,39 @@
             "url": "https://github.com/joshlf/anneal-private"
           },
           "name": "joshlf/anneal-private"
+        },
+        {
+          "identity": {
+            "commit": "98dc76e3c0a9b856c9b98726b713fb04fab16740",
+            "kind": "release",
+            "repo": "leanprover/lean4",
+            "role": "comparison",
+            "summary": "Toolchain on which the bv_decide/native_decide axiom footprint (fresh <thm>._native.<tactic>.ax_* axiom from Lean.Meta.nativeEqTrue, not Lean.ofReduceBool) was observed.",
+            "version": "v4.29.0"
+          },
+          "name": "Lean 4 toolchain v4.29.0"
+        },
+        {
+          "identity": {
+            "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "kind": "release",
+            "repo": "leanprover/lean4",
+            "role": "comparison",
+            "summary": "Toolchain on which the bv_decide/native_decide axiom footprint (fresh <thm>._native.<tactic>.ax_* axiom from Lean.Meta.nativeEqTrue, not Lean.ofReduceBool) was observed.",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain v4.34.1"
+        },
+        {
+          "identity": {
+            "commit": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+            "kind": "release",
+            "repo": "leanprover/lean4",
+            "role": "comparison",
+            "summary": "Toolchain on which the bv_decide/native_decide axiom footprint (fresh <thm>._native.<tactic>.ax_* axiom from Lean.Meta.nativeEqTrue, not Lean.ofReduceBool) was observed.",
+            "version": "v4.35.0"
+          },
+          "name": "Lean 4 toolchain v4.35.0"
         }
       ],
       "topics": [
@@ -48737,7 +48999,7 @@
       ]
     },
     "reference-model-bisimulation-executable-semantics-and-differential-oracles": {
-      "observed_at": "2026-11-19",
+      "observed_at": "2026-11-20",
       "subjects": [
         {
           "identity": {
@@ -48836,6 +49098,13 @@
             "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
           },
           "name": "CompCert verified C compiler (simulation flipping reference)"
+        },
+        {
+          "identity": {
+            "repository": "Verified-zkEVM/riscv-zkvm",
+            "revision": "6810fc14d9c40373101321cefaec59df8d82e3e7"
+          },
+          "name": "riscv-zkvm (Sail RISC-V Lean extraction consumer; emulator-validation scope)"
         }
       ],
       "topics": [
@@ -49615,6 +49884,209 @@
         "tooling"
       ]
     },
+    "riscv-privileged-isa-model-correspondence-prior-art": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "Verified-zkEVM/riscv-zkvm",
+            "revision": "6810fc14d9c40373101321cefaec59df8d82e3e7"
+          },
+          "name": "riscv-zkvm (Sail RISC-V Lean extraction, hand-written RV64IM model, SailEquiv)"
+        },
+        {
+          "identity": {
+            "repository": "opencompl/riscv-lean",
+            "revision": "7c6b500c1744f40d928fb131125cd06edf9f4fce"
+          },
+          "name": "riscv-lean (Sail-to-BitVec purification), revision previously documented in the corpus"
+        },
+        {
+          "identity": {
+            "repository": "opencompl/riscv-lean",
+            "revision": "0e3365ac7b670d79d70e9b4a8b7fba782607c44f"
+          },
+          "name": "riscv-lean (Sail-to-BitVec purification), main at observation"
+        },
+        {
+          "identity": {
+            "repository": "opencompl/sail-riscv-lean",
+            "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+          },
+          "name": "sail-riscv-lean (Sail RISC-V RV64D Lean extraction)"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail",
+            "revision": "e55d89e79e3e5dfa88a137c73be371fb3671c983"
+          },
+          "name": "Sail compiler (Lean backend short-circuit fix commit)"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail",
+            "revision": "3df54034910b31a1e00d948ee965b2e9603d68e0",
+            "tag": "0.20.3"
+          },
+          "name": "Sail compiler release 0.20.3"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail",
+            "revision": "60695b1ea377048f0adc39c62671cd099b2ed9f6",
+            "tag": "0.20.3-binary"
+          },
+          "name": "Sail compiler 0.20.3-binary (revision pinned by riscv-zkvm)"
+        },
+        {
+          "identity": {
+            "repository": "mit-pdos/xv6iris",
+            "revision": "5cb9df992c45829f6210b3e4176962d7b7a4c408"
+          },
+          "name": "xv6iris (xv6-riscv verified in Lean 4 / Iris over Sail RISC-V), lean branch"
+        },
+        {
+          "identity": {
+            "arxiv": "2609.04043"
+          },
+          "name": "Extending concurrent separation logic to the hardware level to verify the xv6 OS kernel on RISC-V with AI agents"
+        },
+        {
+          "identity": {
+            "repository": "lowRISC/ibex",
+            "revision": "f5b1439295048c6eead73ad4ef8a55cc564e7d6f"
+          },
+          "name": "Ibex RISC-V core (formal trace equivalence against Sail)"
+        },
+        {
+          "identity": {
+            "repository": "lowRISC/cheriot-ibex",
+            "revision": "56357b6da56b690c608c2cc97a7f9489ae67a3ac"
+          },
+          "name": "CHERIoT-Ibex core (formal observational correctness against Sail)"
+        },
+        {
+          "identity": {
+            "arxiv": "2502.04738v1"
+          },
+          "name": "Comprehensive Formal Verification of Observational Correctness for the CHERIoT-Ibex Processor"
+        },
+        {
+          "identity": {
+            "repository": "CharlyCst/miralis",
+            "revision": "f5ab1955192833ac025a6719a71c6e36a3f643ab"
+          },
+          "name": "Miralis virtual firmware monitor (Kani model checking against Sail-derived Rust)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3731569.3764826"
+          },
+          "name": "The Design and Implementation of a Virtual Firmware Monitor (SOSP 2025)"
+        },
+        {
+          "identity": {
+            "repository": "CharlyCst/softcore-rs",
+            "revision": "8c238f4103ce43b00078c7b3dc909f7dae05bfc4"
+          },
+          "name": "softcore-rs (Sail-to-Rust backend and softcore-rv64)"
+        },
+        {
+          "identity": {
+            "repository": "uw-unsat/serval",
+            "revision": "72adc4952a1e62330aea527214a26bd0c09cbd05"
+          },
+          "name": "Serval (Rosette verifier framework, RISC-V interpreter)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3341301.3359641"
+          },
+          "name": "Scaling symbolic evaluation for automated verification of systems code with Serval (SOSP 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3132747.3132782"
+          },
+          "name": "Komodo: Using verification to disentangle secure-enclave hardware from software (SOSP 2017)"
+        },
+        {
+          "identity": {
+            "repository": "IBM/ACE-RISCV",
+            "revision": "42cf582eef21f9ab661ec7008d65c6de141b4be1"
+          },
+          "name": "ACE-RISCV confidential-computing security monitor"
+        },
+        {
+          "identity": {
+            "arxiv": "2502.06609"
+          },
+          "name": "Automatic ISA analysis for Secure Context Switching (Sailor)"
+        },
+        {
+          "identity": {
+            "repository": "seL4/l4v",
+            "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e"
+          },
+          "name": "seL4 proofs (RISCV64 machine interface)"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/islaris",
+            "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9"
+          },
+          "name": "Islaris (RISC-V configuration and Sail-trace proofs)"
+        },
+        {
+          "identity": {
+            "repository": "mit-plv/riscv-coq",
+            "revision": "03881b21aa36115d436e06b9e1a40836e9b927c7"
+          },
+          "name": "riscv-coq"
+        },
+        {
+          "identity": {
+            "repository": "HOL-Theorem-Prover/HOL",
+            "revision": "0c30bdb71aafd4e6a354f5b0b43fffbff6fa8d47"
+          },
+          "name": "HOL4 (L3 RISC-V model, examples/l3-machine-code/riscv)"
+        },
+        {
+          "identity": {
+            "repository": "CTSRD-CHERI/sail-cheri-riscv",
+            "revision": "cf36cfd4fca0bd10a5906651bf48b9674ccd0a2b"
+          },
+          "name": "sail-cheri-riscv"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain used for probes"
+        },
+        {
+          "identity": {
+            "commit-prefix": "3ef0c22cd",
+            "date": "2026-11-11",
+            "toolchain": "rustc 1.102.0-nightly"
+          },
+          "name": "rustc used for the array-repeat probe"
+        }
+      ],
+      "topics": [
+        "isa",
+        "isa/riscv64",
+        "isa/riscv64/privileged",
+        "isa/sail",
+        "verification",
+        "verification/refinement",
+        "verification/isa-model-correspondence",
+        "verification/model-checking",
+        "lean/mechanization"
+      ]
+    },
     "riscv-rvv-ppc-vsx-loongarch-and-wasm-simd-isa-formalizations": {
       "observed_at": "2026-11-20",
       "subjects": [
@@ -49828,6 +50300,125 @@
         "isa/wasm",
         "verification/isa-semantics",
         "lean/mechanization"
+      ]
+    },
+    "riscv-smode-kernel-sound-nondeterminism-and-spec-permitted-behaviors": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "riscv/riscv-isa-manual",
+            "revision": "c05f1725f25526dd8463bac6ca75cfcfbee17d05"
+          },
+          "name": "RISC-V ISA Manual (development snapshot)"
+        },
+        {
+          "identity": {
+            "repository": "riscv/riscv-isa-manual",
+            "revision": "584390d9d872835b1bc45ab9ea946b56db3ad485",
+            "tag": "20250508"
+          },
+          "name": "RISC-V ISA Manual (ratified release 20250508)"
+        },
+        {
+          "identity": {
+            "repository": "riscv/riscv-isa-manual",
+            "revision": "6ee57d8997021aaa8025e208164763fe12e03c19",
+            "tag": "20240411"
+          },
+          "name": "RISC-V ISA Manual (release 20240411, Privileged 1.13)"
+        },
+        {
+          "identity": {
+            "repository": "riscv/riscv-isa-manual",
+            "revision": "98964261c931d51884f733664b22efe43de93033",
+            "tag": "Priv-v1.12"
+          },
+          "name": "RISC-V Privileged Specification 1.12"
+        },
+        {
+          "identity": {
+            "repository": "riscv/sail-riscv",
+            "revision": "ec5200bdfe0c10afa6dbb1f7b0980db2d236236e"
+          },
+          "name": "Sail RISC-V model"
+        },
+        {
+          "identity": {
+            "repository": "riscv-software-src/opensbi",
+            "revision": "61f1973bd50338b36c52dc34006f76d464ca4f34"
+          },
+          "name": "OpenSBI"
+        },
+        {
+          "identity": {
+            "repository": "riscv-non-isa/riscv-sbi-doc",
+            "revision": "c33ad9f414505806f084e8677e04d2744f76c8df",
+            "tag": "v3.0"
+          },
+          "name": "RISC-V Supervisor Binary Interface specification"
+        },
+        {
+          "identity": {
+            "repository": "riscv-software-src/riscv-isa-sim",
+            "revision": "e53c8ccf3448ae459877ed3236cb39b2a1d493bf"
+          },
+          "name": "Spike RISC-V ISA simulator"
+        },
+        {
+          "identity": {
+            "repository": "qemu/qemu",
+            "revision": "08ed97c33c3818ef51a7c852347a28e9f66807b5"
+          },
+          "name": "QEMU"
+        },
+        {
+          "identity": {
+            "repository": "daniellustig/riscv_axiomatic",
+            "revision": "0cc125df660a45160ed1602b61b288d2d6f01b26"
+          },
+          "name": "riscv_axiomatic (research RVWMO + virtual-memory axiomatic model)"
+        },
+        {
+          "identity": {
+            "repository": "uw-unsat/serval",
+            "revision": "72adc4952a1e62330aea527214a26bd0c09cbd05"
+          },
+          "name": "Serval"
+        },
+        {
+          "identity": {
+            "repository": "CharlyCst/miralis",
+            "revision": "f5ab1955192833ac025a6719a71c6e36a3f643ab"
+          },
+          "name": "Miralis"
+        },
+        {
+          "identity": {
+            "repository": "IBM/ACE-RISCV",
+            "revision": "42cf582eef21f9ab661ec7008d65c6de141b4be1"
+          },
+          "name": "IBM ACE-RISCV"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "isa",
+        "isa/riscv64",
+        "isa/sail",
+        "systems/virtual-memory",
+        "systems/interrupts",
+        "systems/firmware",
+        "systems/bare-metal",
+        "verification/memory-models",
+        "verification/semantic-models/overapproximation"
       ]
     },
     "riscv-zkvms-risc0-sp1-jolt-lasso-lookup-arguments-and-air-underconstraint-bugs": {
@@ -50055,7 +50646,7 @@
       ]
     },
     "riscv64-sv39-opensbi-trap-wx-and-sail-lean-semantics": {
-      "observed_at": "2026-11-19",
+      "observed_at": "2026-11-20",
       "subjects": [
         {
           "identity": {
@@ -50160,6 +50751,41 @@
             "revision": "549bd84d6279f9852cae6225e372cc67fb91a4c1"
           },
           "name": "Nixpkgs"
+        },
+        {
+          "identity": {
+            "repository": "riscv/riscv-isa-manual",
+            "revision": "c05f1725f25526dd8463bac6ca75cfcfbee17d05"
+          },
+          "name": "RISC-V ISA Manual (Privileged and Unprivileged)"
+        },
+        {
+          "identity": {
+            "repository": "riscv/sail-riscv",
+            "revision": "ec5200bdfe0c10afa6dbb1f7b0980db2d236236e"
+          },
+          "name": "Sail RISC-V specification"
+        },
+        {
+          "identity": {
+            "repository": "riscv/sail-riscv",
+            "revision": "4f8ce828fcacd6f392cb4f9be9046d46ce4bec07"
+          },
+          "name": "Sail RISC-V specification (concurrency-interface V2 port commit)"
+        },
+        {
+          "identity": {
+            "repository": "Verified-zkEVM/riscv-zkvm",
+            "revision": "6810fc14d9c40373101321cefaec59df8d82e3e7"
+          },
+          "name": "riscv-zkvm scoped Sail Lean extraction"
+        },
+        {
+          "identity": {
+            "repository": "riscv-software-src/opensbi",
+            "revision": "61f1973bd50338b36c52dc34006f76d464ca4f34"
+          },
+          "name": "OpenSBI (source)"
         }
       ],
       "topics": [
@@ -56979,7 +57605,7 @@
       ]
     },
     "sail-isa-models-lean-backend-and-rv64d-decoding-framing": {
-      "observed_at": "2026-10-29",
+      "observed_at": "2026-11-20",
       "subjects": [
         {
           "identity": {
@@ -57160,11 +57786,11 @@
         },
         {
           "identity": {
+            "describe": "0.20.3-binary-49-g7e0e53d18",
             "repository": "rems-project/sail",
-            "revision": "7e0e53d183cad75b8f36bfbbecc0ef75614a8418",
-            "version": "0.20.3"
+            "revision": "7e0e53d183cad75b8f36bfbbecc0ef75614a8418"
           },
-          "name": "Sail 0.20.3 Lean backend"
+          "name": "Sail Lean backend (development build self-reporting 0.20.3)"
         },
         {
           "identity": {
@@ -57245,6 +57871,53 @@
             "publication": "PLDI 2022"
           },
           "name": "Islaris PLDI 2022 paper"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail",
+            "revision": "3df54034910b31a1e00d948ee965b2e9603d68e0",
+            "tag": "0.20.3"
+          },
+          "name": "Sail compiler release 0.20.3 (source tag)"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail",
+            "revision": "60695b1ea377048f0adc39c62671cd099b2ed9f6",
+            "tag": "0.20.3-binary"
+          },
+          "name": "Sail compiler release 0.20.3 (binary-release tag)"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/lean-sail",
+            "revision": "c816ea7ad03cce98d51acee252540fd4215fede8",
+            "tag": "v6"
+          },
+          "name": "lean-sail support library v6"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/lean-sail",
+            "revision": "e4745c82fe329f162700020dcd31da6b342473b9",
+            "tag": "v10"
+          },
+          "name": "lean-sail support library v10"
+        },
+        {
+          "identity": {
+            "repository": "riscv/sail-riscv",
+            "revision": "27224ccb2290f022e46213c05b3e72e8a9ea635e",
+            "tag": "0.13.1"
+          },
+          "name": "Sail RISC-V model release 0.13.1"
+        },
+        {
+          "identity": {
+            "repository": "riscv/sail-riscv",
+            "revision": "ec5200bdfe0c10afa6dbb1f7b0980db2d236236e"
+          },
+          "name": "Sail RISC-V model (master, 2026-11-19)"
         }
       ],
       "topics": [
@@ -57254,6 +57927,120 @@
         "isa/aarch64",
         "isa/x86-64",
         "lean/mechanization"
+      ]
+    },
+    "sail-riscv-lean-extraction-provenance-extern-axioms-and-privileged-config": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "riscv/sail-riscv",
+            "revision": "ec5200bdfe0c10afa6dbb1f7b0980db2d236236e"
+          },
+          "name": "Sail RISC-V model (master HEAD)"
+        },
+        {
+          "identity": {
+            "repository": "riscv/sail-riscv",
+            "revision": "b7d13572fcd4a87d0999eb6303652cd05a47881e"
+          },
+          "name": "Sail RISC-V model (inferred generator input of opencompl/sail-riscv-lean@51c635c4)"
+        },
+        {
+          "identity": {
+            "repository": "riscv/sail-riscv",
+            "revision": "27224ccb2290f022e46213c05b3e72e8a9ea635e",
+            "tag": "0.13.1"
+          },
+          "name": "Sail RISC-V model release 0.13.1 (riscv-zkvm pin)"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail",
+            "revision": "97aa617dcd4d01575f773cb58ea1e8686858c8c2"
+          },
+          "name": "Sail compiler (sail2 HEAD, Lean backend)"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail",
+            "revision": "3df54034910b31a1e00d948ee965b2e9603d68e0",
+            "tag": "0.20.3"
+          },
+          "name": "Sail compiler release 0.20.3 (source tag)"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail",
+            "revision": "60695b1ea377048f0adc39c62671cd099b2ed9f6",
+            "tag": "0.20.3-binary"
+          },
+          "name": "Sail compiler release 0.20.3 (binary-release tag)"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail",
+            "revision": "8eb1fb6b5bf9f18c0f89f71e94ff0c5894acd7c1"
+          },
+          "name": "Sail compiler (inferred generator of opencompl/sail-riscv-lean@51c635c4)"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/lean-sail",
+            "revision": "e4745c82fe329f162700020dcd31da6b342473b9",
+            "tag": "v10"
+          },
+          "name": "lean-sail support library v10"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/lean-sail",
+            "revision": "01bb54c7c8a69e52ba11863c67e7c403a6cd198a",
+            "tag": "v7"
+          },
+          "name": "lean-sail support library v7"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/lean-sail",
+            "revision": "079463134b9c50450b8393e1566a09fc492a34d9",
+            "tag": "v5"
+          },
+          "name": "lean-sail support library v5"
+        },
+        {
+          "identity": {
+            "repository": "opencompl/sail-riscv-lean",
+            "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+          },
+          "name": "opencompl Sail RISC-V Lean extraction"
+        },
+        {
+          "identity": {
+            "repository": "Verified-zkEVM/riscv-zkvm",
+            "revision": "6810fc14d9c40373101321cefaec59df8d82e3e7"
+          },
+          "name": "riscv-zkvm scoped Sail RISC-V Lean extraction"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "isa",
+        "isa/riscv64",
+        "isa/sail",
+        "isa/sail/lean-backend",
+        "isa/riscv64/privileged",
+        "lean/mechanization",
+        "lean/axioms",
+        "lean/toolchain-portability",
+        "verification/reference-models"
       ]
     },
     "saml-xml-signature-wrapping-oauth-pkce-downgrades-and-jwt-confusion": {
@@ -58413,7 +59200,7 @@
       ]
     },
     "sf-in-lean-semantics-comparator-and-literate-verification": {
-      "observed_at": "2026-11-02",
+      "observed_at": "2026-11-20",
       "subjects": [
         {
           "identity": {
@@ -59717,7 +60504,7 @@
       ]
     },
     "smt-sat-alethe-carcara-and-numerical-proof-certificate-reconstruction": {
-      "observed_at": "2026-10-14",
+      "observed_at": "2026-11-20",
       "subjects": [
         {
           "identity": {
@@ -65836,7 +66623,7 @@
       ]
     },
     "unified-farkas-knownbits-and-aegraph-side-condition-certificates": {
-      "observed_at": "2026-11-14",
+      "observed_at": "2026-11-20",
       "subjects": [
         {
           "identity": {
@@ -67733,7 +68520,7 @@
       ]
     },
     "verified-rust-compiler-architecture-self-hosting-and-certifying-bootstrap": {
-      "observed_at": "2026-10-30",
+      "observed_at": "2026-11-20",
       "subjects": [
         {
           "identity": {
@@ -68431,7 +69218,7 @@
       ]
     },
     "verified-side-condition-decision-procedures-and-certificate-checkers": {
-      "observed_at": "2026-11-13",
+      "observed_at": "2026-11-20",
       "subjects": [
         {
           "identity": {

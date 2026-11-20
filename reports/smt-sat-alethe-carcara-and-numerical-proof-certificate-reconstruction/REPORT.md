@@ -211,7 +211,7 @@ In `cvc5/LFSC@5a127dbbcf9a0f822768e783dbf892ee90c435d5`, [`src/check.cpp`](https
 - **Known not to apply**:
   - Raw unexpanded `cvc5 1.4.2` Alethe exports for `byte_write`, `bool_validate`, and `array_validate` are rejected by native Carcara (`rare_rewrite` rules not found).
   - Carcara's `Valid` status does not certify all proof steps if `Config.allowed_rules` is non-empty, and process exit code `0` alone does not exclude `holey` proofs.
-  - Lean `4.34.1`'s `LratCert.toReflectionProof` (`bv_decide`) invokes `nativeEqTrue` (`Lean.ofReduceBool`) rather than pure kernel reduction.
+  - Lean `4.34.1`'s `LratCert.toReflectionProof` (`bv_decide`) invokes `nativeEqTrue` (native evaluation recorded as a per-invocation `_native.bv_decide.ax_*` axiom, not `Lean.ofReduceBool`) rather than pure kernel reduction.
   - Real-number interval, Farkas, or SOS proofs do not certify IEEE 754 floating-point or modular machine-word arithmetic without an explicit rounding/overflow bridge (such as FloVer's `IEEE_connection_expr`, which itself excludes subnormals, downcasts, `Inv`, and `Fma`).
   - Why3's ordinary `Valid` status (`drivers/smt-libv2.gen`, `call_provers.ml`) is a regex classification of solver output over an unverified OCaml task-transformation pipeline, not a kernel-checked proof of the source obligation.
 - **Not examined**:
@@ -228,6 +228,8 @@ In `cvc5/LFSC@5a127dbbcf9a0f822768e783dbf892ee90c435d5`, [`src/check.cpp`](https
 - **SMT, SAT/PB, and Numerical Certificate Audits**:
   - Preserved in `coverage.json`, `support/evidence.json`, `support/observations.json`, `support/sat-pb-and-bitvector-certificate-endpoints/`, `support/smt-certificates-reconstruction-and-root-binding/`, `support/exact-and-rounded-numerical-proof-witnesses/`, and `support/gappa-flover-and-why3-checking-paths/`.
 
+- **Correction observed 2026-11-20 (`native_decide`/`bv_decide` axiom mechanism):** on Lean `v4.34.1` (`leanprover/lean4@5045d0056413266e57c625dcd7c365b10e377c52`), both tactics go through `Lean.Meta.nativeEqTrue` (`src/Lean/Meta/Native.lean:37-86`; `native_decide` via `elabNativeDecideCore`, `src/Lean/Elab/Tactic/Decide.lean:57-59`; `bv_decide` via `LratCert.toReflectionProof`, `src/Lean/Meta/Tactic/BVDecide/Prover/Bitblast.lean:26-44`), which evaluates the closed `Bool` term with the compiler and then adds a fresh per-invocation axiom `<theorem>._native.<tactic>.ax_* : e = true`; neither tactic references `Lean.ofReduceBool` or `Lean.trustCompiler`. Executed with `lean -t0`, `#print axioms` reports `[propext, Classical.choice, Quot.sound, <theorem>._native.bv_decide.ax_1_5]` for a 64-bit `bv_decide` proof and `[<theorem>._native.native_decide.ax_1_1]` for `native_decide` (identically on `v4.29.0` and `v4.35.0`); reproduce with `support/A1_axioms.lean` and `support/A6_native_axiom_by_toolchain.lean` in package `lean-kernel-evaluation-symbolic-execution-and-native-axiom-free-isa-proofs`. These axioms lie outside `{propext, Classical.choice, Quot.sound}`, so an axiom allowlist still rejects such proofs. This package's own recorded run agrees: `support/LratControls.stdout` lines 5 and 15 show `goodAccepted._native.native_decide.ax_1_1` and `sourceUnsat._native.native_decide.ax_1_1`.
+
 ## Revalidation
 
 1. **Re-run the four guarded byte-law Alethe generation, expansion, Carcara checking, and Lean countermodel suite**:
@@ -242,5 +244,5 @@ In `cvc5/LFSC@5a127dbbcf9a0f822768e783dbf892ee90c435d5`, [`src/check.cpp`](https
    ```
    Verify that `(not (= changed framed))` passes both raw check and `--check-granularity elaborated` recheck, `(distinct changed framed)` is rejected by the consumer as `holey` despite exit `0`, and `diagnostic_witness.rs` reproduces the `254 -> 255` aliasing store witness.
 3. **Re-verify the Lean `4.34.1` LRAT binding probe and upstream source coordinates**:
-   - Run `lean support/LratControls.lean` with Lean `4.34.1` (`5045d0056413266e57c625dcd7c365b10e377c52`) and confirm that `changedSatWitness` depends only on `propext` while the checker equality theorems expose `Lean.ofReduceBool`.
+   - Run `lean support/LratControls.lean` with Lean `4.34.1` (`5045d0056413266e57c625dcd7c365b10e377c52`) and confirm that `changedSatWitness` depends only on `propext` while the checker equality theorems expose per-invocation `_native.native_decide.ax_*` axioms (as recorded in `support/LratControls.stdout`).
    - Diff the pinned upstream source coordinates recorded in `support/evidence.json` and `upstream-source-identity.json` before changing any solver, elaborator, or checker version pin.

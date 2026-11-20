@@ -1,0 +1,17 @@
+[anneal-lean-run] All 1 host build slot(s) busy; queuing to prevent RAM/swap exhaustion...
+✔ [2/14] Built Sail.IntRange (686ms)
+✔ [3/14] Built Sail.Attr (866ms)
+✔ [4/14] Built Sail.BitVec (1.4s)
+✔ [5/14] Built Sail.Common (1.4s)
+✔ [6/14] Built SailTest.VectorConversion (862ms)
+✔ [7/14] Built Sail.ArchSem (1.6s)
+✔ [8/14] Built SailTest (830ms)
+✔ [10/14] Built Sail.ConcurrencyInterfaceV1 (1.9s)
+✔ [11/14] Built Sail.ArchSemSequential (1.3s)
+✔ [12/14] Built Sail.Sail (1.5s)
+✔ [13/14] Built Sail (854ms)
+Build completed successfully (14 jobs).
+
+real	1m48.768s
+user	0m11.652s
+sys	0m3.652s

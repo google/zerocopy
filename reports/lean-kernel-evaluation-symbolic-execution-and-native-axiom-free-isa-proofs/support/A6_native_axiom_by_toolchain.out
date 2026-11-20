@@ -1,0 +1,9 @@
+== v4.29.0
+'a6_bv' depends on axioms: [propext, Classical.choice, Quot.sound, a6_bv._native.bv_decide.ax_1_5]
+'a6_nd' depends on axioms: [a6_nd._native.native_decide.ax_1_1]
+== v4.34.1
+'a6_bv' depends on axioms: [propext, Classical.choice, Quot.sound, a6_bv._native.bv_decide.ax_1_5]
+'a6_nd' depends on axioms: [a6_nd._native.native_decide.ax_1_1]
+== v4.35.0
+'a6_bv' depends on axioms: [propext, Classical.choice, Quot.sound, a6_bv._native.bv_decide.ax_1_5]
+'a6_nd' depends on axioms: [a6_nd._native.native_decide.ax_1_1]

@@ -20,9 +20,11 @@ establishes the exact decision-procedure selection table and measured costs:
      with **`42` `Expr` DAG nodes**, **`0` auxiliary theorems**, and **only
      `[propext, Quot.sound]`** (`bv64_mask_idempotent_bv_normalize`).
    - By contrast, whenever `bv_decide` enters **Stage 2 (CaDiCaL + LRAT
-     reflection)**, it invokes `Lean.ofReduceBool` (`_native.bv_decide.ax`),
-     which is **rejected by `TrustedBoundary.lean`**. To check propositional or
-     bit-blasted UNSAT certificates without `Lean.ofReduceBool`, the expander
+     reflection)**, it adds a fresh per-invocation axiom
+     `<Decl>._native.bv_decide.ax_*` via `Lean.Meta.nativeEqTrue` (it does not
+     reference `Lean.ofReduceBool`), which is **rejected by `TrustedBoundary.lean`**'s
+     axiom allowlist. To check propositional or bit-blasted UNSAT certificates
+     without a native-evaluation axiom, the expander
      must apply a **kernel-reducible boolean checker theorem** (`checkUnitConflict_sound`
      by `rfl`, which depends only on `[propext]`) or rewrite to `BitVec.toNat`
      algebraic lemmas.
@@ -88,7 +90,7 @@ under Lean `v4.34.1` (`5045d0056413266e57c625dcd7c365b10e377c52`).
 | **1C. 64-Bit Wrapping Add Range Propagation** (`lo1+lo2 ≤ (x+y).toNat ≤ hi1+hi2`) | Raw `bv_omega` (`MeasureSideConditions.lean`) | **`8,416` / `8,416`** | `[propext, Classical.choice, Quot.sound]` | **Yes** | `288.2 ms` elab, **`48.1 ms` kernel check** (`3x` Euclidean `% 2^64` splits) |
 | **1C'. 64-Bit Wrapping Add Range Propagation** (modulo pre-eliminated) | `rw [BitVec.toNat_add, Nat.mod_eq_of_lt (by omega)]; omega` (`bv64_add_range_mod_elim`) | **`2,605` / `2,605`** | `[propext, Classical.choice, Quot.sound]` | **Yes** | **`3.23x` smaller DAG** than raw `bv_omega` by eliminating `% 2^64` before `omega` |
 | **1D. 64-Bit Wrapping Add Range Propagation** (schematic algebraic lemma) | `Nat.add_le_add` + `Nat.mod_eq_of_lt` (`bv64_add_range_algebraic`) | **`230` / `230`** | **`[propext]` only** | **Yes** | **`36.6x` smaller DAG**, **`0.78 ms` kernel check (`61.7x` faster)** than `bv_omega` |
-| **1E. Bit-Blasted Symbolic Bit-Vector Identity** | `bv_decide` Stage 2 (CaDiCaL + LRAT `ofReduceBool`) | Small wrapper + `_native.bv_decide.ax` | Includes **`Lean.ofReduceBool` (`_native`)** | **NO (Rejected)** | Bypasses kernel reduction via compiled C/LLVM evaluator; forbidden in `theory/` |
+| **1E. Bit-Blasted Symbolic Bit-Vector Identity** | `bv_decide` Stage 2 (CaDiCaL + LRAT certificate checked by native evaluation via `Lean.Meta.nativeEqTrue`) | Small wrapper + `_native.bv_decide.ax` | Includes a fresh per-invocation axiom **`<Decl>._native.bv_decide.ax_*`** (not `Lean.ofReduceBool`) | **NO (Rejected)** | Bypasses kernel reduction via the compiled evaluator; forbidden in `theory/` |
 | **2A. GEP Multi-Dimensional Slice Bound** (`base + idx*8 + 8 ≤ base + len*8`) | `subst` + `omega` (`gep_slice_offset_bound_omega`) | **`990` / `990`** | `[propext, Classical.choice, Quot.sound]` | **Yes** | `<10 ms` elaboration, `<3 ms` kernel check |
 | **2B. Congruence + Linear Offset Transitivity** (`a = b → f b + 16 ≤ c → f a + 8 < c`) | `grind` (`gep_congruence_offset_grind`) | **`356` / `454`** | `[propext, Classical.choice, Quot.sound]` | **Yes** | Combines E-graph congruence closure with cutsat/offset linear arithmetic |
 | **2C. Linear Inequality Combination** (`w1*a1 + w2*a2 ≤ w1*b1 + w2*b2`) | Schematic Farkas lemma (`checkFarkas2_sound`) | **`52` / `52`** | **`[]` (Zero axioms!)** | **Yes** | $O(1)$ kernel application when compiler certificate supplies Farkas weights $(w_1, w_2)$ |
@@ -182,17 +184,27 @@ Basis: derived from Findings 1–3.
 
 ## Boundaries
 
-- **Why `bv_decide` Stage 2 (`Lean.ofReduceBool`) Cannot Be Used Directly in
-  `theory/`:** `Std.Tactic.BVDecide.bv_decide` delegates Stage 2 LRAT checking
-  to compiled native code via `Lean.reduceBool` (`Lean.ofReduceBool`), which
-  introduces the axiom `_native.bv_decide.ax` (and `Lean.trustCompiler`).
-  Anneal's `trusted/audit/TrustedBoundary.lean` rejects any theorem whose
-  transitive axiom cone contains `Lean.ofReduceBool`. Therefore, only Stage 1
+- **Why `bv_decide` Stage 2 Cannot Be Used Directly in `theory/`:**
+  `Std.Tactic.BVDecide.bv_decide` delegates Stage 2 LRAT checking to compiled
+  native code via `Lean.Meta.nativeEqTrue` (`src/Lean/Meta/Native.lean:37-87` in
+  `v4.34.1`), which evaluates `verifyBVExpr expr cert` with the compiler and then
+  adds a fresh per-invocation axiom `<Decl>._native.bv_decide.ax_* : verifyBVExpr
+  expr cert = true`. It references neither `Lean.ofReduceBool`/`Lean.reduceBool`
+  nor `Lean.trustCompiler` (an earlier version of this report said it did;
+  corrected 2026-11-20). `native_decide` uses the same helper. Anneal's
+  `trusted/audit/TrustedBoundary.lean` rejects any theorem whose transitive
+  axiom cone contains an axiom outside `propext`/`Classical.choice`/`Quot.sound`,
+  which covers these `_native` axioms. Therefore, only Stage 1
   (`bv_normalize`) or kernel-reduced (`rfl` / `decide`) certificate checkers are
   admissible inside `theory/`.
 - **Non-Linear Bit-Vector Multiplication and Division (`mul`, `udiv`, `urem`):**
   Neither `omega` nor `grind` decides non-linear symbolic multiplication
-  $x \times y$ or variable-divisor remainder $x \bmod y$. When one operand is a
+  $x \times y$ or variable-divisor remainder $x \bmod y$ in general. (`grind`'s
+  commutative-ring normalization does prove ring-normal identities with symbolic
+  products, e.g. `(a + b) * c - a * c = b * c` over `BitVec 64`, with axioms
+  `[propext, Classical.choice, Quot.sound]` — observed 2026-11-20, see package
+  `lean-kernel-evaluation-symbolic-execution-and-native-axiom-free-isa-proofs`;
+  this was not shown to extend to non-linear bounds or remainders.) When one operand is a
   known constant or power of two, shift/add strength reduction (`bv64_mul_four_eq_shl_two`)
   reduces the obligation to linear arithmetic; for general symbolic `mul`/`udiv`,
   the compiler pass must apply pre-proved algebraic monotonicity/distributivity
@@ -217,6 +229,8 @@ Basis: derived from Findings 1–3.
   - Class 4B (Bit-exact IEEE-754 `Float32Bits`): `f32_neg_involutive`,
     `f32_abs_idem`, `f32_qnan_feq_irrefl`, and `f32_feq_refl_of_not_nan` (lines
     210–254).
+- **Evidence dates:** the benchmark suite above was observed for the original report (2026-11-13); the native-axiom correction below was observed 2026-11-20.
+- **Native-axiom footprint of `bv_decide` and `native_decide` (observed 2026-11-20):** [`support/NativeAxiomProbe.lean`](support/NativeAxiomProbe.lean), run as `lean -t0 -M2048 NativeAxiomProbe.lean` with the official Lean `v4.34.1` binary (`5045d0056413266e57c625dcd7c365b10e377c52`), prints `[propext, Classical.choice, Quot.sound, a1_bvdecide_xor._native.bv_decide.ax_1_5]` for a 64-bit `bv_decide` proof and `[a1_native._native.native_decide.ax_1_1]` for `native_decide`, while `bv_normalize`, `bv_omega`, `omega`, `simp`, `decide`, `decide +kernel`, and `rfl` stay within the three standard axioms (recorded in [`support/NativeAxiomProbe.out`](support/NativeAxiomProbe.out)). Source: `leanprover/lean4@5045d0056413266e57c625dcd7c365b10e377c52` `src/Lean/Meta/Native.lean:37-87` (`nativeEqTrue` adds `Declaration.axiomDecl` named `_native.<tactic>.ax`), `src/Lean/Meta/Tactic/BVDecide/Prover/Bitblast.lean:26-44` (`LratCert.toReflectionProof`), `src/Lean/Elab/Tactic/Decide.lean:57-59` (`elabNativeDecideCore`). The same axiom names appear on `v4.29.0` and `v4.35.0` (package `lean-kernel-evaluation-symbolic-execution-and-native-axiom-free-isa-proofs`).
 - **Primary Upstream Repositories:**
   - `leanprover/lean4` at `5045d0056413266e57c625dcd7c365b10e377c52` (`v4.34.1`,
     `Std.Tactic.BVDecide`, `omega`, `grind`).

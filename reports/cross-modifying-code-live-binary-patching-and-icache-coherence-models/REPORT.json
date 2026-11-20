@@ -68,7 +68,29 @@
         "standard": "Arm DDI 0487",
         "sections": "B2.2.5 / B2.4.4 (CMODX, FEAT_IDC, FEAT_DIC)"
       }
+    },
+    {
+      "name": "RISC-V ISA Manual (Ziccif/Ziccid/CMO chapters)",
+      "identity": {
+        "repository": "riscv/riscv-isa-manual",
+        "revision": "c05f1725f25526dd8463bac6ca75cfcfbee17d05"
+      }
+    },
+    {
+      "name": "RISC-V ISA Manual (ratified release 20250508)",
+      "identity": {
+        "repository": "riscv/riscv-isa-manual",
+        "revision": "584390d9d872835b1bc45ab9ea946b56db3ad485",
+        "tag": "20250508"
+      }
+    },
+    {
+      "name": "Spike RISC-V ISA simulator",
+      "identity": {
+        "repository": "riscv-software-src/riscv-isa-sim",
+        "revision": "e53c8ccf3448ae459877ed3236cb39b2a1d493bf"
+      }
     }
   ],
-  "observed_at": "2026-11-19"
+  "observed_at": "2026-11-20"
 }

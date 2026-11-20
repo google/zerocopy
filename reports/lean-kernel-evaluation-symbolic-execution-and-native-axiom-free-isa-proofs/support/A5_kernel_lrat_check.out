@@ -1,0 +1,23 @@
+# cmd: ~/.local/bin/anneal-lean-run --mode file --memory-max-mb 6144 --timeout 600 -- /usr/bin/time -v ~/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -t0 -M5000  A5_kernel_lrat_check.lean
+a5_xor4
+a5_xor4._native.bv_decide.ax_1
+a5_xor4._expr_def_1
+a5_xor4._cert_def_1
+a5_xor4_acts: 95 LRAT actions
+A5_kernel_lrat_check.lean:46:2: error: Tactic `decide` failed for proposition
+  LRAT.check a5_xor4_acts (AIG.toCNF a5_xor4._expr_def_1.bitblast.relabelNat) = true
+because its `Decidable` instance
+  instDecidableEqBool (LRAT.check a5_xor4_acts (AIG.toCNF a5_xor4._expr_def_1.bitblast.relabelNat)) true
+did not reduce to `isTrue` or `isFalse`.
+
+Reduction got stuck at the `Decidable` instance
+  match LRAT.check a5_xor4_acts (AIG.toCNF a5_xor4._expr_def_1.bitblast.relabelNat), true with
+  | false, false => isTrue ⋯
+  | false, true => isFalse ⋯
+  | true, false => isFalse ⋯
+  | true, true => isTrue ⋯
+'a5_xor4_check' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:01.19
+	Maximum resident set size (kbytes): 1639400
+	Exit status: 1
+# exit: 1

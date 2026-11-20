@@ -1,0 +1,63 @@
+# cmd: ~/.local/bin/anneal-lean-run --mode file --memory-max-mb 6144 --timeout 600 -- /usr/bin/time -v ~/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -t0 -M2048  B3_kernel_primitives.lean
+B3_kernel_primitives.lean:8:45: error: Tactic `decide` failed for proposition
+  System.Platform.numBits = 64
+because its `Decidable` instance
+  instDecidableEqNat System.Platform.numBits 64
+did not reduce to `isTrue` or `isFalse`.
+
+Reduction got stuck at the `Decidable` instance
+  match h : System.Platform.numBits.beq 64 with
+  | true => isTrue ⋯
+  | false => isFalse ⋯
+B3_kernel_primitives.lean:10:38: error: Tactic `decide` failed for proposition
+  USize.toNat 5 = 5
+because its `Decidable` instance
+  instDecidableEqNat (USize.toNat 5) 5
+did not reduce to `isTrue` or `isFalse`.
+
+Reduction got stuck at the `Decidable` instance
+  match h : (USize.toNat 5).beq 5 with
+  | true => isTrue ⋯
+  | false => isFalse ⋯
+B3_kernel_primitives.lean:16:71: error: Tactic `decide` failed for proposition
+  (∅.insert 1 2).get? 1 = some 2
+because its `Decidable` instance
+  ((∅.insert 1 2).get? 1).instDecidableEq (some 2)
+did not reduce to `isTrue` or `isFalse`.
+
+Reduction got stuck at the `Decidable` instance
+  match (∅.insert 1 2).get? 1 with
+  | none =>
+    match some 2 with
+    | none => isTrue ⋯
+    | some val => isFalse ⋯
+  | some a =>
+    match some 2 with
+    | none => isFalse ⋯
+    | some b =>
+      match instDecidableEqNat a b with
+      | isTrue h => isTrue ⋯
+      | isFalse n => isFalse ⋯
+B3_kernel_primitives.lean:18:74: error: Tactic `decide` failed for proposition
+  (∅.insert 1 2).get? 1 = some 2
+because its `Decidable` instance
+  ((∅.insert 1 2).get? 1).instDecidableEq (some 2)
+did not reduce to `isTrue` or `isFalse`.
+
+Reduction got stuck at the `Decidable` instance
+  match (∅.insert 1 2).get? 1 with
+  | none =>
+    match some 2 with
+    | none => isTrue ⋯
+    | some val => isFalse ⋯
+  | some a =>
+    match some 2 with
+    | none => isFalse ⋯
+    | some b =>
+      match instDecidableEqNat a b with
+      | isTrue h => isTrue ⋯
+      | isFalse n => isFalse ⋯
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.37
+	Maximum resident set size (kbytes): 626548
+	Exit status: 1
+# exit: 1

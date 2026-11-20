@@ -1,0 +1,7 @@
+file	status	wall	maxrss_kb	axioms_or_error
+B1_array_10000_dk.lean	1	0:17.13	2788672	'b1_result' depends on axioms: [propext, sorryAx, Quot.sound] error: (kernel) excessive memory consumption detected
+B1_array_3000_dk.lean	0	0:05.99	1492988	'b1_result' depends on axioms: [propext, Quot.sound] 
+B1_assoc_10000_dk.lean	0	0:08.37	1728024	'b1_result' depends on axioms: [propext, Quot.sound] 
+B1_assoc_3000_dk.lean	0	0:02.88	866604	'b1_result' depends on axioms: [propext, Quot.sound] 
+B1_fun_10000_dk.lean	0	0:06.67	1444392	'b1_result' depends on axioms: [propext, Quot.sound] 
+B1_fun_3000_dk.lean	0	0:02.39	783540	'b1_result' depends on axioms: [propext, Quot.sound] 

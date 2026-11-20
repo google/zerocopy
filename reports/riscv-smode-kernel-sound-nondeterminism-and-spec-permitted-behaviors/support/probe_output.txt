@@ -1,0 +1,6 @@
+Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)
+'PerLevelStale.perLevel_admits_never_valid' does not depend on any axioms
+'PerLevelStale.fenced_no_gap' does not depend on any axioms
+'LrScSwitch.lost_update_permitted' does not depend on any axioms
+'LrScSwitch.dummy_sc_sound' does not depend on any axioms
+'LrScSwitch.qemu_like_masks_bug' does not depend on any axioms

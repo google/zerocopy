@@ -1,0 +1,25 @@
+pin sha256: b629a9b4c3fd184b20b791d34621a9f6aa1518ed9b164e42561b4eb688157271
+pub const LOCKED_MIRI_COMMIT: &str = "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a";
+
+--
+pub const LOCKED_UPSTREAM_PIN_SHA256: &str =
+ "b629a9b4c3fd184b20b791d34621a9f6aa1518ed9b164e42561b4eb688157271";
+keys: ['build_lean_toolchain', 'commit', 'execution_machine_closure', 'notes', 'patched_files', 'repository', 'schema_version', 'upstream_git_objects', 'upstream_lean_toolchain', 'upstream_pins', 'vendor_aux_files', 'vendor_tree']
+schema_version: 2 commit: c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a
+upstream_lean_toolchain: leanprover/lean4:v4.35.0 build_lean_toolchain: leanprover/lean4:v4.34.1
+closure entries: 160 first: Miri.ABI.Size last: Miri.Interpreter.ExecutionMachine
+entries with server/private sidecars: ['Miri.Memory.QSortProof']
+closure by top namespace: {'ABI': 7, 'Interpreter': 93, 'Memory': 21, 'MIR': 2, 'Concurrency': 13, 'TreeBorrows': 12, 'DataStructures': 2, 'Input': 9, 'OperationalSafety': 1}
+patched_files: ['Miri/Interpreter/Call.lean', 'Miri/Interpreter/Cast.lean', 'Miri/Interpreter/ExecutionCalls.lean', 'Miri/Interpreter/ExecutionCast.lean', 'Miri/Interpreter/ExecutionMachine.lean', 'Miri/Interpreter/LocalAccess.lean', 'Miri/Interpreter/MachineHooks.lean', 'Miri/Interpreter/OperandMachine.lean', 'Miri/Interpreter/Place.lean', 'Miri/Interpreter/PlaceMachine.lean']
+vendor_tree.file_count: 608 manifest_sha256: 081747a37a96c7443997ba12b02565f45c9642dd0dec9e3dcb3a30e7053c8d16
+closure LOC: 44730
+all vendored .lean LOC: 106656
+closure count [^\s*(private |protected )?partial def]: 24
+closure count [@\[extern]: 0
+closure count [@\[implemented_by]: 0
+closure count [^\s*axiom ]: 0
+closure count [^\s*(private )?opaque ]: 0
+closure count [\bsorry\b]: 0
+closure count [native_decide]: 0
+closure count [^\s*run_cmd]: 1
+closure count [^\s*initialize ]: 2

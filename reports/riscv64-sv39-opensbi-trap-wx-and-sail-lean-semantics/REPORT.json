@@ -115,7 +115,42 @@
         "repository": "nixos/nixpkgs",
         "revision": "549bd84d6279f9852cae6225e372cc67fb91a4c1"
       }
+    },
+    {
+      "name": "RISC-V ISA Manual (Privileged and Unprivileged)",
+      "identity": {
+        "repository": "riscv/riscv-isa-manual",
+        "revision": "c05f1725f25526dd8463bac6ca75cfcfbee17d05"
+      }
+    },
+    {
+      "name": "Sail RISC-V specification",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "ec5200bdfe0c10afa6dbb1f7b0980db2d236236e"
+      }
+    },
+    {
+      "name": "Sail RISC-V specification (concurrency-interface V2 port commit)",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "4f8ce828fcacd6f392cb4f9be9046d46ce4bec07"
+      }
+    },
+    {
+      "name": "riscv-zkvm scoped Sail Lean extraction",
+      "identity": {
+        "repository": "Verified-zkEVM/riscv-zkvm",
+        "revision": "6810fc14d9c40373101321cefaec59df8d82e3e7"
+      }
+    },
+    {
+      "name": "OpenSBI (source)",
+      "identity": {
+        "repository": "riscv-software-src/opensbi",
+        "revision": "61f1973bd50338b36c52dc34006f76d464ca4f34"
+      }
     }
   ],
-  "observed_at": "2026-11-19"
+  "observed_at": "2026-11-20"
 }

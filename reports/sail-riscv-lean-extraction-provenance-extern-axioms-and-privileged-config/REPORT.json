@@ -1,0 +1,114 @@
+{
+  "topics": [
+    "isa",
+    "isa/riscv64",
+    "isa/sail",
+    "isa/sail/lean-backend",
+    "isa/riscv64/privileged",
+    "lean/mechanization",
+    "lean/axioms",
+    "lean/toolchain-portability",
+    "verification/reference-models"
+  ],
+  "subjects": [
+    {
+      "name": "Sail RISC-V model (master HEAD)",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "ec5200bdfe0c10afa6dbb1f7b0980db2d236236e"
+      }
+    },
+    {
+      "name": "Sail RISC-V model (inferred generator input of opencompl/sail-riscv-lean@51c635c4)",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "b7d13572fcd4a87d0999eb6303652cd05a47881e"
+      }
+    },
+    {
+      "name": "Sail RISC-V model release 0.13.1 (riscv-zkvm pin)",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "27224ccb2290f022e46213c05b3e72e8a9ea635e",
+        "tag": "0.13.1"
+      }
+    },
+    {
+      "name": "Sail compiler (sail2 HEAD, Lean backend)",
+      "identity": {
+        "repository": "rems-project/sail",
+        "revision": "97aa617dcd4d01575f773cb58ea1e8686858c8c2"
+      }
+    },
+    {
+      "name": "Sail compiler release 0.20.3 (source tag)",
+      "identity": {
+        "repository": "rems-project/sail",
+        "revision": "3df54034910b31a1e00d948ee965b2e9603d68e0",
+        "tag": "0.20.3"
+      }
+    },
+    {
+      "name": "Sail compiler release 0.20.3 (binary-release tag)",
+      "identity": {
+        "repository": "rems-project/sail",
+        "revision": "60695b1ea377048f0adc39c62671cd099b2ed9f6",
+        "tag": "0.20.3-binary"
+      }
+    },
+    {
+      "name": "Sail compiler (inferred generator of opencompl/sail-riscv-lean@51c635c4)",
+      "identity": {
+        "repository": "rems-project/sail",
+        "revision": "8eb1fb6b5bf9f18c0f89f71e94ff0c5894acd7c1"
+      }
+    },
+    {
+      "name": "lean-sail support library v10",
+      "identity": {
+        "repository": "rems-project/lean-sail",
+        "revision": "e4745c82fe329f162700020dcd31da6b342473b9",
+        "tag": "v10"
+      }
+    },
+    {
+      "name": "lean-sail support library v7",
+      "identity": {
+        "repository": "rems-project/lean-sail",
+        "revision": "01bb54c7c8a69e52ba11863c67e7c403a6cd198a",
+        "tag": "v7"
+      }
+    },
+    {
+      "name": "lean-sail support library v5",
+      "identity": {
+        "repository": "rems-project/lean-sail",
+        "revision": "079463134b9c50450b8393e1566a09fc492a34d9",
+        "tag": "v5"
+      }
+    },
+    {
+      "name": "opencompl Sail RISC-V Lean extraction",
+      "identity": {
+        "repository": "opencompl/sail-riscv-lean",
+        "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+      }
+    },
+    {
+      "name": "riscv-zkvm scoped Sail RISC-V Lean extraction",
+      "identity": {
+        "repository": "Verified-zkEVM/riscv-zkvm",
+        "revision": "6810fc14d9c40373101321cefaec59df8d82e3e7"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

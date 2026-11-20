@@ -1,0 +1,72 @@
+{
+  "topics": [
+    "lean",
+    "lean/kernel",
+    "lean/kernel-reduction",
+    "lean/tactics",
+    "lean/symbolic-evaluation",
+    "lean/isa-semantics",
+    "lean/mechanization",
+    "isa",
+    "isa/riscv64",
+    "isa/sail",
+    "anneal/trusted-boundary",
+    "smt/bv",
+    "verification/trusted-computing-base"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 v4.34.1 (kernel, elaborator, Std bv_decide, Std.HashMap, well-founded recursion compiler)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Lean 4 v4.29.0 (native-axiom cross-check and frontend source layout)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "98dc76e3c0a9b856c9b98726b713fb04fab16740",
+        "version": "v4.29.0"
+      }
+    },
+    {
+      "name": "Lean 4 v4.35.0 (native-axiom cross-check)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+        "version": "v4.35.0"
+      }
+    },
+    {
+      "name": "lean-sail (Sail Lean support library: FreeM/ArchSem and sequential EStateM interpreters)",
+      "identity": {
+        "repository": "rems-project/lean-sail",
+        "revision": "e4745c82fe329f162700020dcd31da6b342473b9"
+      }
+    },
+    {
+      "name": "riscv-zkvm (Sail RV64 extraction, computable RV64IM model, SailEquiv proofs, program-logic tactics)",
+      "identity": {
+        "repository": "Verified-zkEVM/riscv-zkvm",
+        "revision": "6810fc14d9c40373101321cefaec59df8d82e3e7"
+      }
+    },
+    {
+      "name": "riscv-lean (bitblastable RV64 semantics proven equivalent to Sail RV64D)",
+      "identity": {
+        "repository": "opencompl/riscv-lean",
+        "revision": "0e3365ac7b670d79d70e9b4a8b7fba782607c44f"
+      }
+    },
+    {
+      "name": "Anneal TrustedBoundary auditor (axiom allowlist and compiler-reflection denylist)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

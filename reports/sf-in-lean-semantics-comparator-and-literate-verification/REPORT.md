@@ -2296,7 +2296,7 @@ preflight parser and live elaboration under `Init.NotationExtra` vs.
 | 3 | `register_label_attr` (`TS/AttributeDecls.lean`) | **FAIL** (`unexpected identifier`) | **FAIL** | **FAIL** (requires `Lean.LabelAttribute`) | **FAIL** | Pass explicit lemma lists: `apply_rules [lem1, lem2]` |
 | 4 | Custom `@[SimpleArith]` attribute | **FAIL** (`unsupported attribute`) | **FAIL** | **FAIL** | **FAIL** | Use `@[simp]` or explicit lemma lists `[lem1, lem2]` |
 | 5 | `by_elab` / `run_tac` inside `by ...` | **FAIL** (`forbidden syntax kind runTac`) | **FAIL** | **FAIL** | **FAIL** | Prohibited everywhere in Anneal |
-| 6a | `native_decide` / `decide +kernel` inside `by ...` | **FAIL** (`forbidden decide configuration '+kernel'`) | **FAIL** | PASS | PASS | Prohibited (`Lean.ofReduceBool` / `Lean.trustCompiler`) |
+| 6a | `native_decide` / `decide +kernel` inside `by ...` | **FAIL** (`forbidden decide configuration '+kernel'`) | **FAIL** | PASS | PASS | Prohibited (`native_decide` adds a per-invocation `_native.native_decide.ax_*` axiom; `decide +kernel` adds no axiom but is rejected by the preflight syntax check) |
 | 6b | **Bare `by decide`** (no config flags) | **FAIL** (`forbidden decide configuration ''`) | **PASS** | **PASS** | **PASS** | Fix `TrustedBoundary.lean:366` (`s[1][0].getArgs.isEmpty`) |
 | 7 | `cases` + `generalize` + `injections` + `subst_vars` | **PASS** | **PASS** | **PASS** | **PASS** | Direct drop-in replacement for `inversion` (`313` vs. `268` DAG nodes) |
 | 8 | `apply_rules [lem1, lem2]` (explicit list) | **PASS** | **PASS** | **PASS** | **PASS** | Built into `Init.Tactics`; `30` DAG nodes on `EvenInd 8` |
@@ -2692,6 +2692,8 @@ self-contained runnable Lean `v4.34.1` support probes in this package:
     `theory/Anneal/Verification/BuildingBlocks.lean`,
     `trusted/lean/Anneal/MirSemantics.lean`, `theory/Anneal/MirPassProofs.lean`,
     `theory/Anneal/MirValInv.lean`.
+
+- **Correction observed 2026-11-20 (`native_decide`/`bv_decide` axiom mechanism):** on Lean `v4.34.1` (`leanprover/lean4@5045d0056413266e57c625dcd7c365b10e377c52`), both tactics go through `Lean.Meta.nativeEqTrue` (`src/Lean/Meta/Native.lean:37-86`; `native_decide` via `elabNativeDecideCore`, `src/Lean/Elab/Tactic/Decide.lean:57-59`; `bv_decide` via `LratCert.toReflectionProof`, `src/Lean/Meta/Tactic/BVDecide/Prover/Bitblast.lean:26-44`), which evaluates the closed `Bool` term with the compiler and then adds a fresh per-invocation axiom `<theorem>._native.<tactic>.ax_* : e = true`; neither tactic references `Lean.ofReduceBool` or `Lean.trustCompiler`. Executed with `lean -t0`, `#print axioms` reports `[propext, Classical.choice, Quot.sound, <theorem>._native.bv_decide.ax_1_5]` for a 64-bit `bv_decide` proof and `[<theorem>._native.native_decide.ax_1_1]` for `native_decide` (identically on `v4.29.0` and `v4.35.0`); reproduce with `support/A1_axioms.lean` and `support/A6_native_axiom_by_toolchain.lean` in package `lean-kernel-evaluation-symbolic-execution-and-native-axiom-free-isa-proofs`. These axioms lie outside `{propext, Classical.choice, Quot.sound}`, so an axiom allowlist still rejects such proofs.
 
 ## Revalidation
 

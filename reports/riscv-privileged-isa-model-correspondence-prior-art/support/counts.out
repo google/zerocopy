@@ -1,0 +1,202 @@
+== riscv-zkvm 6810fc14d9c40373101321cefaec59df8d82e3e7
+distinct *_sail_equiv* theorem names: 66
+base instructions: 51
+81:def Instr.simulable : Instr → Bool
+82-  | .ECALL | .EBREAK | .FENCE | .MV .. | .LI .. | .NOP | .CSRS .. => false
+83-  | _ => true
+structure BareModeInv (s : SailState) where
+  mst : BitVec 64
+  msec : BitVec 64
+  cfgs : Vector (BitVec 8) 64
+  pmpaddrs : Vector (BitVec 64) 64
+  regions : List PMA_Region
+  h_priv : s.regs.get? Register.cur_privilege = some Privilege.Machine
+  h_mst : s.regs.get? Register.mstatus = some mst
+  h_mprv : _get_Mstatus_MPRV mst = 0#1
+  h_sec : s.regs.get? Register.mseccfg = some msec
+  h_pmm : _get_Seccfg_PMM msec = 0#2
+  h_cfg : s.regs.get? Register.pmpcfg_n = some cfgs
+  h_pmpaddr : s.regs.get? Register.pmpaddr_n = some pmpaddrs
+  h_off : ∀ i : Nat,
+    pmpAddrMatchType_encdec_backwards (_get_Pmpcfg_ent_A (cfgs[i]!)) = PmpAddrMatchType.OFF
+  h_reg : s.regs.get? Register.pma_regions = some regions
+noncomputable def sailStep (si : SailInstr) : SailM Unit := do
+  let pc ← readReg Register.PC
+  set_next_pc (pc + 4)
+  let _ ← executeSupported si
+  tick_pc ()
+327:theorem sailStep_run_sim {lo hi : Nat} {sRv sRv' : MachineState} {sSail : SailState}
+381:theorem sailStepN_run_sim (n : Nat) {lo hi : Nat} {sRv sRv' : MachineState} {sSail : SailState}
+460:theorem jalr_sideCond_satisfiable (rd rs1 : Reg) :
+StepRun.lean lines: 483
+264:structure StateRel (sRv : MachineState) (sSail : SailState) : Prop where
+295:structure StateRelPC (sRv : MachineState) (sSail : SailState) : Prop extends
+347:structure PlatformFrame (s s' : SailState) : Prop where
+  | some (.LD rd rs1 offset) =>
+    let addr := s.getReg rs1 + signExtend12 offset
+    if isValidDwordAccess addr then
+      some (execInstrBr s (.LD rd rs1 offset))
+    else none  -- trap: invalid dword memory access
+def allowedAxioms : List Name :=
+  [ -- Lean's three classical axioms.
+    `propext, `Classical.choice, `Quot.sound,
+    -- Sail platform axioms, introduced by the generated extraction.
+    `load_reservation, `match_reservation, `plat_term_write,
+    `sys_enable_experimental_extensions ]
+def check_CSR (csr : (BitVec 12)) (p : Privilege) (access_type : CSRAccessType) : SailM Bool := do
+  (pure ((← (check_CSR_priv csr p)) && ((check_CSR_access csr access_type) && ((← (is_CSR_accessible
+              csr p access_type)) && (← (stateen_allows_CSR_access csr p access_type))))))
+official lean-sail v5, and Sail 0.20.3: all 50 selected `rv64ui-p-*` ELF tests
+- that the proof-oriented and executable backend modes are identical;
+   - the second instruction of every image is `csrr t5, mcause`
+     (`0x34202f73`). `Instr`'s only CSR form is `CSRS`, the ZisK accelerator
+     call `csrrs x0, csr, rs1`; general M-mode CSR access, `mtvec` setup and
+     `mret` are not modeled at all.
+3. **`decode` is not tied to Sail.** No theorem relates
+   `RiscvZkvm.Interpreter.decode` to `RiscvZkvm.Sail.Functions.encdec_backwards`,
+   and it cannot be checked by testing either: the proof extraction is
+   `noncomputable`, so the Sail decoder does not evaluate. This has to become a
+   theorem. `RiscvZkvm/Interpreter/DecodeTests.lean` pins the decoder against
+
+== opencompl/riscv-lean
+7c6b500c1744f40d928fb131125cd06edf9f4fce RISCV/SailToRV64.lean theorem=77 bv_decide=1
+7c6b500c1744f40d928fb131125cd06edf9f4fce RISCV/SailPureToInstructions.lean theorem=104 bv_decide=4
+0e3365ac7b670d79d70e9b4a8b7fba782607c44f RISCV/SailToRV64.lean theorem=78 bv_decide=1
+0e3365ac7b670d79d70e9b4a8b7fba782607c44f RISCV/SailPureToInstructions.lean theorem=106 bv_decide=6
+72:theorem shiftiop_slli_eq (shamt : BitVec 5) (rs1 : regidx) (rd : regidx) :
+72:theorem shiftiop_slli_eq (shamt : BitVec 6) (rs1 : regidx) (rd : regidx) :
+privileged identifiers at HEAD: 0
+
+== opencompl/sail-riscv-lean 51c635c460125ac87955d061fcd902ce03b8011f check_CSR
+def check_CSR (csr : (BitVec 12)) (p : Privilege) (access_type : CSRAccessType) : SailM Bool := do
+  (pure ((← (check_CSR_priv csr p)) && ((check_CSR_access csr access_type) && ((← (is_CSR_accessible
+              csr p access_type)) && (← (stateen_allows_CSR_access csr p access_type))))))
+== rems-project/sail short-circuit fix e55d89e79e3e5dfa88a137c73be371fb3671c983
+e55d89e79e3e5dfa88a137c73be371fb3671c983 Mon Oct 19 15:49:41 2026 +0100 Lean: support short-circuiting && || with effects
+0.20.2 lacks fix
+0.20.3 lacks fix
+60695b1ea377048f0adc39c62671cd099b2ed9f6 lacks fix
+
+== Miralis f5ab1955192833ac025a6719a71c6e36a3f643ab / softcore-rs 8c238f4103ce43b00078c7b3dc909f7dae05bfc4
+  26-pub fn mret() {
+  41-pub fn sret() {
+  56-pub fn wfi() {
+  104-pub fn fences() {
+  165-pub fn read_csr() {
+  198-pub fn write_csr() {
+  252-pub fn interrupt_virtualization() {
+  273-pub fn exception_virtualization() {
+  350-pub fn pmp_virtualization() {
+  453-pub fn verify_decoder() {
+  472-pub fn verify_compressed_loads() {
+  500-pub fn verify_load() {
+  526-pub fn verify_compressed_stores() {
+  558-pub fn verify_stores() {
+pub fn flush_TLB(asid: Option<BitVector<16>>, addr: Option<BitVector<{ 64 }>>) {
+    // todo!("E_for")
+}
+144:    ctx.csr.pmpcfg = [any!(); 8];
+145:    ctx.csr.pmpaddr = [any!(usize) >> 10; 64]; // encodes bits [56:2] of the 56 bits address space
+197:    ctx.regs = [any!(usize); 32];
+riscv-version := "b6f7b1df64157e6b9d250e552842f963394bc2ba"
+softcore raw.rs todo!/unimplemented!: 552
+softcore walk/translate fns: 0
+38:-function clause is_CSR_defined(0x3A) @ idx : bits(4) = sys_pmp_count() > unsigned(idx) & (idx[0] == bitzero | xlen == 32)
+39:+function clause is_CSR_defined(0x3A) @ idx : bits(4) = sys_pmp_count() > 4 * unsigned(idx) & (idx[0] == bitzero | xlen == 32)
+
+== Serval 72adc4952a1e62330aea527214a26bd0c09cbd05
+  [(#b0000000 #b00010 #b00000 #b000 #b00000 #b1110011) uret notimplemented]
+  [(#b0001000 #b00010 #b00000 #b000 #b00000 #b1110011) sret notimplemented]
+  [(#b0011000 #b00010 #b00000 #b000 #b00000 #b1110011) mret notimplemented]
+  [(#b0001000 #b00101 #b00000 #b000 #b00000 #b1110011) wfi skip]
+  [(#b0001001 #b000 #b00000 #b1110011) sfence.vma skip]
+  [(#b001 #b0001111) fence.i skip]
+        (when (! (mret? insn))
+include riscv-tests/isa/rv64ui/Makefrag
+include riscv-tests/isa/rv64um/Makefrag
+include riscv-tests/isa/rv64ua/Makefrag
+include riscv-tests/isa/rv64uc/Makefrag
+include riscv-tests/isa/rv32ui/Makefrag
+include riscv-tests/isa/rv32um/Makefrag
+include riscv-tests/isa/rv32ua/Makefrag
+include riscv-tests/isa/rv32uc/Makefrag
+RISCV_TESTS        := $(addsuffix .asm.rkt, $(addprefix $(O)/riscv-tests/isa/rv64ui/, $(rv64ui_sc_tests)))
+RISCV_TESTS        += $(addsuffix .asm.rkt, $(addprefix $(O)/riscv-tests/isa/rv64um/, $(rv64um_sc_tests)))
+RISCV_TESTS        += $(addsuffix .asm.rkt, $(addprefix $(O)/riscv-tests/isa/rv64ua/, $(rv64ua_sc_tests)))
+# RISCV_TESTS        += $(addsuffix .asm.rkt, $(addprefix $(O)/riscv-tests/isa/rv64uc/, $(rv64uc_sc_tests)))
+RISCV_TESTS        += $(addsuffix .asm.rkt, $(addprefix $(O)/riscv-tests/isa/rv32ui/, $(rv32ui_sc_tests)))
+RISCV_TESTS        += $(addsuffix .asm.rkt, $(addprefix $(O)/riscv-tests/isa/rv32um/, $(rv32um_sc_tests)))
+RISCV_TESTS        += $(addsuffix .asm.rkt, $(addprefix $(O)/riscv-tests/isa/rv32ua/, $(rv32ua_sc_tests)))
+# RISCV_TESTS        += $(addsuffix .asm.rkt, $(addprefix $(O)/riscv-tests/isa/rv32uc/, $(rv32uc_sc_tests)))
+
+== Islaris c978e10f50db5c40f0fdf113f5f76a779782c6f9
+
+Definition sys_regs : list (reg_kind * valu_shape) := [
+  (KindReg "rv_enable_pmp" , ExactShape (RVal_Bool false));
+  (KindReg "rv_enable_misaligned_access" , ExactShape (RVal_Bool false));
+  (KindReg "rv_ram_base" , ExactShape (RVal_Bits (BV 64 0x0000000080000000)));
+  (KindReg "rv_ram_size" , ExactShape (RVal_Bits (BV 64 0x0000000004000000)));
+  (KindReg "rv_rom_base" , ExactShape (RVal_Bits (BV 64 0x0000000000001000)));
+  (KindReg "rv_rom_size" , ExactShape (RVal_Bits (BV 64 0x0000000000000100)));
+  (KindReg "rv_clint_base" , ExactShape (RVal_Bits (BV 64 0x0000000002000000)));
+  (KindReg "rv_clint_size" , ExactShape (RVal_Bits (BV 64 0x00000000000c0000)));
+  (KindReg "rv_htif_tohost" , ExactShape (RVal_Bits (BV 64 0x0000000040001000)));
+  (KindReg "cur_privilege" , ExactShape (RVal_Enum "Machine"));
+  (* TODO: remove this *)
+  (KindReg "Machine" , ExactShape (RVal_Enum "Machine"));
+  (KindReg "misa" , ExactShape (RegVal_Struct [("bits", RVal_Bits misa_bits)]));
+  (* MPRV disabled *)
+  (KindReg "mstatus" , StructShape [("bits", MaskShape 64 0x20000 0)]);
+
+== l4v b0fe7693ca5943e08c49e038d33fd64dc7dfa72e
+consts' hwASIDFlush_impl :: "machine_word \<Rightarrow> unit machine_rest_monad"
+definition hwASIDFlush :: "machine_word \<Rightarrow> unit machine_monad" where
+  "hwASIDFlush asid \<equiv> machine_op_lift (hwASIDFlush_impl asid)"
+
+consts' sfence_impl :: "unit machine_rest_monad"
+definition sfence :: "unit machine_monad" where
+  "sfence \<equiv> machine_op_lift sfence_impl"
+
+consts' ifence_impl :: "unit machine_rest_monad"
+definition ifence :: "unit machine_monad" where
+  "ifence \<equiv> machine_op_lift ifence_impl"
+consts' setVSpaceRoot_impl :: "paddr \<Rightarrow> machine_word \<Rightarrow> unit machine_rest_monad"
+definition setVSpaceRoot :: "paddr \<Rightarrow> machine_word \<Rightarrow> unit machine_monad" where
+  "setVSpaceRoot pt asid \<equiv> machine_op_lift $ setVSpaceRoot_impl pt asid"
+76:definition machine_op_lift :: "unit machine_rest_monad \<Rightarrow> unit machine_monad" where
+77-  "machine_op_lift \<equiv> machine_rest_lift o ignore_failure"
+
+== Ibex f5b1439295048c6eead73ad4ef8a55cc564e7d6f proof holes
+## Proof Holes
+
+1. Some CSRs are not checked.
+   See `ex_is_checkable_csr` in `top.sv` for the full list.
+   They are not checked either because they aren't specified, can't be specified or because I haven't got around to adding them yet.
+   Some should be easy to check.
+   When a CSR instruction touches one of those CSRs the next round of checks is essentially just disabled, anything can happen and verification will assume at the next `spec_en`.
+2. Bus errors are assumed not to occur.
+   They are not specified, though the bigger issue is that they would be hard to prove correctness of.
+3. There are no NMIs or fast IRQs, since there are not specified.
+4. We forbid attempting to enter debug mode, as this is also not specified.
+5. We assume `ResetAll` and no clock gating.
+   Both of these could be fixed with probably fairly little effort.
+6. I don't check that Ibex ever handles interrupts.
+   If it does handle an interrupt, it does so correctly.
+7. I haven't proved security, I have proved correctness, or more specifically specification conformance.
+   If there is a bug in the spec, or a side channel somewhere, I will not find it.
+8. There is currently no proof of correctness of instruction fetch, i.e. when IF returns an instruction with a given PC, it has not been proved that that instruction was actually loaded from memory with that PC.
+   This was proved for CHERIoT-Ibex and could probably be easily proved here too.
+9. Ibex has not been proved to reset to the correct state, there's no reason it couldn't be.
+
+
+== ACE-RISCV 42cf582eef21f9ab661ec7008d65c6de141b4be1
+(** * Architectural ground-truth *)
+(* TODO: have file for translated sail specs and then link up with this *)
+
+== xv6iris 5cb9df992c45829f6210b3e4176962d7b7a4c408
+leanprover/lean4:v4.32.2
+60:SAIL_RISCV_REV="${SAIL_RISCV_REV:-070832a1e4b086f0c6f7635de54cc2b4cfd66993}"
+19:    { "name": "Xv6.userProof",
+20-      "axioms": ["propext", "Classical.choice", "Quot.sound"],
+21-      "opaques": ["LeanRV64D.Functions.xv6_resv_is_valid", "LeanRV64D.Functions.xv6_resv_matches",
+22-                  "MachCSL.bootImageSealed"] },

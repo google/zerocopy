@@ -109,7 +109,14 @@
         "repository": "AbsInt/CompCert",
         "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
       }
+    },
+    {
+      "name": "riscv-zkvm (Sail RISC-V Lean extraction consumer; emulator-validation scope)",
+      "identity": {
+        "repository": "Verified-zkEVM/riscv-zkvm",
+        "revision": "6810fc14d9c40373101321cefaec59df8d82e3e7"
+      }
     }
   ],
-  "observed_at": "2026-11-19"
+  "observed_at": "2026-11-20"
 }

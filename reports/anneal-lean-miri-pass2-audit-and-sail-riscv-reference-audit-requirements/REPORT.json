@@ -1,0 +1,93 @@
+{
+  "topics": [
+    "anneal/audit",
+    "anneal/correspondence",
+    "anneal/lean-miri",
+    "anneal/trusted-boundary",
+    "isa/riscv64",
+    "isa/sail",
+    "lean/axioms",
+    "lean/kernel-replay",
+    "lean/olean-reproducibility",
+    "verification/reference-model",
+    "verification/supply-chain"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal Pass 2 correspondence audit",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Anneal commit introducing Pass 2 enforcement",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "ec77c1a2f3a8d2090e650a3c46d291f316e2bad6"
+      }
+    },
+    {
+      "name": "lean-miri (vendored reference model)",
+      "identity": {
+        "repository": "proofs-rs/lean-miri",
+        "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a",
+        "miri_tree": "ef473f04eed9bbfed474a7b5f6f91a2f6350c41b"
+      }
+    },
+    {
+      "name": "sail-riscv-lean generated RV64D model",
+      "identity": {
+        "repository": "opencompl/sail-riscv-lean",
+        "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+      }
+    },
+    {
+      "name": "lean-sail runtime",
+      "identity": {
+        "repository": "rems-project/lean-sail",
+        "revision": "e4745c82fe329f162700020dcd31da6b342473b9",
+        "tag": "v10"
+      }
+    },
+    {
+      "name": "lean-sail runtime",
+      "identity": {
+        "repository": "rems-project/lean-sail",
+        "revision": "079463134b9c50450b8393e1566a09fc492a34d9",
+        "tag": "v5"
+      }
+    },
+    {
+      "name": "riscv-zkvm scoped Sail extraction",
+      "identity": {
+        "repository": "Verified-zkEVM/riscv-zkvm",
+        "revision": "6810fc14d9c40373101321cefaec59df8d82e3e7"
+      }
+    },
+    {
+      "name": "Sail RISC-V model",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "27224ccb2290f022e46213c05b3e72e8a9ea635e",
+        "tag": "0.13.1"
+      }
+    },
+    {
+      "name": "Sail RISC-V model",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "ec5200bdfe0c10afa6dbb1f7b0980db2d236236e"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

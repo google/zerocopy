@@ -1,0 +1,19 @@
+# lake build of rems-project/lean-sail tag v10 (e4745c82fe329f162700020dcd31da6b342473b9) on leanprover/lean4:v4.34.1, 2026-11-20
+# command: time anneal-lean-run --mode build --timeout 900 -- lake build   (anneal-lean-run = memory-bounded wrapper; plain 'lake build' is equivalent)
+# note: wall time includes ~2 min queueing for a host build slot; per-module times and user CPU are the meaningful numbers
+✔ [2/14] Built Sail.IntRange (754ms)
+✔ [3/14] Built Sail.Attr (1.1s)
+✔ [4/14] Built Sail.BitVec (1.5s)
+✔ [5/14] Built Sail.Common (1.5s)
+✔ [6/14] Built SailTest.VectorConversion (920ms)
+✔ [7/14] Built Sail.ArchSem (2.0s)
+✔ [8/14] Built SailTest (1.3s)
+✔ [10/14] Built Sail.ConcurrencyInterfaceV1 (2.4s)
+✔ [11/14] Built Sail.ArchSemSequential (1.3s)
+✔ [12/14] Built Sail.Sail (1.6s)
+✔ [13/14] Built Sail (959ms)
+Build completed successfully (14 jobs).
+
+real	2m19.290s
+user	0m14.194s
+sys	0m4.017s

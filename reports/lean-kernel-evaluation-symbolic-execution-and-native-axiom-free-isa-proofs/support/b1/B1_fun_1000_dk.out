@@ -1,0 +1,6 @@
+# cmd: ~/.local/bin/anneal-lean-run --mode file --memory-max-mb 6144 --timeout 600 -- /usr/bin/time -v ~/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -t0 -M2048  B1_fun_1000_dk.lean
+'b1_result' depends on axioms: [propext, Quot.sound]
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.99
+	Maximum resident set size (kbytes): 599436
+	Exit status: 0
+# exit: 0

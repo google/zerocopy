@@ -1,0 +1,24 @@
+FAIL LeanRV64D.Defs rc=1 (39.1441s)
+$WORK/rv-defs-probe/src/LeanRV64D/Defs.lean:1371:0: error: (kernel) excessive memory consumption detected
+$WORK/rv-defs-probe/src/LeanRV64D/Defs.lean:1378:0: error: (kernel) excessive memory consumption detected
+$WORK/rv-defs-probe/src/LeanRV64D/Defs.lean:1406:7: error: (kernel) excessive memory consumption detected
+$WORK/rv-defs-probe/src/LeanRV64D/Defs.lean:1412:0: error: (kernel) excessive memory consumption detected
+$WORK/rv-defs-probe/src/LeanRV64D/Defs.lean:1418:0: error: (kernel) excessive memory consumption detected
+$WORK/rv-defs-probe/src/LeanRV64D/Defs.lean:1424:0: error: (kernel) excessive memory consumption detected
+$WORK/rv-defs-probe/src/LeanRV64D/Defs.lean:1430:0: error: (kernel) excessive memory consumption detected
+$WORK/rv-defs-probe/src/LeanRV64D/Defs.lean:1439:0: error: (kernel) excessive memory consumption detected
+$WORK/rv-defs-probe/src/LeanRV64D/Defs.lean:1443:0: error: (kernel) excessive memory consumption detected
+$WORK/rv-defs-probe/src/LeanRV64D/Defs.lean:1447:0: error: (kernel) excessive memory consumption detected
+$WORK/rv-defs-probe/src/LeanRV64D/Defs.lean:1458:0: error: (kernel) excessive memory consumption detected
+$WORK/rv-defs-probe/src/LeanRV64D/Defs.lean:1466:0: error: (kernel) excessive memory consumption detected
+$WORK/rv-defs-probe/src/LeanRV64D/Defs.lean:1470:0: error: (kernel) excessive memory consumption detected
+$WORK/rv-defs-probe/src/LeanRV64D/Defs.lean:1474:0: error: (kernel) excessive memory consumption detected
+$WORK/rv-defs-probe/src/LeanRV64D/Defs.lean:1485:0: error: failed to construct `T.ctorIdx` for `Splittability`:
+  (kernel) excessive memory consumption detected
+$WORK/rv-defs-probe/src/LeanRV64D/Defs.lean:1491:0: error: (kernel) excessive memory consumption detected
+$WORK/rv-defs-probe/src/LeanRV64D/Defs.lean:1504:0: error: (kernel) excessive memory consumption detected
+$WORK/rv-defs-probe/src/LeanRV64D/Defs.lean:1511:0: error: (kernel) excessive memory consumption detected
+$WORK/rv-defs-probe/src/LeanRV64D/Defs.lean:1521:0: error: (kernel) excessive memory consumption detected
+$WORK/rv-defs-probe/src/LeanRV64D/Defs.lean:1538:0: error: (kernel) excessive memory consumption detected
+$WORK/rv-defs-probe/src/LeanRV64D/Defs.lean:1547:18: error(lean.inferBinderTypeFailed): Failed to infer type of binder `k_v`
+$WORK/rv-defs-prob
