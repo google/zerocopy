@@ -1,0 +1,56 @@
+{
+  "topics": [
+    "systems/gpu-video",
+    "ffi/hardware-contracts",
+    "domains/multimedia",
+    "security/dma",
+    "verification/mmio-dma",
+    "zerocopy/dma-lifetimes"
+  ],
+  "subjects": [
+    {
+      "name": "FFmpeg multimedia framework (libavutil/hwcontext_* and libavcodec hwaccel backends)",
+      "identity": {
+        "repository": "FFmpeg/FFmpeg",
+        "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+      }
+    },
+    {
+      "name": "Khronos Vulkan-Headers (VK_KHR_video_decode_queue and VK_KHR_video_encode_queue)",
+      "identity": {
+        "repository": "KhronosGroup/Vulkan-Headers",
+        "revision": "d277a0a3cda9c682708c93279f0c72cd6b0ae3f3"
+      }
+    },
+    {
+      "name": "Intel libva Video Acceleration API (VA-API) headers",
+      "identity": {
+        "repository": "intel/libva",
+        "revision": "f052e984e0c8bf10784198cc311b23c567b1367f"
+      }
+    },
+    {
+      "name": "FFmpeg nv-codec-headers (NVDEC CUVID and NVENC dynamic link headers)",
+      "identity": {
+        "repository": "FFmpeg/nv-codec-headers",
+        "revision": "f2053071ea93137255b6dcf42e9b4c9e0965a44e"
+      }
+    },
+    {
+      "name": "Linux kernel DMA-BUF userspace ABI (include/uapi/linux/dma-buf.h)",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "65e4fd942f72a9dba0e4e257290c4fa1aa756854"
+      }
+    },
+    {
+      "name": "ChromiumOS cros-codecs Rust hardware video acceleration crate",
+      "identity": {
+        "repository": "chromeos/cros-codecs",
+        "revision": "a050c6cde530e563197ee9e3e72ab01f48a0c41f",
+        "version": "0.0.5"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

@@ -24795,6 +24795,110 @@
         "rust/safety"
       ]
     },
+    "ffmpeg-external-codec-and-crypto-library-ecosystem-replacement-vs-ffi-contracts": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+          },
+          "name": "FFmpeg multimedia framework"
+        },
+        {
+          "identity": {
+            "repository": "memorysafety/rav1d",
+            "revision": "2e7216c20ac2a75de204d6c8d7268b75a45959b4",
+            "version": "1.1.1"
+          },
+          "name": "rav1d AV1 decoder in Rust"
+        },
+        {
+          "identity": {
+            "repository": "xiph/rav1e",
+            "revision": "31435de9d76fddd38f6dcc31d4014574cebb2092",
+            "version": "0.8.0"
+          },
+          "name": "rav1e AV1 encoder in Rust"
+        },
+        {
+          "identity": {
+            "repository": "pdeljanov/Symphonia",
+            "revision": "5f879df0bf309246a48d57caae457fd8c0e2a5cb",
+            "version": "0.6.1"
+          },
+          "name": "Symphonia pure-Rust multimedia decoding workspace"
+        },
+        {
+          "identity": {
+            "repository": "rustls/rustls",
+            "revision": "836e411eccaf7331f4c289aabef0de32474de3b8",
+            "version": "0.24.0-dev.3"
+          },
+          "name": "Rustls TLS 1.2/1.3 library"
+        },
+        {
+          "identity": {
+            "repository": "rustls/rustls-ffi",
+            "revision": "60e06efdff33e6e97e00e76fa519d559b2dcaffa"
+          },
+          "name": "rustls-ffi C ABI bindings for Rustls"
+        },
+        {
+          "identity": {
+            "repository": "trifectatechfoundation/zlib-rs",
+            "revision": "a7f9c02c1f48b8962b46c5428828573e9cbac152",
+            "version": "0.6.8"
+          },
+          "name": "zlib-rs and libz-rs-sys memory-safe DEFLATE/zlib implementation"
+        },
+        {
+          "identity": {
+            "repository": "etemesi254/zune-image",
+            "revision": "2cdbbf554e7da373d3418ab327a0db7c4abb50cd",
+            "version": "0.5.3"
+          },
+          "name": "zune-image Rust image codec workspace"
+        },
+        {
+          "identity": {
+            "repository": "image-rs/image-webp",
+            "revision": "946b31adf319a8f87530742716d9e2776044c431",
+            "version": "0.2.4"
+          },
+          "name": "image-webp pure-Rust WebP decoder and encoder"
+        },
+        {
+          "identity": {
+            "repository": "googlefonts/fontations",
+            "revision": "7eec1e18b6dcb2cbb77a805f280825c075a388c6"
+          },
+          "name": "Fontations pure-Rust OpenType/TrueType font stack (read-fonts, skrifa)"
+        },
+        {
+          "identity": {
+            "repository": "PLSysSec/rlbox_sandboxing_api",
+            "revision": "b0157dc84f86ffbe4549e32ed5cbdfad79c17f43"
+          },
+          "name": "RLBox type-directed library sandboxing framework"
+        },
+        {
+          "identity": {
+            "repository": "google/sandboxed-api",
+            "revision": "46402cf55fe0c199d8a0d84041fde8f3d9b39255"
+          },
+          "name": "Sandboxed API OS-process C/C++ library sandboxing framework"
+        }
+      ],
+      "topics": [
+        "ffi/contracts",
+        "domains/multimedia",
+        "security/sandboxing",
+        "systems/ffmpeg",
+        "rust/c-interoperability",
+        "verification/safety-contracts"
+      ]
+    },
     "ffmpeg-ffprobe-ffplay-cli-pipeline-scheduler-and-fate-differential-oracle": {
       "observed_at": "2026-11-20",
       "subjects": [
@@ -27940,6 +28044,62 @@
         "verification",
         "verification/hw-sw-co-verification",
         "compilers"
+      ]
+    },
+    "hardware-video-acceleration-apis-vaapi-nvdec-vulkan-video-videotoolbox-mediacodec": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+          },
+          "name": "FFmpeg multimedia framework (libavutil/hwcontext_* and libavcodec hwaccel backends)"
+        },
+        {
+          "identity": {
+            "repository": "KhronosGroup/Vulkan-Headers",
+            "revision": "d277a0a3cda9c682708c93279f0c72cd6b0ae3f3"
+          },
+          "name": "Khronos Vulkan-Headers (VK_KHR_video_decode_queue and VK_KHR_video_encode_queue)"
+        },
+        {
+          "identity": {
+            "repository": "intel/libva",
+            "revision": "f052e984e0c8bf10784198cc311b23c567b1367f"
+          },
+          "name": "Intel libva Video Acceleration API (VA-API) headers"
+        },
+        {
+          "identity": {
+            "repository": "FFmpeg/nv-codec-headers",
+            "revision": "f2053071ea93137255b6dcf42e9b4c9e0965a44e"
+          },
+          "name": "FFmpeg nv-codec-headers (NVDEC CUVID and NVENC dynamic link headers)"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "65e4fd942f72a9dba0e4e257290c4fa1aa756854"
+          },
+          "name": "Linux kernel DMA-BUF userspace ABI (include/uapi/linux/dma-buf.h)"
+        },
+        {
+          "identity": {
+            "repository": "chromeos/cros-codecs",
+            "revision": "a050c6cde530e563197ee9e3e72ab01f48a0c41f",
+            "version": "0.0.5"
+          },
+          "name": "ChromiumOS cros-codecs Rust hardware video acceleration crate"
+        }
+      ],
+      "topics": [
+        "systems/gpu-video",
+        "ffi/hardware-contracts",
+        "domains/multimedia",
+        "security/dma",
+        "verification/mmio-dma",
+        "zerocopy/dma-lifetimes"
       ]
     },
     "harfbuzz-opentype-gsub-shaping-truetype-hinting-vms-and-font-winding": {
