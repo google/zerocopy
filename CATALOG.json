@@ -65271,6 +65271,81 @@
         "rust/unsafe"
       ]
     },
+    "tock-mmio-w1c-register-bitfields-and-sbi-ffi-noreturn-fallthrough-hazards": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "tock/tock-registers",
+            "revision": "86008616e0082f4a75e2cf1b33c94b78cbaf7f5f",
+            "version": "2.0.0-dev"
+          },
+          "name": "tock-registers MMIO bus and register bitfield library"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3132747.3132786",
+            "repository": "tock/tock",
+            "revision": "ba6aa7edc014505d2e6f0123b2b6059ba6ee7dec",
+            "version": "0.2.4-dev"
+          },
+          "name": "Tock embedded operating system (DmaFence, lowrisc UART, and VirtIO split queues)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+          },
+          "name": "Rust compiler (rustc_codegen_ssa MIR Call and InlineAsm terminator codegen)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          },
+          "name": "Rust Reference (inline assembly noreturn and naked_asm rules)"
+        },
+        {
+          "identity": {
+            "repository": "riscv-non-isa/riscv-sbi-doc",
+            "revision": "8a545effe9b50484ff897d9815d7d9015cdef203"
+          },
+          "name": "RISC-V Supervisor Binary Interface (SBI) specification (SRST and Binary Encoding)"
+        },
+        {
+          "identity": {
+            "authors": "Andres Erbsen, Samuel Gruetter, Joonwon Choi, Clark Wood, and Adam Chlipala",
+            "doi": "10.1145/3453483.3454065",
+            "publication": "Integration Verification Across Software and Hardware for a Simple Embedded System, ACM PLDI 2021"
+          },
+          "name": "Bedrock2 and Kami hardware-software MMIO trace refinement"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "20aa204315cd36aaf944778b7d33c0d609ced8e8"
+          },
+          "name": "Anneal Rust verification framework (TrustedBoundary, MirAst, and MirSemantics)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover (locked Init prelude)"
+        }
+      ],
+      "topics": [
+        "systems/embedded",
+        "systems/os-verification",
+        "rust/semantics",
+        "anneal/theory",
+        "rustc/codegen",
+        "isa/riscv64",
+        "ffi/abi"
+      ]
+    },
     "tokio-select-cancellation-safety-yaml-json-differentials-and-rego-undefined": {
       "observed_at": "2026-11-19",
       "subjects": [
