@@ -11,3 +11,7 @@ import Anneal.PureLift.Lens
 import Anneal.PureLift.PermTree
 import Anneal.PureLift.LoanGraph
 import Anneal.PureLift.SpatialPin
+import Anneal.PureLift.Plan
+import Anneal.PureLift.BlockCfg
+import Anneal.PureLift.Adapter
+import Anneal.PureLift.Canaries
