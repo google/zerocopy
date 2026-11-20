@@ -1,0 +1,71 @@
+{
+  "topics": [
+    "isa/riscv",
+    "verification/os-kernels",
+    "verification/concurrency",
+    "isa/sv39",
+    "systems/os-kernels",
+    "systems/sel4"
+  ],
+  "subjects": [
+    {
+      "name": "RISC-V Privileged Architecture Specification (development snapshot)",
+      "identity": {
+        "repository": "riscv/riscv-isa-manual",
+        "revision": "c05f1725f25526dd8463bac6ca75cfcfbee17d05"
+      }
+    },
+    {
+      "name": "RISC-V Privileged Architecture Specification (ratified release 20250508)",
+      "identity": {
+        "repository": "riscv/riscv-isa-manual",
+        "revision": "584390d9d872835b1bc45ab9ea946b56db3ad485",
+        "version": "20250508"
+      }
+    },
+    {
+      "name": "RISC-V Privileged Architecture Specification (tag Priv-v1.12)",
+      "identity": {
+        "repository": "riscv/riscv-isa-manual",
+        "revision": "98964261c931d51884f733664b22efe43de93033",
+        "version": "Priv-v1.12"
+      }
+    },
+    {
+      "name": "Sail RISC-V formal ISA specification",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "ec5200bdfe0c10afa6dbb1f7b0980db2d236236e"
+      }
+    },
+    {
+      "name": "seL4 microkernel C implementation (RISC-V Sv39 VSpace and untyped retyping)",
+      "identity": {
+        "repository": "seL4/seL4",
+        "revision": "08c7e5fddb3111ff377745c8eefb07feb5c4cfb7"
+      }
+    },
+    {
+      "name": "seL4 l4v RISCV64 machine operations specification",
+      "identity": {
+        "repository": "seL4/l4v",
+        "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e"
+      }
+    },
+    {
+      "name": "Linux kernel RISC-V MMU ASID allocator and TLB flush implementation",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "8dac6df92a2e66e2098bbc69061964cfe7e8375b"
+      }
+    },
+    {
+      "name": "OpenSBI RISC-V supervisor execution environment firmware",
+      "identity": {
+        "repository": "riscv-software-src/opensbi",
+        "revision": "61f1973bd50338b36c52dc34006f76d464ca4f34"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
