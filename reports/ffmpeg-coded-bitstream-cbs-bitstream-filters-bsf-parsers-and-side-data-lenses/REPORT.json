@@ -1,0 +1,75 @@
+{
+  "topics": [
+    "domains/bitstream-filters",
+    "pl/bidirectional-lenses",
+    "verification/binary-formats",
+    "security/bitstream-parsers"
+  ],
+  "subjects": [
+    {
+      "name": "FFmpeg libavcodec parsers, bitstream filters, CodedBitstream, and side-data subsystems",
+      "identity": {
+        "repository": "FFmpeg/FFmpeg",
+        "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+      }
+    },
+    {
+      "name": "dovi_tool (Dolby Vision RPU parser and editor in Rust)",
+      "identity": {
+        "repository": "quietvoid/dovi_tool",
+        "revision": "41dae646193c12de152333ff5dbc33579cb9ef4a"
+      }
+    },
+    {
+      "name": "Combinators for Bidirectional Tree Transformations: A Linguistic Approach to the View-Update Problem (Foster, Greenwald, Moore, Pierce, Schmitt)",
+      "identity": {
+        "doi": "10.1145/1232420.1232424",
+        "version": "ACM TOPLAS 29(3), Article 17, May 2007"
+      }
+    },
+    {
+      "name": "ITU-T Recommendation H.264: Advanced video coding for generic audiovisual services",
+      "identity": {
+        "standard": "ITU-T H.264",
+        "version": "08/2024"
+      }
+    },
+    {
+      "name": "ITU-T Recommendation H.265: High efficiency video coding",
+      "identity": {
+        "standard": "ITU-T H.265",
+        "version": "09/2023"
+      }
+    },
+    {
+      "name": "ITU-T Recommendation H.266: Versatile video coding",
+      "identity": {
+        "standard": "ITU-T H.266",
+        "version": "09/2023"
+      }
+    },
+    {
+      "name": "AV1 Bitstream & Decoding Process Specification",
+      "identity": {
+        "standard": "AOM AV1",
+        "version": "1.0.0 with Errata 1"
+      }
+    },
+    {
+      "name": "SMPTE ST 2094-40:2020: Dynamic Metadata for Color Volume Transform — Application #4",
+      "identity": {
+        "standard": "SMPTE ST 2094-40",
+        "version": "2020",
+        "doi": "10.5594/SMPTE.ST2094-40.2020"
+      }
+    },
+    {
+      "name": "ATSC Standard A/53 Part 4:2009: MPEG-2 Video System Characteristics",
+      "identity": {
+        "standard": "ATSC A/53 Part 4",
+        "version": "2009"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

@@ -1,0 +1,62 @@
+{
+  "topics": [
+    "domains/colorspace-scaling",
+    "compilers/image-pipelines",
+    "verification/floating-point",
+    "isa/simd-media"
+  ],
+  "subjects": [
+    {
+      "name": "FFmpeg libswscale and libavutil",
+      "identity": {
+        "repository": "FFmpeg/FFmpeg",
+        "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+      }
+    },
+    {
+      "name": "zimg (z.lib scaling and colorspace conversion library)",
+      "identity": {
+        "repository": "sekrit-twc/zimg",
+        "revision": "67e0603271c080e22c8429856dd4a8a56587e61e"
+      }
+    },
+    {
+      "name": "Khronos SPIRV-Headers",
+      "identity": {
+        "repository": "KhronosGroup/SPIRV-Headers",
+        "revision": "50184103b19027f5c7080060712d6a9470cf59ee"
+      }
+    },
+    {
+      "name": "ITU-T Recommendation H.273: Coding-independent code points for video signal type identification",
+      "identity": {
+        "standard": "ITU-T H.273",
+        "version": "07/2024"
+      }
+    },
+    {
+      "name": "ITU-R Recommendation BT.2100-2: Image parameter values for high dynamic range television for use in production and international programme exchange",
+      "identity": {
+        "standard": "ITU-R BT.2100-2",
+        "version": "07/2018"
+      }
+    },
+    {
+      "name": "SMPTE ST 2084:2014: High Dynamic Range Electro-Optical Transfer Function of Mastering Reference Displays",
+      "identity": {
+        "standard": "SMPTE ST 2084",
+        "version": "2014",
+        "doi": "10.5594/SMPTE.ST2084.2014"
+      }
+    },
+    {
+      "name": "Khronos SPIR-V Specification",
+      "identity": {
+        "standard": "Khronos SPIR-V",
+        "version": "1.6 Revision 4",
+        "url": "https://registry.khronos.org/SPIR-V/specs/unified1/SPIRV.html"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

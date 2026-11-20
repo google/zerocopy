@@ -25296,6 +25296,81 @@
         "systems/ffmpeg"
       ]
     },
+    "ffmpeg-coded-bitstream-cbs-bitstream-filters-bsf-parsers-and-side-data-lenses": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+          },
+          "name": "FFmpeg libavcodec parsers, bitstream filters, CodedBitstream, and side-data subsystems"
+        },
+        {
+          "identity": {
+            "repository": "quietvoid/dovi_tool",
+            "revision": "41dae646193c12de152333ff5dbc33579cb9ef4a"
+          },
+          "name": "dovi_tool (Dolby Vision RPU parser and editor in Rust)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1232420.1232424",
+            "version": "ACM TOPLAS 29(3), Article 17, May 2007"
+          },
+          "name": "Combinators for Bidirectional Tree Transformations: A Linguistic Approach to the View-Update Problem (Foster, Greenwald, Moore, Pierce, Schmitt)"
+        },
+        {
+          "identity": {
+            "standard": "ITU-T H.264",
+            "version": "08/2024"
+          },
+          "name": "ITU-T Recommendation H.264: Advanced video coding for generic audiovisual services"
+        },
+        {
+          "identity": {
+            "standard": "ITU-T H.265",
+            "version": "09/2023"
+          },
+          "name": "ITU-T Recommendation H.265: High efficiency video coding"
+        },
+        {
+          "identity": {
+            "standard": "ITU-T H.266",
+            "version": "09/2023"
+          },
+          "name": "ITU-T Recommendation H.266: Versatile video coding"
+        },
+        {
+          "identity": {
+            "standard": "AOM AV1",
+            "version": "1.0.0 with Errata 1"
+          },
+          "name": "AV1 Bitstream & Decoding Process Specification"
+        },
+        {
+          "identity": {
+            "doi": "10.5594/SMPTE.ST2094-40.2020",
+            "standard": "SMPTE ST 2094-40",
+            "version": "2020"
+          },
+          "name": "SMPTE ST 2094-40:2020: Dynamic Metadata for Color Volume Transform \u2014 Application #4"
+        },
+        {
+          "identity": {
+            "standard": "ATSC A/53 Part 4",
+            "version": "2009"
+          },
+          "name": "ATSC Standard A/53 Part 4:2009: MPEG-2 Video System Characteristics"
+        }
+      ],
+      "topics": [
+        "domains/bitstream-filters",
+        "pl/bidirectional-lenses",
+        "verification/binary-formats",
+        "security/bitstream-parsers"
+      ]
+    },
     "ffmpeg-cve-ub-memory-safety-taxonomy-and-oss-fuzz-failure-modes": {
       "observed_at": "2026-11-20",
       "subjects": [
@@ -68036,6 +68111,68 @@
         "verification/state-machine-latch-totality",
         "tooling/incremental-syntax-trees",
         "security/integer-promotion-allocation-overflow"
+      ]
+    },
+    "swscale-complete-pixel-format-matrix-polyphase-rescaling-and-spirv-cms-parity": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+          },
+          "name": "FFmpeg libswscale and libavutil"
+        },
+        {
+          "identity": {
+            "repository": "sekrit-twc/zimg",
+            "revision": "67e0603271c080e22c8429856dd4a8a56587e61e"
+          },
+          "name": "zimg (z.lib scaling and colorspace conversion library)"
+        },
+        {
+          "identity": {
+            "repository": "KhronosGroup/SPIRV-Headers",
+            "revision": "50184103b19027f5c7080060712d6a9470cf59ee"
+          },
+          "name": "Khronos SPIRV-Headers"
+        },
+        {
+          "identity": {
+            "standard": "ITU-T H.273",
+            "version": "07/2024"
+          },
+          "name": "ITU-T Recommendation H.273: Coding-independent code points for video signal type identification"
+        },
+        {
+          "identity": {
+            "standard": "ITU-R BT.2100-2",
+            "version": "07/2018"
+          },
+          "name": "ITU-R Recommendation BT.2100-2: Image parameter values for high dynamic range television for use in production and international programme exchange"
+        },
+        {
+          "identity": {
+            "doi": "10.5594/SMPTE.ST2084.2014",
+            "standard": "SMPTE ST 2084",
+            "version": "2014"
+          },
+          "name": "SMPTE ST 2084:2014: High Dynamic Range Electro-Optical Transfer Function of Mastering Reference Displays"
+        },
+        {
+          "identity": {
+            "standard": "Khronos SPIR-V",
+            "url": "https://registry.khronos.org/SPIR-V/specs/unified1/SPIRV.html",
+            "version": "1.6 Revision 4"
+          },
+          "name": "Khronos SPIR-V Specification"
+        }
+      ],
+      "topics": [
+        "domains/colorspace-scaling",
+        "compilers/image-pipelines",
+        "verification/floating-point",
+        "isa/simd-media"
       ]
     },
     "symbolic-and-computational-protocol-verifiers-tamarin-proverif-and-squirrel": {
