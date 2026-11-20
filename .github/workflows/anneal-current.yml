@@ -440,7 +440,10 @@ jobs:
           set -euo pipefail
           exec > >(tee "$ANNEAL_TEST_DIAGNOSTICS/boundary-audit.log") 2>&1
           unset ANNEAL_MIRI_CACHE_DIR
-          audit_args=(--lean "$ANNEAL_TEST_INSTALL_ROOT/lean/bin/lean")
+          audit_args=(
+            --lean "$ANNEAL_TEST_INSTALL_ROOT/lean/bin/lean"
+            --require-correspondence
+          )
           if [ "$CI_EVENT_NAME" != "merge_group" ] && [ "$CI_EVENT_NAME" != "push" ] && [ "$CI_EVENT_NAME" != "workflow_dispatch" ]; then
             audit_args+=(--miri-cache-dir "$MIRI_OLEAN_CACHE_DIR")
           fi

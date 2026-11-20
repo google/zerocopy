@@ -14,96 +14,126 @@ import Lean.Replay
 # Trusted Boundary and Kernel Environment Inspector (`TrustedBoundary.lean`)
 
 Pinned to Lean 4.34.1, commit
-`leanprover/lean4@5045d0056413266e57c625dcd7c365b10e377c52`. `trusted/audit`
-invokes this file in three phases over JSON IPC (`run` and `main`):
+`leanprover/lean4@5045d0056413266e57c625dcd7c365b10e377c52`. `anneal-audit`
+(`trusted/audit/`) invokes this file across four JSON IPC modes (`run` and
+`main`):
 
-- **`"preflight"` (purely syntactic admission before elaboration):**
+- **`"preflight"` (foundation-parser syntactic admission before compilation):**
   Lean elaboration is Turing-complete and effectful: commands such as `#eval`
   and tactics/terms such as `run_tac`, `by_elab`, `native_decide`, and
   `include_str` can execute arbitrary code or read host files during
   compilation, while attributes such as `@[implemented_by]` and `@[extern]`
   alter code generation without appearing in kernel proof terms. `"preflight"`
-  therefore parses every non-foundation `.lean` file using `Parser.parseHeader`
-  and `Parser.parseCommand`—which never invoke the elaborator—against the locked
-  foundation parser environment only. Rather than maintaining an open-ended
-  block-list of dangerous Lean features, `"preflight"` enforces a closed,
-  role-aware `SyntaxNodeKind` allow-list (`allowedTrustedSyntaxKinds` for
-  tactic-free `trusted/lean/` specifications and `allowedTheorySyntaxKinds` for
-  `theory/` proofs) together with closed attribute and identifier grammars, and
-  extracts each `Trusted` module's `-- anneal-trust-tier: <tier>` directive
-  before `lean` compiles any file.
-- **`"audit"` (kernel `.olean` inspection and replay):**
-  Loads the compiled `.olean` files with `trustLevel := 0`, `plugins := #[]`,
-  and `loadExts := false` (so no `[init]` initializers or persistent environment
-  extensions from audited modules are deserialized or executed). It verifies
-  module-level trust-tier separation, `Trusted` namespace hygiene, the
-  foundation axiom allowlist, Pass 1 `Anneal.MirWp` non-backsliding theorem and
-  canary checks, and a full kernel replay of every non-foundation constant
-  against the foundation environment (`base.toKernelEnv.replay`).
-- **`"correspondence-audit"` (`lean-miri` closure audit):**
-  Loads the 160-module `Miri.Interpreter.ExecutionMachine` closure at
-  `trustLevel := 0` with `plugins := #[]` and `loadExts := false` (optional
-  `corrTrusted`/`corrTheory` module lists are currently passed empty by
-  `anneal-audit`, as `trusted/correspondence/` and `correspondence/` are not
-  yet scanned at this commit). It classifies every loaded module into a closed
-  5-role partition (`CorrModuleRole`), validates inventory integrity across
-  `.vendorMiri`, `.trusted`, and `.theory` declarations, rejects any
-  `.vendorMiri` or `.sysrootFoundation` declaration in the reserved `Trusted`
-  or `Anneal` namespaces, rejects any `axiom`, `unsafe`, quotient primitive,
-  `sorryAx`, or compiler-reflection primitive (`Lean.ofReduceBool`,
-  `Lean.ofReduceNat`, `Lean.trustCompiler`, `Lean.reduceBool`,
-  `Lean.reduceNat`) in any `.vendorMiri` module, replays every non-`isPartial`
-  `.vendorMiri` declaration from scratch through the standalone Lean kernel
-  onto the authenticated `.foundation`/`.sysrootFoundation` base on every run
-  (cold build and cache hit alike), and checks that every constant transitively
-  reachable from the 21 `Miri.Interpreter.ExecutionMachine` cone roots is free
-  of `unsafe`, `partial`, `.vendorMiri` `opaque` declarations, and unapproved
-  axioms.
+  parses every Anneal repository `.lean` source using `Parser.parseHeader` and
+  `Parser.parseCommand`—without elaborating the inspected commands—against the
+  authenticated `foundation-lock.json` parser environment. Building this
+  environment executes authenticated foundation initializers and parser
+  extensions, which belong to the runtime TCB. Preflight enforces a closed,
+  role-aware `SyntaxNodeKind` allowlist (`allowedTrustedSyntaxKinds` for
+  tactic-free `trusted/` specifications and `allowedTheorySyntaxKinds` for
+  `theory/` and `correspondence/` proofs) together with closed attribute and
+  identifier grammars, and extracts each `Trusted` module's
+  `-- anneal-trust-tier: <tier>` directive before `lean` compiles any file.
+- **`"correspondence-preflight"` (Pass 2 compile-environment syntactic
+  admission):**
+  Pass 2 modules (`trusted/correspondence/` and `correspondence/`) compile
+  against `vendor/lean-miri`, which transitively imports `Lean` and `Std` and
+  registers additional parser syntax (for example `throwError` ->
+  `Lean.termThrowError__`, `m!` -> `Lean.termM!_`, and vendor tactic `elab`s)
+  that would parse as ordinary function applications under the foundation-only
+  parser. Before compiling any Pass 2 module, `"correspondence-preflight"`
+  loads the Pass 2 union compile environment (authenticated `foundation`, Pass
+  1 `trusted/`, compiled untrusted Pass 1 `theory/`, and SHA-256-pinned
+  `vendorMiri`, with `loadExts := true`, `level := .private`, and
+  `enableInitializersExecution`), checks closed `CorrOrigin` module
+  classification, and parses every Pass 2 source file against that parser
+  environment under the same closed
+  `allowedTrustedSyntaxKinds`/`allowedTheorySyntaxKinds` allowlists. Because
+  `level := .private` enables runtime `[init]` phases and `loadExts := true`
+  runs `finalizePersistentExtensions` -> `runInitAttrs` and
+  `KeyedDeclsAttribute.ofOLeanEntry` (`evalConstCheck`), importing this
+  environment executes pinned vendored `[init]` initializers (which can also
+  register user-defined environment extensions), evaluates pinned vendored
+  tactic `elab`s, and deserializes compiled Pass 1 `theory/` extension data
+  inside the inspector process. `anneal-audit` executes
+  `"correspondence-preflight"` inside an isolated OS-level `bwrap` sandbox
+  (read-only toolchain, staged sources, and compiled libraries, with writes
+  restricted to an isolated per-request output directory) alongside human
+  review of pinned vendored and patched compile-time code against vendored
+  compile-time and preflight side effects, while Pass 1's closed attribute
+  allowlist restricts `theory/` `.olean`s to plain-data extension entries. Both
+  `"preflight"` and `"correspondence-preflight"` track lexical
+  `namespace`/`section`/`end`/`open` scopes and fail closed if any `namespace`
+  or namespaced declaration enters—or any `open` has any candidate resolution
+  (across every prefix of `currNamespace` including root and every
+  conservatively tracked open namespace, regardless of whether an unimported
+  decoy namespace exists in the union parser environment) matching—a namespace
+  registering scoped entries in any `ScopedEnvExtension` (including scoped
+  syntax, notations, macros, elaborators, instances, and attributes).
+- **`"audit"` (Pass 1 repository `.olean` inspection and kernel replay):**
+  Loads the compiled `trusted/lean/` and `theory/` `.olean` files with
+  `trustLevel := 0`, `plugins := #[]`, and `loadExts := false` (skipping module
+  initializers and persistent extension-state reconstruction callbacks). It
+  partitions all loaded modules into `RepoOrigin` (`.foundation | .repo role`),
+  verifies `.olean` header imports (`RepoOrigin.importViolation?`) and kernel
+  declaration edges (`RepoOrigin.edgeViolation?`), `Trusted` namespace hygiene,
+  the foundation axiom allowlist, core weakest-precondition and canary theorem
+  non-backsliding (`verifyMirWpCoreTheorems`), and fresh kernel replay of every
+  repository constant against `foundation-lock.json`
+  (`base.toKernelEnv.replay`).
+- **`"correspondence-audit"` (Pass 2 MIR correspondence and `lean-miri` full
+  standalone kernel replay and cone audit):**
+  Loads `Trusted.Correspondence`, `Anneal.MirCorrespondenceProof`, and the
+  160-module `Miri.Interpreter.ExecutionMachine` closure at `trustLevel := 0`
+  with `plugins := #[]` and `loadExts := false`. It classifies every loaded
+  module into a closed partition (`CorrOrigin`), validates `.vendorMiri` and
+  `.repo` inventory/origin integrity, enforces `Trusted`/`Anneal` namespace
+  isolation and `CorrOrigin` import/edge separation, rejects any `axiom`,
+  `unsafe`, quotient primitive, missing body, direct `sorryAx`, or direct
+  compiler-reflection reference (`Lean.ofReduceBool`, `Lean.ofReduceNat`,
+  `Lean.trustCompiler`, `Lean.reduceBool`, `Lean.reduceNat`) in `.vendorMiri`,
+  replays EVERY non-`isPartial` `.vendorMiri` declaration from scratch through
+  the standalone Lean kernel onto the authenticated `.foundation` and
+  `.sysrootFoundation` base on every run (cold build and cache hit alike),
+  replays all repository declarations (including `trusted/correspondence/` and
+  `correspondence/`) directly on top of that replayed vendor kernel
+  environment, checks that the 21-root `Miri.Interpreter.ExecutionMachine` cone
+  and correspondence cone are free of `unsafe`, `partial`, `.vendorMiri`
+  `opaque`, and unapproved axioms, and verifies all 27 Pass 2 correspondence,
+  wiring, and canary claims plus reference-evaluator independence checks.
 
-## Module roles and trust tiers
-
-Every admitted module in the environment is classified into a single
-`ModuleRole`:
-
-| `ModuleRole` | Directory / Source | Meaning |
-| :--- | :--- | :--- |
-| `.foundation` | Toolchain `Init.*` (`foundation-lock.json`) | Pinned Lean 4 standard prelude and core types |
-| `.trusted .vetted` | `trusted/lean/` (`-- anneal-trust-tier: vetted`) | Human-audited TCB definitions |
-| `.trusted (.candidate f)` | `trusted/lean/` (`-- anneal-trust-tier: candidate:<f>`) | Alpha TCB definitions gated behind opt-in feature `f` |
-| `.theory` | `theory/` (`Anneal.*`) | Untrusted proof automation checked by the kernel |
+## Module origin partitions and authority relations
 
 Every kernel constant `c` has a unique defining module (`origin env c`, read
-directly from `env.getModuleIdxFor? c` in the `.olean`), and therefore a unique
-`ModuleRole`. This includes compiler-generated constants such as constructors,
-recursors (`rec`, `casesOn`, `recOn`, `noConfusion`, `below`, `brecOn`),
-structure projections, pattern matchers (`match_1`), equation lemmas (`eq_1`),
-and `where`/`private` helpers, all of which are compiled into the same `.olean`
-and inherit their defining module's `ModuleRole` without surface-syntax name
-prediction or suffix heuristics.
+directly from `env.getModuleIdxFor? c` in the `.olean`), including
+compiler-generated constructors, recursors (`rec`, `casesOn`, `recOn`,
+`noConfusion`, `below`, `brecOn`), projections, pattern matchers (`match_1`),
+equation lemmas (`eq_1`), and `where`/`private` helpers. Each audit pass maps
+defining modules into a closed origin sum type equipped with an explicit, total,
+pure authority check over kernel declaration edges (`RepoOrigin.edgeViolation?`
+and `CorrOrigin.edgeViolation?`), and checks compiled `.olean` header imports
+with `RepoOrigin.importViolation?` and `CorrOrigin.importViolation?`:
 
-On every kernel dependency edge `c → dep` (`declarationEdges`),
-`checkTierReferences` enforces two rules:
-
-- **Origin rule:** a `.trusted _` constant may only reference `.foundation` or
-  `.trusted _` constants (never `.theory`).
-- **Vetted rule:** a `.trusted .vetted` constant may only reference
-  `.foundation` or `.trusted .vetted` constants (never
-  `.trusted (.candidate _)`).
+- **Pass 1 (`RepoOrigin`):** `.foundation` (`foundation-lock.json`) and
+  `.repo (.trusted .vetted | .trusted (.candidate f) | .theory)`.
+- **Pass 2 (`CorrOrigin`):** `.foundation`, `.sysrootFoundation` (authenticated
+  sysroot `{Init,Std,Lean}*`), `.vendorMiri` (`UPSTREAM_PIN.json`), and
+  `.repo role`.
 -/
 
 open Lean
 
 namespace TrustedBoundary
 
-/-! ## Domain types: `TrustTier` and `ModuleRole` -/
+/-! ## Domain types and per-pass authority lattices -/
 
-/-- Closed set of subsystem feature identifiers allowed in
+/-- Lists the closed set of subsystem feature identifiers allowed in
 `-- anneal-trust-tier: candidate:<feature>`. -/
 def validCandidateFeatures : List Name :=
   [`refinement, `step_result, `memory, `mir_ast, `mir_semantics, `rustc_capture]
 
-/-- Module-level trust tier declared by a `Trusted` module via its
-`-- anneal-trust-tier:` directive. -/
+/-- Represents the module-level trust tier declared by a `Trusted` module via
+its `-- anneal-trust-tier:` directive. -/
 inductive TrustTier where
   | vetted
   | candidate (feature : Name)
@@ -133,30 +163,186 @@ def parse? (raw : String) : Option TrustTier :=
 
 end TrustTier
 
-/-- Role of a repository `.lean` source module inspected during `"preflight"`.
-Every `Trusted` module carries its required `TrustTier`, while `theory/`
-modules carry none; illegal combinations (a `Trusted` module without a tier
-or a `theory/` module with one) are unrepresentable. -/
+/-- Classifies a first-party Anneal repository `.lean` module (`trusted/` vs.
+`theory/` and `correspondence/`). Every `Trusted` module carries its required
+`TrustTier`, while proof/theory modules carry none; illegal combinations (a
+`Trusted` module without a tier or a `theory/` module with one) are
+unrepresentable. -/
 inductive SourceRole where
   | trusted (tier : TrustTier)
   | theory
   deriving BEq, DecidableEq
 
-/-- Partition of every admitted module in the kernel environment into its
-repository role. Representing these three roles as mutually exclusive
-constructors of one sum type makes overlapping or missing module classifications
-unrepresentable. -/
-inductive ModuleRole where
+/-- Partitions every loaded module in Pass 1 (`"audit"`), making
+`.sysrootFoundation` and `.vendorMiri` unrepresentable in Pass 1. -/
+inductive RepoOrigin where
   | foundation
-  | trusted (tier : TrustTier)
-  | theory
+  | repo (role : SourceRole)
   deriving BEq, DecidableEq
+
+/-- Return `none` when Pass 1 permits a constant `cName` in `src` to reference
+`dep` in module `depOrigin` (`dst`), or `some message` when forbidden:
+
+- **Origin rule:** `.trusted _` constants may reference only `.foundation` or
+  `.trusted _` constants (never `.theory`).
+- **Vetted rule:** `.trusted .vetted` constants may reference only `.foundation`
+  or `.trusted .vetted` constants (never `.trusted (.candidate _)`). -/
+def RepoOrigin.edgeViolation? (cName : Name) (src : RepoOrigin)
+    (dep depOrigin : Name) (dst : RepoOrigin) : Option String :=
+  match src, dst with
+  | .foundation, .foundation => none
+  | .foundation, .repo _ =>
+    some s!"authority violation: {cName} references {dep} from {depOrigin}"
+  | .repo (.trusted .vetted), .foundation
+  | .repo (.trusted .vetted), .repo (.trusted .vetted) => none
+  | .repo (.trusted .vetted), .repo (.trusted depTier) =>
+    some s!"vetted constant {cName} references {depTier.render} constant {dep}"
+  | .repo (.trusted _), .repo .theory =>
+    some (s!"Trusted constant {cName} references {dep} from " ++
+      s!"non-Trusted module {depOrigin}")
+  | .repo (.trusted (.candidate _)), .foundation
+  | .repo (.trusted (.candidate _)), .repo (.trusted _) => none
+  | .repo .theory, .foundation | .repo .theory, .repo _ => none
+
+/-- Return `none` when the compiled `.olean` header of Pass 1 module `m` in
+`src` may import module `imp` in `dst`, or `some message` when forbidden.
+
+Module imports are coarser than constant references: the `vetted` umbrella
+`Trusted.lean` imports `candidate:<feature>` modules without referencing their
+constants, and `edgeViolation?` separately checks every constant reference.
+Imports still preserve origin separation:
+
+- `.foundation` modules import only `.foundation` modules.
+- `.trusted _` modules never import `.theory` modules. -/
+def RepoOrigin.importViolation? (m : Name) (src : RepoOrigin) (imp : Name)
+    (dst : RepoOrigin) : Option String :=
+  match src, dst with
+  | .foundation, .foundation => none
+  | .foundation, .repo _ =>
+    some s!"foundation module {m} cannot import {imp}"
+  | .repo (.trusted _), .repo .theory =>
+    some s!"Trusted module {m} cannot import non-Trusted module {imp}"
+  | .repo (.trusted _), .foundation | .repo (.trusted _), .repo (.trusted _) =>
+    none
+  | .repo .theory, .foundation | .repo .theory, .repo _ => none
+
+/-- Partitions every loaded module in Pass 2 (`"correspondence-audit"`). -/
+inductive CorrOrigin where
+  | foundation
+  | sysrootFoundation
+  | vendorMiri
+  | repo (role : SourceRole)
+  deriving BEq, DecidableEq
+
+/-- Return `none` when Pass 2 permits a constant `cName` in `src` to reference
+`dep` in module `depOrigin` (`dst`), or `some message` when forbidden:
+
+- External foundation/vendor origins never reference repository declarations,
+  and `.foundation` never references `.sysrootFoundation` or `.vendorMiri`.
+- `.trusted .vetted` constants remain isolated to `.foundation` and
+  `.trusted .vetted` (never `.sysrootFoundation`, `.vendorMiri`, or
+  `.trusted (.candidate _)`).
+- `.trusted (.candidate _)` constants (such as `Trusted.Correspondence`) may
+  reference `.foundation`, `.sysrootFoundation`, `.vendorMiri`, or
+  `.trusted _`, never `.theory`. -/
+def CorrOrigin.edgeViolation? (cName : Name) (src : CorrOrigin)
+    (dep depOrigin : Name) (dst : CorrOrigin) : Option String :=
+  match src, dst with
+  | .foundation, .foundation => none
+  | .foundation, .sysrootFoundation | .foundation, .vendorMiri
+  | .foundation, .repo _ =>
+    some s!"authority violation: {cName} references {dep} from {depOrigin}"
+  | .sysrootFoundation, .foundation | .sysrootFoundation, .sysrootFoundation =>
+    none
+  | .sysrootFoundation, .vendorMiri | .sysrootFoundation, .repo _ =>
+    some s!"authority violation: {cName} references {dep} from {depOrigin}"
+  | .vendorMiri, .foundation | .vendorMiri, .sysrootFoundation
+  | .vendorMiri, .vendorMiri => none
+  | .vendorMiri, .repo _ =>
+    some s!"authority violation: {cName} references {dep} from {depOrigin}"
+  | .repo (.trusted .vetted), .foundation
+  | .repo (.trusted .vetted), .repo (.trusted .vetted) => none
+  | .repo (.trusted .vetted), .sysrootFoundation
+  | .repo (.trusted .vetted), .vendorMiri =>
+    some (s!"vetted constant {cName} references non-foundation " ++
+      s!"constant {dep} from {depOrigin}")
+  | .repo (.trusted .vetted), .repo (.trusted depTier) =>
+    some s!"vetted constant {cName} references {depTier.render} constant {dep}"
+  | .repo (.trusted _), .repo .theory =>
+    some (s!"Trusted constant {cName} references {dep} from " ++
+      s!"non-Trusted module {depOrigin}")
+  | .repo (.trusted (.candidate _)), .foundation
+  | .repo (.trusted (.candidate _)), .sysrootFoundation
+  | .repo (.trusted (.candidate _)), .vendorMiri
+  | .repo (.trusted (.candidate _)), .repo (.trusted _) => none
+  | .repo .theory, .foundation | .repo .theory, .sysrootFoundation
+  | .repo .theory, .vendorMiri | .repo .theory, .repo _ => none
+
+/-- Return `none` when the compiled `.olean` header of Pass 2 module `m` in
+`src` may import module `imp` in `dst`, or `some message` when forbidden:
+
+- External origins never import repository modules: `.foundation` imports only
+  `.foundation`, `.sysrootFoundation` imports only `.foundation` and
+  `.sysrootFoundation`, and `.vendorMiri` imports no `.repo _` module.
+- `.trusted _` modules never import `.theory` modules (including `theory/`
+  modules such as `Anneal.MirWp` and every `correspondence/` module).
+
+As in `RepoOrigin.importViolation?`, `edgeViolation?` separately checks every
+constant reference across an admitted import. -/
+def CorrOrigin.importViolation? (m : Name) (src : CorrOrigin) (imp : Name)
+    (dst : CorrOrigin) : Option String :=
+  match src, dst with
+  | .foundation, .foundation => none
+  | .foundation, .sysrootFoundation | .foundation, .vendorMiri
+  | .foundation, .repo _ =>
+    some s!"foundation module {m} cannot import {imp}"
+  | .sysrootFoundation, .foundation | .sysrootFoundation, .sysrootFoundation =>
+    none
+  | .sysrootFoundation, .vendorMiri | .sysrootFoundation, .repo _ =>
+    some s!"sysroot module {m} cannot import {imp}"
+  | .vendorMiri, .foundation | .vendorMiri, .sysrootFoundation
+  | .vendorMiri, .vendorMiri => none
+  | .vendorMiri, .repo _ =>
+    some s!"vendor Miri module {m} cannot import {imp}"
+  | .repo (.trusted _), .repo .theory =>
+    some s!"Trusted module {m} cannot import non-Trusted module {imp}"
+  | .repo (.trusted _), .foundation | .repo (.trusted _), .sysrootFoundation
+  | .repo (.trusted _), .vendorMiri | .repo (.trusted _), .repo (.trusted _) =>
+    none
+  | .repo .theory, .foundation | .repo .theory, .sysrootFoundation
+  | .repo .theory, .vendorMiri | .repo .theory, .repo _ => none
 
 /-! ## JSON IPC and environment-loading helpers -/
 
 /-- Throw a policy-rejection error prefixed with `"policy:"` (exit code 1). -/
 def fail (message : String) : IO α :=
   throw <| IO.userError s!"policy:{message}"
+
+/-- Preserve the kernel's result/error distinction in inspector reporting.
+The pinned API calls these "Exceptions that can be raised by the kernel when
+type checking new declarations" and includes resource and internal failures.
+Treat the entire exception channel conservatively as operational, including
+validation errors on deliberately malformed serialized proofs. All still reject;
+only a completed comparison or an explicit policy check justifies policy:.
+https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Environment.lean#L259-L279
+-/
+def kernelResult (operation : String) (result : Except Kernel.Exception α) :
+    IO α := do
+  match result with
+  | .ok value => return value
+  | .error error =>
+    let detail ← (error.toMessageData {}).toString
+    -- Keep a fixed operational prefix even if diagnostic names contain policy:.
+    throw <| IO.userError s!"kernel operation failed ({operation}): {detail}"
+
+/-- A completed false comparison is a policy mismatch; an exception is not.
+The pinned isDefEqGuarded uses "else false" for errors, so it erases precisely
+this reporting distinction. Call the unguarded Except API at each equality gate.
+https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Environment.lean#L2795-L2799
+-/
+def requireKernelEquality (operation mismatch : String)
+    (result : Except Kernel.Exception Bool) : IO Unit := do
+  unless (← kernelResult operation result) do fail mismatch
 
 /-- Extract and deserialize required field `key` from JSON object `j`. -/
 def field [FromJson α] (j : Json) (key : String) : IO α :=
@@ -183,12 +369,28 @@ def graph (env : Environment) : Json :=
     (env.header.modules.zip env.header.moduleData).toList.map fun (m, d) =>
       (m.module.toString, toJson d.imports)
 
+/-- Verify module/data header alignment on an imported `Environment` and disable
+exporting. -/
+def finalizeImportedEnv (env : Environment) : IO Environment := do
+  unless env.header.modules.size == env.header.moduleData.size do
+    throw <| IO.userError "module/data array alignment failure"
+  return env.setExporting false
+
 /-- Import `roots` from the explicit artifact map in `j` at `trustLevel := 0`
 with `level := .private`.
-- In `"preflight"`, `extensions := true` loads the locked `Init.*` parser
-  extensions so `Parser.parseCommand` can parse standard Lean syntax.
-- In `"audit"`, `extensions := false` disables loading persistent environment
-  extensions or `[init]` initializers from compiled `.olean` files. -/
+
+- In `"preflight"`, `extensions := true` loads the authenticated foundation's
+  parser extensions and initializers. Parsing source commands does not elaborate
+  them, but this imported runtime code is trusted.
+- In `"audit"`, `extensions := false` skips module initializers and persistent
+  extension-state reconstruction callbacks. Raw serialized extension entries
+  remain in module data; every repository declaration still undergoes kernel
+  replay.
+
+The pinned importer warns that loading extensions "may use the interpreter"
+and requires `enableInitializersExecution`. These are runtime effects, distinct
+from checking declarations in a kernel environment.
+https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Environment.lean#L2427-L2431 -/
 def importEnv (j : Json) (roots : Array Name)
     (extensions := false) : IO Environment := do
   let arts ← artifacts j
@@ -196,9 +398,34 @@ def importEnv (j : Json) (roots : Array Name)
   let env ← importModules (roots.map fun n => { module := n }) {}
     (trustLevel := 0) (plugins := #[]) (loadExts := extensions)
     (level := .private) (arts := arts)
-  unless env.header.modules.size == env.header.moduleData.size do
-    throw <| IO.userError "module/data array alignment failure"
-  return env.setExporting false
+  finalizeImportedEnv env
+
+/-- Import `roots` at `trustLevel := 0` with `plugins := #[]` and
+`level := .private` using the configured search path.
+
+- In `"correspondence-preflight"`, `extensions := true` (with
+  `level := .private` and `enableInitializersExecution`) loads the Pass 2 union
+  compile environment (`foundation`, Pass 1 `trusted/`, compiled untrusted Pass
+  1 `theory/`, and pinned `vendorMiri`) so `Parser.parseCommand` sees unscoped
+  syntax visible to `lean` during Pass 2 compilation and
+  `collectScopedExtensionNamespaces` sees every namespace with scoped
+  extensions. Doing so runs pinned vendored `[init]` initializers (via
+  `finalizePersistentExtensions` -> `runInitAttrs`, which can register
+  user-defined environment extensions), evaluates pinned vendored tactic
+  `elab`s (via `KeyedDeclsAttribute.ofOLeanEntry` / `evalConstCheck`), and
+  deserializes compiled Pass 1 `theory/` extension entries (limited to
+  plain-data entries by Pass 1's closed attribute allowlist) inside the
+  inspector process. Human review of pinned vendored compile-time code is the
+  security control against vendored side effects.
+- In `"correspondence-audit"`, `extensions := false` skips module initializers
+  and persistent extension-state reconstruction callbacks. -/
+def importCorrEnv (roots : Array Name) (extensions := false) :
+    IO Environment := do
+  if extensions then unsafe enableInitializersExecution
+  let env ← importModules (roots.map fun n => { module := n }) {}
+    (trustLevel := 0) (plugins := #[]) (loadExts := extensions)
+    (level := .private)
+  finalizeImportedEnv env
 
 /-- Verify that the import DAG recorded in the `.olean` headers of `env` is
 identical to the admitted `"graph"` from `"preflight"`. -/
@@ -207,17 +434,17 @@ def validateGraph (j : Json) (env : Environment) : IO Unit := do
   unless graph env == expected do
     fail "compiled module/import DAG differs from admitted DAG"
 
-/-! ## Phase 1: source preflight -/
+/-! ## Phase 1: syntactic header and source preflight -/
 
-/-- Closed allowlist of module header syntax kinds permitted in source files.
+/-- Lists the module header syntax kinds permitted in source files.
 Module-system and import modifiers (`moduleTk`, `public`, `meta`, `all`) are
-excluded so any header modifier is rejected by `SyntaxNodeKind` alone. -/
+excluded, so the `SyntaxNodeKind` check alone rejects every header modifier. -/
 def allowedHeaderKinds : List Name := [
   ``Parser.Module.header, ``Parser.Module.prelude, ``Parser.Module.import]
 
-/-- Closed allowlist of top-level command syntax kinds permitted in source
-files. Commands such as `#eval`, `#check`, `macro`, `syntax`, `elab`,
-`notation`, `infix`, `initialize`, `set_option`, and `axiom` are excluded. -/
+/-- Lists the top-level command syntax kinds permitted in source files.
+Commands such as `#eval`, `#check`, `macro`, `syntax`, `elab`, `notation`,
+`infix`, `initialize`, `set_option`, and `axiom` are excluded. -/
 def allowedCommandKinds : List Name := [
   ``Parser.Command.declaration, ``Parser.Command.namespace,
   ``Parser.Command.section, ``Parser.Command.end, ``Parser.Command.universe,
@@ -225,20 +452,20 @@ def allowedCommandKinds : List Name := [
   ``Parser.Command.mutual, ``Parser.Command.in, ``Parser.Command.attribute,
   ``Parser.Command.moduleDoc]
 
-/-- Closed allowlist of declaration syntax kinds permitted inside
-`Parser.Command.declaration`. `axiom`, `example`, and `coinductive` are
-excluded. -/
+/-- Lists the declaration syntax kinds permitted inside
+`Parser.Command.declaration`. The `axiom`, `example`, and `coinductive` kinds
+are excluded. -/
 def allowedDeclarationKinds : List Name := [
   ``Parser.Command.abbrev, ``Parser.Command.definition,
   ``Parser.Command.theorem, ``Parser.Command.opaque,
   ``Parser.Command.instance, ``Parser.Command.inductive,
   ``Parser.Command.classInductive, ``Parser.Command.structure]
 
-/-- Closed allowlist of command and declaration structural sub-node kinds.
-Excludes `unsafe`, `partial`, `meta`, `nonrec`, `openScoped`, `derivingClass`,
-`computedFields`, and termination/fixpoint clauses (`terminationBy`,
-`decreasingBy`, `partialFixpoint`, `coinductiveFixpoint`,
-`inductiveFixpoint`). -/
+/-- Lists the command and declaration structural sub-node kinds permitted in
+source files. The list excludes `unsafe`, `partial`, `meta`, `nonrec`,
+`openScoped`, `derivingClass`, `computedFields`, and termination or fixpoint
+clauses (`terminationBy`, `decreasingBy`, `partialFixpoint`,
+`coinductiveFixpoint`, and `inductiveFixpoint`). -/
 def allowedCommandSyntaxKinds : List Name := [
   ``Parser.Command.declModifiers, ``Parser.Command.declId,
   ``Parser.Command.declSig, ``Parser.Command.optDeclSig,
@@ -257,12 +484,12 @@ def allowedCommandSyntaxKinds : List Name := [
   ``Lean.binderIdent, ``Lean.explicitBinders,
   ``Lean.bracketedExplicitBinders, ``Lean.unbracketedExplicitBinders]
 
-/-- Closed allowlist of pure term, binder, pattern-matching, structure-instance,
-literal, and attribute-application syntax kinds permitted in both `Trusted` and
-`theory/` modules. Excludes `byTactic` (permitted only in `theory/`), `sorry`,
-`unsafe`, `byElab`, `includeStr`, `set_option`, `scoped`/`local` attribute
+/-- Lists the pure term, binder, pattern-matching, structure-instance, literal,
+and attribute-application syntax kinds permitted in both `Trusted` and `theory/`
+modules. The list excludes `byTactic` (permitted only in `theory/`), `sorry`,
+`unsafe`, `byElab`, `includeStr`, `set_option`, `scoped` and `local` attribute
 kinds, `do` notation, string interpolation, quotations, and reflection macros
-(`decl_name%`, `with_decl_name%`, `private_decl%`). -/
+(`decl_name%`, `with_decl_name%`, and `private_decl%`). -/
 def allowedTermSyntaxKinds : List Name := [
   ``Parser.Term.anonymousCtor, ``Parser.Term.app, ``Parser.Term.arrow,
   ``Parser.Term.attrInstance, ``Parser.Term.attrKind,
@@ -289,8 +516,8 @@ def allowedTermSyntaxKinds : List Name := [
   ``Parser.Attr.simple, ``Parser.Attr.instance, `Lean.Parser.Attr.simp,
   `fieldIdx, `group, `hygieneInfo, `num, `str, `char, `scientific]
 
-/-- Closed allowlist of standard `Init.*` notation syntax kinds expanded by the
-locked foundation parser. -/
+/-- Lists the standard `Init.*` notation syntax kinds admitted from the
+authenticated foundation parser environment. -/
 def allowedNotationSyntaxKinds : List Name := [
   `term!_, `termIfThenElse, `termDepIfThenElse, `«term[_]»,
   `«term_&&_», `«term_||_», `«term_+_», `«term_-_», `«term_*_»,
@@ -299,13 +526,13 @@ def allowedNotationSyntaxKinds : List Name := [
   `«term__[_]_?», `«term_×_», `«term_↔_», `«term_∈_», `«term_∧_»,
   `«term_∨_», `«term¬_», `«term∃_,_», `«term‹_›», `Lean.cdot, `Lean.cdotTk]
 
-/-- Closed allowlist of tactic syntax kinds permitted in `SourceRole.theory`
-(`theory/`) modules only. `Trusted` modules are tactic-free (`byTactic` is
-excluded from `allowedTrustedSyntaxKinds`). Even in `theory/`, effectful or
-trust-bypassing tactics (`native_decide`, `decide!`, `bv_decide`, `rfl'`,
-`sorry`, `run_tac`, `sleep`, `dbg_trace`, `unhygienic`, `grind`) and tactic
-configuration items (`+native`, `+kernel`, etc., which parse as
-`Parser.Tactic.configItem`) are excluded. -/
+/-- Lists the tactic syntax kinds permitted only in `SourceRole.theory`
+(`theory/` and `correspondence/`) modules. `Trusted` modules are tactic-free
+(`byTactic` is excluded from `allowedTrustedSyntaxKinds`). Even in `theory/`,
+the list excludes effectful or trust-bypassing tactics (`native_decide`,
+`decide!`, `bv_decide`, `rfl'`, `sorry`, `run_tac`, `sleep`, `dbg_trace`,
+`unhygienic`, and `grind`) and tactic configuration items such as `+native` and
+`+kernel`, which parse as `Parser.Tactic.configItem`. -/
 def allowedTheoryTacticKinds : List Name := [
   ``Parser.Term.byTactic, ``Parser.Term.binderTactic,
   `Lean.Parser.Tactic.apply, `Lean.Parser.Tactic.cases,
@@ -329,7 +556,7 @@ def allowedTheoryTacticKinds : List Name := [
   `Lean.Parser.Tactic.«tactic_<;>_», `Lean.Parser.Tactic.unfold,
   `tacticFunext___]
 
-/-- Syntax node kinds permitted in `SourceRole.trusted` (`trusted/lean/`)
+/-- Defines the syntax node kinds permitted in `SourceRole.trusted` (`trusted/`)
 modules: pure declarations, types, and term-mode proofs only. -/
 def allowedTrustedSyntaxKinds : NameSet :=
   .ofList <|
@@ -340,14 +567,16 @@ def allowedTrustedSyntaxKinds : NameSet :=
     allowedTermSyntaxKinds ++
     allowedNotationSyntaxKinds
 
-/-- Syntax node kinds permitted in `SourceRole.theory` (`theory/`) modules:
-`allowedTrustedSyntaxKinds` extended with `allowedTheoryTacticKinds`. -/
+/-- Defines the syntax node kinds permitted in `SourceRole.theory` (`theory/`
+and `correspondence/`) modules (`allowedTrustedSyntaxKinds` extended with
+`allowedTheoryTacticKinds`). -/
 def allowedTheorySyntaxKinds : NameSet :=
   allowedTrustedSyntaxKinds ++ .ofList allowedTheoryTacticKinds
 
 namespace SourceRole
 
-/-- The closed `SyntaxNodeKind` allowlist for a source module's role. -/
+/-- Return the closed `SyntaxNodeKind` allowlist for a repository source
+module's role. -/
 def allowedSyntaxKinds : SourceRole → NameSet
   | .trusted _ => allowedTrustedSyntaxKinds
   | .theory => allowedTheorySyntaxKinds
@@ -359,9 +588,9 @@ def renderTier? : SourceRole → Option String
 
 end SourceRole
 
-/-- Closed allowlist of attributes permitted on declarations. Compiler-override
-and metaprogramming attributes (`extern`, `implemented_by`, `csimp`, `init`,
-`macro`, `elab_as_elim`, etc.) are excluded. -/
+/-- Lists the attributes permitted on declarations. Compiler-override and
+metaprogramming attributes (such as `extern`, `implemented_by`, `csimp`, `init`,
+`macro`, and `elab_as_elim`) are excluded. -/
 def allowedAttributeNames : List Name :=
   [`simp, `instance, `reducible, `semireducible, `irreducible]
 
@@ -375,10 +604,10 @@ def isValidSourceIdent (id : Name) : Bool :=
        | .str .anonymous seg => !seg.isEmpty && seg != "_root_"
        | _ => false)
 
-/-- Determine the `SourceRole` of `moduleName` from its name and `--
-anneal-trust-tier: <tier>` directive in `text`. Every `Trusted` module must
-declare a single valid `TrustTier`, and non-`Trusted` (`theory/`) modules may
-not declare one. -/
+/-- Determine the `SourceRole` of `moduleName` from its name and the
+`-- anneal-trust-tier: <tier>` directive in `text`. Every `Trusted` module must
+declare a single valid `TrustTier`, and non-`Trusted` (`theory/` and
+`correspondence/`) modules may not declare one. -/
 def extractSourceRole (moduleName : Name) (text : String) : IO SourceRole := do
   let isTrustedModule :=
     moduleName == `Trusted || moduleName.getRoot == `Trusted
@@ -388,9 +617,11 @@ def extractSourceRole (moduleName : Name) (text : String) : IO SourceRole := do
   match isTrustedModule, directives with
   | false, [] => pure .theory
   | false, _ :: _ =>
-    fail s!"trust tier directive is only allowed in Trusted modules ({moduleName})"
+    fail (s!"trust tier directive is only allowed in Trusted modules " ++
+      s!"({moduleName})")
   | true, [] =>
-    fail s!"missing `-- anneal-trust-tier: vetted` or `-- anneal-trust-tier: candidate:<feature>` in {moduleName}"
+    fail ("missing `-- anneal-trust-tier: vetted` or " ++
+      s!"`-- anneal-trust-tier: candidate:<feature>` in {moduleName}")
   | true, [rawTier] =>
     match TrustTier.parse? rawTier with
     | some tier => pure (.trusted tier)
@@ -408,6 +639,7 @@ def isAllowedNestedCommand (k : SyntaxNodeKind) : Bool :=
 
 /-- Enforce per-node structural invariants on a `Syntax.node` whose kind `k` has
 already been admitted by `allowedKinds`:
+
 - `Parser.Module.header`: an explicit `prelude` child (`args[1]`) is mandatory
   (omitting `prelude` produces an empty `null` node rather than a distinct
   `SyntaxNodeKind`).
@@ -441,7 +673,8 @@ def inspectNodeKind (k : SyntaxNodeKind) (args : Array Syntax) : IO Unit := do
     unless args.size == 3 do fail "unsupported command-wrapper shape"
     unless [``Parser.Command.open, ``Parser.Command.variable].contains
         args[0]!.getKind do
-      fail "only `open` and `variable` commands are permitted on the LHS of `in`"
+      fail ("only `open` and `variable` commands are permitted on the " ++
+        "LHS of `in`")
     unless isAllowedNestedCommand args[2]!.getKind do
       fail s!"unsupported command inside `in`: {args[2]!.getKind}"
   else if k == ``Parser.Attr.simple then
@@ -477,14 +710,249 @@ partial def inspectSyntax (allowedKinds : NameSet) (s : Syntax) : IO Unit := do
     for child in args do
       inspectSyntax allowedKinds child
 
-/-- Parse and validate all commands in `ctx` starting from `initial` and `log`
-using the pure foundation `parserEnv` and the role's `allowedKinds`. -/
+/-- Collect every namespace that registers at least one scoped entry in any
+registered `ScopedEnvExtension` of `env` (including
+`Lean.Parser.parserExtension` scoped syntax/notations,
+`Lean.Elab.macroAttribute` scoped macros, scoped elaborators, scoped
+attributes, scoped instances, and any custom vendor `ScopedEnvExtension`). -/
+def collectScopedExtensionNamespaces (env : Environment) : IO NameSet := do
+  let exts ← scopedEnvExtensionsRef.get
+  let mut acc : NameSet := {}
+  for ext in exts do
+    for (ns, _) in (ext.ext.getState env).scopedEntries.map do
+      acc := acc.insert ns
+  return acc
+
+/-- Collect every non-empty strict prefix of every namespace in
+`scopedNamespaces`. Retaining prefixes alongside existing namespaces in
+`openDecls` ensures multi-step relative `open` chains (such as `open Miri`
+followed by `open ScopedSyntax`) cannot evade `scopedNamespaces` even when a
+decoy namespace exists in the union `parserEnv`. -/
+def collectScopedNamespacePrefixes (scopedNamespaces : NameSet) : NameSet :=
+  let rec insertPrefixes (acc : NameSet) : Name → NameSet
+    | .anonymous => acc
+    | ns@(.str p _) => insertPrefixes (acc.insert ns) p
+    | _ => acc
+  scopedNamespaces.foldl (init := {}) fun acc ns =>
+    match ns with
+    | .str p _ => insertPrefixes acc p
+    | _ => acc
+
+/-- Enumerate every namespace that `Lean.ResolveName.resolveNamespace` could
+resolve `id` to under *any* sub-environment of `parserEnv` given lexical
+namespace `currNs` and conservative `openDecls`:
+- every non-empty prefix `p` of `currNs` with `id` appended (`p ++ id`),
+- the root candidate `id.replacePrefix rootNamespace .anonymous`, and
+- every `ns ++ id` for each `OpenDecl.simple ns _` in `openDecls`.
+
+Checking every candidate—instead of stopping at the innermost existing
+namespace in the union `parserEnv` as `resolveNamespaceUsingScope?` does—closes
+decoy-namespace shadowing when an unimported module declares a namespace with
+the same suffix as a real scoped namespace. -/
+def candidateOpenNamespaces (currNs : Name) (openDecls : List OpenDecl)
+    (id : Name) : List Name :=
+  let rec scopeCandidates : Name → List Name
+    | .anonymous => [id.replacePrefix rootNamespace .anonymous]
+    | ns@(.str p _) => (ns ++ id) :: scopeCandidates p
+    | _ => []
+  let openCandidates := openDecls.filterMap fun
+    | OpenDecl.simple ns _ => some (ns ++ id)
+    | _ => none
+  (scopeCandidates currNs ++ openCandidates).eraseDups
+
+/-- Lexical scope frame tracked by `parseAndInspectCommands`, mirroring Lean's
+`Elab.Command.Scope` (`header`, `currNamespace`, `openDecls`) so
+`Parser.parseCommand` sees the same lexical namespace and `open` context as
+compilation while preflight rejects activating any namespace in
+`scopedNamespaces`. -/
+structure ParseScope where
+  header : String
+  currNamespace : Name
+  openDecls : List OpenDecl
+  deriving Inhabited
+
+/-- Compose the names of up to the innermost `n` scopes in `ss`, truncating at
+an unnamed scope, matching `Lean.Elab.Command.nameOfScopes`. -/
+def nameOfParseScopes : List ParseScope → Nat → Name
+  | _, 0 => .anonymous
+  | [], _ => .anonymous
+  | s :: ss, n + 1 =>
+    if s.header == "" then .anonymous
+    else .str (nameOfParseScopes ss n) s.header
+
+/-- Reject `ns` if it registers any scoped entry in `scopedNamespaces`. -/
+def rejectScopedNamespace (scopedNamespaces : NameSet) (how : String)
+    (ns : Name) : IO Unit := do
+  if scopedNamespaces.contains ns then
+    fail s!"cannot {how} namespace {ns} with scoped syntax or extensions"
+
+/-- Push each component of `header` as a lexical `namespace` or `section` scope
+onto `(parserEnv, scopes)`, rejecting any newly entered namespace present in
+`scopedNamespaces` and registering namespaces in `parserEnv` (matching
+`Lean.Elab.Command.addScopes`). -/
+def pushParseScopes (scopedNamespaces : NameSet) (isNewNamespace : Bool)
+    (header : Name) (parserEnv : Environment) (scopes : List ParseScope) :
+    IO (Environment × List ParseScope) := do
+  match header with
+  | .anonymous => return (parserEnv, scopes)
+  | .str p seg =>
+    let (parserEnv, scopes) ←
+      pushParseScopes scopedNamespaces isNewNamespace p parserEnv scopes
+    let top := scopes.head!
+    let newNs := if isNewNamespace then Name.mkStr top.currNamespace seg
+      else top.currNamespace
+    if isNewNamespace then
+      rejectScopedNamespace scopedNamespaces "enter" newNs
+    let parserEnv := parserEnv.registerNamespace newNs
+    let parserEnv := Parser.parserExtension.pushScope parserEnv
+    let newScope : ParseScope :=
+      { top with header := seg, currNamespace := newNs }
+    return (parserEnv, newScope :: scopes)
+  | _ => fail s!"invalid scope name {header}"
+
+/-- Check that every namespace prefix opened by `expandNamespacedDeclaration`
+for declaration identifier `id` (excluding `_root_`-prefixed names, matching
+`Lean.Elab.Command.expandDeclNamespace?`) is absent from `scopedNamespaces`,
+and register each prefix namespace in `parserEnv`. -/
+def checkDeclNamespacePrefixes (scopedNamespaces : NameSet) (currNs : Name)
+    (id : Name) (parserEnv : Environment) : IO Environment := do
+  if (`_root_).isPrefixOf id then
+    return parserEnv
+  let rec walkPrefix (ns : Name) (env : Environment) :
+      IO (Name × Environment) := do
+    match ns with
+    | .anonymous => return (currNs, env)
+    | .str p seg =>
+      let (base, env) ← walkPrefix p env
+      let full := Name.mkStr base seg
+      rejectScopedNamespace scopedNamespaces "declare in" full
+      return (full, env.registerNamespace full)
+    | _ => fail s!"invalid declaration namespace {id}"
+  match id with
+  | .str .anonymous _ => return parserEnv
+  | .str pre _ =>
+    let (_, env) ← walkPrefix pre parserEnv
+    return env
+  | _ => return parserEnv
+
+/-- Extract the user-supplied declaration identifier from an allowlisted
+`Parser.Command.declaration` syntax node, if present. -/
+def declarationIdent? (stx : Syntax) : Option Name :=
+  let decl := stx[1]
+  if decl.getKind == ``Parser.Command.instance then
+    if decl[3].isNone then none else some decl[3][0][0].getId
+  else
+    some decl[1][0].getId
+
+/-- Update lexical scope state `(parserEnv, scopes)` for a validated command
+`stx`, rejecting any `open`, `open ... in`, `mutual` preamble, `namespace`, or
+multi-component declaration whose entered namespace or candidate `open`
+resolution belongs to `scopedNamespaces`. -/
+partial def applyCommandScope (scopedNamespaces scopedPrefixes : NameSet)
+    (parserEnv : Environment) (scopes : List ParseScope) (stx : Syntax) :
+    IO (Environment × List ParseScope) := do
+  let k := stx.getKind
+  if k == ``Parser.Command.namespace then
+    pushParseScopes scopedNamespaces true stx[1].getId parserEnv scopes
+  else if k == ``Parser.Command.section then
+    if stx[2].isNone then
+      let top := scopes.head!
+      let parserEnv := Parser.parserExtension.pushScope parserEnv
+      return (parserEnv, { top with header := "" } :: scopes)
+    else
+      pushParseScopes scopedNamespaces false stx[2][0].getId parserEnv scopes
+  else if k == ``Parser.Command.end then
+    let header? := if stx[1].isNone then none else some stx[1][0].getId
+    let endSize := match header? with
+      | none => 1
+      | some n => n.getNumParts
+    if scopes.length <= 1 then
+      fail "unexpected `end` command with no active scope"
+    match header? with
+    | none =>
+      if scopes.head!.header != "" then
+        fail s!"missing scope name `{scopes.head!.header}` after `end`"
+    | some header =>
+      if endSize >= scopes.length then
+        fail s!"`end {header}` closes more scopes than are open"
+      let expected := nameOfParseScopes scopes endSize
+      if expected != header then
+        fail s!"mismatched `end {header}` (expected `{expected}`)"
+    let mut env := parserEnv
+    for _ in [:endSize] do
+      env := Parser.parserExtension.popScope env
+    return (env, scopes.drop endSize)
+  else if k == ``Parser.Command.open then
+    let top := scopes.head!
+    let mut openDecls := top.openDecls
+    let openDecl := stx[1]
+    unless openDecl.isOfKind ``Parser.Command.openSimple do
+      fail s!"unsupported open command {openDecl.getKind}"
+    let hasOpenDecl (ods : List OpenDecl) (ns : Name) : Bool :=
+      ods.any fun
+        | OpenDecl.simple existing _ => existing == ns
+        | _ => false
+    for idStx in openDecl[0].getArgs do
+      let id := idStx.getId
+      let candidates :=
+        candidateOpenNamespaces top.currNamespace openDecls id
+      let mut added := false
+      for ns in candidates do
+        rejectScopedNamespace scopedNamespaces "open" ns
+        if parserEnv.isNamespace ns || scopedPrefixes.contains ns then
+          if !hasOpenDecl openDecls ns then
+            openDecls := OpenDecl.simple ns [] :: openDecls
+          added := true
+      if !added then
+        let stripped := id.replacePrefix rootNamespace .anonymous
+        if !hasOpenDecl openDecls stripped then
+          openDecls := OpenDecl.simple stripped [] :: openDecls
+    return (parserEnv, { top with openDecls := openDecls } :: scopes.tail!)
+  else if k == ``Parser.Command.in then
+    let top := scopes.head!
+    let tmpEnv := Parser.parserExtension.pushScope parserEnv
+    let (tmpEnv, tmpScopes) ←
+      applyCommandScope scopedNamespaces scopedPrefixes tmpEnv (top :: scopes)
+        stx[0]
+    let (tmpEnv, _) ←
+      applyCommandScope scopedNamespaces scopedPrefixes tmpEnv tmpScopes stx[2]
+    return (Parser.parserExtension.popScope tmpEnv, scopes)
+  else if k == ``Parser.Command.mutual then
+    let top := scopes.head!
+    let mut tmpEnv := Parser.parserExtension.pushScope parserEnv
+    let mut tmpScopes := top :: scopes
+    for child in stx[1].getArgs do
+      (tmpEnv, tmpScopes) ←
+        applyCommandScope scopedNamespaces scopedPrefixes tmpEnv tmpScopes child
+    return (Parser.parserExtension.popScope tmpEnv, scopes)
+  else if k == ``Parser.Command.declaration then
+    match declarationIdent? stx with
+    | some id =>
+      let env ← checkDeclNamespacePrefixes scopedNamespaces
+        scopes.head!.currNamespace id parserEnv
+      return (env, scopes)
+    | none => return (parserEnv, scopes)
+  else
+    return (parserEnv, scopes)
+
+/-- Parse and validate all commands in `ctx` starting from `state` and
+`messages` using the authenticated `parserEnv`, lexical scope stack `scopes`,
+`scopedNamespaces`, `scopedPrefixes`, and the role's `allowedKinds`, without
+elaborating the inspected commands. -/
 partial def parseAndInspectCommands (ctx : Parser.InputContext)
-    (parserEnv : Environment) (moduleName : Name) (allowedKinds : NameSet)
+    (scopedNamespaces scopedPrefixes : NameSet) (parserEnv : Environment)
+    (scopes : List ParseScope) (moduleName : Name) (allowedKinds : NameSet)
     (state : Parser.ModuleParserState) (messages : MessageLog) : IO Unit := do
   let previous := state.pos
+  let top := scopes.head!
+  let pmctx : Parser.ParserModuleContext := {
+    env := parserEnv
+    options := {}
+    currNamespace := top.currNamespace
+    openDecls := top.openDecls
+  }
   let (stx, nextState, nextMessages) :=
-    Parser.parseCommand ctx { env := parserEnv, options := {} } state messages
+    Parser.parseCommand ctx pmctx state messages
   if nextMessages.hasErrors || nextState.recovering then
     fail s!"command parser error in {moduleName}"
   if stx.isOfKind ``Parser.Command.eoi then
@@ -494,11 +962,15 @@ partial def parseAndInspectCommands (ctx : Parser.InputContext)
   unless allowedCommandKinds.contains stx.getKind do
     fail s!"unsupported command {stx.getKind}"
   inspectSyntax allowedKinds stx
-  parseAndInspectCommands ctx parserEnv moduleName allowedKinds nextState
-    nextMessages
+  let (nextEnv, nextScopes) ←
+    applyCommandScope scopedNamespaces scopedPrefixes parserEnv scopes stx
+  parseAndInspectCommands ctx scopedNamespaces scopedPrefixes nextEnv nextScopes
+    moduleName allowedKinds nextState nextMessages
 
-/-- Parse and validate a single `.lean` source file during `"preflight"`. -/
-def inspectSource (parserEnv : Environment) (moduleName : Name)
+/-- Parse and validate a single repository `.lean` source file during
+`"preflight"` or `"correspondence-preflight"`. -/
+def inspectSource (scopedNamespaces scopedPrefixes : NameSet)
+    (parserEnv : Environment) (moduleName : Name)
     (path : System.FilePath) : IO Json := do
   let text ← IO.FS.readFile path
   let role ← extractSourceRole moduleName text
@@ -512,16 +984,20 @@ def inspectSource (parserEnv : Environment) (moduleName : Name)
   for imp in imports do
     if imp.importAll || imp.isMeta || !imp.isExported then
       fail "import modifiers are unsupported"
-  parseAndInspectCommands ctx parserEnv moduleName allowedKinds initial log
+  let rootScope : ParseScope :=
+    { header := "", currNamespace := .anonymous, openDecls := [] }
+  parseAndInspectCommands ctx scopedNamespaces scopedPrefixes parserEnv
+    [rootScope] moduleName allowedKinds initial log
   return Json.mkObj [
     ("module", toJson moduleName),
     ("imports", toJson imports),
     ("trustTier", toJson role.renderTier?)]
 
-/-! ## Phase 2: kernel environment audit -/
+/-! ## Shared kernel-environment combinators -/
 
-/-- Pure DAG traversal collecting every constant referenced inside `pending`.
-Uses `seen` to avoid re-traversing shared DAG subterms in kernel `Expr`s. -/
+/-- Collect every constant referenced inside `pending` with a pure DAG
+traversal. The `seen` set avoids re-traversing shared subterms of kernel
+`Expr`s. -/
 partial def collectExprConsts (pending : List Expr)
     (seen : Std.HashSet Expr := {}) (acc : NameSet := {}) : NameSet :=
   match pending with
@@ -553,8 +1029,8 @@ def expressionEdges (e : Expr) : IO NameSet := do
     fail "open expression in stored declaration"
   return collectExprConsts [e]
 
-/-- The kernel dependency edges of `ci`: every constant in its type and value,
-the other members of its mutual block, and its inductive structure
+/-- Return the kernel dependency edges of `ci`: every constant in its type and
+value, the other members of its mutual block, and its inductive structure
 (constructors of an inductive, the inductive of a constructor, and the
 constructors and rule right-hand sides of a recursor). -/
 def declarationEdges (ci : ConstantInfo) : IO NameSet := do
@@ -572,7 +1048,7 @@ def declarationEdges (ci : ConstantInfo) : IO NameSet := do
   | .axiomInfo _ | .defnInfo _ | .thmInfo _ | .opaqueInfo _ | .quotInfo _ =>
     return baseEdges
 
-/-- Human-readable kind tag for a kernel `ConstantInfo`. -/
+/-- Return the human-readable kind tag for a kernel `ConstantInfo`. -/
 def kind : ConstantInfo → String
   | .axiomInfo _ => "axiom"
   | .defnInfo _ => "definition"
@@ -583,6 +1059,13 @@ def kind : ConstantInfo → String
   | .ctorInfo _ => "constructor"
   | .recInfo _ => "recursor"
 
+/-- Look up kernel constant `n` in `env.checked`. -/
+def lookupConst (env : Environment) (n : Name)
+    (label : String := "dependency declaration") : IO ConstantInfo := do
+  let some ci := env.checked.get.find? n
+    | fail s!"missing {label} {n}"
+  return ci
+
 /-- Return the defining module name for kernel constant `n` in `env`. -/
 def origin (env : Environment) (n : Name) : IO Name := do
   let some idx := env.getModuleIdxFor? n
@@ -591,49 +1074,28 @@ def origin (env : Environment) (n : Name) : IO Name := do
     | fail s!"invalid module index: {n}"
   return mod.module
 
-/-- Return the defining module name and `ModuleRole` for constant `n` in
-`env`. -/
-def constProvenance (env : Environment)
-    (roles : Std.HashMap Name ModuleRole) (n : Name) :
-    IO (Name × ModuleRole) := do
+/-- Return the defining module name and origin classification `ρ` for constant
+`n` in `env`, rejecting constants from any module outside `roles`. -/
+def constProvenance (env : Environment) (roles : Std.HashMap Name ρ)
+    (n : Name) (foreignKind : String := "module") : IO (Name × ρ) := do
   let orig ← origin env n
   let some role := roles.get? orig
-    | fail s!"foreign module {orig} for {n}"
+    | fail s!"foreign {foreignKind} {orig} for {n}"
   return (orig, role)
 
-/-- Compute the transitive kernel dependency closure of `pending`, verify that
-every reachable axiom belongs to `axioms`, and return the sorted reached
-axioms and the set of reached constants. -/
-partial def closure (lookup : Name → IO ConstantInfo)
-    (provenance : Name → IO Name) (axioms : Array (String × String))
-    (pending : List Name) (visited : NameSet := {})
-    (reachedAxioms : NameSet := {}) : IO (Array Name × NameSet) := do
-  match pending with
-  | [] => return (reachedAxioms.toArray.qsort Name.lt, visited)
-  | n :: rest =>
-    if visited.contains n then
-      closure lookup provenance axioms rest visited reachedAxioms
-    else
-      let visited := visited.insert n
-      let m ← provenance n
-      let ci ← lookup n
-      let reachedAxioms ← if ci.isAxiom then do
-        unless axioms.contains (n.toString, m.toString) do
-          fail s!"unapproved axiom {n} from {m}"
-        pure (reachedAxioms.insert n)
-      else
-        pure reachedAxioms
-      let deps ← declarationEdges ci
-      closure lookup provenance axioms (deps.toList ++ rest) visited
-        reachedAxioms
+/-- Insert `m ↦ role` into `roles`, rejecting overlapping role assignments. -/
+def insertRole (roles : Std.HashMap Name ρ) (m : Name) (role : ρ)
+    (dupPrefix : String := "overlapping module role for") :
+    IO (Std.HashMap Name ρ) := do
+  if roles.contains m then fail s!"{dupPrefix} {m}"
+  return roles.insert m role
 
-/-- Build the complete map from module name to `ModuleRole`, verifying that
-`foundation`, `trusted`, and `theory` are pairwise disjoint and that every
-`Trusted` module has a valid `TrustTier`. -/
-def buildModuleRoles (j : Json) (foundation trusted theory : Array Name) :
-    IO (Std.HashMap Name ModuleRole) := do
+/-- Parse `"moduleTiers"` and verify that every entry names a distinct module in
+`trusted` with a valid `TrustTier`. -/
+def parseModuleTiers (j : Json) (trusted : Array Name) :
+    IO (Std.HashMap Name TrustTier) := do
   let tierEntries ← field (α := Array (String × String)) j "moduleTiers"
-  let tierMap ← tierEntries.foldlM (init := ({} : Std.HashMap Name TrustTier))
+  tierEntries.foldlM (init := ({} : Std.HashMap Name TrustTier))
     fun acc (mStr, rawTier) => do
       let m := mStr.toName
       if acc.contains m then fail s!"duplicate module tier for {m}"
@@ -642,54 +1104,291 @@ def buildModuleRoles (j : Json) (foundation trusted theory : Array Name) :
       let some tier := TrustTier.parse? rawTier
         | fail s!"invalid trust tier {rawTier} for {m}"
       return acc.insert m tier
-  let roles0 := foundation.foldl (init := ({} : Std.HashMap Name ModuleRole))
-    fun acc m => acc.insert m .foundation
-  let roles1 ← trusted.foldlM (init := roles0) fun acc m => do
-    if acc.contains m then fail s!"overlapping module role for {m}"
-    let some tier := tierMap.get? m
-      | fail s!"missing trust tier for Trusted module {m}"
-    return acc.insert m (.trusted tier)
-  theory.foldlM (init := roles1) fun acc m => do
-    if acc.contains m then fail s!"overlapping module role for {m}"
-    return acc.insert m .theory
 
-/-- Enforce per-constant policy invariants on a non-foundation constant `ci`
-defined in module `m` with `role`:
+/-- Enforce the logical safety preconditions required before passing any
+non-foundation `ConstantInfo` to `Kernel.Environment.replay`: no `unsafe` or
+`partial` modifiers, no quotient primitives, and a stored body whenever
+`hasValue true`.
+
+The pinned replay never sends `unsafe` or `partial` declarations to the kernel
+("We skip unsafe constants, and also partial constants."), so replay alone
+would accept them without checking them:
+https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Replay.lean#L176-L185 -/
+def ensureReplayableConstant (unsafeLabel : String) (ctxSuffix : String)
+    (ci : ConstantInfo) : IO Unit := do
+  if ci.isUnsafe || ci.isPartial then
+    fail s!"unsafe/partial {unsafeLabel} {ci.name}{ctxSuffix}"
+  if ci matches .quotInfo _ then
+    fail s!"unexpected quotient primitive {ci.name}{ctxSuffix}"
+  if ci.hasValue true && (ci.value? true).isNone then
+    fail s!"missing stored body {ci.name}"
+
+/-- Enforce per-constant policy invariants on a constant `ci` defined in Anneal
+repository module `m` with `SourceRole` `role` (shared across Pass 1 and
+Pass 2):
+
 - Non-`Trusted` modules cannot declare constants in the `Trusted` root
   namespace (`privateToUserName` strips any `_private.<mod>.0` prefix first so
   `private` declarations inside `namespace Trusted` are also caught).
 - Non-`Trusted` modules cannot declare `opaque` constants.
-- No non-foundation module may declare `unsafe`, `partial`, `axiom`, or `quot`
+- No repository module may declare `unsafe`, `partial`, `axiom`, or `quot`
   constants, or omit a definition body. -/
-def validateLocalConstant (m : Name) (role : ModuleRole)
+def validateRepoConstant (m : Name) (role : SourceRole)
     (ci : ConstantInfo) : IO Unit := do
   let isTrusted := role matches .trusted _
   if !isTrusted && (privateToUserName ci.name).getRoot == `Trusted then
-    fail s!"non-Trusted module {m} cannot declare constant {ci.name} in Trusted namespace"
+    fail (s!"non-Trusted module {m} cannot declare constant {ci.name} " ++
+      "in Trusted namespace")
   if !isTrusted && (ci matches .opaqueInfo _) then
     fail s!"opaque declaration {ci.name} in {m} is not allowed outside Trusted"
-  if ci.isUnsafe || ci.isPartial then
-    fail (if isTrusted then
-      s!"unsafe/partial Trusted declaration {ci.name}"
-    else
-      s!"unsafe/partial declaration {ci.name} in {m}")
   if ci.isAxiom then
     fail (if isTrusted then
       s!"Trusted axiom {ci.name}"
     else
       s!"strict axiom declaration {ci.name} in {m}")
-  if ci matches .quotInfo _ then
-    fail s!"unexpected quotient primitive {ci.name} in {m}"
-  if ci.hasValue true && (ci.value? true).isNone then
-    fail s!"missing stored body {ci.name}"
+  if isTrusted then
+    ensureReplayableConstant "Trusted declaration" "" ci
+  else
+    ensureReplayableConstant "declaration" s!" in {m}" ci
 
-/-- Verify module allowlists, declaration provenance, `Trusted` namespace
-hygiene, and the absence of axioms and `unsafe`/`partial` declarations across
-all loaded modules. Return every non-foundation constant and the compiler-only
-(IR) names of `Trusted` modules. -/
-def verifyAndCollectLocals (env : Environment)
-    (roles : Std.HashMap Name ModuleRole) :
+/-- Enforce `violation?` across every kernel dependency edge of `locals`. -/
+def checkDeclarationEdges (env : Environment) (roles : Std.HashMap Name ρ)
+    (locals : Std.HashMap Name ConstantInfo)
+    (violation? : Name → ρ → Name → Name → ρ → Option String) :
+    IO Unit := do
+  for (cName, ci) in locals do
+    let (_, cRole) ← constProvenance env roles cName
+    for dep in ← declarationEdges ci do
+      let (depOrigin, depRole) ← constProvenance env roles dep
+      if let some msg := violation? cName cRole dep depOrigin depRole then
+        fail msg
+
+/-- Enforce `violation?` on every import recorded in the compiled `.olean`
+header (`data.imports`) of module `m` with origin `role`, rejecting imports of
+modules outside `roles`. -/
+def checkHeaderImports (roles : Std.HashMap Name ρ) (m : Name) (role : ρ)
+    (data : ModuleData) (violation? : Name → ρ → Name → ρ → Option String) :
+    IO Unit := do
+  for imp in data.imports do
+    let some impRole := roles.get? imp.module
+      | fail s!"foreign import {imp.module} in {m}"
+    if let some msg := violation? m role imp.module impRole then
+      fail msg
+
+/-- Compute the transitive kernel dependency closure of `pending`, run optional
+per-constant `onVisit` checks, verify that every reachable axiom belongs to
+`axioms`, and return the sorted reached axioms and the set of reached
+constants. -/
+partial def closure (lookup : Name → IO ConstantInfo)
+    (provenance : Name → IO (Name × ρ)) (axioms : Array (String × String))
+    (pending : List Name)
+    (onVisit : Name → Name → ρ → ConstantInfo → IO Unit :=
+      fun _ _ _ _ => pure ())
+    (visited : NameSet := {})
+    (reachedAxioms : NameSet := {}) : IO (Array Name × NameSet) := do
+  match pending with
+  | [] => return (reachedAxioms.toArray.qsort Name.lt, visited)
+  | n :: rest =>
+    if visited.contains n then
+      closure lookup provenance axioms rest onVisit visited reachedAxioms
+    else
+      let visited := visited.insert n
+      let (m, role) ← provenance n
+      let ci ← lookup n
+      onVisit n m role ci
+      let reachedAxioms ← if ci.isAxiom then do
+        unless axioms.contains (n.toString, m.toString) do
+          fail s!"unapproved axiom {n} from {m}"
+        pure (reachedAxioms.insert n)
+      else
+        pure reachedAxioms
+      let deps ← declarationEdges ci
+      closure lookup provenance axioms (deps.toList ++ rest) onVisit visited
+        reachedAxioms
+
+/-- Reconcile one serialized inventory value with the selected declaration.
+Pinned modules may repeat a theorem with another proof of the same proposition;
+every such proof still needs its own dependency closure and fresh kernel check.
+Definitions and source declarations cannot change their stored meaning. -/
+def inventoryAlternates (stored ci : ConstantInfo) (pinned : Bool) :
+    IO (Array ConstantInfo) := do
+  unless stored.type == ci.type do
+    fail s!"stored declaration type differs from inventory {ci.name}"
+  -- Equal proof expressions do not establish equal universes or mutual-block
+  -- dependencies: declarationEdges also follows ci.all. Check this metadata
+  -- before the equal-value fast path, so it cannot discard an unexamined edge.
+  -- The pinned importer also requires matching levelParams and all, while
+  -- saying "we do not check whether the theorem `value` field match". Preserve
+  -- that distinction locally rather than relying on an earlier import check.
+  -- https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Environment.lean#L2261-L2278
+  match pinned, stored, ci with
+  | true, .thmInfo a, .thmInfo b =>
+    unless a.levelParams == b.levelParams && a.all == b.all do
+      fail s!"inconsistent pinned theorem metadata {ci.name}"
+  | _, _, _ => pure ()
+  if stored.value? true == ci.value? true then return #[]
+  match pinned, stored, ci with
+  | true, .thmInfo _, .thmInfo _ =>
+    -- Replay may reuse a selected theorem already in its foundation base.
+    -- Retain both values so that optimization cannot hide either proof body.
+    return #[stored, ci]
+  | _, _, _ => fail s!"stored declaration differs from inventory {ci.name}"
+
+/-- Validate and record the `.olean` inventory (`constants` and
+`extraConstNames`) of one Anneal repository module `mName` (`srcRole`) across
+Pass 1 and Pass 2. -/
+def collectRepoModuleConstants (env : Environment) (roles : Std.HashMap Name ρ)
+    (mName : Name) (srcRole : SourceRole) (data : ModuleData)
+    (locals : Std.HashMap Name ConstantInfo) (extraNames : NameSet) :
     IO (Std.HashMap Name ConstantInfo × NameSet) := do
+  let mut locals := locals
+  let mut extraNames := extraNames
+  for ci in data.constants do
+    if locals.contains ci.name then
+      fail s!"duplicate declaration {ci.name}"
+    let (orig, _) ← constProvenance env roles ci.name
+    unless orig == mName do
+      fail s!"inventory origin mismatch {ci.name}"
+    let stored ← lookupConst env ci.name "stored declaration"
+    discard <| inventoryAlternates stored ci false
+    validateRepoConstant mName srcRole ci
+    locals := locals.insert ci.name ci
+  for n in data.extraConstNames do
+    let (orig, _) ← constProvenance env roles n
+    unless orig == mName do
+      fail s!"IR helper provenance mismatch {n}"
+    if (env.checked.get.find? n).isSome then
+      unless locals.contains n do
+        fail s!"uninventoried kernel compiler helper {n}"
+    else if srcRole matches .trusted _ then
+      extraNames := extraNames.insert n
+  return (locals, extraNames)
+
+/-- Check each alternate under a fresh name, bypassing replay's duplicate
+optimization while preserving the declaration's type and universe parameters.
+The pinned replay rule says "Ignore duplicate theorems" after comparing their
+metadata; it does not check the duplicate proof value:
+https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Replay.lean#L85-L97
+-/
+def checkAlternateProofs (replayed : Kernel.Environment)
+    (alternateProofs : Array ConstantInfo) : IO Unit := do
+  let checkedEnv := Environment.ofKernelEnv replayed
+  let mut freshIndex := 0
+  for ci in alternateProofs do
+    let .thmInfo info := ci | fail "non-theorem alternate inventory body"
+    let typeOfType ← kernelResult s!"alternate theorem type check {ci.name}"
+      (Kernel.check checkedEnv {} info.type)
+    requireKernelEquality s!"alternate theorem proposition comparison {ci.name}"
+      s!"alternate theorem is not a proposition {ci.name}"
+      (Kernel.isDefEq checkedEnv {} typeOfType (.sort .zero))
+    let mut fresh := Name.num `_anneal_checked_alternate freshIndex
+    while (replayed.find? fresh).isSome do
+      freshIndex := freshIndex + 1
+      fresh := Name.num `_anneal_checked_alternate freshIndex
+    freshIndex := freshIndex + 1
+    discard <| kernelResult s!"alternate pinned theorem proof check {ci.name}"
+      (replayed.addDeclCore 0 0 (.thmDecl { info with name := fresh })
+        (cancelTk? := none))
+
+/-- Replay `replayMap` onto `base` with a fixed operational error prefix (so
+`Lean.Replay`'s stringified `Kernel.Exception` cannot spoof `"policy:"`).
+https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Replay.lean#L54-L63
+https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Replay.lean#L135-L136
+-/
+def replayKernelEnv (base : Kernel.Environment)
+    (replayMap : Std.HashMap Name ConstantInfo)
+    (errPrefix : String := "kernel replay failed") :
+    IO Kernel.Environment := do
+  try base.replay replayMap
+  catch error => throw <| IO.userError s!"{errPrefix}: {error}"
+
+/-- Replay `replayMap` onto `base.toKernelEnv` and check all `alternateProofs`
+under fresh names. -/
+def replayOntoBase (base : Environment)
+    (replayMap : Std.HashMap Name ConstantInfo)
+    (alternateProofs : Array ConstantInfo := #[])
+    (errPrefix : String := "kernel replay failed") :
+    IO Kernel.Environment := do
+  let replayed ← replayKernelEnv base.toKernelEnv replayMap errPrefix
+  checkAlternateProofs replayed alternateProofs
+  return replayed
+
+/-- Verify that `claimName` is a universe-monomorphic `.defnInfo` definition in
+`expectedClaimMod` referencing every constant in the non-empty `reqConsts`
+list, and that `proofName` is a universe-monomorphic `.thmInfo` theorem in
+`expectedProofMod` whose type is either `Expr.const claimName []` (when
+`argName? == none`, with `claimCi.type == .sort .zero`) or
+`Expr.app (Expr.const claimName []) (Expr.const argName [])` (when
+`argName? == some argName`). -/
+def requireClaimProof (env : Environment)
+    (locals : Std.HashMap Name ConstantInfo)
+    (expectedClaimMod expectedProofMod claimName : Name)
+    (argName? : Option Name) (proofName : Name)
+    (reqConsts : List Name) : IO Unit := do
+  if reqConsts.isEmpty then
+    fail s!"claim {claimName} requires a non-empty required-constants list"
+  let some claimCi := locals.get? claimName
+    | fail s!"missing required claim {claimName}"
+  unless claimCi matches .defnInfo _ do
+    fail s!"expected {claimName} to be a definition"
+  unless claimCi.levelParams.isEmpty do
+    fail s!"claim {claimName} must have no universe parameters"
+  let claimOrig ← origin env claimName
+  unless claimOrig == expectedClaimMod do
+    fail (s!"expected {claimName} to be defined in " ++
+      s!"{expectedClaimMod}, found {claimOrig}")
+  if argName?.isNone then
+    unless claimCi.type == .sort .zero do
+      fail s!"expected {claimName} to have type Prop"
+  let some claimVal := claimCi.value? true
+    | fail s!"missing definition body for {claimName}"
+  let valConsts ← expressionEdges claimVal
+  for req in reqConsts do
+    unless valConsts.contains req do
+      fail s!"claim {claimName} body must reference {req}"
+  let some proofCi := locals.get? proofName
+    | fail s!"missing required theorem {proofName}"
+  unless proofCi matches .thmInfo _ do
+    fail s!"expected {proofName} to be a theorem"
+  unless proofCi.levelParams.isEmpty do
+    fail s!"theorem {proofName} must have no universe parameters"
+  let proofOrig ← origin env proofName
+  unless proofOrig == expectedProofMod do
+    fail (s!"expected {proofName} to be defined in " ++
+      s!"{expectedProofMod}, found {proofOrig}")
+  match argName? with
+  | none =>
+    unless proofCi.type == .const claimName [] do
+      fail s!"theorem {proofName} must prove {claimName} directly"
+  | some argName =>
+    unless proofCi.type == .app (.const claimName []) (.const argName []) do
+      fail s!"theorem {proofName} must prove {claimName} {argName} directly"
+
+/-! ## Phase 2: Pass 1 repository audit (`"audit"`) -/
+
+/-- Build the complete map from module name to `RepoOrigin`, verifying that the
+foundation, trusted, and theory module sets are pairwise disjoint and every
+`Trusted` module has a valid `TrustTier`. -/
+def buildRepoOrigins (j : Json) (foundation trusted theory : Array Name) :
+    IO (Std.HashMap Name RepoOrigin) := do
+  let tierMap ← parseModuleTiers j trusted
+  let roles0 := foundation.foldl (init := ({} : Std.HashMap Name RepoOrigin))
+    fun acc m => acc.insert m .foundation
+  let roles1 ← trusted.foldlM (init := roles0) fun acc m => do
+    let some tier := tierMap.get? m
+      | fail s!"missing trust tier for Trusted module {m}"
+    insertRole acc m (.repo (.trusted tier))
+  theory.foldlM (init := roles1) fun acc m =>
+    insertRole acc m (.repo .theory)
+
+/-- Verify admitted Pass 1 module inventories, `.olean` header imports
+(`RepoOrigin.importViolation?`), and declaration origins, and apply namespace
+and logical-admission rules to repository declarations. Return all repository
+constants, the compiler-only (IR) names of `Trusted` modules, and any alternate
+serialized foundation theorem proofs for replay checking. -/
+def verifyAndCollectLocals (env : Environment)
+    (roles : Std.HashMap Name RepoOrigin) :
+    IO (Std.HashMap Name ConstantInfo × NameSet × Array ConstantInfo) := do
   let loadedMods : NameSet :=
     .ofList (env.header.modules.toList.map (·.module))
   for (reqMod, _) in roles do
@@ -697,169 +1396,69 @@ def verifyAndCollectLocals (env : Environment)
       fail s!"missing required module {reqMod}"
   let mut locals : Std.HashMap Name ConstantInfo := {}
   let mut extraNames : NameSet := {}
+  let mut alternateProofs : Array ConstantInfo := #[]
   for m in env.header.modules, data in env.header.moduleData do
     unless data.constNames == data.constants.map ConstantInfo.name do
       fail s!"invalid inventory {m.module}"
     let some role := roles.get? m.module
       | fail s!"foreign module {m.module}"
-    for ci in data.constants do
-      let (orig, origRole) ← constProvenance env roles ci.name
-      match role with
-      | .foundation =>
+    checkHeaderImports roles m.module role data RepoOrigin.importViolation?
+    match role with
+    | .foundation =>
+      for ci in data.constants do
+        let (_, origRole) ← constProvenance env roles ci.name
+        let stored ← lookupConst env ci.name "stored declaration"
         unless origRole == .foundation do
           fail s!"inventory origin mismatch {ci.name}"
-      | .trusted _ | .theory =>
-        if locals.contains ci.name then
-          fail s!"duplicate declaration {ci.name}"
-        unless orig == m.module do
-          fail s!"inventory origin mismatch {ci.name}"
-      let some stored := env.checked.get.find? ci.name
-        | fail s!"missing stored declaration {ci.name}"
-      unless stored.type == ci.type && stored.value? true == ci.value? true do
-        fail s!"stored declaration differs from inventory {ci.name}"
-      if role != .foundation then
-        validateLocalConstant m.module role ci
-        locals := locals.insert ci.name ci
-    for n in data.extraConstNames do
-      let (orig, origRole) ← constProvenance env roles n
-      match role with
-      | .foundation =>
+        alternateProofs := alternateProofs ++
+          (← inventoryAlternates stored ci true)
+      for n in data.extraConstNames do
+        let (_, origRole) ← constProvenance env roles n
         unless origRole == .foundation do
           fail s!"IR helper provenance mismatch {n}"
-      | .trusted _ | .theory =>
-        unless orig == m.module do
-          fail s!"IR helper provenance mismatch {n}"
-        if (env.checked.get.find? n).isSome then
-          unless locals.contains n do
-            fail s!"uninventoried kernel compiler helper {n}"
-        else if role matches .trusted _ then
-          extraNames := extraNames.insert n
+    | .repo srcRole =>
+      let (nextLocals, nextExtras) ←
+        collectRepoModuleConstants env roles m.module srcRole data locals
+          extraNames
+      locals := nextLocals
+      extraNames := nextExtras
   for (n, _) in env.checked.get.constants do
     let (_, origRole) ← constProvenance env roles n
     if origRole != .foundation && !locals.contains n then
       fail s!"uninventoried constant {n}"
-  return (locals, extraNames)
-
-/-- Enforce the origin rule and the vetted rule on every `Trusted` constant:
-- **Origin rule:** a `.trusted _` constant may only reference `.foundation` or
-  `.trusted _` constants (never `.theory`).
-- **Vetted rule:** a `.trusted .vetted` constant may only reference
-  `.foundation` or `.trusted .vetted` constants (never
-  `.trusted (.candidate _)`). -/
-def checkTierReferences (env : Environment)
-    (roles : Std.HashMap Name ModuleRole)
-    (locals : Std.HashMap Name ConstantInfo) : IO Unit := do
-  for (cName, ci) in locals do
-    let (_, cRole) ← constProvenance env roles cName
-    if let .trusted tier := cRole then
-      for dep in ← declarationEdges ci do
-        let (depOrigin, depRole) ← constProvenance env roles dep
-        match depRole with
-        | .foundation => pure ()
-        | .trusted depTier =>
-          if tier == .vetted && depTier != .vetted then
-            fail s!"vetted constant {cName} references {depTier.render} constant {dep}"
-        | .theory =>
-          fail s!"Trusted constant {cName} references {dep} from non-Trusted module {depOrigin}"
-
-/-- Verify that `claimName` is a `.defnInfo` definition in `expectedClaimMod`
-with type `Prop` (`claimCi.type == .sort .zero`) referencing every constant in
-`reqConsts`, and that `proofName` is a `.thmInfo` theorem in
-`expectedProofMod` whose type is exactly `Expr.const claimName []`. -/
-def requireExactClaimProof (env : Environment)
-    (locals : Std.HashMap Name ConstantInfo)
-    (expectedClaimMod expectedProofMod claimName proofName : Name)
-    (reqConsts : List Name := []) : IO Unit := do
-  let some claimCi := locals.get? claimName
-    | fail s!"missing required claim {claimName}"
-  unless claimCi matches .defnInfo _ do
-    fail s!"expected {claimName} to be a definition"
-  let claimOrig ← origin env claimName
-  unless claimOrig == expectedClaimMod do
-    fail (s!"expected {claimName} to be defined in " ++
-      s!"{expectedClaimMod}, found {claimOrig}")
-  unless claimCi.type == .sort .zero do
-    fail s!"expected {claimName} to have type Prop"
-  let some claimVal := claimCi.value? true
-    | fail s!"missing definition body for {claimName}"
-  let valConsts ← expressionEdges claimVal
-  for req in reqConsts do
-    unless valConsts.contains req do
-      fail s!"claim {claimName} body must reference {req}"
-  let some proofCi := locals.get? proofName
-    | fail s!"missing required theorem {proofName}"
-  unless proofCi matches .thmInfo _ do
-    fail s!"expected {proofName} to be a theorem"
-  let proofOrig ← origin env proofName
-  unless proofOrig == expectedProofMod do
-    fail (s!"expected {proofName} to be defined in " ++
-      s!"{expectedProofMod}, found {proofOrig}")
-  unless proofCi.type == .const claimName [] do
-    fail s!"theorem {proofName} must prove {claimName} directly"
-
-/-- Verify that `proofName` is a `.thmInfo` theorem in `expectedProofMod` whose
-type is `Expr.app (Expr.const claimName []) (Expr.const argName [])`, where
-`claimName` is a `.defnInfo` definition in `expectedClaimMod` referencing every
-constant in `reqConsts`. -/
-def requireParamClaimProof (env : Environment)
-    (locals : Std.HashMap Name ConstantInfo)
-    (expectedClaimMod expectedProofMod claimName argName proofName : Name)
-    (reqConsts : List Name) : IO Unit := do
-  let some proofCi := locals.get? proofName
-    | fail s!"missing required theorem {proofName}"
-  unless proofCi matches .thmInfo _ do
-    fail s!"expected {proofName} to be a theorem"
-  let proofOrig ← origin env proofName
-  unless proofOrig == expectedProofMod do
-    fail (s!"expected {proofName} to be defined in " ++
-      s!"{expectedProofMod}, found {proofOrig}")
-  unless proofCi.type == .app (.const claimName []) (.const argName []) do
-    fail s!"theorem {proofName} must prove {claimName} {argName} directly"
-  let some claimCi := locals.get? claimName
-    | fail s!"missing required claim {claimName}"
-  unless claimCi matches .defnInfo _ do
-    fail s!"expected {claimName} to be a definition"
-  let claimOrig ← origin env claimName
-  unless claimOrig == expectedClaimMod do
-    fail (s!"expected {claimName} to be defined in " ++
-      s!"{expectedClaimMod}, found {claimOrig}")
-  let some claimVal := claimCi.value? true
-    | fail s!"missing definition body for {claimName}"
-  let valConsts ← expressionEdges claimVal
-  for req in reqConsts do
-    unless valConsts.contains req do
-      fail s!"claim {claimName} body must reference {req}"
+  return (locals, extraNames, alternateProofs)
 
 /-- Verify that `Trusted.MirAst` and `Trusted.MirSemantics` are loaded as
-`.trusted` modules and `Anneal.MirWp` is loaded as a `.theory` module (whenever
-`requireMirWp` is `true` or any MIR/`PureLift` module is loaded), and that the
-core weakest-precondition adequacy and fault-characterization theorems and all
-15 non-vacuity and parameter-boundary canaries in `Anneal.MirWp` prove the
-exact `*Claim` propositions defined in `Trusted.MirSemantics`. -/
+`.repo (.trusted _)` modules and `Anneal.MirWp` is loaded as a `.repo .theory`
+module (whenever `requireMirWp` is `true` or any MIR/`PureLift` module is
+loaded), and that the core weakest-precondition adequacy and
+fault-characterization theorems and all 15 non-vacuity and parameter-boundary
+canaries in `Anneal.MirWp` prove the exact `*Claim` propositions defined in
+`Trusted.MirSemantics`. -/
 def verifyMirWpCoreTheorems (env : Environment)
-    (roles : Std.HashMap Name ModuleRole)
+    (roles : Std.HashMap Name RepoOrigin)
     (locals : Std.HashMap Name ConstantInfo)
     (requireMirWp : Bool) : IO Unit := do
   if requireMirWp || roles.contains `Anneal.PureLift ||
       roles.contains `Trusted.MirAst ||
       roles.contains `Trusted.MirSemantics || roles.contains `Anneal.MirWp then
-    unless roles.get? `Trusted.MirAst matches some (.trusted _) do
+    unless roles.get? `Trusted.MirAst matches some (.repo (.trusted _)) do
       fail "missing required trusted module Trusted.MirAst"
-    unless roles.get? `Trusted.MirSemantics matches some (.trusted _) do
+    unless roles.get? `Trusted.MirSemantics matches some (.repo (.trusted _)) do
       fail "missing required trusted module Trusted.MirSemantics"
-    unless roles.get? `Anneal.MirWp matches some .theory do
+    unless roles.get? `Anneal.MirWp matches some (.repo .theory) do
       fail "missing required theory module Anneal.MirWp"
     let semMod := `Trusted.MirSemantics
     let wpMod := `Anneal.MirWp
-    requireParamClaimProof env locals semMod wpMod
+    requireClaimProof env locals semMod wpMod
       `Trusted.MirSemantics.WpSoundnessClaim
-      `Anneal.MirWp.wpProg
+      (some `Anneal.MirWp.wpProg)
       `Anneal.MirWp.wellFormed_and_spec_of_wp
       [`Trusted.MirSemantics.SatisfiesPost, `Trusted.MirSemantics.Diverges,
         `Trusted.MirSemantics.Behavior]
-    requireParamClaimProof env locals semMod wpMod
+    requireClaimProof env locals semMod wpMod
       `Trusted.MirSemantics.WpFaultSoundnessClaim
-      `Anneal.MirWp.wpFaultProg
+      (some `Anneal.MirWp.wpFaultProg)
       `Anneal.MirWp.reaches_fault_and_exclusive_of_wpFault
       [`Trusted.MirSemantics.ReachesResult, `Trusted.MirSemantics.Diverges,
         `Trusted.MirSemantics.WellFormed]
@@ -902,7 +1501,7 @@ def verifyMirWpCoreTheorems (env : Environment)
         (`Trusted.MirSemantics.CanaryNegativeUnsupportedUnsignedNegAnnealClaim,
           `Anneal.MirWp.canary_negative_unsupported_unsigned_neg_anneal,
           [negClaim])] do
-      requireExactClaimProof env locals semMod wpMod claimName proofName
+      requireClaimProof env locals semMod wpMod claimName none proofName
         reqConsts
 
 /-- Execute Phase 2 (`"audit"`) on the compiled `.olean` environment `env`. -/
@@ -910,129 +1509,83 @@ def audit (j : Json) (env : Environment) (foundation : Array Name)
     (trusted : Array Name) (theory : Array Name) : IO Json := do
   validateGraph j env
   let axiomPolicy ← field (α := Array (String × String)) j "axioms"
-  let roles ← buildModuleRoles j foundation trusted theory
-  let (locals, extraNames) ← verifyAndCollectLocals env roles
-  let lookup n :=
-    match env.checked.get.find? n with
-    | some ci => pure ci
-    | none => fail s!"missing dependency declaration {n}"
-  checkTierReferences env roles locals
+  let roles ← buildRepoOrigins j foundation trusted theory
+  let (locals, extraNames, alternateProofs) ← verifyAndCollectLocals env roles
+  checkDeclarationEdges env roles locals RepoOrigin.edgeViolation?
   let requireMirWp := (j.getObjValAs? Bool "requireMirWp").toOption.getD true
   verifyMirWpCoreTheorems env roles locals requireMirWp
   let inventory ← locals.foldM (init := #[]) fun acc cName ci => do
     let (orig, cRole) ← constProvenance env roles cName
     match cRole with
-    | .trusted tier =>
+    | .repo (.trusted tier) =>
       let deps := (← declarationEdges ci).toArray.qsort Name.lt
       return acc.push <| Json.mkObj [
         ("name", toJson cName), ("module", toJson orig),
         ("kind", toJson (kind ci)), ("trustStatus", toJson tier.render),
         ("dependencies", toJson deps)]
-    | .foundation | .theory => return acc
-  let allLocalRoots := locals.fold (init := []) fun acc n _ => n :: acc
+    | .foundation | .repo .theory => return acc
+  let mut allLocalRoots := locals.fold (init := []) fun acc n _ => n :: acc
+  for ci in alternateProofs do
+    allLocalRoots := ci.name :: (← declarationEdges ci).toList ++ allLocalRoots
+  let provenance := constProvenance env roles
   let (allAxioms, allVisited) ←
-    closure lookup (origin env) axiomPolicy allLocalRoots
-  -- Replay every non-foundation constant from scratch through the Lean kernel
-  -- against the locked foundation environment (`loadExts := false`).
+    closure (lookupConst env) provenance axiomPolicy allLocalRoots
+  -- Replay repository constants through the kernel against only the locked
+  -- foundation (`loadExts := false`).
   let base ← importEnv j foundation
-  discard <| base.toKernelEnv.replay locals
+  discard <| replayOntoBase base locals alternateProofs
   return Json.mkObj [
     ("graph", graph env), ("declarations", .arr inventory),
     ("kernelDeclarations", toJson inventory.size),
     ("replayedDeclarations", toJson locals.size),
+    ("checkedAlternateProofs", toJson alternateProofs.size),
     ("compilerOnlyNames", toJson extraNames.size),
     ("reachableDeclarations", toJson allVisited.size),
     ("axioms", toJson allAxioms), ("replay", toJson true)]
 
-/-! ## Phase 3: `lean-miri` closure and Pass 2 correspondence audit -/
+/-! ## Phase 3: Pass 2 MIR correspondence and `lean-miri` cone audit -/
 
-/-- Closed 5-role partition of every module loaded in the
-`"correspondence-audit"` environment. -/
-inductive CorrModuleRole where
-  | foundation
-  | sysrootFoundation
-  | vendorMiri
-  | trusted (tier : TrustTier)
-  | theory
-  deriving BEq, DecidableEq
-
-/-- Import `roots` at `trustLevel := 0` with `plugins := #[]`,
-`loadExts := false`, and `level := .private` using the configured search
-path. -/
-def importCorrEnv (roots : Array Name) : IO Environment := do
-  let env ← importModules (roots.map fun n => { module := n }) {}
-    (trustLevel := 0) (plugins := #[]) (loadExts := false) (level := .private)
-  unless env.header.modules.size == env.header.moduleData.size do
-    throw <| IO.userError "module/data array alignment failure"
-  return env.setExporting false
-
-/-- Classify every loaded module in `env.header.modules` into one of the five
-mutually exclusive `CorrModuleRole`s, verifying that `foundation`,
-`sysrootFoundation`, `trusted`, `theory`, and `vendorMiri` are pairwise
-disjoint, that all required modules (`foundation`, `trusted`, `theory`, and
-`vendorMiri`) are loaded, and that any additional sysroot `Init.*`, `Std.*`, or
-`Lean.*` module imported by `vendorMiri` belongs to the `sysrootFoundation`
-allowlist whose `.olean*` artifacts `anneal-audit` verified against
-`LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`.
+/-- Classify every loaded module in `env.header.modules` into `CorrOrigin`,
+verifying that `foundation`, `sysrootFoundation`, `trusted`, `theory`, and
+`vendorMiri` are pairwise disjoint, that all required modules (`foundation`,
+`trusted`, `theory`, and `vendorMiri`) are loaded, and that any additional
+sysroot `Init.*`, `Std.*`, or `Lean.*` module imported by `vendorMiri` belongs
+to the `sysrootFoundation` allowlist whose `.olean*` artifacts `anneal-audit`
+verified against `LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`.
 
 The `Lean.*` root must be admitted as a whole: several modules in the
-`Miri.Interpreter.ExecutionMachine` closure (for example
-`Miri.Memory.InitMask` and `Miri.TreeBorrows.TreeState`) `import Lean`, which
-loads the entire `Lean` package from the pinned toolchain. Admission only
-classifies these modules; `closureCorr` still rejects any `unsafe` or
-`partial` constant that the interpreter or correspondence cone reaches, and
-`verifyAndCollectCorrLocals` rejects any of their constants in the reserved
-`Trusted` or `Anneal` namespaces. -/
+`Miri.Interpreter.ExecutionMachine` closure (for example `Miri.Memory.InitMask`
+and `Miri.TreeBorrows.TreeState`) `import Lean`, which loads the entire `Lean`
+package from the pinned toolchain. Admission only classifies these modules;
+`closureCorr` rejects any `unsafe` or `partial` constant that the
+correspondence cone reaches, and `verifyAndCollectCorrLocals` rejects any of
+their constants in the reserved `Trusted` or `Anneal` namespaces. -/
 def classifyCorrModules (j : Json) (env : Environment)
     (foundation trusted theory vendorMiri : Array Name) :
-    IO (Std.HashMap Name CorrModuleRole) := do
+    IO (Std.HashMap Name CorrOrigin) := do
   let sysrootFoundation ← names j "sysrootFoundation"
-  let tierEntries ← field (α := Array (String × String)) j "moduleTiers"
-  let tierMap ← tierEntries.foldlM (init := ({} : Std.HashMap Name TrustTier))
-    fun acc (mStr, rawTier) => do
-      let m := mStr.toName
-      if acc.contains m then fail s!"duplicate module tier for {m}"
-      unless trusted.contains m do
-        fail s!"trust tier declared for non-Trusted module {m}"
-      let some tier := TrustTier.parse? rawTier
-        | fail s!"invalid trust tier {rawTier} for {m}"
-      return acc.insert m tier
-  let roles0 :=
-    foundation.foldl (init := ({} : Std.HashMap Name CorrModuleRole))
-      fun acc m => acc.insert m .foundation
+  let tierMap ← parseModuleTiers j trusted
+  let roles0 := foundation.foldl (init := ({} : Std.HashMap Name CorrOrigin))
+    fun acc m => acc.insert m .foundation
   let roles1 ← trusted.foldlM (init := roles0) fun acc m => do
-    if acc.contains m then fail s!"overlapping module role for {m}"
     let some tier := tierMap.get? m
       | fail s!"missing trust tier for Trusted module {m}"
-    return acc.insert m (.trusted tier)
-  let roles2 ← theory.foldlM (init := roles1) fun acc m => do
-    if acc.contains m then fail s!"overlapping module role for {m}"
-    return acc.insert m .theory
-  let roles3 ← vendorMiri.foldlM (init := roles2) fun acc m => do
-    if acc.contains m then fail s!"overlapping module role for {m}"
-    return acc.insert m .vendorMiri
+    insertRole acc m (.repo (.trusted tier))
+  let roles2 ← theory.foldlM (init := roles1) fun acc m =>
+    insertRole acc m (.repo .theory)
+  let roles3 ← vendorMiri.foldlM (init := roles2) fun acc m =>
+    insertRole acc m .vendorMiri
   let loadedMods : NameSet :=
     .ofList (env.header.modules.toList.map (·.module))
   for (reqMod, _) in roles3 do
     unless loadedMods.contains reqMod do
       fail s!"missing required module {reqMod} in correspondence environment"
-  let roles4 ← sysrootFoundation.foldlM (init := roles3) fun acc m => do
-    if acc.contains m then fail s!"overlapping module role for {m}"
-    return acc.insert m .sysrootFoundation
+  let roles4 ← sysrootFoundation.foldlM (init := roles3) fun acc m =>
+    insertRole acc m .sysrootFoundation
   for m in env.header.modules do
     unless roles4.contains m.module do
       fail s!"foreign module {m.module} in correspondence environment"
   return roles4
-
-/-- Return the defining module name and `CorrModuleRole` for constant `n` in
-`env`. -/
-def corrConstProvenance (env : Environment)
-    (roles : Std.HashMap Name CorrModuleRole) (n : Name) :
-    IO (Name × CorrModuleRole) := do
-  let orig ← origin env n
-  let some role := roles.get? orig
-    | fail s!"foreign module {orig} for {n}"
-  return (orig, role)
 
 /-- Return `true` if `ci`'s type, value (including `opaque` definitions), or
 recursor rules directly reference `sorryAx`. -/
@@ -1051,7 +1604,8 @@ def forbiddenVendorCompilerRefs : List Name :=
 
 /-- Return the first constant name in `targets` directly referenced in `ci`'s
 type, value (including `opaque` definitions), or recursor rules, if any. -/
-def constantFindRef? (ci : ConstantInfo) (targets : List Name) : Option Name :=
+def constantFindRef? (ci : ConstantInfo) (targets : List Name) :
+    Option Name :=
   let findInExpr (e : Expr) : Option Name :=
     match e.find? fun
       | .const n _ => targets.contains n
@@ -1068,25 +1622,37 @@ def constantFindRef? (ci : ConstantInfo) (targets : List Name) : Option Name :=
       | .recInfo v => v.rules.findSome? fun r => findInExpr r.rhs
       | _ => none
 
-/-- Validate all `.trusted`, `.theory`, `.vendorMiri`, and `.sysrootFoundation`
-declarations in the environment and return `(repoLocals, corrLocals,
-vendorLocals)`.
+/-- Reject any external (`.sysrootFoundation` or `.vendorMiri`) constant `n`
+declared in the reserved `Trusted` or `Anneal` root namespaces (after stripping
+private prefixes). -/
+def validateExternalNamespace (modName : Name) (n : Name) : IO Unit := do
+  let root := (privateToUserName n).getRoot
+  if root == `Trusted || root == `Anneal then
+    fail (s!"external module {modName} cannot declare constant " ++
+      s!"{n} in reserved {root} namespace")
 
-`.vendorMiri` and `.sysrootFoundation` modules are outside the repository's
-source-role checks, so this rejects any constant they declare in the reserved
-`Trusted` or `Anneal` root namespaces (after stripping private prefixes). For
-every `.vendorMiri` constant, it also checks inventory and origin integrity,
-rejects `axiom` (including any declaration whose body was stripped into an
-axiom), `unsafe`, quotient primitives, direct `sorryAx` references, and direct
+/-- Validate `.olean` header imports (`CorrOrigin.importViolation?`), `.repo`
+declarations, and `.vendorMiri` / `.sysrootFoundation` declarations in the
+correspondence environment, returning `(repoLocals, corrLocals, vendorLocals)`.
+
+- `repoLocals` contains all constants from Pass 1 and Pass 2 `.repo` modules.
+- `corrLocals` contains the subset defined in `corrModules`
+  (`trusted/correspondence/` and `correspondence/`).
+- `vendorLocals` contains all unique `.vendorMiri` declarations for standalone
+  kernel replay.
+
+`.vendorMiri` and `.sysrootFoundation` modules are outside repository
+`"preflight"`, so this rejects any constant they declare in the reserved
+`Trusted` or `Anneal` root namespaces. For every `.vendorMiri` constant, it
+also checks inventory and origin integrity, rejects `axiom`, `unsafe`, quotient
+primitives, missing bodies, direct `sorryAx` references, and direct
 compiler-reflection references (`Lean.ofReduceBool`, `Lean.ofReduceNat`,
-`Lean.trustCompiler`, `Lean.reduceBool`, `Lean.reduceNat`), and collects the
-unique vendored declarations for standalone kernel replay. Identical
+`Lean.trustCompiler`, `Lean.reduceBool`, `Lean.reduceNat`), permits identical
 sibling-module `.thmInfo` duplicates (lazily synthesized equation or
-`congr_simp` lemmas) are permitted; any other duplicate is rejected. Other
-unapproved axioms are rejected anywhere transitively reachable from the 21
-`Miri.Interpreter.ExecutionMachine` cone roots by `closureCorr`. -/
+`congr_simp` lemmas), and verifies completeness across
+`env.checked.get.constants`. -/
 def verifyAndCollectCorrLocals (env : Environment)
-    (roles : Std.HashMap Name CorrModuleRole) (corrModules : NameSet) :
+    (roles : Std.HashMap Name CorrOrigin) (corrModules : NameSet) :
     IO (Std.HashMap Name ConstantInfo × Std.HashMap Name ConstantInfo ×
       Std.HashMap Name ConstantInfo) := do
   let mut repoLocals : Std.HashMap Name ConstantInfo := {}
@@ -1098,29 +1664,23 @@ def verifyAndCollectCorrLocals (env : Environment)
       fail s!"invalid inventory {m.module}"
     let some role := roles.get? m.module
       | fail s!"foreign module {m.module}"
+    checkHeaderImports roles m.module role data CorrOrigin.importViolation?
     match role with
     | .foundation => pure ()
     | .sysrootFoundation =>
       for ci in data.constants do
-        let root := (privateToUserName ci.name).getRoot
-        if root == `Trusted || root == `Anneal then
-          fail (s!"external module {m.module} cannot declare constant " ++
-            s!"{ci.name} in reserved {root} namespace")
+        validateExternalNamespace m.module ci.name
     | .vendorMiri =>
       let mut modSeen : NameSet := {}
       for ci in data.constants do
         if modSeen.contains ci.name then
           fail s!"duplicate declaration {ci.name}"
         modSeen := modSeen.insert ci.name
-        let root := (privateToUserName ci.name).getRoot
-        if root == `Trusted || root == `Anneal then
-          fail (s!"external module {m.module} cannot declare constant " ++
-            s!"{ci.name} in reserved {root} namespace")
-        let (orig, origRole) ← corrConstProvenance env roles ci.name
+        validateExternalNamespace m.module ci.name
+        let (orig, origRole) ← constProvenance env roles ci.name
         unless origRole == .vendorMiri do
           fail s!"inventory origin mismatch {ci.name}"
-        let some stored := env.checked.get.find? ci.name
-          | fail s!"missing stored declaration {ci.name}"
+        let stored ← lookupConst env ci.name "stored declaration"
         unless kind stored == kind ci && stored.isUnsafe == ci.isUnsafe &&
             stored.isPartial == ci.isPartial && stored.type == ci.type &&
             stored.value? true == ci.value? true &&
@@ -1159,121 +1719,57 @@ def verifyAndCollectCorrLocals (env : Environment)
             fail s!"duplicate declaration {ci.name}"
         | none =>
           vendorLocals := vendorLocals.insert ci.name ci
-    | .trusted tier =>
-      for ci in data.constants do
-        if repoLocals.contains ci.name then
-          fail s!"duplicate declaration {ci.name}"
-        let orig ← origin env ci.name
-        unless orig == m.module do
-          fail s!"inventory origin mismatch {ci.name}"
-        let some stored := env.checked.get.find? ci.name
-          | fail s!"missing stored declaration {ci.name}"
-        unless stored.type == ci.type && stored.value? true == ci.value? true do
-          fail s!"stored declaration differs from inventory {ci.name}"
-        validateLocalConstant m.module (.trusted tier) ci
-        repoLocals := repoLocals.insert ci.name ci
-        if corrModules.contains m.module then
-          corrLocals := corrLocals.insert ci.name ci
-    | .theory =>
-      for ci in data.constants do
-        if repoLocals.contains ci.name then
-          fail s!"duplicate declaration {ci.name}"
-        let orig ← origin env ci.name
-        unless orig == m.module do
-          fail s!"inventory origin mismatch {ci.name}"
-        let some stored := env.checked.get.find? ci.name
-          | fail s!"missing stored declaration {ci.name}"
-        unless stored.type == ci.type && stored.value? true == ci.value? true do
-          fail s!"stored declaration differs from inventory {ci.name}"
-        validateLocalConstant m.module .theory ci
-        repoLocals := repoLocals.insert ci.name ci
-        if corrModules.contains m.module then
+    | .repo srcRole =>
+      let (nextLocals, _) ←
+        collectRepoModuleConstants env roles m.module srcRole data repoLocals {}
+      repoLocals := nextLocals
+      if corrModules.contains m.module then
+        for ci in data.constants do
           corrLocals := corrLocals.insert ci.name ci
   for (n, _) in vendorLocals do
     unless vendorOrigSeen.contains n do
       fail s!"inventory origin mismatch {n}"
   for (n, _) in env.checked.get.constants do
-    let (_, origRole) ← corrConstProvenance env roles n
+    let (orig, origRole) ← constProvenance env roles n
     match origRole with
-    | .foundation | .sysrootFoundation => pure ()
+    | .foundation => pure ()
+    | .sysrootFoundation =>
+      validateExternalNamespace orig n
     | .vendorMiri =>
       unless vendorLocals.contains n do
         fail s!"uninventoried vendor Miri constant {n}"
-    | .trusted _ | .theory =>
+    | .repo _ =>
       unless repoLocals.contains n do
         fail s!"uninventoried constant {n}"
   return (repoLocals, corrLocals, vendorLocals)
 
-/-- Enforce trust-tier separation across all `.trusted` constants:
-- A `.trusted .vetted` constant may only reference `.foundation` or
-  `.trusted .vetted` constants (never `.sysrootFoundation`, `.vendorMiri`, or
-  `.trusted (.candidate _)`).
-- A `.trusted (.candidate _)` constant may reference `.foundation`,
-  `.sysrootFoundation`, `.vendorMiri`, or `.trusted _` constants (never
-  `.theory`). -/
-def checkCorrTierReferences (env : Environment)
-    (roles : Std.HashMap Name CorrModuleRole)
-    (repoLocals : Std.HashMap Name ConstantInfo) : IO Unit := do
-  for (cName, ci) in repoLocals do
-    let (_, cRole) ← corrConstProvenance env roles cName
-    if let .trusted tier := cRole then
-      for dep in ← declarationEdges ci do
-        let (depOrigin, depRole) ← corrConstProvenance env roles dep
-        match depRole with
-        | .foundation => pure ()
-        | .sysrootFoundation | .vendorMiri =>
-          if tier == .vetted then
-            fail (s!"vetted constant {cName} references non-foundation " ++
-              s!"constant {dep} from {depOrigin}")
-        | .trusted depTier =>
-          if tier == .vetted && depTier != .vetted then
-            fail (s!"vetted constant {cName} references " ++
-              s!"{depTier.render} constant {dep}")
-        | .theory =>
-          fail (s!"Trusted constant {cName} references {dep} from " ++
-            s!"non-Trusted module {depOrigin}")
-
 /-- Traverse the transitive constant-level dependency cone starting from
-`pending`, verifying that:
+`pending` in the Pass 2 environment, verifying via `closure` that:
+
 - No reachable constant is `unsafe` or `isPartial`.
 - No reachable `.vendorMiri` constant is `.opaqueInfo` (guaranteeing that none
   of the 24 `partial def` JSON parser helpers in `Miri.Input.*` is reachable).
 - Every reachable axiom belongs to `axioms`. -/
-partial def closureCorr (env : Environment)
-    (roles : Std.HashMap Name CorrModuleRole)
+def closureCorr (env : Environment)
+    (roles : Std.HashMap Name CorrOrigin)
     (axioms : Array (String × String))
-    (pending : List Name) (visited : NameSet := {})
-    (reachedAxioms : NameSet := {}) : IO (Array Name × NameSet) := do
-  match pending with
-  | [] => return (reachedAxioms.toArray.qsort Name.lt, visited)
-  | n :: rest =>
-    if visited.contains n then
-      closureCorr env roles axioms rest visited reachedAxioms
-    else
-      let visited := visited.insert n
-      let (m, role) ← corrConstProvenance env roles n
-      let some ci := env.checked.get.find? n
-        | fail s!"missing dependency declaration {n}"
-      if ci.isUnsafe || ci.isPartial then
-        fail (s!"unsafe/partial constant {n} from {m} in correspondence " ++
-          "dependency cone")
-      if role == .vendorMiri && (ci matches .opaqueInfo _) then
-        fail (s!"opaque/partial vendor Miri constant {n} from {m} in " ++
-          "correspondence dependency cone")
-      let reachedAxioms ← if ci.isAxiom then do
-        unless axioms.contains (n.toString, m.toString) do
-          fail s!"unapproved axiom {n} from {m}"
-        pure (reachedAxioms.insert n)
-      else
-        pure reachedAxioms
-      let deps ← declarationEdges ci
-      closureCorr env roles axioms (deps.toList ++ rest) visited reachedAxioms
+    (pending : List Name) : IO (Array Name × NameSet) := do
+  let provenance := constProvenance env roles
+  let onVisit (n m : Name) (role : CorrOrigin) (ci : ConstantInfo) :
+      IO Unit := do
+    if ci.isUnsafe || ci.isPartial then
+      fail (s!"unsafe/partial constant {n} from {m} in correspondence " ++
+        "dependency cone")
+    if role == .vendorMiri && (ci matches .opaqueInfo _) then
+      fail (s!"opaque/partial vendor Miri constant {n} from {m} in " ++
+        "correspondence dependency cone")
+  closure (lookupConst env) provenance axioms pending onVisit
 
-/-- Verify that the `Miri.Interpreter.ExecutionMachine` interpreter cone is
-free of `unsafe`, `partial`, `.vendorMiri` `opaque` declarations, and
-unapproved axioms. -/
+/-- Verify the 21-root `Miri.Interpreter.ExecutionMachine` transitive
+dependency cone under `closureCorr`, starting with
+`Miri.Interpreter.ExecutionMachine.step`. -/
 def verifyMiriExecutionMachineCone (env : Environment)
-    (roles : Std.HashMap Name CorrModuleRole)
+    (roles : Std.HashMap Name CorrOrigin)
     (axiomPolicy : Array (String × String)) : IO (Array Name × NameSet) :=
   closureCorr env roles axiomPolicy [
     `Miri.Interpreter.ExecutionMachine.step,
@@ -1298,35 +1794,299 @@ def verifyMiriExecutionMachineCone (env : Environment)
     `Miri.Interpreter.ControlFlow.evalTerminator,
     `Miri.Interpreter.ControlFlow.returnFromCurrentFrame]
 
-/-- Execute Phase 3 (`"correspondence-audit"`) on the `lean-miri` closure
-environment, including standalone kernel replay of every non-`isPartial`
-`.vendorMiri` declaration onto the authenticated `.foundation` and
-`.sysrootFoundation` base on every run (cold build and cache hit alike). -/
-def auditCorrespondence (j : Json) (sysrootStr : String)
-    (foundation : Array Name) : IO Json := do
-  let baseTrusted ← names j "trusted"
-  let corrTrusted ← names j "corrTrusted"
-  let baseTheory ← names j "theory"
-  let corrTheory ← names j "corrTheory"
+/-- Verify that `claimName` is a `Prop` definition in `Trusted.Correspondence`
+referencing every constant in the non-empty `reqConsts` list, and that
+`proofName` is a `.thmInfo` theorem in `Anneal.MirCorrespondenceProof` whose
+type is `Expr.const claimName []`. -/
+def requireCorrClaimProof (env : Environment)
+    (corrLocals : Std.HashMap Name ConstantInfo)
+    (claimName proofName : Name) (reqConsts : List Name) : IO Unit :=
+  requireClaimProof env corrLocals `Trusted.Correspondence
+    `Anneal.MirCorrespondenceProof claimName none proofName reqConsts
+
+/-- Verify that all 27 Pass 2 correspondence, wiring, and canary (`D6`–`D10`)
+claims—covering top-level correspondence, fault equivalence, `deinitMovedPlace`
+wiring, codec round-trip, constructor preservation, uniqueness, simulation, and
+canaries—are present in `Trusted.Correspondence`, reference their required
+semantic definitions (so replacing any claim with `True` fails CI), and are
+proved with exact claim-type equality in `Anneal.MirCorrespondenceProof`. -/
+def verifyCorrespondenceClaims (env : Environment)
+    (corrLocals : Std.HashMap Name ConstantInfo) : IO Unit := do
+  requireCorrClaimProof env corrLocals
+    `Trusted.Correspondence.CorrespondenceClaim
+    `Anneal.MirCorrespondenceProof.correspondence_claim_holds
+    [ `Trusted.MirSemantics.WellFormed,
+      `Trusted.Correspondence.RefWellFormed,
+      `Trusted.MirSemantics.Behavior,
+      `Trusted.Correspondence.RefBehavior,
+      `Trusted.MirSemantics.Diverges,
+      `Trusted.Correspondence.RefDiverges,
+      `Trusted.Correspondence.encodeProg ]
+  requireCorrClaimProof env corrLocals
+    `Trusted.Correspondence.FaultEquivalenceClaim
+    `Anneal.MirCorrespondenceProof.fault_equivalence_claim_holds
+    [ `Trusted.MirSemantics.ReachesResult,
+      `Trusted.Correspondence.RefReachesOutcome,
+      `Trusted.Correspondence.faultToRefOutcome,
+      `Trusted.Correspondence.encodeProg ]
+  requireCorrClaimProof env corrLocals
+    `Trusted.Correspondence.MiriMoveDeinitWiringClaim
+    `Anneal.MirCorrespondenceProof.miri_move_deinit_wiring_claim_holds
+    [ `Miri.Interpreter.ExecutionMachine.step,
+      `Miri.Interpreter.ExecutionMachine.stepHooks,
+      `Miri.Interpreter.Step.step,
+      `Miri.Interpreter.ExecutionMachine.withValidation,
+      `Miri.Interpreter.ExecutionMachine.operandHooks,
+      `Miri.Interpreter.evalOperand,
+      `Miri.Interpreter.MachineHooks.takeLastPendingMoveDeinit,
+      `Miri.Interpreter.MachineHooks.recordPendingMoveDeinit,
+      `Miri.Interpreter.FnArg.copyFnArg,
+      `Miri.Interpreter.Call.deinitInPlaceArg ]
+  for (claimName, proofName, reqConsts) in [
+      (`Trusted.Correspondence.DecodeProgEncodeProgClaim,
+        `Anneal.MirCorrespondenceProof.decodeProg_encodeProg,
+        [`Trusted.Correspondence.decodeProg,
+          `Trusted.Correspondence.encodeProg]),
+      (`Trusted.Correspondence.EncodeProgTypesCanonicalClaim,
+        `Anneal.MirCorrespondenceProof.encodeProg_types_canonical,
+        [`Trusted.Correspondence.typesAreCanonical,
+          `Trusted.Correspondence.encodeProg]),
+      (`Trusted.Correspondence.EncodeStmtNoDormantNoopsClaim,
+        `Anneal.MirCorrespondenceProof.encodeStmt_no_dormant_noops,
+        [`Trusted.Correspondence.encodeStmt]),
+      (`Trusted.Correspondence.EncodeRvalueBinaryOpIffClaim,
+        `Anneal.MirCorrespondenceProof.encodeRvalue_binaryOp_iff,
+        [`Trusted.Correspondence.encodeRvalue,
+          `Trusted.Correspondence.encodeOperand]),
+      (`Trusted.Correspondence.EncodeRvalueUnaryOpIffClaim,
+        `Anneal.MirCorrespondenceProof.encodeRvalue_unaryOp_iff,
+        [`Trusted.Correspondence.encodeRvalue,
+          `Trusted.Correspondence.encodeOperand]),
+      (`Trusted.Correspondence.EncodeStmtAssignIffClaim,
+        `Anneal.MirCorrespondenceProof.encodeStmt_assign_iff,
+        [`Trusted.Correspondence.encodeStmt,
+          `Trusted.Correspondence.encodePlace,
+          `Trusted.Correspondence.encodeRvalue]),
+      (`Trusted.Correspondence.StateUniqueOfSimulationInvClaim,
+        `Anneal.MirCorrespondenceProof.state_unique_of_simulationInv,
+        [`Trusted.Correspondence.SimulationInv]),
+      (`Trusted.Correspondence.RefStateUniqueOfSimulationInvClaim,
+        `Anneal.MirCorrespondenceProof.refState_unique_of_simulationInv,
+        [`Trusted.Correspondence.SimulationInv]),
+      (`Trusted.Correspondence.InitRefStateSimClaim,
+        `Anneal.MirCorrespondenceProof.initRefState_sim,
+        [`Trusted.Correspondence.decodeProg,
+          `Trusted.MirSemantics.initState,
+          `Trusted.Correspondence.initRefState,
+          `Trusted.Correspondence.SimulationInv]),
+      (`Trusted.Correspondence.EvalRefStepEqClaim,
+        `Anneal.MirCorrespondenceProof.evalRefStep_eq,
+        [`Trusted.Correspondence.decodeProg,
+          `Trusted.Correspondence.evalRefStep,
+          `Trusted.Correspondence.stepResultToRefOutcome,
+          `Trusted.Correspondence.mapStepRes,
+          `Trusted.MirSemantics.evalStep]),
+      (`Trusted.Correspondence.SimOfRefStepClaim,
+        `Anneal.MirCorrespondenceProof.sim_of_refStep,
+        [`Trusted.Correspondence.decodeProg,
+          `Trusted.Correspondence.SimulationInv,
+          `Trusted.Correspondence.RefStep,
+          `Trusted.MirSemantics.Step]),
+      (`Trusted.Correspondence.SimOfRefReachesClaim,
+        `Anneal.MirCorrespondenceProof.sim_of_refReaches,
+        [`Trusted.Correspondence.decodeProg,
+          `Trusted.Correspondence.SimulationInv,
+          `Trusted.Correspondence.RefReaches,
+          `Trusted.MirSemantics.Reaches]),
+      (`Trusted.Correspondence.RefWellFormedOfWellFormedClaim,
+        `Anneal.MirCorrespondenceProof.refWellFormed_of_wellFormed,
+        [`Trusted.MirSemantics.WellFormed,
+          `Trusted.Correspondence.RefWellFormed,
+          `Trusted.Correspondence.encodeProg]),
+      (`Trusted.Correspondence.RefBehaviorOfBehaviorClaim,
+        `Anneal.MirCorrespondenceProof.refBehavior_of_behavior,
+        [`Trusted.MirSemantics.Behavior,
+          `Trusted.Correspondence.RefBehavior,
+          `Trusted.Correspondence.encodeProg]),
+      (`Trusted.Correspondence.BehaviorOfRefBehaviorClaim,
+        `Anneal.MirCorrespondenceProof.behavior_of_refBehavior,
+        [`Trusted.Correspondence.RefBehavior,
+          `Trusted.MirSemantics.Behavior,
+          `Trusted.Correspondence.encodeProg]),
+      (`Trusted.Correspondence.BehaviorIffRefBehaviorClaim,
+        `Anneal.MirCorrespondenceProof.behavior_iff_refBehavior,
+        [`Trusted.MirSemantics.Behavior,
+          `Trusted.Correspondence.RefBehavior,
+          `Trusted.Correspondence.encodeProg]),
+      (`Trusted.Correspondence.DivergesIffRefDivergesClaim,
+        `Anneal.MirCorrespondenceProof.diverges_iff_refDiverges,
+        [`Trusted.MirSemantics.Diverges,
+          `Trusted.Correspondence.RefDiverges,
+          `Trusted.Correspondence.encodeProg]),
+      (`Trusted.Correspondence.CanaryD6UseAfterMoveUbClaim,
+        `Anneal.MirCorrespondenceProof.canary_D6_use_after_move_ub,
+        [`Trusted.Correspondence.progUseAfterMoveD6,
+          `Trusted.MirSemantics.ReachesResult,
+          `Trusted.MirSemantics.WellFormed,
+          `Trusted.Correspondence.RefReachesOutcome,
+          `Trusted.Correspondence.encodeProg]),
+      (`Trusted.Correspondence.CanaryD7aBinopCopyThenMoveOkClaim,
+        `Anneal.MirCorrespondenceProof.canary_D7a_binop_copy_then_move_ok,
+        [`Trusted.Correspondence.progBinOpCopyThenMoveD7a,
+          `Trusted.MirSemantics.WellFormed,
+          `Trusted.MirSemantics.Behavior,
+          `Trusted.Correspondence.RefWellFormed,
+          `Trusted.Correspondence.RefBehavior,
+          `Trusted.Correspondence.encodeProg]),
+      (`Trusted.Correspondence.CanaryD7bBinopMoveThenCopyUbClaim,
+        `Anneal.MirCorrespondenceProof.canary_D7b_binop_move_then_copy_ub,
+        [`Trusted.Correspondence.progBinOpMoveThenCopyD7b,
+          `Trusted.MirSemantics.ReachesResult,
+          `Trusted.MirSemantics.WellFormed,
+          `Trusted.Correspondence.RefReachesOutcome,
+          `Trusted.Correspondence.encodeProg]),
+      (`Trusted.Correspondence.CanaryD7cBinopMoveThenMoveUbClaim,
+        `Anneal.MirCorrespondenceProof.canary_D7c_binop_move_then_move_ub,
+        [`Trusted.Correspondence.progBinOpMoveThenMoveD7c,
+          `Trusted.MirSemantics.ReachesResult,
+          `Trusted.MirSemantics.WellFormed,
+          `Trusted.Correspondence.RefReachesOutcome,
+          `Trusted.Correspondence.encodeProg]),
+      (`Trusted.Correspondence.CanaryD8SelfMoveOkClaim,
+        `Anneal.MirCorrespondenceProof.canary_D8_self_move_ok,
+        [`Trusted.Correspondence.progSelfMoveD8,
+          `Trusted.MirSemantics.WellFormed,
+          `Trusted.MirSemantics.Behavior,
+          `Trusted.Correspondence.RefWellFormed,
+          `Trusted.Correspondence.RefBehavior,
+          `Trusted.Correspondence.encodeProg]),
+      (`Trusted.Correspondence.CanaryD9MoveUnitZstOkClaim,
+        `Anneal.MirCorrespondenceProof.canary_D9_move_unit_zst_ok,
+        [`Trusted.Correspondence.progMoveUnitZstD9,
+          `Trusted.MirSemantics.WellFormed,
+          `Trusted.MirSemantics.Behavior,
+          `Trusted.Correspondence.RefWellFormed,
+          `Trusted.Correspondence.RefBehavior,
+          `Trusted.Correspondence.encodeProg]),
+      (`Trusted.Correspondence.CanaryD10AddUncheckedOverflowUbClaim,
+        `Anneal.MirCorrespondenceProof.canary_D10_add_unchecked_overflow_ub,
+        [`Trusted.MirSemantics.progAddUncheckedU32,
+          `Trusted.MirSemantics.progAddU32,
+          `Trusted.MirSemantics.ReachesResult,
+          `Trusted.MirSemantics.WellFormed,
+          `Trusted.Correspondence.RefReachesOutcome,
+          `Trusted.MirSemantics.Behavior,
+          `Trusted.Correspondence.RefBehavior,
+          `Trusted.Correspondence.encodeProg])] do
+    requireCorrClaimProof env corrLocals claimName proofName reqConsts
+
+/-- Verify that the reference machine `M_ref`
+(`Trusted.Correspondence.evalRefStep` and
+`Trusted.Correspondence.initRefState`) reaches the 19 required
+`vendor/lean-miri` primitives and never references any of the 21 named
+`M_anneal` evaluator entry points below. This is a regression check against
+accidental fallback to `M_anneal`; human review of `trusted/correspondence/`
+remains the semantic boundary. -/
+def verifyRefEvaluatorIndependence (env : Environment)
+    (roles : Std.HashMap Name CorrOrigin)
+    (axiomPolicy : Array (String × String)) : IO Unit := do
+  let (_, refCone) ← closureCorr env roles axiomPolicy
+    [`Trusted.Correspondence.evalRefStep, `Trusted.Correspondence.initRefState]
+  for reqMiri in [
+      `Miri.Interpreter.Step.step,
+      `Miri.Interpreter.IntegerOps.binary,
+      `Miri.Interpreter.IntegerOps.binaryBool,
+      `Miri.Interpreter.IntegerOps.unary,
+      `Miri.Memory.ScalarInt.truncateFromUInt,
+      `Miri.Memory.ScalarInt.tryFromUInt,
+      `Miri.Memory.ScalarInt.tryToBool,
+      `Miri.Interpreter.evalOperand,
+      `Miri.Interpreter.evalPlaceToOp,
+      `Miri.Interpreter.localToOp,
+      `Miri.Interpreter.placeWriteLocalImmediate,
+      `Miri.Interpreter.evalRvalueIntoPlace,
+      `Miri.Interpreter.runRvalue,
+      `Miri.Interpreter.Step.evalStatement,
+      `Miri.Interpreter.Frame.storageLive,
+      `Miri.Interpreter.Frame.storageDead,
+      `Miri.Interpreter.ControlFlow.goToBlock,
+      `Miri.Interpreter.ControlFlow.evalTerminator,
+      `Miri.Interpreter.ControlFlow.returnFromCurrentFrame] do
+    unless refCone.contains reqMiri do
+      fail (s!"reference evaluator cone is missing required Miri " ++
+        s!"primitive {reqMiri}")
+  for forbiddenAnneal in [
+      `Trusted.MirSemantics.isSupportedScalarOrUnitTy,
+      `Trusted.MirSemantics.liveUninitSlot,
+      `Trusted.MirSemantics.isPrimitiveReadableTy,
+      `Trusted.MirSemantics.evalConstLit,
+      `Trusted.MirSemantics.evalShiftOp,
+      `Trusted.MirSemantics.evalArithOp,
+      `Trusted.MirSemantics.evalBinOp,
+      `Trusted.MirSemantics.evalUnOp,
+      `Trusted.MirSemantics.checkVal,
+      `Trusted.MirSemantics.checkArgsMatch,
+      `Trusted.MirSemantics.evalSwitchBranches,
+      `Trusted.MirSemantics.evalBoolSwitchBranches,
+      `Trusted.MirSemantics.jumpToBlock,
+      `Trusted.MirSemantics.evalOperandToSlot,
+      `Trusted.MirSemantics.evalPrimitiveOperand,
+      `Trusted.MirSemantics.evalRvalue,
+      `Trusted.MirSemantics.writePlace,
+      `Trusted.MirSemantics.evalStatement,
+      `Trusted.MirSemantics.evalTerminator,
+      `Trusted.MirSemantics.evalStep,
+      `Trusted.MirSemantics.initState] do
+    if refCone.contains forbiddenAnneal then
+      fail (s!"reference evaluator cone illegally references M_anneal " ++
+        s!"evaluator {forbiddenAnneal}")
+
+/-- Execute Pass 2 compile-environment syntactic preflight
+(`"correspondence-preflight"`).
+
+Loads the authenticated Pass 2 union compile parser environment (`foundation`,
+Pass 1 `trusted`/`theory`, and pinned `vendorMiri` with `loadExts := true`),
+checks that every loaded module belongs to the closed `CorrOrigin` partition,
+collects every namespace with scoped `ScopedEnvExtension` entries (and all of
+their strict prefixes), and parses every `trusted/correspondence/` and
+`correspondence/` source file without elaborating it. Unscoped syntax and macro
+extensions registered by `Miri.*`, `Lean.*`, and `Std.*` (such as `throwError`
+-> `Lean.termThrowError__` and `m!` -> `Lean.termM!_`) parse into their true
+`SyntaxNodeKind` and are rejected by the closed allowlist, while any
+`namespace` or multi-component declaration entering—or any `open`,
+`open ... in`, or `mutual` preamble `open` whose candidate resolutions (across
+every prefix of `currNamespace` including root and every conservatively tracked
+open namespace, resisting decoy-namespace shadowing in the union environment)
+include—a namespace with scoped extensions is rejected before compilation. -/
+def preflightCorrespondence (j : Json) (foundation : Array Name) : IO Json := do
+  let trusted ← names j "trusted"
+  let theory ← names j "theory"
   let vendorMiri ← names j "vendorMiri"
-  let axiomPolicy ← field (α := Array (String × String)) j "axioms"
-  let allTrusted := baseTrusted ++ corrTrusted
-  let allTheory := baseTheory ++ corrTheory
-  let corrModSet : NameSet := .ofList (corrTrusted.toList ++ corrTheory.toList)
+  let sources ← field (α := Array (String × String)) j "sources"
+  let env ← importCorrEnv (foundation ++ trusted ++ theory ++ vendorMiri) true
+  discard <| classifyCorrModules j env foundation trusted theory vendorMiri
+  let scopedNamespaces ← collectScopedExtensionNamespaces env
+  let scopedPrefixes := collectScopedNamespacePrefixes scopedNamespaces
+  let headers ←
+    sources.mapM fun (n, p) =>
+      inspectSource scopedNamespaces scopedPrefixes env n.toName p
+  return Json.mkObj [("headers", .arr headers)]
+
+/-- Collect validated `.repo`, correspondence, and `.vendorMiri` inventories
+from the full Pass 2 environment in a dedicated scope so `env` can be released
+before constructing the clean sysroot replay base under `-M8192`. -/
+def collectCorrEnv (j : Json)
+    (foundation allTrusted allTheory vendorMiri : Array Name)
+    (corrModSet : NameSet) :
+    IO (Std.HashMap Name CorrOrigin × Std.HashMap Name ConstantInfo ×
+      Std.HashMap Name ConstantInfo × Std.HashMap Name ConstantInfo ×
+      Array Name) := do
   let env ← importCorrEnv (foundation ++ allTrusted ++ allTheory ++ vendorMiri)
   let roles ← classifyCorrModules j env foundation allTrusted
     allTheory vendorMiri
-  let (repoLocals, _, vendorLocals) ←
+  let (repoLocals, corrLocals, vendorLocals) ←
     verifyAndCollectCorrLocals env roles corrModSet
-  checkCorrTierReferences env roles repoLocals
-  -- Build a clean replay base containing strictly the authenticated
-  -- `.foundation` and `.sysrootFoundation` modules from the pinned sysroot
-  -- (dropping repository and vendor directories from the search path), then
-  -- replay every non-`isPartial` `.vendorMiri` declaration from scratch
-  -- through the standalone Lean kernel. Compiler-generated `isPartial`
-  -- (`*._unsafe_rec`) codegen helpers are omitted from the replay map
-  -- (matching `Kernel.Environment.replay`), so any reference to them from a
-  -- replayed declaration fails kernel replay with `unknown constant`.
+  checkDeclarationEdges env roles repoLocals CorrOrigin.edgeViolation?
   let sysrootBaseMods := env.header.modules.filterMap fun m =>
     match roles.get? m.module with
     | some .foundation | some .sysrootFoundation => some m.module
@@ -1335,6 +2095,34 @@ def auditCorrespondence (j : Json) (sysrootStr : String)
     vendorLocals.fold (init := ({} : Std.HashMap Name ConstantInfo))
       fun acc n ci =>
         if ci.isPartial then acc else acc.insert n ci
+  return (roles, repoLocals, corrLocals, vendorReplayLocals, sysrootBaseMods)
+
+/-- Replay every non-`isPartial` `.vendorMiri` declaration from scratch onto a
+clean `baseEnv` containing strictly the authenticated `.foundation` and
+`.sysrootFoundation` modules (dropping repository and vendor directories from
+the search path), then—whenever `replayRepo` is `true`—replay all `.repo`
+declarations (Pass 1 + Pass 2 correspondence) directly onto that replayed
+vendor kernel environment.
+
+Returns `(miriReplayed, corrReplayed)`, counted from the kernel environments
+that `Kernel.Environment.replay` returns rather than from the request:
+
+- `miriReplayed` counts the `vendorReplayLocals` declarations present in the
+  replayed vendor environment.
+- `corrReplayed` counts the `corrLocals` declarations that were passed to the
+  repository replay (through `repoLocals`) and are present in its result. It is
+  `0` when `replayRepo` is `false`; otherwise it must equal `corrLocals.size`,
+  so the `"correspondenceReplay"` report flag derived from it cannot claim a
+  correspondence replay that never ran.
+
+Compiler-generated `isPartial` (`*._unsafe_rec`) codegen helpers are omitted
+from `vendorReplayLocals` (matching `Kernel.Environment.replay`), so any
+reference to them from a replayed declaration fails kernel replay with
+`unknown constant`. -/
+def replayCorrAndVendor (sysrootStr : String)
+    (roles : Std.HashMap Name CorrOrigin) (sysrootBaseMods : Array Name)
+    (vendorReplayLocals repoLocals corrLocals : Std.HashMap Name ConstantInfo)
+    (replayRepo : Bool) : IO (Nat × Nat) := do
   initSearchPath sysrootStr
   let baseEnv ← importCorrEnv sysrootBaseMods
   for m in baseEnv.header.modules do
@@ -1345,20 +2133,101 @@ def auditCorrespondence (j : Json) (sysrootStr : String)
   for (n, _) in vendorReplayLocals do
     if (baseEnv.checked.get.find? n).isSome then
       fail s!"vendor Miri constant {n} shadows sysroot declaration"
-  try
-    discard <| baseEnv.toKernelEnv.replay vendorReplayLocals
-  catch err =>
-    fail s!"vendor Miri kernel replay failed: {err}"
+  let replayedVendor ← replayKernelEnv baseEnv.toKernelEnv vendorReplayLocals
+    "vendor Miri kernel replay failed"
+  let miriReplayed :=
+    vendorReplayLocals.fold (init := (0 : Nat)) fun acc n _ =>
+      if (replayedVendor.find? n).isSome then acc + 1 else acc
+  if !replayRepo then
+    return (miriReplayed, 0)
+  for (n, _) in repoLocals do
+    if (replayedVendor.find? n).isSome then
+      fail s!"repository constant {n} shadows vendor/sysroot declaration"
+  let replayedRepo ← replayKernelEnv replayedVendor repoLocals
+    "correspondence kernel replay failed"
+  let corrReplayed :=
+    corrLocals.fold (init := (0 : Nat)) fun acc n _ =>
+      if repoLocals.contains n && (replayedRepo.find? n).isSome then acc + 1
+      else acc
+  unless corrReplayed == corrLocals.size do
+    fail (s!"correspondence kernel replay covered {corrReplayed} of " ++
+      s!"{corrLocals.size} correspondence declarations")
+  return (miriReplayed, corrReplayed)
+
+/-- Verify the 21-root `Miri.Interpreter.ExecutionMachine` cone and—when
+Pass 2 correspondence modules are present—all 27 correspondence claims,
+reference-evaluator independence, and the correspondence dependency cone in a
+dedicated scope. -/
+def verifyCorrConesAndClaims
+    (foundation allTrusted allTheory vendorMiri : Array Name)
+    (roles : Std.HashMap Name CorrOrigin)
+    (corrLocals : Std.HashMap Name ConstantInfo) (corrModSet : NameSet)
+    (axiomPolicy : Array (String × String)) :
+    IO (Array Name × Nat × Array Name × Nat) := do
+  let env ← importCorrEnv (foundation ++ allTrusted ++ allTheory ++ vendorMiri)
   let (miriAxioms, miriVisited) ←
     verifyMiriExecutionMachineCone env roles axiomPolicy
+  if corrModSet.isEmpty then
+    return (miriAxioms, miriVisited.size, #[], 0)
+  verifyCorrespondenceClaims env corrLocals
+  verifyRefEvaluatorIndependence env roles axiomPolicy
+  let corrRoots := corrLocals.fold (init := []) fun acc n _ => n :: acc
+  let (corrAxioms, corrVisited) ←
+    closureCorr env roles axiomPolicy corrRoots
+  return (miriAxioms, miriVisited.size, corrAxioms, corrVisited.size)
+
+/-- Execute Phase 3 (`"correspondence-audit"`) on the Pass 2 correspondence
+and `lean-miri` closure environment.
+
+Pass 2 replays EVERY non-`isPartial` `.vendorMiri` declaration (38,718
+declarations across the 160 compiled closure modules) from scratch through the
+standalone Lean kernel onto the authenticated `.foundation` +
+`.sysrootFoundation` base on every run (cold build and warm cache hit alike),
+and then replays all repository declarations (including
+`trusted/correspondence/` and `correspondence/`) directly on top of that
+replayed vendor kernel environment. Only the authenticated toolchain sysroot
+modules (verified against `foundation-lock.json` and
+`LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`) are trusted without replay.
+
+The report derives `"miriReplayedDeclarations"`,
+`"correspondenceReplayedDeclarations"`, and `"correspondenceReplay"` (`true`
+iff the replayed correspondence count is positive) from the counts that
+`replayCorrAndVendor` takes from the replayed kernel environments, so
+`anneal-audit` can fail closed when correspondence replay is skipped. -/
+def auditCorrespondence (j : Json) (sysrootStr : String)
+    (spRaw : Array String) (foundation : Array Name) : IO Json := do
+  let baseTrusted ← names j "trusted"
+  let corrTrusted ← names j "corrTrusted"
+  let baseTheory ← names j "theory"
+  let corrTheory ← names j "corrTheory"
+  let vendorMiri ← names j "vendorMiri"
+  let axiomPolicy ← field (α := Array (String × String)) j "axioms"
+  let allTrusted := baseTrusted ++ corrTrusted
+  let allTheory := baseTheory ++ corrTheory
+  let corrModSet : NameSet := .ofList (corrTrusted.toList ++ corrTheory.toList)
+  let (roles, repoLocals, corrLocals, vendorReplayLocals, sysrootBaseMods) ←
+    collectCorrEnv j foundation allTrusted allTheory vendorMiri corrModSet
+  let (miriReplayed, corrReplayed) ←
+    replayCorrAndVendor sysrootStr roles sysrootBaseMods vendorReplayLocals
+      repoLocals corrLocals (!corrModSet.isEmpty)
+  -- Restore the Pass 2 search path dropped during sysroot-only vendor replay.
+  initSearchPath sysrootStr (spRaw.toList.map System.FilePath.mk)
+  let (miriAxioms, miriVisitedSize, corrAxioms, corrVisitedSize) ←
+    verifyCorrConesAndClaims foundation allTrusted allTheory vendorMiri roles
+      corrLocals corrModSet axiomPolicy
   return Json.mkObj [
     ("miriReplay", toJson true),
-    ("miriReplayedDeclarations", toJson vendorReplayLocals.size),
-    ("miriClosureReachableDeclarations", toJson miriVisited.size),
-    ("miriClosureAxioms", toJson miriAxioms)]
+    ("miriReplayedDeclarations", toJson miriReplayed),
+    ("miriClosureReachableDeclarations", toJson miriVisitedSize),
+    ("miriClosureAxioms", toJson miriAxioms),
+    ("correspondenceReplay", toJson (decide (corrReplayed > 0))),
+    ("correspondenceDeclarations", toJson corrLocals.size),
+    ("correspondenceReplayedDeclarations", toJson corrReplayed),
+    ("correspondenceReachableDeclarations", toJson corrVisitedSize),
+    ("correspondenceAxioms", toJson corrAxioms)]
 
-/-- Dispatch `"preflight"`, `"audit"`, or `"correspondence-audit"` from the
-JSON request `j`. -/
+/-- Dispatch `"preflight"`, `"correspondence-preflight"`, `"audit"`, or
+`"correspondence-audit"` from the JSON request `j`. -/
 def run (j : Json) : IO Json := do
   let mode ← field (α := String) j "mode"
   let sysrootStr ← field (α := String) j "sysroot"
@@ -1368,9 +2237,17 @@ def run (j : Json) : IO Json := do
     initSearchPath sysrootStr
     let env ← importEnv j foundation true
     validateGraph j env
+    let scopedNamespaces ← collectScopedExtensionNamespaces env
+    let scopedPrefixes := collectScopedNamespacePrefixes scopedNamespaces
     let sources ← field (α := Array (String × String)) j "sources"
-    let headers ← sources.mapM fun (n, p) => inspectSource env n.toName p
+    let headers ←
+      sources.mapM fun (n, p) =>
+        inspectSource scopedNamespaces scopedPrefixes env n.toName p
     return Json.mkObj [("headers", .arr headers), ("graph", graph env)]
+  | "correspondence-preflight" =>
+    let spRaw ← field (α := Array String) j "searchPath"
+    initSearchPath sysrootStr (spRaw.toList.map System.FilePath.mk)
+    preflightCorrespondence j foundation
   | "audit" =>
     initSearchPath sysrootStr
     let trusted ← names j "trusted"
@@ -1380,13 +2257,15 @@ def run (j : Json) : IO Json := do
   | "correspondence-audit" =>
     let spRaw ← field (α := Array String) j "searchPath"
     initSearchPath sysrootStr (spRaw.toList.map System.FilePath.mk)
-    auditCorrespondence j sysrootStr foundation
+    auditCorrespondence j sysrootStr spRaw foundation
   | _ => throw <| IO.userError s!"unknown inspector mode {mode}"
 
 end TrustedBoundary
 
-/-- CLI entry point invoked via `lean --run TrustedBoundary.lean <req.json>
-<res.json>`. -/
+/-- Run the inspector as
+`lean --run TrustedBoundary.lean <req.json> <res.json>`, writing a JSON
+envelope to `<res.json>` and returning exit code `0` (success), `1` (policy
+rejection), or `2` (operational failure). -/
 def main (args : List String) : IO UInt32 := do
   let [request, output] := args
     | IO.eprintln "expected request and result files"; return 2

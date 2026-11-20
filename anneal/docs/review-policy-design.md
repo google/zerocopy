@@ -257,6 +257,21 @@ against its canonical owner and required outcome:
     — verifies SHA-bound receipts instead of repeating cold builds, isolates
     untrusted probes in OS sandboxes after static checks, and rejects
     coverage-free or truncated outputs.
+13. **Identity-keyed merge evidence and nondeterministic hosted review:**
+    [`docs/codex-review.md`](codex-review.md#merge-gates),
+    [`change-review`](../skills/change-review/SKILL.md#key-every-result-to-its-inputs),
+    and
+    [`source-control`](../skills/source-control/SKILL.md#lock-and-rebase-a-stack)
+    — reuses review evidence only within one PR and only for an unchanged
+    identity (parent tree, tree, and commit message for a one-commit PR, so a
+    tree change in a lower PR invalidates every one-commit PR above it, while
+    a rebase onto the lower PR's tree-identical squash commit does not), reruns
+    preflight and CI on every new head, and requires a complete Codex review on
+    the PR for the current identity with no requested review still running and
+    every finding fixed by a verified later change to the surface it concerns
+    or carried as an agent-proposed, maintainer-accepted disposition (a later
+    review's silence never resolves a finding, and in-scope trust or soundness
+    defects are never deferred).
 
 ## Empirical evaluation methodology
 

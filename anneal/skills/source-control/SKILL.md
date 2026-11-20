@@ -393,8 +393,13 @@ authorized**.
   squash-merged into `main`) so `merge_base == target_base`; do not run
   `gh stack sync` before post-rebase checks and pre-push gates pass, because
   `gh stack sync` also pushes rebased branches. When authorized to push rebased
-  branches, use `--force-with-lease` (never bare `--force`). To avoid O(n²)
-  hosted re-reviews during a stack landing cascade, defer pushing rebased upper
+  branches, use `--force-with-lease` (never bare `--force`). Rebasing a
+  one-commit PR onto its lower PR's squash commit, whose tree equals the lower
+  PR's reviewed head tree, leaves the upper PR's identity—and its review
+  evidence—unchanged per
+  [`docs/codex-review.md`](../../docs/codex-review.md#merge-gates); only its
+  preflight and CI rerun. To avoid O(n²) hosted re-reviews during a stack
+  landing cascade when identities do change, defer pushing rebased upper
   branches until each reaches the bottom of the stack (or its base settles on
   `main`).
 - **Mandatory post-rebase checks:** After every rebase, run:
@@ -404,5 +409,5 @@ authorized**.
      claims against `git diff <new-base>..HEAD`;
   3. Scoped or full re-verification per
      [`change-review`](../change-review/SKILL.md#key-every-result-to-its-inputs)
-     (including deterministic preflight, plus fresh hosted review and CI before
-     merge on the new `head`).
+     (including deterministic preflight, plus fresh hosted review whenever the
+     identity changed and CI before merge on the new `head`).

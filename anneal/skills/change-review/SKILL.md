@@ -200,8 +200,12 @@ Every verification check, probe, review verdict, and merge gate binds to the
 exact input tuple `(target_base, merge_base, head, dirty_tree)` (and the active
 instructions at that state). Revalidate candidate and base SHAs before reusing
 any prior evidence; any edit to tree, commit history, or base invalidates every
-affected verdict. Freeze the candidate commit before delegating fresh-context
-reviews, and run the deterministic preflight checklist from
+affected verdict. One exception applies to a published PR: the merge gates key
+this tuple to the PR's **identity** defined in
+[`docs/codex-review.md`](../../docs/codex-review.md#merge-gates), so a history
+rewrite that leaves the identity unchanged keeps the evidence recorded on that
+PR valid. Freeze the candidate commit before delegating fresh-context reviews,
+and run the deterministic preflight checklist from
 [`AGENTS.md`](../../AGENTS.md#standing-rules) once per frozen commit to produce
 a verbatim SHA-bound **reference preflight receipt** for reviewers. As manual
 checks graduate into CI, retire the redundant prose.
@@ -215,8 +219,9 @@ change:
 
 | Change since last verified state | Reusable evidence | What must be redone |
 |---|---|---|
+| Identity-preserving rewrite of a one-commit PR (unchanged parent tree, tree, and commit message, such as rebasing an upper stack PR onto its lower PR's squash commit) | Review verdicts and review-gate evidence (Gates 1, 2, and 5) recorded on that PR for that identity, subject to the Gate 5 rule on later edits to the `Human review surface` block; never deterministic preflight or Gate 3 CI, which bind to each SHA | Confirm the identity is unchanged, then rerun deterministic preflight (including authorship and trailer checks, which the identity omits) and CI on new `head` (GitHub reports checks per commit SHA) |
 | Commit-message-only amend (identical `head^{tree}`) | Tree-only builds, tests, and probes | Commit-message and trailer check, `./ci/check_todo.sh`, range invariants, fresh hosted review, CI, and merge gates on new `head` |
-| Clean rebase (`git range-diff` shows no patch edits and no interface changes in rebased-over commits) | Unchanged patch-level semantic analysis | Post-rebase checks in [`source-control`](../source-control/SKILL.md#lock-and-rebase-a-stack), deterministic preflight, fresh hosted review, CI, and merge gates on new `head` |
+| Clean rebase that changes the identity (`git range-diff` shows no patch edits and no interface changes in rebased-over commits; identity-preserving rewrites use the row above) | Unchanged patch-level semantic analysis | Post-rebase checks in [`source-control`](../source-control/SKILL.md#lock-and-rebase-a-stack), deterministic preflight, fresh hosted review, CI, and merge gates on new `head` |
 | Verified non-policy prose, wrapping, or non-directive comment edit (zero behavioral diff; excludes any Pass 2 trigger, Human review surface, `-- anneal-trust-tier:`, `#[anneal::*]`, spec attributes, task-marker directives, and Rust doctests) | Earlier behavioral and semantic verdicts | Deterministic lints, scoped Pass 1 hygiene and diff review (grammar, wrapping, counts, paths, unchanged semantics), fresh hosted review, CI, and merge gates on new `head` |
 | Any behavioral, TCB, policy, specification, tier-directive, manifest, or interface edit | None for affected surfaces | Full fresh-context review on affected surfaces, preflight, hosted review, CI, and merge gates |
 
@@ -426,9 +431,14 @@ Place a short **Human review surface** block at the top of every PR description
 (or in the task handoff for an authorized branch-only push) listing any changes
 to the **Human review surface** defined in
 [`AGENTS.md`](../../AGENTS.md#code-review-rules) and any intentional policy
-relaxation (or `none`). Post the **Review Receipt** in a PR comment (or in the
-task handoff for a branch-only push) so updating receipts across rounds does
-not mutate the PR description. Follow the privacy rule in
+relaxation (or `none`). When a Codex finding cannot be fixed, add it to a
+`Codex finding dispositions` list in that block with a clearly labeled
+proposed disposition and the supporting evidence; the maintainer's Gate 5
+approval decides it (see
+[`docs/codex-review.md`](../../docs/codex-review.md#merge-gates)). Post
+the **Review Receipt** in a PR comment (or in the task handoff for a
+branch-only push) so updating receipts across rounds does not mutate the PR
+description. Follow the privacy rule in
 [`AGENTS.md`](../../AGENTS.md#standing-rules) across the PR description and
 Review Receipt. For narrow or trivial changes, condense all six fields below
 into 3–5 compact bullets; for complex or TCB changes, keep one structured
@@ -452,5 +462,5 @@ bullet per field:
    (Gate 5)" items, or merge blockers.
 
 Before merge, confirm every gate in
-[`docs/codex-review.md`](../../docs/codex-review.md#merge-gates) on the exact
-final `(target_base, head)` with `merge_base == target_base`.
+[`docs/codex-review.md`](../../docs/codex-review.md#merge-gates) for the PR's
+current identity, with `merge_base == target_base`.

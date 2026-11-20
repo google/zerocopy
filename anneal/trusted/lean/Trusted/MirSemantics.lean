@@ -164,7 +164,7 @@ Key semantic correspondence points:
 5. **Declaration modifiers (`noncomputable`):**
    Every `def` and term-level `abbrev` carries `noncomputable`, following the
    rule explained in `Trusted.MirAst` ("Declaration Modifiers"):
-   `TrustedBoundary.validateLocalConstant` rejects the `partial`
+   `TrustedBoundary.validateRepoConstant` rejects the `partial`
    `._unsafe_rec` helper that Lean adds for a computable recursive definition,
    non-recursive value definitions calling `noncomputable` helpers require it
    transitively, and `TrustedBoundary.inspectNodeKind` forbids
