@@ -1,0 +1,6553 @@
+{
+ "configs": {
+  "aarch64_lse_O3": {
+   "diagnostics": [],
+   "extra_flags": [
+    "-C",
+    "opt-level=3",
+    "-C",
+    "target-feature=+lse"
+   ],
+   "functions": {
+    "at_cfence_acqrel": {
+     "asm": [
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") acq_rel",
+      "ret void"
+     ]
+    },
+    "at_cfence_acquire": {
+     "asm": [
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") acquire",
+      "ret void"
+     ]
+    },
+    "at_cfence_release": {
+     "asm": [
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") release",
+      "ret void"
+     ]
+    },
+    "at_cfence_seqcst": {
+     "asm": [
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") seq_cst",
+      "ret void"
+     ]
+    },
+    "at_fence_acqrel": {
+     "asm": [
+      "dmb\tish",
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence acq_rel",
+      "ret void"
+     ]
+    },
+    "at_fence_acquire": {
+     "asm": [
+      "dmb\tishld",
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence acquire",
+      "ret void"
+     ]
+    },
+    "at_fence_release": {
+     "asm": [
+      "dmb\tish",
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence release",
+      "ret void"
+     ]
+    },
+    "at_fence_seqcst": {
+     "asm": [
+      "dmb\tish",
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence seq_cst",
+      "ret void"
+     ]
+    },
+    "at_u32_cas_strong_acqrel_acq": {
+     "asm": [
+      "casal\tw1, w2, [x0]",
+      "mov\tw0, w1",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg ptr %a, i32 %c, i32 %n acq_rel acquire, align 4",
+      "%_8.sroa.0.0.i = extractvalue { i32, i1 } %0, 0",
+      "ret i32 %_8.sroa.0.0.i"
+     ]
+    },
+    "at_u32_cas_strong_seqcst_seqcst": {
+     "asm": [
+      "casal\tw1, w2, [x0]",
+      "mov\tw0, w1",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg ptr %a, i32 %c, i32 %n seq_cst seq_cst, align 4",
+      "%_8.sroa.0.0.i = extractvalue { i32, i1 } %0, 0",
+      "ret i32 %_8.sroa.0.0.i"
+     ]
+    },
+    "at_u32_cas_weak_rel_rlx": {
+     "asm": [
+      "casl\tw1, w2, [x0]",
+      "mov\tw0, w1",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg weak ptr %a, i32 %c, i32 %n release monotonic, align 4",
+      "%1 = extractvalue { i32, i1 } %0, 0",
+      "ret i32 %1"
+     ]
+    },
+    "at_u32_fadd_acqrel": {
+     "asm": [
+      "ldaddal\tw1, w0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v acq_rel, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_acquire": {
+     "asm": [
+      "ldadda\tw1, w0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v acquire, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_relaxed": {
+     "asm": [
+      "ldadd\tw1, w0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v monotonic, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_release": {
+     "asm": [
+      "ldaddl\tw1, w0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v release, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_seqcst": {
+     "asm": [
+      "ldaddal\tw1, w0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v seq_cst, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_load_acquire": {
+     "asm": [
+      "ldar\tw0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a acquire, align 4",
+      "ret i32 %0"
+     ]
+    },
+    "at_u32_load_relaxed": {
+     "asm": [
+      "ldr\tw0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a monotonic, align 4",
+      "ret i32 %0"
+     ]
+    },
+    "at_u32_load_seqcst": {
+     "asm": [
+      "ldar\tw0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a seq_cst, align 4",
+      "ret i32 %0"
+     ]
+    },
+    "at_u32_store_relaxed": {
+     "asm": [
+      "str\tw1, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %v, ptr %a monotonic, align 4",
+      "ret void"
+     ]
+    },
+    "at_u32_store_release": {
+     "asm": [
+      "stlr\tw1, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %v, ptr %a release, align 4",
+      "ret void"
+     ]
+    },
+    "at_u32_store_seqcst": {
+     "asm": [
+      "stlr\tw1, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %v, ptr %a seq_cst, align 4",
+      "ret void"
+     ]
+    },
+    "at_u32_swap_acqrel": {
+     "asm": [
+      "swpal\tw1, w0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v acq_rel, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_acquire": {
+     "asm": [
+      "swpa\tw1, w0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v acquire, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_relaxed": {
+     "asm": [
+      "swp\tw1, w0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v monotonic, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_release": {
+     "asm": [
+      "swpl\tw1, w0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v release, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_seqcst": {
+     "asm": [
+      "swpal\tw1, w0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v seq_cst, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u64_cas_seqcst": {
+     "asm": [
+      "casal\tx1, x2, [x0]",
+      "mov\tx0, x1",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg ptr %a, i64 %c, i64 %n seq_cst acquire, align 8",
+      "%1 = extractvalue { i64, i1 } %0, 0",
+      "ret i64 %1"
+     ]
+    },
+    "at_u64_fadd_acqrel": {
+     "asm": [
+      "ldaddal\tx1, x0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i64 %v acq_rel, align 8",
+      "ret i64 %_0"
+     ]
+    },
+    "at_u64_load_acquire": {
+     "asm": [
+      "ldar\tx0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i64, ptr %a acquire, align 8",
+      "ret i64 %0"
+     ]
+    },
+    "at_u64_store_seqcst": {
+     "asm": [
+      "stlr\tx1, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i64 %v, ptr %a seq_cst, align 8",
+      "ret void"
+     ]
+    },
+    "at_u8_fand_acqrel": {
+     "asm": [
+      "mvn\tw8, w1",
+      "ldclralb\tw8, w0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw and ptr %a, i8 %m acq_rel, align 1",
+      "ret i8 %_0"
+     ]
+    },
+    "canary_adjacent_relaxed_stores": {
+     "asm": [
+      "str\tw1, [x0]",
+      "str\tw2, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %x, ptr %a monotonic, align 4",
+      "store atomic i32 %y, ptr %a monotonic, align 4",
+      "ret void"
+     ]
+    },
+    "canary_cfence_blocks_store_hoist": {
+     "asm": [
+      "mov\tx8, x0",
+      "mov\tw9, #1",
+      "mov\tw0, w2",
+      "str\tw2, [x1]",
+      "str\tw9, [x8]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr %data, align 4",
+      "fence syncscope(\"singlethread\") release",
+      "store atomic i32 1, ptr %flag monotonic, align 4",
+      "fence syncscope(\"singlethread\") acquire",
+      "ret i32 %v"
+     ]
+    },
+    "canary_dead_relaxed_load": {
+     "asm": [
+      "mov\tx8, x0",
+      "mov\tw0, #42",
+      "ldr\twzr, [x8]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a monotonic, align 4",
+      "ret i32 42"
+     ]
+    },
+    "canary_handler_read_with_cfence": {
+     "asm": [
+      "adrp\tx8, :got:_RNvCs8jPW3FB1Bmg_7atomics8IS_READY",
+      "ldr\tx8, [x8, :got_lo12:_RNvCs8jPW3FB1Bmg_7atomics8IS_READY]",
+      "ldr\tw8, [x8]",
+      "cbz\tw8, .LBB35_2",
+      "adrp\tx8, :got:_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE",
+      "ldr\tx8, [x8, :got_lo12:_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE]",
+      "ldr\tw0, [x8]",
+      "ret",
+      "mov\tw0, wzr",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr @_RNvCs8jPW3FB1Bmg_7atomics8IS_READY monotonic, align 4",
+      "%1 = icmp eq i32 %0, 0",
+      "br i1 %1, label %bb4, label %bb1",
+      "bb1:                                              ; preds = %start",
+      "fence syncscope(\"singlethread\") acquire",
+      "%2 = load i32, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4, !noundef !4",
+      "br label %bb4",
+      "bb4:                                              ; preds = %start, %bb1",
+      "%_0.sroa.0.0 = phi i32 [ %2, %bb1 ], [ 0, %start ]",
+      "ret i32 %_0.sroa.0.0"
+     ]
+    },
+    "canary_no_cfence_store_forwarding": {
+     "asm": [
+      "mov\tx8, x0",
+      "mov\tw9, #1",
+      "mov\tw0, w2",
+      "str\tw2, [x1]",
+      "str\tw9, [x8]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr %data, align 4",
+      "store atomic i32 1, ptr %flag monotonic, align 4",
+      "ret i32 %v"
+     ]
+    },
+    "canary_publish_then_overwrite_with_cfence": {
+     "asm": [
+      "adrp\tx9, :got:_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE",
+      "adrp\tx10, :got:_RNvCs8jPW3FB1Bmg_7atomics8IS_READY",
+      "mov\tw8, #1",
+      "ldr\tx9, [x9, :got_lo12:_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE]",
+      "ldr\tx10, [x10, :got_lo12:_RNvCs8jPW3FB1Bmg_7atomics8IS_READY]",
+      "str\tw0, [x9]",
+      "str\tw8, [x10]",
+      "str\tw1, [x9]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "fence syncscope(\"singlethread\") release",
+      "store atomic i32 1, ptr @_RNvCs8jPW3FB1Bmg_7atomics8IS_READY monotonic, align 4",
+      "store i32 %w, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "ret void"
+     ]
+    },
+    "canary_publish_then_overwrite_without_cfence": {
+     "asm": [
+      "adrp\tx8, :got:_RNvCs8jPW3FB1Bmg_7atomics8IS_READY",
+      "adrp\tx10, :got:_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE",
+      "mov\tw9, #1",
+      "ldr\tx8, [x8, :got_lo12:_RNvCs8jPW3FB1Bmg_7atomics8IS_READY]",
+      "ldr\tx10, [x10, :got_lo12:_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE]",
+      "str\tw9, [x8]",
+      "str\tw1, [x10]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i32 1, ptr @_RNvCs8jPW3FB1Bmg_7atomics8IS_READY monotonic, align 4",
+      "store i32 %w, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "ret void"
+     ]
+    },
+    "ext_u64_load_relaxed": {
+     "asm": [
+      "ldr\tx0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i64, ptr %a monotonic, align 8",
+      "ret i64 %0"
+     ]
+    },
+    "ext_u64_load_seqcst": {
+     "asm": [
+      "ldar\tx0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i64, ptr %a seq_cst, align 8",
+      "ret i64 %0"
+     ]
+    },
+    "ext_u64_store_relaxed": {
+     "asm": [
+      "str\tx1, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i64 %v, ptr %a monotonic, align 8",
+      "ret void"
+     ]
+    },
+    "ext_u64_store_release": {
+     "asm": [
+      "stlr\tx1, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i64 %v, ptr %a release, align 8",
+      "ret void"
+     ]
+    },
+    "ext_u64_swap_seqcst": {
+     "asm": [
+      "swpal\tx1, x0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i64 %v seq_cst, align 8",
+      "ret i64 %_0"
+     ]
+    }
+   },
+   "returncode": 0,
+   "target": "aarch64-unknown-linux-gnu"
+  },
+  "aarch64_lse_rcpc3_O3": {
+   "diagnostics": [
+    "warning: unstable feature specified for `-Ctarget-feature`: `rcpc3`",
+    "warning: 1 warning emitted"
+   ],
+   "extra_flags": [
+    "-C",
+    "opt-level=3",
+    "-C",
+    "target-feature=+lse,+rcpc,+rcpc3"
+   ],
+   "functions": {
+    "at_cfence_acqrel": {
+     "asm": [
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") acq_rel",
+      "ret void"
+     ]
+    },
+    "at_cfence_acquire": {
+     "asm": [
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") acquire",
+      "ret void"
+     ]
+    },
+    "at_cfence_release": {
+     "asm": [
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") release",
+      "ret void"
+     ]
+    },
+    "at_cfence_seqcst": {
+     "asm": [
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") seq_cst",
+      "ret void"
+     ]
+    },
+    "at_fence_acqrel": {
+     "asm": [
+      "dmb\tish",
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence acq_rel",
+      "ret void"
+     ]
+    },
+    "at_fence_acquire": {
+     "asm": [
+      "dmb\tishld",
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence acquire",
+      "ret void"
+     ]
+    },
+    "at_fence_release": {
+     "asm": [
+      "dmb\tish",
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence release",
+      "ret void"
+     ]
+    },
+    "at_fence_seqcst": {
+     "asm": [
+      "dmb\tish",
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence seq_cst",
+      "ret void"
+     ]
+    },
+    "at_u32_cas_strong_acqrel_acq": {
+     "asm": [
+      "casal\tw1, w2, [x0]",
+      "mov\tw0, w1",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg ptr %a, i32 %c, i32 %n acq_rel acquire, align 4",
+      "%_8.sroa.0.0.i = extractvalue { i32, i1 } %0, 0",
+      "ret i32 %_8.sroa.0.0.i"
+     ]
+    },
+    "at_u32_cas_strong_seqcst_seqcst": {
+     "asm": [
+      "casal\tw1, w2, [x0]",
+      "mov\tw0, w1",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg ptr %a, i32 %c, i32 %n seq_cst seq_cst, align 4",
+      "%_8.sroa.0.0.i = extractvalue { i32, i1 } %0, 0",
+      "ret i32 %_8.sroa.0.0.i"
+     ]
+    },
+    "at_u32_cas_weak_rel_rlx": {
+     "asm": [
+      "casl\tw1, w2, [x0]",
+      "mov\tw0, w1",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg weak ptr %a, i32 %c, i32 %n release monotonic, align 4",
+      "%1 = extractvalue { i32, i1 } %0, 0",
+      "ret i32 %1"
+     ]
+    },
+    "at_u32_fadd_acqrel": {
+     "asm": [
+      "ldaddal\tw1, w0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v acq_rel, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_acquire": {
+     "asm": [
+      "ldadda\tw1, w0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v acquire, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_relaxed": {
+     "asm": [
+      "ldadd\tw1, w0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v monotonic, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_release": {
+     "asm": [
+      "ldaddl\tw1, w0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v release, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_seqcst": {
+     "asm": [
+      "ldaddal\tw1, w0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v seq_cst, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_load_acquire": {
+     "asm": [
+      "ldapr\tw0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a acquire, align 4",
+      "ret i32 %0"
+     ]
+    },
+    "at_u32_load_relaxed": {
+     "asm": [
+      "ldr\tw0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a monotonic, align 4",
+      "ret i32 %0"
+     ]
+    },
+    "at_u32_load_seqcst": {
+     "asm": [
+      "ldar\tw0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a seq_cst, align 4",
+      "ret i32 %0"
+     ]
+    },
+    "at_u32_store_relaxed": {
+     "asm": [
+      "str\tw1, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %v, ptr %a monotonic, align 4",
+      "ret void"
+     ]
+    },
+    "at_u32_store_release": {
+     "asm": [
+      "stlr\tw1, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %v, ptr %a release, align 4",
+      "ret void"
+     ]
+    },
+    "at_u32_store_seqcst": {
+     "asm": [
+      "stlr\tw1, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %v, ptr %a seq_cst, align 4",
+      "ret void"
+     ]
+    },
+    "at_u32_swap_acqrel": {
+     "asm": [
+      "swpal\tw1, w0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v acq_rel, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_acquire": {
+     "asm": [
+      "swpa\tw1, w0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v acquire, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_relaxed": {
+     "asm": [
+      "swp\tw1, w0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v monotonic, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_release": {
+     "asm": [
+      "swpl\tw1, w0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v release, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_seqcst": {
+     "asm": [
+      "swpal\tw1, w0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v seq_cst, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u64_cas_seqcst": {
+     "asm": [
+      "casal\tx1, x2, [x0]",
+      "mov\tx0, x1",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg ptr %a, i64 %c, i64 %n seq_cst acquire, align 8",
+      "%1 = extractvalue { i64, i1 } %0, 0",
+      "ret i64 %1"
+     ]
+    },
+    "at_u64_fadd_acqrel": {
+     "asm": [
+      "ldaddal\tx1, x0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i64 %v acq_rel, align 8",
+      "ret i64 %_0"
+     ]
+    },
+    "at_u64_load_acquire": {
+     "asm": [
+      "ldapr\tx0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i64, ptr %a acquire, align 8",
+      "ret i64 %0"
+     ]
+    },
+    "at_u64_store_seqcst": {
+     "asm": [
+      "stlr\tx1, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i64 %v, ptr %a seq_cst, align 8",
+      "ret void"
+     ]
+    },
+    "at_u8_fand_acqrel": {
+     "asm": [
+      "mvn\tw8, w1",
+      "ldclralb\tw8, w0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw and ptr %a, i8 %m acq_rel, align 1",
+      "ret i8 %_0"
+     ]
+    },
+    "canary_adjacent_relaxed_stores": {
+     "asm": [
+      "str\tw1, [x0]",
+      "str\tw2, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %x, ptr %a monotonic, align 4",
+      "store atomic i32 %y, ptr %a monotonic, align 4",
+      "ret void"
+     ]
+    },
+    "canary_cfence_blocks_store_hoist": {
+     "asm": [
+      "mov\tx8, x0",
+      "mov\tw9, #1",
+      "mov\tw0, w2",
+      "str\tw2, [x1]",
+      "str\tw9, [x8]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr %data, align 4",
+      "fence syncscope(\"singlethread\") release",
+      "store atomic i32 1, ptr %flag monotonic, align 4",
+      "fence syncscope(\"singlethread\") acquire",
+      "ret i32 %v"
+     ]
+    },
+    "canary_dead_relaxed_load": {
+     "asm": [
+      "mov\tx8, x0",
+      "mov\tw0, #42",
+      "ldr\twzr, [x8]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a monotonic, align 4",
+      "ret i32 42"
+     ]
+    },
+    "canary_handler_read_with_cfence": {
+     "asm": [
+      "adrp\tx8, :got:_RNvCs8jPW3FB1Bmg_7atomics8IS_READY",
+      "ldr\tx8, [x8, :got_lo12:_RNvCs8jPW3FB1Bmg_7atomics8IS_READY]",
+      "ldr\tw8, [x8]",
+      "cbz\tw8, .LBB35_2",
+      "adrp\tx8, :got:_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE",
+      "ldr\tx8, [x8, :got_lo12:_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE]",
+      "ldr\tw0, [x8]",
+      "ret",
+      "mov\tw0, wzr",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr @_RNvCs8jPW3FB1Bmg_7atomics8IS_READY monotonic, align 4",
+      "%1 = icmp eq i32 %0, 0",
+      "br i1 %1, label %bb4, label %bb1",
+      "bb1:                                              ; preds = %start",
+      "fence syncscope(\"singlethread\") acquire",
+      "%2 = load i32, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4, !noundef !4",
+      "br label %bb4",
+      "bb4:                                              ; preds = %start, %bb1",
+      "%_0.sroa.0.0 = phi i32 [ %2, %bb1 ], [ 0, %start ]",
+      "ret i32 %_0.sroa.0.0"
+     ]
+    },
+    "canary_no_cfence_store_forwarding": {
+     "asm": [
+      "mov\tx8, x0",
+      "mov\tw9, #1",
+      "mov\tw0, w2",
+      "str\tw2, [x1]",
+      "str\tw9, [x8]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr %data, align 4",
+      "store atomic i32 1, ptr %flag monotonic, align 4",
+      "ret i32 %v"
+     ]
+    },
+    "canary_publish_then_overwrite_with_cfence": {
+     "asm": [
+      "adrp\tx9, :got:_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE",
+      "adrp\tx10, :got:_RNvCs8jPW3FB1Bmg_7atomics8IS_READY",
+      "mov\tw8, #1",
+      "ldr\tx9, [x9, :got_lo12:_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE]",
+      "ldr\tx10, [x10, :got_lo12:_RNvCs8jPW3FB1Bmg_7atomics8IS_READY]",
+      "str\tw0, [x9]",
+      "str\tw8, [x10]",
+      "str\tw1, [x9]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "fence syncscope(\"singlethread\") release",
+      "store atomic i32 1, ptr @_RNvCs8jPW3FB1Bmg_7atomics8IS_READY monotonic, align 4",
+      "store i32 %w, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "ret void"
+     ]
+    },
+    "canary_publish_then_overwrite_without_cfence": {
+     "asm": [
+      "adrp\tx8, :got:_RNvCs8jPW3FB1Bmg_7atomics8IS_READY",
+      "adrp\tx10, :got:_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE",
+      "mov\tw9, #1",
+      "ldr\tx8, [x8, :got_lo12:_RNvCs8jPW3FB1Bmg_7atomics8IS_READY]",
+      "ldr\tx10, [x10, :got_lo12:_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE]",
+      "str\tw9, [x8]",
+      "str\tw1, [x10]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i32 1, ptr @_RNvCs8jPW3FB1Bmg_7atomics8IS_READY monotonic, align 4",
+      "store i32 %w, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "ret void"
+     ]
+    },
+    "ext_u64_load_relaxed": {
+     "asm": [
+      "ldr\tx0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i64, ptr %a monotonic, align 8",
+      "ret i64 %0"
+     ]
+    },
+    "ext_u64_load_seqcst": {
+     "asm": [
+      "ldar\tx0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i64, ptr %a seq_cst, align 8",
+      "ret i64 %0"
+     ]
+    },
+    "ext_u64_store_relaxed": {
+     "asm": [
+      "str\tx1, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i64 %v, ptr %a monotonic, align 8",
+      "ret void"
+     ]
+    },
+    "ext_u64_store_release": {
+     "asm": [
+      "stlr\tx1, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i64 %v, ptr %a release, align 8",
+      "ret void"
+     ]
+    },
+    "ext_u64_swap_seqcst": {
+     "asm": [
+      "swpal\tx1, x0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i64 %v seq_cst, align 8",
+      "ret i64 %_0"
+     ]
+    }
+   },
+   "returncode": 0,
+   "target": "aarch64-unknown-linux-gnu"
+  },
+  "aarch64_lse_rcpc_O3": {
+   "diagnostics": [],
+   "extra_flags": [
+    "-C",
+    "opt-level=3",
+    "-C",
+    "target-feature=+lse,+rcpc"
+   ],
+   "functions": {
+    "at_cfence_acqrel": {
+     "asm": [
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") acq_rel",
+      "ret void"
+     ]
+    },
+    "at_cfence_acquire": {
+     "asm": [
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") acquire",
+      "ret void"
+     ]
+    },
+    "at_cfence_release": {
+     "asm": [
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") release",
+      "ret void"
+     ]
+    },
+    "at_cfence_seqcst": {
+     "asm": [
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") seq_cst",
+      "ret void"
+     ]
+    },
+    "at_fence_acqrel": {
+     "asm": [
+      "dmb\tish",
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence acq_rel",
+      "ret void"
+     ]
+    },
+    "at_fence_acquire": {
+     "asm": [
+      "dmb\tishld",
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence acquire",
+      "ret void"
+     ]
+    },
+    "at_fence_release": {
+     "asm": [
+      "dmb\tish",
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence release",
+      "ret void"
+     ]
+    },
+    "at_fence_seqcst": {
+     "asm": [
+      "dmb\tish",
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence seq_cst",
+      "ret void"
+     ]
+    },
+    "at_u32_cas_strong_acqrel_acq": {
+     "asm": [
+      "casal\tw1, w2, [x0]",
+      "mov\tw0, w1",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg ptr %a, i32 %c, i32 %n acq_rel acquire, align 4",
+      "%_8.sroa.0.0.i = extractvalue { i32, i1 } %0, 0",
+      "ret i32 %_8.sroa.0.0.i"
+     ]
+    },
+    "at_u32_cas_strong_seqcst_seqcst": {
+     "asm": [
+      "casal\tw1, w2, [x0]",
+      "mov\tw0, w1",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg ptr %a, i32 %c, i32 %n seq_cst seq_cst, align 4",
+      "%_8.sroa.0.0.i = extractvalue { i32, i1 } %0, 0",
+      "ret i32 %_8.sroa.0.0.i"
+     ]
+    },
+    "at_u32_cas_weak_rel_rlx": {
+     "asm": [
+      "casl\tw1, w2, [x0]",
+      "mov\tw0, w1",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg weak ptr %a, i32 %c, i32 %n release monotonic, align 4",
+      "%1 = extractvalue { i32, i1 } %0, 0",
+      "ret i32 %1"
+     ]
+    },
+    "at_u32_fadd_acqrel": {
+     "asm": [
+      "ldaddal\tw1, w0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v acq_rel, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_acquire": {
+     "asm": [
+      "ldadda\tw1, w0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v acquire, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_relaxed": {
+     "asm": [
+      "ldadd\tw1, w0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v monotonic, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_release": {
+     "asm": [
+      "ldaddl\tw1, w0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v release, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_seqcst": {
+     "asm": [
+      "ldaddal\tw1, w0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v seq_cst, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_load_acquire": {
+     "asm": [
+      "ldapr\tw0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a acquire, align 4",
+      "ret i32 %0"
+     ]
+    },
+    "at_u32_load_relaxed": {
+     "asm": [
+      "ldr\tw0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a monotonic, align 4",
+      "ret i32 %0"
+     ]
+    },
+    "at_u32_load_seqcst": {
+     "asm": [
+      "ldar\tw0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a seq_cst, align 4",
+      "ret i32 %0"
+     ]
+    },
+    "at_u32_store_relaxed": {
+     "asm": [
+      "str\tw1, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %v, ptr %a monotonic, align 4",
+      "ret void"
+     ]
+    },
+    "at_u32_store_release": {
+     "asm": [
+      "stlr\tw1, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %v, ptr %a release, align 4",
+      "ret void"
+     ]
+    },
+    "at_u32_store_seqcst": {
+     "asm": [
+      "stlr\tw1, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %v, ptr %a seq_cst, align 4",
+      "ret void"
+     ]
+    },
+    "at_u32_swap_acqrel": {
+     "asm": [
+      "swpal\tw1, w0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v acq_rel, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_acquire": {
+     "asm": [
+      "swpa\tw1, w0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v acquire, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_relaxed": {
+     "asm": [
+      "swp\tw1, w0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v monotonic, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_release": {
+     "asm": [
+      "swpl\tw1, w0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v release, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_seqcst": {
+     "asm": [
+      "swpal\tw1, w0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v seq_cst, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u64_cas_seqcst": {
+     "asm": [
+      "casal\tx1, x2, [x0]",
+      "mov\tx0, x1",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg ptr %a, i64 %c, i64 %n seq_cst acquire, align 8",
+      "%1 = extractvalue { i64, i1 } %0, 0",
+      "ret i64 %1"
+     ]
+    },
+    "at_u64_fadd_acqrel": {
+     "asm": [
+      "ldaddal\tx1, x0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i64 %v acq_rel, align 8",
+      "ret i64 %_0"
+     ]
+    },
+    "at_u64_load_acquire": {
+     "asm": [
+      "ldapr\tx0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i64, ptr %a acquire, align 8",
+      "ret i64 %0"
+     ]
+    },
+    "at_u64_store_seqcst": {
+     "asm": [
+      "stlr\tx1, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i64 %v, ptr %a seq_cst, align 8",
+      "ret void"
+     ]
+    },
+    "at_u8_fand_acqrel": {
+     "asm": [
+      "mvn\tw8, w1",
+      "ldclralb\tw8, w0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw and ptr %a, i8 %m acq_rel, align 1",
+      "ret i8 %_0"
+     ]
+    },
+    "canary_adjacent_relaxed_stores": {
+     "asm": [
+      "str\tw1, [x0]",
+      "str\tw2, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %x, ptr %a monotonic, align 4",
+      "store atomic i32 %y, ptr %a monotonic, align 4",
+      "ret void"
+     ]
+    },
+    "canary_cfence_blocks_store_hoist": {
+     "asm": [
+      "mov\tx8, x0",
+      "mov\tw9, #1",
+      "mov\tw0, w2",
+      "str\tw2, [x1]",
+      "str\tw9, [x8]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr %data, align 4",
+      "fence syncscope(\"singlethread\") release",
+      "store atomic i32 1, ptr %flag monotonic, align 4",
+      "fence syncscope(\"singlethread\") acquire",
+      "ret i32 %v"
+     ]
+    },
+    "canary_dead_relaxed_load": {
+     "asm": [
+      "mov\tx8, x0",
+      "mov\tw0, #42",
+      "ldr\twzr, [x8]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a monotonic, align 4",
+      "ret i32 42"
+     ]
+    },
+    "canary_handler_read_with_cfence": {
+     "asm": [
+      "adrp\tx8, :got:_RNvCs8jPW3FB1Bmg_7atomics8IS_READY",
+      "ldr\tx8, [x8, :got_lo12:_RNvCs8jPW3FB1Bmg_7atomics8IS_READY]",
+      "ldr\tw8, [x8]",
+      "cbz\tw8, .LBB35_2",
+      "adrp\tx8, :got:_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE",
+      "ldr\tx8, [x8, :got_lo12:_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE]",
+      "ldr\tw0, [x8]",
+      "ret",
+      "mov\tw0, wzr",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr @_RNvCs8jPW3FB1Bmg_7atomics8IS_READY monotonic, align 4",
+      "%1 = icmp eq i32 %0, 0",
+      "br i1 %1, label %bb4, label %bb1",
+      "bb1:                                              ; preds = %start",
+      "fence syncscope(\"singlethread\") acquire",
+      "%2 = load i32, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4, !noundef !4",
+      "br label %bb4",
+      "bb4:                                              ; preds = %start, %bb1",
+      "%_0.sroa.0.0 = phi i32 [ %2, %bb1 ], [ 0, %start ]",
+      "ret i32 %_0.sroa.0.0"
+     ]
+    },
+    "canary_no_cfence_store_forwarding": {
+     "asm": [
+      "mov\tx8, x0",
+      "mov\tw9, #1",
+      "mov\tw0, w2",
+      "str\tw2, [x1]",
+      "str\tw9, [x8]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr %data, align 4",
+      "store atomic i32 1, ptr %flag monotonic, align 4",
+      "ret i32 %v"
+     ]
+    },
+    "canary_publish_then_overwrite_with_cfence": {
+     "asm": [
+      "adrp\tx9, :got:_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE",
+      "adrp\tx10, :got:_RNvCs8jPW3FB1Bmg_7atomics8IS_READY",
+      "mov\tw8, #1",
+      "ldr\tx9, [x9, :got_lo12:_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE]",
+      "ldr\tx10, [x10, :got_lo12:_RNvCs8jPW3FB1Bmg_7atomics8IS_READY]",
+      "str\tw0, [x9]",
+      "str\tw8, [x10]",
+      "str\tw1, [x9]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "fence syncscope(\"singlethread\") release",
+      "store atomic i32 1, ptr @_RNvCs8jPW3FB1Bmg_7atomics8IS_READY monotonic, align 4",
+      "store i32 %w, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "ret void"
+     ]
+    },
+    "canary_publish_then_overwrite_without_cfence": {
+     "asm": [
+      "adrp\tx8, :got:_RNvCs8jPW3FB1Bmg_7atomics8IS_READY",
+      "adrp\tx10, :got:_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE",
+      "mov\tw9, #1",
+      "ldr\tx8, [x8, :got_lo12:_RNvCs8jPW3FB1Bmg_7atomics8IS_READY]",
+      "ldr\tx10, [x10, :got_lo12:_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE]",
+      "str\tw9, [x8]",
+      "str\tw1, [x10]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i32 1, ptr @_RNvCs8jPW3FB1Bmg_7atomics8IS_READY monotonic, align 4",
+      "store i32 %w, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "ret void"
+     ]
+    },
+    "ext_u64_load_relaxed": {
+     "asm": [
+      "ldr\tx0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i64, ptr %a monotonic, align 8",
+      "ret i64 %0"
+     ]
+    },
+    "ext_u64_load_seqcst": {
+     "asm": [
+      "ldar\tx0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i64, ptr %a seq_cst, align 8",
+      "ret i64 %0"
+     ]
+    },
+    "ext_u64_store_relaxed": {
+     "asm": [
+      "str\tx1, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i64 %v, ptr %a monotonic, align 8",
+      "ret void"
+     ]
+    },
+    "ext_u64_store_release": {
+     "asm": [
+      "stlr\tx1, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i64 %v, ptr %a release, align 8",
+      "ret void"
+     ]
+    },
+    "ext_u64_swap_seqcst": {
+     "asm": [
+      "swpal\tx1, x0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i64 %v seq_cst, align 8",
+      "ret i64 %_0"
+     ]
+    }
+   },
+   "returncode": 0,
+   "target": "aarch64-unknown-linux-gnu"
+  },
+  "aarch64_v80_default_outline_O3": {
+   "diagnostics": [],
+   "extra_flags": [
+    "-C",
+    "opt-level=3"
+   ],
+   "functions": {
+    "at_cfence_acqrel": {
+     "asm": [
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") acq_rel",
+      "ret void"
+     ]
+    },
+    "at_cfence_acquire": {
+     "asm": [
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") acquire",
+      "ret void"
+     ]
+    },
+    "at_cfence_release": {
+     "asm": [
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") release",
+      "ret void"
+     ]
+    },
+    "at_cfence_seqcst": {
+     "asm": [
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") seq_cst",
+      "ret void"
+     ]
+    },
+    "at_fence_acqrel": {
+     "asm": [
+      "dmb\tish",
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence acq_rel",
+      "ret void"
+     ]
+    },
+    "at_fence_acquire": {
+     "asm": [
+      "dmb\tishld",
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence acquire",
+      "ret void"
+     ]
+    },
+    "at_fence_release": {
+     "asm": [
+      "dmb\tish",
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence release",
+      "ret void"
+     ]
+    },
+    "at_fence_seqcst": {
+     "asm": [
+      "dmb\tish",
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence seq_cst",
+      "ret void"
+     ]
+    },
+    "at_u32_cas_strong_acqrel_acq": {
+     "asm": [
+      "stp\tx29, x30, [sp, #-16]!",
+      "mov\tx29, sp",
+      "mov\tx8, x0",
+      "mov\tw0, w1",
+      "mov\tw1, w2",
+      "mov\tx2, x8",
+      "bl\t__aarch64_cas4_acq_rel",
+      "ldp\tx29, x30, [sp], #16",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg ptr %a, i32 %c, i32 %n acq_rel acquire, align 4",
+      "%_8.sroa.0.0.i = extractvalue { i32, i1 } %0, 0",
+      "ret i32 %_8.sroa.0.0.i"
+     ]
+    },
+    "at_u32_cas_strong_seqcst_seqcst": {
+     "asm": [
+      "stp\tx29, x30, [sp, #-16]!",
+      "mov\tx29, sp",
+      "mov\tx8, x0",
+      "mov\tw0, w1",
+      "mov\tw1, w2",
+      "mov\tx2, x8",
+      "bl\t__aarch64_cas4_acq_rel",
+      "ldp\tx29, x30, [sp], #16",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg ptr %a, i32 %c, i32 %n seq_cst seq_cst, align 4",
+      "%_8.sroa.0.0.i = extractvalue { i32, i1 } %0, 0",
+      "ret i32 %_8.sroa.0.0.i"
+     ]
+    },
+    "at_u32_cas_weak_rel_rlx": {
+     "asm": [
+      "stp\tx29, x30, [sp, #-16]!",
+      "mov\tx29, sp",
+      "mov\tx8, x0",
+      "mov\tw0, w1",
+      "mov\tw1, w2",
+      "mov\tx2, x8",
+      "bl\t__aarch64_cas4_rel",
+      "ldp\tx29, x30, [sp], #16",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg weak ptr %a, i32 %c, i32 %n release monotonic, align 4",
+      "%1 = extractvalue { i32, i1 } %0, 0",
+      "ret i32 %1"
+     ]
+    },
+    "at_u32_fadd_acqrel": {
+     "asm": [
+      "stp\tx29, x30, [sp, #-16]!",
+      "mov\tx29, sp",
+      "mov\tx8, x0",
+      "mov\tw0, w1",
+      "mov\tx1, x8",
+      "bl\t__aarch64_ldadd4_acq_rel",
+      "ldp\tx29, x30, [sp], #16",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v acq_rel, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_acquire": {
+     "asm": [
+      "stp\tx29, x30, [sp, #-16]!",
+      "mov\tx29, sp",
+      "mov\tx8, x0",
+      "mov\tw0, w1",
+      "mov\tx1, x8",
+      "bl\t__aarch64_ldadd4_acq",
+      "ldp\tx29, x30, [sp], #16",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v acquire, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_relaxed": {
+     "asm": [
+      "stp\tx29, x30, [sp, #-16]!",
+      "mov\tx29, sp",
+      "mov\tx8, x0",
+      "mov\tw0, w1",
+      "mov\tx1, x8",
+      "bl\t__aarch64_ldadd4_relax",
+      "ldp\tx29, x30, [sp], #16",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v monotonic, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_release": {
+     "asm": [
+      "stp\tx29, x30, [sp, #-16]!",
+      "mov\tx29, sp",
+      "mov\tx8, x0",
+      "mov\tw0, w1",
+      "mov\tx1, x8",
+      "bl\t__aarch64_ldadd4_rel",
+      "ldp\tx29, x30, [sp], #16",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v release, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_seqcst": {
+     "asm": [
+      "stp\tx29, x30, [sp, #-16]!",
+      "mov\tx29, sp",
+      "mov\tx8, x0",
+      "mov\tw0, w1",
+      "mov\tx1, x8",
+      "bl\t__aarch64_ldadd4_acq_rel",
+      "ldp\tx29, x30, [sp], #16",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v seq_cst, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_load_acquire": {
+     "asm": [
+      "ldar\tw0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a acquire, align 4",
+      "ret i32 %0"
+     ]
+    },
+    "at_u32_load_relaxed": {
+     "asm": [
+      "ldr\tw0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a monotonic, align 4",
+      "ret i32 %0"
+     ]
+    },
+    "at_u32_load_seqcst": {
+     "asm": [
+      "ldar\tw0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a seq_cst, align 4",
+      "ret i32 %0"
+     ]
+    },
+    "at_u32_store_relaxed": {
+     "asm": [
+      "str\tw1, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %v, ptr %a monotonic, align 4",
+      "ret void"
+     ]
+    },
+    "at_u32_store_release": {
+     "asm": [
+      "stlr\tw1, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %v, ptr %a release, align 4",
+      "ret void"
+     ]
+    },
+    "at_u32_store_seqcst": {
+     "asm": [
+      "stlr\tw1, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %v, ptr %a seq_cst, align 4",
+      "ret void"
+     ]
+    },
+    "at_u32_swap_acqrel": {
+     "asm": [
+      "stp\tx29, x30, [sp, #-16]!",
+      "mov\tx29, sp",
+      "mov\tx8, x0",
+      "mov\tw0, w1",
+      "mov\tx1, x8",
+      "bl\t__aarch64_swp4_acq_rel",
+      "ldp\tx29, x30, [sp], #16",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v acq_rel, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_acquire": {
+     "asm": [
+      "stp\tx29, x30, [sp, #-16]!",
+      "mov\tx29, sp",
+      "mov\tx8, x0",
+      "mov\tw0, w1",
+      "mov\tx1, x8",
+      "bl\t__aarch64_swp4_acq",
+      "ldp\tx29, x30, [sp], #16",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v acquire, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_relaxed": {
+     "asm": [
+      "stp\tx29, x30, [sp, #-16]!",
+      "mov\tx29, sp",
+      "mov\tx8, x0",
+      "mov\tw0, w1",
+      "mov\tx1, x8",
+      "bl\t__aarch64_swp4_relax",
+      "ldp\tx29, x30, [sp], #16",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v monotonic, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_release": {
+     "asm": [
+      "stp\tx29, x30, [sp, #-16]!",
+      "mov\tx29, sp",
+      "mov\tx8, x0",
+      "mov\tw0, w1",
+      "mov\tx1, x8",
+      "bl\t__aarch64_swp4_rel",
+      "ldp\tx29, x30, [sp], #16",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v release, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_seqcst": {
+     "asm": [
+      "stp\tx29, x30, [sp, #-16]!",
+      "mov\tx29, sp",
+      "mov\tx8, x0",
+      "mov\tw0, w1",
+      "mov\tx1, x8",
+      "bl\t__aarch64_swp4_acq_rel",
+      "ldp\tx29, x30, [sp], #16",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v seq_cst, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u64_cas_seqcst": {
+     "asm": [
+      "stp\tx29, x30, [sp, #-16]!",
+      "mov\tx29, sp",
+      "mov\tx8, x0",
+      "mov\tx0, x1",
+      "mov\tx1, x2",
+      "mov\tx2, x8",
+      "bl\t__aarch64_cas8_acq_rel",
+      "ldp\tx29, x30, [sp], #16",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg ptr %a, i64 %c, i64 %n seq_cst acquire, align 8",
+      "%1 = extractvalue { i64, i1 } %0, 0",
+      "ret i64 %1"
+     ]
+    },
+    "at_u64_fadd_acqrel": {
+     "asm": [
+      "stp\tx29, x30, [sp, #-16]!",
+      "mov\tx29, sp",
+      "mov\tx8, x0",
+      "mov\tx0, x1",
+      "mov\tx1, x8",
+      "bl\t__aarch64_ldadd8_acq_rel",
+      "ldp\tx29, x30, [sp], #16",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i64 %v acq_rel, align 8",
+      "ret i64 %_0"
+     ]
+    },
+    "at_u64_load_acquire": {
+     "asm": [
+      "ldar\tx0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i64, ptr %a acquire, align 8",
+      "ret i64 %0"
+     ]
+    },
+    "at_u64_store_seqcst": {
+     "asm": [
+      "stlr\tx1, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i64 %v, ptr %a seq_cst, align 8",
+      "ret void"
+     ]
+    },
+    "at_u8_fand_acqrel": {
+     "asm": [
+      "stp\tx29, x30, [sp, #-16]!",
+      "mov\tx29, sp",
+      "mov\tx8, x0",
+      "mvn\tw0, w1",
+      "mov\tx1, x8",
+      "bl\t__aarch64_ldclr1_acq_rel",
+      "ldp\tx29, x30, [sp], #16",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw and ptr %a, i8 %m acq_rel, align 1",
+      "ret i8 %_0"
+     ]
+    },
+    "canary_adjacent_relaxed_stores": {
+     "asm": [
+      "str\tw1, [x0]",
+      "str\tw2, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %x, ptr %a monotonic, align 4",
+      "store atomic i32 %y, ptr %a monotonic, align 4",
+      "ret void"
+     ]
+    },
+    "canary_cfence_blocks_store_hoist": {
+     "asm": [
+      "mov\tx8, x0",
+      "mov\tw9, #1",
+      "mov\tw0, w2",
+      "str\tw2, [x1]",
+      "str\tw9, [x8]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr %data, align 4",
+      "fence syncscope(\"singlethread\") release",
+      "store atomic i32 1, ptr %flag monotonic, align 4",
+      "fence syncscope(\"singlethread\") acquire",
+      "ret i32 %v"
+     ]
+    },
+    "canary_dead_relaxed_load": {
+     "asm": [
+      "mov\tx8, x0",
+      "mov\tw0, #42",
+      "ldr\twzr, [x8]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a monotonic, align 4",
+      "ret i32 42"
+     ]
+    },
+    "canary_handler_read_with_cfence": {
+     "asm": [
+      "adrp\tx8, :got:_RNvCs8jPW3FB1Bmg_7atomics8IS_READY",
+      "ldr\tx8, [x8, :got_lo12:_RNvCs8jPW3FB1Bmg_7atomics8IS_READY]",
+      "ldr\tw8, [x8]",
+      "cbz\tw8, .LBB35_2",
+      "adrp\tx8, :got:_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE",
+      "ldr\tx8, [x8, :got_lo12:_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE]",
+      "ldr\tw0, [x8]",
+      "ret",
+      "mov\tw0, wzr",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr @_RNvCs8jPW3FB1Bmg_7atomics8IS_READY monotonic, align 4",
+      "%1 = icmp eq i32 %0, 0",
+      "br i1 %1, label %bb4, label %bb1",
+      "bb1:                                              ; preds = %start",
+      "fence syncscope(\"singlethread\") acquire",
+      "%2 = load i32, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4, !noundef !4",
+      "br label %bb4",
+      "bb4:                                              ; preds = %start, %bb1",
+      "%_0.sroa.0.0 = phi i32 [ %2, %bb1 ], [ 0, %start ]",
+      "ret i32 %_0.sroa.0.0"
+     ]
+    },
+    "canary_no_cfence_store_forwarding": {
+     "asm": [
+      "mov\tx8, x0",
+      "mov\tw9, #1",
+      "mov\tw0, w2",
+      "str\tw2, [x1]",
+      "str\tw9, [x8]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr %data, align 4",
+      "store atomic i32 1, ptr %flag monotonic, align 4",
+      "ret i32 %v"
+     ]
+    },
+    "canary_publish_then_overwrite_with_cfence": {
+     "asm": [
+      "adrp\tx9, :got:_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE",
+      "adrp\tx10, :got:_RNvCs8jPW3FB1Bmg_7atomics8IS_READY",
+      "mov\tw8, #1",
+      "ldr\tx9, [x9, :got_lo12:_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE]",
+      "ldr\tx10, [x10, :got_lo12:_RNvCs8jPW3FB1Bmg_7atomics8IS_READY]",
+      "str\tw0, [x9]",
+      "str\tw8, [x10]",
+      "str\tw1, [x9]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "fence syncscope(\"singlethread\") release",
+      "store atomic i32 1, ptr @_RNvCs8jPW3FB1Bmg_7atomics8IS_READY monotonic, align 4",
+      "store i32 %w, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "ret void"
+     ]
+    },
+    "canary_publish_then_overwrite_without_cfence": {
+     "asm": [
+      "adrp\tx8, :got:_RNvCs8jPW3FB1Bmg_7atomics8IS_READY",
+      "adrp\tx10, :got:_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE",
+      "mov\tw9, #1",
+      "ldr\tx8, [x8, :got_lo12:_RNvCs8jPW3FB1Bmg_7atomics8IS_READY]",
+      "ldr\tx10, [x10, :got_lo12:_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE]",
+      "str\tw9, [x8]",
+      "str\tw1, [x10]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i32 1, ptr @_RNvCs8jPW3FB1Bmg_7atomics8IS_READY monotonic, align 4",
+      "store i32 %w, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "ret void"
+     ]
+    },
+    "ext_u64_load_relaxed": {
+     "asm": [
+      "ldr\tx0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i64, ptr %a monotonic, align 8",
+      "ret i64 %0"
+     ]
+    },
+    "ext_u64_load_seqcst": {
+     "asm": [
+      "ldar\tx0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i64, ptr %a seq_cst, align 8",
+      "ret i64 %0"
+     ]
+    },
+    "ext_u64_store_relaxed": {
+     "asm": [
+      "str\tx1, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i64 %v, ptr %a monotonic, align 8",
+      "ret void"
+     ]
+    },
+    "ext_u64_store_release": {
+     "asm": [
+      "stlr\tx1, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i64 %v, ptr %a release, align 8",
+      "ret void"
+     ]
+    },
+    "ext_u64_swap_seqcst": {
+     "asm": [
+      "stp\tx29, x30, [sp, #-16]!",
+      "mov\tx29, sp",
+      "mov\tx8, x0",
+      "mov\tx0, x1",
+      "mov\tx1, x8",
+      "bl\t__aarch64_swp8_acq_rel",
+      "ldp\tx29, x30, [sp], #16",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i64 %v seq_cst, align 8",
+      "ret i64 %_0"
+     ]
+    }
+   },
+   "returncode": 0,
+   "target": "aarch64-unknown-linux-gnu"
+  },
+  "aarch64_v80_no_outline_O3": {
+   "diagnostics": [
+    "warning: unstable feature specified for `-Ctarget-feature`: `outline-atomics`",
+    "warning: 1 warning emitted"
+   ],
+   "extra_flags": [
+    "-C",
+    "opt-level=3",
+    "-C",
+    "target-feature=-outline-atomics"
+   ],
+   "functions": {
+    "at_cfence_acqrel": {
+     "asm": [
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") acq_rel",
+      "ret void"
+     ]
+    },
+    "at_cfence_acquire": {
+     "asm": [
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") acquire",
+      "ret void"
+     ]
+    },
+    "at_cfence_release": {
+     "asm": [
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") release",
+      "ret void"
+     ]
+    },
+    "at_cfence_seqcst": {
+     "asm": [
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") seq_cst",
+      "ret void"
+     ]
+    },
+    "at_fence_acqrel": {
+     "asm": [
+      "dmb\tish",
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence acq_rel",
+      "ret void"
+     ]
+    },
+    "at_fence_acquire": {
+     "asm": [
+      "dmb\tishld",
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence acquire",
+      "ret void"
+     ]
+    },
+    "at_fence_release": {
+     "asm": [
+      "dmb\tish",
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence release",
+      "ret void"
+     ]
+    },
+    "at_fence_seqcst": {
+     "asm": [
+      "dmb\tish",
+      "ret"
+     ],
+     "llvm_ir": [
+      "fence seq_cst",
+      "ret void"
+     ]
+    },
+    "at_u32_cas_strong_acqrel_acq": {
+     "asm": [
+      "mov\tx8, x0",
+      "ldaxr\tw0, [x8]",
+      "cmp\tw0, w1",
+      "b.ne\t.LBB8_4",
+      "stlxr\tw9, w2, [x8]",
+      "cbnz\tw9, .LBB8_1",
+      "ret",
+      "clrex",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg ptr %a, i32 %c, i32 %n acq_rel acquire, align 4",
+      "%_8.sroa.0.0.i = extractvalue { i32, i1 } %0, 0",
+      "ret i32 %_8.sroa.0.0.i"
+     ]
+    },
+    "at_u32_cas_strong_seqcst_seqcst": {
+     "asm": [
+      "mov\tx8, x0",
+      "ldaxr\tw0, [x8]",
+      "cmp\tw0, w1",
+      "b.ne\t.LBB9_4",
+      "stlxr\tw9, w2, [x8]",
+      "cbnz\tw9, .LBB9_1",
+      "ret",
+      "clrex",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg ptr %a, i32 %c, i32 %n seq_cst seq_cst, align 4",
+      "%_8.sroa.0.0.i = extractvalue { i32, i1 } %0, 0",
+      "ret i32 %_8.sroa.0.0.i"
+     ]
+    },
+    "at_u32_cas_weak_rel_rlx": {
+     "asm": [
+      "mov\tx8, x0",
+      "ldxr\tw0, [x0]",
+      "cmp\tw0, w1",
+      "b.ne\t.LBB10_2",
+      "stlxr\twzr, w2, [x8]",
+      "ret",
+      "clrex",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg weak ptr %a, i32 %c, i32 %n release monotonic, align 4",
+      "%1 = extractvalue { i32, i1 } %0, 0",
+      "ret i32 %1"
+     ]
+    },
+    "at_u32_fadd_acqrel": {
+     "asm": [
+      "ldaxr\tw8, [x0]",
+      "add\tw9, w8, w1",
+      "stlxr\tw10, w9, [x0]",
+      "cbnz\tw10, .LBB11_1",
+      "mov\tw0, w8",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v acq_rel, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_acquire": {
+     "asm": [
+      "ldaxr\tw8, [x0]",
+      "add\tw9, w8, w1",
+      "stxr\tw10, w9, [x0]",
+      "cbnz\tw10, .LBB12_1",
+      "mov\tw0, w8",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v acquire, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_relaxed": {
+     "asm": [
+      "ldxr\tw8, [x0]",
+      "add\tw9, w8, w1",
+      "stxr\tw10, w9, [x0]",
+      "cbnz\tw10, .LBB13_1",
+      "mov\tw0, w8",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v monotonic, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_release": {
+     "asm": [
+      "ldxr\tw8, [x0]",
+      "add\tw9, w8, w1",
+      "stlxr\tw10, w9, [x0]",
+      "cbnz\tw10, .LBB14_1",
+      "mov\tw0, w8",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v release, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_seqcst": {
+     "asm": [
+      "ldaxr\tw8, [x0]",
+      "add\tw9, w8, w1",
+      "stlxr\tw10, w9, [x0]",
+      "cbnz\tw10, .LBB15_1",
+      "mov\tw0, w8",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v seq_cst, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_load_acquire": {
+     "asm": [
+      "ldar\tw0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a acquire, align 4",
+      "ret i32 %0"
+     ]
+    },
+    "at_u32_load_relaxed": {
+     "asm": [
+      "ldr\tw0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a monotonic, align 4",
+      "ret i32 %0"
+     ]
+    },
+    "at_u32_load_seqcst": {
+     "asm": [
+      "ldar\tw0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a seq_cst, align 4",
+      "ret i32 %0"
+     ]
+    },
+    "at_u32_store_relaxed": {
+     "asm": [
+      "str\tw1, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %v, ptr %a monotonic, align 4",
+      "ret void"
+     ]
+    },
+    "at_u32_store_release": {
+     "asm": [
+      "stlr\tw1, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %v, ptr %a release, align 4",
+      "ret void"
+     ]
+    },
+    "at_u32_store_seqcst": {
+     "asm": [
+      "stlr\tw1, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %v, ptr %a seq_cst, align 4",
+      "ret void"
+     ]
+    },
+    "at_u32_swap_acqrel": {
+     "asm": [
+      "mov\tx8, x0",
+      "ldaxr\tw0, [x8]",
+      "stlxr\tw9, w1, [x8]",
+      "cbnz\tw9, .LBB22_1",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v acq_rel, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_acquire": {
+     "asm": [
+      "mov\tx8, x0",
+      "ldaxr\tw0, [x8]",
+      "stxr\tw9, w1, [x8]",
+      "cbnz\tw9, .LBB23_1",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v acquire, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_relaxed": {
+     "asm": [
+      "mov\tx8, x0",
+      "ldxr\tw0, [x8]",
+      "stxr\tw9, w1, [x8]",
+      "cbnz\tw9, .LBB24_1",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v monotonic, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_release": {
+     "asm": [
+      "mov\tx8, x0",
+      "ldxr\tw0, [x8]",
+      "stlxr\tw9, w1, [x8]",
+      "cbnz\tw9, .LBB25_1",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v release, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_seqcst": {
+     "asm": [
+      "mov\tx8, x0",
+      "ldaxr\tw0, [x8]",
+      "stlxr\tw9, w1, [x8]",
+      "cbnz\tw9, .LBB26_1",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v seq_cst, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u64_cas_seqcst": {
+     "asm": [
+      "mov\tx8, x0",
+      "ldaxr\tx0, [x8]",
+      "cmp\tx0, x1",
+      "b.ne\t.LBB27_4",
+      "stlxr\tw9, x2, [x8]",
+      "cbnz\tw9, .LBB27_1",
+      "ret",
+      "clrex",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg ptr %a, i64 %c, i64 %n seq_cst acquire, align 8",
+      "%1 = extractvalue { i64, i1 } %0, 0",
+      "ret i64 %1"
+     ]
+    },
+    "at_u64_fadd_acqrel": {
+     "asm": [
+      "mov\tx8, x0",
+      "ldaxr\tx0, [x8]",
+      "add\tx9, x0, x1",
+      "stlxr\tw10, x9, [x8]",
+      "cbnz\tw10, .LBB28_1",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i64 %v acq_rel, align 8",
+      "ret i64 %_0"
+     ]
+    },
+    "at_u64_load_acquire": {
+     "asm": [
+      "ldar\tx0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i64, ptr %a acquire, align 8",
+      "ret i64 %0"
+     ]
+    },
+    "at_u64_store_seqcst": {
+     "asm": [
+      "stlr\tx1, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i64 %v, ptr %a seq_cst, align 8",
+      "ret void"
+     ]
+    },
+    "at_u8_fand_acqrel": {
+     "asm": [
+      "ldaxrb\tw8, [x0]",
+      "and\tw9, w8, w1",
+      "stlxrb\tw10, w9, [x0]",
+      "cbnz\tw10, .LBB31_1",
+      "mov\tw0, w8",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw and ptr %a, i8 %m acq_rel, align 1",
+      "ret i8 %_0"
+     ]
+    },
+    "canary_adjacent_relaxed_stores": {
+     "asm": [
+      "str\tw1, [x0]",
+      "str\tw2, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %x, ptr %a monotonic, align 4",
+      "store atomic i32 %y, ptr %a monotonic, align 4",
+      "ret void"
+     ]
+    },
+    "canary_cfence_blocks_store_hoist": {
+     "asm": [
+      "mov\tx8, x0",
+      "mov\tw9, #1",
+      "mov\tw0, w2",
+      "str\tw2, [x1]",
+      "str\tw9, [x8]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr %data, align 4",
+      "fence syncscope(\"singlethread\") release",
+      "store atomic i32 1, ptr %flag monotonic, align 4",
+      "fence syncscope(\"singlethread\") acquire",
+      "ret i32 %v"
+     ]
+    },
+    "canary_dead_relaxed_load": {
+     "asm": [
+      "mov\tx8, x0",
+      "mov\tw0, #42",
+      "ldr\twzr, [x8]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a monotonic, align 4",
+      "ret i32 42"
+     ]
+    },
+    "canary_handler_read_with_cfence": {
+     "asm": [
+      "adrp\tx8, :got:_RNvCs8jPW3FB1Bmg_7atomics8IS_READY",
+      "ldr\tx8, [x8, :got_lo12:_RNvCs8jPW3FB1Bmg_7atomics8IS_READY]",
+      "ldr\tw8, [x8]",
+      "cbz\tw8, .LBB35_2",
+      "adrp\tx8, :got:_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE",
+      "ldr\tx8, [x8, :got_lo12:_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE]",
+      "ldr\tw0, [x8]",
+      "ret",
+      "mov\tw0, wzr",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr @_RNvCs8jPW3FB1Bmg_7atomics8IS_READY monotonic, align 4",
+      "%1 = icmp eq i32 %0, 0",
+      "br i1 %1, label %bb4, label %bb1",
+      "bb1:                                              ; preds = %start",
+      "fence syncscope(\"singlethread\") acquire",
+      "%2 = load i32, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4, !noundef !4",
+      "br label %bb4",
+      "bb4:                                              ; preds = %start, %bb1",
+      "%_0.sroa.0.0 = phi i32 [ %2, %bb1 ], [ 0, %start ]",
+      "ret i32 %_0.sroa.0.0"
+     ]
+    },
+    "canary_no_cfence_store_forwarding": {
+     "asm": [
+      "mov\tx8, x0",
+      "mov\tw9, #1",
+      "mov\tw0, w2",
+      "str\tw2, [x1]",
+      "str\tw9, [x8]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr %data, align 4",
+      "store atomic i32 1, ptr %flag monotonic, align 4",
+      "ret i32 %v"
+     ]
+    },
+    "canary_publish_then_overwrite_with_cfence": {
+     "asm": [
+      "adrp\tx9, :got:_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE",
+      "adrp\tx10, :got:_RNvCs8jPW3FB1Bmg_7atomics8IS_READY",
+      "mov\tw8, #1",
+      "ldr\tx9, [x9, :got_lo12:_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE]",
+      "ldr\tx10, [x10, :got_lo12:_RNvCs8jPW3FB1Bmg_7atomics8IS_READY]",
+      "str\tw0, [x9]",
+      "str\tw8, [x10]",
+      "str\tw1, [x9]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "fence syncscope(\"singlethread\") release",
+      "store atomic i32 1, ptr @_RNvCs8jPW3FB1Bmg_7atomics8IS_READY monotonic, align 4",
+      "store i32 %w, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "ret void"
+     ]
+    },
+    "canary_publish_then_overwrite_without_cfence": {
+     "asm": [
+      "adrp\tx8, :got:_RNvCs8jPW3FB1Bmg_7atomics8IS_READY",
+      "adrp\tx10, :got:_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE",
+      "mov\tw9, #1",
+      "ldr\tx8, [x8, :got_lo12:_RNvCs8jPW3FB1Bmg_7atomics8IS_READY]",
+      "ldr\tx10, [x10, :got_lo12:_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE]",
+      "str\tw9, [x8]",
+      "str\tw1, [x10]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i32 1, ptr @_RNvCs8jPW3FB1Bmg_7atomics8IS_READY monotonic, align 4",
+      "store i32 %w, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "ret void"
+     ]
+    },
+    "ext_u64_load_relaxed": {
+     "asm": [
+      "ldr\tx0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i64, ptr %a monotonic, align 8",
+      "ret i64 %0"
+     ]
+    },
+    "ext_u64_load_seqcst": {
+     "asm": [
+      "ldar\tx0, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i64, ptr %a seq_cst, align 8",
+      "ret i64 %0"
+     ]
+    },
+    "ext_u64_store_relaxed": {
+     "asm": [
+      "str\tx1, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i64 %v, ptr %a monotonic, align 8",
+      "ret void"
+     ]
+    },
+    "ext_u64_store_release": {
+     "asm": [
+      "stlr\tx1, [x0]",
+      "ret"
+     ],
+     "llvm_ir": [
+      "store atomic i64 %v, ptr %a release, align 8",
+      "ret void"
+     ]
+    },
+    "ext_u64_swap_seqcst": {
+     "asm": [
+      "mov\tx8, x0",
+      "ldaxr\tx0, [x8]",
+      "stlxr\tw9, x1, [x8]",
+      "cbnz\tw9, .LBB43_1",
+      "ret"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i64 %v seq_cst, align 8",
+      "ret i64 %_0"
+     ]
+    }
+   },
+   "returncode": 0,
+   "target": "aarch64-unknown-linux-gnu"
+  },
+  "i686_default_sse2_O3": {
+   "diagnostics": [],
+   "extra_flags": [
+    "-C",
+    "opt-level=3"
+   ],
+   "functions": {
+    "at_cfence_acqrel": {
+     "asm": [
+      "retl"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") acq_rel",
+      "ret void"
+     ]
+    },
+    "at_cfence_acquire": {
+     "asm": [
+      "retl"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") acquire",
+      "ret void"
+     ]
+    },
+    "at_cfence_release": {
+     "asm": [
+      "retl"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") release",
+      "ret void"
+     ]
+    },
+    "at_cfence_seqcst": {
+     "asm": [
+      "retl"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") seq_cst",
+      "ret void"
+     ]
+    },
+    "at_fence_acqrel": {
+     "asm": [
+      "retl"
+     ],
+     "llvm_ir": [
+      "fence acq_rel",
+      "ret void"
+     ]
+    },
+    "at_fence_acquire": {
+     "asm": [
+      "retl"
+     ],
+     "llvm_ir": [
+      "fence acquire",
+      "ret void"
+     ]
+    },
+    "at_fence_release": {
+     "asm": [
+      "retl"
+     ],
+     "llvm_ir": [
+      "fence release",
+      "ret void"
+     ]
+    },
+    "at_fence_seqcst": {
+     "asm": [
+      "mfence",
+      "retl"
+     ],
+     "llvm_ir": [
+      "fence seq_cst",
+      "ret void"
+     ]
+    },
+    "at_u32_cas_strong_acqrel_acq": {
+     "asm": [
+      "movl\t8(%esp), %eax",
+      "movl\t12(%esp), %ecx",
+      "movl\t4(%esp), %edx",
+      "lock\t\tcmpxchgl\t%ecx, (%edx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg ptr %a, i32 %c, i32 %n acq_rel acquire, align 4",
+      "%_8.sroa.0.0.i = extractvalue { i32, i1 } %0, 0",
+      "ret i32 %_8.sroa.0.0.i"
+     ]
+    },
+    "at_u32_cas_strong_seqcst_seqcst": {
+     "asm": [
+      "movl\t8(%esp), %eax",
+      "movl\t12(%esp), %ecx",
+      "movl\t4(%esp), %edx",
+      "lock\t\tcmpxchgl\t%ecx, (%edx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg ptr %a, i32 %c, i32 %n seq_cst seq_cst, align 4",
+      "%_8.sroa.0.0.i = extractvalue { i32, i1 } %0, 0",
+      "ret i32 %_8.sroa.0.0.i"
+     ]
+    },
+    "at_u32_cas_weak_rel_rlx": {
+     "asm": [
+      "movl\t8(%esp), %eax",
+      "movl\t12(%esp), %ecx",
+      "movl\t4(%esp), %edx",
+      "lock\t\tcmpxchgl\t%ecx, (%edx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg weak ptr %a, i32 %c, i32 %n release monotonic, align 4",
+      "%1 = extractvalue { i32, i1 } %0, 0",
+      "ret i32 %1"
+     ]
+    },
+    "at_u32_fadd_acqrel": {
+     "asm": [
+      "movl\t4(%esp), %ecx",
+      "movl\t8(%esp), %eax",
+      "lock\t\txaddl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v acq_rel, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_acquire": {
+     "asm": [
+      "movl\t4(%esp), %ecx",
+      "movl\t8(%esp), %eax",
+      "lock\t\txaddl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v acquire, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_relaxed": {
+     "asm": [
+      "movl\t4(%esp), %ecx",
+      "movl\t8(%esp), %eax",
+      "lock\t\txaddl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v monotonic, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_release": {
+     "asm": [
+      "movl\t4(%esp), %ecx",
+      "movl\t8(%esp), %eax",
+      "lock\t\txaddl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v release, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_seqcst": {
+     "asm": [
+      "movl\t4(%esp), %ecx",
+      "movl\t8(%esp), %eax",
+      "lock\t\txaddl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v seq_cst, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_load_acquire": {
+     "asm": [
+      "movl\t4(%esp), %eax",
+      "movl\t(%eax), %eax",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a acquire, align 4",
+      "ret i32 %0"
+     ]
+    },
+    "at_u32_load_relaxed": {
+     "asm": [
+      "movl\t4(%esp), %eax",
+      "movl\t(%eax), %eax",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a monotonic, align 4",
+      "ret i32 %0"
+     ]
+    },
+    "at_u32_load_seqcst": {
+     "asm": [
+      "movl\t4(%esp), %eax",
+      "movl\t(%eax), %eax",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a seq_cst, align 4",
+      "ret i32 %0"
+     ]
+    },
+    "at_u32_store_relaxed": {
+     "asm": [
+      "movl\t8(%esp), %eax",
+      "movl\t4(%esp), %ecx",
+      "movl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %v, ptr %a monotonic, align 4",
+      "ret void"
+     ]
+    },
+    "at_u32_store_release": {
+     "asm": [
+      "movl\t8(%esp), %eax",
+      "movl\t4(%esp), %ecx",
+      "movl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %v, ptr %a release, align 4",
+      "ret void"
+     ]
+    },
+    "at_u32_store_seqcst": {
+     "asm": [
+      "movl\t4(%esp), %eax",
+      "movl\t8(%esp), %ecx",
+      "xchgl\t%ecx, (%eax)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %v, ptr %a seq_cst, align 4",
+      "ret void"
+     ]
+    },
+    "at_u32_swap_acqrel": {
+     "asm": [
+      "movl\t4(%esp), %ecx",
+      "movl\t8(%esp), %eax",
+      "xchgl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v acq_rel, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_acquire": {
+     "asm": [
+      "movl\t4(%esp), %ecx",
+      "movl\t8(%esp), %eax",
+      "xchgl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v acquire, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_relaxed": {
+     "asm": [
+      "movl\t4(%esp), %ecx",
+      "movl\t8(%esp), %eax",
+      "xchgl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v monotonic, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_release": {
+     "asm": [
+      "movl\t4(%esp), %ecx",
+      "movl\t8(%esp), %eax",
+      "xchgl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v release, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_seqcst": {
+     "asm": [
+      "movl\t4(%esp), %ecx",
+      "movl\t8(%esp), %eax",
+      "xchgl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v seq_cst, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u64_cas_seqcst": {
+     "asm": [
+      "pushl\t%ebx",
+      "pushl\t%esi",
+      "movl\t16(%esp), %eax",
+      "movl\t20(%esp), %edx",
+      "movl\t24(%esp), %ebx",
+      "movl\t28(%esp), %ecx",
+      "movl\t12(%esp), %esi",
+      "lock\t\tcmpxchg8b\t(%esi)",
+      "popl\t%esi",
+      "popl\t%ebx",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg ptr %a, i64 %c, i64 %n seq_cst acquire, align 8, !noalias !3",
+      "%1 = extractvalue { i64, i1 } %0, 0",
+      "ret i64 %1"
+     ]
+    },
+    "at_u64_fadd_acqrel": {
+     "asm": [
+      "pushl\t%ebp",
+      "pushl\t%ebx",
+      "pushl\t%edi",
+      "pushl\t%esi",
+      "movl\t20(%esp), %ebp",
+      "movl\t28(%esp), %esi",
+      "movl\t24(%esp), %edi",
+      "movl\t(%ebp), %eax",
+      "movl\t4(%ebp), %edx",
+      "movl\t%eax, %ebx",
+      "movl\t%edx, %ecx",
+      "addl\t%edi, %ebx",
+      "adcl\t%esi, %ecx",
+      "lock\t\tcmpxchg8b\t(%ebp)",
+      "jne\t.LBB28_1",
+      "popl\t%esi",
+      "popl\t%edi",
+      "popl\t%ebx",
+      "popl\t%ebp",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i64 %v acq_rel, align 8",
+      "ret i64 %_0"
+     ]
+    },
+    "at_u64_load_acquire": {
+     "asm": [
+      "movl\t4(%esp), %eax",
+      "movq\t(%eax), %xmm0",
+      "movd\t%xmm0, %eax",
+      "pshufd\t$85, %xmm0, %xmm0",
+      "movd\t%xmm0, %edx",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i64, ptr %a acquire, align 8",
+      "ret i64 %0"
+     ]
+    },
+    "at_u64_store_seqcst": {
+     "asm": [
+      "movl\t4(%esp), %eax",
+      "movsd\t8(%esp), %xmm0",
+      "movlps\t%xmm0, (%eax)",
+      "lock\t\torl\t$0, (%esp)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "store atomic i64 %v, ptr %a seq_cst, align 8",
+      "ret void"
+     ]
+    },
+    "at_u8_fand_acqrel": {
+     "asm": [
+      "movl\t4(%esp), %edx",
+      "movzbl\t8(%esp), %ecx",
+      "movzbl\t(%edx), %eax",
+      "movb\t%al, %ah",
+      "andb\t%cl, %ah",
+      "lock\t\tcmpxchgb\t%ah, (%edx)",
+      "jne\t.LBB31_1",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw and ptr %a, i8 %m acq_rel, align 1",
+      "ret i8 %_0"
+     ]
+    },
+    "canary_adjacent_relaxed_stores": {
+     "asm": [
+      "movl\t12(%esp), %eax",
+      "movl\t8(%esp), %ecx",
+      "movl\t4(%esp), %edx",
+      "movl\t%ecx, (%edx)",
+      "movl\t%eax, (%edx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %x, ptr %a monotonic, align 4",
+      "store atomic i32 %y, ptr %a monotonic, align 4",
+      "ret void"
+     ]
+    },
+    "canary_cfence_blocks_store_hoist": {
+     "asm": [
+      "movl\t12(%esp), %eax",
+      "movl\t8(%esp), %edx",
+      "movl\t4(%esp), %ecx",
+      "movl\t%eax, (%edx)",
+      "movl\t$1, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr %data, align 4",
+      "fence syncscope(\"singlethread\") release",
+      "store atomic i32 1, ptr %flag monotonic, align 4",
+      "fence syncscope(\"singlethread\") acquire",
+      "ret i32 %v"
+     ]
+    },
+    "canary_dead_relaxed_load": {
+     "asm": [
+      "movl\t4(%esp), %eax",
+      "movl\t(%eax), %eax",
+      "movl\t$42, %eax",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a monotonic, align 4",
+      "ret i32 42"
+     ]
+    },
+    "canary_handler_read_with_cfence": {
+     "asm": [
+      "calll\t.L35$pb",
+      "popl\t%eax",
+      "addl\t$_GLOBAL_OFFSET_TABLE_+(.Ltmp0-.L35$pb), %eax",
+      "movl\t_RNvCs8jPW3FB1Bmg_7atomics8IS_READY@GOT(%eax), %ecx",
+      "movl\t(%ecx), %ecx",
+      "testl\t%ecx, %ecx",
+      "je\t.LBB35_1",
+      "movl\t_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE@GOT(%eax), %eax",
+      "movl\t(%eax), %eax",
+      "retl",
+      "xorl\t%eax, %eax",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr @_RNvCs8jPW3FB1Bmg_7atomics8IS_READY monotonic, align 4",
+      "%1 = icmp eq i32 %0, 0",
+      "br i1 %1, label %bb4, label %bb1",
+      "bb1:                                              ; preds = %start",
+      "fence syncscope(\"singlethread\") acquire",
+      "%2 = load i32, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4, !noundef !6",
+      "br label %bb4",
+      "bb4:                                              ; preds = %start, %bb1",
+      "%_0.sroa.0.0 = phi i32 [ %2, %bb1 ], [ 0, %start ]",
+      "ret i32 %_0.sroa.0.0"
+     ]
+    },
+    "canary_no_cfence_store_forwarding": {
+     "asm": [
+      "movl\t12(%esp), %eax",
+      "movl\t8(%esp), %edx",
+      "movl\t4(%esp), %ecx",
+      "movl\t%eax, (%edx)",
+      "movl\t$1, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr %data, align 4",
+      "store atomic i32 1, ptr %flag monotonic, align 4",
+      "ret i32 %v"
+     ]
+    },
+    "canary_publish_then_overwrite_with_cfence": {
+     "asm": [
+      "pushl\t%esi",
+      "calll\t.L37$pb",
+      "popl\t%eax",
+      "movl\t12(%esp), %ecx",
+      "movl\t8(%esp), %edx",
+      "addl\t$_GLOBAL_OFFSET_TABLE_+(.Ltmp1-.L37$pb), %eax",
+      "movl\t_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE@GOT(%eax), %esi",
+      "movl\t_RNvCs8jPW3FB1Bmg_7atomics8IS_READY@GOT(%eax), %eax",
+      "movl\t%edx, (%esi)",
+      "movl\t$1, (%eax)",
+      "movl\t%ecx, (%esi)",
+      "popl\t%esi",
+      "retl"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "fence syncscope(\"singlethread\") release",
+      "store atomic i32 1, ptr @_RNvCs8jPW3FB1Bmg_7atomics8IS_READY monotonic, align 4",
+      "store i32 %w, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "ret void"
+     ]
+    },
+    "canary_publish_then_overwrite_without_cfence": {
+     "asm": [
+      "calll\t.L38$pb",
+      "popl\t%eax",
+      "movl\t8(%esp), %ecx",
+      "addl\t$_GLOBAL_OFFSET_TABLE_+(.Ltmp2-.L38$pb), %eax",
+      "movl\t_RNvCs8jPW3FB1Bmg_7atomics8IS_READY@GOT(%eax), %edx",
+      "movl\t_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE@GOT(%eax), %eax",
+      "movl\t$1, (%edx)",
+      "movl\t%ecx, (%eax)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "store atomic i32 1, ptr @_RNvCs8jPW3FB1Bmg_7atomics8IS_READY monotonic, align 4",
+      "store i32 %w, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "ret void"
+     ]
+    },
+    "ext_u64_load_relaxed": {
+     "asm": [
+      "movl\t4(%esp), %eax",
+      "movq\t(%eax), %xmm0",
+      "movd\t%xmm0, %eax",
+      "pshufd\t$85, %xmm0, %xmm0",
+      "movd\t%xmm0, %edx",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i64, ptr %a monotonic, align 8",
+      "ret i64 %0"
+     ]
+    },
+    "ext_u64_load_seqcst": {
+     "asm": [
+      "movl\t4(%esp), %eax",
+      "movq\t(%eax), %xmm0",
+      "movd\t%xmm0, %eax",
+      "pshufd\t$85, %xmm0, %xmm0",
+      "movd\t%xmm0, %edx",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i64, ptr %a seq_cst, align 8",
+      "ret i64 %0"
+     ]
+    },
+    "ext_u64_store_relaxed": {
+     "asm": [
+      "movl\t4(%esp), %eax",
+      "movsd\t8(%esp), %xmm0",
+      "movlps\t%xmm0, (%eax)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "store atomic i64 %v, ptr %a monotonic, align 8",
+      "ret void"
+     ]
+    },
+    "ext_u64_store_release": {
+     "asm": [
+      "movl\t4(%esp), %eax",
+      "movsd\t8(%esp), %xmm0",
+      "movlps\t%xmm0, (%eax)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "store atomic i64 %v, ptr %a release, align 8",
+      "ret void"
+     ]
+    },
+    "ext_u64_swap_seqcst": {
+     "asm": [
+      "pushl\t%ebx",
+      "pushl\t%esi",
+      "movl\t12(%esp), %esi",
+      "movl\t20(%esp), %ecx",
+      "movl\t16(%esp), %ebx",
+      "movl\t(%esi), %eax",
+      "movl\t4(%esi), %edx",
+      "lock\t\tcmpxchg8b\t(%esi)",
+      "jne\t.LBB43_1",
+      "popl\t%esi",
+      "popl\t%ebx",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i64 %v seq_cst, align 8",
+      "ret i64 %_0"
+     ]
+    }
+   },
+   "returncode": 0,
+   "target": "i686-unknown-linux-gnu"
+  },
+  "i686_nosse2_O3": {
+   "diagnostics": [
+    "warning: target feature `sse2` must be enabled to ensure that the ABI of the current target can be implemented correctly",
+    "warning: 1 warning emitted"
+   ],
+   "extra_flags": [
+    "-C",
+    "opt-level=3",
+    "-C",
+    "target-feature=-sse2,-sse"
+   ],
+   "functions": {
+    "at_cfence_acqrel": {
+     "asm": [
+      "retl"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") acq_rel",
+      "ret void"
+     ]
+    },
+    "at_cfence_acquire": {
+     "asm": [
+      "retl"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") acquire",
+      "ret void"
+     ]
+    },
+    "at_cfence_release": {
+     "asm": [
+      "retl"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") release",
+      "ret void"
+     ]
+    },
+    "at_cfence_seqcst": {
+     "asm": [
+      "retl"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") seq_cst",
+      "ret void"
+     ]
+    },
+    "at_fence_acqrel": {
+     "asm": [
+      "retl"
+     ],
+     "llvm_ir": [
+      "fence acq_rel",
+      "ret void"
+     ]
+    },
+    "at_fence_acquire": {
+     "asm": [
+      "retl"
+     ],
+     "llvm_ir": [
+      "fence acquire",
+      "ret void"
+     ]
+    },
+    "at_fence_release": {
+     "asm": [
+      "retl"
+     ],
+     "llvm_ir": [
+      "fence release",
+      "ret void"
+     ]
+    },
+    "at_fence_seqcst": {
+     "asm": [
+      "lock\t\torl\t$0, (%esp)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "fence seq_cst",
+      "ret void"
+     ]
+    },
+    "at_u32_cas_strong_acqrel_acq": {
+     "asm": [
+      "movl\t8(%esp), %eax",
+      "movl\t12(%esp), %ecx",
+      "movl\t4(%esp), %edx",
+      "lock\t\tcmpxchgl\t%ecx, (%edx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg ptr %a, i32 %c, i32 %n acq_rel acquire, align 4",
+      "%_8.sroa.0.0.i = extractvalue { i32, i1 } %0, 0",
+      "ret i32 %_8.sroa.0.0.i"
+     ]
+    },
+    "at_u32_cas_strong_seqcst_seqcst": {
+     "asm": [
+      "movl\t8(%esp), %eax",
+      "movl\t12(%esp), %ecx",
+      "movl\t4(%esp), %edx",
+      "lock\t\tcmpxchgl\t%ecx, (%edx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg ptr %a, i32 %c, i32 %n seq_cst seq_cst, align 4",
+      "%_8.sroa.0.0.i = extractvalue { i32, i1 } %0, 0",
+      "ret i32 %_8.sroa.0.0.i"
+     ]
+    },
+    "at_u32_cas_weak_rel_rlx": {
+     "asm": [
+      "movl\t8(%esp), %eax",
+      "movl\t12(%esp), %ecx",
+      "movl\t4(%esp), %edx",
+      "lock\t\tcmpxchgl\t%ecx, (%edx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg weak ptr %a, i32 %c, i32 %n release monotonic, align 4",
+      "%1 = extractvalue { i32, i1 } %0, 0",
+      "ret i32 %1"
+     ]
+    },
+    "at_u32_fadd_acqrel": {
+     "asm": [
+      "movl\t4(%esp), %ecx",
+      "movl\t8(%esp), %eax",
+      "lock\t\txaddl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v acq_rel, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_acquire": {
+     "asm": [
+      "movl\t4(%esp), %ecx",
+      "movl\t8(%esp), %eax",
+      "lock\t\txaddl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v acquire, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_relaxed": {
+     "asm": [
+      "movl\t4(%esp), %ecx",
+      "movl\t8(%esp), %eax",
+      "lock\t\txaddl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v monotonic, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_release": {
+     "asm": [
+      "movl\t4(%esp), %ecx",
+      "movl\t8(%esp), %eax",
+      "lock\t\txaddl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v release, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_seqcst": {
+     "asm": [
+      "movl\t4(%esp), %ecx",
+      "movl\t8(%esp), %eax",
+      "lock\t\txaddl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v seq_cst, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_load_acquire": {
+     "asm": [
+      "movl\t4(%esp), %eax",
+      "movl\t(%eax), %eax",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a acquire, align 4",
+      "ret i32 %0"
+     ]
+    },
+    "at_u32_load_relaxed": {
+     "asm": [
+      "movl\t4(%esp), %eax",
+      "movl\t(%eax), %eax",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a monotonic, align 4",
+      "ret i32 %0"
+     ]
+    },
+    "at_u32_load_seqcst": {
+     "asm": [
+      "movl\t4(%esp), %eax",
+      "movl\t(%eax), %eax",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a seq_cst, align 4",
+      "ret i32 %0"
+     ]
+    },
+    "at_u32_store_relaxed": {
+     "asm": [
+      "movl\t8(%esp), %eax",
+      "movl\t4(%esp), %ecx",
+      "movl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %v, ptr %a monotonic, align 4",
+      "ret void"
+     ]
+    },
+    "at_u32_store_release": {
+     "asm": [
+      "movl\t8(%esp), %eax",
+      "movl\t4(%esp), %ecx",
+      "movl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %v, ptr %a release, align 4",
+      "ret void"
+     ]
+    },
+    "at_u32_store_seqcst": {
+     "asm": [
+      "movl\t4(%esp), %eax",
+      "movl\t8(%esp), %ecx",
+      "xchgl\t%ecx, (%eax)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %v, ptr %a seq_cst, align 4",
+      "ret void"
+     ]
+    },
+    "at_u32_swap_acqrel": {
+     "asm": [
+      "movl\t4(%esp), %ecx",
+      "movl\t8(%esp), %eax",
+      "xchgl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v acq_rel, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_acquire": {
+     "asm": [
+      "movl\t4(%esp), %ecx",
+      "movl\t8(%esp), %eax",
+      "xchgl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v acquire, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_relaxed": {
+     "asm": [
+      "movl\t4(%esp), %ecx",
+      "movl\t8(%esp), %eax",
+      "xchgl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v monotonic, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_release": {
+     "asm": [
+      "movl\t4(%esp), %ecx",
+      "movl\t8(%esp), %eax",
+      "xchgl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v release, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_seqcst": {
+     "asm": [
+      "movl\t4(%esp), %ecx",
+      "movl\t8(%esp), %eax",
+      "xchgl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v seq_cst, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u64_cas_seqcst": {
+     "asm": [
+      "pushl\t%ebx",
+      "pushl\t%esi",
+      "movl\t16(%esp), %eax",
+      "movl\t20(%esp), %edx",
+      "movl\t24(%esp), %ebx",
+      "movl\t28(%esp), %ecx",
+      "movl\t12(%esp), %esi",
+      "lock\t\tcmpxchg8b\t(%esi)",
+      "popl\t%esi",
+      "popl\t%ebx",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg ptr %a, i64 %c, i64 %n seq_cst acquire, align 8, !noalias !3",
+      "%1 = extractvalue { i64, i1 } %0, 0",
+      "ret i64 %1"
+     ]
+    },
+    "at_u64_fadd_acqrel": {
+     "asm": [
+      "pushl\t%ebp",
+      "pushl\t%ebx",
+      "pushl\t%edi",
+      "pushl\t%esi",
+      "movl\t20(%esp), %ebp",
+      "movl\t28(%esp), %esi",
+      "movl\t24(%esp), %edi",
+      "movl\t(%ebp), %eax",
+      "movl\t4(%ebp), %edx",
+      "movl\t%eax, %ebx",
+      "movl\t%edx, %ecx",
+      "addl\t%edi, %ebx",
+      "adcl\t%esi, %ecx",
+      "lock\t\tcmpxchg8b\t(%ebp)",
+      "jne\t.LBB28_1",
+      "popl\t%esi",
+      "popl\t%edi",
+      "popl\t%ebx",
+      "popl\t%ebp",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i64 %v acq_rel, align 8",
+      "ret i64 %_0"
+     ]
+    },
+    "at_u64_load_acquire": {
+     "asm": [
+      "subl\t$12, %esp",
+      "movl\t16(%esp), %eax",
+      "fildll\t(%eax)",
+      "fistpll\t(%esp)",
+      "movl\t(%esp), %eax",
+      "movl\t4(%esp), %edx",
+      "addl\t$12, %esp",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i64, ptr %a acquire, align 8",
+      "ret i64 %0"
+     ]
+    },
+    "at_u64_store_seqcst": {
+     "asm": [
+      "subl\t$12, %esp",
+      "movl\t20(%esp), %ecx",
+      "movl\t24(%esp), %edx",
+      "movl\t16(%esp), %eax",
+      "movl\t%edx, 4(%esp)",
+      "movl\t%ecx, (%esp)",
+      "fildll\t(%esp)",
+      "fistpll\t(%eax)",
+      "lock\t\torl\t$0, (%esp)",
+      "addl\t$12, %esp",
+      "retl"
+     ],
+     "llvm_ir": [
+      "store atomic i64 %v, ptr %a seq_cst, align 8",
+      "ret void"
+     ]
+    },
+    "at_u8_fand_acqrel": {
+     "asm": [
+      "movl\t4(%esp), %edx",
+      "movzbl\t8(%esp), %ecx",
+      "movzbl\t(%edx), %eax",
+      "movb\t%al, %ah",
+      "andb\t%cl, %ah",
+      "lock\t\tcmpxchgb\t%ah, (%edx)",
+      "jne\t.LBB31_1",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw and ptr %a, i8 %m acq_rel, align 1",
+      "ret i8 %_0"
+     ]
+    },
+    "canary_adjacent_relaxed_stores": {
+     "asm": [
+      "movl\t12(%esp), %eax",
+      "movl\t8(%esp), %ecx",
+      "movl\t4(%esp), %edx",
+      "movl\t%ecx, (%edx)",
+      "movl\t%eax, (%edx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %x, ptr %a monotonic, align 4",
+      "store atomic i32 %y, ptr %a monotonic, align 4",
+      "ret void"
+     ]
+    },
+    "canary_cfence_blocks_store_hoist": {
+     "asm": [
+      "movl\t12(%esp), %eax",
+      "movl\t8(%esp), %edx",
+      "movl\t4(%esp), %ecx",
+      "movl\t%eax, (%edx)",
+      "movl\t$1, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr %data, align 4",
+      "fence syncscope(\"singlethread\") release",
+      "store atomic i32 1, ptr %flag monotonic, align 4",
+      "fence syncscope(\"singlethread\") acquire",
+      "ret i32 %v"
+     ]
+    },
+    "canary_dead_relaxed_load": {
+     "asm": [
+      "movl\t4(%esp), %eax",
+      "movl\t(%eax), %eax",
+      "movl\t$42, %eax",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a monotonic, align 4",
+      "ret i32 42"
+     ]
+    },
+    "canary_handler_read_with_cfence": {
+     "asm": [
+      "calll\t.L35$pb",
+      "popl\t%eax",
+      "addl\t$_GLOBAL_OFFSET_TABLE_+(.Ltmp0-.L35$pb), %eax",
+      "movl\t_RNvCs8jPW3FB1Bmg_7atomics8IS_READY@GOT(%eax), %ecx",
+      "movl\t(%ecx), %ecx",
+      "testl\t%ecx, %ecx",
+      "je\t.LBB35_1",
+      "movl\t_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE@GOT(%eax), %eax",
+      "movl\t(%eax), %eax",
+      "retl",
+      "xorl\t%eax, %eax",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr @_RNvCs8jPW3FB1Bmg_7atomics8IS_READY monotonic, align 4",
+      "%1 = icmp eq i32 %0, 0",
+      "br i1 %1, label %bb4, label %bb1",
+      "bb1:                                              ; preds = %start",
+      "fence syncscope(\"singlethread\") acquire",
+      "%2 = load i32, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4, !noundef !6",
+      "br label %bb4",
+      "bb4:                                              ; preds = %start, %bb1",
+      "%_0.sroa.0.0 = phi i32 [ %2, %bb1 ], [ 0, %start ]",
+      "ret i32 %_0.sroa.0.0"
+     ]
+    },
+    "canary_no_cfence_store_forwarding": {
+     "asm": [
+      "movl\t12(%esp), %eax",
+      "movl\t8(%esp), %edx",
+      "movl\t4(%esp), %ecx",
+      "movl\t%eax, (%edx)",
+      "movl\t$1, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr %data, align 4",
+      "store atomic i32 1, ptr %flag monotonic, align 4",
+      "ret i32 %v"
+     ]
+    },
+    "canary_publish_then_overwrite_with_cfence": {
+     "asm": [
+      "pushl\t%esi",
+      "calll\t.L37$pb",
+      "popl\t%eax",
+      "movl\t12(%esp), %ecx",
+      "movl\t8(%esp), %edx",
+      "addl\t$_GLOBAL_OFFSET_TABLE_+(.Ltmp1-.L37$pb), %eax",
+      "movl\t_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE@GOT(%eax), %esi",
+      "movl\t_RNvCs8jPW3FB1Bmg_7atomics8IS_READY@GOT(%eax), %eax",
+      "movl\t%edx, (%esi)",
+      "movl\t$1, (%eax)",
+      "movl\t%ecx, (%esi)",
+      "popl\t%esi",
+      "retl"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "fence syncscope(\"singlethread\") release",
+      "store atomic i32 1, ptr @_RNvCs8jPW3FB1Bmg_7atomics8IS_READY monotonic, align 4",
+      "store i32 %w, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "ret void"
+     ]
+    },
+    "canary_publish_then_overwrite_without_cfence": {
+     "asm": [
+      "calll\t.L38$pb",
+      "popl\t%eax",
+      "movl\t8(%esp), %ecx",
+      "addl\t$_GLOBAL_OFFSET_TABLE_+(.Ltmp2-.L38$pb), %eax",
+      "movl\t_RNvCs8jPW3FB1Bmg_7atomics8IS_READY@GOT(%eax), %edx",
+      "movl\t_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE@GOT(%eax), %eax",
+      "movl\t$1, (%edx)",
+      "movl\t%ecx, (%eax)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "store atomic i32 1, ptr @_RNvCs8jPW3FB1Bmg_7atomics8IS_READY monotonic, align 4",
+      "store i32 %w, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "ret void"
+     ]
+    },
+    "ext_u64_load_relaxed": {
+     "asm": [
+      "subl\t$12, %esp",
+      "movl\t16(%esp), %eax",
+      "fildll\t(%eax)",
+      "fistpll\t(%esp)",
+      "movl\t(%esp), %eax",
+      "movl\t4(%esp), %edx",
+      "addl\t$12, %esp",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i64, ptr %a monotonic, align 8",
+      "ret i64 %0"
+     ]
+    },
+    "ext_u64_load_seqcst": {
+     "asm": [
+      "subl\t$12, %esp",
+      "movl\t16(%esp), %eax",
+      "fildll\t(%eax)",
+      "fistpll\t(%esp)",
+      "movl\t(%esp), %eax",
+      "movl\t4(%esp), %edx",
+      "addl\t$12, %esp",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i64, ptr %a seq_cst, align 8",
+      "ret i64 %0"
+     ]
+    },
+    "ext_u64_store_relaxed": {
+     "asm": [
+      "subl\t$12, %esp",
+      "movl\t20(%esp), %ecx",
+      "movl\t24(%esp), %edx",
+      "movl\t16(%esp), %eax",
+      "movl\t%edx, 4(%esp)",
+      "movl\t%ecx, (%esp)",
+      "fildll\t(%esp)",
+      "fistpll\t(%eax)",
+      "addl\t$12, %esp",
+      "retl"
+     ],
+     "llvm_ir": [
+      "store atomic i64 %v, ptr %a monotonic, align 8",
+      "ret void"
+     ]
+    },
+    "ext_u64_store_release": {
+     "asm": [
+      "subl\t$12, %esp",
+      "movl\t20(%esp), %ecx",
+      "movl\t24(%esp), %edx",
+      "movl\t16(%esp), %eax",
+      "movl\t%edx, 4(%esp)",
+      "movl\t%ecx, (%esp)",
+      "fildll\t(%esp)",
+      "fistpll\t(%eax)",
+      "addl\t$12, %esp",
+      "retl"
+     ],
+     "llvm_ir": [
+      "store atomic i64 %v, ptr %a release, align 8",
+      "ret void"
+     ]
+    },
+    "ext_u64_swap_seqcst": {
+     "asm": [
+      "pushl\t%ebx",
+      "pushl\t%esi",
+      "movl\t12(%esp), %esi",
+      "movl\t20(%esp), %ecx",
+      "movl\t16(%esp), %ebx",
+      "movl\t(%esi), %eax",
+      "movl\t4(%esi), %edx",
+      "lock\t\tcmpxchg8b\t(%esi)",
+      "jne\t.LBB43_1",
+      "popl\t%esi",
+      "popl\t%ebx",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i64 %v seq_cst, align 8",
+      "ret i64 %_0"
+     ]
+    }
+   },
+   "returncode": 0,
+   "target": "i686-unknown-linux-gnu"
+  },
+  "i686_sse1_only_O3": {
+   "diagnostics": [
+    "warning: target feature `sse2` must be enabled to ensure that the ABI of the current target can be implemented correctly",
+    "warning: 1 warning emitted"
+   ],
+   "extra_flags": [
+    "-C",
+    "opt-level=3",
+    "-C",
+    "target-feature=-sse2"
+   ],
+   "functions": {
+    "at_cfence_acqrel": {
+     "asm": [
+      "retl"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") acq_rel",
+      "ret void"
+     ]
+    },
+    "at_cfence_acquire": {
+     "asm": [
+      "retl"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") acquire",
+      "ret void"
+     ]
+    },
+    "at_cfence_release": {
+     "asm": [
+      "retl"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") release",
+      "ret void"
+     ]
+    },
+    "at_cfence_seqcst": {
+     "asm": [
+      "retl"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") seq_cst",
+      "ret void"
+     ]
+    },
+    "at_fence_acqrel": {
+     "asm": [
+      "retl"
+     ],
+     "llvm_ir": [
+      "fence acq_rel",
+      "ret void"
+     ]
+    },
+    "at_fence_acquire": {
+     "asm": [
+      "retl"
+     ],
+     "llvm_ir": [
+      "fence acquire",
+      "ret void"
+     ]
+    },
+    "at_fence_release": {
+     "asm": [
+      "retl"
+     ],
+     "llvm_ir": [
+      "fence release",
+      "ret void"
+     ]
+    },
+    "at_fence_seqcst": {
+     "asm": [
+      "lock\t\torl\t$0, (%esp)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "fence seq_cst",
+      "ret void"
+     ]
+    },
+    "at_u32_cas_strong_acqrel_acq": {
+     "asm": [
+      "movl\t8(%esp), %eax",
+      "movl\t12(%esp), %ecx",
+      "movl\t4(%esp), %edx",
+      "lock\t\tcmpxchgl\t%ecx, (%edx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg ptr %a, i32 %c, i32 %n acq_rel acquire, align 4",
+      "%_8.sroa.0.0.i = extractvalue { i32, i1 } %0, 0",
+      "ret i32 %_8.sroa.0.0.i"
+     ]
+    },
+    "at_u32_cas_strong_seqcst_seqcst": {
+     "asm": [
+      "movl\t8(%esp), %eax",
+      "movl\t12(%esp), %ecx",
+      "movl\t4(%esp), %edx",
+      "lock\t\tcmpxchgl\t%ecx, (%edx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg ptr %a, i32 %c, i32 %n seq_cst seq_cst, align 4",
+      "%_8.sroa.0.0.i = extractvalue { i32, i1 } %0, 0",
+      "ret i32 %_8.sroa.0.0.i"
+     ]
+    },
+    "at_u32_cas_weak_rel_rlx": {
+     "asm": [
+      "movl\t8(%esp), %eax",
+      "movl\t12(%esp), %ecx",
+      "movl\t4(%esp), %edx",
+      "lock\t\tcmpxchgl\t%ecx, (%edx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg weak ptr %a, i32 %c, i32 %n release monotonic, align 4",
+      "%1 = extractvalue { i32, i1 } %0, 0",
+      "ret i32 %1"
+     ]
+    },
+    "at_u32_fadd_acqrel": {
+     "asm": [
+      "movl\t4(%esp), %ecx",
+      "movl\t8(%esp), %eax",
+      "lock\t\txaddl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v acq_rel, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_acquire": {
+     "asm": [
+      "movl\t4(%esp), %ecx",
+      "movl\t8(%esp), %eax",
+      "lock\t\txaddl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v acquire, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_relaxed": {
+     "asm": [
+      "movl\t4(%esp), %ecx",
+      "movl\t8(%esp), %eax",
+      "lock\t\txaddl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v monotonic, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_release": {
+     "asm": [
+      "movl\t4(%esp), %ecx",
+      "movl\t8(%esp), %eax",
+      "lock\t\txaddl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v release, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_seqcst": {
+     "asm": [
+      "movl\t4(%esp), %ecx",
+      "movl\t8(%esp), %eax",
+      "lock\t\txaddl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v seq_cst, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_load_acquire": {
+     "asm": [
+      "movl\t4(%esp), %eax",
+      "movl\t(%eax), %eax",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a acquire, align 4",
+      "ret i32 %0"
+     ]
+    },
+    "at_u32_load_relaxed": {
+     "asm": [
+      "movl\t4(%esp), %eax",
+      "movl\t(%eax), %eax",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a monotonic, align 4",
+      "ret i32 %0"
+     ]
+    },
+    "at_u32_load_seqcst": {
+     "asm": [
+      "movl\t4(%esp), %eax",
+      "movl\t(%eax), %eax",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a seq_cst, align 4",
+      "ret i32 %0"
+     ]
+    },
+    "at_u32_store_relaxed": {
+     "asm": [
+      "movl\t8(%esp), %eax",
+      "movl\t4(%esp), %ecx",
+      "movl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %v, ptr %a monotonic, align 4",
+      "ret void"
+     ]
+    },
+    "at_u32_store_release": {
+     "asm": [
+      "movl\t8(%esp), %eax",
+      "movl\t4(%esp), %ecx",
+      "movl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %v, ptr %a release, align 4",
+      "ret void"
+     ]
+    },
+    "at_u32_store_seqcst": {
+     "asm": [
+      "movl\t4(%esp), %eax",
+      "movl\t8(%esp), %ecx",
+      "xchgl\t%ecx, (%eax)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %v, ptr %a seq_cst, align 4",
+      "ret void"
+     ]
+    },
+    "at_u32_swap_acqrel": {
+     "asm": [
+      "movl\t4(%esp), %ecx",
+      "movl\t8(%esp), %eax",
+      "xchgl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v acq_rel, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_acquire": {
+     "asm": [
+      "movl\t4(%esp), %ecx",
+      "movl\t8(%esp), %eax",
+      "xchgl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v acquire, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_relaxed": {
+     "asm": [
+      "movl\t4(%esp), %ecx",
+      "movl\t8(%esp), %eax",
+      "xchgl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v monotonic, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_release": {
+     "asm": [
+      "movl\t4(%esp), %ecx",
+      "movl\t8(%esp), %eax",
+      "xchgl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v release, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_seqcst": {
+     "asm": [
+      "movl\t4(%esp), %ecx",
+      "movl\t8(%esp), %eax",
+      "xchgl\t%eax, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v seq_cst, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u64_cas_seqcst": {
+     "asm": [
+      "pushl\t%ebx",
+      "pushl\t%esi",
+      "movl\t16(%esp), %eax",
+      "movl\t20(%esp), %edx",
+      "movl\t24(%esp), %ebx",
+      "movl\t28(%esp), %ecx",
+      "movl\t12(%esp), %esi",
+      "lock\t\tcmpxchg8b\t(%esi)",
+      "popl\t%esi",
+      "popl\t%ebx",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg ptr %a, i64 %c, i64 %n seq_cst acquire, align 8, !noalias !3",
+      "%1 = extractvalue { i64, i1 } %0, 0",
+      "ret i64 %1"
+     ]
+    },
+    "at_u64_fadd_acqrel": {
+     "asm": [
+      "pushl\t%ebp",
+      "pushl\t%ebx",
+      "pushl\t%edi",
+      "pushl\t%esi",
+      "movl\t20(%esp), %ebp",
+      "movl\t28(%esp), %esi",
+      "movl\t24(%esp), %edi",
+      "movl\t(%ebp), %eax",
+      "movl\t4(%ebp), %edx",
+      "movl\t%eax, %ebx",
+      "movl\t%edx, %ecx",
+      "addl\t%edi, %ebx",
+      "adcl\t%esi, %ecx",
+      "lock\t\tcmpxchg8b\t(%ebp)",
+      "jne\t.LBB28_1",
+      "popl\t%esi",
+      "popl\t%edi",
+      "popl\t%ebx",
+      "popl\t%ebp",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i64 %v acq_rel, align 8",
+      "ret i64 %_0"
+     ]
+    },
+    "at_u64_load_acquire": {
+     "asm": [
+      "subl\t$8, %esp",
+      "movl\t12(%esp), %eax",
+      "xorps\t%xmm0, %xmm0",
+      "movlps\t(%eax), %xmm0",
+      "movss\t%xmm0, (%esp)",
+      "shufps\t$85, %xmm0, %xmm0",
+      "movss\t%xmm0, 4(%esp)",
+      "movl\t(%esp), %eax",
+      "movl\t4(%esp), %edx",
+      "addl\t$8, %esp",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i64, ptr %a acquire, align 8",
+      "ret i64 %0"
+     ]
+    },
+    "at_u64_store_seqcst": {
+     "asm": [
+      "xorps\t%xmm0, %xmm0",
+      "movl\t4(%esp), %eax",
+      "movlps\t8(%esp), %xmm0",
+      "movlps\t%xmm0, (%eax)",
+      "lock\t\torl\t$0, (%esp)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "store atomic i64 %v, ptr %a seq_cst, align 8",
+      "ret void"
+     ]
+    },
+    "at_u8_fand_acqrel": {
+     "asm": [
+      "movl\t4(%esp), %edx",
+      "movzbl\t8(%esp), %ecx",
+      "movzbl\t(%edx), %eax",
+      "movb\t%al, %ah",
+      "andb\t%cl, %ah",
+      "lock\t\tcmpxchgb\t%ah, (%edx)",
+      "jne\t.LBB31_1",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw and ptr %a, i8 %m acq_rel, align 1",
+      "ret i8 %_0"
+     ]
+    },
+    "canary_adjacent_relaxed_stores": {
+     "asm": [
+      "movl\t12(%esp), %eax",
+      "movl\t8(%esp), %ecx",
+      "movl\t4(%esp), %edx",
+      "movl\t%ecx, (%edx)",
+      "movl\t%eax, (%edx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %x, ptr %a monotonic, align 4",
+      "store atomic i32 %y, ptr %a monotonic, align 4",
+      "ret void"
+     ]
+    },
+    "canary_cfence_blocks_store_hoist": {
+     "asm": [
+      "movl\t12(%esp), %eax",
+      "movl\t8(%esp), %edx",
+      "movl\t4(%esp), %ecx",
+      "movl\t%eax, (%edx)",
+      "movl\t$1, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr %data, align 4",
+      "fence syncscope(\"singlethread\") release",
+      "store atomic i32 1, ptr %flag monotonic, align 4",
+      "fence syncscope(\"singlethread\") acquire",
+      "ret i32 %v"
+     ]
+    },
+    "canary_dead_relaxed_load": {
+     "asm": [
+      "movl\t4(%esp), %eax",
+      "movl\t(%eax), %eax",
+      "movl\t$42, %eax",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a monotonic, align 4",
+      "ret i32 42"
+     ]
+    },
+    "canary_handler_read_with_cfence": {
+     "asm": [
+      "calll\t.L35$pb",
+      "popl\t%eax",
+      "addl\t$_GLOBAL_OFFSET_TABLE_+(.Ltmp0-.L35$pb), %eax",
+      "movl\t_RNvCs8jPW3FB1Bmg_7atomics8IS_READY@GOT(%eax), %ecx",
+      "movl\t(%ecx), %ecx",
+      "testl\t%ecx, %ecx",
+      "je\t.LBB35_1",
+      "movl\t_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE@GOT(%eax), %eax",
+      "movl\t(%eax), %eax",
+      "retl",
+      "xorl\t%eax, %eax",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr @_RNvCs8jPW3FB1Bmg_7atomics8IS_READY monotonic, align 4",
+      "%1 = icmp eq i32 %0, 0",
+      "br i1 %1, label %bb4, label %bb1",
+      "bb1:                                              ; preds = %start",
+      "fence syncscope(\"singlethread\") acquire",
+      "%2 = load i32, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4, !noundef !6",
+      "br label %bb4",
+      "bb4:                                              ; preds = %start, %bb1",
+      "%_0.sroa.0.0 = phi i32 [ %2, %bb1 ], [ 0, %start ]",
+      "ret i32 %_0.sroa.0.0"
+     ]
+    },
+    "canary_no_cfence_store_forwarding": {
+     "asm": [
+      "movl\t12(%esp), %eax",
+      "movl\t8(%esp), %edx",
+      "movl\t4(%esp), %ecx",
+      "movl\t%eax, (%edx)",
+      "movl\t$1, (%ecx)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr %data, align 4",
+      "store atomic i32 1, ptr %flag monotonic, align 4",
+      "ret i32 %v"
+     ]
+    },
+    "canary_publish_then_overwrite_with_cfence": {
+     "asm": [
+      "pushl\t%esi",
+      "calll\t.L37$pb",
+      "popl\t%eax",
+      "movl\t12(%esp), %ecx",
+      "movl\t8(%esp), %edx",
+      "addl\t$_GLOBAL_OFFSET_TABLE_+(.Ltmp1-.L37$pb), %eax",
+      "movl\t_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE@GOT(%eax), %esi",
+      "movl\t_RNvCs8jPW3FB1Bmg_7atomics8IS_READY@GOT(%eax), %eax",
+      "movl\t%edx, (%esi)",
+      "movl\t$1, (%eax)",
+      "movl\t%ecx, (%esi)",
+      "popl\t%esi",
+      "retl"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "fence syncscope(\"singlethread\") release",
+      "store atomic i32 1, ptr @_RNvCs8jPW3FB1Bmg_7atomics8IS_READY monotonic, align 4",
+      "store i32 %w, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "ret void"
+     ]
+    },
+    "canary_publish_then_overwrite_without_cfence": {
+     "asm": [
+      "calll\t.L38$pb",
+      "popl\t%eax",
+      "movl\t8(%esp), %ecx",
+      "addl\t$_GLOBAL_OFFSET_TABLE_+(.Ltmp2-.L38$pb), %eax",
+      "movl\t_RNvCs8jPW3FB1Bmg_7atomics8IS_READY@GOT(%eax), %edx",
+      "movl\t_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE@GOT(%eax), %eax",
+      "movl\t$1, (%edx)",
+      "movl\t%ecx, (%eax)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "store atomic i32 1, ptr @_RNvCs8jPW3FB1Bmg_7atomics8IS_READY monotonic, align 4",
+      "store i32 %w, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "ret void"
+     ]
+    },
+    "ext_u64_load_relaxed": {
+     "asm": [
+      "subl\t$8, %esp",
+      "movl\t12(%esp), %eax",
+      "xorps\t%xmm0, %xmm0",
+      "movlps\t(%eax), %xmm0",
+      "movss\t%xmm0, (%esp)",
+      "shufps\t$85, %xmm0, %xmm0",
+      "movss\t%xmm0, 4(%esp)",
+      "movl\t(%esp), %eax",
+      "movl\t4(%esp), %edx",
+      "addl\t$8, %esp",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i64, ptr %a monotonic, align 8",
+      "ret i64 %0"
+     ]
+    },
+    "ext_u64_load_seqcst": {
+     "asm": [
+      "subl\t$8, %esp",
+      "movl\t12(%esp), %eax",
+      "xorps\t%xmm0, %xmm0",
+      "movlps\t(%eax), %xmm0",
+      "movss\t%xmm0, (%esp)",
+      "shufps\t$85, %xmm0, %xmm0",
+      "movss\t%xmm0, 4(%esp)",
+      "movl\t(%esp), %eax",
+      "movl\t4(%esp), %edx",
+      "addl\t$8, %esp",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i64, ptr %a seq_cst, align 8",
+      "ret i64 %0"
+     ]
+    },
+    "ext_u64_store_relaxed": {
+     "asm": [
+      "xorps\t%xmm0, %xmm0",
+      "movl\t4(%esp), %eax",
+      "movlps\t8(%esp), %xmm0",
+      "movlps\t%xmm0, (%eax)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "store atomic i64 %v, ptr %a monotonic, align 8",
+      "ret void"
+     ]
+    },
+    "ext_u64_store_release": {
+     "asm": [
+      "xorps\t%xmm0, %xmm0",
+      "movl\t4(%esp), %eax",
+      "movlps\t8(%esp), %xmm0",
+      "movlps\t%xmm0, (%eax)",
+      "retl"
+     ],
+     "llvm_ir": [
+      "store atomic i64 %v, ptr %a release, align 8",
+      "ret void"
+     ]
+    },
+    "ext_u64_swap_seqcst": {
+     "asm": [
+      "pushl\t%ebx",
+      "pushl\t%esi",
+      "movl\t12(%esp), %esi",
+      "movl\t20(%esp), %ecx",
+      "movl\t16(%esp), %ebx",
+      "movl\t(%esi), %eax",
+      "movl\t4(%esi), %edx",
+      "lock\t\tcmpxchg8b\t(%esi)",
+      "jne\t.LBB43_1",
+      "popl\t%esi",
+      "popl\t%ebx",
+      "retl"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i64 %v seq_cst, align 8",
+      "ret i64 %_0"
+     ]
+    }
+   },
+   "returncode": 0,
+   "target": "i686-unknown-linux-gnu"
+  },
+  "s390x_O3": {
+   "diagnostics": [
+    "error[E0463]: can't find crate for `core`",
+    "error: aborting due to 1 previous error"
+   ],
+   "extra_flags": [
+    "-C",
+    "opt-level=3"
+   ],
+   "returncode": 1,
+   "target": "s390x-unknown-linux-gnu"
+  },
+  "x86_64_O0": {
+   "diagnostics": [],
+   "extra_flags": [
+    "-C",
+    "opt-level=0"
+   ],
+   "functions": {
+    "at_cfence_acqrel": {
+     "asm": [
+      "pushq\t%rax",
+      "movl\t$3, %edi",
+      "callq\t_RNvNtNtCs8b4M6GsfcPr_4core4sync6atomic14compiler_fenceCs8jPW3FB1Bmg_7atomics",
+      "popq\t%rax",
+      "retq"
+     ],
+     "llvm_ir": [
+      "call void @_RNvNtNtCs8b4M6GsfcPr_4core4sync6atomic14compiler_fenceCs8jPW3FB1Bmg_7atomics(i8 3) #4",
+      "ret void"
+     ]
+    },
+    "at_cfence_acquire": {
+     "asm": [
+      "pushq\t%rax",
+      "movl\t$2, %edi",
+      "callq\t_RNvNtNtCs8b4M6GsfcPr_4core4sync6atomic14compiler_fenceCs8jPW3FB1Bmg_7atomics",
+      "popq\t%rax",
+      "retq"
+     ],
+     "llvm_ir": [
+      "call void @_RNvNtNtCs8b4M6GsfcPr_4core4sync6atomic14compiler_fenceCs8jPW3FB1Bmg_7atomics(i8 2) #4",
+      "ret void"
+     ]
+    },
+    "at_cfence_release": {
+     "asm": [
+      "pushq\t%rax",
+      "movl\t$1, %edi",
+      "callq\t_RNvNtNtCs8b4M6GsfcPr_4core4sync6atomic14compiler_fenceCs8jPW3FB1Bmg_7atomics",
+      "popq\t%rax",
+      "retq"
+     ],
+     "llvm_ir": [
+      "call void @_RNvNtNtCs8b4M6GsfcPr_4core4sync6atomic14compiler_fenceCs8jPW3FB1Bmg_7atomics(i8 1) #4",
+      "ret void"
+     ]
+    },
+    "at_cfence_seqcst": {
+     "asm": [
+      "pushq\t%rax",
+      "movl\t$4, %edi",
+      "callq\t_RNvNtNtCs8b4M6GsfcPr_4core4sync6atomic14compiler_fenceCs8jPW3FB1Bmg_7atomics",
+      "popq\t%rax",
+      "retq"
+     ],
+     "llvm_ir": [
+      "call void @_RNvNtNtCs8b4M6GsfcPr_4core4sync6atomic14compiler_fenceCs8jPW3FB1Bmg_7atomics(i8 4) #4",
+      "ret void"
+     ]
+    },
+    "at_fence_acqrel": {
+     "asm": [
+      "pushq\t%rax",
+      "movl\t$3, %edi",
+      "callq\t_RNvNtNtCs8b4M6GsfcPr_4core4sync6atomic5fenceCs8jPW3FB1Bmg_7atomics",
+      "popq\t%rax",
+      "retq"
+     ],
+     "llvm_ir": [
+      "call void @_RNvNtNtCs8b4M6GsfcPr_4core4sync6atomic5fenceCs8jPW3FB1Bmg_7atomics(i8 3) #4",
+      "ret void"
+     ]
+    },
+    "at_fence_acquire": {
+     "asm": [
+      "pushq\t%rax",
+      "movl\t$2, %edi",
+      "callq\t_RNvNtNtCs8b4M6GsfcPr_4core4sync6atomic5fenceCs8jPW3FB1Bmg_7atomics",
+      "popq\t%rax",
+      "retq"
+     ],
+     "llvm_ir": [
+      "call void @_RNvNtNtCs8b4M6GsfcPr_4core4sync6atomic5fenceCs8jPW3FB1Bmg_7atomics(i8 2) #4",
+      "ret void"
+     ]
+    },
+    "at_fence_release": {
+     "asm": [
+      "pushq\t%rax",
+      "movl\t$1, %edi",
+      "callq\t_RNvNtNtCs8b4M6GsfcPr_4core4sync6atomic5fenceCs8jPW3FB1Bmg_7atomics",
+      "popq\t%rax",
+      "retq"
+     ],
+     "llvm_ir": [
+      "call void @_RNvNtNtCs8b4M6GsfcPr_4core4sync6atomic5fenceCs8jPW3FB1Bmg_7atomics(i8 1) #4",
+      "ret void"
+     ]
+    },
+    "at_fence_seqcst": {
+     "asm": [
+      "pushq\t%rax",
+      "movl\t$4, %edi",
+      "callq\t_RNvNtNtCs8b4M6GsfcPr_4core4sync6atomic5fenceCs8jPW3FB1Bmg_7atomics",
+      "popq\t%rax",
+      "retq"
+     ],
+     "llvm_ir": [
+      "call void @_RNvNtNtCs8b4M6GsfcPr_4core4sync6atomic5fenceCs8jPW3FB1Bmg_7atomics(i8 4) #4",
+      "ret void"
+     ]
+    },
+    "at_u32_cas_strong_acqrel_acq": {
+     "asm": [
+      "subq\t$24, %rsp",
+      "movl\t$3, %ecx",
+      "movl\t$2, %r8d",
+      "callq\t_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE16compare_exchangeCs8jPW3FB1Bmg_7atomics",
+      "movl\t%eax, 12(%rsp)",
+      "movl\t%edx, 16(%rsp)",
+      "movl\t12(%rsp), %eax",
+      "testq\t$1, %rax",
+      "je\t.LBB29_2",
+      "movl\t16(%rsp), %eax",
+      "movl\t%eax, 20(%rsp)",
+      "jmp\t.LBB29_3",
+      "movl\t16(%rsp), %eax",
+      "movl\t%eax, 20(%rsp)",
+      "movl\t20(%rsp), %eax",
+      "addq\t$24, %rsp",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%v = alloca [4 x i8], align 4",
+      "%_4 = alloca [8 x i8], align 4",
+      "%0 = call { i32, i32 } @_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE16compare_exchangeCs8jPW3FB1Bmg_7atomics(ptr align 4 %a, i32 %c, i32 %n, i8 3, i8 2) #4",
+      "%1 = extractvalue { i32, i32 } %0, 0",
+      "%2 = extractvalue { i32, i32 } %0, 1",
+      "store i32 %1, ptr %_4, align 4",
+      "%3 = getelementptr inbounds i8, ptr %_4, i64 4",
+      "store i32 %2, ptr %3, align 4",
+      "%4 = load i32, ptr %_4, align 4",
+      "%5 = getelementptr inbounds i8, ptr %_4, i64 4",
+      "%6 = load i32, ptr %5, align 4",
+      "%_7 = zext i32 %4 to i64",
+      "%7 = trunc nuw i64 %_7 to i1",
+      "br i1 %7, label %bb3, label %bb4",
+      "bb3:                                              ; preds = %start",
+      "%8 = getelementptr inbounds i8, ptr %_4, i64 4",
+      "%9 = load i32, ptr %8, align 4",
+      "store i32 %9, ptr %v, align 4",
+      "br label %bb5",
+      "bb4:                                              ; preds = %start",
+      "%10 = getelementptr inbounds i8, ptr %_4, i64 4",
+      "%11 = load i32, ptr %10, align 4",
+      "store i32 %11, ptr %v, align 4",
+      "br label %bb5",
+      "bb5:                                              ; preds = %bb3, %bb4",
+      "%_0 = load i32, ptr %v, align 4",
+      "ret i32 %_0",
+      "bb2:                                              ; No predecessors!",
+      "unreachable"
+     ]
+    },
+    "at_u32_cas_strong_seqcst_seqcst": {
+     "asm": [
+      "subq\t$24, %rsp",
+      "movl\t$4, %r8d",
+      "movl\t%r8d, %ecx",
+      "callq\t_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE16compare_exchangeCs8jPW3FB1Bmg_7atomics",
+      "movl\t%eax, 12(%rsp)",
+      "movl\t%edx, 16(%rsp)",
+      "movl\t12(%rsp), %eax",
+      "testq\t$1, %rax",
+      "je\t.LBB30_2",
+      "movl\t16(%rsp), %eax",
+      "movl\t%eax, 20(%rsp)",
+      "jmp\t.LBB30_3",
+      "movl\t16(%rsp), %eax",
+      "movl\t%eax, 20(%rsp)",
+      "movl\t20(%rsp), %eax",
+      "addq\t$24, %rsp",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%v = alloca [4 x i8], align 4",
+      "%_4 = alloca [8 x i8], align 4",
+      "%0 = call { i32, i32 } @_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE16compare_exchangeCs8jPW3FB1Bmg_7atomics(ptr align 4 %a, i32 %c, i32 %n, i8 4, i8 4) #4",
+      "%1 = extractvalue { i32, i32 } %0, 0",
+      "%2 = extractvalue { i32, i32 } %0, 1",
+      "store i32 %1, ptr %_4, align 4",
+      "%3 = getelementptr inbounds i8, ptr %_4, i64 4",
+      "store i32 %2, ptr %3, align 4",
+      "%4 = load i32, ptr %_4, align 4",
+      "%5 = getelementptr inbounds i8, ptr %_4, i64 4",
+      "%6 = load i32, ptr %5, align 4",
+      "%_7 = zext i32 %4 to i64",
+      "%7 = trunc nuw i64 %_7 to i1",
+      "br i1 %7, label %bb3, label %bb4",
+      "bb3:                                              ; preds = %start",
+      "%8 = getelementptr inbounds i8, ptr %_4, i64 4",
+      "%9 = load i32, ptr %8, align 4",
+      "store i32 %9, ptr %v, align 4",
+      "br label %bb5",
+      "bb4:                                              ; preds = %start",
+      "%10 = getelementptr inbounds i8, ptr %_4, i64 4",
+      "%11 = load i32, ptr %10, align 4",
+      "store i32 %11, ptr %v, align 4",
+      "br label %bb5",
+      "bb5:                                              ; preds = %bb3, %bb4",
+      "%_0 = load i32, ptr %v, align 4",
+      "ret i32 %_0",
+      "bb2:                                              ; No predecessors!",
+      "unreachable"
+     ]
+    },
+    "at_u32_cas_weak_rel_rlx": {
+     "asm": [
+      "subq\t$24, %rsp",
+      "movl\t$1, %ecx",
+      "xorl\t%r8d, %r8d",
+      "callq\t_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE21compare_exchange_weakCs8jPW3FB1Bmg_7atomics",
+      "movl\t%eax, 12(%rsp)",
+      "movl\t%edx, 16(%rsp)",
+      "movl\t12(%rsp), %eax",
+      "testq\t$1, %rax",
+      "je\t.LBB31_2",
+      "movl\t16(%rsp), %eax",
+      "movl\t%eax, 20(%rsp)",
+      "jmp\t.LBB31_3",
+      "movl\t16(%rsp), %eax",
+      "movl\t%eax, 20(%rsp)",
+      "movl\t20(%rsp), %eax",
+      "addq\t$24, %rsp",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%v = alloca [4 x i8], align 4",
+      "%_4 = alloca [8 x i8], align 4",
+      "%0 = call { i32, i32 } @_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE21compare_exchange_weakCs8jPW3FB1Bmg_7atomics(ptr align 4 %a, i32 %c, i32 %n, i8 1, i8 0) #4",
+      "%1 = extractvalue { i32, i32 } %0, 0",
+      "%2 = extractvalue { i32, i32 } %0, 1",
+      "store i32 %1, ptr %_4, align 4",
+      "%3 = getelementptr inbounds i8, ptr %_4, i64 4",
+      "store i32 %2, ptr %3, align 4",
+      "%4 = load i32, ptr %_4, align 4",
+      "%5 = getelementptr inbounds i8, ptr %_4, i64 4",
+      "%6 = load i32, ptr %5, align 4",
+      "%_7 = zext i32 %4 to i64",
+      "%7 = trunc nuw i64 %_7 to i1",
+      "br i1 %7, label %bb3, label %bb4",
+      "bb3:                                              ; preds = %start",
+      "%8 = getelementptr inbounds i8, ptr %_4, i64 4",
+      "%9 = load i32, ptr %8, align 4",
+      "store i32 %9, ptr %v, align 4",
+      "br label %bb5",
+      "bb4:                                              ; preds = %start",
+      "%10 = getelementptr inbounds i8, ptr %_4, i64 4",
+      "%11 = load i32, ptr %10, align 4",
+      "store i32 %11, ptr %v, align 4",
+      "br label %bb5",
+      "bb5:                                              ; preds = %bb3, %bb4",
+      "%_0 = load i32, ptr %v, align 4",
+      "ret i32 %_0",
+      "bb2:                                              ; No predecessors!",
+      "unreachable"
+     ]
+    },
+    "at_u32_fadd_acqrel": {
+     "asm": [
+      "pushq\t%rax",
+      "movl\t$3, %edx",
+      "callq\t_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE9fetch_addCs8jPW3FB1Bmg_7atomics",
+      "popq\t%rcx",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = call i32 @_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE9fetch_addCs8jPW3FB1Bmg_7atomics(ptr align 4 %a, i32 %v, i8 3) #4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_acquire": {
+     "asm": [
+      "pushq\t%rax",
+      "movl\t$2, %edx",
+      "callq\t_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE9fetch_addCs8jPW3FB1Bmg_7atomics",
+      "popq\t%rcx",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = call i32 @_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE9fetch_addCs8jPW3FB1Bmg_7atomics(ptr align 4 %a, i32 %v, i8 2) #4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_relaxed": {
+     "asm": [
+      "pushq\t%rax",
+      "xorl\t%edx, %edx",
+      "callq\t_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE9fetch_addCs8jPW3FB1Bmg_7atomics",
+      "popq\t%rcx",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = call i32 @_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE9fetch_addCs8jPW3FB1Bmg_7atomics(ptr align 4 %a, i32 %v, i8 0) #4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_release": {
+     "asm": [
+      "pushq\t%rax",
+      "movl\t$1, %edx",
+      "callq\t_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE9fetch_addCs8jPW3FB1Bmg_7atomics",
+      "popq\t%rcx",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = call i32 @_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE9fetch_addCs8jPW3FB1Bmg_7atomics(ptr align 4 %a, i32 %v, i8 1) #4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_seqcst": {
+     "asm": [
+      "pushq\t%rax",
+      "movl\t$4, %edx",
+      "callq\t_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE9fetch_addCs8jPW3FB1Bmg_7atomics",
+      "popq\t%rcx",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = call i32 @_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE9fetch_addCs8jPW3FB1Bmg_7atomics(ptr align 4 %a, i32 %v, i8 4) #4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_load_acquire": {
+     "asm": [
+      "pushq\t%rax",
+      "movl\t$2, %esi",
+      "callq\t_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE4loadCs8jPW3FB1Bmg_7atomics",
+      "popq\t%rcx",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = call i32 @_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE4loadCs8jPW3FB1Bmg_7atomics(ptr align 4 %a, i8 2) #4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_load_relaxed": {
+     "asm": [
+      "pushq\t%rax",
+      "xorl\t%esi, %esi",
+      "callq\t_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE4loadCs8jPW3FB1Bmg_7atomics",
+      "popq\t%rcx",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = call i32 @_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE4loadCs8jPW3FB1Bmg_7atomics(ptr align 4 %a, i8 0) #4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_load_seqcst": {
+     "asm": [
+      "pushq\t%rax",
+      "movl\t$4, %esi",
+      "callq\t_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE4loadCs8jPW3FB1Bmg_7atomics",
+      "popq\t%rcx",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = call i32 @_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE4loadCs8jPW3FB1Bmg_7atomics(ptr align 4 %a, i8 4) #4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_store_relaxed": {
+     "asm": [
+      "pushq\t%rax",
+      "xorl\t%edx, %edx",
+      "callq\t_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE5storeCs8jPW3FB1Bmg_7atomics",
+      "popq\t%rax",
+      "retq"
+     ],
+     "llvm_ir": [
+      "call void @_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE5storeCs8jPW3FB1Bmg_7atomics(ptr align 4 %a, i32 %v, i8 0) #4",
+      "ret void"
+     ]
+    },
+    "at_u32_store_release": {
+     "asm": [
+      "pushq\t%rax",
+      "movl\t$1, %edx",
+      "callq\t_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE5storeCs8jPW3FB1Bmg_7atomics",
+      "popq\t%rax",
+      "retq"
+     ],
+     "llvm_ir": [
+      "call void @_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE5storeCs8jPW3FB1Bmg_7atomics(ptr align 4 %a, i32 %v, i8 1) #4",
+      "ret void"
+     ]
+    },
+    "at_u32_store_seqcst": {
+     "asm": [
+      "pushq\t%rax",
+      "movl\t$4, %edx",
+      "callq\t_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE5storeCs8jPW3FB1Bmg_7atomics",
+      "popq\t%rax",
+      "retq"
+     ],
+     "llvm_ir": [
+      "call void @_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE5storeCs8jPW3FB1Bmg_7atomics(ptr align 4 %a, i32 %v, i8 4) #4",
+      "ret void"
+     ]
+    },
+    "at_u32_swap_acqrel": {
+     "asm": [
+      "pushq\t%rax",
+      "movl\t$3, %edx",
+      "callq\t_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE4swapCs8jPW3FB1Bmg_7atomics",
+      "popq\t%rcx",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = call i32 @_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE4swapCs8jPW3FB1Bmg_7atomics(ptr align 4 %a, i32 %v, i8 3) #4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_acquire": {
+     "asm": [
+      "pushq\t%rax",
+      "movl\t$2, %edx",
+      "callq\t_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE4swapCs8jPW3FB1Bmg_7atomics",
+      "popq\t%rcx",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = call i32 @_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE4swapCs8jPW3FB1Bmg_7atomics(ptr align 4 %a, i32 %v, i8 2) #4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_relaxed": {
+     "asm": [
+      "pushq\t%rax",
+      "xorl\t%edx, %edx",
+      "callq\t_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE4swapCs8jPW3FB1Bmg_7atomics",
+      "popq\t%rcx",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = call i32 @_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE4swapCs8jPW3FB1Bmg_7atomics(ptr align 4 %a, i32 %v, i8 0) #4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_release": {
+     "asm": [
+      "pushq\t%rax",
+      "movl\t$1, %edx",
+      "callq\t_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE4swapCs8jPW3FB1Bmg_7atomics",
+      "popq\t%rcx",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = call i32 @_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE4swapCs8jPW3FB1Bmg_7atomics(ptr align 4 %a, i32 %v, i8 1) #4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_seqcst": {
+     "asm": [
+      "pushq\t%rax",
+      "movl\t$4, %edx",
+      "callq\t_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE4swapCs8jPW3FB1Bmg_7atomics",
+      "popq\t%rcx",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = call i32 @_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE4swapCs8jPW3FB1Bmg_7atomics(ptr align 4 %a, i32 %v, i8 4) #4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u64_cas_seqcst": {
+     "asm": [
+      "subq\t$24, %rsp",
+      "movl\t$4, %ecx",
+      "movl\t$2, %r8d",
+      "callq\t_RNvMs1c_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicyE16compare_exchangeCs8jPW3FB1Bmg_7atomics",
+      "movq\t%rax, (%rsp)",
+      "movq\t%rdx, 8(%rsp)",
+      "testq\t$1, (%rsp)",
+      "je\t.LBB48_2",
+      "movq\t8(%rsp), %rax",
+      "movq\t%rax, 16(%rsp)",
+      "jmp\t.LBB48_3",
+      "movq\t8(%rsp), %rax",
+      "movq\t%rax, 16(%rsp)",
+      "movq\t16(%rsp), %rax",
+      "addq\t$24, %rsp",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%v = alloca [8 x i8], align 8",
+      "%_4 = alloca [16 x i8], align 8",
+      "%0 = call { i64, i64 } @_RNvMs1c_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicyE16compare_exchangeCs8jPW3FB1Bmg_7atomics(ptr align 8 %a, i64 %c, i64 %n, i8 4, i8 2) #4",
+      "%1 = extractvalue { i64, i64 } %0, 0",
+      "%2 = extractvalue { i64, i64 } %0, 1",
+      "store i64 %1, ptr %_4, align 8",
+      "%3 = getelementptr inbounds i8, ptr %_4, i64 8",
+      "store i64 %2, ptr %3, align 8",
+      "%_7 = load i64, ptr %_4, align 8",
+      "%4 = getelementptr inbounds i8, ptr %_4, i64 8",
+      "%5 = load i64, ptr %4, align 8",
+      "%6 = trunc nuw i64 %_7 to i1",
+      "br i1 %6, label %bb3, label %bb4",
+      "bb3:                                              ; preds = %start",
+      "%7 = getelementptr inbounds i8, ptr %_4, i64 8",
+      "%8 = load i64, ptr %7, align 8",
+      "store i64 %8, ptr %v, align 8",
+      "br label %bb5",
+      "bb4:                                              ; preds = %start",
+      "%9 = getelementptr inbounds i8, ptr %_4, i64 8",
+      "%10 = load i64, ptr %9, align 8",
+      "store i64 %10, ptr %v, align 8",
+      "br label %bb5",
+      "bb5:                                              ; preds = %bb3, %bb4",
+      "%_0 = load i64, ptr %v, align 8",
+      "ret i64 %_0",
+      "bb2:                                              ; No predecessors!",
+      "unreachable"
+     ]
+    },
+    "at_u64_fadd_acqrel": {
+     "asm": [
+      "pushq\t%rax",
+      "movl\t$3, %edx",
+      "callq\t_RNvMs1c_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicyE9fetch_addCs8jPW3FB1Bmg_7atomics",
+      "popq\t%rcx",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = call i64 @_RNvMs1c_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicyE9fetch_addCs8jPW3FB1Bmg_7atomics(ptr align 8 %a, i64 %v, i8 3) #4",
+      "ret i64 %_0"
+     ]
+    },
+    "at_u64_load_acquire": {
+     "asm": [
+      "pushq\t%rax",
+      "movl\t$2, %esi",
+      "callq\t_RNvMs1c_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicyE4loadCs8jPW3FB1Bmg_7atomics",
+      "popq\t%rcx",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = call i64 @_RNvMs1c_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicyE4loadCs8jPW3FB1Bmg_7atomics(ptr align 8 %a, i8 2) #4",
+      "ret i64 %_0"
+     ]
+    },
+    "at_u64_store_seqcst": {
+     "asm": [
+      "pushq\t%rax",
+      "movl\t$4, %edx",
+      "callq\t_RNvMs1c_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicyE5storeCs8jPW3FB1Bmg_7atomics",
+      "popq\t%rax",
+      "retq"
+     ],
+     "llvm_ir": [
+      "call void @_RNvMs1c_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicyE5storeCs8jPW3FB1Bmg_7atomics(ptr align 8 %a, i64 %v, i8 4) #4",
+      "ret void"
+     ]
+    },
+    "at_u8_fand_acqrel": {
+     "asm": [
+      "pushq\t%rax",
+      "movb\t%sil, %al",
+      "movl\t$3, %edx",
+      "movzbl\t%al, %esi",
+      "callq\t_RNvMsO_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB5_6AtomichE9fetch_andCs8jPW3FB1Bmg_7atomics",
+      "popq\t%rcx",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = call i8 @_RNvMsO_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB5_6AtomichE9fetch_andCs8jPW3FB1Bmg_7atomics(ptr %a, i8 %m, i8 3) #4",
+      "ret i8 %_0"
+     ]
+    },
+    "canary_adjacent_relaxed_stores": {
+     "asm": [
+      "subq\t$24, %rsp",
+      "movq\t%rdi, 8(%rsp)",
+      "movl\t%edx, 20(%rsp)",
+      "xorl\t%edx, %edx",
+      "callq\t_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE5storeCs8jPW3FB1Bmg_7atomics",
+      "movq\t8(%rsp), %rdi",
+      "movl\t20(%rsp), %esi",
+      "xorl\t%edx, %edx",
+      "callq\t_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE5storeCs8jPW3FB1Bmg_7atomics",
+      "addq\t$24, %rsp",
+      "retq"
+     ],
+     "llvm_ir": [
+      "call void @_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE5storeCs8jPW3FB1Bmg_7atomics(ptr align 4 %a, i32 %x, i8 0) #4",
+      "call void @_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE5storeCs8jPW3FB1Bmg_7atomics(ptr align 4 %a, i32 %y, i8 0) #4",
+      "ret void"
+     ]
+    },
+    "canary_cfence_blocks_store_hoist": {
+     "asm": [
+      "subq\t$24, %rsp",
+      "movq\t%rdi, 8(%rsp)",
+      "movq\t%rsi, 16(%rsp)",
+      "movl\t%edx, (%rsi)",
+      "movl\t$1, %edi",
+      "callq\t_RNvNtNtCs8b4M6GsfcPr_4core4sync6atomic14compiler_fenceCs8jPW3FB1Bmg_7atomics",
+      "movq\t8(%rsp), %rdi",
+      "movl\t$1, %esi",
+      "xorl\t%edx, %edx",
+      "callq\t_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE5storeCs8jPW3FB1Bmg_7atomics",
+      "movl\t$2, %edi",
+      "callq\t_RNvNtNtCs8b4M6GsfcPr_4core4sync6atomic14compiler_fenceCs8jPW3FB1Bmg_7atomics",
+      "movq\t16(%rsp), %rsi",
+      "movl\t(%rsi), %eax",
+      "addq\t$24, %rsp",
+      "retq"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr %data, align 4",
+      "call void @_RNvNtNtCs8b4M6GsfcPr_4core4sync6atomic14compiler_fenceCs8jPW3FB1Bmg_7atomics(i8 1) #4",
+      "call void @_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE5storeCs8jPW3FB1Bmg_7atomics(ptr align 4 %flag, i32 1, i8 0) #4",
+      "call void @_RNvNtNtCs8b4M6GsfcPr_4core4sync6atomic14compiler_fenceCs8jPW3FB1Bmg_7atomics(i8 2) #4",
+      "%_0 = load i32, ptr %data, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "canary_dead_relaxed_load": {
+     "asm": [
+      "pushq\t%rax",
+      "xorl\t%esi, %esi",
+      "callq\t_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE4loadCs8jPW3FB1Bmg_7atomics",
+      "movl\t$42, %eax",
+      "popq\t%rcx",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_2 = call i32 @_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE4loadCs8jPW3FB1Bmg_7atomics(ptr align 4 %a, i8 0) #4",
+      "ret i32 42"
+     ]
+    },
+    "canary_handler_read_with_cfence": {
+     "asm": [
+      "pushq\t%rax",
+      "movq\t_RNvCs8jPW3FB1Bmg_7atomics8IS_READY@GOTPCREL(%rip), %rdi",
+      "xorl\t%esi, %esi",
+      "callq\t_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE4loadCs8jPW3FB1Bmg_7atomics",
+      "cmpl\t$0, %eax",
+      "jne\t.LBB56_2",
+      "movl\t$0, 4(%rsp)",
+      "jmp\t.LBB56_3",
+      "movl\t$2, %edi",
+      "callq\t_RNvNtNtCs8b4M6GsfcPr_4core4sync6atomic14compiler_fenceCs8jPW3FB1Bmg_7atomics",
+      "movq\t_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE@GOTPCREL(%rip), %rax",
+      "movl\t(%rax), %eax",
+      "movl\t%eax, 4(%rsp)",
+      "movl\t4(%rsp), %eax",
+      "popq\t%rcx",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = alloca [4 x i8], align 4",
+      "%_2 = call i32 @_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE4loadCs8jPW3FB1Bmg_7atomics(ptr align 4 @_RNvCs8jPW3FB1Bmg_7atomics8IS_READY, i8 0) #4",
+      "%_1 = icmp ne i32 %_2, 0",
+      "br i1 %_1, label %bb2, label %bb4",
+      "bb4:                                              ; preds = %start",
+      "store i32 0, ptr %_0, align 4",
+      "br label %bb5",
+      "bb2:                                              ; preds = %start",
+      "call void @_RNvNtNtCs8b4M6GsfcPr_4core4sync6atomic14compiler_fenceCs8jPW3FB1Bmg_7atomics(i8 2) #4",
+      "%0 = load i32, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "store i32 %0, ptr %_0, align 4",
+      "br label %bb5",
+      "bb5:                                              ; preds = %bb2, %bb4",
+      "%1 = load i32, ptr %_0, align 4",
+      "ret i32 %1"
+     ]
+    },
+    "canary_no_cfence_store_forwarding": {
+     "asm": [
+      "pushq\t%rax",
+      "movq\t%rsi, (%rsp)",
+      "movl\t%edx, (%rsi)",
+      "movl\t$1, %esi",
+      "xorl\t%edx, %edx",
+      "callq\t_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE5storeCs8jPW3FB1Bmg_7atomics",
+      "movq\t(%rsp), %rsi",
+      "movl\t(%rsi), %eax",
+      "popq\t%rcx",
+      "retq"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr %data, align 4",
+      "call void @_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE5storeCs8jPW3FB1Bmg_7atomics(ptr align 4 %flag, i32 1, i8 0) #4",
+      "%_0 = load i32, ptr %data, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "canary_publish_then_overwrite_with_cfence": {
+     "asm": [
+      "pushq\t%rax",
+      "movl\t%esi, 4(%rsp)",
+      "movq\t_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE@GOTPCREL(%rip), %rax",
+      "movl\t%edi, (%rax)",
+      "movl\t$1, %edi",
+      "callq\t_RNvNtNtCs8b4M6GsfcPr_4core4sync6atomic14compiler_fenceCs8jPW3FB1Bmg_7atomics",
+      "movq\t_RNvCs8jPW3FB1Bmg_7atomics8IS_READY@GOTPCREL(%rip), %rdi",
+      "movl\t$1, %esi",
+      "xorl\t%edx, %edx",
+      "callq\t_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE5storeCs8jPW3FB1Bmg_7atomics",
+      "movl\t4(%rsp), %esi",
+      "movq\t_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE@GOTPCREL(%rip), %rax",
+      "movl\t%esi, (%rax)",
+      "popq\t%rax",
+      "retq"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "call void @_RNvNtNtCs8b4M6GsfcPr_4core4sync6atomic14compiler_fenceCs8jPW3FB1Bmg_7atomics(i8 1) #4",
+      "call void @_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE5storeCs8jPW3FB1Bmg_7atomics(ptr align 4 @_RNvCs8jPW3FB1Bmg_7atomics8IS_READY, i32 1, i8 0) #4",
+      "store i32 %w, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "ret void"
+     ]
+    },
+    "canary_publish_then_overwrite_without_cfence": {
+     "asm": [
+      "pushq\t%rax",
+      "movl\t%esi, 4(%rsp)",
+      "movq\t_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE@GOTPCREL(%rip), %rax",
+      "movl\t%edi, (%rax)",
+      "movq\t_RNvCs8jPW3FB1Bmg_7atomics8IS_READY@GOTPCREL(%rip), %rdi",
+      "movl\t$1, %esi",
+      "xorl\t%edx, %edx",
+      "callq\t_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE5storeCs8jPW3FB1Bmg_7atomics",
+      "movl\t4(%rsp), %esi",
+      "movq\t_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE@GOTPCREL(%rip), %rax",
+      "movl\t%esi, (%rax)",
+      "popq\t%rax",
+      "retq"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "call void @_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE5storeCs8jPW3FB1Bmg_7atomics(ptr align 4 @_RNvCs8jPW3FB1Bmg_7atomics8IS_READY, i32 1, i8 0) #4",
+      "store i32 %w, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "ret void"
+     ]
+    },
+    "ext_u64_load_relaxed": {
+     "asm": [
+      "pushq\t%rax",
+      "xorl\t%esi, %esi",
+      "callq\t_RNvMs1c_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicyE4loadCs8jPW3FB1Bmg_7atomics",
+      "popq\t%rcx",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = call i64 @_RNvMs1c_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicyE4loadCs8jPW3FB1Bmg_7atomics(ptr align 8 %a, i8 0) #4",
+      "ret i64 %_0"
+     ]
+    },
+    "ext_u64_load_seqcst": {
+     "asm": [
+      "pushq\t%rax",
+      "movl\t$4, %esi",
+      "callq\t_RNvMs1c_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicyE4loadCs8jPW3FB1Bmg_7atomics",
+      "popq\t%rcx",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = call i64 @_RNvMs1c_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicyE4loadCs8jPW3FB1Bmg_7atomics(ptr align 8 %a, i8 4) #4",
+      "ret i64 %_0"
+     ]
+    },
+    "ext_u64_store_relaxed": {
+     "asm": [
+      "pushq\t%rax",
+      "xorl\t%edx, %edx",
+      "callq\t_RNvMs1c_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicyE5storeCs8jPW3FB1Bmg_7atomics",
+      "popq\t%rax",
+      "retq"
+     ],
+     "llvm_ir": [
+      "call void @_RNvMs1c_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicyE5storeCs8jPW3FB1Bmg_7atomics(ptr align 8 %a, i64 %v, i8 0) #4",
+      "ret void"
+     ]
+    },
+    "ext_u64_store_release": {
+     "asm": [
+      "pushq\t%rax",
+      "movl\t$1, %edx",
+      "callq\t_RNvMs1c_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicyE5storeCs8jPW3FB1Bmg_7atomics",
+      "popq\t%rax",
+      "retq"
+     ],
+     "llvm_ir": [
+      "call void @_RNvMs1c_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicyE5storeCs8jPW3FB1Bmg_7atomics(ptr align 8 %a, i64 %v, i8 1) #4",
+      "ret void"
+     ]
+    },
+    "ext_u64_swap_seqcst": {
+     "asm": [
+      "pushq\t%rax",
+      "movl\t$4, %edx",
+      "callq\t_RNvMs1c_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicyE4swapCs8jPW3FB1Bmg_7atomics",
+      "popq\t%rcx",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = call i64 @_RNvMs1c_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicyE4swapCs8jPW3FB1Bmg_7atomics(ptr align 8 %a, i64 %v, i8 4) #4",
+      "ret i64 %_0"
+     ]
+    }
+   },
+   "returncode": 0,
+   "target": "x86_64-unknown-linux-gnu",
+   "unoptimized_callee_atomic_ir": {
+    "_RINvNtNtCs8b4M6GsfcPr_4core4sync6atomic11atomic_loadmECs8jPW3FB1Bmg_7atomics": [
+     "%0 = load atomic i32, ptr %dst monotonic, align 4",
+     "%1 = load atomic i32, ptr %dst acquire, align 4",
+     "%2 = load atomic i32, ptr %dst seq_cst, align 4"
+    ],
+    "_RINvNtNtCs8b4M6GsfcPr_4core4sync6atomic11atomic_loadyECs8jPW3FB1Bmg_7atomics": [
+     "%0 = load atomic i64, ptr %dst monotonic, align 8",
+     "%1 = load atomic i64, ptr %dst acquire, align 8",
+     "%2 = load atomic i64, ptr %dst seq_cst, align 8"
+    ],
+    "_RINvNtNtCs8b4M6GsfcPr_4core4sync6atomic12atomic_storemECs8jPW3FB1Bmg_7atomics": [
+     "store atomic i32 %val, ptr %dst monotonic, align 4",
+     "store atomic i32 %val, ptr %dst release, align 4",
+     "store atomic i32 %val, ptr %dst seq_cst, align 4"
+    ],
+    "_RINvNtNtCs8b4M6GsfcPr_4core4sync6atomic12atomic_storeyECs8jPW3FB1Bmg_7atomics": [
+     "store atomic i64 %val, ptr %dst monotonic, align 8",
+     "store atomic i64 %val, ptr %dst release, align 8",
+     "store atomic i64 %val, ptr %dst seq_cst, align 8"
+    ],
+    "_RINvNtNtCs8b4M6GsfcPr_4core4sync6atomic23atomic_compare_exchangemECs8jPW3FB1Bmg_7atomics": [
+     "%1 = cmpxchg ptr %dst, i32 %old, i32 %new monotonic monotonic, align 4",
+     "%6 = cmpxchg ptr %dst, i32 %old, i32 %new monotonic acquire, align 4",
+     "%11 = cmpxchg ptr %dst, i32 %old, i32 %new monotonic seq_cst, align 4",
+     "%18 = cmpxchg ptr %dst, i32 %old, i32 %new release monotonic, align 4",
+     "%23 = cmpxchg ptr %dst, i32 %old, i32 %new release acquire, align 4",
+     "%28 = cmpxchg ptr %dst, i32 %old, i32 %new release seq_cst, align 4",
+     "%33 = cmpxchg ptr %dst, i32 %old, i32 %new acquire monotonic, align 4",
+     "%38 = cmpxchg ptr %dst, i32 %old, i32 %new acquire acquire, align 4",
+     "%43 = cmpxchg ptr %dst, i32 %old, i32 %new acquire seq_cst, align 4",
+     "%48 = cmpxchg ptr %dst, i32 %old, i32 %new acq_rel monotonic, align 4",
+     "%53 = cmpxchg ptr %dst, i32 %old, i32 %new acq_rel acquire, align 4",
+     "%58 = cmpxchg ptr %dst, i32 %old, i32 %new acq_rel seq_cst, align 4",
+     "%63 = cmpxchg ptr %dst, i32 %old, i32 %new seq_cst monotonic, align 4",
+     "%68 = cmpxchg ptr %dst, i32 %old, i32 %new seq_cst acquire, align 4",
+     "%73 = cmpxchg ptr %dst, i32 %old, i32 %new seq_cst seq_cst, align 4"
+    ],
+    "_RINvNtNtCs8b4M6GsfcPr_4core4sync6atomic23atomic_compare_exchangeyECs8jPW3FB1Bmg_7atomics": [
+     "%1 = cmpxchg ptr %dst, i64 %old, i64 %new monotonic monotonic, align 8",
+     "%6 = cmpxchg ptr %dst, i64 %old, i64 %new monotonic acquire, align 8",
+     "%11 = cmpxchg ptr %dst, i64 %old, i64 %new monotonic seq_cst, align 8",
+     "%18 = cmpxchg ptr %dst, i64 %old, i64 %new release monotonic, align 8",
+     "%23 = cmpxchg ptr %dst, i64 %old, i64 %new release acquire, align 8",
+     "%28 = cmpxchg ptr %dst, i64 %old, i64 %new release seq_cst, align 8",
+     "%33 = cmpxchg ptr %dst, i64 %old, i64 %new acquire monotonic, align 8",
+     "%38 = cmpxchg ptr %dst, i64 %old, i64 %new acquire acquire, align 8",
+     "%43 = cmpxchg ptr %dst, i64 %old, i64 %new acquire seq_cst, align 8",
+     "%48 = cmpxchg ptr %dst, i64 %old, i64 %new acq_rel monotonic, align 8",
+     "%53 = cmpxchg ptr %dst, i64 %old, i64 %new acq_rel acquire, align 8",
+     "%58 = cmpxchg ptr %dst, i64 %old, i64 %new acq_rel seq_cst, align 8",
+     "%63 = cmpxchg ptr %dst, i64 %old, i64 %new seq_cst monotonic, align 8",
+     "%68 = cmpxchg ptr %dst, i64 %old, i64 %new seq_cst acquire, align 8",
+     "%73 = cmpxchg ptr %dst, i64 %old, i64 %new seq_cst seq_cst, align 8"
+    ],
+    "_RINvNtNtCs8b4M6GsfcPr_4core4sync6atomic28atomic_compare_exchange_weakmECs8jPW3FB1Bmg_7atomics": [
+     "%1 = cmpxchg weak ptr %dst, i32 %old, i32 %new monotonic monotonic, align 4",
+     "%6 = cmpxchg weak ptr %dst, i32 %old, i32 %new monotonic acquire, align 4",
+     "%11 = cmpxchg weak ptr %dst, i32 %old, i32 %new monotonic seq_cst, align 4",
+     "%18 = cmpxchg weak ptr %dst, i32 %old, i32 %new release monotonic, align 4",
+     "%23 = cmpxchg weak ptr %dst, i32 %old, i32 %new release acquire, align 4",
+     "%28 = cmpxchg weak ptr %dst, i32 %old, i32 %new release seq_cst, align 4",
+     "%33 = cmpxchg weak ptr %dst, i32 %old, i32 %new acquire monotonic, align 4",
+     "%38 = cmpxchg weak ptr %dst, i32 %old, i32 %new acquire acquire, align 4",
+     "%43 = cmpxchg weak ptr %dst, i32 %old, i32 %new acquire seq_cst, align 4",
+     "%48 = cmpxchg weak ptr %dst, i32 %old, i32 %new acq_rel monotonic, align 4",
+     "%53 = cmpxchg weak ptr %dst, i32 %old, i32 %new acq_rel acquire, align 4",
+     "%58 = cmpxchg weak ptr %dst, i32 %old, i32 %new acq_rel seq_cst, align 4",
+     "%63 = cmpxchg weak ptr %dst, i32 %old, i32 %new seq_cst monotonic, align 4",
+     "%68 = cmpxchg weak ptr %dst, i32 %old, i32 %new seq_cst acquire, align 4",
+     "%73 = cmpxchg weak ptr %dst, i32 %old, i32 %new seq_cst seq_cst, align 4"
+    ],
+    "_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE4swapCs8jPW3FB1Bmg_7atomics": [
+     "%0 = atomicrmw xchg ptr %self, i32 %val monotonic, align 4",
+     "%1 = atomicrmw xchg ptr %self, i32 %val release, align 4",
+     "%2 = atomicrmw xchg ptr %self, i32 %val acquire, align 4",
+     "%3 = atomicrmw xchg ptr %self, i32 %val acq_rel, align 4",
+     "%4 = atomicrmw xchg ptr %self, i32 %val seq_cst, align 4"
+    ],
+    "_RNvMs14_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicmE9fetch_addCs8jPW3FB1Bmg_7atomics": [
+     "%0 = atomicrmw add ptr %self, i32 %val monotonic, align 4",
+     "%1 = atomicrmw add ptr %self, i32 %val release, align 4",
+     "%2 = atomicrmw add ptr %self, i32 %val acquire, align 4",
+     "%3 = atomicrmw add ptr %self, i32 %val acq_rel, align 4",
+     "%4 = atomicrmw add ptr %self, i32 %val seq_cst, align 4"
+    ],
+    "_RNvMs1c_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicyE4swapCs8jPW3FB1Bmg_7atomics": [
+     "%0 = atomicrmw xchg ptr %self, i64 %val monotonic, align 8",
+     "%1 = atomicrmw xchg ptr %self, i64 %val release, align 8",
+     "%2 = atomicrmw xchg ptr %self, i64 %val acquire, align 8",
+     "%3 = atomicrmw xchg ptr %self, i64 %val acq_rel, align 8",
+     "%4 = atomicrmw xchg ptr %self, i64 %val seq_cst, align 8"
+    ],
+    "_RNvMs1c_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicyE9fetch_addCs8jPW3FB1Bmg_7atomics": [
+     "%0 = atomicrmw add ptr %self, i64 %val monotonic, align 8",
+     "%1 = atomicrmw add ptr %self, i64 %val release, align 8",
+     "%2 = atomicrmw add ptr %self, i64 %val acquire, align 8",
+     "%3 = atomicrmw add ptr %self, i64 %val acq_rel, align 8",
+     "%4 = atomicrmw add ptr %self, i64 %val seq_cst, align 8"
+    ],
+    "_RNvMsO_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB5_6AtomichE9fetch_andCs8jPW3FB1Bmg_7atomics": [
+     "%0 = atomicrmw and ptr %self, i8 %val monotonic, align 1",
+     "%1 = atomicrmw and ptr %self, i8 %val release, align 1",
+     "%2 = atomicrmw and ptr %self, i8 %val acquire, align 1",
+     "%3 = atomicrmw and ptr %self, i8 %val acq_rel, align 1",
+     "%4 = atomicrmw and ptr %self, i8 %val seq_cst, align 1"
+    ],
+    "_RNvNtNtCs8b4M6GsfcPr_4core4sync6atomic14compiler_fenceCs8jPW3FB1Bmg_7atomics": [
+     "fence syncscope(\"singlethread\") release",
+     "fence syncscope(\"singlethread\") acquire",
+     "fence syncscope(\"singlethread\") acq_rel",
+     "fence syncscope(\"singlethread\") seq_cst"
+    ],
+    "_RNvNtNtCs8b4M6GsfcPr_4core4sync6atomic5fenceCs8jPW3FB1Bmg_7atomics": [
+     "fence release",
+     "fence acquire",
+     "fence acq_rel",
+     "fence seq_cst"
+    ]
+   }
+  },
+  "x86_64_O3": {
+   "diagnostics": [],
+   "extra_flags": [
+    "-C",
+    "opt-level=3"
+   ],
+   "functions": {
+    "at_cfence_acqrel": {
+     "asm": [
+      "retq"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") acq_rel",
+      "ret void"
+     ]
+    },
+    "at_cfence_acquire": {
+     "asm": [
+      "retq"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") acquire",
+      "ret void"
+     ]
+    },
+    "at_cfence_release": {
+     "asm": [
+      "retq"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") release",
+      "ret void"
+     ]
+    },
+    "at_cfence_seqcst": {
+     "asm": [
+      "retq"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") seq_cst",
+      "ret void"
+     ]
+    },
+    "at_fence_acqrel": {
+     "asm": [
+      "retq"
+     ],
+     "llvm_ir": [
+      "fence acq_rel",
+      "ret void"
+     ]
+    },
+    "at_fence_acquire": {
+     "asm": [
+      "retq"
+     ],
+     "llvm_ir": [
+      "fence acquire",
+      "ret void"
+     ]
+    },
+    "at_fence_release": {
+     "asm": [
+      "retq"
+     ],
+     "llvm_ir": [
+      "fence release",
+      "ret void"
+     ]
+    },
+    "at_fence_seqcst": {
+     "asm": [
+      "lock\t\torl\t$0, -64(%rsp)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "fence seq_cst",
+      "ret void"
+     ]
+    },
+    "at_u32_cas_strong_acqrel_acq": {
+     "asm": [
+      "movl\t%esi, %eax",
+      "lock\t\tcmpxchgl\t%edx, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg ptr %a, i32 %c, i32 %n acq_rel acquire, align 4",
+      "%_8.sroa.0.0.i = extractvalue { i32, i1 } %0, 0",
+      "ret i32 %_8.sroa.0.0.i"
+     ]
+    },
+    "at_u32_cas_strong_seqcst_seqcst": {
+     "asm": [
+      "movl\t%esi, %eax",
+      "lock\t\tcmpxchgl\t%edx, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg ptr %a, i32 %c, i32 %n seq_cst seq_cst, align 4",
+      "%_8.sroa.0.0.i = extractvalue { i32, i1 } %0, 0",
+      "ret i32 %_8.sroa.0.0.i"
+     ]
+    },
+    "at_u32_cas_weak_rel_rlx": {
+     "asm": [
+      "movl\t%esi, %eax",
+      "lock\t\tcmpxchgl\t%edx, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg weak ptr %a, i32 %c, i32 %n release monotonic, align 4",
+      "%1 = extractvalue { i32, i1 } %0, 0",
+      "ret i32 %1"
+     ]
+    },
+    "at_u32_fadd_acqrel": {
+     "asm": [
+      "movl\t%esi, %eax",
+      "lock\t\txaddl\t%eax, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v acq_rel, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_acquire": {
+     "asm": [
+      "movl\t%esi, %eax",
+      "lock\t\txaddl\t%eax, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v acquire, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_relaxed": {
+     "asm": [
+      "movl\t%esi, %eax",
+      "lock\t\txaddl\t%eax, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v monotonic, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_release": {
+     "asm": [
+      "movl\t%esi, %eax",
+      "lock\t\txaddl\t%eax, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v release, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_seqcst": {
+     "asm": [
+      "movl\t%esi, %eax",
+      "lock\t\txaddl\t%eax, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v seq_cst, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_load_acquire": {
+     "asm": [
+      "movl\t(%rdi), %eax",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a acquire, align 4",
+      "ret i32 %0"
+     ]
+    },
+    "at_u32_load_relaxed": {
+     "asm": [
+      "movl\t(%rdi), %eax",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a monotonic, align 4",
+      "ret i32 %0"
+     ]
+    },
+    "at_u32_load_seqcst": {
+     "asm": [
+      "movl\t(%rdi), %eax",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a seq_cst, align 4",
+      "ret i32 %0"
+     ]
+    },
+    "at_u32_store_relaxed": {
+     "asm": [
+      "movl\t%esi, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %v, ptr %a monotonic, align 4",
+      "ret void"
+     ]
+    },
+    "at_u32_store_release": {
+     "asm": [
+      "movl\t%esi, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %v, ptr %a release, align 4",
+      "ret void"
+     ]
+    },
+    "at_u32_store_seqcst": {
+     "asm": [
+      "xchgl\t%esi, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %v, ptr %a seq_cst, align 4",
+      "ret void"
+     ]
+    },
+    "at_u32_swap_acqrel": {
+     "asm": [
+      "movl\t%esi, %eax",
+      "xchgl\t%eax, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v acq_rel, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_acquire": {
+     "asm": [
+      "movl\t%esi, %eax",
+      "xchgl\t%eax, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v acquire, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_relaxed": {
+     "asm": [
+      "movl\t%esi, %eax",
+      "xchgl\t%eax, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v monotonic, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_release": {
+     "asm": [
+      "movl\t%esi, %eax",
+      "xchgl\t%eax, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v release, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_seqcst": {
+     "asm": [
+      "movl\t%esi, %eax",
+      "xchgl\t%eax, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v seq_cst, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u64_cas_seqcst": {
+     "asm": [
+      "movq\t%rsi, %rax",
+      "lock\t\tcmpxchgq\t%rdx, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg ptr %a, i64 %c, i64 %n seq_cst acquire, align 8",
+      "%1 = extractvalue { i64, i1 } %0, 0",
+      "ret i64 %1"
+     ]
+    },
+    "at_u64_fadd_acqrel": {
+     "asm": [
+      "movq\t%rsi, %rax",
+      "lock\t\txaddq\t%rax, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i64 %v acq_rel, align 8",
+      "ret i64 %_0"
+     ]
+    },
+    "at_u64_load_acquire": {
+     "asm": [
+      "movq\t(%rdi), %rax",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i64, ptr %a acquire, align 8",
+      "ret i64 %0"
+     ]
+    },
+    "at_u64_store_seqcst": {
+     "asm": [
+      "xchgq\t%rsi, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "store atomic i64 %v, ptr %a seq_cst, align 8",
+      "ret void"
+     ]
+    },
+    "at_u8_fand_acqrel": {
+     "asm": [
+      "movzbl\t(%rdi), %eax",
+      "movl\t%eax, %ecx",
+      "andb\t%sil, %cl",
+      "lock\t\tcmpxchgb\t%cl, (%rdi)",
+      "jne\t.LBB31_1",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw and ptr %a, i8 %m acq_rel, align 1",
+      "ret i8 %_0"
+     ]
+    },
+    "canary_adjacent_relaxed_stores": {
+     "asm": [
+      "movl\t%esi, (%rdi)",
+      "movl\t%edx, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %x, ptr %a monotonic, align 4",
+      "store atomic i32 %y, ptr %a monotonic, align 4",
+      "ret void"
+     ]
+    },
+    "canary_cfence_blocks_store_hoist": {
+     "asm": [
+      "movl\t%edx, %eax",
+      "movl\t%edx, (%rsi)",
+      "movl\t$1, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr %data, align 4",
+      "fence syncscope(\"singlethread\") release",
+      "store atomic i32 1, ptr %flag monotonic, align 4",
+      "fence syncscope(\"singlethread\") acquire",
+      "ret i32 %v"
+     ]
+    },
+    "canary_dead_relaxed_load": {
+     "asm": [
+      "movl\t(%rdi), %eax",
+      "movl\t$42, %eax",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a monotonic, align 4",
+      "ret i32 42"
+     ]
+    },
+    "canary_handler_read_with_cfence": {
+     "asm": [
+      "movq\t_RNvCs8jPW3FB1Bmg_7atomics8IS_READY@GOTPCREL(%rip), %rax",
+      "movl\t(%rax), %eax",
+      "testl\t%eax, %eax",
+      "je\t.LBB35_1",
+      "movq\t_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE@GOTPCREL(%rip), %rax",
+      "movl\t(%rax), %eax",
+      "retq",
+      "xorl\t%eax, %eax",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr @_RNvCs8jPW3FB1Bmg_7atomics8IS_READY monotonic, align 4",
+      "%1 = icmp eq i32 %0, 0",
+      "br i1 %1, label %bb4, label %bb1",
+      "bb1:                                              ; preds = %start",
+      "fence syncscope(\"singlethread\") acquire",
+      "%2 = load i32, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4, !noundef !4",
+      "br label %bb4",
+      "bb4:                                              ; preds = %start, %bb1",
+      "%_0.sroa.0.0 = phi i32 [ %2, %bb1 ], [ 0, %start ]",
+      "ret i32 %_0.sroa.0.0"
+     ]
+    },
+    "canary_no_cfence_store_forwarding": {
+     "asm": [
+      "movl\t%edx, %eax",
+      "movl\t%edx, (%rsi)",
+      "movl\t$1, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr %data, align 4",
+      "store atomic i32 1, ptr %flag monotonic, align 4",
+      "ret i32 %v"
+     ]
+    },
+    "canary_publish_then_overwrite_with_cfence": {
+     "asm": [
+      "movq\t_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE@GOTPCREL(%rip), %rax",
+      "movl\t%edi, (%rax)",
+      "movq\t_RNvCs8jPW3FB1Bmg_7atomics8IS_READY@GOTPCREL(%rip), %rcx",
+      "movl\t$1, (%rcx)",
+      "movl\t%esi, (%rax)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "fence syncscope(\"singlethread\") release",
+      "store atomic i32 1, ptr @_RNvCs8jPW3FB1Bmg_7atomics8IS_READY monotonic, align 4",
+      "store i32 %w, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "ret void"
+     ]
+    },
+    "canary_publish_then_overwrite_without_cfence": {
+     "asm": [
+      "movq\t_RNvCs8jPW3FB1Bmg_7atomics8IS_READY@GOTPCREL(%rip), %rax",
+      "movl\t$1, (%rax)",
+      "movq\t_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE@GOTPCREL(%rip), %rax",
+      "movl\t%esi, (%rax)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "store atomic i32 1, ptr @_RNvCs8jPW3FB1Bmg_7atomics8IS_READY monotonic, align 4",
+      "store i32 %w, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "ret void"
+     ]
+    },
+    "ext_u64_load_relaxed": {
+     "asm": [
+      "movq\t(%rdi), %rax",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i64, ptr %a monotonic, align 8",
+      "ret i64 %0"
+     ]
+    },
+    "ext_u64_load_seqcst": {
+     "asm": [
+      "movq\t(%rdi), %rax",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i64, ptr %a seq_cst, align 8",
+      "ret i64 %0"
+     ]
+    },
+    "ext_u64_store_relaxed": {
+     "asm": [
+      "movq\t%rsi, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "store atomic i64 %v, ptr %a monotonic, align 8",
+      "ret void"
+     ]
+    },
+    "ext_u64_store_release": {
+     "asm": [
+      "movq\t%rsi, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "store atomic i64 %v, ptr %a release, align 8",
+      "ret void"
+     ]
+    },
+    "ext_u64_swap_seqcst": {
+     "asm": [
+      "movq\t%rsi, %rax",
+      "xchgq\t%rax, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i64 %v seq_cst, align 8",
+      "ret i64 %_0"
+     ]
+    }
+   },
+   "returncode": 0,
+   "target": "x86_64-unknown-linux-gnu"
+  },
+  "x86_64_O3_no_redzone": {
+   "diagnostics": [],
+   "extra_flags": [
+    "-C",
+    "opt-level=3",
+    "-C",
+    "no-redzone=yes"
+   ],
+   "functions": {
+    "at_cfence_acqrel": {
+     "asm": [
+      "retq"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") acq_rel",
+      "ret void"
+     ]
+    },
+    "at_cfence_acquire": {
+     "asm": [
+      "retq"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") acquire",
+      "ret void"
+     ]
+    },
+    "at_cfence_release": {
+     "asm": [
+      "retq"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") release",
+      "ret void"
+     ]
+    },
+    "at_cfence_seqcst": {
+     "asm": [
+      "retq"
+     ],
+     "llvm_ir": [
+      "fence syncscope(\"singlethread\") seq_cst",
+      "ret void"
+     ]
+    },
+    "at_fence_acqrel": {
+     "asm": [
+      "retq"
+     ],
+     "llvm_ir": [
+      "fence acq_rel",
+      "ret void"
+     ]
+    },
+    "at_fence_acquire": {
+     "asm": [
+      "retq"
+     ],
+     "llvm_ir": [
+      "fence acquire",
+      "ret void"
+     ]
+    },
+    "at_fence_release": {
+     "asm": [
+      "retq"
+     ],
+     "llvm_ir": [
+      "fence release",
+      "ret void"
+     ]
+    },
+    "at_fence_seqcst": {
+     "asm": [
+      "lock\t\torl\t$0, (%rsp)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "fence seq_cst",
+      "ret void"
+     ]
+    },
+    "at_u32_cas_strong_acqrel_acq": {
+     "asm": [
+      "movl\t%esi, %eax",
+      "lock\t\tcmpxchgl\t%edx, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg ptr %a, i32 %c, i32 %n acq_rel acquire, align 4",
+      "%_8.sroa.0.0.i = extractvalue { i32, i1 } %0, 0",
+      "ret i32 %_8.sroa.0.0.i"
+     ]
+    },
+    "at_u32_cas_strong_seqcst_seqcst": {
+     "asm": [
+      "movl\t%esi, %eax",
+      "lock\t\tcmpxchgl\t%edx, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg ptr %a, i32 %c, i32 %n seq_cst seq_cst, align 4",
+      "%_8.sroa.0.0.i = extractvalue { i32, i1 } %0, 0",
+      "ret i32 %_8.sroa.0.0.i"
+     ]
+    },
+    "at_u32_cas_weak_rel_rlx": {
+     "asm": [
+      "movl\t%esi, %eax",
+      "lock\t\tcmpxchgl\t%edx, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg weak ptr %a, i32 %c, i32 %n release monotonic, align 4",
+      "%1 = extractvalue { i32, i1 } %0, 0",
+      "ret i32 %1"
+     ]
+    },
+    "at_u32_fadd_acqrel": {
+     "asm": [
+      "movl\t%esi, %eax",
+      "lock\t\txaddl\t%eax, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v acq_rel, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_acquire": {
+     "asm": [
+      "movl\t%esi, %eax",
+      "lock\t\txaddl\t%eax, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v acquire, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_relaxed": {
+     "asm": [
+      "movl\t%esi, %eax",
+      "lock\t\txaddl\t%eax, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v monotonic, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_release": {
+     "asm": [
+      "movl\t%esi, %eax",
+      "lock\t\txaddl\t%eax, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v release, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_fadd_seqcst": {
+     "asm": [
+      "movl\t%esi, %eax",
+      "lock\t\txaddl\t%eax, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i32 %v seq_cst, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_load_acquire": {
+     "asm": [
+      "movl\t(%rdi), %eax",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a acquire, align 4",
+      "ret i32 %0"
+     ]
+    },
+    "at_u32_load_relaxed": {
+     "asm": [
+      "movl\t(%rdi), %eax",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a monotonic, align 4",
+      "ret i32 %0"
+     ]
+    },
+    "at_u32_load_seqcst": {
+     "asm": [
+      "movl\t(%rdi), %eax",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a seq_cst, align 4",
+      "ret i32 %0"
+     ]
+    },
+    "at_u32_store_relaxed": {
+     "asm": [
+      "movl\t%esi, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %v, ptr %a monotonic, align 4",
+      "ret void"
+     ]
+    },
+    "at_u32_store_release": {
+     "asm": [
+      "movl\t%esi, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %v, ptr %a release, align 4",
+      "ret void"
+     ]
+    },
+    "at_u32_store_seqcst": {
+     "asm": [
+      "xchgl\t%esi, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %v, ptr %a seq_cst, align 4",
+      "ret void"
+     ]
+    },
+    "at_u32_swap_acqrel": {
+     "asm": [
+      "movl\t%esi, %eax",
+      "xchgl\t%eax, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v acq_rel, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_acquire": {
+     "asm": [
+      "movl\t%esi, %eax",
+      "xchgl\t%eax, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v acquire, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_relaxed": {
+     "asm": [
+      "movl\t%esi, %eax",
+      "xchgl\t%eax, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v monotonic, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_release": {
+     "asm": [
+      "movl\t%esi, %eax",
+      "xchgl\t%eax, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v release, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u32_swap_seqcst": {
+     "asm": [
+      "movl\t%esi, %eax",
+      "xchgl\t%eax, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i32 %v seq_cst, align 4",
+      "ret i32 %_0"
+     ]
+    },
+    "at_u64_cas_seqcst": {
+     "asm": [
+      "movq\t%rsi, %rax",
+      "lock\t\tcmpxchgq\t%rdx, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%0 = cmpxchg ptr %a, i64 %c, i64 %n seq_cst acquire, align 8",
+      "%1 = extractvalue { i64, i1 } %0, 0",
+      "ret i64 %1"
+     ]
+    },
+    "at_u64_fadd_acqrel": {
+     "asm": [
+      "movq\t%rsi, %rax",
+      "lock\t\txaddq\t%rax, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw add ptr %a, i64 %v acq_rel, align 8",
+      "ret i64 %_0"
+     ]
+    },
+    "at_u64_load_acquire": {
+     "asm": [
+      "movq\t(%rdi), %rax",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i64, ptr %a acquire, align 8",
+      "ret i64 %0"
+     ]
+    },
+    "at_u64_store_seqcst": {
+     "asm": [
+      "xchgq\t%rsi, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "store atomic i64 %v, ptr %a seq_cst, align 8",
+      "ret void"
+     ]
+    },
+    "at_u8_fand_acqrel": {
+     "asm": [
+      "movzbl\t(%rdi), %eax",
+      "movl\t%eax, %ecx",
+      "andb\t%sil, %cl",
+      "lock\t\tcmpxchgb\t%cl, (%rdi)",
+      "jne\t.LBB31_1",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw and ptr %a, i8 %m acq_rel, align 1",
+      "ret i8 %_0"
+     ]
+    },
+    "canary_adjacent_relaxed_stores": {
+     "asm": [
+      "movl\t%esi, (%rdi)",
+      "movl\t%edx, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "store atomic i32 %x, ptr %a monotonic, align 4",
+      "store atomic i32 %y, ptr %a monotonic, align 4",
+      "ret void"
+     ]
+    },
+    "canary_cfence_blocks_store_hoist": {
+     "asm": [
+      "movl\t%edx, %eax",
+      "movl\t%edx, (%rsi)",
+      "movl\t$1, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr %data, align 4",
+      "fence syncscope(\"singlethread\") release",
+      "store atomic i32 1, ptr %flag monotonic, align 4",
+      "fence syncscope(\"singlethread\") acquire",
+      "ret i32 %v"
+     ]
+    },
+    "canary_dead_relaxed_load": {
+     "asm": [
+      "movl\t(%rdi), %eax",
+      "movl\t$42, %eax",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr %a monotonic, align 4",
+      "ret i32 42"
+     ]
+    },
+    "canary_handler_read_with_cfence": {
+     "asm": [
+      "movq\t_RNvCs8jPW3FB1Bmg_7atomics8IS_READY@GOTPCREL(%rip), %rax",
+      "movl\t(%rax), %eax",
+      "testl\t%eax, %eax",
+      "je\t.LBB35_1",
+      "movq\t_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE@GOTPCREL(%rip), %rax",
+      "movl\t(%rax), %eax",
+      "retq",
+      "xorl\t%eax, %eax",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i32, ptr @_RNvCs8jPW3FB1Bmg_7atomics8IS_READY monotonic, align 4",
+      "%1 = icmp eq i32 %0, 0",
+      "br i1 %1, label %bb4, label %bb1",
+      "bb1:                                              ; preds = %start",
+      "fence syncscope(\"singlethread\") acquire",
+      "%2 = load i32, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4, !noundef !4",
+      "br label %bb4",
+      "bb4:                                              ; preds = %start, %bb1",
+      "%_0.sroa.0.0 = phi i32 [ %2, %bb1 ], [ 0, %start ]",
+      "ret i32 %_0.sroa.0.0"
+     ]
+    },
+    "canary_no_cfence_store_forwarding": {
+     "asm": [
+      "movl\t%edx, %eax",
+      "movl\t%edx, (%rsi)",
+      "movl\t$1, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr %data, align 4",
+      "store atomic i32 1, ptr %flag monotonic, align 4",
+      "ret i32 %v"
+     ]
+    },
+    "canary_publish_then_overwrite_with_cfence": {
+     "asm": [
+      "movq\t_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE@GOTPCREL(%rip), %rax",
+      "movl\t%edi, (%rax)",
+      "movq\t_RNvCs8jPW3FB1Bmg_7atomics8IS_READY@GOTPCREL(%rip), %rcx",
+      "movl\t$1, (%rcx)",
+      "movl\t%esi, (%rax)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "store i32 %v, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "fence syncscope(\"singlethread\") release",
+      "store atomic i32 1, ptr @_RNvCs8jPW3FB1Bmg_7atomics8IS_READY monotonic, align 4",
+      "store i32 %w, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "ret void"
+     ]
+    },
+    "canary_publish_then_overwrite_without_cfence": {
+     "asm": [
+      "movq\t_RNvCs8jPW3FB1Bmg_7atomics8IS_READY@GOTPCREL(%rip), %rax",
+      "movl\t$1, (%rax)",
+      "movq\t_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE@GOTPCREL(%rip), %rax",
+      "movl\t%esi, (%rax)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "store atomic i32 1, ptr @_RNvCs8jPW3FB1Bmg_7atomics8IS_READY monotonic, align 4",
+      "store i32 %w, ptr @_RNvCs8jPW3FB1Bmg_7atomics18IMPORTANT_VARIABLE, align 4",
+      "ret void"
+     ]
+    },
+    "ext_u64_load_relaxed": {
+     "asm": [
+      "movq\t(%rdi), %rax",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i64, ptr %a monotonic, align 8",
+      "ret i64 %0"
+     ]
+    },
+    "ext_u64_load_seqcst": {
+     "asm": [
+      "movq\t(%rdi), %rax",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%0 = load atomic i64, ptr %a seq_cst, align 8",
+      "ret i64 %0"
+     ]
+    },
+    "ext_u64_store_relaxed": {
+     "asm": [
+      "movq\t%rsi, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "store atomic i64 %v, ptr %a monotonic, align 8",
+      "ret void"
+     ]
+    },
+    "ext_u64_store_release": {
+     "asm": [
+      "movq\t%rsi, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "store atomic i64 %v, ptr %a release, align 8",
+      "ret void"
+     ]
+    },
+    "ext_u64_swap_seqcst": {
+     "asm": [
+      "movq\t%rsi, %rax",
+      "xchgq\t%rax, (%rdi)",
+      "retq"
+     ],
+     "llvm_ir": [
+      "%_0 = atomicrmw xchg ptr %a, i64 %v seq_cst, align 8",
+      "ret i64 %_0"
+     ]
+    }
+   },
+   "returncode": 0,
+   "target": "x86_64-unknown-linux-gnu"
+  }
+ },
+ "function_count": 44,
+ "host": "x86_64-unknown-linux-gnu",
+ "llvm_version": "22.1.6",
+ "observed_utc": "2026-11-20T23:21:53Z",
+ "probe": "atomic_lowering_probe.rs",
+ "rustc_commit_hash": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+ "rustc_release": "1.98.0-nightly",
+ "rustc_version_line": "rustc 1.98.0-nightly (14210df0e 2026-05-31)"
+}

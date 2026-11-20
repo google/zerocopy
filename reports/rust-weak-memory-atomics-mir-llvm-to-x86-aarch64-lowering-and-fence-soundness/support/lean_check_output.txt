@@ -1,0 +1,54 @@
+'RustAtomicLowering.RustOrdering.le_trans' depends on axioms: [propext]
+'RustAtomicLowering.RustOrdering.le_antisymm' depends on axioms: [propext]
+'RustAtomicLowering.RustOrdering.join_le' depends on axioms: [propext]
+'RustAtomicLowering.mirToLlvm_injective' does not depend on any axioms
+'RustAtomicLowering.tso_compilerFence_emits_nothing' depends on axioms: [propext]
+'RustAtomicLowering.tso_weak_fence_emits_nothing' depends on axioms: [propext]
+'RustAtomicLowering.tso_seqcst_store_has_barrier' depends on axioms: [propext]
+'RustAtomicLowering.tso_weaker_access_has_no_barrier' depends on axioms: [propext]
+'RustAtomicLowering.tso_rmw_and_cas_are_locked' depends on axioms: [propext]
+'RustAtomicLowering.a64_load_monotone' depends on axioms: [propext]
+'RustAtomicLowering.a64_store_monotone' depends on axioms: [propext]
+'RustAtomicLowering.a64_load_selection' depends on axioms: [propext]
+'RustAtomicLowering.a64_fence_selection' depends on axioms: [propext]
+'RustAtomicLowering.a64_rmw_bits' depends on axioms: [propext]
+'RustAtomicLowering.a64_cas_bits' depends on axioms: [propext]
+'RustAtomicLowering.a64_required_order_is_barrier_ordered' depends on axioms: [propext]
+'RustAtomicLowering.tso_required_order_is_kept' depends on axioms: [propext]
+'RustAtomicLowering.acyclic_of_rank' does not depend on any axioms
+'RustAtomicLowering.tc_of_reach' does not depend on any axioms
+'RustAtomicLowering.rc11_sbSC_forbidden' depends on axioms: [propext]
+'RustAtomicLowering.rc11_sbFence_forbidden' depends on axioms: [propext]
+'RustAtomicLowering.rc11_mp_forbidden' depends on axioms: [propext]
+'RustAtomicLowering.rc11_iriwSC_forbidden' depends on axioms: [propext]
+'RustAtomicLowering.tso_single_writer' depends on axioms: [propext]
+'RustAtomicLowering.tso_sbSC_sound' depends on axioms: [propext]
+'RustAtomicLowering.tso_sbFence_sound' depends on axioms: [propext]
+'RustAtomicLowering.tso_mp_sound' depends on axioms: [propext]
+'RustAtomicLowering.a64_single_writer' depends on axioms: [propext]
+'RustAtomicLowering.a64_sbSC_sound' depends on axioms: [propext]
+'RustAtomicLowering.a64_sbFence_sound' depends on axioms: [propext]
+'RustAtomicLowering.a64_mp_sound' depends on axioms: [propext]
+'RustAtomicLowering.a64_iriwSC_sound' depends on axioms: [propext]
+'RustAtomicLowering.sbSC_sequential_outcome_is_allowed' depends on axioms: [propext]
+'RustAtomicLowering.ce1_edge_lost' depends on axioms: [propext]
+'RustAtomicLowering.CE1' depends on axioms: [propext]
+'RustAtomicLowering.ce1_mutant_keeps_mp_and_iriw' depends on axioms: [propext]
+'RustAtomicLowering.a64_plain_loads_allow_mp_and_iriw' depends on axioms: [propext]
+'RustAtomicLowering.ce4_edge_lost' depends on axioms: [propext]
+'RustAtomicLowering.ce4_dropped_fence_allows_store_buffering' depends on axioms: [propext]
+'RustAtomicLowering.CE4' depends on axioms: [propext]
+'RustAtomicLowering.Stack.fence_disp_matches_table' depends on axioms: [propext]
+'RustAtomicLowering.Stack.real_lowering_is_frame_safe' does not depend on any axioms
+'RustAtomicLowering.Stack.top_of_stack_is_always_safe' does not depend on any axioms
+'RustAtomicLowering.Stack.CE2' does not depend on any axioms
+'RustAtomicLowering.Stack.lock_or_zero_preserves_value' does not depend on any axioms
+'RustAtomicLowering.Sched.fence_edges_keep_prefix_closed' does not depend on any axioms
+'RustAtomicLowering.Sched.fence_edges_protect_the_handler' does not depend on any axioms
+'RustAtomicLowering.Sched.CE3_reordering' does not depend on any axioms
+'RustAtomicLowering.Sched.dse_shapes' depends on axioms: [propext]
+'RustAtomicLowering.Sched.dse_preserves_final_memory' does not depend on any axioms
+'RustAtomicLowering.Sched.dse_respecting_fence_protects_the_handler' depends on axioms: [propext]
+'RustAtomicLowering.Sched.CE3_elimination' depends on axioms: [propext]
+'RustAtomicLowering.compilerFence_emits_nothing_everywhere' depends on axioms: [propext]
+'RustAtomicLowering.probeTable_valid' depends on axioms: [propext]

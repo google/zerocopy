@@ -1,0 +1,1428 @@
+{
+ "canary_and_mutant_checks": 132,
+ "canary_and_mutant_checks_ok": 132,
+ "cells_compared": 754,
+ "cells_matched": 754,
+ "checks": [
+  {
+   "check": "dead relaxed load is still emitted (1 load)",
+   "detail": [
+    "ldr"
+   ],
+   "ok": true,
+   "where": "preserved:aarch64_lse_1.99.1_O3"
+  },
+  {
+   "check": "adjacent relaxed stores are not merged (2 stores)",
+   "detail": [
+    "str",
+    "str"
+   ],
+   "ok": true,
+   "where": "preserved:aarch64_lse_1.99.1_O3"
+  },
+  {
+   "check": "compiler fences change nothing in the &mut canary (same skeleton, 2 stores, 0 loads)",
+   "detail": [
+    "str",
+    "str"
+   ],
+   "ok": true,
+   "where": "preserved:aarch64_lse_1.99.1_O3"
+  },
+  {
+   "check": "both singlethread fences survive in LLVM IR",
+   "detail": [
+    "define noundef i32 @canary_cfence_blocks_store_hoist(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned %v) unnamed_addr #1 personality ptr @rust_eh_personality !guid !37 {",
+    "store i32 %v, ptr %data, align 4",
+    "fence syncscope(\"singlethread\") release",
+    "store atomic i32 1, ptr %flag monotonic, align 4",
+    "fence syncscope(\"singlethread\") acquire",
+    "ret i32 %v"
+   ],
+   "ok": true,
+   "where": "preserved:aarch64_lse_1.99.1_O3"
+  },
+  {
+   "check": "dead relaxed load is still emitted (1 load)",
+   "detail": [
+    "ldr"
+   ],
+   "ok": true,
+   "where": "preserved:aarch64_lse_rcpc3_1.99.1_O3"
+  },
+  {
+   "check": "adjacent relaxed stores are not merged (2 stores)",
+   "detail": [
+    "str",
+    "str"
+   ],
+   "ok": true,
+   "where": "preserved:aarch64_lse_rcpc3_1.99.1_O3"
+  },
+  {
+   "check": "compiler fences change nothing in the &mut canary (same skeleton, 2 stores, 0 loads)",
+   "detail": [
+    "str",
+    "str"
+   ],
+   "ok": true,
+   "where": "preserved:aarch64_lse_rcpc3_1.99.1_O3"
+  },
+  {
+   "check": "both singlethread fences survive in LLVM IR",
+   "detail": [
+    "define noundef i32 @canary_cfence_blocks_store_hoist(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned %v) unnamed_addr #1 personality ptr @rust_eh_personality !guid !37 {",
+    "store i32 %v, ptr %data, align 4",
+    "fence syncscope(\"singlethread\") release",
+    "store atomic i32 1, ptr %flag monotonic, align 4",
+    "fence syncscope(\"singlethread\") acquire",
+    "ret i32 %v"
+   ],
+   "ok": true,
+   "where": "preserved:aarch64_lse_rcpc3_1.99.1_O3"
+  },
+  {
+   "check": "measured at_u32_load_seqcst is not the mutant sequence ['ldapr']",
+   "detail": [
+    "ldar"
+   ],
+   "ok": true,
+   "where": "preserved:aarch64_lse_rcpc3_1.99.1_O3"
+  },
+  {
+   "check": "dead relaxed load is still emitted (1 load)",
+   "detail": [
+    "ldr"
+   ],
+   "ok": true,
+   "where": "preserved:aarch64_lse_rcpc_1.99.1_O3"
+  },
+  {
+   "check": "adjacent relaxed stores are not merged (2 stores)",
+   "detail": [
+    "str",
+    "str"
+   ],
+   "ok": true,
+   "where": "preserved:aarch64_lse_rcpc_1.99.1_O3"
+  },
+  {
+   "check": "compiler fences change nothing in the &mut canary (same skeleton, 2 stores, 0 loads)",
+   "detail": [
+    "str",
+    "str"
+   ],
+   "ok": true,
+   "where": "preserved:aarch64_lse_rcpc_1.99.1_O3"
+  },
+  {
+   "check": "both singlethread fences survive in LLVM IR",
+   "detail": [
+    "define noundef i32 @canary_cfence_blocks_store_hoist(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned %v) unnamed_addr #1 personality ptr @rust_eh_personality !guid !37 {",
+    "store i32 %v, ptr %data, align 4",
+    "fence syncscope(\"singlethread\") release",
+    "store atomic i32 1, ptr %flag monotonic, align 4",
+    "fence syncscope(\"singlethread\") acquire",
+    "ret i32 %v"
+   ],
+   "ok": true,
+   "where": "preserved:aarch64_lse_rcpc_1.99.1_O3"
+  },
+  {
+   "check": "measured at_u32_load_seqcst is not the mutant sequence ['ldapr']",
+   "detail": [
+    "ldar"
+   ],
+   "ok": true,
+   "where": "preserved:aarch64_lse_rcpc_1.99.1_O3"
+  },
+  {
+   "check": "dead relaxed load is still emitted (1 load)",
+   "detail": [
+    "ldr"
+   ],
+   "ok": true,
+   "where": "preserved:aarch64_v80_default_outline_1.99.1_O3"
+  },
+  {
+   "check": "adjacent relaxed stores are not merged (2 stores)",
+   "detail": [
+    "str",
+    "str"
+   ],
+   "ok": true,
+   "where": "preserved:aarch64_v80_default_outline_1.99.1_O3"
+  },
+  {
+   "check": "compiler fences change nothing in the &mut canary (same skeleton, 2 stores, 0 loads)",
+   "detail": [
+    "str",
+    "str"
+   ],
+   "ok": true,
+   "where": "preserved:aarch64_v80_default_outline_1.99.1_O3"
+  },
+  {
+   "check": "both singlethread fences survive in LLVM IR",
+   "detail": [
+    "define noundef i32 @canary_cfence_blocks_store_hoist(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned %v) unnamed_addr #1 personality ptr @rust_eh_personality !guid !37 {",
+    "store i32 %v, ptr %data, align 4",
+    "fence syncscope(\"singlethread\") release",
+    "store atomic i32 1, ptr %flag monotonic, align 4",
+    "fence syncscope(\"singlethread\") acquire",
+    "ret i32 %v"
+   ],
+   "ok": true,
+   "where": "preserved:aarch64_v80_default_outline_1.99.1_O3"
+  },
+  {
+   "check": "dead relaxed load is still emitted (1 load)",
+   "detail": [
+    "ldr"
+   ],
+   "ok": true,
+   "where": "preserved:aarch64_v80_no_outline_1.99.1_O3"
+  },
+  {
+   "check": "adjacent relaxed stores are not merged (2 stores)",
+   "detail": [
+    "str",
+    "str"
+   ],
+   "ok": true,
+   "where": "preserved:aarch64_v80_no_outline_1.99.1_O3"
+  },
+  {
+   "check": "compiler fences change nothing in the &mut canary (same skeleton, 2 stores, 0 loads)",
+   "detail": [
+    "str",
+    "str"
+   ],
+   "ok": true,
+   "where": "preserved:aarch64_v80_no_outline_1.99.1_O3"
+  },
+  {
+   "check": "both singlethread fences survive in LLVM IR",
+   "detail": [
+    "define noundef i32 @canary_cfence_blocks_store_hoist(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned %v) unnamed_addr #1 personality ptr @rust_eh_personality !guid !37 {",
+    "store i32 %v, ptr %data, align 4",
+    "fence syncscope(\"singlethread\") release",
+    "store atomic i32 1, ptr %flag monotonic, align 4",
+    "fence syncscope(\"singlethread\") acquire",
+    "ret i32 %v"
+   ],
+   "ok": true,
+   "where": "preserved:aarch64_v80_no_outline_1.99.1_O3"
+  },
+  {
+   "check": "dead relaxed load is still emitted (1 load)",
+   "detail": [
+    "mov-load"
+   ],
+   "ok": true,
+   "where": "preserved:i686_default_sse2_1.99.1_O3"
+  },
+  {
+   "check": "adjacent relaxed stores are not merged (2 stores)",
+   "detail": [
+    "mov-store",
+    "mov-store"
+   ],
+   "ok": true,
+   "where": "preserved:i686_default_sse2_1.99.1_O3"
+  },
+  {
+   "check": "compiler fences change nothing in the &mut canary (same skeleton, 2 stores, 0 loads)",
+   "detail": [
+    "mov-store",
+    "mov-store"
+   ],
+   "ok": true,
+   "where": "preserved:i686_default_sse2_1.99.1_O3"
+  },
+  {
+   "check": "both singlethread fences survive in LLVM IR",
+   "detail": [
+    "define noundef i32 @canary_cfence_blocks_store_hoist(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned %v) unnamed_addr #1 personality ptr @rust_eh_personality !guid !39 {",
+    "store i32 %v, ptr %data, align 4",
+    "fence syncscope(\"singlethread\") release",
+    "store atomic i32 1, ptr %flag monotonic, align 4",
+    "fence syncscope(\"singlethread\") acquire",
+    "ret i32 %v"
+   ],
+   "ok": true,
+   "where": "preserved:i686_default_sse2_1.99.1_O3"
+  },
+  {
+   "check": "measured at_u64_store_seqcst is not the mutant sequence ['sse-store64']",
+   "detail": [
+    "sse-store64",
+    "lock-or-sp(0)"
+   ],
+   "ok": true,
+   "where": "preserved:i686_default_sse2_1.99.1_O3"
+  },
+  {
+   "check": "measured at_fence_seqcst is not the mutant sequence []",
+   "detail": [
+    "mfence"
+   ],
+   "ok": true,
+   "where": "preserved:i686_default_sse2_1.99.1_O3"
+  },
+  {
+   "check": "dead relaxed load is still emitted (1 load)",
+   "detail": [
+    "mov-load"
+   ],
+   "ok": true,
+   "where": "preserved:i686_nosse2_1.99.1_O3"
+  },
+  {
+   "check": "adjacent relaxed stores are not merged (2 stores)",
+   "detail": [
+    "mov-store",
+    "mov-store"
+   ],
+   "ok": true,
+   "where": "preserved:i686_nosse2_1.99.1_O3"
+  },
+  {
+   "check": "compiler fences change nothing in the &mut canary (same skeleton, 2 stores, 0 loads)",
+   "detail": [
+    "mov-store",
+    "mov-store"
+   ],
+   "ok": true,
+   "where": "preserved:i686_nosse2_1.99.1_O3"
+  },
+  {
+   "check": "both singlethread fences survive in LLVM IR",
+   "detail": [
+    "define noundef i32 @canary_cfence_blocks_store_hoist(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned %v) unnamed_addr #1 personality ptr @rust_eh_personality !guid !39 {",
+    "store i32 %v, ptr %data, align 4",
+    "fence syncscope(\"singlethread\") release",
+    "store atomic i32 1, ptr %flag monotonic, align 4",
+    "fence syncscope(\"singlethread\") acquire",
+    "ret i32 %v"
+   ],
+   "ok": true,
+   "where": "preserved:i686_nosse2_1.99.1_O3"
+  },
+  {
+   "check": "measured at_u64_store_seqcst is not the mutant sequence ['x87-store64']",
+   "detail": [
+    "x87-store64",
+    "lock-or-sp(0)"
+   ],
+   "ok": true,
+   "where": "preserved:i686_nosse2_1.99.1_O3"
+  },
+  {
+   "check": "measured at_fence_seqcst is not the mutant sequence []",
+   "detail": [
+    "lock-or-sp(0)"
+   ],
+   "ok": true,
+   "where": "preserved:i686_nosse2_1.99.1_O3"
+  },
+  {
+   "check": "dead relaxed load is still emitted (1 load)",
+   "detail": [
+    "load"
+   ],
+   "ok": true,
+   "where": "preserved:s390x_nightly_O3"
+  },
+  {
+   "check": "adjacent relaxed stores are not merged (2 stores)",
+   "detail": [
+    "store",
+    "store"
+   ],
+   "ok": true,
+   "where": "preserved:s390x_nightly_O3"
+  },
+  {
+   "check": "compiler fences change nothing in the &mut canary (same skeleton, 2 stores, 0 loads)",
+   "detail": [
+    "store",
+    "store"
+   ],
+   "ok": true,
+   "where": "preserved:s390x_nightly_O3"
+  },
+  {
+   "check": "both singlethread fences survive in LLVM IR",
+   "detail": [
+    "define noundef zeroext i32 @canary_cfence_blocks_store_hoist(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned zeroext %v) unnamed_addr #1 personality ptr @rust_eh_personality !guid !36 {",
+    "store i32 %v, ptr %data, align 4",
+    "fence syncscope(\"singlethread\") release",
+    "store atomic i32 1, ptr %flag monotonic, align 4",
+    "fence syncscope(\"singlethread\") acquire",
+    "ret i32 %v"
+   ],
+   "ok": true,
+   "where": "preserved:s390x_nightly_O3"
+  },
+  {
+   "check": "measured at_u32_store_seqcst is not the mutant sequence ['store']",
+   "detail": [
+    "store",
+    "bcr15"
+   ],
+   "ok": true,
+   "where": "preserved:s390x_nightly_O3"
+  },
+  {
+   "check": "measured at_fence_seqcst is not the mutant sequence []",
+   "detail": [
+    "bcr15"
+   ],
+   "ok": true,
+   "where": "preserved:s390x_nightly_O3"
+  },
+  {
+   "check": "dead relaxed load is still emitted (1 load)",
+   "detail": [
+    "mov-load"
+   ],
+   "ok": true,
+   "where": "preserved:x86_64_1.100.0_O3"
+  },
+  {
+   "check": "adjacent relaxed stores are not merged (2 stores)",
+   "detail": [
+    "mov-store",
+    "mov-store"
+   ],
+   "ok": true,
+   "where": "preserved:x86_64_1.100.0_O3"
+  },
+  {
+   "check": "compiler fences change nothing in the &mut canary (same skeleton, 2 stores, 0 loads)",
+   "detail": [
+    "mov-store",
+    "mov-store"
+   ],
+   "ok": true,
+   "where": "preserved:x86_64_1.100.0_O3"
+  },
+  {
+   "check": "both singlethread fences survive in LLVM IR",
+   "detail": [
+    "define noundef i32 @canary_cfence_blocks_store_hoist(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned %v) unnamed_addr #1 personality ptr @rust_eh_personality !guid !37 {",
+    "store i32 %v, ptr %data, align 4",
+    "fence syncscope(\"singlethread\") release",
+    "store atomic i32 1, ptr %flag monotonic, align 4",
+    "fence syncscope(\"singlethread\") acquire",
+    "ret i32 %v"
+   ],
+   "ok": true,
+   "where": "preserved:x86_64_1.100.0_O3"
+  },
+  {
+   "check": "measured at_u32_store_seqcst is not the mutant sequence ['mov-store']",
+   "detail": [
+    "xchg"
+   ],
+   "ok": true,
+   "where": "preserved:x86_64_1.100.0_O3"
+  },
+  {
+   "check": "measured at_fence_seqcst is not the mutant sequence []",
+   "detail": [
+    "lock-or-sp(-64)"
+   ],
+   "ok": true,
+   "where": "preserved:x86_64_1.100.0_O3"
+  },
+  {
+   "check": "dead relaxed load is still emitted (1 load)",
+   "detail": [
+    "mov-load"
+   ],
+   "ok": true,
+   "where": "preserved:x86_64_1.99.1_O3"
+  },
+  {
+   "check": "adjacent relaxed stores are not merged (2 stores)",
+   "detail": [
+    "mov-store",
+    "mov-store"
+   ],
+   "ok": true,
+   "where": "preserved:x86_64_1.99.1_O3"
+  },
+  {
+   "check": "compiler fences change nothing in the &mut canary (same skeleton, 2 stores, 0 loads)",
+   "detail": [
+    "mov-store",
+    "mov-store"
+   ],
+   "ok": true,
+   "where": "preserved:x86_64_1.99.1_O3"
+  },
+  {
+   "check": "both singlethread fences survive in LLVM IR",
+   "detail": [
+    "define noundef i32 @canary_cfence_blocks_store_hoist(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned %v) unnamed_addr #1 personality ptr @rust_eh_personality !guid !37 {",
+    "store i32 %v, ptr %data, align 4",
+    "fence syncscope(\"singlethread\") release",
+    "store atomic i32 1, ptr %flag monotonic, align 4",
+    "fence syncscope(\"singlethread\") acquire",
+    "ret i32 %v"
+   ],
+   "ok": true,
+   "where": "preserved:x86_64_1.99.1_O3"
+  },
+  {
+   "check": "measured at_u32_store_seqcst is not the mutant sequence ['mov-store']",
+   "detail": [
+    "xchg"
+   ],
+   "ok": true,
+   "where": "preserved:x86_64_1.99.1_O3"
+  },
+  {
+   "check": "measured at_fence_seqcst is not the mutant sequence []",
+   "detail": [
+    "lock-or-sp(-64)"
+   ],
+   "ok": true,
+   "where": "preserved:x86_64_1.99.1_O3"
+  },
+  {
+   "check": "dead relaxed load is still emitted (1 load)",
+   "detail": [
+    "mov-load"
+   ],
+   "ok": true,
+   "where": "preserved:x86_64_1.99.1_O3_no_redzone"
+  },
+  {
+   "check": "adjacent relaxed stores are not merged (2 stores)",
+   "detail": [
+    "mov-store",
+    "mov-store"
+   ],
+   "ok": true,
+   "where": "preserved:x86_64_1.99.1_O3_no_redzone"
+  },
+  {
+   "check": "compiler fences change nothing in the &mut canary (same skeleton, 2 stores, 0 loads)",
+   "detail": [
+    "mov-store",
+    "mov-store"
+   ],
+   "ok": true,
+   "where": "preserved:x86_64_1.99.1_O3_no_redzone"
+  },
+  {
+   "check": "both singlethread fences survive in LLVM IR",
+   "detail": [
+    "define noundef i32 @canary_cfence_blocks_store_hoist(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned %v) unnamed_addr #1 personality ptr @rust_eh_personality !guid !37 {",
+    "store i32 %v, ptr %data, align 4",
+    "fence syncscope(\"singlethread\") release",
+    "store atomic i32 1, ptr %flag monotonic, align 4",
+    "fence syncscope(\"singlethread\") acquire",
+    "ret i32 %v"
+   ],
+   "ok": true,
+   "where": "preserved:x86_64_1.99.1_O3_no_redzone"
+  },
+  {
+   "check": "measured at_fence_seqcst is not the mutant sequence ['lock-or-sp(-64)']",
+   "detail": [
+    "lock-or-sp(0)"
+   ],
+   "ok": true,
+   "where": "preserved:x86_64_1.99.1_O3_no_redzone"
+  },
+  {
+   "check": "dead relaxed load is still emitted (1 load)",
+   "detail": [
+    "mov-load"
+   ],
+   "ok": true,
+   "where": "preserved:x86_64_nightly_O3"
+  },
+  {
+   "check": "adjacent relaxed stores are not merged (2 stores)",
+   "detail": [
+    "mov-store",
+    "mov-store"
+   ],
+   "ok": true,
+   "where": "preserved:x86_64_nightly_O3"
+  },
+  {
+   "check": "compiler fences change nothing in the &mut canary (same skeleton, 2 stores, 0 loads)",
+   "detail": [
+    "mov-store",
+    "mov-store"
+   ],
+   "ok": true,
+   "where": "preserved:x86_64_nightly_O3"
+  },
+  {
+   "check": "both singlethread fences survive in LLVM IR",
+   "detail": [
+    "define noundef i32 @canary_cfence_blocks_store_hoist(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned %v) unnamed_addr #1 personality ptr @rust_eh_personality !guid !37 {",
+    "store i32 %v, ptr %data, align 4",
+    "fence syncscope(\"singlethread\") release",
+    "store atomic i32 1, ptr %flag monotonic, align 4",
+    "fence syncscope(\"singlethread\") acquire",
+    "ret i32 %v"
+   ],
+   "ok": true,
+   "where": "preserved:x86_64_nightly_O3"
+  },
+  {
+   "check": "measured at_u32_store_seqcst is not the mutant sequence ['mov-store']",
+   "detail": [
+    "xchg"
+   ],
+   "ok": true,
+   "where": "preserved:x86_64_nightly_O3"
+  },
+  {
+   "check": "measured at_fence_seqcst is not the mutant sequence []",
+   "detail": [
+    "lock-or-sp(-64)"
+   ],
+   "ok": true,
+   "where": "preserved:x86_64_nightly_O3"
+  },
+  {
+   "check": "dead relaxed load is still emitted (1 load)",
+   "detail": [
+    "ldr"
+   ],
+   "ok": true,
+   "where": "live:aarch64_lse_O3"
+  },
+  {
+   "check": "adjacent relaxed stores are not merged (2 stores)",
+   "detail": [
+    "str",
+    "str"
+   ],
+   "ok": true,
+   "where": "live:aarch64_lse_O3"
+  },
+  {
+   "check": "compiler fences change nothing in the &mut canary (same skeleton, 2 stores, 0 loads)",
+   "detail": [
+    "str",
+    "str"
+   ],
+   "ok": true,
+   "where": "live:aarch64_lse_O3"
+  },
+  {
+   "check": "both singlethread fences survive in LLVM IR",
+   "detail": [
+    "store i32 %v, ptr %data, align 4",
+    "fence syncscope(\"singlethread\") release",
+    "store atomic i32 1, ptr %flag monotonic, align 4",
+    "fence syncscope(\"singlethread\") acquire",
+    "ret i32 %v"
+   ],
+   "ok": true,
+   "where": "live:aarch64_lse_O3"
+  },
+  {
+   "check": "with the compiler fence all 3 stores are emitted",
+   "detail": [
+    "str",
+    "str",
+    "str"
+   ],
+   "ok": true,
+   "where": "live:aarch64_lse_O3"
+  },
+  {
+   "check": "without it the pre-publication store is eliminated (2 stores)",
+   "detail": [
+    "str",
+    "str"
+   ],
+   "ok": true,
+   "where": "live:aarch64_lse_O3"
+  },
+  {
+   "check": "dead relaxed load is still emitted (1 load)",
+   "detail": [
+    "ldr"
+   ],
+   "ok": true,
+   "where": "live:aarch64_lse_rcpc3_O3"
+  },
+  {
+   "check": "adjacent relaxed stores are not merged (2 stores)",
+   "detail": [
+    "str",
+    "str"
+   ],
+   "ok": true,
+   "where": "live:aarch64_lse_rcpc3_O3"
+  },
+  {
+   "check": "compiler fences change nothing in the &mut canary (same skeleton, 2 stores, 0 loads)",
+   "detail": [
+    "str",
+    "str"
+   ],
+   "ok": true,
+   "where": "live:aarch64_lse_rcpc3_O3"
+  },
+  {
+   "check": "both singlethread fences survive in LLVM IR",
+   "detail": [
+    "store i32 %v, ptr %data, align 4",
+    "fence syncscope(\"singlethread\") release",
+    "store atomic i32 1, ptr %flag monotonic, align 4",
+    "fence syncscope(\"singlethread\") acquire",
+    "ret i32 %v"
+   ],
+   "ok": true,
+   "where": "live:aarch64_lse_rcpc3_O3"
+  },
+  {
+   "check": "with the compiler fence all 3 stores are emitted",
+   "detail": [
+    "str",
+    "str",
+    "str"
+   ],
+   "ok": true,
+   "where": "live:aarch64_lse_rcpc3_O3"
+  },
+  {
+   "check": "without it the pre-publication store is eliminated (2 stores)",
+   "detail": [
+    "str",
+    "str"
+   ],
+   "ok": true,
+   "where": "live:aarch64_lse_rcpc3_O3"
+  },
+  {
+   "check": "measured at_u32_load_seqcst is not the mutant sequence ['ldapr']",
+   "detail": [
+    "ldar"
+   ],
+   "ok": true,
+   "where": "live:aarch64_lse_rcpc3_O3"
+  },
+  {
+   "check": "dead relaxed load is still emitted (1 load)",
+   "detail": [
+    "ldr"
+   ],
+   "ok": true,
+   "where": "live:aarch64_lse_rcpc_O3"
+  },
+  {
+   "check": "adjacent relaxed stores are not merged (2 stores)",
+   "detail": [
+    "str",
+    "str"
+   ],
+   "ok": true,
+   "where": "live:aarch64_lse_rcpc_O3"
+  },
+  {
+   "check": "compiler fences change nothing in the &mut canary (same skeleton, 2 stores, 0 loads)",
+   "detail": [
+    "str",
+    "str"
+   ],
+   "ok": true,
+   "where": "live:aarch64_lse_rcpc_O3"
+  },
+  {
+   "check": "both singlethread fences survive in LLVM IR",
+   "detail": [
+    "store i32 %v, ptr %data, align 4",
+    "fence syncscope(\"singlethread\") release",
+    "store atomic i32 1, ptr %flag monotonic, align 4",
+    "fence syncscope(\"singlethread\") acquire",
+    "ret i32 %v"
+   ],
+   "ok": true,
+   "where": "live:aarch64_lse_rcpc_O3"
+  },
+  {
+   "check": "with the compiler fence all 3 stores are emitted",
+   "detail": [
+    "str",
+    "str",
+    "str"
+   ],
+   "ok": true,
+   "where": "live:aarch64_lse_rcpc_O3"
+  },
+  {
+   "check": "without it the pre-publication store is eliminated (2 stores)",
+   "detail": [
+    "str",
+    "str"
+   ],
+   "ok": true,
+   "where": "live:aarch64_lse_rcpc_O3"
+  },
+  {
+   "check": "measured at_u32_load_seqcst is not the mutant sequence ['ldapr']",
+   "detail": [
+    "ldar"
+   ],
+   "ok": true,
+   "where": "live:aarch64_lse_rcpc_O3"
+  },
+  {
+   "check": "dead relaxed load is still emitted (1 load)",
+   "detail": [
+    "ldr"
+   ],
+   "ok": true,
+   "where": "live:aarch64_v80_default_outline_O3"
+  },
+  {
+   "check": "adjacent relaxed stores are not merged (2 stores)",
+   "detail": [
+    "str",
+    "str"
+   ],
+   "ok": true,
+   "where": "live:aarch64_v80_default_outline_O3"
+  },
+  {
+   "check": "compiler fences change nothing in the &mut canary (same skeleton, 2 stores, 0 loads)",
+   "detail": [
+    "str",
+    "str"
+   ],
+   "ok": true,
+   "where": "live:aarch64_v80_default_outline_O3"
+  },
+  {
+   "check": "both singlethread fences survive in LLVM IR",
+   "detail": [
+    "store i32 %v, ptr %data, align 4",
+    "fence syncscope(\"singlethread\") release",
+    "store atomic i32 1, ptr %flag monotonic, align 4",
+    "fence syncscope(\"singlethread\") acquire",
+    "ret i32 %v"
+   ],
+   "ok": true,
+   "where": "live:aarch64_v80_default_outline_O3"
+  },
+  {
+   "check": "with the compiler fence all 3 stores are emitted",
+   "detail": [
+    "str",
+    "str",
+    "str"
+   ],
+   "ok": true,
+   "where": "live:aarch64_v80_default_outline_O3"
+  },
+  {
+   "check": "without it the pre-publication store is eliminated (2 stores)",
+   "detail": [
+    "str",
+    "str"
+   ],
+   "ok": true,
+   "where": "live:aarch64_v80_default_outline_O3"
+  },
+  {
+   "check": "dead relaxed load is still emitted (1 load)",
+   "detail": [
+    "ldr"
+   ],
+   "ok": true,
+   "where": "live:aarch64_v80_no_outline_O3"
+  },
+  {
+   "check": "adjacent relaxed stores are not merged (2 stores)",
+   "detail": [
+    "str",
+    "str"
+   ],
+   "ok": true,
+   "where": "live:aarch64_v80_no_outline_O3"
+  },
+  {
+   "check": "compiler fences change nothing in the &mut canary (same skeleton, 2 stores, 0 loads)",
+   "detail": [
+    "str",
+    "str"
+   ],
+   "ok": true,
+   "where": "live:aarch64_v80_no_outline_O3"
+  },
+  {
+   "check": "both singlethread fences survive in LLVM IR",
+   "detail": [
+    "store i32 %v, ptr %data, align 4",
+    "fence syncscope(\"singlethread\") release",
+    "store atomic i32 1, ptr %flag monotonic, align 4",
+    "fence syncscope(\"singlethread\") acquire",
+    "ret i32 %v"
+   ],
+   "ok": true,
+   "where": "live:aarch64_v80_no_outline_O3"
+  },
+  {
+   "check": "with the compiler fence all 3 stores are emitted",
+   "detail": [
+    "str",
+    "str",
+    "str"
+   ],
+   "ok": true,
+   "where": "live:aarch64_v80_no_outline_O3"
+  },
+  {
+   "check": "without it the pre-publication store is eliminated (2 stores)",
+   "detail": [
+    "str",
+    "str"
+   ],
+   "ok": true,
+   "where": "live:aarch64_v80_no_outline_O3"
+  },
+  {
+   "check": "dead relaxed load is still emitted (1 load)",
+   "detail": [
+    "mov-load"
+   ],
+   "ok": true,
+   "where": "live:i686_default_sse2_O3"
+  },
+  {
+   "check": "adjacent relaxed stores are not merged (2 stores)",
+   "detail": [
+    "mov-store",
+    "mov-store"
+   ],
+   "ok": true,
+   "where": "live:i686_default_sse2_O3"
+  },
+  {
+   "check": "compiler fences change nothing in the &mut canary (same skeleton, 2 stores, 0 loads)",
+   "detail": [
+    "mov-store",
+    "mov-store"
+   ],
+   "ok": true,
+   "where": "live:i686_default_sse2_O3"
+  },
+  {
+   "check": "both singlethread fences survive in LLVM IR",
+   "detail": [
+    "store i32 %v, ptr %data, align 4",
+    "fence syncscope(\"singlethread\") release",
+    "store atomic i32 1, ptr %flag monotonic, align 4",
+    "fence syncscope(\"singlethread\") acquire",
+    "ret i32 %v"
+   ],
+   "ok": true,
+   "where": "live:i686_default_sse2_O3"
+  },
+  {
+   "check": "with the compiler fence all 3 stores are emitted",
+   "detail": [
+    "mov-load",
+    "mov-load",
+    "mov-store",
+    "mov-store",
+    "mov-store"
+   ],
+   "ok": true,
+   "where": "live:i686_default_sse2_O3"
+  },
+  {
+   "check": "without it the pre-publication store is eliminated (2 stores)",
+   "detail": [
+    "mov-load",
+    "mov-load",
+    "mov-store",
+    "mov-store"
+   ],
+   "ok": true,
+   "where": "live:i686_default_sse2_O3"
+  },
+  {
+   "check": "measured at_u64_store_seqcst is not the mutant sequence ['sse-store64']",
+   "detail": [
+    "sse-store64",
+    "lock-or-sp(0)"
+   ],
+   "ok": true,
+   "where": "live:i686_default_sse2_O3"
+  },
+  {
+   "check": "measured at_fence_seqcst is not the mutant sequence []",
+   "detail": [
+    "mfence"
+   ],
+   "ok": true,
+   "where": "live:i686_default_sse2_O3"
+  },
+  {
+   "check": "dead relaxed load is still emitted (1 load)",
+   "detail": [
+    "mov-load"
+   ],
+   "ok": true,
+   "where": "live:i686_nosse2_O3"
+  },
+  {
+   "check": "adjacent relaxed stores are not merged (2 stores)",
+   "detail": [
+    "mov-store",
+    "mov-store"
+   ],
+   "ok": true,
+   "where": "live:i686_nosse2_O3"
+  },
+  {
+   "check": "compiler fences change nothing in the &mut canary (same skeleton, 2 stores, 0 loads)",
+   "detail": [
+    "mov-store",
+    "mov-store"
+   ],
+   "ok": true,
+   "where": "live:i686_nosse2_O3"
+  },
+  {
+   "check": "both singlethread fences survive in LLVM IR",
+   "detail": [
+    "store i32 %v, ptr %data, align 4",
+    "fence syncscope(\"singlethread\") release",
+    "store atomic i32 1, ptr %flag monotonic, align 4",
+    "fence syncscope(\"singlethread\") acquire",
+    "ret i32 %v"
+   ],
+   "ok": true,
+   "where": "live:i686_nosse2_O3"
+  },
+  {
+   "check": "with the compiler fence all 3 stores are emitted",
+   "detail": [
+    "mov-load",
+    "mov-load",
+    "mov-store",
+    "mov-store",
+    "mov-store"
+   ],
+   "ok": true,
+   "where": "live:i686_nosse2_O3"
+  },
+  {
+   "check": "without it the pre-publication store is eliminated (2 stores)",
+   "detail": [
+    "mov-load",
+    "mov-load",
+    "mov-store",
+    "mov-store"
+   ],
+   "ok": true,
+   "where": "live:i686_nosse2_O3"
+  },
+  {
+   "check": "measured at_u64_store_seqcst is not the mutant sequence ['x87-store64']",
+   "detail": [
+    "x87-store64",
+    "lock-or-sp(0)"
+   ],
+   "ok": true,
+   "where": "live:i686_nosse2_O3"
+  },
+  {
+   "check": "measured at_fence_seqcst is not the mutant sequence []",
+   "detail": [
+    "lock-or-sp(0)"
+   ],
+   "ok": true,
+   "where": "live:i686_nosse2_O3"
+  },
+  {
+   "check": "dead relaxed load is still emitted (1 load)",
+   "detail": [
+    "mov-load"
+   ],
+   "ok": true,
+   "where": "live:i686_sse1_only_O3"
+  },
+  {
+   "check": "adjacent relaxed stores are not merged (2 stores)",
+   "detail": [
+    "mov-store",
+    "mov-store"
+   ],
+   "ok": true,
+   "where": "live:i686_sse1_only_O3"
+  },
+  {
+   "check": "compiler fences change nothing in the &mut canary (same skeleton, 2 stores, 0 loads)",
+   "detail": [
+    "mov-store",
+    "mov-store"
+   ],
+   "ok": true,
+   "where": "live:i686_sse1_only_O3"
+  },
+  {
+   "check": "both singlethread fences survive in LLVM IR",
+   "detail": [
+    "store i32 %v, ptr %data, align 4",
+    "fence syncscope(\"singlethread\") release",
+    "store atomic i32 1, ptr %flag monotonic, align 4",
+    "fence syncscope(\"singlethread\") acquire",
+    "ret i32 %v"
+   ],
+   "ok": true,
+   "where": "live:i686_sse1_only_O3"
+  },
+  {
+   "check": "with the compiler fence all 3 stores are emitted",
+   "detail": [
+    "mov-load",
+    "mov-load",
+    "mov-store",
+    "mov-store",
+    "mov-store"
+   ],
+   "ok": true,
+   "where": "live:i686_sse1_only_O3"
+  },
+  {
+   "check": "without it the pre-publication store is eliminated (2 stores)",
+   "detail": [
+    "mov-load",
+    "mov-load",
+    "mov-store",
+    "mov-store"
+   ],
+   "ok": true,
+   "where": "live:i686_sse1_only_O3"
+  },
+  {
+   "check": "dead relaxed load is still emitted (1 load)",
+   "detail": [
+    "mov-load"
+   ],
+   "ok": true,
+   "where": "live:x86_64_O3"
+  },
+  {
+   "check": "adjacent relaxed stores are not merged (2 stores)",
+   "detail": [
+    "mov-store",
+    "mov-store"
+   ],
+   "ok": true,
+   "where": "live:x86_64_O3"
+  },
+  {
+   "check": "compiler fences change nothing in the &mut canary (same skeleton, 2 stores, 0 loads)",
+   "detail": [
+    "mov-store",
+    "mov-store"
+   ],
+   "ok": true,
+   "where": "live:x86_64_O3"
+  },
+  {
+   "check": "both singlethread fences survive in LLVM IR",
+   "detail": [
+    "store i32 %v, ptr %data, align 4",
+    "fence syncscope(\"singlethread\") release",
+    "store atomic i32 1, ptr %flag monotonic, align 4",
+    "fence syncscope(\"singlethread\") acquire",
+    "ret i32 %v"
+   ],
+   "ok": true,
+   "where": "live:x86_64_O3"
+  },
+  {
+   "check": "with the compiler fence all 3 stores are emitted",
+   "detail": [
+    "mov-store",
+    "mov-store",
+    "mov-store"
+   ],
+   "ok": true,
+   "where": "live:x86_64_O3"
+  },
+  {
+   "check": "without it the pre-publication store is eliminated (2 stores)",
+   "detail": [
+    "mov-store",
+    "mov-store"
+   ],
+   "ok": true,
+   "where": "live:x86_64_O3"
+  },
+  {
+   "check": "measured at_u32_store_seqcst is not the mutant sequence ['mov-store']",
+   "detail": [
+    "xchg"
+   ],
+   "ok": true,
+   "where": "live:x86_64_O3"
+  },
+  {
+   "check": "measured at_fence_seqcst is not the mutant sequence []",
+   "detail": [
+    "lock-or-sp(-64)"
+   ],
+   "ok": true,
+   "where": "live:x86_64_O3"
+  },
+  {
+   "check": "dead relaxed load is still emitted (1 load)",
+   "detail": [
+    "mov-load"
+   ],
+   "ok": true,
+   "where": "live:x86_64_O3_no_redzone"
+  },
+  {
+   "check": "adjacent relaxed stores are not merged (2 stores)",
+   "detail": [
+    "mov-store",
+    "mov-store"
+   ],
+   "ok": true,
+   "where": "live:x86_64_O3_no_redzone"
+  },
+  {
+   "check": "compiler fences change nothing in the &mut canary (same skeleton, 2 stores, 0 loads)",
+   "detail": [
+    "mov-store",
+    "mov-store"
+   ],
+   "ok": true,
+   "where": "live:x86_64_O3_no_redzone"
+  },
+  {
+   "check": "both singlethread fences survive in LLVM IR",
+   "detail": [
+    "store i32 %v, ptr %data, align 4",
+    "fence syncscope(\"singlethread\") release",
+    "store atomic i32 1, ptr %flag monotonic, align 4",
+    "fence syncscope(\"singlethread\") acquire",
+    "ret i32 %v"
+   ],
+   "ok": true,
+   "where": "live:x86_64_O3_no_redzone"
+  },
+  {
+   "check": "with the compiler fence all 3 stores are emitted",
+   "detail": [
+    "mov-store",
+    "mov-store",
+    "mov-store"
+   ],
+   "ok": true,
+   "where": "live:x86_64_O3_no_redzone"
+  },
+  {
+   "check": "without it the pre-publication store is eliminated (2 stores)",
+   "detail": [
+    "mov-store",
+    "mov-store"
+   ],
+   "ok": true,
+   "where": "live:x86_64_O3_no_redzone"
+  },
+  {
+   "check": "measured at_fence_seqcst is not the mutant sequence ['lock-or-sp(-64)']",
+   "detail": [
+    "lock-or-sp(0)"
+   ],
+   "ok": true,
+   "where": "live:x86_64_O3_no_redzone"
+  }
+ ],
+ "failed_canary_checks": [],
+ "lean_table_cells": 370,
+ "live_reproduces_preserved": {
+  "assembly_bodies_compared": 324,
+  "assembly_bodies_identical": 324,
+  "atomic_ir_line_sets_compared": 324,
+  "atomic_ir_line_sets_identical": 322,
+  "differing": [
+   "ir i686_default_sse2_1.99.1_O3 at_u64_cas_seqcst: ['%0 = cmpxchg ptr %a, i64 %c, i64 %n seq_cst acquire, align 8, !noalias !31'] vs ['%0 = cmpxchg ptr %a, i64 %c, i64 %n seq_cst acquire, align 8, !noalias !3']",
+   "ir i686_nosse2_1.99.1_O3 at_u64_cas_seqcst: ['%0 = cmpxchg ptr %a, i64 %c, i64 %n seq_cst acquire, align 8, !noalias !31'] vs ['%0 = cmpxchg ptr %a, i64 %c, i64 %n seq_cst acquire, align 8, !noalias !3']"
+  ]
+ },
+ "live_toolchain": {
+  "llvm_version": "22.1.6",
+  "rustc_commit_hash": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+  "rustc_version_line": "rustc 1.98.0-nightly (14210df0e 2026-05-31)"
+ },
+ "per_configuration": {
+  "live:aarch64_lse_O3": {
+   "compared": 37,
+   "lean_config": "aarch64.lse",
+   "matched": 37,
+   "mismatches": []
+  },
+  "live:aarch64_lse_rcpc3_O3": {
+   "compared": 37,
+   "lean_config": "aarch64.lse_rcpc",
+   "matched": 37,
+   "mismatches": []
+  },
+  "live:aarch64_lse_rcpc_O3": {
+   "compared": 37,
+   "lean_config": "aarch64.lse_rcpc",
+   "matched": 37,
+   "mismatches": []
+  },
+  "live:aarch64_v80_default_outline_O3": {
+   "compared": 37,
+   "lean_config": "aarch64.v80_outlined",
+   "matched": 37,
+   "mismatches": []
+  },
+  "live:aarch64_v80_no_outline_O3": {
+   "compared": 37,
+   "lean_config": "aarch64.v80_inline",
+   "matched": 37,
+   "mismatches": []
+  },
+  "live:i686_default_sse2_O3": {
+   "compared": 37,
+   "lean_config": "i686.sse2",
+   "matched": 37,
+   "mismatches": []
+  },
+  "live:i686_nosse2_O3": {
+   "compared": 37,
+   "lean_config": "i686.x87_only",
+   "matched": 37,
+   "mismatches": []
+  },
+  "live:i686_sse1_only_O3": {
+   "compared": 37,
+   "lean_config": "i686.sse1_only",
+   "matched": 37,
+   "mismatches": []
+  },
+  "live:s390x_O3": {
+   "compared": 0,
+   "lean_config": "s390x.z10",
+   "matched": 0,
+   "mismatches": [],
+   "skipped": "configuration did not compile"
+  },
+  "live:x86_64_O0": {
+   "compared": 0,
+   "lean_config": null,
+   "matched": 0,
+   "mismatches": [],
+   "skipped": "not inlined at opt-level=0 or not mapped"
+  },
+  "live:x86_64_O3": {
+   "compared": 37,
+   "lean_config": "x86_64.redzone",
+   "matched": 37,
+   "mismatches": []
+  },
+  "live:x86_64_O3_no_redzone": {
+   "compared": 37,
+   "lean_config": "x86_64.no_redzone",
+   "matched": 37,
+   "mismatches": []
+  },
+  "preserved:aarch64_lse_1.99.1_O3": {
+   "compared": 32,
+   "lean_config": "aarch64.lse",
+   "matched": 32,
+   "mismatches": []
+  },
+  "preserved:aarch64_lse_rcpc3_1.99.1_O3": {
+   "compared": 32,
+   "lean_config": "aarch64.lse_rcpc",
+   "matched": 32,
+   "mismatches": []
+  },
+  "preserved:aarch64_lse_rcpc_1.99.1_O3": {
+   "compared": 32,
+   "lean_config": "aarch64.lse_rcpc",
+   "matched": 32,
+   "mismatches": []
+  },
+  "preserved:aarch64_v80_default_outline_1.99.1_O3": {
+   "compared": 32,
+   "lean_config": "aarch64.v80_outlined",
+   "matched": 32,
+   "mismatches": []
+  },
+  "preserved:aarch64_v80_no_outline_1.99.1_O3": {
+   "compared": 32,
+   "lean_config": "aarch64.v80_inline",
+   "matched": 32,
+   "mismatches": []
+  },
+  "preserved:i686_default_sse2_1.99.1_O3": {
+   "compared": 32,
+   "lean_config": "i686.sse2",
+   "matched": 32,
+   "mismatches": []
+  },
+  "preserved:i686_nosse2_1.99.1_O3": {
+   "compared": 32,
+   "lean_config": "i686.x87_only",
+   "matched": 32,
+   "mismatches": []
+  },
+  "preserved:s390x_nightly_O3": {
+   "compared": 32,
+   "lean_config": "s390x.z10",
+   "matched": 32,
+   "mismatches": []
+  },
+  "preserved:x86_64_1.100.0_O3": {
+   "compared": 32,
+   "lean_config": "x86_64.redzone",
+   "matched": 32,
+   "mismatches": []
+  },
+  "preserved:x86_64_1.99.1_O0": {
+   "compared": 0,
+   "lean_config": null,
+   "matched": 0,
+   "mismatches": [],
+   "skipped": "not inlined at opt-level=0 or not mapped"
+  },
+  "preserved:x86_64_1.99.1_O3": {
+   "compared": 32,
+   "lean_config": "x86_64.redzone",
+   "matched": 32,
+   "mismatches": []
+  },
+  "preserved:x86_64_1.99.1_O3_no_redzone": {
+   "compared": 32,
+   "lean_config": "x86_64.no_redzone",
+   "matched": 32,
+   "mismatches": []
+  },
+  "preserved:x86_64_nightly_O3": {
+   "compared": 32,
+   "lean_config": "x86_64.redzone",
+   "matched": 32,
+   "mismatches": []
+  }
+ },
+ "planted_table_fault_detected": true
+}

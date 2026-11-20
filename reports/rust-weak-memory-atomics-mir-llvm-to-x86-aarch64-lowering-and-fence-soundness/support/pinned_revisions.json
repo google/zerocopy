@@ -1,0 +1,108 @@
+{
+ "observed_on": "2026-11-20",
+ "how_to_verify": "gh api <api_path> --jq .sha must print <revision>",
+ "pins": [
+  {
+   "repository": "rust-lang/rust",
+   "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+   "label": "1.99.1",
+   "api_path": "repos/rust-lang/rust/commits/1.99.1"
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+   "label": "1.100.0",
+   "api_path": "repos/rust-lang/rust/commits/1.100.0"
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "label": "1.102.0-nightly (commit reported by rustc -vV)",
+   "api_path": "repos/rust-lang/rust/commits/3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1"
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "label": "1.98.0-nightly (commit reported by rustc -vV)",
+   "api_path": "repos/rust-lang/rust/commits/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "01f6ddf7588f42ae2d7eb0a2f21d44e8e96674cf",
+   "label": "1.93.1",
+   "api_path": "repos/rust-lang/rust/commits/1.93.1"
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "4a4ef493e3a1488c6e321570238084b38948f6db",
+   "label": "1.94.0",
+   "api_path": "repos/rust-lang/rust/commits/1.94.0"
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "59807616e1fa2540724bfbac14d7976d7e4a3860",
+   "label": "1.95.0",
+   "api_path": "repos/rust-lang/rust/commits/1.95.0"
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96",
+   "label": "1.96.0",
+   "api_path": "repos/rust-lang/rust/commits/1.96.0"
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+   "label": "1.99.0",
+   "api_path": "repos/rust-lang/rust/commits/1.99.0"
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "fa66fef1d1c78d2ecf2ba09a68e25e1e7ab154f7",
+   "label": "core: make atomic primitives type aliases of Atomic<T>",
+   "api_path": "repos/rust-lang/rust/commits/fa66fef1d1c78d2ecf2ba09a68e25e1e7ab154f7"
+  },
+  {
+   "repository": "rust-lang/llvm-project",
+   "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+   "label": "src/llvm-project submodule of rust-lang/rust 1.99.1",
+   "api_path": "repos/rust-lang/rust/contents/src/llvm-project?ref=58cf8f9c35b355199727627d07ae34a4e2846d67"
+  },
+  {
+   "repository": "rust-lang/llvm-project",
+   "revision": "0a5579eb649d3634a9c30ac873300cc2944fa070",
+   "label": "src/llvm-project submodule of rust-lang/rust 1.100.0 and 3ef0c22c",
+   "api_path": "repos/rust-lang/rust/contents/src/llvm-project?ref=0ef1bc386059596dada8fb65b50425aab2ea637a"
+  },
+  {
+   "repository": "rust-lang/llvm-project",
+   "revision": "08c84e69a84d95936296dfcab0e38b34100725d5",
+   "label": "src/llvm-project submodule of rust-lang/rust 14210df0",
+   "api_path": "repos/rust-lang/rust/contents/src/llvm-project?ref=14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+  },
+  {
+   "repository": "llvm/llvm-project",
+   "revision": "6dfe1677ab8dffbc6ec13d53a1e0215d75147689",
+   "label": "llvmorg-23.1.1",
+   "api_path": "repos/llvm/llvm-project/commits/llvmorg-23.1.1"
+  },
+  {
+   "repository": "herd/herdtools7",
+   "revision": "1ae595498c7af7d9d2f00e29aea328b36663104c",
+   "label": "master at observation time",
+   "api_path": "repos/herd/herdtools7/commits/1ae595498c7af7d9d2f00e29aea328b36663104c"
+  },
+  {
+   "repository": "leanprover/lean4",
+   "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+   "label": "v4.34.1",
+   "api_path": "repos/leanprover/lean4/commits/v4.34.1"
+  },
+  {
+   "repository": "torvalds/linux",
+   "revision": "adc218676eef25575469234709c2d87185ca223a",
+   "label": "v6.12",
+   "api_path": "repos/torvalds/linux/commits/v6.12"
+  }
+ ]
+}
