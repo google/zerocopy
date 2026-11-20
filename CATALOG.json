@@ -7902,6 +7902,100 @@
         "systems/vectorized-execution"
       ]
     },
+    "asap-static-deallocation-perceus-drop-insertion-and-nll-last-use-liveness": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "9b60f0232c9bdbbff3df8320aaa71ed13f254eb2"
+          },
+          "name": "Lean 4 compiler source (LCNF inferBorrow, explicitRc, expandResetReuse, coalesceRC passes)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+            "version": "v4.35.0"
+          },
+          "name": "Lean 4 v4.35.0 release (executed compiler)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "ec65cd52bba13d491ff65c9d218b39753755c84a"
+          },
+          "name": "rustc source (borrowck liveness, MIR scope building, drop elaboration, storage liveness, coroutine layout)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-11)"
+          },
+          "name": "rustc 1.102.0-nightly (executed compiler)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/polonius",
+            "revision": "bfd4c945b7713d0e66a3cde80475d9a4494740df"
+          },
+          "name": "Polonius engine (experimental borrow-check fact engine)"
+        },
+        {
+          "identity": {
+            "repository": "CertiRocq/certirocq",
+            "revision": "ab66e0164e7ecb63e5af95c90c8e479068bf95c2"
+          },
+          "name": "CertiRocq (formerly CertiCoq) LambdaANF closure conversion and dead-parameter elimination"
+        },
+        {
+          "identity": {
+            "repository": "koka-lang/koka",
+            "revision": "b66091b2a5a7ea20c5ed9498ad1e1f03caee9589"
+          },
+          "name": "Koka compiler Perceus implementation (Backend.C.Parc)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454032"
+          },
+          "name": "Perceus: Garbage Free Reference Counting with Reuse (PLDI 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3341687"
+          },
+          "name": "Closure Conversion Is Safe for Space (ICFP 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.48456/tr-908"
+          },
+          "name": "ASAP: As Static As Possible memory management (UCAM-CL-TR-908)"
+        },
+        {
+          "identity": {
+            "arxiv": "1908.05647",
+            "version": "v3"
+          },
+          "name": "Counting Immutable Beans: Reference Counting Optimized for Purely Functional Programming"
+        },
+        {
+          "identity": {
+            "standard": "Rust RFC 2094",
+            "url": "https://rust-lang.github.io/rfcs/2094-nll.html"
+          },
+          "name": "Rust RFC 2094 Non-Lexical Lifetimes"
+        }
+      ],
+      "topics": [
+        "compilers/liveness-driven-reclamation",
+        "pl/explicit-drop-and-move-annotations",
+        "compilers/space-safe-closure-liveness",
+        "rust/non-lexical-lifetime-liveness"
+      ]
+    },
     "asl-endpoint-cones-dpdgraph-slicing-and-premise-minimality": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -11499,6 +11593,79 @@
         "verification",
         "verification/rocof-and-impedance-blinders",
         "tooling"
+      ]
+    },
+    "cakeml-dessert-compcerts-frame-sizing-and-ssa-register-pressure-spilling": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "CakeML/cakeml",
+            "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+          },
+          "name": "CakeML verified compiler (dataLang/wordLang/stackLang space semantics, word_to_stack, backend space theorem)"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert verified C compiler (Bounds, Stacking, Stacklayout, Memory, IRC allocator)"
+        },
+        {
+          "identity": {
+            "repository": "gcc-mirror/gcc",
+            "revision": "78dfcd5a2bc9beb9dc4398f7f747b9b242fd37b6"
+          },
+          "name": "GCC trunk source (IRA pressure, LRA spill-slot sharing, cfgexpand stack partitioning, -fstack-usage)"
+        },
+        {
+          "identity": {
+            "repository": "gcc-mirror/gcc",
+            "revision": "5115c7e447fc07457443df874bf57840e8316d5f",
+            "version": "releases/gcc-15.2.0"
+          },
+          "name": "GCC 15.2.0 release source (compared against the executed compiler)"
+        },
+        {
+          "identity": {
+            "artifact": "/usr/libexec/gcc/x86_64-linux-gnu/15/cc1 from Debian package gcc-15 15.2.0-14 amd64",
+            "sha256": "3a582de6da92aeabb093f67e3d167544cecbc3c0453507c1bac939fee41b2275",
+            "version": "15.2.0-14"
+          },
+          "name": "Debian gcc-15 15.2.0-14 cc1 (executed compiler, x86-64)"
+        },
+        {
+          "identity": {
+            "repository": "bytecodealliance/regalloc2",
+            "revision": "4eb655fa745fba271af74be8495154a4b0cac56f"
+          },
+          "name": "regalloc2 register allocator (spill-slot allocation, MachineEnv)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3428272"
+          },
+          "name": "Do You Have Space for Dessert? A Verified Space Cost Semantics for CakeML Programs (OOPSLA 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2594291.2594301"
+          },
+          "name": "End-to-End Verification of Stack-Space Bounds for C Programs (PLDI 2014)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-018-9496-y"
+          },
+          "name": "CompCertS: A Memory-Aware Verified C Compiler Using a Pointer as Integer Semantics (Journal of Automated Reasoning, 2019)"
+        }
+      ],
+      "topics": [
+        "compilers/register-pressure-and-spilling",
+        "verification/verified-stack-frame-bounds",
+        "compilers/live-immediate-space-accounting",
+        "isa/bounded-register-file-models"
       ]
     },
     "call-and-unwind-landing-pad-machine-outliner-with-lsda-synthesis": {

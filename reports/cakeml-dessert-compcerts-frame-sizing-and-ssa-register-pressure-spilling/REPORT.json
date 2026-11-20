@@ -1,0 +1,73 @@
+{
+  "topics": [
+    "compilers/register-pressure-and-spilling",
+    "verification/verified-stack-frame-bounds",
+    "compilers/live-immediate-space-accounting",
+    "isa/bounded-register-file-models"
+  ],
+  "subjects": [
+    {
+      "name": "CakeML verified compiler (dataLang/wordLang/stackLang space semantics, word_to_stack, backend space theorem)",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+      }
+    },
+    {
+      "name": "CompCert verified C compiler (Bounds, Stacking, Stacklayout, Memory, IRC allocator)",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+      }
+    },
+    {
+      "name": "GCC trunk source (IRA pressure, LRA spill-slot sharing, cfgexpand stack partitioning, -fstack-usage)",
+      "identity": {
+        "repository": "gcc-mirror/gcc",
+        "revision": "78dfcd5a2bc9beb9dc4398f7f747b9b242fd37b6"
+      }
+    },
+    {
+      "name": "GCC 15.2.0 release source (compared against the executed compiler)",
+      "identity": {
+        "repository": "gcc-mirror/gcc",
+        "revision": "5115c7e447fc07457443df874bf57840e8316d5f",
+        "version": "releases/gcc-15.2.0"
+      }
+    },
+    {
+      "name": "Debian gcc-15 15.2.0-14 cc1 (executed compiler, x86-64)",
+      "identity": {
+        "artifact": "/usr/libexec/gcc/x86_64-linux-gnu/15/cc1 from Debian package gcc-15 15.2.0-14 amd64",
+        "sha256": "3a582de6da92aeabb093f67e3d167544cecbc3c0453507c1bac939fee41b2275",
+        "version": "15.2.0-14"
+      }
+    },
+    {
+      "name": "regalloc2 register allocator (spill-slot allocation, MachineEnv)",
+      "identity": {
+        "repository": "bytecodealliance/regalloc2",
+        "revision": "4eb655fa745fba271af74be8495154a4b0cac56f"
+      }
+    },
+    {
+      "name": "Do You Have Space for Dessert? A Verified Space Cost Semantics for CakeML Programs (OOPSLA 2020)",
+      "identity": {
+        "doi": "10.1145/3428272"
+      }
+    },
+    {
+      "name": "End-to-End Verification of Stack-Space Bounds for C Programs (PLDI 2014)",
+      "identity": {
+        "doi": "10.1145/2594291.2594301"
+      }
+    },
+    {
+      "name": "CompCertS: A Memory-Aware Verified C Compiler Using a Pointer as Integer Semantics (Journal of Automated Reasoning, 2019)",
+      "identity": {
+        "doi": "10.1007/s10817-018-9496-y"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
