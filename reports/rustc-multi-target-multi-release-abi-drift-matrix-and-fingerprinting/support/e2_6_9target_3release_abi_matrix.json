@@ -1,0 +1,1383 @@
+{
+  "toolchains": {
+    "1.99.1": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.1\nLLVM version: 23.1.1",
+    "1.100.0": "rustc 1.100.0 (0ef1bc386 2026-11-09)\nbinary: rustc\ncommit-hash: 0ef1bc386059596dada8fb65b50425aab2ea637a\ncommit-date: 2026-11-09\nhost: x86_64-unknown-linux-gnu\nrelease: 1.100.0\nLLVM version: 23.1.5",
+    "1.102.0-nightly": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5"
+  },
+  "targets": [
+    "x86_64-unknown-linux-gnu",
+    "x86_64-apple-darwin",
+    "x86_64-pc-windows-msvc",
+    "x86_64-pc-windows-gnu",
+    "aarch64-unknown-linux-gnu",
+    "aarch64-apple-darwin",
+    "aarch64-pc-windows-msvc",
+    "i686-unknown-linux-gnu",
+    "i686-pc-windows-msvc"
+  ],
+  "compile_status": {
+    "1.99.1": {
+      "x86_64-unknown-linux-gnu": {
+        "ok": true,
+        "emitted_fns": 96
+      },
+      "x86_64-apple-darwin": {
+        "ok": true,
+        "emitted_fns": 96
+      },
+      "x86_64-pc-windows-msvc": {
+        "ok": true,
+        "emitted_fns": 96
+      },
+      "x86_64-pc-windows-gnu": {
+        "ok": true,
+        "emitted_fns": 96
+      },
+      "aarch64-unknown-linux-gnu": {
+        "ok": true,
+        "emitted_fns": 87
+      },
+      "aarch64-apple-darwin": {
+        "ok": true,
+        "emitted_fns": 87
+      },
+      "aarch64-pc-windows-msvc": {
+        "ok": true,
+        "emitted_fns": 87
+      },
+      "i686-unknown-linux-gnu": {
+        "ok": true,
+        "emitted_fns": 94
+      },
+      "i686-pc-windows-msvc": {
+        "ok": true,
+        "emitted_fns": 94
+      }
+    },
+    "1.100.0": {
+      "x86_64-unknown-linux-gnu": {
+        "ok": true,
+        "emitted_fns": 96
+      },
+      "x86_64-apple-darwin": {
+        "ok": true,
+        "emitted_fns": 96
+      },
+      "x86_64-pc-windows-msvc": {
+        "ok": true,
+        "emitted_fns": 96
+      },
+      "x86_64-pc-windows-gnu": {
+        "ok": true,
+        "emitted_fns": 96
+      },
+      "aarch64-unknown-linux-gnu": {
+        "ok": true,
+        "emitted_fns": 87
+      },
+      "aarch64-apple-darwin": {
+        "ok": true,
+        "emitted_fns": 87
+      },
+      "aarch64-pc-windows-msvc": {
+        "ok": true,
+        "emitted_fns": 87
+      },
+      "i686-unknown-linux-gnu": {
+        "ok": true,
+        "emitted_fns": 94
+      },
+      "i686-pc-windows-msvc": {
+        "ok": true,
+        "emitted_fns": 94
+      }
+    },
+    "1.102.0-nightly": {
+      "x86_64-unknown-linux-gnu": {
+        "ok": true,
+        "emitted_fns": 96
+      },
+      "x86_64-apple-darwin": {
+        "ok": true,
+        "emitted_fns": 96
+      },
+      "x86_64-pc-windows-msvc": {
+        "ok": true,
+        "emitted_fns": 96
+      },
+      "x86_64-pc-windows-gnu": {
+        "ok": true,
+        "emitted_fns": 96
+      },
+      "aarch64-unknown-linux-gnu": {
+        "ok": true,
+        "emitted_fns": 87
+      },
+      "aarch64-apple-darwin": {
+        "ok": true,
+        "emitted_fns": 87
+      },
+      "aarch64-pc-windows-msvc": {
+        "ok": true,
+        "emitted_fns": 87
+      },
+      "i686-unknown-linux-gnu": {
+        "ok": true,
+        "emitted_fns": 94
+      },
+      "i686-pc-windows-msvc": {
+        "ok": true,
+        "emitted_fns": 94
+      }
+    }
+  },
+  "total_compiled_fn_instances": 2499,
+  "total_compared_pairs_1_99_1_to_1_100_0": 833,
+  "total_compared_pairs_1_100_0_to_nightly": 833,
+  "true_abi_drift_1_99_1_to_1_100_0_count": 30,
+  "true_abi_drift_1_99_1_to_1_100_0_by_target": {
+    "x86_64-unknown-linux-gnu": 5,
+    "x86_64-apple-darwin": 5,
+    "x86_64-pc-windows-msvc": 5,
+    "x86_64-pc-windows-gnu": 5,
+    "i686-unknown-linux-gnu": 5,
+    "i686-pc-windows-msvc": 5
+  },
+  "true_abi_drift_1_100_0_to_nightly_count": 48,
+  "true_abi_drift_1_100_0_to_nightly_by_target": {
+    "x86_64-unknown-linux-gnu": 4,
+    "x86_64-apple-darwin": 4,
+    "x86_64-pc-windows-msvc": 7,
+    "x86_64-pc-windows-gnu": 7,
+    "aarch64-unknown-linux-gnu": 5,
+    "aarch64-apple-darwin": 5,
+    "aarch64-pc-windows-msvc": 5,
+    "i686-unknown-linux-gnu": 4,
+    "i686-pc-windows-msvc": 7
+  },
+  "true_abi_drift_1_99_1_to_nightly_count": 78,
+  "true_abi_drift_1_99_1_to_nightly_by_target": {
+    "x86_64-unknown-linux-gnu": 9,
+    "x86_64-apple-darwin": 9,
+    "x86_64-pc-windows-msvc": 12,
+    "x86_64-pc-windows-gnu": 12,
+    "aarch64-unknown-linux-gnu": 5,
+    "aarch64-apple-darwin": 5,
+    "aarch64-pc-windows-msvc": 5,
+    "i686-unknown-linux-gnu": 9,
+    "i686-pc-windows-msvc": 12
+  },
+  "opt_attr_only_churn_1_99_1_to_1_100_0": {},
+  "opt_attr_only_churn_1_100_0_to_nightly": {},
+  "drift_1_99_1_to_1_100_0": [
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "fn": "abi_rust_simd_f32x2",
+      "abi_1_99_1": "void (ptr sret([8 x i8]) align 8, ptr align 8)",
+      "abi_1_100_0": "<2 x float> (<2 x float>)",
+      "sym_1_99_1": "abi_rust_simd_f32x2",
+      "sym_1_100_0": "abi_rust_simd_f32x2"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "fn": "abi_rust_simd_f32x4",
+      "abi_1_99_1": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_1_100_0": "<4 x float> (<4 x float>)",
+      "sym_1_99_1": "abi_rust_simd_f32x4",
+      "sym_1_100_0": "abi_rust_simd_f32x4"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "fn": "abi_rust_simd_f64x2",
+      "abi_1_99_1": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_1_100_0": "<2 x double> (<2 x double>)",
+      "sym_1_99_1": "abi_rust_simd_f64x2",
+      "sym_1_100_0": "abi_rust_simd_f64x2"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "fn": "abi_rust_simd_i32x4",
+      "abi_1_99_1": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_1_100_0": "<4 x i32> (<4 x i32>)",
+      "sym_1_99_1": "abi_rust_simd_i32x4",
+      "sym_1_100_0": "abi_rust_simd_i32x4"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "fn": "abi_rust_simd_u8x16",
+      "abi_1_99_1": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_1_100_0": "<16 x i8> (<16 x i8>)",
+      "sym_1_99_1": "abi_rust_simd_u8x16",
+      "sym_1_100_0": "abi_rust_simd_u8x16"
+    },
+    {
+      "target": "x86_64-apple-darwin",
+      "fn": "abi_rust_simd_f32x2",
+      "abi_1_99_1": "void (ptr sret([8 x i8]) align 8, ptr align 8)",
+      "abi_1_100_0": "<2 x float> (<2 x float>)",
+      "sym_1_99_1": "abi_rust_simd_f32x2",
+      "sym_1_100_0": "abi_rust_simd_f32x2"
+    },
+    {
+      "target": "x86_64-apple-darwin",
+      "fn": "abi_rust_simd_f32x4",
+      "abi_1_99_1": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_1_100_0": "<4 x float> (<4 x float>)",
+      "sym_1_99_1": "abi_rust_simd_f32x4",
+      "sym_1_100_0": "abi_rust_simd_f32x4"
+    },
+    {
+      "target": "x86_64-apple-darwin",
+      "fn": "abi_rust_simd_f64x2",
+      "abi_1_99_1": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_1_100_0": "<2 x double> (<2 x double>)",
+      "sym_1_99_1": "abi_rust_simd_f64x2",
+      "sym_1_100_0": "abi_rust_simd_f64x2"
+    },
+    {
+      "target": "x86_64-apple-darwin",
+      "fn": "abi_rust_simd_i32x4",
+      "abi_1_99_1": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_1_100_0": "<4 x i32> (<4 x i32>)",
+      "sym_1_99_1": "abi_rust_simd_i32x4",
+      "sym_1_100_0": "abi_rust_simd_i32x4"
+    },
+    {
+      "target": "x86_64-apple-darwin",
+      "fn": "abi_rust_simd_u8x16",
+      "abi_1_99_1": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_1_100_0": "<16 x i8> (<16 x i8>)",
+      "sym_1_99_1": "abi_rust_simd_u8x16",
+      "sym_1_100_0": "abi_rust_simd_u8x16"
+    },
+    {
+      "target": "x86_64-pc-windows-msvc",
+      "fn": "abi_rust_simd_f32x2",
+      "abi_1_99_1": "void (ptr sret([8 x i8]) align 8, ptr align 8)",
+      "abi_1_100_0": "<2 x float> (<2 x float>)",
+      "sym_1_99_1": "abi_rust_simd_f32x2",
+      "sym_1_100_0": "abi_rust_simd_f32x2"
+    },
+    {
+      "target": "x86_64-pc-windows-msvc",
+      "fn": "abi_rust_simd_f32x4",
+      "abi_1_99_1": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_1_100_0": "<4 x float> (<4 x float>)",
+      "sym_1_99_1": "abi_rust_simd_f32x4",
+      "sym_1_100_0": "abi_rust_simd_f32x4"
+    },
+    {
+      "target": "x86_64-pc-windows-msvc",
+      "fn": "abi_rust_simd_f64x2",
+      "abi_1_99_1": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_1_100_0": "<2 x double> (<2 x double>)",
+      "sym_1_99_1": "abi_rust_simd_f64x2",
+      "sym_1_100_0": "abi_rust_simd_f64x2"
+    },
+    {
+      "target": "x86_64-pc-windows-msvc",
+      "fn": "abi_rust_simd_i32x4",
+      "abi_1_99_1": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_1_100_0": "<4 x i32> (<4 x i32>)",
+      "sym_1_99_1": "abi_rust_simd_i32x4",
+      "sym_1_100_0": "abi_rust_simd_i32x4"
+    },
+    {
+      "target": "x86_64-pc-windows-msvc",
+      "fn": "abi_rust_simd_u8x16",
+      "abi_1_99_1": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_1_100_0": "<16 x i8> (<16 x i8>)",
+      "sym_1_99_1": "abi_rust_simd_u8x16",
+      "sym_1_100_0": "abi_rust_simd_u8x16"
+    },
+    {
+      "target": "x86_64-pc-windows-gnu",
+      "fn": "abi_rust_simd_f32x2",
+      "abi_1_99_1": "void (ptr sret([8 x i8]) align 8, ptr align 8)",
+      "abi_1_100_0": "<2 x float> (<2 x float>)",
+      "sym_1_99_1": "abi_rust_simd_f32x2",
+      "sym_1_100_0": "abi_rust_simd_f32x2"
+    },
+    {
+      "target": "x86_64-pc-windows-gnu",
+      "fn": "abi_rust_simd_f32x4",
+      "abi_1_99_1": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_1_100_0": "<4 x float> (<4 x float>)",
+      "sym_1_99_1": "abi_rust_simd_f32x4",
+      "sym_1_100_0": "abi_rust_simd_f32x4"
+    },
+    {
+      "target": "x86_64-pc-windows-gnu",
+      "fn": "abi_rust_simd_f64x2",
+      "abi_1_99_1": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_1_100_0": "<2 x double> (<2 x double>)",
+      "sym_1_99_1": "abi_rust_simd_f64x2",
+      "sym_1_100_0": "abi_rust_simd_f64x2"
+    },
+    {
+      "target": "x86_64-pc-windows-gnu",
+      "fn": "abi_rust_simd_i32x4",
+      "abi_1_99_1": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_1_100_0": "<4 x i32> (<4 x i32>)",
+      "sym_1_99_1": "abi_rust_simd_i32x4",
+      "sym_1_100_0": "abi_rust_simd_i32x4"
+    },
+    {
+      "target": "x86_64-pc-windows-gnu",
+      "fn": "abi_rust_simd_u8x16",
+      "abi_1_99_1": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_1_100_0": "<16 x i8> (<16 x i8>)",
+      "sym_1_99_1": "abi_rust_simd_u8x16",
+      "sym_1_100_0": "abi_rust_simd_u8x16"
+    },
+    {
+      "target": "i686-unknown-linux-gnu",
+      "fn": "abi_rust_simd_f32x2",
+      "abi_1_99_1": "void (ptr sret([8 x i8]) align 8, ptr align 8)",
+      "abi_1_100_0": "<2 x float> (<2 x float>)",
+      "sym_1_99_1": "abi_rust_simd_f32x2",
+      "sym_1_100_0": "abi_rust_simd_f32x2"
+    },
+    {
+      "target": "i686-unknown-linux-gnu",
+      "fn": "abi_rust_simd_f32x4",
+      "abi_1_99_1": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_1_100_0": "<4 x float> (<4 x float>)",
+      "sym_1_99_1": "abi_rust_simd_f32x4",
+      "sym_1_100_0": "abi_rust_simd_f32x4"
+    },
+    {
+      "target": "i686-unknown-linux-gnu",
+      "fn": "abi_rust_simd_f64x2",
+      "abi_1_99_1": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_1_100_0": "<2 x double> (<2 x double>)",
+      "sym_1_99_1": "abi_rust_simd_f64x2",
+      "sym_1_100_0": "abi_rust_simd_f64x2"
+    },
+    {
+      "target": "i686-unknown-linux-gnu",
+      "fn": "abi_rust_simd_i32x4",
+      "abi_1_99_1": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_1_100_0": "<4 x i32> (<4 x i32>)",
+      "sym_1_99_1": "abi_rust_simd_i32x4",
+      "sym_1_100_0": "abi_rust_simd_i32x4"
+    },
+    {
+      "target": "i686-unknown-linux-gnu",
+      "fn": "abi_rust_simd_u8x16",
+      "abi_1_99_1": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_1_100_0": "<16 x i8> (<16 x i8>)",
+      "sym_1_99_1": "abi_rust_simd_u8x16",
+      "sym_1_100_0": "abi_rust_simd_u8x16"
+    },
+    {
+      "target": "i686-pc-windows-msvc",
+      "fn": "abi_rust_simd_f32x2",
+      "abi_1_99_1": "void (ptr sret([8 x i8]) align 8, ptr align 8)",
+      "abi_1_100_0": "<2 x float> (<2 x float>)",
+      "sym_1_99_1": "abi_rust_simd_f32x2",
+      "sym_1_100_0": "abi_rust_simd_f32x2"
+    },
+    {
+      "target": "i686-pc-windows-msvc",
+      "fn": "abi_rust_simd_f32x4",
+      "abi_1_99_1": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_1_100_0": "<4 x float> (<4 x float>)",
+      "sym_1_99_1": "abi_rust_simd_f32x4",
+      "sym_1_100_0": "abi_rust_simd_f32x4"
+    },
+    {
+      "target": "i686-pc-windows-msvc",
+      "fn": "abi_rust_simd_f64x2",
+      "abi_1_99_1": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_1_100_0": "<2 x double> (<2 x double>)",
+      "sym_1_99_1": "abi_rust_simd_f64x2",
+      "sym_1_100_0": "abi_rust_simd_f64x2"
+    },
+    {
+      "target": "i686-pc-windows-msvc",
+      "fn": "abi_rust_simd_i32x4",
+      "abi_1_99_1": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_1_100_0": "<4 x i32> (<4 x i32>)",
+      "sym_1_99_1": "abi_rust_simd_i32x4",
+      "sym_1_100_0": "abi_rust_simd_i32x4"
+    },
+    {
+      "target": "i686-pc-windows-msvc",
+      "fn": "abi_rust_simd_u8x16",
+      "abi_1_99_1": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_1_100_0": "<16 x i8> (<16 x i8>)",
+      "sym_1_99_1": "abi_rust_simd_u8x16",
+      "sym_1_100_0": "abi_rust_simd_u8x16"
+    }
+  ],
+  "drift_1_100_0_to_nightly": [
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "fn": "abi_vec_f32x4",
+      "abi_1_100_0": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>)",
+      "abi_nightly": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>)@@32",
+      "sym_1_100_0": "abi_vec_f32x4",
+      "sym_nightly": "\\01abi_vec_f32x4@@32"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "fn": "abi_vec_f32x8",
+      "abi_1_100_0": "x86_vectorcallcc <8 x float> (<8 x float>)",
+      "abi_nightly": "x86_vectorcallcc <8 x float> (<8 x float>)@@32",
+      "sym_1_100_0": "abi_vec_f32x8",
+      "sym_nightly": "\\01abi_vec_f32x8@@32"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "fn": "abi_vec_hfa4",
+      "abi_1_100_0": "x86_vectorcallcc void (ptr sret([16 x i8]) align 4, ptr align 4, float)",
+      "abi_nightly": "x86_vectorcallcc void (ptr sret([16 x i8]) align 4, ptr align 4, float)@@24",
+      "sym_1_100_0": "abi_vec_hfa4",
+      "sym_nightly": "\\01abi_vec_hfa4@@24"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "fn": "abi_vec_many6_simd",
+      "abi_1_100_0": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>)",
+      "abi_nightly": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>)@@112",
+      "sym_1_100_0": "abi_vec_many6_simd",
+      "sym_nightly": "\\01abi_vec_many6_simd@@112"
+    },
+    {
+      "target": "x86_64-apple-darwin",
+      "fn": "abi_vec_f32x4",
+      "abi_1_100_0": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>)",
+      "abi_nightly": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>)@@32",
+      "sym_1_100_0": "abi_vec_f32x4",
+      "sym_nightly": "\\01abi_vec_f32x4@@32"
+    },
+    {
+      "target": "x86_64-apple-darwin",
+      "fn": "abi_vec_f32x8",
+      "abi_1_100_0": "x86_vectorcallcc <8 x float> (<8 x float>)",
+      "abi_nightly": "x86_vectorcallcc <8 x float> (<8 x float>)@@32",
+      "sym_1_100_0": "abi_vec_f32x8",
+      "sym_nightly": "\\01abi_vec_f32x8@@32"
+    },
+    {
+      "target": "x86_64-apple-darwin",
+      "fn": "abi_vec_hfa4",
+      "abi_1_100_0": "x86_vectorcallcc void (ptr sret([16 x i8]) align 4, ptr align 4, float)",
+      "abi_nightly": "x86_vectorcallcc void (ptr sret([16 x i8]) align 4, ptr align 4, float)@@24",
+      "sym_1_100_0": "abi_vec_hfa4",
+      "sym_nightly": "\\01abi_vec_hfa4@@24"
+    },
+    {
+      "target": "x86_64-apple-darwin",
+      "fn": "abi_vec_many6_simd",
+      "abi_1_100_0": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>)",
+      "abi_nightly": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>)@@112",
+      "sym_1_100_0": "abi_vec_many6_simd",
+      "sym_nightly": "\\01abi_vec_many6_simd@@112"
+    },
+    {
+      "target": "x86_64-pc-windows-msvc",
+      "fn": "abi_c_unit",
+      "abi_1_100_0": "void (ptr align 1)",
+      "abi_nightly": "void ()",
+      "sym_1_100_0": "abi_c_unit",
+      "sym_nightly": "abi_c_unit"
+    },
+    {
+      "target": "x86_64-pc-windows-msvc",
+      "fn": "abi_c_zst_enum",
+      "abi_1_100_0": "void (ptr align 1)",
+      "abi_nightly": "void ()",
+      "sym_1_100_0": "abi_c_zst_enum",
+      "sym_nightly": "abi_c_zst_enum"
+    },
+    {
+      "target": "x86_64-pc-windows-msvc",
+      "fn": "abi_c_zst_struct",
+      "abi_1_100_0": "void (ptr align 1)",
+      "abi_nightly": "void ()",
+      "sym_1_100_0": "abi_c_zst_struct",
+      "sym_nightly": "abi_c_zst_struct"
+    },
+    {
+      "target": "x86_64-pc-windows-msvc",
+      "fn": "abi_vec_f32x4",
+      "abi_1_100_0": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>)",
+      "abi_nightly": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>)@@32",
+      "sym_1_100_0": "abi_vec_f32x4",
+      "sym_nightly": "\\01abi_vec_f32x4@@32"
+    },
+    {
+      "target": "x86_64-pc-windows-msvc",
+      "fn": "abi_vec_f32x8",
+      "abi_1_100_0": "x86_vectorcallcc <8 x float> (<8 x float>)",
+      "abi_nightly": "x86_vectorcallcc <8 x float> (<8 x float>)@@32",
+      "sym_1_100_0": "abi_vec_f32x8",
+      "sym_nightly": "\\01abi_vec_f32x8@@32"
+    },
+    {
+      "target": "x86_64-pc-windows-msvc",
+      "fn": "abi_vec_hfa4",
+      "abi_1_100_0": "x86_vectorcallcc void (ptr sret([16 x i8]) align 4, ptr align 4, float)",
+      "abi_nightly": "x86_vectorcallcc void (ptr sret([16 x i8]) align 4, ptr align 4, float)@@24",
+      "sym_1_100_0": "abi_vec_hfa4",
+      "sym_nightly": "\\01abi_vec_hfa4@@24"
+    },
+    {
+      "target": "x86_64-pc-windows-msvc",
+      "fn": "abi_vec_many6_simd",
+      "abi_1_100_0": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>)",
+      "abi_nightly": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>)@@112",
+      "sym_1_100_0": "abi_vec_many6_simd",
+      "sym_nightly": "\\01abi_vec_many6_simd@@112"
+    },
+    {
+      "target": "x86_64-pc-windows-gnu",
+      "fn": "abi_c_unit",
+      "abi_1_100_0": "void (ptr align 1)",
+      "abi_nightly": "void ()",
+      "sym_1_100_0": "abi_c_unit",
+      "sym_nightly": "abi_c_unit"
+    },
+    {
+      "target": "x86_64-pc-windows-gnu",
+      "fn": "abi_c_zst_enum",
+      "abi_1_100_0": "void (ptr align 1)",
+      "abi_nightly": "void ()",
+      "sym_1_100_0": "abi_c_zst_enum",
+      "sym_nightly": "abi_c_zst_enum"
+    },
+    {
+      "target": "x86_64-pc-windows-gnu",
+      "fn": "abi_c_zst_struct",
+      "abi_1_100_0": "void (ptr align 1)",
+      "abi_nightly": "void ()",
+      "sym_1_100_0": "abi_c_zst_struct",
+      "sym_nightly": "abi_c_zst_struct"
+    },
+    {
+      "target": "x86_64-pc-windows-gnu",
+      "fn": "abi_vec_f32x4",
+      "abi_1_100_0": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>)",
+      "abi_nightly": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>)@@32",
+      "sym_1_100_0": "abi_vec_f32x4",
+      "sym_nightly": "\\01abi_vec_f32x4@@32"
+    },
+    {
+      "target": "x86_64-pc-windows-gnu",
+      "fn": "abi_vec_f32x8",
+      "abi_1_100_0": "x86_vectorcallcc <8 x float> (<8 x float>)",
+      "abi_nightly": "x86_vectorcallcc <8 x float> (<8 x float>)@@32",
+      "sym_1_100_0": "abi_vec_f32x8",
+      "sym_nightly": "\\01abi_vec_f32x8@@32"
+    },
+    {
+      "target": "x86_64-pc-windows-gnu",
+      "fn": "abi_vec_hfa4",
+      "abi_1_100_0": "x86_vectorcallcc void (ptr sret([16 x i8]) align 4, ptr align 4, float)",
+      "abi_nightly": "x86_vectorcallcc void (ptr sret([16 x i8]) align 4, ptr align 4, float)@@24",
+      "sym_1_100_0": "abi_vec_hfa4",
+      "sym_nightly": "\\01abi_vec_hfa4@@24"
+    },
+    {
+      "target": "x86_64-pc-windows-gnu",
+      "fn": "abi_vec_many6_simd",
+      "abi_1_100_0": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>)",
+      "abi_nightly": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>)@@112",
+      "sym_1_100_0": "abi_vec_many6_simd",
+      "sym_nightly": "\\01abi_vec_many6_simd@@112"
+    },
+    {
+      "target": "aarch64-unknown-linux-gnu",
+      "fn": "abi_rust_simd_f32x2",
+      "abi_1_100_0": "void (ptr sret([8 x i8]) align 8, ptr align 8)",
+      "abi_nightly": "<2 x float> (<2 x float>)",
+      "sym_1_100_0": "abi_rust_simd_f32x2",
+      "sym_nightly": "abi_rust_simd_f32x2"
+    },
+    {
+      "target": "aarch64-unknown-linux-gnu",
+      "fn": "abi_rust_simd_f32x4",
+      "abi_1_100_0": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_nightly": "<4 x float> (<4 x float>)",
+      "sym_1_100_0": "abi_rust_simd_f32x4",
+      "sym_nightly": "abi_rust_simd_f32x4"
+    },
+    {
+      "target": "aarch64-unknown-linux-gnu",
+      "fn": "abi_rust_simd_f64x2",
+      "abi_1_100_0": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_nightly": "<2 x double> (<2 x double>)",
+      "sym_1_100_0": "abi_rust_simd_f64x2",
+      "sym_nightly": "abi_rust_simd_f64x2"
+    },
+    {
+      "target": "aarch64-unknown-linux-gnu",
+      "fn": "abi_rust_simd_i32x4",
+      "abi_1_100_0": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_nightly": "<4 x i32> (<4 x i32>)",
+      "sym_1_100_0": "abi_rust_simd_i32x4",
+      "sym_nightly": "abi_rust_simd_i32x4"
+    },
+    {
+      "target": "aarch64-unknown-linux-gnu",
+      "fn": "abi_rust_simd_u8x16",
+      "abi_1_100_0": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_nightly": "<16 x i8> (<16 x i8>)",
+      "sym_1_100_0": "abi_rust_simd_u8x16",
+      "sym_nightly": "abi_rust_simd_u8x16"
+    },
+    {
+      "target": "aarch64-apple-darwin",
+      "fn": "abi_rust_simd_f32x2",
+      "abi_1_100_0": "void (ptr sret([8 x i8]) align 8, ptr align 8)",
+      "abi_nightly": "<2 x float> (<2 x float>)",
+      "sym_1_100_0": "abi_rust_simd_f32x2",
+      "sym_nightly": "abi_rust_simd_f32x2"
+    },
+    {
+      "target": "aarch64-apple-darwin",
+      "fn": "abi_rust_simd_f32x4",
+      "abi_1_100_0": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_nightly": "<4 x float> (<4 x float>)",
+      "sym_1_100_0": "abi_rust_simd_f32x4",
+      "sym_nightly": "abi_rust_simd_f32x4"
+    },
+    {
+      "target": "aarch64-apple-darwin",
+      "fn": "abi_rust_simd_f64x2",
+      "abi_1_100_0": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_nightly": "<2 x double> (<2 x double>)",
+      "sym_1_100_0": "abi_rust_simd_f64x2",
+      "sym_nightly": "abi_rust_simd_f64x2"
+    },
+    {
+      "target": "aarch64-apple-darwin",
+      "fn": "abi_rust_simd_i32x4",
+      "abi_1_100_0": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_nightly": "<4 x i32> (<4 x i32>)",
+      "sym_1_100_0": "abi_rust_simd_i32x4",
+      "sym_nightly": "abi_rust_simd_i32x4"
+    },
+    {
+      "target": "aarch64-apple-darwin",
+      "fn": "abi_rust_simd_u8x16",
+      "abi_1_100_0": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_nightly": "<16 x i8> (<16 x i8>)",
+      "sym_1_100_0": "abi_rust_simd_u8x16",
+      "sym_nightly": "abi_rust_simd_u8x16"
+    },
+    {
+      "target": "aarch64-pc-windows-msvc",
+      "fn": "abi_rust_simd_f32x2",
+      "abi_1_100_0": "void (ptr sret([8 x i8]) align 8, ptr align 8)",
+      "abi_nightly": "<2 x float> (<2 x float>)",
+      "sym_1_100_0": "abi_rust_simd_f32x2",
+      "sym_nightly": "abi_rust_simd_f32x2"
+    },
+    {
+      "target": "aarch64-pc-windows-msvc",
+      "fn": "abi_rust_simd_f32x4",
+      "abi_1_100_0": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_nightly": "<4 x float> (<4 x float>)",
+      "sym_1_100_0": "abi_rust_simd_f32x4",
+      "sym_nightly": "abi_rust_simd_f32x4"
+    },
+    {
+      "target": "aarch64-pc-windows-msvc",
+      "fn": "abi_rust_simd_f64x2",
+      "abi_1_100_0": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_nightly": "<2 x double> (<2 x double>)",
+      "sym_1_100_0": "abi_rust_simd_f64x2",
+      "sym_nightly": "abi_rust_simd_f64x2"
+    },
+    {
+      "target": "aarch64-pc-windows-msvc",
+      "fn": "abi_rust_simd_i32x4",
+      "abi_1_100_0": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_nightly": "<4 x i32> (<4 x i32>)",
+      "sym_1_100_0": "abi_rust_simd_i32x4",
+      "sym_nightly": "abi_rust_simd_i32x4"
+    },
+    {
+      "target": "aarch64-pc-windows-msvc",
+      "fn": "abi_rust_simd_u8x16",
+      "abi_1_100_0": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+      "abi_nightly": "<16 x i8> (<16 x i8>)",
+      "sym_1_100_0": "abi_rust_simd_u8x16",
+      "sym_nightly": "abi_rust_simd_u8x16"
+    },
+    {
+      "target": "i686-unknown-linux-gnu",
+      "fn": "abi_vec_f32x4",
+      "abi_1_100_0": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>)",
+      "abi_nightly": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>)@@32",
+      "sym_1_100_0": "abi_vec_f32x4",
+      "sym_nightly": "\\01abi_vec_f32x4@@32"
+    },
+    {
+      "target": "i686-unknown-linux-gnu",
+      "fn": "abi_vec_f32x8",
+      "abi_1_100_0": "x86_vectorcallcc <8 x float> (<8 x float>)",
+      "abi_nightly": "x86_vectorcallcc <8 x float> (<8 x float>)@@32",
+      "sym_1_100_0": "abi_vec_f32x8",
+      "sym_nightly": "\\01abi_vec_f32x8@@32"
+    },
+    {
+      "target": "i686-unknown-linux-gnu",
+      "fn": "abi_vec_hfa4",
+      "abi_1_100_0": "x86_vectorcallcc void (ptr sret([16 x i8]) align 4, ptr byval([16 x i8]) align 4, float)",
+      "abi_nightly": "x86_vectorcallcc void (ptr sret([16 x i8]) align 4, ptr byval([16 x i8]) align 4, float)@@20",
+      "sym_1_100_0": "abi_vec_hfa4",
+      "sym_nightly": "\\01abi_vec_hfa4@@20"
+    },
+    {
+      "target": "i686-unknown-linux-gnu",
+      "fn": "abi_vec_many6_simd",
+      "abi_1_100_0": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>)",
+      "abi_nightly": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>)@@112",
+      "sym_1_100_0": "abi_vec_many6_simd",
+      "sym_nightly": "\\01abi_vec_many6_simd@@112"
+    },
+    {
+      "target": "i686-pc-windows-msvc",
+      "fn": "abi_fastcall_i686",
+      "abi_1_100_0": "x86_fastcallcc float (i32 inreg, i32 inreg, float, i64)",
+      "abi_nightly": "x86_fastcallcc float (i32 inreg, i32 inreg, float, i64)@20",
+      "sym_1_100_0": "abi_fastcall_i686",
+      "sym_nightly": "\\01@abi_fastcall_i686@20"
+    },
+    {
+      "target": "i686-pc-windows-msvc",
+      "fn": "abi_stdcall_i686",
+      "abi_1_100_0": "x86_stdcallcc i32 (i32, ptr byval([16 x i8]) align 4)",
+      "abi_nightly": "x86_stdcallcc i32 (i32, ptr byval([16 x i8]) align 4)@20",
+      "sym_1_100_0": "abi_stdcall_i686",
+      "sym_nightly": "\\01_abi_stdcall_i686@20"
+    },
+    {
+      "target": "i686-pc-windows-msvc",
+      "fn": "abi_system_u64_f32",
+      "abi_1_100_0": "x86_stdcallcc float (i64, float)",
+      "abi_nightly": "x86_stdcallcc float (i64, float)@12",
+      "sym_1_100_0": "abi_system_u64_f32",
+      "sym_nightly": "\\01_abi_system_u64_f32@12"
+    },
+    {
+      "target": "i686-pc-windows-msvc",
+      "fn": "abi_vec_f32x4",
+      "abi_1_100_0": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>)",
+      "abi_nightly": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>)@@32",
+      "sym_1_100_0": "abi_vec_f32x4",
+      "sym_nightly": "\\01abi_vec_f32x4@@32"
+    },
+    {
+      "target": "i686-pc-windows-msvc",
+      "fn": "abi_vec_f32x8",
+      "abi_1_100_0": "x86_vectorcallcc <8 x float> (<8 x float>)",
+      "abi_nightly": "x86_vectorcallcc <8 x float> (<8 x float>)@@32",
+      "sym_1_100_0": "abi_vec_f32x8",
+      "sym_nightly": "\\01abi_vec_f32x8@@32"
+    },
+    {
+      "target": "i686-pc-windows-msvc",
+      "fn": "abi_vec_hfa4",
+      "abi_1_100_0": "x86_vectorcallcc void (ptr sret([16 x i8]) align 4, ptr byval([16 x i8]) align 4, float)",
+      "abi_nightly": "x86_vectorcallcc void (ptr sret([16 x i8]) align 4, ptr byval([16 x i8]) align 4, float)@@20",
+      "sym_1_100_0": "abi_vec_hfa4",
+      "sym_nightly": "\\01abi_vec_hfa4@@20"
+    },
+    {
+      "target": "i686-pc-windows-msvc",
+      "fn": "abi_vec_many6_simd",
+      "abi_1_100_0": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>)",
+      "abi_nightly": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>, <4 x float>)@@112",
+      "sym_1_100_0": "abi_vec_many6_simd",
+      "sym_nightly": "\\01abi_vec_many6_simd@@112"
+    }
+  ],
+  "spotlights": {
+    "abi_rust_f32": {
+      "x86_64-unknown-linux-gnu": {
+        "1.99.1": "float (float)",
+        "1.100.0": "float (float)",
+        "1.102.0-nightly": "float (float)"
+      },
+      "x86_64-apple-darwin": {
+        "1.99.1": "float (float)",
+        "1.100.0": "float (float)",
+        "1.102.0-nightly": "float (float)"
+      },
+      "x86_64-pc-windows-msvc": {
+        "1.99.1": "float (float)",
+        "1.100.0": "float (float)",
+        "1.102.0-nightly": "float (float)"
+      },
+      "x86_64-pc-windows-gnu": {
+        "1.99.1": "float (float)",
+        "1.100.0": "float (float)",
+        "1.102.0-nightly": "float (float)"
+      },
+      "aarch64-unknown-linux-gnu": {
+        "1.99.1": "float (float)",
+        "1.100.0": "float (float)",
+        "1.102.0-nightly": "float (float)"
+      },
+      "aarch64-apple-darwin": {
+        "1.99.1": "float (float)",
+        "1.100.0": "float (float)",
+        "1.102.0-nightly": "float (float)"
+      },
+      "aarch64-pc-windows-msvc": {
+        "1.99.1": "float (float)",
+        "1.100.0": "float (float)",
+        "1.102.0-nightly": "float (float)"
+      },
+      "i686-unknown-linux-gnu": {
+        "1.99.1": "<4 x i8> (float)",
+        "1.100.0": "<4 x i8> (float)",
+        "1.102.0-nightly": "<4 x i8> (float)"
+      },
+      "i686-pc-windows-msvc": {
+        "1.99.1": "<4 x i8> (float)",
+        "1.100.0": "<4 x i8> (float)",
+        "1.102.0-nightly": "<4 x i8> (float)"
+      }
+    },
+    "abi_c_f32": {
+      "x86_64-unknown-linux-gnu": {
+        "1.99.1": "float (float)",
+        "1.100.0": "float (float)",
+        "1.102.0-nightly": "float (float)"
+      },
+      "x86_64-apple-darwin": {
+        "1.99.1": "float (float)",
+        "1.100.0": "float (float)",
+        "1.102.0-nightly": "float (float)"
+      },
+      "x86_64-pc-windows-msvc": {
+        "1.99.1": "float (float)",
+        "1.100.0": "float (float)",
+        "1.102.0-nightly": "float (float)"
+      },
+      "x86_64-pc-windows-gnu": {
+        "1.99.1": "float (float)",
+        "1.100.0": "float (float)",
+        "1.102.0-nightly": "float (float)"
+      },
+      "aarch64-unknown-linux-gnu": {
+        "1.99.1": "float (float)",
+        "1.100.0": "float (float)",
+        "1.102.0-nightly": "float (float)"
+      },
+      "aarch64-apple-darwin": {
+        "1.99.1": "float (float)",
+        "1.100.0": "float (float)",
+        "1.102.0-nightly": "float (float)"
+      },
+      "aarch64-pc-windows-msvc": {
+        "1.99.1": "float (float)",
+        "1.100.0": "float (float)",
+        "1.102.0-nightly": "float (float)"
+      },
+      "i686-unknown-linux-gnu": {
+        "1.99.1": "float (float)",
+        "1.100.0": "float (float)",
+        "1.102.0-nightly": "float (float)"
+      },
+      "i686-pc-windows-msvc": {
+        "1.99.1": "float (float)",
+        "1.100.0": "float (float)",
+        "1.102.0-nightly": "float (float)"
+      }
+    },
+    "abi_rust_f64": {
+      "x86_64-unknown-linux-gnu": {
+        "1.99.1": "double (double)",
+        "1.100.0": "double (double)",
+        "1.102.0-nightly": "double (double)"
+      },
+      "x86_64-apple-darwin": {
+        "1.99.1": "double (double)",
+        "1.100.0": "double (double)",
+        "1.102.0-nightly": "double (double)"
+      },
+      "x86_64-pc-windows-msvc": {
+        "1.99.1": "double (double)",
+        "1.100.0": "double (double)",
+        "1.102.0-nightly": "double (double)"
+      },
+      "x86_64-pc-windows-gnu": {
+        "1.99.1": "double (double)",
+        "1.100.0": "double (double)",
+        "1.102.0-nightly": "double (double)"
+      },
+      "aarch64-unknown-linux-gnu": {
+        "1.99.1": "double (double)",
+        "1.100.0": "double (double)",
+        "1.102.0-nightly": "double (double)"
+      },
+      "aarch64-apple-darwin": {
+        "1.99.1": "double (double)",
+        "1.100.0": "double (double)",
+        "1.102.0-nightly": "double (double)"
+      },
+      "aarch64-pc-windows-msvc": {
+        "1.99.1": "double (double)",
+        "1.100.0": "double (double)",
+        "1.102.0-nightly": "double (double)"
+      },
+      "i686-unknown-linux-gnu": {
+        "1.99.1": "<8 x i8> (double)",
+        "1.100.0": "<8 x i8> (double)",
+        "1.102.0-nightly": "<8 x i8> (double)"
+      },
+      "i686-pc-windows-msvc": {
+        "1.99.1": "<8 x i8> (double)",
+        "1.100.0": "<8 x i8> (double)",
+        "1.102.0-nightly": "<8 x i8> (double)"
+      }
+    },
+    "abi_c_f64": {
+      "x86_64-unknown-linux-gnu": {
+        "1.99.1": "double (double)",
+        "1.100.0": "double (double)",
+        "1.102.0-nightly": "double (double)"
+      },
+      "x86_64-apple-darwin": {
+        "1.99.1": "double (double)",
+        "1.100.0": "double (double)",
+        "1.102.0-nightly": "double (double)"
+      },
+      "x86_64-pc-windows-msvc": {
+        "1.99.1": "double (double)",
+        "1.100.0": "double (double)",
+        "1.102.0-nightly": "double (double)"
+      },
+      "x86_64-pc-windows-gnu": {
+        "1.99.1": "double (double)",
+        "1.100.0": "double (double)",
+        "1.102.0-nightly": "double (double)"
+      },
+      "aarch64-unknown-linux-gnu": {
+        "1.99.1": "double (double)",
+        "1.100.0": "double (double)",
+        "1.102.0-nightly": "double (double)"
+      },
+      "aarch64-apple-darwin": {
+        "1.99.1": "double (double)",
+        "1.100.0": "double (double)",
+        "1.102.0-nightly": "double (double)"
+      },
+      "aarch64-pc-windows-msvc": {
+        "1.99.1": "double (double)",
+        "1.100.0": "double (double)",
+        "1.102.0-nightly": "double (double)"
+      },
+      "i686-unknown-linux-gnu": {
+        "1.99.1": "double (double)",
+        "1.100.0": "double (double)",
+        "1.102.0-nightly": "double (double)"
+      },
+      "i686-pc-windows-msvc": {
+        "1.99.1": "double (double)",
+        "1.100.0": "double (double)",
+        "1.102.0-nightly": "double (double)"
+      }
+    },
+    "abi_rust_u128": {
+      "x86_64-unknown-linux-gnu": {
+        "1.99.1": "i128 (i128)",
+        "1.100.0": "i128 (i128)",
+        "1.102.0-nightly": "i128 (i128)"
+      },
+      "x86_64-apple-darwin": {
+        "1.99.1": "i128 (i128)",
+        "1.100.0": "i128 (i128)",
+        "1.102.0-nightly": "i128 (i128)"
+      },
+      "x86_64-pc-windows-msvc": {
+        "1.99.1": "i128 (i128)",
+        "1.100.0": "i128 (i128)",
+        "1.102.0-nightly": "i128 (i128)"
+      },
+      "x86_64-pc-windows-gnu": {
+        "1.99.1": "i128 (i128)",
+        "1.100.0": "i128 (i128)",
+        "1.102.0-nightly": "i128 (i128)"
+      },
+      "aarch64-unknown-linux-gnu": {
+        "1.99.1": "i128 (i128)",
+        "1.100.0": "i128 (i128)",
+        "1.102.0-nightly": "i128 (i128)"
+      },
+      "aarch64-apple-darwin": {
+        "1.99.1": "i128 (i128)",
+        "1.100.0": "i128 (i128)",
+        "1.102.0-nightly": "i128 (i128)"
+      },
+      "aarch64-pc-windows-msvc": {
+        "1.99.1": "i128 (i128)",
+        "1.100.0": "i128 (i128)",
+        "1.102.0-nightly": "i128 (i128)"
+      },
+      "i686-unknown-linux-gnu": {
+        "1.99.1": "void (ptr sret([16 x i8]) align 16, i128)",
+        "1.100.0": "void (ptr sret([16 x i8]) align 16, i128)",
+        "1.102.0-nightly": "void (ptr sret([16 x i8]) align 16, i128)"
+      },
+      "i686-pc-windows-msvc": {
+        "1.99.1": "void (ptr sret([16 x i8]) align 16, i128)",
+        "1.100.0": "void (ptr sret([16 x i8]) align 16, i128)",
+        "1.102.0-nightly": "void (ptr sret([16 x i8]) align 16, i128)"
+      }
+    },
+    "abi_c_u128": {
+      "x86_64-unknown-linux-gnu": {
+        "1.99.1": "i128 (i128)",
+        "1.100.0": "i128 (i128)",
+        "1.102.0-nightly": "i128 (i128)"
+      },
+      "x86_64-apple-darwin": {
+        "1.99.1": "i128 (i128)",
+        "1.100.0": "i128 (i128)",
+        "1.102.0-nightly": "i128 (i128)"
+      },
+      "x86_64-pc-windows-msvc": {
+        "1.99.1": "<16 x i8> (ptr align 16)",
+        "1.100.0": "<16 x i8> (ptr align 16)",
+        "1.102.0-nightly": "<16 x i8> (ptr align 16)"
+      },
+      "x86_64-pc-windows-gnu": {
+        "1.99.1": "<16 x i8> (ptr align 16)",
+        "1.100.0": "<16 x i8> (ptr align 16)",
+        "1.102.0-nightly": "<16 x i8> (ptr align 16)"
+      },
+      "aarch64-unknown-linux-gnu": {
+        "1.99.1": "i128 (i128)",
+        "1.100.0": "i128 (i128)",
+        "1.102.0-nightly": "i128 (i128)"
+      },
+      "aarch64-apple-darwin": {
+        "1.99.1": "i128 (i128)",
+        "1.100.0": "i128 (i128)",
+        "1.102.0-nightly": "i128 (i128)"
+      },
+      "aarch64-pc-windows-msvc": {
+        "1.99.1": "i128 (i128)",
+        "1.100.0": "i128 (i128)",
+        "1.102.0-nightly": "i128 (i128)"
+      },
+      "i686-unknown-linux-gnu": {
+        "1.99.1": "i128 (i128)",
+        "1.100.0": "i128 (i128)",
+        "1.102.0-nightly": "i128 (i128)"
+      },
+      "i686-pc-windows-msvc": {
+        "1.99.1": "i128 (i128)",
+        "1.100.0": "i128 (i128)",
+        "1.102.0-nightly": "i128 (i128)"
+      }
+    },
+    "abi_rust_hfa_f32x4": {
+      "x86_64-unknown-linux-gnu": {
+        "1.99.1": "void (ptr sret([16 x i8]) align 4, ptr align 4)",
+        "1.100.0": "void (ptr sret([16 x i8]) align 4, ptr align 4)",
+        "1.102.0-nightly": "void (ptr sret([16 x i8]) align 4, ptr align 4)"
+      },
+      "x86_64-apple-darwin": {
+        "1.99.1": "void (ptr sret([16 x i8]) align 4, ptr align 4)",
+        "1.100.0": "void (ptr sret([16 x i8]) align 4, ptr align 4)",
+        "1.102.0-nightly": "void (ptr sret([16 x i8]) align 4, ptr align 4)"
+      },
+      "x86_64-pc-windows-msvc": {
+        "1.99.1": "void (ptr sret([16 x i8]) align 4, ptr align 4)",
+        "1.100.0": "void (ptr sret([16 x i8]) align 4, ptr align 4)",
+        "1.102.0-nightly": "void (ptr sret([16 x i8]) align 4, ptr align 4)"
+      },
+      "x86_64-pc-windows-gnu": {
+        "1.99.1": "void (ptr sret([16 x i8]) align 4, ptr align 4)",
+        "1.100.0": "void (ptr sret([16 x i8]) align 4, ptr align 4)",
+        "1.102.0-nightly": "void (ptr sret([16 x i8]) align 4, ptr align 4)"
+      },
+      "aarch64-unknown-linux-gnu": {
+        "1.99.1": "void (ptr sret([16 x i8]) align 4, ptr align 4)",
+        "1.100.0": "void (ptr sret([16 x i8]) align 4, ptr align 4)",
+        "1.102.0-nightly": "void (ptr sret([16 x i8]) align 4, ptr align 4)"
+      },
+      "aarch64-apple-darwin": {
+        "1.99.1": "void (ptr sret([16 x i8]) align 4, ptr align 4)",
+        "1.100.0": "void (ptr sret([16 x i8]) align 4, ptr align 4)",
+        "1.102.0-nightly": "void (ptr sret([16 x i8]) align 4, ptr align 4)"
+      },
+      "aarch64-pc-windows-msvc": {
+        "1.99.1": "void (ptr sret([16 x i8]) align 4, ptr align 4)",
+        "1.100.0": "void (ptr sret([16 x i8]) align 4, ptr align 4)",
+        "1.102.0-nightly": "void (ptr sret([16 x i8]) align 4, ptr align 4)"
+      },
+      "i686-unknown-linux-gnu": {
+        "1.99.1": "void (ptr sret([16 x i8]) align 4, ptr align 4)",
+        "1.100.0": "void (ptr sret([16 x i8]) align 4, ptr align 4)",
+        "1.102.0-nightly": "void (ptr sret([16 x i8]) align 4, ptr align 4)"
+      },
+      "i686-pc-windows-msvc": {
+        "1.99.1": "void (ptr sret([16 x i8]) align 4, ptr align 4)",
+        "1.100.0": "void (ptr sret([16 x i8]) align 4, ptr align 4)",
+        "1.102.0-nightly": "void (ptr sret([16 x i8]) align 4, ptr align 4)"
+      }
+    },
+    "abi_c_hfa_f32x4": {
+      "x86_64-unknown-linux-gnu": {
+        "1.99.1": "{ double, double } ({ double, double })",
+        "1.100.0": "{ double, double } ({ double, double })",
+        "1.102.0-nightly": "{ double, double } ({ double, double })"
+      },
+      "x86_64-apple-darwin": {
+        "1.99.1": "{ double, double } ({ double, double })",
+        "1.100.0": "{ double, double } ({ double, double })",
+        "1.102.0-nightly": "{ double, double } ({ double, double })"
+      },
+      "x86_64-pc-windows-msvc": {
+        "1.99.1": "void (ptr sret([16 x i8]) align 4, ptr align 4)",
+        "1.100.0": "void (ptr sret([16 x i8]) align 4, ptr align 4)",
+        "1.102.0-nightly": "void (ptr sret([16 x i8]) align 4, ptr align 4)"
+      },
+      "x86_64-pc-windows-gnu": {
+        "1.99.1": "void (ptr sret([16 x i8]) align 4, ptr align 4)",
+        "1.100.0": "void (ptr sret([16 x i8]) align 4, ptr align 4)",
+        "1.102.0-nightly": "void (ptr sret([16 x i8]) align 4, ptr align 4)"
+      },
+      "aarch64-unknown-linux-gnu": {
+        "1.99.1": "[4 x float] ([4 x float])",
+        "1.100.0": "[4 x float] ([4 x float])",
+        "1.102.0-nightly": "[4 x float] ([4 x float])"
+      },
+      "aarch64-apple-darwin": {
+        "1.99.1": "[4 x float] ([4 x float])",
+        "1.100.0": "[4 x float] ([4 x float])",
+        "1.102.0-nightly": "[4 x float] ([4 x float])"
+      },
+      "aarch64-pc-windows-msvc": {
+        "1.99.1": "[4 x float] ([4 x float])",
+        "1.100.0": "[4 x float] ([4 x float])",
+        "1.102.0-nightly": "[4 x float] ([4 x float])"
+      },
+      "i686-unknown-linux-gnu": {
+        "1.99.1": "void (ptr sret([16 x i8]) align 4, ptr byval([16 x i8]) align 4)",
+        "1.100.0": "void (ptr sret([16 x i8]) align 4, ptr byval([16 x i8]) align 4)",
+        "1.102.0-nightly": "void (ptr sret([16 x i8]) align 4, ptr byval([16 x i8]) align 4)"
+      },
+      "i686-pc-windows-msvc": {
+        "1.99.1": "void (ptr sret([16 x i8]) align 4, ptr byval([16 x i8]) align 4)",
+        "1.100.0": "void (ptr sret([16 x i8]) align 4, ptr byval([16 x i8]) align 4)",
+        "1.102.0-nightly": "void (ptr sret([16 x i8]) align 4, ptr byval([16 x i8]) align 4)"
+      }
+    },
+    "abi_rust_simd_f32x4": {
+      "x86_64-unknown-linux-gnu": {
+        "1.99.1": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+        "1.100.0": "<4 x float> (<4 x float>)",
+        "1.102.0-nightly": "<4 x float> (<4 x float>)"
+      },
+      "x86_64-apple-darwin": {
+        "1.99.1": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+        "1.100.0": "<4 x float> (<4 x float>)",
+        "1.102.0-nightly": "<4 x float> (<4 x float>)"
+      },
+      "x86_64-pc-windows-msvc": {
+        "1.99.1": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+        "1.100.0": "<4 x float> (<4 x float>)",
+        "1.102.0-nightly": "<4 x float> (<4 x float>)"
+      },
+      "x86_64-pc-windows-gnu": {
+        "1.99.1": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+        "1.100.0": "<4 x float> (<4 x float>)",
+        "1.102.0-nightly": "<4 x float> (<4 x float>)"
+      },
+      "aarch64-unknown-linux-gnu": {
+        "1.99.1": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+        "1.100.0": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+        "1.102.0-nightly": "<4 x float> (<4 x float>)"
+      },
+      "aarch64-apple-darwin": {
+        "1.99.1": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+        "1.100.0": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+        "1.102.0-nightly": "<4 x float> (<4 x float>)"
+      },
+      "aarch64-pc-windows-msvc": {
+        "1.99.1": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+        "1.100.0": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+        "1.102.0-nightly": "<4 x float> (<4 x float>)"
+      },
+      "i686-unknown-linux-gnu": {
+        "1.99.1": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+        "1.100.0": "<4 x float> (<4 x float>)",
+        "1.102.0-nightly": "<4 x float> (<4 x float>)"
+      },
+      "i686-pc-windows-msvc": {
+        "1.99.1": "void (ptr sret([16 x i8]) align 16, ptr align 16)",
+        "1.100.0": "<4 x float> (<4 x float>)",
+        "1.102.0-nightly": "<4 x float> (<4 x float>)"
+      }
+    },
+    "abi_c_simd_f32x4": {
+      "x86_64-unknown-linux-gnu": {
+        "1.99.1": "<4 x float> (<4 x float>)",
+        "1.100.0": "<4 x float> (<4 x float>)",
+        "1.102.0-nightly": "<4 x float> (<4 x float>)"
+      },
+      "x86_64-apple-darwin": {
+        "1.99.1": "<4 x float> (<4 x float>)",
+        "1.100.0": "<4 x float> (<4 x float>)",
+        "1.102.0-nightly": "<4 x float> (<4 x float>)"
+      },
+      "x86_64-pc-windows-msvc": {
+        "1.99.1": "<4 x float> (<4 x float>)",
+        "1.100.0": "<4 x float> (<4 x float>)",
+        "1.102.0-nightly": "<4 x float> (<4 x float>)"
+      },
+      "x86_64-pc-windows-gnu": {
+        "1.99.1": "<4 x float> (<4 x float>)",
+        "1.100.0": "<4 x float> (<4 x float>)",
+        "1.102.0-nightly": "<4 x float> (<4 x float>)"
+      },
+      "aarch64-unknown-linux-gnu": {
+        "1.99.1": "<4 x float> (<4 x float>)",
+        "1.100.0": "<4 x float> (<4 x float>)",
+        "1.102.0-nightly": "<4 x float> (<4 x float>)"
+      },
+      "aarch64-apple-darwin": {
+        "1.99.1": "<4 x float> (<4 x float>)",
+        "1.100.0": "<4 x float> (<4 x float>)",
+        "1.102.0-nightly": "<4 x float> (<4 x float>)"
+      },
+      "aarch64-pc-windows-msvc": {
+        "1.99.1": "<4 x float> (<4 x float>)",
+        "1.100.0": "<4 x float> (<4 x float>)",
+        "1.102.0-nightly": "<4 x float> (<4 x float>)"
+      },
+      "i686-unknown-linux-gnu": {
+        "1.99.1": "<4 x float> (<4 x float>)",
+        "1.100.0": "<4 x float> (<4 x float>)",
+        "1.102.0-nightly": "<4 x float> (<4 x float>)"
+      },
+      "i686-pc-windows-msvc": {
+        "1.99.1": "<4 x float> (<4 x float>)",
+        "1.100.0": "<4 x float> (<4 x float>)",
+        "1.102.0-nightly": "<4 x float> (<4 x float>)"
+      }
+    },
+    "abi_rust_simd_f32x8": {
+      "x86_64-unknown-linux-gnu": {
+        "1.99.1": "void (ptr sret([32 x i8]) align 32, ptr align 32)",
+        "1.100.0": "void (ptr sret([32 x i8]) align 32, ptr align 32)",
+        "1.102.0-nightly": "void (ptr sret([32 x i8]) align 32, ptr align 32)"
+      },
+      "x86_64-apple-darwin": {
+        "1.99.1": "void (ptr sret([32 x i8]) align 32, ptr align 32)",
+        "1.100.0": "void (ptr sret([32 x i8]) align 32, ptr align 32)",
+        "1.102.0-nightly": "void (ptr sret([32 x i8]) align 32, ptr align 32)"
+      },
+      "x86_64-pc-windows-msvc": {
+        "1.99.1": "void (ptr sret([32 x i8]) align 32, ptr align 32)",
+        "1.100.0": "void (ptr sret([32 x i8]) align 32, ptr align 32)",
+        "1.102.0-nightly": "void (ptr sret([32 x i8]) align 32, ptr align 32)"
+      },
+      "x86_64-pc-windows-gnu": {
+        "1.99.1": "void (ptr sret([32 x i8]) align 32, ptr align 32)",
+        "1.100.0": "void (ptr sret([32 x i8]) align 32, ptr align 32)",
+        "1.102.0-nightly": "void (ptr sret([32 x i8]) align 32, ptr align 32)"
+      },
+      "aarch64-unknown-linux-gnu": {
+        "1.99.1": "void (ptr sret([32 x i8]) align 32, ptr align 32)",
+        "1.100.0": "void (ptr sret([32 x i8]) align 32, ptr align 32)",
+        "1.102.0-nightly": "void (ptr sret([32 x i8]) align 32, ptr align 32)"
+      },
+      "aarch64-apple-darwin": {
+        "1.99.1": "void (ptr sret([32 x i8]) align 32, ptr align 32)",
+        "1.100.0": "void (ptr sret([32 x i8]) align 32, ptr align 32)",
+        "1.102.0-nightly": "void (ptr sret([32 x i8]) align 32, ptr align 32)"
+      },
+      "aarch64-pc-windows-msvc": {
+        "1.99.1": "void (ptr sret([32 x i8]) align 32, ptr align 32)",
+        "1.100.0": "void (ptr sret([32 x i8]) align 32, ptr align 32)",
+        "1.102.0-nightly": "void (ptr sret([32 x i8]) align 32, ptr align 32)"
+      },
+      "i686-unknown-linux-gnu": {
+        "1.99.1": "void (ptr sret([32 x i8]) align 32, ptr align 32)",
+        "1.100.0": "void (ptr sret([32 x i8]) align 32, ptr align 32)",
+        "1.102.0-nightly": "void (ptr sret([32 x i8]) align 32, ptr align 32)"
+      },
+      "i686-pc-windows-msvc": {
+        "1.99.1": "void (ptr sret([32 x i8]) align 32, ptr align 32)",
+        "1.100.0": "void (ptr sret([32 x i8]) align 32, ptr align 32)",
+        "1.102.0-nightly": "void (ptr sret([32 x i8]) align 32, ptr align 32)"
+      }
+    },
+    "abi_vec_f32x4": {
+      "x86_64-unknown-linux-gnu": {
+        "1.99.1": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>)",
+        "1.100.0": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>)",
+        "1.102.0-nightly": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>)@@32"
+      },
+      "x86_64-apple-darwin": {
+        "1.99.1": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>)",
+        "1.100.0": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>)",
+        "1.102.0-nightly": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>)@@32"
+      },
+      "x86_64-pc-windows-msvc": {
+        "1.99.1": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>)",
+        "1.100.0": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>)",
+        "1.102.0-nightly": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>)@@32"
+      },
+      "x86_64-pc-windows-gnu": {
+        "1.99.1": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>)",
+        "1.100.0": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>)",
+        "1.102.0-nightly": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>)@@32"
+      },
+      "i686-unknown-linux-gnu": {
+        "1.99.1": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>)",
+        "1.100.0": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>)",
+        "1.102.0-nightly": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>)@@32"
+      },
+      "i686-pc-windows-msvc": {
+        "1.99.1": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>)",
+        "1.100.0": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>)",
+        "1.102.0-nightly": "x86_vectorcallcc <4 x float> (<4 x float>, <4 x float>)@@32"
+      }
+    },
+    "abi_vec_hfa4": {
+      "x86_64-unknown-linux-gnu": {
+        "1.99.1": "x86_vectorcallcc void (ptr sret([16 x i8]) align 4, ptr align 4, float)",
+        "1.100.0": "x86_vectorcallcc void (ptr sret([16 x i8]) align 4, ptr align 4, float)",
+        "1.102.0-nightly": "x86_vectorcallcc void (ptr sret([16 x i8]) align 4, ptr align 4, float)@@24"
+      },
+      "x86_64-apple-darwin": {
+        "1.99.1": "x86_vectorcallcc void (ptr sret([16 x i8]) align 4, ptr align 4, float)",
+        "1.100.0": "x86_vectorcallcc void (ptr sret([16 x i8]) align 4, ptr align 4, float)",
+        "1.102.0-nightly": "x86_vectorcallcc void (ptr sret([16 x i8]) align 4, ptr align 4, float)@@24"
+      },
+      "x86_64-pc-windows-msvc": {
+        "1.99.1": "x86_vectorcallcc void (ptr sret([16 x i8]) align 4, ptr align 4, float)",
+        "1.100.0": "x86_vectorcallcc void (ptr sret([16 x i8]) align 4, ptr align 4, float)",
+        "1.102.0-nightly": "x86_vectorcallcc void (ptr sret([16 x i8]) align 4, ptr align 4, float)@@24"
+      },
+      "x86_64-pc-windows-gnu": {
+        "1.99.1": "x86_vectorcallcc void (ptr sret([16 x i8]) align 4, ptr align 4, float)",
+        "1.100.0": "x86_vectorcallcc void (ptr sret([16 x i8]) align 4, ptr align 4, float)",
+        "1.102.0-nightly": "x86_vectorcallcc void (ptr sret([16 x i8]) align 4, ptr align 4, float)@@24"
+      },
+      "i686-unknown-linux-gnu": {
+        "1.99.1": "x86_vectorcallcc void (ptr sret([16 x i8]) align 4, ptr byval([16 x i8]) align 4, float)",
+        "1.100.0": "x86_vectorcallcc void (ptr sret([16 x i8]) align 4, ptr byval([16 x i8]) align 4, float)",
+        "1.102.0-nightly": "x86_vectorcallcc void (ptr sret([16 x i8]) align 4, ptr byval([16 x i8]) align 4, float)@@20"
+      },
+      "i686-pc-windows-msvc": {
+        "1.99.1": "x86_vectorcallcc void (ptr sret([16 x i8]) align 4, ptr byval([16 x i8]) align 4, float)",
+        "1.100.0": "x86_vectorcallcc void (ptr sret([16 x i8]) align 4, ptr byval([16 x i8]) align 4, float)",
+        "1.102.0-nightly": "x86_vectorcallcc void (ptr sret([16 x i8]) align 4, ptr byval([16 x i8]) align 4, float)@@20"
+      }
+    }
+  }
+}
