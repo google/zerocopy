@@ -1,0 +1,613 @@
+[
+  {
+    "id": "adequacy",
+    "lean": "Toy.SemType.adequacy_semTyped_nil_safe",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "In the standard model, an expression that is semantically well typed at some type in the empty typing context (`SemTyped Recipe.std [] e τ`) never reaches a stuck configuration, from any initial heap (`∀ h, Safe (e, h)`). The empty context does not require syntactic closedness `e.closedAt 0 = true`.",
+    "hypotheses": [
+      {
+        "name": "hsem",
+        "purpose": "Semantic typing of `e` at `τ` in the empty context, in the standard model.",
+        "tightness": "tight",
+        "counterexample": "Toy.SemType.adequacy_semTyped_hyp_tight"
+      },
+      {
+        "name": "empty typing context (Γ = [] in hsem)",
+        "purpose": "Semantic typing in a non-empty context only constrains closed instances; the open term itself can be stuck.",
+        "tightness": "tight",
+        "counterexample": "Toy.SemType.adequacy_nil_ctx_hyp_tight"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "`checkedRead (num 0)` (a closed non-value that executes the unsafe primitive) is semantically well typed at `int` in the empty context.",
+    "nonvacuity_witness_lean": "Toy.SemType.adequacy_nonvacuous",
+    "non_claims": [
+      "Does not state that the values reached are in the value interpretation of `τ` (true by definition but not part of this statement).",
+      "Does not require syntactic closedness `e.closedAt 0 = true`: an expression whose free variables occur only in unreachable code can satisfy `hsem` (`semTyped_nil_open_dead_var`: `ifz 1 (var 0) 0` at `int`). What is excluded is semantic typing only in a non-empty context, without a closing substitution (`adequacy_nil_ctx_hyp_tight`).",
+      "Conversely, safety from the empty heap does not give `hsem`: semantic typing in the empty context quantifies over all worlds and all initial heaps; `ifz size 0 (read (cast 99))` is safe from `[]` but has no semantic type (`sizeZeroOrForged_safe_nil_not_semTyped`).",
+      "Is stated for `Recipe.std` only; the same one-step argument applies to any recipe whose expression closure implies `safeOnly` (e.g. `Recipe.anyLoc`, `Recipe.nonKripke`, `Recipe.safetyOnly`), but that is not stated.",
+      "Says nothing about termination: divergence is safe.",
+      "Depth is definitional: the content of the model lies in the fundamental theorem and in let-compatibility, not here; adequacy alone does not validate a model (see `safetyOnly_semTyped_nil_iff_safe`).",
+      "Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier."
+    ],
+    "prior_art": [
+      "Robin Milner. \"A Theory of Type Polymorphism in Programming.\" Journal of Computer and System Sciences 17(3):348-375, December 1978. DOI 10.1016/0022-0000(78)90014-4. (Semantic soundness in a denotational setting: well-typed expressions do not denote the error value; not a small-step operational statement.)",
+      "Amin Timany, Robbert Krebbers, Derek Dreyer, Lars Birkedal. \"A Logical Approach to Type Soundness.\" Journal of the ACM 71(6), Article 40, November 2024. DOI 10.1145/3676954. Theorem 6.6 (adequacy of unary logical relations); Section 4.1 remarks that adequacy is usually almost trivial because safety is built into the definition of semantic typing.",
+      "Andrew W. Appel, David McAllester. \"An Indexed Model of Recursive Types for Foundational Proof-Carrying Code.\" ACM Transactions on Programming Languages and Systems 23(5):657-683, September 2001. DOI 10.1145/504709.504712.",
+      "Amal Jamil Ahmed. \"Semantics of Types for Mutable State.\" PhD thesis, Princeton University, November 2004; Princeton Computer Science Technical Report TR-713-04 (https://www.cs.princeton.edu/techreports/2004/713.pdf)."
+    ],
+    "design_question": "Rust's safety story rests on unsafe code encapsulated behind safe interfaces: a syntactic type system rejects the unsafe primitive, but a library using it internally can still be semantically well typed, and then every safe client is safe. What is the minimal formal content of semantic typing + adequacy + fundamental theorem, and which tempting shortcuts fail? (Adequacy is the cheap ingredient once safety is part of the expression interpretation.)"
+  },
+  {
+    "id": "fundamental-theorem",
+    "lean": "Toy.SemType.fundamental_hasType_semTyped",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "Every expression that is syntactically well typed in a context `Γ` at type `τ` (`HasType Γ e τ`) is semantically well typed in `Γ` at `τ` in the standard model (`SemTyped Recipe.std Γ e τ`).",
+    "hypotheses": [
+      {
+        "name": "hty",
+        "purpose": "Syntactic typing; in particular `e` contains no `cast` and no runtime reference literal.",
+        "tightness": "tight",
+        "counterexample": "Toy.SemType.fundamental_hasType_hyp_tight"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "`HasType [] ((λ r. read r) (alloc 5)) int` and `HasType [int ⇒ int] (x 7) int`.",
+    "nonvacuity_witness_lean": "Toy.SemType.fundamental_nonvacuous",
+    "non_claims": [
+      "Not a completeness result: semantic typing is strictly more permissive (`checkedRead_not_hasType`, `checkedRead_semTyped`).",
+      "Does not establish progress or preservation for `HasType`; no syntactic invariant of intermediate configurations is claimed.",
+      "The function case of `V` carries the syntactic side condition `b.closedAt 1 = true` (so that the shifting-free substitution is capture-free). Syntactically typed terms satisfy it, but operationally safe abstractions with free variables in dead code are excluded from `V` (`V_std_rejects_open_dead_lam`: `λ x. ifz 0 x y`), so `V` is not a purely extensional realizability predicate.",
+      "The absence of step-indexing relies on this toy's restrictions (word-only store, no recursive types); it does not show step-indexing is unnecessary for richer languages.",
+      "Does not hold for the ablated recipes `Recipe.safetyOnly`, `Recipe.nonKripke`, `Recipe.anyLoc` (see their counterexamples); its status for `Recipe.valuesOnly` is unknown (not examined).",
+      "Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier."
+    ],
+    "prior_art": [
+      "Amin Timany, Robbert Krebbers, Derek Dreyer, Lars Birkedal. \"A Logical Approach to Type Soundness.\" Journal of the ACM 71(6), Article 40, November 2024. DOI 10.1145/3676954. Theorem 6.5 (fundamental theorem of unary logical relations), proved from semantic typing rules (compatibility lemmas).",
+      "Coq development accompanying Timany et al. 2024 (https://gitlab.mpi-sws.org/iris/examples, directory theories/logrel/F_mu_ref_conc); per the article it mechanizes the semantic type soundness proof (Sections 5-6) and the proofs that the symbol ADT is semantically well typed and gremlin is not (Section 7).",
+      "Andrew M. Pitts. \"Typed Operational Reasoning.\" In B. C. Pierce (ed.), Advanced Topics in Types and Programming Languages, Chapter 7, pp. 245-289. MIT Press, 2005. ISBN 978-0-262-16228-9. Author copy: https://www.cl.cam.ac.uk/~amp12/papers/typor/typor.pdf.",
+      "Amal Jamil Ahmed. \"Semantics of Types for Mutable State.\" PhD thesis, Princeton University, November 2004; Princeton Computer Science Technical Report TR-713-04 (https://www.cs.princeton.edu/techreports/2004/713.pdf).",
+      "Andrew W. Appel, David McAllester. \"An Indexed Model of Recursive Types for Foundational Proof-Carrying Code.\" ACM Transactions on Programming Languages and Systems 23(5):657-683, September 2001. DOI 10.1145/504709.504712.",
+      "Jeremy Siek. \"Declarative Semantics for Functional Languages.\" Archive of Formal Proofs, July 2017 (https://www.isa-afp.org/entries/Decl_Sem_Fun_PL.html). Isabelle/HOL; case studies include semantic type soundness for a polymorphic lambda-calculus with general recursion and an adaptation to a call-by-value lambda-calculus with mutable references.",
+      "Yuquan Fu, Carlo Angiuli, Sam Tobin-Hochstadt. \"Revisiting Soundness for Occurrence Typing, Semantically.\" arXiv:2609.16299, 2026. (Semantic type soundness via step-indexed logical relations, formalized in Lean.)"
+    ],
+    "design_question": "Rust's safety story rests on unsafe code encapsulated behind safe interfaces: a syntactic type system rejects the unsafe primitive, but a library using it internally can still be semantically well typed, and then every safe client is safe. What is the minimal formal content of semantic typing + adequacy + fundamental theorem, and which tempting shortcuts fail? (The obligation a verification framework discharges once, for the safe fragment, so that safe code needs no per-program proofs.)"
+  },
+  {
+    "id": "syntactic-type-safety-corollary",
+    "lean": "Toy.SemType.hasType_closed_safe",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "A syntactically well-typed expression in the empty context (`HasType [] e τ`, which also makes `e` closed) never gets stuck, from any initial heap; derived from adequacy and the fundamental theorem.",
+    "hypotheses": [
+      {
+        "name": "hty",
+        "purpose": "Syntactic typing in the empty context.",
+        "tightness": "tight",
+        "counterexample": "Toy.SemType.forgedRead_unsafe_ill_typed"
+      },
+      {
+        "name": "empty typing context (Γ = [] in hty)",
+        "purpose": "An open well-typed term is stuck as a program.",
+        "tightness": "tight",
+        "counterexample": "Toy.SemType.adequacy_nil_ctx_hyp_tight"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`HasType [] ((λ r. read r) (alloc 5)) int`.",
+    "nonvacuity_witness_lean": "Toy.SemType.fundamental_nonvacuous",
+    "non_claims": [
+      "Does not establish preservation (semantic soundness implies syntactic safety but not preservation).",
+      "Says nothing about programs that use `cast`; for those see the encapsulation principle.",
+      "Its proof depends on the two main results above; it is a corollary, not independent evidence.",
+      "Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier."
+    ],
+    "prior_art": [
+      "Andrew K. Wright, Matthias Felleisen. \"A Syntactic Approach to Type Soundness.\" Information and Computation 115(1):38-94, November 1994. DOI 10.1006/inco.1994.1093.",
+      "Amin Timany, Robbert Krebbers, Derek Dreyer, Lars Birkedal. \"A Logical Approach to Type Soundness.\" Journal of the ACM 71(6), Article 40, November 2024. DOI 10.1145/3676954. Corollary 6.7 (semantic type soundness implies safety of closed well-typed programs) and footnote 7 (it does not imply preservation)."
+    ],
+    "design_question": "Rust's safety story rests on unsafe code encapsulated behind safe interfaces: a syntactic type system rejects the unsafe primitive, but a library using it internally can still be semantically well typed, and then every safe client is safe. What is the minimal formal content of semantic typing + adequacy + fundamental theorem, and which tempting shortcuts fail? (Reference point (corollary): syntactic safety is the special case without unsafe code; it says nothing about libraries such as `checkedRead`.)"
+  },
+  {
+    "id": "semantic-let-compatibility",
+    "lean": "Toy.SemType.semTyped_let_compat",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "In the standard model, if a client `c` is semantically well typed at `τ` in context `σ :: Γ` (`SemTyped Recipe.std (σ :: Γ) c τ`) and a library expression `lib` is semantically well typed at `σ` in context `Γ` (`SemTyped Recipe.std Γ lib σ`), then the call-by-value linked program `app (lam c) lib` is semantically well typed at `τ` in context `Γ`; neither piece needs to be syntactically typable.",
+    "hypotheses": [
+      {
+        "name": "hc",
+        "purpose": "Semantic typing of the client under the library variable.",
+        "tightness": "tight",
+        "counterexample": "Toy.SemType.client_hyp_tight"
+      },
+      {
+        "name": "hlib",
+        "purpose": "Semantic typing of the library expression.",
+        "tightness": "tight",
+        "counterexample": "Toy.SemType.lib_hyp_tight"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "Client `x 7` is semantically typed in `[int ⇒ int]`, and `checkedRead` (which uses `cast`) is semantically typed at `int ⇒ int` in the empty context.",
+    "nonvacuity_witness_lean": "Toy.SemType.semTyped_let_compat_nonvacuous",
+    "non_claims": [
+      "Covers only call-by-value let-style linking `app (lam c) lib`; substituting a non-value library expression directly into the client (duplicating or dropping its effects) is not covered.",
+      "Does not claim that semantic typing is decidable or mechanically checkable.",
+      "Does not depend on, and does not imply, any syntactic typing of `c` or `lib`.",
+      "Cannot verify a stateful unsafe library whose safety depends on an invariant over the contents of heap cells preserved across calls (for example a stored length bound, or a private monotone counter as in the symbol ADT of Timany et al. 2024): worlds `W : Nat` record only a lower bound on the heap length, and `safeAndIn` quantifies over all heaps of at least that length with arbitrary cell contents. `cellBoundRead_not_semTyped` shows that `cellBoundRead` (a raw read guarded by a bound stored in a private cell) is not semantically typed at its interface type `int ⇒ int` (`¬ SemTyped std [] cellBoundRead (int ⇒ int)`), although it is safe with the client `x 7` (`cellBoundRead_callWith7_safe`). Invariants and ghost state, as in Iris-based models such as RustBelt, are what lift this restriction.",
+      "Imposes no closedness condition on the client `c`, and does not imply an unconditional semantic `lam`-introduction rule: the function case of `V` requires a body closed under one binder (`b.closedAt 1 = true`), so semantic `lam`-introduction needs `b.closedAt (Γ.length + 1) = true` (which the syntactic `lam` rule supplies in `fundamental_hasType_semTyped`). `semTyped_lam_compat_needs_closedAt` shows a client `ifz 1 (var 1) 0` semantically typed at `int` in `[int]` whose abstraction is not semantically typed at `int ⇒ int` in the empty context, while the linked program `(λ. ifz 1 (var 1) 0) 7` is semantically typed; the linked program never places `λ. c` in `V` because call-by-value β-reduction consumes it.",
+      "Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier."
+    ],
+    "prior_art": [
+      "Amin Timany, Robbert Krebbers, Derek Dreyer, Lars Birkedal. \"A Logical Approach to Type Soundness.\" Journal of the ACM 71(6), Article 40, November 2024. DOI 10.1145/3676954. Sections 4.1 and 6 (semantic typing rules, a.k.a. compatibility lemmas).",
+      "Andrew M. Pitts. \"Typed Operational Reasoning.\" In B. C. Pierce (ed.), Advanced Topics in Types and Programming Languages, Chapter 7, pp. 245-289. MIT Press, 2005. ISBN 978-0-262-16228-9. Author copy: https://www.cl.cam.ac.uk/~amp12/papers/typor/typor.pdf.",
+      "Ralf Jung, Jacques-Henri Jourdan, Robbert Krebbers, Derek Dreyer. \"RustBelt: Securing the Foundations of the Rust Programming Language.\" Proceedings of the ACM on Programming Languages 2(POPL), Article 66, January 2018. DOI 10.1145/3158154. Coq development: https://gitlab.mpi-sws.org/iris/lambda-rust."
+    ],
+    "design_question": "Rust's safety story rests on unsafe code encapsulated behind safe interfaces: a syntactic type system rejects the unsafe primitive, but a library using it internally can still be semantically well typed, and then every safe client is safe. What is the minimal formal content of semantic typing + adequacy + fundamental theorem, and which tempting shortcuts fail? (Compositionality: verify an unsafe library once, then link it with arbitrary semantically typed clients.)"
+  },
+  {
+    "id": "linking-safety-semantic-client",
+    "lean": "Toy.SemType.semTyped_client_semTyped_lib_safe",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "In the standard model, linking (call-by-value `app (lam c) lib`) a client `c` that is semantically well typed at some `τ` in the one-variable context `[σ]` with a library `lib` that is semantically well typed at `σ` in the empty context yields a program that never gets stuck, from any heap.",
+    "hypotheses": [
+      {
+        "name": "hc",
+        "purpose": "Semantic typing of the client in the context `[σ]`.",
+        "tightness": "tight",
+        "counterexample": "Toy.SemType.client_hyp_tight"
+      },
+      {
+        "name": "hlib",
+        "purpose": "Semantic typing of the library in the empty context.",
+        "tightness": "tight",
+        "counterexample": "Toy.SemType.lib_hyp_tight"
+      },
+      {
+        "name": "client context is exactly the library variable ([σ])",
+        "purpose": "With more client variables than the linking binds, the linked program is open and stuck.",
+        "tightness": "tight",
+        "counterexample": "Toy.SemType.linking_single_var_ctx_tight"
+      },
+      {
+        "name": "library typed in the empty context ([])",
+        "purpose": "A library typed only in a non-empty context may be an open term, and the linked program is stuck.",
+        "tightness": "tight",
+        "counterexample": "Toy.SemType.linking_lib_nil_ctx_tight"
+      },
+      {
+        "name": "matching interface type (the same σ in hc and hlib)",
+        "purpose": "A client expecting a `ref` linked with a library typed at `int` gets stuck.",
+        "tightness": "tight",
+        "counterexample": "Toy.SemType.linking_interface_match_tight"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Client `x 7` (semantically typed in `[int ⇒ int]`) and library `checkedRead`.",
+    "nonvacuity_witness_lean": [
+      "Toy.SemType.semTyped_let_compat_nonvacuous",
+      "Toy.SemType.linking_structure_nonvacuous"
+    ],
+    "non_claims": [
+      "Corollary of let-compatibility and adequacy; not independent evidence.",
+      "Covers only call-by-value let-linking `app (lam c) lib` of one library expression, typed in the empty context, into a client whose context is exactly the one library variable of the library's type; textual substitution `c[lib/0]` of a non-value library (which would duplicate or drop its effects), several libraries, and libraries sharing state are not covered.",
+      "Does not say that the client cannot observe or modify the library's cells: the toy has no ownership or abstraction (e.g. `checkedRead` can read any allocated cell, and a client can overwrite any cell it holds a reference to).",
+      "Cannot verify a stateful unsafe library whose safety depends on an invariant over the contents of heap cells preserved across calls (for example a stored length bound, or a private monotone counter as in the symbol ADT of Timany et al. 2024): worlds `W : Nat` record only a lower bound on the heap length, and `safeAndIn` quantifies over all heaps of at least that length with arbitrary cell contents. `cellBoundRead_not_semTyped` shows that `cellBoundRead` (a raw read guarded by a bound stored in a private cell) is not semantically typed at its interface type `int ⇒ int` (`¬ SemTyped std [] cellBoundRead (int ⇒ int)`), although it is safe with the client `x 7` (`cellBoundRead_callWith7_safe`). Invariants and ghost state, as in Iris-based models such as RustBelt, are what lift this restriction.",
+      "Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier."
+    ],
+    "prior_art": [
+      "Amin Timany, Robbert Krebbers, Derek Dreyer, Lars Birkedal. \"A Logical Approach to Type Soundness.\" Journal of the ACM 71(6), Article 40, November 2024. DOI 10.1145/3676954. Section 3.2 (safe encapsulation of unsafe features, with an assert-based symbol ADT) and Section 7.",
+      "Ralf Jung, Jacques-Henri Jourdan, Robbert Krebbers, Derek Dreyer. \"RustBelt: Securing the Foundations of the Rust Programming Language.\" Proceedings of the ACM on Programming Languages 2(POPL), Article 66, January 2018. DOI 10.1145/3158154. Coq development: https://gitlab.mpi-sws.org/iris/lambda-rust."
+    ],
+    "design_question": "Rust's safety story rests on unsafe code encapsulated behind safe interfaces: a syntactic type system rejects the unsafe primitive, but a library using it internally can still be semantically well typed, and then every safe client is safe. What is the minimal formal content of semantic typing + adequacy + fundamental theorem, and which tempting shortcuts fail? (Reference point: the minimal-hypothesis form of the encapsulation principle. The client side of the contract need only be semantic; e.g. `checkedRead (f 0)`, which uses `cast` and has no syntactic type, is a semantically typed client (`checkedClient_semTyped_safe_not_hasType`).)"
+  },
+  {
+    "id": "encapsulation-principle",
+    "lean": "Toy.SemType.hasType_client_semTyped_lib_safe",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "In the standard model, linking (call-by-value `app (lam c) lib`) a client `c` that is syntactically well typed at some `τ` in the one-variable context `[σ]` with a library `lib` that is semantically well typed at `σ` in the empty context (even if `lib` uses `cast`) yields a program that never gets stuck, from any heap.",
+    "hypotheses": [
+      {
+        "name": "hc",
+        "purpose": "Syntactic typing of the client; can be weakened to semantic typing (`semTyped_client_semTyped_lib_safe`).",
+        "tightness": "tight",
+        "counterexample": "Toy.SemType.client_hyp_tight"
+      },
+      {
+        "name": "hlib",
+        "purpose": "Semantic typing of the library in the empty context.",
+        "tightness": "tight",
+        "counterexample": "Toy.SemType.lib_hyp_tight"
+      },
+      {
+        "name": "client context is exactly the library variable ([σ])",
+        "purpose": "With more client variables than the linking binds, the linked program is open and stuck.",
+        "tightness": "tight",
+        "counterexample": "Toy.SemType.linking_single_var_ctx_tight"
+      },
+      {
+        "name": "library typed in the empty context ([])",
+        "purpose": "A library typed only in a non-empty context may be an open term, and the linked program is stuck.",
+        "tightness": "tight",
+        "counterexample": "Toy.SemType.linking_lib_nil_ctx_tight"
+      },
+      {
+        "name": "matching interface type (the same σ in hc and hlib)",
+        "purpose": "A client expecting a `ref` linked with a library typed at `int` gets stuck.",
+        "tightness": "tight",
+        "counterexample": "Toy.SemType.linking_interface_match_tight"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Client `x 7` (syntactically typed in `[int ⇒ int]`) and library `checkedRead`.",
+    "nonvacuity_witness_lean": [
+      "Toy.SemType.hasType_client_semTyped_lib_nonvacuous",
+      "Toy.SemType.linking_structure_nonvacuous"
+    ],
+    "non_claims": [
+      "Does not say that the client cannot observe or modify the library's cells: the toy has no ownership or abstraction (e.g. `checkedRead` can read any allocated cell, and a client can overwrite any cell it holds a reference to).",
+      "Covers only call-by-value let-linking `app (lam c) lib` of one library expression, typed in the empty context, into a client whose context is exactly the one library variable of the library's type; textual substitution `c[lib/0]` of a non-value library (which would duplicate or drop its effects), several libraries, and libraries sharing state are not covered.",
+      "Cannot verify a stateful unsafe library whose safety depends on an invariant over the contents of heap cells preserved across calls (for example a stored length bound, or a private monotone counter as in the symbol ADT of Timany et al. 2024): worlds `W : Nat` record only a lower bound on the heap length, and `safeAndIn` quantifies over all heaps of at least that length with arbitrary cell contents. `cellBoundRead_not_semTyped` shows that `cellBoundRead` (a raw read guarded by a bound stored in a private cell) is not semantically typed at its interface type `int ⇒ int` (`¬ SemTyped std [] cellBoundRead (int ⇒ int)`), although it is safe with the client `x 7` (`cellBoundRead_callWith7_safe`). Invariants and ghost state, as in Iris-based models such as RustBelt, are what lift this restriction.",
+      "Does not cover deallocation or concurrency.",
+      "Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier."
+    ],
+    "prior_art": [
+      "Ralf Jung, Jacques-Henri Jourdan, Robbert Krebbers, Derek Dreyer. \"RustBelt: Securing the Foundations of the Rust Programming Language.\" Proceedings of the ACM on Programming Languages 2(POPL), Article 66, January 2018. DOI 10.1145/3158154. Coq development: https://gitlab.mpi-sws.org/iris/lambda-rust.",
+      "Ralf Jung. \"Understanding and Evolving the Rust Programming Language.\" PhD thesis, Saarland University, 2020. DOI 10.22028/D291-31946.",
+      "Amin Timany, Robbert Krebbers, Derek Dreyer, Lars Birkedal. \"A Logical Approach to Type Soundness.\" Journal of the ACM 71(6), Article 40, November 2024. DOI 10.1145/3676954. Sections 3.2 and 7.",
+      "Coq development accompanying Timany et al. 2024 (https://gitlab.mpi-sws.org/iris/examples, directory theories/logrel/F_mu_ref_conc); per the article it mechanizes the semantic type soundness proof (Sections 5-6) and the proofs that the symbol ADT is semantically well typed and gremlin is not (Section 7)."
+    ],
+    "design_question": "Rust's safety story rests on unsafe code encapsulated behind safe interfaces: a syntactic type system rejects the unsafe primitive, but a library using it internally can still be semantically well typed, and then every safe client is safe. What is the minimal formal content of semantic typing + adequacy + fundamental theorem, and which tempting shortcuts fail? (The exact statement a Rust-style verification framework aims for.)"
+  },
+  {
+    "id": "checked-read-not-syntactically-typable",
+    "lean": "Toy.SemType.checkedRead_not_hasType",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "The bounds-checked raw read `checkedRead = λ n. ifz (lt n size) 0 (read (cast n))` (i.e. if `n < size` then `read (cast n)` else `0`; `ifz` takes its first branch on `0`) has no syntactic type in any context.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "No hypotheses; `checkedRead` is a meaningful executable library (`checkedRead_applied_semTyped`).",
+    "nonvacuity_witness_lean": "Toy.SemType.checkedRead_applied_semTyped",
+    "non_claims": [
+      "Only about this `HasType`. Adding the uniform rule `Γ ⊢ a : int ⟹ Γ ⊢ cast a : ref` would be unsound for the standard model (`typing_relation_deriving_cast_of_int_var_unsound` applies to `withCastRootRule`, by `typing_relation_nonvacuous`), but restricted rules with `cast` at the root can be sound (`restrictedCastRule_sound`: `ref :: Γ ⊢ cast 0 : ref` and `Γ ⊢ cast ((λ _. 0) (alloc 0)) : ref`). It is not claimed that no typing rule mentioning `cast` can be sound.",
+      "Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier."
+    ],
+    "prior_art": [
+      "Amin Timany, Robbert Krebbers, Derek Dreyer, Lars Birkedal. \"A Logical Approach to Type Soundness.\" Journal of the ACM 71(6), Article 40, November 2024. DOI 10.1145/3676954. Section 3.2: the symbol ADT is not syntactically well typed because it uses the unsafe assert expression (the analogue of this statement)."
+    ],
+    "design_question": "Rust's safety story rests on unsafe code encapsulated behind safe interfaces: a syntactic type system rejects the unsafe primitive, but a library using it internally can still be semantically well typed, and then every safe client is safe. What is the minimal formal content of semantic typing + adequacy + fundamental theorem, and which tempting shortcuts fail? (Witnesses that the syntactic system rejects the encapsulated library outright.)"
+  },
+  {
+    "id": "checked-read-semantically-typed",
+    "lean": "Toy.SemType.checkedRead_semTyped",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "In the standard model, the bounds-checked raw read `checkedRead` is semantically well typed at `int ⇒ int` in the empty context, even though it uses the unsafe primitive.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "No hypotheses; `checkedRead (num n)` is semantically typed at `int` for every `n`.",
+    "nonvacuity_witness_lean": "Toy.SemType.checkedRead_applied_semTyped",
+    "non_claims": [
+      "Relative to a model that tracks memory safety and nothing else; in a model with ownership (e.g. RustBelt) reading arbitrary allocated cells would not be justified.",
+      "Says nothing about functional correctness (e.g. that it returns the cell's content).",
+      "The guard is necessary: the unguarded `λ n. read (cast n)` has no semantic type (`uncheckedRead_not_semTyped`).",
+      "`checkedRead` is semantically typed only because it compares against the primitive `size` (the current heap length) on every call and relies on no stored cell contents. Cannot verify a stateful unsafe library whose safety depends on an invariant over the contents of heap cells preserved across calls (for example a stored length bound, or a private monotone counter as in the symbol ADT of Timany et al. 2024): worlds `W : Nat` record only a lower bound on the heap length, and `safeAndIn` quantifies over all heaps of at least that length with arbitrary cell contents. `cellBoundRead_not_semTyped` shows that `cellBoundRead` (a raw read guarded by a bound stored in a private cell) is not semantically typed at its interface type `int ⇒ int` (`¬ SemTyped std [] cellBoundRead (int ⇒ int)`), although it is safe with the client `x 7` (`cellBoundRead_callWith7_safe`). Invariants and ghost state, as in Iris-based models such as RustBelt, are what lift this restriction.",
+      "The single comparison `lt n size` suffices without a lower-bound check only because words are unsigned naturals; with signed integers a two-sided check would be needed.",
+      "Models a global `peek(n)` on the heap rather than a container-scoped `get(i)`: `checkedRead` takes no reference or slice argument and reads any allocated cell.",
+      "Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier."
+    ],
+    "prior_art": [
+      "Amin Timany, Robbert Krebbers, Derek Dreyer, Lars Birkedal. \"A Logical Approach to Type Soundness.\" Journal of the ACM 71(6), Article 40, November 2024. DOI 10.1145/3676954. Theorem 7.1 (the symbol ADT, which uses assert, is semantically well typed); the symbol ADT relies on an invariant about a private counter, which this model cannot express.",
+      "Coq development accompanying Timany et al. 2024 (https://gitlab.mpi-sws.org/iris/examples, directory theories/logrel/F_mu_ref_conc); per the article it mechanizes the semantic type soundness proof (Sections 5-6) and the proofs that the symbol ADT is semantically well typed and gremlin is not (Section 7).",
+      "Ralf Jung, Jacques-Henri Jourdan, Robbert Krebbers, Derek Dreyer. \"RustBelt: Securing the Foundations of the Rust Programming Language.\" Proceedings of the ACM on Programming Languages 2(POPL), Article 66, January 2018. DOI 10.1145/3158154. Coq development: https://gitlab.mpi-sws.org/iris/lambda-rust."
+    ],
+    "design_question": "Rust's safety story rests on unsafe code encapsulated behind safe interfaces: a syntactic type system rejects the unsafe primitive, but a library using it internally can still be semantically well typed, and then every safe client is safe. What is the minimal formal content of semantic typing + adequacy + fundamental theorem, and which tempting shortcuts fail? (A concrete instance of 'unsafe inside, safe interface' that the syntactic system rejects.)"
+  },
+  {
+    "id": "checked-read-syntactic-clients-safe",
+    "lean": "Toy.SemType.checkedRead_hasType_clients_safe",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "Every client that is syntactically well typed at some `τ` in the context `[int ⇒ int]` is safe from every heap when linked (call-by-value `app (lam c) checkedRead`) with `checkedRead`.",
+    "hypotheses": [
+      {
+        "name": "hc",
+        "purpose": "Syntactic typing of the client in `[int ⇒ int]`. Not minimal: it can be weakened to `SemTyped Recipe.std [int ⇒ int] c τ` (via `semTyped_client_semTyped_lib_safe` and `checkedRead_semTyped`); `checkedClient_semTyped_safe_not_hasType` exhibits a `cast`-using client that is semantically typed and safe.",
+        "tightness": "tight",
+        "counterexample": "Toy.SemType.checkedRead_client_hyp_tight"
+      },
+      {
+        "name": "client context is exactly the library variable ([int ⇒ int])",
+        "purpose": "A client with a second free variable is open after linking and gets stuck.",
+        "tightness": "tight",
+        "counterexample": "Toy.SemType.checkedRead_single_var_ctx_tight"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Client `x 7`.",
+    "nonvacuity_witness_lean": "Toy.SemType.hasType_client_semTyped_lib_nonvacuous",
+    "non_claims": [
+      "A corollary: its proof composes the encapsulation principle (hence the fundamental theorem, let-compatibility, and adequacy) with `checkedRead_semTyped`; it is not independent evidence.",
+      "Linking is restricted to call-by-value `app (lam c) checkedRead` with the client's only free variable bound to the library.",
+      "Does not say that the client cannot observe or modify the library's cells: the toy has no ownership or abstraction (e.g. `checkedRead` can read any allocated cell, and a client can overwrite any cell it holds a reference to).",
+      "`checkedRead` relies only on the primitive `size`; this result says nothing about libraries whose safety depends on stored cell contents, which the standard model cannot verify (`cellBoundRead_not_semTyped`: `cellBoundRead` is not semantically typed at `int ⇒ int`).",
+      "Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier."
+    ],
+    "prior_art": [
+      "Amin Timany, Robbert Krebbers, Derek Dreyer, Lars Birkedal. \"A Logical Approach to Type Soundness.\" Journal of the ACM 71(6), Article 40, November 2024. DOI 10.1145/3676954. Section 7 (symbol is safe to use in all well-typed contexts).",
+      "Coq development accompanying Timany et al. 2024 (https://gitlab.mpi-sws.org/iris/examples, directory theories/logrel/F_mu_ref_conc); per the article it mechanizes the semantic type soundness proof (Sections 5-6) and the proofs that the symbol ADT is semantically well typed and gremlin is not (Section 7).",
+      "Ralf Jung, Jacques-Henri Jourdan, Robbert Krebbers, Derek Dreyer. \"RustBelt: Securing the Foundations of the Rust Programming Language.\" Proceedings of the ACM on Programming Languages 2(POPL), Article 66, January 2018. DOI 10.1145/3158154. Coq development: https://gitlab.mpi-sws.org/iris/lambda-rust."
+    ],
+    "design_question": "Rust's safety story rests on unsafe code encapsulated behind safe interfaces: a syntactic type system rejects the unsafe primitive, but a library using it internally can still be semantically well typed, and then every safe client is safe. What is the minimal formal content of semantic typing + adequacy + fundamental theorem, and which tempting shortcuts fail? (Reference point (corollary): the end-to-end guarantee a user of a verified unsafe library receives without any proof about client code.)"
+  },
+  {
+    "id": "forged-read-unsafe-and-semantically-ill-typed",
+    "lean": "Toy.SemType.forgedRead_unsafe_ill_typed",
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "`read (cast 7)` is not syntactically typable in any context, is not semantically well typed at any type in the empty context (standard model), and reaches a stuck configuration from the empty heap.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Concrete term `read (cast 7)`, empty heap.",
+    "non_claims": [
+      "Only from the empty heap: from heaps with more than 7 cells it is safe.",
+      "Semantic ill-typedness is stated for the empty context: `read (cast 0)` has no semantic type in `[]` but is semantically typed at `int` in `[ref]`, because a `ref` assumption forces cell 0 to be allocated (`read_cast_zero_semTyped_ref_ctx`).",
+      "Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier."
+    ],
+    "prior_art": [
+      "Amin Timany, Robbert Krebbers, Derek Dreyer, Lars Birkedal. \"A Logical Approach to Type Soundness.\" Journal of the ACM 71(6), Article 40, November 2024. DOI 10.1145/3676954. Theorem 6.6 (adequacy); this statement is a concrete instance of its contrapositive (a term with a stuck execution has no semantic type)."
+    ],
+    "design_question": "Rust's safety story rests on unsafe code encapsulated behind safe interfaces: a syntactic type system rejects the unsafe primitive, but a library using it internally can still be semantically well typed, and then every safe client is safe. What is the minimal formal content of semantic typing + adequacy + fundamental theorem, and which tempting shortcuts fail? (The unsafe primitive is genuinely dangerous, and semantic typing rejects this use.)"
+  },
+  {
+    "id": "cast-of-int-variable-has-no-semantic-type",
+    "lean": [
+      "Toy.SemType.cast_of_int_var_not_semTyped_of_closureEnforcesValues_of_hasInvalidRef",
+      "Toy.SemType.cast_of_int_var_not_semTyped",
+      "Toy.SemType.typing_relation_deriving_cast_of_int_var_unsound"
+    ],
+    "kind": "impossibility",
+    "tier": "T1",
+    "plain_claim": "For every recipe whose expression closure enforces membership of reached values in the value interpretation (`ClosureEnforcesValues`) and which has some invalid reference (`HasInvalidRef`), and in particular for the standard model, `cast x` with `x : int` is not semantically well typed in context `[int]` at any type; consequently no typing relation that derives `[int] ⊢ cast (var 0) : τ` for some `τ` is sound for the standard model.",
+    "hypotheses": [
+      {
+        "name": "hclose : R.ClosureEnforcesValues",
+        "purpose": "The expression closure implies `valuesIn`: the result `loc l` of the cast must be in the value interpretation of `τ`.",
+        "tightness": "tight",
+        "counterexample": "Toy.SemType.cast_of_int_var_semTyped_safetyOnly"
+      },
+      {
+        "name": "hinv : R.HasInvalidRef",
+        "purpose": "Some world has an address that is not a valid reference, which the argument can name. Needed only at `τ = ref`: `Recipe.anyLoc` satisfies `hclose` but not `hinv`, and there `cast (var 0)` is still not semantically typed at `int` or at any arrow type (`cast_of_int_var_not_semTyped_anyLoc_nonRef`).",
+        "tightness": "tight",
+        "counterexample": "Toy.SemType.cast_of_int_var_semTyped_anyLoc_ref"
+      },
+      {
+        "name": "hT (typing_relation_deriving_cast_of_int_var_unsound)",
+        "purpose": "The typing relation derives `[int] ⊢ cast (var 0) : τ`.",
+        "tightness": "tight",
+        "counterexample": "Toy.SemType.typing_relation_hyp_tight"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`Recipe.std` satisfies both hypotheses and `[int]` is inhabited at world 0; syntactic typing extended with the uniform root rule `Γ ⊢ a : int ⟹ Γ ⊢ cast a : ref` derives `[int] ⊢ cast (var 0) : ref`.",
+    "nonvacuity_witness_lean": [
+      "Toy.SemType.cast_of_int_var_not_semTyped_nonvacuous",
+      "Toy.SemType.typing_relation_nonvacuous"
+    ],
+    "positive_control_lean": [
+      "Toy.SemType.cast_of_int_var_semTyped_anyLoc_ref",
+      "Toy.SemType.cast_of_int_var_semTyped_safetyOnly"
+    ],
+    "non_claims": [
+      "Does not say that uses of `cast` are never semantically typed (`checkedRead_semTyped`), nor that no typing rule mentioning `cast` can be sound: restricted rules with `cast` at the root are sound over the unmodified types (`restrictedCastRule_sound`: `ref :: Γ ⊢ cast 0 : ref`, because a `ref` assumption forces cell 0 to be allocated, and `Γ ⊢ cast ((λ _. 0) (alloc 0)) : ref`, because the argument allocates a cell first). What is refuted is a rule typing `cast` of an argument known only to be a word.",
+      "Escape hatches: the conclusion fails if the closure does not enforce values (`Recipe.safetyOnly`: `cast x` is then semantically typed at every type) or if every address is a valid reference (`Recipe.anyLoc`: `cast x` is then semantically typed at `ref`, but that recipe breaks the fundamental theorem, `anyLoc_breaks_fundamental`).",
+      "Depends on `cast` producing the single reference type `ref`, which supports a safe `read`. A design that separates raw addresses (no validity invariant, no safe dereference) from references is not modeled, and this result gives no obstruction to casting words to such a raw type. (Safe Rust allows integer-to-raw-pointer casts and requires `unsafe` to dereference a raw pointer.)",
+      "Does not exclude sound typing rules for `cast` in richer type systems that constrain the argument (e.g. refinement types restricting it to allocated addresses).",
+      "Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier."
+    ],
+    "prior_art": [
+      "Amin Timany, Robbert Krebbers, Derek Dreyer, Lars Birkedal. \"A Logical Approach to Type Soundness.\" Journal of the ACM 71(6), Article 40, November 2024. DOI 10.1145/3676954. Section 3.2 observes informally that no type of their language ensures the argument of assert evaluates to true, so assert is an unsafe feature. Their Theorem 7.2 (gremlin is semantically ill typed) concerns an abstraction-breaking operator, not a typing rule for the unsafe feature, so it is not a mechanized form of this statement. Verbatim: “However, seeing as there is no type in MyLang that would ensure that e satisfies this property, assert is an example of an unsafe feature.” (Section 3.2, p. 40:15)"
+    ],
+    "design_question": "Rust's safety story rests on unsafe code encapsulated behind safe interfaces: a syntactic type system rejects the unsafe primitive, but a library using it internally can still be semantically well typed, and then every safe client is safe. What is the minimal formal content of semantic typing + adequacy + fundamental theorem, and which tempting shortcuts fail? (Why the syntactic system cannot give the primitive a uniform typing rule, and which model ingredients force this.)"
+  },
+  {
+    "id": "cast-literal-safe-but-not-semantically-typed",
+    "lean": "Toy.SemType.cast_literal_safe_but_not_semTyped",
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "For every word `n`, the literal cast `cast n` is safe from every heap, yet in the standard model it is not semantically well typed at any type in the empty context: operational safety of a closed term does not imply semantic typing.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Every `n`; e.g. `cast 7`.",
+    "non_claims": [
+      "Safety of `cast n` relies on this machine deferring undefined behavior to `read` and `write` (the cast itself always steps to `loc n`). In Rust, producing a dangling or unaligned reference value is already undefined behavior, even if it is never dereferenced (Rust Reference, 'Behavior considered undefined').",
+      "Under the safety-only closure (`Recipe.safetyOnly`), `cast n` is semantically typed at every type (by `safetyOnly_semTyped_nil_iff_safe` and the first conjunct); the separation depends on the value conjunct of `safeAndIn`.",
+      "Proved directly; it is not derived from `cast_of_int_var_not_semTyped`.",
+      "Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier."
+    ],
+    "prior_art": [
+      "The Rust Reference, \"Behavior considered undefined\" (https://doc.rust-lang.org/reference/behavior-considered-undefined.html): producing an invalid value is undefined behavior, and a reference must be aligned and non-null and cannot be dangling (rules undefined.invalid and undefined.validity.reference-box)."
+    ],
+    "design_question": "Rust's safety story rests on unsafe code encapsulated behind safe interfaces: a syntactic type system rejects the unsafe primitive, but a library using it internally can still be semantically well typed, and then every safe client is safe. What is the minimal formal content of semantic typing + adequacy + fundamental theorem, and which tempting shortcuts fail? (Semantic typing is strictly stronger than safety of the term itself: the result must also inhabit the type.)"
+  },
+  {
+    "id": "values-only-closure-breaks-adequacy",
+    "lean": "Toy.SemType.valuesOnly_adequacy_fails",
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "If the expression interpretation only requires every reached value to be in the value interpretation (`Recipe.valuesOnly`, no safety requirement), then `read (cast 7)` is semantically well typed at `int` in the empty context and yet gets stuck from the empty heap: adequacy fails.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Concrete term `read (cast 7)`, empty heap.",
+    "non_claims": [
+      "Concerns the partial-correctness closure `valuesIn`, which holds vacuously for executions that get stuck. A total-correctness closure requiring convergence to a value in the interpretation would exclude stuck executions, because the semantics is deterministic (`safe_of_reaches_value`), but it would also reject divergent programs; such a closure is not examined here.",
+      "Does not claim the fundamental theorem fails for `Recipe.valuesOnly` (unknown; not examined).",
+      "Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier."
+    ],
+    "prior_art": [
+      "Amin Timany, Robbert Krebbers, Derek Dreyer, Lars Birkedal. \"A Logical Approach to Type Soundness.\" Journal of the ACM 71(6), Article 40, November 2024. DOI 10.1145/3676954. [Establishes the positive ingredient: an expression interpretation built from Iris weakest preconditions, which require both safety and the postcondition (Theorem 6.6, adequacy). It does not define or refute the ablated recipe of this card; the counterexample here is specific to this package.]"
+    ],
+    "design_question": "Rust's safety story rests on unsafe code encapsulated behind safe interfaces: a syntactic type system rejects the unsafe primitive, but a library using it internally can still be semantically well typed, and then every safe client is safe. What is the minimal formal content of semantic typing + adequacy + fundamental theorem, and which tempting shortcuts fail? (The safety conjunct of the expression interpretation is necessary.)"
+  },
+  {
+    "id": "safety-only-closure-collapses-typing-to-safety",
+    "lean": "Toy.SemType.safetyOnly_semTyped_nil_iff_safe",
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "If the expression interpretation only requires safety (`Recipe.safetyOnly`), then an expression is semantically typed at a type `τ` in the empty context iff it is safe from every heap, independently of `τ`; in particular adequacy holds trivially for this shortcut.",
+    "hypotheses": [
+      {
+        "name": "empty typing context (Γ = [])",
+        "purpose": "In a non-empty context the context interpretation still restricts the substituted values, and the open term itself can be stuck.",
+        "tightness": "tight",
+        "counterexample": "Toy.SemType.safetyOnly_nil_ctx_hyp_tight"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "Both sides hold for `λ _. cast 7` at `int ⇒ ref`; both fail for `read (cast 7)`.",
+    "nonvacuity_witness_lean": "Toy.SemType.safetyOnly_semTyped_nil_iff_safe_nonvacuous",
+    "non_claims": [
+      "Only for the empty context. In a non-empty context the context interpretation still requires the substituted values to have the right shape (a word for `int`, an allocated `loc l` for `ref`, a closed abstraction for an arrow type), so semantic typing is not just safety there (`safetyOnly_nil_ctx_hyp_tight`).",
+      "Adequacy holding for this shortcut does not make it a good model: it breaks the fundamental theorem and linking (`safetyOnly_breaks_fundamental_and_encapsulation`, `safetyOnly_breaks_let_compat`).",
+      "Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier."
+    ],
+    "prior_art": [
+      "Amin Timany, Robbert Krebbers, Derek Dreyer, Lars Birkedal. \"A Logical Approach to Type Soundness.\" Journal of the ACM 71(6), Article 40, November 2024. DOI 10.1145/3676954. [Establishes the positive ingredient: Section 4.1 remarks that adequacy is usually almost trivial because safety is built into semantic typing. It does not define or refute the ablated recipe of this card; the counterexample here is specific to this package.] Verbatim: “This theorem is usually almost trivial to prove, because, as explained above, it is typically more or less baked into the extensional definition of semantic typing.” (Section 4.1, p. 40:16, about adequacy)"
+    ],
+    "design_question": "Rust's safety story rests on unsafe code encapsulated behind safe interfaces: a syntactic type system rejects the unsafe primitive, but a library using it internally can still be semantically well typed, and then every safe client is safe. What is the minimal formal content of semantic typing + adequacy + fundamental theorem, and which tempting shortcuts fail? (Adequacy alone does not validate a semantic model.)"
+  },
+  {
+    "id": "safety-only-closure-breaks-fundamental-theorem-and-linking",
+    "lean": [
+      "Toy.SemType.safetyOnly_breaks_fundamental_and_encapsulation",
+      "Toy.SemType.safetyOnly_breaks_let_compat"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "Under the safety-only expression interpretation (`Recipe.safetyOnly`): (1) the library `λ _. cast 7` is semantically typed at `int ⇒ ref`, the syntactically typed client `read (f 0)` is not semantically typed in `[int ⇒ ref]` (the fundamental theorem fails), and their linked program gets stuck from the empty heap (syntactic-client encapsulation fails); (2) the `cast`-free client `lt x 0` is semantically typed at `int` in `[int]` and the `cast`-free library `λ _. 0` is semantically typed at `int`, yet their linked program is not semantically typed and gets stuck (semantic let-compatibility and semantic-client linking fail).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Concrete pairs (`read (f 0)`, `λ _. cast 7`) and (`lt x 0`, `λ _. 0`), empty heap.",
+    "non_claims": [
+      "Part (1) does not instantiate semantic let-compatibility, because its client is not semantically typed under `Recipe.safetyOnly`; part (2) is the direct counterexample to semantic linking and needs no `cast`.",
+      "Shows failure for this one ablation of the standard recipe, not for every model lacking the value conjunct.",
+      "Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier."
+    ],
+    "prior_art": [
+      "Amin Timany, Robbert Krebbers, Derek Dreyer, Lars Birkedal. \"A Logical Approach to Type Soundness.\" Journal of the ACM 71(6), Article 40, November 2024. DOI 10.1145/3676954. [Establishes the positive ingredient: an expression interpretation that requires reached values to inhabit the type (weakest precondition with the type's interpretation as postcondition). It does not define or refute the ablated recipe of this card; the counterexample here is specific to this package.]"
+    ],
+    "design_question": "Rust's safety story rests on unsafe code encapsulated behind safe interfaces: a syntactic type system rejects the unsafe primitive, but a library using it internally can still be semantically well typed, and then every safe client is safe. What is the minimal formal content of semantic typing + adequacy + fundamental theorem, and which tempting shortcuts fail? (The values-in-the-interpretation conjunct is what makes semantic typing compositional.)"
+  },
+  {
+    "id": "non-kripke-model-breaks-monotonicity-and-fundamental-theorem",
+    "lean": [
+      "Toy.SemType.nonKripke_breaks_monotonicity_and_fundamental",
+      "Toy.SemType.nonKripke_breaks_closed_encapsulation"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "If the function case quantifies only over the current world (`Recipe.nonKripke`), then `probeCellZero = λ r. (λ _. ifz (read (cast 0)) (read (cast 99)) 0) (write r 1)` is in the interpretation of `ref ⇒ int` at world 1 but not at world 2, the standard (Kripke) model rejects it already at world 1, and the syntactically typed client `f (alloc 0)` is not semantically typed in `[ref ⇒ int]` (the fundamental theorem fails); moreover the closed library `sizeGuardedProbe = ifz (lt size 2) (λ _. 0) probeCellZero` is semantically typed at `ref ⇒ int` in the empty context and its link with `f (alloc 0)` gets stuck from the heap `[0]` (closed encapsulation fails).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "World 1 is inhabited (`loc 0`), so the failure does not rest on a vacuous world; witness heaps `[0]`.",
+    "non_claims": [
+      "`probeCellZero` itself is not semantically typed under `Recipe.nonKripke` in the empty context, which quantifies over all worlds including world 2 (`probeCellZero_not_semTyped_nonKripke_nil`); closed encapsulation fails through a library that inspects `size` and returns `probeCellZero` only in worlds 0 and 1.",
+      "Adequacy still holds for `Recipe.nonKripke` (its expression closure is `safeAndIn`), but this is not stated.",
+      "Both counterexamples combine a function-typed library with allocation by the client. At types without arrows the value interpretation does not consult `future`, so the two recipes agree there; whether `Recipe.nonKripke` breaks the fundamental theorem in a fragment without `alloc` is not examined.",
+      "Concerns this one non-Kripke variant (the expression interpretation still quantifies over all heaps with at least `W` cells); other non-Kripke designs are not examined.",
+      "\"Closed encapsulation fails\" refers to a syntactically typed client linked with a closed `nonKripke`-typed library. Closed semantic-client linking still holds under `Recipe.nonKripke`: a client `nonKripke`-typed in `[σ]` linked with a library `nonKripke`-typed at `σ` in the empty context is safe from every heap (`nonKripke_semTyped_client_nil_safe`), unlike under `Recipe.safetyOnly` (`safetyOnly_breaks_let_compat`). What fails for `Recipe.nonKripke` is semantic let-compatibility in a non-empty ambient context (`nonKripke_breaks_open_let_compat`: context `[ref ⇒ int]`, client `f r`, library `alloc 0`).",
+      "Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier."
+    ],
+    "prior_art": [
+      "Achim Jung, Jerzy Tiuryn. \"A New Characterization of Lambda Definability.\" Typed Lambda Calculi and Applications (TLCA 1993), LNCS 664, pp. 245-257. Springer, 1993. DOI 10.1007/BFb0037110. [Establishes the positive ingredient: Kripke logical relations over ordered worlds with future-world quantification in the function case (no state). It does not define or refute the ablated recipe of this card; the counterexample here is specific to this package.]",
+      "Andrew M. Pitts, Ian D. B. Stark. \"Operational Reasoning for Functions with Local State.\" In A. D. Gordon, A. M. Pitts (eds.), Higher Order Operational Techniques in Semantics, pp. 227-273. Cambridge University Press, 1998. Author copy: https://www.cl.cam.ac.uk/~amp12/papers/operfl/operfl.pdf. [Establishes the positive ingredient: Kripke-style operational logical relations for a language with dynamically allocated integer references. It does not define or refute the ablated recipe of this card; the counterexample here is specific to this package.]",
+      "Amal J. Ahmed, Andrew W. Appel, Roberto Virga. \"A Stratified Semantics of General References Embeddable in Higher-Order Logic.\" Proceedings of the 17th Annual IEEE Symposium on Logic in Computer Science (LICS 2002), pp. 75-86. DOI 10.1109/LICS.2002.1029818. [Establishes the positive ingredient: a world-indexed model of general references with world-extension monotonicity. It does not define or refute the ablated recipe of this card; the counterexample here is specific to this package.]",
+      "Amal Jamil Ahmed. \"Semantics of Types for Mutable State.\" PhD thesis, Princeton University, November 2004; Princeton Computer Science Technical Report TR-713-04 (https://www.cs.princeton.edu/techreports/2004/713.pdf). [Establishes the positive ingredient: step-indexed possible-worlds models of mutable references with world-extension monotonicity. It does not define or refute the ablated recipe of this card; the counterexample here is specific to this package.]"
+    ],
+    "design_question": "Rust's safety story rests on unsafe code encapsulated behind safe interfaces: a syntactic type system rejects the unsafe primitive, but a library using it internally can still be semantically well typed, and then every safe client is safe. What is the minimal formal content of semantic typing + adequacy + fundamental theorem, and which tempting shortcuts fail? (Future-world quantification is necessary once references are allocated dynamically.)"
+  },
+  {
+    "id": "any-location-model-breaks-fundamental-theorem",
+    "lean": "Toy.SemType.anyLoc_breaks_fundamental",
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "If every address counts as a valid reference (`Recipe.anyLoc`), the syntactically typed `λ r. read r` is not semantically typed at `ref ⇒ int` in the empty context, so the fundamental theorem fails.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Concrete: `λ r. read r`, argument `loc 0`, empty heap.",
+    "non_claims": [
+      "Relies on `read` and `write` getting stuck on unallocated addresses. With dynamically checked `read`/`write` that return a default or error value instead, this counterexample would not apply; such a semantics is not formalized here.",
+      "Adequacy still holds for `Recipe.anyLoc` (its expression closure is `safeAndIn`), but this is not stated.",
+      "Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier."
+    ],
+    "prior_art": [
+      "Amal Jamil Ahmed. \"Semantics of Types for Mutable State.\" PhD thesis, Princeton University, November 2004; Princeton Computer Science Technical Report TR-713-04 (https://www.cs.princeton.edu/techreports/2004/713.pdf). [Establishes the positive ingredient: possible-worlds models in which the interpretation of a reference type requires the location to be allocated in the current world. It does not define or refute the ablated recipe of this card; the counterexample here is specific to this package.]",
+      "Amin Timany, Robbert Krebbers, Derek Dreyer, Lars Birkedal. \"A Logical Approach to Type Soundness.\" Journal of the ACM 71(6), Article 40, November 2024. DOI 10.1145/3676954. [Establishes the positive ingredient: the interpretation of `ref A` (Section 5.1) requires the value to be a location together with an invariant that it points to a value of type `A`. It does not define or refute the ablated recipe of this card; the counterexample here is specific to this package.]"
+    ],
+    "design_question": "Rust's safety story rests on unsafe code encapsulated behind safe interfaces: a syntactic type system rejects the unsafe primitive, but a library using it internally can still be semantically well typed, and then every safe client is safe. What is the minimal formal content of semantic typing + adequacy + fundamental theorem, and which tempting shortcuts fail? (The interpretation of `ref` must carry the validity invariant; it is also what makes `cast` of an `int` variable semantically untypable.)"
+  },
+  {
+    "id": "syntactic-value-interpretation-rejects-encapsulated-library",
+    "lean": "Toy.SemType.synVal_rejects_checkedRead",
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "`checkedRead` is in the standard semantic interpretation of `int ⇒ int` at every world, but at no type and no world is it in the store-typed syntactic-typability interpretation `SynVal` (values typable by `HasTypeStore W []`), nor in the expression closure `safeAndIn (SynVal τ)`; so a model built from syntactic typability cannot certify this encapsulated library.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Concrete library `checkedRead`, every world and type.",
+    "non_claims": [
+      "`SynVal` includes store typing: it admits runtime closures that capture allocated references (`synVal_pos`: `λ _. read (loc 0)` in world 1; `captureRef_safeAndIn_synVal`: `safeAndIn (SynVal (int ⇒ int)) 0 captureRef`, i.e. from every heap, `captureRef = (λ r. λ _. read r) (alloc 5)` never gets stuck and every value it reaches is in `SynVal (int ⇒ int)` at the length of the reached heap). Its rejection of `checkedRead` comes from the absence of any typing rule for `cast` (`SynVal.castFree`), so it rejects every value containing `cast`.",
+      "Does not claim that a `SynVal`-based model fails adequacy or a fundamental theorem for `HasType`; not examined.",
+      "Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier."
+    ],
+    "prior_art": [
+      "Andrew K. Wright, Matthias Felleisen. \"A Syntactic Approach to Type Soundness.\" Information and Computation 115(1):38-94, November 1994. DOI 10.1006/inco.1994.1093. (syntactic soundness with store typing for references).",
+      "Amin Timany, Robbert Krebbers, Derek Dreyer, Lars Birkedal. \"A Logical Approach to Type Soundness.\" Journal of the ACM 71(6), Article 40, November 2024. DOI 10.1145/3676954. Section 3.2 observes informally that syntactic type soundness offers no means to prove that the symbol ADT safely encapsulates assert. Verbatim: “But syntactic type soundness—by restricting attention to syntactically well-typed programs—does not offer us a means to prove this.” (Section 3.2, p. 40:15)"
+    ],
+    "design_question": "Rust's safety story rests on unsafe code encapsulated behind safe interfaces: a syntactic type system rejects the unsafe primitive, but a library using it internally can still be semantically well typed, and then every safe client is safe. What is the minimal formal content of semantic typing + adequacy + fundamental theorem, and which tempting shortcuts fail? (A model built from syntactic typability can only certify libraries the syntactic system already accepts.)"
+  },
+  {
+    "id": "kripke-monotonicity",
+    "lean": "Toy.SemType.V_std_mono",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "In the standard model, a value in the interpretation of `τ` at world `W` remains in it at every world `W' ≥ W`.",
+    "hypotheses": [
+      {
+        "name": "hW",
+        "purpose": "`W ≤ W'`: worlds only grow (allocation appends; there is no deallocation).",
+        "tightness": "tight",
+        "counterexample": "Toy.SemType.V_std_mono_hyp_tight"
+      },
+      {
+        "name": "h",
+        "purpose": "`V Recipe.std τ W v`: the value is in the interpretation at the smaller world.",
+        "tightness": "tight",
+        "counterexample": "Toy.SemType.V_std_mono_val_hyp_tight"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`loc 0` at `ref`, worlds `1 ≤ 2`; `λ r. read r` at `ref ⇒ int`, worlds `0 ≤ 1`.",
+    "nonvacuity_witness_lean": "Toy.SemType.V_std_mono_nonvacuous",
+    "non_claims": [
+      "States monotonicity of the value interpretation only (the expression interpretation is also monotone in `W`, trivially, but this is not stated).",
+      "The proof does not use the expression closure; monotonicity holds for any recipe whose `refOK` is monotone in the world and for which `future W' W''` implies `future W W''` whenever `W ≤ W'`, but that is not stated.",
+      "Relies on the absence of deallocation; with deallocation validity is not monotone.",
+      "Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier."
+    ],
+    "prior_art": [
+      "Achim Jung, Jerzy Tiuryn. \"A New Characterization of Lambda Definability.\" Typed Lambda Calculi and Applications (TLCA 1993), LNCS 664, pp. 245-257. Springer, 1993. DOI 10.1007/BFb0037110.",
+      "Andrew M. Pitts, Ian D. B. Stark. \"Operational Reasoning for Functions with Local State.\" In A. D. Gordon, A. M. Pitts (eds.), Higher Order Operational Techniques in Semantics, pp. 227-273. Cambridge University Press, 1998. Author copy: https://www.cl.cam.ac.uk/~amp12/papers/operfl/operfl.pdf.",
+      "Amal J. Ahmed, Andrew W. Appel, Roberto Virga. \"A Stratified Semantics of General References Embeddable in Higher-Order Logic.\" Proceedings of the 17th Annual IEEE Symposium on Logic in Computer Science (LICS 2002), pp. 75-86. DOI 10.1109/LICS.2002.1029818.",
+      "Amal Jamil Ahmed. \"Semantics of Types for Mutable State.\" PhD thesis, Princeton University, November 2004; Princeton Computer Science Technical Report TR-713-04 (https://www.cs.princeton.edu/techreports/2004/713.pdf)."
+    ],
+    "design_question": "Rust's safety story rests on unsafe code encapsulated behind safe interfaces: a syntactic type system rejects the unsafe primitive, but a library using it internally can still be semantically well typed, and then every safe client is safe. What is the minimal formal content of semantic typing + adequacy + fundamental theorem, and which tempting shortcuts fail? (The property that the function case's future-world quantification buys (contrast the non-Kripke counterexample).)"
+  }
+]

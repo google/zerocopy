@@ -1,0 +1,96 @@
+{
+  "note": "Statement and definition-closure SHA-256 hashes of supporting boundary theorems cited in the cards' prose, computed by lean/RevalidationAudit.lean with the same algorithm as audit/statements.json.",
+  "statements": {
+    "Toy.SemType.V_std_rejects_open_dead_lam": {
+      "closure_sha256": "2fd64997f5081a55871cd40cff188f980c3951067f1ced26bd126a077788e5ac",
+      "closure_size": 69,
+      "statement_sha256": "961bef1691466a3dca05fc571a5be2d7fdadb67a62ff44af8f9d0e71afcf6642"
+    },
+    "Toy.SemType.captureRef_safeAndIn_synVal": {
+      "closure_sha256": "f7301286fb22c1505ad3b1bb03ff5861b719395b7712fe19df9b333052600e6a",
+      "closure_size": 68,
+      "statement_sha256": "6a5357dc7fc5635ad64f370f0b2f87ab696c8683d5a02558e045a33920f6021f"
+    },
+    "Toy.SemType.cast_of_int_var_not_semTyped_anyLoc_nonRef": {
+      "closure_sha256": "b95f8fa68e087dab254d31e60065e81e35b3fa6e17d09fd8b7988a70a9015495",
+      "closure_size": 78,
+      "statement_sha256": "3ff390a6d3ca3da560d955255ae83e13926faf2ed92a241d349966b32a457340"
+    },
+    "Toy.SemType.cellBoundRead_callWith7_safe": {
+      "closure_sha256": "67fab4b811403fc61b15e29c8339bcd7e1ba2fc17d70f97132978120a670f604",
+      "closure_size": 49,
+      "statement_sha256": "163a131923fdcb337ed59d3e37cafbff6fc1aea87c269b3696d5065badd63b92"
+    },
+    "Toy.SemType.cellBoundRead_not_semTyped": {
+      "closure_sha256": "cbc0ba8c9e8e0627fb13c14a5fe196be8ec119a428881449d5568b8911d8a042",
+      "closure_size": 77,
+      "statement_sha256": "3ea7ddf3f91b6c52375ae8929c285c81df6c5abaae3d16799bc8e433acf8532d"
+    },
+    "Toy.SemType.checkedClient_semTyped_safe_not_hasType": {
+      "closure_sha256": "82f7e4fe439fbe3be40212b091481e38779f90d7d61e343d5d546858fb3bb9a3",
+      "closure_size": 90,
+      "statement_sha256": "3559f83cff87ee43a65f854f23da4446e6f347fcc05bb5061871736c16f7301b"
+    },
+    "Toy.SemType.nonKripke_breaks_open_let_compat": {
+      "closure_sha256": "2497ae5ebc04445831e0108fc73cc7a4319e5cb7a6b9fb1ccd042fec2884b1c7",
+      "closure_size": 77,
+      "statement_sha256": "2b5114ed2a12d59701afdef9ca1050f5d3ce82d7e40f4452e2121d07ba0b51cc"
+    },
+    "Toy.SemType.nonKripke_semTyped_client_nil_safe": {
+      "closure_sha256": "21be5872ccf4910d1abee3691b32c130b38bea4fd1a1509c793b65ea0fa71202",
+      "closure_size": 78,
+      "statement_sha256": "1525209c98bd6b57205e3a2b456eeba141df2c50a022ce06c54a897e97ebe473"
+    },
+    "Toy.SemType.probeCellZero_not_semTyped_nonKripke_nil": {
+      "closure_sha256": "c15a45de40303c56a62a6b46a975605d9f13e67dcf18a3f174cb11423c55561d",
+      "closure_size": 79,
+      "statement_sha256": "1d9a06b3349b6d3c1d95ca50ce85730cb380e132a7c7199037812587f53ec395"
+    },
+    "Toy.SemType.read_cast_zero_semTyped_ref_ctx": {
+      "closure_sha256": "5438f51d5aa089460a273a011e605c8f8b418cd0d902a5bb9bfee9220ba7dd92",
+      "closure_size": 76,
+      "statement_sha256": "fe482910a6d9322314885a1654dab5933d7a390ac8c6a7b6e800f6cc0d800031"
+    },
+    "Toy.SemType.restrictedCastRule_sound": {
+      "closure_sha256": "02c760722de5b30bbb8ac3d588542128d3276330384e7e7a37977a86be2ade79",
+      "closure_size": 80,
+      "statement_sha256": "f09ff20b7141713d72841c007afc895083341e3f31b94da860c6bd9df58376a5"
+    },
+    "Toy.SemType.safe_of_reaches_value": {
+      "closure_sha256": "d5c18eb886f2d8c7375c252f75ada6839f1659fe5fce685f0a912d83e8a36041",
+      "closure_size": 47,
+      "statement_sha256": "bd43e00c7d7fc0c26b087b21f4861b4431b50ec68df6b042a8826c0898354f58"
+    },
+    "Toy.SemType.semTyped_lam_compat_needs_closedAt": {
+      "closure_sha256": "5438f51d5aa089460a273a011e605c8f8b418cd0d902a5bb9bfee9220ba7dd92",
+      "closure_size": 76,
+      "statement_sha256": "c94909d1b262899a1074163771675c738dac9cffeb28a03439f7dfa29a702fc1"
+    },
+    "Toy.SemType.semTyped_nil_open_dead_var": {
+      "closure_sha256": "5438f51d5aa089460a273a011e605c8f8b418cd0d902a5bb9bfee9220ba7dd92",
+      "closure_size": 76,
+      "statement_sha256": "67da7f23841942268942832a9054c7e6bb43054a01f838cbd87b2b82200357c7"
+    },
+    "Toy.SemType.sizeZeroOrForged_safe_nil_not_semTyped": {
+      "closure_sha256": "50228bc78d5832ff67a948a285933a2519fcdc2f31d731040a0d31080d73698d",
+      "closure_size": 78,
+      "statement_sha256": "a5a5c272c63569b82882cabdfe977563370b35f48a5af9f3728d053ac714c9a7"
+    },
+    "Toy.SemType.synVal_iff_isValue_and_hasTypeStore": {
+      "closure_sha256": "f495890c452c0e0c18d886770d229189d831eb82f1379c0f59d812bea93dbf0c",
+      "closure_size": 39,
+      "statement_sha256": "fd28eae01c4d0f15e69c92caefeef690d6e0b761c58b9556ba983c96201a7f6a"
+    },
+    "Toy.SemType.synVal_pos": {
+      "closure_sha256": "ecebb0cc114c012589d3a4589bad1b3a5df146faacce909d7c15ead516173feb",
+      "closure_size": 41,
+      "statement_sha256": "d39208a3c5cf15c07ee952ffbe29de0ed3e511e4f86143adce7130db25a3750a"
+    },
+    "Toy.SemType.uncheckedRead_not_semTyped": {
+      "closure_sha256": "719a583532c9bff59532efbad66111ab27b6a6a58de23eea5d9700799848da09",
+      "closure_size": 77,
+      "statement_sha256": "ae26ada3b828a3e314b9d8721931c97890bead5b3b3ea69e503e3b4d9f8440dd"
+    }
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

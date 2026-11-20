@@ -1,0 +1,1281 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.SemType.Config": [],
+    "Toy.SemType.E": [
+      "propext"
+    ],
+    "Toy.SemType.E_std_neg": [
+      "propext"
+    ],
+    "Toy.SemType.E_std_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.Expr": [],
+    "Toy.SemType.Expr.alloc": [],
+    "Toy.SemType.Expr.alloc.elim": [],
+    "Toy.SemType.Expr.alloc.inj": [],
+    "Toy.SemType.Expr.alloc.injEq": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.alloc.noConfusion": [],
+    "Toy.SemType.Expr.alloc.sizeOf_spec": [],
+    "Toy.SemType.Expr.app": [],
+    "Toy.SemType.Expr.app.elim": [],
+    "Toy.SemType.Expr.app.inj": [],
+    "Toy.SemType.Expr.app.injEq": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.app.noConfusion": [],
+    "Toy.SemType.Expr.app.sizeOf_spec": [],
+    "Toy.SemType.Expr.below": [],
+    "Toy.SemType.Expr.brecOn": [],
+    "Toy.SemType.Expr.brecOn.eq": [],
+    "Toy.SemType.Expr.brecOn.go": [],
+    "Toy.SemType.Expr.casesOn": [],
+    "Toy.SemType.Expr.cast": [],
+    "Toy.SemType.Expr.cast.elim": [],
+    "Toy.SemType.Expr.cast.inj": [],
+    "Toy.SemType.Expr.cast.injEq": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.cast.noConfusion": [],
+    "Toy.SemType.Expr.cast.sizeOf_spec": [],
+    "Toy.SemType.Expr.castFree": [],
+    "Toy.SemType.Expr.castFree.eq_1": [],
+    "Toy.SemType.Expr.castFree.eq_10": [],
+    "Toy.SemType.Expr.castFree.eq_11": [],
+    "Toy.SemType.Expr.castFree.eq_12": [],
+    "Toy.SemType.Expr.castFree.eq_2": [],
+    "Toy.SemType.Expr.castFree.eq_3": [],
+    "Toy.SemType.Expr.castFree.eq_4": [],
+    "Toy.SemType.Expr.castFree.eq_5": [],
+    "Toy.SemType.Expr.castFree.eq_6": [],
+    "Toy.SemType.Expr.castFree.eq_7": [],
+    "Toy.SemType.Expr.castFree.eq_8": [],
+    "Toy.SemType.Expr.castFree.eq_9": [],
+    "Toy.SemType.Expr.castFree.eq_def": [],
+    "Toy.SemType.Expr.closedAt": [],
+    "Toy.SemType.Expr.closedAt.eq_1": [],
+    "Toy.SemType.Expr.closedAt.eq_10": [],
+    "Toy.SemType.Expr.closedAt.eq_11": [],
+    "Toy.SemType.Expr.closedAt.eq_12": [],
+    "Toy.SemType.Expr.closedAt.eq_2": [],
+    "Toy.SemType.Expr.closedAt.eq_3": [],
+    "Toy.SemType.Expr.closedAt.eq_4": [],
+    "Toy.SemType.Expr.closedAt.eq_5": [],
+    "Toy.SemType.Expr.closedAt.eq_6": [],
+    "Toy.SemType.Expr.closedAt.eq_7": [],
+    "Toy.SemType.Expr.closedAt.eq_8": [],
+    "Toy.SemType.Expr.closedAt.eq_9": [],
+    "Toy.SemType.Expr.closedAt.eq_def": [],
+    "Toy.SemType.Expr.closedAt.match_1": [],
+    "Toy.SemType.Expr.ctorElim": [],
+    "Toy.SemType.Expr.ctorElimType": [],
+    "Toy.SemType.Expr.ctorIdx": [],
+    "Toy.SemType.Expr.ifz": [],
+    "Toy.SemType.Expr.ifz.elim": [],
+    "Toy.SemType.Expr.ifz.inj": [],
+    "Toy.SemType.Expr.ifz.injEq": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.ifz.noConfusion": [],
+    "Toy.SemType.Expr.ifz.sizeOf_spec": [],
+    "Toy.SemType.Expr.isValue": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.isValue.eq_1": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.isValue.eq_2": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.isValue.eq_3": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.isValue.eq_4": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.isValue.match_1": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.lam": [],
+    "Toy.SemType.Expr.lam.elim": [],
+    "Toy.SemType.Expr.lam.inj": [],
+    "Toy.SemType.Expr.lam.injEq": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.lam.noConfusion": [],
+    "Toy.SemType.Expr.lam.sizeOf_spec": [],
+    "Toy.SemType.Expr.loc": [],
+    "Toy.SemType.Expr.loc.elim": [],
+    "Toy.SemType.Expr.loc.inj": [],
+    "Toy.SemType.Expr.loc.injEq": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.loc.noConfusion": [],
+    "Toy.SemType.Expr.loc.sizeOf_spec": [],
+    "Toy.SemType.Expr.lt": [],
+    "Toy.SemType.Expr.lt.elim": [],
+    "Toy.SemType.Expr.lt.inj": [],
+    "Toy.SemType.Expr.lt.injEq": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.lt.noConfusion": [],
+    "Toy.SemType.Expr.lt.sizeOf_spec": [],
+    "Toy.SemType.Expr.noConfusion": [],
+    "Toy.SemType.Expr.noConfusionType": [],
+    "Toy.SemType.Expr.num": [],
+    "Toy.SemType.Expr.num.elim": [],
+    "Toy.SemType.Expr.num.inj": [],
+    "Toy.SemType.Expr.num.injEq": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.num.noConfusion": [],
+    "Toy.SemType.Expr.num.sizeOf_spec": [],
+    "Toy.SemType.Expr.read": [],
+    "Toy.SemType.Expr.read.elim": [],
+    "Toy.SemType.Expr.read.inj": [],
+    "Toy.SemType.Expr.read.injEq": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.read.noConfusion": [],
+    "Toy.SemType.Expr.read.sizeOf_spec": [],
+    "Toy.SemType.Expr.rec": [],
+    "Toy.SemType.Expr.recOn": [],
+    "Toy.SemType.Expr.size": [],
+    "Toy.SemType.Expr.size.elim": [],
+    "Toy.SemType.Expr.size.sizeOf_spec": [],
+    "Toy.SemType.Expr.substAll": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.substAll.eq_1": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.substAllAt": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.substAllAt.eq_1": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.substAllAt.eq_10": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.substAllAt.eq_11": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.substAllAt.eq_12": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.substAllAt.eq_2": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.substAllAt.eq_3": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.substAllAt.eq_4": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.substAllAt.eq_5": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.substAllAt.eq_6": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.substAllAt.eq_7": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.substAllAt.eq_8": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.substAllAt.eq_9": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.substAllAt.eq_def": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.substAllAt.match_1": [],
+    "Toy.SemType.Expr.substAllAt_nil": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.substAll_nil": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.substAt": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.substAt.eq_1": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.var": [],
+    "Toy.SemType.Expr.var.elim": [],
+    "Toy.SemType.Expr.var.inj": [],
+    "Toy.SemType.Expr.var.injEq": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.var.noConfusion": [],
+    "Toy.SemType.Expr.var.sizeOf_spec": [],
+    "Toy.SemType.Expr.write": [],
+    "Toy.SemType.Expr.write.elim": [],
+    "Toy.SemType.Expr.write.inj": [],
+    "Toy.SemType.Expr.write.injEq": [
+      "propext"
+    ],
+    "Toy.SemType.Expr.write.noConfusion": [],
+    "Toy.SemType.Expr.write.sizeOf_spec": [],
+    "Toy.SemType.G": [
+      "propext"
+    ],
+    "Toy.SemType.G.eq_1": [
+      "propext"
+    ],
+    "Toy.SemType.G.eq_2": [
+      "propext"
+    ],
+    "Toy.SemType.G.eq_3": [
+      "propext"
+    ],
+    "Toy.SemType.G.eq_def": [
+      "propext"
+    ],
+    "Toy.SemType.G.match_1": [
+      "propext"
+    ],
+    "Toy.SemType.G_closed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.G_length": [
+      "propext"
+    ],
+    "Toy.SemType.G_lookup": [
+      "propext"
+    ],
+    "Toy.SemType.G_neg": [
+      "propext"
+    ],
+    "Toy.SemType.G_neg.match_1_1": [
+      "propext"
+    ],
+    "Toy.SemType.G_neg.match_1_3": [
+      "propext"
+    ],
+    "Toy.SemType.G_neg.match_1_5": [
+      "propext"
+    ],
+    "Toy.SemType.G_nil": [
+      "propext"
+    ],
+    "Toy.SemType.G_pos": [
+      "propext"
+    ],
+    "Toy.SemType.G_singleton": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.G_singleton.match_1_1": [],
+    "Toy.SemType.G_std_mono": [
+      "propext"
+    ],
+    "Toy.SemType.HasType": [
+      "propext"
+    ],
+    "Toy.SemType.HasType.alloc": [],
+    "Toy.SemType.HasType.app": [],
+    "Toy.SemType.HasType.below": [
+      "propext"
+    ],
+    "Toy.SemType.HasType.below.alloc": [
+      "propext"
+    ],
+    "Toy.SemType.HasType.below.app": [
+      "propext"
+    ],
+    "Toy.SemType.HasType.below.casesOn": [
+      "propext"
+    ],
+    "Toy.SemType.HasType.below.ifz": [
+      "propext"
+    ],
+    "Toy.SemType.HasType.below.lam": [
+      "propext"
+    ],
+    "Toy.SemType.HasType.below.lt": [
+      "propext"
+    ],
+    "Toy.SemType.HasType.below.num": [
+      "propext"
+    ],
+    "Toy.SemType.HasType.below.read": [
+      "propext"
+    ],
+    "Toy.SemType.HasType.below.rec": [
+      "propext"
+    ],
+    "Toy.SemType.HasType.below.size": [
+      "propext"
+    ],
+    "Toy.SemType.HasType.below.var": [
+      "propext"
+    ],
+    "Toy.SemType.HasType.below.write": [
+      "propext"
+    ],
+    "Toy.SemType.HasType.brecOn": [
+      "propext"
+    ],
+    "Toy.SemType.HasType.casesOn": [
+      "propext"
+    ],
+    "Toy.SemType.HasType.castFree": [
+      "propext"
+    ],
+    "Toy.SemType.HasType.closedAt": [
+      "propext"
+    ],
+    "Toy.SemType.HasType.ifz": [],
+    "Toy.SemType.HasType.lam": [],
+    "Toy.SemType.HasType.lt": [],
+    "Toy.SemType.HasType.num": [],
+    "Toy.SemType.HasType.read": [],
+    "Toy.SemType.HasType.rec": [
+      "propext"
+    ],
+    "Toy.SemType.HasType.recOn": [
+      "propext"
+    ],
+    "Toy.SemType.HasType.size": [],
+    "Toy.SemType.HasType.toStore": [
+      "propext"
+    ],
+    "Toy.SemType.HasType.var": [
+      "propext"
+    ],
+    "Toy.SemType.HasType.write": [],
+    "Toy.SemType.HasTypeStore": [
+      "propext"
+    ],
+    "Toy.SemType.HasTypeStore.alloc": [],
+    "Toy.SemType.HasTypeStore.app": [],
+    "Toy.SemType.HasTypeStore.below": [
+      "propext"
+    ],
+    "Toy.SemType.HasTypeStore.below.alloc": [
+      "propext"
+    ],
+    "Toy.SemType.HasTypeStore.below.app": [
+      "propext"
+    ],
+    "Toy.SemType.HasTypeStore.below.casesOn": [
+      "propext"
+    ],
+    "Toy.SemType.HasTypeStore.below.ifz": [
+      "propext"
+    ],
+    "Toy.SemType.HasTypeStore.below.lam": [
+      "propext"
+    ],
+    "Toy.SemType.HasTypeStore.below.loc": [
+      "propext"
+    ],
+    "Toy.SemType.HasTypeStore.below.lt": [
+      "propext"
+    ],
+    "Toy.SemType.HasTypeStore.below.num": [
+      "propext"
+    ],
+    "Toy.SemType.HasTypeStore.below.read": [
+      "propext"
+    ],
+    "Toy.SemType.HasTypeStore.below.rec": [
+      "propext"
+    ],
+    "Toy.SemType.HasTypeStore.below.size": [
+      "propext"
+    ],
+    "Toy.SemType.HasTypeStore.below.var": [
+      "propext"
+    ],
+    "Toy.SemType.HasTypeStore.below.write": [
+      "propext"
+    ],
+    "Toy.SemType.HasTypeStore.brecOn": [
+      "propext"
+    ],
+    "Toy.SemType.HasTypeStore.casesOn": [
+      "propext"
+    ],
+    "Toy.SemType.HasTypeStore.castFree": [
+      "propext"
+    ],
+    "Toy.SemType.HasTypeStore.ifz": [
+      "propext"
+    ],
+    "Toy.SemType.HasTypeStore.lam": [],
+    "Toy.SemType.HasTypeStore.loc": [],
+    "Toy.SemType.HasTypeStore.lt": [],
+    "Toy.SemType.HasTypeStore.num": [],
+    "Toy.SemType.HasTypeStore.read": [],
+    "Toy.SemType.HasTypeStore.rec": [
+      "propext"
+    ],
+    "Toy.SemType.HasTypeStore.recOn": [
+      "propext"
+    ],
+    "Toy.SemType.HasTypeStore.size": [],
+    "Toy.SemType.HasTypeStore.var": [
+      "propext"
+    ],
+    "Toy.SemType.HasTypeStore.write": [],
+    "Toy.SemType.Heap": [],
+    "Toy.SemType.Reaches": [
+      "propext"
+    ],
+    "Toy.SemType.Reaches.below": [
+      "propext"
+    ],
+    "Toy.SemType.Reaches.below.casesOn": [
+      "propext"
+    ],
+    "Toy.SemType.Reaches.below.rec": [
+      "propext"
+    ],
+    "Toy.SemType.Reaches.below.refl": [
+      "propext"
+    ],
+    "Toy.SemType.Reaches.below.step": [
+      "propext"
+    ],
+    "Toy.SemType.Reaches.brecOn": [
+      "propext"
+    ],
+    "Toy.SemType.Reaches.casesOn": [
+      "propext"
+    ],
+    "Toy.SemType.Reaches.rec": [
+      "propext"
+    ],
+    "Toy.SemType.Reaches.recOn": [
+      "propext"
+    ],
+    "Toy.SemType.Reaches.refl": [],
+    "Toy.SemType.Reaches.step": [
+      "propext"
+    ],
+    "Toy.SemType.Recipe": [],
+    "Toy.SemType.Recipe.ClosureEnforcesValues": [
+      "propext"
+    ],
+    "Toy.SemType.Recipe.HasInvalidRef": [],
+    "Toy.SemType.Recipe.anyLoc": [
+      "propext"
+    ],
+    "Toy.SemType.Recipe.casesOn": [],
+    "Toy.SemType.Recipe.close": [],
+    "Toy.SemType.Recipe.ctorIdx": [],
+    "Toy.SemType.Recipe.future": [],
+    "Toy.SemType.Recipe.mk": [],
+    "Toy.SemType.Recipe.mk.inj": [],
+    "Toy.SemType.Recipe.mk.injEq": [
+      "propext"
+    ],
+    "Toy.SemType.Recipe.mk.noConfusion": [],
+    "Toy.SemType.Recipe.mk.sizeOf_spec": [],
+    "Toy.SemType.Recipe.noConfusion": [],
+    "Toy.SemType.Recipe.noConfusionType": [],
+    "Toy.SemType.Recipe.nonKripke": [
+      "propext"
+    ],
+    "Toy.SemType.Recipe.rec": [],
+    "Toy.SemType.Recipe.recOn": [],
+    "Toy.SemType.Recipe.refOK": [],
+    "Toy.SemType.Recipe.safetyOnly": [
+      "propext"
+    ],
+    "Toy.SemType.Recipe.std": [
+      "propext"
+    ],
+    "Toy.SemType.Recipe.valuesOnly": [
+      "propext"
+    ],
+    "Toy.SemType.RestrictedCastRule": [],
+    "Toy.SemType.RestrictedCastRule.allocArg": [],
+    "Toy.SemType.RestrictedCastRule.casesOn": [],
+    "Toy.SemType.RestrictedCastRule.rec": [],
+    "Toy.SemType.RestrictedCastRule.recOn": [],
+    "Toy.SemType.RestrictedCastRule.refCtx": [],
+    "Toy.SemType.Safe": [
+      "propext"
+    ],
+    "Toy.SemType.SemTyped": [
+      "propext"
+    ],
+    "Toy.SemType.Stuck": [
+      "propext"
+    ],
+    "Toy.SemType.Stuck.eq_1": [
+      "propext"
+    ],
+    "Toy.SemType.SynVal": [
+      "propext"
+    ],
+    "Toy.SemType.SynVal.castFree": [
+      "propext"
+    ],
+    "Toy.SemType.Ty": [],
+    "Toy.SemType.Ty.arrow": [],
+    "Toy.SemType.Ty.arrow.elim": [],
+    "Toy.SemType.Ty.arrow.inj": [],
+    "Toy.SemType.Ty.arrow.injEq": [
+      "propext"
+    ],
+    "Toy.SemType.Ty.arrow.noConfusion": [],
+    "Toy.SemType.Ty.arrow.sizeOf_spec": [],
+    "Toy.SemType.Ty.below": [],
+    "Toy.SemType.Ty.brecOn": [],
+    "Toy.SemType.Ty.brecOn.eq": [],
+    "Toy.SemType.Ty.brecOn.go": [],
+    "Toy.SemType.Ty.casesOn": [],
+    "Toy.SemType.Ty.ctorElim": [],
+    "Toy.SemType.Ty.ctorElimType": [],
+    "Toy.SemType.Ty.ctorIdx": [],
+    "Toy.SemType.Ty.int": [],
+    "Toy.SemType.Ty.int.elim": [],
+    "Toy.SemType.Ty.int.sizeOf_spec": [],
+    "Toy.SemType.Ty.noConfusion": [],
+    "Toy.SemType.Ty.noConfusionType": [],
+    "Toy.SemType.Ty.rec": [],
+    "Toy.SemType.Ty.recOn": [],
+    "Toy.SemType.Ty.ref": [],
+    "Toy.SemType.Ty.ref.elim": [],
+    "Toy.SemType.Ty.ref.sizeOf_spec": [],
+    "Toy.SemType.V": [
+      "propext"
+    ],
+    "Toy.SemType.V.match_1": [],
+    "Toy.SemType.V_closed": [
+      "propext"
+    ],
+    "Toy.SemType.V_isValue": [
+      "propext"
+    ],
+    "Toy.SemType.V_std_inhabited_one": [
+      "propext"
+    ],
+    "Toy.SemType.V_std_mono": [
+      "propext"
+    ],
+    "Toy.SemType.V_std_mono_hyp_tight": [
+      "propext"
+    ],
+    "Toy.SemType.V_std_mono_hyp_tight.match_1_1": [
+      "propext"
+    ],
+    "Toy.SemType.V_std_mono_nonvacuous": [
+      "propext"
+    ],
+    "Toy.SemType.V_std_mono_val_hyp_tight": [
+      "propext"
+    ],
+    "Toy.SemType.V_std_mono_val_hyp_tight.match_1_1": [
+      "propext"
+    ],
+    "Toy.SemType.V_std_mono_val_hyp_tight.match_1_3": [
+      "propext"
+    ],
+    "Toy.SemType.V_std_neg": [
+      "propext"
+    ],
+    "Toy.SemType.V_std_neg.match_1_1": [
+      "propext"
+    ],
+    "Toy.SemType.V_std_neg.match_1_3": [],
+    "Toy.SemType.V_std_neg.match_1_5": [
+      "propext"
+    ],
+    "Toy.SemType.V_std_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.V_std_rejects_open_dead_lam": [
+      "propext"
+    ],
+    "Toy.SemType.V_std_rejects_open_dead_lam.match_1_1": [
+      "propext"
+    ],
+    "Toy.SemType.adequacy_nil_ctx_hyp_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.adequacy_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.adequacy_semTyped_hyp_tight": [
+      "propext"
+    ],
+    "Toy.SemType.adequacy_semTyped_nil_safe": [
+      "propext"
+    ],
+    "Toy.SemType.allocThenRead": [],
+    "Toy.SemType.anyLoc_breaks_fundamental": [
+      "propext"
+    ],
+    "Toy.SemType.anyLoc_neg": [
+      "propext"
+    ],
+    "Toy.SemType.anyLoc_neg.match_1_1": [],
+    "Toy.SemType.anyLoc_neg.match_1_3": [
+      "propext"
+    ],
+    "Toy.SemType.anyLoc_pos": [
+      "propext"
+    ],
+    "Toy.SemType.bind_goodFrom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.callOnFreshCell": [],
+    "Toy.SemType.callWith7": [],
+    "Toy.SemType.callWith7_hasType": [
+      "propext"
+    ],
+    "Toy.SemType.callWith7_semTyped": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.captureRef": [],
+    "Toy.SemType.captureRef_safeAndIn_synVal": [
+      "propext"
+    ],
+    "Toy.SemType.capturedClosure": [],
+    "Toy.SemType.castFree_neg": [],
+    "Toy.SemType.castFree_pos": [],
+    "Toy.SemType.castResultClient": [],
+    "Toy.SemType.castSeven": [],
+    "Toy.SemType.castSeven_V_safetyOnly": [
+      "propext"
+    ],
+    "Toy.SemType.cast_literal_safe_but_not_semTyped": [
+      "propext"
+    ],
+    "Toy.SemType.cast_of_int_var_context_inhabited": [
+      "propext"
+    ],
+    "Toy.SemType.cast_of_int_var_not_semTyped": [
+      "propext"
+    ],
+    "Toy.SemType.cast_of_int_var_not_semTyped_anyLoc_nonRef": [
+      "propext"
+    ],
+    "Toy.SemType.cast_of_int_var_not_semTyped_anyLoc_nonRef.match_1_1": [
+      "propext"
+    ],
+    "Toy.SemType.cast_of_int_var_not_semTyped_nonvacuous": [
+      "propext"
+    ],
+    "Toy.SemType.cast_of_int_var_not_semTyped_of_closureEnforcesValues_of_hasInvalidRef": [
+      "propext"
+    ],
+    "Toy.SemType.cast_of_int_var_semTyped_anyLoc_ref": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.cast_of_int_var_semTyped_safetyOnly": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.cellBoundRead": [],
+    "Toy.SemType.cellBoundRead_callWith7_safe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.cellBoundRead_not_semTyped": [
+      "propext"
+    ],
+    "Toy.SemType.checkedBody": [],
+    "Toy.SemType.checkedBody_good": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.checkedClient": [],
+    "Toy.SemType.checkedClient_semTyped_safe_not_hasType": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.checkedRead": [],
+    "Toy.SemType.checkedRead.eq_1": [],
+    "Toy.SemType.checkedRead_V": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.checkedRead_applied_semTyped": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.checkedRead_client_hyp_tight": [
+      "propext"
+    ],
+    "Toy.SemType.checkedRead_hasType_clients_safe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.checkedRead_not_hasType": [
+      "propext"
+    ],
+    "Toy.SemType.checkedRead_semTyped": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.checkedRead_single_var_ctx_tight": [
+      "propext"
+    ],
+    "Toy.SemType.client_hyp_tight": [
+      "propext"
+    ],
+    "Toy.SemType.closedAt_mono": [
+      "propext"
+    ],
+    "Toy.SemType.closedAt_neg": [],
+    "Toy.SemType.closedAt_pos": [],
+    "Toy.SemType.closedAt_substAllAt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.closureEnforcesValues_neg": [
+      "propext"
+    ],
+    "Toy.SemType.closureEnforcesValues_pos": [
+      "propext"
+    ],
+    "Toy.SemType.derefArg": [],
+    "Toy.SemType.derefArg.eq_1": [],
+    "Toy.SemType.forgedRead": [],
+    "Toy.SemType.forgedRead_reaches_stuck": [
+      "propext"
+    ],
+    "Toy.SemType.forgedRead_unsafe_ill_typed": [
+      "propext"
+    ],
+    "Toy.SemType.fundamental_hasType_hyp_tight": [
+      "propext"
+    ],
+    "Toy.SemType.fundamental_hasType_semTyped": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.fundamental_nonvacuous": [
+      "propext"
+    ],
+    "Toy.SemType.goodFrom_step": [
+      "propext"
+    ],
+    "Toy.SemType.goodFrom_value": [
+      "propext"
+    ],
+    "Toy.SemType.hasInvalidRef_neg": [
+      "propext"
+    ],
+    "Toy.SemType.hasInvalidRef_neg.match_1_1": [
+      "propext"
+    ],
+    "Toy.SemType.hasInvalidRef_pos": [
+      "propext"
+    ],
+    "Toy.SemType.hasTypeStore_neg": [
+      "propext"
+    ],
+    "Toy.SemType.hasTypeStore_pos": [
+      "propext"
+    ],
+    "Toy.SemType.hasType_client_semTyped_lib_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.hasType_client_semTyped_lib_safe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.hasType_closed_safe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.hasType_neg": [
+      "propext"
+    ],
+    "Toy.SemType.hasType_neg.match_1_1": [
+      "propext"
+    ],
+    "Toy.SemType.hasType_neg.match_1_3": [
+      "propext"
+    ],
+    "Toy.SemType.hasType_pos": [
+      "propext"
+    ],
+    "Toy.SemType.instDecidableEqExpr": [],
+    "Toy.SemType.instDecidableEqExpr.decEq": [],
+    "Toy.SemType.instDecidableEqExpr.decEq.match_1": [],
+    "Toy.SemType.instDecidableEqTy": [],
+    "Toy.SemType.instDecidableEqTy.decEq": [],
+    "Toy.SemType.instDecidableEqTy.decEq.match_1": [],
+    "Toy.SemType.instReprExpr": [],
+    "Toy.SemType.instReprExpr.repr": [],
+    "Toy.SemType.instReprExpr.repr.match_1": [],
+    "Toy.SemType.instReprTy": [],
+    "Toy.SemType.instReprTy.repr": [],
+    "Toy.SemType.instReprTy.repr.match_1": [],
+    "Toy.SemType.isValue_neg": [
+      "propext"
+    ],
+    "Toy.SemType.isValue_pos": [
+      "propext"
+    ],
+    "Toy.SemType.lib_hyp_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.linking_interface_match_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.linking_lib_nil_ctx_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.linking_single_var_ctx_tight": [
+      "propext"
+    ],
+    "Toy.SemType.linking_single_var_ctx_tight.match_1_1": [
+      "propext"
+    ],
+    "Toy.SemType.linking_structure_nonvacuous": [
+      "propext"
+    ],
+    "Toy.SemType.nonKripke_breaks_closed_encapsulation": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.nonKripke_breaks_monotonicity_and_fundamental": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.nonKripke_breaks_open_let_compat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.nonKripke_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.nonKripke_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.nonKripke_semTyped_client_nil_safe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.not_hasType_of_not_castFree": [
+      "propext"
+    ],
+    "Toy.SemType.not_safeAndIn_of_reaches_stuck": [
+      "propext"
+    ],
+    "Toy.SemType.not_safeOnly_of_reaches_stuck": [
+      "propext"
+    ],
+    "Toy.SemType.not_safe_of_reaches_stuck": [
+      "propext"
+    ],
+    "Toy.SemType.not_stuck_of_isValue": [
+      "propext"
+    ],
+    "Toy.SemType.not_stuck_of_step": [
+      "propext"
+    ],
+    "Toy.SemType.omegaExpr": [],
+    "Toy.SemType.omega_good": [
+      "propext"
+    ],
+    "Toy.SemType.omega_reaches_self": [
+      "propext"
+    ],
+    "Toy.SemType.omega_step": [
+      "propext"
+    ],
+    "Toy.SemType.probeBody": [],
+    "Toy.SemType.probeBody.eq_1": [],
+    "Toy.SemType.probeCellZero": [],
+    "Toy.SemType.probeCellZero.eq_1": [],
+    "Toy.SemType.probeCellZero_V_nonKripke_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.probeCellZero_V_nonKripke_zero": [
+      "propext"
+    ],
+    "Toy.SemType.probeCellZero_loc1_reaches_stuck": [
+      "propext"
+    ],
+    "Toy.SemType.probeCellZero_not_semTyped_nonKripke_nil": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.reaches_heap_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.reaches_neg": [
+      "propext"
+    ],
+    "Toy.SemType.reaches_of_isValue": [
+      "propext"
+    ],
+    "Toy.SemType.reaches_of_step": [
+      "propext"
+    ],
+    "Toy.SemType.reaches_pos": [
+      "propext"
+    ],
+    "Toy.SemType.reaches_trans": [
+      "propext"
+    ],
+    "Toy.SemType.readCastVar": [],
+    "Toy.SemType.readResultOf0": [],
+    "Toy.SemType.read_cast_zero_semTyped_ref_ctx": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.restrictedCastRule_neg": [
+      "propext"
+    ],
+    "Toy.SemType.restrictedCastRule_pos": [],
+    "Toy.SemType.restrictedCastRule_sound": [
+      "propext"
+    ],
+    "Toy.SemType.restrictedCastRule_sound.match_1_1": [
+      "propext"
+    ],
+    "Toy.SemType.safeAndIn": [
+      "propext"
+    ],
+    "Toy.SemType.safeAndIn_neg": [
+      "propext"
+    ],
+    "Toy.SemType.safeAndIn_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.safeOnly": [
+      "propext"
+    ],
+    "Toy.SemType.safeOnly_neg": [
+      "propext"
+    ],
+    "Toy.SemType.safeOnly_pos": [
+      "propext"
+    ],
+    "Toy.SemType.safe_neg": [
+      "propext"
+    ],
+    "Toy.SemType.safe_of_isValue": [
+      "propext"
+    ],
+    "Toy.SemType.safe_of_reaches_value": [
+      "propext"
+    ],
+    "Toy.SemType.safe_of_step": [
+      "propext"
+    ],
+    "Toy.SemType.safe_pos": [
+      "propext"
+    ],
+    "Toy.SemType.safetyOnly_breaks_fundamental_and_encapsulation": [
+      "propext"
+    ],
+    "Toy.SemType.safetyOnly_breaks_let_compat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.safetyOnly_neg": [
+      "propext"
+    ],
+    "Toy.SemType.safetyOnly_nil_ctx_hyp_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.safetyOnly_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.safetyOnly_semTyped_nil_iff_safe": [
+      "propext"
+    ],
+    "Toy.SemType.safetyOnly_semTyped_nil_iff_safe_nonvacuous": [
+      "propext"
+    ],
+    "Toy.SemType.semTyped_client_semTyped_lib_safe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.semTyped_lam_compat_needs_closedAt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.semTyped_let_compat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.semTyped_let_compat_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.semTyped_neg": [
+      "propext"
+    ],
+    "Toy.SemType.semTyped_nil_iff": [
+      "propext"
+    ],
+    "Toy.SemType.semTyped_nil_open_dead_var": [
+      "propext"
+    ],
+    "Toy.SemType.semTyped_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.sizeGuardedProbe": [],
+    "Toy.SemType.sizeZeroOrForged": [],
+    "Toy.SemType.sizeZeroOrForged_safe_nil_not_semTyped": [
+      "propext"
+    ],
+    "Toy.SemType.std_closureEnforcesValues": [
+      "propext"
+    ],
+    "Toy.SemType.std_hasInvalidRef": [
+      "propext"
+    ],
+    "Toy.SemType.std_neg": [
+      "propext"
+    ],
+    "Toy.SemType.std_pos": [
+      "propext"
+    ],
+    "Toy.SemType.step": [
+      "propext"
+    ],
+    "Toy.SemType.step.eq_1": [
+      "propext"
+    ],
+    "Toy.SemType.step.eq_10": [
+      "propext"
+    ],
+    "Toy.SemType.step.eq_11": [
+      "propext"
+    ],
+    "Toy.SemType.step.eq_12": [
+      "propext"
+    ],
+    "Toy.SemType.step.eq_13": [
+      "propext"
+    ],
+    "Toy.SemType.step.eq_14": [
+      "propext"
+    ],
+    "Toy.SemType.step.eq_15": [
+      "propext"
+    ],
+    "Toy.SemType.step.eq_16": [
+      "propext"
+    ],
+    "Toy.SemType.step.eq_17": [
+      "propext"
+    ],
+    "Toy.SemType.step.eq_18": [
+      "propext"
+    ],
+    "Toy.SemType.step.eq_19": [
+      "propext"
+    ],
+    "Toy.SemType.step.eq_2": [
+      "propext"
+    ],
+    "Toy.SemType.step.eq_20": [
+      "propext"
+    ],
+    "Toy.SemType.step.eq_3": [
+      "propext"
+    ],
+    "Toy.SemType.step.eq_4": [
+      "propext"
+    ],
+    "Toy.SemType.step.eq_5": [
+      "propext"
+    ],
+    "Toy.SemType.step.eq_6": [
+      "propext"
+    ],
+    "Toy.SemType.step.eq_7": [
+      "propext"
+    ],
+    "Toy.SemType.step.eq_8": [
+      "propext"
+    ],
+    "Toy.SemType.step.eq_9": [
+      "propext"
+    ],
+    "Toy.SemType.step.eq_def": [
+      "propext"
+    ],
+    "Toy.SemType.step.match_1": [
+      "propext"
+    ],
+    "Toy.SemType.step.match_11": [],
+    "Toy.SemType.step.match_13": [
+      "propext"
+    ],
+    "Toy.SemType.step.match_16": [
+      "propext"
+    ],
+    "Toy.SemType.step.match_18": [],
+    "Toy.SemType.step.match_4": [
+      "propext"
+    ],
+    "Toy.SemType.step.match_7": [
+      "propext"
+    ],
+    "Toy.SemType.step.match_9": [
+      "propext"
+    ],
+    "Toy.SemType.step_heap_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.step_neg": [
+      "propext"
+    ],
+    "Toy.SemType.step_of_isValue": [
+      "propext"
+    ],
+    "Toy.SemType.step_pos": [
+      "propext"
+    ],
+    "Toy.SemType.stuck_neg": [
+      "propext"
+    ],
+    "Toy.SemType.stuck_pos": [
+      "propext"
+    ],
+    "Toy.SemType.substAllAt_comp_cons": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.substAllAt_of_closedAt": [
+      "propext"
+    ],
+    "Toy.SemType.substAll_cast_zeroAfterAlloc": [
+      "propext"
+    ],
+    "Toy.SemType.substAll_neg": [
+      "propext"
+    ],
+    "Toy.SemType.substAll_pos": [
+      "propext"
+    ],
+    "Toy.SemType.substAt_neg": [
+      "propext"
+    ],
+    "Toy.SemType.substAt_open_captures": [
+      "propext"
+    ],
+    "Toy.SemType.substAt_pos": [
+      "propext"
+    ],
+    "Toy.SemType.synVal_iff_isValue_and_hasTypeStore": [
+      "propext"
+    ],
+    "Toy.SemType.synVal_iff_isValue_and_hasTypeStore.match_1_1": [
+      "propext"
+    ],
+    "Toy.SemType.synVal_iff_isValue_and_hasTypeStore.match_1_3": [
+      "propext"
+    ],
+    "Toy.SemType.synVal_iff_isValue_and_hasTypeStore.match_1_5": [
+      "propext"
+    ],
+    "Toy.SemType.synVal_iff_isValue_and_hasTypeStore.match_1_7": [
+      "propext"
+    ],
+    "Toy.SemType.synVal_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.synVal_neg.match_1_1": [
+      "propext"
+    ],
+    "Toy.SemType.synVal_pos": [
+      "propext"
+    ],
+    "Toy.SemType.synVal_rejects_checkedRead": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SemType.tacticReach": [],
+    "Toy.SemType.typing_relation_deriving_cast_of_int_var_unsound": [
+      "propext"
+    ],
+    "Toy.SemType.typing_relation_hyp_tight": [
+      "propext"
+    ],
+    "Toy.SemType.typing_relation_nonvacuous": [
+      "propext"
+    ],
+    "Toy.SemType.uncheckedRead": [],
+    "Toy.SemType.uncheckedRead.eq_1": [],
+    "Toy.SemType.uncheckedRead_not_semTyped": [
+      "propext"
+    ],
+    "Toy.SemType.valFrom_step": [
+      "propext"
+    ],
+    "Toy.SemType.valFrom_stuck": [
+      "propext"
+    ],
+    "Toy.SemType.valuesIn": [
+      "propext"
+    ],
+    "Toy.SemType.valuesIn_neg": [
+      "propext"
+    ],
+    "Toy.SemType.valuesIn_of_safeAndIn": [
+      "propext"
+    ],
+    "Toy.SemType.valuesIn_pos": [
+      "propext"
+    ],
+    "Toy.SemType.valuesOnly_adequacy_fails": [
+      "propext"
+    ],
+    "Toy.SemType.valuesOnly_neg": [
+      "propext"
+    ],
+    "Toy.SemType.valuesOnly_pos": [
+      "propext"
+    ],
+    "Toy.SemType.withCastRootRule": [
+      "propext"
+    ],
+    "Toy.SemType.withCastRootRule_neg": [
+      "propext"
+    ],
+    "Toy.SemType.withCastRootRule_pos": [
+      "propext"
+    ],
+    "Toy.SemType.zeroAfterAlloc": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

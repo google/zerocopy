@@ -1,0 +1,6 @@
+name = "toy-semtype"
+version = "0.1.0"
+defaultTargets = ["ToySemType"]
+
+[[lean_lib]]
+name = "ToySemType"

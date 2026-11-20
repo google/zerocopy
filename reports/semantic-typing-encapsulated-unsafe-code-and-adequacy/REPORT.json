@@ -1,0 +1,37 @@
+{
+  "topics": [
+    "lean",
+    "lean/mechanization",
+    "verification",
+    "verification/formalized-results",
+    "verification/semantic-typing",
+    "verification/unsafe-encapsulation",
+    "pl",
+    "pl/logical-relations",
+    "pl/type-soundness",
+    "rust/unsafe-code"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "A Logical Approach to Type Soundness (Timany, Krebbers, Dreyer, Birkedal; J. ACM 2024)",
+      "identity": {
+        "doi": "10.1145/3676954"
+      }
+    },
+    {
+      "name": "RustBelt: Securing the Foundations of the Rust Programming Language (Jung, Jourdan, Krebbers, Dreyer; POPL 2018)",
+      "identity": {
+        "doi": "10.1145/3158154"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
