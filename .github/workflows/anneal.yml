@@ -23,8 +23,152 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  detect_changes:
+    name: Detect Anneal changes
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      ACTIONS_CACHE_URL: ""
+      ACTIONS_RESULTS_URL: ""
+      ACTIONS_RUNTIME_TOKEN: ""
+    outputs:
+      run_anneal: ${{ steps.filter.outputs.run_anneal }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: github.event_name == 'pull_request'
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Classify changed paths
+        id: filter
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          python3 -I -B - <<'PY' >> "$GITHUB_OUTPUT"
+          import os
+          import re
+          import subprocess
+          import sys
+
+          if os.environ["EVENT_NAME"] != "pull_request":
+              print("run_anneal=true")
+              sys.exit(0)
+
+          SHA_RE = re.compile(r"^[0-9a-fA-F]{40}$")
+
+          def git_paths(cmd):
+              res = subprocess.run(cmd, capture_output=True)
+              if res.returncode != 0:
+                  return None
+              return [
+                  p.decode("utf-8", "surrogateescape")
+                  for p in res.stdout.split(b"\0")
+                  if p
+              ]
+
+          def diff_names(*args):
+              return git_paths([
+                  "git", "-c", "core.quotepath=false",
+                  "diff", "--name-only", "--no-renames", "-z", *args, "--",
+              ])
+
+          def log_names(rev_range):
+              return git_paths([
+                  "git", "-c", "core.quotepath=false",
+                  "log", "-m", "--format=",
+                  "--name-only", "--no-renames", "-z", rev_range, "--",
+              ])
+
+          ok = True
+          paths = set()
+          parents_res = subprocess.run(
+              ["git", "rev-list", "--parents", "-n", "1", "HEAD"],
+              capture_output=True,
+              text=True,
+          )
+          if parents_res.returncode != 0:
+              ok = False
+              head_oid = ""
+              parents = []
+          else:
+              tokens = parents_res.stdout.strip().split()
+              head_oid = tokens[0] if tokens else ""
+              parents = tokens[1:]
+
+          base_sha = os.environ.get("PR_BASE_SHA", "")
+          head_sha = os.environ.get("PR_HEAD_SHA", "")
+          if not SHA_RE.fullmatch(base_sha) or not SHA_RE.fullmatch(head_sha):
+              ok = False
+
+          is_synthetic_merge = (
+              len(parents) == 2 and parents[1] == head_sha
+          )
+          if head_oid != head_sha and not is_synthetic_merge:
+              ok = False
+
+          pr_tip = head_sha if SHA_RE.fullmatch(head_sha) else "HEAD"
+
+          if ok:
+              for batch in (
+                  diff_names(f"{base_sha}...HEAD"),
+                  log_names(f"{base_sha}..{pr_tip}"),
+              ):
+                  if batch is None:
+                      ok = False
+                  else:
+                      paths.update(batch)
+
+          if ok and is_synthetic_merge:
+              d_merge = diff_names("HEAD^1", "HEAD")
+              if d_merge is None:
+                  ok = False
+              else:
+                  paths.update(d_merge)
+
+          if ok:
+              for batch in (
+                  diff_names("refs/remotes/origin/main...HEAD"),
+                  log_names(f"refs/remotes/origin/main..{pr_tip}"),
+              ):
+                  if batch is None:
+                      ok = False
+                  else:
+                      paths.update(batch)
+
+          non_anneal_prefixes = (
+              "zerocopy/",
+              "evals/",
+              "tools/",
+              "maintainers/",
+          )
+          non_anneal_files = {
+              "CONTRIBUTING.md",
+              "LICENSE-APACHE",
+              "LICENSE-BSD",
+              "LICENSE-MIT",
+              "rustfmt.toml",
+              ".dockerignore",
+          }
+          only_non_anneal = (
+              ok
+              and bool(paths)
+              and all(
+                  p.startswith(non_anneal_prefixes) or p in non_anneal_files
+                  for p in paths
+              )
+          )
+          print(f"run_anneal={'false' if only_non_anneal else 'true'}")
+          PY
+
   current_anneal:
     name: Current Anneal
+    needs: detect_changes
+    if: needs.detect_changes.outputs.run_anneal == 'true'
     uses: ./.github/workflows/anneal-current.yml
 
   all-jobs-succeed:
@@ -32,9 +176,34 @@ jobs:
     name: All checks succeeded (anneal.yml)
     if: ${{ always() }}
     runs-on: ubuntu-latest
-    needs: [current_anneal]
+    needs: [detect_changes, current_anneal]
     steps:
+      - name: Reject workflow cancellation
+        if: ${{ cancelled() }}
+        run: exit 1
+
       - name: Require every dependency to succeed
         env:
+          EVENT_NAME: ${{ github.event_name }}
+          RUN_ANNEAL: ${{ needs.detect_changes.outputs.run_anneal }}
           NEEDS_JSON: ${{ toJSON(needs) }}
-        run: jq -e 'length > 0 and all(.[]; .result == "success")' <<< "$NEEDS_JSON"
+        run: |
+          set -euo pipefail
+          jq -e --arg event "$EVENT_NAME" --arg run_anneal "$RUN_ANNEAL" '
+            type == "object" and length > 0 and
+            ($event == "pull_request" or $run_anneal == "true") and
+            if $run_anneal == "true" then
+              all(to_entries[]; .value.result == "success")
+            elif $run_anneal == "false" then
+              .detect_changes.result == "success" and
+              all(
+                to_entries[];
+                if .key == "detect_changes"
+                then .value.result == "success"
+                else .value.result == "skipped"
+                end
+              )
+            else
+              false
+            end
+          ' <<< "$NEEDS_JSON"
