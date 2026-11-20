@@ -1,0 +1,278 @@
+[
+  {
+    "id": "functional-correctness-does-not-preserve-ct",
+    "lean": "Toy.CT.functional_correctness_does_not_preserve_ct",
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "There exist concrete transition-deterministic, terminating small-step machines branchlessSelect and branchingSelect such that branchlessSelect satisfies ConstantTime, the pair satisfies FunctionallyCorrect (equating halting output sets on every input), and branchingSelect violates ConstantTime.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Concrete pair (branchlessSelect, branchingSelect) over Pub = Nat × Nat, Sec = Bool, Out = Nat, and Leak = Nat (program counter): branchlessSelect evaluates if sec then pub.1 else pub.2 in one straight-line step with trace [0], whereas branchingSelect branches at PC 0 to PC 1 on true (trace [0, 1]) or PC 2 on false (trace [0, 2]).",
+    "nonvacuity_witness_lean": "Toy.CT.functional_correctness_does_not_preserve_ct",
+    "positive_control_lean": "Toy.CT.branchless_lowering_preserves_ct",
+    "non_claims": [
+      "Does not claim that every functionally correct compilation breaks ConstantTime. Toy.CT.branchless_lowering_preserves_ct exhibits one functionally correct compilation of the same source (branchlessSelect to branchlessLowered) that also satisfies LeakageDetermined and preserves ConstantTime; that theorem is a single instance. The general sufficient condition is Result 2 (Toy.CT.leakage_determined_preserves_ct), in which LeakageDetermined alone suffices and FunctionallyCorrect plays no role.",
+      "The two machines are hand-constructed. The result does not show that any particular compiler performs this transformation; for empirical evidence see the cited compiler studies.",
+      "branchingSelect executes exactly two steps for every secret (Toy.CT.branchingSelect_trace_length). The violation is of the program-counter (control-flow) leakage model; under an observer that sees only the number of steps (execution time in this model), the target is indistinguishable across secrets.",
+      "FunctionallyCorrect here is two-sided equality of halting-output sets: for every input and output, S has a halting run returning that output iff T has one. It implies one-sided inclusion of halting outputs, but it constrains complete halting runs only: on an input where neither machine halts it imposes no condition, even when both machines are deterministic. For example, silentLoopSource loops forever and is Safe (Toy.CT.safe_nonterminating_pos_example), while stuckMachine is stuck at its unique initial configuration and is not Safe (Toy.CT.safe_neg_example); both have halted := False, so FunctionallyCorrect holds between them trivially (read off the quoted definitions; not stated as a separate Lean theorem). FunctionallyCorrect is therefore not a strengthening of CompCert-style backward simulation, which for a safe source also rules out a stuck target; this comparison is unproved commentary, and no formal relation to backward simulation is proved here. The counterexample pair satisfies Deterministic and Terminates (conjuncts of the theorem), hence HasInit and Safe (Toy.CT.hasInit_and_safe_of_det_terminates), so the failure of ConstantTime does not rely on stuck runs or on inputs without a halting run.",
+      "Models instruction-address (program-counter) leakage in an abstract small-step machine rather than cycle-accurate microarchitectural, speculative, or cache state (for speculative constant-time preservation failures in compilers, see Arranz Olmos et al., POPL 2025).",
+      "All results relate one source machine to one target machine. No result quantifies over a compiler (a map from all source programs to target programs); applying them to a compiler pass means discharging the hypotheses for each program the pass produces."
+    ],
+    "prior_art": [
+      "Gilles Barthe, Benjamin Gregoire, and Vincent Laporte, \"Secure Compilation of Side-Channel Countermeasures: The Case of Cryptographic 'Constant-Time',\" 2018 IEEE 31st Computer Security Foundations Symposium (CSF), pp. 328-343, 2018, DOI: 10.1109/CSF.2018.00031 (conditional-move-to-branch compilation counterexample).",
+      "David Molnar, Matt Piotrowski, David Schultz, and David Wagner, \"The Program Counter Security Model: Automatic Detection and Removal of Control-Flow Side Channel Attacks,\" Information Security and Cryptology - ICISC 2005, LNCS vol. 3935, pp. 156-168, Springer, 2006, DOI: 10.1007/11734727_14 (program-counter transcript leakage model).",
+      "Michael R. Clarkson and Fred B. Schneider, \"Hyperproperties,\" Journal of Computer Security, vol. 18, no. 6, pp. 1157-1210, 2010, DOI: 10.3233/JCS-2009-0393.",
+      "Carmine Abate, Roberto Blanco, Stefan Ciobaca, Adrien Durier, Deepak Garg, Catalin Hritcu, Marco Patrignani, Eric Tanter, and Jeremy Thibault, \"Trace-Relating Compiler Correctness and Secure Compilation,\" Programming Languages and Systems (ESOP 2020), LNCS vol. 12075, pp. 1-28, 2020, DOI: 10.1007/978-3-030-44914-8_1.",
+      "Vijay D'Silva, Mathias Payer, and Dawn Song, \"The Correctness-Security Gap in Compiler Optimization,\" 2015 IEEE Security and Privacy Workshops (SPW), pp. 73-87, 2015, DOI: 10.1109/SPW.2015.33.",
+      "Thierry Kaufmann, Herve Pelletier, Serge Vaudenay, and Karine Villegas, \"When Constant-Time Source Yields Variable-Time Binary: Exploiting Curve25519-donna Built with MSVC 2015,\" Cryptology and Network Security (CANS 2016), LNCS vol. 10052, pp. 573-582, 2016, DOI: 10.1007/978-3-319-48965-0_36.",
+      "Laurent Simon, David Chisnall, and Ross Anderson, \"What You Get is What You C: Controlling Side Effects in Mainstream C Compilers,\" 2018 IEEE European Symposium on Security and Privacy (EuroS&P), pp. 1-15, 2018, DOI: 10.1109/EuroSP.2018.00009.",
+      "Lukas Gerlach, Robert Pietsch, and Michael Schwarz, \"Do Compilers Break Constant-time Guarantees?\" Financial Cryptography and Data Security (FC 2025), LNCS vol. 15752, pp. 327-344, Springer, 2026, DOI: 10.1007/978-3-032-07035-7_20."
+    ],
+    "design_question": "Does a standard functional-correctness proof on a compiler pass (input/output equivalence) suffice to preserve constant-time side-channel guarantees?",
+    "lean_names": [
+      "Toy.CT.branchingSelect_trace_length"
+    ]
+  },
+  {
+    "id": "leakage-determined-preserves-ct",
+    "lean": "Toy.CT.leakage_determined_preserves_ct",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For all small-step machines S and T sharing public and secret input types (with possibly distinct output and leakage types) and any secret-independent trace transformer leakMap : Pub -> List SrcLeak -> List TgtLeak, if LeakageDetermined S T leakMap holds (the halting traces of T on every (pub, sec) are exactly the images under leakMap pub of the halting traces of S on (pub, sec)) and S satisfies ConstantTime, then T satisfies ConstantTime.",
+    "hypotheses": [
+      {
+        "name": "hLD",
+        "purpose": "Requires the halting target leakage traces of T on every (pub, sec) to be exactly the images under secret-independent leakMap pub of the halting source leakage traces of S.",
+        "tightness": "tight",
+        "counterexample": "Toy.CT.secret_dependent_leak_map_breaks_ct"
+      },
+      {
+        "name": "hCT",
+        "purpose": "Requires the source machine S to satisfy ConstantTime (halting-trace-set equality across secrets).",
+        "tightness": "tight",
+        "counterexample": "Toy.CT.leakage_determined_drop_ct_counterexample"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Source machine branchlessSelect (trace [0]) lowered to straight-line two-step target machine branchlessLowered (trace [10, 11]) via secret-independent trace transformer selectToLoweredLeakMap.",
+    "nonvacuity_witness_lean": "Toy.CT.leakage_determined_preserves_ct_nonvacuous",
+    "non_claims": [
+      "For a single source/target pair whose source is ConstantTime and whose target is TraceUnique (for example Deterministic), the existence of some secret-independent leakMap with LeakageDetermined S T leakMap is equivalent to the target being ConstantTime and halting on exactly the same inputs (Toy.CT.exists_leakage_determined_iff_of_ct_traceUnique). LeakageDetermined is therefore not an easier per-program obligation than proving the target constant-time; its value lies in a leakMap supplied independently of the security argument (for example by liftStepLeak from Result 3, or by a compiler-produced leakage transformer).",
+      "On TraceUnique (for example Deterministic) sources, LeakageDetermined is sufficient but not minimal: one-way inclusion of target traces in the image plus 'the target halts whenever the source halts' (WeakLeakageDetermined) already suffices for preservation (Toy.CT.weakLeakageDetermined_preserves_ct_of_traceUnique), whereas without TraceUnique S that one-way weakening fails (Toy.CT.weakLeakageDetermined_fails_without_traceUnique).",
+      "Terminates asserts only that some run halts. For nondeterministic machines, ConstantTime (and LeakageDetermined) place no constraint on diverging runs even when Terminates holds (example: haltOrLeak, Toy.CT.terminates_and_constantTime_unconstrained_diverging_branch); only Deterministic M ∧ Terminates M ensures that every run halts.",
+      "When the source never halts on a public input, LeakageDetermined forces the target never to halt there, and the conclusion ConstantTime T holds vacuously on that input.",
+      "ConstantTime quantifies over complete halting executions only. A machine with no halting execution on some public input is constant-time on that input whatever it leaks before diverging (example: leakyLoop, Toy.CT.leakyLoop_constantTime_despite_diverging_step_leak). This differs from the prefix-based definition of Barthe, Gregoire and Laporte (CSF 2018).",
+      "ConstantTime is termination-sensitive and is not preserved by trace-inclusion refinement: a target whose halting traces are a subset of a constant-time source's can fail to be constant-time (example: haltIfTrue refining allHalt, Toy.CT.constantTime_not_refinement_closed).",
+      "ConstantTime equates halting trace sets possibilistically without weighting transition probabilities; single-trace-per-input behavior is captured separately by TraceUnique (example: coinFlip satisfies ConstantTime and violates TraceUnique).",
+      "Does not establish FunctionallyCorrect between S and T: SrcOut and TgtOut need not even coincide, because ConstantTime constrains halting leakage traces rather than return values.",
+      "Does not guarantee freedom from physical or speculative hardware timing channels (variable-latency arithmetic, speculative execution, cache contention) that are not represented in TgtLeak (see Arranz Olmos et al., POPL 2025).",
+      "LeakageDetermined is a sufficient condition for preserving ConstantTime, not a necessary condition for T to be ConstantTime (for example, Partial Control-Flow Linearization compiles a non-constant-time source into a constant-time target; Knothe and Bringmann, ITP 2025)."
+    ],
+    "prior_art": [
+      "Gilles Barthe, Benjamin Gregoire, Vincent Laporte, and Swarn Priya, \"Structured Leakage and Applications to Cryptographic Constant-Time and Cost,\" Proceedings of the 2021 ACM SIGSAC Conference on Computer and Communications Security (CCS '21), pp. 462-476, 2021, DOI: 10.1145/3460120.3484761.",
+      "Gilles Barthe, Benjamin Gregoire, and Vincent Laporte, \"Secure Compilation of Side-Channel Countermeasures: The Case of Cryptographic 'Constant-Time',\" 2018 IEEE 31st Computer Security Foundations Symposium (CSF), pp. 328-343, 2018, DOI: 10.1109/CSF.2018.00031.",
+      "Carmine Abate, Roberto Blanco, Stefan Ciobaca, Adrien Durier, Deepak Garg, Catalin Hritcu, Marco Patrignani, Eric Tanter, and Jeremy Thibault, \"Trace-Relating Compiler Correctness and Secure Compilation,\" Programming Languages and Systems (ESOP 2020), LNCS vol. 12075, pp. 1-28, 2020, DOI: 10.1007/978-3-030-44914-8_1.",
+      "Gilles Barthe, Gaetan Cassiers, Henri Dohmen, Marc Gourjon, Benjamin Gregoire, Nora Khayata, Thomas Schneider, and Finn Schubert, \"Secure Compilation of Probabilistic Side-Channel Countermeasures,\" Cryptology ePrint Archive, Paper 2026/2510, 2026, https://eprint.iacr.org/2026/2510.",
+      "David Knothe and Oliver Bringmann, \"On Verifying Secret Control Flow Elimination,\" 16th International Conference on Interactive Theorem Proving (ITP 2025), LIPIcs vol. 352, pp. 31:1-31:19, 2025, DOI: 10.4230/LIPIcs.ITP.2025.31 (verifies secret control-flow elimination outside LeakageDetermined).",
+      "Santiago Arranz Olmos, Gilles Barthe, Lionel Blatter, Benjamin Gregoire, and Vincent Laporte, \"Preservation of Speculative Constant-Time by Compilation,\" Proceedings of the ACM on Programming Languages (PACMPL), vol. 9, no. POPL, 2025, DOI: 10.1145/3704880 (ePrint 2024/1203)."
+    ],
+    "design_question": "When a compiler pass or simulation proof supplies an explicit secret-independent trace transformer leakMap (without assuming functional equivalence, determinism, or termination), does LeakageDetermined suffice to transfer ConstantTime from source to target?",
+    "lean_names": [
+      "Toy.CT.weakLeakageDetermined_preserves_ct_of_traceUnique",
+      "Toy.CT.weakLeakageDetermined_fails_without_traceUnique",
+      "Toy.CT.terminates_and_constantTime_unconstrained_diverging_branch",
+      "Toy.CT.leakyLoop_constantTime_despite_diverging_step_leak",
+      "Toy.CT.constantTime_not_refinement_closed"
+    ]
+  },
+  {
+    "id": "single-pair-leakage-determined-characterization",
+    "lean": "Toy.CT.exists_leakage_determined_iff_of_ct_traceUnique",
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "For any source machine S satisfying ConstantTime and any target machine T satisfying TraceUnique (in particular any Deterministic target), the existence of some secret-independent trace transformer leakMap satisfying LeakageDetermined S T leakMap is equivalent to ConstantTime T ∧ HaltAgree S T.",
+    "hypotheses": [
+      {
+        "name": "hCTS",
+        "purpose": "Requires the source machine S to satisfy ConstantTime so the forward direction of the equivalence yields ConstantTime T.",
+        "tightness": "tight",
+        "counterexample": "Toy.CT.exists_ld_iff_drop_src_ct_counterexample"
+      },
+      {
+        "name": "hTgtUnique",
+        "purpose": "Requires T to admit at most one halting trace per (pub, sec) so a functional trace map leakMap pub can cover T's halting trace set whenever ConstantTime T and HaltAgree S T hold.",
+        "tightness": "tight",
+        "counterexample": "Toy.CT.exists_ld_iff_drop_tgt_traceUnique_counterexample"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Constant-time source machine branchlessSelect paired with trace-unique target machine branchlessLowered.",
+    "nonvacuity_witness_lean": "Toy.CT.exists_leakage_determined_iff_of_ct_traceUnique_nonvacuous",
+    "non_claims": [
+      "All results relate one source machine to one target machine. No result quantifies over a compiler (a map from all source programs to target programs); applying them to a compiler pass means discharging the hypotheses for each program the pass produces.",
+      "The backward implication (ConstantTime T ∧ HaltAgree S T -> ∃ leakMap, LeakageDetermined S T leakMap) constructs leakMap non-constructively via Classical.choice from T's own halting traces and ignores its source-trace argument; it does not produce a computable compiler-level leakage transformer.",
+      "Without TraceUnique T, ConstantTime T ∧ HaltAgree S T no longer implies ∃ leakMap, LeakageDetermined S T leakMap when S has fewer traces per input than T (Toy.CT.exists_ld_iff_drop_tgt_traceUnique_counterexample).",
+      "No novelty is claimed, and no published statement of this single-pair equivalence was located; it is recorded as an elementary observation (tier T1), and the prior_art entries are background on leakage transformers and trace-relating compilation, not sources that state the equivalence."
+    ],
+    "prior_art": [
+      "Gilles Barthe, Benjamin Gregoire, Vincent Laporte, and Swarn Priya, \"Structured Leakage and Applications to Cryptographic Constant-Time and Cost,\" Proceedings of the 2021 ACM SIGSAC Conference on Computer and Communications Security (CCS '21), pp. 462-476, 2021, DOI: 10.1145/3460120.3484761.",
+      "Carmine Abate, Roberto Blanco, Stefan Ciobaca, Adrien Durier, Deepak Garg, Catalin Hritcu, Marco Patrignani, Eric Tanter, and Jeremy Thibault, \"Trace-Relating Compiler Correctness and Secure Compilation,\" Programming Languages and Systems (ESOP 2020), LNCS vol. 12075, pp. 1-28, 2020, DOI: 10.1007/978-3-030-44914-8_1."
+    ],
+    "design_question": "For a single compiled program pair, is existentially asserting some secret-independent leakage transformer any stronger or easier to prove than directly proving the target constant-time with matching halting domain?",
+    "lean_names": [
+      "Toy.CT.exists_leakage_determined_iff_of_ct_traceUnique_both_sides_true",
+      "Toy.CT.exists_leakage_determined_iff_of_ct_traceUnique_both_sides_false"
+    ]
+  },
+  {
+    "id": "step-leakage-simulation-implies-leakage-determined",
+    "lean": "Toy.CT.step_leakage_sim_det_target_implies_leakage_determined",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For all small-step machines S and T sharing public input, secret input, and output types, any secret-independent step leakage map stepLeak : Pub -> SrcLeak -> List TgtLeak, source anti-stuttering measure measure : S.State -> Nat, and relation R, if forward step simulation StepLeakSim S T stepLeak measure R holds together with HasInit S, Safe S, and transition determinism Deterministic T, then LeakageDetermined S T (liftStepLeak stepLeak) holds for the homomorphic trace transformer liftStepLeak stepLeak.",
+    "hypotheses": [
+      {
+        "name": "hSim",
+        "purpose": "Provides the forward step-wise simulation relation R matching initial and halted configurations and mapping each source step's leakage ls to stepLeak pub ls target steps, with measure s' < measure s whenever stepLeak pub ls = [].",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.CT.step_sim_drop_sim_counterexample",
+          "Toy.CT.unmeasured_stutter_sim_breaks_leakage_determined"
+        ]
+      },
+      {
+        "name": "hSrcInit",
+        "purpose": "Guarantees that every (pub, sec) input has at least one initial configuration in S so halting executions of deterministic T pull back to S.",
+        "tightness": "tight",
+        "counterexample": "Toy.CT.step_sim_drop_src_init_counterexample"
+      },
+      {
+        "name": "hSrcSafe",
+        "purpose": "Guarantees progress (either halting or stepping) at every reachable configuration of S so a stuck source configuration cannot vacuously simulate a halting target configuration.",
+        "tightness": "tight",
+        "counterexample": "Toy.CT.step_sim_drop_src_safe_counterexample"
+      },
+      {
+        "name": "hTgtDet",
+        "purpose": "Guarantees transition determinism of T (unique initial state, unique step leakage and next state, no transitions from halted states) so forward simulation uniquely pins down every halting execution of T.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.CT.nondeterministic_target_sim_breaks_leakage_determined",
+          "Toy.CT.step_sim_drop_tgt_init_det_counterexample",
+          "Toy.CT.step_sim_drop_tgt_step_state_det_counterexample",
+          "Toy.CT.step_sim_drop_tgt_halted_nostep_counterexample"
+        ]
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "Source machine branchlessWithNop (dead nop at PC 0 followed by branchless select at PC 1) simulated by branchlessLowered under nopToLoweredStepLeak, exercising both stuttering elimination (PC 0 -> [] with measure decrease 1 < 2) and multi-step lowering (PC 1 -> [10, 11]).",
+    "nonvacuity_witness_lean": "Toy.CT.step_leakage_sim_det_target_implies_leakage_determined_nonvacuous",
+    "non_claims": [
+      "StepLeakSim is a leakage-functional special case of the constant-time simulations of Barthe, Gregoire and Laporte (CSF 2018), which allow the number of target steps to depend on source and target configurations and establish security through a relational invariant. Passes that need state-dependent step counts are not covered by Result 3, and this package does not formalize the more general condition.",
+      "Covers passes whose step-level leakage map stepLeak : Pub -> SrcLeak -> List TgtLeak fixes target step leakages (including 0-step stuttering [] and multi-step expansion) from (pub, ls) alone; non-local pass transformations such as instruction scheduling or loop reordering that permute leakage events across non-adjacent steps need not factor through liftStepLeak and must establish LeakageDetermined directly.",
+      "In a single-run forward option simulation without a relational pair invariant across secrets (OptionStepLeakSim), allowing the step-versus-stutter choice to depend on internal configurations breaks both LeakageDetermined and ConstantTime (Toy.CT.option_stutter_sim_breaks_ct); whether a state-dependent step count leaks in general depends on whether it depends on secrets, which Barthe, Gregoire and Laporte (CSF 2018) handle via a relational 2-simulation rather than (pub, ls) functionality.",
+      "Each of HasInit S, Safe S, and the stuttering measure is also necessary for constant-time preservation: see Toy.CT.step_sim_drop_src_init_counterexample, Toy.CT.step_sim_drop_src_safe_counterexample, and Toy.CT.unmeasured_stutter_sim_breaks_leakage_determined.",
+      "Result 3 is the leakage instance of the forward-to-backward simulation argument for deterministic targets (Leroy 2009; CompCert Smallstep.forward_to_backward_simulation); it is not a new proof technique.",
+      "Output agreement is not used by the conclusion. StepLeakSim requires related halted configurations to return the same output (halted_sim : S.halted s out -> T.halted t out) over a shared Out type, but the proved generalization Toy.CT.outputFree_step_leakage_sim_det_target_implies_leakage_determined reaches the same LeakageDetermined conclusion for distinct source and target output types under OutputFreeStepLeakSim, whose halted_sim only requires the target to halt with some output whenever the related source configuration halts (every StepLeakSim is an OutputFreeStepLeakSim: Toy.CT.StepLeakSim.toOutputFree). Result 3 therefore says nothing about preservation of return values."
+    ],
+    "prior_art": [
+      "Xavier Leroy, \"A formally verified compiler back-end,\" Journal of Automated Reasoning, vol. 43, no. 4, pp. 363-446, 2009, DOI: 10.1007/s10817-009-9155-4, and CompCert Coq module common/Smallstep.v (Lemma forward_to_backward_simulation), https://compcert.org/doc/html/compcert.common.Smallstep.html.",
+      "Alix Trieu, \"A Study on the Preservation of Cryptographic Constant-Time Security in the CompCert Compiler,\" Workshop on Foundations of Computer Security (FCS 2018), informal proceedings (no DOI), 2018, https://www.andrew.cmu.edu/user/liminjia/events/fcs2018/papers/s31.pdf (anti-stuttering measure counterexample for silent infinite loops compiled to skip).",
+      "Gilles Barthe, Benjamin Gregoire, and Vincent Laporte, \"Secure Compilation of Side-Channel Countermeasures: The Case of Cryptographic 'Constant-Time',\" 2018 IEEE 31st Computer Security Foundations Symposium (CSF), pp. 328-343, 2018, DOI: 10.1109/CSF.2018.00031.",
+      "Gilles Barthe, Sandrine Blazy, Benjamin Gregoire, Remi Hutin, Vincent Laporte, David Pichardie, and Alix Trieu, \"Formal Verification of a Constant-Time Preserving C Compiler,\" Proceedings of the ACM on Programming Languages (PACMPL), vol. 4, no. POPL, Article 7, pp. 7:1-7:30, 2020, DOI: 10.1145/3371075.",
+      "Gilles Barthe, Gaetan Cassiers, Henri Dohmen, Marc Gourjon, Benjamin Gregoire, Nora Khayata, Thomas Schneider, and Finn Schubert, \"Secure Compilation of Probabilistic Side-Channel Countermeasures,\" Cryptology ePrint Archive, Paper 2026/2510, 2026, https://eprint.iacr.org/2026/2510.",
+      "Martin Desharnais-Schafer, \"A Generic Framework for Verified Compilers,\" Archive of Formal Proofs (entry VeriComp), 2020, https://www.isa-afp.org/entries/VeriComp.html.",
+      "Toby Murray, Robert Sison, Edward Pierzchalski, and Christine Rizkallah, \"Compositional Security-Preserving Refinement for Concurrent Imperative Programs,\" Archive of Formal Proofs (entry Dependent_SIFUM_Refinement), 2016, https://www.isa-afp.org/entries/Dependent_SIFUM_Refinement.html.",
+      "Robert Sison and Toby Murray, \"Verifying That a Compiler Preserves Concurrent Value-Dependent Information-Flow Security,\" 10th International Conference on Interactive Theorem Proving (ITP 2019), LIPIcs vol. 141, pp. 27:1-27:19, 2019, DOI: 10.4230/LIPIcs.ITP.2019.27."
+    ],
+    "design_question": "Which local, step-by-step forward simulation condition on deterministic targets (accounting for eliminated/stuttering steps and expanded instructions) suffices to construct an explicit trace transformer liftStepLeak stepLeak satisfying LeakageDetermined without proving a backward simulation by hand?",
+    "lean_names": [
+      "Toy.CT.option_stutter_sim_breaks_ct",
+      "Toy.CT.outputFree_step_leakage_sim_det_target_implies_leakage_determined",
+      "Toy.CT.StepLeakSim.toOutputFree"
+    ]
+  },
+  {
+    "id": "secret-dependent-leakage-map-breaks-ct",
+    "lean": "Toy.CT.secret_dependent_leak_map_breaks_ct",
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "Concretely, for the program-counter selector machines branchlessSelect and branchingSelect: both are transition-deterministic and terminating; branchlessSelect satisfies ConstantTime; the pair satisfies FunctionallyCorrect; the pair satisfies SecretDependentLeakageDetermined under the secret-reading trace map secretBranchLeakMap; no secret-independent trace map f satisfies LeakageDetermined branchlessSelect branchingSelect f; and branchingSelect violates ConstantTime. (The general phenomenon is a separate lemma: letting the map read Sec makes SecretDependentLeakageDetermined satisfiable for every TraceUnique target whose halting domain agrees with the source's, Toy.CT.exists_secretDependentLeakageDetermined_of_traceUnique_haltAgree; it is SecretDependentLeakageDetermined, not LeakageDetermined, that becomes trivially satisfiable.)",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Pair (branchlessSelect, branchingSelect) under explicit secret-dependent map secretBranchLeakMap (which is also guaranteed to exist for any TraceUnique target with matching halting domain by Toy.CT.exists_secretDependentLeakageDetermined_of_traceUnique_haltAgree).",
+    "nonvacuity_witness_lean": "Toy.CT.secret_dependent_leak_map_breaks_ct",
+    "positive_control_lean": "Toy.CT.branchless_lowering_preserves_ct",
+    "non_claims": [
+      "Dropping secret-independence does not merely weaken the condition, it empties it: SecretDependentLeakageDetermined S T m holds for some m whenever T is Deterministic (or TraceUnique) and halts on exactly the inputs where S halts (Toy.CT.exists_secretDependentLeakageDetermined_of_traceUnique_haltAgree). The ∀ f, ¬ LeakageDetermined conjunct follows from Result 2 and the constant-time conjuncts.",
+      "A function of signature Pub -> Sec -> List SrcLeak -> List TgtLeak that ignores its Sec argument reduces definitionally to LeakageDetermined (Toy.CT.secretDependentLeakageDetermined_const_sec_iff)."
+    ],
+    "prior_art": [
+      "Gilles Barthe, Benjamin Gregoire, and Vincent Laporte, \"Secure Compilation of Side-Channel Countermeasures: The Case of Cryptographic 'Constant-Time',\" 2018 IEEE 31st Computer Security Foundations Symposium (CSF), pp. 328-343, 2018, DOI: 10.1109/CSF.2018.00031.",
+      "Gilles Barthe, Benjamin Gregoire, Vincent Laporte, and Swarn Priya, \"Structured Leakage and Applications to Cryptographic Constant-Time and Cost,\" Proceedings of the 2021 ACM SIGSAC Conference on Computer and Communications Security (CCS '21), pp. 462-476, 2021, DOI: 10.1145/3460120.3484761."
+    ],
+    "design_question": "What happens to LeakageDetermined when the trace transformer is allowed to read Sec — does it remain a meaningful restriction or become trivially satisfiable on deterministic targets?",
+    "lean_names": [
+      "Toy.CT.exists_secretDependentLeakageDetermined_of_traceUnique_haltAgree",
+      "Toy.CT.secretDependentLeakageDetermined_const_sec_iff"
+    ]
+  },
+  {
+    "id": "nondeterministic-target-breaks-step-simulation-ct",
+    "lean": "Toy.CT.nondeterministic_target_sim_breaks_leakage_determined",
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "For the transition-deterministic, terminating, safe, constant-time source machine constOneStep and the terminating, nondeterministic target machine nondetSecretBranchTarget (satisfying ¬ Deterministic nondetSecretBranchTarget), forward simulation StepLeakSim holds under the secret-independent identity step-leakage map fun _ l => [l] and zero measure together with FunctionallyCorrect, yet both LeakageDetermined constOneStep nondetSecretBranchTarget (liftStepLeak (fun _ l => [l])) and ConstantTime nondetSecretBranchTarget fail.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Source constOneStep deterministically emits [0] on all secrets; target nondetSecretBranchTarget emits [0] on sec = false and nondeterministically emits either [0] (witnessing forward StepLeakSim) or [1] (breaking LeakageDetermined and ConstantTime) on sec = true while always returning ().",
+    "nonvacuity_witness_lean": "Toy.CT.nondeterministic_target_sim_breaks_leakage_determined",
+    "positive_control_lean": "Toy.CT.determinized_target_sim_positive_control",
+    "non_claims": [
+      "This package does not show whether any backward (target-to-source) simulation condition suffices for nondeterministic targets; backward simulation alone yields only inclusion of target traces in the image, not LeakageDetermined.",
+      "nondeterministic_target_sim_breaks_leakage_determined states ¬ Deterministic nondetSecretBranchTarget as a whole; its statement does not say which sub-clause fails. By inspection of the quoted definition of nondetSecretBranchTarget, only the step-leakage uniqueness half of Deterministic.step_det fails (init_det, successor-state uniqueness, and halted_nostep hold), but these kept sub-clauses are not conjuncts of the theorem. For Deterministic.init_det, successor-state uniqueness in Deterministic.step_det, and Deterministic.halted_nostep, necessity with the other sub-clauses stated as conjuncts is proved in Toy.CT.step_sim_drop_tgt_init_det_counterexample, Toy.CT.step_sim_drop_tgt_step_state_det_counterexample, and Toy.CT.step_sim_drop_tgt_halted_nostep_counterexample.",
+      "The nondeterminism in nondetSecretBranchTarget is itself secret-dependent (the extra transition exists only when sec = true); the result does not model a specific real source of target nondeterminism.",
+      "Does not require source determinism to fail: constOneStep is fully deterministic, showing the vulnerability arises strictly from unsimulated nondeterministic transitions in the target semantics."
+    ],
+    "prior_art": [
+      "Xavier Leroy, \"A formally verified compiler back-end,\" Journal of Automated Reasoning, vol. 43, no. 4, pp. 363-446, 2009, DOI: 10.1007/s10817-009-9155-4, and CompCert Coq module common/Smallstep.v (Lemma forward_to_backward_simulation), https://compcert.org/doc/html/compcert.common.Smallstep.html.",
+      "Gilles Barthe, Benjamin Gregoire, and Vincent Laporte, \"Secure Compilation of Side-Channel Countermeasures: The Case of Cryptographic 'Constant-Time',\" 2018 IEEE 31st Computer Security Foundations Symposium (CSF), pp. 328-343, 2018, DOI: 10.1109/CSF.2018.00031."
+    ],
+    "design_question": "Does a forward constant-time step simulation suffice when the target IR or assembly semantics is not transition-deterministic?"
+  },
+  {
+    "id": "leakage-determined-composes",
+    "lean": "Toy.CT.leakage_determined_comp",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For all small-step machines M1, M2, and M3 sharing public and secret input types (with possibly distinct output and leakage types) and secret-independent trace transformers f : Pub -> List Leak1 -> List Leak2 and g : Pub -> List Leak2 -> List Leak3, if LeakageDetermined M1 M2 f and LeakageDetermined M2 M3 g hold, then LeakageDetermined M1 M3 (composeLeakMap f g) holds for the composed transformer composeLeakMap f g := fun pub tr1 => g pub (f pub tr1).",
+    "hypotheses": [
+      {
+        "name": "h₁₂",
+        "purpose": "Establishes that the first pass from M1 to M2 is LeakageDetermined via secret-independent trace transformer f.",
+        "tightness": "tight",
+        "counterexample": "Toy.CT.leakage_determined_comp_drop_first_counterexample"
+      },
+      {
+        "name": "h₂₃",
+        "purpose": "Establishes that the second pass from M2 to M3 is LeakageDetermined via secret-independent trace transformer g.",
+        "tightness": "tight",
+        "counterexample": "Toy.CT.leakage_determined_comp_drop_second_counterexample"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "Two-pass constant-time pipeline branchlessSelect -> branchlessLowered -> branchlessEncoded composing instruction expansion ([0] -> [10, 11]) with public-input-dependent address relocation ([10, 11] -> [100 + pub.1 % 2, 101 + pub.1 % 2]).",
+    "nonvacuity_witness_lean": "Toy.CT.leakage_determined_comp_nonvacuous",
+    "non_claims": [
+      "The statement is composition of relational images and is definitional; it is a reference point, not evidence that constant-time-preserving compilers are easy to build modularly.",
+      "Composition of StepLeakSim (proving a step simulation for the whole pipeline and applying Result 3 once, as CompCert composes forward simulations before flipping them) is not proved here. Applying Result 3 per pass instead requires HasInit and Safe for every intermediate machine (as the source of the next pass) and Deterministic for every intermediate and final machine (as the target of a pass).",
+      "Establishes vertical sequential composition on a whole machine (M1 -> M2 -> M3), not horizontal linking of compiled constant-time modules with unverified external callers or libraries."
+    ],
+    "prior_art": [
+      "Gilles Barthe, Benjamin Gregoire, Vincent Laporte, and Swarn Priya, \"Structured Leakage and Applications to Cryptographic Constant-Time and Cost,\" Proceedings of the 2021 ACM SIGSAC Conference on Computer and Communications Security (CCS '21), pp. 462-476, 2021, DOI: 10.1145/3460120.3484761.",
+      "Gilles Barthe, Sandrine Blazy, Benjamin Gregoire, Remi Hutin, Vincent Laporte, David Pichardie, and Alix Trieu, \"Formal Verification of a Constant-Time Preserving C Compiler,\" Proceedings of the ACM on Programming Languages (PACMPL), vol. 4, no. POPL, Article 7, pp. 7:1-7:30, 2020, DOI: 10.1145/3371075.",
+      "Xavier Leroy, \"A formally verified compiler back-end,\" Journal of Automated Reasoning, vol. 43, no. 4, pp. 363-446, 2009, DOI: 10.1007/s10817-009-9155-4."
+    ],
+    "design_question": "Reference point: how do trace-level LeakageDetermined witnesses compose across sequential passes with distinct leakage alphabets, and how does per-pass trace composition differ from composing forward StepLeakSim diagrams directly?"
+  }
+]

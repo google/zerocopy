@@ -1,0 +1,754 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.CT.BranchSelectState": [],
+    "Toy.CT.BranchSelectState.casesOn": [],
+    "Toy.CT.BranchSelectState.ctorElim": [],
+    "Toy.CT.BranchSelectState.ctorElimType": [],
+    "Toy.CT.BranchSelectState.ctorIdx": [],
+    "Toy.CT.BranchSelectState.done": [],
+    "Toy.CT.BranchSelectState.done.elim": [],
+    "Toy.CT.BranchSelectState.done.inj": [],
+    "Toy.CT.BranchSelectState.done.injEq": [
+      "propext"
+    ],
+    "Toy.CT.BranchSelectState.done.noConfusion": [],
+    "Toy.CT.BranchSelectState.done.sizeOf_spec": [],
+    "Toy.CT.BranchSelectState.elseBlock": [],
+    "Toy.CT.BranchSelectState.elseBlock.elim": [],
+    "Toy.CT.BranchSelectState.elseBlock.inj": [],
+    "Toy.CT.BranchSelectState.elseBlock.injEq": [
+      "propext"
+    ],
+    "Toy.CT.BranchSelectState.elseBlock.noConfusion": [],
+    "Toy.CT.BranchSelectState.elseBlock.sizeOf_spec": [],
+    "Toy.CT.BranchSelectState.entry": [],
+    "Toy.CT.BranchSelectState.entry.elim": [],
+    "Toy.CT.BranchSelectState.entry.inj": [],
+    "Toy.CT.BranchSelectState.entry.injEq": [
+      "propext"
+    ],
+    "Toy.CT.BranchSelectState.entry.noConfusion": [],
+    "Toy.CT.BranchSelectState.entry.sizeOf_spec": [],
+    "Toy.CT.BranchSelectState.noConfusion": [],
+    "Toy.CT.BranchSelectState.noConfusionType": [],
+    "Toy.CT.BranchSelectState.rec": [],
+    "Toy.CT.BranchSelectState.recOn": [],
+    "Toy.CT.BranchSelectState.thenBlock": [],
+    "Toy.CT.BranchSelectState.thenBlock.elim": [],
+    "Toy.CT.BranchSelectState.thenBlock.inj": [],
+    "Toy.CT.BranchSelectState.thenBlock.injEq": [
+      "propext"
+    ],
+    "Toy.CT.BranchSelectState.thenBlock.noConfusion": [],
+    "Toy.CT.BranchSelectState.thenBlock.sizeOf_spec": [],
+    "Toy.CT.ConstantTime": [],
+    "Toy.CT.Deterministic": [],
+    "Toy.CT.Deterministic.casesOn": [],
+    "Toy.CT.Deterministic.executes_unique": [],
+    "Toy.CT.Deterministic.halted_nostep": [],
+    "Toy.CT.Deterministic.halting_run_extends": [],
+    "Toy.CT.Deterministic.hasTrace_unique": [],
+    "Toy.CT.Deterministic.init_det": [],
+    "Toy.CT.Deterministic.mk": [],
+    "Toy.CT.Deterministic.rec": [],
+    "Toy.CT.Deterministic.recOn": [],
+    "Toy.CT.Deterministic.step_det": [],
+    "Toy.CT.Deterministic.traceUnique": [],
+    "Toy.CT.EncodedSelectState": [],
+    "Toy.CT.EncodedSelectState.casesOn": [],
+    "Toy.CT.EncodedSelectState.ctorElim": [],
+    "Toy.CT.EncodedSelectState.ctorElimType": [],
+    "Toy.CT.EncodedSelectState.ctorIdx": [],
+    "Toy.CT.EncodedSelectState.done": [],
+    "Toy.CT.EncodedSelectState.done.elim": [],
+    "Toy.CT.EncodedSelectState.done.inj": [],
+    "Toy.CT.EncodedSelectState.done.injEq": [
+      "propext"
+    ],
+    "Toy.CT.EncodedSelectState.done.noConfusion": [],
+    "Toy.CT.EncodedSelectState.done.sizeOf_spec": [],
+    "Toy.CT.EncodedSelectState.instr0": [],
+    "Toy.CT.EncodedSelectState.instr0.elim": [],
+    "Toy.CT.EncodedSelectState.instr0.inj": [],
+    "Toy.CT.EncodedSelectState.instr0.injEq": [
+      "propext"
+    ],
+    "Toy.CT.EncodedSelectState.instr0.noConfusion": [],
+    "Toy.CT.EncodedSelectState.instr0.sizeOf_spec": [],
+    "Toy.CT.EncodedSelectState.instr1": [],
+    "Toy.CT.EncodedSelectState.instr1.elim": [],
+    "Toy.CT.EncodedSelectState.instr1.inj": [],
+    "Toy.CT.EncodedSelectState.instr1.injEq": [
+      "propext"
+    ],
+    "Toy.CT.EncodedSelectState.instr1.noConfusion": [],
+    "Toy.CT.EncodedSelectState.instr1.sizeOf_spec": [],
+    "Toy.CT.EncodedSelectState.noConfusion": [],
+    "Toy.CT.EncodedSelectState.noConfusionType": [],
+    "Toy.CT.EncodedSelectState.rec": [],
+    "Toy.CT.EncodedSelectState.recOn": [],
+    "Toy.CT.Executes": [],
+    "Toy.CT.FunctionallyCorrect": [],
+    "Toy.CT.HaltAgree": [],
+    "Toy.CT.HaltOrLeakState": [],
+    "Toy.CT.HaltOrLeakState.casesOn": [],
+    "Toy.CT.HaltOrLeakState.ctorElim": [],
+    "Toy.CT.HaltOrLeakState.ctorElimType": [],
+    "Toy.CT.HaltOrLeakState.ctorIdx": [],
+    "Toy.CT.HaltOrLeakState.loop": [],
+    "Toy.CT.HaltOrLeakState.loop.elim": [],
+    "Toy.CT.HaltOrLeakState.loop.inj": [],
+    "Toy.CT.HaltOrLeakState.loop.injEq": [
+      "propext"
+    ],
+    "Toy.CT.HaltOrLeakState.loop.noConfusion": [],
+    "Toy.CT.HaltOrLeakState.loop.sizeOf_spec": [],
+    "Toy.CT.HaltOrLeakState.noConfusion": [],
+    "Toy.CT.HaltOrLeakState.noConfusionType": [],
+    "Toy.CT.HaltOrLeakState.rec": [],
+    "Toy.CT.HaltOrLeakState.recOn": [],
+    "Toy.CT.HaltOrLeakState.start": [],
+    "Toy.CT.HaltOrLeakState.start.elim": [],
+    "Toy.CT.HaltOrLeakState.start.inj": [],
+    "Toy.CT.HaltOrLeakState.start.injEq": [
+      "propext"
+    ],
+    "Toy.CT.HaltOrLeakState.start.noConfusion": [],
+    "Toy.CT.HaltOrLeakState.start.sizeOf_spec": [],
+    "Toy.CT.HasInit": [],
+    "Toy.CT.HasTrace": [],
+    "Toy.CT.LeakageDetermined": [],
+    "Toy.CT.LoweredSelectState": [],
+    "Toy.CT.LoweredSelectState.casesOn": [],
+    "Toy.CT.LoweredSelectState.combine": [],
+    "Toy.CT.LoweredSelectState.combine.elim": [],
+    "Toy.CT.LoweredSelectState.combine.inj": [],
+    "Toy.CT.LoweredSelectState.combine.injEq": [
+      "propext"
+    ],
+    "Toy.CT.LoweredSelectState.combine.noConfusion": [],
+    "Toy.CT.LoweredSelectState.combine.sizeOf_spec": [],
+    "Toy.CT.LoweredSelectState.ctorElim": [],
+    "Toy.CT.LoweredSelectState.ctorElimType": [],
+    "Toy.CT.LoweredSelectState.ctorIdx": [],
+    "Toy.CT.LoweredSelectState.done": [],
+    "Toy.CT.LoweredSelectState.done.elim": [],
+    "Toy.CT.LoweredSelectState.done.inj": [],
+    "Toy.CT.LoweredSelectState.done.injEq": [
+      "propext"
+    ],
+    "Toy.CT.LoweredSelectState.done.noConfusion": [],
+    "Toy.CT.LoweredSelectState.done.sizeOf_spec": [],
+    "Toy.CT.LoweredSelectState.mask": [],
+    "Toy.CT.LoweredSelectState.mask.elim": [],
+    "Toy.CT.LoweredSelectState.mask.inj": [],
+    "Toy.CT.LoweredSelectState.mask.injEq": [
+      "propext"
+    ],
+    "Toy.CT.LoweredSelectState.mask.noConfusion": [],
+    "Toy.CT.LoweredSelectState.mask.sizeOf_spec": [],
+    "Toy.CT.LoweredSelectState.noConfusion": [],
+    "Toy.CT.LoweredSelectState.noConfusionType": [],
+    "Toy.CT.LoweredSelectState.rec": [],
+    "Toy.CT.LoweredSelectState.recOn": [],
+    "Toy.CT.Machine": [],
+    "Toy.CT.Machine.State": [],
+    "Toy.CT.Machine.casesOn": [],
+    "Toy.CT.Machine.ctorIdx": [],
+    "Toy.CT.Machine.halted": [],
+    "Toy.CT.Machine.init": [],
+    "Toy.CT.Machine.mk": [],
+    "Toy.CT.Machine.mk.inj": [],
+    "Toy.CT.Machine.mk.injEq": [
+      "propext"
+    ],
+    "Toy.CT.Machine.mk.noConfusion": [],
+    "Toy.CT.Machine.mk.sizeOf_spec": [],
+    "Toy.CT.Machine.noConfusion": [],
+    "Toy.CT.Machine.noConfusionType": [],
+    "Toy.CT.Machine.rec": [],
+    "Toy.CT.Machine.recOn": [],
+    "Toy.CT.Machine.step": [],
+    "Toy.CT.NondetTargetState": [],
+    "Toy.CT.NondetTargetState.casesOn": [],
+    "Toy.CT.NondetTargetState.ctorElim": [],
+    "Toy.CT.NondetTargetState.ctorElimType": [],
+    "Toy.CT.NondetTargetState.ctorIdx": [],
+    "Toy.CT.NondetTargetState.done": [],
+    "Toy.CT.NondetTargetState.done.elim": [],
+    "Toy.CT.NondetTargetState.done.sizeOf_spec": [],
+    "Toy.CT.NondetTargetState.noConfusion": [],
+    "Toy.CT.NondetTargetState.noConfusionType": [],
+    "Toy.CT.NondetTargetState.rec": [],
+    "Toy.CT.NondetTargetState.recOn": [],
+    "Toy.CT.NondetTargetState.start": [],
+    "Toy.CT.NondetTargetState.start.elim": [],
+    "Toy.CT.NondetTargetState.start.inj": [],
+    "Toy.CT.NondetTargetState.start.injEq": [
+      "propext"
+    ],
+    "Toy.CT.NondetTargetState.start.noConfusion": [],
+    "Toy.CT.NondetTargetState.start.sizeOf_spec": [],
+    "Toy.CT.NopSelectState": [],
+    "Toy.CT.NopSelectState.casesOn": [],
+    "Toy.CT.NopSelectState.ctorElim": [],
+    "Toy.CT.NopSelectState.ctorElimType": [],
+    "Toy.CT.NopSelectState.ctorIdx": [],
+    "Toy.CT.NopSelectState.done": [],
+    "Toy.CT.NopSelectState.done.elim": [],
+    "Toy.CT.NopSelectState.done.inj": [],
+    "Toy.CT.NopSelectState.done.injEq": [
+      "propext"
+    ],
+    "Toy.CT.NopSelectState.done.noConfusion": [],
+    "Toy.CT.NopSelectState.done.sizeOf_spec": [],
+    "Toy.CT.NopSelectState.noConfusion": [],
+    "Toy.CT.NopSelectState.noConfusionType": [],
+    "Toy.CT.NopSelectState.nop": [],
+    "Toy.CT.NopSelectState.nop.elim": [],
+    "Toy.CT.NopSelectState.nop.inj": [],
+    "Toy.CT.NopSelectState.nop.injEq": [
+      "propext"
+    ],
+    "Toy.CT.NopSelectState.nop.noConfusion": [],
+    "Toy.CT.NopSelectState.nop.sizeOf_spec": [],
+    "Toy.CT.NopSelectState.rec": [],
+    "Toy.CT.NopSelectState.recOn": [],
+    "Toy.CT.NopSelectState.select": [],
+    "Toy.CT.NopSelectState.select.elim": [],
+    "Toy.CT.NopSelectState.select.inj": [],
+    "Toy.CT.NopSelectState.select.injEq": [
+      "propext"
+    ],
+    "Toy.CT.NopSelectState.select.noConfusion": [],
+    "Toy.CT.NopSelectState.select.sizeOf_spec": [],
+    "Toy.CT.OptionStepLeakSim": [],
+    "Toy.CT.OptionStepLeakSim.casesOn": [],
+    "Toy.CT.OptionStepLeakSim.halted_sim": [],
+    "Toy.CT.OptionStepLeakSim.init_sim": [],
+    "Toy.CT.OptionStepLeakSim.mk": [],
+    "Toy.CT.OptionStepLeakSim.rec": [],
+    "Toy.CT.OptionStepLeakSim.recOn": [],
+    "Toy.CT.OptionStepLeakSim.step_sim": [],
+    "Toy.CT.OutputDeterministic": [],
+    "Toy.CT.OutputFreeStepLeakSim": [],
+    "Toy.CT.OutputFreeStepLeakSim.backward": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.CT.OutputFreeStepLeakSim.casesOn": [],
+    "Toy.CT.OutputFreeStepLeakSim.forward": [],
+    "Toy.CT.OutputFreeStepLeakSim.halted_sim": [],
+    "Toy.CT.OutputFreeStepLeakSim.init_sim": [],
+    "Toy.CT.OutputFreeStepLeakSim.mk": [],
+    "Toy.CT.OutputFreeStepLeakSim.rec": [],
+    "Toy.CT.OutputFreeStepLeakSim.recOn": [],
+    "Toy.CT.OutputFreeStepLeakSim.step_sim": [],
+    "Toy.CT.Reachable": [],
+    "Toy.CT.Safe": [],
+    "Toy.CT.SecretDependentLeakageDetermined": [],
+    "Toy.CT.SecretForkState": [],
+    "Toy.CT.SecretForkState.a": [],
+    "Toy.CT.SecretForkState.a.elim": [],
+    "Toy.CT.SecretForkState.a.sizeOf_spec": [],
+    "Toy.CT.SecretForkState.b": [],
+    "Toy.CT.SecretForkState.b.elim": [],
+    "Toy.CT.SecretForkState.b.sizeOf_spec": [],
+    "Toy.CT.SecretForkState.casesOn": [],
+    "Toy.CT.SecretForkState.ctorElim": [],
+    "Toy.CT.SecretForkState.ctorElimType": [],
+    "Toy.CT.SecretForkState.ctorIdx": [],
+    "Toy.CT.SecretForkState.fin": [],
+    "Toy.CT.SecretForkState.fin.elim": [],
+    "Toy.CT.SecretForkState.fin.sizeOf_spec": [],
+    "Toy.CT.SecretForkState.noConfusion": [],
+    "Toy.CT.SecretForkState.noConfusionType": [],
+    "Toy.CT.SecretForkState.rec": [],
+    "Toy.CT.SecretForkState.recOn": [],
+    "Toy.CT.SecretForkState.start": [],
+    "Toy.CT.SecretForkState.start.elim": [],
+    "Toy.CT.SecretForkState.start.inj": [],
+    "Toy.CT.SecretForkState.start.injEq": [
+      "propext"
+    ],
+    "Toy.CT.SecretForkState.start.noConfusion": [],
+    "Toy.CT.SecretForkState.start.sizeOf_spec": [],
+    "Toy.CT.SelectState": [],
+    "Toy.CT.SelectState.casesOn": [],
+    "Toy.CT.SelectState.ctorElim": [],
+    "Toy.CT.SelectState.ctorElimType": [],
+    "Toy.CT.SelectState.ctorIdx": [],
+    "Toy.CT.SelectState.done": [],
+    "Toy.CT.SelectState.done.elim": [],
+    "Toy.CT.SelectState.done.inj": [],
+    "Toy.CT.SelectState.done.injEq": [
+      "propext"
+    ],
+    "Toy.CT.SelectState.done.noConfusion": [],
+    "Toy.CT.SelectState.done.sizeOf_spec": [],
+    "Toy.CT.SelectState.entry": [],
+    "Toy.CT.SelectState.entry.elim": [],
+    "Toy.CT.SelectState.entry.inj": [],
+    "Toy.CT.SelectState.entry.injEq": [
+      "propext"
+    ],
+    "Toy.CT.SelectState.entry.noConfusion": [],
+    "Toy.CT.SelectState.entry.sizeOf_spec": [],
+    "Toy.CT.SelectState.noConfusion": [],
+    "Toy.CT.SelectState.noConfusionType": [],
+    "Toy.CT.SelectState.rec": [],
+    "Toy.CT.SelectState.recOn": [],
+    "Toy.CT.StepLeakSim": [],
+    "Toy.CT.StepLeakSim.casesOn": [],
+    "Toy.CT.StepLeakSim.halted_sim": [],
+    "Toy.CT.StepLeakSim.init_sim": [],
+    "Toy.CT.StepLeakSim.mk": [],
+    "Toy.CT.StepLeakSim.rec": [],
+    "Toy.CT.StepLeakSim.recOn": [],
+    "Toy.CT.StepLeakSim.step_sim": [],
+    "Toy.CT.StepLeakSim.toOutputFree": [],
+    "Toy.CT.Steps": [],
+    "Toy.CT.Steps.append": [],
+    "Toy.CT.Steps.below": [],
+    "Toy.CT.Steps.below.casesOn": [],
+    "Toy.CT.Steps.below.cons": [],
+    "Toy.CT.Steps.below.nil": [],
+    "Toy.CT.Steps.below.rec": [],
+    "Toy.CT.Steps.brecOn": [],
+    "Toy.CT.Steps.casesOn": [],
+    "Toy.CT.Steps.cases_iff": [
+      "propext"
+    ],
+    "Toy.CT.Steps.cons": [],
+    "Toy.CT.Steps.cons_iff": [],
+    "Toy.CT.Steps.nil": [],
+    "Toy.CT.Steps.nil_iff": [],
+    "Toy.CT.Steps.rec": [],
+    "Toy.CT.Steps.recOn": [],
+    "Toy.CT.Terminates": [],
+    "Toy.CT.TraceUnique": [],
+    "Toy.CT.TwoInitState": [],
+    "Toy.CT.TwoInitState.a": [],
+    "Toy.CT.TwoInitState.a.elim": [],
+    "Toy.CT.TwoInitState.a.sizeOf_spec": [],
+    "Toy.CT.TwoInitState.b": [],
+    "Toy.CT.TwoInitState.b.elim": [],
+    "Toy.CT.TwoInitState.b.sizeOf_spec": [],
+    "Toy.CT.TwoInitState.casesOn": [],
+    "Toy.CT.TwoInitState.ctorElim": [],
+    "Toy.CT.TwoInitState.ctorElimType": [],
+    "Toy.CT.TwoInitState.ctorIdx": [],
+    "Toy.CT.TwoInitState.fin": [],
+    "Toy.CT.TwoInitState.fin.elim": [],
+    "Toy.CT.TwoInitState.fin.sizeOf_spec": [],
+    "Toy.CT.TwoInitState.noConfusion": [],
+    "Toy.CT.TwoInitState.noConfusionType": [],
+    "Toy.CT.TwoInitState.ofNat": [],
+    "Toy.CT.TwoInitState.ofNat_ctorIdx": [],
+    "Toy.CT.TwoInitState.rec": [],
+    "Toy.CT.TwoInitState.recOn": [],
+    "Toy.CT.TwoStepState": [],
+    "Toy.CT.TwoStepState.casesOn": [],
+    "Toy.CT.TwoStepState.ctorElim": [],
+    "Toy.CT.TwoStepState.ctorElimType": [],
+    "Toy.CT.TwoStepState.ctorIdx": [],
+    "Toy.CT.TwoStepState.noConfusion": [],
+    "Toy.CT.TwoStepState.noConfusionType": [],
+    "Toy.CT.TwoStepState.ofNat": [],
+    "Toy.CT.TwoStepState.ofNat_ctorIdx": [],
+    "Toy.CT.TwoStepState.rec": [],
+    "Toy.CT.TwoStepState.recOn": [],
+    "Toy.CT.TwoStepState.s0": [],
+    "Toy.CT.TwoStepState.s0.elim": [],
+    "Toy.CT.TwoStepState.s0.sizeOf_spec": [],
+    "Toy.CT.TwoStepState.s1": [],
+    "Toy.CT.TwoStepState.s1.elim": [],
+    "Toy.CT.TwoStepState.s1.sizeOf_spec": [],
+    "Toy.CT.TwoStepState.s2": [],
+    "Toy.CT.TwoStepState.s2.elim": [],
+    "Toy.CT.TwoStepState.s2.sizeOf_spec": [],
+    "Toy.CT.UnmeasuredStepLeakSim": [],
+    "Toy.CT.UnmeasuredStepLeakSim.casesOn": [],
+    "Toy.CT.UnmeasuredStepLeakSim.halted_sim": [],
+    "Toy.CT.UnmeasuredStepLeakSim.init_sim": [],
+    "Toy.CT.UnmeasuredStepLeakSim.mk": [],
+    "Toy.CT.UnmeasuredStepLeakSim.rec": [],
+    "Toy.CT.UnmeasuredStepLeakSim.recOn": [],
+    "Toy.CT.UnmeasuredStepLeakSim.step_sim": [],
+    "Toy.CT.WeakLeakageDetermined": [],
+    "Toy.CT.abortOnSecret": [],
+    "Toy.CT.abortOnSecret_traceUnique": [],
+    "Toy.CT.allHalt": [],
+    "Toy.CT.allHalt_constantTime": [
+      "propext"
+    ],
+    "Toy.CT.allHalt_hasTrace_iff": [],
+    "Toy.CT.ambiguousOutputMachine": [],
+    "Toy.CT.branchingSelect": [],
+    "Toy.CT.branchingSelect_deterministic": [],
+    "Toy.CT.branchingSelect_executes_iff": [],
+    "Toy.CT.branchingSelect_hasTrace_iff": [],
+    "Toy.CT.branchingSelect_not_constantTime": [
+      "propext"
+    ],
+    "Toy.CT.branchingSelect_terminates": [],
+    "Toy.CT.branchingSelect_trace_length": [],
+    "Toy.CT.branchlessEncoded": [],
+    "Toy.CT.branchlessEncoded_hasTrace_iff": [],
+    "Toy.CT.branchlessLowered": [],
+    "Toy.CT.branchlessLowered_constantTime": [
+      "propext"
+    ],
+    "Toy.CT.branchlessLowered_deterministic": [],
+    "Toy.CT.branchlessLowered_executes_iff": [],
+    "Toy.CT.branchlessLowered_hasTrace_iff": [],
+    "Toy.CT.branchlessLowered_terminates": [],
+    "Toy.CT.branchlessSelect": [],
+    "Toy.CT.branchlessSelect_constantTime": [
+      "propext"
+    ],
+    "Toy.CT.branchlessSelect_deterministic": [],
+    "Toy.CT.branchlessSelect_executes_iff": [],
+    "Toy.CT.branchlessSelect_hasTrace_iff": [],
+    "Toy.CT.branchlessSelect_terminates": [],
+    "Toy.CT.branchlessWithNop": [],
+    "Toy.CT.branchlessWithNop_deterministic": [],
+    "Toy.CT.branchlessWithNop_executes_iff": [],
+    "Toy.CT.branchlessWithNop_terminates": [],
+    "Toy.CT.branchless_branching_functionallyCorrect": [],
+    "Toy.CT.branchless_lowering_preserves_ct": [
+      "propext"
+    ],
+    "Toy.CT.coinFlip": [],
+    "Toy.CT.coinFlip_constantTime": [],
+    "Toy.CT.coinFlip_hasTrace_iff": [],
+    "Toy.CT.coinFlip_not_traceUnique": [],
+    "Toy.CT.composeLeakMap": [],
+    "Toy.CT.composeLeakMap_neg_example": [
+      "propext"
+    ],
+    "Toy.CT.composeLeakMap_pos_example": [
+      "propext"
+    ],
+    "Toy.CT.constNondetRel": [],
+    "Toy.CT.constOneStep": [],
+    "Toy.CT.constOneStep_constantTime": [
+      "propext"
+    ],
+    "Toy.CT.constOneStep_deterministic": [],
+    "Toy.CT.constOneStep_executes_iff": [],
+    "Toy.CT.constOneStep_hasTrace_iff": [],
+    "Toy.CT.constOneStep_terminates": [],
+    "Toy.CT.constantTime_abort_neg_example": [],
+    "Toy.CT.constantTime_and_traceUnique_iff": [],
+    "Toy.CT.constantTime_iff_trace_eq_of_terminates_traceUnique": [],
+    "Toy.CT.constantTime_neg_example": [
+      "propext"
+    ],
+    "Toy.CT.constantTime_nondet_pos_example": [],
+    "Toy.CT.constantTime_not_refinement_closed": [
+      "propext"
+    ],
+    "Toy.CT.constantTime_pos_example": [
+      "propext"
+    ],
+    "Toy.CT.deterministic_neg_example": [],
+    "Toy.CT.deterministic_pos_example": [],
+    "Toy.CT.determinizedSecretBranchTarget": [],
+    "Toy.CT.determinizedSecretBranchTarget_constantTime": [
+      "propext"
+    ],
+    "Toy.CT.determinizedSecretBranchTarget_deterministic": [],
+    "Toy.CT.determinizedSecretBranchTarget_hasTrace_iff": [],
+    "Toy.CT.determinized_target_sim_positive_control": [
+      "propext"
+    ],
+    "Toy.CT.emptyInitMachine": [],
+    "Toy.CT.executes_neg_example": [
+      "propext"
+    ],
+    "Toy.CT.executes_pos_example": [],
+    "Toy.CT.exists_ld_iff_drop_src_ct_counterexample": [],
+    "Toy.CT.exists_ld_iff_drop_src_ct_counterexample.match_1_1": [],
+    "Toy.CT.exists_ld_iff_drop_tgt_traceUnique_counterexample": [
+      "propext"
+    ],
+    "Toy.CT.exists_leakage_determined_iff_of_ct_traceUnique": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.CT.exists_leakage_determined_iff_of_ct_traceUnique_both_sides_false": [
+      "propext"
+    ],
+    "Toy.CT.exists_leakage_determined_iff_of_ct_traceUnique_both_sides_false.match_1_1": [],
+    "Toy.CT.exists_leakage_determined_iff_of_ct_traceUnique_both_sides_false.match_1_3": [],
+    "Toy.CT.exists_leakage_determined_iff_of_ct_traceUnique_both_sides_true": [
+      "propext"
+    ],
+    "Toy.CT.exists_leakage_determined_iff_of_ct_traceUnique_nonvacuous": [
+      "propext"
+    ],
+    "Toy.CT.exists_secretDependentLeakageDetermined_of_det_terminates": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.CT.exists_secretDependentLeakageDetermined_of_traceUnique_haltAgree": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.CT.functional_correctness_does_not_preserve_ct": [
+      "propext"
+    ],
+    "Toy.CT.functionallyCorrect_neg_example": [],
+    "Toy.CT.functionallyCorrect_pos_example": [],
+    "Toy.CT.haltAgree_neg_example": [],
+    "Toy.CT.haltAgree_of_leakageDetermined": [],
+    "Toy.CT.haltAgree_of_terminates": [],
+    "Toy.CT.haltAgree_pos_example": [],
+    "Toy.CT.haltIfTrue": [],
+    "Toy.CT.haltIfTrue_deterministic": [],
+    "Toy.CT.haltIfTrue_hasTrace_iff": [],
+    "Toy.CT.haltIfTrue_not_constantTime": [],
+    "Toy.CT.haltOrLeak": [],
+    "Toy.CT.haltOrLeak_constantTime": [
+      "propext"
+    ],
+    "Toy.CT.haltOrLeak_hasTrace_iff": [],
+    "Toy.CT.haltOrLeak_step_loop": [],
+    "Toy.CT.haltOrLeak_terminates": [],
+    "Toy.CT.hasInit_and_safe_of_det_terminates": [],
+    "Toy.CT.hasInit_and_safe_of_det_terminates.match_1_1": [],
+    "Toy.CT.hasInit_neg_example": [],
+    "Toy.CT.hasInit_pos_example": [],
+    "Toy.CT.hasTrace_neg_example": [
+      "propext"
+    ],
+    "Toy.CT.hasTrace_pos_example": [],
+    "Toy.CT.instDecidableEqBranchSelectState": [],
+    "Toy.CT.instDecidableEqBranchSelectState.decEq": [],
+    "Toy.CT.instDecidableEqBranchSelectState.decEq.match_1": [],
+    "Toy.CT.instDecidableEqEncodedSelectState": [],
+    "Toy.CT.instDecidableEqEncodedSelectState.decEq": [],
+    "Toy.CT.instDecidableEqEncodedSelectState.decEq.match_1": [],
+    "Toy.CT.instDecidableEqHaltOrLeakState": [],
+    "Toy.CT.instDecidableEqHaltOrLeakState.decEq": [],
+    "Toy.CT.instDecidableEqHaltOrLeakState.decEq.match_1": [],
+    "Toy.CT.instDecidableEqLoweredSelectState": [],
+    "Toy.CT.instDecidableEqLoweredSelectState.decEq": [],
+    "Toy.CT.instDecidableEqLoweredSelectState.decEq.match_1": [],
+    "Toy.CT.instDecidableEqNondetTargetState": [],
+    "Toy.CT.instDecidableEqNondetTargetState.decEq": [],
+    "Toy.CT.instDecidableEqNondetTargetState.decEq.match_1": [],
+    "Toy.CT.instDecidableEqNopSelectState": [],
+    "Toy.CT.instDecidableEqNopSelectState.decEq": [],
+    "Toy.CT.instDecidableEqNopSelectState.decEq.match_1": [],
+    "Toy.CT.instDecidableEqSecretForkState": [],
+    "Toy.CT.instDecidableEqSecretForkState.decEq": [],
+    "Toy.CT.instDecidableEqSecretForkState.decEq.match_1": [],
+    "Toy.CT.instDecidableEqSelectState": [],
+    "Toy.CT.instDecidableEqSelectState.decEq": [],
+    "Toy.CT.instDecidableEqSelectState.decEq.match_1": [],
+    "Toy.CT.instDecidableEqTwoInitState": [],
+    "Toy.CT.instDecidableEqTwoStepState": [],
+    "Toy.CT.instReprBranchSelectState": [],
+    "Toy.CT.instReprBranchSelectState.repr": [],
+    "Toy.CT.instReprBranchSelectState.repr.match_1": [],
+    "Toy.CT.instReprEncodedSelectState": [],
+    "Toy.CT.instReprEncodedSelectState.repr": [],
+    "Toy.CT.instReprEncodedSelectState.repr.match_1": [],
+    "Toy.CT.instReprHaltOrLeakState": [],
+    "Toy.CT.instReprHaltOrLeakState.repr": [],
+    "Toy.CT.instReprHaltOrLeakState.repr.match_1": [],
+    "Toy.CT.instReprLoweredSelectState": [],
+    "Toy.CT.instReprLoweredSelectState.repr": [],
+    "Toy.CT.instReprLoweredSelectState.repr.match_1": [],
+    "Toy.CT.instReprNondetTargetState": [],
+    "Toy.CT.instReprNondetTargetState.repr": [],
+    "Toy.CT.instReprNondetTargetState.repr.match_1": [],
+    "Toy.CT.instReprNopSelectState": [],
+    "Toy.CT.instReprNopSelectState.repr": [],
+    "Toy.CT.instReprNopSelectState.repr.match_1": [],
+    "Toy.CT.instReprSecretForkState": [],
+    "Toy.CT.instReprSecretForkState.repr": [],
+    "Toy.CT.instReprSecretForkState.repr.match_1": [],
+    "Toy.CT.instReprSelectState": [],
+    "Toy.CT.instReprSelectState.repr": [],
+    "Toy.CT.instReprSelectState.repr.match_1": [],
+    "Toy.CT.instReprTwoInitState": [],
+    "Toy.CT.instReprTwoInitState.repr": [],
+    "Toy.CT.instReprTwoInitState.repr.match_1": [],
+    "Toy.CT.instReprTwoStepState": [],
+    "Toy.CT.instReprTwoStepState.repr": [],
+    "Toy.CT.instReprTwoStepState.repr.match_1": [],
+    "Toy.CT.leakageDetermined_neg_example": [
+      "propext"
+    ],
+    "Toy.CT.leakageDetermined_of_terminates_trace_eq": [],
+    "Toy.CT.leakageDetermined_pos_example": [
+      "propext"
+    ],
+    "Toy.CT.leakage_determined_comp": [
+      "propext"
+    ],
+    "Toy.CT.leakage_determined_comp_drop_first_counterexample": [
+      "propext"
+    ],
+    "Toy.CT.leakage_determined_comp_drop_second_counterexample": [
+      "propext"
+    ],
+    "Toy.CT.leakage_determined_comp_drop_second_counterexample.match_1_1": [],
+    "Toy.CT.leakage_determined_comp_nonvacuous": [
+      "propext"
+    ],
+    "Toy.CT.leakage_determined_drop_ct_counterexample": [
+      "propext"
+    ],
+    "Toy.CT.leakage_determined_drop_ct_counterexample.match_1_1": [],
+    "Toy.CT.leakage_determined_preserves_ct": [
+      "propext"
+    ],
+    "Toy.CT.leakage_determined_preserves_ct_nonvacuous": [
+      "propext"
+    ],
+    "Toy.CT.leakyLoop": [],
+    "Toy.CT.leakyLoop_constantTime": [],
+    "Toy.CT.leakyLoop_constantTime.match_1_1": [],
+    "Toy.CT.leakyLoop_constantTime_despite_diverging_step_leak": [],
+    "Toy.CT.liftStepLeak": [],
+    "Toy.CT.liftStepLeak.match_1": [],
+    "Toy.CT.liftStepLeak_cons": [],
+    "Toy.CT.liftStepLeak_neg_example": [],
+    "Toy.CT.liftStepLeak_nil": [],
+    "Toy.CT.liftStepLeak_pos_example": [],
+    "Toy.CT.loweredToEncodedLeakMap": [
+      "propext"
+    ],
+    "Toy.CT.loweredToEncodedLeakMap.match_1": [
+      "propext"
+    ],
+    "Toy.CT.nondetSecretBranchTarget": [],
+    "Toy.CT.nondetSecretBranchTarget.match_1": [],
+    "Toy.CT.nondetSecretBranchTarget_terminates": [],
+    "Toy.CT.nondeterministic_target_sim_breaks_leakage_determined": [
+      "propext"
+    ],
+    "Toy.CT.nopSelectMeasure": [],
+    "Toy.CT.nopSelectMeasure.match_1": [],
+    "Toy.CT.nopToLoweredRel": [],
+    "Toy.CT.nopToLoweredStepLeak": [],
+    "Toy.CT.nopToLoweredStepLeak.match_1": [],
+    "Toy.CT.optionStepLeakSim_neg_example": [],
+    "Toy.CT.optionStepLeakSim_pos_example": [],
+    "Toy.CT.optionStutterRel": [],
+    "Toy.CT.option_stutter_sim_breaks_ct": [
+      "propext"
+    ],
+    "Toy.CT.outputDeterministic_neg_example": [],
+    "Toy.CT.outputDeterministic_pos_example": [],
+    "Toy.CT.outputFree_step_leakage_sim_det_target_implies_leakage_determined": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.CT.reachable_neg_example": [],
+    "Toy.CT.reachable_pos_example": [],
+    "Toy.CT.safe_neg_example": [],
+    "Toy.CT.safe_nonterminating_pos_example": [],
+    "Toy.CT.safe_pos_example": [],
+    "Toy.CT.secretBranchLeakMap": [
+      "propext"
+    ],
+    "Toy.CT.secretDependentLeakageDetermined_const_sec_iff": [],
+    "Toy.CT.secretDependentLeakageDetermined_neg_example": [],
+    "Toy.CT.secretDependentLeakageDetermined_pos_example": [
+      "propext"
+    ],
+    "Toy.CT.secretForkTarget": [],
+    "Toy.CT.secretHaltOrStepTarget": [],
+    "Toy.CT.secretStutterTarget": [],
+    "Toy.CT.secretStutterTarget_deterministic": [],
+    "Toy.CT.secretStutterTarget_hasTrace_iff": [],
+    "Toy.CT.secretStutterTarget_not_constantTime": [],
+    "Toy.CT.secretTwoInitTarget": [],
+    "Toy.CT.secret_dependent_leak_map_breaks_ct": [
+      "propext"
+    ],
+    "Toy.CT.selectToLoweredLeakMap": [
+      "propext"
+    ],
+    "Toy.CT.selectToLoweredLeakMap.match_1": [
+      "propext"
+    ],
+    "Toy.CT.silentLoopSource": [],
+    "Toy.CT.silentLoopSource_deterministic": [],
+    "Toy.CT.stepLeakSim_neg_example": [
+      "propext"
+    ],
+    "Toy.CT.stepLeakSim_pos_example": [],
+    "Toy.CT.step_leakage_sim_det_target_implies_leakage_determined": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.CT.step_leakage_sim_det_target_implies_leakage_determined_nonvacuous": [],
+    "Toy.CT.step_sim_drop_sim_counterexample": [
+      "propext"
+    ],
+    "Toy.CT.step_sim_drop_src_init_counterexample": [],
+    "Toy.CT.step_sim_drop_src_init_counterexample.match_1_1": [],
+    "Toy.CT.step_sim_drop_src_init_counterexample.match_1_3": [],
+    "Toy.CT.step_sim_drop_src_safe_counterexample": [],
+    "Toy.CT.step_sim_drop_src_safe_counterexample.match_1_1": [],
+    "Toy.CT.step_sim_drop_tgt_halted_nostep_counterexample": [
+      "propext"
+    ],
+    "Toy.CT.step_sim_drop_tgt_init_det_counterexample": [
+      "propext"
+    ],
+    "Toy.CT.step_sim_drop_tgt_step_state_det_counterexample": [
+      "propext"
+    ],
+    "Toy.CT.steps_neg_example": [
+      "propext"
+    ],
+    "Toy.CT.steps_pos_example": [],
+    "Toy.CT.stuckMachine": [],
+    "Toy.CT.terminates_and_constantTime_unconstrained_diverging_branch": [
+      "propext"
+    ],
+    "Toy.CT.terminates_neg_example": [],
+    "Toy.CT.terminates_pos_example": [],
+    "Toy.CT.traceUnique_neg_example": [],
+    "Toy.CT.traceUnique_pos_example": [],
+    "Toy.CT.trivialHaltedMachine": [],
+    "Toy.CT.trivialHaltedMachine_deterministic": [],
+    "Toy.CT.trivialHaltedMachine_hasTrace_iff": [],
+    "Toy.CT.twoStepConstSource": [],
+    "Toy.CT.twoStepConstSource_constantTime": [
+      "propext"
+    ],
+    "Toy.CT.twoStepConstSource_deterministic": [],
+    "Toy.CT.twoStepConstSource_hasTrace_iff": [],
+    "Toy.CT.twoStepConstSource_terminates": [],
+    "Toy.CT.twoStepConstSource_terminates.match_1_1": [],
+    "Toy.CT.twoStepMeasure": [],
+    "Toy.CT.unmeasuredStepLeakSim_neg_example": [],
+    "Toy.CT.unmeasuredStepLeakSim_pos_example": [],
+    "Toy.CT.unmeasured_stutter_sim_breaks_leakage_determined": [],
+    "Toy.CT.unmeasured_stutter_sim_breaks_leakage_determined.match_1_1": [],
+    "Toy.CT.weakLeakageDetermined_fails_without_traceUnique": [],
+    "Toy.CT.weakLeakageDetermined_neg_example": [
+      "propext"
+    ],
+    "Toy.CT.weakLeakageDetermined_pos_example": [],
+    "Toy.CT.weakLeakageDetermined_preserves_ct_of_traceUnique": [],
+    "Toy.CT.wrongOutputSelect": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

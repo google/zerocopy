@@ -18674,6 +18674,85 @@
         "lean/mechanization"
       ]
     },
+    "constant-time-preservation-under-compilation": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "path": "common/Smallstep.v",
+            "repository": "AbsInt/CompCert",
+            "revision": "14d616046360a0b2611ebdfc2f98368af402e1f7",
+            "version": "v3.18"
+          },
+          "name": "CompCert common/Smallstep.v (determinate record, forward_to_backward_simulation)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/CSF.2018.00031"
+          },
+          "name": "Secure Compilation of Side-Channel Countermeasures: The Case of Cryptographic \"Constant-Time\""
+        },
+        {
+          "identity": {
+            "doi": "10.1007/11734727_14"
+          },
+          "name": "The Program Counter Security Model: Automatic Detection and Removal of Control-Flow Side Channel Attacks"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3460120.3484761"
+          },
+          "name": "Structured Leakage and Applications to Cryptographic Constant-Time and Cost"
+        },
+        {
+          "identity": {
+            "eprint": "2026/2510",
+            "url": "https://eprint.iacr.org/2026/2510"
+          },
+          "name": "Secure Compilation of Probabilistic Side-Channel Countermeasures"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-009-9155-4"
+          },
+          "name": "A Formally Verified Compiler Back-end"
+        },
+        {
+          "identity": {
+            "url": "https://www.andrew.cmu.edu/user/liminjia/events/fcs2018/papers/s31.pdf"
+          },
+          "name": "A Study on the Preservation of Cryptographic Constant-Time Security in the CompCert Compiler"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371075"
+          },
+          "name": "Formal Verification of a Constant-Time Preserving C Compiler"
+        }
+      ],
+      "topics": [
+        "verification",
+        "verification/formalized-results",
+        "verification/hyperproperties",
+        "verification/refinement",
+        "verification/simulation",
+        "security",
+        "security/constant-time",
+        "security/side-channels",
+        "compilers",
+        "compilers/secure-compilation",
+        "lean",
+        "lean/mechanization"
+      ]
+    },
     "constraint-programming-modelling-and-pseudo-boolean-mip-proof-logging": {
       "observed_at": "2026-11-19",
       "subjects": [

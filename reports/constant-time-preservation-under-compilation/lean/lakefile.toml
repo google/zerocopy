@@ -1,0 +1,6 @@
+name = "constant-time-preservation-under-compilation"
+version = "0.1.0"
+defaultTargets = ["ToyCT"]
+
+[[lean_lib]]
+name = "ToyCT"
