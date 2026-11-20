@@ -1,0 +1,102 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "verification/conformance-testing",
+    "verification/teaching-dimension",
+    "verification/finite-state-machines"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "On the Complexity of Teaching",
+      "identity": {
+        "doi": "10.1006/jcss.1995.1003"
+      }
+    },
+    {
+      "name": "Teachability in Computational Learning",
+      "identity": {
+        "doi": "10.1007/BF03037091"
+      }
+    },
+    {
+      "name": "On specifying Boolean functions by labelled examples",
+      "identity": {
+        "doi": "10.1016/0166-218X(94)00007-Z"
+      }
+    },
+    {
+      "name": "Two notions of correctness and their relation to testing",
+      "identity": {
+        "doi": "10.1007/BF00625279"
+      }
+    },
+    {
+      "name": "Testing geometric objects",
+      "identity": {
+        "doi": "10.1016/0925-7721(94)90005-1"
+      }
+    },
+    {
+      "name": "Gedanken-Experiments on Sequential Machines",
+      "identity": {
+        "doi": "10.1515/9781400882618-006"
+      }
+    },
+    {
+      "name": "Failure diagnosis of automata",
+      "identity": {
+        "doi": "10.1007/BF01068590"
+      }
+    },
+    {
+      "name": "Testing Software Design Modeled by Finite-State Machines",
+      "identity": {
+        "doi": "10.1109/TSE.1978.231496"
+      }
+    },
+    {
+      "name": "Principles and Methods of Testing Finite State Machines—A Survey",
+      "identity": {
+        "doi": "10.1109/5.533956"
+      }
+    },
+    {
+      "name": "FSM-based conformance testing methods: A survey annotated with experimental evaluation",
+      "identity": {
+        "doi": "10.1016/j.infsof.2010.07.001"
+      }
+    },
+    {
+      "name": "Recursive Teaching Dimension, VC-Dimension and Sample Compression",
+      "identity": {
+        "url": "https://jmlr.org/papers/v15/doliwa14a.html"
+      }
+    },
+    {
+      "name": "Verified Complete Test Strategies for Finite State Machines",
+      "identity": {
+        "url": "https://www.isa-afp.org/entries/FSM_Tests.html",
+        "release": "Isabelle2026",
+        "release_date": "2026-10-26"
+      }
+    },
+    {
+      "name": "Formalisation of an Adaptive State Counting Algorithm",
+      "identity": {
+        "url": "https://www.isa-afp.org/entries/Adaptive_State_Counting.html",
+        "release": "Isabelle2026",
+        "release_date": "2026-10-26"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

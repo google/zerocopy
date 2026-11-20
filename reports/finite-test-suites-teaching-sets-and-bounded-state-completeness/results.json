@@ -1,0 +1,731 @@
+[
+  {
+    "id": "teaches_iff_hits_disagreement_sets_of_mem_of_consistent",
+    "lean": "Toy.Witness.teaches_iff_hits_disagreement_sets_of_mem_of_consistent",
+    "lean_names": [
+      "Toy.Witness.consistent_pos_example",
+      "Toy.Witness.consistent_neg_example",
+      "Toy.Witness.consistent_labelSample",
+      "Toy.Witness.length_labelSample",
+      "Toy.Witness.map_fst_labelSample",
+      "Toy.Witness.uniqueConsistent_pos_example",
+      "Toy.Witness.uniqueConsistent_neg_example",
+      "Toy.Witness.teaches_pos_example",
+      "Toy.Witness.teaches_neg_example",
+      "Toy.Witness.disagreementSet_pos_example",
+      "Toy.Witness.disagreementSet_neg_example",
+      "Toy.Witness.hitsAllDisagreements_pos_example",
+      "Toy.Witness.hitsAllDisagreements_neg_example"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For any hypothesis class H over X -> Y, target function h in H, and finite labeled sample S consistent with h, S teaches h within H if and only if the input coordinates of S hit the disagreement set {x | g x != h x} of every rival g in H distinct from h.",
+    "hypotheses": [
+      {
+        "name": "hh : H h",
+        "purpose": "Ensures the target function belongs to H; Teaches H h S requires H h, whereas HitsAllDisagreements H h does not.",
+        "tightness": "tight",
+        "counterexample": "Toy.Witness.teaches_iff_hits_disagreement_sets_of_mem_of_consistent_ce_not_in_H"
+      },
+      {
+        "name": "hcon : Consistent S h",
+        "purpose": "Ensures S carries the true outputs of h; an inconsistent sample can still cover every disagreement input without teaching h.",
+        "tightness": "tight",
+        "counterexample": "Toy.Witness.teaches_iff_hits_disagreement_sets_of_mem_of_consistent_ce_inconsistent"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "H = ConstBoolClass = {const false, const true} over Bool -> Bool, h = const true, and S = [(false, true)], where both H h and Consistent S h hold.",
+    "nonvacuity_witness_lean": "Toy.Witness.teaches_iff_hits_disagreement_sets_of_mem_of_consistent_nonvacuity",
+    "non_claims": [
+      "Does not say that hitting all disagreement sets suffices when S has wrong or contradictory labels (hcon is tight) or when h lies outside H (hh is tight).",
+      "Does not imply that a finite teaching set exists for every (H, h) or provide an algorithm to compute a minimum-size hitting set.",
+      "Does not address randomized, PAC, or probabilistic testing guarantees; equality holds only against deterministic rivals in H.",
+      "Does not cover cooperative or order-dependent teaching models such as recursive teaching dimension, where the learner may infer information from the absence of examples."
+    ],
+    "prior_art": [
+      "Sally A. Goldman and Michael J. Kearns, \"On the Complexity of Teaching\", Journal of Computer and System Sciences 50(1):20-31, 1995, DOI 10.1006/jcss.1995.1003 (Section 5 set-cover equivalence in WUCS-92-28).",
+      "Ayumi Shinohara and Satoru Miyano, \"Teachability in Computational Learning\", New Generation Computing 8(4):337-347, 1991, DOI 10.1007/BF03037091.",
+      "Martin Anthony, Graham Brightwell, and John Shawe-Taylor, \"On specifying Boolean functions by labelled examples\", Discrete Applied Mathematics 61(1):1-25, 1995, DOI 10.1016/0166-218X(94)00007-Z.",
+      "Timothy A. Budd and Dana Angluin, \"Two notions of correctness and their relation to testing\", Acta Informatica 18(1):31-45, 1982, DOI 10.1007/BF00625279 (two notions of test-data correctness, automatic detection/generation, and relation to program equivalence).",
+      "Kathleen Romanik and Carl Smith, \"Testing geometric objects\", Computational Geometry 4(3):157-176, 1994, DOI 10.1016/0925-7721(94)90005-1 (testing sets determining equivalence to a target concept)."
+    ],
+    "design_question": "Reduces checking whether a finite conformance suite uniquely pins down a target implementation within a class H (given h in H and Consistent S h) to verifying that every distinct rival in H is separated by at least one input in the suite."
+  },
+  {
+    "id": "patchClosed_untested_input_patch_witness",
+    "lean": "Toy.Witness.patchClosed_untested_input_patch_witness",
+    "lean_names": [
+      "Toy.Witness.unrestricted_untested_input_patch_witness",
+      "Toy.Witness.isUnrestricted_pos_example",
+      "Toy.Witness.isUnrestricted_neg_example",
+      "Toy.Witness.isUnrestricted_implies_closedUnderPointPatches",
+      "Toy.Witness.closedUnderPointPatches_pos_example",
+      "Toy.Witness.closedUnderPointPatches_neg_example",
+      "Toy.Witness.patchAt_self",
+      "Toy.Witness.patchAt_of_ne"
+    ],
+    "kind": "impossibility",
+    "tier": "T0",
+    "plain_claim": "If H is closed under single-point patches (in particular if H is unrestricted; see corollary unrestricted_untested_input_patch_witness), h belongs to H, S is consistent with h, x0 does not appear among the inputs of S, and y' != h x0, then the explicit point-patch lookup table patchAt h x0 y' belongs to H, passes S, and differs from h, so S does not teach h within H.",
+    "hypotheses": [
+      {
+        "name": "hClosed : ClosedUnderPointPatches H",
+        "purpose": "Guarantees that modifying h at a single input x0 stays inside H; some restrictions that break patch-closure (e.g. ConstBoolClass or MonotoneConjunctions 2) admit finite teaching sets with untested inputs.",
+        "tightness": "tight",
+        "counterexample": "Toy.Witness.patchClosed_untested_input_ce_not_patchClosed"
+      },
+      {
+        "name": "hh : H h",
+        "purpose": "Guarantees the base function h lies in H so that patch-closure places patchAt h x0 y' in H.",
+        "tightness": "tight",
+        "counterexample": "Toy.Witness.patchClosed_untested_input_ce_not_in_H"
+      },
+      {
+        "name": "hcon : Consistent S h",
+        "purpose": "Guarantees that matching h on every tested input implies patchAt h x0 y' passes S.",
+        "tightness": "tight",
+        "counterexample": "Toy.Witness.patchClosed_untested_input_ce_inconsistent"
+      },
+      {
+        "name": "hUntested : x0 not in S.map Prod.fst",
+        "purpose": "Guarantees that modifying the output at x0 leaves all outputs on S unchanged.",
+        "tightness": "tight",
+        "counterexample": "Toy.Witness.patchClosed_untested_input_ce_tested"
+      },
+      {
+        "name": "hDiff : y' != h x0",
+        "purpose": "Guarantees that patchAt h x0 y' differs from h at x0.",
+        "tightness": "tight",
+        "counterexample": "Toy.Witness.patchClosed_untested_input_ce_same_val"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "The strictly restricted patch-closed class EventuallyFalse on Nat -> Bool, h = const false, S = [(0, false)], x0 = 1, y' = true.",
+    "nonvacuity_witness_lean": "Toy.Witness.patchClosed_untested_input_patch_witness_nonvacuity",
+    "positive_control_lean": "Toy.Witness.patchClosed_untested_input_positive_control_monotone_conj",
+    "non_claims": [
+      "Restricting the hypothesis class is not by itself an escape hatch. The operative property is closure under changing a function's value at one untested input: every class with that property — for example all computable functions on a type with decidable equality (not formalized here), or all eventually-false functions ℕ → Bool — also admits no finite teaching set on an infinite domain when outputs take at least two distinct values. On an infinite domain with at least two distinct outputs, only restrictions that break this closure (such as bounded-state Moore machines over a finite alphabet) can make a finite suite complete. On a finite domain, an exhaustive suite can be complete even for a patch-closed class (proved for id in the unrestricted class on Bool -> Bool by patchClosed_hasUntestedInput_ce_exhaustive); there, breaking the closure is what permits complete suites that leave some input untested (as for MonotoneConjunctions 2 in patchClosed_untested_input_positive_control_monotone_conj).",
+      "The patched function patchAt h x₀ y' is computable whenever h is and equality on X is decidable (computability is not formalized here); the obstruction is not an artifact of non-computable lookup tables.",
+      "Does not show that finite tests fail once patch-closure is broken (the positive control restricts H to MonotoneConjunctions 2 while keeping an untested input and nontrivial codomain).",
+      "Does not apply when S exhausts a finite input domain X (hUntested is tight)."
+    ],
+    "prior_art": [
+      "Sally A. Goldman and Michael J. Kearns, \"On the Complexity of Teaching\", Journal of Computer and System Sciences 50(1):20-31, 1995, DOI 10.1006/jcss.1995.1003.",
+      "Timothy A. Budd and Dana Angluin, \"Two notions of correctness and their relation to testing\", Acta Informatica 18(1):31-45, 1982, DOI 10.1007/BF00625279 (two notions of test-data correctness, automatic detection/generation, and relation to program equivalence)."
+    ],
+    "design_question": "Pinpoints the exact constructive obstruction to finite conformance testing: any class closed under single-point lookup-table overrides (including unrestricted functions and restricted classes like EventuallyFalse) admits, for every target h in H and every suite S consistent with h, a passing disagreeing rival whenever some input x0 goes untested and some output y' != h x0 exists."
+  },
+  {
+    "id": "patchClosed_hasUntestedInput_no_teaching",
+    "lean": "Toy.Witness.patchClosed_hasUntestedInput_no_teaching",
+    "lean_names": [
+      "Toy.Witness.unrestricted_hasUntestedInput_no_teaching",
+      "Toy.Witness.hasTwoDistinct_pos_example",
+      "Toy.Witness.hasTwoDistinct_neg_example",
+      "Toy.Witness.hasUntestedInput_pos_example",
+      "Toy.Witness.hasUntestedInput_neg_example"
+    ],
+    "kind": "impossibility",
+    "tier": "T0",
+    "plain_claim": "Corollary of patchClosed_untested_input_patch_witness: whenever H is closed under single-point patches over X -> Y (including unrestricted H via unrestricted_hasUntestedInput_no_teaching), Y has at least two distinct values, and finite sample S leaves at least one input in X untested, S does not teach any h within H.",
+    "hypotheses": [
+      {
+        "name": "hClosed : ClosedUnderPointPatches H",
+        "purpose": "Allows single-point perturbed rivals in H; some restrictions that break patch-closure (e.g. ConstBoolClass or MonotoneConjunctions 2) admit finite teaching sets with untested inputs.",
+        "tightness": "tight",
+        "counterexample": "Toy.Witness.patchClosed_hasUntestedInput_ce_not_patchClosed"
+      },
+      {
+        "name": "hTwo : HasTwoDistinct Y",
+        "purpose": "Provides an alternative output value distinct from h x0 at an untested input x0.",
+        "tightness": "tight",
+        "counterexample": "Toy.Witness.patchClosed_hasUntestedInput_ce_trivial_codomain"
+      },
+      {
+        "name": "hUntested : HasUntestedInput S",
+        "purpose": "Ensures X contains at least one input omitted from S (in particular whenever |X| > S.length).",
+        "tightness": "tight",
+        "counterexample": "Toy.Witness.patchClosed_hasUntestedInput_ce_exhaustive"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "H = all functions Bool -> Bool (patch-closed), Y = Bool, S = [(false, false)] leaving true untested.",
+    "nonvacuity_witness_lean": "Toy.Witness.patchClosed_hasUntestedInput_no_teaching_nonvacuity",
+    "positive_control_lean": "Toy.Witness.patchClosed_untested_input_positive_control_monotone_conj",
+    "non_claims": [
+      "Restricting the hypothesis class is not by itself an escape hatch. The operative property is closure under changing a function's value at one untested input: every class with that property — for example all computable functions on a type with decidable equality (not formalized here), or all eventually-false functions ℕ → Bool — also admits no finite teaching set on an infinite domain when outputs take at least two distinct values. On an infinite domain with at least two distinct outputs, only restrictions that break this closure (such as bounded-state Moore machines over a finite alphabet) can make a finite suite complete. On a finite domain, an exhaustive suite can be complete even for a patch-closed class (proved for id in the unrestricted class on Bool -> Bool by patchClosed_hasUntestedInput_ce_exhaustive); there, breaking the closure is what permits complete suites that leave some input untested (as for MonotoneConjunctions 2 in patchClosed_untested_input_positive_control_monotone_conj).",
+      "Does not rule out finite teaching sets on finite domains when S tests every input in X (exhaustive testing).",
+      "Does not rule out sub-exhaustive finite teaching sets once patch-closure is broken (as shown by MonotoneConjunctions 2, where 2 examples suffice on a 4-element domain).",
+      "Does not quantify statistical generalization error on unseen inputs under a distribution."
+    ],
+    "prior_art": [
+      "Sally A. Goldman and Michael J. Kearns, \"On the Complexity of Teaching\", Journal of Computer and System Sciences 50(1):20-31, 1995, DOI 10.1006/jcss.1995.1003.",
+      "Martin Anthony, Graham Brightwell, and John Shawe-Taylor, \"On specifying Boolean functions by labelled examples\", Discrete Applied Mathematics 61(1):1-25, 1995, DOI 10.1016/0166-218X(94)00007-Z."
+    ],
+    "design_question": "Corollary giving the exact finite-domain threshold: for any patch-closed class (in particular an unrestricted class) whose codomain has at least two distinct values, a complete conformance suite must test every single input in the domain."
+  },
+  {
+    "id": "patchClosed_infinite_no_finite_teaching_set",
+    "lean": "Toy.Witness.patchClosed_infinite_no_finite_teaching_set",
+    "lean_names": [
+      "Toy.Witness.unrestricted_infinite_no_finite_teaching_set",
+      "Toy.Witness.eventuallyFalse_no_finite_teaching_set",
+      "Toy.Witness.eventuallyFalse_closedUnderPointPatches",
+      "Toy.Witness.eventuallyFalse_not_unrestricted",
+      "Toy.Witness.infiniteDomain_pos_example",
+      "Toy.Witness.infiniteDomain_neg_example"
+    ],
+    "kind": "impossibility",
+    "tier": "T0",
+    "plain_claim": "Corollary of patchClosed_hasUntestedInput_no_teaching: if H is closed under single-point patches over X -> Y (including unrestricted H via unrestricted_infinite_no_finite_teaching_set and strictly restricted classes such as EventuallyFalse via eventuallyFalse_no_finite_teaching_set), Y has at least two distinct elements, and X is infinite, then no finite labeled sample teaches any function h within H.",
+    "hypotheses": [
+      {
+        "name": "hClosed : ClosedUnderPointPatches H",
+        "purpose": "Retains single-point lookup-table overrides inside H; some restrictions that break patch-closure (e.g. constant functions or bounded-state Moore machines over a finite alphabet) allow finite teaching sets even on infinite domains.",
+        "tightness": "tight",
+        "counterexample": "Toy.Witness.patchClosed_infinite_ce_not_patchClosed"
+      },
+      {
+        "name": "hTwo : HasTwoDistinct Y",
+        "purpose": "Rules out subsingleton codomains where every pair of functions X -> Y is automatically equal.",
+        "tightness": "tight",
+        "counterexample": "Toy.Witness.patchClosed_infinite_ce_trivial_codomain"
+      },
+      {
+        "name": "hInf : InfiniteDomain X",
+        "purpose": "Guarantees that every finite sample leaves at least one input in X untested.",
+        "tightness": "tight",
+        "counterexample": "Toy.Witness.patchClosed_infinite_ce_finite_domain"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "H = EventuallyFalse on Nat -> Bool (strictly restricted yet patch-closed), Y = Bool (false != true), X = Nat (infinite).",
+    "nonvacuity_witness_lean": "Toy.Witness.patchClosed_infinite_no_finite_teaching_set_nonvacuity",
+    "positive_control_lean": "Toy.Witness.bounded_two_state_moore_unit_positive_control",
+    "non_claims": [
+      "Restricting the hypothesis class is not by itself an escape hatch. The operative property is closure under changing a function's value at one untested input: every class with that property — for example all computable functions on a type with decidable equality (not formalized here), or all eventually-false functions ℕ → Bool — also admits no finite teaching set on an infinite domain when outputs take at least two distinct values. On an infinite domain with at least two distinct outputs, only restrictions that break this closure (such as bounded-state Moore machines over a finite alphabet) can make a finite suite complete. On a finite domain, an exhaustive suite can be complete even for a patch-closed class (proved for id in the unrestricted class on Bool -> Bool by patchClosed_hasUntestedInput_ce_exhaustive); there, breaking the closure is what permits complete suites that leave some input untested (as for MonotoneConjunctions 2 in patchClosed_untested_input_positive_control_monotone_conj).",
+      "Does not support the slogan 'finite tests can never pin down behavior on an infinite domain': the positive control pins down a 2-state Moore machine over the infinite domain List Unit with 3 examples by breaking patch-closure.",
+      "Identification in the limit (Gold 1967, DOI 10.1016/S0019-9958(67)91165-5) and exact learning from equivalence queries (Angluin 1988, DOI 10.1007/BF00116828) are different protocols and are outside this statement: they fail for the class of all functions on a countably infinite domain (not formalized here), but succeed for some restricted patch-closed classes such as EventuallyFalse (finite-support functions Nat -> Bool, which are identifiable in the limit from positive text and learnable with at most |support| + 1 equivalence queries with no uniform bound); the impossibility here concerns finite teaching sets only.",
+      "Does not apply to finite domains (where exhaustive suites are finite) or subsingleton codomains."
+    ],
+    "prior_art": [
+      "Sally A. Goldman and Michael J. Kearns, \"On the Complexity of Teaching\", Journal of Computer and System Sciences 50(1):20-31, 1995, DOI 10.1006/jcss.1995.1003.",
+      "Ayumi Shinohara and Satoru Miyano, \"Teachability in Computational Learning\", New Generation Computing 8(4):337-347, 1991, DOI 10.1007/BF03037091.",
+      "Martin Anthony, Graham Brightwell, and John Shawe-Taylor, \"On specifying Boolean functions by labelled examples\", Discrete Applied Mathematics 61(1):1-25, 1995, DOI 10.1016/0166-218X(94)00007-Z."
+    ],
+    "design_question": "Corollary isolating three individually necessary hypotheses (patch-closure, nontrivial codomain, infinite domain) under which finite teaching is impossible, showing that, on an infinite domain with at least two distinct outputs, mere restriction of H fails unless it breaks single-point patch closure."
+  },
+  {
+    "id": "monotone_conj_teaching_set_exact",
+    "lean": "Toy.Witness.monotone_conj_teaching_set_exact",
+    "lean_names": [
+      "Toy.Witness.hasMinTeachingSize_pos_example",
+      "Toy.Witness.hasMinTeachingSize_neg_example",
+      "Toy.Witness.hasMinTeachingSize_unique",
+      "Toy.Witness.evalMonotoneConj_all_true",
+      "Toy.Witness.monotoneConjunctions_pos_example",
+      "Toy.Witness.monotoneConjunctions_neg_example_const_false",
+      "Toy.Witness.monotoneConjunctions_neg_example_or",
+      "Toy.Witness.relevantCount_le",
+      "Toy.Witness.monotone_conj_m2_all_teaches",
+      "Toy.Witness.monotoneConjNegExamples_length",
+      "Toy.Witness.monotoneConjTeachingSet_length",
+      "Toy.Witness.monotoneConjTeachingSet_nodup",
+      "Toy.Witness.monotone_conj_m2_r0_exact",
+      "Toy.Witness.monotone_conj_m2_r1_exact",
+      "Toy.Witness.monotone_conj_m2_r2_exact"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For any m Boolean features and any monotone conjunction V : Fin m -> Bool with r = relevantCount V relevant variables, the explicit sample monotoneConjTeachingSet V teaches evalMonotoneConj V within MonotoneConjunctions m, has length min (r + 1) m, and attains the exact minimum teaching-set size min (r + 1) m (covering r = 0, 0 < r < m, r = m, and m = 0).",
+    "hypotheses": [],
+    "depth": "substantive",
+    "nonvacuity_witness": "Direct self-contained proof of the full conclusion (teaching, length, and HasMinTeachingSize lower bound) at m = 2, r = 1 (monotone_conj_m2_r1_exact), with r = 0 (monotone_conj_m2_r0_exact), r = 2 (monotone_conj_m2_r2_exact), and m = 0 (monotone_conjunctions_m0_td) also directly verified.",
+    "nonvacuity_witness_lean": "Toy.Witness.monotone_conj_teaching_set_exact_nonvacuity",
+    "non_claims": [
+      "The 2^m suite size for unrestricted Boolean functions is not a theorem of this package; the gap reflects that the class has only 2^m members and does not imply that structural restrictions generally yield exponential savings (patch-closed restricted classes yield none).",
+      "Does not include the constant-false function or conjunctions with negated literals (general monomials have a different minimum teaching-set formula).",
+      "Does not describe cooperative or recursive teaching dimension (Doliwa et al. 2014, Corollary 9(2), show RTD(Monotone Monomials) = 1, strictly smaller than min (r + 1) m when r >= 1 and m >= 2).",
+      "Does not give an upper bound on adaptive membership-query complexity: teaching dimension provides only a lower bound on the number of membership queries needed for exact identification (Goldman and Kearns 1995)."
+    ],
+    "prior_art": [
+      "Sally A. Goldman and Michael J. Kearns, \"On the Complexity of Teaching\", Journal of Computer and System Sciences 50(1):20-31, 1995, DOI 10.1006/jcss.1995.1003 (section on monotone monomials; Theorem 11 in technical report WUCS-92-28).",
+      "Ayumi Shinohara and Satoru Miyano, \"Teachability in Computational Learning\", New Generation Computing 8(4):337-347, 1991, DOI 10.1007/BF03037091.",
+      "Thorsten Doliwa, Gaojian Fan, Hans Ulrich Simon, and Sandra Zilles, \"Recursive Teaching Dimension, VC-Dimension and Sample Compression\", Journal of Machine Learning Research 15(89):3107-3131, 2014, https://jmlr.org/papers/v15/doliwa14a.html (Corollary 9(2), which Doliwa et al. attribute in part to Sally A. Goldman and Robert H. Sloan, \"The power of self-directed learning\", Machine Learning 14(3):271-294, 1994, DOI 10.1007/BF00993977, and to Zilles et al. 2011, Journal of Machine Learning Research 12(11):349-384; neither attributed source was consulted directly)."
+    ],
+    "design_question": "Computes the exact per-concept conformance-suite size min (r + 1) m for monotone Boolean conjunctions over m features and exposes the explicit computable suite attaining that optimum."
+  },
+  {
+    "id": "monotone_conjunctions_teaching_dimension",
+    "lean": "Toy.Witness.monotone_conjunctions_teaching_dimension",
+    "lean_names": [
+      "Toy.Witness.hasTeachingDimension_pos_example",
+      "Toy.Witness.hasTeachingDimension_neg_example_constBool_0",
+      "Toy.Witness.hasTeachingDimension_neg_example_constBool_2",
+      "Toy.Witness.hasTeachingDimension_neg_example_empty",
+      "Toy.Witness.hasTeachingDimension_unique",
+      "Toy.Witness.monotone_conjunctions_m0_td"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "Corollary derived from monotone_conj_teaching_set_exact: for every m : Nat (including m = 0), the exact teaching dimension of MonotoneConjunctions m is m.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Direct self-contained proof of HasTeachingDimension (MonotoneConjunctions 2) 2 without invoking monotone_conj_teaching_set_exact (with m = 0 also directly checked in monotone_conjunctions_m0_td).",
+    "nonvacuity_witness_lean": "Toy.Witness.monotone_conjunctions_teaching_dimension_nonvacuity",
+    "non_claims": [
+      "Does not mean every monotone conjunction requires m examples: the empty conjunction (r = 0) needs only 1 example when m >= 1, and in general a conjunction of r variables needs min (r + 1) m.",
+      "Does not extend to non-monotone monomials, k-DNF formulas, or arbitrary monotone Boolean functions.",
+      "Does not measure recursive teaching dimension (RTD = 1 for monotone monomials for all m >= 1; Doliwa et al. 2014, Corollary 9(2))."
+    ],
+    "prior_art": [
+      "Sally A. Goldman and Michael J. Kearns, \"On the Complexity of Teaching\", Journal of Computer and System Sciences 50(1):20-31, 1995, DOI 10.1006/jcss.1995.1003 (section on monotone monomials; Theorem 11 in WUCS-92-28).",
+      "Ayumi Shinohara and Satoru Miyano, \"Teachability in Computational Learning\", New Generation Computing 8(4):337-347, 1991, DOI 10.1007/BF03037091.",
+      "Thorsten Doliwa, Gaojian Fan, Hans Ulrich Simon, and Sandra Zilles, \"Recursive Teaching Dimension, VC-Dimension and Sample Compression\", Journal of Machine Learning Research 15(89):3107-3131, 2014, https://jmlr.org/papers/v15/doliwa14a.html (Corollary 9(2))."
+    ],
+    "design_question": "Corollary of monotone_conj_teaching_set_exact giving the exact worst-case finite test-suite size m across the monotone-conjunction class over m features."
+  },
+  {
+    "id": "moore_state_equiv_iff_agree_up_to",
+    "lean": "Toy.Witness.moore_state_equiv_iff_agree_up_to",
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For any deterministic Moore machine M with n states (Fin n) over arbitrary input alphabet I and output alphabet O, two states s and t are behaviorally equivalent if and only if they agree on all input words of length at most n - 2 (equivalently, agreement on all words of length < n suffices, recorded in moore_state_equiv_iff_agree_lt_n).",
+    "hypotheses": [],
+    "depth": "substantive",
+    "nonvacuity_witness": "Direct verification on two non-constant 3-state machines: a 3-state alternating machine where distinct states 0 and 1 satisfy both StateEquiv and AgreeUpTo at length 3 - 2 = 1, and delayChain 3 where states 0 and 1 satisfy neither (companion general sharpness in moore_bound_sharp).",
+    "nonvacuity_witness_lean": "Toy.Witness.moore_state_equiv_iff_agree_up_to_nonvacuity",
+    "non_claims": [
+      "Moore's Theorem 6 assumes pairwise-distinguishable states and a finite alphabet and counts an experiment of length L as L input symbols whose outputs are read before each symbol is applied; 'length n − 1' there equals 'words of length ≤ n − 2' here. This statement drops both hypotheses (a standard generalization).",
+      "Does not say that words of length <= k - 2 or < k suffice when comparing two separate k-state machines: two k-state machines have 2k states in total and require words up to length 2k - 2 (refuted for all k >= 2 by bounded_moore_class_suite_depth_sharp and concretely at k = 2 by two_state_moore_length_lt_k_insufficient).",
+      "Does not guarantee a finite test suite when the input alphabet I is infinite (refuted for all k >= 2 and every O with at least two distinct values by two_le_state_bound_infinite_alphabet_no_finite_teaching_set).",
+      "Does not apply to nondeterministic, probabilistic, or non-resettable (homing/checking-sequence) machines without a reliable reset to the initial state.",
+      "Does not give the word-length bound for Mealy machines (whose outputs live on transitions, shifting the sharp input-word bound from n - 2 to n - 1)."
+    ],
+    "prior_art": [
+      "Edward F. Moore, \"Gedanken-Experiments on Sequential Machines\", in Automata Studies (Annals of Mathematics Studies, No. 34), C. E. Shannon and J. McCarthy (eds.), Princeton University Press, pp. 129-153, 1956, DOI 10.1515/9781400882618-006 (Theorem 6, p. 145).",
+      "David Lee and Mihalis Yannakakis, \"Principles and Methods of Testing Finite State Machines—A Survey\", Proceedings of the IEEE 84(8):1090-1123, 1996, DOI 10.1109/5.533956."
+    ],
+    "design_question": "Establishes the exact finite horizon (n - 2 input symbols) after which no behavioral divergence can first appear between states of an n-state deterministic Moore machine.",
+    "lean_names": [
+      "Toy.Witness.moore_state_equiv_iff_agree_lt_n",
+      "Toy.Witness.MooreMachine.run_append",
+      "Toy.Witness.stateEquiv_pos_example",
+      "Toy.Witness.stateEquiv_neg_example",
+      "Toy.Witness.agreeUpTo_pos_example",
+      "Toy.Witness.agreeUpTo_neg_example"
+    ]
+  },
+  {
+    "id": "moore_two_machine_equiv_iff_agree_up_to",
+    "lean": "Toy.Witness.moore_two_machine_equiv_iff_agree_up_to",
+    "lean_names": [
+      "Toy.Witness.behavior_disjointUnion_inl",
+      "Toy.Witness.behavior_disjointUnion_inr"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "Derived from moore_state_equiv_iff_agree_up_to via disjoint union: two initialized deterministic Moore machines M1 (n1 states) and M2 (n2 states) over arbitrary alphabets I and O have identical input-output behavior if and only if they agree on all input words of length at most n1 + n2 - 2.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "A 1-state and a 2-state all-false Moore machine over Unit -> Bool whose behaviors agree globally and on all words of length <= 1 + 2 - 2 = 1.",
+    "nonvacuity_witness_lean": "Toy.Witness.moore_two_machine_equiv_iff_agree_up_to_nonvacuity",
+    "non_claims": [
+      "Does not imply that words of length <= max n1 n2 - 2 or < max n1 n2 suffice: the worst-case horizon is the exact sum n1 + n2 - 2 (proved sharp for all n1 >= 1, n2 >= 1 in moore_two_machine_bound_sharp).",
+      "Does not by itself yield a finite test suite when I is infinite (refuted for all k >= 2 and every O with at least two distinct values by two_le_state_bound_infinite_alphabet_no_finite_teaching_set).",
+      "Does not bound the size of an optimal checking sequence (e.g. Chow's W-method reduces the number of tests using state covers and characterization sets, whereas naive enumeration tests all words up to length n1 + n2 - 2)."
+    ],
+    "prior_art": [
+      "Edward F. Moore, \"Gedanken-Experiments on Sequential Machines\", in Automata Studies, Princeton University Press, pp. 129-153, 1956, DOI 10.1515/9781400882618-006 (Theorem 7, pp. 146-147, states the symmetric form for two machines with a common state bound n, an experiment of length 2n - 1, i.e. words of length <= 2n - 2 here; the asymmetric n1 + n2 - 2 form proved here follows from the same direct-sum argument but is not stated by Moore).",
+      "M. P. Vasilevskii, \"Failure Diagnosis of Automata\", Cybernetics 9(4):653-665, 1973, DOI 10.1007/BF01068590.",
+      "Tsun S. Chow, \"Testing Software Design Modeled by Finite-State Machines\", IEEE Transactions on Software Engineering SE-4(3):178-187, 1978, DOI 10.1109/TSE.1978.231496."
+    ],
+    "design_question": "Derived from moore_state_equiv_iff_agree_up_to; shows exactly how the required test-word depth grows as the sum n1 + n2 - 2 of specification and implementation state budgets."
+  },
+  {
+    "id": "moore_bound_sharp",
+    "lean": "Toy.Witness.moore_bound_sharp",
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "For every n >= 2, states 0 and 1 of the explicit n-state delay chain delayChain n over Unit -> Bool agree on every input word of length < n - 2 yet disagree on the word of length n - 2, showing Moore's n - 2 input-word bound cannot be tightened.",
+    "hypotheses": [
+      {
+        "name": "hn : 2 <= n",
+        "purpose": "Ensures Fin n contains two distinct states; for n <= 1 all states are equal and no two states of delayChain n can disagree.",
+        "tightness": "tight",
+        "counterexample": "Toy.Witness.moore_bound_sharp_ce_small_n"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "n = 3 satisfies 2 <= 3, where states 0 and 1 of delayChain 3 agree on length 0 and disagree on [()] (length 1 = 3 - 2).",
+    "nonvacuity_witness_lean": "Toy.Witness.moore_bound_sharp_nonvacuity",
+    "non_claims": [
+      "Does not claim that every n-state machine has states requiring length n - 2 to separate (many machines have much shorter distinguishing words).",
+      "Does not claim that all words of length <= n - 2 must be tested: only that the worst-case maximum word length cannot be reduced below n - 2."
+    ],
+    "prior_art": [
+      "Edward F. Moore, \"Gedanken-Experiments on Sequential Machines\", in Automata Studies (Annals of Mathematics Studies, No. 34), Princeton University Press, pp. 129-153, 1956, DOI 10.1515/9781400882618-006 (Theorem 6, p. 145, and sharpness examples D_n for n > 3 over two inputs, p. 146; the unary witness delayChain n covering every n >= 2 is this package's construction)."
+    ],
+    "design_question": "Establishes that n - 2 (not a smaller horizon) is the sharp worst-case word depth needed to distinguish states of an n-state deterministic Moore machine."
+  },
+  {
+    "id": "finite_alphabet_bounded_moore_spec_suite_teaches",
+    "lean": "Toy.Witness.finite_alphabet_bounded_moore_spec_suite_teaches",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "Derived from moore_two_machine_equiv_iff_agree_up_to: over a finite input alphabet enumerated by alphabet, for any n1-state specification machine M whose behavior lies in BoundedMooreBehaviors I O k2, the explicit finite labeled suite mooreSpecTestSuite alphabet M k2 (all words of length <= n1 + k2 - 2) teaches M.behavior within BoundedMooreBehaviors I O k2 (and certifies all <= k2-state implementations even without hMem; see finite_alphabet_bounded_moore_spec_suite_certifies).",
+    "hypotheses": [
+      {
+        "name": "hCover : CoversAll alphabet",
+        "purpose": "Guarantees that wordsUpTo enumerates every input word over I up to length n1 + k2 - 2.",
+        "tightness": "tight",
+        "counterexample": "Toy.Witness.finite_alphabet_bounded_moore_spec_suite_ce_incomplete_alphabet"
+      },
+      {
+        "name": "hMem : BoundedMooreBehaviors I O k2 M.behavior",
+        "purpose": "Needed only for the membership conjunct H h of Teaches; consistency and uniqueness (certification of every <= k2-state implementation against M.behavior) hold without hMem, proved in Toy.Witness.finite_alphabet_bounded_moore_spec_suite_certifies.",
+        "tightness": "tight",
+        "counterexample": "Toy.Witness.finite_alphabet_bounded_moore_spec_suite_ce_target_outside_bound"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "I = Unit with alphabet = [()], O = Bool, k2 = 2, and M = altMachine2 (2 states).",
+    "nonvacuity_witness_lean": "Toy.Witness.finite_alphabet_bounded_moore_spec_suite_teaches_nonvacuity",
+    "non_claims": [
+      "State counts are for Moore machines (outputs attached to states, the empty word observing the initial output). A k-state Mealy implementation (outputs on transitions) can need more Moore states, so the depth formula does not transfer verbatim.",
+      "Does not certify implementations that exceed k2 states (unbounded_moore_no_finite_teaching_set shows no finite suite works without a state bound).",
+      "Does not yield a finite suite over an infinite input alphabet when k2 >= 2 and O has at least two distinct values (two_le_state_bound_infinite_alphabet_no_finite_teaching_set).",
+      "Does not claim that mooreSpecTestSuite is minimum-size: for |I| >= 2 and k2 >= n1, naive enumeration up to length n1 + k2 - 2 has total input-symbol length O((n1 + k2) * |I|^(n1 + k2 - 2)) (for |I| = 1, O((n1 + k2)^2) symbols), whereas structured methods such as Vasilevskii (1973) and Chow's W-method (1978) achieve total input-symbol length O(|I|^(k2 - n1 + 1) * n1^2 * k2) when k2 >= n1 and the specification is minimal, completely specified, and initially connected with reliable reset (strong connectivity is not required).",
+      "Does not apply without a reliable reset between test words (single-sequence checking experiments require additional homing/synchronizing assumptions)."
+    ],
+    "prior_art": [
+      "Edward F. Moore, \"Gedanken-Experiments on Sequential Machines\", in Automata Studies, Princeton University Press, pp. 129-153, 1956, DOI 10.1515/9781400882618-006 (Theorems 6-7; Theorem 7 is the symmetric form with a common state bound n, and the asymmetric n1 + k2 - 2 depth used here follows from the same direct-sum argument but is not stated by Moore).",
+      "M. P. Vasilevskii, \"Failure Diagnosis of Automata\", Cybernetics 9(4):653-665, 1973, DOI 10.1007/BF01068590.",
+      "Tsun S. Chow, \"Testing Software Design Modeled by Finite-State Machines\", IEEE Transactions on Software Engineering SE-4(3):178-187, 1978, DOI 10.1109/TSE.1978.231496.",
+      "David Lee and Mihalis Yannakakis, \"Principles and Methods of Testing Finite State Machines—A Survey\", Proceedings of the IEEE 84(8):1090-1123, 1996, DOI 10.1109/5.533956.",
+      "Rita Dorofeeva, Khaled El-Fakih, Stephane Maag, Ana R. Cavalli, and Nina Yevtushenko, \"FSM-based conformance testing methods: A survey annotated with experimental evaluation\", Information and Software Technology 52(12):1286-1297, 2010, DOI 10.1016/j.infsof.2010.07.001.",
+      "Robert Sachtleben, \"Verified Complete Test Strategies for Finite State Machines\", Archive of Formal Proofs, 9 Aug 2022 (release for Isabelle2026, 2026-10-26), https://www.isa-afp.org/entries/FSM_Tests.html (Isabelle mechanization of complete FSM test strategies: W, Wp, HSI, H, SPY, SPYH, and adaptive state counting).",
+      "Robert Sachtleben, \"Formalisation of an Adaptive State Counting Algorithm\", Archive of Formal Proofs, 16 Aug 2019 (release for Isabelle2026, 2026-10-26), https://www.isa-afp.org/entries/Adaptive_State_Counting.html."
+    ],
+    "design_question": "Derived from moore_two_machine_equiv_iff_agree_up_to; provides an explicit, complete finite conformance suite over an infinite input-word domain once both the input alphabet is finite and the implementation's state count is bounded by k2.",
+    "lean_names": [
+      "Toy.Witness.finite_alphabet_bounded_moore_spec_suite_certifies",
+      "Toy.Witness.mem_wordsOfLength_iff",
+      "Toy.Witness.mem_wordsUpTo_iff",
+      "Toy.Witness.coversAll_pos_example",
+      "Toy.Witness.coversAll_neg_example",
+      "Toy.Witness.boundedMooreBehaviors_pos_example",
+      "Toy.Witness.boundedMooreBehaviors_neg_example"
+    ]
+  },
+  {
+    "id": "finite_alphabet_bounded_moore_class_suite_teaches",
+    "lean": "Toy.Witness.finite_alphabet_bounded_moore_class_suite_teaches",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "Corollary of moore_two_machine_equiv_iff_agree_up_to: over a finite input alphabet enumerated by alphabet, every behavior h in BoundedMooreBehaviors I O k is taught within BoundedMooreBehaviors I O k by the universal finite suite mooreClassTestSuite alphabet k h consisting of all words of length at most 2 * k - 2.",
+    "hypotheses": [
+      {
+        "name": "hCover : CoversAll alphabet",
+        "purpose": "Ensures every input symbol of I is included when enumerating words up to length 2 * k - 2.",
+        "tightness": "tight",
+        "counterexample": "Toy.Witness.finite_alphabet_bounded_moore_class_suite_ce_incomplete_alphabet"
+      },
+      {
+        "name": "hMem : BoundedMooreBehaviors I O k h",
+        "purpose": "Ensures the target behavior h is realizable by some Moore machine with at most k states (needed both to bound the target's state count and for the membership conjunct of Teaches).",
+        "tightness": "tight",
+        "counterexample": "Toy.Witness.finite_alphabet_bounded_moore_class_suite_ce_target_outside_bound"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "I = Unit with alphabet = [()], O = Bool, k = 2, and h = altMachine2.behavior.",
+    "nonvacuity_witness_lean": "Toy.Witness.finite_alphabet_bounded_moore_class_suite_teaches_nonvacuity",
+    "non_claims": [
+      "State counts are for Moore machines (outputs attached to states, the empty word observing the initial output). A k-state Mealy implementation (outputs on transitions) can need more Moore states, so the depth formula does not transfer verbatim.",
+      "Does not work with words of length <= 2 * k - 3 or < k for any k >= 2 (refuted for all k >= 2 by bounded_moore_class_suite_depth_sharp and concretely at k = 2 by two_state_moore_length_lt_k_insufficient).",
+      "Does not provide minimum-size teaching sets (the universal suite does not exploit the specific target's minimal state count).",
+      "Does not apply when the input alphabet I is infinite, k >= 2, and O has at least two distinct values (two_le_state_bound_infinite_alphabet_no_finite_teaching_set) or when candidate implementations can exceed k states."
+    ],
+    "prior_art": [
+      "Edward F. Moore, \"Gedanken-Experiments on Sequential Machines\", in Automata Studies, Princeton University Press, pp. 129-153, 1956, DOI 10.1515/9781400882618-006 (Theorem 7).",
+      "David Lee and Mihalis Yannakakis, \"Principles and Methods of Testing Finite State Machines—A Survey\", Proceedings of the IEEE 84(8):1090-1123, 1996, DOI 10.1109/5.533956.",
+      "Rita Dorofeeva, Khaled El-Fakih, Stephane Maag, Ana R. Cavalli, and Nina Yevtushenko, \"FSM-based conformance testing methods: A survey annotated with experimental evaluation\", Information and Software Technology 52(12):1286-1297, 2010, DOI 10.1016/j.infsof.2010.07.001.",
+      "Robert Sachtleben, \"Verified Complete Test Strategies for Finite State Machines\", Archive of Formal Proofs, 9 Aug 2022 (release for Isabelle2026, 2026-10-26), https://www.isa-afp.org/entries/FSM_Tests.html.",
+      "Robert Sachtleben, \"Formalisation of an Adaptive State Counting Algorithm\", Archive of Formal Proofs, 16 Aug 2019 (release for Isabelle2026, 2026-10-26), https://www.isa-afp.org/entries/Adaptive_State_Counting.html."
+    ],
+    "design_question": "Corollary giving a single target-independent input suite (length <= 2k - 2) that is complete for every <= k-state Moore machine over a finite alphabet, even over the infinite domain List I."
+  },
+  {
+    "id": "moore_two_machine_bound_sharp",
+    "lean": "Toy.Witness.moore_two_machine_bound_sharp",
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "For all m1, m2 : Nat (giving n1 = m1 + 1 and n2 = m2 + 1 states, so n1 + n2 - 2 = m1 + m2), the explicit unary Moore machines modCycleMachine m1 m2 and mimicSaturateMachine m1 m2 agree on every input word of length < m1 + m2 yet disagree on the word of length m1 + m2, showing Moore's two-machine horizon n1 + n2 - 2 is sharp for every pair of state counts.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "m1 = 1, m2 = 2 (2-state and 3-state unary Moore machines agreeing on lengths 0, 1, 2 and differing at length 3 = 2 + 3 - 2).",
+    "nonvacuity_witness_lean": "Toy.Witness.moore_two_machine_bound_sharp_nonvacuity",
+    "non_claims": [
+      "Does not claim that every pair of (n1, n2)-state machines requires depth n1 + n2 - 2 to separate (many pairs disagree on much shorter words).",
+      "Does not claim that every word of length <= n1 + n2 - 2 must be tested: only that the worst-case horizon cannot drop below n1 + n2 - 2."
+    ],
+    "prior_art": [
+      "Edward F. Moore, \"Gedanken-Experiments on Sequential Machines\", in Automata Studies (Annals of Mathematics Studies, No. 34), Princeton University Press, pp. 129-153, 1956, DOI 10.1515/9781400882618-006 (Theorem 7, pp. 146-147, and symmetric sharpness examples D_n vs E_n for n > 3 over two inputs, p. 147; the unary asymmetric pair modCycleMachine m1 m2 and mimicSaturateMachine m1 m2 covering all m1, m2 : Nat is this package's construction)."
+    ],
+    "design_question": "Proves that the additive horizon n1 + n2 - 2 (not max n1 n2 - 2 or < max n1 n2) is tight for every specification/implementation state-budget pair (n1, n2)."
+  },
+  {
+    "id": "bounded_moore_class_suite_depth_sharp",
+    "lean": "Toy.Witness.bounded_moore_class_suite_depth_sharp",
+    "lean_names": [
+      "Toy.Witness.two_state_moore_length_lt_k_insufficient",
+      "Toy.Witness.altMachine2_behavior"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "For every state bound k >= 2 over Unit -> Bool, the explicit k-state machines modCycleMachine (k - 1) (k - 1) and mimicSaturateMachine (k - 1) (k - 1) agree on every word of length < 2 * k - 2 yet disagree at length 2 * k - 2, so neither wordsUpTo [()] (2 * k - 3) nor wordsUpTo [()] (k - 1) teaches modCycleMachine (k - 1) (k - 1) within BoundedMooreBehaviors Unit Bool k (with concrete k = 2 check in two_state_moore_length_lt_k_insufficient).",
+    "hypotheses": [
+      {
+        "name": "hk : 2 <= k",
+        "purpose": "Rules out k = 1 (where 2 * 1 - 3 = 0 and wordsUpTo [()] 0 = [[]] already teaches every 1-state machine) and k = 0 (empty class).",
+        "tightness": "tight",
+        "counterexample": "Toy.Witness.bounded_moore_class_suite_depth_sharp_ce_one_state"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "k = 3 satisfies 2 <= 3, giving two 3-state unary machines agreeing up to length 3 and differing at length 4 = 2 * 3 - 2 (concrete k = 2 check via altMachine2 and latchMachine2 in two_state_moore_length_lt_k_insufficient).",
+    "nonvacuity_witness_lean": "Toy.Witness.bounded_moore_class_suite_depth_sharp_nonvacuity",
+    "non_claims": [
+      "Does not contradict Moore's single-machine bound: two k-state machines together have 2k states, so Moore's bound gives 2k - 2, matching the deviation length.",
+      "Does not claim that length 2k - 2 is insufficient (finite_alphabet_bounded_moore_class_suite_teaches proves 2k - 2 is always sufficient over any finite alphabet).",
+      "Does not imply every individual k-state specification requires a teaching word of length 2k - 2 (for instance, at k = 1 depth 0 suffices, and many targets at k >= 2 have shorter target-specific suites)."
+    ],
+    "prior_art": [
+      "Edward F. Moore, \"Gedanken-Experiments on Sequential Machines\", in Automata Studies (Annals of Mathematics Studies, No. 34), Princeton University Press, pp. 129-153, 1956, DOI 10.1515/9781400882618-006 (Theorem 7 and sharpness examples D_n vs E_n for n > 3 over two inputs, p. 147; the unary pair modCycleMachine (k - 1) (k - 1) and mimicSaturateMachine (k - 1) (k - 1) covering every k >= 2 is this package's construction)."
+    ],
+    "design_question": "Refutes under-sizing a bounded-state class conformance suite to depth < k or 2k - 3 for every k >= 2: comparing a k-state spec against <= k-state implementations requires worst-case depth 2k - 2."
+  },
+  {
+    "id": "two_le_state_bound_infinite_alphabet_no_finite_teaching_set",
+    "lean": "Toy.Witness.two_le_state_bound_infinite_alphabet_no_finite_teaching_set",
+    "lean_names": [
+      "Toy.Witness.bounded_one_state_moore_single_example_teaches",
+      "Toy.Witness.constMoore_behavior"
+    ],
+    "kind": "impossibility",
+    "tier": "T1",
+    "plain_claim": "For every state bound k >= 2, every infinite input alphabet I, and every output alphabet O with at least two distinct values, no finite labeled sample teaches any behavior h within BoundedMooreBehaviors I O k.",
+    "hypotheses": [
+      {
+        "name": "hk : 2 <= k",
+        "purpose": "Exact threshold: at k = 1 every behavior in BoundedMooreBehaviors I O 1 is constant and is taught by [([], c)] over every alphabet I, including infinite Nat.",
+        "tightness": "tight",
+        "counterexample": "Toy.Witness.two_le_state_bound_infinite_alphabet_ce_one_state"
+      },
+      {
+        "name": "hInf : InfiniteDomain I",
+        "purpose": "Guarantees every finite sample leaves some input symbol a0 completely unseen, allowing an unseen-symbol transition perturbation within <= k states.",
+        "tightness": "tight",
+        "counterexample": "Toy.Witness.two_le_state_bound_infinite_alphabet_ce_finite_alphabet"
+      },
+      {
+        "name": "hTwo : HasTwoDistinct O",
+        "purpose": "Rules out subsingleton output alphabets where every two behaviors List I -> O are identical.",
+        "tightness": "tight",
+        "counterexample": "Toy.Witness.two_le_state_bound_infinite_alphabet_ce_trivial_output"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "k = 2, infinite input alphabet I = Nat, and nontrivial output alphabet O = Bool.",
+    "nonvacuity_witness_lean": "Toy.Witness.two_le_state_bound_infinite_alphabet_no_finite_teaching_set_nonvacuity",
+    "positive_control_lean": "Toy.Witness.bounded_two_state_moore_unit_positive_control",
+    "non_claims": [
+      "It does not show that every state bound fails over an infinite alphabet: at state bound 1 every behavior is constant and is taught by one example over any alphabet (proved in bounded_one_state_moore_single_example_teaches and two_le_state_bound_infinite_alphabet_ce_one_state).",
+      "Does not contradict moore_two_machine_equiv_iff_agree_up_to: two k-state machines over an infinite alphabet are still equivalent iff they agree on all words of length <= 2k - 2, but there are infinitely many such words.",
+      "Does not rule out symbolic or input-equivalence-class testing when transitions are restricted to finitely many input predicates."
+    ],
+    "prior_art": [
+      "Edward F. Moore, \"Gedanken-Experiments on Sequential Machines\", in Automata Studies, Princeton University Press, pp. 129-153, 1956, DOI 10.1515/9781400882618-006 (p. 140 restriction to (n, m, p) machines with 'm input symbols or fewer').",
+      "Mechanization search note (T1): checked Lean Mathlib Computability/DFA.lean and Computability/MyhillNerode.lean, Isabelle AFP entries FSM_Tests (Sachtleben 2022) and Adaptive_State_Counting (Sachtleben 2019) as of their Isabelle2026 releases (2026-10-26), and literature searches across Lean/Coq/Isabelle/Agda; existing FSM testing formalizations fix a finite input alphabet and no prior mechanization of this k >= 2 infinite-alphabet impossibility was found."
+    ],
+    "design_question": "Shows that for every nontrivial state bound k >= 2 and every output alphabet with at least two distinct values, bounding internal state count alone never yields a finite conformance suite unless the input alphabet (or transition-distinguishing input partition) is also finite, while pinpointing k = 1 as the exact threshold where one example suffices over any alphabet."
+  },
+  {
+    "id": "deviateAfter_agrees_before_and_differs_at",
+    "lean": "Toy.Witness.deviateAfter_agrees_before_and_differs_at",
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "For any n-state initialized Moore machine M, step threshold k, input symbol a, and output y' != M.behavior (replicate k a), the explicit (n * (k + 1))-state machine deviateAfter M k y' (Moore 1956, Theorem 2) agrees with M on all words of length < k and outputs y' != M.behavior (replicate k a) on replicate k a.",
+    "hypotheses": [
+      {
+        "name": "hDiff : y' != M.behavior (List.replicate k a)",
+        "purpose": "Ensures the forced output y' at step k actually differs from M's output on replicate k a.",
+        "tightness": "tight",
+        "counterexample": "Toy.Witness.deviateAfter_ce_same_output"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "M = constMoore false over Unit -> Bool, k = 3, a = (), y' = true != false.",
+    "nonvacuity_witness_lean": "Toy.Witness.deviateAfter_agrees_before_and_differs_at_nonvacuity",
+    "non_claims": [
+      "The construction (n(k+1) states) and the impossibility are Moore's (1956, Theorem 2 and the remark following it); the contribution here is the mechanization only.",
+      "Does not produce a rival within a fixed state bound k_max when n * (k + 1) > k_max.",
+      "Does not imply that finite-state machines are unlearnable with equivalence queries (Angluin's L* algorithm learns regular sets / minimal DFAs using membership plus equivalence queries; Dana Angluin, \"Learning regular sets from queries and counterexamples\", Information and Computation 75(2):87-106, 1987, DOI 10.1016/0890-5401(87)90052-6)."
+    ],
+    "prior_art": [
+      "Edward F. Moore, \"Gedanken-Experiments on Sequential Machines\", in Automata Studies (Annals of Mathematics Studies, No. 34), Princeton University Press, pp. 129-153, 1956, DOI 10.1515/9781400882618-006 (Theorem 2 and the remark following it, p. 140).",
+      "David Lee and Mihalis Yannakakis, \"Principles and Methods of Testing Finite State Machines—A Survey\", Proceedings of the IEEE 84(8):1090-1123, 1996, DOI 10.1109/5.533956."
+    ],
+    "design_question": "Mechanizes Moore's n(k+1)-state delayed-deviation construction showing why any finite conformance suite can be defeated if no upper bound on implementation states is enforced."
+  },
+  {
+    "id": "unbounded_moore_no_finite_teaching_set",
+    "lean": "Toy.Witness.unbounded_moore_no_finite_teaching_set",
+    "lean_names": [
+      "Toy.Witness.finiteStateMooreBehaviors_pos_example",
+      "Toy.Witness.finiteStateMooreBehaviors_neg_example"
+    ],
+    "kind": "impossibility",
+    "tier": "T0",
+    "plain_claim": "Over any nonempty input alphabet I and output alphabet O with at least two distinct values, no finite labeled sample teaches any behavior within the class FiniteStateMooreBehaviors I O of all finite-state deterministic Moore machines without a state bound (Moore 1956, Theorem 2).",
+    "hypotheses": [
+      {
+        "name": "hI : Nonempty I",
+        "purpose": "Provides an input symbol a to form arbitrarily long words replicate k a exceeding the longest word in S.",
+        "tightness": "tight",
+        "counterexample": "Toy.Witness.unbounded_moore_ce_empty_alphabet"
+      },
+      {
+        "name": "hTwo : HasTwoDistinct O",
+        "purpose": "Provides an output value y' distinct from the target machine's output at step k.",
+        "tightness": "tight",
+        "counterexample": "Toy.Witness.unbounded_moore_ce_trivial_output"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "I = Unit (Nonempty) and O = Bool (false != true).",
+    "nonvacuity_witness_lean": "Toy.Witness.unbounded_moore_no_finite_teaching_set_nonvacuity",
+    "positive_control_lean": "Toy.Witness.bounded_two_state_moore_unit_positive_control",
+    "non_claims": [
+      "The construction (n(k+1) states) and the impossibility are Moore's (1956, Theorem 2 and the remark following it); the contribution here is the mechanization only.",
+      "A state bound alone is not sufficient: finite completeness also needs a finite input alphabet (two_le_state_bound_infinite_alphabet_no_finite_teaching_set, for k >= 2 and outputs with at least two distinct values), deterministic behavior, and reliable reset between test words.",
+      "Does not apply once an explicit state upper bound k is imposed and the input alphabet is finite (positive control at k = 2 over Unit -> Bool).",
+      "Does not rule out interactive learning of unbounded-state DFAs/Moore machines with membership plus equivalence queries (Angluin's L*, Information and Computation 75(2):87-106, 1987, DOI 10.1016/0890-5401(87)90052-6; general query model in Angluin 1988, DOI 10.1007/BF00116828) or identification in the limit from informant (labeled positive and negative examples; Gold 1967, DOI 10.1016/S0019-9958(67)91165-5).",
+      "Does not apply to an empty input alphabet (hI is tight) or a subsingleton output alphabet (hTwo is tight)."
+    ],
+    "prior_art": [
+      "Edward F. Moore, \"Gedanken-Experiments on Sequential Machines\", in Automata Studies (Annals of Mathematics Studies, No. 34), Princeton University Press, pp. 129-153, 1956, DOI 10.1515/9781400882618-006 (Theorem 2 and the remark following it, p. 140).",
+      "Tsun S. Chow, \"Testing Software Design Modeled by Finite-State Machines\", IEEE Transactions on Software Engineering SE-4(3):178-187, 1978, DOI 10.1109/TSE.1978.231496.",
+      "David Lee and Mihalis Yannakakis, \"Principles and Methods of Testing Finite State Machines—A Survey\", Proceedings of the IEEE 84(8):1090-1123, 1996, DOI 10.1109/5.533956."
+    ],
+    "design_question": "Separates 'known to be finite-state' (insufficient for finite-suite completeness) from 'known to have at most k states over a finite alphabet, deterministic, and resettable' (sufficient for finite-suite completeness)."
+  },
+  {
+    "id": "passed_suite_certifies_iff_passingInClass",
+    "lean": "Toy.Witness.passed_suite_certifies_iff_passingInClass",
+    "lean_names": [
+      "Toy.Witness.passed_teaching_suite_certifies_iff_passingInClass",
+      "Toy.Witness.passed_teaching_suite_certifies_subclass",
+      "Toy.Witness.certification_holds_although_C_escapes_H",
+      "Toy.Witness.passed_teaching_suite_ce_not_subclass",
+      "Toy.Witness.subClass_implies_passingInClass",
+      "Toy.Witness.subClass_pos_example",
+      "Toy.Witness.subClass_neg_example",
+      "Toy.Witness.passingInClass_pos_example",
+      "Toy.Witness.passingInClass_neg_example"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "Reference point: whenever h in H is the unique member of H consistent with labeled suite S (in particular whenever Teaches H h S, corollary passed_teaching_suite_certifies_iff_passingInClass), every candidate implementation impl in C passing S is extensionally equal to h if and only if every S-passing member of C belongs to H (PassingInClass C H S, which is strictly weaker than SubClass C H; see corollary passed_teaching_suite_certifies_subclass).",
+    "hypotheses": [
+      {
+        "name": "hh : H h",
+        "purpose": "Used for the forward direction: if every S-passing member of C equals h, then every S-passing member of C lies in H because h lies in H.",
+        "tightness": "tight",
+        "counterexample": "Toy.Witness.passed_suite_certifies_iff_ce_not_in_H"
+      },
+      {
+        "name": "huniq : UniqueConsistent H h S",
+        "purpose": "Used for the backward direction: guarantees that any member of H passing S must equal h.",
+        "tightness": "tight",
+        "counterexample": "Toy.Witness.passed_suite_certifies_iff_ce_not_unique"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "H = ConstBoolClass, h = const true, S = [(false, true)] (satisfying both H h and UniqueConsistent H h S; passingInClass_pos_example and certification_holds_although_C_escapes_H show PassingInClass C H S can hold when SubClass C H fails).",
+    "nonvacuity_witness_lean": "Toy.Witness.passed_suite_certifies_iff_passingInClass_nonvacuity",
+    "non_claims": [
+      "SubClass C H is sufficient, not necessary: the conclusion also holds whenever every member of C that passes S lies in H, and it can hold when C is not contained in H. Failure of SubClass C H does not by itself produce a member of C that passes S and differs from h.",
+      "Does not establish PassingInClass C H S or SubClass C H: class membership of S-passing implementations must be discharged independently (e.g. by static analysis, grammar/type constraints, or formal proof).",
+      "Does not guarantee anything about non-functional properties (timing, memory, side channels) not modeled in X -> Y."
+    ],
+    "prior_art": [
+      "Sally A. Goldman and Michael J. Kearns, \"On the Complexity of Teaching\", Journal of Computer and System Sciences 50(1):20-31, 1995, DOI 10.1006/jcss.1995.1003.",
+      "Timothy A. Budd and Dana Angluin, \"Two notions of correctness and their relation to testing\", Acta Informatica 18(1):31-45, 1982, DOI 10.1007/BF00625279 (two notions of test-data correctness, automatic detection/generation, and relation to program equivalence).",
+      "Kathleen Romanik and Carl Smith, \"Testing geometric objects\", Computational Geometry 4(3):157-176, 1994, DOI 10.1016/0925-7721(94)90005-1.",
+      "Tsun S. Chow, \"Testing Software Design Modeled by Finite-State Machines\", IEEE Transactions on Software Engineering SE-4(3):178-187, 1978, DOI 10.1109/TSE.1978.231496.",
+      "Rita Dorofeeva, Khaled El-Fakih, Stephane Maag, Ana R. Cavalli, and Nina Yevtushenko, \"FSM-based conformance testing methods: A survey annotated with experimental evaluation\", Information and Software Technology 52(12):1286-1297, 2010, DOI 10.1016/j.infsof.2010.07.001 (fault-domain / m-complete test suite contract).",
+      "Robert Sachtleben, \"Verified Complete Test Strategies for Finite State Machines\", Archive of Formal Proofs, 9 Aug 2022 (release for Isabelle2026, 2026-10-26), https://www.isa-afp.org/entries/FSM_Tests.html.",
+      "Robert Sachtleben, \"Formalisation of an Adaptive State Counting Algorithm\", Archive of Formal Proofs, 16 Aug 2019 (release for Isabelle2026, 2026-10-26), https://www.isa-afp.org/entries/Adaptive_State_Counting.html."
+    ],
+    "design_question": "Reference point stating the exact epistemic contract of a passed conformance suite: given h in H and UniqueConsistent H h S (in particular Teaches H h S), 'passed S' certifies 'equals h' across C if and only if every S-passing member of C belongs to H (PassingInClass C H S), which holds in particular provided SubClass C H."
+  },
+  {
+    "id": "splice_consistent_escapes_class_of_unique",
+    "lean": "Toy.Witness.splice_consistent_escapes_class_of_unique",
+    "lean_names": [
+      "Toy.Witness.passed_teaching_suite_without_class_bound_escapes_class",
+      "Toy.Witness.spliceOutside_of_mem",
+      "Toy.Witness.spliceOutside_of_not_mem",
+      "Toy.Witness.spliceOutside_consistent"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "Whenever S is consistent with h and h is the unique member of H consistent with S (in particular whenever Teaches H h S; corollary passed_teaching_suite_without_class_bound_escapes_class), for any off-suite function outside differing from h at an untested input x0, the explicit splice spliceOutside h outside S passes S, equals outside on every untested input, differs from h, and lies outside H.",
+    "hypotheses": [
+      {
+        "name": "hcon : Consistent S h",
+        "purpose": "Ensures agreeing with h on the inputs of S makes spliceOutside h outside S consistent with S.",
+        "tightness": "tight",
+        "counterexample": "Toy.Witness.splice_consistent_escapes_class_ce_inconsistent"
+      },
+      {
+        "name": "huniq : UniqueConsistent H h S",
+        "purpose": "Forces any distinct S-consistent splice to lie outside H (note: H h itself is not needed).",
+        "tightness": "tight",
+        "counterexample": "Toy.Witness.splice_consistent_escapes_class_ce_not_unique"
+      },
+      {
+        "name": "hUntested : x0 not in S.map Prod.fst",
+        "purpose": "Ensures there exists at least one input not covered by S where off-suite behavior can diverge.",
+        "tightness": "tight",
+        "counterexample": "Toy.Witness.splice_consistent_escapes_class_ce_tested"
+      },
+      {
+        "name": "hDiff : outside x0 != h x0",
+        "purpose": "Ensures the chosen off-suite behavior actually disagrees with h at x0.",
+        "tightness": "tight",
+        "counterexample": "Toy.Witness.splice_consistent_escapes_class_ce_agrees"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "H = ConstBoolClass, h = const true, outside = const false, S = [(false, true)], x0 = true.",
+    "nonvacuity_witness_lean": "Toy.Witness.splice_consistent_escapes_class_of_unique_nonvacuity",
+    "non_claims": [
+      "The statement does not mention the implementation class C. The spliced function lies outside H; whether any member of C realizes it, or any other passing behavior different from h, depends on C.",
+      "Does not mean a passed teaching suite is useless: it forces any disagreeing passing function to violate the structural hypothesis H (not H impl).",
+      "Does not apply when S tests every input in a finite domain X (hUntested is tight)."
+    ],
+    "prior_art": [
+      "Sally A. Goldman and Michael J. Kearns, \"On the Complexity of Teaching\", Journal of Computer and System Sciences 50(1):20-31, 1995, DOI 10.1006/jcss.1995.1003.",
+      "Timothy A. Budd and Dana Angluin, \"Two notions of correctness and their relation to testing\", Acta Informatica 18(1):31-45, 1982, DOI 10.1007/BF00625279 (two notions of test-data correctness, automatic detection/generation, and relation to program equivalence).",
+      "Kathleen Romanik and Carl Smith, \"Testing geometric objects\", Computational Geometry 4(3):157-176, 1994, DOI 10.1016/0925-7721(94)90005-1.",
+      "Rita Dorofeeva, Khaled El-Fakih, Stephane Maag, Ana R. Cavalli, and Nina Yevtushenko, \"FSM-based conformance testing methods: A survey annotated with experimental evaluation\", Information and Software Technology 52(12):1286-1297, 2010, DOI 10.1016/j.infsof.2010.07.001.",
+      "David Lee and Mihalis Yannakakis, \"Principles and Methods of Testing Finite State Machines—A Survey\", Proceedings of the IEEE 84(8):1090-1123, 1996, DOI 10.1109/5.533956.",
+      "Mechanization search note (T1): checked Lean Mathlib Computability/, Isabelle AFP entries FSM_Tests (Sachtleben 2022) and Adaptive_State_Counting (Sachtleben 2019) as of their Isabelle2026 releases (2026-10-26), and literature searches across Lean/Coq/Isabelle/Agda; no prior mechanization of this explicit off-suite splicing converse for teaching sets was found."
+    ],
+    "design_question": "Shows that every off-suite behavior that differs from h at some untested input is realized by an S-passing function outside H; whether any such function lies in a concrete implementation class C is a separate question."
+  }
+]

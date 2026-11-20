@@ -1,0 +1,825 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Witness.AgreeUpTo": [],
+    "Toy.Witness.BoolAssignment": [],
+    "Toy.Witness.BoundedMooreBehaviors": [],
+    "Toy.Witness.ClosedUnderPointPatches": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.Consistent": [],
+    "Toy.Witness.ConstBoolClass": [],
+    "Toy.Witness.CoversAll": [],
+    "Toy.Witness.DisagreementSet": [],
+    "Toy.Witness.EventuallyFalse": [],
+    "Toy.Witness.FiniteStateMooreBehaviors": [],
+    "Toy.Witness.HasMinTeachingSize": [],
+    "Toy.Witness.HasTeachingDimension": [],
+    "Toy.Witness.HasTwoDistinct": [],
+    "Toy.Witness.HasUntestedInput": [],
+    "Toy.Witness.HitsAllDisagreements": [],
+    "Toy.Witness.HypothesisClass": [],
+    "Toy.Witness.InfiniteDomain": [],
+    "Toy.Witness.InitMooreMachine": [],
+    "Toy.Witness.InitMooreMachine.behavior": [],
+    "Toy.Witness.InitMooreMachine.behavior.eq_1": [],
+    "Toy.Witness.InitMooreMachine.casesOn": [],
+    "Toy.Witness.InitMooreMachine.ctorIdx": [],
+    "Toy.Witness.InitMooreMachine.init": [],
+    "Toy.Witness.InitMooreMachine.mk": [],
+    "Toy.Witness.InitMooreMachine.mk.inj": [],
+    "Toy.Witness.InitMooreMachine.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Witness.InitMooreMachine.mk.noConfusion": [],
+    "Toy.Witness.InitMooreMachine.mk.sizeOf_spec": [],
+    "Toy.Witness.InitMooreMachine.noConfusion": [],
+    "Toy.Witness.InitMooreMachine.noConfusionType": [],
+    "Toy.Witness.InitMooreMachine.rec": [],
+    "Toy.Witness.InitMooreMachine.recOn": [],
+    "Toy.Witness.InitMooreMachine.toMooreMachine": [],
+    "Toy.Witness.IsUnrestricted": [],
+    "Toy.Witness.MonotoneConjunctions": [],
+    "Toy.Witness.MooreMachine": [],
+    "Toy.Witness.MooreMachine.behavior": [],
+    "Toy.Witness.MooreMachine.behavior.eq_1": [],
+    "Toy.Witness.MooreMachine.casesOn": [],
+    "Toy.Witness.MooreMachine.ctorIdx": [],
+    "Toy.Witness.MooreMachine.mk": [],
+    "Toy.Witness.MooreMachine.mk.inj": [],
+    "Toy.Witness.MooreMachine.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Witness.MooreMachine.mk.noConfusion": [],
+    "Toy.Witness.MooreMachine.mk.sizeOf_spec": [],
+    "Toy.Witness.MooreMachine.noConfusion": [],
+    "Toy.Witness.MooreMachine.noConfusionType": [],
+    "Toy.Witness.MooreMachine.out": [],
+    "Toy.Witness.MooreMachine.rec": [],
+    "Toy.Witness.MooreMachine.recOn": [],
+    "Toy.Witness.MooreMachine.run": [],
+    "Toy.Witness.MooreMachine.run.eq_1": [],
+    "Toy.Witness.MooreMachine.run.eq_2": [],
+    "Toy.Witness.MooreMachine.run.eq_def": [],
+    "Toy.Witness.MooreMachine.run.match_1": [],
+    "Toy.Witness.MooreMachine.run_append": [],
+    "Toy.Witness.MooreMachine.step": [],
+    "Toy.Witness.PassingInClass": [],
+    "Toy.Witness.StateEquiv": [],
+    "Toy.Witness.SubClass": [],
+    "Toy.Witness.Teaches": [],
+    "Toy.Witness.UniqueConsistent": [],
+    "Toy.Witness.agreeUpTo_neg_example": [],
+    "Toy.Witness.agreeUpTo_pos_example": [
+      "propext"
+    ],
+    "Toy.Witness.altMachine2": [],
+    "Toy.Witness.altMachine2.eq_1": [],
+    "Toy.Witness.altMachine2_behavior": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.behavior_disjointUnion_inl": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.behavior_disjointUnion_inr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.boundedMooreBehaviors_neg_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.boundedMooreBehaviors_pos_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.bounded_moore_class_suite_depth_sharp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.bounded_moore_class_suite_depth_sharp_ce_one_state": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.bounded_moore_class_suite_depth_sharp_ce_one_state.match_1_1": [],
+    "Toy.Witness.bounded_moore_class_suite_depth_sharp_nonvacuity": [],
+    "Toy.Witness.bounded_one_state_moore_single_example_teaches": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.bounded_two_state_moore_unit_positive_control": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.certification_holds_although_C_escapes_H": [
+      "propext"
+    ],
+    "Toy.Witness.closedUnderPointPatches_neg_example": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.closedUnderPointPatches_pos_example": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.consistent_labelSample": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.consistent_labelSample_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.consistent_neg_example": [
+      "propext"
+    ],
+    "Toy.Witness.consistent_pos_example": [
+      "propext"
+    ],
+    "Toy.Witness.constMoore": [],
+    "Toy.Witness.constMoore.eq_1": [],
+    "Toy.Witness.constMoore_behavior": [
+      "propext"
+    ],
+    "Toy.Witness.coversAll_neg_example": [
+      "propext"
+    ],
+    "Toy.Witness.coversAll_pos_example": [
+      "propext"
+    ],
+    "Toy.Witness.delayChain": [],
+    "Toy.Witness.delayChain.eq_1": [],
+    "Toy.Witness.deviateAfter": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.deviateAfter.eq_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.deviateAfter_agrees_before_and_differs_at": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.deviateAfter_agrees_before_and_differs_at_nonvacuity": [
+      "propext"
+    ],
+    "Toy.Witness.deviateAfter_ce_same_output": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.deviateAfter_ce_same_output.match_1_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.disagreementSet_neg_example": [],
+    "Toy.Witness.disagreementSet_pos_example": [],
+    "Toy.Witness.disjointUnion": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.disjointUnion.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.evalMonotoneConj": [],
+    "Toy.Witness.evalMonotoneConj.eq_1": [],
+    "Toy.Witness.evalMonotoneConj_all_true": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.evalMonotoneConj_eq_true_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.eventuallyFalse_closedUnderPointPatches": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.eventuallyFalse_closedUnderPointPatches.match_1_1": [],
+    "Toy.Witness.eventuallyFalse_no_finite_teaching_set": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.eventuallyFalse_not_unrestricted": [],
+    "Toy.Witness.finiteStateMooreBehaviors_neg_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.finiteStateMooreBehaviors_pos_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.finite_alphabet_bounded_moore_class_suite_ce_incomplete_alphabet": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.finite_alphabet_bounded_moore_class_suite_ce_target_outside_bound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.finite_alphabet_bounded_moore_class_suite_teaches": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.finite_alphabet_bounded_moore_class_suite_teaches_nonvacuity": [
+      "propext"
+    ],
+    "Toy.Witness.finite_alphabet_bounded_moore_spec_suite_ce_incomplete_alphabet": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.finite_alphabet_bounded_moore_spec_suite_ce_target_outside_bound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.finite_alphabet_bounded_moore_spec_suite_certifies": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.finite_alphabet_bounded_moore_spec_suite_teaches": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.finite_alphabet_bounded_moore_spec_suite_teaches_nonvacuity": [
+      "propext"
+    ],
+    "Toy.Witness.flipBit": [],
+    "Toy.Witness.flipBit.eq_1": [],
+    "Toy.Witness.hasMinTeachingSize_neg_example": [
+      "propext"
+    ],
+    "Toy.Witness.hasMinTeachingSize_pos_example": [
+      "propext"
+    ],
+    "Toy.Witness.hasMinTeachingSize_unique": [],
+    "Toy.Witness.hasTeachingDimension_neg_example_constBool_0": [
+      "propext"
+    ],
+    "Toy.Witness.hasTeachingDimension_neg_example_constBool_2": [
+      "propext"
+    ],
+    "Toy.Witness.hasTeachingDimension_neg_example_empty": [],
+    "Toy.Witness.hasTeachingDimension_pos_example": [
+      "propext"
+    ],
+    "Toy.Witness.hasTeachingDimension_unique": [],
+    "Toy.Witness.hasTwoDistinct_neg_example": [],
+    "Toy.Witness.hasTwoDistinct_neg_example.match_1_1": [],
+    "Toy.Witness.hasTwoDistinct_pos_example": [],
+    "Toy.Witness.hasUntestedInput_neg_example": [
+      "propext"
+    ],
+    "Toy.Witness.hasUntestedInput_neg_example.match_1_1": [],
+    "Toy.Witness.hasUntestedInput_pos_example": [
+      "propext"
+    ],
+    "Toy.Witness.hitsAllDisagreements_neg_example": [
+      "propext"
+    ],
+    "Toy.Witness.hitsAllDisagreements_pos_example": [
+      "propext"
+    ],
+    "Toy.Witness.infiniteDomain_neg_example": [
+      "propext"
+    ],
+    "Toy.Witness.infiniteDomain_pos_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.inlFin": [],
+    "Toy.Witness.inlFin.eq_1": [],
+    "Toy.Witness.inrFin": [],
+    "Toy.Witness.inrFin.eq_1": [],
+    "Toy.Witness.isUnrestricted_implies_closedUnderPointPatches": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.isUnrestricted_neg_example": [],
+    "Toy.Witness.isUnrestricted_pos_example": [],
+    "Toy.Witness.labelSample": [],
+    "Toy.Witness.labelSample.eq_1": [],
+    "Toy.Witness.latchMachine2": [],
+    "Toy.Witness.length_labelSample": [
+      "propext"
+    ],
+    "Toy.Witness.map_fst_labelSample": [],
+    "Toy.Witness.mem_wordsOfLength_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.mem_wordsUpTo_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.mimicSaturateMachine": [],
+    "Toy.Witness.mimicSaturateMachine.eq_1": [],
+    "Toy.Witness.modCycleMachine": [],
+    "Toy.Witness.modCycleMachine.eq_1": [],
+    "Toy.Witness.monotoneConjNegExamples": [],
+    "Toy.Witness.monotoneConjNegExamples.eq_1": [],
+    "Toy.Witness.monotoneConjNegExamples_length": [
+      "propext"
+    ],
+    "Toy.Witness.monotoneConjTeachingSet": [],
+    "Toy.Witness.monotoneConjTeachingSet.eq_1": [],
+    "Toy.Witness.monotoneConjTeachingSet_length": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.monotoneConjTeachingSet_m2_all": [
+      "propext"
+    ],
+    "Toy.Witness.monotoneConjTeachingSet_nodup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.monotoneConjunctions_neg_example_const_false": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.monotoneConjunctions_neg_example_const_false.match_1_1": [],
+    "Toy.Witness.monotoneConjunctions_neg_example_or": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.monotoneConjunctions_pos_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.monotone_conj_m2_all_teaches": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.monotone_conj_m2_all_teaches.match_1_6": [
+      "propext"
+    ],
+    "Toy.Witness.monotone_conj_m2_empty_teaches": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.monotone_conj_m2_r0_exact": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.monotone_conj_m2_r1_exact": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.monotone_conj_m2_r2_exact": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.monotone_conj_m2_single_teaches": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.monotone_conj_m2_single_teaches.match_1_6": [
+      "propext"
+    ],
+    "Toy.Witness.monotone_conj_teaching_set_exact": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.monotone_conj_teaching_set_exact_nonvacuity": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.monotone_conjunctions_m0_td": [
+      "Quot.sound"
+    ],
+    "Toy.Witness.monotone_conjunctions_m0_td.match_1_1": [],
+    "Toy.Witness.monotone_conjunctions_teaching_dimension": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.monotone_conjunctions_teaching_dimension_nonvacuity": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.monotone_conjunctions_teaching_dimension_nonvacuity.match_1_1": [],
+    "Toy.Witness.monotone_conjunctions_teaching_dimension_nonvacuity.match_1_9": [
+      "propext"
+    ],
+    "Toy.Witness.mooreClassTestSuite": [],
+    "Toy.Witness.mooreClassTestSuite.eq_1": [],
+    "Toy.Witness.mooreSpecTestSuite": [],
+    "Toy.Witness.mooreSpecTestSuite.eq_1": [],
+    "Toy.Witness.moore_bound_sharp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.moore_bound_sharp_ce_small_n": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.moore_bound_sharp_nonvacuity": [],
+    "Toy.Witness.moore_state_equiv_iff_agree_lt_n": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.moore_state_equiv_iff_agree_up_to": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.moore_state_equiv_iff_agree_up_to_nonvacuity": [
+      "Quot.sound"
+    ],
+    "Toy.Witness.moore_two_machine_bound_sharp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.moore_two_machine_bound_sharp_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.moore_two_machine_equiv_iff_agree_up_to": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.moore_two_machine_equiv_iff_agree_up_to_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.passed_suite_certifies_iff_ce_not_in_H": [
+      "propext"
+    ],
+    "Toy.Witness.passed_suite_certifies_iff_ce_not_unique": [
+      "propext"
+    ],
+    "Toy.Witness.passed_suite_certifies_iff_passingInClass": [],
+    "Toy.Witness.passed_suite_certifies_iff_passingInClass_nonvacuity": [
+      "propext"
+    ],
+    "Toy.Witness.passed_teaching_suite_ce_not_subclass": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.passed_teaching_suite_certifies_iff_passingInClass": [],
+    "Toy.Witness.passed_teaching_suite_certifies_subclass": [],
+    "Toy.Witness.passed_teaching_suite_without_class_bound_escapes_class": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.passingInClass_neg_example": [
+      "propext"
+    ],
+    "Toy.Witness.passingInClass_pos_example": [
+      "propext"
+    ],
+    "Toy.Witness.patchAt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.patchAt.eq_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.patchAt_of_ne": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.patchAt_self": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.patchClosed_hasUntestedInput_ce_exhaustive": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.patchClosed_hasUntestedInput_ce_not_patchClosed": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.patchClosed_hasUntestedInput_ce_trivial_codomain": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.patchClosed_hasUntestedInput_no_teaching": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.patchClosed_hasUntestedInput_no_teaching.match_1_1": [],
+    "Toy.Witness.patchClosed_hasUntestedInput_no_teaching_nonvacuity": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.patchClosed_infinite_ce_finite_domain": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.patchClosed_infinite_ce_not_patchClosed": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.patchClosed_infinite_ce_trivial_codomain": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.patchClosed_infinite_no_finite_teaching_set": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.patchClosed_infinite_no_finite_teaching_set_nonvacuity": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.patchClosed_untested_input_ce_inconsistent": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.patchClosed_untested_input_ce_inconsistent.match_1_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.patchClosed_untested_input_ce_not_in_H": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.patchClosed_untested_input_ce_not_in_H.match_1_1": [],
+    "Toy.Witness.patchClosed_untested_input_ce_not_in_H.match_1_5": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.patchClosed_untested_input_ce_not_patchClosed": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.patchClosed_untested_input_ce_not_patchClosed.match_1_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.patchClosed_untested_input_ce_same_val": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.patchClosed_untested_input_ce_same_val.match_1_3": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.patchClosed_untested_input_ce_tested": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.patchClosed_untested_input_ce_tested.match_1_3": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.patchClosed_untested_input_patch_witness": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.patchClosed_untested_input_patch_witness_nonvacuity": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.patchClosed_untested_input_positive_control_monotone_conj": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.relevantCount": [],
+    "Toy.Witness.relevantCount.eq_1": [],
+    "Toy.Witness.relevantCount_le": [
+      "propext"
+    ],
+    "Toy.Witness.spliceOutside": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.spliceOutside.eq_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.spliceOutside_consistent": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.spliceOutside_of_mem": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.spliceOutside_of_not_mem": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.splice_consistent_escapes_class_ce_agrees": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.splice_consistent_escapes_class_ce_agrees.match_1_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.splice_consistent_escapes_class_ce_inconsistent": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.splice_consistent_escapes_class_ce_inconsistent.match_1_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.splice_consistent_escapes_class_ce_not_unique": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.splice_consistent_escapes_class_ce_not_unique.match_1_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.splice_consistent_escapes_class_ce_tested": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.splice_consistent_escapes_class_ce_tested.match_1_3": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.splice_consistent_escapes_class_of_unique": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.splice_consistent_escapes_class_of_unique_nonvacuity": [
+      "propext"
+    ],
+    "Toy.Witness.stateEquiv_neg_example": [],
+    "Toy.Witness.stateEquiv_pos_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.subClass_implies_passingInClass": [],
+    "Toy.Witness.subClass_neg_example": [],
+    "Toy.Witness.subClass_pos_example": [],
+    "Toy.Witness.teaches_iff_hits_disagreement_sets_of_mem_of_consistent": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.teaches_iff_hits_disagreement_sets_of_mem_of_consistent_ce_inconsistent": [
+      "propext"
+    ],
+    "Toy.Witness.teaches_iff_hits_disagreement_sets_of_mem_of_consistent_ce_not_in_H": [
+      "propext"
+    ],
+    "Toy.Witness.teaches_iff_hits_disagreement_sets_of_mem_of_consistent_nonvacuity": [
+      "propext"
+    ],
+    "Toy.Witness.teaches_implies_uniqueConsistent": [],
+    "Toy.Witness.teaches_neg_example": [
+      "propext"
+    ],
+    "Toy.Witness.teaches_pos_example": [
+      "propext"
+    ],
+    "Toy.Witness.two_le_state_bound_infinite_alphabet_ce_finite_alphabet": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.two_le_state_bound_infinite_alphabet_ce_one_state": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.two_le_state_bound_infinite_alphabet_ce_trivial_output": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.two_le_state_bound_infinite_alphabet_no_finite_teaching_set": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.two_le_state_bound_infinite_alphabet_no_finite_teaching_set.match_1_1": [],
+    "Toy.Witness.two_le_state_bound_infinite_alphabet_no_finite_teaching_set_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.two_state_moore_length_lt_k_insufficient": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.unbounded_moore_ce_empty_alphabet": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.unbounded_moore_ce_empty_alphabet.match_1_1": [],
+    "Toy.Witness.unbounded_moore_ce_trivial_output": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.unbounded_moore_no_finite_teaching_set": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.unbounded_moore_no_finite_teaching_set.match_1_3": [],
+    "Toy.Witness.unbounded_moore_no_finite_teaching_set_nonvacuity": [],
+    "Toy.Witness.uniqueConsistent_neg_example": [
+      "propext"
+    ],
+    "Toy.Witness.uniqueConsistent_pos_example": [
+      "propext"
+    ],
+    "Toy.Witness.unrestricted_hasUntestedInput_no_teaching": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.unrestricted_infinite_no_finite_teaching_set": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.unrestricted_untested_input_patch_witness": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Witness.wordsOfLength": [],
+    "Toy.Witness.wordsOfLength.eq_1": [],
+    "Toy.Witness.wordsOfLength.eq_2": [],
+    "Toy.Witness.wordsOfLength.eq_def": [],
+    "Toy.Witness.wordsOfLength.match_1": [],
+    "Toy.Witness.wordsUpTo": [],
+    "Toy.Witness.wordsUpTo.eq_1": [],
+    "Toy.Witness.wordsUpTo.eq_2": [],
+    "Toy.Witness.wordsUpTo.eq_def": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
