@@ -1,0 +1,187 @@
+{
+  "topics": [
+    "lean",
+    "lean/mechanization",
+    "verification",
+    "verification/formalized-results",
+    "verification/trusted-computing-base",
+    "verification/certifying-algorithms",
+    "verification/static-analysis",
+    "verification/relative-completeness",
+    "verification/testing"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Abstract interpretation: a unified lattice model for static analysis of programs by construction or approximation of fixpoints (Cousot and Cousot, POPL 1977)",
+      "identity": {
+        "doi": "10.1145/512950.512973"
+      }
+    },
+    {
+      "name": "Incorrectness logic (O'Hearn, PACMPL 4(POPL), 2020)",
+      "identity": {
+        "doi": "10.1145/3371078"
+      }
+    },
+    {
+      "name": "Generalization as search (Mitchell, Artificial Intelligence 18(2), 1982)",
+      "identity": {
+        "doi": "10.1016/0004-3702(82)90040-6"
+      }
+    },
+    {
+      "name": "Toward a theory of test data selection (Goodenough and Gerhart, IEEE TSE SE-1(2), 1975)",
+      "identity": {
+        "doi": "10.1109/TSE.1975.6312836"
+      }
+    },
+    {
+      "name": "Testing can be formal, too (Gaudel, TAPSOFT 1995)",
+      "identity": {
+        "doi": "10.1007/3-540-59293-8_188"
+      }
+    },
+    {
+      "name": "Psychologism and Behaviorism (Block, The Philosophical Review 90(1), 1981)",
+      "identity": {
+        "doi": "10.2307/2184371"
+      }
+    },
+    {
+      "name": "Classes of recursively enumerable sets and their decision problems (Rice, Trans. AMS 74(2), 1953)",
+      "identity": {
+        "doi": "10.1090/S0002-9947-1953-0053041-6"
+      }
+    },
+    {
+      "name": "Abstract extensionality: on the properties of incomplete abstract interpretations (Bruni et al., PACMPL 4(POPL), 2020)",
+      "identity": {
+        "doi": "10.1145/3371096"
+      }
+    },
+    {
+      "name": "Proof-carrying code (Necula, POPL 1997)",
+      "identity": {
+        "doi": "10.1145/263699.263712"
+      }
+    },
+    {
+      "name": "Certifying algorithms (McConnell, Mehlhorn, Näher and Schweitzer, Computer Science Review 5(2), 2011)",
+      "identity": {
+        "doi": "10.1016/j.cosrev.2010.09.009"
+      }
+    },
+    {
+      "name": "Formal verification of translation validators: a case study on instruction scheduling optimizations (Tristan and Leroy, POPL 2008)",
+      "identity": {
+        "doi": "10.1145/1328438.1328444"
+      }
+    },
+    {
+      "name": "A framework for the verification of certifying computations (Alkassar, Böhme, Mehlhorn and Rizkallah, J. Automated Reasoning 52(3), 2014)",
+      "identity": {
+        "doi": "10.1007/s10817-013-9289-2"
+      }
+    },
+    {
+      "name": "Verification of certifying computations (Alkassar, Böhme, Mehlhorn and Rizkallah, CAV 2011)",
+      "identity": {
+        "doi": "10.1007/978-3-642-22110-1_7"
+      }
+    },
+    {
+      "name": "Certification of termination proofs using CeTA (Thiemann and Sternagel, TPHOLs 2009)",
+      "identity": {
+        "doi": "10.1007/978-3-642-03359-9_31"
+      }
+    },
+    {
+      "name": "Translation validation (Pnueli, Siegel and Singerman, TACAS 1998)",
+      "identity": {
+        "doi": "10.1007/BFb0054170"
+      }
+    },
+    {
+      "name": "The challenge of computer mathematics (Barendregt and Wiedijk, Phil. Trans. R. Soc. A 363(1835), 2005)",
+      "identity": {
+        "doi": "10.1098/rsta.2005.1650"
+      }
+    },
+    {
+      "name": "Designing programs that check their work (Blum and Kannan, J. ACM 42(1), 1995)",
+      "identity": {
+        "doi": "10.1145/200836.200880"
+      }
+    },
+    {
+      "name": "What are logical notions? (Tarski, ed. Corcoran, History and Philosophy of Logic 7(2), 1986)",
+      "identity": {
+        "doi": "10.1080/01445348608837096"
+      }
+    },
+    {
+      "name": "Reason, Truth and History (Putnam, Cambridge University Press, 1981)",
+      "identity": {
+        "doi": "10.1017/CBO9780511625398"
+      }
+    },
+    {
+      "name": "Making abstract interpretations complete (Giacobazzi, Ranzato and Scozzari, J. ACM 47(2), 2000)",
+      "identity": {
+        "doi": "10.1145/333979.333989"
+      }
+    },
+    {
+      "name": "A logic for locally complete abstract interpretations (Bruni, Giacobazzi, Gori and Ranzato, LICS 2021)",
+      "identity": {
+        "doi": "10.1109/LICS52264.2021.9470608"
+      }
+    },
+    {
+      "name": "Monotonicity and the precision of program analysis (Campion, Dalla Preda, Giacobazzi and Urban, PACMPL 8(POPL), 2024)",
+      "identity": {
+        "doi": "10.1145/3632897"
+      }
+    },
+    {
+      "name": "The Lean mathematical library (The mathlib Community, CPP 2020)",
+      "identity": {
+        "doi": "10.1145/3372885.3373824"
+      }
+    },
+    {
+      "name": "Formalizing computability theory via partial recursive functions (Carneiro, ITP 2019, LIPIcs 141)",
+      "identity": {
+        "doi": "10.4230/LIPIcs.ITP.2019.12"
+      }
+    },
+    {
+      "name": "Mathlib 4 (ComputablePred.rice₂ in Mathlib/Computability/Halting.lean)",
+      "identity": {
+        "repository": "leanprover-community/mathlib4",
+        "revision": "bbb39fe579406d36e4aacdc6d49a0055e4cf0d75"
+      }
+    },
+    {
+      "name": "Introduction to Static Analysis: An Abstract Interpretation Perspective (Rival and Yi, MIT Press, 2020)",
+      "identity": {
+        "isbn": "978-0-262-04341-0"
+      }
+    },
+    {
+      "name": "Machine Learning (Mitchell, McGraw-Hill, 1997)",
+      "identity": {
+        "isbn": "0-07-042807-7"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

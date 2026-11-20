@@ -1,0 +1,787 @@
+[
+  {
+    "id": "R1a",
+    "lean": [
+      "Toy.Checker.sound_iff_checkerLE_classicalOracle",
+      "Toy.Checker.sound_rejectAll",
+      "Toy.Checker.sound_of_checkerLE_of_sound",
+      "Toy.Checker.sound_orChecker_of_sound_of_sound"
+    ],
+    "kind": "characterization",
+    "module": "ToyChecker/DownSet.lean",
+    "tier": "T0",
+    "tier_justification": "Textbook facts about yes/no analyzers (always-false is trivially sound) and elementary order facts (subsets of the good programs form a down-set closed under union), restated for Boolean checkers.",
+    "plain_claim": "For a fixed semantic predicate good, a checker is sound iff it is pointwise below the classical oracle of good (the possibly noncomputable Boolean function that is true exactly on good programs); hence the set of sound checkers contains rejectAll, is downward closed in the pointwise order, and is closed under the pointwise or of two checkers that are sound for the same good.",
+    "hypotheses": [
+      {
+        "name": "hle : CheckerLE c₁ c₂ (sound_of_checkerLE_of_sound)",
+        "purpose": "c1 must not accept anything c2 rejects; otherwise c1 can accept programs about which c2's soundness says nothing.",
+        "tightness": "tight",
+        "counterexample": "Toy.Checker.cex_sound_of_checkerLE_needs_le"
+      },
+      {
+        "name": "h₂ : Sound good c₂ (sound_of_checkerLE_of_sound)",
+        "purpose": "Soundness has to come from somewhere; the order only transfers it downward.",
+        "tightness": "tight",
+        "counterexample": "Toy.Checker.cex_sound_of_checkerLE_needs_sound"
+      },
+      {
+        "name": "h₁ : Sound good c₁ (sound_orChecker_of_sound_of_sound)",
+        "purpose": "Accepting on c1's say-so requires c1 to be sound.",
+        "tightness": "tight",
+        "counterexample": "Toy.Checker.cex_sound_orChecker_needs_left"
+      },
+      {
+        "name": "h₂ : Sound good c₂ (sound_orChecker_of_sound_of_sound)",
+        "purpose": "Symmetric to h1.",
+        "tightness": "tight",
+        "counterexample": "Toy.Checker.cex_sound_orChecker_needs_right"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "Both sides of the characterization occur: evenExact is below the oracle of evenGood and acceptAll is not (so soundness is not trivial in the toy instance). The closure hypotheses hold for evenBelowTen <= evenExact with evenExact sound, and for the two sound single-program checkers (· == 0) and (· == 2).",
+    "nonvacuity_witness_lean": [
+      "Toy.Checker.nonvacuous_sound_iff_checkerLE_classicalOracle",
+      "Toy.Checker.nonvacuous_sound_of_checkerLE_of_sound",
+      "Toy.Checker.nonvacuous_sound_orChecker"
+    ],
+    "non_claims": [
+      "The oracle is a mathematical function, in general not computable; nothing says an implementable tool attains the top of this down-set. For decidable good the oracle equals fun p => decide (good p) (classicalOracle_eq_decide); nothing more is claimed about decidability.",
+      "Uses classical logic (Classical.choice via the oracle's definition).",
+      "Does not say soundness is upward closed (it is not: rejectAll <= acceptAll), nor that a more conservative checker is preferable; conservativeness costs completeness, which is not measured here.",
+      "Only binary (hence finite) disjunctions are covered; arbitrary unions of sound checkers are not stated (in the classical model they are also sound, but that is not a theorem of this package).",
+      "Closure under or needs both checkers to be sound for the same predicate good. Combining real tools that assume different language dialects, memory models or undefined-behavior conventions and accepting when either accepts is sound only for the disjunction of their predicates, not for either stricter one.",
+      "Polarity: Sound models tools whose true answer certifies goodness. For bug finders that promise no false alarms (every reported problem is real), the guarantee is the dual one, c p = false implies not good p; the order is reversed and the degenerate tool is acceptAll (report nothing), not rejectAll. Nothing here is stated for that polarity.",
+      "Says nothing about completeness, running time, or termination of any tool."
+    ],
+    "prior_art": [
+      "X. Rival and K. Yi, Introduction to Static Analysis: An Abstract Interpretation Perspective, MIT Press, 2020, Chapter 1. Defines soundness (answer true implies the property) and completeness (the property implies answer true) of a yes/no analysis as here (Sound; CompleteOn with F = all programs), and notes that the analysis answering false everywhere is trivially sound and the one answering true everywhere trivially complete.",
+      "P. Cousot and R. Cousot, 'Abstract interpretation: a unified lattice model for static analysis of programs by construction or approximation of fixpoints', POPL 1977, pp. 238-252, doi:10.1145/512950.512973. Source of the soundness-as-over-approximation framing of static analysis. Correspondence (our reading, not a statement of the paper): sound abstractions over-approximate the reachable behaviors and form an up-set whose top element carries no information; a yes/no checker derived from an abstraction accepts p only if the over-approximation lies within the safe behaviors. That passage reverses the order, so the up-set of sound over-approximations corresponds to the down-set of sound checkers, and the top element to rejectAll at the bottom.",
+      "P. W. O'Hearn, 'Incorrectness logic', Proceedings of the ACM on Programming Languages 4(POPL):1-32, 2020, doi:10.1145/3371078. Under-approximate reasoning for bug finding: reported bugs are guaranteed to be real (no false positives), at the price of missed bugs. Cited for the opposite polarity: for such tools the degenerate tool reports nothing, which corresponds to acceptAll rather than rejectAll; this package states results for the certifying polarity only."
+    ],
+    "design_question": "Can a framework exclude degenerate tools (reject-all) using soundness-style laws alone, or does it need an additional positive requirement?"
+  },
+  {
+    "id": "R1e",
+    "lean": "Toy.Checker.law_of_all_sound_holds_for_rejectAll",
+    "kind": "impossibility",
+    "module": "ToyChecker/DownSet.lean",
+    "tier": "T0",
+    "tier_justification": "Immediate consequence of the textbook fact that rejecting everything is sound (R1a), stated as a fact about laws.",
+    "plain_claim": "Any law L satisfied by every sound checker is also satisfied by rejectAll; consequently no law implied by soundness alone can exclude rejectAll.",
+    "hypotheses": [
+      {
+        "name": "hL : ∀ c, Sound good c → L c",
+        "purpose": "The law is implied by soundness (every sound checker satisfies it).",
+        "tightness": "tight",
+        "counterexample": "Toy.Checker.cex_law_of_all_sound_needs_hL"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "L := Sound evenGood satisfies hL.",
+    "nonvacuity_witness_lean": "Toy.Checker.nonvacuous_law_of_all_sound",
+    "positive_control_lean": "Toy.Checker.positive_control_anchor_law_excludes_rejectAll",
+    "non_claims": [
+      "Does not say no law can exclude rejectAll: laws not implied by soundness (anchors, completeness on a fragment, checked two-sided answers) can (positive control; R2a, R6e, R4f).",
+      "Does not say that excluding rejectAll requires excluding an honest tool: the law fun c => c ≠ rejectAll excludes rejectAll and no other checker.",
+      "Stated for the certifying polarity; for bug finders that promise no false alarms the degenerate tool is acceptAll (see R1a).",
+      "Says nothing about intensional evidence (source inspection) or about laws on richer outputs such as certificates (R4)."
+    ],
+    "prior_art": [
+      "X. Rival and K. Yi, Introduction to Static Analysis: An Abstract Interpretation Perspective, MIT Press, 2020, Chapter 1. Defines soundness (answer true implies the property) and completeness (the property implies answer true) of a yes/no analysis as here (Sound; CompleteOn with F = all programs), and notes that the analysis answering false everywhere is trivially sound and the one answering true everywhere trivially complete.",
+      "P. Cousot and R. Cousot, 'Abstract interpretation: a unified lattice model for static analysis of programs by construction or approximation of fixpoints', POPL 1977, pp. 238-252, doi:10.1145/512950.512973. Source of the soundness-as-over-approximation framing of static analysis. Correspondence (our reading, not a statement of the paper): sound abstractions over-approximate the reachable behaviors and form an up-set whose top element carries no information; a yes/no checker derived from an abstraction accepts p only if the over-approximation lies within the safe behaviors. That passage reverses the order, so the up-set of sound over-approximations corresponds to the down-set of sound checkers, and the top element to rejectAll at the bottom."
+    ],
+    "design_question": "Can a framework exclude degenerate tools (reject-all) using soundness-style laws alone, or does it need an additional positive requirement?"
+  },
+  {
+    "id": "R2a",
+    "lean": [
+      "Toy.Checker.not_anchoredSound_rejectAll_iff_anchors_ne_nil",
+      "Toy.Checker.allowlist_anchoredSound_of_anchors_good"
+    ],
+    "kind": "characterization",
+    "module": "ToyChecker/Anchors.lean",
+    "tier": "T0",
+    "tier_justification": "Restatement of version-space facts for an unrestricted hypothesis space: the empty hypothesis is consistent iff there are no positive examples, and the disjunction of the positive examples is consistent when they are all good.",
+    "plain_claim": "The anchored law (sound and accepts every anchor in the finite list A) excludes rejectAll iff A is nonempty, for every good and every A whether or not the anchors are good; and if every anchor is good, the anchored law admits the allowlist checker that accepts exactly the members of A.",
+    "hypotheses": [
+      {
+        "name": "[DecidableEq P] (allowlist_anchoredSound_of_anchors_good)",
+        "purpose": "Needed only to define the allowlist as a Boolean function; the allowlist does not depend on which instance is used, and one always exists classically.",
+        "tightness": "harmless"
+      },
+      {
+        "name": "hA : ∀ a ∈ A, good a (allowlist_anchoredSound_of_anchors_good)",
+        "purpose": "Accepting a bad anchor contradicts soundness, so with a bad anchor nothing is admitted.",
+        "tightness": "tight",
+        "counterexample": "Toy.Checker.cex_allowlist_anchoredSound_needs_anchors_good"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "Both sides of the first statement occur (anchors [0] exclude rejectAll; no anchors admit it); the anchors [0, 2] are good for evenGood.",
+    "nonvacuity_witness_lean": [
+      "Toy.Checker.nonvacuous_not_anchoredSound_rejectAll",
+      "Toy.Checker.nonvacuous_anchors_good"
+    ],
+    "non_claims": [
+      "If some anchor is bad, the law excludes every checker, so 'excludes rejectAll' is then vacuous; that the law admits anything needs good anchors (second statement).",
+      "Excluding rejectAll does not exclude near-trivial tools: the allowlist of the anchors is admitted (second statement; R2c).",
+      "Does not say the allowlist is the only admitted checker, nor that an allowlist is an acceptable tool for a framework; it says the anchored law cannot tell it apart from honest tools."
+    ],
+    "prior_art": [
+      "T. M. Mitchell, 'Generalization as search', Artificial Intelligence 18(2):203-226, 1982, doi:10.1016/0004-3702(82)90040-6. Version spaces: the hypotheses consistent with labeled examples, ordered by generality and represented by their most specific and most general boundary sets.",
+      "T. M. Mitchell, Machine Learning, McGraw-Hill, 1997, Chapter 2 (concept learning, the version space representation theorem, and the unbiased learner whose hypothesis space contains every subset of the instances). For that learner the most specific consistent hypothesis is the disjunction of the positive examples and no instance outside the training examples is classified unanimously. Correspondence (our reading): checkers are hypotheses, the pointwise order is the generality order, anchors and suite entries are labeled examples, and soundness acts as a negative example at every bad program (infinitely many in general, unlike a finite training set); the results cited here restate that picture in this vocabulary."
+    ],
+    "design_question": "What do positive anchors and finite conformance suites actually force on an admitted tool, and can they exclude lookup-table tools?"
+  },
+  {
+    "id": "R2c",
+    "lean": [
+      "Toy.Checker.forced_accept_iff_mem_anchors_of_anchors_good",
+      "Toy.Checker.forced_reject_iff_not_good_of_anchors_good",
+      "Toy.Checker.anchoredSound_admits_allowlists_disagreeing_at_good_nonanchor_of_anchors_good"
+    ],
+    "kind": "characterization",
+    "module": "ToyChecker/Anchors.lean",
+    "tier": "T0",
+    "tier_justification": "Restatement of the unanimous-vote facts for an unbiased version space (only training examples are classified unanimously), with soundness playing the role of a negative example at every bad program.",
+    "plain_claim": "If every anchor in A is good, a program is accepted by every checker that the anchored law admits iff it is an anchor, and is rejected by every admitted checker iff it is bad; explicitly, for any good program p not in A, the allowlists of A and of p :: A are both admitted and disagree on p.",
+    "hypotheses": [
+      {
+        "name": "hA : ∀ a ∈ A, good a (forced_accept_iff_mem_anchors_of_anchors_good)",
+        "purpose": "With a bad anchor the law admits nothing and every program is vacuously forced to be accepted.",
+        "tightness": "tight",
+        "counterexample": "Toy.Checker.cex_forced_accept_needs_anchors_good"
+      },
+      {
+        "name": "hA : ∀ a ∈ A, good a (forced_reject_iff_not_good_of_anchors_good)",
+        "purpose": "With a bad anchor the law admits nothing and every program is vacuously forced to be rejected.",
+        "tightness": "tight",
+        "counterexample": "Toy.Checker.cex_forced_reject_needs_anchors_good"
+      },
+      {
+        "name": "[DecidableEq P] (anchoredSound_admits_allowlists_disagreeing_at_good_nonanchor_of_anchors_good)",
+        "purpose": "Needed only to define allowlists; they do not depend on the instance.",
+        "tightness": "harmless"
+      },
+      {
+        "name": "hA : ∀ a ∈ A, good a (witness family)",
+        "purpose": "Otherwise neither allowlist is admitted.",
+        "tightness": "tight",
+        "counterexample": "Toy.Checker.cex_admits_allowlists_needs_anchors_good"
+      },
+      {
+        "name": "hp : good p (witness family)",
+        "purpose": "Otherwise the allowlist of p :: A is unsound.",
+        "tightness": "tight",
+        "counterexample": "Toy.Checker.cex_admits_allowlists_needs_good_p"
+      },
+      {
+        "name": "hpA : p ∉ A (witness family)",
+        "purpose": "Otherwise the allowlist of A accepts p, so the two allowlists do not disagree on p.",
+        "tightness": "tight",
+        "counterexample": "Toy.Checker.cex_admits_allowlists_needs_not_mem"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Anchors [0, 2] are good for evenGood; for the witness family, anchors [0] and the good non-anchor 2.",
+    "nonvacuity_witness_lean": [
+      "Toy.Checker.nonvacuous_anchors_good",
+      "Toy.Checker.nonvacuous_admits_allowlists"
+    ],
+    "non_claims": [
+      "Concerns acceptance forced by the anchored law alone. Laws with further requirements can force more: completeness on a fragment (R6f), or a relational requirement linking answers on different programs, such as 'accepting p forces accepting 2 * p', which with the single anchor 2 forces infinitely many acceptances and excludes every allowlist while admitting a conservative, incomplete checker (doubling_law_admits_fourOrTwo_excludes_every_allowlist).",
+      "The anchored law is a pointwise law on finitely many inputs; nothing here is claimed for relational or metamorphic laws beyond the single example cited above.",
+      "Does not say an admitted checker can be found algorithmically; the witness for a good p is the allowlist of p :: A, which presupposes knowing that p is good.",
+      "The first two statements have no DecidableEq P hypothesis; their proofs build the witness allowlists with classical decidable equality (Classical.choice), and the forced-acceptance statement, quantified over all types, implies double-negation elimination, so it is not constructive. With a DecidableEq P instance the witnesses are the computable allowlists of the third statement.",
+      "Exhibits two admitted checkers for each good non-anchor; does not enumerate all admitted checkers, and does not quantify how many anchors are needed for any practical purpose."
+    ],
+    "prior_art": [
+      "T. M. Mitchell, Machine Learning, McGraw-Hill, 1997, Chapter 2 (concept learning, the version space representation theorem, and the unbiased learner whose hypothesis space contains every subset of the instances). For that learner the most specific consistent hypothesis is the disjunction of the positive examples and no instance outside the training examples is classified unanimously. Correspondence (our reading): checkers are hypotheses, the pointwise order is the generality order, anchors and suite entries are labeled examples, and soundness acts as a negative example at every bad program (infinitely many in general, unlike a finite training set); the results cited here restate that picture in this vocabulary.",
+      "T. M. Mitchell, 'Generalization as search', Artificial Intelligence 18(2):203-226, 1982, doi:10.1016/0004-3702(82)90040-6. Version spaces: the hypotheses consistent with labeled examples, ordered by generality and represented by their most specific and most general boundary sets."
+    ],
+    "design_question": "What do positive anchors and finite conformance suites actually force on an admitted tool, and can they exclude lookup-table tools?"
+  },
+  {
+    "id": "R2f",
+    "lean": [
+      "Toy.Checker.tableChecker_sound_passes_le_of_sound_passes",
+      "Toy.Checker.tableChecker_passes_and_le_of_passes"
+    ],
+    "kind": "impossibility",
+    "module": "ToyChecker/Anchors.lean",
+    "tier": "T0",
+    "tier_justification": "Restatement of the fact that the most specific hypothesis consistent with labeled examples in an unrestricted hypothesis space is the disjunction of the positive examples, read as the informal lookup-table argument against finite behavioral tests.",
+    "plain_claim": "For a finite test suite T (programs with expected answers): if some checker c passes T, then the lookup table of T (accept exactly the programs that T expects to be accepted) passes T and is pointwise below c, so it is the least checker passing T; if moreover c is sound, the lookup table is sound. So no law of the form 'sound and passes T' admits some checker while excluding the lookup table of T.",
+    "hypotheses": [
+      {
+        "name": "[DecidableEq P]",
+        "purpose": "Needed only to define the lookup table; it does not depend on the instance.",
+        "tightness": "harmless"
+      },
+      {
+        "name": "hc : Sound good c (tableChecker_sound_passes_le_of_sound_passes)",
+        "purpose": "Soundness of the table is inherited from c via the order; a suite passed only by unsound checkers can expect acceptance of a bad program.",
+        "tightness": "tight",
+        "counterexample": "Toy.Checker.cex_tableChecker_sound_needs_sound"
+      },
+      {
+        "name": "hT : Passes c T (tableChecker_sound_passes_le_of_sound_passes)",
+        "purpose": "Some sound checker must pass T, so T expects acceptance only of good programs.",
+        "tightness": "tight",
+        "counterexample": "Toy.Checker.cex_tableChecker_sound_needs_passes"
+      },
+      {
+        "name": "hT : Passes c T (tableChecker_passes_and_le_of_passes)",
+        "purpose": "Without a passing checker the table need not be below c (consistent suite, c = rejectAll) and need not pass T (inconsistent suite).",
+        "tightness": "tight",
+        "counterexample": "Toy.Checker.cex_tableChecker_passes_and_le_needs_passes"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "evenExact is sound for evenGood and passes [(0, true), (1, false), (2, true)].",
+    "nonvacuity_witness_lean": "Toy.Checker.nonvacuous_tableChecker",
+    "positive_control_lean": [
+      "Toy.Checker.positive_control_completeOn_admits_evenExact_excludes_tableChecker",
+      "Toy.Checker.positive_control_doubling_law_admits_fourOrTwo_excludes_every_tableChecker"
+    ],
+    "non_claims": [
+      "The table is built from T: the theorem is about a suite fixed before the table is chosen. It does not say a single table passes every suite, nor that a table fixed in advance passes suites chosen afterwards (held-out or randomized tests are not modeled).",
+      "Does not say tests are useless. Nearby laws exclude lookup tables while admitting honest tools: completeness on an infinite fragment (first positive control; R6g), and, without any completeness requirement, the relational law 'passes [(2, true)] and accepting p forces accepting 2 * p', which admits the conservative, incomplete checker fourOrTwo and excludes the lookup table of every finite suite (second positive control).",
+      "The impossibility concerns only laws of the form 'sound and passes T', which are pointwise laws on finitely many inputs.",
+      "Says nothing about intensional checks (code inspection) that could detect a table. Conclusions about untested inputs from finite testing need hypotheses on the implementation under test (as in the testing literature cited); none is assumed here."
+    ],
+    "prior_art": [
+      "T. M. Mitchell, Machine Learning, McGraw-Hill, 1997, Chapter 2 (concept learning, the version space representation theorem, and the unbiased learner whose hypothesis space contains every subset of the instances). For that learner the most specific consistent hypothesis is the disjunction of the positive examples and no instance outside the training examples is classified unanimously. Correspondence (our reading): checkers are hypotheses, the pointwise order is the generality order, anchors and suite entries are labeled examples, and soundness acts as a negative example at every bad program (infinitely many in general, unlike a finite training set); the results cited here restate that picture in this vocabulary.",
+      "J. B. Goodenough and S. L. Gerhart, 'Toward a theory of test data selection', IEEE Transactions on Software Engineering SE-1(2):156-173, 1975, doi:10.1109/TSE.1975.6312836. Formal account of when passing a finite test set establishes correctness: only under conditions on the test selection criterion (reliability and validity) that tie the tested inputs to the untested ones.",
+      "M.-C. Gaudel, 'Testing can be formal, too', TAPSOFT '95, LNCS 915, pp. 82-96, 1995, doi:10.1007/3-540-59293-8_188. Specification-based testing in which a finite test set is justified only together with explicit hypotheses on the implementation under test (uniformity, regularity). The lookup-table statement here is the situation without any such hypothesis.",
+      "N. Block, 'Psychologism and Behaviorism', The Philosophical Review 90(1):5-43, 1981, doi:10.2307/2184371. The lookup-table thought experiment: a system that reproduces any finite stretch of required behavior by table lookup, used to argue that behavioral tests alone cannot certify how behavior is produced. Philosophical background only; no formal statement there corresponds to these theorems."
+    ],
+    "design_question": "What do positive anchors and finite conformance suites actually force on an admitted tool, and can they exclude lookup-table tools?"
+  },
+  {
+    "id": "R3a",
+    "lean": [
+      "Toy.Checker.extensionalLaw_iff_of_same_behavior",
+      "Toy.Checker.extensionalLaw_id_of_law",
+      "Toy.Checker.extensionalLaw_cannot_separate_honestImpl_from_tableImpl"
+    ],
+    "kind": "impossibility",
+    "module": "ToyChecker/Extensional.lean",
+    "tier": "T0",
+    "tier_justification": "Restatement of the definition of an extensional property and of function extensionality, for laws on tool implementations, with a concrete instance.",
+    "plain_claim": "If a law on tool implementations is extensional (respects pointwise equality of behavior) and two implementations have the same behavior on every program, the law holds of one iff it holds of the other; every law stated directly on Boolean checkers is extensional (by function extensionality), so for laws on input-output behavior the hypothesis is automatic; in particular, in the toy model no extensional law separates the specific arithmetic implementation honestImpl ('accept p iff p < 10 and p is even') from the specific lookup table tableImpl ([0, 2, 4, 6, 8]).",
+    "hypotheses": [
+      {
+        "name": "hL : ExtensionalLaw run L (extensionalLaw_iff_of_same_behavior)",
+        "purpose": "The law must look only at behavior; an intensional law can separate behaviorally identical implementations.",
+        "tightness": "tight",
+        "counterexample": "Toy.Checker.cex_extensionalLaw_iff_needs_extensional"
+      },
+      {
+        "name": "hij : ∀ p, run i p = run j p (extensionalLaw_iff_of_same_behavior)",
+        "purpose": "The two implementations must agree everywhere; an extensional law can separate implementations that differ on one program.",
+        "tightness": "tight",
+        "counterexample": "Toy.Checker.cex_extensionalLaw_iff_needs_same_behavior"
+      },
+      {
+        "name": "hL : ExtensionalLaw toyRun L (extensionalLaw_cannot_separate_honestImpl_from_tableImpl)",
+        "purpose": "Only behavior-respecting laws are blind to the difference; IsStructural is not extensional and separates the two implementations.",
+        "tightness": "tight",
+        "counterexample": "Toy.Checker.cex_extensionalLaw_iff_needs_extensional"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "The law 'behavior is sound for evenGood' is extensional and honestImpl, tableImpl have the same behavior; soundness for evenGood, as a law on Boolean checkers, instantiates the second statement.",
+    "nonvacuity_witness_lean": [
+      "Toy.Checker.nonvacuous_extensionalLaw_iff",
+      "Toy.Checker.nonvacuous_extensionalLaw_id"
+    ],
+    "positive_control_lean": "Toy.Checker.positive_control_intensional_law_separates",
+    "non_claims": [
+      "Definitional: the first statement is the definition of extensionality read in both directions, the second is function extensionality (a theorem in Lean, derived from Quot.sound; in a setting without it the statement would have to be assumed), the third instantiates the first. The value is in naming the barrier, not in depth.",
+      "Intensional laws, i.e. predicates on the implementation itself (source inspection, build provenance; here IsStructural), are outside the barrier and can separate such implementations (positive control). Requiring richer output, such as a certificate with each answer, is not intensional: the barrier applies again to the richer behavior, and a lookup table that stores precomputed valid certificates has the same certified output as an honest tool on the same finite set (cachedCertTool_eq_boundedHonestTool; R4e).",
+      "The toy instance concerns two implementations that accept the same finite set. An honest checker that accepts infinitely many programs has no finite table with the same behavior, and extensional laws can separate it from every finite table (R6g; the positive controls of R2f).",
+      "Not Rice's theorem, and a different notion of extensionality: ExtensionalLaw is extensionality at the level of tools (two implementations give the same answer on every program), not semantic extensionality of target programs (a property of programs that depends only on the function a program computes). A law on tools may distinguish two semantically equivalent programs. Nothing about decidability is stated or used.",
+      "Does not say behavioral laws are useless; they constrain behavior, just not implementation."
+    ],
+    "prior_art": [
+      "H. G. Rice, 'Classes of recursively enumerable sets and their decision problems', Transactions of the American Mathematical Society 74(2):358-366, 1953, doi:10.1090/S0002-9947-1953-0053041-6. Rice's theorem: a class of recursively enumerable sets has a decidable index set only if it is trivial. Context only, and a different notion of extensionality: Rice's hypothesis concerns properties of programs that depend only on the function a program computes, whereas ExtensionalLaw concerns laws on tools that depend only on the tools' answers. Not formalized here.",
+      "R. Bruni, R. Giacobazzi, R. Gori, I. Garcia-Contreras and D. Pavlovic, 'Abstract extensionality: on the properties of incomplete abstract interpretations', Proceedings of the ACM on Programming Languages 4(POPL):1-28, 2020, doi:10.1145/3371096. Non-trivial abstract interpretations distinguish some extensionally equivalent programs: analyzer precision is an intensional property of the analyzed programs. Illustrates the difference between tool-level extensionality (here) and semantic extensionality of target programs.",
+      "N. Block, 'Psychologism and Behaviorism', The Philosophical Review 90(1):5-43, 1981, doi:10.2307/2184371. The lookup-table thought experiment: a system that reproduces any finite stretch of required behavior by table lookup, used to argue that behavioral tests alone cannot certify how behavior is produced. Philosophical background only; no formal statement there corresponds to these theorems."
+    ],
+    "design_question": "Can laws about a tool's input-output behavior distinguish an honest analysis from a behaviorally identical lookup table or wrapper?"
+  },
+  {
+    "id": "R4a",
+    "lean": "Toy.Checker.certChecker_sound_of_verifierSound",
+    "kind": "theorem",
+    "module": "ToyChecker/Certificates.lean",
+    "tier": "T0",
+    "tier_justification": "Core soundness argument of proof-carrying code, certifying algorithms and verified validators, re-derived in the toy model.",
+    "plain_claim": "If a fixed verifier V is sound (V p w = true implies good p), then for every one-sided certifying tool t the induced checker (accept p iff t p = some w and V p w = true; silence or a rejected certificate means reject) is sound, whatever t does.",
+    "hypotheses": [
+      {
+        "name": "hV : VerifierSound good V",
+        "purpose": "The trust is carried by V; with an unsound V some tool yields an unsound checker.",
+        "tightness": "tight",
+        "counterexample": "Toy.Checker.cex_certChecker_sound_needs_verifierSound"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "halfV (w certifies p iff w + w = p) is sound for evenGood; the lying tool that always outputs 7 is an admissible t and its induced checker accepts 14.",
+    "nonvacuity_witness_lean": "Toy.Checker.nonvacuous_certChecker_sound",
+    "non_claims": [
+      "Does not transfer completeness (R4c, R4d). With two-sided certification and a requirement of checked answers on a fragment, completeness on that fragment is forced (R4f).",
+      "Assumes the framework, not the tool, runs V on each output; a tool that reports 'accepted' without its certificate being checked is outside the model.",
+      "certChecker V t passes the original program p itself to V. In an implementation, if the untrusted tool can alter the program, or supply a certificate for a transformed representation that V does not relate back to p, soundness can fail; any parser or verification-condition generator that maps p to proof obligations belongs to V and hence to the trusted base.",
+      "Rules out unsound tools without inspecting their internals, but does not rule out lookup tables: a table that stores precomputed valid certificates for finitely many programs induces a sound checker and has the same output as an honest tool on the same finite set (cachedCertTool_eq_boundedHonestTool).",
+      "Says nothing about the cost of checking or of finding certificates."
+    ],
+    "prior_art": [
+      "G. C. Necula, 'Proof-carrying code', POPL 1997, pp. 106-119, doi:10.1145/263699.263712. Untrusted code is shipped with a safety proof that the code consumer validates with a small proof checker against a fixed safety policy (one-sided: code without a valid proof is simply refused).",
+      "R. M. McConnell, K. Mehlhorn, S. Näher and P. Schweitzer, 'Certifying algorithms', Computer Science Review 5(2):119-161, 2011, doi:10.1016/j.cosrev.2010.09.009. Algorithms that output a witness with each answer, checked by a simple checker, so that trust moves from the algorithm to the checker. For decision problems a certifying algorithm supplies a witness for either answer (for bipartiteness: a 2-coloring for yes, an odd cycle for no); that is the two-sided shape of R4f, not the one-sided certChecker of R4a-R4e, in which a rejection needs no witness.",
+      "J.-B. Tristan and X. Leroy, 'Formal verification of translation validators: a case study on instruction scheduling optimizations', POPL 2008, pp. 17-27, doi:10.1145/1328438.1328444. A translation validator verified in Coq checks each run of an untrusted optimization; soundness of the validator gives correctness of every validated run, whatever the untrusted transformation does. A mechanized instance of the R4a pattern.",
+      "E. Alkassar, S. Böhme, K. Mehlhorn and C. Rizkallah, 'A framework for the verification of certifying computations', Journal of Automated Reasoning 52(3):241-273, 2014, doi:10.1007/s10817-013-9289-2 (conference version CAV 2011, LNCS 6806, pp. 67-82, doi:10.1007/978-3-642-22110-1_7). Verifies witness checkers (with VCC) and the mathematical witness properties (with Isabelle/HOL), so that certified computations can be trusted without trusting the algorithm.",
+      "R. Thiemann and C. Sternagel, 'Certification of termination proofs using CeTA', TPHOLs 2009, LNCS 5674, pp. 452-468, doi:10.1007/978-3-642-03359-9_31. A certifier, generated from an Isabelle/HOL formalization, that checks termination proofs produced by untrusted tools; a mechanized trusted verifier for certificates.",
+      "A. Pnueli, M. Siegel and E. Singerman, 'Translation validation', TACAS 1998, LNCS 1384, pp. 151-166, doi:10.1007/BFb0054170. Instead of verifying a compiler once, each individual run is followed by a validation that the produced target implements the source.",
+      "H. Barendregt and F. Wiedijk, 'The challenge of computer mathematics', Philosophical Transactions of the Royal Society A 363(1835):2351-2375, 2005, doi:10.1098/rsta.2005.1650. Discusses the de Bruijn criterion: proof assistants that emit proof objects checkable by a small independent checker.",
+      "M. Blum and S. Kannan, 'Designing programs that check their work', Journal of the ACM 42(1):269-291, 1995, doi:10.1145/200836.200880. Program checkers: the answer of a program on a given input is checked by a separate (typically randomized) procedure that queries the program as a black box; the program emits no certificate. A contrasting model of per-run checking, not the one formalized by certChecker."
+    ],
+    "design_question": "If tools must emit certificates checked by a fixed trusted verifier, which guarantees transfer from the verifier to every admitted tool, and which remain the tool's responsibility?"
+  },
+  {
+    "id": "R4b",
+    "lean": [
+      "Toy.Checker.verifierSound_iff_forall_certChecker_sound",
+      "Toy.Checker.certChecker_const_not_sound_of_bad_certificate"
+    ],
+    "kind": "characterization",
+    "module": "ToyChecker/Certificates.lean",
+    "tier": "T0",
+    "tier_justification": "The trusted-checker principle as an exact equivalence, with the explicit witness for the converse.",
+    "plain_claim": "Every one-sided certifying tool induces a sound checker iff the verifier V is sound; explicitly, if V accepts a certificate w for a bad program p, the tool that always outputs w induces an unsound checker.",
+    "hypotheses": [
+      {
+        "name": "hVpw : V p w = true (certChecker_const_not_sound_of_bad_certificate)",
+        "purpose": "The certificate must actually be accepted for the bad program.",
+        "tightness": "tight",
+        "counterexample": "Toy.Checker.cex_const_not_sound_needs_accepted_certificate"
+      },
+      {
+        "name": "hp : ¬ good p (certChecker_const_not_sound_of_bad_certificate)",
+        "purpose": "The program must actually be bad.",
+        "tightness": "tight",
+        "counterexample": "Toy.Checker.cex_const_not_sound_needs_bad_program"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Both sides of the equivalence occur (halfV is sound, trustAllV is not); trustAllV accepts () for the bad program 1.",
+    "nonvacuity_witness_lean": [
+      "Toy.Checker.nonvacuous_verifierSound_iff",
+      "Toy.Checker.nonvacuous_certChecker_const_not_sound"
+    ],
+    "non_claims": [
+      "Quantifies over all tools t : P -> Option W; for a restricted family of tools the converse may fail.",
+      "The witness tool is constant; no claim is made about which realistic tools expose an unsound verifier."
+    ],
+    "prior_art": [
+      "G. C. Necula, 'Proof-carrying code', POPL 1997, pp. 106-119, doi:10.1145/263699.263712. Untrusted code is shipped with a safety proof that the code consumer validates with a small proof checker against a fixed safety policy (one-sided: code without a valid proof is simply refused).",
+      "R. M. McConnell, K. Mehlhorn, S. Näher and P. Schweitzer, 'Certifying algorithms', Computer Science Review 5(2):119-161, 2011, doi:10.1016/j.cosrev.2010.09.009. Algorithms that output a witness with each answer, checked by a simple checker, so that trust moves from the algorithm to the checker. For decision problems a certifying algorithm supplies a witness for either answer (for bipartiteness: a 2-coloring for yes, an odd cycle for no); that is the two-sided shape of R4f, not the one-sided certChecker of R4a-R4e, in which a rejection needs no witness.",
+      "H. Barendregt and F. Wiedijk, 'The challenge of computer mathematics', Philosophical Transactions of the Royal Society A 363(1835):2351-2375, 2005, doi:10.1098/rsta.2005.1650. Discusses the de Bruijn criterion: proof assistants that emit proof objects checkable by a small independent checker."
+    ],
+    "design_question": "If tools must emit certificates checked by a fixed trusted verifier, which guarantees transfer from the verifier to every admitted tool, and which remain the tool's responsibility?"
+  },
+  {
+    "id": "R4c",
+    "lean": [
+      "Toy.Checker.certChecker_completeOn_iff",
+      "Toy.Checker.verifierCompleteOn_of_certChecker_completeOn"
+    ],
+    "kind": "characterization",
+    "module": "ToyChecker/Certificates.lean",
+    "tier": "T0",
+    "tier_justification": "Exact unfolding of completeness for the one-sided certifying pipeline, with its consequence for the verifier.",
+    "plain_claim": "The checker induced by a one-sided tool t and verifier V is complete on fragment F iff for every good program p in F the tool outputs some certificate w with V p w = true; in particular, completeness on F requires V to accept some certificate for every good program of F.",
+    "hypotheses": [
+      {
+        "name": "h : CompleteOn good F (certChecker V t) (verifierCompleteOn_of_certChecker_completeOn)",
+        "purpose": "Without a complete pipeline nothing forces V to have certificates (e.g. rejectAllV has none).",
+        "tightness": "tight",
+        "counterexample": "Toy.Checker.cex_verifierCompleteOn_needs_completeOn"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "Both sides of the equivalence occur for halfV on all programs (the honest tool satisfies the right-hand side, the silent tool does not); the honest tool's pipeline is complete on all programs.",
+    "nonvacuity_witness_lean": [
+      "Toy.Checker.nonvacuous_certChecker_completeOn_iff",
+      "Toy.Checker.nonvacuous_verifierCompleteOn_of_certChecker_completeOn"
+    ],
+    "non_claims": [
+      "Completeness is a property of neither the tool alone nor the verifier alone: it needs certificates to exist in V's language for every good program of F (second statement; with rejectAllV no tool succeeds, no_tool_completeOn_rejectAllV) and the tool to find them; verifier completeness alone does not suffice (R4d).",
+      "Concerns one-sided certification, in which a rejection needs no evidence. Under two-sided certification with checked answers required on F, a tool that rejects a good program of F is excluded instead (R4f).",
+      "Does not say certificates are efficiently findable."
+    ],
+    "prior_art": [
+      "R. M. McConnell, K. Mehlhorn, S. Näher and P. Schweitzer, 'Certifying algorithms', Computer Science Review 5(2):119-161, 2011, doi:10.1016/j.cosrev.2010.09.009. Algorithms that output a witness with each answer, checked by a simple checker, so that trust moves from the algorithm to the checker. For decision problems a certifying algorithm supplies a witness for either answer (for bipartiteness: a 2-coloring for yes, an odd cycle for no); that is the two-sided shape of R4f, not the one-sided certChecker of R4a-R4e, in which a rejection needs no witness.",
+      "A. Pnueli, M. Siegel and E. Singerman, 'Translation validation', TACAS 1998, LNCS 1384, pp. 151-166, doi:10.1007/BFb0054170. Instead of verifying a compiler once, each individual run is followed by a validation that the produced target implements the source.",
+      "J.-B. Tristan and X. Leroy, 'Formal verification of translation validators: a case study on instruction scheduling optimizations', POPL 2008, pp. 17-27, doi:10.1145/1328438.1328444. A translation validator verified in Coq checks each run of an untrusted optimization; soundness of the validator gives correctness of every validated run, whatever the untrusted transformation does. A mechanized instance of the R4a pattern."
+    ],
+    "design_question": "If tools must emit certificates checked by a fixed trusted verifier, which guarantees transfer from the verifier to every admitted tool, and which remain the tool's responsibility?"
+  },
+  {
+    "id": "R4d",
+    "lean": "Toy.Checker.cex_verifierSound_verifierComplete_not_completeOn",
+    "kind": "counterexample",
+    "module": "ToyChecker/Certificates.lean",
+    "tier": "T1",
+    "tier_justification": "Concrete counterexample to the tempting reading that a sound and complete trusted verifier makes a one-sided certifying pipeline complete.",
+    "plain_claim": "In one-sided certification completeness is not transferred from the verifier: halfV is sound and complete for evenGood (every even number has a certificate), yet the tool that never outputs a certificate induces a checker that is not complete on all programs.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "It is itself a concrete instance.",
+    "nonvacuity_witness_lean": "Toy.Checker.cex_verifierSound_verifierComplete_not_completeOn",
+    "non_claims": [
+      "Does not say certifying designs are weak: with one-sided certification completeness must be required of the tool separately (R4c, R6). With two-sided certification and checked answers required on a fragment, the silent tool is excluded (it cannot refute good programs) and admitted tools are complete on that fragment (R4f).",
+      "The silent tool is the certifying analogue of rejectAll; the counterexample concerns a law that checks certificates only when they are offered."
+    ],
+    "prior_art": [
+      "R. M. McConnell, K. Mehlhorn, S. Näher and P. Schweitzer, 'Certifying algorithms', Computer Science Review 5(2):119-161, 2011, doi:10.1016/j.cosrev.2010.09.009. Algorithms that output a witness with each answer, checked by a simple checker, so that trust moves from the algorithm to the checker. For decision problems a certifying algorithm supplies a witness for either answer (for bipartiteness: a 2-coloring for yes, an odd cycle for no); that is the two-sided shape of R4f, not the one-sided certChecker of R4a-R4e, in which a rejection needs no witness.",
+      "G. C. Necula, 'Proof-carrying code', POPL 1997, pp. 106-119, doi:10.1145/263699.263712. Untrusted code is shipped with a safety proof that the code consumer validates with a small proof checker against a fixed safety policy (one-sided: code without a valid proof is simply refused)."
+    ],
+    "design_question": "If tools must emit certificates checked by a fixed trusted verifier, which guarantees transfer from the verifier to every admitted tool, and which remain the tool's responsibility?"
+  },
+  {
+    "id": "R4e",
+    "lean": "Toy.Checker.exists_certChecker_eq_iff_sound_certifiable",
+    "kind": "characterization",
+    "module": "ToyChecker/Certificates.lean",
+    "tier": "T1",
+    "tier_justification": "Folklore made precise; no source stating it in this form was found.",
+    "plain_claim": "A Boolean checker c is the checker induced by some one-sided certifying tool for V iff c is sound for the V-certifiability predicate 'p has some certificate that V accepts' (fun p => ∃ w, V p w = true).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Both sides occur for halfV: evenExact is sound for 'has a halfV certificate', acceptAll is not.",
+    "nonvacuity_witness_lean": "Toy.Checker.nonvacuous_exists_certChecker_eq_iff",
+    "non_claims": [
+      "The V-certifiability predicate is not in general a different predicate from good: it equals good when V is sound and complete for good (certifiable_eq_good_of_verifierSound_of_verifierComplete; for halfV it is evenGood, halfV_certifiable_eq_evenGood), and it implies good when V is sound (certifiable_imp_good_of_verifierSound), strictly so when V is incomplete.",
+      "Certificates do not escape R1 or R3 at the level of Boolean behavior; their benefit is that the evidence is checked per run by a fixed trusted V, which changes what the tool must output.",
+      "In particular, allowlist-like tools are induced by certifying tools whenever their accepted programs have certificates: a table caching valid certificates (cachedCertTool) has the same output as an honest bounded tool (cachedCertTool_eq_boundedHonestTool).",
+      "Concerns one-sided certification only; the Boolean image of two-sided certification (R4f) is not characterized here.",
+      "The right-to-left direction uses choice to pick certificates; it says nothing about computing them."
+    ],
+    "prior_art": [
+      "R. M. McConnell, K. Mehlhorn, S. Näher and P. Schweitzer, 'Certifying algorithms', Computer Science Review 5(2):119-161, 2011, doi:10.1016/j.cosrev.2010.09.009. Algorithms that output a witness with each answer, checked by a simple checker, so that trust moves from the algorithm to the checker. For decision problems a certifying algorithm supplies a witness for either answer (for bipartiteness: a 2-coloring for yes, an odd cycle for no); that is the two-sided shape of R4f, not the one-sided certChecker of R4a-R4e, in which a rejection needs no witness.",
+      "G. C. Necula, 'Proof-carrying code', POPL 1997, pp. 106-119, doi:10.1145/263699.263712. Untrusted code is shipped with a safety proof that the code consumer validates with a small proof checker against a fixed safety policy (one-sided: code without a valid proof is simply refused)."
+    ],
+    "design_question": "If tools must emit certificates checked by a fixed trusted verifier, which guarantees transfer from the verifier to every admitted tool, and which remain the tool's responsibility?"
+  },
+  {
+    "id": "R4f",
+    "lean": "Toy.Checker.twoSidedChecker_sound_completeOn_of_verifiedOn",
+    "kind": "theorem",
+    "module": "ToyChecker/Certificates.lean",
+    "tier": "T0",
+    "tier_justification": "Restatement of the certifying-algorithm principle for decision problems (a checked witness for either answer makes the answer trustworthy), for a framework that requires checked answers on a fragment.",
+    "plain_claim": "In two-sided certification, where a tool answers each program with a verdict plus evidence (a certificate for true, a refutation for false): if the certificate verifier is sound for good, the refutation verifier is sound for not-good, and every answer of the tool on fragment F carries evidence that its verifier accepts, then the induced checker (accept iff the verdict is true and its certificate is accepted) is sound everywhere and complete on F.",
+    "hypotheses": [
+      {
+        "name": "hpos : VerifierSound good Vpos",
+        "purpose": "Accepted verdicts are trusted only through Vpos; with an unsound Vpos a tool answering true everywhere is admitted and accepts bad programs.",
+        "tightness": "tight",
+        "counterexample": "Toy.Checker.cex_twoSidedChecker_needs_pos_sound"
+      },
+      {
+        "name": "hneg : VerifierSound (fun p => ¬ good p) Vneg",
+        "purpose": "A false verdict on a good program must be impossible to justify; with an unsound Vneg a tool answering false everywhere is admitted.",
+        "tightness": "tight",
+        "counterexample": "Toy.Checker.cex_twoSidedChecker_needs_neg_sound"
+      },
+      {
+        "name": "hver : TwoSidedVerifiedOn Vpos Vneg F t",
+        "purpose": "The law must demand checked evidence for every answer on F; otherwise a silent tool is admitted and rejects good programs.",
+        "tightness": "tight",
+        "counterexample": "Toy.Checker.cex_twoSidedChecker_needs_verified"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "halfV (certificates) and oddV (w refutes p iff w + w + 1 = p) are sound, and the honest two-sided tool p |-> (p even?, p / 2) is verified on all programs.",
+    "nonvacuity_witness_lean": "Toy.Checker.nonvacuous_twoSidedChecker_sound_completeOn",
+    "non_claims": [
+      "Completeness on F is not transferred from the verifiers: it is forced by the law that every answer on F carry checked evidence. A tool that cannot produce such evidence for some program of F is excluded by that law (not_twoSidedVerifiedOn_example_silent), so the law admits some tool only if certificates exist for the good programs of F and refutations for the bad ones.",
+      "Outside F nothing is required; the induced checker is still sound there (it accepts only certified verdicts) but need not be complete.",
+      "Does not model tools that decline to answer or time out on F; a framework that tolerates unverified answers on F is back in the one-sided situation of R4c and R4d.",
+      "Says nothing about the cost of producing evidence, or about which predicates admit verifier pairs with evidence for every program of F."
+    ],
+    "prior_art": [
+      "R. M. McConnell, K. Mehlhorn, S. Näher and P. Schweitzer, 'Certifying algorithms', Computer Science Review 5(2):119-161, 2011, doi:10.1016/j.cosrev.2010.09.009. Algorithms that output a witness with each answer, checked by a simple checker, so that trust moves from the algorithm to the checker. For decision problems a certifying algorithm supplies a witness for either answer (for bipartiteness: a 2-coloring for yes, an odd cycle for no); that is the two-sided shape of R4f, not the one-sided certChecker of R4a-R4e, in which a rejection needs no witness."
+    ],
+    "design_question": "If tools must emit certificates checked by a fixed trusted verifier, which guarantees transfer from the verifier to every admitted tool, and which remain the tool's responsibility?"
+  },
+  {
+    "id": "R5b",
+    "lean": "Toy.Checker.sound_comp_iff_of_surjective_of_invariantUnder",
+    "kind": "impossibility",
+    "module": "ToyChecker/Relabel.lean",
+    "tier": "T0",
+    "tier_justification": "Invariance of soundness under precomposition with a goodness-preserving surjection; elementary rewriting along a surjection.",
+    "plain_claim": "If good is invariant under a surjective map pi of programs (in particular the forward map of any bijective relabeling), then a checker c is sound iff c composed with pi is sound; so soundness cannot distinguish a checker from its relabeled twin.",
+    "hypotheses": [
+      {
+        "name": "hsurj : Function.Surjective π",
+        "purpose": "Used only for the direction from c composed with pi to c (the other direction holds for any pi: sound_comp_of_invariantUnder); a non-surjective pi hides some inputs of c.",
+        "tightness": "tight",
+        "counterexample": "Toy.Checker.cex_sound_comp_iff_needs_surjective"
+      },
+      {
+        "name": "hgood : InvariantUnder π good",
+        "purpose": "If relabeling changes goodness, soundness can separate c from its relabeled twin.",
+        "tightness": "tight",
+        "counterexample": "Toy.Checker.cex_sound_comp_iff_needs_invariant"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "swap02Fun (transpose 0 and 2) is surjective and leaves evenGood invariant.",
+    "nonvacuity_witness_lean": "Toy.Checker.nonvacuous_sound_comp_iff",
+    "positive_control_lean": "Toy.Checker.positive_control_anchor_law_separates_relabeled_checker",
+    "non_claims": [
+      "Only the soundness law is covered; other laws (anchors) can separate a checker from its relabeling (positive control).",
+      "The anchor positive control works because the framework supplies the anchor program 0 itself, fixed outside the relabeling. If a tool could choose how programs are encoded, a relabeling would move the anchors as well, and the anchored law would not separate the twins.",
+      "Says nothing about relabelings that change goodness.",
+      "Not a formalization of the permutation-invariance theorem of Lindenbaum and Tarski or of Putnam's permutation argument; it states only the elementary invariance fact for the soundness law."
+    ],
+    "prior_art": [
+      "A. Lindenbaum and A. Tarski, 'Über die Beschränktheit der Ausdrucksmittel deduktiver Theorien', Ergebnisse eines mathematischen Kolloquiums 7:15-22, 1936 (English translation 'On the limitations of the means of expression of deductive theories', in A. Tarski, Logic, Semantics, Metamathematics, Oxford University Press, 1956). Notions definable by purely logical means are invariant under every permutation of the domain, hence cannot distinguish an object from its image; the mathematical principle behind the relabeling statements here.",
+      "A. Tarski, 'What are logical notions?' (ed. J. Corcoran), History and Philosophy of Logic 7(2):143-154, 1986, doi:10.1080/01445348608837096. Proposes invariance under all permutations of the domain as the criterion of logicality.",
+      "H. Putnam, Reason, Truth and History, Cambridge University Press, 1981, doi:10.1017/CBO9780511625398, chapter 2 'A problem about reference' and the book's mathematical appendix. Model-theoretic permutation argument: permuting the domain and reinterpreting the non-logical vocabulary accordingly preserves the truth value of every sentence, so truth-value constraints alone do not fix reference. Informal source of the relabeling idea only; there every constant is reinterpreted along with everything else, whereas the anchors here are programs supplied by the framework and fixed outside the relabeling."
+    ],
+    "design_question": "Can a law that is invariant under renaming of programs pin down behavior on specific named inputs?"
+  },
+  {
+    "id": "R5c",
+    "lean": [
+      "Toy.Checker.forced_value_relabeled_iff_of_invariantUnder_comp",
+      "Toy.Checker.forced_value_at_image_of_invariantUnder_comp"
+    ],
+    "kind": "impossibility",
+    "module": "ToyChecker/Relabel.lean",
+    "tier": "T1",
+    "tier_justification": "Folklore ('a renaming-invariant requirement cannot single out a name') made precise for laws on checkers; the nearest formal source is permutation invariance of logical notions.",
+    "plain_claim": "Let L be a law on checkers that is invariant under relabeling programs by pi (L (c composed with pi) iff L c, for every checker c). If every checker that L admits gives answer b on program p, then every admitted checker gives b on pi p; and for a bijective relabeling sigma, L forces answer b on sigma p iff it forces b on p. So such a law can force answers on specific programs only uniformly along relabeling orbits.",
+    "hypotheses": [
+      {
+        "name": "hL : InvariantUnder (fun c => c ∘ σ.toFun) L (forced_value_relabeled_iff_of_invariantUnder_comp)",
+        "purpose": "A law that mentions a fixed program (a single anchor) is not invariant and can force an answer at that program but not at its image.",
+        "tightness": "tight",
+        "counterexample": "Toy.Checker.cex_forced_value_relabeled_needs_invariant"
+      },
+      {
+        "name": "σ : Relabeling P (left_inv / injectivity tight; right_inv unused; forced_value_relabeled_iff_of_invariantUnder_comp)",
+        "purpose": "Needed for the direction from sigma p to p. Only the left-inverse half of the bijection (sigma.left_inv, which makes sigma.toFun injective) is used; sigma.right_inv (surjectivity) is not. Tightness counterexample: for the constant map 0, which is neither injective nor surjective, an invariant law forces an answer at the image of p without forcing it at p. Surjectivity alone does not suffice either (cex_forced_value_relabeled_surjective_not_injective, with the surjective, non-injective map n |-> n - 2); a left inverse suffices (forced_value_relabeled_iff_of_leftInverse), and classically injectivity suffices (forced_value_relabeled_iff_of_injective).",
+        "tightness": "tight",
+        "counterexample": "Toy.Checker.cex_forced_value_relabeled_needs_bijective"
+      },
+      {
+        "name": "hL : InvariantUnder (fun c => c ∘ π) L (forced_value_at_image_of_invariantUnder_comp)",
+        "purpose": "As above, for the one-directional statement about an arbitrary map.",
+        "tightness": "tight",
+        "counterexample": "Toy.Checker.cex_forced_value_at_image_needs_invariant"
+      },
+      {
+        "name": "hp : ∀ c, L c → c p = b (forced_value_at_image_of_invariantUnder_comp)",
+        "purpose": "The answer at p must actually be forced; an invariant law that forces nothing transfers nothing.",
+        "tightness": "tight",
+        "counterexample": "Toy.Checker.cex_forced_value_at_image_needs_forced"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "The anchored law with anchors [0, 2] is invariant under the transposition of 0 and 2, and every checker it admits accepts 0: an invariant law can force an answer outright.",
+    "nonvacuity_witness_lean": "Toy.Checker.nonvacuous_forced_value_relabeled",
+    "positive_control_lean": "Toy.Checker.cex_forced_value_relabeled_needs_invariant",
+    "non_claims": [
+      "Does not say an invariant law cannot pin down behavior on specific programs: it can force an answer at p outright, e.g. at a fixed point of the relabeling or by constraining the whole orbit of p (nonvacuity witness: anchors [0, 2] under the swap of 0 and 2 force acceptance of 0). It only cannot force an answer at p without forcing the same answer at pi p.",
+      "Bijectivity of sigma is more than the proof uses: only sigma.left_inv is used, never sigma.right_inv. The equivalence also holds for any map with a left inverse (forced_value_relabeled_iff_of_leftInverse) and, classically, for any injective map (forced_value_relabeled_iff_of_injective); it fails for some surjective, non-injective maps (cex_forced_value_relabeled_surjective_not_injective). The statement takes a Relabeling because relabelings of programs are bijections and orbits are defined through them; the tightness counterexample for the hypothesis sigma : Relabeling P removes injectivity, and no claim is made that injectivity is necessary for every law.",
+      "Concerns invariance under one given relabeling; invariance under a group of relabelings gives the statement for each element of the group, which is not separately stated.",
+      "Laws that mention fixed programs (anchors) are typically not invariant; they single out p because the framework supplies p itself, fixed outside the relabeling (see R5b).",
+      "Not a formalization of the Lindenbaum-Tarski theorem or of Putnam's permutation argument."
+    ],
+    "prior_art": [
+      "A. Lindenbaum and A. Tarski, 'Über die Beschränktheit der Ausdrucksmittel deduktiver Theorien', Ergebnisse eines mathematischen Kolloquiums 7:15-22, 1936 (English translation 'On the limitations of the means of expression of deductive theories', in A. Tarski, Logic, Semantics, Metamathematics, Oxford University Press, 1956). Notions definable by purely logical means are invariant under every permutation of the domain, hence cannot distinguish an object from its image; the mathematical principle behind the relabeling statements here.",
+      "A. Tarski, 'What are logical notions?' (ed. J. Corcoran), History and Philosophy of Logic 7(2):143-154, 1986, doi:10.1080/01445348608837096. Proposes invariance under all permutations of the domain as the criterion of logicality.",
+      "H. Putnam, Reason, Truth and History, Cambridge University Press, 1981, doi:10.1017/CBO9780511625398, chapter 2 'A problem about reference' and the book's mathematical appendix. Model-theoretic permutation argument: permuting the domain and reinterpreting the non-logical vocabulary accordingly preserves the truth value of every sentence, so truth-value constraints alone do not fix reference. Informal source of the relabeling idea only; there every constant is reinterpreted along with everything else, whereas the anchors here are programs supplied by the framework and fixed outside the relabeling."
+    ],
+    "design_question": "Can a law that is invariant under renaming of programs pin down behavior on specific named inputs?"
+  },
+  {
+    "id": "R6a",
+    "lean": [
+      "Toy.Checker.soundCompleteOn_iff_between",
+      "Toy.Checker.soundCompleteOn_classicalOracle_inter"
+    ],
+    "kind": "characterization",
+    "module": "ToyChecker/RelativeCompleteness.lean",
+    "tier": "T0",
+    "tier_justification": "Restatement of the interval structure of consistent hypotheses (version space representation) for soundness plus completeness on a fragment, with the classical character of the witness explicit.",
+    "plain_claim": "A checker is sound and complete on fragment F iff it lies, pointwise, between the classical oracle of 'F p and good p' and the classical oracle of good; the lower end is itself sound and complete on F, so in the Boolean-function model the law 'sound and complete on F' is always satisfiable (by a possibly noncomputable function).",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "No hypotheses. In the toy instance the law on p < 10 is satisfied by the computable evenBelowTen and excludes rejectAll, so both sides of the characterization occur.",
+    "nonvacuity_witness_lean": "Toy.Checker.nonvacuous_soundCompleteOn",
+    "non_claims": [
+      "Satisfiability here is not implementability: the witness is defined by excluded middle and is in general not computable. Lean's logic does not see computability, so this does not contradict Rice-style undecidability.",
+      "For decidable F and good the witness equals fun p => decide (F p ∧ good p) (classicalOracle_eq_decide).",
+      "Describes the set of satisfiers in the Boolean-function model only; which of them are implementable is not addressed (R6c relativizes to a class K).",
+      "Uses classical logic."
+    ],
+    "prior_art": [
+      "T. M. Mitchell, Machine Learning, McGraw-Hill, 1997, Chapter 2 (concept learning, the version space representation theorem, and the unbiased learner whose hypothesis space contains every subset of the instances). For that learner the most specific consistent hypothesis is the disjunction of the positive examples and no instance outside the training examples is classified unanimously. Correspondence (our reading): checkers are hypotheses, the pointwise order is the generality order, anchors and suite entries are labeled examples, and soundness acts as a negative example at every bad program (infinitely many in general, unlike a finite training set); the results cited here restate that picture in this vocabulary.",
+      "R. Giacobazzi, F. Ranzato and F. Scozzari, 'Making abstract interpretations complete', Journal of the ACM 47(2):361-416, 2000, doi:10.1145/333979.333989. Completeness of an abstract interpretation (no loss of precision relative to the abstract domain), shown to depend only on the domain. A different, domain-level notion from the per-program relative completeness used here.",
+      "R. Bruni, R. Giacobazzi, R. Gori and F. Ranzato, 'A logic for locally complete abstract interpretations', LICS 2021, pp. 1-13, doi:10.1109/LICS52264.2021.9470608. Local completeness: precision required only on specific inputs rather than globally; the closest abstract-interpretation analogue of completeness relative to a fragment, at the level of abstract domains.",
+      "H. G. Rice, 'Classes of recursively enumerable sets and their decision problems', Transactions of the American Mathematical Society 74(2):358-366, 1953, doi:10.1090/S0002-9947-1953-0053041-6. Rice's theorem: a class of recursively enumerable sets has a decidable index set only if it is trivial. Context only; not formalized here."
+    ],
+    "design_question": "When a framework requires soundness plus completeness on a fragment, when is the law satisfiable, when does it lock out the do-nothing tool or all lookup tables, and what does 'decidable' mean in the model?"
+  },
+  {
+    "id": "R6c",
+    "lean": [
+      "Toy.Checker.soundCompleteOn_iff_sound_and_decides_on",
+      "Toy.Checker.exists_soundCompleteOn_in_class_iff",
+      "Toy.Checker.soundCompleteOn_univ_iff_decides",
+      "Toy.Checker.exists_soundCompleteOn_univ_in_class_iff",
+      "Toy.Checker.exists_soundCompleteOn_in_class_iff_decides_on_of_andClosed_of_decidedIn"
+    ],
+    "kind": "characterization",
+    "module": "ToyChecker/RelativeCompleteness.lean",
+    "tier": "T1",
+    "tier_justification": "The pointwise and class forms are elementary restatements (T0 taken alone); the closure condition under which the soundness requirement can be dropped, which locates exactly where the counterexample R6h stops applying, is folklore made precise with no source found stating it in this form, so the card as a whole is T1.",
+    "plain_claim": "A checker is sound and complete on F iff the same checker is sound everywhere and decides good on F; hence, for any class K of admissible checkers, the law has a satisfier in K iff some checker in K is sound and decides good on F. For F = all programs, a checker satisfies the law iff it decides good, so the law has a satisfier in K iff good is decided by some checker in K. If K is closed under pointwise and (AndClosed K) and contains a decider for F (DecidedIn K F), the soundness requirement can be dropped: the law has a satisfier in K iff some checker in K decides good on F.",
+    "hypotheses": [
+      {
+        "name": "hK : AndClosed K (exists_soundCompleteOn_in_class_iff_decides_on_of_andClosed_of_decidedIn)",
+        "purpose": "Restricting a checker that decides good on F to F (by and-ing it with a decider of F) must stay in K.",
+        "tightness": "tight",
+        "counterexample": "Toy.Checker.cex_decides_on_iff_needs_andClosed"
+      },
+      {
+        "name": "hF : DecidedIn K F (exists_soundCompleteOn_in_class_iff_decides_on_of_andClosed_of_decidedIn)",
+        "purpose": "Restriction to F needs a decider of F inside K; without one the soundness requirement cannot be dropped (R6h).",
+        "tightness": "tight",
+        "counterexample": "Toy.Checker.cex_decides_on_iff_needs_decidedIn"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "On the proper fragment p < 10 the right-hand sides hold for evenBelowTen (which rejects the good program 10 outside the fragment) and fail for rejectAll, and correspondingly for the classes {evenBelowTen} and {rejectAll}; on all programs they hold for evenExact and fail for evenBelowTen; the class of all checkers is closed under and and decides p < 10. The class of all checkers already contains a sound decider of good on F, so the last witness does not exercise the repair step of the closure statement (and-ing an unsound decider with a decider of F). That step is exercised by the four-element class {rejectAll, belowTwo, zeroOrLarge, (· == 0)}: it is closed under and, decides p < 2, contains zeroOrLarge, which decides p = 0 on p < 2 but is unsound, and belowTwo && zeroOrLarge = (· == 0) is a member that is sound and complete on p < 2 (andClosed_class_repairs_unsound_decider_example). In the two-element class {rejectAll, belowTwo}, also closed under and and deciding p < 2, both sides of the closure statement are false for good = (p = 0) (andClosed_class_both_sides_false_example).",
+    "nonvacuity_witness_lean": [
+      "Toy.Checker.nonvacuous_soundCompleteOn_iff_sound_and_decides_on",
+      "Toy.Checker.nonvacuous_soundCompleteOn_univ_iff_decides",
+      "Toy.Checker.nonvacuous_exists_soundCompleteOn_in_class_iff_decides_on"
+    ],
+    "non_claims": [
+      "K is arbitrary and left abstract; the computable functions are the intended example but are not defined here, so no undecidability result follows.",
+      "The soundness conjunct cannot be dropped in general (R6h, with K = {acceptAll}); it can be dropped under the stated closure conditions. That natural classes such as computable or polynomial-time checkers are closed under and is an informal remark; those classes are not defined here.",
+      "The closure statement's non-vacuity witness with K = all checkers is degenerate in one respect: that class already contains a sound decider, so the soundness repair (restricting an unsound decider of good on F to F with the decider of F) is not needed there. Restricted classes that do need the repair, and one where both sides fail, are proved separately (andClosed_class_repairs_unsound_decider_example, andClosed_class_both_sides_false_example); neither is a further hypothesis of the theorem.",
+      "Background from outside this package, not a result of it: if P were program texts of a Turing-complete language, K the computable checkers, and good a nontrivial property of the partial function a program computes, Rice's theorem (H. G. Rice 1953, listed under prior art) would make the full-fragment right-hand side false, so the law on all programs would have no computable satisfier. None of this is formalized or proved here: the package defines neither program texts nor computability, and it neither proves nor refutes the general claim that every property and fragment admit an implementable (computable) checker that is sound and complete on that fragment. The remark also leaves the standard alternatives open: properties that are not semantic (e.g. syntactic or type-structural ones) may be decidable; restricting completeness to a fragment F that is decided in K reduces the question to deciding good on F (closure statement); and procedures that may diverge are outside this model of total checkers P -> Bool.",
+      "The pointwise forms keep the witness (the same checker witnesses both sides); the class forms are their existential consequences."
+    ],
+    "prior_art": [
+      "H. G. Rice, 'Classes of recursively enumerable sets and their decision problems', Transactions of the American Mathematical Society 74(2):358-366, 1953, doi:10.1090/S0002-9947-1953-0053041-6. Rice's theorem: a class of recursively enumerable sets has a decidable index set only if it is trivial. Context only; not formalized here.",
+      "The mathlib Community, 'The Lean mathematical library', CPP 2020, pp. 367-381, doi:10.1145/3372885.3373824. General reference for the Lean mathematical library, described there for Lean 3. It mentions a library on computability theory that proves the undecidability of the halting problem and cites Carneiro (ITP 2019, next entry) for it; it does not mention Rice's theorem or the declaration ComputablePred.rice₂ cited below (checked against its arXiv version, arXiv:1910.09336).",
+      "M. Carneiro, 'Formalizing computability theory via partial recursive functions', 10th International Conference on Interactive Theorem Proving (ITP 2019), LIPIcs 141, 12:1-12:17, 2019, doi:10.4230/LIPIcs.ITP.2019.12 (arXiv version arXiv:1810.08380). Describes that computability library (Lean 3 mathlib); the arXiv version states Rice's theorem for partial recursive functions and their codes as Theorem 6 (rice).",
+      "Mathlib 4, repository leanprover-community/mathlib4, commit bbb39fe579406d36e4aacdc6d49a0055e4cf0d75, file Mathlib/Computability/Halting.lean, lines 42-43 (namespace ComputablePred): theorem rice₂ (C : Set Code) (H : ∀ cf cg, eval cf = eval cg → (cf ∈ C ↔ cg ∈ C)) : (ComputablePred fun c => c ∈ C) ↔ C = ∅ ∨ C = Set.univ. A mechanized Rice's theorem for codes of partial recursive functions, with semantic extensionality (codes computing the same partial function are treated alike) as hypothesis. Background for the outside-the-package remark on R6c's full-fragment form (see the non-claims); this package does not use Mathlib.",
+      "R. Bruni, R. Giacobazzi, R. Gori and F. Ranzato, 'A logic for locally complete abstract interpretations', LICS 2021, pp. 1-13, doi:10.1109/LICS52264.2021.9470608. Local completeness: precision required only on specific inputs rather than globally; the closest abstract-interpretation analogue of completeness relative to a fragment, at the level of abstract domains.",
+      "M. Campion, M. Dalla Preda, R. Giacobazzi and C. Urban, 'Monotonicity and the precision of program analysis', Proceedings of the ACM on Programming Languages 8(POPL):1629-1662, 2024, doi:10.1145/3632897. Identifies a class of programs (monotone ones) that admit complete abstract interpretation over a class of numerical domains: completeness restricted to a program fragment, at the level of abstract domains."
+    ],
+    "design_question": "When a framework requires soundness plus completeness on a fragment, when is the law satisfiable, when does it lock out the do-nothing tool or all lookup tables, and what does 'decidable' mean in the model?"
+  },
+  {
+    "id": "R6e",
+    "lean": "Toy.Checker.not_soundCompleteOn_rejectAll_iff",
+    "kind": "characterization",
+    "module": "ToyChecker/RelativeCompleteness.lean",
+    "tier": "T0",
+    "tier_justification": "Elementary: rejectAll is sound (textbook), and it is complete on F exactly when F has no good program.",
+    "plain_claim": "The law 'sound and complete on F' excludes rejectAll iff F contains at least one good program.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "No hypotheses. Both sides occur: on p < 10 there is a good program; on the fragment p = 1 there is none and rejectAll is admitted.",
+    "nonvacuity_witness_lean": "Toy.Checker.nonvacuous_not_soundCompleteOn_rejectAll_iff",
+    "non_claims": [
+      "Excluding rejectAll does not exclude lookup tables when F has finitely many good programs (R6f; positive control of R6g).",
+      "The left-to-right direction is classical: quantified over all types, the statement implies double-negation elimination, so it cannot be proved by unfolding definitions alone."
+    ],
+    "prior_art": [
+      "X. Rival and K. Yi, Introduction to Static Analysis: An Abstract Interpretation Perspective, MIT Press, 2020, Chapter 1. Defines soundness (answer true implies the property) and completeness (the property implies answer true) of a yes/no analysis as here (Sound; CompleteOn with F = all programs), and notes that the analysis answering false everywhere is trivially sound and the one answering true everywhere trivially complete."
+    ],
+    "design_question": "When a framework requires soundness plus completeness on a fragment, when is the law satisfiable, when does it lock out the do-nothing tool or all lookup tables, and what does 'decidable' mean in the model?"
+  },
+  {
+    "id": "R6f",
+    "lean": "Toy.Checker.soundCompleteOn_allowlist_iff",
+    "kind": "characterization",
+    "module": "ToyChecker/RelativeCompleteness.lean",
+    "tier": "T0",
+    "tier_justification": "Elementary set reading: the accepted set of the allowlist is A, so soundness is A ⊆ good and completeness on F is good ∩ F ⊆ A.",
+    "plain_claim": "The allowlist of A is sound and complete on F iff every member of A is good and every good program in F is a member of A.",
+    "hypotheses": [
+      {
+        "name": "[DecidableEq P]",
+        "purpose": "Needed only to define the allowlist; it does not depend on the instance.",
+        "tightness": "harmless"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "On the fragment p < 10 for evenGood the right-hand side holds for [0, 2, 4, 6, 8] and fails for [0, 2, 4, 6].",
+    "nonvacuity_witness_lean": "Toy.Checker.nonvacuous_soundCompleteOn_allowlist_iff",
+    "non_claims": [
+      "Concerns allowlists only; other degenerate tools are not classified.",
+      "When F contains infinitely many good programs no allowlist satisfies the law; R6g gives a concrete instance, and the general statement is not separately stated."
+    ],
+    "prior_art": [
+      "T. M. Mitchell, Machine Learning, McGraw-Hill, 1997, Chapter 2 (concept learning, the version space representation theorem, and the unbiased learner whose hypothesis space contains every subset of the instances). For that learner the most specific consistent hypothesis is the disjunction of the positive examples and no instance outside the training examples is classified unanimously. Correspondence (our reading): checkers are hypotheses, the pointwise order is the generality order, anchors and suite entries are labeled examples, and soundness acts as a negative example at every bad program (infinitely many in general, unlike a finite training set); the results cited here restate that picture in this vocabulary."
+    ],
+    "design_question": "When a framework requires soundness plus completeness on a fragment, when is the law satisfiable, when does it lock out the do-nothing tool or all lookup tables, and what does 'decidable' mean in the model?"
+  },
+  {
+    "id": "R6g",
+    "lean": "Toy.Checker.no_allowlist_soundCompleteOn_evenGood_univ",
+    "kind": "impossibility",
+    "module": "ToyChecker/RelativeCompleteness.lean",
+    "tier": "T0",
+    "tier_justification": "Concrete instance of R6f: there are infinitely many even numbers.",
+    "plain_claim": "In the toy instance, no allowlist (finite list of programs) is sound and complete for evenGood on all programs.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "The law 'sound and complete for evenGood on all programs' is satisfied by evenExact, so excluding every allowlist is not an artifact of an unsatisfiable law.",
+    "nonvacuity_witness_lean": "Toy.Checker.nonvacuous_no_allowlist_soundCompleteOn_evenGood_univ",
+    "positive_control_lean": "Toy.Checker.positive_control_allowlist_soundCompleteOn_finite_fragment",
+    "non_claims": [
+      "Proved only for evenGood on all programs; the general statement (an allowlist satisfies the law iff F has finitely many good programs, all listed) follows from R6f but is not separately stated.",
+      "Excludes finite tables only; an infinite 'table' is just an arbitrary function and is not excluded (R6a).",
+      "Completeness on an infinite fragment is one way to exclude every finite table, not the only one: a relational law with a single anchor ('accepting p forces accepting 2 * p') also excludes every allowlist while admitting a conservative, incomplete checker (doubling_law_admits_fourOrTwo_excludes_every_allowlist)."
+    ],
+    "prior_art": [
+      "N. Block, 'Psychologism and Behaviorism', The Philosophical Review 90(1):5-43, 1981, doi:10.2307/2184371. The lookup-table thought experiment: a system that reproduces any finite stretch of required behavior by table lookup, used to argue that behavioral tests alone cannot certify how behavior is produced. Philosophical background only; no formal statement there corresponds to these theorems."
+    ],
+    "design_question": "When a framework requires soundness plus completeness on a fragment, when is the law satisfiable, when does it lock out the do-nothing tool or all lookup tables, and what does 'decidable' mean in the model?"
+  },
+  {
+    "id": "R6h",
+    "lean": "Toy.Checker.cex_decides_on_fragment_without_soundness",
+    "kind": "counterexample",
+    "module": "ToyChecker/RelativeCompleteness.lean",
+    "tier": "T1",
+    "tier_justification": "Counterexample to a tempting simplification of R6c ('satisfiable in K iff good restricted to F is K-decidable').",
+    "plain_claim": "'good restricted to F is decided by some checker in K' does not imply that the law 'sound and complete on F' has a satisfier in K: with K = {acceptAll} and good = F = (p = 0), acceptAll decides good on F but is unsound off F.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "It is itself a concrete instance.",
+    "nonvacuity_witness_lean": "Toy.Checker.cex_decides_on_fragment_without_soundness",
+    "non_claims": [
+      "The class used does not contain a decider for F. For classes closed under pointwise and that do contain one, the simplification holds (R6c, closure statement; this counterexample is its tightness witness for that hypothesis, cex_decides_on_iff_needs_decidedIn)."
+    ],
+    "prior_art": [
+      "H. G. Rice, 'Classes of recursively enumerable sets and their decision problems', Transactions of the American Mathematical Society 74(2):358-366, 1953, doi:10.1090/S0002-9947-1953-0053041-6. Rice's theorem: a class of recursively enumerable sets has a decidable index set only if it is trivial. Context only; not formalized here."
+    ],
+    "design_question": "When a framework requires soundness plus completeness on a fragment, when is the law satisfiable, when does it lock out the do-nothing tool or all lookup tables, and what does 'decidable' mean in the model?"
+  }
+]

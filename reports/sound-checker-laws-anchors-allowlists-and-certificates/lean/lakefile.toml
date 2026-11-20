@@ -1,0 +1,6 @@
+name = "toy_checker"
+version = "0.1.0"
+defaultTargets = ["ToyChecker"]
+
+[[lean_lib]]
+name = "ToyChecker"

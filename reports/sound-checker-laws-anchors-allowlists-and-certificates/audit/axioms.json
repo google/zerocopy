@@ -1,0 +1,741 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Checker.AnchoredSound": [],
+    "Toy.Checker.AndClosed": [],
+    "Toy.Checker.CheckerLE": [],
+    "Toy.Checker.ClosedUnderDoubling": [],
+    "Toy.Checker.CompleteOn": [],
+    "Toy.Checker.DecidedIn": [],
+    "Toy.Checker.ExtensionalLaw": [],
+    "Toy.Checker.InvariantUnder": [],
+    "Toy.Checker.IsStructural": [],
+    "Toy.Checker.IsStructural.match_1": [],
+    "Toy.Checker.Law": [],
+    "Toy.Checker.Passes": [],
+    "Toy.Checker.Relabeling": [],
+    "Toy.Checker.Relabeling.casesOn": [],
+    "Toy.Checker.Relabeling.ctorIdx": [],
+    "Toy.Checker.Relabeling.invFun": [],
+    "Toy.Checker.Relabeling.left_inv": [],
+    "Toy.Checker.Relabeling.mk": [],
+    "Toy.Checker.Relabeling.mk.congr_simp": [],
+    "Toy.Checker.Relabeling.mk.inj": [],
+    "Toy.Checker.Relabeling.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Checker.Relabeling.mk.noConfusion": [],
+    "Toy.Checker.Relabeling.mk.sizeOf_spec": [],
+    "Toy.Checker.Relabeling.noConfusion": [],
+    "Toy.Checker.Relabeling.noConfusionType": [],
+    "Toy.Checker.Relabeling.rec": [],
+    "Toy.Checker.Relabeling.recOn": [],
+    "Toy.Checker.Relabeling.right_inv": [],
+    "Toy.Checker.Relabeling.surjective": [],
+    "Toy.Checker.Relabeling.toFun": [],
+    "Toy.Checker.Sound": [],
+    "Toy.Checker.SoundCompleteOn": [],
+    "Toy.Checker.TestSuite": [],
+    "Toy.Checker.ToyImpl": [],
+    "Toy.Checker.ToyImpl.casesOn": [],
+    "Toy.Checker.ToyImpl.ctorElim": [],
+    "Toy.Checker.ToyImpl.ctorElimType": [],
+    "Toy.Checker.ToyImpl.ctorIdx": [],
+    "Toy.Checker.ToyImpl.evenBelow": [],
+    "Toy.Checker.ToyImpl.evenBelow.elim": [],
+    "Toy.Checker.ToyImpl.evenBelow.inj": [],
+    "Toy.Checker.ToyImpl.evenBelow.injEq": [
+      "propext"
+    ],
+    "Toy.Checker.ToyImpl.evenBelow.noConfusion": [],
+    "Toy.Checker.ToyImpl.evenBelow.sizeOf_spec": [],
+    "Toy.Checker.ToyImpl.noConfusion": [],
+    "Toy.Checker.ToyImpl.noConfusionType": [],
+    "Toy.Checker.ToyImpl.rec": [],
+    "Toy.Checker.ToyImpl.recOn": [],
+    "Toy.Checker.ToyImpl.table": [],
+    "Toy.Checker.ToyImpl.table.elim": [],
+    "Toy.Checker.ToyImpl.table.inj": [],
+    "Toy.Checker.ToyImpl.table.injEq": [
+      "propext"
+    ],
+    "Toy.Checker.ToyImpl.table.noConfusion": [],
+    "Toy.Checker.ToyImpl.table.sizeOf_spec": [],
+    "Toy.Checker.TwoSidedVerifiedOn": [],
+    "Toy.Checker.VerifierComplete": [],
+    "Toy.Checker.VerifierSound": [],
+    "Toy.Checker.acceptAll": [],
+    "Toy.Checker.acceptAll.eq_1": [],
+    "Toy.Checker.acceptsTenImplLaw": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.acceptsTenImplLaw.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.acceptsZeroLaw": [],
+    "Toy.Checker.acceptsZeroLaw.eq_1": [],
+    "Toy.Checker.allowlist": [
+      "propext"
+    ],
+    "Toy.Checker.allowlist.eq_1": [
+      "propext"
+    ],
+    "Toy.Checker.allowlist_anchoredSound_of_anchors_good": [
+      "propext"
+    ],
+    "Toy.Checker.anchoredSound_admits_allowlists_disagreeing_at_good_nonanchor_of_anchors_good": [
+      "propext"
+    ],
+    "Toy.Checker.anchoredSound_example_evenExact": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.anchoredSound_iff_sound_passes_anchorSuite": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.andClosed_class_both_sides_false_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.andClosed_class_repairs_unsound_decider_example": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.andClosed_decidedIn_example_all": [
+      "propext"
+    ],
+    "Toy.Checker.belowTwo": [],
+    "Toy.Checker.belowTwo.eq_1": [],
+    "Toy.Checker.boundedHonestTool": [],
+    "Toy.Checker.boundedHonestTool.eq_1": [],
+    "Toy.Checker.cachedCertTool": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.cachedCertTool.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.cachedCertTool_eq_boundedHonestTool": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.certChecker": [],
+    "Toy.Checker.certChecker.eq_1": [],
+    "Toy.Checker.certChecker.match_1": [],
+    "Toy.Checker.certChecker_completeOn_iff": [],
+    "Toy.Checker.certChecker_const_not_sound_of_bad_certificate": [],
+    "Toy.Checker.certChecker_examples": [],
+    "Toy.Checker.certChecker_sound_of_verifierSound": [],
+    "Toy.Checker.certifiable_eq_good_of_verifierSound_of_verifierComplete": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.certifiable_eq_good_of_verifierSound_of_verifierComplete.match_1_1": [],
+    "Toy.Checker.certifiable_imp_good_of_verifierSound": [],
+    "Toy.Checker.certifiable_imp_good_of_verifierSound.match_1_1": [],
+    "Toy.Checker.cex_admits_allowlists_needs_anchors_good": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.cex_admits_allowlists_needs_good_p": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.cex_admits_allowlists_needs_not_mem": [
+      "propext"
+    ],
+    "Toy.Checker.cex_allowlist_anchoredSound_needs_anchors_good": [
+      "propext"
+    ],
+    "Toy.Checker.cex_certChecker_sound_needs_verifierSound": [
+      "propext"
+    ],
+    "Toy.Checker.cex_const_not_sound_needs_accepted_certificate": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.cex_const_not_sound_needs_bad_program": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.cex_decides_on_fragment_without_soundness": [
+      "propext"
+    ],
+    "Toy.Checker.cex_decides_on_iff_needs_andClosed": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.cex_decides_on_iff_needs_decidedIn": [
+      "propext"
+    ],
+    "Toy.Checker.cex_extensionalLaw_iff_needs_extensional": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.cex_extensionalLaw_iff_needs_same_behavior": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.cex_forced_accept_needs_anchors_good": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.cex_forced_reject_needs_anchors_good": [
+      "propext"
+    ],
+    "Toy.Checker.cex_forced_value_at_image_needs_forced": [
+      "propext"
+    ],
+    "Toy.Checker.cex_forced_value_at_image_needs_invariant": [
+      "propext"
+    ],
+    "Toy.Checker.cex_forced_value_relabeled_needs_bijective": [],
+    "Toy.Checker.cex_forced_value_relabeled_needs_invariant": [
+      "propext"
+    ],
+    "Toy.Checker.cex_forced_value_relabeled_surjective_not_injective": [
+      "propext"
+    ],
+    "Toy.Checker.cex_law_of_all_sound_needs_hL": [
+      "propext"
+    ],
+    "Toy.Checker.cex_sound_comp_iff_needs_invariant": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.cex_sound_comp_iff_needs_surjective": [
+      "propext"
+    ],
+    "Toy.Checker.cex_sound_of_checkerLE_needs_le": [
+      "propext"
+    ],
+    "Toy.Checker.cex_sound_of_checkerLE_needs_sound": [
+      "propext"
+    ],
+    "Toy.Checker.cex_sound_orChecker_needs_left": [
+      "propext"
+    ],
+    "Toy.Checker.cex_sound_orChecker_needs_right": [
+      "propext"
+    ],
+    "Toy.Checker.cex_tableChecker_passes_and_le_needs_passes": [
+      "propext"
+    ],
+    "Toy.Checker.cex_tableChecker_sound_needs_passes": [
+      "propext"
+    ],
+    "Toy.Checker.cex_tableChecker_sound_needs_sound": [
+      "propext"
+    ],
+    "Toy.Checker.cex_twoSidedChecker_needs_neg_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.cex_twoSidedChecker_needs_pos_sound": [
+      "propext"
+    ],
+    "Toy.Checker.cex_twoSidedChecker_needs_verified": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.cex_verifierCompleteOn_needs_completeOn": [
+      "propext"
+    ],
+    "Toy.Checker.cex_verifierSound_verifierComplete_not_completeOn": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.checkerLE_example_evenBelowTen_evenExact": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.checkerLE_example_rejectAll": [
+      "propext"
+    ],
+    "Toy.Checker.classicalOracle": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.classicalOracle_eq_decide": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.classicalOracle_eq_true_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.classicalOracle_examples": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.closedUnderDoubling_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.completeOn_example_evenBelowTen": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.doubling_law_admits_fourOrTwo_excludes_every_allowlist": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.evenBelowTen": [],
+    "Toy.Checker.evenBelowTen.eq_1": [],
+    "Toy.Checker.evenExact": [],
+    "Toy.Checker.evenExact.eq_1": [],
+    "Toy.Checker.evenGood": [],
+    "Toy.Checker.evenGood.eq_1": [],
+    "Toy.Checker.exists_certChecker_eq_iff_sound_certifiable": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.exists_large_accepted_of_closedUnderDoubling": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.exists_large_accepted_of_closedUnderDoubling.match_1_1": [],
+    "Toy.Checker.exists_soundCompleteOn_in_class_iff": [],
+    "Toy.Checker.exists_soundCompleteOn_in_class_iff_decides_on_of_andClosed_of_decidedIn": [],
+    "Toy.Checker.exists_soundCompleteOn_univ_in_class_iff": [],
+    "Toy.Checker.extensionalLaw_cannot_separate_honestImpl_from_tableImpl": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.extensionalLaw_example_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.extensionalLaw_id_of_law": [
+      "Quot.sound"
+    ],
+    "Toy.Checker.extensionalLaw_iff_of_same_behavior": [],
+    "Toy.Checker.forced_accept_iff_mem_anchors_of_anchors_good": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.forced_reject_iff_not_good_of_anchors_good": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.forced_value_at_image_of_invariantUnder_comp": [],
+    "Toy.Checker.forced_value_relabeled_iff_of_injective": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.forced_value_relabeled_iff_of_invariantUnder_comp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.forced_value_relabeled_iff_of_leftInverse": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.fourOrTwo": [],
+    "Toy.Checker.fourOrTwo.eq_1": [],
+    "Toy.Checker.fourOrTwo_examples": [],
+    "Toy.Checker.halfV": [],
+    "Toy.Checker.halfV.eq_1": [],
+    "Toy.Checker.halfV_certifiable_eq_evenGood": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.honestImpl": [],
+    "Toy.Checker.honestImpl.eq_1": [],
+    "Toy.Checker.honestTool": [],
+    "Toy.Checker.honestTool.eq_1": [],
+    "Toy.Checker.honestTwoSidedTool": [],
+    "Toy.Checker.honestTwoSidedTool.eq_1": [],
+    "Toy.Checker.instDecidableEqToyImpl": [],
+    "Toy.Checker.instDecidableEqToyImpl.decEq": [],
+    "Toy.Checker.instDecidableEqToyImpl.decEq.match_1": [],
+    "Toy.Checker.instDecidablePasses": [],
+    "Toy.Checker.instDecidablePredNatEvenGood": [],
+    "Toy.Checker.invariantUnder_cannot_separate": [],
+    "Toy.Checker.invariantUnder_comp_anchoredSound_swap02": [
+      "propext"
+    ],
+    "Toy.Checker.invariantUnder_example_evenGood_swap02": [
+      "propext"
+    ],
+    "Toy.Checker.invariantUnder_example_length": [
+      "propext"
+    ],
+    "Toy.Checker.invariantUnder_invFun_of_invariantUnder": [],
+    "Toy.Checker.law_of_all_sound_holds_for_rejectAll": [
+      "propext"
+    ],
+    "Toy.Checker.le_sum_of_mem_nat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.le_sum_of_mem_nat.match_1_1": [],
+    "Toy.Checker.lyingTool": [],
+    "Toy.Checker.namedCheckers_examples": [
+      "propext"
+    ],
+    "Toy.Checker.namedCheckers_negative_examples": [
+      "propext"
+    ],
+    "Toy.Checker.no_allowlist_soundCompleteOn_evenGood_univ": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.no_tool_completeOn_rejectAllV": [
+      "propext"
+    ],
+    "Toy.Checker.nonvacuous_admits_allowlists": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.nonvacuous_anchors_good": [],
+    "Toy.Checker.nonvacuous_certChecker_completeOn_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.nonvacuous_certChecker_const_not_sound": [
+      "propext"
+    ],
+    "Toy.Checker.nonvacuous_certChecker_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.nonvacuous_exists_certChecker_eq_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.nonvacuous_exists_soundCompleteOn_in_class_iff_decides_on": [
+      "propext"
+    ],
+    "Toy.Checker.nonvacuous_extensionalLaw_id": [
+      "Quot.sound"
+    ],
+    "Toy.Checker.nonvacuous_extensionalLaw_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.nonvacuous_forced_value_relabeled": [
+      "propext"
+    ],
+    "Toy.Checker.nonvacuous_law_of_all_sound": [],
+    "Toy.Checker.nonvacuous_no_allowlist_soundCompleteOn_evenGood_univ": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.nonvacuous_not_anchoredSound_rejectAll": [
+      "propext"
+    ],
+    "Toy.Checker.nonvacuous_not_soundCompleteOn_rejectAll_iff": [
+      "propext"
+    ],
+    "Toy.Checker.nonvacuous_soundCompleteOn": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.nonvacuous_soundCompleteOn_allowlist_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.nonvacuous_soundCompleteOn_iff_sound_and_decides_on": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.nonvacuous_soundCompleteOn_univ_iff_decides": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.nonvacuous_sound_comp_iff": [
+      "propext"
+    ],
+    "Toy.Checker.nonvacuous_sound_iff_checkerLE_classicalOracle": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.nonvacuous_sound_of_checkerLE_of_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.nonvacuous_sound_orChecker": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.nonvacuous_tableChecker": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.nonvacuous_twoSidedChecker_sound_completeOn": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.nonvacuous_verifierCompleteOn_of_certChecker_completeOn": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.nonvacuous_verifierSound_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.not_anchoredSound_example_acceptAll": [
+      "propext"
+    ],
+    "Toy.Checker.not_anchoredSound_example_rejectAll": [
+      "propext"
+    ],
+    "Toy.Checker.not_anchoredSound_rejectAll_iff_anchors_ne_nil": [
+      "propext"
+    ],
+    "Toy.Checker.not_andClosed_example_belowTwo_zeroOrLarge": [],
+    "Toy.Checker.not_checkerLE_example_acceptAll_rejectAll": [
+      "propext"
+    ],
+    "Toy.Checker.not_checkerLE_example_evenExact_evenBelowTen": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.not_closedUnderDoubling_examples": [
+      "propext"
+    ],
+    "Toy.Checker.not_completeOn_example_evenBelowTen": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.not_completeOn_example_rejectAll": [
+      "propext"
+    ],
+    "Toy.Checker.not_decidedIn_example_acceptAll": [],
+    "Toy.Checker.not_evenExact_examples": [],
+    "Toy.Checker.not_extensionalLaw_example_isStructural": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.not_invariantUnder_example_evenGood_swap01": [
+      "propext"
+    ],
+    "Toy.Checker.not_invariantUnder_example_mentionsZero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.not_passes_example_inconsistent": [
+      "propext"
+    ],
+    "Toy.Checker.not_passes_example_rejectAll": [
+      "propext"
+    ],
+    "Toy.Checker.not_relabeling_example_const": [],
+    "Toy.Checker.not_soundCompleteOn_example_acceptAll": [
+      "propext"
+    ],
+    "Toy.Checker.not_soundCompleteOn_example_evenBelowTen": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.not_soundCompleteOn_rejectAll_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.not_sound_example_acceptAll": [
+      "propext"
+    ],
+    "Toy.Checker.not_sound_example_acceptsThree": [
+      "propext"
+    ],
+    "Toy.Checker.not_twoSidedVerifiedOn_example_silent": [
+      "propext"
+    ],
+    "Toy.Checker.not_verifierComplete_example_rejectAllV": [
+      "propext"
+    ],
+    "Toy.Checker.not_verifierSound_example_halfV_neg": [],
+    "Toy.Checker.not_verifierSound_example_trustAllV": [
+      "propext"
+    ],
+    "Toy.Checker.oddV": [],
+    "Toy.Checker.oddV.eq_1": [],
+    "Toy.Checker.orChecker": [],
+    "Toy.Checker.orChecker.eq_1": [],
+    "Toy.Checker.passes_example_evenExact": [],
+    "Toy.Checker.positive_control_allowlist_soundCompleteOn_finite_fragment": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.positive_control_anchor_law_excludes_rejectAll": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.positive_control_anchor_law_separates_relabeled_checker": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.positive_control_completeOn_admits_evenExact_excludes_tableChecker": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.positive_control_doubling_law_admits_fourOrTwo_excludes_every_tableChecker": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.positive_control_intensional_law_separates": [],
+    "Toy.Checker.rejectAll": [],
+    "Toy.Checker.rejectAll.eq_1": [],
+    "Toy.Checker.rejectAllV": [],
+    "Toy.Checker.rejectAllV.eq_1": [],
+    "Toy.Checker.relabelList": [],
+    "Toy.Checker.relabelList.eq_1": [],
+    "Toy.Checker.silentTool": [],
+    "Toy.Checker.silentTool.eq_1": [],
+    "Toy.Checker.silentTwoSidedTool": [],
+    "Toy.Checker.silentTwoSidedTool.eq_1": [],
+    "Toy.Checker.soundCompleteOn_allowlist_iff": [
+      "propext"
+    ],
+    "Toy.Checker.soundCompleteOn_classicalOracle_inter": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.soundCompleteOn_example_evenBelowTen": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.soundCompleteOn_example_rejectAll_odd_fragment": [
+      "propext"
+    ],
+    "Toy.Checker.soundCompleteOn_iff_between": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.soundCompleteOn_iff_sound_and_decides_on": [],
+    "Toy.Checker.soundCompleteOn_iff_sound_and_decides_on.match_1_1": [],
+    "Toy.Checker.soundCompleteOn_iff_sound_and_decides_on.match_1_3": [],
+    "Toy.Checker.soundCompleteOn_univ_iff_decides": [],
+    "Toy.Checker.soundCompleteOn_univ_iff_decides.match_1_1": [],
+    "Toy.Checker.sound_comp_iff_of_surjective_of_invariantUnder": [],
+    "Toy.Checker.sound_comp_of_invariantUnder": [],
+    "Toy.Checker.sound_example_evenBelowTen": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.sound_example_evenExact": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.sound_iff_checkerLE_classicalOracle": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.sound_of_checkerLE_of_sound": [],
+    "Toy.Checker.sound_orChecker_of_sound_of_sound": [
+      "propext"
+    ],
+    "Toy.Checker.sound_rejectAll": [
+      "propext"
+    ],
+    "Toy.Checker.swap01Fun": [],
+    "Toy.Checker.swap01Fun.eq_1": [],
+    "Toy.Checker.swap01Fun_swap01Fun": [
+      "propext"
+    ],
+    "Toy.Checker.swap02": [
+      "propext"
+    ],
+    "Toy.Checker.swap02.eq_1": [
+      "propext"
+    ],
+    "Toy.Checker.swap02Fun": [],
+    "Toy.Checker.swap02Fun.eq_1": [],
+    "Toy.Checker.swap02Fun_swap02Fun": [
+      "propext"
+    ],
+    "Toy.Checker.tableChecker": [
+      "propext"
+    ],
+    "Toy.Checker.tableChecker.eq_1": [
+      "propext"
+    ],
+    "Toy.Checker.tableChecker_examples": [
+      "propext"
+    ],
+    "Toy.Checker.tableChecker_passes_and_le_of_passes": [
+      "propext"
+    ],
+    "Toy.Checker.tableChecker_sound_passes_le_of_sound_passes": [
+      "propext"
+    ],
+    "Toy.Checker.tableImpl": [],
+    "Toy.Checker.tableImpl.eq_1": [],
+    "Toy.Checker.toyRun": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.toyRun.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.toyRun.eq_2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.toyRun.match_1": [],
+    "Toy.Checker.toyRun_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.toyRun_honest_table_same_behavior": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.trustAllV": [],
+    "Toy.Checker.twoSidedChecker": [],
+    "Toy.Checker.twoSidedChecker.eq_1": [],
+    "Toy.Checker.twoSidedChecker_examples": [],
+    "Toy.Checker.twoSidedChecker_sound_completeOn_of_verifiedOn": [],
+    "Toy.Checker.twoSidedVerifiedOn_example_honest": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.verifierCompleteOn_of_certChecker_completeOn": [],
+    "Toy.Checker.verifierComplete_example_halfV": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.verifierSound_example_halfV": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.verifierSound_example_oddV": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Checker.verifierSound_iff_forall_certChecker_sound": [],
+    "Toy.Checker.zeroOrLarge": [],
+    "Toy.Checker.zeroOrLarge.eq_1": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
