@@ -8,11 +8,13 @@
 
 //! CLI entrypoint for `cargo-anneal`.
 
+#[cfg(feature = "setup")]
 mod setup;
 mod verify;
 
 use std::env;
 use std::ffi::OsString;
+#[cfg(feature = "setup")]
 use std::path::PathBuf;
 use std::process::ExitCode;
 
@@ -35,6 +37,7 @@ struct Cli {
 #[derive(Subcommand)]
 enum Command {
     /// Install the pinned Anneal toolchain archive.
+    #[cfg(feature = "setup")]
     Setup {
         /// Install a local archive instead of downloading the pinned archive.
         #[arg(long, value_name = "path")]
@@ -52,6 +55,7 @@ enum Action {
 #[derive(Debug)]
 enum Failure {
     Arguments(clap::Error),
+    #[cfg(feature = "setup")]
     Operation(String),
 }
 
@@ -64,6 +68,7 @@ fn parse(mut args: Vec<OsString>) -> Result<Cli, clap::Error> {
     Cli::try_parse_from(args)
 }
 
+#[cfg(feature = "setup")]
 fn dispatch(
     cli: Cli,
     install: impl FnOnce(Option<PathBuf>) -> Result<PathBuf, String>,
@@ -81,27 +86,55 @@ fn dispatch(
     }
 }
 
-fn run(
-    args: Vec<OsString>,
-    install: impl FnOnce(Option<PathBuf>) -> Result<PathBuf, String>,
-) -> Result<Action, Failure> {
-    let cli = match parse(args) {
-        Ok(cli) => cli,
+#[cfg(not(feature = "setup"))]
+fn dispatch(cli: Cli) -> Action {
+    match cli.command {
+        None => Action::Print(format!("{}\n", Cli::command().render_help())),
+        Some(Command::Verify(args)) => Action::Verify(args),
+    }
+}
+
+fn parse_action(args: Vec<OsString>) -> Result<Result<Cli, Action>, Failure> {
+    match parse(args) {
+        Ok(cli) => Ok(Ok(cli)),
         Err(error)
             if matches!(
                 error.kind(),
                 ErrorKind::DisplayHelp | ErrorKind::DisplayVersion
             ) =>
         {
-            return Ok(Action::Print(error.to_string()));
+            Ok(Err(Action::Print(error.to_string())))
         }
-        Err(error) => return Err(Failure::Arguments(error)),
-    };
-    dispatch(cli, install).map_err(Failure::Operation)
+        Err(error) => Err(Failure::Arguments(error)),
+    }
+}
+
+#[cfg(feature = "setup")]
+fn run(
+    args: Vec<OsString>,
+    install: impl FnOnce(Option<PathBuf>) -> Result<PathBuf, String>,
+) -> Result<Action, Failure> {
+    match parse_action(args)? {
+        Ok(cli) => dispatch(cli, install).map_err(Failure::Operation),
+        Err(action) => Ok(action),
+    }
+}
+
+#[cfg(not(feature = "setup"))]
+fn run(args: Vec<OsString>) -> Result<Action, Failure> {
+    match parse_action(args)? {
+        Ok(cli) => Ok(dispatch(cli)),
+        Err(action) => Ok(action),
+    }
 }
 
 fn main() -> ExitCode {
-    match run(env::args_os().collect(), setup::install) {
+    #[cfg(feature = "setup")]
+    let outcome = run(env::args_os().collect(), setup::install);
+    #[cfg(not(feature = "setup"))]
+    let outcome = run(env::args_os().collect());
+
+    match outcome {
         Ok(Action::Print(output)) => {
             print!("{output}");
             ExitCode::SUCCESS
@@ -111,6 +144,7 @@ fn main() -> ExitCode {
             eprint!("{error}");
             ExitCode::from(2)
         }
+        #[cfg(feature = "setup")]
         Err(Failure::Operation(error)) => {
             eprintln!("error: {error}");
             ExitCode::from(1)
@@ -126,8 +160,20 @@ mod tests {
         values.iter().map(OsString::from).collect()
     }
 
+    #[cfg(feature = "setup")]
     fn must_not_install(_: Option<PathBuf>) -> Result<PathBuf, String> {
         panic!("argument handling must not install a toolchain")
+    }
+
+    fn run_without_install(args: Vec<OsString>) -> Result<Action, Failure> {
+        #[cfg(feature = "setup")]
+        {
+            run(args, must_not_install)
+        }
+        #[cfg(not(feature = "setup"))]
+        {
+            run(args)
+        }
     }
 
     fn output(action: Action) -> String {
@@ -145,26 +191,32 @@ mod tests {
                 &["help"],
                 &["-h"],
                 &["--help"],
+                #[cfg(feature = "setup")]
                 &["setup", "-h"],
+                #[cfg(feature = "setup")]
                 &["setup", "--help"],
+                #[cfg(feature = "setup")]
                 &["help", "setup"],
                 &["verify", "-h"],
                 &["verify", "--help"],
                 &["help", "verify"],
             ] {
                 let output = output(
-                    run(args(&[prefix, suffix].concat()), must_not_install)
+                    run_without_install(args(&[prefix, suffix].concat()))
                         .expect("help must succeed"),
                 );
                 assert!(output.contains("Usage:"), "{output}");
                 if suffix.is_empty() {
+                    #[cfg(feature = "setup")]
                     assert!(output.contains("setup"), "{output}");
+                    #[cfg(not(feature = "setup"))]
+                    assert!(!output.contains("setup"), "{output}");
                     assert!(output.contains("verify"), "{output}");
                 }
             }
             for suffix in ["-V", "--version"] {
                 let output = output(
-                    run(args(&[prefix, &[suffix]].concat()), must_not_install)
+                    run_without_install(args(&[prefix, &[suffix]].concat()))
                         .expect("version must succeed"),
                 );
                 assert_eq!(
@@ -180,8 +232,13 @@ mod tests {
         for suffix in [
             &["unknown"][..],
             &["--unknown"],
+            #[cfg(not(feature = "setup"))]
+            &["setup"],
+            #[cfg(feature = "setup")]
             &["setup", "--unknown"],
+            #[cfg(feature = "setup")]
             &["setup", "--local-archive"],
+            #[cfg(feature = "setup")]
             &["setup", "--local-archive", "--unknown"],
             &["verify"],
             &["verify", "--request"],
@@ -194,20 +251,20 @@ mod tests {
                 "Cargo.toml",
             ],
         ] {
-            let failure = run(
-                args(&[&["cargo-anneal"], suffix].concat()),
-                must_not_install,
-            )
-            .err()
-            .expect("malformed arguments must fail");
-            let Failure::Arguments(error) = failure else {
-                panic!("expected an argument failure, got {failure:?}");
+            let failure = run_without_install(args(&[&["cargo-anneal"], suffix].concat()))
+                .err()
+                .expect("malformed arguments must fail");
+            let error = match failure {
+                Failure::Arguments(error) => error,
+                #[cfg(feature = "setup")]
+                other => panic!("expected an argument failure, got {other:?}"),
             };
             assert_eq!(error.exit_code(), 2);
             assert!(error.to_string().contains("error:"));
         }
     }
 
+    #[cfg(feature = "setup")]
     #[test]
     fn setup_dispatch_preserves_archive_and_operation_result() {
         for archive in [None, Some(PathBuf::from("local archive.tar.zst"))] {
@@ -253,14 +310,14 @@ mod tests {
                     "subject::function",
                 ],
             ] {
-                let action = run(args(&[prefix, suffix].concat()), must_not_install)
+                let action = run_without_install(args(&[prefix, suffix].concat()))
                     .expect("verify arguments must parse and dispatch");
                 assert!(matches!(action, Action::Verify(_)));
             }
         }
     }
 
-    #[cfg(unix)]
+    #[cfg(all(unix, feature = "setup"))]
     #[test]
     fn archive_paths_do_not_require_utf8() {
         use std::os::unix::ffi::OsStringExt as _;

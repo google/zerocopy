@@ -274,7 +274,16 @@ fn selected(request: &Value) -> Value {
 #[test]
 fn canonicalizes_symlinked_temporary_directory_source_bindings() {
     use sha2::{Digest, Sha256};
+    use std::fmt::Write as _;
     use std::os::unix::fs::symlink;
+
+    fn sha256_hex(bytes: &[u8]) -> String {
+        let mut hex = String::with_capacity(64);
+        for byte in Sha256::digest(bytes) {
+            let _ = write!(&mut hex, "{byte:02x}");
+        }
+        hex
+    }
 
     let tools = Tools::discover();
     let fixture = Fixture::new();
@@ -311,15 +320,9 @@ fn canonicalizes_symlinked_temporary_directory_source_bindings() {
     let input_path = PathBuf::from(input["path"].as_str().unwrap());
     assert!(input_path.starts_with(fs::canonicalize(&temporary).unwrap()));
     assert_eq!(input["path"], captured["configuration"]["crate_root"]);
-    assert_eq!(
-        input["sha256"],
-        format!("{:x}", Sha256::digest(SOURCE.as_bytes()))
-    );
+    assert_eq!(input["sha256"], sha256_hex(SOURCE.as_bytes()));
     assert_eq!(input["sha256"], accepted.value["sources"][0]["sha256"]);
-    assert_eq!(
-        accepted.value["capture_sha256"],
-        format!("{:x}", Sha256::digest(&bytes))
-    );
+    assert_eq!(accepted.value["capture_sha256"], sha256_hex(&bytes));
     assert!(fs::read_dir(&temporary).unwrap().next().is_none());
 
     // Canonical temporary paths must not broaden the compiler's read allowlist.

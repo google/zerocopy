@@ -16,6 +16,15 @@ use std::process::{Command, Output};
 use common::sysroot;
 use serde_json::Value;
 use sha2::{Digest, Sha256};
+use std::fmt::Write as _;
+
+fn sha256_hex(bytes: &[u8]) -> String {
+    let mut hex = String::with_capacity(64);
+    for byte in Sha256::digest(bytes) {
+        let _ = write!(&mut hex, "{byte:02x}");
+    }
+    hex
+}
 
 struct Capture {
     directory: tempfile::TempDir,
@@ -234,7 +243,7 @@ fn source_hashes_bind_the_exact_crlf_input_bytes() {
     let manifest = fixture.manifest();
     let files = manifest["source_files"].as_array().expect("source records");
     assert_eq!(files.len(), 1, "{manifest}");
-    assert_eq!(files[0]["sha256"], format!("{:x}", Sha256::digest(source)));
+    assert_eq!(files[0]["sha256"], sha256_hex(source));
     assert_eq!(files[0]["read_kind"], "text");
 }
 
@@ -760,7 +769,7 @@ fn declared_namespace_guards_text_and_binary_include_reads() {
             .iter()
             .find(|entry| entry["path"] == path.to_str().unwrap())
             .unwrap();
-        assert_eq!(entry["sha256"], format!("{:x}", Sha256::digest(bytes)));
+        assert_eq!(entry["sha256"], sha256_hex(&bytes));
         assert_eq!(entry["read_kind"], kind);
     }
     fixture.output = fixture.directory.path().join("undeclared-include");

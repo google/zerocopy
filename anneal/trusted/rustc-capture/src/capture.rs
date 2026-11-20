@@ -27,6 +27,15 @@ use rustc_span::FileName;
 use rustc_span::def_id::LocalDefId;
 use rustc_span::source_map::{FileLoader, RealFileLoader};
 use sha2::{Digest, Sha256};
+use std::fmt::Write as _;
+
+fn sha256_hex(bytes: &[u8]) -> String {
+    let mut hex = String::with_capacity(64);
+    for byte in Sha256::digest(bytes) {
+        let _ = write!(&mut hex, "{byte:02x}");
+    }
+    hex
+}
 
 use crate::{Args, Failure, extract, ir};
 
@@ -171,7 +180,7 @@ impl RecordingLoader {
             reads.refusals.push(error.clone());
             return Err(io::Error::other(error));
         }
-        let sha256 = format!("{:x}", Sha256::digest(bytes));
+        let sha256 = sha256_hex(bytes);
         if let Some(previous) = reads.files.get(&path) {
             if previous.sha256 != sha256 {
                 let error = format!("input changed between compiler reads: {}", path.display());
@@ -602,7 +611,7 @@ fn collect(
 fn check_current_inputs(reads: &Reads) -> Result<(), Failure> {
     for file in reads.files.values() {
         let current = std::fs::read(&file.path).map_err(Failure::io)?;
-        if format!("{:x}", Sha256::digest(&current)) != file.sha256 {
+        if sha256_hex(&current) != file.sha256 {
             return Err(Failure::unsupported(format!(
                 "compiler input changed after reading: {}",
                 file.path.display()

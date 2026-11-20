@@ -15,6 +15,7 @@ edition = "2024"
 description = "Formally verify Rust programs in Lean 4."
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
 repository = "https://github.com/google/zerocopy/tree/main/anneal"
+exclude = ["tests/"]
 
 # FIXME: Replace these placeholder archive URLs and hashes before publishing
 # this crate; `cargo anneal setup` uses this metadata by default when callers
@@ -45,7 +46,6 @@ url = "https://example.com/macos-aarch64.tar.zst"
 
 [[bin]]
 name = "cargo-anneal"
-required-features = ["setup"]
 
 [[example]]
 name = "regenerate_bundle"
@@ -56,8 +56,7 @@ default = ["setup"]
 setup = ["dep:exocrate"]
 
 [dependencies]
-clap = { version = "4.5", features = ["derive"] }
-dirs = "6.0"
+clap = { version = "4.5", default-features = false, features = ["std", "help", "usage", "error-context", "suggestions", "derive"] }
 exocrate = { version = "0.3.0", optional = true }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"

@@ -74,8 +74,11 @@ fn help_and_version_work_through_direct_and_cargo_invocation() {
             &["help"],
             &["-h"],
             &["--help"],
+            #[cfg(feature = "setup")]
             &["setup", "-h"],
+            #[cfg(feature = "setup")]
             &["setup", "--help"],
+            #[cfg(feature = "setup")]
             &["help", "setup"],
             &["verify", "-h"],
             &["verify", "--help"],
@@ -111,7 +114,11 @@ fn malformed_arguments_fail_through_direct_and_cargo_invocation() {
         for args in [
             &["unknown"][..],
             &["--unknown"],
+            #[cfg(not(feature = "setup"))]
+            &["setup"],
+            #[cfg(feature = "setup")]
             &["setup", "--unknown"],
+            #[cfg(feature = "setup")]
             &["setup", "--local-archive"],
             &["verify"],
             &["verify", "--request"],
@@ -134,12 +141,12 @@ fn malformed_arguments_fail_through_direct_and_cargo_invocation() {
     }
 }
 
-#[cfg(target_os = "linux")]
+#[cfg(all(target_os = "linux", feature = "setup"))]
 fn local_archive(path: &Path) {
     archive_entries(path, &[("marker.txt", b"current-run CLI archive", 0o644)]);
 }
 
-#[cfg(target_os = "linux")]
+#[cfg(all(target_os = "linux", feature = "setup"))]
 fn archive_entries(path: &Path, entries: &[(&str, &[u8], u32)]) {
     let file = std::fs::File::create(path).expect("create archive");
     let encoder = zstd::Encoder::new(file, 1).expect("create compressor");
@@ -160,7 +167,7 @@ fn archive_entries(path: &Path, entries: &[(&str, &[u8], u32)]) {
         .expect("finish compressed archive");
 }
 
-#[cfg(target_os = "linux")]
+#[cfg(all(target_os = "linux", feature = "setup"))]
 #[test]
 fn setup_uses_fresh_child_cache_for_each_invocation() {
     let project = tempfile::tempdir().expect("create external working directory");
@@ -189,6 +196,17 @@ fn setup_uses_fresh_child_cache_for_each_invocation() {
             installed.starts_with(cache.path()),
             "{}",
             installed.display()
+        );
+        let [expected_cache_base, _home_base] = cargo_anneal::default_lean_search_bases_from_env(
+            Some(cache.path().as_os_str()),
+            std::env::var_os("HOME").as_deref(),
+        );
+        assert_eq!(
+            installed.parent(),
+            Some(expected_cache_base.as_path()),
+            "exocrate UserGlobal install {} must live under default Lean cache base {}",
+            installed.display(),
+            expected_cache_base.display()
         );
         assert_eq!(
             std::fs::read(installed.join("marker.txt")).expect("read installed current-run marker"),
@@ -339,7 +357,7 @@ fn early_verification_failures_have_versioned_receipts() {
     }
 }
 
-#[cfg(target_os = "linux")]
+#[cfg(all(target_os = "linux", feature = "setup"))]
 #[test]
 fn capture_discovery_prefers_explicit_then_installed_then_sibling() {
     use std::fs;
@@ -501,4 +519,57 @@ fn cargo_shortcut_declares_only_its_documented_source_namespace() {
     assert!(!evidence.join("rust/.hidden").exists());
     assert!(!evidence.join("rust/target").exists());
     assert!(!evidence.join("rust/proof").exists());
+}
+
+#[cfg(not(feature = "setup"))]
+#[test]
+fn verify_without_setup_feature_requires_explicit_tool_paths() {
+    use std::fs;
+
+    let project = tempfile::tempdir().unwrap();
+    let rust = project.path().join("rust");
+    fs::create_dir(&rust).unwrap();
+    fs::write(rust.join("lib.rs"), b"pub fn zero() -> u64 { 0 }\n").unwrap();
+    let request = project.path().join("request.json");
+    fs::write(
+        &request,
+        serde_json::to_vec(&serde_json::json!({
+            "schema_version": 1,
+            "compilation": {
+                "source_root": rust,
+                "crate_root": "lib.rs",
+                "crate_name": "fixture",
+                "edition": "2024",
+                "target": "x86_64-unknown-linux-gnu",
+                "source_files": ["lib.rs"]
+            },
+            "scope": {"kind": "crate"},
+            "proof": {"source_root": "unused", "sources": []}
+        }))
+        .unwrap(),
+    )
+    .unwrap();
+
+    for route in [Route::Direct, Route::Cargo] {
+        let output = command(route, project.path())
+            .arg("verify")
+            .arg("--request")
+            .arg(&request)
+            .output()
+            .unwrap();
+        assert_result(&output, 2, "", "");
+        assert!(output.stderr.is_empty(), "{output:?}");
+        let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+        assert_eq!(receipt["schema_version"], 1);
+        assert_eq!(receipt["status"], "tool_failed");
+        assert_eq!(receipt["phase"], "capture-tool");
+        let detail = receipt["detail"].as_str().unwrap();
+        assert!(
+            detail.contains("--capture")
+                && detail.contains("--sysroot")
+                && detail.contains("--lean")
+                && detail.contains("setup"),
+            "{receipt}"
+        );
+    }
 }

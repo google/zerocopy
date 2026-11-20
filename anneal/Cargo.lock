@@ -114,7 +114,6 @@ name = "cargo-anneal"
 version = "0.1.0-alpha.1"
 dependencies = [
  "clap",
- "dirs",
  "exocrate",
  "serde",
  "serde_json",
