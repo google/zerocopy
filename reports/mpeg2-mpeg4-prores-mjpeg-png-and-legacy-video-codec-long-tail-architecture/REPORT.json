@@ -1,0 +1,79 @@
+{
+  "topics": [
+    "domains/video-codecs",
+    "domains/image-codecs",
+    "systems/ffmpeg",
+    "verification/equivalence",
+    "verification/parsers",
+    "compilers/codegen"
+  ],
+  "subjects": [
+    {
+      "name": "FFmpeg libavcodec video, image, and shared DSP implementation",
+      "identity": {
+        "repository": "FFmpeg/FFmpeg",
+        "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+      }
+    },
+    {
+      "name": "ITU-T Rec. H.262 | ISO/IEC 13818-2 (MPEG-2 Video)",
+      "identity": {
+        "standard": "ITU-T Rec. H.262 | ISO/IEC 13818-2",
+        "url": "https://www.itu.int/rec/T-REC-H.262"
+      }
+    },
+    {
+      "name": "ISO/IEC 14496-2 (MPEG-4 Part 2 Visual)",
+      "identity": {
+        "standard": "ISO/IEC 14496-2"
+      }
+    },
+    {
+      "name": "ISO/IEC 23002-1:2006 / IEEE Std 1180-1990 (8x8 Integer-Output IDCT Accuracy)",
+      "identity": {
+        "standard": "ISO/IEC 23002-1:2006",
+        "baseline": "IEEE Std 1180-1990"
+      }
+    },
+    {
+      "name": "SMPTE ST 421:2006 (VC-1 Compressed Video Bitstream Format and Decoding Process)",
+      "identity": {
+        "standard": "SMPTE ST 421:2006"
+      }
+    },
+    {
+      "name": "SMPTE RDD 36:2015 (Apple ProRes Bitstream Syntax and Decoding Process)",
+      "identity": {
+        "standard": "SMPTE RDD 36:2015"
+      }
+    },
+    {
+      "name": "SMPTE ST 2019-1 (VC-3 / DNxHD Picture Compression and Data Stream Format)",
+      "identity": {
+        "standard": "SMPTE ST 2019-1"
+      }
+    },
+    {
+      "name": "IETF RFC 9043 (FFV1 Video Coding Format Versions 0, 1, and 3)",
+      "identity": {
+        "standard": "RFC 9043",
+        "url": "https://www.rfc-editor.org/rfc/rfc9043"
+      }
+    },
+    {
+      "name": "IETF RFC 9649 (WebP Image Format)",
+      "identity": {
+        "standard": "RFC 9649",
+        "url": "https://www.rfc-editor.org/rfc/rfc9649"
+      }
+    },
+    {
+      "name": "ISO/IEC 15948:2004 / W3C Portable Network Graphics (PNG)",
+      "identity": {
+        "standard": "ISO/IEC 15948:2004",
+        "url": "https://www.w3.org/TR/png-3/"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
