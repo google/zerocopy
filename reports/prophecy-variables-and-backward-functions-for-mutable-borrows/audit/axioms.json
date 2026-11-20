@@ -1,0 +1,2149 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Prophecy.AllEndedAtExit": [],
+    "Toy.Prophecy.Avoids": [],
+    "Toy.Prophecy.BRef": [],
+    "Toy.Prophecy.BRef.back": [],
+    "Toy.Prophecy.BRef.casesOn": [],
+    "Toy.Prophecy.BRef.ctorIdx": [],
+    "Toy.Prophecy.BRef.cur": [],
+    "Toy.Prophecy.BRef.mk": [],
+    "Toy.Prophecy.BRef.mk.inj": [],
+    "Toy.Prophecy.BRef.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Prophecy.BRef.mk.noConfusion": [],
+    "Toy.Prophecy.BRef.mk.sizeOf_spec": [],
+    "Toy.Prophecy.BRef.noConfusion": [],
+    "Toy.Prophecy.BRef.noConfusionType": [],
+    "Toy.Prophecy.BRef.rec": [],
+    "Toy.Prophecy.BRef.recOn": [],
+    "Toy.Prophecy.BState": [],
+    "Toy.Prophecy.BState.casesOn": [],
+    "Toy.Prophecy.BState.ctorIdx": [],
+    "Toy.Prophecy.BState.init": [],
+    "Toy.Prophecy.BState.init.eq_1": [],
+    "Toy.Prophecy.BState.mk": [],
+    "Toy.Prophecy.BState.mk.inj": [],
+    "Toy.Prophecy.BState.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Prophecy.BState.mk.noConfusion": [],
+    "Toy.Prophecy.BState.mk.sizeOf_spec": [],
+    "Toy.Prophecy.BState.noConfusion": [],
+    "Toy.Prophecy.BState.noConfusionType": [],
+    "Toy.Prophecy.BState.rec": [],
+    "Toy.Prophecy.BState.recOn": [],
+    "Toy.Prophecy.BState.refs": [],
+    "Toy.Prophecy.BState.store": [],
+    "Toy.Prophecy.CState": [],
+    "Toy.Prophecy.CState.addV": [],
+    "Toy.Prophecy.CState.addV.eq_1": [],
+    "Toy.Prophecy.CState.bindRef": [],
+    "Toy.Prophecy.CState.bindRef.eq_1": [],
+    "Toy.Prophecy.CState.bound": [],
+    "Toy.Prophecy.CState.calleeInit": [],
+    "Toy.Prophecy.CState.calleeInit.eq_1": [],
+    "Toy.Prophecy.CState.casesOn": [],
+    "Toy.Prophecy.CState.ctorIdx": [],
+    "Toy.Prophecy.CState.init": [],
+    "Toy.Prophecy.CState.init.eq_1": [],
+    "Toy.Prophecy.CState.lender": [],
+    "Toy.Prophecy.CState.lent": [],
+    "Toy.Prophecy.CState.mk": [],
+    "Toy.Prophecy.CState.mk.inj": [],
+    "Toy.Prophecy.CState.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Prophecy.CState.mk.noConfusion": [],
+    "Toy.Prophecy.CState.mk.sizeOf_spec": [],
+    "Toy.Prophecy.CState.noConfusion": [],
+    "Toy.Prophecy.CState.noConfusionType": [],
+    "Toy.Prophecy.CState.rec": [],
+    "Toy.Prophecy.CState.recOn": [],
+    "Toy.Prophecy.CState.release": [],
+    "Toy.Prophecy.CState.release.eq_1": [],
+    "Toy.Prophecy.CState.release.match_1": [],
+    "Toy.Prophecy.CState.setStuck": [],
+    "Toy.Prophecy.CState.setStuck.eq_1": [],
+    "Toy.Prophecy.CState.status": [],
+    "Toy.Prophecy.CState.stuck": [],
+    "Toy.Prophecy.CState.upd": [],
+    "Toy.Prophecy.CState.upd.eq_1": [],
+    "Toy.Prophecy.CState.useRef": [],
+    "Toy.Prophecy.CState.useRef.eq_1": [],
+    "Toy.Prophecy.CState.viol": [],
+    "Toy.Prophecy.Callee": [],
+    "Toy.Prophecy.Callee.body": [],
+    "Toy.Prophecy.Callee.casesOn": [],
+    "Toy.Prophecy.Callee.ctorIdx": [],
+    "Toy.Prophecy.Callee.mk": [],
+    "Toy.Prophecy.Callee.mk.inj": [],
+    "Toy.Prophecy.Callee.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Prophecy.Callee.mk.noConfusion": [],
+    "Toy.Prophecy.Callee.mk.sizeOf_spec": [],
+    "Toy.Prophecy.Callee.noConfusion": [],
+    "Toy.Prophecy.Callee.noConfusionType": [],
+    "Toy.Prophecy.Callee.param": [],
+    "Toy.Prophecy.Callee.param.eq_1": [],
+    "Toy.Prophecy.Callee.rec": [],
+    "Toy.Prophecy.Callee.recOn": [],
+    "Toy.Prophecy.Callee.refNames": [
+      "propext"
+    ],
+    "Toy.Prophecy.Callee.refNames.eq_1": [
+      "propext"
+    ],
+    "Toy.Prophecy.Callee.ret": [],
+    "Toy.Prophecy.CalleeAvoids": [],
+    "Toy.Prophecy.CalleeAvoids.eq_1": [],
+    "Toy.Prophecy.CalleeFreshBindings": [],
+    "Toy.Prophecy.CalleeNoFrozenAccess": [],
+    "Toy.Prophecy.CalleeNoUseAfterEnd": [],
+    "Toy.Prophecy.CalleeScoped": [],
+    "Toy.Prophecy.Expr": [],
+    "Toy.Prophecy.Expr.add": [],
+    "Toy.Prophecy.Expr.add.elim": [],
+    "Toy.Prophecy.Expr.add.inj": [],
+    "Toy.Prophecy.Expr.add.injEq": [
+      "propext"
+    ],
+    "Toy.Prophecy.Expr.add.noConfusion": [],
+    "Toy.Prophecy.Expr.add.sizeOf_spec": [],
+    "Toy.Prophecy.Expr.below": [],
+    "Toy.Prophecy.Expr.brecOn": [],
+    "Toy.Prophecy.Expr.brecOn.eq": [],
+    "Toy.Prophecy.Expr.brecOn.go": [],
+    "Toy.Prophecy.Expr.casesOn": [],
+    "Toy.Prophecy.Expr.ctorElim": [],
+    "Toy.Prophecy.Expr.ctorElimType": [],
+    "Toy.Prophecy.Expr.ctorIdx": [],
+    "Toy.Prophecy.Expr.deref": [],
+    "Toy.Prophecy.Expr.deref.elim": [],
+    "Toy.Prophecy.Expr.deref.inj": [],
+    "Toy.Prophecy.Expr.deref.injEq": [
+      "propext"
+    ],
+    "Toy.Prophecy.Expr.deref.noConfusion": [],
+    "Toy.Prophecy.Expr.deref.sizeOf_spec": [],
+    "Toy.Prophecy.Expr.lit": [],
+    "Toy.Prophecy.Expr.lit.elim": [],
+    "Toy.Prophecy.Expr.lit.inj": [],
+    "Toy.Prophecy.Expr.lit.injEq": [
+      "propext"
+    ],
+    "Toy.Prophecy.Expr.lit.noConfusion": [],
+    "Toy.Prophecy.Expr.lit.sizeOf_spec": [],
+    "Toy.Prophecy.Expr.noConfusion": [],
+    "Toy.Prophecy.Expr.noConfusionType": [],
+    "Toy.Prophecy.Expr.rec": [],
+    "Toy.Prophecy.Expr.recOn": [],
+    "Toy.Prophecy.Expr.var": [],
+    "Toy.Prophecy.Expr.var.elim": [],
+    "Toy.Prophecy.Expr.var.inj": [],
+    "Toy.Prophecy.Expr.var.injEq": [
+      "propext"
+    ],
+    "Toy.Prophecy.Expr.var.noConfusion": [],
+    "Toy.Prophecy.Expr.var.sizeOf_spec": [],
+    "Toy.Prophecy.FreshBindings": [],
+    "Toy.Prophecy.Lender": [],
+    "Toy.Prophecy.Lender.casesOn": [],
+    "Toy.Prophecy.Lender.ctorElim": [],
+    "Toy.Prophecy.Lender.ctorElimType": [],
+    "Toy.Prophecy.Lender.ctorIdx": [],
+    "Toy.Prophecy.Lender.loc": [],
+    "Toy.Prophecy.Lender.loc.elim": [],
+    "Toy.Prophecy.Lender.loc.inj": [],
+    "Toy.Prophecy.Lender.loc.injEq": [
+      "propext"
+    ],
+    "Toy.Prophecy.Lender.loc.noConfusion": [],
+    "Toy.Prophecy.Lender.loc.sizeOf_spec": [],
+    "Toy.Prophecy.Lender.noConfusion": [],
+    "Toy.Prophecy.Lender.noConfusionType": [],
+    "Toy.Prophecy.Lender.rec": [],
+    "Toy.Prophecy.Lender.recOn": [],
+    "Toy.Prophecy.Lender.ref": [],
+    "Toy.Prophecy.Lender.ref.elim": [],
+    "Toy.Prophecy.Lender.ref.inj": [],
+    "Toy.Prophecy.Lender.ref.injEq": [
+      "propext"
+    ],
+    "Toy.Prophecy.Lender.ref.noConfusion": [],
+    "Toy.Prophecy.Lender.ref.sizeOf_spec": [],
+    "Toy.Prophecy.Lender.sel": [],
+    "Toy.Prophecy.Lender.sel.elim": [],
+    "Toy.Prophecy.Lender.sel.inj": [],
+    "Toy.Prophecy.Lender.sel.injEq": [
+      "propext"
+    ],
+    "Toy.Prophecy.Lender.sel.noConfusion": [],
+    "Toy.Prophecy.Lender.sel.sizeOf_spec": [],
+    "Toy.Prophecy.NoFrozenAccess": [],
+    "Toy.Prophecy.NoLentAccess": [],
+    "Toy.Prophecy.NoUseAfterEnd": [],
+    "Toy.Prophecy.Op": [],
+    "Toy.Prophecy.Op.assign": [],
+    "Toy.Prophecy.Op.assign.elim": [],
+    "Toy.Prophecy.Op.assign.inj": [],
+    "Toy.Prophecy.Op.assign.injEq": [
+      "propext"
+    ],
+    "Toy.Prophecy.Op.assign.noConfusion": [],
+    "Toy.Prophecy.Op.assign.sizeOf_spec": [],
+    "Toy.Prophecy.Op.binds": [
+      "propext"
+    ],
+    "Toy.Prophecy.Op.binds.eq_1": [
+      "propext"
+    ],
+    "Toy.Prophecy.Op.binds.eq_2": [
+      "propext"
+    ],
+    "Toy.Prophecy.Op.binds.eq_3": [
+      "propext"
+    ],
+    "Toy.Prophecy.Op.binds.eq_4": [
+      "propext"
+    ],
+    "Toy.Prophecy.Op.binds.match_1": [
+      "propext"
+    ],
+    "Toy.Prophecy.Op.borrow": [],
+    "Toy.Prophecy.Op.borrow.elim": [],
+    "Toy.Prophecy.Op.borrow.inj": [],
+    "Toy.Prophecy.Op.borrow.injEq": [
+      "propext"
+    ],
+    "Toy.Prophecy.Op.borrow.noConfusion": [],
+    "Toy.Prophecy.Op.borrow.sizeOf_spec": [],
+    "Toy.Prophecy.Op.borrowSel": [],
+    "Toy.Prophecy.Op.borrowSel.elim": [],
+    "Toy.Prophecy.Op.borrowSel.inj": [],
+    "Toy.Prophecy.Op.borrowSel.injEq": [
+      "propext"
+    ],
+    "Toy.Prophecy.Op.borrowSel.noConfusion": [],
+    "Toy.Prophecy.Op.borrowSel.sizeOf_spec": [],
+    "Toy.Prophecy.Op.casesOn": [],
+    "Toy.Prophecy.Op.ctorElim": [],
+    "Toy.Prophecy.Op.ctorElimType": [],
+    "Toy.Prophecy.Op.ctorIdx": [],
+    "Toy.Prophecy.Op.endBorrow": [],
+    "Toy.Prophecy.Op.endBorrow.elim": [],
+    "Toy.Prophecy.Op.endBorrow.inj": [],
+    "Toy.Prophecy.Op.endBorrow.injEq": [
+      "propext"
+    ],
+    "Toy.Prophecy.Op.endBorrow.noConfusion": [],
+    "Toy.Prophecy.Op.endBorrow.sizeOf_spec": [],
+    "Toy.Prophecy.Op.noConfusion": [],
+    "Toy.Prophecy.Op.noConfusionType": [],
+    "Toy.Prophecy.Op.reborrow": [],
+    "Toy.Prophecy.Op.reborrow.elim": [],
+    "Toy.Prophecy.Op.reborrow.inj": [],
+    "Toy.Prophecy.Op.reborrow.injEq": [
+      "propext"
+    ],
+    "Toy.Prophecy.Op.reborrow.noConfusion": [],
+    "Toy.Prophecy.Op.reborrow.sizeOf_spec": [],
+    "Toy.Prophecy.Op.rec": [],
+    "Toy.Prophecy.Op.recOn": [],
+    "Toy.Prophecy.Op.write": [],
+    "Toy.Prophecy.Op.write.elim": [],
+    "Toy.Prophecy.Op.write.inj": [],
+    "Toy.Prophecy.Op.write.injEq": [
+      "propext"
+    ],
+    "Toy.Prophecy.Op.write.noConfusion": [],
+    "Toy.Prophecy.Op.write.sizeOf_spec": [],
+    "Toy.Prophecy.PRef": [],
+    "Toy.Prophecy.PRef.casesOn": [],
+    "Toy.Prophecy.PRef.ctorIdx": [],
+    "Toy.Prophecy.PRef.cur": [],
+    "Toy.Prophecy.PRef.done": [],
+    "Toy.Prophecy.PRef.fin": [],
+    "Toy.Prophecy.PRef.mk": [],
+    "Toy.Prophecy.PRef.mk.inj": [],
+    "Toy.Prophecy.PRef.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Prophecy.PRef.mk.noConfusion": [],
+    "Toy.Prophecy.PRef.mk.sizeOf_spec": [],
+    "Toy.Prophecy.PRef.noConfusion": [],
+    "Toy.Prophecy.PRef.noConfusionType": [],
+    "Toy.Prophecy.PRef.rec": [],
+    "Toy.Prophecy.PRef.recOn": [],
+    "Toy.Prophecy.PState": [],
+    "Toy.Prophecy.PState.casesOn": [],
+    "Toy.Prophecy.PState.cs": [],
+    "Toy.Prophecy.PState.ctorIdx": [],
+    "Toy.Prophecy.PState.init": [],
+    "Toy.Prophecy.PState.init.eq_1": [],
+    "Toy.Prophecy.PState.mk": [],
+    "Toy.Prophecy.PState.mk.inj": [],
+    "Toy.Prophecy.PState.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Prophecy.PState.mk.noConfusion": [],
+    "Toy.Prophecy.PState.mk.sizeOf_spec": [],
+    "Toy.Prophecy.PState.next": [],
+    "Toy.Prophecy.PState.noConfusion": [],
+    "Toy.Prophecy.PState.noConfusionType": [],
+    "Toy.Prophecy.PState.rec": [],
+    "Toy.Prophecy.PState.recOn": [],
+    "Toy.Prophecy.PState.refs": [],
+    "Toy.Prophecy.PState.store": [],
+    "Toy.Prophecy.Prog": [],
+    "Toy.Prophecy.ProphContract": [
+      "propext"
+    ],
+    "Toy.Prophecy.ProphOutcome": [
+      "propext"
+    ],
+    "Toy.Prophecy.ProphOutcomeWith": [
+      "propext"
+    ],
+    "Toy.Prophecy.RState": [],
+    "Toy.Prophecy.RState.casesOn": [],
+    "Toy.Prophecy.RState.ctorIdx": [],
+    "Toy.Prophecy.RState.init": [],
+    "Toy.Prophecy.RState.init.eq_1": [],
+    "Toy.Prophecy.RState.mk": [],
+    "Toy.Prophecy.RState.mk.inj": [],
+    "Toy.Prophecy.RState.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Prophecy.RState.mk.noConfusion": [],
+    "Toy.Prophecy.RState.mk.sizeOf_spec": [],
+    "Toy.Prophecy.RState.noConfusion": [],
+    "Toy.Prophecy.RState.noConfusionType": [],
+    "Toy.Prophecy.RState.rec": [],
+    "Toy.Prophecy.RState.recOn": [],
+    "Toy.Prophecy.RState.refs": [],
+    "Toy.Prophecy.RState.store": [],
+    "Toy.Prophecy.RStatus": [],
+    "Toy.Prophecy.RStatus.active": [],
+    "Toy.Prophecy.RStatus.active.elim": [],
+    "Toy.Prophecy.RStatus.active.sizeOf_spec": [],
+    "Toy.Prophecy.RStatus.casesOn": [],
+    "Toy.Prophecy.RStatus.ctorElim": [],
+    "Toy.Prophecy.RStatus.ctorElimType": [],
+    "Toy.Prophecy.RStatus.ctorIdx": [],
+    "Toy.Prophecy.RStatus.ended": [],
+    "Toy.Prophecy.RStatus.ended.elim": [],
+    "Toy.Prophecy.RStatus.ended.sizeOf_spec": [],
+    "Toy.Prophecy.RStatus.frozen": [],
+    "Toy.Prophecy.RStatus.frozen.elim": [],
+    "Toy.Prophecy.RStatus.frozen.sizeOf_spec": [],
+    "Toy.Prophecy.RStatus.noConfusion": [],
+    "Toy.Prophecy.RStatus.noConfusionType": [],
+    "Toy.Prophecy.RStatus.ofNat": [],
+    "Toy.Prophecy.RStatus.ofNat_ctorIdx": [],
+    "Toy.Prophecy.RStatus.rec": [],
+    "Toy.Prophecy.RStatus.recOn": [],
+    "Toy.Prophecy.RStatus.unborn": [],
+    "Toy.Prophecy.RStatus.unborn.elim": [],
+    "Toy.Prophecy.RStatus.unborn.sizeOf_spec": [],
+    "Toy.Prophecy.RefVar": [],
+    "Toy.Prophecy.ResPolicy": [],
+    "Toy.Prophecy.ResPolicy.atCalleeExit": [],
+    "Toy.Prophecy.ResPolicy.atEnd": [],
+    "Toy.Prophecy.ResPolicy.casesOn": [],
+    "Toy.Prophecy.ResPolicy.ctorIdx": [],
+    "Toy.Prophecy.ResPolicy.early": [],
+    "Toy.Prophecy.ResPolicy.mk": [],
+    "Toy.Prophecy.ResPolicy.mk.inj": [],
+    "Toy.Prophecy.ResPolicy.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Prophecy.ResPolicy.mk.noConfusion": [],
+    "Toy.Prophecy.ResPolicy.mk.sizeOf_spec": [],
+    "Toy.Prophecy.ResPolicy.noConfusion": [],
+    "Toy.Prophecy.ResPolicy.noConfusionType": [],
+    "Toy.Prophecy.ResPolicy.omitAtCalleeExit": [],
+    "Toy.Prophecy.ResPolicy.omitAtEnd": [],
+    "Toy.Prophecy.ResPolicy.omitAtEnd.eq_1": [],
+    "Toy.Prophecy.ResPolicy.rec": [],
+    "Toy.Prophecy.ResPolicy.recOn": [],
+    "Toy.Prophecy.ResPolicy.resolveAfter": [],
+    "Toy.Prophecy.ResPolicy.resolveAfter.eq_1": [],
+    "Toy.Prophecy.ResPolicy.std": [],
+    "Toy.Prophecy.ResPolicy.std.eq_1": [],
+    "Toy.Prophecy.Sat": [],
+    "Toy.Prophecy.Sat.eq_1": [],
+    "Toy.Prophecy.SelBackSpec": [],
+    "Toy.Prophecy.SelBackSpec.eq_1": [],
+    "Toy.Prophecy.SelProphSpec": [],
+    "Toy.Prophecy.SelProphSpec.eq_1": [],
+    "Toy.Prophecy.Sim.BRel": [],
+    "Toy.Prophecy.Sim.BackOK": [],
+    "Toy.Prophecy.Sim.CPend": [],
+    "Toy.Prophecy.Sim.CRel": [],
+    "Toy.Prophecy.Sim.CRel.active_head": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.CRel.addr": [],
+    "Toy.Prophecy.Sim.CRel.bottom": [],
+    "Toy.Prophecy.Sim.CRel.brB": [],
+    "Toy.Prophecy.Sim.CRel.brP": [],
+    "Toy.Prophecy.Sim.CRel.brR": [],
+    "Toy.Prophecy.Sim.CRel.casesOn": [],
+    "Toy.Prophecy.Sim.CRel.done": [],
+    "Toy.Prophecy.Sim.CRel.frame": [],
+    "Toy.Prophecy.Sim.CRel.head": [],
+    "Toy.Prophecy.Sim.CRel.links": [],
+    "Toy.Prophecy.Sim.CRel.mem": [],
+    "Toy.Prophecy.Sim.CRel.mk": [],
+    "Toy.Prophecy.Sim.CRel.nodup": [],
+    "Toy.Prophecy.Sim.CRel.pback": [],
+    "Toy.Prophecy.Sim.CRel.pbound": [],
+    "Toy.Prophecy.Sim.CRel.pfin": [],
+    "Toy.Prophecy.Sim.CRel.plender": [],
+    "Toy.Prophecy.Sim.CRel.rec": [],
+    "Toy.Prophecy.Sim.CRel.recOn": [],
+    "Toy.Prophecy.Sim.CRel.stuck": [],
+    "Toy.Prophecy.Sim.CRel.viol": [],
+    "Toy.Prophecy.Sim.ExprOK": [],
+    "Toy.Prophecy.Sim.ExprOK.eq_1": [],
+    "Toy.Prophecy.Sim.ExprOK.eq_2": [],
+    "Toy.Prophecy.Sim.ExprOK.eq_3": [],
+    "Toy.Prophecy.Sim.ExprOK.eq_4": [],
+    "Toy.Prophecy.Sim.ExprOK.eq_def": [],
+    "Toy.Prophecy.Sim.ExprOK.match_1": [],
+    "Toy.Prophecy.Sim.ExprStuck": [],
+    "Toy.Prophecy.Sim.ExprStuck.eq_1": [],
+    "Toy.Prophecy.Sim.ExprStuck.eq_2": [],
+    "Toy.Prophecy.Sim.ExprStuck.eq_3": [],
+    "Toy.Prophecy.Sim.ExprStuck.eq_4": [],
+    "Toy.Prophecy.Sim.ExprStuck.eq_def": [],
+    "Toy.Prophecy.Sim.FVc": [],
+    "Toy.Prophecy.Sim.FVc.eq_1": [],
+    "Toy.Prophecy.Sim.FVc.eq_2": [],
+    "Toy.Prophecy.Sim.FVc.eq_def": [],
+    "Toy.Prophecy.Sim.FVc.match_1": [],
+    "Toy.Prophecy.Sim.FVc.match_3": [],
+    "Toy.Prophecy.Sim.FVc_cons_of_ne": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.FVm": [],
+    "Toy.Prophecy.Sim.FVm.eq_1": [],
+    "Toy.Prophecy.Sim.FVm.eq_2": [],
+    "Toy.Prophecy.Sim.FVm.eq_def": [],
+    "Toy.Prophecy.Sim.FVm.match_1": [],
+    "Toy.Prophecy.Sim.FVm.match_3": [],
+    "Toy.Prophecy.Sim.FVm_cons_of_ne": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.LendsLoc": [],
+    "Toy.Prophecy.Sim.LendsLoc.eq_1": [],
+    "Toy.Prophecy.Sim.LinkAt": [],
+    "Toy.Prophecy.Sim.Links": [],
+    "Toy.Prophecy.Sim.Links.eq_1": [],
+    "Toy.Prophecy.Sim.Links.eq_2": [],
+    "Toy.Prophecy.Sim.Links.eq_3": [],
+    "Toy.Prophecy.Sim.Links.eq_def": [],
+    "Toy.Prophecy.Sim.Links.match_1": [],
+    "Toy.Prophecy.Sim.Live": [],
+    "Toy.Prophecy.Sim.Live.eq_1": [],
+    "Toy.Prophecy.Sim.MPend": [],
+    "Toy.Prophecy.Sim.MRel": [],
+    "Toy.Prophecy.Sim.MRel.active_head": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.MRel.bound": [],
+    "Toy.Prophecy.Sim.MRel.brB": [],
+    "Toy.Prophecy.Sim.MRel.brP": [],
+    "Toy.Prophecy.Sim.MRel.brR": [],
+    "Toy.Prophecy.Sim.MRel.casesOn": [],
+    "Toy.Prophecy.Sim.MRel.ch_nil_of_not_lent": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.MRel.eval": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.MRel.free": [],
+    "Toy.Prophecy.Sim.MRel.head": [],
+    "Toy.Prophecy.Sim.MRel.lendsLent": [],
+    "Toy.Prophecy.Sim.MRel.lendsUniq": [],
+    "Toy.Prophecy.Sim.MRel.lent_of_ch": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.MRel.links": [],
+    "Toy.Prophecy.Sim.MRel.live_of_mem": [],
+    "Toy.Prophecy.Sim.MRel.mem": [],
+    "Toy.Prophecy.Sim.MRel.mem_addr": [],
+    "Toy.Prophecy.Sim.MRel.mk": [],
+    "Toy.Prophecy.Sim.MRel.nodup": [],
+    "Toy.Prophecy.Sim.MRel.rec": [],
+    "Toy.Prophecy.Sim.MRel.recOn": [],
+    "Toy.Prophecy.Sim.MRel.root": [],
+    "Toy.Prophecy.Sim.MRel.stuck": [],
+    "Toy.Prophecy.Sim.MRel.unborn_not_mem": [],
+    "Toy.Prophecy.Sim.MRel.viol": [],
+    "Toy.Prophecy.Sim.OpStuck": [],
+    "Toy.Prophecy.Sim.OpStuck.match_1": [],
+    "Toy.Prophecy.Sim.RootOK": [],
+    "Toy.Prophecy.Sim.SameShape": [],
+    "Toy.Prophecy.Sim.SameShape.bound": [],
+    "Toy.Prophecy.Sim.SameShape.casesOn": [],
+    "Toy.Prophecy.Sim.SameShape.lender": [],
+    "Toy.Prophecy.Sim.SameShape.lent": [],
+    "Toy.Prophecy.Sim.SameShape.mk": [],
+    "Toy.Prophecy.Sim.SameShape.rec": [],
+    "Toy.Prophecy.Sim.SameShape.recOn": [],
+    "Toy.Prophecy.Sim.SameShape.status": [],
+    "Toy.Prophecy.Sim.Stmt.binds": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.Stmt.binds.eq_1": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.Stmt.binds.eq_2": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.Stmt.binds.match_1": [],
+    "Toy.Prophecy.Sim.T4C": [],
+    "Toy.Prophecy.Sim.T4Rel": [],
+    "Toy.Prophecy.Sim.T4Rel.backs": [],
+    "Toy.Prophecy.Sim.T4Rel.brel": [],
+    "Toy.Prophecy.Sim.T4Rel.casesOn": [],
+    "Toy.Prophecy.Sim.T4Rel.depth": [],
+    "Toy.Prophecy.Sim.T4Rel.mk": [],
+    "Toy.Prophecy.Sim.T4Rel.param": [],
+    "Toy.Prophecy.Sim.T4Rel.rec": [],
+    "Toy.Prophecy.Sim.T4Rel.recOn": [],
+    "Toy.Prophecy.Sim.T4Rel.stuck": [],
+    "Toy.Prophecy.Sim.addV_ite_lender": [],
+    "Toy.Prophecy.Sim.addV_ite_lent": [],
+    "Toy.Prophecy.Sim.addV_ite_status": [],
+    "Toy.Prophecy.Sim.addV_ite_stuck": [],
+    "Toy.Prophecy.Sim.append_eq_self": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.applyBack_backs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.applyBack_backs.match_1_1": [],
+    "Toy.Prophecy.Sim.applyBack_refs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.applyBack_refs.match_1_1": [],
+    "Toy.Prophecy.Sim.bindRef_bound": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.bindRef_clean": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.bindRef_lent": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.bindRef_status": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.bindRef_stuck": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.bindRef_viol": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.bound_of": [],
+    "Toy.Prophecy.Sim.brel_step": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.c_run_exist": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.c_run_exist.match_1_1": [],
+    "Toy.Prophecy.Sim.c_run_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.c_run_sound.match_1_1": [],
+    "Toy.Prophecy.Sim.c_step_end": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.c_step_reborrow": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.c_step_write": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.calleeB_stuck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.calleeInit_brelB": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.calleeInit_brelP": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.calleeInit_brelR": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.calleeP_stuck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.calleeR_stuck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.calleeRunP_congr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.calleeRunP_next": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.callee_op_not_local": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.callee_summary": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.checkCallee_viol": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.checkExpr_clean": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.checkExpr_clean.match_1_1": [],
+    "Toy.Prophecy.Sim.checkExpr_clean_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.checkExpr_shape": [],
+    "Toy.Prophecy.Sim.checkExpr_shape.match_1_1": [],
+    "Toy.Prophecy.Sim.checkExpr_stuck": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.checkExpr_stuck.match_1_1": [],
+    "Toy.Prophecy.Sim.checkExpr_stuck_mono": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.checkExpr_stuck_mono.match_1_1": [],
+    "Toy.Prophecy.Sim.checkExpr_viol": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.checkExpr_viol.match_1_1": [],
+    "Toy.Prophecy.Sim.checkOp_not_stuck_of_checkOps": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.checkOp_ns_cases": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.checkOp_ns_cases.match_1": [],
+    "Toy.Prophecy.Sim.checkOp_of_stuck": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.checkOp_status_unborn": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.checkOp_stuck": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.checkOp_viol": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.checkOps_of_stuck'": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.checkOps_of_stuck'.match_1_1": [],
+    "Toy.Prophecy.Sim.checkOps_viol": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.checkOps_viol.match_1_1": [],
+    "Toy.Prophecy.Sim.checkStmt_call_status_unborn": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.checkStmt_not_stuck_of_checkStmts": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.checkStmt_of_stuck": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.checkStmt_viol": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.checkStmts_of_stuck'": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.checkStmts_of_stuck'.match_1_1": [],
+    "Toy.Prophecy.Sim.checkStmts_viol": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.checkStmts_viol.match_1_1": [],
+    "Toy.Prophecy.Sim.clean_assign": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.clean_borrow": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.clean_borrowSel": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.clean_call": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.clean_endBorrow": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.clean_reborrow": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.clean_write": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.crel_init": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.cstate_ext": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.curR": [],
+    "Toy.Prophecy.Sim.curR.eq_1": [],
+    "Toy.Prophecy.Sim.evalB_none_of_stuck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.evalB_none_of_stuck.match_1_1": [],
+    "Toy.Prophecy.Sim.evalB_some_of_not_stuck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.evalB_some_of_not_stuck.match_1_1": [],
+    "Toy.Prophecy.Sim.evalP_none_of_stuck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.evalP_none_of_stuck.match_1_1": [],
+    "Toy.Prophecy.Sim.evalP_some_of_not_stuck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.evalP_some_of_not_stuck.match_1_1": [],
+    "Toy.Prophecy.Sim.evalR_none_of_stuck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.evalR_none_of_stuck.match_1_1": [],
+    "Toy.Prophecy.Sim.evalR_some_of_not_stuck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.evalR_some_of_not_stuck.match_1_1": [],
+    "Toy.Prophecy.Sim.eval_agree": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.eval_agree.match_1_1": [],
+    "Toy.Prophecy.Sim.exitCs_inv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.final_store_P": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.fupd_apply": [],
+    "Toy.Prophecy.Sim.getLast?_some_of_ne_nil": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.getLast?_some_of_ne_nil.match_1_1": [],
+    "Toy.Prophecy.Sim.linkAt_congr": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.links_child": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.links_child.match_1_1": [],
+    "Toy.Prophecy.Sim.links_congr": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.links_congr.match_1_1": [],
+    "Toy.Prophecy.Sim.links_fin_pf": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.links_fin_pf.match_1_1": [],
+    "Toy.Prophecy.Sim.links_refs_eq": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.links_tail": [],
+    "Toy.Prophecy.Sim.live_after": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.live_unborn_ne": [],
+    "Toy.Prophecy.Sim.m_end_root": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.m_end_root.match_1_3": [],
+    "Toy.Prophecy.Sim.m_end_root.match_1_5": [],
+    "Toy.Prophecy.Sim.m_end_root.match_1_7": [],
+    "Toy.Prophecy.Sim.m_pop": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.m_pop.match_1_1": [],
+    "Toy.Prophecy.Sim.m_pop.match_1_3": [],
+    "Toy.Prophecy.Sim.m_push": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.m_run_exist": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.m_run_exist.match_1_1": [],
+    "Toy.Prophecy.Sim.m_run_sound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.m_run_sound.match_1_1": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.m_sel_core": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.m_step": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.m_step_assign": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.m_step_borrow": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.m_step_borrowSel": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.m_step_call": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.m_step_end": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.m_step_exist": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.m_step_reborrow": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.m_step_write": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.map_eq_some_of": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.mem_exitCs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.mem_refNames": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.mrel_init": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.ne_nil_of_getLast?": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.no_live_of_allEnded": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.noactive_contra": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.noactive_contra.match_1_1": [],
+    "Toy.Prophecy.Sim.release_bound": [],
+    "Toy.Prophecy.Sim.release_lender": [],
+    "Toy.Prophecy.Sim.release_loc": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.release_none": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.release_ref": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.release_sel": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.release_status_unborn": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.release_stuck": [],
+    "Toy.Prophecy.Sim.release_viol": [],
+    "Toy.Prophecy.Sim.rootOK_congr": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.runB_none_of_stuck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.runB_none_of_stuck.match_1_1": [],
+    "Toy.Prophecy.Sim.runOpsB_brel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.runOpsB_brel.match_1_1": [],
+    "Toy.Prophecy.Sim.runOpsB_none_of_stuck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.runOpsB_none_of_stuck.match_1_1": [],
+    "Toy.Prophecy.Sim.runOpsP_bound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.runOpsP_bound.match_1_1": [],
+    "Toy.Prophecy.Sim.runOpsP_brel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.runOpsP_brel.match_1_1": [],
+    "Toy.Prophecy.Sim.runOpsP_congr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.runOpsP_congr.match_1_1": [],
+    "Toy.Prophecy.Sim.runOpsP_cs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.runOpsP_cs.match_1_1": [],
+    "Toy.Prophecy.Sim.runOpsP_next": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.runOpsP_next.match_1_1": [],
+    "Toy.Prophecy.Sim.runOpsP_none_of_stuck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.runOpsP_none_of_stuck.match_1_1": [],
+    "Toy.Prophecy.Sim.runOpsP_some": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.runOpsP_some.match_1_1": [],
+    "Toy.Prophecy.Sim.runOpsR_brel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.runOpsR_brel.match_1_1": [],
+    "Toy.Prophecy.Sim.runOpsR_none_of_stuck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.runOpsR_none_of_stuck.match_1_1": [],
+    "Toy.Prophecy.Sim.runP_cs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.runP_cs.match_1_1": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.runP_none_of_stuck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.runP_none_of_stuck.match_1_1": [],
+    "Toy.Prophecy.Sim.runP_std_next": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.runP_std_next.match_1_1": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.runR_none_of_stuck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.runR_none_of_stuck.match_1_1": [],
+    "Toy.Prophecy.Sim.sat_append": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.sat_of_append": [],
+    "Toy.Prophecy.Sim.stepB_call_refs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.stepOpB_none": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.stepOpB_none.match_1_1": [],
+    "Toy.Prophecy.Sim.stepOpB_refs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.stepOpP_bind_fin": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.stepOpP_congr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.stepOpP_cs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.stepOpP_fin": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.stepOpP_next": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.stepOpP_none": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.stepOpP_none.match_1_1": [],
+    "Toy.Prophecy.Sim.stepOpP_refs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.stepOpP_some": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.stepOpR_none": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.stepOpR_none.match_1_1": [],
+    "Toy.Prophecy.Sim.stepOpR_refs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.stepOpR_some": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.stepP_call_refs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.stepP_cs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.stepP_std_call": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.stepP_std_congr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.stepP_std_next": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.stepP_std_op": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.stepR_call_refs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.store_set_apply": [],
+    "Toy.Prophecy.Sim.t4_run": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.t4_run.match_1_1": [],
+    "Toy.Prophecy.Sim.t4_step": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.t4_unwind": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.t4_unwind.match_1_1": [],
+    "Toy.Prophecy.Sim.t4c_congr": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.upd_apply": [],
+    "Toy.Prophecy.Sim.useRef_active": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.useRef_clean": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.useRef_ended": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.useRef_frozen": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.useRef_shape": [],
+    "Toy.Prophecy.Sim.useRef_stuck_iff": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.useRef_stuck_mono": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.useRef_unborn": [
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.useRef_viol": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.viol_eq_of_append": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.viol_eq_of_checkOps": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.viol_nil_of_checkOps": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.viol_nil_of_checkStmts": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.viol_nil_of_discipline": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Sim.viol_prefix_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.Stmt": [],
+    "Toy.Prophecy.Stmt.call": [],
+    "Toy.Prophecy.Stmt.call.elim": [],
+    "Toy.Prophecy.Stmt.call.inj": [],
+    "Toy.Prophecy.Stmt.call.injEq": [
+      "propext"
+    ],
+    "Toy.Prophecy.Stmt.call.noConfusion": [],
+    "Toy.Prophecy.Stmt.call.sizeOf_spec": [],
+    "Toy.Prophecy.Stmt.casesOn": [],
+    "Toy.Prophecy.Stmt.ctorElim": [],
+    "Toy.Prophecy.Stmt.ctorElimType": [],
+    "Toy.Prophecy.Stmt.ctorIdx": [],
+    "Toy.Prophecy.Stmt.noConfusion": [],
+    "Toy.Prophecy.Stmt.noConfusionType": [],
+    "Toy.Prophecy.Stmt.op": [],
+    "Toy.Prophecy.Stmt.op.elim": [],
+    "Toy.Prophecy.Stmt.op.inj": [],
+    "Toy.Prophecy.Stmt.op.injEq": [
+      "propext"
+    ],
+    "Toy.Prophecy.Stmt.op.noConfusion": [],
+    "Toy.Prophecy.Stmt.op.sizeOf_spec": [],
+    "Toy.Prophecy.Stmt.rec": [],
+    "Toy.Prophecy.Stmt.recOn": [],
+    "Toy.Prophecy.Store": [],
+    "Toy.Prophecy.Store.set": [],
+    "Toy.Prophecy.Store.set.eq_1": [],
+    "Toy.Prophecy.Target": [],
+    "Toy.Prophecy.Target.casesOn": [],
+    "Toy.Prophecy.Target.ctorElim": [],
+    "Toy.Prophecy.Target.ctorElimType": [],
+    "Toy.Prophecy.Target.ctorIdx": [],
+    "Toy.Prophecy.Target.loc": [],
+    "Toy.Prophecy.Target.loc.elim": [],
+    "Toy.Prophecy.Target.loc.inj": [],
+    "Toy.Prophecy.Target.loc.injEq": [
+      "propext"
+    ],
+    "Toy.Prophecy.Target.loc.noConfusion": [],
+    "Toy.Prophecy.Target.loc.sizeOf_spec": [],
+    "Toy.Prophecy.Target.noConfusion": [],
+    "Toy.Prophecy.Target.noConfusionType": [],
+    "Toy.Prophecy.Target.rec": [],
+    "Toy.Prophecy.Target.recOn": [],
+    "Toy.Prophecy.Target.ref": [],
+    "Toy.Prophecy.Target.ref.elim": [],
+    "Toy.Prophecy.Target.ref.inj": [],
+    "Toy.Prophecy.Target.ref.injEq": [
+      "propext"
+    ],
+    "Toy.Prophecy.Target.ref.noConfusion": [],
+    "Toy.Prophecy.Target.ref.sizeOf_spec": [],
+    "Toy.Prophecy.Var": [],
+    "Toy.Prophecy.Violation": [],
+    "Toy.Prophecy.Violation.casesOn": [],
+    "Toy.Prophecy.Violation.ctorElim": [],
+    "Toy.Prophecy.Violation.ctorElimType": [],
+    "Toy.Prophecy.Violation.ctorIdx": [],
+    "Toy.Prophecy.Violation.frozenAccess": [],
+    "Toy.Prophecy.Violation.frozenAccess.elim": [],
+    "Toy.Prophecy.Violation.frozenAccess.sizeOf_spec": [],
+    "Toy.Prophecy.Violation.lentAccess": [],
+    "Toy.Prophecy.Violation.lentAccess.elim": [],
+    "Toy.Prophecy.Violation.lentAccess.sizeOf_spec": [],
+    "Toy.Prophecy.Violation.noConfusion": [],
+    "Toy.Prophecy.Violation.noConfusionType": [],
+    "Toy.Prophecy.Violation.ofNat": [],
+    "Toy.Prophecy.Violation.ofNat_ctorIdx": [],
+    "Toy.Prophecy.Violation.rebind": [],
+    "Toy.Prophecy.Violation.rebind.elim": [],
+    "Toy.Prophecy.Violation.rebind.sizeOf_spec": [],
+    "Toy.Prophecy.Violation.rec": [],
+    "Toy.Prophecy.Violation.recOn": [],
+    "Toy.Prophecy.Violation.unendedAtExit": [],
+    "Toy.Prophecy.Violation.unendedAtExit.elim": [],
+    "Toy.Prophecy.Violation.unendedAtExit.sizeOf_spec": [],
+    "Toy.Prophecy.Violation.useAfterEnd": [],
+    "Toy.Prophecy.Violation.useAfterEnd.elim": [],
+    "Toy.Prophecy.Violation.useAfterEnd.sizeOf_spec": [],
+    "Toy.Prophecy.applyBack": [],
+    "Toy.Prophecy.applyBack.eq_1": [],
+    "Toy.Prophecy.applyBack.eq_2": [],
+    "Toy.Prophecy.applyBack.eq_3": [],
+    "Toy.Prophecy.applyBack.eq_def": [],
+    "Toy.Prophecy.applyBack.match_1": [],
+    "Toy.Prophecy.applyBack_neg": [],
+    "Toy.Prophecy.applyBack_pos": [],
+    "Toy.Prophecy.backLenders01": [],
+    "Toy.Prophecy.backLenders01.eq_1": [],
+    "Toy.Prophecy.backLenders01_neg": [],
+    "Toy.Prophecy.backLenders01_pos": [],
+    "Toy.Prophecy.backSem": [
+      "propext"
+    ],
+    "Toy.Prophecy.backSem.eq_1": [
+      "propext"
+    ],
+    "Toy.Prophecy.backSem_eq_refSem_aux": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.backSem_eq_refSem_of_discipline": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.backSem_eq_refSem_tight_allEndedAtExit": [
+      "propext"
+    ],
+    "Toy.Prophecy.backSem_eq_refSem_tight_freshBindings": [
+      "propext"
+    ],
+    "Toy.Prophecy.backSem_eq_refSem_tight_noFrozenAccess": [
+      "propext"
+    ],
+    "Toy.Prophecy.backSem_eq_refSem_tight_noLentAccess": [
+      "propext"
+    ],
+    "Toy.Prophecy.backSem_eq_refSem_tight_noUseAfterEnd": [
+      "propext"
+    ],
+    "Toy.Prophecy.backSem_neg_not_in_place": [
+      "propext"
+    ],
+    "Toy.Prophecy.backSem_neg_unbound": [
+      "propext"
+    ],
+    "Toy.Prophecy.backSem_pos_call": [
+      "propext"
+    ],
+    "Toy.Prophecy.backSem_pos_nested": [
+      "propext"
+    ],
+    "Toy.Prophecy.backSem_selIncr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.borrowSel_lends_both": [],
+    "Toy.Prophecy.callDeep": [],
+    "Toy.Prophecy.callDeep.eq_1": [],
+    "Toy.Prophecy.callDeepOut": [],
+    "Toy.Prophecy.callDeepOut.eq_1": [],
+    "Toy.Prophecy.callDeep_omitAtCalleeExit_admits_real": [
+      "propext"
+    ],
+    "Toy.Prophecy.callDeep_omitAtEnd0_callee_still_resolved": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.callDeep_prophOutcome_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.callDeep_std_excludes_spurious": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.calleeAvoids_lentAccess_unendedAtExit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.calleeAvoids_lentAccess_unendedAtExit.match_1_1": [],
+    "Toy.Prophecy.calleeAvoids_pos_neg": [
+      "propext"
+    ],
+    "Toy.Prophecy.calleeBack": [
+      "propext"
+    ],
+    "Toy.Prophecy.calleeBack.eq_1": [
+      "propext"
+    ],
+    "Toy.Prophecy.calleeBack?": [
+      "propext"
+    ],
+    "Toy.Prophecy.calleeBack?.eq_1": [
+      "propext"
+    ],
+    "Toy.Prophecy.calleeBackOpt_eq_some_of_calleeBack_eq_of_ne_zero": [
+      "propext"
+    ],
+    "Toy.Prophecy.calleeBack_eq_final_aux": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.calleeBack_eq_final_of_calleeScoped_of_calleeFreshBindings": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.calleeBack_eq_final_tight_rebind": [
+      "propext"
+    ],
+    "Toy.Prophecy.calleeBack_eq_final_tight_scoped": [
+      "propext"
+    ],
+    "Toy.Prophecy.calleeBack_masks_none_at_zero": [
+      "propext"
+    ],
+    "Toy.Prophecy.calleeBack_neg": [
+      "propext"
+    ],
+    "Toy.Prophecy.calleeBack_pos": [
+      "propext"
+    ],
+    "Toy.Prophecy.calleeDiscipline_pos_neg": [
+      "propext"
+    ],
+    "Toy.Prophecy.calleeExitCs": [
+      "propext"
+    ],
+    "Toy.Prophecy.calleeExitCs.eq_1": [
+      "propext"
+    ],
+    "Toy.Prophecy.calleeExitCs.match_1": [],
+    "Toy.Prophecy.calleeExit_neg": [
+      "propext"
+    ],
+    "Toy.Prophecy.calleeExit_pos": [
+      "propext"
+    ],
+    "Toy.Prophecy.calleeFwd": [],
+    "Toy.Prophecy.calleeFwd.eq_1": [],
+    "Toy.Prophecy.calleeFwd_neg": [],
+    "Toy.Prophecy.calleeFwd_pos": [],
+    "Toy.Prophecy.calleeInitB": [],
+    "Toy.Prophecy.calleeInitB.eq_1": [],
+    "Toy.Prophecy.calleeInitP": [],
+    "Toy.Prophecy.calleeInitP.eq_1": [],
+    "Toy.Prophecy.calleeRefsR": [],
+    "Toy.Prophecy.calleeRefsR.eq_1": [],
+    "Toy.Prophecy.calleeRunB": [],
+    "Toy.Prophecy.calleeRunB.eq_1": [],
+    "Toy.Prophecy.calleeRunP": [
+      "propext"
+    ],
+    "Toy.Prophecy.calleeRunP.eq_1": [
+      "propext"
+    ],
+    "Toy.Prophecy.calleeScoped_pos_neg": [],
+    "Toy.Prophecy.calleeViolations": [],
+    "Toy.Prophecy.calleeViolations.eq_1": [],
+    "Toy.Prophecy.checkCallee": [],
+    "Toy.Prophecy.checkCallee.eq_1": [],
+    "Toy.Prophecy.checkExpr": [],
+    "Toy.Prophecy.checkExpr.eq_1": [],
+    "Toy.Prophecy.checkExpr.eq_2": [],
+    "Toy.Prophecy.checkExpr.eq_3": [],
+    "Toy.Prophecy.checkExpr.eq_4": [],
+    "Toy.Prophecy.checkExpr.eq_def": [],
+    "Toy.Prophecy.checkExpr.match_1": [],
+    "Toy.Prophecy.checkExpr_callee_no_lent_unended": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.checkOp": [],
+    "Toy.Prophecy.checkOp.eq_1": [],
+    "Toy.Prophecy.checkOp.eq_2": [],
+    "Toy.Prophecy.checkOp.eq_3": [],
+    "Toy.Prophecy.checkOp.eq_4": [],
+    "Toy.Prophecy.checkOp.eq_5": [],
+    "Toy.Prophecy.checkOp.eq_6": [],
+    "Toy.Prophecy.checkOp.match_1": [],
+    "Toy.Prophecy.checkOp_callee_no_lent_unended": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.checkOps": [],
+    "Toy.Prophecy.checkOps.eq_1": [],
+    "Toy.Prophecy.checkOps.eq_2": [],
+    "Toy.Prophecy.checkOps.eq_def": [],
+    "Toy.Prophecy.checkOps.match_1": [],
+    "Toy.Prophecy.checkOps_callee_no_lent_unended": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.checkOps_callee_no_lent_unended.match_1_1": [],
+    "Toy.Prophecy.checkOps_of_stuck": [
+      "propext"
+    ],
+    "Toy.Prophecy.checkOps_of_stuck.match_1_1": [],
+    "Toy.Prophecy.checkStmt": [],
+    "Toy.Prophecy.checkStmt.eq_1": [],
+    "Toy.Prophecy.checkStmt.eq_2": [],
+    "Toy.Prophecy.checkStmt.match_1": [],
+    "Toy.Prophecy.checkStmts": [],
+    "Toy.Prophecy.checkStmts.eq_1": [],
+    "Toy.Prophecy.checkStmts.eq_2": [],
+    "Toy.Prophecy.checkStmts.eq_def": [],
+    "Toy.Prophecy.checkStmts.match_1": [],
+    "Toy.Prophecy.checkStmts_of_stuck": [
+      "propext"
+    ],
+    "Toy.Prophecy.checkStmts_of_stuck.match_1_1": [],
+    "Toy.Prophecy.cxAfterEnd": [],
+    "Toy.Prophecy.cxAfterEndUnsat": [],
+    "Toy.Prophecy.cxAfterEndUnsat.eq_1": [],
+    "Toy.Prophecy.cxAfterEndUnsat_back": [
+      "propext"
+    ],
+    "Toy.Prophecy.cxAfterEndUnsat_no_proph": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.cxAfterEndUnsat_no_proph_omit0": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.cxAfterEndUnsat_ref": [],
+    "Toy.Prophecy.cxAfterEndUnsat_violations": [],
+    "Toy.Prophecy.cxAfterEnd_back": [
+      "propext"
+    ],
+    "Toy.Prophecy.cxAfterEnd_proph": [
+      "propext"
+    ],
+    "Toy.Prophecy.cxAfterEnd_ref": [],
+    "Toy.Prophecy.cxAfterEnd_violations": [],
+    "Toy.Prophecy.cxCalleeAfterEnd": [],
+    "Toy.Prophecy.cxCalleeAfterEnd_violations": [],
+    "Toy.Prophecy.cxCalleeEndedRebind": [],
+    "Toy.Prophecy.cxCalleeEndedRebind_cycle": [
+      "propext"
+    ],
+    "Toy.Prophecy.cxCalleeFrozen": [],
+    "Toy.Prophecy.cxCalleeFrozen_violations": [],
+    "Toy.Prophecy.cxCalleeLocal": [],
+    "Toy.Prophecy.cxCalleeLocal_avoids_all_no_contract": [
+      "propext"
+    ],
+    "Toy.Prophecy.cxCalleeLocal_not_scoped": [],
+    "Toy.Prophecy.cxCalleeLocal_violations": [],
+    "Toy.Prophecy.cxCalleeRebind": [],
+    "Toy.Prophecy.cxCalleeRebind_violations": [],
+    "Toy.Prophecy.cxFrozen": [],
+    "Toy.Prophecy.cxFrozen.eq_1": [],
+    "Toy.Prophecy.cxFrozen_back": [
+      "propext"
+    ],
+    "Toy.Prophecy.cxFrozen_proph": [
+      "propext"
+    ],
+    "Toy.Prophecy.cxFrozen_proph_forces": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.cxFrozen_ref": [],
+    "Toy.Prophecy.cxFrozen_violations": [],
+    "Toy.Prophecy.cxLent": [],
+    "Toy.Prophecy.cxLent.eq_1": [],
+    "Toy.Prophecy.cxLent_back": [
+      "propext"
+    ],
+    "Toy.Prophecy.cxLent_omit0_forces": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.cxLent_proph": [
+      "propext"
+    ],
+    "Toy.Prophecy.cxLent_proph_forces": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.cxLent_ref": [],
+    "Toy.Prophecy.cxLent_ref01": [],
+    "Toy.Prophecy.cxLent_violations": [],
+    "Toy.Prophecy.cxRebind": [],
+    "Toy.Prophecy.cxRebind_back": [
+      "propext"
+    ],
+    "Toy.Prophecy.cxRebind_proph": [
+      "propext"
+    ],
+    "Toy.Prophecy.cxRebind_real_outcome_admitted": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.cxRebind_ref": [],
+    "Toy.Prophecy.cxRebind_violations": [],
+    "Toy.Prophecy.cxUnended": [],
+    "Toy.Prophecy.cxUnended_back": [
+      "propext"
+    ],
+    "Toy.Prophecy.cxUnended_proph": [
+      "propext"
+    ],
+    "Toy.Prophecy.cxUnended_ref": [],
+    "Toy.Prophecy.cxUnended_violations": [],
+    "Toy.Prophecy.deepCallee": [],
+    "Toy.Prophecy.deepCallee.eq_1": [],
+    "Toy.Prophecy.deepCallee_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Prophecy.discipline_pos": [],
+    "Toy.Prophecy.earlyCs": [],
+    "Toy.Prophecy.earlyCs.eq_1": [],
+    "Toy.Prophecy.emptyBodyUnboundRet": [],
+    "Toy.Prophecy.emptyBody_unboundRet_not_scoped": [
+      "propext"
+    ],
+    "Toy.Prophecy.emptyCallee": [],
+    "Toy.Prophecy.emptyCallee.eq_1": [],
+    "Toy.Prophecy.emptyCallee_edge_case": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.emptyProg_edge_case": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.endParentFirst": [],
+    "Toy.Prophecy.endParentFirst.eq_1": [],
+    "Toy.Prophecy.endParentFirstChildUnended": [],
+    "Toy.Prophecy.endParentFirstChildUnended_imprecise": [
+      "propext"
+    ],
+    "Toy.Prophecy.endParentFirst_prophecy_exact_backward_lossy": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.end_parent_first_neg": [],
+    "Toy.Prophecy.eq_some_of_forall_map": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.evalB": [],
+    "Toy.Prophecy.evalB.eq_1": [],
+    "Toy.Prophecy.evalB.eq_2": [],
+    "Toy.Prophecy.evalB.eq_3": [],
+    "Toy.Prophecy.evalB.eq_4": [],
+    "Toy.Prophecy.evalB.eq_def": [],
+    "Toy.Prophecy.evalB.match_1": [],
+    "Toy.Prophecy.evalP": [],
+    "Toy.Prophecy.evalP.eq_1": [],
+    "Toy.Prophecy.evalP.eq_2": [],
+    "Toy.Prophecy.evalP.eq_3": [],
+    "Toy.Prophecy.evalP.eq_4": [],
+    "Toy.Prophecy.evalP.eq_def": [],
+    "Toy.Prophecy.evalP.match_1": [],
+    "Toy.Prophecy.evalP_congr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.evalP_congr.match_1_1": [],
+    "Toy.Prophecy.evalR": [],
+    "Toy.Prophecy.evalR.eq_1": [],
+    "Toy.Prophecy.evalR.eq_2": [],
+    "Toy.Prophecy.evalR.eq_3": [],
+    "Toy.Prophecy.evalR.eq_4": [],
+    "Toy.Prophecy.evalR.eq_def": [],
+    "Toy.Prophecy.evalR.match_1": [],
+    "Toy.Prophecy.fupd": [],
+    "Toy.Prophecy.fupd.eq_1": [],
+    "Toy.Prophecy.fupd_neg": [],
+    "Toy.Prophecy.fupd_pos": [],
+    "Toy.Prophecy.idStore": [],
+    "Toy.Prophecy.idStore.eq_1": [],
+    "Toy.Prophecy.incCallee": [],
+    "Toy.Prophecy.incCallee.eq_1": [],
+    "Toy.Prophecy.inclusion_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.instDecidableAvoids": [
+      "propext"
+    ],
+    "Toy.Prophecy.instDecidableCalleeAvoids": [
+      "propext"
+    ],
+    "Toy.Prophecy.instDecidableCalleeScoped": [],
+    "Toy.Prophecy.instDecidableEqCallee": [],
+    "Toy.Prophecy.instDecidableEqCallee.decEq": [],
+    "Toy.Prophecy.instDecidableEqCallee.decEq.match_1": [],
+    "Toy.Prophecy.instDecidableEqExpr": [],
+    "Toy.Prophecy.instDecidableEqExpr.decEq": [],
+    "Toy.Prophecy.instDecidableEqExpr.decEq.match_1": [],
+    "Toy.Prophecy.instDecidableEqLender": [],
+    "Toy.Prophecy.instDecidableEqLender.decEq": [],
+    "Toy.Prophecy.instDecidableEqLender.decEq.match_1": [],
+    "Toy.Prophecy.instDecidableEqOp": [],
+    "Toy.Prophecy.instDecidableEqOp.decEq": [],
+    "Toy.Prophecy.instDecidableEqOp.decEq.match_1": [],
+    "Toy.Prophecy.instDecidableEqPRef": [],
+    "Toy.Prophecy.instDecidableEqPRef.decEq": [],
+    "Toy.Prophecy.instDecidableEqPRef.decEq.match_1": [],
+    "Toy.Prophecy.instDecidableEqRStatus": [],
+    "Toy.Prophecy.instDecidableEqStmt": [],
+    "Toy.Prophecy.instDecidableEqStmt.decEq": [],
+    "Toy.Prophecy.instDecidableEqStmt.decEq.match_1": [],
+    "Toy.Prophecy.instDecidableEqTarget": [],
+    "Toy.Prophecy.instDecidableEqTarget.decEq": [],
+    "Toy.Prophecy.instDecidableEqTarget.decEq.match_1": [],
+    "Toy.Prophecy.instDecidableEqViolation": [],
+    "Toy.Prophecy.instDecidableSat": [],
+    "Toy.Prophecy.instReprCallee": [
+      "propext"
+    ],
+    "Toy.Prophecy.instReprCallee.repr": [
+      "propext"
+    ],
+    "Toy.Prophecy.instReprExpr": [
+      "propext"
+    ],
+    "Toy.Prophecy.instReprExpr.repr": [
+      "propext"
+    ],
+    "Toy.Prophecy.instReprExpr.repr.match_1": [],
+    "Toy.Prophecy.instReprLender": [],
+    "Toy.Prophecy.instReprLender.repr": [],
+    "Toy.Prophecy.instReprLender.repr.match_1": [],
+    "Toy.Prophecy.instReprOp": [
+      "propext"
+    ],
+    "Toy.Prophecy.instReprOp.repr": [
+      "propext"
+    ],
+    "Toy.Prophecy.instReprOp.repr.match_1": [],
+    "Toy.Prophecy.instReprPRef": [
+      "propext"
+    ],
+    "Toy.Prophecy.instReprPRef.repr": [
+      "propext"
+    ],
+    "Toy.Prophecy.instReprRStatus": [],
+    "Toy.Prophecy.instReprRStatus.repr": [],
+    "Toy.Prophecy.instReprRStatus.repr.match_1": [],
+    "Toy.Prophecy.instReprStmt": [
+      "propext"
+    ],
+    "Toy.Prophecy.instReprStmt.repr": [
+      "propext"
+    ],
+    "Toy.Prophecy.instReprStmt.repr.match_1": [],
+    "Toy.Prophecy.instReprTarget": [],
+    "Toy.Prophecy.instReprTarget.repr": [],
+    "Toy.Prophecy.instReprTarget.repr.match_1": [],
+    "Toy.Prophecy.instReprViolation": [],
+    "Toy.Prophecy.instReprViolation.repr": [],
+    "Toy.Prophecy.instReprViolation.repr.match_1": [],
+    "Toy.Prophecy.ne_of_map_ne": [],
+    "Toy.Prophecy.nestedReborrows": [],
+    "Toy.Prophecy.not_prophOutcome_iff_of_admitted": [
+      "propext"
+    ],
+    "Toy.Prophecy.not_prophOutcome_iff_of_not_admitted": [
+      "propext"
+    ],
+    "Toy.Prophecy.omission_keeps_real_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.omitAtEnd_neg": [
+      "propext"
+    ],
+    "Toy.Prophecy.omitAtEnd_pos": [
+      "propext"
+    ],
+    "Toy.Prophecy.omitting_callee_exit_resolution_admits_unproducible_store": [
+      "propext"
+    ],
+    "Toy.Prophecy.omitting_resolution_admits_unproducible_store": [
+      "propext"
+    ],
+    "Toy.Prophecy.omitting_resolution_keeps_real_store_writeThenRead": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.parent_resolution_while_reborrow_live_exact": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.phiOf": [
+      "propext"
+    ],
+    "Toy.Prophecy.phiOf.eq_1": [
+      "propext"
+    ],
+    "Toy.Prophecy.premature_resolution_excludes_real_store": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.prophContract_iff_aux": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.prophContract_iff_backwardSummary_of_calleeNoFrozenAccess_of_calleeNoUseAfterEnd_of_calleeFreshBindings": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.prophContract_iff_tight_frozenAccess": [
+      "propext"
+    ],
+    "Toy.Prophecy.prophContract_iff_tight_rebind": [
+      "propext"
+    ],
+    "Toy.Prophecy.prophContract_iff_tight_useAfterEnd": [
+      "propext"
+    ],
+    "Toy.Prophecy.prophContract_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.prophContract_pos": [
+      "propext"
+    ],
+    "Toy.Prophecy.prophOutcomeWith_omitAtEnd_of_prophOutcome": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.prophOutcomeWith_omitAtEnd_of_refSem_of_noLentAccess_of_noFrozenAccess_of_noUseAfterEnd_of_freshBindings": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.prophOutcomeWith_omitAtEnd_of_refSem_tight_noFrozenAccess": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.prophOutcomeWith_omitAtEnd_of_refSem_tight_noLentAccess": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.prophOutcomeWith_omitAtEnd_of_refSem_tight_noUseAfterEnd": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.prophOutcome_iff_backSem_of_discipline": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.prophOutcome_iff_backSem_tight_allEndedAtExit": [
+      "propext"
+    ],
+    "Toy.Prophecy.prophOutcome_iff_backSem_tight_freshBindings": [
+      "propext"
+    ],
+    "Toy.Prophecy.prophOutcome_iff_backSem_tight_noFrozenAccess": [
+      "propext"
+    ],
+    "Toy.Prophecy.prophOutcome_iff_backSem_tight_noLentAccess": [
+      "propext"
+    ],
+    "Toy.Prophecy.prophOutcome_iff_backSem_tight_noUseAfterEnd": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.prophOutcome_iff_refSem_of_discipline": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.prophOutcome_iff_refSem_tight_allEndedAtExit": [
+      "propext"
+    ],
+    "Toy.Prophecy.prophOutcome_iff_refSem_tight_freshBindings": [
+      "propext"
+    ],
+    "Toy.Prophecy.prophOutcome_iff_refSem_tight_noFrozenAccess": [
+      "propext"
+    ],
+    "Toy.Prophecy.prophOutcome_iff_refSem_tight_noLentAccess": [
+      "propext"
+    ],
+    "Toy.Prophecy.prophOutcome_iff_refSem_tight_noUseAfterEnd": [
+      "propext"
+    ],
+    "Toy.Prophecy.prophOutcome_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.prophOutcome_of_refSem_aux": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.prophOutcome_of_refSem_of_noLentAccess_of_noFrozenAccess_of_noUseAfterEnd_of_freshBindings": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.prophOutcome_of_refSem_tight_noFrozenAccess": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.prophOutcome_of_refSem_tight_noLentAccess": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.prophOutcome_of_refSem_tight_noUseAfterEnd": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.prophOutcome_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.prophOutcome_sound_aux": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.prophOutcome_writeThenRead_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.rebindEnded": [],
+    "Toy.Prophecy.rebindEnded.eq_1": [],
+    "Toy.Prophecy.rebindEnded_harmless": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.rebindThenFrozenRead": [],
+    "Toy.Prophecy.rebindThenFrozenRead.eq_1": [],
+    "Toy.Prophecy.rebindThenFrozenRead_real_excluded": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.rebindThenFrozenRead_violations": [],
+    "Toy.Prophecy.rebindThenFrozenUse_violations": [],
+    "Toy.Prophecy.rebind_ended_neg": [],
+    "Toy.Prophecy.reborrowOnce": [],
+    "Toy.Prophecy.reborrowOnce.eq_1": [],
+    "Toy.Prophecy.refSem": [],
+    "Toy.Prophecy.refSem.eq_1": [],
+    "Toy.Prophecy.refSem_callDeep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.refSem_neg_callee_local": [],
+    "Toy.Prophecy.refSem_neg_unbound": [],
+    "Toy.Prophecy.refSem_pos_in_place": [],
+    "Toy.Prophecy.refSem_pos_nested": [],
+    "Toy.Prophecy.refSem_selIncr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.refSem_writeThenRead": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.resolution_after_last_write_exact": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.resolveAfter_neg": [
+      "propext"
+    ],
+    "Toy.Prophecy.resolveAfter_pos": [
+      "propext"
+    ],
+    "Toy.Prophecy.reuseEndedCallee": [],
+    "Toy.Prophecy.reuseEndedCallee.eq_1": [],
+    "Toy.Prophecy.reuseEndedCallee_harmless": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.richProg": [],
+    "Toy.Prophecy.richProg_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Prophecy.richProg_nonvacuous_other_branch": [
+      "propext"
+    ],
+    "Toy.Prophecy.runB": [
+      "propext"
+    ],
+    "Toy.Prophecy.runB.eq_1": [
+      "propext"
+    ],
+    "Toy.Prophecy.runB.eq_2": [
+      "propext"
+    ],
+    "Toy.Prophecy.runB.eq_def": [
+      "propext"
+    ],
+    "Toy.Prophecy.runB.match_1": [],
+    "Toy.Prophecy.runOpsB": [],
+    "Toy.Prophecy.runOpsB.eq_1": [],
+    "Toy.Prophecy.runOpsB.eq_2": [],
+    "Toy.Prophecy.runOpsB.eq_def": [],
+    "Toy.Prophecy.runOpsB.match_1": [],
+    "Toy.Prophecy.runOpsP": [],
+    "Toy.Prophecy.runOpsP.eq_1": [],
+    "Toy.Prophecy.runOpsP.eq_2": [],
+    "Toy.Prophecy.runOpsP.eq_def": [],
+    "Toy.Prophecy.runOpsP.match_1": [],
+    "Toy.Prophecy.runOpsR": [],
+    "Toy.Prophecy.runOpsR.eq_1": [],
+    "Toy.Prophecy.runOpsR.eq_2": [],
+    "Toy.Prophecy.runOpsR.eq_def": [],
+    "Toy.Prophecy.runOpsR.match_1": [],
+    "Toy.Prophecy.runP": [
+      "propext"
+    ],
+    "Toy.Prophecy.runP.eq_1": [
+      "propext"
+    ],
+    "Toy.Prophecy.runP.eq_2": [
+      "propext"
+    ],
+    "Toy.Prophecy.runP.eq_def": [
+      "propext"
+    ],
+    "Toy.Prophecy.runP.match_1": [],
+    "Toy.Prophecy.runP_omitAtEnd_sim": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.runP_omitAtEnd_sim.match_1_1": [
+      "propext"
+    ],
+    "Toy.Prophecy.runR": [],
+    "Toy.Prophecy.runR.eq_1": [],
+    "Toy.Prophecy.runR.eq_2": [],
+    "Toy.Prophecy.runR.eq_def": [],
+    "Toy.Prophecy.runR.match_1": [],
+    "Toy.Prophecy.sat_neg": [],
+    "Toy.Prophecy.sat_pos": [],
+    "Toy.Prophecy.selBack": [],
+    "Toy.Prophecy.selBack.eq_1": [],
+    "Toy.Prophecy.selBackSpec_neg": [
+      "propext"
+    ],
+    "Toy.Prophecy.selBackSpec_pos": [],
+    "Toy.Prophecy.selBack_neg": [],
+    "Toy.Prophecy.selBack_pos_degenerate": [],
+    "Toy.Prophecy.selIncr": [],
+    "Toy.Prophecy.selIncr.eq_1": [],
+    "Toy.Prophecy.selIncrOut": [],
+    "Toy.Prophecy.selIncrOut.eq_1": [],
+    "Toy.Prophecy.selIncr_backward_shape": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.selIncr_both_translations_correct": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.selIncr_prophecy_shape": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.selLenders": [],
+    "Toy.Prophecy.selLenders.eq_1": [],
+    "Toy.Prophecy.selLenders_depends_on_condition": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.selLenders_neg": [],
+    "Toy.Prophecy.selLenders_pos": [],
+    "Toy.Prophecy.selProphSpec_neg": [
+      "propext"
+    ],
+    "Toy.Prophecy.selProphSpec_pos": [],
+    "Toy.Prophecy.selSameLocal": [],
+    "Toy.Prophecy.selSameLocal.eq_1": [],
+    "Toy.Prophecy.selSameLocal_edge_case": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.std_pos": [
+      "propext"
+    ],
+    "Toy.Prophecy.stepB": [
+      "propext"
+    ],
+    "Toy.Prophecy.stepB.eq_1": [
+      "propext"
+    ],
+    "Toy.Prophecy.stepB.eq_2": [
+      "propext"
+    ],
+    "Toy.Prophecy.stepB.match_1": [],
+    "Toy.Prophecy.stepOpB": [],
+    "Toy.Prophecy.stepOpB.eq_1": [],
+    "Toy.Prophecy.stepOpB.eq_2": [],
+    "Toy.Prophecy.stepOpB.eq_3": [],
+    "Toy.Prophecy.stepOpB.eq_4": [],
+    "Toy.Prophecy.stepOpB.eq_5": [],
+    "Toy.Prophecy.stepOpB.eq_6": [],
+    "Toy.Prophecy.stepOpB.match_1": [],
+    "Toy.Prophecy.stepOpP": [],
+    "Toy.Prophecy.stepOpP.eq_1": [],
+    "Toy.Prophecy.stepOpP.eq_2": [],
+    "Toy.Prophecy.stepOpP.eq_3": [],
+    "Toy.Prophecy.stepOpP.eq_4": [],
+    "Toy.Prophecy.stepOpP.eq_5": [],
+    "Toy.Prophecy.stepOpP.eq_6": [],
+    "Toy.Prophecy.stepOpP.match_1": [],
+    "Toy.Prophecy.stepOpP_omitAtEnd_sim": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.stepOpR": [],
+    "Toy.Prophecy.stepOpR.eq_1": [],
+    "Toy.Prophecy.stepOpR.eq_2": [],
+    "Toy.Prophecy.stepOpR.eq_3": [],
+    "Toy.Prophecy.stepOpR.eq_4": [],
+    "Toy.Prophecy.stepOpR.eq_5": [],
+    "Toy.Prophecy.stepOpR.eq_6": [],
+    "Toy.Prophecy.stepOpR.match_1": [],
+    "Toy.Prophecy.stepP": [
+      "propext"
+    ],
+    "Toy.Prophecy.stepP.eq_1": [
+      "propext"
+    ],
+    "Toy.Prophecy.stepP.eq_2": [
+      "propext"
+    ],
+    "Toy.Prophecy.stepP.match_1": [],
+    "Toy.Prophecy.stepR": [],
+    "Toy.Prophecy.stepR.eq_1": [],
+    "Toy.Prophecy.stepR.eq_2": [],
+    "Toy.Prophecy.stepR.match_1": [],
+    "Toy.Prophecy.store_set_neg": [],
+    "Toy.Prophecy.store_set_pos": [],
+    "Toy.Prophecy.stuckCalleeWithViolations": [],
+    "Toy.Prophecy.stuckCallee_satisfies_all_avoids": [
+      "propext"
+    ],
+    "Toy.Prophecy.stuckProgWithViolations": [],
+    "Toy.Prophecy.stuckProgWithViolations.eq_1": [],
+    "Toy.Prophecy.stuckProg_satisfies_all_avoids": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Prophecy.unbound_not_violation": [],
+    "Toy.Prophecy.unwindB": [
+      "propext"
+    ],
+    "Toy.Prophecy.unwindB.eq_1": [
+      "propext"
+    ],
+    "Toy.Prophecy.unwindB.eq_2": [
+      "propext"
+    ],
+    "Toy.Prophecy.unwindB.eq_def": [
+      "propext"
+    ],
+    "Toy.Prophecy.unwindB.match_1": [
+      "propext"
+    ],
+    "Toy.Prophecy.unwindB.match_6": [],
+    "Toy.Prophecy.violations": [],
+    "Toy.Prophecy.violations.eq_1": [],
+    "Toy.Prophecy.writeOnce": [],
+    "Toy.Prophecy.writeOnce.eq_1": [],
+    "Toy.Prophecy.writeThenRead": [],
+    "Toy.Prophecy.writeThenRead.eq_1": [],
+    "Toy.Prophecy.writeThenReadOut": [],
+    "Toy.Prophecy.writeThenReadOut.eq_1": [],
+    "Toy.Prophecy.zeroStore": [],
+    "Toy.Prophecy.zeroStore.eq_1": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

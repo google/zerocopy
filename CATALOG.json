@@ -56423,6 +56423,64 @@
         "verification/compiler-verification"
       ]
     },
+    "prophecy-variables-and-backward-functions-for-mutable-borrows": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3547647"
+          },
+          "name": "Aeneas: Rust Verification by Functional Translation"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3674640"
+          },
+          "name": "Sound Borrow-Checking for Rust via Symbolic Semantics"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-44914-8_18"
+          },
+          "name": "RustHorn: CHC-Based Verification for Rust Programs"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3519939.3523704"
+          },
+          "name": "RustHornBelt: A Semantic Foundation for Functional Verification of Rust Programs with Unsafe Code"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-031-17244-1_6"
+          },
+          "name": "Creusot: A Foundry for the Deductive Verification of Rust Programs"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/0304-3975(91)90224-P"
+          },
+          "name": "The Existence of Refinement Mappings"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/prophecy-variables",
+        "verification/backward-functions",
+        "verification/refinement",
+        "pl/mutable-borrows",
+        "pl/borrow-checking"
+      ]
+    },
     "proven-baseline-compiler-candidates-and-reusable-verified-backends": {
       "observed_at": "2026-11-13",
       "subjects": [

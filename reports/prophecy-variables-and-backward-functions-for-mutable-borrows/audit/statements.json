@@ -1,0 +1,265 @@
+{
+  "statements": {
+    "Toy.Prophecy.backSem_eq_refSem_of_discipline": {
+      "closure_sha256": "2df85e7cce42adc1e554fbeac62a13f2d54acda3f17729ebc7c09a8b24c28eff",
+      "closure_size": 178,
+      "statement_sha256": "fb6fb97421122208bb78f484e03b4f11f5fe64e7d7d8b59b7336d61a172bf2e1"
+    },
+    "Toy.Prophecy.backSem_eq_refSem_tight_allEndedAtExit": {
+      "closure_sha256": "22259e123c070273b0d5718420a984de45fab9b18179cb8c9a03ed29881da74b",
+      "closure_size": 180,
+      "statement_sha256": "844dad1f5fe08a2ba4e560ab562f80ddc89d0dafbf4148db9461e8ec30b259cb"
+    },
+    "Toy.Prophecy.backSem_eq_refSem_tight_freshBindings": {
+      "closure_sha256": "e58c0e92d56662589f789ba05b8bcbb86ede9c3966394ce215c03da729de94b1",
+      "closure_size": 180,
+      "statement_sha256": "e4af4ededaaeae7616d335703534b9779860f44602fee4946f68ba8429b5ac60"
+    },
+    "Toy.Prophecy.backSem_eq_refSem_tight_noFrozenAccess": {
+      "closure_sha256": "9c989a2b4f12c811d8fdfaa903e863ea85f56fd1177b585f5f2082daaf1f648c",
+      "closure_size": 180,
+      "statement_sha256": "9f3dbc805b2da3c033f3955e4a2c60d36894c631a266aa4ab16f1c8e44a78ae9"
+    },
+    "Toy.Prophecy.backSem_eq_refSem_tight_noLentAccess": {
+      "closure_sha256": "334f2ea9fef15d52f78862e88ad417681185762dc8c7549cb25d4ea8b40a1eee",
+      "closure_size": 180,
+      "statement_sha256": "35a3393a0676f1bbb9a41085628b029bff4e0a1cf2192741c669fb8e4f7bcb24"
+    },
+    "Toy.Prophecy.backSem_eq_refSem_tight_noUseAfterEnd": {
+      "closure_sha256": "7430b0adb87cf174612aba9473aa169295bd1ce2e53f4513e255449b77ec2f19",
+      "closure_size": 180,
+      "statement_sha256": "71f0f2bd55b7b524ce0d10d29a1ba72634f81883c6e31fbf6883f00d6d2dac48"
+    },
+    "Toy.Prophecy.callDeep_prophOutcome_iff": {
+      "closure_sha256": "398a85be96384cec2a7cc6828ab5c78d084596e2e680de70ccaa2dd92bf4c355",
+      "closure_size": 102,
+      "statement_sha256": "1b4ed996a35e335e8229505f529fec646564d90ca951c4c42758fb33051aff3e"
+    },
+    "Toy.Prophecy.calleeBack_eq_final_of_calleeScoped_of_calleeFreshBindings": {
+      "closure_sha256": "9a8e27ca08a4e5ee794209b073ad97ebf8121becf9f4f45cb11bb5202a51cb9c",
+      "closure_size": 135,
+      "statement_sha256": "8c294aac71037934d10f14a4e3fd2467618fd9d94591c8021174e59df2ddc83d"
+    },
+    "Toy.Prophecy.calleeBack_eq_final_tight_rebind": {
+      "closure_sha256": "a7cf88d30bb19bde7cc663a22081843cb5eae49fb8f3be70532d46aeebf7aaed",
+      "closure_size": 136,
+      "statement_sha256": "1f3d5fc2bf344a919dbf22139adbb5bbacde3aff26cead10218dc0afd7828ac2"
+    },
+    "Toy.Prophecy.calleeBack_eq_final_tight_scoped": {
+      "closure_sha256": "34981bce890f4223eb341b4b11df30ea80bc8991eeda3701446a3d723127d231",
+      "closure_size": 136,
+      "statement_sha256": "75772a1382c8fa835722bdc7bbf5a06cee73eafed1ef7958e872f4ef0073bb96"
+    },
+    "Toy.Prophecy.deepCallee_nonvacuous": {
+      "closure_sha256": "18917c1fef710b7b0166cd8a41916d8409b4dacd79b519514fccb2ec2ca16292",
+      "closure_size": 169,
+      "statement_sha256": "81c4460ee4a10a8537a8f8a033260f52864b3b5cdb278ebfa8750f970a30d44f"
+    },
+    "Toy.Prophecy.inclusion_nonvacuous": {
+      "closure_sha256": "c120a74692ee939ad7596570cbe9f3008ee0045e7b04befebebef6c80250d4a4",
+      "closure_size": 182,
+      "statement_sha256": "ca77ab3ad3219fcbfcdfc03d67b7687319e36ddeb33699985597ecddeddf85ca"
+    },
+    "Toy.Prophecy.omission_keeps_real_nonvacuous": {
+      "closure_sha256": "0ea412987bdc92f839a612961265c1a1306217b4a333035bfa25e8b240ca688f",
+      "closure_size": 180,
+      "statement_sha256": "b72a848ae0f1e8c77edac3ba778842275ac05b12337a293084cfe821c32cd1b9"
+    },
+    "Toy.Prophecy.omitting_callee_exit_resolution_admits_unproducible_store": {
+      "closure_sha256": "ff3c7da5bd25bd6fb61e3799c0e95c7dc93d2f16c7a91cb5c8cbaec18ab9629c",
+      "closure_size": 180,
+      "statement_sha256": "03db2199eae442105c511924e4f1cb979746f481afb465d35333bc6632dae37a"
+    },
+    "Toy.Prophecy.omitting_resolution_admits_unproducible_store": {
+      "closure_sha256": "d64e26590636a85b49c9fcaaa88ec14cfa43d3b9b0a9d71bc6e6732b7b255865",
+      "closure_size": 179,
+      "statement_sha256": "90d29ce80c3765b879ea35a96dec8830ca8990684701c67236b05c9145e5c3ae"
+    },
+    "Toy.Prophecy.omitting_resolution_keeps_real_store_writeThenRead": {
+      "closure_sha256": "3d4a00b002962b4eba8497ab820e528405ab900f83518244402e3c449917d81f",
+      "closure_size": 82,
+      "statement_sha256": "7b289e0cbe5e9befb11514d99886816bb09adb4b9b750fbc32e7fc904d6f456c"
+    },
+    "Toy.Prophecy.parent_resolution_while_reborrow_live_exact": {
+      "closure_sha256": "32e2cad452eaa7a19b8cae242398b580e9d613fb38550b9952ea82ff661732bd",
+      "closure_size": 100,
+      "statement_sha256": "4cce629f9cb02e601a11bc763b71926afcebcf54c2552d08f0bc36bb260a2c1f"
+    },
+    "Toy.Prophecy.premature_resolution_excludes_real_store": {
+      "closure_sha256": "8a94692f525197f6e13d21d86654bc7c235d221627e8473da0798766c0812d08",
+      "closure_size": 178,
+      "statement_sha256": "36a0ce9816b2b7643d2a08cccd0a020920aefde570d077189490d0b979f49ab4"
+    },
+    "Toy.Prophecy.prophContract_iff_backwardSummary_of_calleeNoFrozenAccess_of_calleeNoUseAfterEnd_of_calleeFreshBindings": {
+      "closure_sha256": "79d4d6e6820add82f9a5c2c369f7415fc0ff3a3d93eb73727b592abb1fdaa4f8",
+      "closure_size": 167,
+      "statement_sha256": "33f2c65c49cfb9c4db637646be8803a5b71f1af5f6b868ea93bacc5d1cf010f5"
+    },
+    "Toy.Prophecy.prophContract_iff_tight_frozenAccess": {
+      "closure_sha256": "ef7b1857ba9a879af89d415ed362d93aefe7850217912b944a00de92c6213ab7",
+      "closure_size": 168,
+      "statement_sha256": "480cb0b760091bb1c27f344fec83affec98d1cf24a730c494f93fb5a957c889d"
+    },
+    "Toy.Prophecy.prophContract_iff_tight_rebind": {
+      "closure_sha256": "4e21d7702cd016aa5fd37ff2c1f842ce0a8799cfca48297829ece383d34ae67e",
+      "closure_size": 168,
+      "statement_sha256": "37141dfad97b8629c8d88f3bbb5bf10cecdde5d82dd303d810a988f1eceb50aa"
+    },
+    "Toy.Prophecy.prophContract_iff_tight_useAfterEnd": {
+      "closure_sha256": "4bdfe2e159971773ecac6a341d6d8533e4b5aaf0f898af6ed35d3b8c8d237714",
+      "closure_size": 168,
+      "statement_sha256": "ddf46029008c3f64bd77b2322d291bfbddb11c991f0290f8d9a1282695f0b3ca"
+    },
+    "Toy.Prophecy.prophOutcomeWith_omitAtEnd_of_prophOutcome": {
+      "closure_sha256": "96c846c9adec26b55814dabcfc11a3cb49a3fe2e8bc2bb2d12385ba02bfa2c6c",
+      "closure_size": 80,
+      "statement_sha256": "f1a4510e8bbbb3455a9e66771175ae3c26d7b07f04067889a8cd4a9cb3736a0a"
+    },
+    "Toy.Prophecy.prophOutcomeWith_omitAtEnd_of_refSem_of_noLentAccess_of_noFrozenAccess_of_noUseAfterEnd_of_freshBindings": {
+      "closure_sha256": "7d2e92e55c13662ac079023eab84ca71bd585347fa1e2772f43a2dc950982254",
+      "closure_size": 176,
+      "statement_sha256": "7e65f42e35d71ef42e2c686831efc20a1a0c584fb1afca96fcad3312f568c0ae"
+    },
+    "Toy.Prophecy.prophOutcomeWith_omitAtEnd_of_refSem_tight_noFrozenAccess": {
+      "closure_sha256": "c471291f6c893017f91b0f89db1008c32fe573204cf83b9c673924a4f4295b7b",
+      "closure_size": 178,
+      "statement_sha256": "34d40d4bd6490b0d802ba3cc376b838c1582e8f03c3cf6bdcadae0331e59e018"
+    },
+    "Toy.Prophecy.prophOutcomeWith_omitAtEnd_of_refSem_tight_noLentAccess": {
+      "closure_sha256": "fba9d9195b6399f0244e4de7809daaadde51c84de0d7ecf0eca14f84e9ced806",
+      "closure_size": 178,
+      "statement_sha256": "eda99f3526ad326529d2fa6e278fe5ef0fe4c410bafb69938807d8c032c46c9e"
+    },
+    "Toy.Prophecy.prophOutcomeWith_omitAtEnd_of_refSem_tight_noUseAfterEnd": {
+      "closure_sha256": "91e26ea96b9a50a5f65cb3cb7f3bd068a2c14aae2cb1b4c84f394df6df902c09",
+      "closure_size": 178,
+      "statement_sha256": "67104cea67ac1a705fa4a5744e8f77ba0b140d806678e7c24a653361553e6c40"
+    },
+    "Toy.Prophecy.prophOutcome_iff_backSem_of_discipline": {
+      "closure_sha256": "34f1136e6466c6ff85e24c839a2bdf3006e4513dacf03cff5b36bd74bfd3ad1a",
+      "closure_size": 202,
+      "statement_sha256": "b6ea12953dde0171a38adb29442ffb11acdd2872a58567dcdda5595c3767445e"
+    },
+    "Toy.Prophecy.prophOutcome_iff_backSem_tight_allEndedAtExit": {
+      "closure_sha256": "afe854a59b820ca568f026568c00ffaca154524e1c7c48fcdcea1aeb520a7b2f",
+      "closure_size": 204,
+      "statement_sha256": "d9a19f9675b61d9507a64023f7f4539e709b9a681d21b5b7eae731345b4c9248"
+    },
+    "Toy.Prophecy.prophOutcome_iff_backSem_tight_freshBindings": {
+      "closure_sha256": "b3682f3cabd9670bfe3ad17776007bcee5962ca869af24da35cffd2f1108cd0e",
+      "closure_size": 204,
+      "statement_sha256": "8548908f3e767b5cf5d854dee5bf9ffdd9afc8fd6f7f15261c12e5eb574cbdb8"
+    },
+    "Toy.Prophecy.prophOutcome_iff_backSem_tight_noFrozenAccess": {
+      "closure_sha256": "499e41f47eaf173d0a5753a61b49fa60c70f884789d50c2a7277b7bac78761eb",
+      "closure_size": 204,
+      "statement_sha256": "00f8d25e48c3be204645234adb07d338e42256ad1c3c27927fc7c1806ac8b5a9"
+    },
+    "Toy.Prophecy.prophOutcome_iff_backSem_tight_noLentAccess": {
+      "closure_sha256": "f709d7602647bf0a85c9e833e1f8bfde3a774524d4d76628cbdd7ba7f7b6233a",
+      "closure_size": 204,
+      "statement_sha256": "da4e5a74f9d61787c48d3d38951729e593a28cabfc2588ecc6aa2788ed912fd0"
+    },
+    "Toy.Prophecy.prophOutcome_iff_backSem_tight_noUseAfterEnd": {
+      "closure_sha256": "936e60b7969d56f6fa10268a858a88863fabd57c60bd5c70e624b443e1c79998",
+      "closure_size": 204,
+      "statement_sha256": "a71c5843aa65f34e0e3814057dbd9004cb92bc83d13ca0b640d9b8d828829a7b"
+    },
+    "Toy.Prophecy.prophOutcome_iff_refSem_of_discipline": {
+      "closure_sha256": "29bfcaa56daf48cd91b8afd205bb25eaf7045fa9b27967c528374120c4d639b2",
+      "closure_size": 177,
+      "statement_sha256": "9d86ba81f020909ddea59fd2964baf52db346f5da15688ff4adfb15e25a66414"
+    },
+    "Toy.Prophecy.prophOutcome_iff_refSem_tight_allEndedAtExit": {
+      "closure_sha256": "91ad3b94904a7ed6497bd51343c46dfecb0bc8f638f3a6749af8edbfc3ae3fa5",
+      "closure_size": 179,
+      "statement_sha256": "16501c9a2e09b86a38f47ad3d9d841ff3c45981dbdd55e24be94db7b8c0d6a88"
+    },
+    "Toy.Prophecy.prophOutcome_iff_refSem_tight_freshBindings": {
+      "closure_sha256": "f3fffda68bdf16256f4f9b488ef405fd3b7f765df0642450d658552b18c1c34a",
+      "closure_size": 179,
+      "statement_sha256": "647e0f205275f207cab1432ff4da5303602c17f6c8af5cb74e2eb7e873f35421"
+    },
+    "Toy.Prophecy.prophOutcome_iff_refSem_tight_noFrozenAccess": {
+      "closure_sha256": "7c3ffb5105d48e2767bba68ad748e029910f181653de0ab9c89676d3b5ad5a77",
+      "closure_size": 179,
+      "statement_sha256": "d56cfadacfdb6856118e61290e9575224fff7b376df0d16d9c1da32b518e432f"
+    },
+    "Toy.Prophecy.prophOutcome_iff_refSem_tight_noLentAccess": {
+      "closure_sha256": "19333bdc06d527f115de8d2d476c53604c42f703c02b7bc9c02880d0e11d75f9",
+      "closure_size": 179,
+      "statement_sha256": "1cc0e78b5501efdefe6500d22292fba156ce33ab853f22f2af76837d901bbe24"
+    },
+    "Toy.Prophecy.prophOutcome_iff_refSem_tight_noUseAfterEnd": {
+      "closure_sha256": "dc2c56db1ee51e73ba60b4c989e84a1a17c5b4bebe0fc76e361dbed4aa35a582",
+      "closure_size": 179,
+      "statement_sha256": "9cec26fe96032001a80ca5bc02ee704473cabd0648f5a1ddda22e49358d9daa1"
+    },
+    "Toy.Prophecy.prophOutcome_of_refSem_of_noLentAccess_of_noFrozenAccess_of_noUseAfterEnd_of_freshBindings": {
+      "closure_sha256": "371f93b76afca305f1ae82c9f660a0ce0340830a9f7b52ed8f850c41fd872148",
+      "closure_size": 176,
+      "statement_sha256": "e222a8da7b08473deece4cc1c97699fa16c856016ea147134fd2110d6165ba4b"
+    },
+    "Toy.Prophecy.prophOutcome_of_refSem_tight_noFrozenAccess": {
+      "closure_sha256": "65b308b4f0e551586650c5c58a7d390f5c1444b65c714991fc9dea659bf75989",
+      "closure_size": 178,
+      "statement_sha256": "cf01a22b7398e853886642ab483e6b215984dc9d73194b356908c03db1f3ea92"
+    },
+    "Toy.Prophecy.prophOutcome_of_refSem_tight_noLentAccess": {
+      "closure_sha256": "69862be90de87595b6ca4e101b3c7accaca4552e8675751c09d51c4f2d84ac56",
+      "closure_size": 178,
+      "statement_sha256": "d43baa718601b3df5734c5878e3701b80b3409e7683b342d0830fb1d06a9db20"
+    },
+    "Toy.Prophecy.prophOutcome_of_refSem_tight_noUseAfterEnd": {
+      "closure_sha256": "c41ff77ffc997ed7b6c4e6423ba50046aba2a8337e2ed8353cd02869412ae312",
+      "closure_size": 178,
+      "statement_sha256": "ac6088b0ed2ade72034861214b977b6bbb4aaad4b3b818cc44fdf58974b1320e"
+    },
+    "Toy.Prophecy.prophOutcome_pos": {
+      "closure_sha256": "e051ca0f4ad5ad15ef21bdaadcdfa407a59c6d09e2ce23a6b0808d7f44a58be3",
+      "closure_size": 82,
+      "statement_sha256": "ebeb294462424b453d9fa2f03d04c1fdf00d193b4939b35fb9ee361907982f51"
+    },
+    "Toy.Prophecy.prophOutcome_writeThenRead_iff": {
+      "closure_sha256": "461e0a1edb8a8ffee8729150382542cbf9e8e4f4b8139712981e03bbc4b22d5d",
+      "closure_size": 101,
+      "statement_sha256": "1ec28d97dedd427bfc75ba7166e0dbd355e1a0932788d8f2b360287dffbc0baf"
+    },
+    "Toy.Prophecy.resolution_after_last_write_exact": {
+      "closure_sha256": "8206acc5eddf15fedba663cb045f2cd7b3a478b235852a8079083fb3317737b4",
+      "closure_size": 100,
+      "statement_sha256": "fca3d5dad14ddaf487cad90f8c72b4b710f240df41fdf1d61a8e885121cf0453"
+    },
+    "Toy.Prophecy.richProg_nonvacuous": {
+      "closure_sha256": "9fad5cdaab18c42fedffd16d8d1013daa5e0c178e285424de1a26fa6530ee2e1",
+      "closure_size": 225,
+      "statement_sha256": "3907a635a756cc6b49e366127fce63a31f055614af554d963e83badb74d2b305"
+    },
+    "Toy.Prophecy.richProg_nonvacuous_other_branch": {
+      "closure_sha256": "c5bb0287ff94b6898cd96a4d1e0e9589a36f3ed2d000038b35446523a5f0b856",
+      "closure_size": 103,
+      "statement_sha256": "24ad684f39a61f46ec66ecf7d0d21372dacfa251fa5dad8b89109c4eb84889a1"
+    },
+    "Toy.Prophecy.selIncr_backward_shape": {
+      "closure_sha256": "0e25261a0161eca4d878f74cccaafdbe1dd93dc5f669cec52cdad6dcf54ce50c",
+      "closure_size": 83,
+      "statement_sha256": "0a1daca8a404c3bad3fd395e5bc1ac33fe985090114a5ef3140b4fe7686b02e5"
+    },
+    "Toy.Prophecy.selIncr_both_translations_correct": {
+      "closure_sha256": "04b744fb380cfbcd4f6a5cb5ba61252abbda0c81a537e964d277e89bfe1eed12",
+      "closure_size": 145,
+      "statement_sha256": "57ec429a8804c1c44969c8c9d408bd60327a719f342bd85d6709f075d1fa9bf5"
+    },
+    "Toy.Prophecy.selIncr_prophecy_shape": {
+      "closure_sha256": "a945f823bb2d813bb9edaa2155da9c65f72fbd639e5148b72cc07a9c21ba9874",
+      "closure_size": 79,
+      "statement_sha256": "10144b0c0c389561897bc85bcbcf0bb609d20c0164f973dc242a607241e7bc21"
+    },
+    "Toy.Prophecy.selLenders_depends_on_condition": {
+      "closure_sha256": "0b8f6048dfe0e8302e11a317115f18afcda1040f135b09287f9733a32258fe8a",
+      "closure_size": 1,
+      "statement_sha256": "bae9022102a02a9e6fbd48e7ca9f5e25c7572f4f91b79840e46226d51062d9e2"
+    }
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
