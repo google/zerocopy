@@ -11,7 +11,7 @@
 set -euo pipefail
 
 ROOT="$(git rev-parse --show-toplevel)"
-FLAKE="$ROOT/anneal"
+FLAKE="$ROOT/anneal/v2"
 
 systems=(
   aarch64-darwin

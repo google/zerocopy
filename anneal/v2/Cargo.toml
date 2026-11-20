@@ -19,7 +19,7 @@ categories = [
 ]
 keywords = ["verification", "cargo", "plugin", "unsafe", "lean"]
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
-repository = "https://github.com/google/zerocopy/tree/main/anneal"
+repository = "https://github.com/google/zerocopy/tree/main/anneal/v2"
 publish = true
 
 exclude = [".*", "testdata"]
@@ -52,7 +52,7 @@ sha256 = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
 url = "https://example.com/macos-aarch64.tar.zst"
 
 [dependencies]
-exocrate = { path = "../exocrate" }
+exocrate = { path = "../../exocrate" }
 clap = { version = "4.5", features = ["derive"] }
 clap-cargo = { version = "0.18.3", features = ["cargo_metadata"] }
 env_logger = "0.11"

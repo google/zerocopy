@@ -8,11 +8,11 @@ those terms. -->
 
 # Anneal agent guide
 
-Before working on the current Anneal redesign, read and preserve the project
+Before working on the archived Anneal V2 implementation, read and preserve the project
 principles in [`PRINCIPLES.md`](PRINCIPLES.md) and the shared design contract in
 [`DESIGN.md`](DESIGN.md). The principles are authoritative if the two conflict.
 
 Determine current implementation behavior from the checked-in source. The
-[`v1/`](v1/) subtree is the historical V1 prototype: use it as historical
+[`../v1/`](../v1/) subtree is the historical V1 prototype: use it as historical
 evidence rather than current design authority. When changing files under
-`v1/`, also follow the more specific [`v1/AGENTS.md`](v1/AGENTS.md).
+`../v1/`, also follow the more specific [`../v1/AGENTS.md`](../v1/AGENTS.md).
