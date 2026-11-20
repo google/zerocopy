@@ -1,0 +1,116 @@
+{
+  "topics": [
+    "verification/equivalence",
+    "isa/simd",
+    "domains/multimedia",
+    "compilers/vectorization"
+  ],
+  "subjects": [
+    {
+      "name": "FFmpeg multimedia framework and checkasm DSP harness",
+      "identity": {
+        "repository": "FFmpeg/FFmpeg",
+        "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+      }
+    },
+    {
+      "name": "VideoLAN dav1d AV1 decoder and multi-ISA SIMD DSP library",
+      "identity": {
+        "repository": "videolan/dav1d",
+        "revision": "9af5ae4eb5204706c7f381ec62635237179f172e"
+      }
+    },
+    {
+      "name": "rav1d memory-safe Rust AV1 decoder with external SIMD assembly",
+      "identity": {
+        "repository": "memorysafety/rav1d",
+        "revision": "2e7216c20ac2a75de204d6c8d7268b75a45959b4"
+      }
+    },
+    {
+      "name": "AWS s2n-bignum HOL Light machine-code and SIMD verification suite",
+      "identity": {
+        "repository": "awslabs/s2n-bignum",
+        "revision": "280a220986a0bc6249248187717a771153d073db"
+      }
+    },
+    {
+      "name": "Jasmin Coq-verified assembly compiler and SIMD instruction semantics",
+      "identity": {
+        "repository": "jasmin-lang/jasmin",
+        "revision": "8c3279973a89afd969e50301f71563bb40d55724"
+      }
+    },
+    {
+      "name": "HACL* and merged Vale procedural x86_64/NEON SIMD verification library",
+      "identity": {
+        "repository": "hacl-star/hacl-star",
+        "revision": "f557259007db9933442dde10aa995c1b00bd3446"
+      }
+    },
+    {
+      "name": "Vale Verified Assembly Language for Everest compiler toolchain",
+      "identity": {
+        "repository": "project-everest/vale",
+        "revision": "bbae0eb89143734363b14a77642dbf8dec36e288"
+      }
+    },
+    {
+      "name": "CryptoLine algebraic + QF_BV SMT low-level arithmetic and SIMD verifier",
+      "identity": {
+        "repository": "fmlab-iis/cryptoline",
+        "revision": "c992f0c41b5f34fb1a07bf3f84568c732a935272"
+      }
+    },
+    {
+      "name": "Alive2 bounded translation validator for LLVM IR and vector intrinsics",
+      "identity": {
+        "repository": "AliveToolkit/alive2",
+        "revision": "3bdd4f5e1cefa47057e93110e707acd11cfe08e4"
+      }
+    },
+    {
+      "name": "Halide image-processing DSL compiler and fixed-point intrinsic rewriter",
+      "identity": {
+        "repository": "halide/Halide",
+        "revision": "54c1a9bd6733081c8700a7c2521871161a701fad"
+      }
+    },
+    {
+      "name": "Intel Implicit SPMD Program Compiler (ISPC)",
+      "identity": {
+        "repository": "ispc/ispc",
+        "revision": "ccb91bbc5332f026f494c48263b935145cd72f77"
+      }
+    },
+    {
+      "name": "Rake two-stage data-movement-decoupled DSP SIMD synthesizer",
+      "identity": {
+        "repository": "uwplse/rake",
+        "revision": "2b499110cecfee875edf392306b41be8d6cc2567",
+        "doi": "10.1145/3503222.3507714"
+      }
+    },
+    {
+      "name": "Hydride retargetable vendor-pseudocode synthesis vectorizer",
+      "identity": {
+        "repository": "akothen/Hydride",
+        "revision": "0c97d0f9d3f8cd0494e421b9ece4b24488b614e5",
+        "doi": "10.1145/3620665.3640385"
+      }
+    },
+    {
+      "name": "Alive2: Bounded Translation Validation for LLVM (PLDI 2021)",
+      "identity": {
+        "doi": "10.1145/3453483.3454030"
+      }
+    },
+    {
+      "name": "Verifying and Improving Halide's Term Rewriting System with Program Synthesis (OOPSLA 2020)",
+      "identity": {
+        "doi": "10.1145/3428234"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

@@ -23746,6 +23746,126 @@
         "verification/do178c-mode-transition-freedom"
       ]
     },
+    "ffmpeg-codebase-architecture-cpuflags-dispatch-and-asm-corpus-census": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+          },
+          "name": "FFmpeg"
+        }
+      ],
+      "topics": [
+        "domains/multimedia",
+        "isa/simd",
+        "compilers/assembly",
+        "systems/ffmpeg"
+      ]
+    },
+    "ffmpeg-cve-ub-memory-safety-taxonomy-and-oss-fuzz-failure-modes": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+          },
+          "name": "FFmpeg"
+        },
+        {
+          "identity": {
+            "repository": "google/oss-fuzz",
+            "revision": "cdd107021c20428647db0699c33d6cb1f717474a"
+          },
+          "name": "OSS-Fuzz FFmpeg Integration"
+        },
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "3ed2e4d62492e02ffb7188e13aae5ccbf966851e"
+          },
+          "name": "FFmpeg fix for OSS-Fuzz 574937224 (swscale signed overflow)"
+        },
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "0c6b7f9483a38657c9be824572b4c0c45d4d9fef"
+          },
+          "name": "FFmpeg fix for CVE-2025-63757 (swscale yuv2ya16 signed overflow)"
+        },
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "1b12e919cfe3bf69038225794330d14575fb78d0"
+          },
+          "name": "FFmpeg fix for OSS-Fuzz 427532813 (mxg AV_INPUT_BUFFER_PADDING_SIZE zeroing)"
+        },
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "051e0d7744dbb45f680bbfa72bfead947b11ef2f"
+          },
+          "name": "FFmpeg fix for OSS-Fuzz 429296194 (ffv1dec Golomb/VLC k overflow)"
+        },
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "1a2c16fe514b60e1860829c42ce199de77a007e5"
+          },
+          "name": "FFmpeg fix for CVE-2026-30997 (av1dec primary_ref_frame OOB)"
+        },
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "3b939ced79655ed084e6bebc493fa8b11e9b9d8b"
+          },
+          "name": "FFmpeg fix for OSS-Fuzz 500770604 (hevc generate_missing_ref OOB)"
+        },
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "7c0b8c8594501dd904ebbb3b45bb3f6e2c745b7d"
+          },
+          "name": "FFmpeg fix for CVE-2026-66038 (lcldec uninitialized tail)"
+        },
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "c41a70b6bb79707e1e3a4b0e31950cd986b9f50e"
+          },
+          "name": "FFmpeg fix for CVE-2025-59734 (sanm reallocated-frame UAF)"
+        },
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "2f60af465ad78ae4be85e0bbde4067846d80b582"
+          },
+          "name": "FFmpeg fix for CVE-2026-12706 (rasc av_fast_padded_malloc UAF)"
+        },
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "342cb6374fee2e7a86b35235203e3eefc9572969"
+          },
+          "name": "FFmpeg fix for OSS-Fuzz 584661914 (demux discard_padding saturation)"
+        },
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "0d9c003d76383e82b57b6d5aa33776709d0cda2c"
+          },
+          "name": "FFmpeg fix for CVE-2025-59731 (exr dwa_uncompress bounds)"
+        }
+      ],
+      "topics": [
+        "security/memory-safety",
+        "domains/multimedia",
+        "verification/ub-freedom",
+        "rust/safety"
+      ]
+    },
     "fiat-crypto-hacl-evercrypt-vale-libcrux-and-verified-crypto-synthesis": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -51081,6 +51201,123 @@
         "lean/elaboration-trust"
       ]
     },
+    "rust-inline-asm-and-external-asm-abi-seams-in-formal-verifiers": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "4b5350e87e487aed08ab2f9f0160a4b2616438bc"
+          },
+          "name": "Rust compiler (MIR inline assembly, const-eval interpreter, and LLVM asm codegen)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly"
+          },
+          "name": "rustc 1.98.0-nightly (2026-05-31) executed for x86_64 YMM clobber / vzeroupper codegen probe"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference (inline assembly, target_feature, and undefined behavior specifications)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/miri",
+            "revision": "5b99fdad636668442f94e15054a6b9fb3a80f613"
+          },
+          "name": "Miri operational Rust MIR interpreter and Tree Borrows / target_feature checker"
+        },
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "063d784186d3252bee242217f218223205c0b568"
+          },
+          "name": "MiniRust formal operational semantics of Rust MIR and Tree Borrows memory model"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "f61dfd8c0d8cfa6ed8a1ea3a16174d9673184825"
+          },
+          "name": "LLVM compiler infrastructure (X86InsertVZeroUpper pass)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal Lean 4 Rust MIR verification framework and TrustedBoundary"
+        },
+        {
+          "identity": {
+            "repository": "ARM-software/abi-aa",
+            "revision": "9f9e067e6c6a5d3c5c8326756500cdbd940b8ff7"
+          },
+          "name": "Procedure Call Standard for the Arm 64-bit Architecture (AAPCS64)"
+        },
+        {
+          "identity": {
+            "repository": "riscv-non-isa/riscv-elf-psabi-doc",
+            "revision": "56561cb3e7330fe99a98fd27457229707b2786ae"
+          },
+          "name": "RISC-V ELF psABI and Vector Calling Convention Specification"
+        },
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+          },
+          "name": "FFmpeg x86inc.asm NASM ABI, Win64 XMM spill, and vzeroupper macro layer"
+        },
+        {
+          "identity": {
+            "repository": "memorysafety/rav1d",
+            "revision": "2e7216c20ac2a75de204d6c8d7268b75a45959b4"
+          },
+          "name": "rav1d Rust-to-assembly FFI dispatch and runtime CPU feature detection"
+        },
+        {
+          "identity": {
+            "repository": "awslabs/s2n-bignum",
+            "revision": "280a220986a0bc6249248187717a771153d073db"
+          },
+          "name": "AWS s2n-bignum HOL Light SysV/Win64/AAPCS64 ABI subroutine preservation proofs"
+        },
+        {
+          "identity": {
+            "standard": "SysV-AMD64-psABI",
+            "version": "1.0"
+          },
+          "name": "System V Application Binary Interface AMD64 Architecture Processor Supplement"
+        },
+        {
+          "identity": {
+            "standard": "Microsoft-x64-ABI",
+            "url": "https://learn.microsoft.com/en-us/cpp/build/x64-calling-convention"
+          },
+          "name": "Microsoft x64 Calling Convention and Register Usage Specification"
+        },
+        {
+          "identity": {
+            "standard": "OpenPOWER-ELFv2-ABI",
+            "version": "2.1.5"
+          },
+          "name": "OpenPOWER 64-Bit ELF V2 ABI Specification for Power Architecture"
+        }
+      ],
+      "topics": [
+        "rust/inline-asm",
+        "ffi/abi",
+        "isa/calling-conventions",
+        "verification/semantics"
+      ]
+    },
     "rust-inline-assembly-contracts-relocations-and-simd-correspondence": {
       "observed_at": "2026-10-24",
       "subjects": [
@@ -68232,6 +68469,122 @@
         "verification",
         "verification/certificates",
         "verification/compiler-verification"
+      ]
+    },
+    "verified-simd-vs-scalar-equivalence-for-media-dsp-kernels-and-asm": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+          },
+          "name": "FFmpeg multimedia framework and checkasm DSP harness"
+        },
+        {
+          "identity": {
+            "repository": "videolan/dav1d",
+            "revision": "9af5ae4eb5204706c7f381ec62635237179f172e"
+          },
+          "name": "VideoLAN dav1d AV1 decoder and multi-ISA SIMD DSP library"
+        },
+        {
+          "identity": {
+            "repository": "memorysafety/rav1d",
+            "revision": "2e7216c20ac2a75de204d6c8d7268b75a45959b4"
+          },
+          "name": "rav1d memory-safe Rust AV1 decoder with external SIMD assembly"
+        },
+        {
+          "identity": {
+            "repository": "awslabs/s2n-bignum",
+            "revision": "280a220986a0bc6249248187717a771153d073db"
+          },
+          "name": "AWS s2n-bignum HOL Light machine-code and SIMD verification suite"
+        },
+        {
+          "identity": {
+            "repository": "jasmin-lang/jasmin",
+            "revision": "8c3279973a89afd969e50301f71563bb40d55724"
+          },
+          "name": "Jasmin Coq-verified assembly compiler and SIMD instruction semantics"
+        },
+        {
+          "identity": {
+            "repository": "hacl-star/hacl-star",
+            "revision": "f557259007db9933442dde10aa995c1b00bd3446"
+          },
+          "name": "HACL* and merged Vale procedural x86_64/NEON SIMD verification library"
+        },
+        {
+          "identity": {
+            "repository": "project-everest/vale",
+            "revision": "bbae0eb89143734363b14a77642dbf8dec36e288"
+          },
+          "name": "Vale Verified Assembly Language for Everest compiler toolchain"
+        },
+        {
+          "identity": {
+            "repository": "fmlab-iis/cryptoline",
+            "revision": "c992f0c41b5f34fb1a07bf3f84568c732a935272"
+          },
+          "name": "CryptoLine algebraic + QF_BV SMT low-level arithmetic and SIMD verifier"
+        },
+        {
+          "identity": {
+            "repository": "AliveToolkit/alive2",
+            "revision": "3bdd4f5e1cefa47057e93110e707acd11cfe08e4"
+          },
+          "name": "Alive2 bounded translation validator for LLVM IR and vector intrinsics"
+        },
+        {
+          "identity": {
+            "repository": "halide/Halide",
+            "revision": "54c1a9bd6733081c8700a7c2521871161a701fad"
+          },
+          "name": "Halide image-processing DSL compiler and fixed-point intrinsic rewriter"
+        },
+        {
+          "identity": {
+            "repository": "ispc/ispc",
+            "revision": "ccb91bbc5332f026f494c48263b935145cd72f77"
+          },
+          "name": "Intel Implicit SPMD Program Compiler (ISPC)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3503222.3507714",
+            "repository": "uwplse/rake",
+            "revision": "2b499110cecfee875edf392306b41be8d6cc2567"
+          },
+          "name": "Rake two-stage data-movement-decoupled DSP SIMD synthesizer"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3620665.3640385",
+            "repository": "akothen/Hydride",
+            "revision": "0c97d0f9d3f8cd0494e421b9ece4b24488b614e5"
+          },
+          "name": "Hydride retargetable vendor-pseudocode synthesis vectorizer"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454030"
+          },
+          "name": "Alive2: Bounded Translation Validation for LLVM (PLDI 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3428234"
+          },
+          "name": "Verifying and Improving Halide's Term Rewriting System with Program Synthesis (OOPSLA 2020)"
+        }
+      ],
+      "topics": [
+        "verification/equivalence",
+        "isa/simd",
+        "domains/multimedia",
+        "compilers/vectorization"
       ]
     },
     "verified-software-hardware-ffi-mmio-dma-interconnects-and-reconfigurable-fabrics": {

@@ -1,0 +1,18 @@
+{
+  "topics": [
+    "domains/multimedia",
+    "isa/simd",
+    "compilers/assembly",
+    "systems/ffmpeg"
+  ],
+  "subjects": [
+    {
+      "name": "FFmpeg",
+      "identity": {
+        "repository": "FFmpeg/FFmpeg",
+        "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

@@ -1,0 +1,117 @@
+{
+  "topics": [
+    "rust/inline-asm",
+    "ffi/abi",
+    "isa/calling-conventions",
+    "verification/semantics"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler (MIR inline assembly, const-eval interpreter, and LLVM asm codegen)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "4b5350e87e487aed08ab2f9f0160a4b2616438bc"
+      }
+    },
+    {
+      "name": "rustc 1.98.0-nightly (2026-05-31) executed for x86_64 YMM clobber / vzeroupper codegen probe",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "1.98.0-nightly"
+      }
+    },
+    {
+      "name": "The Rust Reference (inline assembly, target_feature, and undefined behavior specifications)",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+      }
+    },
+    {
+      "name": "Miri operational Rust MIR interpreter and Tree Borrows / target_feature checker",
+      "identity": {
+        "repository": "rust-lang/miri",
+        "revision": "5b99fdad636668442f94e15054a6b9fb3a80f613"
+      }
+    },
+    {
+      "name": "MiniRust formal operational semantics of Rust MIR and Tree Borrows memory model",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "063d784186d3252bee242217f218223205c0b568"
+      }
+    },
+    {
+      "name": "LLVM compiler infrastructure (X86InsertVZeroUpper pass)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "f61dfd8c0d8cfa6ed8a1ea3a16174d9673184825"
+      }
+    },
+    {
+      "name": "Anneal Lean 4 Rust MIR verification framework and TrustedBoundary",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Procedure Call Standard for the Arm 64-bit Architecture (AAPCS64)",
+      "identity": {
+        "repository": "ARM-software/abi-aa",
+        "revision": "9f9e067e6c6a5d3c5c8326756500cdbd940b8ff7"
+      }
+    },
+    {
+      "name": "RISC-V ELF psABI and Vector Calling Convention Specification",
+      "identity": {
+        "repository": "riscv-non-isa/riscv-elf-psabi-doc",
+        "revision": "56561cb3e7330fe99a98fd27457229707b2786ae"
+      }
+    },
+    {
+      "name": "FFmpeg x86inc.asm NASM ABI, Win64 XMM spill, and vzeroupper macro layer",
+      "identity": {
+        "repository": "FFmpeg/FFmpeg",
+        "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+      }
+    },
+    {
+      "name": "rav1d Rust-to-assembly FFI dispatch and runtime CPU feature detection",
+      "identity": {
+        "repository": "memorysafety/rav1d",
+        "revision": "2e7216c20ac2a75de204d6c8d7268b75a45959b4"
+      }
+    },
+    {
+      "name": "AWS s2n-bignum HOL Light SysV/Win64/AAPCS64 ABI subroutine preservation proofs",
+      "identity": {
+        "repository": "awslabs/s2n-bignum",
+        "revision": "280a220986a0bc6249248187717a771153d073db"
+      }
+    },
+    {
+      "name": "System V Application Binary Interface AMD64 Architecture Processor Supplement",
+      "identity": {
+        "standard": "SysV-AMD64-psABI",
+        "version": "1.0"
+      }
+    },
+    {
+      "name": "Microsoft x64 Calling Convention and Register Usage Specification",
+      "identity": {
+        "standard": "Microsoft-x64-ABI",
+        "url": "https://learn.microsoft.com/en-us/cpp/build/x64-calling-convention"
+      }
+    },
+    {
+      "name": "OpenPOWER 64-Bit ELF V2 ABI Specification for Power Architecture",
+      "identity": {
+        "standard": "OpenPOWER-ELFv2-ABI",
+        "version": "2.1.5"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
