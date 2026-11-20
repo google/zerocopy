@@ -1,0 +1,16 @@
+alg.thm                  spec=  186 proof=  384 theorems=  77 skip=0
+completeness.thm         spec=  235 proof=  723 theorems=  61 skip=0
+dcl.thm                  spec=   62 proof=  300 theorems=  12 skip=0
+decidability.thm         spec=  135 proof=  703 theorems=  57 skip=0
+decl.thm                 spec=   69 proof=  130 theorems=  33 skip=0
+declTyping.thm           spec=  228 proof=  589 theorems=  70 skip=0
+depth.thm                spec=   37 proof=  148 theorems=  14 skip=0
+inst_decidable.thm       spec=  156 proof=  586 theorems=  44 skip=0
+nat.thm                  spec=   49 proof=   49 theorems=  28 skip=0
+olist.thm                spec=   77 proof=   80 theorems=  28 skip=0
+order.thm                spec=   63 proof=  142 theorems=  27 skip=0
+smallStep.thm            spec=   56 proof=   39 theorems=   2 skip=0
+soundness.thm            spec=  238 proof=  671 theorems=  73 skip=0
+trans.thm                spec=  162 proof=  390 theorems=  53 skip=0
+typing.thm               spec=  167 proof=    7 theorems=   7 skip=0
+TOTAL                    spec= 1920 proof= 4941 theorems= 586 skip=0  proof/spec=2.57

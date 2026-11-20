@@ -1,0 +1,10 @@
+coq/well-typed                           files= 10 loc=   560 spec=226 proof=334 admit/postulate/axiom-tokens=0
+coq/well-scoped                          files= 10 loc=   732 spec=287 proof=445 admit/postulate/axiom-tokens=1
+coq/well-typed-sums                      files=  9 loc=   768 spec=268 proof=500 admit/postulate/axiom-tokens=0
+coq/well-scoped-sums                     files= 10 loc=  1039 spec=345 proof=694 admit/postulate/axiom-tokens=1
+agda/STLC.agda                           files=  1 loc=   423 admit/postulate/axiom-tokens=0
+agda/STLC+.agda                          files=  1 loc=   779 admit/postulate/axiom-tokens=0
+agda/generic-syntax                      files= 35 loc=  2196 admit/postulate/axiom-tokens=2
+beluga/stlc                              files=  6 loc=   506 admit/postulate/axiom-tokens=0
+beluga/stlc_sums                         files=  6 loc=   954 admit/postulate/axiom-tokens=0
+f-star                                   files=  6 loc=  1863 admit/postulate/axiom-tokens=2

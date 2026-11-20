@@ -1328,6 +1328,142 @@
         "runtimes/continuations"
       ]
     },
+    "algorithm-w-principality-harper-pfenning-lf-equivalence-worklist-higher-rank-and-poplmark-reloaded": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "JimmyZJX/TypingFormalization",
+            "revision": "7f0596031be9ee08b5f7b5a7678a284240e95805"
+          },
+          "name": "Abella mechanization of worklist higher-rank type inference (Zhao, Oliveira, Schrijvers)"
+        },
+        {
+          "identity": {
+            "repository": "poplmark-reloaded/poplmark-reloaded",
+            "revision": "6d69fb3f9f4c135671330c8f34ed62b71494ba2d"
+          },
+          "name": "POPLMark Reloaded solutions (Beluga, Coq, Agda, F*)"
+        },
+        {
+          "identity": {
+            "repository": "garrigue/certint",
+            "revision": "2c7fdb1e4b12a097e1e55e3899adb39d675ce3b6"
+          },
+          "name": "Garrigue certified interpreter and type inference for ML with structural polymorphism (certint)"
+        },
+        {
+          "identity": {
+            "path": "src/HOL/MiniML",
+            "repository": "isabelle-prover/mirror-isabelle",
+            "revision": "ffe95c3ab95d4b9903849cf9e0596e13e5309b8f"
+          },
+          "name": "Isabelle MiniML theory (Algorithm W), 1998 snapshot"
+        },
+        {
+          "identity": {
+            "path": "src/HOL/MiniML",
+            "repository": "isabelle-prover/mirror-isabelle",
+            "revision": "d4d27ad162365f9f3b5c125a6a69cfbfb3cdf9f4"
+          },
+          "name": "Isabelle MiniML theory (Algorithm W), 2004 Isar snapshot"
+        },
+        {
+          "identity": {
+            "path": "thys/MiniML",
+            "repository": "isabelle-prover/mirror-afp-devel",
+            "revision": "523cdc72b5ae4a91c9ab8e1025d4a30b40472720"
+          },
+          "name": "Archive of Formal Proofs MiniML entry"
+        },
+        {
+          "identity": {
+            "repository": "abella-prover/abella",
+            "revision": "5f6a6122e990f32a3718e1f7efaf29469fd22606",
+            "version": "v2.0.7"
+          },
+          "name": "Abella prover release used to check the worklist development"
+        },
+        {
+          "identity": {
+            "repository": "abella-prover/abella",
+            "revision": "e59565233045865942882271a34236c257edc8e1",
+            "version": "v2.0.8.3"
+          },
+          "name": "Abella prover release on which the worklist development fails"
+        },
+        {
+          "identity": {
+            "doi": "10.1023/A:1006277616879"
+          },
+          "name": "Naraschewski and Nipkow, Type Inference Verified: Algorithm W in Isabelle/HOL (JAR 1999)"
+        },
+        {
+          "identity": {
+            "doi": "10.1023/A:1006285817788"
+          },
+          "name": "Dubois and Menissier-Morain, Certification of a Type Inference Tool for ML: Damas-Milner within Coq (JAR 1999)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-17164-2_25"
+          },
+          "name": "Garrigue, A Certified Implementation of ML with Structural Polymorphism (APLAS 2010)"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0960129513000066"
+          },
+          "name": "Garrigue, A certified implementation of ML with structural polymorphism and recursive types (MSCS)"
+        },
+        {
+          "identity": {
+            "arxiv": "cs/0110028",
+            "doi": "10.1145/1042038.1042041"
+          },
+          "name": "Harper and Pfenning, On equivalence and canonical forms in the LF type theory (TOCL 2005)"
+        },
+        {
+          "identity": {
+            "arxiv": "0804.1667v3",
+            "doi": "10.1145/1877714.1877721"
+          },
+          "name": "Urban, Cheney and Berghofer, Mechanizing the metatheory of LF (TOCL 2011)"
+        },
+        {
+          "identity": {
+            "arxiv": "1306.6032v2",
+            "doi": "10.1145/2500365.2500582"
+          },
+          "name": "Dunfield and Krishnaswami, Complete and easy bidirectional typechecking for higher-rank polymorphism (ICFP 2013)"
+        },
+        {
+          "identity": {
+            "arxiv": "1601.05106v4",
+            "doi": "10.1145/3290322"
+          },
+          "name": "Dunfield and Krishnaswami, Sound and complete bidirectional typechecking for higher-rank polymorphism with existentials and indexed types (POPL 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3341716"
+          },
+          "name": "Zhao, Oliveira and Schrijvers, A mechanical formalization of higher-ranked polymorphic type inference (ICFP 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796819000170"
+          },
+          "name": "Abel et al., POPLMark reloaded: Mechanizing proofs by logical relations (JFP 2019)"
+        }
+      ],
+      "topics": [
+        "verification/type-inference-completeness-proofs",
+        "pl/principal-types-and-unification",
+        "verification/algorithmic-equality-completeness",
+        "pl/worklist-higher-rank-inference"
+      ]
+    },
     "alloy4fun-forge-sterling-misconceptions-tlaplus-audits-and-spec-review-effort": {
       "observed_at": "2026-11-20",
       "subjects": [

@@ -1,0 +1,17 @@
+
+induction on 1.
+intros.
+case H1.
+search.
+case H2.
+apply append_prune_AB to H3.
+unfold.
+backchain IH.
+apply append_prune_AB_tm to H3.
+apply IH to H3 _.
+unfold.
+search.
+backchain wft_weaken with E = E3, F = tyvar n1 :: nil, G = nil.
+Error: Found logic variable at toplevel.
+This usually means that the `search` tactic could not fully solve a goal.
+Note: the `search` tactic may have been invoked implicitly by `apply`,

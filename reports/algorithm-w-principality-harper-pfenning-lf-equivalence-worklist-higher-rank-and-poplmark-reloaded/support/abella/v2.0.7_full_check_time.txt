@@ -1,0 +1,8 @@
+	User time (seconds): 21.40
+	System time (seconds): 0.34
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:22.95
+	Maximum resident set size (kbytes): 30092
+	Exit status: 0
+thc files: 14, total bytes: 568940
+'Proof completed' messages across all .out files: 586
+files containing 'Error': 0

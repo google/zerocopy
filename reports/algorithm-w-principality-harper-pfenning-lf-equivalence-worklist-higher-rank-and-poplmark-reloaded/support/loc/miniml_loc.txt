@@ -1,0 +1,20 @@
+Generalize.thy      38 lines    25 nonblank
+Instance.thy        49 lines    35 nonblank
+Maybe.thy           18 lines    13 nonblank
+MiniML.thy          32 lines    26 nonblank
+Type.thy           159 lines   112 nonblank
+W.thy               38 lines    28 nonblank
+Generalize.ML      137 lines   119 nonblank
+Instance.ML        288 lines   249 nonblank
+Maybe.ML            34 lines    27 nonblank
+MiniML.ML          246 lines   217 nonblank
+Type.ML            750 lines   618 nonblank
+W.ML               567 lines   547 nonblank
+
+AFP (Isar) MiniML:
+Generalize.thy     123 lines
+Instance.thy       219 lines
+Maybe.thy           45 lines
+MiniML.thy         164 lines
+Type.thy           583 lines
+W.thy              388 lines
