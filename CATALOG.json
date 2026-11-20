@@ -33887,6 +33887,89 @@
         "verification/compiler-verification"
       ]
     },
+    "inductive-step-relations-vs-executable-isa-interpreters-in-proof-assistants": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rems-project/lean-sail",
+            "revision": "e4745c82fe329f162700020dcd31da6b342473b9"
+          },
+          "name": "lean-sail Lean 4 support library for Sail ISA models"
+        },
+        {
+          "identity": {
+            "repository": "mit-pdos/xv6iris",
+            "revision": "5cb9df992c45829f6210b3e4176962d7b7a4c408"
+          },
+          "name": "xv6iris RISC-V kernel verification over free-monad Sail in Lean 4"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/LNSym",
+            "revision": "5c05220ff970e3bdd7813ad0c9ef3741522c8b92"
+          },
+          "name": "LNSym Armv8 symbolic simulator in Lean 4"
+        },
+        {
+          "identity": {
+            "repository": "Verified-zkEVM/riscv-zkvm",
+            "revision": "6810fc14d9c40373101321cefaec59df8d82e3e7"
+          },
+          "name": "riscv-zkvm RV64IM interpreter and Sail equivalence suite in Lean 4"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+          },
+          "name": "Lean 4 theorem prover and kernel (v4.34.1)"
+        },
+        {
+          "identity": {
+            "repository": "mit-plv/riscv-coq",
+            "revision": "03881b21aa36115d436e06b9e1a40836e9b927c7"
+          },
+          "name": "riscv-coq multipurpose formal RISC-V specification in Rocq"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/islaris",
+            "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9"
+          },
+          "name": "Islaris Coq/Iris verification framework over Isla ISA traces"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert verified C compiler and RISC-V Asm semantics in Rocq"
+        },
+        {
+          "identity": {
+            "repository": "seL4/l4v",
+            "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e"
+          },
+          "name": "seL4 l4v formal verification proofs in Isabelle/HOL"
+        },
+        {
+          "identity": {
+            "repository": "HOL-Theorem-Prover/HOL",
+            "revision": "0c30bdb71aafd4e6a354f5b0b43fffbff6fa8d47"
+          },
+          "name": "HOL4 L3 RISC-V machine-code specification"
+        }
+      ],
+      "topics": [
+        "verification/lean4",
+        "isa/riscv",
+        "verification/refinement",
+        "lean/mechanization",
+        "pl/operational-semantics",
+        "isa/sail"
+      ]
+    },
     "infix-precedence-misunderstandings-rhombus-lattices-and-uax31-joiners": {
       "observed_at": "2026-11-19",
       "subjects": [
