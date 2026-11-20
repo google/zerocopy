@@ -1,0 +1,77 @@
+{
+  "topics": [
+    "rust/toolchain",
+    "rustc/metadata",
+    "build/reproducible-builds",
+    "security/supply-chain",
+    "security/toctou",
+    "verification/tcb",
+    "anneal/tcb"
+  ],
+  "subjects": [
+    {
+      "name": "Rust Compiler Sysroot, CrateLocator, rmeta Decoder, and Mmap Loader",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1"
+      }
+    },
+    {
+      "name": "Cargo Standard-Library Rebuild Pipeline (-Zbuild-std)",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "9ae79c984e55ee94ed9642ea101abd3f16f82916"
+      }
+    },
+    {
+      "name": "Anneal Rust Verification Framework (rustc-capture, flake.nix, and Lean sysroot audit)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Kani Rust Verifier Driver and Custom Sysroot Pipeline",
+      "identity": {
+        "repository": "model-checking/kani",
+        "revision": "0601bc57f00a5b7f4d8fb4dd76acd6ec9355227a"
+      }
+    },
+    {
+      "name": "Verus Rust Verifier Driver and vstd / Core Extern Binding",
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "0dab219272ac2353320bd177ebb3929453b90a9e"
+      }
+    },
+    {
+      "name": "Charon Rust MIR Extractor and Full-MIR Sysroot CLI",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "ab5b6d60f53691bc4edee3b11cc52656c090071d"
+      }
+    },
+    {
+      "name": "Creusot Deductive Rust Verifier Toolchain Setup",
+      "identity": {
+        "repository": "creusot-rs/creusot",
+        "revision": "601d97891bb0bc0b569686cc946ef4980560b5d8"
+      }
+    },
+    {
+      "name": "Linux Kernel File Sealing (memfd_create / F_ADD_SEALS) and fs-verity Implementation",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "65e4fd942f72a9dba0e4e257290c4fa1aa756854"
+      }
+    },
+    {
+      "name": "Supply-Chain Provenance and Reproducible Builds Specifications and Literature (SLSA v1.0, in-toto, and Lamb & Zacchiroli)",
+      "identity": {
+        "doi": "10.1109/MS.2021.3073045",
+        "specification": "SLSA v1.0 (https://slsa.dev/spec/v1.0) and in-toto Attestation Framework v1.0"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

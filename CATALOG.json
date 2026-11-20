@@ -14532,6 +14532,104 @@
         "rust/traits"
       ]
     },
+    "coinductive-divergence-fair-scheduling-and-reactive-rust-event-loop-liveness": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal MIR semantics, correspondence, and trusted boundary auditor"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 kernel and foundation prelude"
+        },
+        {
+          "identity": {
+            "path": "Mathlib/Data/PFunctor/Univariate/M.lean",
+            "repository": "leanprover-community/mathlib4",
+            "revision": "92b2a2cbdc245d7e751a2ee681ea91f819fbab5e"
+          },
+          "name": "Mathlib4 univariate polynomial functor M-types"
+        },
+        {
+          "identity": {
+            "repository": "proofs-rs/lean-miri",
+            "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+          },
+          "name": "Lean-Miri mechanized MIR reference interpreter"
+        },
+        {
+          "identity": {
+            "reference_submodule": "a286e1ecb8ce193d50056e4bb042eea9b23876ef",
+            "repository": "rust-lang/rust",
+            "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+          },
+          "name": "Rust compiler and Rust Reference"
+        },
+        {
+          "identity": {
+            "ctrees_repository": "vellvm/ctrees",
+            "ctrees_revision": "cabcf9bf24b0f459204a7da19ac01b7697ff04e3",
+            "itrees_repository": "DeepSpec/InteractionTrees",
+            "itrees_revision": "284d42248a3c5517cff9f582e335fcee2f6bdc1f"
+          },
+          "name": "Interaction Trees and Choice Trees Coq mechanizations"
+        },
+        {
+          "identity": {
+            "path": "kernel/src/kernel.rs",
+            "repository": "tock/tock",
+            "revision": "ba6aa7edc014505d2e6f0123b2b6059ba6ee7dec"
+          },
+          "name": "Tock OS kernel event loop"
+        },
+        {
+          "identity": {
+            "repository": "rtic-rs/rtic",
+            "revision": "fed0fa5e9d74c1f1fb27f06582d4387590cbf0a9"
+          },
+          "name": "RTIC hardware-scheduled Rust framework"
+        },
+        {
+          "identity": {
+            "path": "embassy-executor/src/raw/mod.rs",
+            "repository": "embassy-rs/embassy",
+            "revision": "0bf016d305431fcf6fb00be248ab608dca009168"
+          },
+          "name": "Embassy embedded async executor"
+        },
+        {
+          "identity": {
+            "repository": "tokio-rs/tokio",
+            "revision": "3f0ffc85f51c71d97bce72e0f8b80ece9b8b4892"
+          },
+          "name": "Tokio multi-threaded scheduler and cooperative budget"
+        },
+        {
+          "identity": {
+            "path": "src/ext-sys-reset.adoc",
+            "repository": "riscv-non-isa/riscv-sbi-doc",
+            "revision": "8a545effe9b50484ff897d9815d7d9015cdef203"
+          },
+          "name": "RISC-V Supervisor Binary Interface System Reset Extension"
+        }
+      ],
+      "topics": [
+        "verification/semantics",
+        "verification/liveness",
+        "lean/mechanization",
+        "anneal/theory",
+        "runtimes/event-loops",
+        "ffi/divergence"
+      ]
+    },
     "collaborative-ast-crdts-categorical-patch-theory-and-archival-vms": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -37674,6 +37772,86 @@
         "verification/compiler-verification"
       ]
     },
+    "load-reserved-store-conditional-reservation-sets-forward-progress-and-aba-hazards": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "riscv/riscv-isa-manual",
+            "revision": "c05f1725f25526dd8463bac6ca75cfcfbee17d05"
+          },
+          "name": "RISC-V Unprivileged ISA Specification (Zalrsc, Zaamo, and RVWMO chapters)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3290384",
+            "repository": "riscv/sail-riscv",
+            "revision": "ec5200bdfe0c10afa6dbb1f7b0980db2d236236e"
+          },
+          "name": "Sail RISC-V Formal ISA Model (Zalrsc instructions and PMA reservability)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3158107",
+            "repository": "rems-project/sail-arm",
+            "revision": "5416ef6b43e9527c38dc71fb752259c1d01a47e1",
+            "specification": "Arm Architecture Reference Manual for A-profile Architecture (ARM DDI 0487)"
+          },
+          "name": "Armv8-A / Armv9-A Architecture Reference Manual and Sail ARMv8 Model (LDAXR/STLXR and Exclusives Monitors)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1"
+          },
+          "name": "Rust core::sync::atomic Library and Intrinsics"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "90895e4f8b0f3c50816e7323c91c7a0634fc35b0"
+          },
+          "name": "LLVM AtomicExpandPass and Target LL/SC Lowering (RISC-V and AArch64)"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "65e4fd942f72a9dba0e4e257290c4fa1aa756854"
+          },
+          "name": "Linux Kernel RISC-V and ARM64 LL/SC Atomic and cmpxchg Primitives"
+        },
+        {
+          "identity": {
+            "repository": "crossbeam-rs/crossbeam",
+            "revision": "a28f40fdddb70bea8e5faf0efad9af0be4b9dbea"
+          },
+          "name": "Crossbeam Epoch-Based Reclamation and Tagged Atomic Pointers"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal Rust Verification Framework and Vendored Lean-Miri Semantics"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3314221.3314624",
+            "related_dois": "10.1145/3458926; 10.1145/3062341.3062352; 10.1145/3519939.3523434; 10.1109/TPDS.2004.8"
+          },
+          "name": "Weak-Memory Operational, Axiomatic, and Safe Reclamation Literature (Promising-ARM/RISC-V, Armed Cats, RC11, Islaris, and Hazard Pointers)"
+        }
+      ],
+      "topics": [
+        "isa/riscv64",
+        "isa/aarch64",
+        "isa/llsc",
+        "verification/concurrency",
+        "rust/atomics",
+        "systems/kernels",
+        "anneal/concurrency"
+      ]
+    },
     "locally-complete-analyzers-aalpy-wp-oracles-and-mull-tce-mutants": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -42104,6 +42282,117 @@
         "ffi/gc-interop",
         "runtimes/interop",
         "ffi/bridges"
+      ]
+    },
+    "multicore-interrupt-controllers-plic-claim-complete-and-shared-mmio-ordering": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "riscv/riscv-plic-spec",
+            "revision": "f8ec1b7e9b1a92c34af8e0ab7eb33838813785a3",
+            "version": "1.0.0"
+          },
+          "name": "RISC-V Platform-Level Interrupt Controller Specification"
+        },
+        {
+          "identity": {
+            "repository": "riscv/riscv-isa-manual",
+            "revision": "6ee57d8997021aaa8025e208164763fe12e03c19"
+          },
+          "name": "RISC-V Instruction Set Manual (Unprivileged RVWMO/FENCE and Privileged Machine/Supervisor ISA)"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+          },
+          "name": "Linux kernel (SiFive PLIC, ARM GICv3, and RISC-V MMIO/mmiowb barriers)"
+        },
+        {
+          "identity": {
+            "repository": "tock/tock",
+            "revision": "ba6aa7edc014505d2e6f0123b2b6059ba6ee7dec"
+          },
+          "name": "Tock embedded OS (SiFive/EarlGrey PLIC and DmaFence)"
+        },
+        {
+          "identity": {
+            "repository": "tock/tock-registers",
+            "revision": "86008616e0082f4a75e2cf1b33c94b78cbaf7f5f"
+          },
+          "name": "tock-registers MMIO bitfield and bus library"
+        },
+        {
+          "identity": {
+            "repository": "seL4/seL4",
+            "revision": "08c7e5fddb3111ff377745c8eefb07feb5c4cfb7"
+          },
+          "name": "seL4 microkernel RISC-V PLIC driver"
+        },
+        {
+          "identity": {
+            "repository": "rtic-rs/rtic",
+            "revision": "fed0fa5e9d74c1f1fb27f06582d4387590cbf0a9",
+            "version": "rtic 2.4.0"
+          },
+          "name": "RTIC (Real-Time Interrupt-driven Concurrency)"
+        },
+        {
+          "identity": {
+            "architecture": "GICv3/GICv4",
+            "document": "ARM IHI 0069H"
+          },
+          "name": "ARM Generic Interrupt Controller Architecture Specification GICv3 and GICv4"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "20aa204315cd36aaf944778b7d33c0d609ced8e8"
+          },
+          "name": "Anneal formal verification framework"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/BF00365393"
+          },
+          "name": "Baker, Stack-Based Scheduling of Realtime Processes (Real-Time Systems 3(1), 1991)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/REAL.2001.990598"
+          },
+          "name": "Gai, Lipari, and Di Natale, Minimizing Memory Utilization of Real-Time Task Sets in Single and Multi-Processor Systems-on-a-Chip (RTSS 2001)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ECRTS.2013.37"
+          },
+          "name": "Burns and Wellings, A Schedulability Compatible Multiprocessor Resource Sharing Protocol -- MrsP (ECRTS 2013)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3173162.3177156"
+          },
+          "name": "Alglave et al., Frightening Small Children and Disconcerting Grown-ups: Concurrency in the Linux Kernel (ASPLOS 2018)"
+        }
+      ],
+      "topics": [
+        "systems/kernels",
+        "systems/interrupts",
+        "isa/mmio",
+        "isa/riscv64",
+        "isa/aarch64",
+        "verification/concurrency",
+        "anneal/theory"
       ]
     },
     "multicore-realtime-interference-cache-partitioning-and-mrsp-locking": {
@@ -54298,6 +54587,116 @@
         "lean/mechanization"
       ]
     },
+    "rust-drop-check-eyepatch-dangling-generics-and-phantomdata-variance-rules": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "c884ecfbabb04b04fa5054dafc67ec258ecde745"
+          },
+          "name": "Rust compiler and standard library (current trunk)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly"
+          },
+          "name": "Rust standard library historical Unique<T> snapshot"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "Rust RFCs (RFC 0769, RFC 1238, RFC 1327)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/nomicon",
+            "revision": "b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6"
+          },
+          "name": "The Rustonomicon (Drop Check, PhantomData, Subtyping)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference (Subtyping and Variance, Destructors)"
+        },
+        {
+          "identity": {
+            "repository": "SimonSapin/rust-typed-arena",
+            "revision": "f1f26c3994dc881c35591cb629d8466df29e778a"
+          },
+          "name": "typed-arena single-type chunked arena allocator"
+        },
+        {
+          "identity": {
+            "repository": "proofs-rs/lean-miri",
+            "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+          },
+          "name": "lean-miri mechanized Miri and Tree Borrows semantics"
+        },
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          },
+          "name": "MiniRust operational semantics specification"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "fd793268d403f83cd1fc9082b28097c5b0b92cbd"
+          },
+          "name": "zerocopy safe transmutation and pointer wrappers"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "20aa204315cd36aaf944778b7d33c0d609ced8e8"
+          },
+          "name": "Anneal formal verification framework"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3158154"
+          },
+          "name": "Jung et al., RustBelt: Securing the Foundations of the Rust Programming Language (POPL 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371109"
+          },
+          "name": "Jung et al., Stacked Borrows: An Aliasing Model for Rust (POPL 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3735592"
+          },
+          "name": "Villani, Hostert, Dreyer, and Jung, Tree Borrows (PACMPL / PLDI 2025)"
+        }
+      ],
+      "topics": [
+        "rust/type-system",
+        "rust/unsafe",
+        "rust/memory-model",
+        "rustc/dropck",
+        "rust/tree-borrows",
+        "verification/rust"
+      ]
+    },
     "rust-drop-reentrancy-interior-mutability-and-arena-borrowing-invariants": {
       "observed_at": "2026-11-20",
       "subjects": [
@@ -55477,6 +55876,68 @@
         "rustc/intrinsics"
       ]
     },
+    "rust-panic-payloads-unwind-abi-catch-unwind-and-exception-safety-hierarchies": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+          },
+          "name": "Rust compiler, standard library panic runtime, and alloc containers"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "a286e1ecb8ce193d50056e4bb042eea9b23876ef"
+          },
+          "name": "The Rust Reference (Panic and Undefined Behavior chapters)"
+        },
+        {
+          "identity": {
+            "repository": "proofs-rs/lean-miri",
+            "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+          },
+          "name": "Lean-Miri mechanized MIR unwind and panic interpreter"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/miri",
+            "revision": "7fa591d7d4dd9af8154becbc8332f8096f8323b1"
+          },
+          "name": "Miri Rust MIR interpreter"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal MIR AST, small-step semantics, and correspondence specification"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/hashbrown",
+            "revision": "f3e9f0fc110f55ca55d73d6eddc0bdf5e85eb223"
+          },
+          "name": "hashbrown SwissTable ScopeGuard and exception-safe table mutations"
+        },
+        {
+          "identity": {
+            "repository": "Sgeo/take_mut",
+            "revision": "1bd70d842c6febcd16ec1fe3a954a84032b89f52"
+          },
+          "name": "take_mut in-place mutable borrow ownership transfer crate"
+        }
+      ],
+      "topics": [
+        "rust/safety",
+        "rust/semantics",
+        "verification/rust",
+        "anneal/theory",
+        "rustc/mir",
+        "ffi/unwind"
+      ]
+    },
     "rust-pin-drop-guarantee-mem-forget-leaks-and-async-cancellation-invariants": {
       "observed_at": "2026-11-20",
       "subjects": [
@@ -56075,6 +56536,83 @@
         "systems",
         "systems/object-formats",
         "verification"
+      ]
+    },
+    "rust-sysroot-rlib-artifact-provenance-reproducible-capture-and-toctou-hardening": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1"
+          },
+          "name": "Rust Compiler Sysroot, CrateLocator, rmeta Decoder, and Mmap Loader"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "9ae79c984e55ee94ed9642ea101abd3f16f82916"
+          },
+          "name": "Cargo Standard-Library Rebuild Pipeline (-Zbuild-std)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal Rust Verification Framework (rustc-capture, flake.nix, and Lean sysroot audit)"
+        },
+        {
+          "identity": {
+            "repository": "model-checking/kani",
+            "revision": "0601bc57f00a5b7f4d8fb4dd76acd6ec9355227a"
+          },
+          "name": "Kani Rust Verifier Driver and Custom Sysroot Pipeline"
+        },
+        {
+          "identity": {
+            "repository": "verus-lang/verus",
+            "revision": "0dab219272ac2353320bd177ebb3929453b90a9e"
+          },
+          "name": "Verus Rust Verifier Driver and vstd / Core Extern Binding"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "ab5b6d60f53691bc4edee3b11cc52656c090071d"
+          },
+          "name": "Charon Rust MIR Extractor and Full-MIR Sysroot CLI"
+        },
+        {
+          "identity": {
+            "repository": "creusot-rs/creusot",
+            "revision": "601d97891bb0bc0b569686cc946ef4980560b5d8"
+          },
+          "name": "Creusot Deductive Rust Verifier Toolchain Setup"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "65e4fd942f72a9dba0e4e257290c4fa1aa756854"
+          },
+          "name": "Linux Kernel File Sealing (memfd_create / F_ADD_SEALS) and fs-verity Implementation"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/MS.2021.3073045",
+            "specification": "SLSA v1.0 (https://slsa.dev/spec/v1.0) and in-toto Attestation Framework v1.0"
+          },
+          "name": "Supply-Chain Provenance and Reproducible Builds Specifications and Literature (SLSA v1.0, in-toto, and Lamb & Zacchiroli)"
+        }
+      ],
+      "topics": [
+        "rust/toolchain",
+        "rustc/metadata",
+        "build/reproducible-builds",
+        "security/supply-chain",
+        "security/toctou",
+        "verification/tcb",
+        "anneal/tcb"
       ]
     },
     "rust-thread-local-storage-models-and-runtime-contracts": {

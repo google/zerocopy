@@ -1,0 +1,62 @@
+{
+  "topics": [
+    "rust/safety",
+    "rust/semantics",
+    "verification/rust",
+    "anneal/theory",
+    "rustc/mir",
+    "ffi/unwind"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler, standard library panic runtime, and alloc containers",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+      }
+    },
+    {
+      "name": "The Rust Reference (Panic and Undefined Behavior chapters)",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "a286e1ecb8ce193d50056e4bb042eea9b23876ef"
+      }
+    },
+    {
+      "name": "Lean-Miri mechanized MIR unwind and panic interpreter",
+      "identity": {
+        "repository": "proofs-rs/lean-miri",
+        "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+      }
+    },
+    {
+      "name": "Miri Rust MIR interpreter",
+      "identity": {
+        "repository": "rust-lang/miri",
+        "revision": "7fa591d7d4dd9af8154becbc8332f8096f8323b1"
+      }
+    },
+    {
+      "name": "Anneal MIR AST, small-step semantics, and correspondence specification",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "hashbrown SwissTable ScopeGuard and exception-safe table mutations",
+      "identity": {
+        "repository": "rust-lang/hashbrown",
+        "revision": "f3e9f0fc110f55ca55d73d6eddc0bdf5e85eb223"
+      }
+    },
+    {
+      "name": "take_mut in-place mutable borrow ownership transfer crate",
+      "identity": {
+        "repository": "Sgeo/take_mut",
+        "revision": "1bd70d842c6febcd16ec1fe3a954a84032b89f52"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

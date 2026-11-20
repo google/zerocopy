@@ -1,0 +1,110 @@
+{
+  "topics": [
+    "rust/type-system",
+    "rust/unsafe",
+    "rust/memory-model",
+    "rustc/dropck",
+    "rust/tree-borrows",
+    "verification/rust"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler and standard library (current trunk)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "c884ecfbabb04b04fa5054dafc67ec258ecde745"
+      }
+    },
+    {
+      "name": "Rust standard library historical Unique<T> snapshot",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "1.98.0-nightly"
+      }
+    },
+    {
+      "name": "Rust RFCs (RFC 0769, RFC 1238, RFC 1327)",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+      }
+    },
+    {
+      "name": "The Rustonomicon (Drop Check, PhantomData, Subtyping)",
+      "identity": {
+        "repository": "rust-lang/nomicon",
+        "revision": "b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6"
+      }
+    },
+    {
+      "name": "The Rust Reference (Subtyping and Variance, Destructors)",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+      }
+    },
+    {
+      "name": "typed-arena single-type chunked arena allocator",
+      "identity": {
+        "repository": "SimonSapin/rust-typed-arena",
+        "revision": "f1f26c3994dc881c35591cb629d8466df29e778a"
+      }
+    },
+    {
+      "name": "lean-miri mechanized Miri and Tree Borrows semantics",
+      "identity": {
+        "repository": "proofs-rs/lean-miri",
+        "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+      }
+    },
+    {
+      "name": "MiniRust operational semantics specification",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+      }
+    },
+    {
+      "name": "zerocopy safe transmutation and pointer wrappers",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "fd793268d403f83cd1fc9082b28097c5b0b92cbd"
+      }
+    },
+    {
+      "name": "Anneal formal verification framework",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "20aa204315cd36aaf944778b7d33c0d609ced8e8"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Jung et al., RustBelt: Securing the Foundations of the Rust Programming Language (POPL 2018)",
+      "identity": {
+        "doi": "10.1145/3158154"
+      }
+    },
+    {
+      "name": "Jung et al., Stacked Borrows: An Aliasing Model for Rust (POPL 2020)",
+      "identity": {
+        "doi": "10.1145/3371109"
+      }
+    },
+    {
+      "name": "Villani, Hostert, Dreyer, and Jung, Tree Borrows (PACMPL / PLDI 2025)",
+      "identity": {
+        "doi": "10.1145/3735592"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

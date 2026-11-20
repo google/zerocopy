@@ -1,0 +1,98 @@
+{
+  "topics": [
+    "verification/semantics",
+    "verification/liveness",
+    "lean/mechanization",
+    "anneal/theory",
+    "runtimes/event-loops",
+    "ffi/divergence"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal MIR semantics, correspondence, and trusted boundary auditor",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 kernel and foundation prelude",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Mathlib4 univariate polynomial functor M-types",
+      "identity": {
+        "repository": "leanprover-community/mathlib4",
+        "revision": "92b2a2cbdc245d7e751a2ee681ea91f819fbab5e",
+        "path": "Mathlib/Data/PFunctor/Univariate/M.lean"
+      }
+    },
+    {
+      "name": "Lean-Miri mechanized MIR reference interpreter",
+      "identity": {
+        "repository": "proofs-rs/lean-miri",
+        "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+      }
+    },
+    {
+      "name": "Rust compiler and Rust Reference",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd",
+        "reference_submodule": "a286e1ecb8ce193d50056e4bb042eea9b23876ef"
+      }
+    },
+    {
+      "name": "Interaction Trees and Choice Trees Coq mechanizations",
+      "identity": {
+        "itrees_repository": "DeepSpec/InteractionTrees",
+        "itrees_revision": "284d42248a3c5517cff9f582e335fcee2f6bdc1f",
+        "ctrees_repository": "vellvm/ctrees",
+        "ctrees_revision": "cabcf9bf24b0f459204a7da19ac01b7697ff04e3"
+      }
+    },
+    {
+      "name": "Tock OS kernel event loop",
+      "identity": {
+        "repository": "tock/tock",
+        "revision": "ba6aa7edc014505d2e6f0123b2b6059ba6ee7dec",
+        "path": "kernel/src/kernel.rs"
+      }
+    },
+    {
+      "name": "RTIC hardware-scheduled Rust framework",
+      "identity": {
+        "repository": "rtic-rs/rtic",
+        "revision": "fed0fa5e9d74c1f1fb27f06582d4387590cbf0a9"
+      }
+    },
+    {
+      "name": "Embassy embedded async executor",
+      "identity": {
+        "repository": "embassy-rs/embassy",
+        "revision": "0bf016d305431fcf6fb00be248ab608dca009168",
+        "path": "embassy-executor/src/raw/mod.rs"
+      }
+    },
+    {
+      "name": "Tokio multi-threaded scheduler and cooperative budget",
+      "identity": {
+        "repository": "tokio-rs/tokio",
+        "revision": "3f0ffc85f51c71d97bce72e0f8b80ece9b8b4892"
+      }
+    },
+    {
+      "name": "RISC-V Supervisor Binary Interface System Reset Extension",
+      "identity": {
+        "repository": "riscv-non-isa/riscv-sbi-doc",
+        "revision": "8a545effe9b50484ff897d9815d7d9015cdef203",
+        "path": "src/ext-sys-reset.adoc"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

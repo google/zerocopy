@@ -1,0 +1,111 @@
+{
+  "topics": [
+    "systems/kernels",
+    "systems/interrupts",
+    "isa/mmio",
+    "isa/riscv64",
+    "isa/aarch64",
+    "verification/concurrency",
+    "anneal/theory"
+  ],
+  "subjects": [
+    {
+      "name": "RISC-V Platform-Level Interrupt Controller Specification",
+      "identity": {
+        "repository": "riscv/riscv-plic-spec",
+        "revision": "f8ec1b7e9b1a92c34af8e0ab7eb33838813785a3",
+        "version": "1.0.0"
+      }
+    },
+    {
+      "name": "RISC-V Instruction Set Manual (Unprivileged RVWMO/FENCE and Privileged Machine/Supervisor ISA)",
+      "identity": {
+        "repository": "riscv/riscv-isa-manual",
+        "revision": "6ee57d8997021aaa8025e208164763fe12e03c19"
+      }
+    },
+    {
+      "name": "Linux kernel (SiFive PLIC, ARM GICv3, and RISC-V MMIO/mmiowb barriers)",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+      }
+    },
+    {
+      "name": "Tock embedded OS (SiFive/EarlGrey PLIC and DmaFence)",
+      "identity": {
+        "repository": "tock/tock",
+        "revision": "ba6aa7edc014505d2e6f0123b2b6059ba6ee7dec"
+      }
+    },
+    {
+      "name": "tock-registers MMIO bitfield and bus library",
+      "identity": {
+        "repository": "tock/tock-registers",
+        "revision": "86008616e0082f4a75e2cf1b33c94b78cbaf7f5f"
+      }
+    },
+    {
+      "name": "seL4 microkernel RISC-V PLIC driver",
+      "identity": {
+        "repository": "seL4/seL4",
+        "revision": "08c7e5fddb3111ff377745c8eefb07feb5c4cfb7"
+      }
+    },
+    {
+      "name": "RTIC (Real-Time Interrupt-driven Concurrency)",
+      "identity": {
+        "repository": "rtic-rs/rtic",
+        "revision": "fed0fa5e9d74c1f1fb27f06582d4387590cbf0a9",
+        "version": "rtic 2.4.0"
+      }
+    },
+    {
+      "name": "ARM Generic Interrupt Controller Architecture Specification GICv3 and GICv4",
+      "identity": {
+        "document": "ARM IHI 0069H",
+        "architecture": "GICv3/GICv4"
+      }
+    },
+    {
+      "name": "Anneal formal verification framework",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "20aa204315cd36aaf944778b7d33c0d609ced8e8"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Baker, Stack-Based Scheduling of Realtime Processes (Real-Time Systems 3(1), 1991)",
+      "identity": {
+        "doi": "10.1007/BF00365393"
+      }
+    },
+    {
+      "name": "Gai, Lipari, and Di Natale, Minimizing Memory Utilization of Real-Time Task Sets in Single and Multi-Processor Systems-on-a-Chip (RTSS 2001)",
+      "identity": {
+        "doi": "10.1109/REAL.2001.990598"
+      }
+    },
+    {
+      "name": "Burns and Wellings, A Schedulability Compatible Multiprocessor Resource Sharing Protocol -- MrsP (ECRTS 2013)",
+      "identity": {
+        "doi": "10.1109/ECRTS.2013.37"
+      }
+    },
+    {
+      "name": "Alglave et al., Frightening Small Children and Disconcerting Grown-ups: Concurrency in the Linux Kernel (ASPLOS 2018)",
+      "identity": {
+        "doi": "10.1145/3173162.3177156"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

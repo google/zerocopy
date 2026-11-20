@@ -1,0 +1,80 @@
+{
+  "topics": [
+    "isa/riscv64",
+    "isa/aarch64",
+    "isa/llsc",
+    "verification/concurrency",
+    "rust/atomics",
+    "systems/kernels",
+    "anneal/concurrency"
+  ],
+  "subjects": [
+    {
+      "name": "RISC-V Unprivileged ISA Specification (Zalrsc, Zaamo, and RVWMO chapters)",
+      "identity": {
+        "repository": "riscv/riscv-isa-manual",
+        "revision": "c05f1725f25526dd8463bac6ca75cfcfbee17d05"
+      }
+    },
+    {
+      "name": "Sail RISC-V Formal ISA Model (Zalrsc instructions and PMA reservability)",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "ec5200bdfe0c10afa6dbb1f7b0980db2d236236e",
+        "doi": "10.1145/3290384"
+      }
+    },
+    {
+      "name": "Armv8-A / Armv9-A Architecture Reference Manual and Sail ARMv8 Model (LDAXR/STLXR and Exclusives Monitors)",
+      "identity": {
+        "repository": "rems-project/sail-arm",
+        "revision": "5416ef6b43e9527c38dc71fb752259c1d01a47e1",
+        "specification": "Arm Architecture Reference Manual for A-profile Architecture (ARM DDI 0487)",
+        "doi": "10.1145/3158107"
+      }
+    },
+    {
+      "name": "Rust core::sync::atomic Library and Intrinsics",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1"
+      }
+    },
+    {
+      "name": "LLVM AtomicExpandPass and Target LL/SC Lowering (RISC-V and AArch64)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "90895e4f8b0f3c50816e7323c91c7a0634fc35b0"
+      }
+    },
+    {
+      "name": "Linux Kernel RISC-V and ARM64 LL/SC Atomic and cmpxchg Primitives",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "65e4fd942f72a9dba0e4e257290c4fa1aa756854"
+      }
+    },
+    {
+      "name": "Crossbeam Epoch-Based Reclamation and Tagged Atomic Pointers",
+      "identity": {
+        "repository": "crossbeam-rs/crossbeam",
+        "revision": "a28f40fdddb70bea8e5faf0efad9af0be4b9dbea"
+      }
+    },
+    {
+      "name": "Anneal Rust Verification Framework and Vendored Lean-Miri Semantics",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Weak-Memory Operational, Axiomatic, and Safe Reclamation Literature (Promising-ARM/RISC-V, Armed Cats, RC11, Islaris, and Hazard Pointers)",
+      "identity": {
+        "doi": "10.1145/3314221.3314624",
+        "related_dois": "10.1145/3458926; 10.1145/3062341.3062352; 10.1145/3519939.3523434; 10.1109/TPDS.2004.8"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
