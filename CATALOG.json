@@ -43939,6 +43939,42 @@
         "security/tcb-hazards"
       ]
     },
+    "lean4-kernel-whnf-forcing-rewrite-barrier-opacity-and-explicit-vs-typeclass-algebra-costs": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover, C++ kernel, Meta/Tactic elaborator, and LCNF code generator"
+        },
+        {
+          "identity": {
+            "repository": "digama0/lean4lean",
+            "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+          },
+          "name": "Lean4Lean self-hosted Lean 4 typechecker and typing metatheory"
+        },
+        {
+          "identity": {
+            "repository": "ammkrn/nanoda_lib",
+            "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929",
+            "version": "v0.4.32"
+          },
+          "name": "Nanoda external Rust proof checker for Lean 4"
+        }
+      ],
+      "topics": [
+        "lean/kernel",
+        "verification/proof-engineering",
+        "pl/typeclasses",
+        "lean/elaboration",
+        "lean/tactics",
+        "lean/codegen"
+      ]
+    },
     "lean4-realizeconst-diamond-collisions-chunked-mir-ast-and-olean-rss-scaling": {
       "observed_at": "2026-11-20",
       "subjects": [
@@ -68258,6 +68294,70 @@
         "rust/validity",
         "zerocopy/layout",
         "lean/mechanization"
+      ]
+    },
+    "rust-c-ffi-tbaa-noalias-dead-store-hazards-and-tls-destructor-reentrancy": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly (2026-05-31)"
+          },
+          "name": "Rust compiler and standard library (rustc_codegen_llvm asm/intrinsics and std::sys::thread_local)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "1780833aa0f119a425d7f993aaac29d03cb04da6"
+          },
+          "name": "LLVM compiler infrastructure (TypeBasedAliasAnalysis, ScopedNoAliasAA, InlineFunction, DeadStoreElimination)"
+        },
+        {
+          "identity": {
+            "repository": "bminor/glibc",
+            "revision": "74f59e9271cbb4071671e5a474e7d4f1622b186f",
+            "version": "glibc-2.41"
+          },
+          "name": "GNU C Library (cxa_thread_atexit_impl, exit, pthread_create, nptl_deallocate_tsd, dl-fini)"
+        },
+        {
+          "identity": {
+            "repository": "kraj/musl",
+            "revision": "0784374d561435f7c787a555aeab8ede699ed298",
+            "version": "v1.2.5"
+          },
+          "name": "musl C standard library (exit, atexit, pthread_key_create TSD destruction)"
+        },
+        {
+          "identity": {
+            "repository": "RustCrypto/utils",
+            "revision": "77d1a3e6c2e8c28f49189258abb5d4405c0f1330"
+          },
+          "name": "RustCrypto zeroize crate (optimization_barrier and bulk slice zeroization)"
+        },
+        {
+          "identity": {
+            "target": "x86_64-linux-gnu",
+            "toolchain": "gcc (Debian 15.2.0-14) 15.2.0"
+          },
+          "name": "GNU Compiler Collection C compiler (strict-aliasing TBAA and FFI probe)"
+        },
+        {
+          "identity": {
+            "standards": "ISO/IEC 9899:2024; IEEE Std 1003.1-2024; Itanium C++ ABI 1.86"
+          },
+          "name": "ISO C23 and POSIX.1-2024 normative specifications"
+        }
+      ],
+      "topics": [
+        "ffi/rust-c",
+        "llvm/aliasing",
+        "runtimes/tls",
+        "rust/unsafe",
+        "rustc/codegen",
+        "security/secret-zeroization"
       ]
     },
     "rust-coroutines-gen-blocks-async-drop-and-self-referential-generator-pinning": {

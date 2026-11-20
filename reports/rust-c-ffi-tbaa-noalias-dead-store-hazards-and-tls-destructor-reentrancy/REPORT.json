@@ -1,0 +1,64 @@
+{
+  "topics": [
+    "ffi/rust-c",
+    "llvm/aliasing",
+    "runtimes/tls",
+    "rust/unsafe",
+    "rustc/codegen",
+    "security/secret-zeroization"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler and standard library (rustc_codegen_llvm asm/intrinsics and std::sys::thread_local)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "1.98.0-nightly (2026-05-31)"
+      }
+    },
+    {
+      "name": "LLVM compiler infrastructure (TypeBasedAliasAnalysis, ScopedNoAliasAA, InlineFunction, DeadStoreElimination)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "1780833aa0f119a425d7f993aaac29d03cb04da6"
+      }
+    },
+    {
+      "name": "GNU C Library (cxa_thread_atexit_impl, exit, pthread_create, nptl_deallocate_tsd, dl-fini)",
+      "identity": {
+        "repository": "bminor/glibc",
+        "revision": "74f59e9271cbb4071671e5a474e7d4f1622b186f",
+        "version": "glibc-2.41"
+      }
+    },
+    {
+      "name": "musl C standard library (exit, atexit, pthread_key_create TSD destruction)",
+      "identity": {
+        "repository": "kraj/musl",
+        "revision": "0784374d561435f7c787a555aeab8ede699ed298",
+        "version": "v1.2.5"
+      }
+    },
+    {
+      "name": "RustCrypto zeroize crate (optimization_barrier and bulk slice zeroization)",
+      "identity": {
+        "repository": "RustCrypto/utils",
+        "revision": "77d1a3e6c2e8c28f49189258abb5d4405c0f1330"
+      }
+    },
+    {
+      "name": "GNU Compiler Collection C compiler (strict-aliasing TBAA and FFI probe)",
+      "identity": {
+        "target": "x86_64-linux-gnu",
+        "toolchain": "gcc (Debian 15.2.0-14) 15.2.0"
+      }
+    },
+    {
+      "name": "ISO C23 and POSIX.1-2024 normative specifications",
+      "identity": {
+        "standards": "ISO/IEC 9899:2024; IEEE Std 1003.1-2024; Itanium C++ ABI 1.86"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
