@@ -1,0 +1,841 @@
+[
+  {
+    "id": "decEnc_imp_enc_injective",
+    "lean": "Toy.Codec.decEnc_imp_enc_injective",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For any codec c : Codec A B, the decode-after-encode round-trip law DecEnc c alone implies that the encoder c.enc is injective (EncDec c is not required).",
+    "hypotheses": [
+      {
+        "name": "hde",
+        "purpose": "Makes c.dec a left retraction of c.enc up to Option.some, so equal encodings yield equal decoded values.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_decEnc_imp_enc_injective_drop_decEnc"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "boolToNatCodec : Codec Bool Nat (false ↦ 0, true ↦ 1, n ≥ 2 ↦ none) satisfies DecEnc.",
+    "nonvacuity_witness_lean": "Toy.Codec.nv_decEnc_imp_enc_injective",
+    "non_claims": [
+      "Does not show that DecEnc c implies EncDec c or whole-input decoder injectivity (DecInj c); see decEnc_admits_malleable_codec.",
+      "Does not show that EncDec c implies Function.Injective c.enc; alwaysFailConstCodec satisfies EncDec with a constant encoder Bool → Unit.",
+      "Does not construct an executable decoder for an arbitrary injective function without FiberSplit or Classical.choice."
+    ],
+    "prior_art": [
+      "Rocq Corelib SSReflect, repository rocq-prover/rocq, file theories/Corelib/ssr/ssrfun.v, commit 25f5b18a320e4796f181f938d3b74bebe7db4dc4 (pcancel, ocancel, pcan_inj, pcan_pcomp, ocan_comp) and Mathematical Components, repository math-comp/math-comp, file boot/eqtype.v, commit 1cf23375ae1948bc37a50f153a6fdd2338dacf98 (valK, insubK).",
+      "Simon Foster, Christian Pardillo-Laursen, and Frank Zeyda, 'Optics', Archive of Formal Proofs, 2017, https://www.isa-afp.org/entries/Optics.html, official AFP Isabelle2026 release mirror isabelle-prover/mirror-afp-2026, commit 749ee1bd79285aeb2597f31d797d0e55d9af62c9, file thys/Optics/Prisms.thy (locale wb_prism with match_build, build_match, build_match_iff, range_build, inj_build, wb_prim_suml, wb_prim_sumr, and disjoint-range prism_plus_wb).",
+      "Lean Mathlib, repository leanprover-community/mathlib4, commit 5f78f9ce46fc85fa3cb45561d47b489c4c98cd04, Mathlib/Logic/Encodable/Basic.lean (Encodable.encodek, Encodable.decode₂, mem_decode₂, decode₂_isPartialInv, decidableRangeEncode) and Mathlib/Computability/Encoding.lean (Encoding.encode_injective).",
+      "EverParse / LowParse mechanization, repository project-everest/everparse, commit f3e4ce51d9b68593fd98472cadcdeb8b6abf388f, file lib/everparse/lowparse/LowParse.Spec.Base.fsti (serializer_correct, serializer_complete, serializer_correct_implies_complete, serializer_injective, serializer_parser_unique).",
+      "Dimitrios Vytiniotis and Andrew J. Kennedy, 'Functional pearl: every bit counts', Proceedings of the 15th ACM SIGPLAN International Conference on Functional Programming (ICFP '10), pp. 15–26, 2010, DOI 10.1145/1863543.1863548 (Section 3, Coq-checked Lemma 1 for PrefixDecEnc, Corollary 1 for encoder injectivity, Corollary 2 for indexed PrefixFree, and Lemma 3 for PrefixEncDec); journal version: Andrew J. Kennedy and Dimitrios Vytiniotis, 'Every bit counts: The binary representation of typed data and programs', Journal of Functional Programming 22(4–5), pp. 529–573, 2012, DOI 10.1017/S0956796812000263.",
+      "Benjamin Delaware, Sorawit Suriyakarn, Clément Pit-Claudel, Qianchuan Ye, and Adam Chlipala, 'Narcissus: Correct-by-Construction Derivation of Decoders and Encoders from Binary Formats', Proceedings of the ACM on Programming Languages 3 (ICFP), Article 82, 2019, DOI 10.1145/3341686 (Definition 2.2 requires both that every target in the format relation decodes to its source value and that every accepted target lies in the format relation; because a format is a relation rather than a single function, multiple encodings of one value may be valid without accepting malformed input, so functional EncDec relative to one chosen encoder need not hold)."
+    ],
+    "design_question": "Does demanding decode-after-encode (DecEnc) alone guarantee that an encoder loses no source information (is injective), even when canonicality (EncDec) is not yet enforced?"
+  },
+  {
+    "id": "lawful_iff_dec_eq_some_iff",
+    "lean": [
+      "Toy.Codec.lawful_iff_dec_eq_some_iff",
+      "Toy.Codec.decEqSomeIff_imp_enc_injective"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For any codec c : Codec A B, satisfying both DecEnc c and EncDec c is equivalent to c.dec having the converse graph of c.enc (∀ b a, c.dec b = some a ↔ c.enc a = b); as a hypothesis-minimality corollary (decEqSomeIff_imp_enc_injective, reference point), that converse-graph condition alone implies Function.Injective c.enc.",
+    "hypotheses": [
+      {
+        "name": "hconv (in decEqSomeIff_imp_enc_injective)",
+        "purpose": "Forces c.dec (c.enc a) = some a for every a, so equal encodings yield equal outputs of the function c.dec; lawful_iff_dec_eq_some_iff itself is unconditional.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_decEqSomeIff_imp_enc_injective_drop_hconv"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "boolToNatCodec : Codec Bool Nat satisfies both sides of lawful_iff_dec_eq_some_iff and the hypothesis of decEqSomeIff_imp_enc_injective.",
+    "nonvacuity_witness_lean": [
+      "Toy.Codec.nv_lawful_iff_dec_eq_some_iff",
+      "Toy.Codec.nv_decEqSomeIff_imp_enc_injective"
+    ],
+    "non_claims": [
+      "Does not show that the encoder implements any intended format. Classically, every injective function `A → B` is the encoder of a codec satisfying both laws; the laws constrain the decoder relative to the encoder and nothing else.",
+      "The model has no byte layouts, lengths, state, or error reporting. Nothing here is a security property of an implemented parser.",
+      "Does not require listing Function.Injective c.enc on the right-hand side of lawful_iff_dec_eq_some_iff because injectivity is derivable from either side (decEnc_imp_enc_injective, decEqSomeIff_imp_enc_injective); a third equivalent formulation matching EverParse's 'correct and exact' is proved in Witnesses.lean as lawful_iff_decEnc_and_accepts_only_range.",
+      "Does not imply c.enc is surjective or c.dec is total, and does not guarantee unambiguous list concatenation when B = List β (see lawful_injective_nonEmpty_enc_admits_ambiguous_concat)."
+    ],
+    "prior_art": [
+      "Lean Mathlib, repository leanprover-community/mathlib4, commit 5f78f9ce46fc85fa3cb45561d47b489c4c98cd04, Mathlib/Logic/Function/Basic.lean (Function.IsPartialInv, IsPartialInv.injective, injective_of_isPartialInv_right, IsPartialInv.comp, Function.partialInv, Injective.isPartialInv, partialInv_left) and Mathlib/Basic/PEquiv.lean (PEquiv).",
+      "Simon Foster, Christian Pardillo-Laursen, and Frank Zeyda, 'Optics', Archive of Formal Proofs, 2017, https://www.isa-afp.org/entries/Optics.html, official AFP Isabelle2026 release mirror isabelle-prover/mirror-afp-2026, commit 749ee1bd79285aeb2597f31d797d0e55d9af62c9, file thys/Optics/Prisms.thy (locale wb_prism with match_build, build_match, build_match_iff, range_build, inj_build, wb_prim_suml, wb_prim_sumr, and disjoint-range prism_plus_wb).",
+      "Haskell lens library, lens-5.3.2, module Control.Lens.Prism, Hackage documentation (states the prism laws preview l (review l b) ≡ Just b and preview l s ≡ Just a ⟹ review l a ≡ s).",
+      "Tillmann Rendel and Klaus Ostermann, 'Invertible syntax descriptions: unifying parsing and pretty printing', Proceedings of the Third ACM Haskell Symposium on Haskell (Haskell '10), pp. 1–12, 2010, DOI 10.1145/1863523.1863525 (defines partial isomorphisms as pairs α → Maybe β and β → Maybe α, with Category composition and product combinator (***) in Hackage package partial-isomorphisms-0.2.4.0; Codec specializes this shape to a total encoder).",
+      "Tahina Ramananandro, Antoine Delignat-Lavaud, Cédric Fournet, Nikhil Swamy, Tej Chajed, Nadim Kobeissi, and Jonathan Protzenko, 'EverParse: Verified Secure Zero-Copy Parsers for Authenticated Message Formats', 28th USENIX Security Symposium, 2019, pp. 1465–1482, https://www.usenix.org/conference/usenixsecurity19/presentation/delignat-lavaud (Section 2.1 defines parser correctness p(s(m)) = m, exactness p⁻¹(V) = s(V), non-malleability as parser injectivity on accepted inputs, and completeness as parser surjectivity; Section 2.2 ('Attacks on Parsers') describes attacks enabled by malleable or non-exact parsers (PKCS #1 signature forgery via a malleable or non-exact ASN.1 parser, and Bitcoin transaction malleability), alongside memory-safety bugs such as Heartbleed)."
+    ],
+    "design_question": "What exact relational condition on (encode, decode) is equivalent to demanding both DecEnc and EncDec—ensuring simultaneously that every encoding is accepted and decodes to its source, no junk outside the image is accepted, and no value has multiple accepted encodings?"
+  },
+  {
+    "id": "lawful_iff_decEnc_and_decInj",
+    "lean": "Toy.Codec.lawful_iff_decEnc_and_decInj",
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For any codec c : Codec A B, satisfying DecEnc c and EncDec c is equivalent to satisfying DecEnc c and whole-input decoder injectivity DecInj c (at most one wire representation decodes to each source value).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "boolToNatCodec : Codec Bool Nat satisfies both sides of the equivalence.",
+    "nonvacuity_witness_lean": "Toy.Codec.nv_lawful_iff_decEnc_and_decInj",
+    "non_claims": [
+      "`EncDec c` implies `DecInj c` with no other hypothesis; only the converse needs `DecEnc c`. A decoder that is injective on accepted inputs and surjective does not make a codec with a given encoder satisfy either law (`shiftedBoolCodec`).",
+      "Does not show that DecInj c implies DecEnc c; alwaysFailBoolCodec satisfies DecInj vacuously while rejecting every input (encDec_imp_decInj is proved unconditionally in Witnesses.lean, whereas DecInj → EncDec fails on shiftedBoolCodec via decInj_and_surjective_dec_not_lawful)."
+    ],
+    "prior_art": [
+      "Tahina Ramananandro, Antoine Delignat-Lavaud, Cédric Fournet, Nikhil Swamy, Tej Chajed, Nadim Kobeissi, and Jonathan Protzenko, 'EverParse: Verified Secure Zero-Copy Parsers for Authenticated Message Formats', 28th USENIX Security Symposium, 2019, pp. 1465–1482, https://www.usenix.org/conference/usenixsecurity19/presentation/delignat-lavaud (Section 2.1 defines parser correctness p(s(m)) = m, exactness p⁻¹(V) = s(V), non-malleability as parser injectivity on accepted inputs, and completeness as parser surjectivity; Section 2.2 ('Attacks on Parsers') describes attacks enabled by malleable or non-exact parsers (PKCS #1 signature forgery via a malleable or non-exact ASN.1 parser, and Bitcoin transaction malleability), alongside memory-safety bugs such as Heartbleed).",
+      "EverParse / LowParse mechanization, repository project-everest/everparse, commit f3e4ce51d9b68593fd98472cadcdeb8b6abf388f, file lib/everparse/lowparse/LowParse.Spec.Base.fsti (serializer_correct, serializer_complete, serializer_correct_implies_complete, serializer_injective, serializer_parser_unique).",
+      "Lean Mathlib, repository leanprover-community/mathlib4, commit 5f78f9ce46fc85fa3cb45561d47b489c4c98cd04, Mathlib/Logic/Function/Basic.lean (Function.IsPartialInv, IsPartialInv.injective, injective_of_isPartialInv_right, IsPartialInv.comp, Function.partialInv, Injective.isPartialInv, partialInv_left) and Mathlib/Basic/PEquiv.lean (PEquiv)."
+    ],
+    "design_question": "When does parser-only non-malleability (DecInj: at most one wire input decodes to any value) coincide with encoder-relative canonicality (EncDec)?"
+  },
+  {
+    "id": "dec_unique_of_lawful",
+    "lean": "Toy.Codec.dec_unique_of_lawful",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "If two codecs c₁ c₂ : Codec A B share the same encoder (c₁.enc = c₂.enc) and both satisfy DecEnc and EncDec, then they have the same decoder (c₁.dec = c₂.dec), without Classical.choice (using function extensionality; established by the kernel axiom record: [Quot.sound]).",
+    "hypotheses": [
+      {
+        "name": "henc",
+        "purpose": "Aligns the two encoders so both decoders invert the same map.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_dec_unique_drop_henc"
+      },
+      {
+        "name": "hde₁",
+        "purpose": "Ensures c₁.dec accepts every encoded value in the shared image.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_dec_unique_drop_hde1"
+      },
+      {
+        "name": "hed₁",
+        "purpose": "Ensures c₁.dec rejects wire values outside the image of enc.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_dec_unique_drop_hed1"
+      },
+      {
+        "name": "hde₂",
+        "purpose": "Ensures c₂.dec accepts every encoded value in the shared image.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_dec_unique_drop_hde2"
+      },
+      {
+        "name": "hed₂",
+        "purpose": "Ensures c₂.dec rejects wire values outside the image of enc.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_dec_unique_drop_hed2"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "boolToNatCodec and codecOfFiberSplit boolToNatCodec.enc boolToNatFiberSplit share the same encoder and both satisfy DecEnc and EncDec.",
+    "nonvacuity_witness_lean": "Toy.Codec.nv_dec_unique_of_lawful",
+    "non_claims": [
+      "Does not assert that a computable lawful decoder exists for an arbitrary injection without FiberSplit.",
+      "Does not assert uniqueness when only DecEnc holds (decoders may accept different non-canonical inputs) or when only EncDec holds (decoders may reject different valid encodings); by contrast, the dual encoder-uniqueness fact enc_unique_of_dec_eq (proved in Witnesses.lean) needs only DecEnc c₁ and EncDec c₂.",
+      "Does not assert algorithmic or complexity equivalence of the two decoders—only extensional function equality B → Option A."
+    ],
+    "prior_art": [
+      "EverParse / LowParse mechanization, repository project-everest/everparse, commit f3e4ce51d9b68593fd98472cadcdeb8b6abf388f, file lib/everparse/lowparse/LowParse.Spec.Base.fsti (serializer_correct, serializer_complete, serializer_correct_implies_complete, serializer_injective, serializer_parser_unique).",
+      "Lean Mathlib, repository leanprover-community/mathlib4, commit 5f78f9ce46fc85fa3cb45561d47b489c4c98cd04, Mathlib/Logic/Function/Basic.lean (Function.IsPartialInv, IsPartialInv.injective, injective_of_isPartialInv_right, IsPartialInv.comp, Function.partialInv, Injective.isPartialInv, partialInv_left) and Mathlib/Basic/PEquiv.lean (PEquiv).",
+      "Tahina Ramananandro et al., 'EverParse', USENIX Security 2019, Section 2.1 (states the dual direction: a non-malleable and surjective parser uniquely determines its serializer p⁻¹)."
+    ],
+    "design_question": "Once an encoder is fixed, can two extensionally distinct decoders both satisfy DecEnc and EncDec, or do the two laws determine decode uniquely?"
+  },
+  {
+    "id": "classicalCodec_bijection",
+    "lean": [
+      "Toy.Codec.classicalCodec_decEnc_of_injective",
+      "Toy.Codec.classicalCodec_encDec",
+      "Toy.Codec.classicalCodec_recover_of_lawful"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "Classically (via Classical.choice), classicalCodec f satisfies DecEnc for every injective f : A → B (classicalCodec_decEnc_of_injective) and satisfies EncDec unconditionally for every f (classicalCodec_encDec, reference-point companion), while classicalCodec c.enc = c holds for every codec satisfying DecEnc c and EncDec c (classicalCodec_recover_of_lawful); together with decEnc_imp_enc_injective and the definitional equality classicalCodec_enc ((classicalCodec f).enc = f), these five named declarations establish a bijection between lawful codecs A ⇄ B and injections A → B.",
+    "hypotheses": [
+      {
+        "name": "hf (in classicalCodec_decEnc_of_injective)",
+        "purpose": "Forces Classical.choose ⟨a, rfl⟩ to equal a; not required for classicalCodec_encDec.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_classicalCodec_decEnc_drop_inj"
+      },
+      {
+        "name": "hde (in classicalCodec_recover_of_lawful)",
+        "purpose": "Ensures c.dec accepts every element in the image of c.enc, matching classicalDec c.enc.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_classicalCodec_recover_drop_decEnc"
+      },
+      {
+        "name": "hed (in classicalCodec_recover_of_lawful)",
+        "purpose": "Ensures c.dec rejects every element outside the image of c.enc, matching classicalDec c.enc.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_classicalCodec_recover_drop_encDec"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "boolToNatCodec.enc : Bool → Nat is injective, classicalCodec satisfies EncDec on both boolToNatCodec.enc and fun _ : Bool => (), and boolToNatCodec is lawful.",
+    "nonvacuity_witness_lean": [
+      "Toy.Codec.nv_classicalCodec_decEnc_of_injective",
+      "Toy.Codec.nv_classicalCodec_encDec",
+      "Toy.Codec.nv_classicalCodec_recover_of_lawful"
+    ],
+    "non_claims": [
+      "Does not produce an executable decoder; classicalDec uses Classical.propDecidable and Classical.choose (Classical.choice).",
+      "Does not imply DecEnc (classicalCodec f) when f is not injective (ce_classicalCodec_decEnc_drop_inj), nor does it recover single-law codecs from their encoder."
+    ],
+    "prior_art": [
+      "Lean Mathlib, repository leanprover-community/mathlib4, commit 5f78f9ce46fc85fa3cb45561d47b489c4c98cd04, Mathlib/Logic/Function/Basic.lean (Function.IsPartialInv, IsPartialInv.injective, injective_of_isPartialInv_right, IsPartialInv.comp, Function.partialInv, Injective.isPartialInv, partialInv_left) and Mathlib/Basic/PEquiv.lean (PEquiv).",
+      "Mitchell Riley, 'Categories of Optics', arXiv:1809.00738v2 [math.CT], 2018 (Section 4.2 states concrete prism laws and observes in the proof of Proposition 4.2.2 that the first law makes Review injective so S ≅ C ⊔ A for some complement C in Set; Proposition 4.1.3, generalizing Johnson, Rosebrugh, and Wood, J.UCS 16(5):729–748, 2010, treats the lens-side complement under pullbacks and a global element of the view)."
+    ],
+    "design_question": "Ignoring computability, does a lawful codec A ⇄ B carry any additional mathematical data beyond an injective encoder A → B?",
+    "lean_names": [
+      "Toy.Codec.classicalCodec_enc"
+    ]
+  },
+  {
+    "id": "codecOfFiberSplit_correspondence",
+    "lean": [
+      "Toy.Codec.codecOfFiberSplit_decEnc_of_injective",
+      "Toy.Codec.codecOfFiberSplit_eq_of_lawful"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "Constructively (without Classical.choice, established by the kernel axiom record: no axioms for codecOfFiberSplit_decEnc_of_injective, codecOfFiberSplit_encDec, and fiberSplitOfLawful; [Quot.sound] only for codecOfFiberSplit_eq_of_lawful), any injection f : A → B equipped with a decidable-fiber witness s : FiberSplit f yields a computable lawful codec codecOfFiberSplit f s (satisfying DecEnc via codecOfFiberSplit_decEnc_of_injective and EncDec unconditionally via codecOfFiberSplit_encDec); conversely, every lawful codec c constructively yields fiberSplitOfLawful c hde hed : FiberSplit c.enc, and for every s : FiberSplit c.enc, codecOfFiberSplit c.enc s = c (codecOfFiberSplit_eq_of_lawful).",
+    "hypotheses": [
+      {
+        "name": "hf (in codecOfFiberSplit_decEnc_of_injective)",
+        "purpose": "Forces the preimage returned by s (f a) to equal a rather than a distinct colliding preimage.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_codecOfFiberSplit_decEnc_drop_inj"
+      },
+      {
+        "name": "hde (in codecOfFiberSplit_eq_of_lawful)",
+        "purpose": "Ensures c.dec accepts every element in the image of c.enc, matching codecOfFiberSplit c.enc s.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_codecOfFiberSplit_eq_drop_decEnc"
+      },
+      {
+        "name": "hed (in codecOfFiberSplit_eq_of_lawful)",
+        "purpose": "Ensures c.dec rejects every element outside the image of c.enc, matching codecOfFiberSplit c.enc s.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_codecOfFiberSplit_eq_drop_encDec"
+      },
+      {
+        "name": "hde (in fiberSplitOfLawful)",
+        "purpose": "Used only in the none branch of the choice-free construction of fiberSplitOfLawful: if c.dec b = none, hde shows that no a has c.enc a = b. It is needed only to build this particular FiberSplit c.enc from c.dec without Classical.choice; classically every function f has a FiberSplit f (fiberSplit_exists_for_every_function, axioms [propext, Classical.choice, Quot.sound]), so no counterexample to the existence of FiberSplit c.enc without hde can exist.",
+        "tightness": "harmless"
+      },
+      {
+        "name": "hed (in fiberSplitOfLawful)",
+        "purpose": "Used only in the some branch of the choice-free construction of fiberSplitOfLawful: if c.dec b = some a, hed gives the preimage witness c.enc a = b. It is needed only to build this particular FiberSplit c.enc from c.dec without Classical.choice; classically every function f has a FiberSplit f (fiberSplit_exists_for_every_function, axioms [propext, Classical.choice, Quot.sound]), so no counterexample to the existence of FiberSplit c.enc without hed can exist.",
+        "tightness": "harmless"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "boolToNatCodec.enc : Bool → Nat is injective and admits computable boolToNatFiberSplit, with codecOfFiberSplit boolToNatCodec.enc boolToNatFiberSplit = boolToNatCodec.",
+    "nonvacuity_witness_lean": [
+      "Toy.Codec.nv_codecOfFiberSplit_decEnc_of_injective",
+      "Toy.Codec.nv_codecOfFiberSplit_eq_of_lawful"
+    ],
+    "non_claims": [
+      "Does not construct, without Classical.choice, a FiberSplit f for an arbitrary injection f without a lawful decoder (classically every function f has one: fiberSplit_exists_for_every_function, via the noncomputable classicalFiberSplit f); rather, together with fiberSplitOfLawful (Defs.lean), it establishes that FiberSplit f (decidable fibers) is both necessary and sufficient constructive data for a lawful decoder.",
+      "Does not imply that FiberSplit f alone forces Function.Injective f or DecEnc; constUnitFiberSplit splits fibers for the non-injective constant map Bool → Unit."
+    ],
+    "prior_art": [
+      "agda-unimath, repository UniMath/agda-unimath, commit c0022bfc4e6f57fc84ca70d4d4e3aa568def5e3f, files src/foundation/decidable-maps.lagda.md and decidable-embeddings.lagda.md (is-decidable-map f and is-decidable-emb f).",
+      "Lean Mathlib, repository leanprover-community/mathlib4, commit 5f78f9ce46fc85fa3cb45561d47b489c4c98cd04, Mathlib/Logic/Encodable/Basic.lean (Encodable.encodek, Encodable.decode₂, mem_decode₂, decode₂_isPartialInv, decidableRangeEncode) and Mathlib/Computability/Encoding.lean (Encoding.encode_injective)."
+    ],
+    "design_question": "What constructive decidability data on an injective encoder f : A → B is both necessary and sufficient to build a lawful decoder without Classical.choice?",
+    "lean_names": [
+      "Toy.Codec.codecOfFiberSplit_encDec",
+      "Toy.Codec.fiberSplitOfLawful"
+    ]
+  },
+  {
+    "id": "lawful_dec_isSome_iff_mem_range",
+    "lean": [
+      "Toy.Codec.lawful_dec_isSome_iff_mem_range",
+      "Toy.Codec.junk_iff_not_in_image_of_lawful"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For any codec c : Codec A B satisfying DecEnc c and EncDec c, (c.dec b).isSome = true holds if and only if b lies in the image of c.enc (lawful_dec_isSome_iff_mem_range), and—as an immediate negated corollary (junk_iff_not_in_image_of_lawful, definitional via eq_none_iff_of_isSome_iff)—b belongs to Junk c (c.dec b = none) if and only if ∀ a : A, c.enc a ≠ b.",
+    "hypotheses": [
+      {
+        "name": "hde (in lawful_dec_isSome_iff_mem_range and junk_iff_not_in_image_of_lawful)",
+        "purpose": "Ensures every b in the image of c.enc yields isSome = true (and ≠ none); see mem_range_imp_isSome_of_decEnc.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Codec.ce_lawful_dec_isSome_drop_decEnc",
+          "Toy.Codec.ce_junk_iff_not_in_image_of_lawful_drop_decEnc"
+        ]
+      },
+      {
+        "name": "hed (in lawful_dec_isSome_iff_mem_range and junk_iff_not_in_image_of_lawful)",
+        "purpose": "Ensures every accepted b (isSome = true) lies in the image of c.enc; see isSome_imp_mem_range_of_encDec.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Codec.ce_lawful_dec_isSome_drop_encDec",
+          "Toy.Codec.ce_junk_iff_not_in_image_of_lawful_drop_encDec"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "boolToNatCodec : Codec Bool Nat satisfies both DecEnc and EncDec (accepting 0 and 1 and rejecting n ≥ 2 as Junk).",
+    "nonvacuity_witness_lean": [
+      "Toy.Codec.nv_lawful_dec_isSome_iff_mem_range",
+      "Toy.Codec.nv_junk_iff_not_in_image_of_lawful"
+    ],
+    "non_claims": [
+      "Says nothing about computability. In Lean, `classicalCodec f` satisfies both laws for every injective `f`, including encoders whose image is undecidable. The reading 'a computable lawful decoder yields a computable membership test for the image' is a modeling remark, not part of the statement.",
+      "Does not assert that Junk c is inhabited (for bijective codecs such as Codec.id, Junk c is empty), nor does it constrain the runtime complexity of evaluating (c.dec b).isSome."
+    ],
+    "prior_art": [
+      "Simon Foster, Christian Pardillo-Laursen, and Frank Zeyda, 'Optics', Archive of Formal Proofs, 2017, https://www.isa-afp.org/entries/Optics.html, official AFP Isabelle2026 release mirror isabelle-prover/mirror-afp-2026, commit 749ee1bd79285aeb2597f31d797d0e55d9af62c9, file thys/Optics/Prisms.thy (locale wb_prism with match_build, build_match, build_match_iff, range_build, inj_build, wb_prim_suml, wb_prim_sumr, and disjoint-range prism_plus_wb).",
+      "Lean Mathlib, repository leanprover-community/mathlib4, commit 5f78f9ce46fc85fa3cb45561d47b489c4c98cd04, Mathlib/Logic/Encodable/Basic.lean (Encodable.encodek, Encodable.decode₂, mem_decode₂, decode₂_isPartialInv, decidableRangeEncode) and Mathlib/Computability/Encoding.lean (Encoding.encode_injective).",
+      "Tahina Ramananandro, Antoine Delignat-Lavaud, Cédric Fournet, Nikhil Swamy, Tej Chajed, Nadim Kobeissi, and Jonathan Protzenko, 'EverParse: Verified Secure Zero-Copy Parsers for Authenticated Message Formats', 28th USENIX Security Symposium, 2019, pp. 1465–1482, https://www.usenix.org/conference/usenixsecurity19/presentation/delignat-lavaud (Section 2.1 defines parser correctness p(s(m)) = m, exactness p⁻¹(V) = s(V), non-malleability as parser injectivity on accepted inputs, and completeness as parser surjectivity; Section 2.2 ('Attacks on Parsers') describes attacks enabled by malleable or non-exact parsers (PKCS #1 signature forgery via a malleable or non-exact ASN.1 parser, and Bitcoin transaction malleability), alongside memory-safety bugs such as Heartbleed)."
+    ],
+    "design_question": "Which wire values does a lawful decoder accept and which belong to its rejected complement Junk c?"
+  },
+  {
+    "id": "decEnc_admits_malleable_codec",
+    "lean": "Toy.Codec.decEnc_admits_malleable_codec",
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "Demanding DecEnc alone does not prevent malleability: nonCanonicalBoolCodec : Codec Bool Nat satisfies DecEnc yet violates both EncDec and DecInj because the distinct wire values 1 and 2 both decode to true.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "nonCanonicalBoolCodec : Codec Bool Nat (false ↦ 0, true ↦ 1; dec 0 = some false, dec 1 = dec 2 = some true, dec (n + 3) = none).",
+    "nonvacuity_witness_lean": "Toy.Codec.decEnc_admits_malleable_codec",
+    "non_claims": [
+      "Does not show that `EncDec` has to be established by a separate argument for each codec. When the wire type has decidable equality, wrapping a `DecEnc` decoder with a re-encode-and-compare check (`dec' b := match dec b with | some a => if enc a = b then some a else none | none => none`) gives a codec with the same encoder that satisfies both laws.",
+      "The laws are stated for one encoder function. A format that permits several encodings of one value cannot satisfy `EncDec` for any single encoder; for such formats the corresponding requirement is that the decoder accepts exactly the strings the format relates to the decoded value. Failing `EncDec` for a chosen encoder is therefore not by itself evidence that malformed input is accepted.",
+      "Does not show that every DecEnc-only codec is malleable; lawful codecs satisfy DecEnc without malleability."
+    ],
+    "prior_art": [
+      "Tahina Ramananandro, Antoine Delignat-Lavaud, Cédric Fournet, Nikhil Swamy, Tej Chajed, Nadim Kobeissi, and Jonathan Protzenko, 'EverParse: Verified Secure Zero-Copy Parsers for Authenticated Message Formats', 28th USENIX Security Symposium, 2019, pp. 1465–1482, https://www.usenix.org/conference/usenixsecurity19/presentation/delignat-lavaud (Section 2.1 defines parser correctness p(s(m)) = m, exactness p⁻¹(V) = s(V), non-malleability as parser injectivity on accepted inputs, and completeness as parser surjectivity; Section 2.2 ('Attacks on Parsers') describes attacks enabled by malleable or non-exact parsers (PKCS #1 signature forgery via a malleable or non-exact ASN.1 parser, and Bitcoin transaction malleability), alongside memory-safety bugs such as Heartbleed).",
+      "Benjamin Delaware, Sorawit Suriyakarn, Clément Pit-Claudel, Qianchuan Ye, and Adam Chlipala, 'Narcissus: Correct-by-Construction Derivation of Decoders and Encoders from Binary Formats', Proceedings of the ACM on Programming Languages 3 (ICFP), Article 82, 2019, DOI 10.1145/3341686 (Definition 2.2 requires both that every target in the format relation decodes to its source value and that every accepted target lies in the format relation; because a format is a relation rather than a single function, multiple encodings of one value may be valid without accepting malformed input, so functional EncDec relative to one chosen encoder need not hold).",
+      "Lean Mathlib, repository leanprover-community/mathlib4, commit 5f78f9ce46fc85fa3cb45561d47b489c4c98cd04, Mathlib/Logic/Encodable/Basic.lean (Encodable.encodek, Encodable.decode₂, mem_decode₂, decode₂_isPartialInv, decidableRangeEncode) and Mathlib/Computability/Encoding.lean (Encoding.encode_injective)."
+    ],
+    "design_question": "What concrete failure mode slips through when a serialization specification requires only the decode-after-encode law decode (encode a) = some a?"
+  },
+  {
+    "id": "encDec_admits_always_failing_codec",
+    "lean": "Toy.Codec.encDec_admits_always_failing_codec",
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "Demanding EncDec alone does not prevent vacuous rejection: alwaysFailBoolCodec : Codec Bool Bool satisfies EncDec yet violates DecEnc and returns none on every wire input.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "alwaysFailBoolCodec : Codec Bool Bool (enc = id, dec _ = none).",
+    "nonvacuity_witness_lean": "Toy.Codec.encDec_admits_always_failing_codec",
+    "non_claims": [
+      "Does not show that violating DecEnc forces total failure on every input; a partially failing decoder can accept some valid encodings and reject others while still satisfying EncDec.",
+      "Does not show that EncDec alone implies injectivity of enc (ce_decEnc_imp_enc_injective_drop_decEnc), nor that adding 'every encoding is accepted' without encoder injectivity rescues DecEnc (ce_codecOfFiberSplit_decEnc_drop_inj)."
+    ],
+    "prior_art": [
+      "Tahina Ramananandro, Antoine Delignat-Lavaud, Cédric Fournet, Nikhil Swamy, Tej Chajed, Nadim Kobeissi, and Jonathan Protzenko, 'EverParse: Verified Secure Zero-Copy Parsers for Authenticated Message Formats', 28th USENIX Security Symposium, 2019, pp. 1465–1482, https://www.usenix.org/conference/usenixsecurity19/presentation/delignat-lavaud (Section 2.1 defines parser correctness p(s(m)) = m, exactness p⁻¹(V) = s(V), non-malleability as parser injectivity on accepted inputs, and completeness as parser surjectivity; Section 2.2 ('Attacks on Parsers') describes attacks enabled by malleable or non-exact parsers (PKCS #1 signature forgery via a malleable or non-exact ASN.1 parser, and Bitcoin transaction malleability), alongside memory-safety bugs such as Heartbleed).",
+      "Rocq Corelib SSReflect, repository rocq-prover/rocq, file theories/Corelib/ssr/ssrfun.v, commit 25f5b18a320e4796f181f938d3b74bebe7db4dc4 (pcancel, ocancel, pcan_inj, pcan_pcomp, ocan_comp) and Mathematical Components, repository math-comp/math-comp, file boot/eqtype.v, commit 1cf23375ae1948bc37a50f153a6fdd2338dacf98 (valK, insubK)."
+    ],
+    "design_question": "What concrete failure mode slips through when a codec specification requires only the encode-after-decode law dec b = some a → enc a = b?"
+  },
+  {
+    "id": "canonicalize_decEnc_of_decEnc",
+    "lean": "Toy.Codec.canonicalize_decEnc_of_decEnc",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "Given a [DecidableEq B] instance on the wire type B (always available classically, and needed computably for an executable wrapper), wrapping any codec c : Codec A B satisfying DecEnc c in the re-encode-and-compare check canonicalize c preserves DecEnc (canonicalize_decEnc_of_decEnc) while guaranteeing EncDec (canonicalize c) unconditionally (canonicalize_encDec) with the identical encoder c.enc.",
+    "hypotheses": [
+      {
+        "name": "[DecidableEq B] (in canonicalize_decEnc_of_decEnc and canonicalize_encDec)",
+        "purpose": "Supplies the equality check c.enc a = b inside canonicalize; classically every type admits decidable equality (via Classical.propDecidable), so the theorem applies to every wire type B classically, while an executable wrapper requires a computable DecidableEq B instance.",
+        "tightness": "harmless"
+      },
+      {
+        "name": "hde (in canonicalize_decEnc_of_decEnc)",
+        "purpose": "Ensures the underlying decoder c.dec returns some a on c.enc a before the equality guard c.enc a = c.enc a is checked.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_canonicalize_decEnc_drop_decEnc"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "nonCanonicalBoolCodec satisfies DecEnc while violating EncDec, and canonicalize nonCanonicalBoolCodec satisfies both DecEnc and EncDec (rejecting 2 while accepting 1).",
+    "nonvacuity_witness_lean": "Toy.Codec.nv_canonicalize_decEnc_of_decEnc",
+    "non_claims": [
+      "Does not eliminate the runtime cost of re-encoding and comparing wire representations on every decode call (unlike zero-copy parsers that prove EncDec directly on the parser).",
+      "Classically every type B has decidable equality (via Classical.propDecidable), so canonicalize applies to every wire type B in logic; a computable DecidableEq B instance is needed only to obtain an executable wrapper. Moreover, canonicalize cannot repair a codec that violates DecEnc (ce_canonicalize_decEnc_drop_decEnc)."
+    ],
+    "prior_art": [
+      "Lean Mathlib, repository leanprover-community/mathlib4, commit 5f78f9ce46fc85fa3cb45561d47b489c4c98cd04, Mathlib/Logic/Encodable/Basic.lean (Encodable.encodek, Encodable.decode₂, mem_decode₂, decode₂_isPartialInv, decidableRangeEncode) and Mathlib/Computability/Encoding.lean (Encoding.encode_injective)."
+    ],
+    "design_question": "When a codec only satisfies DecEnc and wire equality is decidable, can it be systematically upgraded to satisfy both DecEnc and EncDec without changing its encoder?",
+    "lean_names": [
+      "Toy.Codec.canonicalize_encDec"
+    ]
+  },
+  {
+    "id": "combinator_closure_decEnc_and_encDec",
+    "lean": [
+      "Toy.Codec.comp_decEnc",
+      "Toy.Codec.comp_encDec",
+      "Toy.Codec.prod_decEnc",
+      "Toy.Codec.prod_encDec",
+      "Toy.Codec.sum_decEnc",
+      "Toy.Codec.sum_encDec"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "Each round-trip law (DecEnc and EncDec) is preserved independently of the other under sequential Kleisli composition c₁.comp c₂ (comp_decEnc, comp_encDec), componentwise products c₁.prod c₂ over B₁ × B₂ (prod_decEnc, prod_encDec), and tagged sums c₁.sum c₂ over B₁ ⊕ B₂ (sum_decEnc, sum_encDec); consequently, lawful codecs are closed under all three combinators.",
+    "hypotheses": [
+      {
+        "name": "comp_decEnc.hde₁",
+        "purpose": "Recovers a from c₁.enc a after c₂.dec succeeds.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_comp_decEnc_drop_hde1"
+      },
+      {
+        "name": "comp_decEnc.hde₂",
+        "purpose": "Recovers c₁.enc a from c₂.enc (c₁.enc a).",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_comp_decEnc_drop_hde2"
+      },
+      {
+        "name": "comp_encDec.hed₁",
+        "purpose": "Forces the intermediate b to equal c₁.enc a.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_comp_encDec_drop_hed1"
+      },
+      {
+        "name": "comp_encDec.hed₂",
+        "purpose": "Forces the outer wire value c to equal c₂.enc b.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_comp_encDec_drop_hed2"
+      },
+      {
+        "name": "prod_decEnc.hde₁",
+        "purpose": "Round-trips the first component of the pair.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_prod_decEnc_drop_hde1"
+      },
+      {
+        "name": "prod_decEnc.hde₂",
+        "purpose": "Round-trips the second component of the pair.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_prod_decEnc_drop_hde2"
+      },
+      {
+        "name": "prod_encDec.hed₁",
+        "purpose": "Enforces canonicality on the first component.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_prod_encDec_drop_hed1"
+      },
+      {
+        "name": "prod_encDec.hed₂",
+        "purpose": "Enforces canonicality on the second component.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_prod_encDec_drop_hed2"
+      },
+      {
+        "name": "sum_decEnc.hde₁",
+        "purpose": "Round-trips Sum.inl values.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_sum_decEnc_drop_hde1"
+      },
+      {
+        "name": "sum_decEnc.hde₂",
+        "purpose": "Round-trips Sum.inr values.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_sum_decEnc_drop_hde2"
+      },
+      {
+        "name": "sum_encDec.hed₁",
+        "purpose": "Enforces canonicality on Sum.inl wire values.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_sum_encDec_drop_hed1"
+      },
+      {
+        "name": "sum_encDec.hed₂",
+        "purpose": "Enforces canonicality on Sum.inr wire values.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_sum_encDec_drop_hed2"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "boolToNatCodec : Codec Bool Nat and natSuccCodec : Codec Nat Nat satisfy both DecEnc and EncDec across comp, prod, and sum.",
+    "nonvacuity_witness_lean": [
+      "Toy.Codec.nv_comp_decEnc",
+      "Toy.Codec.nv_comp_encDec",
+      "Toy.Codec.nv_prod_decEnc",
+      "Toy.Codec.nv_prod_encDec",
+      "Toy.Codec.nv_sum_decEnc",
+      "Toy.Codec.nv_sum_encDec"
+    ],
+    "non_claims": [
+      "For an untagged union of two codecs into a single shared wire type B, DecEnc under any decoder requires the two branch encoders to have disjoint images (untaggedSum_decEnc_imp_disjoint_images), and when both branches are lawful their left-biased untagged union untaggedSum c₁ c₂ is lawful if and only if ∀ a₁ a₂, c₁.enc a₁ ≠ c₂.enc a₂ (untaggedSum_lawful_iff_disjoint_images).",
+      "Codec.prod encodes into the structured pair type B₁ × B₂ rather than flat wire concatenation List β; for unseparated stream concatenation of two fields see FramedCodec.seq (framed_seq_closure) and lawful_injective_nonEmpty_enc_admits_ambiguous_concat.",
+      "Does not imply converse decomposition of laws from a composite codec back to its factors (for example, when c₁.enc is non-surjective in comp, when one factor domain is empty in prod_decEnc, or when one factor decoder always returns none in comp_encDec / prod_encDec)."
+    ],
+    "prior_art": [
+      "Lean Mathlib, repository leanprover-community/mathlib4, commit 5f78f9ce46fc85fa3cb45561d47b489c4c98cd04, Mathlib/Logic/Function/Basic.lean (Function.IsPartialInv, IsPartialInv.injective, injective_of_isPartialInv_right, IsPartialInv.comp, Function.partialInv, Injective.isPartialInv, partialInv_left) and Mathlib/Basic/PEquiv.lean (PEquiv).",
+      "Rocq Corelib SSReflect, repository rocq-prover/rocq, file theories/Corelib/ssr/ssrfun.v, commit 25f5b18a320e4796f181f938d3b74bebe7db4dc4 (pcancel, ocancel, pcan_inj, pcan_pcomp, ocan_comp) and Mathematical Components, repository math-comp/math-comp, file boot/eqtype.v, commit 1cf23375ae1948bc37a50f153a6fdd2338dacf98 (valK, insubK).",
+      "Tillmann Rendel and Klaus Ostermann, 'Invertible syntax descriptions: unifying parsing and pretty printing', Proceedings of the Third ACM Haskell Symposium on Haskell (Haskell '10), pp. 1–12, 2010, DOI 10.1145/1863523.1863525 (defines partial isomorphisms as pairs α → Maybe β and β → Maybe α, with Category composition and product combinator (***) in Hackage package partial-isomorphisms-0.2.4.0; Codec specializes this shape to a total encoder).",
+      "Matthew Pickering, Jeremy Gibbons, and Nicolas Wu, 'Profunctor Optics: Modular Data Accessors', The Art, Science, and Engineering of Programming, vol. 1, no. 2, article 7, 2017, DOI 10.22152/programming-journal.org/2017/1/7 (concrete prisms as match/build pairs formally dual to lenses, and profunctor composition; does not formalize prism laws).",
+      "Bryce Clarke, Derek Elkins, Jeremy Gibbons, Fosco Loregian, Bartosz Milewski, Emily Pillmore, and Mario Román, 'Profunctor Optics, a Categorical Update', Compositionality, vol. 6, article 1, 2024, DOI 10.32408/compositionality-6-1 (Section 3.1.6 defines prisms as mixed optics for the coproduct action; lawfulness is not treated there).",
+      "Simon Foster, Christian Pardillo-Laursen, and Frank Zeyda, 'Optics', Archive of Formal Proofs, 2017, https://www.isa-afp.org/entries/Optics.html, official AFP Isabelle2026 release mirror isabelle-prover/mirror-afp-2026, commit 749ee1bd79285aeb2597f31d797d0e55d9af62c9, file thys/Optics/Prisms.thy (locale wb_prism with match_build, build_match, build_match_iff, range_build, inj_build, wb_prim_suml, wb_prim_sumr, and disjoint-range prism_plus_wb).",
+      "Tillmann Rendel and Klaus Ostermann, Hackage package partial-isomorphisms-0.2.4.0, module Control.Isomorphism.Partial.Prim (the untagged sum combinator (|||) :: Iso alpha gamma -> Iso beta gamma -> Iso (Either alpha beta) gamma is documented as 'not a proper partial isomorphism because of mplus')."
+    ],
+    "design_question": "Do DecEnc and EncDec close modularly and independently across sequential pipelines, structured tuple pairs, and tagged sum variants?"
+  },
+  {
+    "id": "framed_lawful_iff_decPrefix_eq_some_iff",
+    "lean": "Toy.Codec.framed_lawful_iff_decPrefix_eq_some_iff",
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For any framed codec fc : FramedCodec A β, satisfying both PrefixDecEnc fc and PrefixEncDec fc is equivalent to fc.decPrefix xs = some (a, rest) holding if and only if xs = fc.enc a ++ rest.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "varLenBoolFramedCodec : FramedCodec Bool Bool (false ↦ [false], true ↦ [true, true]) satisfies both sides of the equivalence.",
+    "nonvacuity_witness_lean": "Toy.Codec.nv_framed_lawful_iff_decPrefix_eq_some_iff",
+    "non_claims": [
+      "A framed codec satisfying `PrefixDecEnc` (even when `PrefixEncDec` also holds) does not become a lawful whole-input codec by discarding the remainder: `firstOnly fc` (`xs ↦ (fc.decPrefix xs).map Prod.fst`) satisfies `DecEnc`, yet whenever `A` and the token type `β` are inhabited it violates both `DecInj` and `EncDec` (proved in general as `firstOnly_decEnc_and_not_decInj`, and instantiated on `varLenBoolFramedCodec` in `framed_lawful_but_firstOnly_not_decInj`). Converting `decPrefix` into a lawful whole-input decoder requires checking `rest = []`.",
+      "Does not imply NonEmptyEnc fc.enc; emptyUnitFramedCodec satisfies both PrefixDecEnc and PrefixEncDec on Unit while encoding () to []."
+    ],
+    "prior_art": [
+      "Dimitrios Vytiniotis and Andrew J. Kennedy, 'Functional pearl: every bit counts', Proceedings of the 15th ACM SIGPLAN International Conference on Functional Programming (ICFP '10), pp. 15–26, 2010, DOI 10.1145/1863543.1863548 (Section 3, Coq-checked Lemma 1 for PrefixDecEnc, Corollary 1 for encoder injectivity, Corollary 2 for indexed PrefixFree, and Lemma 3 for PrefixEncDec); journal version: Andrew J. Kennedy and Dimitrios Vytiniotis, 'Every bit counts: The binary representation of typed data and programs', Journal of Functional Programming 22(4–5), pp. 529–573, 2012, DOI 10.1017/S0956796812000263.",
+      "Benjamin Delaware, Sorawit Suriyakarn, Clément Pit-Claudel, Qianchuan Ye, and Adam Chlipala, 'Narcissus: Correct-by-Construction Derivation of Decoders and Encoders from Binary Formats', Proceedings of the ACM on Programming Languages 3 (ICFP), Article 82, 2019, DOI 10.1145/3341686 (Definition 3.1, decoder-combinator soundness on t · t' returning the decoded view and exact remainder t').",
+      "Tahina Ramananandro et al., 'EverParse: Verified Secure Zero-Copy Parsers for Authenticated Message Formats', 28th USENIX Security Symposium, 2019, pp. 1465–1482, https://www.usenix.org/conference/usenixsecurity19/presentation/delignat-lavaud (Section 5, Definitions 1–2 on prefix non-malleability and the strong prefix property for sequenced parsers; Section 5.1 on plist[p] rejecting zero-byte steps and consuming all input without itself having the strong prefix property)."
+    ],
+    "design_question": "What single relational specification on a streaming prefix decoder decPrefix is equivalent to demanding both PrefixDecEnc and PrefixEncDec?"
+  },
+  {
+    "id": "prefixDecEnc_imp_prefixFree",
+    "lean": "Toy.Codec.prefixDecEnc_imp_prefixFree",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For any framed codec fc : FramedCodec A β, the prefix round-trip law PrefixDecEnc fc alone implies PrefixFree fc.enc: fc.enc is injective and no codeword is a prefix of another distinct value's codeword.",
+    "hypotheses": [
+      {
+        "name": "hpde",
+        "purpose": "Evaluates decPrefix on enc a₁ ++ s = enc a₂ ++ [] in two ways, forcing a₁ = a₂.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_prefixDecEnc_imp_prefixFree_drop_hpde"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "varLenBoolFramedCodec : FramedCodec Bool Bool satisfies PrefixDecEnc.",
+    "nonvacuity_witness_lean": "Toy.Codec.nv_prefixDecEnc_imp_prefixFree",
+    "non_claims": [
+      "Does not show the converse, that a prefix-free encoder admits a prefix decoder satisfying `PrefixDecEnc`; that converse is neither stated nor proved in this package (not examined).",
+      "A framed codec satisfying `PrefixDecEnc` (even when `PrefixEncDec` also holds) does not become a lawful whole-input codec by discarding the remainder: `firstOnly fc` (`xs ↦ (fc.decPrefix xs).map Prod.fst`) satisfies `DecEnc`, yet whenever `A` and the token type `β` are inhabited it violates both `DecInj` and `EncDec` (proved in general as `firstOnly_decEnc_and_not_decInj`, and instantiated on `varLenBoolFramedCodec` in `framed_lawful_but_firstOnly_not_decInj`). Converting `decPrefix` into a lawful whole-input decoder requires checking `rest = []`.",
+      "PrefixFree fc.enc bundles Function.Injective fc.enc with set-level proper-prefix-freeness ImagePrefixFree fc.enc (proved in Witnesses.lean as prefixFree_iff_injective_and_imagePrefixFree; contrast const_imagePrefixFree_not_prefixFree in Counterexamples.lean and Mathlib InformationTheory.IsPrefixFree).",
+      "Does not imply NonEmptyEnc fc.enc on subsingleton types (emptyUnitFramedCodec), and does not claim PrefixFree is necessary for whole-list unique decodability (suffixEnc_not_prefixFree_yet_concat_lawful)."
+    ],
+    "prior_art": [
+      "Dimitrios Vytiniotis and Andrew J. Kennedy, 'Functional pearl: every bit counts', Proceedings of the 15th ACM SIGPLAN International Conference on Functional Programming (ICFP '10), pp. 15–26, 2010, DOI 10.1145/1863543.1863548 (Section 3, Coq-checked Lemma 1 for PrefixDecEnc, Corollary 1 for encoder injectivity, Corollary 2 for indexed PrefixFree, and Lemma 3 for PrefixEncDec); journal version: Andrew J. Kennedy and Dimitrios Vytiniotis, 'Every bit counts: The binary representation of typed data and programs', Journal of Functional Programming 22(4–5), pp. 529–573, 2012, DOI 10.1017/S0956796812000263.",
+      "Benjamin Delaware, Sorawit Suriyakarn, Clément Pit-Claudel, Qianchuan Ye, and Adam Chlipala, 'Narcissus: Correct-by-Construction Derivation of Decoders and Encoders from Binary Formats', Proceedings of the ACM on Programming Languages 3 (ICFP), Article 82, 2019, DOI 10.1145/3341686 (Definition 3.1, decoder-combinator soundness on t · t' returning the decoded view and exact remainder t').",
+      "Tahina Ramananandro et al., 'EverParse: Verified Secure Zero-Copy Parsers for Authenticated Message Formats', 28th USENIX Security Symposium, 2019, pp. 1465–1482, https://www.usenix.org/conference/usenixsecurity19/presentation/delignat-lavaud (Section 5, Definitions 1–2 on prefix non-malleability and the strong prefix property for sequenced parsers; Section 5.1 on plist[p] rejecting zero-byte steps and consuming all input without itself having the strong prefix property).",
+      "Lean Mathlib, repository leanprover-community/mathlib4, commit 5f78f9ce46fc85fa3cb45561d47b489c4c98cd04, Mathlib/InformationTheory/Coding/PrefixFree.lean and UniquelyDecodable.lean (IsPrefixFree, IsPrefixFree.eq_singleton_empty_of_empty_mem, IsPrefixFree.isUniquelyDecodable, IsPrefixFree.isUniquelyDecodable_of_nontrivial, IsUniquelyDecodable.epsilon_notMem)."
+    ],
+    "design_question": "Why does requiring a lookahead-free streaming prefix decoder (PrefixDecEnc) force the encoder to be injective with a prefix-free codeword image?"
+  },
+  {
+    "id": "framed_seq_closure",
+    "lean": [
+      "Toy.Codec.seq_prefixDecEnc",
+      "Toy.Codec.seq_prefixEncDec"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For any framed codecs fc₁ : FramedCodec A₁ β and fc₂ : FramedCodec A₂ β over a shared token type β, their sequential concatenation fc₁.seq fc₂ : FramedCodec (A₁ × A₂) β preserves PrefixDecEnc when both factors satisfy PrefixDecEnc (seq_prefixDecEnc) and preserves PrefixEncDec when both factors satisfy PrefixEncDec (seq_prefixEncDec), requiring neither the opposite law nor NonEmptyEnc.",
+    "hypotheses": [
+      {
+        "name": "seq_prefixDecEnc.hpde₁",
+        "purpose": "Strips fc₁.enc p.1 and passes the exact remainder fc₂.enc p.2 ++ rest to fc₂.decPrefix.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_seq_prefixDecEnc_drop_h1"
+      },
+      {
+        "name": "seq_prefixDecEnc.hpde₂",
+        "purpose": "Strips fc₂.enc p.2 from the intermediate remainder and preserves rest.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_seq_prefixDecEnc_drop_h2"
+      },
+      {
+        "name": "seq_prefixEncDec.hped₁",
+        "purpose": "Reconstructs xs = fc₁.enc a₁ ++ rest₁ from the first prefix parse.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_seq_prefixEncDec_drop_h1"
+      },
+      {
+        "name": "seq_prefixEncDec.hped₂",
+        "purpose": "Reconstructs rest₁ = fc₂.enc a₂ ++ rest from the second prefix parse.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_seq_prefixEncDec_drop_h2"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "varLenBoolFramedCodec sequenced with itself satisfies both PrefixDecEnc and PrefixEncDec.",
+    "nonvacuity_witness_lean": [
+      "Toy.Codec.nv_seq_prefixDecEnc",
+      "Toy.Codec.nv_seq_prefixEncDec"
+    ],
+    "non_claims": [
+      "Unlike uncounted variable-length listCodec, finite fixed-arity record sequencing fc₁.seq fc₂ does not require NonEmptyEnc (zero-width Unit fields compose cleanly in a fixed tuple).",
+      "Does not apply when fc₁ only satisfies whole-input DecEnc rather than PrefixDecEnc (see lawful_injective_nonEmpty_enc_admits_ambiguous_concat and Narcissus Section 3)."
+    ],
+    "prior_art": [
+      "Tahina Ramananandro et al., 'EverParse: Verified Secure Zero-Copy Parsers for Authenticated Message Formats', 28th USENIX Security Symposium, 2019, pp. 1465–1482, https://www.usenix.org/conference/usenixsecurity19/presentation/delignat-lavaud (Section 5, Definitions 1–2 on prefix non-malleability and the strong prefix property for sequenced parsers; Section 5.1 on plist[p] rejecting zero-byte steps and consuming all input without itself having the strong prefix property).",
+      "Benjamin Delaware, Sorawit Suriyakarn, Clément Pit-Claudel, Qianchuan Ye, and Adam Chlipala, 'Narcissus: Correct-by-Construction Derivation of Decoders and Encoders from Binary Formats', Proceedings of the ACM on Programming Languages 3 (ICFP), Article 82, 2019, DOI 10.1145/3341686 (Definition 3.1, decoder-combinator soundness on t · t' returning the decoded view and exact remainder t').",
+      "Dimitrios Vytiniotis and Andrew J. Kennedy, 'Functional pearl: every bit counts', Proceedings of the 15th ACM SIGPLAN International Conference on Functional Programming (ICFP '10), pp. 15–26, 2010, DOI 10.1145/1863543.1863548 (Section 3, Coq-checked Lemma 1 for PrefixDecEnc, Corollary 1 for encoder injectivity, Corollary 2 for indexed PrefixFree, and Lemma 3 for PrefixEncDec); journal version: Andrew J. Kennedy and Dimitrios Vytiniotis, 'Every bit counts: The binary representation of typed data and programs', Journal of Functional Programming 22(4–5), pp. 529–573, 2012, DOI 10.1017/S0956796812000263."
+    ],
+    "design_question": "When two heterogeneous fields are serialized back-to-back onto a single flat token stream without an external separator, which laws make their combined record codec composable?"
+  },
+  {
+    "id": "listCodec_decEnc_iff_nonEmptyEnc_of_prefixDecEnc",
+    "lean": "Toy.Codec.listCodec_decEnc_iff_nonEmptyEnc_of_prefixDecEnc",
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For any framed codec fc : FramedCodec A β satisfying PrefixDecEnc fc, the induced whole-input list codec listCodec fc satisfies DecEnc if and only if every codeword is non-empty (NonEmptyEnc fc.enc); moreover, when A has two distinct elements, NonEmptyEnc fc.enc follows automatically from PrefixDecEnc fc (nonEmptyEnc_of_prefixDecEnc_of_ne).",
+    "hypotheses": [
+      {
+        "name": "hpde (in listCodec_decEnc_iff_nonEmptyEnc_of_prefixDecEnc)",
+        "purpose": "Sufficient (not necessary) framing condition under which decList strips each leading non-empty codeword fc.enc a; the forward direction DecEnc (listCodec fc) → NonEmptyEnc fc.enc holds unconditionally (nonEmptyEnc_of_listCodec_decEnc), while NonEmptyEnc fails under PrefixDecEnc only on subsingleton types (ce_listCodec_decEnc_drop_nonEmptyEnc).",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_listCodec_decEnc_iff_drop_prefixDecEnc"
+      },
+      {
+        "name": "hpde (in nonEmptyEnc_of_prefixDecEnc_of_ne)",
+        "purpose": "Prevents distinct elements x ≠ y from sharing an empty codeword []; without PrefixDecEnc, emptyBoolFailFramedCodec on Bool (false ≠ true) satisfies PrefixEncDec while mapping every value to [].",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_nonEmptyEnc_of_prefixDecEnc_of_ne_drop_hpde"
+      },
+      {
+        "name": "hxy (in nonEmptyEnc_of_prefixDecEnc_of_ne)",
+        "purpose": "Supplies two distinct elements x ≠ y : A so fc.enc cannot map any element to [] under PrefixDecEnc; on the subsingleton type Unit (where no x ≠ y exists), emptyUnitFramedCodec satisfies PrefixDecEnc while violating NonEmptyEnc.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_listCodec_decEnc_drop_nonEmptyEnc"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "varLenBoolFramedCodec on Bool (false ≠ true) satisfies PrefixDecEnc with NonEmptyEnc and DecEnc (listCodec _) both true (instantiating both listCodec_decEnc_iff_nonEmptyEnc_of_prefixDecEnc and nonEmptyEnc_of_prefixDecEnc_of_ne), whereas emptyUnitFramedCodec satisfies PrefixDecEnc on Unit with both sides of the iff false.",
+    "nonvacuity_witness_lean": [
+      "Toy.Codec.nv_listCodec_decEnc_iff_nonEmptyEnc",
+      "Toy.Codec.nv_nonEmptyEnc_of_prefixDecEnc_of_ne"
+    ],
+    "non_claims": [
+      "Under `PrefixDecEnc`, `NonEmptyEnc` can fail only if all values of `A` are equal (`prefixDecEnc_nil_codeword_imp_subsingleton`); for a type with two distinct values it is automatic (`nonEmptyEnc_of_prefixDecEnc_of_ne`).",
+      "Does not show that `PrefixDecEnc` is necessary for `DecEnc (listCodec fc)`: `lenientFc` violates `PrefixDecEnc` on arbitrary remainders yet satisfies `DecEnc (listCodec lenientFc)` because its prefix decoder succeeds whenever the remainder is itself a concatenation of codewords (`lenient_not_prefixDecEnc_yet_listCodec_decEnc`).",
+      "`listCodec fc` is a whole-input codec. Its encoder `encList fc.enc` is not prefix-free whenever `A` is inhabited (`encList_not_prefixFree`), so no framed codec with that encoder satisfies `PrefixDecEnc` (`no_prefixDecEnc_for_encList`). Consequently the package's sequencing theorem `seq_prefixDecEnc`, which assumes `PrefixDecEnc` for both fields, does not apply to a `FramedCodec.seq` record that has a list encoded this way as a field (for example as the first field, followed by further data), and `listCodec_decEnc_iff_nonEmptyEnc_of_prefixDecEnc` does not apply when the list elements are themselves such lists. The package therefore gives no general guarantee that such a layout decodes correctly, but this is not an impossibility result: in general such a layout needs extra framing (such as a length prefix or a terminator) or a separate argument that the following tokens cannot be read as list elements. `bareList_first_field_lawful` proves a lawful `seq` record whose first field is a bare `encList`-encoded list, with no length prefix or terminator, followed by a field whose codewords share no token with the element codewords. Nesting such lists directly inside another bare `encList`-encoded list does make the outer encoder non-injective (derived: for any `a : A`, `encList (encList enc)` maps both `[[a], [a]]` and `[[a, a]]` to `enc a ++ enc a`).",
+      "A framed codec satisfying `PrefixDecEnc` (even when `PrefixEncDec` also holds) does not become a lawful whole-input codec by discarding the remainder: `firstOnly fc` (`xs ↦ (fc.decPrefix xs).map Prod.fst`) satisfies `DecEnc`, yet whenever `A` and the token type `β` are inhabited it violates both `DecInj` and `EncDec` (proved in general as `firstOnly_decEnc_and_not_decInj`, and instantiated on `varLenBoolFramedCodec` in `framed_lawful_but_firstOnly_not_decInj`). Converting `decPrefix` into a lawful whole-input decoder requires checking `rest = []`.",
+      "Does not imply EncDec (listCodec fc) unless PrefixEncDec fc also holds (listCodec_encDec_of_prefixEncDec), and does not cover length-prefixed list formats, which transmit element counts explicitly and therefore permit zero-width Unit elements."
+    ],
+    "prior_art": [
+      "EverParse / LowParse mechanization, repository project-everest/everparse, commit f3e4ce51d9b68593fd98472cadcdeb8b6abf388f, file lib/everparse/lowparse/LowParse.Spec.List.fsti (parse_list_aux with zero-progress rejection, serialize_list_precond requiring ParserStrong and parser_kind_low > 0, bare_serialize_list_correct, and parse_list_bare_injective).",
+      "Tahina Ramananandro et al., 'EverParse: Verified Secure Zero-Copy Parsers for Authenticated Message Formats', 28th USENIX Security Symposium, 2019, pp. 1465–1482, https://www.usenix.org/conference/usenixsecurity19/presentation/delignat-lavaud (Section 5, Definitions 1–2 on prefix non-malleability and the strong prefix property for sequenced parsers; Section 5.1 on plist[p] rejecting zero-byte steps and consuming all input without itself having the strong prefix property).",
+      "Lean Mathlib, repository leanprover-community/mathlib4, commit 5f78f9ce46fc85fa3cb45561d47b489c4c98cd04, Mathlib/InformationTheory/Coding/PrefixFree.lean and UniquelyDecodable.lean (IsPrefixFree, IsPrefixFree.eq_singleton_empty_of_empty_mem, IsPrefixFree.isUniquelyDecodable, IsPrefixFree.isUniquelyDecodable_of_nontrivial, IsUniquelyDecodable.epsilon_notMem).",
+      "Dimitrios Vytiniotis and Andrew J. Kennedy, 'Functional pearl: every bit counts', Proceedings of the 15th ACM SIGPLAN International Conference on Functional Programming (ICFP '10), pp. 15–26, 2010, DOI 10.1145/1863543.1863548 (Section 3, Coq-checked Lemma 1 for PrefixDecEnc, Corollary 1 for encoder injectivity, Corollary 2 for indexed PrefixFree, and Lemma 3 for PrefixEncDec); journal version: Andrew J. Kennedy and Dimitrios Vytiniotis, 'Every bit counts: The binary representation of typed data and programs', Journal of Functional Programming 22(4–5), pp. 529–573, 2012, DOI 10.1017/S0956796812000263."
+    ],
+    "design_question": "Under the sufficient framing condition PrefixDecEnc, when does uncounted concatenation of variable-length elements round-trip through repeated prefix decoding until end-of-input?",
+    "lean_names": [
+      "Toy.Codec.nonEmptyEnc_of_prefixDecEnc_of_ne"
+    ]
+  },
+  {
+    "id": "listCodec_encDec_of_prefixEncDec",
+    "lean": "Toy.Codec.listCodec_encDec_of_prefixEncDec",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For any framed codec fc : FramedCodec A β satisfying the converse prefix law PrefixEncDec fc, the concatenated whole-input list codec listCodec fc satisfies EncDec (requiring neither PrefixDecEnc nor NonEmptyEnc).",
+    "hypotheses": [
+      {
+        "name": "hped",
+        "purpose": "Guarantees every step accepted by fc.decPrefix decomposes the current stream as fc.enc a ++ rest, so re-encoding reconstructs xs.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_listCodec_encDec_drop_prefixEncDec"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "varLenBoolFramedCodec : FramedCodec Bool Bool satisfies PrefixEncDec.",
+    "nonvacuity_witness_lean": "Toy.Codec.nv_listCodec_encDec",
+    "non_claims": [
+      "`listCodec fc` is a whole-input codec. Its encoder `encList fc.enc` is not prefix-free whenever `A` is inhabited (`encList_not_prefixFree`), so no framed codec with that encoder satisfies `PrefixDecEnc` (`no_prefixDecEnc_for_encList`). Consequently the package's sequencing theorem `seq_prefixDecEnc`, which assumes `PrefixDecEnc` for both fields, does not apply to a `FramedCodec.seq` record that has a list encoded this way as a field (for example as the first field, followed by further data), and `listCodec_decEnc_iff_nonEmptyEnc_of_prefixDecEnc` does not apply when the list elements are themselves such lists. The package therefore gives no general guarantee that such a layout decodes correctly, but this is not an impossibility result: in general such a layout needs extra framing (such as a length prefix or a terminator) or a separate argument that the following tokens cannot be read as list elements. `bareList_first_field_lawful` proves a lawful `seq` record whose first field is a bare `encList`-encoded list, with no length prefix or terminator, followed by a field whose codewords share no token with the element codewords. Nesting such lists directly inside another bare `encList`-encoded list does make the outer encoder non-injective (derived: for any `a : A`, `encList (encList enc)` maps both `[[a], [a]]` and `[[a, a]]` to `enc a ++ enc a`).",
+      "A framed codec satisfying `PrefixDecEnc` (even when `PrefixEncDec` also holds) does not become a lawful whole-input codec by discarding the remainder: `firstOnly fc` (`xs ↦ (fc.decPrefix xs).map Prod.fst`) satisfies `DecEnc`, yet whenever `A` and the token type `β` are inhabited it violates both `DecInj` and `EncDec` (proved in general as `firstOnly_decEnc_and_not_decInj`, and instantiated on `varLenBoolFramedCodec` in `framed_lawful_but_firstOnly_not_decInj`). Converting `decPrefix` into a lawful whole-input decoder requires checking `rest = []`.",
+      "Does not imply DecEnc (listCodec fc) without PrefixDecEnc and NonEmptyEnc, and avoids needing NonEmptyEnc only because decList explicitly rejects non-progressing steps (rest.length ≥ xs.length; exercised by ex_decList_guard_rejects in Examples.lean)."
+    ],
+    "prior_art": [
+      "EverParse / LowParse mechanization, repository project-everest/everparse, commit f3e4ce51d9b68593fd98472cadcdeb8b6abf388f, file lib/everparse/lowparse/LowParse.Spec.List.fsti (parse_list_aux with zero-progress rejection, serialize_list_precond requiring ParserStrong and parser_kind_low > 0, bare_serialize_list_correct, and parse_list_bare_injective).",
+      "Tahina Ramananandro et al., 'EverParse: Verified Secure Zero-Copy Parsers for Authenticated Message Formats', 28th USENIX Security Symposium, 2019, pp. 1465–1482, https://www.usenix.org/conference/usenixsecurity19/presentation/delignat-lavaud (Section 5, Definitions 1–2 on prefix non-malleability and the strong prefix property for sequenced parsers; Section 5.1 on plist[p] rejecting zero-byte steps and consuming all input without itself having the strong prefix property)."
+    ],
+    "design_question": "Does framed canonicality (PrefixEncDec) lift from a single element parser to whole-stream list decoding without assuming PrefixDecEnc or NonEmptyEnc?"
+  },
+  {
+    "id": "lawful_injective_nonEmpty_enc_admits_ambiguous_concat",
+    "lean": "Toy.Codec.lawful_injective_nonEmpty_enc_admits_ambiguous_concat",
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "Single-value lawfulness with an injective, non-empty encoding admits ambiguous concatenation: ambiguousCodec : Codec Bool (List Bool) (false ↦ [false], true ↦ [false, false]) satisfies DecEnc, EncDec, Function.Injective enc, and NonEmptyEnc, yet violates PrefixFree and maps the distinct lists [false, false] and [true] to the same concatenation [false, false], ruling out any DecEnc list decoder.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "ambiguousCodec : Codec Bool (List Bool) (false ↦ [false], true ↦ [false, false]).",
+    "nonvacuity_witness_lean": "Toy.Codec.lawful_injective_nonEmpty_enc_admits_ambiguous_concat",
+    "positive_control_lean": "Toy.Codec.suffixEnc_not_prefixFree_yet_concat_lawful",
+    "non_claims": [
+      "This is one instance, not a general implication: an injective encoding that is not prefix-free can still have injective concatenation (`false ↦ [false]`, `true ↦ [false, true]`).",
+      "Positive control suffixEnc_not_prefixFree_yet_concat_lawful (Counterexamples.lean) proves that suffixEnc (false ↦ [false], true ↦ [false, true]) violates PrefixFree yet has injective concatenation and a computable lawful (DecEnc ∧ EncDec) whole-list decoder decSuffixList.",
+      "Does not rule out length-prefixed or delimiter-framed list encodings over ambiguousCodec; ambiguity arises specifically from bare concatenation encList."
+    ],
+    "prior_art": [
+      "Benjamin Delaware, Sorawit Suriyakarn, Clément Pit-Claudel, Qianchuan Ye, and Adam Chlipala, 'Narcissus: Correct-by-Construction Derivation of Decoders and Encoders from Binary Formats', Proceedings of the ACM on Programming Languages 3 (ICFP), Article 82, 2019, DOI 10.1145/3341686 (Section 3, format_suit example {(♣, 0b11), (♦, 0b0), (♥, 0b1), (♠, 0b10)} illustrating why sequencing a non-prefix-free format confuses (♣, ♦) with (♥, ♠)).",
+      "Dimitrios Vytiniotis and Andrew J. Kennedy, 'Functional pearl: every bit counts', Proceedings of the 15th ACM SIGPLAN International Conference on Functional Programming (ICFP '10), pp. 15–26, 2010, DOI 10.1145/1863543.1863548 (Section 3, Coq-checked Lemma 1 for PrefixDecEnc, Corollary 1 for encoder injectivity, Corollary 2 for indexed PrefixFree, and Lemma 3 for PrefixEncDec); journal version: Andrew J. Kennedy and Dimitrios Vytiniotis, 'Every bit counts: The binary representation of typed data and programs', Journal of Functional Programming 22(4–5), pp. 529–573, 2012, DOI 10.1017/S0956796812000263.",
+      "Tahina Ramananandro et al., 'EverParse: Verified Secure Zero-Copy Parsers for Authenticated Message Formats', 28th USENIX Security Symposium, 2019, pp. 1465–1482, https://www.usenix.org/conference/usenixsecurity19/presentation/delignat-lavaud (Section 5, Definitions 1–2 on prefix non-malleability and the strong prefix property for sequenced parsers; Section 5.1 on plist[p] rejecting zero-byte steps and consuming all input without itself having the strong prefix property)."
+    ],
+    "design_question": "Why are whole-input single-value codec laws (DecEnc ∧ EncDec) together with non-empty codewords insufficient to make bare list concatenation unambiguous?"
+  },
+  {
+    "id": "decomp_isEquiv_iff_lawful",
+    "lean": [
+      "Toy.Codec.decomp_isEquiv_iff_lawful",
+      "Toy.Codec.leftInv_decomp_iff_encDec",
+      "Toy.Codec.rightInv_decomp_iff_decEnc"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "For any codec c : Codec A B, the specific canonical split maps decompToFun c : B → A ⊕ Junk c and decompInvFun c : A ⊕ Junk c → B satisfy LeftInv if and only if EncDec c holds (leftInv_decomp_iff_encDec), satisfy RightInv if and only if DecEnc c holds (rightInv_decomp_iff_decEnc), and therefore form mutual two-sided inverses (IsEquiv (decompToFun c) (decompInvFun c)) if and only if DecEnc c ∧ EncDec c holds (decomp_isEquiv_iff_lawful, without Classical.choice; by contrast, the bare existence of some non-canonical equivalence Equiv B (A ⊕ Junk c) does not make c lawful, as proved for nonCanonicalBoolCodec by nonCanonicalBoolCodec_not_encDec_yet_admits_equiv; axiom qualifiers established by the kernel axiom record: no axioms for decomp_isEquiv_iff_lawful, leftInv_decomp_iff_encDec, and rightInv_decomp_iff_decEnc, and [propext] without Classical.choice for nonCanonicalBoolCodec_not_encDec_yet_admits_equiv).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "boolToNatCodec satisfies both sides of decomp_isEquiv_iff_lawful, while nonCanonicalBoolCodec fails LeftInv and EncDec (even though a non-canonical bijection Equiv Nat (Bool ⊕ Junk nonCanonicalBoolCodec) exists via nonCanonicalBoolJunkEquiv; see nonCanonicalBoolCodec_not_encDec_yet_admits_equiv) and alwaysFailUnitCodec fails RightInv and DecEnc (admitting no Equiv Unit (Unit ⊕ Junk alwaysFailUnitCodec); see ce_lawful_decomp_drop_decEnc, alongside malleableUnitBoolCodec in ce_lawful_decomp_drop_encDec, which fails LeftInv and EncDec and admits no Equiv Bool (Unit ⊕ Junk malleableUnitBoolCodec)).",
+    "nonvacuity_witness_lean": "Toy.Codec.nv_decomp_isEquiv_iff_lawful",
+    "non_claims": [
+      "Concerns only whether the canonical maps `decompToFun c` and `decompInvFun c` are mutual inverses: the bare existence of some equivalence `Equiv B (A ⊕ Junk c)` does not imply `EncDec c` or lawfulness. In particular, `nonCanonicalBoolCodec` violates `EncDec` (and its canonical maps fail `IsEquiv`), yet `nonCanonicalBoolJunkEquiv` constructs an explicit bijection `Equiv Nat (Bool ⊕ Junk nonCanonicalBoolCodec)` because `Junk nonCanonicalBoolCodec = { b : Nat // nonCanonicalBoolCodec.dec b = none }` (`b ≥ 3`) is countably infinite (`nonCanonicalBoolCodec_not_encDec_yet_admits_equiv`).",
+      "For a codec satisfying only one law the canonical maps are not mutually inverse: `LeftInv` holds exactly when `EncDec` does (`leftInv_decomp_iff_encDec`), `RightInv` exactly when `DecEnc` does (`rightInv_decomp_iff_decEnc`).",
+      "No statement about lenses is proved in this package. 'Dual to lenses' describes the shape of the result; the lens-side decomposition needs extra assumptions (for instance an inhabited view type).",
+      "Does not imply that Junk c is the unique type C with B ≃ A ⊕ C; any C related by an intertwining equivalence yields the same codec (codecOfSplit_eq_iff_exists_intertwining_equiv), while decompToFun c (c.enc a) = Sum.inl a follows directly from RightInv (decompToFun_enc_of_rightInv) and c.dec b = inlMatcher (decompToFun c b) holds unconditionally (dec_eq_inlMatcher_decompToFun)."
+    ],
+    "prior_art": [
+      "Mitchell Riley, 'Categories of Optics', arXiv:1809.00738v2 [math.CT], 2018 (Section 4.2 states concrete prism laws and observes in the proof of Proposition 4.2.2 that the first law makes Review injective so S ≅ C ⊔ A for some complement C in Set; Proposition 4.1.3, generalizing Johnson, Rosebrugh, and Wood, J.UCS 16(5):729–748, 2010, treats the lens-side complement under pullbacks and a global element of the view).",
+      "Matthew Pickering, Jeremy Gibbons, and Nicolas Wu, 'Profunctor Optics: Modular Data Accessors', The Art, Science, and Engineering of Programming, vol. 1, no. 2, article 7, 2017, DOI 10.22152/programming-journal.org/2017/1/7 (concrete prisms as match/build pairs formally dual to lenses, and profunctor composition; does not formalize prism laws).",
+      "Bryce Clarke, Derek Elkins, Jeremy Gibbons, Fosco Loregian, Bartosz Milewski, Emily Pillmore, and Mario Román, 'Profunctor Optics, a Categorical Update', Compositionality, vol. 6, article 1, 2024, DOI 10.32408/compositionality-6-1 (Section 3.1.6 defines prisms as mixed optics for the coproduct action; lawfulness is not treated there).",
+      "J. Nathan Foster, Michael B. Greenwald, Jonathan T. Moore, Benjamin C. Pierce, and Alan Schmitt, 'Combinators for bi-directional tree transformations: a linguistic approach to the view update problem', POPL '05, pp. 233–246, 2005, DOI 10.1145/1040305.1040325; journal version: 'Combinators for bidirectional tree transformations: A linguistic approach to the view-update problem', ACM Transactions on Programming Languages and Systems 29(3), article 17, 2007, DOI 10.1145/1232420.1232424 (defines the GetPut, PutGet, and PutPut lens laws)."
+    ],
+    "design_question": "How do the individual codec laws DecEnc and EncDec correspond to the two inverse laws of the canonical split maps decompToFun c : B → A ⊕ Junk c and decompInvFun c : A ⊕ Junk c → B?",
+    "lean_names": [
+      "Toy.Codec.nonCanonicalBoolCodec_not_encDec_yet_admits_equiv"
+    ]
+  },
+  {
+    "id": "decomp_induces_lawful_and_complement",
+    "lean": "Toy.Codec.decomp_induces_lawful_and_complement",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For any mutual inverses f : B → A ⊕ C and g : A ⊕ C → B (LeftInv f g and RightInv f g), the induced codec codecOfSplit f g satisfies DecEnc and EncDec, g ∘ Sum.inr maps C into Junk (codecOfSplit f g) as a two-sided inverse to junkToC f g, and f agrees with decompToFun (codecOfSplit f g) under this identification (without Classical.choice; established by the kernel axiom record: no axioms).",
+    "hypotheses": [
+      {
+        "name": "hl",
+        "purpose": "Establishes EncDec (codecOfSplit f g), the Junk → C → Junk round-trip, and agreement with decompToFun.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_decomp_induces_drop_leftInv"
+      },
+      {
+        "name": "hr",
+        "purpose": "Establishes DecEnc on Sum.inl and well-definedness plus the C → Junk → C round-trip on Sum.inr (see also ce_decomp_induces_drop_rightInv_inr).",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_decomp_induces_drop_rightInv"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "natBoolSplitToFun and natBoolSplitInvFun witness Nat ≃ Bool ⊕ Nat matching boolToNatCodec.",
+    "nonvacuity_witness_lean": "Toy.Codec.nv_decomp_induces_lawful_and_complement",
+    "non_claims": [
+      "No statement about lenses is proved in this package. 'Dual to lenses' describes the shape of the result; the lens-side decomposition needs extra assumptions (for instance an inhabited view type).",
+      "RightInv on Sum.inr is not required if one only wants DecEnc ∧ EncDec of codecOfSplit f g: LeftInv f g together with ∀ a, f (g (Sum.inl a)) = Sum.inl a already implies both DecEnc and EncDec for every f and g (codecOfSplit_lawful_of_leftInv_and_rightInv_inl), whereas RightInv on Sum.inr is specifically needed to identify C with Junk (codecOfSplit f g) (ce_decomp_induces_drop_rightInv_inr).",
+      "Distinct decompositions (C₁, f₁, g₁) and (C₂, f₂, g₂) need not produce distinct codecs (codecOfSplit_eq_iff_exists_intertwining_equiv)."
+    ],
+    "prior_art": [
+      "Mitchell Riley, 'Categories of Optics', arXiv:1809.00738v2 [math.CT], 2018 (Section 4.2 states concrete prism laws and observes in the proof of Proposition 4.2.2 that the first law makes Review injective so S ≅ C ⊔ A for some complement C in Set; Proposition 4.1.3, generalizing Johnson, Rosebrugh, and Wood, J.UCS 16(5):729–748, 2010, treats the lens-side complement under pullbacks and a global element of the view).",
+      "Matthew Pickering, Jeremy Gibbons, and Nicolas Wu, 'Profunctor Optics: Modular Data Accessors', The Art, Science, and Engineering of Programming, vol. 1, no. 2, article 7, 2017, DOI 10.22152/programming-journal.org/2017/1/7 (concrete prisms as match/build pairs formally dual to lenses, and profunctor composition; does not formalize prism laws).",
+      "Bryce Clarke, Derek Elkins, Jeremy Gibbons, Fosco Loregian, Bartosz Milewski, Emily Pillmore, and Mario Román, 'Profunctor Optics, a Categorical Update', Compositionality, vol. 6, article 1, 2024, DOI 10.32408/compositionality-6-1 (Section 3.1.6 defines prisms as mixed optics for the coproduct action; lawfulness is not treated there)."
+    ],
+    "design_question": "Given an arbitrary coproduct decomposition B ≃ A ⊕ C, does it always induce a lawful codec A ⇄ B, and what does the residual type C represent?"
+  },
+  {
+    "id": "codecOfSplit_eq_iff_exists_intertwining_equiv",
+    "lean": [
+      "Toy.Codec.codecOfSplit_eq_iff_exists_intertwining_equiv",
+      "Toy.Codec.complementEquivOfCodecEq_intertwines"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "Given two mutually inverse coproduct decompositions (f₁, g₁) of B as A ⊕ C₁ and (f₂, g₂) of B as A ⊕ C₂, they induce the same codec (codecOfSplit f₁ g₁ = codecOfSplit f₂ g₂) if and only if there exists an equivalence φ : Equiv C₁ C₂ intertwining them (∀ b, f₂ b = Sum.map id φ.toFun (f₁ b)); moreover, when the codecs are equal, complementEquivOfCodecEq constructs that Equiv C₁ C₂ in Type with zero axioms and complementEquivOfCodecEq_intertwines proves the intertwining equation (axiom qualifiers established by the kernel axiom record: [Quot.sound] for codecOfSplit_eq_iff_exists_intertwining_equiv, and no axioms for complementEquivOfCodecEq and complementEquivOfCodecEq_intertwines).",
+    "hypotheses": [
+      {
+        "name": "hl₁ (in codecOfSplit_eq_iff_exists_intertwining_equiv)",
+        "purpose": "Ensures g₁ ∘ Sum.inr surjects onto Junk of the first split and recovers b from f₁ b = Sum.inr k₁.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_codecOfSplit_eq_iff_drop_hl1"
+      },
+      {
+        "name": "hr₁ (in codecOfSplit_eq_iff_exists_intertwining_equiv)",
+        "purpose": "Ensures g₁ maps Sum.inl to valid values and Sum.inr into Junk of the first split.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_codecOfSplit_eq_iff_drop_hr1"
+      },
+      {
+        "name": "hl₂ (in codecOfSplit_eq_iff_exists_intertwining_equiv)",
+        "purpose": "Ensures g₂ ∘ Sum.inr surjects onto Junk of the second split and aligns encoders under intertwining.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_codecOfSplit_eq_iff_drop_hl2"
+      },
+      {
+        "name": "hr₂ (in codecOfSplit_eq_iff_exists_intertwining_equiv)",
+        "purpose": "Ensures g₂ maps Sum.inl to valid values and Sum.inr into Junk of the second split.",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_codecOfSplit_eq_iff_drop_hr2"
+      },
+      {
+        "name": "hl₁ (in complementEquivOfCodecEq_intertwines)",
+        "purpose": "Structurally required to form the conclusion's term complementEquivOfCodecEq f₁ g₁ f₂ g₂ hl₁ hr₁ hl₂ hr₂ heq (so a literal drop-hl₁ instance of the conclusion cannot be typed); aligns g₁ (Sum.inr k) = b on the complement branch. Surrogate counterexample ce_codecOfSplit_eq_iff_drop_hl1 exports, for one concrete instance (B = Bool, C₁ = Unit, C₂ = Bool), exactly the three remaining laws hr₁, hl₂, hr₂ and the negation ¬ (codecOfSplit f₁ g₁ = codecOfSplit f₂ g₂ ↔ ∃ φ : Equiv C₁ C₂, ∀ b, f₂ b = Sum.map id φ.toFun (f₁ b)) of the iff in codecOfSplit_eq_iff_exists_intertwining_equiv; it does not export heq or the emptiness of Equiv C₁ C₂ as separate conclusions (both are established only inside its proof).",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_codecOfSplit_eq_iff_drop_hl1"
+      },
+      {
+        "name": "hr₁ (in complementEquivOfCodecEq_intertwines)",
+        "purpose": "Structurally required to form the conclusion's term complementEquivOfCodecEq f₁ g₁ f₂ g₂ hl₁ hr₁ hl₂ hr₂ heq; ensures g₁ (Sum.inr k) lies in Junk of the first split. Surrogate counterexample ce_codecOfSplit_eq_iff_drop_hr1 exports, for one concrete instance (B = Unit, C₁ = Bool, C₂ = Empty), exactly the three remaining laws hl₁, hl₂, hr₂ and the negation ¬ (codecOfSplit f₁ g₁ = codecOfSplit f₂ g₂ ↔ ∃ φ : Equiv C₁ C₂, ∀ b, f₂ b = Sum.map id φ.toFun (f₁ b)) of the iff in codecOfSplit_eq_iff_exists_intertwining_equiv; it does not export heq or the emptiness of Equiv C₁ C₂ as separate conclusions (both are established only inside its proof).",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_codecOfSplit_eq_iff_drop_hr1"
+      },
+      {
+        "name": "hl₂ (in complementEquivOfCodecEq_intertwines)",
+        "purpose": "Structurally required to form the conclusion's term complementEquivOfCodecEq f₁ g₁ f₂ g₂ hl₁ hr₁ hl₂ hr₂ heq (used in complementEquivOfCodecEq.left_inv). Surrogate counterexample ce_codecOfSplit_eq_iff_drop_hl2 exports, for one concrete instance (B = Bool, C₁ = Bool, C₂ = Unit), exactly the three remaining laws hl₁, hr₁, hr₂ and the negation ¬ (codecOfSplit f₁ g₁ = codecOfSplit f₂ g₂ ↔ ∃ φ : Equiv C₁ C₂, ∀ b, f₂ b = Sum.map id φ.toFun (f₁ b)) of the iff in codecOfSplit_eq_iff_exists_intertwining_equiv; it does not export heq or the emptiness of Equiv C₁ C₂ as separate conclusions (both are established only inside its proof).",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_codecOfSplit_eq_iff_drop_hl2"
+      },
+      {
+        "name": "hr₂ (in complementEquivOfCodecEq_intertwines)",
+        "purpose": "Structurally required to form the conclusion's term complementEquivOfCodecEq f₁ g₁ f₂ g₂ hl₁ hr₁ hl₂ hr₂ heq (used in complementEquivOfCodecEq.right_inv). Surrogate counterexample ce_codecOfSplit_eq_iff_drop_hr2 exports, for one concrete instance (B = Unit, C₁ = Empty, C₂ = Bool), exactly the three remaining laws hl₁, hr₁, hl₂ and the negation ¬ (codecOfSplit f₁ g₁ = codecOfSplit f₂ g₂ ↔ ∃ φ : Equiv C₁ C₂, ∀ b, f₂ b = Sum.map id φ.toFun (f₁ b)) of the iff in codecOfSplit_eq_iff_exists_intertwining_equiv; it does not export heq or the emptiness of Equiv C₁ C₂ as separate conclusions (both are established only inside its proof).",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_codecOfSplit_eq_iff_drop_hr2"
+      },
+      {
+        "name": "heq (in complementEquivOfCodecEq_intertwines)",
+        "purpose": "Structurally required to form the conclusion's term complementEquivOfCodecEq f₁ g₁ f₂ g₂ hl₁ hr₁ hl₂ hr₂ heq (so a literal drop-heq instance of the conclusion cannot be typed); supplies equality of the two induced codecs so C₁ elements map into Junk of the second split. Surrogate counterexample ce_intertwines_drop_heq shows that when all four inverse hypotheses hold and the induced codecs differ, no candidate function φ : C₁ → C₂ at all intertwines f₁ and f₂ (it exports the four laws and the non-existence of φ; the inequality of the two induced codecs for the same instance is exported by same_complement_different_codec).",
+        "tightness": "tight",
+        "counterexample": "Toy.Codec.ce_intertwines_drop_heq"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Positive pair: (natBoolSplitToFun, natBoolSplitInvFun) on Nat ≃ Bool ⊕ Nat and (natBoolSubSplitToFun, natBoolSubSplitInvFun) on Nat ≃ Bool ⊕ { n // 2 ≤ n } satisfy all four inverse laws, induce equal codecs, and are intertwined by natBoolSubEquiv; negative pair: (splitBoolFalseToFun, splitBoolFalseInvFun) and (splitBoolTrueToFun, splitBoolTrueInvFun) on Bool ≃ Unit ⊕ Unit satisfy all four inverse laws, induce unequal codecs, and admit no intertwining equivalence.",
+    "nonvacuity_witness_lean": "Toy.Codec.nv_codecOfSplit_eq_iff_exists_intertwining_equiv",
+    "non_claims": [
+      "Does not say that two decompositions induce the same codec whenever their complement types are equivalent. The equivalence must intertwine the decompositions: two decompositions of `Bool` as `Unit ⊕ Unit`, one with `enc () = false` and one with `enc () = true`, have the same complement and different codecs.",
+      "No statement about lenses is proved in this package. 'Dual to lenses' describes the shape of the result; the lens-side decomposition needs extra assumptions (for instance an inhabited view type).",
+      "In the reverse direction (intertwining ⇒ equal codecs), bijectivity of φ and hypotheses hl₁ and hr₂ are not needed: any intertwining function φ : C₁ → C₂ with hr₁ and hl₂ suffices (proved in Witnesses.lean as codecOfSplit_eq_of_intertwining_fun)."
+    ],
+    "prior_art": [
+      "Mitchell Riley, 'Categories of Optics', arXiv:1809.00738v2 [math.CT], 2018 (Section 4.2 states concrete prism laws and observes in the proof of Proposition 4.2.2 that the first law makes Review injective so S ≅ C ⊔ A for some complement C in Set; Proposition 4.1.3, generalizing Johnson, Rosebrugh, and Wood, J.UCS 16(5):729–748, 2010, treats the lens-side complement under pullbacks and a global element of the view). Note: Riley's coend relation (Section 3, Definition 4.2.1) is generated by arbitrary residual maps rather than isomorphisms of mutually inverse decompositions; this intertwining-equivalence statement for two-sided decompositions was not found in Riley, Clarke et al., Isabelle AFP Optics, or Mathlib.",
+      "Bryce Clarke, Derek Elkins, Jeremy Gibbons, Fosco Loregian, Bartosz Milewski, Emily Pillmore, and Mario Román, 'Profunctor Optics, a Categorical Update', Compositionality, vol. 6, article 1, 2024, DOI 10.32408/compositionality-6-1 (Section 3.1.6 defines prisms as mixed optics for the coproduct action; lawfulness is not treated there).",
+      "J. Nathan Foster, Michael B. Greenwald, Jonathan T. Moore, Benjamin C. Pierce, and Alan Schmitt, 'Combinators for bi-directional tree transformations: a linguistic approach to the view update problem', POPL '05, pp. 233–246, 2005, DOI 10.1145/1040305.1040325; journal version: 'Combinators for bidirectional tree transformations: A linguistic approach to the view-update problem', ACM Transactions on Programming Languages and Systems 29(3), article 17, 2007, DOI 10.1145/1232420.1232424 (defines the GetPut, PutGet, and PutPut lens laws)."
+    ],
+    "design_question": "When do two mutually inverse coproduct decompositions B ≃ A ⊕ C₁ and B ≃ A ⊕ C₂ induce the exact same lawful codec A ⇄ B, and how can the complement equivalence C₁ ≃ C₂ be extracted as explicit data?"
+  }
+]

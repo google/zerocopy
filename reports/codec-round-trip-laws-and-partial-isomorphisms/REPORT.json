@@ -1,0 +1,108 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "pl/bidirectional-lenses",
+    "pl/codecs",
+    "pl/prisms",
+    "verification/serialization",
+    "security/parser-non-malleability"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "EverParse: Verified Secure Zero-Copy Parsers for Authenticated Message Formats",
+      "identity": {
+        "url": "https://www.usenix.org/conference/usenixsecurity19/presentation/delignat-lavaud"
+      }
+    },
+    {
+      "name": "EverParse / LowParse mechanization",
+      "identity": {
+        "repository": "project-everest/everparse",
+        "revision": "f3e4ce51d9b68593fd98472cadcdeb8b6abf388f"
+      }
+    },
+    {
+      "name": "Functional pearl: every bit counts",
+      "identity": {
+        "doi": "10.1145/1863543.1863548"
+      }
+    },
+    {
+      "name": "Narcissus: Correct-by-Construction Derivation of Decoders and Encoders from Binary Formats",
+      "identity": {
+        "doi": "10.1145/3341686"
+      }
+    },
+    {
+      "name": "Invertible syntax descriptions: unifying parsing and pretty printing",
+      "identity": {
+        "doi": "10.1145/1863523.1863525"
+      }
+    },
+    {
+      "name": "Profunctor Optics: Modular Data Accessors",
+      "identity": {
+        "doi": "10.22152/programming-journal.org/2017/1/7"
+      }
+    },
+    {
+      "name": "Categories of Optics",
+      "identity": {
+        "arxiv": "1809.00738v2",
+        "url": "https://arxiv.org/abs/1809.00738v2"
+      }
+    },
+    {
+      "name": "Profunctor Optics, a Categorical Update",
+      "identity": {
+        "doi": "10.32408/compositionality-6-1"
+      }
+    },
+    {
+      "name": "Lean Mathlib (mathlib4)",
+      "identity": {
+        "repository": "leanprover-community/mathlib4",
+        "revision": "5f78f9ce46fc85fa3cb45561d47b489c4c98cd04"
+      }
+    },
+    {
+      "name": "Optics (Archive of Formal Proofs entry)",
+      "identity": {
+        "url": "https://www.isa-afp.org/entries/Optics.html",
+        "repository": "isabelle-prover/mirror-afp-2026",
+        "revision": "749ee1bd79285aeb2597f31d797d0e55d9af62c9"
+      }
+    },
+    {
+      "name": "Rocq Corelib SSReflect (ssrfun.v)",
+      "identity": {
+        "repository": "rocq-prover/rocq",
+        "revision": "25f5b18a320e4796f181f938d3b74bebe7db4dc4"
+      }
+    },
+    {
+      "name": "Mathematical Components (eqtype.v)",
+      "identity": {
+        "repository": "math-comp/math-comp",
+        "revision": "1cf23375ae1948bc37a50f153a6fdd2338dacf98"
+      }
+    },
+    {
+      "name": "agda-unimath",
+      "identity": {
+        "repository": "UniMath/agda-unimath",
+        "revision": "c0022bfc4e6f57fc84ca70d4d4e3aa568def5e3f"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

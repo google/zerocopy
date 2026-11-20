@@ -1,0 +1,836 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Codec.Codec": [],
+    "Toy.Codec.Codec.casesOn": [],
+    "Toy.Codec.Codec.comp": [],
+    "Toy.Codec.Codec.ctorIdx": [],
+    "Toy.Codec.Codec.dec": [],
+    "Toy.Codec.Codec.enc": [],
+    "Toy.Codec.Codec.ext": [],
+    "Toy.Codec.Codec.id": [],
+    "Toy.Codec.Codec.mk": [],
+    "Toy.Codec.Codec.mk.inj": [],
+    "Toy.Codec.Codec.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Codec.Codec.mk.noConfusion": [],
+    "Toy.Codec.Codec.mk.sizeOf_spec": [],
+    "Toy.Codec.Codec.noConfusion": [],
+    "Toy.Codec.Codec.noConfusionType": [],
+    "Toy.Codec.Codec.prod": [
+      "propext"
+    ],
+    "Toy.Codec.Codec.prod.eq_1": [
+      "propext"
+    ],
+    "Toy.Codec.Codec.prod.match_1": [
+      "propext"
+    ],
+    "Toy.Codec.Codec.rec": [],
+    "Toy.Codec.Codec.recOn": [],
+    "Toy.Codec.Codec.sum": [],
+    "Toy.Codec.Codec.sum.match_1": [],
+    "Toy.Codec.DecEnc": [],
+    "Toy.Codec.DecInj": [],
+    "Toy.Codec.EncDec": [],
+    "Toy.Codec.Equiv": [],
+    "Toy.Codec.Equiv.casesOn": [],
+    "Toy.Codec.Equiv.ctorIdx": [],
+    "Toy.Codec.Equiv.invFun": [],
+    "Toy.Codec.Equiv.left_inv": [],
+    "Toy.Codec.Equiv.mk": [],
+    "Toy.Codec.Equiv.mk.inj": [],
+    "Toy.Codec.Equiv.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Codec.Equiv.mk.noConfusion": [],
+    "Toy.Codec.Equiv.mk.sizeOf_spec": [],
+    "Toy.Codec.Equiv.noConfusion": [],
+    "Toy.Codec.Equiv.noConfusionType": [],
+    "Toy.Codec.Equiv.rec": [],
+    "Toy.Codec.Equiv.recOn": [],
+    "Toy.Codec.Equiv.right_inv": [],
+    "Toy.Codec.Equiv.toFun": [],
+    "Toy.Codec.FiberSplit": [],
+    "Toy.Codec.FramedCodec": [],
+    "Toy.Codec.FramedCodec.casesOn": [],
+    "Toy.Codec.FramedCodec.ctorIdx": [],
+    "Toy.Codec.FramedCodec.decPrefix": [],
+    "Toy.Codec.FramedCodec.enc": [],
+    "Toy.Codec.FramedCodec.mk": [],
+    "Toy.Codec.FramedCodec.mk.inj": [],
+    "Toy.Codec.FramedCodec.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Codec.FramedCodec.mk.noConfusion": [],
+    "Toy.Codec.FramedCodec.mk.sizeOf_spec": [],
+    "Toy.Codec.FramedCodec.noConfusion": [],
+    "Toy.Codec.FramedCodec.noConfusionType": [],
+    "Toy.Codec.FramedCodec.rec": [],
+    "Toy.Codec.FramedCodec.recOn": [],
+    "Toy.Codec.FramedCodec.seq": [],
+    "Toy.Codec.FramedCodec.seq.eq_1": [],
+    "Toy.Codec.FramedCodec.seq.match_1": [],
+    "Toy.Codec.ImagePrefixFree": [],
+    "Toy.Codec.IsEquiv": [],
+    "Toy.Codec.Junk": [],
+    "Toy.Codec.Lawful": [],
+    "Toy.Codec.LeftInv": [],
+    "Toy.Codec.NonEmptyEnc": [],
+    "Toy.Codec.PrefixDecEnc": [],
+    "Toy.Codec.PrefixEncDec": [],
+    "Toy.Codec.PrefixFree": [],
+    "Toy.Codec.RightInv": [],
+    "Toy.Codec.alwaysFailBoolCodec": [],
+    "Toy.Codec.alwaysFailBoolCodec_encDec": [],
+    "Toy.Codec.alwaysFailConstCodec": [],
+    "Toy.Codec.alwaysFailConstCodec_encDec": [],
+    "Toy.Codec.alwaysFailFramedCodec": [],
+    "Toy.Codec.alwaysFailFramedCodec.eq_1": [],
+    "Toy.Codec.alwaysFailFramedCodec_nonEmptyEnc": [],
+    "Toy.Codec.alwaysFailFramedCodec_prefixEncDec": [],
+    "Toy.Codec.alwaysFailUnitCodec": [],
+    "Toy.Codec.alwaysFailUnitCodec_encDec": [],
+    "Toy.Codec.ambiguousCodec": [
+      "propext"
+    ],
+    "Toy.Codec.ambiguousCodec.eq_1": [
+      "propext"
+    ],
+    "Toy.Codec.ambiguousCodec.match_1": [
+      "propext"
+    ],
+    "Toy.Codec.ambiguousCodec_decEnc": [
+      "propext"
+    ],
+    "Toy.Codec.ambiguousCodec_encDec": [
+      "propext"
+    ],
+    "Toy.Codec.ambiguousCodec_encDec.match_1_1": [
+      "propext"
+    ],
+    "Toy.Codec.ambiguousEnc": [],
+    "Toy.Codec.ambiguousEnc_injective": [],
+    "Toy.Codec.ambiguousEnc_nonEmpty": [],
+    "Toy.Codec.ambiguousFailFramedCodec": [],
+    "Toy.Codec.ambiguousFailFramedCodec_prefixEncDec": [],
+    "Toy.Codec.badEmptyUnitSplitInvFun": [],
+    "Toy.Codec.badEmptyUnitSplitInvFun.match_1": [],
+    "Toy.Codec.badEmptyUnitSplitToFun": [],
+    "Toy.Codec.badEmptyUnitSplit_rightInv": [],
+    "Toy.Codec.badLeftSplitInvFun": [],
+    "Toy.Codec.badLeftSplitInvFun.match_1": [],
+    "Toy.Codec.badLeftSplitToFun": [],
+    "Toy.Codec.badLeftSplit_rightInv": [],
+    "Toy.Codec.badRightInlSplitInvFun": [],
+    "Toy.Codec.badRightInlSplitToFun": [],
+    "Toy.Codec.badRightInlSplit_leftInv": [],
+    "Toy.Codec.badRightInrSplitInvFun": [],
+    "Toy.Codec.badRightInrSplitToFun": [],
+    "Toy.Codec.bareListElemEnc": [],
+    "Toy.Codec.bareListElemEnc.match_1": [],
+    "Toy.Codec.bareListFc": [
+      "propext"
+    ],
+    "Toy.Codec.bareListFc.eq_1": [
+      "propext"
+    ],
+    "Toy.Codec.bareListGreedy": [
+      "propext"
+    ],
+    "Toy.Codec.bareListGreedy.eq_1": [
+      "propext"
+    ],
+    "Toy.Codec.bareListGreedy.eq_2": [
+      "propext"
+    ],
+    "Toy.Codec.bareListGreedy.eq_3": [
+      "propext"
+    ],
+    "Toy.Codec.bareListGreedy.eq_def": [
+      "propext"
+    ],
+    "Toy.Codec.bareListGreedy.match_1": [
+      "propext"
+    ],
+    "Toy.Codec.bareListGreedy_encList": [
+      "propext"
+    ],
+    "Toy.Codec.bareListGreedy_sound": [
+      "propext"
+    ],
+    "Toy.Codec.bareListGreedy_sound.match_1_1": [],
+    "Toy.Codec.bareListSeq_decPrefix_eq": [
+      "propext"
+    ],
+    "Toy.Codec.bareList_first_field_lawful": [
+      "propext"
+    ],
+    "Toy.Codec.bareList_first_field_lawful.match_1_6": [],
+    "Toy.Codec.bareList_first_field_lawful.match_1_8": [
+      "propext"
+    ],
+    "Toy.Codec.boolNotCodec": [],
+    "Toy.Codec.boolNotCodec_decEnc": [],
+    "Toy.Codec.boolNotCodec_encDec": [],
+    "Toy.Codec.boolNotEquiv": [],
+    "Toy.Codec.boolToNatCodec": [],
+    "Toy.Codec.boolToNatCodec.match_1": [],
+    "Toy.Codec.boolToNatCodec.match_3": [],
+    "Toy.Codec.boolToNatCodec_decEnc": [],
+    "Toy.Codec.boolToNatCodec_decInj": [],
+    "Toy.Codec.boolToNatCodec_encDec": [],
+    "Toy.Codec.boolToNatCodec_encDec.match_1_1": [],
+    "Toy.Codec.boolToNatCodec_lawful": [],
+    "Toy.Codec.boolToNatFiberSplit": [
+      "propext"
+    ],
+    "Toy.Codec.boolToNat_enc_injective": [],
+    "Toy.Codec.canonicalize": [],
+    "Toy.Codec.canonicalize.match_1": [],
+    "Toy.Codec.canonicalize_decEnc_of_decEnc": [
+      "propext"
+    ],
+    "Toy.Codec.canonicalize_encDec": [],
+    "Toy.Codec.ce_canonicalize_decEnc_drop_decEnc": [],
+    "Toy.Codec.ce_classicalCodec_decEnc_drop_inj": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Codec.ce_classicalCodec_recover_drop_decEnc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Codec.ce_classicalCodec_recover_drop_encDec": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Codec.ce_codecOfFiberSplit_decEnc_drop_inj": [],
+    "Toy.Codec.ce_codecOfFiberSplit_eq_drop_decEnc": [],
+    "Toy.Codec.ce_codecOfFiberSplit_eq_drop_encDec": [
+      "propext"
+    ],
+    "Toy.Codec.ce_codecOfSplit_eq_iff_drop_hl1": [
+      "Quot.sound"
+    ],
+    "Toy.Codec.ce_codecOfSplit_eq_iff_drop_hl2": [
+      "Quot.sound"
+    ],
+    "Toy.Codec.ce_codecOfSplit_eq_iff_drop_hr1": [
+      "Quot.sound"
+    ],
+    "Toy.Codec.ce_codecOfSplit_eq_iff_drop_hr2": [
+      "Quot.sound"
+    ],
+    "Toy.Codec.ce_comp_decEnc_drop_hde1": [],
+    "Toy.Codec.ce_comp_decEnc_drop_hde2": [],
+    "Toy.Codec.ce_comp_encDec_drop_hed1": [
+      "propext"
+    ],
+    "Toy.Codec.ce_comp_encDec_drop_hed2": [
+      "propext"
+    ],
+    "Toy.Codec.ce_decEnc_imp_enc_injective_drop_decEnc": [],
+    "Toy.Codec.ce_decEqSomeIff_imp_enc_injective_drop_hconv": [],
+    "Toy.Codec.ce_decInj_not_implies_encDec": [],
+    "Toy.Codec.ce_dec_unique_drop_hde1": [],
+    "Toy.Codec.ce_dec_unique_drop_hde2": [],
+    "Toy.Codec.ce_dec_unique_drop_hed1": [
+      "Quot.sound"
+    ],
+    "Toy.Codec.ce_dec_unique_drop_hed2": [
+      "Quot.sound"
+    ],
+    "Toy.Codec.ce_dec_unique_drop_henc": [],
+    "Toy.Codec.ce_decomp_induces_drop_leftInv": [],
+    "Toy.Codec.ce_decomp_induces_drop_rightInv": [],
+    "Toy.Codec.ce_decomp_induces_drop_rightInv_inr": [],
+    "Toy.Codec.ce_intertwines_drop_heq": [],
+    "Toy.Codec.ce_junk_iff_not_in_image_of_lawful_drop_decEnc": [],
+    "Toy.Codec.ce_junk_iff_not_in_image_of_lawful_drop_encDec": [
+      "propext"
+    ],
+    "Toy.Codec.ce_lawful_dec_isSome_drop_decEnc": [],
+    "Toy.Codec.ce_lawful_dec_isSome_drop_encDec": [
+      "propext"
+    ],
+    "Toy.Codec.ce_lawful_decomp_drop_decEnc": [],
+    "Toy.Codec.ce_lawful_decomp_drop_encDec": [],
+    "Toy.Codec.ce_listCodec_decEnc_drop_nonEmptyEnc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Codec.ce_listCodec_decEnc_iff_drop_prefixDecEnc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Codec.ce_listCodec_encDec_drop_prefixEncDec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Codec.ce_nonEmptyEnc_of_prefixDecEnc_of_ne_drop_hpde": [],
+    "Toy.Codec.ce_prefixDecEnc_imp_prefixFree_drop_hpde": [],
+    "Toy.Codec.ce_prod_decEnc_drop_hde1": [
+      "propext"
+    ],
+    "Toy.Codec.ce_prod_decEnc_drop_hde2": [
+      "propext"
+    ],
+    "Toy.Codec.ce_prod_encDec_drop_hed1": [
+      "propext"
+    ],
+    "Toy.Codec.ce_prod_encDec_drop_hed2": [
+      "propext"
+    ],
+    "Toy.Codec.ce_seq_prefixDecEnc_drop_h1": [
+      "propext"
+    ],
+    "Toy.Codec.ce_seq_prefixDecEnc_drop_h2": [
+      "propext"
+    ],
+    "Toy.Codec.ce_seq_prefixEncDec_drop_h1": [
+      "propext"
+    ],
+    "Toy.Codec.ce_seq_prefixEncDec_drop_h2": [
+      "propext"
+    ],
+    "Toy.Codec.ce_sum_decEnc_drop_hde1": [],
+    "Toy.Codec.ce_sum_decEnc_drop_hde2": [],
+    "Toy.Codec.ce_sum_encDec_drop_hed1": [
+      "propext"
+    ],
+    "Toy.Codec.ce_sum_encDec_drop_hed2": [
+      "propext"
+    ],
+    "Toy.Codec.classicalCodec": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Codec.classicalCodec_decEnc_of_injective": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Codec.classicalCodec_enc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Codec.classicalCodec_encDec": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Codec.classicalCodec_recover_of_lawful": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Codec.classicalDec": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Codec.classicalFiberSplit": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Codec.codecId_decEnc": [],
+    "Toy.Codec.codecId_encDec": [],
+    "Toy.Codec.codecId_lawful": [],
+    "Toy.Codec.codecOfFiberSplit": [],
+    "Toy.Codec.codecOfFiberSplit.match_1": [],
+    "Toy.Codec.codecOfFiberSplit_decEnc_of_injective": [],
+    "Toy.Codec.codecOfFiberSplit_encDec": [],
+    "Toy.Codec.codecOfFiberSplit_encDec.match_1_1": [],
+    "Toy.Codec.codecOfFiberSplit_eq_of_lawful": [
+      "Quot.sound"
+    ],
+    "Toy.Codec.codecOfSplit": [],
+    "Toy.Codec.codecOfSplit_decomp_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Codec.codecOfSplit_eq_iff_exists_intertwining_equiv": [
+      "Quot.sound"
+    ],
+    "Toy.Codec.codecOfSplit_eq_of_intertwining_fun": [
+      "Quot.sound"
+    ],
+    "Toy.Codec.codecOfSplit_lawful_of_leftInv_and_rightInv_inl": [],
+    "Toy.Codec.collidingJunkInvFun": [],
+    "Toy.Codec.collidingJunkInvFun.match_1": [],
+    "Toy.Codec.collidingJunkToFun": [],
+    "Toy.Codec.comp_decEnc": [],
+    "Toy.Codec.comp_encDec": [],
+    "Toy.Codec.complementEquivOfCodecEq": [],
+    "Toy.Codec.complementEquivOfCodecEq_intertwines": [],
+    "Toy.Codec.constUnitFiberSplit": [],
+    "Toy.Codec.constUnitFiberSplit.match_1": [],
+    "Toy.Codec.const_imagePrefixFree_not_prefixFree": [
+      "propext"
+    ],
+    "Toy.Codec.decEnc_admits_malleable_codec": [
+      "propext"
+    ],
+    "Toy.Codec.decEnc_imp_enc_injective": [],
+    "Toy.Codec.decEqSomeIff_imp_enc_injective": [],
+    "Toy.Codec.decInj_and_surjective_dec_not_lawful": [],
+    "Toy.Codec.decList": [],
+    "Toy.Codec.decList.eq_1": [
+      "Quot.sound"
+    ],
+    "Toy.Codec.decList.eq_2": [
+      "Quot.sound"
+    ],
+    "Toy.Codec.decList.eq_def": [
+      "Quot.sound"
+    ],
+    "Toy.Codec.decSuffixList": [
+      "propext"
+    ],
+    "Toy.Codec.decSuffixList.match_1": [
+      "propext"
+    ],
+    "Toy.Codec.dec_eq_inlMatcher_decompToFun": [
+      "propext"
+    ],
+    "Toy.Codec.dec_unique_of_lawful": [
+      "Quot.sound"
+    ],
+    "Toy.Codec.decompInvFun": [],
+    "Toy.Codec.decompInvFun.match_1": [],
+    "Toy.Codec.decompToFun": [],
+    "Toy.Codec.decompToFun_enc_of_rightInv": [],
+    "Toy.Codec.decomp_induces_lawful_and_complement": [],
+    "Toy.Codec.decomp_isEquiv_iff_lawful": [],
+    "Toy.Codec.emptyBoolFailFramedCodec": [],
+    "Toy.Codec.emptyBoolSplitInvFun": [],
+    "Toy.Codec.emptyBoolSplitInvFun.match_1": [],
+    "Toy.Codec.emptyBoolSplitToFun": [],
+    "Toy.Codec.emptyBoolSplit_leftInv": [],
+    "Toy.Codec.emptyBoolSplit_rightInv": [],
+    "Toy.Codec.emptyUnitFramedCodec": [],
+    "Toy.Codec.emptyUnitFramedCodec.eq_1": [],
+    "Toy.Codec.emptyUnitFramedCodec_prefixDecEnc": [],
+    "Toy.Codec.emptyUnitFramedCodec_prefixEncDec": [],
+    "Toy.Codec.emptyUnitFramedCodec_prefixFree": [],
+    "Toy.Codec.encDec_admits_always_failing_codec": [],
+    "Toy.Codec.encDec_imp_decInj": [],
+    "Toy.Codec.encList": [],
+    "Toy.Codec.encList.eq_1": [],
+    "Toy.Codec.encList.eq_2": [],
+    "Toy.Codec.encList.eq_def": [],
+    "Toy.Codec.encList.match_1": [],
+    "Toy.Codec.encList_not_prefixFree": [],
+    "Toy.Codec.enc_unique_of_dec_eq": [
+      "Quot.sound"
+    ],
+    "Toy.Codec.eq_none_iff_of_isSome_iff": [],
+    "Toy.Codec.ex_canonicalize_neg": [],
+    "Toy.Codec.ex_canonicalize_pos": [],
+    "Toy.Codec.ex_classicalCodec_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Codec.ex_classicalCodec_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Codec.ex_codecId_ne_boolNot": [],
+    "Toy.Codec.ex_codecId_neg": [],
+    "Toy.Codec.ex_codecOfSplit_neg": [],
+    "Toy.Codec.ex_codecOfSplit_neg.match_1": [],
+    "Toy.Codec.ex_codecOfSplit_pos": [
+      "Quot.sound"
+    ],
+    "Toy.Codec.ex_codecOfSplit_pos.match_1_1": [],
+    "Toy.Codec.ex_comp_neg": [],
+    "Toy.Codec.ex_comp_pos": [],
+    "Toy.Codec.ex_comp_pos.match_1_1": [],
+    "Toy.Codec.ex_complementEquivOfCodecEq_neg": [
+      "Quot.sound"
+    ],
+    "Toy.Codec.ex_complementEquivOfCodecEq_neg.match_1": [],
+    "Toy.Codec.ex_complementEquivOfCodecEq_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Codec.ex_decEnc_neg": [],
+    "Toy.Codec.ex_decEnc_pos": [],
+    "Toy.Codec.ex_decInj_neg": [
+      "propext"
+    ],
+    "Toy.Codec.ex_decInj_pos": [],
+    "Toy.Codec.ex_decList_guard_rejects": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Codec.ex_decomp_neg_failing": [],
+    "Toy.Codec.ex_decomp_neg_malleable": [
+      "propext"
+    ],
+    "Toy.Codec.ex_decomp_pos": [],
+    "Toy.Codec.ex_decomp_pos.match_1_1": [],
+    "Toy.Codec.ex_decomp_pos.match_1_3": [],
+    "Toy.Codec.ex_encDec_neg": [
+      "propext"
+    ],
+    "Toy.Codec.ex_encDec_pos": [],
+    "Toy.Codec.ex_equiv_neg": [],
+    "Toy.Codec.ex_equiv_pos": [],
+    "Toy.Codec.ex_fiberSplitOfLawful_neg": [],
+    "Toy.Codec.ex_fiberSplitOfLawful_pos": [],
+    "Toy.Codec.ex_fiberSplitOfLawful_pos.match_1": [],
+    "Toy.Codec.ex_fiberSplit_neg_nonInjective": [],
+    "Toy.Codec.ex_fiberSplit_pos": [
+      "propext"
+    ],
+    "Toy.Codec.ex_fiberSplit_pos.match_1_1": [
+      "propext"
+    ],
+    "Toy.Codec.ex_imagePrefixFree_neg": [],
+    "Toy.Codec.ex_imagePrefixFree_pos": [
+      "propext"
+    ],
+    "Toy.Codec.ex_inlMatcher_neg": [],
+    "Toy.Codec.ex_inlMatcher_pos": [],
+    "Toy.Codec.ex_isEquiv_neg": [],
+    "Toy.Codec.ex_isEquiv_pos": [],
+    "Toy.Codec.ex_junkToC_neg_nonRightInv": [],
+    "Toy.Codec.ex_junkToC_pos": [],
+    "Toy.Codec.ex_junk_neg": [],
+    "Toy.Codec.ex_junk_pos": [],
+    "Toy.Codec.ex_lawful_neg_failing": [],
+    "Toy.Codec.ex_lawful_neg_malleable": [
+      "propext"
+    ],
+    "Toy.Codec.ex_lawful_pos": [],
+    "Toy.Codec.ex_leftInv_neg": [],
+    "Toy.Codec.ex_leftInv_pos": [],
+    "Toy.Codec.ex_listCodec_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Codec.ex_listCodec_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Codec.ex_nonEmptyEnc_neg": [],
+    "Toy.Codec.ex_nonEmptyEnc_pos": [
+      "propext"
+    ],
+    "Toy.Codec.ex_prefixDecEnc_neg": [],
+    "Toy.Codec.ex_prefixDecEnc_pos": [
+      "propext"
+    ],
+    "Toy.Codec.ex_prefixEncDec_neg": [],
+    "Toy.Codec.ex_prefixEncDec_pos": [
+      "propext"
+    ],
+    "Toy.Codec.ex_prefixFree_neg": [],
+    "Toy.Codec.ex_prefixFree_pos": [
+      "propext"
+    ],
+    "Toy.Codec.ex_prod_neg": [
+      "propext"
+    ],
+    "Toy.Codec.ex_prod_pos": [
+      "propext"
+    ],
+    "Toy.Codec.ex_prod_pos.match_1_1": [
+      "propext"
+    ],
+    "Toy.Codec.ex_rightInv_neg": [],
+    "Toy.Codec.ex_rightInv_pos": [],
+    "Toy.Codec.ex_seq_neg": [
+      "propext"
+    ],
+    "Toy.Codec.ex_seq_pos": [
+      "propext"
+    ],
+    "Toy.Codec.ex_sum_neg": [],
+    "Toy.Codec.ex_sum_pos": [],
+    "Toy.Codec.ex_sum_pos.match_1_1": [],
+    "Toy.Codec.fiberSplitOfLawful": [],
+    "Toy.Codec.fiberSplitOfLawful.match_1": [],
+    "Toy.Codec.fiberSplit_exists_for_every_function": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Codec.firstOnly": [],
+    "Toy.Codec.firstOnly_decEnc_and_not_decInj": [
+      "propext"
+    ],
+    "Toy.Codec.framed_lawful_but_firstOnly_not_decInj": [
+      "propext"
+    ],
+    "Toy.Codec.framed_lawful_iff_decPrefix_eq_some_iff": [],
+    "Toy.Codec.idBoolFiberSplit": [],
+    "Toy.Codec.inlMatcher": [],
+    "Toy.Codec.inlMatcher.eq_1": [],
+    "Toy.Codec.inlMatcher.eq_2": [],
+    "Toy.Codec.isSome_imp_mem_range_of_encDec": [],
+    "Toy.Codec.junkToC": [],
+    "Toy.Codec.junkToC.match_1": [],
+    "Toy.Codec.junk_iff_not_in_image_of_lawful": [],
+    "Toy.Codec.lawful_dec_isSome_iff_mem_range": [],
+    "Toy.Codec.lawful_iff_decEnc_and_accepts_only_range": [],
+    "Toy.Codec.lawful_iff_decEnc_and_decInj": [],
+    "Toy.Codec.lawful_iff_dec_eq_some_iff": [],
+    "Toy.Codec.lawful_injective_nonEmpty_enc_admits_ambiguous_concat": [
+      "propext"
+    ],
+    "Toy.Codec.leftInv_decomp_iff_encDec": [],
+    "Toy.Codec.lenientFc": [
+      "propext"
+    ],
+    "Toy.Codec.lenientFc.match_1": [
+      "propext"
+    ],
+    "Toy.Codec.lenient_not_prefixDecEnc_yet_listCodec_decEnc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Codec.listCodec": [],
+    "Toy.Codec.listCodec.eq_1": [],
+    "Toy.Codec.listCodec_decEnc_iff_nonEmptyEnc_of_prefixDecEnc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Codec.listCodec_encDec_of_prefixEncDec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Codec.malleableFramedCodec": [],
+    "Toy.Codec.malleableFramedCodec.eq_1": [],
+    "Toy.Codec.malleableFramedCodec.match_1": [],
+    "Toy.Codec.malleableFramedCodec_nonEmptyEnc": [],
+    "Toy.Codec.malleableFramedCodec_prefixDecEnc": [],
+    "Toy.Codec.malleableUnitBoolCodec": [],
+    "Toy.Codec.malleableUnitBoolCodec_decEnc": [],
+    "Toy.Codec.mem_range_imp_isSome_of_decEnc": [],
+    "Toy.Codec.natBoolEquiv": [],
+    "Toy.Codec.natBoolSplitInvFun": [],
+    "Toy.Codec.natBoolSplitInvFun.match_1": [],
+    "Toy.Codec.natBoolSplitToFun": [],
+    "Toy.Codec.natBoolSplit_eq_subSplit": [
+      "Quot.sound"
+    ],
+    "Toy.Codec.natBoolSplit_eq_subSplit.match_1_1": [],
+    "Toy.Codec.natBoolSplit_leftInv": [],
+    "Toy.Codec.natBoolSplit_leftInv.match_1_1": [],
+    "Toy.Codec.natBoolSplit_rightInv": [],
+    "Toy.Codec.natBoolSubEquiv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Codec.natBoolSubSplitInvFun": [],
+    "Toy.Codec.natBoolSubSplitInvFun.match_1": [],
+    "Toy.Codec.natBoolSubSplitToFun": [],
+    "Toy.Codec.natBoolSubSplit_leftInv": [],
+    "Toy.Codec.natBoolSubSplit_leftInv.match_1_1": [],
+    "Toy.Codec.natBoolSubSplit_rightInv": [
+      "propext"
+    ],
+    "Toy.Codec.natBoolSubSplit_rightInv.match_1_1": [],
+    "Toy.Codec.natFieldFc": [
+      "propext"
+    ],
+    "Toy.Codec.natFieldFc.eq_1": [
+      "propext"
+    ],
+    "Toy.Codec.natFieldFc.match_1": [
+      "propext"
+    ],
+    "Toy.Codec.natSuccCodec": [],
+    "Toy.Codec.natSuccCodec.match_1": [],
+    "Toy.Codec.natSuccCodec_decEnc": [],
+    "Toy.Codec.natSuccCodec_encDec": [],
+    "Toy.Codec.natSuccCodec_lawful": [],
+    "Toy.Codec.no_prefixDecEnc_for_encList": [
+      "propext"
+    ],
+    "Toy.Codec.nonCanonicalBoolCodec": [],
+    "Toy.Codec.nonCanonicalBoolCodec.match_1": [],
+    "Toy.Codec.nonCanonicalBoolCodec_decEnc": [],
+    "Toy.Codec.nonCanonicalBoolCodec_not_encDec_yet_admits_equiv": [
+      "propext"
+    ],
+    "Toy.Codec.nonCanonicalBoolEquivInvFun": [],
+    "Toy.Codec.nonCanonicalBoolEquivInvFun.match_1": [],
+    "Toy.Codec.nonCanonicalBoolEquivInvFun.match_3": [],
+    "Toy.Codec.nonCanonicalBoolEquivInvFun.match_5": [],
+    "Toy.Codec.nonCanonicalBoolEquivInvFun.match_7": [],
+    "Toy.Codec.nonCanonicalBoolEquivToFun": [],
+    "Toy.Codec.nonCanonicalBoolFiberSplit": [
+      "propext"
+    ],
+    "Toy.Codec.nonCanonicalBoolFiberSplit.match_1": [],
+    "Toy.Codec.nonCanonicalBoolJunk": [],
+    "Toy.Codec.nonCanonicalBoolJunkEquiv": [],
+    "Toy.Codec.nonCanonicalBoolJunkEquiv.match_1": [],
+    "Toy.Codec.nonCanonicalBoolJunkEquiv.match_3": [],
+    "Toy.Codec.nonEmptyEnc_of_listCodec_decEnc": [
+      "propext"
+    ],
+    "Toy.Codec.nonEmptyEnc_of_prefixDecEnc_of_ne": [
+      "propext"
+    ],
+    "Toy.Codec.nv_canonicalize_decEnc_of_decEnc": [
+      "propext"
+    ],
+    "Toy.Codec.nv_classicalCodec_decEnc_of_injective": [],
+    "Toy.Codec.nv_classicalCodec_encDec": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Codec.nv_classicalCodec_recover_of_lawful": [],
+    "Toy.Codec.nv_codecOfFiberSplit_decEnc_of_injective": [
+      "propext"
+    ],
+    "Toy.Codec.nv_codecOfFiberSplit_eq_of_lawful": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Codec.nv_codecOfFiberSplit_eq_of_lawful.match_1_1": [],
+    "Toy.Codec.nv_codecOfSplit_eq_iff_exists_intertwining_equiv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Codec.nv_codecOfSplit_eq_iff_exists_intertwining_equiv.match_1_1": [],
+    "Toy.Codec.nv_comp_decEnc": [],
+    "Toy.Codec.nv_comp_encDec": [],
+    "Toy.Codec.nv_decEnc_imp_enc_injective": [],
+    "Toy.Codec.nv_decEqSomeIff_imp_enc_injective": [],
+    "Toy.Codec.nv_dec_unique_of_lawful": [
+      "propext"
+    ],
+    "Toy.Codec.nv_decomp_induces_lawful_and_complement": [],
+    "Toy.Codec.nv_decomp_isEquiv_iff_lawful": [
+      "propext"
+    ],
+    "Toy.Codec.nv_framed_lawful_iff_decPrefix_eq_some_iff": [
+      "propext"
+    ],
+    "Toy.Codec.nv_junk_iff_not_in_image_of_lawful": [],
+    "Toy.Codec.nv_lawful_dec_isSome_iff_mem_range": [],
+    "Toy.Codec.nv_lawful_iff_decEnc_and_decInj": [],
+    "Toy.Codec.nv_lawful_iff_dec_eq_some_iff": [],
+    "Toy.Codec.nv_listCodec_decEnc_iff_nonEmptyEnc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Codec.nv_listCodec_encDec": [
+      "propext"
+    ],
+    "Toy.Codec.nv_nonEmptyEnc_of_prefixDecEnc_of_ne": [
+      "propext"
+    ],
+    "Toy.Codec.nv_prefixDecEnc_imp_prefixFree": [
+      "propext"
+    ],
+    "Toy.Codec.nv_prod_decEnc": [],
+    "Toy.Codec.nv_prod_encDec": [],
+    "Toy.Codec.nv_seq_prefixDecEnc": [
+      "propext"
+    ],
+    "Toy.Codec.nv_seq_prefixEncDec": [
+      "propext"
+    ],
+    "Toy.Codec.nv_sum_decEnc": [],
+    "Toy.Codec.nv_sum_encDec": [],
+    "Toy.Codec.prefixDecEnc_imp_prefixFree": [
+      "propext"
+    ],
+    "Toy.Codec.prefixDecEnc_nil_codeword_imp_subsingleton": [
+      "propext"
+    ],
+    "Toy.Codec.prefixFree_iff_injective_and_imagePrefixFree": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Codec.prefixFree_nil_codeword_imp_subsingleton": [],
+    "Toy.Codec.prod_decEnc": [
+      "propext"
+    ],
+    "Toy.Codec.prod_encDec": [
+      "propext"
+    ],
+    "Toy.Codec.rightInv_decomp_iff_decEnc": [],
+    "Toy.Codec.same_complement_different_codec": [],
+    "Toy.Codec.seq_prefixDecEnc": [
+      "propext"
+    ],
+    "Toy.Codec.seq_prefixEncDec": [
+      "propext"
+    ],
+    "Toy.Codec.shiftedBoolCodec": [],
+    "Toy.Codec.shiftedBoolCodec_decInj": [],
+    "Toy.Codec.splitBoolFalseInvFun": [],
+    "Toy.Codec.splitBoolFalseInvFun.match_1": [],
+    "Toy.Codec.splitBoolFalseToFun": [],
+    "Toy.Codec.splitBoolTrueInvFun": [],
+    "Toy.Codec.splitBoolTrueToFun": [],
+    "Toy.Codec.splitBoolTrueToFun.match_1": [],
+    "Toy.Codec.suffixEnc": [],
+    "Toy.Codec.suffixEnc.match_1": [],
+    "Toy.Codec.suffixEnc_not_prefixFree_yet_concat_lawful": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Codec.sum_decEnc": [],
+    "Toy.Codec.sum_encDec": [],
+    "Toy.Codec.unitEmptySplitInvFun": [],
+    "Toy.Codec.unitEmptySplitToFun": [],
+    "Toy.Codec.unitEmptySplit_leftInv": [],
+    "Toy.Codec.unitEmptySplit_rightInv": [],
+    "Toy.Codec.untaggedSum": [],
+    "Toy.Codec.untaggedSum.match_1": [],
+    "Toy.Codec.untaggedSum.match_3": [],
+    "Toy.Codec.untaggedSum_decEnc_imp_disjoint_images": [],
+    "Toy.Codec.untaggedSum_lawful_iff_disjoint_images": [],
+    "Toy.Codec.varLenBoolFramedCodec": [
+      "propext"
+    ],
+    "Toy.Codec.varLenBoolFramedCodec.eq_1": [
+      "propext"
+    ],
+    "Toy.Codec.varLenBoolFramedCodec.match_1": [
+      "propext"
+    ],
+    "Toy.Codec.varLenBoolFramedCodec_imagePrefixFree": [
+      "propext"
+    ],
+    "Toy.Codec.varLenBoolFramedCodec_nonEmptyEnc": [
+      "propext"
+    ],
+    "Toy.Codec.varLenBoolFramedCodec_prefixDecEnc": [
+      "propext"
+    ],
+    "Toy.Codec.varLenBoolFramedCodec_prefixEncDec": [
+      "propext"
+    ],
+    "Toy.Codec.varLenBoolFramedCodec_prefixEncDec.match_1_1": [
+      "propext"
+    ],
+    "Toy.Codec.varLenBoolFramedCodec_prefixFree": [
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
