@@ -1,0 +1,193 @@
+{
+  "topics": [
+    "build",
+    "build/reproducible-builds",
+    "compilers",
+    "compilers/bootstrapping",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/tcb",
+    "lean",
+    "lean/kernel",
+    "security",
+    "security/supply-chain"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler and bootstrap build system (release 1.99.1)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "tag": "1.99.1"
+      }
+    },
+    {
+      "name": "mrustc (alternative Rust compiler in C++ used to bootstrap rustc)",
+      "identity": {
+        "repository": "thepowersgang/mrustc",
+        "revision": "4e020d6b307c738434209435e9b75b7d81b00077"
+      }
+    },
+    {
+      "name": "GNU Guix Rust package chain (gnu/packages/rust.scm)",
+      "identity": {
+        "repository": "https://codeberg.org/guix/guix",
+        "revision": "0a08fa79a9e908ad6f7b449229153beae68af918",
+        "path": "gnu/packages/rust.scm",
+        "sha256": "e2adeaf1d320489d33fbbc06031c3d40273a0a0bd4687c1b78fd53d716e475e1"
+      }
+    },
+    {
+      "name": "nixpkgs Rust 1.99 package and binary bootstrap",
+      "identity": {
+        "repository": "NixOS/nixpkgs",
+        "revision": "dd621dfccea326fef05c6ce516cf99c3cfc94561"
+      }
+    },
+    {
+      "name": "Lean 4 (kernel, stage0 bootstrap, leanchecker)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Lean 4.34.1 x86_64-unknown-linux-gnu release distribution (executed)",
+      "identity": {
+        "artifact": "bin/lean and lib/lean/libleanshared.so of the elan toolchain leanprover/lean4:v4.34.1",
+        "bin_lean_sha256": "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550",
+        "libleanshared_sha256": "6b30cc963d065fc9d2f87f7e9cbe0682b23000ae5425bccd769c5d477fa74f13"
+      }
+    },
+    {
+      "name": "Lean4Lean (Lean 4 kernel reimplemented in Lean 4)",
+      "identity": {
+        "repository": "digama0/lean4lean",
+        "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+      }
+    },
+    {
+      "name": "nanoda_lib (Lean 4 external type checker in Rust)",
+      "identity": {
+        "repository": "ammkrn/nanoda_lib",
+        "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929",
+        "version": "0.4.32"
+      }
+    },
+    {
+      "name": "lean4export (Lean 4 NDJSON declaration exporter)",
+      "identity": {
+        "repository": "leanprover/lean4export",
+        "revision": "df81913eee5519d5a88ae5b0fd701b5298cc29ab"
+      }
+    },
+    {
+      "name": "Anneal trusted audit and Lean foundation lock",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "CakeML (in-logic compiler bootstrap)",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+      }
+    },
+    {
+      "name": "CompCert (Rocq-to-OCaml extraction build)",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc",
+        "version": "3.18"
+      }
+    },
+    {
+      "name": "CertiRocq (formerly CertiCoq)",
+      "identity": {
+        "repository": "CertiCoq/certicoq",
+        "revision": "ab66e0164e7ecb63e5af95c90c8e479068bf95c2"
+      }
+    },
+    {
+      "name": "MetaRocq (formerly MetaCoq)",
+      "identity": {
+        "repository": "MetaCoq/metacoq",
+        "revision": "51b14e4bb5f4580f00f60208ff8dbf31f3ad6f56"
+      }
+    },
+    {
+      "name": "gccrs (GCC Rust front end)",
+      "identity": {
+        "repository": "Rust-GCC/gccrs",
+        "revision": "f802cdb6101ee21743df0bbca3478eafadda9407"
+      }
+    },
+    {
+      "name": "rustc_codegen_gcc (libgccjit codegen backend for rustc)",
+      "identity": {
+        "repository": "rust-lang/rustc_codegen_gcc",
+        "revision": "3d46c6c1460843f1803fae04caaf6f5e6771798f"
+      }
+    },
+    {
+      "name": "SLSA specification (main-branch draft)",
+      "identity": {
+        "repository": "slsa-framework/slsa",
+        "revision": "8c3161670b7a6cf7bd6d858b2332ae7eb0838b0c"
+      }
+    },
+    {
+      "name": "in-toto attestation framework specification",
+      "identity": {
+        "repository": "in-toto/attestation",
+        "revision": "50bf01716982189898823e90586075f37cd9bb7d"
+      }
+    },
+    {
+      "name": "TinyCC (self-hosting C compiler used for the executed DDC)",
+      "identity": {
+        "repository": "TinyCC/tinycc",
+        "revision": "56b75101ef323cca9e45c925ba17042ce87134de",
+        "version": "0.9.28rc"
+      }
+    },
+    {
+      "name": "GCC (first host compiler in the executed DDC)",
+      "identity": {
+        "artifact": "gcc (Debian 15.2.0-14)",
+        "version": "15.2.0"
+      }
+    },
+    {
+      "name": "Clang (second host compiler in the executed DDC)",
+      "identity": {
+        "artifact": "bin/clang bundled in the Lean 4.34.1 x86_64-unknown-linux-gnu distribution",
+        "version": "22.1.4",
+        "sha256": "9fcd5fc4baeea9c449bcc9ca4b9db7714465107669498b0056a853f22f5f4def"
+      }
+    },
+    {
+      "name": "Thompson, Reflections on Trusting Trust",
+      "identity": {
+        "doi": "10.1145/358198.358210",
+        "venue": "Communications of the ACM 27(8):761-763, August 1984"
+      }
+    },
+    {
+      "name": "Wheeler, Fully Countering Trusting Trust through Diverse Double-Compiling",
+      "identity": {
+        "arxiv": "1004.5534v1",
+        "venue": "PhD dissertation, George Mason University, 2009"
+      }
+    },
+    {
+      "name": "Carneiro, Lean4Lean: Verifying a Typechecker for Lean, in Lean",
+      "identity": {
+        "arxiv": "2403.14064v3"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

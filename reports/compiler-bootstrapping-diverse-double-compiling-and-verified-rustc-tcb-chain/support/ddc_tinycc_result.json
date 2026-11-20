@@ -1,0 +1,42 @@
+{
+  "subject": "TinyCC/tinycc",
+  "tinycc_commit": "56b75101ef323cca9e45c925ba17042ce87134de",
+  "tarball_sha256": "c1927898f8c61e1781f77f4598699cf3777cc05f892ae6651eae69b3f5c57c1c",
+  "tinycc_version": "tcc version 0.9.28rc (x86_64 Linux)",
+  "negative_control_banner": "tcc version (payload) 0.9.28rc (x86_64 Linux)",
+  "host": "Linux x86_64",
+  "config_os_release_lines_in_config_h": 1,
+  "host_kernel_release_string_occurrences_in_binaries": {
+    "A1": 0,
+    "A2": 0,
+    "B1": 0,
+    "B2": 0
+  },
+  "compiler_A": "gcc (Debian 15.2.0-14) 15.2.0",
+  "compiler_T": "clang version 22.1.4 (https://github.com/llvm/llvm-project 35990504507d79e0b9deb809c8ee5e1b34ceef20)",
+  "wall_seconds_all_six_builds": 40,
+  "sha256": {
+    "A1_tcc_built_by_compiler_A": "aeb53c9301d01bc4418767b6d100a2fad791a7bda4d2dcdb88b84c655319ad2a",
+    "B1_stage1_tcc_built_by_compiler_T": "1513f7989f53bc0130ac130ce60e6b85f9d9451989ed654fd4b7e58d75f4e25b",
+    "A2_cA_tcc_built_by_A1": "7a787d827f82d49c18b2c8a1a72a2d3606b3199285359be6d9d64a0dbe1ff460",
+    "A3_tcc_built_by_A2": "7a787d827f82d49c18b2c8a1a72a2d3606b3199285359be6d9d64a0dbe1ff460",
+    "B2_stage2_tcc_built_by_B1": "7a787d827f82d49c18b2c8a1a72a2d3606b3199285359be6d9d64a0dbe1ff460",
+    "N2_tcc_from_modified_source_built_by_A1": "8e0058e23cb9039706ab5722075ab8b540581815fc5e66c7b7d85da5d8cc9159",
+    "A2_libtcc1": "7fac7e6c3717e8e82e7b424a69f5ff47f61eea49ea5448e791ebecc208800215",
+    "B2_libtcc1": "7fac7e6c3717e8e82e7b424a69f5ff47f61eea49ea5448e791ebecc208800215"
+  },
+  "bytes": {
+    "A1_tcc": 377552,
+    "B1_tcc": 439272,
+    "A2_tcc": 445052,
+    "B2_tcc": 445052,
+    "N2_tcc": 445068
+  },
+  "checks": {
+    "stage1_compilers_differ_A1_vs_B1": true,
+    "self_regeneration_A3_equals_A2": true,
+    "ddc_stage2_equals_cA_B2_vs_A2": true,
+    "ddc_runtime_library_equal_B2_vs_A2": true,
+    "negative_control_detected_B2_differs_from_N2": true
+  }
+}
