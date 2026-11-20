@@ -1,0 +1,112 @@
+{
+  "topics": [
+    "rust/layout",
+    "rust/unsafe",
+    "verification/rust",
+    "zerocopy/soundness",
+    "minirust/semantics",
+    "aeneas/borrows-regions",
+    "anneal/theory"
+  ],
+  "subjects": [
+    {
+      "name": "MiniRust formal specification of Rust representations and memory",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "063d784186d3252bee242217f218223205c0b568"
+      }
+    },
+    {
+      "name": "Aeneas layouts, machine types, and MiniRust Galois connection prototype (PR #1447)",
+      "identity": {
+        "repository": "JoJoDeveloping/aeneas",
+        "pull_request": "AeneasVerif/aeneas#1447",
+        "revision": "2a1dd75567517e078f90b1df746af7373fe24cbc",
+        "base_revision": "673f9e30e1e2a81b355df9a9550168e672a10d4e"
+      }
+    },
+    {
+      "name": "Aeneas stateful lifetimes and backward liveness prototype (PR #1537)",
+      "identity": {
+        "repository": "JoJoDeveloping/aeneas",
+        "pull_request": "AeneasVerif/aeneas#1537",
+        "revision": "5c28fe8def8db99041d22503175591ba1fa47915",
+        "base_revision": "0d21a9ec7bbbb110110cacc14464a47fd71c8705"
+      }
+    },
+    {
+      "name": "Aeneas concrete-address byte heap, pointer provenance lanes, and ClosedViews prototype (PR #1497)",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "pull_request": "1497",
+        "revision": "d17ca83fc07d712d1785f650840cb2073c259e69",
+        "base_revision": "de16f3cf877976e966906dc890f63dcb418884fa"
+      }
+    },
+    {
+      "name": "zerocopy safe byte-reinterpretation traits",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "1962a9c0e3eda8a3a58387f61c70ddd2c396b118"
+      }
+    },
+    {
+      "name": "Anneal MIR verification framework and PureLift SpatialPin",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "20aa204315cd36aaf944778b7d33c0d609ced8e8"
+      }
+    },
+    {
+      "name": "Lean 4.34.1 verification toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Cerberus C semantics, CN verifier, and Fulminate runtime checker",
+      "identity": {
+        "repository": "rems-project/cerberus",
+        "revision": "e29a8ec9f247ef7e0fbc3a19141dfc8f0f9b902e"
+      }
+    },
+    {
+      "name": "Fulminate: Testing CN Separation-Logic Specifications in C (Banerjee et al., POPL 2025)",
+      "identity": {
+        "doi": "10.1145/3704879",
+        "venue": "PACMPL / POPL 2025"
+      }
+    },
+    {
+      "name": "CN: Verifying Systems C Code with Separation-Logic Refinement Types (Pulte et al., POPL 2023)",
+      "identity": {
+        "doi": "10.1145/3571194",
+        "venue": "PACMPL / POPL 2023"
+      }
+    },
+    {
+      "name": "Aeneas: Rust Verification by Functional Translation (Ho & Protzenko, ICFP 2022)",
+      "identity": {
+        "doi": "10.1145/3547647",
+        "venue": "PACMPL / ICFP 2022"
+      }
+    },
+    {
+      "name": "Sound Borrow-Checking for Rust via Symbolic Semantics (Ho, Fromherz & Protzenko, ICFP 2024)",
+      "identity": {
+        "doi": "10.1145/3674640",
+        "venue": "PACMPL / ICFP 2024"
+      }
+    },
+    {
+      "name": "RefinedRust: A Type System for High-Assurance Verification of Rust Programs (Gäher et al., PLDI 2024)",
+      "identity": {
+        "doi": "10.1145/3656423",
+        "venue": "PACMPL / PLDI 2024"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
