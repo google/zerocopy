@@ -10,6 +10,8 @@
 //! digest and path validators, and deterministic topological ordering.
 
 use std::collections::{BTreeMap, BTreeSet};
+use std::ffi::OsStr;
+use std::fmt::Write as _;
 use std::fs;
 use std::path::{Component, Path, PathBuf};
 
@@ -356,17 +358,60 @@ pub(crate) fn verify_installed_module_record(
     ModuleArtifacts::from_available(&available, phase, || format!("missing olean for {module}"))
 }
 
-/// Resolve the default pinned Lean 4.34.1 binary path when none is explicitly
-/// provided, selecting a candidate binary whose SHA-256 matches
-/// [`LOCKED_LEAN_SHA256`].
-pub fn default_lean_path() -> PathBuf {
-    let home = dirs::home_dir().unwrap_or_else(|| PathBuf::from("/root"));
+fn non_empty_path(value: Option<&OsStr>) -> Option<PathBuf> {
+    value.filter(|v| !v.is_empty()).map(PathBuf::from)
+}
+
+fn cache_dir_for_platform(is_macos: bool, xdg_cache_home: Option<&OsStr>, home: &Path) -> PathBuf {
+    if is_macos {
+        home.join("Library/Caches")
+    } else {
+        non_empty_path(xdg_cache_home)
+            .filter(|p| p.is_absolute())
+            .unwrap_or_else(|| home.join(".cache"))
+    }
+}
+
+/// Resolve the ordered `anneal/toolchain` parent directories and the fallback
+/// `.elan` Lean binary path from raw `XDG_CACHE_HOME` and `HOME` values.
+fn lean_search_locations_for_platform(
+    is_macos: bool,
+    xdg_cache_home: Option<&OsStr>,
+    home: Option<&OsStr>,
+) -> ([PathBuf; 2], PathBuf) {
+    let home = non_empty_path(home).unwrap_or_else(|| PathBuf::from("/root"));
+    let cache = cache_dir_for_platform(is_macos, xdg_cache_home, &home);
+    let tc_bases = [
+        cache.join("anneal/toolchain"),
+        home.join("anneal/toolchain"),
+    ];
+    let elan_lean = home.join(".elan/toolchains/leanprover--lean4---v4.34.1/bin/lean");
+    (tc_bases, elan_lean)
+}
+
+fn lean_search_locations(
+    xdg_cache_home: Option<&OsStr>,
+    home: Option<&OsStr>,
+) -> ([PathBuf; 2], PathBuf) {
+    lean_search_locations_for_platform(cfg!(target_os = "macos"), xdg_cache_home, home)
+}
+
+#[doc(hidden)]
+pub fn default_lean_search_bases_from_env(
+    xdg_cache_home: Option<&OsStr>,
+    home: Option<&OsStr>,
+) -> [PathBuf; 2] {
+    lean_search_locations(xdg_cache_home, home).0
+}
+
+fn default_lean_path_for_platform(
+    is_macos: bool,
+    xdg_cache_home: Option<&OsStr>,
+    home: Option<&OsStr>,
+) -> PathBuf {
+    let (tc_bases, elan_lean) = lean_search_locations_for_platform(is_macos, xdg_cache_home, home);
     let mut candidate_paths = Vec::new();
-    for base in dirs::cache_dir()
-        .into_iter()
-        .chain(std::iter::once(home.clone()))
-    {
-        let tc_base = base.join("anneal/toolchain");
+    for tc_base in tc_bases {
         if let Ok(entries) = fs::read_dir(&tc_base) {
             let mut dirs: Vec<(std::time::SystemTime, PathBuf)> = entries
                 .filter_map(Result::ok)
@@ -383,7 +428,6 @@ pub fn default_lean_path() -> PathBuf {
             candidate_paths.extend(dirs.into_iter().map(|(_, p)| p));
         }
     }
-    let elan_lean = home.join(".elan/toolchains/leanprover--lean4---v4.34.1/bin/lean");
     if elan_lean.is_file() {
         candidate_paths.push(elan_lean.clone());
     }
@@ -395,6 +439,20 @@ pub fn default_lean_path() -> PathBuf {
         }
     }
     candidate_paths.into_iter().next().unwrap_or(elan_lean)
+}
+
+fn default_lean_path_from_env(xdg_cache_home: Option<&OsStr>, home: Option<&OsStr>) -> PathBuf {
+    default_lean_path_for_platform(cfg!(target_os = "macos"), xdg_cache_home, home)
+}
+
+/// Resolve the default pinned Lean 4.34.1 binary path when none is explicitly
+/// provided, selecting a candidate binary whose SHA-256 matches
+/// [`LOCKED_LEAN_SHA256`].
+pub fn default_lean_path() -> PathBuf {
+    default_lean_path_from_env(
+        std::env::var_os("XDG_CACHE_HOME").as_deref(),
+        std::env::var_os("HOME").as_deref(),
+    )
 }
 
 /// Verify that `path` exists and is a regular file (not a symlink, directory,
@@ -415,7 +473,11 @@ pub fn regular(path: &Path, phase: &str) -> Result<(), Failure> {
 
 /// Compute the lowercase hex-encoded FIPS 180-4 SHA-256 digest of `data`.
 pub fn sha256_bytes(data: &[u8]) -> String {
-    format!("{:x}", Sha256::digest(data))
+    let mut hex = String::with_capacity(64);
+    for byte in Sha256::digest(data) {
+        let _ = write!(&mut hex, "{byte:02x}");
+    }
+    hex
 }
 
 /// Verify that `path` is a regular file and return its lowercase hex SHA-256
@@ -617,5 +679,206 @@ mod module_order_tests {
             .expect("module ordering thread panicked")
             .unwrap();
         assert_eq!(order, modules);
+    }
+}
+
+#[cfg(test)]
+mod default_lean_path_tests {
+    use super::*;
+
+    #[test]
+    fn search_locations_honor_xdg_cache_home_home_and_fallbacks() {
+        let (bases, elan) = lean_search_locations_for_platform(
+            false,
+            Some(OsStr::new("/tmp/xdg-cache")),
+            Some(OsStr::new("/home/alice")),
+        );
+        assert_eq!(
+            bases,
+            [
+                PathBuf::from("/tmp/xdg-cache/anneal/toolchain"),
+                PathBuf::from("/home/alice/anneal/toolchain"),
+            ]
+        );
+        assert_eq!(
+            elan,
+            PathBuf::from("/home/alice/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean")
+        );
+
+        // Per XDG spec (matching `dirs::cache_dir`), relative `XDG_CACHE_HOME`
+        // values are ignored in favor of `$HOME/.cache`.
+        for ignored_xdg in [
+            None,
+            Some(OsStr::new("")),
+            Some(OsStr::new("relative/cache")),
+        ] {
+            let (bases, elan) = lean_search_locations_for_platform(
+                false,
+                ignored_xdg,
+                Some(OsStr::new("/home/bob")),
+            );
+            assert_eq!(
+                bases,
+                [
+                    PathBuf::from("/home/bob/.cache/anneal/toolchain"),
+                    PathBuf::from("/home/bob/anneal/toolchain"),
+                ]
+            );
+            assert_eq!(
+                elan,
+                PathBuf::from("/home/bob/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean")
+            );
+        }
+
+        // On macOS, `dirs::cache_dir` always resolves to `$HOME/Library/Caches`
+        // regardless of `XDG_CACHE_HOME`.
+        let (bases, elan) = lean_search_locations_for_platform(
+            true,
+            Some(OsStr::new("/tmp/xdg-ignored")),
+            Some(OsStr::new("/Users/alice")),
+        );
+        assert_eq!(
+            bases,
+            [
+                PathBuf::from("/Users/alice/Library/Caches/anneal/toolchain"),
+                PathBuf::from("/Users/alice/anneal/toolchain"),
+            ]
+        );
+        assert_eq!(
+            elan,
+            PathBuf::from("/Users/alice/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean")
+        );
+
+        for empty_or_none in [None, Some(OsStr::new(""))] {
+            let (bases, elan) = lean_search_locations_for_platform(false, None, empty_or_none);
+            assert_eq!(
+                bases,
+                [
+                    PathBuf::from("/root/.cache/anneal/toolchain"),
+                    PathBuf::from("/root/anneal/toolchain"),
+                ]
+            );
+            assert_eq!(
+                elan,
+                PathBuf::from("/root/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean")
+            );
+        }
+
+        let (bases, elan) = lean_search_locations_for_platform(
+            false,
+            Some(OsStr::new("/tmp/xdg-only")),
+            Some(OsStr::new("")),
+        );
+        assert_eq!(
+            bases,
+            [
+                PathBuf::from("/tmp/xdg-only/anneal/toolchain"),
+                PathBuf::from("/root/anneal/toolchain"),
+            ]
+        );
+        assert_eq!(
+            elan,
+            PathBuf::from("/root/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean")
+        );
+    }
+
+    #[test]
+    fn default_lean_path_for_platform_prefers_cache_then_home_then_elan() {
+        let dir = tempfile::tempdir().unwrap();
+        let xdg = dir.path().join("xdg");
+        let home = dir.path().join("home");
+
+        let xdg_lean = xdg.join("anneal/toolchain/v1/lean/bin/lean");
+        let home_cache_lean = home.join(".cache/anneal/toolchain/v1/lean/bin/lean");
+        let macos_cache_lean = home.join("Library/Caches/anneal/toolchain/v1/lean/bin/lean");
+        let home_tc_lean = home.join("anneal/toolchain/v1/lean/bin/lean");
+        let elan_lean = home.join(".elan/toolchains/leanprover--lean4---v4.34.1/bin/lean");
+
+        for p in [
+            &xdg_lean,
+            &home_cache_lean,
+            &macos_cache_lean,
+            &home_tc_lean,
+            &elan_lean,
+        ] {
+            fs::create_dir_all(p.parent().unwrap()).unwrap();
+            fs::write(p, b"fake lean").unwrap();
+        }
+
+        // Linux / non-macOS precedence: XDG_CACHE_HOME -> $HOME/.cache ->
+        // $HOME/anneal -> .elan.
+        assert_eq!(
+            default_lean_path_for_platform(false, Some(xdg.as_os_str()), Some(home.as_os_str())),
+            xdg_lean
+        );
+        assert_eq!(
+            default_lean_path_for_platform(false, None, Some(home.as_os_str())),
+            home_cache_lean
+        );
+        assert_eq!(
+            default_lean_path_for_platform(false, Some(OsStr::new("")), Some(home.as_os_str())),
+            home_cache_lean
+        );
+
+        // macOS precedence: $HOME/Library/Caches (ignoring XDG_CACHE_HOME) ->
+        // $HOME/anneal -> .elan.
+        assert_eq!(
+            default_lean_path_for_platform(true, Some(xdg.as_os_str()), Some(home.as_os_str())),
+            macos_cache_lean
+        );
+
+        // Host wrapper matches the active target OS.
+        let expected_host = if cfg!(target_os = "macos") {
+            &macos_cache_lean
+        } else {
+            &xdg_lean
+        };
+        assert_eq!(
+            &default_lean_path_from_env(Some(xdg.as_os_str()), Some(home.as_os_str())),
+            expected_host
+        );
+
+        fs::remove_dir_all(home.join(".cache")).unwrap();
+        fs::remove_dir_all(home.join("Library")).unwrap();
+        assert_eq!(
+            default_lean_path_for_platform(false, None, Some(home.as_os_str())),
+            home_tc_lean
+        );
+        assert_eq!(
+            default_lean_path_for_platform(true, Some(xdg.as_os_str()), Some(home.as_os_str())),
+            home_tc_lean
+        );
+
+        fs::remove_dir_all(home.join("anneal")).unwrap();
+        assert_eq!(
+            default_lean_path_for_platform(false, None, Some(home.as_os_str())),
+            elan_lean
+        );
+        assert_eq!(
+            default_lean_path_for_platform(true, None, Some(home.as_os_str())),
+            elan_lean
+        );
+
+        fs::remove_file(&elan_lean).unwrap();
+        assert_eq!(
+            default_lean_path_for_platform(false, None, Some(home.as_os_str())),
+            elan_lean
+        );
+        assert_eq!(
+            default_lean_path_for_platform(true, None, Some(home.as_os_str())),
+            elan_lean
+        );
+    }
+
+    #[test]
+    fn sha256_bytes_produces_lowercase_hex_digest() {
+        assert_eq!(
+            sha256_bytes(b"abc"),
+            "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+        );
+        assert_eq!(
+            sha256_bytes(b""),
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        );
     }
 }

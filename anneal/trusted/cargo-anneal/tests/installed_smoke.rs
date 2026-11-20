@@ -24,6 +24,8 @@
 //! `python3 reproduce.py` in a retained command directory to repeat its argv,
 //! environment, and working directory with the recorded toolchain artifacts.
 
+#![cfg(feature = "setup")]
+
 #[allow(dead_code)]
 #[path = "../src/setup.rs"]
 mod setup;

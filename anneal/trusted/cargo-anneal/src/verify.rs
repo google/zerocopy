@@ -24,6 +24,7 @@ use std::path::{Component, Path, PathBuf};
 use std::process::{Command, ExitCode};
 use std::time::Instant;
 
+#[cfg(feature = "setup")]
 use crate::setup::{ToolOverrides, installed_bundle, resolve_tools};
 
 // Generated resources keep installed and packaged builds independent of the
@@ -55,16 +56,42 @@ pub struct VerifyArgs {
     select: Vec<String>,
     /// Capture driver; defaults to the installed bundle, then a sibling. The
     /// receipt records its SHA-256, which no lock pins.
-    #[arg(long)]
+    #[cfg_attr(
+        not(feature = "setup"),
+        arg(
+            long,
+            help = "Capture driver; required when built without the `setup` \
+                    feature. The receipt records its SHA-256, which no lock pins."
+        )
+    )]
+    #[cfg_attr(feature = "setup", arg(long))]
     capture: Option<PathBuf>,
     /// Lean executable; defaults to the installed bundle, cached toolchain, or
     /// pinned elan installation. Its SHA-256 must match the foundation lock,
     /// which does not cover the shared libraries it loads.
-    #[arg(long)]
+    #[cfg_attr(
+        not(feature = "setup"),
+        arg(
+            long,
+            help = "Lean executable; required when built without the `setup` \
+                    feature. Its SHA-256 must match the foundation lock, which \
+                    does not cover the shared libraries it loads."
+        )
+    )]
+    #[cfg_attr(feature = "setup", arg(long))]
     lean: Option<PathBuf>,
     /// Compiler sysroot; defaults to the installed bundle when present.
     /// Capture checks its reported rustc commit but does not hash it.
-    #[arg(long)]
+    #[cfg_attr(
+        not(feature = "setup"),
+        arg(
+            long,
+            help = "Compiler sysroot; required when built without the `setup` \
+                    feature. Capture checks its reported rustc commit but does \
+                    not hash it."
+        )
+    )]
+    #[cfg_attr(feature = "setup", arg(long))]
     sysroot: Option<PathBuf>,
     /// New UTF-8 directory path for retained capture, sources and audit
     /// evidence.
@@ -603,6 +630,65 @@ fn load_request(args: &VerifyArgs) -> Result<(Request, PathBuf)> {
     }
 }
 
+struct SelectedTools {
+    capture: PathBuf,
+    sysroot: Option<PathBuf>,
+    lean: Option<PathBuf>,
+}
+
+fn select_tools(args: &VerifyArgs) -> Result<SelectedTools> {
+    #[cfg(feature = "setup")]
+    {
+        let installed = installed_bundle();
+        let tools = resolve_tools(
+            ToolOverrides {
+                capture: args.capture.clone(),
+                sysroot: args.sysroot.clone(),
+                lean: args.lean.clone(),
+            },
+            installed.as_ref(),
+            std::env::current_exe(),
+        )
+        .map_err(|detail| error("tool_failed", "capture-tool", detail))?;
+        Ok(SelectedTools {
+            capture: tools.capture,
+            sysroot: tools.sysroot,
+            lean: tools.lean,
+        })
+    }
+    #[cfg(not(feature = "setup"))]
+    {
+        match (&args.capture, &args.sysroot, &args.lean) {
+            (Some(capture), Some(sysroot), Some(lean)) => Ok(SelectedTools {
+                capture: capture.clone(),
+                sysroot: Some(sysroot.clone()),
+                lean: Some(lean.clone()),
+            }),
+            _ => {
+                let mut missing = Vec::new();
+                if args.capture.is_none() {
+                    missing.push("--capture");
+                }
+                if args.sysroot.is_none() {
+                    missing.push("--sysroot");
+                }
+                if args.lean.is_none() {
+                    missing.push("--lean");
+                }
+                Err(error(
+                    "tool_failed",
+                    "capture-tool",
+                    format!(
+                        "missing {}; explicit --capture, --sysroot, and --lean tool paths are \
+                         required when built without the `setup` feature",
+                        missing.join(", ")
+                    ),
+                ))
+            }
+        }
+    }
+}
+
 fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     let start = Instant::now();
     let (request, base) = load_request(args)?;
@@ -680,23 +766,12 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     // no lock pins it. Capture checks only the commit that the Rust compiler
     // and sysroot report; neither is hashed.
     //
-    // When CLI tool flags are omitted, `resolve_tools` checks the user-global
-    // installed bundle (resolved via `XDG_CACHE_HOME` / `HOME`) so capture,
-    // Rust sysroot, and Lean stay paired, falling back to a sibling capture
-    // executable and `default_lean_path` when unavailable. The sibling lookup
-    // fails closed unless `current_exe` yields an absolute path, so a relative
-    // name never selects a file in the working directory.
-    let installed = installed_bundle();
-    let tools = resolve_tools(
-        ToolOverrides {
-            capture: args.capture.clone(),
-            sysroot: args.sysroot.clone(),
-            lean: args.lean.clone(),
-        },
-        installed.as_ref(),
-        std::env::current_exe(),
-    )
-    .map_err(|detail| error("tool_failed", "capture-tool", detail))?;
+    // When built with `setup`, `resolve_tools` checks the user-global installed
+    // bundle (resolved via `XDG_CACHE_HOME` / `HOME`) so capture, Rust sysroot,
+    // and Lean stay paired, falling back to a sibling capture executable and
+    // `default_lean_path` when unavailable. When built without `setup`, all
+    // three tool paths must be passed explicitly.
+    let tools = select_tools(args)?;
     let capture = fs::canonicalize(tools.capture).map_err(|e| io("capture-tool", e))?;
     let capture_binary_sha256 =
         sha256_bytes(&fs::read(&capture).map_err(|e| io("capture-tool", e))?);
@@ -1575,5 +1650,78 @@ mod tests {
             2
         );
         assert_eq!(provenance["trusted_lean"].as_object().unwrap().len(), 5);
+    }
+
+    #[cfg(not(feature = "setup"))]
+    #[test]
+    fn select_tools_requires_explicit_paths_without_setup_feature() {
+        let base = VerifyArgs {
+            request: Some(PathBuf::from("request.json")),
+            manifest_path: None,
+            proof_dir: None,
+            select: Vec::new(),
+            capture: None,
+            lean: None,
+            sysroot: None,
+            artifacts: None,
+        };
+
+        let cases = [
+            (None, None, None, &["--capture", "--sysroot", "--lean"][..]),
+            (
+                Some(PathBuf::from("/tool/capture")),
+                None,
+                None,
+                &["--sysroot", "--lean"][..],
+            ),
+            (
+                Some(PathBuf::from("/tool/capture")),
+                Some(PathBuf::from("/tool/sysroot")),
+                None,
+                &["--lean"][..],
+            ),
+            (
+                None,
+                Some(PathBuf::from("/tool/sysroot")),
+                Some(PathBuf::from("/tool/lean")),
+                &["--capture"][..],
+            ),
+        ];
+
+        for (capture, sysroot, lean, expected_missing) in cases {
+            let args = VerifyArgs {
+                capture,
+                sysroot,
+                lean,
+                request: base.request.clone(),
+                manifest_path: None,
+                proof_dir: None,
+                select: Vec::new(),
+                artifacts: None,
+            };
+            let err = select_tools(&args).err().expect("missing tools must fail");
+            assert_eq!(err.status, "tool_failed");
+            assert_eq!(err.phase, "capture-tool");
+            assert!(
+                err.detail.contains("explicit") && err.detail.contains("setup"),
+                "{}",
+                err.detail
+            );
+            for flag in expected_missing {
+                assert!(err.detail.contains(flag), "{flag}: {}", err.detail);
+            }
+        }
+
+        let complete = VerifyArgs {
+            capture: Some(PathBuf::from("/tool/capture")),
+            sysroot: Some(PathBuf::from("/tool/sysroot")),
+            lean: Some(PathBuf::from("/tool/lean")),
+            ..base
+        };
+        let selected = select_tools(&complete)
+            .unwrap_or_else(|e| panic!("all explicit paths must succeed: {}", e.detail));
+        assert_eq!(selected.capture, PathBuf::from("/tool/capture"));
+        assert_eq!(selected.sysroot, Some(PathBuf::from("/tool/sysroot")));
+        assert_eq!(selected.lean, Some(PathBuf::from("/tool/lean")));
     }
 }
