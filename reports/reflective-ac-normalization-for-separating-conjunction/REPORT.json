@@ -1,0 +1,109 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "verification/separation-logic",
+    "verification/proof-by-reflection",
+    "verification/ac-normalization",
+    "pl/program-logics"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Using reflection to build efficient and certified decision procedures",
+      "identity": {
+        "doi": "10.1007/BFb0014565"
+      }
+    },
+    {
+      "name": "Proving Equalities in a Commutative Ring Done Right in Coq",
+      "identity": {
+        "doi": "10.1007/11541868_7"
+      }
+    },
+    {
+      "name": "Tactics for Reasoning Modulo AC in Coq",
+      "identity": {
+        "doi": "10.1007/978-3-642-25379-9_14"
+      }
+    },
+    {
+      "name": "Mostly-automated verification of low-level programs in computational separation logic",
+      "identity": {
+        "doi": "10.1145/1993498.1993526"
+      }
+    },
+    {
+      "name": "Verified Software Toolchain",
+      "identity": {
+        "doi": "10.1007/978-3-642-19718-5_1"
+      }
+    },
+    {
+      "name": "Certified Programming with Dependent Types",
+      "identity": {
+        "isbn": "978-0-262-02665-9"
+      }
+    },
+    {
+      "name": "Program Logics for Certified Compilers",
+      "identity": {
+        "isbn": "978-1-107-04801-0"
+      }
+    },
+    {
+      "name": "Compositional Computational Reflection",
+      "identity": {
+        "doi": "10.1007/978-3-319-08970-6_24"
+      }
+    },
+    {
+      "name": "Interactive proofs in higher-order concurrent separation logic",
+      "identity": {
+        "doi": "10.1145/3009837.3009855"
+      }
+    },
+    {
+      "name": "MoSeL: a general, extensible modal framework for interactive proofs in separation logic",
+      "identity": {
+        "doi": "10.1145/3236772"
+      }
+    },
+    {
+      "name": "Separation Logic for Sequential Programs (Functional Pearl)",
+      "identity": {
+        "doi": "10.1145/3408998"
+      }
+    },
+    {
+      "name": "Agda standard library",
+      "identity": {
+        "repository": "agda/agda-stdlib",
+        "version": "v2.1",
+        "revision": "97bc55e47367c562b3032bf104f2a00b19716f88"
+      }
+    },
+    {
+      "name": "Mathlib4",
+      "identity": {
+        "repository": "leanprover-community/mathlib4",
+        "revision": "4dbecbe2ebe515d6bfb36d0685092eed09f9d1fd"
+      }
+    },
+    {
+      "name": "Verified Software Toolchain (VST) Coq repository",
+      "identity": {
+        "repository": "PrincetonUniversity/VST",
+        "revision": "d50ac1969f9f6586621895eb043ccf08a165f731"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

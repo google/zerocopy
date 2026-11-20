@@ -1,0 +1,887 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.SepAC.AffineEntails": [],
+    "Toy.SepAC.Bag": [],
+    "Toy.SepAC.Bag.casesOn": [],
+    "Toy.SepAC.Bag.count": [],
+    "Toy.SepAC.Bag.ctorIdx": [],
+    "Toy.SepAC.Bag.emp": [],
+    "Toy.SepAC.Bag.emp.eq_1": [],
+    "Toy.SepAC.Bag.ext": [
+      "Quot.sound"
+    ],
+    "Toy.SepAC.Bag.ext_iff": [
+      "Quot.sound"
+    ],
+    "Toy.SepAC.Bag.finite": [],
+    "Toy.SepAC.Bag.mk": [],
+    "Toy.SepAC.Bag.mk.congr_simp": [],
+    "Toy.SepAC.Bag.mk.inj": [],
+    "Toy.SepAC.Bag.mk.injEq": [
+      "propext"
+    ],
+    "Toy.SepAC.Bag.mk.noConfusion": [],
+    "Toy.SepAC.Bag.mk.sizeOf_spec": [],
+    "Toy.SepAC.Bag.noConfusion": [],
+    "Toy.SepAC.Bag.noConfusionType": [],
+    "Toy.SepAC.Bag.rec": [],
+    "Toy.SepAC.Bag.recOn": [],
+    "Toy.SepAC.Bag.sep": [
+      "propext"
+    ],
+    "Toy.SepAC.Bag.sep.eq_1": [
+      "propext"
+    ],
+    "Toy.SepAC.Bag.single": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.Bag.single.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.Bientails": [],
+    "Toy.SepAC.Bientails.eq_1": [],
+    "Toy.SepAC.CellModel": [],
+    "Toy.SepAC.CellModel.casesOn": [],
+    "Toy.SepAC.CellModel.conflict": [],
+    "Toy.SepAC.CellModel.conflict.elim": [],
+    "Toy.SepAC.CellModel.conflict.sizeOf_spec": [],
+    "Toy.SepAC.CellModel.ctorElim": [],
+    "Toy.SepAC.CellModel.ctorElimType": [],
+    "Toy.SepAC.CellModel.ctorIdx": [],
+    "Toy.SepAC.CellModel.empty": [],
+    "Toy.SepAC.CellModel.empty.elim": [],
+    "Toy.SepAC.CellModel.empty.sizeOf_spec": [],
+    "Toy.SepAC.CellModel.entails": [
+      "propext"
+    ],
+    "Toy.SepAC.CellModel.entails.match_1": [
+      "propext"
+    ],
+    "Toy.SepAC.CellModel.noConfusion": [],
+    "Toy.SepAC.CellModel.noConfusionType": [],
+    "Toy.SepAC.CellModel.ofNat": [],
+    "Toy.SepAC.CellModel.ofNat_ctorIdx": [],
+    "Toy.SepAC.CellModel.owned": [],
+    "Toy.SepAC.CellModel.owned.elim": [],
+    "Toy.SepAC.CellModel.owned.sizeOf_spec": [],
+    "Toy.SepAC.CellModel.rec": [],
+    "Toy.SepAC.CellModel.recOn": [],
+    "Toy.SepAC.CellModel.sep": [
+      "propext"
+    ],
+    "Toy.SepAC.CellModel.sep.eq_1": [
+      "propext"
+    ],
+    "Toy.SepAC.CellModel.sep.eq_2": [
+      "propext"
+    ],
+    "Toy.SepAC.CellModel.sep.eq_3": [
+      "propext"
+    ],
+    "Toy.SepAC.CellModel.sep.eq_4": [
+      "propext"
+    ],
+    "Toy.SepAC.CellModel.sep.eq_5": [
+      "propext"
+    ],
+    "Toy.SepAC.CellModel.sep.match_1": [
+      "propext"
+    ],
+    "Toy.SepAC.EntailsRefl": [],
+    "Toy.SepAC.EntailsTrans": [],
+    "Toy.SepAC.FiniteSupport": [],
+    "Toy.SepAC.IdemElem": [],
+    "Toy.SepAC.IdemElem.eq_1": [],
+    "Toy.SepAC.LeftUnit": [],
+    "Toy.SepAC.LeftUnitBientails": [],
+    "Toy.SepAC.NonAssocCarrier": [],
+    "Toy.SepAC.NonAssocCarrier.a": [],
+    "Toy.SepAC.NonAssocCarrier.a.elim": [],
+    "Toy.SepAC.NonAssocCarrier.a.sizeOf_spec": [],
+    "Toy.SepAC.NonAssocCarrier.b": [],
+    "Toy.SepAC.NonAssocCarrier.b.elim": [],
+    "Toy.SepAC.NonAssocCarrier.b.sizeOf_spec": [],
+    "Toy.SepAC.NonAssocCarrier.casesOn": [],
+    "Toy.SepAC.NonAssocCarrier.ctorElim": [],
+    "Toy.SepAC.NonAssocCarrier.ctorElimType": [],
+    "Toy.SepAC.NonAssocCarrier.ctorIdx": [],
+    "Toy.SepAC.NonAssocCarrier.emp": [],
+    "Toy.SepAC.NonAssocCarrier.emp.elim": [],
+    "Toy.SepAC.NonAssocCarrier.emp.sizeOf_spec": [],
+    "Toy.SepAC.NonAssocCarrier.noConfusion": [],
+    "Toy.SepAC.NonAssocCarrier.noConfusionType": [],
+    "Toy.SepAC.NonAssocCarrier.ofNat": [],
+    "Toy.SepAC.NonAssocCarrier.ofNat_ctorIdx": [],
+    "Toy.SepAC.NonAssocCarrier.op": [],
+    "Toy.SepAC.NonAssocCarrier.op.match_1": [],
+    "Toy.SepAC.NonAssocCarrier.rec": [],
+    "Toy.SepAC.NonAssocCarrier.recOn": [],
+    "Toy.SepAC.RightUnit": [],
+    "Toy.SepAC.RightUnitBientails": [],
+    "Toy.SepAC.SepAssoc": [],
+    "Toy.SepAC.SepAssocBientails": [],
+    "Toy.SepAC.SepComm": [],
+    "Toy.SepAC.SepCommBientails": [],
+    "Toy.SepAC.SepIdem": [],
+    "Toy.SepAC.SepMonoLeft": [],
+    "Toy.SepAC.SepMonoRight": [],
+    "Toy.SepAC.TaggedNat": [],
+    "Toy.SepAC.Tree": [],
+    "Toy.SepAC.Tree.atom": [],
+    "Toy.SepAC.Tree.atom.elim": [],
+    "Toy.SepAC.Tree.atom.inj": [],
+    "Toy.SepAC.Tree.atom.injEq": [
+      "propext"
+    ],
+    "Toy.SepAC.Tree.atom.noConfusion": [],
+    "Toy.SepAC.Tree.atom.sizeOf_spec": [],
+    "Toy.SepAC.Tree.atomCount": [],
+    "Toy.SepAC.Tree.atomCount.eq_1": [],
+    "Toy.SepAC.Tree.atomCount.eq_2": [],
+    "Toy.SepAC.Tree.atomCount.eq_3": [],
+    "Toy.SepAC.Tree.atomCount.eq_def": [],
+    "Toy.SepAC.Tree.atoms": [],
+    "Toy.SepAC.Tree.atoms.eq_1": [],
+    "Toy.SepAC.Tree.atoms.eq_2": [],
+    "Toy.SepAC.Tree.atoms.eq_3": [],
+    "Toy.SepAC.Tree.atoms.eq_def": [],
+    "Toy.SepAC.Tree.atomsAcc": [],
+    "Toy.SepAC.Tree.atomsAcc.eq_1": [],
+    "Toy.SepAC.Tree.atomsAcc.eq_2": [],
+    "Toy.SepAC.Tree.atomsAcc.eq_3": [],
+    "Toy.SepAC.Tree.atomsAcc.eq_def": [],
+    "Toy.SepAC.Tree.atomsAcc.match_1": [],
+    "Toy.SepAC.Tree.atomsFast": [],
+    "Toy.SepAC.Tree.below": [],
+    "Toy.SepAC.Tree.brecOn": [],
+    "Toy.SepAC.Tree.brecOn.eq": [],
+    "Toy.SepAC.Tree.brecOn.go": [],
+    "Toy.SepAC.Tree.casesOn": [],
+    "Toy.SepAC.Tree.ctorElim": [],
+    "Toy.SepAC.Tree.ctorElimType": [],
+    "Toy.SepAC.Tree.ctorIdx": [],
+    "Toy.SepAC.Tree.denote": [],
+    "Toy.SepAC.Tree.denote.eq_1": [],
+    "Toy.SepAC.Tree.denote.eq_2": [],
+    "Toy.SepAC.Tree.denote.eq_3": [],
+    "Toy.SepAC.Tree.denote.eq_def": [],
+    "Toy.SepAC.Tree.noConfusion": [],
+    "Toy.SepAC.Tree.noConfusionType": [],
+    "Toy.SepAC.Tree.node": [],
+    "Toy.SepAC.Tree.node.elim": [],
+    "Toy.SepAC.Tree.node.inj": [],
+    "Toy.SepAC.Tree.node.injEq": [
+      "propext"
+    ],
+    "Toy.SepAC.Tree.node.noConfusion": [],
+    "Toy.SepAC.Tree.node.sizeOf_spec": [],
+    "Toy.SepAC.Tree.rec": [],
+    "Toy.SepAC.Tree.recOn": [],
+    "Toy.SepAC.Tree.size": [],
+    "Toy.SepAC.Tree.size.eq_def": [],
+    "Toy.SepAC.Tree.size.match_1": [],
+    "Toy.SepAC.Tree.unit": [],
+    "Toy.SepAC.Tree.unit.elim": [],
+    "Toy.SepAC.Tree.unit.sizeOf_spec": [],
+    "Toy.SepAC.Tree.unitCount": [],
+    "Toy.SepAC.Tree.unitCount.eq_1": [],
+    "Toy.SepAC.Tree.unitCount.eq_2": [],
+    "Toy.SepAC.Tree.unitCount.eq_3": [],
+    "Toy.SepAC.Tree.unitCount.eq_def": [],
+    "Toy.SepAC.Tree.unitFree": [],
+    "Toy.SepAC.Tree.unitFree.eq_1": [],
+    "Toy.SepAC.Tree.unitFree.eq_2": [],
+    "Toy.SepAC.Tree.unitFree.eq_3": [],
+    "Toy.SepAC.Tree.unitFree.eq_def": [],
+    "Toy.SepAC.Tree.unitFree_iff_unitCount_eq_zero": [
+      "propext"
+    ],
+    "Toy.SepAC.TwoCellModel": [],
+    "Toy.SepAC.TwoCellModel.both": [],
+    "Toy.SepAC.TwoCellModel.both.elim": [],
+    "Toy.SepAC.TwoCellModel.both.sizeOf_spec": [],
+    "Toy.SepAC.TwoCellModel.casesOn": [],
+    "Toy.SepAC.TwoCellModel.cellA": [],
+    "Toy.SepAC.TwoCellModel.cellA.elim": [],
+    "Toy.SepAC.TwoCellModel.cellA.sizeOf_spec": [],
+    "Toy.SepAC.TwoCellModel.cellB": [],
+    "Toy.SepAC.TwoCellModel.cellB.elim": [],
+    "Toy.SepAC.TwoCellModel.cellB.sizeOf_spec": [],
+    "Toy.SepAC.TwoCellModel.conflict": [],
+    "Toy.SepAC.TwoCellModel.conflict.elim": [],
+    "Toy.SepAC.TwoCellModel.conflict.sizeOf_spec": [],
+    "Toy.SepAC.TwoCellModel.ctorElim": [],
+    "Toy.SepAC.TwoCellModel.ctorElimType": [],
+    "Toy.SepAC.TwoCellModel.ctorIdx": [],
+    "Toy.SepAC.TwoCellModel.empty": [],
+    "Toy.SepAC.TwoCellModel.empty.elim": [],
+    "Toy.SepAC.TwoCellModel.empty.sizeOf_spec": [],
+    "Toy.SepAC.TwoCellModel.entails": [
+      "propext"
+    ],
+    "Toy.SepAC.TwoCellModel.entailsBool": [
+      "propext"
+    ],
+    "Toy.SepAC.TwoCellModel.entailsBool.match_1": [
+      "propext"
+    ],
+    "Toy.SepAC.TwoCellModel.noConfusion": [],
+    "Toy.SepAC.TwoCellModel.noConfusionType": [],
+    "Toy.SepAC.TwoCellModel.ofNat": [],
+    "Toy.SepAC.TwoCellModel.ofNat_ctorIdx": [],
+    "Toy.SepAC.TwoCellModel.rec": [],
+    "Toy.SepAC.TwoCellModel.recOn": [],
+    "Toy.SepAC.TwoCellModel.sep": [
+      "propext"
+    ],
+    "Toy.SepAC.TwoCellModel.sep.match_1": [
+      "propext"
+    ],
+    "Toy.SepAC.ac_denote_eq_of_unitCount_eq_of_isPerm": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.ac_denote_eq_of_unitCount_eq_of_isPerm_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.ac_denote_eq_of_unitCount_eq_of_isPerm_iff.match_1_1": [],
+    "Toy.SepAC.ac_denote_eq_of_unitCount_eq_of_isPerm_nonvacuous": [],
+    "Toy.SepAC.ac_denote_eq_of_unitFree_of_isPerm": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.ac_denote_eq_of_unitFree_of_isPerm_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.ac_denote_eq_of_unitFree_of_isPerm_iff.match_1_1": [],
+    "Toy.SepAC.ac_denote_eq_of_unitFree_of_isPerm_nonvacuous": [],
+    "Toy.SepAC.ac_laws_of_unitCount_denote_eq_of_isPerm": [
+      "propext"
+    ],
+    "Toy.SepAC.ac_laws_of_unitFree_denote_eq_of_isPerm": [],
+    "Toy.SepAC.acu_denote_eq_of_isPerm": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.acu_denote_eq_of_isPerm_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.acu_denote_eq_of_isPerm_iff.match_1_1": [],
+    "Toy.SepAC.acu_denote_eq_of_isPerm_nonvacuous": [
+      "propext"
+    ],
+    "Toy.SepAC.acu_entails_of_cancelAtoms_nonvacuous": [
+      "propext"
+    ],
+    "Toy.SepAC.acu_entails_of_cancelAtoms_of_sepMonoRight": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.acu_entails_of_common_perm_nonvacuous": [
+      "propext"
+    ],
+    "Toy.SepAC.acu_entails_of_common_perm_of_sepMonoRight": [],
+    "Toy.SepAC.acu_laws_of_denote_eq_of_isPerm": [],
+    "Toy.SepAC.affineCellEntails": [
+      "propext"
+    ],
+    "Toy.SepAC.affineCellEntails.eq_1": [
+      "propext"
+    ],
+    "Toy.SepAC.affineCellEntails.eq_2": [
+      "propext"
+    ],
+    "Toy.SepAC.affineCellEntails.eq_3": [
+      "propext"
+    ],
+    "Toy.SepAC.affineCellEntails.eq_4": [
+      "propext"
+    ],
+    "Toy.SepAC.affineCellEntails.match_1": [
+      "propext"
+    ],
+    "Toy.SepAC.affineCellEntails_neg_example": [
+      "propext"
+    ],
+    "Toy.SepAC.affineCellEntails_pos_example": [
+      "propext"
+    ],
+    "Toy.SepAC.affineCellEntails_residual_holds": [
+      "propext"
+    ],
+    "Toy.SepAC.assoc_units_of_denote_eq_denoteAtoms": [],
+    "Toy.SepAC.atMostTwo_comm_unital_sepAssoc": [],
+    "Toy.SepAC.atomCount_le_size": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.atomCount_neg_example": [],
+    "Toy.SepAC.atomCount_pos_example": [],
+    "Toy.SepAC.atomsAcc_eq_atoms_append": [
+      "propext"
+    ],
+    "Toy.SepAC.atomsAcc_neg_example": [],
+    "Toy.SepAC.atomsAcc_pos_example": [],
+    "Toy.SepAC.atomsFast_eq_atoms": [
+      "propext"
+    ],
+    "Toy.SepAC.atomsFast_neg_example": [],
+    "Toy.SepAC.atomsFast_pos_example": [],
+    "Toy.SepAC.atoms_length_eq_atomCount": [
+      "propext"
+    ],
+    "Toy.SepAC.atoms_neg_example": [],
+    "Toy.SepAC.atoms_pos_example": [],
+    "Toy.SepAC.bag_aliased_env_denote_eq_not_isPerm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.bag_count_denote": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.bag_dupAtomTree_denote_ne_singleAtomTree": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.bag_listEnv_oob_denote_eq_not_isPerm": [
+      "propext"
+    ],
+    "Toy.SepAC.bag_neg_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.bag_not_sepIdem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.bag_pos_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.bag_rightUnit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.bag_sepAssoc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.bag_sepComm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.bag_single_zero_not_idemElem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.bag_tight_denote_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.bientails_acu_entails_of_cancelAtoms_nonvacuous": [
+      "propext"
+    ],
+    "Toy.SepAC.bientails_acu_entails_of_cancelAtoms_of_trans_sepMonoRight": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.bientails_acu_entails_of_common_perm_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.bientails_acu_entails_of_common_perm_of_trans_sepMonoRight": [],
+    "Toy.SepAC.bientails_neg_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.bientails_pos_example": [],
+    "Toy.SepAC.boolAndFalse_not_leftUnit": [],
+    "Toy.SepAC.boolAndFalse_not_rightUnit": [],
+    "Toy.SepAC.boolAndFalse_not_rightUnitBientails_eq": [],
+    "Toy.SepAC.boolAndFalse_tight_bientails_cancelAtoms_rightUnit": [],
+    "Toy.SepAC.boolAndFalse_tight_bientails_commonPerm_rightUnit": [],
+    "Toy.SepAC.boolAndFalse_tight_cancelAtoms_rightUnit": [],
+    "Toy.SepAC.boolAndFalse_tight_commonPerm_rightUnit": [],
+    "Toy.SepAC.boolAndFalse_tight_isPerm_rightUnit": [],
+    "Toy.SepAC.boolAndFalse_tight_unitCount_eq": [],
+    "Toy.SepAC.boolAndFalse_tight_unitCount_perm": [],
+    "Toy.SepAC.boolAndFalse_tight_unitFree_left": [],
+    "Toy.SepAC.boolAndFalse_tight_unitFree_perm": [],
+    "Toy.SepAC.boolAndFalse_tight_unitFree_right": [],
+    "Toy.SepAC.boolAndTrue_rightUnit": [],
+    "Toy.SepAC.boolAndTrue_tight_isPerm_perm": [],
+    "Toy.SepAC.boolAnd_affine_cancelAtoms_converse_fails": [
+      "propext"
+    ],
+    "Toy.SepAC.boolAnd_sepAssoc": [],
+    "Toy.SepAC.boolAnd_sepComm": [],
+    "Toy.SepAC.boolImp": [],
+    "Toy.SepAC.boolImp.eq_1": [],
+    "Toy.SepAC.boolImp_neg_example": [],
+    "Toy.SepAC.boolImp_pos_example": [],
+    "Toy.SepAC.boolOr_linear_cancelAtoms_converse_fails": [
+      "propext"
+    ],
+    "Toy.SepAC.boolOr_rightUnit": [],
+    "Toy.SepAC.boolOr_sepAssoc": [],
+    "Toy.SepAC.boolOr_sepComm": [],
+    "Toy.SepAC.boolOr_sepIdem": [],
+    "Toy.SepAC.boolOr_setCheck_incomplete": [],
+    "Toy.SepAC.bool_comm_unital_sepAssoc": [
+      "propext"
+    ],
+    "Toy.SepAC.cancelAtoms": [],
+    "Toy.SepAC.cancelAtoms.eq_1": [],
+    "Toy.SepAC.cancelAtoms.eq_2": [],
+    "Toy.SepAC.cancelAtoms.eq_def": [],
+    "Toy.SepAC.cancelAtoms.match_1": [],
+    "Toy.SepAC.cancelAtoms.match_3": [],
+    "Toy.SepAC.cancelAtoms_count": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.cancelAtoms_count.match_1_4": [],
+    "Toy.SepAC.cancelAtoms_count.match_1_8": [],
+    "Toy.SepAC.cancelAtoms_disjoint": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.cancelAtoms_disjoint.match_1_1": [],
+    "Toy.SepAC.cancelAtoms_neg_example": [],
+    "Toy.SepAC.cancelAtoms_pos_example": [],
+    "Toy.SepAC.cancelAtoms_spec": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.capOneEntails": [],
+    "Toy.SepAC.capOneScore": [],
+    "Toy.SepAC.capOneScore.match_1": [],
+    "Toy.SepAC.capOne_not_sepMonoRight": [],
+    "Toy.SepAC.capOne_tight_bientails_cancelAtoms_sepMonoRight": [],
+    "Toy.SepAC.capOne_tight_bientails_commonPerm_sepMonoRight": [],
+    "Toy.SepAC.capOne_tight_commonPerm_sepMonoRight": [],
+    "Toy.SepAC.cellModel_affine_cancelAtoms_converse_fails": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.cellModel_cancelAtoms_converse_fails": [
+      "propext"
+    ],
+    "Toy.SepAC.cellModel_conflict_idemElem": [
+      "propext"
+    ],
+    "Toy.SepAC.cellModel_conflict_idemElem_incomplete": [
+      "propext"
+    ],
+    "Toy.SepAC.cellModel_entailsRefl": [
+      "propext"
+    ],
+    "Toy.SepAC.cellModel_entailsTrans": [
+      "propext"
+    ],
+    "Toy.SepAC.cellModel_incomplete_without_sepIdem": [
+      "propext"
+    ],
+    "Toy.SepAC.cellModel_neg_example": [
+      "propext"
+    ],
+    "Toy.SepAC.cellModel_not_affineEntails": [
+      "propext"
+    ],
+    "Toy.SepAC.cellModel_not_sepIdem": [
+      "propext"
+    ],
+    "Toy.SepAC.cellModel_owned_not_idemElem": [
+      "propext"
+    ],
+    "Toy.SepAC.cellModel_pos_example": [
+      "propext"
+    ],
+    "Toy.SepAC.cellModel_rightUnit": [
+      "propext"
+    ],
+    "Toy.SepAC.cellModel_sepAssoc": [
+      "propext"
+    ],
+    "Toy.SepAC.cellModel_sepComm": [
+      "propext"
+    ],
+    "Toy.SepAC.cellModel_sepMonoRight": [
+      "propext"
+    ],
+    "Toy.SepAC.checkPermSort": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.checkPermSort_eq_isPerm_and_size_bounds": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.checkPermSort_neg_example": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.checkPermSort_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.checkPermSort_pos_example": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.count_shift_succ": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.count_shift_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.decideTreePerm": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.denoteAtoms": [],
+    "Toy.SepAC.denoteAtoms.eq_1": [],
+    "Toy.SepAC.denoteAtoms_append": [],
+    "Toy.SepAC.denoteAtoms_neg_example": [],
+    "Toy.SepAC.denoteAtoms_perm": [],
+    "Toy.SepAC.denoteAtoms_pos_example": [],
+    "Toy.SepAC.denoteNonEmpty": [],
+    "Toy.SepAC.denoteNonEmpty.match_1": [],
+    "Toy.SepAC.denoteNonEmpty_neg_example": [],
+    "Toy.SepAC.denoteNonEmpty_pos_example": [],
+    "Toy.SepAC.denote_eq_and_isPerm_false_of_idemElem": [],
+    "Toy.SepAC.denote_eq_and_isPerm_false_of_sepIdem": [],
+    "Toy.SepAC.denote_eq_denoteAtoms_iff_assoc_units": [],
+    "Toy.SepAC.denote_eq_denoteAtoms_iff_assoc_units.match_1_1": [],
+    "Toy.SepAC.denote_eq_denoteAtoms_of_assoc_units": [],
+    "Toy.SepAC.denote_eq_denoteAtoms_of_assoc_units_nonvacuous": [
+      "propext"
+    ],
+    "Toy.SepAC.denote_neg_example": [],
+    "Toy.SepAC.denote_pos_example": [],
+    "Toy.SepAC.denote_shift": [
+      "propext"
+    ],
+    "Toy.SepAC.dupAtomTree": [],
+    "Toy.SepAC.entailsRefl_of_trans_of_rightUnitBientails": [],
+    "Toy.SepAC.finiteSupport_zero": [],
+    "Toy.SepAC.idempotent_bool_acu_incomplete": [],
+    "Toy.SepAC.instDecidableEqCellModel": [],
+    "Toy.SepAC.instDecidableEqNonAssocCarrier": [],
+    "Toy.SepAC.instDecidableEqTree": [],
+    "Toy.SepAC.instDecidableEqTree.decEq": [],
+    "Toy.SepAC.instDecidableEqTree.decEq.match_1": [],
+    "Toy.SepAC.instDecidableEqTwoCellModel": [],
+    "Toy.SepAC.instReprCellModel": [],
+    "Toy.SepAC.instReprCellModel.repr": [],
+    "Toy.SepAC.instReprCellModel.repr.match_1": [],
+    "Toy.SepAC.instReprNonAssocCarrier": [],
+    "Toy.SepAC.instReprNonAssocCarrier.repr": [],
+    "Toy.SepAC.instReprNonAssocCarrier.repr.match_1": [],
+    "Toy.SepAC.instReprTree": [],
+    "Toy.SepAC.instReprTree.repr": [],
+    "Toy.SepAC.instReprTree.repr.match_1": [],
+    "Toy.SepAC.instReprTwoCellModel": [],
+    "Toy.SepAC.instReprTwoCellModel.repr": [],
+    "Toy.SepAC.instReprTwoCellModel.repr.match_1": [],
+    "Toy.SepAC.isPerm_iff_bag_denote_eq": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.isPerm_iff_forall_acu_denote_eq": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.isPerm_of_bag_denote_eq": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.isPerm_of_bag_denote_eq_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.leftProj": [],
+    "Toy.SepAC.leftProj_neg_example": [],
+    "Toy.SepAC.leftProj_not_leftUnit": [],
+    "Toy.SepAC.leftProj_pos_example": [],
+    "Toy.SepAC.leftProj_rightUnit": [],
+    "Toy.SepAC.leftProj_tight_flattening_leftUnit": [],
+    "Toy.SepAC.leftUnitBientails_neg_example": [],
+    "Toy.SepAC.leftUnitBientails_of_trans_of_commBientails_of_rightUnitBientails": [],
+    "Toy.SepAC.leftUnitBientails_pos_example": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.leftUnit_of_comm_of_rightUnit": [],
+    "Toy.SepAC.listAppend_leftUnit": [],
+    "Toy.SepAC.listAppend_not_commBientails_eq": [],
+    "Toy.SepAC.listAppend_not_sepComm": [],
+    "Toy.SepAC.listAppend_rightUnit": [
+      "propext"
+    ],
+    "Toy.SepAC.listAppend_sepAssoc": [
+      "propext"
+    ],
+    "Toy.SepAC.listAppend_tight_bientails_cancelAtoms_sepComm": [
+      "propext"
+    ],
+    "Toy.SepAC.listAppend_tight_bientails_commonPerm_sepComm": [
+      "propext"
+    ],
+    "Toy.SepAC.listAppend_tight_cancelAtoms_sepComm": [
+      "propext"
+    ],
+    "Toy.SepAC.listAppend_tight_commonPerm_sepComm": [
+      "propext"
+    ],
+    "Toy.SepAC.listAppend_tight_isPerm_sepComm": [
+      "propext"
+    ],
+    "Toy.SepAC.listAppend_tight_unitCount_sepComm": [
+      "propext"
+    ],
+    "Toy.SepAC.listAppend_tight_unitFree_sepComm": [
+      "propext"
+    ],
+    "Toy.SepAC.listEnv": [
+      "propext"
+    ],
+    "Toy.SepAC.listEnv_neg_example": [
+      "propext"
+    ],
+    "Toy.SepAC.listEnv_pos_example": [
+      "propext"
+    ],
+    "Toy.SepAC.mergeSort_beq_eq_isPerm": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.natAdd_le_sepMonoLeft": [],
+    "Toy.SepAC.natAdd_le_sepMonoRight": [],
+    "Toy.SepAC.natAdd_not_sepIdem": [
+      "propext"
+    ],
+    "Toy.SepAC.natAdd_sepAssoc": [],
+    "Toy.SepAC.natAdd_sepComm": [],
+    "Toy.SepAC.natAdd_tight_bientails_cancelAtoms_residual": [],
+    "Toy.SepAC.natAdd_tight_bientails_commonPerm_leftPerm": [
+      "propext"
+    ],
+    "Toy.SepAC.natAdd_tight_bientails_commonPerm_residual": [],
+    "Toy.SepAC.natAdd_tight_bientails_commonPerm_rightPerm": [
+      "propext"
+    ],
+    "Toy.SepAC.natAdd_tight_cancelAtoms_residual": [],
+    "Toy.SepAC.natAdd_tight_commonPerm_leftPerm": [
+      "propext"
+    ],
+    "Toy.SepAC.natAdd_tight_commonPerm_residual": [],
+    "Toy.SepAC.natAdd_tight_commonPerm_rightPerm": [
+      "propext"
+    ],
+    "Toy.SepAC.natAdd_zero_idemElem": [],
+    "Toy.SepAC.natLe_entailsRefl": [],
+    "Toy.SepAC.natLe_entailsTrans": [],
+    "Toy.SepAC.natLt_not_entailsRefl": [],
+    "Toy.SepAC.nonAssocOp_neg_example": [],
+    "Toy.SepAC.nonAssocOp_not_sepAssoc": [],
+    "Toy.SepAC.nonAssocOp_pos_example": [],
+    "Toy.SepAC.nonAssocOp_rightUnit": [],
+    "Toy.SepAC.nonAssocOp_sepComm": [],
+    "Toy.SepAC.nonAssoc_not_assocBientails_eq": [],
+    "Toy.SepAC.nonAssoc_tight_bientails_cancelAtoms_sepAssoc": [],
+    "Toy.SepAC.nonAssoc_tight_bientails_commonPerm_sepAssoc": [],
+    "Toy.SepAC.nonAssoc_tight_cancelAtoms_sepAssoc": [],
+    "Toy.SepAC.nonAssoc_tight_commonPerm_sepAssoc": [],
+    "Toy.SepAC.nonAssoc_tight_flattening_sepAssoc": [],
+    "Toy.SepAC.nonAssoc_tight_isPerm_sepAssoc": [],
+    "Toy.SepAC.nonAssoc_tight_unitCount_sepAssoc": [],
+    "Toy.SepAC.nonAssoc_tight_unitFree_sepAssoc": [],
+    "Toy.SepAC.not_finiteSupport_const_one": [],
+    "Toy.SepAC.optBagSep": [
+      "propext"
+    ],
+    "Toy.SepAC.optBagSep.eq_1": [
+      "propext"
+    ],
+    "Toy.SepAC.optBagSep.eq_2": [
+      "propext"
+    ],
+    "Toy.SepAC.optBagSep.match_1": [
+      "propext"
+    ],
+    "Toy.SepAC.optBag_absorbing_but_complete": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.optBag_denote": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.parityBiasOp": [],
+    "Toy.SepAC.parityBiasOp_monoRight_and_not_monoLeft": [],
+    "Toy.SepAC.partial_cancellation_succeeds_where_cancelAtoms_fails": [
+      "propext"
+    ],
+    "Toy.SepAC.rightProj": [],
+    "Toy.SepAC.rightProj_leftUnit": [],
+    "Toy.SepAC.rightProj_neg_example": [],
+    "Toy.SepAC.rightProj_not_rightUnit": [],
+    "Toy.SepAC.rightProj_pos_example": [],
+    "Toy.SepAC.rightProj_tight_flattening_rightUnit": [],
+    "Toy.SepAC.rightUnit_of_comm_of_leftUnit": [],
+    "Toy.SepAC.sepMonoLeft_of_comm_of_monoRight": [],
+    "Toy.SepAC.sepMonoLeft_of_trans_of_commBientails_of_monoRight": [],
+    "Toy.SepAC.shiftEnv": [],
+    "Toy.SepAC.shiftEnv.match_1": [],
+    "Toy.SepAC.shiftTree": [],
+    "Toy.SepAC.shiftTree.eq_1": [],
+    "Toy.SepAC.shiftTree.eq_2": [],
+    "Toy.SepAC.shiftTree.eq_3": [],
+    "Toy.SepAC.shiftTree.eq_def": [],
+    "Toy.SepAC.shiftTree.match_1": [],
+    "Toy.SepAC.singleAtomTree": [],
+    "Toy.SepAC.stepByTwo_nonPreorder_satisfies_cancel_hypotheses": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.tagDistLeOne": [],
+    "Toy.SepAC.tagDistLeOne.eq_1": [],
+    "Toy.SepAC.tagDistLeOne_not_entailsTrans": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.tagDistLeOne_tight_bientails_cancelAtoms_trans": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.tagDistLeOne_tight_bientails_commonPerm_trans": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.taggedEmp": [],
+    "Toy.SepAC.taggedEmp.eq_1": [],
+    "Toy.SepAC.taggedSep": [],
+    "Toy.SepAC.taggedSep.eq_1": [],
+    "Toy.SepAC.taggedSep_assocBientails_valLe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.taggedSep_commBientails_valLe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.taggedSep_rightUnitBientails_valLe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.taggedValLe": [],
+    "Toy.SepAC.totalRelation_cancel_sound_without_laws": [],
+    "Toy.SepAC.treeSize_neg_example": [],
+    "Toy.SepAC.treeSize_pos_example": [],
+    "Toy.SepAC.twoCellModel_affineEntails": [
+      "propext"
+    ],
+    "Toy.SepAC.twoCellModel_affine_cancelAtoms_converse_fails": [
+      "propext"
+    ],
+    "Toy.SepAC.twoCellModel_conflict_distinct_atoms_incomplete": [
+      "propext"
+    ],
+    "Toy.SepAC.twoCellModel_entailsRefl": [
+      "propext"
+    ],
+    "Toy.SepAC.twoCellModel_entailsTrans": [
+      "propext"
+    ],
+    "Toy.SepAC.twoCellModel_entails_neg_example": [
+      "propext"
+    ],
+    "Toy.SepAC.twoCellModel_entails_pos_example": [
+      "propext"
+    ],
+    "Toy.SepAC.twoCellModel_neg_example": [
+      "propext"
+    ],
+    "Toy.SepAC.twoCellModel_not_sepIdem": [
+      "propext"
+    ],
+    "Toy.SepAC.twoCellModel_pos_example": [
+      "propext"
+    ],
+    "Toy.SepAC.twoCellModel_rightUnit": [
+      "propext"
+    ],
+    "Toy.SepAC.twoCellModel_sepAssoc": [
+      "propext"
+    ],
+    "Toy.SepAC.twoCellModel_sepComm": [
+      "propext"
+    ],
+    "Toy.SepAC.twoCellModel_sepMonoRight": [
+      "propext"
+    ],
+    "Toy.SepAC.unitCount_converse_hypothesis_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.unitCount_eq_and_isPerm_of_forall_ac_denote_eq": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SepAC.unitCount_eq_not_necessary_in_fixed_model": [],
+    "Toy.SepAC.unitCount_neg_example": [],
+    "Toy.SepAC.unitCount_pos_example": [],
+    "Toy.SepAC.unitFree_neg_example": [],
+    "Toy.SepAC.unitFree_pos_example": [],
+    "Toy.SepAC.unitFree_shift": [
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

@@ -54567,6 +54567,115 @@
         "compilers/secure-compilation"
       ]
     },
+    "reflective-ac-normalization-for-separating-conjunction": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/BFb0014565"
+          },
+          "name": "Using reflection to build efficient and certified decision procedures"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/11541868_7"
+          },
+          "name": "Proving Equalities in a Commutative Ring Done Right in Coq"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-25379-9_14"
+          },
+          "name": "Tactics for Reasoning Modulo AC in Coq"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1993498.1993526"
+          },
+          "name": "Mostly-automated verification of low-level programs in computational separation logic"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-19718-5_1"
+          },
+          "name": "Verified Software Toolchain"
+        },
+        {
+          "identity": {
+            "isbn": "978-0-262-02665-9"
+          },
+          "name": "Certified Programming with Dependent Types"
+        },
+        {
+          "identity": {
+            "isbn": "978-1-107-04801-0"
+          },
+          "name": "Program Logics for Certified Compilers"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-08970-6_24"
+          },
+          "name": "Compositional Computational Reflection"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3009837.3009855"
+          },
+          "name": "Interactive proofs in higher-order concurrent separation logic"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3236772"
+          },
+          "name": "MoSeL: a general, extensible modal framework for interactive proofs in separation logic"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3408998"
+          },
+          "name": "Separation Logic for Sequential Programs (Functional Pearl)"
+        },
+        {
+          "identity": {
+            "repository": "agda/agda-stdlib",
+            "revision": "97bc55e47367c562b3032bf104f2a00b19716f88",
+            "version": "v2.1"
+          },
+          "name": "Agda standard library"
+        },
+        {
+          "identity": {
+            "repository": "leanprover-community/mathlib4",
+            "revision": "4dbecbe2ebe515d6bfb36d0685092eed09f9d1fd"
+          },
+          "name": "Mathlib4"
+        },
+        {
+          "identity": {
+            "repository": "PrincetonUniversity/VST",
+            "revision": "d50ac1969f9f6586621895eb043ccf08a165f731"
+          },
+          "name": "Verified Software Toolchain (VST) Coq repository"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/separation-logic",
+        "verification/proof-by-reflection",
+        "verification/ac-normalization",
+        "pl/program-logics"
+      ]
+    },
     "regalloc2-symbolic-checker-stacking-and-quantitative-stack-bounds-2026": {
       "observed_at": "2026-10-30",
       "subjects": [

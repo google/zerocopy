@@ -1,0 +1,847 @@
+[
+  {
+    "id": "R1a-monoid-flattening-normal-form",
+    "lean": "Toy.SepAC.denote_eq_denoteAtoms_of_assoc_units",
+    "kind": "theorem",
+    "status": "proved",
+    "tier": "T0",
+    "tier_justification": "Standard reflective monoid-normalization lemma (Boutin 1997; Chlipala 2013 Chapter 15; core Lean `Lean.Data.AC.Context.eval_toList`; Braibant & Pous 2011; AeneasVerif/aeneas#1551 `Tree.denote_eq_foldr`), restated parametrically over unbundled `SepAssoc`, `LeftUnit`, and `RightUnit` without commutativity.",
+    "plain_claim": "For any binary operation `sep` and element `emp` satisfying `SepAssoc sep`, `LeftUnit sep emp`, and `RightUnit sep emp` (commutativity not assumed), every syntax tree `t` has the same denotation in environment `env` as the right-nested list fold `denoteAtoms sep emp env t.atoms`.",
+    "hypotheses": [
+      {
+        "name": "hAssoc : SepAssoc sep",
+        "purpose": "Distributes `denoteAtoms` across `l.atoms ++ r.atoms` at binary `Tree.node` constructors.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.nonAssoc_tight_flattening_sepAssoc"
+      },
+      {
+        "name": "hLeftUnit : LeftUnit sep emp",
+        "purpose": "Eliminates empty left subtrees (`Tree.unit` on the left of `Tree.node`, base case of `++` induction).",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.leftProj_tight_flattening_leftUnit"
+      },
+      {
+        "name": "hRightUnit : RightUnit sep emp",
+        "purpose": "Removes the trailing `emp` factor introduced by `foldr` at `Tree.atom` leaves (`sep (env i) emp = env i`).",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.rightProj_tight_flattening_rightUnit"
+      },
+      {
+        "name": "P : Type u (arbitrary universe)",
+        "purpose": "No decidability, finiteness, or commutativity of the carrier is assumed.",
+        "tightness": "harmless"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "List concatenation on `List Nat` with unit `[]` satisfies `SepAssoc`, `LeftUnit`, and `RightUnit` while violating `SepComm`.",
+    "nonvacuity_witness_lean": "Toy.SepAC.denote_eq_denoteAtoms_of_assoc_units_nonvacuous",
+    "non_claims": [
+      "This result concerns the denotation of a given syntax tree. It does not show that a reifier produces a tree whose denotation is the original goal.",
+      "Each unit law is tight only in the absence of `SepComm`; with `SepComm`, either unit law implies the other (`Toy.SepAC.leftUnit_of_comm_of_rightUnit`, `Toy.SepAC.rightUnit_of_comm_of_leftUnit`).",
+      "Does not reorder atoms: without `SepComm`, trees with distinct permutations of the same atoms can denote distinct elements (`Toy.SepAC.listAppend_tight_isPerm_sepComm`).",
+      "Treats `Tree.atom i` as opaque: if `env i` is itself a compound `sep` expression in the object logic, `Tree.atoms` does not recursively flatten inside `env i`."
+    ],
+    "prior_art": [
+      "Lean 4 core (`leanprover/lean4:v4.34.1`, commit `5045d0056413266e57c625dcd7c365b10e377c52`), `src/Init/Data/AC.lean`: `Lean.Data.AC.Context.eval_toList` (lines 330-335) flattens unit-free associative syntax trees using `Associative` alone, and `removeNeutrals` (lines 95-106) eliminates `LawfulIdentity`-flagged atoms.",
+      "Boutin, S., 'Using reflection to build efficient and certified decision procedures', TACS 1997, LNCS 1281, pp. 515-529, doi:10.1007/BFb0014565. Establishes proof by reflection in type theory.",
+      "Chlipala, A., Certified Programming with Dependent Types, MIT Press, 2013, ISBN 9780262026659, Chapter 15 ('Proof by Reflection', section 'A Monoid Expression Simplifier'). Flattens monoid expressions into lists using `assoc`, `identl`, and `identr` into a right-nested fold with trailing identity.",
+      "Braibant, T. & Pous, D., 'Tactics for Reasoning Modulo AC in Coq', CPP 2011, LNCS 7086, pp. 167-182, doi:10.1007/978-3-642-25379-9_14. Mechanizes associative-only and neutral-element reflection.",
+      "Repository `AeneasVerif/aeneas`, open unmerged PR #1551 ('Separation logic over the byte heap', base `cezar/sl-extraction`, head `cezar/seplogic`, pinned commit `1d8f9aa0121faca8ff113c1b9b742b333e3e1519`), `backends/lean/Aeneas/SepLogic/Tactic/Normalize.lean`, `Aeneas.SepLogic.SepAC.Tree.denote_eq_foldr` (lines 51-57): relates tree evaluation to a right-nested fold of looked-up atoms over concrete `IProp`."
+    ],
+    "design_question": "Which exact algebraic laws are consumed by flattening and `emp`-unit elimination into a right-nested list fold, prior to any commutative reordering?"
+  },
+  {
+    "id": "R1a-iff-monoid-flattening-characterization",
+    "lean": [
+      "Toy.SepAC.denote_eq_denoteAtoms_iff_assoc_units",
+      "Toy.SepAC.assoc_units_of_denote_eq_denoteAtoms"
+    ],
+    "kind": "characterization",
+    "status": "proved",
+    "tier": "T0",
+    "tier_justification": "Elementary equational adequacy pairing T0 monoid flattening (`denote_eq_denoteAtoms_of_assoc_units`) with the fully proved three-tree converse (`assoc_units_of_denote_eq_denoteAtoms`).",
+    "plain_claim": "For a fixed carrier `P`, binary operation `sep`, and element `emp`, flattening `t.denote sep emp env = denoteAtoms sep emp env t.atoms` holds for all environments `env` and syntax trees `t` if and only if `SepAssoc sep`, `LeftUnit sep emp`, and `RightUnit sep emp` all hold.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "List concatenation on `List Nat` with unit `[]` satisfies the right-hand side (`SepAssoc`, `LeftUnit`, `RightUnit`) while violating `SepComm`.",
+    "nonvacuity_witness_lean": "Toy.SepAC.denote_eq_denoteAtoms_of_assoc_units_nonvacuous",
+    "non_claims": [
+      "The necessity (`→`) direction requires universal quantification over all environments `env : Nat → P` and all syntax trees `t : Tree`; flattening can hold on a restricted subset of trees or environments without the algebraic laws holding globally.",
+      "Does not certify reification from object-logic expressions to `Tree`."
+    ],
+    "prior_art": [
+      "Chlipala, A., Certified Programming with Dependent Types, MIT Press, 2013, ISBN 9780262026659, Chapter 15 ('Proof by Reflection').",
+      "Lean 4 core (`leanprover/lean4:v4.34.1`, commit `5045d0056413266e57c625dcd7c365b10e377c52`), `src/Init/Data/AC.lean` (`Context.eval_toList`)."
+    ],
+    "design_question": "Are `SepAssoc`, `LeftUnit`, and `RightUnit` jointly necessary as well as sufficient for universal monoid-flattening soundness over `(sep, emp)`?"
+  },
+  {
+    "id": "R1b-acu-permutation-soundness",
+    "lean": "Toy.SepAC.acu_denote_eq_of_isPerm",
+    "kind": "theorem",
+    "status": "proved",
+    "tier": "T0",
+    "tier_justification": "Parametric restatement of the reflective ACU equality kernel (Boutin 1997; Braibant & Pous 2011; Agda stdlib `Algebra.Solver.CommutativeMonoid`; Lean 4 core `Lean.Data.AC.Context.eq_of_norm`; AeneasVerif/aeneas#1551 `SepAC.Tree.denote_eq`) with irredundant unbundled hypotheses (`LeftUnit` dropped via `Toy.SepAC.leftUnit_of_comm_of_rightUnit`).",
+    "plain_claim": "For any binary operation `sep` and element `emp` satisfying `SepAssoc sep`, `SepComm sep`, and `RightUnit sep emp`, if core Lean's boolean check `l.atoms.isPerm r.atoms = true` succeeds, then `l.denote sep emp env = r.denote sep emp env` in every environment `env : Nat → P` (including finite list-backed environments via `listEnv`).",
+    "hypotheses": [
+      {
+        "name": "hAssoc : SepAssoc sep",
+        "purpose": "Re-associates binary `Tree.node` spines and enables adjacent-element swaps inside right-nested folds.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.nonAssoc_tight_isPerm_sepAssoc"
+      },
+      {
+        "name": "hComm : SepComm sep",
+        "purpose": "Permutes atom order and derives `LeftUnit sep emp` from `RightUnit sep emp` (`Toy.SepAC.leftUnit_of_comm_of_rightUnit`).",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.listAppend_tight_isPerm_sepComm"
+      },
+      {
+        "name": "hRightUnit : RightUnit sep emp",
+        "purpose": "Makes `Tree.unit` denote a genuine identity of `sep` so erasing `Tree.unit` from `Tree.atoms` preserves denotation.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.boolAndFalse_tight_isPerm_rightUnit"
+      },
+      {
+        "name": "hPerm : l.atoms.isPerm r.atoms = true",
+        "purpose": "Decidable syntactic side condition ensuring `l` and `r` contain the same multiset of atom indices.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.boolAndTrue_tight_isPerm_perm"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "The 3-state disjoint single-cell heap assertion algebra `CellModel` satisfies `SepAssoc`, `SepComm`, and `RightUnit`, and distinct trees `((atom 0 ∗ unit) ∗ atom 1)` and `(atom 1 ∗ atom 0)` satisfy `l.atoms.isPerm r.atoms = true`.",
+    "nonvacuity_witness_lean": "Toy.SepAC.acu_denote_eq_of_isPerm_nonvacuous",
+    "non_claims": [
+      "Atoms are compared by index. Atoms that are equal but have distinct indices, or `sep`-expressions hidden inside an atom, are not identified. Merging such atoms is the reifier's job.",
+      "Not a statement about the cited prototype's assertion type. Applying it there requires the modeling bridge that its `sep`/`emp` satisfy associativity, commutativity and right unit as propositional equalities.",
+      "Does not certify reification (that the reified trees denote the original goal). It says nothing about the cost of the check (see R5) or of definitional unfolding against the goal.",
+      "Requires propositional equality (`=`) for the ACU laws; if `sep` is ACU only up to mutual entailment (`Bientails`), use `Toy.SepAC.bientails_acu_entails_of_common_perm_of_trans_sepMonoRight` instead, which additionally assumes `EntailsTrans entails` and `SepMonoRight sep entails`, takes a residual entailment as a hypothesis, and concludes the one-way entailment `entails (l.denote sep emp env) (r.denote sep emp env)`, not equality (for mutual entailment, apply it in both directions, e.g. with an `entails emp emp` residual when every atom cancels).",
+      "Soundness does not imply completeness: in models with pointwise-idempotent atoms, absorbing conflict elements, or aliased environments, `l.denote = r.denote` can hold while `l.atoms.isPerm r.atoms = false` (`Toy.SepAC.denote_eq_and_isPerm_false_of_idemElem`, `Toy.SepAC.cellModel_incomplete_without_sepIdem`, `Toy.SepAC.bag_aliased_env_denote_eq_not_isPerm`).",
+      "`RightUnit` is required only when trees may differ in their count of `Tree.unit` leaves; when `l.unitCount = r.unitCount` (in particular on `unitFree` trees), `RightUnit` can be dropped (`Toy.SepAC.ac_denote_eq_of_unitCount_eq_of_isPerm`)."
+    ],
+    "prior_art": [
+      "Lean 4 core (`leanprover/lean4:v4.34.1`, commit `5045d0056413266e57c625dcd7c365b10e377c52`), `src/Init/Data/AC.lean` (`Lean.Data.AC.Context.eq_of_norm`, line 342) and `src/Lean/Meta/Tactic/AC/Main.lean` (`ac_rfl` / `ac_nf`, building `Context.eq_of_norm ... (mkEqRefl Bool.true)` at line 128). The pinned prototype's `IProp` already registers `Std.Associative sep`, `Std.Commutative sep`, and `Std.LawfulIdentity sep emp` (`Lemmas.lean`, lines 105, 108, 138), so `ac_rfl` applies directly.",
+      "Braibant, T. & Pous, D., 'Tactics for Reasoning Modulo AC in Coq', CPP 2011, LNCS 7086, pp. 167-182, doi:10.1007/978-3-642-25379-9_14. Mechanizes reflexive AC decision procedures with neutral elements, associative-only operators, and user-defined setoid equivalences.",
+      "Agda standard library (`agda/agda-stdlib` v2.1, commit `97bc55e47367c562b3032bf104f2a00b19716f88`), `src/Algebra/Solver/CommutativeMonoid.agda`: reflective solver for commutative monoids with a unit constructor `id` and bag normal forms (`Vec ℕ n`) over a setoid.",
+      "Boutin, S., 'Using reflection to build efficient and certified decision procedures', TACS 1997, LNCS 1281, pp. 515-529, doi:10.1007/BFb0014565.",
+      "Gregoire, B. & Mahboubi, A., 'Proving Equalities in a Commutative Ring Done Right in Coq', TPHOLs 2005, LNCS 3603, pp. 98-113, doi:10.1007/11541868_7. Establishes reflective canonical-form normalization with kernel reduction of decidable side conditions (including over setoids).",
+      "Repository `AeneasVerif/aeneas`, open unmerged PR #1551 (base `cezar/sl-extraction`, head `cezar/seplogic`, pinned commit `1d8f9aa0121faca8ff113c1b9b742b333e3e1519`), `backends/lean/Aeneas/SepLogic/Tactic/Normalize.lean`, `Aeneas.SepLogic.SepAC.Tree.denote_eq` (lines 59-62): specialized to `IProp` and `List.getD`, rewrites both sides to right-nested folds of the looked-up atoms and closes by permutation invariance of the fold.",
+      "Malecha, G., Chlipala, A. & Braibant, T., 'Compositional Computational Reflection', ITP 2014, LNCS 8558, pp. 374-389, doi:10.1007/978-3-319-08970-6_24: MirrorShard's reflective entailment checker (Listing 1) reifies propositional separation logic into `sexpr := Star | Opaque | Emp` with list-environment denotation `sexprD`, erases `Emp` terms and crosses common terms off both sides in `check_entailment`, and proves `check_entailment_sound` (plus extensible `Apply_cancel_sound` for Bedrock) discharged by reflexivity.",
+      "Krebbers, R., Timany, A. & Birkedal, L., 'Interactive proofs in higher-order concurrent separation logic', POPL 2017, pp. 205-217, doi:10.1145/3009837.3009855: manipulates list-based persistent and spatial assertion contexts reflectively in Iris Proof Mode."
+    ],
+    "design_question": "Which minimal, irredundant set of algebraic laws makes a `List.isPerm`-based reflective equality kernel sound over arbitrary reified `sep`/`emp` syntax trees?"
+  },
+  {
+    "id": "R1b-iff-acu-soundness-characterization",
+    "lean": [
+      "Toy.SepAC.acu_denote_eq_of_isPerm_iff",
+      "Toy.SepAC.acu_laws_of_denote_eq_of_isPerm"
+    ],
+    "kind": "characterization",
+    "status": "proved",
+    "tier": "T0",
+    "tier_justification": "Exact equational adequacy characterization combining T0 ACU reflection soundness (`acu_denote_eq_of_isPerm`) with its fully proved three-instance converse (`acu_laws_of_denote_eq_of_isPerm`).",
+    "plain_claim": "For a fixed carrier `P`, binary operation `sep`, and element `emp`, the `List.isPerm` kernel (`l.atoms.isPerm r.atoms = true → l.denote sep emp env = r.denote sep emp env`) is sound for all environments `env` and syntax trees `l, r` if and only if `SepAssoc sep`, `SepComm sep`, and `RightUnit sep emp` all hold.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "`CellModel` satisfies `SepAssoc`, `SepComm`, and `RightUnit` (and exhibits distinct permutation-equivalent trees).",
+    "nonvacuity_witness_lean": "Toy.SepAC.acu_denote_eq_of_isPerm_nonvacuous",
+    "non_claims": [
+      "The necessity (`→`) direction requires soundness across all environments `env : Nat → P` and all trees `l, r : Tree`; soundness on a restricted class of trees (such as unit-free trees, see `R1c-iff`) or fixed environments does not force `RightUnit`.",
+      "Unlike equality reflection, no analogous `↔` characterization holds for one-way entailment frame cancellation (`Toy.SepAC.totalRelation_cancel_sound_without_laws`)."
+    ],
+    "prior_art": [
+      "Lean 4 core (`leanprover/lean4:v4.34.1`, commit `5045d0056413266e57c625dcd7c365b10e377c52`), `src/Init/Data/AC.lean`.",
+      "Braibant, T. & Pous, D., 'Tactics for Reasoning Modulo AC in Coq', CPP 2011, LNCS 7086, pp. 167-182, doi:10.1007/978-3-642-25379-9_14."
+    ],
+    "design_question": "Exactly which algebraic laws are both necessary and sufficient for a `List.isPerm` reflective kernel to be universally sound over `(sep, emp)`?"
+  },
+  {
+    "id": "R1c-unit-count-ac-soundness",
+    "lean": "Toy.SepAC.ac_denote_eq_of_unitCount_eq_of_isPerm",
+    "kind": "theorem",
+    "status": "proved",
+    "tier": "T0",
+    "tier_justification": "Unit-law-free commutative-semigroup (AC) reflection treating `Tree.unit` leaves as an unconstrained atom; AC reflection without unit laws is already mechanized in core Lean `Lean.Data.AC` and Braibant & Pous (CPP 2011).",
+    "plain_claim": "For any associative and commutative operation `sep` (with no unit assumption on `emp`), if `l` and `r` have equal counts of `Tree.unit` leaves (`l.unitCount = r.unitCount`) and `l.atoms.isPerm r.atoms = true`, then `l.denote sep emp env = r.denote sep emp env`; conversely, if `l` and `r` denote equally in every `Type`-level associative-commutative model `(P, sep)` with arbitrary `emp` and `env`, then `l.unitCount = r.unitCount` and `l.atoms.isPerm r.atoms = true` (`Toy.SepAC.unitCount_eq_and_isPerm_of_forall_ac_denote_eq`).",
+    "hypotheses": [
+      {
+        "name": "hAssoc : SepAssoc sep",
+        "purpose": "Re-associates binary trees with matching leaf multisets without relying on an identity element.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.nonAssoc_tight_unitCount_sepAssoc"
+      },
+      {
+        "name": "hComm : SepComm sep",
+        "purpose": "Reorders both atom leaves and `Tree.unit` leaves (`emp` behaves as one additional atom).",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.listAppend_tight_unitCount_sepComm"
+      },
+      {
+        "name": "hUnitCount : l.unitCount = r.unitCount",
+        "purpose": "Prevents dropping or duplicating `Tree.unit` leaves when `emp` is not a unit of `sep`.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.boolAndFalse_tight_unitCount_eq"
+      },
+      {
+        "name": "hPerm : l.atoms.isPerm r.atoms = true",
+        "purpose": "Ensures `l` and `r` contain the same multiset of atom indices.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.boolAndFalse_tight_unitCount_perm"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`(Nat, Nat.add, emp := 99)` satisfies `SepAssoc` and `SepComm` while violating `RightUnit Nat.add 99`, and non-unit-free trees `(atom 0 ∗ unit)` and `(unit ∗ atom 0)` have equal `unitCount = 1`, `isPerm = true`, and equal denotations in every environment.",
+    "nonvacuity_witness_lean": "Toy.SepAC.ac_denote_eq_of_unitCount_eq_of_isPerm_nonvacuous",
+    "non_claims": [
+      "Not novel: core Lean's reflective AC normalizer (`Lean.Data.AC`, used by `ac_rfl`) already works on unit-free syntax and treats units as flagged atoms.",
+      "Does not permit `emp`-elimination: changing the number of `Tree.unit` leaves between `l` and `r` requires `RightUnit sep emp` (`Toy.SepAC.boolAndFalse_tight_unitCount_eq`).",
+      "Equal `unitCount` is necessary only when quantified universally over all associative-commutative models, `emp`, and environments (`Toy.SepAC.unitCount_eq_and_isPerm_of_forall_ac_denote_eq`, proved at `Type`); in a single fixed model where `emp` happens to be a unit of `sep` (such as `(Nat, Nat.add, 0)`), trees with unequal `unitCount` still denote equally (`Toy.SepAC.unitCount_eq_not_necessary_in_fixed_model`)."
+    ],
+    "prior_art": [
+      "Lean 4 core (`leanprover/lean4:v4.34.1`, commit `5045d0056413266e57c625dcd7c365b10e377c52`), `src/Init/Data/AC.lean`: `Lean.Data.AC.Expr` has only `var` and `op` (no `unit` constructor); neutral elements are represented as `LawfulIdentity`-flagged variables, so AC rearrangement without `LawfulIdentity` treats every non-neutral constant uniformly as an atom.",
+      "Braibant, T. & Pous, D., 'Tactics for Reasoning Modulo AC in Coq', CPP 2011, LNCS 7086, pp. 167-182, doi:10.1007/978-3-642-25379-9_14. Handles AC symbols without neutral elements.",
+      "Boutin, S., 'Using reflection to build efficient and certified decision procedures', TACS 1997, LNCS 1281, pp. 515-529, doi:10.1007/BFb0014565."
+    ],
+    "design_question": "When `emp` is not assumed to be a unit of `sep`, what exact syntactic condition on `Tree` makes reflective AC normalization universally sound across all associative-commutative models `(P, sep, emp, env)`?",
+    "lean_names": [
+      "Toy.SepAC.unitCount_eq_and_isPerm_of_forall_ac_denote_eq",
+      "Toy.SepAC.unitCount_eq_not_necessary_in_fixed_model",
+      "Toy.SepAC.unitCount_converse_hypothesis_nonvacuous"
+    ],
+    "supporting_hypotheses": [
+      {
+        "theorem": "Toy.SepAC.unitCount_eq_and_isPerm_of_forall_ac_denote_eq",
+        "name": "∀ (P : Type) (sep : P → P → P) (emp : P), SepAssoc sep → SepComm sep → ∀ (env : Nat → P), Tree.denote sep emp env l = Tree.denote sep emp env r",
+        "purpose": "Converse direction: only equal denotations across every associative-commutative model, `emp`, and environment force equal `unitCount` and `isPerm`; equality in one fixed model does not.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.unitCount_eq_not_necessary_in_fixed_model",
+        "note": "The theorem has no other hypotheses. `atom 0` and `atom 0 ∗ unit` have different `unitCount`, while they denote equally for every `env` in the single model `(Nat, Nat.add, 0)`, so the hypothesis also cannot be weakened to one model."
+      }
+    ],
+    "supporting_nonvacuity_witness_lean": "Toy.SepAC.unitCount_converse_hypothesis_nonvacuous"
+  },
+  {
+    "id": "R1c-unit-free-ac-soundness",
+    "lean": "Toy.SepAC.ac_denote_eq_of_unitFree_of_isPerm",
+    "kind": "theorem",
+    "status": "proved",
+    "tier": "T0",
+    "tier_justification": "Unit-free specialization of `ac_denote_eq_of_unitCount_eq_of_isPerm` (`l.unitFree = true ↔ l.unitCount = 0`); unit-free AC reflection is already mechanized in core Lean `Lean.Data.AC` and Braibant & Pous (CPP 2011).",
+    "plain_claim": "For any associative and commutative operation `sep` (with no unit assumption on `emp`), if both `l` and `r` contain no `Tree.unit` leaves (`l.unitFree = true` and `r.unitFree = true`) and `l.atoms.isPerm r.atoms = true`, then `l.denote sep emp env = r.denote sep emp env`.",
+    "hypotheses": [
+      {
+        "name": "hAssoc : SepAssoc sep",
+        "purpose": "Re-associates unit-free binary trees without appealing to an identity element.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.nonAssoc_tight_unitFree_sepAssoc"
+      },
+      {
+        "name": "hComm : SepComm sep",
+        "purpose": "Reorders atom indices without appealing to an identity element.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.listAppend_tight_unitFree_sepComm"
+      },
+      {
+        "name": "hUFL : l.unitFree = true",
+        "purpose": "Rules out `Tree.unit` in `l`, whose evaluation would introduce an unconstrained `emp` when `r` has no `Tree.unit`.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.boolAndFalse_tight_unitFree_left"
+      },
+      {
+        "name": "hUFR : r.unitFree = true",
+        "purpose": "Rules out `Tree.unit` in `r`; `l.unitFree = true` and `l.atoms.isPerm r.atoms = true` do not imply `r.unitFree = true` because `Tree.atoms` erases `Tree.unit`.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.boolAndFalse_tight_unitFree_right"
+      },
+      {
+        "name": "hPerm : l.atoms.isPerm r.atoms = true",
+        "purpose": "Ensures `l` and `r` have the same non-empty multiset of atom indices.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.boolAndFalse_tight_unitFree_perm"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`(Nat, Nat.add, emp := 99)` satisfies `SepAssoc` and `SepComm` while violating `RightUnit Nat.add 99`, and `((0 ∗ 1) ∗ 2)` vs `(2 ∗ (0 ∗ 1))` are `unitFree` with `isPerm = true`.",
+    "nonvacuity_witness_lean": "Toy.SepAC.ac_denote_eq_of_unitFree_of_isPerm_nonvacuous",
+    "non_claims": [
+      "Not novel: core Lean's reflective AC normalizer (`Lean.Data.AC`, used by `ac_rfl`) already works on unit-free syntax and treats units as flagged atoms.",
+      "Unit-freeness is sufficient, not necessary, for unit-law-free AC normalization: equal `Tree.unit` leaf counts suffice (`Toy.SepAC.ac_denote_eq_of_unitCount_eq_of_isPerm`, witnessed by `Toy.SepAC.ac_denote_eq_of_unitCount_eq_of_isPerm_nonvacuous`).",
+      "Does not permit `emp`-elimination: if only one side contains `Tree.unit`, `RightUnit sep emp` becomes mandatory (`Toy.SepAC.boolAndFalse_tight_unitFree_left`, `Toy.SepAC.boolAndFalse_tight_unitFree_right`)."
+    ],
+    "prior_art": [
+      "Lean 4 core (`leanprover/lean4:v4.34.1`, commit `5045d0056413266e57c625dcd7c365b10e377c52`), `src/Init/Data/AC.lean`: `Lean.Data.AC.Expr` is unit-free (`var | op`).",
+      "Braibant, T. & Pous, D., 'Tactics for Reasoning Modulo AC in Coq', CPP 2011, LNCS 7086, pp. 167-182, doi:10.1007/978-3-642-25379-9_14.",
+      "Repository `AeneasVerif/aeneas`, open unmerged PR #1551 (commit `1d8f9aa0121faca8ff113c1b9b742b333e3e1519`), `backends/lean/Aeneas/SepLogic/Tactic/Normalize.lean`: meta-level `mkStar` (lines 113-118) avoids a trailing `emp` on non-empty atom arrays, whereas kernel-level `Tree.denote_eq_foldr` (lines 51-57) folds into `emp` and uses `sep_emp_r_eq` even on unit-free trees."
+    ],
+    "design_question": "Is a unit law needed for reflective AC reordering of unit-free trees, or is it paid solely for `emp` unit elimination?"
+  },
+  {
+    "id": "R1c-iff-ac-soundness-characterization",
+    "lean": [
+      "Toy.SepAC.ac_denote_eq_of_unitCount_eq_of_isPerm_iff",
+      "Toy.SepAC.ac_denote_eq_of_unitFree_of_isPerm_iff",
+      "Toy.SepAC.ac_laws_of_unitCount_denote_eq_of_isPerm",
+      "Toy.SepAC.ac_laws_of_unitFree_denote_eq_of_isPerm"
+    ],
+    "kind": "characterization",
+    "status": "proved",
+    "tier": "T0",
+    "tier_justification": "Exact algebraic characterization pairing T0 unit-law-free AC soundness with its fully proved two-tree converses (`ac_laws_of_unitCount_denote_eq_of_isPerm`, `ac_laws_of_unitFree_denote_eq_of_isPerm`).",
+    "plain_claim": "For a fixed carrier `P`, binary operation `sep`, and arbitrary `emp`, `List.isPerm` soundness over equal-unit-count trees (equivalently, over unit-free trees) holds for all environments and trees if and only if `SepAssoc sep` and `SepComm sep` hold (with no constraint on `emp`).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "`(Nat, Nat.add, emp := 99)` satisfies `SepAssoc` and `SepComm` while violating `RightUnit Nat.add 99`.",
+    "nonvacuity_witness_lean": "Toy.SepAC.ac_denote_eq_of_unitCount_eq_of_isPerm_nonvacuous",
+    "non_claims": [
+      "The `→` direction requires universal quantification over all environments and all equal-unit-count (resp. unit-free) trees.",
+      "Does not establish `RightUnit sep emp` or `LeftUnit sep emp`."
+    ],
+    "prior_art": [
+      "Lean 4 core (`leanprover/lean4:v4.34.1`, commit `5045d0056413266e57c625dcd7c365b10e377c52`), `src/Init/Data/AC.lean`.",
+      "Braibant, T. & Pous, D., CPP 2011, LNCS 7086, pp. 167-182, doi:10.1007/978-3-642-25379-9_14."
+    ],
+    "design_question": "Exactly which algebraic laws characterize unit-law-free reflective AC soundness over `(sep, emp)`?"
+  },
+  {
+    "id": "R2a-noncommutative-append-counterexample",
+    "lean": "Toy.SepAC.listAppend_tight_isPerm_sepComm",
+    "kind": "counterexample",
+    "status": "proved",
+    "tier": "T0",
+    "tier_justification": "Reference point: standard free-monoid witness separating non-commutative monoids (`List` with `++`) from commutative monoids.",
+    "plain_claim": "Reference point: over `(List Nat, List.append, [])`, `SepAssoc`, `RightUnit`, and `LeftUnit` all hold while `SepComm` fails, and `(atom 0 ∗ atom 1)` vs `(atom 1 ∗ atom 0)` satisfy `l.atoms.isPerm r.atoms = true`, yet their denotations at `env i = [i]` are `[0, 1] ≠ [1, 0]`.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "Concrete trees `atom 0 ∗ atom 1` and `atom 1 ∗ atom 0` under `env i = [i]`.",
+    "nonvacuity_witness_lean": "Toy.SepAC.listAppend_tight_isPerm_sepComm",
+    "non_claims": [
+      "This counterexample is the `SepComm` tightness witness of R1b, restated as a reference point.",
+      "Does not refute `Toy.SepAC.denote_eq_denoteAtoms_of_assoc_units` (R1a): when `l.atoms = r.atoms` (equal lists rather than permuted lists), `List.append` satisfies all hypotheses of R1a (`Toy.SepAC.denote_eq_denoteAtoms_of_assoc_units_nonvacuous`) and hence satisfies normal-form equivalence by R1a."
+    ],
+    "prior_art": [
+      "Lean 4 core (`leanprover/lean4:v4.34.1`, commit `5045d0056413266e57c625dcd7c365b10e377c52`), `src/Init/Data/AC.lean`: gates `sort` on optional `Commutative` (`Context.comm`, line 31; `norm`, line 111), separating associative-only normalization from AC normalization.",
+      "Agda standard library (`agda/agda-stdlib` v2.1, commit `97bc55e47367c562b3032bf104f2a00b19716f88`), `src/Algebra/Solver/Monoid.agda` vs `src/Algebra/Solver/CommutativeMonoid.agda`: separate solvers for non-commutative monoids vs commutative monoids.",
+      "Braibant, T. & Pous, D., 'Tactics for Reasoning Modulo AC in Coq', CPP 2011, LNCS 7086, pp. 167-182, doi:10.1007/978-3-642-25379-9_14. Handles associative-only operations separately from AC operations."
+    ],
+    "design_question": "Reference point: where does `List.isPerm`-based reflective normalization break for ordered / non-commutative associative monoids?"
+  },
+  {
+    "id": "R2b-nonassociative-three-element-counterexample",
+    "lean": [
+      "Toy.SepAC.nonAssoc_tight_isPerm_sepAssoc",
+      "Toy.SepAC.atMostTwo_comm_unital_sepAssoc"
+    ],
+    "kind": "counterexample",
+    "status": "proved",
+    "tier": "T0",
+    "tier_justification": "Reference point: textbook 3-element commutative unital non-associative magma falsifying ACU tree normalization even on identical atom lists `[0, 0, 1]`, paired with the elementary cardinality-≤2 associativity proof `atMostTwo_comm_unital_sepAssoc`.",
+    "plain_claim": "Reference point: on the 3-element carrier `NonAssocCarrier`, `NonAssocCarrier.op` satisfies `SepComm`, `RightUnit`, and `LeftUnit` with unit `.emp` while violating `SepAssoc`, and `((atom 0 ∗ atom 0) ∗ atom 1)` vs `(atom 0 ∗ (atom 0 ∗ atom 1))` satisfy `l.atoms.isPerm r.atoms = true` (in fact `l.atoms = r.atoms = [0, 0, 1]`) yet denote `.b ≠ .a`; moreover, 3 elements is minimal because every commutative unital magma on a carrier of size at most 2 is associative (`atMostTwo_comm_unital_sepAssoc`).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Concrete 3-element table `NonAssocCarrier.op` with `env 0 = .a, env 1 = .b`.",
+    "nonvacuity_witness_lean": "Toy.SepAC.nonAssoc_tight_isPerm_sepAssoc",
+    "non_claims": [
+      "This counterexample is the `SepAssoc` tightness witness of R1b, restated as a reference point alongside the proved minimality lemma `Toy.SepAC.atMostTwo_comm_unital_sepAssoc`.",
+      "The failure already occurs for identical atom sequences `[0, 0, 1]` differing only in tree parenthesization, so replacing `List.isPerm` by strict list equality `l.atoms == r.atoms` still fails without `SepAssoc` (`Toy.SepAC.nonAssoc_tight_flattening_sepAssoc`)."
+    ],
+    "prior_art": [
+      "Boutin, S., 'Using reflection to build efficient and certified decision procedures', TACS 1997, LNCS 1281, pp. 515-529, doi:10.1007/BFb0014565.",
+      "Lean 4 core (`leanprover/lean4:v4.34.1`, commit `5045d0056413266e57c625dcd7c365b10e377c52`), `src/Init/Data/AC.lean`: `Context.assoc` (line 30) is mandatory, unlike optional `comm` and `idem`."
+    ],
+    "design_question": "Reference point: can commutativity and a two-sided unit ever compensate for missing associativity in reflective tree normalization, and what is the smallest countermodel?"
+  },
+  {
+    "id": "R2c-nonunital-boolean-counterexample",
+    "lean": "Toy.SepAC.boolAndFalse_tight_isPerm_rightUnit",
+    "kind": "counterexample",
+    "status": "proved",
+    "tier": "T0",
+    "tier_justification": "Reference point: elementary 2-element commutative semigroup (`Bool.and` with absorbing element `false` in the `emp` slot) isolating the unit requirement.",
+    "plain_claim": "Reference point: over `(Bool, Bool.and, false)`, `SepAssoc` and `SepComm` hold while `RightUnit Bool.and false` fails, and `atom 0` vs `(atom 0 ∗ unit)` satisfy `l.atoms.isPerm r.atoms = true`, yet at `env 0 = true` their denotations are `true ≠ false`.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "Concrete trees `atom 0` and `atom 0 ∗ unit` at `env _ = true`.",
+    "nonvacuity_witness_lean": "Toy.SepAC.boolAndFalse_tight_isPerm_rightUnit",
+    "non_claims": [
+      "This counterexample is the `RightUnit` tightness witness of R1b, restated as a reference point.",
+      "Does not show that `Bool.and` lacks a unit altogether (`true` is a unit for `Bool.and`, `Toy.SepAC.boolAndTrue_rightUnit`); it shows that the specific constant `emp` interpreted by `Tree.unit` must satisfy `RightUnit sep emp` whenever trees have unequal `Tree.unit` counts (cf. `Toy.SepAC.ac_denote_eq_of_unitCount_eq_of_isPerm`)."
+    ],
+    "prior_art": [
+      "Repository `AeneasVerif/aeneas`, open unmerged PR #1551 (commit `1d8f9aa0121faca8ff113c1b9b742b333e3e1519`), `backends/lean/Aeneas/SepLogic/Tactic/Normalize.lean`: `Tree.atoms` erases `.unit` to `[]`, relying on `emp` being a genuine unit of `sep`."
+    ],
+    "design_question": "Reference point: where does erasing `Tree.unit` in `Tree.atoms` fail if the designated constant `emp` is not a unit for `sep`?"
+  },
+  {
+    "id": "R3a-free-commutative-monoid-completeness",
+    "lean": "Toy.SepAC.isPerm_of_bag_denote_eq",
+    "kind": "theorem",
+    "status": "proved",
+    "tier": "T0",
+    "tier_justification": "Reduces directly to core Lean's `List.perm_iff_count` (`Init.Data.List.Perm`, line 426) and a tree multiplicity-homomorphism lemma; bag normal forms are mechanized in Agda stdlib (`Algebra.Solver.CommutativeMonoid`) and quotient multisets in Mathlib (`Multiset.coe_eq_coe`).",
+    "plain_claim": "In the free commutative monoid `(Bag, Bag.sep, Bag.emp)` of finitely supported `Nat` multiplicity maps under the free generator environment `Bag.single`, if `l.denote Bag.sep Bag.emp Bag.single = r.denote Bag.sep Bag.emp Bag.single`, then `l.atoms.isPerm r.atoms = true`.",
+    "hypotheses": [
+      {
+        "name": "hDenote : l.denote Bag.sep Bag.emp Bag.single = r.denote Bag.sep Bag.emp Bag.single",
+        "purpose": "Semantic equality in `Bag` under `Bag.single`, implying equal per-index atom multiplicities.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.bag_tight_denote_eq"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Distinct trees `((atom 0 ∗ unit) ∗ atom 1)` and `(atom 1 ∗ atom 0)` have equal `Bag` denotations under `Bag.single`.",
+    "nonvacuity_witness_lean": "Toy.SepAC.isPerm_of_bag_denote_eq_nonvacuous",
+    "non_claims": [
+      "Non-idempotence does not suffice for completeness. A model with an absorbing (conflict) element can be incomplete for the check at some environments even without idempotent atom values or aliasing (though not necessarily at every environment, `Toy.SepAC.optBag_absorbing_but_complete`): in `CellModel` at `env _ = .owned` (a single non-idempotent atom), `((0 ∗ 0) ∗ 0)` and `(0 ∗ 0)` both denote `.conflict` (`Toy.SepAC.cellModel_incomplete_without_sepIdem`), and in `TwoCellModel` at `env 0 = .cellA`, `env 1 = .cellB` (two distinct, non-aliased, non-idempotent atoms), `(0 ∗ 0)` and `(1 ∗ 1)` both denote `.conflict` (`Toy.SepAC.twoCellModel_conflict_distinct_atoms_incomplete`).",
+      "Completeness holds relative to the free commutative monoid `Bag` under the generator environment `Bag.single` (equivalently, universal equality across all `Type`-level ACU models and environments; see `Toy.SepAC.isPerm_iff_forall_acu_denote_eq` in `R3a-iff`); `List.isPerm` does not decide semantic equality in any particular non-free separation logic.",
+      "The universal property of `Bag` is not proved in the package; 'free' refers to the standard identification of finitely supported multiplicity maps with finite multisets.",
+      "Even inside `Bag`, completeness fails for arbitrary environments `env : Nat → Bag` that alias distinct atom indices (`Toy.SepAC.bag_aliased_env_denote_eq_not_isPerm`) or map an atom index to `Bag.emp` such as out-of-bounds `listEnv` lookups (`Toy.SepAC.bag_listEnv_oob_denote_eq_not_isPerm`).",
+      "In reifiers that assign distinct indices to syntactically distinct but definitionally equal atoms, `isPerm` returns `false` unless those atoms are merged into a single environment slot beforehand (matching the `aliases` table in `AeneasVerif/aeneas#1551` `Normalize.proveEqAC`)."
+    ],
+    "prior_art": [
+      "Lean 4 core (`leanprover/lean4:v4.34.1`, commit `5045d0056413266e57c625dcd7c365b10e377c52`), `src/Init/Data/List/Perm.lean`: `List.perm_iff_count` (line 426) and `List.isPerm_iff` (line 448), which form the mathematical core of completeness.",
+      "Agda standard library (`agda/agda-stdlib` v2.1, commit `97bc55e47367c562b3032bf104f2a00b19716f88`), `src/Algebra/Solver/CommutativeMonoid.agda`: normalizes commutative-monoid expressions to multiplicity vectors (`Normal n = Vec ℕ n`, a bag).",
+      "Mathlib (`leanprover-community/mathlib4`, commit `4dbecbe2ebe515d6bfb36d0685092eed09f9d1fd`, `Mathlib/Data/Multiset/Defs.lean`), `Multiset.coe_eq_coe` (line 100): quotient-multiset equality iff list permutation.",
+      "Boutin, S., 'Using reflection to build efficient and certified decision procedures', TACS 1997, LNCS 1281, pp. 515-529, doi:10.1007/BFb0014565.",
+      "Repository `AeneasVerif/aeneas`, open unmerged PR #1551 (commit `1d8f9aa0121faca8ff113c1b9b742b333e3e1519`), `backends/lean/Aeneas/SepLogic/Tactic/Normalize.lean`, `proveEqAC` (doc lines 140-142, def lines 143-162): merges unified atom pairs into a shared index class before checking permutation."
+    ],
+    "design_question": "For which exact algebraic semantics and atom environments is `List.isPerm` a complete decision procedure for `sep`-tree equality, and why must tactics pre-unify aliases and handle non-free laws separately?"
+  },
+  {
+    "id": "R3a-iff-bag-characterization",
+    "lean": "Toy.SepAC.isPerm_iff_bag_denote_eq",
+    "kind": "characterization",
+    "status": "proved",
+    "tier": "T0",
+    "tier_justification": "Combines `isPerm_of_bag_denote_eq` (R3a) with the `Bag` instance of `acu_denote_eq_of_isPerm` (R1b).",
+    "plain_claim": "For all syntax trees `l, r : Tree`, `l.denote Bag.sep Bag.emp Bag.single = r.denote Bag.sep Bag.emp Bag.single` holds if and only if `l.atoms.isPerm r.atoms = true`, and equivalently `l.atoms.isPerm r.atoms = true` holds if and only if `l` and `r` denote equally across all `Type`-level associative, commutative, right-unital models `(P, sep, emp)` and all environments `env : Nat → P` (`Toy.SepAC.isPerm_iff_forall_acu_denote_eq`).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Distinct trees `((atom 0 ∗ unit) ∗ atom 1)` and `(atom 1 ∗ atom 0)` have equal `Bag` denotations under `Bag.single`.",
+    "nonvacuity_witness_lean": "Toy.SepAC.isPerm_of_bag_denote_eq_nonvacuous",
+    "non_claims": [
+      "Holds specifically for `Bag` under the free generator map `Bag.single`; replacing `Bag.single` by an arbitrary `env : Nat → Bag` breaks the `→` direction (`Toy.SepAC.bag_aliased_env_denote_eq_not_isPerm`, `Toy.SepAC.bag_listEnv_oob_denote_eq_not_isPerm`).",
+      "The universal property of `Bag` is not proved in the package."
+    ],
+    "prior_art": [
+      "Lean 4 core (`leanprover/lean4:v4.34.1`, commit `5045d0056413266e57c625dcd7c365b10e377c52`), `src/Init/Data/List/Perm.lean` (`List.perm_iff_count`, `List.isPerm_iff`).",
+      "Mathlib (`leanprover-community/mathlib4`, commit `4dbecbe2ebe515d6bfb36d0685092eed09f9d1fd`, `Mathlib/Data/Multiset/Defs.lean`), `Multiset.coe_eq_coe` (line 100)."
+    ],
+    "design_question": "Does `List.isPerm` coincide exactly with semantic equality in the multiplicity-bag model `Bag` under distinct generators?",
+    "lean_names": [
+      "Toy.SepAC.isPerm_iff_forall_acu_denote_eq"
+    ]
+  },
+  {
+    "id": "R3b-pointwise-idempotent-and-conflict-incompleteness",
+    "lean": [
+      "Toy.SepAC.denote_eq_and_isPerm_false_of_idemElem",
+      "Toy.SepAC.denote_eq_and_isPerm_false_of_sepIdem",
+      "Toy.SepAC.cellModel_incomplete_without_sepIdem",
+      "Toy.SepAC.twoCellModel_conflict_distinct_atoms_incomplete"
+    ],
+    "kind": "impossibility",
+    "status": "proved",
+    "tier": "T0",
+    "tier_justification": "Well-known completeness boundary separating multiset normal forms from idempotent/set normal forms (mechanized in core Lean `Lean.Data.AC.mergeIdem` and Agda stdlib `Algebra.Solver.IdempotentCommutativeMonoid`), stated pointwise via `IdemElem` and paired with non-idempotent conflict witnesses.",
+    "plain_claim": "Whenever a single atom value satisfies pointwise idempotence `IdemElem sep (env 0)` (`env 0 ∗ env 0 = env 0`) — for example the absorbing element `conflict` of the mixed non-idempotent ACU model `CellModel`, or any value of the globally idempotent model `(Bool, Bool.or, false)` — `dupAtomTree` (`atom 0 ∗ atom 0`) and `singleAtomTree` (`atom 0`) have identical denotations while `dupAtomTree.atoms.isPerm singleAtomTree.atoms = false`; moreover, incompleteness also arises without any idempotent atom value, for specific environments, in non-idempotent ACU models with an absorbing conflict element (`CellModel` at `env = fun _ => owned`; `TwoCellModel` at `env 0 = cellA`, `env 1 = cellB`), although an absorbing element does not by itself break completeness for every environment (`Toy.SepAC.optBag_absorbing_but_complete`).",
+    "hypotheses": [
+      {
+        "name": "hIdem0 : IdemElem sep (env 0)",
+        "purpose": "Collapses `env 0 ∗ env 0` to `env 0` at atom index `0` while `Tree.atoms` preserves multiplicity (`[0, 0]` vs `[0]`); does not require global `SepIdem sep`.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.bag_dupAtomTree_denote_ne_singleAtomTree"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "Satisfied both in the globally idempotent ACU model `(Bool, Bool.or, false)` at `env 0 = true ≠ false` and in the non-idempotent ACU model `CellModel` at `env 0 = .conflict`.",
+    "nonvacuity_witness_lean": [
+      "Toy.SepAC.idempotent_bool_acu_incomplete",
+      "Toy.SepAC.cellModel_conflict_idemElem_incomplete"
+    ],
+    "positive_control_lean": "Toy.SepAC.bag_dupAtomTree_denote_ne_singleAtomTree",
+    "non_claims": [
+      "Idempotence breaks completeness, NOT soundness: `Toy.SepAC.acu_denote_eq_of_isPerm` remains sound on both globally idempotent ACU models (`Bool.or`) and mixed models (`CellModel`, `TwoCellModel`) whenever `l.atoms.isPerm r.atoms = true`.",
+      "Incompleteness is not specific to idempotent models or idempotent atom values: non-idempotent models with an absorbing conflict element break completeness for some environments (`Toy.SepAC.cellModel_incomplete_without_sepIdem` at `env _ = .owned`, `Toy.SepAC.twoCellModel_conflict_distinct_atoms_incomplete` at `env 0 = .cellA`, `env 1 = .cellB`). Neither non-freeness nor an absorbing element breaks completeness for every environment: in `Option Bag` with the absorbing element `none` (`Toy.SepAC.optBagSep`), the generator `some (Bag.single 0)` is not pointwise idempotent and `List.isPerm` is complete for the environment `fun i => some (Bag.single i)` (`Toy.SepAC.optBag_absorbing_but_complete`).",
+      "Deduplicating atoms (set equality) is sound for idempotent `sep` and complete relative to the free idempotent commutative monoid under the generator environment (cf. Agda `Algebra.Solver.IdempotentCommutativeMonoid`; core Lean `ac_rfl` with `IdempotentOp`). It is not complete for arbitrary idempotent models or environments (`Toy.SepAC.boolOr_setCheck_incomplete`), and it is unsound for non-idempotent spatial assertions (`Toy.SepAC.bag_neg_example`).",
+      "\"(ℓ ↦ v) ∗ (ℓ ↦ v) = False\" for the cited prototype is a derived modeling-bridge claim (consistent with `Resource.not_compatible_self` at `Resource.lean:39`), not a lemma of the prototype.",
+      "Do not conflate affine assertions (`x ∗ y ⊢ x`, `AffineEntails emp entails`) with idempotent/duplicable assertions (`IdemElem sep x`): spatial ownership in an affine heap logic is affine without being idempotent. Whether a pure or persistent assertion satisfies `IdemElem` (a propositional equality `x ∗ x = x`) is not proved here; see the R3b modeling bridge for the qualifications (at best `⊣⊢`, extensionality needed for `=`, and no general `P ∗ P ⊢ P` for persistent non-affine assertions in linear logics)."
+    ],
+    "prior_art": [
+      "Lean 4 core (`leanprover/lean4:v4.34.1`, commit `5045d0056413266e57c625dcd7c365b10e377c52`), `src/Init/Data/AC.lean`: `Context.idem : Option (PLift (IdempotentOp op))` (line 32) and `mergeIdem` (lines 82-93) mechanize the deduplication escape hatch for globally idempotent operations.",
+      "Agda standard library (`agda/agda-stdlib` v2.1, commit `97bc55e47367c562b3032bf104f2a00b19716f88`), `src/Algebra/Solver/IdempotentCommutativeMonoid.agda`: normalizes idempotent commutative monoids to bit vectors (`Normal n = Vec Bool n`, a set).",
+      "Krebbers, R., Timany, A. & Birkedal, L., 'Interactive proofs in higher-order concurrent separation logic', POPL 2017, pp. 205-217, doi:10.1145/3009837.3009855. Separates the persistent context (`env persistent`) from the spatial context (`env spatial`) in Iris Proof Mode.",
+      "Chlipala, A., 'Mostly-automated verification of low-level programs in computational separation logic', PLDI 2011, pp. 234-245, doi:10.1145/1993498.1993526 (ACM SIGPLAN Notices 46(6) reprint doi:10.1145/1993316.1993526). Lifts pure predicates via `[< p >]` and turns pure facts into pure hypotheses.",
+      "Repository `AeneasVerif/aeneas`, open unmerged PR #1551 (commit `1d8f9aa0121faca8ff113c1b9b742b333e3e1519`), `backends/lean/Aeneas/SepLogic/Tactic/Normalize.lean`: `splitPures` (lines 230-251), `introPures` (lines 253-266), and `pullLeft` (lines 289-354) hoist pure facts and existentials into the Lean context rather than contracting duplicates inside `SepAC.Tree.denote_eq`."
+    ],
+    "design_question": "Why is a multiset-permutation ACU kernel incomplete when an atom value is pointwise idempotent (as duplicable assertions such as `⌜P⌝` or `□ P` may be, subject to the qualifications in the modeling bridge) and, for some environments, in non-idempotent conflict models, and what are the limits of set-equality deduplication?",
+    "lean_names": [
+      "Toy.SepAC.optBag_absorbing_but_complete",
+      "Toy.SepAC.bag_dupAtomTree_denote_ne_singleAtomTree",
+      "Toy.SepAC.boolOr_sepIdem"
+    ],
+    "supporting_hypotheses": [
+      {
+        "theorem": "Toy.SepAC.denote_eq_and_isPerm_false_of_sepIdem",
+        "name": "SepIdem sep",
+        "purpose": "Global idempotence makes `env 0` pointwise idempotent for every `env`, so the conclusion holds in every environment.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.bag_dupAtomTree_denote_ne_singleAtomTree",
+        "note": "The theorem has no other `Prop` hypotheses. In `(Bag, Bag.sep, Bag.emp)` under `Bag.single`, `¬ SepIdem Bag.sep` holds and `dupAtomTree`, `singleAtomTree` denote differently."
+      }
+    ],
+    "supporting_nonvacuity_witness_lean": "Toy.SepAC.boolOr_sepIdem"
+  },
+  {
+    "id": "R4a-frame-cancellation-extensional-acu",
+    "lean": [
+      "Toy.SepAC.acu_entails_of_common_perm_of_sepMonoRight",
+      "Toy.SepAC.acu_entails_of_cancelAtoms_of_sepMonoRight",
+      "Toy.SepAC.cancelAtoms_spec",
+      "Toy.SepAC.cancelAtoms_count",
+      "Toy.SepAC.cancelAtoms_disjoint"
+    ],
+    "kind": "theorem",
+    "status": "proved",
+    "tier": "T2",
+    "tier_justification": "Generalized parametric form of known reflective and tactic-level frame-cancellation procedures (MirrorShard `check_entailment` / `Apply_cancel_sound`, Malecha, Chlipala & Braibant ITP 2014; Bedrock PLDI 2011; VST `floyd/seplog_tactics.v`; CFML `xsimpl`; Iris `iFrame`; Chargueraud 2020 Remark 3.10 noting one-sided/two-sided monotonicity equivalence): stated over an arbitrary binary relation without reflexivity or transitivity, for any common sub-multiset `common`, with fully proved multiset-difference specification of `cancelAtoms` and maximal cancellation as a corollary.",
+    "plain_claim": "If `sep` satisfies `SepAssoc sep`, `SepComm sep`, and `RightUnit sep emp` (propositional equality), and `entails` satisfies `SepMonoRight sep entails` (`x ⊢ y → f ∗ x ⊢ f ∗ y`), then for any common sub-multiset `common` and residuals `ls, rs` with `l.atoms.Perm (common ++ ls)` and `r.atoms.Perm (common ++ rs)`, `entails (l.denote sep emp env) (r.denote sep emp env)` follows from `entails (denoteAtoms sep emp env ls) (denoteAtoms sep emp env rs)` — without assuming `EntailsRefl`, `EntailsTrans`, or `SepMonoLeft` (with maximal `cancelAtoms` cancellation following via `cancelAtoms_spec`).",
+    "hypotheses": [
+      {
+        "name": "hAssoc : SepAssoc sep",
+        "purpose": "Groups all cancelled atoms in `common` into a single left frame factor `denoteAtoms sep emp env common`.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.nonAssoc_tight_commonPerm_sepAssoc"
+      },
+      {
+        "name": "hComm : SepComm sep",
+        "purpose": "Reorders atom lists to bring `common` to the front of both `l` and `r`, and makes `SepMonoLeft` derivable (`Toy.SepAC.sepMonoLeft_of_comm_of_monoRight`).",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.listAppend_tight_commonPerm_sepComm"
+      },
+      {
+        "name": "hRightUnit : RightUnit sep emp",
+        "purpose": "Equates empty residuals `[]` with `emp` (`x = sep x emp`, critical even when every atom cancels so `ls = rs = []`).",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.boolAndFalse_tight_commonPerm_rightUnit"
+      },
+      {
+        "name": "hMonoRight : SepMonoRight sep entails",
+        "purpose": "Lifts the residual entailment `denoteAtoms ls ⊢ denoteAtoms rs` across the common cancelled frame `denoteAtoms common`.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.capOne_tight_commonPerm_sepMonoRight"
+      },
+      {
+        "name": "hl : l.atoms.Perm (common ++ ls)",
+        "purpose": "Certifies that `common` and `ls` partition the atom multiset of `l` (discharged for maximal cancellation by `cancelAtoms_spec`).",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.natAdd_tight_commonPerm_leftPerm"
+      },
+      {
+        "name": "hr : r.atoms.Perm (common ++ rs)",
+        "purpose": "Certifies that `common` and `rs` partition the atom multiset of `r` (discharged for maximal cancellation by `cancelAtoms_spec`).",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.natAdd_tight_commonPerm_rightPerm"
+      },
+      {
+        "name": "hResidual : entails (denoteAtoms sep emp env ls) (denoteAtoms sep emp env rs)",
+        "purpose": "Residual proof obligation remaining after removing `common` from both sides.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.natAdd_tight_commonPerm_residual"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Holds both in `CellModel` (with partial non-maximal cancellation `common = [0]`, `ls = [0, 0]`, `rs = [0]`) and for the non-reflexive, non-transitive relation `x + 2 = y` on `(Nat, +, 0)`.",
+    "nonvacuity_witness_lean": [
+      "Toy.SepAC.acu_entails_of_common_perm_nonvacuous",
+      "Toy.SepAC.stepByTwo_nonPreorder_satisfies_cancel_hypotheses"
+    ],
+    "non_claims": [
+      "Reflective, kernel-checked cancellation over reified separation-logic syntax is not novel (Malecha, Chlipala & Braibant, ITP 2014, MirrorShard `check_entailment` / `Apply_cancel_sound`); this card contributes the parametric statement over arbitrary unbundled `(P, sep, emp, entails)` and arbitrary common sub-multisets together with its irredundant tightness ledger.",
+      "The hypotheses are sufficient, not necessary. Tightness is relative to the other hypotheses; for a particular `(sep, entails)`, cancellation may be sound without some or all of these laws (`Toy.SepAC.totalRelation_cancel_sound_without_laws`). No characterization of cancellation soundness is claimed.",
+      "Not a model of the cited prototype's cancellation tactic, which matches atoms by unification at meta level and kernel-checks only two AC reorderings plus one monotonicity step.",
+      "`hResidual` is stated over `denoteAtoms` normal forms (with a trailing `emp`). Relating it to a tactic's residual goal (often built without a trailing `emp`) uses `RightUnit`.",
+      "Frame cancellation is a one-way reduction (soundness), NOT an equivalence: in disjoint-heap models (`CellModel` linear and `TwoCellModel` affine), maximal `cancelAtoms` can turn a true entailment into a false residual (`Toy.SepAC.cellModel_cancelAtoms_converse_fails`, `Toy.SepAC.twoCellModel_affine_cancelAtoms_converse_fails`).",
+      "Automatically discharging a fully cancelled `([], [])` residual without supplying `hResidual : entails emp emp` additionally requires `entails emp emp`.",
+      "Omitting `EntailsTrans` relies crucially on `SepAssoc`, `SepComm`, and `RightUnit` being propositional equalities (`=`); when they hold only up to mutual entailment (`Bientails`), `EntailsTrans` cannot be dropped from the remaining hypotheses (`Toy.SepAC.tagDistLeOne_tight_bientails_commonPerm_trans`).",
+      "Permutation decomposition cancels equal syntactic atom indices; it does not perform existential witness instantiation or unification of flexible metavariables.",
+      "Holds in both affine and linear separation logics (neither `AffineEntails emp entails` nor its negation is assumed). Leftover left-hand atoms in `ls` are not weakened away automatically: in an affine logic where `AffineEntails emp entails` holds, a residual goal `entails (denoteAtoms sep emp env ls) (denoteAtoms sep emp env [])` (`= emp`) follows from `AffineEntails` and must still be supplied as `hResidual`."
+    ],
+    "prior_art": [
+      "Malecha, G., Chlipala, A. & Braibant, T., 'Compositional Computational Reflection', ITP 2014, LNCS 8558, pp. 374-389, doi:10.1007/978-3-319-08970-6_24: MirrorShard's reflective entailment checker (Listing 1) reifies propositional separation logic into `sexpr := Star | Opaque | Emp` with list-environment denotation `sexprD`, erases `Emp` terms and crosses common terms off both sides in `check_entailment`, and proves `check_entailment_sound` (plus extensible `Apply_cancel_sound` for Bedrock) discharged by reflexivity.",
+      "Chargueraud, A., 'Separation Logic for Sequential Programs (Functional Pearl)', Proc. ACM Program. Lang. 4(ICFP), Article 116, August 2020, doi:10.1145/3408998 (author PDF: 43 pp.; Crossref: pp. 1-34): Remark 3.10 states that one-sided `star-monotone-r` is provably equivalent to symmetric monotonicity; Appendix K describes the Ltac `xsimpl` cancellation tactic.",
+      "Chlipala, A., 'Mostly-automated verification of low-level programs in computational separation logic', PLDI 2011, pp. 234-245, doi:10.1145/1993498.1993526: Bedrock's separation-logic tactic performs AC-aware cancellation (step 7, 'Cancellation') with unification of existentials.",
+      "Krebbers, R., Timany, A. & Birkedal, L., 'Interactive proofs in higher-order concurrent separation logic', POPL 2017, pp. 205-217, doi:10.1145/3009837.3009855: `iFrame` via typeclass-driven `Frame` instances (§4.2).",
+      "Appel, A. W., 'Verified Software Toolchain', ESOP 2011, LNCS 6602, pp. 1-17, doi:10.1007/978-3-642-19718-5_1 (VST overview); Appel, A. W. et al., Program Logics for Certified Compilers, Cambridge University Press, 2014, ISBN 978-1-107-04801-0 (bibliographic pointer only; chapter contents were not verified at the source, so no content claim is made); repository `PrincetonUniversity/VST`, commit `d50ac1969f9f6586621895eb043ccf08a165f731`, `floyd/seplog_tactics.v`, `Ltac cancel_frame` (line 346) and `Ltac cancel` (initial definition at line 468, redefined via `Ltac cancel ::= new_cancel cancel_local_tac` at line 914).",
+      "Repository `AeneasVerif/aeneas`, open unmerged PR #1551 (commit `1d8f9aa0121faca8ff113c1b9b742b333e3e1519`), `backends/lean/Aeneas/SepLogic/Tactic/Matchers.lean`, `cancelGoal` (doc lines 87-91, def lines 92-117): matches atoms at meta level via unification (`matchAll`) and kernel-checks two `proveEqAC` reorderings plus one `sep_mono` step."
+    ],
+    "design_question": "Which exact laws of `sep` and `⊢` justify removing an arbitrary common sub-multiset of atoms (including maximal `cancelAtoms` as a special case) when `sep` satisfies propositional ACU?",
+    "supporting_hypotheses": [
+      {
+        "theorem": "Toy.SepAC.acu_entails_of_cancelAtoms_of_sepMonoRight",
+        "name": "SepAssoc sep",
+        "purpose": "Groups the atoms cancelled by `cancelAtoms` into a single frame factor (the corollary instantiates the primary theorem via `cancelAtoms_spec`).",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.nonAssoc_tight_cancelAtoms_sepAssoc"
+      },
+      {
+        "theorem": "Toy.SepAC.acu_entails_of_cancelAtoms_of_sepMonoRight",
+        "name": "SepComm sep",
+        "purpose": "Reorders both atom lists so that the atoms cancelled by `cancelAtoms` come first.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.listAppend_tight_cancelAtoms_sepComm"
+      },
+      {
+        "theorem": "Toy.SepAC.acu_entails_of_cancelAtoms_of_sepMonoRight",
+        "name": "RightUnit sep emp",
+        "purpose": "Equates empty residuals `[]` with `emp` (critical when every atom cancels).",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.boolAndFalse_tight_cancelAtoms_rightUnit"
+      },
+      {
+        "theorem": "Toy.SepAC.acu_entails_of_cancelAtoms_of_sepMonoRight",
+        "name": "SepMonoRight sep entails",
+        "purpose": "Lifts the `cancelAtoms` residual entailment across the cancelled frame.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.capOne_tight_commonPerm_sepMonoRight",
+        "note": "its last two conjuncts state that the `cancelAtoms` residual holds and the conclusion fails."
+      },
+      {
+        "theorem": "Toy.SepAC.acu_entails_of_cancelAtoms_of_sepMonoRight",
+        "name": "entails (denoteAtoms sep emp env (cancelAtoms l.atoms r.atoms).fst) (denoteAtoms sep emp env (cancelAtoms l.atoms r.atoms).snd)",
+        "purpose": "Residual proof obligation remaining after maximal cancellation by `cancelAtoms`.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.natAdd_tight_cancelAtoms_residual"
+      }
+    ],
+    "supporting_nonvacuity_witness_lean": "Toy.SepAC.acu_entails_of_cancelAtoms_nonvacuous",
+    "lean_names": [
+      "Toy.SepAC.nonAssoc_tight_cancelAtoms_sepAssoc",
+      "Toy.SepAC.listAppend_tight_cancelAtoms_sepComm",
+      "Toy.SepAC.boolAndFalse_tight_cancelAtoms_rightUnit",
+      "Toy.SepAC.capOne_tight_commonPerm_sepMonoRight",
+      "Toy.SepAC.natAdd_tight_cancelAtoms_residual",
+      "Toy.SepAC.acu_entails_of_cancelAtoms_nonvacuous"
+    ]
+  },
+  {
+    "id": "R4b-frame-cancellation-bientails-acu",
+    "lean": [
+      "Toy.SepAC.bientails_acu_entails_of_common_perm_of_trans_sepMonoRight",
+      "Toy.SepAC.bientails_acu_entails_of_cancelAtoms_of_trans_sepMonoRight"
+    ],
+    "kind": "theorem",
+    "status": "proved",
+    "tier": "T2",
+    "tier_justification": "Generalizes reflective arbitrary-sub-multiset frame cancellation from extensional (`=`) ACU algebras to intensional/setoid (`Bientails`) BI logics without `propext`/`funext` (cf. MoSeL ICFP 2018 for generic BI over setoid `⊣⊢` and Braibant & Pous CPP 2011 for setoid AC equality reflection), showing that `EntailsTrans` cannot be dropped given the remaining hypotheses (`Toy.SepAC.tagDistLeOne_tight_bientails_commonPerm_trans`; relative tightness only, not a characterization) while deriving `EntailsRefl` and `SepMonoLeft`.",
+    "plain_claim": "When `sep` satisfies associativity, commutativity, and right unit only up to mutual entailment `Bientails entails` (`SepAssocBientails`, `SepCommBientails`, `RightUnitBientails`), adding `EntailsTrans entails` alongside `SepMonoRight sep entails` suffices to derive `entails (l.denote sep emp env) (r.denote sep emp env)` from `entails (denoteAtoms sep emp env ls) (denoteAtoms sep emp env rs)` for any common sub-multiset `common` with `l.atoms.Perm (common ++ ls)` and `r.atoms.Perm (common ++ rs)` (`EntailsRefl` and `SepMonoLeft` being derivable, and maximal `cancelAtoms` cancellation following via `cancelAtoms_spec`).",
+    "hypotheses": [
+      {
+        "name": "hTrans : EntailsTrans entails",
+        "purpose": "Chains multi-step normal-form bientailments across `SepMonoRight`, and derives `EntailsRefl` (`Toy.SepAC.entailsRefl_of_trans_of_rightUnitBientails`) and `SepMonoLeft` (`Toy.SepAC.sepMonoLeft_of_trans_of_commBientails_of_monoRight`).",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.tagDistLeOne_tight_bientails_commonPerm_trans"
+      },
+      {
+        "name": "hAssoc : SepAssocBientails sep entails",
+        "purpose": "Re-associates syntax trees and normal-form folds up to `Bientails`.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.nonAssoc_tight_bientails_commonPerm_sepAssoc"
+      },
+      {
+        "name": "hComm : SepCommBientails sep entails",
+        "purpose": "Reorders atom indices up to `Bientails` and derives `SepMonoLeft` and `LeftUnitBientails`.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.listAppend_tight_bientails_commonPerm_sepComm"
+      },
+      {
+        "name": "hRightUnit : RightUnitBientails sep emp entails",
+        "purpose": "Eliminates `Tree.unit` and trailing `foldr` `emp` factors up to `Bientails`, and together with `EntailsTrans` implies `EntailsRefl`.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.boolAndFalse_tight_bientails_commonPerm_rightUnit"
+      },
+      {
+        "name": "hMonoRight : SepMonoRight sep entails",
+        "purpose": "Frames the common cancelled prefix `common` onto `hResidual` and enables right `Bientails` congruence.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.capOne_tight_bientails_commonPerm_sepMonoRight"
+      },
+      {
+        "name": "hl : l.atoms.Perm (common ++ ls)",
+        "purpose": "Certifies that `common` and `ls` partition the atom multiset of `l`.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.natAdd_tight_bientails_commonPerm_leftPerm"
+      },
+      {
+        "name": "hr : r.atoms.Perm (common ++ rs)",
+        "purpose": "Certifies that `common` and `rs` partition the atom multiset of `r`.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.natAdd_tight_bientails_commonPerm_rightPerm"
+      },
+      {
+        "name": "hResidual : entails (denoteAtoms sep emp env ls) (denoteAtoms sep emp env rs)",
+        "purpose": "Residual entailment after removing `common` from both sides.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.natAdd_tight_bientails_commonPerm_residual"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`(TaggedNat, taggedSep, taggedEmp, taggedValLe)` satisfies all hypotheses while violating propositional `RightUnit taggedSep taggedEmp` (because `taggedSep` increments a syntax-depth counter).",
+    "nonvacuity_witness_lean": "Toy.SepAC.bientails_acu_entails_of_common_perm_nonvacuous",
+    "non_claims": [
+      "The hypotheses are sufficient, not necessary. Tightness is relative to the other hypotheses; for a particular `(sep, entails)`, cancellation may be sound without some or all of these laws (`Toy.SepAC.totalRelation_cancel_sound_without_laws`). No characterization of cancellation soundness is claimed.",
+      "Does not yield `l.denote = r.denote` (propositional equality), only `entails (l.denote ...) (r.denote ...)` (and `Bientails` when residuals hold in both directions).",
+      "Because `Bientails` cannot substitute inside arbitrary host-language contexts without explicit congruence lemmas, rewriting deeply nested subformulas still requires monotonicity of each surrounding connective.",
+      "`hResidual` is stated over `denoteAtoms` normal forms (with a trailing `emp`). Relating it to a tactic's residual goal without trailing `emp` uses `RightUnitBientails` and `EntailsTrans`.",
+      "Holds in both affine and linear separation logics (neither `AffineEntails emp entails` nor its negation is assumed). Leftover left-hand atoms in `ls` are not weakened away automatically: in an affine logic where `AffineEntails emp entails` holds, a residual goal `entails (denoteAtoms sep emp env ls) (denoteAtoms sep emp env [])` (`= emp`) follows from `AffineEntails` and must still be supplied as `hResidual`."
+    ],
+    "prior_art": [
+      "Krebbers, R., Jourdan, J.-H., Jung, R., Tassarotti, J., Kaiser, J.-O., Timany, A., Chargueraud, A. & Dreyer, D., 'MoSeL: a general, extensible modal framework for interactive proofs in separation logic', Proc. ACM Program. Lang. 2(ICFP), 2018, pp. 1-30, doi:10.1145/3236772. Formulates a generic BI interface (applicable to both affine and linear logics) over a setoid equivalence rather than tying tactics to Iris's `iProp`.",
+      "Braibant, T. & Pous, D., 'Tactics for Reasoning Modulo AC in Coq', CPP 2011, LNCS 7086, pp. 167-182, doi:10.1007/978-3-642-25379-9_14. Mechanizes reflective AC equality modulo user-defined equivalence relations (setoids).",
+      "Agda standard library (`agda/agda-stdlib` v2.1, commit `97bc55e47367c562b3032bf104f2a00b19716f88`), `src/Algebra/Solver/CommutativeMonoid.agda`: mechanizes commutative-monoid reflection over a setoid `≈`.",
+      "Appel, A. W. et al., Program Logics for Certified Compilers, Cambridge University Press, 2014, ISBN 978-1-107-04801-0 (bibliographic pointer only; chapter contents were not verified at the source, so no content claim is made)."
+    ],
+    "design_question": "What additional order laws become necessary when moving a reflective sub-multiset frame-cancellation kernel from an extensional assertion type (with `=`) to an intensional BI logic (with `⊣⊢` only)?",
+    "supporting_hypotheses": [
+      {
+        "theorem": "Toy.SepAC.bientails_acu_entails_of_cancelAtoms_of_trans_sepMonoRight",
+        "name": "EntailsTrans entails",
+        "purpose": "Chains the `Bientails` reassociation, reordering, and unit steps with the lifted residual entailment.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.tagDistLeOne_tight_bientails_cancelAtoms_trans"
+      },
+      {
+        "theorem": "Toy.SepAC.bientails_acu_entails_of_cancelAtoms_of_trans_sepMonoRight",
+        "name": "SepAssocBientails sep entails",
+        "purpose": "Groups the atoms cancelled by `cancelAtoms` into a single frame factor, up to mutual entailment.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.nonAssoc_tight_bientails_cancelAtoms_sepAssoc"
+      },
+      {
+        "theorem": "Toy.SepAC.bientails_acu_entails_of_cancelAtoms_of_trans_sepMonoRight",
+        "name": "SepCommBientails sep entails",
+        "purpose": "Reorders both sides so that the cancelled atoms come first, up to mutual entailment.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.listAppend_tight_bientails_cancelAtoms_sepComm"
+      },
+      {
+        "theorem": "Toy.SepAC.bientails_acu_entails_of_cancelAtoms_of_trans_sepMonoRight",
+        "name": "RightUnitBientails sep emp entails",
+        "purpose": "Relates empty residuals `[]` to `emp`, up to mutual entailment.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.boolAndFalse_tight_bientails_cancelAtoms_rightUnit"
+      },
+      {
+        "theorem": "Toy.SepAC.bientails_acu_entails_of_cancelAtoms_of_trans_sepMonoRight",
+        "name": "SepMonoRight sep entails",
+        "purpose": "Lifts the `cancelAtoms` residual entailment across the cancelled frame.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.capOne_tight_bientails_cancelAtoms_sepMonoRight"
+      },
+      {
+        "theorem": "Toy.SepAC.bientails_acu_entails_of_cancelAtoms_of_trans_sepMonoRight",
+        "name": "entails (denoteAtoms sep emp env (cancelAtoms l.atoms r.atoms).fst) (denoteAtoms sep emp env (cancelAtoms l.atoms r.atoms).snd)",
+        "purpose": "Residual proof obligation remaining after maximal cancellation by `cancelAtoms`.",
+        "tightness": "tight",
+        "counterexample": "Toy.SepAC.natAdd_tight_bientails_cancelAtoms_residual"
+      }
+    ],
+    "supporting_nonvacuity_witness_lean": "Toy.SepAC.bientails_acu_entails_of_cancelAtoms_nonvacuous",
+    "lean_names": [
+      "Toy.SepAC.tagDistLeOne_tight_bientails_cancelAtoms_trans",
+      "Toy.SepAC.nonAssoc_tight_bientails_cancelAtoms_sepAssoc",
+      "Toy.SepAC.listAppend_tight_bientails_cancelAtoms_sepComm",
+      "Toy.SepAC.boolAndFalse_tight_bientails_cancelAtoms_rightUnit",
+      "Toy.SepAC.capOne_tight_bientails_cancelAtoms_sepMonoRight",
+      "Toy.SepAC.natAdd_tight_bientails_cancelAtoms_residual",
+      "Toy.SepAC.bientails_acu_entails_of_cancelAtoms_nonvacuous"
+    ]
+  },
+  {
+    "id": "R4c-nonmonotone-preorder-cancellation-counterexample",
+    "lean": [
+      "Toy.SepAC.capOne_tight_commonPerm_sepMonoRight",
+      "Toy.SepAC.capOne_not_sepMonoRight"
+    ],
+    "kind": "counterexample",
+    "status": "proved",
+    "tier": "T0",
+    "tier_justification": "Reference point: concrete non-monotone preorder counterexample on `(Nat, +, 0)` refuting frame-cancellation soundness when `SepMonoRight` is omitted.",
+    "plain_claim": "Reference point: on `(Nat, +, 0)`, the preorder `capOneEntails` satisfies `EntailsRefl` and `EntailsTrans` while violating `SepMonoRight` (`capOne_not_sepMonoRight`), and cancelling `common = [0]` (matching `cancelAtoms`) from `atom 0 ⊢ atom 0 ∗ atom 0` reduces the false goal `1 ⊢ 2` to the true residual `0 ⊢ 1`.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Concrete capacity-bounded preorder `capOneEntails` on `(Nat, +, 0)` at `env 0 = 1`.",
+    "nonvacuity_witness_lean": "Toy.SepAC.capOne_tight_commonPerm_sepMonoRight",
+    "non_claims": [
+      "This counterexample is the `SepMonoRight` tightness witness of R4a and R4b, restated as a reference point.",
+      "Exhibits one non-monotone preorder that breaks cancellation. It does not characterize which non-monotone orders do."
+    ],
+    "prior_art": [
+      "Chargueraud, A., 'Separation Logic for Sequential Programs (Functional Pearl)', Proc. ACM Program. Lang. 4(ICFP), Article 116, 2020, doi:10.1145/3408998, Section 3.3 (Remark 3.10 on framing monotonicity)."
+    ],
+    "design_question": "Reference point: how does frame cancellation fail when `sep` is not monotone for a reflexive, transitive entailment preorder `⊢`?"
+  },
+  {
+    "id": "R4d-maximal-cancellation-converse-failure",
+    "lean": [
+      "Toy.SepAC.cellModel_cancelAtoms_converse_fails",
+      "Toy.SepAC.twoCellModel_affine_cancelAtoms_converse_fails",
+      "Toy.SepAC.partial_cancellation_succeeds_where_cancelAtoms_fails",
+      "Toy.SepAC.affineCellEntails_residual_holds"
+    ],
+    "kind": "counterexample",
+    "status": "proved",
+    "tier": "T1",
+    "tier_justification": "Folklore non-invertibility of greedy maximal frame cancellation in separation logics with disjointness conflict (consistent with Charguéraud 2020 Appendix K, which notes generically, without naming specific rules, that some `xsimpl` simplifications are not equivalence-preserving), made precise with illustrative (not minimal) linear (`CellModel`) and affine (`TwoCellModel`) finite countermodels plus a witness separating partial from maximal cancellation; two-element models (`Toy.SepAC.boolOr_linear_cancelAtoms_converse_fails`, `Toy.SepAC.boolAnd_affine_cancelAtoms_converse_fails`) and `CellModel` under `affineCellEntails` (`Toy.SepAC.cellModel_affine_cancelAtoms_converse_fails`) also exhibit the failure.",
+    "plain_claim": "Even when all ACU, preorder, and monotonicity laws hold, maximal syntactic cancellation (`cancelAtoms`) is not invertible: (1) in the linear 1-cell conflict model `CellModel` (`¬ AffineEntails`), `(owned ∗ owned) ⊢ owned` holds while `cancelAtoms` yields the false residual `owned ⊢ empty` (a residual that becomes valid under affine `affineCellEntails`); (2) in the affine 2-cell conflict model `TwoCellModel` (`AffineEntails`), `(cellA ∗ cellA) ⊢ (cellA ∗ cellB)` holds while `cancelAtoms` yields the false non-`emp` residual `cellA ⊢ cellB`; and (3) on `((0 ∗ 0) ∗ 0) ⊢ (0 ∗ 0)` in `CellModel`, maximal `cancelAtoms` fails whereas partial cancellation (`common = [0]`) leaves the valid residual `conflict ⊢ owned`.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Concrete evaluations in `CellModel` (linear, `env 0 = .owned`) and `TwoCellModel` (affine, `env 0 = .cellA`, `env 1 = .cellB`).",
+    "nonvacuity_witness_lean": [
+      "Toy.SepAC.cellModel_cancelAtoms_converse_fails",
+      "Toy.SepAC.twoCellModel_affine_cancelAtoms_converse_fails"
+    ],
+    "non_claims": [
+      "`CellModel.entails` is linear (`owned ⊬ empty`). In affine logics, where every assertion entails `emp`, the exhibited residual `owned ⊢ empty` is valid (`Toy.SepAC.affineCellEntails_residual_holds`), so the single-cell linear witness does not by itself show incompleteness for affine logics. An affine witness needs a residual whose right-hand side is not `emp` (provided by `Toy.SepAC.twoCellModel_affine_cancelAtoms_converse_fails`, and also by `Toy.SepAC.cellModel_affine_cancelAtoms_converse_fails` and `Toy.SepAC.boolAnd_affine_cancelAtoms_converse_fails`).",
+      "Refutes completeness/invertibility of maximal syntactic cancellation (`cancelAtoms`), NOT soundness (`Toy.SepAC.acu_entails_of_common_perm_of_sepMonoRight`): a non-maximal common sub-multiset cancellation can still succeed where `cancelAtoms` fails (`Toy.SepAC.partial_cancellation_succeeds_where_cancelAtoms_fails`).",
+      "\"(ℓ ↦ v) ∗ (ℓ ↦ v) = False\" for the cited prototype is a derived modeling-bridge claim (consistent with `Resource.not_compatible_self`), not a lemma of the prototype.",
+      "No minimality claim: `CellModel` (3 states) and `TwoCellModel` (5 states) are illustrative countermodels. Two-element models already exhibit non-invertible maximal cancellation in the linear case (`Toy.SepAC.boolOr_linear_cancelAtoms_converse_fails`, `(Bool, Bool.or, false)` with the implication order) and in the affine case (`Toy.SepAC.boolAnd_affine_cancelAtoms_converse_fails`, `(Bool, Bool.and, true)`), and `CellModel` under the affine order `affineCellEntails` gives an affine witness with the non-`emp` residual `empty ⊢ owned` (`Toy.SepAC.cellModel_affine_cancelAtoms_converse_fails`)."
+    ],
+    "prior_art": [
+      "Chargueraud, A., 'Separation Logic for Sequential Programs (Functional Pearl)', Proc. ACM Program. Lang. 4(ICFP), Article 116, August 2020, doi:10.1145/3408998: Lemma 3.11 (`single-conflict`: `(p ↪ v1) ⋆ (p ↪ v2) ⊢ [False]`) and Appendix K (`xsimpl`: the text notes generically, without naming specific rules, that 'there are a number of simplifications that are technically not equivalence-preserving, yet nearly always desirable to perform'; Definition K.1, rule (4), removes a predicate `H` other than `⊤⊤` that occurs on both sides).",
+      "Krebbers, R., Jourdan, J.-H., Jung, R., Tassarotti, J., Kaiser, J.-O., Timany, A., Chargueraud, A. & Dreyer, D., 'MoSeL: a general, extensible modal framework for interactive proofs in separation logic', Proc. ACM Program. Lang. 2(ICFP), 2018, pp. 1-30, doi:10.1145/3236772 (distinguishes affine and linear separation logics).",
+      "Malecha, G., Chlipala, A. & Braibant, T., 'Compositional Computational Reflection', ITP 2014, LNCS 8558, pp. 374-389, doi:10.1007/978-3-319-08970-6_24: MirrorShard's reflective entailment checker (Listing 1) reifies propositional separation logic into `sexpr := Star | Opaque | Emp` with list-environment denotation `sexprD`, erases `Emp` terms and crosses common terms off both sides in `check_entailment`, and proves `check_entailment_sound` (plus extensible `Apply_cancel_sound` for Bedrock) discharged by reflexivity."
+    ],
+    "design_question": "Why can eager maximal syntactic cancellation turn a valid separation-logic entailment into an unprovable residual in both linear and affine models, and why does a kernel need arbitrary (partial) sub-multiset cancellation?",
+    "lean_names": [
+      "Toy.SepAC.boolOr_linear_cancelAtoms_converse_fails",
+      "Toy.SepAC.boolAnd_affine_cancelAtoms_converse_fails",
+      "Toy.SepAC.cellModel_affine_cancelAtoms_converse_fails"
+    ]
+  },
+  {
+    "id": "R5-quasilinear-sort-check-and-size-bounds",
+    "lean": "Toy.SepAC.checkPermSort_eq_isPerm_and_size_bounds",
+    "kind": "theorem",
+    "status": "proved",
+    "tier": "T0",
+    "tier_justification": "Classical equivalence of multiset permutation and sorted-list equality under a total order, mechanized in core Lean `v4.34.1` via `List.mergeSort_perm`, `List.pairwise_mergeSort`, and `List.Perm.eq_of_pairwise` alongside difference-list flattening `atomsFast`.",
+    "plain_claim": "For all trees `l, r : Tree`, the accumulator-plus-merge-sort boolean check `checkPermSort l r` equals `l.atoms.isPerm r.atoms`, `atomsFast` equals `atoms` without `List.append`, and `atomsFast.length = atomCount ≤ size`.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Distinct trees `((atom 2 ∗ unit) ∗ atom 0)` and `(atom 0 ∗ atom 2)` satisfy `checkPermSort l r = true` and `l.atomCount = 2 < 5 = l.size`.",
+    "nonvacuity_witness_lean": "Toy.SepAC.checkPermSort_nonvacuous",
+    "non_claims": [
+      "Asymptotic time complexity is informal, not formalized in a machine cost model: `atomsFast` visits each `Tree` constructor once ($O(|t|)$, vs $O(|t|^2)$ worst-case for `Tree.atoms` on left-nested spines) and `List.mergeSort (· ≤ ·)` performs $O(m \\log m)$ `Nat` comparisons where $m = \\text{atomCount} \\le \\text{size}$ (vs $O(m^2)$ comparisons for core Lean's `List.isPerm`).",
+      "Each `Nat` comparison in Lean's kernel takes time proportional to the bit-length of the index ($O(\\log k)$ for `Nat` literals), though reification assigns dense indices $0, \\dots, m - 1$.",
+      "Critical Lean `v4.34.1` kernel caveat: core Lean defines `List.mergeSort` (`Init.Data.List.Sort.Basic`, lines 79-87) by well-founded recursion (`termination_by xs => xs.length`), replaced at runtime via the `@[csimp]` theorem `List.mergeSort_eq_mergeSortTR₂` (`Init.Data.List.Sort.Impl`, line 240). The logical definition uses well-founded recursion, and on the instances probed by `support/KernelReductionProbe.lean` the Lean `v4.34.1` kernel neither reduces `checkPermSort l r` to `true` by `whnf` nor accepts `checkPermSort l r ≡ true`, so `Eq.refl true` does not prove `checkPermSort l r = true` there, whereas the probed structurally recursive `List.isPerm` instance reduces (execution observation; not proved for all `l, r`). A reflective kernel closing its side condition via `mkEqRefl` should therefore keep structural `List.isPerm`, use a structurally recursive sort, or rewrite with `Toy.SepAC.checkPermSort_eq_isPerm_and_size_bounds` first.",
+      "Core Lean's own reflective AC tactic sorts with a structurally recursive insertion sort (`Lean.Data.AC.sort`). It is quadratic but kernel-reducible, which is consistent with the caveat above."
+    ],
+    "prior_art": [
+      "Lean 4 core library (`leanprover/lean4:v4.34.1`, commit `5045d0056413266e57c625dcd7c365b10e377c52`): `Init.Data.List.Basic` (`List.Perm` line 1858, `List.isPerm` line 1886), `Init.Data.List.Perm` (`List.isPerm_iff` line 448, `List.Perm.eq_of_pairwise` line 530), `Init.Data.List.Sort.Basic` (`List.mergeSort` lines 79-87), `Init.Data.List.Sort.Impl` (`@[csimp] mergeSort_eq_mergeSortTR₂` line 240), `Init.Data.List.Sort.Lemmas` (`List.mergeSort_perm` line 280, `List.pairwise_mergeSort` line 305), and `Init.Data.AC` (`Lean.Data.AC.sort` lines 76-80).",
+      "Repository `AeneasVerif/aeneas`, open unmerged PR #1551 (commit `1d8f9aa0121faca8ff113c1b9b742b333e3e1519`), `backends/lean/Aeneas/SepLogic/Tactic/Normalize.lean`: uses `qsort` at meta time (`proveEqAC`, line 157) and structural `List.isPerm` in the kernel (`Tree.denote_eq`, lines 59-62)."
+    ],
+    "design_question": "Does core Lean `v4.34.1` already provide `List.isPerm`, what is its algorithmic and kernel-reduction behavior vs accumulator extraction + `List.mergeSort` and core `Lean.Data.AC.sort`, and are `checkPermSort` and `List.isPerm` provably identical?"
+  }
+]

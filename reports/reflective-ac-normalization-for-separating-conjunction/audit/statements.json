@@ -1,0 +1,490 @@
+{
+  "statements": {
+    "Toy.SepAC.ac_denote_eq_of_unitCount_eq_of_isPerm": {
+      "closure_sha256": "25698eb3ec35e1de130b0066c821d25de8735716abbe69a93cdf27b1e87ef30c",
+      "closure_size": 18,
+      "statement_sha256": "bbb3d67832939425777f74e6bf680203ccadaf7e41aae8fcb201e8d15a0c9365"
+    },
+    "Toy.SepAC.ac_denote_eq_of_unitCount_eq_of_isPerm_iff": {
+      "closure_sha256": "25698eb3ec35e1de130b0066c821d25de8735716abbe69a93cdf27b1e87ef30c",
+      "closure_size": 18,
+      "statement_sha256": "b5f70f90f1d5aca76302b9484ec396a50e1037122eab21fbb78ac1f36fb12a75"
+    },
+    "Toy.SepAC.ac_denote_eq_of_unitCount_eq_of_isPerm_nonvacuous": {
+      "closure_sha256": "b7f6bf7d6848421e6e0f0c8b44c7dd77f6c8d44e5c326d05fc25a728351fcc05",
+      "closure_size": 21,
+      "statement_sha256": "0f8558bdaa3f108c5921d5f3d40b68ba95a5f9fa00ee06314bd65dfd61c8b5d1"
+    },
+    "Toy.SepAC.ac_denote_eq_of_unitFree_of_isPerm": {
+      "closure_sha256": "bcda5985081f83628c7d960c3a87a84fd9948500426f16706ad2347c669041ad",
+      "closure_size": 18,
+      "statement_sha256": "edcbd3fa6beb88c904569195eca60d6346bc117dac8ff2f63a97b04983d675dd"
+    },
+    "Toy.SepAC.ac_denote_eq_of_unitFree_of_isPerm_iff": {
+      "closure_sha256": "bcda5985081f83628c7d960c3a87a84fd9948500426f16706ad2347c669041ad",
+      "closure_size": 18,
+      "statement_sha256": "c0d9b8cc25f2f322258d52a4b78eb5afe37881d1bde4fa1fe4f2ec679c844636"
+    },
+    "Toy.SepAC.ac_denote_eq_of_unitFree_of_isPerm_nonvacuous": {
+      "closure_sha256": "6e09550755ad9afe2bba9ad123a06d34d971c294b36cb9cad77f514222ee3dfb",
+      "closure_size": 17,
+      "statement_sha256": "21984d2092d6549e746870b3faba946978f54c50cd2a127735304c5d6470fe03"
+    },
+    "Toy.SepAC.ac_laws_of_unitCount_denote_eq_of_isPerm": {
+      "closure_sha256": "25698eb3ec35e1de130b0066c821d25de8735716abbe69a93cdf27b1e87ef30c",
+      "closure_size": 18,
+      "statement_sha256": "b5e3e2533a6423d4fdbc388190ac06a05f24df208b0e9434561468514baf7dc3"
+    },
+    "Toy.SepAC.ac_laws_of_unitFree_denote_eq_of_isPerm": {
+      "closure_sha256": "bcda5985081f83628c7d960c3a87a84fd9948500426f16706ad2347c669041ad",
+      "closure_size": 18,
+      "statement_sha256": "891b99d76f06b28d06455b92853f20f961b4da02cf2ef8d267b1bfb036c0417e"
+    },
+    "Toy.SepAC.acu_denote_eq_of_isPerm": {
+      "closure_sha256": "90398009e27d76d34eca380054436f27cd138943878533155967679c1a430232",
+      "closure_size": 17,
+      "statement_sha256": "d0225a412d58381e20262f5060ff298eb931b9eb008bcdaf72d8d58a7e2ac94a"
+    },
+    "Toy.SepAC.acu_denote_eq_of_isPerm_iff": {
+      "closure_sha256": "90398009e27d76d34eca380054436f27cd138943878533155967679c1a430232",
+      "closure_size": 17,
+      "statement_sha256": "6cac28c0153c5f076615fef9f488f14e646d58ff4657074258532eb83cd9863f"
+    },
+    "Toy.SepAC.acu_denote_eq_of_isPerm_nonvacuous": {
+      "closure_sha256": "d99eabbc57edeba8a37744d2bcfed2456dc528b1b919d65414ae215b63db7077",
+      "closure_size": 25,
+      "statement_sha256": "43bb7ee51a773d36863041ecc934b3ec9409097fbb56089a3ba09610568b77d4"
+    },
+    "Toy.SepAC.acu_entails_of_cancelAtoms_nonvacuous": {
+      "closure_sha256": "802bda30ad9b27fe9d8097d629d8ccbad35ac0e4411225ec4a9a3ac99fe75fb9",
+      "closure_size": 36,
+      "statement_sha256": "f20aa0b79376a1d495922f12228e64534af80e145f201007327a869f1c299728"
+    },
+    "Toy.SepAC.acu_entails_of_cancelAtoms_of_sepMonoRight": {
+      "closure_sha256": "ed8d2ea769b4c7c84ae5a09fa4c093b19a69de6cf153422833abbeac3aab9ff4",
+      "closure_size": 23,
+      "statement_sha256": "c86cbe7d0c38ad912b78d3b53884a830269e09bfc495f9a9823ec0257a86d6a2"
+    },
+    "Toy.SepAC.acu_entails_of_common_perm_nonvacuous": {
+      "closure_sha256": "4fc7e41039e63b5c8c0acb22ca6b5e87286dd98b3170f4081a441b0632d80d86",
+      "closure_size": 31,
+      "statement_sha256": "373ae6e6dff3775d4222c56b07410a1dcc7bf90508bcb5dd42e6d5fe785bda94"
+    },
+    "Toy.SepAC.acu_entails_of_common_perm_of_sepMonoRight": {
+      "closure_sha256": "5b05948a3285d0b96d2a3f0f0851378ad5ea33a6f621ff53dc9856a5b1dfb147",
+      "closure_size": 19,
+      "statement_sha256": "075a76e9db08e7f1d1b7df4f834ff1bafed2f70b9334dc39c7fcde2d6f472edf"
+    },
+    "Toy.SepAC.acu_laws_of_denote_eq_of_isPerm": {
+      "closure_sha256": "90398009e27d76d34eca380054436f27cd138943878533155967679c1a430232",
+      "closure_size": 17,
+      "statement_sha256": "021e64443fbd6dc625eea4f4e22e02e382352e294e03f2f5709c01f155e8586b"
+    },
+    "Toy.SepAC.affineCellEntails_residual_holds": {
+      "closure_sha256": "d94249ba6feaf35e79e6d6072443258a014749094f6561e7574579c92dc9d5cb",
+      "closure_size": 38,
+      "statement_sha256": "6aef7af8a44ab7c8a442844dc76241da4e6d7c6948d2371b90170bad2b717c6e"
+    },
+    "Toy.SepAC.assoc_units_of_denote_eq_denoteAtoms": {
+      "closure_sha256": "a9c4748c23ca97222d81ffc2e11ed9887a43e795592638c8d06edb2b5c6554f2",
+      "closure_size": 18,
+      "statement_sha256": "89d91a43a6115bcead5654182cdaa34e88d139aa4ddb44b2427c66f3a1be58ea"
+    },
+    "Toy.SepAC.atMostTwo_comm_unital_sepAssoc": {
+      "closure_sha256": "949ef6ef07de8d02d843af1b26a941ed5abc0ce40456bd68ab7cf11e448d6334",
+      "closure_size": 3,
+      "statement_sha256": "2584a8d06d0abda177f61ea0f8fbd059965dac69694cfe4d4fb0e761b93d972c"
+    },
+    "Toy.SepAC.bag_dupAtomTree_denote_ne_singleAtomTree": {
+      "closure_sha256": "994fa012bed4d0aab4d558c521dff969b2079ac3bd33720fc3a075f3a3eeafdf",
+      "closure_size": 29,
+      "statement_sha256": "ceedae2b59c9757aa2026f0b7d53eb597b2ae7d27bf73568901c3f9f4dfe1fb3"
+    },
+    "Toy.SepAC.bag_tight_denote_eq": {
+      "closure_sha256": "5d98dc6afec203e6511095ce4a7c9ccdee398ee4d3f7ccf90c69c378869d7f90",
+      "closure_size": 24,
+      "statement_sha256": "3af0a8e3d9417ab4689b5139eead52f3869d84aab8ec6a633295f07d37c206cf"
+    },
+    "Toy.SepAC.bientails_acu_entails_of_cancelAtoms_nonvacuous": {
+      "closure_sha256": "c8b2e8a1d20a1d2797e2fb5360d78960602abc66673dcf0206a317b25db537e8",
+      "closure_size": 38,
+      "statement_sha256": "3698f0c4a905121254d1ad0b8ad452d127d07489c2b1c0e26b16a4587ff600b5"
+    },
+    "Toy.SepAC.bientails_acu_entails_of_cancelAtoms_of_trans_sepMonoRight": {
+      "closure_sha256": "c52014ea2d2c86041af4ca4259914c93286ced5dd76bb93d97a2f9d8c8ae0888",
+      "closure_size": 25,
+      "statement_sha256": "388dfd871e467168c96b31df1639a5e741104cdf4894296ed429291cd7549586"
+    },
+    "Toy.SepAC.bientails_acu_entails_of_common_perm_nonvacuous": {
+      "closure_sha256": "5d0d918833af251ef8a11b11fca2ff553593af6e38d13131b3f1e63a60f3a7a6",
+      "closure_size": 24,
+      "statement_sha256": "0b0580aebbdb4408e7b22b6ca580dde20a2d1de3b042ef5100d56d05cb9178ee"
+    },
+    "Toy.SepAC.bientails_acu_entails_of_common_perm_of_trans_sepMonoRight": {
+      "closure_sha256": "73e59dfc26fac713d97ca991a666ca17b3ccaa54d94f4c5633d1f356fc3c12b6",
+      "closure_size": 21,
+      "statement_sha256": "0b578a4cc60e0cdc69fca9cc4e77289660e2673d353413569b0c8333e8319596"
+    },
+    "Toy.SepAC.boolAndFalse_tight_bientails_cancelAtoms_rightUnit": {
+      "closure_sha256": "f6ecf8287bbcf32f3023c55a447b1de904f615505ec689d7dc04180de1c30b8c",
+      "closure_size": 24,
+      "statement_sha256": "e898d73d29ddfa3057cac335ff607dcebdf14f29f111fb94cb417cca6e7b2f81"
+    },
+    "Toy.SepAC.boolAndFalse_tight_bientails_commonPerm_rightUnit": {
+      "closure_sha256": "13f1c5883dfbc09c720810955e318769579f7b1d463d423259cfed545fdaf8f9",
+      "closure_size": 20,
+      "statement_sha256": "21b96ba9cf957af9bb912638b125f05631f3946ecb8e0df66edb116c7033f4a3"
+    },
+    "Toy.SepAC.boolAndFalse_tight_cancelAtoms_rightUnit": {
+      "closure_sha256": "a61df80fed4310742bdc224f9022c7da04dbca0141ccf15e21fba3f1459ab9f0",
+      "closure_size": 22,
+      "statement_sha256": "58576fb0f40eb7bb82bfafca819c5d933f34862513c578a7429776b675b4f8bb"
+    },
+    "Toy.SepAC.boolAndFalse_tight_commonPerm_rightUnit": {
+      "closure_sha256": "bf1ff499e106e3e35dfd82ec07b1681281ba6e8a49b3023e5b8879d55dd5fb80",
+      "closure_size": 18,
+      "statement_sha256": "61be493c7624f4a2474dff3cf0d418f89e22cf02d8b5c18d6a8249f5b4859d39"
+    },
+    "Toy.SepAC.boolAndFalse_tight_isPerm_rightUnit": {
+      "closure_sha256": "90398009e27d76d34eca380054436f27cd138943878533155967679c1a430232",
+      "closure_size": 17,
+      "statement_sha256": "aff402a4c822e07fb9e5f37025389d48c90c3938c520a5f663d6b598c62c8cf9"
+    },
+    "Toy.SepAC.boolAndFalse_tight_unitCount_eq": {
+      "closure_sha256": "25698eb3ec35e1de130b0066c821d25de8735716abbe69a93cdf27b1e87ef30c",
+      "closure_size": 18,
+      "statement_sha256": "183c1fd0f2481a72d6d55656c394c2b881ab8e843afc3131676a7675791f6506"
+    },
+    "Toy.SepAC.boolAndFalse_tight_unitCount_perm": {
+      "closure_sha256": "25698eb3ec35e1de130b0066c821d25de8735716abbe69a93cdf27b1e87ef30c",
+      "closure_size": 18,
+      "statement_sha256": "9fbb9a930749f7ea575d517c7e434b5181a33e7dc8982982da1c6989ef0753a0"
+    },
+    "Toy.SepAC.boolAndFalse_tight_unitFree_left": {
+      "closure_sha256": "bcda5985081f83628c7d960c3a87a84fd9948500426f16706ad2347c669041ad",
+      "closure_size": 18,
+      "statement_sha256": "0ad4a2be6941c131bfbed17d5d1b78aa000675b5e12c1f5ac0de0b6b5b42e203"
+    },
+    "Toy.SepAC.boolAndFalse_tight_unitFree_perm": {
+      "closure_sha256": "bcda5985081f83628c7d960c3a87a84fd9948500426f16706ad2347c669041ad",
+      "closure_size": 18,
+      "statement_sha256": "b28edd5061c766446ade1282ad2248d1230478b6d7e720a7c8744857d7eef9d7"
+    },
+    "Toy.SepAC.boolAndFalse_tight_unitFree_right": {
+      "closure_sha256": "bcda5985081f83628c7d960c3a87a84fd9948500426f16706ad2347c669041ad",
+      "closure_size": 18,
+      "statement_sha256": "a6188b270323e3ce28ba44aaba82f2f443846fd6c0219fa3e725f3d519675eb7"
+    },
+    "Toy.SepAC.boolAndTrue_tight_isPerm_perm": {
+      "closure_sha256": "90398009e27d76d34eca380054436f27cd138943878533155967679c1a430232",
+      "closure_size": 17,
+      "statement_sha256": "4737f8b93e4b417b964a312b91e764116659e62a2a5ff6382739b05cbb2ff446"
+    },
+    "Toy.SepAC.boolAnd_affine_cancelAtoms_converse_fails": {
+      "closure_sha256": "1aacf1fee487bb8cbf8a3dcd6b9a923ab80c372bd68ccf89a69e7eacd450bac7",
+      "closure_size": 27,
+      "statement_sha256": "a6cc1079f46232e008b46883d8320243d1ef08ed732454ccd4393279e85e0b13"
+    },
+    "Toy.SepAC.boolOr_linear_cancelAtoms_converse_fails": {
+      "closure_sha256": "1aacf1fee487bb8cbf8a3dcd6b9a923ab80c372bd68ccf89a69e7eacd450bac7",
+      "closure_size": 27,
+      "statement_sha256": "faebdabfa5ee2b1b8a79bdd01f14fcb17bd93243390adadce09d724015393077"
+    },
+    "Toy.SepAC.boolOr_sepIdem": {
+      "closure_sha256": "4d8da670d6ce90762dc2e8c057286d4bca913830e3c0d4d781e6dd808ad5a3f0",
+      "closure_size": 1,
+      "statement_sha256": "2f6b242d92d128ad73c1527a2c4e2fa894b52c9c39c04650399248b092bf945a"
+    },
+    "Toy.SepAC.cancelAtoms_count": {
+      "closure_sha256": "99a7645ce0eb7b0e0ca1ad888d49f52ff3fc94b0d2c7e360ff09b1cfca953c48",
+      "closure_size": 4,
+      "statement_sha256": "4c78296148edc9a00830baf1523d6396eb694e028bc0a62460d179b2395d23e9"
+    },
+    "Toy.SepAC.cancelAtoms_disjoint": {
+      "closure_sha256": "99a7645ce0eb7b0e0ca1ad888d49f52ff3fc94b0d2c7e360ff09b1cfca953c48",
+      "closure_size": 4,
+      "statement_sha256": "181f4c564fd8ddb33a258e4231b1a923b76e1872128b5d1ba7fb07eda7c9ca97"
+    },
+    "Toy.SepAC.cancelAtoms_spec": {
+      "closure_sha256": "99a7645ce0eb7b0e0ca1ad888d49f52ff3fc94b0d2c7e360ff09b1cfca953c48",
+      "closure_size": 4,
+      "statement_sha256": "82575a8c5bac40a2f2bbd6b9a80bf1a07242787767935b97472978c1f2d21ea0"
+    },
+    "Toy.SepAC.capOne_not_sepMonoRight": {
+      "closure_sha256": "4336d4bde1ce7db1a1f6d96ba516ffdcdf4b4534d77b4bde8743425dc1a75e95",
+      "closure_size": 4,
+      "statement_sha256": "2fcde3513aa681e0c6949dda5612f96d02384aa824aaeef86b9836fa28c94b5f"
+    },
+    "Toy.SepAC.capOne_tight_bientails_cancelAtoms_sepMonoRight": {
+      "closure_sha256": "cbac0e61fc77437b46272739ab0ff650415a330dd7cc00773bdfc91eec649f85",
+      "closure_size": 28,
+      "statement_sha256": "93b5a2f679b24013f3c645e12cba0373f1d18af7e627ca575338c7d82f9e6bc0"
+    },
+    "Toy.SepAC.capOne_tight_bientails_commonPerm_sepMonoRight": {
+      "closure_sha256": "cd1bafecac41f186341bc8fcc0d9026af29565575a9c093813231b65506ed52f",
+      "closure_size": 24,
+      "statement_sha256": "a36817041be917951597fb2386585bd497a4432fcdc17137302cb330d6796533"
+    },
+    "Toy.SepAC.capOne_tight_commonPerm_sepMonoRight": {
+      "closure_sha256": "82ecf8657e02490d6e6cc9fdb8ecb3db71a7eb69db165d052c5850bf5ecd13f3",
+      "closure_size": 28,
+      "statement_sha256": "fb6a4fc6a6b8ff0147c7f9b209e60e3bd543b91ca77d7d4f3a8e79a81715fcad"
+    },
+    "Toy.SepAC.cellModel_affine_cancelAtoms_converse_fails": {
+      "closure_sha256": "e87ee5d3ada7ef0f7f87dcd0585900f9f1cf14c1703393e302ffaba3668900fb",
+      "closure_size": 41,
+      "statement_sha256": "b756846b194bbd4b4987e08d22858b6ca902675e92d8d0e7ec3595b414d97246"
+    },
+    "Toy.SepAC.cellModel_cancelAtoms_converse_fails": {
+      "closure_sha256": "c8e1a5882309f7954533985cc0ba5acc1db2966bb52a994e9c863fe59be1cbc9",
+      "closure_size": 40,
+      "statement_sha256": "6ec59cf7a6e6d619fdfd92e5e7c64ccd52951583173c0c80c444437a4c2f99a5"
+    },
+    "Toy.SepAC.cellModel_conflict_idemElem_incomplete": {
+      "closure_sha256": "b7ac5b1435267e6730fb01f3dfbcca29a366aef8bc199aa7689918d3221a03d7",
+      "closure_size": 31,
+      "statement_sha256": "759231ab0299fde000ebe08fcb48e80ea47347d88a11255bb5f8d507f8d45efb"
+    },
+    "Toy.SepAC.cellModel_incomplete_without_sepIdem": {
+      "closure_sha256": "b7ac5b1435267e6730fb01f3dfbcca29a366aef8bc199aa7689918d3221a03d7",
+      "closure_size": 31,
+      "statement_sha256": "00c994cec97a689eceb7d3be08cb3de0f66cbb66e831da0fbcc271f4bdffc571"
+    },
+    "Toy.SepAC.checkPermSort_eq_isPerm_and_size_bounds": {
+      "closure_sha256": "5d3e28a2109a1a18dbf250e5b50bbe20c5f0d87a32ceb2c0ce1ec523e60144e2",
+      "closure_size": 22,
+      "statement_sha256": "400bd799720b055fc148588c06b2ae42cae0afe3e32f4ec52f529e554d07aa73"
+    },
+    "Toy.SepAC.checkPermSort_nonvacuous": {
+      "closure_sha256": "e60aecbcd4b7cc2d7c8f8e0e0fa4f664621049151132ad47b5276d0cac980146",
+      "closure_size": 19,
+      "statement_sha256": "8ff32f9696ad7c36ef16bed46d0af1cc6fddeb4bb08b7565bc061e48b3b0772f"
+    },
+    "Toy.SepAC.denote_eq_and_isPerm_false_of_idemElem": {
+      "closure_sha256": "ebdf284ab2971cd596f4b613644a30fb878f2363d37fe205af7d4cc1e1238805",
+      "closure_size": 17,
+      "statement_sha256": "31b71418ed4751992969b2c28f7722bf4f0b0d58402bdf1b4197e4088fb5e1eb"
+    },
+    "Toy.SepAC.denote_eq_and_isPerm_false_of_sepIdem": {
+      "closure_sha256": "7c3abae4619c44ee6809c3bd4a3c3f5bb28caf7f1e5214aa9e4c1f62a9b7e619",
+      "closure_size": 17,
+      "statement_sha256": "0748d9a1baaecdcba7b26807adc2ce4720cac93c27ed5e8a47e3471e9b4aa70a"
+    },
+    "Toy.SepAC.denote_eq_denoteAtoms_iff_assoc_units": {
+      "closure_sha256": "a9c4748c23ca97222d81ffc2e11ed9887a43e795592638c8d06edb2b5c6554f2",
+      "closure_size": 18,
+      "statement_sha256": "6ec91214087a4678f1ad5ddbe8be522a479da78a9988ec2795653bbfe45e44d0"
+    },
+    "Toy.SepAC.denote_eq_denoteAtoms_of_assoc_units": {
+      "closure_sha256": "a9c4748c23ca97222d81ffc2e11ed9887a43e795592638c8d06edb2b5c6554f2",
+      "closure_size": 18,
+      "statement_sha256": "cccec1c2bf10bd267bbc2bc9de8fe39b9d500982fb227be5f98860a68ce9a85f"
+    },
+    "Toy.SepAC.denote_eq_denoteAtoms_of_assoc_units_nonvacuous": {
+      "closure_sha256": "dfe2c244c784ee4fd233547595f68bd13125e3104dfe561a7870730819b89c34",
+      "closure_size": 4,
+      "statement_sha256": "bafb99545be8879f780c7897bee25177da4092365fbc003758ab882c2c299d57"
+    },
+    "Toy.SepAC.idempotent_bool_acu_incomplete": {
+      "closure_sha256": "3b8c0e9178c871dd30399fc3e1b550297847baf7fa7dbc5bce79cd8c928b4cdb",
+      "closure_size": 21,
+      "statement_sha256": "f5976f9aa855661eb725b218dc094d61e5c4d4865b91dbd763018e4ae3a4f8b8"
+    },
+    "Toy.SepAC.isPerm_iff_bag_denote_eq": {
+      "closure_sha256": "5d98dc6afec203e6511095ce4a7c9ccdee398ee4d3f7ccf90c69c378869d7f90",
+      "closure_size": 24,
+      "statement_sha256": "f2cca7d7eb588ba7b534a59c4f3a9162f014112af77ec33eb48c006a14295ec2"
+    },
+    "Toy.SepAC.isPerm_iff_forall_acu_denote_eq": {
+      "closure_sha256": "90398009e27d76d34eca380054436f27cd138943878533155967679c1a430232",
+      "closure_size": 17,
+      "statement_sha256": "83c802292ab28cfbd21c793eba06b06e7d742f6a0f84d740dcb4a020cee9ae4a"
+    },
+    "Toy.SepAC.isPerm_of_bag_denote_eq": {
+      "closure_sha256": "5d98dc6afec203e6511095ce4a7c9ccdee398ee4d3f7ccf90c69c378869d7f90",
+      "closure_size": 24,
+      "statement_sha256": "266d862b1b39e05353f2677927f016f4ec97369ac3ab6d8ceb15a88d00f96e3c"
+    },
+    "Toy.SepAC.isPerm_of_bag_denote_eq_nonvacuous": {
+      "closure_sha256": "6b69c2376a7df4b5c7750e6ed7bd60d1a563f665a9fd8d9e86a30ed7e6767db3",
+      "closure_size": 22,
+      "statement_sha256": "3a540a4e78952aa5697c1d4c128e85c42f48fdc207c968eab61423644bf772f6"
+    },
+    "Toy.SepAC.leftProj_tight_flattening_leftUnit": {
+      "closure_sha256": "c850f70c961f7e81e6be9729ae1e8bb0c6ee9d8ce2a0b377a6a0c6d5cd87e46b",
+      "closure_size": 18,
+      "statement_sha256": "3508777d3db1c94e9a3af6efa6be79bf39c35cba72c7f9bc4c5a11ee1e838574"
+    },
+    "Toy.SepAC.listAppend_tight_bientails_cancelAtoms_sepComm": {
+      "closure_sha256": "14d0332737259f13c6f7693fdb1b833f996fc1b2608cfc35a8855ec61195a0e1",
+      "closure_size": 24,
+      "statement_sha256": "4559dcff182cf25aef27b637111d1e6929d5d593c7a27ed02df2bbcf2b34ba1a"
+    },
+    "Toy.SepAC.listAppend_tight_bientails_commonPerm_sepComm": {
+      "closure_sha256": "6541d708d76b471bcd7104315ad99198a7a62065c1fa090c4c1bfc5034020e8f",
+      "closure_size": 20,
+      "statement_sha256": "d3add973e6f5c44f4419e24603c38d2b64bcc0b671e9e009c6680b1a3a476a37"
+    },
+    "Toy.SepAC.listAppend_tight_cancelAtoms_sepComm": {
+      "closure_sha256": "7488bb0e1eab0d5ec537efdab1f63bb1cd09834d09d5fbc88c8951239f83cf1e",
+      "closure_size": 22,
+      "statement_sha256": "70d7c02a1d03377cbfe318e6990d198b4a5f363e0a1e1188bb60ba7c2710fa9d"
+    },
+    "Toy.SepAC.listAppend_tight_commonPerm_sepComm": {
+      "closure_sha256": "12791d9a3abafdfd7cde3e52a46ad7333aa4e35dbe6771fc3123a780c5a3220c",
+      "closure_size": 18,
+      "statement_sha256": "9b62afbbc4d38d73810ca2a1eb50a54333a476175d22213bfae6c1c4efd4d9cd"
+    },
+    "Toy.SepAC.listAppend_tight_isPerm_sepComm": {
+      "closure_sha256": "cdc5ca721e8f659f3c44868fd121074ed0a08a7b2b14ed568b841e1baeb49758",
+      "closure_size": 18,
+      "statement_sha256": "de57fd87c18594cf9b0d20dfc823beda0101c71f9729fa580c8d665224717a8e"
+    },
+    "Toy.SepAC.listAppend_tight_unitCount_sepComm": {
+      "closure_sha256": "3c4b3621eaa52f6aba6ddbda4cd11ae7a81390620b131453d603ded497320014",
+      "closure_size": 17,
+      "statement_sha256": "811cd9d7edcb609ef585779450cb86b52219a962d251e65f64a5256b08917832"
+    },
+    "Toy.SepAC.listAppend_tight_unitFree_sepComm": {
+      "closure_sha256": "139033923c1dc5167fb452bd4b7a364ee880863a0c10c707722b9df09ee59a40",
+      "closure_size": 17,
+      "statement_sha256": "2932e40abf3d6f1ed890ee7f134ad197c54f331efceefb32d77efa43ada4e79c"
+    },
+    "Toy.SepAC.natAdd_tight_bientails_cancelAtoms_residual": {
+      "closure_sha256": "c52014ea2d2c86041af4ca4259914c93286ced5dd76bb93d97a2f9d8c8ae0888",
+      "closure_size": 25,
+      "statement_sha256": "926c57f276ac6439066965096fbce27eefb136645f5c41383c49b578ea1a49ca"
+    },
+    "Toy.SepAC.natAdd_tight_bientails_commonPerm_leftPerm": {
+      "closure_sha256": "73e59dfc26fac713d97ca991a666ca17b3ccaa54d94f4c5633d1f356fc3c12b6",
+      "closure_size": 21,
+      "statement_sha256": "9625885db3af65c3400c98e5caa12172a537fb4ccad17d1e319b2a509b9ab881"
+    },
+    "Toy.SepAC.natAdd_tight_bientails_commonPerm_residual": {
+      "closure_sha256": "73e59dfc26fac713d97ca991a666ca17b3ccaa54d94f4c5633d1f356fc3c12b6",
+      "closure_size": 21,
+      "statement_sha256": "e4a1de19ea09d63a2146b9667bc12980041b616d7dd2f9649922e80a5612b648"
+    },
+    "Toy.SepAC.natAdd_tight_bientails_commonPerm_rightPerm": {
+      "closure_sha256": "73e59dfc26fac713d97ca991a666ca17b3ccaa54d94f4c5633d1f356fc3c12b6",
+      "closure_size": 21,
+      "statement_sha256": "0ee742f2029b1d215e8cc80a715bdd5de3a512458512b44c919b5bbc19e9d024"
+    },
+    "Toy.SepAC.natAdd_tight_cancelAtoms_residual": {
+      "closure_sha256": "ed8d2ea769b4c7c84ae5a09fa4c093b19a69de6cf153422833abbeac3aab9ff4",
+      "closure_size": 23,
+      "statement_sha256": "fa9981a4fb10a09b8a00f614481d596367de30e0d78272f83610a5067bf1e7ca"
+    },
+    "Toy.SepAC.natAdd_tight_commonPerm_leftPerm": {
+      "closure_sha256": "5b05948a3285d0b96d2a3f0f0851378ad5ea33a6f621ff53dc9856a5b1dfb147",
+      "closure_size": 19,
+      "statement_sha256": "c331f3c5ae36aec7f9116f702c9ac14cd656d6f0703ad4242e7e3cd93d826032"
+    },
+    "Toy.SepAC.natAdd_tight_commonPerm_residual": {
+      "closure_sha256": "5b05948a3285d0b96d2a3f0f0851378ad5ea33a6f621ff53dc9856a5b1dfb147",
+      "closure_size": 19,
+      "statement_sha256": "f7c70564cc1db732f0d75438a01482e1d69b3b3a3249f711c799f82f10ce29eb"
+    },
+    "Toy.SepAC.natAdd_tight_commonPerm_rightPerm": {
+      "closure_sha256": "5b05948a3285d0b96d2a3f0f0851378ad5ea33a6f621ff53dc9856a5b1dfb147",
+      "closure_size": 19,
+      "statement_sha256": "f034a1b487e65aa7eec12b229187bed53213a1c63eb642511b827c748e85e245"
+    },
+    "Toy.SepAC.nonAssoc_tight_bientails_cancelAtoms_sepAssoc": {
+      "closure_sha256": "5c0e4e6abdc2b67ae57d4a5aefe1255c84f2a4c547b03db67aa5eb3497a75c99",
+      "closure_size": 32,
+      "statement_sha256": "3a918d1dfd1ec041ff78958e218bf6df5540805112a2ef14973614fc7650fb6c"
+    },
+    "Toy.SepAC.nonAssoc_tight_bientails_commonPerm_sepAssoc": {
+      "closure_sha256": "68347f9177fb0c38e248901e24c711fda10051bea49498c84eb56fb0f9e3c91c",
+      "closure_size": 28,
+      "statement_sha256": "f0e7a3c0c20d24424876b35e6d4d689710c5b83fc0e2099d6a451eaef99df0f3"
+    },
+    "Toy.SepAC.nonAssoc_tight_cancelAtoms_sepAssoc": {
+      "closure_sha256": "50b5e0bb4b6990bf997f648204ddf1dc98cf3f840710320254ebfee333585527",
+      "closure_size": 30,
+      "statement_sha256": "86c94b929913746c16b3251f979c59ea04f9aeb1c0c1c584fc8a663a28f662a4"
+    },
+    "Toy.SepAC.nonAssoc_tight_commonPerm_sepAssoc": {
+      "closure_sha256": "5625dc4726daf2ea374bd928f95601cfb6fd8d3a375e8b6fc29a1321e94837a7",
+      "closure_size": 26,
+      "statement_sha256": "d43bd3ca5f6bdcba0b5621b66822e7a2c0dd7c5234ca8d42e9fa68f2a6a988b4"
+    },
+    "Toy.SepAC.nonAssoc_tight_flattening_sepAssoc": {
+      "closure_sha256": "5658f4d514e0cf29e5408a070b9cad12608e186da2d3d416f28d0481432304af",
+      "closure_size": 25,
+      "statement_sha256": "95bf5435435544ccc019782d00d683d587a7eeed3bbba40895c7d91679cfc15c"
+    },
+    "Toy.SepAC.nonAssoc_tight_isPerm_sepAssoc": {
+      "closure_sha256": "d21ac016c81d023289209ba8c20f379530ec659874f73eafaa0d58b9c1e554d5",
+      "closure_size": 26,
+      "statement_sha256": "8523027074954d5e74398fb199d3081af42dd6a4fc97b8b7beb7e6a75b4ed353"
+    },
+    "Toy.SepAC.nonAssoc_tight_unitCount_sepAssoc": {
+      "closure_sha256": "b152ebea10c578fa1bbcda8c70368a2c54cb2470ac21e0497239182da647920e",
+      "closure_size": 25,
+      "statement_sha256": "9dfd005160528041c1fa97aaff3d7fbff7c14b417ca69699c62f7d6ebcc22659"
+    },
+    "Toy.SepAC.nonAssoc_tight_unitFree_sepAssoc": {
+      "closure_sha256": "61afc9650e5cd4caa21211f8d4703357c5a9d6c9f8e0e309704a64609fa40abc",
+      "closure_size": 25,
+      "statement_sha256": "bbcafaa6128307280accf4fb619e3e2c39352ba0db45efa2a97e2c6597113c4d"
+    },
+    "Toy.SepAC.optBag_absorbing_but_complete": {
+      "closure_sha256": "ed406a8c07e4b7196dae37b898672e72c3da856518843d1c798d0d5f8e628100",
+      "closure_size": 28,
+      "statement_sha256": "785d24aa562d49cdca763f67470ba16108f9a66e05f255a6bd278ac94baf5333"
+    },
+    "Toy.SepAC.partial_cancellation_succeeds_where_cancelAtoms_fails": {
+      "closure_sha256": "5b25c661316cff3a78ac6617c7ff23bd9d53d4dd6a413e95c34dc80066cfa87e",
+      "closure_size": 31,
+      "statement_sha256": "1004fbc17242095d5255073922484d1e772c310aaac085f7081e4b5470741925"
+    },
+    "Toy.SepAC.rightProj_tight_flattening_rightUnit": {
+      "closure_sha256": "73c996cae9ba2bec3dca1772cec2c8122411d14fd841e26ab09a11bb158f265b",
+      "closure_size": 18,
+      "statement_sha256": "d14ba2b32d09763269ea942269dff933e6a7824561ee9386c194bf70f3428832"
+    },
+    "Toy.SepAC.stepByTwo_nonPreorder_satisfies_cancel_hypotheses": {
+      "closure_sha256": "0b125cbe662d5d457cf08af518448382d3fe93d817ad026bfee030cdf2170954",
+      "closure_size": 23,
+      "statement_sha256": "344efac3075f3d5f8f59f520e64bb0e0b8ae7d1e4b72bb7ac4e8c88769b2da25"
+    },
+    "Toy.SepAC.tagDistLeOne_tight_bientails_cancelAtoms_trans": {
+      "closure_sha256": "915fee9b1e6d04028598b10c08174d83f5ca9859fec839980846dcafc82f4723",
+      "closure_size": 28,
+      "statement_sha256": "c076bd6e30d7479e2c38ebb3e060706e76354485641e5440197c3298197734c9"
+    },
+    "Toy.SepAC.tagDistLeOne_tight_bientails_commonPerm_trans": {
+      "closure_sha256": "81b856884f5c33b991fdfd6996d84ecd05cbd02c5d7bf1be876b928ec545e862",
+      "closure_size": 25,
+      "statement_sha256": "c6ff09fd76491c1018e579412fc40dfbaf83f2c33a728d9dbecc3b3253e431ad"
+    },
+    "Toy.SepAC.twoCellModel_affine_cancelAtoms_converse_fails": {
+      "closure_sha256": "d103641bed4dd3f421fcdc3b24efc66db87fd8aeb456a0b4a457e3e882705fa0",
+      "closure_size": 49,
+      "statement_sha256": "b7d36b59ba6e51376eb8452f586ba501d9ff59c4981f78ff3a3083390eadddf4"
+    },
+    "Toy.SepAC.twoCellModel_conflict_distinct_atoms_incomplete": {
+      "closure_sha256": "11f0c357c660512f018e0be880fb8f5996ae1c070a28098532a50087a89855b9",
+      "closure_size": 34,
+      "statement_sha256": "d9dbc864ddc4ff6c8a9c94d50c4f25e3f1d6b7d938e34ee77ab789c9b928335c"
+    },
+    "Toy.SepAC.unitCount_converse_hypothesis_nonvacuous": {
+      "closure_sha256": "c3cf8422cd20c9d6c73a8d5af221ef247104fac92f49a910311e4a1e39663e03",
+      "closure_size": 14,
+      "statement_sha256": "7bb1c54a20a030f05e3cb10f6fe2862d9d5f4fb1611b36de6f834df8e37e05c7"
+    },
+    "Toy.SepAC.unitCount_eq_and_isPerm_of_forall_ac_denote_eq": {
+      "closure_sha256": "25698eb3ec35e1de130b0066c821d25de8735716abbe69a93cdf27b1e87ef30c",
+      "closure_size": 18,
+      "statement_sha256": "694ca54ab532382a71ca07b8569805c88ca10689d9344c5eaa726776366f7f5c"
+    },
+    "Toy.SepAC.unitCount_eq_not_necessary_in_fixed_model": {
+      "closure_sha256": "199edb03274f0f1ed84ca9e0a0cae9f79860bc4d1f77a4d97d0b410d9f654547",
+      "closure_size": 14,
+      "statement_sha256": "89d8b98648844510450d3130213855a161739792aeef04bb823ca57da3a6b908"
+    }
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
