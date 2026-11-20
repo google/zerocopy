@@ -1,0 +1,56 @@
+{
+  "topics": [
+    "verification",
+    "verification/formalized-results",
+    "verification/rice-theorem",
+    "verification/decidability",
+    "verification/static-analysis",
+    "lean",
+    "lean/mechanization",
+    "pl/fixed-point-theorems"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Classes of recursively enumerable sets and their decision problems (Rice 1953)",
+      "identity": {"doi": "10.1090/S0002-9947-1953-0053041-6"}
+    },
+    {
+      "name": "On notation for ordinal numbers (Kleene 1938)",
+      "identity": {"doi": "10.2307/2267778"}
+    },
+    {
+      "name": "A symmetric form of Gödel's theorem (Kleene 1950)",
+      "identity": {
+        "journal": "Proceedings of the Section of Sciences, Koninklijke Nederlandse Akademie van Wetenschappen",
+        "volume": "53",
+        "pages": "800-802",
+        "year": "1950",
+        "also_published_in": "Indagationes Mathematicae 12 (1950), 244-246",
+        "knaw_id": "PU00014670",
+        "url": "https://dwc.knaw.nl/DL/publications/PU00014670.pdf",
+        "sha256": "573d04d5448a7293142ee953175e7697165a986fc1f155b2aea8707601de8c82"
+      }
+    },
+    {
+      "name": "Diagonal arguments and cartesian closed categories (Lawvere 1969)",
+      "identity": {"doi": "10.1007/BFb0080769"}
+    },
+    {
+      "name": "A universal approach to self-referential paradoxes, incompleteness and fixed points (Yanofsky 2003)",
+      "identity": {"doi": "10.2178/bsl/1058448677"}
+    },
+    {
+      "name": "The intensional content of Rice's theorem (Asperti 2008)",
+      "identity": {"doi": "10.1145/1328438.1328455"}
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

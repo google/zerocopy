@@ -1,0 +1,999 @@
+[
+  {
+    "id": "R1",
+    "lean": "Toy.Rice.not_decidedInside_of_fixpointPrinciple_extensional_nontrivial",
+    "kind": "impossibility",
+    "tier": "T0",
+    "tier_justification": "Re-derivation of Rice's theorem (Rice 1953) by the standard recursion-theorem argument with a swapped case split (as in Yanofsky 2003, the Coq development coq-synthetic-computability, and Mathlib's ComputablePred.rice), restated over an abstract system in which the recursion theorem is an assumption.",
+    "plain_claim": "In any programming system satisfying the fixpoint principle (every admissible transformer f has a code c with sem (f c) = sem c), no nontrivial extensional predicate P on codes is decided inside the system: there is no checker that decides P and all of whose switches c ↦ if chk c then a else b are admissible.",
+    "notes": "No global closure law on Adm is assumed as a separate hypothesis; the only admissibility the proof uses is that of one switch on the checker, which is part of DecidedInside (see R2). The class form, for any class K of checkers all of whose switches are admissible (K ⊆ SwitchAdmissible S), is the corollary Toy.Rice.not_decidedBy_of_fixpointPrinciple_switchClosed_extensional_nontrivial.",
+    "hypotheses": [
+      {
+        "name": "hfix : FixpointPrinciple S",
+        "purpose": "Supplies a semantic fixed point of the swapped switch.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.rice_tight_fixpointPrinciple"
+      },
+      {
+        "name": "hext : Extensional S P",
+        "purpose": "Transfers P across the equation sem (f c) = sem c.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.rice_tight_extensional"
+      },
+      {
+        "name": "hnt.1 : ∃ a, P a",
+        "purpose": "A branch of the swapped switch satisfying P.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.rice_tight_nontrivial_hasMember"
+      },
+      {
+        "name": "hnt.2 : ∃ b, ¬ P b",
+        "purpose": "A branch of the swapped switch violating P.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.rice_tight_nontrivial_hasNonMember"
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "Apply the fixpoint principle to the swapped switch and case on the checker's verdict at the fixed point.",
+    "nonvacuity_witness": "The padded system with BehTrue and the flat domain with Halts satisfy all hypotheses.",
+    "nonvacuity_witness_lean": "Toy.Rice.Controls.rice_nonvacuous",
+    "positive_control_lean": "Toy.Rice.Controls.rice_tight_fixpointPrinciple",
+    "lawvere_relation": "Lawvere's theorem: if every map in a class is represented by a point, every endomorphism whose diagonal lies in the class has a fixed point. Here the fixpoint principle plays the role of that conclusion, and the swapped switch on a decider of a nontrivial extensional P moves every code to a code of the other P-status, acting on the two P-classes like Boolean negation, which has no fixed point. F3 shows the fixpoint principle itself is a Lawvere-style diagonal consequence of representability.",
+    "non_claims": [
+      "Does not forbid: (i) partial or one-sided procedures: a one-sided switch that answers on the codes satisfying the predicate and diverges on the others can be admissible while the predicate is not decided inside (W8, Toy.Rice.Flat.halts_unswappedSwitch_admissible_not_decidedInside, in the flat-domain system); semi-decision itself is not formalized; (ii) checkers for decidable fragments: a separate total language without the fixpoint principle decides a nontrivial extensional predicate inside (N1), and a behaviour-closed fragment of a system whose transformers cannot test code equality does as well (W4); R6 states when restricting to a behaviour-closed fragment does not help; (iii) sound but incomplete checkers: these are switch-admissible in systems with the fixpoint principle (W1, W2), and W5 states the incompleteness every such checker of a nontrivial extensional predicate has.",
+      "'Not decided inside the system' is not 'no Boolean function decides P'. Decides is a set-theoretic relation that classical logic always satisfies; the impossibility concerns the admissibility of the switches on such a function. For example Toy.Rice.Flat.haltCheck decides halting on the flat domain but is not switch-admissible (Toy.Rice.Examples.switchAdmissible_neg).",
+      "The strength of the conclusion depends entirely on how rich Adm is. The fixpoint principle becomes easier to satisfy as Adm shrinks; with no admissible transformers it holds vacuously and then nothing at all is decided inside (Toy.Rice.Controls.emptyAdm_fixpointPrinciple_nothingDecided). The result rules out only checkers whose switches are admissible.",
+      "The converse fails: a system without the fixpoint principle need not decide anything nontrivial, even if it contains all constants and is closed under composition (N3).",
+      "Says nothing about semi-decision: DecidedInside is two-sided, and a one-sided switch can be admissible while the two-sided decision is impossible (W8). The Rice-Shapiro theorem is not formalized.",
+      "Says nothing about time or space: Adm is a bare membership predicate with no cost model. It neither shows nor refutes complexity-aware versions (for example Asperti 2008, listed under Prior art), which are not covered.",
+      "Applies only to extensional predicates, relative to the chosen semantics sem. Properties of code text can be decided inside a system with the fixpoint principle (W3). Which predicates count as extensional depends on sem.",
+      "Does not forbid certificate checking (proof-carrying or annotation-assisted verification): deciding 'the attached certificate is valid' for a code that carries a certificate is a property of the text, not of the behaviour alone, and such checks can be switch-admissible in a system with the fixpoint principle (compare W2). Such a checker is sound for P but complete only for codes carrying a valid certificate, not for P itself.",
+      "Decides and DecidedInside quantify deterministically over every code. Says nothing about randomized checkers, classifiers that are accurate on a distribution or benchmark, or checkers verified only on bounded inputs.",
+      "Says nothing about any particular real language unless that language's fixpoint principle is established; the connection to acceptable numberings is a modeling bridge, not a theorem here."
+    ],
+    "modeling_bridges": [
+      {
+        "label": "derived (modeling bridge)",
+        "claim": "For an acceptable numbering of the partial computable functions (Code = indices, sem = the numbering, Adm = total computable transformers), FixpointPrinciple holds and every computable checker is switch-admissible, so R1 yields Rice's theorem for that numbering.",
+        "reasoning": "The fixpoint principle is the conclusion of Kleene's (second) recursion theorem in Rogers' form; Mathlib's Nat.Partrec.Code.fixed_point states exactly this for its code type. Total computable functions are closed under definition by cases on a computable Boolean with constant branches. Neither step is formalized in this package."
+      }
+    ],
+    "prior_art": [
+      "H. G. Rice, \"Classes of recursively enumerable sets and their decision problems\", Transactions of the American Mathematical Society 74(2) (1953), 358-366, DOI 10.1090/S0002-9947-1953-0053041-6. The original theorem: an index set of r.e. sets is recursive only if it is trivial.",
+      "H. Rogers, Jr., Theory of Recursive Functions and Effective Computability, McGraw-Hill, New York, 1967; reprinted MIT Press, Cambridge, MA, 1987, ISBN 978-0-262-68052-3. Standard textbook treatment of acceptable numberings, the recursion theorem, index sets, recursive inseparability, Rice's theorem and the Rice-Shapiro theorem; cited as a general reference, no page or theorem number is claimed.",
+      "N. S. Yanofsky, \"A universal approach to self-referential paradoxes, incompleteness and fixed points\", Bulletin of Symbolic Logic 9(3) (2003), 362-386, DOI 10.2178/bsl/1058448677 (arXiv:math/0305282). Derives the recursion theorem from Lawvere's scheme (Theorem 5 in the arXiv text) and proves Rice's theorem with the swapped case split h(x) = a if x is not in A, b if x is in A.",
+      "Mathlib (leanprover-community/mathlib4, commit e237a521d16607fe82439145293b89fbd0e74678), Mathlib/Computability/Halting.lean: ComputablePred.rice (line 32), proved from Nat.Partrec.Code.fixed_point₂ with a swapped Partrec.cond, and ComputablePred.rice₂ (line 42): a predicate on codes that respects eval is computable iff it is empty or everything. Described in prose only; not a dependency.",
+      "uds-psl/coq-synthetic-computability, theories/Basic/Rice.v at commit 7e019a047314a75d90f33899a6ff023a22e9d618: Lemma FP (line 97: every f has e with Θ e ≡ Θ (f e), from an abstract enumerability principle) and Lemma Rice_Theorem' (line 112; the swapped case split is at line 118). The closest existing mechanization of Rice's theorem from an abstract fixed-point lemma; it does not separate an admissible class from the ambient function space. Associated thesis: Y. Forster, Computability in Constructive Type Theory, Saarland University, 2021, DOI 10.22028/D291-35758.",
+      "Y. Forster and G. Smolka, \"Weak call-by-value lambda calculus as a model of computation in Coq\", ITP 2017, LNCS 10499, 189-206, DOI 10.1007/978-3-319-66107-0_13; uds-psl/coq-library-undecidability, theories/L/Computability/Scott.v at commit 138245ce9172b45d91ec49eda1cc67ef155bc14e: Theorem Scott (line 6), proved from SecondFixedPoint with a swapped case split.",
+      "M. Norrish, \"Mechanised computability theory\", ITP 2011, LNCS 6898, 297-311, DOI 10.1007/978-3-642-22863-6_22. HOL4 mechanization including the recursion theorem, an s-m-n instance and Rice's theorem.",
+      "M. Nedzelsky, \"Recursion Theory I\", Archive of Formal Proofs, April 2008, https://isa-afp.org/entries/Recursion-Theory-I.html; F. J. Balbach, \"Some classical results in inductive inference of recursive functions\", Archive of Formal Proofs, August 2020, https://www.isa-afp.org/entries/Inductive_Inference.html. Isabelle/HOL mechanizations that include Rice's theorem (Balbach also s-m-n and recursion theorems of Kleene, Rogers and Smullyan).",
+      "M. Carneiro, \"Formalizing computability theory via partial recursive functions\", ITP 2019, LIPIcs 141, 12:1-12:17, DOI 10.4230/LIPIcs.ITP.2019.12. The reference for Mathlib's computability library.",
+      "A. Asperti, \"The intensional content of Rice's theorem\", in: Proceedings of the 35th Annual ACM SIGPLAN-SIGACT Symposium on Principles of Programming Languages (POPL '08), San Francisco, ACM, 2008, 113-119, DOI 10.1145/1328438.1328455. Replaces extensional index sets by complexity cliques (sets of indices closed under same behaviour and similar complexity) and proves, under weak complexity assumptions, that every recursive complexity clique is trivial and every r.e. complexity clique is extensional. Cited only for the cost-model non-claim; no statement here models complexity."
+    ],
+    "design_question": "Arguments about automated checkers often appeal to Rice's theorem, sometimes too broadly. Exactly which checker designs does a Rice-style argument rule out, under which hypotheses about the programming system, and which designs remain possible (sound-but-incomplete checkers, syntactic checks, checkers for total sublanguages, checkers for restricted fragments)?",
+    "evidence_role": "execution (Lean kernel check)",
+    "axioms": {
+      "Toy.Rice.not_decidedInside_of_fixpointPrinciple_extensional_nontrivial": [
+        "propext"
+      ]
+    },
+    "status": "proved"
+  },
+  {
+    "id": "R2",
+    "lean": "Toy.Rice.swappedSwitch_not_admissible_of_fixpointPrinciple_extensional_decides",
+    "kind": "impossibility",
+    "tier": "T0",
+    "tier_justification": "The single case split at the heart of the standard proof (Yanofsky 2003; Rice_Theorem' in coq-synthetic-computability; ComputablePred.rice in Mathlib), isolated as a statement.",
+    "plain_claim": "In a system with the fixpoint principle, if chk decides an extensional predicate P, a satisfies P and b violates P, then the swapped switch c ↦ if chk c then b else a is not admissible.",
+    "hypotheses": [
+      {
+        "name": "hfix : FixpointPrinciple S",
+        "purpose": "Semantic fixed point of the swapped switch.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.riceSharp_tight_fixpointPrinciple"
+      },
+      {
+        "name": "hext : Extensional S P",
+        "purpose": "Transfers P across the semantic equation.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.riceSharp_tight_extensional"
+      },
+      {
+        "name": "hdec : Decides chk P",
+        "purpose": "Links the checker's verdict at the fixed point to P in both directions.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.riceSharp_tight_decides"
+      },
+      {
+        "name": "ha : P a",
+        "purpose": "The branch taken on rejection satisfies P.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.riceSharp_tight_member"
+      },
+      {
+        "name": "hb : ¬ P b",
+        "purpose": "The branch taken on acceptance violates P.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.riceSharp_tight_nonmember"
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "One application of the fixpoint principle and a case split.",
+    "nonvacuity_witness": "Flat domain, haltCheck, a = tt, b = bot.",
+    "nonvacuity_witness_lean": "Toy.Rice.Controls.riceSharp_nonvacuous",
+    "positive_control_lean": "Toy.Rice.Controls.riceSharp_tight_fixpointPrinciple",
+    "non_claims": [
+      "Does not forbid: (i) partial or one-sided procedures: the unswapped switch c ↦ if chk c then a else b can be admissible (Toy.Rice.Flat.unswappedSwitch_admissible), and a one-sided switch that diverges on rejected codes can be admissible while the predicate is not decided inside (W8); semi-decision itself is not formalized; (ii) checkers for decidable fragments: a separate total language without the fixpoint principle decides a nontrivial extensional predicate inside (N1), and a behaviour-closed fragment of a system whose transformers cannot test code equality does as well (W4); R6 states when restricting to a behaviour-closed fragment does not help; (iii) sound but incomplete checkers: these are switch-admissible in systems with the fixpoint principle (W1, W2), and W5 states the incompleteness every such checker of a nontrivial extensional predicate has.",
+      "Says nothing about the unswapped switch c ↦ if chk c then a else b, which can be admissible (Toy.Rice.Flat.unswappedSwitch_admissible); this is why nothing follows about semi-decision.",
+      "Requires chk to decide P. A checker that is only sound for P can have an admissible swapped switch: Toy.Rice.Padded.litTrueCheck_swappedSwitch_admissible exhibits litTrueCheck, sound for BehTrue in the padded system, with c ↦ if litTrueCheck c then hid false 0 else hid true 0 admissible.",
+      "Does not say that switches with other branch pairs are inadmissible: with both branches satisfying P, or both violating it, the swapped switch can be admissible (Toy.Rice.Controls.riceSharp_tight_member, Toy.Rice.Controls.riceSharp_tight_nonmember)."
+    ],
+    "prior_art": [
+      "N. S. Yanofsky, \"A universal approach to self-referential paradoxes, incompleteness and fixed points\", Bulletin of Symbolic Logic 9(3) (2003), 362-386, DOI 10.2178/bsl/1058448677 (arXiv:math/0305282). Derives the recursion theorem from Lawvere's scheme (Theorem 5 in the arXiv text) and proves Rice's theorem with the swapped case split h(x) = a if x is not in A, b if x is in A.",
+      "uds-psl/coq-synthetic-computability, theories/Basic/Rice.v at commit 7e019a047314a75d90f33899a6ff023a22e9d618: Lemma FP (line 97: every f has e with Θ e ≡ Θ (f e), from an abstract enumerability principle) and Lemma Rice_Theorem' (line 112; the swapped case split is at line 118). The closest existing mechanization of Rice's theorem from an abstract fixed-point lemma; it does not separate an admissible class from the ambient function space. Associated thesis: Y. Forster, Computability in Constructive Type Theory, Saarland University, 2021, DOI 10.22028/D291-35758.",
+      "Mathlib (leanprover-community/mathlib4, commit e237a521d16607fe82439145293b89fbd0e74678), Mathlib/Computability/Halting.lean: ComputablePred.rice (line 32), proved from Nat.Partrec.Code.fixed_point₂ with a swapped Partrec.cond, and ComputablePred.rice₂ (line 42): a predicate on codes that respects eval is computable iff it is empty or everything. Described in prose only; not a dependency."
+    ],
+    "design_question": "Arguments about automated checkers often appeal to Rice's theorem, sometimes too broadly. Exactly which checker designs does a Rice-style argument rule out, under which hypotheses about the programming system, and which designs remain possible (sound-but-incomplete checkers, syntactic checks, checkers for total sublanguages, checkers for restricted fragments)?",
+    "evidence_role": "execution (Lean kernel check)",
+    "axioms": {
+      "Toy.Rice.swappedSwitch_not_admissible_of_fixpointPrinciple_extensional_decides": [
+        "propext"
+      ]
+    },
+    "status": "proved"
+  },
+  {
+    "id": "R4",
+    "lean": "Toy.Rice.decidedInside_iff_trivial_of_fixpointPrinciple_constClosed_extensional",
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "The 'decidable iff trivial' form of Rice's theorem (compare ComputablePred.rice₂ in Mathlib), restated over an abstract system.",
+    "plain_claim": "In a system with the fixpoint principle whose admissible class contains every constant transformer, an extensional predicate is decided inside the system if and only if it holds of every code or of no code.",
+    "hypotheses": [
+      {
+        "name": "hfix : FixpointPrinciple S",
+        "purpose": "Forward direction (via R1).",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.riceChar_tight_fixpointPrinciple"
+      },
+      {
+        "name": "hconst : ConstClosed S",
+        "purpose": "Backward direction: trivial predicates are decided by constant checkers, whose switches are constant transformers.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.riceChar_tight_constClosed"
+      },
+      {
+        "name": "hext : Extensional S P",
+        "purpose": "Forward direction (via R1).",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.riceChar_tight_extensional"
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "R1 plus a classical case split; the converse uses constant checkers.",
+    "nonvacuity_witness": "Padded system: the trivial predicate True (decided inside, trivial) and the nontrivial BehTrue (not decided inside, not trivial) exercise both sides.",
+    "nonvacuity_witness_lean": "Toy.Rice.Controls.riceChar_nonvacuous",
+    "non_claims": [
+      "Does not forbid: (i) partial or one-sided procedures: a one-sided switch that answers on the codes satisfying the predicate and diverges on the others can be admissible while the predicate is not decided inside (W8, Toy.Rice.Flat.halts_unswappedSwitch_admissible_not_decidedInside, in the flat-domain system); semi-decision itself is not formalized; (ii) checkers for decidable fragments: a separate total language without the fixpoint principle decides a nontrivial extensional predicate inside (N1), and a behaviour-closed fragment of a system whose transformers cannot test code equality does as well (W4); R6 states when restricting to a behaviour-closed fragment does not help; (iii) sound but incomplete checkers: these are switch-admissible in systems with the fixpoint principle (W1, W2), and W5 states the incompleteness every such checker of a nontrivial extensional predicate has.",
+      "The forward direction uses classical logic (Classical.byContradiction; the axiom audit shows Classical.choice), unlike R1, whose proof uses only propext.",
+      "ConstClosed is used only for the backward direction; without it even trivial predicates can fail to be decided inside (Toy.Rice.Controls.riceChar_tight_constClosed).",
+      "Inherits every scope limit of R1: extensional predicates only, no semi-decision, no cost model, no real language without its fixpoint principle."
+    ],
+    "prior_art": [
+      "Mathlib (leanprover-community/mathlib4, commit e237a521d16607fe82439145293b89fbd0e74678), Mathlib/Computability/Halting.lean: ComputablePred.rice (line 32), proved from Nat.Partrec.Code.fixed_point₂ with a swapped Partrec.cond, and ComputablePred.rice₂ (line 42): a predicate on codes that respects eval is computable iff it is empty or everything. Described in prose only; not a dependency.",
+      "H. G. Rice, \"Classes of recursively enumerable sets and their decision problems\", Transactions of the American Mathematical Society 74(2) (1953), 358-366, DOI 10.1090/S0002-9947-1953-0053041-6. The original theorem: an index set of r.e. sets is recursive only if it is trivial.",
+      "H. Rogers, Jr., Theory of Recursive Functions and Effective Computability, McGraw-Hill, New York, 1967; reprinted MIT Press, Cambridge, MA, 1987, ISBN 978-0-262-68052-3. Standard textbook treatment of acceptable numberings, the recursion theorem, index sets, recursive inseparability, Rice's theorem and the Rice-Shapiro theorem; cited as a general reference, no page or theorem number is claimed."
+    ],
+    "design_question": "Arguments about automated checkers often appeal to Rice's theorem, sometimes too broadly. Exactly which checker designs does a Rice-style argument rule out, under which hypotheses about the programming system, and which designs remain possible (sound-but-incomplete checkers, syntactic checks, checkers for total sublanguages, checkers for restricted fragments)?",
+    "evidence_role": "execution (Lean kernel check)",
+    "axioms": {
+      "Toy.Rice.decidedInside_iff_trivial_of_fixpointPrinciple_constClosed_extensional": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "status": "proved"
+  },
+  {
+    "id": "R6",
+    "lean": "Toy.Rice.not_decidedInside_restrict_of_fixpointPrinciple_eqTestClosed_extensionalFragment_extensional_nontrivial",
+    "kind": "impossibility",
+    "tier": "T1",
+    "tier_justification": "Abstract form of the classical recursive-inseparability obstruction (Kleene 1950): with code-equality tests available, restricting to a behaviour-closed fragment such as the halting programs does not make a nontrivial extensional property decided inside the restricted system. We did not find this abstract formulation, with an explicit code-equality closure law, in the sources checked; no novelty is claimed.",
+    "plain_claim": "Let S have the fixpoint principle, let its admissible transformers be closed under literal code-equality tests (for admissible f and codes k, a, b, the transformer c ↦ if f c = k then a else b is admissible), and let F be a fragment of codes closed under same behaviour. Then no predicate that is extensional and nontrivial on F is decided inside the restricted system S.restrict F, whose admissible transformers are the fragment maps that agree literally on F with some admissible transformer of S.",
+    "hypotheses": [
+      {
+        "name": "hfix : FixpointPrinciple S",
+        "purpose": "Semantic fixed point of the full-system transformer built from the fragment switch and a code-equality test.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.restrict_tight_fixpointPrinciple"
+      },
+      {
+        "name": "heq : EqTestClosed S",
+        "purpose": "Turns the full-system extension f of the fragment switch into the swap c ↦ if f c = a then b else a.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.restrict_tight_eqTestClosed"
+      },
+      {
+        "name": "hF : Extensional S F",
+        "purpose": "Forces the fixed point, which behaves like a fragment code, into the fragment.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.restrict_tight_extensionalFragment"
+      },
+      {
+        "name": "hext : Extensional (S.restrict F) (fun x => P x.val)",
+        "purpose": "Transfers P across the semantic equation inside the fragment.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.restrict_tight_extensional"
+      },
+      {
+        "name": "hnt.1 : ∃ x : {c // F c}, P x.val",
+        "purpose": "A fragment code satisfying P (a branch).",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.restrict_tight_hasMember"
+      },
+      {
+        "name": "hnt.2 : ∃ x : {c // F c}, ¬ P x.val",
+        "purpose": "A fragment code violating P (the other branch).",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.restrict_tight_hasNonMember"
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "One fixpoint application to a code-equality test composed with the full-system extension of an unswapped fragment switch, then a four-way case split.",
+    "nonvacuity_witness": "The padded system with divergence (three behaviours), the halting fragment, and 'returns true'.",
+    "nonvacuity_witness_lean": "Toy.Rice.Controls.restrict_nonvacuous",
+    "positive_control_lean": "Toy.Rice.Controls.restrict_tight_eqTestClosed",
+    "non_claims": [
+      "Does not forbid: (i) partial or one-sided procedures: a one-sided switch that answers on the codes satisfying the predicate and diverges on the others can be admissible while the predicate is not decided inside (W8, Toy.Rice.Flat.halts_unswappedSwitch_admissible_not_decidedInside, in the flat-domain system); semi-decision itself is not formalized; (ii) checkers for other kinds of fragment: R6 covers only fragments closed under same behaviour in systems closed under code-equality tests; a syntactically delimited fragment (Toy.Rice.Controls.restrict_tight_extensionalFragment), a separate total language (N1), and a behaviour-closed fragment of a system whose transformers cannot test code equality (W4) can each decide a nontrivial property inside; (iii) sound but incomplete checkers: R6 constrains only checkers that decide the predicate on the fragment; sound but incomplete checkers are switch-admissible in systems with the fixpoint principle (W1, W2).",
+      "Does not cover fragments that are not closed under same behaviour, such as syntactically delimited sublanguages (the literal programs of the padded system, Toy.Rice.Controls.restrict_tight_extensionalFragment) or a separate total language with its own system (N1). Restricting to those can escape Rice.",
+      "Does not cover systems whose transformers cannot test code equality. Strict (domain-theoretic) transformers, which model analyzers allowed to diverge outside the fragment, do escape (W4; Toy.Rice.Controls.restrict_tight_eqTestClosed).",
+      "S.restrict requires literal agreement on the fragment. Says nothing about full-system transformers that agree with the fragment switch only up to behaviour (for example 'run the program, then branch'); that is a different notion of deciding on a fragment.",
+      "Says nothing about semi-decision on the fragment, about cost, or about non-extensional predicates."
+    ],
+    "modeling_bridges": [
+      {
+        "label": "derived (modeling bridge)",
+        "claim": "For an acceptable numbering with Adm = total computable transformers, take F = the indices of programs that halt on input 0 and P = 'outputs 1 on input 0'. Then no total computable transformer agrees literally, on every index in F, with a switch on a checker deciding P on F.",
+        "reasoning": "Codes are natural numbers, so total computable transformers are closed under code-equality tests; F is closed under same behaviour; the fixpoint principle is Kleene's recursion theorem. This is the abstract shadow of the recursive inseparability of {e : φ_e(0) = 1} and {e : φ_e(0) = 0} (Kleene 1950). Not formalized here."
+      }
+    ],
+    "prior_art": [
+      "S. C. Kleene, \"A symmetric form of Gödel's theorem\", Proceedings of the KNAW 53 (1950), 800-802; also Indagationes Mathematicae 12 (1950), 244-246; no DOI; KNAW Digital Library record PU00014670, https://dwc.knaw.nl/DL/publications/PU00014670.pdf (a scan of Proceedings volume 53, Nos. 6-10, pp. 685-1656, containing the article at pp. 800-802). Constructs two disjoint r.e. sets that no recursive set separates (recursive inseparability).",
+      "H. Rogers, Jr., Theory of Recursive Functions and Effective Computability, McGraw-Hill, New York, 1967; reprinted MIT Press, Cambridge, MA, 1987, ISBN 978-0-262-68052-3. Standard textbook treatment of acceptable numberings, the recursion theorem, index sets, recursive inseparability, Rice's theorem and the Rice-Shapiro theorem; cited as a general reference, no page or theorem number is claimed."
+    ],
+    "design_question": "Arguments about automated checkers often appeal to Rice's theorem, sometimes too broadly. Exactly which checker designs does a Rice-style argument rule out, under which hypotheses about the programming system, and which designs remain possible (sound-but-incomplete checkers, syntactic checks, checkers for total sublanguages, checkers for restricted fragments)?",
+    "evidence_role": "execution (Lean kernel check)",
+    "axioms": {
+      "Toy.Rice.not_decidedInside_restrict_of_fixpointPrinciple_eqTestClosed_extensionalFragment_extensional_nontrivial": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "status": "proved"
+  },
+  {
+    "id": "F1",
+    "lean": "Toy.Rice.lawvere_fixedPoint_of_represents_diagonal",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Lawvere's fixed-point theorem (1969, Theorem 1.1) for types and functions, relativized to a class of maps; the unrelativized form is Mathlib's Function.exists_fixed_point_of_surjective.",
+    "plain_claim": "Let φ : A → A → Y represent every map in a class G (each g in G equals φ a pointwise for some a), and let t : Y → Y be such that the diagonal map x ↦ t (φ x x) is in G. Then some a represents that diagonal map, and for every such a, φ a a is a fixed point of t.",
+    "hypotheses": [
+      {
+        "name": "hrep : ∀ g, G g → ∃ a, ∀ x, φ a x = g x",
+        "purpose": "Every map in the class has a representing point.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Models.lawvere_tight_represents"
+      },
+      {
+        "name": "hdiag : G (fun x => t (φ x x))",
+        "purpose": "The diagonal map lies in the class.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Models.lawvere_tight_diagonal"
+      }
+    ],
+    "depth": "definitional",
+    "depth_note": "Instantiate hrep at the diagonal; the fixed-point equation is hrep's equation at a itself.",
+    "nonvacuity_witness": "A = Y = Bool, φ = phiConst representing the constant maps, t = const true.",
+    "nonvacuity_witness_lean": "Toy.Rice.Models.lawvere_nonvacuous",
+    "related_lean": [
+      "Toy.Rice.exists_fixedPoint_of_represents_diagonal"
+    ],
+    "related_lean_notes": {
+      "Toy.Rice.exists_fixedPoint_of_represents_diagonal": "same hypotheses as F1; concludes only ∃ y, t y = y (t has a fixed point)"
+    },
+    "non_claims": [
+      "Does not forbid any checker design: it is a fixed-point existence statement about represented maps. In particular it says nothing against partial or semi-decision procedures (W8), checkers for decidable fragments (N1, W4), or sound but incomplete checkers (W1, W2).",
+      "Stated for types and functions with a class restriction; does not formalize cartesian closed categories.",
+      "The second conjunct (φ a a is a fixed point whenever a represents the diagonal) holds without either hypothesis; the hypotheses are needed only to obtain such an a.",
+      "Says nothing about computability; it supplies the diagonal pattern that F3 instantiates."
+    ],
+    "prior_art": [
+      "F. W. Lawvere, \"Diagonal arguments and cartesian closed categories\", in Category Theory, Homology Theory and their Applications II, Lecture Notes in Mathematics 92, Springer, 1969, 134-145, DOI 10.1007/BFb0080769; reprinted with commentary in Reprints in Theory and Applications of Categories No. 15 (2006), 1-13. Theorem 1.1 (checked in the reprint): in any cartesian closed category, if there is a weakly point-surjective morphism A -> Y^A then Y has the fixed point property; Cantor's theorem follows with Y = 2.",
+      "N. S. Yanofsky, \"A universal approach to self-referential paradoxes, incompleteness and fixed points\", Bulletin of Symbolic Logic 9(3) (2003), 362-386, DOI 10.2178/bsl/1058448677 (arXiv:math/0305282). Derives the recursion theorem from Lawvere's scheme (Theorem 5 in the arXiv text) and proves Rice's theorem with the swapped case split h(x) = a if x is not in A, b if x is in A.",
+      "Mathlib (leanprover-community/mathlib4, commit e237a521d16607fe82439145293b89fbd0e74678), Mathlib/Logic/Function/Basic.lean: Function.exists_fixed_point_of_surjective (lines 367-368; documented as Lawvere's fixed-point theorem for types and functions) and Function.cantor_surjective (line 374). Prose only."
+    ],
+    "design_question": "Arguments about automated checkers often appeal to Rice's theorem, sometimes too broadly. Exactly which checker designs does a Rice-style argument rule out, under which hypotheses about the programming system, and which designs remain possible (sound-but-incomplete checkers, syntactic checks, checkers for total sublanguages, checkers for restricted fragments)?",
+    "evidence_role": "execution (Lean kernel check)",
+    "axioms": {
+      "Toy.Rice.lawvere_fixedPoint_of_represents_diagonal": []
+    },
+    "status": "proved"
+  },
+  {
+    "id": "F2",
+    "lean": "Toy.Rice.nonempty_subsingleton_of_weaklyPointSurjective",
+    "kind": "impossibility",
+    "tier": "T0",
+    "tier_justification": "Cantor's theorem in Lawvere's form (Lawvere 1969, Corollary 1.2 setting); compare Mathlib's Function.cantor_surjective.",
+    "plain_claim": "For types and arbitrary functions, if φ : A → A → Y represents every map A → Y, then Y has exactly one element.",
+    "hypotheses": [
+      {
+        "name": "hsurj : ∀ g : A → Y, ∃ a, ∀ x, φ a x = g x",
+        "purpose": "Weak point-surjectivity: every map is represented.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.cantor_tight_surjective"
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "Lawvere's theorem applied to a fixed-point-free swap of two distinct elements (classical); nonemptiness because A must be nonempty to represent the empty-domain map.",
+    "nonvacuity_witness": "A = Y = Unit.",
+    "nonvacuity_witness_lean": "Toy.Rice.Controls.cantor_nonvacuous",
+    "positive_control_lean": "Toy.Rice.Controls.cantor_tight_surjective",
+    "related_lean": [
+      "Toy.Rice.subsingleton_of_weaklyPointSurjective"
+    ],
+    "related_lean_notes": {
+      "Toy.Rice.subsingleton_of_weaklyPointSurjective": "same hypothesis as F2; concludes only ∀ y y' : Y, y = y' (the subsingleton half of F2)"
+    },
+    "non_claims": [
+      "Does not forbid any checker design: it concerns a function space that contains every map A → Y. In particular it says nothing against partial or semi-decision procedures (W8), checkers for decidable fragments (N1, W4), or sound but incomplete checkers (W1, W2).",
+      "Holds for types with all functions and uses classical logic. Does not say that weak point-surjectivity forces a one-element Y in other cartesian closed categories: Scott (1972) constructs a continuous lattice isomorphic to its own function space, and there every endomorphism has a fixed point (Tarski 1955), as Lawvere's theorem requires.",
+      "Says nothing about computability. It shows why a fixpoint principle is informative only for a restricted admissible class (see F4)."
+    ],
+    "prior_art": [
+      "F. W. Lawvere, \"Diagonal arguments and cartesian closed categories\", in Category Theory, Homology Theory and their Applications II, Lecture Notes in Mathematics 92, Springer, 1969, 134-145, DOI 10.1007/BFb0080769; reprinted with commentary in Reprints in Theory and Applications of Categories No. 15 (2006), 1-13. Theorem 1.1 (checked in the reprint): in any cartesian closed category, if there is a weakly point-surjective morphism A -> Y^A then Y has the fixed point property; Cantor's theorem follows with Y = 2.",
+      "Mathlib (leanprover-community/mathlib4, commit e237a521d16607fe82439145293b89fbd0e74678), Mathlib/Logic/Function/Basic.lean: Function.exists_fixed_point_of_surjective (lines 367-368; documented as Lawvere's fixed-point theorem for types and functions) and Function.cantor_surjective (line 374). Prose only.",
+      "D. Scott, \"Continuous lattices\", in Toposes, Algebraic Geometry and Logic, Lecture Notes in Mathematics 274, Springer, 1972, 97-136, DOI 10.1007/BFb0073967. Constructs a continuous lattice isomorphic to its own function space (a model of the lambda calculus).",
+      "A. Tarski, \"A lattice-theoretical fixpoint theorem and its applications\", Pacific Journal of Mathematics 5(2) (1955), 285-309, DOI 10.2140/pjm.1955.5.285. Every monotone map on a complete lattice has a fixed point."
+    ],
+    "design_question": "Arguments about automated checkers often appeal to Rice's theorem, sometimes too broadly. Exactly which checker designs does a Rice-style argument rule out, under which hypotheses about the programming system, and which designs remain possible (sound-but-incomplete checkers, syntactic checks, checkers for total sublanguages, checkers for restricted fragments)?",
+    "evidence_role": "execution (Lean kernel check)",
+    "axioms": {
+      "Toy.Rice.nonempty_subsingleton_of_weaklyPointSurjective": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "status": "proved"
+  },
+  {
+    "id": "F3",
+    "lean": "Toy.Rice.diagonalFixedPoint_of_represents_diagonal_precompClosed",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Abstract form of Kleene's (second) recursion theorem via a diagonal (as in Yanofsky 2003 and Lemma FP of coq-synthetic-computability), with the closure hypothesis weakened to closure under precomposition with the diagonal.",
+    "plain_claim": "If every admissible transformer is computed by some code under a partial application app (Represents), d is a diagonal transformer (whenever app x x halts with output z, the code d x behaves like z), and precomposition with d preserves admissibility, then for every admissible f some code e computes f ∘ d, and for every such e the code d e is a semantic fixed point of f (sem (f (d e)) = sem (d e)). In particular the system has the fixpoint principle.",
+    "hypotheses": [
+      {
+        "name": "hrep : Represents S app",
+        "purpose": "A code e computing f ∘ d.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Models.kleene_tight_represents"
+      },
+      {
+        "name": "hdiag : IsDiagonal S app d",
+        "purpose": "d e behaves like the output of e on itself.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Models.kleene_tight_diagonal"
+      },
+      {
+        "name": "hpre : PrecompClosed S d",
+        "purpose": "f ∘ d is admissible, so hrep applies to it.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Models.kleene_tight_precompClosed"
+      }
+    ],
+    "depth": "definitional",
+    "depth_note": "Instantiate hrep at f ∘ d and hdiag at e; the same two-step pattern as F1.",
+    "nonvacuity_witness": "Tag model: codes (b, n), sem = first component, admissible = constants and x ↦ (x.1, m); the diagonal x ↦ (x.1, x.2 + 1) moves every code and is not admissible, and the fixed point produced for x ↦ (x.1, 0) is semantic but not literal.",
+    "nonvacuity_witness_lean": "Toy.Rice.Models.kleene_nonvacuous",
+    "related_lean": [
+      "Toy.Rice.fixpointPrinciple_of_represents_diagonal_precompClosed",
+      "Toy.Rice.fixpointPrinciple_of_compClosed_represents_diagonal"
+    ],
+    "related_lean_notes": {
+      "Toy.Rice.fixpointPrinciple_of_represents_diagonal_precompClosed": "same hypotheses as F3; concludes FixpointPrinciple S (the 'in particular' part of F3)",
+      "Toy.Rice.fixpointPrinciple_of_compClosed_represents_diagonal": "the textbook form: from CompClosed S, Represents S app, IsDiagonal S app d and S.Adm d, concludes FixpointPrinciple S"
+    },
+    "non_claims": [
+      "Does not forbid any checker design by itself: it derives the fixpoint principle from representability. What follows for checkers follows through R1, R2, R4, R6 and W5 to W7, and partial or one-sided procedures (W8), checkers for decidable fragments (N1, W4), and sound but incomplete checkers (W1, W2) remain possible under those results.",
+      "Does not construct an acceptable numbering; Represents, IsDiagonal and PrecompClosed are assumptions. Establishing them for a real language needs a universal function and the s-m-n theorem (a modeling bridge).",
+      "The fixpoint principle does not require Turing-completeness, universal programs, or self-reference: the flat-domain, padded and lifted systems satisfy it without encoding computation (and without this theorem's hypotheses).",
+      "PrecompClosed S d is strictly weaker than the textbook pair CompClosed S and Adm d: in the tag model PrecompClosed holds while Adm d fails. The textbook corollary is kept as Toy.Rice.fixpointPrinciple_of_compClosed_represents_diagonal."
+    ],
+    "modeling_bridges": [
+      {
+        "label": "derived (modeling bridge)",
+        "claim": "For an acceptable numbering φ with Adm = total computable transformers and app e x = the output of φ_e on x, Represents holds, and the s-m-n theorem gives a total computable d with φ_{d x} = φ_{φ_x(x)} when φ_x(x) halts, so the theorem yields Kleene's recursion theorem.",
+        "reasoning": "Standard textbook construction (Rogers 1967; Kleene 1952); not formalized here."
+      }
+    ],
+    "prior_art": [
+      "S. C. Kleene, \"On notation for ordinal numbers\", Journal of Symbolic Logic 3(4) (1938), 150-155, DOI 10.2307/2267778. The first published statement and proof of the (second) recursion theorem, according to Moschovakis (2010).",
+      "S. C. Kleene, Introduction to Metamathematics, Van Nostrand / North-Holland, 1952. States and proves the recursion theorem and the first recursion theorem (least fixed points of monotone recursive operators); cited without section numbers.",
+      "Y. N. Moschovakis, \"Kleene's amazing second recursion theorem\", Bulletin of Symbolic Logic 16(2) (2010), 189-239, DOI 10.2178/bsl/1286889124. Survey of the second recursion theorem and its uses.",
+      "H. Rogers, Jr., Theory of Recursive Functions and Effective Computability, McGraw-Hill, New York, 1967; reprinted MIT Press, Cambridge, MA, 1987, ISBN 978-0-262-68052-3. Standard textbook treatment of acceptable numberings, the recursion theorem, index sets, recursive inseparability, Rice's theorem and the Rice-Shapiro theorem; cited as a general reference, no page or theorem number is claimed.",
+      "N. S. Yanofsky, \"A universal approach to self-referential paradoxes, incompleteness and fixed points\", Bulletin of Symbolic Logic 9(3) (2003), 362-386, DOI 10.2178/bsl/1058448677 (arXiv:math/0305282). Derives the recursion theorem from Lawvere's scheme (Theorem 5 in the arXiv text) and proves Rice's theorem with the swapped case split h(x) = a if x is not in A, b if x is in A.",
+      "uds-psl/coq-synthetic-computability, theories/Basic/Rice.v at commit 7e019a047314a75d90f33899a6ff023a22e9d618: Lemma FP (line 97: every f has e with Θ e ≡ Θ (f e), from an abstract enumerability principle) and Lemma Rice_Theorem' (line 112; the swapped case split is at line 118). The closest existing mechanization of Rice's theorem from an abstract fixed-point lemma; it does not separate an admissible class from the ambient function space. Associated thesis: Y. Forster, Computability in Constructive Type Theory, Saarland University, 2021, DOI 10.22028/D291-35758.",
+      "Mathlib (leanprover-community/mathlib4, commit e237a521d16607fe82439145293b89fbd0e74678), Mathlib/Computability/PartrecCode.lean: Nat.Partrec.Code.fixed_point (line 1021; documented as \"Roger's fixed-point theorem\": every total computable f : Code -> Code has c with eval (f c) = eval c) and fixed_point₂ (line 1039; Kleene's second recursion theorem). Prose only.",
+      "M. Nedzelsky, \"Recursion Theory I\", Archive of Formal Proofs, April 2008, https://isa-afp.org/entries/Recursion-Theory-I.html; F. J. Balbach, \"Some classical results in inductive inference of recursive functions\", Archive of Formal Proofs, August 2020, https://www.isa-afp.org/entries/Inductive_Inference.html. Isabelle/HOL mechanizations that include Rice's theorem (Balbach also s-m-n and recursion theorems of Kleene, Rogers and Smullyan)."
+    ],
+    "design_question": "Arguments about automated checkers often appeal to Rice's theorem, sometimes too broadly. Exactly which checker designs does a Rice-style argument rule out, under which hypotheses about the programming system, and which designs remain possible (sound-but-incomplete checkers, syntactic checks, checkers for total sublanguages, checkers for restricted fragments)?",
+    "evidence_role": "execution (Lean kernel check)",
+    "axioms": {
+      "Toy.Rice.diagonalFixedPoint_of_represents_diagonal_precompClosed": []
+    },
+    "status": "proved"
+  },
+  {
+    "id": "F4",
+    "lean": [
+      "Toy.Rice.sem_constant_of_fixpointPrinciple_allSwitchesAdmissible",
+      "Toy.Rice.fixpointPrinciple_allAdm_iff_sem_constant_of_nonempty"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "A Cantor/Lawvere-style collapse, immediate from R1; recorded because it explains why Adm must be restricted.",
+    "plain_claim": "If a system has the fixpoint principle and every switch on every Boolean checker is admissible, then all codes have the same behaviour; consequently, when every transformer is admissible and the code type is nonempty, the fixpoint principle holds exactly when the semantics is constant.",
+    "hypotheses": [
+      {
+        "name": "hfix : FixpointPrinciple S (first theorem)",
+        "purpose": "Feeds R1.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.semConst_tight_fixpointPrinciple"
+      },
+      {
+        "name": "hall : ∀ chk, SwitchAdmissible S chk (first theorem)",
+        "purpose": "Makes 'same behaviour as c' decided inside.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.semConst_tight_allSwitches"
+      },
+      {
+        "name": "hne : Nonempty C (second theorem)",
+        "purpose": "Constant semantics gives a fixed point only if some code exists.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.allAdm_tight_nonempty"
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "R1 applied to the predicate 'same behaviour as c'.",
+    "nonvacuity_witness": "Constant semantics on Bool with every transformer admissible (both theorems); identity semantics on Bool exercises the false side of the equivalence.",
+    "nonvacuity_witness_lean": [
+      "Toy.Rice.Controls.semConst_nonvacuous",
+      "Toy.Rice.Controls.allAdm_nonvacuous"
+    ],
+    "non_claims": [
+      "Does not forbid partial or one-sided procedures, checkers for decidable fragments, or sound but incomplete checkers in systems whose admissible class is restricted: its hypothesis hall makes every switch on every checker admissible, and systems with the fixpoint principle and a restricted admissible class admit one-sided switches (W8), fragment deciders (W4) and sound syntactic checkers (W2, W3).",
+      "Requires every checker on codes, including extensional ones, to be switch-admissible. Does not rule out nonconstant semantics in a system with the fixpoint principle in which many syntactic checkers are switch-admissible (the padded system: W2, W3).",
+      "Not a statement about any real language; it shows that a fixpoint principle carries information only for a restricted admissible class."
+    ],
+    "prior_art": [
+      "F. W. Lawvere, \"Diagonal arguments and cartesian closed categories\", in Category Theory, Homology Theory and their Applications II, Lecture Notes in Mathematics 92, Springer, 1969, 134-145, DOI 10.1007/BFb0080769; reprinted with commentary in Reprints in Theory and Applications of Categories No. 15 (2006), 1-13. Theorem 1.1 (checked in the reprint): in any cartesian closed category, if there is a weakly point-surjective morphism A -> Y^A then Y has the fixed point property; Cantor's theorem follows with Y = 2.",
+      "Mathlib (leanprover-community/mathlib4, commit e237a521d16607fe82439145293b89fbd0e74678), Mathlib/Logic/Function/Basic.lean: Function.exists_fixed_point_of_surjective (lines 367-368; documented as Lawvere's fixed-point theorem for types and functions) and Function.cantor_surjective (line 374). Prose only."
+    ],
+    "design_question": "Arguments about automated checkers often appeal to Rice's theorem, sometimes too broadly. Exactly which checker designs does a Rice-style argument rule out, under which hypotheses about the programming system, and which designs remain possible (sound-but-incomplete checkers, syntactic checks, checkers for total sublanguages, checkers for restricted fragments)?",
+    "evidence_role": "execution (Lean kernel check)",
+    "axioms": {
+      "Toy.Rice.sem_constant_of_fixpointPrinciple_allSwitchesAdmissible": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "Toy.Rice.fixpointPrinciple_allAdm_iff_sem_constant_of_nonempty": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "status": "proved"
+  },
+  {
+    "id": "N1",
+    "lean": "Toy.Rice.Tables.tables_no_fixpointPrinciple_and_isZeroFn_decidedInside",
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "Folklore (Rice-style arguments need the recursion theorem; weak total formalisms escape them) made precise in a concrete toy system.",
+    "plain_claim": "In the lookup-table system (codes: finite tables; behaviours: total functions ℕ → ℕ; admissible transformers: those expressible in the total language TProg of constant tables, identity, two table edits, composition, and conditionals on the tests of a small test language TTest), the fixpoint principle fails and the nontrivial extensional predicate 'computes the zero function' is decided inside the system by zeroCheck, which is itself a TTest test.",
+    "notes": "Existence statement about one concrete system: Tables.sys witnesses that a system can lack the fixpoint principle and decide a nontrivial extensional predicate inside. Nothing follows for other total languages (see the non-claims).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_note": "The fixpoint failure is immediate (incrAt 0 changes the value at 0); correctness of zeroCheck is a short induction. Toy.Rice.Tables.tail_not_admissible shows the admissible class is proper. Further checkers and predicates are covered by Toy.Rice.Tables.allOutputsZero_switchAdmissible (every switch on the syntactic checker allOutputsZero t = t.all (fun p => p.2 == 0), 'every stored value is 0', is admissible), Toy.Rice.Tables.evalAtZero_decidedInside (the pointwise predicate 'the value at 0 is 0' is decided inside) and Toy.Rice.Tables.isNil_decidedInside (the syntactic predicate 'the table is empty' is decided inside).",
+    "nonvacuity_witness": "The statement is closed and concrete.",
+    "nonvacuity_witness_lean": "Toy.Rice.Tables.tables_no_fixpointPrinciple_and_isZeroFn_decidedInside",
+    "model_notes": "Codes: List (ℕ × ℕ), first entry wins, default 0. Behaviours: ℕ → ℕ. Adm f := ∃ p : TProg, ∀ x, p.run x = f x. zeroCheck t = TTest.run t (TTest.allEntries (EntryTest.evalAtKeyEq 0)), by rfl (Toy.Rice.Tables.zeroCheck_eq_test).",
+    "non_claims": [
+      "Is itself an example of what Rice-style results do not forbid: an internal decider for a nontrivial extensional predicate in a total language without the fixpoint principle. It does not show that such a decider exists for an expressive total language (see the primitive-recursive modeling bridge), and it says nothing for or against partial or semi-decision procedures or sound but incomplete checkers, which are not needed here because the predicate is decided.",
+      "'Computes the zero function' is decided inside this system because a finite table has finite support, so 'zero everywhere' reduces to finitely many evaluations. This is not a property of total languages in general: for primitive-recursive programs (equivalently Loop programs, Meyer and Ritchie 1967, Theorem 7), 'computes the zero function' is not decidable by any total computable procedure (classical undecidability; see the modeling bridge, which is not formalized).",
+      "Pointwise behavioural properties, such as 'the value at 0 is 0' (Toy.Rice.Tables.evalAtZero_decidedInside), can be decided by evaluating the program at finitely many inputs in any total language whose programs can be run (decidability in the classical computability sense; commentary, not formalized beyond this system); universally quantified properties such as 'computes the zero function' or program equivalence are a different matter (previous item).",
+      "Does not claim that every total language decides every extensional property, nor that totality is the only way to lose the fixpoint principle.",
+      "TProg and TTest are a deliberately small language over a deliberately weak code type; the system shows that deciding this predicate inside is consistent once the fixpoint principle is dropped, not that a comparable checker exists for an expressive language."
+    ],
+    "modeling_bridges": [
+      {
+        "label": "derived (modeling bridge)",
+        "claim": "For primitive-recursive programs, 'computes the zero function' is not decidable in the classical sense: no total computable procedure decides it on program indices.",
+        "reasoning": "By Kleene's normal form theorem the predicate T(e, x, s) ('machine e on input x halts within s steps') is primitive recursive, so f_e(s) = 1 if T(e, e, s) else 0 is primitive recursive, uniformly in e, and f_e is the zero function iff machine e does not halt on input e. A decider for 'computes the zero function' on primitive-recursive programs would therefore decide the complement of the halting problem (standard; see Kleene 1952 and Rogers 1967). Not formalized here."
+      }
+    ],
+    "prior_art": [
+      "H. Rogers, Jr., Theory of Recursive Functions and Effective Computability, McGraw-Hill, New York, 1967; reprinted MIT Press, Cambridge, MA, 1987, ISBN 978-0-262-68052-3. Standard textbook treatment of acceptable numberings, the recursion theorem, index sets, recursive inseparability, Rice's theorem and the Rice-Shapiro theorem; cited as a general reference, no page or theorem number is claimed.",
+      "S. C. Kleene, Introduction to Metamathematics, Van Nostrand / North-Holland, 1952. States and proves the recursion theorem and the first recursion theorem (least fixed points of monotone recursive operators); cited without section numbers.",
+      "A. R. Meyer and D. M. Ritchie, \"The complexity of loop programs\", Proceedings of the ACM National Conference 1967, 465-469, DOI 10.1145/800196.806014. Theorem 7: the functions computable by Loop programs are exactly the primitive recursive functions. (Cited only for that fact.)"
+    ],
+    "design_question": "Arguments about automated checkers often appeal to Rice's theorem, sometimes too broadly. Exactly which checker designs does a Rice-style argument rule out, under which hypotheses about the programming system, and which designs remain possible (sound-but-incomplete checkers, syntactic checks, checkers for total sublanguages, checkers for restricted fragments)?",
+    "evidence_role": "execution (Lean kernel check)",
+    "axioms": {
+      "Toy.Rice.Tables.tables_no_fixpointPrinciple_and_isZeroFn_decidedInside": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "status": "proved"
+  },
+  {
+    "id": "N2",
+    "lean": "Toy.Rice.Flat.flat_fixpointPrinciple_and_halts_not_decidedInside",
+    "kind": "impossibility",
+    "tier": "T0",
+    "tier_justification": "A concrete instance of R1 in a three-point flat domain; the fixpoint principle there is the least-fixed-point argument behind Kleene's first recursion theorem.",
+    "plain_claim": "In the flat-domain system (codes and behaviours are the three denotations 'diverges', 'returns true', 'returns false'; sem is the identity; admissible transformers are the monotone maps), the fixpoint principle holds, halting is extensional and nontrivial, and halting is not decided inside the system.",
+    "notes": "Existence statement about one concrete system: Flat.sys witnesses that the fixpoint principle, a nontrivial extensional predicate, and the failure to decide it inside occur together. It is not a statement about other systems.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_note": "Every monotone map on the three-point flat domain has a fixed point (iterate from bot); then R1.",
+    "nonvacuity_witness": "Closed concrete statement.",
+    "nonvacuity_witness_lean": "Toy.Rice.Flat.flat_fixpointPrinciple_and_halts_not_decidedInside",
+    "positive_control_lean": "Toy.Rice.Tables.tables_no_fixpointPrinciple_and_isZeroFn_decidedInside",
+    "non_claims": [
+      "Does not forbid: (i) partial or one-sided procedures: in this same system the one-sided switch 'if the program halts then return true, else diverge' is admissible (W8); semi-decision itself is not formalized; (ii) checkers for decidable fragments: the two-element total fragment of this system decides every predicate (Toy.Rice.Flat.totalSys_decides_every_predicate), a degenerate case recorded as Toy.Rice.Examples.restrict_degenerate_flat; (iii) sound but incomplete checkers: the statement concerns deciders only; because the only switch-admissible checkers here are constant (Toy.Rice.Flat.switchAdmissible_const), a sound switch-admissible checker for halting can only be the one that rejects everything.",
+      "'Halting is not decided inside' is not 'no Boolean function decides halting': haltCheck decides Halts on the flat domain (Toy.Rice.Flat.haltCheck_decides); what fails is the admissibility of its swapped switch (Toy.Rice.Examples.switchAdmissible_neg). No classical undecidability of halting is claimed or formalized here; the classical fact is cited in prose only (W8).",
+      "Codes are denotations (sem = id), so every predicate is extensional; this system cannot separate syntactic from semantic predicates (see the padded system, W2 and W3).",
+      "Only the two constant checkers are switch-admissible here (Toy.Rice.Flat.switchAdmissible_const), so every nontrivial predicate fails to be decided inside for a blunt reason. The system is a positive control for R1's hypotheses, not a model of a programming language.",
+      "The fixpoint principle holds here by a least-fixed-point argument on a pointed poset, with no encoding of computation, universal program, or self-reference: the fixpoint principle does not imply Turing-completeness.",
+      "The flat domain is not a lattice (Toy.Rice.Flat.no_upper_bound_tt_ff), so this is not an instance of Tarski's lattice fixed-point theorem."
+    ],
+    "prior_art": [
+      "S. C. Kleene, Introduction to Metamathematics, Van Nostrand / North-Holland, 1952. States and proves the recursion theorem and the first recursion theorem (least fixed points of monotone recursive operators); cited without section numbers.",
+      "H. G. Rice, \"Classes of recursively enumerable sets and their decision problems\", Transactions of the American Mathematical Society 74(2) (1953), 358-366, DOI 10.1090/S0002-9947-1953-0053041-6. The original theorem: an index set of r.e. sets is recursive only if it is trivial."
+    ],
+    "design_question": "Arguments about automated checkers often appeal to Rice's theorem, sometimes too broadly. Exactly which checker designs does a Rice-style argument rule out, under which hypotheses about the programming system, and which designs remain possible (sound-but-incomplete checkers, syntactic checks, checkers for total sublanguages, checkers for restricted fragments)?",
+    "evidence_role": "execution (Lean kernel check)",
+    "axioms": {
+      "Toy.Rice.Flat.flat_fixpointPrinciple_and_halts_not_decidedInside": [
+        "propext"
+      ]
+    },
+    "status": "proved"
+  },
+  {
+    "id": "N3",
+    "lean": "Toy.Rice.Controls.converse_fails_constClosed_compClosed_noFixpoint_nothingNontrivialDecided",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "Elementary boundary fact recorded to block the converse reading of R1.",
+    "plain_claim": "The system on ℕ with identity semantics whose admissible transformers are the constants and the shifts n ↦ n + k contains every constant, is closed under composition, and lacks the fixpoint principle, and yet decides no nontrivial predicate inside (every predicate is extensional here).",
+    "notes": "Existence statement about one concrete system: natShiftSys witnesses that ConstClosed, CompClosed and the failure of the fixpoint principle are consistent with deciding nothing nontrivial inside. It does not characterize such systems.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_note": "The shift by one has no fixed point; a switch with branches 0 and 1 is neither constant nor a shift unless the checker is constant.",
+    "nonvacuity_witness": "Closed concrete statement.",
+    "nonvacuity_witness_lean": "Toy.Rice.Controls.converse_fails_constClosed_compClosed_noFixpoint_nothingNontrivialDecided",
+    "non_claims": [
+      "Does not forbid anything: it shows that losing the fixpoint principle does not by itself make anything nontrivial decided inside. It says nothing about partial or semi-decision procedures, checkers for decidable fragments, or sound but incomplete checkers.",
+      "Shows only that the fixpoint principle is not necessary for the conclusion of R1; it does not characterize the systems in which nothing nontrivial is decided.",
+      "A degenerate variant, in which not even constant switches are admissible, is Toy.Rice.Controls.converse_fails_noFixpoint_nothingDecided."
+    ],
+    "prior_art": [
+      "None cited: an elementary boundary fact."
+    ],
+    "design_question": "Arguments about automated checkers often appeal to Rice's theorem, sometimes too broadly. Exactly which checker designs does a Rice-style argument rule out, under which hypotheses about the programming system, and which designs remain possible (sound-but-incomplete checkers, syntactic checks, checkers for total sublanguages, checkers for restricted fragments)?",
+    "evidence_role": "execution (Lean kernel check)",
+    "axioms": {
+      "Toy.Rice.Controls.converse_fails_constClosed_compClosed_noFixpoint_nothingNontrivialDecided": [
+        "propext",
+        "Quot.sound"
+      ]
+    },
+    "status": "proved"
+  },
+  {
+    "id": "W1",
+    "lean": "Toy.Rice.rejectAll_sound_switchAdmissible_of_constClosed",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Trivial reference point for the sound-but-incomplete checkers part of the design question.",
+    "plain_claim": "If every constant transformer is admissible, the checker that rejects every code is sound for every predicate and is switch-admissible.",
+    "hypotheses": [
+      {
+        "name": "hconst : ConstClosed S",
+        "purpose": "The switches of a constant checker are constant transformers.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.rejectAll_tight_constClosed"
+      }
+    ],
+    "depth": "definitional",
+    "depth_note": "Unfolding.",
+    "nonvacuity_witness": "Padded system (which also has the fixpoint principle).",
+    "nonvacuity_witness_lean": "Toy.Rice.Controls.rejectAll_nonvacuous",
+    "non_claims": [
+      "Is itself a (trivially) sound but incomplete checker, which Rice-style results do not forbid. It does not show that useful sound checkers exist (W2 does, for a syntactic subclass), and it says nothing about partial or semi-decision procedures (W8) or checkers for decidable fragments (N1, W4).",
+      "Reject-all is sound but useless; it shows only that soundness alone is never forbidden.",
+      "Symmetrically, accept-all is complete for every predicate and switch-admissible under the same hypothesis (Toy.Rice.acceptAll_complete_switchAdmissible_of_constClosed): completeness alone is never forbidden either.",
+      "No fixpoint hypothesis is involved; the statement holds with or without the fixpoint principle."
+    ],
+    "prior_art": [
+      "P. Cousot and R. Cousot, \"Abstract interpretation: a unified lattice model for static analysis of programs by construction or approximation of fixpoints\", POPL 1977, 238-252, DOI 10.1145/512950.512973. Foundational framework for sound but incomplete static analyzers; cited as context for the design space, not for any statement here."
+    ],
+    "design_question": "Arguments about automated checkers often appeal to Rice's theorem, sometimes too broadly. Exactly which checker designs does a Rice-style argument rule out, under which hypotheses about the programming system, and which designs remain possible (sound-but-incomplete checkers, syntactic checks, checkers for total sublanguages, checkers for restricted fragments)?",
+    "evidence_role": "execution (Lean kernel check)",
+    "axioms": {
+      "Toy.Rice.rejectAll_sound_switchAdmissible_of_constClosed": []
+    },
+    "status": "proved"
+  },
+  {
+    "id": "W2",
+    "lean": "Toy.Rice.Padded.padded_litTrueCheck_sound_infinite_incomplete",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Folklore (sound checkers for syntactic subclasses exist despite Rice) made precise in a toy system where Rice applies.",
+    "plain_claim": "In the padded system, which has the fixpoint principle, the predicate 'the behaviour is true' is extensional, nontrivial and not decided inside the system; yet the checker 'the code is a literal true program' is switch-admissible and sound for it, accepts the infinitely many codes lit true n, and rejects every hidden code hid true n although those satisfy the predicate.",
+    "notes": "Existence statement about one concrete system: Padded.sys witnesses that the fixpoint principle is consistent with a sound, switch-admissible checker that accepts infinitely many codes but is incomplete for a predicate that is not decided inside. It is not a statement about other systems.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_note": "The fixpoint principle holds by a fresh-padding obliviousness argument (hidden codes outside a finite exception set are seen only through their visible part); the rest is unfolding.",
+    "nonvacuity_witness": "Closed concrete statement.",
+    "nonvacuity_witness_lean": "Toy.Rice.Padded.padded_litTrueCheck_sound_infinite_incomplete",
+    "non_claims": [
+      "Is itself a sound but incomplete checker that accepts infinitely many codes, which Rice-style results do not forbid. It says nothing about partial or semi-decision procedures (W8) or checkers for decidable fragments (N1, W4).",
+      "The padded system's admissible class is deliberately small: outside a finite set its transformers cannot read the behaviour of hidden codes. It shows that this checker is consistent with the fixpoint principle; it is not a model of a real language.",
+      "The accepted class is syntactic (literal codes). Does not say that any natural class of real programs is accepted by a sound internal checker.",
+      "The checker remains incomplete on every behaviour: both behaviours of the padded system are realizable, and each has rejected codes (W5).",
+      "litTrueCheck reads a certificate that is visible in the code text; this is the pattern of certificate checking (proof-carrying code). Such a checker is sound for the property but complete only for codes that carry the certificate."
+    ],
+    "prior_art": [
+      "P. Cousot and R. Cousot, \"Abstract interpretation: a unified lattice model for static analysis of programs by construction or approximation of fixpoints\", POPL 1977, 238-252, DOI 10.1145/512950.512973. Foundational framework for sound but incomplete static analyzers; cited as context for the design space, not for any statement here."
+    ],
+    "design_question": "Arguments about automated checkers often appeal to Rice's theorem, sometimes too broadly. Exactly which checker designs does a Rice-style argument rule out, under which hypotheses about the programming system, and which designs remain possible (sound-but-incomplete checkers, syntactic checks, checkers for total sublanguages, checkers for restricted fragments)?",
+    "evidence_role": "execution (Lean kernel check)",
+    "axioms": {
+      "Toy.Rice.Padded.padded_litTrueCheck_sound_infinite_incomplete": [
+        "propext"
+      ]
+    },
+    "status": "proved"
+  },
+  {
+    "id": "W3",
+    "lean": "Toy.Rice.Padded.padded_fixpointPrinciple_and_evenPad_decidedInside",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Folklore (syntactic properties are not covered by Rice) made precise in a toy system where Rice applies.",
+    "plain_claim": "In the padded system, which has the fixpoint principle, the nontrivial non-extensional predicate 'the padding is even' is decided inside the system by evenPadCheck.",
+    "notes": "Existence statement about one concrete system: Padded.sys witnesses that a nontrivial non-extensional predicate can be decided inside a system with the fixpoint principle. It is not a statement about other systems.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_note": "evenPadCheck reads only the visible part of a code, so its switches are admissible.",
+    "nonvacuity_witness": "Closed concrete statement.",
+    "nonvacuity_witness_lean": "Toy.Rice.Padded.padded_fixpointPrinciple_and_evenPad_decidedInside",
+    "non_claims": [
+      "Is itself a decider for a non-extensional (syntactic) predicate, which Rice-style results do not forbid. It says nothing about partial or semi-decision procedures (W8), checkers for decidable fragments (N1, W4), or sound but incomplete checkers for extensional predicates (W1, W2, W5).",
+      "Does not say that every non-extensional predicate is decided inside a system with the fixpoint principle; which syntactic predicates are decided depends on Adm.",
+      "Whether a predicate is extensional depends on the chosen semantics sem; changing sem changes the scope of R1.",
+      "The padded system is a toy, not a model of a real language."
+    ],
+    "prior_art": [
+      "None cited: a toy construction."
+    ],
+    "design_question": "Arguments about automated checkers often appeal to Rice's theorem, sometimes too broadly. Exactly which checker designs does a Rice-style argument rule out, under which hypotheses about the programming system, and which designs remain possible (sound-but-incomplete checkers, syntactic checks, checkers for total sublanguages, checkers for restricted fragments)?",
+    "evidence_role": "execution (Lean kernel check)",
+    "axioms": {
+      "Toy.Rice.Padded.padded_fixpointPrinciple_and_evenPad_decidedInside": [
+        "propext",
+        "Quot.sound"
+      ]
+    },
+    "status": "proved"
+  },
+  {
+    "id": "W4",
+    "lean": "Toy.Rice.Lifted.lifted_haltsZero_decidedInside_haltingFragment_not_full",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Folklore (checkers for total sublanguages escape Rice) made precise, together with the condition under which the escape works (see R6).",
+    "plain_claim": "In the lifted lookup-table system (codes: table programs plus one divergent program; admissible transformers: constants and strict extensions of TProg programs), which has the fixpoint principle and is not closed under literal code-equality tests, the halting fragment is closed under same behaviour, has a proper admissible class and no fixpoint principle, and decides inside it, by fragCheck (which runs zeroCheck on the underlying table), the property 'halts and computes the zero function', which is extensional and nontrivial on the fragment; in the full system that property is extensional, nontrivial and not decided inside.",
+    "model_notes": "Codes: Option Table (none = the divergent program). Behaviours: Option (ℕ → ℕ), sem = Option.map eval. Adm f: f is constant, or f none = none and f (some t) = some (p.run t) for some TProg program p. totalSys = sys.restrict Halts is the halting fragment {c // c.isSome = true}. fragCheck ⟨some t, _⟩ = zeroCheck t: on a fragment code it runs zeroCheck on the underlying table (the none case is unreachable). All definitions are quoted under Toy systems (unfolded).",
+    "notes": "Existence statement about one concrete system: Lifted.sys and its halting fragment Lifted.totalSys witness that there is a system with the fixpoint principle, not closed under code-equality tests, whose behaviour-closed halting fragment decides inside a property that is extensional and nontrivial on the fragment and is not decided inside the full system. It does not say that every such system, or every behaviour-closed fragment, behaves this way.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_note": "The full-system extension of each fragment switch is strict (maps the divergent code to itself), hence admissible.",
+    "nonvacuity_witness": "Closed concrete statement.",
+    "nonvacuity_witness_lean": "Toy.Rice.Lifted.lifted_haltsZero_decidedInside_haltingFragment_not_full",
+    "related_lean": [
+      "Toy.Rice.Lifted.switchAdmissible_const",
+      "Toy.Rice.Lifted.not_decidedInside_of_nontrivial",
+      "Toy.Rice.Lifted.isEmptyTable_not_decidedInside",
+      "Toy.Rice.Lifted.not_eqTestClosed"
+    ],
+    "related_lean_notes": {
+      "Toy.Rice.Lifted.switchAdmissible_const": "every switch-admissible checker of the full system Lifted.sys is constant: SwitchAdmissible sys chk → (∀ c, chk c = true) ∨ (∀ c, chk c = false)",
+      "Toy.Rice.Lifted.not_decidedInside_of_nontrivial": "every nontrivial predicate on Option Table is not decided inside the full system Lifted.sys",
+      "Toy.Rice.Lifted.isEmptyTable_not_decidedInside": "the syntactic predicate fun c => c = some [] ('the code is the empty table') is not decided inside Lifted.sys",
+      "Toy.Rice.Lifted.not_eqTestClosed": "¬ EqTestClosed Lifted.sys, the last conjunct of W4 as a separate lemma"
+    },
+    "non_claims": [
+      "Is itself a checker for a decidable fragment, which Rice-style results do not forbid when the system's transformers cannot test code equality (compare R6). It says nothing about partial or semi-decision procedures (not formalized; compare W8) or about sound but incomplete checkers on the full system beyond the degeneracy that only constant checkers are switch-admissible there (Toy.Rice.Lifted.switchAdmissible_const).",
+      "The escape relies on strictness: the full-system transformer that agrees with a fragment switch sends the divergent code to the divergent code, which models an analyzer allowed to diverge outside the fragment. Under closure under code-equality tests the escape is impossible for every behaviour-closed fragment (R6). In particular, for a Turing-complete language with total computable code transformers, restricting to the halting programs does not make 'returns true' decidable in the classical sense, by a total computable procedure on the halting programs (modeling bridge of R6, not formalized; Kleene 1950).",
+      "In the full system Toy.Rice.Lifted.sys only the two constant checkers are switch-admissible (Toy.Rice.Lifted.switchAdmissible_const): a switch whose two branches are halting codes does not send the divergent code to itself, so it is admissible only if it is constant. Hence every nontrivial predicate on the full system, syntactic ones included, fails to be decided inside it (Toy.Rice.Lifted.not_decidedInside_of_nontrivial; for example 'the code is the empty table', Toy.Rice.Lifted.isEmptyTable_not_decidedInside), for the same strictness reason as in the flat-domain system (N2, Toy.Rice.Flat.switchAdmissible_const). The full-system conjunct ¬ DecidedInside sys HaltsZero therefore carries no information beyond this degeneracy. The content of W4 lies in the halting fragment Lifted.totalSys, whose admissible class is proper (it excludes the tail map) and contains the non-constant switch-admissible checker fragCheck.",
+      "Deciding on the fragment does not give a decider on the full system: membership in the fragment (halting) is extensional and nontrivial in the full system, hence not decided inside it (R1).",
+      "The full system's fixpoint principle holds for a domain-theoretic reason (every admissible transformer is constant or fixes the divergent code); the system is not Turing-complete and not a model of a real language.",
+      "The two-element total fragment of the flat-domain system admits every map and decides every predicate (Toy.Rice.Examples.restrict_degenerate_flat); it is recorded as a degenerate example and not used as evidence."
+    ],
+    "prior_art": [
+      "S. C. Kleene, \"A symmetric form of Gödel's theorem\", Proceedings of the KNAW 53 (1950), 800-802; also Indagationes Mathematicae 12 (1950), 244-246; no DOI; KNAW Digital Library record PU00014670, https://dwc.knaw.nl/DL/publications/PU00014670.pdf (a scan of Proceedings volume 53, Nos. 6-10, pp. 685-1656, containing the article at pp. 800-802). Constructs two disjoint r.e. sets that no recursive set separates (recursive inseparability).",
+      "H. Rogers, Jr., Theory of Recursive Functions and Effective Computability, McGraw-Hill, New York, 1967; reprinted MIT Press, Cambridge, MA, 1987, ISBN 978-0-262-68052-3. Standard textbook treatment of acceptable numberings, the recursion theorem, index sets, recursive inseparability, Rice's theorem and the Rice-Shapiro theorem; cited as a general reference, no page or theorem number is claimed."
+    ],
+    "design_question": "Arguments about automated checkers often appeal to Rice's theorem, sometimes too broadly. Exactly which checker designs does a Rice-style argument rule out, under which hypotheses about the programming system, and which designs remain possible (sound-but-incomplete checkers, syntactic checks, checkers for total sublanguages, checkers for restricted fragments)?",
+    "evidence_role": "execution (Lean kernel check)",
+    "axioms": {
+      "Toy.Rice.Lifted.lifted_haltsZero_decidedInside_haltingFragment_not_full": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "status": "proved"
+  },
+  {
+    "id": "W5",
+    "lean": "Toy.Rice.forall_exists_sameSem_rejected_of_fixpointPrinciple_extensional_violated_sound_switchAdmissible",
+    "kind": "impossibility",
+    "tier": "T1",
+    "tier_justification": "Folklore ('every sound analyzer is incomplete') made precise. The per-behaviour form (every realizable behaviour contains a rejected code) follows from the same single switch; we did not locate it stated in this form in the sources checked and claim no novelty.",
+    "plain_claim": "In a system with the fixpoint principle, let chk be switch-admissible and sound for an extensional predicate P that some code violates. Then every realizable behaviour (the behaviour of some code) has a code that chk rejects: for every code a there is a code c with sem c = sem a and chk c = false. In particular every code satisfying P, and every accepted code, has a rejected code with the same behaviour.",
+    "hypotheses": [
+      {
+        "name": "hfix : FixpointPrinciple S",
+        "purpose": "Semantic fixed point of the switch c ↦ if chk c then b else a.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.incompleteAll_tight_fixpointPrinciple"
+      },
+      {
+        "name": "hext : Extensional S P",
+        "purpose": "Transfers P from the fixed point to b.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.incompleteAll_tight_extensional"
+      },
+      {
+        "name": "hviol : ∃ b, ¬ P b",
+        "purpose": "The branch taken on acceptance.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.incompleteAll_tight_violated"
+      },
+      {
+        "name": "hsound : SoundFor chk P",
+        "purpose": "An accepted fixed point would satisfy P.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.incompleteAll_tight_sound"
+      },
+      {
+        "name": "hsw : SwitchAdmissible S chk",
+        "purpose": "Admissibility of the switch.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.incompleteAll_tight_switchAdmissible"
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "One switch per behaviour, one fixpoint application, one case split; no classical reasoning (axiom audit: propext only).",
+    "nonvacuity_witness": "Padded system, BehTrue, litTrueCheck.",
+    "nonvacuity_witness_lean": "Toy.Rice.Controls.incompleteAll_nonvacuous",
+    "positive_control_lean": "Toy.Rice.Controls.incompleteAll_tight_fixpointPrinciple",
+    "related_lean": [
+      "Toy.Rice.exists_satisfying_rejected_of_fixpointPrinciple_extensional_nontrivial_sound_switchAdmissible",
+      "Toy.Rice.exists_sameSem_rejected_of_fixpointPrinciple_extensional_sound_swappedSwitch",
+      "Toy.Rice.forall_exists_sameSem_accepted_of_fixpointPrinciple_extensional_satisfied_complete_switchAdmissible"
+    ],
+    "related_lean_notes": {
+      "Toy.Rice.exists_satisfying_rejected_of_fixpointPrinciple_extensional_nontrivial_sound_switchAdmissible": "from FixpointPrinciple S, Extensional S P, NontrivialPred P, SoundFor chk P and SwitchAdmissible S chk, concludes ∃ c, P c ∧ chk c = false (some code satisfying P is rejected)",
+      "Toy.Rice.exists_sameSem_rejected_of_fixpointPrinciple_extensional_sound_swappedSwitch": "the single-switch core of W5: from FixpointPrinciple S, Extensional S P, SoundFor chk P, ¬ P b and S.Adm (switch chk b a), concludes ∃ c, S.sem c = S.sem a ∧ chk c = false",
+      "Toy.Rice.forall_exists_sameSem_accepted_of_fixpointPrinciple_extensional_satisfied_complete_switchAdmissible": "the dual of W5 for complete checkers: from FixpointPrinciple S, Extensional S P, ∃ a, P a, CompleteFor chk P and SwitchAdmissible S chk, concludes ∀ b, ∃ c, S.sem c = S.sem b ∧ chk c = true"
+    },
+    "non_claims": [
+      "Does not forbid: (i) partial or one-sided procedures: a one-sided switch that answers on the codes satisfying the predicate and diverges on the others can be admissible while the predicate is not decided inside (W8, Toy.Rice.Flat.halts_unswappedSwitch_admissible_not_decidedInside, in the flat-domain system); semi-decision itself is not formalized; (ii) checkers for decidable fragments: a separate total language without the fixpoint principle decides a nontrivial extensional predicate inside (N1), and a behaviour-closed fragment of a system whose transformers cannot test code equality does as well (W4); R6 states when restricting to a behaviour-closed fragment does not help; (iii) sound but incomplete checkers themselves: W5 presupposes such a checker and describes its incompleteness; such checkers exist (W1, W2).",
+      "Requires a total two-sided Boolean checker whose switches are admissible. Says nothing against one-sided procedures that accept the codes satisfying P and diverge on the others; semi-decision is not formalized (W8).",
+      "Uses soundness only. The dual for complete checkers (the behaviour of every code contains an accepted code, so the behaviour of every code violating P contains a false positive) is the lemma Toy.Rice.forall_exists_sameSem_accepted_of_fixpointPrinciple_extensional_satisfied_complete_switchAdmissible.",
+      "Speaks only about realizable behaviours, the behaviours of codes. If sem is not surjective, an element of the behaviour type that no code has contains no code, hence no rejected code (Toy.Rice.Controls.incompleteAll_unrealizableBehaviour: all hypotheses hold in the padded system with behaviours embedded in Option Bool, and the behaviour none has no rejected code).",
+      "The rejected code is obtained as a semantic fixed point of a switch, a self-referential construction in a real language. Does not say that small, natural, or frequently occurring programs are rejected, nor how many codes are rejected.",
+      "Deterministic and over all codes; says nothing about randomized checkers, classifiers that are accurate on a distribution, or checkers verified only on bounded inputs.",
+      "Does not apply to checkers of non-extensional predicates or to checkers whose switches are not admissible (see the counterexamples)."
+    ],
+    "prior_art": [
+      "H. G. Rice, \"Classes of recursively enumerable sets and their decision problems\", Transactions of the American Mathematical Society 74(2) (1953), 358-366, DOI 10.1090/S0002-9947-1953-0053041-6. The original theorem: an index set of r.e. sets is recursive only if it is trivial.",
+      "H. Rogers, Jr., Theory of Recursive Functions and Effective Computability, McGraw-Hill, New York, 1967; reprinted MIT Press, Cambridge, MA, 1987, ISBN 978-0-262-68052-3. Standard textbook treatment of acceptable numberings, the recursion theorem, index sets, recursive inseparability, Rice's theorem and the Rice-Shapiro theorem; cited as a general reference, no page or theorem number is claimed.",
+      "P. Cousot and R. Cousot, \"Abstract interpretation: a unified lattice model for static analysis of programs by construction or approximation of fixpoints\", POPL 1977, 238-252, DOI 10.1145/512950.512973. Foundational framework for sound but incomplete static analyzers; cited as context for the design space, not for any statement here."
+    ],
+    "design_question": "Arguments about automated checkers often appeal to Rice's theorem, sometimes too broadly. Exactly which checker designs does a Rice-style argument rule out, under which hypotheses about the programming system, and which designs remain possible (sound-but-incomplete checkers, syntactic checks, checkers for total sublanguages, checkers for restricted fragments)?",
+    "evidence_role": "execution (Lean kernel check)",
+    "axioms": {
+      "Toy.Rice.forall_exists_sameSem_rejected_of_fixpointPrinciple_extensional_violated_sound_switchAdmissible": [
+        "propext"
+      ]
+    },
+    "status": "proved"
+  },
+  {
+    "id": "W6",
+    "lean": "Toy.Rice.exists_sameSem_rejected_or_exists_sameSem_accepted_of_fixpointPrinciple_switchAdmissible",
+    "kind": "impossibility",
+    "tier": "T1",
+    "tier_justification": "Folklore (internal checkers cannot be exactly behavioural) made precise in a localized form; not located in this form in the sources checked; no novelty claimed.",
+    "plain_claim": "In a system with the fixpoint principle, every switch-admissible checker chk has the following property: for any codes a and b, chk rejects some code with the behaviour of a or accepts some code with the behaviour of b. Consequently (and, classically, equivalently) no realizable behaviour (the behaviour of some code) has all its codes accepted while a realizable behaviour has all its codes rejected.",
+    "hypotheses": [
+      {
+        "name": "hfix : FixpointPrinciple S",
+        "purpose": "Semantic fixed point of the switch c ↦ if chk c then b else a.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.splitAll_tight_fixpointPrinciple"
+      },
+      {
+        "name": "hsw : SwitchAdmissible S chk",
+        "purpose": "Admissibility of that switch.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.splitAll_tight_switchAdmissible"
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "One fixpoint application per pair of codes; no classical reasoning.",
+    "nonvacuity_witness": "Padded system, litTrueCheck, which takes both verdicts.",
+    "nonvacuity_witness_lean": "Toy.Rice.Controls.splitAll_nonvacuous",
+    "positive_control_lean": "Toy.Rice.Controls.splitAll_tight_fixpointPrinciple",
+    "related_lean": [
+      "Toy.Rice.exists_sameSem_accepted_rejected_of_fixpointPrinciple_switchAdmissible",
+      "Toy.Rice.not_forall_sameSem_accepted_and_forall_sameSem_rejected_of_fixpointPrinciple_switchAdmissible",
+      "Toy.Rice.sameSem_split_iff_not_forall_sameSem_accepted_and_forall_sameSem_rejected"
+    ],
+    "related_lean_notes": {
+      "Toy.Rice.exists_sameSem_accepted_rejected_of_fixpointPrinciple_switchAdmissible": "from FixpointPrinciple S, SwitchAdmissible S chk, ∃ c, chk c = true and ∃ d, chk d = false, concludes ∃ c d, S.sem c = S.sem d ∧ chk c = true ∧ chk d = false",
+      "Toy.Rice.not_forall_sameSem_accepted_and_forall_sameSem_rejected_of_fixpointPrinciple_switchAdmissible": "the negative form of W6: from FixpointPrinciple S and SwitchAdmissible S chk, for all codes a b, ¬ ((∀ c, S.sem c = S.sem a → chk c = true) ∧ (∀ c, S.sem c = S.sem b → chk c = false))",
+      "Toy.Rice.sameSem_split_iff_not_forall_sameSem_accepted_and_forall_sameSem_rejected": "for every chk, a, b (no hypotheses), W6's disjunction is equivalent, using classical logic, to that negative form"
+    },
+    "non_claims": [
+      "Does not forbid: (i) partial or one-sided procedures: a one-sided switch that answers on the codes satisfying the predicate and diverges on the others can be admissible while the predicate is not decided inside (W8, Toy.Rice.Flat.halts_unswappedSwitch_admissible_not_decidedInside, in the flat-domain system); semi-decision itself is not formalized; (ii) checkers for decidable fragments: a separate total language without the fixpoint principle decides a nontrivial extensional predicate inside (N1), and a behaviour-closed fragment of a system whose transformers cannot test code equality does as well (W4); R6 states when restricting to a behaviour-closed fragment does not help; (iii) sound but incomplete checkers: W6 constrains only how verdicts split across behaviours; sound but incomplete checkers exist in systems with the fixpoint principle (W1, W2).",
+      "Does not say which of the two behaviours is split, nor that every behaviour is split: a constant checker splits no behaviour (and satisfies the statement trivially).",
+      "Speaks only about realizable behaviours. If sem is not surjective, a behaviour that no code has vacuously has all its (zero) codes both accepted and rejected, so the unqualified paraphrase 'no behaviour has all its codes accepted while another behaviour has all its codes rejected' is false (Toy.Rice.Controls.verdictSplit_unrealizableBehaviour).",
+      "The statement is constructive (its only axiom is propext), and so is its negative consequence for realizable behaviours (Toy.Rice.not_forall_sameSem_accepted_and_forall_sameSem_rejected_of_fixpointPrinciple_switchAdmissible). Recovering the positive disjunction from the negative form uses classical logic (Toy.Rice.sameSem_split_iff_not_forall_sameSem_accepted_and_forall_sameSem_rejected).",
+      "Involves no predicate; it constrains the verdicts of the checker only. For sound checkers of a nontrivial extensional predicate, W5 gives the stronger per-behaviour statement.",
+      "Same scope as W5: deterministic, total two-sided checkers with admissible switches."
+    ],
+    "prior_art": [
+      "H. G. Rice, \"Classes of recursively enumerable sets and their decision problems\", Transactions of the American Mathematical Society 74(2) (1953), 358-366, DOI 10.1090/S0002-9947-1953-0053041-6. The original theorem: an index set of r.e. sets is recursive only if it is trivial.",
+      "H. Rogers, Jr., Theory of Recursive Functions and Effective Computability, McGraw-Hill, New York, 1967; reprinted MIT Press, Cambridge, MA, 1987, ISBN 978-0-262-68052-3. Standard textbook treatment of acceptable numberings, the recursion theorem, index sets, recursive inseparability, Rice's theorem and the Rice-Shapiro theorem; cited as a general reference, no page or theorem number is claimed."
+    ],
+    "design_question": "Arguments about automated checkers often appeal to Rice's theorem, sometimes too broadly. Exactly which checker designs does a Rice-style argument rule out, under which hypotheses about the programming system, and which designs remain possible (sound-but-incomplete checkers, syntactic checks, checkers for total sublanguages, checkers for restricted fragments)?",
+    "evidence_role": "execution (Lean kernel check)",
+    "axioms": {
+      "Toy.Rice.exists_sameSem_rejected_or_exists_sameSem_accepted_of_fixpointPrinciple_switchAdmissible": [
+        "propext"
+      ]
+    },
+    "status": "proved"
+  },
+  {
+    "id": "W7",
+    "lean": "Toy.Rice.exists_sameSem_satisfying_accepted_rejected_of_fixpointPrinciple_extensional_sound_switchAdmissible",
+    "kind": "impossibility",
+    "tier": "T0",
+    "tier_justification": "Immediate from W6 and soundness.",
+    "plain_claim": "In a system with the fixpoint principle, a switch-admissible checker that is sound for an extensional predicate P, accepts some code and rejects some code gives different verdicts on two codes with the same behaviour, both satisfying P.",
+    "hypotheses": [
+      {
+        "name": "hfix : FixpointPrinciple S",
+        "purpose": "Via W6.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.soundSplit_tight_fixpointPrinciple"
+      },
+      {
+        "name": "hext : Extensional S P",
+        "purpose": "Transfers P to the rejected code.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.soundSplit_tight_extensional"
+      },
+      {
+        "name": "hsound : SoundFor chk P",
+        "purpose": "The accepted code satisfies P.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.soundSplit_tight_sound"
+      },
+      {
+        "name": "hsw : SwitchAdmissible S chk",
+        "purpose": "Via W6.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.soundSplit_tight_switchAdmissible"
+      },
+      {
+        "name": "hacc : ∃ c, chk c = true",
+        "purpose": "An accepted code (the reject-all checker is sound and never splits).",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.soundSplit_tight_accepts"
+      },
+      {
+        "name": "hrej : ∃ d, chk d = false",
+        "purpose": "A rejected code.",
+        "tightness": "tight",
+        "counterexample": "Toy.Rice.Controls.soundSplit_tight_rejects"
+      }
+    ],
+    "depth": "definitional",
+    "depth_note": "W6 plus soundness and extensionality.",
+    "nonvacuity_witness": "Padded system, BehTrue, litTrueCheck.",
+    "nonvacuity_witness_lean": "Toy.Rice.Controls.soundSplit_nonvacuous",
+    "positive_control_lean": "Toy.Rice.Controls.soundSplit_tight_fixpointPrinciple",
+    "non_claims": [
+      "Does not forbid: (i) partial or one-sided procedures: a one-sided switch that answers on the codes satisfying the predicate and diverges on the others can be admissible while the predicate is not decided inside (W8, Toy.Rice.Flat.halts_unswappedSwitch_admissible_not_decidedInside, in the flat-domain system); semi-decision itself is not formalized; (ii) checkers for decidable fragments: a separate total language without the fixpoint principle decides a nontrivial extensional predicate inside (N1), and a behaviour-closed fragment of a system whose transformers cannot test code equality does as well (W4); R6 states when restricting to a behaviour-closed fragment does not help; (iii) sound but incomplete checkers themselves: W7 presupposes such a checker and describes how it splits a behaviour; such checkers exist (W1, W2).",
+      "hacc is essential: the reject-all checker is sound for every P and never accepts. P need not be nontrivial: the statement holds for P = True whenever chk takes both verdicts.",
+      "Existential; for nontrivial P the per-behaviour statement is W5.",
+      "Same scope as W5: deterministic, total two-sided checkers with admissible switches, extensional P."
+    ],
+    "prior_art": [
+      "H. G. Rice, \"Classes of recursively enumerable sets and their decision problems\", Transactions of the American Mathematical Society 74(2) (1953), 358-366, DOI 10.1090/S0002-9947-1953-0053041-6. The original theorem: an index set of r.e. sets is recursive only if it is trivial.",
+      "H. Rogers, Jr., Theory of Recursive Functions and Effective Computability, McGraw-Hill, New York, 1967; reprinted MIT Press, Cambridge, MA, 1987, ISBN 978-0-262-68052-3. Standard textbook treatment of acceptable numberings, the recursion theorem, index sets, recursive inseparability, Rice's theorem and the Rice-Shapiro theorem; cited as a general reference, no page or theorem number is claimed."
+    ],
+    "design_question": "Arguments about automated checkers often appeal to Rice's theorem, sometimes too broadly. Exactly which checker designs does a Rice-style argument rule out, under which hypotheses about the programming system, and which designs remain possible (sound-but-incomplete checkers, syntactic checks, checkers for total sublanguages, checkers for restricted fragments)?",
+    "evidence_role": "execution (Lean kernel check)",
+    "axioms": {
+      "Toy.Rice.exists_sameSem_satisfying_accepted_rejected_of_fixpointPrinciple_extensional_sound_switchAdmissible": [
+        "propext"
+      ]
+    },
+    "status": "proved"
+  },
+  {
+    "id": "W8",
+    "lean": "Toy.Rice.Flat.halts_unswappedSwitch_admissible_not_decidedInside",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Toy counterpart of the classical fact that halting is semi-decidable but not decidable, in the classical computability sense, which is not formalized here (Mathlib: ComputablePred.halting_problem_re, ComputablePred.halting_problem).",
+    "plain_claim": "In the flat-domain system, which has the fixpoint principle, the one-sided switch 'if the program halts then return true, else diverge' is admissible, while halting is not decided inside the system.",
+    "notes": "Existence statement about one concrete system: Flat.sys witnesses that a one-sided switch can be admissible in a system with the fixpoint principle while the predicate is not decided inside. It is not a statement about other systems.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "depth_note": "The one-sided switch maps bot to bot, hence is monotone.",
+    "nonvacuity_witness": "Closed concrete statement.",
+    "nonvacuity_witness_lean": "Toy.Rice.Flat.halts_unswappedSwitch_admissible_not_decidedInside",
+    "non_claims": [
+      "Shows that one-sided procedures are not forbidden here: the one-sided halting switch is admissible in a system with the fixpoint principle. It does not define or characterize semi-decision, and it says nothing about checkers for decidable fragments (N1, W4) or sound but incomplete checkers (W1, W2).",
+      "No notion of semi-decision is defined. The statement shows only that DecidedInside, which needs both switches, is strictly stronger than admissibility of the unswapped switch. The Rice-Shapiro theorem is not formalized.",
+      "Toy flat domain with sem = id; not a model of a real language."
+    ],
+    "prior_art": [
+      "Mathlib (leanprover-community/mathlib4, commit e237a521d16607fe82439145293b89fbd0e74678), Mathlib/Computability/Halting.lean: ComputablePred.halting_problem_re (line 60: the halting predicate is r.e.) and ComputablePred.halting_problem (line 64: it is not computable). Prose only.",
+      "H. G. Rice, \"On completely recursively enumerable classes and their key arrays\", Journal of Symbolic Logic 21(3) (1956), 304-308, DOI 10.2307/2269105. With Myhill and Shepherdson (1955), the source of the Rice-Shapiro characterization of semi-decidable extensional properties, which this package does not formalize.",
+      "J. Myhill and J. C. Shepherdson, \"Effective operations on partial recursive functions\", Zeitschrift für mathematische Logik und Grundlagen der Mathematik 1(4) (1955), 310-317, DOI 10.1002/malq.19550010407."
+    ],
+    "design_question": "Arguments about automated checkers often appeal to Rice's theorem, sometimes too broadly. Exactly which checker designs does a Rice-style argument rule out, under which hypotheses about the programming system, and which designs remain possible (sound-but-incomplete checkers, syntactic checks, checkers for total sublanguages, checkers for restricted fragments)?",
+    "evidence_role": "execution (Lean kernel check)",
+    "axioms": {
+      "Toy.Rice.Flat.halts_unswappedSwitch_admissible_not_decidedInside": [
+        "propext"
+      ]
+    },
+    "status": "proved"
+  }
+]

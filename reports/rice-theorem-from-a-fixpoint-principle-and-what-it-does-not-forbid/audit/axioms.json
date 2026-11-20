@@ -1,0 +1,1156 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Rice.CompClosed": [],
+    "Toy.Rice.CompleteFor": [],
+    "Toy.Rice.ConstClosed": [],
+    "Toy.Rice.Controls.allAdm_nonvacuous": [],
+    "Toy.Rice.Controls.allAdm_tight_nonempty": [],
+    "Toy.Rice.Controls.allAdm_tight_nonempty.match_1_1": [],
+    "Toy.Rice.Controls.allAdm_tight_nonempty.match_1_3": [],
+    "Toy.Rice.Controls.cantor_nonvacuous": [],
+    "Toy.Rice.Controls.cantor_tight_surjective": [],
+    "Toy.Rice.Controls.cantor_tight_surjective.match_1_1": [],
+    "Toy.Rice.Controls.converse_fails_constClosed_compClosed_noFixpoint_nothingNontrivialDecided": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Controls.converse_fails_noFixpoint_nothingDecided": [],
+    "Toy.Rice.Controls.emptyAdm_fixpointPrinciple_nothingDecided": [],
+    "Toy.Rice.Controls.emptyAdm_fixpointPrinciple_nothingDecided.match_1_1": [],
+    "Toy.Rice.Controls.emptySem": [],
+    "Toy.Rice.Controls.emptySem.match_1": [],
+    "Toy.Rice.Controls.incompleteAll_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.incompleteAll_tight_extensional": [],
+    "Toy.Rice.Controls.incompleteAll_tight_fixpointPrinciple": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Controls.incompleteAll_tight_sound": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.incompleteAll_tight_switchAdmissible": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.incompleteAll_tight_violated": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.incompleteAll_unrealizableBehaviour": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.incompleteAll_unrealizableBehaviour.match_1_1": [],
+    "Toy.Rice.Controls.incomplete_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.incomplete_tight_extensional": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Controls.incomplete_tight_fixpointPrinciple": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Controls.incomplete_tight_nontrivial_hasMember": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.incomplete_tight_nontrivial_hasMember.match_1_1": [],
+    "Toy.Rice.Controls.incomplete_tight_nontrivial_hasNonMember": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.incomplete_tight_nontrivial_hasNonMember.match_1_1": [],
+    "Toy.Rice.Controls.incomplete_tight_sound": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.incomplete_tight_sound.match_1_1": [],
+    "Toy.Rice.Controls.incomplete_tight_switchAdmissible": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.natShiftSys": [],
+    "Toy.Rice.Controls.nonSurjSys": [],
+    "Toy.Rice.Controls.paddedOptSys": [],
+    "Toy.Rice.Controls.rejectAll_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.rejectAll_tight_constClosed": [],
+    "Toy.Rice.Controls.rejectAll_tight_constClosed.match_1_1": [],
+    "Toy.Rice.Controls.restrict_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Controls.restrict_tight_eqTestClosed": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Controls.restrict_tight_extensional": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Controls.restrict_tight_extensionalFragment": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Controls.restrict_tight_fixpointPrinciple": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Controls.restrict_tight_hasMember": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Controls.restrict_tight_hasNonMember": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Controls.riceChar_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.riceChar_tight_constClosed": [],
+    "Toy.Rice.Controls.riceChar_tight_extensional": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Controls.riceChar_tight_fixpointPrinciple": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Controls.riceClosure_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.riceClosure_tight_extensional": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Controls.riceClosure_tight_fixpointPrinciple": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Controls.riceClosure_tight_nontrivial_hasMember": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.riceClosure_tight_nontrivial_hasNonMember": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.riceClosure_tight_switchClosed": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.riceSharp_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.riceSharp_tight_decides": [],
+    "Toy.Rice.Controls.riceSharp_tight_extensional": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Controls.riceSharp_tight_fixpointPrinciple": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Controls.riceSharp_tight_member": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.riceSharp_tight_nonmember": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.rice_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.rice_tight_extensional": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Controls.rice_tight_fixpointPrinciple": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Controls.rice_tight_nontrivial_hasMember": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.rice_tight_nontrivial_hasNonMember": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.semConst_nonvacuous": [],
+    "Toy.Rice.Controls.semConst_tight_allSwitches": [],
+    "Toy.Rice.Controls.semConst_tight_fixpointPrinciple": [],
+    "Toy.Rice.Controls.soundSplit_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.soundSplit_tight_accepts": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.soundSplit_tight_accepts.match_1_1": [],
+    "Toy.Rice.Controls.soundSplit_tight_extensional": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.soundSplit_tight_fixpointPrinciple": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Controls.soundSplit_tight_rejects": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.soundSplit_tight_rejects.match_1_1": [],
+    "Toy.Rice.Controls.soundSplit_tight_sound": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.soundSplit_tight_sound.match_1_1": [],
+    "Toy.Rice.Controls.soundSplit_tight_switchAdmissible": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.splitAll_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.splitAll_tight_fixpointPrinciple": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Controls.splitAll_tight_switchAdmissible": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.split_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.split_tight_accepts": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.split_tight_accepts.match_1_1": [],
+    "Toy.Rice.Controls.split_tight_fixpointPrinciple": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Controls.split_tight_rejects": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.split_tight_rejects.match_1_1": [],
+    "Toy.Rice.Controls.split_tight_switchAdmissible": [
+      "propext"
+    ],
+    "Toy.Rice.Controls.tagOr": [],
+    "Toy.Rice.Controls.twinAdm": [],
+    "Toy.Rice.Controls.twinSys": [],
+    "Toy.Rice.Controls.twin_fixpointPrinciple": [],
+    "Toy.Rice.Controls.twin_tagOr_not_extensional": [],
+    "Toy.Rice.Controls.twin_tagOr_switchAdmissible": [],
+    "Toy.Rice.Controls.verdictSplit_unrealizableBehaviour": [],
+    "Toy.Rice.DecidedBy": [],
+    "Toy.Rice.DecidedInside": [],
+    "Toy.Rice.Decides": [],
+    "Toy.Rice.EqTestClosed": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Examples.behTrue_neg": [],
+    "Toy.Rice.Examples.behTrue_pos": [],
+    "Toy.Rice.Examples.compClosed_neg": [],
+    "Toy.Rice.Examples.compClosed_pos": [],
+    "Toy.Rice.Examples.compClosed_pos_tables": [],
+    "Toy.Rice.Examples.completeFor_neg": [],
+    "Toy.Rice.Examples.completeFor_pos": [],
+    "Toy.Rice.Examples.constClosed_neg": [],
+    "Toy.Rice.Examples.constClosed_pos": [],
+    "Toy.Rice.Examples.constClosed_pos_tables": [],
+    "Toy.Rice.Examples.decidedBy_neg": [
+      "propext"
+    ],
+    "Toy.Rice.Examples.decidedBy_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Examples.decidedInside_neg_direct": [],
+    "Toy.Rice.Examples.decidedInside_pos_padded": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Examples.decidedInside_pos_tables": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Examples.decides_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Examples.decides_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Examples.emptyAdmSys": [],
+    "Toy.Rice.Examples.eqTestClosed_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Examples.eqTestClosed_neg_lifted": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Examples.eqTestClosed_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Examples.eqTestClosed_pos_div": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Examples.evenPad_neg": [],
+    "Toy.Rice.Examples.evenPad_pos": [],
+    "Toy.Rice.Examples.extensional_neg": [],
+    "Toy.Rice.Examples.extensional_neg_litTrue": [],
+    "Toy.Rice.Examples.extensional_pos": [],
+    "Toy.Rice.Examples.extensional_pos_tables": [],
+    "Toy.Rice.Examples.fixpointPrinciple_neg_tables": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Examples.fixpointPrinciple_neg_total": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Examples.fixpointPrinciple_pos_flat": [],
+    "Toy.Rice.Examples.fixpointPrinciple_pos_padded": [
+      "propext"
+    ],
+    "Toy.Rice.Examples.flat_monotone_neg": [],
+    "Toy.Rice.Examples.flat_monotone_pos": [],
+    "Toy.Rice.Examples.flipBeh": [],
+    "Toy.Rice.Examples.flipBeh.match_1": [],
+    "Toy.Rice.Examples.halts_neg": [],
+    "Toy.Rice.Examples.halts_pos": [],
+    "Toy.Rice.Examples.isDiagonal_neg": [],
+    "Toy.Rice.Examples.isDiagonal_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Examples.isZeroFn_neg": [
+      "propext"
+    ],
+    "Toy.Rice.Examples.isZeroFn_pos": [
+      "propext"
+    ],
+    "Toy.Rice.Examples.nontrivialPred_neg_false": [],
+    "Toy.Rice.Examples.nontrivialPred_neg_false.match_1_1": [],
+    "Toy.Rice.Examples.nontrivialPred_neg_true": [],
+    "Toy.Rice.Examples.nontrivialPred_neg_true.match_1_1": [],
+    "Toy.Rice.Examples.nontrivialPred_pos": [],
+    "Toy.Rice.Examples.padded_admissible_neg": [
+      "propext"
+    ],
+    "Toy.Rice.Examples.padded_admissible_pos": [
+      "propext"
+    ],
+    "Toy.Rice.Examples.precompClosed_neg": [],
+    "Toy.Rice.Examples.precompClosed_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Examples.precompClosed_pos_padded": [],
+    "Toy.Rice.Examples.represents_neg": [
+      "propext"
+    ],
+    "Toy.Rice.Examples.represents_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Examples.restrict_adm_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Examples.restrict_adm_pos": [],
+    "Toy.Rice.Examples.restrict_degenerate_flat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Examples.restrict_example": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Examples.soundFor_neg": [],
+    "Toy.Rice.Examples.soundFor_pos": [],
+    "Toy.Rice.Examples.switchAdmissible_neg": [],
+    "Toy.Rice.Examples.switchAdmissible_pos": [
+      "propext"
+    ],
+    "Toy.Rice.Examples.switchAdmissible_pos_tables": [],
+    "Toy.Rice.Examples.switchClosed_neg": [
+      "propext"
+    ],
+    "Toy.Rice.Examples.switchClosed_pos": [
+      "propext"
+    ],
+    "Toy.Rice.Examples.tables_admissible_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Examples.tables_admissible_pos": [],
+    "Toy.Rice.Extensional": [],
+    "Toy.Rice.FixpointPrinciple": [],
+    "Toy.Rice.Flat.Flat": [],
+    "Toy.Rice.Flat.Flat.bot": [],
+    "Toy.Rice.Flat.Flat.bot.elim": [],
+    "Toy.Rice.Flat.Flat.bot.sizeOf_spec": [],
+    "Toy.Rice.Flat.Flat.casesOn": [],
+    "Toy.Rice.Flat.Flat.ctorElim": [],
+    "Toy.Rice.Flat.Flat.ctorElimType": [],
+    "Toy.Rice.Flat.Flat.ctorIdx": [],
+    "Toy.Rice.Flat.Flat.ff": [],
+    "Toy.Rice.Flat.Flat.ff.elim": [],
+    "Toy.Rice.Flat.Flat.ff.sizeOf_spec": [],
+    "Toy.Rice.Flat.Flat.noConfusion": [],
+    "Toy.Rice.Flat.Flat.noConfusionType": [],
+    "Toy.Rice.Flat.Flat.ofNat": [],
+    "Toy.Rice.Flat.Flat.ofNat_ctorIdx": [],
+    "Toy.Rice.Flat.Flat.rec": [],
+    "Toy.Rice.Flat.Flat.recOn": [],
+    "Toy.Rice.Flat.Flat.tt": [],
+    "Toy.Rice.Flat.Flat.tt.elim": [],
+    "Toy.Rice.Flat.Flat.tt.sizeOf_spec": [],
+    "Toy.Rice.Flat.Halts": [],
+    "Toy.Rice.Flat.Halts.eq_1": [],
+    "Toy.Rice.Flat.IsTotal": [],
+    "Toy.Rice.Flat.Monotone": [],
+    "Toy.Rice.Flat.ReturnsTt": [],
+    "Toy.Rice.Flat.extensional_all": [],
+    "Toy.Rice.Flat.fixpointPrinciple": [],
+    "Toy.Rice.Flat.flat_fixpointPrinciple_and_halts_not_decidedInside": [
+      "propext"
+    ],
+    "Toy.Rice.Flat.haltCheck": [],
+    "Toy.Rice.Flat.haltCheck.eq_1": [],
+    "Toy.Rice.Flat.haltCheck_decides": [
+      "propext"
+    ],
+    "Toy.Rice.Flat.halts_nontrivial": [],
+    "Toy.Rice.Flat.halts_not_decidedInside": [
+      "propext"
+    ],
+    "Toy.Rice.Flat.halts_unswappedSwitch_admissible_not_decidedInside": [
+      "propext"
+    ],
+    "Toy.Rice.Flat.instDecidableEqFlat": [],
+    "Toy.Rice.Flat.instReprFlat": [],
+    "Toy.Rice.Flat.instReprFlat.repr": [],
+    "Toy.Rice.Flat.instReprFlat.repr.match_1": [],
+    "Toy.Rice.Flat.le": [],
+    "Toy.Rice.Flat.monotone_of_map_bot": [],
+    "Toy.Rice.Flat.no_upper_bound_tt_ff": [],
+    "Toy.Rice.Flat.not_eqTestClosed": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Flat.returnsTt_nontrivial": [],
+    "Toy.Rice.Flat.returnsTt_not_decidedInside": [
+      "propext"
+    ],
+    "Toy.Rice.Flat.swappedSwitch_not_admissible": [],
+    "Toy.Rice.Flat.switchAdmissible_const": [
+      "propext"
+    ],
+    "Toy.Rice.Flat.sys": [],
+    "Toy.Rice.Flat.totalSys": [],
+    "Toy.Rice.Flat.totalSys_adm": [
+      "propext"
+    ],
+    "Toy.Rice.Flat.totalSys_decides_every_predicate": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Flat.total_not_fixpointPrinciple": [
+      "propext"
+    ],
+    "Toy.Rice.Flat.unswappedSwitch_admissible": [],
+    "Toy.Rice.IsDiagonal": [],
+    "Toy.Rice.Lifted.Admissible": [],
+    "Toy.Rice.Lifted.Halts": [],
+    "Toy.Rice.Lifted.HaltsZero": [],
+    "Toy.Rice.Lifted.constClosed": [],
+    "Toy.Rice.Lifted.fixpointPrinciple": [],
+    "Toy.Rice.Lifted.fragCheck": [],
+    "Toy.Rice.Lifted.fragCheck.match_1": [],
+    "Toy.Rice.Lifted.fragCheck_decides": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Lifted.fragCheck_switchAdmissible": [],
+    "Toy.Rice.Lifted.fragCheck_switchAdmissible.match_1_1": [],
+    "Toy.Rice.Lifted.haltsZero_extensional": [
+      "propext"
+    ],
+    "Toy.Rice.Lifted.haltsZero_nontrivial": [],
+    "Toy.Rice.Lifted.haltsZero_nontrivial.match_1_1": [],
+    "Toy.Rice.Lifted.haltsZero_nontrivial_fragment": [
+      "propext"
+    ],
+    "Toy.Rice.Lifted.haltsZero_nontrivial_fragment.isZeroFn_neg'": [
+      "propext"
+    ],
+    "Toy.Rice.Lifted.haltsZero_nontrivial_fragment.match_1_1": [],
+    "Toy.Rice.Lifted.haltsZero_not_decidedInside": [
+      "propext"
+    ],
+    "Toy.Rice.Lifted.halts_extensional": [
+      "propext"
+    ],
+    "Toy.Rice.Lifted.isEmptyTable_not_decidedInside": [],
+    "Toy.Rice.Lifted.lifted_haltsZero_decidedInside_haltingFragment_not_full": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Lifted.not_decidedInside_of_nontrivial": [],
+    "Toy.Rice.Lifted.not_eqTestClosed": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Lifted.switchAdmissible_const": [],
+    "Toy.Rice.Lifted.sys": [],
+    "Toy.Rice.Lifted.totalSys": [],
+    "Toy.Rice.Lifted.totalSys_adm_proper": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Lifted.total_not_fixpointPrinciple": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Lifted.total_not_fixpointPrinciple.match_1_1": [],
+    "Toy.Rice.Models.DiagConclusion": [],
+    "Toy.Rice.Models.IsConst": [],
+    "Toy.Rice.Models.LawvereConclusion": [],
+    "Toy.Rice.Models.adm0": [],
+    "Toy.Rice.Models.adm1": [],
+    "Toy.Rice.Models.adm1_not_compClosed": [],
+    "Toy.Rice.Models.adm1_not_precompClosed": [],
+    "Toy.Rice.Models.adm2": [],
+    "Toy.Rice.Models.adm3": [],
+    "Toy.Rice.Models.adm3_compClosed": [
+      "Quot.sound"
+    ],
+    "Toy.Rice.Models.adm3_no_diagonal": [],
+    "Toy.Rice.Models.app0": [],
+    "Toy.Rice.Models.app0.eq_1": [],
+    "Toy.Rice.Models.app0.eq_2": [],
+    "Toy.Rice.Models.app0.match_1": [],
+    "Toy.Rice.Models.app1": [],
+    "Toy.Rice.Models.app1.eq_1": [],
+    "Toy.Rice.Models.app1.eq_2": [],
+    "Toy.Rice.Models.app2": [],
+    "Toy.Rice.Models.app2.eq_1": [],
+    "Toy.Rice.Models.app2_not_represents": [
+      "propext"
+    ],
+    "Toy.Rice.Models.app3": [],
+    "Toy.Rice.Models.boolSys": [],
+    "Toy.Rice.Models.boolSys_not_fixpointPrinciple_of_not": [],
+    "Toy.Rice.Models.fixpointPrinciple_of_diagConclusion": [],
+    "Toy.Rice.Models.id_not_diagonal_app3": [],
+    "Toy.Rice.Models.kleene_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Models.kleene_nonvacuous_trivialDiagonal": [
+      "propext"
+    ],
+    "Toy.Rice.Models.kleene_tight_diagonal": [],
+    "Toy.Rice.Models.kleene_tight_precompClosed": [
+      "propext"
+    ],
+    "Toy.Rice.Models.kleene_tight_represents": [
+      "propext"
+    ],
+    "Toy.Rice.Models.lawvere_nonvacuous": [],
+    "Toy.Rice.Models.lawvere_tight_diagonal": [
+      "propext"
+    ],
+    "Toy.Rice.Models.lawvere_tight_diagonal.match_1_1": [],
+    "Toy.Rice.Models.lawvere_tight_represents": [],
+    "Toy.Rice.Models.lawvere_tight_represents.match_1_1": [],
+    "Toy.Rice.Models.not_has_no_fixpoint": [],
+    "Toy.Rice.Models.phiConst": [],
+    "Toy.Rice.Models.phiConst.eq_1": [],
+    "Toy.Rice.Models.phiConst_represents_const": [],
+    "Toy.Rice.Models.phiTrue": [],
+    "Toy.Rice.Models.tagAdm": [],
+    "Toy.Rice.Models.tagApp": [],
+    "Toy.Rice.Models.tagApp.eq_1": [],
+    "Toy.Rice.Models.tagDiag": [],
+    "Toy.Rice.Models.tagDiag.eq_1": [],
+    "Toy.Rice.Models.tagSys": [],
+    "Toy.Rice.NontrivialPred": [],
+    "Toy.Rice.Padded.Admissible": [],
+    "Toy.Rice.Padded.BehTrue": [],
+    "Toy.Rice.Padded.Code": [],
+    "Toy.Rice.Padded.Code.beh": [],
+    "Toy.Rice.Padded.Code.beh_hid": [],
+    "Toy.Rice.Padded.Code.beh_lit": [],
+    "Toy.Rice.Padded.Code.casesOn": [],
+    "Toy.Rice.Padded.Code.ctorElim": [],
+    "Toy.Rice.Padded.Code.ctorElimType": [],
+    "Toy.Rice.Padded.Code.ctorIdx": [],
+    "Toy.Rice.Padded.Code.erase": [],
+    "Toy.Rice.Padded.Code.erase_hid": [],
+    "Toy.Rice.Padded.Code.erase_lit": [],
+    "Toy.Rice.Padded.Code.hid": [],
+    "Toy.Rice.Padded.Code.hid.elim": [],
+    "Toy.Rice.Padded.Code.hid.inj": [],
+    "Toy.Rice.Padded.Code.hid.injEq": [
+      "propext"
+    ],
+    "Toy.Rice.Padded.Code.hid.noConfusion": [],
+    "Toy.Rice.Padded.Code.hid.sizeOf_spec": [],
+    "Toy.Rice.Padded.Code.lit": [],
+    "Toy.Rice.Padded.Code.lit.elim": [],
+    "Toy.Rice.Padded.Code.lit.inj": [],
+    "Toy.Rice.Padded.Code.lit.injEq": [
+      "propext"
+    ],
+    "Toy.Rice.Padded.Code.lit.noConfusion": [],
+    "Toy.Rice.Padded.Code.lit.sizeOf_spec": [],
+    "Toy.Rice.Padded.Code.noConfusion": [],
+    "Toy.Rice.Padded.Code.noConfusionType": [],
+    "Toy.Rice.Padded.Code.pad": [],
+    "Toy.Rice.Padded.Code.pad_erase": [],
+    "Toy.Rice.Padded.Code.pad_hid": [],
+    "Toy.Rice.Padded.Code.pad_lit": [],
+    "Toy.Rice.Padded.Code.rec": [],
+    "Toy.Rice.Padded.Code.recOn": [],
+    "Toy.Rice.Padded.EvenPad": [],
+    "Toy.Rice.Padded.EvenPad.eq_1": [],
+    "Toy.Rice.Padded.IdOffFinite": [],
+    "Toy.Rice.Padded.IsLit": [],
+    "Toy.Rice.Padded.VisOnlyOffFinite": [],
+    "Toy.Rice.Padded.allowlist": [
+      "propext"
+    ],
+    "Toy.Rice.Padded.allowlist.eq_1": [
+      "propext"
+    ],
+    "Toy.Rice.Padded.allowlist_sound_iff": [
+      "propext"
+    ],
+    "Toy.Rice.Padded.allowlist_switchAdmissible": [
+      "propext"
+    ],
+    "Toy.Rice.Padded.behCheck_not_switchAdmissible": [
+      "propext"
+    ],
+    "Toy.Rice.Padded.behTrue_extensional": [],
+    "Toy.Rice.Padded.behTrue_nontrivial": [],
+    "Toy.Rice.Padded.behTrue_not_decidedInside": [
+      "propext"
+    ],
+    "Toy.Rice.Padded.compClosed": [],
+    "Toy.Rice.Padded.constClosed": [],
+    "Toy.Rice.Padded.eqTestClosed": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Padded.evenPadCheck": [],
+    "Toy.Rice.Padded.evenPadCheck.eq_1": [],
+    "Toy.Rice.Padded.evenPadCheck_decides": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Padded.evenPadCheck_switchAdmissible": [
+      "propext"
+    ],
+    "Toy.Rice.Padded.evenPad_nontrivial": [],
+    "Toy.Rice.Padded.evenPad_not_extensional": [],
+    "Toy.Rice.Padded.exists_fresh_pad": [
+      "propext"
+    ],
+    "Toy.Rice.Padded.fixpointPrinciple": [
+      "propext"
+    ],
+    "Toy.Rice.Padded.instDecidableEqCode": [],
+    "Toy.Rice.Padded.instDecidableEqCode.decEq": [],
+    "Toy.Rice.Padded.instDecidableEqCode.decEq.match_1": [],
+    "Toy.Rice.Padded.instReprCode": [],
+    "Toy.Rice.Padded.instReprCode.repr": [],
+    "Toy.Rice.Padded.instReprCode.repr.match_1": [],
+    "Toy.Rice.Padded.isLit_not_extensional": [],
+    "Toy.Rice.Padded.litTrueCheck": [],
+    "Toy.Rice.Padded.litTrueCheck_erase": [],
+    "Toy.Rice.Padded.litTrueCheck_sound": [],
+    "Toy.Rice.Padded.litTrueCheck_swappedSwitch_admissible": [
+      "propext"
+    ],
+    "Toy.Rice.Padded.litTrueCheck_switchAdmissible": [
+      "propext"
+    ],
+    "Toy.Rice.Padded.not_mem_of_fresh": [],
+    "Toy.Rice.Padded.padded_allowlist_sound_nontrivial_incomplete": [
+      "propext"
+    ],
+    "Toy.Rice.Padded.padded_fixpointPrinciple_and_evenPad_decidedInside": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Padded.padded_litTrueCheck_sound_infinite_incomplete": [
+      "propext"
+    ],
+    "Toy.Rice.Padded.switchAdmissible_of_visOnly": [
+      "propext"
+    ],
+    "Toy.Rice.Padded.sys": [],
+    "Toy.Rice.PaddedDiv.Admissible": [],
+    "Toy.Rice.PaddedDiv.Code": [],
+    "Toy.Rice.PaddedDiv.Code.beh": [],
+    "Toy.Rice.PaddedDiv.Code.beh.match_1": [],
+    "Toy.Rice.PaddedDiv.Code.casesOn": [],
+    "Toy.Rice.PaddedDiv.Code.ctorElim": [],
+    "Toy.Rice.PaddedDiv.Code.ctorElimType": [],
+    "Toy.Rice.PaddedDiv.Code.ctorIdx": [],
+    "Toy.Rice.PaddedDiv.Code.erase": [],
+    "Toy.Rice.PaddedDiv.Code.hid": [],
+    "Toy.Rice.PaddedDiv.Code.hid.elim": [],
+    "Toy.Rice.PaddedDiv.Code.hid.inj": [],
+    "Toy.Rice.PaddedDiv.Code.hid.injEq": [
+      "propext"
+    ],
+    "Toy.Rice.PaddedDiv.Code.hid.noConfusion": [],
+    "Toy.Rice.PaddedDiv.Code.hid.sizeOf_spec": [],
+    "Toy.Rice.PaddedDiv.Code.lit": [],
+    "Toy.Rice.PaddedDiv.Code.lit.elim": [],
+    "Toy.Rice.PaddedDiv.Code.lit.inj": [],
+    "Toy.Rice.PaddedDiv.Code.lit.injEq": [
+      "propext"
+    ],
+    "Toy.Rice.PaddedDiv.Code.lit.noConfusion": [],
+    "Toy.Rice.PaddedDiv.Code.lit.sizeOf_spec": [],
+    "Toy.Rice.PaddedDiv.Code.noConfusion": [],
+    "Toy.Rice.PaddedDiv.Code.noConfusionType": [],
+    "Toy.Rice.PaddedDiv.Code.pad": [],
+    "Toy.Rice.PaddedDiv.Code.rec": [],
+    "Toy.Rice.PaddedDiv.Code.recOn": [],
+    "Toy.Rice.PaddedDiv.Halts": [],
+    "Toy.Rice.PaddedDiv.IdOffFinite": [],
+    "Toy.Rice.PaddedDiv.ReturnsTrue": [],
+    "Toy.Rice.PaddedDiv.VisOnlyOffFinite": [],
+    "Toy.Rice.PaddedDiv.constClosed": [],
+    "Toy.Rice.PaddedDiv.eqTestClosed": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.PaddedDiv.exists_fresh_pad": [
+      "propext"
+    ],
+    "Toy.Rice.PaddedDiv.fixpointPrinciple": [
+      "propext"
+    ],
+    "Toy.Rice.PaddedDiv.halts_extensional": [],
+    "Toy.Rice.PaddedDiv.instDecidableEqCode": [],
+    "Toy.Rice.PaddedDiv.instDecidableEqCode.decEq": [],
+    "Toy.Rice.PaddedDiv.instDecidableEqCode.decEq.match_1": [],
+    "Toy.Rice.PaddedDiv.not_mem_of_fresh": [],
+    "Toy.Rice.PaddedDiv.returnsTrue_extensional": [],
+    "Toy.Rice.PaddedDiv.returnsTrue_nontrivial_halting": [],
+    "Toy.Rice.PaddedDiv.sys": [],
+    "Toy.Rice.PrecompClosed": [],
+    "Toy.Rice.Represents": [],
+    "Toy.Rice.SoundFor": [],
+    "Toy.Rice.SwitchAdmissible": [],
+    "Toy.Rice.SwitchClosed": [],
+    "Toy.Rice.System": [],
+    "Toy.Rice.System.Adm": [],
+    "Toy.Rice.System.Beh": [],
+    "Toy.Rice.System.Code": [],
+    "Toy.Rice.System.casesOn": [],
+    "Toy.Rice.System.ctorIdx": [],
+    "Toy.Rice.System.mk": [],
+    "Toy.Rice.System.mk.inj": [],
+    "Toy.Rice.System.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Rice.System.mk.noConfusion": [],
+    "Toy.Rice.System.mk.sizeOf_spec": [],
+    "Toy.Rice.System.noConfusion": [],
+    "Toy.Rice.System.noConfusionType": [],
+    "Toy.Rice.System.rec": [],
+    "Toy.Rice.System.recOn": [],
+    "Toy.Rice.System.restrict": [],
+    "Toy.Rice.System.sem": [],
+    "Toy.Rice.Tables.Admissible": [],
+    "Toy.Rice.Tables.EntryTest": [],
+    "Toy.Rice.Tables.EntryTest.and": [],
+    "Toy.Rice.Tables.EntryTest.and.elim": [],
+    "Toy.Rice.Tables.EntryTest.and.inj": [],
+    "Toy.Rice.Tables.EntryTest.and.injEq": [
+      "propext"
+    ],
+    "Toy.Rice.Tables.EntryTest.and.noConfusion": [],
+    "Toy.Rice.Tables.EntryTest.and.sizeOf_spec": [],
+    "Toy.Rice.Tables.EntryTest.below": [],
+    "Toy.Rice.Tables.EntryTest.brecOn": [],
+    "Toy.Rice.Tables.EntryTest.brecOn.eq": [],
+    "Toy.Rice.Tables.EntryTest.brecOn.go": [],
+    "Toy.Rice.Tables.EntryTest.casesOn": [],
+    "Toy.Rice.Tables.EntryTest.ctorElim": [],
+    "Toy.Rice.Tables.EntryTest.ctorElimType": [],
+    "Toy.Rice.Tables.EntryTest.ctorIdx": [],
+    "Toy.Rice.Tables.EntryTest.evalAtKeyEq": [],
+    "Toy.Rice.Tables.EntryTest.evalAtKeyEq.elim": [],
+    "Toy.Rice.Tables.EntryTest.evalAtKeyEq.inj": [],
+    "Toy.Rice.Tables.EntryTest.evalAtKeyEq.injEq": [
+      "propext"
+    ],
+    "Toy.Rice.Tables.EntryTest.evalAtKeyEq.noConfusion": [],
+    "Toy.Rice.Tables.EntryTest.evalAtKeyEq.sizeOf_spec": [],
+    "Toy.Rice.Tables.EntryTest.noConfusion": [],
+    "Toy.Rice.Tables.EntryTest.noConfusionType": [],
+    "Toy.Rice.Tables.EntryTest.not": [],
+    "Toy.Rice.Tables.EntryTest.not.elim": [],
+    "Toy.Rice.Tables.EntryTest.not.inj": [],
+    "Toy.Rice.Tables.EntryTest.not.injEq": [
+      "propext"
+    ],
+    "Toy.Rice.Tables.EntryTest.not.noConfusion": [],
+    "Toy.Rice.Tables.EntryTest.not.sizeOf_spec": [],
+    "Toy.Rice.Tables.EntryTest.rec": [],
+    "Toy.Rice.Tables.EntryTest.recOn": [],
+    "Toy.Rice.Tables.EntryTest.run": [],
+    "Toy.Rice.Tables.EntryTest.run.eq_1": [],
+    "Toy.Rice.Tables.EntryTest.run.eq_2": [],
+    "Toy.Rice.Tables.EntryTest.run.eq_3": [],
+    "Toy.Rice.Tables.EntryTest.run.eq_4": [],
+    "Toy.Rice.Tables.EntryTest.run.eq_def": [],
+    "Toy.Rice.Tables.EntryTest.run.match_1": [],
+    "Toy.Rice.Tables.EntryTest.valEq": [],
+    "Toy.Rice.Tables.EntryTest.valEq.elim": [],
+    "Toy.Rice.Tables.EntryTest.valEq.inj": [],
+    "Toy.Rice.Tables.EntryTest.valEq.injEq": [
+      "propext"
+    ],
+    "Toy.Rice.Tables.EntryTest.valEq.noConfusion": [],
+    "Toy.Rice.Tables.EntryTest.valEq.sizeOf_spec": [],
+    "Toy.Rice.Tables.IsZeroFn": [],
+    "Toy.Rice.Tables.TProg": [],
+    "Toy.Rice.Tables.TProg.below": [],
+    "Toy.Rice.Tables.TProg.branch": [],
+    "Toy.Rice.Tables.TProg.branch.elim": [],
+    "Toy.Rice.Tables.TProg.branch.inj": [],
+    "Toy.Rice.Tables.TProg.branch.injEq": [
+      "propext"
+    ],
+    "Toy.Rice.Tables.TProg.branch.noConfusion": [],
+    "Toy.Rice.Tables.TProg.branch.sizeOf_spec": [],
+    "Toy.Rice.Tables.TProg.brecOn": [],
+    "Toy.Rice.Tables.TProg.brecOn.eq": [],
+    "Toy.Rice.Tables.TProg.brecOn.go": [],
+    "Toy.Rice.Tables.TProg.casesOn": [],
+    "Toy.Rice.Tables.TProg.comp": [],
+    "Toy.Rice.Tables.TProg.comp.elim": [],
+    "Toy.Rice.Tables.TProg.comp.inj": [],
+    "Toy.Rice.Tables.TProg.comp.injEq": [
+      "propext"
+    ],
+    "Toy.Rice.Tables.TProg.comp.noConfusion": [],
+    "Toy.Rice.Tables.TProg.comp.sizeOf_spec": [],
+    "Toy.Rice.Tables.TProg.const": [],
+    "Toy.Rice.Tables.TProg.const.elim": [],
+    "Toy.Rice.Tables.TProg.const.inj": [],
+    "Toy.Rice.Tables.TProg.const.injEq": [
+      "propext"
+    ],
+    "Toy.Rice.Tables.TProg.const.noConfusion": [],
+    "Toy.Rice.Tables.TProg.const.sizeOf_spec": [],
+    "Toy.Rice.Tables.TProg.ctorElim": [],
+    "Toy.Rice.Tables.TProg.ctorElimType": [],
+    "Toy.Rice.Tables.TProg.ctorIdx": [],
+    "Toy.Rice.Tables.TProg.ident": [],
+    "Toy.Rice.Tables.TProg.ident.elim": [],
+    "Toy.Rice.Tables.TProg.ident.sizeOf_spec": [],
+    "Toy.Rice.Tables.TProg.incrAt": [],
+    "Toy.Rice.Tables.TProg.incrAt.elim": [],
+    "Toy.Rice.Tables.TProg.incrAt.inj": [],
+    "Toy.Rice.Tables.TProg.incrAt.injEq": [
+      "propext"
+    ],
+    "Toy.Rice.Tables.TProg.incrAt.noConfusion": [],
+    "Toy.Rice.Tables.TProg.incrAt.sizeOf_spec": [],
+    "Toy.Rice.Tables.TProg.noConfusion": [],
+    "Toy.Rice.Tables.TProg.noConfusionType": [],
+    "Toy.Rice.Tables.TProg.rec": [],
+    "Toy.Rice.Tables.TProg.recOn": [],
+    "Toy.Rice.Tables.TProg.run": [],
+    "Toy.Rice.Tables.TProg.run.eq_1": [],
+    "Toy.Rice.Tables.TProg.run.eq_2": [],
+    "Toy.Rice.Tables.TProg.run.eq_3": [],
+    "Toy.Rice.Tables.TProg.run.eq_4": [],
+    "Toy.Rice.Tables.TProg.run.eq_5": [],
+    "Toy.Rice.Tables.TProg.run.eq_6": [],
+    "Toy.Rice.Tables.TProg.run.eq_def": [],
+    "Toy.Rice.Tables.TProg.run.match_1": [],
+    "Toy.Rice.Tables.TProg.setAt": [],
+    "Toy.Rice.Tables.TProg.setAt.elim": [],
+    "Toy.Rice.Tables.TProg.setAt.inj": [],
+    "Toy.Rice.Tables.TProg.setAt.injEq": [
+      "propext"
+    ],
+    "Toy.Rice.Tables.TProg.setAt.noConfusion": [],
+    "Toy.Rice.Tables.TProg.setAt.sizeOf_spec": [],
+    "Toy.Rice.Tables.TTest": [],
+    "Toy.Rice.Tables.TTest.allEntries": [],
+    "Toy.Rice.Tables.TTest.allEntries.elim": [],
+    "Toy.Rice.Tables.TTest.allEntries.inj": [],
+    "Toy.Rice.Tables.TTest.allEntries.injEq": [
+      "propext"
+    ],
+    "Toy.Rice.Tables.TTest.allEntries.noConfusion": [],
+    "Toy.Rice.Tables.TTest.allEntries.sizeOf_spec": [],
+    "Toy.Rice.Tables.TTest.and": [],
+    "Toy.Rice.Tables.TTest.and.elim": [],
+    "Toy.Rice.Tables.TTest.and.inj": [],
+    "Toy.Rice.Tables.TTest.and.injEq": [
+      "propext"
+    ],
+    "Toy.Rice.Tables.TTest.and.noConfusion": [],
+    "Toy.Rice.Tables.TTest.and.sizeOf_spec": [],
+    "Toy.Rice.Tables.TTest.below": [],
+    "Toy.Rice.Tables.TTest.brecOn": [],
+    "Toy.Rice.Tables.TTest.brecOn.eq": [],
+    "Toy.Rice.Tables.TTest.brecOn.go": [],
+    "Toy.Rice.Tables.TTest.casesOn": [],
+    "Toy.Rice.Tables.TTest.ctorElim": [],
+    "Toy.Rice.Tables.TTest.ctorElimType": [],
+    "Toy.Rice.Tables.TTest.ctorIdx": [],
+    "Toy.Rice.Tables.TTest.evalAtEq": [],
+    "Toy.Rice.Tables.TTest.evalAtEq.elim": [],
+    "Toy.Rice.Tables.TTest.evalAtEq.inj": [],
+    "Toy.Rice.Tables.TTest.evalAtEq.injEq": [
+      "propext"
+    ],
+    "Toy.Rice.Tables.TTest.evalAtEq.noConfusion": [],
+    "Toy.Rice.Tables.TTest.evalAtEq.sizeOf_spec": [],
+    "Toy.Rice.Tables.TTest.noConfusion": [],
+    "Toy.Rice.Tables.TTest.noConfusionType": [],
+    "Toy.Rice.Tables.TTest.not": [],
+    "Toy.Rice.Tables.TTest.not.elim": [],
+    "Toy.Rice.Tables.TTest.not.inj": [],
+    "Toy.Rice.Tables.TTest.not.injEq": [
+      "propext"
+    ],
+    "Toy.Rice.Tables.TTest.not.noConfusion": [],
+    "Toy.Rice.Tables.TTest.not.sizeOf_spec": [],
+    "Toy.Rice.Tables.TTest.rec": [],
+    "Toy.Rice.Tables.TTest.recOn": [],
+    "Toy.Rice.Tables.TTest.run": [],
+    "Toy.Rice.Tables.TTest.run.eq_1": [],
+    "Toy.Rice.Tables.TTest.run.eq_2": [],
+    "Toy.Rice.Tables.TTest.run.eq_3": [],
+    "Toy.Rice.Tables.TTest.run.eq_4": [],
+    "Toy.Rice.Tables.TTest.run.eq_def": [],
+    "Toy.Rice.Tables.TTest.run.match_1": [],
+    "Toy.Rice.Tables.Table": [],
+    "Toy.Rice.Tables.allOutputsZero": [],
+    "Toy.Rice.Tables.allOutputsZero.eq_1": [],
+    "Toy.Rice.Tables.allOutputsZero_eq_test": [],
+    "Toy.Rice.Tables.allOutputsZero_sound_not_complete": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Tables.allOutputsZero_switchAdmissible": [],
+    "Toy.Rice.Tables.bump": [],
+    "Toy.Rice.Tables.bump.eq_1": [],
+    "Toy.Rice.Tables.bump_admissible": [],
+    "Toy.Rice.Tables.compClosed": [],
+    "Toy.Rice.Tables.constClosed": [],
+    "Toy.Rice.Tables.eval": [],
+    "Toy.Rice.Tables.eval.eq_1": [],
+    "Toy.Rice.Tables.eval.eq_2": [],
+    "Toy.Rice.Tables.eval.eq_def": [],
+    "Toy.Rice.Tables.eval.match_1": [],
+    "Toy.Rice.Tables.evalAtZero_decidedInside": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Tables.eval_ne_zero_exists_key": [
+      "propext"
+    ],
+    "Toy.Rice.Tables.exists_long": [
+      "propext"
+    ],
+    "Toy.Rice.Tables.isNil_decidedInside": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Tables.isZeroFn_decidedInside": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Tables.isZeroFn_extensional": [],
+    "Toy.Rice.Tables.isZeroFn_nontrivial": [
+      "propext"
+    ],
+    "Toy.Rice.Tables.not_fixpointPrinciple": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Tables.run_finite_or_length_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Tables.switchAdmissible_of_test": [],
+    "Toy.Rice.Tables.sys": [],
+    "Toy.Rice.Tables.tables_no_fixpointPrinciple_and_isZeroFn_decidedInside": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Tables.tail_not_admissible": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Tables.zeroCheck": [],
+    "Toy.Rice.Tables.zeroCheck_decides": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.Tables.zeroCheck_eq_test": [],
+    "Toy.Rice.Tables.zeroCheck_switchAdmissible": [],
+    "Toy.Rice.acceptAll_complete_switchAdmissible_of_constClosed": [],
+    "Toy.Rice.allAdm": [],
+    "Toy.Rice.decidedInside_iff_decidedBy_switchAdmissible": [],
+    "Toy.Rice.decidedInside_iff_ite_admissible": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.decidedInside_iff_trivial_of_fixpointPrinciple_constClosed_extensional": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.decidedInside_restrict_of_switchAdmissible": [],
+    "Toy.Rice.decides_decide": [
+      "propext"
+    ],
+    "Toy.Rice.decides_iff_sound_complete": [],
+    "Toy.Rice.diagonalFixedPoint_of_represents_diagonal_precompClosed": [],
+    "Toy.Rice.exists_fixedPoint_of_represents_diagonal": [],
+    "Toy.Rice.exists_sameSem_accepted_rejected_of_fixpointPrinciple_switchAdmissible": [
+      "propext"
+    ],
+    "Toy.Rice.exists_sameSem_rejected_of_fixpointPrinciple_extensional_sound_swappedSwitch": [
+      "propext"
+    ],
+    "Toy.Rice.exists_sameSem_rejected_or_exists_sameSem_accepted_of_fixpointPrinciple_switchAdmissible": [
+      "propext"
+    ],
+    "Toy.Rice.exists_sameSem_satisfying_accepted_rejected_of_fixpointPrinciple_extensional_sound_switchAdmissible": [
+      "propext"
+    ],
+    "Toy.Rice.exists_satisfying_rejected_of_fixpointPrinciple_extensional_nontrivial_sound_switchAdmissible": [
+      "propext"
+    ],
+    "Toy.Rice.extensional_restrict": [],
+    "Toy.Rice.fixpointPrinciple_allAdm_iff_sem_constant_of_nonempty": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.fixpointPrinciple_of_compClosed_represents_diagonal": [],
+    "Toy.Rice.fixpointPrinciple_of_represents_diagonal_precompClosed": [],
+    "Toy.Rice.forall_exists_sameSem_accepted_of_fixpointPrinciple_extensional_satisfied_complete_switchAdmissible": [
+      "propext"
+    ],
+    "Toy.Rice.forall_exists_sameSem_rejected_of_fixpointPrinciple_extensional_violated_sound_switchAdmissible": [
+      "propext"
+    ],
+    "Toy.Rice.kleene_witness": [],
+    "Toy.Rice.lawvere_fixedPoint_of_represents_diagonal": [],
+    "Toy.Rice.lawvere_witness": [],
+    "Toy.Rice.nonempty_subsingleton_of_weaklyPointSurjective": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.not_decidedBy_of_fixpointPrinciple_switchClosed_extensional_nontrivial": [
+      "propext"
+    ],
+    "Toy.Rice.not_decidedInside_of_fixpointPrinciple_extensional_nontrivial": [
+      "propext"
+    ],
+    "Toy.Rice.not_decidedInside_restrict_of_fixpointPrinciple_eqTestClosed_extensionalFragment_extensional_nontrivial": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.not_forall_sameSem_accepted_and_forall_sameSem_rejected_of_fixpointPrinciple_switchAdmissible": [
+      "propext"
+    ],
+    "Toy.Rice.precompClosed_of_compClosed_adm": [],
+    "Toy.Rice.rejectAll_sound_switchAdmissible_of_constClosed": [],
+    "Toy.Rice.sameSem_split_iff_not_forall_sameSem_accepted_and_forall_sameSem_rejected": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.sem_constant_of_fixpointPrinciple_allSwitchesAdmissible": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.subsingleton_of_weaklyPointSurjective": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.swappedSwitch_not_admissible_of_fixpointPrinciple_extensional_decides": [
+      "propext"
+    ],
+    "Toy.Rice.switch": [],
+    "Toy.Rice.switch.eq_1": [],
+    "Toy.Rice.switch_apply": [],
+    "Toy.Rice.switch_eq_ite_of_decides": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Rice.switch_of_false": [
+      "propext"
+    ],
+    "Toy.Rice.switch_of_true": [
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
