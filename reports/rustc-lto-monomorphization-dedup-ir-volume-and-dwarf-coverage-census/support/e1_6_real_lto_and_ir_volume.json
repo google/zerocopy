@@ -1,0 +1,150 @@
+{
+  "benchmark": "E1-6_T11_real_lto_and_ir_volume",
+  "ir_volume": {
+    "num_runtime_ll_files": 109,
+    "total_post_o3_fns": 38455,
+    "total_post_o3_bbs": 380893,
+    "total_post_o3_llvm_insts": 1640035,
+    "mean_insts_per_fn": 42.65,
+    "top_15_crates": [
+      {
+        "file": "rustls-d82a8fb35d82402a.ll",
+        "fns": 1533,
+        "bbs": 30928,
+        "insts": 166082
+      },
+      {
+        "file": "syn-ebe86debcc1b2349.ll",
+        "fns": 5897,
+        "bbs": 43298,
+        "insts": 162713
+      },
+      {
+        "file": "syn-559c88123352f9dc.ll",
+        "fns": 5979,
+        "bbs": 42893,
+        "insts": 159809
+      },
+      {
+        "file": "anneal_audit-28231cc890f9c903.ll",
+        "fns": 647,
+        "bbs": 26155,
+        "insts": 140920
+      },
+      {
+        "file": "serde_derive-f2a1740772359c29.ll",
+        "fns": 2910,
+        "bbs": 33344,
+        "insts": 115587
+      },
+      {
+        "file": "cc-24702cc60b92fcc1.ll",
+        "fns": 3122,
+        "bbs": 22650,
+        "insts": 85358
+      },
+      {
+        "file": "clap_builder-6b88582a6e07cb60.ll",
+        "fns": 488,
+        "bbs": 12427,
+        "insts": 64607
+      },
+      {
+        "file": "clap_derive-0c4d12a60f749cce.ll",
+        "fns": 1468,
+        "bbs": 17940,
+        "insts": 59532
+      },
+      {
+        "file": "ureq-b6d899b68d7a37d7.ll",
+        "fns": 761,
+        "bbs": 12116,
+        "insts": 58257
+      },
+      {
+        "file": "thiserror_impl-6107d960ed373318.ll",
+        "fns": 1435,
+        "bbs": 13880,
+        "insts": 52875
+      },
+      {
+        "file": "toml_const_macros-f617b4a988656d3b.ll",
+        "fns": 2089,
+        "bbs": 14406,
+        "insts": 50990
+      },
+      {
+        "file": "toml-89c59760a095ca7f.ll",
+        "fns": 1996,
+        "bbs": 12042,
+        "insts": 43756
+      },
+      {
+        "file": "core.ll",
+        "fns": 543,
+        "bbs": 5898,
+        "insts": 32442
+      },
+      {
+        "file": "phf_macros-3ac773b71dadf147.ll",
+        "fns": 998,
+        "bbs": 7433,
+        "insts": 27906
+      },
+      {
+        "file": "toml_parser-ff34acaf48e42edd.ll",
+        "fns": 611,
+        "bbs": 5349,
+        "insts": 26124
+      }
+    ]
+  },
+  "lto_sweep": {
+    "lto_off_cgu16": {
+      "cargo_profile_env": {
+        "CARGO_PROFILE_RELEASE_LTO": "off",
+        "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "16"
+      },
+      "clean_build_sec": 8.7,
+      "file_bytes": 3183040,
+      "text_bytes": 2160581,
+      "defined_text_symbols": 4518,
+      "v0_generic_monomorph_symbols": 2044,
+      "cli_median_ms": 1.124
+    },
+    "lto_off_cgu1": {
+      "cargo_profile_env": {
+        "CARGO_PROFILE_RELEASE_LTO": "off",
+        "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1"
+      },
+      "clean_build_sec": 22.6,
+      "file_bytes": 2272280,
+      "text_bytes": 1841841,
+      "defined_text_symbols": 2121,
+      "v0_generic_monomorph_symbols": 737,
+      "cli_median_ms": 1.213
+    },
+    "lto_thin": {
+      "cargo_profile_env": {
+        "CARGO_PROFILE_RELEASE_LTO": "thin"
+      },
+      "clean_build_sec": 14.94,
+      "file_bytes": 2617304,
+      "text_bytes": 1984951,
+      "defined_text_symbols": 2648,
+      "v0_generic_monomorph_symbols": 1126,
+      "cli_median_ms": 1.144
+    },
+    "lto_fat": {
+      "cargo_profile_env": {
+        "CARGO_PROFILE_RELEASE_LTO": "fat"
+      },
+      "clean_build_sec": 24.06,
+      "file_bytes": 2135520,
+      "text_bytes": 1774499,
+      "defined_text_symbols": 1776,
+      "v0_generic_monomorph_symbols": 689,
+      "cli_median_ms": 1.166
+    }
+  }
+}

@@ -64494,6 +64494,37 @@
         "rustc/codegen"
       ]
     },
+    "rustc-lto-monomorphization-dedup-ir-volume-and-dwarf-coverage-census": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "https://github.com/rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+          },
+          "name": "rust-lang/rust (rustc 1.99.1, LLVM 23.1.1)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "joshlf/anneal (anneal-audit workspace)"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/lto",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/debuginfo",
+        "compilers/verified-rustc/scale",
+        "llvm",
+        "llvm/debuginfo",
+        "rust",
+        "rustc",
+        "rustc/codegen"
+      ]
+    },
     "rustc-mir-artifact-export-settings-and-proof-binding": {
       "observed_at": "2026-11-13",
       "subjects": [
