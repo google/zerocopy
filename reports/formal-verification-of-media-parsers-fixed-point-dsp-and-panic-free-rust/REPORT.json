@@ -1,0 +1,100 @@
+{
+  "topics": [
+    "verification/panic-freedom",
+    "verification/parsers",
+    "verification/fixed-point",
+    "rust/verification",
+    "anneal/theory"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Google Wuffs",
+      "identity": {
+        "repository": "google/wuffs",
+        "revision": "a87f0bb85b9406d29f48a1c03b6f42c4585145f6"
+      }
+    },
+    {
+      "name": "Verus",
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "0dab219272ac2353320bd177ebb3929453b90a9e",
+        "doi": "10.1145/3586037"
+      }
+    },
+    {
+      "name": "Vest",
+      "identity": {
+        "repository": "secure-foundations/vest",
+        "revision": "026867a37d4b918153058df2c8db6c52fc62ba35",
+        "url": "https://www.usenix.org/conference/usenixsecurity25/presentation/cai-yi"
+      }
+    },
+    {
+      "name": "EverParse",
+      "identity": {
+        "repository": "project-everest/everparse",
+        "revision": "f3e4ce51d9b68593fd98472cadcdeb8b6abf388f"
+      }
+    },
+    {
+      "name": "Kani Rust Verifier",
+      "identity": {
+        "repository": "model-checking/kani",
+        "revision": "0601bc57f00a5b7f4d8fb4dd76acd6ec9355227a",
+        "doi": "10.1145/3832783.3834499"
+      }
+    },
+    {
+      "name": "Flux",
+      "identity": {
+        "repository": "flux-rs/flux",
+        "revision": "ac24831e4f3dc570ad991751ff65bea0826ed446",
+        "doi": "10.1145/3591283"
+      }
+    },
+    {
+      "name": "Aeneas",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "2e3d4488280bb8a95411db81019a7854a784861f",
+        "doi": "10.1145/3547647"
+      }
+    },
+    {
+      "name": "FFmpeg",
+      "identity": {
+        "repository": "FFmpeg/FFmpeg",
+        "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+      }
+    },
+    {
+      "name": "libopus",
+      "identity": {
+        "repository": "xiph/opus",
+        "revision": "31b4b36284394b66a4c9d7352991aa977dfc8bc1"
+      }
+    },
+    {
+      "name": "rav1d",
+      "identity": {
+        "repository": "memorysafety/rav1d",
+        "revision": "2e7216c20ac2a75de204d6c8d7268b75a45959b4"
+      }
+    },
+    {
+      "name": "ISO/IEC 23002-1 and ISO/IEC 23002-2:2008 Fixed-Point 8x8 IDCT",
+      "identity": {
+        "standard": "ISO/IEC 23002-1 and ISO/IEC 23002-2:2008"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

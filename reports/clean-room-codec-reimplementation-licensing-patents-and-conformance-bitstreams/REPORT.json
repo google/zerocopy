@@ -1,0 +1,116 @@
+{
+  "topics": [
+    "domains/multimedia",
+    "domains/video-codecs",
+    "verification/conformance",
+    "systems/licensing",
+    "ffi/c-abi"
+  ],
+  "subjects": [
+    {
+      "name": "FFmpeg",
+      "identity": {
+        "repository": "FFmpeg/FFmpeg",
+        "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+      }
+    },
+    {
+      "name": "libopus",
+      "identity": {
+        "repository": "xiph/opus",
+        "revision": "31b4b36284394b66a4c9d7352991aa977dfc8bc1"
+      }
+    },
+    {
+      "name": "libFLAC",
+      "identity": {
+        "repository": "xiph/flac",
+        "revision": "59fa3402cb19b6b7c85b916f138cfb03c7b27504"
+      }
+    },
+    {
+      "name": "IETF CELLAR FLAC Decoder Testbench",
+      "identity": {
+        "repository": "ietf-wg-cellar/flac-test-files",
+        "revision": "aa7b0c6cf32994c106ae517a08134c28a96ff5b2"
+      }
+    },
+    {
+      "name": "libvpx",
+      "identity": {
+        "repository": "webmproject/libvpx",
+        "revision": "18656c27cf3bee114562297274b64a84d0a6187c"
+      }
+    },
+    {
+      "name": "AOMedia AV1 Bitstream and Decoding Process Specification",
+      "identity": {
+        "repository": "AOMediaCodec/av1-spec",
+        "revision": "5e04f3f75e73a5898d7616c47c52f032144b8f80"
+      }
+    },
+    {
+      "name": "SVT-AV1 (Alliance for Open Media Patent License 1.0)",
+      "identity": {
+        "repository": "AOMediaCodec/SVT-AV1",
+        "revision": "462771f87694e959cc1d3f9addde23d7015662e3"
+      }
+    },
+    {
+      "name": "Cisco OpenH264",
+      "identity": {
+        "repository": "cisco/openh264",
+        "revision": "78783f195ce116ecbaea83f7fac0ea8a355518b5"
+      }
+    },
+    {
+      "name": "Fraunhofer FDK AAC",
+      "identity": {
+        "repository": "mstorsjo/fdk-aac",
+        "revision": "ec82feb39662ac77e24ee9b324d5962e91bc79c5"
+      }
+    },
+    {
+      "name": "Fraunhofer VVdeC (H.266/VVC)",
+      "identity": {
+        "repository": "fraunhoferhhi/vvdec",
+        "revision": "8909ff880412629bdd31e87a9f68d652db89479c"
+      }
+    },
+    {
+      "name": "Symphonia",
+      "identity": {
+        "repository": "pdeljanov/Symphonia",
+        "revision": "5f879df0bf309246a48d57caae457fd8c0e2a5cb"
+      }
+    },
+    {
+      "name": "rav1d",
+      "identity": {
+        "repository": "memorysafety/rav1d",
+        "revision": "2e7216c20ac2a75de204d6c8d7268b75a45959b4"
+      }
+    },
+    {
+      "name": "ITU-T Rec. H.264.1, H.265.1, and H.266.1 Conformance Specifications",
+      "identity": {
+        "standard": "ITU-T Rec. H.264.1 (AVC), H.265.1 (HEVC), and H.266.1 (VVC)",
+        "url": "https://www.itu.int/rec/T-REC-H"
+      }
+    },
+    {
+      "name": "ISO/IEC 14496-4 and ISO/IEC 14496-12 (MPEG-4 Conformance and ISOBMFF)",
+      "identity": {
+        "standard": "ISO/IEC 14496-4:2004 and ISO/IEC 14496-12"
+      }
+    },
+    {
+      "name": "IETF RFC 6716, RFC 8251 (Opus), and RFC 9639 (FLAC)",
+      "identity": {
+        "standard": "IETF RFC 6716, RFC 8251, and RFC 9639",
+        "url": "https://www.rfc-editor.org/rfc/rfc9639"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
