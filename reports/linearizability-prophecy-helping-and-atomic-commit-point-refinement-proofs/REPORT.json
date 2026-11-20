@@ -1,0 +1,50 @@
+{
+  "topics": [
+    "verification/concurrency",
+    "rust/atomics",
+    "verification/separation-logic",
+    "verification/iris",
+    "verification/refinement",
+    "lean/mechanization"
+  ],
+  "subjects": [
+    {
+      "name": "Modular Safe Memory Reclamation, RDCSS, Elimination Stack, and Harris List Mechanization in Rocq/Iris",
+      "identity": {
+        "repository": "kaist-cp/smr-verification",
+        "revision": "53fdc1648c17c5527c2499ed0ad10d55c01e1344"
+      }
+    },
+    {
+      "name": "Iris-Lean Separation Logic, Logical Atomicity, and Prophecy Ghost Map Mechanization in Lean 4",
+      "identity": {
+        "repository": "leanprover-community/iris-lean",
+        "revision": "5540ef0110fc8f6d8e495c10c2f238c3ede14f3b",
+        "ported_rocq_iris_revision": "8e4909593a3a84f850d224a344cbd3a380672088"
+      }
+    },
+    {
+      "name": "Verus Linear Ghost Types, Atomic Invariants, and Prophecy Libraries",
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "0dab219272ac2353320bd177ebb3929453b90a9e"
+      }
+    },
+    {
+      "name": "Crossbeam Epoch-Based Memory Reclamation",
+      "identity": {
+        "repository": "crossbeam-rs/crossbeam",
+        "revision": "a28f40fdddb70bea8e5faf0efad9af0be4b9dbea",
+        "path": "crossbeam-epoch"
+      }
+    },
+    {
+      "name": "Lean 4 Kernel and Type Theory Prelude",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "c09b486ce1706403e386ae88450194fbac50fc33"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

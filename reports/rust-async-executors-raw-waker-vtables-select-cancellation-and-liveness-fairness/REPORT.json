@@ -1,0 +1,48 @@
+{
+  "topics": [
+    "rust/async",
+    "verification/concurrency",
+    "rust/safety",
+    "runtimes/async-executors",
+    "verification/liveness",
+    "systems/concurrency-weak-memory"
+  ],
+  "subjects": [
+    {
+      "name": "Rust Core Task Waker, Future, and Alloc Wake Standard Library",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "ec65cd52bba13d491ff65c9d218b39753755c84a"
+      }
+    },
+    {
+      "name": "Tokio Asynchronous Runtime Task Harness, Synchronization Primitives, and Work-Stealing Queue",
+      "identity": {
+        "repository": "tokio-rs/tokio",
+        "revision": "3f0ffc85f51c71d97bce72e0f8b80ece9b8b4892"
+      }
+    },
+    {
+      "name": "Embassy Bare-Metal Static Asynchronous Executor and Futures Combinators",
+      "identity": {
+        "repository": "embassy-rs/embassy",
+        "revision": "0bf016d305431fcf6fb00be248ab608dca009168"
+      }
+    },
+    {
+      "name": "Loom Concurrency Permutation and Weak-Memory Model Checker for Rust",
+      "identity": {
+        "repository": "tokio-rs/loom",
+        "revision": "9d549cd5357a5485900f4c53951fc1726319659f"
+      }
+    },
+    {
+      "name": "Lean 4 Kernel and Constructive Specification Prelude",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "c09b486ce1706403e386ae88450194fbac50fc33"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
