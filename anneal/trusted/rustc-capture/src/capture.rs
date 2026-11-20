@@ -10,7 +10,7 @@
 //! authenticates the compiler/sysroot distribution and stages declared inputs;
 //! these checks do not defend against a compromised execution environment.
 
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::{BTreeMap, BTreeSet, VecDeque};
 use std::io;
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex, OnceLock};
@@ -38,8 +38,8 @@ use crate::{Args, Failure, extract, identity, ir};
 // second capture, avoiding stale bodies or selectors from another compilation.
 type Provider = for<'tcx> fn(TyCtxt<'tcx>, LocalDefId) -> &'tcx Steal<mir::Body<'tcx>>;
 static DEFAULT_PROVIDER: OnceLock<Provider> = OnceLock::new();
-static SELECTION: OnceLock<ir::Scope> = OnceLock::new();
-static CAPTURED: Mutex<BTreeMap<u32, extract::Result<ir::Body>>> = Mutex::new(BTreeMap::new());
+static CAPTURED: Mutex<BTreeMap<u32, extract::Result<extract::RawBody>>> =
+    Mutex::new(BTreeMap::new());
 
 /// The query returns `Steal<Body>` and later queries consume it. Call the
 /// original provider, copy the admitted syntax while it is available, and
@@ -47,19 +47,16 @@ static CAPTURED: Mutex<BTreeMap<u32, extract::Result<ir::Body>>> = Mutex::new(BT
 /// "can be overridden by custom rustc drivers".
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_mir_transform/src/lib.rs#L567-L598
 ///
-/// Early snapshots do not decide coverage. The independent compiler census is
-/// enumerated in full before selecting or assembling any output program.
+/// Snapshot every queried callable so `collect` can resolve the complete
+/// transitive crate-local call closure in selected-unit mode without missing
+/// helpers queried during compiler passes. Early snapshots do not decide
+/// coverage; `collect` enumerates the full census before assembling output.
 fn hook<'tcx>(tcx: TyCtxt<'tcx>, def: LocalDefId) -> &'tcx Steal<mir::Body<'tcx>> {
     let provider = DEFAULT_PROVIDER
         .get()
         .expect("provider installed before queries");
     let original = provider(tcx, def);
-    let selection = SELECTION.get().expect("selection installed before queries");
-    let matches_scope = match selection {
-        ir::Scope::Crate => true,
-        ir::Scope::SelectedUnit { roots } => roots.contains(&tcx.def_path_str(def)),
-    };
-    if callable(tcx.def_kind(def)) && matches_scope {
+    if callable(tcx.def_kind(def)) {
         let result = extract::body(tcx, def, &original.borrow());
         CAPTURED
             .lock()
@@ -621,6 +618,14 @@ fn collect(
             "only 64-bit little-endian targets are modeled",
         ));
     }
+    // `Trusted.MirSemantics` models Rust unwinding (`UnwindAction::Continue`,
+    // `Cleanup`, and `UnwindResume`); refuse panic=abort sessions fail-closed
+    // so unwinding semantics never disagree with the target panic strategy.
+    if tcx.sess.panic_strategy().desc_symbol() != sym::unwind {
+        return Err(Failure::unsupported(
+            "only panic=unwind sessions are modeled",
+        ));
+    }
     let sysroot = tcx
         .sess
         .opts
@@ -723,15 +728,33 @@ fn collect(
         )));
     }
     // A provider is only called when a query is demanded. Force every selected
-    // body before code generation, with no incremental cache or fallback to
-    // optimized MIR. The hook records bodies before later stealing. The query
-    // is declared `no_hash` without `cache_on_disk_if`, and capture passes no
-    // `-Cincremental`, so no stored result can stand in for the provider call.
+    // root and its transitive crate-local call closure before code generation,
+    // with no incremental cache or fallback to optimized MIR. The hook records
+    // bodies before later stealing. The query is declared `no_hash` without
+    // `cache_on_disk_if`, and capture passes no `-Cincremental`, so no stored
+    // result can stand in for the provider call.
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/queries.rs#L638-L641
-    let mut bodies = Vec::new();
-    let mut selected = Vec::new();
+    let mut worklist = VecDeque::new();
+    let mut visited = BTreeSet::new();
     for def in selected_defs {
         let key = def.local_def_index.as_u32();
+        if visited.insert(key) {
+            worklist.push_back(def);
+        }
+    }
+    let mut closure_order = Vec::new();
+    let mut raw_bodies = BTreeMap::new();
+    while let Some(def) = worklist.pop_front() {
+        let key = def.local_def_index.as_u32();
+        let kind = tcx.def_kind(def);
+        if !callable(kind) || !body_owners.contains(&key) {
+            unsupported.push(ir::Unsupported {
+                def_id: key,
+                path: tcx.def_path_str(def),
+                reason: format!("called crate-local definition is not a callable body: {kind:?}"),
+            });
+            continue;
+        }
         let _ = tcx.mir_drops_elaborated_and_const_checked(def);
         let result = CAPTURED
             .lock()
@@ -740,13 +763,15 @@ fn collect(
             .cloned()
             .unwrap_or_else(|| Err("compiler did not provide Runtime(PostCleanup) MIR".into()));
         match result {
-            Ok(body) => {
-                selected.push(ir::SelectedBody {
-                    def_id: key,
-                    path: tcx.def_path_str(def),
-                    body_index: bodies.len(),
-                });
-                bodies.push(body);
+            Ok(raw_body) => {
+                for callee in raw_body.local_callees() {
+                    let callee_key = callee.local_def_index.as_u32();
+                    if visited.insert(callee_key) {
+                        worklist.push_back(callee);
+                    }
+                }
+                closure_order.push(def);
+                raw_bodies.insert(key, raw_body);
             }
             Err(reason) => unsupported.push(ir::Unsupported {
                 def_id: key,
@@ -759,6 +784,43 @@ fn collect(
         return Err(Failure::compiler(
             "late compiler diagnostics prohibit capture",
         ));
+    }
+    if !unsupported.is_empty() {
+        return Err(Failure::unsupported_items(unsupported));
+    }
+    let mut def_to_body_index = BTreeMap::new();
+    for (idx, def) in closure_order.iter().enumerate() {
+        let idx_u32 =
+            u32::try_from(idx).map_err(|_| Failure::unsupported("captured body count overflow"))?;
+        def_to_body_index.insert(def.local_def_index.as_u32(), idx_u32);
+    }
+    for item in &mut census {
+        if def_to_body_index.contains_key(&item.def_id) {
+            item.selected = true;
+        }
+    }
+    let mut bodies = Vec::with_capacity(closure_order.len());
+    let mut selected = Vec::with_capacity(closure_order.len());
+    for (idx, def) in closure_order.into_iter().enumerate() {
+        let key = def.local_def_index.as_u32();
+        let raw_body = raw_bodies
+            .remove(&key)
+            .ok_or_else(|| Failure::tool("missing raw body for closure item"))?;
+        match raw_body.into_body(&def_to_body_index) {
+            Ok(body) => {
+                selected.push(ir::SelectedBody {
+                    def_id: key,
+                    path: tcx.def_path_str(def),
+                    body_index: idx,
+                });
+                bodies.push(body);
+            }
+            Err(reason) => unsupported.push(ir::Unsupported {
+                def_id: key,
+                path: tcx.def_path_str(def),
+                reason,
+            }),
+        }
     }
     if !unsupported.is_empty() {
         return Err(Failure::unsupported_items(unsupported));
@@ -846,7 +908,8 @@ fn collect(
             cfg: args.cfg.clone(),
             opt_level: 0,
             debug_assertions: false,
-            overflow_checks: false,
+            overflow_checks: tcx.sess.overflow_checks(),
+            panic: "unwind",
             pointer_bits: 64,
             endian: "little",
             declared_source_files: args.source_file.clone(),
@@ -876,9 +939,11 @@ fn check_current_inputs(reads: &Reads) -> Result<(), Failure> {
 
 pub fn run(args: &Args, verified_sysroot: &Path) -> Result<ir::Manifest, Failure> {
     let scope = args.resolved_scope()?;
-    SELECTION
-        .set(scope.clone())
-        .map_err(|_| Failure::tool("one capture invocation per process is required"))?;
+    let overflow_flag = if args.overflow_checks {
+        "-Coverflow-checks=yes"
+    } else {
+        "-Coverflow-checks=no"
+    };
     let mut compiler_args = vec![
         "anneal-rustc-capture".into(),
         compiler_path(&args.crate_root)?.to_string(),
@@ -900,13 +965,20 @@ pub fn run(args: &Args, verified_sysroot: &Path) -> Result<ir::Manifest, Failure
         // This explicit profile belongs to the captured configuration, rather
         // than inheriting Cargo or host defaults. rustc says debug-assertions
         // controls "cfg(debug_assertions)" and overflow-checks controls
-        // "runtime integer overflow". This subject uses both disabled; explicit
-        // MIR checks are still translated or refused, never silently removed.
+        // "runtime integer overflow". Explicit MIR checks are translated or
+        // refused, never silently removed.
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/src/doc/rustc/src/codegen-options/index.md#L65-L76
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/src/doc/rustc/src/codegen-options/index.md#L463-L474
         "-Copt-level=0".into(),
         "-Cdebug-assertions=no".into(),
-        "-Coverflow-checks=no".into(),
+        overflow_flag.into(),
+        // Pass `-Cpanic=unwind` explicitly rather than inheriting the target's
+        // default so unwinding behavior belongs to the explicit capture
+        // profile; `collect` re-checks `tcx.sess.panic_strategy()` after
+        // session configuration and records `"panic": "unwind"` in the
+        // manifest.
+        // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/src/doc/rustc/src/codegen-options/index.md#L1216-L1242
+        "-Cpanic=unwind".into(),
         format!("--out-dir={}", compiler_path(&args.out_dir)?),
     ];
     if let Some(sysroot) = &args.sysroot {

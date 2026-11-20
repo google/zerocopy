@@ -67,6 +67,10 @@ pub struct Args {
     scope: Option<String>,
     #[arg(long, action = clap::ArgAction::Append)]
     cfg: Vec<String>,
+    /// Enable runtime integer overflow checks (`-Coverflow-checks=yes`) instead
+    /// of the default `-Coverflow-checks=no` profile.
+    #[arg(long)]
+    overflow_checks: bool,
     /// Override the sysroot resolved from the pinned compiler distribution.
     #[arg(long)]
     sysroot: Option<PathBuf>,

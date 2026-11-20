@@ -1131,3 +1131,100 @@ fn rustc_mode_symlinks_replay_export_lean_lib_and_unpinned_taint() {
         unpinned.value["audit"]["unpinnedLean"]["sysrootModulesSha256"]
     );
 }
+
+#[test]
+fn verifies_tier1_overflow_checks_and_transitive_call_closure() {
+    let tools = Tools::discover();
+
+    // 1. Whole-crate Tier 1 arithmetic with `-Coverflow-checks=yes`:
+    //    `div_ceil_usize` exercises `subWithOverflow`, `addWithOverflow`,
+    //    `div`, tuple field projections, `assert` terminators, and clean
+    //    unwinding on division by zero.
+    let div_ceil = Fixture::new();
+    div_ceil.write(
+        "rust/lib.rs",
+        include_str!("fixtures/tier1_div_ceil/lib.rs"),
+    );
+    div_ceil.write(
+        "lean/Spec.lean",
+        include_str!("fixtures/tier1_div_ceil/Spec.lean"),
+    );
+    div_ceil.write(
+        "lean/Proof.lean",
+        include_str!("fixtures/tier1_div_ceil/Proof.lean"),
+    );
+    let mut div_ceil_request = div_ceil.request.clone();
+    div_ceil_request["compilation"]["crate_name"] = json!("tier1_div_ceil");
+    div_ceil_request["compilation"]["overflow_checks"] = json!(true);
+    let div_ceil_receipt = div_ceil.run(&tools, "tier1-div-ceil", &div_ceil_request);
+    div_ceil_receipt.expect(0, "crate_verified", None);
+    assert_eq!(
+        div_ceil_receipt.value["configuration"]["overflow_checks"],
+        json!(true)
+    );
+    assert_eq!(div_ceil_receipt.value["audit"]["exactType"], true);
+    assert_eq!(div_ceil_receipt.value["audit"]["replay"], true);
+
+    // The same fixture also verifies through `cargo-anneal verify rustc
+    // --overflow-checks`.
+    let rustc_div_ceil = div_ceil.execute(
+        "tier1-div-ceil-rustc",
+        tools
+            .command()
+            .arg("--artifacts")
+            .arg(div_ceil.path("tier1-div-ceil-rustc"))
+            .arg("rustc")
+            .arg(div_ceil.path("rust/lib.rs"))
+            .args(["--crate-name", "tier1_div_ceil", "--overflow-checks"])
+            .arg("--spec-file")
+            .arg(format!(
+                "Spec={}",
+                div_ceil.path("lean/Spec.lean").display()
+            ))
+            .arg("--proof-file")
+            .arg(format!(
+                "Proof={}",
+                div_ceil.path("lean/Proof.lean").display()
+            )),
+    );
+    rustc_div_ceil.expect(0, "crate_verified", None);
+    assert_eq!(
+        rustc_div_ceil.value["configuration"]["overflow_checks"],
+        json!(true)
+    );
+
+    // 2. Selected-unit Tier 1 transitive crate-local call closure + core
+    //    builtins (`saturatingSub`, `leadingZeros`, `cmpMin`), while an
+    //    unselected item with an unmodeled `&'static str` field stays excluded.
+    let calls = Fixture::new();
+    calls.write(
+        "rust/lib.rs",
+        include_str!("fixtures/tier1_calls_builtins/lib.rs"),
+    );
+    calls.write(
+        "lean/Spec.lean",
+        include_str!("fixtures/tier1_calls_builtins/Spec.lean"),
+    );
+    calls.write(
+        "lean/Proof.lean",
+        include_str!("fixtures/tier1_calls_builtins/Proof.lean"),
+    );
+    let mut calls_request = calls.request.clone();
+    calls_request["compilation"]["crate_name"] = json!("tier1_calls_builtins");
+    calls_request["scope"] = json!({"kind": "selected_unit", "roots": ["selected"]});
+    let calls_receipt = calls.run(&tools, "tier1-calls-builtins", &calls_request);
+    calls_receipt.expect(0, "selected_unit_verified", None);
+    assert_eq!(
+        calls_receipt.value["configuration"]["overflow_checks"],
+        json!(false)
+    );
+    assert_eq!(calls_receipt.value["audit"]["exactType"], true);
+    assert_eq!(calls_receipt.value["audit"]["replay"], true);
+    let selected_paths: Vec<&str> = calls_receipt.value["selected"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|item| item["path"].as_str().unwrap())
+        .collect();
+    assert_eq!(selected_paths, vec!["selected", "clamp_gap"]);
+}

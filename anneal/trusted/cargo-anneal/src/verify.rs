@@ -36,7 +36,7 @@ use crate::setup::{ToolOverrides, installed_bundle, resolve_tools};
 // canonical audited sources without running a build hook.
 include!("bundled_resources.rs");
 
-const PINNED_CAPTURE_SCHEMA_VERSION: u32 = 3;
+const PINNED_CAPTURE_SCHEMA_VERSION: u32 = 4;
 const PINNED_RUSTC_COMMIT: &str = "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1";
 const RECEIPT_SCHEMA_VERSION: u32 = 2;
 
@@ -45,7 +45,10 @@ const RECEIPT_SCHEMA_VERSION: u32 = 2;
 #[command(subcommand_negates_reqs = true)]
 pub struct VerifyArgs {
     /// JSON compilation/proof request, with paths relative to its directory.
-    #[arg(long, conflicts_with_all = ["manifest_path", "proof_dir", "select"])]
+    #[arg(
+        long,
+        conflicts_with_all = ["manifest_path", "proof_dir", "select", "overflow_checks"]
+    )]
     request: Option<PathBuf>,
     /// A feature-free library for the x86_64-unknown-linux-gnu scalar profile.
     #[arg(long, conflicts_with = "request", requires = "proof_dir")]
@@ -56,6 +59,10 @@ pub struct VerifyArgs {
     /// Select a function by its compiler path; omit to require the whole crate.
     #[arg(long, requires = "manifest_path", conflicts_with = "request")]
     select: Vec<String>,
+    /// Enable rustc integer overflow checks (`-Coverflow-checks=yes`) for the
+    /// Cargo shortcut.
+    #[arg(long, requires = "manifest_path", conflicts_with = "request")]
+    overflow_checks: bool,
     /// Capture driver; defaults to the installed bundle, then a sibling. The
     /// receipt records its SHA-256, which no lock pins.
     #[cfg_attr(
@@ -148,6 +155,9 @@ struct RustcArgs {
     /// Conditional compilation `cfg` flag passed to capture.
     #[arg(long)]
     cfg: Vec<String>,
+    /// Enable rustc integer overflow checks (`-Coverflow-checks=yes`).
+    #[arg(long)]
+    overflow_checks: bool,
     /// Additional Rust source file in the crate.
     #[arg(long)]
     source_file: Vec<PathBuf>,
@@ -374,6 +384,8 @@ struct Compilation {
     target: String,
     #[serde(default)]
     cfg: BTreeSet<String>,
+    #[serde(default)]
+    overflow_checks: bool,
     source_files: Vec<PathBuf>,
 }
 
@@ -503,12 +515,14 @@ struct CaptureSchemaHeader {
 fn parse_capture_receipt(bytes: &[u8]) -> Result<CaptureReceipt> {
     let header: CaptureSchemaHeader =
         serde_json::from_slice(bytes).map_err(|e| error("tool_failed", "capture", e))?;
-    // Capture schema 3 records structured `IntWidth` / `IntTy`, `ConstLit`,
-    // `EnumTagRepr`, and a single authoritative `program.scope` (including
-    // rootless `crate` scope values), retaining schema 2's `with_retag` flags
-    // and source identities. Check the schema version and compiler commit
-    // before strict deserialization so older capture ABIs report a clear
-    // version mismatch. Request schema 1 is independent.
+    // Capture schema 4 extends the typed IR for Tier 1 MIR (`IntWidth::I128`,
+    // non-empty `Ty::Tuple`, `Place` with `ProjectionElem::Field`, `UnOp`,
+    // expanded `BinOp`, `CastKind::IntToInt`, `Rvalue::{Unary, Cast,
+    // AggregateTuple}`, `Block.cleanup`, `UnwindAction`, operand-free
+    // `AssertKind`, audited `CoreBuiltin`, `Terminator::{Assert, UnwindResume,
+    // Call, CallBuiltin}`, and `overflow_checks`). Check the schema version
+    // and compiler commit before strict deserialization so older capture ABIs
+    // report a clear version mismatch. Request schema 1 is independent.
     if header.schema_version != PINNED_CAPTURE_SCHEMA_VERSION
         || header
             .compiler
@@ -890,6 +904,7 @@ fn cargo_request(args: &VerifyArgs, manifest: &Path) -> Result<(Request, PathBuf
                 edition: library["edition"].as_str().unwrap_or("2024").to_owned(),
                 target: target(),
                 cfg: BTreeSet::new(),
+                overflow_checks: args.overflow_checks,
                 source_files,
             },
             scope,
@@ -1148,6 +1163,7 @@ fn prepare_rustc_request(
             edition: rustc.edition.clone(),
             target: rustc.target.clone(),
             cfg: rustc.cfg.iter().cloned().collect(),
+            overflow_checks: rustc.overflow_checks,
             source_files,
         },
         scope,
@@ -1399,6 +1415,9 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     for cfg in &request.compilation.cfg {
         command.arg(format!("--cfg={cfg}"));
     }
+    if request.compilation.overflow_checks {
+        command.arg("--overflow-checks");
+    }
     for source in &sources {
         command
             .arg("--source-file")
@@ -1433,6 +1452,8 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
         || manifest.configuration["target"] != request.compilation.target
         || manifest.configuration["edition"] != request.compilation.edition
         || manifest.configuration["cfg"] != json!(request.compilation.cfg)
+        || manifest.configuration["overflow_checks"] != json!(request.compilation.overflow_checks)
+        || manifest.configuration["panic"] != "unwind"
     {
         return Err(error(
             "tool_failed",
@@ -2255,13 +2276,17 @@ mod tests {
 
     #[test]
     fn old_capture_schema_reports_version_mismatch_before_strict_deserialization() {
-        let schema2 = br#"{"schema_version":2,"compiler":{"commit":"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1"},"legacy":true}"#;
-        let Err(err) = parse_capture_receipt(schema2) else {
-            panic!("schema 2 receipt must be rejected");
-        };
-        assert_eq!(err.status, "tool_failed");
-        assert_eq!(err.phase, "capture");
-        assert_eq!(err.detail, "unexpected capture schema or compiler");
+        for schema in [2u32, 3u32] {
+            let payload = format!(
+                r#"{{"schema_version":{schema},"compiler":{{"commit":"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1"}},"legacy":true}}"#
+            );
+            let Err(err) = parse_capture_receipt(payload.as_bytes()) else {
+                panic!("schema {schema} receipt must be rejected");
+            };
+            assert_eq!(err.status, "tool_failed");
+            assert_eq!(err.phase, "capture");
+            assert_eq!(err.detail, "unexpected capture schema or compiler");
+        }
     }
 
     #[test]
@@ -2377,6 +2402,7 @@ mod tests {
             edition: "2024".to_owned(),
             target: target(),
             cfg: vec!["foo".to_owned()],
+            overflow_checks: false,
             source_file: vec![runfiles.join("lib.rs"), runfiles.join("helper.rs")],
             spec_file: vec![ModuleFileArg {
                 module: "Contract".to_owned(),
@@ -2431,6 +2457,7 @@ mod tests {
                 edition: "2024".to_owned(),
                 target: target(),
                 cfg: Vec::new(),
+                overflow_checks: false,
                 source_file: Vec::new(),
                 spec_file: Vec::new(),
                 proof_file: Vec::new(),
@@ -2548,6 +2575,7 @@ mod tests {
             manifest_path: None,
             proof_dir: None,
             select: Vec::new(),
+            overflow_checks: false,
             capture: None,
             lean: None,
             sysroot: None,
@@ -2589,6 +2617,7 @@ mod tests {
                 manifest_path: None,
                 proof_dir: None,
                 select: Vec::new(),
+                overflow_checks: false,
                 artifacts: None,
                 export_lean_lib: false,
                 allow_unpinned_lean: false,
@@ -2639,6 +2668,7 @@ mod tests {
             edition: "2024".to_owned(),
             target: "x86_64-unknown-linux-gnu".to_owned(),
             cfg: Vec::new(),
+            overflow_checks: false,
             source_file: Vec::new(),
             spec_file: spec_files,
             proof_file: vec![ModuleFileArg {

@@ -159,12 +159,14 @@ cargo anneal verify --request /path/to/example/request.json \
 ```
 
 Every request compiles a library with optimization level 0, debug assertions
-disabled and overflow checks disabled. The initial target is
-`x86_64-unknown-linux-gnu`, with 64-bit pointers and little-endian layout.
-`cfg` contains the resolved compiler cfg arguments for this compilation. The
-format does not expose arbitrary compiler flags or external dependency inputs.
-A request proves this configured source subject; correspondence to a different
-Cargo profile or deployed binary requires separate evidence.
+disabled, `panic=unwind`, and integer overflow checks disabled by default
+(opt in via `"overflow_checks": true` in `compilation` or `--overflow-checks`
+on the CLI). The initial target is `x86_64-unknown-linux-gnu`, with 64-bit
+pointers and little-endian layout. `cfg` contains the resolved compiler cfg
+arguments for this compilation. The format does not expose arbitrary compiler
+flags or external dependency inputs. A request proves this configured source
+subject; correspondence to a different Cargo profile or deployed binary
+requires separate evidence.
 
 Declared regular files and their ancestor directories define the compilation's
 source namespace. Source reads and existence checks resolve within that
@@ -182,12 +184,13 @@ To verify selected functions, replace the scope with compiler paths:
 }
 ```
 
-Selected-unit success covers the named callable bodies and the supported
-dependencies needed to justify their verification: their admitted closure. The
-current fragment refuses MIR calls and provides no waiver mechanism for
-unverified Rust helpers. The receipt's `selected` list identifies the proved
-bodies; its `census` also lists unselected crate items without claiming to
-verify them.
+Selected-unit success covers the named callable bodies and the transitive
+crate-local call closure needed to justify their verification, together with
+the 15 audited `core::num` / `core::cmp` builtins modeled directly in
+`Trusted.MirSemantics`. Unmodeled external calls and indirect calls remain
+refused with no waiver mechanism for unverified Rust helpers. The receipt's
+`selected` list identifies the proved bodies (roots and transitive callees);
+its `census` also lists unselected crate items without claiming to verify them.
 
 Whole-crate verification accounts for every function, method, trait
 implementation and other relevant item in the configured crate, including
@@ -361,49 +364,54 @@ to nondeterministic execution needs a bridge covering every relevant path.
 
 ## Supported fragment and results
 
-The operational fragment supports booleans, integers up to 64 bits, unit and
-never locals, and inhabited local fieldless enums whose variants have distinct
-discriminants and either a zero-sized tag or an integer tag up to 64 bits.
+The operational fragment supports booleans, integers up to 128 bits (including
+`isize`/`usize`), unit and never locals, non-empty tuples with field
+projections, and inhabited local fieldless enums whose variants have distinct
+discriminants and either a zero-sized tag or an integer tag up to 128 bits.
 Whole-crate scope (`crate`) admits fieldless enums without explicit
 discriminant expressions and refuses all anonymous constants (including
 explicit enum discriminant `AnonConst` items) fail-closed; `selected_unit`
-scope captures only the selected callable bodies and relies on `rustc`'s
-evaluated discriminant values for referenced fieldless enums. It preserves
-storage markers, moves and copies; MIR retag flags on these reference-free
-values have no borrow-tracking effect and lower to ordinary operand uses, while
-reference and pointer types are refused. Operations include ordinary bitwise,
-shift, wrapping arithmetic and comparison operations, discriminant reads,
-scalar assignment, branches, returns and loops.
+scope captures only the selected callable bodies and their transitive local
+call closure and relies on `rustc`'s evaluated discriminant values for
+referenced fieldless enums. It preserves storage markers, moves and copies;
+MIR retag flags on these reference-free values have no borrow-tracking effect
+and lower to ordinary operand uses, while reference and pointer types are
+refused. Operations include unary (`!`, `-`), integer/boolean bitwise, shift,
+wrapping/checked-with-overflow/unchecked arithmetic, division/remainder,
+`IntToInt` casts, comparisons, tuple aggregates, discriminant reads,
+operand-free `Assert` terminators (with sysroot `core` panic lang items and
+sysroot `std` unwinding panic handlers under `-Cpanic=unwind`), unwinding
+(`UnwindAction`, `UnwindResume`), direct monomorphic crate-local calls, the 15
+audited `core::num` / `core::cmp` builtins, branches, returns, and loops.
 
-The model represents logical scalar values and local storage slots. Physical
-allocations, padding, pointer provenance and general memory operations are
-outside this fragment. A MIR move of a non-zero-sized value marks its source
-uninitialized; reading that source before reinitialization faults in the model
-(zero-sized unit and single-variant enum moves leave their source readable).
-This conservative rule can refuse valid Rust cases where a value of a
-non-zero-sized `Copy` type may remain usable.
+The model represents logical scalar and tuple values and local storage slots.
+Physical allocations, padding, pointer provenance and general memory operations
+are outside this fragment. A MIR move of a non-zero-sized value marks its
+source uninitialized; reading that source before reinitialization faults in the
+model (zero-sized unit and single-variant enum moves leave their source
+readable). This conservative rule can refuse valid Rust cases where a value of
+a non-zero-sized `Copy` type may remain usable.
 
-Selected code using references, pointers, projections, calls, aggregates other
-than `()`, drop, unwinding, assembly or unsupported constants is refused. Empty
-`()` aggregates are captured 1:1 as `Trusted.MirAst.Rvalue.aggregateTuple []`
-and fail closed in `Trusted.MirSemantics.evalRvalue` until tuple aggregates are
-implemented there. Generic functions require instantiation obligations beyond
-this fragment. Capture likewise refuses functions with a non-Rust ABI, C
-variadics or `#[target_feature]` entry conditions, and compiler intrinsics
-(`#[rustc_intrinsic]` definitions): rustc rewrites calls to an intrinsic by
-name, so its fallback body need not be what callers execute. For the same
-reason it refuses `#[linkage]` functions: calls to a `weak`, `linkonce` or
-`available_externally` definition can bind to another definition at link
+Selected code using references, pointers, non-field projections, indirect or
+unmodeled external calls, aggregates other than tuples, drop, assembly, or
+unsupported constants is refused. Generic functions require instantiation
+obligations beyond this fragment. Capture likewise refuses functions with a
+non-Rust ABI, C variadics or `#[target_feature]` entry conditions, and compiler
+intrinsics (`#[rustc_intrinsic]` definitions): rustc rewrites calls to an
+intrinsic by name, so its fallback body need not be what callers execute. For
+the same reason it refuses `#[linkage]` functions: calls to a `weak`, `linkonce`
+or `available_externally` definition can bind to another definition at link
 time. Symbol and section attributes (`#[unsafe(no_mangle)]`,
 `#[unsafe(export_name = ...)]` and `#[unsafe(link_section = ...)]`) carry
 link-time obligations that the captured safety bit does not record, so capture
-refuses them too, along with every other code-generation attribute or flag
-whose effect the model does not state, such as allocator, unwinding, naked,
-sanitizer or alignment settings. Only inlining hints, `#[optimize]` goals,
-`#[cold]` and `#[track_caller]` are admitted. A crate whose source reads an
-environment variable through `env!` or `option_env!`, even an absent one, is
-refused because the environment is not part of the bound inputs. Broader
-memory, concurrency and full Starnix verification remain further work.
+refuses them too, along with `#[track_caller]` (which adds an implicit
+caller-location ABI parameter) and every other code-generation attribute or
+flag whose effect the model does not state, such as allocator, unwinding,
+naked, sanitizer or alignment settings. Only inlining hints, `#[optimize]`
+goals, and `#[cold]` are admitted. A crate whose source reads an environment
+variable through `env!` or `option_env!`, even an absent one, is refused
+because the environment is not part of the bound inputs. Broader memory,
+concurrency and full Starnix verification remain further work.
 
 Verification returns a Receipt schema v2 (`"schema_version": 2`) JSON receipt
 with `"taint_reasons"` (`[]` for pinned runs, `["unpinned_lean"]` when

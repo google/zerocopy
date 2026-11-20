@@ -12,21 +12,37 @@
 use std::collections::BTreeSet;
 use std::path::PathBuf;
 
-use serde::Serialize;
+use serde::{Serialize, Serializer};
 
-// Version 3 updates the typed IR JSON schema with structured `IntWidth` /
-// `IntTy`, `ConstLit`, `EnumTagRepr`, and a single authoritative
-// `program.scope` (`crate` without roots or `selected_unit`, retaining schema
-// 2's non-empty source identities and `with_retag` flags), and enforces static
-// admission invariants on integer widths, enum descriptors, constants, and
-// body indices at construction.
-pub const SCHEMA_VERSION: u32 = 3;
+// Version 4 extends the typed IR JSON schema for Tier 1 MIR: `IntWidth::I128`,
+// non-empty `Ty::Tuple`, `Place` with `ProjectionElem::Field`, `UnOp`, full
+// scalar `BinOp` (`Div`, `Rem`, `*Unchecked`, `*WithOverflow`),
+// `CastKind::IntToInt`, `Rvalue::{Unary, Cast, AggregateTuple}`,
+// `Block.cleanup`, `UnwindAction`, operand-free `AssertKind`, audited
+// `CoreBuiltin`, `Terminator::{Assert, UnwindResume, Call, CallBuiltin}`,
+// decimal-string serialization for 128-bit payloads, and configurable
+// `overflow_checks`.
+pub const SCHEMA_VERSION: u32 = 4;
 pub const COMPILER_COMMIT: &str = "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1";
 pub const COMPILER_VERSION: &str = "1.98.0-nightly (f8a08b688 2026-05-30)";
 
+/// Serialize a 128-bit unsigned payload as a decimal string so `serde_json`
+/// consumers without `arbitrary_precision` preserve all 128 bits losslessly.
+fn serialize_u128<S: Serializer>(value: &u128, serializer: S) -> Result<S::Ok, S::Error> {
+    serializer.serialize_str(&value.to_string())
+}
+
+fn serialize_u128_vec<S: Serializer>(values: &[u128], serializer: S) -> Result<S::Ok, S::Error> {
+    use serde::ser::SerializeSeq;
+    let mut seq = serializer.serialize_seq(Some(values.len()))?;
+    for value in values {
+        seq.serialize_element(&value.to_string())?;
+    }
+    seq.end()
+}
+
 /// Admitted integer widths in the 64-bit little-endian capture profile,
-/// corresponding 1-to-1 to the <= 64-bit constructors of
-/// `Trusted.MirAst.IntWidth`.
+/// corresponding 1-to-1 to `Trusted.MirAst.IntWidth`.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "lowercase")]
 pub enum IntWidth {
@@ -34,6 +50,7 @@ pub enum IntWidth {
     I16,
     I32,
     I64,
+    I128,
     Isize,
 }
 
@@ -44,11 +61,15 @@ impl IntWidth {
             Self::I16 => 16,
             Self::I32 => 32,
             Self::I64 | Self::Isize => 64,
+            Self::I128 => 128,
         }
     }
 
     pub const fn mask(self) -> u128 {
-        (1u128 << self.bits()) - 1
+        match self {
+            Self::I128 => u128::MAX,
+            _ => (1u128 << self.bits()) - 1,
+        }
     }
 
     pub const fn lean_name(self) -> &'static str {
@@ -57,6 +78,7 @@ impl IntWidth {
             Self::I16 => "i16",
             Self::I32 => "i32",
             Self::I64 => "i64",
+            Self::I128 => "i128",
             Self::Isize => "isize",
         }
     }
@@ -112,7 +134,8 @@ pub struct EnumTy {
     discr_width: IntWidth,
     discr_signed: bool,
     tag_repr: EnumTagRepr,
-    discriminants: Vec<u64>,
+    #[serde(serialize_with = "serialize_u128_vec")]
+    discriminants: Vec<u128>,
 }
 
 impl EnumTy {
@@ -120,7 +143,7 @@ impl EnumTy {
         id: u32,
         discr: IntTy,
         tag_repr: EnumTagRepr,
-        discriminants: Vec<u64>,
+        discriminants: Vec<u128>,
     ) -> Result<Self, String> {
         if discriminants.is_empty() {
             return Err("uninhabited zero-variant enums are unsupported".into());
@@ -130,11 +153,11 @@ impl EnumTy {
         }
         let discr_mask = discr.width.mask();
         for &d in &discriminants {
-            if u128::from(d) > discr_mask {
+            if d > discr_mask {
                 return Err("enum discriminant exceeds its discriminant width".into());
             }
         }
-        let unique: BTreeSet<u64> = discriminants.iter().copied().collect();
+        let unique: BTreeSet<u128> = discriminants.iter().copied().collect();
         if unique.len() != discriminants.len() {
             return Err("duplicate enum discriminants are unsupported".into());
         }
@@ -147,9 +170,8 @@ impl EnumTy {
             EnumTagRepr::Scalar(tag) => {
                 let tag_mask = tag.width.mask();
                 for &d in &discriminants {
-                    let d128 = u128::from(d);
-                    let recovered = tag_bits_to_discr_bits(tag, discr.width, d128 & tag_mask);
-                    if recovered != d128 {
+                    let recovered = tag_bits_to_discr_bits(tag, discr.width, d & tag_mask);
+                    if recovered != d {
                         return Err(
                             "enum discriminant does not round-trip through its tag representation"
                                 .into(),
@@ -182,7 +204,7 @@ impl EnumTy {
         self.tag_repr
     }
 
-    pub fn discriminants(&self) -> &[u64] {
+    pub fn discriminants(&self) -> &[u128] {
         &self.discriminants
     }
 }
@@ -195,6 +217,7 @@ pub enum Ty {
     Never,
     Int(IntTy),
     Enum(EnumTy),
+    Tuple { fields: Vec<Ty> },
 }
 
 impl Ty {
@@ -208,13 +231,31 @@ impl Ty {
     /// `WithRetag::Yes` sets `RetagMode::Default` during `copyOp`, which calls
     /// `retagSafePointer` only inside `ValidityVisitor::checkSafe` on safe
     /// pointers (`&T`, `&mut T`, `Box<T>`). For reference-free scalar, unit,
-    /// never, and fieldless-enum types, `WithRetag::Yes` and `WithRetag::No`
-    /// have identical semantics. Any future `Ty` variant capable of carrying
-    /// references or `Box` must return `false` so capture fails closed rather
-    /// than erasing active retags.
-    pub const fn is_retag_noop(&self) -> bool {
+    /// never, fieldless-enum, and tuple-of-retag-noop types, `WithRetag::Yes`
+    /// and `WithRetag::No` have identical semantics. Any future `Ty` variant
+    /// capable of carrying references or `Box` must return `false` so capture
+    /// fails closed rather than erasing active retags.
+    pub fn is_retag_noop(&self) -> bool {
         match self {
             Self::Bool | Self::Unit | Self::Never | Self::Int(_) | Self::Enum(_) => true,
+            Self::Tuple { fields } => fields.iter().all(Self::is_retag_noop),
+        }
+    }
+}
+
+/// Validate structural type invariants (`Ty::Tuple` must be non-empty; `()`
+/// uses `Ty::Unit`).
+pub fn validate_ty(ty: &Ty) -> Result<(), String> {
+    match ty {
+        Ty::Bool | Ty::Unit | Ty::Never | Ty::Int(_) | Ty::Enum(_) => Ok(()),
+        Ty::Tuple { fields } => {
+            if fields.is_empty() {
+                return Err("empty tuple type must use Ty::Unit".into());
+            }
+            for field in fields {
+                validate_ty(field)?;
+            }
+            Ok(())
         }
     }
 }
@@ -224,7 +265,10 @@ impl Ty {
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum ConstLit {
     ZeroSized,
-    Scalar { bits: u64 },
+    Scalar {
+        #[serde(serialize_with = "serialize_u128")]
+        bits: u128,
+    },
 }
 
 /// Validate that `with_retag` is admitted for destination type `dst_ty`.
@@ -248,6 +292,7 @@ fn admit_retag(retag_noop: bool, with_retag: bool) -> Result<(), String> {
 
 /// Validate a typed constant literal against `evalConstLit` invariants.
 pub fn validate_constant(ty: &Ty, lit: ConstLit) -> Result<(), String> {
+    validate_ty(ty)?;
     match (ty, lit) {
         (Ty::Unit, ConstLit::ZeroSized) => Ok(()),
         (Ty::Unit, ConstLit::Scalar { .. }) => {
@@ -276,7 +321,7 @@ pub fn validate_constant(ty: &Ty, lit: ConstLit) -> Result<(), String> {
             Err("ZeroSized constant requires unit or zero-sized enum type".into())
         }
         (Ty::Int(ity), ConstLit::Scalar { bits }) => {
-            if u128::from(bits) > ity.width.mask() {
+            if bits > ity.width.mask() {
                 return Err(format!(
                     "scalar constant {bits:#x} exceeds {}-bit width",
                     ity.width.bits()
@@ -284,6 +329,7 @@ pub fn validate_constant(ty: &Ty, lit: ConstLit) -> Result<(), String> {
             }
             Ok(())
         }
+        (Ty::Tuple { .. }, _) => Err("tuple constants are unsupported".into()),
         (Ty::Enum(ety), lit) => match (ety.tag_repr, lit) {
             (EnumTagRepr::ZeroSized, ConstLit::ZeroSized) => Ok(()),
             (EnumTagRepr::ZeroSized, ConstLit::Scalar { .. }) => {
@@ -293,14 +339,14 @@ pub fn validate_constant(ty: &Ty, lit: ConstLit) -> Result<(), String> {
                 Err("ZeroSized constant requires unit or zero-sized enum type".into())
             }
             (EnumTagRepr::Scalar(tag), ConstLit::Scalar { bits }) => {
-                if u128::from(bits) > tag.width.mask() {
+                if bits > tag.width.mask() {
                     return Err(format!(
                         "enum tag constant {bits:#x} exceeds {}-bit tag width",
                         tag.width.bits()
                     ));
                 }
-                let discr = tag_bits_to_discr_bits(tag, ety.discr().width, u128::from(bits));
-                if !ety.discriminants.iter().any(|&d| u128::from(d) == discr) {
+                let discr = tag_bits_to_discr_bits(tag, ety.discr().width, bits);
+                if !ety.discriminants.contains(&discr) {
                     return Err(format!(
                         "enum tag constant {bits:#x} does not match any declared variant"
                     ));
@@ -311,12 +357,82 @@ pub fn validate_constant(ty: &Ty, lit: ConstLit) -> Result<(), String> {
     }
 }
 
+/// Admitted MIR place projection elements matching
+/// `Trusted.MirAst.ProjectionElem`.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+#[serde(tag = "kind", rename_all = "snake_case")]
+pub enum ProjectionElem {
+    Field { index: u32, ty: Ty },
+}
+
+/// MIR place (`local` plus left-to-right `projection` elements) matching
+/// `Trusted.MirAst.Place`.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct Place {
+    pub local: u32,
+    pub projection: Vec<ProjectionElem>,
+}
+
+#[cfg(test)]
+impl Place {
+    pub fn local(local: u32) -> Self {
+        Self {
+            local,
+            projection: Vec::new(),
+        }
+    }
+}
+
+/// Resolve and validate `place` against `local_tys`, mirroring
+/// `Trusted.MirSemantics.projectTy?`.
+pub fn project_place_ty<'a>(
+    local_tys: &'a [Ty],
+    place: &Place,
+    role: &str,
+) -> Result<&'a Ty, String> {
+    let mut current = local_tys
+        .get(place.local as usize)
+        .ok_or_else(|| format!("{role} local {} out of bounds", place.local))?;
+    for elem in &place.projection {
+        match elem {
+            ProjectionElem::Field { index, ty: stated } => {
+                validate_ty(stated)?;
+                let Ty::Tuple { fields } = current else {
+                    return Err(format!(
+                        "{role} field projection requires tuple place, got {current:?}"
+                    ));
+                };
+                let field_ty = fields.get(*index as usize).ok_or_else(|| {
+                    format!(
+                        "{role} field projection index {index} out of bounds for {} fields",
+                        fields.len()
+                    )
+                })?;
+                if field_ty != stated {
+                    return Err(format!(
+                        "{role} field projection type {stated:?} disagrees with tuple field {field_ty:?}"
+                    ));
+                }
+                current = field_ty;
+            }
+        }
+    }
+    Ok(current)
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum Operand {
-    Copy { local: u32 },
-    Move { local: u32 },
+    Copy { place: Place },
+    Move { place: Place },
     Constant { ty: Ty, lit: ConstLit },
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum UnOp {
+    Not,
+    Neg,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -326,16 +442,48 @@ pub enum BinOp {
     BitOr,
     BitXor,
     Shl,
+    ShlUnchecked,
     Shr,
+    ShrUnchecked,
     Add,
+    AddUnchecked,
+    AddWithOverflow,
     Sub,
+    SubUnchecked,
+    SubWithOverflow,
     Mul,
+    MulUnchecked,
+    MulWithOverflow,
+    Div,
+    Rem,
     Eq,
     Ne,
     Lt,
     Le,
     Gt,
     Ge,
+}
+
+impl BinOp {
+    pub const fn is_with_overflow(self) -> bool {
+        matches!(
+            self,
+            Self::AddWithOverflow | Self::SubWithOverflow | Self::MulWithOverflow
+        )
+    }
+
+    pub const fn is_admitted_assert_overflow_op(self) -> bool {
+        matches!(
+            self,
+            Self::Add | Self::Sub | Self::Mul | Self::Div | Self::Rem | Self::Shl | Self::Shr
+        )
+    }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum CastKind {
+    IntToInt,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -346,23 +494,189 @@ pub enum Rvalue {
         operand: Operand,
         with_retag: bool,
     },
+    Unary {
+        op: UnOp,
+        operand: Operand,
+    },
     Binary {
         op: BinOp,
         left: Operand,
         right: Operand,
     },
+    Cast {
+        cast_kind: CastKind,
+        operand: Operand,
+        ty: Ty,
+    },
+    AggregateTuple {
+        operands: Vec<Operand>,
+    },
     Discriminant {
-        local: u32,
+        place: Place,
     },
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum Statement {
-    Assign { local: u32, value: Rvalue },
+    Assign { place: Place, value: Rvalue },
     StorageLive { local: u32 },
     StorageDead { local: u32 },
     Nop,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[serde(tag = "kind", rename_all = "snake_case")]
+pub enum UnwindAction {
+    Continue,
+    Unreachable,
+    Terminate,
+    Cleanup { block: u32 },
+}
+
+/// Admitted operand-free `AssertKind` variants matching
+/// `Trusted.MirSemantics.isOperandFreeAssertKind`.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[serde(tag = "kind", rename_all = "snake_case")]
+pub enum AssertKind {
+    Overflow { op: BinOp },
+    OverflowNeg,
+    DivisionByZero,
+    RemainderByZero,
+    NullPointerDereference,
+}
+
+/// Audited `core::num` and `core::cmp` scalar/tuple builtins matching
+/// `Trusted.MirAst.CoreBuiltin` 1-to-1.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum CoreBuiltin {
+    WrappingAdd,
+    WrappingSub,
+    WrappingMul,
+    WrappingShl,
+    WrappingShr,
+    OverflowingAdd,
+    OverflowingSub,
+    OverflowingMul,
+    SaturatingAdd,
+    SaturatingSub,
+    LeadingZeros,
+    TrailingZeros,
+    IsMultipleOf,
+    CmpMin,
+    CmpMax,
+}
+
+impl CoreBuiltin {
+    pub const fn lean_name(self) -> &'static str {
+        match self {
+            Self::WrappingAdd => "wrappingAdd",
+            Self::WrappingSub => "wrappingSub",
+            Self::WrappingMul => "wrappingMul",
+            Self::WrappingShl => "wrappingShl",
+            Self::WrappingShr => "wrappingShr",
+            Self::OverflowingAdd => "overflowingAdd",
+            Self::OverflowingSub => "overflowingSub",
+            Self::OverflowingMul => "overflowingMul",
+            Self::SaturatingAdd => "saturatingAdd",
+            Self::SaturatingSub => "saturatingSub",
+            Self::LeadingZeros => "leadingZeros",
+            Self::TrailingZeros => "trailingZeros",
+            Self::IsMultipleOf => "isMultipleOf",
+            Self::CmpMin => "cmpMin",
+            Self::CmpMax => "cmpMax",
+        }
+    }
+}
+
+/// Validate `CoreBuiltin` argument and destination types against
+/// `Trusted.MirSemantics.evalCoreBuiltin`.
+pub fn validate_core_builtin_signature(
+    builtin: CoreBuiltin,
+    arg_tys: &[&Ty],
+    dst_ty: &Ty,
+) -> Result<(), String> {
+    let u32_ty = Ty::Int(IntTy {
+        width: IntWidth::I32,
+        signed: false,
+    });
+    match builtin {
+        CoreBuiltin::WrappingAdd
+        | CoreBuiltin::WrappingSub
+        | CoreBuiltin::WrappingMul
+        | CoreBuiltin::SaturatingAdd
+        | CoreBuiltin::SaturatingSub
+        | CoreBuiltin::CmpMin
+        | CoreBuiltin::CmpMax => {
+            let [Ty::Int(lhs), Ty::Int(rhs)] = arg_tys else {
+                return Err(format!(
+                    "builtin {builtin:?} requires two integer arguments"
+                ));
+            };
+            if lhs != rhs || *dst_ty != Ty::Int(*lhs) {
+                return Err(format!(
+                    "builtin {builtin:?} requires matching integer arguments and destination"
+                ));
+            }
+            Ok(())
+        }
+        CoreBuiltin::WrappingShl | CoreBuiltin::WrappingShr => {
+            let [Ty::Int(lhs), rhs] = arg_tys else {
+                return Err(format!("builtin {builtin:?} requires (int, u32) arguments"));
+            };
+            if **rhs != u32_ty || *dst_ty != Ty::Int(*lhs) {
+                return Err(format!(
+                    "builtin {builtin:?} requires u32 shift amount and matching destination"
+                ));
+            }
+            Ok(())
+        }
+        CoreBuiltin::OverflowingAdd | CoreBuiltin::OverflowingSub | CoreBuiltin::OverflowingMul => {
+            let [Ty::Int(lhs), Ty::Int(rhs)] = arg_tys else {
+                return Err(format!(
+                    "builtin {builtin:?} requires two integer arguments"
+                ));
+            };
+            let expected_dst = Ty::Tuple {
+                fields: vec![Ty::Int(*lhs), Ty::Bool],
+            };
+            if lhs != rhs || *dst_ty != expected_dst {
+                return Err(format!(
+                    "builtin {builtin:?} requires matching integer arguments and (T, bool) destination"
+                ));
+            }
+            Ok(())
+        }
+        CoreBuiltin::LeadingZeros | CoreBuiltin::TrailingZeros => {
+            let [Ty::Int(_)] = arg_tys else {
+                return Err(format!("builtin {builtin:?} requires one integer argument"));
+            };
+            if *dst_ty != u32_ty {
+                return Err(format!("builtin {builtin:?} requires u32 destination"));
+            }
+            Ok(())
+        }
+        CoreBuiltin::IsMultipleOf => {
+            let [Ty::Int(lhs), Ty::Int(rhs)] = arg_tys else {
+                return Err("builtin IsMultipleOf requires two unsigned integer arguments".into());
+            };
+            if lhs.signed || lhs != rhs || *dst_ty != Ty::Bool {
+                return Err(
+                    "builtin IsMultipleOf requires matching unsigned integer arguments and bool destination"
+                        .into(),
+                );
+            }
+            Ok(())
+        }
+    }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct SwitchTarget {
+    #[serde(serialize_with = "serialize_u128")]
+    pub value: u128,
+    pub block: u32,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -373,17 +687,40 @@ pub enum Terminator {
     },
     SwitchInt {
         operand: Operand,
-        targets: Vec<(u64, u32)>,
+        targets: Vec<SwitchTarget>,
         otherwise: u32,
     },
     Ret,
     Unreachable,
+    UnwindResume,
+    Assert {
+        cond: Operand,
+        expected: bool,
+        msg: AssertKind,
+        target: u32,
+        unwind: UnwindAction,
+    },
+    Call {
+        callee: u32,
+        args: Vec<Operand>,
+        destination: Place,
+        target: Option<u32>,
+        unwind: UnwindAction,
+    },
+    CallBuiltin {
+        builtin: CoreBuiltin,
+        args: Vec<Operand>,
+        destination: Place,
+        target: Option<u32>,
+        unwind: UnwindAction,
+    },
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct Block {
     pub statements: Vec<Statement>,
     pub terminator: Terminator,
+    pub cleanup: bool,
 }
 
 /// Validated MIR function body enforcing
@@ -391,15 +728,14 @@ pub struct Block {
 /// invariants, and in-bounds local/block references by construction.
 ///
 /// Most checks in [`Body::try_new`] (static `BodyStaticAdmitted` conditions,
-/// constant/index/storage bounds, and direct destination-type agreement for
-/// `Rvalue::Unit`, `Rvalue::Use`, and `Rvalue::Discriminant`) mirror
-/// `BodyStaticAdmitted` and `WellFormed` in `Trusted.MirSemantics` for
-/// fail-fast defense in depth; full runtime operand and terminator typing is
-/// enforced by `WellFormed`. By contrast, [`check_use_retag`] is the sole
-/// soundness guard for erasing `WithRetag::Yes` in `lean.rs`, because
-/// `Trusted.MirAst.Rvalue.use` carries no retag field (vacuous today while
-/// every admitted [`Ty`] variant is retag-noop, but load-bearing for any
-/// future reference-bearing [`Ty`]).
+/// constant/index/storage bounds, place projections, cast/tuple/assert/builtin
+/// typing, and direct destination-type agreement) mirror `BodyStaticAdmitted`
+/// and `WellFormed` in `Trusted.MirSemantics` for fail-fast defense in depth;
+/// full runtime operand and terminator typing is enforced by `WellFormed`. By
+/// contrast, [`check_use_retag`] is the sole soundness guard for erasing
+/// `WithRetag::Yes` in `lean.rs`, because `Trusted.MirAst.Rvalue.use` carries
+/// no retag field (vacuous today while every admitted [`Ty`] variant is
+/// retag-noop, but load-bearing for any future reference-bearing [`Ty`]).
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct Body {
     arg_count: usize,
@@ -410,6 +746,18 @@ pub struct Body {
     /// Inventory indices remain navigation metadata; this value enters the
     /// theorem subject and selects the reviewed unsafe caller requirements.
     identity: String,
+}
+
+fn check_operand<'a>(local_tys: &'a [Ty], op: &'a Operand) -> Result<&'a Ty, String> {
+    match op {
+        Operand::Copy { place } | Operand::Move { place } => {
+            project_place_ty(local_tys, place, "operand")
+        }
+        Operand::Constant { ty, lit } => {
+            validate_constant(ty, *lit)?;
+            Ok(ty)
+        }
+    }
 }
 
 impl Body {
@@ -432,21 +780,13 @@ impl Body {
                 local_tys.len()
             ));
         }
+        for local_ty in &local_tys {
+            validate_ty(local_ty)?;
+        }
         fn check_local<'a>(local_tys: &'a [Ty], local: u32, role: &str) -> Result<&'a Ty, String> {
             local_tys
                 .get(local as usize)
                 .ok_or_else(|| format!("{role} local {local} out of bounds"))
-        }
-        fn check_operand<'a>(local_tys: &'a [Ty], op: &'a Operand) -> Result<&'a Ty, String> {
-            match op {
-                Operand::Copy { local } | Operand::Move { local } => {
-                    check_local(local_tys, *local, "operand")
-                }
-                Operand::Constant { ty, lit } => {
-                    validate_constant(ty, *lit)?;
-                    Ok(ty)
-                }
-            }
         }
         let num_blocks = blocks.len();
         let check_block = |target: u32| -> Result<(), String> {
@@ -457,16 +797,22 @@ impl Body {
             }
             Ok(())
         };
+        let check_unwind = |unwind: UnwindAction| -> Result<(), String> {
+            if let UnwindAction::Cleanup { block } = unwind {
+                check_block(block)?;
+            }
+            Ok(())
+        };
         for block in &blocks {
             for stmt in &block.statements {
                 match stmt {
-                    Statement::Assign { local, value } => {
-                        let dst_ty = check_local(&local_tys, *local, "assignment")?;
+                    Statement::Assign { place, value } => {
+                        let dst_ty = project_place_ty(&local_tys, place, "assignment")?;
                         match value {
                             Rvalue::Unit => {
                                 if *dst_ty != Ty::Unit {
                                     return Err(
-                                        "unit aggregate requires unit destination local".into()
+                                        "unit aggregate requires unit destination place".into()
                                     );
                                 }
                             }
@@ -478,20 +824,117 @@ impl Body {
                                 let op_ty = check_operand(&local_tys, operand)?;
                                 if op_ty != dst_ty {
                                     return Err(
-                                        "use rvalue operand type disagrees with destination local"
+                                        "use rvalue operand type disagrees with destination place"
                                             .into(),
                                     );
                                 }
                             }
-                            Rvalue::Binary { left, right, .. } => {
-                                check_operand(&local_tys, left)?;
-                                check_operand(&local_tys, right)?;
+                            Rvalue::Unary { op, operand } => {
+                                let op_ty = check_operand(&local_tys, operand)?;
+                                match op {
+                                    UnOp::Not => {
+                                        if !matches!(op_ty, Ty::Bool | Ty::Int(_)) {
+                                            return Err(
+                                                "unary Not requires bool or integer operand".into(),
+                                            );
+                                        }
+                                    }
+                                    UnOp::Neg => {
+                                        if !matches!(op_ty, Ty::Int(IntTy { signed: true, .. })) {
+                                            return Err(
+                                                "unary Neg requires signed integer operand".into(),
+                                            );
+                                        }
+                                    }
+                                }
+                                if op_ty != dst_ty {
+                                    return Err(
+                                        "unary rvalue operand type disagrees with destination place"
+                                            .into(),
+                                    );
+                                }
                             }
-                            Rvalue::Discriminant { local: src } => {
-                                let Ty::Enum(ety) = check_local(&local_tys, *src, "discriminant")?
+                            Rvalue::Binary { op, left, right } => {
+                                let lhs_ty = check_operand(&local_tys, left)?;
+                                let rhs_ty = check_operand(&local_tys, right)?;
+                                if op.is_with_overflow() {
+                                    let (Ty::Int(l), Ty::Int(r)) = (lhs_ty, rhs_ty) else {
+                                        return Err(
+                                            "overflowing binary op requires integer operands"
+                                                .into(),
+                                        );
+                                    };
+                                    let expected_dst = Ty::Tuple {
+                                        fields: vec![Ty::Int(*l), Ty::Bool],
+                                    };
+                                    if l != r || *dst_ty != expected_dst {
+                                        return Err(
+                                            "overflowing binary op destination must be (T, bool)"
+                                                .into(),
+                                        );
+                                    }
+                                }
+                            }
+                            Rvalue::Cast {
+                                cast_kind: CastKind::IntToInt,
+                                operand,
+                                ty,
+                            } => {
+                                validate_ty(ty)?;
+                                let src_ty = check_operand(&local_tys, operand)?;
+                                if !matches!(src_ty, Ty::Int(_) | Ty::Bool) {
+                                    return Err(
+                                        "IntToInt cast requires integer or bool source operand"
+                                            .into(),
+                                    );
+                                }
+                                if !matches!(ty, Ty::Int(_)) {
+                                    return Err("IntToInt cast requires integer target type".into());
+                                }
+                                if ty != dst_ty {
+                                    return Err(
+                                        "cast target type disagrees with destination place".into(),
+                                    );
+                                }
+                            }
+                            Rvalue::AggregateTuple { operands } => {
+                                if operands.is_empty() {
+                                    return Err(
+                                        "empty tuple aggregate must use Rvalue::Unit".into()
+                                    );
+                                }
+                                let Ty::Tuple { fields } = dst_ty else {
+                                    return Err(
+                                        "tuple aggregate requires tuple destination place".into()
+                                    );
+                                };
+                                if operands.len() != fields.len() {
+                                    return Err(
+                                        "tuple aggregate operand count disagrees with destination"
+                                            .into(),
+                                    );
+                                }
+                                for (op, field_ty) in operands.iter().zip(fields.iter()) {
+                                    let op_ty = check_operand(&local_tys, op)?;
+                                    if op_ty != field_ty {
+                                        return Err(
+                                            "tuple aggregate operand type disagrees with field"
+                                                .into(),
+                                        );
+                                    }
+                                }
+                            }
+                            Rvalue::Discriminant { place: src } => {
+                                if !src.projection.is_empty() {
+                                    return Err(
+                                        "projected discriminant place is unsupported".into()
+                                    );
+                                }
+                                let Ty::Enum(ety) =
+                                    project_place_ty(&local_tys, src, "discriminant")?
                                 else {
                                     return Err(
-                                        "discriminant rvalue requires a fieldless enum local"
+                                        "discriminant rvalue requires a fieldless enum place"
                                             .into(),
                                     );
                                 };
@@ -530,12 +973,66 @@ impl Body {
                     otherwise,
                 } => {
                     check_operand(&local_tys, operand)?;
-                    for &(_, target) in targets {
-                        check_block(target)?;
+                    for target in targets {
+                        check_block(target.block)?;
                     }
                     check_block(*otherwise)?;
                 }
-                Terminator::Ret | Terminator::Unreachable => {}
+                Terminator::Ret | Terminator::Unreachable | Terminator::UnwindResume => {}
+                Terminator::Assert {
+                    cond,
+                    msg,
+                    target,
+                    unwind,
+                    ..
+                } => {
+                    let cond_ty = check_operand(&local_tys, cond)?;
+                    if *cond_ty != Ty::Bool {
+                        return Err("assert condition operand must have bool type".into());
+                    }
+                    if let AssertKind::Overflow { op } = msg
+                        && !op.is_admitted_assert_overflow_op()
+                    {
+                        return Err(format!("unsupported assert overflow operator: {op:?}"));
+                    }
+                    check_block(*target)?;
+                    check_unwind(*unwind)?;
+                }
+                Terminator::Call {
+                    args,
+                    destination,
+                    target,
+                    unwind,
+                    ..
+                } => {
+                    for arg in args {
+                        check_operand(&local_tys, arg)?;
+                    }
+                    project_place_ty(&local_tys, destination, "call destination")?;
+                    if let Some(next) = target {
+                        check_block(*next)?;
+                    }
+                    check_unwind(*unwind)?;
+                }
+                Terminator::CallBuiltin {
+                    builtin,
+                    args,
+                    destination,
+                    target,
+                    unwind,
+                } => {
+                    let arg_tys = args
+                        .iter()
+                        .map(|arg| check_operand(&local_tys, arg))
+                        .collect::<Result<Vec<_>, _>>()?;
+                    let dst_ty = project_place_ty(&local_tys, destination, "builtin destination")?;
+                    validate_core_builtin_signature(*builtin, &arg_tys, dst_ty)?;
+                    let Some(next) = target else {
+                        return Err("diverging core builtin call is unsupported".into());
+                    };
+                    check_block(*next)?;
+                    check_unwind(*unwind)?;
+                }
             }
         }
         Ok(Self {
@@ -583,8 +1080,9 @@ pub enum Scope {
 }
 
 /// Validated captured program enforcing non-empty selected-unit roots,
-/// non-empty bodies, and pairwise-distinct function identities
-/// (`Trusted.MirSemantics.bodiesHaveUniqueIdentities`).
+/// non-empty bodies, pairwise-distinct function identities
+/// (`Trusted.MirSemantics.bodiesHaveUniqueIdentities`), and valid direct-call
+/// targets/signatures across `bodies`.
 #[derive(Debug, Serialize)]
 pub struct Program {
     scope: Scope,
@@ -608,6 +1106,49 @@ impl Program {
                     "ambiguous captured function identity: {}",
                     body.identity
                 ));
+            }
+        }
+        for body in &bodies {
+            for block in &body.blocks {
+                if let Terminator::Call {
+                    callee,
+                    args,
+                    destination,
+                    ..
+                } = &block.terminator
+                {
+                    let callee_body = bodies.get(*callee as usize).ok_or_else(|| {
+                        format!(
+                            "call callee index {callee} out of bounds for {} bodies",
+                            bodies.len()
+                        )
+                    })?;
+                    if args.len() != callee_body.arg_count() {
+                        return Err(format!(
+                            "call argument count {} disagrees with callee {} arity {}",
+                            args.len(),
+                            callee_body.identity(),
+                            callee_body.arg_count()
+                        ));
+                    }
+                    let dst_ty =
+                        project_place_ty(&body.local_tys, destination, "call destination")?;
+                    if *dst_ty != callee_body.local_tys()[0] {
+                        return Err(format!(
+                            "call destination type disagrees with callee {} return type",
+                            callee_body.identity()
+                        ));
+                    }
+                    for (index, arg) in args.iter().enumerate() {
+                        let arg_ty = check_operand(&body.local_tys, arg)?;
+                        if *arg_ty != callee_body.local_tys()[1 + index] {
+                            return Err(format!(
+                                "call argument {index} type disagrees with callee {} parameter",
+                                callee_body.identity()
+                            ));
+                        }
+                    }
+                }
             }
         }
         Ok(Self { scope, bodies })
@@ -639,6 +1180,7 @@ pub struct Configuration {
     pub opt_level: u8,
     pub debug_assertions: bool,
     pub overflow_checks: bool,
+    pub panic: &'static str,
     pub pointer_bits: u64,
     pub endian: &'static str,
     pub declared_source_files: Vec<PathBuf>,
@@ -711,7 +1253,7 @@ mod tests {
             vec![u8_ty.clone()],
             vec![Block {
                 statements: vec![Statement::Assign {
-                    local: 0,
+                    place: Place::local(0),
                     value: Rvalue::Use {
                         operand: Operand::Constant {
                             ty: Ty::Unit,
@@ -721,11 +1263,12 @@ mod tests {
                     },
                 }],
                 terminator: Terminator::Ret,
+                cleanup: false,
             }],
             "rust-path-v1::unit_into_u8".into(),
         )
         .unwrap_err();
-        assert!(unit_into_u8.contains("disagrees with destination local"));
+        assert!(unit_into_u8.contains("disagrees with destination place"));
 
         let copy_mismatch = Body::try_new(
             1,
@@ -733,18 +1276,21 @@ mod tests {
             vec![Ty::Unit, u8_ty.clone()],
             vec![Block {
                 statements: vec![Statement::Assign {
-                    local: 0,
+                    place: Place::local(0),
                     value: Rvalue::Use {
-                        operand: Operand::Copy { local: 1 },
+                        operand: Operand::Copy {
+                            place: Place::local(1),
+                        },
                         with_retag: false,
                     },
                 }],
                 terminator: Terminator::Ret,
+                cleanup: false,
             }],
             "rust-path-v1::copy_mismatch".into(),
         )
         .unwrap_err();
-        assert!(copy_mismatch.contains("disagrees with destination local"));
+        assert!(copy_mismatch.contains("disagrees with destination place"));
 
         assert!(
             Body::try_new(
@@ -753,7 +1299,7 @@ mod tests {
                 vec![Ty::Unit],
                 vec![Block {
                     statements: vec![Statement::Assign {
-                        local: 0,
+                        place: Place::local(0),
                         value: Rvalue::Use {
                             operand: Operand::Constant {
                                 ty: Ty::Unit,
@@ -763,6 +1309,7 @@ mod tests {
                         },
                     }],
                     terminator: Terminator::Ret,
+                    cleanup: false,
                 }],
                 "rust-path-v1::unit_into_unit".into(),
             )
@@ -785,10 +1332,13 @@ mod tests {
             vec![u8_ty, Ty::Enum(ety.clone())],
             vec![Block {
                 statements: vec![Statement::Assign {
-                    local: 0,
-                    value: Rvalue::Discriminant { local: 1 },
+                    place: Place::local(0),
+                    value: Rvalue::Discriminant {
+                        place: Place::local(1),
+                    },
                 }],
                 terminator: Terminator::Ret,
+                cleanup: false,
             }],
             "rust-path-v1::discr_mismatch".into(),
         )
@@ -802,7 +1352,7 @@ mod tests {
                 vec![Ty::Enum(ety.clone())],
                 vec![Block {
                     statements: vec![Statement::Assign {
-                        local: 0,
+                        place: Place::local(0),
                         value: Rvalue::Use {
                             operand: Operand::Constant {
                                 ty: Ty::Enum(ety),
@@ -812,6 +1362,7 @@ mod tests {
                         },
                     }],
                     terminator: Terminator::Ret,
+                    cleanup: false,
                 }],
                 "rust-path-v1::zst_enum_ok".into(),
             )
@@ -844,12 +1395,16 @@ mod tests {
                     width: IntWidth::I8,
                     signed: true,
                 }),
-                vec![u64::MAX, 1],
+                vec![u128::from(u64::MAX), 1],
             )
             .unwrap(),
         );
         let u8_ty = Ty::Int(IntTy {
             width: IntWidth::I8,
+            signed: false,
+        });
+        let u128_ty = Ty::Int(IntTy {
+            width: IntWidth::I128,
             signed: false,
         });
 
@@ -864,12 +1419,22 @@ mod tests {
         assert!(validate_constant(&u8_ty, ConstLit::ZeroSized).is_err());
         assert!(validate_constant(&u8_ty, ConstLit::Scalar { bits: 255 }).is_ok());
         assert!(validate_constant(&u8_ty, ConstLit::Scalar { bits: 256 }).is_err());
+        assert!(validate_constant(&u128_ty, ConstLit::Scalar { bits: u128::MAX }).is_ok());
         assert!(validate_constant(&zst_enum, ConstLit::ZeroSized).is_ok());
         assert!(validate_constant(&zst_enum, ConstLit::Scalar { bits: 0 }).is_err());
         assert!(validate_constant(&scalar_enum, ConstLit::ZeroSized).is_err());
         assert!(validate_constant(&scalar_enum, ConstLit::Scalar { bits: 0xff }).is_ok());
         assert!(validate_constant(&scalar_enum, ConstLit::Scalar { bits: 1 }).is_ok());
         assert!(validate_constant(&scalar_enum, ConstLit::Scalar { bits: 2 }).is_err());
+        assert!(
+            validate_constant(
+                &Ty::Tuple {
+                    fields: vec![u8_ty]
+                },
+                ConstLit::ZeroSized
+            )
+            .is_err()
+        );
     }
 
     #[test]
@@ -884,15 +1449,16 @@ mod tests {
             vec![u8_ty],
             vec![Block {
                 statements: vec![Statement::Assign {
-                    local: 0,
+                    place: Place::local(0),
                     value: Rvalue::Unit,
                 }],
                 terminator: Terminator::Ret,
+                cleanup: false,
             }],
             "rust-path-v1::unit_mismatch".into(),
         )
         .unwrap_err();
-        assert!(err.contains("unit aggregate requires unit destination local"));
+        assert!(err.contains("unit aggregate requires unit destination place"));
 
         let ok = Body::try_new(
             0,
@@ -900,10 +1466,11 @@ mod tests {
             vec![Ty::Unit],
             vec![Block {
                 statements: vec![Statement::Assign {
-                    local: 0,
+                    place: Place::local(0),
                     value: Rvalue::Unit,
                 }],
                 terminator: Terminator::Ret,
+                cleanup: false,
             }],
             "rust-path-v1::unit_ok".into(),
         )
@@ -935,6 +1502,9 @@ mod tests {
                 width: IntWidth::Isize,
                 signed: true,
             }),
+            Ty::Tuple {
+                fields: vec![Ty::Bool, Ty::Unit],
+            },
         ] {
             assert!(ty.is_retag_noop(), "{ty:?}");
             assert!(check_use_retag(&ty, true).is_ok(), "{ty:?}");
