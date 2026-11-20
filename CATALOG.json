@@ -9971,6 +9971,100 @@
         "verification/translation-validation"
       ]
     },
+    "boolean-derivative-guard-sensitivity-conjunct-independence-and-test-probe-evasion": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "927a56d2bb7d1dba1e01bca8321bf3c4e5095a2c"
+          },
+          "name": "LLVM Source-Based MC/DC Coverage (Clang & ProfileData)"
+        },
+        {
+          "identity": {
+            "repository": "Z3Prover/z3",
+            "revision": "24fb9f2f2c3a7745d88e53ad61c39b9d1758899f"
+          },
+          "name": "Z3 Theorem Prover (Unsat-Core / MUS Tracking)"
+        },
+        {
+          "identity": {
+            "repository": "Certora/gambit",
+            "revision": "072ff4c6d747397f859e0a15a20fe1ff05672332"
+          },
+          "name": "Gambit (Certora Mutation Generator for Formal Specs)"
+        },
+        {
+          "identity": {
+            "repository": "sourcefrog/cargo-mutants",
+            "revision": "6c720ae82a1784b84cfa06066f7b0d59ed1798d0"
+          },
+          "name": "cargo-mutants (Rust Mutation Testing)"
+        },
+        {
+          "identity": {
+            "repository": "rjust/defects4j",
+            "revision": "8c16da8230843cdc918eaf4ddb449637f02b83c6",
+            "version": "v3.0.1"
+          },
+          "name": "Defects4J"
+        },
+        {
+          "identity": {
+            "repository": "theorem-labs/oss-verify-proofs",
+            "revision": "32c8baf6e92f173b445903857770da103ba307e0",
+            "url": "https://www.anthropic.com/research/formal-verification"
+          },
+          "name": "OSS Verify (Theorem & Anthropic binary verification proofs)"
+        },
+        {
+          "identity": {
+            "mcdc_doi": "10.1049/sej.1994.0025",
+            "rcdc_conf_doi": "10.1007/3-540-45648-1_15",
+            "rcdc_journal_doi": "10.1007/s00165-005-0084-7"
+          },
+          "name": "MC/DC & RC/DC Literature (Chilenski & Miller 1994; DO-178C; Vilkomir & Bowen 2002/2006)"
+        },
+        {
+          "identity": {
+            "beer_fmsd_doi": "10.1023/A:1008732924151",
+            "ckv_fmsd_doi": "10.1007/s10703-006-7694-z",
+            "kv_sttt_doi": "10.1007/s100090100062"
+          },
+          "name": "Temporal Model-Checking Vacuity & Coverage (Beer et al. 2001; Kupferman & Vardi 2003; Chockler et al. 2006)"
+        },
+        {
+          "identity": {
+            "contag_sp2017_doi": "10.1109/SP.2017.66",
+            "statute": "42 U.S.C. 7522(a)(3)(B) / 40 C.F.R. Part 86"
+          },
+          "name": "Emission Defeat-Device Analysis & Regulatory Notices (Contag et al., IEEE S&P 2017; US EPA NOVs)"
+        },
+        {
+          "identity": {
+            "qi_issta2015_doi": "10.1145/2771783.2771791",
+            "smith_fse2015_doi": "10.1145/2786805.2786825"
+          },
+          "name": "APR Test-Suite Overfitting Studies (Smith et al., ESEC/FSE 2015; Qi et al., ISSTA 2015)"
+        },
+        {
+          "identity": {
+            "surprising_creativity_arxiv": "1803.03453",
+            "sycophancy_subterfuge_arxiv": "2406.10162"
+          },
+          "name": "Specification Gaming & Reward Tampering Studies (Lehman et al. 2020; Denison et al. 2024)"
+        }
+      ],
+      "topics": [
+        "verification",
+        "verification/vacuity-and-mutation",
+        "security",
+        "security/probe-evasion",
+        "tooling",
+        "compilers"
+      ]
+    },
     "borrow-checker-self-referential-views-disjoint-slices-and-polonius-limits": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -12970,6 +13064,124 @@
         "compilers",
         "compilers/aliasing",
         "domains"
+      ]
+    },
+    "code-based-security-games-versus-conservative-extension-for-specification-adequacy": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "EasyCrypt/easycrypt",
+            "revision": "ce19cb6cbab4951e58553c36128e8a19f2f90c6a"
+          },
+          "name": "EasyCrypt"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3594735",
+            "repository": "SSProve/ssprove",
+            "revision": "9a37fe0ab79d041f8d835e6cf18e37614b16a791"
+          },
+          "name": "SSProve"
+        },
+        {
+          "identity": {
+            "repository": "adampetcher/fcf",
+            "revision": "2550fa27e491c03655cddc7830a5baeb15520104"
+          },
+          "name": "Foundational Cryptography Framework (FCF)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TDSC.2007.1005",
+            "url": "https://gitlab.inria.fr/bblanche/CryptoVerif"
+          },
+          "name": "CryptoVerif (Blanchet, IEEE TDSC 2008)"
+        },
+        {
+          "identity": {
+            "repository": "jrh13/hol-light",
+            "revision": "1a0c0e6b182cd9e271946ba8d78f7942619f4acb"
+          },
+          "name": "HOL Light"
+        },
+        {
+          "identity": {
+            "repository": "HOL-Theorem-Prover/HOL",
+            "revision": "0c30bdb71aafd4e6a354f5b0b43fffbff6fa8d47"
+          },
+          "name": "HOL4"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-015-9357-x",
+            "repository": "CakeML/cakeml",
+            "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+          },
+          "name": "Candle (CakeML verified HOL kernel & semantics)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-018-9454-8",
+            "repository": "isabelle-prover/mirror-isabelle",
+            "revision": "c45cdab77eec0ac889f9717ca229a5e9064a24b1"
+          },
+          "name": "Isabelle/HOL"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5a82f1a47fbc2323ad6be6b11a7c0522dd4f3e68"
+          },
+          "name": "Lean 4"
+        },
+        {
+          "identity": {
+            "repository": "digama0/lean4lean",
+            "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+          },
+          "name": "Lean4Lean"
+        },
+        {
+          "identity": {
+            "repository": "theorem-labs/oss-verify-proofs",
+            "revision": "32c8baf6e92f173b445903857770da103ba307e0",
+            "url": "https://www.anthropic.com/research/formal-verification"
+          },
+          "name": "OSS Verify (Theorem & Anthropic binary verification proofs)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/11761679_25",
+            "halevi_eprint": "2005/181",
+            "shoup_eprint": "2004/332"
+          },
+          "name": "Code-Based Game-Playing Proofs (Bellare & Rogaway, EUROCRYPT 2006; Shoup 2004; Halevi 2005)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/237432.237434",
+            "standard": "Zave-Jackson-TOSEM-1997"
+          },
+          "name": "Four Dark Corners of Requirements Engineering & Problem Frames (Zave & Jackson 1997; Jackson 2001)"
+        },
+        {
+          "identity": {
+            "csmith_pldi_doi": "10.1145/1993498.1993532",
+            "distributed_fv_eurosys_doi": "10.1145/3064176.3064183",
+            "sel4_tocs_doi": "10.1145/2560537",
+            "ssh_attack_doi": "10.1109/SP.2009.5"
+          },
+          "name": "Real-World Cryptographic & Verified Systems Empirical Studies (Albrecht et al. 2009; Degabriele et al. 2011; Yang et al. 2011; Klein et al. 2014; Fonseca et al. 2017)"
+        }
+      ],
+      "topics": [
+        "verification",
+        "verification/specification-adequacy",
+        "security",
+        "security/game-based-proofs",
+        "pl",
+        "lean"
       ]
     },
     "coherence-orphan-instances-and-module-system-compilation": {

@@ -1,0 +1,94 @@
+{
+  "topics": [
+    "verification",
+    "verification/vacuity-and-mutation",
+    "security",
+    "security/probe-evasion",
+    "tooling",
+    "compilers"
+  ],
+  "subjects": [
+    {
+      "name": "LLVM Source-Based MC/DC Coverage (Clang & ProfileData)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "927a56d2bb7d1dba1e01bca8321bf3c4e5095a2c"
+      }
+    },
+    {
+      "name": "Z3 Theorem Prover (Unsat-Core / MUS Tracking)",
+      "identity": {
+        "repository": "Z3Prover/z3",
+        "revision": "24fb9f2f2c3a7745d88e53ad61c39b9d1758899f"
+      }
+    },
+    {
+      "name": "Gambit (Certora Mutation Generator for Formal Specs)",
+      "identity": {
+        "repository": "Certora/gambit",
+        "revision": "072ff4c6d747397f859e0a15a20fe1ff05672332"
+      }
+    },
+    {
+      "name": "cargo-mutants (Rust Mutation Testing)",
+      "identity": {
+        "repository": "sourcefrog/cargo-mutants",
+        "revision": "6c720ae82a1784b84cfa06066f7b0d59ed1798d0"
+      }
+    },
+    {
+      "name": "Defects4J",
+      "identity": {
+        "repository": "rjust/defects4j",
+        "revision": "8c16da8230843cdc918eaf4ddb449637f02b83c6",
+        "version": "v3.0.1"
+      }
+    },
+    {
+      "name": "OSS Verify (Theorem & Anthropic binary verification proofs)",
+      "identity": {
+        "repository": "theorem-labs/oss-verify-proofs",
+        "revision": "32c8baf6e92f173b445903857770da103ba307e0",
+        "url": "https://www.anthropic.com/research/formal-verification"
+      }
+    },
+    {
+      "name": "MC/DC & RC/DC Literature (Chilenski & Miller 1994; DO-178C; Vilkomir & Bowen 2002/2006)",
+      "identity": {
+        "mcdc_doi": "10.1049/sej.1994.0025",
+        "rcdc_conf_doi": "10.1007/3-540-45648-1_15",
+        "rcdc_journal_doi": "10.1007/s00165-005-0084-7"
+      }
+    },
+    {
+      "name": "Temporal Model-Checking Vacuity & Coverage (Beer et al. 2001; Kupferman & Vardi 2003; Chockler et al. 2006)",
+      "identity": {
+        "beer_fmsd_doi": "10.1023/A:1008732924151",
+        "kv_sttt_doi": "10.1007/s100090100062",
+        "ckv_fmsd_doi": "10.1007/s10703-006-7694-z"
+      }
+    },
+    {
+      "name": "Emission Defeat-Device Analysis & Regulatory Notices (Contag et al., IEEE S&P 2017; US EPA NOVs)",
+      "identity": {
+        "contag_sp2017_doi": "10.1109/SP.2017.66",
+        "statute": "42 U.S.C. 7522(a)(3)(B) / 40 C.F.R. Part 86"
+      }
+    },
+    {
+      "name": "APR Test-Suite Overfitting Studies (Smith et al., ESEC/FSE 2015; Qi et al., ISSTA 2015)",
+      "identity": {
+        "smith_fse2015_doi": "10.1145/2786805.2786825",
+        "qi_issta2015_doi": "10.1145/2771783.2771791"
+      }
+    },
+    {
+      "name": "Specification Gaming & Reward Tampering Studies (Lehman et al. 2020; Denison et al. 2024)",
+      "identity": {
+        "surprising_creativity_arxiv": "1803.03453",
+        "sycophancy_subterfuge_arxiv": "2406.10162"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

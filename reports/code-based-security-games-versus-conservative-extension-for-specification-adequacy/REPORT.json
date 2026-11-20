@@ -1,0 +1,118 @@
+{
+  "topics": [
+    "verification",
+    "verification/specification-adequacy",
+    "security",
+    "security/game-based-proofs",
+    "pl",
+    "lean"
+  ],
+  "subjects": [
+    {
+      "name": "EasyCrypt",
+      "identity": {
+        "repository": "EasyCrypt/easycrypt",
+        "revision": "ce19cb6cbab4951e58553c36128e8a19f2f90c6a"
+      }
+    },
+    {
+      "name": "SSProve",
+      "identity": {
+        "repository": "SSProve/ssprove",
+        "revision": "9a37fe0ab79d041f8d835e6cf18e37614b16a791",
+        "doi": "10.1145/3594735"
+      }
+    },
+    {
+      "name": "Foundational Cryptography Framework (FCF)",
+      "identity": {
+        "repository": "adampetcher/fcf",
+        "revision": "2550fa27e491c03655cddc7830a5baeb15520104"
+      }
+    },
+    {
+      "name": "CryptoVerif (Blanchet, IEEE TDSC 2008)",
+      "identity": {
+        "doi": "10.1109/TDSC.2007.1005",
+        "url": "https://gitlab.inria.fr/bblanche/CryptoVerif"
+      }
+    },
+    {
+      "name": "HOL Light",
+      "identity": {
+        "repository": "jrh13/hol-light",
+        "revision": "1a0c0e6b182cd9e271946ba8d78f7942619f4acb"
+      }
+    },
+    {
+      "name": "HOL4",
+      "identity": {
+        "repository": "HOL-Theorem-Prover/HOL",
+        "revision": "0c30bdb71aafd4e6a354f5b0b43fffbff6fa8d47"
+      }
+    },
+    {
+      "name": "Candle (CakeML verified HOL kernel & semantics)",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb",
+        "doi": "10.1007/s10817-015-9357-x"
+      }
+    },
+    {
+      "name": "Isabelle/HOL",
+      "identity": {
+        "repository": "isabelle-prover/mirror-isabelle",
+        "revision": "c45cdab77eec0ac889f9717ca229a5e9064a24b1",
+        "doi": "10.1007/s10817-018-9454-8"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5a82f1a47fbc2323ad6be6b11a7c0522dd4f3e68"
+      }
+    },
+    {
+      "name": "Lean4Lean",
+      "identity": {
+        "repository": "digama0/lean4lean",
+        "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+      }
+    },
+    {
+      "name": "OSS Verify (Theorem & Anthropic binary verification proofs)",
+      "identity": {
+        "repository": "theorem-labs/oss-verify-proofs",
+        "revision": "32c8baf6e92f173b445903857770da103ba307e0",
+        "url": "https://www.anthropic.com/research/formal-verification"
+      }
+    },
+    {
+      "name": "Code-Based Game-Playing Proofs (Bellare & Rogaway, EUROCRYPT 2006; Shoup 2004; Halevi 2005)",
+      "identity": {
+        "doi": "10.1007/11761679_25",
+        "shoup_eprint": "2004/332",
+        "halevi_eprint": "2005/181"
+      }
+    },
+    {
+      "name": "Four Dark Corners of Requirements Engineering & Problem Frames (Zave & Jackson 1997; Jackson 2001)",
+      "identity": {
+        "doi": "10.1145/237432.237434",
+        "standard": "Zave-Jackson-TOSEM-1997"
+      }
+    },
+    {
+      "name": "Real-World Cryptographic & Verified Systems Empirical Studies (Albrecht et al. 2009; Degabriele et al. 2011; Yang et al. 2011; Klein et al. 2014; Fonseca et al. 2017)",
+      "identity": {
+        "ssh_attack_doi": "10.1109/SP.2009.5",
+        "sel4_tocs_doi": "10.1145/2560537",
+        "csmith_pldi_doi": "10.1145/1993498.1993532",
+        "distributed_fv_eurosys_doi": "10.1145/3064176.3064183"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
