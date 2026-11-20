@@ -1,0 +1,3007 @@
+{
+  "lean_audit": {
+    "axiom_audit": {
+      "lines": [
+        "'CoroutineStateTransformRefinement.noDoubleDropB_iff' depends on axioms: [propext]",
+        "'CoroutineStateTransformRefinement.init_sim' does not depend on any axioms",
+        "'CoroutineStateTransformRefinement.poll_step_lockstep_sim' depends on axioms: [propext, Quot.sound]",
+        "'CoroutineStateTransformRefinement.cancel_drop_lockstep_sim' depends on axioms: [propext]",
+        "'CoroutineStateTransformRefinement.execTrace_lockstep_sim' depends on axioms: [propext, Quot.sound]",
+        "'CoroutineStateTransformRefinement.no_double_drop_invariant' depends on axioms: [propext, Quot.sound]",
+        "'CoroutineStateTransformRefinement.moving_suspended_self_ref_frame_faults' depends on axioms: [propext]",
+        "'CoroutineStateTransformRefinement.ce1_noalias_on_self_ref_pin_miscompiles' depends on axioms: [propext]",
+        "'CoroutineStateTransformRefinement.ce2a_missing_poison_double_drops' depends on axioms: [propext]",
+        "'CoroutineStateTransformRefinement.ce2b_missing_poison_repoll_reads_uninit_payload' depends on axioms: [propext]"
+      ],
+      "uses_classical_choice": false,
+      "uses_reduce_bool": false,
+      "uses_sorry_ax": false
+    },
+    "def_and_type_count": 40,
+    "exit_code": 0,
+    "file_name": "CoroutineStateTransformRefinement.lean",
+    "forbidden_source_token_hits": {
+      "._unsafe_rec": 0,
+      "Classical.choice": 0,
+      "Lean.ofReduceBool": 0,
+      "bv_decide": 0,
+      "namespace Trusted": 0,
+      "native_decide": 0,
+      "omega": 0,
+      "partial def": 0,
+      "sorry": 0
+    },
+    "kernel_check_elapsed_s": 14.3186,
+    "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+    "loc": 1399,
+    "sha256": "55530ab801db9ab09ba2acb953200b8295acba42a685eb56a414dbfd6e23508d",
+    "theorem_count": 19,
+    "theorems": [
+      "natBeq_refl",
+      "natBeq_eq_true_iff",
+      "nat_ble_true_iff_le",
+      "noDoubleDropB_iff",
+      "countGuard_append",
+      "bool_dichotomy",
+      "appendActiveDrops_bounds",
+      "init_sim",
+      "poll_step_lockstep_sim",
+      "cancel_drop_lockstep_sim",
+      "stepSrcPoll_phase_matches",
+      "validActions_tail_after_poll",
+      "simRel_selfBorrow",
+      "execTrace_lockstep_sim",
+      "no_double_drop_invariant",
+      "moving_suspended_self_ref_frame_faults",
+      "ce1_noalias_on_self_ref_pin_miscompiles",
+      "ce2a_missing_poison_double_drops",
+      "ce2b_missing_poison_repoll_reads_uninit_payload"
+    ]
+  },
+  "rustc_probe": {
+    "bin_compile_s": 2.4141,
+    "bin_run_s": 0.0635,
+    "bin_size_bytes": 4445432,
+    "llvm_ir": {
+      "o2": {
+        "by_role": {
+          "_RNvCs6fTWCDGP5YP_19coroutine_specimens18inner_guarded_step": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 48,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr dead_on_unwind noalias noundef writable writeonly sret([48 x i8]) align 8 captures(none) dereferenceable(48) initializes((32, 42)) %_0"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 3,
+            "return_type": "void",
+            "switch_count": 0,
+            "symbol": "_RNvCs6fTWCDGP5YP_19coroutine_specimens18inner_guarded_step"
+          },
+          "_RNvCs6fTWCDGP5YP_19coroutine_specimens27make_movable_two_yield_coro": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 48,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr dead_on_unwind noalias noundef writable writeonly sret([48 x i8]) align 8 captures(none) dereferenceable(48) initializes((0, 9)) %_0"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 2,
+            "return_type": "void",
+            "switch_count": 0,
+            "symbol": "_RNvCs6fTWCDGP5YP_19coroutine_specimens27make_movable_two_yield_coro"
+          },
+          "_RNvCs6fTWCDGP5YP_19coroutine_specimens27retain_all_lowering_targets": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 32,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef readnone align 8 captures(none) dereferenceable(32) %cx"
+            },
+            "has_personality": true,
+            "invoke_count": 2,
+            "landingpad_count": 1,
+            "lifetime_end_count": 6,
+            "lifetime_start_count": 6,
+            "param_count": 1,
+            "return_type": "noundef i64",
+            "switch_count": 1,
+            "symbol": "_RNvCs6fTWCDGP5YP_19coroutine_specimens27retain_all_lowering_targets"
+          },
+          "_RNvXCs6fTWCDGP5YP_19coroutine_specimensNtB2_9DropGuardNtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4drop": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 16,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef readonly align 8 captures(none) dereferenceable(16) %self"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 1,
+            "lifetime_start_count": 1,
+            "param_count": 1,
+            "return_type": "void",
+            "switch_count": 0,
+            "symbol": "_RNvXCs6fTWCDGP5YP_19coroutine_specimensNtB2_9DropGuardNtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4drop"
+          },
+          "_RNvXs0_Cs6fTWCDGP5YP_19coroutine_specimensNtB5_7StepFutNtNtNtCs8b4M6GsfcPr_4core6future6future6Future4poll": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 16,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef align 8 captures(none) dereferenceable(16) %0"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 2,
+            "return_type": "{ i64, i64 }",
+            "switch_count": 0,
+            "symbol": "_RNvXs0_Cs6fTWCDGP5YP_19coroutine_specimensNtB5_7StepFutNtNtNtCs8b4M6GsfcPr_4core6future6future6Future4poll"
+          },
+          "drive_async_nested_drop": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": null,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": false,
+              "has_noalias": false,
+              "has_nofree": false,
+              "has_nonnull": true,
+              "has_noundef": true,
+              "raw": "ptr noundef nonnull align 8 %f"
+            },
+            "has_personality": true,
+            "invoke_count": 8,
+            "landingpad_count": 3,
+            "lifetime_end_count": 5,
+            "lifetime_start_count": 4,
+            "param_count": 2,
+            "return_type": "{ i64, i64 }",
+            "switch_count": 2,
+            "symbol": "_RINvCs6fTWCDGP5YP_19coroutine_specimens20drive_generic_futureNCNvB2_28async_nested_drop_and_unwind0EB2_"
+          },
+          "drive_async_non_self_ref": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": null,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": false,
+              "has_noalias": false,
+              "has_nofree": false,
+              "has_nonnull": true,
+              "has_noundef": true,
+              "raw": "ptr noundef nonnull align 8 captures(none) %f"
+            },
+            "has_personality": true,
+            "invoke_count": 4,
+            "landingpad_count": 2,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 2,
+            "return_type": "{ i64, i64 }",
+            "switch_count": 1,
+            "symbol": "_RINvCs6fTWCDGP5YP_19coroutine_specimens20drive_generic_futureNCNvB2_28async_non_self_ref_two_await0EB2_"
+          },
+          "drive_async_self_ref": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": null,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": false,
+              "has_noalias": false,
+              "has_nofree": false,
+              "has_nonnull": true,
+              "has_noundef": true,
+              "raw": "ptr noundef nonnull align 8 %f"
+            },
+            "has_personality": true,
+            "invoke_count": 4,
+            "landingpad_count": 2,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 2,
+            "return_type": "{ i64, i64 }",
+            "switch_count": 1,
+            "symbol": "_RINvCs6fTWCDGP5YP_19coroutine_specimens20drive_generic_futureNCNvB2_24async_self_ref_two_await0EB2_"
+          },
+          "drive_manual_unpin": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 16,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef align 8 captures(none) dereferenceable(16) %f"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 2,
+            "return_type": "{ i64, i64 }",
+            "switch_count": 0,
+            "symbol": "_RNvCs6fTWCDGP5YP_19coroutine_specimens18drive_manual_unpin"
+          },
+          "drive_movable_coro": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 48,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef align 8 captures(none) dereferenceable(48) %g"
+            },
+            "has_personality": true,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 1,
+            "return_type": "{ i64, i64 }",
+            "switch_count": 1,
+            "symbol": "_RINvCs6fTWCDGP5YP_19coroutine_specimens18drive_generic_coroNCNvB2_27make_movable_two_yield_coro0EB2_"
+          },
+          "drop_generic_async_nested": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 136,
+              "has_captures_none": false,
+              "has_dead_on_return": true,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr dead_on_return noalias noundef readonly align 8 captures(address) dereferenceable(136) %f"
+            },
+            "has_personality": true,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 2,
+            "lifetime_start_count": 2,
+            "param_count": 1,
+            "return_type": "void",
+            "switch_count": 1,
+            "symbol": "_RINvCs6fTWCDGP5YP_19coroutine_specimens19drop_generic_futureNCNvB2_28async_nested_drop_and_unwind0EB2_"
+          },
+          "drop_glue_async_nested": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": null,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": false,
+              "has_noalias": false,
+              "has_nofree": false,
+              "has_nonnull": true,
+              "has_noundef": true,
+              "raw": "ptr noundef nonnull align 8 captures(none) %_1"
+            },
+            "has_personality": true,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 1,
+            "return_type": "fastcc void",
+            "switch_count": 1,
+            "symbol": "_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNCNvCs6fTWCDGP5YP_19coroutine_specimens28async_nested_drop_and_unwind0EBF_"
+          },
+          "manual_unpin_fut_poll": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 16,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef align 8 captures(none) dereferenceable(16) %0"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 2,
+            "return_type": "{ i64, i64 }",
+            "switch_count": 1,
+            "symbol": "_RNvXs_Cs6fTWCDGP5YP_19coroutine_specimensNtB4_24ManualUnpinTwoStepFutureNtNtNtCs8b4M6GsfcPr_4core6future6future6Future4poll"
+          }
+        },
+        "compile_elapsed_s": 0.7367,
+        "total_defined_functions": 13
+      },
+      "o2_no_mir_inline": {
+        "by_role": {
+          "_RNvCs6fTWCDGP5YP_19coroutine_specimens18inner_guarded_step": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 48,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr dead_on_unwind noalias noundef writable writeonly sret([48 x i8]) align 8 captures(none) dereferenceable(48) initializes((32, 42)) %_0"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 3,
+            "return_type": "void",
+            "switch_count": 0,
+            "symbol": "_RNvCs6fTWCDGP5YP_19coroutine_specimens18inner_guarded_step"
+          },
+          "_RNvCs6fTWCDGP5YP_19coroutine_specimens27make_movable_two_yield_coro": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 48,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr dead_on_unwind noalias noundef writable writeonly sret([48 x i8]) align 8 captures(none) dereferenceable(48) initializes((0, 9)) %_0"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 2,
+            "return_type": "void",
+            "switch_count": 0,
+            "symbol": "_RNvCs6fTWCDGP5YP_19coroutine_specimens27make_movable_two_yield_coro"
+          },
+          "_RNvCs6fTWCDGP5YP_19coroutine_specimens27retain_all_lowering_targets": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 32,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef readnone align 8 captures(none) dereferenceable(32) %cx"
+            },
+            "has_personality": true,
+            "invoke_count": 2,
+            "landingpad_count": 1,
+            "lifetime_end_count": 6,
+            "lifetime_start_count": 6,
+            "param_count": 1,
+            "return_type": "noundef i64",
+            "switch_count": 1,
+            "symbol": "_RNvCs6fTWCDGP5YP_19coroutine_specimens27retain_all_lowering_targets"
+          },
+          "_RNvXCs6fTWCDGP5YP_19coroutine_specimensNtB2_9DropGuardNtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4drop": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 16,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef readonly align 8 captures(none) dereferenceable(16) %self"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 1,
+            "lifetime_start_count": 1,
+            "param_count": 1,
+            "return_type": "void",
+            "switch_count": 0,
+            "symbol": "_RNvXCs6fTWCDGP5YP_19coroutine_specimensNtB2_9DropGuardNtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4drop"
+          },
+          "_RNvXs0_Cs6fTWCDGP5YP_19coroutine_specimensNtB5_7StepFutNtNtNtCs8b4M6GsfcPr_4core6future6future6Future4poll": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 16,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef align 8 captures(none) dereferenceable(16) %0"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 2,
+            "return_type": "{ i64, i64 }",
+            "switch_count": 0,
+            "symbol": "_RNvXs0_Cs6fTWCDGP5YP_19coroutine_specimensNtB5_7StepFutNtNtNtCs8b4M6GsfcPr_4core6future6future6Future4poll"
+          },
+          "drive_async_nested_drop": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": null,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": false,
+              "has_noalias": false,
+              "has_nofree": false,
+              "has_nonnull": true,
+              "has_noundef": true,
+              "raw": "ptr noundef nonnull align 8 %f"
+            },
+            "has_personality": true,
+            "invoke_count": 8,
+            "landingpad_count": 3,
+            "lifetime_end_count": 5,
+            "lifetime_start_count": 4,
+            "param_count": 2,
+            "return_type": "{ i64, i64 }",
+            "switch_count": 2,
+            "symbol": "_RINvCs6fTWCDGP5YP_19coroutine_specimens20drive_generic_futureNCNvB2_28async_nested_drop_and_unwind0EB2_"
+          },
+          "drive_async_non_self_ref": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": null,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": false,
+              "has_noalias": false,
+              "has_nofree": false,
+              "has_nonnull": true,
+              "has_noundef": true,
+              "raw": "ptr noundef nonnull align 8 captures(none) %f"
+            },
+            "has_personality": true,
+            "invoke_count": 4,
+            "landingpad_count": 2,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 2,
+            "return_type": "{ i64, i64 }",
+            "switch_count": 1,
+            "symbol": "_RINvCs6fTWCDGP5YP_19coroutine_specimens20drive_generic_futureNCNvB2_28async_non_self_ref_two_await0EB2_"
+          },
+          "drive_async_self_ref": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": null,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": false,
+              "has_noalias": false,
+              "has_nofree": false,
+              "has_nonnull": true,
+              "has_noundef": true,
+              "raw": "ptr noundef nonnull align 8 %f"
+            },
+            "has_personality": true,
+            "invoke_count": 4,
+            "landingpad_count": 2,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 2,
+            "return_type": "{ i64, i64 }",
+            "switch_count": 1,
+            "symbol": "_RINvCs6fTWCDGP5YP_19coroutine_specimens20drive_generic_futureNCNvB2_24async_self_ref_two_await0EB2_"
+          },
+          "drive_manual_unpin": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 16,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef align 8 captures(none) dereferenceable(16) %f"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 2,
+            "return_type": "{ i64, i64 }",
+            "switch_count": 0,
+            "symbol": "_RNvCs6fTWCDGP5YP_19coroutine_specimens18drive_manual_unpin"
+          },
+          "drive_movable_coro": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 48,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef align 8 captures(none) dereferenceable(48) %g"
+            },
+            "has_personality": true,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 1,
+            "return_type": "{ i64, i64 }",
+            "switch_count": 1,
+            "symbol": "_RINvCs6fTWCDGP5YP_19coroutine_specimens18drive_generic_coroNCNvB2_27make_movable_two_yield_coro0EB2_"
+          },
+          "drop_generic_async_nested": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 136,
+              "has_captures_none": false,
+              "has_dead_on_return": true,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr dead_on_return noalias noundef align 8 captures(address) dereferenceable(136) %f"
+            },
+            "has_personality": true,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 2,
+            "lifetime_start_count": 2,
+            "param_count": 1,
+            "return_type": "void",
+            "switch_count": 1,
+            "symbol": "_RINvCs6fTWCDGP5YP_19coroutine_specimens19drop_generic_futureNCNvB2_28async_nested_drop_and_unwind0EB2_"
+          },
+          "drop_glue_async_nested": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": null,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": false,
+              "has_noalias": false,
+              "has_nofree": false,
+              "has_nonnull": true,
+              "has_noundef": true,
+              "raw": "ptr noundef nonnull align 8 captures(none) %_1"
+            },
+            "has_personality": true,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 1,
+            "return_type": "fastcc void",
+            "switch_count": 1,
+            "symbol": "_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNCNvCs6fTWCDGP5YP_19coroutine_specimens28async_nested_drop_and_unwind0EBF_"
+          },
+          "manual_unpin_fut_poll": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 16,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef align 8 captures(none) dereferenceable(16) %0"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 2,
+            "return_type": "{ i64, i64 }",
+            "switch_count": 1,
+            "symbol": "_RNvXs_Cs6fTWCDGP5YP_19coroutine_specimensNtB4_24ManualUnpinTwoStepFutureNtNtNtCs8b4M6GsfcPr_4core6future6future6Future4poll"
+          }
+        },
+        "compile_elapsed_s": 0.8647,
+        "total_defined_functions": 13
+      },
+      "o2_no_prepopulate": {
+        "by_role": {
+          "_RINvNtCs8b4M6GsfcPr_4core3mem4dropNtCs6fTWCDGP5YP_19coroutine_specimens9DropGuardEBy_": {
+            "first_param_attrs": {
+              "align_bytes": null,
+              "dereferenceable_bytes": null,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": false,
+              "has_noalias": false,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "i64 noundef %0"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 2,
+            "return_type": "void",
+            "switch_count": 0,
+            "symbol": "_RINvNtCs8b4M6GsfcPr_4core3mem4dropNtCs6fTWCDGP5YP_19coroutine_specimens9DropGuardEBy_"
+          },
+          "_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtB4_4cell10UnsafeCellINtBE_7RefCellNtNtCs8jjFDZd5IFg_5alloc6string6StringEEECs6fTWCDGP5YP_19coroutine_specimens": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 32,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef align 8 dereferenceable(32) %_1"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 1,
+            "return_type": "void",
+            "switch_count": 0,
+            "symbol": "_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtB4_4cell10UnsafeCellINtBE_7RefCellNtNtCs8jjFDZd5IFg_5alloc6string6StringEEECs6fTWCDGP5YP_19coroutine_specimens"
+          },
+          "_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtB4_4cell10UnsafeCellNtNtCs8jjFDZd5IFg_5alloc6string6StringEECs6fTWCDGP5YP_19coroutine_specimens": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 24,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef align 8 dereferenceable(24) %_1"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 1,
+            "return_type": "void",
+            "switch_count": 0,
+            "symbol": "_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtB4_4cell10UnsafeCellNtNtCs8jjFDZd5IFg_5alloc6string6StringEECs6fTWCDGP5YP_19coroutine_specimens"
+          },
+          "_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtB4_4cell7RefCellNtNtCs8jjFDZd5IFg_5alloc6string6StringEECs6fTWCDGP5YP_19coroutine_specimens": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 32,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef align 8 dereferenceable(32) %_1"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 1,
+            "return_type": "void",
+            "switch_count": 0,
+            "symbol": "_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtB4_4cell7RefCellNtNtCs8jjFDZd5IFg_5alloc6string6StringEECs6fTWCDGP5YP_19coroutine_specimens"
+          },
+          "_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtCs8jjFDZd5IFg_5alloc3vec3VechEECs6fTWCDGP5YP_19coroutine_specimens": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 24,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef align 8 dereferenceable(24) %_1"
+            },
+            "has_personality": true,
+            "invoke_count": 4,
+            "landingpad_count": 2,
+            "lifetime_end_count": 1,
+            "lifetime_start_count": 1,
+            "param_count": 1,
+            "return_type": "void",
+            "switch_count": 0,
+            "symbol": "_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtCs8jjFDZd5IFg_5alloc3vec3VechEECs6fTWCDGP5YP_19coroutine_specimens"
+          },
+          "_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtCs8jjFDZd5IFg_5alloc7raw_vec6RawVechEECs6fTWCDGP5YP_19coroutine_specimens": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 16,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef align 8 dereferenceable(16) %_1"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 1,
+            "return_type": "void",
+            "switch_count": 0,
+            "symbol": "_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtCs8jjFDZd5IFg_5alloc7raw_vec6RawVechEECs6fTWCDGP5YP_19coroutine_specimens"
+          },
+          "_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtNtNtNtCsfFlbQN6m3JZ_3std3sys12thread_local6native5eager7StorageINtNtB4_4cell7RefCellNtNtCs8jjFDZd5IFg_5alloc6string6StringEEECs6fTWCDGP5YP_19coroutine_specimens": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 40,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef align 8 dereferenceable(40) %_1"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 1,
+            "return_type": "void",
+            "switch_count": 0,
+            "symbol": "_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtNtNtNtCsfFlbQN6m3JZ_3std3sys12thread_local6native5eager7StorageINtNtB4_4cell7RefCellNtNtCs8jjFDZd5IFg_5alloc6string6StringEEECs6fTWCDGP5YP_19coroutine_specimens"
+          },
+          "_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtCs6fTWCDGP5YP_19coroutine_specimens9DropGuardEBD_": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 16,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef align 8 dereferenceable(16) %_1"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 1,
+            "return_type": "void",
+            "switch_count": 0,
+            "symbol": "_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtCs6fTWCDGP5YP_19coroutine_specimens9DropGuardEBD_"
+          },
+          "_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtNtCs8jjFDZd5IFg_5alloc6string6StringECs6fTWCDGP5YP_19coroutine_specimens": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 24,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef align 8 dereferenceable(24) %_1"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 1,
+            "return_type": "void",
+            "switch_count": 0,
+            "symbol": "_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtNtCs8jjFDZd5IFg_5alloc6string6StringECs6fTWCDGP5YP_19coroutine_specimens"
+          },
+          "_RINvNtCs8b4M6GsfcPr_4core4hint9black_boxRyECs6fTWCDGP5YP_19coroutine_specimens": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 8,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(8) %dummy"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 1,
+            "return_type": "noundef nonnull align 8 ptr",
+            "switch_count": 0,
+            "symbol": "_RINvNtCs8b4M6GsfcPr_4core4hint9black_boxRyECs6fTWCDGP5YP_19coroutine_specimens"
+          },
+          "_RNvCs6fTWCDGP5YP_19coroutine_specimens18inner_guarded_step": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 48,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr dead_on_unwind noalias noundef writable sret([48 x i8]) align 8 captures(none) dereferenceable(48) %_0"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 3,
+            "return_type": "void",
+            "switch_count": 0,
+            "symbol": "_RNvCs6fTWCDGP5YP_19coroutine_specimens18inner_guarded_step"
+          },
+          "_RNvCs6fTWCDGP5YP_19coroutine_specimens27make_movable_two_yield_coro": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 48,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr dead_on_unwind noalias noundef writable sret([48 x i8]) align 8 captures(none) dereferenceable(48) %_0"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 2,
+            "return_type": "void",
+            "switch_count": 0,
+            "symbol": "_RNvCs6fTWCDGP5YP_19coroutine_specimens27make_movable_two_yield_coro"
+          },
+          "_RNvCs6fTWCDGP5YP_19coroutine_specimens27retain_all_lowering_targets": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 32,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef align 8 dereferenceable(32) %cx"
+            },
+            "has_personality": true,
+            "invoke_count": 24,
+            "landingpad_count": 5,
+            "lifetime_end_count": 13,
+            "lifetime_start_count": 16,
+            "param_count": 1,
+            "return_type": "noundef i64",
+            "switch_count": 0,
+            "symbol": "_RNvCs6fTWCDGP5YP_19coroutine_specimens27retain_all_lowering_targets"
+          },
+          "_RNvMs2_NtCs8jjFDZd5IFg_5alloc7raw_vecNtB5_11RawVecInner10deallocateCs6fTWCDGP5YP_19coroutine_specimens": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 16,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef align 8 dereferenceable(16) %self"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 2,
+            "lifetime_start_count": 1,
+            "param_count": 3,
+            "return_type": "void",
+            "switch_count": 0,
+            "symbol": "_RNvMs2_NtCs8jjFDZd5IFg_5alloc7raw_vecNtB5_11RawVecInner10deallocateCs6fTWCDGP5YP_19coroutine_specimens"
+          },
+          "_RNvMs2_NtCs8jjFDZd5IFg_5alloc7raw_vecNtB5_11RawVecInner14current_memoryCs6fTWCDGP5YP_19coroutine_specimens": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 24,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr dead_on_unwind noalias noundef writable sret([24 x i8]) align 8 captures(none) dereferenceable(24) %_0"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 1,
+            "lifetime_start_count": 1,
+            "param_count": 4,
+            "return_type": "void",
+            "switch_count": 0,
+            "symbol": "_RNvMs2_NtCs8jjFDZd5IFg_5alloc7raw_vecNtB5_11RawVecInner14current_memoryCs6fTWCDGP5YP_19coroutine_specimens"
+          },
+          "_RNvMs4_NtCs8b4M6GsfcPr_4core3pinINtB5_3PinQNCNvCs6fTWCDGP5YP_19coroutine_specimens18inner_guarded_step0E13new_uncheckedBJ_": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": null,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": false,
+              "has_noalias": false,
+              "has_nofree": false,
+              "has_nonnull": true,
+              "has_noundef": true,
+              "raw": "ptr noundef nonnull align 8 %pointer"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 1,
+            "return_type": "noundef nonnull align 8 ptr",
+            "switch_count": 0,
+            "symbol": "_RNvMs4_NtCs8b4M6GsfcPr_4core3pinINtB5_3PinQNCNvCs6fTWCDGP5YP_19coroutine_specimens18inner_guarded_step0E13new_uncheckedBJ_"
+          },
+          "_RNvMs4_NtCs8b4M6GsfcPr_4core3pinINtB5_3PinQNtCs6fTWCDGP5YP_19coroutine_specimens7StepFutE13new_uncheckedBH_": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 16,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef align 8 dereferenceable(16) %pointer"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 1,
+            "return_type": "noundef nonnull align 8 ptr",
+            "switch_count": 0,
+            "symbol": "_RNvMs4_NtCs8b4M6GsfcPr_4core3pinINtB5_3PinQNtCs6fTWCDGP5YP_19coroutine_specimens7StepFutE13new_uncheckedBH_"
+          },
+          "_RNvMs7_NtCs8b4M6GsfcPr_4core3numy12wrapping_add": {
+            "first_param_attrs": {
+              "align_bytes": null,
+              "dereferenceable_bytes": null,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": false,
+              "has_noalias": false,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "i64 noundef %self"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 2,
+            "return_type": "noundef i64",
+            "switch_count": 0,
+            "symbol": "_RNvMs7_NtCs8b4M6GsfcPr_4core3numy12wrapping_add"
+          },
+          "_RNvNvCs6fTWCDGP5YP_19coroutine_specimens10noop_waker10drop_waker": {
+            "first_param_attrs": {
+              "align_bytes": null,
+              "dereferenceable_bytes": null,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": false,
+              "has_noalias": false,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noundef %_1"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 1,
+            "return_type": "void",
+            "switch_count": 0,
+            "symbol": "_RNvNvCs6fTWCDGP5YP_19coroutine_specimens10noop_waker10drop_waker"
+          },
+          "_RNvNvCs6fTWCDGP5YP_19coroutine_specimens10noop_waker11wake_by_ref": {
+            "first_param_attrs": {
+              "align_bytes": null,
+              "dereferenceable_bytes": null,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": false,
+              "has_noalias": false,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noundef %_1"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 1,
+            "return_type": "void",
+            "switch_count": 0,
+            "symbol": "_RNvNvCs6fTWCDGP5YP_19coroutine_specimens10noop_waker11wake_by_ref"
+          },
+          "_RNvNvCs6fTWCDGP5YP_19coroutine_specimens10noop_waker4wake": {
+            "first_param_attrs": {
+              "align_bytes": null,
+              "dereferenceable_bytes": null,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": false,
+              "has_noalias": false,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noundef %_1"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 1,
+            "return_type": "void",
+            "switch_count": 0,
+            "symbol": "_RNvNvCs6fTWCDGP5YP_19coroutine_specimens10noop_waker4wake"
+          },
+          "_RNvNvCs6fTWCDGP5YP_19coroutine_specimens10noop_waker5clone": {
+            "first_param_attrs": {
+              "align_bytes": null,
+              "dereferenceable_bytes": null,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": false,
+              "has_noalias": false,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noundef %_1"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 1,
+            "return_type": "{ ptr, ptr }",
+            "switch_count": 0,
+            "symbol": "_RNvNvCs6fTWCDGP5YP_19coroutine_specimens10noop_waker5clone"
+          },
+          "_RNvXCs6fTWCDGP5YP_19coroutine_specimensNtB2_9DropGuardNtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4drop": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 16,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef align 8 dereferenceable(16) %self"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 1,
+            "lifetime_start_count": 1,
+            "param_count": 1,
+            "return_type": "void",
+            "switch_count": 1,
+            "symbol": "_RNvXCs6fTWCDGP5YP_19coroutine_specimensNtB2_9DropGuardNtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4drop"
+          },
+          "_RNvXNtNtCs8b4M6GsfcPr_4core6future11into_futureNCNvCs6fTWCDGP5YP_19coroutine_specimens18inner_guarded_step0NtB2_10IntoFuture11into_futureBN_": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 48,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr dead_on_unwind noalias noundef writable sret([48 x i8]) align 8 captures(none) dereferenceable(48) %_0"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 2,
+            "return_type": "void",
+            "switch_count": 0,
+            "symbol": "_RNvXNtNtCs8b4M6GsfcPr_4core6future11into_futureNCNvCs6fTWCDGP5YP_19coroutine_specimens18inner_guarded_step0NtB2_10IntoFuture11into_futureBN_"
+          },
+          "_RNvXNtNtCs8b4M6GsfcPr_4core6future11into_futureNtCs6fTWCDGP5YP_19coroutine_specimens7StepFutNtB2_10IntoFuture11into_futureBL_": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 16,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr dead_on_unwind noalias noundef writable sret([16 x i8]) align 8 captures(none) dereferenceable(16) %_0"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 2,
+            "return_type": "void",
+            "switch_count": 0,
+            "symbol": "_RNvXNtNtCs8b4M6GsfcPr_4core6future11into_futureNtCs6fTWCDGP5YP_19coroutine_specimens7StepFutNtB2_10IntoFuture11into_futureBL_"
+          },
+          "_RNvXs0_Cs6fTWCDGP5YP_19coroutine_specimensNtB5_7StepFutNtNtNtCs8b4M6GsfcPr_4core6future6future6Future4poll": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 16,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef align 8 dereferenceable(16) %0"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 2,
+            "return_type": "{ i64, i64 }",
+            "switch_count": 0,
+            "symbol": "_RNvXs0_Cs6fTWCDGP5YP_19coroutine_specimensNtB5_7StepFutNtNtNtCs8b4M6GsfcPr_4core6future6future6Future4poll"
+          },
+          "_RNvXs1_NtCs8jjFDZd5IFg_5alloc7raw_vecINtB5_6RawVechENtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4dropCs6fTWCDGP5YP_19coroutine_specimens": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 16,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef align 8 dereferenceable(16) %self"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 1,
+            "return_type": "void",
+            "switch_count": 0,
+            "symbol": "_RNvXs1_NtCs8jjFDZd5IFg_5alloc7raw_vecINtB5_6RawVechENtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4dropCs6fTWCDGP5YP_19coroutine_specimens"
+          },
+          "_RNvXs_NtCs8jjFDZd5IFg_5alloc5allocNtB4_6GlobalNtNtCs8b4M6GsfcPr_4core5alloc9Allocator10deallocate": {
+            "first_param_attrs": {
+              "align_bytes": null,
+              "dereferenceable_bytes": null,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": false,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": true,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef nonnull readonly captures(address, read_provenance) %self"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 4,
+            "return_type": "void",
+            "switch_count": 0,
+            "symbol": "_RNvXs_NtCs8jjFDZd5IFg_5alloc5allocNtB4_6GlobalNtNtCs8b4M6GsfcPr_4core5alloc9Allocator10deallocate"
+          },
+          "_RNvXso_NtCs8jjFDZd5IFg_5alloc3vecINtB5_3VechENtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4dropCs6fTWCDGP5YP_19coroutine_specimens": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 24,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef align 8 dereferenceable(24) %self"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 1,
+            "return_type": "void",
+            "switch_count": 0,
+            "symbol": "_RNvXso_NtCs8jjFDZd5IFg_5alloc3vecINtB5_3VechENtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4dropCs6fTWCDGP5YP_19coroutine_specimens"
+          },
+          "coro_async_nested_drop_poll": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": null,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": false,
+              "has_noalias": false,
+              "has_nofree": false,
+              "has_nonnull": true,
+              "has_noundef": true,
+              "raw": "ptr noundef nonnull align 8 %_1"
+            },
+            "has_personality": true,
+            "invoke_count": 34,
+            "landingpad_count": 12,
+            "lifetime_end_count": 17,
+            "lifetime_start_count": 19,
+            "param_count": 2,
+            "return_type": "{ i64, i64 }",
+            "switch_count": 1,
+            "symbol": "_RNCNvCs6fTWCDGP5YP_19coroutine_specimens28async_nested_drop_and_unwind0B3_"
+          },
+          "coro_async_non_self_ref_poll": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": null,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": false,
+              "has_noalias": false,
+              "has_nofree": false,
+              "has_nonnull": true,
+              "has_noundef": true,
+              "raw": "ptr noundef nonnull align 8 %_1"
+            },
+            "has_personality": true,
+            "invoke_count": 20,
+            "landingpad_count": 8,
+            "lifetime_end_count": 17,
+            "lifetime_start_count": 16,
+            "param_count": 2,
+            "return_type": "{ i64, i64 }",
+            "switch_count": 1,
+            "symbol": "_RNCNvCs6fTWCDGP5YP_19coroutine_specimens28async_non_self_ref_two_await0B3_"
+          },
+          "coro_async_self_ref_poll": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": null,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": false,
+              "has_noalias": false,
+              "has_nofree": false,
+              "has_nonnull": true,
+              "has_noundef": true,
+              "raw": "ptr noundef nonnull align 8 %_1"
+            },
+            "has_personality": true,
+            "invoke_count": 20,
+            "landingpad_count": 8,
+            "lifetime_end_count": 17,
+            "lifetime_start_count": 16,
+            "param_count": 2,
+            "return_type": "{ i64, i64 }",
+            "switch_count": 1,
+            "symbol": "_RNCNvCs6fTWCDGP5YP_19coroutine_specimens24async_self_ref_two_await0B3_"
+          },
+          "coro_inner_guarded_step_poll": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": null,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": false,
+              "has_noalias": false,
+              "has_nofree": false,
+              "has_nonnull": true,
+              "has_noundef": true,
+              "raw": "ptr noundef nonnull align 8 %_1"
+            },
+            "has_personality": true,
+            "invoke_count": 14,
+            "landingpad_count": 6,
+            "lifetime_end_count": 9,
+            "lifetime_start_count": 9,
+            "param_count": 2,
+            "return_type": "{ i64, i64 }",
+            "switch_count": 1,
+            "symbol": "_RNCNvCs6fTWCDGP5YP_19coroutine_specimens18inner_guarded_step0B3_"
+          },
+          "coro_movable_resume": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 48,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef align 8 dereferenceable(48) %_1"
+            },
+            "has_personality": true,
+            "invoke_count": 4,
+            "landingpad_count": 2,
+            "lifetime_end_count": 1,
+            "lifetime_start_count": 2,
+            "param_count": 1,
+            "return_type": "{ i64, i64 }",
+            "switch_count": 1,
+            "symbol": "_RNCNvCs6fTWCDGP5YP_19coroutine_specimens27make_movable_two_yield_coro0B3_"
+          },
+          "drive_async_nested_drop": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": null,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": false,
+              "has_noalias": false,
+              "has_nofree": false,
+              "has_nonnull": true,
+              "has_noundef": true,
+              "raw": "ptr noundef nonnull align 8 %f"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 2,
+            "return_type": "{ i64, i64 }",
+            "switch_count": 0,
+            "symbol": "_RINvCs6fTWCDGP5YP_19coroutine_specimens20drive_generic_futureNCNvB2_28async_nested_drop_and_unwind0EB2_"
+          },
+          "drive_async_non_self_ref": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": null,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": false,
+              "has_noalias": false,
+              "has_nofree": false,
+              "has_nonnull": true,
+              "has_noundef": true,
+              "raw": "ptr noundef nonnull align 8 %f"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 2,
+            "return_type": "{ i64, i64 }",
+            "switch_count": 0,
+            "symbol": "_RINvCs6fTWCDGP5YP_19coroutine_specimens20drive_generic_futureNCNvB2_28async_non_self_ref_two_await0EB2_"
+          },
+          "drive_async_self_ref": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": null,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": false,
+              "has_noalias": false,
+              "has_nofree": false,
+              "has_nonnull": true,
+              "has_noundef": true,
+              "raw": "ptr noundef nonnull align 8 %f"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 2,
+            "return_type": "{ i64, i64 }",
+            "switch_count": 0,
+            "symbol": "_RINvCs6fTWCDGP5YP_19coroutine_specimens20drive_generic_futureNCNvB2_24async_self_ref_two_await0EB2_"
+          },
+          "drive_manual_unpin": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 16,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef align 8 dereferenceable(16) %f"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 2,
+            "return_type": "{ i64, i64 }",
+            "switch_count": 0,
+            "symbol": "_RNvCs6fTWCDGP5YP_19coroutine_specimens18drive_manual_unpin"
+          },
+          "drive_movable_coro": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 48,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef align 8 dereferenceable(48) %g"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 1,
+            "return_type": "{ i64, i64 }",
+            "switch_count": 0,
+            "symbol": "_RINvCs6fTWCDGP5YP_19coroutine_specimens18drive_generic_coroNCNvB2_27make_movable_two_yield_coro0EB2_"
+          },
+          "drop_generic_async_nested": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 136,
+              "has_captures_none": false,
+              "has_dead_on_return": true,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr dead_on_return noalias noundef readonly align 8 captures(address) dereferenceable(136) %f"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 2,
+            "lifetime_start_count": 2,
+            "param_count": 1,
+            "return_type": "void",
+            "switch_count": 0,
+            "symbol": "_RINvCs6fTWCDGP5YP_19coroutine_specimens19drop_generic_futureNCNvB2_28async_nested_drop_and_unwind0EB2_"
+          },
+          "drop_glue_async_nested": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": null,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": false,
+              "has_noalias": false,
+              "has_nofree": false,
+              "has_nonnull": true,
+              "has_noundef": true,
+              "raw": "ptr noundef nonnull align 8 %_1"
+            },
+            "has_personality": true,
+            "invoke_count": 16,
+            "landingpad_count": 6,
+            "lifetime_end_count": 1,
+            "lifetime_start_count": 5,
+            "param_count": 1,
+            "return_type": "void",
+            "switch_count": 1,
+            "symbol": "_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNCNvCs6fTWCDGP5YP_19coroutine_specimens28async_nested_drop_and_unwind0EBF_"
+          },
+          "drop_glue_async_non_self_ref": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": null,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": false,
+              "has_noalias": false,
+              "has_nofree": false,
+              "has_nonnull": true,
+              "has_noundef": true,
+              "raw": "ptr noundef nonnull align 8 %_1"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 1,
+            "return_type": "void",
+            "switch_count": 1,
+            "symbol": "_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNCNvCs6fTWCDGP5YP_19coroutine_specimens28async_non_self_ref_two_await0EBF_"
+          },
+          "drop_glue_async_self_ref": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": null,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": false,
+              "has_noalias": false,
+              "has_nofree": false,
+              "has_nonnull": true,
+              "has_noundef": true,
+              "raw": "ptr noundef nonnull align 8 %_1"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 1,
+            "return_type": "void",
+            "switch_count": 1,
+            "symbol": "_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNCNvCs6fTWCDGP5YP_19coroutine_specimens24async_self_ref_two_await0EBF_"
+          },
+          "drop_glue_inner_guarded_step": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": null,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": false,
+              "has_noalias": false,
+              "has_nofree": false,
+              "has_nonnull": true,
+              "has_noundef": true,
+              "raw": "ptr noundef nonnull align 8 %_1"
+            },
+            "has_personality": true,
+            "invoke_count": 2,
+            "landingpad_count": 1,
+            "lifetime_end_count": 1,
+            "lifetime_start_count": 1,
+            "param_count": 1,
+            "return_type": "void",
+            "switch_count": 1,
+            "symbol": "_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNCNvCs6fTWCDGP5YP_19coroutine_specimens18inner_guarded_step0EBF_"
+          },
+          "drop_glue_movable_coro": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 48,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef align 8 dereferenceable(48) %_1"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 1,
+            "return_type": "void",
+            "switch_count": 1,
+            "symbol": "_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNCNvCs6fTWCDGP5YP_19coroutine_specimens27make_movable_two_yield_coro0EBF_"
+          },
+          "manual_unpin_fut_poll": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 16,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef align 8 dereferenceable(16) %0"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 2,
+            "return_type": "{ i64, i64 }",
+            "switch_count": 1,
+            "symbol": "_RNvXs_Cs6fTWCDGP5YP_19coroutine_specimensNtB4_24ManualUnpinTwoStepFutureNtNtNtCs8b4M6GsfcPr_4core6future6future6Future4poll"
+          }
+        },
+        "compile_elapsed_s": 0.4131,
+        "total_defined_functions": 46
+      },
+      "o3": {
+        "by_role": {
+          "_RNvCs6fTWCDGP5YP_19coroutine_specimens18inner_guarded_step": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 48,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr dead_on_unwind noalias noundef writable writeonly sret([48 x i8]) align 8 captures(none) dereferenceable(48) initializes((32, 42)) %_0"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 3,
+            "return_type": "void",
+            "switch_count": 0,
+            "symbol": "_RNvCs6fTWCDGP5YP_19coroutine_specimens18inner_guarded_step"
+          },
+          "_RNvCs6fTWCDGP5YP_19coroutine_specimens27make_movable_two_yield_coro": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 48,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr dead_on_unwind noalias noundef writable writeonly sret([48 x i8]) align 8 captures(none) dereferenceable(48) initializes((0, 9)) %_0"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 2,
+            "return_type": "void",
+            "switch_count": 0,
+            "symbol": "_RNvCs6fTWCDGP5YP_19coroutine_specimens27make_movable_two_yield_coro"
+          },
+          "_RNvCs6fTWCDGP5YP_19coroutine_specimens27retain_all_lowering_targets": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 32,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef readnone align 8 captures(none) dereferenceable(32) %cx"
+            },
+            "has_personality": true,
+            "invoke_count": 2,
+            "landingpad_count": 1,
+            "lifetime_end_count": 6,
+            "lifetime_start_count": 6,
+            "param_count": 1,
+            "return_type": "noundef i64",
+            "switch_count": 1,
+            "symbol": "_RNvCs6fTWCDGP5YP_19coroutine_specimens27retain_all_lowering_targets"
+          },
+          "_RNvXCs6fTWCDGP5YP_19coroutine_specimensNtB2_9DropGuardNtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4drop": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 16,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef readonly align 8 captures(none) dereferenceable(16) %self"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 1,
+            "lifetime_start_count": 1,
+            "param_count": 1,
+            "return_type": "void",
+            "switch_count": 0,
+            "symbol": "_RNvXCs6fTWCDGP5YP_19coroutine_specimensNtB2_9DropGuardNtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4drop"
+          },
+          "_RNvXs0_Cs6fTWCDGP5YP_19coroutine_specimensNtB5_7StepFutNtNtNtCs8b4M6GsfcPr_4core6future6future6Future4poll": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 16,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef align 8 captures(none) dereferenceable(16) %0"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 2,
+            "return_type": "{ i64, i64 }",
+            "switch_count": 0,
+            "symbol": "_RNvXs0_Cs6fTWCDGP5YP_19coroutine_specimensNtB5_7StepFutNtNtNtCs8b4M6GsfcPr_4core6future6future6Future4poll"
+          },
+          "drive_async_nested_drop": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": null,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": false,
+              "has_noalias": false,
+              "has_nofree": false,
+              "has_nonnull": true,
+              "has_noundef": true,
+              "raw": "ptr noundef nonnull align 8 %f"
+            },
+            "has_personality": true,
+            "invoke_count": 8,
+            "landingpad_count": 3,
+            "lifetime_end_count": 5,
+            "lifetime_start_count": 4,
+            "param_count": 2,
+            "return_type": "{ i64, i64 }",
+            "switch_count": 2,
+            "symbol": "_RINvCs6fTWCDGP5YP_19coroutine_specimens20drive_generic_futureNCNvB2_28async_nested_drop_and_unwind0EB2_"
+          },
+          "drive_async_non_self_ref": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": null,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": false,
+              "has_noalias": false,
+              "has_nofree": false,
+              "has_nonnull": true,
+              "has_noundef": true,
+              "raw": "ptr noundef nonnull align 8 captures(none) %f"
+            },
+            "has_personality": true,
+            "invoke_count": 4,
+            "landingpad_count": 2,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 2,
+            "return_type": "{ i64, i64 }",
+            "switch_count": 1,
+            "symbol": "_RINvCs6fTWCDGP5YP_19coroutine_specimens20drive_generic_futureNCNvB2_28async_non_self_ref_two_await0EB2_"
+          },
+          "drive_async_self_ref": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": null,
+              "has_captures_none": false,
+              "has_dead_on_return": false,
+              "has_dereferenceable": false,
+              "has_noalias": false,
+              "has_nofree": false,
+              "has_nonnull": true,
+              "has_noundef": true,
+              "raw": "ptr noundef nonnull align 8 %f"
+            },
+            "has_personality": true,
+            "invoke_count": 4,
+            "landingpad_count": 2,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 2,
+            "return_type": "{ i64, i64 }",
+            "switch_count": 1,
+            "symbol": "_RINvCs6fTWCDGP5YP_19coroutine_specimens20drive_generic_futureNCNvB2_24async_self_ref_two_await0EB2_"
+          },
+          "drive_manual_unpin": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 16,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef align 8 captures(none) dereferenceable(16) %f"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 2,
+            "return_type": "{ i64, i64 }",
+            "switch_count": 0,
+            "symbol": "_RNvCs6fTWCDGP5YP_19coroutine_specimens18drive_manual_unpin"
+          },
+          "drive_movable_coro": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 48,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef align 8 captures(none) dereferenceable(48) %g"
+            },
+            "has_personality": true,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 1,
+            "return_type": "{ i64, i64 }",
+            "switch_count": 1,
+            "symbol": "_RINvCs6fTWCDGP5YP_19coroutine_specimens18drive_generic_coroNCNvB2_27make_movable_two_yield_coro0EB2_"
+          },
+          "drop_generic_async_nested": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 136,
+              "has_captures_none": false,
+              "has_dead_on_return": true,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr dead_on_return noalias noundef readonly align 8 captures(address) dereferenceable(136) %f"
+            },
+            "has_personality": true,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 2,
+            "lifetime_start_count": 2,
+            "param_count": 1,
+            "return_type": "void",
+            "switch_count": 1,
+            "symbol": "_RINvCs6fTWCDGP5YP_19coroutine_specimens19drop_generic_futureNCNvB2_28async_nested_drop_and_unwind0EB2_"
+          },
+          "drop_glue_async_nested": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": null,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": false,
+              "has_noalias": false,
+              "has_nofree": false,
+              "has_nonnull": true,
+              "has_noundef": true,
+              "raw": "ptr noundef nonnull align 8 captures(none) %_1"
+            },
+            "has_personality": true,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 1,
+            "return_type": "fastcc void",
+            "switch_count": 1,
+            "symbol": "_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNCNvCs6fTWCDGP5YP_19coroutine_specimens28async_nested_drop_and_unwind0EBF_"
+          },
+          "manual_unpin_fut_poll": {
+            "first_param_attrs": {
+              "align_bytes": 8,
+              "dereferenceable_bytes": 16,
+              "has_captures_none": true,
+              "has_dead_on_return": false,
+              "has_dereferenceable": true,
+              "has_noalias": true,
+              "has_nofree": false,
+              "has_nonnull": false,
+              "has_noundef": true,
+              "raw": "ptr noalias noundef align 8 captures(none) dereferenceable(16) %0"
+            },
+            "has_personality": false,
+            "invoke_count": 0,
+            "landingpad_count": 0,
+            "lifetime_end_count": 0,
+            "lifetime_start_count": 0,
+            "param_count": 2,
+            "return_type": "{ i64, i64 }",
+            "switch_count": 1,
+            "symbol": "_RNvXs_Cs6fTWCDGP5YP_19coroutine_specimensNtB4_24ManualUnpinTwoStepFutureNtNtNtCs8b4M6GsfcPr_4core6future6future6Future4poll"
+          }
+        },
+        "compile_elapsed_s": 1.1057,
+        "total_defined_functions": 13
+      }
+    },
+    "mir_dump_compile_s": 0.7612,
+    "mir_summaries": {
+      "async_nested_drop_and_unwind": {
+        "coroutine_before": {
+          "basic_blocks": 82,
+          "cleanup_bbs": 35,
+          "coroutine_drop_terminators": 1,
+          "entry_switch_targets": {
+            "0": "bb8",
+            "1": "bb7",
+            "otherwise": "bb6"
+          },
+          "layout_fields": [],
+          "local_bool_decls": 5,
+          "no_retag_copy_sites": 0,
+          "panic_assert_messages": [],
+          "read_discriminant_sites": 0,
+          "set_discriminant_occurrences": [],
+          "set_discriminant_values": [],
+          "signature": "fn async_nested_drop_and_unwind::{closure#0}(_1: {async fn body of async_nested_drop_and_unwind()}, _2: std::future::ResumeTy) -> u64",
+          "storage_conflict_pairs": 0,
+          "storage_dead_remapped_fields": 0,
+          "storage_dead_total": 124,
+          "storage_live_remapped_fields": 0,
+          "storage_live_total": 56,
+          "variant_fields": {},
+          "yield_terminators": 2
+        },
+        "coroutine_drop": {
+          "basic_blocks": 30,
+          "cleanup_bbs": 9,
+          "coroutine_drop_terminators": 0,
+          "entry_switch_targets": {
+            "0": "bb24",
+            "3": "bb27",
+            "4": "bb28",
+            "otherwise": "bb29"
+          },
+          "layout_fields": [],
+          "local_bool_decls": 5,
+          "no_retag_copy_sites": 0,
+          "panic_assert_messages": [],
+          "read_discriminant_sites": 1,
+          "set_discriminant_occurrences": [],
+          "set_discriminant_values": [],
+          "signature": "fn async_nested_drop_and_unwind::{closure#0}(_1: &mut {async fn body of async_nested_drop_and_unwind()}) -> () {",
+          "storage_conflict_pairs": 0,
+          "storage_dead_remapped_fields": 0,
+          "storage_dead_total": 11,
+          "storage_live_remapped_fields": 0,
+          "storage_live_total": 9,
+          "variant_fields": {},
+          "yield_terminators": 0
+        },
+        "coroutine_resume": {
+          "basic_blocks": 65,
+          "cleanup_bbs": 26,
+          "coroutine_drop_terminators": 0,
+          "entry_switch_targets": {
+            "0": "bb64",
+            "1": "bb63",
+            "2": "bb62",
+            "3": "bb60",
+            "4": "bb61",
+            "otherwise": "bb6"
+          },
+          "layout_fields": [
+            "field _s0: DropGuard",
+            "field _s1: u64",
+            "field _s2: bool",
+            "field _s3: bool",
+            "field _s4: DropGuard",
+            "field _s5: DropGuard",
+            "field _s6: StepFut",
+            "field _s7: {async fn body of inner_guarded_step()}",
+            "field _s8: bool"
+          ],
+          "local_bool_decls": 5,
+          "no_retag_copy_sites": 0,
+          "panic_assert_messages": [
+            "`async fn` resumed after panicking",
+            "`async fn` resumed after completion"
+          ],
+          "read_discriminant_sites": 1,
+          "set_discriminant_occurrences": [
+            3,
+            4,
+            1,
+            2
+          ],
+          "set_discriminant_values": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "signature": "fn async_nested_drop_and_unwind::{closure#0}(_1: Pin<&mut {async fn body of async_nested_drop_and_unwind()}>, _2: &mut Context<'_>) -> Poll<u64> {",
+          "storage_conflict_pairs": 0,
+          "storage_dead_remapped_fields": 0,
+          "storage_dead_total": 89,
+          "storage_live_remapped_fields": 0,
+          "storage_live_total": 57,
+          "variant_fields": {
+            "Panicked(2)": [],
+            "Returned(1)": [],
+            "Suspend0(3)": [
+              "_s0",
+              "_s1",
+              "_s2",
+              "_s3",
+              "_s4",
+              "_s5",
+              "_s6",
+              "_s8"
+            ],
+            "Suspend1(4)": [
+              "_s0",
+              "_s1",
+              "_s4",
+              "_s5",
+              "_s7",
+              "_s8"
+            ],
+            "Unresumed(0)": []
+          },
+          "yield_terminators": 0
+        },
+        "runtime-post-cleanup": {
+          "basic_blocks": 49,
+          "cleanup_bbs": 19,
+          "coroutine_drop_terminators": 0,
+          "entry_switch_targets": {
+            "0": "bb48",
+            "1": "bb47",
+            "2": "bb46",
+            "3": "bb44",
+            "4": "bb45",
+            "otherwise": "bb5"
+          },
+          "layout_fields": [
+            "field _s0: DropGuard",
+            "field _s1: u64",
+            "field _s2: bool",
+            "field _s3: bool",
+            "field _s4: DropGuard",
+            "field _s5: DropGuard",
+            "field _s6: StepFut",
+            "field _s7: {async fn body of inner_guarded_step()}",
+            "field _s8: bool"
+          ],
+          "local_bool_decls": 5,
+          "no_retag_copy_sites": 0,
+          "panic_assert_messages": [
+            "`async fn` resumed after panicking",
+            "`async fn` resumed after completion"
+          ],
+          "read_discriminant_sites": 1,
+          "set_discriminant_occurrences": [
+            3,
+            4,
+            1,
+            2
+          ],
+          "set_discriminant_values": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "signature": "fn async_nested_drop_and_unwind::{closure#0}(_1: Pin<&mut {async fn body of async_nested_drop_and_unwind()}>, _2: &mut Context<'_>) -> Poll<u64> {",
+          "storage_conflict_pairs": 0,
+          "storage_dead_remapped_fields": 0,
+          "storage_dead_total": 89,
+          "storage_live_remapped_fields": 0,
+          "storage_live_total": 57,
+          "variant_fields": {
+            "Panicked(2)": [],
+            "Returned(1)": [],
+            "Suspend0(3)": [
+              "_s0",
+              "_s1",
+              "_s2",
+              "_s3",
+              "_s4",
+              "_s5",
+              "_s6",
+              "_s8"
+            ],
+            "Suspend1(4)": [
+              "_s0",
+              "_s1",
+              "_s4",
+              "_s5",
+              "_s7",
+              "_s8"
+            ],
+            "Unresumed(0)": []
+          },
+          "yield_terminators": 0
+        }
+      },
+      "async_non_self_ref_two_await": {
+        "coroutine_before": {
+          "basic_blocks": 61,
+          "cleanup_bbs": 28,
+          "coroutine_drop_terminators": 1,
+          "entry_switch_targets": {
+            "0": "bb9",
+            "1": "bb8",
+            "otherwise": "bb7"
+          },
+          "layout_fields": [],
+          "local_bool_decls": 6,
+          "no_retag_copy_sites": 0,
+          "panic_assert_messages": [],
+          "read_discriminant_sites": 0,
+          "set_discriminant_occurrences": [],
+          "set_discriminant_values": [],
+          "signature": "fn async_non_self_ref_two_await::{closure#0}(_1: {async fn body of async_non_self_ref_two_await()}, _2: std::future::ResumeTy) -> u64",
+          "storage_conflict_pairs": 0,
+          "storage_dead_remapped_fields": 0,
+          "storage_dead_total": 134,
+          "storage_live_remapped_fields": 0,
+          "storage_live_total": 66,
+          "variant_fields": {},
+          "yield_terminators": 2
+        },
+        "coroutine_drop": {
+          "basic_blocks": 12,
+          "cleanup_bbs": 0,
+          "coroutine_drop_terminators": 0,
+          "entry_switch_targets": {
+            "0": "bb6",
+            "3": "bb9",
+            "4": "bb10",
+            "otherwise": "bb11"
+          },
+          "layout_fields": [],
+          "local_bool_decls": 6,
+          "no_retag_copy_sites": 0,
+          "panic_assert_messages": [],
+          "read_discriminant_sites": 1,
+          "set_discriminant_occurrences": [],
+          "set_discriminant_values": [],
+          "signature": "fn async_non_self_ref_two_await::{closure#0}(_1: &mut {async fn body of async_non_self_ref_two_await()}) -> () {",
+          "storage_conflict_pairs": 0,
+          "storage_dead_remapped_fields": 0,
+          "storage_dead_total": 12,
+          "storage_live_remapped_fields": 0,
+          "storage_live_total": 14,
+          "variant_fields": {},
+          "yield_terminators": 0
+        },
+        "coroutine_resume": {
+          "basic_blocks": 62,
+          "cleanup_bbs": 27,
+          "coroutine_drop_terminators": 0,
+          "entry_switch_targets": {
+            "0": "bb61",
+            "1": "bb60",
+            "2": "bb59",
+            "3": "bb57",
+            "4": "bb58",
+            "otherwise": "bb7"
+          },
+          "layout_fields": [
+            "field _s0: [u64; 4]",
+            "field _s1: StepFut",
+            "field _s2: [u64; 4]",
+            "field _s3: StepFut"
+          ],
+          "local_bool_decls": 6,
+          "no_retag_copy_sites": 0,
+          "panic_assert_messages": [
+            "`async fn` resumed after panicking",
+            "`async fn` resumed after completion"
+          ],
+          "read_discriminant_sites": 1,
+          "set_discriminant_occurrences": [
+            3,
+            4,
+            1,
+            2
+          ],
+          "set_discriminant_values": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "signature": "fn async_non_self_ref_two_await::{closure#0}(_1: Pin<&mut {async fn body of async_non_self_ref_two_await()}>, _2: &mut Context<'_>) -> Poll<u64> {",
+          "storage_conflict_pairs": 0,
+          "storage_dead_remapped_fields": 0,
+          "storage_dead_total": 122,
+          "storage_live_remapped_fields": 0,
+          "storage_live_total": 76,
+          "variant_fields": {
+            "Panicked(2)": [],
+            "Returned(1)": [],
+            "Suspend0(3)": [
+              "_s0",
+              "_s1"
+            ],
+            "Suspend1(4)": [
+              "_s2",
+              "_s3"
+            ],
+            "Unresumed(0)": []
+          },
+          "yield_terminators": 0
+        },
+        "runtime-post-cleanup": {
+          "basic_blocks": 54,
+          "cleanup_bbs": 25,
+          "coroutine_drop_terminators": 0,
+          "entry_switch_targets": {
+            "0": "bb53",
+            "1": "bb52",
+            "2": "bb51",
+            "3": "bb49",
+            "4": "bb50",
+            "otherwise": "bb6"
+          },
+          "layout_fields": [
+            "field _s0: [u64; 4]",
+            "field _s1: StepFut",
+            "field _s2: [u64; 4]",
+            "field _s3: StepFut"
+          ],
+          "local_bool_decls": 6,
+          "no_retag_copy_sites": 0,
+          "panic_assert_messages": [
+            "`async fn` resumed after panicking",
+            "`async fn` resumed after completion"
+          ],
+          "read_discriminant_sites": 1,
+          "set_discriminant_occurrences": [
+            3,
+            4,
+            1,
+            2
+          ],
+          "set_discriminant_values": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "signature": "fn async_non_self_ref_two_await::{closure#0}(_1: Pin<&mut {async fn body of async_non_self_ref_two_await()}>, _2: &mut Context<'_>) -> Poll<u64> {",
+          "storage_conflict_pairs": 0,
+          "storage_dead_remapped_fields": 0,
+          "storage_dead_total": 122,
+          "storage_live_remapped_fields": 0,
+          "storage_live_total": 76,
+          "variant_fields": {
+            "Panicked(2)": [],
+            "Returned(1)": [],
+            "Suspend0(3)": [
+              "_s0",
+              "_s1"
+            ],
+            "Suspend1(4)": [
+              "_s2",
+              "_s3"
+            ],
+            "Unresumed(0)": []
+          },
+          "yield_terminators": 0
+        }
+      },
+      "async_self_ref_two_await": {
+        "coroutine_before": {
+          "basic_blocks": 49,
+          "cleanup_bbs": 22,
+          "coroutine_drop_terminators": 1,
+          "entry_switch_targets": {
+            "0": "bb9",
+            "1": "bb8",
+            "otherwise": "bb7"
+          },
+          "layout_fields": [],
+          "local_bool_decls": 0,
+          "no_retag_copy_sites": 0,
+          "panic_assert_messages": [],
+          "read_discriminant_sites": 0,
+          "set_discriminant_occurrences": [],
+          "set_discriminant_values": [],
+          "signature": "fn async_self_ref_two_await::{closure#0}(_1: {async fn body of async_self_ref_two_await()}, _2: std::future::ResumeTy) -> u64",
+          "storage_conflict_pairs": 0,
+          "storage_dead_remapped_fields": 0,
+          "storage_dead_total": 99,
+          "storage_live_remapped_fields": 0,
+          "storage_live_total": 46,
+          "variant_fields": {},
+          "yield_terminators": 2
+        },
+        "coroutine_drop": {
+          "basic_blocks": 12,
+          "cleanup_bbs": 0,
+          "coroutine_drop_terminators": 0,
+          "entry_switch_targets": {
+            "0": "bb6",
+            "3": "bb9",
+            "4": "bb10",
+            "otherwise": "bb11"
+          },
+          "layout_fields": [],
+          "local_bool_decls": 0,
+          "no_retag_copy_sites": 0,
+          "panic_assert_messages": [],
+          "read_discriminant_sites": 1,
+          "set_discriminant_occurrences": [],
+          "set_discriminant_values": [],
+          "signature": "fn async_self_ref_two_await::{closure#0}(_1: &mut {async fn body of async_self_ref_two_await()}) -> () {",
+          "storage_conflict_pairs": 0,
+          "storage_dead_remapped_fields": 0,
+          "storage_dead_total": 9,
+          "storage_live_remapped_fields": 0,
+          "storage_live_total": 11,
+          "variant_fields": {},
+          "yield_terminators": 0
+        },
+        "coroutine_resume": {
+          "basic_blocks": 50,
+          "cleanup_bbs": 21,
+          "coroutine_drop_terminators": 0,
+          "entry_switch_targets": {
+            "0": "bb49",
+            "1": "bb48",
+            "2": "bb47",
+            "3": "bb45",
+            "4": "bb46",
+            "otherwise": "bb7"
+          },
+          "layout_fields": [
+            "field _s0: u64",
+            "field _s1: &u64",
+            "field _s2: StepFut",
+            "field _s3: u64",
+            "field _s4: StepFut"
+          ],
+          "local_bool_decls": 0,
+          "no_retag_copy_sites": 0,
+          "panic_assert_messages": [
+            "`async fn` resumed after panicking",
+            "`async fn` resumed after completion"
+          ],
+          "read_discriminant_sites": 1,
+          "set_discriminant_occurrences": [
+            3,
+            4,
+            1,
+            2
+          ],
+          "set_discriminant_values": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "signature": "fn async_self_ref_two_await::{closure#0}(_1: Pin<&mut {async fn body of async_self_ref_two_await()}>, _2: &mut Context<'_>) -> Poll<u64> {",
+          "storage_conflict_pairs": 0,
+          "storage_dead_remapped_fields": 0,
+          "storage_dead_total": 84,
+          "storage_live_remapped_fields": 0,
+          "storage_live_total": 52,
+          "variant_fields": {
+            "Panicked(2)": [],
+            "Returned(1)": [],
+            "Suspend0(3)": [
+              "_s0",
+              "_s1",
+              "_s2"
+            ],
+            "Suspend1(4)": [
+              "_s0",
+              "_s1",
+              "_s3",
+              "_s4"
+            ],
+            "Unresumed(0)": []
+          },
+          "yield_terminators": 0
+        },
+        "runtime-post-cleanup": {
+          "basic_blocks": 41,
+          "cleanup_bbs": 18,
+          "coroutine_drop_terminators": 0,
+          "entry_switch_targets": {
+            "0": "bb40",
+            "1": "bb39",
+            "2": "bb38",
+            "3": "bb36",
+            "4": "bb37",
+            "otherwise": "bb6"
+          },
+          "layout_fields": [
+            "field _s0: u64",
+            "field _s1: &u64",
+            "field _s2: StepFut",
+            "field _s3: u64",
+            "field _s4: StepFut"
+          ],
+          "local_bool_decls": 0,
+          "no_retag_copy_sites": 3,
+          "panic_assert_messages": [
+            "`async fn` resumed after panicking",
+            "`async fn` resumed after completion"
+          ],
+          "read_discriminant_sites": 1,
+          "set_discriminant_occurrences": [
+            3,
+            4,
+            1,
+            2
+          ],
+          "set_discriminant_values": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "signature": "fn async_self_ref_two_await::{closure#0}(_1: Pin<&mut {async fn body of async_self_ref_two_await()}>, _2: &mut Context<'_>) -> Poll<u64> {",
+          "storage_conflict_pairs": 0,
+          "storage_dead_remapped_fields": 0,
+          "storage_dead_total": 84,
+          "storage_live_remapped_fields": 0,
+          "storage_live_total": 52,
+          "variant_fields": {
+            "Panicked(2)": [],
+            "Returned(1)": [],
+            "Suspend0(3)": [
+              "_s0",
+              "_s1",
+              "_s2"
+            ],
+            "Suspend1(4)": [
+              "_s0",
+              "_s1",
+              "_s3",
+              "_s4"
+            ],
+            "Unresumed(0)": []
+          },
+          "yield_terminators": 0
+        }
+      },
+      "inner_guarded_step": {
+        "coroutine_before": {
+          "basic_blocks": 29,
+          "cleanup_bbs": 12,
+          "coroutine_drop_terminators": 1,
+          "entry_switch_targets": {
+            "0": "bb8",
+            "1": "bb7",
+            "otherwise": "bb6"
+          },
+          "layout_fields": [],
+          "local_bool_decls": 2,
+          "no_retag_copy_sites": 0,
+          "panic_assert_messages": [],
+          "read_discriminant_sites": 0,
+          "set_discriminant_occurrences": [],
+          "set_discriminant_values": [],
+          "signature": "fn inner_guarded_step::{closure#0}(_1: {async fn body of inner_guarded_step()}, _2: std::future::ResumeTy) -> u64",
+          "storage_conflict_pairs": 0,
+          "storage_dead_remapped_fields": 0,
+          "storage_dead_total": 60,
+          "storage_live_remapped_fields": 0,
+          "storage_live_total": 28,
+          "variant_fields": {},
+          "yield_terminators": 1
+        },
+        "coroutine_drop": {
+          "basic_blocks": 12,
+          "cleanup_bbs": 2,
+          "coroutine_drop_terminators": 0,
+          "entry_switch_targets": {
+            "0": "bb7",
+            "3": "bb10",
+            "otherwise": "bb11"
+          },
+          "layout_fields": [],
+          "local_bool_decls": 2,
+          "no_retag_copy_sites": 0,
+          "panic_assert_messages": [],
+          "read_discriminant_sites": 1,
+          "set_discriminant_occurrences": [],
+          "set_discriminant_values": [],
+          "signature": "fn inner_guarded_step::{closure#0}(_1: &mut {async fn body of inner_guarded_step()}) -> () {",
+          "storage_conflict_pairs": 0,
+          "storage_dead_remapped_fields": 0,
+          "storage_dead_total": 8,
+          "storage_live_remapped_fields": 0,
+          "storage_live_total": 6,
+          "variant_fields": {},
+          "yield_terminators": 0
+        },
+        "coroutine_resume": {
+          "basic_blocks": 30,
+          "cleanup_bbs": 11,
+          "coroutine_drop_terminators": 0,
+          "entry_switch_targets": {
+            "0": "bb29",
+            "1": "bb28",
+            "2": "bb27",
+            "3": "bb26",
+            "otherwise": "bb6"
+          },
+          "layout_fields": [
+            "field _s0: DropGuard",
+            "field _s1: StepFut"
+          ],
+          "local_bool_decls": 2,
+          "no_retag_copy_sites": 0,
+          "panic_assert_messages": [
+            "`async fn` resumed after panicking",
+            "`async fn` resumed after completion"
+          ],
+          "read_discriminant_sites": 1,
+          "set_discriminant_occurrences": [
+            3,
+            1,
+            2
+          ],
+          "set_discriminant_values": [
+            1,
+            2,
+            3
+          ],
+          "signature": "fn inner_guarded_step::{closure#0}(_1: Pin<&mut {async fn body of inner_guarded_step()}>, _2: &mut Context<'_>) -> Poll<u64> {",
+          "storage_conflict_pairs": 0,
+          "storage_dead_remapped_fields": 0,
+          "storage_dead_total": 50,
+          "storage_live_remapped_fields": 0,
+          "storage_live_total": 32,
+          "variant_fields": {
+            "Panicked(2)": [],
+            "Returned(1)": [],
+            "Suspend0(3)": [
+              "_s0",
+              "_s1"
+            ],
+            "Unresumed(0)": []
+          },
+          "yield_terminators": 0
+        },
+        "runtime-post-cleanup": {
+          "basic_blocks": 24,
+          "cleanup_bbs": 9,
+          "coroutine_drop_terminators": 0,
+          "entry_switch_targets": {
+            "0": "bb23",
+            "1": "bb22",
+            "2": "bb21",
+            "3": "bb20",
+            "otherwise": "bb5"
+          },
+          "layout_fields": [
+            "field _s0: DropGuard",
+            "field _s1: StepFut"
+          ],
+          "local_bool_decls": 2,
+          "no_retag_copy_sites": 0,
+          "panic_assert_messages": [
+            "`async fn` resumed after panicking",
+            "`async fn` resumed after completion"
+          ],
+          "read_discriminant_sites": 1,
+          "set_discriminant_occurrences": [
+            3,
+            1,
+            2
+          ],
+          "set_discriminant_values": [
+            1,
+            2,
+            3
+          ],
+          "signature": "fn inner_guarded_step::{closure#0}(_1: Pin<&mut {async fn body of inner_guarded_step()}>, _2: &mut Context<'_>) -> Poll<u64> {",
+          "storage_conflict_pairs": 0,
+          "storage_dead_remapped_fields": 0,
+          "storage_dead_total": 50,
+          "storage_live_remapped_fields": 0,
+          "storage_live_total": 32,
+          "variant_fields": {
+            "Panicked(2)": [],
+            "Returned(1)": [],
+            "Suspend0(3)": [
+              "_s0",
+              "_s1"
+            ],
+            "Unresumed(0)": []
+          },
+          "yield_terminators": 0
+        }
+      },
+      "make_movable_two_yield_coro": {
+        "coroutine_before": {
+          "basic_blocks": 26,
+          "cleanup_bbs": 10,
+          "coroutine_drop_terminators": 1,
+          "entry_switch_targets": {},
+          "layout_fields": [],
+          "local_bool_decls": 6,
+          "no_retag_copy_sites": 0,
+          "panic_assert_messages": [],
+          "read_discriminant_sites": 0,
+          "set_discriminant_occurrences": [],
+          "set_discriminant_values": [],
+          "signature": "fn make_movable_two_yield_coro::{closure#0}(_1: {coroutine@/tmp/r3_b2_pkg_rust_async_coroutines_pin_and_drop_lowering_ws/corpus/reports/rustc-coroutine-state-machine-lowering-pin-self-references-and-unwind-drop-flags/support/coroutine_specimens.rs:128:5: 128:14}, _2: ()) -> u64",
+          "storage_conflict_pairs": 0,
+          "storage_dead_remapped_fields": 0,
+          "storage_dead_total": 57,
+          "storage_live_remapped_fields": 0,
+          "storage_live_total": 31,
+          "variant_fields": {},
+          "yield_terminators": 2
+        },
+        "coroutine_drop": {
+          "basic_blocks": 12,
+          "cleanup_bbs": 0,
+          "coroutine_drop_terminators": 0,
+          "entry_switch_targets": {
+            "0": "bb6",
+            "3": "bb9",
+            "4": "bb10",
+            "otherwise": "bb11"
+          },
+          "layout_fields": [],
+          "local_bool_decls": 6,
+          "no_retag_copy_sites": 0,
+          "panic_assert_messages": [],
+          "read_discriminant_sites": 1,
+          "set_discriminant_occurrences": [],
+          "set_discriminant_values": [],
+          "signature": "fn make_movable_two_yield_coro::{closure#0}(_1: &mut {coroutine@/tmp/r3_b2_pkg_rust_async_coroutines_pin_and_drop_lowering_ws/corpus/reports/rustc-coroutine-state-machine-lowering-pin-self-references-and-unwind-drop-flags/support/coroutine_specimens.rs:128:5: 128:14}) -> () {",
+          "storage_conflict_pairs": 0,
+          "storage_dead_remapped_fields": 0,
+          "storage_dead_total": 7,
+          "storage_live_remapped_fields": 0,
+          "storage_live_total": 8,
+          "variant_fields": {},
+          "yield_terminators": 0
+        },
+        "coroutine_resume": {
+          "basic_blocks": 30,
+          "cleanup_bbs": 11,
+          "coroutine_drop_terminators": 0,
+          "entry_switch_targets": {
+            "0": "bb29",
+            "1": "bb27",
+            "2": "bb26",
+            "3": "bb24",
+            "4": "bb25",
+            "otherwise": "bb28"
+          },
+          "layout_fields": [
+            "field _s0: [u64; 4]",
+            "field _s1: [u64; 4]"
+          ],
+          "local_bool_decls": 6,
+          "no_retag_copy_sites": 0,
+          "panic_assert_messages": [
+            "coroutine resumed after panicking",
+            "coroutine resumed after completion"
+          ],
+          "read_discriminant_sites": 1,
+          "set_discriminant_occurrences": [
+            3,
+            4,
+            1,
+            2
+          ],
+          "set_discriminant_values": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "signature": "fn make_movable_two_yield_coro::{closure#0}(_1: Pin<&mut {coroutine@/tmp/r3_b2_pkg_rust_async_coroutines_pin_and_drop_lowering_ws/corpus/reports/rustc-coroutine-state-machine-lowering-pin-self-references-and-unwind-drop-flags/support/coroutine_specimens.rs:128:5: 128:14}>, _2: ()) -> CoroutineState<u64, u64> {",
+          "storage_conflict_pairs": 0,
+          "storage_dead_remapped_fields": 0,
+          "storage_dead_total": 52,
+          "storage_live_remapped_fields": 0,
+          "storage_live_total": 37,
+          "variant_fields": {
+            "Panicked(2)": [],
+            "Returned(1)": [],
+            "Suspend0(3)": [
+              "_s0"
+            ],
+            "Suspend1(4)": [
+              "_s1"
+            ],
+            "Unresumed(0)": []
+          },
+          "yield_terminators": 0
+        },
+        "runtime-post-cleanup": {
+          "basic_blocks": 22,
+          "cleanup_bbs": 7,
+          "coroutine_drop_terminators": 0,
+          "entry_switch_targets": {
+            "0": "bb21",
+            "1": "bb19",
+            "2": "bb18",
+            "3": "bb16",
+            "4": "bb17",
+            "otherwise": "bb20"
+          },
+          "layout_fields": [
+            "field _s0: [u64; 4]",
+            "field _s1: [u64; 4]"
+          ],
+          "local_bool_decls": 6,
+          "no_retag_copy_sites": 0,
+          "panic_assert_messages": [
+            "coroutine resumed after panicking",
+            "coroutine resumed after completion"
+          ],
+          "read_discriminant_sites": 1,
+          "set_discriminant_occurrences": [
+            3,
+            4,
+            1,
+            2
+          ],
+          "set_discriminant_values": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "signature": "fn make_movable_two_yield_coro::{closure#0}(_1: Pin<&mut {coroutine@/tmp/r3_b2_pkg_rust_async_coroutines_pin_and_drop_lowering_ws/corpus/reports/rustc-coroutine-state-machine-lowering-pin-self-references-and-unwind-drop-flags/support/coroutine_specimens.rs:128:5: 128:14}>, _2: ()) -> CoroutineState<u64, u64> {",
+          "storage_conflict_pairs": 0,
+          "storage_dead_remapped_fields": 0,
+          "storage_dead_total": 52,
+          "storage_live_remapped_fields": 0,
+          "storage_live_total": 37,
+          "variant_fields": {
+            "Panicked(2)": [],
+            "Returned(1)": [],
+            "Suspend0(3)": [
+              "_s0"
+            ],
+            "Suspend1(4)": [
+              "_s1"
+            ],
+            "Unresumed(0)": []
+          },
+          "yield_terminators": 0
+        }
+      }
+    },
+    "nested_drop_glue_post_cleanup_mir": null,
+    "runtime_verification": {
+      "bench_self_ref_ns_per_poll_median": 8.71,
+      "bench_self_ref_ns_per_poll_trials": [
+        6.849,
+        8.018,
+        8.71,
+        11.153,
+        12.632
+      ],
+      "lifecycle_drop_counts": {
+        "after_drop_panicked": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "after_repoll_panicked": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "after_unwind_poison": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "cancel_at_suspend0": [
+          1,
+          1,
+          1,
+          0
+        ],
+        "cancel_at_suspend1_early_drop": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "cancel_at_suspend1_late_drop": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "normal_complete": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "unresumed_drop": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "panic_messages": {
+        "body_unwind": "intentional step future panic",
+        "resumed_after_panic": "`async fn` resumed after panicking",
+        "resumed_after_return": "`async fn` resumed after completion"
+      },
+      "self_ref_result": 79,
+      "sizes_bytes": {
+        "async_nested_drop_and_unwind": [
+          136,
+          8
+        ],
+        "async_non_self_ref_two_await": [
+          64,
+          8
+        ],
+        "async_self_ref_two_await": [
+          56,
+          8
+        ],
+        "manual_unpin_two_step": [
+          16,
+          8
+        ],
+        "movable_two_yield_coro": [
+          48,
+          8
+        ]
+      }
+    },
+    "rustc_probe_total_s": 6.6048
+  },
+  "rustc_toolchain": {
+    "LLVM version": "22.1.6",
+    "banner": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+    "binary": "rustc",
+    "commit-date": "2026-05-31",
+    "commit-hash": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+    "host": "x86_64-unknown-linux-gnu",
+    "release": "1.98.0-nightly"
+  },
+  "schema": "coroutine-lowering-probe/1",
+  "specimens_file": {
+    "loc": 590,
+    "name": "coroutine_specimens.rs",
+    "sha256": "a979851f87aceb3d1176324d7e487e70f6af3bb4c05f6109639862e63ddebe0b"
+  }
+}
