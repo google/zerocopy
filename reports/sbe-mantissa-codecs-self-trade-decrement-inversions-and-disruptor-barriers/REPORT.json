@@ -1,0 +1,86 @@
+{
+  "topics": [
+    "domains/exchange-matching-and-stp-rules",
+    "ffi/sbe-repeating-group-wire-codecs",
+    "runtimes/disruptor-ring-sequence-barriers",
+    "verification/orderbook-conservation-and-liveness"
+  ],
+  "subjects": [
+    {
+      "name": "Real Logic FIX Simple Binary Encoding (SBE) codec generator",
+      "identity": {
+        "repository": "real-logic/simple-binary-encoding",
+        "revision": "6c20e6242e63ac67854707470dcee931eabf68fe"
+      }
+    },
+    {
+      "name": "Exchange-Core adaptive-radix-tree matching and risk engine",
+      "identity": {
+        "repository": "exchange-core/exchange-core",
+        "revision": "75d95cd4bce49929b14ed2180300509c7b3d8801"
+      }
+    },
+    {
+      "name": "LMAX Disruptor inter-thread ring buffer and sequence barriers",
+      "identity": {
+        "repository": "LMAX-Exchange/disruptor",
+        "revision": "c871ca49826a6be7ada6957f6fbafcfecf7b1f87"
+      }
+    },
+    {
+      "name": "OpenHFT Chronicle Queue persisted memory-mapped message journal",
+      "identity": {
+        "repository": "OpenHFT/Chronicle-Queue",
+        "revision": "cb24105e9e320ffc8765cf0376572e5b3c2e46f5"
+      }
+    },
+    {
+      "name": "QuickFIX/J session state machine and sequence-reset engine",
+      "identity": {
+        "repository": "quickfix-j/quickfixj",
+        "revision": "5076f87ea21060446d0afa4ed9c08ce91a4e1e37"
+      }
+    },
+    {
+      "name": "GenMC stateless weak-memory model checker",
+      "identity": {
+        "repository": "MPI-SWS/genmc",
+        "revision": "fab5bba7d9efaf76990227c2f59d62c11c7ea2a3",
+        "version": "v0.20.0"
+      }
+    },
+    {
+      "name": "Loom permutation model checker for concurrent Rust",
+      "identity": {
+        "repository": "tokio-rs/loom",
+        "revision": "9d549cd5357a5485900f4c53951fc1726319659f",
+        "version": "v0.7.3"
+      }
+    },
+    {
+      "name": "FIX Simple Binary Encoding (SBE) Standard",
+      "identity": {
+        "organization": "FIX Trading Community",
+        "standard": "FIX Simple Binary Encoding (SBE) Specification v1.0 / v2.0 RC2"
+      }
+    },
+    {
+      "name": "CME Globex SMP / Implied Functionality, NYSE Pillar STP, and SEC LULD Rules",
+      "identity": {
+        "cme_spec": "CME Globex iLink 3 / MDP 3.0 Self-Match Prevention & Implied Functionality",
+        "nyse_spec": "NYSE Pillar Gateway & Self-Trade Prevention (STPN, STPO, STPC, STPD)",
+        "sec_luld": "SEC NMS Plan to Address Extraordinary Market Volatility (Limit Up-Limit Down)",
+        "sec_postmortem": "SEC Exchange Act Release No. 34-70694 (Knight Capital Americas LLC, 2013-10-16)"
+      }
+    },
+    {
+      "name": "LMAX Disruptor Technical Report",
+      "identity": {
+        "authors": "Martin Thompson, Dave Farley, Michael Barker, Patricia Gee, Andrew Stewart",
+        "title": "Disruptor: High performance alternative to bounded queues for exchanging data between concurrent threads",
+        "year": "2011"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

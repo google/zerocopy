@@ -1,0 +1,78 @@
+{
+  "topics": [
+    "domains/jerk-limited-trajectory-generation",
+    "domains/inverse-kinematics-dls-singularities",
+    "systems/ethercat-distributed-clock-sync",
+    "verification/kinematic-root-and-servo-envelopes"
+  ],
+  "subjects": [
+    {
+      "name": "Ruckig real-time jerk-limited trajectory generator",
+      "identity": {
+        "repository": "pantor/ruckig",
+        "revision": "91085469d2133089c285e2f34541255815390e2c"
+      }
+    },
+    {
+      "name": "MoveIt 2 kinematics and MoveIt Servo",
+      "identity": {
+        "repository": "moveit/moveit2",
+        "revision": "900e0e42a80d4d096e60864316a16640b0fe9372",
+        "version": "2.15.3"
+      }
+    },
+    {
+      "name": "Orocos Kinematics and Dynamics Library (KDL)",
+      "identity": {
+        "repository": "orocos/orocos_kinematics_dynamics",
+        "revision": "b7f433b94b2bc66981ce073e4d14480424b85adc"
+      }
+    },
+    {
+      "name": "Simple Open EtherCAT Master (SOEM)",
+      "identity": {
+        "repository": "OpenEtherCATsociety/SOEM",
+        "revision": "49fc34923b973c17700592319159af22157350c9"
+      }
+    },
+    {
+      "name": "PSY-TaLiRo Signal Temporal Logic falsification toolbox",
+      "identity": {
+        "repository": "cpslab-asu/psy-taliro",
+        "revision": "887f2dc321e83688796307f8b0abcf22b3a57b4c",
+        "version": "v3.2.0"
+      }
+    },
+    {
+      "name": "VerifAI cyber-physical falsification and verification toolkit",
+      "identity": {
+        "repository": "BerkeleyLearnVerify/VerifAI",
+        "revision": "7ef383f191cac0cb2d0174829ac2ec75ab7a0f3c"
+      }
+    },
+    {
+      "name": "Berscheid and Kroeger RSS 2021 Ruckig specification",
+      "identity": {
+        "arxiv": "2105.04830v2",
+        "doi": "10.15607/RSS.2021.XVII.015",
+        "title": "Jerk-limited Real-time Trajectory Generation with Arbitrary Target States"
+      }
+    },
+    {
+      "name": "Wampler and Nakamura-Hanafusa Damped Least-Squares Inverse Kinematics",
+      "identity": {
+        "citation_nakamura": "ASME J. Dyn. Syst. Meas. Control 108(3):163-171 (1986)",
+        "citation_wampler": "IEEE Trans. Syst. Man Cybern. SMC-16(1):93-101 (1986)",
+        "review_chiaverini": "IEEE Trans. Control Syst. Technol. 2(2):123-134 (1994)"
+      }
+    },
+    {
+      "name": "EtherCAT Distributed Clocks and Drive Functional Safety Standards",
+      "identity": {
+        "safety_standard": "IEC 61800-5-2:2016 (STO, SLS, SS1)",
+        "transport_standard": "IEC 61158 Type 12 / ETG.1000.4 & ETG.1020 Distributed Clocks"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
