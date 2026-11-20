@@ -1,0 +1,95 @@
+{
+  "topics": [
+    "domains/genomic-vcf-variant-normalization",
+    "isa/simd-poa-alignment-overflow",
+    "domains/hl7-fhir-ucum-snomed-ontologies",
+    "verification/canonical-clinical-bioinformatics"
+  ],
+  "subjects": [
+    {
+      "name": "BCFtools (samtools/bcftools)",
+      "identity": {
+        "repository": "samtools/bcftools",
+        "revision": "ec0daf29256ce7a0da3b19eeed8a97a42bc1307a"
+      }
+    },
+    {
+      "name": "vt variant toolset (atks/vt)",
+      "identity": {
+        "repository": "atks/vt",
+        "revision": "c6bd1591a23a1d116d52834a627c00bbf7ed4a64"
+      }
+    },
+    {
+      "name": "abPOA adaptive banded Partial Order Alignment (yangao07/abPOA)",
+      "identity": {
+        "repository": "yangao07/abPOA",
+        "revision": "2e095ba7f8de6bc62aaaa9a684cda781b8098ee0"
+      }
+    },
+    {
+      "name": "SPOA SIMD Partial Order Alignment (rvaser/spoa)",
+      "identity": {
+        "repository": "rvaser/spoa",
+        "revision": "c987896674564519a580fba9f51b6f81ddc66e4d"
+      }
+    },
+    {
+      "name": "HAPI FHIR Java implementation (hapifhir/hapi-fhir)",
+      "identity": {
+        "repository": "hapifhir/hapi-fhir",
+        "revision": "2221cbc19eb2b3c7db50e035cd18661ea213014e"
+      }
+    },
+    {
+      "name": "UCUM-java canonical unit converter (FHIR/ucum-java)",
+      "identity": {
+        "repository": "FHIR/ucum-java",
+        "revision": "10089515484cdfd291fa6d2b74b989f60d12fcb3"
+      }
+    },
+    {
+      "name": "Tan, Abecasis & Kang (2015) — Unified representation of genetic variants",
+      "identity": {
+        "doi": "10.1093/bioinformatics/btv112",
+        "journal": "Bioinformatics 31(13):2202-2204"
+      }
+    },
+    {
+      "name": "Gao et al. (2021) — abPOA: an SIMD-based C library for fast partial order alignment using adaptive band",
+      "identity": {
+        "doi": "10.1093/bioinformatics/btaa963",
+        "journal": "Bioinformatics 37(15):2209-2211"
+      }
+    },
+    {
+      "name": "Vaser et al. (2017) — Fast and accurate de novo genome assembly from long uncorrected reads (SPOA/Racon)",
+      "identity": {
+        "doi": "10.1101/gr.214270.116",
+        "journal": "Genome Research 27(5):737-746"
+      }
+    },
+    {
+      "name": "Farrar (2007) — Striped Smith-Waterman speeds database searches six times over other SIMD implementations",
+      "identity": {
+        "doi": "10.1093/bioinformatics/btl582",
+        "journal": "Bioinformatics 23(2):156-161"
+      }
+    },
+    {
+      "name": "Baader, Brandt & Lutz (2005) — Pushing the EL Envelope (IJCAI 2005)",
+      "identity": {
+        "standard": "IJCAI-05 Proceedings pp. 364-369",
+        "url": "https://www.ijcai.org/Proceedings/05/Papers/0372.pdf"
+      }
+    },
+    {
+      "name": "Variant Call Format (VCF) Specification v4.4 & UCUM / HL7 FHIR R5 / SNOMED CT Context Model",
+      "identity": {
+        "standard": "SAM/VCF v4.4; UCUM 2.1; HL7 FHIR R5; SNOMED CT Concept Model",
+        "url": "https://samtools.github.io/hts-specs/VCFv4.4.pdf"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

@@ -1014,6 +1014,87 @@
         "aeneas/lean-backend"
       ]
     },
+    "aes67-asrc-farrow-fifo-slips-fxlms-anc-howling-and-midi2-ump-jr-timestamps": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "libsndfile/libsamplerate",
+            "revision": "0844c208f683527c08ea8a80acc13b398aa9c8bf"
+          },
+          "name": "libsamplerate (libsndfile/libsamplerate)"
+        },
+        {
+          "identity": {
+            "repository": "PipeWire/pipewire",
+            "revision": "0e30a575c2e279bd7a8975e403168f8ac906cc7e"
+          },
+          "name": "PipeWire (PipeWire/pipewire)"
+        },
+        {
+          "identity": {
+            "repository": "LCAV/pyroomacoustics",
+            "revision": "08d16968f8db414affaf84771a650358a7961446"
+          },
+          "name": "pyroomacoustics (LCAV/pyroomacoustics)"
+        },
+        {
+          "identity": {
+            "repository": "ARM-software/CMSIS-DSP",
+            "revision": "9f64ba31591e527c505951943b4b95b0eb2f834b"
+          },
+          "name": "ARM CMSIS-DSP (ARM-software/CMSIS-DSP)"
+        },
+        {
+          "identity": {
+            "repository": "midi2-dev/AM_MIDI2.0Lib",
+            "revision": "7fa1b0c59acf31fbaa55a0e45042663d9a8b7ee4"
+          },
+          "name": "AM_MIDI2.0Lib (midi2-dev/AM_MIDI2.0Lib)"
+        },
+        {
+          "identity": {
+            "repository": "thestk/rtmidi",
+            "revision": "00d855f31fbaeb196da2c0a3507d92f0d6051efb"
+          },
+          "name": "RtMidi (thestk/rtmidi)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/5.763310",
+            "journal": "Proceedings of the IEEE 87(6):943-973"
+          },
+          "name": "Kuo & Morgan (1999) \u2014 Active noise control: a tutorial review"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ISCAS.1988.15483",
+            "proceedings": "IEEE International Symposium on Circuits and Systems (ISCAS 1988), Vol. 3, pp. 2641-2645"
+          },
+          "name": "Farrow (1988) \u2014 A continuously variable digital delay element"
+        },
+        {
+          "identity": {
+            "standard": "AES67-2018; SMPTE ST 2110-30:2017; IEEE 1588-2008",
+            "url": "https://www.aes.org/publications/standards/search.cfm?docID=96"
+          },
+          "name": "AES67-2018 & SMPTE ST 2110-30 / IEEE 1588-2008 (PTPv2) Audio-over-IP Standards"
+        },
+        {
+          "identity": {
+            "standard": "MMA/AMEI M2-104-UM v1.1.2; M2-115-U",
+            "url": "https://midi.org/specs"
+          },
+          "name": "MIDI 2.0 Universal MIDI Packet (UMP) Format and MIDI 2.0 Protocol (M2-104-UM) & Bit Scaling (M2-115-U)"
+        }
+      ],
+      "topics": [
+        "domains/aes67-asrc-media-clock-recovery",
+        "domains/fxlms-active-noise-control-stability",
+        "systems/midi2-ump-jitter-timestamps",
+        "verification/adaptive-filter-passivity-bounds"
+      ]
+    },
     "af-xdp-umem-ring-toctou-multibuf-scatter-and-checksum-offload-traps": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -9263,6 +9344,101 @@
         "security/openat2-resolve-in-root-toctou",
         "vcs/case-folding-symlink-collisions",
         "verification/hermetic-sandbox-isolation"
+      ]
+    },
+    "bcftools-vcf-indel-left-norm-abpoa-int8-wraparound-and-fhir-ucum-snomed": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "samtools/bcftools",
+            "revision": "ec0daf29256ce7a0da3b19eeed8a97a42bc1307a"
+          },
+          "name": "BCFtools (samtools/bcftools)"
+        },
+        {
+          "identity": {
+            "repository": "atks/vt",
+            "revision": "c6bd1591a23a1d116d52834a627c00bbf7ed4a64"
+          },
+          "name": "vt variant toolset (atks/vt)"
+        },
+        {
+          "identity": {
+            "repository": "yangao07/abPOA",
+            "revision": "2e095ba7f8de6bc62aaaa9a684cda781b8098ee0"
+          },
+          "name": "abPOA adaptive banded Partial Order Alignment (yangao07/abPOA)"
+        },
+        {
+          "identity": {
+            "repository": "rvaser/spoa",
+            "revision": "c987896674564519a580fba9f51b6f81ddc66e4d"
+          },
+          "name": "SPOA SIMD Partial Order Alignment (rvaser/spoa)"
+        },
+        {
+          "identity": {
+            "repository": "hapifhir/hapi-fhir",
+            "revision": "2221cbc19eb2b3c7db50e035cd18661ea213014e"
+          },
+          "name": "HAPI FHIR Java implementation (hapifhir/hapi-fhir)"
+        },
+        {
+          "identity": {
+            "repository": "FHIR/ucum-java",
+            "revision": "10089515484cdfd291fa6d2b74b989f60d12fcb3"
+          },
+          "name": "UCUM-java canonical unit converter (FHIR/ucum-java)"
+        },
+        {
+          "identity": {
+            "doi": "10.1093/bioinformatics/btv112",
+            "journal": "Bioinformatics 31(13):2202-2204"
+          },
+          "name": "Tan, Abecasis & Kang (2015) \u2014 Unified representation of genetic variants"
+        },
+        {
+          "identity": {
+            "doi": "10.1093/bioinformatics/btaa963",
+            "journal": "Bioinformatics 37(15):2209-2211"
+          },
+          "name": "Gao et al. (2021) \u2014 abPOA: an SIMD-based C library for fast partial order alignment using adaptive band"
+        },
+        {
+          "identity": {
+            "doi": "10.1101/gr.214270.116",
+            "journal": "Genome Research 27(5):737-746"
+          },
+          "name": "Vaser et al. (2017) \u2014 Fast and accurate de novo genome assembly from long uncorrected reads (SPOA/Racon)"
+        },
+        {
+          "identity": {
+            "doi": "10.1093/bioinformatics/btl582",
+            "journal": "Bioinformatics 23(2):156-161"
+          },
+          "name": "Farrar (2007) \u2014 Striped Smith-Waterman speeds database searches six times over other SIMD implementations"
+        },
+        {
+          "identity": {
+            "standard": "IJCAI-05 Proceedings pp. 364-369",
+            "url": "https://www.ijcai.org/Proceedings/05/Papers/0372.pdf"
+          },
+          "name": "Baader, Brandt & Lutz (2005) \u2014 Pushing the EL Envelope (IJCAI 2005)"
+        },
+        {
+          "identity": {
+            "standard": "SAM/VCF v4.4; UCUM 2.1; HL7 FHIR R5; SNOMED CT Concept Model",
+            "url": "https://samtools.github.io/hts-specs/VCFv4.4.pdf"
+          },
+          "name": "Variant Call Format (VCF) Specification v4.4 & UCUM / HL7 FHIR R5 / SNOMED CT Context Model"
+        }
+      ],
+      "topics": [
+        "domains/genomic-vcf-variant-normalization",
+        "isa/simd-poa-alignment-overflow",
+        "domains/hl7-fhir-ucum-snomed-ontologies",
+        "verification/canonical-clinical-bioinformatics"
       ]
     },
     "beam-procbin-heaps-pony-orca-capabilities-and-mlkit-region-resetting": {

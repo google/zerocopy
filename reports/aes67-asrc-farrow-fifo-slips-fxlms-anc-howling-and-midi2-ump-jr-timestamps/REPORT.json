@@ -1,0 +1,81 @@
+{
+  "topics": [
+    "domains/aes67-asrc-media-clock-recovery",
+    "domains/fxlms-active-noise-control-stability",
+    "systems/midi2-ump-jitter-timestamps",
+    "verification/adaptive-filter-passivity-bounds"
+  ],
+  "subjects": [
+    {
+      "name": "libsamplerate (libsndfile/libsamplerate)",
+      "identity": {
+        "repository": "libsndfile/libsamplerate",
+        "revision": "0844c208f683527c08ea8a80acc13b398aa9c8bf"
+      }
+    },
+    {
+      "name": "PipeWire (PipeWire/pipewire)",
+      "identity": {
+        "repository": "PipeWire/pipewire",
+        "revision": "0e30a575c2e279bd7a8975e403168f8ac906cc7e"
+      }
+    },
+    {
+      "name": "pyroomacoustics (LCAV/pyroomacoustics)",
+      "identity": {
+        "repository": "LCAV/pyroomacoustics",
+        "revision": "08d16968f8db414affaf84771a650358a7961446"
+      }
+    },
+    {
+      "name": "ARM CMSIS-DSP (ARM-software/CMSIS-DSP)",
+      "identity": {
+        "repository": "ARM-software/CMSIS-DSP",
+        "revision": "9f64ba31591e527c505951943b4b95b0eb2f834b"
+      }
+    },
+    {
+      "name": "AM_MIDI2.0Lib (midi2-dev/AM_MIDI2.0Lib)",
+      "identity": {
+        "repository": "midi2-dev/AM_MIDI2.0Lib",
+        "revision": "7fa1b0c59acf31fbaa55a0e45042663d9a8b7ee4"
+      }
+    },
+    {
+      "name": "RtMidi (thestk/rtmidi)",
+      "identity": {
+        "repository": "thestk/rtmidi",
+        "revision": "00d855f31fbaeb196da2c0a3507d92f0d6051efb"
+      }
+    },
+    {
+      "name": "Kuo & Morgan (1999) — Active noise control: a tutorial review",
+      "identity": {
+        "doi": "10.1109/5.763310",
+        "journal": "Proceedings of the IEEE 87(6):943-973"
+      }
+    },
+    {
+      "name": "Farrow (1988) — A continuously variable digital delay element",
+      "identity": {
+        "doi": "10.1109/ISCAS.1988.15483",
+        "proceedings": "IEEE International Symposium on Circuits and Systems (ISCAS 1988), Vol. 3, pp. 2641-2645"
+      }
+    },
+    {
+      "name": "AES67-2018 & SMPTE ST 2110-30 / IEEE 1588-2008 (PTPv2) Audio-over-IP Standards",
+      "identity": {
+        "standard": "AES67-2018; SMPTE ST 2110-30:2017; IEEE 1588-2008",
+        "url": "https://www.aes.org/publications/standards/search.cfm?docID=96"
+      }
+    },
+    {
+      "name": "MIDI 2.0 Universal MIDI Packet (UMP) Format and MIDI 2.0 Protocol (M2-104-UM) & Bit Scaling (M2-115-U)",
+      "identity": {
+        "standard": "MMA/AMEI M2-104-UM v1.1.2; M2-115-U",
+        "url": "https://midi.org/specs"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
