@@ -1,0 +1,768 @@
+[
+  {
+    "id": "partial-fuel-equals-gfp",
+    "lean": [
+      "Toy.FuelWP.wpFuel_of_wpGfp",
+      "Toy.FuelWP.wpGfp_of_forall_wpFuel",
+      "Toy.FuelWP.forall_wpFuel_iff_wpGfp"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "Known result restated in this vocabulary: the greatest fixpoint of an inf-continuous monotone operator is the meet of its finite iterates from the top predicate (the dual Kleene iteration theorem, mechanized for example as Isabelle/HOL inf_continuous_gfp). The package-specific observation is that wpStep, which quantifies universally over successors, satisfies this with no branching assumption.",
+    "plain_claim": "For every transition system, postcondition Q and state s, with no finite-branching, determinism or other assumption: s satisfies the partial-correctness fuel weakest precondition wpFuel n Q at every fuel n if and only if s satisfies the greatest-fixpoint partial-correctness weakest precondition wpGfp Q. Both directions are separate theorems (wpFuel_of_wpGfp, wpGfp_of_forall_wpFuel); the biconditional forall_wpFuel_iff_wpGfp is derived from them.",
+    "hypotheses": [
+      {
+        "name": "h : wpGfp S Q s (in wpFuel_of_wpGfp)",
+        "purpose": "the greatest-fixpoint judgement being converted to fuel form; wpFuel_of_wpGfp has no other hypothesis",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.FuelWP.stuckSys_not_wpGfp_not_wpFuel_one"
+        ]
+      },
+      {
+        "name": "h : ∀ n, wpFuel S n Q s — every fuel (in wpGfp_of_forall_wpFuel)",
+        "purpose": "a single fixed fuel only checks run prefixes shorter than that fuel; dropping h (stuckSys) or weakening it to one fixed fuel (downToStuckSys) both break the conclusion",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.FuelWP.stuckSys_not_wpGfp_not_wpFuel_one",
+          "Toy.FuelWP.fixed_fuel_wpFuel_not_imp_wpGfp"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "chainSys from 3 with postcondition (· = 0) (a halting run) and loopSys with postcondition False (a diverging run) satisfy both sides.",
+    "nonvacuity_witness_lean": [
+      "Toy.FuelWP.nonvacuity_forall_wpFuel_and_wpGfp"
+    ],
+    "logic": "wpFuel_of_wpGfp: proved; #print axioms: no axioms; wpGfp_of_forall_wpFuel: proved; #print axioms: no axioms; forall_wpFuel_iff_wpGfp: proved; #print axioms: no axioms.",
+    "non_claims": [
+      "Does not say that any single fuel n suffices: for every n there is a state satisfying wpFuel n Q but not wpGfp Q (fixed_fuel_wpFuel_not_imp_wpGfp). Only the quantifier over all fuels gives the equivalence.",
+      "Says nothing about total correctness; the analogous statement for wpFuelTotal and the least fixpoint needs finite branching (see total-fuel-complete-under-finite-branching and unbounded-choice-no-uniform-fuel).",
+      "The no-branching-assumption equivalence relies on the recursive occurrence appearing in wpStep only under universal quantification over successors and under implication, so that iterating from True commutes with the meet over all fuels. It does not extend to one-step operators that place the recursive occurrence under an existential over an infinite set — angelic choice of a successor, existential ghost-state updates as in separation-logic weakest preconditions, or existential stuttering: for the angelic operator wpStepAngelic, the state start of fanToStuckSys satisfies the fuel version at every fuel but not the greatest fixpoint (fanToStuckSys_angelic_forall_fuel_not_gfp).",
+      "wpStep has the case structure of the weakest precondition of Iris-style program logics but is not that operator: Iris tests value-hood computably, wraps the recursive occurrence in update modalities (existential over ghost-state updates) and later modalities, and takes a guarded step-indexed fixpoint. Nothing here is claimed about that operator.",
+      "Proving ∀ n, wpFuel S n Q s does not avoid discovering loop invariants: an induction on fuel for a looping state still has to strengthen the induction hypothesis to an invariant, that is, a post-fixed predicate of wpStep S Q.",
+      "Structural recursion on fuel makes wpFuel S n Q s unfoldable at a concrete numeral n; it does not make the statement ∀ n, wpFuel S n Q s decidable, computable or checkable by evaluation.",
+      "Does not imply that a kernel without coinductive types or partial definitions must use fuel: wpGfp is itself defined in core Lean by impredicative quantification over σ → Prop, with no coinductive type, partial definition or library fixpoint. Fuel is forced only if impredicative quantification over predicates is also unavailable, or if unfolding to a concrete depth is wanted.",
+      "Does not relate wpFuel to interaction-tree equivalences, the delay monad, step-indexed logical relations, Lean's partial_fixpoint or Lean's coinductive predicates; the coinductive side here is a greatest fixpoint of predicates on states, written impredicatively.",
+      "Fuel counts steps of this abstract relation plus one final check; a concrete interpreter that counts fuel differently (per loop iteration, per call) is related only through a re-indexing argument that is not given here.",
+      "Relies on two conventions: terminal states halt (edges leaving them are ignored) and stuck states are errors that every weakest precondition rejects. A framework in which stuck states are allowed (blocking assumptions) or terminal states may continue needs different statements.",
+      "Toy model only: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. Transfer to a concrete semantics requires a separate modeling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "S. Owens, M. O. Myreen, R. Kumar, Y. K. Tan. Functional big-step semantics. ESOP 2016, LNCS 9632, pp. 589–615. doi:10.1007/978-3-662-49498-1_23. Clocked (fuel-indexed) interpreters: evaluation diverges iff it times out for every initial clock value; the HOL4 development (HOL repository, examples/pl-semantics/for/forScript.sml, theorem simple_sem_t_div_iff_sem_t_div) proves this equals a coinductive divergence relation for a deterministic language — the closest mechanized analogue of the 'every fuel = coinductive' direction found.",
+      "Isabelle/HOL, HOL/Library/Order_Continuity.thy: lemma inf_continuous_gfp (gfp F = (INF i. (F ^^ i) top) for inf-continuous F) and lemma sup_continuous_lfp (lfp F = (SUP i. (F ^^ i) bot) for sup-continuous F) — mechanized Kleene-style iteration theorems; partial-fuel-equals-gfp is the instance for wpStep, which is inf-continuous with no branching assumption, while the least-fixpoint dual needs continuity that fails under unbounded branching.",
+      "Mathlib, Mathlib/Order/FixedPoints.lean (github.com/leanprover-community/mathlib4, master): OrderHom.lfp / OrderHom.gfp on a complete lattice, defined as the infimum of pre-fixed points / supremum of post-fixed points, with lfp_le, le_gfp, map_lfp, map_gfp and fixedPoints.completeLattice (Knaster–Tarski) — the same impredicative construction as wpLfp / wpGfp, in general form.",
+      "E. W. Dijkstra and C. S. Scholten. Predicate Calculus and Program Semantics. Springer, 1990. doi:10.1007/978-1-4612-3228-5. Chapter 8 'Equations in predicates and their extreme solutions' (pp. 147–170) and chapter 9 'Semantics of repetitions' (pp. 170–189). The characterization of wlp of a repetition as the weakest (greatest) solution and wp as the strongest (least) solution of the loop equation was verified only through a secondary source (I. M. Rewitzky, Modelling the Algebra of Weakest Preconditions, MSc thesis, Department of Mathematics, University of Cape Town, 1991), not in the book itself.",
+      "P. Cousot and R. Cousot. Constructive versions of Tarski's fixed point theorems. Pacific Journal of Mathematics 82(1):43–57, 1979. doi:10.2140/pjm.1979.82.43. Fixpoints of monotone maps via transfinite iteration without continuity, contrasted with the ω-iteration that needs continuity.",
+      "J.-L. Lassez, V. L. Nguyen, E. A. Sonenberg. Fixed point theorems and semantics: a folk tale. Information Processing Letters 14(3):112–116, 1982. doi:10.1016/0020-0190(82)90065-5. On the attribution of the fixed-point theorems used in semantics (bibliographic record verified; content not re-read here).",
+      "R. Jung, R. Krebbers, J.-H. Jourdan, A. Bizjak, L. Birkedal, D. Dreyer. Iris from the ground up: a modular foundation for higher-order concurrent separation logic. Journal of Functional Programming 28, e20, 2018. doi:10.1017/S0956796818000151. Section 6 defines a weakest precondition with the same case structure as wpStep (a value satisfies the postcondition; otherwise the expression is reducible and every successor satisfies the weakest precondition). It is not the same operator: in the Iris Coq library (iris/program_logic/weakestpre.v, definition wp_pre) value-hood is tested by the computable to_val, the recursive occurrence sits under fancy-update modalities (which quantify existentially over ghost-state updates) and later modalities, and wp is the guarded fixpoint of a contractive function.",
+      "X. Leroy and H. Grall. Coinductive big-step operational semantics. Information and Computation 207(2):284–304, 2009. doi:10.1016/j.ic.2007.12.004. Coinductive big-step semantics describing diverging as well as terminating evaluations; the accompanying Coq development proves equivalences between big-step and small-step semantics.",
+      "K. Nakata and T. Uustalu. Trace-based coinductive operational semantics for While. TPHOLs 2009, LNCS 5674, pp. 375–390. doi:10.1007/978-3-642-03359-9_26. Four coinductive trace-based semantics (big-/small-step, relational/functional) for terminating and nonterminating runs, proved equivalent in Coq.",
+      "L. Xia, Y. Zakowski, P. He, C.-K. Hur, G. Malecha, B. C. Pierce, S. Zdancewic. Interaction trees: representing recursive and impure programs in Coq. Proc. ACM Program. Lang. 4(POPL), article 51, 2020. doi:10.1145/3371119. A coinductive variant of free monads representing possibly nonterminating computations, with equivalence up to weak bisimulation; the coinductive alternative to fuel.",
+      "V. Capretta. General recursion via coinductive types. Logical Methods in Computer Science 1(2:1), 2005. doi:10.2168/LMCS-1(2:1)2005. The coinductive delay type of partial elements (return / add a step) — a coinductive alternative to fuel for representing possibly nonterminating computations.",
+      "N. A. Danielsson. Operational semantics using the partiality monad. ICFP 2012, pp. 127–138. doi:10.1145/2364527.2364546. Coinductive partiality monad for total definitional interpreters, in Agda — the coinductive counterpart of a fuel-indexed interpreter.",
+      "Lean 4 reference manual, recursive definitions: partial_fixpoint (introduced in Lean v4.17.0, leanprover/lean4 pull request 6355) defines functions as least fixpoints of monotone equations in chain-complete partial orders (for example Option-valued functions) and generates a partial-correctness theorem; lattice-theoretic least/greatest-fixpoint predicates (introduced in v4.20.0, pull request 8097; named inductive_fixpoint / coinductive_fixpoint from v4.23.0) use Knaster–Tarski on Prop with (co)induction principles. Source: github.com/leanprover/reference-manual, files Manual/RecursiveDefs/PartialFixpoint.lean and Manual/RecursiveDefs/CoinductivePredicates.lean. This package uses neither; its wpGfp and wpLfp are hand-written impredicative fixpoints.",
+      "Lean v4.25.0 release notes (github.com/leanprover/reference-manual, Manual/Releases/v4_25_0.lean): pull request leanprover/lean4#10333 introduces a coinductive keyword that defines coinductive predicates with the same syntax as inductive. The pinned toolchain v4.34.1 therefore offers coinductive predicates; this package does not use them, so that its definitions also make sense for a kernel without them."
+    ],
+    "boundary_evidence_lean": [
+      "Toy.FuelWP.fanToStuckSys_angelic_forall_fuel_not_gfp",
+      "Toy.FuelWP.fixed_fuel_wpFuel_not_imp_wpGfp"
+    ],
+    "design_question": "A verification framework whose trusted kernel forbids coinductive definitions and general recursion defines its weakest precondition by structural recursion on fuel. For which properties is that the same as the coinductive (greatest-fixpoint) definition, how should 'verified at fuel n' be read, and where do the two differ (total correctness, divergence, liveness)? This card: partial correctness is the same under both definitions provided the fuel statement is proved for all fuels, and this needs no branching assumption."
+  },
+  {
+    "id": "fixed-fuel-does-not-give-partial-correctness",
+    "lean": [
+      "Toy.FuelWP.fixed_fuel_wpFuel_not_imp_wpGfp"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "Elementary: an error at distance n is invisible to a check of depth n.",
+    "plain_claim": "For every fuel n, the state n of downToStuckSys (a countdown on Nat whose last state 0 is stuck) satisfies the partial-correctness fuel weakest precondition wpFuel n (fun _ => True), does not satisfy wpFuel m (fun _ => True) at every fuel m (the statement asserts only that not every fuel m works; that m = n + 1 fails is the separate lemma downToStuckSys_not_wpFuel, used in the proof but not part of the statement), and does not satisfy wpGfp (fun _ => True).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "The statement is itself a concrete instance for each n.",
+    "nonvacuity_witness_lean": [
+      "Toy.FuelWP.fixed_fuel_wpFuel_not_imp_wpGfp"
+    ],
+    "logic": "fixed_fuel_wpFuel_not_imp_wpGfp: proved; #print axioms: Quot.sound, propext.",
+    "non_claims": [
+      "The counterexample state depends on n. It does not show a state satisfying wpFuel at every fuel but failing wpGfp; no such state exists (partial-fuel-equals-gfp).",
+      "Uses an infinite-state system (downToStuckSys on Nat) with arbitrarily long error-free prefixes; it does not rule out that a single fixed fuel suffices on finite-state or bounded-depth systems (not formalized here).",
+      "The failure is an error (stuck state), not a postcondition violation; a postcondition violation at distance n behaves the same way but is not separately stated.",
+      "Toy model only: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. Transfer to a concrete semantics requires a separate modeling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "S. Owens, M. O. Myreen, R. Kumar, Y. K. Tan. Functional big-step semantics. ESOP 2016, LNCS 9632, pp. 589–615. doi:10.1007/978-3-662-49498-1_23. Clocked (fuel-indexed) interpreters: evaluation diverges iff it times out for every initial clock value; the HOL4 development (HOL repository, examples/pl-semantics/for/forScript.sml, theorem simple_sem_t_div_iff_sem_t_div) proves this equals a coinductive divergence relation for a deterministic language — the closest mechanized analogue of the 'every fuel = coinductive' direction found.",
+      "A. W. Appel and D. McAllester. An indexed model of recursive types for foundational proof-carrying code. ACM TOPLAS 23(5):657–683, 2001. doi:10.1145/504709.504712. Origin of step-indexed models, in which a natural-number index bounds the number of steps for which a property is observed — the same 'bounded observation' reading as partial-correctness fuel, applied to types rather than weakest preconditions (analogy only)."
+    ],
+    "design_question": "A verification framework whose trusted kernel forbids coinductive definitions and general recursion defines its weakest precondition by structural recursion on fuel. For which properties is that the same as the coinductive (greatest-fixpoint) definition, how should 'verified at fuel n' be read, and where do the two differ (total correctness, divergence, liveness)? This card: a partial-correctness result verified at one fixed fuel is only a bounded-depth check."
+  },
+  {
+    "id": "fuel-monotonicity-opposite-directions",
+    "lean": [
+      "Toy.FuelWP.wpFuel_antitone",
+      "Toy.FuelWP.wpFuelTotal_monotone"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Iterates of a monotone operator from the top predicate decrease and from the bottom predicate increase; restated for the two fuel transformers.",
+    "plain_claim": "For every transition system, postcondition and state, and fuels n ≤ m: the partial-correctness fuel weakest precondition is antitone (wpFuel m Q s implies wpFuel n Q s, so more fuel is a stronger claim), while the total-correctness fuel weakest precondition is monotone (wpFuelTotal n Q s implies wpFuelTotal m Q s, so more fuel is a weaker claim).",
+    "hypotheses": [
+      {
+        "name": "hnm : n ≤ m (in wpFuel_antitone)",
+        "purpose": "fuel order; reversing it fails because fuel 0 is vacuous for partial correctness",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.FuelWP.wpFuel_not_monotone_stuck"
+        ]
+      },
+      {
+        "name": "h : wpFuel S m Q s (in wpFuel_antitone)",
+        "purpose": "the judgement at the larger fuel",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.FuelWP.wpFuel_antitone_drop_h"
+        ]
+      },
+      {
+        "name": "hnm : n ≤ m (in wpFuelTotal_monotone)",
+        "purpose": "fuel order; reversing it fails because fuel 0 is unsatisfiable for total correctness",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.FuelWP.wpFuelTotal_not_antitone_done"
+        ]
+      },
+      {
+        "name": "h : wpFuelTotal S n Q s (in wpFuelTotal_monotone)",
+        "purpose": "the judgement at the smaller fuel",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.FuelWP.wpFuelTotal_monotone_drop_h"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "1 ≤ 3 with wpFuel loopSys 3 False (); 4 ≤ 6 with wpFuelTotal chainSys 4 (· = 0) 3.",
+    "nonvacuity_witness_lean": [
+      "Toy.FuelWP.nonvacuity_wpFuel_antitone",
+      "Toy.FuelWP.nonvacuity_wpFuelTotal"
+    ],
+    "logic": "wpFuel_antitone: proved; #print axioms: no axioms; wpFuelTotal_monotone: proved; #print axioms: no axioms.",
+    "non_claims": [
+      "Failure at a single fuel n means opposite things in the two modes: by antitonicity, ¬ wpFuel S n Q s refutes wpFuel S m Q s for every m ≥ n and refutes wpGfp S Q s (via wpFuel_of_wpGfp); by monotonicity, ¬ wpFuelTotal S n Q s does not refute wpLfp S Q s — a larger fuel may still succeed (wpFuelTotal_neg_chain_short and wpLfp_pos_chain: chainSys from 3 fails at fuel 3 but is totally correct).",
+      "Monotonicity in fuel is not monotonicity in the postcondition; the latter is not stated here.",
+      "Does not say the fuel transformers stabilise at a finite fuel; they need not (fixed-fuel-does-not-give-partial-correctness, unbounded-choice-no-uniform-fuel).",
+      "The statements are about these two transformers with base cases True and False; a fuel semantics with another base case (for example 'out of fuel is an error' in a partial setting) is not covered.",
+      "Toy model only: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. Transfer to a concrete semantics requires a separate modeling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "E. W. Dijkstra. Guarded commands, nondeterminacy and formal derivation of programs. Communications of the ACM 18(8):453–457, 1975. doi:10.1145/360933.360975. Defines only the total-correctness wp(S, R) — the weakest precondition guaranteeing proper termination in a state satisfying R; no liberal (partial-correctness) counterpart is defined there — and defines the loop by H0(R) = R ∧ ¬BB, Hk(R) = wp(IF, Hk-1(R)) ∨ H0(R), wp(DO, R) = (∃k ≥ 0: Hk(R)), with Hk(R) read as termination after at most k selections — an existentially fuel-indexed total weakest precondition. (Content read in the author's EWD418 transcription, whose abstract matches the published one.)",
+      "P. Cousot and R. Cousot. Constructive versions of Tarski's fixed point theorems. Pacific Journal of Mathematics 82(1):43–57, 1979. doi:10.2140/pjm.1979.82.43. Fixpoints of monotone maps via transfinite iteration without continuity, contrasted with the ω-iteration that needs continuity."
+    ],
+    "boundary_evidence_lean": [
+      "Toy.FuelWP.wpFuelTotal_neg_chain_short",
+      "Toy.FuelWP.wpLfp_pos_chain"
+    ],
+    "design_question": "A verification framework whose trusted kernel forbids coinductive definitions and general recursion defines its weakest precondition by structural recursion on fuel. For which properties is that the same as the coinductive (greatest-fixpoint) definition, how should 'verified at fuel n' be read, and where do the two differ (total correctness, divergence, liveness)? This card: 'verified at fuel n' means opposite things in the two modes — a lower bound on the depth checked (partial) versus an upper bound on run length (total)."
+  },
+  {
+    "id": "partial-fuel-n-reading",
+    "lean": [
+      "Toy.FuelWP.wpFuel_iff_forall_reach_lt"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "Restatement of the bounded-observation reading of clocked / step-indexed partial correctness over run prefixes; it is the fuel-n truncation of the adequacy characterization gfp-adequacy.",
+    "plain_claim": "For every transition system, fuel n, postcondition Q and state s: wpFuel n Q s holds if and only if every run prefix from s of fewer than n steps (each step taken from a non-terminal state) ends in a state t with RunEndOk S Q t, that is, t satisfies Q if it is terminal and has a successor if it is not; run prefixes of n or more steps are unconstrained.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "downToStuckSys from 3 satisfies wpFuel at fuel 3 although an error is reachable in 3 steps, and fails it at fuel 4.",
+    "nonvacuity_witness_lean": [
+      "Toy.FuelWP.nonvacuity_wpFuel_iff_forall_reach_lt"
+    ],
+    "logic": "wpFuel_iff_forall_reach_lt: proved; #print axioms: no axioms. RunEndOk is phrased with implications so that the statement is constructive; its disjunctive reading (runEndOk_iff_or; #print axioms: Classical.choice, Quot.sound, propext) is classical.",
+    "non_claims": [
+      "Says nothing about run prefixes of n or more steps: a state verified at fuel n may reach an error or a Q-violation at step n.",
+      "At fuel 0, wpFuel S 0 Q s is identically True and checks nothing — not even whether s itself is stuck or violates Q (wpFuel_pos_zero_stuck); checking the initial state alone needs fuel 1 (one unit of fuel per step plus one final check).",
+      "Does not say anything about termination: diverging states satisfy wpFuel at every fuel.",
+      "Relies on two conventions: terminal states halt (edges leaving them are ignored) and stuck states are errors that every weakest precondition rejects. A framework in which stuck states are allowed (blocking assumptions) or terminal states may continue needs different statements.",
+      "Toy model only: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. Transfer to a concrete semantics requires a separate modeling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "A. W. Appel and D. McAllester. An indexed model of recursive types for foundational proof-carrying code. ACM TOPLAS 23(5):657–683, 2001. doi:10.1145/504709.504712. Origin of step-indexed models, in which a natural-number index bounds the number of steps for which a property is observed — the same 'bounded observation' reading as partial-correctness fuel, applied to types rather than weakest preconditions (analogy only).",
+      "A. J. Ahmed. Semantics of Types for Mutable State. PhD thesis, Princeton University, 2004. Indexed possible-worlds model building on Appel and McAllester's indexed model (analogy only).",
+      "S. Owens, M. O. Myreen, R. Kumar, Y. K. Tan. Functional big-step semantics. ESOP 2016, LNCS 9632, pp. 589–615. doi:10.1007/978-3-662-49498-1_23. Clocked (fuel-indexed) interpreters: evaluation diverges iff it times out for every initial clock value; the HOL4 development (HOL repository, examples/pl-semantics/for/forScript.sml, theorem simple_sem_t_div_iff_sem_t_div) proves this equals a coinductive divergence relation for a deterministic language — the closest mechanized analogue of the 'every fuel = coinductive' direction found.",
+      "N. Amin and T. Rompf. Type soundness proofs with definitional interpreters. POPL 2017, pp. 666–679. doi:10.1145/3009837.3009866. Type soundness stated over definitional interpreters (bibliographic record verified; listed as a reference point for interpreter-based semantics, content not re-read here).",
+      "Iris Coq library, iris/program_logic/adequacy.v (as rendered in the Iris coqdoc): the record adequate s e1 σ1 φ says that every value reached by a finite execution satisfies φ and, for s = NotStuck, that no reachable thread is stuck; wp_adequacy_gen derives adequate from a weakest-precondition proof — the analogue, for a guarded step-indexed weakest precondition, of the finite-run-prefix adequacy here."
+    ],
+    "boundary_evidence_lean": [
+      "Toy.FuelWP.wpFuel_pos_zero_stuck"
+    ],
+    "design_question": "A verification framework whose trusted kernel forbids coinductive definitions and general recursion defines its weakest precondition by structural recursion on fuel. For which properties is that the same as the coinductive (greatest-fixpoint) definition, how should 'verified at fuel n' be read, and where do the two differ (total correctness, divergence, liveness)? This card: the exact meaning of a partial-correctness theorem proved at one fuel."
+  },
+  {
+    "id": "total-fuel-n-reading",
+    "lean": [
+      "Toy.FuelWP.wpFuelTotal_iff_wpFuel_and_no_reach"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "Restatement of bounded total correctness (Dijkstra's Hk, up to an index shift) over run prefixes.",
+    "plain_claim": "For every transition system, fuel n, postcondition Q and state s: wpFuelTotal n Q s holds if and only if wpFuel n Q s holds and no run prefix from s has exactly n steps. In particular no state satisfies wpFuelTotal 0 Q. Read classically (or when terminal is decidable), the right-hand side says that every run from s halts after fewer than n steps, without error, in a state satisfying Q.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "wpFuelTotal chainSys 4 (· = 0) 3 holds.",
+    "nonvacuity_witness_lean": [
+      "Toy.FuelWP.nonvacuity_wpFuelTotal"
+    ],
+    "logic": "wpFuelTotal_iff_wpFuel_and_no_reach: proved; #print axioms: propext.",
+    "non_claims": [
+      "Failure of wpFuelTotal S n Q s does not mean that s diverges, gets stuck or violates Q; it may only mean that the fuel n is too small. At n = 0 it fails for every state, including a terminal state satisfying Q (wpFuelTotal_neg_zero_done): a terminal state needs fuel 1.",
+      "Because wpStep is written with implications rather than a disjunction on S.terminal, a total-correctness judgement establishes, without classical logic or a decidable terminal predicate, only ¬¬ S.terminal at the end of a bounded run, not S.terminal itself (wpFuelTotal_propSys_one_iff_not_not: in a one-state system without steps whose state is terminal exactly when P holds, wpFuelTotal at fuel 1 is equivalent to ¬¬ P). The operational reading 'halts in a terminal state satisfying Q' is classical.",
+      "The bound is on steps of this abstract relation; it is not a bound on any concrete cost measure.",
+      "Does not give a way to compute the least sufficient fuel.",
+      "Relies on two conventions: terminal states halt (edges leaving them are ignored) and stuck states are errors that every weakest precondition rejects. A framework in which stuck states are allowed (blocking assumptions) or terminal states may continue needs different statements.",
+      "Toy model only: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. Transfer to a concrete semantics requires a separate modeling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "E. W. Dijkstra. Guarded commands, nondeterminacy and formal derivation of programs. Communications of the ACM 18(8):453–457, 1975. doi:10.1145/360933.360975. Defines only the total-correctness wp(S, R) — the weakest precondition guaranteeing proper termination in a state satisfying R; no liberal (partial-correctness) counterpart is defined there — and defines the loop by H0(R) = R ∧ ¬BB, Hk(R) = wp(IF, Hk-1(R)) ∨ H0(R), wp(DO, R) = (∃k ≥ 0: Hk(R)), with Hk(R) read as termination after at most k selections — an existentially fuel-indexed total weakest precondition. (Content read in the author's EWD418 transcription, whose abstract matches the published one.) Index shift: H0 already covers a loop that terminates after zero selections, whereas wpFuelTotal 0 Q is False and a terminal state needs fuel 1; under the analogy one selection = one step, Hk corresponds to fuel k + 1.",
+      "S. Owens, M. O. Myreen, R. Kumar, Y. K. Tan. Functional big-step semantics. ESOP 2016, LNCS 9632, pp. 589–615. doi:10.1007/978-3-662-49498-1_23. Clocked (fuel-indexed) interpreters: evaluation diverges iff it times out for every initial clock value; the HOL4 development (HOL repository, examples/pl-semantics/for/forScript.sml, theorem simple_sem_t_div_iff_sem_t_div) proves this equals a coinductive divergence relation for a deterministic language — the closest mechanized analogue of the 'every fuel = coinductive' direction found."
+    ],
+    "boundary_evidence_lean": [
+      "Toy.FuelWP.wpFuelTotal_propSys_one_iff_not_not",
+      "Toy.FuelWP.wpFuelTotal_neg_zero_done"
+    ],
+    "design_question": "A verification framework whose trusted kernel forbids coinductive definitions and general recursion defines its weakest precondition by structural recursion on fuel. For which properties is that the same as the coinductive (greatest-fixpoint) definition, how should 'verified at fuel n' be read, and where do the two differ (total correctness, divergence, liveness)? This card: a total-correctness theorem at fuel n is a uniform bound on run length plus partial correctness at fuel n."
+  },
+  {
+    "id": "total-fuel-sound-for-lfp",
+    "lean": [
+      "Toy.FuelWP.wpLfp_of_exists_wpFuelTotal",
+      "Toy.FuelWP.wpGfp_of_wpFuelTotal"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Finite iterates from the bottom predicate lie below the least fixpoint, and the least fixpoint lies below the greatest; restated for the fuel form.",
+    "plain_claim": "For every transition system (no branching assumption), postcondition Q and state s: if wpFuelTotal n Q s for some fuel n, then s satisfies the least-fixpoint total-correctness weakest precondition wpLfp Q (wpLfp_of_exists_wpFuelTotal), and therefore also the greatest-fixpoint partial-correctness weakest precondition wpGfp Q (wpGfp_of_wpFuelTotal, derived from the first using that wpLfp Q is a post-fixed point of wpStep Q).",
+    "hypotheses": [
+      {
+        "name": "h : ∃ n, wpFuelTotal S n Q s (in wpLfp_of_exists_wpFuelTotal)",
+        "purpose": "a fuel bound; the theorem has no other hypothesis",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.FuelWP.stuckSys_no_total_no_partial"
+        ]
+      },
+      {
+        "name": "h : wpFuelTotal S n Q s (in wpGfp_of_wpFuelTotal)",
+        "purpose": "the total-correctness judgement at fuel n; the theorem has no other hypothesis",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.FuelWP.stuckSys_no_total_no_partial"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "wpFuelTotal chainSys 4 (· = 0) 3 holds.",
+    "nonvacuity_witness_lean": [
+      "Toy.FuelWP.nonvacuity_wpFuelTotal"
+    ],
+    "logic": "wpLfp_of_exists_wpFuelTotal: proved; #print axioms: no axioms; wpGfp_of_wpFuelTotal: proved; #print axioms: no axioms.",
+    "non_claims": [
+      "The converse of the first statement needs finite branching (total-fuel-complete-under-finite-branching) and fails without it (unbounded-choice-no-uniform-fuel).",
+      "The converse of the second statement fails outright: wpGfp does not imply wpFuelTotal at any fuel (loopSys, loop_finitelyBranching_no_total_fuel).",
+      "Relies on wpFuelTotal, wpLfp and wpGfp sharing the same one-step operator wpStep (demonic choice, terminal states halt, stuck states are errors). In a framework whose total and partial modes treat stuck states differently (for example stuck states blocking, or miraculous, in the partial mode only), total correctness need not imply partial correctness in this form.",
+      "Toy model only: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. Transfer to a concrete semantics requires a separate modeling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "E. W. Dijkstra. Guarded commands, nondeterminacy and formal derivation of programs. Communications of the ACM 18(8):453–457, 1975. doi:10.1145/360933.360975. Defines only the total-correctness wp(S, R) — the weakest precondition guaranteeing proper termination in a state satisfying R; no liberal (partial-correctness) counterpart is defined there — and defines the loop by H0(R) = R ∧ ¬BB, Hk(R) = wp(IF, Hk-1(R)) ∨ H0(R), wp(DO, R) = (∃k ≥ 0: Hk(R)), with Hk(R) read as termination after at most k selections — an existentially fuel-indexed total weakest precondition. (Content read in the author's EWD418 transcription, whose abstract matches the published one.)",
+      "P. Cousot and R. Cousot. Constructive versions of Tarski's fixed point theorems. Pacific Journal of Mathematics 82(1):43–57, 1979. doi:10.2140/pjm.1979.82.43. Fixpoints of monotone maps via transfinite iteration without continuity, contrasted with the ω-iteration that needs continuity.",
+      "G. Nelson. A generalization of Dijkstra's calculus. ACM TOPLAS 11(4):517–561, 1989. doi:10.1145/69558.69559. Generalizes the wp calculus by dropping the law of the excluded miracle, treats recursion by fixpoints, and relates the full wp/wlp semantics to a powerdomain semantics. Contrast: here wpLfp obeys the law of the excluded miracle (wpLfp_excluded_miracle) and every weakest precondition rejects stuck states, so a state without outcomes is an error, not a miracle.",
+      "Iris Coq library, iris/program_logic/total_weakestpre.v and total_adequacy.v (as rendered in the Iris coqdoc): the total weakest precondition twp is defined as a least fixpoint (bi_least_fixpoint of twp_pre'), and twp_total derives strong normalization sn erased_step from a total-weakest-precondition proof — a mechanized least-fixpoint total weakest precondition in a separation logic."
+    ],
+    "boundary_evidence_lean": [
+      "Toy.FuelWP.loop_finitelyBranching_no_total_fuel"
+    ],
+    "design_question": "A verification framework whose trusted kernel forbids coinductive definitions and general recursion defines its weakest precondition by structural recursion on fuel. For which properties is that the same as the coinductive (greatest-fixpoint) definition, how should 'verified at fuel n' be read, and where do the two differ (total correctness, divergence, liveness)? This card: in total mode a fuel-bounded proof is always sound, for total and hence for partial correctness."
+  },
+  {
+    "id": "total-fuel-complete-under-finite-branching",
+    "lean": [
+      "Toy.FuelWP.exists_wpFuelTotal_of_wpLfp_of_finitelyBranchingFrom",
+      "Toy.FuelWP.exists_wpFuelTotal_iff_wpLfp_of_finitelyBranching",
+      "Toy.FuelWP.exists_wpFuelTotal_iff_wpLfp_of_deterministic",
+      "Toy.FuelWP.exists_wpFuelTotal_iff_wpLfp_ofStepFn",
+      "Toy.FuelWP.exists_wpFuelTotal_of_wpGfp_of_not_hasInfiniteRun_of_finitelyBranchingFrom"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Known as continuity of wp under bounded nondeterminism (and its failure under unbounded nondeterminism; Dijkstra 1976, Apt and Plotkin 1986), with Kőnig's lemma behind the König form; restated here with a local finite-branching hypothesis, three corollaries for global finite branching, determinism and interpreter step functions, and the König form.",
+    "plain_claim": "If every non-terminal state reachable from s has its successors contained in a finite list (FinitelyBranchingFrom S s), then wpLfp Q s implies wpFuelTotal n Q s for some fuel n, which depends on s (exists_wpFuelTotal_of_wpLfp_of_finitelyBranchingFrom). Corollaries: (∃ n, wpFuelTotal n Q s) ↔ wpLfp Q s at every state of a system in which every non-terminal state is finitely branching (FinitelyBranching), in particular of a system in which every non-terminal state has at most one successor (Deterministic), in particular of the system ofStepFn next halted induced by any partial step function next : σ → Option σ; and the König form: if FinitelyBranchingFrom S s, wpGfp Q s and no run from s is infinite, then wpFuelTotal n Q s for some n (derived from the first statement and total-equals-partial-plus-termination).",
+    "hypotheses": [
+      {
+        "name": "hfb : FinitelyBranchingFrom S s (in exists_wpFuelTotal_of_wpLfp_of_finitelyBranchingFrom)",
+        "purpose": "lets the fuel bound be a maximum over finitely many successors at each reachable non-terminal state",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.FuelWP.countdown_wpLfp_without_uniform_fuel"
+        ]
+      },
+      {
+        "name": "h : wpLfp S Q s (in exists_wpFuelTotal_of_wpLfp_of_finitelyBranchingFrom)",
+        "purpose": "the total-correctness judgement",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.FuelWP.loop_finitelyBranching_no_total_fuel"
+        ]
+      },
+      {
+        "name": "hfb : FinitelyBranching S (in exists_wpFuelTotal_iff_wpLfp_of_finitelyBranching)",
+        "purpose": "global finite branching at non-terminal states; strictly stronger than FinitelyBranchingFrom S s (finitelyBranchingFrom_pos_countdown_count holds in countdownSys, which is not FinitelyBranching)",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.FuelWP.countdown_exists_wpFuelTotal_iff_wpLfp_fails"
+        ]
+      },
+      {
+        "name": "hdet : Deterministic S (in exists_wpFuelTotal_iff_wpLfp_of_deterministic)",
+        "purpose": "at most one successor at every non-terminal state; strictly stronger than FinitelyBranching (spinOrExitSys_finitelyBranching_not_deterministic), so this corollary is a convenience form of the previous one",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.FuelWP.countdown_exists_wpFuelTotal_iff_wpLfp_fails"
+        ]
+      },
+      {
+        "name": "hfb : FinitelyBranchingFrom S s (in the König form exists_wpFuelTotal_of_wpGfp_of_not_hasInfiniteRun_of_finitelyBranchingFrom)",
+        "purpose": "Kőnig's lemma needs finite branching",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.FuelWP.countdown_wpLfp_without_uniform_fuel"
+        ]
+      },
+      {
+        "name": "hsafe : wpGfp S Q s (in the König form)",
+        "purpose": "no error and Q at termination",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.FuelWP.stuck_finitelyBranching_no_infinite_run_no_total_fuel"
+        ]
+      },
+      {
+        "name": "hfin : ¬ HasInfiniteRun S s (in the König form)",
+        "purpose": "termination of every run",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.FuelWP.loop_finitelyBranching_no_total_fuel"
+        ]
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "chainSys from 3 (deterministic, finitely branching, totally correct for (· = 0), no infinite run); the state count 3 of countdownSys, finitely branching locally inside a system that is not globally finitely branching; the predecessor interpreter ofStepFn predStep (· = 0) from 3.",
+    "nonvacuity_witness_lean": [
+      "Toy.FuelWP.nonvacuity_exists_wpFuelTotal_of_wpLfp_of_finitelyBranchingFrom",
+      "Toy.FuelWP.nonvacuity_exists_wpFuelTotal_iff_wpLfp_corollaries",
+      "Toy.FuelWP.nonvacuity_exists_wpFuelTotal_iff_wpLfp_ofStepFn",
+      "Toy.FuelWP.nonvacuity_koenig_form"
+    ],
+    "logic": "exists_wpFuelTotal_of_wpLfp_of_finitelyBranchingFrom: proved; #print axioms: Classical.choice, Quot.sound, propext; exists_wpFuelTotal_iff_wpLfp_of_finitelyBranching: proved; #print axioms: Classical.choice, Quot.sound, propext; exists_wpFuelTotal_iff_wpLfp_of_deterministic: proved; #print axioms: Classical.choice, Quot.sound, propext; exists_wpFuelTotal_iff_wpLfp_ofStepFn: proved; #print axioms: Classical.choice, Quot.sound, propext; exists_wpFuelTotal_of_wpGfp_of_not_hasInfiniteRun_of_finitelyBranchingFrom: proved; #print axioms: Classical.choice, Quot.sound, propext. Classical reasoning is necessary, not an artifact of these proofs: exists_wpFuelTotal_of_wpLfp_of_finitelyBranchingFrom, exists_wpFuelTotal_iff_wpLfp_of_finitelyBranching and the König form each imply the limited principle of omniscience (lpo_of_exists_wpFuelTotal_of_wpLfp_of_finitelyBranchingFrom, lpo_of_exists_wpFuelTotal_iff_wpLfp_of_finitelyBranching, lpo_of_koenig_form; #print axioms: propext only), which is not derivable in intuitionistic logic. The obstruction comes from FinitelyBranchingAt asking only for a finite list containing the successors (not an exact successor list) together with undecidable step and terminal predicates; for deterministic systems with decidable terminal states the first statement's conclusion has a proof with no axioms (exists_wpFuelTotal_of_wpLfp_of_deterministic_of_decidable_terminal).",
+    "logic_evidence_lean": [
+      "Toy.FuelWP.lpo_of_exists_wpFuelTotal_of_wpLfp_of_finitelyBranchingFrom",
+      "Toy.FuelWP.lpo_of_exists_wpFuelTotal_iff_wpLfp_of_finitelyBranching",
+      "Toy.FuelWP.lpo_of_koenig_form",
+      "Toy.FuelWP.exists_wpFuelTotal_of_wpLfp_of_deterministic_of_decidable_terminal"
+    ],
+    "non_claims": [
+      "The fuel bound depends on the initial state: the statement is ∀ s, (… → ∃ n, wpFuelTotal S n Q s), not ∃ n, ∀ s, …. No single fuel need work for all initial states satisfying a precondition, even for a deterministic system: in chainSys every k satisfies wpFuelTotal chainSys (k + 1) (· = 0) k but no single n works for all k (chainSys_fuel_per_state_not_uniform).",
+      "A sequential language whose operational model represents unbounded external input, unbounded nondeterministic allocation or any choice from an infinite set as transition steps is not finitely branching and is not covered (see unbounded-choice-no-uniform-fuel); finite-width choice (for example of an arbitrary 64-bit integer) remains finitely branching.",
+      "Does not say total-fuel completeness is constructively provable in general: it implies the limited principle of omniscience (see logic). Constructive proofs exist under extra decidability, for example deterministic systems with decidable terminal states (exists_wpFuelTotal_of_wpLfp_of_deterministic_of_decidable_terminal).",
+      "Finite branching is sufficient, not necessary: an infinitely branching state whose successors have uniformly bounded fuel also has a fuel bound; no exact characterization of when a fuel bound exists is given beyond ∃ n itself.",
+      "Gives no explicit or computable fuel bound.",
+      "In the König form, termination of every run is assumed, not established; the theorem does not help to prove termination.",
+      "Deterministic constrains only non-terminal states (edges leaving terminal states are ignored, deterministic_pos_termBranch). A concrete interpreter is covered only if it is faithfully modeled as such a system with the same notion of terminal and stuck states.",
+      "Toy model only: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. Transfer to a concrete semantics requires a separate modeling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "E. W. Dijkstra. Guarded commands, nondeterminacy and formal derivation of programs. Communications of the ACM 18(8):453–457, 1975. doi:10.1145/360933.360975. Defines only the total-correctness wp(S, R) — the weakest precondition guaranteeing proper termination in a state satisfying R; no liberal (partial-correctness) counterpart is defined there — and defines the loop by H0(R) = R ∧ ¬BB, Hk(R) = wp(IF, Hk-1(R)) ∨ H0(R), wp(DO, R) = (∃k ≥ 0: Hk(R)), with Hk(R) read as termination after at most k selections — an existentially fuel-indexed total weakest precondition. (Content read in the author's EWD418 transcription, whose abstract matches the published one.)",
+      "E. W. Dijkstra. A Discipline of Programming. Prentice-Hall, 1976 (ISBN 0-13-215871-X, seen only in a copyright-page snippet). Contains the chapter 'On nondeterminacy being bounded' (p. 72 per the table of contents). That the book introduces the weakest liberal precondition and states a continuity property for bounded nondeterminism was seen only through secondary sources and text snippets, not at the primary source.",
+      "K. R. Apt and G. D. Plotkin. Countable nondeterminism and random assignment. Journal of the ACM 33(4):724–767, 1986. doi:10.1145/6490.6494. Abstract: admitting countable (unbounded) nondeterminism results in a lack of continuity of various semantic functions, shown necessary for any semantics satisfying appropriate conditions; total-correctness proofs need countable ordinals.",
+      "D. Kőnig. Über eine Schlussweise aus dem Endlichen ins Unendliche. Acta Sci. Math. (Szeged) 3(2–3):121–130, 1927 (volume and issue seen only via a secondary record). The infinity lemma (Lemma A): a sequence of finite non-empty sets linked by a relation admits an infinite chain.",
+      "R.-J. Back and J. von Wright. Refinement Calculus. Springer, 1998. doi:10.1007/978-1-4612-1674-2. Contains a chapter 'Continuity and Executable Statements' (pp. 365–382) and a chapter on fixed points; only titles and pages were verified, not the chapter text.",
+      "W. H. Hesselink. Programs, Recursion and Unbounded Choice. Cambridge University Press, 1992. doi:10.1017/CBO9780511569784. Publisher's abstract: a complete account of the predicate transformation calculus semantics of sequential programs, including repetitions, recursive procedures, computational induction and unbounded nondeterminacy.",
+      "Mathlib, Mathlib/Order/KonigLemma.lean (github.com/leanprover-community/mathlib4, master): exists_seq_covby_of_forall_covby_finite and exists_seq_forall_proj_of_forall_finite (Kőnig's infinity lemma) — a mechanized form of the lemma behind the König form of finite-branching completeness.",
+      "A. Lochbihler. Coinductive. Archive of Formal Proofs, February 2010 (isa-afp.org/entries/Coinductive.html). Abstract: general-purpose coinductive data types (lazy lists, streams, ...) with 'a version of König's lemma as an application for coinductive lists'.",
+      "D. Larchey-Wendling. Constructive Substitutes for Kőnig's Lemma. TYPES 2024, LIPIcs 336, 2:1–2:23, 2025. doi:10.4230/LIPIcs.TYPES.2024.2 (DataCite record verified), with the Coq artifact github.com/DmxLarchey/Constructive-Konig. Constructive replacements for Kőnig's lemma — relevant to the classical content of the finite-branching completeness statements, which imply the limited principle of omniscience here.",
+      "B. C. Pierce et al. Software Foundations, Volume 1: Logical Foundations, chapter ImpCEvalFun (softwarefoundations.cis.upenn.edu): theorem ceval_and_ceval_step_coincide — for the deterministic language Imp, the inductive big-step evaluation relation holds iff a fuel-indexed evaluation function returns the final state for some fuel; the deterministic analogue of the 'some fuel = least fixpoint' corollary.",
+      "D. Bridges, E. Palmgren and H. Ishihara. Constructive Mathematics. Stanford Encyclopedia of Philosophy, substantive revision of 25 August 2022, https://plato.stanford.edu/entries/mathematics-constructive/. Section 1 (Introduction): the limited principle of omniscience (LPO) is not constructively derivable (Kripke models; Bridges and Richman 1987, chapter 7). Section 2 (The Constructive Interpretation of Logic): Markov's principle (MP) is not constructively derivable (a Kripke model; Bridges and Richman 1987, pp. 137–138)."
+    ],
+    "boundary_evidence_lean": [
+      "Toy.FuelWP.chainSys_fuel_per_state_not_uniform",
+      "Toy.FuelWP.deterministic_pos_termBranch",
+      "Toy.FuelWP.finitelyBranchingFrom_pos_countdown_count",
+      "Toy.FuelWP.finitelyBranching_neg_countdown",
+      "Toy.FuelWP.spinOrExitSys_finitelyBranching_not_deterministic"
+    ],
+    "design_question": "A verification framework whose trusted kernel forbids coinductive definitions and general recursion defines its weakest precondition by structural recursion on fuel. For which properties is that the same as the coinductive (greatest-fixpoint) definition, how should 'verified at fuel n' be read, and where do the two differ (total correctness, divergence, liveness)? This card: for finitely branching (in particular deterministic, interpreter-induced) semantics, 'verified for some fuel' is exactly total correctness — with the fuel chosen per initial state, and only by classical reasoning in general."
+  },
+  {
+    "id": "unbounded-choice-no-uniform-fuel",
+    "lean": [
+      "Toy.FuelWP.countdown_wpLfp_without_uniform_fuel"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "The random-assignment countdown (x := ?; while x > 0 do x := x - 1) is the standard example of unbounded nondeterminism breaking continuity (Dijkstra 1976; Apt and Plotkin 1986); restated as a fuel counterexample.",
+    "plain_claim": "In countdownSys (from start choose any k : Nat, then count down to a terminal count 0), the state start is not finitely branching, the system is not deterministic, and start satisfies wpLfp (fun _ => True) and wpGfp (fun _ => True) and has no infinite run, yet no fuel n gives wpFuelTotal n (fun _ => True) start.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "The statement is a concrete instance.",
+    "nonvacuity_witness_lean": [
+      "Toy.FuelWP.countdown_wpLfp_without_uniform_fuel"
+    ],
+    "logic": "countdown_wpLfp_without_uniform_fuel: proved; #print axioms: Quot.sound, propext.",
+    "non_claims": [
+      "Shows only that natural-number fuel (∃ n : Nat, wpFuelTotal n) fails to capture total correctness of countdownSys; total correctness of countdownSys is still expressed by the least fixpoint wpLfp (proved here, countdownSys_start_wpLfp), and could be proved with ordinal-indexed fuel or well-founded induction (not formalized here).",
+      "Requires genuinely infinite branching (a choice from all of Nat); bounded-width nondeterminism, such as choosing an arbitrary fixed-width machine integer, is finitely branching, and then total correctness does give a fuel bound per initial state (total-fuel-complete-under-finite-branching).",
+      "Does not say the partial-correctness side fails: partial correctness of this state is still equivalent to wpFuel at every fuel (partial-fuel-equals-gfp).",
+      "Toy model only: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. Transfer to a concrete semantics requires a separate modeling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "K. R. Apt and G. D. Plotkin. Countable nondeterminism and random assignment. Journal of the ACM 33(4):724–767, 1986. doi:10.1145/6490.6494. Abstract: admitting countable (unbounded) nondeterminism results in a lack of continuity of various semantic functions, shown necessary for any semantics satisfying appropriate conditions; total-correctness proofs need countable ordinals.",
+      "T. Nipkow. Hoare logics for recursive procedures and unbounded nondeterminism. CSL 2002, pp. 103–119. doi:10.1007/3-540-45793-3_8; mechanized in the Isabelle Archive of Formal Proofs entry Abstract-Hoare-Logics. Mechanized total correctness in the presence of unbounded nondeterminism (not a continuity-failure theorem).",
+      "E. W. Dijkstra. A Discipline of Programming. Prentice-Hall, 1976 (ISBN 0-13-215871-X, seen only in a copyright-page snippet). Contains the chapter 'On nondeterminacy being bounded' (p. 72 per the table of contents). That the book introduces the weakest liberal precondition and states a continuity property for bounded nondeterminism was seen only through secondary sources and text snippets, not at the primary source.",
+      "W. H. Hesselink. Programs, Recursion and Unbounded Choice. Cambridge University Press, 1992. doi:10.1017/CBO9780511569784. Publisher's abstract: a complete account of the predicate transformation calculus semantics of sequential programs, including repetitions, recursive procedures, computational induction and unbounded nondeterminacy.",
+      "S. Spies, L. Gäher, D. Gratzer, J. Tassarotti, R. Krebbers, D. Dreyer, L. Birkedal. Transfinite Iris: resolving an existential dilemma of step-indexed separation logic. PLDI 2021, pp. 80–95. doi:10.1145/3453483.3454031. Moves the step index of Iris from natural numbers to ordinals to resolve a problem with existential quantification in step-indexed logics (bibliographic record and title verified; details not re-read here) — related to the limits of natural-number fuel under unbounded or existential choice."
+    ],
+    "boundary_evidence_lean": [
+      "Toy.FuelWP.countdownSys_start_wpLfp"
+    ],
+    "design_question": "A verification framework whose trusted kernel forbids coinductive definitions and general recursion defines its weakest precondition by structural recursion on fuel. For which properties is that the same as the coinductive (greatest-fixpoint) definition, how should 'verified at fuel n' be read, and where do the two differ (total correctness, divergence, liveness)? This card: with unbounded nondeterminism, fuel-bounded total correctness is incomplete."
+  },
+  {
+    "id": "total-equals-partial-plus-termination",
+    "lean": [
+      "Toy.FuelWP.wpLfp_iff_wpGfp_and_not_hasInfiniteRun"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "Total correctness = partial correctness + termination (wp(S, Q) = wlp(S, Q) ∧ wp(S, true) in the predicate-transformer literature), stated for these fixpoints with termination as the absence of an infinite run.",
+    "plain_claim": "For every transition system (no branching assumption), postcondition Q and state s: wpLfp Q s holds if and only if wpGfp Q s holds and no run from s is infinite.",
+    "hypotheses": [],
+    "depth": "substantive",
+    "nonvacuity_witness": "Both sides hold at the infinitely branching countdownSys start state; at loopSys the left side fails while wpGfp holds and an infinite run exists.",
+    "nonvacuity_witness_lean": [
+      "Toy.FuelWP.nonvacuity_wpLfp_iff_wpGfp_and_not_hasInfiniteRun"
+    ],
+    "logic": "wpLfp_iff_wpGfp_and_not_hasInfiniteRun: proved; #print axioms: Classical.choice, Quot.sound, propext. The forward direction has a proof with no axioms (wpGfp_and_not_hasInfiniteRun_of_wpLfp). The backward direction is not constructively provable: the statement implies Markov's principle even restricted to a deterministic system with decidable step and terminal predicates (markov_of_wpLfp_iff_wpGfp_and_not_hasInfiniteRun; #print axioms: no axioms), and Markov's principle is not derivable in intuitionistic logic. Whether more than Markov's principle (for example full dependent choice) is needed is not determined here.",
+    "logic_evidence_lean": [
+      "Toy.FuelWP.wpGfp_and_not_hasInfiniteRun_of_wpLfp",
+      "Toy.FuelWP.markov_of_wpLfp_iff_wpGfp_and_not_hasInfiniteRun"
+    ],
+    "non_claims": [
+      "Termination here is the absence of an infinite run; it is not a uniform bound on run length (see unbounded-choice-no-uniform-fuel).",
+      "Relies on demonic quantification over all successors and on stuck states being errors rejected by wpGfp. Under angelic nondeterminism total correctness would need only one terminating run rather than the absence of every infinite run, and if stuck states were blocking or miraculous, wpGfp ∧ ¬ HasInfiniteRun would admit stuck states; neither variant is covered.",
+      "Only the forward direction is constructive; the backward direction needs at least Markov's principle (see logic).",
+      "Says nothing about fairness or other liveness properties.",
+      "Toy model only: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. Transfer to a concrete semantics requires a separate modeling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "B. Alpern and F. B. Schneider. Defining liveness. Information Processing Letters 21(4):181–185, 1985. doi:10.1016/0020-0190(85)90056-0. Liveness properties say something good eventually happens; every property is the intersection of a safety property and a liveness property.",
+      "L. Lamport. Proving the correctness of multiprocess programs. IEEE Transactions on Software Engineering SE-3(2):125–143, 1977. doi:10.1109/TSE.1977.229904. Proofs of safety and liveness properties of concurrent programs (bibliographic record verified; content not re-read here).",
+      "G. Nelson. A generalization of Dijkstra's calculus. ACM TOPLAS 11(4):517–561, 1989. doi:10.1145/69558.69559. Generalizes the wp calculus by dropping the law of the excluded miracle, treats recursion by fixpoints, and relates the full wp/wlp semantics to a powerdomain semantics. Contrast: here wpLfp obeys the law of the excluded miracle (wpLfp_excluded_miracle) and every weakest precondition rejects stuck states, so a state without outcomes is an error, not a miracle.",
+      "E. W. Dijkstra and C. S. Scholten. Predicate Calculus and Program Semantics. Springer, 1990. doi:10.1007/978-1-4612-3228-5. Chapter 8 'Equations in predicates and their extreme solutions' (pp. 147–170) and chapter 9 'Semantics of repetitions' (pp. 170–189). The characterization of wlp of a repetition as the weakest (greatest) solution and wp as the strongest (least) solution of the loop equation was verified only through a secondary source (I. M. Rewitzky, Modelling the Algebra of Weakest Preconditions, MSc thesis, Department of Mathematics, University of Cape Town, 1991), not in the book itself.",
+      "W. H. Hesselink. Programs, Recursion and Unbounded Choice. Cambridge University Press, 1992. doi:10.1017/CBO9780511569784. Publisher's abstract: a complete account of the predicate transformation calculus semantics of sequential programs, including repetitions, recursive procedures, computational induction and unbounded nondeterminacy.",
+      "Iris Coq library, iris/program_logic/total_weakestpre.v and total_adequacy.v (as rendered in the Iris coqdoc): the total weakest precondition twp is defined as a least fixpoint (bi_least_fixpoint of twp_pre'), and twp_total derives strong normalization sn erased_step from a total-weakest-precondition proof — a mechanized least-fixpoint total weakest precondition in a separation logic.",
+      "V. Preoteasa. Algebra of Monotonic Boolean Transformers. Archive of Formal Proofs, September 2011 (isa-afp.org/entries/MonoBoolTranAlgebra.html). Abstract: an algebra of monotonic Boolean transformers modelling total correctness, refinement, demonic and angelic choice.",
+      "W. Guttmann. Algebras for Iteration, Infinite Executions and Correctness of Sequential Computations. Archive of Formal Proofs, October 2021 (isa-afp.org/entries/Correctness_Algebras.html). Abstract: algebras for iteration and infinite executions that unify computation models differing in the fixpoints used for iteration, and correctness statements across models.",
+      "D. Bridges, E. Palmgren and H. Ishihara. Constructive Mathematics. Stanford Encyclopedia of Philosophy, substantive revision of 25 August 2022, https://plato.stanford.edu/entries/mathematics-constructive/. Section 1 (Introduction): the limited principle of omniscience (LPO) is not constructively derivable (Kripke models; Bridges and Richman 1987, chapter 7). Section 2 (The Constructive Interpretation of Logic): Markov's principle (MP) is not constructively derivable (a Kripke model; Bridges and Richman 1987, pp. 137–138)."
+    ],
+    "design_question": "A verification framework whose trusted kernel forbids coinductive definitions and general recursion defines its weakest precondition by structural recursion on fuel. For which properties is that the same as the coinductive (greatest-fixpoint) definition, how should 'verified at fuel n' be read, and where do the two differ (total correctness, divergence, liveness)? This card: the gap between the two notions is exactly termination."
+  },
+  {
+    "id": "divergence-satisfies-every-partial-wp-and-no-total-wp",
+    "lean": [
+      "Toy.FuelWP.alwaysDiverges_satisfies_every_partial_wp_and_no_total_wp",
+      "Toy.FuelWP.hasInfiniteRun_refutes_every_total_wp"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Partial correctness is insensitive to divergence; demonic total correctness rejects every state with an infinite run.",
+    "plain_claim": "If every run from s diverges without getting stuck (AlwaysDiverges S s: every state reachable from s is non-terminal and can step), then for every postcondition Q and fuel n, s satisfies wpFuel n Q and wpGfp Q and fails wpFuelTotal n Q and wpLfp Q. If merely some run from s is infinite (HasInfiniteRun S s), then s still fails wpFuelTotal n Q and wpLfp Q for every Q and n.",
+    "hypotheses": [
+      {
+        "name": "h : AlwaysDiverges S s (in alwaysDiverges_satisfies_every_partial_wp_and_no_total_wp)",
+        "purpose": "no run halts or gets stuck, so no postcondition is ever checked",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.FuelWP.done_not_every_partial_wp"
+        ]
+      },
+      {
+        "name": "h : HasInfiniteRun S s (in hasInfiniteRun_refutes_every_total_wp)",
+        "purpose": "one infinite run is enough to refute demonic total correctness",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.FuelWP.done_some_total_wp"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "loopSys and spinOrOutSys at spin always diverge; spinOrExitSys at spin has an infinite run without always diverging.",
+    "nonvacuity_witness_lean": [
+      "Toy.FuelWP.nonvacuity_alwaysDiverges",
+      "Toy.FuelWP.nonvacuity_hasInfiniteRun"
+    ],
+    "logic": "alwaysDiverges_satisfies_every_partial_wp_and_no_total_wp: proved; #print axioms: no axioms; hasInfiniteRun_refutes_every_total_wp: proved; #print axioms: no axioms.",
+    "non_claims": [
+      "Stuck states are not diverging states: a state that gets stuck (non-terminal, no successor) fails both partial and total weakest preconditions, whereas AlwaysDiverges requires every reachable state to be non-terminal and able to step.",
+      "A state with an infinite run need not satisfy every partial-correctness weakest precondition: if it also has halting or stuck runs, partial correctness still constrains them (spinOrExitSys at spin fails wpGfp spinOrExitSys (fun t => ¬ isOut t), spinOrExitSys_conjugate_ne_wpLfp).",
+      "An infinite run is sufficient, not necessary, for failing every total weakest precondition: a reachable stuck state also suffices.",
+      "Does not say partial correctness is useless; it says partial correctness carries no information about termination.",
+      "All weakest preconditions here quantify over every successor (demonic nondeterminism); nothing is said about angelic (exists-a-successor) transformers.",
+      "Toy model only: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. Transfer to a concrete semantics requires a separate modeling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "E. W. Dijkstra. Guarded commands, nondeterminacy and formal derivation of programs. Communications of the ACM 18(8):453–457, 1975. doi:10.1145/360933.360975. Defines only the total-correctness wp(S, R) — the weakest precondition guaranteeing proper termination in a state satisfying R; no liberal (partial-correctness) counterpart is defined there — and defines the loop by H0(R) = R ∧ ¬BB, Hk(R) = wp(IF, Hk-1(R)) ∨ H0(R), wp(DO, R) = (∃k ≥ 0: Hk(R)), with Hk(R) read as termination after at most k selections — an existentially fuel-indexed total weakest precondition. (Content read in the author's EWD418 transcription, whose abstract matches the published one.)",
+      "X. Leroy and H. Grall. Coinductive big-step operational semantics. Information and Computation 207(2):284–304, 2009. doi:10.1016/j.ic.2007.12.004. Coinductive big-step semantics describing diverging as well as terminating evaluations; the accompanying Coq development proves equivalences between big-step and small-step semantics.",
+      "J. Åman Pohjola, M. O. Myreen, M. Tanaka. A Hoare Logic for Diverging Programs. Archive of Formal Proofs, January 2023 (isa-afp.org/entries/HoareForDivergence.html). Abstract: a While language with output, a total-correctness Hoare logic proved sound and complete, and a new Hoare logic for programs that diverge, also proved sound and complete — a mechanized alternative for stating properties of diverging runs.",
+      "J. Åman Pohjola, H. Rostedt, M. O. Myreen. Characteristic Formulae for Liveness Properties of Non-Terminating CakeML Programs. ITP 2019, LIPIcs 141, 32:1–32:19. doi:10.4230/LIPIcs.ITP.2019.32 (DataCite record verified). Liveness reasoning for programs that are meant not to terminate (content beyond the title not re-read here)."
+    ],
+    "boundary_evidence_lean": [
+      "Toy.FuelWP.spinOrExitSys_conjugate_ne_wpLfp"
+    ],
+    "design_question": "A verification framework whose trusted kernel forbids coinductive definitions and general recursion defines its weakest precondition by structural recursion on fuel. For which properties is that the same as the coinductive (greatest-fixpoint) definition, how should 'verified at fuel n' be read, and where do the two differ (total correctness, divergence, liveness)? This card: divergence is exactly where the two modes differ — partial weakest preconditions accept every must-diverging state, total ones reject every may-diverging state."
+  },
+  {
+    "id": "wpgfp-false-is-divergence",
+    "lean": [
+      "Toy.FuelWP.wpGfp_false_iff_alwaysDiverges",
+      "Toy.FuelWP.forall_wpGfp_iff_alwaysDiverges"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "Analogue of reading wlp(S, false) as the states from which S cannot terminate, and the instance Q := False of gfp-adequacy; that reading was not located verbatim in a primary source checked.",
+    "plain_claim": "For every transition system and state s: s satisfies wpGfp (fun _ => False) if and only if every run from s diverges without getting stuck (AlwaysDiverges: every state reachable from s is non-terminal and can step); equivalently, s satisfies wpGfp Q for every postcondition Q.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "loopSys and spinOrOutSys at spin.",
+    "nonvacuity_witness_lean": [
+      "Toy.FuelWP.nonvacuity_alwaysDiverges"
+    ],
+    "logic": "wpGfp_false_iff_alwaysDiverges: proved; #print axioms: no axioms; forall_wpGfp_iff_alwaysDiverges: proved; #print axioms: no axioms.",
+    "non_claims": [
+      "Characterizes must-divergence without getting stuck (AlwaysDiverges), not may-divergence (HasInfiniteRun): a nondeterministic state with both a diverging run and a halting run (spinOrExitSys at spin, alwaysDiverges_neg_spinOrExit) fails wpGfp False.",
+      "Here 'diverges' includes 'never gets stuck': stuck states are safety errors rejected by wpGfp, so a state that never halts because it gets stuck fails wpGfp False. This differs from calculi in which the liberal precondition of a non-terminating or miraculous command for false is true.",
+      "Toy model only: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. Transfer to a concrete semantics requires a separate modeling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "E. W. Dijkstra. A Discipline of Programming. Prentice-Hall, 1976 (ISBN 0-13-215871-X, seen only in a copyright-page snippet). Contains the chapter 'On nondeterminacy being bounded' (p. 72 per the table of contents). That the book introduces the weakest liberal precondition and states a continuity property for bounded nondeterminism was seen only through secondary sources and text snippets, not at the primary source.",
+      "E. W. Dijkstra and C. S. Scholten. Predicate Calculus and Program Semantics. Springer, 1990. doi:10.1007/978-1-4612-3228-5. Chapter 8 'Equations in predicates and their extreme solutions' (pp. 147–170) and chapter 9 'Semantics of repetitions' (pp. 170–189). The characterization of wlp of a repetition as the weakest (greatest) solution and wp as the strongest (least) solution of the loop equation was verified only through a secondary source (I. M. Rewitzky, Modelling the Algebra of Weakest Preconditions, MSc thesis, Department of Mathematics, University of Cape Town, 1991), not in the book itself.",
+      "G. Nelson. A generalization of Dijkstra's calculus. ACM TOPLAS 11(4):517–561, 1989. doi:10.1145/69558.69559. Generalizes the wp calculus by dropping the law of the excluded miracle, treats recursion by fixpoints, and relates the full wp/wlp semantics to a powerdomain semantics. Contrast: here wpLfp obeys the law of the excluded miracle (wpLfp_excluded_miracle) and every weakest precondition rejects stuck states, so a state without outcomes is an error, not a miracle."
+    ],
+    "boundary_evidence_lean": [
+      "Toy.FuelWP.alwaysDiverges_neg_spinOrExit"
+    ],
+    "design_question": "A verification framework whose trusted kernel forbids coinductive definitions and general recursion defines its weakest precondition by structural recursion on fuel. For which properties is that the same as the coinductive (greatest-fixpoint) definition, how should 'verified at fuel n' be read, and where do the two differ (total correctness, divergence, liveness)? This card: a partial-correctness proof of the postcondition False certifies must-divergence without errors, and must-diverging states are exactly those satisfying every partial-correctness weakest precondition."
+  },
+  {
+    "id": "positive-partial-wp-cannot-reject-divergent-state",
+    "lean": [
+      "Toy.FuelWP.not_partial_wp_expressible_of_alwaysDiverges_of_not",
+      "Toy.FuelWP.allRunsEventually_not_partial_wp_of_divergent_violation",
+      "Toy.FuelWP.allRunsEventually_isOut_not_partial_wp_expressible",
+      "Toy.FuelWP.startSpinOutSys_allRunsEventually_not_partial_wp_expressible"
+    ],
+    "kind": "impossibility",
+    "tier": "T0",
+    "tier_justification": "Immediate from divergence-satisfies-every-partial-wp-and-no-total-wp (every positive partial-correctness weakest precondition is true at an always-diverging state); the safety/liveness distinction applied to weakest preconditions.",
+    "plain_claim": "For every transition system S and every predicate R on states: if some state s always diverges without getting stuck (AlwaysDiverges S s) and R fails at s, then no postcondition Q makes the positive partial-correctness weakest precondition wpGfp S Q equal to R on all states, and likewise for wpFuel S n Q at each fixed fuel n and for ∀ n, wpFuel S n Q (not_partial_wp_expressible_of_alwaysDiverges_of_not). The proof uses nothing about R except ¬ R s. Instances: the liveness property AllRunsEventually S P ('every run eventually reaches P') whenever an always-diverging state violates it, and concretely 'every run eventually reaches out' in the two-state spinOrOutSys and in the three-state startSpinOutSys, where the property also holds at a non-output state.",
+    "hypotheses": [
+      {
+        "name": "hdiv : AlwaysDiverges S s (in not_partial_wp_expressible_of_alwaysDiverges_of_not and allRunsEventually_not_partial_wp_of_divergent_violation)",
+        "purpose": "makes s satisfy every positive partial-correctness weakest precondition",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.FuelWP.done_allRunsEventually_false_expressible"
+        ]
+      },
+      {
+        "name": "hviol : ¬ R s (in not_partial_wp_expressible_of_alwaysDiverges_of_not; ¬ AllRunsEventually S P s in the liveness specialization)",
+        "purpose": "the predicate must fail somewhere that partial correctness cannot see",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.FuelWP.loop_allRunsEventually_true_expressible"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "spinOrOutSys at spin and startSpinOutSys at spin, with R the property 'every run eventually reaches out'; the property holds at out in both systems and at the non-output state start of startSpinOutSys (reached through one step).",
+    "nonvacuity_witness_lean": [
+      "Toy.FuelWP.nonvacuity_divergent_violation",
+      "Toy.FuelWP.nonvacuity_allRunsEventually_isOut_nontrivial",
+      "Toy.FuelWP.spinOrOutSys_spin_every_partial_wp_but_never_outputs"
+    ],
+    "positive_control_lean": [
+      "Toy.FuelWP.done_allRunsEventually_false_expressible",
+      "Toy.FuelWP.loop_allRunsEventually_true_expressible",
+      "Toy.FuelWP.allRunsEventually_isOut_iff_not_wpGfp_false",
+      "Toy.FuelWP.startSpinOutSys_wpGfp_iff_allRunsEventually_off_spin",
+      "Toy.FuelWP.allRunsEventually_isOut_iff_wpLfp_isOut"
+    ],
+    "logic": "not_partial_wp_expressible_of_alwaysDiverges_of_not: proved; #print axioms: no axioms; allRunsEventually_not_partial_wp_of_divergent_violation: proved; #print axioms: no axioms; allRunsEventually_isOut_not_partial_wp_expressible: proved; #print axioms: no axioms; startSpinOutSys_allRunsEventually_not_partial_wp_expressible: proved; #print axioms: no axioms.",
+    "non_claims": [
+      "Rules out only a single positive partial-correctness weakest precondition (wpGfp S Q, wpFuel S n Q or ∀ n, wpFuel S n Q). It does not rule out negations or Boolean combinations of partial weakest preconditions: on spinOrOutSys itself, AllRunsEventually spinOrOutSys isOut s holds iff wpGfp spinOrOutSys (fun _ => False) s fails (allRunsEventually_isOut_iff_not_wpGfp_false), and on every deterministic system without stuck states the conjugate ¬ wpGfp S (fun t => ¬ Q t) coincides with wpLfp S Q (not_wpGfp_not_iff_wpLfp_of_deterministic_of_not_stuck; both side conditions are needed, spinOrExitSys_conjugate_ne_wpLfp and stuckSys_conjugate_ne_wpLfp).",
+      "Does not imply that total correctness (wpLfp) expresses AllRunsEventually S P in general: wpLfp spinOrOutSys isOut coincides with the property only because the output state out is terminal (allRunsEventually_isOut_iff_wpLfp_isOut). In a system that reaches P at a non-terminal state and keeps running (spinOrEmitLoopSys), the property is expressed by no wpGfp, wpLfp or wpFuelTotal weakest precondition for any postcondition (spinOrEmitLoopSys_allRunsEventually_not_wp_expressible).",
+      "Quantifies the equivalence over the entire state space. Restricting it to states satisfying a precondition that excludes the always-diverging violating states defeats the impossibility: off the state spin, AllRunsEventually startSpinOutSys isOut3 coincides with wpGfp startSpinOutSys isOut3 (startSpinOutSys_wpGfp_iff_allRunsEventually_off_spin).",
+      "The mechanism is generic, not specific to liveness: every positive partial-correctness weakest precondition is forced true at an always-diverging state, so any predicate false there is inexpressible. In spinOrOutSys no transition enters out and out is terminal, so there the liveness property coincides with spinOrOutSys.terminal and the two-state instance tests halting versus non-halting; startSpinOutSys is the instance in which the output is reached after a step.",
+      "¬ AllRunsEventually S P s is the negation of an inductive predicate. Reading it as 'some run never reaches P' (extracting a violating run) needs classical reasoning and is not part of any statement here.",
+      "Expressibility is over postconditions on the same state space and the same system. It does not exclude encoding a liveness property as a partial-correctness weakest precondition of a modified system (for example one instrumented with a counter or prophecy that turns bounded liveness into safety).",
+      "Does not say AllRunsEventually is never a partial-correctness weakest precondition: on systems without an always-diverging violating state it may coincide with one (loop_allRunsEventually_true_expressible, done_allRunsEventually_false_expressible).",
+      "Does not cover angelic ('some run eventually') liveness, fairness, or output events on traces.",
+      "Toy model only: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. Transfer to a concrete semantics requires a separate modeling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "B. Alpern and F. B. Schneider. Defining liveness. Information Processing Letters 21(4):181–185, 1985. doi:10.1016/0020-0190(85)90056-0. Liveness properties say something good eventually happens; every property is the intersection of a safety property and a liveness property.",
+      "L. Lamport. Proving the correctness of multiprocess programs. IEEE Transactions on Software Engineering SE-3(2):125–143, 1977. doi:10.1109/TSE.1977.229904. Proofs of safety and liveness properties of concurrent programs (bibliographic record verified; content not re-read here).",
+      "E. M. Clarke and E. A. Emerson. Design and synthesis of synchronization skeletons using branching time temporal logic. Logics of Programs, Lecture Notes in Computer Science, Springer, pp. 52–71. doi:10.1007/BFb0025774 (volume number and year are not given in the DOI record). Branching-time temporal logic, whose operator AF ('on all paths, eventually') is the shape of AllRunsEventually (bibliographic record verified; content not re-read here).",
+      "D. Kozen. Results on the propositional μ-calculus. Theoretical Computer Science 27(3):333–354, 1983. doi:10.1016/0304-3975(82)90125-6. The propositional μ-calculus, in which eventuality properties such as AF are least fixpoints and safety properties greatest fixpoints (bibliographic record verified; content not re-read here).",
+      "S. Spies, L. Gäher, D. Gratzer, J. Tassarotti, R. Krebbers, D. Dreyer, L. Birkedal. Transfinite Iris: resolving an existential dilemma of step-indexed separation logic. PLDI 2021, pp. 80–95. doi:10.1145/3453483.3454031. Moves the step index of Iris from natural numbers to ordinals to resolve a problem with existential quantification in step-indexed logics (bibliographic record and title verified; details not re-read here) — related to the limits of natural-number fuel under unbounded or existential choice.",
+      "J. Åman Pohjola, M. O. Myreen, M. Tanaka. A Hoare Logic for Diverging Programs. Archive of Formal Proofs, January 2023 (isa-afp.org/entries/HoareForDivergence.html). Abstract: a While language with output, a total-correctness Hoare logic proved sound and complete, and a new Hoare logic for programs that diverge, also proved sound and complete — a mechanized alternative for stating properties of diverging runs.",
+      "J. Åman Pohjola, H. Rostedt, M. O. Myreen. Characteristic Formulae for Liveness Properties of Non-Terminating CakeML Programs. ITP 2019, LIPIcs 141, 32:1–32:19. doi:10.4230/LIPIcs.ITP.2019.32 (DataCite record verified). Liveness reasoning for programs that are meant not to terminate (content beyond the title not re-read here)."
+    ],
+    "boundary_evidence_lean": [
+      "Toy.FuelWP.allRunsEventually_isOut_iff_not_wpGfp_false",
+      "Toy.FuelWP.not_wpGfp_not_iff_wpLfp_of_deterministic_of_not_stuck",
+      "Toy.FuelWP.spinOrExitSys_conjugate_ne_wpLfp",
+      "Toy.FuelWP.stuckSys_conjugate_ne_wpLfp",
+      "Toy.FuelWP.spinOrEmitLoopSys_allRunsEventually_not_wp_expressible",
+      "Toy.FuelWP.startSpinOutSys_wpGfp_iff_allRunsEventually_off_spin",
+      "Toy.FuelWP.allRunsEventually_isOut_iff_wpLfp_isOut"
+    ],
+    "design_question": "A verification framework whose trusted kernel forbids coinductive definitions and general recursion defines its weakest precondition by structural recursion on fuel. For which properties is that the same as the coinductive (greatest-fixpoint) definition, how should 'verified at fuel n' be read, and where do the two differ (total correctness, divergence, liveness)? This card: a property that fails at some always-diverging state — in particular a liveness obligation violated by divergence — cannot be stated as a single positive partial-correctness weakest precondition over the same state space; the escape hatches (negated partial weakest preconditions, total correctness on suitable systems, domain restriction, instrumented systems) each come with the limits recorded in the non-claims."
+  },
+  {
+    "id": "gfp-adequacy",
+    "lean": [
+      "Toy.FuelWP.wpGfp_adequacy",
+      "Toy.FuelWP.wpGfp_of_forall_reach_runEndOk",
+      "Toy.FuelWP.wpGfp_iff_forall_reach_runEndOk"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "Standard adequacy of a coinductive safety judgement, with its converse.",
+    "plain_claim": "For every transition system, postcondition Q and state s: if wpGfp Q s, then every finite run prefix from s ends in a state t with RunEndOk S Q t — t satisfies Q if it is terminal and has a successor if it is not (so no stuck state is reachable and every halted run ends in Q) (wpGfp_adequacy); conversely this property of all finite run prefixes implies wpGfp Q s (wpGfp_of_forall_reach_runEndOk); the biconditional wpGfp_iff_forall_reach_runEndOk is derived from the two.",
+    "hypotheses": [
+      {
+        "name": "h : wpGfp S Q s (in wpGfp_adequacy)",
+        "purpose": "the judgement whose meaning is stated; the theorem has no other hypothesis",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.FuelWP.wpGfp_adequacy_drop_h"
+        ]
+      },
+      {
+        "name": "h : ∀ k t, Reach S s k t → RunEndOk S Q t (in wpGfp_of_forall_reach_runEndOk)",
+        "purpose": "every finite run prefix acceptable; the theorem has no other hypothesis",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.FuelWP.wpGfp_of_forall_reach_runEndOk_drop_h"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "chainSys from 3 with postcondition (· = 0), exercising both branches of RunEndOk (the terminal state 0 reached in 3 steps and the non-terminal state 3); loopSys with postcondition False.",
+    "nonvacuity_witness_lean": [
+      "Toy.FuelWP.nonvacuity_adequacy"
+    ],
+    "logic": "wpGfp_adequacy: proved; #print axioms: no axioms; wpGfp_of_forall_reach_runEndOk: proved; #print axioms: no axioms; wpGfp_iff_forall_reach_runEndOk: proved; #print axioms: no axioms.",
+    "non_claims": [
+      "The statement uses implications (RunEndOk); the disjunctive reading 'either terminal and Q, or non-terminal and extendable' (runEndOk_iff_or) and the reading 'not stuck, and Q if terminal' (runEndOk_iff_not_stuck) are classical. A disjunctive adequacy statement for all systems implies excluded middle (em_of_disjunctive_adequacy).",
+      "Q is guaranteed only at terminal states, not at the intermediate non-terminal states of a run prefix: partial correctness is not a state invariant (in nonvacuity_adequacy the reachable non-terminal state 3 does not satisfy Q = (· = 0)).",
+      "Adequacy is about finite run prefixes; it says nothing about infinite runs (which are unconstrained) or about termination.",
+      "Relative to the abstract relation only; adequacy for a concrete language requires that its operational semantics is the system used here.",
+      "Relies on two conventions: terminal states halt (edges leaving them are ignored) and stuck states are errors that every weakest precondition rejects. A framework in which stuck states are allowed (blocking assumptions) or terminal states may continue needs different statements.",
+      "Toy model only: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. Transfer to a concrete semantics requires a separate modeling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "R. Jung, R. Krebbers, J.-H. Jourdan, A. Bizjak, L. Birkedal, D. Dreyer. Iris from the ground up: a modular foundation for higher-order concurrent separation logic. Journal of Functional Programming 28, e20, 2018. doi:10.1017/S0956796818000151. Section 6 defines a weakest precondition with the same case structure as wpStep (a value satisfies the postcondition; otherwise the expression is reducible and every successor satisfies the weakest precondition). It is not the same operator: in the Iris Coq library (iris/program_logic/weakestpre.v, definition wp_pre) value-hood is tested by the computable to_val, the recursive occurrence sits under fancy-update modalities (which quantify existentially over ghost-state updates) and later modalities, and wp is the guarded fixpoint of a contractive function.",
+      "Iris Coq library, iris/program_logic/adequacy.v (as rendered in the Iris coqdoc): the record adequate s e1 σ1 φ says that every value reached by a finite execution satisfies φ and, for s = NotStuck, that no reachable thread is stuck; wp_adequacy_gen derives adequate from a weakest-precondition proof — the analogue, for a guarded step-indexed weakest precondition, of the finite-run-prefix adequacy here."
+    ],
+    "boundary_evidence_lean": [
+      "Toy.FuelWP.em_of_disjunctive_adequacy",
+      "Toy.FuelWP.runEndOk_iff_or",
+      "Toy.FuelWP.runEndOk_iff_not_stuck"
+    ],
+    "design_question": "A verification framework whose trusted kernel forbids coinductive definitions and general recursion defines its weakest precondition by structural recursion on fuel. For which properties is that the same as the coinductive (greatest-fixpoint) definition, how should 'verified at fuel n' be read, and where do the two differ (total correctness, divergence, liveness)? This card: what a greatest-fixpoint partial-correctness proof guarantees operationally."
+  },
+  {
+    "id": "fixpoint-definitions-adequate",
+    "lean": [
+      "Toy.FuelWP.wpGfp_unfold",
+      "Toy.FuelWP.wpGfp_coinduction",
+      "Toy.FuelWP.wpLfp_unfold",
+      "Toy.FuelWP.wpLfp_induction"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "Knaster–Tarski (Tarski 1955) for the specific monotone operator wpStep.",
+    "plain_claim": "wpGfp S Q (the union of all post-fixed points of wpStep S Q) is a fixed point of wpStep S Q (wpGfp_unfold) that contains every post-fixed point (wpGfp_coinduction: PostFixed S Q X and X s imply wpGfp S Q s), and wpLfp S Q (the intersection of all pre-fixed points) is a fixed point (wpLfp_unfold) contained in every pre-fixed point (wpLfp_induction: PreFixed S Q X and wpLfp S Q s imply X s); so they are the greatest and the least fixpoints.",
+    "hypotheses": [
+      {
+        "name": "hX : PostFixed S Q X (in wpGfp_coinduction)",
+        "purpose": "the coinduction invariant",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.FuelWP.wpGfp_coinduction_drop_hX"
+        ]
+      },
+      {
+        "name": "hs : X s (in wpGfp_coinduction)",
+        "purpose": "the state lies in the invariant",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.FuelWP.wpGfp_coinduction_drop_hs"
+        ]
+      },
+      {
+        "name": "hX : PreFixed S Q X (in wpLfp_induction)",
+        "purpose": "the induction predicate is closed under wpStep",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.FuelWP.wpLfp_induction_drop_hX"
+        ]
+      },
+      {
+        "name": "hs : wpLfp S Q s (in wpLfp_induction)",
+        "purpose": "the state is in the least fixpoint",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.FuelWP.wpLfp_induction_drop_hs"
+        ]
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "X := True is a post-fixed point of wpStep loopSys False holding at (); X := isOut is a non-trivial pre-fixed point of wpStep spinOrOutSys isOut and out satisfies wpLfp spinOrOutSys isOut; wpGfp loopSys False () and wpLfp chainSys (· = 0) 3 hold.",
+    "nonvacuity_witness_lean": [
+      "Toy.FuelWP.nonvacuity_coinduction_induction",
+      "Toy.FuelWP.wpGfp_pos_loop_false",
+      "Toy.FuelWP.wpLfp_pos_chain"
+    ],
+    "logic": "wpGfp_unfold: proved; #print axioms: no axioms; wpGfp_coinduction: proved; #print axioms: no axioms; wpLfp_unfold: proved; #print axioms: no axioms; wpLfp_induction: proved; #print axioms: no axioms.",
+    "non_claims": [
+      "Does not assert uniqueness of the fixed point of wpStep S Q: whenever a state can diverge, wpLfp S Q and wpGfp S Q are distinct fixed points (loopSys_wpLfp_ne_wpGfp).",
+      "Reference point justifying the definitions; no general fixpoint theory is developed.",
+      "Toy model only: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. Transfer to a concrete semantics requires a separate modeling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "A. Tarski. A lattice-theoretical fixpoint theorem and its applications. Pacific Journal of Mathematics 5(2):285–309, 1955. doi:10.2140/pjm.1955.5.285. The fixed points of a monotone map on a complete lattice form a complete lattice; in particular least and greatest fixed points exist (the source of the impredicative definitions of wpLfp and wpGfp).",
+      "Mathlib, Mathlib/Order/FixedPoints.lean (github.com/leanprover-community/mathlib4, master): OrderHom.lfp / OrderHom.gfp on a complete lattice, defined as the infimum of pre-fixed points / supremum of post-fixed points, with lfp_le, le_gfp, map_lfp, map_gfp and fixedPoints.completeLattice (Knaster–Tarski) — the same impredicative construction as wpLfp / wpGfp, in general form.",
+      "P. Cousot and R. Cousot. Constructive versions of Tarski's fixed point theorems. Pacific Journal of Mathematics 82(1):43–57, 1979. doi:10.2140/pjm.1979.82.43. Fixpoints of monotone maps via transfinite iteration without continuity, contrasted with the ω-iteration that needs continuity.",
+      "Lean 4 reference manual, recursive definitions: partial_fixpoint (introduced in Lean v4.17.0, leanprover/lean4 pull request 6355) defines functions as least fixpoints of monotone equations in chain-complete partial orders (for example Option-valued functions) and generates a partial-correctness theorem; lattice-theoretic least/greatest-fixpoint predicates (introduced in v4.20.0, pull request 8097; named inductive_fixpoint / coinductive_fixpoint from v4.23.0) use Knaster–Tarski on Prop with (co)induction principles. Source: github.com/leanprover/reference-manual, files Manual/RecursiveDefs/PartialFixpoint.lean and Manual/RecursiveDefs/CoinductivePredicates.lean. This package uses neither; its wpGfp and wpLfp are hand-written impredicative fixpoints.",
+      "Lean v4.25.0 release notes (github.com/leanprover/reference-manual, Manual/Releases/v4_25_0.lean): pull request leanprover/lean4#10333 introduces a coinductive keyword that defines coinductive predicates with the same syntax as inductive. The pinned toolchain v4.34.1 therefore offers coinductive predicates; this package does not use them, so that its definitions also make sense for a kernel without them."
+    ],
+    "boundary_evidence_lean": [
+      "Toy.FuelWP.loopSys_wpLfp_ne_wpGfp"
+    ],
+    "design_question": "Reference point: the impredicative definitions used in place of coinductive types are the intended fixpoints."
+  }
+]

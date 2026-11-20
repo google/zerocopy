@@ -28416,6 +28416,53 @@
         "lean/provable-inference"
       ]
     },
+    "fuel-indexed-and-coinductive-weakest-preconditions-for-partial-correctness": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/360933.360975"
+          },
+          "name": "Guarded commands, nondeterminacy and formal derivation of programs (E. W. Dijkstra, 1975)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/6490.6494"
+          },
+          "name": "Countable nondeterminism and random assignment (K. R. Apt and G. D. Plotkin, 1986)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-662-49498-1_23"
+          },
+          "name": "Functional big-step semantics (S. Owens, M. O. Myreen, R. Kumar, Y. K. Tan, 2016)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-1-4612-3228-5"
+          },
+          "name": "Predicate Calculus and Program Semantics (E. W. Dijkstra and C. S. Scholten, 1990)"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/weakest-preconditions",
+        "verification/partial-correctness",
+        "verification/total-correctness",
+        "verification/fixpoints",
+        "pl/operational-semantics",
+        "pl/fuel-indexed-semantics"
+      ]
+    },
     "fuel-step-indexing-clocks-and-tcb-recursion": {
       "observed_at": "2026-11-05",
       "subjects": [

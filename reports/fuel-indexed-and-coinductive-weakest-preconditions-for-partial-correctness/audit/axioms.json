@@ -1,0 +1,699 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.FuelWP.AllRunsEventually": [],
+    "Toy.FuelWP.AllRunsEventually.below": [],
+    "Toy.FuelWP.AllRunsEventually.below.casesOn": [],
+    "Toy.FuelWP.AllRunsEventually.below.later": [],
+    "Toy.FuelWP.AllRunsEventually.below.now": [],
+    "Toy.FuelWP.AllRunsEventually.below.rec": [],
+    "Toy.FuelWP.AllRunsEventually.brecOn": [],
+    "Toy.FuelWP.AllRunsEventually.casesOn": [],
+    "Toy.FuelWP.AllRunsEventually.later": [],
+    "Toy.FuelWP.AllRunsEventually.now": [],
+    "Toy.FuelWP.AllRunsEventually.rec": [],
+    "Toy.FuelWP.AllRunsEventually.recOn": [],
+    "Toy.FuelWP.AlwaysDiverges": [],
+    "Toy.FuelWP.AlwaysDiverges.here": [],
+    "Toy.FuelWP.AlwaysDiverges.succ": [],
+    "Toy.FuelWP.CD": [],
+    "Toy.FuelWP.CD.casesOn": [],
+    "Toy.FuelWP.CD.count": [],
+    "Toy.FuelWP.CD.count.elim": [],
+    "Toy.FuelWP.CD.count.inj": [],
+    "Toy.FuelWP.CD.count.injEq": [
+      "propext"
+    ],
+    "Toy.FuelWP.CD.count.noConfusion": [],
+    "Toy.FuelWP.CD.count.sizeOf_spec": [],
+    "Toy.FuelWP.CD.count_succ_ne_zero": [],
+    "Toy.FuelWP.CD.ctorElim": [],
+    "Toy.FuelWP.CD.ctorElimType": [],
+    "Toy.FuelWP.CD.ctorIdx": [],
+    "Toy.FuelWP.CD.list_misses_count": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.CD.list_misses_count.match_1_1": [],
+    "Toy.FuelWP.CD.noConfusion": [],
+    "Toy.FuelWP.CD.noConfusionType": [],
+    "Toy.FuelWP.CD.rec": [],
+    "Toy.FuelWP.CD.recOn": [],
+    "Toy.FuelWP.CD.start": [],
+    "Toy.FuelWP.CD.start.elim": [],
+    "Toy.FuelWP.CD.start.sizeOf_spec": [],
+    "Toy.FuelWP.CD.start_ne_count": [],
+    "Toy.FuelWP.CDStep": [],
+    "Toy.FuelWP.CDStep.casesOn": [],
+    "Toy.FuelWP.CDStep.choose": [],
+    "Toy.FuelWP.CDStep.rec": [],
+    "Toy.FuelWP.CDStep.recOn": [],
+    "Toy.FuelWP.CDStep.tick": [],
+    "Toy.FuelWP.CanStep": [],
+    "Toy.FuelWP.Deterministic": [],
+    "Toy.FuelWP.FinitelyBranching": [],
+    "Toy.FuelWP.FinitelyBranchingAt": [],
+    "Toy.FuelWP.FinitelyBranchingFrom": [],
+    "Toy.FuelWP.FinitelyBranchingFrom.here": [],
+    "Toy.FuelWP.FinitelyBranchingFrom.succ": [],
+    "Toy.FuelWP.HasInfiniteRun": [],
+    "Toy.FuelWP.LO": [],
+    "Toy.FuelWP.LO.casesOn": [],
+    "Toy.FuelWP.LO.ctorElim": [],
+    "Toy.FuelWP.LO.ctorElimType": [],
+    "Toy.FuelWP.LO.ctorIdx": [],
+    "Toy.FuelWP.LO.noConfusion": [],
+    "Toy.FuelWP.LO.noConfusionType": [],
+    "Toy.FuelWP.LO.out": [],
+    "Toy.FuelWP.LO.out.elim": [],
+    "Toy.FuelWP.LO.out.sizeOf_spec": [],
+    "Toy.FuelWP.LO.rec": [],
+    "Toy.FuelWP.LO.recOn": [],
+    "Toy.FuelWP.LO.spin": [],
+    "Toy.FuelWP.LO.spin.elim": [],
+    "Toy.FuelWP.LO.spin.sizeOf_spec": [],
+    "Toy.FuelWP.LO.spin_ne_out": [],
+    "Toy.FuelWP.LO3": [],
+    "Toy.FuelWP.LO3.casesOn": [],
+    "Toy.FuelWP.LO3.ctorElim": [],
+    "Toy.FuelWP.LO3.ctorElimType": [],
+    "Toy.FuelWP.LO3.ctorIdx": [],
+    "Toy.FuelWP.LO3.noConfusion": [],
+    "Toy.FuelWP.LO3.noConfusionType": [],
+    "Toy.FuelWP.LO3.out": [],
+    "Toy.FuelWP.LO3.out.elim": [],
+    "Toy.FuelWP.LO3.out.sizeOf_spec": [],
+    "Toy.FuelWP.LO3.rec": [],
+    "Toy.FuelWP.LO3.recOn": [],
+    "Toy.FuelWP.LO3.spin": [],
+    "Toy.FuelWP.LO3.spin.elim": [],
+    "Toy.FuelWP.LO3.spin.sizeOf_spec": [],
+    "Toy.FuelWP.LO3.spin_ne_out": [],
+    "Toy.FuelWP.LO3.start": [],
+    "Toy.FuelWP.LO3.start.elim": [],
+    "Toy.FuelWP.LO3.start.sizeOf_spec": [],
+    "Toy.FuelWP.LO3.start_ne_out": [],
+    "Toy.FuelWP.LPOState": [],
+    "Toy.FuelWP.LPOState.casesOn": [],
+    "Toy.FuelWP.LPOState.ctorElim": [],
+    "Toy.FuelWP.LPOState.ctorElimType": [],
+    "Toy.FuelWP.LPOState.ctorIdx": [],
+    "Toy.FuelWP.LPOState.done": [],
+    "Toy.FuelWP.LPOState.done.elim": [],
+    "Toy.FuelWP.LPOState.done.sizeOf_spec": [],
+    "Toy.FuelWP.LPOState.noConfusion": [],
+    "Toy.FuelWP.LPOState.noConfusionType": [],
+    "Toy.FuelWP.LPOState.rec": [],
+    "Toy.FuelWP.LPOState.recOn": [],
+    "Toy.FuelWP.LPOState.search": [],
+    "Toy.FuelWP.LPOState.search.elim": [],
+    "Toy.FuelWP.LPOState.search.inj": [],
+    "Toy.FuelWP.LPOState.search.injEq": [
+      "propext"
+    ],
+    "Toy.FuelWP.LPOState.search.noConfusion": [],
+    "Toy.FuelWP.LPOState.search.sizeOf_spec": [],
+    "Toy.FuelWP.LPOState.start": [],
+    "Toy.FuelWP.LPOState.start.elim": [],
+    "Toy.FuelWP.LPOState.start.sizeOf_spec": [],
+    "Toy.FuelWP.LimitedPrincipleOfOmniscience": [],
+    "Toy.FuelWP.MarkovPrinciple": [],
+    "Toy.FuelWP.PostFixed": [],
+    "Toy.FuelWP.PostFixed.reach": [],
+    "Toy.FuelWP.PreFixed": [],
+    "Toy.FuelWP.Reach": [],
+    "Toy.FuelWP.Reach.below": [],
+    "Toy.FuelWP.Reach.below.casesOn": [],
+    "Toy.FuelWP.Reach.below.rec": [],
+    "Toy.FuelWP.Reach.below.refl": [],
+    "Toy.FuelWP.Reach.below.step": [],
+    "Toy.FuelWP.Reach.brecOn": [],
+    "Toy.FuelWP.Reach.casesOn": [],
+    "Toy.FuelWP.Reach.rec": [],
+    "Toy.FuelWP.Reach.recOn": [],
+    "Toy.FuelWP.Reach.refl": [],
+    "Toy.FuelWP.Reach.step": [],
+    "Toy.FuelWP.RunEndOk": [],
+    "Toy.FuelWP.Stuck": [],
+    "Toy.FuelWP.System": [],
+    "Toy.FuelWP.System.casesOn": [],
+    "Toy.FuelWP.System.ctorIdx": [],
+    "Toy.FuelWP.System.mk": [],
+    "Toy.FuelWP.System.mk.inj": [],
+    "Toy.FuelWP.System.mk.injEq": [
+      "propext"
+    ],
+    "Toy.FuelWP.System.mk.noConfusion": [],
+    "Toy.FuelWP.System.mk.sizeOf_spec": [],
+    "Toy.FuelWP.System.noConfusion": [],
+    "Toy.FuelWP.System.noConfusionType": [],
+    "Toy.FuelWP.System.rec": [],
+    "Toy.FuelWP.System.recOn": [],
+    "Toy.FuelWP.System.step": [],
+    "Toy.FuelWP.System.terminal": [],
+    "Toy.FuelWP.allRunsEventually_isOut_iff_not_wpGfp_false": [],
+    "Toy.FuelWP.allRunsEventually_isOut_iff_wpLfp_isOut": [],
+    "Toy.FuelWP.allRunsEventually_isOut_not_partial_wp_expressible": [],
+    "Toy.FuelWP.allRunsEventually_neg_spin": [],
+    "Toy.FuelWP.allRunsEventually_neg_spinOrExit": [],
+    "Toy.FuelWP.allRunsEventually_neg_stuck": [],
+    "Toy.FuelWP.allRunsEventually_not_partial_wp_of_divergent_violation": [],
+    "Toy.FuelWP.allRunsEventually_pos_chain": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.allRunsEventually_pos_out": [],
+    "Toy.FuelWP.alwaysDiverges_imp_hasInfiniteRun": [
+      "Classical.choice"
+    ],
+    "Toy.FuelWP.alwaysDiverges_imp_hasInfiniteRun.match_1_1": [],
+    "Toy.FuelWP.alwaysDiverges_neg_done": [],
+    "Toy.FuelWP.alwaysDiverges_neg_error": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.alwaysDiverges_neg_spinOrExit": [],
+    "Toy.FuelWP.alwaysDiverges_pos_loop": [],
+    "Toy.FuelWP.alwaysDiverges_pos_spinOrOut": [],
+    "Toy.FuelWP.alwaysDiverges_satisfies_every_partial_wp_and_no_total_wp": [],
+    "Toy.FuelWP.canStep_neg_stuck": [],
+    "Toy.FuelWP.canStep_neg_stuck.match_1_1": [],
+    "Toy.FuelWP.canStep_pos_loop": [],
+    "Toy.FuelWP.canStep_raw_termLoop": [
+      "propext"
+    ],
+    "Toy.FuelWP.chainSys": [],
+    "Toy.FuelWP.chainSys_deterministic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.chainSys_finitelyBranching": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.chainSys_fuel_gt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.chainSys_fuel_per_state_not_uniform": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.chainSys_fuel_per_state_not_uniform.match_1_1": [],
+    "Toy.FuelWP.chainSys_runEndOk": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.chainSys_wpFuel": [
+      "propext"
+    ],
+    "Toy.FuelWP.chainSys_wpFuelTotal": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.chainSys_wpGfp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.chainSys_wpLfp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.countdownSys": [],
+    "Toy.FuelWP.countdownSys_count_fuel_gt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.countdownSys_count_wpLfp": [
+      "propext"
+    ],
+    "Toy.FuelWP.countdownSys_finitelyBranchingAt_count": [
+      "propext"
+    ],
+    "Toy.FuelWP.countdownSys_not_finitelyBranchingAt_start": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.countdownSys_not_finitelyBranchingFrom_start": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.countdownSys_reach_count": [],
+    "Toy.FuelWP.countdownSys_start_no_fuel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.countdownSys_start_wpLfp": [
+      "propext"
+    ],
+    "Toy.FuelWP.countdown_exists_wpFuelTotal_iff_wpLfp_fails": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.countdown_wpLfp_without_uniform_fuel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.deterministic_neg_countdown": [],
+    "Toy.FuelWP.deterministic_neg_spinOrExit": [],
+    "Toy.FuelWP.deterministic_pos_chain": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.deterministic_pos_termBranch": [],
+    "Toy.FuelWP.doneSys": [],
+    "Toy.FuelWP.doneSys_not_hasInfiniteRun": [],
+    "Toy.FuelWP.doneSys_wpFuelTotal_one": [],
+    "Toy.FuelWP.doneSys_wpLfp_true": [],
+    "Toy.FuelWP.done_allRunsEventually_false_expressible": [],
+    "Toy.FuelWP.done_not_every_partial_wp": [],
+    "Toy.FuelWP.done_some_total_wp": [],
+    "Toy.FuelWP.downToStuckSys": [],
+    "Toy.FuelWP.downToStuckSys_not_wpFuel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.downToStuckSys_not_wpGfp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.downToStuckSys_wpFuel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.em_of_disjunctive_adequacy": [],
+    "Toy.FuelWP.exists_wpFuelTotal_iff_wpLfp_ofStepFn": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.exists_wpFuelTotal_iff_wpLfp_of_deterministic": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.exists_wpFuelTotal_iff_wpLfp_of_finitelyBranching": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.exists_wpFuelTotal_of_wpGfp_of_not_hasInfiniteRun_of_finitelyBranchingFrom": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.exists_wpFuelTotal_of_wpLfp_of_deterministic_of_decidable_terminal": [],
+    "Toy.FuelWP.exists_wpFuelTotal_of_wpLfp_of_finitelyBranchingFrom": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.fanToStuckSys": [],
+    "Toy.FuelWP.fanToStuckSys_angelic_forall_fuel_not_gfp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.fanToStuckSys_not_wpGfpAngelic_count": [
+      "propext"
+    ],
+    "Toy.FuelWP.fanToStuckSys_wpFuelAngelic_count": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.findTrue": [],
+    "Toy.FuelWP.findTrue.match_1": [],
+    "Toy.FuelWP.findTrue.match_3": [],
+    "Toy.FuelWP.findTrue_true_iff": [],
+    "Toy.FuelWP.findTrue_true_iff.match_1_1": [],
+    "Toy.FuelWP.findTrue_true_iff.match_1_3": [],
+    "Toy.FuelWP.findTrue_true_iff.match_1_5": [],
+    "Toy.FuelWP.finitelyBranchingAt_neg_countdown": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.finitelyBranchingAt_pos_chain": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.finitelyBranchingFrom_neg_countdown_start": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.finitelyBranchingFrom_of_finitelyBranching": [],
+    "Toy.FuelWP.finitelyBranchingFrom_pos_countdown_count": [
+      "propext"
+    ],
+    "Toy.FuelWP.finitelyBranching_neg_countdown": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.finitelyBranching_of_deterministic": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.finitelyBranching_pos_chain": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.finitelyBranching_pos_loop": [
+      "propext"
+    ],
+    "Toy.FuelWP.fixed_fuel_wpFuel_not_imp_wpGfp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.forall_wpFuel_iff_wpGfp": [],
+    "Toy.FuelWP.forall_wpGfp_iff_alwaysDiverges": [],
+    "Toy.FuelWP.hasInfiniteRun_neg_chain": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.hasInfiniteRun_neg_done": [],
+    "Toy.FuelWP.hasInfiniteRun_neg_termLoop": [],
+    "Toy.FuelWP.hasInfiniteRun_pos_loop": [],
+    "Toy.FuelWP.hasInfiniteRun_pos_spinOrExit": [],
+    "Toy.FuelWP.hasInfiniteRun_refutes_every_total_wp": [],
+    "Toy.FuelWP.isOut": [],
+    "Toy.FuelWP.isOut3": [],
+    "Toy.FuelWP.loopSys": [],
+    "Toy.FuelWP.loopSys_alwaysDiverges": [],
+    "Toy.FuelWP.loopSys_every_partial_wp_no_total_wp": [],
+    "Toy.FuelWP.loopSys_hasInfiniteRun": [],
+    "Toy.FuelWP.loopSys_wpLfp_ne_wpGfp": [],
+    "Toy.FuelWP.loop_allRunsEventually_true_expressible": [],
+    "Toy.FuelWP.loop_finitelyBranching_no_total_fuel": [
+      "propext"
+    ],
+    "Toy.FuelWP.loop_finitelyBranching_no_total_fuel.match_1_1": [],
+    "Toy.FuelWP.lpoSys": [
+      "propext"
+    ],
+    "Toy.FuelWP.lpoSys.match_1": [
+      "propext"
+    ],
+    "Toy.FuelWP.lpoSys.match_6": [],
+    "Toy.FuelWP.lpoSys_finitelyBranching": [
+      "propext"
+    ],
+    "Toy.FuelWP.lpoSys_wpFuelTotal_search_bound": [
+      "propext"
+    ],
+    "Toy.FuelWP.lpoSys_wpFuelTotal_search_bound.match_1_1": [],
+    "Toy.FuelWP.lpoSys_wpLfp_search_of_witness": [
+      "propext"
+    ],
+    "Toy.FuelWP.lpoSys_wpLfp_start": [
+      "propext"
+    ],
+    "Toy.FuelWP.lpo_of_exists_wpFuelTotal_iff_wpLfp_of_finitelyBranching": [
+      "propext"
+    ],
+    "Toy.FuelWP.lpo_of_exists_wpFuelTotal_of_wpLfp_of_finitelyBranchingFrom": [
+      "propext"
+    ],
+    "Toy.FuelWP.lpo_of_koenig_form": [
+      "propext"
+    ],
+    "Toy.FuelWP.lpo_of_lpoSys_fuel_bound": [
+      "propext"
+    ],
+    "Toy.FuelWP.lpo_of_lpoSys_fuel_bound.match_1_1": [],
+    "Toy.FuelWP.markovSys": [],
+    "Toy.FuelWP.markovSys_not_hasInfiniteRun_of_not_all_false": [],
+    "Toy.FuelWP.markovSys_wpGfp": [],
+    "Toy.FuelWP.markov_of_wpLfp_iff_wpGfp_and_not_hasInfiniteRun": [],
+    "Toy.FuelWP.markov_of_wpLfp_iff_wpGfp_and_not_hasInfiniteRun.match_1_1": [],
+    "Toy.FuelWP.nonvacuity_adequacy": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.nonvacuity_allRunsEventually_isOut_nontrivial": [],
+    "Toy.FuelWP.nonvacuity_alwaysDiverges": [],
+    "Toy.FuelWP.nonvacuity_coinduction_induction": [],
+    "Toy.FuelWP.nonvacuity_divergent_violation": [],
+    "Toy.FuelWP.nonvacuity_exists_wpFuelTotal_iff_wpLfp_corollaries": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.nonvacuity_exists_wpFuelTotal_iff_wpLfp_ofStepFn": [
+      "propext"
+    ],
+    "Toy.FuelWP.nonvacuity_exists_wpFuelTotal_of_wpLfp_of_finitelyBranchingFrom": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.nonvacuity_forall_wpFuel_and_wpGfp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.nonvacuity_hasInfiniteRun": [],
+    "Toy.FuelWP.nonvacuity_koenig_form": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.nonvacuity_wpFuelTotal": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.nonvacuity_wpFuel_antitone": [],
+    "Toy.FuelWP.nonvacuity_wpFuel_iff_forall_reach_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.nonvacuity_wpLfp_iff_wpGfp_and_not_hasInfiniteRun": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.not_partial_wp_expressible_of_alwaysDiverges_of_not": [],
+    "Toy.FuelWP.not_wpFuelTotal_of_alwaysDiverges": [],
+    "Toy.FuelWP.not_wpFuelTotal_of_hasInfiniteRun": [],
+    "Toy.FuelWP.not_wpGfp_not_iff_wpLfp_of_deterministic_of_not_stuck": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.not_wpGfp_not_of_wpLfp": [],
+    "Toy.FuelWP.not_wpLfp_of_alwaysDiverges": [],
+    "Toy.FuelWP.not_wpLfp_of_hasInfiniteRun": [],
+    "Toy.FuelWP.not_wpLfp_of_hasInfiniteRun.match_1_1": [],
+    "Toy.FuelWP.ofStepFn": [],
+    "Toy.FuelWP.ofStepFn_deterministic": [],
+    "Toy.FuelWP.ofStepFn_neg_pred": [
+      "propext"
+    ],
+    "Toy.FuelWP.ofStepFn_pos_pred": [],
+    "Toy.FuelWP.ofStepFn_pred_deterministic": [],
+    "Toy.FuelWP.ofStepFn_pred_wpLfp": [
+      "propext"
+    ],
+    "Toy.FuelWP.postFixed_neg_stuck": [],
+    "Toy.FuelWP.postFixed_pos_loop": [],
+    "Toy.FuelWP.preFixed_neg_done": [],
+    "Toy.FuelWP.preFixed_pos_spinOrOut_isOut": [],
+    "Toy.FuelWP.preFixed_pos_top": [],
+    "Toy.FuelWP.predStep": [],
+    "Toy.FuelWP.predStep.match_1": [],
+    "Toy.FuelWP.propSys": [],
+    "Toy.FuelWP.reach_neg_from_terminal": [
+      "propext"
+    ],
+    "Toy.FuelWP.reach_neg_termLoop": [
+      "propext"
+    ],
+    "Toy.FuelWP.reach_pos_chain": [
+      "propext"
+    ],
+    "Toy.FuelWP.reach_succ_iff": [
+      "propext"
+    ],
+    "Toy.FuelWP.reach_zero_iff": [],
+    "Toy.FuelWP.runEndOk_iff_not_stuck": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.runEndOk_iff_not_stuck.match_1_1": [],
+    "Toy.FuelWP.runEndOk_iff_not_stuck.match_1_3": [],
+    "Toy.FuelWP.runEndOk_iff_not_stuck.match_1_5": [],
+    "Toy.FuelWP.runEndOk_iff_or": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.runEndOk_iff_or.match_1_1": [],
+    "Toy.FuelWP.runEndOk_neg_done_false": [],
+    "Toy.FuelWP.runEndOk_neg_stuck": [],
+    "Toy.FuelWP.runEndOk_pos_done": [],
+    "Toy.FuelWP.runEndOk_pos_loop": [],
+    "Toy.FuelWP.spinOrEmitLoopSys": [],
+    "Toy.FuelWP.spinOrEmitLoopSys_allRunsEventually_not_wp_expressible": [],
+    "Toy.FuelWP.spinOrExitSys": [],
+    "Toy.FuelWP.spinOrExitSys_conjugate_ne_wpLfp": [],
+    "Toy.FuelWP.spinOrExitSys_conjugate_ne_wpLfp.match_1_1": [],
+    "Toy.FuelWP.spinOrExitSys_finitelyBranching_not_deterministic": [],
+    "Toy.FuelWP.spinOrExitSys_hasInfiniteRun": [],
+    "Toy.FuelWP.spinOrOutSys": [],
+    "Toy.FuelWP.spinOrOutSys_alwaysDiverges": [],
+    "Toy.FuelWP.spinOrOutSys_hasInfiniteRun": [],
+    "Toy.FuelWP.spinOrOutSys_out_allRunsEventually_isOut": [],
+    "Toy.FuelWP.spinOrOutSys_reach_spin": [],
+    "Toy.FuelWP.spinOrOutSys_spin_every_partial_wp_but_never_outputs": [],
+    "Toy.FuelWP.spinOrOutSys_spin_not_allRunsEventually_isOut": [],
+    "Toy.FuelWP.startSpinOutSys": [],
+    "Toy.FuelWP.startSpinOutSys_allRunsEventually_not_partial_wp_expressible": [],
+    "Toy.FuelWP.startSpinOutSys_reach_spin": [],
+    "Toy.FuelWP.startSpinOutSys_spin_alwaysDiverges": [],
+    "Toy.FuelWP.startSpinOutSys_spin_not_allRunsEventually": [],
+    "Toy.FuelWP.startSpinOutSys_start_allRunsEventually_later": [],
+    "Toy.FuelWP.startSpinOutSys_wpGfp_iff_allRunsEventually_off_spin": [],
+    "Toy.FuelWP.startSpinOutSys_wpGfp_iff_allRunsEventually_off_spin.match_1_1": [],
+    "Toy.FuelWP.stuckSys": [],
+    "Toy.FuelWP.stuckSys_conjugate_ne_wpLfp": [],
+    "Toy.FuelWP.stuckSys_no_total_no_partial": [],
+    "Toy.FuelWP.stuckSys_not_hasInfiniteRun": [],
+    "Toy.FuelWP.stuckSys_not_wpGfp_not_wpFuel_one": [],
+    "Toy.FuelWP.stuckSys_stuck": [],
+    "Toy.FuelWP.stuck_finitelyBranching_no_infinite_run_no_total_fuel": [],
+    "Toy.FuelWP.stuck_finitelyBranching_no_infinite_run_no_total_fuel.match_1_1": [],
+    "Toy.FuelWP.stuck_neg_done": [],
+    "Toy.FuelWP.stuck_neg_loop": [],
+    "Toy.FuelWP.stuck_pos_stuckSys": [],
+    "Toy.FuelWP.stuck_reach_not_runEndOk": [],
+    "Toy.FuelWP.termBranchSys": [],
+    "Toy.FuelWP.termLoopSys": [],
+    "Toy.FuelWP.wpFuel": [],
+    "Toy.FuelWP.wpFuel.match_1": [],
+    "Toy.FuelWP.wpFuelAngelic": [],
+    "Toy.FuelWP.wpFuelAngelic.match_1": [],
+    "Toy.FuelWP.wpFuelAngelic_neg_stuck": [],
+    "Toy.FuelWP.wpFuelAngelic_pos_zero_stuck": [],
+    "Toy.FuelWP.wpFuelTotal": [],
+    "Toy.FuelWP.wpFuelTotal_excluded_miracle": [],
+    "Toy.FuelWP.wpFuelTotal_iff_wpFuel_and_no_reach": [
+      "propext"
+    ],
+    "Toy.FuelWP.wpFuelTotal_iff_wpFuel_and_no_reach.match_1_1": [],
+    "Toy.FuelWP.wpFuelTotal_iff_wpFuel_and_no_reach.match_1_3": [],
+    "Toy.FuelWP.wpFuelTotal_monotone": [],
+    "Toy.FuelWP.wpFuelTotal_monotone_drop_h": [],
+    "Toy.FuelWP.wpFuelTotal_neg_chain_short": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.wpFuelTotal_neg_loop": [],
+    "Toy.FuelWP.wpFuelTotal_neg_zero_done": [],
+    "Toy.FuelWP.wpFuelTotal_not_antitone_done": [],
+    "Toy.FuelWP.wpFuelTotal_pos_chain": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.wpFuelTotal_pos_done": [],
+    "Toy.FuelWP.wpFuelTotal_propSys_one_iff_not_not": [],
+    "Toy.FuelWP.wpFuelTotal_succ": [],
+    "Toy.FuelWP.wpFuelTotal_zero": [],
+    "Toy.FuelWP.wpFuel_antitone": [],
+    "Toy.FuelWP.wpFuel_antitone_drop_h": [],
+    "Toy.FuelWP.wpFuel_iff_forall_reach_lt": [],
+    "Toy.FuelWP.wpFuel_neg_done_false": [],
+    "Toy.FuelWP.wpFuel_neg_error_in_range": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.wpFuel_neg_stuck": [],
+    "Toy.FuelWP.wpFuel_not_monotone_stuck": [],
+    "Toy.FuelWP.wpFuel_of_alwaysDiverges": [],
+    "Toy.FuelWP.wpFuel_of_wpGfp": [],
+    "Toy.FuelWP.wpFuel_one_iff_runEndOk": [],
+    "Toy.FuelWP.wpFuel_pos_error_out_of_range": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.wpFuel_pos_loop_false": [],
+    "Toy.FuelWP.wpFuel_pos_zero_stuck": [],
+    "Toy.FuelWP.wpFuel_succ": [],
+    "Toy.FuelWP.wpFuel_zero": [],
+    "Toy.FuelWP.wpGfp": [],
+    "Toy.FuelWP.wpGfpAngelic": [],
+    "Toy.FuelWP.wpGfpAngelic_neg_stuck": [],
+    "Toy.FuelWP.wpGfpAngelic_pos_spinOrExit": [],
+    "Toy.FuelWP.wpGfp_adequacy": [],
+    "Toy.FuelWP.wpGfp_adequacy_drop_h": [],
+    "Toy.FuelWP.wpGfp_and_not_hasInfiniteRun_of_wpLfp": [],
+    "Toy.FuelWP.wpGfp_coinduction": [],
+    "Toy.FuelWP.wpGfp_coinduction_drop_hX": [],
+    "Toy.FuelWP.wpGfp_coinduction_drop_hs": [],
+    "Toy.FuelWP.wpGfp_false_iff_alwaysDiverges": [],
+    "Toy.FuelWP.wpGfp_iff_forall_reach_runEndOk": [],
+    "Toy.FuelWP.wpGfp_neg_done_false": [],
+    "Toy.FuelWP.wpGfp_neg_error_far": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.wpGfp_neg_stuck": [],
+    "Toy.FuelWP.wpGfp_of_alwaysDiverges": [],
+    "Toy.FuelWP.wpGfp_of_forall_reach_runEndOk": [],
+    "Toy.FuelWP.wpGfp_of_forall_reach_runEndOk_drop_h": [],
+    "Toy.FuelWP.wpGfp_of_forall_wpFuel": [],
+    "Toy.FuelWP.wpGfp_of_wpFuelTotal": [],
+    "Toy.FuelWP.wpGfp_pos_chain": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.wpGfp_pos_loop_false": [],
+    "Toy.FuelWP.wpGfp_postFixed": [],
+    "Toy.FuelWP.wpGfp_postFixed.match_1_1": [],
+    "Toy.FuelWP.wpGfp_termLoop_iff": [],
+    "Toy.FuelWP.wpGfp_unfold": [],
+    "Toy.FuelWP.wpLfp": [],
+    "Toy.FuelWP.wpLfp_excluded_miracle": [],
+    "Toy.FuelWP.wpLfp_iff_wpGfp_and_not_hasInfiniteRun": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.wpLfp_iff_wpGfp_and_not_hasInfiniteRun.match_1_1": [],
+    "Toy.FuelWP.wpLfp_iff_wpGfp_and_not_hasInfiniteRun.match_1_3": [],
+    "Toy.FuelWP.wpLfp_iff_wpGfp_and_not_hasInfiniteRun.match_1_5": [],
+    "Toy.FuelWP.wpLfp_induction": [],
+    "Toy.FuelWP.wpLfp_induction_drop_hX": [],
+    "Toy.FuelWP.wpLfp_induction_drop_hs": [],
+    "Toy.FuelWP.wpLfp_neg_chain_wrong_post": [
+      "propext"
+    ],
+    "Toy.FuelWP.wpLfp_neg_loop": [],
+    "Toy.FuelWP.wpLfp_neg_stuck": [],
+    "Toy.FuelWP.wpLfp_of_exists_wpFuelTotal": [],
+    "Toy.FuelWP.wpLfp_of_not_wpGfp_not_of_deterministic_of_not_stuck": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.wpLfp_pos_chain": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.FuelWP.wpLfp_pos_countdown": [
+      "propext"
+    ],
+    "Toy.FuelWP.wpLfp_preFixed": [],
+    "Toy.FuelWP.wpLfp_unfold": [],
+    "Toy.FuelWP.wpStep": [],
+    "Toy.FuelWP.wpStepAngelic": [],
+    "Toy.FuelWP.wpStepAngelic_neg_stuck": [],
+    "Toy.FuelWP.wpStepAngelic_pos_spinOrExit": [],
+    "Toy.FuelWP.wpStep_mono": [],
+    "Toy.FuelWP.wpStep_neg_stuck": [],
+    "Toy.FuelWP.wpStep_pos_done": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

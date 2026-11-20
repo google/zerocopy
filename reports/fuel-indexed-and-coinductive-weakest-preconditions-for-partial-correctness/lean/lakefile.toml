@@ -1,0 +1,5 @@
+name = "toy_fuel_wp"
+defaultTargets = ["ToyFuelWP"]
+
+[[lean_lib]]
+name = "ToyFuelWP"

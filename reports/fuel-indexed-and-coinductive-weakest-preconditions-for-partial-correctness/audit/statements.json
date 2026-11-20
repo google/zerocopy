@@ -1,0 +1,365 @@
+{
+  "statements": {
+    "Toy.FuelWP.allRunsEventually_isOut_iff_not_wpGfp_false": {
+      "closure_sha256": "4a55492172490e3a3f3c391b89d1cfa3a4696dce638e73dcb883c4ea5bccd44d",
+      "closure_size": 16,
+      "statement_sha256": "5e6f10b451b073cdcf2b80b16fa5931dd69bc9d4ed0da747785460fb56a4b4dc"
+    },
+    "Toy.FuelWP.allRunsEventually_isOut_iff_wpLfp_isOut": {
+      "closure_sha256": "a4e893ef3dcbac60d5254fedc61eea63f6603783f532c7f3ccb025f7966c7349",
+      "closure_size": 16,
+      "statement_sha256": "e743f2c29d75444b5c905a2549fcbb9dc598d58d742d1deaa4a30f22d5ffe668"
+    },
+    "Toy.FuelWP.allRunsEventually_isOut_not_partial_wp_expressible": {
+      "closure_sha256": "b207bb8197e346d98a17da7e393981bed037829e245d1655918975a8647fdc06",
+      "closure_size": 19,
+      "statement_sha256": "91fad745fcc8f00ff3b40ff46b4cbbe0fdac12431e69f6093e993c7d1e2239c6"
+    },
+    "Toy.FuelWP.allRunsEventually_not_partial_wp_of_divergent_violation": {
+      "closure_sha256": "bf64ca740e973543c8562a68a8dd232767b875b69499f8f17fc1987474e9d218",
+      "closure_size": 18,
+      "statement_sha256": "c1e068654b42c4d86220587f37d25fa1a90daec850c891167619b673db29bc26"
+    },
+    "Toy.FuelWP.alwaysDiverges_satisfies_every_partial_wp_and_no_total_wp": {
+      "closure_sha256": "7b5fc07ef57853aca76bb1c8d23891f53cca99ad0b30a494e67898296cf64491",
+      "closure_size": 19,
+      "statement_sha256": "547fb184e193285b2ef1e7cd219c8a78420e89613b245d4d657a0e2882dfc028"
+    },
+    "Toy.FuelWP.countdown_exists_wpFuelTotal_iff_wpLfp_fails": {
+      "closure_sha256": "e4cf17b78245fe0cb4d1784b874ca5dc5cf783f643c2f67081fb65df4bb74105",
+      "closure_size": 21,
+      "statement_sha256": "46b6f97b3910112558166c2605f729edff315291f3e99318c6f02c08b52b0129"
+    },
+    "Toy.FuelWP.countdown_wpLfp_without_uniform_fuel": {
+      "closure_sha256": "2a758c74cb14108e0f8c0ea09022666dda01ab3420a15b74da6e3ad138d0b885",
+      "closure_size": 28,
+      "statement_sha256": "9acf3acb74d425be59f1aee5d22d7348fa13f84260accb3c78260bdfbfe47a67"
+    },
+    "Toy.FuelWP.done_allRunsEventually_false_expressible": {
+      "closure_sha256": "441c6288ca31bbeb37d8fe4d20a9d9aae0146bda18d2e5624ace3cc20801fc5c",
+      "closure_size": 19,
+      "statement_sha256": "68a4367e09f1e865c3c00d268ad4bd3530024293758f1c4e833e65bb942fb591"
+    },
+    "Toy.FuelWP.done_not_every_partial_wp": {
+      "closure_sha256": "108d7c11a6faa1cf8acc905f89b80a879b3e3e14f5352b117962d006501c7972",
+      "closure_size": 16,
+      "statement_sha256": "fd67f3cc051755d30c75192819aa4fc92f53bb01857ad9433d10a7dbd68e56c5"
+    },
+    "Toy.FuelWP.done_some_total_wp": {
+      "closure_sha256": "041288c965b1783e79ac4b882dbae30b3739c52fff9734e1d78f756fd72b4342",
+      "closure_size": 13,
+      "statement_sha256": "85dc643caf6fa512917e0bbf626b48bfca427b5c4b45d1c3bd4db2b83fb1f3ec"
+    },
+    "Toy.FuelWP.exists_wpFuelTotal_iff_wpLfp_ofStepFn": {
+      "closure_sha256": "40401f1e8ac405ae9a011d7d9cd58a44485b41d3371cf268be4519882caff577",
+      "closure_size": 12,
+      "statement_sha256": "e47051e904b7ae44ac5bbd77cd9ae9718e14cb86e6eaf94311149f62a8419411"
+    },
+    "Toy.FuelWP.exists_wpFuelTotal_iff_wpLfp_of_deterministic": {
+      "closure_sha256": "a565631398e13e079fc9528ad147a1cb7d572face9cca6d400e19d722c4aeddd",
+      "closure_size": 12,
+      "statement_sha256": "57ac32ff357b11e59416ce8f6f6363555ddd526a8388c9670cc4db64f8c71e68"
+    },
+    "Toy.FuelWP.exists_wpFuelTotal_iff_wpLfp_of_finitelyBranching": {
+      "closure_sha256": "d7e0645085d2090c0d585be1c418bec2cac7cc168434a23a2fdd7822ca16d68f",
+      "closure_size": 13,
+      "statement_sha256": "f21b633e7ac33aaa1de8e539ac804909d63342969a7fe0d8640f531c5ef2342f"
+    },
+    "Toy.FuelWP.exists_wpFuelTotal_of_wpGfp_of_not_hasInfiniteRun_of_finitelyBranchingFrom": {
+      "closure_sha256": "417758a1903cc71f947ea42ed468578f2a360bd0450249d41f13383e1ef46670",
+      "closure_size": 17,
+      "statement_sha256": "5bf0705d1b42fd321c96b848a4f5908deadd45fb7897479b379a16f383cbe54b"
+    },
+    "Toy.FuelWP.exists_wpFuelTotal_of_wpLfp_of_finitelyBranchingFrom": {
+      "closure_sha256": "2b57e838e2b9f92ddfa382b6370e52db77e65472e4a8b72a6d39e18ba28393be",
+      "closure_size": 16,
+      "statement_sha256": "c28c1bd973045353a6eb40eb7a2550244279e0b5d10e1a579c326201345e98bc"
+    },
+    "Toy.FuelWP.fixed_fuel_wpFuel_not_imp_wpGfp": {
+      "closure_sha256": "c9c3bff59c4f8dc1d5aaf67ce1ad03bd6b74644fce81156e1a6a5e447427f67f",
+      "closure_size": 12,
+      "statement_sha256": "360000882ad8392e1cdf3bdb1bd2172642f5dec7431201aa29fb252048da2e2f"
+    },
+    "Toy.FuelWP.forall_wpFuel_iff_wpGfp": {
+      "closure_sha256": "6121c99ef2fc0c868a8d026c21274ca8ca0854a11e383df9fc4792c56dbcc2f2",
+      "closure_size": 11,
+      "statement_sha256": "8fab44a27000217938b5edd23d030bf7b0f280a6fe341667536668b6e1d206ea"
+    },
+    "Toy.FuelWP.forall_wpGfp_iff_alwaysDiverges": {
+      "closure_sha256": "cebc798646ad583d7fd6799c9e7702e4a14464fd2e7b908f574f7b9318ba8b32",
+      "closure_size": 12,
+      "statement_sha256": "07d52152c8cad8312dc5437f4f9d8c853a8f6c24a6a3a6f9197e9b828c7fd8a7"
+    },
+    "Toy.FuelWP.hasInfiniteRun_refutes_every_total_wp": {
+      "closure_sha256": "a25a30d399180c25aa676fc1b835d3f59865bc9ce685d3cd908a01ba21ffe84a",
+      "closure_size": 12,
+      "statement_sha256": "468da089596e0c89ca0e33b956ec8a8b7a65bce3cda9aa98bdcd0b65a171373f"
+    },
+    "Toy.FuelWP.loop_allRunsEventually_true_expressible": {
+      "closure_sha256": "a59b392e70d64fdeaadb7167ca565e6ed9db5bce4e15b4df89e1c6c72d7727c7",
+      "closure_size": 19,
+      "statement_sha256": "60f391b0f5a9a7af06650cbb05945c49a33c664bf274ca60c02c80b19f4eb091"
+    },
+    "Toy.FuelWP.loop_finitelyBranching_no_total_fuel": {
+      "closure_sha256": "5192c8d253152332eb19963cf1e0ab2a6ebeaae2fdbffbeaecdfac3957309dbc",
+      "closure_size": 21,
+      "statement_sha256": "72af073346283f4e60e7a71131006fa65631d3efc6a4ed51a72516c64ad7c7b2"
+    },
+    "Toy.FuelWP.nonvacuity_adequacy": {
+      "closure_sha256": "ddadbde9371f4384b43f53556184ee66ab10021075f2f91a56224f1d8581fa98",
+      "closure_size": 14,
+      "statement_sha256": "79dc6c097d65ccafbe4e491e061d6ad1836f331a7db31309cf3908bfeed11afd"
+    },
+    "Toy.FuelWP.nonvacuity_allRunsEventually_isOut_nontrivial": {
+      "closure_sha256": "01a68049947127a602815de603536d4d59a9b8bfceae956000ca0ab9ff773cda",
+      "closure_size": 19,
+      "statement_sha256": "4efdf3194f1b7d541238ecc41ca6077fa233f73055772dc908f2cf596f911007"
+    },
+    "Toy.FuelWP.nonvacuity_alwaysDiverges": {
+      "closure_sha256": "ab1f06d3f5eb24d675d8b6908edb5389fececa3a2aa99c3b0ab1579cc4172715",
+      "closure_size": 14,
+      "statement_sha256": "bf1e7b278cf25c107d62048ff68f2fbf12daeba6ea61e1513a3df3154b438afa"
+    },
+    "Toy.FuelWP.nonvacuity_coinduction_induction": {
+      "closure_sha256": "e6e543a016254036c8ed3dde9de6bd23e37c02d34a352abc0f1b576c3a626e1f",
+      "closure_size": 15,
+      "statement_sha256": "63bf6d2a7c2aac0c8acf5e669763c7a2ec1722a2d48e1fc19f9535befcceef99"
+    },
+    "Toy.FuelWP.nonvacuity_divergent_violation": {
+      "closure_sha256": "fd13716c6f97b6058e99ef1e5d3d4f33137cb982cd334523785d4d630aa9978b",
+      "closure_size": 23,
+      "statement_sha256": "b0a39e054d3c67492ba0edd27f91b41f6f66b3eff5e44f76e128b9ca6a1b0500"
+    },
+    "Toy.FuelWP.nonvacuity_exists_wpFuelTotal_iff_wpLfp_corollaries": {
+      "closure_sha256": "4d21770218d2724b4b34ee3a4bb1915409481155b2c678cbe4479614cfa14f21",
+      "closure_size": 12,
+      "statement_sha256": "3b348fc806940e89481e0ee8d78673fa5b8422ec27c1f44fed554bef0807f34b"
+    },
+    "Toy.FuelWP.nonvacuity_exists_wpFuelTotal_iff_wpLfp_ofStepFn": {
+      "closure_sha256": "2504b78f5a97505579774733baf50326454e2cd6736f76d29d0ad201a086e753",
+      "closure_size": 12,
+      "statement_sha256": "e07dea7a5974f011cbbfaabf34c817b04073c6549fb85987b55ab70ee0c58718"
+    },
+    "Toy.FuelWP.nonvacuity_exists_wpFuelTotal_of_wpLfp_of_finitelyBranchingFrom": {
+      "closure_sha256": "ad3a4438daa54287281be93879746df1fbccd9e13a953b956fc0d3cf8a29f60d",
+      "closure_size": 21,
+      "statement_sha256": "b6144d5ab970627db5ae25c89450abe5a6ece27743a2203a96574d65cbec27da"
+    },
+    "Toy.FuelWP.nonvacuity_forall_wpFuel_and_wpGfp": {
+      "closure_sha256": "25d6f82fc4674042ad4fd994c368befb9df32f527c0421ee3d22f1394f3f356c",
+      "closure_size": 13,
+      "statement_sha256": "1c222787ededdd5bacbe0e83a862bd5ccb431ae4a45ba2fea32fd384668c57d7"
+    },
+    "Toy.FuelWP.nonvacuity_hasInfiniteRun": {
+      "closure_sha256": "8edac8ecd7f574eaf5545eba2c87f656fc16911db49ed49c18209c851b6b3b65",
+      "closure_size": 14,
+      "statement_sha256": "fa48529c5b37c610dabcd46242b6bf4abf0c163f41458e149796333353f51dfb"
+    },
+    "Toy.FuelWP.nonvacuity_koenig_form": {
+      "closure_sha256": "420d780f4bb1b33ce04db2941de8b09cd7d531c0ea67eea6af967e1e7902d7f6",
+      "closure_size": 15,
+      "statement_sha256": "5d3c53bf537296306dee0886e41b71068c57e94583778c99243d52b9452a6a76"
+    },
+    "Toy.FuelWP.nonvacuity_wpFuelTotal": {
+      "closure_sha256": "cf0a88cb7d50909317706ad8e925198b6cfd142aa89f81a001d7180beeb55c15",
+      "closure_size": 10,
+      "statement_sha256": "751d97f841589d601b2ee778a02ca7f640f05e1d0cc4358d94d56a9352ee3157"
+    },
+    "Toy.FuelWP.nonvacuity_wpFuel_antitone": {
+      "closure_sha256": "a06750f90943438aff19ea958ec2e61006ef8253b108d47e3bf69159db2bfc91",
+      "closure_size": 10,
+      "statement_sha256": "2db8af3d85ae5944217c93465617273aa4d574aa9aad4da99c2ebba67121e3c0"
+    },
+    "Toy.FuelWP.nonvacuity_wpFuel_iff_forall_reach_lt": {
+      "closure_sha256": "633d9ad9e839ba3e806fcca214209d47ed8fc15f2c7cd5ed38fb02c2054aadd9",
+      "closure_size": 10,
+      "statement_sha256": "39818aaf72070ac8e4cf1dc6257cd013fe2933c8ee60bf5b81ee84d618904e65"
+    },
+    "Toy.FuelWP.nonvacuity_wpLfp_iff_wpGfp_and_not_hasInfiniteRun": {
+      "closure_sha256": "456144669c8db7e60fa20228bf098ffeace1e537673dbf68af6bc889db720d5c",
+      "closure_size": 19,
+      "statement_sha256": "15d1138d48ac66570e181599f4da67dd7b7ca919d1bada0eca5c75b414f9a7cc"
+    },
+    "Toy.FuelWP.not_partial_wp_expressible_of_alwaysDiverges_of_not": {
+      "closure_sha256": "a96321c8d613acb3fefa62ae83349c3ebfbf35483f9b91e227a33c8c4fc7565f",
+      "closure_size": 15,
+      "statement_sha256": "f4354b9bb340b39fb0eb3988da24e33a95c9a0f0a9f5e1ba19107d75f0af104f"
+    },
+    "Toy.FuelWP.spinOrOutSys_spin_every_partial_wp_but_never_outputs": {
+      "closure_sha256": "b207bb8197e346d98a17da7e393981bed037829e245d1655918975a8647fdc06",
+      "closure_size": 19,
+      "statement_sha256": "a5b8025637ea3bc77aa28f9f17d7ad514f70367aae5fd6a46dd2c8cd7e22f8e6"
+    },
+    "Toy.FuelWP.startSpinOutSys_allRunsEventually_not_partial_wp_expressible": {
+      "closure_sha256": "566496ce6564d1b5da7cb54afc3a9d14cba521fb2b8c24b88bddd85b60e44a08",
+      "closure_size": 20,
+      "statement_sha256": "3fa8e2f4832c9ac1b102a99dbab08bbf64c380093d9730e1e1f6273f8b77da29"
+    },
+    "Toy.FuelWP.startSpinOutSys_wpGfp_iff_allRunsEventually_off_spin": {
+      "closure_sha256": "3524727eae7407abc4ee9345f952480378fe4b3adc555d976696fc9d38c52c7d",
+      "closure_size": 17,
+      "statement_sha256": "07f0db025d166c8916b3757c3eb862a220bb8e2b842ab8689cdc5b739a47ecec"
+    },
+    "Toy.FuelWP.stuckSys_no_total_no_partial": {
+      "closure_sha256": "2a73a22e979866f5b15b033b76343b1b0e0310648155b8990ac7118859309234",
+      "closure_size": 14,
+      "statement_sha256": "b16876e79cf9c16c08703b019a4bcc485f0edb2d0ccf8ca8b733321b40c7be2d"
+    },
+    "Toy.FuelWP.stuckSys_not_wpGfp_not_wpFuel_one": {
+      "closure_sha256": "d62ca2b6a35e2ac2ede23f6166af9a9a7e458fc6fd9367cc32d71c01c689edcb",
+      "closure_size": 12,
+      "statement_sha256": "dea9a596edef78530757285aa9a552f68e73197c2750b1ed0edf9812d12a2e42"
+    },
+    "Toy.FuelWP.stuck_finitelyBranching_no_infinite_run_no_total_fuel": {
+      "closure_sha256": "f6092267d3f5b5ce4c4a85a074bd463e05752b645782642229fa6478e55381e4",
+      "closure_size": 18,
+      "statement_sha256": "6fa4b8a379ca172d8cd25711b2a2137fabfca5f9e91d53154df80236ff8bff5e"
+    },
+    "Toy.FuelWP.wpFuelTotal_iff_wpFuel_and_no_reach": {
+      "closure_sha256": "2d8c2e885f8f9fd413bee50ce4b8c21bea8cfbf487ca37cb35c8934fd6716c37",
+      "closure_size": 14,
+      "statement_sha256": "81fe7b03bf37b8dc8d242b37a8eab0767f25a5fb6c7eae552f62cbf8be5d5d4f"
+    },
+    "Toy.FuelWP.wpFuelTotal_monotone": {
+      "closure_sha256": "0466b86bcd2bd953795bfd719f26fd01429137f4b8e2fae85cb3c4bf31448c4f",
+      "closure_size": 9,
+      "statement_sha256": "5b0959bdc59492cbde3f996db825122f2c57b7b7c7118532b159251c8bae87d2"
+    },
+    "Toy.FuelWP.wpFuelTotal_monotone_drop_h": {
+      "closure_sha256": "a47fe6b0405cc9d98e65c858c369ac428d3f830f4a1011e1274d9ca169dad69d",
+      "closure_size": 10,
+      "statement_sha256": "94cbd91bd312c0494c7f7cc3a606dfcb7d51f6a49cc6a2113eb76c262afd8f73"
+    },
+    "Toy.FuelWP.wpFuelTotal_not_antitone_done": {
+      "closure_sha256": "e39d7f0dbb184f20efa03e2681efbc1090ec790b758cf9a8f4347802034775e9",
+      "closure_size": 10,
+      "statement_sha256": "8f63ef2a977ea994db4f75719d921dc0969a7f4d3b06b3d5d6f5b49736ceae3e"
+    },
+    "Toy.FuelWP.wpFuel_antitone": {
+      "closure_sha256": "0552b473ba1af861341156260e515f4fba04913c90017c2df64b8bc05e0bbdde",
+      "closure_size": 9,
+      "statement_sha256": "3909df84d00b597803276008fd16a424454f85731e07a3ee2f270d902bb61a9a"
+    },
+    "Toy.FuelWP.wpFuel_antitone_drop_h": {
+      "closure_sha256": "9aaa08e02a277b9008cc6496317641adf3f097df83cc39bbb8f05452f38eb4ce",
+      "closure_size": 10,
+      "statement_sha256": "73f877c1bb14021e1ba3d279243579dfa1f76c693fcdece7daffca98f09d7cf4"
+    },
+    "Toy.FuelWP.wpFuel_iff_forall_reach_lt": {
+      "closure_sha256": "e1feb2b1097b92363c768bf4b31f6639abafc40b44d9a5aafe73158b6ffb0329",
+      "closure_size": 13,
+      "statement_sha256": "11e2a261e41b71ce347e38edad89f65a6292445aab4808a0bf2701043906a6b2"
+    },
+    "Toy.FuelWP.wpFuel_not_monotone_stuck": {
+      "closure_sha256": "9aaa08e02a277b9008cc6496317641adf3f097df83cc39bbb8f05452f38eb4ce",
+      "closure_size": 10,
+      "statement_sha256": "ff1d15b2627f08414c6c6f92a3f40cf4e7297f1d813843beef4f79a931ab6913"
+    },
+    "Toy.FuelWP.wpFuel_of_wpGfp": {
+      "closure_sha256": "6121c99ef2fc0c868a8d026c21274ca8ca0854a11e383df9fc4792c56dbcc2f2",
+      "closure_size": 11,
+      "statement_sha256": "840eb015ccc62cea29c72dbaad3f098641cf5823300941b42b0716742f7d2de5"
+    },
+    "Toy.FuelWP.wpGfp_adequacy": {
+      "closure_sha256": "8ca413db7ada1816a1ad32948eeef94392a631386b7a0d66da901fa1c34719ed",
+      "closure_size": 12,
+      "statement_sha256": "60af3305585541b09404c9e978d581dc7475c8b56d31570e7454505d2ea9652a"
+    },
+    "Toy.FuelWP.wpGfp_adequacy_drop_h": {
+      "closure_sha256": "eab3d7640b7acfbd66b48688031d9e00d10550b3bc55eb9cbc922fdc67020b03",
+      "closure_size": 13,
+      "statement_sha256": "3c173fbc3f6c5550e76422765a90303c9e72f2c17bbc0dfc5d27f7d22ec9f976"
+    },
+    "Toy.FuelWP.wpGfp_coinduction": {
+      "closure_sha256": "628552982b476a4126064ad33f4f27cd598aec847bd759614296085fcced63aa",
+      "closure_size": 8,
+      "statement_sha256": "a1d9b320df4e279f3b3597131c76dd7ace9395ebb2528a4552f50968410d000e"
+    },
+    "Toy.FuelWP.wpGfp_coinduction_drop_hX": {
+      "closure_sha256": "d4d131901a5739dc4039825a20d393876b89abaeab132311693690bc7e09a7df",
+      "closure_size": 9,
+      "statement_sha256": "b11525767a3c69eb7b8359410c509ff1cf9ce438f976448b2ce013db824404d1"
+    },
+    "Toy.FuelWP.wpGfp_coinduction_drop_hs": {
+      "closure_sha256": "d4d131901a5739dc4039825a20d393876b89abaeab132311693690bc7e09a7df",
+      "closure_size": 9,
+      "statement_sha256": "849210d4732455a397ace87944779327d27ca7f1dc3fa5598a689d2e2fbc4bc4"
+    },
+    "Toy.FuelWP.wpGfp_false_iff_alwaysDiverges": {
+      "closure_sha256": "cebc798646ad583d7fd6799c9e7702e4a14464fd2e7b908f574f7b9318ba8b32",
+      "closure_size": 12,
+      "statement_sha256": "4f9287a68f4f79c25c0bbf3410cf122ec518fe3ea3557ee9b366b0c1a3fd0f1c"
+    },
+    "Toy.FuelWP.wpGfp_iff_forall_reach_runEndOk": {
+      "closure_sha256": "8ca413db7ada1816a1ad32948eeef94392a631386b7a0d66da901fa1c34719ed",
+      "closure_size": 12,
+      "statement_sha256": "25e7c2e7421b9a762ca7514d46b44f2dc25e7b4056dd05a9efa034fa4a1148e9"
+    },
+    "Toy.FuelWP.wpGfp_of_forall_reach_runEndOk": {
+      "closure_sha256": "8ca413db7ada1816a1ad32948eeef94392a631386b7a0d66da901fa1c34719ed",
+      "closure_size": 12,
+      "statement_sha256": "b07da9e28d5d60aabdd3b99b5b6367ee94c5fed1452f51129d627062e7a2f5fe"
+    },
+    "Toy.FuelWP.wpGfp_of_forall_reach_runEndOk_drop_h": {
+      "closure_sha256": "eab3d7640b7acfbd66b48688031d9e00d10550b3bc55eb9cbc922fdc67020b03",
+      "closure_size": 13,
+      "statement_sha256": "f12cd4e616385fd0f4f0cb5e3453ecdc01d649229fd52c03d94a64a91f563217"
+    },
+    "Toy.FuelWP.wpGfp_of_forall_wpFuel": {
+      "closure_sha256": "6121c99ef2fc0c868a8d026c21274ca8ca0854a11e383df9fc4792c56dbcc2f2",
+      "closure_size": 11,
+      "statement_sha256": "1653e3e1bca9de45fcecd6fe91b451057a420adb194d15c3f08b964a42247003"
+    },
+    "Toy.FuelWP.wpGfp_of_wpFuelTotal": {
+      "closure_sha256": "e5423f00071108788dee1535ada128076282ecf7e095d3347dcdeda17ebd9ade",
+      "closure_size": 11,
+      "statement_sha256": "f5e50bc1ab371bc9bf054f4e724b341d290f8bd11917c103c67f57917890ab02"
+    },
+    "Toy.FuelWP.wpGfp_pos_loop_false": {
+      "closure_sha256": "e1ca16241ec700721745b59d4da88229da512cd3139be3cad2aee9e82743ed87",
+      "closure_size": 9,
+      "statement_sha256": "635b83ba32ebfe93510da805d59f00b7aff7d9a296c256df2ee7e49a22d7c83a"
+    },
+    "Toy.FuelWP.wpGfp_unfold": {
+      "closure_sha256": "628552982b476a4126064ad33f4f27cd598aec847bd759614296085fcced63aa",
+      "closure_size": 8,
+      "statement_sha256": "e485a41f9edb00b88beace1ccccb71755eed21d00dfe72b50a66de8f98872695"
+    },
+    "Toy.FuelWP.wpLfp_iff_wpGfp_and_not_hasInfiniteRun": {
+      "closure_sha256": "4152876e4d58a63bc4439825ffe057deea7a1b3b9487e427b2dae91735cfa2e6",
+      "closure_size": 11,
+      "statement_sha256": "39d736a44c9bf068d95b68f4a29c46231cd1a0c9726c0b137c3f0ba9bf8c61ee"
+    },
+    "Toy.FuelWP.wpLfp_induction": {
+      "closure_sha256": "e0371add931efee1862f2c8b39e3d2c079de313dd41f583b403987ae8c112a12",
+      "closure_size": 8,
+      "statement_sha256": "49ea3ac13b4252b30df3ed24f3ee0ff5dd3c2a4f6054d78d4d3a64221509b7b0"
+    },
+    "Toy.FuelWP.wpLfp_induction_drop_hX": {
+      "closure_sha256": "ef5fc4fced600c8f6f1ff9ee9c4822eabdcaefa1baa9f4b416161412fb0e6fa4",
+      "closure_size": 9,
+      "statement_sha256": "a800606ad7664fbdfb330609bab415cab6c39ef6ed9a1932c8751215afc24eeb"
+    },
+    "Toy.FuelWP.wpLfp_induction_drop_hs": {
+      "closure_sha256": "46acbacaefd7926edffb1a51acef5d2da55db0e4526c000d2642df6e06454ce9",
+      "closure_size": 9,
+      "statement_sha256": "1730753d22ff12c22f52ff938e8eb9ad5ee2d007e577e20ce5b4adaa3e11082f"
+    },
+    "Toy.FuelWP.wpLfp_of_exists_wpFuelTotal": {
+      "closure_sha256": "ceeb9018a37d4eeafac203484ef96c3e0c21878eca1d21e75ed12dee5baa39d7",
+      "closure_size": 11,
+      "statement_sha256": "4322b45146c1a852caa45fc52d908f8da170486d4d6d321196ca23d279f0c490"
+    },
+    "Toy.FuelWP.wpLfp_pos_chain": {
+      "closure_sha256": "9617c779f5c7b0af2947c471b7b7d81df3c7633be959a102b2df118b916c3ff9",
+      "closure_size": 9,
+      "statement_sha256": "37cfe27f9093350da84d3808acfc175ecd9b09a4c5182dd6dce7f71c4accafac"
+    },
+    "Toy.FuelWP.wpLfp_unfold": {
+      "closure_sha256": "e0371add931efee1862f2c8b39e3d2c079de313dd41f583b403987ae8c112a12",
+      "closure_size": 8,
+      "statement_sha256": "1a0272d7fbff8efb2e604096f6e72b9c0995a756b11d0ac76bd91273900159fc"
+    }
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
