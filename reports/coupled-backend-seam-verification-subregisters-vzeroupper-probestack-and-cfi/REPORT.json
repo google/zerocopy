@@ -1,0 +1,132 @@
+{
+  "observed_at": "2026-11-20",
+  "subjects": [
+    {
+      "identity": {
+        "paths": "src/lib.rs, src/checker.rs, src/moves.rs, src/fastalloc/mod.rs, src/fuzzing/func.rs",
+        "repository": "bytecodealliance/regalloc2",
+        "revision": "4eb655fa745fba271af74be8495154a4b0cac56f",
+        "version": "v0.15.3"
+      },
+      "name": "regalloc2 SSA register allocator, symbolic checker, and MoveAndScratchResolver"
+    },
+    {
+      "identity": {
+        "paths": "llvm/include/llvm/CodeGen/TargetSubtargetInfo.h, llvm/lib/Target/X86/X86RegisterInfo.td, llvm/lib/Target/AArch64/AArch64Options.td, llvm/lib/Target/AArch64/AArch64SRLTDefineSuperRegs.cpp",
+        "repository": "llvm/llvm-project",
+        "revision": "984202b7bd448b1c8da65689ecd2dd27aa891175"
+      },
+      "name": "LLVM SubRegLiveness, X86 subregister indices, and AArch64 super-register invariants"
+    },
+    {
+      "identity": {
+        "paths": "llvm/include/llvm/CodeGen/MachineInstr.h, llvm/include/llvm/CodeGen/MachineOperand.h",
+        "repository": "llvm/llvm-project",
+        "revision": "27825e751662497914dac447753f6d8daca974ff"
+      },
+      "name": "LLVM MachineInstr and MachineOperand subregister/undef representation"
+    },
+    {
+      "identity": {
+        "paths": "llvm/lib/CodeGen/AsmPrinter/DwarfExpression.cpp, llvm/lib/MC/MCAssembler.cpp",
+        "repository": "llvm/llvm-project",
+        "revision": "ef02d46bb33d10383f6ba5a5d9a5511416ee790c"
+      },
+      "name": "LLVM DwarfExpression DW_OP_fbreg emission and MCAssembler relaxation"
+    },
+    {
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "1.98.0-nightly (2026-05-31)"
+      },
+      "name": "Rust compiler nightly toolchain (LLVM 22.1.6) used for live x86-64 stack-probe, vzeroupper, and catch_unwind execution"
+    },
+    {
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      },
+      "name": "Rust compiler 1.99.1 (LLVM 23.1.1) binary validation and DWARF location coverage baseline"
+    },
+    {
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+        "version": "1.100.0"
+      },
+      "name": "Rust compiler 1.100.0 cross-release SIMD ABI comparison point"
+    },
+    {
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly"
+      },
+      "name": "Rust compiler 1.102.0-nightly cross-release vectorcall ABI comparison point"
+    },
+    {
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      },
+      "name": "Lean 4 theorem prover and synchronous standalone kernel"
+    },
+    {
+      "identity": {
+        "paths": "trusted/audit/TrustedBoundary.lean",
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      },
+      "name": "Anneal TrustedBoundary axiom and tactic gate plus sysroot audit binary"
+    },
+    {
+      "identity": {
+        "paths": "cranelift/codegen/src/machinst/buffer.rs, cranelift/codegen/src/machinst/reg.rs, cranelift/codegen/src/isa/unwind.rs",
+        "repository": "bytecodealliance/wasmtime",
+        "revision": "4eec6994d538397a5170c782548631483fbbb87b"
+      },
+      "name": "Wasmtime Cranelift MachBuffer, Reg encoding, and UnwindInst"
+    },
+    {
+      "identity": {
+        "paths": "backend/Allocation.v, backend/Allocproof.v, backend/Debugvarproof.v, x86/Asm.v",
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+      },
+      "name": "CompCert register allocation, debug variable tracking, and x86 Asm semantics"
+    },
+    {
+      "identity": {
+        "paths": "compiler/backend/lab_to_targetScript.sml",
+        "repository": "CakeML/cakeml",
+        "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+      },
+      "name": "CakeML assembler-free lab_to_target backend"
+    },
+    {
+      "identity": {
+        "paths": "reports/verified-instruction-selection-isle-crocus-and-unified-minimach-ir, reports/verified-ssa-register-allocation-coalescing-and-subregister-lane-liveness, reports/rustc-release-abi-drift-binary-validation-cfg-alignment-and-surviving-bounds-checks",
+        "repository": "google/zerocopy",
+        "revision": "d116b216ddcf5143b6b11a46e2f984ded2551254"
+      },
+      "name": "google/zerocopy reference corpus backend and binary-validation baseline reports"
+    }
+  ],
+  "topics": [
+    "compilers",
+    "compilers/register-allocation",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/backend",
+    "isa",
+    "isa/x86-64",
+    "lean",
+    "lean/mechanization",
+    "llvm",
+    "llvm/codegen",
+    "verification",
+    "verification/refinement"
+  ]
+}
