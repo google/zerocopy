@@ -1,0 +1,38 @@
+error[E0499]: cannot borrow `*map` as mutable more than once at a time
+  --> rs/pc3_cross_fn.rs:7:13
+   |
+ 3 |   pub fn get_default<'r>(map: &'r mut HashMap<u32, String>, key: u32) ->...
+   |                      -- lifetime `'r` defined here
+ 4 |       match map.get_mut(&key) {
+   |       -     --- first mutable borrow occurs here
+   |  _____|
+   | |
+ 5 | |         Some(value) => value,
+ 6 | |         None => {
+ 7 | |             map.insert(key, String::new());
+   | |             ^^^ second mutable borrow occurs here
+...  |
+10 | |     }
+   | |_____- returning this value requires that `*map` is borrowed for `'r`
+
+error[E0499]: cannot borrow `*map` as mutable more than once at a time
+  --> rs/pc3_cross_fn.rs:8:13
+   |
+ 3 |   pub fn get_default<'r>(map: &'r mut HashMap<u32, String>, key: u32) ->...
+   |                      -- lifetime `'r` defined here
+ 4 |       match map.get_mut(&key) {
+   |       -     --- first mutable borrow occurs here
+   |  _____|
+   | |
+ 5 | |         Some(value) => value,
+ 6 | |         None => {
+ 7 | |             map.insert(key, String::new());
+ 8 | |             map.get_mut(&key).unwrap()
+   | |             ^^^ second mutable borrow occurs here
+ 9 | |         }
+10 | |     }
+   | |_____- returning this value requires that `*map` is borrowed for `'r`
+
+error: aborting due to 2 previous errors
+
+For more information about this error, try `rustc --explain E0499`.

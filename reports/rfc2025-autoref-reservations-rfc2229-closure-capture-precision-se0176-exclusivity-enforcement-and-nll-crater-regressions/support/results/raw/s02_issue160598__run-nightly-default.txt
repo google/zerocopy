@@ -1,0 +1,3 @@
+$ ./s02_issue160598
+Some(1) Some(2)
+exit=0

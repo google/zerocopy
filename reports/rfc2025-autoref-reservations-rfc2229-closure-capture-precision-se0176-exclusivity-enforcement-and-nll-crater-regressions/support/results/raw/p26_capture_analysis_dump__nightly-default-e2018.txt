@@ -1,0 +1,79 @@
+$ rustc --edition 2018 --crate-type lib --emit=metadata p26_capture_analysis_dump.rs
+warning: the feature `rustc_attrs` is internal to the compiler or standard library
+ --> p26_capture_analysis_dump.rs:2:12
+  |
+2 | #![feature(rustc_attrs, stmt_expr_attributes)]
+  |            ^^^^^^^^^^^
+  |
+  = note: using it is strongly discouraged
+  = note: `#[warn(internal_features)]` on by default
+
+error: First Pass analysis includes:
+  --> p26_capture_analysis_dump.rs:6:39
+   |
+ 6 |       let c = #[rustc_capture_analysis] || {
+   |  _______________________________________^
+ 7 | |         let _a = s.inner.x;          // field path
+ 8 | |         let _b = unsafe { *s.raw };  // deref of raw pointer
+ 9 | |         let _c = s.boxed.y;          // through Box
+10 | |         let _d = s.arr[1];           // index
+11 | |         let _e = s.shr.x;            // through shared reference
+12 | |     };
+   | |_____^
+   |
+note: Capturing s[(0, 0),(0, 0)] -> Immutable
+  --> p26_capture_analysis_dump.rs:7:18
+   |
+ 7 |         let _a = s.inner.x;          // field path
+   |                  ^^^^^^^^^
+note: Capturing s[(1, 0),Deref] -> Immutable
+  --> p26_capture_analysis_dump.rs:8:27
+   |
+ 8 |         let _b = unsafe { *s.raw };  // deref of raw pointer
+   |                           ^^^^^^
+note: Capturing s[(2, 0),Deref,(1, 0)] -> Immutable
+  --> p26_capture_analysis_dump.rs:9:18
+   |
+ 9 |         let _c = s.boxed.y;          // through Box
+   |                  ^^^^^^^^^
+note: Capturing s[(3, 0)] -> Immutable
+  --> p26_capture_analysis_dump.rs:10:18
+   |
+10 |         let _d = s.arr[1];           // index
+   |                  ^^^^^
+note: Capturing s[(4, 0),Deref,(0, 0)] -> Immutable
+  --> p26_capture_analysis_dump.rs:11:18
+   |
+11 |         let _e = s.shr.x;            // through shared reference
+   |                  ^^^^^^^
+
+error: Min Capture analysis includes:
+  --> p26_capture_analysis_dump.rs:6:39
+   |
+ 6 |       let c = #[rustc_capture_analysis] || {
+   |  _______________________________________^
+ 7 | |         let _a = s.inner.x;          // field path
+ 8 | |         let _b = unsafe { *s.raw };  // deref of raw pointer
+ 9 | |         let _c = s.boxed.y;          // through Box
+10 | |         let _d = s.arr[1];           // index
+11 | |         let _e = s.shr.x;            // through shared reference
+12 | |     };
+   | |_____^
+   |
+note: Min Capture s[] -> Immutable
+  --> p26_capture_analysis_dump.rs:6:39
+   |
+ 6 |       let c = #[rustc_capture_analysis] || {
+   |  _______________________________________^
+ 7 | |         let _a = s.inner.x;          // field path
+   | |                  ^^^^^^^^^ s[] captured as Immutable here
+ 8 | |         let _b = unsafe { *s.raw };  // deref of raw pointer
+ 9 | |         let _c = s.boxed.y;          // through Box
+10 | |         let _d = s.arr[1];           // index
+11 | |         let _e = s.shr.x;            // through shared reference
+12 | |     };
+   | |_____^ s[] used here
+
+error: aborting due to 2 previous errors; 1 warning emitted
+
+exit=1

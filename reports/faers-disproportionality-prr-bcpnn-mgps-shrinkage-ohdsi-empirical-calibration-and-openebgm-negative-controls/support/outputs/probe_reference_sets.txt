@@ -1,0 +1,20 @@
+omopReferenceSet: rows=399 positives=165 negatives=234 distinct exposures=182 distinct outcomes=4
+   HOI Upper GI #3: positive=24 negative=67
+   OMOP Acute Liver Failure 1: positive=81 negative=37
+   OMOP Acute Renal Failure 1: positive=24 negative=64
+   OMOP Acute myocardial Infarction  1: positive=36 negative=66
+euadrReferenceSet: rows=93 positives=43 negatives=50 distinct exposures=65 distinct outcomes=10
+   Anaphylaxis #1: positive=5 negative=5
+   Cardiac Valve Fibrosis #1: positive=0 negative=5
+   HOI Upper GI #3: positive=5 negative=5
+   Leukopenia Including Neutropenia and Agranulocytosis: positive=5 negative=5
+   OMOP Acute Liver Failure 1: positive=4 negative=5
+   OMOP Acute Renal Failure 1: positive=5 negative=5
+   OMOP Acute myocardial Infarction  1: positive=5 negative=5
+   OMOP Aplastic Anemia 1: positive=5 negative=5
+   Rhabdomyolysis #1: positive=4 negative=5
+   Stevens-Johnson Syndrome #1: positive=5 negative=5
+ohdsiNegativeControls: rows=200
+   by target: {'brinzolamide': 2, 'cevimeline': 2, 'Chlorzoxazone': 1, 'cilostazol': 1, 'desmopressin': 1, 'Dyphylline': 1, 'epinastine': 2, 'Eszopiclone': 1, 'fesoterodine': 2, 'Follicle Stimulating Hormone': 2, 'Ivermectin': 2, 'Luteinizing Hormone': 2, 'olopatadine': 1, 'omalizumab': 1, 'lubiprostone': 1, 'picosulfate sodium': 2, 'Pilocarpine': 2, 'prasugrel': 1, 'Prilocaine': 2, 'ramelteon': 3, 'ropivacaine': 2, 'silodosin': 2, 'tadalafil': 1, 'Terazosin': 2, 'vardenafil': 1, 'aliskiren': 1, 'alogliptin': 1, 'atomoxetine': 2, 'Bethanechol': 1, 'Bupivacaine': 1, 'Clomiphene': 2, 'desloratadine': 2, 'lacosamide': 2, 'levocetirizine': 2, 'Malathion': 1, 'Phenobarbital': 1, 'Primidone': 1, 'Scopolamine': 3, 'Terbutaline': 1, 'Tetracaine': 1, 'zafirlukast': 1, 'Atovaquone': 1, 'Cefaclor': 1, 'Cefadroxil': 1, 'Cefazolin': 1, 'cefdinir': 1, 'Cefixime': 1, 'Cefotaxime': 1, 'cefpodoxime': 1, 'Cefuroxime': 1, 'entecavir': 1, 'Griseofulvin': 1, 'paricalcitol': 1, 'Petrolatum': 1, 'Ceftazidime': 1, 'Aztreonam': 1, 'isoniazid': 1, 'Amikacin': 1, 'Bisoprolol': 1, 'brimonidine': 1, 'dorzolamide': 1, 'Doxazosin': 1, 'Dutasteride': 1, 'Finasteride': 1, 'Insulin Lispro': 1, 'irbesartan': 1, 'Labetalol': 1, 'Lidocaine': 1, 'Meperidine': 1, 'Nalbuphine': 1, 'Propofol': 1, 'Raloxifene': 1, 'Solifenacin': 1, 'tamsulosin': 1, 'Timolol': 1, 'zoledronic acid': 1, 'Midazolam': 1, 'Methadone': 1, 'Diclofenac': 25, 'Ciprofloxacin': 25, 'Metformin': 25, 'Sertraline': 25}
+   by outcome-of-interest nesting: {'Glaucoma': 7, "Sjogren's syndrome": 2, 'Back pain': 1, 'Phlebosclerosis': 3, 'Urinary incontinence': 4, 'Bronchospasm and obstruction': 3, 'Rhinitis allergic': 6, 'Insomnia': 8, 'Infertility female': 6, 'Arthropod infestation': 2, 'Conjunctivitis allergic': 1, 'Gastrointestinal motility and defaecation conditions': 4, 'Neoplastic disease': 1, 'Surgery': 7, 'Benign prostatic hyperplasia': 7, 'Sexual dysfunction': 1, 'Type 2 diabetes mellitus': 27, 'Atypical attention deficit syndrome': 2, 'Epilepsy': 3, 'Encephalopathies': 1, 'Arthropathy': 1, 'Asthma': 2, 'Arthropod-borne disease': 1, 'Otitis media': 28, 'Upper respiratory tract infections': 2, 'Pharyngitis': 1, 'Lower respiratory tract and lung infections': 2, 'Viral infectious disorders': 1, 'Tinea infections': 1, 'Arthropod dermatosis': 1, 'Hyperparathyroidism': 1, 'Skin dystrophy': 1, 'Cystic fibrosis': 2, 'Tuberculosis': 1, 'Hypertension': 4, 'Delivery': 1, 'Polycystic ovaries': 1, 'Elimination pattern': 1, 'Osteoporosis': 1, 'Drug dependence': 1, 'Arthralgia': 25, 'Depression': 25}
+   by type: {'Exposure control': 100, 'Outcome control': 100}

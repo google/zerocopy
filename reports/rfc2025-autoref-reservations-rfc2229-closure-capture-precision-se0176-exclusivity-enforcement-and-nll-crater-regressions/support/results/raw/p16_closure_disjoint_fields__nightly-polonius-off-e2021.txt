@@ -1,0 +1,2 @@
+$ rustc -Zpolonius=off --edition 2021 --crate-type lib --emit=metadata -o /tmp/out/x.rmeta p16_closure_disjoint_fields.rs
+exit=0

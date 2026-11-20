@@ -1,0 +1,31 @@
+$ rustup run 1.100.0 rustc --edition 2021 --crate-type lib --emit=metadata -o /tmp/out/x.rmeta p18_migration_lint_send.rs
+error[E0277]: `*mut i32` cannot be sent between threads safely
+   --> p18_migration_lint_send.rs:8:27
+    |
+  8 |     let _ = thread::spawn(move || unsafe { *fptr.0 = 20; });
+    |             ------------- -------^^^^^^^^^^^^^^^^^^^^^^^^^
+    |             |             |
+    |             |             `*mut i32` cannot be sent between threads safely
+    |             |             within this `{closure@p18_migration_lint_send.rs:8:27}`
+    |             required by a bound introduced by this call
+    |
+    = help: within `{closure@p18_migration_lint_send.rs:8:27}`, the trait `Send` is not implemented for `*mut i32`
+note: required because `fptr.0` is used within this closure
+   --> p18_migration_lint_send.rs:8:44
+    |
+  8 |     let _ = thread::spawn(move || unsafe { *fptr.0 = 20; });
+    |                                            ^^^^^^^
+note: required by a bound in `spawn`
+   --> $RUSTUP_HOME/toolchains/1.100.0-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/thread/functions.rs:128:8
+    |
+125 | pub fn spawn<F, T>(f: F) -> JoinHandle<T>
+...
+128 |     F: Send + 'static,
+    |        ^^^^ required by this bound in `spawn`
+    = note: the full name for the type has been written to '/tmp/out/x.long-type-16232064465957232274.txt'
+    = note: consider using `--verbose` to print the full type name to the console
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0277`.
+exit=1

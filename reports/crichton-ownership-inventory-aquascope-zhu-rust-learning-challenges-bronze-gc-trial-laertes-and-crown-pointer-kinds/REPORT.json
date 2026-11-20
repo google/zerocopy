@@ -1,0 +1,220 @@
+{
+  "topics": [
+    "rust/borrow-checking-onboarding-evidence",
+    "pl/ownership-annotation-density-measurement",
+    "tooling/ownership-visualization-for-learners",
+    "compilers/c-to-rust-ownership-classification"
+  ],
+  "subjects": [
+    {
+      "name": "Aquascope (permissions, loans and lifetime visualizer for Rust learners)",
+      "identity": {
+        "repository": "cognitive-engineering-lab/aquascope",
+        "revision": "f2d0a06034b86765a91f10b7c8e40ec31ecb87a6"
+      }
+    },
+    {
+      "name": "Rust Book experiment fork with quiz instruments",
+      "identity": {
+        "repository": "cognitive-engineering-lab/rust-book",
+        "revision": "88250e0392cef0622f318e35469108d68694c1f7"
+      }
+    },
+    {
+      "name": "Crown ownership analysis for C-to-Rust translation",
+      "identity": {
+        "repository": "KomaEc/crown",
+        "revision": "621904cd356b433215d5f55db39ffd71714f44ff"
+      }
+    },
+    {
+      "name": "c2rust (c2rust-analyze pointer-permission analysis)",
+      "identity": {
+        "repository": "immunant/c2rust",
+        "revision": "a4837814f1ae7650fae0c7eccb9bdbbf2b1aef20"
+      }
+    },
+    {
+      "name": "rustc source (E0106 error-code explanation)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973"
+      }
+    },
+    {
+      "name": "rustc 1.100.0 (executed for the E0106 diagnostic probe)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+        "version": "1.100.0"
+      }
+    },
+    {
+      "name": "syn parser used by the density counter",
+      "identity": {
+        "registry": "crates.io",
+        "crate": "syn",
+        "version": "2.0.119"
+      }
+    },
+    {
+      "name": "Density sample: serde",
+      "identity": {
+        "repository": "serde-rs/serde",
+        "revision": "e306b0c7c40ad21d5bdf52bcd20da513904682ae"
+      }
+    },
+    {
+      "name": "Density sample: syn",
+      "identity": {
+        "repository": "dtolnay/syn",
+        "revision": "a2cddb7a893532133c17a32e4ac68a9805db7c9f"
+      }
+    },
+    {
+      "name": "Density sample: regex",
+      "identity": {
+        "repository": "rust-lang/regex",
+        "revision": "fde4946d4a3cb367338a21493ec91ec7106a12b4"
+      }
+    },
+    {
+      "name": "Density sample: rand",
+      "identity": {
+        "repository": "rust-random/rand",
+        "revision": "c03e547d051fee1e7c8b1217ff04b11bf0ea5138"
+      }
+    },
+    {
+      "name": "Density sample: clap (clap_builder)",
+      "identity": {
+        "repository": "clap-rs/clap",
+        "revision": "487474f013d3e0cbffc911934575f7ebcc72a6d4"
+      }
+    },
+    {
+      "name": "Density sample: tokio",
+      "identity": {
+        "repository": "tokio-rs/tokio",
+        "revision": "717c508f9e9ac4317665ff1eb30f29c139ea6363"
+      }
+    },
+    {
+      "name": "Density sample: anyhow",
+      "identity": {
+        "repository": "dtolnay/anyhow",
+        "revision": "dd0c0a655a214add8fc986df34ea3823468fa4fb"
+      }
+    },
+    {
+      "name": "Density sample: itertools",
+      "identity": {
+        "repository": "rust-itertools/itertools",
+        "revision": "8b4c6cb2732a08b3dcac681ca249ae413b998c83"
+      }
+    },
+    {
+      "name": "Density sample: hashbrown",
+      "identity": {
+        "repository": "rust-lang/hashbrown",
+        "revision": "f3e9f0fc110f55ca55d73d6eddc0bdf5e85eb223"
+      }
+    },
+    {
+      "name": "Density sample: bytes",
+      "identity": {
+        "repository": "tokio-rs/bytes",
+        "revision": "67edc2b999d669eb4f471aff576e213dbcb58871"
+      }
+    },
+    {
+      "name": "Density sample: memchr",
+      "identity": {
+        "repository": "BurntSushi/memchr",
+        "revision": "bd6068c30e9074a90c285e47912fa0b047d07597"
+      }
+    },
+    {
+      "name": "Density sample: nom",
+      "identity": {
+        "repository": "rust-bakery/nom",
+        "revision": "51c3c4e44fa78a8a09b413419372b97b2cc2a787"
+      }
+    },
+    {
+      "name": "Density sample: log",
+      "identity": {
+        "repository": "rust-lang/log",
+        "revision": "75fcb86da1cce3b9476c58c911482ec43ec235f4"
+      }
+    },
+    {
+      "name": "Density sample: smallvec",
+      "identity": {
+        "repository": "servo/rust-smallvec",
+        "revision": "4850a2c4f47c07a0ec2ee91bd47d7f598e3fdc69"
+      }
+    },
+    {
+      "name": "Crichton, The Usability of Ownership (HATRA 2020)",
+      "identity": {
+        "arxiv": "2011.06171",
+        "version": "v2"
+      }
+    },
+    {
+      "name": "Fulton et al., Benefits and Drawbacks of Adopting a Secure Programming Language: Rust as a Case Study (SOUPS 2021)",
+      "identity": {
+        "url": "https://www.usenix.org/system/files/soups2021-fulton.pdf",
+        "venue": "SOUPS 2021, pages 597-616"
+      }
+    },
+    {
+      "name": "Zhu et al., Learning and Programming Challenges of Rust: A Mixed-Methods Study (ICSE 2022)",
+      "identity": {
+        "doi": "10.1145/3510003.3510164"
+      }
+    },
+    {
+      "name": "Coblenz, Mazurek, Hicks, Garbage Collection Makes Rust Easier to Use: A Randomized Controlled Trial of the Bronze Garbage Collector (ICSE 2022)",
+      "identity": {
+        "doi": "10.1145/3510003.3510107",
+        "arxiv": "2110.01098"
+      }
+    },
+    {
+      "name": "Crichton, Gray, Krishnamurthi, A Grounded Conceptual Model for Ownership Types in Rust (OOPSLA 2023)",
+      "identity": {
+        "doi": "10.1145/3622841",
+        "arxiv": "2309.04134"
+      }
+    },
+    {
+      "name": "Crichton, Krishnamurthi, Profiling Programming Language Learning (OOPSLA 2024)",
+      "identity": {
+        "doi": "10.1145/3649812",
+        "arxiv": "2401.01257"
+      }
+    },
+    {
+      "name": "Emre, Schroeder, Dewey, Hardekopf, Translating C to Safer Rust (OOPSLA 2021)",
+      "identity": {
+        "doi": "10.1145/3485498"
+      }
+    },
+    {
+      "name": "Zhang, David, Yu, Wang, Ownership Guided C to Rust Translation (CAV 2023)",
+      "identity": {
+        "doi": "10.1007/978-3-031-37709-9_22",
+        "arxiv": "2303.10515"
+      }
+    },
+    {
+      "name": "Emre et al., Aliasing Limits on Translating C to Safe Rust (OOPSLA 2023)",
+      "identity": {
+        "doi": "10.1145/3586046"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

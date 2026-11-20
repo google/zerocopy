@@ -1,0 +1,14 @@
+sigs: 9
+sigs_lifetime_relevant: 7
+sigs_fn_lifetime_params: 1
+sigs_write_named: 2
+sigs_output_lifetime: 5
+sigs_elision_rule3: 3
+sigs_elision_rule2: 1
+sigs_must_annotate: 1
+sigs_must_annotate_written_named: 1
+sigs_elidable_but_named_output: 1
+ref_positions: 13
+refs_elided: 9
+refs_named: 3
+refs_static: 1

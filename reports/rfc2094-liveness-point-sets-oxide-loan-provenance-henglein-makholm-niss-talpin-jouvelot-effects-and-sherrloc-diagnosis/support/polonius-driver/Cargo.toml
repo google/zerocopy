@@ -1,0 +1,13 @@
+[package]
+name = "polonius-driver"
+version = "0.1.0"
+edition = "2021"
+
+# `../polonius` must be a checkout of rust-lang/polonius at
+# bfd4c945b7713d0e66a3cde80475d9a4494740df (only polonius-engine is used; it
+# depends on datafrog 2.0.1, rustc-hash 1.1.0 and log 0.4).
+[dependencies]
+polonius-engine = { path = "../polonius/polonius-engine" }
+
+[profile.release]
+debug = false

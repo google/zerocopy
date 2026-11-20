@@ -1,0 +1,14 @@
+probe	stable-1.100.0	nightly-polonius-off	nightly-default	nightly-polonius-legacy	nightly-polonius-next
+alpha_limit_loop	reject(E0499,E0503)	reject(E0499,E0503)	reject(E0499,E0503)	accept	reject(E0499,E0503)
+join_cause_on_one_branch	reject(E0502)	reject(E0502)	reject(E0502)	reject(E0502)	reject(E0502)
+join_two_owners	reject(E0506)	reject(E0506)	reject(E0506)	reject(E0506)	reject(E0506)
+kill_on_reassign	accept	accept	accept	accept	accept
+loop_later_iteration	reject(E0502)	reject(E0502)	reject(E0502)	reject(E0502)	reject(E0502)
+loop_previous_iteration	reject(E0499)	reject(E0499)	reject(E0499)	reject(E0499)	reject(E0499)
+pc1_assigned_ref	accept	accept	accept	accept	accept
+pc2_cond_flow	accept	accept	accept	accept	accept
+pc3_cross_fn	reject(E0499)	reject(E0499)	accept	accept	accept
+pc3_loop	reject(E0502)	reject(E0502)	accept	accept	accept
+pc4_mut_ref_walk	accept	accept	accept	accept	accept
+region_join_return	reject(other)	reject(other)	reject(other)	reject(other)	reject(other)
+subset_after_join	reject(E0506)	reject(E0506)	accept	reject(E0506)	accept

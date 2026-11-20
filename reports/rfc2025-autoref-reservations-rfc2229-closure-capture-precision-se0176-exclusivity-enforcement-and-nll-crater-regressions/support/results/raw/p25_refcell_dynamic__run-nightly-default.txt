@@ -1,0 +1,8 @@
+$ ./p25_refcell_dynamic
+first borrow_mut ok: true
+overlapping borrow ok: false
+
+thread 'main' (1281333) panicked at p25_refcell_dynamic.rs:12:16:
+RefCell already mutably borrowed
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+exit=101

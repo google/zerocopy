@@ -1,0 +1,16 @@
+$ rustc -Zpolonius=off --edition 2021 --crate-type lib --emit=metadata -o /tmp/out/x.rmeta p22_closure_reads_reserved.rs
+error[E0502]: cannot borrow `x` as mutable because it is also borrowed as immutable
+ --> p22_closure_reads_reserved.rs:6:5
+  |
+6 |     x.assign_result_of(|| x.0 + 1);
+  |     ^^----------------^--^---^^^^^
+  |     | |                |  |
+  |     | |                |  first borrow occurs due to use of `x.0` in closure
+  |     | |                immutable borrow occurs here
+  |     | immutable borrow later used by call
+  |     mutable borrow occurs here
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0502`.
+exit=1

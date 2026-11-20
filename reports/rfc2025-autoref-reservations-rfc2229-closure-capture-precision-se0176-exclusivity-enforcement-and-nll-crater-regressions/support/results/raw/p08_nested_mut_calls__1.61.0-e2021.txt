@@ -1,0 +1,26 @@
+$ rustup run 1.61.0 rustc --edition 2021 --crate-type lib --emit=metadata -o /tmp/out/x.rmeta p08_nested_mut_calls.rs
+error[E0499]: cannot borrow `x` as mutable more than once at a time
+ --> p08_nested_mut_calls.rs:6:17
+  |
+6 |     x.increment(x.increment(1))
+  |     ------------^^^^^^^^^^^^^^-
+  |     | |         |
+  |     | |         second mutable borrow occurs here
+  |     | first borrow later used by call
+  |     first mutable borrow occurs here
+  |
+help: try adding a local storing this argument...
+ --> p08_nested_mut_calls.rs:6:17
+  |
+6 |     x.increment(x.increment(1))
+  |                 ^^^^^^^^^^^^^^
+help: ...and then using that local as the argument to this call
+ --> p08_nested_mut_calls.rs:6:5
+  |
+6 |     x.increment(x.increment(1))
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to previous error
+
+For more information about this error, try `rustc --explain E0499`.
+exit=1

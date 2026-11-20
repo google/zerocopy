@@ -1,0 +1,2 @@
+$ rustup run 1.61.0 rustc --edition 2021 --crate-type lib --emit=metadata -o /tmp/out/x.rmeta p09_nll_case1.rs
+exit=0

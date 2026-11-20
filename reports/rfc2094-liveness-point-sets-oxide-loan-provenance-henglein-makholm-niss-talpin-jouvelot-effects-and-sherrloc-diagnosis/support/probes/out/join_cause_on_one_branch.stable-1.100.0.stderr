@@ -1,0 +1,13 @@
+error[E0502]: cannot borrow `v` as mutable because it is also borrowed as immutable
+ --> rs/join_cause_on_one_branch.rs:7:5
+  |
+6 |     if c { r = &v[0]; } else { r = &zero; }
+  |                 - immutable borrow occurs here
+7 |     v.push(2);
+  |     ^^^^^^^^^ mutable borrow occurs here
+8 |     *r
+  |     -- immutable borrow later used here
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0502`.

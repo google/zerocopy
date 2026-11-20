@@ -1,0 +1,14 @@
+$ rustc --edition 2021 --crate-type lib --emit=metadata -o /tmp/out/x.rmeta p02_two_phase_index_activates.rs
+error[E0502]: cannot borrow `v` as immutable because it is also borrowed as mutable
+ --> p02_two_phase_index_activates.rs:4:34
+  |
+4 |     v[0].push_str(&format!("{}", v.len()));
+  |     -    --------                ^ immutable borrow occurs here
+  |     |    |
+  |     |    mutable borrow later used by call
+  |     mutable borrow occurs here
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0502`.
+exit=1

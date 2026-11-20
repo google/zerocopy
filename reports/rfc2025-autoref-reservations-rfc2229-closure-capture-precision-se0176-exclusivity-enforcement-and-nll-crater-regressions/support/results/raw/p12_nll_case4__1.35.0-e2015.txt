@@ -1,0 +1,33 @@
+$ rustup run 1.35.0 rustc --edition 2015 --crate-type lib --emit=metadata p12_nll_case4.rs
+error[E0499]: cannot borrow `list.value` as mutable more than once at a time
+  --> p12_nll_case4.rs:6:26
+   |
+6  |         result.push(&mut list.value);
+   |                          ^^^^^^^^^^ mutable borrow starts here in previous iteration of loop
+...
+13 | }
+   | - mutable borrow ends here
+
+error[E0499]: cannot borrow `list.next` as mutable more than once at a time
+  --> p12_nll_case4.rs:7:26
+   |
+7  |         if let Some(n) = list.next.as_mut() {
+   |                          ^^^^^^^^^ mutable borrow starts here in previous iteration of loop
+...
+13 | }
+   | - mutable borrow ends here
+
+error[E0506]: cannot assign to `list` because it is borrowed
+ --> p12_nll_case4.rs:8:13
+  |
+6 |         result.push(&mut list.value);
+  |                          ---------- borrow of `list` occurs here
+7 |         if let Some(n) = list.next.as_mut() {
+8 |             list = n;
+  |             ^^^^^^^^ assignment to borrowed `list` occurs here
+
+error: aborting due to 3 previous errors
+
+Some errors occurred: E0499, E0506.
+For more information about an error, try `rustc --explain E0499`.
+exit=1

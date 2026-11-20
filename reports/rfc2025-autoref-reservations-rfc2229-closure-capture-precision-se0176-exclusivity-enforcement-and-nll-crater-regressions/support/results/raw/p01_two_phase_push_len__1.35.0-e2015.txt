@@ -1,0 +1,14 @@
+$ rustup run 1.35.0 rustc --edition 2015 --crate-type lib --emit=metadata p01_two_phase_push_len.rs
+error[E0502]: cannot borrow `vec` as immutable because it is also borrowed as mutable
+ --> p01_two_phase_push_len.rs:4:14
+  |
+4 |     vec.push(vec.len());
+  |     ---      ^^^      - mutable borrow ends here
+  |     |        |
+  |     |        immutable borrow occurs here
+  |     mutable borrow occurs here
+
+error: aborting due to previous error
+
+For more information about this error, try `rustc --explain E0502`.
+exit=1

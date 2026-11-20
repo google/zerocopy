@@ -1,0 +1,2 @@
+$ rustc -Zpolonius=off --edition 2021 --crate-type lib --emit=metadata -o /tmp/out/x.rmeta p06_overloaded_compound_assign.rs
+exit=0

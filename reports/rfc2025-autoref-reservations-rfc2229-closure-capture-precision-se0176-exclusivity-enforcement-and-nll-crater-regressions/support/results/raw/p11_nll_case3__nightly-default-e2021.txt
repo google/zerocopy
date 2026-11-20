@@ -1,0 +1,2 @@
+$ rustc --edition 2021 --crate-type lib --emit=metadata -o /tmp/out/x.rmeta p11_nll_case3.rs
+exit=0

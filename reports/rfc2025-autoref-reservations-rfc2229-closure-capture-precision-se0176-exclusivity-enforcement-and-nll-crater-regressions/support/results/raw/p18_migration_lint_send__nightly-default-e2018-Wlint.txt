@@ -1,0 +1,19 @@
+$ rustc --edition 2018 -W rust-2021-incompatible-closure-captures --crate-type lib --emit=metadata p18_migration_lint_send.rs
+warning: changes to closure capture in Rust 2021 will affect which traits the closure implements
+ --> p18_migration_lint_send.rs:8:27
+  |
+8 |     let _ = thread::spawn(move || unsafe { *fptr.0 = 20; });
+  |                           ^^^^^^^          ------- in Rust 2018, this closure captures all of `fptr`, but in Rust 2021, it will only capture `fptr.0`
+  |                           |
+  |                           in Rust 2018, this closure implements `Send` as `fptr` implements `Send`, but in Rust 2021, this closure will no longer implement `Send` because `fptr` is not fully captured and `fptr.0` does not implement `Send`
+  |
+  = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2021/disjoint-capture-in-closures.html>
+  = note: requested on the command line with `-W rust-2021-incompatible-closure-captures`
+help: add a dummy let to cause `fptr` to be fully captured
+  |
+8 |     let _ = thread::spawn(move || { let _ = &fptr; unsafe { *fptr.0 = 20; } });
+  |                                   ++++++++++++++++                          +
+
+warning: 1 warning emitted
+
+exit=0

@@ -1,0 +1,2 @@
+$ rustup run 1.35.0 rustc --edition 2018 --crate-type lib --emit=metadata p10_nll_case2.rs
+exit=0

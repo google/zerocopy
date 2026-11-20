@@ -1,0 +1,26 @@
+$ rustup run 1.35.0 rustc --edition 2015 --crate-type lib --emit=metadata p07_reservation_conflict.rs
+error[E0502]: cannot borrow `v` as mutable because it is also borrowed as immutable
+ --> p07_reservation_conflict.rs:6:5
+  |
+5 |     let shared = &v;
+  |                   - immutable borrow occurs here
+6 |     v.push(shared.len());
+  |     ^ mutable borrow occurs here
+7 |     v
+8 | }
+  | - immutable borrow ends here
+
+error[E0505]: cannot move out of `v` because it is borrowed
+ --> p07_reservation_conflict.rs:7:5
+  |
+5 |     let shared = &v;
+  |                   - borrow of `v` occurs here
+6 |     v.push(shared.len());
+7 |     v
+  |     ^ move out of `v` occurs here
+
+error: aborting due to 2 previous errors
+
+Some errors occurred: E0502, E0505.
+For more information about an error, try `rustc --explain E0502`.
+exit=1

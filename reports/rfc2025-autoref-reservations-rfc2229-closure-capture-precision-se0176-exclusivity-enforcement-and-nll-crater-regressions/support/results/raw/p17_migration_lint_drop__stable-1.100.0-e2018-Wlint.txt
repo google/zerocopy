@@ -1,0 +1,20 @@
+$ rustup run 1.100.0 rustc --edition 2018 -W rust-2021-incompatible-closure-captures --crate-type lib --emit=metadata p17_migration_lint_drop.rs
+warning: changes to closure capture in Rust 2021 will affect drop order
+ --> p17_migration_lint_drop.rs:7:13
+  |
+7 |     let c = || { let _x = p.x; };
+  |             ^^            --- in Rust 2018, this closure captures all of `p`, but in Rust 2021, it will only capture `p.x`
+8 |     c();
+9 | }
+  | - in Rust 2018, `p` is dropped here, but in Rust 2021, only `p.x` will be dropped here as part of the closure
+  |
+  = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2021/disjoint-capture-in-closures.html>
+  = note: requested on the command line with `-W rust-2021-incompatible-closure-captures`
+help: add a dummy let to cause `p` to be fully captured
+  |
+7 |     let c = || { let _ = &p; let _x = p.x; };
+  |                  +++++++++++
+
+warning: 1 warning emitted
+
+exit=0

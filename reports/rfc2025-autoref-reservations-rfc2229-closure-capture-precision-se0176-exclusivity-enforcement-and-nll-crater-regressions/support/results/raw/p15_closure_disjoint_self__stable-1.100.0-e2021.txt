@@ -1,0 +1,2 @@
+$ rustup run 1.100.0 rustc --edition 2021 --crate-type lib --emit=metadata -o /tmp/out/x.rmeta p15_closure_disjoint_self.rs
+exit=0

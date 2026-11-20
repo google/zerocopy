@@ -1,0 +1,55 @@
+algorithm=Naive dir=facts/pc2_cond_flow/process points=4 origins=4 loans=3 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=11 errors_at_points=0 subset_errors_at_points=0 move_errors_at_points=0 runs=1
+algorithm=DatafrogOpt dir=facts/pc2_cond_flow/process points=4 origins=4 loans=3 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=11 errors_at_points=0 subset_errors_at_points=0 move_errors_at_points=0 runs=1
+algorithm=LocationInsensitive dir=facts/pc2_cond_flow/process points=4 origins=4 loans=3 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=11 errors_at_points=0 subset_errors_at_points=0 move_errors_at_points=0 runs=1
+algorithm=Naive dir=facts/pc2_cond_flow/process_or_default points=88 origins=21 loans=7 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=298 errors_at_points=0 subset_errors_at_points=0 move_errors_at_points=0 runs=1
+algorithm=DatafrogOpt dir=facts/pc2_cond_flow/process_or_default points=88 origins=21 loans=7 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=298 errors_at_points=0 subset_errors_at_points=0 move_errors_at_points=0 runs=1
+algorithm=LocationInsensitive dir=facts/pc2_cond_flow/process_or_default points=88 origins=21 loans=7 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=298 errors_at_points=0 subset_errors_at_points=0 move_errors_at_points=0 runs=1
+algorithm=Naive dir=facts/pc3_cross_fn/get_default points=124 origins=36 loans=12 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=690 errors_at_points=0 subset_errors_at_points=0 move_errors_at_points=0 runs=1
+algorithm=DatafrogOpt dir=facts/pc3_cross_fn/get_default points=124 origins=36 loans=12 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=690 errors_at_points=0 subset_errors_at_points=0 move_errors_at_points=0 runs=1
+algorithm=LocationInsensitive dir=facts/pc3_cross_fn/get_default points=124 origins=36 loans=12 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=690 errors_at_points=11 subset_errors_at_points=0 move_errors_at_points=0 runs=1
+  error_at Start(bb0[4]) loans=["bw0", "bw3"]
+  error_at Start(bb0[9]) loans=["bw3"]
+  error_at Start(bb10[0]) loans=["bw5"]
+  error_at Start(bb11[0]) loans=["bw6"]
+  error_at Start(bb11[1]) loans=["bw7"]
+  error_at Start(bb4[2]) loans=["bw0", "bw3"]
+  error_at Start(bb5[2]) loans=["bw8"]
+  error_at Start(bb6[0]) loans=["bw0", "bw3"]
+  error_at Start(bb8[4]) loans=["bw0", "bw3"]
+  error_at Start(bb8[9]) loans=["bw0"]
+  error_at Start(bb9[2]) loans=["bw5"]
+algorithm=Naive dir=facts/pc3_loop/get_or_insert_loop points=96 origins=20 loans=6 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=509 errors_at_points=0 subset_errors_at_points=0 move_errors_at_points=0 runs=1
+algorithm=DatafrogOpt dir=facts/pc3_loop/get_or_insert_loop points=96 origins=20 loans=6 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=509 errors_at_points=0 subset_errors_at_points=0 move_errors_at_points=0 runs=1
+algorithm=LocationInsensitive dir=facts/pc3_loop/get_or_insert_loop points=96 origins=20 loans=6 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=509 errors_at_points=2 subset_errors_at_points=0 move_errors_at_points=0 runs=1
+  error_at Start(bb6[6]) loans=["bw0"]
+  error_at Start(bb7[0]) loans=["bw0"]
+algorithm=Naive dir=facts/subset_after_join/random_bool points=6 origins=2 loans=2 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=5 errors_at_points=0 subset_errors_at_points=0 move_errors_at_points=0 runs=1
+algorithm=DatafrogOpt dir=facts/subset_after_join/random_bool points=6 origins=2 loans=2 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=5 errors_at_points=0 subset_errors_at_points=0 move_errors_at_points=0 runs=1
+algorithm=LocationInsensitive dir=facts/subset_after_join/random_bool points=6 origins=2 loans=2 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=5 errors_at_points=0 subset_errors_at_points=0 move_errors_at_points=0 runs=1
+algorithm=Naive dir=facts/subset_after_join/unnecessary_error points=172 origins=35 loans=5 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=2971 errors_at_points=1 subset_errors_at_points=0 move_errors_at_points=0 runs=1
+  error_at Start(bb10[0]) loans=["bw2"]
+algorithm=DatafrogOpt dir=facts/subset_after_join/unnecessary_error points=172 origins=35 loans=5 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=2971 errors_at_points=1 subset_errors_at_points=0 move_errors_at_points=0 runs=1
+  error_at Start(bb10[0]) loans=["bw2"]
+algorithm=LocationInsensitive dir=facts/subset_after_join/unnecessary_error points=172 origins=35 loans=5 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=2971 errors_at_points=2 subset_errors_at_points=0 move_errors_at_points=0 runs=1
+  error_at Start(bb0[29]) loans=["bw2"]
+  error_at Start(bb10[0]) loans=["bw2"]
+algorithm=Naive dir=facts/join_two_owners/join_two_owners points=56 origins=7 loans=4 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=71 errors_at_points=1 subset_errors_at_points=0 move_errors_at_points=0 runs=1
+  error_at Start(bb4[0]) loans=["bw0"]
+algorithm=DatafrogOpt dir=facts/join_two_owners/join_two_owners points=56 origins=7 loans=4 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=71 errors_at_points=1 subset_errors_at_points=0 move_errors_at_points=0 runs=1
+  error_at Start(bb4[0]) loans=["bw0"]
+algorithm=LocationInsensitive dir=facts/join_two_owners/join_two_owners points=56 origins=7 loans=4 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=71 errors_at_points=1 subset_errors_at_points=0 move_errors_at_points=0 runs=1
+  error_at Start(bb4[0]) loans=["bw0"]
+algorithm=Naive dir=facts/kill_on_reassign/kill_rules points=84 origins=22 loans=8 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=1461 errors_at_points=0 subset_errors_at_points=0 move_errors_at_points=0 runs=1
+algorithm=DatafrogOpt dir=facts/kill_on_reassign/kill_rules points=84 origins=22 loans=8 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=1461 errors_at_points=0 subset_errors_at_points=0 move_errors_at_points=0 runs=1
+algorithm=LocationInsensitive dir=facts/kill_on_reassign/kill_rules points=84 origins=22 loans=8 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=1461 errors_at_points=4 subset_errors_at_points=0 move_errors_at_points=0 runs=1
+  error_at Start(bb0[24]) loans=["bw4"]
+  error_at Start(bb0[25]) loans=["bw5"]
+  error_at Start(bb0[29]) loans=["bw2"]
+  error_at Start(bb1[0]) loans=["bw2"]
+algorithm=Naive dir=facts/alpha_limit_loop/conditional points=104 origins=10 loans=6 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=133 errors_at_points=0 subset_errors_at_points=0 move_errors_at_points=0 runs=1
+algorithm=DatafrogOpt dir=facts/alpha_limit_loop/conditional points=104 origins=10 loans=6 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=133 errors_at_points=0 subset_errors_at_points=0 move_errors_at_points=0 runs=1
+algorithm=LocationInsensitive dir=facts/alpha_limit_loop/conditional points=104 origins=10 loans=6 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=133 errors_at_points=4 subset_errors_at_points=0 move_errors_at_points=0 runs=1
+  error_at Start(bb5[1]) loans=["bw1"]
+  error_at Start(bb7[1]) loans=["bw1"]
+  error_at Start(bb8[2]) loans=["bw2"]
+  error_at Start(bb8[3]) loans=["bw3"]

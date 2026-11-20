@@ -1,0 +1,14 @@
+$ rustc --edition 2018 --crate-type lib --emit=metadata -o /tmp/out/x.rmeta p03_two_phase_sneaky.rs
+error[E0499]: cannot borrow `v` as mutable more than once at a time
+ --> p03_two_phase_sneaky.rs:5:21
+  |
+5 |     v[0].push_str({ v.push(s); "World!" });
+  |     -    --------   ^ second mutable borrow occurs here
+  |     |    |
+  |     |    first borrow later used by call
+  |     first mutable borrow occurs here
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0499`.
+exit=1

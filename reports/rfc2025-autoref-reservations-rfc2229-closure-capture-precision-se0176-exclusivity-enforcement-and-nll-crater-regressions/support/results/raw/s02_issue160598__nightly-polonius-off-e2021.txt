@@ -1,0 +1,2 @@
+$ rustc -Zpolonius=off --edition 2021 -o s02_issue160598 s02_issue160598.rs
+exit=0

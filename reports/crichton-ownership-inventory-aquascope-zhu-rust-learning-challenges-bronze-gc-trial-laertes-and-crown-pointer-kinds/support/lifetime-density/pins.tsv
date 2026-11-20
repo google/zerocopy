@@ -1,0 +1,15 @@
+repository	revision	library_source_dirs
+serde-rs/serde	e306b0c7c40ad21d5bdf52bcd20da513904682ae	serde_core/src serde/src
+dtolnay/syn	a2cddb7a893532133c17a32e4ac68a9805db7c9f	src
+rust-lang/regex	fde4946d4a3cb367338a21493ec91ec7106a12b4	src
+rust-random/rand	c03e547d051fee1e7c8b1217ff04b11bf0ea5138	src
+clap-rs/clap	487474f013d3e0cbffc911934575f7ebcc72a6d4	clap_builder/src
+tokio-rs/tokio	717c508f9e9ac4317665ff1eb30f29c139ea6363	tokio/src
+dtolnay/anyhow	dd0c0a655a214add8fc986df34ea3823468fa4fb	src
+rust-itertools/itertools	8b4c6cb2732a08b3dcac681ca249ae413b998c83	src
+rust-lang/hashbrown	f3e9f0fc110f55ca55d73d6eddc0bdf5e85eb223	src
+tokio-rs/bytes	67edc2b999d669eb4f471aff576e213dbcb58871	src
+BurntSushi/memchr	bd6068c30e9074a90c285e47912fa0b047d07597	src
+rust-bakery/nom	51c3c4e44fa78a8a09b413419372b97b2cc2a787	src
+rust-lang/log	75fcb86da1cce3b9476c58c911482ec43ec235f4	src
+servo/rust-smallvec	4850a2c4f47c07a0ec2ee91bd47d7f598e3fdc69	src

@@ -1,0 +1,8 @@
+[package]
+name = "lifetime-density"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+syn = { version = "2", default-features = false, features = ["full", "visit", "parsing", "printing"] }
+proc-macro2 = { version = "1", default-features = false, features = ["span-locations"] }

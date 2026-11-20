@@ -1,0 +1,86 @@
+### repo:rust-lang/rust is:issue label:I-unsound label:A-NLL
+160525	open	2026-08-04	-	ConstantIndex and Index not flagged as potential aliases
+151637	open	2026-01-25	-	Unsoundness due to closure return value not being checked for WF
+148854	closed	2025-11-12	2026-02-14	Lifetime bounds of Drop aren't checked properly
+119564	closed	2024-01-04	2024-01-05	Coroutine resume type is not borrow-checked
+118876	closed	2023-12-12	2024-02-14	`&'a T` → `&'static T` in safe code
+115175	closed	2023-08-24	2026-02-14	ignored lifetime constraints in type annotations
+98693	closed	2022-06-29	2022-07-11	NLL and closures: higher-ranked lifetime bounds are not enforced in type tests
+58776	closed	2019-02-27	2019-03-11	NLL migrate mode erroneously downgrades error with nested closures, yielding use-after-free
+58299	closed	2019-02-08	2019-02-14	NLL ignores lifetimes on associated constants in range patterns
+57265	closed	2019-01-02	2019-01-03	Unsoundness related to implied bounds for return types
+57170	closed	2018-12-28	2019-03-02	Borrow checker incorrectly accepts code when calling function with complex lifetime bounds through a fn pointer
+56797	closed	2018-12-13	2018-12-16	Matching on an enum should read the entire enum
+55223	closed	2018-10-20	2018-10-25	ICE 'allocation missing in dead_alloc_map' in rustc_mir::interpret when compiling Servo
+53432	closed	2018-08-16	2019-09-27	Bug: nested closure outlives borrowed value.
+53142	closed	2018-08-07	2020-04-17	Polonius (but not ordinary NLL) accepts code which segfaults
+53026	closed	2018-08-03	2018-08-06	NLL migration mode is accepting code that both NLL and AST-borrowck reject!
+48803	closed	2018-03-07	2018-04-15	Converting "&'a &'b T" to "&'a T" in the presence of non-lexical lifetimes can be unsound
+47516	closed	2018-01-17	2018-01-24	generator + nll : creating movable self referencing object
+47470	closed	2018-01-15	2018-03-13	NLL: unconstrained lifetimes can be returned via associated types
+46557	closed	2017-12-07	2018-06-02	Compiler accepts return mut ref to local var on no longer valid stackframe
+45045	closed	2017-10-05	2018-01-17	 binding-less matches on borrowed data are incorrectly allowed
+38899	closed	2017-01-07	2019-09-27	borrowed referent of a `&T` sometimes incorrectly allowed
+31567	closed	2016-02-11	2019-09-27	`Drop` and leaking `&mut` references
+27868	closed	2015-08-17	2019-09-27	Inconsistent evaluation order for assignment operations
+27282	closed	2015-07-25	2019-08-03	Can mutate in match-arm using a closure
+### repo:rust-lang/rust is:issue label:I-unsound label:A-closures
+164546	closed	2026-10-18	2026-10-19	Polonius: passing an `impl Trait` value through a closure drops the borrow it captures
+164421	open	2026-10-16	-	Borrow held by an `impl Trait` value is lost when the value is passed through a closure (Polonius; the fn-pointer form also with NLL)
+164338	open	2026-10-15	-	`Reborrow` unsoundness: calling through a closure allows two live exclusive reborrows
+164337	open	2026-10-15	-	Polonius (nightly default) loses the borrow captured by an `impl Trait` return value when the callee has a projection-typed parameter and is called through a closure
+153140	open	2026-02-26	-	closures are not required to outlive generic arguments mentioned in their body
+152489	open	2026-02-11	-	higher-ranked `dyn Trait`, fn pointers, and closures allow normalizing to non-wf type
+151637	open	2026-01-25	-	Unsoundness due to closure return value not being checked for WF
+141713	open	2025-05-29	-	Lifetime HRTB on associated type results in unsoundness
+84533	open	2021-04-24	-	Functions, closures, and HRTB-trait-objects can implement traits such that validity of associated types is never checked.
+84366	open	2021-04-20	-	'static closures/FnDefs/futures with non-'static return type are unsound
+84305	closed	2021-04-18	2022-09-25	Opaque `impl Trait` return types unsoundly ignoring lifetime constraints
+82633	closed	2021-02-28	2022-10-06	`fn() -> Out` is a valid type for unsized types `Out`, and it implements `FnOnce<(), Output = Out>`
+53432	closed	2018-08-16	2019-09-27	Bug: nested closure outlives borrowed value.
+### repo:rust-lang/rust is:issue label:I-unsound two-phase
+164163	open	2026-10-11	-	Unsound two-phase borrow accepted by compiler
+160598	open	2026-08-06	-	is_active can be unsound when the activation does not dominate the reservation
+143047	open	2025-06-26	-	const-eval can construct uninhabited values or other unconstructable values out-of-thin-air via recursive static initialization
+160815	closed	2026-08-09	2026-08-28	`Condvar` and `Mutex` in `std::sys::pal::unix::sync` violate aliasing rules
+155748	closed	2026-04-24	2026-04-26	Memory unsafety at libc/kernel boundary via argv overread in unix impl of `std::process::Command`
+152735	closed	2026-02-16	2026-03-09	Miscompilation causing segfault with `dyn Future` on recent nightly versions
+116558	closed	2023-10-09	2025-04-24	The `extern "C"` ABI of SIMD vector types depends on target features (tracking issue for `abi_unsupported_vector_types` future-incompatibility lint)
+10389	closed	2013-11-09	2024-08-12	Collisions in type_id
+27970	closed	2015-08-23	2024-05-30	set_var/remove_var are unsound in combination with C code that reads the environment
+82523	closed	2021-02-25	2023-02-01	Tracking Issue for future-incompatibility warning `unaligned_references`
+27060	closed	2015-07-16	2022-03-28	repr(packed) allows invalid unaligned loads
+86163	closed	2021-06-09	2021-12-02	SPARC - passing argument from C++ to Rust issue
+38899	closed	2017-01-07	2019-09-27	borrowed referent of a `&T` sometimes incorrectly allowed
+27282	closed	2015-07-25	2019-08-03	Can mutate in match-arm using a closure
+54957	closed	2018-10-10	2018-12-16	BTreeSet causes UB by having (partially) dangling shared reference
+45045	closed	2017-10-05	2018-01-17	 binding-less matches on borrowed data are incorrectly allowed
+53026	closed	2018-08-03	2018-08-06	NLL migration mode is accepting code that both NLL and AST-borrowck reject!
+### repo:rust-lang/rust is:issue is:open label:NLL-sound
+123312	open	2024-04-01	-	closure rvalue not checked for WF allowing it to assume more implied bounds
+104478	open	2022-11-16	-	closures accept ill-formed inputs
+54366	open	2018-09-19	-	`#[thread_local] static mut` is allowed to have `'static` lifetime
+54105	open	2018-09-10	-	fix "bivariant wf" bug in the NLL subtyping code
+### repo:rust-lang/rust is:issue is:open label:I-unsound label:A-borrow-checker
+165308	open	2026-11-02	-	Gen closures can hold a borrow of their own upvar across `yield`: the by-move body is not borrow-checked (use-after-free in safe code)
+165290	open	2026-11-01	-	nightly-only regression: borrows of `#[thread_local]`s can escape from functions
+165176	open	2026-10-30	-	`-Zassumptions-on-binders`: any higher-ranked type-outlives assumption proves `T: 'static` for every `T`
+164738	open	2026-10-22	-	Nested place mention on uninitialized local compiles to invalid pointer dereference
+164705	open	2026-10-21	-	Borrow checker allows "place mention"-dereferencing an uninitialized reference
+164704	open	2026-10-21	-	`async_drop`: dropping a suspended future asynchronously polls its async destructors with the `Context` of an earlier poll (use-after-free)
+164421	open	2026-10-16	-	Borrow held by an `impl Trait` value is lost when the value is passed through a closure (Polonius; the fn-pointer form also with NLL)
+164420	open	2026-10-16	-	Polonius (old trait solver): fix for #160669 is skipped once the body contains a higher-ranked type
+164338	open	2026-10-15	-	`Reborrow` unsoundness: calling through a closure allows two live exclusive reborrows
+164337	open	2026-10-15	-	Polonius (nightly default) loses the borrow captured by an `impl Trait` return value when the callee has a projection-typed parameter and is called through a closure
+164250	open	2026-10-13	-	struct's lifetime requirements can be bypassed via covariant field assignment
+164163	open	2026-10-11	-	Unsound two-phase borrow accepted by compiler
+163886	open	2026-10-06	-	`impl Trait` bounds incorrectly assumed to be not-live
+161471	open	2026-08-21	-	Polonius soundness bug with higher ranked function pointers
+161038	open	2026-08-13	-	Unsoundness in Polonius involving impl Trait
+160598	open	2026-08-06	-	is_active can be unsound when the activation does not dominate the reservation
+160525	open	2026-08-04	-	ConstantIndex and Index not flagged as potential aliases
+154676	open	2026-04-01	-	Borrow checker doesn't account for reads from `ProjectionElem::Index`
+153597	open	2026-03-09	-	Lifetime annotation not respected in recursive function with RPIT
+151637	open	2026-01-25	-	Unsoundness due to closure return value not being checked for WF
+144312	open	2025-07-22	-	Patterns sometimes ignores lifetimes.
+49682	open	2018-04-05	-	Keeping references to #[thread_local] statics is allowed across yields.

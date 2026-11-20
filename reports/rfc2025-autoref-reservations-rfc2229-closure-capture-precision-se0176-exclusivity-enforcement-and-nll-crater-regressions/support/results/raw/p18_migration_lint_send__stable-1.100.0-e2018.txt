@@ -1,0 +1,2 @@
+$ rustup run 1.100.0 rustc --edition 2018 --crate-type lib --emit=metadata -o /tmp/out/x.rmeta p18_migration_lint_send.rs
+exit=0

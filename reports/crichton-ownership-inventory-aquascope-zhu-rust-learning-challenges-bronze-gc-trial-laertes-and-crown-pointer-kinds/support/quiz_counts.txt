@@ -1,0 +1,19 @@
+ch04-01-ownership-sec1-stackheap.toml	2	{'MultipleChoice': 1, 'ShortAnswer': 1}
+ch04-01-ownership-sec2-moves.toml	4	{'MultipleChoice': 2, 'Tracing': 2}
+ch04-02-references-sec1-basics.toml	2	{'ShortAnswer': 1, 'MultipleChoice': 1}
+ch04-02-references-sec2-perms.toml	3	{'MultipleChoice': 3}
+ch04-02-references-sec3-safety.toml	3	{'Tracing': 2, 'MultipleChoice': 1}
+ch04-03-fixing-ownership-errors-sec1-idioms.toml	3	{'MultipleChoice': 3}
+ch04-03-fixing-ownership-errors-sec2-safety.toml	5	{'MultipleChoice': 4, 'Tracing': 1}
+ch04-04-slices.toml	2	{'MultipleChoice': 1, 'Tracing': 1}
+ch04-05-ownership-recap.toml	7	{'MultipleChoice': 7}
+ch06-04-inventory.toml	6	{'MultipleChoice': 6}
+ch08-04-inventory.toml	6	{'MultipleChoice': 6}
+ch10-03-lifetimes-sec1.toml	2	{'MultipleChoice': 1, 'Tracing': 1}
+ch10-03-lifetimes-sec2.toml	3	{'MultipleChoice': 3}
+ch10-04-inventory.toml	6	{'MultipleChoice': 6}
+ch17-04-inventory.toml	3	{'MultipleChoice': 3}
+ALL	files=93	questions=222	{'MultipleChoice': 141, 'ShortAnswer': 17, 'Tracing': 64}
+GROUP ch10-03 lifetimes	files=2	questions=5	{'MultipleChoice': 4, 'Tracing': 1}
+GROUP chapter 4	files=9	questions=31	{'MultipleChoice': 23, 'ShortAnswer': 2, 'Tracing': 6}
+GROUP ownership inventory files	files=4	questions=21	{'MultipleChoice': 21}

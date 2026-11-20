@@ -21056,6 +21056,226 @@
         "verification/separation-logic"
       ]
     },
+    "crichton-ownership-inventory-aquascope-zhu-rust-learning-challenges-bronze-gc-trial-laertes-and-crown-pointer-kinds": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "cognitive-engineering-lab/aquascope",
+            "revision": "f2d0a06034b86765a91f10b7c8e40ec31ecb87a6"
+          },
+          "name": "Aquascope (permissions, loans and lifetime visualizer for Rust learners)"
+        },
+        {
+          "identity": {
+            "repository": "cognitive-engineering-lab/rust-book",
+            "revision": "88250e0392cef0622f318e35469108d68694c1f7"
+          },
+          "name": "Rust Book experiment fork with quiz instruments"
+        },
+        {
+          "identity": {
+            "repository": "KomaEc/crown",
+            "revision": "621904cd356b433215d5f55db39ffd71714f44ff"
+          },
+          "name": "Crown ownership analysis for C-to-Rust translation"
+        },
+        {
+          "identity": {
+            "repository": "immunant/c2rust",
+            "revision": "a4837814f1ae7650fae0c7eccb9bdbbf2b1aef20"
+          },
+          "name": "c2rust (c2rust-analyze pointer-permission analysis)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973"
+          },
+          "name": "rustc source (E0106 error-code explanation)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "version": "1.100.0"
+          },
+          "name": "rustc 1.100.0 (executed for the E0106 diagnostic probe)"
+        },
+        {
+          "identity": {
+            "crate": "syn",
+            "registry": "crates.io",
+            "version": "2.0.119"
+          },
+          "name": "syn parser used by the density counter"
+        },
+        {
+          "identity": {
+            "repository": "serde-rs/serde",
+            "revision": "e306b0c7c40ad21d5bdf52bcd20da513904682ae"
+          },
+          "name": "Density sample: serde"
+        },
+        {
+          "identity": {
+            "repository": "dtolnay/syn",
+            "revision": "a2cddb7a893532133c17a32e4ac68a9805db7c9f"
+          },
+          "name": "Density sample: syn"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/regex",
+            "revision": "fde4946d4a3cb367338a21493ec91ec7106a12b4"
+          },
+          "name": "Density sample: regex"
+        },
+        {
+          "identity": {
+            "repository": "rust-random/rand",
+            "revision": "c03e547d051fee1e7c8b1217ff04b11bf0ea5138"
+          },
+          "name": "Density sample: rand"
+        },
+        {
+          "identity": {
+            "repository": "clap-rs/clap",
+            "revision": "487474f013d3e0cbffc911934575f7ebcc72a6d4"
+          },
+          "name": "Density sample: clap (clap_builder)"
+        },
+        {
+          "identity": {
+            "repository": "tokio-rs/tokio",
+            "revision": "717c508f9e9ac4317665ff1eb30f29c139ea6363"
+          },
+          "name": "Density sample: tokio"
+        },
+        {
+          "identity": {
+            "repository": "dtolnay/anyhow",
+            "revision": "dd0c0a655a214add8fc986df34ea3823468fa4fb"
+          },
+          "name": "Density sample: anyhow"
+        },
+        {
+          "identity": {
+            "repository": "rust-itertools/itertools",
+            "revision": "8b4c6cb2732a08b3dcac681ca249ae413b998c83"
+          },
+          "name": "Density sample: itertools"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/hashbrown",
+            "revision": "f3e9f0fc110f55ca55d73d6eddc0bdf5e85eb223"
+          },
+          "name": "Density sample: hashbrown"
+        },
+        {
+          "identity": {
+            "repository": "tokio-rs/bytes",
+            "revision": "67edc2b999d669eb4f471aff576e213dbcb58871"
+          },
+          "name": "Density sample: bytes"
+        },
+        {
+          "identity": {
+            "repository": "BurntSushi/memchr",
+            "revision": "bd6068c30e9074a90c285e47912fa0b047d07597"
+          },
+          "name": "Density sample: memchr"
+        },
+        {
+          "identity": {
+            "repository": "rust-bakery/nom",
+            "revision": "51c3c4e44fa78a8a09b413419372b97b2cc2a787"
+          },
+          "name": "Density sample: nom"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/log",
+            "revision": "75fcb86da1cce3b9476c58c911482ec43ec235f4"
+          },
+          "name": "Density sample: log"
+        },
+        {
+          "identity": {
+            "repository": "servo/rust-smallvec",
+            "revision": "4850a2c4f47c07a0ec2ee91bd47d7f598e3fdc69"
+          },
+          "name": "Density sample: smallvec"
+        },
+        {
+          "identity": {
+            "arxiv": "2011.06171",
+            "version": "v2"
+          },
+          "name": "Crichton, The Usability of Ownership (HATRA 2020)"
+        },
+        {
+          "identity": {
+            "url": "https://www.usenix.org/system/files/soups2021-fulton.pdf",
+            "venue": "SOUPS 2021, pages 597-616"
+          },
+          "name": "Fulton et al., Benefits and Drawbacks of Adopting a Secure Programming Language: Rust as a Case Study (SOUPS 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3510003.3510164"
+          },
+          "name": "Zhu et al., Learning and Programming Challenges of Rust: A Mixed-Methods Study (ICSE 2022)"
+        },
+        {
+          "identity": {
+            "arxiv": "2110.01098",
+            "doi": "10.1145/3510003.3510107"
+          },
+          "name": "Coblenz, Mazurek, Hicks, Garbage Collection Makes Rust Easier to Use: A Randomized Controlled Trial of the Bronze Garbage Collector (ICSE 2022)"
+        },
+        {
+          "identity": {
+            "arxiv": "2309.04134",
+            "doi": "10.1145/3622841"
+          },
+          "name": "Crichton, Gray, Krishnamurthi, A Grounded Conceptual Model for Ownership Types in Rust (OOPSLA 2023)"
+        },
+        {
+          "identity": {
+            "arxiv": "2401.01257",
+            "doi": "10.1145/3649812"
+          },
+          "name": "Crichton, Krishnamurthi, Profiling Programming Language Learning (OOPSLA 2024)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3485498"
+          },
+          "name": "Emre, Schroeder, Dewey, Hardekopf, Translating C to Safer Rust (OOPSLA 2021)"
+        },
+        {
+          "identity": {
+            "arxiv": "2303.10515",
+            "doi": "10.1007/978-3-031-37709-9_22"
+          },
+          "name": "Zhang, David, Yu, Wang, Ownership Guided C to Rust Translation (CAV 2023)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3586046"
+          },
+          "name": "Emre et al., Aliasing Limits on Translating C to Safe Rust (OOPSLA 2023)"
+        }
+      ],
+      "topics": [
+        "rust/borrow-checking-onboarding-evidence",
+        "pl/ownership-annotation-density-measurement",
+        "tooling/ownership-visualization-for-learners",
+        "compilers/c-to-rust-ownership-classification"
+      ]
+    },
     "cross-crate-thinlto-anneal-mir-summary-certificates-and-import-replay": {
       "observed_at": "2026-11-14",
       "subjects": [
@@ -28197,6 +28417,157 @@
         "security/fault-isolation",
         "isa/protection-keys",
         "runtimes/libos-dataplanes"
+      ]
+    },
+    "faers-disproportionality-prr-bcpnn-mgps-shrinkage-ohdsi-empirical-calibration-and-openebgm-negative-controls": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "cran/openEBGM",
+            "revision": "d731cb3ee8d5fe6013666e05b9e55e2494d51f25",
+            "version": "0.11.0"
+          },
+          "name": "openEBGM (CRAN read-only mirror)"
+        },
+        {
+          "identity": {
+            "repository": "cran/PhViD",
+            "revision": "bbb450c3837c6001710a328d382a27e856e601d8",
+            "version": "1.0.8"
+          },
+          "name": "PhViD (CRAN read-only mirror)"
+        },
+        {
+          "identity": {
+            "repository": "OHDSI/EmpiricalCalibration",
+            "revision": "03d4747fd805e92744d0bcaf603f4c2d0b13370b",
+            "version": "3.1.4"
+          },
+          "name": "EmpiricalCalibration"
+        },
+        {
+          "identity": {
+            "repository": "OHDSI/MethodEvaluation",
+            "revision": "d7305910f6c6a390a9e423ffc1685a97c017183e",
+            "version": "2.4.2"
+          },
+          "name": "MethodEvaluation"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s002280050466"
+          },
+          "name": "Bate et al. 1998, A Bayesian neural network method for adverse drug reaction signal generation"
+        },
+        {
+          "identity": {
+            "doi": "10.1080/00031305.1999.10474456"
+          },
+          "name": "DuMouchel 1999, Bayesian data mining in large frequency tables, with an application to the FDA Spontaneous Reporting System"
+        },
+        {
+          "identity": {
+            "doi": "10.1002/pds.677"
+          },
+          "name": "Evans, Waller and Davis 2001, Use of proportional reporting ratios (PRRs) for signal generation"
+        },
+        {
+          "identity": {
+            "doi": "10.1002/pds.668"
+          },
+          "name": "van Puijenbroek et al. 2002, A comparison of measures of disproportionality for signal detection"
+        },
+        {
+          "identity": {
+            "doi": "10.2165/00002018-200225060-00001"
+          },
+          "name": "Szarfman, Machado and O'Neill 2002, Use of screening algorithms and computer systems to signal higher-than-expected drug-event combinations"
+        },
+        {
+          "identity": {
+            "doi": "10.1002/sim.2473"
+          },
+          "name": "Noren et al. 2006, Extending the methods used to screen the WHO drug safety database"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10618-006-0052-8"
+          },
+          "name": "Noren et al. 2007, Duplicate detection in adverse drug reaction surveillance"
+        },
+        {
+          "identity": {
+            "doi": "10.2165/00002018-200831110-00008"
+          },
+          "name": "Hopstadius et al. 2008, Impact of stratification on adverse drug reaction surveillance"
+        },
+        {
+          "identity": {
+            "doi": "10.1002/sim.5620"
+          },
+          "name": "Ryan et al. 2012, Empirical assessment of methods for risk identification in healthcare data (OMOP)"
+        },
+        {
+          "identity": {
+            "doi": "10.1177/0962280211403604"
+          },
+          "name": "Noren, Hopstadius and Bate 2013, Shrinkage observed-to-expected ratios for robust and transparent large-scale pattern discovery"
+        },
+        {
+          "identity": {
+            "doi": "10.1038/clpt.2013.24"
+          },
+          "name": "Harpaz et al. 2013, Performance of pharmacovigilance signal-detection algorithms for the FDA Adverse Event Reporting System"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s40264-013-0097-8"
+          },
+          "name": "Ryan et al. 2013, Defining a reference set to support methodological research in drug safety"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s40264-013-0108-9"
+          },
+          "name": "Ryan et al. 2013, A comparison of the empirical performance of methods for a risk identification system"
+        },
+        {
+          "identity": {
+            "doi": "10.1002/sim.5925"
+          },
+          "name": "Schuemie et al. 2014, Interpreting observational studies: why empirical calibration is needed to correct p-values"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s40264-014-0146-y"
+          },
+          "name": "Tregunno et al. 2014, Performance of probabilistic method to detect duplicate individual case safety reports"
+        },
+        {
+          "identity": {
+            "doi": "10.32614/RJ-2017-063"
+          },
+          "name": "Canida and Ihrie 2017, openEBGM: an R implementation of the gamma-Poisson shrinker data mining model"
+        },
+        {
+          "identity": {
+            "doi": "10.1073/pnas.1708282114"
+          },
+          "name": "Schuemie et al. 2018, Empirical confidence interval calibration for population-level effect estimation studies"
+        },
+        {
+          "identity": {
+            "doi": "10.1162/99608f92.147cc28e"
+          },
+          "name": "Schuemie et al. 2020, How confident are we about observational findings in health care: a benchmark study"
+        }
+      ],
+      "topics": [
+        "domains/pharmacovigilance-signal-detection",
+        "domains/observational-drug-safety-estimation",
+        "verification/negative-control-calibration",
+        "tooling/disproportionality-score-implementations"
       ]
     },
     "fagan-inspection-rates-perspective-based-reading-and-formal-notation-comprehension-trials": {
@@ -63647,6 +64018,267 @@
         "isa/microarchitecture",
         "systems",
         "tooling"
+      ]
+    },
+    "rfc2025-autoref-reservations-rfc2229-closure-capture-precision-se0176-exclusivity-enforcement-and-nll-crater-regressions": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "Rust RFCs repository (RFC 2094 non-lexical lifetimes, RFC 2025 nested method calls, RFC 2229 closures capture disjoint fields)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973"
+          },
+          "name": "Rust compiler source (borrow checker, closure capture analysis, lint registry, Polonius option)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)"
+          },
+          "name": "rustc nightly toolchain used for probes"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "rustc 1.100.0 (0ef1bc386 2026-11-09)"
+          },
+          "name": "rustc stable toolchain used for probes"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "fe5b13d681f25ee6474be29d748c65adcd91f69e",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "rustc 1.61.0 (fe5b13d68 2022-05-18)"
+          },
+          "name": "rustc 1.61.0 toolchain (last release with the mutable_borrow_reservation_conflict lint)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "09c42c45858d5f3aedfa670698275303a3d19afa",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "rustc 1.56.0 (09c42c458 2021-10-18)"
+          },
+          "name": "rustc 1.56.0 toolchain (first release with edition 2021)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3c235d5600393dfe6c36eeed34042efad8d4f26e",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "rustc 1.35.0 (3c235d560 2019-05-20)"
+          },
+          "name": "rustc 1.35.0 toolchain (edition 2015 still checked by the pre-NLL borrow checker)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/edition-guide",
+            "revision": "ab8544aeed7b792984366aa122ac19bd47ad9a2f"
+          },
+          "name": "Rust Edition Guide (disjoint capture in closures, 2021 migration)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/crater",
+            "revision": "abaa949414a8b9457858f0fc1a6ed97824cb9120"
+          },
+          "name": "Crater ecosystem regression-testing tool"
+        },
+        {
+          "identity": {
+            "repository": "swiftlang/swift-evolution",
+            "revision": "f75d0a0456d72c2ca3ae418cc6a9939d32f42779"
+          },
+          "name": "Swift Evolution proposals (SE-0176 Enforce Exclusive Access to Memory)"
+        },
+        {
+          "identity": {
+            "repository": "swiftlang/swift",
+            "revision": "640604572aaeae2e0f37c139bc70556129efb550"
+          },
+          "name": "Swift compiler and runtime source (Ownership Manifesto, exclusivity diagnostics, enforcement selection and optimization, runtime access tracking)"
+        },
+        {
+          "identity": {
+            "repository": "swiftlang/swift-org-website",
+            "revision": "dabf9ac18178ccbd17e43bb4972b5064ee577385"
+          },
+          "name": "Swift.org website source (Swift 5 Exclusivity Enforcement post)"
+        }
+      ],
+      "topics": [
+        "rust/borrow-checker-relaxation-history",
+        "pl/exclusivity-enforcement-static-and-dynamic",
+        "verification/borrow-checker-soundness-regressions",
+        "tooling/ecosystem-wide-compiler-regression-testing"
+      ]
+    },
+    "rfc2094-liveness-point-sets-oxide-loan-provenance-henglein-makholm-niss-talpin-jouvelot-effects-and-sherrloc-diagnosis": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "path": "text/2094-nll.md",
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "Rust RFC 2094 (Non-Lexical Lifetimes)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973"
+          },
+          "name": "rustc source (borrow checker, Polonius options, bootstrap defaults)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-11)"
+          },
+          "name": "rustc 1.102.0-nightly (executed; rustup toolchain nightly-2026-11-12)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "version": "1.100.0"
+          },
+          "name": "rustc 1.100.0 (executed)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/polonius",
+            "revision": "bfd4c945b7713d0e66a3cde80475d9a4494740df"
+          },
+          "name": "Polonius engine (Naive, DatafrogOpt, LocationInsensitive variants; executed)"
+        },
+        {
+          "identity": {
+            "crate": "datafrog",
+            "registry": "crates.io",
+            "version": "2.0.1"
+          },
+          "name": "datafrog (Datalog engine linked by polonius-engine in the executed driver)"
+        },
+        {
+          "identity": {
+            "repository": "aatxe/oxide",
+            "revision": "203e42936b273e7f1351ce1d0ea5bb8d1b0dc5c1"
+          },
+          "name": "Oxide executable model (OCaml type checker)"
+        },
+        {
+          "identity": {
+            "path": "docs/lrm/source/declarations-and-types.rst",
+            "repository": "AdaCore/spark2014",
+            "revision": "d737789cf270fb29659d176793c9a40b7ae16714"
+          },
+          "name": "SPARK 2014 language reference (access-type ownership rules)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rustc-dev-guide",
+            "revision": "d946d7402d269990f3b64baabaf6592409791c11"
+          },
+          "name": "rustc-dev-guide (region inference chapters)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/blog.rust-lang.org",
+            "revision": "8666f7c3a86260ec58e4d914d451b14613c690a4"
+          },
+          "name": "Rust blog posts on Polonius (2023 update; 2026 nightly enablement)"
+        },
+        {
+          "identity": {
+            "arxiv": "1903.00982",
+            "version": "v4"
+          },
+          "name": "Weiss, Gierczak, Patterson, Ahmed, Oxide: The Essence of Rust"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796800000393"
+          },
+          "name": "Talpin, Jouvelot, Polymorphic Type, Region and Effect Inference (JFP 1992; abstract only)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/207110.207137"
+          },
+          "name": "Aiken, Fahndrich, Levien, Better Static Memory Management (PLDI 1995)"
+        },
+        {
+          "identity": {
+            "url": "https://elsman.com/mlkit/pdf/toplas98.pdf",
+            "venue": "ACM TOPLAS 20(5), 1998"
+          },
+          "name": "Tofte, Birkedal, A Region Inference Algorithm (TOPLAS 20(5), 1998)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2535838.2535870"
+          },
+          "name": "Zhang, Myers, Toward General Diagnosis of Static Errors (POPL 2014; abstract only)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3121137"
+          },
+          "name": "Zhang, Myers, Vytiniotis, Peyton Jones, SHErrLoc: A Static Holistic Error Locator (TOPLAS 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2737924.2738009"
+          },
+          "name": "Zhang, Myers, Vytiniotis, Peyton Jones, Diagnosing Type Errors with Class (PLDI 2015)"
+        },
+        {
+          "identity": {
+            "arxiv": "1708.07583",
+            "doi": "10.1145/3138818"
+          },
+          "name": "Seidel, Sibghat, Chaudhuri, Weimer, Jhala, Learning to Blame (OOPSLA 2017)"
+        },
+        {
+          "identity": {
+            "arxiv": "1710.07047",
+            "version": "v1"
+          },
+          "name": "Jaloyan, Safe Pointers in SPARK 2014"
+        },
+        {
+          "identity": {
+            "arxiv": "2510.20532"
+          },
+          "name": "Balik, Jedras, Polesiuk, Deciding not to Decide (secondary description of Talpin-Jouvelot inference)"
+        },
+        {
+          "identity": {
+            "url": "http://smallcultfollowing.com/babysteps/blog/2018/04/27/an-alias-based-formulation-of-the-borrow-checker/"
+          },
+          "name": "Matsakis, An alias-based formulation of the borrow checker (blog, 2018)"
+        }
+      ],
+      "topics": [
+        "pl/region-inference-at-control-flow-joins",
+        "rust/location-sensitive-lifetime-constraints",
+        "verification/principal-region-and-effect-typing",
+        "tooling/constraint-error-localization"
       ]
     },
     "rice-theorem-from-a-fixpoint-principle-and-what-it-does-not-forbid": {

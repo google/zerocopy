@@ -1,0 +1,40 @@
+warning: value assigned to `z` is never read
+  --> rs/subset_after_join.rs:18:5
+   |
+18 |     z += 1; // is the loan of z still live via 'y?
+   |     ^^^^^^
+   |
+   = help: maybe it is overwritten before being read?
+   = note: `#[warn(unused_assignments)]` (part of `#[warn(unused)]`) on by default
+
+warning: calls to `std::mem::drop` with a reference instead of an owned value does nothing
+  --> rs/subset_after_join.rs:16:9
+   |
+16 |         drop(x.0);
+   |         ^^^^^---^
+   |              |
+   |              argument has type `&u32`
+   |
+   = note: `#[warn(dropping_references)]` on by default
+help: use `let _ = ...` to ignore the expression or result
+   |
+16 -         drop(x.0);
+16 +         let _ = x.0;
+   |
+
+warning: calls to `std::mem::drop` with a reference instead of an owned value does nothing
+  --> rs/subset_after_join.rs:19:5
+   |
+19 |     drop(y.0);
+   |     ^^^^^---^
+   |          |
+   |          argument has type `&u32`
+   |
+help: use `let _ = ...` to ignore the expression or result
+   |
+19 -     drop(y.0);
+19 +     let _ = y.0;
+   |
+
+warning: 3 warnings emitted
+

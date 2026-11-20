@@ -1,0 +1,14 @@
+error: lifetime may not live long enough
+ --> rs/region_join_return.rs:3:23
+  |
+2 | pub fn pick<'a, 'b>(c: bool, x: &'a u32, y: &'b u32) -> &'a u32 {
+  |             --  -- lifetime `'b` defined here
+  |             |
+  |             lifetime `'a` defined here
+3 |     if c { x } else { y }
+  |                       ^ function was supposed to return data with lifetime `'a` but it is returning data with lifetime `'b`
+  |
+  = help: consider adding the following bound: `'b: 'a`
+
+error: aborting due to 1 previous error
+

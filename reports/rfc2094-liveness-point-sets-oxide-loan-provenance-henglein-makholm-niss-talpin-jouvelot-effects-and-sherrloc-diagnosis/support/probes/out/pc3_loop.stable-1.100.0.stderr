@@ -1,0 +1,17 @@
+error[E0502]: cannot borrow `*map` as mutable because it is also borrowed as immutable
+ --> rs/pc3_loop.rs:8:9
+  |
+3 | pub fn get_or_insert_loop<'r>(map: &'r mut HashMap<u32, String>, key: u32...
+  |                           -- lifetime `'r` defined here
+4 |     loop {
+5 |         if let Some(v) = map.get(&key) {
+  |                          --- immutable borrow occurs here
+6 |             return v;
+  |                    - returning this value requires that `*map` is borrowed for `'r`
+7 |         }
+8 |         map.insert(key, String::new());
+  |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ mutable borrow occurs here
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0502`.

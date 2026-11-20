@@ -1,0 +1,22 @@
+caers rows: 15204 unique ids: 2776 strata: ['Female', 'Male', 'Not reported']
+processRaw (unstratified) rows: 13441  N_tot(unique ids): 2776  [0.04s toy]
+  vignette E 0.0003602305 -> toy (1, '0.0003602305', 2776.0, inf)
+  vignette E 0.1253602305 -> toy (1, '0.1253602305', 7.98, 8.0)
+  vignette E 0.0407060519 -> toy (1, '0.0407060519', 24.57, 24.78)
+stratified/unstratified E ratio: min 0.137 median 1.096 max 4.940
+squashData() defaults -> rows: 1202 (vignette03 prints 1202)
+toy fit, per-component truncation (openEBGM form): [3.77687 0.51432 3.75497 3.66461 0.04829] negLL 2994.068 [3.4s toy]
+  vignette03 autoHyper(squashed):  [3.77687 0.51432 3.75500 3.66463 0.04829] negLL 2994.068
+toy fit, mixture-level truncation (conditional marginal): ['4.96728e-11', '0.274715', '27.4092', '23.2391', '1'] negLL 3008.898
+  mixture-level negLL evaluated at the openEBGM estimate: 3111.247
+with .reinInTheta (as shipped): theta used = [1.02776 0.51388 3.73821 3.64892 0.04817]
+   Qn    [0.08983976 0.06931687 0.08191145]
+   EBGM  [1.27 1.19 1.24]
+   Q05   [0.5  0.48 0.5 ]  Q95 [3.31 2.75 3.05]
+   cells with QUANT_05 >= 2 (F(1.995) <= 0.05): 24 of 13441
+without clamp (raw MLE): theta used = [3.777   0.51388 3.73821 3.64892 0.04817]
+   Qn    [0.26581188 0.1305827  0.21003888]
+   EBGM  [1.96 1.42 1.72]
+   Q05   [0.54 0.5  0.53]  Q95 [12.77  7.98 11.02]
+   cells with QUANT_05 >= 2 (F(1.995) <= 0.05): 44 of 13441
+vignette04 prints: Qn 0.08983976 0.06931687 0.08191145; EBGM 1.27 1.19 1.24; Q05 0.50 0.48 0.50; Q95 3.31 2.75 3.05; 24 of 13441 with QUANT_05 >= 2

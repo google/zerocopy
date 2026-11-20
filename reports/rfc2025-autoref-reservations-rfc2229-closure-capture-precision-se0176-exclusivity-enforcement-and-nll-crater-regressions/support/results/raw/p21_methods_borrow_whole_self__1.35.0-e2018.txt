@@ -1,0 +1,14 @@
+$ rustup run 1.35.0 rustc --edition 2018 --crate-type lib --emit=metadata p21_methods_borrow_whole_self.rs
+error[E0499]: cannot borrow `*self` as mutable more than once at a time
+  --> p21_methods_borrow_whole_self.rs:11:61
+   |
+11 |     pub fn through_method(&mut self) { let b = &mut self.b; self.push_a(1); b.push(2); }
+   |                                                -----------  ^^^^            - first borrow later used here
+   |                                                |            |
+   |                                                |            second mutable borrow occurs here
+   |                                                first mutable borrow occurs here
+
+error: aborting due to previous error
+
+For more information about this error, try `rustc --explain E0499`.
+exit=1

@@ -1,0 +1,115 @@
+{
+  "topics": [
+    "domains/pharmacovigilance-signal-detection",
+    "domains/observational-drug-safety-estimation",
+    "verification/negative-control-calibration",
+    "tooling/disproportionality-score-implementations"
+  ],
+  "subjects": [
+    {
+      "name": "openEBGM (CRAN read-only mirror)",
+      "identity": {
+        "repository": "cran/openEBGM",
+        "revision": "d731cb3ee8d5fe6013666e05b9e55e2494d51f25",
+        "version": "0.11.0"
+      }
+    },
+    {
+      "name": "PhViD (CRAN read-only mirror)",
+      "identity": {
+        "repository": "cran/PhViD",
+        "revision": "bbb450c3837c6001710a328d382a27e856e601d8",
+        "version": "1.0.8"
+      }
+    },
+    {
+      "name": "EmpiricalCalibration",
+      "identity": {
+        "repository": "OHDSI/EmpiricalCalibration",
+        "revision": "03d4747fd805e92744d0bcaf603f4c2d0b13370b",
+        "version": "3.1.4"
+      }
+    },
+    {
+      "name": "MethodEvaluation",
+      "identity": {
+        "repository": "OHDSI/MethodEvaluation",
+        "revision": "d7305910f6c6a390a9e423ffc1685a97c017183e",
+        "version": "2.4.2"
+      }
+    },
+    {
+      "name": "Bate et al. 1998, A Bayesian neural network method for adverse drug reaction signal generation",
+      "identity": { "doi": "10.1007/s002280050466" }
+    },
+    {
+      "name": "DuMouchel 1999, Bayesian data mining in large frequency tables, with an application to the FDA Spontaneous Reporting System",
+      "identity": { "doi": "10.1080/00031305.1999.10474456" }
+    },
+    {
+      "name": "Evans, Waller and Davis 2001, Use of proportional reporting ratios (PRRs) for signal generation",
+      "identity": { "doi": "10.1002/pds.677" }
+    },
+    {
+      "name": "van Puijenbroek et al. 2002, A comparison of measures of disproportionality for signal detection",
+      "identity": { "doi": "10.1002/pds.668" }
+    },
+    {
+      "name": "Szarfman, Machado and O'Neill 2002, Use of screening algorithms and computer systems to signal higher-than-expected drug-event combinations",
+      "identity": { "doi": "10.2165/00002018-200225060-00001" }
+    },
+    {
+      "name": "Noren et al. 2006, Extending the methods used to screen the WHO drug safety database",
+      "identity": { "doi": "10.1002/sim.2473" }
+    },
+    {
+      "name": "Noren et al. 2007, Duplicate detection in adverse drug reaction surveillance",
+      "identity": { "doi": "10.1007/s10618-006-0052-8" }
+    },
+    {
+      "name": "Hopstadius et al. 2008, Impact of stratification on adverse drug reaction surveillance",
+      "identity": { "doi": "10.2165/00002018-200831110-00008" }
+    },
+    {
+      "name": "Ryan et al. 2012, Empirical assessment of methods for risk identification in healthcare data (OMOP)",
+      "identity": { "doi": "10.1002/sim.5620" }
+    },
+    {
+      "name": "Noren, Hopstadius and Bate 2013, Shrinkage observed-to-expected ratios for robust and transparent large-scale pattern discovery",
+      "identity": { "doi": "10.1177/0962280211403604" }
+    },
+    {
+      "name": "Harpaz et al. 2013, Performance of pharmacovigilance signal-detection algorithms for the FDA Adverse Event Reporting System",
+      "identity": { "doi": "10.1038/clpt.2013.24" }
+    },
+    {
+      "name": "Ryan et al. 2013, Defining a reference set to support methodological research in drug safety",
+      "identity": { "doi": "10.1007/s40264-013-0097-8" }
+    },
+    {
+      "name": "Ryan et al. 2013, A comparison of the empirical performance of methods for a risk identification system",
+      "identity": { "doi": "10.1007/s40264-013-0108-9" }
+    },
+    {
+      "name": "Schuemie et al. 2014, Interpreting observational studies: why empirical calibration is needed to correct p-values",
+      "identity": { "doi": "10.1002/sim.5925" }
+    },
+    {
+      "name": "Tregunno et al. 2014, Performance of probabilistic method to detect duplicate individual case safety reports",
+      "identity": { "doi": "10.1007/s40264-014-0146-y" }
+    },
+    {
+      "name": "Canida and Ihrie 2017, openEBGM: an R implementation of the gamma-Poisson shrinker data mining model",
+      "identity": { "doi": "10.32614/RJ-2017-063" }
+    },
+    {
+      "name": "Schuemie et al. 2018, Empirical confidence interval calibration for population-level effect estimation studies",
+      "identity": { "doi": "10.1073/pnas.1708282114" }
+    },
+    {
+      "name": "Schuemie et al. 2020, How confident are we about observational findings in health care: a benchmark study",
+      "identity": { "doi": "10.1162/99608f92.147cc28e" }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

@@ -1,0 +1,23 @@
+$ rustup run 1.35.0 rustc --edition 2015 --crate-type lib --emit=metadata p23_swap_same.rs
+error[E0499]: cannot borrow `x` as mutable more than once at a time
+ --> p23_swap_same.rs:2:60
+  |
+2 | pub fn same() { let mut x = 0; std::mem::swap(&mut x, &mut x); }
+  |                                                    -       ^- first borrow ends here
+  |                                                    |       |
+  |                                                    |       second mutable borrow occurs here
+  |                                                    first mutable borrow occurs here
+
+error[E0499]: cannot borrow `a[..]` as mutable more than once at a time
+ --> p23_swap_same.rs:3:69
+  |
+3 | pub fn elems() { let mut a = [1, 2]; std::mem::swap(&mut a[0], &mut a[1]); }
+  |                                                          ----       ^^^^- first borrow ends here
+  |                                                          |          |
+  |                                                          |          second mutable borrow occurs here
+  |                                                          first mutable borrow occurs here
+
+error: aborting due to 2 previous errors
+
+For more information about this error, try `rustc --explain E0499`.
+exit=1

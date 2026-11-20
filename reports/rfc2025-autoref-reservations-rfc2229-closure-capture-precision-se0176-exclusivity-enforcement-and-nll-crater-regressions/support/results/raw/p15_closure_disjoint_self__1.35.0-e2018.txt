@@ -1,0 +1,16 @@
+$ rustup run 1.35.0 rustc --edition 2018 --crate-type lib --emit=metadata p15_closure_disjoint_self.rs
+error[E0502]: cannot borrow `self.list` as mutable because it is also borrowed as immutable
+ --> p15_closure_disjoint_self.rs:7:9
+  |
+7 |         self.list.retain(|i| self.filter.allowed(i));
+  |         ^^^^^^^^^^------^---^----^^^^^^^^^^^^^^^^^^^
+  |         |         |      |   |
+  |         |         |      |   first borrow occurs due to use of `self` in closure
+  |         |         |      immutable borrow occurs here
+  |         |         immutable borrow later used by call
+  |         mutable borrow occurs here
+
+error: aborting due to previous error
+
+For more information about this error, try `rustc --explain E0502`.
+exit=1

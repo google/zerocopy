@@ -1,0 +1,13 @@
+error[E0502]: cannot borrow `*items` as mutable because it is also borrowed as immutable
+ --> rs/loop_later_iteration.rs:5:9
+  |
+5 |         items.push(i.to_string());
+  |         ^^^^^^^^^^^^^^^^^^^^^^^^^ mutable borrow occurs here
+6 |         keep.push(&items[0]);
+  |         ----       ----- immutable borrow occurs here
+  |         |
+  |         immutable borrow later used here
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0502`.

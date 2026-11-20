@@ -1,0 +1,244 @@
+probe	configuration	exit_code	diagnostic_header_counts
+p01_two_phase_push_len	1.35.0-e2015	1	error x1;error[E0502] x1
+p01_two_phase_push_len	1.35.0-e2018	0	
+p01_two_phase_push_len	1.61.0-e2021	0	
+p01_two_phase_push_len	nightly-default-e2018	0	
+p01_two_phase_push_len	nightly-default-e2021	0	
+p01_two_phase_push_len	nightly-polonius-off-e2018	0	
+p01_two_phase_push_len	nightly-polonius-off-e2021	0	
+p01_two_phase_push_len	stable-1.100.0-e2018	0	
+p01_two_phase_push_len	stable-1.100.0-e2021	0	
+p02_two_phase_index_activates	1.35.0-e2015	1	error x1;error[E0502] x1
+p02_two_phase_index_activates	1.35.0-e2018	1	error x1;error[E0502] x1
+p02_two_phase_index_activates	1.61.0-e2021	1	error x1;error[E0502] x1
+p02_two_phase_index_activates	nightly-default-e2018	1	error x1;error[E0502] x1
+p02_two_phase_index_activates	nightly-default-e2021	1	error x1;error[E0502] x1
+p02_two_phase_index_activates	nightly-polonius-off-e2018	1	error x1;error[E0502] x1
+p02_two_phase_index_activates	nightly-polonius-off-e2021	1	error x1;error[E0502] x1
+p02_two_phase_index_activates	stable-1.100.0-e2018	1	error x1;error[E0502] x1
+p02_two_phase_index_activates	stable-1.100.0-e2021	1	error x1;error[E0502] x1
+p03_two_phase_sneaky	1.35.0-e2015	1	error x1;error[E0499] x1
+p03_two_phase_sneaky	1.35.0-e2018	1	error x1;error[E0499] x1
+p03_two_phase_sneaky	1.61.0-e2021	1	error x1;error[E0499] x1
+p03_two_phase_sneaky	nightly-default-e2018	1	error x1;error[E0499] x1
+p03_two_phase_sneaky	nightly-default-e2021	1	error x1;error[E0499] x1
+p03_two_phase_sneaky	nightly-polonius-off-e2018	1	error x1;error[E0499] x1
+p03_two_phase_sneaky	nightly-polonius-off-e2021	1	error x1;error[E0499] x1
+p03_two_phase_sneaky	stable-1.100.0-e2018	1	error x1;error[E0499] x1
+p03_two_phase_sneaky	stable-1.100.0-e2021	1	error x1;error[E0499] x1
+p04_manual_desugar	1.35.0-e2015	1	error x1;error[E0502] x1
+p04_manual_desugar	1.35.0-e2018	1	error x1;error[E0502] x1
+p04_manual_desugar	1.61.0-e2021	1	error x1;error[E0502] x1
+p04_manual_desugar	nightly-default-e2018	1	error x1;error[E0502] x1
+p04_manual_desugar	nightly-default-e2021	1	error x1;error[E0502] x1
+p04_manual_desugar	nightly-polonius-off-e2018	1	error x1;error[E0502] x1
+p04_manual_desugar	nightly-polonius-off-e2021	1	error x1;error[E0502] x1
+p04_manual_desugar	stable-1.100.0-e2018	1	error x1;error[E0502] x1
+p04_manual_desugar	stable-1.100.0-e2021	1	error x1;error[E0502] x1
+p05_ufcs_explicit_mut_arg	1.35.0-e2015	1	error x1;error[E0502] x1
+p05_ufcs_explicit_mut_arg	1.35.0-e2018	1	error x1;error[E0502] x1
+p05_ufcs_explicit_mut_arg	1.61.0-e2021	1	error x1;error[E0502] x1
+p05_ufcs_explicit_mut_arg	nightly-default-e2018	1	error x1;error[E0502] x1
+p05_ufcs_explicit_mut_arg	nightly-default-e2021	1	error x1;error[E0502] x1
+p05_ufcs_explicit_mut_arg	nightly-polonius-off-e2018	1	error x1;error[E0502] x1
+p05_ufcs_explicit_mut_arg	nightly-polonius-off-e2021	1	error x1;error[E0502] x1
+p05_ufcs_explicit_mut_arg	stable-1.100.0-e2018	1	error x1;error[E0502] x1
+p05_ufcs_explicit_mut_arg	stable-1.100.0-e2021	1	error x1;error[E0502] x1
+p06_overloaded_compound_assign	1.35.0-e2015	0	
+p06_overloaded_compound_assign	1.35.0-e2018	0	
+p06_overloaded_compound_assign	1.61.0-e2021	0	
+p06_overloaded_compound_assign	nightly-default-e2018	0	
+p06_overloaded_compound_assign	nightly-default-e2021	0	
+p06_overloaded_compound_assign	nightly-polonius-off-e2018	0	
+p06_overloaded_compound_assign	nightly-polonius-off-e2021	0	
+p06_overloaded_compound_assign	stable-1.100.0-e2018	0	
+p06_overloaded_compound_assign	stable-1.100.0-e2021	0	
+p07_reservation_conflict	1.35.0-e2015	1	error x1;error[E0502] x1;error[E0505] x1
+p07_reservation_conflict	1.35.0-e2018	0	warning x1
+p07_reservation_conflict	1.61.0-e2021	0	warning x2
+p07_reservation_conflict	nightly-default-e2018	0	
+p07_reservation_conflict	nightly-default-e2021	0	
+p07_reservation_conflict	nightly-polonius-off-e2018	0	
+p07_reservation_conflict	nightly-polonius-off-e2021	0	
+p07_reservation_conflict	stable-1.100.0-e2018	0	
+p07_reservation_conflict	stable-1.100.0-e2021	0	
+p08_nested_mut_calls	1.35.0-e2015	1	error x1;error[E0499] x1
+p08_nested_mut_calls	1.35.0-e2018	1	error x1;error[E0499] x1
+p08_nested_mut_calls	1.61.0-e2021	1	error x1;error[E0499] x1
+p08_nested_mut_calls	nightly-default-e2018	1	error x1;error[E0499] x1
+p08_nested_mut_calls	nightly-default-e2021	1	error x1;error[E0499] x1
+p08_nested_mut_calls	nightly-polonius-off-e2018	1	error x1;error[E0499] x1
+p08_nested_mut_calls	nightly-polonius-off-e2021	1	error x1;error[E0499] x1
+p08_nested_mut_calls	stable-1.100.0-e2018	1	error x1;error[E0499] x1
+p08_nested_mut_calls	stable-1.100.0-e2021	1	error x1;error[E0499] x1
+p09_nll_case1	1.35.0-e2015	1	error x1;error[E0499] x3
+p09_nll_case1	1.35.0-e2018	0	
+p09_nll_case1	1.61.0-e2021	0	
+p09_nll_case1	nightly-default-e2018	0	
+p09_nll_case1	nightly-default-e2021	0	
+p09_nll_case1	nightly-polonius-off-e2018	0	
+p09_nll_case1	nightly-polonius-off-e2021	0	
+p09_nll_case1	stable-1.100.0-e2018	0	
+p09_nll_case1	stable-1.100.0-e2021	0	
+p10_nll_case2	1.35.0-e2015	1	error x1;error[E0499] x1
+p10_nll_case2	1.35.0-e2018	0	
+p10_nll_case2	1.61.0-e2021	0	
+p10_nll_case2	nightly-default-e2018	0	
+p10_nll_case2	nightly-default-e2021	0	
+p10_nll_case2	nightly-polonius-off-e2018	0	
+p10_nll_case2	nightly-polonius-off-e2021	0	
+p10_nll_case2	stable-1.100.0-e2018	0	
+p10_nll_case2	stable-1.100.0-e2021	0	
+p11_nll_case3	1.35.0-e2015	1	error x1;error[E0499] x2
+p11_nll_case3	1.35.0-e2018	1	error x1;error[E0499] x2
+p11_nll_case3	1.61.0-e2021	1	error x1;error[E0499] x2
+p11_nll_case3	nightly-default-e2018	0	
+p11_nll_case3	nightly-default-e2021	0	
+p11_nll_case3	nightly-polonius-off-e2018	1	error x1;error[E0499] x2
+p11_nll_case3	nightly-polonius-off-e2021	1	error x1;error[E0499] x2
+p11_nll_case3	stable-1.100.0-e2018	1	error x1;error[E0499] x2
+p11_nll_case3	stable-1.100.0-e2021	1	error x1;error[E0499] x2
+p12_nll_case4	1.35.0-e2015	1	error x1;error[E0499] x2;error[E0506] x1
+p12_nll_case4	1.35.0-e2018	0	
+p12_nll_case4	1.61.0-e2021	0	
+p12_nll_case4	nightly-default-e2018	0	
+p12_nll_case4	nightly-default-e2021	0	
+p12_nll_case4	nightly-polonius-off-e2018	0	
+p12_nll_case4	nightly-polonius-off-e2021	0	
+p12_nll_case4	stable-1.100.0-e2018	0	
+p12_nll_case4	stable-1.100.0-e2021	0	
+p13_assign_rhs_reads_loan	1.35.0-e2015	1	error x1;error[E0503] x1;error[E0506] x2
+p13_assign_rhs_reads_loan	1.35.0-e2018	0	
+p13_assign_rhs_reads_loan	1.61.0-e2021	0	
+p13_assign_rhs_reads_loan	nightly-default-e2018	0	
+p13_assign_rhs_reads_loan	nightly-default-e2021	0	
+p13_assign_rhs_reads_loan	nightly-polonius-off-e2018	0	
+p13_assign_rhs_reads_loan	nightly-polonius-off-e2021	0	
+p13_assign_rhs_reads_loan	stable-1.100.0-e2018	0	
+p13_assign_rhs_reads_loan	stable-1.100.0-e2021	0	
+p14_assign_rhs_loan_live_after	1.35.0-e2015	1	error x1;error[E0506] x1;warning x1
+p14_assign_rhs_loan_live_after	1.35.0-e2018	1	error x1;error[E0506] x1;warning x1
+p14_assign_rhs_loan_live_after	1.61.0-e2021	1	error x1;error[E0506] x1;warning x1
+p14_assign_rhs_loan_live_after	nightly-default-e2018	1	error x1;error[E0506] x1;warning x1
+p14_assign_rhs_loan_live_after	nightly-default-e2021	1	error x1;error[E0506] x1;warning x1
+p14_assign_rhs_loan_live_after	nightly-polonius-off-e2018	1	error x1;error[E0506] x1;warning x1
+p14_assign_rhs_loan_live_after	nightly-polonius-off-e2021	1	error x1;error[E0506] x1;warning x1
+p14_assign_rhs_loan_live_after	stable-1.100.0-e2018	1	error x1;error[E0506] x1;warning x1
+p14_assign_rhs_loan_live_after	stable-1.100.0-e2021	1	error x1;error[E0506] x1;warning x1
+p15_closure_disjoint_self	1.35.0-e2015	1	error x1;error[E0502] x1
+p15_closure_disjoint_self	1.35.0-e2018	1	error x1;error[E0502] x1
+p15_closure_disjoint_self	1.61.0-e2021	0	
+p15_closure_disjoint_self	nightly-default-e2018-Wlint	1	error x1;error[E0502] x1
+p15_closure_disjoint_self	nightly-default-e2018	1	error x1;error[E0502] x1
+p15_closure_disjoint_self	nightly-default-e2021	0	
+p15_closure_disjoint_self	nightly-polonius-off-e2018	1	error x1;error[E0502] x1
+p15_closure_disjoint_self	nightly-polonius-off-e2021	0	
+p15_closure_disjoint_self	stable-1.100.0-e2018-Wlint	1	error x1;error[E0502] x1
+p15_closure_disjoint_self	stable-1.100.0-e2018	1	error x1;error[E0502] x1
+p15_closure_disjoint_self	stable-1.100.0-e2021	0	
+p16_closure_disjoint_fields	1.35.0-e2015	1	error x1;error[E0502] x1
+p16_closure_disjoint_fields	1.35.0-e2018	1	error x1;error[E0502] x1
+p16_closure_disjoint_fields	1.61.0-e2021	0	
+p16_closure_disjoint_fields	nightly-default-e2018-Wlint	1	error x1;error[E0502] x1
+p16_closure_disjoint_fields	nightly-default-e2018	1	error x1;error[E0502] x1
+p16_closure_disjoint_fields	nightly-default-e2021	0	
+p16_closure_disjoint_fields	nightly-polonius-off-e2018	1	error x1;error[E0502] x1
+p16_closure_disjoint_fields	nightly-polonius-off-e2021	0	
+p16_closure_disjoint_fields	stable-1.100.0-e2018-Wlint	1	error x1;error[E0502] x1
+p16_closure_disjoint_fields	stable-1.100.0-e2018	1	error x1;error[E0502] x1
+p16_closure_disjoint_fields	stable-1.100.0-e2021	0	
+p17_migration_lint_drop	1.61.0-e2021	0	
+p17_migration_lint_drop	nightly-default-e2018-Wlint	0	warning x2
+p17_migration_lint_drop	nightly-default-e2018	0	
+p17_migration_lint_drop	nightly-default-e2021	0	
+p17_migration_lint_drop	nightly-polonius-off-e2018	0	
+p17_migration_lint_drop	nightly-polonius-off-e2021	0	
+p17_migration_lint_drop	stable-1.100.0-e2018-Wlint	0	warning x2
+p17_migration_lint_drop	stable-1.100.0-e2018	0	
+p17_migration_lint_drop	stable-1.100.0-e2021	0	
+p18_migration_lint_send	1.61.0-e2021	1	error x1;error[E0277] x1
+p18_migration_lint_send	nightly-default-e2018-Wlint	0	warning x2
+p18_migration_lint_send	nightly-default-e2018	0	
+p18_migration_lint_send	nightly-default-e2021	1	error x1;error[E0277] x1
+p18_migration_lint_send	nightly-polonius-off-e2018	0	
+p18_migration_lint_send	nightly-polonius-off-e2021	1	error x1;error[E0277] x1
+p18_migration_lint_send	stable-1.100.0-e2018-Wlint	0	warning x2
+p18_migration_lint_send	stable-1.100.0-e2018	0	
+p18_migration_lint_send	stable-1.100.0-e2021	1	error x1;error[E0277] x1
+p19_capture_index_truncation	1.35.0-e2015	1	error x1;error[E0502] x1
+p19_capture_index_truncation	1.35.0-e2018	1	error x1;error[E0502] x1
+p19_capture_index_truncation	1.61.0-e2021	1	error x1;error[E0502] x1
+p19_capture_index_truncation	nightly-default-e2018	1	error x1;error[E0502] x1
+p19_capture_index_truncation	nightly-default-e2021	1	error x1;error[E0502] x1
+p19_capture_index_truncation	nightly-polonius-off-e2018	1	error x1;error[E0502] x1
+p19_capture_index_truncation	nightly-polonius-off-e2021	1	error x1;error[E0502] x1
+p19_capture_index_truncation	stable-1.100.0-e2018	1	error x1;error[E0502] x1
+p19_capture_index_truncation	stable-1.100.0-e2021	1	error x1;error[E0502] x1
+p20_capture_packed_truncation	1.35.0-e2015	1	error x1;error[E0502] x2
+p20_capture_packed_truncation	1.35.0-e2018	1	error x1;error[E0502] x2
+p20_capture_packed_truncation	1.61.0-e2021	0	
+p20_capture_packed_truncation	nightly-default-e2018	1	error x1;error[E0502] x2
+p20_capture_packed_truncation	nightly-default-e2021	1	error x1;error[E0502] x1
+p20_capture_packed_truncation	nightly-polonius-off-e2018	1	error x1;error[E0502] x2
+p20_capture_packed_truncation	nightly-polonius-off-e2021	1	error x1;error[E0502] x1
+p20_capture_packed_truncation	stable-1.100.0-e2018	1	error x1;error[E0502] x2
+p20_capture_packed_truncation	stable-1.100.0-e2021	1	error x1;error[E0502] x1
+p21_methods_borrow_whole_self	1.35.0-e2015	1	error x1;error[E0499] x1;error[E0502] x1
+p21_methods_borrow_whole_self	1.35.0-e2018	1	error x1;error[E0499] x1
+p21_methods_borrow_whole_self	1.61.0-e2021	1	error x1;error[E0499] x1
+p21_methods_borrow_whole_self	nightly-default-e2018	1	error x1;error[E0499] x1
+p21_methods_borrow_whole_self	nightly-default-e2021	1	error x1;error[E0499] x1
+p21_methods_borrow_whole_self	nightly-polonius-off-e2018	1	error x1;error[E0499] x1
+p21_methods_borrow_whole_self	nightly-polonius-off-e2021	1	error x1;error[E0499] x1
+p21_methods_borrow_whole_self	stable-1.100.0-e2018	1	error x1;error[E0499] x1
+p21_methods_borrow_whole_self	stable-1.100.0-e2021	1	error x1;error[E0499] x1
+p22_closure_reads_reserved	1.35.0-e2015	1	error x1;error[E0502] x1
+p22_closure_reads_reserved	1.35.0-e2018	1	error x1;error[E0502] x1
+p22_closure_reads_reserved	1.61.0-e2021	1	error x1;error[E0502] x1
+p22_closure_reads_reserved	nightly-default-e2018	1	error x1;error[E0502] x1
+p22_closure_reads_reserved	nightly-default-e2021	1	error x1;error[E0502] x1
+p22_closure_reads_reserved	nightly-polonius-off-e2018	1	error x1;error[E0502] x1
+p22_closure_reads_reserved	nightly-polonius-off-e2021	1	error x1;error[E0502] x1
+p22_closure_reads_reserved	stable-1.100.0-e2018	1	error x1;error[E0502] x1
+p22_closure_reads_reserved	stable-1.100.0-e2021	1	error x1;error[E0502] x1
+p23_swap_same	1.35.0-e2015	1	error x1;error[E0499] x2
+p23_swap_same	1.35.0-e2018	1	error x1;error[E0499] x2
+p23_swap_same	1.61.0-e2021	1	error x1;error[E0499] x2
+p23_swap_same	nightly-default-e2018	1	error x1;error[E0499] x2
+p23_swap_same	nightly-default-e2021	1	error x1;error[E0499] x2
+p23_swap_same	nightly-polonius-off-e2018	1	error x1;error[E0499] x2
+p23_swap_same	nightly-polonius-off-e2021	1	error x1;error[E0499] x2
+p23_swap_same	stable-1.100.0-e2018	1	error x1;error[E0499] x2
+p23_swap_same	stable-1.100.0-e2021	1	error x1;error[E0499] x2
+p24_index_compound_assign	1.35.0-e2015	0	
+p24_index_compound_assign	1.35.0-e2018	0	
+p24_index_compound_assign	1.61.0-e2021	0	
+p24_index_compound_assign	nightly-default-e2018	0	
+p24_index_compound_assign	nightly-default-e2021	0	
+p24_index_compound_assign	nightly-polonius-off-e2018	0	
+p24_index_compound_assign	nightly-polonius-off-e2021	0	
+p24_index_compound_assign	stable-1.100.0-e2018	0	
+p24_index_compound_assign	stable-1.100.0-e2021	0	
+p25_refcell_dynamic	run-nightly-default	101	
+p26_capture_analysis_dump	nightly-default-e2018	1	error x3;warning x1
+p26_capture_analysis_dump	nightly-default-e2021	1	error x3;warning x1
+p27_ufcs_reborrow_arg	1.35.0-e2015	1	error x1;error[E0502] x1
+p27_ufcs_reborrow_arg	1.35.0-e2018	0	
+p27_ufcs_reborrow_arg	1.61.0-e2021	0	
+p27_ufcs_reborrow_arg	nightly-default-e2021	0	
+p27_ufcs_reborrow_arg	nightly-polonius-off-e2021	0	
+p27_ufcs_reborrow_arg	stable-1.100.0-e2021	0	
+s01_issue164163	1.56.0-e2021	0	
+s01_issue164163	1.61.0-e2021	0	
+s01_issue164163	nightly-default-e2021	0	
+s01_issue164163	nightly-polonius-off-e2021	0	
+s01_issue164163	stable-1.100.0-e2021	0	
+s02_issue160598	1.61.0-e2021	1	error x1;error[E0658] x1
+s02_issue160598	nightly-default-e2021	0	
+s02_issue160598	nightly-polonius-off-e2021	0	
+s02_issue160598	run-nightly-default	0	
+s02_issue160598	stable-1.100.0-e2021	0	
+s03_issue160598_loop	1.56.0-e2021	0	
+s03_issue160598_loop	1.61.0-e2021	0	
+s03_issue160598_loop	nightly-default-e2021	0	
+s03_issue160598_loop	stable-1.100.0-e2021	0	

@@ -1,0 +1,2 @@
+$ rustc -Zpolonius=off --edition 2021 --crate-type lib --emit=metadata p27_ufcs_reborrow_arg.rs
+exit=0

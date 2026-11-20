@@ -1,0 +1,18 @@
+$ rustc -Zpolonius=off --edition 2021 --crate-type lib --emit=metadata -o /tmp/out/x.rmeta p19_capture_index_truncation.rs
+error[E0502]: cannot borrow `s.arr` as immutable because it is also borrowed as mutable
+ --> p19_capture_index_truncation.rs:6:13
+  |
+5 |     let a = &mut s.arr[0];
+  |             ------------- mutable borrow occurs here
+6 |     let c = || s.arr[1] + 1;
+  |             ^^ ----- second borrow occurs due to use of `s.arr` in closure
+  |             |
+  |             immutable borrow occurs here
+7 |     let _ = c();
+8 |     *a += 1;
+  |     ------- mutable borrow later used here
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0502`.
+exit=1

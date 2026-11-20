@@ -1,0 +1,14 @@
+$ rustc --edition 2018 --crate-type lib --emit=metadata -o /tmp/out/x.rmeta p05_ufcs_explicit_mut_arg.rs
+error[E0502]: cannot borrow `v` as immutable because it is also borrowed as mutable
+ --> p05_ufcs_explicit_mut_arg.rs:4:23
+  |
+4 |     Vec::push(&mut v, v.len());
+  |     --------- ------  ^ immutable borrow occurs here
+  |     |         |
+  |     |         mutable borrow occurs here
+  |     mutable borrow later used by call
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0502`.
+exit=1

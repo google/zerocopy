@@ -1,0 +1,24 @@
+$ rustc --edition 2021 --crate-type lib --emit=metadata -o /tmp/out/x.rmeta p14_assign_rhs_loan_live_after.rs
+error[E0506]: cannot assign to `x` because it is borrowed
+ --> p14_assign_rhs_loan_live_after.rs:5:5
+  |
+4 |     let r = &x;
+  |             -- `x` is borrowed here
+5 |     x = *r + 1;
+  |     ^^^^^^^^^^ `x` is assigned to here but it was already borrowed
+6 |     *r
+  |     -- borrow later used here
+
+warning: value assigned to `x` is never read
+ --> p14_assign_rhs_loan_live_after.rs:5:5
+  |
+5 |     x = *r + 1;
+  |     ^^^^^^^^^^
+  |
+  = help: maybe it is overwritten before being read?
+  = note: `#[warn(unused_assignments)]` (part of `#[warn(unused)]`) on by default
+
+error: aborting due to 1 previous error; 1 warning emitted
+
+For more information about this error, try `rustc --explain E0506`.
+exit=1

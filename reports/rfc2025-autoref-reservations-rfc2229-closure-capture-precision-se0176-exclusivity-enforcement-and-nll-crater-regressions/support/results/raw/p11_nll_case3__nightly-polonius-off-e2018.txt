@@ -1,0 +1,40 @@
+$ rustc -Zpolonius=off --edition 2018 --crate-type lib --emit=metadata -o /tmp/out/x.rmeta p11_nll_case3.rs
+error[E0499]: cannot borrow `*map` as mutable more than once at a time
+  --> p11_nll_case3.rs:8:13
+   |
+ 4 |   pub fn get_default<'r, K: Hash + Eq + Copy, V: Default>(map: &'r mut H...
+   |                      -- lifetime `'r` defined here
+ 5 |       match map.get_mut(&key) {
+   |       -     --- first mutable borrow occurs here
+   |  _____|
+   | |
+ 6 | |         Some(value) => value,
+ 7 | |         None => {
+ 8 | |             map.insert(key, V::default());
+   | |             ^^^ second mutable borrow occurs here
+...  |
+11 | |     }
+   | |_____- returning this value requires that `*map` is borrowed for `'r`
+
+error[E0499]: cannot borrow `*map` as mutable more than once at a time
+  --> p11_nll_case3.rs:9:13
+   |
+ 4 |   pub fn get_default<'r, K: Hash + Eq + Copy, V: Default>(map: &'r mut H...
+   |                      -- lifetime `'r` defined here
+ 5 |       match map.get_mut(&key) {
+   |       -     --- first mutable borrow occurs here
+   |  _____|
+   | |
+ 6 | |         Some(value) => value,
+ 7 | |         None => {
+ 8 | |             map.insert(key, V::default());
+ 9 | |             map.get_mut(&key).unwrap()
+   | |             ^^^ second mutable borrow occurs here
+10 | |         }
+11 | |     }
+   | |_____- returning this value requires that `*map` is borrowed for `'r`
+
+error: aborting due to 2 previous errors
+
+For more information about this error, try `rustc --explain E0499`.
+exit=1

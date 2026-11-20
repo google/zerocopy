@@ -1,0 +1,13 @@
+$ rustup run 1.61.0 rustc --edition 2021 -o s02_issue160598 s02_issue160598.rs
+error[E0658]: labels on blocks are unstable
+ --> s02_issue160598.rs:6:5
+  |
+6 |     'b: {
+  |     ^^
+  |
+  = note: see issue #48594 <https://github.com/rust-lang/rust/issues/48594> for more information
+
+error: aborting due to previous error
+
+For more information about this error, try `rustc --explain E0658`.
+exit=1

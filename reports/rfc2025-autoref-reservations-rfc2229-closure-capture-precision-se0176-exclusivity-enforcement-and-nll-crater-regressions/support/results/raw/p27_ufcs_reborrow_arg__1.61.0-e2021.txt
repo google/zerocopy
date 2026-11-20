@@ -1,0 +1,2 @@
+$ rustup run 1.61.0 rustc --edition 2021 --crate-type lib --emit=metadata p27_ufcs_reborrow_arg.rs
+exit=0

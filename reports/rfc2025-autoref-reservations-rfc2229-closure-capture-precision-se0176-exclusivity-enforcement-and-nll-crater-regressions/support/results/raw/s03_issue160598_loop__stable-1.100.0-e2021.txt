@@ -1,0 +1,2 @@
+$ rustup run 1.100.0 rustc --edition 2021 -o s03_issue160598_loop s03_issue160598_loop.rs
+exit=0

@@ -1,0 +1,2 @@
+$ rustup run 1.100.0 rustc --edition 2021 --crate-type lib --emit=metadata -o /tmp/out/x.rmeta p13_assign_rhs_reads_loan.rs
+exit=0

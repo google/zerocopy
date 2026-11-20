@@ -1,0 +1,17 @@
+$ rustup run 1.35.0 rustc --edition 2015 --crate-type lib --emit=metadata p10_nll_case2.rs
+error[E0499]: cannot borrow `*map` as mutable more than once at a time
+  --> p10_nll_case2.rs:8:13
+   |
+5  |     match map.get_mut(&key) {
+   |           --- first mutable borrow occurs here
+...
+8  |             map.insert(key, u32::default());
+   |             ^^^ second mutable borrow occurs here
+9  |         }
+10 |     }
+   |     - first borrow ends here
+
+error: aborting due to previous error
+
+For more information about this error, try `rustc --explain E0499`.
+exit=1

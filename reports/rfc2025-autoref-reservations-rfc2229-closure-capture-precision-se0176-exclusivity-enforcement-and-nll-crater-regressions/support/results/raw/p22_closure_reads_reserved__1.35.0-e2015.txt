@@ -1,0 +1,15 @@
+$ rustup run 1.35.0 rustc --edition 2015 --crate-type lib --emit=metadata p22_closure_reads_reserved.rs
+error[E0502]: cannot borrow `x` as immutable because it is also borrowed as mutable
+ --> p22_closure_reads_reserved.rs:6:24
+  |
+6 |     x.assign_result_of(|| x.0 + 1);
+  |     -                  ^^ -      - mutable borrow ends here
+  |     |                  |  |
+  |     |                  |  borrow occurs due to use of `x` in closure
+  |     |                  immutable borrow occurs here
+  |     mutable borrow occurs here
+
+error: aborting due to previous error
+
+For more information about this error, try `rustc --explain E0502`.
+exit=1

@@ -1,0 +1,24 @@
+$ rustup run 1.35.0 rustc --edition 2018 --crate-type lib --emit=metadata p14_assign_rhs_loan_live_after.rs
+warning: value assigned to `x` is never read
+ --> p14_assign_rhs_loan_live_after.rs:5:5
+  |
+5 |     x = *r + 1;
+  |     ^
+  |
+  = note: #[warn(unused_assignments)] on by default
+  = help: maybe it is overwritten before being read?
+
+error[E0506]: cannot assign to `x` because it is borrowed
+ --> p14_assign_rhs_loan_live_after.rs:5:5
+  |
+4 |     let r = &x;
+  |             -- borrow of `x` occurs here
+5 |     x = *r + 1;
+  |     ^^^^^^^^^^ assignment to borrowed `x` occurs here
+6 |     *r
+  |     -- borrow later used here
+
+error: aborting due to previous error
+
+For more information about this error, try `rustc --explain E0506`.
+exit=1

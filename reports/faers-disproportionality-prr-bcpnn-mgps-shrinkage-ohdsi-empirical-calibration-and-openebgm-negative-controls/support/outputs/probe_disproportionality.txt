@@ -1,0 +1,25 @@
+PhViDdata.frame: cells=102483 drugs=634 events=756 N(sum of n11)=1196487 cells with n11=1: 40344 (39.4%)
+   Evans: n>=3 & PRR>=2 & chi2(uncorrected)>=4      signals= 11442  of which n11<=2: 0
+   Evans: n>=3 & PRR>=2 & chi2(Yates)>=4            signals= 10240  of which n11<=2: 0
+   PRR lower 95% bound > 1                          signals= 23612  of which n11<=2: 10047
+   ROR lower 95% bound > 1                          signals= 23542  of which n11<=2: 9996
+   ROR lower 95% bound > 1 & n>=3                   signals= 13546  of which n11<=2: 0
+   BCPNN IC025 > 0 (PhViD exact, normal approx.)    signals= 10067  of which n11<=2: 0
+   shrinkage IC025 > 0 (Gamma(O+.5,E+.5))           signals= 10314  of which n11<=2: 0
+   Jaccard overlap between signal sets:
+     Evans: n>=3 & PRR>=2 & chi2(un vs Evans: n>=3 & PRR>=2 & chi2(Ya: 0.895
+     Evans: n>=3 & PRR>=2 & chi2(un vs PRR lower 95% bound > 1       : 0.477
+     Evans: n>=3 & PRR>=2 & chi2(un vs ROR lower 95% bound > 1       : 0.478
+     Evans: n>=3 & PRR>=2 & chi2(un vs ROR lower 95% bound > 1 & n>=3: 0.828
+     Evans: n>=3 & PRR>=2 & chi2(un vs BCPNN IC025 > 0 (PhViD exact, : 0.622
+     Evans: n>=3 & PRR>=2 & chi2(un vs shrinkage IC025 > 0 (Gamma(O+.: 0.647
+     Evans: n>=3 & PRR>=2 & chi2(Ya vs shrinkage IC025 > 0 (Gamma(O+.: 0.712
+     PRR lower 95% bound > 1        vs shrinkage IC025 > 0 (Gamma(O+.: 0.437
+     ROR lower 95% bound > 1        vs shrinkage IC025 > 0 (Gamma(O+.: 0.438
+     ROR lower 95% bound > 1 & n>=3 vs shrinkage IC025 > 0 (Gamma(O+.: 0.761
+     BCPNN IC025 > 0 (PhViD exact,  vs shrinkage IC025 > 0 (Gamma(O+.: 0.960
+   BCPNN IC025 minus shrinkage IC025: median +0.430, 5-95% [-0.048, +1.339]; for n11>=5 median +0.042
+   BCPNN E[IC] minus shrinkage IC (alpha=0.5): median -0.234, max |diff| 0.959
+   BCPNN E[IC] minus log2((O+1)/(E+1)) (alpha=1): median -0.2534, max |diff| 0.3968
+CAERS: pairs=13441 unique reports=2776 sum of pair counts=15164
+   E(pair-count margins)/E(unique-report margins): median 1.569, 5-95% [0.366, 5.767], max 38.078

@@ -1,0 +1,31 @@
+$ rustup run 1.35.0 rustc --edition 2015 --crate-type lib --emit=metadata p13_assign_rhs_reads_loan.rs
+error[E0506]: cannot assign to `x` because it is borrowed
+ --> p13_assign_rhs_reads_loan.rs:6:5
+  |
+5 |     let r = &x;
+  |              - borrow of `x` occurs here
+6 |     x = *r + 1;
+  |     ^^^^^^^^^^ assignment to borrowed `x` occurs here
+
+error[E0506]: cannot assign to `x` because it is borrowed
+  --> p13_assign_rhs_reads_loan.rs:12:5
+   |
+11 |     let r = &mut x;
+   |                  - borrow of `x` occurs here
+12 |     x = *r + 1;
+   |     ^^^^^^^^^^ assignment to borrowed `x` occurs here
+
+error[E0503]: cannot use `x` because it was mutably borrowed
+  --> p13_assign_rhs_reads_loan.rs:13:5
+   |
+11 |     let r = &mut x;
+   |                  - borrow of `x` occurs here
+12 |     x = *r + 1;
+13 |     x
+   |     ^ use of borrowed `x`
+
+error: aborting due to 3 previous errors
+
+Some errors occurred: E0503, E0506.
+For more information about an error, try `rustc --explain E0503`.
+exit=1

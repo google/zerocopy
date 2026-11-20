@@ -1,0 +1,31 @@
+$ rustup run 1.35.0 rustc --edition 2015 --crate-type lib --emit=metadata p20_capture_packed_truncation.rs
+error[E0502]: cannot borrow `p` as immutable because `p.a` is also borrowed as mutable
+  --> p20_capture_packed_truncation.rs:8:13
+   |
+7  |     let r = &mut p.a;
+   |                  --- mutable borrow occurs here
+8  |     let c = || { let x = &p.b; *x };
+   |             ^^            - borrow occurs due to use of `p` in closure
+   |             |
+   |             immutable borrow occurs here
+...
+11 | }
+   | - mutable borrow ends here
+
+error[E0502]: cannot borrow `q` as immutable because `q.a` is also borrowed as mutable
+  --> p20_capture_packed_truncation.rs:14:13
+   |
+13 |     let r = &mut q.a;
+   |                  --- mutable borrow occurs here
+14 |     let c = || { let x = &q.b; *x };
+   |             ^^            - borrow occurs due to use of `q` in closure
+   |             |
+   |             immutable borrow occurs here
+...
+17 | }
+   | - mutable borrow ends here
+
+error: aborting due to 2 previous errors
+
+For more information about this error, try `rustc --explain E0502`.
+exit=1

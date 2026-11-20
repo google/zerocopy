@@ -1,0 +1,16 @@
+$ rustup run 1.35.0 rustc --edition 2015 --crate-type lib --emit=metadata p04_manual_desugar.rs
+error[E0502]: cannot borrow `vec` as immutable because it is also borrowed as mutable
+ --> p04_manual_desugar.rs:5:16
+  |
+4 |     let tmp0 = &mut vec;
+  |                     --- mutable borrow occurs here
+5 |     let tmp1 = vec.len();
+  |                ^^^ immutable borrow occurs here
+6 |     Vec::push(tmp0, tmp1);
+7 | }
+  | - mutable borrow ends here
+
+error: aborting due to previous error
+
+For more information about this error, try `rustc --explain E0502`.
+exit=1

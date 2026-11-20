@@ -1,0 +1,11 @@
+error[E0499]: cannot borrow `x` as mutable more than once at a time
+ --> rs/loop_previous_iteration.rs:6:16
+  |
+6 |         v.push(&mut x);
+  |         -      ^^^^^^ `x` was mutably borrowed here in the previous iteration of the loop
+  |         |
+  |         first borrow used here, in later iteration of loop
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0499`.

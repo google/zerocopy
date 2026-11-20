@@ -1,0 +1,2 @@
+$ rustc --edition 2018 --crate-type lib --emit=metadata -o /tmp/out/x.rmeta p10_nll_case2.rs
+exit=0

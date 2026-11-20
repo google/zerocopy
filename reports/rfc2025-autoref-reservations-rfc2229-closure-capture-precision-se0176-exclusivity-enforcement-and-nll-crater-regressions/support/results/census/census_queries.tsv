@@ -1,0 +1,13 @@
+query	total_count	observed_utc_date
+repo:rust-lang/rust is:issue label:I-unsound	763	2026-11-20
+repo:rust-lang/rust is:issue label:I-unsound label:A-borrow-checker	53	2026-11-20
+repo:rust-lang/rust is:issue is:open label:I-unsound label:A-borrow-checker	22	2026-11-20
+repo:rust-lang/rust is:issue label:I-unsound label:A-NLL	25	2026-11-20
+repo:rust-lang/rust is:issue is:open label:I-unsound label:A-NLL	2	2026-11-20
+repo:rust-lang/rust is:issue label:NLL-sound	54	2026-11-20
+repo:rust-lang/rust is:issue is:open label:NLL-sound	4	2026-11-20
+repo:rust-lang/rust is:issue label:I-unsound label:A-closures	13	2026-11-20
+repo:rust-lang/rust is:issue is:open label:I-unsound label:A-closures	9	2026-11-20
+repo:rust-lang/rust is:issue label:I-unsound label:A-NLL label:A-closures	2	2026-11-20
+repo:rust-lang/rust is:issue label:I-unsound two-phase	17	2026-11-20
+repo:rust-lang/rust is:issue label:I-unsound "2229"	0	2026-11-20

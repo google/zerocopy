@@ -1,0 +1,33 @@
+== Null fits on the Schuemie et al. 2014 datasets shipped with the package
+sccs: negatives=45 toy null mean=0.7921 sd=0.2834  (paper Table 1: 0.79, 0.28)
+   drug of interest Sertraline: RR=2.08 traditional p=0.00e+00 calibrated p=0.8390
+   negatives with traditional p<0.05: 33/45; leave-one-out calibrated p<0.05: 2/45
+   EASE closed form=0.7926 numeric=0.7926 null mean=0.7921 |EASE-mean|/|mean|=5.54e-04
+caseControl: negatives=46 toy null mean=0.9001 sd=0.3447  (paper Table 1: 0.9, 0.35)
+   drug of interest Sertraline: RR=2.16 traditional p=0.00e+00 calibrated p=0.7086
+   negatives with traditional p<0.05: 33/46; leave-one-out calibrated p<0.05: 5/46
+   EASE closed form=0.9011 numeric=0.9011 null mean=0.9001 |EASE-mean|/|mean|=1.08e-03
+cohortMethod: negatives=30 toy null mean=-0.0459 sd=0.5432  (paper Table 1: -0.05, 0.54)
+   drug of interest Isoniazid: RR=4.03 traditional p=1.19e-11 calibrated p=0.0132
+   negatives with traditional p<0.05: 17/30; leave-one-out calibrated p<0.05: 2/30
+   EASE closed form=0.4350 numeric=0.4350 null mean=-0.0459 |EASE-mean|/|mean|=1.05e+01
+   vignette (EmpiricalPCalibrationVignette.pdf, sccs): Mean 0.7922 SD 0.2834; calibrateP 0.8389142
+
+== Schuemie 2014 derived check from rounded published numbers (Results 3, Table 1, section 3.2)
+isoniazid cohort: column read as SD -> p=0.013; read as variance -> p=0.060; paper reports 0.01
+sertraline case-control: column read as SD -> p=0.755; read as variance -> p=0.851; paper reports 0.71
+sertraline SCCS: column read as SD -> p=0.868; read as variance -> p=0.928; paper reports 0.84
+
+== Systematic error model on southworthReplication / grahamReplication
+southworthReplication: controls=172 (negatives=49)
+   default model (mean a+b*t, sd c+d*|t|): [-0.06655   0.933292  0.187466  0.002977]
+   legacy model  (mean a+b*t, sd exp(c+d*t)): [-0.0665  0.9333 -1.6742  0.0158]
+   outcome of interest uncalibrated RR 0.699 (0.614-0.797); calibrated logRr=-0.3118 [-0.7340, 0.1067] -> RR 0.732 (0.480-1.113)
+   95% CI coverage of true effect over 172 controls: uncalibrated 0.366; leave-one-out calibrated 0.953
+grahamReplication: controls=124 (negatives=49)
+   default model (mean a+b*t, sd c+d*|t|): [-0.034011  0.986155  0.05294   0.019959]
+   legacy model  (mean a+b*t, sd exp(c+d*t)): [-0.034   0.9862 -2.9194  0.2921]
+   outcome of interest uncalibrated RR 1.268 (1.026-1.566); calibrated logRr=0.2750 [0.0354, 0.5238] -> RR 1.317 (1.036-1.688)
+   95% CI coverage of true effect over 124 controls: uncalibrated 0.863; leave-one-out calibrated 0.927
+   vignette (EmpiricalCiCalibrationVignette.pdf, southworth): meanIntercept -0.066550795 meanSlope 0.933292141 sdIntercept 0.187468405 sdSlope 0.002979502; calibrated logRr -0.3117702 [-0.733957, 0.1067054]
+   PNAS 2018 Table 1 (legacy parameterization): Southworth -0.07 0.93 -1.67 0.02; Graham -0.03 0.99 -2.92 0.29

@@ -1,0 +1,18 @@
+algorithm=LocationInsensitive dir=joins_25 points=3222 origins=629 loans=78 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=658216 errors_at_points=0 subset_errors_at_points=0 move_errors_at_points=0 median_s=0.932293 runs=3
+  peak_rss_kb=200692 wall_s=3.13
+algorithm=DatafrogOpt dir=joins_25 points=3222 origins=629 loans=78 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=658216 errors_at_points=0 subset_errors_at_points=0 move_errors_at_points=0 median_s=1.104934 runs=3
+  peak_rss_kb=199888 wall_s=3.84
+algorithm=Naive dir=joins_25 points=3222 origins=629 loans=78 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=658216 errors_at_points=0 subset_errors_at_points=0 move_errors_at_points=0 median_s=2.136294 runs=3
+  peak_rss_kb=424372 wall_s=6.46
+algorithm=LocationInsensitive dir=joins_50 points=6422 origins=1254 loans=153 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=2602616 errors_at_points=0 subset_errors_at_points=0 move_errors_at_points=0 median_s=4.125026 runs=3
+  peak_rss_kb=845088 wall_s=14.33
+algorithm=DatafrogOpt dir=joins_50 points=6422 origins=1254 loans=153 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=2602616 errors_at_points=0 subset_errors_at_points=0 move_errors_at_points=0 median_s=4.538052 runs=3
+  peak_rss_kb=844352 wall_s=15.07
+algorithm=Naive dir=joins_50 points=6422 origins=1254 loans=153 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=2602616 errors_at_points=0 subset_errors_at_points=0 move_errors_at_points=0 median_s=9.176716 runs=3
+  peak_rss_kb=1544728 wall_s=27.67
+algorithm=LocationInsensitive dir=joins_100 points=12822 origins=2504 loans=303 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=10350166 errors_at_points=0 subset_errors_at_points=0 move_errors_at_points=0 median_s=22.818461 runs=3
+  peak_rss_kb=3257916 wall_s=73.63
+algorithm=DatafrogOpt dir=joins_100 points=12822 origins=2504 loans=303 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=10350166 errors_at_points=0 subset_errors_at_points=0 move_errors_at_points=0 median_s=26.291071 runs=3
+  peak_rss_kb=3260836 wall_s=83.82
+algorithm=Naive dir=joins_100 points=12822 origins=2504 loans=303 input_tuples(subset_base+cfg_edge+loan_invalidated_at+loan_issued_at)=10350166 errors_at_points=0 subset_errors_at_points=0 move_errors_at_points=0 median_s=40.662748 runs=3
+  peak_rss_kb=6030368 wall_s=128.53

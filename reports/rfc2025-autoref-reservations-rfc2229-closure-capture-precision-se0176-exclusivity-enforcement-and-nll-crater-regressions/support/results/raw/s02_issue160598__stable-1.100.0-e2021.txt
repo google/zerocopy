@@ -1,0 +1,2 @@
+$ rustup run 1.100.0 rustc --edition 2021 -o s02_issue160598 s02_issue160598.rs
+exit=0
