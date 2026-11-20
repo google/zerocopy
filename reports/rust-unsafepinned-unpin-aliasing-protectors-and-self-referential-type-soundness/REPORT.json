@@ -1,0 +1,63 @@
+{
+  "topics": [
+    "rust/pinning",
+    "rust/aliasing",
+    "rust/safety",
+    "rust/tree-borrows",
+    "rustc/layout",
+    "verification/separation-logic"
+  ],
+  "subjects": [
+    {
+      "name": "rust-lang/rust (core::pin::UnsafePinned, Unpin/UnsafeUnpin, rustc layout/ABI)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "5c56312f346d7cc8209d9fc0fd660c72e6fc6950"
+      }
+    },
+    {
+      "name": "RFC 3467: UnsafePinned (rust-lang/rfcs)",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07",
+        "path": "text/3467-unsafe-pinned.md"
+      }
+    },
+    {
+      "name": "rust-lang/miri (Tree Borrows and Stacked Borrows borrow trackers)",
+      "identity": {
+        "repository": "rust-lang/miri",
+        "revision": "7e679961edcfe2c526f19153bb8b03de346efa5c"
+      }
+    },
+    {
+      "name": "tokio-rs/tokio (intrusive LinkedList Pointers<T>)",
+      "identity": {
+        "repository": "tokio-rs/tokio",
+        "revision": "717c508f9e9ac4317665ff1eb30f29c139ea6363"
+      }
+    },
+    {
+      "name": "Tree Borrows (Villani, Hostert, Dreyer, Jung, PLDI 2025)",
+      "identity": {
+        "doi": "10.1145/3735592",
+        "published": "2025-06"
+      }
+    },
+    {
+      "name": "Stacked Borrows: An Aliasing Model for Rust (Jung, Dang, Kang, Dreyer, POPL 2020)",
+      "identity": {
+        "doi": "10.1145/3371109",
+        "published": "2020-01"
+      }
+    },
+    {
+      "name": "RustBelt: Securing the Foundations of the Rust Programming Language (Jung, Jourdan, Krebbers, Dreyer, POPL 2018)",
+      "identity": {
+        "doi": "10.1145/3158154",
+        "published": "2018-01"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

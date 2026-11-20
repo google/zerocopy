@@ -57841,6 +57841,69 @@
         "systems/realtime"
       ]
     },
+    "refcell-non-poisoning-borrow-guards-panic-recovery-and-mutex-poisoning-contrast": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "5c56312f346d7cc8209d9fc0fd660c72e6fc6950"
+          },
+          "name": "rust-lang/rust (core::cell::RefCell, core::panic::UnwindSafe, std::sync::{poison,nonpoison}::Mutex)"
+        },
+        {
+          "identity": {
+            "path": "text/1236-stabilize-catch-panic.md",
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "RFC 1236: Stabilize catch_panic / UnwindSafe (rust-lang/rfcs)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/unsafe-code-guidelines",
+            "revision": "d809f91e62968913d808e53397fbcf7cea762cce"
+          },
+          "name": "rust-lang/unsafe-code-guidelines (Validity and Safety Invariants)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3158154",
+            "published": "2018-01"
+          },
+          "name": "RustBelt: Securing the Foundations of the Rust Programming Language (Jung et al., POPL 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796818000151",
+            "published": "2018"
+          },
+          "name": "Iris from the Ground Up (Jung et al., JFP 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3694715.3695952",
+            "published": "2024-11"
+          },
+          "name": "Verus: A Practical Foundation for Systems Verification (Lattuada et al., SOSP 2024)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3656422",
+            "published": "2024-06"
+          },
+          "name": "RefinedRust: A Type System for High-Assurance Verification of Rust Programs (Gaher et al., PLDI 2024)"
+        }
+      ],
+      "topics": [
+        "rust/safety",
+        "rust/interior-mutability",
+        "verification/separation-logic",
+        "rust/concurrency",
+        "verification/iris",
+        "verification/verus"
+      ]
+    },
     "reference-model-bisimulation-executable-semantics-and-differential-oracles": {
       "observed_at": "2026-11-20",
       "subjects": [
@@ -64514,6 +64577,69 @@
         "rust/reference-guarantees",
         "zerocopy/soundness-policy",
         "verification/program-logics"
+      ]
+    },
+    "rust-unsafepinned-unpin-aliasing-protectors-and-self-referential-type-soundness": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "5c56312f346d7cc8209d9fc0fd660c72e6fc6950"
+          },
+          "name": "rust-lang/rust (core::pin::UnsafePinned, Unpin/UnsafeUnpin, rustc layout/ABI)"
+        },
+        {
+          "identity": {
+            "path": "text/3467-unsafe-pinned.md",
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "RFC 3467: UnsafePinned (rust-lang/rfcs)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/miri",
+            "revision": "7e679961edcfe2c526f19153bb8b03de346efa5c"
+          },
+          "name": "rust-lang/miri (Tree Borrows and Stacked Borrows borrow trackers)"
+        },
+        {
+          "identity": {
+            "repository": "tokio-rs/tokio",
+            "revision": "717c508f9e9ac4317665ff1eb30f29c139ea6363"
+          },
+          "name": "tokio-rs/tokio (intrusive LinkedList Pointers<T>)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3735592",
+            "published": "2025-06"
+          },
+          "name": "Tree Borrows (Villani, Hostert, Dreyer, Jung, PLDI 2025)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371109",
+            "published": "2020-01"
+          },
+          "name": "Stacked Borrows: An Aliasing Model for Rust (Jung, Dang, Kang, Dreyer, POPL 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3158154",
+            "published": "2018-01"
+          },
+          "name": "RustBelt: Securing the Foundations of the Rust Programming Language (Jung, Jourdan, Krebbers, Dreyer, POPL 2018)"
+        }
+      ],
+      "topics": [
+        "rust/pinning",
+        "rust/aliasing",
+        "rust/safety",
+        "rust/tree-borrows",
+        "rustc/layout",
+        "verification/separation-logic"
       ]
     },
     "rust-validity-initialization-padding-and-transmute-semantics": {

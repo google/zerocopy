@@ -1,0 +1,63 @@
+{
+  "topics": [
+    "rust/safety",
+    "rust/interior-mutability",
+    "verification/separation-logic",
+    "rust/concurrency",
+    "verification/iris",
+    "verification/verus"
+  ],
+  "subjects": [
+    {
+      "name": "rust-lang/rust (core::cell::RefCell, core::panic::UnwindSafe, std::sync::{poison,nonpoison}::Mutex)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "5c56312f346d7cc8209d9fc0fd660c72e6fc6950"
+      }
+    },
+    {
+      "name": "RFC 1236: Stabilize catch_panic / UnwindSafe (rust-lang/rfcs)",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07",
+        "path": "text/1236-stabilize-catch-panic.md"
+      }
+    },
+    {
+      "name": "rust-lang/unsafe-code-guidelines (Validity and Safety Invariants)",
+      "identity": {
+        "repository": "rust-lang/unsafe-code-guidelines",
+        "revision": "d809f91e62968913d808e53397fbcf7cea762cce"
+      }
+    },
+    {
+      "name": "RustBelt: Securing the Foundations of the Rust Programming Language (Jung et al., POPL 2018)",
+      "identity": {
+        "doi": "10.1145/3158154",
+        "published": "2018-01"
+      }
+    },
+    {
+      "name": "Iris from the Ground Up (Jung et al., JFP 2018)",
+      "identity": {
+        "doi": "10.1017/S0956796818000151",
+        "published": "2018"
+      }
+    },
+    {
+      "name": "Verus: A Practical Foundation for Systems Verification (Lattuada et al., SOSP 2024)",
+      "identity": {
+        "doi": "10.1145/3694715.3695952",
+        "published": "2024-11"
+      }
+    },
+    {
+      "name": "RefinedRust: A Type System for High-Assurance Verification of Rust Programs (Gaher et al., PLDI 2024)",
+      "identity": {
+        "doi": "10.1145/3656422",
+        "published": "2024-06"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
