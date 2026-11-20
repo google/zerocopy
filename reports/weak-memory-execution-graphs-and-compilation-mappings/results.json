@@ -1,0 +1,828 @@
+[
+  {
+    "id": "acyclicity-decision-procedure",
+    "lean": [
+      "Toy.WMM.Rel.acyclicB_eq_true_iff",
+      "Toy.WMM.Rel.warshall_iff_path"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "Correctness of Roy-Floyd-Warshall transitive closure is textbook and mechanized (Isabelle/HOL AFP entry cited).",
+    "plain_claim": "For every Boolean relation r on Fin n, the Floyd-Warshall stage warshall r n relates a to b exactly when r has a non-empty path from a to b (warshall_iff_path), and the closure test acyclicB r returns true exactly when no element reaches itself by a non-empty r-path (acyclicB_eq_true_iff). The Decidable instance for Acyclic is defined from acyclicB, so a `decide` verdict on Acyclic is a verdict about the TransGen-based definition.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "The chain 0→1→2 (with 0→2) is acyclic; the 3-cycle and a self-loop are not.",
+    "nonvacuity_witness_lean": [
+      "Toy.WMM.acyclic_example_pos",
+      "Toy.WMM.acyclic_example_neg",
+      "Toy.WMM.acyclic_example_neg_self"
+    ],
+    "non_claims": [
+      "Supporting infrastructure: a reference point used to check litmus verdicts by kernel evaluation; it says nothing about memory models.",
+      "Says nothing about efficiency beyond kernel evaluation of small instances (n ≤ 8 is used here).",
+      "Acyclic is defined via Relation.TransGen; no claim about other cycle notions (e.g. simple cycles of bounded length)."
+    ],
+    "prior_art": [
+      "M. Wenzel. Transitive closure according to Roy-Floyd-Warshall. Archive of Formal Proofs, May 2014. https://isa-afp.org/entries/Roy_Floyd_Warshall.html (Isabelle/HOL)."
+    ],
+    "design_question": "Reference point (supporting infrastructure): can litmus verdicts be checked mechanically against the Prop-level consistency predicates?"
+  },
+  {
+    "id": "sc-implies-tso",
+    "lean": [
+      "Toy.WMM.tsoConsistent_of_scConsistent"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "SC ⊆ TSO is standard (both models are instances of the frameworks of Alglave et al.); restated for the toy without well-formedness hypotheses.",
+    "plain_claim": "Every candidate execution, well-formed or not, that is SC-consistent (po ∪ rf ∪ co ∪ fr acyclic) is TSO-consistent (SC per location, and ppo ∪ rfe ∪ co ∪ fr ∪ fenceOrd acyclic, where ppo and fenceOrd relate memory accesses only).",
+    "hypotheses": [
+      {
+        "name": "h : X.SCConsistent",
+        "purpose": "the premise of the inclusion",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.tsoConsistent_of_scConsistent_needs_sc"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "The SC outcome of SB (each read sees the other thread's write).",
+    "nonvacuity_witness_lean": [
+      "Toy.WMM.nonvacuity_tsoConsistent_of_scConsistent"
+    ],
+    "non_claims": [
+      "This is the inclusion (permissiveness) direction: every SC-consistent execution is TSO-consistent. It does not justify running SC programs unfenced on TSO; that would need the converse, which fails (sb-tso-not-sc).",
+      "No well-formedness is assumed. The premise is SC-consistency with fence events present; no claim is made with SCConsistentErased as premise.",
+      "Fence events are not endpoints of ppo or fenceOrd, so fence events (and, e.g., a po self-loop on a fence) never lie on a TSO cycle.",
+      "Toy model only: finite candidate executions of straight-line programs, one access size, no read-modify-write or locked instructions, no registers, dependencies or control flow, a single full fence. Nothing is claimed about C11/RC11, Java, out-of-thin-air behaviour, mixed-size accesses, ARM, POWER, RISC-V, or compiler optimisations other than fence insertion.",
+      "That TSOConsistent captures x86-TSO is a modeling bridge (derived, not a theorem): it is the two-axiom form (SC per location; acyclic(ppo ∪ rfe ∪ co ∪ fr ∪ fence) with ppo = ([RW];po;[RW]) \\ (W×R) and fence = [RW];po;[F];po;[RW]) of Alglave, Maranget and Tautschnig (TOPLAS 2014, Fig. 5 and Fig. 21), whose Lemma 4.1 proves equivalence to SPARC TSO via Alglave (FMSD 2012), Def. 23; no theorem here relates it to the x86-TSO abstract machine or to hardware."
+    ],
+    "prior_art": [
+      "L. Lamport. How to Make a Multiprocessor Computer That Correctly Executes Multiprocess Programs. IEEE Trans. Computers C-28(9):690-691, 1979. DOI 10.1109/TC.1979.1675439.",
+      "P. S. Sindhu, J.-M. Frailong, M. Cekleov. Formal Specification of Memory Models. In Scalable Shared Memory Multiprocessors, pp. 25-41, Springer, 1992. DOI 10.1007/978-1-4615-3604-8_2 (SPARC TSO and PSO).",
+      "J. Alglave, L. Maranget, M. Tautschnig. Herding Cats: Modelling, Simulation, Testing, and Data Mining for Weak Memory. ACM TOPLAS 36(2), Article 7, 2014. DOI 10.1145/2627752 (arXiv:1308.6810). Fig. 5 (SC PER LOCATION), Fig. 21 (TSO: ppo = po \\ WR over memory events, ffence = mfence); Lemma 4.1 (the Fig. 21 TSO model is equivalent to SPARC TSO).",
+      "J. Alglave, L. Maranget, S. Sarkar, P. Sewell. Fences in Weak Memory Models. CAV 2010, LNCS 6174, pp. 258-272, DOI 10.1007/978-3-642-14295-6_25; extended version in Formal Methods in System Design 40(2):170-205, 2012, DOI 10.1007/s10703-011-0135-z (Coq-formalized framework relating SC, TSO and Power and the fences that restore stronger models).",
+      "J. Alglave. A formal hierarchy of weak memory models. Formal Methods in System Design 41(2):178-210, 2012. DOI 10.1007/s10703-012-0161-5.",
+      "V. Nagarajan, D. J. Sorin, M. D. Hill, D. A. Wood. A Primer on Memory Consistency and Cache Coherence, Second Edition. Synthesis Lectures on Computer Architecture, 2020. DOI 10.2200/S00962ED2V01Y201910CAC049 (textbook treatment of SC, TSO and fences)."
+    ],
+    "design_question": "Is the TSO-like target weaker than SC in this toy, so that a mapping from SC must add ordering rather than remove it?"
+  },
+  {
+    "id": "sb-tso-not-sc",
+    "lean": [
+      "Toy.WMM.Litmus.sb_weak_tso_allowed_sc_forbidden",
+      "Toy.WMM.not_forall_wf_tsoConsistent_scConsistent"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "SB is the textbook separating test (CACM 2010, Sect. 1).",
+    "plain_claim": "The store-buffering weak-outcome execution sbWeak (both reads return the initial value) is a candidate execution of the SB program sbProg that is well formed and TSO-consistent but not SC-consistent; hence TSO-consistency does not imply SC-consistency, even for well-formed 6-event executions.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "sbWeak, an execution of sbProg.",
+    "nonvacuity_witness_lean": [
+      "Toy.WMM.Litmus.sb_weak_tso_allowed_sc_forbidden"
+    ],
+    "positive_control_lean": [
+      "Toy.WMM.tsoConsistent_of_scConsistent"
+    ],
+    "non_claims": [
+      "Shows strictness on one execution; does not characterize the gap between SC and TSO.",
+      "Escape hatch: fencing every po-ordered write→read pair (fence-mapping-soundness-execution), or every such pair between shared locations (shared-location-fencing-soundness), makes TSO-consistent executions satisfying those theorems' other hypotheses SC-consistent after fence erasure.",
+      "Toy model only: finite candidate executions of straight-line programs, one access size, no read-modify-write or locked instructions, no registers, dependencies or control flow, a single full fence. Nothing is claimed about C11/RC11, Java, out-of-thin-air behaviour, mixed-size accesses, ARM, POWER, RISC-V, or compiler optimisations other than fence insertion.",
+      "That TSOConsistent captures x86-TSO is a modeling bridge (derived, not a theorem): it is the two-axiom form (SC per location; acyclic(ppo ∪ rfe ∪ co ∪ fr ∪ fence) with ppo = ([RW];po;[RW]) \\ (W×R) and fence = [RW];po;[F];po;[RW]) of Alglave, Maranget and Tautschnig (TOPLAS 2014, Fig. 5 and Fig. 21), whose Lemma 4.1 proves equivalence to SPARC TSO via Alglave (FMSD 2012), Def. 23; no theorem here relates it to the x86-TSO abstract machine or to hardware."
+    ],
+    "prior_art": [
+      "P. Sewell, S. Sarkar, S. Owens, F. Zappa Nardelli, M. O. Myreen. x86-TSO: A Rigorous and Usable Programmer's Model for x86 Multiprocessors. CACM 53(7):89-97, 2010. DOI 10.1145/1785414.1785443. Litmus verdicts: SB allowed (Sect. 1); n6 allowed (Sect. 2.2); IRIW forbidden (Intel Example 8-7); MP shape forbidden (Example 8-1); LB shape forbidden (Example 8-2); amd5 (SB with MFENCEs) forbidden (Sect. 3.2).",
+      "L. Lamport. How to Make a Multiprocessor Computer That Correctly Executes Multiprocess Programs. IEEE Trans. Computers C-28(9):690-691, 1979. DOI 10.1109/TC.1979.1675439."
+    ],
+    "design_question": "Is the TSO-like target strictly weaker than SC, so that a mapping from SC needs fences at all?"
+  },
+  {
+    "id": "litmus-table",
+    "lean": [
+      "Toy.WMM.Litmus.mp_weak_tso_forbidden_sc_forbidden",
+      "Toy.WMM.Litmus.lb_weak_tso_forbidden_sc_forbidden",
+      "Toy.WMM.Litmus.w22_weak_tso_forbidden_sc_forbidden",
+      "Toy.WMM.Litmus.iriw_weak_tso_forbidden_sc_forbidden",
+      "Toy.WMM.Litmus.sbFenced_weak_tso_forbidden_sc_forbidden",
+      "Toy.WMM.Litmus.r_weak_tso_allowed_sc_forbidden"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Re-derivation of published x86-TSO litmus verdicts on the toy model.",
+    "plain_claim": "For each of the programs MP, LB, 2+2W, IRIW and SB+mfences (fenceAfterStores sbProg), the weak-outcome candidate execution of that program defined in Litmus.lean (Litmus.mpWeak, Litmus.lbWeak, Litmus.w22Weak, Litmus.iriwWeak, Litmus.sbFencedWeak) is well formed and neither TSO-consistent nor SC-consistent; for R, the weak-outcome execution Litmus.rWeak of rProg is well formed, TSO-consistent and not SC-consistent. The outcomes of these executions (read values; final value of each location, i.e. its co-maximal write) are: MP r0 = 2, r1 = 0 (final x = 1, y = 2); LB r0 = 2, r1 = 1 (final x = 2, y = 1); 2+2W no reads, final x = 1, y = 3 (co on x: initial write, x := 4, x := 1; co on y: initial write, y := 2, y := 3); IRIW r0 = 1, r1 = 0, r2 = 2, r3 = 0 (final x = 1, y = 2); SB+mfences r0 = 0, r1 = 0 (final x = 1, y = 2); R r0 = 0, final x = 1, y = 3 (co on y: initial write, y := 2, y := 3). (SB, n6 and SB with one fence are covered by sb-tso-not-sc, keep-same-location-wr-ppo-variant-rejected and partial-fencing-unsound.)",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "Each theorem proves that its execution is a well-formed candidate execution of the named program; wf_example_pos checks Wf for all nine litmus executions.",
+    "nonvacuity_witness_lean": [
+      "Toy.WMM.Litmus.mp_weak_tso_forbidden_sc_forbidden",
+      "Toy.WMM.Litmus.lb_weak_tso_forbidden_sc_forbidden",
+      "Toy.WMM.Litmus.w22_weak_tso_forbidden_sc_forbidden",
+      "Toy.WMM.Litmus.iriw_weak_tso_forbidden_sc_forbidden",
+      "Toy.WMM.Litmus.sbFenced_weak_tso_forbidden_sc_forbidden",
+      "Toy.WMM.Litmus.r_weak_tso_allowed_sc_forbidden",
+      "Toy.WMM.wf_example_pos"
+    ],
+    "non_claims": [
+      "Verdicts concern the specific candidate execution of each program defined in Litmus.lean (mpWeak, lbWeak, w22Weak, iriwWeak, sbFencedWeak, rWeak), with the outcomes listed in the plain claim. That it is the only well-formed candidate execution with that outcome (distinct written values fix rf; the final state fixes co) is argued in prose, not proved, so no outcome-level statement such as 'TSO forbids the outcome' is a theorem here.",
+      "Agreement with x86 is by citation (derived, modeling bridge): MP (Intel Example 8-1 shape), LB (Example 8-2 shape), IRIW (Example 8-7) and SB+mfences (amd5) are verdicts stated by Sewell et al. (CACM 2010); the 2+2W and R verdicts follow from the Herding Cats TSO model and are not quoted x86 test verdicts. No hardware was run.",
+      "The SB+mfences verdict depends on fenceOrd: the execution has no cycle in ppo ∪ rfe ∪ co ∪ fr (sbFencedWeak_needs_fenceOrd).",
+      "Toy model only: finite candidate executions of straight-line programs, one access size, no read-modify-write or locked instructions, no registers, dependencies or control flow, a single full fence. Nothing is claimed about C11/RC11, Java, out-of-thin-air behaviour, mixed-size accesses, ARM, POWER, RISC-V, or compiler optimisations other than fence insertion.",
+      "That TSOConsistent captures x86-TSO is a modeling bridge (derived, not a theorem): it is the two-axiom form (SC per location; acyclic(ppo ∪ rfe ∪ co ∪ fr ∪ fence) with ppo = ([RW];po;[RW]) \\ (W×R) and fence = [RW];po;[F];po;[RW]) of Alglave, Maranget and Tautschnig (TOPLAS 2014, Fig. 5 and Fig. 21), whose Lemma 4.1 proves equivalence to SPARC TSO via Alglave (FMSD 2012), Def. 23; no theorem here relates it to the x86-TSO abstract machine or to hardware."
+    ],
+    "prior_art": [
+      "P. Sewell, S. Sarkar, S. Owens, F. Zappa Nardelli, M. O. Myreen. x86-TSO: A Rigorous and Usable Programmer's Model for x86 Multiprocessors. CACM 53(7):89-97, 2010. DOI 10.1145/1785414.1785443. Litmus verdicts: SB allowed (Sect. 1); n6 allowed (Sect. 2.2); IRIW forbidden (Intel Example 8-7); MP shape forbidden (Example 8-1); LB shape forbidden (Example 8-2); amd5 (SB with MFENCEs) forbidden (Sect. 3.2).",
+      "J. Alglave, L. Maranget, M. Tautschnig. Herding Cats: Modelling, Simulation, Testing, and Data Mining for Weak Memory. ACM TOPLAS 36(2), Article 7, 2014. DOI 10.1145/2627752 (arXiv:1308.6810). Fig. 5 (SC PER LOCATION), Fig. 21 (TSO: ppo = po \\ WR over memory events, ffence = mfence); Lemma 4.1 (the Fig. 21 TSO model is equivalent to SPARC TSO)."
+    ],
+    "design_question": "Definition adequacy: does the toy TSO predicate give the published x86-TSO verdicts on standard litmus tests, so that the soundness results are about the intended model?",
+    "scope_witnesses_lean": [
+      "Toy.WMM.sbFencedWeak_needs_fenceOrd",
+      "Toy.WMM.fenceAfterStores_sbProg"
+    ]
+  },
+  {
+    "id": "keep-same-location-wr-ppo-variant-rejected",
+    "lean": [
+      "Toy.WMM.tsoConsistent_of_tsoConsistentKeepSameLocWR",
+      "Toy.WMM.Litmus.n6_weak_tso_allowed_keepSameLocWR_forbidden"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "n6 is the published test showing store forwarding on x86 (CACM 2010, Sect. 2.2); TPHOLs 2009 explains that keeping same-address write→read pairs in memory order gives a strictly stronger model (test n7).",
+    "plain_claim": "Keeping same-location write→read pairs in preserved program order (dropping only different-location write→read pairs) gives a model strictly stronger than TSOConsistent: every execution consistent under the variant is TSOConsistent (tsoConsistent_of_tsoConsistentKeepSameLocWR), and the n6 execution Litmus.n6Weak of n6Prog defined in Litmus.lean (r0 = 1, read from the thread's own x := 1; r1 = 0, the initial y; co on x: initial write, then thread 1's x := 2, then thread 0's x := 1, so final x = 1 and y = 2), a store-forwarding outcome that x86-TSO allows, is well formed and TSOConsistent but rejected by the variant.",
+    "hypotheses": [
+      {
+        "name": "h : X.TSOConsistentKeepSameLocWR (inclusion theorem)",
+        "purpose": "the premise of the inclusion",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.tsoConsistent_of_tsoConsistentKeepSameLocWR_needs_keep"
+        ]
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "The SB weak outcome is consistent under the variant; n6Weak is an execution of n6Prog.",
+    "nonvacuity_witness_lean": [
+      "Toy.WMM.keepSameLocWR_example_pos",
+      "Toy.WMM.Litmus.n6_weak_tso_allowed_keepSameLocWR_forbidden"
+    ],
+    "positive_control_lean": [
+      "Toy.WMM.keepSameLocWR_example_pos",
+      "Toy.WMM.tsoConsistent_example_pos"
+    ],
+    "non_claims": [
+      "Shows the variant is too strong on one test; does not classify all differences between the two models.",
+      "That TSOConsistent captures x86-TSO, and that n6 is allowed by x86-TSO and observed on x86 hardware, is a modeling bridge (derived) from Sewell et al. (CACM 2010, Sect. 2.2) and Owens, Sarkar and Sewell (TPHOLs 2009); no theorem here relates TSOConsistent to the x86-TSO abstract machine or to hardware.",
+      "Escape hatch: the separating execution uses store forwarding (a read of the thread's own buffered write, an internal rf edge) followed by a read of another location; no claim is made either way about executions without such a pattern.",
+      "Toy model only: finite candidate executions of straight-line programs, one access size, no read-modify-write or locked instructions, no registers, dependencies or control flow, a single full fence. Nothing is claimed about C11/RC11, Java, out-of-thin-air behaviour, mixed-size accesses, ARM, POWER, RISC-V, or compiler optimisations other than fence insertion."
+    ],
+    "prior_art": [
+      "P. Sewell, S. Sarkar, S. Owens, F. Zappa Nardelli, M. O. Myreen. x86-TSO: A Rigorous and Usable Programmer's Model for x86 Multiprocessors. CACM 53(7):89-97, 2010. DOI 10.1145/1785414.1785443. Litmus verdicts: SB allowed (Sect. 1); n6 allowed (Sect. 2.2); IRIW forbidden (Intel Example 8-7); MP shape forbidden (Example 8-1); LB shape forbidden (Example 8-2); amd5 (SB with MFENCEs) forbidden (Sect. 3.2).",
+      "S. Owens, S. Sarkar, P. Sewell. A Better x86 Memory Model: x86-TSO. TPHOLs 2009, LNCS 5674, pp. 391-407. DOI 10.1007/978-3-642-03359-9_27. Paragraph 'Interpreting \"not reordered with\"': adding memory-order edges for a write followed by a read of the same address gives a strictly stronger model that forbids test n7, which x86-TSO allows.",
+      "J. Alglave, L. Maranget, M. Tautschnig. Herding Cats: Modelling, Simulation, Testing, and Data Mining for Weak Memory. ACM TOPLAS 36(2), Article 7, 2014. DOI 10.1145/2627752 (arXiv:1308.6810). Fig. 5 (SC PER LOCATION), Fig. 21 (TSO: ppo = po \\ WR over memory events, ffence = mfence); Lemma 4.1 (the Fig. 21 TSO model is equivalent to SPARC TSO)."
+    ],
+    "design_question": "Which preserved-program-order relation is right for a TSO-like target? (For x86-TSO: po \\ WR over memory accesses, with same-location ordering supplied by SC per location.)"
+  },
+  {
+    "id": "fence-mapping-soundness-execution",
+    "lean": [
+      "Toy.WMM.scConsistentErased_of_tso_of_fenceBetweenWR"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Fencing every write→read pair restores SC on TSO is standard (CACM 2010, Sect. 3.2) and has a Coq-mechanized counterpart for a richer axiomatic TSO (weakmemory/imm, Lemma IMM_consistent); restated with minimal well-formedness hypotheses.",
+    "plain_claim": "If po is total on each thread, rf only relates same-location events, every po-ordered write→read pair is separated by a fence (fenceOrd), and the execution is TSO-consistent (SC per location and the TSO ordering axiom), then the execution is SC-consistent after erasing its fence events.",
+    "hypotheses": [
+      {
+        "name": "htot : X.PoTotal",
+        "purpose": "orients internal reads-from along po",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.fenceBetweenWR_needs_poTotal"
+        ]
+      },
+      {
+        "name": "hrf : X.RfSameLoc",
+        "purpose": "lets SC per location orient internal reads-from",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.fenceBetweenWR_needs_rfSameLoc"
+        ]
+      },
+      {
+        "name": "hfence : X.FenceBetweenWR",
+        "purpose": "every write→read pair restored by fenceOrd",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.fenceBetweenWR_needs_fenceBetweenWR"
+        ]
+      },
+      {
+        "name": "hloc : X.PerLocSC",
+        "purpose": "first TSO axiom; orients same-location internal edges",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.fenceBetweenWR_needs_perLocSC"
+        ]
+      },
+      {
+        "name": "hghb : X.TsoGhbAcyclic",
+        "purpose": "second TSO axiom",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.fenceBetweenWR_needs_tsoGhbAcyclic"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "The SC outcome of SB+mfences.",
+    "nonvacuity_witness_lean": [
+      "Toy.WMM.nonvacuity_scConsistentErased_of_tso_of_fenceBetweenWR"
+    ],
+    "non_claims": [
+      "Conclusion is SC after fence erasure (restriction to memory accesses); for SC with fences present combine with fence-erasure; for a statement about source executions see fence-mapping-source-execution.",
+      "No claim that the fences are necessary pair by pair (see shared-location-fencing-soundness and partial-fencing-unsound).",
+      "Does not show the converse or any optimality of fence placement.",
+      "Toy model only: finite candidate executions of straight-line programs, one access size, no read-modify-write or locked instructions, no registers, dependencies or control flow, a single full fence. Nothing is claimed about C11/RC11, Java, out-of-thin-air behaviour, mixed-size accesses, ARM, POWER, RISC-V, or compiler optimisations other than fence insertion.",
+      "That TSOConsistent captures x86-TSO is a modeling bridge (derived, not a theorem): it is the two-axiom form (SC per location; acyclic(ppo ∪ rfe ∪ co ∪ fr ∪ fence) with ppo = ([RW];po;[RW]) \\ (W×R) and fence = [RW];po;[F];po;[RW]) of Alglave, Maranget and Tautschnig (TOPLAS 2014, Fig. 5 and Fig. 21), whose Lemma 4.1 proves equivalence to SPARC TSO via Alglave (FMSD 2012), Def. 23; no theorem here relates it to the x86-TSO abstract machine or to hardware."
+    ],
+    "prior_art": [
+      "P. Sewell, S. Sarkar, S. Owens, F. Zappa Nardelli, M. O. Myreen. x86-TSO: A Rigorous and Usable Programmer's Model for x86 Multiprocessors. CACM 53(7):89-97, 2010. DOI 10.1145/1785414.1785443. Sect. 3.2: 'In x86-TSO adding MFENCE between every instruction would clearly suffice to regain sequential consistency'.",
+      "J. Alglave, L. Maranget, M. Tautschnig. Herding Cats: Modelling, Simulation, Testing, and Data Mining for Weak Memory. ACM TOPLAS 36(2), Article 7, 2014. DOI 10.1145/2627752 (arXiv:1308.6810). Fig. 5 (SC PER LOCATION), Fig. 21 (TSO: ppo = po \\ WR over memory events, ffence = mfence); Lemma 4.1 (the Fig. 21 TSO model is equivalent to SPARC TSO).",
+      "A. Podkopaev, O. Lahav, V. Vafeiadis. Bridging the Gap between Programming Languages and Hardware Weak Memory Models. PACMPL 3(POPL), Article 69, 2019. DOI 10.1145/3290382. Coq development https://github.com/weakmemory/imm at commit 4ca191b072df081dd3a6d9aa755959dc901b1bd0: src/hardware/TSO.v, lines 48-50, defines ppo := ([RW];sb;[RW]) \\ (W×R) and fence := [RW];sb;[MFENCE];sb;[RW]; src/hardware/immToTSO.v, lines 897-898, Lemma IMM_consistent, assumes SCF : [W∩Sc];sb;[R∩Sc] ⊆ sb;[MFENCE];sb.",
+      "J. Alglave, L. Maranget, S. Sarkar, P. Sewell. Fences in Weak Memory Models. CAV 2010, LNCS 6174, pp. 258-272, DOI 10.1007/978-3-642-14295-6_25; extended version in Formal Methods in System Design 40(2):170-205, 2012, DOI 10.1007/s10703-011-0135-z (Coq-formalized framework relating SC, TSO and Power and the fences that restore stronger models)."
+    ],
+    "design_question": "Which condition makes a TSO-consistent execution SC (after erasing fences)? Here: a fence between every po-ordered write→read pair, per-thread-total po and location-respecting rf."
+  },
+  {
+    "id": "fence-mapping-soundness-program",
+    "lean": [
+      "Toy.WMM.scConsistentErased_of_tso_fenceAfterStores"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Same known result as fence-mapping-soundness-execution, for the explicit mapping fenceAfterStores on toy programs; compilation of SC accesses to x86 by fencing stores is proved correct in Batty et al. (POPL 2011, Sect. 5) and mechanized in weakmemory/imm.",
+    "plain_claim": "For every straight-line program P, every candidate execution of fenceAfterStores P (an mfence inserted immediately after every store) whose rf relates same-location events and which is TSO-consistent is SC-consistent after erasing its fence events.",
+    "hypotheses": [
+      {
+        "name": "hX : ExecOf (fenceAfterStores P) X",
+        "purpose": "X is an execution of the compiled program",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.fenceAfterStores_needs_execOf"
+        ]
+      },
+      {
+        "name": "hrf : X.RfSameLoc",
+        "purpose": "rf respects locations",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.fenceAfterStores_needs_rfSameLoc"
+        ]
+      },
+      {
+        "name": "hloc : X.PerLocSC",
+        "purpose": "first TSO axiom",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.fenceAfterStores_needs_perLocSC"
+        ]
+      },
+      {
+        "name": "hghb : X.TsoGhbAcyclic",
+        "purpose": "second TSO axiom",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.fenceAfterStores_needs_tsoGhbAcyclic"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "fenceAfterStores sbProg and its SC execution sbFencedSC.",
+    "nonvacuity_witness_lean": [
+      "Toy.WMM.nonvacuity_scConsistentErased_of_tso_fenceAfterStores"
+    ],
+    "non_claims": [
+      "The conclusion is about the target execution (restriction to non-fence events); the source-execution statement is fence-mapping-source-execution.",
+      "Does not show that fencing after every store is minimal or unique: alternative mappings such as fencing before every load, or implementing stores with locked instructions (e.g., x86 LOCK XCHG), are not modelled or compared.",
+      "Does not prove completeness (backward preservation): that every SC execution of P gives rise to a TSO-consistent execution of fenceAfterStores P with the same outcome is not proved.",
+      "Does not justify partial or mixed-ordering mappings (such as C11/Rust SeqCst-to-x86, where only SeqCst stores receive MFENCE while relaxed or non-atomic stores remain unfenced): fenceAfterStores fences every store in the program.",
+      "Programs have no registers, control flow, or dependencies; reads may return any value permitted by rf.",
+      "Toy model only: finite candidate executions of straight-line programs, one access size, no read-modify-write or locked instructions, no registers, dependencies or control flow, a single full fence. Nothing is claimed about C11/RC11, Java, out-of-thin-air behaviour, mixed-size accesses, ARM, POWER, RISC-V, or compiler optimisations other than fence insertion.",
+      "That TSOConsistent captures x86-TSO is a modeling bridge (derived, not a theorem): it is the two-axiom form (SC per location; acyclic(ppo ∪ rfe ∪ co ∪ fr ∪ fence) with ppo = ([RW];po;[RW]) \\ (W×R) and fence = [RW];po;[F];po;[RW]) of Alglave, Maranget and Tautschnig (TOPLAS 2014, Fig. 5 and Fig. 21), whose Lemma 4.1 proves equivalence to SPARC TSO via Alglave (FMSD 2012), Def. 23; no theorem here relates it to the x86-TSO abstract machine or to hardware."
+    ],
+    "prior_art": [
+      "P. Sewell, S. Sarkar, S. Owens, F. Zappa Nardelli, M. O. Myreen. x86-TSO: A Rigorous and Usable Programmer's Model for x86 Multiprocessors. CACM 53(7):89-97, 2010. DOI 10.1145/1785414.1785443. Sect. 3.2: 'In x86-TSO adding MFENCE between every instruction would clearly suffice to regain sequential consistency'.",
+      "M. Batty, S. Owens, S. Sarkar, P. Sewell, T. Weber. Mathematizing C++ Concurrency. POPL 2011, pp. 55-66. DOI 10.1145/1926385.1926394 (Isabelle/HOL model of C++11; Sect. 5 proves correctness of compiling C++11 primitives, including SC atomics, to x86-TSO).",
+      "A. Podkopaev, O. Lahav, V. Vafeiadis. Bridging the Gap between Programming Languages and Hardware Weak Memory Models. PACMPL 3(POPL), Article 69, 2019. DOI 10.1145/3290382. Coq development https://github.com/weakmemory/imm at commit 4ca191b072df081dd3a6d9aa755959dc901b1bd0: src/hardware/TSO.v, lines 48-50, defines ppo := ([RW];sb;[RW]) \\ (W×R) and fence := [RW];sb;[MFENCE];sb;[RW]; src/hardware/immToTSO.v, lines 897-898, Lemma IMM_consistent, assumes SCF : [W∩Sc];sb;[R∩Sc] ⊆ sb;[MFENCE];sb."
+    ],
+    "design_question": "Is inserting an mfence after every store a sound mapping from SC to TSO at the level of target executions?"
+  },
+  {
+    "id": "fence-mapping-source-execution",
+    "lean": [
+      "Toy.WMM.exists_sc_source_execution_of_tso_fenceAfterStores"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Compilation correctness of the SC-to-x86 fence-after-stores mapping is known (CACM 2010, Sect. 3.2; Batty et al., POPL 2011, Sect. 5; weakmemory/imm in Coq); restated for toy programs with an explicit reconstruction of the source execution.",
+    "plain_claim": "For every straight-line program P and every TSO-consistent candidate execution X of fenceAfterStores P whose rf and co are well formed (RfCoWf: rf from writes to reads of the same location and value, total and functional; co between same-location writes, transitive, total, with initialisation writes first), there is an order-preserving map f from the events of P to the events of X that hits every memory access of X (so it misses only fence events) such that X.comap f, the events, po, rf and co of X read through f, is a well-formed SC-consistent candidate execution of P.",
+    "hypotheses": [
+      {
+        "name": "hX : ExecOf (fenceAfterStores P) X",
+        "purpose": "X is an execution of the compiled program",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.sourceExec_needs_execOf"
+        ]
+      },
+      {
+        "name": "hwf : X.RfCoWf",
+        "purpose": "well-formedness of rf and co: every Wf conjunct except the four po conditions (implied by hX) and CoIrrefl (implied by SC per location); each conjunct is inherited by the corresponding conjunct of (X.comap f).Wf. The nine conjuncts are not independent once SC per location holds: RfFunctional follows from RfSameLoc, RfKinds and CoTotal (Exec.rfFunctional_of_perLocSC), and CoTrans from CoKinds and CoTotal (Exec.coTrans_of_perLocSC). Tight as a bundle: the counterexample violates RfTotal (a read with no rf source); necessity of the individual conjuncts is not claimed.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.sourceExec_needs_rfCoWf"
+        ]
+      },
+      {
+        "name": "htso : X.TSOConsistent",
+        "purpose": "the target model",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.sourceExec_needs_tso"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "fenceAfterStores sbProg and its SC execution sbFencedSC; with the explicit map sbSrcIdx the source execution is an SC execution of sbProg.",
+    "nonvacuity_witness_lean": [
+      "Toy.WMM.nonvacuity_exists_sc_source_execution_of_tso_fenceAfterStores",
+      "Toy.WMM.sbFencedSC_source_execution"
+    ],
+    "non_claims": [
+      "Outcome agreement is by construction: the read values, rf and co of X.comap f are those of X at the images of f; no separate observational-equivalence theorem is stated.",
+      "The map f is not claimed to be unique (when P has its own mfence next to an inserted one, either fence event may be chosen).",
+      "Does not prove completeness: that every SC execution of P is matched by a TSO-consistent execution of fenceAfterStores P is not proved.",
+      "RfCoWf is not claimed to be the weakest premise: two of its conjuncts are redundant given PerLocSC (Exec.rfFunctional_of_perLocSC, Exec.coTrans_of_perLocSC), and it also constrains rf and co at the inserted fences, which the source execution never sees (storeFenceExtraRfOnInserted_check: an rf edge into an inserted fence violates RfCoWf while the conclusion still holds). Only the necessity of the bundle is shown, through RfTotal (sourceExec_needs_rfCoWf).",
+      "Does not justify partial or mixed-ordering mappings: fenceAfterStores fences every store in the program.",
+      "Toy model only: finite candidate executions of straight-line programs, one access size, no read-modify-write or locked instructions, no registers, dependencies or control flow, a single full fence. Nothing is claimed about C11/RC11, Java, out-of-thin-air behaviour, mixed-size accesses, ARM, POWER, RISC-V, or compiler optimisations other than fence insertion.",
+      "That TSOConsistent captures x86-TSO is a modeling bridge (derived, not a theorem): it is the two-axiom form (SC per location; acyclic(ppo ∪ rfe ∪ co ∪ fr ∪ fence) with ppo = ([RW];po;[RW]) \\ (W×R) and fence = [RW];po;[F];po;[RW]) of Alglave, Maranget and Tautschnig (TOPLAS 2014, Fig. 5 and Fig. 21), whose Lemma 4.1 proves equivalence to SPARC TSO via Alglave (FMSD 2012), Def. 23; no theorem here relates it to the x86-TSO abstract machine or to hardware."
+    ],
+    "prior_art": [
+      "P. Sewell, S. Sarkar, S. Owens, F. Zappa Nardelli, M. O. Myreen. x86-TSO: A Rigorous and Usable Programmer's Model for x86 Multiprocessors. CACM 53(7):89-97, 2010. DOI 10.1145/1785414.1785443. Sect. 3.2: 'In x86-TSO adding MFENCE between every instruction would clearly suffice to regain sequential consistency'.",
+      "M. Batty, S. Owens, S. Sarkar, P. Sewell, T. Weber. Mathematizing C++ Concurrency. POPL 2011, pp. 55-66. DOI 10.1145/1926385.1926394 (Isabelle/HOL model of C++11; Sect. 5 proves correctness of compiling C++11 primitives, including SC atomics, to x86-TSO).",
+      "A. Podkopaev, O. Lahav, V. Vafeiadis. Bridging the Gap between Programming Languages and Hardware Weak Memory Models. PACMPL 3(POPL), Article 69, 2019. DOI 10.1145/3290382. Coq development https://github.com/weakmemory/imm at commit 4ca191b072df081dd3a6d9aa755959dc901b1bd0: src/hardware/TSO.v, lines 48-50, defines ppo := ([RW];sb;[RW]) \\ (W×R) and fence := [RW];sb;[MFENCE];sb;[RW]; src/hardware/immToTSO.v, lines 897-898, Lemma IMM_consistent, assumes SCF : [W∩Sc];sb;[R∩Sc] ⊆ sb;[MFENCE];sb."
+    ],
+    "design_question": "Which correctness statement does a compilation mapping from SC to a TSO-like target need? Here: every target execution allowed by TSO arises from a source execution allowed by SC with the same communication (rf, co) and read values.",
+    "scope_witnesses_lean": [
+      "Toy.WMM.Exec.rfFunctional_of_perLocSC",
+      "Toy.WMM.Exec.coTrans_of_perLocSC",
+      "Toy.WMM.storeFenceExtraRfOnInserted_check"
+    ]
+  },
+  {
+    "id": "fence-erasure",
+    "lean": [
+      "Toy.WMM.scConsistent_of_scConsistentErased"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Fences are inert in SC (cf. TPHOLs 2009: no need to include fence events in the memory order); cycle shortening through a transitive po.",
+    "plain_claim": "If po is irreflexive and transitive, rf goes from writes to reads, and co relates same-location writes, then SC-consistency after erasing fence events implies SC-consistency with the fence events present.",
+    "hypotheses": [
+      {
+        "name": "hirr : X.PoIrrefl",
+        "purpose": "excludes po self-loops on fences",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.scConsistent_of_scConsistentErased_needs_poIrrefl"
+        ]
+      },
+      {
+        "name": "htrans : X.PoTrans",
+        "purpose": "shortens cycles through fences",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.scConsistent_of_scConsistentErased_needs_poTrans"
+        ]
+      },
+      {
+        "name": "hrfk : X.RfKinds",
+        "purpose": "no rf edge touches a fence",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.scConsistent_of_scConsistentErased_needs_rfKinds"
+        ]
+      },
+      {
+        "name": "hcok : X.CoKinds",
+        "purpose": "no co edge touches a fence",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.scConsistent_of_scConsistentErased_needs_coKinds"
+        ]
+      },
+      {
+        "name": "h : X.SCConsistentErased",
+        "purpose": "the premise",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.scConsistent_of_scConsistentErased_needs_scErased"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "The SC outcome of SB+mfences.",
+    "nonvacuity_witness_lean": [
+      "Toy.WMM.nonvacuity_scConsistent_of_scConsistentErased"
+    ],
+    "non_claims": [
+      "Supporting infrastructure: relates the two SC targets on the same execution; the converse holds unconditionally (scConsistentErased_of_scConsistent).",
+      "Does not erase fences from a program (mapping fenceAfterStores P back to P) or construct a re-indexed execution of the source program; premise and conclusion are predicates on the same Exec n whose vertex set still contains the fence events (for source executions see fence-mapping-source-execution).",
+      "Fences are not inert under TSO: sbFencedWeak is not TSO-consistent while its fence-free counterpart sbWeak is, so there is no TSO analogue of this theorem.",
+      "The proof uses only that rf and co edges join memory accesses; RfKinds and CoKinds are stated as the package's well-formedness conditions, and each is shown necessary by an execution with a fence endpoint.",
+      "Toy model only: finite candidate executions of straight-line programs, one access size, no read-modify-write or locked instructions, no registers, dependencies or control flow, a single full fence. Nothing is claimed about C11/RC11, Java, out-of-thin-air behaviour, mixed-size accesses, ARM, POWER, RISC-V, or compiler optimisations other than fence insertion."
+    ],
+    "prior_art": [
+      "S. Owens, S. Sarkar, P. Sewell. A Better x86 Memory Model: x86-TSO. TPHOLs 2009, LNCS 5674, pp. 391-407. DOI 10.1007/978-3-642-03359-9_27. Axiomatic model: 'There is no need to include fence events themselves in the memory ordering.'"
+    ],
+    "design_question": "Reference point (supporting infrastructure): is 'SC after erasing fences' the same correctness target as 'SC' for compiled executions?",
+    "scope_witnesses_lean": [
+      "Toy.WMM.scConsistentErased_of_scConsistent"
+    ]
+  },
+  {
+    "id": "shared-location-fencing-soundness",
+    "lean": [
+      "Toy.WMM.scConsistentErased_of_tso_of_fenceBetweenBothSharedWR",
+      "Toy.WMM.scConsistentErased_of_tso_of_fenceBetweenSharedWR"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Known informally from delay-set analysis (Shasha and Snir 1988) and used by escape-analysis-based fence omission (Sura et al. 2005); no mechanization of this execution-level statement was found in the works cited (search limited to them and the Coq/HOL4 developments listed). Vafeiadis and Zappa Nardelli (SAS 2011) mechanize a different fence optimisation.",
+    "plain_claim": "Fencing only the po-ordered write→read pairs whose write and read are both to locations accessed (excluding initialisation writes) by two or more threads suffices: if po is transitive, within threads and total on each thread, rf and co only relate events at the same location, those pairs are separated by a fence, and the execution is TSO-consistent, then it is SC-consistent after erasing fences. The form that fences every pair whose write's location is shared (FenceBetweenSharedWR, with CoKinds) is a corollary.",
+    "hypotheses": [
+      {
+        "name": "hptrans : X.PoTrans (primary theorem scConsistentErased_of_tso_of_fenceBetweenBothSharedWR)",
+        "purpose": "shortens cycles through thread-local accesses",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.fenceBetweenBothSharedWR_needs_poTrans"
+        ]
+      },
+      {
+        "name": "hpth : X.PoWithinThread (primary theorem scConsistentErased_of_tso_of_fenceBetweenBothSharedWR)",
+        "purpose": "po never enters an initialisation write",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.fenceBetweenBothSharedWR_needs_poWithinThread"
+        ]
+      },
+      {
+        "name": "htot : X.PoTotal (primary theorem scConsistentErased_of_tso_of_fenceBetweenBothSharedWR)",
+        "purpose": "orients same-thread communication along po",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.fenceBetweenBothSharedWR_needs_poTotal"
+        ]
+      },
+      {
+        "name": "hrfl : X.RfSameLoc (primary theorem scConsistentErased_of_tso_of_fenceBetweenBothSharedWR)",
+        "purpose": "communication stays on one location",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.fenceBetweenBothSharedWR_needs_rfSameLoc"
+        ]
+      },
+      {
+        "name": "hcol : X.CoSameLoc (primary theorem scConsistentErased_of_tso_of_fenceBetweenBothSharedWR)",
+        "purpose": "co stays on one location",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.fenceBetweenBothSharedWR_needs_coSameLoc"
+        ]
+      },
+      {
+        "name": "hfence : X.FenceBetweenBothSharedWR (primary theorem scConsistentErased_of_tso_of_fenceBetweenBothSharedWR)",
+        "purpose": "write→read pairs between shared locations fenced",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.fenceBetweenBothSharedWR_needs_fenceBetweenBothSharedWR",
+          "Toy.WMM.sbOneFence_execution_tso_not_scErased"
+        ]
+      },
+      {
+        "name": "hloc : X.PerLocSC (primary theorem scConsistentErased_of_tso_of_fenceBetweenBothSharedWR)",
+        "purpose": "first TSO axiom",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.fenceBetweenBothSharedWR_needs_perLocSC"
+        ]
+      },
+      {
+        "name": "hghb : X.TsoGhbAcyclic (primary theorem scConsistentErased_of_tso_of_fenceBetweenBothSharedWR)",
+        "purpose": "second TSO axiom",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.fenceBetweenBothSharedWR_needs_tsoGhbAcyclic"
+        ]
+      },
+      {
+        "name": "hptrans : X.PoTrans (corollary scConsistentErased_of_tso_of_fenceBetweenSharedWR)",
+        "purpose": "shortens cycles through thread-local accesses",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.fenceBetweenSharedWR_needs_poTrans"
+        ]
+      },
+      {
+        "name": "hpth : X.PoWithinThread (corollary scConsistentErased_of_tso_of_fenceBetweenSharedWR)",
+        "purpose": "po never enters an initialisation write",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.fenceBetweenSharedWR_needs_poWithinThread"
+        ]
+      },
+      {
+        "name": "htot : X.PoTotal (corollary scConsistentErased_of_tso_of_fenceBetweenSharedWR)",
+        "purpose": "orients same-thread communication along po",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.fenceBetweenSharedWR_needs_poTotal"
+        ]
+      },
+      {
+        "name": "hrfl : X.RfSameLoc (corollary scConsistentErased_of_tso_of_fenceBetweenSharedWR)",
+        "purpose": "communication stays on one location",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.fenceBetweenSharedWR_needs_rfSameLoc"
+        ]
+      },
+      {
+        "name": "hcok : X.CoKinds (corollary scConsistentErased_of_tso_of_fenceBetweenSharedWR)",
+        "purpose": "co joins same-location writes; strictly stronger than the primary theorem's CoSameLoc (coBetweenReadsSameLoc_separates_coSameLoc_from_coKinds)",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.fenceBetweenSharedWR_needs_coKinds"
+        ]
+      },
+      {
+        "name": "hfence : X.FenceBetweenSharedWR (corollary scConsistentErased_of_tso_of_fenceBetweenSharedWR)",
+        "purpose": "every write→read pair whose write is to a shared location is fenced; strictly stronger than the primary theorem's FenceBetweenBothSharedWR (sharedWLocalR in nonvacuity_scConsistentErased_of_tso_of_fenceBetweenBothSharedWR)",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.fenceBetweenSharedWR_needs_fenceBetweenSharedWR"
+        ]
+      },
+      {
+        "name": "hloc : X.PerLocSC (corollary scConsistentErased_of_tso_of_fenceBetweenSharedWR)",
+        "purpose": "first TSO axiom",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.fenceBetweenSharedWR_needs_perLocSC"
+        ]
+      },
+      {
+        "name": "hghb : X.TsoGhbAcyclic (corollary scConsistentErased_of_tso_of_fenceBetweenSharedWR)",
+        "purpose": "second TSO axiom",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.fenceBetweenSharedWR_needs_tsoGhbAcyclic"
+        ]
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "localWR (T0: z := 1; r := x ‖ T1: x := 2, z thread-local) fails FenceBetweenWR; sharedWLocalR (T0: x := 1; r := z ‖ T1: x := 2) fails FenceBetweenSharedWR; both satisfy every hypothesis.",
+    "nonvacuity_witness_lean": [
+      "Toy.WMM.nonvacuity_scConsistentErased_of_tso_of_fenceBetweenBothSharedWR"
+    ],
+    "non_claims": [
+      "'Shared' is computed from the execution's own events (accessed, excluding initialisation writes, by two or more threads); no program-level mapping 'fence after shared stores' is formalized, and no static sharing analysis is validated.",
+      "Conclusion is SC after fence erasure (SCConsistentErased); for SC with fences present combine with fence-erasure; no re-indexed execution of a source program is constructed.",
+      "The first eight hypothesis entries belong to the primary theorem scConsistentErased_of_tso_of_fenceBetweenBothSharedWR; the corollary scConsistentErased_of_tso_of_fenceBetweenSharedWR assumes CoKinds instead of CoSameLoc and FenceBetweenSharedWR instead of FenceBetweenBothSharedWR, both strictly stronger, so the corollary is the weaker statement. Its own eight hypotheses are each necessary (fenceBetweenSharedWR_needs_*).",
+      "Does not justify omitting fences after writes to locations that are only temporarily thread-local (e.g., before publication through a pointer): LocalLoc requires that at most one thread accesses the location anywhere in the execution.",
+      "Does not claim necessity: omitting fences on some shared write→read pairs can still preserve SC (e.g., accesses to a single shared location, where SC per location already rules out cycles); see partial-fencing-unsound for a case where the omitted fence matters.",
+      "Does not claim FenceBetweenBothSharedWR is the weakest sound static condition: e.g., triangular-race freedom (Owens, ECOOP 2010, Sect. 6) also exempts reads that race with no write of another thread; no such refinement is formalized here.",
+      "Establishes axiomatic SC-consistency (acyclicity of po ∪ rf ∪ co ∪ fr on memory accesses), not preservation of a global write order across locations: Owens (ECOOP 2010, Fig. 6) shows that a write to a location accessed by one thread followed by an unfenced read of a shared location (the shape of localWR) violates memorySC, which also preserves the global order of writes, while such executions are SC-consistent in the sense used here.",
+      "Toy model only: finite candidate executions of straight-line programs, one access size, no read-modify-write or locked instructions, no registers, dependencies or control flow, a single full fence. Nothing is claimed about C11/RC11, Java, out-of-thin-air behaviour, mixed-size accesses, ARM, POWER, RISC-V, or compiler optimisations other than fence insertion.",
+      "That TSOConsistent captures x86-TSO is a modeling bridge (derived, not a theorem): it is the two-axiom form (SC per location; acyclic(ppo ∪ rfe ∪ co ∪ fr ∪ fence) with ppo = ([RW];po;[RW]) \\ (W×R) and fence = [RW];po;[F];po;[RW]) of Alglave, Maranget and Tautschnig (TOPLAS 2014, Fig. 5 and Fig. 21), whose Lemma 4.1 proves equivalence to SPARC TSO via Alglave (FMSD 2012), Def. 23; no theorem here relates it to the x86-TSO abstract machine or to hardware."
+    ],
+    "prior_art": [
+      "D. Shasha, M. Snir. Efficient and Correct Execution of Parallel Programs that Share Memory. ACM TOPLAS 10(2):282-312, 1988. DOI 10.1145/42190.42277 (delay sets: only program-order pairs on critical cycles of the conflict graph need delays).",
+      "Z. Sura, X. Fang, C.-L. Wong, S. P. Midkiff, J. Lee, D. Padua. Compiler Techniques for High Performance Sequentially Consistent Java Programs. PPoPP 2005, pp. 2-13. DOI 10.1145/1065944.1065947 (escape analysis and delay-set analysis to omit fences on thread-local accesses).",
+      "J. Alglave, D. Kroening, V. Nimal, D. Poetzl. Don't Sit on the Fence: A Static Analysis Approach to Automatic Fence Insertion. CAV 2014, DOI 10.1007/978-3-319-08867-9_33; ACM TOPLAS 39(2), Article 6, 2017, DOI 10.1145/3037273.",
+      "V. Vafeiadis, F. Zappa Nardelli. Verifying Fence Elimination Optimisations. SAS 2011, LNCS 6887, pp. 146-162. DOI 10.1007/978-3-642-23702-7_14 (Coq-verified removal of redundant fences on x86-TSO; a different optimisation from sharing-based fence omission).",
+      "S. Owens. Reasoning about the Implementation of Concurrency Abstractions on x86-TSO. ECOOP 2010, LNCS 6183, pp. 478-503. DOI 10.1007/978-3-642-14107-2_23. Sect. 4, Def. 4 (memorySC: same reads-from and same global order of writes as some SC execution); Sect. 6, Def. 6 and Theorem 1 (a program is memorySC iff it has no triangular race); Fig. 6 (p: [x]:=1 || q: [y]:=1; r:=[x], with y accessed only by q, is not memorySC but is resultSC); Appendix A, Lemma 4 (axiomatic version, mechanically verified in HOL4)."
+    ],
+    "design_question": "May a compiler omit fences after accesses to thread-local locations when targeting a TSO-like model, and which execution-level sharing condition makes that sound?",
+    "scope_witnesses_lean": [
+      "Toy.WMM.coBetweenReadsSameLoc_separates_coSameLoc_from_coKinds"
+    ]
+  },
+  {
+    "id": "partial-fencing-unsound",
+    "lean": [
+      "Toy.WMM.sbOneFence_execution_tso_not_scErased"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "SB with one fence is a standard failing case (Herding Cats: a full fence is needed on each side of sb).",
+    "plain_claim": "Fencing only some shared write→read pairs is unsound: the SB program with an mfence after thread 0's store only (sbOneFenceProg) has a well-formed TSO-consistent execution that is not SC-consistent even after fence erasure; in it thread 0's write→read pair is fenced and thread 1's is not, so the execution fails FenceBetweenSharedWR and FenceBetweenBothSharedWR.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "sbOneFenceWeak, an execution of sbOneFenceProg.",
+    "nonvacuity_witness_lean": [
+      "Toy.WMM.sbOneFence_execution_tso_not_scErased"
+    ],
+    "positive_control_lean": [
+      "Toy.WMM.Litmus.sbFenced_weak_tso_forbidden_sc_forbidden",
+      "Toy.WMM.scConsistentErased_of_tso_of_fenceBetweenBothSharedWR"
+    ],
+    "non_claims": [
+      "One missing pair suffices in SB; no claim about which pairs can be omitted in other programs beyond shared-location-fencing-soundness.",
+      "Escape hatch: this counterexample refutes fencing only one side of SB; it does not show that every shared write→read pair in every program needs a fence (e.g., T0: x := 1; r := x ‖ T1: x := 2 touches a single location, where SC per location already rules out cycles; not stated as a theorem here).",
+      "Toy model only: finite candidate executions of straight-line programs, one access size, no read-modify-write or locked instructions, no registers, dependencies or control flow, a single full fence. Nothing is claimed about C11/RC11, Java, out-of-thin-air behaviour, mixed-size accesses, ARM, POWER, RISC-V, or compiler optimisations other than fence insertion.",
+      "That TSOConsistent captures x86-TSO is a modeling bridge (derived, not a theorem): it is the two-axiom form (SC per location; acyclic(ppo ∪ rfe ∪ co ∪ fr ∪ fence) with ppo = ([RW];po;[RW]) \\ (W×R) and fence = [RW];po;[F];po;[RW]) of Alglave, Maranget and Tautschnig (TOPLAS 2014, Fig. 5 and Fig. 21), whose Lemma 4.1 proves equivalence to SPARC TSO via Alglave (FMSD 2012), Def. 23; no theorem here relates it to the x86-TSO abstract machine or to hardware."
+    ],
+    "prior_art": [
+      "J. Alglave, L. Maranget, M. Tautschnig. Herding Cats (TOPLAS 36(2), Article 7, 2014, DOI 10.1145/2627752): discussion of sb+ffences, 'We need a full fence on each side to prevent the reads b and d from reading the initial state'.",
+      "D. Shasha, M. Snir. Efficient and Correct Execution of Parallel Programs that Share Memory. ACM TOPLAS 10(2):282-312, 1988. DOI 10.1145/42190.42277 (delay sets: only program-order pairs on critical cycles of the conflict graph need delays)."
+    ],
+    "design_question": "Must every shared write→read pair be fenced, or can a mapping fence only one side of a communication pattern?"
+  },
+  {
+    "id": "straight-line-race-freedom-collapse",
+    "lean": [
+      "Toy.WMM.hbRaceFree_sc_executions_iff_noConflict",
+      "Toy.WMM.raceFree_sc_executions_iff_conflictsWRFenced",
+      "Toy.WMM.raceFreeEither_sc_executions_iff_conflictsWRFencedEither",
+      "Toy.WMM.exists_sc_execution_hb_unordered_of_conflict"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "That a program without synchronization operations is data-race free only if it has no conflicting accesses is folklore of the DRF literature (Adve and Hill 1990 identify synchronization explicitly); made precise here for straight-line programs, including the static collapse of fence-based race exemptions.",
+    "plain_claim": "For every straight-line program P: (i) every conflicting pair of accesses is unordered by hb = (po ∪ rf)⁺ in some well-formed SC-consistent execution of P; hence (ii) every well-formed SC-consistent execution of P orders all its conflicting pairs by hb if and only if P has no conflicting pair at all; (iii) every well-formed SC-consistent execution of P is RaceFree (conflicting accesses hb-ordered or both satisfying NoUnfencedWRIncident) if and only if the static condition P.ConflictsWRFenced holds; and (iv) every such execution is RaceFreeEither (one side suffices) if and only if P.ConflictsWRFencedEither holds.",
+    "hypotheses": [
+      {
+        "name": "hc : (skel P).Conflict a b (exists_sc_execution_hb_unordered_of_conflict)",
+        "purpose": "the pair must be a conflicting pair of accesses of P; this is the only hypothesis on the card (the three equivalences have none)",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.exists_sc_execution_hb_unordered_needs_conflict"
+        ]
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "loadStoreProg := [[.load 1, .store 0 1]] (one thread, r0 := y; x := 1) has no conflicts and sbProg has some; fenceAfterStores sbProg satisfies ConflictsWRFenced, sbProg fails even ConflictsWRFencedEither, and sbOneFenceProg satisfies the either-side but not the both-sides condition. Every program, including [] and [[]], has a well-formed SC-consistent execution (forall_prog_exists_wf_sc_exec), so the universal quantifiers over well-formed SC executions never range over an empty set.",
+    "nonvacuity_witness_lean": [
+      "Toy.WMM.nonvacuity_straightLine_race_characterizations",
+      "Toy.WMM.forall_prog_exists_wf_sc_exec"
+    ],
+    "non_claims": [
+      "The collapse is a property of straight-line programs: with control flow (branches on loaded values) or synchronization operations, hb can order conflicting accesses in every SC execution. No such language is modelled, so no DRF-SC theorem (Adve-Hill or Owens style) is stated or proved in this package.",
+      "NoUnfencedWRIncident is syntactic: every write with no po-later read and every read with no po-earlier write satisfies it vacuously with zero fences (in the fence-free MP and LB executions every event satisfies it; noUnfencedWRIncident_vacuous_example). It does not model C11/x86 SC atomics: an SC-atomic load compiled as a plain MOV after a plain store does not satisfy it.",
+      "Race freedom here is not C11's, Java's, or Owens's x86 data-race freedom (ECOOP 2010, Def. 5, defined on SC execution prefixes with locked instructions).",
+      "Toy model only: finite candidate executions of straight-line programs, one access size, no read-modify-write or locked instructions, no registers, dependencies or control flow, a single full fence. Nothing is claimed about C11/RC11, Java, out-of-thin-air behaviour, mixed-size accesses, ARM, POWER, RISC-V, or compiler optimisations other than fence insertion."
+    ],
+    "prior_art": [
+      "S. V. Adve, M. D. Hill. Weak Ordering - A New Definition. ISCA 1990, pp. 2-14. DOI 10.1145/325164.325100 (DRF0: SC for data-race-free programs whose synchronization operations are explicitly identified).",
+      "S. Owens. Reasoning about the Implementation of Concurrency Abstractions on x86-TSO. ECOOP 2010, LNCS 6183, pp. 478-503. DOI 10.1007/978-3-642-14107-2_23. Sect. 5, Def. 5 (data races on SC execution prefixes; 'a locked write and unlocked read can form a data race') and Corollary 1 (DRF theorem); Sect. 6, Def. 6 and Theorem 1 (triangular-race freedom)."
+    ],
+    "design_question": "Can a happens-before data-race-freedom contract serve as the source-level correctness criterion for compiling straight-line toy programs to TSO? (No: on such programs it degenerates to a static condition on fence placement; a meaningful DRF-SC statement needs control flow or synchronization operations.)",
+    "scope_witnesses_lean": [
+      "Toy.WMM.noUnfencedWRIncident_vacuous_example"
+    ]
+  },
+  {
+    "id": "static-both-sides-fencing-sc-on-tso",
+    "lean": [
+      "Toy.WMM.scConsistent_of_tso_of_conflictsWRFenced",
+      "Toy.WMM.fenceBetweenSharedWR_of_conflictsWRFenced"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Corollary of shared-location-fencing-soundness (T1) and fence-erasure; the static condition is the race-freedom premise of straight-line-race-freedom-collapse.",
+    "plain_claim": "If every conflicting pair of accesses of a straight-line program P has both accesses satisfying NoUnfencedWRIncident (P.ConflictsWRFenced; equivalently, every well-formed SC execution of P is RaceFree), then every candidate execution of P fences every po-ordered write→read pair whose write is to a shared location, and every candidate execution of P whose rf goes from writes to reads of the same location, whose co relates same-location writes, and which is TSO-consistent, is SC-consistent.",
+    "hypotheses": [
+      {
+        "name": "h : P.ConflictsWRFenced",
+        "purpose": "the static race-freedom condition",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.scConsistent_of_tso_of_conflictsWRFenced_needs_conflictsWRFenced"
+        ]
+      },
+      {
+        "name": "hX : ExecOf P X",
+        "purpose": "X is an execution of P",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.scConsistent_of_tso_of_conflictsWRFenced_needs_execOf"
+        ]
+      },
+      {
+        "name": "hrfl : X.RfSameLoc",
+        "purpose": "communication stays on one location",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.scConsistent_of_tso_of_conflictsWRFenced_needs_rfSameLoc"
+        ]
+      },
+      {
+        "name": "hrfk : X.RfKinds",
+        "purpose": "rf joins memory accesses (fence erasure)",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.scConsistent_of_tso_of_conflictsWRFenced_needs_rfKinds"
+        ]
+      },
+      {
+        "name": "hcok : X.CoKinds",
+        "purpose": "co joins same-location writes",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.scConsistent_of_tso_of_conflictsWRFenced_needs_coKinds"
+        ]
+      },
+      {
+        "name": "htso : X.TSOConsistent",
+        "purpose": "the target model",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.scConsistent_of_tso_of_conflictsWRFenced_needs_tso"
+        ]
+      },
+      {
+        "name": "h : P.ConflictsWRFenced (fenceBetweenSharedWR_of_conflictsWRFenced)",
+        "purpose": "the static condition",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.fenceBetweenSharedWR_of_conflictsWRFenced_needs_conflictsWRFenced"
+        ]
+      },
+      {
+        "name": "hX : ExecOf P X (fenceBetweenSharedWR_of_conflictsWRFenced)",
+        "purpose": "X is an execution of P",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.WMM.fenceBetweenSharedWR_of_conflictsWRFenced_needs_execOf"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "fenceAfterStores sbProg with its SC execution sbFencedSC.",
+    "nonvacuity_witness_lean": [
+      "Toy.WMM.nonvacuity_scConsistent_of_tso_of_conflictsWRFenced"
+    ],
+    "non_claims": [
+      "Strictly weaker than shared-location-fencing-soundness: localWRProg fails ConflictsWRFenced, yet its execution localWR satisfies FenceBetweenSharedWR (localWRProg_not_conflictsWRFenced_but_fenceBetweenSharedWR).",
+      "Not a DRF-SC theorem: hb plays no role in the premise (straight-line-race-freedom-collapse).",
+      "NoUnfencedWRIncident holds vacuously for writes with no po-later read and reads with no po-earlier write, and does not model C11/x86 SC atomics.",
+      "Toy model only: finite candidate executions of straight-line programs, one access size, no read-modify-write or locked instructions, no registers, dependencies or control flow, a single full fence. Nothing is claimed about C11/RC11, Java, out-of-thin-air behaviour, mixed-size accesses, ARM, POWER, RISC-V, or compiler optimisations other than fence insertion.",
+      "That TSOConsistent captures x86-TSO is a modeling bridge (derived, not a theorem): it is the two-axiom form (SC per location; acyclic(ppo ∪ rfe ∪ co ∪ fr ∪ fence) with ppo = ([RW];po;[RW]) \\ (W×R) and fence = [RW];po;[F];po;[RW]) of Alglave, Maranget and Tautschnig (TOPLAS 2014, Fig. 5 and Fig. 21), whose Lemma 4.1 proves equivalence to SPARC TSO via Alglave (FMSD 2012), Def. 23; no theorem here relates it to the x86-TSO abstract machine or to hardware."
+    ],
+    "prior_art": [
+      "S. Owens. Reasoning about the Implementation of Concurrency Abstractions on x86-TSO. ECOOP 2010, LNCS 6183, pp. 478-503. DOI 10.1007/978-3-642-14107-2_23. Sect. 4, Def. 4 (memorySC: same reads-from and same global order of writes as some SC execution); Sect. 6, Def. 6 and Theorem 1 (a program is memorySC iff it has no triangular race); Fig. 6 (p: [x]:=1 || q: [y]:=1; r:=[x], with y accessed only by q, is not memorySC but is resultSC); Appendix A, Lemma 4 (axiomatic version, mechanically verified in HOL4).",
+      "D. Shasha, M. Snir. Efficient and Correct Execution of Parallel Programs that Share Memory. ACM TOPLAS 10(2):282-312, 1988. DOI 10.1145/42190.42277 (delay sets: only program-order pairs on critical cycles of the conflict graph need delays)."
+    ],
+    "design_question": "How must a fence-based race exemption treat the two accesses of a conflicting pair for SC to hold on TSO? (Requiring both sides suffices; one side does not, see drf-either-fenced-variant-rejected.)",
+    "scope_witnesses_lean": [
+      "Toy.WMM.localWRProg_not_conflictsWRFenced_but_fenceBetweenSharedWR"
+    ]
+  },
+  {
+    "id": "drf-either-fenced-variant-rejected",
+    "lean": [
+      "Toy.WMM.conflictsWRFencedEither_does_not_imply_sc"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "Fencing one side of SB is a standard failing case (Herding Cats: a full fence is needed on each side); Owens (ECOOP 2010, Def. 5) likewise lets a locked write race with an unlocked read.",
+    "plain_claim": "Exempting a conflicting pair when either (rather than both) of its accesses satisfies NoUnfencedWRIncident does not give SC on TSO: in SB with an mfence after thread 0's store (sbOneFenceProg), thread 0's write and read are separated by an actual fence, every conflicting pair has a side satisfying NoUnfencedWRIncident, and hence every well-formed SC execution is RaceFreeEither; yet the program has a well-formed TSO-consistent execution that is not SC-consistent.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "sbOneFenceProg and its execution sbOneFenceWeak.",
+    "nonvacuity_witness_lean": [
+      "Toy.WMM.conflictsWRFencedEither_does_not_imply_sc"
+    ],
+    "positive_control_lean": [
+      "Toy.WMM.scConsistent_of_tso_of_conflictsWRFenced"
+    ],
+    "non_claims": [
+      "The exemption is a static condition on the program (straight-line-race-freedom-collapse); hb plays no role.",
+      "NoUnfencedWRIncident holds vacuously for writes with no po-later read and reads with no po-earlier write; in the counterexample thread 0's accesses satisfy it through an actual fence and thread 1's accesses do not satisfy it.",
+      "Escape hatch: write-write conflicts, and conflicts whose read has no unfenced po-earlier write, are not the failing pattern; the counterexample needs an unfenced write→read pair on a thread whose read conflicts with another thread's write, as in triangular races (Owens, ECOOP 2010, Sect. 6). No theorem here characterizes the failing pattern.",
+      "Toy model only: finite candidate executions of straight-line programs, one access size, no read-modify-write or locked instructions, no registers, dependencies or control flow, a single full fence. Nothing is claimed about C11/RC11, Java, out-of-thin-air behaviour, mixed-size accesses, ARM, POWER, RISC-V, or compiler optimisations other than fence insertion.",
+      "That TSOConsistent captures x86-TSO is a modeling bridge (derived, not a theorem): it is the two-axiom form (SC per location; acyclic(ppo ∪ rfe ∪ co ∪ fr ∪ fence) with ppo = ([RW];po;[RW]) \\ (W×R) and fence = [RW];po;[F];po;[RW]) of Alglave, Maranget and Tautschnig (TOPLAS 2014, Fig. 5 and Fig. 21), whose Lemma 4.1 proves equivalence to SPARC TSO via Alglave (FMSD 2012), Def. 23; no theorem here relates it to the x86-TSO abstract machine or to hardware."
+    ],
+    "prior_art": [
+      "J. Alglave, L. Maranget, M. Tautschnig. Herding Cats (TOPLAS 36(2), Article 7, 2014, DOI 10.1145/2627752): discussion of sb+ffences, 'We need a full fence on each side to prevent the reads b and d from reading the initial state'.",
+      "S. Owens. Reasoning about the Implementation of Concurrency Abstractions on x86-TSO. ECOOP 2010, LNCS 6183, pp. 478-503. DOI 10.1007/978-3-642-14107-2_23. Sect. 5, Def. 5 (data races on SC execution prefixes; 'a locked write and unlocked read can form a data race') and Corollary 1 (DRF theorem); Sect. 6, Def. 6 and Theorem 1 (triangular-race freedom).",
+      "M. Batty, S. Owens, S. Sarkar, P. Sewell, T. Weber. Mathematizing C++ Concurrency. POPL 2011, pp. 55-66. DOI 10.1145/1926385.1926394 (Isabelle/HOL model of C++11; Sect. 5 proves correctness of compiling C++11 primitives, including SC atomics, to x86-TSO)."
+    ],
+    "design_question": "How must a fence-based race exemption treat the two accesses of a conflicting pair for SC to hold on TSO? (One side is not enough.)"
+  }
+]

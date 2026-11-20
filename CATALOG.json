@@ -88979,6 +88979,81 @@
         "verification/iris"
       ]
     },
+    "weak-memory-execution-graphs-and-compilation-mappings": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2627752"
+          },
+          "name": "Herding Cats: Modelling, Simulation, Testing, and Data Mining for Weak Memory (Alglave, Maranget, Tautschnig; ACM TOPLAS 36(2), 2014)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1785414.1785443"
+          },
+          "name": "x86-TSO: A Rigorous and Usable Programmer's Model for x86 Multiprocessors (Sewell, Sarkar, Owens, Zappa Nardelli, Myreen; CACM 53(7), 2010)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-03359-9_27"
+          },
+          "name": "A Better x86 Memory Model: x86-TSO (Owens, Sarkar, Sewell; TPHOLs 2009)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-14107-2_23"
+          },
+          "name": "Reasoning about the Implementation of Concurrency Abstractions on x86-TSO (Owens; ECOOP 2010)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TC.1979.1675439"
+          },
+          "name": "How to Make a Multiprocessor Computer That Correctly Executes Multiprocess Programs (Lamport; IEEE Trans. Computers C-28(9), 1979)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/42190.42277"
+          },
+          "name": "Efficient and Correct Execution of Parallel Programs that Share Memory (Shasha, Snir; ACM TOPLAS 10(2), 1988)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/325164.325100"
+          },
+          "name": "Weak Ordering - A New Definition (Adve, Hill; ISCA 1990)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1926385.1926394"
+          },
+          "name": "Mathematizing C++ Concurrency (Batty, Owens, Sarkar, Sewell, Weber; POPL 2011)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3290382"
+          },
+          "name": "Bridging the Gap between Programming Languages and Hardware Weak Memory Models (Podkopaev, Lahav, Vafeiadis; PACMPL 3(POPL), 2019)"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/weak-memory-models",
+        "verification/refinement",
+        "compilers/fence-insertion",
+        "pl/memory-models"
+      ]
+    },
     "weak-memory-hardware-litmus-testing-x86-and-aarch64": {
       "observed_at": "2026-11-13",
       "subjects": [

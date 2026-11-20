@@ -1,0 +1,1659 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.WMM.Event": [],
+    "Toy.WMM.Event.F": [],
+    "Toy.WMM.Event.R": [],
+    "Toy.WMM.Event.W": [],
+    "Toy.WMM.Event.casesOn": [],
+    "Toy.WMM.Event.ctorIdx": [],
+    "Toy.WMM.Event.initW": [],
+    "Toy.WMM.Event.initW.eq_1": [],
+    "Toy.WMM.Event.isAccess": [
+      "propext"
+    ],
+    "Toy.WMM.Event.isAccess.eq_1": [
+      "propext"
+    ],
+    "Toy.WMM.Event.isFence": [
+      "propext"
+    ],
+    "Toy.WMM.Event.isFence.eq_1": [
+      "propext"
+    ],
+    "Toy.WMM.Event.isFence.match_1": [
+      "propext"
+    ],
+    "Toy.WMM.Event.isInit": [
+      "propext"
+    ],
+    "Toy.WMM.Event.isInit.eq_1": [
+      "propext"
+    ],
+    "Toy.WMM.Event.isInit.match_1": [
+      "propext"
+    ],
+    "Toy.WMM.Event.isRead": [
+      "propext"
+    ],
+    "Toy.WMM.Event.isRead.eq_1": [
+      "propext"
+    ],
+    "Toy.WMM.Event.isRead.match_1": [
+      "propext"
+    ],
+    "Toy.WMM.Event.isWrite": [
+      "propext"
+    ],
+    "Toy.WMM.Event.isWrite.eq_1": [
+      "propext"
+    ],
+    "Toy.WMM.Event.isWrite.match_1": [
+      "propext"
+    ],
+    "Toy.WMM.Event.kind": [],
+    "Toy.WMM.Event.loc": [],
+    "Toy.WMM.Event.mk": [],
+    "Toy.WMM.Event.mk.inj": [],
+    "Toy.WMM.Event.mk.injEq": [
+      "propext"
+    ],
+    "Toy.WMM.Event.mk.noConfusion": [],
+    "Toy.WMM.Event.mk.sizeOf_spec": [],
+    "Toy.WMM.Event.noConfusion": [],
+    "Toy.WMM.Event.noConfusionType": [],
+    "Toy.WMM.Event.rec": [],
+    "Toy.WMM.Event.recOn": [],
+    "Toy.WMM.Event.tid": [],
+    "Toy.WMM.Event.val": [],
+    "Toy.WMM.Exec": [],
+    "Toy.WMM.Exec.CoInitFirst": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.CoIrrefl": [],
+    "Toy.WMM.Exec.CoKinds": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.CoSameLoc": [],
+    "Toy.WMM.Exec.CoTotal": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.CoTrans": [],
+    "Toy.WMM.Exec.Conflict": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.Conflict.eq_1": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.FenceBetweenBothSharedWR": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.FenceBetweenSharedWR": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.FenceBetweenWR": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.HB": [],
+    "Toy.WMM.Exec.LocalLoc": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.NoUnfencedWRIncident": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.NoUnfencedWRIncident.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.PerLocSC": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.PoIrrefl": [],
+    "Toy.WMM.Exec.PoTotal": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.PoTrans": [],
+    "Toy.WMM.Exec.PoWithinThread": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.Race": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.RaceEither": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.RaceFree": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.RaceFreeEither": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.RfCoWf": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.RfFunctional": [],
+    "Toy.WMM.Exec.RfKinds": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.RfSameLoc": [],
+    "Toy.WMM.Exec.RfSameVal": [],
+    "Toy.WMM.Exec.RfTotal": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.SCConsistent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.SCConsistentErased": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.TSOConsistent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.TSOConsistentKeepSameLocWR": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.TsoGhbAcyclic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.Wf": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.casesOn": [],
+    "Toy.WMM.Exec.co": [],
+    "Toy.WMM.Exec.coIrrefl_of_perLocSC": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.coSameLoc_of_coKinds": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.coTrans_of_perLocSC": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.comap": [],
+    "Toy.WMM.Exec.comap.eq_1": [],
+    "Toy.WMM.Exec.conflict_congr": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.ctorIdx": [],
+    "Toy.WMM.Exec.eraseFences": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.eraseFences.eq_1": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.eraseFences_scRel_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.ev": [],
+    "Toy.WMM.Exec.fenceBetweenBothSharedWR_of_fenceBetweenSharedWR": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.fenceOrd": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.fenceOrd.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.fr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.fr.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.fr_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.hbRel": [],
+    "Toy.WMM.Exec.hbRel.eq_1": [],
+    "Toy.WMM.Exec.instDecidableCoInitFirst": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.instDecidableCoIrrefl": [],
+    "Toy.WMM.Exec.instDecidableCoKinds": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.instDecidableCoSameLoc": [],
+    "Toy.WMM.Exec.instDecidableCoTotal": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.instDecidableCoTrans": [],
+    "Toy.WMM.Exec.instDecidableConflict": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.instDecidableFenceBetweenBothSharedWR": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.instDecidableFenceBetweenSharedWR": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.instDecidableFenceBetweenWR": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.instDecidableHB": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.instDecidableLocalLoc": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.instDecidableNoUnfencedWRIncident": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.instDecidablePerLocSC": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.instDecidablePoIrrefl": [],
+    "Toy.WMM.Exec.instDecidablePoTotal": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.instDecidablePoTrans": [],
+    "Toy.WMM.Exec.instDecidablePoWithinThread": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.instDecidableRace": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.instDecidableRaceEither": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.instDecidableRaceFree": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.instDecidableRaceFreeEither": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.instDecidableRfCoWf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.instDecidableRfFunctional": [],
+    "Toy.WMM.Exec.instDecidableRfKinds": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.instDecidableRfSameLoc": [],
+    "Toy.WMM.Exec.instDecidableRfSameVal": [],
+    "Toy.WMM.Exec.instDecidableRfTotal": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.instDecidableSCConsistent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.instDecidableSCConsistentErased": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.instDecidableTSOConsistent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.instDecidableTSOConsistentKeepSameLocWR": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.instDecidableTsoGhbAcyclic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.instDecidableWf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.mk": [],
+    "Toy.WMM.Exec.mk.inj": [],
+    "Toy.WMM.Exec.mk.injEq": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.mk.noConfusion": [],
+    "Toy.WMM.Exec.mk.sizeOf_spec": [],
+    "Toy.WMM.Exec.noConfusion": [],
+    "Toy.WMM.Exec.noConfusionType": [],
+    "Toy.WMM.Exec.noUnfencedWRIncident_congr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.ofList": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.ofListPo": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.path_scRel_of_tsoRel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.po": [],
+    "Toy.WMM.Exec.poLoc": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.poLoc.eq_1": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.po_of_uniproc_edge": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.ppo": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.ppo.eq_1": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.ppoKeepSameLocWR": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.ppoKeepSameLocWR.eq_1": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.rec": [],
+    "Toy.WMM.Exec.recOn": [],
+    "Toy.WMM.Exec.rf": [],
+    "Toy.WMM.Exec.rfFunctional_of_perLocSC": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.rfe": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.rfe.eq_1": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.sameLoc": [],
+    "Toy.WMM.Exec.sameLoc.eq_1": [],
+    "Toy.WMM.Exec.sameLoc_symm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.sameLoc_trans": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.sameThread": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.sameThread.eq_1": [
+      "propext"
+    ],
+    "Toy.WMM.Exec.sameThread_symm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.scConsistentErased_of_comap": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.scRel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.scRel.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.scRel_cases": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.tsoRel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.tsoRel.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.tsoRel_of_po_of_fenced": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.uniprocRel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.uniprocRel.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.uniprocRel_of_co": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.uniprocRel_of_fr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Exec.uniprocRel_of_rf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.ExecOf": [
+      "propext"
+    ],
+    "Toy.WMM.ExecOf.casesOn": [
+      "propext"
+    ],
+    "Toy.WMM.ExecOf.fenceBetweenWR_of_fenceAfterStores": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.ExecOf.fencedSide_of_skel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.ExecOf.getD_eq": [
+      "propext"
+    ],
+    "Toy.WMM.ExecOf.kind": [
+      "propext"
+    ],
+    "Toy.WMM.ExecOf.length": [
+      "propext"
+    ],
+    "Toy.WMM.ExecOf.loc": [
+      "propext"
+    ],
+    "Toy.WMM.ExecOf.mk": [
+      "propext"
+    ],
+    "Toy.WMM.ExecOf.noConflict_of_skel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.ExecOf.noUnfencedWRIncident_of_skel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.ExecOf.po": [
+      "propext"
+    ],
+    "Toy.WMM.ExecOf.poIrrefl": [
+      "propext"
+    ],
+    "Toy.WMM.ExecOf.poTotal": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.ExecOf.poTrans": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.ExecOf.poWithinThread": [
+      "propext"
+    ],
+    "Toy.WMM.ExecOf.rec": [
+      "propext"
+    ],
+    "Toy.WMM.ExecOf.recOn": [
+      "propext"
+    ],
+    "Toy.WMM.ExecOf.skel_facts": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.ExecOf.tid": [
+      "propext"
+    ],
+    "Toy.WMM.ExecOf.val": [
+      "propext"
+    ],
+    "Toy.WMM.Instr": [],
+    "Toy.WMM.Instr.casesOn": [],
+    "Toy.WMM.Instr.ctorElim": [],
+    "Toy.WMM.Instr.ctorElimType": [],
+    "Toy.WMM.Instr.ctorIdx": [],
+    "Toy.WMM.Instr.load": [],
+    "Toy.WMM.Instr.load.elim": [],
+    "Toy.WMM.Instr.load.inj": [],
+    "Toy.WMM.Instr.load.injEq": [
+      "propext"
+    ],
+    "Toy.WMM.Instr.load.noConfusion": [],
+    "Toy.WMM.Instr.load.sizeOf_spec": [],
+    "Toy.WMM.Instr.loc": [],
+    "Toy.WMM.Instr.loc.eq_1": [],
+    "Toy.WMM.Instr.loc.eq_2": [],
+    "Toy.WMM.Instr.loc.eq_3": [],
+    "Toy.WMM.Instr.mfence": [],
+    "Toy.WMM.Instr.mfence.elim": [],
+    "Toy.WMM.Instr.mfence.sizeOf_spec": [],
+    "Toy.WMM.Instr.noConfusion": [],
+    "Toy.WMM.Instr.noConfusionType": [],
+    "Toy.WMM.Instr.rec": [],
+    "Toy.WMM.Instr.recOn": [],
+    "Toy.WMM.Instr.store": [],
+    "Toy.WMM.Instr.store.elim": [],
+    "Toy.WMM.Instr.store.inj": [],
+    "Toy.WMM.Instr.store.injEq": [
+      "propext"
+    ],
+    "Toy.WMM.Instr.store.noConfusion": [],
+    "Toy.WMM.Instr.store.sizeOf_spec": [],
+    "Toy.WMM.Instr.toEvent": [],
+    "Toy.WMM.Instr.toEvent.eq_1": [],
+    "Toy.WMM.Instr.toEvent.eq_2": [],
+    "Toy.WMM.Instr.toEvent.eq_3": [],
+    "Toy.WMM.Kind": [],
+    "Toy.WMM.Kind.casesOn": [],
+    "Toy.WMM.Kind.ctorElim": [],
+    "Toy.WMM.Kind.ctorElimType": [],
+    "Toy.WMM.Kind.ctorIdx": [],
+    "Toy.WMM.Kind.fence": [],
+    "Toy.WMM.Kind.fence.elim": [],
+    "Toy.WMM.Kind.fence.sizeOf_spec": [],
+    "Toy.WMM.Kind.init": [],
+    "Toy.WMM.Kind.init.elim": [],
+    "Toy.WMM.Kind.init.sizeOf_spec": [],
+    "Toy.WMM.Kind.noConfusion": [],
+    "Toy.WMM.Kind.noConfusionType": [],
+    "Toy.WMM.Kind.ofNat": [],
+    "Toy.WMM.Kind.ofNat_ctorIdx": [],
+    "Toy.WMM.Kind.read": [],
+    "Toy.WMM.Kind.read.elim": [],
+    "Toy.WMM.Kind.read.sizeOf_spec": [],
+    "Toy.WMM.Kind.rec": [],
+    "Toy.WMM.Kind.recOn": [],
+    "Toy.WMM.Kind.write": [],
+    "Toy.WMM.Kind.write.elim": [],
+    "Toy.WMM.Kind.write.sizeOf_spec": [],
+    "Toy.WMM.Litmus.iriwWeak": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Litmus.iriw_weak_tso_forbidden_sc_forbidden": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Litmus.lbWeak": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Litmus.lb_weak_tso_forbidden_sc_forbidden": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Litmus.mpWeak": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Litmus.mp_weak_tso_forbidden_sc_forbidden": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Litmus.n6Weak": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Litmus.n6_weak_tso_allowed_keepSameLocWR_forbidden": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Litmus.rWeak": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Litmus.r_weak_tso_allowed_sc_forbidden": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Litmus.sbFencedSC": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Litmus.sbFencedWeak": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Litmus.sbFenced_weak_tso_forbidden_sc_forbidden": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Litmus.sbOneFenceWeak": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Litmus.sbSC": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Litmus.sbSC_sbFencedSC_scConsistent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Litmus.sbWeak": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Litmus.sb_weak_tso_allowed_sc_forbidden": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Litmus.w22Weak": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Litmus.w22_weak_tso_forbidden_sc_forbidden": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Prog": [],
+    "Toy.WMM.Prog.ConflictsWRFenced": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Prog.ConflictsWRFencedEither": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Prog.numLocs": [],
+    "Toy.WMM.Prog.numLocs.eq_1": [],
+    "Toy.WMM.Rel": [],
+    "Toy.WMM.Rel.Acyclic": [],
+    "Toy.WMM.Rel.Acyclic.mono": [],
+    "Toy.WMM.Rel.Acyclic.of_sub_path": [],
+    "Toy.WMM.Rel.Path": [],
+    "Toy.WMM.Rel.Path.mono": [],
+    "Toy.WMM.Rel.Path.single": [],
+    "Toy.WMM.Rel.Path.tail": [],
+    "Toy.WMM.Rel.Path.toPathBelow": [],
+    "Toy.WMM.Rel.Path.trans": [],
+    "Toy.WMM.Rel.PathBelow": [],
+    "Toy.WMM.Rel.PathBelow.below": [],
+    "Toy.WMM.Rel.PathBelow.below.casesOn": [],
+    "Toy.WMM.Rel.PathBelow.below.edge": [],
+    "Toy.WMM.Rel.PathBelow.below.rec": [],
+    "Toy.WMM.Rel.PathBelow.below.trans": [],
+    "Toy.WMM.Rel.PathBelow.brecOn": [],
+    "Toy.WMM.Rel.PathBelow.casesOn": [],
+    "Toy.WMM.Rel.PathBelow.edge": [],
+    "Toy.WMM.Rel.PathBelow.mono": [],
+    "Toy.WMM.Rel.PathBelow.of_succ_of_le": [],
+    "Toy.WMM.Rel.PathBelow.rec": [],
+    "Toy.WMM.Rel.PathBelow.recOn": [],
+    "Toy.WMM.Rel.PathBelow.split": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Rel.PathBelow.toPath": [],
+    "Toy.WMM.Rel.PathBelow.trans": [],
+    "Toy.WMM.Rel.Star": [],
+    "Toy.WMM.Rel.Star.of_path": [],
+    "Toy.WMM.Rel.Star.path_of_star_of_edge": [],
+    "Toy.WMM.Rel.Sub": [],
+    "Toy.WMM.Rel.acyclicB": [],
+    "Toy.WMM.Rel.acyclicB.eq_1": [],
+    "Toy.WMM.Rel.acyclicB_eq_true_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Rel.acyclic_of_acyclic_restrict": [
+      "propext"
+    ],
+    "Toy.WMM.Rel.acyclic_of_acyclic_restrict_of_targets": [
+      "propext"
+    ],
+    "Toy.WMM.Rel.instDecidableAcyclic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Rel.path_from_erased": [],
+    "Toy.WMM.Rel.restrict": [],
+    "Toy.WMM.Rel.restrict.eq_1": [],
+    "Toy.WMM.Rel.restrict_path_aux": [
+      "propext"
+    ],
+    "Toy.WMM.Rel.union": [],
+    "Toy.WMM.Rel.warshall": [],
+    "Toy.WMM.Rel.warshall.eq_1": [],
+    "Toy.WMM.Rel.warshall.eq_2": [],
+    "Toy.WMM.Rel.warshall.eq_def": [],
+    "Toy.WMM.Rel.warshall.match_1": [],
+    "Toy.WMM.Rel.warshall_complete": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Rel.warshall_iff_path": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.Rel.warshall_sound": [
+      "propext"
+    ],
+    "Toy.WMM.SourceMap.ValidEmbed": [
+      "propext"
+    ],
+    "Toy.WMM.SourceMap.ValidEmbed.append": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.SourceMap.ValidEmbed.bound": [
+      "propext"
+    ],
+    "Toy.WMM.SourceMap.ValidEmbed.casesOn": [
+      "propext"
+    ],
+    "Toy.WMM.SourceMap.ValidEmbed.cov": [
+      "propext"
+    ],
+    "Toy.WMM.SourceMap.ValidEmbed.eq_ev": [
+      "propext"
+    ],
+    "Toy.WMM.SourceMap.ValidEmbed.len": [
+      "propext"
+    ],
+    "Toy.WMM.SourceMap.ValidEmbed.mk": [
+      "propext"
+    ],
+    "Toy.WMM.SourceMap.ValidEmbed.nil": [
+      "propext"
+    ],
+    "Toy.WMM.SourceMap.ValidEmbed.pw": [
+      "propext"
+    ],
+    "Toy.WMM.SourceMap.ValidEmbed.rec": [
+      "propext"
+    ],
+    "Toy.WMM.SourceMap.ValidEmbed.recOn": [
+      "propext"
+    ],
+    "Toy.WMM.SourceMap.ValidEmbed.single_same": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.SourceMap.ValidEmbed.store_fence": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.SourceMap.ValidEmbed.store_fence.match_1_1": [
+      "propext"
+    ],
+    "Toy.WMM.SourceMap.foldr_max_append": [
+      "propext"
+    ],
+    "Toy.WMM.SourceMap.max_zero_foldr_fenceThread": [
+      "propext"
+    ],
+    "Toy.WMM.SourceMap.max_zero_foldr_fenceThread.match_1_1": [],
+    "Toy.WMM.SourceMap.numLocs_fenceAfterStores": [
+      "propext"
+    ],
+    "Toy.WMM.SourceMap.scConsistent_comap_of_scConsistent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.SourceMap.validEmbed_fenceThread": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.SourceMap.validEmbed_fenceThread.match_1_1": [],
+    "Toy.WMM.SourceMap.validEmbed_layout": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.SourceMap.validEmbed_refl": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.SourceMap.validEmbed_refl.match_1_1": [],
+    "Toy.WMM.SourceMap.validEmbed_threadEvents": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.StoreThenFence": [
+      "propext"
+    ],
+    "Toy.WMM.StoreThenFence.append": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.acyclic_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.acyclic_example_neg_self": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.acyclic_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.coAcrossLocs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.coBetweenReadsSameLoc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.coBetweenReadsSameLoc_separates_coSameLoc_from_coKinds": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.coFromFence": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.coInitFirst_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.coIrrefl_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.coKinds_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.coSameLoc_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.coSameLoc_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.coTotal_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.coTrans_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.comap_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.conflict_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.conflictsWRFencedEither_does_not_imply_sc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.emptyProg_has_wf_sc_exec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.emptyThreadProg_has_wf_sc_exec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.execOf_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.execOf_example_neg_length": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.execOf_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.exists_sc_execution_hb_unordered_needs_conflict": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.exists_sc_execution_hb_unordered_of_conflict": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.exists_sc_execution_hb_unordered_of_conflict.match_1_33": [],
+    "Toy.WMM.exists_sc_source_execution_of_tso_fenceAfterStores": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceAfterStores": [],
+    "Toy.WMM.fenceAfterStores.eq_1": [],
+    "Toy.WMM.fenceAfterStores_example_neg": [],
+    "Toy.WMM.fenceAfterStores_example_pos": [],
+    "Toy.WMM.fenceAfterStores_needs_execOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceAfterStores_needs_perLocSC": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceAfterStores_needs_rfSameLoc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceAfterStores_needs_tsoGhbAcyclic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceAfterStores_sbProg": [],
+    "Toy.WMM.fenceBetweenBothSharedWR_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceBetweenBothSharedWR_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceBetweenBothSharedWR_needs_coSameLoc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceBetweenBothSharedWR_needs_fenceBetweenBothSharedWR": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceBetweenBothSharedWR_needs_perLocSC": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceBetweenBothSharedWR_needs_poTotal": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceBetweenBothSharedWR_needs_poTrans": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceBetweenBothSharedWR_needs_poWithinThread": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceBetweenBothSharedWR_needs_rfSameLoc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceBetweenBothSharedWR_needs_tsoGhbAcyclic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceBetweenSharedWR_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceBetweenSharedWR_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceBetweenSharedWR_needs_coKinds": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceBetweenSharedWR_needs_fenceBetweenSharedWR": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceBetweenSharedWR_needs_perLocSC": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceBetweenSharedWR_needs_poTotal": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceBetweenSharedWR_needs_poTrans": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceBetweenSharedWR_needs_poWithinThread": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceBetweenSharedWR_needs_rfSameLoc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceBetweenSharedWR_needs_tsoGhbAcyclic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceBetweenSharedWR_of_conflictsWRFenced": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceBetweenSharedWR_of_conflictsWRFenced_needs_conflictsWRFenced": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceBetweenSharedWR_of_conflictsWRFenced_needs_execOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceBetweenWR_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceBetweenWR_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceBetweenWR_needs_fenceBetweenWR": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceBetweenWR_needs_perLocSC": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceBetweenWR_needs_poTotal": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceBetweenWR_needs_rfSameLoc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceBetweenWR_needs_tsoGhbAcyclic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceNonTransPo": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceOrd_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceSelfPo": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fenceThread": [],
+    "Toy.WMM.fenceThread.eq_1": [],
+    "Toy.WMM.fenceThread.eq_2": [],
+    "Toy.WMM.fenceThread.eq_3": [],
+    "Toy.WMM.fenceThread.eq_4": [],
+    "Toy.WMM.fenceThread.eq_def": [],
+    "Toy.WMM.fenceThread.match_1": [],
+    "Toy.WMM.forall_prog_exists_wf_sc_exec": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.fr_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.hbRaceFree_sc_executions_iff_noConflict": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.hb_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.injective_of_strictMono": [],
+    "Toy.WMM.instDecidableConflictsWRFenced": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.instDecidableConflictsWRFencedEither": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.instDecidableEqEvent": [],
+    "Toy.WMM.instDecidableEqEvent.decEq": [],
+    "Toy.WMM.instDecidableEqEvent.decEq.match_1": [],
+    "Toy.WMM.instDecidableEqInstr": [],
+    "Toy.WMM.instDecidableEqInstr.decEq": [],
+    "Toy.WMM.instDecidableEqInstr.decEq.match_1": [],
+    "Toy.WMM.instDecidableEqKind": [],
+    "Toy.WMM.instInhabitedEvent": [],
+    "Toy.WMM.instInhabitedEvent.default": [],
+    "Toy.WMM.instInhabitedKind": [],
+    "Toy.WMM.instInhabitedKind.default": [],
+    "Toy.WMM.instReprEvent": [],
+    "Toy.WMM.instReprEvent.repr": [],
+    "Toy.WMM.instReprInstr": [],
+    "Toy.WMM.instReprInstr.repr": [],
+    "Toy.WMM.instReprInstr.repr.match_1": [],
+    "Toy.WMM.instReprKind": [],
+    "Toy.WMM.instReprKind.repr": [],
+    "Toy.WMM.instReprKind.repr.match_1": [],
+    "Toy.WMM.iriwProg": [],
+    "Toy.WMM.iriwWeak_execOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.keepSameLocWR_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.keepSameLocWR_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.layout": [],
+    "Toy.WMM.layout.eq_1": [],
+    "Toy.WMM.layout_example": [],
+    "Toy.WMM.lbProg": [],
+    "Toy.WMM.lbWeak_execOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.loadNoRf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.loadStoreBadRf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.loadStoreBadRf_execOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.loadStoreFenceRfFromFence": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.loadStoreFenceRfFromFence_execOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.loadStoreFencedBadRf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.loadStoreFencedBadRf_execOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.loadStoreProg": [],
+    "Toy.WMM.loadStoreSameFencedCoRW": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.loadStoreSameFencedCoRW_execOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.loadStoreSameProg": [],
+    "Toy.WMM.localLoc_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.localLoc_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.localWR": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.localWRProg": [],
+    "Toy.WMM.localWRProg_not_conflictsWRFenced_but_fenceBetweenSharedWR": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.localWR_execOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.mkRel": [],
+    "Toy.WMM.mpProg": [],
+    "Toy.WMM.mpWeak_execOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.n6Prog": [],
+    "Toy.WMM.n6Weak_execOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.noUnfencedWRIncident_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.noUnfencedWRIncident_vacuous_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.nonvacuity_exists_sc_source_execution_of_tso_fenceAfterStores": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.nonvacuity_scConsistentErased_of_tso_fenceAfterStores": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.nonvacuity_scConsistentErased_of_tso_of_fenceBetweenBothSharedWR": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.nonvacuity_scConsistentErased_of_tso_of_fenceBetweenWR": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.nonvacuity_scConsistent_of_scConsistentErased": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.nonvacuity_scConsistent_of_tso_of_conflictsWRFenced": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.nonvacuity_straightLine_race_characterizations": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.nonvacuity_tsoConsistent_of_scConsistent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.not_forall_wf_tsoConsistent_scConsistent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.perLocSC_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.perLocSC_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.poIntoInit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.poIrrefl_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.poPartial": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.poTotal_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.poTrans_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.poTwoCycle": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.poWithinThread_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.ppo_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.rProg": [],
+    "Toy.WMM.rWeak_execOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.raceFreeEither_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.raceFreeEither_sc_executions_iff_conflictsWRFencedEither": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.raceFreeEither_sc_executions_iff_conflictsWRFencedEither.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.raceFree_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.raceFree_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.raceFree_sc_executions_iff_conflictsWRFenced": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.raceFree_sc_executions_iff_conflictsWRFenced.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.readOwnLaterWrite": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.rfFromFence": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.rfFunctional_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.rfKinds_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.rfSameLoc_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.rfSameVal_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.rfTotal_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.rfWrongLoc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.rfe_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.sbFencedSC_execOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.sbFencedSC_source_execution": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.sbFencedWeak_execOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.sbFencedWeak_needs_fenceOrd": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.sbOneFenceProg": [],
+    "Toy.WMM.sbOneFenceWeak_execOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.sbOneFence_execution_tso_not_scErased": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.sbProg": [],
+    "Toy.WMM.sbSC_execOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.sbSeq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.sbSeq_execOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.sbSrcIdx": [
+      "propext"
+    ],
+    "Toy.WMM.sbWeak_execOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.scConsistentErased_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.scConsistentErased_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.scConsistentErased_of_scConsistent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.scConsistentErased_of_tso_fenceAfterStores": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.scConsistentErased_of_tso_of_fenceBetweenBothSharedWR": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.scConsistentErased_of_tso_of_fenceBetweenSharedWR": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.scConsistentErased_of_tso_of_fenceBetweenWR": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.scConsistent_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.scConsistent_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.scConsistent_of_scConsistentErased": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.scConsistent_of_scConsistentErased_needs_coKinds": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.scConsistent_of_scConsistentErased_needs_poIrrefl": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.scConsistent_of_scConsistentErased_needs_poTrans": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.scConsistent_of_scConsistentErased_needs_rfKinds": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.scConsistent_of_scConsistentErased_needs_scErased": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.scConsistent_of_tso_of_conflictsWRFenced": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.scConsistent_of_tso_of_conflictsWRFenced_needs_coKinds": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.scConsistent_of_tso_of_conflictsWRFenced_needs_conflictsWRFenced": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.scConsistent_of_tso_of_conflictsWRFenced_needs_execOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.scConsistent_of_tso_of_conflictsWRFenced_needs_rfKinds": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.scConsistent_of_tso_of_conflictsWRFenced_needs_rfSameLoc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.scConsistent_of_tso_of_conflictsWRFenced_needs_tso": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.seqSCExec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.seqSCExec.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.seqSCExec.match_1": [],
+    "Toy.WMM.sharedWLocalR": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.skel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.skel.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.sourceExec_needs_execOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.sourceExec_needs_rfCoWf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.sourceExec_needs_tso": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.storeFenceCoFromFence": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.storeFenceCoFromFence_execOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.storeFenceExtraRfOnInserted": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.storeFenceExtraRfOnInserted_check": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.storeThenFence_fenceThread": [
+      "propext"
+    ],
+    "Toy.WMM.storeThenFence_fenceThread.match_1_12": [
+      "propext"
+    ],
+    "Toy.WMM.storeThenFence_fenceThread.match_1_14": [
+      "propext"
+    ],
+    "Toy.WMM.storeThenFence_fenceThread.match_1_6": [
+      "propext"
+    ],
+    "Toy.WMM.storeThenFence_layout": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.storeThenFence_threadEvents": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.threadEvents": [],
+    "Toy.WMM.threadEvents.eq_1": [],
+    "Toy.WMM.threadEvents.eq_2": [],
+    "Toy.WMM.threadEvents.eq_def": [],
+    "Toy.WMM.threadEvents.match_1": [],
+    "Toy.WMM.tsoConsistent_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.tsoConsistent_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.tsoConsistent_of_scConsistent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.tsoConsistent_of_scConsistent_needs_sc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.tsoConsistent_of_tsoConsistentKeepSameLocWR": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.tsoConsistent_of_tsoConsistentKeepSameLocWR_needs_keep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.tsoGhbAcyclic_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.tsoGhbAcyclic_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.w22Prog": [],
+    "Toy.WMM.w22Weak_execOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WMM.wf_example_pos": [
+      "Quot.sound",
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
