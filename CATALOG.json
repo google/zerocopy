@@ -20081,6 +20081,110 @@
         "verification/compiler-verification"
       ]
     },
+    "cross-platform-windows-macos-media-sandboxing-hwcontext-and-cdylib-abi": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+          },
+          "name": "FFmpeg"
+        },
+        {
+          "identity": {
+            "repository": "chromium/chromium",
+            "revision": "35a0816efc03ad8fed8920050497050ed1d23a08"
+          },
+          "name": "Chromium"
+        },
+        {
+          "identity": {
+            "repository": "apple-oss-distributions/xnu",
+            "revision": "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+          },
+          "name": "Apple XNU Kernel"
+        },
+        {
+          "identity": {
+            "repository": "apple-oss-distributions/dyld",
+            "revision": "fd8d0c4d52320ebf64db34f3cb280310d905c5ae"
+          },
+          "name": "Apple Dynamic Linker (dyld)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "c51c6d10cd1b612b8d0c8913ed3f449c535c6933"
+          },
+          "name": "LLVM Project (libunwind and LLD Mach-O)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "5c56312f346d7cc8209d9fc0fd660c72e6fc6950"
+          },
+          "name": "The Rust Programming Language (rustc_target)"
+        },
+        {
+          "identity": {
+            "repository": "mingw-w64/mingw-w64",
+            "revision": "7095c702af7836f12a4d904555546d6abbf28b2c"
+          },
+          "name": "MinGW-w64 Win32 and DirectX Headers"
+        },
+        {
+          "identity": {
+            "repository": "oneapi-src/oneVPL",
+            "revision": "ec718e8ede859f16d29c3cdeba3a3025031bc83d"
+          },
+          "name": "Intel oneAPI Video Processing Library (oneVPL)"
+        },
+        {
+          "identity": {
+            "repository": "GPUOpen-LibrariesAndSDKs/AMF",
+            "revision": "57ee0cfb0e1a08d9041f77435653794c1b012be0"
+          },
+          "name": "AMD Advanced Media Framework (AMF)"
+        },
+        {
+          "identity": {
+            "repository": "KhronosGroup/OpenCL-Headers",
+            "revision": "82f60316cc142e7b21dc1d8983b26de18858fbd9"
+          },
+          "name": "Khronos OpenCL C Headers"
+        },
+        {
+          "identity": {
+            "artifact": "include/vdpau/vdpau.h",
+            "url": "https://gitlab.freedesktop.org/vdpau/libvdpau"
+          },
+          "name": "VDPAU (Video Decode and Presentation API for Unix)"
+        },
+        {
+          "identity": {
+            "standard": "Microsoft Win32 API and PE/COFF x64 Software Conventions",
+            "url": "https://learn.microsoft.com/en-us/windows/win32/"
+          },
+          "name": "Microsoft Win32 Security, Memory Management, and x64/ARM64 ABI Specifications"
+        },
+        {
+          "identity": {
+            "standard": "Apple Developer Documentation (macOS Security, XPC, IOSurface, Apple Silicon ABI)",
+            "url": "https://developer.apple.com/documentation/"
+          },
+          "name": "Apple macOS App Sandbox, Hardened Runtime, XPC, IOSurface, and ARM64 ABI Specifications"
+        }
+      ],
+      "topics": [
+        "ffi/c-abi",
+        "ffi/os-boundary",
+        "security/container-sandboxing",
+        "build/dynamic-linking",
+        "systems/sandboxing",
+        "zerocopy/dma-lifetimes"
+      ]
+    },
     "cross-prover-guarantee-composition-and-native-checker-soundness": {
       "observed_at": "2026-11-13",
       "subjects": [
