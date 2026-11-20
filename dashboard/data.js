@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1795163997794,
+  "lastUpdate": 1795166547200,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -24041,6 +24041,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 1687,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Josh Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "1962a9c0e3eda8a3a58387f61c70ddd2c396b118",
+          "message": "[anneal] Connect PureLift to trusted MIR semantics (#3942)\n\nConnect the generic PureLift theory to the trusted MIR model. Check the\nfive MIR workloads and their adequacy lemmas through the existing audit.\n\nSource: https://github.com/joshlf/anneal/tree/c131b320eeeb26ef692e5afd5ec8db49ee518613\nAgent-authored-by: AI agent acting on joshlf's behalf",
+          "timestamp": "2026-11-20T08:12:17Z",
+          "tree_id": "54b0081bc9348002215e2dd808f69472051a5a41",
+          "url": "https://github.com/google/zerocopy/commit/1962a9c0e3eda8a3a58387f61c70ddd2c396b118"
+        },
+        "date": 1795166545477,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 1662,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 1815,
             "unit": "seconds"
           }
         ]
