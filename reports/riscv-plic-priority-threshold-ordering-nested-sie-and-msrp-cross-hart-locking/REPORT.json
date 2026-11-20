@@ -1,0 +1,86 @@
+{
+  "topics": [
+    "isa/riscv",
+    "verification/os-kernels",
+    "verification/concurrency",
+    "systems/os-kernels",
+    "systems/concurrency-weak-memory",
+    "rust/concurrency"
+  ],
+  "subjects": [
+    {
+      "name": "RISC-V Platform-Level Interrupt Controller (PLIC) Specification v1.0.0",
+      "identity": {
+        "repository": "riscv/riscv-plic-spec",
+        "revision": "f8ec1b7e9b1a92c34af8e0ab7eb33838813785a3",
+        "version": "1.0.0",
+        "path": "riscv-plic.adoc"
+      }
+    },
+    {
+      "name": "RISC-V Privileged and Unprivileged ISA Specifications",
+      "identity": {
+        "repository": "riscv/riscv-isa-manual",
+        "revision": "c05f1725f25526dd8463bac6ca75cfcfbee17d05"
+      }
+    },
+    {
+      "name": "Linux Kernel v6.12 SiFive PLIC Driver and RISC-V MMIO Ordering",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "adc218676eef25575469234709c2d87185ca223a",
+        "tag": "v6.12"
+      }
+    },
+    {
+      "name": "QEMU v9.1.0 SiFive PLIC Emulator",
+      "identity": {
+        "repository": "qemu/qemu",
+        "revision": "fd1952d814da738ed107e05583b3e02ac11e88ff",
+        "tag": "v9.1.0",
+        "path": "hw/intc/sifive_plic.c"
+      }
+    },
+    {
+      "name": "Tock Embedded OS SiFive PLIC Driver",
+      "identity": {
+        "repository": "tock/tock",
+        "revision": "842498efca186bba0071ed3d072fddd2dec3312e",
+        "path": "chips/sifive/src/plic.rs"
+      }
+    },
+    {
+      "name": "RTIC (Real-Time Interrupt-driven Concurrency) SRP Framework for Rust",
+      "identity": {
+        "repository": "rtic-rs/rtic",
+        "revision": "fed0fa5e9d74c1f1fb27f06582d4387590cbf0a9"
+      }
+    },
+    {
+      "name": "LLVM 19.1.0 RISC-V Atomic Fence Lowering",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4",
+        "tag": "llvmorg-19.1.0",
+        "path": "llvm/lib/Target/RISCV/RISCVInstrInfo.td"
+      }
+    },
+    {
+      "name": "RISC-V ELF psABI Specification",
+      "identity": {
+        "repository": "riscv-non-isa/riscv-elf-psabi-doc",
+        "revision": "56561cb3e7330fe99a98fd27457229707b2786ae",
+        "path": "riscv-cc.adoc"
+      }
+    },
+    {
+      "name": "Lean 4 Theorem Prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

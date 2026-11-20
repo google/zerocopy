@@ -1,0 +1,99 @@
+{
+  "topics": [
+    "rust/abi",
+    "verification/security",
+    "isa/riscv",
+    "compilers/secret-erasure",
+    "llvm/codegen",
+    "security/zeroization"
+  ],
+  "subjects": [
+    {
+      "name": "LLVM 19.1.0 CodeGen and Target Frame Lowering",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4",
+        "tag": "llvmorg-19.1.0"
+      }
+    },
+    {
+      "name": "Rust 1.98.0-nightly compiler (multi-target assembly probe toolchain)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "1.98.0-nightly (2026-05-31)"
+      }
+    },
+    {
+      "name": "Rust 1.99.1 compiler and MIR-to-SSA codegen baseline",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "RustCrypto zeroize crate",
+      "identity": {
+        "repository": "RustCrypto/utils",
+        "revision": "0feca06cf87e61567033a333feb79ecf3c427fea",
+        "path": "zeroize"
+      }
+    },
+    {
+      "name": "GCC 14.2.0 interprocedural stack scrubbing (ipa-strub and libgcc strub)",
+      "identity": {
+        "repository": "gcc-mirror/gcc",
+        "revision": "04696df09633baf97cdbbdd6e9929b9d472161d3",
+        "tag": "releases/gcc-14.2.0"
+      }
+    },
+    {
+      "name": "RISC-V ELF psABI Specification (Calling Conventions)",
+      "identity": {
+        "repository": "riscv-non-isa/riscv-elf-psabi-doc",
+        "revision": "56561cb3e7330fe99a98fd27457229707b2786ae",
+        "path": "riscv-cc.adoc"
+      }
+    },
+    {
+      "name": "Procedure Call Standard for the Arm 64-bit Architecture (AAPCS64)",
+      "identity": {
+        "repository": "ARM-software/abi-aa",
+        "revision": "ec3e2fb69065768aa1caf298813a7808b50bc264",
+        "path": "aapcs64/aapcs64.rst"
+      }
+    },
+    {
+      "name": "RISC-V Privileged and Unprivileged ISA Specifications",
+      "identity": {
+        "repository": "riscv/riscv-isa-manual",
+        "revision": "c05f1725f25526dd8463bac6ca75cfcfbee17d05"
+      }
+    },
+    {
+      "name": "Linux Kernel v6.12 RISC-V Supervisor Trap Entry",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "adc218676eef25575469234709c2d87185ca223a",
+        "tag": "v6.12"
+      }
+    },
+    {
+      "name": "Jasmin Cryptographic Compiler and Formal Verification Framework",
+      "identity": {
+        "repository": "jasmin-lang/jasmin",
+        "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9"
+      }
+    },
+    {
+      "name": "Lean 4 Theorem Prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
