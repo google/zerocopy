@@ -83772,6 +83772,150 @@
         "systems/interrupts"
       ]
     },
+    "verified-ssa-register-allocation-coalescing-and-subregister-lane-liveness": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "bytecodealliance/regalloc2",
+            "revision": "4eb655fa745fba271af74be8495154a4b0cac56f",
+            "version": "0.15.3"
+          },
+          "name": "bytecodealliance/regalloc2 backtracking Ion allocator, Fastalloc, and symbolic checker"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "AbsInt/CompCert RTL-to-LTL register allocation validator, IRC oracle, and Debugvar pass"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "984202b7bd448b1c8da65689ecd2dd27aa891175"
+          },
+          "name": "LLVM CodeGen RAGreedy, LaneBitmask, X86/AArch64 sub-register liveness, and DwarfExpression"
+        },
+        {
+          "identity": {
+            "repository": "CakeML/cakeml",
+            "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+          },
+          "name": "CakeML HOL4 verified graph-coloring register allocator (reg_alloc)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly (2026-05-31)"
+          },
+          "name": "rustc nightly toolchain and bundled LLVM 22.1.6 code generator"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel checker"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rustc-hash",
+            "revision": "f16da569fcb867fa1bc3b5dba18c9b8f7ca99483"
+          },
+          "name": "rust-lang/rustc-hash dependency used for offline regalloc2 compilation"
+        },
+        {
+          "identity": {
+            "repository": "fitzgen/bumpalo",
+            "revision": "482e18d57f386fe3e0ecabc08ee448b561a14239"
+          },
+          "name": "fitzgen/bumpalo arena dependency used for offline regalloc2 compilation"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/11688834_18",
+            "venue": "CC 2006, LNCS 3923, pp. 247-262"
+          },
+          "name": "Register Allocation for Programs in SSA-Form (Hack, Grund, Goos)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-00722-4_13",
+            "venue": "CC 2009, LNCS 5501, pp. 174-189"
+          },
+          "name": "Register Spilling and Live-Range Splitting for SSA-Form Programs (Braun, Hack)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-007-9096-8",
+            "venue": "Journal of Automated Reasoning 40(4), pp. 271-296, 2008"
+          },
+          "name": "Tilting at Windmills with Coq: Formal Verification of a Compilation Algorithm for Parallel Moves (Rideau, Serpette, Leroy)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-11970-5_13",
+            "venue": "CC 2010, LNCS 6011, pp. 224-243"
+          },
+          "name": "Validating Register Allocation and Spilling (Rideau, Leroy)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-11957-6_9",
+            "venue": "ESOP 2010, LNCS 6012, pp. 145-164"
+          },
+          "name": "Formal Verification of Coalescing Graph-Coloring Register Allocation (Blazy, Robillard, Appel)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-19861-8_4",
+            "venue": "CC 2011, LNCS 6601, pp. 42-61"
+          },
+          "name": "SSA-Based Register Allocation with PBQP (Buchwald, Zwinkau, Bersch)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2579080",
+            "venue": "ACM TOPLAS 36(1), Article 4, 2014"
+          },
+          "name": "Formal Verification of an SSA-Based Middle-End for CompCert (Barthe, Demange, Pichardie)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2892208.2892211",
+            "venue": "CC 2016, pp. 67-76 (Isabelle/HOL AFP Formal_SSA)"
+          },
+          "name": "Verified Construction of Static Single Assignment Form (Buchwald, Lohner, Ullrich)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2951913.2951924",
+            "venue": "ICFP 2016, pp. 60-73"
+          },
+          "name": "A New Verified Compiler Backend for CakeML (Tan, Myreen, Kumar, Fox, Owens, Norrish)"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/register-allocation",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/backend",
+        "isa",
+        "isa/aarch64",
+        "isa/i686",
+        "isa/x86-64",
+        "lean",
+        "lean/mechanization",
+        "llvm",
+        "llvm/codegen",
+        "verification",
+        "verification/compcert",
+        "verification/translation-validation"
+      ]
+    },
     "verified-tail-duplication-hot-cold-splitting-and-branch-relaxation": {
       "observed_at": "2026-11-14",
       "subjects": [
