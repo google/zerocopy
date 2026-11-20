@@ -1,0 +1,884 @@
+[
+ {
+  "id": "hoare-consequence-strengthen-pre-weaken-post",
+  "lean": [
+   "Toy.IL.hoare_consequence_strengthen_pre_weaken_post"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Hoare's rule of consequence (Hoare 1969) restated over this toy semantics; the ⇑⇓ symmetry with the IL rule is O'Hearn 2020 Fig. 1.",
+  "plain_claim": "For every command c and exit kind e: if {P} c {e : Q} is a valid Hoare triple, P' ⊆ P and Q ⊆ Q', then {P'} c {e : Q'} is valid (strengthen the pre, weaken the post).",
+  "unfolded": "(∀ s, P' s → P s) → (∀ t, (∃ s, P s ∧ Exec c s e t) → Q t) → (∀ t, Q t → Q' t) → ∀ t, (∃ s, P' s ∧ Exec c s e t) → Q' t",
+  "hypotheses": [
+   {
+    "name": "hpre : Entails P' P",
+    "purpose": "the new pre must be stronger; the IL direction P ⊆ P' is unsound for Hoare triples",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.IL.hoare_consequence_pre_tight"
+    ]
+   },
+   {
+    "name": "h : Hoare P c e Q",
+    "purpose": "the triple being adapted",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.IL.hoare_consequence_triple_tight"
+    ]
+   },
+   {
+    "name": "hpost : Entails Q Q'",
+    "purpose": "the new post must be weaker; the IL direction Q' ⊆ Q is unsound for Hoare triples",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.IL.hoare_consequence_post_tight"
+    ]
+   }
+  ],
+  "depth": "definitional",
+  "nonvacuity_witness": "{x = 0} ⊊ {x ≤ 1}, {x ≤ 1} x := x+1 {ok : x ≤ 2}, {x ≤ 2} ⊊ {x ≤ 3} (both inclusions strict); conclusion {x = 0} x := x+1 {ok : x ≤ 3}.",
+  "nonvacuity_witness_lean": [
+   "Toy.IL.nonvacuity_hoare_consequence"
+  ],
+  "non_claims": [
+   "Says nothing about incorrectness triples, whose consequence rule runs in the opposite direction (il-consequence-weaken-pre-strengthen-post); the counterexamples show each direction fails in the other logic.",
+   "Entailments are semantic and supplied as proofs; nothing is claimed about a tool whose entailment checker is unsound or incomplete.",
+   "Partial correctness only: says nothing about termination or about the other exit kind.",
+   "Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier."
+  ],
+  "prior_art": [
+   "C. A. R. Hoare, \"An axiomatic basis for computer programming\", Communications of the ACM 12(10), pp. 576-580, October 1969, doi:10.1145/363235.363259. Introduces Hoare triples and the rules of consequence, composition and iteration.",
+   "P. W. O'Hearn, \"Incorrectness logic\", Proceedings of the ACM on Programming Languages 4(POPL), Article 10, January 2020, doi:10.1145/3371078. Definition 1 defines the under-approximate triple [p]r[q] as post(r)p ⊇ q and the Hoare triple {p}r{q} as post(r)p ⊆ q; Lemma 3 (Characterization): [p]r[q] iff every state of q is reachable from some state of p; Fig. 1 states the ∧∨ and ⇑⇓ symmetries and the Principles of Agreement and Denial; Fig. 2 gives the generic rules (Empty under-approximates, Consequence, Disjunction, Unit, Sequencing short-circuit/normal, Iterate zero, Iterate non-zero, Backwards Variant, Choice, Error, Assume); Fig. 4 the relational semantics; Theorem 5 soundness; Theorem 6 completeness for finitely-supported predicates."
+  ],
+  "design_question": "Which conclusions may a tool draw from an over-approximate (Hoare) result versus an under-approximate (incorrectness) result, and which inference rules may it use for each, so that 'no alarm' is read as safety only for over-approximation and 'alarm' is read as a real bug only for under-approximation?"
+ },
+ {
+  "id": "il-consequence-weaken-pre-strengthen-post",
+  "lean": [
+   "Toy.IL.il_consequence_weaken_pre_strengthen_post"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "The IL rule of consequence of O'Hearn 2020 (Fig. 2; ⇑⇓ symmetry of Fig. 1) and rule Con of de Vries and Koutavas 2011, restated semantically.",
+  "plain_claim": "For every command c and exit kind e: if [P] c [e : Q] is a valid incorrectness triple, P ⊆ P' and Q' ⊆ Q, then [P'] c [e : Q'] is valid (weaken the pre, strengthen the post — the reverse of Hoare consequence).",
+  "unfolded": "(∀ s, P s → P' s) → (∀ t, Q t → ∃ s, P s ∧ Exec c s e t) → (∀ t, Q' t → Q t) → ∀ t, Q' t → ∃ s, P' s ∧ Exec c s e t",
+  "hypotheses": [
+   {
+    "name": "hpre : Entails P P'",
+    "purpose": "the new pre must be weaker; strengthening the pre (Hoare direction) can remove the only states that reach the post",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.IL.il_consequence_pre_tight"
+    ]
+   },
+   {
+    "name": "h : IL P c e Q",
+    "purpose": "the triple being adapted",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.IL.il_consequence_triple_tight"
+    ]
+   },
+   {
+    "name": "hpost : Entails Q' Q",
+    "purpose": "the new post must be stronger; weakening the post (Hoare direction) can add unreachable states",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.IL.il_consequence_post_tight"
+    ]
+   }
+  ],
+  "depth": "definitional",
+  "nonvacuity_witness": "{x ≤ 1} ⊊ {x ≤ 2}, [x ≤ 1] x := x+1 [ok : x = 1 ∨ x = 2], {x = 1} ⊊ {x = 1 ∨ x = 2} (both inclusions strict); conclusion [x ≤ 2] x := x+1 [ok : x = 1].",
+  "nonvacuity_witness_lean": [
+   "Toy.IL.nonvacuity_il_consequence"
+  ],
+  "non_claims": [
+   "Does not license weakening the post of an incorrectness triple: il_consequence_post_tight shows [x = 0] skip [ok : x = 0] holds but [x = 0] skip [ok : True] does not.",
+   "Does not license strengthening the pre: il_consequence_pre_tight shows [True] skip [ok : x = 1] holds but [x = 0] skip [ok : x = 1] does not.",
+   "Weakening the pre of an error triple [P] c [er : Q] to [True] c [er : Q] is sound, but it does not make the error manifest: [True] c [er : Q] only guarantees that some initial state reaches Q via er, not that every initial state does, nor that a caller reaching c in a state satisfying True triggers the error (il_er_true_pre_yet_caller_state_avoids_error).",
+   "Entailments are semantic and supplied as proofs.",
+   "Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier."
+  ],
+  "prior_art": [
+   "P. W. O'Hearn, \"Incorrectness logic\", Proceedings of the ACM on Programming Languages 4(POPL), Article 10, January 2020, doi:10.1145/3371078. Definition 1 defines the under-approximate triple [p]r[q] as post(r)p ⊇ q and the Hoare triple {p}r{q} as post(r)p ⊆ q; Lemma 3 (Characterization): [p]r[q] iff every state of q is reachable from some state of p; Fig. 1 states the ∧∨ and ⇑⇓ symmetries and the Principles of Agreement and Denial; Fig. 2 gives the generic rules (Empty under-approximates, Consequence, Disjunction, Unit, Sequencing short-circuit/normal, Iterate zero, Iterate non-zero, Backwards Variant, Choice, Error, Assume); Fig. 4 the relational semantics; Theorem 5 soundness; Theorem 6 completeness for finitely-supported predicates.",
+   "E. de Vries and V. Koutavas, \"Reverse Hoare logic\", Software Engineering and Formal Methods (SEFM 2011), LNCS 7041, pp. 155-171, Springer, 2011, doi:10.1007/978-3-642-24690-6_12. Definition 1 (reverse Hoare validity): every final state satisfying Q is reachable from some initial state satisfying P. Fig. 2: rule Con (consequence with the implications reversed), rule While with a fresh natural-number index (a backwards-variant-style rule), the infinitary rule Split, and rule Frame for unmodified variables. Theorem 1 (soundness), Theorem 2 (relative completeness, via a weakest-postcondition calculus). The language has no error exit."
+  ],
+  "design_question": "Which conclusions may a tool draw from an over-approximate (Hoare) result versus an under-approximate (incorrectness) result, and which inference rules may it use for each, so that 'no alarm' is read as safety only for over-approximation and 'alarm' is read as a real bug only for under-approximation?"
+ },
+ {
+  "id": "exact-post-duality-and-or-symmetry",
+  "lean": [
+   "Toy.IL.hoare_and_il_iff_eq_post",
+   "Toy.IL.il_or_post_iff",
+   "Toy.IL.hoare_and_post_iff"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "tier_justification": "Immediate from O'Hearn 2020 Definition 1; the ∧∨ symmetry is stated in his Fig. 1.",
+  "plain_claim": "For a fixed pre P, command c and exit kind e: an assertion Q is both a Hoare post and an incorrectness post iff Q equals post c e P pointwise; two incorrectness posts both hold iff their disjunction is an incorrectness post, [P]c[e:Q1] ∧ [P]c[e:Q2] ↔ [P]c[e:Q1 ∨ Q2]; two Hoare posts both hold iff their conjunction is a Hoare post, {P}c{e:Q1} ∧ {P}c{e:Q2} ↔ {P}c{e:Q1 ∧ Q2}.",
+  "unfolded": "hoare_and_il_iff_eq_post: ((∀ t, (∃ s, P s ∧ Exec c s e t) → Q t) ∧ (∀ t, Q t → ∃ s, P s ∧ Exec c s e t)) ↔ ∀ t, Q t ↔ ∃ s, P s ∧ Exec c s e t\nil_or_post_iff: ((∀ t, Q₁ t → ∃ s, P s ∧ Exec c s e t) ∧ (∀ t, Q₂ t → ∃ s, P s ∧ Exec c s e t)) ↔ ∀ t, Q₁ t ∨ Q₂ t → ∃ s, P s ∧ Exec c s e t\nhoare_and_post_iff: ((∀ t, (∃ s, P s ∧ Exec c s e t) → Q₁ t) ∧ (∀ t, (∃ s, P s ∧ Exec c s e t) → Q₂ t)) ↔ ∀ t, (∃ s, P s ∧ Exec c s e t) → Q₁ t ∧ Q₂ t",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "For x := 0 + x := 2 from True: x = 0 ∨ x = 2 is exact; x = 2 is an IL post but not a Hoare post; x ≤ 5 is a Hoare post but not an IL post.",
+  "nonvacuity_witness_lean": [
+   "Toy.IL.nonvacuity_duality"
+  ],
+  "non_claims": [
+   "Does not say exact posts are computable or expressible in any assertion language; assertions here are arbitrary predicates.",
+   "The two iff-laws are not characterizations of post c e P: any family of assertions of the form {Q | Q ⊆ R} (or {Q | R ⊆ Q}) satisfies the corresponding law.",
+   "For a fixed pre P, the dual laws fail in the splitting direction: [P] c [e : Q1 ∧ Q2] does not imply [P] c [e : Q1] ∧ [P] c [e : Q2] (il_and_post_not_split, with Q1 = True, Q2 = False), and {P} c {e : Q1 ∨ Q2} does not imply {P} c {e : Q1} ∧ {P} c {e : Q2} (hoare_or_post_not_split). Incorrectness posts for a fixed pre are closed under conjunction (il_and_post_of_il_left, by strengthening the post), whereas conjoining two incorrectness triples with different pres P1 ∧ P2 is unsound in general (il-conjunction-rule-unsound); Hoare triples with different pres are closed under disjunction (conjunction-and-disjunction-rule-soundness).",
+   "Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier."
+  ],
+  "prior_art": [
+   "P. W. O'Hearn, \"Incorrectness logic\", Proceedings of the ACM on Programming Languages 4(POPL), Article 10, January 2020, doi:10.1145/3371078. Definition 1 defines the under-approximate triple [p]r[q] as post(r)p ⊇ q and the Hoare triple {p}r{q} as post(r)p ⊆ q; Lemma 3 (Characterization): [p]r[q] iff every state of q is reachable from some state of p; Fig. 1 states the ∧∨ and ⇑⇓ symmetries and the Principles of Agreement and Denial; Fig. 2 gives the generic rules (Empty under-approximates, Consequence, Disjunction, Unit, Sequencing short-circuit/normal, Iterate zero, Iterate non-zero, Backwards Variant, Choice, Error, Assume); Fig. 4 the relational semantics; Theorem 5 soundness; Theorem 6 completeness for finitely-supported predicates.",
+   "B. Möller, P. W. O'Hearn and T. Hoare, \"On algebra of program correctness and incorrectness\", Relational and Algebraic Methods in Computer Science (RAMiCS 2021), LNCS 13027, pp. 325-343, Springer, 2021, doi:10.1007/978-3-030-88701-8_20. Modal Kleene algebra with countable joins of tests embedding both incorrectness logic and Hoare logic."
+  ],
+  "design_question": "Which conclusions may a tool draw from an over-approximate (Hoare) result versus an under-approximate (incorrectness) result, and which inference rules may it use for each, so that 'no alarm' is read as safety only for over-approximation and 'alarm' is read as a real bug only for under-approximation?"
+ },
+ {
+  "id": "il-hoare-agreement-and-denial",
+  "lean": [
+   "Toy.IL.il_hoare_agreement",
+   "Toy.IL.il_denies_hoare"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "O'Hearn 2020 Fig. 1, Principles of Agreement and Denial, restated semantically.",
+  "plain_claim": "Agreement: if [U] c [e : U'] is a valid incorrectness triple, U ⊆ O, and {O} c {e : O'} is a valid Hoare triple, then U' ⊆ O'. Denial (contrapositive): if [U] c [e : U'] is a valid incorrectness triple, U ⊆ O, and U' ⊄ O', then {O} c {e : O'} is not valid.",
+  "unfolded": "il_hoare_agreement: (∀ t, U' t → ∃ s, U s ∧ Exec c s e t) → (∀ s, U s → O s) → (∀ t, (∃ s, O s ∧ Exec c s e t) → O' t) → ∀ t, U' t → O' t\nil_denies_hoare: (∀ t, U' t → ∃ s, U s ∧ Exec c s e t) → (∀ s, U s → O s) → ¬ (∀ t, U' t → O' t) → ¬ (∀ t, (∃ s, O s ∧ Exec c s e t) → O' t)",
+  "hypotheses": [
+   {
+    "name": "hil : IL U c e U' (agreement and denial)",
+    "purpose": "the under-approximate witness; without it U' may contain unreachable states. The counterexample serves both theorems: hsub holds, U' ⊄ O' (so denial's hout holds), the Hoare triple holds, and both conclusions fail",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.IL.il_hoare_agreement_il_tight"
+    ]
+   },
+   {
+    "name": "hsub : Entails U O (agreement and denial)",
+    "purpose": "the witness must start inside the Hoare pre. The counterexample serves both theorems in the same way",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.IL.il_hoare_agreement_sub_tight"
+    ]
+   },
+   {
+    "name": "hh : Hoare O c e O' (agreement only)",
+    "purpose": "agreement's conclusion needs the Hoare triple",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.IL.il_hoare_agreement_hoare_tight"
+    ]
+   },
+   {
+    "name": "hout : ¬ Entails U' O' (denial only)",
+    "purpose": "denial needs the post of the IL triple to escape O'; with U' ⊆ O' the Hoare triple can be valid",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.IL.il_denies_hoare_hout_tight"
+    ]
+   }
+  ],
+  "depth": "definitional",
+  "nonvacuity_witness": "c = x := 0 + x := 2. Agreement: [x = 5] c [ok : x = 2], {x = 5} ⊆ True, {True} c {ok : x even}, and {x = 2} ⊆ {x even}. Denial: [x = 5] c [ok : x = 2], {x = 5} ⊆ True, {x = 2} ⊄ {x = 0}, hence {True} c {ok : x = 0} is invalid.",
+  "nonvacuity_witness_lean": [
+   "Toy.IL.nonvacuity_agreement",
+   "Toy.IL.nonvacuity_denial"
+  ],
+  "non_claims": [
+   "Denial refutes one specific Hoare triple {O} c {e : O'}; it does not show that c is wrong with respect to any other specification, nor that the pre O is reachable in any enclosing program.",
+   "Agreement does not let a Hoare triple prove an incorrectness triple, or vice versa.",
+   "An incorrectness triple with empty post never satisfies the escape hypothesis of denial (the empty assertion is contained in every O', entails_empty_left), so [U] c [er : False] never refutes any Hoare triple.",
+   "Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier."
+  ],
+  "prior_art": [
+   "P. W. O'Hearn, \"Incorrectness logic\", Proceedings of the ACM on Programming Languages 4(POPL), Article 10, January 2020, doi:10.1145/3371078. Definition 1 defines the under-approximate triple [p]r[q] as post(r)p ⊇ q and the Hoare triple {p}r{q} as post(r)p ⊆ q; Lemma 3 (Characterization): [p]r[q] iff every state of q is reachable from some state of p; Fig. 1 states the ∧∨ and ⇑⇓ symmetries and the Principles of Agreement and Denial; Fig. 2 gives the generic rules (Empty under-approximates, Consequence, Disjunction, Unit, Sequencing short-circuit/normal, Iterate zero, Iterate non-zero, Backwards Variant, Choice, Error, Assume); Fig. 4 the relational semantics; Theorem 5 soundness; Theorem 6 completeness for finitely-supported predicates."
+  ],
+  "design_question": "Which conclusions may a tool draw from an over-approximate (Hoare) result versus an under-approximate (incorrectness) result, and which inference rules may it use for each, so that 'no alarm' is read as safety only for over-approximation and 'alarm' is read as a real bug only for under-approximation?"
+ },
+ {
+  "id": "hoare-invalid-iff-il-singleton-outside-post",
+  "lean": [
+   "Toy.IL.not_hoare_iff_exists_il_singleton_outside"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "tier_justification": "Möller, O'Hearn and Hoare 2021, Theorem 4.1 (an invalid Hoare triple is refuted by a valid IL triple with a pre below p and a post not below q; its proof uses p0 = p), specialised to the relation model with a singleton post; related falsification results in outcome logic (Zilberstein et al. 2023, Corollary 5.7) and Hyper Hoare Logic (Dardinier and Müller 2024, Theorem 5).",
+  "plain_claim": "A Hoare triple {P} c {e : Q} is invalid iff there is a single state t with t ∉ Q such that the incorrectness triple [P] c [e : {t}] is valid.",
+  "unfolded": "¬ (∀ t, (∃ s, P s ∧ Exec c s e t) → Q t) ↔ ∃ t, ¬ Q t ∧ ∀ x, x = t → ∃ s, P s ∧ Exec c s e x",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "{x = 0} x := x+1 {ok : x = 0} is invalid, refuted by [x = 0] x := x+1 [ok : x = 1] with 1 ∉ {x = 0}.",
+  "nonvacuity_witness_lean": [
+   "Toy.IL.nonvacuity_not_hoare_singleton"
+  ],
+  "non_claims": [
+   "The left-to-right direction is classical (it uses excluded middle): it asserts that a refuting state exists, not that one can be computed or found by a bounded search.",
+   "The refuting incorrectness triple keeps the entire pre P; it does not isolate a single initial test state. Moreover {t} is a semantic singleton predicate and need not be expressible in any syntactic assertion language.",
+   "Says nothing about refuting Hoare triples for the other exit kind or with a different pre.",
+   "Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier."
+  ],
+  "prior_art": [
+   "P. W. O'Hearn, \"Incorrectness logic\", Proceedings of the ACM on Programming Languages 4(POPL), Article 10, January 2020, doi:10.1145/3371078. Definition 1 defines the under-approximate triple [p]r[q] as post(r)p ⊇ q and the Hoare triple {p}r{q} as post(r)p ⊆ q; Lemma 3 (Characterization): [p]r[q] iff every state of q is reachable from some state of p; Fig. 1 states the ∧∨ and ⇑⇓ symmetries and the Principles of Agreement and Denial; Fig. 2 gives the generic rules (Empty under-approximates, Consequence, Disjunction, Unit, Sequencing short-circuit/normal, Iterate zero, Iterate non-zero, Backwards Variant, Choice, Error, Assume); Fig. 4 the relational semantics; Theorem 5 soundness; Theorem 6 completeness for finitely-supported predicates.",
+   "B. Möller, P. W. O'Hearn and T. Hoare, \"On algebra of program correctness and incorrectness\", Relational and Algebraic Methods in Computer Science (RAMiCS 2021), LNCS 13027, pp. 325-343, Springer, 2021, doi:10.1007/978-3-030-88701-8_20. Modal Kleene algebra with countable joins of tests embedding both incorrectness logic and Hoare logic. Theorem 4.1: {p} a {q} is invalid iff there are p0 ≤ p and q0 ≰ q with [p0] a [q0] valid (the proof takes p0 = p and q0 the strongest post); the text notes that in concrete testing in the relation model p0 and q0 denote singleton sets.",
+   "N. Zilberstein, D. Dreyer and A. Silva, \"Outcome logic: a unifying foundation for correctness and incorrectness reasoning\", Proceedings of the ACM on Programming Languages 7(OOPSLA1), Article 93, April 2023, doi:10.1145/3586045 (full version arXiv:2303.03111). Corollary 5.7 (Hoare Logic Falsification): a Hoare triple {P} C {Q} is invalid iff some satisfiable assertion stronger than P has a valid outcome-logic triple witnessing an outcome outside Q. Outcome logic is a different formalism; it is not formalized here.",
+   "T. Dardinier and P. Müller, \"Hyper Hoare Logic: (Dis-)Proving Program Hyperproperties\", Proceedings of the ACM on Programming Languages 8(PLDI), Article 207, June 2024, doi:10.1145/3656437 (arXiv:2301.10037); Isabelle/HOL formalization: T. Dardinier, \"Formalization of Hyper Hoare Logic: A Logic to (Dis-)Prove Program Hyperproperties\", Archive of Formal Proofs, April 2023, https://isa-afp.org/entries/HyperHoareLogic.html. Theorem 5 (disproving hyper-triples): a hyper-triple is invalid iff some satisfiable hyper-assertion entailing the pre yields a valid triple with the negated post; Proposition 6 expresses IL triples as hyper-triples."
+  ],
+  "design_question": "Which conclusions may a tool draw from an over-approximate (Hoare) result versus an under-approximate (incorrectness) result, and which inference rules may it use for each, so that 'no alarm' is read as safety only for over-approximation and 'alarm' is read as a real bug only for under-approximation?"
+ },
+ {
+  "id": "il-error-triple-nonempty-post-true-positive",
+  "lean": [
+   "Toy.IL.il_er_nonempty_post_true_positive",
+   "Toy.IL.errReachable_iff_exists_il_er_nonempty",
+   "Toy.IL.safe_iff_all_il_er_posts_empty"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "The true-positive reading of IL error triples (O'Hearn 2020 Lemma 3); the two characterizations are Möller, O'Hearn and Hoare 2021 Theorem 4.5 restated in this toy semantics.",
+  "plain_claim": "If [P] c [er : Q] is a valid incorrectness triple and Q is nonempty, then some run of c from a state in P terminates with an error in a state in Q (a true positive relative to P). Consequently an error is reachable from P iff some valid incorrectness error triple [P] c [er : Q] has nonempty Q, and c is safe from P iff every valid incorrectness error triple from P has an empty post.",
+  "unfolded": "il_er_nonempty_post_true_positive: (∀ t, Q t → ∃ s, P s ∧ Exec c s .er t) → (∃ t, Q t) → ∃ s t, P s ∧ Q t ∧ Exec c s .er t\nerrReachable_iff_exists_il_er_nonempty: (∃ s t, P s ∧ Exec c s .er t) ↔ ∃ Q, (∀ t, Q t → ∃ s, P s ∧ Exec c s .er t) ∧ ∃ t, Q t\nsafe_iff_all_il_er_posts_empty: (∀ s t, P s → ¬ Exec c s .er t) ↔ ∀ Q, (∀ t, Q t → ∃ s, P s ∧ Exec c s .er t) → ∀ t, ¬ Q t",
+  "hypotheses": [
+   {
+    "name": "hil : IL P c er Q (il_er_nonempty_post_true_positive)",
+    "purpose": "under-approximation is what makes post states reachable",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.IL.il_er_nonempty_post_true_positive_il_tight"
+    ]
+   },
+   {
+    "name": "hne : ∃ t, Q t (il_er_nonempty_post_true_positive)",
+    "purpose": "an empty post makes every incorrectness triple vacuously valid",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.IL.il_er_nonempty_post_true_positive_nonempty_tight"
+    ]
+   }
+  ],
+  "depth": "definitional",
+  "nonvacuity_witness": "[x = 7] assume (x = 7); error() [er : x = 7], with post state 7; for the characterizations, assume (x = 7); error() errs from x = 7 and assume false; error() is safe from True.",
+  "nonvacuity_witness_lean": [
+   "Toy.IL.nonvacuity_il_true_positive",
+   "Toy.IL.nonvacuity_il_characterization"
+  ],
+  "non_claims": [
+   "The witness is existential over P (∃ s, P s ∧ Exec c s er t), not universal over P: even if an enclosing program reaches c in a state satisfying P — including when P = True, to which every valid pre weakens by consequence — c need not err from that state. For example [True] assume (x = 7); error() [er : x = 7] is valid, yet x := 0; assume (x = 7); error() never errs (il_er_true_pre_yet_caller_state_avoids_error). Nor does the theorem say that any caller ever reaches an error-triggering state of P (a latent error; see manifest-reach-iff-error-in-every-reaching-context).",
+   "Does not say every error of c is in Q, or that c errs from every state of P.",
+   "Does not say c terminates on all of P; other runs may diverge or exit normally.",
+   "The safety characterization quantifies over all assertions Q; a single valid triple with empty post, or the empty result of any particular search, does not establish safety (il-error-triple-empty-post-does-not-imply-safety). Nothing is claimed about whether a witnessing post is expressible in a given assertion language or found by a given analysis.",
+   "Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier."
+  ],
+  "prior_art": [
+   "P. W. O'Hearn, \"Incorrectness logic\", Proceedings of the ACM on Programming Languages 4(POPL), Article 10, January 2020, doi:10.1145/3371078. Definition 1 defines the under-approximate triple [p]r[q] as post(r)p ⊇ q and the Hoare triple {p}r{q} as post(r)p ⊆ q; Lemma 3 (Characterization): [p]r[q] iff every state of q is reachable from some state of p; Fig. 1 states the ∧∨ and ⇑⇓ symmetries and the Principles of Agreement and Denial; Fig. 2 gives the generic rules (Empty under-approximates, Consequence, Disjunction, Unit, Sequencing short-circuit/normal, Iterate zero, Iterate non-zero, Backwards Variant, Choice, Error, Assume); Fig. 4 the relational semantics; Theorem 5 soundness; Theorem 6 completeness for finitely-supported predicates. Section 4: the existence of a consistent error assertion does not indicate a definite bug; for f(x) = {assert(x!=0);...} the error spec [x==0]f(x)[er:x==0] is valid, but no bug occurs unless a caller supplies x == 0.",
+   "B. Möller, P. W. O'Hearn and T. Hoare, \"On algebra of program correctness and incorrectness\", Relational and Algebraic Methods in Computer Science (RAMiCS 2021), LNCS 13027, pp. 325-343, Springer, 2021, doi:10.1007/978-3-030-88701-8_20. Modal Kleene algebra with countable joins of tests embedding both incorrectness logic and Hoare logic. Theorem 4.5: (1) {p} c {er : 0} is valid iff every valid [p] c [er : q] has q = 0; (2) some valid [p] c [er : q] has q ≠ 0 iff {p} c {er : 0} is invalid. Section 4.4 also gives over-approximate error rules whose sequencing rule uses a normal-exit summary {p} c1 {ok : q} and whose iteration rule uses a loop invariant {p} c {ok : p}.",
+   "Q. L. Le, A. Raad, J. Villard, J. Berdine, D. Dreyer and P. W. O'Hearn, \"Finding real bugs in big programs with incorrectness logic\", Proceedings of the ACM on Programming Languages 6(OOPSLA1), Article 81, April 2022, doi:10.1145/3527325. Distinguishes latent from manifest errors. Definition 3.2: a valid error triple |= [p] C [er : q] denotes a manifest error iff ∀s. ∃s'. (s,s') ∈ ⟦C⟧er ∧ s' ∈ ⟦q ∗ true⟧. Theorem 3.3 gives a sufficient logical condition; Theorem 3.4 (True Positives Property): if a procedure in a complete program has a manifest error then it is dead code or ⟦main⟧er ≠ ∅.",
+   "A. Raad, J. Berdine, H.-H. Dang, D. Dreyer, P. W. O'Hearn and J. Villard, \"Local reasoning about the presence of bugs: Incorrectness Separation Logic\", Computer Aided Verification (CAV 2020), LNCS 12225, pp. 225-252, Springer, 2020, doi:10.1007/978-3-030-53291-8_14. Combines incorrectness logic with separation logic and states that when ISL identifies a bug there is indeed a bug (no false positives), given the assumptions of the underlying model. Heaps, separating conjunction and the frame rule are not modelled in this package."
+  ],
+  "design_question": "Which conclusions may a tool draw from an over-approximate (Hoare) result versus an under-approximate (incorrectness) result, and which inference rules may it use for each, so that 'no alarm' is read as safety only for over-approximation and 'alarm' is read as a real bug only for under-approximation?"
+ },
+ {
+  "id": "safety-iff-hoare-error-triple-false",
+  "lean": [
+   "Toy.IL.safe_iff_hoare_er_false",
+   "Toy.IL.safe_of_hoare_er_false"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "tier_justification": "Definitional for partial-correctness triples with an error exit; the error-exit form is Möller, O'Hearn and Hoare 2021 Section 4.4 (Theorem 4.5 relates it to IL error triples).",
+  "plain_claim": "c is safe from P (no run from P terminates with an error) iff the Hoare error triple {P} c {er : False} is valid. Stating safety of c needs only this error-exit triple, and no normal-exit triple about c can replace it: {True} error() {ok : False} is valid although error() is unsafe.",
+  "unfolded": "safe_iff_hoare_er_false: (∀ s t, P s → ¬ Exec c s .er t) ↔ ∀ t, (∃ s, P s ∧ Exec c s .er t) → False\nsafe_of_hoare_er_false: (∀ t, (∃ s, P s ∧ Exec c s .er t) → False) → ∀ s t, P s → ¬ Exec c s .er t",
+  "hypotheses": [
+   {
+    "name": "h : Hoare P c er False (safe_of_hoare_er_false)",
+    "purpose": "the error-exit triple; a normal-exit triple cannot replace it, even with the strongest post False",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.IL.safe_of_hoare_er_false_tight"
+    ]
+   }
+  ],
+  "depth": "definitional",
+  "nonvacuity_witness": "{True} assume false; error() {er : False}.",
+  "nonvacuity_witness_lean": [
+   "Toy.IL.nonvacuity_hoare_safe"
+  ],
+  "non_claims": [
+   "A Hoare triple about the ok exit, {P} c {ok : Q}, says nothing about errors: {True} error() {ok : False} is valid and error() is unsafe (safe_of_hoare_er_false_tight).",
+   "While stating safety of a whole command c needs no ok-exit triple, proving {P} c1; c2 {er : False} or {P} c⋆ {er : False} compositionally uses over-approximate ok-exit summaries and loop invariants of subcommands (hoare_seq_er_false); the error-exit triples of the parts from the same pre do not determine safety of a sequence (safe_seq_not_of_safe_parts).",
+   "Safety here is absence of erroneous termination only; it says nothing about divergence or about the values of normal exits.",
+   "A Hoare error triple with a satisfiable post does not show that an error is reachable (hoare-summaries-do-not-imply-reachable-error).",
+   "Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier."
+  ],
+  "prior_art": [
+   "P. W. O'Hearn, \"Incorrectness logic\", Proceedings of the ACM on Programming Languages 4(POPL), Article 10, January 2020, doi:10.1145/3371078. Definition 1 defines the under-approximate triple [p]r[q] as post(r)p ⊇ q and the Hoare triple {p}r{q} as post(r)p ⊆ q; Lemma 3 (Characterization): [p]r[q] iff every state of q is reachable from some state of p; Fig. 1 states the ∧∨ and ⇑⇓ symmetries and the Principles of Agreement and Denial; Fig. 2 gives the generic rules (Empty under-approximates, Consequence, Disjunction, Unit, Sequencing short-circuit/normal, Iterate zero, Iterate non-zero, Backwards Variant, Choice, Error, Assume); Fig. 4 the relational semantics; Theorem 5 soundness; Theorem 6 completeness for finitely-supported predicates.",
+   "B. Möller, P. W. O'Hearn and T. Hoare, \"On algebra of program correctness and incorrectness\", Relational and Algebraic Methods in Computer Science (RAMiCS 2021), LNCS 13027, pp. 325-343, Springer, 2021, doi:10.1007/978-3-030-88701-8_20. Modal Kleene algebra with countable joins of tests embedding both incorrectness logic and Hoare logic. Theorem 4.5: (1) {p} c {er : 0} is valid iff every valid [p] c [er : q] has q = 0; (2) some valid [p] c [er : q] has q ≠ 0 iff {p} c {er : 0} is invalid. Section 4.4 also gives over-approximate error rules whose sequencing rule uses a normal-exit summary {p} c1 {ok : q} and whose iteration rule uses a loop invariant {p} c {ok : p}.",
+   "C. A. R. Hoare, \"An axiomatic basis for computer programming\", Communications of the ACM 12(10), pp. 576-580, October 1969, doi:10.1145/363235.363259. Introduces Hoare triples and the rules of consequence, composition and iteration."
+  ],
+  "design_question": "Reference point (definitional baseline for other cards). Which conclusions may a tool draw from an over-approximate (Hoare) result versus an under-approximate (incorrectness) result, and which inference rules may it use for each, so that 'no alarm' is read as safety only for over-approximation and 'alarm' is read as a real bug only for under-approximation?"
+ },
+ {
+  "id": "il-error-triple-empty-post-does-not-imply-safety",
+  "lean": [
+   "Toy.IL.not_il_er_empty_post_implies_safe",
+   "Toy.IL.il_er_empty_post_valid_yet_unsafe",
+   "Toy.IL.il_empty_post"
+  ],
+  "kind": "impossibility",
+  "tier": "T0",
+  "tier_justification": "O'Hearn 2020's 'Empty under-approximates' axiom makes every empty-post triple valid; the consequence for safety is immediate and is the contrapositive reading of Möller, O'Hearn and Hoare 2021 Theorem 4.5(1).",
+  "plain_claim": "A valid incorrectness error triple with empty post, [P] c [er : False], does not imply that c is safe from P: such triples are valid for every P and c, including error(), which is unsafe.",
+  "unfolded": "not_il_er_empty_post_implies_safe: ¬ ∀ (P : Nat → Prop) (c : Cmd Nat), (∀ t, False → ∃ s, P s ∧ Exec c s .er t) → ∀ s t, P s → ¬ Exec c s .er t\nil_er_empty_post_valid_yet_unsafe: (∀ t : Nat, False → ∃ s, True ∧ Exec .error s .er t) ∧ ¬ ∀ s t : Nat, True → ¬ Exec .error s .er t\nil_empty_post: ∀ t, False → ∃ s, P s ∧ Exec c s e t",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "[True] error() [er : False] is valid, and error() errs from every state.",
+  "nonvacuity_witness_lean": [
+   "Toy.IL.il_er_empty_post_valid_yet_unsafe"
+  ],
+  "positive_control_lean": [
+   "Toy.IL.safe_iff_all_il_er_posts_empty"
+  ],
+  "non_claims": [
+   "Does not say under-approximate reasoning can never establish safety: if every valid incorrectness error triple from P has an empty post, c is safe (the positive control safe_iff_all_il_er_posts_empty); the failure is in reading one empty result as that universal statement.",
+   "Combining [P] c [er : False] with a valid normal-exit triple [P] c [ok : Q] whose post Q is nonempty still does not imply safety: skip + error() satisfies [True] c [ok : True] and [True] c [er : False] and is unsafe (il_ok_nonempty_and_er_empty_yet_unsafe).",
+   "Stated over the state type Nat; over the empty state type the refuted implication holds vacuously (refuted_implications_hold_on_empty_state_space), so the negative result needs at least one state. Likewise, when P is unsatisfiable, Safe P c holds regardless of any triple.",
+   "Does not say anything about over-approximate analyses, whose silence does imply safety (sound-analyses-license-alarms-or-silence).",
+   "Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier."
+  ],
+  "prior_art": [
+   "P. W. O'Hearn, \"Incorrectness logic\", Proceedings of the ACM on Programming Languages 4(POPL), Article 10, January 2020, doi:10.1145/3371078. Definition 1 defines the under-approximate triple [p]r[q] as post(r)p ⊇ q and the Hoare triple {p}r{q} as post(r)p ⊆ q; Lemma 3 (Characterization): [p]r[q] iff every state of q is reachable from some state of p; Fig. 1 states the ∧∨ and ⇑⇓ symmetries and the Principles of Agreement and Denial; Fig. 2 gives the generic rules (Empty under-approximates, Consequence, Disjunction, Unit, Sequencing short-circuit/normal, Iterate zero, Iterate non-zero, Backwards Variant, Choice, Error, Assume); Fig. 4 the relational semantics; Theorem 5 soundness; Theorem 6 completeness for finitely-supported predicates.",
+   "B. Möller, P. W. O'Hearn and T. Hoare, \"On algebra of program correctness and incorrectness\", Relational and Algebraic Methods in Computer Science (RAMiCS 2021), LNCS 13027, pp. 325-343, Springer, 2021, doi:10.1007/978-3-030-88701-8_20. Modal Kleene algebra with countable joins of tests embedding both incorrectness logic and Hoare logic. Theorem 4.5: (1) {p} c {er : 0} is valid iff every valid [p] c [er : q] has q = 0; (2) some valid [p] c [er : q] has q ≠ 0 iff {p} c {er : 0} is invalid. Section 4.4 also gives over-approximate error rules whose sequencing rule uses a normal-exit summary {p} c1 {ok : q} and whose iteration rule uses a loop invariant {p} c {ok : p}."
+  ],
+  "design_question": "Which conclusions may a tool draw from an over-approximate (Hoare) result versus an under-approximate (incorrectness) result, and which inference rules may it use for each, so that 'no alarm' is read as safety only for over-approximation and 'alarm' is read as a real bug only for under-approximation?"
+ },
+ {
+  "id": "hoare-summaries-do-not-imply-reachable-error",
+  "lean": [
+   "Toy.IL.not_hoare_er_nonempty_post_implies_errReachable",
+   "Toy.IL.hoare_er_nonempty_post_without_reachable_error",
+   "Toy.IL.not_hoare_ok_then_il_er_implies_errReachable",
+   "Toy.IL.hoare_ok_summary_then_il_er_without_reachable_error"
+  ],
+  "kind": "impossibility",
+  "tier": "T0",
+  "tier_justification": "O'Hearn 2020 Section 3.3 (mkeven/usemkeven) describes the compositional false positive mechanized in the second pair of statements; the first pair is the whole-program form, which holds vacuously.",
+  "plain_claim": "Over-approximate (Hoare) summaries do not establish reachable errors. (a) A valid Hoare error triple {P} c {er : Q} with nonempty Q does not imply that an error is reachable from P: {True} x := 2; assume (x = 4); error() {er : x = 4} is valid — vacuously, because the program has no erroneous runs — and no error is reachable. (b) Compositionally (O'Hearn's mkeven example): an over-approximate normal-exit summary {P} c1 {ok : Q} followed by a valid incorrectness error triple [Q] c2 [er : R] with nonempty R does not imply that c1; c2 has a reachable error from P: {True} x := 2 {ok : x = 2 ∨ x = 4} and [x = 2 ∨ x = 4] assume (x = 4); error() [er : x = 4] are valid, yet x := 2; assume (x = 4); error() never errs.",
+  "unfolded": "not_hoare_er_nonempty_post_implies_errReachable: ¬ ∀ (P Q : Nat → Prop) (c : Cmd Nat), (∀ t, (∃ s, P s ∧ Exec c s .er t) → Q t) → (∃ t, Q t) → ∃ s t, P s ∧ Exec c s .er t\nnot_hoare_ok_then_il_er_implies_errReachable: ¬ ∀ (P Q R : Nat → Prop) (c₁ c₂ : Cmd Nat), (∀ t, (∃ s, P s ∧ Exec c₁ s .ok t) → Q t) → (∀ t, R t → ∃ s, Q s ∧ Exec c₂ s .er t) → (∃ t, R t) → ∃ s t, P s ∧ Exec (.seq c₁ c₂) s .er t\nwhere mkevenProg = mkevenBody; mkevenCheck, mkevenBody = x := 2, mkevenCheck = assume (x = 4); error()",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "mkevenProg = x := 2; assume (x = 4); error() from True, with Hoare error post x = 4; and its split into mkevenBody with summary x = 2 ∨ x = 4 and mkevenCheck with IL error post x = 4.",
+  "nonvacuity_witness_lean": [
+   "Toy.IL.hoare_er_nonempty_post_without_reachable_error",
+   "Toy.IL.hoare_ok_summary_then_il_er_without_reachable_error"
+  ],
+  "positive_control_lean": [
+   "Toy.IL.il_er_nonempty_post_true_positive",
+   "Toy.IL.il_ok_then_il_er_errReachable"
+  ],
+  "non_claims": [
+   "Part (a) works by vacuity: a Hoare error triple holds for every post when there are no erroneous runs, and post True is a valid Hoare post for every program (hoare_true_post); nonemptiness of a Hoare post therefore carries no information about reachability.",
+   "Does not say Hoare error triples are useless: with post False they are exactly safety (safety-iff-hoare-error-triple-false).",
+   "Does not say every Hoare-derived alarm is spurious; replacing the Hoare triple, or the over-approximate summary of the prefix, by an incorrectness triple restores the conclusion (positive controls il_er_nonempty_post_true_positive and il_ok_then_il_er_errReachable).",
+   "Stated over the state type Nat; over the empty state type the refuted implication holds vacuously (refuted_implications_hold_on_empty_state_space), so the negative result needs at least one state.",
+   "Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier."
+  ],
+  "prior_art": [
+   "P. W. O'Hearn, \"Incorrectness logic\", Proceedings of the ACM on Programming Languages 4(POPL), Article 10, January 2020, doi:10.1145/3371078. Definition 1 defines the under-approximate triple [p]r[q] as post(r)p ⊇ q and the Hoare triple {p}r{q} as post(r)p ⊆ q; Lemma 3 (Characterization): [p]r[q] iff every state of q is reachable from some state of p; Fig. 1 states the ∧∨ and ⇑⇓ symmetries and the Principles of Agreement and Denial; Fig. 2 gives the generic rules (Empty under-approximates, Consequence, Disjunction, Unit, Sequencing short-circuit/normal, Iterate zero, Iterate non-zero, Backwards Variant, Choice, Error, Assume); Fig. 4 the relational semantics; Theorem 5 soundness; Theorem 6 completeness for finitely-supported predicates. Section 3.3 (Under-approximate Success): for mkeven() { x=2; } the over-approximate normal-exit summary 'ok: x==2 || x==4', used in usemkeven() { mkeven(); if (x==4) error(); }, would yield a false positive warning; the paper therefore uses under-approximate summaries for both normal and erroneous termination."
+  ],
+  "design_question": "Which conclusions may a tool draw from an over-approximate (Hoare) result versus an under-approximate (incorrectness) result, and which inference rules may it use for each, so that 'no alarm' is read as safety only for over-approximation and 'alarm' is read as a real bug only for under-approximation?"
+ },
+ {
+  "id": "il-proof-rules-sound",
+  "lean": [
+   "Toy.IL.ilDeriv_sound",
+   "Toy.IL.il_backwardsVariant_sound"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "O'Hearn 2020 Theorem 5 (soundness) for the generic rules of Fig. 2, specialised to this language; cf. de Vries and Koutavas 2011 Theorem 1.",
+  "plain_claim": "Every triple derivable with the incorrectness-logic rules — empty post, consequence (IL direction), disjunction, sequencing (short-circuit and normal), iterate zero, iterate non-zero, backwards variant (one premise per natural number n), choice, error, assume and assignment — is a valid under-approximate triple. In particular the backwards-variant rule is sound: if [p n] c [ok : p (n+1)] is valid for every n, then [p 0] c⋆ [ok : ∃ n, p n] is valid.",
+  "unfolded": "ilDeriv_sound: ILDeriv P c e Q → ∀ t, Q t → ∃ s, P s ∧ Exec c s e t\nil_backwardsVariant_sound: (∀ n t, p (n + 1) t → ∃ s, p n s ∧ Exec c s .ok t) → ∀ t, (∃ n, p n t) → ∃ s, p 0 s ∧ Exec (.star c) s .ok t\nILDeriv constructors: empty [P] c [e : False]; conseq (P ⊆ P', [P] c [e : Q], Q' ⊆ Q ⊢ [P'] c [e : Q']); disj; seqShort ([P] c₁ [er : R] ⊢ [P] c₁;c₂ [er : R]); seqNormal ([P] c₁ [ok : Q], [Q] c₂ [e : R] ⊢ [P] c₁;c₂ [e : R]); iterZero [P] c⋆ [ok : P]; iterNonzero ([P] c⋆;c [e : Q] ⊢ [P] c⋆ [e : Q]); backwardsVariant (∀ n, [p n] c [ok : p (n+1)] ⊢ [p 0] c⋆ [ok : ∃ n, p n]); choiceL/choiceR; errorEr [P] error [er : P]; assumeOk [P] assume b [ok : P ∧ b]; assign [P] assign f [ok : ∃ s, P s ∧ t = f s]",
+  "hypotheses": [
+   {
+    "name": "h : ILDeriv P c e Q (ilDeriv_sound)",
+    "purpose": "the triple must be produced by the rules; an arbitrary triple need not be valid. The counterexample [True] skip [er : True] is neither derivable nor valid",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.IL.ilDeriv_sound_deriv_tight"
+    ]
+   },
+   {
+    "name": "h : ∀ n, IL (p n) c ok (p (n + 1)) (il_backwardsVariant_sound)",
+    "purpose": "every step of the variant must be under-approximate; holding for the first step only is not enough",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.IL.il_backwardsVariant_sound_premise_tight"
+    ]
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "[x = 0] (x := x+1)⋆ [ok : True] derived via the backwards variant p(n) = (x = n), and [x = 0] (x := x+1)⋆; assume (x = 3); error() [er : x = 3]; for il_backwardsVariant_sound, ∀ n, [x = n] x := x+1 [ok : x = n+1].",
+  "nonvacuity_witness_lean": [
+   "Toy.IL.ilDeriv_count_up",
+   "Toy.IL.ilDeriv_count_up_error",
+   "Toy.IL.nonvacuity_ilDeriv_sound",
+   "Toy.IL.nonvacuity_backwardsVariant"
+  ],
+  "non_claims": [
+   "The conjunction rule is not part of the system and is unsound (il-conjunction-rule-unsound).",
+   "Consequence premises are semantic entailments supplied as proofs; nothing is claimed about a tool with an unsound entailment checker.",
+   "The backwards-variant premise is infinitary (one derivation per n); nothing is claimed about finitary syntactic variants.",
+   "iterZero is derivable from backwardsVariant, empty and conseq (iterZero_derivable); it is kept as a separate rule only to mirror O'Hearn's Fig. 2.",
+   "Atomic updates are deterministic state functions f : σ → σ; nondeterminism comes only from binary choice and iteration. Nondeterministic assignment (x := nondet()) and the variable-specific rules of O'Hearn's Fig. 3 (assignment with substitution, constancy, local variables, substitution) are not modelled.",
+   "Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier."
+  ],
+  "prior_art": [
+   "P. W. O'Hearn, \"Incorrectness logic\", Proceedings of the ACM on Programming Languages 4(POPL), Article 10, January 2020, doi:10.1145/3371078. Definition 1 defines the under-approximate triple [p]r[q] as post(r)p ⊇ q and the Hoare triple {p}r{q} as post(r)p ⊆ q; Lemma 3 (Characterization): [p]r[q] iff every state of q is reachable from some state of p; Fig. 1 states the ∧∨ and ⇑⇓ symmetries and the Principles of Agreement and Denial; Fig. 2 gives the generic rules (Empty under-approximates, Consequence, Disjunction, Unit, Sequencing short-circuit/normal, Iterate zero, Iterate non-zero, Backwards Variant, Choice, Error, Assume); Fig. 4 the relational semantics; Theorem 5 soundness; Theorem 6 completeness for finitely-supported predicates.",
+   "E. de Vries and V. Koutavas, \"Reverse Hoare logic\", Software Engineering and Formal Methods (SEFM 2011), LNCS 7041, pp. 155-171, Springer, 2011, doi:10.1007/978-3-642-24690-6_12. Definition 1 (reverse Hoare validity): every final state satisfying Q is reachable from some initial state satisfying P. Fig. 2: rule Con (consequence with the implications reversed), rule While with a fresh natural-number index (a backwards-variant-style rule), the infinitary rule Split, and rule Frame for unmodified variables. Theorem 1 (soundness), Theorem 2 (relative completeness, via a weakest-postcondition calculus). The language has no error exit.",
+   "C. Zhang, A. Azevedo de Amorim and M. Gaboardi, \"On incorrectness logic and Kleene algebra with top and tests\", Proceedings of the ACM on Programming Languages 6(POPL), Article 29, January 2022, doi:10.1145/3498690. Shows that Kleene algebra with tests cannot express incorrectness triples, while Kleene algebra with top and tests can and validates the rules of O'Hearn's logic equationally.",
+   "T. Murray, \"An Under-Approximate Relational Logic\", Archive of Formal Proofs, March 2020, https://isa-afp.org/entries/Relational-Incorrectness-Logic.html. An Isabelle/HOL mechanization of an under-approximate relational logic for IMP, proved sound and complete, with a decomposition into a non-relational under-approximate Hoare logic.",
+   "F. Verbeek, M. S. Sefat, Z. Fu and B. Ravindran, \"On Extending Incorrectness Logic with Backwards Reasoning\", Proceedings of the ACM on Programming Languages 9(POPL), Article 14, January 2025, doi:10.1145/3704850. Extends incorrectness logic with underspecification; soundness and completeness for a subset of presumptions are formalized in Isabelle/HOL."
+  ],
+  "design_question": "Which conclusions may a tool draw from an over-approximate (Hoare) result versus an under-approximate (incorrectness) result, and which inference rules may it use for each, so that 'no alarm' is read as safety only for over-approximation and 'alarm' is read as a real bug only for under-approximation?"
+ },
+ {
+  "id": "il-conjunction-rule-unsound",
+  "lean": [
+   "Toy.IL.il_conjunction_rule_unsound",
+   "Toy.IL.il_conjunction_counterexample",
+   "Toy.IL.il_conjunction_rule_sound_iff_subsingleton"
+  ],
+  "kind": "impossibility",
+  "tier": "T0",
+  "tier_justification": "O'Hearn 2020's own counterexample, mechanized; the dependence on the state type is an elementary consequence of the backward-uniqueness characterization (conjunction-and-disjunction-rule-soundness).",
+  "plain_claim": "The conjunction rule — from [P1] c [e : Q1] and [P2] c [e : Q2] infer [P1 ∧ P2] c [e : Q1 ∧ Q2] — is unsound for incorrectness triples over Nat: for C = (assume x = 1; x := 88) + (assume x = 2; x := 88) both premises hold with post x = 88 but the conclusion fails. Over an arbitrary state type, the rule holds for all commands and assertions iff the state type has at most one element.",
+  "unfolded": "il_conjunction_rule_unsound: ¬ ∀ P₁ P₂ Q₁ Q₂ c e, IL P₁ c e Q₁ → IL P₂ c e Q₂ → IL (P₁ ∧ P₂) c e (Q₁ ∧ Q₂)   (over Nat)\nil_conjunction_rule_sound_iff_subsingleton τ: (∀ P₁ P₂ Q₁ Q₂ c e, IL P₁ c e Q₁ → IL P₂ c e Q₂ → IL (P₁ ∧ P₂) c e (Q₁ ∧ Q₂)) ↔ ∀ s₁ s₂ : τ, s₁ = s₂",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "conjCounterProg with P1 = (x = 1), P2 = (x = 2), Q1 = Q2 = (x = 88); for the characterization, both sides hold over Unit.",
+  "nonvacuity_witness_lean": [
+   "Toy.IL.il_conjunction_counterexample",
+   "Toy.IL.il_conjunction_rule_sound_on_unit"
+  ],
+  "positive_control_lean": [
+   "Toy.IL.il_conjunction_sound_of_backward_unique",
+   "Toy.IL.hoare_conjunction_sound",
+   "Toy.IL.il_conjunction_rule_sound_on_unit",
+   "Toy.IL.il_conjunction_same_pre_sound",
+   "Toy.IL.il_conjunction_backward_preserved_sound"
+  ],
+  "non_claims": [
+   "Does not say the conjunction rule fails for every command: at a fixed (c, e) it holds for all assertions exactly when c is backward-unique at e (il_conjunction_rule_iff_backward_unique), and it is always sound for Hoare triples (positive controls).",
+   "Escape hatches that keep a conjunction-like rule sound for every command: conjoining posts for the same pre ([P] c [e : Q1] and [P] c [e : Q2] give [P] c [e : Q1 ∧ Q2], il_conjunction_same_pre_sound), and conjoining an assertion F that c preserves backwards (every e-run ending in F started in F; the constancy idea) to both pre and post (il_conjunction_backward_preserved_sound), even for commands that merge states.",
+   "Over a state type with at most one element (for instance Unit) the conjunction rule holds universally (il_conjunction_rule_sound_on_unit); the failure needs two distinct states.",
+   "Concerns ordinary conjunction of assertions on a single state; separating conjunction and the frame rule of Incorrectness Separation Logic are not modelled.",
+   "Does not concern the disjunction rule, which is sound for both logics.",
+   "Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier."
+  ],
+  "prior_art": [
+   "P. W. O'Hearn, \"Incorrectness logic\", PACMPL 4(POPL), Article 10, 2020, doi:10.1145/3371078, Section 4: the dual of the disjunction rule (with ∧) is omitted because it is unsound for under-approximation, with the counterexample C = (assume x==1; x=88) + (assume x==2; x=88): [x==1]C[ok:x==88] and [x==2]C[ok:x==88] hold but [false]C[ok:x==88] does not. Fig. 3 includes a Constancy rule for unmodified variables.",
+   "A. Raad, J. Berdine, H.-H. Dang, D. Dreyer, P. W. O'Hearn and J. Villard, \"Local reasoning about the presence of bugs: Incorrectness Separation Logic\", Computer Aided Verification (CAV 2020), LNCS 12225, pp. 225-252, Springer, 2020, doi:10.1007/978-3-030-53291-8_14. Combines incorrectness logic with separation logic and states that when ISL identifies a bug there is indeed a bug (no false positives), given the assumptions of the underlying model. Heaps, separating conjunction and the frame rule are not modelled in this package."
+  ],
+  "design_question": "Which conclusions may a tool draw from an over-approximate (Hoare) result versus an under-approximate (incorrectness) result, and which inference rules may it use for each, so that 'no alarm' is read as safety only for over-approximation and 'alarm' is read as a real bug only for under-approximation?"
+ },
+ {
+  "id": "conjunction-and-disjunction-rule-soundness",
+  "lean": [
+   "Toy.IL.hoare_conjunction_sound",
+   "Toy.IL.hoare_disjunction_sound",
+   "Toy.IL.il_disjunction_sound",
+   "Toy.IL.il_conjunction_sound_of_backward_unique",
+   "Toy.IL.il_conjunction_rule_iff_backward_unique"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Standard for Hoare triples; IL disjunction is O'Hearn 2020 Fig. 2; the backward-unique characterization of IL conjunction is an elementary observation (singleton pres and posts).",
+  "plain_claim": "The disjunction rule (from two triples infer the triple with both pres and both posts disjoined) is sound for Hoare and for incorrectness triples; the conjunction rule is sound for Hoare triples. For incorrectness triples, at a fixed command c and exit kind e, the conjunction rule holds for all assertions P1, P2, Q1, Q2 iff the e-relation of c is backward-unique (each final state has at most one initial state).",
+  "unfolded": "hoare_conjunction_sound / hoare_disjunction_sound: Hoare P₁ c e Q₁ → Hoare P₂ c e Q₂ → Hoare (P₁ ∧ P₂) c e (Q₁ ∧ Q₂), and the same with ∨\nil_disjunction_sound: IL P₁ c e Q₁ → IL P₂ c e Q₂ → IL (P₁ ∨ P₂) c e (Q₁ ∨ Q₂)\nil_conjunction_sound_of_backward_unique: (∀ s₁ s₂ t, Exec c s₁ e t → Exec c s₂ e t → s₁ = s₂) → IL P₁ c e Q₁ → IL P₂ c e Q₂ → IL (P₁ ∧ P₂) c e (Q₁ ∧ Q₂)\nil_conjunction_rule_iff_backward_unique c e: (∀ P₁ P₂ Q₁ Q₂, IL P₁ c e Q₁ → IL P₂ c e Q₂ → IL (P₁ ∧ P₂) c e (Q₁ ∧ Q₂)) ↔ ∀ s₁ s₂ t, Exec c s₁ e t → Exec c s₂ e t → s₁ = s₂",
+  "hypotheses": [
+   {
+    "name": "h₁ : first premise triple (Hoare for the Hoare rules, IL for the IL rules)",
+    "purpose": "each conclusion needs the first premise; one canonical counterexample per rule (the other hypotheses hold, h₁ fails, the conclusion fails)",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.IL.conj_disj_rules_h1_tight"
+    ]
+   },
+   {
+    "name": "h₂ : second premise triple",
+    "purpose": "each conclusion needs the second premise; one canonical counterexample per rule",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.IL.conj_disj_rules_h2_tight"
+    ]
+   },
+   {
+    "name": "huniq : ∀ s₁ s₂ t, Exec c s₁ e t → Exec c s₂ e t → s₁ = s₂ (il_conjunction_sound_of_backward_unique)",
+    "purpose": "makes the two witnesses for a post state coincide",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.IL.il_conjunction_sound_of_backward_unique_tight"
+    ]
+   }
+  ],
+  "depth": "definitional",
+  "nonvacuity_witness": "x := x+1 with {x ≤ 1}/{1 ≤ x} for Hoare, [x = 0]/[x = 4] for IL disjunction, and [x ≤ 3]/[1 ≤ x] with post x = 2 for backward-unique IL conjunction; for the characterization, both sides hold for x := x+1 and both fail for conjCounterProg.",
+  "nonvacuity_witness_lean": [
+   "Toy.IL.nonvacuity_conj_disj",
+   "Toy.IL.nonvacuity_il_conjunction_backward_unique",
+   "Toy.IL.nonvacuity_il_conjunction_rule_iff"
+  ],
+  "non_claims": [
+   "The characterization is about the rule for all assertions at a fixed (c, e). A single instance of the conclusion can hold for a command that is not backward-unique, for example with empty posts (il_conjunction_instance_without_backward_unique), or with P1 = P2 (il_conjunction_same_pre_sound).",
+   "For commands that merge states (such as assignments of constants) the rule fails for some choice of P1, P2, Q1, Q2 (in general, with different pres); it is not claimed to fail for every instance.",
+   "Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier."
+  ],
+  "prior_art": [
+   "P. W. O'Hearn, \"Incorrectness logic\", Proceedings of the ACM on Programming Languages 4(POPL), Article 10, January 2020, doi:10.1145/3371078. Definition 1 defines the under-approximate triple [p]r[q] as post(r)p ⊇ q and the Hoare triple {p}r{q} as post(r)p ⊆ q; Lemma 3 (Characterization): [p]r[q] iff every state of q is reachable from some state of p; Fig. 1 states the ∧∨ and ⇑⇓ symmetries and the Principles of Agreement and Denial; Fig. 2 gives the generic rules (Empty under-approximates, Consequence, Disjunction, Unit, Sequencing short-circuit/normal, Iterate zero, Iterate non-zero, Backwards Variant, Choice, Error, Assume); Fig. 4 the relational semantics; Theorem 5 soundness; Theorem 6 completeness for finitely-supported predicates."
+  ],
+  "design_question": "Which conclusions may a tool draw from an over-approximate (Hoare) result versus an under-approximate (incorrectness) result, and which inference rules may it use for each, so that 'no alarm' is read as safety only for over-approximation and 'alarm' is read as a real bug only for under-approximation?"
+ },
+ {
+  "id": "il-proof-rules-complete",
+  "lean": [
+   "Toy.IL.ilDeriv_relatively_complete",
+   "Toy.IL.ilDeriv_post"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "O'Hearn 2020 Theorem 6 (completeness) for this language without variables, so no finite-support side condition is needed; cf. de Vries and Koutavas 2011 Theorem 2 and Möller, O'Hearn and Hoare 2021 Theorems 3.2 and 4.4.",
+  "plain_claim": "Every valid incorrectness triple [P] c [e : Q] is derivable with the incorrectness-logic rules (with semantic assertions and semantic entailment as the consequence oracle), because [P] c [e : post c e P] is always derivable.",
+  "unfolded": "ilDeriv_relatively_complete: (∀ t, Q t → ∃ s, P s ∧ Exec c s e t) → ILDeriv P c e Q\nilDeriv_post: ∀ P e, ILDeriv P c e (fun t => ∃ s, P s ∧ Exec c s e t)",
+  "hypotheses": [
+   {
+    "name": "h : IL P c e Q",
+    "purpose": "only valid triples are derivable (soundness)",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.IL.ilDeriv_complete_valid_tight"
+    ]
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "[x = 0] (x := x+1)⋆; assume (x = 3); error() [er : x = 3] is valid, hence derivable.",
+  "nonvacuity_witness_lean": [
+   "Toy.IL.nonvacuity_ilDeriv_complete"
+  ],
+  "non_claims": [
+   "Relative completeness only: assertions are arbitrary predicates and entailment is an oracle; nothing is claimed about any assertion language, about decidability, or about finding derivations.",
+   "The loop case uses an infinitary backwards-variant premise; nothing is claimed for finitary rule sets.",
+   "Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier."
+  ],
+  "prior_art": [
+   "P. W. O'Hearn, \"Incorrectness logic\", Proceedings of the ACM on Programming Languages 4(POPL), Article 10, January 2020, doi:10.1145/3371078. Definition 1 defines the under-approximate triple [p]r[q] as post(r)p ⊇ q and the Hoare triple {p}r{q} as post(r)p ⊆ q; Lemma 3 (Characterization): [p]r[q] iff every state of q is reachable from some state of p; Fig. 1 states the ∧∨ and ⇑⇓ symmetries and the Principles of Agreement and Denial; Fig. 2 gives the generic rules (Empty under-approximates, Consequence, Disjunction, Unit, Sequencing short-circuit/normal, Iterate zero, Iterate non-zero, Backwards Variant, Choice, Error, Assume); Fig. 4 the relational semantics; Theorem 5 soundness; Theorem 6 completeness for finitely-supported predicates.",
+   "E. de Vries and V. Koutavas, \"Reverse Hoare logic\", Software Engineering and Formal Methods (SEFM 2011), LNCS 7041, pp. 155-171, Springer, 2011, doi:10.1007/978-3-642-24690-6_12. Definition 1 (reverse Hoare validity): every final state satisfying Q is reachable from some initial state satisfying P. Fig. 2: rule Con (consequence with the implications reversed), rule While with a fresh natural-number index (a backwards-variant-style rule), the infinitary rule Split, and rule Frame for unmodified variables. Theorem 1 (soundness), Theorem 2 (relative completeness, via a weakest-postcondition calculus). The language has no error exit.",
+   "B. Möller, P. W. O'Hearn and T. Hoare, \"On algebra of program correctness and incorrectness\", Relational and Algebraic Methods in Computer Science (RAMiCS 2021), LNCS 13027, pp. 325-343, Springer, 2021, doi:10.1007/978-3-030-88701-8_20. Modal Kleene algebra with countable joins of tests embedding both incorrectness logic and Hoare logic. Lemma 3.4: [p] a [⟨a|p] (strongest post) is provable; Theorem 3.2: soundness and relative completeness of the variable-free IL rules; Theorem 4.4: soundness and completeness of the rules with an error exit."
+  ],
+  "design_question": "Which conclusions may a tool draw from an over-approximate (Hoare) result versus an under-approximate (incorrectness) result, and which inference rules may it use for each, so that 'no alarm' is read as safety only for over-approximation and 'alarm' is read as a real bug only for under-approximation?"
+ },
+ {
+  "id": "abs-post-sound-iff-extensive",
+  "lean": [
+   "Toy.IL.absPost_sound",
+   "Toy.IL.soundOver_absPost_iff_extensive"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "tier_justification": "Soundness of compositional abstract interpretation is standard (Cousot and Cousot 1977, 1979), and the authors' summary of the 1979 paper states that isotony is not required for approximate predicate transformers to be correct; a mechanized abstract interpreter exists in Isabelle/HOL (Nipkow 2012). Restated here for this toy analysis, with the converse.",
+  "plain_claim": "For every map ρ on assertions, the compositional analysis absPost ρ is a sound over-approximate analysis (every computed post is a Hoare post) iff ρ is extensive (X ⊆ ρ X for all X). absPost ρ applies ρ to the exact post at atomic commands; at c1; c2 it runs c2's analysis on c1's normal-exit result (exit ok, no extra ρ) or applies ρ to the disjunction of c1's error post and c2's error post from c1's normal-exit result (exit er); at c1 + c2 it applies ρ to the disjunction of the branch results; at c⋆ it uses the set Inv, the intersection of all assertions X with P ⊆ X and absPost ρ c ok X ⊆ X, returning ρ Inv (exit ok) and ρ (absPost ρ c er Inv) (exit er).",
+  "unfolded": "absPost_sound: (∀ X s, X s → ρ X s) → ∀ P c e t, (∃ s, P s ∧ Exec c s e t) → absPost ρ c e P t\nsoundOver_absPost_iff_extensive ρ: (∀ P c e t, (∃ s, P s ∧ Exec c s e t) → absPost ρ c e P t) ↔ ∀ X s, X s → ρ X s\nabsPost ρ: atomic c ↦ ρ (post c e P); seq ok ↦ absPost c₂ ok (absPost c₁ ok P); seq er ↦ ρ (absPost c₁ er P ∨ absPost c₂ er (absPost c₁ ok P)); choice ↦ ρ (absPost c₁ e P ∨ absPost c₂ e P); star ok ↦ ρ Inv; star er ↦ ρ (absPost c er Inv), Inv t := ∀ X, P ⊆ X → absPost ρ c ok X ⊆ X → X t",
+  "hypotheses": [
+   {
+    "name": "hρ : Extensive ρ (absPost_sound)",
+    "purpose": "each abstraction step must keep every concrete state; the converse direction of the characterization shows it is also necessary for every ρ",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.IL.absPost_sound_extensive_tight"
+    ]
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "ρ = hull, the interval hull on Nat, is extensive and absPost hull is sound.",
+  "nonvacuity_witness_lean": [
+   "Toy.IL.nonvacuity_absPost_sound"
+  ],
+  "non_claims": [
+   "Soundness is not precision: the hull analysis raises false alarms (sound-overapproximate-alarm-not-a-true-positive).",
+   "ρ need not be monotone or idempotent, so it need not be an upper closure operator; ρ ∘ post is not claimed to be a best abstract transformer. For a non-monotone extensive ρ the loop set Inv need not itself satisfy absPost ρ c ok Inv ⊆ Inv (absPost_loop_set_not_closed_of_nonmonotone, with nonMonoRho X := if X = {0} then True else X over Nat, which is extensive but not monotone); soundness does not depend on that closure.",
+   "Inv quantifies over all assertions X, not only over the image of ρ; it is defined impredicatively and is not computable in general; no termination, widening or effective-analysis claim is made, and nothing is claimed about which other analyses (for example with widening) are sound.",
+   "Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier."
+  ],
+  "prior_art": [
+   "P. Cousot and R. Cousot, \"Abstract interpretation: a unified lattice model for static analysis of programs by construction or approximation of fixpoints\", POPL 1977, pp. 238-252, doi:10.1145/512950.512973. Sound over-approximation of program semantics by abstract interpretation.",
+   "P. Cousot and R. Cousot, \"Systematic design of program analysis frameworks\", Conference Record of the Sixth Annual ACM Symposium on Principles of Programming Languages (POPL 1979), pp. 269-282, doi:10.1145/567752.567778. Per the authors' published summary of the paper, Section 7 gives a local correctness condition for approximate predicate transformers and notes that, since isotony is not required for them to be correct, non-isotone program analysis frameworks are manageable; it also discusses best approximate predicate transformers for upper closure operators.",
+   "T. Nipkow, \"Abstract Interpretation of Annotated Commands\", Interactive Theorem Proving (ITP 2012), LNCS 7406, pp. 116-132, Springer, 2012, doi:10.1007/978-3-642-32347-8_9; Isabelle/HOL formalization in the Archive of Formal Proofs entry Abs_Int_ITP2012 (https://isa-afp.org/entries/Abs_Int_ITP2012.html): a mechanized generic abstract interpreter for a while-language, including widening and narrowing."
+  ],
+  "design_question": "Which conclusions may a tool draw from an over-approximate (Hoare) result versus an under-approximate (incorrectness) result, and which inference rules may it use for each, so that 'no alarm' is read as safety only for over-approximation and 'alarm' is read as a real bug only for under-approximation?"
+ },
+ {
+  "id": "sound-overapproximate-alarm-not-a-true-positive",
+  "lean": [
+   "Toy.IL.soundOver_silentOnErrorFree_alarm_not_imply_errReachable",
+   "Toy.IL.hullAnalysis_false_alarm"
+  ],
+  "kind": "impossibility",
+  "tier": "T0",
+  "tier_justification": "False positives of sound over-approximate analyses are folklore (discussed in O'Hearn 2020 Section 2 and by Bruni et al. 2021); mechanized here with an interval-hull analysis that is silent on every program without error().",
+  "plain_claim": "A sound over-approximate analysis that never alarms on a program without error() can still raise an alarm without a reachable error: the interval-hull analysis absPost hull is sound, silent on every error-free program, and alarms on (x := 0 + x := 2); assume (x = 1); error() from True, which has no reachable error.",
+  "unfolded": "soundOver_silentOnErrorFree_alarm_not_imply_errReachable: ¬ ∀ A : Analysis Nat, (∀ P c e t, (∃ s, P s ∧ Exec c s e t) → A c e P t) → (∀ P c, c.errorFree = true → ¬ ∃ t, A c .er P t) → ∀ P c, (∃ t, A c .er P t) → ∃ s t, P s ∧ Exec c s .er t\nhullAnalysis_false_alarm: SoundOver hullAnalysis ∧ SilentOnErrorFree hullAnalysis ∧ Alarm hullAnalysis (fun _ => True) falseAlarmProg ∧ ¬ ErrReachable (fun _ => True) falseAlarmProg",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "hullAnalysis on falseAlarmProg from True: the abstract state after the choice is hull {0, 2} ∋ 1. hullAnalysis is also silent on mkevenProg, whose error is unreachable.",
+  "nonvacuity_witness_lean": [
+   "Toy.IL.hullAnalysis_false_alarm",
+   "Toy.IL.hullAnalysis_silent_on_mkevenProg"
+  ],
+  "positive_control_lean": [
+   "Toy.IL.soundUnder_alarm_errReachable",
+   "Toy.IL.exactAnalysis_alarm_iff_errReachable",
+   "Toy.IL.alarm_errReachable_of_er_post_under"
+  ],
+  "non_claims": [
+   "Does not say every alarm of a sound over-approximate analysis is false, nor that interval analysis is useless; alarms of a sound under-approximate analysis, and of the exact analysis, are true positives (positive controls).",
+   "The witness depends on a join losing precision (hull {0, 2} contains 1); an analysis whose computed error post at (P, c) is contained in the true error post raises only true alarms there (alarm_errReachable_of_er_post_under). Locally complete abstract interpretations (Bruni et al. 2021) give conditions of this kind for a given input; that theory is not formalized here.",
+   "The non-degeneracy condition SilentOnErrorFree only excludes analyses that alarm on programs without error() (such as topAnalysis, not_silentOnErrorFree_topAnalysis); it is not a precision guarantee.",
+   "Stated over the state type Nat; over the empty state type the refuted implication holds vacuously (refuted_implications_hold_on_empty_state_space), so the negative result needs at least one state.",
+   "Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier."
+  ],
+  "prior_art": [
+   "P. W. O'Hearn, \"Incorrectness logic\", PACMPL 4(POPL), Article 10, 2020, doi:10.1145/3371078, Section 2: tools based on over-approximation suffer from false positives, reports of bugs that cannot occur.",
+   "P. Cousot and R. Cousot, \"Abstract interpretation: a unified lattice model for static analysis of programs by construction or approximation of fixpoints\", POPL 1977, pp. 238-252, doi:10.1145/512950.512973. Sound over-approximation of program semantics by abstract interpretation.",
+   "R. Bruni, R. Giacobazzi, R. Gori and F. Ranzato, \"A Logic for Locally Complete Abstract Interpretations\", 36th Annual ACM/IEEE Symposium on Logic in Computer Science (LICS 2021), pp. 1-13, doi:10.1109/LICS52264.2021.9470608. A provable triple gives an under-approximation Q of the strongest post with the same abstraction; Corollary V.5 (Precision): for specifications expressible in the abstract domain, such a triple decides both correctness and incorrectness, so the abstract interpretation raises no false alert for that input."
+  ],
+  "design_question": "Which conclusions may a tool draw from an over-approximate (Hoare) result versus an under-approximate (incorrectness) result, and which inference rules may it use for each, so that 'no alarm' is read as safety only for over-approximation and 'alarm' is read as a real bug only for under-approximation?"
+ },
+ {
+  "id": "sound-analyses-license-alarms-or-silence",
+  "lean": [
+   "Toy.IL.soundUnder_alarm_errReachable",
+   "Toy.IL.soundOver_no_alarm_safe"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Immediate from the definitions; the standard division of labour between bug finders and verifiers.",
+  "plain_claim": "An alarm (nonempty computed error post) of a sound under-approximate analysis is a true positive relative to the analysed pre, and the silence (empty computed error post) of a sound over-approximate analysis is safety from the analysed pre.",
+  "unfolded": "soundUnder_alarm_errReachable: (∀ P c e t, U c e P t → ∃ s, P s ∧ Exec c s e t) → (∃ t, U c .er P t) → ∃ s t, P s ∧ Exec c s .er t\nsoundOver_no_alarm_safe: (∀ P c e t, (∃ s, P s ∧ Exec c s e t) → A c e P t) → ¬ (∃ t, A c .er P t) → ∀ s t, P s → ¬ Exec c s .er t",
+  "hypotheses": [
+   {
+    "name": "hU : SoundUnder U",
+    "purpose": "under-approximation makes alarms real; only its instance at (P, c, er) is used (the pointwise form is il_er_nonempty_post_true_positive)",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.IL.soundUnder_alarm_errReachable_tight"
+    ]
+   },
+   {
+    "name": "ha : Alarm U P c",
+    "purpose": "without an alarm nothing is reported",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.IL.soundUnder_alarm_errReachable_alarm_tight"
+    ]
+   },
+   {
+    "name": "hA : SoundOver A",
+    "purpose": "over-approximation makes silence meaningful; only its instance at (P, c, er) is used (the pointwise form is safe_of_hoare_er_false)",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.IL.soundOver_no_alarm_safe_tight"
+    ]
+   },
+   {
+    "name": "hna : ¬ Alarm A P c",
+    "purpose": "an alarm of an over-approximate analysis proves nothing",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.IL.soundOver_no_alarm_safe_alarm_tight"
+    ]
+   }
+  ],
+  "depth": "definitional",
+  "nonvacuity_witness": "The exact analysis alarms on error() and is silent on skip.",
+  "nonvacuity_witness_lean": [
+   "Toy.IL.nonvacuity_analysis_licensing"
+  ],
+  "non_claims": [
+   "The converses fail: under-approximate silence is not safety (sound-underapproximate-silence-not-safety) and over-approximate alarms are not true positives (sound-overapproximate-alarm-not-a-true-positive).",
+   "An alarm of a sound under-approximate analysis for P (even P = True) establishes only ErrReachable P c — an existential, possibly latent error — not that any caller or enclosing context triggers it (il-error-triple-nonempty-post-true-positive, manifest-reach-iff-error-in-every-reaching-context).",
+   "Silence of a sound over-approximate analysis establishes only absence of erroneous termination (Safe P c); it says nothing about divergence or about the correctness of normal exits.",
+   "SoundUnder and SoundOver require soundness for all commands and both exit kinds, more than these two theorems use; compositional analyses do rely on soundness at the ok exit to propagate summaries across sequences and loops (hoare_seq_er_false, absPost).",
+   "Soundness is with respect to this relational semantics; whether an analysis's assumptions match a real program is outside the claim.",
+   "Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier."
+  ],
+  "prior_art": [
+   "P. W. O'Hearn, \"Incorrectness logic\", Proceedings of the ACM on Programming Languages 4(POPL), Article 10, January 2020, doi:10.1145/3371078. Definition 1 defines the under-approximate triple [p]r[q] as post(r)p ⊇ q and the Hoare triple {p}r{q} as post(r)p ⊆ q; Lemma 3 (Characterization): [p]r[q] iff every state of q is reachable from some state of p; Fig. 1 states the ∧∨ and ⇑⇓ symmetries and the Principles of Agreement and Denial; Fig. 2 gives the generic rules (Empty under-approximates, Consequence, Disjunction, Unit, Sequencing short-circuit/normal, Iterate zero, Iterate non-zero, Backwards Variant, Choice, Error, Assume); Fig. 4 the relational semantics; Theorem 5 soundness; Theorem 6 completeness for finitely-supported predicates.",
+   "A. Raad, J. Berdine, H.-H. Dang, D. Dreyer, P. W. O'Hearn and J. Villard, \"Local reasoning about the presence of bugs: Incorrectness Separation Logic\", Computer Aided Verification (CAV 2020), LNCS 12225, pp. 225-252, Springer, 2020, doi:10.1007/978-3-030-53291-8_14. Combines incorrectness logic with separation logic and states that when ISL identifies a bug there is indeed a bug (no false positives), given the assumptions of the underlying model. Heaps, separating conjunction and the frame rule are not modelled in this package."
+  ],
+  "design_question": "Reference point (definitional baseline for other cards). Which conclusions may a tool draw from an over-approximate (Hoare) result versus an under-approximate (incorrectness) result, and which inference rules may it use for each, so that 'no alarm' is read as safety only for over-approximation and 'alarm' is read as a real bug only for under-approximation?"
+ },
+ {
+  "id": "sound-underapproximate-silence-not-safety",
+  "lean": [
+   "Toy.IL.soundUnder_exactOnLoopFree_no_alarm_not_imply_safe",
+   "Toy.IL.unrollAnalysis_two_false_negative",
+   "Toy.IL.unrollAnalysis_soundUnder"
+  ],
+  "kind": "impossibility",
+  "tier": "T0",
+  "tier_justification": "Folklore (bounded exploration finds bugs but does not prove their absence; O'Hearn 2020 Sections 4 and 5.2 discuss bounded unrolling); mechanized with a bounded-unrolling analysis shown sound under-approximate for every bound and exact on loop-free programs.",
+  "plain_claim": "A sound under-approximate analysis that is exact on every loop-free program can still be silent on an unsafe program: unrolling every loop at most k times is a sound under-approximate analysis for every k and is exact on loop-free programs, and with k = 2 it is silent on (x := x+1)⋆; assume (x = 3); error() from x = 0, which errs.",
+  "unfolded": "soundUnder_exactOnLoopFree_no_alarm_not_imply_safe: ¬ ∀ U : Analysis Nat, (∀ P c e t, U c e P t → ∃ s, P s ∧ Exec c s e t) → (∀ P c e t, c.loopFree = true → (U c e P t ↔ ∃ s, P s ∧ Exec c s e t)) → ∀ P c, ¬ (∃ t, U c .er P t) → ∀ s t, P s → ¬ Exec c s .er t\nunrollAnalysis_two_false_negative: SoundUnder (unrollAnalysis 2) ∧ ExactOnLoopFree (unrollAnalysis 2) ∧ ¬ Alarm (unrollAnalysis 2) (fun n => n = 0) countProg ∧ ¬ Safe (fun n => n = 0) countProg\nunrollAnalysis_soundUnder k: ∀ P c e t, post (c.unroll k) e P t → post c e P t",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "unrollAnalysis 2 on countProg from x = 0; unrollAnalysis 2 does alarm on the same loop followed by assume (x = 2); error().",
+  "nonvacuity_witness_lean": [
+   "Toy.IL.unrollAnalysis_two_false_negative",
+   "Toy.IL.unrollAnalysis_two_alarm_two_iterations"
+  ],
+  "positive_control_lean": [
+   "Toy.IL.soundOver_no_alarm_safe",
+   "Toy.IL.unrollAnalysis_three_alarm",
+   "Toy.IL.exactOnLoopFree_no_alarm_safe"
+  ],
+  "non_claims": [
+   "Does not say bounded unrolling cannot find this bug: with k = 3 it alarms (unrollAnalysis_three_alarm).",
+   "Does not say under-approximate silence is never informative: it is safety when the analysis is also over-approximate (soundOver_no_alarm_safe), and on loop-free programs silence of an analysis that is exact there is safety (exactOnLoopFree_no_alarm_safe). More generally, when every erroneous run from P iterates each loop at most k times, the k-unrolling finds every error and its silence is safety; that general bounded-iteration statement is not formalized here.",
+   "The non-degeneracy condition ExactOnLoopFree excludes the trivial analysis botAnalysis (not_exactOnLoopFree_botAnalysis) and forces any unsafe program on which U is silent to contain a loop (c.loopFree = false; for unrollAnalysis k, specifically an error requiring more than k iterations of some loop). The first part is exactOnLoopFree_no_alarm_safe; the unrollAnalysis refinement is the contrapositive of the bounded-iteration remark above and is likewise not formalized here. ExactOnLoopFree does not place the missed error inside or after that loop, and it is not a completeness guarantee for programs with loops.",
+   "Stated over the state type Nat; over the empty state type the refuted implication holds vacuously (refuted_implications_hold_on_empty_state_space), so the negative result needs at least one state.",
+   "Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier."
+  ],
+  "prior_art": [
+   "P. W. O'Hearn, \"Incorrectness logic\", PACMPL 4(POPL), Article 10, 2020, doi:10.1145/3371078: Section 4 states a Derived Unrolling Rule (iteration can execute its body i times) and compares it to symbolic bounded model checking (citing Clarke et al. 2004); Section 5.2 notes that under-approximation via bounded loop unrollings is well known and not sufficient in all situations.",
+   "A. Biere, A. Cimatti, E. M. Clarke and Y. Zhu, \"Symbolic model checking without BDDs\", Tools and Algorithms for the Construction and Analysis of Systems (TACAS 1999), LNCS 1579, pp. 193-207, Springer, 1999, doi:10.1007/3-540-49059-0_14. Introduces SAT-based bounded model checking, which explores executions up to a fixed bound. Context for the bounded-unrolling witness only.",
+   "E. Clarke, D. Kroening and F. Lerda, \"A Tool for Checking ANSI-C Programs\", TACAS 2004, LNCS 2988, pp. 168-176, Springer, 2004, doi:10.1007/978-3-540-24730-2_15. The CBMC bounded model checker for C, which unrolls loops up to a bound. Context for the bounded-unrolling witness only."
+  ],
+  "design_question": "Which conclusions may a tool draw from an over-approximate (Hoare) result versus an under-approximate (incorrectness) result, and which inference rules may it use for each, so that 'no alarm' is read as safety only for over-approximation and 'alarm' is read as a real bug only for under-approximation?"
+ },
+ {
+  "id": "manifest-error-preserved-under-state-frame-extension",
+  "lean": [
+   "Toy.IL.manifestError_liftFst",
+   "Toy.IL.manifestError_liftFst_iff"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Le et al. 2022 build frame extension into Definition 3.2 via q ∗ true in separation logic (another formalism); this toy (no heap) proves preservation, and reflection for a nonempty frame type, for disjoint product states. No mechanization of this property was found; the closest formal statement is outcome logic's characterization of manifest errors (Zilberstein et al. 2023, Lemma 6.7).",
+  "plain_claim": "If [P] c [er : Q] is a manifest error — a valid incorrectness error triple such that from every initial state some run of c errs in a Q state — then running c on the first component of a product state with an untouched frame component gives a manifest error [P × True] c↑ [er : Q × True]; when the frame type has an element, the converse also holds.",
+  "unfolded": "manifestError_liftFst: ((∀ t, Q t → ∃ s, P s ∧ Exec c s .er t) ∧ ∀ s, ∃ t, Q t ∧ Exec c s .er t) → ((∀ p, Q p.1 → ∃ p₀, P p₀.1 ∧ Exec c.liftFst p₀ .er p) ∧ ∀ p₀, ∃ p, Q p.1 ∧ Exec c.liftFst p₀ .er p)\nmanifestError_liftFst_iff (r₀ : τ): ManifestError (fun p => P p.1) c.liftFst (fun p => Q p.1) ↔ ManifestError P c Q\nexec_liftFst_iff: Exec c.liftFst (s, r) e (t, r') ↔ Exec c s e t ∧ r' = r",
+  "hypotheses": [
+   {
+    "name": "h.1 : IL P c er Q (validity half of ManifestError; manifestError_liftFst)",
+    "purpose": "needed for the validity half of the conclusion",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.IL.manifestError_liftFst_il_tight"
+    ]
+   },
+   {
+    "name": "h.2 : ManifestReach c Q (every-state half of ManifestError; manifestError_liftFst)",
+    "purpose": "a latent error (reachable only from some states) stays latent after extension",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.IL.manifestError_liftFst_reach_tight"
+    ]
+   },
+   {
+    "name": "r₀ : τ (manifestError_liftFst_iff)",
+    "purpose": "reflection needs a frame value; over the empty frame type every lifted triple is vacuously a manifest error",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.IL.manifestError_liftFst_iff_frame_tight"
+    ]
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "x := 0; error() with P = True, Q = (x = 0), lifted to Nat × Nat.",
+  "nonvacuity_witness_lean": [
+   "Toy.IL.nonvacuity_manifestError_liftFst",
+   "Toy.IL.nonvacuity_manifestError_liftFst_iff"
+  ],
+  "non_claims": [
+   "Frames are untouched, disjoint product components; nothing is claimed about heaps, separating conjunction, allocation, or Le et al.'s Theorem 3.3 sufficient condition. When a command and its context share a resource (for example an allocator that can return addresses the context also uses), frame preservation can fail; that is not modelled here.",
+   "Frames that constrain the extra component (posts Q × F with F not everywhere true) are not covered: the every-state clause would fail.",
+   "ManifestError P c Q does not require P = True: [x = 99] x := 0; error() [er : x = 0] is a manifest error (manifestError_pre_need_not_be_true), so the pre of a manifest error need not describe the states that trigger it.",
+   "Over the empty frame type the lifted statement holds vacuously (manifestError_liftFst_iff_frame_tight); only the forward direction holds there.",
+   "Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier."
+  ],
+  "prior_art": [
+   "Q. L. Le, A. Raad, J. Villard, J. Berdine, D. Dreyer and P. W. O'Hearn, \"Finding real bugs in big programs with incorrectness logic\", Proceedings of the ACM on Programming Languages 6(OOPSLA1), Article 81, April 2022, doi:10.1145/3527325. Distinguishes latent from manifest errors. Definition 3.2: a valid error triple |= [p] C [er : q] denotes a manifest error iff ∀s. ∃s'. (s,s') ∈ ⟦C⟧er ∧ s' ∈ ⟦q ∗ true⟧. Theorem 3.3 gives a sufficient logical condition; Theorem 3.4 (True Positives Property): if a procedure in a complete program has a manifest error then it is dead code or ⟦main⟧er ≠ ∅.",
+   "N. Zilberstein, D. Dreyer and A. Silva, \"Outcome logic: a unifying foundation for correctness and incorrectness reasoning\", Proceedings of the ACM on Programming Languages 7(OOPSLA1), Article 93, April 2023, doi:10.1145/3586045 (full version arXiv:2303.03111). Lemma 6.7 (Manifest Error Characterization): [p] C [er : q] is a manifest error in the sense of Le et al. iff the outcome-logic triple ⟨ok : true⟩ C ⟨er : q ∗ true⟩ holds; the accompanying text observes that IL preconditions do not describe conditions sufficient to reach an end state.",
+   "A. Raad, J. Berdine, H.-H. Dang, D. Dreyer, P. W. O'Hearn and J. Villard, \"Local reasoning about the presence of bugs: Incorrectness Separation Logic\", Computer Aided Verification (CAV 2020), LNCS 12225, pp. 225-252, Springer, 2020, doi:10.1007/978-3-030-53291-8_14. Combines incorrectness logic with separation logic and states that when ISL identifies a bug there is indeed a bug (no false positives), given the assumptions of the underlying model. Heaps, separating conjunction and the frame rule are not modelled in this package."
+  ],
+  "design_question": "Which conclusions may a tool draw from an over-approximate (Hoare) result versus an under-approximate (incorrectness) result, and which inference rules may it use for each, so that 'no alarm' is read as safety only for over-approximation and 'alarm' is read as a real bug only for under-approximation?"
+ },
+ {
+  "id": "manifest-reach-iff-error-in-every-reaching-context",
+  "lean": [
+   "Toy.IL.error_in_context_of_err_at_hole",
+   "Toy.IL.manifestReach_iff_forall_reaching_contexts",
+   "Toy.IL.manifestReach_fill_of_reaches_from_every_state"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "tier_justification": "Toy analogue of Le et al. 2022 Theorem 3.4 (True Positives Property) for one-hole syntactic contexts; the characterization is elementary.",
+  "plain_claim": "If running K[c] from s can arrive at the hole in state u and c can err from u into Q, then K[c] can err from s into Q. Hence c can err into Q from every state iff, for every one-hole context K and all s, u such that K[c] reaches the hole from s in state u, K[c] can err into Q from s; and if K reaches its hole from every state, K[c] can again err into Q from every state.",
+  "unfolded": "error_in_context_of_err_at_hole: (∃ t, Q t ∧ Exec c u .er t) → Reaches c K s u → ∃ t, Q t ∧ Exec (K.fill c) s .er t\nmanifestReach_iff_forall_reaching_contexts: (∀ s, ∃ t, Q t ∧ Exec c s .er t) ↔ ∀ K s u, Reaches c K s u → ∃ t, Q t ∧ Exec (K.fill c) s .er t\nmanifestReach_fill_of_reaches_from_every_state: (∀ s, ∃ t, Q t ∧ Exec c s .er t) → (∀ s, ∃ u, Reaches c K s u) → ∀ s, ∃ t, Q t ∧ Exec (K.fill c) s .er t\nReaches c K s u (inductive): hole: Reaches c hole s s; seqL: Reaches c K s u → Reaches c (seqL K c₂) s u; seqR: Exec c₁ s ok m → Reaches c K m u → Reaches c (seqR c₁ K) s u; choiceL/choiceR: Reaches c K s u → Reaches c (choice… K …) s u; star: Exec (star (K.fill c)) s ok m → Reaches c K m u → Reaches c (star K) s u",
+  "hypotheses": [
+   {
+    "name": "hu : ∃ t, Q t ∧ Exec c u er t (error_in_context_of_err_at_hole)",
+    "purpose": "c must be able to err from the state in which the context enters the hole; a latent error can be avoided even when every state satisfies a valid pre of c (for [True] assume (x = 7); error() [er : x = 7], the context x := 0; [·] enters the hole in 0)",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.IL.error_in_context_err_at_hole_tight"
+    ]
+   },
+   {
+    "name": "hr : Reaches c K s u (error_in_context_of_err_at_hole)",
+    "purpose": "an error behind dead code produces no error",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.IL.error_in_context_reaches_tight"
+    ]
+   },
+   {
+    "name": "hm : ManifestReach c Q (manifestReach_fill_of_reaches_from_every_state)",
+    "purpose": "a latent error may never be triggered by a context that reaches the hole from every state",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.IL.manifestReach_fill_manifest_tight"
+    ]
+   },
+   {
+    "name": "hr : ∀ s, ∃ u, Reaches c K s u (manifestReach_fill_of_reaches_from_every_state)",
+    "purpose": "reaching the hole from some state is not enough for the every-state conclusion",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.IL.manifestReach_fill_every_state_tight"
+    ]
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "c = x := 0; error() inside x := x+1; (skip + [·])⋆, reaching the hole from 0 in state 1 after one complete loop iteration; the same context reaches its hole from every state.",
+  "nonvacuity_witness_lean": [
+   "Toy.IL.nonvacuity_error_in_context",
+   "Toy.IL.nonvacuity_manifestReach_fill"
+  ],
+  "non_claims": [
+   "Only the every-state clause ManifestReach is characterized. Full ManifestError, validity conjunct included, is not preserved by contexts, even by contexts that reach the hole from every state: manifestError_not_preserved_by_context gives a command c, pre P, post Q, and a context K that reaches its hole from every state such that ManifestError P c Q holds but ManifestError P' (K.fill c) Q fails for every pre P' (same post Q), because the IL validity conjunct fails for every P'.",
+   "Errors are existential (may-errors): the conclusion is that some run of K[c] from s errs in Q; other nondeterministic runs of K[c] from s may exit normally or diverge.",
+   "Exact preservation of the error post Q relies on errors short-circuiting the rest of the program, with no handlers, cleanup code or state restoration in this language.",
+   "In loop contexts (star K'), whether the context reaches its hole depends on c itself, because earlier iterations run the filled body K'.fill c.",
+   "A latent error can still be triggered by a context that enters the hole in a triggering state (latent_error_triggered_by_context); manifestness is what makes the conclusion independent of the context.",
+   "Contexts are syntactic one-hole contexts of this language; there are no procedures, parameters or calls, so this is an analogue of, not a formalization of, Le et al.'s Theorem 3.4, which concludes only that main can err.",
+   "Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier."
+  ],
+  "prior_art": [
+   "Q. L. Le, A. Raad, J. Villard, J. Berdine, D. Dreyer and P. W. O'Hearn, \"Finding real bugs in big programs with incorrectness logic\", Proceedings of the ACM on Programming Languages 6(OOPSLA1), Article 81, April 2022, doi:10.1145/3527325. Distinguishes latent from manifest errors. Definition 3.2: a valid error triple |= [p] C [er : q] denotes a manifest error iff ∀s. ∃s'. (s,s') ∈ ⟦C⟧er ∧ s' ∈ ⟦q ∗ true⟧. Theorem 3.3 gives a sufficient logical condition; Theorem 3.4 (True Positives Property): if a procedure in a complete program has a manifest error then it is dead code or ⟦main⟧er ≠ ∅.",
+   "N. Zilberstein, D. Dreyer and A. Silva, \"Outcome logic: a unifying foundation for correctness and incorrectness reasoning\", Proceedings of the ACM on Programming Languages 7(OOPSLA1), Article 93, April 2023, doi:10.1145/3586045 (full version arXiv:2303.03111). Lemma 6.7 (Manifest Error Characterization): [p] C [er : q] is a manifest error in the sense of Le et al. iff the outcome-logic triple ⟨ok : true⟩ C ⟨er : q ∗ true⟩ holds; the accompanying text observes that IL preconditions do not describe conditions sufficient to reach an end state.",
+   "P. W. O'Hearn, \"Incorrectness logic\", PACMPL 4(POPL), Article 10, 2020, doi:10.1145/3371078, Section 4: the existence of a consistent error assertion does not indicate a definite bug; for f(x) = {assert(x!=0);...} the error spec [x==0]f(x)[er:x==0] is valid, but no bug occurs unless a caller supplies x == 0."
+  ],
+  "design_question": "Which conclusions may a tool draw from an over-approximate (Hoare) result versus an under-approximate (incorrectness) result, and which inference rules may it use for each, so that 'no alarm' is read as safety only for over-approximation and 'alarm' is read as a real bug only for under-approximation?"
+ }
+]

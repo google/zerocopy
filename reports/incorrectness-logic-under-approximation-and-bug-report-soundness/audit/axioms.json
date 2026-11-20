@@ -1,0 +1,831 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.IL.Alarm": [],
+    "Toy.IL.Analysis": [],
+    "Toy.IL.Assn": [],
+    "Toy.IL.Cmd": [],
+    "Toy.IL.Cmd.assign": [],
+    "Toy.IL.Cmd.assign.elim": [],
+    "Toy.IL.Cmd.assign.inj": [],
+    "Toy.IL.Cmd.assign.injEq": [
+      "propext"
+    ],
+    "Toy.IL.Cmd.assign.noConfusion": [],
+    "Toy.IL.Cmd.assign.sizeOf_spec": [],
+    "Toy.IL.Cmd.assume": [],
+    "Toy.IL.Cmd.assume.elim": [],
+    "Toy.IL.Cmd.assume.inj": [],
+    "Toy.IL.Cmd.assume.injEq": [
+      "propext"
+    ],
+    "Toy.IL.Cmd.assume.noConfusion": [],
+    "Toy.IL.Cmd.assume.sizeOf_spec": [],
+    "Toy.IL.Cmd.below": [],
+    "Toy.IL.Cmd.brecOn": [],
+    "Toy.IL.Cmd.brecOn.eq": [],
+    "Toy.IL.Cmd.brecOn.go": [],
+    "Toy.IL.Cmd.casesOn": [],
+    "Toy.IL.Cmd.choice": [],
+    "Toy.IL.Cmd.choice.elim": [],
+    "Toy.IL.Cmd.choice.inj": [],
+    "Toy.IL.Cmd.choice.injEq": [
+      "propext"
+    ],
+    "Toy.IL.Cmd.choice.noConfusion": [],
+    "Toy.IL.Cmd.choice.sizeOf_spec": [],
+    "Toy.IL.Cmd.ctorElim": [],
+    "Toy.IL.Cmd.ctorElimType": [],
+    "Toy.IL.Cmd.ctorIdx": [],
+    "Toy.IL.Cmd.error": [],
+    "Toy.IL.Cmd.error.elim": [],
+    "Toy.IL.Cmd.error.sizeOf_spec": [],
+    "Toy.IL.Cmd.errorFree": [],
+    "Toy.IL.Cmd.errorFree.eq_1": [],
+    "Toy.IL.Cmd.errorFree.eq_2": [],
+    "Toy.IL.Cmd.errorFree.eq_3": [],
+    "Toy.IL.Cmd.errorFree.eq_4": [],
+    "Toy.IL.Cmd.errorFree.eq_5": [],
+    "Toy.IL.Cmd.errorFree.eq_6": [],
+    "Toy.IL.Cmd.errorFree.eq_def": [],
+    "Toy.IL.Cmd.errorFree.match_1": [],
+    "Toy.IL.Cmd.liftFst": [],
+    "Toy.IL.Cmd.liftFst.eq_1": [],
+    "Toy.IL.Cmd.liftFst.eq_2": [],
+    "Toy.IL.Cmd.liftFst.eq_3": [],
+    "Toy.IL.Cmd.liftFst.eq_4": [],
+    "Toy.IL.Cmd.liftFst.eq_5": [],
+    "Toy.IL.Cmd.liftFst.eq_6": [],
+    "Toy.IL.Cmd.liftFst.eq_def": [],
+    "Toy.IL.Cmd.liftFst.match_1": [],
+    "Toy.IL.Cmd.loopFree": [],
+    "Toy.IL.Cmd.loopFree.eq_1": [],
+    "Toy.IL.Cmd.loopFree.eq_2": [],
+    "Toy.IL.Cmd.loopFree.eq_3": [],
+    "Toy.IL.Cmd.loopFree.eq_4": [],
+    "Toy.IL.Cmd.loopFree.eq_5": [],
+    "Toy.IL.Cmd.loopFree.eq_6": [],
+    "Toy.IL.Cmd.loopFree.eq_def": [],
+    "Toy.IL.Cmd.noConfusion": [],
+    "Toy.IL.Cmd.noConfusionType": [],
+    "Toy.IL.Cmd.rec": [],
+    "Toy.IL.Cmd.recOn": [],
+    "Toy.IL.Cmd.seq": [],
+    "Toy.IL.Cmd.seq.elim": [],
+    "Toy.IL.Cmd.seq.inj": [],
+    "Toy.IL.Cmd.seq.injEq": [
+      "propext"
+    ],
+    "Toy.IL.Cmd.seq.noConfusion": [],
+    "Toy.IL.Cmd.seq.sizeOf_spec": [],
+    "Toy.IL.Cmd.skip": [],
+    "Toy.IL.Cmd.skip.eq_1": [],
+    "Toy.IL.Cmd.star": [],
+    "Toy.IL.Cmd.star.elim": [],
+    "Toy.IL.Cmd.star.inj": [],
+    "Toy.IL.Cmd.star.injEq": [
+      "propext"
+    ],
+    "Toy.IL.Cmd.star.noConfusion": [],
+    "Toy.IL.Cmd.star.sizeOf_spec": [],
+    "Toy.IL.Cmd.unroll": [],
+    "Toy.IL.Cmd.unroll.eq_1": [],
+    "Toy.IL.Cmd.unroll.eq_2": [],
+    "Toy.IL.Cmd.unroll.eq_3": [],
+    "Toy.IL.Cmd.unroll.eq_4": [],
+    "Toy.IL.Cmd.unroll.eq_5": [],
+    "Toy.IL.Cmd.unroll.eq_6": [],
+    "Toy.IL.Cmd.unroll.eq_def": [],
+    "Toy.IL.Cmd.upTo": [],
+    "Toy.IL.Cmd.upTo.eq_1": [],
+    "Toy.IL.Cmd.upTo.eq_2": [],
+    "Toy.IL.Cmd.upTo.eq_def": [],
+    "Toy.IL.Cmd.upTo.match_1": [],
+    "Toy.IL.Ctx": [],
+    "Toy.IL.Ctx.below": [],
+    "Toy.IL.Ctx.brecOn": [],
+    "Toy.IL.Ctx.brecOn.eq": [],
+    "Toy.IL.Ctx.brecOn.go": [],
+    "Toy.IL.Ctx.casesOn": [],
+    "Toy.IL.Ctx.choiceL": [],
+    "Toy.IL.Ctx.choiceL.elim": [],
+    "Toy.IL.Ctx.choiceL.inj": [],
+    "Toy.IL.Ctx.choiceL.injEq": [
+      "propext"
+    ],
+    "Toy.IL.Ctx.choiceL.noConfusion": [],
+    "Toy.IL.Ctx.choiceL.sizeOf_spec": [],
+    "Toy.IL.Ctx.choiceR": [],
+    "Toy.IL.Ctx.choiceR.elim": [],
+    "Toy.IL.Ctx.choiceR.inj": [],
+    "Toy.IL.Ctx.choiceR.injEq": [
+      "propext"
+    ],
+    "Toy.IL.Ctx.choiceR.noConfusion": [],
+    "Toy.IL.Ctx.choiceR.sizeOf_spec": [],
+    "Toy.IL.Ctx.ctorElim": [],
+    "Toy.IL.Ctx.ctorElimType": [],
+    "Toy.IL.Ctx.ctorIdx": [],
+    "Toy.IL.Ctx.fill": [],
+    "Toy.IL.Ctx.fill.eq_1": [],
+    "Toy.IL.Ctx.fill.eq_2": [],
+    "Toy.IL.Ctx.fill.eq_3": [],
+    "Toy.IL.Ctx.fill.eq_4": [],
+    "Toy.IL.Ctx.fill.eq_5": [],
+    "Toy.IL.Ctx.fill.eq_6": [],
+    "Toy.IL.Ctx.fill.eq_def": [],
+    "Toy.IL.Ctx.fill.match_1": [],
+    "Toy.IL.Ctx.hole": [],
+    "Toy.IL.Ctx.hole.elim": [],
+    "Toy.IL.Ctx.hole.sizeOf_spec": [],
+    "Toy.IL.Ctx.noConfusion": [],
+    "Toy.IL.Ctx.noConfusionType": [],
+    "Toy.IL.Ctx.rec": [],
+    "Toy.IL.Ctx.recOn": [],
+    "Toy.IL.Ctx.seqL": [],
+    "Toy.IL.Ctx.seqL.elim": [],
+    "Toy.IL.Ctx.seqL.inj": [],
+    "Toy.IL.Ctx.seqL.injEq": [
+      "propext"
+    ],
+    "Toy.IL.Ctx.seqL.noConfusion": [],
+    "Toy.IL.Ctx.seqL.sizeOf_spec": [],
+    "Toy.IL.Ctx.seqR": [],
+    "Toy.IL.Ctx.seqR.elim": [],
+    "Toy.IL.Ctx.seqR.inj": [],
+    "Toy.IL.Ctx.seqR.injEq": [
+      "propext"
+    ],
+    "Toy.IL.Ctx.seqR.noConfusion": [],
+    "Toy.IL.Ctx.seqR.sizeOf_spec": [],
+    "Toy.IL.Ctx.star": [],
+    "Toy.IL.Ctx.star.elim": [],
+    "Toy.IL.Ctx.star.inj": [],
+    "Toy.IL.Ctx.star.injEq": [
+      "propext"
+    ],
+    "Toy.IL.Ctx.star.noConfusion": [],
+    "Toy.IL.Ctx.star.sizeOf_spec": [],
+    "Toy.IL.Entails": [],
+    "Toy.IL.ErrReachable": [],
+    "Toy.IL.ExactOnLoopFree": [],
+    "Toy.IL.Exec": [],
+    "Toy.IL.Exec.assign": [],
+    "Toy.IL.Exec.assume": [],
+    "Toy.IL.Exec.below": [],
+    "Toy.IL.Exec.below.assign": [],
+    "Toy.IL.Exec.below.assume": [],
+    "Toy.IL.Exec.below.casesOn": [],
+    "Toy.IL.Exec.below.choiceL": [],
+    "Toy.IL.Exec.below.choiceR": [],
+    "Toy.IL.Exec.below.error": [],
+    "Toy.IL.Exec.below.rec": [],
+    "Toy.IL.Exec.below.seqEr": [],
+    "Toy.IL.Exec.below.seqOk": [],
+    "Toy.IL.Exec.below.starEr": [],
+    "Toy.IL.Exec.below.starNil": [],
+    "Toy.IL.Exec.below.starOk": [],
+    "Toy.IL.Exec.brecOn": [],
+    "Toy.IL.Exec.casesOn": [],
+    "Toy.IL.Exec.choiceL": [],
+    "Toy.IL.Exec.choiceR": [],
+    "Toy.IL.Exec.error": [],
+    "Toy.IL.Exec.rec": [],
+    "Toy.IL.Exec.recOn": [],
+    "Toy.IL.Exec.seqEr": [],
+    "Toy.IL.Exec.seqOk": [],
+    "Toy.IL.Exec.starEr": [],
+    "Toy.IL.Exec.starNil": [],
+    "Toy.IL.Exec.starOk": [],
+    "Toy.IL.Exit": [],
+    "Toy.IL.Exit.casesOn": [],
+    "Toy.IL.Exit.ctorElim": [],
+    "Toy.IL.Exit.ctorElimType": [],
+    "Toy.IL.Exit.ctorIdx": [],
+    "Toy.IL.Exit.er": [],
+    "Toy.IL.Exit.er.elim": [],
+    "Toy.IL.Exit.er.sizeOf_spec": [],
+    "Toy.IL.Exit.noConfusion": [],
+    "Toy.IL.Exit.noConfusionType": [],
+    "Toy.IL.Exit.ofNat": [],
+    "Toy.IL.Exit.ofNat_ctorIdx": [],
+    "Toy.IL.Exit.ok": [],
+    "Toy.IL.Exit.ok.elim": [],
+    "Toy.IL.Exit.ok.sizeOf_spec": [],
+    "Toy.IL.Exit.rec": [],
+    "Toy.IL.Exit.recOn": [],
+    "Toy.IL.Extensive": [],
+    "Toy.IL.Hoare": [],
+    "Toy.IL.IL": [],
+    "Toy.IL.ILDeriv": [],
+    "Toy.IL.ILDeriv.assign": [],
+    "Toy.IL.ILDeriv.assumeOk": [],
+    "Toy.IL.ILDeriv.backwardsVariant": [],
+    "Toy.IL.ILDeriv.below": [],
+    "Toy.IL.ILDeriv.below.assign": [],
+    "Toy.IL.ILDeriv.below.assumeOk": [],
+    "Toy.IL.ILDeriv.below.backwardsVariant": [],
+    "Toy.IL.ILDeriv.below.casesOn": [],
+    "Toy.IL.ILDeriv.below.choiceL": [],
+    "Toy.IL.ILDeriv.below.choiceR": [],
+    "Toy.IL.ILDeriv.below.conseq": [],
+    "Toy.IL.ILDeriv.below.disj": [],
+    "Toy.IL.ILDeriv.below.empty": [],
+    "Toy.IL.ILDeriv.below.errorEr": [],
+    "Toy.IL.ILDeriv.below.iterNonzero": [],
+    "Toy.IL.ILDeriv.below.iterZero": [],
+    "Toy.IL.ILDeriv.below.rec": [],
+    "Toy.IL.ILDeriv.below.seqNormal": [],
+    "Toy.IL.ILDeriv.below.seqShort": [],
+    "Toy.IL.ILDeriv.brecOn": [],
+    "Toy.IL.ILDeriv.casesOn": [],
+    "Toy.IL.ILDeriv.choiceL": [],
+    "Toy.IL.ILDeriv.choiceR": [],
+    "Toy.IL.ILDeriv.conseq": [],
+    "Toy.IL.ILDeriv.disj": [],
+    "Toy.IL.ILDeriv.empty": [],
+    "Toy.IL.ILDeriv.errorEr": [],
+    "Toy.IL.ILDeriv.iterNonzero": [],
+    "Toy.IL.ILDeriv.iterZero": [],
+    "Toy.IL.ILDeriv.rec": [],
+    "Toy.IL.ILDeriv.recOn": [],
+    "Toy.IL.ILDeriv.seqNormal": [],
+    "Toy.IL.ILDeriv.seqShort": [],
+    "Toy.IL.ManifestError": [],
+    "Toy.IL.ManifestReach": [],
+    "Toy.IL.Reaches": [],
+    "Toy.IL.Reaches.below": [],
+    "Toy.IL.Reaches.below.casesOn": [],
+    "Toy.IL.Reaches.below.choiceL": [],
+    "Toy.IL.Reaches.below.choiceR": [],
+    "Toy.IL.Reaches.below.hole": [],
+    "Toy.IL.Reaches.below.rec": [],
+    "Toy.IL.Reaches.below.seqL": [],
+    "Toy.IL.Reaches.below.seqR": [],
+    "Toy.IL.Reaches.below.star": [],
+    "Toy.IL.Reaches.brecOn": [],
+    "Toy.IL.Reaches.casesOn": [],
+    "Toy.IL.Reaches.choiceL": [],
+    "Toy.IL.Reaches.choiceR": [],
+    "Toy.IL.Reaches.hole": [],
+    "Toy.IL.Reaches.rec": [],
+    "Toy.IL.Reaches.recOn": [],
+    "Toy.IL.Reaches.seqL": [],
+    "Toy.IL.Reaches.seqR": [],
+    "Toy.IL.Reaches.star": [],
+    "Toy.IL.Safe": [],
+    "Toy.IL.SilentOnErrorFree": [],
+    "Toy.IL.SoundOver": [],
+    "Toy.IL.SoundUnder": [],
+    "Toy.IL.absPost": [],
+    "Toy.IL.absPost.match_1": [],
+    "Toy.IL.absPost_er_empty_of_errorFree": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.absPost_loop_set_not_closed_of_nonmonotone": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.absPost_sound": [
+      "propext"
+    ],
+    "Toy.IL.absPost_sound_aux": [
+      "propext"
+    ],
+    "Toy.IL.absPost_sound_extensive_tight": [],
+    "Toy.IL.alarm_errReachable_of_er_post_under": [],
+    "Toy.IL.alarm_neg": [
+      "propext"
+    ],
+    "Toy.IL.alarm_pos": [],
+    "Toy.IL.botAnalysis": [],
+    "Toy.IL.conjCounterProg": [],
+    "Toy.IL.conj_disj_rules_h1_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.conj_disj_rules_h2_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.countProg": [],
+    "Toy.IL.countProg.eq_1": [],
+    "Toy.IL.entails_empty_left": [],
+    "Toy.IL.entails_neg": [],
+    "Toy.IL.entails_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.errReachable_iff_exists_il_er_nonempty": [],
+    "Toy.IL.errReachable_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.errReachable_pos": [],
+    "Toy.IL.error_in_context_err_at_hole_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.error_in_context_of_err_at_hole": [],
+    "Toy.IL.error_in_context_of_manifestReach": [],
+    "Toy.IL.error_in_context_reaches_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.exactAnalysis": [],
+    "Toy.IL.exactAnalysis_alarm_iff_errReachable": [],
+    "Toy.IL.exactOnLoopFree_no_alarm_safe": [],
+    "Toy.IL.exec_assign_iff": [],
+    "Toy.IL.exec_assume_iff": [],
+    "Toy.IL.exec_choice_iff": [],
+    "Toy.IL.exec_error_iff": [],
+    "Toy.IL.exec_liftFst": [],
+    "Toy.IL.exec_liftFst_iff": [
+      "propext"
+    ],
+    "Toy.IL.exec_neg_assume_false": [
+      "propext"
+    ],
+    "Toy.IL.exec_neg_error_ok": [
+      "propext"
+    ],
+    "Toy.IL.exec_neg_seq_error_state": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.exec_neg_star_assign_er": [
+      "propext"
+    ],
+    "Toy.IL.exec_of_exec_unroll": [
+      "propext"
+    ],
+    "Toy.IL.exec_pos_seq_error": [],
+    "Toy.IL.exec_pos_star_three": [],
+    "Toy.IL.exec_seq_iff": [],
+    "Toy.IL.exec_skip_iff": [
+      "propext"
+    ],
+    "Toy.IL.exec_star_er_split": [],
+    "Toy.IL.exec_star_iff": [],
+    "Toy.IL.exec_star_of_exec_upTo": [
+      "propext"
+    ],
+    "Toy.IL.exec_star_snoc": [],
+    "Toy.IL.exists_iterPost_of_exec_star": [],
+    "Toy.IL.falseAlarmProg": [],
+    "Toy.IL.falseAlarmProg.eq_1": [],
+    "Toy.IL.hoare_and_il_iff_eq_post": [],
+    "Toy.IL.hoare_and_post_iff": [],
+    "Toy.IL.hoare_conjunction_sound": [],
+    "Toy.IL.hoare_consequence_post_tight": [
+      "propext"
+    ],
+    "Toy.IL.hoare_consequence_pre_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.hoare_consequence_strengthen_pre_weaken_post": [],
+    "Toy.IL.hoare_consequence_triple_tight": [
+      "propext"
+    ],
+    "Toy.IL.hoare_disjunction_sound": [],
+    "Toy.IL.hoare_er_nonempty_post_without_reachable_error": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.hoare_iff": [],
+    "Toy.IL.hoare_neg": [],
+    "Toy.IL.hoare_ok_summary_then_il_er_without_reachable_error": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.hoare_or_post_not_split": [
+      "propext"
+    ],
+    "Toy.IL.hoare_pos": [
+      "propext"
+    ],
+    "Toy.IL.hoare_pos_error_ok": [
+      "propext"
+    ],
+    "Toy.IL.hoare_post_self": [],
+    "Toy.IL.hoare_rules_premise_tight": [
+      "propext"
+    ],
+    "Toy.IL.hoare_seq_er_false": [
+      "propext"
+    ],
+    "Toy.IL.hoare_true_post": [],
+    "Toy.IL.hull": [],
+    "Toy.IL.hullAnalysis": [],
+    "Toy.IL.hullAnalysis_false_alarm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.hullAnalysis_silent_on_mkevenProg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.hull_empty": [],
+    "Toy.IL.hull_empty.match_1_1": [],
+    "Toy.IL.hull_extensive": [],
+    "Toy.IL.hull_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.hull_pos": [],
+    "Toy.IL.ilDeriv_complete_valid_tight": [
+      "propext"
+    ],
+    "Toy.IL.ilDeriv_count_up": [],
+    "Toy.IL.ilDeriv_count_up_error": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.ilDeriv_post": [
+      "propext"
+    ],
+    "Toy.IL.ilDeriv_relatively_complete": [
+      "propext"
+    ],
+    "Toy.IL.ilDeriv_sound": [],
+    "Toy.IL.ilDeriv_sound_deriv_tight": [
+      "propext"
+    ],
+    "Toy.IL.il_and_post_not_split": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.il_and_post_of_il_left": [],
+    "Toy.IL.il_backwardsVariant_sound": [],
+    "Toy.IL.il_backwardsVariant_sound_premise_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.il_backwardsVariant_sound_premise_tight.match_1": [],
+    "Toy.IL.il_conjunction_backward_preserved_sound": [],
+    "Toy.IL.il_conjunction_backward_preserved_sound.match_1_1": [],
+    "Toy.IL.il_conjunction_backward_preserved_sound.match_1_3": [],
+    "Toy.IL.il_conjunction_counterexample": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.il_conjunction_instance_without_backward_unique": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.il_conjunction_rule_iff_backward_unique": [],
+    "Toy.IL.il_conjunction_rule_sound_iff_subsingleton": [],
+    "Toy.IL.il_conjunction_rule_sound_on_unit": [],
+    "Toy.IL.il_conjunction_rule_sound_on_unit.match_1_1": [],
+    "Toy.IL.il_conjunction_rule_unsound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.il_conjunction_same_pre_sound": [],
+    "Toy.IL.il_conjunction_same_pre_sound.match_1_1": [],
+    "Toy.IL.il_conjunction_sound_of_backward_unique": [],
+    "Toy.IL.il_conjunction_sound_of_backward_unique_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.il_consequence_post_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.il_consequence_pre_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.il_consequence_triple_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.il_consequence_weaken_pre_strengthen_post": [],
+    "Toy.IL.il_denies_hoare": [],
+    "Toy.IL.il_denies_hoare_hout_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.il_disjunction_premise_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.il_disjunction_sound": [],
+    "Toy.IL.il_empty_post": [],
+    "Toy.IL.il_er_empty_post_valid_yet_unsafe": [],
+    "Toy.IL.il_er_nonempty_post_true_positive": [],
+    "Toy.IL.il_er_nonempty_post_true_positive_il_tight": [
+      "propext"
+    ],
+    "Toy.IL.il_er_nonempty_post_true_positive_nonempty_tight": [],
+    "Toy.IL.il_er_nonempty_post_true_positive_nonempty_tight.match_1_1": [],
+    "Toy.IL.il_er_true_pre_yet_caller_state_avoids_error": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.il_hoare_agreement": [],
+    "Toy.IL.il_hoare_agreement_hoare_tight": [
+      "propext"
+    ],
+    "Toy.IL.il_hoare_agreement_il_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.il_hoare_agreement_sub_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.il_iff": [],
+    "Toy.IL.il_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.il_ok_nonempty_and_er_empty_yet_unsafe": [
+      "propext"
+    ],
+    "Toy.IL.il_ok_then_il_er_errReachable": [],
+    "Toy.IL.il_or_post_iff": [],
+    "Toy.IL.il_pos": [],
+    "Toy.IL.il_pos_drop_branch": [],
+    "Toy.IL.il_post_self": [],
+    "Toy.IL.instDecidableEqExit": [],
+    "Toy.IL.instReprExit": [],
+    "Toy.IL.instReprExit.repr": [],
+    "Toy.IL.instReprExit.repr.match_1": [],
+    "Toy.IL.iterPost": [],
+    "Toy.IL.iterPost.eq_1": [],
+    "Toy.IL.iterPost.eq_2": [],
+    "Toy.IL.iterPost.eq_def": [],
+    "Toy.IL.iterPost.match_1": [],
+    "Toy.IL.iterPost_shift": [],
+    "Toy.IL.iterZero_derivable": [],
+    "Toy.IL.iterZero_derivable.match_1_1": [],
+    "Toy.IL.latent_error_not_manifest": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.latent_error_triggered_by_context": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.manifestError_liftFst": [],
+    "Toy.IL.manifestError_liftFst_iff": [
+      "propext"
+    ],
+    "Toy.IL.manifestError_liftFst_iff_frame_tight": [
+      "propext"
+    ],
+    "Toy.IL.manifestError_liftFst_il_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.manifestError_liftFst_reach_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.manifestError_not_preserved_by_context": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.manifestError_not_preserved_by_context.match_1_1": [],
+    "Toy.IL.manifestError_pos": [],
+    "Toy.IL.manifestError_pre_need_not_be_true": [],
+    "Toy.IL.manifestReach_fill_every_state_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.manifestReach_fill_manifest_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.manifestReach_fill_of_reaches_from_every_state": [],
+    "Toy.IL.manifestReach_iff_forall_reaching_contexts": [],
+    "Toy.IL.manifestReach_not_manifestError": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.mkevenBody": [],
+    "Toy.IL.mkevenBody.eq_1": [],
+    "Toy.IL.mkevenCheck": [],
+    "Toy.IL.mkevenCheck.eq_1": [],
+    "Toy.IL.mkevenProg": [],
+    "Toy.IL.mkevenProg.eq_1": [],
+    "Toy.IL.mkevenProg_eq": [],
+    "Toy.IL.nonMonoRho": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.nonMonoRho.eq_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.nonMonoRho_extensive": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.nonMonoRho_not_monotone": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.nonvacuity_absPost_sound": [
+      "propext"
+    ],
+    "Toy.IL.nonvacuity_agreement": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.nonvacuity_analysis_licensing": [
+      "propext"
+    ],
+    "Toy.IL.nonvacuity_backwardsVariant": [
+      "propext"
+    ],
+    "Toy.IL.nonvacuity_conj_disj": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.nonvacuity_denial": [],
+    "Toy.IL.nonvacuity_duality": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.nonvacuity_error_in_context": [],
+    "Toy.IL.nonvacuity_hoare_consequence": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.nonvacuity_hoare_safe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.nonvacuity_ilDeriv_complete": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.nonvacuity_ilDeriv_sound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.nonvacuity_il_characterization": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.nonvacuity_il_conjunction_backward_unique": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.nonvacuity_il_conjunction_rule_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.nonvacuity_il_consequence": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.nonvacuity_il_true_positive": [],
+    "Toy.IL.nonvacuity_manifestError_liftFst": [],
+    "Toy.IL.nonvacuity_manifestError_liftFst_iff": [],
+    "Toy.IL.nonvacuity_manifestReach_fill": [],
+    "Toy.IL.nonvacuity_not_hoare_singleton": [],
+    "Toy.IL.not_exactOnLoopFree_botAnalysis": [],
+    "Toy.IL.not_exec_er_of_errorFree": [
+      "propext"
+    ],
+    "Toy.IL.not_hoare_er_nonempty_post_implies_errReachable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.not_hoare_iff_exists_il_singleton_outside": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.not_hoare_ok_then_il_er_implies_errReachable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.not_il_er_empty_post_implies_safe": [],
+    "Toy.IL.not_silentOnErrorFree_topAnalysis": [],
+    "Toy.IL.not_soundOver_botAnalysis": [],
+    "Toy.IL.not_soundUnder_topAnalysis": [
+      "propext"
+    ],
+    "Toy.IL.post": [],
+    "Toy.IL.post_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.post_pos": [],
+    "Toy.IL.post_skip_ok": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.reaches_neg": [
+      "propext"
+    ],
+    "Toy.IL.reaches_pos": [],
+    "Toy.IL.refuted_implications_hold_on_empty_state_space": [],
+    "Toy.IL.refuted_implications_hold_on_empty_state_space.match_1_1": [],
+    "Toy.IL.refuted_implications_hold_on_empty_state_space.match_1_3": [],
+    "Toy.IL.safe_iff_all_il_er_posts_empty": [
+      "propext"
+    ],
+    "Toy.IL.safe_iff_hoare_er_false": [
+      "propext"
+    ],
+    "Toy.IL.safe_iff_not_errReachable": [],
+    "Toy.IL.safe_neg": [],
+    "Toy.IL.safe_of_hoare_er_false": [
+      "propext"
+    ],
+    "Toy.IL.safe_of_hoare_er_false_tight": [
+      "propext"
+    ],
+    "Toy.IL.safe_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.safe_seq_not_of_safe_parts": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.silentOnErrorFree_exactAnalysis": [
+      "propext"
+    ],
+    "Toy.IL.silentOnErrorFree_hullAnalysis": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.skip_backward_unique": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.soundOver_absPost_iff_extensive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.soundOver_exactAnalysis": [],
+    "Toy.IL.soundOver_no_alarm_safe": [],
+    "Toy.IL.soundOver_no_alarm_safe_alarm_tight": [],
+    "Toy.IL.soundOver_no_alarm_safe_tight": [],
+    "Toy.IL.soundOver_no_alarm_safe_tight.match_1_1": [],
+    "Toy.IL.soundOver_silentOnErrorFree_alarm_not_imply_errReachable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.soundOver_topAnalysis": [],
+    "Toy.IL.soundUnder_alarm_errReachable": [],
+    "Toy.IL.soundUnder_alarm_errReachable_alarm_tight": [
+      "propext"
+    ],
+    "Toy.IL.soundUnder_alarm_errReachable_tight": [
+      "propext"
+    ],
+    "Toy.IL.soundUnder_botAnalysis": [],
+    "Toy.IL.soundUnder_exactAnalysis": [],
+    "Toy.IL.soundUnder_exactOnLoopFree_no_alarm_not_imply_safe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.star_ok_closed": [],
+    "Toy.IL.topAnalysis": [],
+    "Toy.IL.unrollAnalysis": [],
+    "Toy.IL.unrollAnalysis_exactOnLoopFree": [
+      "propext"
+    ],
+    "Toy.IL.unrollAnalysis_soundUnder": [
+      "propext"
+    ],
+    "Toy.IL.unrollAnalysis_three_alarm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.unrollAnalysis_two_alarm_two_iterations": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.unrollAnalysis_two_false_negative": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.IL.unroll_of_loopFree": [
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

@@ -1,0 +1,6 @@
+name = "ToyIL"
+version = "0.1.0"
+defaultTargets = ["ToyIL"]
+
+[[lean_lib]]
+name = "ToyIL"

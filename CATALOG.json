@@ -35828,6 +35828,97 @@
         "systems/os-kernels"
       ]
     },
+    "incorrectness-logic-under-approximation-and-bug-report-soundness": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371078"
+          },
+          "name": "Incorrectness Logic (O'Hearn, POPL 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3527325"
+          },
+          "name": "Finding Real Bugs in Big Programs with Incorrectness Logic (Le, Raad, Villard, Berdine, Dreyer, O'Hearn, OOPSLA 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-88701-8_20"
+          },
+          "name": "On Algebra of Program Correctness and Incorrectness (M\u00f6ller, O'Hearn, Hoare, RAMiCS 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-24690-6_12"
+          },
+          "name": "Reverse Hoare Logic (de Vries, Koutavas, SEFM 2011)"
+        },
+        {
+          "identity": {
+            "arxiv": "2303.03111",
+            "doi": "10.1145/3586045"
+          },
+          "name": "Outcome Logic: A Unifying Foundation for Correctness and Incorrectness Reasoning (Zilberstein, Dreyer, Silva, OOPSLA 2023)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-53291-8_14"
+          },
+          "name": "Local Reasoning about the Presence of Bugs: Incorrectness Separation Logic (Raad, Berdine, Dang, Dreyer, O'Hearn, Villard, CAV 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/363235.363259"
+          },
+          "name": "An Axiomatic Basis for Computer Programming (Hoare, CACM 1969)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/512950.512973"
+          },
+          "name": "Abstract Interpretation: A Unified Lattice Model for Static Analysis of Programs by Construction or Approximation of Fixpoints (Cousot, Cousot, POPL 1977)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/567752.567778"
+          },
+          "name": "Systematic Design of Program Analysis Frameworks (Cousot, Cousot, POPL 1979)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/LICS52264.2021.9470608"
+          },
+          "name": "A Logic for Locally Complete Abstract Interpretations (Bruni, Giacobazzi, Gori, Ranzato, LICS 2021)"
+        },
+        {
+          "identity": {
+            "arxiv": "2301.10037",
+            "doi": "10.1145/3656437"
+          },
+          "name": "Hyper Hoare Logic: (Dis-)Proving Program Hyperproperties (Dardinier, M\u00fcller, PLDI 2024)"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/incorrectness-logic",
+        "verification/hoare-logic",
+        "verification/under-approximation",
+        "verification/abstract-interpretation",
+        "verification/bug-finding",
+        "pl/program-logics"
+      ]
+    },
     "incremental-c2rust-lifting-mvee-shadow-execution-and-ffi-strangulation": {
       "observed_at": "2026-11-19",
       "subjects": [
