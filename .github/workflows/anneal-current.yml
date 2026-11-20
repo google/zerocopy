@@ -22,6 +22,12 @@ jobs:
   static-checks:
     runs-on: ubuntu-latest
     name: Static checks
+    # Strip GitHub Actions cache and artifact service credentials so scripts in
+    # `ci/` (outside `trusted/`) cannot poison workflow caches or artifacts.
+    env:
+      ACTIONS_CACHE_URL: ''
+      ACTIONS_RESULTS_URL: ''
+      ACTIONS_RUNTIME_TOKEN: ''
     steps:
       - name: Install ripgrep
         working-directory: .
@@ -32,7 +38,7 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-      - name: Reject Cargo and toolchain overrides
+      - name: Verify root TCB manifest
         run: |
           set -euo pipefail
           linked_path="$(find trusted -type l -print -quit)"
@@ -40,6 +46,7 @@ jobs:
             echo "symlink in Anneal trusted tree: $linked_path" >&2
             exit 1
           fi
+          sha256sum --check --strict trusted/root-manifest.sha256
           for root in . "$GITHUB_WORKSPACE"; do
             for name in .cargo rust-toolchain rust-toolchain.toml .gitmodules; do
               path="$root/$name"
@@ -59,6 +66,10 @@ jobs:
         run: ./ci/check_actions.sh
       - name: Check Nix flake evaluation across all platforms
         run: ./ci/check_flake_eval.sh
+      # FIXME(#87): We must address all blockers listed in #87 before permitting
+      # stable releases.
+      - name: Check non-stable cargo-anneal version
+        run: ./ci/check_non_stable_version.sh
 
   build-exocrate:
     runs-on: ubuntu-latest
@@ -67,7 +78,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - name: Reject Cargo and toolchain overrides
+
+      - name: Verify root TCB manifest
         run: |
           set -euo pipefail
           linked_path="$(find trusted -type l -print -quit)"
@@ -75,6 +87,7 @@ jobs:
             echo "symlink in Anneal trusted tree: $linked_path" >&2
             exit 1
           fi
+          sha256sum --check --strict trusted/root-manifest.sha256
           for root in . "$GITHUB_WORKSPACE"; do
             for name in .cargo rust-toolchain rust-toolchain.toml .gitmodules; do
               path="$root/$name"
@@ -91,7 +104,9 @@ jobs:
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ${{ runner.temp }}/anneal-nix-cache
-          key: anneal-current-nix-cache-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('anneal/flake.nix', 'anneal/flake.lock', 'anneal/Cargo.lock', 'anneal/trusted/lean/**', 'anneal/trusted/rustc-capture/**') }}
+          key: anneal-current-nix-cache-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('anneal/flake.nix', 'anneal/flake.lock', 'anneal/Cargo.lock', 'anneal/trusted/lean/**', 'anneal/trusted/audit/**', 'anneal/trusted/rustc-capture/**', 'anneal/theory/**') }}
+          restore-keys: |
+            anneal-current-nix-cache-v1-${{ runner.os }}-${{ runner.arch }}-
 
       - name: Install Nix
         uses: DeterminateSystems/determinate-nix-action@92957199488000b908fdad19f63711000965d8f3 # v3.24.1
@@ -142,7 +157,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - name: Reject Cargo and toolchain overrides
+
+      - name: Verify root TCB manifest
         run: |
           set -euo pipefail
           linked_path="$(find trusted -type l -print -quit)"
@@ -150,6 +166,7 @@ jobs:
             echo "symlink in Anneal trusted tree: $linked_path" >&2
             exit 1
           fi
+          sha256sum --check --strict trusted/root-manifest.sha256
           for root in . "$GITHUB_WORKSPACE"; do
             for name in .cargo rust-toolchain rust-toolchain.toml .gitmodules; do
               path="$root/$name"
@@ -171,6 +188,10 @@ jobs:
           cargo run --locked -p cargo-anneal -- setup \
             --local-archive target/anneal-exocrate.tar.zst
           rm -f target/anneal-exocrate.tar.zst
+
+      - name: Audit repository trusted boundary
+        run: |
+          cargo run --locked -p anneal-audit
 
       - name: Test Rust workspace and crate packaging
         run: |

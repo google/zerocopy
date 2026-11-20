@@ -8,6 +8,8 @@
 
 [package]
 name = "cargo-anneal"
+# FIXME(#87): We must address all blockers listed in #87 before permitting
+# stable releases.
 version = "0.1.0-alpha.1"
 edition = "2024"
 description = "Formally verify Rust programs in Lean 4."
