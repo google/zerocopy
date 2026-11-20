@@ -1,0 +1,124 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "verification/symbolic-execution",
+    "verification/path-merging",
+    "verification/bounded-model-checking",
+    "pl/operational-semantics",
+    "pl/fuel-indexed-semantics"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Symbolic execution and program testing",
+      "identity": {
+        "doi": "10.1145/360248.360252"
+      }
+    },
+    {
+      "name": "Symbolic execution formally explained",
+      "identity": {
+        "doi": "10.1007/s00165-020-00527-y"
+      }
+    },
+    {
+      "name": "A formal foundation for symbolic evaluation with merging",
+      "identity": {
+        "doi": "10.1145/3498709"
+      }
+    },
+    {
+      "name": "Featherweight VeriFast",
+      "identity": {
+        "doi": "10.2168/LMCS-11(3:19)2015"
+      }
+    },
+    {
+      "name": "Infeasible paths elimination by symbolic execution techniques: proof of correctness and preservation of paths",
+      "identity": {
+        "url": "https://isa-afp.org/entries/InfPathElimination.html",
+        "date": "2016-08-18",
+        "issn": "2150-914x"
+      }
+    },
+    {
+      "name": "Verified symbolic execution with Kripke specification monads (and no meta-programming)",
+      "identity": {
+        "doi": "10.1145/3547628"
+      }
+    },
+    {
+      "name": "A survey of symbolic execution techniques",
+      "identity": {
+        "doi": "10.1145/3182657",
+        "arxiv": "1610.00502v3"
+      }
+    },
+    {
+      "name": "Efficient state merging in symbolic execution",
+      "identity": {
+        "doi": "10.1145/2254064.2254088"
+      }
+    },
+    {
+      "name": "Bit-blasting ACL2 theorems",
+      "identity": {
+        "doi": "10.4204/EPTCS.70.7"
+      }
+    },
+    {
+      "name": "A lightweight symbolic virtual machine for solver-aided host languages",
+      "identity": {
+        "doi": "10.1145/2594291.2594340"
+      }
+    },
+    {
+      "name": "Enhancing symbolic execution with veritesting",
+      "identity": {
+        "doi": "10.1145/2568225.2568293"
+      }
+    },
+    {
+      "name": "Functional big-step semantics",
+      "identity": {
+        "doi": "10.1007/978-3-662-49498-1_23"
+      }
+    },
+    {
+      "name": "CBMC: The C Bounded Model Checker",
+      "identity": {
+        "arxiv": "2302.02384v1"
+      }
+    },
+    {
+      "name": "A tool for checking ANSI-C programs",
+      "identity": {
+        "doi": "10.1007/978-3-540-24730-2_15"
+      }
+    },
+    {
+      "name": "Kani Rust Verifier documentation: Loops, unwinding, and bounds",
+      "identity": {
+        "repository": "model-checking/kani",
+        "revision": "21f3a2884e65c4c29465515a0117123cb8392814",
+        "path": "docs/src/tutorial-loop-unwinding.md"
+      }
+    },
+    {
+      "name": "KLEE: Unassisted and automatic generation of high-coverage tests for complex systems programs",
+      "identity": {
+        "url": "https://www.usenix.org/legacy/events/osdi08/tech/full_papers/cadar/cadar.pdf",
+        "sha256": "59594fde5ff5b6c654410fb37d7ed3f8132d41f16dd15421dd58d38bcd90d621"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

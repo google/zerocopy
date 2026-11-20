@@ -1,0 +1,6 @@
+name = "ToySymEx"
+version = "0.1.0"
+defaultTargets = ["ToySymEx"]
+
+[[lean_lib]]
+name = "ToySymEx"

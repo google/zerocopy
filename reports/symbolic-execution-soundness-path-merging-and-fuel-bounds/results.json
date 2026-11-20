@@ -1,0 +1,672 @@
+[
+  {
+    "id": "eval-subst-agrees",
+    "lean": "Toy.SymEx.eval_subst",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Standard substitution lemma (on paper: de Boer and Bonsangue 2021, Lemma 2.1); the expression-level core of every symbolic-execution correctness proof.",
+    "plain_claim": "For every symbolic store sigma, valuation rho and expression e, with no hypotheses: interpreting the symbolic evaluation e.subst sigma under rho gives the same value as evaluating e concretely in the instantiated store sigma.inst rho.",
+    "depth": "shallow",
+    "hypotheses": [],
+    "nonvacuity_witness": "No hypotheses; a concrete instance (x1 + x1 in the x0 = 0 branch store at x0 = 5) is checked by decide.",
+    "nonvacuity_witness_lean": "Toy.SymEx.nonvacuity_eval_subst",
+    "non_claims": [
+      "Only for this term language (variables, literals, +, structural ==, ite) with total coercing operations; a language with partial operations (division, overflow traps, type errors) needs a side condition that is not modelled.",
+      "Conditions are read through Val.toBool (nonzero integers are true) while Term.eq is structural equality of values, so Boolean identities such as (c == true) = c fail for non-Boolean c (proved example in Examples.lean); a simplifier must respect this.",
+      "Symbolic input x stands for the initial value of local x (SymStore.init = var); uninitialized locals and havoc (fresh unconstrained values in the middle of a run) are not modelled.",
+      "Says nothing about statements, control flow or fuel; those are per-path soundness.",
+      "Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "F. S. de Boer, M. Bonsangue, 'Symbolic execution formally explained', Formal Aspects of Computing 33(4-5):617-636, 2021, doi:10.1007/s00165-020-00527-y (open access). Lemma 2.1 (substitution) is the same commutation of substitution with evaluation, for a while language, on paper.",
+      "J. C. King, 'Symbolic execution and program testing', Communications of the ACM 19(7):385-394, July 1976, doi:10.1145/360248.360252. Introduces symbolic execution with symbolic inputs, symbolic stores and path conditions accumulated at branches."
+    ],
+    "design_question": "Which property must a symbolic expression evaluator satisfy so that one symbolic store can stand for every concrete store it describes?"
+  },
+  {
+    "id": "per-path-soundness",
+    "lean": "Toy.SymEx.symExec_leaf_sound",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Correctness of forking symbolic execution with respect to concrete execution is classical (King 1976; de Boer and Bonsangue 2021, Theorem 2.3, on paper) and has been mechanized for other languages (Porncharoenwase et al. 2022 in Lean; Vogels et al. 2015 in Coq; Aissat et al. 2016 in Isabelle); here it is restated for a fuel-indexed CFG with panic locations.",
+    "plain_claim": "For every CFG p, fuel f, leaf l produced by symExec p f, and valuation rho satisfying l's path condition, the concrete run of p from the rho-instantiated initial store with the same fuel f has exactly l's outcome instantiated at rho: the same final store, or a panic at the same location, or fuel exhaustion.",
+    "hypotheses": [
+      {
+        "name": "hl : l ∈ symExec p f",
+        "purpose": "only leaves produced by the executor are claimed sound",
+        "tightness": "tight",
+        "counterexample": "Toy.SymEx.symExec_leaf_sound_needs_membership"
+      },
+      {
+        "name": "hpc : holds l.pc ρ",
+        "purpose": "a leaf describes only the inputs that follow its path; ignoring this yields a spurious success",
+        "tightness": "tight",
+        "counterexample": "Toy.SymEx.symExec_leaf_sound_needs_pc"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "The x0 = 0 leaf of the diamond CFG exDiamond at fuel 4 with valuation rho0 (all inputs 0).",
+    "nonvacuity_witness_lean": "Toy.SymEx.nonvacuity_symExec_leaf_sound",
+    "non_claims": [
+      "Equality is with the concrete run at the same fuel; it says nothing about other fuels (see concrete-fuel-monotonicity).",
+      "An outOfFuel leaf only says the concrete run also runs out of fuel at that fuel; it says nothing about termination or safety at larger fuel.",
+      "A panic location is (block, statement index) for a failing assert; for a jump to a nonexistent block b' (and for an empty CFG, with b' = 0) the location ⟨b', 0⟩ is a sentinel meaning 'missing block b'', not statement 0 of block b'. The executor and the interpreter use the same convention.",
+      "Does not say that every leaf is reachable: leaves with unsatisfiable path conditions are produced (no pruning) and are vacuously sound.",
+      "The executor here never simplifies, prunes, or merges; soundness of executors that do is a separate question (see the merge and simplification cards).",
+      "Symbolic input x stands for the initial value of local x (SymStore.init = var); uninitialized locals and havoc (fresh unconstrained values in the middle of a run) are not modelled.",
+      "Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "F. S. de Boer, M. Bonsangue, 'Symbolic execution formally explained', Formal Aspects of Computing 33(4-5):617-636, 2021, doi:10.1007/s00165-020-00527-y (open access). Pen-and-paper account for a while language: a symbolic transition system that takes both branches of every conditional without a feasibility check is related to a concrete operational semantics by Theorem 2.3 (correctness) and Theorem 2.4 (completeness); there is no fuel.",
+      "S. Porncharoenwase, L. Nelson, X. Wang, E. Torlak, 'A formal foundation for symbolic evaluation with merging', Proc. ACM Program. Lang. 6(POPL), Article 47, 2022, doi:10.1145/3498709. Lean-mechanized semantics S_c of symbolic evaluation with state merging, parameterized by a 'symbolic factory'; Theorem 5 proves S_c sound and complete with respect to the concrete semantics, and Theorem 9 proves the fuel-bounded reference evaluator Leanette sound and complete with respect to S_c given enough fuel. The closest existing mechanization; its setting (a small functional language, merging inside the evaluator) differs from the CFG model here.",
+      "F. Vogels, B. Jacobs, F. Piessens, 'Featherweight VeriFast', Logical Methods in Computer Science 11(3:19), 2015, doi:10.2168/LMCS-11(3:19)2015. Coq-mechanized soundness proof for the symbolic execution of a core of the VeriFast verifier (separation logic): a successful symbolic run implies safety of all concrete runs.",
+      "R. Aissat, F. Voisin, B. Wolff, 'Infeasible paths elimination by symbolic execution techniques: proof of correctness and preservation of paths', Archive of Formal Proofs, August 2016 (isa-afp.org/entries/InfPathElimination.html). Isabelle/HOL mechanization relating symbolic execution over control-flow graphs to concrete paths, including correctness of infeasible-path elimination.",
+      "S. Keuchel, S. Huyghebaert, G. Lukyanov, D. Devriese, 'Verified symbolic execution with Kripke specification monads (and no meta-programming)', Proc. ACM Program. Lang. 6(ICFP), Article 97, 2022, doi:10.1145/3547628. A Coq-mechanized symbolic verification-condition generator written as an interpreter in a backward predicate-transformer monad; soundness is proved, completeness is explicitly not a goal. A different architecture from the forward, leaf-enumerating executor here.",
+      "J. C. King, 'Symbolic execution and program testing', Communications of the ACM 19(7):385-394, July 1976, doi:10.1145/360248.360252. Introduces symbolic execution with symbolic inputs, symbolic stores and path conditions accumulated at branches."
+    ],
+    "design_question": "What exactly does one leaf of a forking symbolic executor guarantee about the concrete runs it describes, at a fixed fuel?"
+  },
+  {
+    "id": "path-coverage",
+    "lean": [
+      "Toy.SymEx.symExec_exhaustive",
+      "Toy.SymEx.symExec_pairwise_disjoint"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "The leaves of a non-pruning symbolic execution tree partition the input space; folklore since King 1976, restated here per fuel.",
+    "plain_claim": "For every CFG p and every fuel f, with no hypotheses: every valuation satisfies the path condition of at least one leaf of symExec p f, and the path conditions of any two leaves at distinct list positions are never simultaneously true.",
+    "depth": "substantive",
+    "hypotheses": [],
+    "nonvacuity_witness": "exDiamond at fuel 4: two leaves, x0 = 0 and x0 != 0, covering and disjoint.",
+    "nonvacuity_witness_lean": "Toy.SymEx.nonvacuity_path_coverage",
+    "non_claims": [
+      "Disjointness quantifies over list positions (List.Pairwise), not over semantic reachability: an unsatisfiable leaf is disjoint from everything, and duplicate unsatisfiable leaves are tolerated.",
+      "Leaves with unsatisfiable path conditions are kept; neither half makes every leaf satisfiable.",
+      "Disjointness is not needed for transferring leaf checks to concrete runs (leaf-check-transfer uses only exhaustiveness); it is recorded because it holds and supports counting arguments.",
+      "Exhaustiveness is for this executor, which records every branch condition and prunes nothing; an executor that prunes or deduplicates leaves keeps exhaustiveness only if it removes leaves whose path conditions are unsatisfiable (or covered by kept leaves), which needs a solver soundness argument that is not modelled.",
+      "The leaf checks quantify over every valuation satisfying a path condition, which models an ideal solver; a verifier that decides path conditions with an SMT solver adds solver soundness (and, for completeness claims, solver completeness) assumptions that are not modelled.",
+      "Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "J. C. King, 'Symbolic execution and program testing', Communications of the ACM 19(7):385-394, July 1976, doi:10.1145/360248.360252. Introduces symbolic execution with symbolic inputs, symbolic stores and path conditions accumulated at branches; its executor forks at a conditional only when neither pc ⊃ q nor pc ⊃ ¬q holds (p. 387), so it does not create branches already known to be infeasible, whereas symExec here keeps every branch.",
+      "F. S. de Boer, M. Bonsangue, 'Symbolic execution formally explained', Formal Aspects of Computing 33(4-5):617-636, 2021, doi:10.1007/s00165-020-00527-y (open access). Pen-and-paper account for a while language: a symbolic transition system that takes both branches of every conditional without a feasibility check is related to a concrete operational semantics by Theorem 2.3 (correctness) and Theorem 2.4 (completeness); there is no fuel. It does not state pairwise disjointness of path conditions by list position (the second half of this card, symExec_pairwise_disjoint).",
+      "R. Aissat, F. Voisin, B. Wolff, 'Infeasible paths elimination by symbolic execution techniques: proof of correctness and preservation of paths', Archive of Formal Proofs, August 2016 (isa-afp.org/entries/InfPathElimination.html). Isabelle/HOL mechanization relating symbolic execution over control-flow graphs to concrete paths, including correctness of infeasible-path elimination.",
+      "R. Baldoni, E. Coppa, D. C. D'Elia, C. Demetrescu, I. Finocchi, 'A survey of symbolic execution techniques', ACM Computing Surveys 51(3), Article 50, pp. 50:1-50:39, 2018, doi:10.1145/3182657 (arXiv:1610.00502). Surveys path conditions, state merging (Section 5.6) and constraint reduction. Its Section 1.2 uses 'soundness' and 'completeness' in the bug-finding sense (soundness: no false negatives, every unsafe input is found); the cards here use the verification sense (a passing check implies concrete success). (Section content checked via the arXiv version; the journal record via its DOI landing metadata.)"
+    ],
+    "design_question": "Do the leaves of a non-pruning forking executor account for every input, and for each input exactly once?"
+  },
+  {
+    "id": "leaf-check-transfer",
+    "lean": [
+      "Toy.SymEx.exec_okWith_of_leavesSound_of_exhaustive_of_leavesProve",
+      "Toy.SymEx.exec_okWithOrOutOfFuel_of_leavesSound_of_exhaustive_of_leavesProveLax"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Folklore made precise: isolates exactly three conditions on an arbitrary leaf list (per-leaf soundness, exhaustiveness, the check), shows each is needed, and shows disjointness is not. Mechanized soundness results exist for specific executors (Porncharoenwase et al. 2022; Vogels et al. 2015) but not, as far as found, this decomposition for arbitrary leaf lists.",
+    "plain_claim": "For any leaf list L for CFG p at fuel f (not necessarily produced by symExec): if every leaf is sound for p at f (LeavesSound), the path conditions are exhaustive (LeavesExhaustive), and every leaf passes the strict check for Q, then every concrete run at fuel f returns with Q; with the lax check (out-of-fuel leaves accepted) the conclusion is 'returns with Q or runs out of fuel'.",
+    "hypotheses": [
+      {
+        "name": "hsound : LeavesSound p f L",
+        "purpose": "each leaf must describe the concrete outcome on its path; a leaf (true, ok) for a panicking program is otherwise accepted",
+        "tightness": "tight",
+        "counterexample": "Toy.SymEx.transfer_needs_leavesSound"
+      },
+      {
+        "name": "hexh : LeavesExhaustive L",
+        "purpose": "the checked leaves must cover all inputs; keeping only the success leaf (whose path condition is not valid) gives a spurious success",
+        "tightness": "tight",
+        "counterexample": "Toy.SymEx.transfer_needs_exhaustive"
+      },
+      {
+        "name": "hprove : LeavesProve L Q (resp. LeavesProveLax L Q)",
+        "purpose": "the leaf check itself",
+        "tightness": "tight",
+        "counterexample": "Toy.SymEx.transfer_needs_leaf_check"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "The leaves of exDiamond at fuel 4 with postcondition x1 != x0 satisfy all hypotheses (both variants).",
+    "nonvacuity_witness_lean": "Toy.SymEx.nonvacuity_transfer",
+    "non_claims": [
+      "Pairwise disjointness of path conditions is not a hypothesis and is not needed.",
+      "The conclusion is about the same fuel f only: the strict variant gives no information about other fuels by itself (strict-success-monotone-in-fuel adds larger fuels), and the lax variant gives neither termination nor safety at larger fuel (out-of-fuel-is-not-success).",
+      "A failing check does not by itself show that a concrete run fails: only a failing leaf whose path condition is satisfiable, in a sound list, witnesses a concrete failure.",
+      "The theorem does not construct L; for L = symExec p f the hypotheses hsound and hexh are per-path-soundness and path-coverage.",
+      "The leaf checks quantify over every valuation satisfying a path condition, which models an ideal solver; a verifier that decides path conditions with an SMT solver adds solver soundness (and, for completeness claims, solver completeness) assumptions that are not modelled.",
+      "Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "S. Porncharoenwase, L. Nelson, X. Wang, E. Torlak, 'A formal foundation for symbolic evaluation with merging', Proc. ACM Program. Lang. 6(POPL), Article 47, 2022, doi:10.1145/3498709. Lean-mechanized semantics S_c of symbolic evaluation with state merging, parameterized by a 'symbolic factory'; Theorem 5 proves S_c sound and complete with respect to the concrete semantics, and Theorem 9 proves the fuel-bounded reference evaluator Leanette sound and complete with respect to S_c given enough fuel. The closest existing mechanization; its setting (a small functional language, merging inside the evaluator) differs from the CFG model here.",
+      "F. Vogels, B. Jacobs, F. Piessens, 'Featherweight VeriFast', Logical Methods in Computer Science 11(3:19), 2015, doi:10.2168/LMCS-11(3:19)2015. Coq-mechanized soundness proof for the symbolic execution of a core of the VeriFast verifier (separation logic): a successful symbolic run implies safety of all concrete runs.",
+      "F. S. de Boer, M. Bonsangue, 'Symbolic execution formally explained', Formal Aspects of Computing 33(4-5):617-636, 2021, doi:10.1007/s00165-020-00527-y (open access). Pen-and-paper account for a while language: a symbolic transition system that takes both branches of every conditional without a feasibility check is related to a concrete operational semantics by Theorem 2.3 (correctness) and Theorem 2.4 (completeness); there is no fuel.",
+      "J. C. King, 'Symbolic execution and program testing', Communications of the ACM 19(7):385-394, July 1976, doi:10.1145/360248.360252. Introduces symbolic execution with symbolic inputs, symbolic stores and path conditions accumulated at branches."
+    ],
+    "design_question": "Which properties of a leaf list must a verifier establish before 'every leaf passes' may be read as 'every run succeeds'?"
+  },
+  {
+    "id": "lax-success-iff-concrete-success-or-out-of-fuel-same-fuel",
+    "lean": "Toy.SymEx.provesLax_iff_forall_exec_okWithOrOutOfFuel",
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "Correctness plus completeness of symbolic execution at a fixed fuel, in the form that accepts fuel exhaustion; the lax counterpart of strict-success-iff-concrete-success-same-fuel (cf. de Boer and Bonsangue 2021 for an unbounded version, Porncharoenwase et al. 2022, Theorem 9, for a fuel-bounded evaluator given enough fuel).",
+    "plain_claim": "For every CFG p, fuel f and postcondition Q, with no hypotheses: the lax check on symExec p f passes (every leaf, under every valuation satisfying its path condition, returns with a store satisfying Q or is out of fuel; panic leaves are rejected) if and only if every concrete run of p at fuel f either returns with a store satisfying Q or runs out of fuel, i.e. no input panics within f steps and every input that returns within f steps satisfies Q.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "exHalfDone at fuel 3 with postcondition x1 = 1: both sides hold, the strict check fails, input x0 = 0 returns with x1 = 1 and input x0 = 5 runs out of fuel.",
+    "nonvacuity_witness_lean": "Toy.SymEx.nonvacuity_provesLax_iff",
+    "non_claims": [
+      "This is bounded safety at fuel f, not Hoare-style partial correctness: a lax pass at fuel 4 coexists with a panic after 13 steps (out-of-fuel-is-not-success).",
+      "Says nothing about runs at other fuels; the lax check is not monotone in fuel (out-of-fuel-is-not-success).",
+      "With postcondition False both sides degenerate to 'every run runs out of fuel at f'; that is not a proof of anything about returning runs.",
+      "Reference point: the forward direction is leaf-check-transfer instantiated with per-path-soundness and path-coverage; the backward direction is per-path-soundness alone.",
+      "The leaf checks quantify over every valuation satisfying a path condition, which models an ideal solver; a verifier that decides path conditions with an SMT solver adds solver soundness (and, for completeness claims, solver completeness) assumptions that are not modelled.",
+      "Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "F. S. de Boer, M. Bonsangue, 'Symbolic execution formally explained', Formal Aspects of Computing 33(4-5):617-636, 2021, doi:10.1007/s00165-020-00527-y (open access). Pen-and-paper account for a while language: a symbolic transition system that takes both branches of every conditional without a feasibility check is related to a concrete operational semantics by Theorem 2.3 (correctness) and Theorem 2.4 (completeness); there is no fuel; its completeness theorem is existential reachability of finite computations, not an equivalence at a fixed fuel.",
+      "S. Porncharoenwase, L. Nelson, X. Wang, E. Torlak, 'A formal foundation for symbolic evaluation with merging', Proc. ACM Program. Lang. 6(POPL), Article 47, 2022, doi:10.1145/3498709. Lean-mechanized semantics S_c of symbolic evaluation with state merging, parameterized by a 'symbolic factory'; Theorem 5 proves S_c sound and complete with respect to the concrete semantics, and Theorem 9 proves the fuel-bounded reference evaluator Leanette sound and complete with respect to S_c given enough fuel. The closest existing mechanization; its setting (a small functional language, merging inside the evaluator) differs from the CFG model here."
+    ],
+    "design_question": "What exactly does a fuel-bounded symbolic check that accepts out-of-fuel leaves establish about concrete runs?"
+  },
+  {
+    "id": "dropping-path-conditions-is-conservative",
+    "lean": [
+      "Toy.SymEx.leavesProve_of_leavesProve_dropPcs",
+      "Toy.SymEx.dropPcs_false_alarm"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Elementary consequence of the definitions (weakening a universal antecedent); recorded as a reference point because it corrects a tempting misreading. No source states it separately.",
+    "plain_claim": "For every leaf list L and postcondition Q: if the leaves with every path condition replaced by true pass the strict check for Q, then the original leaves pass it. The converse fails: the leaves of exAssertTrue (assert true; return) pass the strict check for True, but after erasing path conditions they do not, because the infeasible panic leaf becomes feasible.",
+    "hypotheses": [
+      {
+        "name": "h : LeavesProve (dropPcs L) Q",
+        "purpose": "the check on the erased leaves",
+        "tightness": "tight",
+        "counterexample": "Toy.SymEx.leavesProve_dropPcs_needed",
+        "applies_to": [
+          "Toy.SymEx.leavesProve_of_leavesProve_dropPcs"
+        ]
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "The exDiamond leaves with path conditions erased still pass for x1 != x0 (both branch stores satisfy it for every input).",
+    "nonvacuity_witness_lean": "Toy.SymEx.nonvacuity_leavesProve_dropPcs",
+    "non_claims": [
+      "Erasing path conditions cannot by itself produce a spurious verification success, but concluding concrete success still needs the original list to be per-leaf sound and exhaustive: then the erased check passing implies the original check passing, which implies concrete success by leaf-check-transfer (derived by composing the two cards).",
+      "For bug finding the direction reverses: erasing path conditions produces spurious panic reports (false alarms), as dropPcs_false_alarm shows.",
+      "Erased leaves are not per-leaf sound (dropPcs_not_leavesSound in Examples.lean), so leaf-check-transfer cannot be applied to dropPcs L directly.",
+      "Erasing the path condition of only some leaves, checking leaves that do not cover all inputs, or erasing the guard inside a merge are different shortcuts and can give spurious success (leaf-check-transfer, unguarded-merge-spurious-success).",
+      "Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "R. Baldoni, E. Coppa, D. C. D'Elia, C. Demetrescu, I. Finocchi, 'A survey of symbolic execution techniques', ACM Computing Surveys 51(3), Article 50, pp. 50:1-50:39, 2018, doi:10.1145/3182657 (arXiv:1610.00502). Surveys path conditions, state merging (Section 5.6) and constraint reduction. Its Section 1.2 uses 'soundness' and 'completeness' in the bug-finding sense (soundness: no false negatives, every unsafe input is found); the cards here use the verification sense (a passing check implies concrete success). (Section content checked via the arXiv version; the journal record via its DOI landing metadata.)"
+    ],
+    "design_question": "Is it safe for a verifier to check a leaf's outcome without restricting to the leaf's path condition, and what does it cost?"
+  },
+  {
+    "id": "guarded-merge-sound",
+    "lean": "Toy.SymEx.guardedMerge_sound",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "The ite merge rule of Kuznetsov et al. (PLDI 2012), stated for an arbitrary reference and continuation; merging soundness is mechanized in Lean for a different language by Porncharoenwase et al. (2022).",
+    "plain_claim": "For any reference R (what the concrete semantics yields from each valuation) and any single continuation K (what the rest of the computation yields from a concrete store at the merge point): if guarded states (c1, sigma1) and (c2, sigma2) are both sound for R and K, then the merged state (c1 or c2, x -> ite c1 (sigma1 x) (sigma2 x)) is sound for R and K, with no assumption that c1 and c2 are disjoint.",
+    "hypotheses": [
+      {
+        "name": "h₁ : GuardedSound R K c₁ σ₁",
+        "purpose": "the first state must be sound",
+        "tightness": "tight",
+        "counterexample": "Toy.SymEx.guardedMerge_needs_first_sound"
+      },
+      {
+        "name": "h₂ : GuardedSound R K c₂ σ₂",
+        "purpose": "the second state must be sound",
+        "tightness": "tight",
+        "counterexample": "Toy.SymEx.guardedMerge_needs_second_sound"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "The two branch states of exDiamond (disjoint guards), and an overlapping pair (the x0 = 0 branch state and the merged state), with R the concrete run at fuel 4 and K = Outcome.ok.",
+    "nonvacuity_witness_lean": "Toy.SymEx.nonvacuity_guardedMerge_sound",
+    "non_claims": [
+      "Disjointness is not needed because the merged store selects sigma1 wherever c1 holds and sigma2 only where c1 fails and c2 holds; the proof never uses agreement on the overlap. The same argument works for a many-valued behaviour relation (guardedMerge_sound_rel in Lemmas.lean). That two states sound for one reference agree on their overlap (agree_on_overlap_of_guardedSound) is a consequence, relevant to behaviour coverage (merge-behaviour-coverage-needs-agreement-on-overlap), not the reason merging is sound.",
+      "Both states must be sound for the same continuation K, which models 'same program point and same remaining fuel'. Merging states that reach a join point with different step counts or remaining fuel (for example across loop iterations) is not covered and would need fuel alignment.",
+      "Says nothing about behaviour coverage of a many-valued relation; there overlap matters (merge-behaviour-coverage-needs-agreement-on-overlap).",
+      "Says nothing about solver cost or term growth, which is what state-merging heuristics trade off.",
+      "Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "V. Kuznetsov, J. Kinder, S. Bucur, G. Candea, 'Efficient state merging in symbolic execution', PLDI 2012, pp. 193-204, doi:10.1145/2254064.2254088. Section 1 merges (X<0, [x=0]) and (X>=0, [x=5]) into (true, [x = ite(X<0, 0, 5)]); Algorithm 1 (Section 2.1), line 20, replaces two similar worklist states at the same location l by (l, pc' or pc'', lambda v. ite(pc', s'[v], s''[v])). mergeLeaf / mergeStore is this rule, and merging at one location corresponds to the shared continuation K. The paper's concrete semantics is deterministic and it gives no mechanized proof.",
+      "S. Porncharoenwase, L. Nelson, X. Wang, E. Torlak, 'A formal foundation for symbolic evaluation with merging', Proc. ACM Program. Lang. 6(POPL), Article 47, 2022, doi:10.1145/3498709. Lean-mechanized semantics S_c of symbolic evaluation with state merging, parameterized by a 'symbolic factory'; Theorem 5 proves S_c sound and complete with respect to the concrete semantics, and Theorem 9 proves the fuel-bounded reference evaluator Leanette sound and complete with respect to S_c given enough fuel. The closest existing mechanization; its setting (a small functional language, merging inside the evaluator) differs from the CFG model here.",
+      "S. Swords, J. Davis, 'Bit-blasting ACL2 theorems', ACL2 Workshop 2011, EPTCS 70, pp. 84-102, doi:10.4204/EPTCS.70.7. GL, a symbolic-execution framework whose proof procedure is verified in ACL2; its symbolic objects include if-then-else objects (:g-ite test then . else), a guarded representation of merged values.",
+      "E. Torlak, R. Bodik, 'A lightweight symbolic virtual machine for solver-aided host languages', PLDI 2014, pp. 530-541, doi:10.1145/2594291.2594340. Rosette's symbolic virtual machine combines symbolic execution and bounded model checking with type-driven state merging at control-flow joins; not mechanized.",
+      "T. Avgerinos, A. Rebert, S. K. Cha, D. Brumley, 'Enhancing symbolic execution with veritesting', ICSE 2014, pp. 1083-1094, doi:10.1145/2568225.2568293. Alternates dynamic and static symbolic execution and merges paths within a bounded static region; an engineering source for merging in practice, without a soundness proof. (Bibliographic record and abstract checked; the full text was not inspected.)",
+      "R. Baldoni, E. Coppa, D. C. D'Elia, C. Demetrescu, I. Finocchi, 'A survey of symbolic execution techniques', ACM Computing Surveys 51(3), Article 50, pp. 50:1-50:39, 2018, doi:10.1145/3182657 (arXiv:1610.00502). Surveys path conditions, state merging (Section 5.6) and constraint reduction. Its Section 1.2 uses 'soundness' and 'completeness' in the bug-finding sense (soundness: no false negatives, every unsafe input is found); the cards here use the verification sense (a passing check implies concrete success). (Section content checked via the arXiv version; the journal record via its DOI landing metadata.)"
+    ],
+    "design_question": "Is the ite-guarded merge of two sound states at a join point sound, and does it require the path conditions to be disjoint?"
+  },
+  {
+    "id": "merge-leaves-preserve-soundness-and-exhaustiveness",
+    "lean": [
+      "Toy.SymEx.mergeLeaf_preserves_leavesSound",
+      "Toy.SymEx.mergeLeaf_leavesExhaustive_iff"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Leaf-list instance of the guarded merge rule; a reference point for executors that merge leaves.",
+    "plain_claim": "Replacing two successful leaves (c1, ok sigma1), (c2, ok sigma2) at the front of a leaf list by their guarded merge keeps the list per-leaf sound for p at f if it was, and leaves exhaustiveness unchanged in both directions (the merged list is exhaustive if and only if the original is); neither statement assumes the two path conditions are disjoint.",
+    "hypotheses": [
+      {
+        "name": "hs : LeavesSound p f (⟨c₁, ok σ₁⟩ :: ⟨c₂, ok σ₂⟩ :: rest)",
+        "purpose": "soundness of the list before merging",
+        "tightness": "tight",
+        "counterexample": "Toy.SymEx.mergeLeaf_needs_leavesSound",
+        "applies_to": [
+          "Toy.SymEx.mergeLeaf_preserves_leavesSound"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "The two leaves of exDiamond at fuel 4 are sound and exhaustive.",
+    "nonvacuity_witness_lean": "Toy.SymEx.nonvacuity_mergeLeaf",
+    "non_claims": [
+      "Soundness is preserved, not reflected: an unsound second leaf whose guard is covered by the first guard disappears in the merge (mergeLeaf_leavesSound_converse_fails in Counterexamples.lean).",
+      "'Exhaustiveness' here is LeavesExhaustive (every valuation satisfies some path condition), not behaviour coverage of a many-valued relation (Covers in merge-behaviour-coverage-needs-agreement-on-overlap), which can fail for overlapping merges.",
+      "The statements name the first two leaves, but LeavesSound and LeavesExhaustive depend only on list membership (leavesSound_of_subset, leavesExhaustive_of_subset in Lemmas.lean), so any two leaves can be merged after reordering.",
+      "Panic and out-of-fuel leaves are not merged by this operator.",
+      "Pairwise disjointness of the list is neither assumed nor concluded.",
+      "Reference point: the soundness half is guarded-merge-sound with R the concrete run and K = Outcome.ok.",
+      "Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "V. Kuznetsov, J. Kinder, S. Bucur, G. Candea, 'Efficient state merging in symbolic execution', PLDI 2012, pp. 193-204, doi:10.1145/2254064.2254088. Section 1 merges (X<0, [x=0]) and (X>=0, [x=5]) into (true, [x = ite(X<0, 0, 5)]); Algorithm 1 (Section 2.1), line 20, replaces two similar worklist states at the same location l by (l, pc' or pc'', lambda v. ite(pc', s'[v], s''[v])). mergeLeaf / mergeStore is this rule, and merging at one location corresponds to the shared continuation K. The paper's concrete semantics is deterministic and it gives no mechanized proof.",
+      "S. Porncharoenwase, L. Nelson, X. Wang, E. Torlak, 'A formal foundation for symbolic evaluation with merging', Proc. ACM Program. Lang. 6(POPL), Article 47, 2022, doi:10.1145/3498709. Lean-mechanized semantics S_c of symbolic evaluation with state merging, parameterized by a 'symbolic factory'; Theorem 5 proves S_c sound and complete with respect to the concrete semantics, and Theorem 9 proves the fuel-bounded reference evaluator Leanette sound and complete with respect to S_c given enough fuel. The closest existing mechanization; its setting (a small functional language, merging inside the evaluator) differs from the CFG model here."
+    ],
+    "design_question": "Can a symbolic executor replace two successful leaves by their guarded merge without invalidating the hypotheses of leaf-check-transfer?"
+  },
+  {
+    "id": "unguarded-merge-spurious-success",
+    "lean": "Toy.SymEx.unguardedMerge_spurious_success",
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "Folklore failure mode made concrete and kernel-checked.",
+    "plain_claim": "Merging the two sound branch leaves of the diamond CFG without an ite guard (keeping the first branch's store, x1 = x0 + 1, under path condition c1 or c2) gives an exhaustive leaf list that passes the strict check for x1 = x0 + 1; at the input x0 = 5, which satisfies c1 or c2, the unguarded leaf claims x1 = 6 while the concrete run ends with x1 = 7. This is a spurious success, and the unguarded leaf is not sound.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "Not applicable (counterexample).",
+    "positive_control_lean": "Toy.SymEx.guardedMerge_rejects_Qplus1",
+    "non_claims": [
+      "Shows one failing instance; it does not classify all unsound merge operators.",
+      "Escape hatch: dropping the guard is harmless when, wherever c2 holds, sigma1 and sigma2 are indistinguishable through the continuation K, for example when they differ only in locals that K never reads (unguardedMerge_sound_of_agree_on_second_guard in Lemmas.lean).",
+      "The guarded merge of the same leaves is sound and correctly fails the check (guardedMerge_rejects_Qplus1).",
+      "Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "V. Kuznetsov, J. Kinder, S. Bucur, G. Candea, 'Efficient state merging in symbolic execution', PLDI 2012, pp. 193-204, doi:10.1145/2254064.2254088. Section 1 merges (X<0, [x=0]) and (X>=0, [x=5]) into (true, [x = ite(X<0, 0, 5)]); Algorithm 1 (Section 2.1), line 20, replaces two similar worklist states at the same location l by (l, pc' or pc'', lambda v. ite(pc', s'[v], s''[v])). mergeLeaf / mergeStore is this rule, and merging at one location corresponds to the shared continuation K. The paper's concrete semantics is deterministic and it gives no mechanized proof.",
+      "E. Torlak, R. Bodik, 'A lightweight symbolic virtual machine for solver-aided host languages', PLDI 2014, pp. 530-541, doi:10.1145/2594291.2594340. Rosette's symbolic virtual machine combines symbolic execution and bounded model checking with type-driven state merging at control-flow joins; not mechanized."
+    ],
+    "design_question": "Can a merge keep one branch's store under the disjunction of both path conditions?"
+  },
+  {
+    "id": "merge-behaviour-coverage-needs-agreement-on-overlap",
+    "lean": "Toy.SymEx.guardedMerge_preserves_covers_of_agree_on_overlap",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Makes precise when overlapping path conditions are harmful: only when a merged pair would have to represent two different behaviours at one valuation.",
+    "plain_claim": "For a possibly many-valued behaviour relation B and a common continuation K: if a list of guarded states covers B (every behaviour of every valuation is produced by some state whose guard holds) and the first two states agree through K wherever both guards hold, then replacing them by their guarded merge still covers B.",
+    "hypotheses": [
+      {
+        "name": "hcov : Covers B K ((c₁, σ₁) :: (c₂, σ₂) :: rest)",
+        "purpose": "coverage before merging",
+        "tightness": "tight",
+        "counterexample": "Toy.SymEx.covers_merge_needs_covers"
+      },
+      {
+        "name": "hagree : ∀ ρ, holds c₁ ρ → holds c₂ ρ → K (σ₂.inst ρ) = K (σ₁.inst ρ)",
+        "purpose": "on the overlap the merged state keeps sigma1, so sigma2's behaviour must coincide",
+        "tightness": "tight",
+        "counterexample": "Toy.SymEx.overlapping_merge_loses_behaviour"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "B has two behaviours (1 and 2) at every valuation; the merged pair (true, constant 1) and (x0 = 0, x0 := x0 + 1) has genuinely overlapping guards and different stores that agree through K = 'read local 0' on the overlap; the unmerged state (true, constant 2) carries the second behaviour.",
+    "nonvacuity_witness_lean": "Toy.SymEx.nonvacuity_covers_merge",
+    "non_claims": [
+      "'Coverage' here is Covers B K L (behaviour coverage), not LeavesExhaustive (path-condition exhaustiveness, merge-leaves-preserve-soundness-and-exhaustiveness).",
+      "hagree relaxes disjointness of the merged pair only: overlapping guards are allowed when the two states produce the same behaviour on the overlap. It does not let one state represent several behaviours. If every pair of states in a covering list agrees on its overlap (in particular if all guards are pairwise disjoint), the covered relation has at most one behaviour per valuation (covers_pairwise_agree_single_valued in Lemmas.lean); several behaviours at one valuation must come from states that are not merged with each other.",
+      "Because mergeStore keeps sigma1 on the overlap, merging is asymmetric: without hagree, sigma2's behaviours on the overlap are lost (overlapping_merge_loses_behaviour).",
+      "Sufficient conditions for hagree, proved separately and not part of this card's claim: disjoint guards (agree_on_overlap_of_disjoint) and two states sound for one single-valued reference (agree_on_overlap_of_guardedSound).",
+      "The behaviour relation is abstract; the toy CFG semantics is deterministic, where hagree is automatic for sound states.",
+      "Says nothing about whether a merged state's later exploration recovers a lost behaviour.",
+      "Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "V. Kuznetsov, J. Kinder, S. Bucur, G. Candea, 'Efficient state merging in symbolic execution', PLDI 2012, pp. 193-204, doi:10.1145/2254064.2254088. Section 1 merges (X<0, [x=0]) and (X>=0, [x=5]) into (true, [x = ite(X<0, 0, 5)]); Algorithm 1 (Section 2.1), line 20, replaces two similar worklist states at the same location l by (l, pc' or pc'', lambda v. ite(pc', s'[v], s''[v])). mergeLeaf / mergeStore is this rule, and merging at one location corresponds to the shared continuation K. The paper's concrete semantics is deterministic; it does not consider many-valued behaviour relations, and is cited only as the source of the merge operator.",
+      "R. Baldoni, E. Coppa, D. C. D'Elia, C. Demetrescu, I. Finocchi, 'A survey of symbolic execution techniques', ACM Computing Surveys 51(3), Article 50, pp. 50:1-50:39, 2018, doi:10.1145/3182657 (arXiv:1610.00502). Surveys path conditions, state merging (Section 5.6) and constraint reduction. Its Section 1.2 uses 'soundness' and 'completeness' in the bug-finding sense (soundness: no false negatives, every unsafe input is found); the cards here use the verification sense (a passing check implies concrete success). (Section content checked via the arXiv version; the journal record via its DOI landing metadata.)"
+    ],
+    "design_question": "When symbolic states stand for several behaviours per input (nondeterminism, or repeated visits of a program point), what must hold for an ite merge not to lose behaviours?"
+  },
+  {
+    "id": "concrete-fuel-monotonicity",
+    "lean": "Toy.SymEx.exec_fuel_mono",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Standard property of fuel-indexed (clocked) interpreters; stated and proved in HOL4 by Owens et al. (ESOP 2016, Section 3.4).",
+    "plain_claim": "For every CFG p, store st and fuels f <= f': if the run with fuel f does not run out of fuel, then the run with fuel f' has exactly the same outcome.",
+    "hypotheses": [
+      {
+        "name": "hne : exec p f st ≠ outOfFuel",
+        "purpose": "an out-of-fuel outcome may change with more fuel",
+        "tightness": "tight",
+        "counterexample": "Toy.SymEx.exec_fuel_mono_needs_ne_outOfFuel"
+      },
+      {
+        "name": "hle : f ≤ f'",
+        "purpose": "less fuel can turn a result into fuel exhaustion",
+        "tightness": "tight",
+        "counterexample": "Toy.SymEx.exec_fuel_mono_needs_le"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "exStraight from x0 = 5 returns at fuel 5; compare with fuel 6.",
+    "nonvacuity_witness_lean": "Toy.SymEx.nonvacuity_exec_fuel_mono",
+    "non_claims": [
+      "Relies on the interpreter being deterministic; for a nondeterministic clocked semantics, more fuel can expose additional behaviours.",
+      "Says nothing about how much fuel is needed (see the fuel-bound cards).",
+      "Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "S. Owens, M. O. Myreen, R. Kumar, Y. K. Tan, 'Functional big-step semantics', ESOP 2016, LNCS 9632, pp. 589-615, doi:10.1007/978-3-662-49498-1_23. Clocked (fuel-indexed) big-step semantics in HOL4; Section 3.4 states clock monotonicity: if evaluation does not time out at a given clock, every increment of the clock gives the same result. exec_fuel_mono is the same property for the interpreter here."
+    ],
+    "design_question": "Can the verdict of a fuel-indexed interpreter change when more fuel is supplied?"
+  },
+  {
+    "id": "strict-success-monotone-in-fuel",
+    "lean": [
+      "Toy.SymEx.provesStrict_mono",
+      "Toy.SymEx.exec_okWith_of_provesStrict_of_le"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Corollary of per-path soundness, path coverage, concrete fuel monotonicity and same-fuel completeness, all T0.",
+    "plain_claim": "For every CFG p, postcondition Q and fuels f <= f': if the strict check passes at fuel f (every leaf of symExec p f, under every valuation satisfying its path condition, returns with a store satisfying Q), then it also passes at fuel f', and the concrete run from every input at fuel f' returns with a store satisfying Q.",
+    "hypotheses": [
+      {
+        "name": "h : ProvesStrict p f Q",
+        "purpose": "strict symbolic success at the smaller fuel",
+        "tightness": "tight",
+        "counterexample": "Toy.SymEx.provesStrict_mono_needs_provesStrict"
+      },
+      {
+        "name": "hle : f ≤ f'",
+        "purpose": "success at fuel f does not transfer to smaller fuel",
+        "tightness": "tight",
+        "counterexample": "Toy.SymEx.provesStrict_mono_needs_le"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "exDiamond at fuel 4 with x1 != x0, and f' = 5.",
+    "nonvacuity_witness_lean": "Toy.SymEx.nonvacuity_provesStrict_mono",
+    "non_claims": [
+      "Requires the strict check: the lax check is not monotone in fuel (it passes at fuel 4 and fails at fuel 13 for the loop of out-of-fuel-is-not-success).",
+      "Says nothing about the size of the leaf list, the size of path conditions, or the cost of checking at the larger fuel.",
+      "The leaf checks quantify over every valuation satisfying a path condition, which models an ideal solver; a verifier that decides path conditions with an SMT solver adds solver soundness (and, for completeness claims, solver completeness) assumptions that are not modelled.",
+      "Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "S. Owens, M. O. Myreen, R. Kumar, Y. K. Tan, 'Functional big-step semantics', ESOP 2016, LNCS 9632, pp. 589-615, doi:10.1007/978-3-662-49498-1_23. Clocked (fuel-indexed) big-step semantics in HOL4; Section 3.4 states clock monotonicity: if evaluation does not time out at a given clock, every increment of the clock gives the same result. exec_fuel_mono is the same property for the interpreter here.",
+      "S. Porncharoenwase, L. Nelson, X. Wang, E. Torlak, 'A formal foundation for symbolic evaluation with merging', Proc. ACM Program. Lang. 6(POPL), Article 47, 2022, doi:10.1145/3498709. Lean-mechanized semantics S_c of symbolic evaluation with state merging, parameterized by a 'symbolic factory'; Theorem 5 proves S_c sound and complete with respect to the concrete semantics, and Theorem 9 proves the fuel-bounded reference evaluator Leanette sound and complete with respect to S_c given enough fuel. The closest existing mechanization; its setting (a small functional language, merging inside the evaluator) differs from the CFG model here."
+    ],
+    "design_question": "Once a strict symbolic check passes at some fuel, can raising the fuel ever invalidate it?"
+  },
+  {
+    "id": "out-of-fuel-is-not-success",
+    "lean": [
+      "Toy.SymEx.provesLax_loopThenAssertFalse_but_panics",
+      "Toy.SymEx.provesLax_selfLoop_every_fuel_but_never_returns"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "Folklore (bounded model checkers report unwinding-assertion failures for this reason) made concrete and kernel-checked.",
+    "plain_claim": "Accepting out-of-fuel leaves as success 'proves' at fuel 4 that a CFG which loops three times and then executes assert false satisfies even postcondition False, although with fuel 13 every input panics at that assert; and it 'proves' postcondition False for an infinite loop at every fuel, although at every fuel every run exhausts its fuel (it neither returns nor panics).",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "Not applicable (counterexample).",
+    "positive_control_lean": "Toy.SymEx.provesStrict_rejects_out_of_fuel",
+    "non_claims": [
+      "The lax check is still meaningful as bounded safety at a fixed fuel (lax-success-iff-concrete-success-or-out-of-fuel-same-fuel); the failure is reading it as success, as Hoare-style partial correctness, or as a statement about other fuels.",
+      "Escape hatches: (1) the strict check rejects both programs (provesStrict_rejects_out_of_fuel), and a strict pass transfers to every larger fuel (strict-success-monotone-in-fuel); (2) for acyclic CFGs at fuel >= fuelBound p the lax and strict checks coincide (lax-check-equals-strict-for-acyclic-at-fuel-bound); (3) discharging loops by invariants instead of fuel is not modelled.",
+      "Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "D. Kroening, P. Schrammel, M. Tautschnig, 'CBMC: The C Bounded Model Checker', arXiv:2302.02384, 2023. States that successful verification with loop-unwinding bounds is unsound unless the bounds amount to complete unwinding, and that unwinding assertions restore soundness by failing when a bound is insufficient; treating fuel exhaustion as failure plays the same role here. (Checked against the arXiv version only; no archival venue record was used.)",
+      "Kani Rust Verifier documentation, 'Loops, unwinding, and bounds' (docs/src/tutorial-loop-unwinding.md in the model-checking/kani repository; latest commit touching that file when consulted: 21f3a2884e65c4c29465515a0117123cb8392814). States that when the #[kani::unwind] bound is too low, Kani reports a failed 'unwinding assertion' and leaves other properties 'undetermined'; tool documentation of the practice of not counting an exhausted bound as success.",
+      "E. Clarke, D. Kroening, F. Lerda, 'A tool for checking ANSI-C programs', TACAS 2004, LNCS 2988, pp. 168-176, doi:10.1007/978-3-540-24730-2_15. Introduces the CBMC bounded model checker for C; cited for the tool and its bounded exploration only. (Bibliographic record checked; the publisher full text was not inspected.)"
+    ],
+    "design_question": "May a fuel-bounded symbolic verifier count paths that run out of fuel as verified?"
+  },
+  {
+    "id": "loop-free-fuel-bound-sufficient",
+    "lean": "Toy.SymEx.acyclic_exec_ne_outOfFuel_of_fuelBound_le",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Folklore bound (a run of an acyclic CFG visits each block at most once) made precise for this fuel accounting (one unit per statement and per terminator); no source found that states this exact bound.",
+    "plain_claim": "For every acyclic CFG p (some ranking of blocks strictly increases along every edge between existing blocks; the blocks need not be numbered in topological order), every store st and every fuel f >= fuelBound p = #statements + #blocks: the concrete run does not run out of fuel.",
+    "hypotheses": [
+      {
+        "name": "hacyc : Acyclic p",
+        "purpose": "a cycle allows unboundedly many steps",
+        "tightness": "tight",
+        "counterexample": "Toy.SymEx.acyclic_fuelBound_needs_acyclic"
+      },
+      {
+        "name": "hf : fuelBound p ≤ f",
+        "purpose": "the bound itself",
+        "tightness": "tight",
+        "counterexample": "Toy.SymEx.acyclic_fuelBound_needs_bound"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "exDiamond (forward edges, fuelBound 6) with fuel 6, and exDag (acyclic, not numbered in topological order, fuelBound 3) with fuel 3.",
+    "nonvacuity_witness_lean": "Toy.SymEx.nonvacuity_acyclic_fuelBound",
+    "non_claims": [
+      "The bound is not minimal for CFGs with branches or unreachable blocks: every block counts toward fuelBound even if no run visits it; minimality is only stated for straight-line code.",
+      "Acyclic does not constrain edges to nonexistent blocks; such a jump ends the run with a panic, which is not fuel exhaustion.",
+      "The bound depends on this fuel accounting; entering a block is free and every statement and terminator costs one unit.",
+      "ForwardEdges (successor index greater than block index) is a decidable sufficient condition for Acyclic (acyclic_of_forwardEdges); deciding Acyclic itself is not provided.",
+      "Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "D. Kroening, P. Schrammel, M. Tautschnig, 'CBMC: The C Bounded Model Checker', arXiv:2302.02384, 2023. States that successful verification with loop-unwinding bounds is unsound unless the bounds amount to complete unwinding, and that unwinding assertions restore soundness by failing when a bound is insufficient; treating fuel exhaustion as failure plays the same role here. (Checked against the arXiv version only; no archival venue record was used.)",
+      "E. Clarke, D. Kroening, F. Lerda, 'A tool for checking ANSI-C programs', TACAS 2004, LNCS 2988, pp. 168-176, doi:10.1007/978-3-540-24730-2_15. Introduces the CBMC bounded model checker for C; cited for the tool and its bounded exploration only. (Bibliographic record checked; the publisher full text was not inspected.)"
+    ],
+    "design_question": "How much fuel suffices for a bounded executor to finish every run of an acyclic CFG?"
+  },
+  {
+    "id": "straight-line-fuel-bound-minimal",
+    "lean": [
+      "Toy.SymEx.straightLine_fuelBound_le_of_exec_ok",
+      "Toy.SymEx.straightLine_exec_ok_iff_fuelBound_minimal"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Folklore made precise; no source found that states the exact #statements + #blocks minimal bound for straight-line CFGs.",
+    "plain_claim": "For every straight-line CFG p (nonempty; block i ends in goto i+1 and the last block returns), store st and fuel f: if the run with fuel f returns, then f >= fuelBound p = #statements + #blocks; moreover the run returns a store s at some fuel if and only if it returns s at fuel fuelBound p and runs out of fuel at every smaller fuel, so fuelBound p is the exact minimal fuel for runs that return.",
+    "hypotheses": [
+      {
+        "name": "hsl : StraightLine p",
+        "purpose": "with branches a run may skip blocks, and an unreachable block adds to fuelBound without being executed",
+        "tightness": "tight",
+        "counterexample": "Toy.SymEx.straightLine_fuelBound_needs_straightLine",
+        "applies_to": [
+          "Toy.SymEx.straightLine_fuelBound_le_of_exec_ok",
+          "Toy.SymEx.straightLine_exec_ok_iff_fuelBound_minimal"
+        ]
+      },
+      {
+        "name": "hok : exec p f st = ok s",
+        "purpose": "a run that panics stops early and needs less fuel",
+        "tightness": "tight",
+        "counterexample": "Toy.SymEx.straightLine_fuelBound_needs_ok",
+        "applies_to": [
+          "Toy.SymEx.straightLine_fuelBound_le_of_exec_ok"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "exStraight (3 statements, 2 blocks) from x0 = 5 returns at fuel 5 = fuelBound and runs out of fuel at every smaller fuel.",
+    "nonvacuity_witness_lean": "Toy.SymEx.nonvacuity_straightLine_fuelBound",
+    "non_claims": [
+      "Minimality is for runs that return; for inputs that panic less fuel suffices, and if every input panics the minimal sufficient fuel is smaller than fuelBound.",
+      "The exact-minimality equivalence combines the lower bound with sufficiency for acyclic CFGs (straight-line CFGs are acyclic: acyclic_of_straightLine in Lemmas.lean) and concrete fuel monotonicity.",
+      "The number #statements + #blocks reflects this model's accounting (each terminator, including return, costs one unit; entering a block is free).",
+      "Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "D. Kroening, P. Schrammel, M. Tautschnig, 'CBMC: The C Bounded Model Checker', arXiv:2302.02384, 2023. States that successful verification with loop-unwinding bounds is unsound unless the bounds amount to complete unwinding, and that unwinding assertions restore soundness by failing when a bound is insufficient; treating fuel exhaustion as failure plays the same role here. (Checked against the arXiv version only; no archival venue record was used.)"
+    ],
+    "design_question": "Is fuelBound tight, and for which CFGs?"
+  },
+  {
+    "id": "simplifier-soundness-characterization",
+    "lean": "Toy.SymEx.simpSoundUnder_iff_preserves_guardedSound",
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "Folklore criterion (simplify modulo the path condition) stated as an exact equivalence; the sufficiency direction has mechanized instances in other architectures (Keuchel et al. 2022), the necessity direction is not stated there.",
+    "plain_claim": "A term simplifier S preserves interpretation under every valuation satisfying path condition c (SimpSoundUnder c S) if and only if, for every result type, reference R, continuation K and symbolic store sigma, rewriting every term of sigma with S (leaving c unchanged) turns a state (c, sigma) that is sound for R and K into one that is still sound.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Rewriting x0 to 0 is sound under the path condition x0 = 0 and unsound under true.",
+    "nonvacuity_witness_lean": "Toy.SymEx.nonvacuity_simpSoundUnder",
+    "non_claims": [
+      "S rewrites the store terms of a single guarded state under that state's own path condition; applying a rewrite that is sound under c1 to a merged state guarded by c1 or c2 is unsound (path-specific-simplification-breaks-merge).",
+      "Known not to apply to rewriting the path condition itself: a rewrite that is sound under c can turn c into a weaker condition and break soundness (simp_pathCondition_breaks_guardedSound in Counterexamples.lean: x0 -> 0 turns x0 = 0 into a condition that also holds at x0 = 5). Simplifying a path condition needs a separate argument (for example, that the new condition is equivalent to the old one).",
+      "The right-hand side quantifies over all result types, references and continuations. For one fixed continuation the equivalence fails (simpSound_iff_fails_for_fixed_continuation in Counterexamples.lean: with a constant continuation every rewrite preserves soundness). The backward direction needs only the single instance result type Val, K = 'read local 0', and a constant store.",
+      "Conditions are read through Val.toBool (nonzero integers are true) while Term.eq is structural equality of values, so Boolean identities such as (c == true) = c fail for non-Boolean c (proved example in Examples.lean); a simplifier must respect this.",
+      "Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "S. Keuchel, S. Huyghebaert, G. Lukyanov, D. Devriese, 'Verified symbolic execution with Kripke specification monads (and no meta-programming)', Proc. ACM Program. Lang. 6(ICFP), Article 97, 2022, doi:10.1145/3547628. Its Coq-mechanized symbolic executor simplifies path conditions and prunes unreachable paths through a solver interface, and its soundness proof rests on the correctness of that interface; a mechanized instance of the 'sound simplification' direction in a different architecture.",
+      "R. Baldoni, E. Coppa, D. C. D'Elia, C. Demetrescu, I. Finocchi, 'A survey of symbolic execution techniques', ACM Computing Surveys 51(3), Article 50, pp. 50:1-50:39, 2018, doi:10.1145/3182657 (arXiv:1610.00502). Section 6 (constraint reduction) describes implied value concretization, as used by KLEE: once the path condition forces a variable to a value, the variable is replaced by that value on that path. (Section content checked via the arXiv version; the journal record via its DOI landing metadata.)",
+      "C. Cadar, D. Dunbar, D. Engler, 'KLEE: Unassisted and automatic generation of high-coverage tests for complex systems programs', OSDI 2008, pp. 209-224. The symbolic executor that uses implied value concretization (per Baldoni et al., Section 6); cited for the practice, not for a proof. Section 3.3 (query optimization) of the paper itself describes implied value concretization: once a path-condition constraint fixes a variable (x + 1 = 10 gives x = 9), the concrete value is written back for that path. Full text: https://www.usenix.org/legacy/events/osdi08/tech/full_papers/cadar/cadar.pdf."
+    ],
+    "design_question": "Under which condition may a symbolic executor rewrite the terms of a state using facts implied by its path condition?"
+  },
+  {
+    "id": "path-specific-simplification-breaks-merge",
+    "lean": "Toy.SymEx.pathSimp_after_merge_breaks_soundness",
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "Folklore failure mode made concrete.",
+    "plain_claim": "The rewrite x0 -> 0 is sound under the x0 = 0 branch's path condition c1, but applied to every term of the guarded merge of the two diamond branches (a sound leaf guarded by c1 or c2) it breaks soundness. It also rewrites the merge guard c1 inside each ite into a condition that holds at x0 = 5, where c1 does not; so at x0 = 5 the rewritten merged leaf selects the first branch and claims x1 = 1, while the concrete run ends with x1 = 7.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "Not applicable (counterexample).",
+    "positive_control_lean": "Toy.SymEx.pathSimp_before_merge_sound",
+    "non_claims": [
+      "One instance; the general rule is simplifier-soundness-characterization applied with the correct path condition.",
+      "Escape hatch: path-specific simplification stays sound if it is applied to each branch's store before merging, under that branch's path condition, leaving the merge guard unrewritten (guardedMerge_sound_of_simp_branches in Lemmas.lean; the instance x0 -> 0 in the x0 = 0 branch is the positive control pathSimp_before_merge_sound).",
+      "Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "V. Kuznetsov, J. Kinder, S. Bucur, G. Candea, 'Efficient state merging in symbolic execution', PLDI 2012, pp. 193-204, doi:10.1145/2254064.2254088. Section 1 merges (X<0, [x=0]) and (X>=0, [x=5]) into (true, [x = ite(X<0, 0, 5)]); Algorithm 1 (Section 2.1), line 20, replaces two similar worklist states at the same location l by (l, pc' or pc'', lambda v. ite(pc', s'[v], s''[v])). mergeLeaf / mergeStore is this rule, and merging at one location corresponds to the shared continuation K. The paper's concrete semantics is deterministic and it gives no mechanized proof.",
+      "R. Baldoni, E. Coppa, D. C. D'Elia, C. Demetrescu, I. Finocchi, 'A survey of symbolic execution techniques', ACM Computing Surveys 51(3), Article 50, pp. 50:1-50:39, 2018, doi:10.1145/3182657 (arXiv:1610.00502). Section 6 (constraint reduction) describes implied value concretization, as used by KLEE: once the path condition forces a variable to a value, the variable is replaced by that value on that path. (Section content checked via the arXiv version; the journal record via its DOI landing metadata.)",
+      "C. Cadar, D. Dunbar, D. Engler, 'KLEE: Unassisted and automatic generation of high-coverage tests for complex systems programs', OSDI 2008, pp. 209-224. The symbolic executor that uses implied value concretization (per Baldoni et al., Section 6); cited for the practice, not for a proof. Section 3.3 (query optimization) of the paper itself describes implied value concretization: once a path-condition constraint fixes a variable (x + 1 = 10 gives x = 9), the concrete value is written back for that path. Full text: https://www.usenix.org/legacy/events/osdi08/tech/full_papers/cadar/cadar.pdf."
+    ],
+    "design_question": "Can facts learned on one branch be used to simplify a merged state?"
+  },
+  {
+    "id": "strict-success-iff-concrete-success-same-fuel",
+    "lean": "Toy.SymEx.provesStrict_iff_forall_exec_okWith",
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "Correctness plus completeness of symbolic execution, restated at a fixed fuel (cf. de Boer and Bonsangue 2021, Theorems 2.3 and 2.4, unbounded and on paper; Porncharoenwase et al. 2022, Theorems 5 and 9, mechanized in Lean for a fuel-bounded evaluator given enough fuel).",
+    "plain_claim": "For every CFG p (cycles allowed), fuel f and postcondition Q, with no hypotheses: the strict check on symExec p f passes if and only if the concrete run from every input at the same fuel f returns with a store satisfying Q.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "exDiamond at fuel 4 with x1 != x0, and the three-iteration loop exLoop3 (not acyclic) at fuel 13 with postcondition True.",
+    "nonvacuity_witness_lean": "Toy.SymEx.nonvacuity_provesStrict_iff",
+    "non_claims": [
+      "The equivalence is at one fuel. 'Every input returns at some fuel' does not give strict success at any single fuel for CFGs with cycles (loop-free-completeness-at-fuel-bound and its counterexample).",
+      "The leaf checks quantify over every valuation satisfying a path condition, which models an ideal solver; a verifier that decides path conditions with an SMT solver adds solver soundness (and, for completeness claims, solver completeness) assumptions that are not modelled.",
+      "Neither side says which leaves are feasible, and the leaf list is not pruned or merged, so the size of the check is not bounded by the number of feasible paths.",
+      "Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "F. S. de Boer, M. Bonsangue, 'Symbolic execution formally explained', Formal Aspects of Computing 33(4-5):617-636, 2021, doi:10.1007/s00165-020-00527-y (open access). Pen-and-paper account for a while language: a symbolic transition system that takes both branches of every conditional without a feasibility check is related to a concrete operational semantics by Theorem 2.3 (correctness) and Theorem 2.4 (completeness); there is no fuel; its completeness theorem is existential reachability of finite computations, not an equivalence at a fixed fuel.",
+      "S. Porncharoenwase, L. Nelson, X. Wang, E. Torlak, 'A formal foundation for symbolic evaluation with merging', Proc. ACM Program. Lang. 6(POPL), Article 47, 2022, doi:10.1145/3498709. Lean-mechanized semantics S_c of symbolic evaluation with state merging, parameterized by a 'symbolic factory'; Theorem 5 proves S_c sound and complete with respect to the concrete semantics, and Theorem 9 proves the fuel-bounded reference evaluator Leanette sound and complete with respect to S_c given enough fuel. The closest existing mechanization; its setting (a small functional language, merging inside the evaluator) differs from the CFG model here.",
+      "J. C. King, 'Symbolic execution and program testing', Communications of the ACM 19(7):385-394, July 1976, doi:10.1145/360248.360252. Introduces symbolic execution with symbolic inputs, symbolic stores and path conditions accumulated at branches."
+    ],
+    "design_question": "Is a strict symbolic check at a fixed fuel complete as well as sound?"
+  },
+  {
+    "id": "loop-free-completeness-at-fuel-bound",
+    "lean": "Toy.SymEx.acyclic_provesStrict_fuelBound_iff_forall_exists_fuel",
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "Folklore (bounded exploration is complete for loop-free code) made precise with the explicit bound #statements + #blocks.",
+    "plain_claim": "For every acyclic CFG p (some ranking of blocks strictly increases along every edge between existing blocks) and postcondition Q: the strict check at fuel fuelBound p = #statements + #blocks passes if and only if every input has some fuel at which the concrete run returns with a store satisfying Q.",
+    "hypotheses": [
+      {
+        "name": "hacyc : Acyclic p",
+        "purpose": "with a cycle, every input may return yet need more than fuelBound p steps",
+        "tightness": "tight",
+        "counterexample": "Toy.SymEx.acyclic_completeness_needs_acyclic"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "exDiamond is acyclic and passes the strict check for x1 != x0 at fuelBound 6.",
+    "nonvacuity_witness_lean": "Toy.SymEx.nonvacuity_acyclic_completeness",
+    "non_claims": [
+      "Acyclic is graph acyclicity, so CFGs whose blocks are not numbered in topological order are covered; edges to nonexistent blocks are unconstrained (they panic), and unreachable blocks still count toward fuelBound p.",
+      "The counterexample loop runs a fixed three iterations; a loop whose iteration count depends on the input without a uniform bound is not exhibited here (the term language has no order comparison).",
+      "For CFGs with cycles, beyond the counterexample, whether some other single fuel makes the strict check complete is not examined.",
+      "The leaf checks quantify over every valuation satisfying a path condition, which models an ideal solver; a verifier that decides path conditions with an SMT solver adds solver soundness (and, for completeness claims, solver completeness) assumptions that are not modelled.",
+      "Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "D. Kroening, P. Schrammel, M. Tautschnig, 'CBMC: The C Bounded Model Checker', arXiv:2302.02384, 2023. States that successful verification with loop-unwinding bounds is unsound unless the bounds amount to complete unwinding, and that unwinding assertions restore soundness by failing when a bound is insufficient; treating fuel exhaustion as failure plays the same role here. (Checked against the arXiv version only; no archival venue record was used.)",
+      "E. Clarke, D. Kroening, F. Lerda, 'A tool for checking ANSI-C programs', TACAS 2004, LNCS 2988, pp. 168-176, doi:10.1007/978-3-540-24730-2_15. Introduces the CBMC bounded model checker for C; cited for the tool and its bounded exploration only. (Bibliographic record checked; the publisher full text was not inspected.)"
+    ],
+    "design_question": "For acyclic CFGs, can a single fuel value make the strict symbolic check complete?"
+  },
+  {
+    "id": "lax-check-equals-strict-for-acyclic-at-fuel-bound",
+    "lean": "Toy.SymEx.acyclic_provesLax_iff_provesStrict_of_fuelBound_le",
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "Folklore (with a sufficient unwinding bound, unwinding assertions cannot fail) made precise for this model.",
+    "plain_claim": "For every acyclic CFG p, postcondition Q and fuel f >= fuelBound p: the lax check on symExec p f (out-of-fuel leaves accepted) passes if and only if the strict check passes.",
+    "hypotheses": [
+      {
+        "name": "hacyc : Acyclic p",
+        "purpose": "with a cycle, every feasible path may still be looping at fuel fuelBound p, so the lax check passes vacuously while the strict check fails",
+        "tightness": "tight",
+        "counterexample": "Toy.SymEx.acyclic_lax_iff_strict_needs_acyclic"
+      },
+      {
+        "name": "hf : fuelBound p ≤ f",
+        "purpose": "below the bound a feasible path can run out of fuel",
+        "tightness": "tight",
+        "counterexample": "Toy.SymEx.acyclic_lax_iff_strict_needs_bound"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "exDiamond (acyclic, fuelBound 6) at fuel 6 with x1 != x0, where both checks pass.",
+    "nonvacuity_witness_lean": "Toy.SymEx.nonvacuity_acyclic_lax_iff_strict",
+    "non_claims": [
+      "Derived, not stated in Lean: at such fuel no out-of-fuel leaf of symExec p f has a satisfiable path condition (per-path-soundness with loop-free-fuel-bound-sufficient).",
+      "Says nothing about CFGs with cycles; there the lax check can pass at every fuel while no run returns (out-of-fuel-is-not-success).",
+      "The equivalence is between the two checks at the same fuel; it does not say either check passes.",
+      "The leaf checks quantify over every valuation satisfying a path condition, which models an ideal solver; a verifier that decides path conditions with an SMT solver adds solver soundness (and, for completeness claims, solver completeness) assumptions that are not modelled.",
+      "Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide."
+    ],
+    "prior_art": [
+      "D. Kroening, P. Schrammel, M. Tautschnig, 'CBMC: The C Bounded Model Checker', arXiv:2302.02384, 2023. States that successful verification with loop-unwinding bounds is unsound unless the bounds amount to complete unwinding, and that unwinding assertions restore soundness by failing when a bound is insufficient; treating fuel exhaustion as failure plays the same role here. (Checked against the arXiv version only; no archival venue record was used.)",
+      "Kani Rust Verifier documentation, 'Loops, unwinding, and bounds' (docs/src/tutorial-loop-unwinding.md in the model-checking/kani repository; latest commit touching that file when consulted: 21f3a2884e65c4c29465515a0117123cb8392814). States that when the #[kani::unwind] bound is too low, Kani reports a failed 'unwinding assertion' and leaves other properties 'undetermined'; tool documentation of the practice of not counting an exhausted bound as success."
+    ],
+    "design_question": "When is accepting out-of-fuel leaves harmless?"
+  }
+]

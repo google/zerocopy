@@ -1,0 +1,1269 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.SymEx.Acyclic": [],
+    "Toy.SymEx.Block": [],
+    "Toy.SymEx.Block.casesOn": [],
+    "Toy.SymEx.Block.ctorIdx": [],
+    "Toy.SymEx.Block.mk": [],
+    "Toy.SymEx.Block.mk.inj": [],
+    "Toy.SymEx.Block.mk.injEq": [
+      "propext"
+    ],
+    "Toy.SymEx.Block.mk.noConfusion": [],
+    "Toy.SymEx.Block.mk.sizeOf_spec": [],
+    "Toy.SymEx.Block.noConfusion": [],
+    "Toy.SymEx.Block.noConfusionType": [],
+    "Toy.SymEx.Block.rec": [],
+    "Toy.SymEx.Block.recOn": [],
+    "Toy.SymEx.Block.stmts": [],
+    "Toy.SymEx.Block.term": [],
+    "Toy.SymEx.B\u2081\u2082": [],
+    "Toy.SymEx.Cfg": [],
+    "Toy.SymEx.Covers": [],
+    "Toy.SymEx.Disjoint": [],
+    "Toy.SymEx.ForwardEdges": [],
+    "Toy.SymEx.GuardedSound": [],
+    "Toy.SymEx.K\u2080": [],
+    "Toy.SymEx.K\u2080.eq_1": [],
+    "Toy.SymEx.Leaf": [],
+    "Toy.SymEx.Leaf.casesOn": [],
+    "Toy.SymEx.Leaf.ctorIdx": [],
+    "Toy.SymEx.Leaf.mk": [],
+    "Toy.SymEx.Leaf.mk.inj": [],
+    "Toy.SymEx.Leaf.mk.injEq": [
+      "propext"
+    ],
+    "Toy.SymEx.Leaf.mk.noConfusion": [],
+    "Toy.SymEx.Leaf.mk.sizeOf_spec": [],
+    "Toy.SymEx.Leaf.noConfusion": [],
+    "Toy.SymEx.Leaf.noConfusionType": [],
+    "Toy.SymEx.Leaf.pc": [],
+    "Toy.SymEx.Leaf.rec": [],
+    "Toy.SymEx.Leaf.recOn": [],
+    "Toy.SymEx.Leaf.res": [],
+    "Toy.SymEx.LeavesExhaustive": [],
+    "Toy.SymEx.LeavesProve": [
+      "propext"
+    ],
+    "Toy.SymEx.LeavesProveLax": [],
+    "Toy.SymEx.LeavesSound": [
+      "propext"
+    ],
+    "Toy.SymEx.Loc": [],
+    "Toy.SymEx.Loc.blk": [],
+    "Toy.SymEx.Loc.casesOn": [],
+    "Toy.SymEx.Loc.ctorIdx": [],
+    "Toy.SymEx.Loc.idx": [],
+    "Toy.SymEx.Loc.mk": [],
+    "Toy.SymEx.Loc.mk.inj": [],
+    "Toy.SymEx.Loc.mk.injEq": [
+      "propext"
+    ],
+    "Toy.SymEx.Loc.mk.noConfusion": [],
+    "Toy.SymEx.Loc.mk.sizeOf_spec": [],
+    "Toy.SymEx.Loc.noConfusion": [],
+    "Toy.SymEx.Loc.noConfusionType": [],
+    "Toy.SymEx.Loc.rec": [],
+    "Toy.SymEx.Loc.recOn": [],
+    "Toy.SymEx.OkWith": [
+      "propext"
+    ],
+    "Toy.SymEx.OkWith.eq_1": [
+      "propext"
+    ],
+    "Toy.SymEx.OkWith.eq_2": [
+      "propext"
+    ],
+    "Toy.SymEx.OkWith.match_1": [
+      "propext"
+    ],
+    "Toy.SymEx.OkWithOrOutOfFuel": [],
+    "Toy.SymEx.OkWithOrOutOfFuel.eq_1": [],
+    "Toy.SymEx.OkWithOrOutOfFuel.eq_2": [],
+    "Toy.SymEx.OkWithOrOutOfFuel.eq_3": [],
+    "Toy.SymEx.OkWithOrOutOfFuel.match_1": [],
+    "Toy.SymEx.Outcome": [],
+    "Toy.SymEx.Outcome.casesOn": [],
+    "Toy.SymEx.Outcome.ctorElim": [],
+    "Toy.SymEx.Outcome.ctorElimType": [],
+    "Toy.SymEx.Outcome.ctorIdx": [],
+    "Toy.SymEx.Outcome.get?": [
+      "propext"
+    ],
+    "Toy.SymEx.Outcome.get?.match_1": [
+      "propext"
+    ],
+    "Toy.SymEx.Outcome.noConfusion": [],
+    "Toy.SymEx.Outcome.noConfusionType": [],
+    "Toy.SymEx.Outcome.ok": [],
+    "Toy.SymEx.Outcome.ok.elim": [],
+    "Toy.SymEx.Outcome.ok.inj": [],
+    "Toy.SymEx.Outcome.ok.injEq": [
+      "propext"
+    ],
+    "Toy.SymEx.Outcome.ok.noConfusion": [],
+    "Toy.SymEx.Outcome.ok.sizeOf_spec": [],
+    "Toy.SymEx.Outcome.outOfFuel": [],
+    "Toy.SymEx.Outcome.outOfFuel.elim": [],
+    "Toy.SymEx.Outcome.outOfFuel.sizeOf_spec": [],
+    "Toy.SymEx.Outcome.panic": [],
+    "Toy.SymEx.Outcome.panic.elim": [],
+    "Toy.SymEx.Outcome.panic.inj": [],
+    "Toy.SymEx.Outcome.panic.injEq": [
+      "propext"
+    ],
+    "Toy.SymEx.Outcome.panic.noConfusion": [],
+    "Toy.SymEx.Outcome.panic.sizeOf_spec": [],
+    "Toy.SymEx.Outcome.panicLoc?": [
+      "propext"
+    ],
+    "Toy.SymEx.Outcome.panicLoc?.match_1": [
+      "propext"
+    ],
+    "Toy.SymEx.Outcome.rec": [],
+    "Toy.SymEx.Outcome.recOn": [],
+    "Toy.SymEx.Outcome.tag": [],
+    "Toy.SymEx.Outcome.tag.match_1": [],
+    "Toy.SymEx.Proofs.acyclic_fuel_core": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.acyclic_fuel_core.match_1_1": [
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.blkCost": [
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.blkCost.eq_1": [
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.blkCost.match_1": [],
+    "Toy.SymEx.Proofs.covers_merge_core": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.dropPcs_core": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.eval_subst_core": [
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.exec_fuel_mono_core": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.exec_okWith_le_core": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.forkSwitch_exhaustive": [
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.forkSwitch_exhaustive.match_1_1": [],
+    "Toy.SymEx.Proofs.forkSwitch_pairwise_disjoint": [
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.forkSwitch_pairwise_disjoint.match_1_1": [],
+    "Toy.SymEx.Proofs.forkSwitch_pairwise_disjoint.match_1_3": [],
+    "Toy.SymEx.Proofs.forkSwitch_pairwise_disjoint.match_1_5": [],
+    "Toy.SymEx.Proofs.forkSwitch_pc_imp": [
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.forkSwitch_pc_imp.match_1_1": [],
+    "Toy.SymEx.Proofs.guardedMerge_sound_core": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.holds_and_iff": [],
+    "Toy.SymEx.Proofs.holds_and_iff.match_1_1": [],
+    "Toy.SymEx.Proofs.holds_and_iff.match_1_3": [],
+    "Toy.SymEx.Proofs.holds_and_iff.match_1_5": [],
+    "Toy.SymEx.Proofs.holds_eq_lit_iff": [
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.holds_not_iff": [],
+    "Toy.SymEx.Proofs.holds_not_iff.match_1_1": [],
+    "Toy.SymEx.Proofs.holds_not_iff.match_1_3": [],
+    "Toy.SymEx.Proofs.mergeLeaf_exhaustive_core": [
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.mergeLeaf_sound_core": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.pairwise_flatMap": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.provesStrict_iff_core": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.range_blkCost_add_tailCost": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.range_blkCost_add_tailCost.match_1_1": [],
+    "Toy.SymEx.Proofs.range_blkCost_eq_fuelBound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.runBlock_fuel_mono": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.runBlock_fuel_mono.match_1_1": [
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.runBlock_ne_outOfFuel_of_acyclic": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.runBlock_ne_outOfFuel_of_acyclic.match_1_1": [
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.runBlock_ne_outOfFuel_of_acyclic.match_1_12": [],
+    "Toy.SymEx.Proofs.runBlock_ne_outOfFuel_of_acyclic.match_1_14": [
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.runBlock_ne_outOfFuel_of_acyclic.match_1_20": [
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.runBlock_ok_le_of_straightLine": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.runBlock_ok_le_of_straightLine.match_1_1": [
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.runBlock_ok_le_of_straightLine.match_1_13": [],
+    "Toy.SymEx.Proofs.runBlock_ok_le_of_straightLine.match_1_3": [
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.select_mem_targets": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.select_mem_targets.match_1_1": [],
+    "Toy.SymEx.Proofs.simpSoundUnder_iff_core": [
+      "Quot.sound"
+    ],
+    "Toy.SymEx.Proofs.straightLine_min_core": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.straightLine_min_core.match_1_1": [
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.sum_map_erase": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.sum_map_erase.match_1_1": [],
+    "Toy.SymEx.Proofs.sum_map_erase.match_1_3": [],
+    "Toy.SymEx.Proofs.symBlock_exhaustive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.symBlock_exhaustive.match_1_1": [],
+    "Toy.SymEx.Proofs.symBlock_pairwise_disjoint": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.symBlock_pairwise_disjoint.match_1_1": [],
+    "Toy.SymEx.Proofs.symBlock_pairwise_disjoint.match_1_14": [],
+    "Toy.SymEx.Proofs.symBlock_pairwise_disjoint.match_1_3": [],
+    "Toy.SymEx.Proofs.symBlock_pairwise_disjoint.match_1_5": [],
+    "Toy.SymEx.Proofs.symBlock_pc_imp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.symBlock_pc_imp.match_1_1": [
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.symBlock_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.symBlock_sound.match_1_1": [
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.symExec_exhaustive_core": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.symExec_leaf_sound_core": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.symExec_pairwise_disjoint_core": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.symExec_pairwise_disjoint_core.match_1_1": [],
+    "Toy.SymEx.Proofs.symStore_set_inst": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.tailCost": [],
+    "Toy.SymEx.Proofs.tailCost.eq_1": [],
+    "Toy.SymEx.Proofs.tailCost_anti": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.tailCost_anti.match_1_1": [],
+    "Toy.SymEx.Proofs.tailCost_step": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.tailCost_zero_eq_fuelBound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.tailCost_zero_eq_fuelBound.match_1_1": [],
+    "Toy.SymEx.Proofs.transfer_lax": [
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.transfer_lax.match_1_1": [],
+    "Toy.SymEx.Proofs.transfer_strict": [
+      "propext"
+    ],
+    "Toy.SymEx.Proofs.transfer_strict.match_1_1": [],
+    "Toy.SymEx.ProvesLax": [
+      "propext"
+    ],
+    "Toy.SymEx.ProvesStrict": [
+      "propext"
+    ],
+    "Toy.SymEx.QneDiamond": [],
+    "Toy.SymEx.QneDiamond.eq_1": [],
+    "Toy.SymEx.Qplus1": [],
+    "Toy.SymEx.Qplus1.eq_1": [],
+    "Toy.SymEx.Qtrue": [],
+    "Toy.SymEx.Qx1eq1": [],
+    "Toy.SymEx.Qx1eq1.eq_1": [],
+    "Toy.SymEx.Rdia": [
+      "propext"
+    ],
+    "Toy.SymEx.Rdia.eq_1": [
+      "propext"
+    ],
+    "Toy.SymEx.Sat": [],
+    "Toy.SymEx.SimpSoundUnder": [],
+    "Toy.SymEx.Stmt": [],
+    "Toy.SymEx.Stmt.assert": [],
+    "Toy.SymEx.Stmt.assert.elim": [],
+    "Toy.SymEx.Stmt.assert.inj": [],
+    "Toy.SymEx.Stmt.assert.injEq": [
+      "propext"
+    ],
+    "Toy.SymEx.Stmt.assert.noConfusion": [],
+    "Toy.SymEx.Stmt.assert.sizeOf_spec": [],
+    "Toy.SymEx.Stmt.assign": [],
+    "Toy.SymEx.Stmt.assign.elim": [],
+    "Toy.SymEx.Stmt.assign.inj": [],
+    "Toy.SymEx.Stmt.assign.injEq": [
+      "propext"
+    ],
+    "Toy.SymEx.Stmt.assign.noConfusion": [],
+    "Toy.SymEx.Stmt.assign.sizeOf_spec": [],
+    "Toy.SymEx.Stmt.casesOn": [],
+    "Toy.SymEx.Stmt.ctorElim": [],
+    "Toy.SymEx.Stmt.ctorElimType": [],
+    "Toy.SymEx.Stmt.ctorIdx": [],
+    "Toy.SymEx.Stmt.noConfusion": [],
+    "Toy.SymEx.Stmt.noConfusionType": [],
+    "Toy.SymEx.Stmt.rec": [],
+    "Toy.SymEx.Stmt.recOn": [],
+    "Toy.SymEx.Store": [],
+    "Toy.SymEx.Store.set": [],
+    "Toy.SymEx.Store.set.eq_1": [],
+    "Toy.SymEx.StraightLine": [],
+    "Toy.SymEx.SymOutcome": [],
+    "Toy.SymEx.SymOutcome.casesOn": [],
+    "Toy.SymEx.SymOutcome.ctorElim": [],
+    "Toy.SymEx.SymOutcome.ctorElimType": [],
+    "Toy.SymEx.SymOutcome.ctorIdx": [],
+    "Toy.SymEx.SymOutcome.inst": [],
+    "Toy.SymEx.SymOutcome.inst.eq_1": [],
+    "Toy.SymEx.SymOutcome.inst.eq_2": [],
+    "Toy.SymEx.SymOutcome.inst.eq_3": [],
+    "Toy.SymEx.SymOutcome.inst.match_1": [],
+    "Toy.SymEx.SymOutcome.noConfusion": [],
+    "Toy.SymEx.SymOutcome.noConfusionType": [],
+    "Toy.SymEx.SymOutcome.ok": [],
+    "Toy.SymEx.SymOutcome.ok.elim": [],
+    "Toy.SymEx.SymOutcome.ok.inj": [],
+    "Toy.SymEx.SymOutcome.ok.injEq": [
+      "propext"
+    ],
+    "Toy.SymEx.SymOutcome.ok.noConfusion": [],
+    "Toy.SymEx.SymOutcome.ok.sizeOf_spec": [],
+    "Toy.SymEx.SymOutcome.outOfFuel": [],
+    "Toy.SymEx.SymOutcome.outOfFuel.elim": [],
+    "Toy.SymEx.SymOutcome.outOfFuel.sizeOf_spec": [],
+    "Toy.SymEx.SymOutcome.panic": [],
+    "Toy.SymEx.SymOutcome.panic.elim": [],
+    "Toy.SymEx.SymOutcome.panic.inj": [],
+    "Toy.SymEx.SymOutcome.panic.injEq": [
+      "propext"
+    ],
+    "Toy.SymEx.SymOutcome.panic.noConfusion": [],
+    "Toy.SymEx.SymOutcome.panic.sizeOf_spec": [],
+    "Toy.SymEx.SymOutcome.rec": [],
+    "Toy.SymEx.SymOutcome.recOn": [],
+    "Toy.SymEx.SymOutcome.tag": [],
+    "Toy.SymEx.SymOutcome.tag.eq_1": [],
+    "Toy.SymEx.SymOutcome.tag.eq_2": [],
+    "Toy.SymEx.SymOutcome.tag.eq_3": [],
+    "Toy.SymEx.SymOutcome.tag.match_1": [],
+    "Toy.SymEx.SymStore": [],
+    "Toy.SymEx.SymStore.init": [],
+    "Toy.SymEx.SymStore.init.eq_1": [],
+    "Toy.SymEx.SymStore.inst": [],
+    "Toy.SymEx.SymStore.inst.eq_1": [],
+    "Toy.SymEx.SymStore.set": [],
+    "Toy.SymEx.SymStore.set.eq_1": [],
+    "Toy.SymEx.Term": [],
+    "Toy.SymEx.Term.add": [],
+    "Toy.SymEx.Term.add.elim": [],
+    "Toy.SymEx.Term.add.inj": [],
+    "Toy.SymEx.Term.add.injEq": [
+      "propext"
+    ],
+    "Toy.SymEx.Term.add.noConfusion": [],
+    "Toy.SymEx.Term.add.sizeOf_spec": [],
+    "Toy.SymEx.Term.and": [],
+    "Toy.SymEx.Term.and.eq_1": [],
+    "Toy.SymEx.Term.below": [],
+    "Toy.SymEx.Term.brecOn": [],
+    "Toy.SymEx.Term.brecOn.eq": [],
+    "Toy.SymEx.Term.brecOn.go": [],
+    "Toy.SymEx.Term.casesOn": [],
+    "Toy.SymEx.Term.closed": [],
+    "Toy.SymEx.Term.closed.eq_1": [],
+    "Toy.SymEx.Term.closed.eq_2": [],
+    "Toy.SymEx.Term.closed.eq_3": [],
+    "Toy.SymEx.Term.closed.eq_4": [],
+    "Toy.SymEx.Term.closed.eq_5": [],
+    "Toy.SymEx.Term.closed.eq_def": [],
+    "Toy.SymEx.Term.closed.match_1": [],
+    "Toy.SymEx.Term.ctorElim": [],
+    "Toy.SymEx.Term.ctorElimType": [],
+    "Toy.SymEx.Term.ctorIdx": [],
+    "Toy.SymEx.Term.eq": [],
+    "Toy.SymEx.Term.eq.elim": [],
+    "Toy.SymEx.Term.eq.inj": [],
+    "Toy.SymEx.Term.eq.injEq": [
+      "propext"
+    ],
+    "Toy.SymEx.Term.eq.noConfusion": [],
+    "Toy.SymEx.Term.eq.sizeOf_spec": [],
+    "Toy.SymEx.Term.eval": [],
+    "Toy.SymEx.Term.eval.eq_1": [],
+    "Toy.SymEx.Term.eval.eq_2": [],
+    "Toy.SymEx.Term.eval.eq_3": [],
+    "Toy.SymEx.Term.eval.eq_4": [],
+    "Toy.SymEx.Term.eval.eq_5": [],
+    "Toy.SymEx.Term.eval.eq_def": [],
+    "Toy.SymEx.Term.eval_of_closed": [
+      "propext"
+    ],
+    "Toy.SymEx.Term.eval_of_closed.match_1_1": [],
+    "Toy.SymEx.Term.eval_of_closed.match_1_3": [],
+    "Toy.SymEx.Term.ff": [],
+    "Toy.SymEx.Term.ff.eq_1": [],
+    "Toy.SymEx.Term.int": [],
+    "Toy.SymEx.Term.int.eq_1": [],
+    "Toy.SymEx.Term.ite": [],
+    "Toy.SymEx.Term.ite.elim": [],
+    "Toy.SymEx.Term.ite.inj": [],
+    "Toy.SymEx.Term.ite.injEq": [
+      "propext"
+    ],
+    "Toy.SymEx.Term.ite.noConfusion": [],
+    "Toy.SymEx.Term.ite.sizeOf_spec": [],
+    "Toy.SymEx.Term.lit": [],
+    "Toy.SymEx.Term.lit.elim": [],
+    "Toy.SymEx.Term.lit.inj": [],
+    "Toy.SymEx.Term.lit.injEq": [
+      "propext"
+    ],
+    "Toy.SymEx.Term.lit.noConfusion": [],
+    "Toy.SymEx.Term.lit.sizeOf_spec": [],
+    "Toy.SymEx.Term.noConfusion": [],
+    "Toy.SymEx.Term.noConfusionType": [],
+    "Toy.SymEx.Term.not": [],
+    "Toy.SymEx.Term.not.eq_1": [],
+    "Toy.SymEx.Term.or": [],
+    "Toy.SymEx.Term.rec": [],
+    "Toy.SymEx.Term.recOn": [],
+    "Toy.SymEx.Term.subst": [],
+    "Toy.SymEx.Term.subst.eq_1": [],
+    "Toy.SymEx.Term.subst.eq_2": [],
+    "Toy.SymEx.Term.subst.eq_3": [],
+    "Toy.SymEx.Term.subst.eq_4": [],
+    "Toy.SymEx.Term.subst.eq_5": [],
+    "Toy.SymEx.Term.subst.eq_def": [],
+    "Toy.SymEx.Term.substVar": [],
+    "Toy.SymEx.Term.substVar.eq_1": [],
+    "Toy.SymEx.Term.tt": [],
+    "Toy.SymEx.Term.tt.eq_1": [],
+    "Toy.SymEx.Term.var": [],
+    "Toy.SymEx.Term.var.elim": [],
+    "Toy.SymEx.Term.var.inj": [],
+    "Toy.SymEx.Term.var.injEq": [
+      "propext"
+    ],
+    "Toy.SymEx.Term.var.noConfusion": [],
+    "Toy.SymEx.Term.var.sizeOf_spec": [],
+    "Toy.SymEx.Terminator": [],
+    "Toy.SymEx.Terminator.casesOn": [],
+    "Toy.SymEx.Terminator.ctorElim": [],
+    "Toy.SymEx.Terminator.ctorElimType": [],
+    "Toy.SymEx.Terminator.ctorIdx": [],
+    "Toy.SymEx.Terminator.goto": [],
+    "Toy.SymEx.Terminator.goto.elim": [],
+    "Toy.SymEx.Terminator.goto.inj": [],
+    "Toy.SymEx.Terminator.goto.injEq": [
+      "propext"
+    ],
+    "Toy.SymEx.Terminator.goto.noConfusion": [],
+    "Toy.SymEx.Terminator.goto.sizeOf_spec": [],
+    "Toy.SymEx.Terminator.noConfusion": [],
+    "Toy.SymEx.Terminator.noConfusionType": [],
+    "Toy.SymEx.Terminator.rec": [],
+    "Toy.SymEx.Terminator.recOn": [],
+    "Toy.SymEx.Terminator.ret": [],
+    "Toy.SymEx.Terminator.ret.elim": [],
+    "Toy.SymEx.Terminator.ret.sizeOf_spec": [],
+    "Toy.SymEx.Terminator.switchInt": [],
+    "Toy.SymEx.Terminator.switchInt.elim": [],
+    "Toy.SymEx.Terminator.switchInt.inj": [],
+    "Toy.SymEx.Terminator.switchInt.injEq": [
+      "propext"
+    ],
+    "Toy.SymEx.Terminator.switchInt.noConfusion": [],
+    "Toy.SymEx.Terminator.switchInt.sizeOf_spec": [],
+    "Toy.SymEx.Terminator.targetsOf": [],
+    "Toy.SymEx.Terminator.targetsOf.eq_1": [],
+    "Toy.SymEx.Terminator.targetsOf.eq_2": [],
+    "Toy.SymEx.Terminator.targetsOf.eq_3": [],
+    "Toy.SymEx.Val": [],
+    "Toy.SymEx.Val.bool": [],
+    "Toy.SymEx.Val.bool.elim": [],
+    "Toy.SymEx.Val.bool.inj": [],
+    "Toy.SymEx.Val.bool.injEq": [
+      "propext"
+    ],
+    "Toy.SymEx.Val.bool.noConfusion": [],
+    "Toy.SymEx.Val.bool.sizeOf_spec": [],
+    "Toy.SymEx.Val.casesOn": [],
+    "Toy.SymEx.Val.ctorElim": [],
+    "Toy.SymEx.Val.ctorElimType": [],
+    "Toy.SymEx.Val.ctorIdx": [],
+    "Toy.SymEx.Val.int": [],
+    "Toy.SymEx.Val.int.elim": [],
+    "Toy.SymEx.Val.int.inj": [],
+    "Toy.SymEx.Val.int.injEq": [
+      "propext"
+    ],
+    "Toy.SymEx.Val.int.noConfusion": [],
+    "Toy.SymEx.Val.int.sizeOf_spec": [],
+    "Toy.SymEx.Val.noConfusion": [],
+    "Toy.SymEx.Val.noConfusionType": [],
+    "Toy.SymEx.Val.rec": [],
+    "Toy.SymEx.Val.recOn": [],
+    "Toy.SymEx.Val.toBool": [],
+    "Toy.SymEx.Val.toBool.eq_1": [],
+    "Toy.SymEx.Val.toBool.eq_2": [],
+    "Toy.SymEx.Val.toInt": [],
+    "Toy.SymEx.Val.toInt.eq_1": [],
+    "Toy.SymEx.Val.toInt.eq_2": [],
+    "Toy.SymEx.Valuation": [],
+    "Toy.SymEx.Var": [],
+    "Toy.SymEx.acyclic_completeness_needs_acyclic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.acyclic_exDag": [
+      "propext"
+    ],
+    "Toy.SymEx.acyclic_exDag.match_1_1": [
+      "propext"
+    ],
+    "Toy.SymEx.acyclic_exDiamond": [],
+    "Toy.SymEx.acyclic_exStraight": [],
+    "Toy.SymEx.acyclic_exec_ne_outOfFuel_of_fuelBound_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.acyclic_fuelBound_needs_acyclic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.acyclic_fuelBound_needs_bound": [
+      "propext"
+    ],
+    "Toy.SymEx.acyclic_lax_iff_strict_needs_acyclic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.acyclic_lax_iff_strict_needs_bound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.acyclic_of_forwardEdges": [],
+    "Toy.SymEx.acyclic_of_straightLine": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.acyclic_provesLax_iff_provesStrict_of_fuelBound_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.acyclic_provesStrict_fuelBound_iff_forall_exists_fuel": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.agree_on_overlap_of_disjoint": [],
+    "Toy.SymEx.agree_on_overlap_of_guardedSound": [],
+    "Toy.SymEx.covers_exDiamond": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.covers_merge_needs_covers": [
+      "propext"
+    ],
+    "Toy.SymEx.covers_pairwise_agree_single_valued": [
+      "propext"
+    ],
+    "Toy.SymEx.dc\u2081": [],
+    "Toy.SymEx.dc\u2081.eq_1": [],
+    "Toy.SymEx.dc\u2082": [],
+    "Toy.SymEx.dc\u2082.eq_1": [],
+    "Toy.SymEx.disjoint_dc\u2081_dc\u2082": [
+      "propext"
+    ],
+    "Toy.SymEx.disjoint_dc\u2081_dc\u2082.match_1_1": [],
+    "Toy.SymEx.dropPcs": [],
+    "Toy.SymEx.dropPcs.eq_1": [],
+    "Toy.SymEx.dropPcs_false_alarm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.dropPcs_not_leavesSound": [
+      "propext"
+    ],
+    "Toy.SymEx.d\u03c3\u2081": [],
+    "Toy.SymEx.d\u03c3\u2081.eq_1": [],
+    "Toy.SymEx.d\u03c3\u2082": [],
+    "Toy.SymEx.d\u03c3\u2082.eq_1": [],
+    "Toy.SymEx.eval_subst": [
+      "propext"
+    ],
+    "Toy.SymEx.exAssertTrue": [],
+    "Toy.SymEx.exAssertTrue.eq_1": [],
+    "Toy.SymEx.exDag": [],
+    "Toy.SymEx.exDag.eq_1": [],
+    "Toy.SymEx.exDeadBlock": [],
+    "Toy.SymEx.exDiamond": [],
+    "Toy.SymEx.exDiamond.eq_1": [],
+    "Toy.SymEx.exHalfDone": [],
+    "Toy.SymEx.exHalfDone.eq_1": [],
+    "Toy.SymEx.exLoop3": [],
+    "Toy.SymEx.exLoopThenAssertFalse": [],
+    "Toy.SymEx.exLoopThenAssertFalse.eq_1": [],
+    "Toy.SymEx.exPanicIfZero": [],
+    "Toy.SymEx.exPanicIfZero.eq_1": [],
+    "Toy.SymEx.exPanicIfZero_panics_at_\u03c10": [
+      "propext"
+    ],
+    "Toy.SymEx.exSelfLoop": [],
+    "Toy.SymEx.exStraight": [],
+    "Toy.SymEx.exStraight.eq_1": [],
+    "Toy.SymEx.exec": [
+      "propext"
+    ],
+    "Toy.SymEx.exec.eq_1": [
+      "propext"
+    ],
+    "Toy.SymEx.exec_exDiamond": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.exec_exPanicIfZero": [
+      "propext"
+    ],
+    "Toy.SymEx.exec_fuel_mono": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.exec_fuel_mono_needs_le": [
+      "propext"
+    ],
+    "Toy.SymEx.exec_fuel_mono_needs_ne_outOfFuel": [
+      "propext"
+    ],
+    "Toy.SymEx.exec_okWithOrOutOfFuel_of_leavesSound_of_exhaustive_of_leavesProveLax": [
+      "propext"
+    ],
+    "Toy.SymEx.exec_okWith_of_leavesSound_of_exhaustive_of_leavesProve": [
+      "propext"
+    ],
+    "Toy.SymEx.exec_okWith_of_provesStrict_of_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.forkSwitch": [],
+    "Toy.SymEx.forkSwitch.eq_1": [],
+    "Toy.SymEx.forkSwitch.eq_2": [],
+    "Toy.SymEx.forkSwitch.eq_def": [],
+    "Toy.SymEx.forkSwitch.match_1": [],
+    "Toy.SymEx.forwardEdges_of_straightLine": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.forwardEdges_of_straightLine.match_1_6": [],
+    "Toy.SymEx.fuelBound": [],
+    "Toy.SymEx.fuelBound.eq_1": [],
+    "Toy.SymEx.guardedMerge_needs_first_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.guardedMerge_needs_second_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.guardedMerge_preserves_covers_of_agree_on_overlap": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.guardedMerge_rejects_Qplus1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.guardedMerge_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.guardedMerge_sound_of_simp_branches": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.guardedMerge_sound_overlapping_instance": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.guardedMerge_sound_rel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.guardedSound_dc\u2081_d\u03c3\u2081": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.guardedSound_dc\u2082_d\u03c3\u2082": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.guardedSound_merge_dia": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.holds": [],
+    "Toy.SymEx.holds.eq_1": [],
+    "Toy.SymEx.holds_and": [],
+    "Toy.SymEx.holds_and.match_1_1": [],
+    "Toy.SymEx.holds_and.match_1_3": [],
+    "Toy.SymEx.holds_and.match_1_5": [],
+    "Toy.SymEx.holds_dc\u2081": [
+      "propext"
+    ],
+    "Toy.SymEx.holds_dc\u2082": [
+      "propext"
+    ],
+    "Toy.SymEx.holds_not": [],
+    "Toy.SymEx.holds_not.match_1_1": [],
+    "Toy.SymEx.holds_not.match_1_3": [],
+    "Toy.SymEx.holds_or": [
+      "propext"
+    ],
+    "Toy.SymEx.holds_pzOkPc": [
+      "propext"
+    ],
+    "Toy.SymEx.holds_pzPanicPc": [
+      "propext"
+    ],
+    "Toy.SymEx.instDecidableEqBlock": [],
+    "Toy.SymEx.instDecidableEqBlock.decEq": [],
+    "Toy.SymEx.instDecidableEqBlock.decEq.match_1": [],
+    "Toy.SymEx.instDecidableEqLoc": [],
+    "Toy.SymEx.instDecidableEqLoc.decEq": [],
+    "Toy.SymEx.instDecidableEqLoc.decEq.match_1": [],
+    "Toy.SymEx.instDecidableEqStmt": [],
+    "Toy.SymEx.instDecidableEqStmt.decEq": [],
+    "Toy.SymEx.instDecidableEqStmt.decEq.match_1": [],
+    "Toy.SymEx.instDecidableEqTerm": [],
+    "Toy.SymEx.instDecidableEqTerm.decEq": [],
+    "Toy.SymEx.instDecidableEqTerm.decEq.match_1": [],
+    "Toy.SymEx.instDecidableEqTerminator": [],
+    "Toy.SymEx.instDecidableEqTerminator.decEq": [],
+    "Toy.SymEx.instDecidableEqTerminator.decEq.match_1": [],
+    "Toy.SymEx.instDecidableEqVal": [],
+    "Toy.SymEx.instDecidableEqVal.decEq": [],
+    "Toy.SymEx.instDecidableEqVal.decEq.match_1": [],
+    "Toy.SymEx.instDecidableForwardEdges": [],
+    "Toy.SymEx.instDecidableHolds": [],
+    "Toy.SymEx.instDecidableStraightLine": [],
+    "Toy.SymEx.instInhabitedLeaf": [],
+    "Toy.SymEx.instInhabitedLeaf.default": [],
+    "Toy.SymEx.instInhabitedSymOutcome": [],
+    "Toy.SymEx.instInhabitedSymOutcome.default": [],
+    "Toy.SymEx.instInhabitedTerm": [],
+    "Toy.SymEx.instInhabitedTerm.default": [],
+    "Toy.SymEx.instInhabitedVal": [],
+    "Toy.SymEx.instInhabitedVal.default": [],
+    "Toy.SymEx.instReprBlock": [
+      "propext"
+    ],
+    "Toy.SymEx.instReprBlock.repr": [
+      "propext"
+    ],
+    "Toy.SymEx.instReprLoc": [],
+    "Toy.SymEx.instReprLoc.repr": [],
+    "Toy.SymEx.instReprStmt": [
+      "propext"
+    ],
+    "Toy.SymEx.instReprStmt.repr": [
+      "propext"
+    ],
+    "Toy.SymEx.instReprStmt.repr.match_1": [],
+    "Toy.SymEx.instReprTerm": [
+      "propext"
+    ],
+    "Toy.SymEx.instReprTerm.repr": [
+      "propext"
+    ],
+    "Toy.SymEx.instReprTerm.repr.match_1": [],
+    "Toy.SymEx.instReprTerminator": [
+      "propext"
+    ],
+    "Toy.SymEx.instReprTerminator.repr": [
+      "propext"
+    ],
+    "Toy.SymEx.instReprTerminator.repr.match_1": [],
+    "Toy.SymEx.instReprVal": [
+      "propext"
+    ],
+    "Toy.SymEx.instReprVal.repr": [
+      "propext"
+    ],
+    "Toy.SymEx.instReprVal.repr.match_1": [],
+    "Toy.SymEx.leavesExhaustive_exDiamond": [
+      "propext"
+    ],
+    "Toy.SymEx.leavesExhaustive_exPanicIfZero": [
+      "propext"
+    ],
+    "Toy.SymEx.leavesExhaustive_of_subset": [],
+    "Toy.SymEx.leavesExhaustive_of_subset.match_1_1": [],
+    "Toy.SymEx.leavesProveLax_false_of_closed_check": [
+      "propext"
+    ],
+    "Toy.SymEx.leavesProveLax_false_of_closed_check.match_1_1": [],
+    "Toy.SymEx.leavesProveLax_false_of_closed_check.match_1_3": [
+      "propext"
+    ],
+    "Toy.SymEx.leavesProveLax_of_leavesProve": [
+      "propext"
+    ],
+    "Toy.SymEx.leavesProve_dropPcs_needed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.leavesProve_of_closed_check": [
+      "propext"
+    ],
+    "Toy.SymEx.leavesProve_of_closed_check.match_1_5": [],
+    "Toy.SymEx.leavesProve_of_closed_check.match_1_7": [],
+    "Toy.SymEx.leavesProve_of_leavesProve_dropPcs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.leavesProve_of_subset": [
+      "propext"
+    ],
+    "Toy.SymEx.leavesSound_exDiamond": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.leavesSound_exPanicIfZero": [
+      "propext"
+    ],
+    "Toy.SymEx.leavesSound_of_subset": [
+      "propext"
+    ],
+    "Toy.SymEx.mem_pairwise_or": [
+      "propext"
+    ],
+    "Toy.SymEx.mem_pairwise_or.match_1_1": [],
+    "Toy.SymEx.mergeLeaf": [],
+    "Toy.SymEx.mergeLeafUnguarded": [],
+    "Toy.SymEx.mergeLeafUnguarded.eq_1": [],
+    "Toy.SymEx.mergeLeaf_leavesExhaustive_iff": [
+      "propext"
+    ],
+    "Toy.SymEx.mergeLeaf_leavesSound_converse_fails": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.mergeLeaf_needs_leavesSound": [
+      "propext"
+    ],
+    "Toy.SymEx.mergeLeaf_preserves_leavesSound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.mergeStore": [],
+    "Toy.SymEx.mergeStore.eq_1": [],
+    "Toy.SymEx.mergeStore_inst_of_holds": [
+      "Quot.sound"
+    ],
+    "Toy.SymEx.mergeStore_inst_of_not_holds": [
+      "Quot.sound"
+    ],
+    "Toy.SymEx.nonvacuity_acyclic_completeness": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.nonvacuity_acyclic_fuelBound": [
+      "propext"
+    ],
+    "Toy.SymEx.nonvacuity_acyclic_lax_iff_strict": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.nonvacuity_covers_merge": [
+      "propext"
+    ],
+    "Toy.SymEx.nonvacuity_eval_subst": [],
+    "Toy.SymEx.nonvacuity_exec_fuel_mono": [
+      "propext"
+    ],
+    "Toy.SymEx.nonvacuity_guardedMerge_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.nonvacuity_leavesProve_dropPcs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.nonvacuity_mergeLeaf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.nonvacuity_path_coverage": [
+      "propext"
+    ],
+    "Toy.SymEx.nonvacuity_provesLax_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.nonvacuity_provesStrict_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.nonvacuity_provesStrict_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.nonvacuity_simpSoundUnder": [
+      "propext"
+    ],
+    "Toy.SymEx.nonvacuity_straightLine_fuelBound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.nonvacuity_symExec_leaf_sound": [
+      "propext"
+    ],
+    "Toy.SymEx.nonvacuity_transfer": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.not_acyclic_exLoop3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.not_acyclic_exLoopThenAssertFalse": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.not_acyclic_exSelfLoop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.not_covers_exDiamond_one_branch": [
+      "propext"
+    ],
+    "Toy.SymEx.not_guardedSound_tt_d\u03c3\u2081": [
+      "propext"
+    ],
+    "Toy.SymEx.not_holds_of_closed": [
+      "propext"
+    ],
+    "Toy.SymEx.not_leavesExhaustive_pzOk": [
+      "propext"
+    ],
+    "Toy.SymEx.not_leavesProveLax_of_panic_leaf": [
+      "propext"
+    ],
+    "Toy.SymEx.not_leavesProve_of_bad_leaf": [
+      "propext"
+    ],
+    "Toy.SymEx.not_leavesSound_tt_ok_exPanicIfZero": [
+      "propext"
+    ],
+    "Toy.SymEx.not_provesLax_exPanicIfZero": [
+      "propext"
+    ],
+    "Toy.SymEx.not_provesStrict_exPanicIfZero": [
+      "propext"
+    ],
+    "Toy.SymEx.not_provesStrict_exStraight_4": [
+      "propext"
+    ],
+    "Toy.SymEx.not_simpSoundUnder_tt": [],
+    "Toy.SymEx.overlapping_merge_loses_behaviour": [
+      "propext"
+    ],
+    "Toy.SymEx.pathSimp_after_merge_breaks_soundness": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.pathSimp_before_merge_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.provesLax_exStraight_4": [
+      "propext"
+    ],
+    "Toy.SymEx.provesLax_iff_forall_exec_okWithOrOutOfFuel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.provesLax_loopThenAssertFalse_but_panics": [
+      "propext"
+    ],
+    "Toy.SymEx.provesLax_selfLoop_every_fuel_but_never_returns": [
+      "propext"
+    ],
+    "Toy.SymEx.provesStrict_exDiamond": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.provesStrict_iff_forall_exec_okWith": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.provesStrict_mono": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.provesStrict_mono_needs_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.provesStrict_mono_needs_provesStrict": [
+      "propext"
+    ],
+    "Toy.SymEx.provesStrict_rejects_out_of_fuel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.pzOkPc": [],
+    "Toy.SymEx.pzOkPc.eq_1": [],
+    "Toy.SymEx.pzPanicPc": [],
+    "Toy.SymEx.pzPanicPc.eq_1": [],
+    "Toy.SymEx.runBlock": [
+      "propext"
+    ],
+    "Toy.SymEx.runBlock.eq_1": [
+      "propext"
+    ],
+    "Toy.SymEx.runBlock.eq_2": [
+      "propext"
+    ],
+    "Toy.SymEx.runBlock.eq_3": [
+      "propext"
+    ],
+    "Toy.SymEx.runBlock.eq_4": [
+      "propext"
+    ],
+    "Toy.SymEx.runBlock.eq_5": [
+      "propext"
+    ],
+    "Toy.SymEx.runBlock.eq_6": [
+      "propext"
+    ],
+    "Toy.SymEx.runBlock.eq_def": [
+      "propext"
+    ],
+    "Toy.SymEx.runBlock.match_1": [],
+    "Toy.SymEx.runBlock.match_3": [],
+    "Toy.SymEx.runBlock_exSelfLoop": [
+      "propext"
+    ],
+    "Toy.SymEx.select": [],
+    "Toy.SymEx.select.eq_1": [],
+    "Toy.SymEx.select.eq_2": [],
+    "Toy.SymEx.select.eq_def": [],
+    "Toy.SymEx.select.match_1": [],
+    "Toy.SymEx.simpSoundUnder_dc\u2081": [
+      "propext"
+    ],
+    "Toy.SymEx.simpSoundUnder_iff_preserves_guardedSound": [
+      "Quot.sound"
+    ],
+    "Toy.SymEx.simpSoundUnder_substVar_of_forces": [
+      "propext"
+    ],
+    "Toy.SymEx.simpSound_iff_fails_for_fixed_continuation": [],
+    "Toy.SymEx.simp_pathCondition_breaks_guardedSound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.straightLine_exec_ok_iff_fuelBound_minimal": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.straightLine_exec_ok_iff_fuelBound_minimal.match_1_2": [],
+    "Toy.SymEx.straightLine_exec_ok_iff_fuelBound_minimal.match_1_5": [],
+    "Toy.SymEx.straightLine_exec_ok_iff_fuelBound_minimal.match_1_7": [
+      "propext"
+    ],
+    "Toy.SymEx.straightLine_fuelBound_le_of_exec_ok": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.straightLine_fuelBound_needs_ok": [
+      "propext"
+    ],
+    "Toy.SymEx.straightLine_fuelBound_needs_straightLine": [
+      "propext"
+    ],
+    "Toy.SymEx.straightLine_fuelBound_needs_straightLine.match_1_1": [
+      "propext"
+    ],
+    "Toy.SymEx.straightLine_fuelBound_needs_straightLine.match_1_3": [
+      "propext"
+    ],
+    "Toy.SymEx.symBlock": [
+      "propext"
+    ],
+    "Toy.SymEx.symBlock.eq_1": [
+      "propext"
+    ],
+    "Toy.SymEx.symBlock.eq_2": [
+      "propext"
+    ],
+    "Toy.SymEx.symBlock.eq_3": [
+      "propext"
+    ],
+    "Toy.SymEx.symBlock.eq_4": [
+      "propext"
+    ],
+    "Toy.SymEx.symBlock.eq_5": [
+      "propext"
+    ],
+    "Toy.SymEx.symBlock.eq_6": [
+      "propext"
+    ],
+    "Toy.SymEx.symBlock.eq_def": [
+      "propext"
+    ],
+    "Toy.SymEx.symBlock.match_1": [],
+    "Toy.SymEx.symBlock_exSelfLoop": [
+      "propext"
+    ],
+    "Toy.SymEx.symExec": [
+      "propext"
+    ],
+    "Toy.SymEx.symExec.eq_1": [
+      "propext"
+    ],
+    "Toy.SymEx.symExec_exDiamond": [
+      "propext"
+    ],
+    "Toy.SymEx.symExec_exDiamond_6": [
+      "propext"
+    ],
+    "Toy.SymEx.symExec_exPanicIfZero": [
+      "propext"
+    ],
+    "Toy.SymEx.symExec_exhaustive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.symExec_leaf_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.symExec_leaf_sound_needs_membership": [
+      "propext"
+    ],
+    "Toy.SymEx.symExec_leaf_sound_needs_pc": [
+      "propext"
+    ],
+    "Toy.SymEx.symExec_pairwise_disjoint": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.s\u2081": [],
+    "Toy.SymEx.s\u2081.eq_1": [],
+    "Toy.SymEx.s\u2082": [],
+    "Toy.SymEx.transfer_needs_exhaustive": [
+      "propext"
+    ],
+    "Toy.SymEx.transfer_needs_leaf_check": [
+      "propext"
+    ],
+    "Toy.SymEx.transfer_needs_leavesSound": [
+      "propext"
+    ],
+    "Toy.SymEx.unguardedMerge_sound_of_agree_on_second_guard": [
+      "propext"
+    ],
+    "Toy.SymEx.unguardedMerge_spurious_success": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SymEx.\u03c10": [],
+    "Toy.SymEx.\u03c10.eq_1": [],
+    "Toy.SymEx.\u03c15": [],
+    "Toy.SymEx.\u03c3x0plus1": [],
+    "Toy.SymEx.\u03c3x0plus1.eq_1": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
