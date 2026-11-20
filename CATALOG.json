@@ -25956,6 +25956,99 @@
         "anneal/theory"
       ]
     },
+    "frame-limited-reuse-fip-second-class-values-and-levity-kind-immediates": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "koka-lang/koka",
+            "revision": "b66091b2a5a7ea20c5ed9498ad1e1f03caee9589"
+          },
+          "name": "Koka compiler and kklib runtime"
+        },
+        {
+          "identity": {
+            "repository": "TiarkRompf/scala-escape",
+            "revision": "bab5b9ce005aa8aae42898231aac28ec9cb54407"
+          },
+          "name": "scala-escape second-class values plugin and Coq formalization"
+        },
+        {
+          "identity": {
+            "repository": "ghc/ghc",
+            "revision": "83038fbee5efea8e3ebd5090b2ff5537462e169d"
+          },
+          "name": "Glasgow Haskell Compiler (GHC)"
+        },
+        {
+          "identity": {
+            "repository": "dotnet/csharplang",
+            "revision": "fad8344d2d115bed96c5e559c1f281bfc49f4d6a"
+          },
+          "name": "C# Language Design Specifications (csharplang)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3540543961_30"
+          },
+          "name": "Unboxed Values as First Class Citizens in a Non-Strict Functional Language (Peyton Jones, Launchbury, FPCA 1991)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/0167-6423(91)90036-W"
+          },
+          "name": "On the Expressive Power of Programming Languages (Felleisen, SCP 1991)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2983990.2984009"
+          },
+          "name": "Gentrification Gone too Far? Affordable 2nd-Class Values for Fun and (Co-)Effect (Osvald, Essertel, Wu, Gonzalez Alayon, Rompf, OOPSLA 2016)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3062341.3062357"
+          },
+          "name": "Levity Polymorphism (Eisenberg, Peyton Jones, PLDI 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3408986"
+          },
+          "name": "Kinds Are Calling Conventions (Downen, Ariola, Peyton Jones, Eisenberg, ICFP 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454032"
+          },
+          "name": "Perceus: Garbage Free Reference Counting with Reuse (Reinking, Xie, de Moura, Leijen, PLDI 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3547634"
+          },
+          "name": "Reference Counting with Frame Limited Reuse (Lorenzen, Leijen, ICFP 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.4230/LIPIcs.ECOOP.2022.15"
+          },
+          "name": "What If We Don't Pop the Stack? The Return of 2nd-Class Values (Xhebraj, Bracevac, Wei, Rompf, ECOOP 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3607840"
+          },
+          "name": "FP2: Fully in-Place Functional Programming (Lorenzen, Leijen, Swierstra, ICFP 2023)"
+        }
+      ],
+      "topics": [
+        "pl/unboxed-value-kinds",
+        "compilers/in-place-reuse-analysis",
+        "runtimes/reference-count-metadata",
+        "pl/second-class-values"
+      ]
+    },
     "frontier-ai-lab-binary-verification-oss-fuzz-proofs-and-agent-reward-hacking": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -36874,6 +36967,118 @@
         "security/timestamp-smearing-divergence",
         "systems/ntp-ptp-leap-second-smearing",
         "verification/civil-tzdb-epoch-injectivity"
+      ]
+    },
+    "leftover-typing-adoption-focus-mezzo-permissions-and-l3-strong-updates": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "gallais/typing-with-leftovers",
+            "revision": "b0289b34fc47afc67ef8d2881c63a7ef0748a989"
+          },
+          "name": "typing-with-leftovers"
+        },
+        {
+          "identity": {
+            "repository": "ajrouvoet/ternary.agda",
+            "revision": "4097451af88fb512f89fcb06f643e554fcd0a6aa"
+          },
+          "name": "ternary.agda"
+        },
+        {
+          "identity": {
+            "repository": "laMudri/generic-lr",
+            "revision": "3ee8ce26f6c6ec5860ed323d4cf3c9f6d0f5ef7e"
+          },
+          "name": "generic-lr"
+        },
+        {
+          "identity": {
+            "repository": "protz/mezzo",
+            "revision": "4e9d917558bd96067437116341b7a6ea02ab9c39"
+          },
+          "name": "Mezzo type checker and runtime"
+        },
+        {
+          "identity": {
+            "repository": "tov/alms",
+            "revision": "b35b804abaf7579aae8a57785544562647919c36"
+          },
+          "name": "Alms affine functional language"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/S0304-3975(99)00173-5"
+          },
+          "name": "Efficient Resource Management for Linear Logic Proof Search (Cervesato, Hodas, Pfenning, TCS 2000)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3-540-46425-5_24"
+          },
+          "name": "Alias Types (Smith, Walker, Morrisett, ESOP 2000)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/378795.378811"
+          },
+          "name": "Enforcing High-Level Protocols in Low-Level Software (DeLine, Fahndrich, PLDI 2001)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/512529.512532"
+          },
+          "name": "Adoption and Focus: Practical Linear Types for Imperative Programming (Fahndrich, DeLine, PLDI 2002)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3-540-44898-5_4"
+          },
+          "name": "Checking Interference with Fractional Permissions (Boyland, SAS 2003)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/11417170_22"
+          },
+          "name": "L3: A Linear Language with Locations (Morrisett, Ahmed, Fluet, TLCA 2005)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1926385.1926436"
+          },
+          "name": "Practical Affine Types (Tov, Pucella, POPL 2011)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2837022"
+          },
+          "name": "The Design and Formalization of Mezzo, a Permission-Based Programming Language (Balabonski, Pottier, Protzenko, ACM TOPLAS 2016)"
+        },
+        {
+          "identity": {
+            "doi": "10.4230/LIPIcs.TYPES.2017.1"
+          },
+          "name": "Typing with Leftovers (Allais, TYPES 2017 / LIPIcs 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3372885.3373818"
+          },
+          "name": "Intrinsically-Typed Definitional Interpreters for Linear, Session-Typed Languages (Rouvoet, Bach Poulsen, Krebbers, Visser, CPP 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-99336-8_14"
+          },
+          "name": "A Framework for Substructural Type Systems (Wood, Atkey, ESOP 2022)"
+        }
+      ],
+      "topics": [
+        "pl/input-output-linear-contexts",
+        "pl/capability-split-join-rules",
+        "verification/mechanized-substructural-metatheory",
+        "pl/single-use-typestate"
       ]
     },
     "libavfilter-graph-scheduling-frame-threading-and-avbufferref-lifetime-invariants": {

@@ -1,0 +1,93 @@
+{
+  "topics": [
+    "pl/unboxed-value-kinds",
+    "compilers/in-place-reuse-analysis",
+    "runtimes/reference-count-metadata",
+    "pl/second-class-values"
+  ],
+  "subjects": [
+    {
+      "name": "Koka compiler and kklib runtime",
+      "identity": {
+        "repository": "koka-lang/koka",
+        "revision": "b66091b2a5a7ea20c5ed9498ad1e1f03caee9589"
+      }
+    },
+    {
+      "name": "scala-escape second-class values plugin and Coq formalization",
+      "identity": {
+        "repository": "TiarkRompf/scala-escape",
+        "revision": "bab5b9ce005aa8aae42898231aac28ec9cb54407"
+      }
+    },
+    {
+      "name": "Glasgow Haskell Compiler (GHC)",
+      "identity": {
+        "repository": "ghc/ghc",
+        "revision": "83038fbee5efea8e3ebd5090b2ff5537462e169d"
+      }
+    },
+    {
+      "name": "C# Language Design Specifications (csharplang)",
+      "identity": {
+        "repository": "dotnet/csharplang",
+        "revision": "fad8344d2d115bed96c5e559c1f281bfc49f4d6a"
+      }
+    },
+    {
+      "name": "Unboxed Values as First Class Citizens in a Non-Strict Functional Language (Peyton Jones, Launchbury, FPCA 1991)",
+      "identity": {
+        "doi": "10.1007/3540543961_30"
+      }
+    },
+    {
+      "name": "On the Expressive Power of Programming Languages (Felleisen, SCP 1991)",
+      "identity": {
+        "doi": "10.1016/0167-6423(91)90036-W"
+      }
+    },
+    {
+      "name": "Gentrification Gone too Far? Affordable 2nd-Class Values for Fun and (Co-)Effect (Osvald, Essertel, Wu, Gonzalez Alayon, Rompf, OOPSLA 2016)",
+      "identity": {
+        "doi": "10.1145/2983990.2984009"
+      }
+    },
+    {
+      "name": "Levity Polymorphism (Eisenberg, Peyton Jones, PLDI 2017)",
+      "identity": {
+        "doi": "10.1145/3062341.3062357"
+      }
+    },
+    {
+      "name": "Kinds Are Calling Conventions (Downen, Ariola, Peyton Jones, Eisenberg, ICFP 2020)",
+      "identity": {
+        "doi": "10.1145/3408986"
+      }
+    },
+    {
+      "name": "Perceus: Garbage Free Reference Counting with Reuse (Reinking, Xie, de Moura, Leijen, PLDI 2021)",
+      "identity": {
+        "doi": "10.1145/3453483.3454032"
+      }
+    },
+    {
+      "name": "Reference Counting with Frame Limited Reuse (Lorenzen, Leijen, ICFP 2022)",
+      "identity": {
+        "doi": "10.1145/3547634"
+      }
+    },
+    {
+      "name": "What If We Don't Pop the Stack? The Return of 2nd-Class Values (Xhebraj, Bracevac, Wei, Rompf, ECOOP 2022)",
+      "identity": {
+        "doi": "10.4230/LIPIcs.ECOOP.2022.15"
+      }
+    },
+    {
+      "name": "FP2: Fully in-Place Functional Programming (Lorenzen, Leijen, Swierstra, ICFP 2023)",
+      "identity": {
+        "doi": "10.1145/3607840"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
