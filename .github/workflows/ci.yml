@@ -43,7 +43,7 @@ env:
   # tag. Keep the protocol centralized here rather than duplicating literals in
   # the upload/download actions.
   ZC_CI_IMAGE: zerocopy-ci:local
-  ZC_CI_IMAGE_ARCHIVE: zerocopy-ci.tar
+  ZC_CI_IMAGE_ARCHIVE: zerocopy-ci.tar.zst
   RUSTFLAGS: -Dwarnings
   RUSTDOCFLAGS: -Dwarnings --cfg=zerocopy_unstable_ptr
   # `ZC_NIGHTLY_XXX` are flags that we add to `XXX` only on the nightly
@@ -385,7 +385,7 @@ jobs:
         # trap also reclaims it if loading or validation fails, avoiding archive
         # plus expanded-image disk pressure for later diagnostic steps.
         trap 'rm -f -- "$IMAGE_ARCHIVE"' EXIT
-        docker load --input "$IMAGE_ARCHIVE"
+        zstd -dc "$IMAGE_ARCHIVE" | docker load
         docker image inspect "$IMAGE_NAME" >/dev/null
         # `inspect` proves the tag exists; running a trivial command also proves
         # that the archive matches this runner's architecture.
@@ -1106,17 +1106,27 @@ jobs:
           file: .github/workflows/Dockerfile
           tags: ${{ env.ZC_CI_IMAGE }}
           provenance: false
-          # The Docker exporter creates a single archive accepted directly by
-          # `docker load`. Its gzip-compressed layers make the tar suitable for
-          # upload-file-artifact's direct (non-ZIP) transfer. This path and tag
-          # are coupled to the workflow-level producer/consumer values above.
-          outputs: type=docker,dest=${{ runner.temp }}/${{ env.ZC_CI_IMAGE_ARCHIVE }},compression=gzip
+          # Export an uncompressed Docker tar and compress it once with
+          # multi-threaded zstd below. This avoids single-threaded gzip
+          # decompression inside `docker load` across every matrix runner while
+          # keeping the uploaded artifact suitable for upload-file-artifact's
+          # direct (non-ZIP) transfer.
+          outputs: type=docker,dest=${{ runner.temp }}/zerocopy-ci.tar,compression=uncompressed,force-compression=true
           cache-from: |
             type=registry,ref=ghcr.io/google/zerocopy/zerocopy-ci-cache:${{ steps.docker_tag.outputs.tag }}
             type=registry,ref=ghcr.io/google/zerocopy/zerocopy-ci-cache:main
           # External pull requests have read-only package permissions, so they
           # can consume GHCR caches but cannot export updated cache layers.
           cache-to: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && format('type=registry,ref=ghcr.io/google/zerocopy/zerocopy-ci-cache:{0},mode=max', steps.docker_tag.outputs.tag) || '' }}
+
+      - name: Compress Docker image archive
+        env:
+          RAW_ARCHIVE: ${{ runner.temp }}/zerocopy-ci.tar
+          COMPRESSED_ARCHIVE: ${{ runner.temp }}/${{ env.ZC_CI_IMAGE_ARCHIVE }}
+        run: |
+          set -euo pipefail
+          trap 'rm -f -- "$RAW_ARCHIVE"' EXIT
+          zstd -T0 -6 "$RAW_ARCHIVE" -o "$COMPRESSED_ARCHIVE"
 
       # Uploading is the producer's final gate. Matrix jobs cannot start until
       # this succeeds and the job exposes its artifact ID, so no runner is spent
