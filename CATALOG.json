@@ -1413,6 +1413,114 @@
         "vcs/proof-library-version-pinning"
       ]
     },
+    "airbus-do-333-unit-proof-observable-mcdc-fault-finding-kind2-cocospec-agree-contracts-and-copilot-monitors": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "kind2-mc/kind2",
+            "revision": "c080a232181bf571f090f58cc5b70a23e3a5fa24"
+          },
+          "name": "Kind 2 model checker (source examined at development head)"
+        },
+        {
+          "identity": {
+            "artifact": "kind2-v3.0.0-linux-x86_64.tar.gz",
+            "repository": "kind2-mc/kind2",
+            "revision": "1a05ebc42c5161b72030e69496b48e3483139ce4",
+            "sha256": "a8d08130a1ae8039ff42474fccee955880491061fc7b97d3954d3e66e6faa19d",
+            "version": "v3.0.0"
+          },
+          "name": "Kind 2 model checker (release executed)"
+        },
+        {
+          "identity": {
+            "artifact": "z3-5.3.3-x64-glibc-2.39.zip",
+            "repository": "Z3Prover/z3",
+            "revision": "430d19e697e2ec9bad79ff210d41b4a7a5fcfa3e",
+            "sha256": "d56f60b06f432f33de5810f7f1a384a339131f361e2d54d08ea83eea14326880",
+            "version": "z3-5.3.3"
+          },
+          "name": "Z3 SMT solver used as the Kind 2 back end"
+        },
+        {
+          "identity": {
+            "repository": "loonwerks/AGREE",
+            "revision": "c7848ff79871e1382ef0aafc762ee4d8bb0e362c"
+          },
+          "name": "AGREE assume-guarantee reasoning environment for AADL"
+        },
+        {
+          "identity": {
+            "repository": "Copilot-Language/copilot",
+            "revision": "ee1ff1994214554910d36d321817ca013748a32e"
+          },
+          "name": "Copilot stream runtime-verification language and copilot-verifier"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ICSE.2013.6606556"
+          },
+          "name": "Whalen, Gay, You, Heimdahl, Staats, Observable Modified Condition/Decision Coverage (ICSE 2013)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TSE.2015.2421011"
+          },
+          "name": "Gay, Staats, Whalen, Heimdahl, The Risks of Coverage-Directed Test Case Generation (IEEE TSE 2015)"
+        },
+        {
+          "identity": {
+            "standard": "DOT/FAA/AR-01/18",
+            "url": "https://www.faa.gov/sites/faa.gov/files/aircraft/air_cert/design_approvals/air_software/AR-01-18_MCDC.pdf",
+            "version": "April 2001"
+          },
+          "name": "Chilenski, An Investigation of Three Forms of the Modified Condition Decision Coverage (MCDC) Criterion"
+        },
+        {
+          "identity": {
+            "standard": "NASA/TM-2001-210876",
+            "version": "May 2001"
+          },
+          "name": "Hayhurst, Veerhusen, Chilenski, Rierson, A Practical Tutorial on Modified Condition/Decision Coverage"
+        },
+        {
+          "identity": {
+            "standard": "NASA/CR-2012-217329",
+            "url": "https://ntrs.nasa.gov/api/citations/20120001989/downloads/20120001989.pdf"
+          },
+          "name": "Pike, Wegmann, Niller, Goodloe, Copilot: Monitoring Embedded Systems (NASA contractor report version)"
+        },
+        {
+          "identity": {
+            "url": "https://aerospacelab.onera.fr/sites/default/files/2024-01/AL04-10.pdf",
+            "version": "AL04-10, May 2012"
+          },
+          "name": "Wiels, Delmas, Doose, Garoche, Cazin, Durrieu, Formal Verification of Critical Aerospace Software (AerospaceLab Journal issue 4)"
+        },
+        {
+          "identity": {
+            "url": "https://richmodels.epfl.ch/_media/madrid13-slides-virginie-wiels.pdf"
+          },
+          "name": "Wiels, Formal Methods in Aerospace: Constraints, Assets and Challenges (presentation slides, 2013)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1646353.1646372",
+            "url": "https://conservancy.umn.edu/bitstreams/5930292d-53f1-4db3-804f-f61e87214fce/download"
+          },
+          "name": "Miller, Whalen, Cofer, Software Model Checking Takes Off (Communications of the ACM, 2010), author's version"
+        }
+      ],
+      "topics": [
+        "verification/certification-credit-for-formal-analysis",
+        "verification/coverage-criterion-fault-detection-evidence",
+        "tooling/assume-guarantee-contract-checkers",
+        "systems/runtime-monitor-generation-for-flight-software",
+        "verification/specification-defect-class-coverage",
+        "verification/contract-realizability-and-vacuity-checks"
+      ]
+    },
     "algebraic-effects-handlers-coeffects-and-capability-tracking": {
       "observed_at": "2026-11-19",
       "subjects": [

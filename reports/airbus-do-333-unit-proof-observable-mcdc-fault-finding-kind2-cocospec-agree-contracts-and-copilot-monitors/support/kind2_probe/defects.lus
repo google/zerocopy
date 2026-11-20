@@ -1,0 +1,106 @@
+-- Probe of Kind 2 / CoCoSpec behaviour on recurring specification-defect classes.
+-- Each node is self-contained; run with:
+--   kind2 --smt_solver Z3 --z3_bin <z3> --check_reach true --timeout 60 -json defects.lus
+
+-- (1) Units at a component boundary, encoded only as ranges.
+-- Producer reports altitude in FEET; consumer's contract assumes METRES in [0, 15000].
+node AltSensorFt (raw : real) returns (alt_ft : real);
+(*@contract
+  assume "raw count is non-negative" raw >= 0.0;
+  guarantee "altitude in feet within sensor range" 0.0 <= alt_ft and alt_ft <= 12000.0;
+*)
+let
+  alt_ft = if raw > 12000.0 then 12000.0 else raw;
+tel
+
+node AltConsumerM (alt_m : real) returns (alarm : bool);
+(*@contract
+  assume "altitude in metres within envelope" 0.0 <= alt_m and alt_m <= 15000.0;
+  guarantee "alarm iff below 300 m" alarm = (alt_m < 300.0);
+*)
+let
+  alarm = alt_m < 300.0;
+tel
+
+-- Wiring feet into a metres input: the range assumption IS discharged (12000 <= 15000),
+-- so compositional analysis accepts the unit error.
+node SystemUnitsBug (raw : real) returns (alarm : bool);
+(*@contract
+  assume raw >= 0.0;
+  guarantee "trivially true" alarm or not alarm;
+*)
+var alt : real;
+let
+  alt = AltSensorFt(raw);
+  alarm = AltConsumerM(alt);
+tel
+
+-- Same wiring with a producer whose feet range exceeds the metres envelope:
+-- the unit error now manifests as an assumption violation and is reported.
+node AltSensorFtWide (raw : real) returns (alt_ft : real);
+(*@contract
+  assume raw >= 0.0;
+  guarantee 0.0 <= alt_ft and alt_ft <= 45000.0;
+*)
+let
+  alt_ft = if raw > 45000.0 then 45000.0 else raw;
+tel
+
+node SystemUnitsRangeVisible (raw : real) returns (alarm : bool);
+(*@contract
+  assume raw >= 0.0;
+  guarantee "trivially true" alarm or not alarm;
+*)
+var alt : real;
+let
+  alt = AltSensorFtWide(raw);
+  alarm = AltConsumerM(alt);
+tel
+
+-- (2) n-ary condition implemented as a pairwise fold (x != z omitted).
+node AllDistinct (x, y, z : int) returns (ok : bool);
+(*@contract
+  guarantee "ok iff the three channels are pairwise distinct"
+    ok = (x <> y and y <> z and x <> z);
+*)
+let
+  ok = x <> y and y <> z;
+tel
+
+-- (3) Discarded check: the range check is computed but its result is not used.
+node Saturate (x : int) returns (y : int);
+(*@contract
+  guarantee "output never exceeds 100" y <= 100;
+*)
+var in_range : bool;
+let
+  in_range = x <= 100;
+  y = x;
+tel
+
+-- (4) Documentation/contract text disagreement: the string says 100, the formula says 1000.
+-- Kind 2 proves the formula; the string is not interpreted.
+node DocDrift (x : int) returns (y : int);
+(*@contract
+  guarantee "output never exceeds 100" y <= 1000;
+*)
+let
+  y = if x > 100 then 100 else x;
+tel
+
+-- (5) Vacuous mode: its require clause is unsatisfiable, so its ensure holds trivially.
+node VacuousMode (x : int) returns (y : int);
+(*@contract
+  mode high (
+    require x > 10;
+    require x < 5;
+    ensure y = 0;
+  );
+  mode other (
+    require not (x > 10 and x < 5);
+    ensure y = x;
+  );
+*)
+let
+  y = x;
+tel

@@ -1,0 +1,32 @@
+== Family 1: t = a&&b&&c&&d ; out = t || ovr  (32 input vectors) ==
+Mutants: 4 negations, 8 stuck-at, 3 operator replacements, 3 variable replacements, 1 dropped override path = 19
+non-equivalent mutants: 19 of 19
+structure  crit  min |T| #min sets guaranteed kill mean kill worst kill
+single     DC          2        30         0/19         5.53          0
+single     UC          5        14        10/19        15.21         12
+single     MASK        5        14        10/19        15.21         12
+single     OBS         6        15        19/19        19.00         19
+nested     DC          5      1920         0/19         8.79          1
+nested     UC          5       896         9/19        12.20          9
+nested     MASK        5       896         9/19        12.20          9
+nested     OBS         6        15        19/19        19.00         19
+fold       DC          2        24         0/19         5.25          0
+fold       UC          5       294         9/19        12.95          9
+fold       MASK        5       294         9/19        12.95          9
+fold       OBS         6        15        19/19        19.00         19
+
+== Family 2: spec allDistinct(x,y,z); implementation x!=y && y!=z (pairwise chain, x!=z omitted) ==
+domain {0..2}^3: 27 vectors, 6 fault-revealing (x==z, x!=y)
+  coverage measured on implementation      DC    min |T|=2  min sets=   180  sets revealing the omission=    90 ( 50.0%)
+  coverage measured on implementation      UC    min |T|=3  min sets=   432  sets revealing the omission=   216 ( 50.0%)
+  coverage measured on implementation      MASK  min |T|=3  min sets=   432  sets revealing the omission=   216 ( 50.0%)
+  coverage measured on requirement formula DC    min |T|=2  min sets=   126  sets revealing the omission=    36 ( 28.6%)
+  coverage measured on requirement formula UC    min |T|=4  min sets=  1296  sets revealing the omission=  1296 (100.0%)
+  coverage measured on requirement formula MASK  min |T|=4  min sets=  1296  sets revealing the omission=  1296 (100.0%)
+domain {0..3}^3: 64 vectors, 12 fault-revealing (x==z, x!=y)
+  coverage measured on implementation      DC    min |T|=2  min sets=  1008  sets revealing the omission=   336 ( 33.3%)
+  coverage measured on implementation      UC    min |T|=3  min sets=  5184  sets revealing the omission=  1728 ( 33.3%)
+  coverage measured on implementation      MASK  min |T|=3  min sets=  5184  sets revealing the omission=  1728 ( 33.3%)
+  coverage measured on requirement formula DC    min |T|=2  min sets=   960  sets revealing the omission=   288 ( 30.0%)
+  coverage measured on requirement formula UC    min |T|=4  min sets= 41472  sets revealing the omission= 41472 (100.0%)
+  coverage measured on requirement formula MASK  min |T|=4  min sets= 41472  sets revealing the omission= 41472 (100.0%)

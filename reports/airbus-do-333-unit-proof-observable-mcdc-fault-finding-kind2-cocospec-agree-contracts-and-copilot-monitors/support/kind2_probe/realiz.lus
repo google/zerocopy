@@ -1,0 +1,32 @@
+-- Contract realizability probe: run with
+--   kind2 --smt_solver Z3 --z3_bin <z3> --enable CONTRACTCK --timeout 60 realiz.lus
+
+-- Unrealizable: the output at step t-1 must equal the (uncontrolled) input at step t,
+-- i.e. any implementation would have to predict its input.
+node Predict (x : int) returns (y : int);
+(*@contract
+  guarantee "y anticipates the next input" true -> (pre y = x);
+*)
+let
+  y = 0;
+tel
+
+-- Realizable but the guarantee is only satisfiable thanks to the assumption.
+node Clamp (x : int) returns (y : int);
+(*@contract
+  assume "input in range" 0 <= x and x <= 10;
+  guarantee "output equals input and stays below 11" y = x and y <= 10;
+*)
+let
+  y = x;
+tel
+
+-- Unsatisfiable contract: guarantees contradict each other.
+node Contradiction (x : int) returns (y : int);
+(*@contract
+  guarantee y > x;
+  guarantee y < x;
+*)
+let
+  y = x;
+tel

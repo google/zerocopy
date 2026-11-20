@@ -1,0 +1,70 @@
+ kind2 v3.0.0
+
+
+
+================================================================================
+Analyzing GuarCurrentOutput
+  with First top: 'GuarCurrentOutput' (no subsystems)
+
+<Success> Property relates current output to current input is valid by property directed reachability (IA) after 0.033s.
+
+--------------------------------------------------------------------------------
+Summary of Properties:
+--------------------------------------------------------------------------------
+relates current output to current input: valid (k=1)
+  (y = (x + 1))
+
+================================================================================
+
+
+
+================================================================================
+Analyzing GuarPastOutput
+  with First top: 'GuarPastOutput' (no subsystems)
+
+<Failure> Property relates previous output to current input is invalid by property directed reachability (QE) for k=1 after 0.033s.
+
+Counterexample:
+  Node GuarPastOutput ()
+    == Mode(s) ==
+    
+    == Inputs ==
+    x 0 1
+    == Outputs ==
+    y 0 0
+    
+  
+<Success> Generated candidate property SubRange[L10C40] is valid by property directed reachability (QE) after 0.135s.
+
+--------------------------------------------------------------------------------
+Summary of Properties:
+--------------------------------------------------------------------------------
+relates previous output to current input: invalid after 1 steps
+  (true -> ((pre y) = x))
+
+================================================================================
+
+
+
+================================================================================
+Analyzing GuarInputOnly
+  with First top: 'GuarInputOnly' (no subsystems)
+
+<Failure> Property constrains only the input is invalid by property directed reachability (QE) for k=0 after 0.033s.
+
+Counterexample:
+  Node GuarInputOnly ()
+    == Mode(s) ==
+    
+    == Inputs ==
+    x 0
+    
+  
+--------------------------------------------------------------------------------
+Summary of Properties:
+--------------------------------------------------------------------------------
+constrains only the input: invalid after 0 steps
+  (x > 0)
+
+================================================================================
+

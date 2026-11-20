@@ -1,0 +1,24 @@
+-- Characterisation of guarantees that do not mention a current-step output.
+node GuarInputOnly (x : int) returns (y : int);
+(*@contract
+  guarantee "constrains only the input" x > 0;
+*)
+let
+  y = x;
+tel
+
+node GuarPastOutput (x : int) returns (y : int);
+(*@contract
+  guarantee "relates previous output to current input" true -> (pre y = x);
+*)
+let
+  y = 0;
+tel
+
+node GuarCurrentOutput (x : int) returns (y : int);
+(*@contract
+  guarantee "relates current output to current input" y = x + 1;
+*)
+let
+  y = x + 1;
+tel

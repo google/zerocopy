@@ -1,0 +1,60 @@
+ kind2 v3.0.0
+
+
+================================================================================
+Checking environment of Contradiction
+
+<Success> Environment of Contradiction was proven realizable after 0.000s.
+
+
+================================================================================
+Checking contract of Contradiction
+
+<Failure> Contract of Contradiction was proven unrealizable after 0.031s.
+
+<Note> Computing deadlocking trace and conflict...
+
+Deadlocking trace:
+  Contract of Contradiction ()
+    == Mode(s) ==
+    
+    == Inputs ==
+    x -1
+    == Outputs ==
+    y  0
+    
+  
+CONFLICTING CONSTRAINTS (2 elements):
+  Contract of Contradiction
+    Guarantee guarantee[L27C3] at position [L27C3]
+    Guarantee guarantee[L28C3] at position [L28C3]
+    
+  
+<Note> Checking satisfiability of contract...
+
+<Failure> Contract of Contradiction was proven unsatisfiable after 0.031s.
+
+
+================================================================================
+Checking environment of Clamp
+
+<Success> Environment of Clamp was proven realizable after 0.095s.
+
+
+================================================================================
+Checking contract of Clamp
+
+<Success> Contract of Clamp was proven realizable after 0.109s.
+
+
+================================================================================
+Checking environment of Predict
+
+<Success> Environment of Predict was proven realizable after 0.000s.
+
+
+================================================================================
+Checking contract of Predict
+
+<Success> Contract of Predict was proven realizable after 0.077s.
+

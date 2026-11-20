@@ -1,0 +1,133 @@
+ kind2 v3.0.0
+
+
+
+================================================================================
+Analyzing VacuousMode
+  with ContractCheck top: 'VacuousMode' (no subsystems)
+
+<Success> Property other[L97C3] is reachable by bounded model checking for k=0 after 0.043s.
+
+<Success> Property _one_mode_active is valid by property directed reachability (IA) after 0.053s.
+
+<Failure> Property high[L92C3] is unreachable by property directed reachability (QE) after 0.065s.
+
+--------------------------------------------------------------------------------
+Summary of Properties:
+--------------------------------------------------------------------------------
+high[L92C3]: unreachable (k=2)
+  (x > 10) and (x < 5)
+
+other[L97C3]: reachable after 0 steps
+  (not ((x > 10) and (x < 5)))
+
+_one_mode_active: valid (k=1)
+  unknown
+
+================================================================================
+
+
+
+================================================================================
+Analyzing VacuousMode
+  with First top: 'VacuousMode' (no subsystems)
+
+<Success> Property other[L97C3] is reachable by property directed reachability (QE) for k=0 after 0.043s.
+
+<Success> Property high.ensure[L95C5] is valid by property directed reachability (IA) after 0.054s.
+
+<Success> Property other.ensure[L99C5] is valid by property directed reachability (QE) after 0.054s.
+
+<Failure> Property high[L92C3] is unreachable by property directed reachability (QE) after 0.054s.
+
+--------------------------------------------------------------------------------
+Summary of Properties:
+--------------------------------------------------------------------------------
+other[L97C3]: reachable after 0 steps
+  (not ((x > 10) and (x < 5)))
+
+other.ensure[L99C5]: valid (k=1)
+  (y = x)
+
+high[L92C3]: unreachable (k=1)
+  (x > 10) and (x < 5)
+
+high.ensure[L95C5]: valid (k=1)
+  (y = 0)
+
+================================================================================
+
+
+
+================================================================================
+Analyzing DocDrift
+  with First top: 'DocDrift' (no subsystems)
+
+<Success> Property output never exceeds 100 is valid by property directed reachability (IA) after 0.042s.
+
+--------------------------------------------------------------------------------
+Summary of Properties:
+--------------------------------------------------------------------------------
+output never exceeds 100: valid (k=1)
+  (y <= 1000)
+
+================================================================================
+
+
+
+================================================================================
+Analyzing Saturate
+  with First top: 'Saturate' (no subsystems)
+
+<Failure> Property output never exceeds 100 is invalid by property directed reachability (QE) for k=0 after 0.059s.
+
+Counterexample:
+  Node Saturate ()
+    == Mode(s) ==
+    
+    == Inputs ==
+    x 101
+    == Outputs ==
+    y 101
+    
+  
+--------------------------------------------------------------------------------
+Summary of Properties:
+--------------------------------------------------------------------------------
+output never exceeds 100: invalid after 0 steps
+  (y <= 100)
+
+================================================================================
+
+
+
+================================================================================
+Analyzing AllDistinct
+  with First top: 'AllDistinct' (no subsystems)
+
+<Failure> Property ok iff the three channels are pairwise distinct is invalid by bounded model checking for k=0 after 0.068s.
+
+Counterexample:
+  Node AllDistinct ()
+    == Mode(s) ==
+    
+    == Inputs ==
+    x   1
+    y   0
+    z   1
+    == Outputs ==
+    ok tt
+    
+  
+--------------------------------------------------------------------------------
+Summary of Properties:
+--------------------------------------------------------------------------------
+ok iff the three channels are pairwise distinct: invalid after 0 steps
+  (ok = (((x <> y) and (y <> z)) and (x <> z)))
+
+================================================================================
+
+<Note> System SystemUnitsRangeVisible has no property, skipping verification step.
+
+<Note> System SystemUnitsBug has no property, skipping verification step.
+

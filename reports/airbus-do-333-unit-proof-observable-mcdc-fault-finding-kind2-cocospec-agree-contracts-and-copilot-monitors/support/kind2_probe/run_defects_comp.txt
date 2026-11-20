@@ -1,0 +1,326 @@
+ kind2 v3.0.0
+
+
+
+================================================================================
+Analyzing VacuousMode
+  with ContractCheck top: 'VacuousMode' (no subsystems)
+
+<Success> Property other[L99C3] is reachable by property directed reachability (QE) for k=0 after 0.076s.
+
+<Failure> Property high[L94C3] is unreachable by property directed reachability (QE) after 0.097s.
+
+<Success> Property _one_mode_active is valid by property directed reachability (QE) after 0.097s.
+
+--------------------------------------------------------------------------------
+Summary of Properties:
+--------------------------------------------------------------------------------
+high[L94C3]: unreachable (k=1)
+  (x > 10) and (x < 5)
+
+other[L99C3]: reachable after 0 steps
+  (not ((x > 10) and (x < 5)))
+
+_one_mode_active: valid (k=1)
+  unknown
+
+================================================================================
+
+
+
+================================================================================
+Analyzing VacuousMode
+  with First top: 'VacuousMode' (no subsystems)
+
+<Success> Property other[L99C3] is reachable by property directed reachability (QE) for k=0 after 0.034s.
+
+<Success> Property high.ensure[L97C5] is valid by property directed reachability (IA) after 0.034s.
+
+<Success> Property other.ensure[L101C5] is valid by property directed reachability (QE) after 0.044s.
+
+<Failure> Property high[L94C3] is unreachable by property directed reachability (QE) after 0.044s.
+
+--------------------------------------------------------------------------------
+Summary of Properties:
+--------------------------------------------------------------------------------
+other[L99C3]: reachable after 0 steps
+  (not ((x > 10) and (x < 5)))
+
+other.ensure[L101C5]: valid (k=1)
+  (y = x)
+
+high[L94C3]: unreachable (k=1)
+  (x > 10) and (x < 5)
+
+high.ensure[L97C5]: valid (k=1)
+  (y = 0)
+
+================================================================================
+
+
+
+================================================================================
+Analyzing DocDrift
+  with First top: 'DocDrift' (no subsystems)
+             assumptions:
+               VacuousMode: 4 one-state, 0 two-state
+
+<Success> Property output never exceeds 100 is valid by property directed reachability (IA) after 0.044s.
+
+--------------------------------------------------------------------------------
+Summary of Properties:
+--------------------------------------------------------------------------------
+output never exceeds 100: valid (k=1)
+  (y <= 1000)
+
+================================================================================
+
+
+
+================================================================================
+Analyzing Saturate
+  with First top: 'Saturate' (no subsystems)
+             assumptions:
+               DocDrift: 1 one-state, 6 two-state
+
+<Failure> Property output never exceeds 100 is invalid by property directed reachability (QE) for k=0 after 0.106s.
+
+Counterexample:
+  Node Saturate ()
+    == Mode(s) ==
+    
+    == Inputs ==
+    x 101
+    == Outputs ==
+    y 101
+    
+  
+--------------------------------------------------------------------------------
+Summary of Properties:
+--------------------------------------------------------------------------------
+output never exceeds 100: invalid after 0 steps
+  (y <= 100)
+
+================================================================================
+
+
+
+================================================================================
+Analyzing AllDistinct
+  with First top: 'AllDistinct' (no subsystems)
+             assumptions:
+               
+
+<Failure> Property ok iff the three channels are pairwise distinct is invalid by property directed reachability (QE) for k=0 after 0.033s.
+
+Counterexample:
+  Node AllDistinct ()
+    == Mode(s) ==
+    
+    == Inputs ==
+    x   0
+    y   1
+    z   0
+    == Outputs ==
+    ok tt
+    
+  
+--------------------------------------------------------------------------------
+Summary of Properties:
+--------------------------------------------------------------------------------
+ok iff the three channels are pairwise distinct: invalid after 0 steps
+  (ok = (((x <> y) and (y <> z)) and (x <> z)))
+
+================================================================================
+
+
+
+================================================================================
+Analyzing AltSensorFtWide
+  with First top: 'AltSensorFtWide' (no subsystems)
+             assumptions:
+               
+
+<Success> Property guarantee[L43C3] is valid by property directed reachability (IA) after 0.034s.
+
+--------------------------------------------------------------------------------
+Summary of Properties:
+--------------------------------------------------------------------------------
+guarantee[L43C3]: valid (k=1)
+  ((0.0 <= alt_ft) and (alt_ft <= 45000.0))
+
+================================================================================
+
+
+
+================================================================================
+Analyzing AltConsumerM
+  with First top: 'AltConsumerM' (no subsystems)
+             assumptions:
+               AltSensorFtWide: 10 one-state, 0 two-state
+
+<Success> Property alarm iff below 300 m is valid by property directed reachability (QE) after 0.043s.
+
+--------------------------------------------------------------------------------
+Summary of Properties:
+--------------------------------------------------------------------------------
+alarm iff below 300 m: valid (k=1)
+  (alarm = (alt_m < 300.0))
+
+================================================================================
+
+
+
+================================================================================
+Analyzing SystemUnitsRangeVisible
+  with First top: 'SystemUnitsRangeVisible'
+             subsystems
+               | abstract: AltSensorFtWide, AltConsumerM
+             assumptions:
+               AltConsumerM: 9 one-state, 8 two-state
+
+<Failure> Property AltConsumerM[L57C11].altitude in metres within envelope is invalid by property directed reachability (QE) for k=0 after 0.035s.
+
+Counterexample:
+  Node SystemUnitsRangeVisible ()
+    == Mode(s) ==
+    
+    == Inputs ==
+    raw       0
+    == Outputs ==
+    alarm    ff
+    == Locals ==
+    alt   15001
+    
+  Node AltSensorFtWide (SystemUnitsRangeVisible[L56C9])
+    == Mode(s) ==
+    
+    == Inputs ==
+    raw        0
+    == Outputs ==
+    alt_ft 15001
+    
+  Node AltConsumerM (SystemUnitsRangeVisible[L57C11])
+    == Mode(s) ==
+    
+    == Inputs ==
+    alt_m 15001
+    == Outputs ==
+    alarm    ff
+    
+  
+<Success> Property AltSensorFtWide[L56C9].assume[L42C3] is valid by property directed reachability (IA) after 0.046s.
+
+<Success> Property trivially true is valid by property directed reachability (QE) after 0.046s.
+
+--------------------------------------------------------------------------------
+Summary of Properties:
+--------------------------------------------------------------------------------
+trivially true: valid (k=1)
+  (alarm or (not alarm))
+
+AltConsumerM[L57C11].altitude in metres within envelope: invalid after 0 steps
+  ((0.0 <= alt_m) and (alt_m <= 15000.0))
+
+AltSensorFtWide[L56C9].assume[L42C3]: valid (k=1)
+  (raw >= 0.0)
+
+================================================================================
+
+
+
+================================================================================
+Analyzing AltSensorFt
+  with First top: 'AltSensorFt' (no subsystems)
+             assumptions:
+               SystemUnitsRangeVisible: 19 one-state, 0 two-state
+
+<Success> Property altitude in feet within sensor range is valid by property directed reachability (IA) after 0.033s.
+
+--------------------------------------------------------------------------------
+Summary of Properties:
+--------------------------------------------------------------------------------
+altitude in feet within sensor range: valid (k=1)
+  ((0.0 <= alt_ft) and (alt_ft <= 12000.0))
+
+================================================================================
+
+
+
+================================================================================
+Analyzing SystemUnitsBug
+  with First top: 'SystemUnitsBug'
+             subsystems
+               | abstract: AltSensorFt, AltConsumerM
+             assumptions:
+               AltSensorFt: 10 one-state, 8 two-state
+
+<Success> Property AltSensorFt[L34C9].raw count is non-negative is valid by property directed reachability (IA) after 0.043s.
+
+<Success> Property trivially true is valid by inductive step after 0.064s.
+
+<Success> Property AltConsumerM[L35C11].altitude in metres within envelope is valid by one state invariant generator (bool) after 0.074s.
+
+--------------------------------------------------------------------------------
+Summary of Properties:
+--------------------------------------------------------------------------------
+trivially true: valid (k=1)
+  (alarm or (not alarm))
+
+AltConsumerM[L35C11].altitude in metres within envelope: valid (k=1)
+  ((0.0 <= alt_m) and (alt_m <= 15000.0))
+
+AltSensorFt[L34C9].raw count is non-negative: valid (k=1)
+  (raw >= 0.0)
+
+================================================================================
+
+--------------------------------------------------------------------------------
+Analysis breakdown, total runtime 3.651s seconds:
+  VacuousMode:
+    safe in 0.351s
+    without refinement: 0 abstract systems
+    2 invariant properties
+    unreachable: [ 'high[L94C3]': non-vacuity check (VacuousMode) ]
+    reachable:   [ 'other[L99C3]': non-vacuity check (VacuousMode) ]
+      
+  DocDrift:
+    safe in 0.350s
+    without refinement: 0 abstract systems
+    1 invariant property
+  Saturate:
+    unsafe in 0.410s
+    without refinement: 0 abstract systems
+    unknown: [  ]
+    invalid: [ 'output never exceeds 100': guarantee (Saturate) ]
+    valid:   [  ]
+  AllDistinct:
+    unsafe in 0.337s
+    without refinement: 0 abstract systems
+    unknown: [  ]
+    invalid: [ 'ok iff the three channels are pairwise distinct': guarantee (AllDistinct) ]
+    valid:   [  ]
+  AltSensorFtWide:
+    safe in 0.342s
+    without refinement: 0 abstract systems
+    1 invariant property
+  AltConsumerM:
+    safe in 0.349s
+    without refinement: 0 abstract systems
+    1 invariant property
+  SystemUnitsRangeVisible:
+    unsafe in 0.350s
+    without refinement: 2 abstract systems
+    unknown: [  ]
+    invalid: [ 'AltConsumerM[L57C11].altitude in metres within envelope': assumption of AltConsumerM ]
+    valid:   [ 'trivially true': guarantee (SystemUnitsRangeVisible),
+               'AltSensorFtWide[L56C9].assume[L42C3]': assumption of AltSensorFtWide ]
+  AltSensorFt:
+    safe in 0.337s
+    without refinement: 0 abstract systems
+    1 invariant property
+  SystemUnitsBug:
+    safe in 0.378s
+    without refinement: 2 abstract systems
+    3 invariant properties
+

@@ -1,0 +1,38 @@
+ kind2 v3.0.0
+
+
+================================================================================
+Checking environment of GuarCurrentOutput
+
+<Success> Environment of GuarCurrentOutput was proven realizable after 0.000s.
+
+
+================================================================================
+Checking contract of GuarCurrentOutput
+
+<Success> Contract of GuarCurrentOutput was proven realizable after 0.078s.
+
+
+================================================================================
+Checking environment of GuarPastOutput
+
+<Success> Environment of GuarPastOutput was proven realizable after 0.000s.
+
+
+================================================================================
+Checking contract of GuarPastOutput
+
+<Success> Contract of GuarPastOutput was proven realizable after 0.076s.
+
+
+================================================================================
+Checking environment of GuarInputOnly
+
+<Success> Environment of GuarInputOnly was proven realizable after 0.000s.
+
+
+================================================================================
+Checking contract of GuarInputOnly
+
+<Success> Contract of GuarInputOnly was proven realizable after 0.072s.
+
