@@ -11867,6 +11867,94 @@
         "tooling/firmware-emulation"
       ]
     },
+    "cfml-characteristic-formulae-and-prelude-dijkstra-monad-vcgen": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal verification framework"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover, kernel, and Std.Do library"
+        },
+        {
+          "identity": {
+            "repository": "charguer/cfml",
+            "revision": "4359c19e0eee323bd7b3ce7f43e451bd34440c09"
+          },
+          "name": "CFML 2.0 characteristic formulae framework for Coq and OCaml"
+        },
+        {
+          "identity": {
+            "repository": "FStarLang/FStar",
+            "revision": "5643e656b989aca7629723653a2570c7df6252b9",
+            "version": "v2024.09.05"
+          },
+          "name": "F* verification system (classic WP and DM4F release)"
+        },
+        {
+          "identity": {
+            "repository": "FStarLang/FStar",
+            "revision": "fc1776afe592ed8eef352c6610614a70d77b3b66"
+          },
+          "name": "F* verification system (Hoare-style specification trunk)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1863543.1863590"
+          },
+          "name": "Program Verification Through Characteristic Formulae"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2034773.2034828"
+          },
+          "name": "Characteristic Formulae for the Verification of Imperative Programs"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3408998"
+          },
+          "name": "Separation Logic for Sequential Programs (Functional Pearl)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2491956.2491978"
+          },
+          "name": "Verifying Higher-Order Programs with the Dijkstra Monad"
+        },
+        {
+          "identity": {
+            "arxiv": "1608.06499",
+            "doi": "10.1145/3009837.3009878"
+          },
+          "name": "Dijkstra Monads for Free"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3341708"
+          },
+          "name": "Dijkstra Monads for All"
+        }
+      ],
+      "topics": [
+        "verification/program-logics",
+        "anneal/theory",
+        "lean/mechanization",
+        "verification/separation-logic",
+        "lean/kernel-reduction",
+        "pl/type-theory",
+        "rustc/mir"
+      ]
+    },
     "cgroups-v2-psi-priority-inversion-user-namespaces-and-certikos-layers": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -43214,6 +43302,98 @@
         "verification/disjoint-memory-coherence",
         "isa/associative-cam-processors",
         "systems/accelerator-memory-fences"
+      ]
+    },
+    "profunctor-optics-prisms-affine-traversals-and-enum-slice-reborrows": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal verification framework"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+          },
+          "name": "Rust compiler Mid-level Intermediate Representation and core slice library"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "d86aa34c75fd036ac139eb6e65da1cacc5492d0f"
+          },
+          "name": "Aeneas Lean 4 standard library backend"
+        },
+        {
+          "identity": {
+            "repository": "purescript-contrib/purescript-profunctor-lenses",
+            "revision": "c479df47cc386b840c5e7238b4b5b1b3e9e2c4ff"
+          },
+          "name": "PureScript profunctor-lenses library"
+        },
+        {
+          "identity": {
+            "repository": "well-typed/optics",
+            "revision": "dd0b30e144ad92f77584dc8357c381eed2243028"
+          },
+          "name": "Haskell optics-core library"
+        },
+        {
+          "identity": {
+            "repository": "optics-dev/Monocle",
+            "revision": "33bdd3fd63c8d30b778dfc68784e3c42bd2e9e05"
+          },
+          "name": "Scala Monocle optics library"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "ec133ce4d7993775413d852f91c9e3eb2a2a0897"
+          },
+          "name": "zerocopy safe byte conversion library"
+        },
+        {
+          "identity": {
+            "arxiv": "1703.10857",
+            "doi": "10.22152/programming-journal.org/2017/1/7"
+          },
+          "name": "Profunctor Optics: Modular Data Accessors"
+        },
+        {
+          "identity": {
+            "arxiv": "2001.07488",
+            "doi": "10.32408/compositionality-6-1"
+          },
+          "name": "Profunctor Optics, a Categorical Update"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3236779"
+          },
+          "name": "What You Needa Know about Yoneda: Profunctor Optics and the Yoneda Lemma"
+        }
+      ],
+      "topics": [
+        "verification/rust",
+        "anneal/theory",
+        "lean/mechanization",
+        "pl/type-theory",
+        "pl/bidirectional-lenses",
+        "rust/mir",
+        "aeneas/borrows-regions",
+        "zerocopy/bidirectional-lenses"
       ]
     },
     "programmable-network-pipelines-p4-semantics-and-exotic-hardware-numerics": {

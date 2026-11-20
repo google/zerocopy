@@ -1,0 +1,88 @@
+{
+  "topics": [
+    "verification/program-logics",
+    "anneal/theory",
+    "lean/mechanization",
+    "verification/separation-logic",
+    "lean/kernel-reduction",
+    "pl/type-theory",
+    "rustc/mir"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal verification framework",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover, kernel, and Std.Do library",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "CFML 2.0 characteristic formulae framework for Coq and OCaml",
+      "identity": {
+        "repository": "charguer/cfml",
+        "revision": "4359c19e0eee323bd7b3ce7f43e451bd34440c09"
+      }
+    },
+    {
+      "name": "F* verification system (classic WP and DM4F release)",
+      "identity": {
+        "repository": "FStarLang/FStar",
+        "revision": "5643e656b989aca7629723653a2570c7df6252b9",
+        "version": "v2024.09.05"
+      }
+    },
+    {
+      "name": "F* verification system (Hoare-style specification trunk)",
+      "identity": {
+        "repository": "FStarLang/FStar",
+        "revision": "fc1776afe592ed8eef352c6610614a70d77b3b66"
+      }
+    },
+    {
+      "name": "Program Verification Through Characteristic Formulae",
+      "identity": {
+        "doi": "10.1145/1863543.1863590"
+      }
+    },
+    {
+      "name": "Characteristic Formulae for the Verification of Imperative Programs",
+      "identity": {
+        "doi": "10.1145/2034773.2034828"
+      }
+    },
+    {
+      "name": "Separation Logic for Sequential Programs (Functional Pearl)",
+      "identity": {
+        "doi": "10.1145/3408998"
+      }
+    },
+    {
+      "name": "Verifying Higher-Order Programs with the Dijkstra Monad",
+      "identity": {
+        "doi": "10.1145/2491956.2491978"
+      }
+    },
+    {
+      "name": "Dijkstra Monads for Free",
+      "identity": {
+        "doi": "10.1145/3009837.3009878",
+        "arxiv": "1608.06499"
+      }
+    },
+    {
+      "name": "Dijkstra Monads for All",
+      "identity": {
+        "doi": "10.1145/3341708"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

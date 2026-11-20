@@ -1,0 +1,92 @@
+{
+  "topics": [
+    "verification/rust",
+    "anneal/theory",
+    "lean/mechanization",
+    "pl/type-theory",
+    "pl/bidirectional-lenses",
+    "rust/mir",
+    "aeneas/borrows-regions",
+    "zerocopy/bidirectional-lenses"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal verification framework",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover and kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Rust compiler Mid-level Intermediate Representation and core slice library",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+      }
+    },
+    {
+      "name": "Aeneas Lean 4 standard library backend",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "d86aa34c75fd036ac139eb6e65da1cacc5492d0f"
+      }
+    },
+    {
+      "name": "PureScript profunctor-lenses library",
+      "identity": {
+        "repository": "purescript-contrib/purescript-profunctor-lenses",
+        "revision": "c479df47cc386b840c5e7238b4b5b1b3e9e2c4ff"
+      }
+    },
+    {
+      "name": "Haskell optics-core library",
+      "identity": {
+        "repository": "well-typed/optics",
+        "revision": "dd0b30e144ad92f77584dc8357c381eed2243028"
+      }
+    },
+    {
+      "name": "Scala Monocle optics library",
+      "identity": {
+        "repository": "optics-dev/Monocle",
+        "revision": "33bdd3fd63c8d30b778dfc68784e3c42bd2e9e05"
+      }
+    },
+    {
+      "name": "zerocopy safe byte conversion library",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "ec133ce4d7993775413d852f91c9e3eb2a2a0897"
+      }
+    },
+    {
+      "name": "Profunctor Optics: Modular Data Accessors",
+      "identity": {
+        "doi": "10.22152/programming-journal.org/2017/1/7",
+        "arxiv": "1703.10857"
+      }
+    },
+    {
+      "name": "Profunctor Optics, a Categorical Update",
+      "identity": {
+        "doi": "10.32408/compositionality-6-1",
+        "arxiv": "2001.07488"
+      }
+    },
+    {
+      "name": "What You Needa Know about Yoneda: Profunctor Optics and the Yoneda Lemma",
+      "identity": {
+        "doi": "10.1145/3236779"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
