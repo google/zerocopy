@@ -23,14 +23,15 @@ satisfies any stated specifications.
 
 A modern verification tool needs tens of thousands of lines of intermediate
 representation (IR) lowering passes, weakest-precondition (WP) rules,
-separation-logic lemmas, and proof automation—much of it written by untrusted
-AI agents. To keep the human audit surface small, Anneal isolates all
-first-party trusted code inside [`trusted/`](../trusted) and places all
-lowering passes, program logics, and tactics outside the TCB in `theory/`. To
-ensure that adversarial or buggy code in `theory/` cannot use side effects, OS
-APIs, or custom axioms to undermine the guarantees established by `trusted/`,
-Anneal runs a standalone boundary auditor ([`trusted/audit/`](../trusted/audit))
-**in Anneal's own repository CI**.
+correspondence proofs, separation-logic lemmas, and proof automation—much of
+it written by untrusted AI agents. To keep the human audit surface small,
+Anneal isolates all first-party trusted code inside [`trusted/`](../trusted)
+and places all lowering passes, program logics, tactics, and correspondence
+proofs outside the TCB in `theory/` and `correspondence/`. To ensure that
+adversarial or buggy code in `theory/` or `correspondence/` cannot use side
+effects, OS APIs, or custom axioms to undermine the guarantees established by
+`trusted/`, Anneal runs a standalone boundary auditor
+([`trusted/audit/`](../trusted/audit)) **in Anneal's own repository CI**.
 
 For related architectural details, see:
 
@@ -38,20 +39,18 @@ For related architectural details, see:
   workflow and specification modes.
 - [`docs/architecture.md`](architecture.md) for the three-stage MIR pipeline
   and how untrusted lowering passes in `theory/` connect to `trusted/lean/`.
+- [`docs/mir-correspondence-design.md`](mir-correspondence-design.md) for how
+  Pass 2 anchors `Trusted.MirSemantics` against `vendor/lean-miri/`.
 
 ## 1. The `trusted/` boundary and how verification stays sound
 
-Anneal divides its repository into three active zones with strictly separated
-roles, augmented by planned Pass 2 zones (`trusted/correspondence/` and
-`correspondence/`) for the full MIR correspondence audit (see
-[`docs/architecture.md`](architecture.md) and
-[`docs/mir-correspondence-design.md`](mir-correspondence-design.md)):
+Anneal divides its repository into three zones with strictly separated roles:
 
 | Zone | Directory | Role | Trust status |
 | :--- | :--- | :--- | :--- |
-| **Trusted foundation** | [`trusted/`](../trusted) (plus planned `trusted/correspondence/`) | Extracts MIR and emits pure proof scripts (`trusted/rustc-capture/`), defines captured MIR syntax and verification operational semantics (`trusted/lean/`), orchestrates CLI invocation (`trusted/cargo-anneal/`), audits the Anneal repository in CI (`trusted/audit/`), and—in planned Pass 2—states MIR correspondence claims and reference-adapter specifications (`trusted/correspondence/`). | **In the TCB.** Audited by humans (alongside external files pinned by hash manifests inside `trusted/`). |
-| **Proof theory** (and planned **correspondence proofs**) | `theory/` (and planned `correspondence/`) | Defines the normalized `StableAst`, proves lowering passes (`Abstracts`), provides WP calculi, separation logic, and proof tactics invoked by generated proof scripts (`theory/`), and—in planned Pass 2—proves the MIR correspondence theorems and canaries (`correspondence/`, CI-only and never shipped in the user toolchain archive). | **Outside the TCB.** Treated as potentially adversarial; audited mechanically in Anneal's CI via syntactic preflight and Lean 4 kernel replay. |
-| **Vendored reference model** | `vendor/lean-miri/` | Pinned snapshot of `proofs-rs/lean-miri` (plus any human-audited local delta) serving as the MIR correspondence reference model in repository CI. Never shipped in the user toolchain archive. | **In the correspondence TCB (Pass 2 / Phase 3).** Exempt from `theory/` syntactic preflight because upstream contains compile-time metaprograms and `partial` definitions; pinned byte-for-byte in `vendor/lean-miri/UPSTREAM_PIN.json` (locked by SHA-256 in `trusted/audit/`), with 10 `Miri/Interpreter/*.lean` files carrying Anneal's human-audited opt-in `deinitMovedPlace` patch pinned in `patched_files` and `LOCKED_PATCHED_MIRI_FILES`; admitted by human semantic and compile-time review of upstream pin diffs and local patches, OS-sandboxed cold compilation, standalone kernel replay of every non-`isPartial` declaration across the 160-module `Miri.Interpreter.ExecutionMachine` slice, and execution-cone purity checks. |
+| **Trusted foundation** | [`trusted/`](../trusted) | Extracts MIR and emits pure proof scripts (`trusted/rustc-capture/`), defines captured MIR syntax and verification operational semantics (`trusted/lean/`), states MIR correspondence claims and reference-adapter specifications (`trusted/correspondence/`), orchestrates CLI invocation (`trusted/cargo-anneal/`), and audits the Anneal repository in CI (`trusted/audit/`). | **In the TCB.** Audited by humans (alongside external files pinned by hash manifests inside `trusted/`). |
+| **Proof theory & correspondence** | `theory/`, `correspondence/` | Defines the normalized `StableAst`, proves lowering passes (`Abstracts`), provides WP calculi (`theory/Anneal/MirWp.lean`), separation logic, and proof tactics (`theory/`), and proves the MIR correspondence theorems and canaries (`correspondence/`). | **Outside the TCB.** Treated as potentially adversarial; audited mechanically in Anneal's CI and checked by the Lean 4 kernel (`correspondence/` is checked in CI only and is not shipped in the user toolchain archive). |
+| **Vendored reference model** | `vendor/lean-miri/` | Pinned snapshot of `proofs-rs/lean-miri` with a human-audited 10-file opt-in `deinitMovedPlace` delta ([`docs/mir-correspondence-design.md`](mir-correspondence-design.md)). Never shipped in the user toolchain archive. | **In the correspondence TCB.** Pinned byte-for-byte in `vendor/lean-miri/UPSTREAM_PIN.json` (locked by `LOCKED_UPSTREAM_PIN_SHA256` and `LOCKED_PATCHED_MIRI_FILES` in `trusted/audit/`). Only the 160-module `Miri.Interpreter.ExecutionMachine` slice (excluding `Miri.Input.NativeMathHost`) is compiled inside an OS-level `bwrap` sandbox (or restored from a digest-gated cache outside the checkout) and verified by `.olean` SHA-256; every non-`isPartial` vendored declaration (38,728 declarations) is replayed from scratch through the standalone Lean 4 kernel (`toKernelEnv.replay`) onto the authenticated sysroot base on every run, followed directly by replaying `Trusted.Correspondence`, `Anneal.MirCorrespondenceBase`, and `Anneal.MirCorrespondenceProof` on top of that replayed base and checking cone purity. |
 
 ### How CI auditing and user-machine verification fit together
 
@@ -106,15 +105,14 @@ flowchart TD
      Anneal repository before any commit can merge or be packaged into the
      toolchain archive. `anneal-audit` does **not** run on a user's machine; its
      job is to verify in CI that all first-party Lean code outside `trusted/`
-     (`theory/`, and planned Pass 2 `correspondence/`) is pure, effect-free, and
-     within the locked foundation axiom allowlist (and that no Rust crate
-     resides outside `trusted/`). Vendored reference-model sources under
-     `vendor/lean-miri/` are never packaged into the user toolchain archive and
-     are admitted under Phase 3 (rather than Phase 1 syntactic preflight) by
-     content-addressed SHA-256 pinning, human semantic and compile-time review
-     of upstream pin diffs and local patches, standalone kernel replay, and
-     cone-purity enforcement (to be joined by planned Pass 2 correspondence
-     proofs and archive-bound correspondence provenance verification).
+     (`theory/` and `correspondence/`) is pure, effect-free, and within the
+     locked foundation axiom allowlist (and that no Rust crate resides outside
+     `trusted/`). Vendored reference-model sources under `vendor/lean-miri/` are
+     never packaged into the user toolchain archive and are admitted under Pass
+     2 by content-addressed SHA-256 pinning, human semantic and compile-time
+     review of upstream pin diffs and local patches, OS-sandboxed compilation
+     and Pass 2 preflight, standalone kernel replay, and cone-purity
+     enforcement, while `ci/` and `.github/` are human-audited CI configuration.
 
 ### Statement-Origin Separation (`ConstantInfo.type` vs. `ConstantInfo.value?`)
 
@@ -174,27 +172,21 @@ automatically inherits its defining module's trust tier via
 `Environment.getModuleIdxFor?`.
 
 To prevent unreviewed candidate modules from contaminating audited definitions,
-`TrustedBoundary.lean` enforces a strict one-way dependency rule across all
-compiled constants: constants in a `vetted` module may reference only the
-locked `Init.*` foundation and other `vetted` modules, never a
-`candidate:<feature>` module.
+`TrustedBoundary.lean` enforces a strict one-way dependency rule across both
+Pass 1 (`RepoOrigin.edgeViolation?`) and Pass 2 (`CorrOrigin.edgeViolation?`):
+constants in a `vetted` module may reference only the locked `Init.*`
+foundation and other `vetted` modules, never a `candidate:<feature>`,
+`vendorMiri`, or `sysrootFoundation` module.
 
 ## 2. Repository CI boundary enforcement (`anneal-audit`)
 
 [`trusted/audit/`](../trusted/audit) implements the CI gatekeeper
 (`anneal-audit` and
 [`TrustedBoundary.lean`](../trusted/audit/TrustedBoundary.lean)) that audits
-the Anneal repository. It classifies every module into a closed role partition—
-the four-role `ModuleRole` (`.foundation`, `.trusted .vetted`,
-`.trusted (.candidate f)`, `.theory`) in Phase 2, and the five-role
-`CorrModuleRole` (`.foundation`, `.sysrootFoundation`, `.vendorMiri`,
-`.trusted <tier>`, `.theory`) in Phase 3—and enforces its invariants across
-three internal phases within an audit run (Phase 1 syntactic preflight, Phase 2
-core kernel replay, and Phase 3 vendored `lean-miri` closure verification—run
-unconditionally by `Checker::run` whenever `vendor/lean-miri/` is present until
-the Pass 2 `--require-correspondence` split lands) over an isolated staging
-directory; the governing Pass 2 correspondence controls (including remaining
-planned items) are summarized below.
+the Anneal repository over an isolated `0o700` staging directory. It enforces
+the boundary controls detailed below across Pass 1 (core repository
+`trusted/lean/` and `theory/`) and Pass 2 (vendored `lean-miri`,
+`trusted/correspondence/`, and `correspondence/`).
 
 ### Cargo workspace containment
 
@@ -205,27 +197,60 @@ and `path` dependency resides under `trusted/`. Because Rust code (including
 `build.rs` scripts and proc-macros) is effectful and not checked by the Lean
 kernel, no Rust crate is permitted outside `trusted/`.
 
-### Phase 1: Syntactic source preflight (`--mode preflight`)
+### Syntactic source preflight (`"preflight"` & `"correspondence-preflight"`)
 
-Before compiling any `.lean` file in `trusted/lean/` or `theory/`,
-`anneal-audit` stages the source files into a private temporary directory,
-verifies that no pre-existing `.olean` or `.ir` files exist in the source tree,
-and parses every file using `Parser.parseHeader` and `Parser.parseCommand`
-against the locked `Init.*` foundation parser environment (without invoking
-Lean's Turing-complete elaborator). Rather than relying on an open-ended
-blocklist of dangerous Lean features, `TrustedBoundary.lean` classifies each
-source file into a `SourceRole` (`trusted (tier : TrustTier)` vs. `theory`) and
-validates the module header and every top-level command in a single top-down
-traversal (`inspectSyntax` and `inspectNodeKind`) against a closed, role-aware
-`SyntaxNodeKind` allowlist:
+Before compiling any repository `.lean` file in Pass 1 or Pass 2,
+`anneal-audit` stages regular source files into a private temporary directory,
+verifies that no symlinks or pre-existing `.olean`/`.ilean`/`.ir` artifacts
+exist in the source tree, and parses every file using `Parser.parseHeader` and
+`Parser.parseCommand` against the locked `Init.*` foundation parser environment
+(`"preflight"`, without invoking Lean's Turing-complete elaborator). For Pass 2
+(`trusted/correspondence/` and `correspondence/`), `anneal-audit` additionally
+runs `"correspondence-preflight"` after staging the authenticated `Miri.*`
+closure and before compiling any Pass 2 source: it re-parses every Pass 2
+source file under the Pass 2 union compile parser environment (importing
+authenticated `Init.*`/`Std.*`/`Lean.*`, Pass 1 `Trusted.*`, compiled untrusted
+Pass 1 `theory/`, and pinned `Miri.*` modules with `loadExts := true`,
+`level := .private`, and `enableInitializersExecution`). Because
+`level := .private` enables runtime `[init]` phases and `loadExts := true`
+executes `finalizePersistentExtensions` -> `runInitAttrs` and
+`KeyedDeclsAttribute.ofOLeanEntry` (`evalConstCheck`), importing this
+environment inside the inspector process runs pinned vendored `[init]`
+initializers (for example `Miri.Input.DecoderValues`'s `initialize
+runtimeSummaryKeys`, which can also register user-defined environment
+extensions), evaluates pinned vendored tactic `elab`s (such as
+`DedupRangeMap.lean` and `TreeState.lean`), and deserializes compiled Pass 1
+`theory/` extension data. Human review of the pinned vendored and patched
+compile-time code is the safeguard against vendored compile-time and preflight
+side effects, while Pass 1's closed attribute allowlist restricts compiled
+`theory/` `.olean`s to plain-data extension entries. Both `"preflight"` and
+`"correspondence-preflight"` track lexical `namespace`/`section`/`end`/`open`
+scopes in `parseAndInspectCommands` and fail closed if any `namespace` or
+multi-component declaration enters—or any `open`, `open ... in`, or `mutual`
+preamble `open` has *any* candidate resolution (across every prefix of
+`currNamespace` including root and every conservatively tracked open namespace,
+regardless of whether an unimported decoy namespace exists in the union parser
+environment) matching—a namespace that registers scoped entries in any
+`ScopedEnvExtension` (including scoped syntax, notations, macros, elaborators,
+instances, and attributes). Unscoped syntax registered by `Lean`/`Std` or
+vendored `Miri.*` modules (such as `throwError "x"` -> `Lean.termThrowError__`,
+`m! "x"` -> `Lean.termM!_`, or custom Miri tactic `elab`s) is parsed into its
+true `SyntaxNodeKind` and rejected before elaboration, while scoped extensions
+cannot be activated across `open`/`namespace` boundaries. Rather than relying on
+an open-ended blocklist of dangerous Lean features, `TrustedBoundary.lean`
+classifies each source file into a `SourceRole` (`trusted (tier : TrustTier)`
+vs. `theory`) and validates the module header and every top-level command in a
+single top-down traversal (`inspectSyntax` and `inspectNodeKind`) against a
+closed, role-aware `SyntaxNodeKind` allowlist in every applicable preflight
+environment:
 
-- **`SourceRole.trusted` (`trusted/lean/`):** Restricted to
-  `allowedTrustedSyntaxKinds`—pure declarations, types, and term-mode proofs
-  only, excluding `byTactic` and all tactic syntax so TCB specifications remain
-  direct, tactic-free definitions—and required to carry exactly one valid
-  `-- anneal-trust-tier: vetted` or `-- anneal-trust-tier: candidate:<feature>`
-  directive.
-- **`SourceRole.theory` (`theory/`):** Restricted to
+- **`SourceRole.trusted` (`trusted/lean/` and `trusted/correspondence/`):**
+  Restricted to `allowedTrustedSyntaxKinds`—pure declarations, types, and
+  term-mode proofs only, excluding `byTactic` and all tactic syntax so TCB
+  specifications remain direct, tactic-free definitions—and required to carry
+  exactly one valid `-- anneal-trust-tier: vetted` or
+  `-- anneal-trust-tier: candidate:<feature>` directive.
+- **`SourceRole.theory` (`theory/` and `correspondence/`):** Restricted to
   `allowedTheorySyntaxKinds`, which extends `allowedTrustedSyntaxKinds` with a
   closed allowlist of pure proof tactics (`allowedTheoryTacticKinds`) while
   rejecting trust-tier directives and any unallowlisted syntax node, command,
@@ -235,46 +260,60 @@ traversal (`inspectSyntax` and `inspectNodeKind`) against a closed, role-aware
   flags such as `+native` and `+kernel`, `by_elab`, `run_tac`, `#eval`,
   `include_str`, `set_option`, `@[implemented_by]`, `@[extern]`, `@[csimp]`,
   and `initialize` hooks; `noncomputable` declaration modifiers are admitted
-  mechanically by `allowedCommandSyntaxKinds`, while repository policy keeps
-  `theory/` free of `noncomputable` definitions).
+  mechanically across all roles and both passes by `allowedCommandSyntaxKinds`
+  (which `trusted/lean/` and Pass 2 modules rely on), while `noncomputable
+  section` is forbidden mechanically and repository policy keeps `theory/` free
+  of `noncomputable` definitions; unlike `theory/`, `correspondence/` modules
+  may use `noncomputable def`).
 
-### Phase 2: Standalone kernel replay and DAG audit (`--mode audit`)
+### Pass 1: Core repository kernel replay (`"audit"` JSON IPC mode)
 
-After compiling the staged `.lean` modules synchronously with kernel checking
-enabled (`-t0 -DElab.async=false -Ddebug.skipKernelTC=false`), `anneal-audit`
-loads the resulting `.olean` files with `trustLevel := 0`, `plugins := #[]`,
-and `loadExts := false` (so no `[init]` initializers or persistent environment
-extensions from audited modules are deserialized or executed) and performs a
-full kernel-level audit:
+After compiling the staged `trusted/lean/` and `theory/` modules synchronously
+with kernel checking enabled (`-t0 -DElab.async=false
+-Ddebug.skipKernelTC=false`), `anneal-audit` loads the resulting `.olean` files
+with `trustLevel := 0`, `plugins := #[]`, and `loadExts := false` (so no
+`[init]` initializers or persistent environment extensions from audited modules
+are deserialized or executed), partitions every loaded module into `RepoOrigin`
+(`.foundation` or `.repo (.trusted tier | .theory)`), and performs a full
+kernel-level audit:
 
-1. **Module, namespace, and axiom verification (`verifyAndCollectLocals`):**
-   Verifies that only allowlisted modules are loaded; that every constant's
-   recorded module origin (`env.getModuleIdxFor?`) matches its module's
-   `ModuleRole`; that non-`Trusted` modules declare no constants in the
-   `Trusted` root namespace (`(privateToUserName ci.name).getRoot == `Trusted`)
-   and no `opaque` definitions; that no non-foundation declaration in
-   `Trusted.*` or `theory/` is `unsafe`, `partial`, an `axiom`, or a quotient
-   primitive (`.quotInfo`); and that the transitive dependency closure reaches
-   only the locked foundation axiom allowlist
+1. **Inventory, imports, namespace, and constant safety
+   (`verifyAndCollectLocals`):** Verifies that only allowlisted modules are
+   loaded; rejects compiled `.olean` header imports violating
+   `RepoOrigin.importViolation?` (for example, a `Trusted` module importing a
+   `theory/` module); verifies that every constant's recorded module origin
+   (`env.getModuleIdxFor?`) matches its module's `RepoOrigin`; forbids
+   non-`Trusted` modules from declaring constants in the `Trusted` root
+   namespace (`(privateToUserName ci.name).getRoot == `Trusted`) or `opaque`
+   definitions; rejects any `unsafe`, `partial`, `axiom`, or quotient primitive
+   (`.quotInfo`) across repository declarations; and checks that the transitive
+   dependency closure reaches only the locked foundation axiom allowlist
    (`{Classical.choice, Quot.sound, propext}`).
-2. **Origin and trust-tier separation (`checkTierReferences`):** Traverses
-   every kernel dependency edge `c → dep` (`declarationEdges`) across all
-   `Trusted.*` constants and enforces two rules:
+2. **Origin and trust-tier separation (`checkDeclarationEdges`):** Traverses
+   every kernel dependency edge (`declarationEdges`) across repository
+   constants and enforces `RepoOrigin.edgeViolation?`:
    - **Origin rule:** A `.trusted _` constant may reference only `.foundation`
      or `.trusted _` constants (never `.theory`).
    - **Vetted rule:** A `.trusted .vetted` constant may reference only
      `.foundation` or `.trusted .vetted` constants (never
      `.trusted (.candidate _)`).
-3. **Fresh kernel replay (`base.toKernelEnv.replay locals`):** Finally,
-   `TrustedBoundary.lean` constructs a clean kernel environment containing only
-   the pinned `Init.*` foundation (`base`) and replays every non-foundation
-   constant (`Trusted.*` and `theory/`) through the standalone Lean 4 kernel
-   typechecker from scratch.
+3. **MIR WP non-backsliding (`verifyMirWpCoreTheorems`):** Enabled by default
+   (`require_mir_wp = true`); requires `Trusted.MirAst`,
+   `Trusted.MirSemantics`, and `Anneal.MirWp` to be present and verifies that
+   `wpProg` soundness, `wpFaultProg` soundness, and all 15 Pass 1 canaries
+   prove their exact `Trusted.MirSemantics` `*Claim` propositions.
+4. **Fresh kernel replay (`replayOntoBase`):** Constructs a clean kernel
+   environment containing only the pinned `Init.*` foundation (`base`),
+   replays every non-foundation constant (`Trusted.*` and `theory/`) through
+   the standalone Lean 4 kernel typechecker (`base.toKernelEnv.replay`) from
+   scratch, and checks any alternate foundation theorem proofs under fresh
+   names.
 
-### Phase 3: Vendored `lean-miri` verification (`--mode correspondence-audit`)
+### Pass 2: MIR correspondence and `lean-miri` cone audit
 
-Whenever `vendor/lean-miri/` is present, `anneal-audit` verifies the vendored
-reference model before succeeding:
+When `--require-correspondence` is passed in CI (or correspondence directories
+or `vendor/lean-miri/` are present), `anneal-audit` executes Pass 2
+(`"correspondence-preflight"` and `"correspondence-audit"` JSON IPC modes):
 
 1. **Pin and sysroot authentication (`verify_upstream_pin`,
    `ensure_sysroot_foundation`):** `trusted/audit` hashes
@@ -294,7 +333,7 @@ reference model before succeeding:
    (`upstream_lean_toolchain`), whereas Anneal compiles and pins `.olean`
    digests under its locked `leanprover/lean4:v4.34.1` (`build_lean_toolchain`):
    upstream's `v4.35.0` test results therefore do not automatically carry over
-   to Anneal's `v4.34.1` build, and correspondence proofs must validate
+   to Anneal's `v4.34.1` build, and correspondence proofs validate
    reference-model behavior under the `v4.34.1` toolchain.
 2. **Digest-gated cache restore or OS-sandboxed cold compilation:** Every
    closure source file is staged and re-hashed against its pinned SHA-256
@@ -323,7 +362,7 @@ reference model before succeeding:
    (lexically or after resolving symlinks) as a policy error so a PR cannot
    commit pre-built `.olean` files to satisfy cache hits. A digest-matching
    cache hit skips only re-elaborating the pinned `.lean` source; it does
-   **not** skip kernel typechecking, because step 3 below unconditionally runs
+   **not** skip kernel typechecking, because step 4 below unconditionally runs
    full standalone kernel replay over all 160 vendored closure modules on every
    run (cold build and warm cache hit alike). In CI, the cache lives in
    `${{ runner.temp }}/anneal-miri-olean-cache` keyed on
@@ -333,103 +372,120 @@ reference model before succeeding:
    `workflow_dispatch` runs skip the cache action and omit `--miri-cache-dir`
    so every landed or manually dispatched revision performs a cold,
    OS-sandboxed from-source build as well as standalone kernel replay.
-3. **Standalone vendor kernel replay and dependency-cone audit
-   (`auditCorrespondence`):** Unlike `trusted/lean/` and `theory/`, vendored
-   `Miri.*` sources are **not** passed through Phase 1 syntactic preflight:
-   upstream `Miri.Input.*` and proof helpers contain compile-time metaprograms
-   (`run_cmd`, `initialize`), custom tactic `elab`s, and 24 `partial def`s that
-   execute during cold Phase 3 builds inside the per-module OS sandbox. The
-   SHA-256 `UPSTREAM_PIN.json` pin and `patched_files` allowlist in
-   `trusted/audit/` authenticate the exact source bytes, the OS sandbox
-   confines compile-time side effects, and human review of the pinned vendored
-   and patched compile-time code—and of the resolved old-to-new reference-model
-   semantic diff on any pin update—guards against malicious metaprograms and
-   upstream semantic regressions (consistent with
-   [`THREAT_MODEL.md`](../THREAT_MODEL.md) Section 2.1).
-   To eliminate both any `.olean` cache-hit kernel trust assumption and any
-   scoped `set_option debug.skipKernelTC true` bypass inside a vendored or
-   patched `.lean` file (which overrides CLI `-Ddebug.skipKernelTC=false`
-   during elaboration), `TrustedBoundary.lean` loads the verified `.olean`
-   closure with `trustLevel := 0`, `plugins := #[]`, and `loadExts := false`,
-   verifies module classification (`classifyCorrModules`), enforces inventory
-   and origin integrity across `.vendorMiri`, `.trusted`, and `.theory`
-   declarations, rejects any `.vendorMiri` or `.sysrootFoundation` declaration
-   in the reserved `Trusted` or `Anneal` namespaces, and rejects any `axiom`
-   (including stripped-body declarations), `unsafe` declaration, quotient
-   primitive, direct `sorryAx` reference, or direct compiler-reflection
-   primitive (`Lean.ofReduceBool`, `Lean.ofReduceNat`, `Lean.trustCompiler`,
-   `Lean.reduceBool`, `Lean.reduceNat`) across all 160 `.vendorMiri` modules
-   (`verifyAndCollectCorrLocals`). After enforcing trust-tier separation
-   (`checkCorrTierReferences`), it resets the Lean search path strictly to the
-   authenticated sysroot, constructs a clean `baseEnv` containing only the
-   authenticated `.foundation` and `.sysrootFoundation` modules (`trustLevel :=
-   0`, `plugins := #[]`, `loadExts := false`), and replays every non-`isPartial`
-   declaration in the 160 compiled vendored modules (38,728 declarations,
-   including all 27 `.opaqueInfo` declarations) from scratch through the
-   standalone Lean kernel (`baseEnv.toKernelEnv.replay vendorReplayLocals`) on
-   every run—cold build and warm cache hit alike. The 75 compiler-generated
-   `isPartial` (`*._unsafe_rec`) runtime codegen helpers are omitted from the
-   replay map (matching `Kernel.Environment.replay`), so any reference to them
-   from a replayed declaration fails replay with `unknown constant`. Finally,
-   `verifyMiriExecutionMachineCone` (`closureCorr`) traverses from its 21 cone
-   roots to reject any reachable `unsafe` or `isPartial` constant, any
-   reachable `.vendorMiri` `.opaqueInfo` constant (which rejects vendored
-   `Miri.*` `partial def`s, as Lean elaborates `partial def` into an `opaque`
-   constant), and any unapproved axiom (while permitting `opaque`
-   constants—including toolchain `partial def`s—from the pinned toolchain's
-   `.foundation` and `.sysrootFoundation` modules).
+3. **Dual Pass 2 preflight, OS-sandboxed Pass 2 elaboration, and `LEAN_PATH`
+   isolation:** Pass 2 first runs foundation `"preflight"` to validate imports,
+   cycles, trust tiers, and syntax—admitting imports in
+   `trusted/correspondence/` only from `foundation-lock.json`, Pass 1
+   `Trusted.*` modules, other `trusted/correspondence/` modules, and the pinned
+   `Miri.*` closure, while rejecting imports of `theory/` and `correspondence/`
+   modules. Once the 160 `Miri.*` modules are staged, Pass 2 runs
+   `"correspondence-preflight"` inside the same isolated `bwrap --unshare-all`
+   sandbox (read-only toolchain, staged sources, and compiled libraries, with
+   writes restricted to an isolated per-request output directory) to re-parse
+   every `trusted/correspondence/` and `correspondence/` file under the Pass 2
+   union compile parser environment (including `Miri.*` and `Lean`/`Std` parser
+   extensions) against `allowedTrustedSyntaxKinds` and
+   `allowedTheorySyntaxKinds`—tracking lexical scopes and failing closed if any
+   `namespace`/namespaced declaration enters or any `open` candidate resolution
+   (resisting decoy namespaces in unimported modules) matches a namespace with
+   scoped `ScopedEnvExtension` entries—before any Pass 2 module compiles. Each
+   Pass 2 module (`trusted/correspondence/` and `correspondence/`) is likewise
+   compiled inside a per-module `bwrap --unshare-all` sandbox with `LEAN_PATH`
+   omitting compiled `theory/` and `correspondence/` artifacts when compiling
+   `trusted/correspondence/`, confining any vendored `[init]` initializers or
+   tactic `elab`s loaded during Pass 2 elaboration and rejecting unexpected
+   files before staging into `lib/` or `theory-lib/`.
+4. **Four-origin `CorrOrigin` classification, standalone vendor + correspondence
+   kernel replay, cone purity, and claims (`auditCorrespondence`):** Unlike
+   `trusted/` and `correspondence/`, vendored `Miri.*` sources are not passed
+   through syntactic preflight because upstream `Miri.Input.*` and proof helpers
+   contain compile-time metaprograms (`run_cmd`, `initialize`), custom tactic
+   `elab`s, and 24 `partial def`s that execute inside the isolated OS sandbox
+   during cold Pass 2 builds, `"correspondence-preflight"`, and Pass 2
+   compilation. The SHA-256 `UPSTREAM_PIN.json` pin and `patched_files`
+   allowlist in `trusted/audit/` authenticate the exact source bytes, the OS
+   sandbox confines compile-time side effects, and human review of the pinned
+   vendored and patched compile-time code—and of the resolved old-to-new
+   reference-model semantic diff on any pin update—guards against malicious
+   metaprograms and upstream semantic regressions (consistent with
+   [`THREAT_MODEL.md`](../THREAT_MODEL.md) Section 2.1). To eliminate both any
+   `.olean` cache-hit kernel trust assumption and any scoped `set_option
+   debug.skipKernelTC true` bypass inside a vendored or patched `.lean` file,
+   `TrustedBoundary.lean` loads the verified `.olean` environment with
+   `trustLevel := 0`, `plugins := #[]`, and `loadExts := false`, partitions
+   modules into `CorrOrigin` (`.foundation`, `.sysrootFoundation`,
+   `.vendorMiri`, `.repo (.trusted tier | .theory)`), checks header imports
+   (`CorrOrigin.importViolation?`), declaration edges
+   (`CorrOrigin.edgeViolation?`), and `.vendorMiri` global inventory and purity
+   (forbidding same-module duplicates, non-identical cross-module duplicates,
+   external declarations in `Trusted` or `Anneal`, and any `axiom`, `unsafe`,
+   `.quotInfo`, missing body, direct `sorryAx`, or compiler-reflection
+   primitive `Lean.ofReduceBool`/`Lean.ofReduceNat`/`Lean.trustCompiler`/
+   `Lean.reduceBool`/`Lean.reduceNat` across all 160 `.vendorMiri` modules). It
+   then resets the Lean search path strictly to the authenticated sysroot,
+   builds a clean `baseEnv` containing only the authenticated `.foundation` and
+   `.sysrootFoundation` modules, and replays **every** non-`isPartial`
+   `.vendorMiri` declaration (38,728 declarations across the 160 closure
+   modules, including all 27 `.opaqueInfo` declarations and omitting
+   compiler-generated `isPartial` `*._unsafe_rec` helpers so any reference to
+   them fails replay with `unknown constant`) from scratch through the
+   standalone Lean 4 kernel (`baseEnv.toKernelEnv.replay`) on every run—cold
+   build and warm cache hit alike—followed directly by replaying all repository
+   declarations (Pass 1 plus Pass 2 `Trusted.Correspondence`,
+   `Anneal.MirCorrespondenceBase`, and `Anneal.MirCorrespondenceProof`) onto
+   that replayed vendor kernel environment. Before that repository replay, it
+   rejects any repository constant whose name already exists in the replayed
+   vendor or sysroot environment, so replay never skips a repository
+   declaration as a duplicate theorem. The report counts the correspondence
+   declarations present in the resulting kernel environment
+   (`correspondenceReplayedDeclarations`), and `anneal-audit` fails closed
+   unless `correspondenceReplay` is `true` and that count equals
+   `correspondenceDeclarations`. Finally, it verifies the 21-root
+   `Miri.Interpreter.ExecutionMachine` cone (`verifyMiriExecutionMachineCone`)
+   and correspondence dependency cone (`closureCorr`) for purity (rejecting any
+   reachable `unsafe`, `isPartial`, `.vendorMiri` `opaque`, or unapproved
+   axiom), verifies all 27 Day-1 correspondence, wiring, and canary (`D6`–`D10`)
+   claims (`verifyCorrespondenceClaims`, enforcing universe monomorphism on
+   every claim and proof and a mechanically checked non-empty
+   required-constants list on every claim), and runs
+   `verifyRefEvaluatorIndependence` (19 required `Miri.*` primitives and
+   rejection of 21 named `Trusted.MirSemantics` evaluator entry points, with
+   human review of `trusted/correspondence/` remaining the semantic boundary).
 
 ### Pass 2 governance and remaining correspondence controls (`trusted/correspondence/` and `correspondence/`)
 
 To mechanically anchor `Trusted.MirSemantics` against `vendor/lean-miri/`
 without expanding the user-machine TCB or weakening Pass 1's pure `theory/`
-gate, Anneal's complete Pass 2 correspondence audit (detailed in
+gate, Anneal's Pass 2 correspondence audit (detailed in
 [`docs/architecture.md`](architecture.md) and
 [`docs/mir-correspondence-design.md`](mir-correspondence-design.md)) governs
-five controls—combining the active Phase 3 vendor controls above with remaining
-planned controls tracked for follow-up PRs:
+five controls—four active in Pass 2 above and one remaining planned control
+tracked for a follow-up PR:
 
-1. **Content-addressed vendor pinning, semantic diff review, OS-level
-   candidate sandboxing, and source-to-`.olean` provenance binding:** Pin
-   authentication, sysroot locking, external `.olean` caching, OS-level
-   `bwrap` process sandboxing of cold vendor elaboration (with fail-closed
-   isolation on platforms without bubblewrap), and cold builds on
-   `merge_group`, `push` to `main`, `workflow_dispatch`, and
-   `UPSTREAM_PIN.json`/`lean-toolchain` changes are active in Phase 3 above.
+1. **Content-addressed vendor pinning, semantic diff review, and OS-level
+   sandboxing (active):** Pin authentication, sysroot locking, external
+   `.olean` caching, OS-level `bwrap` process sandboxing of cold vendor
+   elaboration, `"correspondence-preflight"`, and Pass 2 module compilation
+   (with fail-closed isolation on platforms without bubblewrap), and cold
+   builds on `merge_group`, `push` to `main`, `workflow_dispatch`, and
+   `UPSTREAM_PIN.json`/`lean-toolchain` changes are active in Pass 2 above.
    Every future `vendor/lean-miri/` pin update must expose and receive human
    semantic review of the resolved old-to-new reference-model diff—not only
    compile-time metaprograms and local patches—so pure, well-typed upstream
-   semantic regressions (such as removed UB checks or miscomputed operations)
-   cannot pass silently through hash checks and kernel replay. Any future Pass
-   2 preflight or build step that executes vendored metaprograms must likewise
-   remain confined to an OS-level isolated sandbox with no credentials or
-   writable access to the repository worktree, home directory, or auditor
-   state (restricting writes strictly to an isolated build output directory,
-   after which the outer auditor checks `.olean` SHA-256 digests and runs
-   standalone kernel replay in a separate `loadExts := false` process).
-2. **Pass 2 syntactic preflight and isolation *(planned)*:** Before compiling
-   `trusted/correspondence/` or `correspondence/`, `anneal-audit` will run
-   syntactic preflight on both first-party directories—requiring
-   `trusted/correspondence/` to follow trusted declaration rules and restricting
-   `correspondence/` to pure, effect-free proof syntax while preventing
-   untrusted declarations from injecting into `Trusted.*` or `Miri.*` or
-   importing scoped metaprogramming extensions.
-3. **Standalone vendor and correspondence kernel replay plus cone purity:**
-   Standalone vendor kernel replay and 21-root `ExecutionMachine` cone purity
-   are active in Phase 3 above; extending standalone replay and cone purity to
-   `trusted/correspondence/` and `correspondence/` lands with the
-   correspondence proofs.
-4. **Correspondence witness locks and evaluator independence *(planned)*:**
-   `anneal-audit` will mechanically verify that every required correspondence,
-   fault-equivalence, wiring, and canary claim in `trusted/correspondence/` is
-   inhabited by a universe-monomorphic theorem in `correspondence/` with the
-   exact expected kernel type and required constants. To prevent a shared
-   helper bug or narrowing from making both models silently agree on
-   `unsupported`, `anneal-audit` will check that the reference evaluator and
-   staged support gate depend on the expected `Miri.*` primitives and reject
-   dependencies from them into the entire Anneal execution and support-rule
-   cone (permitting only explicitly allowlisted shared boundary data types such
-   as AST, value, query, and behavior types).
+   semantic regressions cannot pass silently through hash checks and kernel
+   replay.
+2. **Pass 2 syntactic preflight and isolation (active):** Foundation
+   `"preflight"`, sandboxed union-parser `"correspondence-preflight"` with
+   decoy-resistant scoped-namespace rejection, and `LEAN_PATH` isolation are
+   active in Pass 2 above.
+3. **Standalone vendor and correspondence kernel replay plus cone purity
+   (active):** Full standalone kernel replay over all 160 vendored closure
+   modules plus all Pass 1 and Pass 2 repository modules and 21-root cone
+   purity checks are active in Pass 2 above.
+4. **Correspondence witness locks and evaluator independence (active):**
+   Universe-monomorphic claim/proof checking with non-empty required-constants
+   lists (`verifyCorrespondenceClaims`) and `verifyRefEvaluatorIndependence`
+   are active in Pass 2 above.
 5. **Archive-embedded correspondence provenance and fail-closed digest
    verification *(planned)*:** To uphold [`THREAT_MODEL.md`](../THREAT_MODEL.md)'s
    bounded human-review guarantee without shipping `vendor/lean-miri/` or
@@ -469,9 +525,8 @@ effective TCB cannot practically reside inside the `trusted/` subdirectory:
   `Cargo.lock`, `flake.nix`, and `flake.lock`) to sit at the current verifier's workspace root;
   moving them into `trusted/` would require symlinks or custom wrapper flags
   for every Cargo and Nix command.
-- Pre-built upstream toolchain artifacts (the `lean` binary and its
-  `Init`/`Std`/`Lean` sysroot `.olean` artifacts) live outside the repository
-  altogether.
+- Pre-built upstream toolchain artifacts (the `lean` binary and its `Init.*`,
+  `Std.*`, and `Lean.*` libraries) live outside the repository altogether.
 
 To include these files in `trusted/`'s effective TCB without relocating them,
 `trusted/` stores their SHA-256 digests in checked-in lock manifests:
@@ -484,23 +539,20 @@ To include these files in `trusted/`'s effective TCB without relocating them,
   (`trusted/lean/foundation-lock.json`): Pins the SHA-256 digests of the `lean`
   executable and all `Init.*` prelude source and `.olean` companion files,
   verified by both the Nix toolchain build (`flake.nix`) and `anneal-audit`.
-- **`LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`** (in
-  [`trusted/audit/src/lib.rs`](../trusted/audit/src/lib.rs)): Pins the SHA-256
-  manifest digest over all `Init`/`Std`/`Lean` `.olean`, `.olean.server`, and
-  `.olean.private` sysroot companions loaded during Phase 3 correspondence
-  auditing, and must be updated alongside `foundation-lock.json` and
-  `UPSTREAM_PIN.json` (plus `LOCKED_UPSTREAM_PIN_SHA256`) on any Lean toolchain
-  bump.
+- **`LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`**
+  (`trusted/audit/src/lib.rs`): Pins one SHA-256 digest over the sorted
+  `"{rel_path}:{sha256}"` lines of every `{Init,Std,Lean}*` `.olean`,
+  `.olean.server`, and `.olean.private` file in the pinned toolchain's
+  `lib/lean/`, verified by Pass 2 before compiling or loading `.vendorMiri`
+  and `.sysrootFoundation` modules.
 - **[`UPSTREAM_PIN.json`](../vendor/lean-miri/UPSTREAM_PIN.json)**
   (`vendor/lean-miri/UPSTREAM_PIN.json`):
   Pins the upstream commit and SHA-256 digest of every file in
-  `vendor/lean-miri/` (together with any consumer-side patch records and the
-  160-module `Miri.Interpreter.ExecutionMachine` slice), verified against
-  `LOCKED_UPSTREAM_PIN_SHA256` inside `trusted/audit/src/lib.rs`. After the
-  unmodified initial vendor import, 10 `Miri/Interpreter/*.lean` files carry
-  Anneal's human-audited opt-in `deinitMovedPlace` patch, pinned by explicit
-  `upstream_sha256`/`patched_sha256` records in `patched_files` and the closed
-  `LOCKED_PATCHED_MIRI_FILES` allowlist.
+  `vendor/lean-miri/`, the human-audited 10-file `deinitMovedPlace` patch
+  records (`upstream_sha256`/`patched_sha256` in `patched_files`, closed by
+  `LOCKED_PATCHED_MIRI_FILES` in `trusted/audit/src/lib.rs`), and the
+  160-module `Miri.Interpreter.ExecutionMachine` `.olean` digests, verified
+  against `LOCKED_UPSTREAM_PIN_SHA256` inside `trusted/audit/src/lib.rs`.
 
 Because CI and `anneal-audit` reject any mismatch against these files, changing
 a root manifest or toolchain artifact requires a corresponding diff inside

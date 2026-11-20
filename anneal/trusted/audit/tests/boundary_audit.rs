@@ -127,6 +127,99 @@ fn copy_dir_all(src: &Path, dst: &Path) -> io::Result<()> {
     Ok(())
 }
 
+/// Copies the root build files, `trusted/root-manifest.sha256`, and the Cargo
+/// workspace member crates that `check_cargo_boundary` inspects from the real
+/// checkout into `root`.
+fn copy_cargo_workspace(root: &Path) {
+    let checkout = repo_root();
+    for rel in [
+        "Cargo.toml",
+        "Cargo.lock",
+        "flake.nix",
+        "flake.lock",
+        "trusted/root-manifest.sha256",
+        "trusted/audit/Cargo.toml",
+    ] {
+        fs::copy(checkout.join(rel), root.join(rel)).unwrap();
+    }
+    for rel in ["trusted/rustc-capture", "trusted/cargo-anneal"] {
+        copy_dir_all(&checkout.join(rel), &root.join(rel)).unwrap();
+    }
+}
+
+/// Compiles `body` as `module` into `out_dir` directly with `lean --setup`,
+/// bypassing repository `"preflight"`, and registers the compiled `.olean` and
+/// its import edges with the checker's admitted toolchain so later forged
+/// modules and inspector requests can import it.
+///
+/// The setup descriptor lists `Init.Core` and every module in `imports`.
+fn compile_forged_module(
+    checker: &mut Checker,
+    src_root: &Path,
+    out_dir: &Path,
+    imports: &[&str],
+    module: &str,
+    body: &str,
+) {
+    let rel = module.replace('.', "/");
+    let src = src_root.join(format!("{rel}.lean"));
+    fs::create_dir_all(src.parent().unwrap()).unwrap();
+    fs::write(&src, body).unwrap();
+    let out = out_dir.join(format!("{rel}.olean"));
+    fs::create_dir_all(out.parent().unwrap()).unwrap();
+    let edges: Vec<ImportEdge> = ["Init.Core"]
+        .iter()
+        .chain(imports)
+        .map(|imp| ImportEdge {
+            module: (*imp).to_string(),
+            import_all: false,
+            is_exported: true,
+            is_meta: false,
+        })
+        .collect();
+    let setup_path = checker.write_setup_json(module, &edges).unwrap();
+    checker
+        .process(
+            &format!("compile-{module}"),
+            &[
+                "-j1".to_string(),
+                "-M2048".to_string(),
+                "-t0".to_string(),
+                "--setup".to_string(),
+                setup_path.to_string_lossy().into_owned(),
+                "-o".to_string(),
+                out.to_string_lossy().into_owned(),
+                src.to_string_lossy().into_owned(),
+            ],
+        )
+        .unwrap();
+    let available = BTreeMap::from([("olean", out.to_string_lossy().into_owned())]);
+    let arts = ModuleArtifacts::from_available(&available, "test", String::new).unwrap();
+    let adm = checker.admitted_mut().unwrap();
+    adm.artifacts.insert(module.to_string(), arts);
+    adm.graph.insert(module.to_string(), edges);
+}
+
+/// Writes `source` to `script` and runs it with `lean --run`.
+///
+/// Tests use such scripts to forge `.olean` files with `Lean.saveModuleData`,
+/// which serializes arbitrary `ModuleData` without elaborating or
+/// kernel-checking it, so only `TrustedBoundary.lean` can reject the result.
+fn run_lean_script(checker: &mut Checker, label: &str, script: &Path, source: &str) {
+    fs::write(script, source).unwrap();
+    checker
+        .process(
+            label,
+            &[
+                "-j1".to_string(),
+                "-M4096".to_string(),
+                "--run".to_string(),
+                script.to_string_lossy().into_owned(),
+            ],
+        )
+        .unwrap();
+}
+
 /// Verifies that an empty `Trusted.lean` importing only locked `Init.*`
 /// modules passes tool admission, preflight, compilation, and foundation
 /// kernel replay with zero `Trusted` declarations and zero reached axioms.
@@ -1056,9 +1149,9 @@ fn enforces_module_level_trust_tiers_and_namespace_hygiene() {
 
 /// Verifies that `verify_upstream_pin` and `Checker::run()` enforce
 /// `vendor/lean-miri/UPSTREAM_PIN.json` and reject whole-directory deletion,
-/// missing or tampered manifests (including before JSON parsing),
-/// modified/deleted/unlisted `.lean` and non-`.lean` files, and symlinks with
-/// policy exit code `1`.
+/// missing manifests, modified or unlisted `.lean` files, symlinks,
+/// unauthorized `patched_files`, and invalid `execution_machine_closure`
+/// entries with policy exit code `1`.
 #[test]
 fn verifies_upstream_pin_and_rejects_tampering() {
     let checkout = repo_root();
@@ -1125,7 +1218,7 @@ fn verifies_upstream_pin_and_rejects_tampering() {
     let tmp = tempfile::tempdir().unwrap();
     let vendor_copy = tmp.path().join("vendor/lean-miri");
     copy_dir_all(&checkout.join("vendor/lean-miri"), &vendor_copy).unwrap();
-    anneal_audit::verify_upstream_pin(&vendor_copy).unwrap();
+    let pin = anneal_audit::verify_upstream_pin(&vendor_copy).unwrap();
 
     // 2. Modified `.lean` file digest mismatch is rejected.
     let target_lean = vendor_copy.join("Miri.lean");
@@ -1231,9 +1324,9 @@ fn verifies_upstream_pin_and_rejects_tampering() {
         fs::remove_file(&link_path).unwrap();
     }
 
-    // 5. Modifying `UPSTREAM_PIN.json` without updating
-    // `LOCKED_UPSTREAM_PIN_SHA256` is rejected before JSON parsing (both for
-    // structured edits and malformed JSON).
+    // 5. Modifying `UPSTREAM_PIN.json` (structured edits or malformed JSON)
+    // without updating `LOCKED_UPSTREAM_PIN_SHA256` fails closed on the digest
+    // check before JSON parsing.
     let pin_path = vendor_copy.join("UPSTREAM_PIN.json");
     let orig_pin_bytes = fs::read(&pin_path).unwrap();
     let mut pin_notes_json: Json = serde_json::from_slice(&orig_pin_bytes).unwrap();
@@ -1252,13 +1345,13 @@ fn verifies_upstream_pin_and_rejects_tampering() {
     );
 
     fs::write(&pin_path, b"{not valid json").unwrap();
-    let err_bad_json_sha = anneal_audit::verify_upstream_pin(&vendor_copy).unwrap_err();
-    assert_eq!(err_bad_json_sha.code, 1);
+    let err_malformed_pin_sha = anneal_audit::verify_upstream_pin(&vendor_copy).unwrap_err();
+    assert_eq!(err_malformed_pin_sha.code, 1);
     assert!(
-        err_bad_json_sha
+        err_malformed_pin_sha
             .message
             .contains("UPSTREAM_PIN.json SHA-256 differs from locked digest"),
-        "unexpected error: {err_bad_json_sha}"
+        "expected digest check before JSON parse, got: {err_malformed_pin_sha}"
     );
 
     // 6. Missing `UPSTREAM_PIN.json` is rejected with policy exit code `1`.
@@ -1278,8 +1371,9 @@ fn verifies_upstream_pin_and_rejects_tampering() {
 /// (including a `private` declaration), declares an `axiom` or `unsafe`
 /// constant, or directly references `sorryAx`, `Lean.ofReduceBool`, or
 /// `Lean.trustCompiler`, while a benign vendor constant passes those checks
-/// and standalone kernel replay and fails only later when the
-/// `Miri.Interpreter.ExecutionMachine` cone is missing.
+/// and standalone kernel replay and fails only later at unconditional
+/// `closureCorr` (`unknown declaration origin:
+/// Miri.Interpreter.ExecutionMachine.step`).
 #[test]
 fn rejects_vendor_constants_in_reserved_namespaces() {
     let fix = TempFixture::new(None);
@@ -1438,924 +1532,6 @@ fn rejects_vendor_constants_in_reserved_namespaces() {
             }
         }
     }
-}
-
-/// Verifies the vendored `.olean` cache and compilation pipeline in
-/// [`Checker::verify_and_stage_miri_entries`]:
-/// 1. Staged source digest mismatch fails closed before consulting the cache or
-///    invoking Lean.
-/// 2. Compiled `.olean` digest mismatch fails closed and writes zero files to
-///    the cache directory (write-after-verify).
-/// 3. Cold compilation populates the cache with verified digests.
-/// 4. Digest-gated cache restore succeeds without recompiling.
-/// 5. Tampered cached `.olean` bytes are rejected (never blindly accepted),
-///    forcing recompilation and healing the cache when valid source exists.
-/// 6. Missing, mismatched, and unexpected compiled `.olean.server` /
-///    `.olean.private` sidecars all fail closed with policy exit code `1`.
-#[test]
-fn verifies_miri_cache_and_rejects_unverified_oleans() {
-    let fix = TempFixture::new(None);
-    let cache_root = tempfile::Builder::new()
-        .prefix("anneal-miri-cache-test-")
-        .tempdir()
-        .unwrap();
-    let vendor_dir = fix.root.join("fake-vendor");
-    let src_path = vendor_dir.join("Miri/Tiny.lean");
-    fs::create_dir_all(src_path.parent().unwrap()).unwrap();
-    let valid_src =
-        "prelude\nimport Init.Core\nnamespace Miri.Tiny\ndef x : Nat := 1\nend Miri.Tiny\n";
-    let valid_src_sha = sha256_bytes(valid_src.as_bytes());
-    let valid_sources = BTreeMap::from([("Miri/Tiny.lean".to_string(), valid_src_sha.clone())]);
-    fs::write(&src_path, valid_src).unwrap();
-
-    // Compile once in a probe checker to obtain the deterministic `.olean`
-    // companion digests for `Miri.Tiny`.
-    let mut probe = Checker::new(&fix.root, None).unwrap();
-    probe.set_require_mir_wp(false);
-    probe.run().unwrap();
-    let probe_out = probe.stage.join("probe-lib/Miri/Tiny.olean");
-    fs::create_dir_all(probe_out.parent().unwrap()).unwrap();
-    probe
-        .process(
-            "probe-miri-tiny",
-            &[
-                "-j1".to_string(),
-                "-M2048".to_string(),
-                "-t0".to_string(),
-                "-DElab.async=false".to_string(),
-                "-Ddebug.skipKernelTC=false".to_string(),
-                "-R".to_string(),
-                vendor_dir.to_string_lossy().into_owned(),
-                "-o".to_string(),
-                probe_out.to_string_lossy().into_owned(),
-                src_path.to_string_lossy().into_owned(),
-            ],
-        )
-        .unwrap();
-    let expected_olean = sha256_file(&probe_out, "test").unwrap();
-    let probe_server = probe.stage.join("probe-lib/Miri/Tiny.olean.server");
-    let expected_server = probe_server
-        .exists()
-        .then(|| sha256_file(&probe_server, "test").unwrap());
-    let probe_private = probe.stage.join("probe-lib/Miri/Tiny.olean.private");
-    let expected_private = probe_private
-        .exists()
-        .then(|| sha256_file(&probe_private, "test").unwrap());
-
-    let good_entry = MiriClosureEntry {
-        module: "Miri.Tiny".to_string(),
-        path: "Miri/Tiny.lean".to_string(),
-        olean_sha256: expected_olean.clone(),
-        olean_server_sha256: expected_server.clone(),
-        olean_private_sha256: expected_private.clone(),
-    };
-
-    // Case 0: Staged source SHA-256 mismatch fails closed with exit code `1`.
-    let wrong_sources = BTreeMap::from([("Miri/Tiny.lean".to_string(), "1".repeat(64))]);
-    let mut c0 = Checker::new(&fix.root, None).unwrap();
-    c0.set_require_mir_wp(false);
-    c0.run().unwrap();
-    let err_src_sha = c0
-        .verify_and_stage_miri_entries(
-            &vendor_dir,
-            std::slice::from_ref(&good_entry),
-            &wrong_sources,
-        )
-        .unwrap_err();
-    assert_eq!(err_src_sha.code, 1, "expected policy error: {err_src_sha}");
-    assert!(
-        err_src_sha
-            .message
-            .contains("staged Miri source SHA-256 mismatch for Miri/Tiny.lean"),
-        "unexpected source-mismatch error: {err_src_sha}"
-    );
-
-    // Case 1: Compiled `.olean` digest mismatch fails closed AND writes
-    // nothing into the empty cache directory (write-after-verify invariant).
-    let cache_mismatch = cache_root.path().join("cache-mismatch");
-    fs::create_dir_all(&cache_mismatch).unwrap();
-    let mut bad_entry = good_entry.clone();
-    bad_entry.olean_sha256 = "0".repeat(64);
-    let mut c1 = Checker::new(&fix.root, None).unwrap();
-    c1.set_require_mir_wp(false);
-    c1.set_miri_cache_dir(Some(cache_mismatch.clone()));
-    c1.run().unwrap();
-    let err = c1
-        .verify_and_stage_miri_entries(&vendor_dir, &[bad_entry], &valid_sources)
-        .unwrap_err();
-    assert_eq!(err.code, 1, "expected policy error: {err}");
-    assert!(
-        err.message
-            .contains("compiled Miri .olean SHA-256 mismatch for Miri.Tiny"),
-        "unexpected mismatch error: {err}"
-    );
-    assert!(
-        !cache_mismatch.join("Miri/Tiny.olean").exists(),
-        "unverified .olean must never be written to cache"
-    );
-
-    // Case 2: Cold compile verifies digests and populates the cache.
-    let cache_dir = cache_root.path().join("cache-live");
-    fs::create_dir_all(&cache_dir).unwrap();
-    let mut c2 = Checker::new(&fix.root, None).unwrap();
-    c2.set_require_mir_wp(false);
-    c2.set_miri_cache_dir(Some(cache_dir.clone()));
-    c2.run().unwrap();
-    c2.verify_and_stage_miri_entries(
-        &vendor_dir,
-        std::slice::from_ref(&good_entry),
-        &valid_sources,
-    )
-    .unwrap();
-    let cached_olean = cache_dir.join("Miri/Tiny.olean");
-    assert_eq!(
-        sha256_file(&cached_olean, "test").unwrap(),
-        expected_olean,
-        "cached .olean digest must match verified output"
-    );
-
-    // Case 3: Digest-gated cache hit restores `.olean` without compiling
-    // source (proven by temporarily replacing source with invalid Lean while
-    // updating the expected source digest so staging succeeds).
-    let invalid_src = "this is intentionally invalid lean syntax !!!\n";
-    let invalid_sources = BTreeMap::from([(
-        "Miri/Tiny.lean".to_string(),
-        sha256_bytes(invalid_src.as_bytes()),
-    )]);
-    fs::write(&src_path, invalid_src).unwrap();
-    let mut c3 = Checker::new(&fix.root, None).unwrap();
-    c3.set_require_mir_wp(false);
-    c3.set_miri_cache_dir(Some(cache_dir.clone()));
-    c3.run().unwrap();
-    c3.verify_and_stage_miri_entries(
-        &vendor_dir,
-        std::slice::from_ref(&good_entry),
-        &invalid_sources,
-    )
-    .unwrap();
-
-    // Case 4a: Tampered cached `.olean` is rejected (cannot serve cache hit;
-    // with invalid source present, fallback compilation fails closed).
-    let mut bytes = fs::read(&cached_olean).unwrap();
-    bytes[0] ^= 0xFF;
-    fs::write(&cached_olean, &bytes).unwrap();
-    let mut c4a = Checker::new(&fix.root, None).unwrap();
-    c4a.set_require_mir_wp(false);
-    c4a.set_miri_cache_dir(Some(cache_dir.clone()));
-    c4a.run().unwrap();
-    let err_tampered = c4a
-        .verify_and_stage_miri_entries(
-            &vendor_dir,
-            std::slice::from_ref(&good_entry),
-            &invalid_sources,
-        )
-        .unwrap_err();
-    assert!(
-        err_tampered.phase.contains("compile-Miri.Tiny"),
-        "tampered cached .olean must trigger recompile, got: {err_tampered}"
-    );
-
-    // Case 4b: With valid source restored, tampered cache entry is bypassed,
-    // recompiled, re-verified, and healed on disk.
-    fs::write(&src_path, valid_src).unwrap();
-    let mut c4b = Checker::new(&fix.root, None).unwrap();
-    c4b.set_require_mir_wp(false);
-    c4b.set_miri_cache_dir(Some(cache_dir.clone()));
-    c4b.run().unwrap();
-    c4b.verify_and_stage_miri_entries(
-        &vendor_dir,
-        std::slice::from_ref(&good_entry),
-        &valid_sources,
-    )
-    .unwrap();
-    assert_eq!(
-        sha256_file(&cached_olean, "test").unwrap(),
-        expected_olean,
-        "healed cache entry must match pinned digest"
-    );
-
-    // Case 5: Missing expected `.olean.server` sidecar fails closed without
-    // contaminating a fresh cache directory.
-    let cache_sidecar = cache_root.path().join("cache-sidecar");
-    fs::create_dir_all(&cache_sidecar).unwrap();
-    let mut bad_sidecar = good_entry;
-    bad_sidecar.olean_server_sha256 = Some("f".repeat(64));
-    let mut c5 = Checker::new(&fix.root, None).unwrap();
-    c5.set_require_mir_wp(false);
-    c5.set_miri_cache_dir(Some(cache_sidecar.clone()));
-    c5.run().unwrap();
-    let err_sidecar = c5
-        .verify_and_stage_miri_entries(&vendor_dir, &[bad_sidecar], &valid_sources)
-        .unwrap_err();
-    assert_eq!(err_sidecar.code, 1, "expected policy error: {err_sidecar}");
-    assert!(
-        err_sidecar
-            .message
-            .contains("missing compiled Miri .olean.server sidecar for Miri.Tiny"),
-        "unexpected missing-sidecar error: {err_sidecar}"
-    );
-    assert!(
-        !cache_sidecar.join("Miri/Tiny.olean").exists(),
-        "sidecar mismatch must not write to cache"
-    );
-
-    // Case 6: Unexpected compiled `.olean.server` / `.olean.private` sidecar
-    // (present on disk when `UPSTREAM_PIN.json` expects `None`) and sidecar
-    // SHA-256 mismatch both fail closed with policy exit code `1`.
-    let mod_path = vendor_dir.join("Miri/WithSidecar.lean");
-    let mod_src = "module\nprelude\npublic import Init.Core\n\
-                   namespace Miri.WithSidecar\npublic def x : Nat := 1\n\
-                   end Miri.WithSidecar\n";
-    let mod_sources = BTreeMap::from([(
-        "Miri/WithSidecar.lean".to_string(),
-        sha256_bytes(mod_src.as_bytes()),
-    )]);
-    fs::write(&mod_path, mod_src).unwrap();
-    let probe_mod_out = probe.stage.join("probe-lib/Miri/WithSidecar.olean");
-    probe
-        .process(
-            "probe-miri-sidecar",
-            &[
-                "-j1".to_string(),
-                "-M2048".to_string(),
-                "-t0".to_string(),
-                "-DElab.async=false".to_string(),
-                "-Ddebug.skipKernelTC=false".to_string(),
-                "-R".to_string(),
-                vendor_dir.to_string_lossy().into_owned(),
-                "-o".to_string(),
-                probe_mod_out.to_string_lossy().into_owned(),
-                mod_path.to_string_lossy().into_owned(),
-            ],
-        )
-        .unwrap();
-    let mod_olean = sha256_file(&probe_mod_out, "test").unwrap();
-    let mod_server = probe.stage.join("probe-lib/Miri/WithSidecar.olean.server");
-    let mod_private = probe.stage.join("probe-lib/Miri/WithSidecar.olean.private");
-    assert!(
-        mod_server.exists(),
-        "Lean `module` fixture must emit .olean.server to exercise sidecar checks"
-    );
-    let mod_server_sha = sha256_file(&mod_server, "test").unwrap();
-    let mod_private_sha = mod_private
-        .exists()
-        .then(|| sha256_file(&mod_private, "test").unwrap());
-
-    // 6a. Unexpected `.olean.server` when entry expects `None`.
-    let unexpected_server = MiriClosureEntry {
-        module: "Miri.WithSidecar".to_string(),
-        path: "Miri/WithSidecar.lean".to_string(),
-        olean_sha256: mod_olean.clone(),
-        olean_server_sha256: None,
-        olean_private_sha256: mod_private_sha.clone(),
-    };
-    let mut c6a = Checker::new(&fix.root, None).unwrap();
-    c6a.set_require_mir_wp(false);
-    c6a.run().unwrap();
-    let err_unexpected_server = c6a
-        .verify_and_stage_miri_entries(&vendor_dir, &[unexpected_server], &mod_sources)
-        .unwrap_err();
-    assert_eq!(
-        err_unexpected_server.code, 1,
-        "expected policy error: {err_unexpected_server}"
-    );
-    assert!(
-        err_unexpected_server
-            .message
-            .contains("unexpected Miri .olean.server sidecar for Miri.WithSidecar"),
-        "unexpected sidecar error: {err_unexpected_server}"
-    );
-
-    // 6b. Mismatched `.olean.server` SHA-256 when entry expects `Some(...)`.
-    let mismatched_server = MiriClosureEntry {
-        module: "Miri.WithSidecar".to_string(),
-        path: "Miri/WithSidecar.lean".to_string(),
-        olean_sha256: mod_olean.clone(),
-        olean_server_sha256: Some("e".repeat(64)),
-        olean_private_sha256: mod_private_sha.clone(),
-    };
-    let mut c6b = Checker::new(&fix.root, None).unwrap();
-    c6b.set_require_mir_wp(false);
-    c6b.run().unwrap();
-    let err_mismatched_server = c6b
-        .verify_and_stage_miri_entries(&vendor_dir, &[mismatched_server], &mod_sources)
-        .unwrap_err();
-    assert_eq!(
-        err_mismatched_server.code, 1,
-        "expected policy error: {err_mismatched_server}"
-    );
-    assert!(
-        err_mismatched_server
-            .message
-            .contains("compiled Miri .olean.server SHA-256 mismatch for Miri.WithSidecar"),
-        "unexpected sidecar-mismatch error: {err_mismatched_server}"
-    );
-
-    // 6c. Unexpected `.olean.private` when emitted and entry expects `None`.
-    if mod_private_sha.is_some() {
-        let unexpected_private = MiriClosureEntry {
-            module: "Miri.WithSidecar".to_string(),
-            path: "Miri/WithSidecar.lean".to_string(),
-            olean_sha256: mod_olean,
-            olean_server_sha256: Some(mod_server_sha),
-            olean_private_sha256: None,
-        };
-        let mut c6c = Checker::new(&fix.root, None).unwrap();
-        c6c.set_require_mir_wp(false);
-        c6c.run().unwrap();
-        let err_unexpected_private = c6c
-            .verify_and_stage_miri_entries(&vendor_dir, &[unexpected_private], &mod_sources)
-            .unwrap_err();
-        assert_eq!(
-            err_unexpected_private.code, 1,
-            "expected policy error: {err_unexpected_private}"
-        );
-        assert!(
-            err_unexpected_private
-                .message
-                .contains("unexpected Miri .olean.private sidecar for Miri.WithSidecar"),
-            "unexpected private-sidecar error: {err_unexpected_private}"
-        );
-    }
-}
-
-/// Verifies that `--miri-cache-dir` / `Checker::set_miri_cache_dir` rejects
-/// any cache directory located inside (or resolving inside) the repository
-/// checkout as a policy error (exit code `1`), including non-existent paths,
-/// parent traversals, and symlinks, while allowing sibling directories outside
-/// the checkout.
-#[test]
-fn rejects_miri_cache_dir_inside_checkout() {
-    let fix = TempFixture::new(None);
-    let outside = tempfile::Builder::new()
-        .prefix("anneal-miri-outside-")
-        .tempdir()
-        .unwrap();
-
-    let existing_inside = fix.root.join("existing-cache");
-    fs::create_dir_all(&existing_inside).unwrap();
-    let nonexistent_inside = fix.root.join(".evil-cache/nested");
-    let traversed_inside = fix.root.join("sub/../.evil-cache");
-
-    let link_into_checkout = outside.path().join("link-in");
-    symlink(&existing_inside, &link_into_checkout).unwrap();
-    let link_into_nested = link_into_checkout.join("deep");
-
-    let dangling_into_checkout = outside.path().join("dangling-in");
-    symlink(fix.root.join("does-not-exist"), &dangling_into_checkout).unwrap();
-
-    let real_outside_cache = outside.path().join("real-cache");
-    fs::create_dir_all(&real_outside_cache).unwrap();
-    let link_out_of_checkout = fix.root.join("link-out");
-    symlink(&real_outside_cache, &link_out_of_checkout).unwrap();
-
-    let bad_paths = [
-        fix.root.clone(),
-        existing_inside,
-        nonexistent_inside,
-        traversed_inside,
-        link_into_checkout,
-        link_into_nested,
-        dangling_into_checkout,
-        link_out_of_checkout,
-    ];
-    for bad in &bad_paths {
-        let mut checker = Checker::new(&fix.root, None).unwrap();
-        checker.set_miri_cache_dir(Some(bad.clone()));
-        let err = checker.run().unwrap_err();
-        assert_eq!(
-            err.code,
-            1,
-            "expected policy error for {}: {err}",
-            bad.display()
-        );
-        assert_eq!(
-            err.phase,
-            "miri-pin",
-            "unexpected phase for {}: {err}",
-            bad.display()
-        );
-        assert!(
-            !checker.execution_began,
-            "Lean execution must not begin when cache dir is inside checkout: {}",
-            bad.display()
-        );
-    }
-
-    // Sibling path sharing a string prefix with `checkout` is outside the
-    // checkout and must be accepted by containment validation.
-    let sibling_parent = outside.path().join("parent");
-    let fake_repo = sibling_parent.join("repo");
-    let sibling_cache = sibling_parent.join("repo-cache");
-    fs::create_dir_all(&fake_repo).unwrap();
-    ensure_miri_cache_outside_checkout(&fake_repo, &sibling_cache).unwrap();
-
-    // Verify end-to-end CLI rejection with exit code `1`.
-    let output = Command::new(env!("CARGO_BIN_EXE_anneal-audit"))
-        .env_clear()
-        .arg("--anneal-root")
-        .arg(&fix.root)
-        .arg("--miri-cache-dir")
-        .arg(fix.root.join(".evil-cache"))
-        .output()
-        .unwrap();
-    assert_eq!(
-        output.status.code(),
-        Some(1),
-        "expected exit code 1 from CLI: {output:?}"
-    );
-    let stderr = String::from_utf8_lossy(&output.stderr);
-    assert!(
-        stderr.contains("Miri .olean cache directory must reside outside the repository checkout"),
-        "unexpected CLI stderr: {stderr}"
-    );
-}
-
-/// Verifies negative cases for correspondence-audit rules in
-/// `TrustedBoundary.lean` (`classifyCorrModules`, `checkCorrTierReferences`,
-/// and `closureCorr` unapproved-axiom rejection) and for toolchain sysroot
-/// manifest authentication (`verify_sysroot_foundation_dir`).
-#[test]
-fn rejects_correspondence_audit_violations_and_sysroot_mismatch() {
-    let fix = TempFixture::new(None);
-
-    // 1. Sysroot manifest mismatch & symlink rejection.
-    let fake_lib = fix.root.join("fake-sysroot-lib");
-    for pkg in ["Init", "Std", "Lean"] {
-        fs::create_dir_all(fake_lib.join(pkg)).unwrap();
-    }
-    fs::write(fake_lib.join("Init/Dummy.olean"), b"dummy-olean").unwrap();
-    let err_sysroot =
-        verify_sysroot_foundation_dir(&fake_lib, &BTreeSet::new(), &"0".repeat(64)).unwrap_err();
-    assert_eq!(err_sysroot.phase, "sysroot-foundation");
-    assert!(
-        err_sysroot
-            .message
-            .contains("sysroot Init/Std/Lean .olean manifest SHA-256 mismatch"),
-        "unexpected sysroot mismatch error: {err_sysroot}"
-    );
-    symlink(
-        fake_lib.join("Init/Dummy.olean"),
-        fake_lib.join("Std/Link.olean"),
-    )
-    .unwrap();
-    let err_sym =
-        verify_sysroot_foundation_dir(&fake_lib, &BTreeSet::new(), &"0".repeat(64)).unwrap_err();
-    assert!(
-        err_sym.message.contains("symlink forbidden in sysroot"),
-        "unexpected sysroot symlink error: {err_sym}"
-    );
-
-    // Prepare compiled synthetic modules for `TrustedBoundary.lean`
-    // `"correspondence-audit"` negative cases.
-    let mut checker = Checker::new(&fix.root, None).unwrap();
-    checker.set_require_mir_wp(false);
-    checker.run().unwrap();
-    let trusted_lib = checker.stage.join("lib");
-    let aux_src = checker.stage.join("src/corr-neg");
-    let aux_path = env::join_paths([&trusted_lib]).unwrap();
-
-    let compile_aux = |chk: &mut Checker, module: &str, body: &str| {
-        let rel = module.replace('.', "/");
-        let src = aux_src.join(format!("{rel}.lean"));
-        fs::create_dir_all(src.parent().unwrap()).unwrap();
-        fs::write(&src, body).unwrap();
-        let out = trusted_lib.join(format!("{rel}.olean"));
-        fs::create_dir_all(out.parent().unwrap()).unwrap();
-        chk.process_with_path(
-            &format!("compile-{module}"),
-            &[
-                "-j1".to_string(),
-                "-M2048".to_string(),
-                "-t0".to_string(),
-                "-R".to_string(),
-                aux_src.to_string_lossy().into_owned(),
-                "-o".to_string(),
-                out.to_string_lossy().into_owned(),
-                src.to_string_lossy().into_owned(),
-            ],
-            Some(&aux_path),
-        )
-        .unwrap();
-    };
-
-    compile_aux(
-        &mut checker,
-        "Miri.Child",
-        "prelude\nimport Init.Core\nnamespace Miri.Child\ndef c : Nat := 1\nend Miri.Child\n",
-    );
-    compile_aux(
-        &mut checker,
-        "Miri.Parent",
-        "prelude\nimport Init.Core\nimport Miri.Child\n\
-         namespace Miri.Parent\ndef p : Nat := Miri.Child.c\nend Miri.Parent\n",
-    );
-    compile_aux(
-        &mut checker,
-        "Trusted.CandHelper",
-        "prelude\nimport Init.Core\nnamespace Trusted.CandHelper\ndef h : Nat := 1\nend Trusted.CandHelper\n",
-    );
-    compile_aux(
-        &mut checker,
-        "Trusted.VettedRefsCand",
-        "prelude\nimport Init.Core\nimport Trusted.CandHelper\n\
-         namespace Trusted.VettedRefsCand\ndef x : Nat := Trusted.CandHelper.h\nend Trusted.VettedRefsCand\n",
-    );
-    compile_aux(
-        &mut checker,
-        "Trusted.VettedRefsMiri",
-        "prelude\nimport Init.Core\nimport Miri.Child\n\
-         namespace Trusted.VettedRefsMiri\ndef x : Nat := Miri.Child.c\nend Trusted.VettedRefsMiri\n",
-    );
-    compile_aux(
-        &mut checker,
-        "Anneal.Helper",
-        "prelude\nimport Init.Core\nnamespace Anneal.Helper\ndef t : Nat := 2\nend Anneal.Helper\n",
-    );
-    compile_aux(
-        &mut checker,
-        "Trusted.CandRefsTheory",
-        "prelude\nimport Init.Core\nimport Anneal.Helper\n\
-         namespace Trusted.CandRefsTheory\ndef x : Nat := Anneal.Helper.t\nend Trusted.CandRefsTheory\n",
-    );
-    compile_aux(
-        &mut checker,
-        "Miri.Interpreter.ExecutionMachine",
-        "prelude\nimport Init.Core\n\
-         namespace Miri.Interpreter.ExecutionMachine\n\
-         theorem step : (True ↔ True) → True = True := propext\n\
-         end Miri.Interpreter.ExecutionMachine\n",
-    );
-
-    let search = vec![trusted_lib];
-
-    // 2a. `classifyCorrModules`: overlapping module role.
-    let err_overlap = checker
-        .inspect(InspectorRequest::CorrespondenceAudit {
-            search_path: search.clone(),
-            trusted: vec!["Trusted".to_string()],
-            corr_trusted: Vec::new(),
-            theory: Vec::new(),
-            corr_theory: Vec::new(),
-            vendor_miri: vec!["Trusted".to_string()],
-            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
-        })
-        .unwrap_err();
-    assert!(
-        err_overlap
-            .message
-            .contains("overlapping module role for Trusted"),
-        "unexpected overlap error: {err_overlap}"
-    );
-
-    // 2b. `classifyCorrModules`: missing trust tier for Trusted module.
-    let err_missing_tier = checker
-        .inspect(InspectorRequest::CorrespondenceAudit {
-            search_path: search.clone(),
-            trusted: vec!["Trusted".to_string()],
-            corr_trusted: Vec::new(),
-            theory: Vec::new(),
-            corr_theory: Vec::new(),
-            vendor_miri: vec!["Miri.Child".to_string()],
-            module_tiers: BTreeMap::new(),
-        })
-        .unwrap_err();
-    assert!(
-        err_missing_tier
-            .message
-            .contains("missing trust tier for Trusted module Trusted"),
-        "unexpected missing-tier error: {err_missing_tier}"
-    );
-
-    // 2c. `classifyCorrModules`: trust tier declared for non-Trusted module.
-    let err_non_trusted_tier = checker
-        .inspect(InspectorRequest::CorrespondenceAudit {
-            search_path: search.clone(),
-            trusted: vec!["Trusted".to_string()],
-            corr_trusted: Vec::new(),
-            theory: Vec::new(),
-            corr_theory: Vec::new(),
-            vendor_miri: vec!["Miri.Child".to_string()],
-            module_tiers: BTreeMap::from([
-                ("Trusted".to_string(), TrustTier::Vetted),
-                ("Miri.Child".to_string(), TrustTier::Vetted),
-            ]),
-        })
-        .unwrap_err();
-    assert!(
-        err_non_trusted_tier
-            .message
-            .contains("trust tier declared for non-Trusted module Miri.Child"),
-        "unexpected non-trusted-tier error: {err_non_trusted_tier}"
-    );
-
-    // 2d. `classifyCorrModules`: foreign module in correspondence environment
-    // (`Miri.Parent` imports unlisted `Miri.Child`).
-    let err_foreign = checker
-        .inspect(InspectorRequest::CorrespondenceAudit {
-            search_path: search.clone(),
-            trusted: vec!["Trusted".to_string()],
-            corr_trusted: Vec::new(),
-            theory: Vec::new(),
-            corr_theory: Vec::new(),
-            vendor_miri: vec!["Miri.Parent".to_string()],
-            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
-        })
-        .unwrap_err();
-    assert!(
-        err_foreign
-            .message
-            .contains("foreign module Miri.Child in correspondence environment"),
-        "unexpected foreign-module error: {err_foreign}"
-    );
-
-    // 3a. `checkCorrTierReferences`: vetted -> candidate.
-    let err_vetted_cand = checker
-        .inspect(InspectorRequest::CorrespondenceAudit {
-            search_path: search.clone(),
-            trusted: vec![
-                "Trusted".to_string(),
-                "Trusted.CandHelper".to_string(),
-                "Trusted.VettedRefsCand".to_string(),
-            ],
-            corr_trusted: Vec::new(),
-            theory: Vec::new(),
-            corr_theory: Vec::new(),
-            vendor_miri: vec!["Miri.Child".to_string()],
-            module_tiers: BTreeMap::from([
-                ("Trusted".to_string(), TrustTier::Vetted),
-                (
-                    "Trusted.CandHelper".to_string(),
-                    TrustTier::Candidate(CandidateFeature::MirSemantics),
-                ),
-                ("Trusted.VettedRefsCand".to_string(), TrustTier::Vetted),
-            ]),
-        })
-        .unwrap_err();
-    assert!(
-        err_vetted_cand.message.contains(
-            "vetted constant Trusted.VettedRefsCand.x references candidate:mir_semantics constant"
-        ),
-        "unexpected vetted->cand error: {err_vetted_cand}"
-    );
-
-    // 3b. `checkCorrTierReferences`: vetted -> vendorMiri.
-    let err_vetted_miri = checker
-        .inspect(InspectorRequest::CorrespondenceAudit {
-            search_path: search.clone(),
-            trusted: vec!["Trusted".to_string(), "Trusted.VettedRefsMiri".to_string()],
-            corr_trusted: Vec::new(),
-            theory: Vec::new(),
-            corr_theory: Vec::new(),
-            vendor_miri: vec!["Miri.Child".to_string()],
-            module_tiers: BTreeMap::from([
-                ("Trusted".to_string(), TrustTier::Vetted),
-                ("Trusted.VettedRefsMiri".to_string(), TrustTier::Vetted),
-            ]),
-        })
-        .unwrap_err();
-    assert!(
-        err_vetted_miri.message.contains(
-            "vetted constant Trusted.VettedRefsMiri.x references non-foundation constant Miri.Child.c"
-        ),
-        "unexpected vetted->miri error: {err_vetted_miri}"
-    );
-
-    // 3c. `checkCorrTierReferences`: candidate Trusted -> theory.
-    let err_cand_theory = checker
-        .inspect(InspectorRequest::CorrespondenceAudit {
-            search_path: search.clone(),
-            trusted: vec!["Trusted".to_string(), "Trusted.CandRefsTheory".to_string()],
-            corr_trusted: Vec::new(),
-            theory: vec!["Anneal.Helper".to_string()],
-            corr_theory: Vec::new(),
-            vendor_miri: vec!["Miri.Child".to_string()],
-            module_tiers: BTreeMap::from([
-                ("Trusted".to_string(), TrustTier::Vetted),
-                (
-                    "Trusted.CandRefsTheory".to_string(),
-                    TrustTier::Candidate(CandidateFeature::MirSemantics),
-                ),
-            ]),
-        })
-        .unwrap_err();
-    assert!(
-        err_cand_theory.message.contains(
-            "Trusted constant Trusted.CandRefsTheory.x references Anneal.Helper.t from non-Trusted module Anneal.Helper"
-        ),
-        "unexpected cand->theory error: {err_cand_theory}"
-    );
-
-    // 4. `closureCorr`: reachable unapproved axiom (`propext` from `Init.Core`
-    // when omitted from the axiom allowlist) rejected after passing
-    // `verifyAndCollectCorrLocals` and standalone kernel replay.
-    checker
-        .admitted_mut()
-        .unwrap()
-        .axioms
-        .retain(|(ax, _)| ax != "propext");
-    let err_axiom = checker
-        .inspect(InspectorRequest::CorrespondenceAudit {
-            search_path: search,
-            trusted: vec!["Trusted".to_string()],
-            corr_trusted: Vec::new(),
-            theory: Vec::new(),
-            corr_theory: Vec::new(),
-            vendor_miri: vec!["Miri.Interpreter.ExecutionMachine".to_string()],
-            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
-        })
-        .unwrap_err();
-    assert!(
-        err_axiom
-            .message
-            .contains("unapproved axiom propext from Init.Core"),
-        "unexpected unapproved-axiom error: {err_axiom}"
-    );
-}
-
-/// Verifies end-to-end that standalone kernel replay in Phase 3
-/// (`"correspondence-audit"`) rejects an ill-typed `.vendorMiri` `.olean`
-/// compiled with a scoped `set_option debug.skipKernelTC true` override (even
-/// when compiled with CLI `-Ddebug.skipKernelTC=false`), and that a valid
-/// minimal vendor closure passes replay and reports `miriReplay: true` with a
-/// positive `miriReplayedDeclarations` count.
-#[test]
-fn rejects_vendor_miri_skip_kernel_tc_during_replay() {
-    let fix = TempFixture::new(None);
-    let mut checker = Checker::new(&fix.root, None).unwrap();
-    checker.set_require_mir_wp(false);
-    checker.run().unwrap();
-    let trusted_lib = checker.stage.join("lib");
-    let vendor_src = checker.stage.join("src/skip-tc-miri");
-    let vendor_lib = checker.stage.join("skip-tc-miri-lib");
-
-    // 1. Compile a vendor module whose scoped `set_option debug.skipKernelTC
-    // true` overrides CLI `-Ddebug.skipKernelTC=false` to emit an ill-typed
-    // theorem (`Miri.SkipKernelTC.bogus : False := True.intro`) into the
-    // `.olean` without using `axiom`, `sorryAx`, `unsafe`, or compiler
-    // reflection primitives.
-    let bogus_src = vendor_src.join("Miri/SkipKernelTC.lean");
-    let bogus_out = vendor_lib.join("Miri/SkipKernelTC.olean");
-    fs::create_dir_all(bogus_src.parent().unwrap()).unwrap();
-    fs::create_dir_all(bogus_out.parent().unwrap()).unwrap();
-    fs::write(
-        &bogus_src,
-        "import Lean.Elab.Command\n\
-         namespace Miri.SkipKernelTC\n\
-         set_option debug.skipKernelTC true in\n\
-         run_cmd\n\
-           Lean.Elab.Command.liftCoreM <| Lean.addDecl <| .thmDecl {\n\
-             name := `Miri.SkipKernelTC.bogus\n\
-             levelParams := []\n\
-             type := Lean.mkConst `False\n\
-             value := Lean.mkConst `True.intro\n\
-           }\n\
-         end Miri.SkipKernelTC\n",
-    )
-    .unwrap();
-    checker
-        .process(
-            "compile-Miri.SkipKernelTC",
-            &[
-                "-j1".to_string(),
-                "-M2048".to_string(),
-                "-t0".to_string(),
-                "-DElab.async=false".to_string(),
-                "-Ddebug.skipKernelTC=false".to_string(),
-                "-R".to_string(),
-                vendor_src.to_string_lossy().into_owned(),
-                "-o".to_string(),
-                bogus_out.to_string_lossy().into_owned(),
-                bogus_src.to_string_lossy().into_owned(),
-            ],
-        )
-        .expect(
-            "Lean must accept scoped `set_option debug.skipKernelTC true` \
-             at compile time to prove CLI `-Ddebug.skipKernelTC=false` alone \
-             is insufficient",
-        );
-
-    let err_replay = checker
-        .inspect(InspectorRequest::CorrespondenceAudit {
-            search_path: vec![trusted_lib.clone(), vendor_lib.clone()],
-            trusted: vec!["Trusted".to_string()],
-            corr_trusted: Vec::new(),
-            theory: Vec::new(),
-            corr_theory: Vec::new(),
-            vendor_miri: vec!["Miri.SkipKernelTC".to_string()],
-            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
-        })
-        .unwrap_err();
-    assert_eq!(
-        err_replay.code, 1,
-        "expected policy exit code 1 on replay rejection: {err_replay}"
-    );
-    assert_eq!(
-        err_replay.phase, "correspondence-audit",
-        "unexpected phase: {err_replay}"
-    );
-    assert!(
-        err_replay
-            .message
-            .contains("vendor Miri kernel replay failed")
-            && err_replay.message.contains("Miri.SkipKernelTC.bogus")
-            && err_replay.message.contains("declaration type mismatch"),
-        "expected kernel replay type-mismatch rejection, got: {err_replay}"
-    );
-
-    // 2. Verify the positive path: a valid minimal `.vendorMiri` module
-    // defining the 21 `ExecutionMachine` cone roots passes standalone kernel
-    // replay and returns `miriReplay: true` with `miriReplayedDeclarations`
-    // positive.
-    let valid_src = vendor_src.join("Miri/Interpreter/ExecutionMachine.lean");
-    let valid_out = vendor_lib.join("Miri/Interpreter/ExecutionMachine.olean");
-    fs::create_dir_all(valid_src.parent().unwrap()).unwrap();
-    fs::create_dir_all(valid_out.parent().unwrap()).unwrap();
-    fs::write(
-        &valid_src,
-        "prelude\n\
-         import Init.Core\n\
-         namespace Miri.Interpreter.ExecutionMachine\n\
-         def step : Nat := 0\n\
-         def withValidation : Nat := 0\n\
-         def operandHooks : Nat := 0\n\
-         end Miri.Interpreter.ExecutionMachine\n\
-         namespace Miri.Interpreter.IntegerOps\n\
-         def binary : Nat := 0\n\
-         def binaryBool : Nat := 0\n\
-         def unary : Nat := 0\n\
-         end Miri.Interpreter.IntegerOps\n\
-         namespace Miri.Memory.ScalarInt\n\
-         def truncateFromUInt : Nat := 0\n\
-         def tryFromUInt : Nat := 0\n\
-         def tryToBool : Nat := 0\n\
-         end Miri.Memory.ScalarInt\n\
-         namespace Miri.Interpreter\n\
-         def evalOperand : Nat := 0\n\
-         def evalPlaceToOp : Nat := 0\n\
-         def localToOp : Nat := 0\n\
-         def placeWriteLocalImmediate : Nat := 0\n\
-         def evalRvalueIntoPlace : Nat := 0\n\
-         def runRvalue : Nat := 0\n\
-         end Miri.Interpreter\n\
-         namespace Miri.Interpreter.Step\n\
-         def evalStatement : Nat := 0\n\
-         end Miri.Interpreter.Step\n\
-         namespace Miri.Interpreter.Frame\n\
-         def storageLive : Nat := 0\n\
-         def storageDead : Nat := 0\n\
-         end Miri.Interpreter.Frame\n\
-         namespace Miri.Interpreter.ControlFlow\n\
-         def goToBlock : Nat := 0\n\
-         def evalTerminator : Nat := 0\n\
-         def returnFromCurrentFrame : Nat := 0\n\
-         end Miri.Interpreter.ControlFlow\n",
-    )
-    .unwrap();
-    checker
-        .process(
-            "compile-Miri.Interpreter.ExecutionMachine",
-            &[
-                "-j1".to_string(),
-                "-M2048".to_string(),
-                "-t0".to_string(),
-                "-DElab.async=false".to_string(),
-                "-Ddebug.skipKernelTC=false".to_string(),
-                "-R".to_string(),
-                vendor_src.to_string_lossy().into_owned(),
-                "-o".to_string(),
-                valid_out.to_string_lossy().into_owned(),
-                valid_src.to_string_lossy().into_owned(),
-            ],
-        )
-        .unwrap();
-
-    let ok_rep = checker
-        .inspect(InspectorRequest::CorrespondenceAudit {
-            search_path: vec![trusted_lib, vendor_lib],
-            trusted: vec!["Trusted".to_string()],
-            corr_trusted: Vec::new(),
-            theory: Vec::new(),
-            corr_theory: Vec::new(),
-            vendor_miri: vec!["Miri.Interpreter.ExecutionMachine".to_string()],
-            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
-        })
-        .unwrap();
-    assert_eq!(ok_rep.get("miriReplay"), Some(&json!(true)));
-    assert_eq!(
-        ok_rep
-            .get("miriReplayedDeclarations")
-            .and_then(Json::as_u64),
-        Some(21)
-    );
-    assert!(
-        ok_rep
-            .get("miriClosureReachableDeclarations")
-            .and_then(Json::as_u64)
-            .is_some_and(|n| n >= 21),
-        "unexpected reachable declarations: {ok_rep}"
-    );
-    assert_eq!(ok_rep.get("miriClosureAxioms"), Some(&json!([])));
 }
 
 /// Verifies that cold `vendor/lean-miri/` compilation runs inside an OS-level
@@ -3109,11 +2285,11 @@ fn enforces_mir_wp_non_backsliding() {
     );
 }
 
-/// Verifies every rejection branch of `requireParamClaimProof` in
-/// `TrustedBoundary.lean` (missing theorem, non-theorem proof, wrong-module
-/// proof, weakened/wrong-type proof, non-definition claim, wrong-module claim,
-/// and claim bodies missing required semantic constants) against a passing
-/// synthetic baseline.
+/// Verifies every rejection branch of `requireClaimProof` (parameterized mode,
+/// `argName? = some _`) in `TrustedBoundary.lean` (missing claim, missing
+/// theorem, non-theorem proof, wrong-module proof, weakened/wrong-type proof,
+/// non-definition claim, wrong-module claim, and claim bodies missing required
+/// semantic constants) against a passing synthetic baseline.
 #[test]
 fn enforces_mir_wp_param_claim_proof_rules() {
     // Baseline: the unmutated synthetic fixture passes with default
@@ -3122,6 +2298,13 @@ fn enforces_mir_wp_param_claim_proof_rules() {
     let mut checker = Checker::new(&baseline.root, None).unwrap();
     let report = checker.run().unwrap();
     assert_eq!(report.get("replay"), Some(&json!(true)));
+
+    // Missing `WpSoundnessClaim` from `Trusted.MirSemantics`.
+    let mut missing_wp_claim = MirWpSyntheticSpec::valid();
+    missing_wp_claim.wp_soundness_claim = None;
+    missing_wp_claim.wp_soundness_proof = None;
+    missing_wp_claim
+        .expect_audit_policy_err("missing required claim Trusted.MirSemantics.WpSoundnessClaim");
 
     // Missing `wellFormed_and_spec_of_wp`.
     let mut missing_wp_thm = MirWpSyntheticSpec::valid();
@@ -3200,7 +2383,7 @@ fn enforces_mir_wp_param_claim_proof_rules() {
     );
 
     // Claim body missing required `SatisfiesPost` reference
-    // (`TrustedBoundary.lean` `requireParamClaimProof` `reqConsts` check).
+    // (`TrustedBoundary.lean` `requireClaimProof` `reqConsts` check).
     let mut missing_req_const = MirWpSyntheticSpec::valid();
     missing_req_const.wp_soundness_claim =
         Some("def WpSoundnessClaim (_f : Nat) : Prop := And Diverges Behavior".to_string());
@@ -3264,11 +2447,11 @@ fn enforces_mir_wp_param_claim_proof_rules() {
     );
 }
 
-/// Verifies every rejection branch of `requireExactClaimProof` in
-/// `TrustedBoundary.lean` across the 15 canary claims (missing claim,
-/// non-definition claim, wrong-module claim, non-`Prop` claim, claim body
-/// missing required constant, missing canary theorem, non-theorem proof,
-/// wrong-module proof, and weakened/wrong-type canary theorem).
+/// Verifies every rejection branch of `requireClaimProof` (exact-claim mode,
+/// `argName? = none`) in `TrustedBoundary.lean` across the 15 canary claims
+/// (missing claim, non-definition claim, wrong-module claim, non-`Prop` claim,
+/// claim body missing required constant, missing canary theorem, non-theorem
+/// proof, wrong-module proof, and weakened/wrong-type canary theorem).
 #[test]
 fn enforces_mir_wp_canary_claim_proof_rules() {
     // Missing canary claim from `Trusted.MirSemantics`.
@@ -3319,7 +2502,7 @@ fn enforces_mir_wp_canary_claim_proof_rules() {
     );
 
     // Canary claim declared inside `Anneal.MirWp` (rejected fail-closed by
-    // `Trusted` namespace isolation in `validateLocalConstant`).
+    // `Trusted` namespace isolation in `validateRepoConstant`).
     let mut claim_in_theory = MirWpSyntheticSpec::valid();
     claim_in_theory
         .canary_claim_overrides
@@ -3355,7 +2538,7 @@ fn enforces_mir_wp_canary_claim_proof_rules() {
     );
 
     // Canary claim body missing required `PositiveCanaryClaim` constant
-    // (`TrustedBoundary.lean` `requireExactClaimProof` `reqConsts` check).
+    // (`TrustedBoundary.lean` `requireClaimProof` `reqConsts` check).
     let mut missing_req_const = MirWpSyntheticSpec::valid();
     missing_req_const.canary_claim_overrides.insert(
         "CanaryPositiveAddAnnealClaim".to_string(),
@@ -3420,5 +2603,3854 @@ fn enforces_mir_wp_canary_claim_proof_rules() {
     weakened_canary.expect_audit_policy_err(
         "theorem Anneal.MirWp.canary_positive_add_anneal must prove \
          Trusted.MirSemantics.CanaryPositiveAddAnnealClaim directly",
+    );
+}
+
+/// Verifies Pass 2 non-backsliding enforcement (`--require-correspondence`):
+/// missing correspondence directories, `verifyCorrespondenceClaims` across all
+/// 27 required claims, and `verifyRefEvaluatorIndependence` (required Miri
+/// primitives and rejection of named `Trusted.MirSemantics` evaluator entry
+/// points).
+#[test]
+fn enforces_correspondence_non_backsliding() {
+    // 1. When `require_correspondence` is enabled and correspondence
+    // directories are absent, `Checker::run` rejects in `"correspondence"`.
+    let fix_missing_corr = TempFixture::new(None);
+    let mut checker = Checker::new(&fix_missing_corr.root, None).unwrap();
+    checker.set_require_mir_wp(false);
+    checker.set_require_correspondence(true);
+    let err_corr = checker.run().unwrap_err();
+    assert_eq!(err_corr.code, 1);
+    assert_eq!(err_corr.phase, "correspondence");
+    assert!(
+        err_corr
+            .message
+            .contains("missing required correspondence directories"),
+        "unexpected error: {err_corr}"
+    );
+
+    // 2. Pass 2 (`InspectorRequest::CorrespondenceAudit`) enforces
+    // `verifyCorrespondenceClaims` (required constant references on
+    // `CorrespondenceClaim` and exact claim-type proof checking on
+    // `correspondence_claim_holds`) and `verifyRefEvaluatorIndependence`
+    // (required Miri primitives and named `Trusted.MirSemantics.*` evaluator
+    // entry points in `evalRefStep` / `initRefState`).
+    let fix_pass2 = TempFixture::new(None);
+    let mut checker_pass2 = Checker::new(&fix_pass2.root, None).unwrap();
+    checker_pass2.set_require_mir_wp(false);
+    checker_pass2.run().unwrap();
+    let trusted_lib = checker_pass2.stage.join("lib");
+    let corr_src = checker_pass2.stage.join("src/fake-corr");
+    let corr_lib = checker_pass2.stage.join("fake-corr-lib");
+    let vendor_src = checker_pass2.stage.join("src/fake-vendor");
+    let vendor_lib = checker_pass2.stage.join("fake-vendor-lib");
+    let search_paths = vec![trusted_lib.clone(), vendor_lib.clone(), corr_lib.clone()];
+
+    compile_forged_module(
+        &mut checker_pass2,
+        &vendor_src,
+        &vendor_lib,
+        &[],
+        "Miri.FakeStubs",
+        "prelude\nimport Init.Core\n\
+         namespace Miri.Interpreter.ExecutionMachine\n\
+         def step : Nat := 0\n\
+         def stepHooks : Nat := 0\n\
+         def withValidation : Nat := 0\n\
+         def operandHooks : Nat := 0\n\
+         end Miri.Interpreter.ExecutionMachine\n\
+         namespace Miri.Interpreter.Step\n\
+         def step : Nat := 0\n\
+         def evalStatement : Nat := 0\n\
+         end Miri.Interpreter.Step\n\
+         namespace Miri.Interpreter.MachineHooks\n\
+         def takeLastPendingMoveDeinit : Nat := 0\n\
+         def recordPendingMoveDeinit : Nat := 0\n\
+         end Miri.Interpreter.MachineHooks\n\
+         namespace Miri.Interpreter.FnArg\n\
+         def copyFnArg : Nat := 0\n\
+         end Miri.Interpreter.FnArg\n\
+         namespace Miri.Interpreter.Call\n\
+         def deinitInPlaceArg : Nat := 0\n\
+         end Miri.Interpreter.Call\n\
+         namespace Miri.Interpreter.IntegerOps\n\
+         def binary : Nat := 0\n\
+         def binaryBool : Nat := 0\n\
+         def unary : Nat := 0\n\
+         end Miri.Interpreter.IntegerOps\n\
+         namespace Miri.Memory.ScalarInt\n\
+         def truncateFromUInt : Nat := 0\n\
+         def tryFromUInt : Nat := 0\n\
+         def tryToBool : Nat := 0\n\
+         end Miri.Memory.ScalarInt\n\
+         namespace Miri.Interpreter\n\
+         def evalOperand : Nat := 0\n\
+         def evalPlaceToOp : Nat := 0\n\
+         def localToOp : Nat := 0\n\
+         def placeWriteLocalImmediate : Nat := 0\n\
+         def evalRvalueIntoPlace : Nat := 0\n\
+         def runRvalue : Nat := 0\n\
+         end Miri.Interpreter\n\
+         namespace Miri.Interpreter.Frame\n\
+         def storageLive : Nat := 0\n\
+         def storageDead : Nat := 0\n\
+         end Miri.Interpreter.Frame\n\
+         namespace Miri.Interpreter.ControlFlow\n\
+         def goToBlock : Nat := 0\n\
+         def evalTerminator : Nat := 0\n\
+         def returnFromCurrentFrame : Nat := 0\n\
+         end Miri.Interpreter.ControlFlow\n",
+    );
+
+    compile_forged_module(
+        &mut checker_pass2,
+        &corr_src,
+        &trusted_lib,
+        &[],
+        "Trusted.MirSemantics",
+        "prelude\nimport Init.Core\n\
+         namespace Trusted.MirSemantics\n\
+         def WellFormed : Prop := True\n\
+         def Behavior : Prop := True\n\
+         def Diverges : Prop := True\n\
+         def ReachesResult : Prop := True\n\
+         def initState : Nat := 0\n\
+         def Step : Prop := True\n\
+         def Reaches : Prop := True\n\
+         def progAddUncheckedU32 : Nat := 0\n\
+         def progAddU32 : Nat := 0\n\
+         def evalShiftOp : Nat := 0\n\
+         def evalArithOp : Nat := 0\n\
+         def jumpToBlock : Nat := 0\n\
+         def evalStep : Nat := 0\n\
+         end Trusted.MirSemantics\n",
+    );
+
+    // 2a. Weakened `CorrespondenceClaim` (missing
+    // `Trusted.MirSemantics.WellFormed` reference) is rejected by
+    // `verifyCorrespondenceClaims`.
+    compile_forged_module(
+        &mut checker_pass2,
+        &corr_src,
+        &trusted_lib,
+        &[],
+        "Trusted.Correspondence",
+        "prelude\nimport Init.Core\n\
+         namespace Trusted.Correspondence\n\
+         def CorrespondenceClaim : Prop := True\n\
+         end Trusted.Correspondence\n",
+    );
+    compile_forged_module(
+        &mut checker_pass2,
+        &corr_src,
+        &corr_lib,
+        &["Trusted.Correspondence"],
+        "Anneal.MirCorrespondenceProof",
+        "prelude\nimport Trusted.Correspondence\n\
+         namespace Anneal.MirCorrespondenceProof\n\
+         theorem correspondence_claim_holds : Trusted.Correspondence.CorrespondenceClaim := True.intro\n\
+         end Anneal.MirCorrespondenceProof\n",
+    );
+    let run_corr_audit = |checker: &mut Checker| {
+        checker.inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: search_paths.clone(),
+            trusted: vec!["Trusted".to_string(), "Trusted.MirSemantics".to_string()],
+            corr_trusted: vec!["Trusted.Correspondence".to_string()],
+            theory: Vec::new(),
+            corr_theory: vec!["Anneal.MirCorrespondenceProof".to_string()],
+            vendor_miri: vec!["Miri.FakeStubs".to_string()],
+            module_tiers: BTreeMap::from([
+                ("Trusted".to_string(), TrustTier::Vetted),
+                (
+                    "Trusted.MirSemantics".to_string(),
+                    TrustTier::parse("candidate:mir_semantics").unwrap(),
+                ),
+                (
+                    "Trusted.Correspondence".to_string(),
+                    TrustTier::parse("candidate:mir_semantics").unwrap(),
+                ),
+            ]),
+        })
+    };
+    let err_weak_claim = run_corr_audit(&mut checker_pass2).unwrap_err();
+    assert_eq!(err_weak_claim.code, 1);
+    assert_eq!(err_weak_claim.phase, "correspondence-audit");
+    assert!(
+        err_weak_claim.message.contains(
+            "claim Trusted.Correspondence.CorrespondenceClaim body must reference Trusted.MirSemantics.WellFormed"
+        ),
+        "unexpected error: {err_weak_claim}"
+    );
+
+    // 2b. When all 27 Day-1 required claims and proofs are present,
+    // `verifyCorrespondenceClaims` succeeds and
+    // `verifyRefEvaluatorIndependence` rejects an `evalRefStep` that omits
+    // required Miri primitives or illegally references a named
+    // `Trusted.MirSemantics` evaluator entry point (`evalStep`, `evalArithOp`,
+    // `evalShiftOp`, `jumpToBlock`).
+    let all_claims_src = |eval_ref_step_body: &str, d6_override: Option<&str>| {
+        let d6_def = d6_override.unwrap_or(
+            "progUseAfterMoveD6 = encodeProg ∧ Trusted.MirSemantics.ReachesResult ∧\n\
+             Trusted.MirSemantics.WellFormed ∧ RefReachesOutcome",
+        );
+        format!(
+            "prelude\nimport Init.Core\nimport Miri.FakeStubs\nimport Trusted.MirSemantics\n\
+             namespace Trusted.Correspondence\n\
+             def RefWellFormed : Prop := True\n\
+             def RefBehavior : Prop := True\n\
+             def RefDiverges : Prop := True\n\
+             def encodeProg : Nat := 0\n\
+             def decodeProg : Nat := 0\n\
+             def typesAreCanonical : Nat := 0\n\
+             def encodeStmt : Nat := 0\n\
+             def encodeRvalue : Nat := 0\n\
+             def encodeOperand : Nat := 0\n\
+             def encodePlace : Nat := 0\n\
+             def SimulationInv : Prop := True\n\
+             def stepResultToRefOutcome : Nat := 0\n\
+             def mapStepRes : Nat := 0\n\
+             def RefStep : Prop := True\n\
+             def RefReaches : Prop := True\n\
+             def RefReachesOutcome : Prop := True\n\
+             def faultToRefOutcome : Nat := 0\n\
+             def progUseAfterMoveD6 : Nat := 0\n\
+             def progBinOpCopyThenMoveD7a : Nat := 0\n\
+             def progBinOpMoveThenCopyD7b : Nat := 0\n\
+             def progBinOpMoveThenMoveD7c : Nat := 0\n\
+             def progSelfMoveD8 : Nat := 0\n\
+             def progMoveUnitZstD9 : Nat := 0\n\
+             def initRefState : Nat := 0\n\
+             def evalRefStep : Nat := {eval_ref_step_body}\n\
+             def CorrespondenceClaim : Prop :=\n\
+               Trusted.MirSemantics.WellFormed ∧ RefWellFormed ∧\n\
+               Trusted.MirSemantics.Behavior ∧ RefBehavior ∧\n\
+               Trusted.MirSemantics.Diverges ∧ RefDiverges ∧ encodeProg = encodeProg\n\
+             def FaultEquivalenceClaim : Prop :=\n\
+               Trusted.MirSemantics.ReachesResult ∧ RefReachesOutcome ∧\n\
+               faultToRefOutcome = encodeProg\n\
+             def MiriMoveDeinitWiringClaim : Prop :=\n\
+               Miri.Interpreter.ExecutionMachine.step = Miri.Interpreter.ExecutionMachine.stepHooks ∧\n\
+               Miri.Interpreter.Step.step = Miri.Interpreter.ExecutionMachine.withValidation ∧\n\
+               Miri.Interpreter.ExecutionMachine.operandHooks = Miri.Interpreter.evalOperand ∧\n\
+               Miri.Interpreter.MachineHooks.takeLastPendingMoveDeinit = Miri.Interpreter.MachineHooks.recordPendingMoveDeinit ∧\n\
+               Miri.Interpreter.FnArg.copyFnArg = Miri.Interpreter.Call.deinitInPlaceArg\n\
+             def DecodeProgEncodeProgClaim : Prop := decodeProg = encodeProg\n\
+             def EncodeProgTypesCanonicalClaim : Prop := typesAreCanonical = encodeProg\n\
+             def EncodeStmtNoDormantNoopsClaim : Prop := encodeStmt = encodeStmt\n\
+             def EncodeRvalueBinaryOpIffClaim : Prop := encodeRvalue = encodeOperand\n\
+             def EncodeRvalueUnaryOpIffClaim : Prop := encodeRvalue = encodeOperand\n\
+             def EncodeStmtAssignIffClaim : Prop :=\n\
+               encodeStmt = encodePlace ∧ encodePlace = encodeRvalue\n\
+             def StateUniqueOfSimulationInvClaim : Prop := SimulationInv\n\
+             def RefStateUniqueOfSimulationInvClaim : Prop := SimulationInv\n\
+             def InitRefStateSimClaim : Prop :=\n\
+               decodeProg = Trusted.MirSemantics.initState ∧\n\
+               initRefState = decodeProg ∧ SimulationInv\n\
+             def EvalRefStepEqClaim : Prop :=\n\
+               decodeProg = stepResultToRefOutcome ∧ mapStepRes = Trusted.MirSemantics.evalStep ∧\n\
+               evalRefStep = evalRefStep\n\
+             def SimOfRefStepClaim : Prop :=\n\
+               decodeProg = decodeProg ∧ SimulationInv ∧ RefStep ∧ Trusted.MirSemantics.Step\n\
+             def SimOfRefReachesClaim : Prop :=\n\
+               decodeProg = decodeProg ∧ SimulationInv ∧ RefReaches ∧ Trusted.MirSemantics.Reaches\n\
+             def RefWellFormedOfWellFormedClaim : Prop :=\n\
+               Trusted.MirSemantics.WellFormed ∧ RefWellFormed ∧ encodeProg = encodeProg\n\
+             def RefBehaviorOfBehaviorClaim : Prop :=\n\
+               Trusted.MirSemantics.Behavior ∧ RefBehavior ∧ encodeProg = encodeProg\n\
+             def BehaviorOfRefBehaviorClaim : Prop :=\n\
+               RefBehavior ∧ Trusted.MirSemantics.Behavior ∧ encodeProg = encodeProg\n\
+             def BehaviorIffRefBehaviorClaim : Prop :=\n\
+               Trusted.MirSemantics.Behavior ∧ RefBehavior ∧ encodeProg = encodeProg\n\
+             def DivergesIffRefDivergesClaim : Prop :=\n\
+               Trusted.MirSemantics.Diverges ∧ RefDiverges ∧ encodeProg = encodeProg\n\
+             def CanaryD6UseAfterMoveUbClaim : Prop := {d6_def}\n\
+             def CanaryD7aBinopCopyThenMoveOkClaim : Prop :=\n\
+               progBinOpCopyThenMoveD7a = encodeProg ∧ Trusted.MirSemantics.WellFormed ∧\n\
+               Trusted.MirSemantics.Behavior ∧ RefWellFormed ∧ RefBehavior\n\
+             def CanaryD7bBinopMoveThenCopyUbClaim : Prop :=\n\
+               progBinOpMoveThenCopyD7b = encodeProg ∧ Trusted.MirSemantics.ReachesResult ∧\n\
+               Trusted.MirSemantics.WellFormed ∧ RefReachesOutcome\n\
+             def CanaryD7cBinopMoveThenMoveUbClaim : Prop :=\n\
+               progBinOpMoveThenMoveD7c = encodeProg ∧ Trusted.MirSemantics.ReachesResult ∧\n\
+               Trusted.MirSemantics.WellFormed ∧ RefReachesOutcome\n\
+             def CanaryD8SelfMoveOkClaim : Prop :=\n\
+               progSelfMoveD8 = encodeProg ∧ Trusted.MirSemantics.WellFormed ∧\n\
+               Trusted.MirSemantics.Behavior ∧ RefWellFormed ∧ RefBehavior\n\
+             def CanaryD9MoveUnitZstOkClaim : Prop :=\n\
+               progMoveUnitZstD9 = encodeProg ∧ Trusted.MirSemantics.WellFormed ∧\n\
+               Trusted.MirSemantics.Behavior ∧ RefWellFormed ∧ RefBehavior\n\
+             def CanaryD10AddUncheckedOverflowUbClaim : Prop :=\n\
+               Trusted.MirSemantics.progAddUncheckedU32 = Trusted.MirSemantics.progAddU32 ∧\n\
+               encodeProg = encodeProg ∧ Trusted.MirSemantics.ReachesResult ∧\n\
+               Trusted.MirSemantics.WellFormed ∧ RefReachesOutcome ∧\n\
+               Trusted.MirSemantics.Behavior ∧ RefBehavior\n\
+             end Trusted.Correspondence\n"
+        )
+    };
+    let all_proofs_src = |d6_proof: &str| {
+        format!(
+            "prelude\nimport Trusted.Correspondence\n\
+             namespace Anneal.MirCorrespondenceProof\n\
+             open Trusted.Correspondence\n\
+             theorem correspondence_claim_holds : CorrespondenceClaim :=\n\
+               ⟨True.intro, True.intro, True.intro, True.intro, True.intro, True.intro, Eq.refl _⟩\n\
+             theorem fault_equivalence_claim_holds : FaultEquivalenceClaim :=\n\
+               ⟨True.intro, True.intro, Eq.refl _⟩\n\
+             theorem miri_move_deinit_wiring_claim_holds : MiriMoveDeinitWiringClaim :=\n\
+               ⟨Eq.refl _, Eq.refl _, Eq.refl _, Eq.refl _, Eq.refl _⟩\n\
+             theorem decodeProg_encodeProg : DecodeProgEncodeProgClaim := Eq.refl _\n\
+             theorem encodeProg_types_canonical : EncodeProgTypesCanonicalClaim := Eq.refl _\n\
+             theorem encodeStmt_no_dormant_noops : EncodeStmtNoDormantNoopsClaim := Eq.refl _\n\
+             theorem encodeRvalue_binaryOp_iff : EncodeRvalueBinaryOpIffClaim := Eq.refl _\n\
+             theorem encodeRvalue_unaryOp_iff : EncodeRvalueUnaryOpIffClaim := Eq.refl _\n\
+             theorem encodeStmt_assign_iff : EncodeStmtAssignIffClaim := ⟨Eq.refl _, Eq.refl _⟩\n\
+             theorem state_unique_of_simulationInv : StateUniqueOfSimulationInvClaim := True.intro\n\
+             theorem refState_unique_of_simulationInv : RefStateUniqueOfSimulationInvClaim := True.intro\n\
+             theorem initRefState_sim : InitRefStateSimClaim := ⟨Eq.refl _, Eq.refl _, True.intro⟩\n\
+             theorem evalRefStep_eq : EvalRefStepEqClaim := ⟨Eq.refl _, Eq.refl _, Eq.refl _⟩\n\
+             theorem sim_of_refStep : SimOfRefStepClaim := ⟨Eq.refl _, True.intro, True.intro, True.intro⟩\n\
+             theorem sim_of_refReaches : SimOfRefReachesClaim := ⟨Eq.refl _, True.intro, True.intro, True.intro⟩\n\
+             theorem refWellFormed_of_wellFormed : RefWellFormedOfWellFormedClaim := ⟨True.intro, True.intro, Eq.refl _⟩\n\
+             theorem refBehavior_of_behavior : RefBehaviorOfBehaviorClaim := ⟨True.intro, True.intro, Eq.refl _⟩\n\
+             theorem behavior_of_refBehavior : BehaviorOfRefBehaviorClaim := ⟨True.intro, True.intro, Eq.refl _⟩\n\
+             theorem behavior_iff_refBehavior : BehaviorIffRefBehaviorClaim := ⟨True.intro, True.intro, Eq.refl _⟩\n\
+             theorem diverges_iff_refDiverges : DivergesIffRefDivergesClaim := ⟨True.intro, True.intro, Eq.refl _⟩\n\
+             theorem canary_D6_use_after_move_ub : CanaryD6UseAfterMoveUbClaim := {d6_proof}\n\
+             theorem canary_D7a_binop_copy_then_move_ok : CanaryD7aBinopCopyThenMoveOkClaim :=\n\
+               ⟨Eq.refl _, True.intro, True.intro, True.intro, True.intro⟩\n\
+             theorem canary_D7b_binop_move_then_copy_ub : CanaryD7bBinopMoveThenCopyUbClaim :=\n\
+               ⟨Eq.refl _, True.intro, True.intro, True.intro⟩\n\
+             theorem canary_D7c_binop_move_then_move_ub : CanaryD7cBinopMoveThenMoveUbClaim :=\n\
+               ⟨Eq.refl _, True.intro, True.intro, True.intro⟩\n\
+             theorem canary_D8_self_move_ok : CanaryD8SelfMoveOkClaim :=\n\
+               ⟨Eq.refl _, True.intro, True.intro, True.intro, True.intro⟩\n\
+             theorem canary_D9_move_unit_zst_ok : CanaryD9MoveUnitZstOkClaim :=\n\
+               ⟨Eq.refl _, True.intro, True.intro, True.intro, True.intro⟩\n\
+             theorem canary_D10_add_unchecked_overflow_ub : CanaryD10AddUncheckedOverflowUbClaim :=\n\
+               ⟨Eq.refl _, Eq.refl _, True.intro, True.intro, True.intro, True.intro, True.intro⟩\n\
+             end Anneal.MirCorrespondenceProof\n"
+        )
+    };
+    let d6_valid_proof = "⟨Eq.refl _, True.intro, True.intro, True.intro⟩";
+
+    let corr_deps = ["Miri.FakeStubs", "Trusted.MirSemantics"];
+    let proof_deps = ["Trusted.Correspondence"];
+
+    // 2a-ii. Weakening a canary claim (`CanaryD6UseAfterMoveUbClaim := True`)
+    // is rejected by `verifyCorrespondenceClaims` non-empty `reqConsts`.
+    compile_forged_module(
+        &mut checker_pass2,
+        &corr_src,
+        &trusted_lib,
+        &corr_deps,
+        "Trusted.Correspondence",
+        &all_claims_src("0", Some("True")),
+    );
+    compile_forged_module(
+        &mut checker_pass2,
+        &corr_src,
+        &corr_lib,
+        &proof_deps,
+        "Anneal.MirCorrespondenceProof",
+        &all_proofs_src("True.intro"),
+    );
+    let err_weak_d6 = run_corr_audit(&mut checker_pass2).unwrap_err();
+    assert_eq!(err_weak_d6.code, 1);
+    assert_eq!(err_weak_d6.phase, "correspondence-audit");
+    assert!(
+        err_weak_d6.message.contains(
+            "claim Trusted.Correspondence.CanaryD6UseAfterMoveUbClaim body must reference Trusted.Correspondence.progUseAfterMoveD6"
+        ),
+        "unexpected weakened-canary error: {err_weak_d6}"
+    );
+
+    compile_forged_module(
+        &mut checker_pass2,
+        &corr_src,
+        &trusted_lib,
+        &corr_deps,
+        "Trusted.Correspondence",
+        &all_claims_src("0", None),
+    );
+    compile_forged_module(
+        &mut checker_pass2,
+        &corr_src,
+        &corr_lib,
+        &proof_deps,
+        "Anneal.MirCorrespondenceProof",
+        &all_proofs_src(d6_valid_proof),
+    );
+    let err_missing_miri = run_corr_audit(&mut checker_pass2).unwrap_err();
+    assert_eq!(err_missing_miri.code, 1);
+    assert_eq!(err_missing_miri.phase, "correspondence-audit");
+    assert!(
+        err_missing_miri.message.contains(
+            "reference evaluator cone is missing required Miri primitive Miri.Interpreter.Step.step"
+        ),
+        "unexpected error: {err_missing_miri}"
+    );
+
+    for forbidden in ["evalStep", "evalArithOp", "evalShiftOp", "jumpToBlock"] {
+        let all_miri_plus_anneal_fn = format!(
+            "let _ := (\
+             Miri.Interpreter.Step.step, \
+             Miri.Interpreter.IntegerOps.binary, \
+             Miri.Interpreter.IntegerOps.binaryBool, \
+             Miri.Interpreter.IntegerOps.unary, \
+             Miri.Memory.ScalarInt.truncateFromUInt, \
+             Miri.Memory.ScalarInt.tryFromUInt, \
+             Miri.Memory.ScalarInt.tryToBool, \
+             Miri.Interpreter.evalOperand, \
+             Miri.Interpreter.evalPlaceToOp, \
+             Miri.Interpreter.localToOp, \
+             Miri.Interpreter.placeWriteLocalImmediate, \
+             Miri.Interpreter.evalRvalueIntoPlace, \
+             Miri.Interpreter.runRvalue, \
+             Miri.Interpreter.Step.evalStatement, \
+             Miri.Interpreter.Frame.storageLive, \
+             Miri.Interpreter.Frame.storageDead, \
+             Miri.Interpreter.ControlFlow.goToBlock, \
+             Miri.Interpreter.ControlFlow.evalTerminator, \
+             Miri.Interpreter.ControlFlow.returnFromCurrentFrame); \
+             Trusted.MirSemantics.{forbidden}"
+        );
+        compile_forged_module(
+            &mut checker_pass2,
+            &corr_src,
+            &trusted_lib,
+            &corr_deps,
+            "Trusted.Correspondence",
+            &all_claims_src(&all_miri_plus_anneal_fn, None),
+        );
+        compile_forged_module(
+            &mut checker_pass2,
+            &corr_src,
+            &corr_lib,
+            &proof_deps,
+            "Anneal.MirCorrespondenceProof",
+            &all_proofs_src(d6_valid_proof),
+        );
+        let err_forbidden_anneal = run_corr_audit(&mut checker_pass2).unwrap_err();
+        assert_eq!(err_forbidden_anneal.code, 1);
+        assert_eq!(err_forbidden_anneal.phase, "correspondence-audit");
+        assert!(
+            err_forbidden_anneal.message.contains(&format!(
+                "reference evaluator cone illegally references M_anneal evaluator Trusted.MirSemantics.{forbidden}"
+            )),
+            "unexpected error for {forbidden}: {err_forbidden_anneal}"
+        );
+    }
+}
+
+/// Verifies the vendored `.olean` cache and compilation pipeline in
+/// [`Checker::verify_and_stage_miri_entries`]:
+/// 1. Staged source digest mismatch fails closed before consulting the cache or
+///    invoking Lean.
+/// 2. Compiled `.olean` digest mismatch fails closed and writes zero files to
+///    the cache directory (write-after-verify).
+/// 3. Cold compilation populates the cache with verified digests.
+/// 4. Digest-gated cache restore succeeds without recompiling.
+/// 5. Tampered cached `.olean` bytes are rejected (never blindly accepted),
+///    forcing recompilation and healing the cache when valid source exists.
+/// 6. Missing, mismatched, and unexpected compiled `.olean.server` /
+///    `.olean.private` sidecars all fail closed with policy exit code `1`.
+#[test]
+fn verifies_miri_cache_and_rejects_unverified_oleans() {
+    let fix = TempFixture::new(None);
+    let cache_root = tempfile::Builder::new()
+        .prefix("anneal-miri-cache-test-")
+        .tempdir()
+        .unwrap();
+    let vendor_dir = fix.root.join("fake-vendor");
+    let src_path = vendor_dir.join("Miri/Tiny.lean");
+    fs::create_dir_all(src_path.parent().unwrap()).unwrap();
+    let valid_src =
+        "prelude\nimport Init.Core\nnamespace Miri.Tiny\ndef x : Nat := 1\nend Miri.Tiny\n";
+    let valid_src_sha = sha256_bytes(valid_src.as_bytes());
+    let valid_sources = BTreeMap::from([("Miri/Tiny.lean".to_string(), valid_src_sha)]);
+    fs::write(&src_path, valid_src).unwrap();
+
+    // Compile once in a probe checker to obtain the deterministic `.olean`
+    // companion digests for `Miri.Tiny`.
+    let mut probe = Checker::new(&fix.root, None).unwrap();
+    probe.set_require_mir_wp(false);
+    probe.run().unwrap();
+    let probe_out = probe.stage.join("probe-lib/Miri/Tiny.olean");
+    fs::create_dir_all(probe_out.parent().unwrap()).unwrap();
+    probe
+        .process(
+            "probe-miri-tiny",
+            &[
+                "-j1".to_string(),
+                "-M2048".to_string(),
+                "-t0".to_string(),
+                "-DElab.async=false".to_string(),
+                "-Ddebug.skipKernelTC=false".to_string(),
+                "-R".to_string(),
+                vendor_dir.to_string_lossy().into_owned(),
+                "-o".to_string(),
+                probe_out.to_string_lossy().into_owned(),
+                src_path.to_string_lossy().into_owned(),
+            ],
+        )
+        .unwrap();
+    let expected_olean = sha256_file(&probe_out, "test").unwrap();
+    let probe_server = probe.stage.join("probe-lib/Miri/Tiny.olean.server");
+    let expected_server = probe_server
+        .exists()
+        .then(|| sha256_file(&probe_server, "test").unwrap());
+    let probe_private = probe.stage.join("probe-lib/Miri/Tiny.olean.private");
+    let expected_private = probe_private
+        .exists()
+        .then(|| sha256_file(&probe_private, "test").unwrap());
+
+    let good_entry = MiriClosureEntry {
+        module: "Miri.Tiny".to_string(),
+        path: "Miri/Tiny.lean".to_string(),
+        olean_sha256: expected_olean.clone(),
+        olean_server_sha256: expected_server.clone(),
+        olean_private_sha256: expected_private.clone(),
+    };
+
+    // Case 0: Staged source SHA-256 mismatch fails closed with exit code `1`.
+    let wrong_sources = BTreeMap::from([("Miri/Tiny.lean".to_string(), "1".repeat(64))]);
+    let mut c0 = Checker::new(&fix.root, None).unwrap();
+    c0.set_require_mir_wp(false);
+    c0.run().unwrap();
+    let err_src_sha = c0
+        .verify_and_stage_miri_entries(
+            &vendor_dir,
+            std::slice::from_ref(&good_entry),
+            &wrong_sources,
+        )
+        .unwrap_err();
+    assert_eq!(err_src_sha.code, 1, "expected policy error: {err_src_sha}");
+    assert!(
+        err_src_sha
+            .message
+            .contains("staged Miri source SHA-256 mismatch for Miri/Tiny.lean"),
+        "unexpected source-mismatch error: {err_src_sha}"
+    );
+
+    // Case 1: Compiled `.olean` digest mismatch fails closed AND writes
+    // nothing into the empty cache directory (write-after-verify invariant).
+    let cache_mismatch = cache_root.path().join("cache-mismatch");
+    fs::create_dir_all(&cache_mismatch).unwrap();
+    let mut bad_entry = good_entry.clone();
+    bad_entry.olean_sha256 = "0".repeat(64);
+    let mut c1 = Checker::new(&fix.root, None).unwrap();
+    c1.set_require_mir_wp(false);
+    c1.set_miri_cache_dir(Some(cache_mismatch.clone()));
+    c1.run().unwrap();
+    let err = c1
+        .verify_and_stage_miri_entries(&vendor_dir, &[bad_entry], &valid_sources)
+        .unwrap_err();
+    assert_eq!(err.code, 1, "expected policy error: {err}");
+    assert!(
+        err.message
+            .contains("compiled Miri .olean SHA-256 mismatch for Miri.Tiny"),
+        "unexpected mismatch error: {err}"
+    );
+    assert!(
+        !cache_mismatch.join("Miri/Tiny.olean").exists(),
+        "unverified .olean must never be written to cache"
+    );
+
+    // Case 2: Cold compile verifies digests and populates the cache.
+    let cache_dir = cache_root.path().join("cache-live");
+    fs::create_dir_all(&cache_dir).unwrap();
+    let mut c2 = Checker::new(&fix.root, None).unwrap();
+    c2.set_require_mir_wp(false);
+    c2.set_miri_cache_dir(Some(cache_dir.clone()));
+    c2.run().unwrap();
+    c2.verify_and_stage_miri_entries(
+        &vendor_dir,
+        std::slice::from_ref(&good_entry),
+        &valid_sources,
+    )
+    .unwrap();
+    let cached_olean = cache_dir.join("Miri/Tiny.olean");
+    assert_eq!(
+        sha256_file(&cached_olean, "test").unwrap(),
+        expected_olean,
+        "cached .olean digest must match verified output"
+    );
+
+    // Case 3: Digest-gated cache hit restores `.olean` without compiling
+    // source (proven by temporarily replacing source with invalid Lean while
+    // updating the expected source digest so staging succeeds).
+    let invalid_src = "this is intentionally invalid lean syntax !!!\n";
+    let invalid_sources = BTreeMap::from([(
+        "Miri/Tiny.lean".to_string(),
+        sha256_bytes(invalid_src.as_bytes()),
+    )]);
+    fs::write(&src_path, invalid_src).unwrap();
+    let mut c3 = Checker::new(&fix.root, None).unwrap();
+    c3.set_require_mir_wp(false);
+    c3.set_miri_cache_dir(Some(cache_dir.clone()));
+    c3.run().unwrap();
+    c3.verify_and_stage_miri_entries(
+        &vendor_dir,
+        std::slice::from_ref(&good_entry),
+        &invalid_sources,
+    )
+    .unwrap();
+
+    // Case 4a: Tampered cached `.olean` is rejected (cannot serve cache hit;
+    // with invalid source present, fallback compilation fails closed).
+    let mut bytes = fs::read(&cached_olean).unwrap();
+    bytes[0] ^= 0xFF;
+    fs::write(&cached_olean, &bytes).unwrap();
+    let mut c4a = Checker::new(&fix.root, None).unwrap();
+    c4a.set_require_mir_wp(false);
+    c4a.set_miri_cache_dir(Some(cache_dir.clone()));
+    c4a.run().unwrap();
+    let err_tampered = c4a
+        .verify_and_stage_miri_entries(
+            &vendor_dir,
+            std::slice::from_ref(&good_entry),
+            &invalid_sources,
+        )
+        .unwrap_err();
+    assert!(
+        err_tampered.phase.contains("compile-Miri.Tiny"),
+        "tampered cached .olean must trigger recompile, got: {err_tampered}"
+    );
+
+    // Case 4b: With valid source restored, tampered cache entry is bypassed,
+    // recompiled, re-verified, and healed on disk.
+    fs::write(&src_path, valid_src).unwrap();
+    let mut c4b = Checker::new(&fix.root, None).unwrap();
+    c4b.set_require_mir_wp(false);
+    c4b.set_miri_cache_dir(Some(cache_dir.clone()));
+    c4b.run().unwrap();
+    c4b.verify_and_stage_miri_entries(
+        &vendor_dir,
+        std::slice::from_ref(&good_entry),
+        &valid_sources,
+    )
+    .unwrap();
+    assert_eq!(
+        sha256_file(&cached_olean, "test").unwrap(),
+        expected_olean,
+        "healed cache entry must match pinned digest"
+    );
+
+    // Case 5: Missing expected `.olean.server` sidecar fails closed without
+    // contaminating a fresh cache directory.
+    let cache_sidecar = cache_root.path().join("cache-sidecar");
+    fs::create_dir_all(&cache_sidecar).unwrap();
+    let mut bad_sidecar = good_entry;
+    bad_sidecar.olean_server_sha256 = Some("f".repeat(64));
+    let mut c5 = Checker::new(&fix.root, None).unwrap();
+    c5.set_require_mir_wp(false);
+    c5.set_miri_cache_dir(Some(cache_sidecar.clone()));
+    c5.run().unwrap();
+    let err_sidecar = c5
+        .verify_and_stage_miri_entries(&vendor_dir, &[bad_sidecar], &valid_sources)
+        .unwrap_err();
+    assert_eq!(err_sidecar.code, 1, "expected policy error: {err_sidecar}");
+    assert!(
+        err_sidecar
+            .message
+            .contains("missing compiled Miri .olean.server sidecar for Miri.Tiny"),
+        "unexpected missing-sidecar error: {err_sidecar}"
+    );
+    assert!(
+        !cache_sidecar.join("Miri/Tiny.olean").exists(),
+        "sidecar mismatch must not write to cache"
+    );
+
+    // Case 6: Unexpected compiled `.olean.server` / `.olean.private` sidecar
+    // (present on disk when `UPSTREAM_PIN.json` expects `None`) and sidecar
+    // SHA-256 mismatch both fail closed with policy exit code `1`.
+    let mod_path = vendor_dir.join("Miri/WithSidecar.lean");
+    let mod_src = "module\nprelude\npublic import Init.Core\n\
+                   namespace Miri.WithSidecar\npublic def x : Nat := 1\n\
+                   end Miri.WithSidecar\n";
+    let mod_sources = BTreeMap::from([(
+        "Miri/WithSidecar.lean".to_string(),
+        sha256_bytes(mod_src.as_bytes()),
+    )]);
+    fs::write(&mod_path, mod_src).unwrap();
+    let probe_mod_out = probe.stage.join("probe-lib/Miri/WithSidecar.olean");
+    probe
+        .process(
+            "probe-miri-sidecar",
+            &[
+                "-j1".to_string(),
+                "-M2048".to_string(),
+                "-t0".to_string(),
+                "-DElab.async=false".to_string(),
+                "-Ddebug.skipKernelTC=false".to_string(),
+                "-R".to_string(),
+                vendor_dir.to_string_lossy().into_owned(),
+                "-o".to_string(),
+                probe_mod_out.to_string_lossy().into_owned(),
+                mod_path.to_string_lossy().into_owned(),
+            ],
+        )
+        .unwrap();
+    let mod_olean = sha256_file(&probe_mod_out, "test").unwrap();
+    let mod_server = probe.stage.join("probe-lib/Miri/WithSidecar.olean.server");
+    let mod_private = probe.stage.join("probe-lib/Miri/WithSidecar.olean.private");
+    assert!(
+        mod_server.exists(),
+        "Lean `module` fixture must emit .olean.server to exercise sidecar checks"
+    );
+    let mod_server_sha = sha256_file(&mod_server, "test").unwrap();
+    let mod_private_sha = mod_private
+        .exists()
+        .then(|| sha256_file(&mod_private, "test").unwrap());
+
+    // 6a. Unexpected `.olean.server` when entry expects `None`.
+    let unexpected_server = MiriClosureEntry {
+        module: "Miri.WithSidecar".to_string(),
+        path: "Miri/WithSidecar.lean".to_string(),
+        olean_sha256: mod_olean.clone(),
+        olean_server_sha256: None,
+        olean_private_sha256: mod_private_sha.clone(),
+    };
+    let mut c6a = Checker::new(&fix.root, None).unwrap();
+    c6a.set_require_mir_wp(false);
+    c6a.run().unwrap();
+    let err_unexpected_server = c6a
+        .verify_and_stage_miri_entries(&vendor_dir, &[unexpected_server], &mod_sources)
+        .unwrap_err();
+    assert_eq!(
+        err_unexpected_server.code, 1,
+        "expected policy error: {err_unexpected_server}"
+    );
+    assert!(
+        err_unexpected_server
+            .message
+            .contains("unexpected Miri .olean.server sidecar for Miri.WithSidecar"),
+        "unexpected sidecar error: {err_unexpected_server}"
+    );
+
+    // 6b. Mismatched `.olean.server` SHA-256 when entry expects `Some(...)`.
+    let mismatched_server = MiriClosureEntry {
+        module: "Miri.WithSidecar".to_string(),
+        path: "Miri/WithSidecar.lean".to_string(),
+        olean_sha256: mod_olean.clone(),
+        olean_server_sha256: Some("e".repeat(64)),
+        olean_private_sha256: mod_private_sha.clone(),
+    };
+    let mut c6b = Checker::new(&fix.root, None).unwrap();
+    c6b.set_require_mir_wp(false);
+    c6b.run().unwrap();
+    let err_mismatched_server = c6b
+        .verify_and_stage_miri_entries(&vendor_dir, &[mismatched_server], &mod_sources)
+        .unwrap_err();
+    assert_eq!(
+        err_mismatched_server.code, 1,
+        "expected policy error: {err_mismatched_server}"
+    );
+    assert!(
+        err_mismatched_server
+            .message
+            .contains("compiled Miri .olean.server SHA-256 mismatch for Miri.WithSidecar"),
+        "unexpected sidecar-mismatch error: {err_mismatched_server}"
+    );
+
+    // 6c. Unexpected `.olean.private` when emitted and entry expects `None`.
+    if mod_private_sha.is_some() {
+        let unexpected_private = MiriClosureEntry {
+            module: "Miri.WithSidecar".to_string(),
+            path: "Miri/WithSidecar.lean".to_string(),
+            olean_sha256: mod_olean,
+            olean_server_sha256: Some(mod_server_sha),
+            olean_private_sha256: None,
+        };
+        let mut c6c = Checker::new(&fix.root, None).unwrap();
+        c6c.set_require_mir_wp(false);
+        c6c.run().unwrap();
+        let err_unexpected_private = c6c
+            .verify_and_stage_miri_entries(&vendor_dir, &[unexpected_private], &mod_sources)
+            .unwrap_err();
+        assert_eq!(
+            err_unexpected_private.code, 1,
+            "expected policy error: {err_unexpected_private}"
+        );
+        assert!(
+            err_unexpected_private
+                .message
+                .contains("unexpected Miri .olean.private sidecar for Miri.WithSidecar"),
+            "unexpected private-sidecar error: {err_unexpected_private}"
+        );
+    }
+}
+
+/// Verifies that `--miri-cache-dir` / `Checker::set_miri_cache_dir` rejects
+/// any cache directory located inside (or resolving inside) the repository
+/// checkout as a policy error (exit code `1`), including non-existent paths,
+/// parent traversals, and symlinks, while allowing sibling directories outside
+/// the checkout.
+#[test]
+fn rejects_miri_cache_dir_inside_checkout() {
+    let fix = TempFixture::new(None);
+    let outside = tempfile::Builder::new()
+        .prefix("anneal-miri-outside-")
+        .tempdir()
+        .unwrap();
+
+    let existing_inside = fix.root.join("existing-cache");
+    fs::create_dir_all(&existing_inside).unwrap();
+    let nonexistent_inside = fix.root.join(".evil-cache/nested");
+    let traversed_inside = fix.root.join("sub/../.evil-cache");
+
+    let link_into_checkout = outside.path().join("link-in");
+    symlink(&existing_inside, &link_into_checkout).unwrap();
+    let link_into_nested = link_into_checkout.join("deep");
+
+    let dangling_into_checkout = outside.path().join("dangling-in");
+    symlink(fix.root.join("does-not-exist"), &dangling_into_checkout).unwrap();
+
+    let real_outside_cache = outside.path().join("real-cache");
+    fs::create_dir_all(&real_outside_cache).unwrap();
+    let link_out_of_checkout = fix.root.join("link-out");
+    symlink(&real_outside_cache, &link_out_of_checkout).unwrap();
+
+    let bad_paths = [
+        fix.root.clone(),
+        existing_inside,
+        nonexistent_inside,
+        traversed_inside,
+        link_into_checkout,
+        link_into_nested,
+        dangling_into_checkout,
+        link_out_of_checkout,
+    ];
+    for bad in &bad_paths {
+        let mut checker = Checker::new(&fix.root, None).unwrap();
+        checker.set_require_mir_wp(false);
+        checker.set_miri_cache_dir(Some(bad.clone()));
+        let err = checker.run().unwrap_err();
+        assert_eq!(
+            err.code,
+            1,
+            "expected policy error for {}: {err}",
+            bad.display()
+        );
+        assert_eq!(
+            err.phase,
+            "miri-pin",
+            "unexpected phase for {}: {err}",
+            bad.display()
+        );
+        assert!(
+            !checker.execution_began,
+            "Lean execution must not begin when cache dir is inside checkout: {}",
+            bad.display()
+        );
+    }
+
+    // Sibling path sharing a string prefix with `checkout` is outside the
+    // checkout and must be accepted by containment validation.
+    let sibling_parent = outside.path().join("parent");
+    let fake_repo = sibling_parent.join("repo");
+    let sibling_cache = sibling_parent.join("repo-cache");
+    fs::create_dir_all(&fake_repo).unwrap();
+    ensure_miri_cache_outside_checkout(&fake_repo, &sibling_cache).unwrap();
+
+    // Verify end-to-end CLI rejection with exit code `1`.
+    let output = Command::new(env!("CARGO_BIN_EXE_anneal-audit"))
+        .env_clear()
+        .arg("--anneal-root")
+        .arg(&fix.root)
+        .arg("--miri-cache-dir")
+        .arg(fix.root.join(".evil-cache"))
+        .output()
+        .unwrap();
+    assert_eq!(
+        output.status.code(),
+        Some(1),
+        "expected exit code 1 from CLI: {output:?}"
+    );
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(
+        stderr.contains("Miri .olean cache directory must reside outside the repository checkout"),
+        "unexpected CLI stderr: {stderr}"
+    );
+}
+
+/// Verifies negative cases for correspondence-audit rules in
+/// `TrustedBoundary.lean` (`classifyCorrModules`,
+/// `CorrOrigin.importViolation?`, `CorrOrigin.edgeViolation?`, and
+/// `closureCorr` unapproved-axiom rejection) and for toolchain sysroot
+/// manifest authentication (`verify_sysroot_foundation_dir`).
+#[test]
+fn rejects_correspondence_audit_violations_and_sysroot_mismatch() {
+    let fix = TempFixture::new(None);
+
+    // 1. Sysroot manifest mismatch & symlink rejection.
+    let fake_lib = fix.root.join("fake-sysroot-lib");
+    for pkg in ["Init", "Std", "Lean"] {
+        fs::create_dir_all(fake_lib.join(pkg)).unwrap();
+    }
+    fs::write(fake_lib.join("Init/Dummy.olean"), b"dummy-olean").unwrap();
+    let err_sysroot =
+        verify_sysroot_foundation_dir(&fake_lib, &BTreeSet::new(), &"0".repeat(64)).unwrap_err();
+    assert_eq!(err_sysroot.phase, "sysroot-foundation");
+    assert!(
+        err_sysroot
+            .message
+            .contains("sysroot Init/Std/Lean .olean manifest SHA-256 mismatch"),
+        "unexpected sysroot mismatch error: {err_sysroot}"
+    );
+    symlink(
+        fake_lib.join("Init/Dummy.olean"),
+        fake_lib.join("Std/Link.olean"),
+    )
+    .unwrap();
+    let err_sym =
+        verify_sysroot_foundation_dir(&fake_lib, &BTreeSet::new(), &"0".repeat(64)).unwrap_err();
+    assert!(
+        err_sym.message.contains("symlink forbidden in sysroot"),
+        "unexpected sysroot symlink error: {err_sym}"
+    );
+
+    // Prepare compiled synthetic modules for `TrustedBoundary.lean`
+    // `"correspondence-audit"` negative cases.
+    let mut checker = Checker::new(&fix.root, None).unwrap();
+    checker.set_require_mir_wp(false);
+    checker.run().unwrap();
+    let trusted_lib = checker.stage.join("lib");
+    let aux_src = checker.stage.join("src/corr-neg");
+    let aux_path = env::join_paths([&trusted_lib]).unwrap();
+
+    let compile_aux = |chk: &mut Checker, module: &str, body: &str| {
+        let rel = module.replace('.', "/");
+        let src = aux_src.join(format!("{rel}.lean"));
+        fs::create_dir_all(src.parent().unwrap()).unwrap();
+        fs::write(&src, body).unwrap();
+        let out = trusted_lib.join(format!("{rel}.olean"));
+        fs::create_dir_all(out.parent().unwrap()).unwrap();
+        chk.process_with_path(
+            &format!("compile-{module}"),
+            &[
+                "-j1".to_string(),
+                "-M2048".to_string(),
+                "-t0".to_string(),
+                "-R".to_string(),
+                aux_src.to_string_lossy().into_owned(),
+                "-o".to_string(),
+                out.to_string_lossy().into_owned(),
+                src.to_string_lossy().into_owned(),
+            ],
+            Some(&aux_path),
+        )
+        .unwrap();
+    };
+
+    compile_aux(
+        &mut checker,
+        "Miri.Child",
+        "prelude\nimport Init.Core\nnamespace Miri.Child\ndef c : Nat := 1\nend Miri.Child\n",
+    );
+    compile_aux(
+        &mut checker,
+        "Miri.Parent",
+        "prelude\nimport Init.Core\nimport Miri.Child\n\
+         namespace Miri.Parent\ndef p : Nat := Miri.Child.c\nend Miri.Parent\n",
+    );
+    compile_aux(
+        &mut checker,
+        "Trusted.CandHelper",
+        "prelude\nimport Init.Core\nnamespace Trusted.CandHelper\ndef h : Nat := 1\nend Trusted.CandHelper\n",
+    );
+    compile_aux(
+        &mut checker,
+        "Trusted.VettedRefsCand",
+        "prelude\nimport Init.Core\nimport Trusted.CandHelper\n\
+         namespace Trusted.VettedRefsCand\ndef x : Nat := Trusted.CandHelper.h\nend Trusted.VettedRefsCand\n",
+    );
+    compile_aux(
+        &mut checker,
+        "Trusted.VettedRefsMiri",
+        "prelude\nimport Init.Core\nimport Miri.Child\n\
+         namespace Trusted.VettedRefsMiri\ndef x : Nat := Miri.Child.c\nend Trusted.VettedRefsMiri\n",
+    );
+    compile_aux(
+        &mut checker,
+        "Anneal.Helper",
+        "prelude\nimport Init.Core\nnamespace Anneal.Helper\ndef t : Nat := 2\nend Anneal.Helper\n",
+    );
+    compile_aux(
+        &mut checker,
+        "Trusted.CandRefsTheory",
+        "prelude\nimport Init.Core\nimport Anneal.Helper\n\
+         namespace Trusted.CandRefsTheory\ndef x : Nat := Anneal.Helper.t\nend Trusted.CandRefsTheory\n",
+    );
+    compile_aux(
+        &mut checker,
+        "Miri.Interpreter.ExecutionMachine",
+        "prelude\nimport Init.Core\n\
+         namespace Miri.Interpreter.ExecutionMachine\n\
+         theorem step : (True ↔ True) → True = True := propext\n\
+         end Miri.Interpreter.ExecutionMachine\n",
+    );
+
+    let search = vec![trusted_lib];
+
+    // 2a. `classifyCorrModules`: overlapping module role.
+    let err_overlap = checker
+        .inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: search.clone(),
+            trusted: vec!["Trusted".to_string()],
+            corr_trusted: Vec::new(),
+            theory: Vec::new(),
+            corr_theory: Vec::new(),
+            vendor_miri: vec!["Trusted".to_string()],
+            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+        })
+        .unwrap_err();
+    assert!(
+        err_overlap
+            .message
+            .contains("overlapping module role for Trusted"),
+        "unexpected overlap error: {err_overlap}"
+    );
+
+    // 2b. `classifyCorrModules`: missing trust tier for Trusted module.
+    let err_missing_tier = checker
+        .inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: search.clone(),
+            trusted: vec!["Trusted".to_string()],
+            corr_trusted: Vec::new(),
+            theory: Vec::new(),
+            corr_theory: Vec::new(),
+            vendor_miri: vec!["Miri.Child".to_string()],
+            module_tiers: BTreeMap::new(),
+        })
+        .unwrap_err();
+    assert!(
+        err_missing_tier
+            .message
+            .contains("missing trust tier for Trusted module Trusted"),
+        "unexpected missing-tier error: {err_missing_tier}"
+    );
+
+    // 2c. `classifyCorrModules`: trust tier declared for non-Trusted module.
+    let err_non_trusted_tier = checker
+        .inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: search.clone(),
+            trusted: vec!["Trusted".to_string()],
+            corr_trusted: Vec::new(),
+            theory: Vec::new(),
+            corr_theory: Vec::new(),
+            vendor_miri: vec!["Miri.Child".to_string()],
+            module_tiers: BTreeMap::from([
+                ("Trusted".to_string(), TrustTier::Vetted),
+                ("Miri.Child".to_string(), TrustTier::Vetted),
+            ]),
+        })
+        .unwrap_err();
+    assert!(
+        err_non_trusted_tier
+            .message
+            .contains("trust tier declared for non-Trusted module Miri.Child"),
+        "unexpected non-trusted-tier error: {err_non_trusted_tier}"
+    );
+
+    // 2d. `classifyCorrModules`: foreign module in correspondence environment
+    // (`Miri.Parent` imports unlisted `Miri.Child`).
+    let err_foreign = checker
+        .inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: search.clone(),
+            trusted: vec!["Trusted".to_string()],
+            corr_trusted: Vec::new(),
+            theory: Vec::new(),
+            corr_theory: Vec::new(),
+            vendor_miri: vec!["Miri.Parent".to_string()],
+            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+        })
+        .unwrap_err();
+    assert!(
+        err_foreign
+            .message
+            .contains("foreign module Miri.Child in correspondence environment"),
+        "unexpected foreign-module error: {err_foreign}"
+    );
+
+    // 3a. `CorrOrigin.edgeViolation?`: vetted -> candidate.
+    let err_vetted_cand = checker
+        .inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: search.clone(),
+            trusted: vec![
+                "Trusted".to_string(),
+                "Trusted.CandHelper".to_string(),
+                "Trusted.VettedRefsCand".to_string(),
+            ],
+            corr_trusted: Vec::new(),
+            theory: Vec::new(),
+            corr_theory: Vec::new(),
+            vendor_miri: vec!["Miri.Child".to_string()],
+            module_tiers: BTreeMap::from([
+                ("Trusted".to_string(), TrustTier::Vetted),
+                (
+                    "Trusted.CandHelper".to_string(),
+                    TrustTier::Candidate(CandidateFeature::MirSemantics),
+                ),
+                ("Trusted.VettedRefsCand".to_string(), TrustTier::Vetted),
+            ]),
+        })
+        .unwrap_err();
+    assert!(
+        err_vetted_cand.message.contains(
+            "vetted constant Trusted.VettedRefsCand.x references candidate:mir_semantics constant"
+        ),
+        "unexpected vetted->cand error: {err_vetted_cand}"
+    );
+
+    // 3b. `CorrOrigin.edgeViolation?`: vetted -> vendorMiri.
+    let err_vetted_miri = checker
+        .inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: search.clone(),
+            trusted: vec!["Trusted".to_string(), "Trusted.VettedRefsMiri".to_string()],
+            corr_trusted: Vec::new(),
+            theory: Vec::new(),
+            corr_theory: Vec::new(),
+            vendor_miri: vec!["Miri.Child".to_string()],
+            module_tiers: BTreeMap::from([
+                ("Trusted".to_string(), TrustTier::Vetted),
+                ("Trusted.VettedRefsMiri".to_string(), TrustTier::Vetted),
+            ]),
+        })
+        .unwrap_err();
+    assert!(
+        err_vetted_miri.message.contains(
+            "vetted constant Trusted.VettedRefsMiri.x references non-foundation constant Miri.Child.c"
+        ),
+        "unexpected vetted->miri error: {err_vetted_miri}"
+    );
+
+    // 3c. `CorrOrigin.importViolation?`: candidate Trusted -> theory. The
+    // compiled `.olean` header import of `Anneal.Helper` is rejected before
+    // `checkDeclarationEdges` inspects the constant reference;
+    // `rejects_forged_trusted_constant_referencing_theory` covers that
+    // constant-edge rule with a forged header that omits the import.
+    let err_cand_theory = checker
+        .inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: search.clone(),
+            trusted: vec!["Trusted".to_string(), "Trusted.CandRefsTheory".to_string()],
+            corr_trusted: Vec::new(),
+            theory: vec!["Anneal.Helper".to_string()],
+            corr_theory: Vec::new(),
+            vendor_miri: vec!["Miri.Child".to_string()],
+            module_tiers: BTreeMap::from([
+                ("Trusted".to_string(), TrustTier::Vetted),
+                (
+                    "Trusted.CandRefsTheory".to_string(),
+                    TrustTier::Candidate(CandidateFeature::MirSemantics),
+                ),
+            ]),
+        })
+        .unwrap_err();
+    assert_eq!(
+        err_cand_theory.code, 1,
+        "unexpected cand->theory code: {err_cand_theory}"
+    );
+    assert!(
+        err_cand_theory.message.contains(
+            "Trusted module Trusted.CandRefsTheory cannot import non-Trusted module Anneal.Helper"
+        ),
+        "unexpected cand->theory error: {err_cand_theory}"
+    );
+
+    // 4. `closureCorr`: reachable unapproved axiom (`propext` from `Init.Core`
+    // when omitted from the axiom allowlist) rejected after passing
+    // `verifyAndCollectCorrLocals` and standalone kernel replay.
+    checker
+        .admitted_mut()
+        .unwrap()
+        .axioms
+        .retain(|(ax, _)| ax != "propext");
+    let err_axiom = checker
+        .inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: search,
+            trusted: vec!["Trusted".to_string()],
+            corr_trusted: Vec::new(),
+            theory: Vec::new(),
+            corr_theory: Vec::new(),
+            vendor_miri: vec!["Miri.Interpreter.ExecutionMachine".to_string()],
+            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+        })
+        .unwrap_err();
+    assert!(
+        err_axiom
+            .message
+            .contains("unapproved axiom propext from Init.Core"),
+        "unexpected unapproved-axiom error: {err_axiom}"
+    );
+}
+
+/// Pass 1 `"audit"` independently rejects a compiled `Trusted` module whose
+/// `.olean` header imports a `theory/` module, even when the module was
+/// compiled without repository `"preflight"` and references none of the
+/// imported constants (so only `RepoOrigin.importViolation?` applies).
+#[test]
+fn rejects_compiled_trusted_header_import_of_theory() {
+    let fix = TempFixture::new(None);
+    fs::create_dir_all(fix.root.join("theory")).unwrap();
+    fs::write(
+        fix.root.join("theory/Anneal.lean"),
+        b"prelude\nimport Trusted\nnamespace Anneal\ndef helper : Nat := 0\nend Anneal\n",
+    )
+    .unwrap();
+    let mut checker = Checker::new(&fix.root, None).unwrap();
+    checker.set_require_mir_wp(false);
+    checker.run().unwrap();
+
+    let stage = checker.stage.clone();
+    compile_forged_module(
+        &mut checker,
+        &stage.join("src/forged"),
+        &stage.join("lib"),
+        &["Anneal"],
+        "Trusted.Forged",
+        "prelude\nimport Init.Core\nimport Anneal\nnamespace Trusted\ndef forged : Nat := 0\nend Trusted\n",
+    );
+    let err = checker
+        .inspect(InspectorRequest::Audit {
+            trusted: vec!["Trusted".to_string(), "Trusted.Forged".to_string()],
+            theory: vec!["Anneal".to_string()],
+            module_tiers: BTreeMap::from([
+                ("Trusted".to_string(), TrustTier::Vetted),
+                ("Trusted.Forged".to_string(), TrustTier::Vetted),
+            ]),
+        })
+        .unwrap_err();
+    assert_eq!(err.code, 1, "unexpected code: {err}");
+    assert_eq!(err.phase, "audit", "unexpected phase: {err}");
+    assert!(
+        err.message
+            .contains("Trusted module Trusted.Forged cannot import non-Trusted module Anneal"),
+        "unexpected error: {err}"
+    );
+}
+
+/// Pass 1 `"audit"` and Pass 2 `"correspondence-audit"` both reject a
+/// `Trusted` constant that references a `theory/` constant (the
+/// `.repo (.trusted _), .repo .theory` arm of `RepoOrigin.edgeViolation?` and
+/// `CorrOrigin.edgeViolation?`) with policy exit code `1`.
+///
+/// `Lean.saveModuleData` forges `Trusted.ForgedRef.olean`, whose header
+/// imports only `Init.Core` (so `checkHeaderImports` admits it) while its
+/// well-typed definition `Trusted.ForgedRef.x : Nat := Anneal.helper`
+/// references the compiled `theory/` constant `Anneal.helper`. Only
+/// `checkDeclarationEdges` can therefore reject it. Pass 1 audits the forged
+/// module as `vetted` and Pass 2 as `candidate:mir_semantics`, covering both
+/// tiers that the `.trusted _` pattern matches.
+#[test]
+fn rejects_forged_trusted_constant_referencing_theory() {
+    let fix = TempFixture::new(None);
+    fs::create_dir_all(fix.root.join("theory")).unwrap();
+    fs::write(
+        fix.root.join("theory/Anneal.lean"),
+        b"prelude\nimport Trusted\nnamespace Anneal\ndef helper : Nat := 0\nend Anneal\n",
+    )
+    .unwrap();
+    let mut checker = Checker::new(&fix.root, None).unwrap();
+    checker.set_require_mir_wp(false);
+    checker.run().unwrap();
+
+    // `Trusted.*` modules must share the search-path entry holding
+    // `Trusted.olean`, so the forged module goes into the staged `lib/`.
+    let stage = checker.stage.clone();
+    let trusted_lib = stage.join("lib");
+    let forged_module = "Trusted.ForgedRef";
+    let forged_out = trusted_lib.join("Trusted/ForgedRef.olean");
+    fs::create_dir_all(forged_out.parent().unwrap()).unwrap();
+    run_lean_script(
+        &mut checker,
+        "gen-forged-ref",
+        &stage.join("gen_forged_ref.lean"),
+        &format!(
+            "import Lean\n\
+             open Lean\n\
+             def main : IO Unit := do\n\
+               let ci : ConstantInfo := .defnInfo {{\n\
+                 name := `Trusted.ForgedRef.x\n\
+                 levelParams := []\n\
+                 type := .const `Nat []\n\
+                 value := .const `Anneal.helper []\n\
+                 hints := .abbrev\n\
+                 safety := .safe\n\
+                 all := [`Trusted.ForgedRef.x]\n\
+               }}\n\
+               let md : ModuleData := {{\n\
+                 isModule := false\n\
+                 imports := #[{{ module := `Init.Core }}]\n\
+                 constNames := #[`Trusted.ForgedRef.x]\n\
+                 constants := #[ci]\n\
+                 extraConstNames := #[]\n\
+                 entries := #[]\n\
+               }}\n\
+               saveModuleData (System.FilePath.mk {:?}) `Trusted.ForgedRef md\n",
+            forged_out.to_string_lossy()
+        ),
+    );
+    // Pass 1 loads modules from the admitted artifact map and compares their
+    // headers with the admitted import graph.
+    let core_edge = vec![ImportEdge {
+        module: "Init.Core".to_string(),
+        import_all: false,
+        is_exported: true,
+        is_meta: false,
+    }];
+    let arts = ModuleArtifacts::from_available(
+        &BTreeMap::from([("olean", forged_out.to_string_lossy().into_owned())]),
+        "test",
+        String::new,
+    )
+    .unwrap();
+    {
+        let adm = checker.admitted_mut().unwrap();
+        adm.graph.insert(forged_module.to_string(), core_edge);
+        adm.artifacts.insert(forged_module.to_string(), arts);
+    }
+
+    let expected = "Trusted constant Trusted.ForgedRef.x references Anneal.helper \
+                    from non-Trusted module Anneal";
+    let err_audit = checker
+        .inspect(InspectorRequest::Audit {
+            trusted: vec!["Trusted".to_string(), forged_module.to_string()],
+            theory: vec!["Anneal".to_string()],
+            module_tiers: BTreeMap::from([
+                ("Trusted".to_string(), TrustTier::Vetted),
+                (forged_module.to_string(), TrustTier::Vetted),
+            ]),
+        })
+        .unwrap_err();
+    assert_eq!(err_audit.code, 1, "unexpected Pass 1 code: {err_audit}");
+    assert_eq!(
+        err_audit.phase, "audit",
+        "unexpected Pass 1 phase: {err_audit}"
+    );
+    assert!(
+        err_audit.message.contains(expected),
+        "unexpected Pass 1 error: {err_audit}"
+    );
+
+    let err_corr = checker
+        .inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: vec![trusted_lib, stage.join("theory-lib")],
+            trusted: vec!["Trusted".to_string(), forged_module.to_string()],
+            corr_trusted: Vec::new(),
+            theory: vec!["Anneal".to_string()],
+            corr_theory: Vec::new(),
+            vendor_miri: Vec::new(),
+            module_tiers: BTreeMap::from([
+                ("Trusted".to_string(), TrustTier::Vetted),
+                (
+                    forged_module.to_string(),
+                    TrustTier::Candidate(CandidateFeature::MirSemantics),
+                ),
+            ]),
+        })
+        .unwrap_err();
+    assert_eq!(err_corr.code, 1, "unexpected Pass 2 code: {err_corr}");
+    assert_eq!(
+        err_corr.phase, "correspondence-audit",
+        "unexpected Pass 2 phase: {err_corr}"
+    );
+    assert!(
+        err_corr.message.contains(expected),
+        "unexpected Pass 2 error: {err_corr}"
+    );
+}
+
+/// Pass 2 `"preflight"` keeps `trusted/correspondence/` isolated from Pass 1
+/// `theory/` modules. Pass 1 compiles the real `Trusted.MirAst`,
+/// `Trusted.MirSemantics`, and `Anneal.MirWp` first, so `Anneal.MirWp` is an
+/// admitted compiled artifact when Pass 2 starts; a `Trusted.Correspondence`
+/// source importing it is still rejected before any Pass 2 module compiles.
+#[test]
+fn rejects_trusted_correspondence_import_of_theory_in_pass2_preflight() {
+    let checkout = repo_root();
+    let fix = TempFixture::new(None);
+    copy_cargo_workspace(&fix.root);
+    copy_dir_all(
+        &checkout.join("vendor/lean-miri"),
+        &fix.root.join("vendor/lean-miri"),
+    )
+    .unwrap();
+    for rel in [
+        "trusted/lean/Trusted.lean",
+        "trusted/lean/Trusted/MirAst.lean",
+        "trusted/lean/Trusted/MirSemantics.lean",
+        "theory/Anneal/MirWp.lean",
+    ] {
+        let dst = fix.root.join(rel);
+        fs::create_dir_all(dst.parent().unwrap()).unwrap();
+        fs::copy(checkout.join(rel), dst).unwrap();
+    }
+    fs::write(
+        fix.root.join("theory/Anneal.lean"),
+        b"prelude\nimport Init.NotationExtra\nimport Trusted\nimport Anneal.MirWp\n",
+    )
+    .unwrap();
+    fs::create_dir_all(fix.root.join("trusted/correspondence/Trusted")).unwrap();
+    fs::write(
+        fix.root
+            .join("trusted/correspondence/Trusted/Correspondence.lean"),
+        b"-- anneal-trust-tier: candidate:mir_semantics\nprelude\nimport Init.NotationExtra\nimport Anneal.MirWp\n",
+    )
+    .unwrap();
+    fs::create_dir_all(fix.root.join("correspondence/Anneal")).unwrap();
+    fs::write(
+        fix.root
+            .join("correspondence/Anneal/MirCorrespondenceProof.lean"),
+        b"prelude\nimport Trusted.Correspondence\n",
+    )
+    .unwrap();
+
+    let mut checker = Checker::new(&fix.root, None).unwrap();
+    let err = checker.run().unwrap_err();
+    assert_eq!(err.code, 1, "unexpected code: {err}");
+    assert_eq!(err.phase, "preflight", "unexpected phase: {err}");
+    assert!(
+        err.message
+            .contains("foreign/missing import Anneal.MirWp in Trusted.Correspondence"),
+        "unexpected error: {err}"
+    );
+}
+
+/// Pass 2 `"correspondence-audit"` independently rejects a compiled
+/// `Trusted.Correspondence` whose `.olean` header imports the `theory/` module
+/// `Anneal.MirWp`, even when the module was compiled without repository
+/// `"preflight"` and references none of the imported constants (so only
+/// `CorrOrigin.importViolation?` applies).
+#[test]
+fn rejects_trusted_correspondence_import_of_theory_in_correspondence_audit() {
+    let fix = TempFixture::new(None);
+    let mut checker = Checker::new(&fix.root, None).unwrap();
+    checker.set_require_mir_wp(false);
+    checker.run().unwrap();
+
+    let stage = checker.stage.clone();
+    let src = stage.join("src/forged-corr");
+    let trusted_lib = stage.join("lib");
+    let corr_lib = stage.join("forged-corr-lib");
+    let vendor_lib = stage.join("forged-vendor-lib");
+    compile_forged_module(
+        &mut checker,
+        &stage.join("src/forged-vendor"),
+        &vendor_lib,
+        &[],
+        "Miri.Forged",
+        "prelude\nimport Init.Core\nnamespace Miri.Forged\ndef ok : Nat := 0\nend Miri.Forged\n",
+    );
+    compile_forged_module(
+        &mut checker,
+        &src,
+        &corr_lib,
+        &[],
+        "Anneal.MirWp",
+        "prelude\nimport Init.Core\nnamespace Anneal.MirWp\ndef wpProg : Nat := 0\nend Anneal.MirWp\n",
+    );
+    compile_forged_module(
+        &mut checker,
+        &src,
+        &trusted_lib,
+        &["Anneal.MirWp"],
+        "Trusted.Correspondence",
+        "prelude\nimport Init.Core\nimport Anneal.MirWp\nnamespace Trusted.Correspondence\ndef CorrespondenceClaim : Prop := True\nend Trusted.Correspondence\n",
+    );
+    compile_forged_module(
+        &mut checker,
+        &src,
+        &corr_lib,
+        &["Trusted.Correspondence"],
+        "Anneal.MirCorrespondenceProof",
+        "prelude\nimport Init.Core\nimport Trusted.Correspondence\n",
+    );
+    let err = checker
+        .inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: vec![trusted_lib, vendor_lib, corr_lib],
+            trusted: vec!["Trusted".to_string()],
+            corr_trusted: vec!["Trusted.Correspondence".to_string()],
+            theory: vec!["Anneal.MirWp".to_string()],
+            corr_theory: vec!["Anneal.MirCorrespondenceProof".to_string()],
+            vendor_miri: vec!["Miri.Forged".to_string()],
+            module_tiers: BTreeMap::from([
+                ("Trusted".to_string(), TrustTier::Vetted),
+                (
+                    "Trusted.Correspondence".to_string(),
+                    TrustTier::parse("candidate:mir_semantics").unwrap(),
+                ),
+            ]),
+        })
+        .unwrap_err();
+    assert_eq!(err.code, 1, "unexpected code: {err}");
+    assert_eq!(err.phase, "correspondence-audit", "unexpected phase: {err}");
+    assert!(
+        err.message.contains(
+            "Trusted module Trusted.Correspondence cannot import non-Trusted module Anneal.MirWp"
+        ),
+        "unexpected error: {err}"
+    );
+}
+
+/// Verifies end-to-end that standalone kernel replay in Pass 2
+/// (`"correspondence-audit"`) rejects an ill-typed `.vendorMiri` `.olean`
+/// compiled with a scoped `set_option debug.skipKernelTC true` override (even
+/// when compiled with CLI `-Ddebug.skipKernelTC=false`), and that a valid
+/// minimal vendor closure passes replay and reports `miriReplay: true` with a
+/// positive `miriReplayedDeclarations` count.
+#[test]
+fn rejects_vendor_miri_skip_kernel_tc_during_replay() {
+    let fix = TempFixture::new(None);
+    let mut checker = Checker::new(&fix.root, None).unwrap();
+    checker.set_require_mir_wp(false);
+    checker.run().unwrap();
+    checker
+        .admitted_mut()
+        .unwrap()
+        .ensure_sysroot_foundation()
+        .unwrap();
+    let trusted_lib = checker.stage.join("lib");
+    let vendor_src = checker.stage.join("src/skip-tc-miri");
+    let vendor_lib = checker.stage.join("skip-tc-miri-lib");
+
+    // 1. Compile a vendor module whose scoped `set_option debug.skipKernelTC
+    // true` overrides CLI `-Ddebug.skipKernelTC=false` to emit an ill-typed
+    // theorem (`Miri.SkipKernelTC.bogus : False := True.intro`) into the
+    // `.olean` without using `axiom`, `sorryAx`, `unsafe`, or compiler
+    // reflection primitives.
+    let bogus_src = vendor_src.join("Miri/SkipKernelTC.lean");
+    let bogus_out = vendor_lib.join("Miri/SkipKernelTC.olean");
+    fs::create_dir_all(bogus_src.parent().unwrap()).unwrap();
+    fs::create_dir_all(bogus_out.parent().unwrap()).unwrap();
+    fs::write(
+        &bogus_src,
+        "import Lean.Elab.Command\n\
+         namespace Miri.SkipKernelTC\n\
+         set_option debug.skipKernelTC true in\n\
+         run_cmd\n\
+           Lean.Elab.Command.liftCoreM <| Lean.addDecl <| .thmDecl {\n\
+             name := `Miri.SkipKernelTC.bogus\n\
+             levelParams := []\n\
+             type := Lean.mkConst `False\n\
+             value := Lean.mkConst `True.intro\n\
+           }\n\
+         end Miri.SkipKernelTC\n",
+    )
+    .unwrap();
+    checker
+        .process(
+            "compile-Miri.SkipKernelTC",
+            &[
+                "-j1".to_string(),
+                "-M4096".to_string(),
+                "-t0".to_string(),
+                "-DElab.async=false".to_string(),
+                "-Ddebug.skipKernelTC=false".to_string(),
+                "-R".to_string(),
+                vendor_src.to_string_lossy().into_owned(),
+                "-o".to_string(),
+                bogus_out.to_string_lossy().into_owned(),
+                bogus_src.to_string_lossy().into_owned(),
+            ],
+        )
+        .expect(
+            "Lean must accept scoped `set_option debug.skipKernelTC true` \
+             at compile time to prove CLI `-Ddebug.skipKernelTC=false` alone \
+             is insufficient",
+        );
+
+    let err_replay = checker
+        .inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: vec![trusted_lib.clone(), vendor_lib.clone()],
+            trusted: vec!["Trusted".to_string()],
+            corr_trusted: Vec::new(),
+            theory: Vec::new(),
+            corr_theory: Vec::new(),
+            vendor_miri: vec!["Miri.SkipKernelTC".to_string()],
+            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+        })
+        .unwrap_err();
+    // Kernel replay exceptions are operational errors (exit code `2`) so no
+    // stringified `Kernel.Exception` can spoof `"policy:"`.
+    assert_eq!(
+        err_replay.code, 2,
+        "expected operational exit code 2 on kernel replay failure: {err_replay}"
+    );
+    assert_eq!(
+        err_replay.phase, "correspondence-audit",
+        "unexpected phase: {err_replay}"
+    );
+    assert!(
+        err_replay
+            .message
+            .contains("vendor Miri kernel replay failed")
+            && err_replay.message.contains("Miri.SkipKernelTC.bogus")
+            && err_replay.message.contains("declaration type mismatch"),
+        "expected kernel replay type-mismatch rejection, got: {err_replay}"
+    );
+
+    // 2. Verify the positive path: a valid minimal `.vendorMiri` module
+    // defining the 21 `ExecutionMachine` cone roots passes standalone kernel
+    // replay and returns `miriReplay: true` with `miriReplayedDeclarations`
+    // positive, while vendor-only mode (no correspondence modules) reports
+    // `correspondenceReplay: false` with zero correspondence declarations
+    // replayed.
+    let valid_src = vendor_src.join("Miri/Interpreter/ExecutionMachine.lean");
+    let valid_out = vendor_lib.join("Miri/Interpreter/ExecutionMachine.olean");
+    fs::create_dir_all(valid_src.parent().unwrap()).unwrap();
+    fs::create_dir_all(valid_out.parent().unwrap()).unwrap();
+    fs::write(
+        &valid_src,
+        "prelude\n\
+         import Init.Core\n\
+         namespace Miri.Interpreter.ExecutionMachine\n\
+         def step : Nat := 0\n\
+         def withValidation : Nat := 0\n\
+         def operandHooks : Nat := 0\n\
+         end Miri.Interpreter.ExecutionMachine\n\
+         namespace Miri.Interpreter.IntegerOps\n\
+         def binary : Nat := 0\n\
+         def binaryBool : Nat := 0\n\
+         def unary : Nat := 0\n\
+         end Miri.Interpreter.IntegerOps\n\
+         namespace Miri.Memory.ScalarInt\n\
+         def truncateFromUInt : Nat := 0\n\
+         def tryFromUInt : Nat := 0\n\
+         def tryToBool : Nat := 0\n\
+         end Miri.Memory.ScalarInt\n\
+         namespace Miri.Interpreter\n\
+         def evalOperand : Nat := 0\n\
+         def evalPlaceToOp : Nat := 0\n\
+         def localToOp : Nat := 0\n\
+         def placeWriteLocalImmediate : Nat := 0\n\
+         def evalRvalueIntoPlace : Nat := 0\n\
+         def runRvalue : Nat := 0\n\
+         end Miri.Interpreter\n\
+         namespace Miri.Interpreter.Step\n\
+         def evalStatement : Nat := 0\n\
+         end Miri.Interpreter.Step\n\
+         namespace Miri.Interpreter.Frame\n\
+         def storageLive : Nat := 0\n\
+         def storageDead : Nat := 0\n\
+         end Miri.Interpreter.Frame\n\
+         namespace Miri.Interpreter.ControlFlow\n\
+         def goToBlock : Nat := 0\n\
+         def evalTerminator : Nat := 0\n\
+         def returnFromCurrentFrame : Nat := 0\n\
+         end Miri.Interpreter.ControlFlow\n",
+    )
+    .unwrap();
+    checker
+        .process(
+            "compile-Miri.Interpreter.ExecutionMachine",
+            &[
+                "-j1".to_string(),
+                "-M2048".to_string(),
+                "-t0".to_string(),
+                "-DElab.async=false".to_string(),
+                "-Ddebug.skipKernelTC=false".to_string(),
+                "-R".to_string(),
+                vendor_src.to_string_lossy().into_owned(),
+                "-o".to_string(),
+                valid_out.to_string_lossy().into_owned(),
+                valid_src.to_string_lossy().into_owned(),
+            ],
+        )
+        .unwrap();
+
+    let ok_rep = checker
+        .inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: vec![trusted_lib, vendor_lib],
+            trusted: vec!["Trusted".to_string()],
+            corr_trusted: Vec::new(),
+            theory: Vec::new(),
+            corr_theory: Vec::new(),
+            vendor_miri: vec!["Miri.Interpreter.ExecutionMachine".to_string()],
+            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+        })
+        .unwrap();
+    assert_eq!(ok_rep.get("miriReplay"), Some(&json!(true)));
+    assert_eq!(
+        ok_rep
+            .get("miriReplayedDeclarations")
+            .and_then(Json::as_u64),
+        Some(21)
+    );
+    assert_eq!(ok_rep.get("correspondenceReplay"), Some(&json!(false)));
+    for zero_field in [
+        "correspondenceDeclarations",
+        "correspondenceReplayedDeclarations",
+    ] {
+        assert_eq!(
+            ok_rep.get(zero_field).and_then(Json::as_u64),
+            Some(0),
+            "unexpected {zero_field}: {ok_rep}"
+        );
+    }
+    assert!(
+        ok_rep
+            .get("miriClosureReachableDeclarations")
+            .and_then(Json::as_u64)
+            .is_some_and(|n| n >= 21),
+        "unexpected reachable declarations: {ok_rep}"
+    );
+    assert_eq!(ok_rep.get("miriClosureAxioms"), Some(&json!([])));
+}
+
+/// Pass 2 `"correspondence-audit"` kernel-replays correspondence declarations:
+/// a forged `Anneal.MirCorrespondenceProof.olean` holding the ill-typed theorem
+/// `Anneal.MirCorrespondenceProof.bogus : False := True.intro` is rejected
+/// with operational exit code `2` and `"correspondence kernel replay failed"`.
+///
+/// `Lean.saveModuleData` writes the theorem without elaborating or
+/// kernel-checking it, and the theorem passes every inventory, origin, and
+/// edge check, so only the correspondence replay in `replayCorrAndVendor`
+/// rejects it. If that replay were skipped, a later Pass 2 policy check would
+/// reject this fixture with exit code `1` instead.
+#[test]
+fn rejects_forged_ill_typed_correspondence_declaration_during_replay() {
+    let fix = TempFixture::new(None);
+    let mut checker = Checker::new(&fix.root, None).unwrap();
+    checker.set_require_mir_wp(false);
+    checker.run().unwrap();
+
+    let stage = checker.stage.clone();
+    let corr_lib = stage.join("forged-corr-lib");
+    let forged_out = corr_lib.join("Anneal/MirCorrespondenceProof.olean");
+    fs::create_dir_all(forged_out.parent().unwrap()).unwrap();
+    run_lean_script(
+        &mut checker,
+        "gen-bogus-corr-proof",
+        &stage.join("gen_bogus_corr_proof.lean"),
+        &format!(
+            "import Lean\n\
+             open Lean\n\
+             def main : IO Unit := do\n\
+               let ci : ConstantInfo := .thmInfo {{\n\
+                 name := `Anneal.MirCorrespondenceProof.bogus\n\
+                 levelParams := []\n\
+                 type := .const `False []\n\
+                 value := .const `True.intro []\n\
+                 all := [`Anneal.MirCorrespondenceProof.bogus]\n\
+               }}\n\
+               let md : ModuleData := {{\n\
+                 isModule := false\n\
+                 imports := #[{{ module := `Init.Core }}]\n\
+                 constNames := #[`Anneal.MirCorrespondenceProof.bogus]\n\
+                 constants := #[ci]\n\
+                 extraConstNames := #[]\n\
+                 entries := #[]\n\
+               }}\n\
+               saveModuleData (System.FilePath.mk {:?}) `Anneal.MirCorrespondenceProof md\n",
+            forged_out.to_string_lossy()
+        ),
+    );
+
+    let err = checker
+        .inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: vec![stage.join("lib"), corr_lib],
+            trusted: vec!["Trusted".to_string()],
+            corr_trusted: Vec::new(),
+            theory: Vec::new(),
+            corr_theory: vec!["Anneal.MirCorrespondenceProof".to_string()],
+            vendor_miri: Vec::new(),
+            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+        })
+        .unwrap_err();
+    // Kernel replay exceptions are operational errors (exit code `2`) so no
+    // stringified `Kernel.Exception` can spoof `"policy:"`.
+    assert_eq!(
+        err.code, 2,
+        "expected operational exit code 2 on correspondence replay failure: {err}"
+    );
+    assert_eq!(err.phase, "correspondence-audit", "unexpected phase: {err}");
+    assert!(
+        err.message.contains("correspondence kernel replay failed")
+            && err.message.contains("Anneal.MirCorrespondenceProof.bogus")
+            && err.message.contains("declaration type mismatch"),
+        "expected correspondence kernel replay rejection, got: {err}"
+    );
+}
+
+/// Pass 2 `"correspondence-audit"` rejects a repository constant whose name
+/// already belongs to the authenticated sysroot replay base with policy exit
+/// code `1` (`"repository constant ... shadows vendor/sysroot declaration"`),
+/// before `Kernel.Environment.replay` could skip it as a duplicate theorem.
+///
+/// `Lean.saveModuleData` forges a `Trusted.Correspondence.olean` (header
+/// importing only `Init.Core`) whose sole constant is a verbatim copy of the
+/// `.sysrootFoundation` theorem `Prod.fst_swap` from `Init.Data.Prod`, and an
+/// empty `Anneal.MirCorrespondenceProof.olean` whose header imports
+/// `Init.Data.Prod`. `Lean.importModules` admits the duplicate theorem and
+/// attributes it to `Trusted.Correspondence`, which loads first, so the
+/// inventory, origin, and edge checks pass and only the shadow check in
+/// `replayCorrAndVendor` rejects it.
+#[test]
+fn rejects_repository_constant_shadowing_sysroot_declaration() {
+    let fix = TempFixture::new(None);
+    let mut checker = Checker::new(&fix.root, None).unwrap();
+    checker.set_require_mir_wp(false);
+    checker.run().unwrap();
+
+    // `Trusted.*` modules must share the search-path entry holding
+    // `Trusted.olean`, so the forged umbrella goes into the staged `lib/`.
+    let stage = checker.stage.clone();
+    let prefix = checker.admitted().unwrap().prefix.clone();
+    let trusted_lib = stage.join("lib");
+    let corr_lib = stage.join("shadow-corr-lib");
+    let corr_out = trusted_lib.join("Trusted/Correspondence.olean");
+    let proof_out = corr_lib.join("Anneal/MirCorrespondenceProof.olean");
+    for out in [&corr_out, &proof_out] {
+        fs::create_dir_all(out.parent().unwrap()).unwrap();
+    }
+    run_lean_script(
+        &mut checker,
+        "gen-shadow-sysroot",
+        &stage.join("gen_shadow_sysroot.lean"),
+        &format!(
+            "import Lean\n\
+             open Lean\n\
+             def main : IO Unit := do\n\
+               initSearchPath (System.FilePath.mk {:?})\n\
+               let env ← importModules #[{{ module := `Init.Data.Prod }}] {{}} \
+                 (trustLevel := 0) (plugins := #[]) (loadExts := false) \
+                 (level := .private)\n\
+               let some ci := env.checked.get.find? `Prod.fst_swap \
+                 | throw (IO.userError \"missing sysroot theorem Prod.fst_swap\")\n\
+               let corrMd : ModuleData := {{\n\
+                 isModule := false\n\
+                 imports := #[{{ module := `Init.Core }}]\n\
+                 constNames := #[ci.name]\n\
+                 constants := #[ci]\n\
+                 extraConstNames := #[]\n\
+                 entries := #[]\n\
+               }}\n\
+               saveModuleData (System.FilePath.mk {:?}) `Trusted.Correspondence corrMd\n\
+               let proofMd : ModuleData := {{\n\
+                 isModule := false\n\
+                 imports := #[{{ module := `Init.Data.Prod }}]\n\
+                 constNames := #[]\n\
+                 constants := #[]\n\
+                 extraConstNames := #[]\n\
+                 entries := #[]\n\
+               }}\n\
+               saveModuleData (System.FilePath.mk {:?}) `Anneal.MirCorrespondenceProof proofMd\n",
+            prefix.to_string_lossy(),
+            corr_out.to_string_lossy(),
+            proof_out.to_string_lossy()
+        ),
+    );
+
+    let err = checker
+        .inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: vec![trusted_lib, corr_lib],
+            trusted: vec!["Trusted".to_string()],
+            corr_trusted: vec!["Trusted.Correspondence".to_string()],
+            theory: Vec::new(),
+            corr_theory: vec!["Anneal.MirCorrespondenceProof".to_string()],
+            vendor_miri: Vec::new(),
+            module_tiers: BTreeMap::from([
+                ("Trusted".to_string(), TrustTier::Vetted),
+                (
+                    "Trusted.Correspondence".to_string(),
+                    TrustTier::Candidate(CandidateFeature::MirSemantics),
+                ),
+            ]),
+        })
+        .unwrap_err();
+    assert_eq!(err.code, 1, "unexpected code: {err}");
+    assert_eq!(err.phase, "correspondence-audit", "unexpected phase: {err}");
+    assert!(
+        err.message
+            .contains("repository constant Prod.fst_swap shadows vendor/sysroot declaration"),
+        "unexpected error: {err}"
+    );
+}
+
+/// Verifies Pass 2 compile-environment syntactic preflight
+/// (`"correspondence-preflight"`): syntax registered by `Lean`/`Std` (via
+/// `Miri.*` importing `Lean`), such as `throwError "x"`
+/// (`Lean.termThrowError__`) and `m! "x"` (`Lean.termM!_`), slips past
+/// foundation-only `"preflight"` as a plain application, but is rejected with
+/// policy exit code `1` by `"correspondence-preflight"` in both
+/// `correspondence/` and `trusted/correspondence/` modules before compilation.
+#[test]
+fn rejects_pass2_lean_syntax_extensions_in_correspondence_preflight() {
+    let fix = TempFixture::new(None);
+    let mut checker = Checker::new(&fix.root, None).unwrap();
+    checker.set_require_mir_wp(false);
+    checker.run().unwrap();
+    checker
+        .admitted_mut()
+        .unwrap()
+        .ensure_sysroot_foundation()
+        .unwrap();
+
+    let trusted_lib = checker.stage.join("lib");
+    let vendor_src = checker.stage.join("src/lean-ext-miri");
+    let vendor_lib = checker.stage.join("lean-ext-miri-lib");
+    let miri_src = vendor_src.join("Miri/ImportLean.lean");
+    let miri_out = vendor_lib.join("Miri/ImportLean.olean");
+    fs::create_dir_all(miri_src.parent().unwrap()).unwrap();
+    fs::create_dir_all(miri_out.parent().unwrap()).unwrap();
+    fs::write(
+        &miri_src,
+        "import Lean\nnamespace Miri.ImportLean\ndef ok : Nat := 0\nend Miri.ImportLean\n",
+    )
+    .unwrap();
+    checker
+        .process(
+            "compile-Miri.ImportLean",
+            &[
+                "-j1".to_string(),
+                "-M4096".to_string(),
+                "-t0".to_string(),
+                "-DElab.async=false".to_string(),
+                "-Ddebug.skipKernelTC=false".to_string(),
+                "-R".to_string(),
+                vendor_src.to_string_lossy().into_owned(),
+                "-o".to_string(),
+                miri_out.to_string_lossy().into_owned(),
+                miri_src.to_string_lossy().into_owned(),
+            ],
+        )
+        .unwrap();
+
+    let corr_src = checker.stage.join("src/corr-preflight-test");
+    fs::create_dir_all(corr_src.join("Anneal")).unwrap();
+    fs::create_dir_all(corr_src.join("Trusted")).unwrap();
+
+    let bad_throw_theory = corr_src.join("Anneal/BadThrowError.lean");
+    fs::write(
+        &bad_throw_theory,
+        "prelude\nimport Init.Core\nimport Miri.ImportLean\n\
+         namespace Anneal.BadThrowError\n\
+         def f := throwError \"x\"\n\
+         end Anneal.BadThrowError\n",
+    )
+    .unwrap();
+
+    let bad_throw_trusted = corr_src.join("Trusted/BadThrowError.lean");
+    fs::write(
+        &bad_throw_trusted,
+        "-- anneal-trust-tier: candidate:mir_semantics\n\
+         prelude\nimport Init.Core\nimport Miri.ImportLean\n\
+         namespace Trusted.BadThrowError\n\
+         def f := throwError \"x\"\n\
+         end Trusted.BadThrowError\n",
+    )
+    .unwrap();
+
+    let bad_msg_theory = corr_src.join("Anneal/BadMsgData.lean");
+    fs::write(
+        &bad_msg_theory,
+        "prelude\nimport Init.Core\nimport Miri.ImportLean\n\
+         namespace Anneal.BadMsgData\n\
+         def f := m! \"x\"\n\
+         end Anneal.BadMsgData\n",
+    )
+    .unwrap();
+
+    let good_corr = corr_src.join("Anneal/GoodCorr.lean");
+    fs::write(
+        &good_corr,
+        "prelude\nimport Init.Core\nimport Miri.ImportLean\n\
+         namespace Anneal.GoodCorr\n\
+         theorem ok : True := by exact True.intro\n\
+         end Anneal.GoodCorr\n",
+    )
+    .unwrap();
+
+    // Confirm that foundation-only `"preflight"` parses `throwError "x"` as a
+    // plain function application without rejecting it.
+    checker
+        .inspect(InspectorRequest::Preflight {
+            sources: vec![("Anneal.BadThrowError".to_string(), bad_throw_theory.clone())],
+        })
+        .expect("foundation-only preflight parses `throwError` as a plain identifier");
+
+    let run_corr_pf = |chk: &mut Checker, module: &str, path: &Path| {
+        chk.inspect(InspectorRequest::CorrespondencePreflight {
+            search_path: vec![trusted_lib.clone(), vendor_lib.clone()],
+            trusted: vec!["Trusted".to_string()],
+            theory: Vec::new(),
+            vendor_miri: vec!["Miri.ImportLean".to_string()],
+            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+            sources: vec![(module.to_string(), path.to_path_buf())],
+        })
+    };
+
+    let err_throw =
+        run_corr_pf(&mut checker, "Anneal.BadThrowError", &bad_throw_theory).unwrap_err();
+    assert_eq!(err_throw.code, 1, "expected policy exit 1: {err_throw}");
+    assert_eq!(err_throw.phase, "correspondence-preflight");
+    assert!(
+        err_throw
+            .message
+            .contains("unsupported syntax kind Lean.termThrowError__"),
+        "expected Lean.termThrowError__ rejection, got: {err_throw}"
+    );
+
+    let err_trusted_throw =
+        run_corr_pf(&mut checker, "Trusted.BadThrowError", &bad_throw_trusted).unwrap_err();
+    assert_eq!(
+        err_trusted_throw.code, 1,
+        "expected policy exit 1: {err_trusted_throw}"
+    );
+    assert_eq!(err_trusted_throw.phase, "correspondence-preflight");
+    assert!(
+        err_trusted_throw
+            .message
+            .contains("unsupported syntax kind Lean.termThrowError__"),
+        "expected Lean.termThrowError__ rejection, got: {err_trusted_throw}"
+    );
+
+    let err_msg = run_corr_pf(&mut checker, "Anneal.BadMsgData", &bad_msg_theory).unwrap_err();
+    assert_eq!(err_msg.code, 1, "expected policy exit 1: {err_msg}");
+    assert_eq!(err_msg.phase, "correspondence-preflight");
+    assert!(
+        err_msg
+            .message
+            .contains("unsupported syntax kind Lean.termM!_"),
+        "expected Lean.termM!_ rejection, got: {err_msg}"
+    );
+
+    // Benign correspondence proof module passes `"correspondence-preflight"`.
+    run_corr_pf(&mut checker, "Anneal.GoodCorr", &good_corr)
+        .expect("benign correspondence module must pass correspondence-preflight");
+}
+
+/// Verifies scoped-extension defense in `"correspondence-preflight"`: any
+/// `open`, `open ... in`, `namespace`, relative nested `open`,
+/// multi-component declaration (`expandNamespacedDeclaration`), or `mutual`
+/// preamble targeting a namespace that registers scoped `ScopedEnvExtension`
+/// entries (such as a synthetic vendor `scoped syntax`/`scoped macro_rules` or
+/// `Lean`/`Init` scoped namespaces like `List` or `Lean.PostprocessTraces`) is
+/// rejected with policy exit code `1` before compilation—including when an
+/// unimported `theory/` module declares a decoy namespace with the same suffix
+/// (1-step or chained 2-step shadowing in the union parser environment).
+#[test]
+fn rejects_scoped_syntax_and_extensions_in_preflight() {
+    let fix = TempFixture::new(None);
+    let decoy_path = fix.root.join("theory/Anneal/DecoyNs.lean");
+    fs::create_dir_all(decoy_path.parent().unwrap()).unwrap();
+    fs::write(
+        fix.root.join("theory/Anneal.lean"),
+        "prelude\nimport Init.Core\n",
+    )
+    .unwrap();
+    fs::write(
+        &decoy_path,
+        "prelude\nimport Init.Core\n\
+         namespace Anneal.Miri.ScopedSyntax\n\
+         def decoy : Nat := 0\n\
+         end Anneal.Miri.ScopedSyntax\n\
+         namespace Anneal.Miri\n\
+         def decoyMiri : Nat := 0\n\
+         end Anneal.Miri\n\
+         namespace Anneal.Lean.PostprocessTraces\n\
+         def decoyTraces : Nat := 0\n\
+         end Anneal.Lean.PostprocessTraces\n",
+    )
+    .unwrap();
+    let mut checker = Checker::new(&fix.root, None).unwrap();
+    checker.set_require_mir_wp(false);
+    checker.run().unwrap();
+    checker
+        .admitted_mut()
+        .unwrap()
+        .ensure_sysroot_foundation()
+        .unwrap();
+
+    let trusted_lib = checker.stage.join("lib");
+    let theory_lib = checker.stage.join("theory-lib");
+    let vendor_src = checker.stage.join("src/scoped-miri");
+    let vendor_lib = checker.stage.join("scoped-miri-lib");
+    let miri_src = vendor_src.join("Miri/ScopedExt.lean");
+    let miri_out = vendor_lib.join("Miri/ScopedExt.olean");
+    fs::create_dir_all(miri_src.parent().unwrap()).unwrap();
+    fs::create_dir_all(miri_out.parent().unwrap()).unwrap();
+    fs::write(
+        &miri_src,
+        "import Lean\n\
+         namespace Miri.ScopedSyntax\n\
+         scoped syntax \"sneaky_term\" : term\n\
+         scoped macro_rules | `(sneaky_term) => `(0)\n\
+         end Miri.ScopedSyntax\n\
+         namespace Miri.ScopedOuter\n\
+         def helper : Nat := 1\n\
+         namespace ScopedInner\n\
+         scoped syntax \"nested_term\" : term\n\
+         scoped macro_rules | `(nested_term) => `(2)\n\
+         end ScopedInner\n\
+         end Miri.ScopedOuter\n",
+    )
+    .unwrap();
+    checker
+        .process(
+            "compile-Miri.ScopedExt",
+            &[
+                "-j1".to_string(),
+                "-M4096".to_string(),
+                "-t0".to_string(),
+                "-DElab.async=false".to_string(),
+                "-Ddebug.skipKernelTC=false".to_string(),
+                "-R".to_string(),
+                vendor_src.to_string_lossy().into_owned(),
+                "-o".to_string(),
+                miri_out.to_string_lossy().into_owned(),
+                miri_src.to_string_lossy().into_owned(),
+            ],
+        )
+        .unwrap();
+
+    let src_dir = checker.stage.join("src/scoped-tests");
+    fs::create_dir_all(src_dir.join("Anneal")).unwrap();
+    fs::create_dir_all(src_dir.join("Trusted")).unwrap();
+
+    let run_corr_pf = |chk: &mut Checker, module: &str, path: &Path| {
+        chk.inspect(InspectorRequest::CorrespondencePreflight {
+            search_path: vec![trusted_lib.clone(), theory_lib.clone(), vendor_lib.clone()],
+            trusted: vec!["Trusted".to_string()],
+            theory: vec!["Anneal".to_string(), "Anneal.DecoyNs".to_string()],
+            vendor_miri: vec!["Miri.ScopedExt".to_string()],
+            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+            sources: vec![(module.to_string(), path.to_path_buf())],
+        })
+    };
+
+    let cases: &[(&str, &str, &str, &str)] = &[
+        (
+            "Anneal.ScopedOpen",
+            "Anneal/ScopedOpen.lean",
+            "prelude\nimport Init.Core\nimport Miri.ScopedExt\n\
+             open Miri.ScopedSyntax\n\
+             def f : Nat := sneaky_term\n",
+            "cannot open namespace Miri.ScopedSyntax with scoped syntax or extensions",
+        ),
+        (
+            "Trusted.ScopedOpen",
+            "Trusted/ScopedOpen.lean",
+            "-- anneal-trust-tier: candidate:mir_semantics\n\
+             prelude\nimport Init.Core\nimport Miri.ScopedExt\n\
+             open Miri.ScopedSyntax\n\
+             def f : Nat := sneaky_term\n",
+            "cannot open namespace Miri.ScopedSyntax with scoped syntax or extensions",
+        ),
+        (
+            "Anneal.ScopedOpenIn",
+            "Anneal/ScopedOpenIn.lean",
+            "prelude\nimport Init.Core\nimport Miri.ScopedExt\n\
+             open Miri.ScopedSyntax in\n\
+             def f : Nat := 0\n",
+            "cannot open namespace Miri.ScopedSyntax with scoped syntax or extensions",
+        ),
+        (
+            "Anneal.ScopedNamespace",
+            "Anneal/ScopedNamespace.lean",
+            "prelude\nimport Init.Core\nimport Miri.ScopedExt\n\
+             namespace Miri.ScopedSyntax\n\
+             def f : Nat := sneaky_term\n\
+             end Miri.ScopedSyntax\n",
+            "cannot enter namespace Miri.ScopedSyntax with scoped syntax or extensions",
+        ),
+        (
+            "Anneal.ScopedRelativeOpen",
+            "Anneal/ScopedRelativeOpen.lean",
+            "prelude\nimport Init.Core\nimport Miri.ScopedExt\n\
+             open Miri.ScopedOuter\n\
+             open ScopedInner\n\
+             def f : Nat := nested_term\n",
+            "cannot open namespace Miri.ScopedOuter.ScopedInner with scoped syntax or extensions",
+        ),
+        (
+            "Anneal.ScopedNestedNsOpen",
+            "Anneal/ScopedNestedNsOpen.lean",
+            "prelude\nimport Init.Core\nimport Miri.ScopedExt\n\
+             namespace Miri.ScopedOuter\n\
+             open ScopedInner\n\
+             def f : Nat := nested_term\n\
+             end Miri.ScopedOuter\n",
+            "cannot open namespace Miri.ScopedOuter.ScopedInner with scoped syntax or extensions",
+        ),
+        (
+            "Anneal.ScopedDeclPrefix",
+            "Anneal/ScopedDeclPrefix.lean",
+            "prelude\nimport Init.Core\nimport Miri.ScopedExt\n\
+             def Miri.ScopedSyntax.sneaky : Nat := sneaky_term\n",
+            "cannot declare in namespace Miri.ScopedSyntax with scoped syntax or extensions",
+        ),
+        (
+            "Anneal.ScopedMutualOpen",
+            "Anneal/ScopedMutualOpen.lean",
+            "prelude\nimport Init.Core\nimport Miri.ScopedExt\n\
+             mutual\n\
+             open Miri.ScopedSyntax\n\
+             def f : Nat := sneaky_term\n\
+             end\n",
+            "cannot open namespace Miri.ScopedSyntax with scoped syntax or extensions",
+        ),
+        (
+            "Anneal.ScopedListOpen",
+            "Anneal/ScopedListOpen.lean",
+            "prelude\nimport Init.Core\nimport Miri.ScopedExt\n\
+             open List\n\
+             def f : Nat := 0\n",
+            "cannot open namespace List with scoped syntax or extensions",
+        ),
+        (
+            "Anneal.BadEndScope",
+            "Anneal/BadEndScope.lean",
+            "prelude\nimport Init.Core\nimport Miri.ScopedExt\n\
+             namespace Foo\n\
+             end Bar\n",
+            "mismatched `end Bar`",
+        ),
+        // Decoy-namespace shadowing regressions: `Anneal.DecoyNs` is loaded in
+        // the union parser environment (without being imported here), declaring
+        // unscoped `Anneal.Miri.ScopedSyntax`, `Anneal.Miri`, and
+        // `Anneal.Lean.PostprocessTraces`. Preflight must check all candidate
+        // resolutions and reject every real scoped target.
+        (
+            "Anneal.DecoyScopedOpen",
+            "Anneal/DecoyScopedOpen.lean",
+            "prelude\nimport Init.Core\nimport Miri.ScopedExt\n\
+             namespace Anneal\n\
+             open Miri.ScopedSyntax\n\
+             def f : Nat := sneaky_term\n\
+             end Anneal\n",
+            "cannot open namespace Miri.ScopedSyntax with scoped syntax or extensions",
+        ),
+        (
+            "Anneal.DecoyScopedOpenIn",
+            "Anneal/DecoyScopedOpenIn.lean",
+            "prelude\nimport Init.Core\nimport Miri.ScopedExt\n\
+             namespace Anneal\n\
+             open Miri.ScopedSyntax in\n\
+             def f : Nat := 0\n\
+             end Anneal\n",
+            "cannot open namespace Miri.ScopedSyntax with scoped syntax or extensions",
+        ),
+        (
+            "Anneal.DecoyChainedOpen",
+            "Anneal/DecoyChainedOpen.lean",
+            "prelude\nimport Init.Core\nimport Miri.ScopedExt\n\
+             namespace Anneal\n\
+             open Miri\n\
+             open ScopedSyntax\n\
+             def f : Nat := sneaky_term\n\
+             end Anneal\n",
+            "cannot open namespace Miri.ScopedSyntax with scoped syntax or extensions",
+        ),
+        (
+            "Anneal.DecoySameCmdChainedOpen",
+            "Anneal/DecoySameCmdChainedOpen.lean",
+            "prelude\nimport Init.Core\nimport Miri.ScopedExt\n\
+             namespace Anneal\n\
+             open Miri ScopedSyntax\n\
+             def f : Nat := sneaky_term\n\
+             end Anneal\n",
+            "cannot open namespace Miri.ScopedSyntax with scoped syntax or extensions",
+        ),
+        (
+            "Anneal.DecoyLeanPostprocessTraces",
+            "Anneal/DecoyLeanPostprocessTraces.lean",
+            "prelude\nimport Init.Core\nimport Miri.ScopedExt\n\
+             namespace Anneal\n\
+             open Lean.PostprocessTraces\n\
+             def f : Nat := 0\n\
+             end Anneal\n",
+            "cannot open namespace Lean.PostprocessTraces with scoped syntax or extensions",
+        ),
+    ];
+
+    for (module, rel, body, expected_msg) in cases {
+        let path = src_dir.join(rel);
+        fs::write(&path, body).unwrap();
+        let err = run_corr_pf(&mut checker, module, &path).unwrap_err();
+        assert_eq!(err.code, 1, "expected policy exit 1 for {module}: {err}");
+        assert_eq!(err.phase, "correspondence-preflight");
+        assert!(
+            err.message.contains(expected_msg),
+            "expected `{expected_msg}` for {module}, got: {err}"
+        );
+    }
+
+    // Benign lexical scopes (`namespace`, `section`, `end`, and `open` of a
+    // namespace without scoped extensions) pass `"correspondence-preflight"`.
+    let benign = src_dir.join("Anneal/BenignScopes.lean");
+    fs::write(
+        &benign,
+        "prelude\nimport Init.Core\nimport Miri.ScopedExt\n\
+         namespace Anneal.BenignScopes\n\
+         section Helper\n\
+         open Miri.ScopedOuter\n\
+         def ok : Nat := helper\n\
+         end Helper\n\
+         end Anneal.BenignScopes\n",
+    )
+    .unwrap();
+    run_corr_pf(&mut checker, "Anneal.BenignScopes", &benign)
+        .expect("benign lexical scopes must pass correspondence-preflight");
+}
+
+/// End-to-end negative test of the production Pass 2 pipeline in
+/// [`Checker::run_correspondence_with_closure`] (invoked by [`Checker::run`]):
+/// verifies that the production `"correspondence-preflight"` call site rejects
+/// compilable Pass 2 proof files using unscoped `Lean` syntax (`m! "x"`) or
+/// opening a synthetic vendor scoped-syntax namespace
+/// (`open Miri.ScopedSyntax`) with `code == 1`,
+/// `phase == "correspondence-preflight"` BEFORE compiling any Pass 2 module
+/// (`Trusted/Correspondence.olean` and `Anneal/MirCorrespondenceProof.olean`
+/// are never produced).
+#[test]
+fn rejects_pass2_syntax_and_scoped_extensions_in_run_correspondence_pipeline() {
+    let fix = TempFixture::new(None);
+    // Include an unimported Pass 1 `theory/` decoy module declaring unscoped
+    // namespaces that shadow real scoped namespaces inside `namespace Anneal`.
+    let decoy_path = fix.root.join("theory/Anneal/DecoyNs.lean");
+    fs::create_dir_all(decoy_path.parent().unwrap()).unwrap();
+    fs::write(
+        fix.root.join("theory/Anneal.lean"),
+        "prelude\nimport Init.Core\n",
+    )
+    .unwrap();
+    fs::write(
+        &decoy_path,
+        "prelude\nimport Init.Core\n\
+         namespace Anneal.Miri.ScopedSyntax\n\
+         def decoy : Nat := 0\n\
+         end Anneal.Miri.ScopedSyntax\n\
+         namespace Anneal.Miri\n\
+         def decoyMiri : Nat := 0\n\
+         end Anneal.Miri\n\
+         namespace Anneal.Lean.PostprocessTraces\n\
+         def decoyTraces : Nat := 0\n\
+         end Anneal.Lean.PostprocessTraces\n",
+    )
+    .unwrap();
+    let vendor_dir = fix.root.join("synthetic-miri");
+    let miri_rel = "Miri/ImportLean.lean";
+    let miri_src_path = vendor_dir.join(miri_rel);
+    fs::create_dir_all(miri_src_path.parent().unwrap()).unwrap();
+    let miri_src = "import Lean\n\
+                    namespace Miri.ScopedSyntax\n\
+                    scoped syntax \"sneaky_macro\" : term\n\
+                    scoped macro_rules | `(sneaky_macro) => `(0)\n\
+                    end Miri.ScopedSyntax\n\
+                    namespace Miri.ImportLean\n\
+                    def ok : Nat := 0\n\
+                    end Miri.ImportLean\n";
+    fs::write(&miri_src_path, miri_src).unwrap();
+    let expected_sources =
+        BTreeMap::from([(miri_rel.to_string(), sha256_bytes(miri_src.as_bytes()))]);
+
+    // Compile `Miri.ImportLean` once in a probe checker to record its
+    // deterministic `.olean` companion digests.
+    let mut probe = Checker::new(&fix.root, None).unwrap();
+    probe.set_require_mir_wp(false);
+    probe.run().unwrap();
+    probe
+        .admitted_mut()
+        .unwrap()
+        .ensure_sysroot_foundation()
+        .unwrap();
+    let probe_out = probe.stage.join("probe-lib/Miri/ImportLean.olean");
+    fs::create_dir_all(probe_out.parent().unwrap()).unwrap();
+    probe
+        .process(
+            "probe-Miri.ImportLean",
+            &[
+                "-j1".to_string(),
+                "-M4096".to_string(),
+                "-t0".to_string(),
+                "-DElab.async=false".to_string(),
+                "-Ddebug.skipKernelTC=false".to_string(),
+                "-R".to_string(),
+                vendor_dir.to_string_lossy().into_owned(),
+                "-o".to_string(),
+                probe_out.to_string_lossy().into_owned(),
+                miri_src_path.to_string_lossy().into_owned(),
+            ],
+        )
+        .unwrap();
+    let probe_server = probe.stage.join("probe-lib/Miri/ImportLean.olean.server");
+    let probe_private = probe.stage.join("probe-lib/Miri/ImportLean.olean.private");
+    let miri_entry = MiriClosureEntry {
+        module: "Miri.ImportLean".to_string(),
+        path: miri_rel.to_string(),
+        olean_sha256: sha256_file(&probe_out, "test").unwrap(),
+        olean_server_sha256: probe_server
+            .exists()
+            .then(|| sha256_file(&probe_server, "test").unwrap()),
+        olean_private_sha256: probe_private
+            .exists()
+            .then(|| sha256_file(&probe_private, "test").unwrap()),
+    };
+
+    let base_tiers = BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]);
+    let corr_trusted_path = fix
+        .root
+        .join("trusted/correspondence/Trusted/Correspondence.lean");
+    let corr_proof_path = fix
+        .root
+        .join("correspondence/Anneal/MirCorrespondenceProof.lean");
+
+    let e2e_cases: &[(&str, &str)] = &[
+        (
+            // Valid compilable `Lean.MessageData` term using `m!`: passes
+            // foundation preflight as an identifier/app, so dropping
+            // `"correspondence-preflight"` would compile both Pass 2 modules.
+            "prelude\nimport Init.Core\nimport Miri.ImportLean\n\
+             import Trusted.Correspondence\n\
+             namespace Anneal.MirCorrespondenceProof\n\
+             def f : Lean.MessageData := m! \"x\"\n\
+             end Anneal.MirCorrespondenceProof\n",
+            "unsupported syntax kind Lean.termM!_",
+        ),
+        (
+            // Valid compilable use of synthetic vendor scoped macro: passes
+            // foundation preflight and would compile cleanly if
+            // `"correspondence-preflight"` did not block scoped namespaces.
+            "prelude\nimport Init.Core\nimport Miri.ImportLean\n\
+             import Trusted.Correspondence\n\
+             open Miri.ScopedSyntax\n\
+             namespace Anneal.MirCorrespondenceProof\n\
+             def f : Nat := sneaky_macro\n\
+             end Anneal.MirCorrespondenceProof\n",
+            "cannot open namespace Miri.ScopedSyntax with scoped syntax or extensions",
+        ),
+        (
+            // Decoy-namespace shadowing attack (1-step): `Anneal.DecoyNs`
+            // declares unscoped `Anneal.Miri.ScopedSyntax` in Pass 1 `theory/`
+            // (not imported here). Under `namespace Anneal`, `lean` resolves
+            // `open Miri.ScopedSyntax` to the real scoped namespace and would
+            // expand `sneaky_macro`. Preflight must reject all candidates.
+            "prelude\nimport Init.Core\nimport Miri.ImportLean\n\
+             import Trusted.Correspondence\n\
+             namespace Anneal\n\
+             open Miri.ScopedSyntax\n\
+             def f : Nat := sneaky_macro\n\
+             end Anneal\n",
+            "cannot open namespace Miri.ScopedSyntax with scoped syntax or extensions",
+        ),
+        (
+            // Decoy-namespace shadowing attack (2-step chain): `Anneal.DecoyNs`
+            // declares unscoped `Anneal.Miri` (not imported here). Opening
+            // `Miri` then `ScopedSyntax` inside `namespace Anneal` must still
+            // track real `Miri` and reject `Miri.ScopedSyntax`.
+            "prelude\nimport Init.Core\nimport Miri.ImportLean\n\
+             import Trusted.Correspondence\n\
+             namespace Anneal\n\
+             open Miri\n\
+             open ScopedSyntax\n\
+             def f : Nat := sneaky_macro\n\
+             end Anneal\n",
+            "cannot open namespace Miri.ScopedSyntax with scoped syntax or extensions",
+        ),
+        (
+            // Decoy-namespace shadowing attack against sysroot
+            // `Lean.PostprocessTraces`: `Anneal.DecoyNs` declares unscoped
+            // `Anneal.Lean.PostprocessTraces` in Pass 1 `theory/`.
+            "prelude\nimport Init.Core\nimport Miri.ImportLean\n\
+             import Trusted.Correspondence\n\
+             namespace Anneal\n\
+             open Lean.PostprocessTraces\n\
+             def f : Nat := 0\n\
+             end Anneal\n",
+            "cannot open namespace Lean.PostprocessTraces with scoped syntax or extensions",
+        ),
+    ];
+
+    for (proof_src, expected_msg) in e2e_cases {
+        // Run Pass 1 cleanly before placing Pass 2 directories in the checkout.
+        let _ = fs::remove_dir_all(fix.root.join("trusted/correspondence"));
+        let _ = fs::remove_dir_all(fix.root.join("correspondence"));
+        let mut checker = Checker::new(&fix.root, None).unwrap();
+        checker.set_require_mir_wp(false);
+        checker.run().unwrap();
+
+        fs::create_dir_all(corr_trusted_path.parent().unwrap()).unwrap();
+        fs::create_dir_all(corr_proof_path.parent().unwrap()).unwrap();
+        fs::write(
+            &corr_trusted_path,
+            "-- anneal-trust-tier: candidate:mir_semantics\n\
+             prelude\nimport Init.Core\nimport Miri.ImportLean\n\
+             namespace Trusted.Correspondence\n\
+             def ok : Nat := Miri.ImportLean.ok\n\
+             end Trusted.Correspondence\n",
+        )
+        .unwrap();
+        fs::write(&corr_proof_path, proof_src).unwrap();
+
+        let err = checker
+            .run_correspondence_with_closure(
+                &base_tiers,
+                &vendor_dir,
+                "synthetic-commit",
+                std::slice::from_ref(&miri_entry),
+                &expected_sources,
+            )
+            .unwrap_err();
+        assert_eq!(err.code, 1, "expected policy exit 1: {err}");
+        assert_eq!(err.phase, "correspondence-preflight");
+        assert!(
+            err.message.contains(expected_msg),
+            "expected `{expected_msg}`, got: {err}"
+        );
+        assert!(
+            !checker
+                .stage
+                .join("lib/Trusted/Correspondence.olean")
+                .exists(),
+            "Pass 2 Trusted.Correspondence must not compile before correspondence-preflight"
+        );
+        assert!(
+            !checker
+                .stage
+                .join("theory-lib/Anneal/MirCorrespondenceProof.olean")
+                .exists(),
+            "Pass 2 Anneal.MirCorrespondenceProof must not compile before correspondence-preflight"
+        );
+    }
+}
+
+/// Verifies Pass 1 foundation `"preflight"` rejects `open List` (an `Init.*`
+/// namespace with scoped notations) in both `theory/` and `trusted/lean/`
+/// before compilation—including when shadowed by a local decoy namespace.
+#[test]
+fn rejects_scoped_namespace_in_pass1_preflight() {
+    let cases: &[(&str, &str)] = &[
+        (
+            "theory/Anneal/OpenList.lean",
+            "prelude\nimport Init.Data.List.Basic\n\
+             open List\n\
+             def f : Nat := 0\n",
+        ),
+        (
+            "trusted/lean/Trusted/OpenList.lean",
+            "-- anneal-trust-tier: candidate:mir_semantics\n\
+             prelude\nimport Init.Data.List.Basic\n\
+             open List\n\
+             def f : Nat := 0\n",
+        ),
+        (
+            "theory/Anneal/OpenListDecoy.lean",
+            "prelude\nimport Init.Data.List.Basic\n\
+             namespace Anneal.List\n\
+             def decoy : Nat := 0\n\
+             end Anneal.List\n\
+             namespace Anneal\n\
+             open List\n\
+             def f : Nat := 0\n\
+             end Anneal\n",
+        ),
+    ];
+
+    for (rel, body) in cases {
+        let mut fix = TempFixture::new(None);
+        let path = fix.root.join(rel);
+        fs::create_dir_all(path.parent().unwrap()).unwrap();
+        if rel.starts_with("theory/") {
+            fs::write(
+                fix.root.join("theory/Anneal.lean"),
+                "prelude\nimport Init.Core\n",
+            )
+            .unwrap();
+        }
+        fs::write(&path, body).unwrap();
+        let err = fix
+            .check_expected(Some(1), Some("preflight"), Some(false))
+            .unwrap_err();
+        assert!(
+            err.message
+                .contains("cannot open namespace List with scoped syntax or extensions"),
+            "expected scoped List rejection for {rel}, got: {err}"
+        );
+    }
+}
+
+/// Verifies `requireClaimProof` universe-parameter rejection in both Pass 1
+/// (`"audit"`) and Pass 2 (`"correspondence-audit"`): neither a required
+/// `*Claim` definition nor its proof theorem may declare universe parameters.
+#[test]
+fn rejects_universe_polymorphic_claims_and_proofs() {
+    // 1. Pass 1 (`Audit`): universe-polymorphic claim and theorem rejection.
+    let fix = TempFixture::new(None);
+    let mut checker = Checker::new(&fix.root, None).unwrap();
+    checker.set_require_mir_wp(false);
+    checker.run().unwrap();
+    checker.set_require_mir_wp(true);
+
+    let stage = checker.stage.clone();
+    let src = stage.join("src/univ-poly");
+    let lib = stage.join("lib");
+    let theory_lib = stage.join("theory-lib");
+
+    compile_forged_module(
+        &mut checker,
+        &src,
+        &lib,
+        &[],
+        "Trusted.MirAst",
+        "prelude\nimport Init.Core\nnamespace Trusted.MirAst\ndef x : Nat := 0\nend Trusted.MirAst\n",
+    );
+    let run_pass1_audit = |chk: &mut Checker| {
+        chk.inspect(InspectorRequest::Audit {
+            trusted: vec![
+                "Trusted".to_string(),
+                "Trusted.MirAst".to_string(),
+                "Trusted.MirSemantics".to_string(),
+            ],
+            theory: vec!["Anneal.MirWp".to_string()],
+            module_tiers: BTreeMap::from([
+                ("Trusted".to_string(), TrustTier::Vetted),
+                (
+                    "Trusted.MirAst".to_string(),
+                    TrustTier::Candidate(CandidateFeature::MirAst),
+                ),
+                (
+                    "Trusted.MirSemantics".to_string(),
+                    TrustTier::Candidate(CandidateFeature::MirSemantics),
+                ),
+            ]),
+        })
+    };
+
+    // 1a. Universe-polymorphic Pass 1 claim.
+    compile_forged_module(
+        &mut checker,
+        &src,
+        &lib,
+        &["Trusted.MirAst"],
+        "Trusted.MirSemantics",
+        "prelude\nimport Init.Core\nimport Trusted.MirAst\n\
+         namespace Trusted.MirSemantics\n\
+         def SatisfiesPost : Prop := True\n\
+         def Diverges : Prop := True\n\
+         def Behavior : Prop := True\n\
+         def WpSoundnessClaim.{u} (_f : Nat) : Prop :=\n\
+           (fun (_ : PUnit.{u + 1}) => And SatisfiesPost (And Diverges Behavior)) PUnit.unit\n\
+         end Trusted.MirSemantics\n",
+    );
+    compile_forged_module(
+        &mut checker,
+        &src,
+        &theory_lib,
+        &["Trusted.MirSemantics"],
+        "Anneal.MirWp",
+        "prelude\nimport Init.Core\nimport Trusted.MirSemantics\n\
+         namespace Anneal.MirWp\n\
+         def wpProg : Nat := 0\n\
+         theorem wellFormed_and_spec_of_wp : \
+           Trusted.MirSemantics.WpSoundnessClaim.{0} wpProg := \
+           And.intro True.intro (And.intro True.intro True.intro)\n\
+         end Anneal.MirWp\n",
+    );
+    let err_claim_u = run_pass1_audit(&mut checker).unwrap_err();
+    assert_eq!(err_claim_u.code, 1, "unexpected code: {err_claim_u}");
+    assert_eq!(err_claim_u.phase, "audit");
+    assert!(
+        err_claim_u.message.contains(
+            "claim Trusted.MirSemantics.WpSoundnessClaim must have no universe parameters"
+        ),
+        "unexpected Pass 1 poly-claim error: {err_claim_u}"
+    );
+
+    // 1b. Universe-polymorphic Pass 1 proof theorem.
+    compile_forged_module(
+        &mut checker,
+        &src,
+        &lib,
+        &["Trusted.MirAst"],
+        "Trusted.MirSemantics",
+        "prelude\nimport Init.Core\nimport Trusted.MirAst\n\
+         namespace Trusted.MirSemantics\n\
+         def SatisfiesPost : Prop := True\n\
+         def Diverges : Prop := True\n\
+         def Behavior : Prop := True\n\
+         def WpSoundnessClaim (_f : Nat) : Prop := And SatisfiesPost (And Diverges Behavior)\n\
+         end Trusted.MirSemantics\n",
+    );
+    compile_forged_module(
+        &mut checker,
+        &src,
+        &theory_lib,
+        &["Trusted.MirSemantics"],
+        "Anneal.MirWp",
+        "prelude\nimport Init.Core\nimport Trusted.MirSemantics\n\
+         namespace Anneal.MirWp\n\
+         def wpProg : Nat := 0\n\
+         theorem wellFormed_and_spec_of_wp.{u} :\n\
+           (fun (_ : PUnit.{u + 1}) => Trusted.MirSemantics.WpSoundnessClaim wpProg) PUnit.unit :=\n\
+           And.intro True.intro (And.intro True.intro True.intro)\n\
+         end Anneal.MirWp\n",
+    );
+    let err_thm_u = run_pass1_audit(&mut checker).unwrap_err();
+    assert_eq!(err_thm_u.code, 1, "unexpected code: {err_thm_u}");
+    assert_eq!(err_thm_u.phase, "audit");
+    assert!(
+        err_thm_u.message.contains(
+            "theorem Anneal.MirWp.wellFormed_and_spec_of_wp must have no universe parameters"
+        ),
+        "unexpected Pass 1 poly-theorem error: {err_thm_u}"
+    );
+
+    // 2. Pass 2 (`CorrespondenceAudit`): universe-polymorphic claim and
+    // theorem rejection.
+    let vendor_lib = stage.join("univ-vendor-lib");
+    let corr_lib = stage.join("univ-corr-lib");
+    compile_forged_module(
+        &mut checker,
+        &src,
+        &vendor_lib,
+        &[],
+        "Miri.UnivStub",
+        "prelude\nimport Init.Core\n\
+         namespace Miri.Interpreter.ExecutionMachine\n\
+         def step : Nat := 0\n\
+         def withValidation : Nat := 0\n\
+         def operandHooks : Nat := 0\n\
+         end Miri.Interpreter.ExecutionMachine\n\
+         namespace Miri.Interpreter.IntegerOps\n\
+         def binary : Nat := 0\n\
+         def binaryBool : Nat := 0\n\
+         def unary : Nat := 0\n\
+         end Miri.Interpreter.IntegerOps\n\
+         namespace Miri.Memory.ScalarInt\n\
+         def truncateFromUInt : Nat := 0\n\
+         def tryFromUInt : Nat := 0\n\
+         def tryToBool : Nat := 0\n\
+         end Miri.Memory.ScalarInt\n\
+         namespace Miri.Interpreter\n\
+         def evalOperand : Nat := 0\n\
+         def evalPlaceToOp : Nat := 0\n\
+         def localToOp : Nat := 0\n\
+         def placeWriteLocalImmediate : Nat := 0\n\
+         def evalRvalueIntoPlace : Nat := 0\n\
+         def runRvalue : Nat := 0\n\
+         end Miri.Interpreter\n\
+         namespace Miri.Interpreter.Step\n\
+         def evalStatement : Nat := 0\n\
+         end Miri.Interpreter.Step\n\
+         namespace Miri.Interpreter.Frame\n\
+         def storageLive : Nat := 0\n\
+         def storageDead : Nat := 0\n\
+         end Miri.Interpreter.Frame\n\
+         namespace Miri.Interpreter.ControlFlow\n\
+         def goToBlock : Nat := 0\n\
+         def evalTerminator : Nat := 0\n\
+         def returnFromCurrentFrame : Nat := 0\n\
+         end Miri.Interpreter.ControlFlow\n",
+    );
+    compile_forged_module(
+        &mut checker,
+        &src,
+        &lib,
+        &[],
+        "Trusted.MirSemantics",
+        "prelude\nimport Init.Core\n\
+         namespace Trusted.MirSemantics\n\
+         def WellFormed : Prop := True\n\
+         def Behavior : Prop := True\n\
+         def Diverges : Prop := True\n\
+         end Trusted.MirSemantics\n",
+    );
+    let run_pass2_audit = |chk: &mut Checker| {
+        chk.inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: vec![lib.clone(), vendor_lib.clone(), corr_lib.clone()],
+            trusted: vec!["Trusted".to_string(), "Trusted.MirSemantics".to_string()],
+            corr_trusted: vec!["Trusted.Correspondence".to_string()],
+            theory: Vec::new(),
+            corr_theory: vec!["Anneal.MirCorrespondenceProof".to_string()],
+            vendor_miri: vec!["Miri.UnivStub".to_string()],
+            module_tiers: BTreeMap::from([
+                ("Trusted".to_string(), TrustTier::Vetted),
+                (
+                    "Trusted.MirSemantics".to_string(),
+                    TrustTier::Candidate(CandidateFeature::MirSemantics),
+                ),
+                (
+                    "Trusted.Correspondence".to_string(),
+                    TrustTier::Candidate(CandidateFeature::MirSemantics),
+                ),
+            ]),
+        })
+    };
+
+    // 2a. Universe-polymorphic `CorrespondenceClaim`.
+    compile_forged_module(
+        &mut checker,
+        &src,
+        &lib,
+        &["Trusted.MirSemantics"],
+        "Trusted.Correspondence",
+        "prelude\nimport Init.Core\nimport Trusted.MirSemantics\n\
+         namespace Trusted.Correspondence\n\
+         def RefWellFormed : Prop := True\n\
+         def RefBehavior : Prop := True\n\
+         def RefDiverges : Prop := True\n\
+         def encodeProg : Nat := 0\n\
+         def CorrespondenceClaim.{u} : Prop :=\n\
+           (fun (_ : PUnit.{u + 1}) =>\n\
+             Trusted.MirSemantics.WellFormed ∧ RefWellFormed ∧\n\
+             Trusted.MirSemantics.Behavior ∧ RefBehavior ∧\n\
+             Trusted.MirSemantics.Diverges ∧ RefDiverges ∧ encodeProg = encodeProg) PUnit.unit\n\
+         end Trusted.Correspondence\n",
+    );
+    compile_forged_module(
+        &mut checker,
+        &src,
+        &corr_lib,
+        &["Trusted.Correspondence"],
+        "Anneal.MirCorrespondenceProof",
+        "prelude\nimport Init.Core\nimport Trusted.Correspondence\n\
+         namespace Anneal.MirCorrespondenceProof\n\
+         theorem correspondence_claim_holds : \
+           Trusted.Correspondence.CorrespondenceClaim.{0} :=\n\
+           ⟨True.intro, True.intro, True.intro, True.intro, True.intro, True.intro, Eq.refl _⟩\n\
+         end Anneal.MirCorrespondenceProof\n",
+    );
+    let err_p2_claim = run_pass2_audit(&mut checker).unwrap_err();
+    assert_eq!(err_p2_claim.code, 1, "unexpected code: {err_p2_claim}");
+    assert_eq!(err_p2_claim.phase, "correspondence-audit");
+    assert!(
+        err_p2_claim.message.contains(
+            "claim Trusted.Correspondence.CorrespondenceClaim must have no universe parameters"
+        ),
+        "unexpected Pass 2 poly-claim error: {err_p2_claim}"
+    );
+
+    // 2b. Universe-polymorphic `correspondence_claim_holds`.
+    compile_forged_module(
+        &mut checker,
+        &src,
+        &lib,
+        &["Trusted.MirSemantics"],
+        "Trusted.Correspondence",
+        "prelude\nimport Init.Core\nimport Trusted.MirSemantics\n\
+         namespace Trusted.Correspondence\n\
+         def RefWellFormed : Prop := True\n\
+         def RefBehavior : Prop := True\n\
+         def RefDiverges : Prop := True\n\
+         def encodeProg : Nat := 0\n\
+         def CorrespondenceClaim : Prop :=\n\
+           Trusted.MirSemantics.WellFormed ∧ RefWellFormed ∧\n\
+           Trusted.MirSemantics.Behavior ∧ RefBehavior ∧\n\
+           Trusted.MirSemantics.Diverges ∧ RefDiverges ∧ encodeProg = encodeProg\n\
+         end Trusted.Correspondence\n",
+    );
+    compile_forged_module(
+        &mut checker,
+        &src,
+        &corr_lib,
+        &["Trusted.Correspondence"],
+        "Anneal.MirCorrespondenceProof",
+        "prelude\nimport Init.Core\nimport Trusted.Correspondence\n\
+         namespace Anneal.MirCorrespondenceProof\n\
+         theorem correspondence_claim_holds.{u} :\n\
+           (fun (_ : PUnit.{u + 1}) => Trusted.Correspondence.CorrespondenceClaim) PUnit.unit :=\n\
+           ⟨True.intro, True.intro, True.intro, True.intro, True.intro, True.intro, Eq.refl _⟩\n\
+         end Anneal.MirCorrespondenceProof\n",
+    );
+    let err_p2_thm = run_pass2_audit(&mut checker).unwrap_err();
+    assert_eq!(err_p2_thm.code, 1, "unexpected code: {err_p2_thm}");
+    assert_eq!(err_p2_thm.phase, "correspondence-audit");
+    assert!(
+        err_p2_thm.message.contains(
+            "theorem Anneal.MirCorrespondenceProof.correspondence_claim_holds must have no universe parameters"
+        ),
+        "unexpected Pass 2 poly-theorem error: {err_p2_thm}"
+    );
+}
+
+/// Verifies `inventoryAlternates` and `checkAlternateProofs` in
+/// `TrustedBoundary.lean`:
+/// 1. Two pinned foundation modules exporting the same theorem with distinct
+///    *valid* proof terms are accepted and both proofs are kernel-checked
+///    (`checkedAlternateProofs == 2`).
+/// 2. When the unselected alternate theorem carries a forged ill-typed proof
+///    (accepted silently by `Lean.importModules`), `checkAlternateProofs`
+///    rejects it under a fresh name with an operational kernel error
+///    (exit code `2`, `"alternate pinned theorem proof check"`).
+#[test]
+fn validates_and_rejects_alternate_foundation_theorem_proofs() {
+    let fix = TempFixture::new(None);
+    let mut checker = Checker::new(&fix.root, None).unwrap();
+    checker.set_require_mir_wp(false);
+    checker.run().unwrap();
+
+    let stage = checker.stage.clone();
+    let src = stage.join("src/alt-proofs");
+    let lib = stage.join("alt-lib");
+    let core_edge = vec![ImportEdge {
+        module: "Init.Core".to_string(),
+        import_all: false,
+        is_exported: true,
+        is_meta: false,
+    }];
+
+    compile_forged_module(
+        &mut checker,
+        &src,
+        &lib,
+        &[],
+        "Init.AltA",
+        "prelude\nimport Init.Core\ntheorem AltDup.thm : True := True.intro\n",
+    );
+    compile_forged_module(
+        &mut checker,
+        &src,
+        &lib,
+        &[],
+        "Init.AltB",
+        "prelude\nimport Init.Core\ntheorem AltDup.thm : True := (fun x => x) True.intro\n",
+    );
+    {
+        let adm = checker.admitted_mut().unwrap();
+        adm.foundation_graph
+            .insert("Init.AltA".to_string(), core_edge.clone());
+        adm.foundation_graph
+            .insert("Init.AltB".to_string(), core_edge.clone());
+    }
+
+    // 1. Positive case: two valid alternate proofs are both kernel-checked.
+    let ok_rep = checker
+        .inspect(InspectorRequest::Audit {
+            trusted: vec!["Trusted".to_string()],
+            theory: Vec::new(),
+            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+        })
+        .expect("valid alternate pinned theorem proofs must be accepted");
+    assert_eq!(
+        ok_rep.get("checkedAlternateProofs").and_then(Json::as_u64),
+        Some(2),
+        "expected both alternate proofs to be checked: {ok_rep}"
+    );
+
+    // 2. Negative case: synthesize `Init.AltBad.olean` containing the same
+    // theorem `AltDup.thm : True` with a forged proof `Nat.zero` (only
+    // importing `Init.Core`) via `Lean.saveModuleData`. `importModules` keeps
+    // `Init.AltA`'s valid proof, and `checkAlternateProofs` must catch the
+    // forged unselected alternate proof.
+    let forged_out = lib.join("Init/AltBad.olean");
+    let gen_script = stage.join("gen_alt_bad.lean");
+    fs::write(
+        &gen_script,
+        format!(
+            "import Lean\n\
+             open Lean\n\
+             def main : IO Unit := do\n\
+               let ci : ConstantInfo := .thmInfo {{\n\
+                 name := `AltDup.thm\n\
+                 levelParams := []\n\
+                 type := .const `True []\n\
+                 value := .const `Nat.zero []\n\
+                 all := [`AltDup.thm]\n\
+               }}\n\
+               let md : ModuleData := {{\n\
+                 isModule := false\n\
+                 imports := #[{{ module := `Init.Core }}]\n\
+                 constNames := #[`AltDup.thm]\n\
+                 constants := #[ci]\n\
+                 extraConstNames := #[]\n\
+                 entries := #[]\n\
+               }}\n\
+               saveModuleData (System.FilePath.mk {:?}) `Init.AltBad md\n",
+            forged_out.to_string_lossy()
+        ),
+    )
+    .unwrap();
+    checker
+        .process(
+            "gen-alt-bad",
+            &[
+                "-j1".to_string(),
+                "-M4096".to_string(),
+                "--run".to_string(),
+                gen_script.to_string_lossy().into_owned(),
+            ],
+        )
+        .unwrap();
+    let bad_arts = ModuleArtifacts::from_available(
+        &BTreeMap::from([("olean", forged_out.to_string_lossy().into_owned())]),
+        "test",
+        String::new,
+    )
+    .unwrap();
+    {
+        let adm = checker.admitted_mut().unwrap();
+        adm.foundation_graph.remove("Init.AltB");
+        adm.graph.remove("Init.AltB");
+        adm.artifacts.remove("Init.AltB");
+        adm.foundation_graph
+            .insert("Init.AltBad".to_string(), core_edge.clone());
+        adm.graph.insert("Init.AltBad".to_string(), core_edge);
+        adm.artifacts.insert("Init.AltBad".to_string(), bad_arts);
+    }
+
+    let err_alt = checker
+        .inspect(InspectorRequest::Audit {
+            trusted: vec!["Trusted".to_string()],
+            theory: Vec::new(),
+            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+        })
+        .unwrap_err();
+    assert_eq!(
+        err_alt.code, 2,
+        "expected operational exit code 2 on forged alternate proof: {err_alt}"
+    );
+    assert_eq!(err_alt.phase, "audit");
+    assert!(
+        err_alt
+            .message
+            .contains("alternate pinned theorem proof check AltDup.thm")
+            && err_alt.message.contains("declaration type mismatch"),
+        "expected checkAlternateProofs rejection, got: {err_alt}"
+    );
+}
+
+/// Verifies `Checker::run` rejects correspondence setups that are missing the
+/// required `Trusted/Correspondence.lean` umbrella or
+/// `Anneal/MirCorrespondenceProof.lean` entry module with policy exit code `1`.
+#[test]
+fn rejects_missing_correspondence_entry_modules() {
+    let checkout = repo_root();
+    let fix = TempFixture::new(None);
+    copy_cargo_workspace(&fix.root);
+    copy_dir_all(
+        &checkout.join("vendor/lean-miri"),
+        &fix.root.join("vendor/lean-miri"),
+    )
+    .unwrap();
+    fs::create_dir_all(fix.root.join("trusted/correspondence/Trusted")).unwrap();
+    fs::create_dir_all(fix.root.join("correspondence/Anneal")).unwrap();
+
+    // 1. Missing `Trusted/Correspondence.lean` umbrella.
+    fs::write(
+        fix.root.join("trusted/correspondence/Trusted/Other.lean"),
+        b"-- anneal-trust-tier: candidate:mir_semantics\nprelude\nimport Init.NotationExtra\n",
+    )
+    .unwrap();
+    fs::write(
+        fix.root
+            .join("correspondence/Anneal/MirCorrespondenceProof.lean"),
+        b"prelude\nimport Init.NotationExtra\n",
+    )
+    .unwrap();
+    let mut checker1 = Checker::new(&fix.root, None).unwrap();
+    checker1.set_require_mir_wp(false);
+    let err_missing_corr = checker1.run().unwrap_err();
+    assert_eq!(err_missing_corr.code, 1);
+    assert_eq!(err_missing_corr.phase, "snapshot");
+    assert!(
+        err_missing_corr
+            .message
+            .contains("missing Trusted/Correspondence.lean umbrella in trusted/correspondence"),
+        "unexpected missing Trusted.Correspondence error: {err_missing_corr}"
+    );
+
+    // 2. Missing `Anneal/MirCorrespondenceProof.lean`.
+    fs::write(
+        fix.root
+            .join("trusted/correspondence/Trusted/Correspondence.lean"),
+        b"-- anneal-trust-tier: candidate:mir_semantics\nprelude\nimport Init.NotationExtra\n",
+    )
+    .unwrap();
+    fs::remove_file(
+        fix.root
+            .join("correspondence/Anneal/MirCorrespondenceProof.lean"),
+    )
+    .unwrap();
+    fs::write(
+        fix.root.join("correspondence/Anneal/Other.lean"),
+        b"prelude\nimport Init.NotationExtra\n",
+    )
+    .unwrap();
+    let mut checker2 = Checker::new(&fix.root, None).unwrap();
+    checker2.set_require_mir_wp(false);
+    let err_missing_proof = checker2.run().unwrap_err();
+    assert_eq!(err_missing_proof.code, 1);
+    assert_eq!(err_missing_proof.phase, "snapshot");
+    assert!(
+        err_missing_proof
+            .message
+            .contains("missing Anneal/MirCorrespondenceProof.lean in correspondence"),
+        "unexpected missing Anneal.MirCorrespondenceProof error: {err_missing_proof}"
+    );
+}
+
+/// Verifies every external-origin branch of `CorrOrigin.importViolation?`
+/// (`.vendorMiri -> .repo`, `.sysrootFoundation -> .vendorMiri/.repo`,
+/// `.foundation -> .vendorMiri/.repo`) and `checkHeaderImports`'s defensive
+/// `"foreign import"` rejection with policy exit code `1`.
+#[test]
+fn rejects_external_origin_header_imports_and_foreign_imports() {
+    let fix = TempFixture::new(None);
+    let mut checker = Checker::new(&fix.root, None).unwrap();
+    checker.set_require_mir_wp(false);
+    checker.run().unwrap();
+
+    let stage = checker.stage.clone();
+    let trusted_lib = stage.join("lib");
+    let ext_src = stage.join("src/ext-imp");
+    let ext_path = env::join_paths([&trusted_lib]).unwrap();
+
+    let compile_ext = |chk: &mut Checker, module: &str, body: &str| {
+        let rel = module.replace('.', "/");
+        let src = ext_src.join(format!("{rel}.lean"));
+        fs::create_dir_all(src.parent().unwrap()).unwrap();
+        fs::write(&src, body).unwrap();
+        let out = trusted_lib.join(format!("{rel}.olean"));
+        fs::create_dir_all(out.parent().unwrap()).unwrap();
+        chk.process_with_path(
+            &format!("compile-{module}"),
+            &[
+                "-j1".to_string(),
+                "-M2048".to_string(),
+                "-t0".to_string(),
+                "-R".to_string(),
+                ext_src.to_string_lossy().into_owned(),
+                "-o".to_string(),
+                out.to_string_lossy().into_owned(),
+                src.to_string_lossy().into_owned(),
+            ],
+            Some(&ext_path),
+        )
+        .unwrap();
+    };
+
+    compile_ext(
+        &mut checker,
+        "Miri.Child",
+        "prelude\nimport Init.Core\nnamespace Miri.Child\ndef c : Nat := 1\nend Miri.Child\n",
+    );
+    compile_ext(
+        &mut checker,
+        "Miri.ImpTrusted",
+        "prelude\nimport Init.Core\nimport Trusted\nnamespace Miri.ImpTrusted\ndef x : Nat := 0\nend Miri.ImpTrusted\n",
+    );
+    compile_ext(
+        &mut checker,
+        "FakeSysrootMiri",
+        "prelude\nimport Init.Core\nimport Miri.Child\nnamespace FakeSysrootMiri\ndef x : Nat := 0\nend FakeSysrootMiri\n",
+    );
+    compile_ext(
+        &mut checker,
+        "Miri.UsesFakeSysrootMiri",
+        "prelude\nimport Init.Core\nimport FakeSysrootMiri\nnamespace Miri.UsesFakeSysrootMiri\ndef x : Nat := 0\nend Miri.UsesFakeSysrootMiri\n",
+    );
+    compile_ext(
+        &mut checker,
+        "FakeSysrootRepo",
+        "prelude\nimport Init.Core\nimport Trusted\nnamespace FakeSysrootRepo\ndef x : Nat := 0\nend FakeSysrootRepo\n",
+    );
+    compile_ext(
+        &mut checker,
+        "Miri.UsesFakeSysrootRepo",
+        "prelude\nimport Init.Core\nimport FakeSysrootRepo\nnamespace Miri.UsesFakeSysrootRepo\ndef x : Nat := 0\nend Miri.UsesFakeSysrootRepo\n",
+    );
+    compile_ext(
+        &mut checker,
+        "FakeFoundMiri",
+        "prelude\nimport Init.Core\nimport Miri.Child\nnamespace FakeFoundMiri\ndef x : Nat := 0\nend FakeFoundMiri\n",
+    );
+    compile_ext(
+        &mut checker,
+        "FakeFoundRepo",
+        "prelude\nimport Init.Core\nimport Trusted\nnamespace FakeFoundRepo\ndef x : Nat := 0\nend FakeFoundRepo\n",
+    );
+
+    let search = vec![trusted_lib.clone()];
+
+    // 1. `.vendorMiri` importing `.repo` (`Trusted`).
+    let err_miri_repo = checker
+        .inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: search.clone(),
+            trusted: vec!["Trusted".to_string()],
+            corr_trusted: Vec::new(),
+            theory: Vec::new(),
+            corr_theory: Vec::new(),
+            vendor_miri: vec!["Miri.ImpTrusted".to_string()],
+            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+        })
+        .unwrap_err();
+    assert_eq!(err_miri_repo.code, 1);
+    assert!(
+        err_miri_repo
+            .message
+            .contains("vendor Miri module Miri.ImpTrusted cannot import Trusted"),
+        "unexpected vendor->repo error: {err_miri_repo}"
+    );
+
+    // 2. `.sysrootFoundation` importing `.vendorMiri`.
+    checker.admitted_mut().unwrap().sysroot_foundation = Some(vec![
+        "FakeSysrootMiri".to_string(),
+        "FakeSysrootRepo".to_string(),
+    ]);
+    let err_sys_miri = checker
+        .inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: search.clone(),
+            trusted: vec!["Trusted".to_string()],
+            corr_trusted: Vec::new(),
+            theory: Vec::new(),
+            corr_theory: Vec::new(),
+            vendor_miri: vec![
+                "Miri.Child".to_string(),
+                "Miri.UsesFakeSysrootMiri".to_string(),
+            ],
+            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+        })
+        .unwrap_err();
+    assert_eq!(err_sys_miri.code, 1);
+    assert!(
+        err_sys_miri
+            .message
+            .contains("sysroot module FakeSysrootMiri cannot import Miri.Child"),
+        "unexpected sysroot->vendor error: {err_sys_miri}"
+    );
+
+    // 3. `.sysrootFoundation` importing `.repo` (`Trusted`).
+    let err_sys_repo = checker
+        .inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: search.clone(),
+            trusted: vec!["Trusted".to_string()],
+            corr_trusted: Vec::new(),
+            theory: Vec::new(),
+            corr_theory: Vec::new(),
+            vendor_miri: vec!["Miri.UsesFakeSysrootRepo".to_string()],
+            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+        })
+        .unwrap_err();
+    assert_eq!(err_sys_repo.code, 1);
+    assert!(
+        err_sys_repo
+            .message
+            .contains("sysroot module FakeSysrootRepo cannot import Trusted"),
+        "unexpected sysroot->repo error: {err_sys_repo}"
+    );
+
+    // 4. `.foundation` importing `.vendorMiri`.
+    checker
+        .admitted_mut()
+        .unwrap()
+        .foundation_graph
+        .insert("FakeFoundMiri".to_string(), Vec::new());
+    let err_found_miri = checker
+        .inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: search.clone(),
+            trusted: vec!["Trusted".to_string()],
+            corr_trusted: Vec::new(),
+            theory: Vec::new(),
+            corr_theory: Vec::new(),
+            vendor_miri: vec!["Miri.Child".to_string()],
+            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+        })
+        .unwrap_err();
+    assert_eq!(err_found_miri.code, 1);
+    assert!(
+        err_found_miri
+            .message
+            .contains("foundation module FakeFoundMiri cannot import Miri.Child"),
+        "unexpected foundation->vendor error: {err_found_miri}"
+    );
+    checker
+        .admitted_mut()
+        .unwrap()
+        .foundation_graph
+        .remove("FakeFoundMiri");
+
+    // 5. `.foundation` importing `.repo` (`Trusted`).
+    checker
+        .admitted_mut()
+        .unwrap()
+        .foundation_graph
+        .insert("FakeFoundRepo".to_string(), Vec::new());
+    let err_found_repo = checker
+        .inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: search,
+            trusted: vec!["Trusted".to_string()],
+            corr_trusted: Vec::new(),
+            theory: Vec::new(),
+            corr_theory: Vec::new(),
+            vendor_miri: vec!["Miri.Child".to_string()],
+            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+        })
+        .unwrap_err();
+    assert_eq!(err_found_repo.code, 1);
+    assert!(
+        err_found_repo
+            .message
+            .contains("foundation module FakeFoundRepo cannot import Trusted"),
+        "unexpected foundation->repo error: {err_found_repo}"
+    );
+
+    // 6. `checkHeaderImports` defensive `"foreign import"` rejection on a
+    // `ModuleData` whose header imports a module absent from `roles`.
+    let inspector_path = checker.admitted().unwrap().inspector.clone();
+    let tb_lib = stage.join("tb-lib");
+    fs::create_dir_all(&tb_lib).unwrap();
+    let tb_olean = tb_lib.join("TrustedBoundary.olean");
+    checker
+        .process(
+            "compile-TrustedBoundary",
+            &[
+                "-j1".to_string(),
+                "-M4096".to_string(),
+                "-t0".to_string(),
+                "-R".to_string(),
+                inspector_path
+                    .parent()
+                    .unwrap()
+                    .to_string_lossy()
+                    .into_owned(),
+                "-o".to_string(),
+                tb_olean.to_string_lossy().into_owned(),
+                inspector_path.to_string_lossy().into_owned(),
+            ],
+        )
+        .unwrap();
+    let driver = stage.join("check_foreign_import.lean");
+    fs::write(
+        &driver,
+        "import TrustedBoundary\n\
+         open TrustedBoundary\n\
+         #eval show IO Unit from do\n\
+           let roles : Std.HashMap Lean.Name RepoOrigin := {}\n\
+           let md : Lean.ModuleData := {\n\
+             isModule := false\n\
+             imports := #[{ module := `Unlisted.Ghost }]\n\
+             constNames := #[]\n\
+             constants := #[]\n\
+             extraConstNames := #[]\n\
+             entries := #[]\n\
+           }\n\
+           checkHeaderImports roles `Trusted.Forged (.repo (.trusted .vetted)) \
+             md RepoOrigin.importViolation?\n",
+    )
+    .unwrap();
+    let tb_path = env::join_paths([&tb_lib]).unwrap();
+    let err_foreign_imp = checker
+        .process_with_path(
+            "check-foreign-import",
+            &[
+                "-j1".to_string(),
+                "-M4096".to_string(),
+                driver.to_string_lossy().into_owned(),
+            ],
+            Some(&tb_path),
+        )
+        .unwrap_err();
+    assert!(
+        err_foreign_imp
+            .message
+            .contains("policy:foreign import Unlisted.Ghost in Trusted.Forged"),
+        "expected checkHeaderImports foreign-import rejection, got: {err_foreign_imp}"
+    );
+
+    // 7. `requireClaimProof` rejects an empty `reqConsts` list at runtime
+    // with policy exit code `1`.
+    let driver_req = stage.join("check_empty_req_consts.lean");
+    fs::write(
+        &driver_req,
+        "import TrustedBoundary\n\
+         open TrustedBoundary\n\
+         #eval show IO Unit from do\n\
+           let env ← Lean.mkEmptyEnvironment\n\
+           let locals : Std.HashMap Lean.Name Lean.ConstantInfo := {}\n\
+           requireClaimProof env locals `Trusted.Correspondence \
+             `Anneal.MirCorrespondenceProof `Trusted.Correspondence.EmptyReq \
+             none `Anneal.MirCorrespondenceProof.empty_req []\n",
+    )
+    .unwrap();
+    let err_empty_req = checker
+        .process_with_path(
+            "check-empty-req-consts",
+            &[
+                "-j1".to_string(),
+                "-M4096".to_string(),
+                driver_req.to_string_lossy().into_owned(),
+            ],
+            Some(&tb_path),
+        )
+        .unwrap_err();
+    assert!(
+        err_empty_req.message.contains(
+            "policy:claim Trusted.Correspondence.EmptyReq requires a non-empty required-constants list"
+        ),
+        "expected requireClaimProof empty reqConsts rejection, got: {err_empty_req}"
+    );
+}
+
+/// Verifies Pass 2 preflight rejects import cycles in both
+/// `trusted/correspondence/` (`"Trusted correspondence import cycle"`) and
+/// `correspondence/` (`"Correspondence proof import cycle"`) with policy exit
+/// code `1` before compiling Miri or any Pass 2 module.
+#[test]
+fn rejects_pass2_correspondence_import_cycles() {
+    let checkout = repo_root();
+    let fix = TempFixture::new(None);
+    copy_cargo_workspace(&fix.root);
+    copy_dir_all(
+        &checkout.join("vendor/lean-miri"),
+        &fix.root.join("vendor/lean-miri"),
+    )
+    .unwrap();
+    fs::create_dir_all(fix.root.join("trusted/correspondence/Trusted")).unwrap();
+    fs::create_dir_all(fix.root.join("correspondence/Anneal")).unwrap();
+
+    // 1. Import cycle inside `trusted/correspondence/`.
+    fs::write(
+        fix.root
+            .join("trusted/correspondence/Trusted/Correspondence.lean"),
+        b"-- anneal-trust-tier: candidate:mir_semantics\nprelude\nimport Init.NotationExtra\n",
+    )
+    .unwrap();
+    fs::write(
+        fix.root.join("trusted/correspondence/Trusted/CycleA.lean"),
+        b"-- anneal-trust-tier: candidate:mir_semantics\nprelude\nimport Init.NotationExtra\nimport Trusted.CycleB\n",
+    )
+    .unwrap();
+    fs::write(
+        fix.root.join("trusted/correspondence/Trusted/CycleB.lean"),
+        b"-- anneal-trust-tier: candidate:mir_semantics\nprelude\nimport Init.NotationExtra\nimport Trusted.CycleA\n",
+    )
+    .unwrap();
+    fs::write(
+        fix.root
+            .join("correspondence/Anneal/MirCorrespondenceProof.lean"),
+        b"prelude\nimport Trusted.Correspondence\n",
+    )
+    .unwrap();
+
+    let mut checker1 = Checker::new(&fix.root, None).unwrap();
+    checker1.set_require_mir_wp(false);
+    let err_trusted_cycle = checker1.run().unwrap_err();
+    assert_eq!(err_trusted_cycle.code, 1);
+    assert_eq!(err_trusted_cycle.phase, "preflight");
+    assert!(
+        err_trusted_cycle
+            .message
+            .contains("Trusted correspondence import cycle"),
+        "unexpected trusted-correspondence cycle error: {err_trusted_cycle}"
+    );
+
+    // 2. Import cycle inside `correspondence/`.
+    fs::remove_file(fix.root.join("trusted/correspondence/Trusted/CycleA.lean")).unwrap();
+    fs::remove_file(fix.root.join("trusted/correspondence/Trusted/CycleB.lean")).unwrap();
+    fs::write(
+        fix.root.join("correspondence/Anneal/CycleA.lean"),
+        b"prelude\nimport Init.NotationExtra\nimport Anneal.CycleB\n",
+    )
+    .unwrap();
+    fs::write(
+        fix.root.join("correspondence/Anneal/CycleB.lean"),
+        b"prelude\nimport Init.NotationExtra\nimport Anneal.CycleA\n",
+    )
+    .unwrap();
+
+    let mut checker2 = Checker::new(&fix.root, None).unwrap();
+    checker2.set_require_mir_wp(false);
+    let err_theory_cycle = checker2.run().unwrap_err();
+    assert_eq!(err_theory_cycle.code, 1);
+    assert_eq!(err_theory_cycle.phase, "preflight");
+    assert!(
+        err_theory_cycle
+            .message
+            .contains("Correspondence proof import cycle"),
+        "unexpected correspondence-proof cycle error: {err_theory_cycle}"
+    );
+}
+
+/// Keeps `LOCKED_LEAN_SHA256` synchronized with `foundation-lock.json`
+/// `distributions` binary digests.
+#[test]
+fn locked_lean_sha256_matches_foundation_lock_distributions() {
+    let lock_bytes = fs::read(repo_root().join("trusted/lean/foundation-lock.json")).unwrap();
+    let lock: Json = serde_json::from_slice(&lock_bytes).unwrap();
+    let expected: BTreeSet<String> = lock["distributions"]
+        .as_object()
+        .unwrap()
+        .values()
+        .map(|v| v.as_str().unwrap().to_ascii_lowercase())
+        .collect();
+    let actual: BTreeSet<String> = anneal_audit::LOCKED_LEAN_SHA256
+        .iter()
+        .map(|s| s.to_ascii_lowercase())
+        .collect();
+    assert_eq!(actual, expected);
+}
+
+/// Verifies that Pass 2 `"correspondence-preflight"` and Pass 2 module
+/// compilation run inside the isolated Linux `bwrap` sandbox: a vendored
+/// `Miri.*` `[init]` initializer cannot write to the host checkout or stage
+/// during `"correspondence-preflight"` or during Pass 2 elaboration, and any
+/// extra file dropped into `/work/out` is rejected with policy exit code `1`.
+#[cfg(target_os = "linux")]
+#[test]
+fn sandboxes_pass2_preflight_and_compilation_against_host_and_stage_writes() {
+    let fix = TempFixture::new(None);
+    let vendor_dir = fix.root.join("fake-vendor");
+    fs::create_dir_all(vendor_dir.join("Miri")).unwrap();
+
+    // Build a vendored `Miri.InitWriter` module whose `initialize` hook runs
+    // whenever `importModules` loads extensions (both during
+    // `"correspondence-preflight"` and during Pass 2 compilation) and attempts
+    // to write to a host checkout path, plus a second module that drops an
+    // unexpected file into `/work/out/sneaky-drop.txt`.
+    let host_victim = fix.root.join("pass2-escape-host.txt");
+    let init_host_src = format!(
+        "import Lean\n\
+         namespace Miri.InitHost\n\
+         initialize _ : Unit ← do\n\
+           IO.FS.writeFile \"{}\" \"pwned\"\n\
+           pure ()\n\
+         def ok : Nat := 1\n\
+         end Miri.InitHost\n",
+        host_victim.display()
+    );
+    fs::write(vendor_dir.join("Miri/InitHost.lean"), &init_host_src).unwrap();
+
+    let mut prebuild = Checker::new(&fix.root, None).unwrap();
+    prebuild.set_require_mir_wp(false);
+    prebuild.run().unwrap();
+    prebuild
+        .admitted_mut()
+        .unwrap()
+        .ensure_sysroot_foundation()
+        .unwrap();
+    let probe_lib = prebuild.stage.join("probe-miri-lib");
+    fs::create_dir_all(probe_lib.join("Miri")).unwrap();
+    // Compile `Miri.InitHost` into a temporary `.olean` for digest capture
+    // (the `initialize` hook does not execute while compiling its own module,
+    // only when an importing process loads the `.olean` with `loadExts`).
+    prebuild
+        .process(
+            "probe-init-host",
+            &[
+                "-j1".to_string(),
+                "-M2048".to_string(),
+                "-t0".to_string(),
+                "-DElab.async=false".to_string(),
+                "-Ddebug.skipKernelTC=false".to_string(),
+                "-R".to_string(),
+                vendor_dir.to_string_lossy().into_owned(),
+                "-o".to_string(),
+                probe_lib
+                    .join("Miri/InitHost.olean")
+                    .to_string_lossy()
+                    .into_owned(),
+                vendor_dir
+                    .join("Miri/InitHost.lean")
+                    .to_string_lossy()
+                    .into_owned(),
+            ],
+        )
+        .unwrap();
+    assert!(
+        !host_victim.exists(),
+        "compiling Miri.InitHost must not execute its initialize hook"
+    );
+
+    // 1. `"correspondence-preflight"` runs inside `bwrap`: importing
+    // `Miri.InitHost` with `loadExts := true` fails when the `[init]` hook
+    // tries to write outside `/work/out`, leaving `host_victim` untouched.
+    let src_dir = prebuild.stage.join("src/p2-sandbox-test");
+    fs::create_dir_all(src_dir.join("Trusted")).unwrap();
+    let sample_src = src_dir.join("Trusted/Correspondence.lean");
+    fs::write(
+        &sample_src,
+        "-- anneal-trust-tier: candidate:mir_semantics\n\
+         prelude\nimport Init.Core\nimport Miri.InitHost\n\
+         def c : Nat := Miri.InitHost.ok\n",
+    )
+    .unwrap();
+    let err_pf = prebuild
+        .inspect(InspectorRequest::CorrespondencePreflight {
+            search_path: vec![
+                prebuild.stage.join("lib"),
+                prebuild.stage.join("theory-lib"),
+                probe_lib.clone(),
+            ],
+            trusted: vec!["Trusted".to_string()],
+            theory: vec![],
+            vendor_miri: vec!["Miri.InitHost".to_string()],
+            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+            sources: vec![("Trusted.Correspondence".to_string(), sample_src.clone())],
+        })
+        .unwrap_err();
+    assert_eq!(
+        err_pf.code, 2,
+        "expected sandboxed correspondence-preflight failure: {err_pf}"
+    );
+    assert!(
+        !err_pf.message.contains("bwrap:"),
+        "bwrap itself must launch Lean rather than failing on mount setup: {err_pf}"
+    );
+    assert!(
+        err_pf.message.contains("pass2-escape-host.txt"),
+        "expected failure from the malicious [init] host write attempt: {err_pf}"
+    );
+    assert!(
+        !host_victim.exists(),
+        "sandboxed correspondence-preflight must not write to host checkout"
+    );
+
+    // 2. Even if a vendored `[init]` drops an extra file inside the sole
+    // writable `/work/out` directory during `"correspondence-preflight"`,
+    // `anneal-audit` rejects it with policy exit code `1` before trusting
+    // `result.json`.
+    let init_drop_src = "import Lean\n\
+        namespace Miri.InitDrop\n\
+        initialize _ : Unit ← do\n\
+          IO.FS.writeFile \"/work/out/sneaky-drop.txt\" \"junk\"\n\
+          pure ()\n\
+        def ok : Nat := 1\n\
+        end Miri.InitDrop\n";
+    fs::write(vendor_dir.join("Miri/InitDrop.lean"), init_drop_src).unwrap();
+    prebuild
+        .process(
+            "probe-init-drop",
+            &[
+                "-j1".to_string(),
+                "-M2048".to_string(),
+                "-t0".to_string(),
+                "-DElab.async=false".to_string(),
+                "-Ddebug.skipKernelTC=false".to_string(),
+                "-R".to_string(),
+                vendor_dir.to_string_lossy().into_owned(),
+                "-o".to_string(),
+                probe_lib
+                    .join("Miri/InitDrop.olean")
+                    .to_string_lossy()
+                    .into_owned(),
+                vendor_dir
+                    .join("Miri/InitDrop.lean")
+                    .to_string_lossy()
+                    .into_owned(),
+            ],
+        )
+        .unwrap();
+    let sample_drop_src = src_dir.join("Trusted/DropTest.lean");
+    fs::write(
+        &sample_drop_src,
+        "-- anneal-trust-tier: candidate:mir_semantics\n\
+         prelude\nimport Init.Core\nimport Miri.InitDrop\n\
+         def c : Nat := Miri.InitDrop.ok\n",
+    )
+    .unwrap();
+    let err_drop = prebuild
+        .inspect(InspectorRequest::CorrespondencePreflight {
+            search_path: vec![
+                prebuild.stage.join("lib"),
+                prebuild.stage.join("theory-lib"),
+                probe_lib.clone(),
+            ],
+            trusted: vec!["Trusted".to_string()],
+            theory: vec![],
+            vendor_miri: vec!["Miri.InitDrop".to_string()],
+            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+            sources: vec![("Trusted.DropTest".to_string(), sample_drop_src)],
+        })
+        .unwrap_err();
+    assert_eq!(
+        err_drop.code, 1,
+        "expected policy rejection for unexpected file in /work/out: {err_drop}"
+    );
+    assert!(
+        err_drop
+            .message
+            .contains("unexpected file in sandboxed correspondence-preflight output"),
+        "unexpected error message: {err_drop}"
+    );
+
+    // 3. Pass 2 module compilation (`run_correspondence_with_closure`) runs
+    // inside `bwrap`: a vendored `[init]` that stays silent during
+    // `"correspondence-preflight"` (where `/work/src/pass2` is absent) and
+    // attempts to write to the host checkout during Pass 2 compilation fails
+    // inside the sandbox, leaving `compile_host_victim` untouched.
+    let compile_host_victim = fix.root.join("pass2-compile-escape-host.txt");
+    let init_compile_host_src = format!(
+        "import Lean\n\
+         namespace Miri.InitCompileHost\n\
+         initialize _ : Unit ← do\n\
+           if ← System.FilePath.pathExists \"/work/src/pass2\" then\n\
+             IO.FS.writeFile \"{}\" \"pwned\"\n\
+           pure ()\n\
+         def ok : Nat := 1\n\
+         end Miri.InitCompileHost\n",
+        compile_host_victim.display()
+    );
+    fs::write(
+        vendor_dir.join("Miri/InitCompileHost.lean"),
+        &init_compile_host_src,
+    )
+    .unwrap();
+    let compile_host_olean = probe_lib.join("Miri/InitCompileHost.olean");
+    prebuild
+        .process(
+            "probe-init-compile-host",
+            &[
+                "-j1".to_string(),
+                "-M2048".to_string(),
+                "-t0".to_string(),
+                "-DElab.async=false".to_string(),
+                "-Ddebug.skipKernelTC=false".to_string(),
+                "-R".to_string(),
+                vendor_dir.to_string_lossy().into_owned(),
+                "-o".to_string(),
+                compile_host_olean.to_string_lossy().into_owned(),
+                vendor_dir
+                    .join("Miri/InitCompileHost.lean")
+                    .to_string_lossy()
+                    .into_owned(),
+            ],
+        )
+        .unwrap();
+    let compile_host_entry = MiriClosureEntry {
+        module: "Miri.InitCompileHost".to_string(),
+        path: "Miri/InitCompileHost.lean".to_string(),
+        olean_sha256: sha256_file(&compile_host_olean, "test").unwrap(),
+        olean_server_sha256: None,
+        olean_private_sha256: None,
+    };
+    let compile_host_sources = BTreeMap::from([(
+        "Miri/InitCompileHost.lean".to_string(),
+        sha256_bytes(init_compile_host_src.as_bytes()),
+    )]);
+    // Run Pass 1 on fresh checkers before creating `trusted/correspondence/`
+    // and `correspondence/` so `Checker::run()` completes Pass 1 without
+    // demanding `vendor/lean-miri/upstream-pin.json`.
+    let mut c3 = Checker::new(&fix.root, None).unwrap();
+    c3.set_require_mir_wp(false);
+    c3.run().unwrap();
+    let mut c4 = Checker::new(&fix.root, None).unwrap();
+    c4.set_require_mir_wp(false);
+    c4.run().unwrap();
+    fs::create_dir_all(fix.root.join("trusted/correspondence/Trusted")).unwrap();
+    fs::create_dir_all(fix.root.join("correspondence/Anneal")).unwrap();
+    fs::write(
+        fix.root
+            .join("trusted/correspondence/Trusted/Correspondence.lean"),
+        "-- anneal-trust-tier: candidate:mir_semantics\n\
+         prelude\nimport Init.Core\nimport Miri.InitCompileHost\n\
+         def c : Nat := Miri.InitCompileHost.ok\n",
+    )
+    .unwrap();
+    fs::write(
+        fix.root
+            .join("correspondence/Anneal/MirCorrespondenceProof.lean"),
+        "prelude\nimport Trusted.Correspondence\n\
+         def p : Nat := c\n",
+    )
+    .unwrap();
+    let err_compile_host = c3
+        .run_correspondence_with_closure(
+            &BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+            &vendor_dir,
+            "0000000000000000000000000000000000000000",
+            &[compile_host_entry],
+            &compile_host_sources,
+        )
+        .unwrap_err();
+    assert_eq!(
+        err_compile_host.code, 2,
+        "expected sandboxed Pass 2 compile failure: {err_compile_host}"
+    );
+    assert_eq!(err_compile_host.phase, "compile-Trusted.Correspondence");
+    assert!(
+        !err_compile_host.message.contains("bwrap:"),
+        "bwrap itself must launch Lean rather than failing on mount setup: {err_compile_host}"
+    );
+    assert!(
+        err_compile_host
+            .message
+            .contains("pass2-compile-escape-host.txt"),
+        "expected failure from the malicious [init] host write attempt: {err_compile_host}"
+    );
+    assert!(
+        !compile_host_victim.exists(),
+        "sandboxed Pass 2 compilation must not write to host checkout"
+    );
+
+    // 4. Even if a vendored `[init]` drops an extra file into `/work/out`
+    // during Pass 2 compilation, `anneal-audit` rejects it with policy exit
+    // code `1` and stages nothing into `lib/`.
+    let init_compile_drop_src = "import Lean\n\
+        namespace Miri.InitCompileDrop\n\
+        initialize _ : Unit ← do\n\
+          if ← System.FilePath.pathExists \"/work/src/pass2\" then\n\
+            IO.FS.writeFile \"/work/out/sneaky-pass2.txt\" \"junk\"\n\
+          pure ()\n\
+        def ok : Nat := 1\n\
+        end Miri.InitCompileDrop\n";
+    fs::write(
+        vendor_dir.join("Miri/InitCompileDrop.lean"),
+        init_compile_drop_src,
+    )
+    .unwrap();
+    let compile_drop_olean = probe_lib.join("Miri/InitCompileDrop.olean");
+    prebuild
+        .process(
+            "probe-init-compile-drop",
+            &[
+                "-j1".to_string(),
+                "-M2048".to_string(),
+                "-t0".to_string(),
+                "-DElab.async=false".to_string(),
+                "-Ddebug.skipKernelTC=false".to_string(),
+                "-R".to_string(),
+                vendor_dir.to_string_lossy().into_owned(),
+                "-o".to_string(),
+                compile_drop_olean.to_string_lossy().into_owned(),
+                vendor_dir
+                    .join("Miri/InitCompileDrop.lean")
+                    .to_string_lossy()
+                    .into_owned(),
+            ],
+        )
+        .unwrap();
+    let compile_drop_entry = MiriClosureEntry {
+        module: "Miri.InitCompileDrop".to_string(),
+        path: "Miri/InitCompileDrop.lean".to_string(),
+        olean_sha256: sha256_file(&compile_drop_olean, "test").unwrap(),
+        olean_server_sha256: None,
+        olean_private_sha256: None,
+    };
+    let compile_drop_sources = BTreeMap::from([(
+        "Miri/InitCompileDrop.lean".to_string(),
+        sha256_bytes(init_compile_drop_src.as_bytes()),
+    )]);
+    fs::write(
+        fix.root
+            .join("trusted/correspondence/Trusted/Correspondence.lean"),
+        "-- anneal-trust-tier: candidate:mir_semantics\n\
+         prelude\nimport Init.Core\nimport Miri.InitCompileDrop\n\
+         def c : Nat := Miri.InitCompileDrop.ok\n",
+    )
+    .unwrap();
+    let err_compile_drop = c4
+        .run_correspondence_with_closure(
+            &BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+            &vendor_dir,
+            "0000000000000000000000000000000000000000",
+            &[compile_drop_entry],
+            &compile_drop_sources,
+        )
+        .unwrap_err();
+    assert_eq!(
+        err_compile_drop.code, 1,
+        "expected policy rejection for unexpected file in Pass 2 /work/out: {err_compile_drop}"
+    );
+    assert!(
+        err_compile_drop
+            .message
+            .contains("unexpected file in sandboxed Pass 2 output"),
+        "unexpected error message: {err_compile_drop}"
+    );
+    assert!(
+        !c4.stage.join("lib/Trusted/Correspondence.olean").exists(),
+        "rejected Pass 2 output must not be staged into lib/"
     );
 }

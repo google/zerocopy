@@ -75,7 +75,7 @@ local types structurally without threading a global type table.
 Every `def` and term-level `abbrev` in `Trusted.MirAst` and
 `Trusted.MirSemantics` carries `noncomputable`. For a computable recursive
 definition (such as `MirTy.beq`), Lean adds a `._unsafe_rec` compiler helper
-marked `partial`, and `TrustedBoundary.validateLocalConstant` rejects every
+marked `partial`, and `TrustedBoundary.validateRepoConstant` rejects every
 `partial` constant; `noncomputable` stops Lean from adding the helper. Any
 non-recursive value definition that calls a `noncomputable` helper (such as
 `checkVal` or `initState`) also requires `noncomputable` in Lean 4 (otherwise

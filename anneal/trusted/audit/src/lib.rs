@@ -57,10 +57,12 @@
 //!    non-foundation constants in `Trusted` and `Anneal` are checked against
 //!    the foundation axiom allowlist in `foundation-lock.json` and replayed
 //!    from scratch through `base.toKernelEnv.replay` with `loadExts := false`.
-//! 6. **Pinned `vendor/lean-miri/` closure verification
+//! 6. **Pass 2 MIR correspondence and `vendor/lean-miri/` verification
 //!    ([`verify_upstream_pin`], [`Checker::verify_and_stage_miri_entries`],
-//!    [`InspectorRequest::CorrespondenceAudit`]):** When `vendor/lean-miri/` is
-//!    present, `UPSTREAM_PIN.json` and every vendored file are verified against
+//!    [`InspectorRequest::CorrespondencePreflight`],
+//!    [`InspectorRequest::CorrespondenceAudit`]):** When
+//!    `--require-correspondence` is set or correspondence directories exist,
+//!    `UPSTREAM_PIN.json` and every vendored file are verified against
 //!    TCB-locked SHA-256 digests, the sysroot `Init`/`Std`/`Lean` `.olean`
 //!    manifest is authenticated before compilation, the 160-module
 //!    `ExecutionMachine` slice is restored from a digest-gated cache outside
@@ -68,13 +70,22 @@
 //!    (`bwrap --unshare-all` with an empty `tmpfs` root, read-only toolchain
 //!    and staged inputs, zero network/credentials, and writes confined strictly
 //!    to an isolated output directory) with write-after-verify `.olean` digest
-//!    and unexpected-file checking before staging, and the loaded closure is
-//!    checked for namespace isolation, trust-tier separation, and `.vendorMiri`
-//!    axiom/`unsafe`/`sorryAx`/compiler-primitive absence, kernel-replayed from
-//!    scratch onto the authenticated sysroot base on every run (cold compile
-//!    and cache hit alike), and checked for execution-cone freedom from
-//!    `unsafe`, `partial`, `.vendorMiri` `opaque`, and unapproved axioms
-//!    (without source-preflighting vendor modules).
+//!    and unexpected-file checking before staging, Pass 2 sources
+//!    (`trusted/correspondence/` and `correspondence/`) pass syntactic
+//!    preflight under both the foundation parser and the OS-sandboxed Pass 2
+//!    union compile parser environment (with decoy-resistant all-candidate
+//!    scoped-namespace rejection) before OS-sandboxed isolated compilation,
+//!    and `"correspondence-audit"` verifies `CorrOrigin` import/edge
+//!    isolation, `.vendorMiri` purity (rejecting `axiom`, `unsafe`, `sorryAx`,
+//!    and compiler-reflection primitives), full standalone kernel replay over
+//!    every non-`isPartial` `.vendorMiri` declaration onto the authenticated
+//!    sysroot base on every run (cold compile and cache hit alike), kernel
+//!    replay of all correspondence declarations onto that replayed vendor
+//!    kernel environment, 21-root Miri and correspondence cone purity, all 27
+//!    correspondence, wiring, and canary claims, and reference-evaluator
+//!    regression checks (reaching the 19 required `Miri.*` primitives while
+//!    rejecting the 21 named `M_anneal` evaluator entry points, with human
+//!    review of `trusted/correspondence/` remaining the semantic boundary).
 
 use std::collections::{BTreeMap, BTreeSet, VecDeque};
 use std::env;
@@ -329,14 +340,29 @@ pub struct ImportEdge {
 ///
 /// Encoding the inspector phases as a sum type ensures that `"preflight"`
 /// is always invoked with a source list against the foundation graph,
-/// `"audit"` is always invoked with the full module inventory and validated
-/// [`TrustTier`] map, and `"correspondence-audit"` is always invoked with the
-/// complete correspondence-audit module sets and search path.
+/// `"correspondence-preflight"` is always invoked with Pass 2 sources against
+/// the authenticated Pass 2 compile environment, `"audit"` is always invoked
+/// with the full module inventory and validated [`TrustTier`] map, and
+/// `"correspondence-audit"` is always invoked with the complete Pass 2
+/// correspondence module sets and search path.
 #[derive(Debug, Clone)]
 pub enum InspectorRequest {
     /// Phase 1 (`"preflight"`): parse `(module_name, staged_path)` pairs
     /// against the locked foundation parser environment before any elaboration.
     Preflight { sources: Vec<(String, PathBuf)> },
+    /// Pass 2 compile-environment preflight (`"correspondence-preflight"`):
+    /// parse `(module_name, staged_path)` pairs against the authenticated
+    /// Pass 2 compile parser environment (`foundation`, Pass 1 `trusted`/
+    /// `theory`, and pinned `vendor_miri` with `loadExts := true`) before
+    /// compiling any Pass 2 module.
+    CorrespondencePreflight {
+        search_path: Vec<PathBuf>,
+        trusted: Vec<String>,
+        theory: Vec<String>,
+        vendor_miri: Vec<String>,
+        module_tiers: BTreeMap<String, TrustTier>,
+        sources: Vec<(String, PathBuf)>,
+    },
     /// Phase 2 (`"audit"`): load compiled `.olean`s with `loadExts := false`,
     /// verify module-level trust tiers and namespace hygiene, and replay all
     /// non-foundation constants through the Lean kernel.
@@ -345,16 +371,15 @@ pub enum InspectorRequest {
         theory: Vec<String>,
         module_tiers: BTreeMap<String, TrustTier>,
     },
-    /// Phase 3 (`"correspondence-audit"`): load the pinned `lean-miri` closure
-    /// `.olean`s with `loadExts := false`, verify 5-role module provenance,
-    /// `.vendorMiri` inventory integrity and axiom/`unsafe`/`sorryAx`/
-    /// compiler-primitive absence, kernel-replay every non-`isPartial`
-    /// `.vendorMiri` declaration onto the authenticated sysroot base on every
-    /// run (cold compile and cache hit alike), and verify constant-cone purity
-    /// for `Miri.Interpreter.ExecutionMachine`. `corr_trusted` and
-    /// `corr_theory` are currently passed empty by `run_miri_closure` until
-    /// `trusted/correspondence/` and `correspondence/` are added and wired into
-    /// directory scanning.
+    /// Phase 3 (`"correspondence-audit"`): load Pass 2 correspondence and
+    /// `lean-miri` closure `.olean`s with `loadExts := false`, verify
+    /// `CorrOrigin` import/edge isolation and `.vendorMiri` purity,
+    /// kernel-replay every non-`isPartial` `.vendorMiri` declaration onto the
+    /// authenticated sysroot base on every run (cold compile and cache hit
+    /// alike), kernel-replay all correspondence declarations onto that
+    /// replayed vendor kernel environment, and verify constant-cone purity,
+    /// all 27 correspondence/wiring/canary claims, and reference-evaluator
+    /// independence.
     CorrespondenceAudit {
         search_path: Vec<PathBuf>,
         trusted: Vec<String>,
@@ -367,11 +392,12 @@ pub enum InspectorRequest {
 }
 
 impl InspectorRequest {
-    /// Return the wire mode tag (`"preflight"`, `"audit"`, or
-    /// `"correspondence-audit"`).
+    /// Return the wire mode tag (`"preflight"`,
+    /// `"correspondence-preflight"`, `"audit"`, or `"correspondence-audit"`).
     pub const fn mode(&self) -> &'static str {
         match self {
             Self::Preflight { .. } => "preflight",
+            Self::CorrespondencePreflight { .. } => "correspondence-preflight",
             Self::Audit { .. } => "audit",
             Self::CorrespondenceAudit { .. } => "correspondence-audit",
         }
@@ -1372,6 +1398,16 @@ pub fn scan_lean_tree(
     root: &Path,
     umbrella_prefix: &str,
 ) -> Result<BTreeMap<String, PathBuf>, Failure> {
+    scan_lean_tree_opts(root, umbrella_prefix, true)
+}
+
+/// Scan a Lean directory tree (`root`) under `umbrella_prefix`, optionally
+/// requiring a root `<umbrella_prefix>.lean` umbrella file.
+fn scan_lean_tree_opts(
+    root: &Path,
+    umbrella_prefix: &str,
+    require_umbrella: bool,
+) -> Result<BTreeMap<String, PathBuf>, Failure> {
     let meta = fs::symlink_metadata(root).map_err(|_| {
         Failure::new(
             1,
@@ -1447,7 +1483,8 @@ pub fn scan_lean_tree(
                     format!("duplicate module: {module}"),
                 ));
             }
-        } else if !(umbrella_prefix == "Trusted"
+        } else if !(require_umbrella
+            && umbrella_prefix == "Trusted"
             && (relative == "lean-toolchain" || relative == "foundation-lock.json"))
         {
             return Err(Failure::new(
@@ -1458,7 +1495,8 @@ pub fn scan_lean_tree(
         }
     }
 
-    if (umbrella_prefix == "Trusted" || !modules.is_empty())
+    if require_umbrella
+        && (umbrella_prefix == "Trusted" || !modules.is_empty())
         && !modules.contains_key(umbrella_prefix)
     {
         return Err(Failure::new(
@@ -1472,7 +1510,7 @@ pub fn scan_lean_tree(
 
 /// Pinned SHA-256 digests of the official Lean 4.34.1 `bin/lean` binaries from
 /// `trusted/lean/foundation-lock.json`.
-const LOCKED_LEAN_SHA256: [&str; 4] = [
+pub const LOCKED_LEAN_SHA256: [&str; 4] = [
     "79fb1d26fa5a39385d59fdc48a711a14b0710ca6480271acce99b4d177cea085",
     "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554",
     "998f0cc2a5a754cc66df1f33b85e1447528737ff15012db35d8c501754b02f1e",
@@ -1710,15 +1748,20 @@ pub fn verify_sysroot_foundation_dir(
     Ok(modules.into_iter().collect())
 }
 
-/// Validated repository source headers and module-level trust tiers produced by
-/// [`Checker::preflight_repo_modules`].
+/// Validated repository source headers, module-level trust tiers, and
+/// topological compilation orders produced by
+/// [`Checker::preflight_and_order_modules`].
 #[derive(Debug, Clone)]
-struct PreflightAdmission {
+struct OrderedPreflight {
     /// Direct `import` edges for every staged `Trusted.*` and `Anneal.*`
     /// module.
     imports: BTreeMap<String, Vec<ImportEdge>>,
     /// Validated [`TrustTier`] for every staged `Trusted.*` module.
     module_tiers: BTreeMap<String, TrustTier>,
+    /// Topological compilation order for `Trusted.*` modules.
+    trusted_order: Vec<String>,
+    /// Topological compilation order for `Anneal.*` modules.
+    theory_order: Vec<String>,
 }
 
 /// Repository-boundary auditor managing an isolated staging directory
@@ -1733,6 +1776,7 @@ pub struct Checker {
     pub environment: BTreeMap<String, String>,
     counter: usize,
     pub admitted: Option<AdmittedToolchain>,
+    pub require_correspondence: bool,
     pub miri_cache_dir: Option<PathBuf>,
     pub require_mir_wp: bool,
 }
@@ -1856,9 +1900,17 @@ impl Checker {
             environment,
             counter: 0,
             admitted: None,
+            require_correspondence: false,
             miri_cache_dir: None,
             require_mir_wp: true,
         })
+    }
+
+    /// Configure whether Pass 2 (`vendor/lean-miri/`,
+    /// `trusted/correspondence/`, and `correspondence/`) is mandatory even if
+    /// those directories are absent.
+    pub fn set_require_correspondence(&mut self, require: bool) {
+        self.require_correspondence = require;
     }
 
     /// Configure an optional cache directory for verified `Miri.*` `.olean`
@@ -1908,9 +1960,8 @@ impl Checker {
         self.launch_lean_with_path(arguments, None)
     }
 
-    /// Capture a Lean child in the stage with an optional `LEAN_PATH`
-    /// override pointing at staged `.olean` directories (Lean appends the
-    /// authenticated toolchain sysroot library path automatically).
+    /// Capture a Lean child in the stage with an optional hermetic `LEAN_PATH`
+    /// override pointing exclusively at staged `.olean` directories.
     fn launch_lean_with_path(
         &self,
         arguments: &[String],
@@ -1995,8 +2046,30 @@ impl Checker {
     /// validate the structured response envelope.
     pub fn inspect(&mut self, request: InspectorRequest) -> Result<Json, Failure> {
         let mode = request.mode();
-        if matches!(request, InspectorRequest::CorrespondenceAudit { .. }) {
+        if matches!(
+            request,
+            InspectorRequest::CorrespondencePreflight { .. }
+                | InspectorRequest::CorrespondenceAudit { .. }
+        ) {
             self.admitted_mut()?.ensure_sysroot_foundation()?;
+        }
+        if let InspectorRequest::CorrespondencePreflight {
+            search_path,
+            trusted,
+            theory,
+            vendor_miri,
+            module_tiers,
+            sources,
+        } = &request
+        {
+            return self.inspect_correspondence_preflight_sandboxed(
+                search_path,
+                trusted,
+                theory,
+                vendor_miri,
+                module_tiers,
+                sources,
+            );
         }
         let adm = self.admitted()?;
         let arts_arr: Vec<Json> = adm
@@ -2021,6 +2094,7 @@ impl Checker {
                     "sources": src_pairs,
                 })
             }
+            InspectorRequest::CorrespondencePreflight { .. } => unreachable!(),
             InspectorRequest::Audit {
                 trusted,
                 theory,
@@ -2088,13 +2162,12 @@ impl Checker {
         fs::write(&request_path, req_bytes)
             .map_err(|e| Failure::new(2, mode, format!("cannot write request: {e}")))?;
 
-        // Keep Phase 1/2 capped at `-M2048` during preflight and core audit.
-        // Raise the cap to `-M8192` for Phase 3 (`CorrespondenceAudit`), which
-        // loads the 160-module `lean-miri` and `Lean.*` closure alongside the
-        // already-audited `Trusted.*` and `theory/` `.olean` files (resource
-        // bound only; soundness does not depend on this limit).
+        // Keep Pass 1 capped at `-M2048` over untrusted `theory/`, raising the
+        // limit to `-M8192` only for Pass 2 when loading the 160-module
+        // `lean-miri` and `Lean.*` closure environment.
         let mem_limit = match request {
-            InspectorRequest::CorrespondenceAudit { .. } => "-M8192",
+            InspectorRequest::CorrespondencePreflight { .. }
+            | InspectorRequest::CorrespondenceAudit { .. } => "-M8192",
             InspectorRequest::Preflight { .. } | InspectorRequest::Audit { .. } => "-M2048",
         };
         let args = vec![
@@ -2109,41 +2182,157 @@ impl Checker {
             .launch_lean(&args)
             .map_err(|e| Failure::new(2, mode, format!("could not execute Lean: {e}")))?;
 
-        if !output.status.success() {
-            if output.status.code() == Some(1)
-                && result_path.is_file()
-                && let Ok(text) = fs::read_to_string(&result_path)
-                && let Ok(resp) = serde_json::from_str::<InspectorErrResponse>(&text)
-                && !resp.ok
-                && resp.category == "policy"
-                && resp.message.starts_with("policy:")
-            {
-                return Err(Failure::new(1, mode, resp.message));
-            }
-            let stderr = String::from_utf8_lossy(&output.stderr);
-            return Err(Failure::new(
-                2,
-                mode,
-                format!("Lean exited {:?}: {}", output.status.code(), stderr.trim()),
-            ));
+        let result_map = parse_inspector_output(mode, &output, &result_path)?;
+        if let InspectorRequest::CorrespondenceAudit {
+            vendor_miri,
+            corr_trusted,
+            corr_theory,
+            ..
+        } = &request
+        {
+            validate_correspondence_report(
+                &result_map,
+                !vendor_miri.is_empty(),
+                !corr_trusted.is_empty() || !corr_theory.is_empty(),
+            )?;
         }
+        Ok(Json::Object(result_map))
+    }
 
-        let resp_text = fs::read_to_string(&result_path).map_err(|e| {
-            Failure::new(2, mode, format!("missing/malformed inspector result: {e}"))
-        })?;
-        let resp: InspectorOkResponse = serde_json::from_str(&resp_text)
-            .map_err(|_| Failure::new(2, mode, "unexpected inspector protocol response"))?;
-        if !resp.ok {
-            return Err(Failure::new(
-                2,
-                mode,
-                "unexpected inspector protocol response",
-            ));
+    /// Execute `"correspondence-preflight"` inside an isolated OS-level
+    /// sandbox so vendored `[init]` initializers and parser extensions loaded
+    /// with `loadExts := true` have zero credentials, zero network access,
+    /// read-only access to toolchain/libraries/sources, and can write only to
+    /// an isolated per-request output directory holding `result.json`.
+    fn inspect_correspondence_preflight_sandboxed(
+        &mut self,
+        search_path: &[PathBuf],
+        trusted: &[String],
+        theory: &[String],
+        vendor_miri: &[String],
+        module_tiers: &BTreeMap<String, TrustTier>,
+        sources: &[(String, PathBuf)],
+    ) -> Result<Json, Failure> {
+        let mode = "correspondence-preflight";
+        let (bwrap, lean_prefix, sandbox_lean) = self.resolve_bwrap_and_sandbox_lean(mode)?;
+
+        let (foundation, sysroot_foundation, inspector) = {
+            let adm = self.admitted()?;
+            (
+                adm.foundation_modules(),
+                adm.sysroot_foundation.clone().unwrap_or_default(),
+                adm.inspector.clone(),
+            )
+        };
+
+        let mut sp_binds: Vec<(PathBuf, String)> = Vec::new();
+        for (i, dir) in search_path.iter().enumerate() {
+            match fs::symlink_metadata(dir) {
+                Ok(meta) => {
+                    if meta.file_type().is_symlink() || !meta.is_dir() {
+                        return Err(Failure::policy(
+                            mode,
+                            format!(
+                                "invalid correspondence search_path entry (must be a regular directory): {}",
+                                dir.display()
+                            ),
+                        ));
+                    }
+                    sp_binds.push((dir.clone(), format!("/work/sp-{i}")));
+                }
+                Err(e) if e.kind() == std::io::ErrorKind::NotFound => continue,
+                Err(e) => {
+                    return Err(Failure::operational(
+                        mode,
+                        format!("cannot inspect search_path {}: {e}", dir.display()),
+                    ));
+                }
+            }
         }
-        if let InspectorRequest::CorrespondenceAudit { vendor_miri, .. } = &request {
-            validate_correspondence_report(&resp.result, !vendor_miri.is_empty())?;
-        }
-        Ok(Json::Object(resp.result))
+        let sandbox_sp: Vec<&str> = sp_binds.iter().map(|(_, dst)| dst.as_str()).collect();
+        let src_binds: Vec<(PathBuf, String)> = sources
+            .iter()
+            .enumerate()
+            .map(|(i, (_, p))| (p.clone(), format!("/work/src/s-{i}.lean")))
+            .collect();
+        let sandbox_sources: Vec<(&str, &str)> = sources
+            .iter()
+            .zip(src_binds.iter())
+            .map(|((m, _), (_, dst))| (m.as_str(), dst.as_str()))
+            .collect();
+        let tiers: Vec<(&str, String)> = module_tiers
+            .iter()
+            .map(|(m, t)| (m.as_str(), t.render()))
+            .collect();
+
+        let req = json!({
+            "mode": mode,
+            "sysroot": "/toolchain",
+            "searchPath": sandbox_sp,
+            "foundation": foundation,
+            "sysrootFoundation": sysroot_foundation,
+            "trusted": trusted,
+            "theory": theory,
+            "vendorMiri": vendor_miri,
+            "moduleTiers": tiers,
+            "sources": sandbox_sources,
+        });
+
+        self.counter += 1;
+        let request_path = self
+            .stage
+            .join(format!("request-{:03}-{mode}.json", self.counter));
+        let req_bytes = serde_json::to_vec(&req)
+            .map_err(|e| Failure::new(2, mode, format!("cannot serialize request: {e}")))?;
+        fs::write(&request_path, req_bytes)
+            .map_err(|e| Failure::new(2, mode, format!("cannot write request: {e}")))?;
+
+        let mut out_builder = tempfile::Builder::new();
+        out_builder.prefix("anneal-corr-pf-out-");
+        #[cfg(unix)]
+        out_builder.permissions(fs::Permissions::from_mode(0o700));
+        let out_dir = out_builder
+            .tempdir()
+            .map_err(|e| Failure::operational(mode, e.to_string()))?;
+
+        let args = build_bwrap_correspondence_preflight_args(
+            &lean_prefix,
+            &sandbox_lean,
+            &inspector,
+            &request_path,
+            &sp_binds,
+            &src_binds,
+            out_dir.path(),
+        );
+        let output = Command::new(bwrap)
+            .args(&args)
+            .current_dir(out_dir.path())
+            .env_clear()
+            .output()
+            .map_err(|e| {
+                Failure::new(
+                    2,
+                    mode,
+                    format!(
+                        "could not execute bubblewrap sandbox {}: {e}",
+                        bwrap.display()
+                    ),
+                )
+            })?;
+
+        let allowed = BTreeSet::from(["result.json".to_string()]);
+        verify_no_unexpected_sandbox_outputs_for_phase(
+            out_dir.path(),
+            &allowed,
+            None,
+            mode,
+            mode,
+            "correspondence-preflight",
+        )?;
+
+        let result_path = out_dir.path().join("result.json");
+        let result_map = parse_inspector_output(mode, &output, &result_path)?;
+        Ok(Json::Object(result_map))
     }
 
     /// Scan `root` via [`scan_lean_tree`] and copy every discovered `.lean`
@@ -2154,7 +2343,19 @@ impl Checker {
         umbrella_prefix: &str,
         stage_subdir: &str,
     ) -> Result<BTreeMap<String, PathBuf>, Failure> {
-        scan_lean_tree(root, umbrella_prefix)?
+        self.scan_and_stage_tree_opts(root, umbrella_prefix, stage_subdir, true)
+    }
+
+    /// Scan `root` via [`scan_lean_tree_opts`] and copy every discovered
+    /// `.lean` file into `self.stage.join(stage_subdir)`.
+    fn scan_and_stage_tree_opts(
+        &self,
+        root: &Path,
+        umbrella_prefix: &str,
+        stage_subdir: &str,
+        require_umbrella: bool,
+    ) -> Result<BTreeMap<String, PathBuf>, Failure> {
+        scan_lean_tree_opts(root, umbrella_prefix, require_umbrella)?
             .into_iter()
             .map(|(mod_name, raw_path)| {
                 let staged_path = self
@@ -2377,76 +2578,100 @@ impl Checker {
     // Stage 3 & 4: Preflight, `--setup` compilation, and kernel audit
     // -----------------------------------------------------------------------
 
-    /// Run Phase 1 (`"preflight"`) over all staged `Trusted.*` and `Anneal.*`
-    /// repository sources and return the validated [`PreflightAdmission`].
-    fn preflight_repo_modules(&mut self) -> Result<PreflightAdmission, Failure> {
-        let adm = self.admitted()?;
-        let sources: Vec<(String, PathBuf)> = adm
-            .modules
+    /// Run preflight, tier extraction, import-boundary validation, and
+    /// topological ordering for Pass 1 (`trusted/lean` + `theory`) and Pass 2
+    /// (`trusted/correspondence` + `correspondence`).
+    #[allow(clippy::too_many_arguments)]
+    fn preflight_and_order_modules(
+        &mut self,
+        trusted_map: &BTreeMap<String, PathBuf>,
+        theory_map: &BTreeMap<String, PathBuf>,
+        base_tiers: &BTreeMap<String, TrustTier>,
+        extra_trusted_allowed: &BTreeSet<String>,
+        extra_theory_allowed: &BTreeSet<String>,
+        inventory_err: &str,
+        trusted_cycle_msg: &str,
+        theory_cycle_msg: &str,
+    ) -> Result<OrderedPreflight, Failure> {
+        let sources: Vec<(String, PathBuf)> = trusted_map
             .iter()
-            .chain(adm.theory_modules.iter())
+            .chain(theory_map.iter())
             .map(|(n, p)| (n.clone(), p.clone()))
             .collect();
         let pf_res: PreflightResult =
             serde_json::from_value(self.inspect(InspectorRequest::Preflight { sources })?)
-                .map_err(|_| {
-                    Failure::operational("preflight", "incomplete source-header inventory")
-                })?;
+                .map_err(|_| Failure::operational("preflight", inventory_err))?;
 
-        let adm = self.admitted()?;
         let mut imports: BTreeMap<String, Vec<ImportEdge>> = BTreeMap::new();
-        let mut module_tiers: BTreeMap<String, TrustTier> = BTreeMap::new();
-        for h in pf_res.headers {
-            let mod_name = h.module;
-            let is_trusted = adm.modules.contains_key(&mod_name);
-            if is_trusted {
-                let raw_tier = h.trust_tier.ok_or_else(|| {
-                    Failure::policy(
-                        "preflight",
-                        format!("missing trust tier for Trusted module {mod_name}"),
-                    )
-                })?;
-                let tier = TrustTier::parse(&raw_tier).ok_or_else(|| {
-                    Failure::policy(
-                        "preflight",
-                        format!("invalid trust tier {raw_tier} for Trusted module {mod_name}"),
-                    )
-                })?;
-                module_tiers.insert(mod_name.clone(), tier);
-            }
-            for edge in &h.imports {
-                let imp_mod = edge.module.as_str();
-                let allowed = if is_trusted {
-                    adm.artifacts.contains_key(imp_mod) || adm.modules.contains_key(imp_mod)
-                } else {
-                    adm.artifacts.contains_key(imp_mod)
-                        || adm.modules.contains_key(imp_mod)
-                        || adm.theory_modules.contains_key(imp_mod)
-                };
-                if !allowed {
-                    return Err(Failure::policy(
-                        "preflight",
-                        format!("foreign/missing import {imp_mod} in {mod_name}"),
-                    ));
-                }
-            }
-            imports.insert(mod_name, h.imports);
-        }
-
-        let expected_count = adm.modules.len() + adm.theory_modules.len();
-        if imports.len() != expected_count
-            || !adm.modules.keys().all(|m| imports.contains_key(m))
-            || !adm.theory_modules.keys().all(|m| imports.contains_key(m))
+        let mut module_tiers = base_tiers.clone();
         {
-            return Err(Failure::operational(
-                "preflight",
-                "incomplete source-header inventory",
-            ));
+            let adm = self.admitted()?;
+            for h in pf_res.headers {
+                let mod_name = h.module;
+                let is_trusted = trusted_map.contains_key(&mod_name);
+                if is_trusted {
+                    let raw_tier = h.trust_tier.ok_or_else(|| {
+                        Failure::policy(
+                            "preflight",
+                            format!("missing trust tier for Trusted module {mod_name}"),
+                        )
+                    })?;
+                    let tier = TrustTier::parse(&raw_tier).ok_or_else(|| {
+                        Failure::policy(
+                            "preflight",
+                            format!("invalid trust tier {raw_tier} for Trusted module {mod_name}"),
+                        )
+                    })?;
+                    module_tiers.insert(mod_name.clone(), tier);
+                }
+                for edge in &h.imports {
+                    let imp_mod = edge.module.as_str();
+                    let allowed = if is_trusted {
+                        adm.foundation_graph.contains_key(imp_mod)
+                            || trusted_map.contains_key(imp_mod)
+                            || extra_trusted_allowed.contains(imp_mod)
+                    } else {
+                        adm.foundation_graph.contains_key(imp_mod)
+                            || trusted_map.contains_key(imp_mod)
+                            || theory_map.contains_key(imp_mod)
+                            || extra_trusted_allowed.contains(imp_mod)
+                            || extra_theory_allowed.contains(imp_mod)
+                    };
+                    if !allowed {
+                        return Err(Failure::policy(
+                            "preflight",
+                            format!("foreign/missing import {imp_mod} in {mod_name}"),
+                        ));
+                    }
+                }
+                imports.insert(mod_name, h.imports);
+            }
         }
 
-        Ok(PreflightAdmission {
+        let expected_count = trusted_map.len() + theory_map.len();
+        if imports.len() != expected_count
+            || !trusted_map.keys().all(|m| imports.contains_key(m))
+            || !theory_map.keys().all(|m| imports.contains_key(m))
+        {
+            return Err(Failure::operational("preflight", inventory_err));
+        }
+
+        let trusted_order = topo_sort_modules(
+            trusted_map.keys().cloned().collect(),
+            &imports,
+            trusted_cycle_msg,
+        )?;
+        let theory_order = topo_sort_modules(
+            theory_map.keys().cloned().collect(),
+            &imports,
+            theory_cycle_msg,
+        )?;
+
+        Ok(OrderedPreflight {
             imports,
             module_tiers,
+            trusted_order,
+            theory_order,
         })
     }
 
@@ -2515,7 +2740,8 @@ impl Checker {
     }
 
     /// Run the complete repository boundary check (`trusted/lean/` plus
-    /// `theory/` when present).
+    /// `theory/` when present, and Pass 2 correspondence when present or
+    /// required).
     pub fn run(&mut self) -> Result<Json, Failure> {
         if let Some(cache_dir) = &self.miri_cache_dir {
             ensure_miri_cache_outside_checkout(&self.checkout, cache_dir)?;
@@ -2523,30 +2749,32 @@ impl Checker {
         check_checkout_cargo_hygiene(&self.checkout)?;
         self.reset_stage()?;
         self.tool_admission()?;
-        let preflight = self.preflight_repo_modules()?;
-
-        let (trusted_set, theory_set) = {
+        let (trusted_modules, theory_modules) = {
             let adm = self.admitted()?;
-            (
-                adm.modules.keys().cloned().collect(),
-                adm.theory_modules.keys().cloned().collect(),
-            )
+            (adm.modules.clone(), adm.theory_modules.clone())
         };
-        let trusted_order =
-            topo_sort_modules(trusted_set, &preflight.imports, "Trusted import cycle")?;
-        let theory_order =
-            topo_sort_modules(theory_set, &preflight.imports, "Theory import cycle")?;
+        let empty = BTreeSet::new();
+        let preflight = self.preflight_and_order_modules(
+            &trusted_modules,
+            &theory_modules,
+            &BTreeMap::new(),
+            &empty,
+            &empty,
+            "incomplete source-header inventory",
+            "Trusted import cycle",
+            "Theory import cycle",
+        )?;
 
-        for module in &trusted_order {
+        for module in &preflight.trusted_order {
             let edge_list = preflight.imports[module].clone();
-            let staged_src_path = self.admitted()?.modules[module].clone();
+            let staged_src_path = trusted_modules[module].clone();
             self.execution_began = true;
             self.compile_lean_module(module, &staged_src_path, edge_list, "lib", false)?;
         }
 
-        for module in &theory_order {
+        for module in &preflight.theory_order {
             let edge_list = preflight.imports[module].clone();
-            let staged_src_path = self.admitted()?.theory_modules[module].clone();
+            let staged_src_path = theory_modules[module].clone();
             self.execution_began = true;
             self.compile_lean_module(module, &staged_src_path, edge_list, "theory-lib", true)?;
         }
@@ -2572,7 +2800,7 @@ impl Checker {
             );
         }
 
-        if let Some(corr_report) = self.run_miri_closure(&preflight.module_tiers)?
+        if let Some(corr_report) = self.run_correspondence(&preflight.module_tiers)?
             && let (Some(rep_obj), Some(corr_obj)) =
                 (report.as_object_mut(), corr_report.as_object())
         {
@@ -2584,58 +2812,248 @@ impl Checker {
         Ok(report)
     }
 
-    /// Stage, compile (or restore from verified cache), and audit the
-    /// 160-module `Miri.Interpreter.ExecutionMachine` closure whenever
-    /// `vendor/lean-miri` is present in `self.checkout`.
-    fn run_miri_closure(
+    /// Execute Pass 2 (`"correspondence-audit"`) when
+    /// `self.require_correspondence` is set or any of `vendor/lean-miri`,
+    /// `trusted/correspondence`, or `correspondence` exists in `self.checkout`.
+    fn run_correspondence(
         &mut self,
         base_tiers: &BTreeMap<String, TrustTier>,
     ) -> Result<Option<Json>, Failure> {
         let vendor_dir = self.checkout.join("vendor/lean-miri");
-        if fs::symlink_metadata(&vendor_dir).is_err() {
+        let corr_trusted_dir = self.checkout.join("trusted/correspondence");
+        let corr_theory_dir = self.checkout.join("correspondence");
+
+        let vendor_exists = fs::symlink_metadata(&vendor_dir).is_ok();
+        let corr_trusted_exists = fs::symlink_metadata(&corr_trusted_dir).is_ok();
+        let corr_theory_exists = fs::symlink_metadata(&corr_theory_dir).is_ok();
+
+        if !self.require_correspondence
+            && !vendor_exists
+            && !corr_trusted_exists
+            && !corr_theory_exists
+        {
             return Ok(None);
+        }
+        if !vendor_exists || !corr_trusted_exists || !corr_theory_exists {
+            return Err(Failure::policy(
+                "correspondence",
+                "missing required correspondence directories (vendor/lean-miri, trusted/correspondence, correspondence)",
+            ));
         }
 
         let pin = verify_upstream_pin(&vendor_dir)?;
-        // Authenticate the toolchain sysroot `.olean` manifest before compiling
-        // any vendored module against `Init`/`Std`/`Lean`.
-        self.admitted_mut()?.ensure_sysroot_foundation()?;
-
         let expected_sources = pin.expected_source_digests();
-        let miri_lib = self.verify_and_stage_miri_entries(
+        let corr_report = self.run_correspondence_with_closure(
+            base_tiers,
             &vendor_dir,
+            &pin.commit,
             &pin.execution_machine_closure,
             &expected_sources,
         )?;
+        Ok(Some(corr_report))
+    }
 
+    /// Execute Pass 2 staging, foundation `"preflight"`, sysroot
+    /// authentication, vendor Miri staging, Pass 2 compile-environment
+    /// `"correspondence-preflight"`, Pass 2 compilation, and
+    /// `"correspondence-audit"` for an authenticated vendor Miri closure.
+    ///
+    /// Production callers enter strictly via [`Checker::run`], which
+    /// authenticates `vendor/lean-miri/UPSTREAM_PIN.json` with
+    /// [`verify_upstream_pin`] before invoking this method.
+    pub fn run_correspondence_with_closure(
+        &mut self,
+        base_tiers: &BTreeMap<String, TrustTier>,
+        vendor_dir: &Path,
+        miri_commit: &str,
+        closure_entries: &[MiriClosureEntry],
+        expected_sources: &BTreeMap<String, String>,
+    ) -> Result<Json, Failure> {
+        let corr_trusted_dir = self.checkout.join("trusted/correspondence");
+        let corr_theory_dir = self.checkout.join("correspondence");
+
+        let corr_trusted_modules =
+            self.scan_and_stage_tree_opts(&corr_trusted_dir, "Trusted", "src/corr-trusted", false)?;
+        if !corr_trusted_modules.contains_key("Trusted.Correspondence") {
+            return Err(Failure::policy(
+                "snapshot",
+                "missing Trusted/Correspondence.lean umbrella in trusted/correspondence",
+            ));
+        }
+
+        let corr_theory_modules =
+            self.scan_and_stage_tree_opts(&corr_theory_dir, "Anneal", "src/corr-theory", false)?;
+        if !corr_theory_modules.contains_key("Anneal.MirCorrespondenceProof") {
+            return Err(Failure::policy(
+                "snapshot",
+                "missing Anneal/MirCorrespondenceProof.lean in correspondence",
+            ));
+        }
+
+        // Run Phase 1 (`"preflight"`) over `trusted/correspondence/` and
+        // `correspondence/` before compiling any Pass 2 module.
+        let (extra_trusted_allowed, extra_theory_allowed) = {
+            let adm = self.admitted()?;
+            let extra_trusted: BTreeSet<String> = adm
+                .modules
+                .keys()
+                .cloned()
+                .chain(closure_entries.iter().map(|e| e.module.clone()))
+                .collect();
+            let extra_theory: BTreeSet<String> = adm.theory_modules.keys().cloned().collect();
+            (extra_trusted, extra_theory)
+        };
+        let preflight = self.preflight_and_order_modules(
+            &corr_trusted_modules,
+            &corr_theory_modules,
+            base_tiers,
+            &extra_trusted_allowed,
+            &extra_theory_allowed,
+            "incomplete correspondence header inventory",
+            "Trusted correspondence import cycle",
+            "Correspondence proof import cycle",
+        )?;
+
+        // Authenticate the toolchain sysroot `.olean` manifest before compiling
+        // any vendored or correspondence module against `Init`/`Std`/`Lean`.
+        self.admitted_mut()?.ensure_sysroot_foundation()?;
+
+        let miri_lib =
+            self.verify_and_stage_miri_entries(vendor_dir, closure_entries, expected_sources)?;
+
+        // Compile `Trusted.Correspondence.*` into `lib/` and
+        // `Anneal.MirCorrespondenceProof.*` into `theory-lib/` inside
+        // per-module OS-level `bwrap` sandboxes. For `Trusted` modules,
+        // `corr_theory_lib` is neither mounted nor in `LEAN_PATH`, so they
+        // cannot resolve compiled `theory/` or `correspondence/` modules even
+        // if an import slipped past preflight.
+        let corr_trusted_lib = self.stage.join("lib");
+        let corr_theory_lib = self.stage.join("theory-lib");
+        fs::create_dir_all(&corr_trusted_lib)
+            .map_err(|e| Failure::operational("compile", e.to_string()))?;
+        fs::create_dir_all(&corr_theory_lib)
+            .map_err(|e| Failure::operational("compile", e.to_string()))?;
         let search_dirs = vec![
-            self.stage.join("lib"),
-            self.stage.join("theory-lib"),
-            miri_lib,
+            corr_trusted_lib.clone(),
+            corr_theory_lib.clone(),
+            miri_lib.clone(),
         ];
+
+        // Re-parse every Pass 2 source under the Pass 2 union compile parser
+        // environment (`foundation` + Pass 1 `trusted`/`theory` + pinned
+        // `vendor/lean-miri` with `loadExts := true`) inside an isolated
+        // `bwrap` sandbox before compiling any Pass 2 module, rejecting
+        // unscoped `Miri.*`/`Lean.*`/`Std.*` syntax (such as `throwError` and
+        // `m!`) and any `namespace`, namespaced declaration, or candidate
+        // `open` resolution (resisting unimported decoy namespaces) targeting
+        // a namespace with scoped `ScopedEnvExtension` entries.
+        let corr_preflight_sources: Vec<(String, PathBuf)> = corr_trusted_modules
+            .iter()
+            .chain(corr_theory_modules.iter())
+            .map(|(n, p)| (n.clone(), p.clone()))
+            .collect();
+        let corr_pf_req = {
+            let adm = self.admitted()?;
+            InspectorRequest::CorrespondencePreflight {
+                search_path: search_dirs.clone(),
+                trusted: adm.modules.keys().cloned().collect(),
+                theory: adm.theory_modules.keys().cloned().collect(),
+                vendor_miri: closure_entries.iter().map(|e| e.module.clone()).collect(),
+                module_tiers: base_tiers.clone(),
+                sources: corr_preflight_sources.clone(),
+            }
+        };
+        let corr_pf_res: PreflightResult = serde_json::from_value(self.inspect(corr_pf_req)?)
+            .map_err(|_| {
+                Failure::operational(
+                    "correspondence-preflight",
+                    "incomplete correspondence compile-environment preflight result",
+                )
+            })?;
+        if corr_pf_res.headers.len() != corr_preflight_sources.len() {
+            return Err(Failure::operational(
+                "correspondence-preflight",
+                "incomplete correspondence compile-environment preflight inventory",
+            ));
+        }
+
+        let corr_trusted_src_root = self.stage.join("src/corr-trusted");
+        for module in &preflight.trusted_order {
+            let staged_src = &corr_trusted_modules[module];
+            let entry_rel = staged_src
+                .strip_prefix(&corr_trusted_src_root)
+                .map_err(|e| Failure::operational("compile", e.to_string()))?;
+            let entry_rel_str = entry_rel
+                .components()
+                .map(|c| c.as_os_str().to_string_lossy())
+                .collect::<Vec<_>>()
+                .join("/");
+            // Importing the 160-module `Miri.Interpreter.ExecutionMachine`
+            // closure consumes ~1.7 GiB of Lean's `-M` allocator at startup,
+            // so Pass 2 uses `-M4096` rather than Pass 1's `-M2048`.
+            self.sandbox_compile_pass2_module(&Pass2CompileSpec {
+                module,
+                src_root: &corr_trusted_src_root,
+                entry_rel_path: &entry_rel_str,
+                ro_libs: &[
+                    (&corr_trusted_lib, "/work/lib"),
+                    (&miri_lib, "/work/miri-lib"),
+                ],
+                sandbox_lean_path: "/work/lib:/work/miri-lib",
+                out_lib_root: &corr_trusted_lib,
+                warning_as_error: false,
+            })?;
+        }
+
+        let corr_theory_src_root = self.stage.join("src/corr-theory");
+        for module in &preflight.theory_order {
+            let staged_src = &corr_theory_modules[module];
+            let entry_rel = staged_src
+                .strip_prefix(&corr_theory_src_root)
+                .map_err(|e| Failure::operational("compile", e.to_string()))?;
+            let entry_rel_str = entry_rel
+                .components()
+                .map(|c| c.as_os_str().to_string_lossy())
+                .collect::<Vec<_>>()
+                .join("/");
+            self.sandbox_compile_pass2_module(&Pass2CompileSpec {
+                module,
+                src_root: &corr_theory_src_root,
+                entry_rel_path: &entry_rel_str,
+                ro_libs: &[
+                    (&corr_trusted_lib, "/work/lib"),
+                    (&corr_theory_lib, "/work/theory-lib"),
+                    (&miri_lib, "/work/miri-lib"),
+                ],
+                sandbox_lean_path: "/work/lib:/work/theory-lib:/work/miri-lib",
+                out_lib_root: &corr_theory_lib,
+                warning_as_error: true,
+            })?;
+        }
+
         let corr_req = {
             let adm = self.admitted()?;
             InspectorRequest::CorrespondenceAudit {
                 search_path: search_dirs,
                 trusted: adm.modules.keys().cloned().collect(),
-                corr_trusted: Vec::new(),
+                corr_trusted: corr_trusted_modules.keys().cloned().collect(),
                 theory: adm.theory_modules.keys().cloned().collect(),
-                corr_theory: Vec::new(),
-                vendor_miri: pin
-                    .execution_machine_closure
-                    .iter()
-                    .map(|e| e.module.clone())
-                    .collect(),
-                module_tiers: base_tiers.clone(),
+                corr_theory: corr_theory_modules.keys().cloned().collect(),
+                vendor_miri: closure_entries.iter().map(|e| e.module.clone()).collect(),
+                module_tiers: preflight.module_tiers,
             }
         };
         let mut corr_report = self.inspect(corr_req)?;
         if let Some(obj) = corr_report.as_object_mut() {
-            validate_correspondence_report(obj, !pin.execution_machine_closure.is_empty())?;
-            obj.insert("miriCommit".to_string(), json!(pin.commit));
+            validate_correspondence_report(
+                obj,
+                !closure_entries.is_empty(),
+                !corr_trusted_modules.is_empty() || !corr_theory_modules.is_empty(),
+            )?;
+            obj.insert("miriCommit".to_string(), json!(miri_commit));
             obj.insert(
                 "miriClosureModules".to_string(),
-                json!(pin.execution_machine_closure.len()),
+                json!(closure_entries.len()),
             );
         } else {
             return Err(Failure::operational(
@@ -2643,7 +3061,7 @@ impl Checker {
                 "expected JSON object from correspondence audit",
             ));
         }
-        Ok(Some(corr_report))
+        Ok(corr_report)
     }
 
     /// Stage, restore from the digest-gated cache or compile cold inside an
@@ -2935,6 +3353,53 @@ impl Checker {
         Ok(miri_lib)
     }
 
+    /// Resolve the Linux bubblewrap binary, admitted Lean toolchain prefix,
+    /// and in-sandbox Lean binary path (`/toolchain/...`), failing closed on
+    /// platforms without bubblewrap support.
+    fn resolve_bwrap_and_sandbox_lean(
+        &self,
+        label: &str,
+    ) -> Result<(&'static Path, PathBuf, PathBuf), Failure> {
+        #[cfg(not(target_os = "linux"))]
+        {
+            return Err(Failure::operational(
+                label,
+                "Pass 2 OS-level sandboxing requires Linux bubblewrap (/usr/bin/bwrap)",
+            ));
+        }
+
+        #[cfg(target_os = "linux")]
+        {
+            let bwrap = ["/usr/bin/bwrap", "/bin/bwrap"]
+                .into_iter()
+                .map(Path::new)
+                .find(|p| fs::metadata(p).is_ok_and(|m| m.is_file()))
+                .ok_or_else(|| {
+                    Failure::operational(
+                        label,
+                        "Pass 2 OS-level sandboxing requires Linux bubblewrap (/usr/bin/bwrap)",
+                    )
+                })?;
+
+            let lean_prefix = self.admitted()?.prefix.clone();
+            let lean_canon = fs::canonicalize(&self.lean).map_err(|e| {
+                Failure::operational(label, format!("cannot resolve Lean binary path: {e}"))
+            })?;
+            let lean_rel = lean_canon.strip_prefix(&lean_prefix).map_err(|_| {
+                Failure::operational(
+                    label,
+                    format!(
+                        "Lean binary {} does not reside under admitted toolchain prefix {}",
+                        lean_canon.display(),
+                        lean_prefix.display()
+                    ),
+                )
+            })?;
+            let sandbox_lean = Path::new("/toolchain").join(lean_rel);
+            Ok((bwrap, lean_prefix, sandbox_lean))
+        }
+    }
+
     /// Compile one vendored `Miri.*` module inside an OS-level isolated
     /// sandbox so unpreflighted compile-time metaprograms (`run_cmd`,
     /// `initialize`, custom `elab`s) have zero credentials, zero network
@@ -2956,107 +3421,182 @@ impl Checker {
         rel_olean: &str,
         entry_rel_path: &str,
     ) -> Result<(), Failure> {
-        #[cfg(not(target_os = "linux"))]
-        {
-            let _ = (
-                miri_src_root,
-                miri_lib,
-                module_out_dir,
-                rel_olean,
-                entry_rel_path,
-            );
-            return Err(Failure::operational(
-                label,
-                "cold vendor Lean compilation requires an OS-level sandbox (currently supported via Linux bubblewrap /usr/bin/bwrap); supply a verified --miri-cache-dir or run on Linux",
-            ));
-        }
-
-        #[cfg(target_os = "linux")]
-        {
-            let bwrap = ["/usr/bin/bwrap", "/bin/bwrap"]
-                .into_iter()
-                .map(Path::new)
-                .find(|p| fs::metadata(p).is_ok_and(|m| m.is_file()))
-                .ok_or_else(|| {
-                    Failure::operational(
-                        label,
-                        "cold vendor Lean compilation requires Linux bubblewrap (/usr/bin/bwrap) to enforce OS-level sandboxing",
-                    )
-                })?;
-
-            let lean_prefix = self.admitted()?.prefix.clone();
-            let lean_canon = fs::canonicalize(&self.lean).map_err(|e| {
-                Failure::operational(label, format!("cannot resolve Lean binary path: {e}"))
-            })?;
-            let lean_rel = lean_canon.strip_prefix(&lean_prefix).map_err(|_| {
-                Failure::operational(
+        let (bwrap, lean_prefix, sandbox_lean) = self.resolve_bwrap_and_sandbox_lean(label)?;
+        let args = build_bwrap_miri_compile_args(
+            &lean_prefix,
+            &sandbox_lean,
+            miri_src_root,
+            miri_lib,
+            module_out_dir,
+            rel_olean,
+            entry_rel_path,
+        );
+        self.counter += 1;
+        let output = Command::new(bwrap)
+            .args(&args)
+            .current_dir(module_out_dir)
+            .env_clear()
+            .output()
+            .map_err(|e| {
+                Failure::new(
+                    2,
                     label,
                     format!(
-                        "Lean binary {} does not reside under admitted toolchain prefix {}",
-                        lean_canon.display(),
-                        lean_prefix.display()
+                        "could not execute bubblewrap sandbox {}: {e}",
+                        bwrap.display()
                     ),
                 )
             })?;
-            let sandbox_lean = Path::new("/toolchain").join(lean_rel);
-
-            let args = build_bwrap_miri_compile_args(
-                &lean_prefix,
-                &sandbox_lean,
-                miri_src_root,
-                miri_lib,
-                module_out_dir,
-                rel_olean,
-                entry_rel_path,
-            );
-            self.counter += 1;
-            let output = Command::new(bwrap)
-                .args(&args)
-                .current_dir(module_out_dir)
-                .env_clear()
-                .output()
-                .map_err(|e| {
-                    Failure::new(
-                        2,
-                        label,
-                        format!(
-                            "could not execute bubblewrap sandbox {}: {e}",
-                            bwrap.display()
-                        ),
-                    )
-                })?;
-            if !output.status.success() {
-                let stderr = String::from_utf8_lossy(&output.stderr);
-                let stdout = String::from_utf8_lossy(&output.stdout);
-                let detail = if stderr.trim().is_empty() {
-                    stdout.trim()
-                } else {
-                    stderr.trim()
-                };
-                return Err(Failure::new(
-                    2,
-                    label,
-                    format!("sandboxed Lean exited {:?}: {detail}", output.status.code()),
-                ));
-            }
-            Ok(())
+        if !output.status.success() {
+            let stderr = String::from_utf8_lossy(&output.stderr);
+            let stdout = String::from_utf8_lossy(&output.stdout);
+            let detail = if stderr.trim().is_empty() {
+                stdout.trim()
+            } else {
+                stderr.trim()
+            };
+            return Err(Failure::new(
+                2,
+                label,
+                format!("sandboxed Lean exited {:?}: {detail}", output.status.code()),
+            ));
         }
+        Ok(())
+    }
+
+    /// Compile one Pass 2 module (`trusted/correspondence/` or
+    /// `correspondence/`) inside an isolated per-module OS-level `bwrap`
+    /// sandbox, verify that only the module's expected regular `.olean` file
+    /// was created inside `/work/out`, and stage it into `spec.out_lib_root`.
+    fn sandbox_compile_pass2_module(&mut self, spec: &Pass2CompileSpec<'_>) -> Result<(), Failure> {
+        let label = format!("compile-{}", spec.module);
+        let rel_olean = format!("{}.olean", spec.module.replace('.', "/"));
+        let mut out_builder = tempfile::Builder::new();
+        out_builder.prefix("anneal-pass2-out-");
+        #[cfg(unix)]
+        out_builder.permissions(fs::Permissions::from_mode(0o700));
+        let module_out_dir = out_builder
+            .tempdir()
+            .map_err(|e| Failure::operational("compile", e.to_string()))?;
+        let out_olean = module_out_dir.path().join(&rel_olean);
+        if let Some(parent) = out_olean.parent() {
+            fs::create_dir_all(parent)
+                .map_err(|e| Failure::operational("compile", e.to_string()))?;
+        }
+
+        let (bwrap, lean_prefix, sandbox_lean) = self.resolve_bwrap_and_sandbox_lean(&label)?;
+        let args = build_bwrap_pass2_compile_args(
+            &lean_prefix,
+            &sandbox_lean,
+            spec,
+            module_out_dir.path(),
+            &rel_olean,
+        );
+        self.execution_began = true;
+        self.counter += 1;
+        let output = Command::new(bwrap)
+            .args(&args)
+            .current_dir(module_out_dir.path())
+            .env_clear()
+            .output()
+            .map_err(|e| {
+                Failure::new(
+                    2,
+                    &label,
+                    format!(
+                        "could not execute bubblewrap sandbox {}: {e}",
+                        bwrap.display()
+                    ),
+                )
+            })?;
+        if !output.status.success() {
+            let stderr = String::from_utf8_lossy(&output.stderr);
+            let stdout = String::from_utf8_lossy(&output.stdout);
+            let detail = if stderr.trim().is_empty() {
+                stdout.trim()
+            } else {
+                stderr.trim()
+            };
+            return Err(Failure::new(
+                2,
+                &label,
+                format!("sandboxed Lean exited {:?}: {detail}", output.status.code()),
+            ));
+        }
+
+        regular(&out_olean, "compile")?;
+        let expected_out_files = BTreeSet::from([rel_olean.clone()]);
+        verify_no_unexpected_sandbox_outputs_for_phase(
+            module_out_dir.path(),
+            &expected_out_files,
+            Some(&rel_olean),
+            spec.module,
+            "compile",
+            "Pass 2",
+        )?;
+
+        let staged_olean = spec.out_lib_root.join(&rel_olean);
+        stage_regular_file(&out_olean, &staged_olean, "compile")?;
+        regular(&staged_olean, "compile")?;
+        Ok(())
     }
 }
 
-/// Build the `bwrap` argument vector that confines cold `vendor/lean-miri/`
-/// compilation to an empty `tmpfs` root with isolated user, mount, PID, IPC,
-/// UTS, and network namespaces, read-only runtime libraries/toolchain/inputs,
-/// and a single host-backed writable output directory (`/work/out`).
-fn build_bwrap_miri_compile_args(
-    lean_prefix: &Path,
-    sandbox_lean: &Path,
-    miri_src_root: &Path,
-    miri_lib: &Path,
-    module_out_dir: &Path,
-    rel_olean: &str,
-    entry_rel_path: &str,
-) -> Vec<OsString> {
+/// Parameters for compiling one Pass 2 module inside an isolated OS sandbox.
+struct Pass2CompileSpec<'a> {
+    module: &'a str,
+    src_root: &'a Path,
+    entry_rel_path: &'a str,
+    ro_libs: &'a [(&'a Path, &'a str)],
+    sandbox_lean_path: &'a str,
+    out_lib_root: &'a Path,
+    warning_as_error: bool,
+}
+
+/// Parse and validate the structured JSON response emitted by
+/// `TrustedBoundary.lean`.
+fn parse_inspector_output(
+    mode: &str,
+    output: &std::process::Output,
+    result_path: &Path,
+) -> Result<serde_json::Map<String, Json>, Failure> {
+    if !output.status.success() {
+        if output.status.code() == Some(1)
+            && result_path.is_file()
+            && let Ok(text) = fs::read_to_string(result_path)
+            && let Ok(resp) = serde_json::from_str::<InspectorErrResponse>(&text)
+            && !resp.ok
+            && resp.category == "policy"
+            && resp.message.starts_with("policy:")
+        {
+            return Err(Failure::new(1, mode, resp.message));
+        }
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        return Err(Failure::new(
+            2,
+            mode,
+            format!("Lean exited {:?}: {}", output.status.code(), stderr.trim()),
+        ));
+    }
+
+    let resp_text = fs::read_to_string(result_path)
+        .map_err(|e| Failure::new(2, mode, format!("missing/malformed inspector result: {e}")))?;
+    let resp: InspectorOkResponse = serde_json::from_str(&resp_text)
+        .map_err(|_| Failure::new(2, mode, "unexpected inspector protocol response"))?;
+    if !resp.ok {
+        return Err(Failure::new(
+            2,
+            mode,
+            "unexpected inspector protocol response",
+        ));
+    }
+    Ok(resp.result)
+}
+
+/// Shared Linux `bwrap` isolation preamble: unshares all namespaces, clears
+/// the environment, mounts an empty `tmpfs` root with read-only dynamic
+/// loader libraries and the admitted Lean toolchain at `/toolchain`.
+fn bwrap_base_args(lean_prefix: &Path) -> Vec<OsString> {
     let mut args: Vec<OsString> = Vec::new();
     for flag in [
         "--unshare-all",
@@ -3098,23 +3638,15 @@ fn build_bwrap_miri_compile_args(
         args.push(OsString::from("/nix/store"));
         args.push(OsString::from("/nix/store"));
     }
-
     args.push(OsString::from("--ro-bind"));
     args.push(lean_prefix.as_os_str().to_os_string());
     args.push(OsString::from("/toolchain"));
+    args
+}
 
-    args.push(OsString::from("--ro-bind"));
-    args.push(miri_src_root.as_os_str().to_os_string());
-    args.push(OsString::from("/work/src/vendor-miri"));
-
-    args.push(OsString::from("--ro-bind"));
-    args.push(miri_lib.as_os_str().to_os_string());
-    args.push(OsString::from("/work/miri-lib"));
-
-    args.push(OsString::from("--bind"));
-    args.push(module_out_dir.as_os_str().to_os_string());
-    args.push(OsString::from("/work/out"));
-
+/// Append the shared ephemeral `/work/tmp` and clean environment flags before
+/// the `--` command separator.
+fn push_bwrap_env_args(args: &mut Vec<OsString>, lean_path: Option<&str>) {
     for flag in [
         "--tmpfs",
         "/work/tmp",
@@ -3123,9 +3655,15 @@ fn build_bwrap_miri_compile_args(
         "--setenv",
         "PATH",
         "/toolchain/bin",
-        "--setenv",
-        "LEAN_PATH",
-        "/work/miri-lib",
+    ] {
+        args.push(OsString::from(flag));
+    }
+    if let Some(lp) = lean_path {
+        args.push(OsString::from("--setenv"));
+        args.push(OsString::from("LEAN_PATH"));
+        args.push(OsString::from(lp));
+    }
+    for flag in [
         "--setenv",
         "HOME",
         "/work/tmp",
@@ -3142,6 +3680,36 @@ fn build_bwrap_miri_compile_args(
     ] {
         args.push(OsString::from(flag));
     }
+}
+
+/// Build the `bwrap` argument vector that confines cold `vendor/lean-miri/`
+/// compilation to an empty `tmpfs` root with isolated user, mount, PID, IPC,
+/// UTS, and network namespaces, read-only runtime libraries/toolchain/inputs,
+/// and a single host-backed writable output directory (`/work/out`).
+fn build_bwrap_miri_compile_args(
+    lean_prefix: &Path,
+    sandbox_lean: &Path,
+    miri_src_root: &Path,
+    miri_lib: &Path,
+    module_out_dir: &Path,
+    rel_olean: &str,
+    entry_rel_path: &str,
+) -> Vec<OsString> {
+    let mut args = bwrap_base_args(lean_prefix);
+
+    args.push(OsString::from("--ro-bind"));
+    args.push(miri_src_root.as_os_str().to_os_string());
+    args.push(OsString::from("/work/src/vendor-miri"));
+
+    args.push(OsString::from("--ro-bind"));
+    args.push(miri_lib.as_os_str().to_os_string());
+    args.push(OsString::from("/work/miri-lib"));
+
+    args.push(OsString::from("--bind"));
+    args.push(module_out_dir.as_os_str().to_os_string());
+    args.push(OsString::from("/work/out"));
+
+    push_bwrap_env_args(&mut args, Some("/work/miri-lib"));
 
     args.push(sandbox_lean.as_os_str().to_os_string());
     for arg in [
@@ -3161,6 +3729,109 @@ fn build_bwrap_miri_compile_args(
     args
 }
 
+/// Build the `bwrap` argument vector that confines `"correspondence-preflight"`
+/// to read-only toolchain, inspector, request JSON, compiled libraries, and
+/// staged source files, with writes restricted to `/work/out`.
+fn build_bwrap_correspondence_preflight_args(
+    lean_prefix: &Path,
+    sandbox_lean: &Path,
+    inspector: &Path,
+    request_path: &Path,
+    sp_binds: &[(PathBuf, String)],
+    src_binds: &[(PathBuf, String)],
+    out_dir: &Path,
+) -> Vec<OsString> {
+    let mut args = bwrap_base_args(lean_prefix);
+
+    args.push(OsString::from("--ro-bind"));
+    args.push(inspector.as_os_str().to_os_string());
+    args.push(OsString::from("/work/TrustedBoundary.lean"));
+
+    args.push(OsString::from("--ro-bind"));
+    args.push(request_path.as_os_str().to_os_string());
+    args.push(OsString::from("/work/request.json"));
+
+    for (host_dir, sandbox_dst) in sp_binds {
+        args.push(OsString::from("--ro-bind"));
+        args.push(host_dir.as_os_str().to_os_string());
+        args.push(OsString::from(sandbox_dst));
+    }
+    for (host_src, sandbox_dst) in src_binds {
+        args.push(OsString::from("--ro-bind"));
+        args.push(host_src.as_os_str().to_os_string());
+        args.push(OsString::from(sandbox_dst));
+    }
+
+    args.push(OsString::from("--bind"));
+    args.push(out_dir.as_os_str().to_os_string());
+    args.push(OsString::from("/work/out"));
+
+    push_bwrap_env_args(&mut args, None);
+
+    args.push(sandbox_lean.as_os_str().to_os_string());
+    for arg in [
+        "-j1",
+        "-M8192",
+        "--run",
+        "/work/TrustedBoundary.lean",
+        "/work/request.json",
+        "/work/out/result.json",
+    ] {
+        args.push(OsString::from(arg));
+    }
+    args
+}
+
+/// Build the `bwrap` argument vector that confines one Pass 2 module
+/// compilation (`trusted/correspondence/` or `correspondence/`) to read-only
+/// toolchain, staged sources, and scoped libraries, writing solely into
+/// `/work/out`.
+fn build_bwrap_pass2_compile_args(
+    lean_prefix: &Path,
+    sandbox_lean: &Path,
+    spec: &Pass2CompileSpec<'_>,
+    module_out_dir: &Path,
+    rel_olean: &str,
+) -> Vec<OsString> {
+    let mut args = bwrap_base_args(lean_prefix);
+
+    args.push(OsString::from("--ro-bind"));
+    args.push(spec.src_root.as_os_str().to_os_string());
+    args.push(OsString::from("/work/src/pass2"));
+
+    for (host_lib, sandbox_dst) in spec.ro_libs {
+        args.push(OsString::from("--ro-bind"));
+        args.push(host_lib.as_os_str().to_os_string());
+        args.push(OsString::from(*sandbox_dst));
+    }
+
+    args.push(OsString::from("--bind"));
+    args.push(module_out_dir.as_os_str().to_os_string());
+    args.push(OsString::from("/work/out"));
+
+    push_bwrap_env_args(&mut args, Some(spec.sandbox_lean_path));
+
+    args.push(sandbox_lean.as_os_str().to_os_string());
+    for arg in [
+        "-j1",
+        "-M4096",
+        "-t0",
+        "-DElab.async=false",
+        "-Ddebug.skipKernelTC=false",
+    ] {
+        args.push(OsString::from(arg));
+    }
+    if spec.warning_as_error {
+        args.push(OsString::from("-DwarningAsError=true"));
+    }
+    for arg in ["-R", "src/pass2", "-o"] {
+        args.push(OsString::from(arg));
+    }
+    args.push(OsString::from(format!("out/{rel_olean}")));
+    args.push(OsString::from(format!("src/pass2/{}", spec.entry_rel_path)));
+    args
+}
+
 /// Reject any symlink, non-regular file, unexpected file, or unexpected
 /// subdirectory created inside a per-module sandbox output directory.
 fn verify_no_unexpected_sandbox_outputs(
@@ -3169,8 +3840,28 @@ fn verify_no_unexpected_sandbox_outputs(
     rel_olean: &str,
     module: &str,
 ) -> Result<(), Failure> {
+    verify_no_unexpected_sandbox_outputs_for_phase(
+        out_root,
+        expected_files,
+        Some(rel_olean),
+        module,
+        "miri-pin",
+        "Miri",
+    )
+}
+
+/// Parameterized sandbox output verifier used by cold Miri compilation, Pass 2
+/// `"correspondence-preflight"`, and Pass 2 module compilation.
+fn verify_no_unexpected_sandbox_outputs_for_phase(
+    out_root: &Path,
+    expected_files: &BTreeSet<String>,
+    allowed_dir_from_rel: Option<&str>,
+    label: &str,
+    phase: &str,
+    kind: &str,
+) -> Result<(), Failure> {
     let mut allowed_dirs = BTreeSet::new();
-    let mut ancestor = Path::new(rel_olean).parent();
+    let mut ancestor = allowed_dir_from_rel.and_then(|p| Path::new(p).parent());
     while let Some(dir) = ancestor {
         if dir.as_os_str().is_empty() {
             break;
@@ -3192,8 +3883,8 @@ fn verify_no_unexpected_sandbox_outputs(
     for item in WalkDir::new(out_root).follow_links(false) {
         let item = item.map_err(|e| {
             Failure::policy(
-                "miri-pin",
-                format!("cannot inspect sandbox output for {module}: {e}"),
+                phase,
+                format!("cannot inspect sandbox output for {label}: {e}"),
             )
         })?;
         if item.path() == out_root {
@@ -3202,32 +3893,32 @@ fn verify_no_unexpected_sandbox_outputs(
         let ft = item.file_type();
         if ft.is_symlink() {
             return Err(Failure::policy(
-                "miri-pin",
+                phase,
                 format!(
-                    "symlink forbidden in sandboxed Miri output for {module}: {}",
+                    "symlink forbidden in sandboxed {kind} output for {label}: {}",
                     item.path().display()
                 ),
             ));
         }
         let rel = item.path().strip_prefix(out_root).map_err(|e| {
-            Failure::operational("miri-pin", format!("invalid sandbox relative path: {e}"))
+            Failure::operational(phase, format!("invalid sandbox relative path: {e}"))
         })?;
         let mut segs = Vec::new();
         for comp in rel.components() {
             let Component::Normal(os) = comp else {
                 return Err(Failure::policy(
-                    "miri-pin",
+                    phase,
                     format!(
-                        "invalid path component in sandboxed Miri output for {module}: {}",
+                        "invalid path component in sandboxed {kind} output for {label}: {}",
                         item.path().display()
                     ),
                 ));
             };
             let Some(s) = os.to_str() else {
                 return Err(Failure::policy(
-                    "miri-pin",
+                    phase,
                     format!(
-                        "non-UTF-8 path in sandboxed Miri output for {module}: {}",
+                        "non-UTF-8 path in sandboxed {kind} output for {label}: {}",
                         item.path().display()
                     ),
                 ));
@@ -3238,23 +3929,23 @@ fn verify_no_unexpected_sandbox_outputs(
         if ft.is_dir() {
             if !allowed_dirs.contains(&rel_str) {
                 return Err(Failure::policy(
-                    "miri-pin",
+                    phase,
                     format!(
-                        "unexpected directory in sandboxed Miri output for {module}: {rel_str}"
+                        "unexpected directory in sandboxed {kind} output for {label}: {rel_str}"
                     ),
                 ));
             }
         } else if ft.is_file() {
             if !expected_files.contains(&rel_str) {
                 return Err(Failure::policy(
-                    "miri-pin",
-                    format!("unexpected file in sandboxed Miri output for {module}: {rel_str}"),
+                    phase,
+                    format!("unexpected file in sandboxed {kind} output for {label}: {rel_str}"),
                 ));
             }
         } else {
             return Err(Failure::policy(
-                "miri-pin",
-                format!("unexpected file type in sandboxed Miri output for {module}: {rel_str}"),
+                phase,
+                format!("unexpected file type in sandboxed {kind} output for {label}: {rel_str}"),
             ));
         }
     }
@@ -3269,10 +3960,23 @@ fn verify_no_unexpected_sandbox_outputs(
 /// by `TrustedBoundary.lean`.
 ///
 /// Requires `miriReplay == true` and a numeric `miriReplayedDeclarations`
-/// count (which must be positive whenever `has_vendor_miri` is `true`).
+/// count (positive whenever `has_vendor_miri` is `true`).
+///
+/// Whenever `has_correspondence` is `true`, also requires
+/// `correspondenceReplay == true` and positive, equal
+/// `correspondenceDeclarations` and `correspondenceReplayedDeclarations`
+/// counts. `TrustedBoundary.lean` counts replayed correspondence declarations
+/// in the kernel environment that its repository replay returns, so a
+/// regression that skips that replay reports zero and fails here.
+///
+/// Whenever `has_correspondence` is `false` (vendor-only mode, which replays
+/// no repository declarations), rejects any report that claims a
+/// correspondence replay (`correspondenceReplay == true` or a positive
+/// `correspondenceReplayedDeclarations` count).
 fn validate_correspondence_report(
     result: &serde_json::Map<String, Json>,
     has_vendor_miri: bool,
+    has_correspondence: bool,
 ) -> Result<(), Failure> {
     let phase = "correspondence-audit";
     if result.get("miriReplay").and_then(Json::as_bool) != Some(true) {
@@ -3294,6 +3998,60 @@ fn validate_correspondence_report(
         return Err(Failure::policy(
             phase,
             "correspondence audit replayed zero vendor Miri declarations",
+        ));
+    }
+    let corr_replay = result.get("correspondenceReplay").and_then(Json::as_bool);
+    let corr_replayed = result
+        .get("correspondenceReplayedDeclarations")
+        .and_then(Json::as_u64);
+    if !has_correspondence {
+        if corr_replay == Some(true) || corr_replayed.is_some_and(|n| n > 0) {
+            return Err(Failure::policy(
+                phase,
+                "correspondence audit reported correspondence kernel replay without correspondence modules",
+            ));
+        }
+        return Ok(());
+    }
+    if corr_replay != Some(true) {
+        return Err(Failure::policy(
+            phase,
+            "correspondence audit did not confirm correspondence kernel replay",
+        ));
+    }
+    let Some(corr_decls) = result
+        .get("correspondenceDeclarations")
+        .and_then(Json::as_u64)
+    else {
+        return Err(Failure::operational(
+            phase,
+            "missing correspondenceDeclarations in correspondence audit result",
+        ));
+    };
+    if corr_decls == 0 {
+        return Err(Failure::policy(
+            phase,
+            "correspondence audit replayed zero correspondence declarations",
+        ));
+    }
+    let Some(corr_replayed) = corr_replayed else {
+        return Err(Failure::operational(
+            phase,
+            "missing correspondenceReplayedDeclarations in correspondence audit result",
+        ));
+    };
+    if corr_replayed == 0 {
+        return Err(Failure::policy(
+            phase,
+            "correspondence audit kernel-replayed zero correspondence declarations",
+        ));
+    }
+    if corr_replayed != corr_decls {
+        return Err(Failure::policy(
+            phase,
+            format!(
+                "correspondence audit kernel-replayed {corr_replayed} of {corr_decls} correspondence declarations"
+            ),
         ));
     }
     Ok(())
@@ -3457,9 +4215,10 @@ pub fn verify_upstream_pin(vendor_root: &Path) -> Result<UpstreamPin, Failure> {
     verify_upstream_pin_bytes(vendor_root, &pin_bytes)
 }
 
-/// Parse and verify `UPSTREAM_PIN.json` bytes and every file on disk under
-/// `vendor_root` after [`verify_upstream_pin`] has authenticated `pin_bytes`
-/// against [`LOCKED_UPSTREAM_PIN_SHA256`].
+/// Parse authenticated `UPSTREAM_PIN.json` bytes and verify every internal
+/// invariant (commit, toolchain, `patched_files` allowlist, `vendor_tree` and
+/// `vendor_aux_files` disk manifests, and 160-module
+/// `execution_machine_closure`).
 fn verify_upstream_pin_bytes(vendor_root: &Path, pin_bytes: &[u8]) -> Result<UpstreamPin, Failure> {
     let phase = "miri-pin";
     let pin: UpstreamPin = serde_json::from_slice(pin_bytes)
@@ -4088,7 +4847,8 @@ mod process_tests {
         let victim = outside.join("victim.olean");
         fs::write(&victim, b"keep-me").unwrap();
 
-        // 1. Symlinked cache root (with/without trailing slash) is rejected.
+        // 1. Symlinked cache root (with and without trailing slash) is
+        // rejected.
         let sym_root = tmp.path().join("sym-cache");
         symlink(&outside, &sym_root).unwrap();
         assert_eq!(
@@ -4105,7 +4865,8 @@ mod process_tests {
             1
         );
 
-        // 2. Symlinked intermediate subdir inside `cache_dir` is rejected.
+        // 2. Symlinked intermediate subdirectory inside `cache_dir` is
+        // rejected.
         let cache = tmp.path().join("real-cache");
         fs::create_dir_all(&cache).unwrap();
         symlink(&outside, cache.join("Miri")).unwrap();
@@ -4142,44 +4903,182 @@ mod process_tests {
         let obj = |v: Json| v.as_object().unwrap().clone();
 
         // Missing or false `miriReplay` fails closed with policy code 1.
-        let err_missing =
-            validate_correspondence_report(&obj(json!({"miriReplayedDeclarations": 10})), true)
-                .unwrap_err();
+        let err_missing = validate_correspondence_report(
+            &obj(json!({"miriReplayedDeclarations": 10})),
+            true,
+            false,
+        )
+        .unwrap_err();
         assert_eq!(err_missing.code, 1);
         let err_false = validate_correspondence_report(
             &obj(json!({"miriReplay": false, "miriReplayedDeclarations": 10})),
             true,
+            false,
         )
         .unwrap_err();
         assert_eq!(err_false.code, 1);
 
         // Missing `miriReplayedDeclarations` fails closed (operational code 2).
         let err_no_count =
-            validate_correspondence_report(&obj(json!({"miriReplay": true})), true).unwrap_err();
+            validate_correspondence_report(&obj(json!({"miriReplay": true})), true, false)
+                .unwrap_err();
         assert_eq!(err_no_count.code, 2);
 
-        // Zero replayed declarations fails closed when vendor modules are
-        // present.
+        // Zero replayed vendor declarations fails closed when vendor modules
+        // are present.
         let err_zero = validate_correspondence_report(
             &obj(json!({"miriReplay": true, "miriReplayedDeclarations": 0})),
             true,
+            false,
         )
         .unwrap_err();
         assert_eq!(err_zero.code, 1);
 
-        // Zero is permitted only when `vendor_miri` is empty.
+        // Zero vendor declarations is permitted only when `vendor_miri` is
+        // empty.
         validate_correspondence_report(
             &obj(json!({"miriReplay": true, "miriReplayedDeclarations": 0})),
+            false,
             false,
         )
         .unwrap();
 
-        // Positive replayed count with `miriReplay == true` succeeds.
-        validate_correspondence_report(
+        // When correspondence modules are present, `correspondenceReplay` and
+        // positive `correspondenceDeclarations` are also mandatory.
+        let err_missing_corr = validate_correspondence_report(
             &obj(json!({"miriReplay": true, "miriReplayedDeclarations": 38728})),
+            true,
+            true,
+        )
+        .unwrap_err();
+        assert_eq!(err_missing_corr.code, 1);
+        let err_zero_corr = validate_correspondence_report(
+            &obj(json!({
+                "miriReplay": true,
+                "miriReplayedDeclarations": 38728,
+                "correspondenceReplay": true,
+                "correspondenceDeclarations": 0
+            })),
+            true,
+            true,
+        )
+        .unwrap_err();
+        assert_eq!(err_zero_corr.code, 1);
+        let err_no_corr_count = validate_correspondence_report(
+            &obj(json!({
+                "miriReplay": true,
+                "miriReplayedDeclarations": 38728,
+                "correspondenceReplay": true
+            })),
+            true,
+            true,
+        )
+        .unwrap_err();
+        assert_eq!(err_no_corr_count.code, 2);
+
+        // `correspondenceReplayedDeclarations` must be present (operational
+        // code 2 otherwise), positive, and equal to
+        // `correspondenceDeclarations`, and `correspondenceReplay` must be
+        // `true` even when both counts agree (policy code 1 otherwise).
+        let err_no_corr_replayed = validate_correspondence_report(
+            &obj(json!({
+                "miriReplay": true,
+                "miriReplayedDeclarations": 38728,
+                "correspondenceReplay": true,
+                "correspondenceDeclarations": 120
+            })),
+            true,
+            true,
+        )
+        .unwrap_err();
+        assert_eq!(err_no_corr_replayed.code, 2);
+        for corr_replayed in [0, 119, 121] {
+            let err_corr_replayed = validate_correspondence_report(
+                &obj(json!({
+                    "miriReplay": true,
+                    "miriReplayedDeclarations": 38728,
+                    "correspondenceReplay": true,
+                    "correspondenceDeclarations": 120,
+                    "correspondenceReplayedDeclarations": corr_replayed
+                })),
+                true,
+                true,
+            )
+            .unwrap_err();
+            assert_eq!(
+                err_corr_replayed.code, 1,
+                "unexpected result for {corr_replayed} replayed declarations: {err_corr_replayed}"
+            );
+        }
+        let err_false_corr_replay = validate_correspondence_report(
+            &obj(json!({
+                "miriReplay": true,
+                "miriReplayedDeclarations": 38728,
+                "correspondenceReplay": false,
+                "correspondenceDeclarations": 120,
+                "correspondenceReplayedDeclarations": 120
+            })),
+            true,
+            true,
+        )
+        .unwrap_err();
+        assert_eq!(err_false_corr_replay.code, 1);
+
+        // Positive vendor + correspondence replay counts succeed.
+        validate_correspondence_report(
+            &obj(json!({
+                "miriReplay": true,
+                "miriReplayedDeclarations": 38728,
+                "correspondenceReplay": true,
+                "correspondenceDeclarations": 120,
+                "correspondenceReplayedDeclarations": 120
+            })),
+            true,
             true,
         )
         .unwrap();
+
+        // Vendor-only mode accepts the zero correspondence fields that
+        // `TrustedBoundary.lean` reports without correspondence modules, but
+        // rejects any report claiming a correspondence replay.
+        validate_correspondence_report(
+            &obj(json!({
+                "miriReplay": true,
+                "miriReplayedDeclarations": 21,
+                "correspondenceReplay": false,
+                "correspondenceDeclarations": 0,
+                "correspondenceReplayedDeclarations": 0
+            })),
+            true,
+            false,
+        )
+        .unwrap();
+        let err_vendor_only_replay = validate_correspondence_report(
+            &obj(json!({
+                "miriReplay": true,
+                "miriReplayedDeclarations": 21,
+                "correspondenceReplay": true,
+                "correspondenceDeclarations": 0,
+                "correspondenceReplayedDeclarations": 0
+            })),
+            true,
+            false,
+        )
+        .unwrap_err();
+        assert_eq!(err_vendor_only_replay.code, 1);
+        let err_vendor_only_count = validate_correspondence_report(
+            &obj(json!({
+                "miriReplay": true,
+                "miriReplayedDeclarations": 21,
+                "correspondenceReplay": false,
+                "correspondenceDeclarations": 0,
+                "correspondenceReplayedDeclarations": 5
+            })),
+            true,
+            false,
+        )
+        .unwrap_err();
+        assert_eq!(err_vendor_only_count.code, 1);
     }
 
     #[test]
@@ -4187,10 +5086,8 @@ mod process_tests {
         let vendor_root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../vendor/lean-miri");
         let orig_pin_bytes = fs::read(vendor_root.join("UPSTREAM_PIN.json")).unwrap();
 
-        // Unauthorized `patched_files` entry, mismatched `patched_sha256`
-        // between `patched_files` and `vendor_tree`, and missing
-        // `patched_sha256` annotation in `vendor_tree` are rejected even if
-        // the outer pin digest check has already passed.
+        // Unauthorized `patched_files` entry is rejected even if the outer pin
+        // digest check has already passed.
         let mut pin_json: Json = serde_json::from_slice(&orig_pin_bytes).unwrap();
         pin_json["patched_files"]
             .as_array_mut()
@@ -4212,6 +5109,8 @@ mod process_tests {
             "unexpected error: {err_unauth_patch}"
         );
 
+        // Mismatched `patched_sha256` between `patched_files` and `vendor_tree`
+        // is rejected.
         let mut pin_mismatch_json: Json = serde_json::from_slice(&orig_pin_bytes).unwrap();
         pin_mismatch_json["patched_files"][0]["patched_sha256"] =
             json!("2222222222222222222222222222222222222222222222222222222222222222");
@@ -4228,6 +5127,7 @@ mod process_tests {
             "unexpected error: {err_patch_mismatch}"
         );
 
+        // Missing `patched_sha256` annotation in `vendor_tree` is rejected.
         let mut pin_missing_annot_json: Json = serde_json::from_slice(&orig_pin_bytes).unwrap();
         for entry in pin_missing_annot_json["vendor_tree"]["files"]
             .as_array_mut()
@@ -4336,6 +5236,136 @@ mod process_tests {
             !args.iter().any(|a| a == "/usr/bin" || a == "/bin"),
             "host shell/utility directories must not be mounted: {args:?}"
         );
+    }
+
+    #[test]
+    fn bwrap_correspondence_preflight_and_pass2_compile_args_enforce_isolation() {
+        let pf_args: Vec<String> = build_bwrap_correspondence_preflight_args(
+            Path::new("/opt/lean-4.34.1"),
+            Path::new("/toolchain/bin/lean"),
+            Path::new("/tmp/stage/TrustedBoundary.lean"),
+            Path::new("/tmp/stage/request-001-correspondence-preflight.json"),
+            &[
+                (PathBuf::from("/tmp/stage/lib"), "/work/sp-0".to_string()),
+                (
+                    PathBuf::from("/tmp/stage/theory-lib"),
+                    "/work/sp-1".to_string(),
+                ),
+                (
+                    PathBuf::from("/tmp/stage/miri-lib"),
+                    "/work/sp-2".to_string(),
+                ),
+            ],
+            &[(
+                PathBuf::from("/tmp/stage/src/corr-trusted/Trusted/Correspondence.lean"),
+                "/work/src/s-0.lean".to_string(),
+            )],
+            Path::new("/tmp/corr-pf-out-123"),
+        )
+        .into_iter()
+        .map(|a| a.to_string_lossy().into_owned())
+        .collect();
+
+        for required in [
+            "--unshare-all",
+            "--die-with-parent",
+            "--new-session",
+            "--clearenv",
+            "-M8192",
+            "--run",
+        ] {
+            assert!(
+                pf_args.iter().any(|a| a == required),
+                "missing required sandbox flag {required}: {pf_args:?}"
+            );
+        }
+        let pf_rw_binds: Vec<(&str, &str)> = pf_args
+            .windows(3)
+            .filter(|w| w[0] == "--bind")
+            .map(|w| (w[1].as_str(), w[2].as_str()))
+            .collect();
+        assert_eq!(pf_rw_binds, vec![("/tmp/corr-pf-out-123", "/work/out")]);
+        let pf_ro_binds: Vec<(&str, &str)> = pf_args
+            .windows(3)
+            .filter(|w| w[0] == "--ro-bind")
+            .map(|w| (w[1].as_str(), w[2].as_str()))
+            .collect();
+        assert!(pf_ro_binds.contains(&("/opt/lean-4.34.1", "/toolchain")));
+        assert!(pf_ro_binds.contains(&(
+            "/tmp/stage/TrustedBoundary.lean",
+            "/work/TrustedBoundary.lean"
+        )));
+        assert!(pf_ro_binds.contains(&(
+            "/tmp/stage/request-001-correspondence-preflight.json",
+            "/work/request.json"
+        )));
+        assert!(pf_ro_binds.contains(&("/tmp/stage/miri-lib", "/work/sp-2")));
+        assert!(pf_ro_binds.contains(&(
+            "/tmp/stage/src/corr-trusted/Trusted/Correspondence.lean",
+            "/work/src/s-0.lean"
+        )));
+
+        // Trusted Pass 2 compilation must not mount `theory-lib` or include it
+        // in `LEAN_PATH`, and must not set `-DwarningAsError=true`.
+        let trusted_spec = Pass2CompileSpec {
+            module: "Trusted.Correspondence",
+            src_root: Path::new("/tmp/stage/src/corr-trusted"),
+            entry_rel_path: "Trusted/Correspondence.lean",
+            ro_libs: &[
+                (Path::new("/tmp/stage/lib"), "/work/lib"),
+                (Path::new("/tmp/stage/miri-lib"), "/work/miri-lib"),
+            ],
+            sandbox_lean_path: "/work/lib:/work/miri-lib",
+            out_lib_root: Path::new("/tmp/stage/lib"),
+            warning_as_error: false,
+        };
+        let trusted_args: Vec<String> = build_bwrap_pass2_compile_args(
+            Path::new("/opt/lean-4.34.1"),
+            Path::new("/toolchain/bin/lean"),
+            &trusted_spec,
+            Path::new("/tmp/pass2-out-1"),
+            "Trusted/Correspondence.olean",
+        )
+        .into_iter()
+        .map(|a| a.to_string_lossy().into_owned())
+        .collect();
+        assert!(trusted_args.iter().any(|a| a == "-M4096"));
+        assert!(!trusted_args.iter().any(|a| a.contains("theory-lib")));
+        assert!(!trusted_args.iter().any(|a| a == "-DwarningAsError=true"));
+        let trusted_rw: Vec<(&str, &str)> = trusted_args
+            .windows(3)
+            .filter(|w| w[0] == "--bind")
+            .map(|w| (w[1].as_str(), w[2].as_str()))
+            .collect();
+        assert_eq!(trusted_rw, vec![("/tmp/pass2-out-1", "/work/out")]);
+
+        // Theory Pass 2 compilation mounts `theory-lib` read-only and sets
+        // `-DwarningAsError=true`.
+        let theory_spec = Pass2CompileSpec {
+            module: "Anneal.MirCorrespondenceProof",
+            src_root: Path::new("/tmp/stage/src/corr-theory"),
+            entry_rel_path: "Anneal/MirCorrespondenceProof.lean",
+            ro_libs: &[
+                (Path::new("/tmp/stage/lib"), "/work/lib"),
+                (Path::new("/tmp/stage/theory-lib"), "/work/theory-lib"),
+                (Path::new("/tmp/stage/miri-lib"), "/work/miri-lib"),
+            ],
+            sandbox_lean_path: "/work/lib:/work/theory-lib:/work/miri-lib",
+            out_lib_root: Path::new("/tmp/stage/theory-lib"),
+            warning_as_error: true,
+        };
+        let theory_args: Vec<String> = build_bwrap_pass2_compile_args(
+            Path::new("/opt/lean-4.34.1"),
+            Path::new("/toolchain/bin/lean"),
+            &theory_spec,
+            Path::new("/tmp/pass2-out-2"),
+            "Anneal/MirCorrespondenceProof.olean",
+        )
+        .into_iter()
+        .map(|a| a.to_string_lossy().into_owned())
+        .collect();
+        assert!(theory_args.iter().any(|a| a == "-DwarningAsError=true"));
+        assert!(theory_args.iter().any(|a| a == "/work/theory-lib"));
     }
 
     #[test]

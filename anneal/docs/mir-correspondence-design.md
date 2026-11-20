@@ -476,15 +476,15 @@ allowlists:
   and any `Trusted.lean` umbrella import requires promoting those modules from
   `candidate:*` to `vetted` first. `anneal-audit` discovers candidate modules
   by walking `trusted/lean/` directly and mechanically enforces tier isolation
-  at the **declaration-edge level** (`checkTierReferences`, later generalized
-  to `checkDeclarationEdges` with `RepoOrigin.edgeViolation?` and
-  `CorrOrigin.edgeViolation?`, forbids any `vetted` *declaration* from
-  referencing a `candidate:*` declaration); because module-level import
-  isolation between `vetted` and `candidate:*` modules is currently a known
-  temporary enforcement gap (`boundary_audit.rs` Case 2 still allows a
-  declaration-free `Trusted.lean` umbrella import), Pass 2 human review
-  enforces module-level import isolation manually until `anneal-audit` and Case
-  2 are hardened.
+  at the **declaration-edge level** (`checkDeclarationEdges` with
+  `RepoOrigin.edgeViolation?` and `CorrOrigin.edgeViolation?` forbids any
+  `vetted` *declaration* from referencing a `candidate:*` declaration); because
+  module-level import isolation between `vetted` and `candidate:*` modules is
+  currently a known temporary enforcement gap
+  (`enforces_module_level_trust_tiers_and_namespace_hygiene` in
+  `boundary_audit.rs` still allows a declaration-free `Trusted.lean` umbrella
+  import), Pass 2 human review enforces module-level import isolation manually
+  until `anneal-audit` and that test are hardened.
 - **Tactic-free, `deriving`-free `Trusted.*` definitions:**
   `Trusted/MirAst.lean`, `Trusted/MirSemantics.lean`, and
   `Trusted/Correspondence.lean` start with `prelude`, import locked modules
@@ -497,9 +497,9 @@ allowlists:
   emitting partial `._unsafe_rec` compiler helpers. Beyond locked modules and
   the `Trusted.*` modules they build on, only `Trusted/Correspondence.lean`
   imports anything else: `Miri.Interpreter.ExecutionMachine` and its
-  sub-modules (`LocalAccess`, `Place`, `Rvalue`, `Discriminant`, `Step`,
-  `ControlFlow`) from `vendor/lean-miri/`, which places the vendored tree
-  inside the correspondence TCB (Section 1.3).
+  sub-modules (`LocalAccess`, `Place`, `Rvalue`, `Step`, `ControlFlow`) from
+  `vendor/lean-miri/`, which places the vendored tree inside the correspondence
+  TCB (Section 1.3).
 - **Allowlisted tactics in `theory/` and `correspondence/`:**
   `Anneal/MirWp.lean`, `Anneal/MirCorrespondenceBase.lean`, and
   `Anneal/MirCorrespondenceProof.lean` use only the tactics that

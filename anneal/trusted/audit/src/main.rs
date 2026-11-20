@@ -7,7 +7,8 @@
 // those terms.
 
 //! Standalone CLI entry point (`anneal-audit`) for auditing Anneal's
-//! repository trust boundary (`trusted/` vs. `theory/`) in CI.
+//! repository trust boundary (`trusted/` vs. `theory/` and `correspondence/`)
+//! in CI.
 
 use std::env;
 use std::ffi::OsString;
@@ -38,6 +39,11 @@ struct Cli {
     /// Emit the full JSON audit report instead of a human-readable summary.
     #[arg(long)]
     json: bool,
+
+    /// Require Pass 2 (`vendor/lean-miri/`, `trusted/correspondence/`, and
+    /// `correspondence/`) correspondence verification to be present and pass.
+    #[arg(long)]
+    require_correspondence: bool,
 
     /// Optional directory outside `--anneal-root` for caching verified
     /// `Miri.*` `.olean` artifacts across runs (overrides
@@ -90,6 +96,9 @@ fn run(raw_args: Vec<OsString>) -> Result<u8, (u8, String)> {
             format!("Trusted check could not initialize staging directory: {e}"),
         )
     })?;
+    if cli.require_correspondence {
+        checker.set_require_correspondence(true);
+    }
     if let Some(cache_dir) = cli.miri_cache_dir {
         checker.set_miri_cache_dir(Some(cache_dir));
     }
@@ -148,6 +157,24 @@ fn run(raw_args: Vec<OsString>) -> Result<u8, (u8, String)> {
                      ({miri_replayed} kernel-replayed declarations; \
                      {miri_decls} reachable cone declarations; \
                      commit {miri_commit})"
+                );
+            }
+            if let Some(corr_decls) = report
+                .get("correspondenceDeclarations")
+                .and_then(Json::as_u64)
+            {
+                let corr_reachable = report
+                    .get("correspondenceReachableDeclarations")
+                    .and_then(Json::as_u64)
+                    .unwrap_or(0);
+                let corr_axioms = report
+                    .get("correspondenceAxioms")
+                    .and_then(|v| serde_json::to_string(v).ok())
+                    .unwrap_or_else(|| "[]".to_string());
+                println!(
+                    "Correspondence: {corr_decls} replayed declarations; \
+                     {corr_reachable} reachable declarations; \
+                     axioms={corr_axioms}"
                 );
             }
             Ok(0)
