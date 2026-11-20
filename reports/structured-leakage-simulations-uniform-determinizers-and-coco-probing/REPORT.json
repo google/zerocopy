@@ -1,0 +1,69 @@
+{
+  "topics": [
+    "compilers/constant-time-pass-taxonomy",
+    "security/structured-leakage-simulations",
+    "pl/probabilistic-masking-confinement",
+    "verification/hardware-probing-contracts"
+  ],
+  "subjects": [
+    {
+      "name": "Jasmin verified cryptographic compiler",
+      "identity": {
+        "repository": "jasmin-lang/jasmin",
+        "revision": "8c3279973a89afd969e50301f71563bb40d55724"
+      }
+    },
+    {
+      "name": "CompCert verified C compiler",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+      }
+    },
+    {
+      "name": "Pitchfork LLVM constant-time verifier (haybale-pitchfork)",
+      "identity": {
+        "repository": "PLSysSec/haybale-pitchfork",
+        "revision": "69a048a66c59118bf88b21008fef2afc40e97263",
+        "version": "0.4.1"
+      }
+    },
+    {
+      "name": "CocoAlma gate-level masking verifier",
+      "identity": {
+        "repository": "IAIK/coco-alma",
+        "revision": "95c80df5d6d704bf525f47ef6e58e98e27fedf97"
+      }
+    },
+    {
+      "name": "CompCert-CT constant-time C compiler (Barthe et al., POPL 2020)",
+      "identity": {
+        "doi": "10.1145/3371075",
+        "venue": "POPL 2020",
+        "eprint": "https://eprint.iacr.org/2019/926"
+      }
+    },
+    {
+      "name": "Structured Leakage framework (Barthe, Gregoire, Laporte, Priya, CCS 2021)",
+      "identity": {
+        "doi": "10.1145/3460120.3484761",
+        "venue": "ACM CCS 2021"
+      }
+    },
+    {
+      "name": "Verified Proofs of Higher-Order Masking (Barthe et al., EUROCRYPT 2015)",
+      "identity": {
+        "doi": "10.1007/978-3-662-46800-5_18",
+        "venue": "EUROCRYPT 2015"
+      }
+    },
+    {
+      "name": "maskVerif masking verifier with physical defaults (Barthe et al., ESORICS 2019)",
+      "identity": {
+        "doi": "10.1007/978-3-030-29959-0_15",
+        "venue": "ESORICS 2019"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

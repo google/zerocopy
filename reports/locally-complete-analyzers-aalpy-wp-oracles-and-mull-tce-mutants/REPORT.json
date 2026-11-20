@@ -1,0 +1,76 @@
+{
+  "topics": [
+    "pl/locally-complete-abstract-interpretation",
+    "verification/conformance-oracle-bounds",
+    "tooling/equivalent-mutant-detection",
+    "verification/inductive-inference-limits"
+  ],
+  "subjects": [
+    {
+      "name": "NASA IKOS static analyzer",
+      "identity": {
+        "repository": "NASA-SW-VnV/ikos",
+        "revision": "ac7f7c1738976cabc58c6a53413df6e458995c38"
+      }
+    },
+    {
+      "name": "AALpy active automata learning library",
+      "identity": {
+        "repository": "DES-Lab/AALpy",
+        "revision": "b3ed2fb48cb77840fb4cfa6bf7d8aab50c70d18a"
+      }
+    },
+    {
+      "name": "Mull LLVM mutation testing engine",
+      "identity": {
+        "repository": "mull-project/mull",
+        "revision": "4b53263e8880ae9f14a8abcf7effe4effcbb799d",
+        "version": "0.39.1"
+      }
+    },
+    {
+      "name": "universalmutator multi-language mutant generator",
+      "identity": {
+        "repository": "agroce/universalmutator",
+        "revision": "fec4223b30f9e26b9e0497d43375fbd5c1ecd5bf",
+        "version": "1.14.1"
+      }
+    },
+    {
+      "name": "Making Abstract Interpretations Complete (Giacobazzi, Ranzato, Scozzari, JACM 2000)",
+      "identity": {
+        "doi": "10.1145/333979.333989",
+        "venue": "Journal of the ACM 47(2), 2000"
+      }
+    },
+    {
+      "name": "A Logic for Locally Complete Abstract Interpretations (Bruni, Giacobazzi, Gori, Ranzato, LICS 2021)",
+      "identity": {
+        "doi": "10.1109/LICS52264.2021.9470608",
+        "venue": "ACM/IEEE LICS 2021"
+      }
+    },
+    {
+      "name": "Language Identification in the Limit (Gold, Information and Control 1967)",
+      "identity": {
+        "doi": "10.1016/S0019-9958(67)91165-5",
+        "venue": "Information and Control 10(5), 1967"
+      }
+    },
+    {
+      "name": "Learning Regular Sets from Queries and Counterexamples (Angluin, Information and Computation 1987)",
+      "identity": {
+        "doi": "10.1016/0890-5401(87)90052-6",
+        "venue": "Information and Computation 75(2), 1987"
+      }
+    },
+    {
+      "name": "Trivial Compiler Equivalence (Papadakis, Jia, Harman, Le Traon, ICSE 2015)",
+      "identity": {
+        "doi": "10.1109/ICSE.2015.103",
+        "venue": "ICSE 2015"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
