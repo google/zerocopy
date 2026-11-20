@@ -4260,6 +4260,33 @@ mod proofs {
         DstLayout { align: align, size_info: size_info, statically_shallow_unpadded: kani::any() }
     }
 
+    /// Generates sized layouts satisfying the same `Layout::from_size_align`
+    /// validity constraints as the `SizeInfo::Sized` branch of
+    /// `any_valid_dst_layout`.
+    ///
+    /// Because CBMC is a path-merging bounded model checker rather than a
+    /// path-pruning symbolic executor, calling `any_valid_dst_layout` and
+    /// discarding `SizeInfo::SliceDst` via `kani::assume(false)` still
+    /// bit-blasts the `TrailingSliceLayout` minimum-size arithmetic into the
+    /// SAT formula. Harnesses scoped strictly to sized layouts call this
+    /// generator directly to avoid that dead circuit.
+    fn any_valid_sized_dst_layout() -> (DstLayout, usize) {
+        let align = any_layout_align();
+        let size: usize = kani::any();
+
+        kani::assume(size <= DstLayout::MAX_SIZE);
+        kani::assume(Layout::from_size_align(size, align.get()).is_ok());
+
+        (
+            DstLayout {
+                align,
+                size_info: SizeInfo::Sized { size },
+                statically_shallow_unpadded: kani::any(),
+            },
+            size,
+        )
+    }
+
     /// Generates either a fixed size at most `DstLayout::MAX_SIZE`, or a DST
     /// description from `any_bounded_trailing_layout`.
     ///
@@ -5017,11 +5044,7 @@ mod proofs {
     fn prove_dst_layout_pad_to_align_sized() {
         use crate::util::padding_needed_for;
 
-        let layout: DstLayout = any_valid_dst_layout();
-        let SizeInfo::Sized { size: unpadded_size } = layout.size_info else {
-            kani::assume(false);
-            loop {}
-        };
+        let (layout, unpadded_size) = any_valid_sized_dst_layout();
 
         let padded = layout.pad_to_align();
         assert_eq!(padded.align, layout.align);
