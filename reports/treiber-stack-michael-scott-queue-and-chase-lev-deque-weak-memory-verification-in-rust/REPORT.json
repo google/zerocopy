@@ -1,0 +1,99 @@
+{
+  "topics": [
+    "rust/atomics",
+    "rust/concurrency",
+    "rust/unsafe",
+    "verification/concurrency",
+    "verification/data-structures",
+    "verification/iris",
+    "verification/rust",
+    "verification/separation-logic"
+  ],
+  "subjects": [
+    {
+      "name": "crossbeam (crossbeam-deque)",
+      "identity": {
+        "repository": "crossbeam-rs/crossbeam",
+        "revision": "a28f40fdddb70bea8e5faf0efad9af0be4b9dbea"
+      }
+    },
+    {
+      "name": "cs431 (lockfree Treiber stack, Michael-Scott queue, elim_stack)",
+      "identity": {
+        "repository": "kaist-cp/cs431",
+        "revision": "0bc971aa82f600b948eb9f83bb972bef31b9fc5d"
+      }
+    },
+    {
+      "name": "relaxed-memory-separation-logic (GPFSL / iRC11 Treiber, MS-queue, Chase-Lev)",
+      "identity": {
+        "repository": "kaist-cp/relaxed-memory-separation-logic",
+        "revision": "6fe1475af1f8c49f8c144a67d9175b5b3e6bc472"
+      }
+    },
+    {
+      "name": "Rust standard library (core::sync::atomic)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "ec65cd52bba13d491ff65c9d218b39753755c84a"
+      }
+    },
+    {
+      "name": "Miri concurrency and weak-memory engine",
+      "identity": {
+        "repository": "rust-lang/miri",
+        "revision": "0a0ce195cb0e91890c21ed717cca6eefef5e1ff3"
+      }
+    },
+    {
+      "name": "Iris concurrent separation logic framework",
+      "identity": {
+        "repository": "rocq-iris/iris",
+        "revision": "2fe2f450add5678d9a2492343c638ccdb428a677"
+      }
+    },
+    {
+      "name": "Simple, Fast, and Practical Non-Blocking and Blocking Concurrent Queue Algorithms",
+      "identity": {
+        "doi": "10.1145/248052.248106",
+        "venue": "PODC 1996"
+      }
+    },
+    {
+      "name": "Dynamic Circular Work-Stealing Deque",
+      "identity": {
+        "doi": "10.1145/1073970.1073974",
+        "venue": "SPAA 2005"
+      }
+    },
+    {
+      "name": "Correct and Efficient Work-Stealing for Weak Memory Models",
+      "identity": {
+        "doi": "10.1145/2442516.2442524",
+        "venue": "PPoPP 2013"
+      }
+    },
+    {
+      "name": "The Future is Ours: Prophecy Variables in Separation Logic",
+      "identity": {
+        "doi": "10.1145/3371113",
+        "venue": "POPL 2020"
+      }
+    },
+    {
+      "name": "Contextual Refinement of the Michael-Scott Queue (Proof Pearl)",
+      "identity": {
+        "doi": "10.1145/3437992.3439930",
+        "venue": "CPP 2021"
+      }
+    },
+    {
+      "name": "Compass: Strong and Compositional Library Specifications in Relaxed Memory Separation Logic",
+      "identity": {
+        "doi": "10.1145/3519939.3523451",
+        "venue": "PLDI 2022"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

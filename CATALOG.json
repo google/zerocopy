@@ -56135,6 +56135,91 @@
         "rustc/mir"
       ]
     },
+    "rust-alloc-global-allocator-contracts-realloc-in-place-and-zero-sized-allocation-semantics": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "ec65cd52bba13d491ff65c9d218b39753755c84a"
+          },
+          "name": "Rust standard library (core::alloc, alloc::alloc, alloc::boxed, alloc::raw_vec, core::ptr)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/miri",
+            "revision": "0a0ce195cb0e91890c21ed717cca6eefef5e1ff3"
+          },
+          "name": "Miri interpreter (allocator shims, address/provenance engine, Tree Borrows)"
+        },
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "063d784186d3252bee242217f218223205c0b568"
+          },
+          "name": "MiniRust operational memory and Tree Borrows specification"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference (behavior considered undefined)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/unsafe-code-guidelines",
+            "revision": "d809f91e62968913d808e53397fbcf7cea762cce"
+          },
+          "name": "Rust Unsafe Code Guidelines Reference"
+        },
+        {
+          "identity": {
+            "repository": "verus-lang/verified-memory-allocator",
+            "revision": "7d120970f8d63157ae9bf3b2361192d29bc0acaa"
+          },
+          "name": "Verified Memory Allocator (verus-mimalloc)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3735592",
+            "venue": "PLDI 2025"
+          },
+          "name": "Tree Borrows"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371109",
+            "venue": "POPL 2020"
+          },
+          "name": "Stacked Borrows: An Aliasing Model for Rust"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3158154",
+            "venue": "POPL 2018"
+          },
+          "name": "RustBelt: Securing the Foundations of the Rust Programming Language"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3276495",
+            "venue": "OOPSLA 2018"
+          },
+          "name": "Reconciling High-Level Optimizations and Low-Level Code in LLVM"
+        }
+      ],
+      "topics": [
+        "minirust/memory",
+        "rust/layout",
+        "rust/memory-model",
+        "rust/provenance",
+        "rust/tree-borrows",
+        "rust/unsafe",
+        "systems/allocators",
+        "verification/rust"
+      ]
+    },
     "rust-allocation-box-storage-transfer-and-drop-elaboration": {
       "observed_at": "2026-10-24",
       "subjects": [
@@ -71728,6 +71813,105 @@
         "verification",
         "verification/compiler-verification",
         "verification/refinement"
+      ]
+    },
+    "treiber-stack-michael-scott-queue-and-chase-lev-deque-weak-memory-verification-in-rust": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "crossbeam-rs/crossbeam",
+            "revision": "a28f40fdddb70bea8e5faf0efad9af0be4b9dbea"
+          },
+          "name": "crossbeam (crossbeam-deque)"
+        },
+        {
+          "identity": {
+            "repository": "kaist-cp/cs431",
+            "revision": "0bc971aa82f600b948eb9f83bb972bef31b9fc5d"
+          },
+          "name": "cs431 (lockfree Treiber stack, Michael-Scott queue, elim_stack)"
+        },
+        {
+          "identity": {
+            "repository": "kaist-cp/relaxed-memory-separation-logic",
+            "revision": "6fe1475af1f8c49f8c144a67d9175b5b3e6bc472"
+          },
+          "name": "relaxed-memory-separation-logic (GPFSL / iRC11 Treiber, MS-queue, Chase-Lev)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "ec65cd52bba13d491ff65c9d218b39753755c84a"
+          },
+          "name": "Rust standard library (core::sync::atomic)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/miri",
+            "revision": "0a0ce195cb0e91890c21ed717cca6eefef5e1ff3"
+          },
+          "name": "Miri concurrency and weak-memory engine"
+        },
+        {
+          "identity": {
+            "repository": "rocq-iris/iris",
+            "revision": "2fe2f450add5678d9a2492343c638ccdb428a677"
+          },
+          "name": "Iris concurrent separation logic framework"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/248052.248106",
+            "venue": "PODC 1996"
+          },
+          "name": "Simple, Fast, and Practical Non-Blocking and Blocking Concurrent Queue Algorithms"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1073970.1073974",
+            "venue": "SPAA 2005"
+          },
+          "name": "Dynamic Circular Work-Stealing Deque"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2442516.2442524",
+            "venue": "PPoPP 2013"
+          },
+          "name": "Correct and Efficient Work-Stealing for Weak Memory Models"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371113",
+            "venue": "POPL 2020"
+          },
+          "name": "The Future is Ours: Prophecy Variables in Separation Logic"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3437992.3439930",
+            "venue": "CPP 2021"
+          },
+          "name": "Contextual Refinement of the Michael-Scott Queue (Proof Pearl)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3519939.3523451",
+            "venue": "PLDI 2022"
+          },
+          "name": "Compass: Strong and Compositional Library Specifications in Relaxed Memory Separation Logic"
+        }
+      ],
+      "topics": [
+        "rust/atomics",
+        "rust/concurrency",
+        "rust/unsafe",
+        "verification/concurrency",
+        "verification/data-structures",
+        "verification/iris",
+        "verification/rust",
+        "verification/separation-logic"
       ]
     },
     "trusting-trust-bootstrappable-builds-and-verified-binary-lifting": {

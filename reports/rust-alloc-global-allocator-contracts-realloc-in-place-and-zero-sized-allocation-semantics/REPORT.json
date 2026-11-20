@@ -1,0 +1,85 @@
+{
+  "topics": [
+    "minirust/memory",
+    "rust/layout",
+    "rust/memory-model",
+    "rust/provenance",
+    "rust/tree-borrows",
+    "rust/unsafe",
+    "systems/allocators",
+    "verification/rust"
+  ],
+  "subjects": [
+    {
+      "name": "Rust standard library (core::alloc, alloc::alloc, alloc::boxed, alloc::raw_vec, core::ptr)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "ec65cd52bba13d491ff65c9d218b39753755c84a"
+      }
+    },
+    {
+      "name": "Miri interpreter (allocator shims, address/provenance engine, Tree Borrows)",
+      "identity": {
+        "repository": "rust-lang/miri",
+        "revision": "0a0ce195cb0e91890c21ed717cca6eefef5e1ff3"
+      }
+    },
+    {
+      "name": "MiniRust operational memory and Tree Borrows specification",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "063d784186d3252bee242217f218223205c0b568"
+      }
+    },
+    {
+      "name": "The Rust Reference (behavior considered undefined)",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+      }
+    },
+    {
+      "name": "Rust Unsafe Code Guidelines Reference",
+      "identity": {
+        "repository": "rust-lang/unsafe-code-guidelines",
+        "revision": "d809f91e62968913d808e53397fbcf7cea762cce"
+      }
+    },
+    {
+      "name": "Verified Memory Allocator (verus-mimalloc)",
+      "identity": {
+        "repository": "verus-lang/verified-memory-allocator",
+        "revision": "7d120970f8d63157ae9bf3b2361192d29bc0acaa"
+      }
+    },
+    {
+      "name": "Tree Borrows",
+      "identity": {
+        "doi": "10.1145/3735592",
+        "venue": "PLDI 2025"
+      }
+    },
+    {
+      "name": "Stacked Borrows: An Aliasing Model for Rust",
+      "identity": {
+        "doi": "10.1145/3371109",
+        "venue": "POPL 2020"
+      }
+    },
+    {
+      "name": "RustBelt: Securing the Foundations of the Rust Programming Language",
+      "identity": {
+        "doi": "10.1145/3158154",
+        "venue": "POPL 2018"
+      }
+    },
+    {
+      "name": "Reconciling High-Level Optimizations and Low-Level Code in LLVM",
+      "identity": {
+        "doi": "10.1145/3276495",
+        "venue": "OOPSLA 2018"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
