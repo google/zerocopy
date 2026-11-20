@@ -1,0 +1,1218 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Sep.AlwaysAllocatesAt": [],
+    "Toy.Sep.Assn": [],
+    "Toy.Sep.AssocGap": [],
+    "Toy.Sep.AssocGap.casesOn": [],
+    "Toy.Sep.AssocGap.ctorElim": [],
+    "Toy.Sep.AssocGap.ctorElimType": [],
+    "Toy.Sep.AssocGap.ctorIdx": [],
+    "Toy.Sep.AssocGap.disjB": [
+      "propext"
+    ],
+    "Toy.Sep.AssocGap.disjB.match_1": [
+      "propext"
+    ],
+    "Toy.Sep.AssocGap.faultAtT": [],
+    "Toy.Sep.AssocGap.m": [],
+    "Toy.Sep.AssocGap.m.elim": [],
+    "Toy.Sep.AssocGap.m.sizeOf_spec": [],
+    "Toy.Sep.AssocGap.noConfusion": [],
+    "Toy.Sep.AssocGap.noConfusionType": [],
+    "Toy.Sep.AssocGap.ofNat": [],
+    "Toy.Sep.AssocGap.ofNat_ctorIdx": [],
+    "Toy.Sep.AssocGap.p": [],
+    "Toy.Sep.AssocGap.p.elim": [],
+    "Toy.Sep.AssocGap.p.sizeOf_spec": [],
+    "Toy.Sep.AssocGap.r": [],
+    "Toy.Sep.AssocGap.r.elim": [],
+    "Toy.Sep.AssocGap.r.sizeOf_spec": [],
+    "Toy.Sep.AssocGap.rec": [],
+    "Toy.Sep.AssocGap.recOn": [],
+    "Toy.Sep.AssocGap.s": [],
+    "Toy.Sep.AssocGap.s.elim": [],
+    "Toy.Sep.AssocGap.s.sizeOf_spec": [],
+    "Toy.Sep.AssocGap.t": [],
+    "Toy.Sep.AssocGap.t.elim": [],
+    "Toy.Sep.AssocGap.t.sizeOf_spec": [],
+    "Toy.Sep.AssocGap.unionG": [
+      "propext"
+    ],
+    "Toy.Sep.Cmd": [],
+    "Toy.Sep.CommOneWay": [],
+    "Toy.Sep.CommOneWay.casesOn": [],
+    "Toy.Sep.CommOneWay.ctorElim": [],
+    "Toy.Sep.CommOneWay.ctorElimType": [],
+    "Toy.Sep.CommOneWay.ctorIdx": [],
+    "Toy.Sep.CommOneWay.disjB": [
+      "propext"
+    ],
+    "Toy.Sep.CommOneWay.disjB.match_1": [
+      "propext"
+    ],
+    "Toy.Sep.CommOneWay.noConfusion": [],
+    "Toy.Sep.CommOneWay.noConfusionType": [],
+    "Toy.Sep.CommOneWay.ofNat": [],
+    "Toy.Sep.CommOneWay.ofNat_ctorIdx": [],
+    "Toy.Sep.CommOneWay.op": [
+      "propext"
+    ],
+    "Toy.Sep.CommOneWay.op.match_1": [
+      "propext"
+    ],
+    "Toy.Sep.CommOneWay.rec": [],
+    "Toy.Sep.CommOneWay.recOn": [],
+    "Toy.Sep.CommOneWay.s0": [],
+    "Toy.Sep.CommOneWay.s0.elim": [],
+    "Toy.Sep.CommOneWay.s0.sizeOf_spec": [],
+    "Toy.Sep.CommOneWay.s1": [],
+    "Toy.Sep.CommOneWay.s1.elim": [],
+    "Toy.Sep.CommOneWay.s1.sizeOf_spec": [],
+    "Toy.Sep.CommOneWay.s2": [],
+    "Toy.Sep.CommOneWay.s2.elim": [],
+    "Toy.Sep.CommOneWay.s2.sizeOf_spec": [],
+    "Toy.Sep.CommOneWay.step2": [
+      "propext"
+    ],
+    "Toy.Sep.CommOneWay.step2.match_1": [
+      "propext"
+    ],
+    "Toy.Sep.ConjDistrib": [],
+    "Toy.Sep.ConjDistribLeft": [],
+    "Toy.Sep.DisjSymm": [],
+    "Toy.Sep.FQTriple": [],
+    "Toy.Sep.Fork": [],
+    "Toy.Sep.Fork.a": [],
+    "Toy.Sep.Fork.a.elim": [],
+    "Toy.Sep.Fork.a.sizeOf_spec": [],
+    "Toy.Sep.Fork.b": [],
+    "Toy.Sep.Fork.b.elim": [],
+    "Toy.Sep.Fork.b.sizeOf_spec": [],
+    "Toy.Sep.Fork.casesOn": [],
+    "Toy.Sep.Fork.ctorElim": [],
+    "Toy.Sep.Fork.ctorElimType": [],
+    "Toy.Sep.Fork.ctorIdx": [],
+    "Toy.Sep.Fork.disjB": [
+      "propext"
+    ],
+    "Toy.Sep.Fork.disjB.match_1": [
+      "propext"
+    ],
+    "Toy.Sep.Fork.e": [],
+    "Toy.Sep.Fork.e.elim": [],
+    "Toy.Sep.Fork.e.sizeOf_spec": [],
+    "Toy.Sep.Fork.noConfusion": [],
+    "Toy.Sep.Fork.noConfusionType": [],
+    "Toy.Sep.Fork.ofNat": [],
+    "Toy.Sep.Fork.ofNat_ctorIdx": [],
+    "Toy.Sep.Fork.p": [],
+    "Toy.Sep.Fork.p.elim": [],
+    "Toy.Sep.Fork.p.sizeOf_spec": [],
+    "Toy.Sep.Fork.rec": [],
+    "Toy.Sep.Fork.recOn": [],
+    "Toy.Sep.Fork.t": [],
+    "Toy.Sep.Fork.t.elim": [],
+    "Toy.Sep.Fork.t.sizeOf_spec": [],
+    "Toy.Sep.Fork.unionF": [
+      "propext"
+    ],
+    "Toy.Sep.FrameProp": [],
+    "Toy.Sep.FrameRuleAtSingletons": [],
+    "Toy.Sep.FrameRuleForPreciseFrames": [],
+    "Toy.Sep.FrameRuleSound": [],
+    "Toy.Sep.Heap": [],
+    "Toy.Sep.Heap.Disj": [],
+    "Toy.Sep.Heap.Sub": [],
+    "Toy.Sep.Heap.casesOn": [],
+    "Toy.Sep.Heap.ctorIdx": [],
+    "Toy.Sep.Heap.disj_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.Heap.emp": [],
+    "Toy.Sep.Heap.emp_join": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.Heap.emp_val": [],
+    "Toy.Sep.Heap.exists_frame_iff_sub": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.Heap.ext": [
+      "Quot.sound"
+    ],
+    "Toy.Sep.Heap.finite": [],
+    "Toy.Sep.Heap.join": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.Heap.join_comm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.Heap.join_emp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.Heap.join_val": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.Heap.mk": [],
+    "Toy.Sep.Heap.mk.congr_simp": [],
+    "Toy.Sep.Heap.mk.inj": [],
+    "Toy.Sep.Heap.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Sep.Heap.mk.noConfusion": [],
+    "Toy.Sep.Heap.mk.sizeOf_spec": [],
+    "Toy.Sep.Heap.noConfusion": [],
+    "Toy.Sep.Heap.noConfusionType": [],
+    "Toy.Sep.Heap.pt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.Heap.pt.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.Heap.pt_val": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.Heap.rec": [],
+    "Toy.Sep.Heap.recOn": [],
+    "Toy.Sep.Heap.right_none_of_disj": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.Heap.set": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.Heap.set_join": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.Heap.set_val": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.Heap.union_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.Heap.union_val_of_ne_none": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.Heap.val": [],
+    "Toy.Sep.IsSepAlgebra": [],
+    "Toy.Sep.IsSepAlgebra.assoc": [],
+    "Toy.Sep.IsSepAlgebra.casesOn": [],
+    "Toy.Sep.IsSepAlgebra.comm": [],
+    "Toy.Sep.IsSepAlgebra.disjSymm": [],
+    "Toy.Sep.IsSepAlgebra.mk": [],
+    "Toy.Sep.IsSepAlgebra.rec": [],
+    "Toy.Sep.IsSepAlgebra.recOn": [],
+    "Toy.Sep.IsSepAlgebra.unit": [],
+    "Toy.Sep.LeftCancel": [],
+    "Toy.Sep.Local": [],
+    "Toy.Sep.OneWayAssoc": [],
+    "Toy.Sep.OneWayAssoc.casesOn": [],
+    "Toy.Sep.OneWayAssoc.ctorElim": [],
+    "Toy.Sep.OneWayAssoc.ctorElimType": [],
+    "Toy.Sep.OneWayAssoc.ctorIdx": [],
+    "Toy.Sep.OneWayAssoc.disjB": [
+      "propext"
+    ],
+    "Toy.Sep.OneWayAssoc.disjB.match_1": [
+      "propext"
+    ],
+    "Toy.Sep.OneWayAssoc.noConfusion": [],
+    "Toy.Sep.OneWayAssoc.noConfusionType": [],
+    "Toy.Sep.OneWayAssoc.ofNat": [],
+    "Toy.Sep.OneWayAssoc.ofNat_ctorIdx": [],
+    "Toy.Sep.OneWayAssoc.op": [
+      "propext"
+    ],
+    "Toy.Sep.OneWayAssoc.op.match_1": [
+      "propext"
+    ],
+    "Toy.Sep.OneWayAssoc.rec": [],
+    "Toy.Sep.OneWayAssoc.recOn": [],
+    "Toy.Sep.OneWayAssoc.s0": [],
+    "Toy.Sep.OneWayAssoc.s0.elim": [],
+    "Toy.Sep.OneWayAssoc.s0.sizeOf_spec": [],
+    "Toy.Sep.OneWayAssoc.s1": [],
+    "Toy.Sep.OneWayAssoc.s1.elim": [],
+    "Toy.Sep.OneWayAssoc.s1.sizeOf_spec": [],
+    "Toy.Sep.OneWayAssoc.s2": [],
+    "Toy.Sep.OneWayAssoc.s2.elim": [],
+    "Toy.Sep.OneWayAssoc.s2.sizeOf_spec": [],
+    "Toy.Sep.OneWayAssoc.step2": [
+      "propext"
+    ],
+    "Toy.Sep.OneWayAssoc.step2.match_1": [
+      "propext"
+    ],
+    "Toy.Sep.OrAlg": [],
+    "Toy.Sep.OrAlg.bit": [],
+    "Toy.Sep.OrAlg.casesOn": [],
+    "Toy.Sep.OrAlg.ctorIdx": [],
+    "Toy.Sep.OrAlg.mk": [],
+    "Toy.Sep.OrAlg.mk.inj": [],
+    "Toy.Sep.OrAlg.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Sep.OrAlg.mk.noConfusion": [],
+    "Toy.Sep.OrAlg.mk.sizeOf_spec": [],
+    "Toy.Sep.OrAlg.noConfusion": [],
+    "Toy.Sep.OrAlg.noConfusionType": [],
+    "Toy.Sep.OrAlg.rec": [],
+    "Toy.Sep.OrAlg.recOn": [],
+    "Toy.Sep.OrAlg.unit": [],
+    "Toy.Sep.Outcome": [],
+    "Toy.Sep.Outcome.casesOn": [],
+    "Toy.Sep.Outcome.ctorElim": [],
+    "Toy.Sep.Outcome.ctorElimType": [],
+    "Toy.Sep.Outcome.ctorIdx": [],
+    "Toy.Sep.Outcome.fault": [],
+    "Toy.Sep.Outcome.fault.elim": [],
+    "Toy.Sep.Outcome.fault.sizeOf_spec": [],
+    "Toy.Sep.Outcome.noConfusion": [],
+    "Toy.Sep.Outcome.noConfusionType": [],
+    "Toy.Sep.Outcome.ok": [],
+    "Toy.Sep.Outcome.ok.elim": [],
+    "Toy.Sep.Outcome.ok.inj": [],
+    "Toy.Sep.Outcome.ok.injEq": [
+      "propext"
+    ],
+    "Toy.Sep.Outcome.ok.noConfusion": [],
+    "Toy.Sep.Outcome.ok.sizeOf_spec": [],
+    "Toy.Sep.Outcome.rec": [],
+    "Toy.Sep.Outcome.recOn": [],
+    "Toy.Sep.Precise": [],
+    "Toy.Sep.PreciseLeft": [],
+    "Toy.Sep.RightCancel": [],
+    "Toy.Sep.RightUnitLaw": [],
+    "Toy.Sep.RunsWhenOccupied": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.Safe": [],
+    "Toy.Sep.SafetyMono": [],
+    "Toy.Sep.SepStruct": [],
+    "Toy.Sep.SepStruct.casesOn": [],
+    "Toy.Sep.SepStruct.ctorIdx": [],
+    "Toy.Sep.SepStruct.disj": [],
+    "Toy.Sep.SepStruct.mk": [],
+    "Toy.Sep.SepStruct.mk.noConfusion": [],
+    "Toy.Sep.SepStruct.noConfusion": [],
+    "Toy.Sep.SepStruct.noConfusionType": [],
+    "Toy.Sep.SepStruct.rec": [],
+    "Toy.Sep.SepStruct.recOn": [],
+    "Toy.Sep.SepStruct.union": [],
+    "Toy.Sep.SymmAssocGap": [],
+    "Toy.Sep.SymmAssocGap.casesOn": [],
+    "Toy.Sep.SymmAssocGap.ctorElim": [],
+    "Toy.Sep.SymmAssocGap.ctorElimType": [],
+    "Toy.Sep.SymmAssocGap.ctorIdx": [],
+    "Toy.Sep.SymmAssocGap.disjB": [
+      "propext"
+    ],
+    "Toy.Sep.SymmAssocGap.disjB.match_1": [
+      "propext"
+    ],
+    "Toy.Sep.SymmAssocGap.faultAtT": [],
+    "Toy.Sep.SymmAssocGap.m": [],
+    "Toy.Sep.SymmAssocGap.m.elim": [],
+    "Toy.Sep.SymmAssocGap.m.sizeOf_spec": [],
+    "Toy.Sep.SymmAssocGap.noConfusion": [],
+    "Toy.Sep.SymmAssocGap.noConfusionType": [],
+    "Toy.Sep.SymmAssocGap.ofNat": [],
+    "Toy.Sep.SymmAssocGap.ofNat_ctorIdx": [],
+    "Toy.Sep.SymmAssocGap.p": [],
+    "Toy.Sep.SymmAssocGap.p.elim": [],
+    "Toy.Sep.SymmAssocGap.p.sizeOf_spec": [],
+    "Toy.Sep.SymmAssocGap.r": [],
+    "Toy.Sep.SymmAssocGap.r.elim": [],
+    "Toy.Sep.SymmAssocGap.r.sizeOf_spec": [],
+    "Toy.Sep.SymmAssocGap.rec": [],
+    "Toy.Sep.SymmAssocGap.recOn": [],
+    "Toy.Sep.SymmAssocGap.s": [],
+    "Toy.Sep.SymmAssocGap.s.elim": [],
+    "Toy.Sep.SymmAssocGap.s.sizeOf_spec": [],
+    "Toy.Sep.SymmAssocGap.t": [],
+    "Toy.Sep.SymmAssocGap.t.elim": [],
+    "Toy.Sep.SymmAssocGap.t.sizeOf_spec": [],
+    "Toy.Sep.SymmAssocGap.unionG": [
+      "propext"
+    ],
+    "Toy.Sep.Triple": [],
+    "Toy.Sep.UnionAssoc": [],
+    "Toy.Sep.UnionAssocRev": [],
+    "Toy.Sep.UnionComm": [],
+    "Toy.Sep.UniqueFrame": [],
+    "Toy.Sep.UnitLaw": [],
+    "Toy.Sep.WeakTriple": [],
+    "Toy.Sep.abort": [],
+    "Toy.Sep.alloc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.allocAt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.allocAtBlock": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.allocAtBlock_local_and_blocks_when_taken": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.allocAtBlock_safetyMono_and_frameProp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.allocAtBlock_safetyMono_and_frameProp.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.allocAt_frameProp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.allocAt_frameProp_and_framed_triple_fails": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.allocAt_not_frameRuleForPreciseFrames": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.allocAt_not_frameRuleSound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.allocAt_not_local": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.allocAt_not_safetyMono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.allocInto": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.allocInto_safetyMono_and_frameProp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.allocLeast": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.allocLeast_fqTriple_someCell": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.allocLeast_fqTriple_someCell.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.allocLeast_frame_rule_for_emp_frame_and_not_local": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.allocLeast_not_frameProp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.allocLeast_not_frameRuleAtSingletons": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.allocLeast_not_safetyMono_and_frameProp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.allocLeast_safetyMono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.allocLeast_safetyMono_and_framed_triple_fails": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.allocLeast_triple_and_not_fqTriple": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.alloc_frameProp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.alloc_not_alwaysAllocatesAt_and_frameProp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.alloc_safetyMono_and_frameProp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.assertAlloc": [],
+    "Toy.Sep.assertAlloc_faults_and_safetyMono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.assertAlloc_frameProp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.assertAlloc_local_and_framed_weakTriple_fails": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.assertAlloc_safetyMono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.assocGap_unionAssocRev_and_fqTriple_frame_fails": [
+      "propext"
+    ],
+    "Toy.Sep.assocGap_unionAssocRev_and_fqTriple_frame_fails.match_1_1": [
+      "propext"
+    ],
+    "Toy.Sep.assocGap_unionAssocRev_and_fqTriple_frame_fails.match_1_3": [],
+    "Toy.Sep.assocGap_unionAssocRev_and_fqTriple_frame_fails.match_1_5": [
+      "propext"
+    ],
+    "Toy.Sep.boundary_witnesses_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.cancel_coincide_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.commOneWay_unionComm_unionAssoc_and_fqTriple_frame_fails": [
+      "propext"
+    ],
+    "Toy.Sep.commOneWay_unionComm_unionAssoc_and_fqTriple_frame_fails.match_1_1": [
+      "propext"
+    ],
+    "Toy.Sep.commOneWay_unionComm_unionAssoc_and_fqTriple_frame_fails.match_1_3": [
+      "propext"
+    ],
+    "Toy.Sep.conj": [],
+    "Toy.Sep.conjDistrib_iff_conjDistribLeft_of_disjSymm_of_unionComm": [],
+    "Toy.Sep.conjDistrib_iff_uniqueFrame": [],
+    "Toy.Sep.conjDistrib_iff_uniqueFrame.match_1_1": [],
+    "Toy.Sep.conjDistrib_iff_uniqueFrame_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.conjDistrib_of_precise_of_rightCancel": [],
+    "Toy.Sep.conjDistrib_of_precise_of_rightCancel_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.detAlloc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.detAllocInto": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.detAllocInto_fresh_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.detAllocInto_not_frameProp_of_fresh": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.detAllocInto_self_frameProp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.detAllocOnEmp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.detAllocOnEmp_frameProp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.detAllocOnEmp_frameProp.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.detAllocOnEmp_not_runsWhenOccupied_and_frameProp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.detAlloc_not_frameProp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.disj_pt_of_none": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.diverge": [],
+    "Toy.Sep.diverge_local": [],
+    "Toy.Sep.emp_conjDistrib": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.emp_conjDistrib.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.emptyDisjSepStruct": [],
+    "Toy.Sep.emptyDisj_degenerate": [],
+    "Toy.Sep.emptyDisj_degenerate.match_1_1": [],
+    "Toy.Sep.emptyDisj_degenerate.match_1_3": [],
+    "Toy.Sep.emptyDisj_disjSymm_unionComm_no_unit_and_fqTriple_adequacy_fails": [],
+    "Toy.Sep.emptyDisj_disjSymm_unionComm_no_unit_and_fqTriple_adequacy_fails.match_1_1": [],
+    "Toy.Sep.emptyDisj_no_rightUnit_and_fqTriple_adequacy_fails": [],
+    "Toy.Sep.emptyDisj_no_rightUnit_and_fqTriple_adequacy_fails.match_1_1": [],
+    "Toy.Sep.emptyDisj_no_rightUnit_and_fqTriple_adequacy_fails.match_1_3": [],
+    "Toy.Sep.everywhere_allocated_not_finite": [],
+    "Toy.Sep.faultOrSet0": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.faultOrSet0_not_safe_and_frameProp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.forkR": [],
+    "Toy.Sep.forkR_conjDistrib": [
+      "propext"
+    ],
+    "Toy.Sep.forkR_conjDistrib.match_1_1": [
+      "propext"
+    ],
+    "Toy.Sep.forkR_conjDistrib_and_not_precise": [
+      "propext"
+    ],
+    "Toy.Sep.forkR_not_precise": [
+      "propext"
+    ],
+    "Toy.Sep.forkR_uniqueFrame": [
+      "propext"
+    ],
+    "Toy.Sep.fork_isSepAlgebra": [
+      "propext"
+    ],
+    "Toy.Sep.fork_not_leftCancel": [
+      "propext"
+    ],
+    "Toy.Sep.fork_not_rightCancel": [
+      "propext"
+    ],
+    "Toy.Sep.fqTriple_frame_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.fqTriple_frame_of_disjSymm_of_unionAssoc": [],
+    "Toy.Sep.fqTriple_frame_of_disjSymm_of_unionComm_of_unionAssoc": [],
+    "Toy.Sep.fqTriple_frame_of_unionAssoc_of_unionAssocRev": [],
+    "Toy.Sep.fqTriple_frame_premise_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.frameRuleAtSingletons_assertAlloc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.frameRuleAtSingletons_assertAlloc.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.frameRuleForPreciseFrames_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.frameRuleSound_iff_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.frameRuleSound_iff_safetyMono_and_frameProp": [],
+    "Toy.Sep.frameRuleSound_iff_safetyMono_and_frameProp.match_1_1": [],
+    "Toy.Sep.frame_rule_of_safetyMono_of_frameProp": [],
+    "Toy.Sep.frame_rule_of_safetyMono_of_frameProp_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.frame_rule_with_emp_frame_trivial": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.frame_rule_with_emp_frame_trivial.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.free": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.free_safetyMono_and_frameProp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.heap_commands_framed_runs_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.heap_disjSymm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.heap_empty_all_commands_local": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.heap_fqTriple_frame": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.heap_isSepAlgebra": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.heap_leftCancel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.heap_leftCancel_and_oneCell_not_precise": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.heap_precise_iff_atMostOneSubheap": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.heap_precise_iff_conjDistrib": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.heap_precise_iff_conjDistrib_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.heap_rightCancel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.heap_rightCancel_and_oneCell_not_conjDistrib": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.heap_rightUnitLaw": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.heap_sep_assoc_mp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.heap_sep_assoc_mpr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.heap_sep_emp_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.heap_triple_of_fqTriple": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.heap_unionAssoc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.heap_unionAssocRev": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.heap_unionComm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.heap_unitLaw": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.instDecidableDisjAssocGap": [
+      "propext"
+    ],
+    "Toy.Sep.instDecidableDisjCommOneWay": [
+      "propext"
+    ],
+    "Toy.Sep.instDecidableDisjFork": [
+      "propext"
+    ],
+    "Toy.Sep.instDecidableDisjOneWayAssoc": [
+      "propext"
+    ],
+    "Toy.Sep.instDecidableDisjSymmAssocGap": [
+      "propext"
+    ],
+    "Toy.Sep.instDecidableEqAssocGap": [],
+    "Toy.Sep.instDecidableEqCommOneWay": [],
+    "Toy.Sep.instDecidableEqFork": [],
+    "Toy.Sep.instDecidableEqOneWayAssoc": [],
+    "Toy.Sep.instDecidableEqOrAlg": [],
+    "Toy.Sep.instDecidableEqOrAlg.decEq": [],
+    "Toy.Sep.instDecidableEqOrAlg.decEq.match_1": [],
+    "Toy.Sep.instDecidableEqSymmAssocGap": [],
+    "Toy.Sep.instDecidablePredForkForkR": [],
+    "Toy.Sep.instSepStructAssocGap": [
+      "propext"
+    ],
+    "Toy.Sep.instSepStructCommOneWay": [
+      "propext"
+    ],
+    "Toy.Sep.instSepStructFork": [
+      "propext"
+    ],
+    "Toy.Sep.instSepStructHeap": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.instSepStructOneWayAssoc": [
+      "propext"
+    ],
+    "Toy.Sep.instSepStructOrAlg": [],
+    "Toy.Sep.instSepStructSymmAssocGap": [
+      "propext"
+    ],
+    "Toy.Sep.isAllocTest": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.isAllocTest_not_frameProp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.isAllocTest_safetyMono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.isAllocTest_safetyMono_and_framed_triple_fails": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.isAllocTest_self_frameProp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.leastFree": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.leastFree.match_1": [],
+    "Toy.Sep.leastFree.match_3": [],
+    "Toy.Sep.leastFree_spec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.leftCancel_iff_rightCancel_of_disjSymm_of_unionComm": [],
+    "Toy.Sep.leftCancel_of_disjSymm_of_unionComm_of_rightCancel": [],
+    "Toy.Sep.leftDisjCommUnit": [],
+    "Toy.Sep.leftDisjCommUnit_unionComm_unitLaw_and_fqTriple_adequacy_fails": [],
+    "Toy.Sep.leftDisjCommUnit_unionComm_unitLaw_and_fqTriple_adequacy_fails.match_1_1": [],
+    "Toy.Sep.leftProjSepStruct": [],
+    "Toy.Sep.leftProjSepStruct_not_isSepAlgebra": [],
+    "Toy.Sep.leftProjSepStruct_not_unionComm": [],
+    "Toy.Sep.local_iff": [],
+    "Toy.Sep.lookup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.lookup_safetyMono_and_frameProp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.ltSepStruct": [],
+    "Toy.Sep.ltSepStruct_not_disjSymm": [],
+    "Toy.Sep.mutate": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.mutate_not_safe_emp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.mutate_pt_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.mutate_safetyMono_and_frameProp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.not_frameProp_of_alwaysAllocatesAt_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.not_frameProp_of_alwaysAllocatesAt_of_runsWhenOccupied": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.not_safetyMono_of_safe_emp_of_faults": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.not_triple_mutate_emp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.not_weakTriple_mutate": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.oneCell": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.oneCell_conjDistrib_fails": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.oneCell_not_conjDistrib": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.oneCell_not_emp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.oneCell_not_precise": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.oneCell_not_two": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.oneCell_not_uniqueFrame": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.onePairSepStruct": [],
+    "Toy.Sep.onePair_true_precise": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.onePair_true_precise.match_1_1": [],
+    "Toy.Sep.onePair_true_precise.match_1_3": [],
+    "Toy.Sep.oneWayAssoc_unionAssoc_and_fqTriple_frame_fails": [
+      "propext"
+    ],
+    "Toy.Sep.oneWayAssoc_unionAssoc_and_fqTriple_frame_fails.match_1_1": [
+      "propext"
+    ],
+    "Toy.Sep.oneWayAssoc_unionAssoc_and_fqTriple_frame_fails.match_1_3": [
+      "propext"
+    ],
+    "Toy.Sep.orAlg_disjSymm_unionComm_not_leftCancel": [],
+    "Toy.Sep.orAlg_disjSymm_unionComm_not_rightCancel": [],
+    "Toy.Sep.orAlg_isSepAlgebra": [],
+    "Toy.Sep.orAlg_isSepAlgebra.match_1_1": [],
+    "Toy.Sep.orAlg_not_leftCancel": [],
+    "Toy.Sep.orAlg_not_rightCancel": [],
+    "Toy.Sep.orAlg_true_precise": [],
+    "Toy.Sep.orAlg_true_precise_and_not_conjDistrib": [],
+    "Toy.Sep.orDisjLeftSepStruct": [],
+    "Toy.Sep.orDisjLeft_unionComm_rightCancel_not_leftCancel": [],
+    "Toy.Sep.orDisjRightSepStruct": [],
+    "Toy.Sep.orDisjRight_unionComm_and_not_conjDistrib_iff_conjDistribLeft": [],
+    "Toy.Sep.orDisjRight_unionComm_and_not_conjDistrib_iff_conjDistribLeft.match_1_1": [],
+    "Toy.Sep.orDisjRight_unionComm_and_not_conjDistrib_iff_conjDistribLeft.match_1_3": [],
+    "Toy.Sep.orDisjRight_unionComm_and_not_precise_iff_preciseLeft": [],
+    "Toy.Sep.orDisjRight_unionComm_leftCancel_not_rightCancel": [],
+    "Toy.Sep.post": [],
+    "Toy.Sep.post_mutate_excludes_old": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.precise_iff_preciseLeft_of_disjSymm_of_unionComm": [],
+    "Toy.Sep.precise_of_conjDistrib_of_leftCancel": [],
+    "Toy.Sep.precise_of_conjDistrib_of_leftCancel_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.projLeftSepStruct": [],
+    "Toy.Sep.projLeft_disjSymm_and_not_precise_iff_preciseLeft": [],
+    "Toy.Sep.projLeft_disjSymm_rightCancel_not_leftCancel": [],
+    "Toy.Sep.projLeft_disjSymm_unionAssoc_unionAssocRev_not_unionComm": [],
+    "Toy.Sep.projLeft_rightCancel_precise_not_conjDistribLeft": [],
+    "Toy.Sep.projRightSepStruct": [],
+    "Toy.Sep.projRight_conjDistribLeft": [],
+    "Toy.Sep.projRight_conjDistribLeft.match_1_1": [],
+    "Toy.Sep.projRight_conjDistribLeft.match_1_3": [],
+    "Toy.Sep.projRight_disjSymm_and_not_conjDistrib_iff_conjDistribLeft": [],
+    "Toy.Sep.projRight_disjSymm_leftCancel_not_rightCancel": [],
+    "Toy.Sep.projRight_disjSymm_unitLaw_and_fqTriple_adequacy_fails": [],
+    "Toy.Sep.projRight_disjSymm_unitLaw_and_fqTriple_adequacy_fails.match_1_1": [],
+    "Toy.Sep.projRight_leftCancel_precise_not_conjDistrib_not_preciseLeft": [],
+    "Toy.Sep.pt01_disj_pt12": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.pt01_ne_pt12": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.pt01_union_pt12_comm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.pt02_not_sub_pt01": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.pt0_not_disj_pt0": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.pt12_disj_pt01": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.ptAny": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.ptAny_conjDistrib": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.ptAny_conjDistrib.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.ptAny_part_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.ptAny_precise": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.ptAny_uniqueFrame": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.pt_not_rightUnitLaw": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.pt_not_unitLaw": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.rightCancel_of_disjSymm_of_unionComm_of_leftCancel": [],
+    "Toy.Sep.rightUnitLaw_of_disjSymm_of_unionComm_of_unitLaw": [],
+    "Toy.Sep.safe_alloc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.safe_allocAtBlock": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.safe_allocAt_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.safe_allocInto_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.safe_allocLeast": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.safe_allocLeast.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.safe_assertAlloc_iff": [],
+    "Toy.Sep.safe_detAlloc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.safe_detAllocInto_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.safe_detAllocOnEmp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.safe_free_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.safe_isAllocTest_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.safe_lookup_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.safe_mutate_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.safe_skip": [],
+    "Toy.Sep.safetyMono_and_frameProp_of_frameRuleAtSingletons": [],
+    "Toy.Sep.safetyMono_and_frameProp_of_frameRuleForPreciseFrames": [],
+    "Toy.Sep.sep": [],
+    "Toy.Sep.sep_assoc_mp_of_unionAssoc": [],
+    "Toy.Sep.sep_assoc_mpr_of_unionAssocRev": [],
+    "Toy.Sep.sep_comm_of_disjSymm_of_unionComm": [],
+    "Toy.Sep.sep_overlap_unsat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.sing": [],
+    "Toy.Sep.sing_precise": [],
+    "Toy.Sep.skip": [],
+    "Toy.Sep.skipOnEmp": [],
+    "Toy.Sep.skipOnEmp_local_and_no_outcome_on_nonempty": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.skipOnEmp_local_and_no_outcome_on_nonempty.match_1_1": [],
+    "Toy.Sep.skipOnEmp_local_and_no_outcome_on_nonempty.match_1_3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.skipOnEmp_local_and_no_outcome_on_nonempty.match_1_5": [],
+    "Toy.Sep.skipOnEmp_local_and_no_outcome_on_nonempty.match_1_7": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.skip_fqTriple": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.skip_fqTriple.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.skip_frameProp": [],
+    "Toy.Sep.skip_frameRuleAtSingletons": [],
+    "Toy.Sep.skip_frameRuleForPreciseFrames": [],
+    "Toy.Sep.skip_frameRuleSound": [],
+    "Toy.Sep.skip_frameRuleSound.match_1_1": [],
+    "Toy.Sep.skip_local": [],
+    "Toy.Sep.skip_local_and_framed_triple_fails": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.skip_occupied_base_and_frameProp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.skip_safe_emp_and_safetyMono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.skip_safetyMono": [],
+    "Toy.Sep.someCellAllocated": [],
+    "Toy.Sep.someCellAllocated_conjDistrib_fails": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.someCellAllocated_not_conjDistrib": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.someCellAllocated_not_emp": [],
+    "Toy.Sep.someCellAllocated_not_precise": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.subSepStruct": [],
+    "Toy.Sep.subSepStruct_not_unionAssoc": [],
+    "Toy.Sep.symmAssocGap_disjSymm_unionComm_and_fqTriple_frame_fails": [
+      "propext"
+    ],
+    "Toy.Sep.symmAssocGap_disjSymm_unionComm_and_fqTriple_frame_fails.match_1_1": [
+      "propext"
+    ],
+    "Toy.Sep.symmAssocGap_disjSymm_unionComm_and_fqTriple_frame_fails.match_1_3": [],
+    "Toy.Sep.symmAssocGap_disjSymm_unionComm_and_fqTriple_frame_fails.match_1_5": [
+      "propext"
+    ],
+    "Toy.Sep.triple_alloc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.triple_assertAlloc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.triple_conj": [],
+    "Toy.Sep.triple_conj_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.triple_conj_premise1_tight": [],
+    "Toy.Sep.triple_conj_premise2_tight": [],
+    "Toy.Sep.triple_diverge": [],
+    "Toy.Sep.triple_free": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.triple_mutate": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.triple_of_fqTriple_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.triple_of_fqTriple_of_disjSymm_of_unionComm_of_unitLaw": [],
+    "Toy.Sep.triple_of_fqTriple_of_rightUnitLaw": [],
+    "Toy.Sep.triple_of_fqTriple_premise_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.true_not_precise": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Sep.unionAssocRev_of_disjSymm_of_unionAssoc": [],
+    "Toy.Sep.unionAssocRev_of_disjSymm_of_unionComm_of_unionAssoc": [],
+    "Toy.Sep.unionAssoc_iff_unionAssocRev_of_disjSymm": [],
+    "Toy.Sep.unionAssoc_of_disjSymm_of_unionAssocRev": [],
+    "Toy.Sep.union_overlapping_not_comm": [
+      "Quot.sound",
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

@@ -28322,6 +28322,97 @@
         "pl/second-class-values"
       ]
     },
+    "frame-rule-locality-and-precise-assertions": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3-540-45931-6_28"
+          },
+          "name": "A Semantic Basis for Local Reasoning (Yang and O'Hearn, FoSSaCS 2002)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/LICS.2007.30"
+          },
+          "name": "Local Action and Abstract Separation Logic (Calcagno, O'Hearn and Yang, LICS 2007)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/964001.964024"
+          },
+          "name": "Separation and Information Hiding (O'Hearn, Yang and Reynolds, POPL 2004)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1498926.1498929"
+          },
+          "name": "Separation and Information Hiding (O'Hearn, Yang and Reynolds, ACM TOPLAS 2009)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/LICS.2002.1029817"
+          },
+          "name": "Separation Logic: A Logic for Shared Mutable Data Structures (Reynolds, LICS 2002)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3408998"
+          },
+          "name": "Separation Logic for Sequential Programs (Chargueraud, ICFP 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/LICS.2005.47"
+          },
+          "name": "Semantics of Separation-Logic Typing and Higher-Order Frame Rules (Birkedal, Torp-Smith and Yang, LICS 2005)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-35182-2_24"
+          },
+          "name": "A Case for Behavior-Preserving Actions in Separation Logic (Costanzo and Shao, APLAS 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.48456/tr-799"
+          },
+          "name": "A separation logic framework for HOL (Tuerk, UCAM-CL-TR-799)"
+        },
+        {
+          "identity": {
+            "repository": "HOL-Theorem-Prover/HOL",
+            "revision": "c2b475d585febe0e718f87ab51959c0a73fc924e"
+          },
+          "name": "HOL4 theorem prover"
+        },
+        {
+          "identity": {
+            "repository": "PrincetonUniversity/VST",
+            "revision": "e1db53a4e22ddd3f8223532ba73127b706faf1b3",
+            "version": "v2.14"
+          },
+          "name": "Verified Software Toolchain (VST)"
+        }
+      ],
+      "topics": [
+        "verification",
+        "verification/formalized-results",
+        "verification/separation-logic",
+        "verification/frame-rule",
+        "verification/program-logics",
+        "pl/semantics",
+        "lean/mechanization"
+      ]
+    },
     "frontier-ai-lab-binary-verification-oss-fuzz-proofs-and-agent-reward-hacking": {
       "observed_at": "2026-11-19",
       "subjects": [

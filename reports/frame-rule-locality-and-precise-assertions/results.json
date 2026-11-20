@@ -1,0 +1,882 @@
+[
+ {
+  "id": "R1-frame-rule-from-locality",
+  "lean": "Toy.Sep.frame_rule_of_safetyMono_of_frameProp",
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Yang-O'Hearn 2002 Lemmas 1-2 and Theorem 1 (store-and-heap model); stated relationally for separation algebras in Calcagno-O'Hearn-Yang 2007 Section 3; mechanized without algebraic laws in HOL4 (ASL_IS_LOCAL_ACTION___HOARE_TRIPLE with LOCALITY_CHARACTERISATION_REL).",
+  "plain_claim": "In any separation structure (no algebraic laws assumed), if a command c is safety-monotone and has the frame property, then every fault-avoiding partial-correctness triple {P} c {Q} implies {P * R} c {Q * R} for every assertion R.",
+  "hypotheses": [
+   {
+    "name": "hsm : SafetyMono c",
+    "purpose": "Gives safety (no fault) from the framed precondition P * R.",
+    "tightness": "tight",
+    "counterexample": "Toy.Sep.allocAt_frameProp_and_framed_triple_fails"
+   },
+   {
+    "name": "hfp : FrameProp c",
+    "purpose": "Gives the framed postcondition Q * R for every normal run from P * R.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Sep.isAllocTest_safetyMono_and_framed_triple_fails",
+     "Toy.Sep.allocLeast_safetyMono_and_framed_triple_fails"
+    ]
+   },
+   {
+    "name": "ht : Triple P c Q",
+    "purpose": "Premise of the frame rule.",
+    "tightness": "tight",
+    "counterexample": "Toy.Sep.skip_local_and_framed_triple_fails"
+   },
+   {
+    "name": "(definition) Triple is fault-avoiding",
+    "purpose": "With non-fault-avoiding triples the frame rule fails even for a local command.",
+    "tightness": "tight",
+    "counterexample": "Toy.Sep.assertAlloc_local_and_framed_weakTriple_fails"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "assertAlloc 0 (fault unless cell 0 is allocated) is safety-monotone, has the frame property, and satisfies {0 |-> 1} assertAlloc 0 {0 |-> 1}.",
+  "nonvacuity_witness_lean": "Toy.Sep.frame_rule_of_safetyMono_of_frameProp_nonvacuous",
+  "non_claims": [
+   "Partial correctness only: nothing about termination or total correctness; the command with no outcomes (diverge) is local and satisfies every triple.",
+   "Does not preserve termination under framing: skipOnEmp terminates normally from emp and has no outcome from any non-empty heap, yet satisfies SafetyMono and FrameProp (Toy.Sep.skipOnEmp_local_and_no_outcome_on_nonempty). A total-correctness frame rule additionally needs termination monotonicity (Yang-O'Hearn 2002, Lemma 1(2)).",
+   "FrameProp maps every run from a framed state back to a run from the unframed state, not conversely: adding a frame can remove nondeterministic outcomes (alloc cannot pick an address that the frame occupies). So a local command's behaviour is not determined by its behaviour on its smallest safe states, and specifications on those states need not be complete (Costanzo-Shao 2012, Section 5.1); frame rules for relational (two-run) specifications of nondeterministic local commands are not covered (Costanzo-Shao 2012, Section 5.3).",
+   "In degenerate separation structures the result says little: with empty disjointness every command satisfies SafetyMono, FrameProp and the frame rule vacuously (Toy.Sep.emptyDisj_degenerate). The statement is informative for structures with enough disjoint pairs, such as the heap model.",
+   "Does not show that locality is preserved by sequencing, nondeterministic choice, or loops (not examined).",
+   "Frames are added on the right of *. For separation structures whose union is not commutative, framing on the left ({R * P} c {R * Q}) is not covered.",
+   "The model has no variable store, so the result says nothing about 'modifies' side conditions on program variables.",
+   "Locality does not make any particular triple true; it only lets true triples be framed."
+  ],
+  "prior_art": [
+   "Yang, H. & O'Hearn, P. W., 'A Semantic Basis for Local Reasoning', FoSSaCS 2002, LNCS 2303, pp. 402-416, doi:10.1007/3-540-45931-6_28 (author PDF http://www0.cs.ucl.ac.uk/staff/p.ohearn/papers/basis.pdf). Section 4: Lemma 1 (Safety and Termination Monotonicity), Lemma 2 (Frame Property), Theorem 1 (the Frame Rule is sound for both partial and total correctness), in a store-and-heap model. Section 4.1: always choosing the smallest free address for cons would invalidate the Frame Rule (detectable with address arithmetic; without address arithmetic, invariance under location renaming could be used instead of nondeterminism); trapping memory faults would allow branching on whether a cell is active, contradicting Safety Monotonicity; in Petri nets with capacity 1 a transition with pre(t) = {a}, post(t) = {b} is enabled in {a} but not in {a, b} and violates Safety Monotonicity. Section 5.1: a command that faults when more than 3 heap cells are active and skips otherwise violates Safety Monotonicity. Section 5.2, Proposition 2: wp(C) and wlp(C) both satisfy locality for X iff C satisfies Safety and Termination Monotonicity, the Frame Property and a locality property for variables (a joint characterization with a store and termination, not a partial-correctness-only converse).",
+   "Calcagno, C., O'Hearn, P. W. & Yang, H., 'Local Action and Abstract Separation Logic', LICS 2007, pp. 366-378, doi:10.1109/LICS.2007.30 (author PDF http://www0.cs.ucl.ac.uk/staff/p.ohearn/papers/asl-short.pdf). Definition 1: a separation algebra is a cancellative partial commutative monoid. Definition 3: p is precise if every state has at most one substate in p. Section 2, Examples of Predicates: the two-cell disjunction l0 |-> rv0 or l1 |-> rv1 is not precise. Lemma 4: every singleton is precise; p is precise iff for all nonempty X, (meet X) * p = meet{x * p | x in X}; the remark after it says injectivity of sigma . (-) is equivalent to that distribution for singleton frames {sigma}. Section 3: a relation satisfies Safety Monotonicity and the Frame Property 'iff the frame rule is sound for it' (stated without proof).",
+   "HOL4 theory examples/separationLogic/src/separationLogicScript.sml in HOL-Theorem-Prover/HOL at commit c2b475d585febe0e718f87ab51959c0a73fc924e; the framework is described in Tuerk, T., 'A separation logic framework for HOL', University of Cambridge Computer Laboratory Technical Report UCAM-CL-TR-799, June 2011, doi:10.48456/tr-799 (based on the author's PhD dissertation). ASL_IS_LOCAL_ACTION f op (lines 2457-2462): for all separate s1, s2, op(s1 . s2) is below (op s1) * {s2} in the order with fault on top, i.e. locality stated at singleton frames against the outcome set (strongest postcondition) op s1. LOCALITY_CHARACTERISATION_REL (lines 2490-2495): for every f and relation R, ASL_IS_LOCAL_ACTION f (TRANS_REL_TO_TRANS_FUNC R) iff TRANS_REL_SAFETY_MONOTONICITY f R and TRANS_REL_FRAME_PROPERTY f R. ASL_IS_LOCAL_ACTION___HOARE_TRIPLE (lines 2699-2703): for every f and action a, a is local iff for all P, Q, HOARE_TRIPLE P a Q implies HOARE_TRIPLE (P * x) a (Q * x) for every frame set x, where HOARE_TRIPLE is fault-avoiding with no termination requirement; the backward direction is proved by instantiating a singleton precondition, the outcome set and a singleton frame. Neither theorem has an IS_SEPARATION_COMBINATOR f premise: f is an arbitrary partial binary operation, with no algebraic laws.",
+   "Reynolds, J. C., 'Separation Logic: A Logic for Shared Mutable Data Structures', LICS 2002, pp. 55-74, doi:10.1109/LICS.2002.1029817. End of Section 2: the 'restricting the heap' formulation of locality. Section 3 defines intuitionistic assertions and states the distributive law for 'domain-exact' q; 'precise' is not used as a technical term. Section 4: frame rule soundness, citing Yang and O'Hearn.",
+   "Ishtiaq, S. S. & O'Hearn, P. W., 'BI as an Assertion Language for Mutable Data Structures', POPL 2001, pp. 14-26, doi:10.1145/360204.375719. Section 8 introduces the frame rule ('Frame Axiom Introduction'); the soundness argument is only sketched."
+  ],
+  "design_question": "Which exact properties of commands make the frame rule sound, and which plausible commands violate them?"
+ },
+ {
+  "id": "R2a-locality-from-frame-rule-at-singletons",
+  "lean": "Toy.Sep.safetyMono_and_frameProp_of_frameRuleAtSingletons",
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Mechanized without algebraic laws in HOL4: ASL_IS_LOCAL_ACTION is locality stated at singleton frames against the strongest postcondition, and LOCALITY_CHARACTERISATION_REL proves it equivalent to safety monotonicity plus the frame property for an arbitrary partial operation. Stated without proof in Calcagno-O'Hearn-Yang 2007 Section 3.",
+  "plain_claim": "In any separation structure (no algebraic laws assumed), if for all states h, h' the frame rule holds for c at the single instance with precondition {h}, postcondition 'some final state of c from h', and frame {h'}, then c is safety-monotone and has the frame property.",
+  "hypotheses": [
+   {
+    "name": "H : FrameRuleAtSingletons c",
+    "purpose": "The only use of the frame rule; with it dropped the conclusion fails for a non-local command.",
+    "tightness": "tight",
+    "counterexample": "Toy.Sep.allocLeast_not_safetyMono_and_frameProp"
+   },
+   {
+    "name": "(setting) frames range over at least the singleton assertions",
+    "purpose": "If the only admitted frame is emp, every command satisfies the restricted frame rule, so no locality follows.",
+    "tightness": "tight",
+    "counterexample": "Toy.Sep.allocLeast_frame_rule_for_emp_frame_and_not_local"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "assertAlloc 0 satisfies the frame rule at all singleton instances (proved directly).",
+  "nonvacuity_witness_lean": "Toy.Sep.frameRuleAtSingletons_assertAlloc",
+  "non_claims": [
+   "Does not apply to logics whose assertion language cannot express exact singleton states {h} and strongest postconditions post c h, such as intuitionistic (affine) logics whose assertions are all upward-closed (h a subheap of h' and P h imply P h'); such logics are not examined.",
+   "Specific to this relational command model with an explicit fault outcome.",
+   "In degenerate separation structures the result says little: with empty disjointness every command satisfies SafetyMono, FrameProp and the frame rule vacuously (Toy.Sep.emptyDisj_degenerate). The statement is informative for structures with enough disjoint pairs, such as the heap model."
+  ],
+  "prior_art": [
+   "HOL4 theory examples/separationLogic/src/separationLogicScript.sml in HOL-Theorem-Prover/HOL at commit c2b475d585febe0e718f87ab51959c0a73fc924e; the framework is described in Tuerk, T., 'A separation logic framework for HOL', University of Cambridge Computer Laboratory Technical Report UCAM-CL-TR-799, June 2011, doi:10.48456/tr-799 (based on the author's PhD dissertation). ASL_IS_LOCAL_ACTION f op (lines 2457-2462): for all separate s1, s2, op(s1 . s2) is below (op s1) * {s2} in the order with fault on top, i.e. locality stated at singleton frames against the outcome set (strongest postcondition) op s1. LOCALITY_CHARACTERISATION_REL (lines 2490-2495): for every f and relation R, ASL_IS_LOCAL_ACTION f (TRANS_REL_TO_TRANS_FUNC R) iff TRANS_REL_SAFETY_MONOTONICITY f R and TRANS_REL_FRAME_PROPERTY f R. ASL_IS_LOCAL_ACTION___HOARE_TRIPLE (lines 2699-2703): for every f and action a, a is local iff for all P, Q, HOARE_TRIPLE P a Q implies HOARE_TRIPLE (P * x) a (Q * x) for every frame set x, where HOARE_TRIPLE is fault-avoiding with no termination requirement; the backward direction is proved by instantiating a singleton precondition, the outcome set and a singleton frame. Neither theorem has an IS_SEPARATION_COMBINATOR f premise: f is an arbitrary partial binary operation, with no algebraic laws.",
+   "Calcagno, C., O'Hearn, P. W. & Yang, H., 'Local Action and Abstract Separation Logic', LICS 2007, pp. 366-378, doi:10.1109/LICS.2007.30 (author PDF http://www0.cs.ucl.ac.uk/staff/p.ohearn/papers/asl-short.pdf). Definition 1: a separation algebra is a cancellative partial commutative monoid. Definition 3: p is precise if every state has at most one substate in p. Section 2, Examples of Predicates: the two-cell disjunction l0 |-> rv0 or l1 |-> rv1 is not precise. Lemma 4: every singleton is precise; p is precise iff for all nonempty X, (meet X) * p = meet{x * p | x in X}; the remark after it says injectivity of sigma . (-) is equivalent to that distribution for singleton frames {sigma}. Section 3: a relation satisfies Safety Monotonicity and the Frame Property 'iff the frame rule is sound for it' (stated without proof).",
+   "Yang, H. & O'Hearn, P. W., 'A Semantic Basis for Local Reasoning', FoSSaCS 2002, LNCS 2303, pp. 402-416, doi:10.1007/3-540-45931-6_28 (author PDF http://www0.cs.ucl.ac.uk/staff/p.ohearn/papers/basis.pdf). Section 4: Lemma 1 (Safety and Termination Monotonicity), Lemma 2 (Frame Property), Theorem 1 (the Frame Rule is sound for both partial and total correctness), in a store-and-heap model. Section 4.1: always choosing the smallest free address for cons would invalidate the Frame Rule (detectable with address arithmetic; without address arithmetic, invariance under location renaming could be used instead of nondeterminism); trapping memory faults would allow branching on whether a cell is active, contradicting Safety Monotonicity; in Petri nets with capacity 1 a transition with pre(t) = {a}, post(t) = {b} is enabled in {a} but not in {a, b} and violates Safety Monotonicity. Section 5.1: a command that faults when more than 3 heap cells are active and skips otherwise violates Safety Monotonicity. Section 5.2, Proposition 2: wp(C) and wlp(C) both satisfy locality for X iff C satisfies Safety and Termination Monotonicity, the Frame Property and a locality property for variables (a joint characterization with a store and termination, not a partial-correctness-only converse).",
+   "Reynolds, J. C., 'Separation Logic: A Logic for Shared Mutable Data Structures', LICS 2002, pp. 55-74, doi:10.1109/LICS.2002.1029817. End of Section 2: the 'restricting the heap' formulation of locality. Section 3 defines intuitionistic assertions and states the distributive law for 'domain-exact' q; 'precise' is not used as a technical term. Section 4: frame rule soundness, citing Yang and O'Hearn."
+  ],
+  "design_question": "How much of the frame rule must a logic validate before it is forced to admit only local commands? Just the singleton instances."
+ },
+ {
+  "id": "R2b-frame-rule-iff-locality",
+  "lean": "Toy.Sep.frameRuleSound_iff_safetyMono_and_frameProp",
+  "kind": "characterization",
+  "tier": "T0",
+  "tier_justification": "Stated without proof in Calcagno-O'Hearn-Yang 2007 Section 3. Mechanized without algebraic laws in HOL4 by composing LOCALITY_CHARACTERISATION_REL with ASL_IS_LOCAL_ACTION___HOARE_TRIPLE.",
+  "plain_claim": "In any separation structure (no algebraic laws assumed), the frame rule is sound for a command c (for all assertions P, Q, R, {P} c {Q} implies {P * R} c {Q * R}) if and only if c is safety-monotone and has the frame property. It is the conjunction of R1 and R2a.",
+  "hypotheses": [
+   {
+    "name": "(setting) assertions range over all predicates",
+    "purpose": "The forward direction instantiates singleton preconditions, strongest postconditions and singleton frames.",
+    "tightness": "tight",
+    "counterexample": "Toy.Sep.allocLeast_frame_rule_for_emp_frame_and_not_local"
+   },
+   {
+    "name": "(setting) triples are fault-avoiding",
+    "purpose": "The backward direction fails for non-fault-avoiding triples.",
+    "tightness": "tight",
+    "counterexample": "Toy.Sep.assertAlloc_local_and_framed_weakTriple_fails"
+   }
+  ],
+  "depth": "shallow",
+  "depth_note": "Given R1 and R2a the proof is one line; the label reflects the content of the equivalence, which needs both of those unfoldings, not only the definitions involved.",
+  "nonvacuity_witness": "Both sides hold for skip; both sides fail for allocAt 0 1.",
+  "nonvacuity_witness_lean": "Toy.Sep.frameRuleSound_iff_nonvacuous",
+  "non_claims": [
+   "Not a statement about the syntax or proof rules of any concrete program logic.",
+   "Partial correctness only.",
+   "Does not preserve termination under framing: skipOnEmp terminates normally from emp and has no outcome from any non-empty heap, yet satisfies SafetyMono and FrameProp (Toy.Sep.skipOnEmp_local_and_no_outcome_on_nonempty). A total-correctness frame rule additionally needs termination monotonicity (Yang-O'Hearn 2002, Lemma 1(2)).",
+   "FrameProp maps every run from a framed state back to a run from the unframed state, not conversely: adding a frame can remove nondeterministic outcomes (alloc cannot pick an address that the frame occupies). So a local command's behaviour is not determined by its behaviour on its smallest safe states, and specifications on those states need not be complete (Costanzo-Shao 2012, Section 5.1); frame rules for relational (two-run) specifications of nondeterministic local commands are not covered (Costanzo-Shao 2012, Section 5.3).",
+   "In degenerate separation structures the result says little: with empty disjointness every command satisfies SafetyMono, FrameProp and the frame rule vacuously (Toy.Sep.emptyDisj_degenerate). The statement is informative for structures with enough disjoint pairs, such as the heap model.",
+   "Does not say that non-local commands cannot be specified at all: frame-quantified triples (R6a-R6c) admit them, at the price of stronger per-command obligations."
+  ],
+  "prior_art": [
+   "Calcagno, C., O'Hearn, P. W. & Yang, H., 'Local Action and Abstract Separation Logic', LICS 2007, pp. 366-378, doi:10.1109/LICS.2007.30 (author PDF http://www0.cs.ucl.ac.uk/staff/p.ohearn/papers/asl-short.pdf). Definition 1: a separation algebra is a cancellative partial commutative monoid. Definition 3: p is precise if every state has at most one substate in p. Section 2, Examples of Predicates: the two-cell disjunction l0 |-> rv0 or l1 |-> rv1 is not precise. Lemma 4: every singleton is precise; p is precise iff for all nonempty X, (meet X) * p = meet{x * p | x in X}; the remark after it says injectivity of sigma . (-) is equivalent to that distribution for singleton frames {sigma}. Section 3: a relation satisfies Safety Monotonicity and the Frame Property 'iff the frame rule is sound for it' (stated without proof).",
+   "HOL4 theory examples/separationLogic/src/separationLogicScript.sml in HOL-Theorem-Prover/HOL at commit c2b475d585febe0e718f87ab51959c0a73fc924e; the framework is described in Tuerk, T., 'A separation logic framework for HOL', University of Cambridge Computer Laboratory Technical Report UCAM-CL-TR-799, June 2011, doi:10.48456/tr-799 (based on the author's PhD dissertation). ASL_IS_LOCAL_ACTION f op (lines 2457-2462): for all separate s1, s2, op(s1 . s2) is below (op s1) * {s2} in the order with fault on top, i.e. locality stated at singleton frames against the outcome set (strongest postcondition) op s1. LOCALITY_CHARACTERISATION_REL (lines 2490-2495): for every f and relation R, ASL_IS_LOCAL_ACTION f (TRANS_REL_TO_TRANS_FUNC R) iff TRANS_REL_SAFETY_MONOTONICITY f R and TRANS_REL_FRAME_PROPERTY f R. ASL_IS_LOCAL_ACTION___HOARE_TRIPLE (lines 2699-2703): for every f and action a, a is local iff for all P, Q, HOARE_TRIPLE P a Q implies HOARE_TRIPLE (P * x) a (Q * x) for every frame set x, where HOARE_TRIPLE is fault-avoiding with no termination requirement; the backward direction is proved by instantiating a singleton precondition, the outcome set and a singleton frame. Neither theorem has an IS_SEPARATION_COMBINATOR f premise: f is an arbitrary partial binary operation, with no algebraic laws.",
+   "Yang, H. & O'Hearn, P. W., 'A Semantic Basis for Local Reasoning', FoSSaCS 2002, LNCS 2303, pp. 402-416, doi:10.1007/3-540-45931-6_28 (author PDF http://www0.cs.ucl.ac.uk/staff/p.ohearn/papers/basis.pdf). Section 4: Lemma 1 (Safety and Termination Monotonicity), Lemma 2 (Frame Property), Theorem 1 (the Frame Rule is sound for both partial and total correctness), in a store-and-heap model. Section 4.1: always choosing the smallest free address for cons would invalidate the Frame Rule (detectable with address arithmetic; without address arithmetic, invariance under location renaming could be used instead of nondeterminism); trapping memory faults would allow branching on whether a cell is active, contradicting Safety Monotonicity; in Petri nets with capacity 1 a transition with pre(t) = {a}, post(t) = {b} is enabled in {a} but not in {a, b} and violates Safety Monotonicity. Section 5.1: a command that faults when more than 3 heap cells are active and skips otherwise violates Safety Monotonicity. Section 5.2, Proposition 2: wp(C) and wlp(C) both satisfy locality for X iff C satisfies Safety and Termination Monotonicity, the Frame Property and a locality property for variables (a joint characterization with a store and termination, not a partial-correctness-only converse)."
+  ],
+  "design_question": "Is 'local' the right side condition for the frame rule? Yes: it is exactly equivalent."
+ },
+ {
+  "id": "R2c-locality-from-frame-rule-for-precise-frames",
+  "lean": "Toy.Sep.safetyMono_and_frameProp_of_frameRuleForPreciseFrames",
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Follows from R2a because singleton assertions are precise (Calcagno-O'Hearn-Yang 2007 Lemma 4(1), used there in the proof of Lemma 9); this consequence is not stated in the cited sources.",
+  "plain_claim": "In any separation structure (no algebraic laws assumed), if the frame rule holds for c for all P, Q and every precise frame R (precise in the right-handed sense of Toy.Sep.Precise), then c is safety-monotone and has the frame property.",
+  "hypotheses": [
+   {
+    "name": "H : FrameRuleForPreciseFrames c",
+    "purpose": "The only use of the frame rule.",
+    "tightness": "tight",
+    "counterexample": "Toy.Sep.allocLeast_not_safetyMono_and_frameProp"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "skip satisfies the frame rule for all precise frames.",
+  "nonvacuity_witness_lean": "Toy.Sep.frameRuleForPreciseFrames_nonvacuous",
+  "non_claims": [
+   "Shows only that restricting the ordinary sequential frame rule to precise frames admits no additional non-local commands. It does not deny the role of precision in the soundness of the hypothetical frame rule (O'Hearn-Yang-Reynolds 2004, Theorem 5) or of concurrent separation logic with resource invariants and the conjunction rule (Gotsman-Berdine-Cook 2011, Theorem 4.1).",
+   "Does not claim that restricting the frame rule to precise frames is harmless for completeness.",
+   "Precise R, UniqueFrame R and ConjDistrib R place R on the right of *. Without DisjSymm and UnionComm they do not coincide with the left-handed notions used by O'Hearn-Yang-Reynolds and Calcagno-O'Hearn-Yang (r1 . f1 = r2 . f2 -> r1 = r2, and (R * P) and (R * Q) |- R * (P and Q)), even in cancellative structures (Toy.Sep.projLeft_rightCancel_precise_not_conjDistribLeft, Toy.Sep.projRight_leftCancel_precise_not_conjDistrib_not_preciseLeft); with both laws they coincide (Toy.Sep.precise_iff_preciseLeft_of_disjSymm_of_unionComm, Toy.Sep.conjDistrib_iff_conjDistribLeft_of_disjSymm_of_unionComm).",
+   "Without a unit a state need not be a decomposition of itself, so precision can hold for trivial reasons: in onePairSepStruct (symmetric, commutative, associative, no unit) even the always-true assertion is precise (Toy.Sep.onePair_true_precise); with empty disjointness every assertion is precise, has unique frames and distributes (Toy.Sep.emptyDisj_degenerate)."
+  ],
+  "prior_art": [
+   "Calcagno, C., O'Hearn, P. W. & Yang, H., 'Local Action and Abstract Separation Logic', LICS 2007, pp. 366-378, doi:10.1109/LICS.2007.30 (author PDF http://www0.cs.ucl.ac.uk/staff/p.ohearn/papers/asl-short.pdf). Definition 1: a separation algebra is a cancellative partial commutative monoid. Definition 3: p is precise if every state has at most one substate in p. Section 2, Examples of Predicates: the two-cell disjunction l0 |-> rv0 or l1 |-> rv1 is not precise. Lemma 4: every singleton is precise; p is precise iff for all nonempty X, (meet X) * p = meet{x * p | x in X}; the remark after it says injectivity of sigma . (-) is equivalent to that distribution for singleton frames {sigma}. Section 3: a relation satisfies Safety Monotonicity and the Frame Property 'iff the frame rule is sound for it' (stated without proof).",
+   "O'Hearn, P. W., Yang, H. & Reynolds, J. C., 'Separation and Information Hiding', POPL 2004, pp. 268-280, doi:10.1145/964001.964024: Section 9, Lemma 3: p is precise iff p * - distributes over conjunction, p * (q and r) = (p * q) and (p * r), in the store-and-heap model with p on the left; Theorem 5: the hypothetical frame rule is sound for fixed preconditions (resp. a fixed resource invariant) iff they are precise; Section 10.3, Theorem 11: soundness also holds for 'supported' preconditions or invariants with intuitionistic (closed under heap extension) postconditions. Journal version: ACM TOPLAS 31(3), Article 11, pp. 11:1-11:50, 2009, doi:10.1145/1498926.1498929; in the authors' 2008 preprint of it, Lemma 6 is the Distribution Lemma and Section 9 notes that (q * r) and (q' * r) does not imply (q and q') * r in general, with q = emp, q' = x |-> - and r = true.",
+   "Gotsman, A., Berdine, J. & Cook, B., 'Precision and the Conjunction Rule in Concurrent Separation Logic', MFPS XXVII, ENTCS 276:171-190, 2011, doi:10.1016/j.entcs.2011.09.021. Definition 2.1: a separation algebra is a partial commutative monoid with unit, explicitly omitting the cancellativity required by Calcagno-O'Hearn-Yang 2007. Section 2.2: the 'command' that disposes cell 10 if it is allocated and is a no-op otherwise is not local; 'the requirement of locality rules out commands that can check if a cell is allocated in the heap other than by trying to access it and faulting if it is not allocated'. Theorem 4.1: concurrent separation logic is sound if resource invariants are precise and * is cancellative, or if the conjunction rule is not used."
+  ],
+  "design_question": "If a logic restricts its frame rule to precise frames (e.g. to keep the conjunction rule), does it gain room for non-local commands? No."
+ },
+ {
+  "id": "R3a-allocation-test-violates-frame-property",
+  "lean": [
+   "Toy.Sep.isAllocTest_not_frameProp",
+   "Toy.Sep.isAllocTest_safetyMono",
+   "Toy.Sep.isAllocTest_safetyMono_and_framed_triple_fails"
+  ],
+  "lean_names": [
+   "Toy.Sep.assertAlloc_safetyMono",
+   "Toy.Sep.assertAlloc_frameProp"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "Gotsman-Berdine-Cook 2011 Section 2.2 give a similar allocation-checking non-local example; Yang-O'Hearn 2002 Section 4.1 discuss fault trapping. The concrete statement and triple are made precise here.",
+  "plain_claim": "In the heap model, the command isAllocTest k r that records in cell r whether a different cell k is allocated is safety-monotone (for all k, r) but violates the frame property when k != r: {0 |-> 0} isAllocTest 1 0 {0 |-> 0} holds, but framing it with 1 |-> 7 fails because cell 0 becomes 1.",
+  "hypotheses": [
+   {
+    "name": "hkr : k != r",
+    "purpose": "If the tested cell is the result cell, the answer is always 'allocated' and the command has the frame property.",
+    "tightness": "tight",
+    "counterexample": "Toy.Sep.isAllocTest_self_frameProp"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "Concrete instance k = 1, r = 0.",
+  "nonvacuity_witness_lean": "Toy.Sep.isAllocTest_safetyMono_and_framed_triple_fails",
+  "non_claims": [
+   "Not every allocation check is non-local: assertAlloc (fault unless allocated) is local (assertAlloc_safetyMono, assertAlloc_frameProp). A test whose answer is discarded is equivalent to skip (not formalized).",
+   "In formulations where the test traps a fault rather than reading allocation status, the violated property can be safety monotonicity instead (Yang-O'Hearn 2002 Section 4.1); not modelled here."
+  ],
+  "prior_art": [
+   "Gotsman, A., Berdine, J. & Cook, B., 'Precision and the Conjunction Rule in Concurrent Separation Logic', MFPS XXVII, ENTCS 276:171-190, 2011, doi:10.1016/j.entcs.2011.09.021. Definition 2.1: a separation algebra is a partial commutative monoid with unit, explicitly omitting the cancellativity required by Calcagno-O'Hearn-Yang 2007. Section 2.2: the 'command' that disposes cell 10 if it is allocated and is a no-op otherwise is not local; 'the requirement of locality rules out commands that can check if a cell is allocated in the heap other than by trying to access it and faulting if it is not allocated'. Theorem 4.1: concurrent separation logic is sound if resource invariants are precise and * is cancellative, or if the conjunction rule is not used.",
+   "Yang, H. & O'Hearn, P. W., 'A Semantic Basis for Local Reasoning', FoSSaCS 2002, LNCS 2303, pp. 402-416, doi:10.1007/3-540-45931-6_28 (author PDF http://www0.cs.ucl.ac.uk/staff/p.ohearn/papers/basis.pdf). Section 4: Lemma 1 (Safety and Termination Monotonicity), Lemma 2 (Frame Property), Theorem 1 (the Frame Rule is sound for both partial and total correctness), in a store-and-heap model. Section 4.1: always choosing the smallest free address for cons would invalidate the Frame Rule (detectable with address arithmetic; without address arithmetic, invariance under location renaming could be used instead of nondeterminism); trapping memory faults would allow branching on whether a cell is active, contradicting Safety Monotonicity; in Petri nets with capacity 1 a transition with pre(t) = {a}, post(t) = {b} is enabled in {a} but not in {a, b} and violates Safety Monotonicity. Section 5.1: a command that faults when more than 3 heap cells are active and skips otherwise violates Safety Monotonicity. Section 5.2, Proposition 2: wp(C) and wlp(C) both satisfy locality for X iff C satisfies Safety and Termination Monotonicity, the Frame Property and a locality property for variables (a joint characterization with a store and termination, not a partial-correctness-only converse)."
+  ],
+  "design_question": "Which plausible commands violate locality? Commands that observe the absence of memory."
+ },
+ {
+  "id": "R3b-fixed-address-allocation-violates-safety-monotonicity",
+  "lean": [
+   "Toy.Sep.allocAt_not_safetyMono",
+   "Toy.Sep.allocAt_frameProp",
+   "Toy.Sep.allocAt_frameProp_and_framed_triple_fails",
+   "Toy.Sep.allocAtBlock_safetyMono_and_frameProp",
+   "Toy.Sep.allocAtBlock_local_and_blocks_when_taken"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "Yang-O'Hearn 2002 Section 4.1 give the analogous capacity-1 Petri-net transition that is disabled when its output place is already marked, and Section 5.1 another safety-monotonicity violator; the heap instance and its framed triple are made precise here.",
+  "plain_claim": "In the heap model, allocating at a fixed address k and faulting if k is already allocated (allocAt k v) has the frame property (for all k, v) but violates safety monotonicity: {emp} allocAt 0 1 {0 |-> 1} holds, but framing it with 0 |-> 2 fails because the command faults. The variant allocAtBlock k v that blocks (has no outcome) instead of faulting when k is taken is safety-monotone and has the frame property.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Concrete instance k = 0, v = 1, frame 0 |-> 2.",
+  "nonvacuity_witness_lean": "Toy.Sep.allocAt_frameProp_and_framed_triple_fails",
+  "non_claims": [
+   "Does not say fixed-address allocation is unusable: given a precondition that owns the address it behaves as a mutation of an owned cell.",
+   "Only faulting makes fixed-address allocation non-local here. The variant that blocks when the address is taken is local in this partial-correctness model (Toy.Sep.allocAtBlock_safetyMono_and_frameProp), because blocking is modelled exactly like divergence; it would violate termination monotonicity, which this model does not track.",
+   "allocAt k is the capacity-one instance of an allocator that faults when memory is exhausted; any heap command that is safe on emp and faults from some heap violates safety monotonicity (Toy.Sep.not_safetyMono_of_safe_emp_of_faults; Costanzo-Shao 2012, Section 5.4)."
+  ],
+  "prior_art": [
+   "Yang, H. & O'Hearn, P. W., 'A Semantic Basis for Local Reasoning', FoSSaCS 2002, LNCS 2303, pp. 402-416, doi:10.1007/3-540-45931-6_28 (author PDF http://www0.cs.ucl.ac.uk/staff/p.ohearn/papers/basis.pdf). Section 4: Lemma 1 (Safety and Termination Monotonicity), Lemma 2 (Frame Property), Theorem 1 (the Frame Rule is sound for both partial and total correctness), in a store-and-heap model. Section 4.1: always choosing the smallest free address for cons would invalidate the Frame Rule (detectable with address arithmetic; without address arithmetic, invariance under location renaming could be used instead of nondeterminism); trapping memory faults would allow branching on whether a cell is active, contradicting Safety Monotonicity; in Petri nets with capacity 1 a transition with pre(t) = {a}, post(t) = {b} is enabled in {a} but not in {a, b} and violates Safety Monotonicity. Section 5.1: a command that faults when more than 3 heap cells are active and skips otherwise violates Safety Monotonicity. Section 5.2, Proposition 2: wp(C) and wlp(C) both satisfy locality for X iff C satisfies Safety and Termination Monotonicity, the Frame Property and a locality property for variables (a joint characterization with a store and termination, not a partial-correctness-only converse).",
+   "Costanzo, D. & Shao, Z., 'A Case for Behavior-Preserving Actions in Separation Logic', APLAS 2012, LNCS 7705, pp. 332-349, doi:10.1007/978-3-642-35182-2_24 (author PDF https://flint.cs.yale.edu/flint/publications/bpsl.pdf). Section 5.1 (Footprints and Smallest Safe States): under standard locality a specification of a command on its smallest safe states need not be complete (example x := cons(0); free(x)). Section 5.3: the frame rule of relational separation logic is sound for deterministic but not for nondeterministic programs (citing Yang, TCS 2007). Section 5.4 (Finite Memory): a state-growing command that faults when memory is full is safe on the empty state but unsafe on the full state, so it violates Safety Monotonicity; diverging instead requires allowing divergence on any state to keep Termination Monotonicity."
+  ],
+  "design_question": "Which plausible commands violate locality? Commands that fault on the presence of memory.",
+  "ledger_note": "No hypotheses: allocAt_not_safetyMono, allocAt_frameProp and allocAtBlock_safetyMono_and_frameProp hold for every value type V, address k and value v, without conditions; allocAt_frameProp_and_framed_triple_fails and allocAtBlock_local_and_blocks_when_taken are closed instances (k = 0, v = 1 in Heap Nat)."
+ },
+ {
+  "id": "R3c-deterministic-allocation-violates-frame-property",
+  "lean": [
+   "Toy.Sep.allocLeast_not_frameProp",
+   "Toy.Sep.allocLeast_safetyMono",
+   "Toy.Sep.allocLeast_safetyMono_and_framed_triple_fails"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "Yang-O'Hearn 2002 Section 4.1 make the point informally for least-free-address allocation with address arithmetic.",
+  "plain_claim": "In the heap model, allocating at the least free address (allocLeast v) is safety-monotone (for all v) but violates the frame property: {emp} allocLeast 1 {0 |-> 1} holds, but framing it with 0 |-> 2 fails because the new cell lands at address 1. It is a special case of R3d.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Concrete instance v = 1, frame 0 |-> 2.",
+  "nonvacuity_witness_lean": "Toy.Sep.allocLeast_safetyMono_and_framed_triple_fails",
+  "non_claims": [
+   "The failing triple mentions a concrete address (0 |-> 1). Whether deterministic allocation becomes admissible in a logic whose assertions are invariant under address renaming (Yang-O'Hearn 2002 Section 4.1), and whether that remedy survives when assertions can retain and compare dangling pointers, is not examined."
+  ],
+  "prior_art": [
+   "Yang, H. & O'Hearn, P. W., 'A Semantic Basis for Local Reasoning', FoSSaCS 2002, LNCS 2303, pp. 402-416, doi:10.1007/3-540-45931-6_28 (author PDF http://www0.cs.ucl.ac.uk/staff/p.ohearn/papers/basis.pdf). Section 4: Lemma 1 (Safety and Termination Monotonicity), Lemma 2 (Frame Property), Theorem 1 (the Frame Rule is sound for both partial and total correctness), in a store-and-heap model. Section 4.1: always choosing the smallest free address for cons would invalidate the Frame Rule (detectable with address arithmetic; without address arithmetic, invariance under location renaming could be used instead of nondeterminism); trapping memory faults would allow branching on whether a cell is active, contradicting Safety Monotonicity; in Petri nets with capacity 1 a transition with pre(t) = {a}, post(t) = {b} is enabled in {a} but not in {a, b} and violates Safety Monotonicity. Section 5.1: a command that faults when more than 3 heap cells are active and skips otherwise violates Safety Monotonicity. Section 5.2, Proposition 2: wp(C) and wlp(C) both satisfy locality for X iff C satisfies Safety and Termination Monotonicity, the Frame Property and a locality property for variables (a joint characterization with a store and termination, not a partial-correctness-only converse)."
+  ],
+  "design_question": "Must allocation be nondeterministic? See R3d.",
+  "ledger_note": "No hypotheses: allocLeast_not_frameProp and allocLeast_safetyMono hold for every value type V and value v, without conditions; allocLeast_safetyMono_and_framed_triple_fails is a closed instance (v = 1 in Heap Nat)."
+ },
+ {
+  "id": "R3d-predictable-allocation-violates-frame-property",
+  "lean": [
+   "Toy.Sep.not_frameProp_of_alwaysAllocatesAt_of_runsWhenOccupied",
+   "Toy.Sep.detAlloc_not_frameProp",
+   "Toy.Sep.detAllocInto_not_frameProp_of_fresh"
+  ],
+  "kind": "impossibility",
+  "tier": "T1",
+  "tier_justification": "Makes precise and generalizes the informal remark of Yang-O'Hearn 2002 Section 4.1 (least-free allocation breaks the Frame Rule) to every command whose allocated address is predictable from some base heap; not claimed novel.",
+  "plain_claim": "In the heap model, let c be a command, hb a heap, a an address and w a value. If c is safe at hb, a is free in hb, every normal outcome of c from hb has a allocated (AlwaysAllocatesAt c hb a), and c has at least one normal outcome from hb extended by the cell a |-> w (RunsWhenOccupied c hb a w), then c violates the frame property. Corollaries: for every address-choice function f and value v (so the value type is inhabited) the total deterministic single-cell writer h |-> h[f h |-> v] (detAlloc f v) violates it; and deterministic pointer-recording allocation [r] := det_cons(v) (detAllocInto f r v) violates it whenever f h is fresh in h for every h in which r is allocated.",
+  "hypotheses": [
+   {
+    "name": "hs : Safe c hb",
+    "purpose": "The frame property only constrains runs from states that are safe at the smaller heap.",
+    "tightness": "tight",
+    "counterexample": "Toy.Sep.faultOrSet0_not_safe_and_frameProp"
+   },
+   {
+    "name": "hfree : hb.val a = none",
+    "purpose": "Needed for hb and the frame a |-> w to be disjoint.",
+    "tightness": "tight",
+    "counterexample": "Toy.Sep.skip_occupied_base_and_frameProp"
+   },
+   {
+    "name": "hpred : AlwaysAllocatesAt c hb a",
+    "purpose": "Predictability: every run from hb uses address a. Nondeterministic choice among fresh addresses restores the frame property.",
+    "tightness": "tight",
+    "counterexample": "Toy.Sep.alloc_not_alwaysAllocatesAt_and_frameProp"
+   },
+   {
+    "name": "hrun : RunsWhenOccupied c hb a w",
+    "purpose": "The command still terminates normally when a frame occupies a. A deterministic allocator that blocks on every non-empty heap has the frame property.",
+    "tightness": "tight",
+    "counterexample": "Toy.Sep.detAllocOnEmp_not_runsWhenOccupied_and_frameProp"
+   },
+   {
+    "name": "hfresh (detAllocInto_not_frameProp_of_fresh) : f h fresh whenever r is allocated in h",
+    "purpose": "With the non-fresh choice f _ = r, pointer-recording allocation degenerates to the mutation [r] := r, which is local.",
+    "tightness": "tight",
+    "counterexample": "Toy.Sep.detAllocInto_self_frameProp"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "All four hypotheses hold for detAlloc (fun _ => 0) 1 with base emp, address 0, frame value 1. A genuinely fresh deterministic allocator also meets them: leastFree h, the least unallocated address of h (defined by well-founded recursion on the finiteness of heaps, without Classical.choice), satisfies hfresh for every r, and detAlloc leastFree 1 satisfies all four hypotheses with base emp, address 0, frame value 1 (Toy.Sep.detAllocInto_fresh_nonvacuous).",
+  "nonvacuity_witness_lean": [
+   "Toy.Sep.not_frameProp_of_alwaysAllocatesAt_nonvacuous",
+   "Toy.Sep.detAllocInto_fresh_nonvacuous"
+  ],
+  "positive_control_lean": [
+   "Toy.Sep.alloc_not_alwaysAllocatesAt_and_frameProp",
+   "Toy.Sep.detAllocOnEmp_not_runsWhenOccupied_and_frameProp",
+   "Toy.Sep.alloc_frameProp",
+   "Toy.Sep.detAllocOnEmp_frameProp"
+  ],
+  "non_claims": [
+   "Escape hatches are exactly the dropped hypotheses: a command escapes this impossibility only if, for every base heap and address, it is unsafe there, may leave that address unallocated (e.g. nondeterministic choice, as alloc), or has no normal outcome when a frame occupies the address. Blocking rescues a deterministic allocator only in the last way, as detAllocOnEmp does by having no outcome from any non-empty heap. Any deterministic allocator that terminates normally from emp at some address a and also from the one-cell heap a |-> w is covered, whatever it does on larger heaps.",
+   "Modelling memory exhaustion as a fault is not an escape either: a heap command that is safe on emp and faults from some heap violates safety monotonicity, whether or not its address choice is deterministic (Toy.Sep.not_safetyMono_of_safe_emp_of_faults; Costanzo-Shao 2012, Section 5.4).",
+   "The frame property uses exact heap equality and assertions may name addresses. Models that quotient states by address renaming are not covered, and renaming invariance as an alternative remedy (Yang-O'Hearn 2002 Section 4.1) is not examined.",
+   "For pointer-recording allocation the freshness of the chosen address matters: with f _ = r, [r] := det_cons(v) has the frame property (Toy.Sep.detAllocInto_self_frameProp)."
+  ],
+  "prior_art": [
+   "Yang, H. & O'Hearn, P. W., 'A Semantic Basis for Local Reasoning', FoSSaCS 2002, LNCS 2303, pp. 402-416, doi:10.1007/3-540-45931-6_28 (author PDF http://www0.cs.ucl.ac.uk/staff/p.ohearn/papers/basis.pdf). Section 4: Lemma 1 (Safety and Termination Monotonicity), Lemma 2 (Frame Property), Theorem 1 (the Frame Rule is sound for both partial and total correctness), in a store-and-heap model. Section 4.1: always choosing the smallest free address for cons would invalidate the Frame Rule (detectable with address arithmetic; without address arithmetic, invariance under location renaming could be used instead of nondeterminism); trapping memory faults would allow branching on whether a cell is active, contradicting Safety Monotonicity; in Petri nets with capacity 1 a transition with pre(t) = {a}, post(t) = {b} is enabled in {a} but not in {a, b} and violates Safety Monotonicity. Section 5.1: a command that faults when more than 3 heap cells are active and skips otherwise violates Safety Monotonicity. Section 5.2, Proposition 2: wp(C) and wlp(C) both satisfy locality for X iff C satisfies Safety and Termination Monotonicity, the Frame Property and a locality property for variables (a joint characterization with a store and termination, not a partial-correctness-only converse).",
+   "Costanzo, D. & Shao, Z., 'A Case for Behavior-Preserving Actions in Separation Logic', APLAS 2012, LNCS 7705, pp. 332-349, doi:10.1007/978-3-642-35182-2_24 (author PDF https://flint.cs.yale.edu/flint/publications/bpsl.pdf). Section 5.1 (Footprints and Smallest Safe States): under standard locality a specification of a command on its smallest safe states need not be complete (example x := cons(0); free(x)). Section 5.3: the frame rule of relational separation logic is sound for deterministic but not for nondeterministic programs (citing Yang, TCS 2007). Section 5.4 (Finite Memory): a state-growing command that faults when memory is full is safe on the empty state but unsafe on the full state, so it violates Safety Monotonicity; diverging instead requires allowing divergence on any state to keep Termination Monotonicity."
+  ],
+  "design_question": "How must allocation be specified for a frame-rule logic to be sound? Not by any policy whose address is predictable from some base heap and that still runs when a frame occupies that address; nondeterministic choice works (or, not examined here, a renaming-invariant logic)."
+ },
+ {
+  "id": "R3e-frame-rule-needs-fault-avoidance",
+  "lean": "Toy.Sep.assertAlloc_local_and_framed_weakTriple_fails",
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "Folklore; fault avoidance is built into all cited frame-rule soundness proofs.",
+  "plain_claim": "For non-fault-avoiding partial-correctness triples the frame rule fails even for a local command: {emp} assertAlloc 0 {false} holds vacuously (every run faults), but adding the frame 0 |-> 1 produces a normal run.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Concrete instance with assertAlloc 0 and frame 0 |-> 1.",
+  "nonvacuity_witness_lean": "Toy.Sep.assertAlloc_local_and_framed_weakTriple_fails",
+  "non_claims": [
+   "Total-correctness triples that require normal termination exclude faulting runs as well, so they avoid this failure; their frame rule additionally needs termination monotonicity (Yang-O'Hearn 2002, Lemma 1(2) and Theorem 1). Not formalized here."
+  ],
+  "prior_art": [
+   "Yang, H. & O'Hearn, P. W., 'A Semantic Basis for Local Reasoning', FoSSaCS 2002, LNCS 2303, pp. 402-416, doi:10.1007/3-540-45931-6_28 (author PDF http://www0.cs.ucl.ac.uk/staff/p.ohearn/papers/basis.pdf). Section 4: Lemma 1 (Safety and Termination Monotonicity), Lemma 2 (Frame Property), Theorem 1 (the Frame Rule is sound for both partial and total correctness), in a store-and-heap model. Section 4.1: always choosing the smallest free address for cons would invalidate the Frame Rule (detectable with address arithmetic; without address arithmetic, invariance under location renaming could be used instead of nondeterminism); trapping memory faults would allow branching on whether a cell is active, contradicting Safety Monotonicity; in Petri nets with capacity 1 a transition with pre(t) = {a}, post(t) = {b} is enabled in {a} but not in {a, b} and violates Safety Monotonicity. Section 5.1: a command that faults when more than 3 heap cells are active and skips otherwise violates Safety Monotonicity. Section 5.2, Proposition 2: wp(C) and wlp(C) both satisfy locality for X iff C satisfies Safety and Termination Monotonicity, the Frame Property and a locality property for variables (a joint characterization with a store and termination, not a partial-correctness-only converse).",
+   "Reynolds, J. C., 'Separation Logic: A Logic for Shared Mutable Data Structures', LICS 2002, pp. 55-74, doi:10.1109/LICS.2002.1029817. End of Section 2: the 'restricting the heap' formulation of locality. Section 3 defines intuitionistic assertions and states the distributive law for 'domain-exact' q; 'precise' is not used as a technical term. Section 4: frame rule soundness, citing Yang and O'Hearn."
+  ],
+  "design_question": "What must triples mean for the frame rule to be sound? They must exclude faults.",
+  "ledger_note": "No hypotheses: assertAlloc_local_and_framed_weakTriple_fails is a closed statement about the specific command assertAlloc 0 in Heap Nat."
+ },
+ {
+  "id": "R4a-distribution-iff-unique-frame",
+  "lean": "Toy.Sep.conjDistrib_iff_uniqueFrame",
+  "kind": "characterization",
+  "tier": "T2",
+  "tier_justification": "A law-free version of the precision/distribution correspondence, related to the remark after Lemma 4 of Calcagno-O'Hearn-Yang 2007 (in a commutative cancellative setting, injectivity of sigma . (-) is equivalent to distribution for the singleton frame {sigma}). Not claimed novel.",
+  "plain_claim": "In any separation structure (no algebraic laws assumed), (P * R) and (Q * R) |- (P and Q) * R holds for all P, Q exactly when any two decompositions of a state whose right parts satisfy R have the same left part ('unique frames', which is not precision).",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Both sides hold for forkR = {a, b} in Fork; both fail for oneCell in the heap model.",
+  "nonvacuity_witness_lean": "Toy.Sep.conjDistrib_iff_uniqueFrame_nonvacuous",
+  "non_claims": [
+   "Does not say that unique frames and precision coincide; they do under cancellativity (R4b, R4c) and are incomparable without it (R4f).",
+   "Binary conjunction only; the infinitary-meet version (Calcagno-O'Hearn-Yang 2007 Lemma 4(2); HOL4 IS_PRECISE___CHARACTERISATION) is not covered.",
+   "P and Q range over all predicates on states. In intuitionistic (affine) logics where assertions are restricted to upward-closed predicates (h a subheap of h' and P h imply P h'), the distribution law can hold for upward-closed frames that are neither precise nor have unique frames over arbitrary predicates; such restricted classes are not examined here (compare the supported/intuitionistic relaxation of precision in O'Hearn-Yang-Reynolds 2004, Section 10.3; intuitionistic assertions are defined in Reynolds 2002, Section 3).",
+   "Precise R, UniqueFrame R and ConjDistrib R place R on the right of *. Without DisjSymm and UnionComm they do not coincide with the left-handed notions used by O'Hearn-Yang-Reynolds and Calcagno-O'Hearn-Yang (r1 . f1 = r2 . f2 -> r1 = r2, and (R * P) and (R * Q) |- R * (P and Q)), even in cancellative structures (Toy.Sep.projLeft_rightCancel_precise_not_conjDistribLeft, Toy.Sep.projRight_leftCancel_precise_not_conjDistrib_not_preciseLeft); with both laws they coincide (Toy.Sep.precise_iff_preciseLeft_of_disjSymm_of_unionComm, Toy.Sep.conjDistrib_iff_conjDistribLeft_of_disjSymm_of_unionComm).",
+   "Without a unit a state need not be a decomposition of itself, so precision can hold for trivial reasons: in onePairSepStruct (symmetric, commutative, associative, no unit) even the always-true assertion is precise (Toy.Sep.onePair_true_precise); with empty disjointness every assertion is precise, has unique frames and distributes (Toy.Sep.emptyDisj_degenerate).",
+   "Neither Precise R nor ConjDistrib R is needed for the ordinary sequential frame rule (R1) or for the Hoare conjunction rule {P1} c {Q1}, {P2} c {Q2} |- {P1 and P2} c {Q1 and Q2}, which holds for every command (Toy.Sep.triple_conj). ConjDistrib R is about pushing a frame R inside a conjunction, (Q1 * R) and (Q2 * R) |- (Q1 and Q2) * R, as needed by the hypothetical frame rule (O'Hearn-Yang-Reynolds 2004, Theorem 5) and by concurrent separation logic with resource invariants and the conjunction rule (Gotsman-Berdine-Cook 2011, Theorem 4.1)."
+  ],
+  "prior_art": [
+   "Calcagno, C., O'Hearn, P. W. & Yang, H., 'Local Action and Abstract Separation Logic', LICS 2007, pp. 366-378, doi:10.1109/LICS.2007.30 (author PDF http://www0.cs.ucl.ac.uk/staff/p.ohearn/papers/asl-short.pdf). Definition 1: a separation algebra is a cancellative partial commutative monoid. Definition 3: p is precise if every state has at most one substate in p. Section 2, Examples of Predicates: the two-cell disjunction l0 |-> rv0 or l1 |-> rv1 is not precise. Lemma 4: every singleton is precise; p is precise iff for all nonempty X, (meet X) * p = meet{x * p | x in X}; the remark after it says injectivity of sigma . (-) is equivalent to that distribution for singleton frames {sigma}. Section 3: a relation satisfies Safety Monotonicity and the Frame Property 'iff the frame rule is sound for it' (stated without proof).",
+   "O'Hearn, P. W., Yang, H. & Reynolds, J. C., 'Separation and Information Hiding', POPL 2004, pp. 268-280, doi:10.1145/964001.964024: Section 9, Lemma 3: p is precise iff p * - distributes over conjunction, p * (q and r) = (p * q) and (p * r), in the store-and-heap model with p on the left; Theorem 5: the hypothetical frame rule is sound for fixed preconditions (resp. a fixed resource invariant) iff they are precise; Section 10.3, Theorem 11: soundness also holds for 'supported' preconditions or invariants with intuitionistic (closed under heap extension) postconditions. Journal version: ACM TOPLAS 31(3), Article 11, pp. 11:1-11:50, 2009, doi:10.1145/1498926.1498929; in the authors' 2008 preprint of it, Lemma 6 is the Distribution Lemma and Section 9 notes that (q * r) and (q' * r) does not imply (q and q') * r in general, with q = emp, q' = x |-> - and r = true.",
+   "Klein, G., Kolanski, R. & Boyton, A., 'Separation Algebra', Archive of Formal Proofs, May 2012, https://www.isa-afp.org/entries/Separation_Algebra.html; companion paper Klein, Kolanski & Boyton, 'Mechanised Separation Algebra', ITP 2012, LNCS 7406, pp. 332-337, doi:10.1007/978-3-642-32347-8_22. Class sep_algebra (unit 0, commutativity, associativity, disjointness laws; no cancellativity); class cancellative_sep_algebra adds x + z = y + z ==> x ## z ==> y ## z ==> x = y, with the comment that the results on precise assertions (distributivity over separating conjunction) require it; lemma precise_distribute: precise P = (forall Q R. ((Q and R) ** P) = ((Q ** P) and (R ** P))), P on the right.",
+   "Coq, Verified Software Toolchain: PrincetonUniversity/VST tag v2.14 (commit e1db53a4e22ddd3f8223532ba73127b706faf1b3), file msl/predicates_sa.v, lines 78-122: Definition precise (at most one join_sub substate in P) and Lemma precise_eq, proved under Join, Perm_alg, Sep_alg and Canc_alg (the cancellation class of msl/sepalg.v, join a1 b c -> join a2 b c -> a1 = a2): precise = fun P => forall Q R, P * (Q && R) = (P * Q) && (P * R), the binary form with P on the left. Book: Appel, A. W., Dockins, R., Hobor, A., Beringer, L., Dodds, J., Stewart, G., Blazy, S. & Leroy, X., 'Program Logics for Certified Compilers', Cambridge University Press, 2014, doi:10.1017/CBO9781107256552.",
+   "HOL4 theory examples/separationLogic/src/separationLogicScript.sml in HOL-Theorem-Prover/HOL at commit c2b475d585febe0e718f87ab51959c0a73fc924e (Tuerk, UCAM-CL-TR-799, 2011, doi:10.48456/tr-799). IS_PRECISE___CHARACTERISATION (lines 1690-1697): assuming IS_SEPARATION_COMBINATOR f (commutativity, associativity, a unit for each element, left cancellativity), ASL_IS_PRECISE f p iff for every nonempty set X of predicates, asl_star f (BIGINTER X) p = BIGINTER (IMAGE (\\x. asl_star f x p) X): the infinitary form, with the precise p on the right of *.",
+   "Reynolds, J. C., 'Separation Logic: A Logic for Shared Mutable Data Structures', LICS 2002, pp. 55-74, doi:10.1109/LICS.2002.1029817. End of Section 2: the 'restricting the heap' formulation of locality. Section 3 defines intuitionistic assertions and states the distributive law for 'domain-exact' q; 'precise' is not used as a technical term. Section 4: frame rule soundness, citing Yang and O'Hearn."
+  ],
+  "design_question": "Which algebraic properties of assertions (precision) and of the state model (cancellativity) are needed for the law (P * R) and (Q * R) |- (P and Q) * R, which is used when a frame or invariant R must be pushed inside a conjunction (hypothetical frame rules, resource invariants with the conjunction rule)?",
+  "ledger_note": "conjDistrib_iff_uniqueFrame has no hypotheses: it holds for every type S with any SepStruct S (no algebraic law is assumed: no symmetry of disjointness, commutativity, associativity, unit or cancellativity) and every assertion R : Assn S. It is a universally quantified characterization, not a statement about a fixed instance. ConjDistrib R itself quantifies over all predicates P, Q : Assn S (Assn S is S -> Prop: all predicates on states, not only upward-closed ones), and UniqueFrame R over all pairs of decompositions."
+ },
+ {
+  "id": "R4b-precise-implies-distribution-under-right-cancellation",
+  "lean": "Toy.Sep.conjDistrib_of_precise_of_rightCancel",
+  "kind": "theorem",
+  "tier": "T2",
+  "tier_justification": "Refines the cancellative results (Isabelle AFP precise_distribute; VST precise_eq; HOL4 IS_PRECISE___CHARACTERISATION; O'Hearn-Yang-Reynolds 2004 Lemma 3 for heaps) by identifying which cancellation law this direction uses, without commutativity or associativity.",
+  "plain_claim": "In a right-cancellative separation structure (no other laws assumed), every precise R (right-handed precision) satisfies (P * R) and (Q * R) |- (P and Q) * R for all P, Q.",
+  "hypotheses": [
+   {
+    "name": "hrc : RightCancel S",
+    "purpose": "Turns 'same R-part' into 'same frame'. Can be weakened to cancellation at elements of R (not formalized).",
+    "tightness": "tight",
+    "counterexample": "Toy.Sep.orAlg_true_precise_and_not_conjDistrib"
+   },
+   {
+    "name": "hp : Precise R",
+    "purpose": "Two R-decompositions of a state have the same R-part.",
+    "tightness": "tight",
+    "counterexample": "Toy.Sep.heap_rightCancel_and_oneCell_not_conjDistrib"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "Heap model (right-cancellative) with R = 0 |-> - (cell 0 is the only allocated cell, any value), which is precise.",
+  "nonvacuity_witness_lean": "Toy.Sep.conjDistrib_of_precise_of_rightCancel_nonvacuous",
+  "non_claims": [
+   "Does not give the converse; that is R4c and uses the other cancellation law.",
+   "P and Q range over all predicates; nothing is claimed about restricted assertion classes.",
+   "Precise R, UniqueFrame R and ConjDistrib R place R on the right of *. Without DisjSymm and UnionComm they do not coincide with the left-handed notions used by O'Hearn-Yang-Reynolds and Calcagno-O'Hearn-Yang (r1 . f1 = r2 . f2 -> r1 = r2, and (R * P) and (R * Q) |- R * (P and Q)), even in cancellative structures (Toy.Sep.projLeft_rightCancel_precise_not_conjDistribLeft, Toy.Sep.projRight_leftCancel_precise_not_conjDistrib_not_preciseLeft); with both laws they coincide (Toy.Sep.precise_iff_preciseLeft_of_disjSymm_of_unionComm, Toy.Sep.conjDistrib_iff_conjDistribLeft_of_disjSymm_of_unionComm).",
+   "Without a unit a state need not be a decomposition of itself, so precision can hold for trivial reasons: in onePairSepStruct (symmetric, commutative, associative, no unit) even the always-true assertion is precise (Toy.Sep.onePair_true_precise); with empty disjointness every assertion is precise, has unique frames and distributes (Toy.Sep.emptyDisj_degenerate).",
+   "Neither Precise R nor ConjDistrib R is needed for the ordinary sequential frame rule (R1) or for the Hoare conjunction rule {P1} c {Q1}, {P2} c {Q2} |- {P1 and P2} c {Q1 and Q2}, which holds for every command (Toy.Sep.triple_conj). ConjDistrib R is about pushing a frame R inside a conjunction, (Q1 * R) and (Q2 * R) |- (Q1 and Q2) * R, as needed by the hypothetical frame rule (O'Hearn-Yang-Reynolds 2004, Theorem 5) and by concurrent separation logic with resource invariants and the conjunction rule (Gotsman-Berdine-Cook 2011, Theorem 4.1)."
+  ],
+  "prior_art": [
+   "O'Hearn, P. W., Yang, H. & Reynolds, J. C., 'Separation and Information Hiding', POPL 2004, pp. 268-280, doi:10.1145/964001.964024: Section 9, Lemma 3: p is precise iff p * - distributes over conjunction, p * (q and r) = (p * q) and (p * r), in the store-and-heap model with p on the left; Theorem 5: the hypothetical frame rule is sound for fixed preconditions (resp. a fixed resource invariant) iff they are precise; Section 10.3, Theorem 11: soundness also holds for 'supported' preconditions or invariants with intuitionistic (closed under heap extension) postconditions. Journal version: ACM TOPLAS 31(3), Article 11, pp. 11:1-11:50, 2009, doi:10.1145/1498926.1498929; in the authors' 2008 preprint of it, Lemma 6 is the Distribution Lemma and Section 9 notes that (q * r) and (q' * r) does not imply (q and q') * r in general, with q = emp, q' = x |-> - and r = true.",
+   "Klein, G., Kolanski, R. & Boyton, A., 'Separation Algebra', Archive of Formal Proofs, May 2012, https://www.isa-afp.org/entries/Separation_Algebra.html; companion paper Klein, Kolanski & Boyton, 'Mechanised Separation Algebra', ITP 2012, LNCS 7406, pp. 332-337, doi:10.1007/978-3-642-32347-8_22. Class sep_algebra (unit 0, commutativity, associativity, disjointness laws; no cancellativity); class cancellative_sep_algebra adds x + z = y + z ==> x ## z ==> y ## z ==> x = y, with the comment that the results on precise assertions (distributivity over separating conjunction) require it; lemma precise_distribute: precise P = (forall Q R. ((Q and R) ** P) = ((Q ** P) and (R ** P))), P on the right.",
+   "Coq, Verified Software Toolchain: PrincetonUniversity/VST tag v2.14 (commit e1db53a4e22ddd3f8223532ba73127b706faf1b3), file msl/predicates_sa.v, lines 78-122: Definition precise (at most one join_sub substate in P) and Lemma precise_eq, proved under Join, Perm_alg, Sep_alg and Canc_alg (the cancellation class of msl/sepalg.v, join a1 b c -> join a2 b c -> a1 = a2): precise = fun P => forall Q R, P * (Q && R) = (P * Q) && (P * R), the binary form with P on the left. Book: Appel, A. W., Dockins, R., Hobor, A., Beringer, L., Dodds, J., Stewart, G., Blazy, S. & Leroy, X., 'Program Logics for Certified Compilers', Cambridge University Press, 2014, doi:10.1017/CBO9781107256552.",
+   "HOL4 theory examples/separationLogic/src/separationLogicScript.sml in HOL-Theorem-Prover/HOL at commit c2b475d585febe0e718f87ab51959c0a73fc924e (Tuerk, UCAM-CL-TR-799, 2011, doi:10.48456/tr-799). IS_PRECISE___CHARACTERISATION (lines 1690-1697): assuming IS_SEPARATION_COMBINATOR f (commutativity, associativity, a unit for each element, left cancellativity), ASL_IS_PRECISE f p iff for every nonempty set X of predicates, asl_star f (BIGINTER X) p = BIGINTER (IMAGE (\\x. asl_star f x p) X): the infinitary form, with the precise p on the right of *.",
+   "Gotsman, A., Berdine, J. & Cook, B., 'Precision and the Conjunction Rule in Concurrent Separation Logic', MFPS XXVII, ENTCS 276:171-190, 2011, doi:10.1016/j.entcs.2011.09.021. Definition 2.1: a separation algebra is a partial commutative monoid with unit, explicitly omitting the cancellativity required by Calcagno-O'Hearn-Yang 2007. Section 2.2: the 'command' that disposes cell 10 if it is allocated and is a no-op otherwise is not local; 'the requirement of locality rules out commands that can check if a cell is allocated in the heap other than by trying to access it and faulting if it is not allocated'. Theorem 4.1: concurrent separation logic is sound if resource invariants are precise and * is cancellative, or if the conjunction rule is not used."
+  ],
+  "design_question": "Which algebraic properties of assertions (precision) and of the state model (cancellativity) are needed for the law (P * R) and (Q * R) |- (P and Q) * R, which is used when a frame or invariant R must be pushed inside a conjunction (hypothetical frame rules, resource invariants with the conjunction rule)?"
+ },
+ {
+  "id": "R4c-distribution-implies-precise-under-left-cancellation",
+  "lean": "Toy.Sep.precise_of_conjDistrib_of_leftCancel",
+  "kind": "theorem",
+  "tier": "T2",
+  "tier_justification": "As R4b, for the other direction.",
+  "plain_claim": "In a left-cancellative separation structure (no other laws assumed), every R satisfying (P * R) and (Q * R) |- (P and Q) * R for all P, Q is precise (right-handed precision).",
+  "hypotheses": [
+   {
+    "name": "hlc : LeftCancel S",
+    "purpose": "Turns 'same frame' into 'same R-part'.",
+    "tightness": "tight",
+    "counterexample": "Toy.Sep.forkR_conjDistrib_and_not_precise"
+   },
+   {
+    "name": "hd : ConjDistrib R",
+    "purpose": "Distribution for all P, Q (instantiated at singletons).",
+    "tightness": "tight",
+    "counterexample": "Toy.Sep.heap_leftCancel_and_oneCell_not_precise"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "Heap model (left-cancellative) with R = 0 |-> -, which satisfies the distribution law (proved directly).",
+  "nonvacuity_witness_lean": "Toy.Sep.precise_of_conjDistrib_of_leftCancel_nonvacuous",
+  "non_claims": [
+   "In commutative structures with symmetric disjointness the two cancellation laws are interderivable (R4g), so the left/right distinction matters only without those laws.",
+   "Precise R, UniqueFrame R and ConjDistrib R place R on the right of *. Without DisjSymm and UnionComm they do not coincide with the left-handed notions used by O'Hearn-Yang-Reynolds and Calcagno-O'Hearn-Yang (r1 . f1 = r2 . f2 -> r1 = r2, and (R * P) and (R * Q) |- R * (P and Q)), even in cancellative structures (Toy.Sep.projLeft_rightCancel_precise_not_conjDistribLeft, Toy.Sep.projRight_leftCancel_precise_not_conjDistrib_not_preciseLeft); with both laws they coincide (Toy.Sep.precise_iff_preciseLeft_of_disjSymm_of_unionComm, Toy.Sep.conjDistrib_iff_conjDistribLeft_of_disjSymm_of_unionComm).",
+   "Without a unit a state need not be a decomposition of itself, so precision can hold for trivial reasons: in onePairSepStruct (symmetric, commutative, associative, no unit) even the always-true assertion is precise (Toy.Sep.onePair_true_precise); with empty disjointness every assertion is precise, has unique frames and distributes (Toy.Sep.emptyDisj_degenerate).",
+   "Neither Precise R nor ConjDistrib R is needed for the ordinary sequential frame rule (R1) or for the Hoare conjunction rule {P1} c {Q1}, {P2} c {Q2} |- {P1 and P2} c {Q1 and Q2}, which holds for every command (Toy.Sep.triple_conj). ConjDistrib R is about pushing a frame R inside a conjunction, (Q1 * R) and (Q2 * R) |- (Q1 and Q2) * R, as needed by the hypothetical frame rule (O'Hearn-Yang-Reynolds 2004, Theorem 5) and by concurrent separation logic with resource invariants and the conjunction rule (Gotsman-Berdine-Cook 2011, Theorem 4.1)."
+  ],
+  "prior_art": [
+   "O'Hearn, P. W., Yang, H. & Reynolds, J. C., 'Separation and Information Hiding', POPL 2004, pp. 268-280, doi:10.1145/964001.964024: Section 9, Lemma 3: p is precise iff p * - distributes over conjunction, p * (q and r) = (p * q) and (p * r), in the store-and-heap model with p on the left; Theorem 5: the hypothetical frame rule is sound for fixed preconditions (resp. a fixed resource invariant) iff they are precise; Section 10.3, Theorem 11: soundness also holds for 'supported' preconditions or invariants with intuitionistic (closed under heap extension) postconditions. Journal version: ACM TOPLAS 31(3), Article 11, pp. 11:1-11:50, 2009, doi:10.1145/1498926.1498929; in the authors' 2008 preprint of it, Lemma 6 is the Distribution Lemma and Section 9 notes that (q * r) and (q' * r) does not imply (q and q') * r in general, with q = emp, q' = x |-> - and r = true.",
+   "Klein, G., Kolanski, R. & Boyton, A., 'Separation Algebra', Archive of Formal Proofs, May 2012, https://www.isa-afp.org/entries/Separation_Algebra.html; companion paper Klein, Kolanski & Boyton, 'Mechanised Separation Algebra', ITP 2012, LNCS 7406, pp. 332-337, doi:10.1007/978-3-642-32347-8_22. Class sep_algebra (unit 0, commutativity, associativity, disjointness laws; no cancellativity); class cancellative_sep_algebra adds x + z = y + z ==> x ## z ==> y ## z ==> x = y, with the comment that the results on precise assertions (distributivity over separating conjunction) require it; lemma precise_distribute: precise P = (forall Q R. ((Q and R) ** P) = ((Q ** P) and (R ** P))), P on the right.",
+   "Coq, Verified Software Toolchain: PrincetonUniversity/VST tag v2.14 (commit e1db53a4e22ddd3f8223532ba73127b706faf1b3), file msl/predicates_sa.v, lines 78-122: Definition precise (at most one join_sub substate in P) and Lemma precise_eq, proved under Join, Perm_alg, Sep_alg and Canc_alg (the cancellation class of msl/sepalg.v, join a1 b c -> join a2 b c -> a1 = a2): precise = fun P => forall Q R, P * (Q && R) = (P * Q) && (P * R), the binary form with P on the left. Book: Appel, A. W., Dockins, R., Hobor, A., Beringer, L., Dodds, J., Stewart, G., Blazy, S. & Leroy, X., 'Program Logics for Certified Compilers', Cambridge University Press, 2014, doi:10.1017/CBO9781107256552.",
+   "HOL4 theory examples/separationLogic/src/separationLogicScript.sml in HOL-Theorem-Prover/HOL at commit c2b475d585febe0e718f87ab51959c0a73fc924e (Tuerk, UCAM-CL-TR-799, 2011, doi:10.48456/tr-799). IS_PRECISE___CHARACTERISATION (lines 1690-1697): assuming IS_SEPARATION_COMBINATOR f (commutativity, associativity, a unit for each element, left cancellativity), ASL_IS_PRECISE f p iff for every nonempty set X of predicates, asl_star f (BIGINTER X) p = BIGINTER (IMAGE (\\x. asl_star f x p) X): the infinitary form, with the precise p on the right of *."
+  ],
+  "design_question": "Which algebraic properties of assertions (precision) and of the state model (cancellativity) are needed for the law (P * R) and (Q * R) |- (P and Q) * R, which is used when a frame or invariant R must be pushed inside a conjunction (hypothetical frame rules, resource invariants with the conjunction rule)?"
+ },
+ {
+  "id": "R4d-heap-precise-iff-distribution",
+  "lean": [
+   "Toy.Sep.heap_precise_iff_conjDistrib",
+   "Toy.Sep.heap_precise_iff_atMostOneSubheap"
+  ],
+  "lean_names": [
+   "Toy.Sep.heap_rightCancel",
+   "Toy.Sep.heap_leftCancel"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "tier_justification": "O'Hearn-Yang-Reynolds 2004 Lemma 3 (store-and-heap model, precise assertion on the left); Brookes 2007 Definition 11 remark; mechanized for cancellative separation algebras in Isabelle AFP (precise_distribute), VST (precise_eq) and, infinitary, HOL4 (IS_PRECISE___CHARACTERISATION).",
+  "plain_claim": "For finite heaps, an assertion R is precise, equivalently every heap has at most one subheap satisfying R (heap_precise_iff_atMostOneSubheap, proved), if and only if (P * R) and (Q * R) |- (P and Q) * R for all P, Q.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Both sides hold for 0 |-> -; both fail for oneCell.",
+  "nonvacuity_witness_lean": "Toy.Sep.heap_precise_iff_conjDistrib_nonvacuous",
+  "non_claims": [
+   "Says nothing about other resource models (permissions, fractional shares, ghost state) where cancellativity may fail; there the two notions can come apart (R4f).",
+   "P and Q range over all predicates on heaps.",
+   "Neither Precise R nor ConjDistrib R is needed for the ordinary sequential frame rule (R1) or for the Hoare conjunction rule {P1} c {Q1}, {P2} c {Q2} |- {P1 and P2} c {Q1 and Q2}, which holds for every command (Toy.Sep.triple_conj). ConjDistrib R is about pushing a frame R inside a conjunction, (Q1 * R) and (Q2 * R) |- (Q1 and Q2) * R, as needed by the hypothetical frame rule (O'Hearn-Yang-Reynolds 2004, Theorem 5) and by concurrent separation logic with resource invariants and the conjunction rule (Gotsman-Berdine-Cook 2011, Theorem 4.1)."
+  ],
+  "prior_art": [
+   "O'Hearn, P. W., Yang, H. & Reynolds, J. C., 'Separation and Information Hiding', POPL 2004, pp. 268-280, doi:10.1145/964001.964024: Section 9, Lemma 3: p is precise iff p * - distributes over conjunction, p * (q and r) = (p * q) and (p * r), in the store-and-heap model with p on the left; Theorem 5: the hypothetical frame rule is sound for fixed preconditions (resp. a fixed resource invariant) iff they are precise; Section 10.3, Theorem 11: soundness also holds for 'supported' preconditions or invariants with intuitionistic (closed under heap extension) postconditions. Journal version: ACM TOPLAS 31(3), Article 11, pp. 11:1-11:50, 2009, doi:10.1145/1498926.1498929; in the authors' 2008 preprint of it, Lemma 6 is the Distribution Lemma and Section 9 notes that (q * r) and (q' * r) does not imply (q and q') * r in general, with q = emp, q' = x |-> - and r = true.",
+   "Brookes, S., 'A Semantics for Concurrent Separation Logic', Theoretical Computer Science 375(1-3):227-270, 2007, doi:10.1016/j.tcs.2006.12.034 (CONCUR 2004 version doi:10.1007/978-3-540-28644-8_2). Definition 11 defines precise formulas in the concrete store-and-heap model and remarks that for precise R, (p and q) * R and (p * R) and (q * R) are logically equivalent.",
+   "Klein, G., Kolanski, R. & Boyton, A., 'Separation Algebra', Archive of Formal Proofs, May 2012, https://www.isa-afp.org/entries/Separation_Algebra.html; companion paper Klein, Kolanski & Boyton, 'Mechanised Separation Algebra', ITP 2012, LNCS 7406, pp. 332-337, doi:10.1007/978-3-642-32347-8_22. Class sep_algebra (unit 0, commutativity, associativity, disjointness laws; no cancellativity); class cancellative_sep_algebra adds x + z = y + z ==> x ## z ==> y ## z ==> x = y, with the comment that the results on precise assertions (distributivity over separating conjunction) require it; lemma precise_distribute: precise P = (forall Q R. ((Q and R) ** P) = ((Q ** P) and (R ** P))), P on the right.",
+   "Coq, Verified Software Toolchain: PrincetonUniversity/VST tag v2.14 (commit e1db53a4e22ddd3f8223532ba73127b706faf1b3), file msl/predicates_sa.v, lines 78-122: Definition precise (at most one join_sub substate in P) and Lemma precise_eq, proved under Join, Perm_alg, Sep_alg and Canc_alg (the cancellation class of msl/sepalg.v, join a1 b c -> join a2 b c -> a1 = a2): precise = fun P => forall Q R, P * (Q && R) = (P * Q) && (P * R), the binary form with P on the left. Book: Appel, A. W., Dockins, R., Hobor, A., Beringer, L., Dodds, J., Stewart, G., Blazy, S. & Leroy, X., 'Program Logics for Certified Compilers', Cambridge University Press, 2014, doi:10.1017/CBO9781107256552.",
+   "HOL4 theory examples/separationLogic/src/separationLogicScript.sml in HOL-Theorem-Prover/HOL at commit c2b475d585febe0e718f87ab51959c0a73fc924e (Tuerk, UCAM-CL-TR-799, 2011, doi:10.48456/tr-799). IS_PRECISE___CHARACTERISATION (lines 1690-1697): assuming IS_SEPARATION_COMBINATOR f (commutativity, associativity, a unit for each element, left cancellativity), ASL_IS_PRECISE f p iff for every nonempty set X of predicates, asl_star f (BIGINTER X) p = BIGINTER (IMAGE (\\x. asl_star f x p) X): the infinitary form, with the precise p on the right of *."
+  ],
+  "design_question": "In the plain heap model, are 'precise' and 'distributes over conjunction' the same notion? Yes.",
+  "ledger_note": "heap_precise_iff_conjDistrib and heap_precise_iff_atMostOneSubheap have no hypotheses: they hold for every value type V : Type and every assertion R : Assn (Heap V) (all predicates on heaps). They are universally quantified characterizations, not statements about a fixed instance. They are specific to the heap model, which supplies what R4b and R4c take as hypotheses: Heap V is right- and left-cancellative (heap_rightCancel, heap_leftCancel), and the proof of heap_precise_iff_conjDistrib combines conjDistrib_of_precise_of_rightCancel and precise_of_conjDistrib_of_leftCancel with these two facts. ConjDistrib R quantifies over all predicates P, Q."
+ },
+ {
+  "id": "R4e-imprecise-assertions-violate-distribution",
+  "lean": [
+   "Toy.Sep.oneCell_conjDistrib_fails",
+   "Toy.Sep.someCellAllocated_conjDistrib_fails",
+   "Toy.Sep.oneCell_not_precise",
+   "Toy.Sep.someCellAllocated_not_precise"
+  ],
+  "lean_names": [
+   "Toy.Sep.ptAny_precise"
+  ],
+  "kind": "counterexample",
+  "tier": "T0",
+  "tier_justification": "Concrete heap counterexamples of this kind are in the literature: O'Hearn-Yang-Reynolds (journal version, r = true with q = emp, q' = x |-> -) and Calcagno-O'Hearn-Yang 2007 Section 2 (an imprecise two-cell disjunction). Restated here with explicit witnesses.",
+  "plain_claim": "The heap assertions 'exactly one cell is allocated, at some address' and 'some cell is allocated' are imprecise, and for each the distribution law fails with P = {0 |-> 1}, Q = {1 |-> 2} on the heap (0 |-> 1) o (1 |-> 2).",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Concrete heap (0 |-> 1) o (1 |-> 2).",
+  "nonvacuity_witness_lean": "Toy.Sep.oneCell_conjDistrib_fails",
+  "non_claims": [
+   "Does not show all existential assertions are imprecise: 0 |-> - is precise (ptAny_precise)."
+  ],
+  "prior_art": [
+   "O'Hearn, P. W., Yang, H. & Reynolds, J. C., 'Separation and Information Hiding', POPL 2004, pp. 268-280, doi:10.1145/964001.964024: Section 9, Lemma 3: p is precise iff p * - distributes over conjunction, p * (q and r) = (p * q) and (p * r), in the store-and-heap model with p on the left; Theorem 5: the hypothetical frame rule is sound for fixed preconditions (resp. a fixed resource invariant) iff they are precise; Section 10.3, Theorem 11: soundness also holds for 'supported' preconditions or invariants with intuitionistic (closed under heap extension) postconditions. Journal version: ACM TOPLAS 31(3), Article 11, pp. 11:1-11:50, 2009, doi:10.1145/1498926.1498929; in the authors' 2008 preprint of it, Lemma 6 is the Distribution Lemma and Section 9 notes that (q * r) and (q' * r) does not imply (q and q') * r in general, with q = emp, q' = x |-> - and r = true.",
+   "Calcagno, C., O'Hearn, P. W. & Yang, H., 'Local Action and Abstract Separation Logic', LICS 2007, pp. 366-378, doi:10.1109/LICS.2007.30 (author PDF http://www0.cs.ucl.ac.uk/staff/p.ohearn/papers/asl-short.pdf). Definition 1: a separation algebra is a cancellative partial commutative monoid. Definition 3: p is precise if every state has at most one substate in p. Section 2, Examples of Predicates: the two-cell disjunction l0 |-> rv0 or l1 |-> rv1 is not precise. Lemma 4: every singleton is precise; p is precise iff for all nonempty X, (meet X) * p = meet{x * p | x in X}; the remark after it says injectivity of sigma . (-) is equivalent to that distribution for singleton frames {sigma}. Section 3: a relation satisfies Safety Monotonicity and the Frame Property 'iff the frame rule is sound for it' (stated without proof)."
+  ],
+  "design_question": "Which natural frames break the distribution law?",
+  "ledger_note": "No hypotheses: all four statements are closed statements about the specific assertions oneCell and someCellAllocated in Heap Nat."
+ },
+ {
+  "id": "R4f-precision-and-distribution-incomparable-without-cancellativity",
+  "lean": [
+   "Toy.Sep.orAlg_true_precise_and_not_conjDistrib",
+   "Toy.Sep.forkR_conjDistrib_and_not_precise",
+   "Toy.Sep.orAlg_isSepAlgebra",
+   "Toy.Sep.fork_isSepAlgebra",
+   "Toy.Sep.orAlg_not_rightCancel",
+   "Toy.Sep.orAlg_not_leftCancel",
+   "Toy.Sep.fork_not_rightCancel",
+   "Toy.Sep.fork_not_leftCancel"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "The sources state that the precision/distribution correspondence needs cancellativity (Isabelle AFP comment on cancellative_sep_algebra; Gotsman-Berdine-Cook 2011 omit cancellativity on purpose). The two separating structures make this precise. Not claimed novel.",
+  "plain_claim": "In partial commutative monoids with a unit that are not cancellative (IsSepAlgebra without RightCancel or LeftCancel; separation algebras in the sense of Gotsman-Berdine-Cook 2011 and the Isabelle AFP class sep_algebra, but not in the cancellative sense of Calcagno-O'Hearn-Yang 2007 and Dockins-Hobor-Appel 2009), neither precision nor the distribution law implies the other: in OrAlg the frame {true} is precise but does not distribute; in Fork the frame {a, b} distributes but is not precise.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "OrAlg and Fork satisfy IsSepAlgebra and fail both cancellation laws (all proved).",
+  "nonvacuity_witness_lean": [
+   "Toy.Sep.orAlg_isSepAlgebra",
+   "Toy.Sep.fork_isSepAlgebra"
+  ],
+  "non_claims": [
+   "Does not identify conditions weaker than cancellativity that suffice, beyond the exact law-free condition of R4a.",
+   "IsSepAlgebra assumes a single global unit and a total, functional union; multi-unit algebras (as in Dockins-Hobor-Appel 2009 and VST), relational joins, and positivity laws are not examined."
+  ],
+  "prior_art": [
+   "Klein, G., Kolanski, R. & Boyton, A., 'Separation Algebra', Archive of Formal Proofs, May 2012, https://www.isa-afp.org/entries/Separation_Algebra.html; companion paper Klein, Kolanski & Boyton, 'Mechanised Separation Algebra', ITP 2012, LNCS 7406, pp. 332-337, doi:10.1007/978-3-642-32347-8_22. Class sep_algebra (unit 0, commutativity, associativity, disjointness laws; no cancellativity); class cancellative_sep_algebra adds x + z = y + z ==> x ## z ==> y ## z ==> x = y, with the comment that the results on precise assertions (distributivity over separating conjunction) require it; lemma precise_distribute: precise P = (forall Q R. ((Q and R) ** P) = ((Q ** P) and (R ** P))), P on the right.",
+   "Gotsman, A., Berdine, J. & Cook, B., 'Precision and the Conjunction Rule in Concurrent Separation Logic', MFPS XXVII, ENTCS 276:171-190, 2011, doi:10.1016/j.entcs.2011.09.021. Definition 2.1: a separation algebra is a partial commutative monoid with unit, explicitly omitting the cancellativity required by Calcagno-O'Hearn-Yang 2007. Section 2.2: the 'command' that disposes cell 10 if it is allocated and is a no-op otherwise is not local; 'the requirement of locality rules out commands that can check if a cell is allocated in the heap other than by trying to access it and faulting if it is not allocated'. Theorem 4.1: concurrent separation logic is sound if resource invariants are precise and * is cancellative, or if the conjunction rule is not used.",
+   "Dockins, R., Hobor, A. & Appel, A. W., 'A Fresh Look at Separation Algebras and Share Accounting', APLAS 2009, LNCS 5904, pp. 161-177, doi:10.1007/978-3-642-10672-9_13. Separation algebras as a join relation with functionality, commutativity, associativity and cancellation as core axioms, and possibly multiple units; positivity and disjointness are optional extra axioms.",
+   "Calcagno, C., O'Hearn, P. W. & Yang, H., 'Local Action and Abstract Separation Logic', LICS 2007, pp. 366-378, doi:10.1109/LICS.2007.30 (author PDF http://www0.cs.ucl.ac.uk/staff/p.ohearn/papers/asl-short.pdf). Definition 1: a separation algebra is a cancellative partial commutative monoid. Definition 3: p is precise if every state has at most one substate in p. Section 2, Examples of Predicates: the two-cell disjunction l0 |-> rv0 or l1 |-> rv1 is not precise. Lemma 4: every singleton is precise; p is precise iff for all nonempty X, (meet X) * p = meet{x * p | x in X}; the remark after it says injectivity of sigma . (-) is equivalent to that distribution for singleton frames {sigma}. Section 3: a relation satisfies Safety Monotonicity and the Frame Property 'iff the frame rule is sound for it' (stated without proof).",
+   "Coq, Verified Software Toolchain: PrincetonUniversity/VST tag v2.14 (commit e1db53a4e22ddd3f8223532ba73127b706faf1b3), file msl/predicates_sa.v, lines 78-122: Definition precise (at most one join_sub substate in P) and Lemma precise_eq, proved under Join, Perm_alg, Sep_alg and Canc_alg (the cancellation class of msl/sepalg.v, join a1 b c -> join a2 b c -> a1 = a2): precise = fun P => forall Q R, P * (Q && R) = (P * Q) && (P * R), the binary form with P on the left. Book: Appel, A. W., Dockins, R., Hobor, A., Beringer, L., Dodds, J., Stewart, G., Blazy, S. & Leroy, X., 'Program Logics for Certified Compilers', Cambridge University Press, 2014, doi:10.1017/CBO9781107256552."
+  ],
+  "design_question": "Can a resource model without cancellativity (e.g. idempotent permissions) keep 'precise frames give the distribution law'? Not in general.",
+  "ledger_note": "No hypotheses: all eight statements are closed statements about the specific structures OrAlg and Fork (quoted under Key definitions) and the assertions sing { bit := true } and forkR."
+ },
+ {
+  "id": "R4g-cancellation-laws-coincide-under-commutativity",
+  "lean": [
+   "Toy.Sep.leftCancel_iff_rightCancel_of_disjSymm_of_unionComm",
+   "Toy.Sep.rightCancel_of_disjSymm_of_unionComm_of_leftCancel",
+   "Toy.Sep.leftCancel_of_disjSymm_of_unionComm_of_rightCancel"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Standard algebra; HOL4 derives right from left cancellativity under commutativity.",
+  "plain_claim": "If disjointness is symmetric and union is commutative, left and right cancellativity are equivalent (an iff, and each direction separately).",
+  "hypotheses": [
+   {
+    "name": "hc : UnionComm S",
+    "purpose": "Moves the shared element from one side to the other.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Sep.projRight_disjSymm_leftCancel_not_rightCancel",
+     "Toy.Sep.projLeft_disjSymm_rightCancel_not_leftCancel"
+    ]
+   },
+   {
+    "name": "hs : DisjSymm S",
+    "purpose": "Moves disjointness facts to the other side.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Sep.orDisjRight_unionComm_leftCancel_not_rightCancel",
+     "Toy.Sep.orDisjLeft_unionComm_rightCancel_not_leftCancel"
+    ]
+   },
+   {
+    "name": "hl : LeftCancel S (resp. hr : RightCancel S), directional lemmas only",
+    "purpose": "The cancellation law being transported.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Sep.orAlg_disjSymm_unionComm_not_rightCancel",
+     "Toy.Sep.orAlg_disjSymm_unionComm_not_leftCancel"
+    ]
+   }
+  ],
+  "depth": "definitional",
+  "nonvacuity_witness": "Heap model: symmetric, commutative, left- and right-cancellative.",
+  "nonvacuity_witness_lean": "Toy.Sep.cancel_coincide_nonvacuous",
+  "non_claims": [
+   "A reference point that lets R4b and R4c be combined with a single cancellation law in commutative structures; it informs no design question on its own.",
+   "Each tightness counterexample for hc and hs exhibits one cancellation law without the other, so it also refutes the iff."
+  ],
+  "prior_art": [
+   "HOL4 theory examples/separationLogic/src/separationLogicScript.sml in HOL-Theorem-Prover/HOL at commit c2b475d585febe0e718f87ab51959c0a73fc924e: IS_SEPARATION_COMBINATOR assumes commutativity and only left cancellativity (OPTION_IS_LEFT_CANCELLATIVE, lines 19-22 and 39-45); IS_SEPARATION_COMBINATOR_EXPAND_THM (lines 286-303) derives right cancellativity as well."
+  ],
+  "design_question": "Reference point: in commutative structures with symmetric disjointness, R4b and R4c combine with a single cancellation law (as in R4d)."
+ },
+ {
+  "id": "R5-standard-heap-commands-local",
+  "lean": [
+   "Toy.Sep.lookup_safetyMono_and_frameProp",
+   "Toy.Sep.mutate_safetyMono_and_frameProp",
+   "Toy.Sep.alloc_safetyMono_and_frameProp",
+   "Toy.Sep.allocInto_safetyMono_and_frameProp",
+   "Toy.Sep.free_safetyMono_and_frameProp"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Yang-O'Hearn 2002 Lemmas 1-2 for their language; frame lemmas for similar primitives are mechanized for total correctness in Coq (SLF) and Lean 4 (SPLean).",
+  "plain_claim": "In the heap model, lookup [r] := [k], mutation [k] := v, allocation at a nondeterministically chosen fresh address without recording it (alloc v) or recording it in cell r (allocInto r v, with heap values in Nat so that an address fits in a cell), and deallocation free k are each safety-monotone and have the frame property. lookup, mutate, alloc and free are stated for every value type V.",
+  "hypotheses": [
+   {
+    "name": "(definition) allocation chooses its fresh address nondeterministically",
+    "purpose": "Every predictable allocation policy that still runs when its address is occupied violates the frame property.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Sep.allocLeast_not_frameProp",
+     "Toy.Sep.detAlloc_not_frameProp"
+    ]
+   }
+  ],
+  "depth": "shallow",
+  "depth_note": "alloc_safetyMono_and_frameProp is proved: alloc never faults, and its frame property is alloc_frameProp (the positive control of R3d).",
+  "nonvacuity_witness": "For each of the five commands, a disjoint pair h, h' with h' non-empty, the command safe at h, and a normal run from h o h', so the antecedents of both properties are met.",
+  "nonvacuity_witness_lean": "Toy.Sep.heap_commands_framed_runs_nonvacuous",
+  "non_claims": [
+   "No variable store; variable-writing commands are modelled by writing heap cells.",
+   "No address arithmetic.",
+   "Locality of compositions of these commands is not examined.",
+   "Models flat single-cell allocation and deallocation with natural-number addresses; does not cover block allocation, free of interior pointers, alignment, or pointer-provenance memory models."
+  ],
+  "prior_art": [
+   "Yang, H. & O'Hearn, P. W., 'A Semantic Basis for Local Reasoning', FoSSaCS 2002, LNCS 2303, pp. 402-416, doi:10.1007/3-540-45931-6_28 (author PDF http://www0.cs.ucl.ac.uk/staff/p.ohearn/papers/basis.pdf). Section 4: Lemma 1 (Safety and Termination Monotonicity), Lemma 2 (Frame Property), Theorem 1 (the Frame Rule is sound for both partial and total correctness), in a store-and-heap model. Section 4.1: always choosing the smallest free address for cons would invalidate the Frame Rule (detectable with address arithmetic; without address arithmetic, invariance under location renaming could be used instead of nondeterminism); trapping memory faults would allow branching on whether a cell is active, contradicting Safety Monotonicity; in Petri nets with capacity 1 a transition with pre(t) = {a}, post(t) = {b} is enabled in {a} but not in {a, b} and violates Safety Monotonicity. Section 5.1: a command that faults when more than 3 heap cells are active and skips otherwise violates Safety Monotonicity. Section 5.2, Proposition 2: wp(C) and wlp(C) both satisfy locality for X iff C satisfies Safety and Termination Monotonicity, the Frame Property and a locality property for variables (a joint characterization with a store and termination, not a partial-correctness-only converse).",
+   "Reynolds, J. C., 'Separation Logic: A Logic for Shared Mutable Data Structures', LICS 2002, pp. 55-74, doi:10.1109/LICS.2002.1029817. End of Section 2: the 'restricting the heap' formulation of locality. Section 3 defines intuitionistic assertions and states the distributive law for 'domain-exact' q; 'precise' is not used as a technical term. Section 4: frame rule soundness, citing Yang and O'Hearn.",
+   "Coq: Chargueraud, A., Separation Logic Foundations (Software Foundations series, https://softwarefoundations.cis.upenn.edu/slf-current/), chapter Triples: lemma eval_frame (eval h1 t Q -> Fmap.disjoint h1 h2 -> eval (h1 \\u h2) t (Q \\*+ (= h2))) for an omni-big-step, total-correctness evaluation judgment over finite-map heaps, including allocation, read, write and free.",
+   "Lean 4: verse-lab/splean at commit e24286f51bd9ee207197d47ec587d592cdfb0ddc (Apache-2.0), SPLean/Theories/SepLog.lean lines 475-478: eval_frame for a postcondition-indexed big-step (total-correctness) evaluation judgment over finite-map heaps; its language has scoped allocation, read and write but no free."
+  ],
+  "design_question": "Which primitive heap operations can a frame-rule logic admit? All the standard ones, provided allocation is nondeterministic."
+ },
+ {
+  "id": "R6a-fq-triple-frame-rule-from-two-sided-associativity",
+  "lean": [
+   "Toy.Sep.fqTriple_frame_of_unionAssoc_of_unionAssocRev",
+   "Toy.Sep.fqTriple_frame_of_disjSymm_of_unionComm_of_unionAssoc",
+   "Toy.Sep.heap_fqTriple_frame",
+   "Toy.Sep.unionAssocRev_of_disjSymm_of_unionComm_of_unionAssoc",
+   "Toy.Sep.fqTriple_frame_of_disjSymm_of_unionAssoc",
+   "Toy.Sep.unionAssocRev_of_disjSymm_of_unionAssoc"
+  ],
+  "lean_names": [
+   "Toy.Sep.projLeft_disjSymm_unionAssoc_unionAssocRev_not_unionComm"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Frame-quantified ('baked-in frame') triples and the derivation of framing from associativity of * are in Birkedal-Torp-Smith-Yang 2005/2006 and Chargueraud 2020 (Definition 5.2, Appendix C.1), with mechanizations in Coq (Appel-Blazy 2007; Separation Logic Foundations) and HOL4 (Myreen-Gordon 2007). The law-minimal form here is not claimed as T2.",
+  "plain_claim": "In any separation structure with two-sided partial associativity (ha : UnionAssoc S and har : UnionAssocRev S; no commutativity, unit, cancellativity or locality), frame-quantified triples FQTriple P c Q := for all R, {P * R} c {Q * R} satisfy the frame rule for every command c: FQTriple P c Q implies FQTriple (P * R) c (Q * R). The heap model is an instance (no hypotheses). The other four theorems on this card take the explicit hypothesis hs : DisjSymm S (symmetric disjointness) in place of har: under hs : DisjSymm S, hc : UnionComm S and ha : UnionAssoc S, UnionAssocRev S and the frame rule hold; commutativity is not needed for this step, so hs : DisjSymm S and ha : UnionAssoc S alone already give UnionAssocRev S and the frame rule. The hypothesis hs : DisjSymm S cannot be dropped from these four theorems: UnionAssoc alone, or UnionAssoc together with UnionComm, gives neither UnionAssocRev nor the frame rule.",
+  "hypotheses": [
+   {
+    "name": "ha : UnionAssoc S",
+    "purpose": "Re-associates the framed precondition (P * R) * R' into P * (R * R'). In the four DisjSymm theorems it is also the source of UnionAssocRev.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Sep.assocGap_unionAssocRev_and_fqTriple_frame_fails",
+     "Toy.Sep.symmAssocGap_disjSymm_unionComm_and_fqTriple_frame_fails"
+    ]
+   },
+   {
+    "name": "har : UnionAssocRev S",
+    "purpose": "Re-associates the postcondition Q * (R * R') into (Q * R) * R'.",
+    "tightness": "tight",
+    "counterexample": "Toy.Sep.oneWayAssoc_unionAssoc_and_fqTriple_frame_fails"
+   },
+   {
+    "name": "hs : DisjSymm S (the four theorems fqTriple_frame_of_disjSymm_of_unionComm_of_unionAssoc, unionAssocRev_of_disjSymm_of_unionComm_of_unionAssoc, fqTriple_frame_of_disjSymm_of_unionAssoc, unionAssocRev_of_disjSymm_of_unionAssoc)",
+    "purpose": "Takes the place of har: three cyclic applications of UnionAssoc, with DisjSymm moving disjointness facts to the other side between them, give UnionAssocRev, which re-associates the postcondition.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Sep.oneWayAssoc_unionAssoc_and_fqTriple_frame_fails",
+     "Toy.Sep.commOneWay_unionComm_unionAssoc_and_fqTriple_frame_fails"
+    ]
+   },
+   {
+    "name": "ht : FQTriple P c Q",
+    "purpose": "Premise of the frame rule.",
+    "tightness": "tight",
+    "counterexample": "Toy.Sep.fqTriple_frame_premise_tight"
+   },
+   {
+    "name": "hc : UnionComm S (only fqTriple_frame_of_disjSymm_of_unionComm_of_unionAssoc and unionAssocRev_of_disjSymm_of_unionComm_of_unionAssoc)",
+    "purpose": "Not needed: DisjSymm and UnionAssoc already give UnionAssocRev (Toy.Sep.unionAssocRev_of_disjSymm_of_unionAssoc), hence the frame rule (Toy.Sep.fqTriple_frame_of_disjSymm_of_unionAssoc); a non-commutative structure with DisjSymm, UnionAssoc and UnionAssocRev is Toy.Sep.projLeft_disjSymm_unionAssoc_unionAssocRev_not_unionComm. The two corollaries keep UnionComm so that their hypotheses are exactly the partial-commutative-monoid laws of IsSepAlgebra.",
+    "tightness": "harmless"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "The heap model has both associativity directions, and FQTriple {emp} allocLeast 1 {exists k. k |-> 1} holds for the non-local command allocLeast.",
+  "nonvacuity_witness_lean": "Toy.Sep.fqTriple_frame_nonvacuous",
+  "non_claims": [
+   "Does not say that one direction of associativity suffices on its own: the four DisjSymm theorems on this card need the explicit hypothesis hs : DisjSymm S. UnionAssoc alone gives neither UnionAssocRev nor the frame rule (Toy.Sep.oneWayAssoc_unionAssoc_and_fqTriple_frame_fails), and neither does UnionAssoc together with UnionComm (Toy.Sep.commOneWay_unionComm_unionAssoc_and_fqTriple_frame_fails).",
+   "Does not say that frame-quantified specifications are as convenient as plain ones: each primitive's specification must be proved under all frames, which rules out natural plain specifications of non-local commands (R6c).",
+   "Not a statement about any particular weakest-precondition calculus or program logic. The cited baked-in-frame logics differ in detail: Chargueraud's triples are total-correctness, the HOL4 machine-code RUN/SPEC definitions require the postcondition to be reached on every execution sequence, and Birkedal-Torp-Smith-Yang additionally require their base commands to be local.",
+   "Uses demonic, fault-avoiding triples that allow divergence. Frame-quantified weakest preconditions that also demand successor existence (progress), or that are angelic (some run succeeds), are not covered.",
+   "Says nothing about concurrency: frame quantification does not make non-local commands sound under parallel composition (not examined)."
+  ],
+  "prior_art": [
+   "Chargueraud, A., 'Separation Logic for Sequential Programs (Functional Pearl)', Proc. ACM Program. Lang. 4(ICFP), Article 116, 2020, doi:10.1145/3408998 (author PDF https://www.chargueraud.org/research/2020/seq_seplogic/seq_seplogic.pdf). Definition 5.1: total-correctness Hoare triple HOARE{H} t {Q}. Definition 5.2: {H} t {Q} == forall H', HOARE{H * H'} t {Q * H'}, which 'bakes in the frame rule'. Lemma 5.4 lists the structural rules including frame; Appendix C.1 (author PDF) proves the combined consequence-frame rule (Lemma 5.5) using associativity of * (star-assoc, Lemma 3.9). Section 10 attributes the idea to Birkedal, Torp-Smith and Yang. The paper describes an accompanying course in the style of the Software Foundations series with all statements and proofs formalized in Coq (published as Software Foundations Volume 6, Separation Logic Foundations).",
+   "Birkedal, L., Torp-Smith, N. & Yang, H., 'Semantics of Separation-Logic Typing and Higher-Order Frame Rules', LICS 2005, pp. 260-269, doi:10.1109/LICS.2005.47; journal version 'Semantics of Separation-Logic Typing and Higher-order Frame Rules for Algol-like Languages', Logical Methods in Computer Science 2(5:1), 2006, doi:10.2168/LMCS-2(5:1)2006, arXiv:cs/0610081. In the journal version (Section 4.1) a triple object [p, q] contains, for each frame p0, the commands satisfying {p * p0} - {q * p0}; invariant extension inv(-, p) adds a frame, and Lemmas 4.4-4.5 use associativity of *. Their base commands are themselves required to satisfy safety monotonicity and the frame property.",
+   "Appel, A. W. & Blazy, S., 'Separation Logic for Small-Step Cminor', TPHOLs 2007, LNCS 4732, pp. 5-21, doi:10.1007/978-3-540-74591-4_3 (arXiv:0707.4389). Hoare sextuples are defined by quantifying over every frame A (and continuation), for partial correctness, mechanized in Coq (Definition 8 in the arXiv version).",
+   "Myreen, M. O. & Gordon, M. J. C., 'Hoare Logic for Realistically Modelled Machine Code', TACAS 2007, LNCS 4424, pp. 568-582, doi:10.1007/978-3-540-71209-1_44, mechanized in HOL4. The frame-quantified specification form is attested here only by the HOL4 sources, not by the paper text: in HOL-Theorem-Prover/HOL at commit c2b475d585febe0e718f87ab51959c0a73fc924e, examples/machine-code/hoare-triple/progScript.sml lines 24-39, RUN_def states RUN p q := for all state and r, if SEP_REFINE (p * r) less to_set state or allow state, then for every execution sequence seq from state there is an i with SEP_REFINE (q * r) less to_set (seq i) or allow (seq i); SPEC p c q is RUN (CODE_POOL instr c * p) (CODE_POOL instr c * q). The frame r is universally quantified, and the postcondition must be reached at some point of every execution sequence."
+  ],
+  "design_question": "Separate frame rule with locality obligations on primitives, versus frame baked into the specification? The second makes the frame rule free for every command, at the cost of two-sided associativity of the state model and of proving each primitive's specification under all frames.",
+  "ledger_note": "The entries ha and har refer to the primary, law-minimal theorem fqTriple_frame_of_unionAssoc_of_unionAssocRev. hs is a hypothesis of the four DisjSymm theorems, where it takes the place of har; its counterexample oneWayAssoc_unionAssoc_and_fqTriple_frame_fails covers the two theorems without hc (UnionAssoc holds; UnionAssocRev and the framed triple fail), and commOneWay_unionComm_unionAssoc_and_fqTriple_frame_fails covers the two with hc (UnionComm and UnionAssoc hold; DisjSymm, UnionAssocRev and the framed triple fail). ha is also a hypothesis of the four DisjSymm theorems: assocGap_unionAssocRev_and_fqTriple_frame_fails witnesses its tightness in the primary theorem, and symmAssocGap_disjSymm_unionComm_and_fqTriple_frame_fails (DisjSymm and UnionComm hold; UnionAssoc, UnionAssocRev and the framed triple fail) in the four DisjSymm theorems. ht is the premise of the four frame-rule theorems (fqTriple_frame_of_unionAssoc_of_unionAssocRev, fqTriple_frame_of_disjSymm_of_unionComm_of_unionAssoc, fqTriple_frame_of_disjSymm_of_unionAssoc, heap_fqTriple_frame); the two unionAssocRev_of_... theorems have no ht. Its counterexample is in the heap model, which also satisfies DisjSymm and UnionComm (boundary_witnesses_nonvacuous). heap_fqTriple_frame has no algebraic hypotheses (the heap model satisfies both associativity directions); hc is listed only for the two partial-commutative-monoid corollaries."
+ },
+ {
+  "id": "R6b-fq-triple-implies-plain-triple-given-right-unit",
+  "lean": [
+   "Toy.Sep.triple_of_fqTriple_of_rightUnitLaw",
+   "Toy.Sep.triple_of_fqTriple_of_disjSymm_of_unionComm_of_unitLaw",
+   "Toy.Sep.heap_triple_of_fqTriple",
+   "Toy.Sep.rightUnitLaw_of_disjSymm_of_unionComm_of_unitLaw"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Instantiating the frame with the unit recovers the plain triple, as in Chargueraud 2020 (Definitions 5.1-5.2) and the other cited baked-in-frame logics.",
+  "plain_claim": "In any separation structure with a right unit e (every state is disjoint from e and a o e = a), FQTriple P c Q implies the plain triple {P} c {Q}, for every command. A left unit with symmetric disjointness and commutative union suffices; the heap model, with e = emp, is an instance.",
+  "hypotheses": [
+   {
+    "name": "hu : RightUnitLaw e",
+    "purpose": "Instantiates the frame with {e}.",
+    "tightness": "tight",
+    "counterexample": "Toy.Sep.emptyDisj_no_rightUnit_and_fqTriple_adequacy_fails"
+   },
+   {
+    "name": "ht : FQTriple P c Q",
+    "purpose": "Premise of the adequacy theorem.",
+    "tightness": "tight",
+    "counterexample": "Toy.Sep.triple_of_fqTriple_premise_tight"
+   },
+   {
+    "name": "hs : DisjSymm S (left-unit corollary triple_of_fqTriple_of_disjSymm_of_unionComm_of_unitLaw)",
+    "purpose": "Turns e ⊥ a (from the left unit) into a ⊥ e.",
+    "tightness": "tight",
+    "counterexample": "Toy.Sep.leftDisjCommUnit_unionComm_unitLaw_and_fqTriple_adequacy_fails"
+   },
+   {
+    "name": "hc : UnionComm S (left-unit corollary)",
+    "purpose": "Turns e ∘ a = a into a ∘ e = a.",
+    "tightness": "tight",
+    "counterexample": "Toy.Sep.projRight_disjSymm_unitLaw_and_fqTriple_adequacy_fails"
+   },
+   {
+    "name": "hu : UnitLaw e (left-unit corollary)",
+    "purpose": "Supplies the unit used as the frame.",
+    "tightness": "tight",
+    "counterexample": "Toy.Sep.emptyDisj_disjSymm_unionComm_no_unit_and_fqTriple_adequacy_fails"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "emp is a right unit of the heap model, and FQTriple {emp} allocLeast 1 {exists k. k |-> 1} holds.",
+  "nonvacuity_witness_lean": "Toy.Sep.triple_of_fqTriple_nonvacuous",
+  "non_claims": [
+   "A single global right unit is assumed; whether a per-element (multi-unit) condition suffices is not examined.",
+   "The converse fails for non-local commands (R6c); for local commands it is R1."
+  ],
+  "prior_art": [
+   "Chargueraud, A., 'Separation Logic for Sequential Programs (Functional Pearl)', Proc. ACM Program. Lang. 4(ICFP), Article 116, 2020, doi:10.1145/3408998 (author PDF https://www.chargueraud.org/research/2020/seq_seplogic/seq_seplogic.pdf). Definition 5.1: total-correctness Hoare triple HOARE{H} t {Q}. Definition 5.2: {H} t {Q} == forall H', HOARE{H * H'} t {Q * H'}, which 'bakes in the frame rule'. Lemma 5.4 lists the structural rules including frame; Appendix C.1 (author PDF) proves the combined consequence-frame rule (Lemma 5.5) using associativity of * (star-assoc, Lemma 3.9). Section 10 attributes the idea to Birkedal, Torp-Smith and Yang. The paper describes an accompanying course in the style of the Software Foundations series with all statements and proofs formalized in Coq (published as Software Foundations Volume 6, Separation Logic Foundations).",
+   "Birkedal, L., Torp-Smith, N. & Yang, H., 'Semantics of Separation-Logic Typing and Higher-Order Frame Rules', LICS 2005, pp. 260-269, doi:10.1109/LICS.2005.47; journal version 'Semantics of Separation-Logic Typing and Higher-order Frame Rules for Algol-like Languages', Logical Methods in Computer Science 2(5:1), 2006, doi:10.2168/LMCS-2(5:1)2006, arXiv:cs/0610081. In the journal version (Section 4.1) a triple object [p, q] contains, for each frame p0, the commands satisfying {p * p0} - {q * p0}; invariant extension inv(-, p) adds a frame, and Lemmas 4.4-4.5 use associativity of *. Their base commands are themselves required to satisfy safety monotonicity and the frame property."
+  ],
+  "design_question": "Do frame-quantified specifications still give ordinary triples? Yes, given a right unit (which is necessary).",
+  "ledger_note": "The entry hu : RightUnitLaw e refers to the primary theorem triple_of_fqTriple_of_rightUnitLaw; ht is the premise of the three triple theorems on this card (rightUnitLaw_of_disjSymm_of_unionComm_of_unitLaw, the algebraic lemma behind the left-unit corollary, has no ht and takes the same hs, hc and hu : UnitLaw e as that corollary); the entries marked 'left-unit corollary' refer to triple_of_fqTriple_of_disjSymm_of_unionComm_of_unitLaw; heap_triple_of_fqTriple has no algebraic hypotheses."
+ },
+ {
+  "id": "R6c-fq-triples-strictly-stronger-for-nonlocal-commands",
+  "lean": [
+   "Toy.Sep.allocLeast_triple_and_not_fqTriple",
+   "Toy.Sep.allocLeast_fqTriple_someCell"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "An immediate consequence of R3c, recorded because it delimits R6a-R6b.",
+  "plain_claim": "In the heap model, {emp} allocLeast 1 {0 |-> 1} holds as a plain triple but not as a frame-quantified one, while the frame-quantified triple {emp} allocLeast 1 {exists k. k |-> 1} holds: under frame quantification this specification of the non-local allocLeast survives only without the address.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Concrete command allocLeast 1 from emp.",
+  "nonvacuity_witness_lean": "Toy.Sep.allocLeast_triple_and_not_fqTriple",
+  "non_claims": [
+   "Does not characterize all frame-quantified specifications of allocLeast; only the two triples named are shown.",
+   "For local commands plain and frame-quantified triples coincide (R1 with R6b); no separate theorem states this."
+  ],
+  "prior_art": [
+   "Yang, H. & O'Hearn, P. W., 'A Semantic Basis for Local Reasoning', FoSSaCS 2002, LNCS 2303, pp. 402-416, doi:10.1007/3-540-45931-6_28 (author PDF http://www0.cs.ucl.ac.uk/staff/p.ohearn/papers/basis.pdf). Section 4: Lemma 1 (Safety and Termination Monotonicity), Lemma 2 (Frame Property), Theorem 1 (the Frame Rule is sound for both partial and total correctness), in a store-and-heap model. Section 4.1: always choosing the smallest free address for cons would invalidate the Frame Rule (detectable with address arithmetic; without address arithmetic, invariance under location renaming could be used instead of nondeterminism); trapping memory faults would allow branching on whether a cell is active, contradicting Safety Monotonicity; in Petri nets with capacity 1 a transition with pre(t) = {a}, post(t) = {b} is enabled in {a} but not in {a, b} and violates Safety Monotonicity. Section 5.1: a command that faults when more than 3 heap cells are active and skips otherwise violates Safety Monotonicity. Section 5.2, Proposition 2: wp(C) and wlp(C) both satisfy locality for X iff C satisfies Safety and Termination Monotonicity, the Frame Property and a locality property for variables (a joint characterization with a store and termination, not a partial-correctness-only converse).",
+   "Chargueraud, A., 'Separation Logic for Sequential Programs (Functional Pearl)', Proc. ACM Program. Lang. 4(ICFP), Article 116, 2020, doi:10.1145/3408998 (author PDF https://www.chargueraud.org/research/2020/seq_seplogic/seq_seplogic.pdf). Definition 5.1: total-correctness Hoare triple HOARE{H} t {Q}. Definition 5.2: {H} t {Q} == forall H', HOARE{H * H'} t {Q * H'}, which 'bakes in the frame rule'. Lemma 5.4 lists the structural rules including frame; Appendix C.1 (author PDF) proves the combined consequence-frame rule (Lemma 5.5) using associativity of * (star-assoc, Lemma 3.9). Section 10 attributes the idea to Birkedal, Torp-Smith and Yang. The paper describes an accompanying course in the style of the Software Foundations series with all statements and proofs formalized in Coq (published as Software Foundations Volume 6, Separation Logic Foundations)."
+  ],
+  "design_question": "What does baking in the frame cost for non-local commands? Specifications that depend on the frame-sensitive behaviour are lost.",
+  "ledger_note": "No hypotheses: both statements are closed statements about the specific command allocLeast 1 in Heap Nat and specific assertions."
+ },
+ {
+  "id": "R7-scope-boundary-witnesses",
+  "lean": [
+   "Toy.Sep.triple_conj",
+   "Toy.Sep.skipOnEmp_local_and_no_outcome_on_nonempty",
+   "Toy.Sep.emptyDisj_degenerate",
+   "Toy.Sep.onePair_true_precise",
+   "Toy.Sep.projLeft_rightCancel_precise_not_conjDistribLeft",
+   "Toy.Sep.projRight_leftCancel_precise_not_conjDistrib_not_preciseLeft",
+   "Toy.Sep.precise_iff_preciseLeft_of_disjSymm_of_unionComm",
+   "Toy.Sep.conjDistrib_iff_conjDistribLeft_of_disjSymm_of_unionComm",
+   "Toy.Sep.not_safetyMono_of_safe_emp_of_faults",
+   "Toy.Sep.heap_empty_all_commands_local"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "Small folklore facts made precise to delimit R1-R4; not claimed novel.",
+  "plain_claim": "(i) The Hoare conjunction rule holds for every command without precision or cancellativity. (ii) A local heap command can terminate from emp and have no outcome from every non-empty heap. (iii) With empty disjointness every command is local and every assertion precise, with unique frames and the distribution law; without a unit even the always-true assertion can be precise. (iv) Right- and left-handed precision and distribution coincide under symmetric disjointness and commutative union, and can differ without them, even in cancellative structures. (v) A heap command that is safe on emp and faults from some heap is not safety-monotone. (vi) Over the uninhabited value type Empty the only heap is emp, so every heap command is safety-monotone and has the frame property; the non-locality results need an inhabited value type.",
+  "hypotheses": [
+   {
+    "name": "h₁ : Triple P₁ c Q₁ (triple_conj)",
+    "purpose": "Premise of the conjunction rule; supplies safety and the first conjunct of the postcondition.",
+    "tightness": "tight",
+    "counterexample": "Toy.Sep.triple_conj_premise1_tight"
+   },
+   {
+    "name": "h₂ : Triple P₂ c Q₂ (triple_conj)",
+    "purpose": "Premise of the conjunction rule; supplies the second conjunct of the postcondition.",
+    "tightness": "tight",
+    "counterexample": "Toy.Sep.triple_conj_premise2_tight"
+   },
+   {
+    "name": "hs : DisjSymm S (orientation equivalences)",
+    "purpose": "Swaps disjointness facts between the two sides.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Sep.orDisjRight_unionComm_and_not_precise_iff_preciseLeft",
+     "Toy.Sep.orDisjRight_unionComm_and_not_conjDistrib_iff_conjDistribLeft"
+    ]
+   },
+   {
+    "name": "hc : UnionComm S (orientation equivalences)",
+    "purpose": "Swaps the two sides of a union.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Sep.projLeft_disjSymm_and_not_precise_iff_preciseLeft",
+     "Toy.Sep.projRight_disjSymm_and_not_conjDistrib_iff_conjDistribLeft"
+    ]
+   },
+   {
+    "name": "hs : Safe c Heap.emp (not_safetyMono_of_safe_emp_of_faults)",
+    "purpose": "Without safety on emp, a command may fault everywhere it is unsafe and still be safety-monotone.",
+    "tightness": "tight",
+    "counterexample": "Toy.Sep.assertAlloc_faults_and_safetyMono"
+   },
+   {
+    "name": "hf : c h Outcome.fault (not_safetyMono_of_safe_emp_of_faults)",
+    "purpose": "Without a faulting run there is nothing to contradict.",
+    "tightness": "tight",
+    "counterexample": "Toy.Sep.skip_safe_emp_and_safetyMono"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "Items (ii)-(iv) are concrete witnesses; the hypotheses of the orientation equivalences hold in the heap model, and allocAt 0 1 is safe on emp and faults from 0 |-> 2. For triple_conj, both premises hold in the heap model for c = skip with the different preconditions ptAny 0 and {0 |-> 1}, whose conjunction holds of 0 |-> 1 (triple_conj_nonvacuous).",
+  "nonvacuity_witness_lean": [
+   "Toy.Sep.boundary_witnesses_nonvacuous",
+   "Toy.Sep.triple_conj_nonvacuous"
+  ],
+  "non_claims": [
+   "These witnesses only delimit the main results; they are not design results on their own."
+  ],
+  "prior_art": [
+   "Yang, H. & O'Hearn, P. W., 'A Semantic Basis for Local Reasoning', FoSSaCS 2002, LNCS 2303, pp. 402-416, doi:10.1007/3-540-45931-6_28 (author PDF http://www0.cs.ucl.ac.uk/staff/p.ohearn/papers/basis.pdf). Section 4: Lemma 1 (Safety and Termination Monotonicity), Lemma 2 (Frame Property), Theorem 1 (the Frame Rule is sound for both partial and total correctness), in a store-and-heap model. Section 4.1: always choosing the smallest free address for cons would invalidate the Frame Rule (detectable with address arithmetic; without address arithmetic, invariance under location renaming could be used instead of nondeterminism); trapping memory faults would allow branching on whether a cell is active, contradicting Safety Monotonicity; in Petri nets with capacity 1 a transition with pre(t) = {a}, post(t) = {b} is enabled in {a} but not in {a, b} and violates Safety Monotonicity. Section 5.1: a command that faults when more than 3 heap cells are active and skips otherwise violates Safety Monotonicity. Section 5.2, Proposition 2: wp(C) and wlp(C) both satisfy locality for X iff C satisfies Safety and Termination Monotonicity, the Frame Property and a locality property for variables (a joint characterization with a store and termination, not a partial-correctness-only converse).",
+   "Costanzo, D. & Shao, Z., 'A Case for Behavior-Preserving Actions in Separation Logic', APLAS 2012, LNCS 7705, pp. 332-349, doi:10.1007/978-3-642-35182-2_24 (author PDF https://flint.cs.yale.edu/flint/publications/bpsl.pdf). Section 5.1 (Footprints and Smallest Safe States): under standard locality a specification of a command on its smallest safe states need not be complete (example x := cons(0); free(x)). Section 5.3: the frame rule of relational separation logic is sound for deterministic but not for nondeterministic programs (citing Yang, TCS 2007). Section 5.4 (Finite Memory): a state-growing command that faults when memory is full is safe on the empty state but unsafe on the full state, so it violates Safety Monotonicity; diverging instead requires allowing divergence on any state to keep Termination Monotonicity.",
+   "O'Hearn, P. W., Yang, H. & Reynolds, J. C., 'Separation and Information Hiding', POPL 2004, pp. 268-280, doi:10.1145/964001.964024: Section 9, Lemma 3: p is precise iff p * - distributes over conjunction, p * (q and r) = (p * q) and (p * r), in the store-and-heap model with p on the left; Theorem 5: the hypothetical frame rule is sound for fixed preconditions (resp. a fixed resource invariant) iff they are precise; Section 10.3, Theorem 11: soundness also holds for 'supported' preconditions or invariants with intuitionistic (closed under heap extension) postconditions. Journal version: ACM TOPLAS 31(3), Article 11, pp. 11:1-11:50, 2009, doi:10.1145/1498926.1498929; in the authors' 2008 preprint of it, Lemma 6 is the Distribution Lemma and Section 9 notes that (q * r) and (q' * r) does not imply (q and q') * r in general, with q = emp, q' = x |-> - and r = true.",
+   "Calcagno, C., O'Hearn, P. W. & Yang, H., 'Local Action and Abstract Separation Logic', LICS 2007, pp. 366-378, doi:10.1109/LICS.2007.30 (author PDF http://www0.cs.ucl.ac.uk/staff/p.ohearn/papers/asl-short.pdf). Definition 1: a separation algebra is a cancellative partial commutative monoid. Definition 3: p is precise if every state has at most one substate in p. Section 2, Examples of Predicates: the two-cell disjunction l0 |-> rv0 or l1 |-> rv1 is not precise. Lemma 4: every singleton is precise; p is precise iff for all nonempty X, (meet X) * p = meet{x * p | x in X}; the remark after it says injectivity of sigma . (-) is equivalent to that distribution for singleton frames {sigma}. Section 3: a relation satisfies Safety Monotonicity and the Frame Property 'iff the frame rule is sound for it' (stated without proof)."
+  ],
+  "design_question": "Reference point: which tempting readings of R1-R4 are ruled out.",
+  "ledger_note": "The ledger lists the Prop hypotheses of the theorems on this card: h₁ and h₂ of triple_conj (item (i)), hs and hc of the two orientation equivalences precise_iff_preciseLeft_of_disjSymm_of_unionComm and conjDistrib_iff_conjDistribLeft_of_disjSymm_of_unionComm (item (iv)), and hs and hf of not_safetyMono_of_safe_emp_of_faults (item (v)); the binder name hs is used by both of the latter theorems, with different types. The remaining statements (items (ii), (iii), the counterexamples of item (iv), and item (vi)) have no Prop hypotheses; their parameters (a command, an assertion) are universally quantified without conditions."
+ }
+]
