@@ -1,0 +1,74 @@
+{
+  "topics": [
+    "domains/media-containers",
+    "zerocopy/wire-formats",
+    "verification/cryptography",
+    "security/media-codecs"
+  ],
+  "subjects": [
+    {
+      "name": "FFmpeg multimedia framework",
+      "identity": {
+        "repository": "FFmpeg/FFmpeg",
+        "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+      }
+    },
+    {
+      "name": "Coding of Audio-Visual Objects — Part 12: ISO Base Media File Format (ISOBMFF)",
+      "identity": {
+        "standard": "ISO/IEC 14496-12",
+        "version": "2022"
+      }
+    },
+    {
+      "name": "MPEG Systems Technologies — Part 7: Common Encryption in ISO Base Media File Format Files (CENC)",
+      "identity": {
+        "standard": "ISO/IEC 23001-7",
+        "version": "2023"
+      }
+    },
+    {
+      "name": "Multimedia Application Format (MPEG-A) — Part 19: Common Media Application Format (CMAF) for Segmented Media",
+      "identity": {
+        "standard": "ISO/IEC 23000-19",
+        "version": "2024"
+      }
+    },
+    {
+      "name": "Generic Coding of Moving Pictures and Associated Audio Information: Systems (MPEG-2 Transport Stream)",
+      "identity": {
+        "standard": "ITU-T Rec. H.222.0 | ISO/IEC 13818-1",
+        "version": "2023"
+      }
+    },
+    {
+      "name": "Extensible Binary Meta Language (EBML)",
+      "identity": {
+        "standard": "IETF RFC 8794",
+        "url": "https://www.rfc-editor.org/rfc/rfc8794"
+      }
+    },
+    {
+      "name": "Matroska Media Container Format Specifications",
+      "identity": {
+        "standard": "IETF RFC 9559",
+        "url": "https://www.rfc-editor.org/rfc/rfc9559"
+      }
+    },
+    {
+      "name": "HTTP Live Streaming (HLS)",
+      "identity": {
+        "standard": "IETF RFC 8216",
+        "url": "https://www.rfc-editor.org/rfc/rfc8216"
+      }
+    },
+    {
+      "name": "Dynamic Adaptive Streaming over HTTP (DASH) — Part 1: Media Presentation Description and Segment Formats",
+      "identity": {
+        "standard": "ISO/IEC 23009-1",
+        "version": "2022"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

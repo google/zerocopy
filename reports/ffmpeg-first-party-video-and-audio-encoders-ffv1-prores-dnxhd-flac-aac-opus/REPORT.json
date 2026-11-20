@@ -1,0 +1,67 @@
+{
+  "topics": [
+    "domains/media-encoders",
+    "verification/fixed-point-dsp",
+    "security/media-codecs",
+    "compilers/simd-vectorization"
+  ],
+  "subjects": [
+    {
+      "name": "FFmpeg multimedia framework",
+      "identity": {
+        "repository": "FFmpeg/FFmpeg",
+        "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+      }
+    },
+    {
+      "name": "FFV1 Video Coding Format Versions 0, 1, and 3",
+      "identity": {
+        "standard": "IETF RFC 9043",
+        "url": "https://www.rfc-editor.org/rfc/rfc9043"
+      }
+    },
+    {
+      "name": "Apple ProRes Bitstream Syntax and Decoding Process",
+      "identity": {
+        "standard": "SMPTE RDD 36",
+        "version": "2015"
+      }
+    },
+    {
+      "name": "VC-3 Picture Compression and Data Stream Format (DNxHD)",
+      "identity": {
+        "standard": "SMPTE ST 2019-1",
+        "version": "2016"
+      }
+    },
+    {
+      "name": "Free Lossless Audio Codec (FLAC)",
+      "identity": {
+        "standard": "IETF RFC 9639",
+        "url": "https://www.rfc-editor.org/rfc/rfc9639"
+      }
+    },
+    {
+      "name": "Definition of the Opus Audio Codec",
+      "identity": {
+        "standard": "IETF RFC 6716",
+        "url": "https://www.rfc-editor.org/rfc/rfc6716"
+      }
+    },
+    {
+      "name": "Digital Audio Compression (AC-3, Enhanced AC-3) Standard",
+      "identity": {
+        "standard": "ETSI TS 102 366",
+        "version": "V1.4.1"
+      }
+    },
+    {
+      "name": "Generic Coding of Moving Pictures and Associated Audio Information — Part 7: Advanced Audio Coding (AAC)",
+      "identity": {
+        "standard": "ISO/IEC 13818-7",
+        "version": "2006"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

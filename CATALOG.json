@@ -25645,6 +25645,73 @@
         "domains/multimedia"
       ]
     },
+    "ffmpeg-first-party-video-and-audio-encoders-ffv1-prores-dnxhd-flac-aac-opus": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+          },
+          "name": "FFmpeg multimedia framework"
+        },
+        {
+          "identity": {
+            "standard": "IETF RFC 9043",
+            "url": "https://www.rfc-editor.org/rfc/rfc9043"
+          },
+          "name": "FFV1 Video Coding Format Versions 0, 1, and 3"
+        },
+        {
+          "identity": {
+            "standard": "SMPTE RDD 36",
+            "version": "2015"
+          },
+          "name": "Apple ProRes Bitstream Syntax and Decoding Process"
+        },
+        {
+          "identity": {
+            "standard": "SMPTE ST 2019-1",
+            "version": "2016"
+          },
+          "name": "VC-3 Picture Compression and Data Stream Format (DNxHD)"
+        },
+        {
+          "identity": {
+            "standard": "IETF RFC 9639",
+            "url": "https://www.rfc-editor.org/rfc/rfc9639"
+          },
+          "name": "Free Lossless Audio Codec (FLAC)"
+        },
+        {
+          "identity": {
+            "standard": "IETF RFC 6716",
+            "url": "https://www.rfc-editor.org/rfc/rfc6716"
+          },
+          "name": "Definition of the Opus Audio Codec"
+        },
+        {
+          "identity": {
+            "standard": "ETSI TS 102 366",
+            "version": "V1.4.1"
+          },
+          "name": "Digital Audio Compression (AC-3, Enhanced AC-3) Standard"
+        },
+        {
+          "identity": {
+            "standard": "ISO/IEC 13818-7",
+            "version": "2006"
+          },
+          "name": "Generic Coding of Moving Pictures and Associated Audio Information \u2014 Part 7: Advanced Audio Coding (AAC)"
+        }
+      ],
+      "topics": [
+        "domains/media-encoders",
+        "verification/fixed-point-dsp",
+        "security/media-codecs",
+        "compilers/simd-vectorization"
+      ]
+    },
     "fiat-crypto-hacl-evercrypt-vale-libcrux-and-verified-crypto-synthesis": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -29310,6 +29377,85 @@
         "security/truetype-bytecode-twilight-bounds",
         "zerocopy/fontations-font-table-parsing",
         "verification/glyph-contour-winding-coverage"
+      ]
+    },
+    "he-aac-sbr-ps-usac-xhe-aac-truehd-eac3-dts-and-spatial-audio-decoder-anatomy": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+          },
+          "name": "FFmpeg libavcodec/libavformat/libavutil parametric, lossless, and spatial audio decoders"
+        },
+        {
+          "identity": {
+            "repository": "ittiam-systems/libxaac",
+            "revision": "2fbadd57bca46693b7a077bcf1513131106d960c"
+          },
+          "name": "Ittiam libxaac complete xHE-AAC / ISO/IEC 23003-3 USAC decoder"
+        },
+        {
+          "identity": {
+            "repository": "mstorsjo/fdk-aac",
+            "revision": "ec82feb39662ac77e24ee9b324d5962e91bc79c5"
+          },
+          "name": "Fraunhofer FDK AAC fixed-point HE-AAC v1/v2 and xHE-AAC library"
+        },
+        {
+          "identity": {
+            "repository": "AOMediaCodec/iamf-tools",
+            "revision": "7a52020dec74976394a730455a473e2933350b4d"
+          },
+          "name": "AOMedia iamf-tools reference IAMF OBU parser, encoder, and spatial renderer"
+        },
+        {
+          "identity": {
+            "edition": "2019",
+            "standard": "ISO/IEC 14496-3",
+            "title": "Information technology - Coding of audio-visual objects - Part 3: Audio"
+          },
+          "name": "ISO/IEC 14496-3 MPEG-4 Audio (HE-AAC v1 SBR and HE-AAC v2 Parametric Stereo)"
+        },
+        {
+          "identity": {
+            "edition": "2020",
+            "standard": "ISO/IEC 23003-3",
+            "title": "MPEG audio technologies - Part 3: Unified speech and audio coding"
+          },
+          "name": "ISO/IEC 23003-3 Unified Speech and Audio Coding (USAC / xHE-AAC)"
+        },
+        {
+          "identity": {
+            "standard": "ATSC A/52:2018 / ETSI TS 102 366 V1.4.1",
+            "title": "Digital Audio Compression (AC-3, Enhanced AC-3) Standard"
+          },
+          "name": "ATSC A/52:2018 / ETSI TS 102 366 AC-3 and Enhanced AC-3 (E-AC-3) specification"
+        },
+        {
+          "identity": {
+            "standard": "ETSI TS 102 114",
+            "title": "DTS Coherent Acoustics; Core and Extensions with Additional Profiles",
+            "version": "V1.6.1"
+          },
+          "name": "ETSI TS 102 114 DTS Coherent Acoustics (Core, XXCH, X96, XLL, LBR)"
+        },
+        {
+          "identity": {
+            "standard": "AOMedia IAMF",
+            "url": "https://aomediacodec.github.io/iamf/",
+            "version": "v1.1.0"
+          },
+          "name": "AOMedia Immersive Audio Model and Formats (IAMF) specification"
+        }
+      ],
+      "topics": [
+        "domains/multimedia-codecs",
+        "domains/spatial-audio",
+        "verification/fixed-point-dsp",
+        "isa/simd-media",
+        "security/bitstream-parsers"
       ]
     },
     "hemodialysis-ultrafiltration-extracorporeal-air-traps-and-infusion-pca-locks": {
@@ -33503,6 +33649,80 @@
         "verification/compcert",
         "llvm/translation-validation",
         "rust/layout"
+      ]
+    },
+    "isobmff-matroska-mpegts-hls-dash-muxers-interleaving-faststart-and-cenc-crypto": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+          },
+          "name": "FFmpeg multimedia framework"
+        },
+        {
+          "identity": {
+            "standard": "ISO/IEC 14496-12",
+            "version": "2022"
+          },
+          "name": "Coding of Audio-Visual Objects \u2014 Part 12: ISO Base Media File Format (ISOBMFF)"
+        },
+        {
+          "identity": {
+            "standard": "ISO/IEC 23001-7",
+            "version": "2023"
+          },
+          "name": "MPEG Systems Technologies \u2014 Part 7: Common Encryption in ISO Base Media File Format Files (CENC)"
+        },
+        {
+          "identity": {
+            "standard": "ISO/IEC 23000-19",
+            "version": "2024"
+          },
+          "name": "Multimedia Application Format (MPEG-A) \u2014 Part 19: Common Media Application Format (CMAF) for Segmented Media"
+        },
+        {
+          "identity": {
+            "standard": "ITU-T Rec. H.222.0 | ISO/IEC 13818-1",
+            "version": "2023"
+          },
+          "name": "Generic Coding of Moving Pictures and Associated Audio Information: Systems (MPEG-2 Transport Stream)"
+        },
+        {
+          "identity": {
+            "standard": "IETF RFC 8794",
+            "url": "https://www.rfc-editor.org/rfc/rfc8794"
+          },
+          "name": "Extensible Binary Meta Language (EBML)"
+        },
+        {
+          "identity": {
+            "standard": "IETF RFC 9559",
+            "url": "https://www.rfc-editor.org/rfc/rfc9559"
+          },
+          "name": "Matroska Media Container Format Specifications"
+        },
+        {
+          "identity": {
+            "standard": "IETF RFC 8216",
+            "url": "https://www.rfc-editor.org/rfc/rfc8216"
+          },
+          "name": "HTTP Live Streaming (HLS)"
+        },
+        {
+          "identity": {
+            "standard": "ISO/IEC 23009-1",
+            "version": "2022"
+          },
+          "name": "Dynamic Adaptive Streaming over HTTP (DASH) \u2014 Part 1: Media Presentation Description and Segment Formats"
+        }
+      ],
+      "topics": [
+        "domains/media-containers",
+        "zerocopy/wire-formats",
+        "verification/cryptography",
+        "security/media-codecs"
       ]
     },
     "isobmff-mp4-matroska-mpegts-hls-dash-demuxer-muxer-edge-cases-and-fuzz-hazards": {
@@ -37815,6 +38035,208 @@
         "pl/capability-split-join-rules",
         "verification/mechanized-substructural-metatheory",
         "pl/single-use-typestate"
+      ]
+    },
+    "libavdevice-os-capture-playback-and-realtime-rtp-rtsp-rtmp-srt-whip-transports": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80",
+            "version": "Lavd63.6.100 / Lavf63.21.100"
+          },
+          "name": "FFmpeg (libavdevice v63.6.100 and libavformat v63.21.100)"
+        },
+        {
+          "identity": {
+            "repository": "algesten/dimpl",
+            "revision": "e341a902854d96e1ab8aad910ef5ddea5c1598f8",
+            "version": "0.9.0"
+          },
+          "name": "dimpl (Sans-IO DTLS 1.2/1.3 and DTLS-SRTP engine)"
+        },
+        {
+          "identity": {
+            "repository": "algesten/str0m",
+            "revision": "54bf16ee84eca2bc39c8b59720338eb0bbd55538",
+            "version": "0.25.0"
+          },
+          "name": "str0m (Sans-IO WebRTC ICE/STUN/DTLS-SRTP/RTP/SCTP stack)"
+        },
+        {
+          "identity": {
+            "repository": "webrtc-rs/webrtc",
+            "revision": "3c4584ae984a004def73168782fa86d59f12263a",
+            "version": "0.21.1"
+          },
+          "name": "webrtc-rs (Async/Sans-IO WebRTC umbrella crate)"
+        },
+        {
+          "identity": {
+            "repository": "webrtc-rs/dtls",
+            "revision": "119dc715440843c6a6e7a0fb955fc38d1e7f37ef",
+            "version": "0.5.4"
+          },
+          "name": "webrtc-dtls (Legacy standalone Rust DTLS 1.2 crate)"
+        },
+        {
+          "identity": {
+            "repository": "webrtc-rs/srtp",
+            "revision": "33121993cd21e2e75adc1559052bf6901eecd95b",
+            "version": "0.8.9"
+          },
+          "name": "webrtc-srtp (Standalone Rust SRTP crate)"
+        },
+        {
+          "identity": {
+            "repository": "Haivision/srt",
+            "revision": "98ac9998f9ba8db41e7118fa867180c1536d1b74"
+          },
+          "name": "Haivision SRT (Secure Reliable Transport reference library)"
+        },
+        {
+          "identity": {
+            "repository": "veovera/enhanced-rtmp",
+            "revision": "40589eb9d38d6555e6cdbbfc5699312995203561",
+            "version": "v2"
+          },
+          "name": "Enhanced RTMP Specification (v1 and v2)"
+        },
+        {
+          "identity": {
+            "repository": "scottlamb/retina",
+            "revision": "2b6b7fe0a6f6a5bf69d5e9c8d4fd785ccd090873",
+            "version": "0.4.22"
+          },
+          "name": "retina (Rust RTSP and RTP depacketization library)"
+        },
+        {
+          "identity": {
+            "repository": "google/boringssl",
+            "revision": "ddd732967025c608598b9984a1ada358fa82f6f0"
+          },
+          "name": "BoringSSL (DTLS-SRTP implementation)"
+        },
+        {
+          "identity": {
+            "repository": "openssl/openssl",
+            "revision": "159cdbc6006afe7676c5e699f624991ce40d911e"
+          },
+          "name": "OpenSSL (TLS/DTLS-SRTP implementation)"
+        },
+        {
+          "identity": {
+            "repository": "PipeWire/pipewire",
+            "revision": "415ac8e5b68607e95e57a12b926f9aa104e5ea7b"
+          },
+          "name": "PipeWire (Simple Plugin API buffer and DMA-BUF protocol)"
+        },
+        {
+          "identity": {
+            "repository": "RustAudio/cpal",
+            "revision": "40ff3adea81757326debba6b2befb747a6699d50"
+          },
+          "name": "cpal (Cross-Platform Audio Library WASAPI/ALSA/CoreAudio backend)"
+        },
+        {
+          "identity": {
+            "url": "https://code.videolan.org/rist/librist",
+            "version": "v0.2.11"
+          },
+          "name": "librist (VideoLAN Reliable Internet Stream Transport library)"
+        },
+        {
+          "identity": {
+            "standard": "IETF RFC 3550, RFC 3711, RFC 5764, RFC 6184, RFC 7714, RFC 7798, RFC 8216, RFC 8445, RFC 8489, RFC 9147, RFC 9725"
+          },
+          "name": "IETF RTP, Payload Format, SRTP, ICE/STUN, DTLS-SRTP, HLS, and WHIP Specifications"
+        },
+        {
+          "identity": {
+            "standard": "AOMedia AV1-RTP v1.0; VSF TR-06-1 (Simple Profile) and TR-06-2 (Main Profile)"
+          },
+          "name": "AOMedia RTP Payload Format For AV1 and VSF RIST Specifications"
+        }
+      ],
+      "topics": [
+        "systems/realtime-streaming",
+        "ffi/os-boundary",
+        "security/network-protocols",
+        "domains/media-transports",
+        "verification/parsers",
+        "zerocopy/dma-lifetimes"
+      ]
+    },
+    "libavfilter-audio-video-dsp-kernels-framesync-subtitles-and-gpu-filtergraphs": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+          },
+          "name": "FFmpeg libavfilter, libavcodec subtitle decoders, and build shader pipeline"
+        },
+        {
+          "identity": {
+            "repository": "sekrit-twc/zimg",
+            "revision": "67e0603271c080e22c8429856dd4a8a56587e61e"
+          },
+          "name": "zimg scaling and colorspace library backing vf_zscale"
+        },
+        {
+          "identity": {
+            "repository": "libass/libass",
+            "revision": "a6613d2554daff9e1b5ddf2dbfb3fc31b61b9448"
+          },
+          "name": "libass ASS/SSA subtitle renderer backing vf_subtitles and vf_ass"
+        },
+        {
+          "identity": {
+            "repository": "googlefonts/fontations",
+            "revision": "7eec1e18b6dcb2cbb77a805f280825c075a388c6"
+          },
+          "name": "Fontations safe Rust OpenType font parsing and outline extraction workspace"
+        },
+        {
+          "identity": {
+            "repository": "harfbuzz/harfruzz",
+            "revision": "afca863838d515241d45ab0f49b1bafc03a9b93e"
+          },
+          "name": "HarfRust (harfruzz) pure-Rust OpenType text shaping engine"
+        },
+        {
+          "identity": {
+            "edition": "2015-10",
+            "standard": "ITU-R BS.1770-4",
+            "title": "Algorithms to measure audio programme loudness and true-peak audio level"
+          },
+          "name": "ITU-R BS.1770-4 gated loudness and true-peak measurement specification"
+        },
+        {
+          "identity": {
+            "standard": "ETSI EN 300 743",
+            "title": "Digital Video Broadcasting (DVB); Subtitling systems",
+            "version": "V1.6.1"
+          },
+          "name": "ETSI EN 300 743 DVB bitmap subtitling specification"
+        },
+        {
+          "identity": {
+            "standard": "ANSI/CTA-608-E S-2019 / CTA-708-E S-2023",
+            "title": "Line 21 Data Services and Digital Television (DTV) Closed Captioning"
+          },
+          "name": "ANSI/CTA-608-E and CTA-708-E closed captioning specifications"
+        }
+      ],
+      "topics": [
+        "domains/media-filters",
+        "systems/realtime-media-graphs",
+        "compilers/shader-languages",
+        "verification/floating-point",
+        "isa/simd-media",
+        "zerocopy/media-frame-views"
       ]
     },
     "libavfilter-graph-scheduling-frame-threading-and-avbufferref-lifetime-invariants": {

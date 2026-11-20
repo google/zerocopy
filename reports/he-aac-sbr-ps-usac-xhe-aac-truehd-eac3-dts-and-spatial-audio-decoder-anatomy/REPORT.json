@@ -1,0 +1,79 @@
+{
+  "topics": [
+    "domains/multimedia-codecs",
+    "domains/spatial-audio",
+    "verification/fixed-point-dsp",
+    "isa/simd-media",
+    "security/bitstream-parsers"
+  ],
+  "subjects": [
+    {
+      "name": "FFmpeg libavcodec/libavformat/libavutil parametric, lossless, and spatial audio decoders",
+      "identity": {
+        "repository": "FFmpeg/FFmpeg",
+        "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+      }
+    },
+    {
+      "name": "Ittiam libxaac complete xHE-AAC / ISO/IEC 23003-3 USAC decoder",
+      "identity": {
+        "repository": "ittiam-systems/libxaac",
+        "revision": "2fbadd57bca46693b7a077bcf1513131106d960c"
+      }
+    },
+    {
+      "name": "Fraunhofer FDK AAC fixed-point HE-AAC v1/v2 and xHE-AAC library",
+      "identity": {
+        "repository": "mstorsjo/fdk-aac",
+        "revision": "ec82feb39662ac77e24ee9b324d5962e91bc79c5"
+      }
+    },
+    {
+      "name": "AOMedia iamf-tools reference IAMF OBU parser, encoder, and spatial renderer",
+      "identity": {
+        "repository": "AOMediaCodec/iamf-tools",
+        "revision": "7a52020dec74976394a730455a473e2933350b4d"
+      }
+    },
+    {
+      "name": "ISO/IEC 14496-3 MPEG-4 Audio (HE-AAC v1 SBR and HE-AAC v2 Parametric Stereo)",
+      "identity": {
+        "standard": "ISO/IEC 14496-3",
+        "edition": "2019",
+        "title": "Information technology - Coding of audio-visual objects - Part 3: Audio"
+      }
+    },
+    {
+      "name": "ISO/IEC 23003-3 Unified Speech and Audio Coding (USAC / xHE-AAC)",
+      "identity": {
+        "standard": "ISO/IEC 23003-3",
+        "edition": "2020",
+        "title": "MPEG audio technologies - Part 3: Unified speech and audio coding"
+      }
+    },
+    {
+      "name": "ATSC A/52:2018 / ETSI TS 102 366 AC-3 and Enhanced AC-3 (E-AC-3) specification",
+      "identity": {
+        "standard": "ATSC A/52:2018 / ETSI TS 102 366 V1.4.1",
+        "title": "Digital Audio Compression (AC-3, Enhanced AC-3) Standard"
+      }
+    },
+    {
+      "name": "ETSI TS 102 114 DTS Coherent Acoustics (Core, XXCH, X96, XLL, LBR)",
+      "identity": {
+        "standard": "ETSI TS 102 114",
+        "version": "V1.6.1",
+        "title": "DTS Coherent Acoustics; Core and Extensions with Additional Profiles"
+      }
+    },
+    {
+      "name": "AOMedia Immersive Audio Model and Formats (IAMF) specification",
+      "identity": {
+        "standard": "AOMedia IAMF",
+        "version": "v1.1.0",
+        "url": "https://aomediacodec.github.io/iamf/"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

@@ -1,0 +1,71 @@
+{
+  "topics": [
+    "domains/media-filters",
+    "systems/realtime-media-graphs",
+    "compilers/shader-languages",
+    "verification/floating-point",
+    "isa/simd-media",
+    "zerocopy/media-frame-views"
+  ],
+  "subjects": [
+    {
+      "name": "FFmpeg libavfilter, libavcodec subtitle decoders, and build shader pipeline",
+      "identity": {
+        "repository": "FFmpeg/FFmpeg",
+        "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+      }
+    },
+    {
+      "name": "zimg scaling and colorspace library backing vf_zscale",
+      "identity": {
+        "repository": "sekrit-twc/zimg",
+        "revision": "67e0603271c080e22c8429856dd4a8a56587e61e"
+      }
+    },
+    {
+      "name": "libass ASS/SSA subtitle renderer backing vf_subtitles and vf_ass",
+      "identity": {
+        "repository": "libass/libass",
+        "revision": "a6613d2554daff9e1b5ddf2dbfb3fc31b61b9448"
+      }
+    },
+    {
+      "name": "Fontations safe Rust OpenType font parsing and outline extraction workspace",
+      "identity": {
+        "repository": "googlefonts/fontations",
+        "revision": "7eec1e18b6dcb2cbb77a805f280825c075a388c6"
+      }
+    },
+    {
+      "name": "HarfRust (harfruzz) pure-Rust OpenType text shaping engine",
+      "identity": {
+        "repository": "harfbuzz/harfruzz",
+        "revision": "afca863838d515241d45ab0f49b1bafc03a9b93e"
+      }
+    },
+    {
+      "name": "ITU-R BS.1770-4 gated loudness and true-peak measurement specification",
+      "identity": {
+        "standard": "ITU-R BS.1770-4",
+        "edition": "2015-10",
+        "title": "Algorithms to measure audio programme loudness and true-peak audio level"
+      }
+    },
+    {
+      "name": "ETSI EN 300 743 DVB bitmap subtitling specification",
+      "identity": {
+        "standard": "ETSI EN 300 743",
+        "version": "V1.6.1",
+        "title": "Digital Video Broadcasting (DVB); Subtitling systems"
+      }
+    },
+    {
+      "name": "ANSI/CTA-608-E and CTA-708-E closed captioning specifications",
+      "identity": {
+        "standard": "ANSI/CTA-608-E S-2019 / CTA-708-E S-2023",
+        "title": "Line 21 Data Services and Digital Television (DTV) Closed Captioning"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
