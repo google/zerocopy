@@ -386,7 +386,8 @@ an authenticated `Init` + `Std` parser environment only (**zero** target
   `{definition, abbrev, theorem, structure, inductive, classInductive,
   instance}`. Rejects user-written `._unsafe_rec` declaration identifiers.
 - **Arity-independent fail-closed modifiers:** Rejects
-  `Command.{meta,unsafe,partial,public}` and `Term.unsafe`. For
+  `Command.{meta,unsafe,partial,public}`, `Term.unsafe`, and `Term.scoped`
+  (closing `scoped instance` as well as `@[scoped ...]`). For
   `Command.sectionHeader`, inspects **all** children and accepts strictly
   `null #[]` or `null #[atom "noncomputable"]`—avoiding brittle `args.size == 4`
   slot-index assumptions while rejecting `public`, `meta`, `unsafe`, or any
@@ -411,23 +412,27 @@ an authenticated `Init` + `Std` parser environment only (**zero** target
     literal-boolean `linter.*`.
 - **Dynamic fail-closed pure-spec tactic allowlist (`allowedSpecTacticKinds`):**
   Extracts every syntax kind in every `Parser.parserExtension` category outside
-  the closed 25-category pure expression/command/binder set, unioned with
-  `Lean.Parser.Tactic.`-prefixed kinds. Every matching node must belong to
-  `allowedSpecTacticKinds` (extending `allowedTheoryTacticKinds` with pure
-  `Init` spec/termination tactics; `decide` admitted bare or with
-  `kernel`/`revert` config only). This automatically closes `bv_decide`,
-  `bv_check`, `grind => bv_*`, `native_decide`, `rfl'`, `run_tac`,
-  `Tactic.{open,set_option}`, and future Lean solver categories by construction.
+  the closed 9-category pure expression/command/attribute/level/binder set
+  (`attr`, `binderPred`, `command`, `doElem`, `level`, `prec`, `prio`,
+  `structInstFieldDecl`, `term`), unioned with `Lean.Parser.Tactic.`-prefixed
+  kinds. Every matching node must belong to `allowedSpecTacticKinds` (extending
+  `allowedTheoryTacticKinds` with pure `Init` spec/termination tactics; `decide`
+  admitted bare or with `kernel`/`revert` config only). Combined with rejecting
+  `autoParam`, `Term.binderTactic`, and `Term.{quotedName,doubleQuotedName}`,
+  this closes `bv_decide`, `bv_check`, `grind => bv_*`, `native_decide`, `rfl'`,
+  `run_tac`, `Tactic.{open,set_option}`, synthetic `autoParam` tactic scripts,
+  and future Lean solver categories by construction.
 - **Exact term and quotation guards:** Rejects double-backtick
   `` ``Lean.includeStr `` and `` ``Lean.byElab `` (failing closed at inspector
-  compile time if renamed in `Init`), single-backtick meta/debug/parser-macro
-  `Term` and `doElem` forms (`sorry`, `unsafe`, `dbgTrace`, `idbg`,
-  `doDbgTrace`, `doIdbg`, `matchExpr`, `letExpr`, `doMatchExpr`, `doLetExpr`,
-  `doLetMetaExpr`, `showTermElabImpl`, `declName`, `withDeclName`,
-  `privateDecl`, `leading_parser`, `trailing_parser`, `elabToSyntax`,
-  `termMacro.trace[_]_`, `Syntax.exact?`, `termEval_{prec,prio}_`,
-  `termPrintln!__`, `logNamed*`/`throwNamed*`), and trailing
-  `"quot"`/`"quotSeq"` (`dynamicQuot`/`precheckedQuot`), backed by live
+  compile time if renamed in `Init`), `autoParam` identifiers,
+  `Term.{binderTactic,quotedName,doubleQuotedName}`, single-backtick
+  meta/debug/parser-macro `Term` and `doElem` forms (`sorry`, `unsafe`,
+  `dbgTrace`, `idbg`, `doDbgTrace`, `doIdbg`, `matchExpr`, `letExpr`,
+  `doMatchExpr`, `doLetExpr`, `doLetMetaExpr`, `showTermElabImpl`, `declName`,
+  `withDeclName`, `privateDecl`, `leading_parser`, `trailing_parser`,
+  `elabToSyntax`, `termMacro.trace[_]_`, `Syntax.exact?`,
+  `termEval_{prec,prio}_`, `termPrintln!__`, `logNamed*`/`throwNamed*`), and
+  trailing `"quot"`/`"quotSeq"` (`dynamicQuot`/`precheckedQuot`), backed by live
   parse-tree round-trip CI tests.
 
 ### 4.3 Unified 2-phase `"target-audit"`

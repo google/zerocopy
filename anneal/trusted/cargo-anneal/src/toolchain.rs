@@ -335,6 +335,9 @@ pub struct AdmittedToolchain {
     pub(crate) expected_lean_sha: Option<String>,
     /// SHA-256 digest of staged `control/TrustedBoundary.lean` at admission.
     pub(crate) inspector_sha256: String,
+    /// Staged precompiled `control/TrustedBoundary.olean` built once per
+    /// `Checker` from `control/TrustedBoundary.lean`, plus its SHA-256 digest.
+    pub(crate) inspector_olean: Option<(PathBuf, String)>,
 }
 
 impl AdmittedToolchain {

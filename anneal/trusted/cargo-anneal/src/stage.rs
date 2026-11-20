@@ -740,6 +740,7 @@ impl Checker {
             exec_lean,
             expected_lean_sha: Some(expected_lean_sha.clone()),
             inspector_sha256,
+            inspector_olean: None,
         });
         Ok(self.admitted.as_mut().unwrap())
     }
@@ -795,6 +796,7 @@ impl Checker {
             exec_lean,
             expected_lean_sha: None,
             inspector_sha256,
+            inspector_olean: None,
         });
         Ok(self.admitted.as_mut().unwrap())
     }
@@ -1353,8 +1355,9 @@ impl Checker {
         Ok(())
     }
 
-    /// Re-hash `stage/control/TrustedBoundary.lean`, every staged target
-    /// source in `staged_sources`, and every Door-1-promoted `.olean` in
+    /// Re-hash `stage/control/TrustedBoundary.lean`, any precompiled
+    /// `stage/control/TrustedBoundary.olean`, every staged target source in
+    /// `staged_sources`, and every Door-1-promoted `.olean` in
     /// `self.olean_ledger` right before `"target-audit"` (`ArtifactLedger`).
     pub(crate) fn verify_artifact_ledger(
         &self,
@@ -1367,6 +1370,15 @@ impl Checker {
                 "artifact-ledger",
                 "staged TrustedBoundary.lean changed during elaboration",
             ));
+        }
+        if let Some((olean_path, expected_olean_sha)) = &adm.inspector_olean {
+            let actual = sha256_file(olean_path, "artifact-ledger")?;
+            if !actual.eq_ignore_ascii_case(expected_olean_sha) {
+                return Err(Failure::operational(
+                    "artifact-ledger",
+                    "staged TrustedBoundary.olean changed during elaboration",
+                ));
+            }
         }
         for (path, expected_sha) in staged_sources {
             let actual = sha256_file(path, "artifact-ledger")?;
@@ -1392,6 +1404,132 @@ impl Checker {
         Ok(())
     }
 
+    /// Compile staged `control/TrustedBoundary.lean` once per [`Checker`] into
+    /// `control/TrustedBoundary.olean` (validated through Door 1 and pinned by
+    /// SHA-256 in [`AdmittedToolchain`]) so repeated inspector invocations
+    /// (`headers`, `spec-preflight`, `target-audit`, `preflight`, `audit`) load
+    /// the precompiled `.olean` instead of re-elaborating the full inspector
+    /// source on every call.
+    fn ensure_inspector_compiled(&mut self, mode: &str, direct: bool) -> Result<PathBuf, Failure> {
+        if let Some((olean_path, _)) = &self.admitted()?.inspector_olean {
+            return Ok(olean_path.clone());
+        }
+        let (inspector_host, expected_sha) = {
+            let adm = self.admitted()?;
+            (adm.inspector.clone(), adm.inspector_sha256.clone())
+        };
+        let actual_sha = sha256_file(&inspector_host, mode)?;
+        if !actual_sha.eq_ignore_ascii_case(&expected_sha) {
+            return Err(Failure::operational(
+                mode,
+                "staged TrustedBoundary.lean changed before compilation",
+            ));
+        }
+        let control_dir = self.stage.join("control");
+        let mem_limit = format!("-M{}", self.effective_lean_memory_limit_mb(Some(mode)));
+
+        let (olean_dest, olean_sha) = if direct {
+            self.counter += 1;
+            let out_dir = self
+                .stage
+                .join(format!("inspector-compile-{:03}", self.counter));
+            create_dir_mode(&out_dir, 0o700)?;
+            let out_olean = out_dir.join("TrustedBoundary.olean");
+            let args = vec![
+                "-j1".to_string(),
+                mem_limit,
+                "-R".to_string(),
+                control_dir.to_string_lossy().into_owned(),
+                "-o".to_string(),
+                out_olean.to_string_lossy().into_owned(),
+                inspector_host.to_string_lossy().into_owned(),
+            ];
+            let output = self
+                .launch_lean(&args)
+                .map_err(|e| Failure::new(2, mode, format!("could not execute Lean: {e}")));
+            let output = match output {
+                Ok(out) => out,
+                Err(err) => {
+                    let _ = fs::remove_dir_all(&out_dir);
+                    return Err(err);
+                }
+            };
+            if !output.status.success() {
+                let _ = fs::remove_dir_all(&out_dir);
+                let stderr = String::from_utf8_lossy(&output.stderr);
+                return Err(Failure::new(
+                    2,
+                    mode,
+                    format!("Lean exited {:?}: {}", output.status.code(), stderr.trim()),
+                ));
+            }
+            let promoted = promote_inspector_olean(&control_dir, &out_dir, mode);
+            let _ = fs::remove_dir_all(&out_dir);
+            promoted?
+        } else {
+            let runtime = self.ensure_sandbox_ready()?;
+            let (_run_dir, in_dir, out_dir, tmp_dir) = self.prepare_run_dirs()?;
+            let in_inspector = in_dir.join("TrustedBoundary.lean");
+            copy_readonly_file(&inspector_host, &in_inspector, mode)?;
+            set_mode(&in_dir, 0o500)?;
+
+            let ro_mounts = vec![
+                MountSpec {
+                    host: runtime.toolchain_dir.clone(),
+                    child: PathBuf::from("/toolchain"),
+                },
+                MountSpec {
+                    host: in_dir.clone(),
+                    child: PathBuf::from("/work/in"),
+                },
+            ];
+            let rw_out = MountSpec {
+                host: out_dir.clone(),
+                child: PathBuf::from("/work/out"),
+            };
+            let rw_tmp = MountSpec {
+                host: tmp_dir.clone(),
+                child: PathBuf::from("/work/tmp"),
+            };
+            let mapper = PathMapper::new(&runtime, &ro_mounts, &rw_out, &rw_tmp);
+            let out_olean = out_dir.join("TrustedBoundary.olean");
+            let args = vec![
+                "-j1".to_string(),
+                mem_limit,
+                "-R".to_string(),
+                mapper.map_str(&in_dir)?,
+                "-o".to_string(),
+                mapper.map_str(&out_olean)?,
+                mapper.map_str(&in_inspector)?,
+            ];
+            let policy = SandboxPolicy {
+                exec_bin: runtime.exec_lean.clone(),
+                args,
+                ro_mounts,
+                rw_out,
+                rw_tmp,
+                child_cwd: None,
+                extra_env: BTreeMap::new(),
+                timeout: self.child_timeout,
+            };
+            let output = runtime.execute(&policy);
+            let _ = fs::remove_dir_all(&tmp_dir);
+            let output = output?;
+            if !output.status.success() {
+                let stderr = String::from_utf8_lossy(&output.stderr);
+                return Err(Failure::new(
+                    2,
+                    mode,
+                    format!("Lean exited {:?}: {}", output.status.code(), stderr.trim()),
+                ));
+            }
+            promote_inspector_olean(&control_dir, &out_dir, mode)?
+        };
+
+        self.admitted.as_mut().unwrap().inspector_olean = Some((olean_dest.clone(), olean_sha));
+        Ok(olean_dest)
+    }
+
     /// Invoke staged `TrustedBoundary.lean` with a serialized JSON request and
     /// validate its structured response envelope (`policy:` -> code `1`,
     /// operational -> code `2`).
@@ -1401,12 +1539,20 @@ impl Checker {
             return self.invoke_inspector_direct(mode, req);
         }
 
+        let olean_host = self.ensure_inspector_compiled(mode, false)?;
         let runtime = self.ensure_sandbox_ready()?;
-        let inspector_host = self.admitted()?.inspector.clone();
         let (_run_dir, in_dir, out_dir, tmp_dir) = self.prepare_run_dirs()?;
 
-        let in_inspector = in_dir.join("TrustedBoundary.lean");
-        copy_readonly_file(&inspector_host, &in_inspector, mode)?;
+        copy_readonly_file(&olean_host, &in_dir.join("TrustedBoundary.olean"), mode)?;
+        let in_entry = in_dir.join("TrustedBoundaryEntry.lean");
+        fs::write(&in_entry, INSPECTOR_ENTRY_SOURCE).map_err(|e| {
+            Failure::new(
+                2,
+                mode,
+                format!("cannot write inspector entry {}: {e}", in_entry.display()),
+            )
+        })?;
+        set_mode(&in_entry, 0o444)?;
 
         let mut ro_mounts = vec![
             MountSpec {
@@ -1512,10 +1658,12 @@ impl Checker {
             "-j1".to_string(),
             mem_limit,
             "--run".to_string(),
-            mapper.map_str(&in_inspector)?,
+            mapper.map_str(&in_entry)?,
             mapper.map_str(&request_host)?,
             mapper.map_str(&result_host)?,
         ];
+        let mut extra_env = BTreeMap::new();
+        extra_env.insert("LEAN_PATH".to_string(), mapper.map_str(&in_dir)?);
         let policy = SandboxPolicy {
             exec_bin: runtime.exec_lean.clone(),
             args,
@@ -1523,7 +1671,7 @@ impl Checker {
             rw_out,
             rw_tmp,
             child_cwd: None,
-            extra_env: BTreeMap::new(),
+            extra_env,
             timeout: self.child_timeout,
         };
         let output = runtime.execute(&policy);
@@ -1568,7 +1716,9 @@ impl Checker {
     }
 
     fn invoke_inspector_direct(&mut self, mode: &str, req: &Json) -> Result<Json, Failure> {
-        let inspector = self.admitted()?.inspector.clone();
+        let _olean_host = self.ensure_inspector_compiled(mode, true)?;
+        let control_dir = self.stage.join("control");
+        let entry = control_dir.join("TrustedBoundaryEntry.lean");
         self.counter += 1;
         let stem = self
             .stage
@@ -1585,12 +1735,12 @@ impl Checker {
             "-j1".to_string(),
             mem_limit,
             "--run".to_string(),
-            inspector.to_string_lossy().into_owned(),
+            entry.to_string_lossy().into_owned(),
             request_path.to_string_lossy().into_owned(),
             result_path.to_string_lossy().into_owned(),
         ];
         let output = self
-            .launch_lean(&args)
+            .launch_lean_with_path(&args, Some(control_dir.as_os_str()))
             .map_err(|e| Failure::new(2, mode, format!("could not execute Lean: {e}")))?;
 
         if !output.status.success() {
@@ -1626,6 +1776,43 @@ impl Checker {
         }
         Ok(Json::Object(resp.result))
     }
+}
+
+/// Minimal one-line Lean entrypoint executed by `lean --run` once staged
+/// `TrustedBoundary.lean` has been precompiled to `TrustedBoundary.olean`.
+const INSPECTOR_ENTRY_SOURCE: &str = "import TrustedBoundary\n";
+
+/// Promote a Door-1-validated `TrustedBoundary.olean` into `control_dir`
+/// (`0o444`), emit the static `TrustedBoundaryEntry.lean` (`0o444`), and
+/// unconditionally re-lock `control_dir` to `0o500`.
+fn promote_inspector_olean(
+    control_dir: &Path,
+    out_dir: &Path,
+    mode: &str,
+) -> Result<(PathBuf, String), Failure> {
+    set_mode(control_dir, 0o700)?;
+    let promoted = (|| {
+        let olean_dest = control_dir.join("TrustedBoundary.olean");
+        if fs::symlink_metadata(&olean_dest).is_ok() {
+            let _ = fs::remove_file(&olean_dest);
+        }
+        let sha = validate_and_promote_olean(out_dir, "TrustedBoundary.olean", &olean_dest)?;
+        let entry_dest = control_dir.join("TrustedBoundaryEntry.lean");
+        if fs::symlink_metadata(&entry_dest).is_ok() {
+            let _ = fs::remove_file(&entry_dest);
+        }
+        fs::write(&entry_dest, INSPECTOR_ENTRY_SOURCE).map_err(|e| {
+            Failure::new(
+                2,
+                mode,
+                format!("cannot write inspector entry {}: {e}", entry_dest.display()),
+            )
+        })?;
+        set_mode(&entry_dest, 0o444)?;
+        Ok((olean_dest, sha))
+    })();
+    let relock = set_mode(control_dir, 0o500);
+    promoted.and_then(|pair| relock.map(|()| pair))
 }
 
 #[cfg(all(test, unix))]
@@ -1974,6 +2161,7 @@ mod process_tests {
             exec_lean: checkout.path().join("lean"),
             expected_lean_sha: None,
             inspector_sha256: "0".repeat(64),
+            inspector_olean: None,
         });
         assert_eq!(checker.default_lean_memory_limit_mb(None), 2048);
         assert_eq!(
@@ -2200,5 +2388,48 @@ mod process_tests {
         assert!(!dest.join("Trusted/MirAst.ir").exists());
         assert!(!dest.join("Trusted/MirAst.ir.sig").exists());
         assert!(!dest.join("lean-toolchain").exists());
+    }
+
+    #[test]
+    fn artifact_ledger_catches_tampered_inspector_olean() {
+        let dir = tempfile::tempdir().unwrap();
+        let root = fs::canonicalize(dir.path()).unwrap();
+        let inspector = root.join("TrustedBoundary.lean");
+        let olean = root.join("TrustedBoundary.olean");
+        fs::write(&inspector, b"-- inspector\n").unwrap();
+        fs::write(&olean, b"initial olean bytes").unwrap();
+
+        let mut checker = shell_checker(&root);
+        checker.admitted = Some(AdmittedToolchain {
+            inspector: inspector.clone(),
+            version: "Lean 4.34.1".to_string(),
+            prefix: root.clone(),
+            axioms: Vec::new(),
+            foundation_graph: BTreeMap::new(),
+            graph: BTreeMap::new(),
+            artifacts: BTreeMap::new(),
+            library_lock: None,
+            library_modules: BTreeSet::new(),
+            unpinned: false,
+            sysroot_package_roots: BTreeSet::new(),
+            unpinned_records: BTreeMap::new(),
+            lean_binary_sha256: None,
+            exec_lean: PathBuf::from("/bin/sh"),
+            expected_lean_sha: None,
+            inspector_sha256: sha256_file(&inspector, "test").unwrap(),
+            inspector_olean: Some((olean.clone(), sha256_file(&olean, "test").unwrap())),
+        });
+
+        checker.verify_artifact_ledger(&[]).unwrap();
+
+        fs::write(&olean, b"tampered olean bytes").unwrap();
+        let err = checker.verify_artifact_ledger(&[]).unwrap_err();
+        assert_eq!(err.code, 2);
+        assert_eq!(err.phase, "artifact-ledger");
+        assert!(
+            err.message.contains("TrustedBoundary.olean"),
+            "{}",
+            err.message
+        );
     }
 }
