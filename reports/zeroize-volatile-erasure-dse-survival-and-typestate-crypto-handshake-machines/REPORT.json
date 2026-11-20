@@ -1,0 +1,77 @@
+{
+  "topics": [
+    "security/cryptography",
+    "rust/unsafe",
+    "verification/security",
+    "anneal/theory",
+    "security/secret-zeroization",
+    "compilers/constant-time",
+    "pl/typestates"
+  ],
+  "subjects": [
+    {
+      "name": "RustCrypto zeroize secret-erasure crate",
+      "identity": {
+        "repository": "RustCrypto/utils",
+        "revision": "0feca06cf87e61567033a333feb79ecf3c427fea"
+      }
+    },
+    {
+      "name": "rustls TLS 1.3 client handshake and key schedule",
+      "identity": {
+        "repository": "rustls/rustls",
+        "revision": "836e411eccaf7331f4c289aabef0de32474de3b8"
+      }
+    },
+    {
+      "name": "snow Noise Protocol Framework handshake and cipher state machines",
+      "identity": {
+        "repository": "mcginty/snow",
+        "revision": "8ac60f51cfe3e010c84f0a454cc575ad9204fa12"
+      }
+    },
+    {
+      "name": "OpenMLS key schedule, secret tree, and sender ratchet",
+      "identity": {
+        "repository": "openmls/openmls",
+        "revision": "ba267737b9511e538a77a41f4480fbed28ff4e83"
+      }
+    },
+    {
+      "name": "Jasmin compiler pipeline and post-linearization stack zeroization pass",
+      "identity": {
+        "repository": "jasmin-lang/jasmin",
+        "revision": "8c3279973a89afd969e50301f71563bb40d55724"
+      }
+    },
+    {
+      "name": "CompCert verified C compiler RTL dead-store elimination and volatile events",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+      }
+    },
+    {
+      "name": "FaCT timing-sensitive DSL LLVM intrinsic lowering",
+      "identity": {
+        "repository": "PLSysSec/fact",
+        "revision": "b3daa03f48447285117f426129dbf539a7f32f4a"
+      }
+    },
+    {
+      "name": "Rust compiler MIR operand syntax and constant-evaluation semantics",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+      }
+    },
+    {
+      "name": "Anneal Trusted MIR operational semantics and Pass-1 boundary auditor",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "20aa204315cd36aaf944778b7d33c0d609ced8e8"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
