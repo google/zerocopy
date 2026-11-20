@@ -1,0 +1,5 @@
+cfg0 wall=29.53 s maxrss=67612 kB
+cfg1 wall=232.29 s maxrss=183820 kB
+cfg2 wall=555.51 s maxrss=318540 kB
+cfg3 wall=779.98 s maxrss=462808 kB
+cfg4 wall=821.99 s maxrss=506072 kB

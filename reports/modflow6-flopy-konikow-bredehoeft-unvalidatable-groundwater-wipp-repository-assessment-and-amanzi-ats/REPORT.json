@@ -1,0 +1,96 @@
+{
+  "topics": [
+    "domains/groundwater-flow-and-transport",
+    "domains/geologic-repository-performance-assessment",
+    "verification/earth-science-model-validation-limits",
+    "domains/coupled-surface-subsurface-hydrology",
+    "verification/numerical-convergence-and-mass-balance",
+    "verification/regression-and-benchmark-test-suites"
+  ],
+  "subjects": [
+    {
+      "name": "MODFLOW 6",
+      "identity": {
+        "repository": "MODFLOW-ORG/modflow6",
+        "revision": "6565dc81cada70781208a1a1659565597046c171",
+        "version": "6.9.0.dev0"
+      }
+    },
+    {
+      "name": "FloPy",
+      "identity": {
+        "repository": "modflowpy/flopy",
+        "revision": "996687f33cd0e2880e83c4cfd3957870256be352",
+        "version": "3.13.0.dev0"
+      }
+    },
+    {
+      "name": "Amanzi",
+      "identity": {
+        "repository": "amanzi/amanzi",
+        "revision": "e38fee614cbf0829b51405020a24011ba2b75d1e"
+      }
+    },
+    {
+      "name": "Advanced Terrestrial Simulator (ATS)",
+      "identity": {
+        "repository": "amanzi/ats",
+        "revision": "2f7afaf04b67a93b7c75c9f32b1463c82f90b04c"
+      }
+    },
+    {
+      "name": "ATS regression test suite",
+      "identity": {
+        "repository": "amanzi/ats-regression-tests",
+        "revision": "5093ad458f1a8629ae838deb0515874107c9d5f7"
+      }
+    },
+    {
+      "name": "Konikow and Bredehoeft, Ground-water models cannot be validated (1992)",
+      "identity": {
+        "doi": "10.1016/0309-1708(92)90033-X"
+      }
+    },
+    {
+      "name": "Oreskes, Shrader-Frechette and Belitz, Verification, validation, and confirmation of numerical models in the earth sciences (1994)",
+      "identity": {
+        "doi": "10.1126/science.263.5147.641"
+      }
+    },
+    {
+      "name": "Bredehoeft, The conceptualization model problem - surprise (2005)",
+      "identity": {
+        "doi": "10.1007/s10040-004-0430-5"
+      }
+    },
+    {
+      "name": "Helton et al., Conceptual structure of the 1996 performance assessment for the Waste Isolation Pilot Plant (2000)",
+      "identity": {
+        "doi": "10.1016/S0951-8320(00)00030-2",
+        "url": "https://www.osti.gov/servlets/purl/755471"
+      }
+    },
+    {
+      "name": "Helton et al., Uncertainty analysis in the 1996 performance assessment for the Waste Isolation Pilot Plant (SAND98-0983C)",
+      "identity": {
+        "standard": "SAND98-0983C",
+        "url": "https://www.osti.gov/servlets/purl/656529"
+      }
+    },
+    {
+      "name": "40 CFR Part 194 (WIPP compliance criteria)",
+      "identity": {
+        "standard": "40 CFR Part 194",
+        "version": "eCFR point-in-time 2026-11-01",
+        "url": "https://www.ecfr.gov/api/versioner/v1/full/2026-11-01/title-40.xml?part=194"
+      }
+    },
+    {
+      "name": "40 CFR Part 191 (environmental radiation protection standards for disposal)",
+      "identity": {
+        "standard": "40 CFR 191.13"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

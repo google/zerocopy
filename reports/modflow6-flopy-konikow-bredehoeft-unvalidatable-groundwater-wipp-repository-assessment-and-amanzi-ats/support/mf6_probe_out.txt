@@ -1,0 +1,21 @@
+== Probe A: unconfined Dupuit flow with recharge (NEWTON)
+reference dvclose=1e-12: rc=0 outer=9 inner=19 pct_disc=-0.0 max|h_ref-h_dupuit|=1.207e-02 m
+dvclose | rc | outer_iters | inner_iters | lst_pct_discrepancy | rate_in | rate_out | recomputed_pct | max|h-h_ref| (m) | max|h-h_dupuit| (m) | wall_s | maxrss_kB
+1 | 0 | 6 | 12 | -0.76 | 2.0064 | 2.0218 | -0.7646 | 2.567e-02 | 1.391e-02 | 0.025 | 10124
+0.1 | 0 | 7 | 14 | -0.01 | 2.011 | 2.0111 | -0.0050 | 3.477e-05 | 1.204e-02 | 0.019 | 10164
+0.01 | 0 | 8 | 15 | -0.0 | 2.011 | 2.011 | 0.0000 | 1.225e-10 | 1.207e-02 | 0.015 | 9276
+0.001 | 0 | 8 | 15 | -0.0 | 2.011 | 2.011 | 0.0000 | 1.225e-10 | 1.207e-02 | 0.016 | 10188
+0.0001 | 0 | 8 | 16 | -0.0 | 2.011 | 2.011 | 0.0000 | 0.000e+00 | 1.207e-02 | 0.011 | 10112
+1e-06 | 0 | 9 | 17 | -0.0 | 2.011 | 2.011 | 0.0000 | 0.000e+00 | 1.207e-02 | 0.011 | 10204
+1e-08 | 0 | 9 | 17 | -0.0 | 2.011 | 2.011 | 0.0000 | 0.000e+00 | 1.207e-02 | 0.011 | 10144
+1e-10 | 0 | 9 | 18 | -0.0 | 2.011 | 2.011 | 0.0000 | 0.000e+00 | 1.207e-02 | 0.014 | 10100
+== Probe B: Ogata-Banks breakthrough at x = 50 m, DELR = 1.0 grid Peclet = DELR/ALH = 10.0
+upstream (DELR=1.0, obs col 51): rc=0 v=0.20101 m/d D=0.02010 m2/d rmse=0.0884 t50_sim=247.0 t50_ana=249.0 t10-90_sim=106.0 t10-90_ana=41.0 cmin=1.434e-149 cmax=1.000000 pct_disc=0.0 wall=0.120s maxrss_kB=10804
+central (DELR=1.0, obs col 51): rc=0 v=0.20101 m/d D=0.02010 m2/d rmse=0.0330 t50_sim=251.0 t50_ana=249.0 t10-90_sim=59.0 t10-90_ana=41.0 cmin=9.804e-188 cmax=1.035257 pct_disc=0.0 wall=0.120s maxrss_kB=12396
+tvd (DELR=1.0, obs col 51): rc=0 v=0.20101 m/d D=0.02010 m2/d rmse=0.0354 t50_sim=246.0 t50_ana=249.0 t10-90_sim=59.0 t10-90_ana=41.0 cmin=-1.318e-12 cmax=1.000000 pct_disc=0.0 wall=0.246s maxrss_kB=11720
+utvd (DELR=1.0, obs col 51): rc=0 v=0.20101 m/d D=0.02010 m2/d rmse=0.0354 t50_sim=246.0 t50_ana=249.0 t10-90_sim=59.0 t10-90_ana=41.0 cmin=-1.973e-12 cmax=1.000000 pct_disc=0.0 wall=0.273s maxrss_kB=11748
+== Probe B: Ogata-Banks breakthrough at x = 50 m, DELR = 0.25 grid Peclet = DELR/ALH = 2.5
+upstream (DELR=0.25, obs col 201): rc=0 v=0.20025 m/d D=0.02003 m2/d rmse=0.0500 t50_sim=250.0 t50_ana=250.0 t10-90_sim=73.0 t10-90_ana=41.0 cmin=1.305e-247 cmax=1.000000 pct_disc=-0.0 wall=0.358s maxrss_kB=12488
+central (DELR=0.25, obs col 201): rc=0 v=0.20025 m/d D=0.02003 m2/d rmse=0.0283 t50_sim=250.0 t50_ana=250.0 t10-90_sim=58.0 t10-90_ana=41.0 cmin=2.441e-293 cmax=1.000029 pct_disc=-0.0 wall=0.381s maxrss_kB=13140
+tvd (DELR=0.25, obs col 201): rc=0 v=0.20025 m/d D=0.02003 m2/d rmse=0.0281 t50_sim=250.0 t50_ana=250.0 t10-90_sim=57.0 t10-90_ana=41.0 cmin=2.842e-251 cmax=1.000000 pct_disc=-0.0 wall=0.702s maxrss_kB=12400
+utvd (DELR=0.25, obs col 201): rc=0 v=0.20025 m/d D=0.02003 m2/d rmse=0.0281 t50_sim=250.0 t50_ana=250.0 t10-90_sim=57.0 t10-90_ana=41.0 cmin=8.628e-251 cmax=1.000000 pct_disc=-0.0 wall=0.764s maxrss_kB=13228

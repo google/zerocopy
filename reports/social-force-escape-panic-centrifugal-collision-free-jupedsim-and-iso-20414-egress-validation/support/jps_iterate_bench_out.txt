@@ -1,0 +1,8 @@
+SFM: 29513 agent-iterations in 3.634 s -> 123.1 us/agent-iteration (agents start 60, end 56)
+GCFM: 30000 agent-iterations in 2.599 s -> 86.6 us/agent-iteration (agents start 60, end 60)
+CFSM: 29875 agent-iterations in 2.516 s -> 84.2 us/agent-iteration (agents start 60, end 58)
+AVM: 29813 agent-iterations in 0.132 s -> 4.4 us/agent-iteration (agents start 60, end 58)
+SFM: 29513 agent-iterations in 2.647 s -> 89.7 us/agent-iteration (agents start 60, end 56)
+GCFM: 30000 agent-iterations in 3.008 s -> 100.3 us/agent-iteration (agents start 60, end 60)
+CFSM: 29875 agent-iterations in 3.870 s -> 129.5 us/agent-iteration (agents start 60, end 58)
+AVM: 29813 agent-iterations in 0.255 s -> 8.6 us/agent-iteration (agents start 60, end 58)

@@ -1,0 +1,8 @@
+corridor w=1.0 v0=0.8 A=2000.0 dt=0.01: STOPPED, final x=7.6600 y=4.0003 |v|=7.50e-03
+thinwall w=1.0 v0=0.8 A=2000.0 dt=0.01: STOPPED, final x=7.6659 y=4.0000 |v|=6.29e-03
+thinwall w=1.0 v0=1.2 A=2000.0 dt=0.01: PASSED door at t=2.72s
+corridor w=1.2 v0=0.8 A=2000.0 dt=0.01: PASSED door at t=3.51s
+thinwall w=1.2 v0=0.8 A=2000.0 dt=0.01: PASSED door at t=3.47s
+corridor w=1.4 v0=0.8 A=2000.0 dt=0.01: PASSED door at t=3.32s
+thinwall w=1.4 v0=0.8 A=2000.0 dt=0.01: PASSED door at t=3.30s
+thinwall w=1.0 v0=1.34 A=2000.0 dt=0.01: PASSED door at t=2.41s

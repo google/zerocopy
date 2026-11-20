@@ -1,0 +1,2 @@
+tvd DELR=0.25 NSTP=400 dt=1 d Courant=0.801 rmse=0.0281 t10-90_sim=57.0 t10-90_ana=41.0 v^2*dt/2=0.02005 D=0.02003 wall=0.668s maxrss_kB=12468
+tvd DELR=0.25 NSTP=4000 dt=0.1 d Courant=0.080 rmse=0.0052 t10-90_sim=42.5 t10-90_ana=40.4 v^2*dt/2=0.00201 D=0.02003 wall=5.995s maxrss_kB=14828

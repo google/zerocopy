@@ -1,0 +1,70 @@
+{
+  "topics": [
+    "domains/pedestrian-crowd-dynamics",
+    "domains/building-egress-simulation-validation",
+    "domains/crowd-disaster-analysis",
+    "verification/agent-model-calibration-against-trajectories",
+    "verification/time-step-sensitivity-of-agent-models"
+  ],
+  "subjects": [
+    {
+      "name": "JuPedSim",
+      "identity": {
+        "repository": "PedestrianDynamics/jupedsim",
+        "revision": "789178048117975d136f849bcdf4add962a9004a"
+      }
+    },
+    {
+      "name": "PedPy",
+      "identity": {
+        "repository": "PedestrianDynamics/PedPy",
+        "revision": "0604d9af80eeced0fe16d65d503ea78381dae11a"
+      }
+    },
+    {
+      "name": "Vadere",
+      "identity": {
+        "repository": "pedestrian-dynamics-HM/vadere",
+        "revision": "917aeaf5c430b828a723b34bf02cf095464f9c91"
+      }
+    },
+    {
+      "name": "ISO 20414:2020 Fire safety engineering - Verification and validation protocol for building fire evacuation models",
+      "identity": {
+        "standard": "ISO 20414:2020",
+        "version": "first edition 2020-11 (public preview examined)"
+      }
+    },
+    {
+      "name": "NIST TN 1822 The Process of Verification and Validation of Building Fire Evacuation Models",
+      "identity": {
+        "doi": "10.6028/NIST.TN.1822"
+      }
+    },
+    {
+      "name": "Helbing and Mukerji, Crowd disasters as systemic failures: analysis of the Love Parade disaster (2012)",
+      "identity": {
+        "doi": "10.1140/epjds7"
+      }
+    },
+    {
+      "name": "Helbing, Farkas and Vicsek, Simulating dynamical features of escape panic (2000)",
+      "identity": {
+        "doi": "10.1038/35035023"
+      }
+    },
+    {
+      "name": "Chraibi, Seyfried and Schadschneider, Generalized centrifugal-force model for pedestrian dynamics (2010)",
+      "identity": {
+        "doi": "10.1103/PhysRevE.82.046111"
+      }
+    },
+    {
+      "name": "Tordeux, Chraibi and Seyfried, Collision-free speed model for pedestrian dynamics (2016)",
+      "identity": {
+        "doi": "10.1007/978-3-319-33482-0_29"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
