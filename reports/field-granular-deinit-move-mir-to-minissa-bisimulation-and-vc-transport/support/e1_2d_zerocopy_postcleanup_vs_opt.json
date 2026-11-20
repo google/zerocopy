@@ -1,0 +1,444 @@
+{
+  "post_cleanup": {
+    "label": "zerocopy_PostCleanup_1.99.1",
+    "num_files": 4691,
+    "total_bodies": 4657,
+    "total_bbs": 13815,
+    "bb_p50": 1,
+    "bb_p95": 6,
+    "bb_p99": 22,
+    "bb_max": 184,
+    "bodies_with": {
+      "has_deref_proj": 1103,
+      "fits_unproj_no_unwind_no_rawptr": 3447,
+      "has_transmute": 100,
+      "has_unwind_cleanup": 78,
+      "has_raw_ptr": 362,
+      "m3_partial_field_move": 12,
+      "has_loop": 20
+    },
+    "bodies_pct": {
+      "has_deref_proj": 23.68,
+      "fits_unproj_no_unwind_no_rawptr": 74.02,
+      "has_transmute": 2.15,
+      "has_unwind_cleanup": 1.67,
+      "has_raw_ptr": 7.77,
+      "m3_partial_field_move": 0.26,
+      "has_loop": 0.43
+    },
+    "stmts": {
+      "StorageLive": 15126,
+      "Assign": 14508,
+      "StorageDead": 15247
+    },
+    "terms": {
+      "Call": 6312,
+      "Return": 4630,
+      "SwitchInt": 1127,
+      "Unreachable": 531,
+      "Goto": 924,
+      "Resume": 78,
+      "Drop": 55,
+      "Assert": 19
+    },
+    "rvals": {
+      "Transmute": 121,
+      "RawPtr": 363,
+      "PtrMetadata": 3
+    },
+    "casts_top20": [
+      [
+        "move _11",
+        1
+      ],
+      [
+        "move _48, move _49",
+        1
+      ]
+    ],
+    "unwind": {
+      "unwind_continue": 6203,
+      "unwind_terminate": 50
+    },
+    "m2_by_ty_class": {},
+    "m1_samples": [],
+    "m2_samples": [],
+    "m3_samples": [
+      {
+        "file": "zerocopy.TryFromBytes-try_read_from_prefix.runtime-post-cleanup.after.mir",
+        "fn": "fn TryFromBytes::try_read_from_prefix(_1: &[u8]) -> Result<(Self, &[u8]), ConvertError<Infallible, error::SizeError<&[u8",
+        "bb": "bb4",
+        "local": "_4",
+        "ty": "(core::mem::MaybeUninit<Self>, &[u8])",
+        "moved_fields": [
+          "(_4.0: core::mem::MaybeUninit<Self>)"
+        ],
+        "read_field": "(_4.1: &[u8])",
+        "stmt": "_3 = copy (_4.1: &[u8]);"
+      },
+      {
+        "file": "zerocopy.mut_from_prefix_suffix.runtime-post-cleanup.after.mir",
+        "fn": "fn mut_from_prefix_suffix(_1: &mut [u8], _2: Option<<T as KnownLayout>::PointerMetadata>, _3: layout::CastType) -> Resul",
+        "bb": "bb6",
+        "local": "_6",
+        "ty": "(pointer::ptr::def::Ptr<'_, T, (pointer::invariant::Exclusive, pointer::invariant::Aligned, pointer::invariant::Initialized)>, pointer::ptr::def::Ptr<'_, [u8], (pointer::invariant::Exclusive, pointer::invariant::Aligned, pointer::invariant::Valid)>)",
+        "moved_fields": [
+          "(_6.0: pointer::ptr::def::Ptr<'_, T, (pointer::invariant::Exclusive, pointer::invariant::Aligned, pointer::invariant::Initialized)>)"
+        ],
+        "read_field": "(_6.1: pointer::ptr::def::Ptr<'_, [u8], (pointer::invariant::Exclusive, pointer::invariant::Aligned, pointer::invariant::Valid)>)",
+        "stmt": "_5 = move (_6.1: pointer::ptr::def::Ptr<'_, [u8], (pointer::invariant::Exclusive, pointer::invariant::Aligned, pointer::invariant::Valid)>);"
+      },
+      {
+        "file": "zerocopy.ref-{impl#1}-sized_from_prefix.runtime-post-cleanup.after.mir",
+        "fn": "fn r#ref::<impl at src/ref.rs:220:1: 222:23>::sized_from_prefix(_1: B) -> Result<(r#ref::def::Ref<B, T>, B), ConvertErro",
+        "bb": "bb19",
+        "local": "_26",
+        "ty": "(B, B)",
+        "moved_fields": [
+          "(_26.0: B)"
+        ],
+        "read_field": "(_26.1: B)",
+        "stmt": "_25 = move (_26.1: B);"
+      },
+      {
+        "file": "zerocopy.ref-{impl#1}-sized_from_suffix.runtime-post-cleanup.after.mir",
+        "fn": "fn r#ref::<impl at src/ref.rs:220:1: 222:23>::sized_from_suffix(_1: B) -> Result<(B, r#ref::def::Ref<B, T>), ConvertErro",
+        "bb": "bb13",
+        "local": "_18",
+        "ty": "(B, B)",
+        "moved_fields": [
+          "(_18.0: B)"
+        ],
+        "read_field": "(_18.1: B)",
+        "stmt": "_17 = move (_18.1: B);"
+      },
+      {
+        "file": "zerocopy.ref-{impl#3}-from_prefix.runtime-post-cleanup.after.mir",
+        "fn": "fn r#ref::<impl at src/ref.rs:320:1: 323:41>::from_prefix(_1: B) -> Result<(r#ref::def::Ref<B, T>, B), ConvertError<erro",
+        "bb": "bb18",
+        "local": "_33",
+        "ty": "(B, B)",
+        "moved_fields": [
+          "(_33.0: B)"
+        ],
+        "read_field": "(_33.1: B)",
+        "stmt": "_32 = move (_33.1: B);"
+      },
+      {
+        "file": "zerocopy.ref-{impl#3}-from_suffix.runtime-post-cleanup.after.mir",
+        "fn": "fn r#ref::<impl at src/ref.rs:320:1: 323:41>::from_suffix(_1: B) -> Result<(B, r#ref::def::Ref<B, T>), ConvertError<erro",
+        "bb": "bb15",
+        "local": "_29",
+        "ty": "(B, B)",
+        "moved_fields": [
+          "(_29.0: B)"
+        ],
+        "read_field": "(_29.1: B)",
+        "stmt": "_28 = move (_29.1: B);"
+      },
+      {
+        "file": "zerocopy.ref-{impl#5}-from_prefix_with_elems.runtime-post-cleanup.after.mir",
+        "fn": "fn r#ref::<impl at src/ref.rs:501:1: 504:66>::from_prefix_with_elems(_1: B, _2: usize) -> Result<(r#ref::def::Ref<B, T>,",
+        "bb": "bb12",
+        "local": "_19",
+        "ty": "(B, B)",
+        "moved_fields": [
+          "(_19.0: B)"
+        ],
+        "read_field": "(_19.1: B)",
+        "stmt": "_18 = move (_19.1: B);"
+      },
+      {
+        "file": "zerocopy.ref-{impl#5}-from_suffix_with_elems.runtime-post-cleanup.after.mir",
+        "fn": "fn r#ref::<impl at src/ref.rs:501:1: 504:66>::from_suffix_with_elems(_1: B, _2: usize) -> Result<(B, r#ref::def::Ref<B, ",
+        "bb": "bb16",
+        "local": "_32",
+        "ty": "(B, B)",
+        "moved_fields": [
+          "(_32.0: B)"
+        ],
+        "read_field": "(_32.1: B)",
+        "stmt": "_31 = move (_32.1: B);"
+      },
+      {
+        "file": "zerocopy.split_at-{impl#3}-via_into_bytes.runtime-post-cleanup.after.mir",
+        "fn": "fn split_at::<impl at src/split_at.rs:595:1: 597:25>::via_into_bytes(_1: split_at::Split<&mut T>) -> (&mut T, &mut [<T a",
+        "bb": "bb2",
+        "local": "_4",
+        "ty": "(pointer::ptr::def::Ptr<'_, T, (pointer::invariant::Exclusive, pointer::invariant::Aligned, pointer::invariant::Valid)>, pointer::ptr::def::Ptr<'_, [<T as split_at::SplitAt>::Elem], (pointer::invariant::Exclusive, pointer::invariant::Aligned, pointer::invariant::Valid)>)",
+        "moved_fields": [
+          "(_4.0: pointer::ptr::def::Ptr<'_, T, (pointer::invariant::Exclusive, pointer::invariant::Aligned, pointer::invariant::Valid)>)"
+        ],
+        "read_field": "(_4.1: pointer::ptr::def::Ptr<'_, [<T as split_at::SplitAt>::Elem], (pointer::invariant::Exclusive, pointer::invariant::Aligned, pointer::invariant::Valid)>)",
+        "stmt": "_3 = move (_4.1: pointer::ptr::def::Ptr<'_, [<T as split_at::SplitAt>::Elem], (pointer::invariant::Exclusive, pointer::invariant::Aligned, p"
+      },
+      {
+        "file": "zerocopy.split_at-{impl#3}-via_unaligned.runtime-post-cleanup.after.mir",
+        "fn": "fn split_at::<impl at src/split_at.rs:595:1: 597:25>::via_unaligned(_1: split_at::Split<&mut T>) -> (&mut T, &mut [<T as",
+        "bb": "bb2",
+        "local": "_4",
+        "ty": "(pointer::ptr::def::Ptr<'_, T, (pointer::invariant::Exclusive, pointer::invariant::Aligned, pointer::invariant::Valid)>, pointer::ptr::def::Ptr<'_, [<T as split_at::SplitAt>::Elem], (pointer::invariant::Exclusive, pointer::invariant::Aligned, pointer::invariant::Valid)>)",
+        "moved_fields": [
+          "(_4.0: pointer::ptr::def::Ptr<'_, T, (pointer::invariant::Exclusive, pointer::invariant::Aligned, pointer::invariant::Valid)>)"
+        ],
+        "read_field": "(_4.1: pointer::ptr::def::Ptr<'_, [<T as split_at::SplitAt>::Elem], (pointer::invariant::Exclusive, pointer::invariant::Aligned, pointer::invariant::Valid)>)",
+        "stmt": "_3 = move (_4.1: pointer::ptr::def::Ptr<'_, [<T as split_at::SplitAt>::Elem], (pointer::invariant::Exclusive, pointer::invariant::Aligned, p"
+      },
+      {
+        "file": "zerocopy.split_at-{impl#3}-via_unchecked.runtime-post-cleanup.after.mir",
+        "fn": "fn split_at::<impl at src/split_at.rs:595:1: 597:25>::via_unchecked(_1: split_at::Split<&mut T>) -> (&mut T, &mut [<T as",
+        "bb": "bb2",
+        "local": "_4",
+        "ty": "(pointer::ptr::def::Ptr<'_, T, (pointer::invariant::Exclusive, pointer::invariant::Aligned, pointer::invariant::Valid)>, pointer::ptr::def::Ptr<'_, [<T as split_at::SplitAt>::Elem], (pointer::invariant::Exclusive, pointer::invariant::Aligned, pointer::invariant::Valid)>)",
+        "moved_fields": [
+          "(_4.0: pointer::ptr::def::Ptr<'_, T, (pointer::invariant::Exclusive, pointer::invariant::Aligned, pointer::invariant::Valid)>)"
+        ],
+        "read_field": "(_4.1: pointer::ptr::def::Ptr<'_, [<T as split_at::SplitAt>::Elem], (pointer::invariant::Exclusive, pointer::invariant::Aligned, pointer::invariant::Valid)>)",
+        "stmt": "_3 = move (_4.1: pointer::ptr::def::Ptr<'_, [<T as split_at::SplitAt>::Elem], (pointer::invariant::Exclusive, pointer::invariant::Aligned, p"
+      },
+      {
+        "file": "zerocopy.swap.runtime-post-cleanup.after.mir",
+        "fn": "fn swap(_1: (T, U)) -> (U, T) {",
+        "bb": "bb0",
+        "local": "_1",
+        "ty": "(T",
+        "moved_fields": [
+          "(_1.0: T)"
+        ],
+        "read_field": "(_1.1: U)",
+        "stmt": "_3 = move (_1.1: U);"
+      }
+    ],
+    "m4_samples": []
+  },
+  "optimized": {
+    "label": "zerocopy_Optimized_1.99.1",
+    "num_files": 4449,
+    "total_bodies": 4449,
+    "total_bbs": 13186,
+    "bb_p50": 1,
+    "bb_p95": 11,
+    "bb_p99": 16,
+    "bb_max": 131,
+    "bodies_with": {
+      "has_deref_proj": 1069,
+      "fits_unproj_no_unwind_no_rawptr": 2768,
+      "has_transmute": 1380,
+      "has_raw_ptr": 458,
+      "has_mir_intrinsic": 69,
+      "has_unwind_cleanup": 18,
+      "has_loop": 12,
+      "m3_partial_field_move": 13
+    },
+    "bodies_pct": {
+      "has_deref_proj": 24.03,
+      "fits_unproj_no_unwind_no_rawptr": 62.22,
+      "has_transmute": 31.02,
+      "has_raw_ptr": 10.29,
+      "has_mir_intrinsic": 1.55,
+      "has_unwind_cleanup": 0.4,
+      "has_loop": 0.27,
+      "m3_partial_field_move": 0.29
+    },
+    "stmts": {
+      "StorageLive": 12830,
+      "Assign": 15740,
+      "StorageDead": 13508,
+      "Intrinsic": 419
+    },
+    "terms": {
+      "Call": 2856,
+      "Return": 4424,
+      "SwitchInt": 1716,
+      "Unreachable": 768,
+      "Goto": 2952,
+      "Drop": 47,
+      "Resume": 18,
+      "Assert": 341
+    },
+    "rvals": {
+      "Transmute": 3710,
+      "RawPtr": 495,
+      "PtrMetadata": 39,
+      "CopyNonOverlapping": 4,
+      "CheckedOp": 47
+    },
+    "casts_top20": [
+      [
+        "Transmute",
+        72
+      ],
+      [
+        "move _17, copy _2",
+        1
+      ]
+    ],
+    "unwind": {
+      "unwind_continue": 2166,
+      "unwind_unreachable": 1052,
+      "unwind_terminate": 23
+    },
+    "m2_by_ty_class": {},
+    "m1_samples": [],
+    "m2_samples": [],
+    "m3_samples": [
+      {
+        "file": "zerocopy.ref-{impl#5}-from_suffix_with_elems.runtime-optimized.after.mir",
+        "fn": "fn r#ref::<impl at src/ref.rs:501:1: 504:66>::from_suffix_with_elems(_1: B, _2: usize) -> Result<(B, r#ref::def::Ref<B, ",
+        "bb": "bb8",
+        "local": "_20",
+        "ty": "(B, B)",
+        "moved_fields": [
+          "(_20.0: B)"
+        ],
+        "read_field": "(_20.1: B)",
+        "stmt": "_19 = move (_20.1: B);"
+      },
+      {
+        "file": "zerocopy.split_at-{impl#2}-via_immutable.runtime-optimized.after.mir",
+        "fn": "fn split_at::<impl at src/split_at.rs:297:1: 299:25>::via_immutable(_1: split_at::Split<&T>) -> (&T, &[<T as split_at::S",
+        "bb": "bb0",
+        "local": "_1",
+        "ty": "split_at::Split<&T>) -> (&T",
+        "moved_fields": [
+          "(_1.0: &T)"
+        ],
+        "read_field": "(_1.1: usize)",
+        "stmt": "_12 = move (_1.1: usize);"
+      },
+      {
+        "file": "zerocopy.split_at-{impl#2}-via_into_bytes.runtime-optimized.after.mir",
+        "fn": "fn split_at::<impl at src/split_at.rs:297:1: 299:25>::via_into_bytes(_1: split_at::Split<&T>) -> (&T, &[<T as split_at::",
+        "bb": "bb0",
+        "local": "_1",
+        "ty": "split_at::Split<&T>) -> (&T",
+        "moved_fields": [
+          "(_1.0: &T)"
+        ],
+        "read_field": "(_1.1: usize)",
+        "stmt": "_12 = move (_1.1: usize);"
+      },
+      {
+        "file": "zerocopy.split_at-{impl#2}-via_runtime_check.runtime-optimized.after.mir",
+        "fn": "fn split_at::<impl at src/split_at.rs:297:1: 299:25>::via_runtime_check(_1: split_at::Split<&T>) -> Result<(&T, &[<T as ",
+        "bb": "bb0",
+        "local": "_1",
+        "ty": "split_at::Split<&T>",
+        "moved_fields": [
+          "(_1.0: &T)"
+        ],
+        "read_field": "(_1.1: usize)",
+        "stmt": "_18 = move (_1.1: usize);"
+      },
+      {
+        "file": "zerocopy.split_at-{impl#2}-via_unaligned.runtime-optimized.after.mir",
+        "fn": "fn split_at::<impl at src/split_at.rs:297:1: 299:25>::via_unaligned(_1: split_at::Split<&T>) -> (&T, &[<T as split_at::S",
+        "bb": "bb0",
+        "local": "_1",
+        "ty": "split_at::Split<&T>) -> (&T",
+        "moved_fields": [
+          "(_1.0: &T)"
+        ],
+        "read_field": "(_1.1: usize)",
+        "stmt": "_12 = move (_1.1: usize);"
+      },
+      {
+        "file": "zerocopy.split_at-{impl#2}-via_unchecked.runtime-optimized.after.mir",
+        "fn": "fn split_at::<impl at src/split_at.rs:297:1: 299:25>::via_unchecked(_1: split_at::Split<&T>) -> (&T, &[<T as split_at::S",
+        "bb": "bb0",
+        "local": "_1",
+        "ty": "split_at::Split<&T>) -> (&T",
+        "moved_fields": [
+          "(_1.0: &T)"
+        ],
+        "read_field": "(_1.1: usize)",
+        "stmt": "_12 = move (_1.1: usize);"
+      },
+      {
+        "file": "zerocopy.split_at-{impl#3}-via_into_bytes.runtime-optimized.after.mir",
+        "fn": "fn split_at::<impl at src/split_at.rs:595:1: 597:25>::via_into_bytes(_1: split_at::Split<&mut T>) -> (&mut T, &mut [<T a",
+        "bb": "bb0",
+        "local": "_1",
+        "ty": "split_at::Split<&mut T>) -> (&mut T",
+        "moved_fields": [
+          "(_1.0: &mut T)"
+        ],
+        "read_field": "(_1.1: usize)",
+        "stmt": "_12 = move (_1.1: usize);"
+      },
+      {
+        "file": "zerocopy.split_at-{impl#3}-via_runtime_check.runtime-optimized.after.mir",
+        "fn": "fn split_at::<impl at src/split_at.rs:595:1: 597:25>::via_runtime_check(_1: split_at::Split<&mut T>) -> Result<(&mut T, ",
+        "bb": "bb0",
+        "local": "_1",
+        "ty": "split_at::Split<&mut T>",
+        "moved_fields": [
+          "(_1.0: &mut T)"
+        ],
+        "read_field": "(_1.1: usize)",
+        "stmt": "_18 = move (_1.1: usize);"
+      },
+      {
+        "file": "zerocopy.split_at-{impl#3}-via_unaligned.runtime-optimized.after.mir",
+        "fn": "fn split_at::<impl at src/split_at.rs:595:1: 597:25>::via_unaligned(_1: split_at::Split<&mut T>) -> (&mut T, &mut [<T as",
+        "bb": "bb0",
+        "local": "_1",
+        "ty": "split_at::Split<&mut T>) -> (&mut T",
+        "moved_fields": [
+          "(_1.0: &mut T)"
+        ],
+        "read_field": "(_1.1: usize)",
+        "stmt": "_12 = move (_1.1: usize);"
+      },
+      {
+        "file": "zerocopy.split_at-{impl#3}-via_unchecked.runtime-optimized.after.mir",
+        "fn": "fn split_at::<impl at src/split_at.rs:595:1: 597:25>::via_unchecked(_1: split_at::Split<&mut T>) -> (&mut T, &mut [<T as",
+        "bb": "bb0",
+        "local": "_1",
+        "ty": "split_at::Split<&mut T>) -> (&mut T",
+        "moved_fields": [
+          "(_1.0: &mut T)"
+        ],
+        "read_field": "(_1.1: usize)",
+        "stmt": "_12 = move (_1.1: usize);"
+      },
+      {
+        "file": "zerocopy.split_at-{impl#4}-via_runtime_check.runtime-optimized.after.mir",
+        "fn": "fn split_at::<impl at src/split_at.rs:800:1: 803:58>::via_runtime_check(_1: split_at::Split<pointer::ptr::def::Ptr<'_, T",
+        "bb": "bb0",
+        "local": "_5",
+        "ty": "layout::TrailingSliceLayout",
+        "moved_fields": [
+          "(_5.0: usize)"
+        ],
+        "read_field": "(_5.1: usize)",
+        "stmt": "_20 = move (_5.1: usize);"
+      },
+      {
+        "file": "zerocopy.swap.runtime-optimized.after.mir",
+        "fn": "fn swap(_1: (T, U)) -> (U, T) {",
+        "bb": "bb0",
+        "local": "_1",
+        "ty": "(T",
+        "moved_fields": [
+          "(_1.0: T)"
+        ],
+        "read_field": "(_1.1: U)",
+        "stmt": "_3 = move (_1.1: U);"
+      },
+      {
+        "file": "zerocopy.util-len_of-{impl#2}-padding_needed_for.runtime-optimized.after.mir",
+        "fn": "fn len_of::<impl at src/util/mod.rs:481:5: 483:24>::padding_needed_for(_1: &len_of::MetadataOf<T>) -> usize {",
+        "bb": "bb0",
+        "local": "_2",
+        "ty": "layout::TrailingSliceLayout",
+        "moved_fields": [
+          "(_2.0: usize)"
+        ],
+        "read_field": "(_2.1: usize)",
+        "stmt": "_12 = move (_2.1: usize);"
+      }
+    ],
+    "m4_samples": []
+  }
+}
