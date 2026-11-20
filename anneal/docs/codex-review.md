@@ -25,6 +25,42 @@ green run of the diagnostics workflow reports that the evaluator ran; it does
 not approve a merge. Keep prior reviews intact rather than deleting review
 history to force a new summary.
 
+## Author preflight and hosted review
+
+Authors must complete the local review-fix loop in
+[`change-review`](../skills/change-review/SKILL.md) before publishing a
+candidate or revision. Use fresh-context reviewers when available, keep trust
+review separate, verify findings, and review the final candidate after fixes.
+Prepare a receipt of the reviewed comparison, coverage, checks, and
+capability limits before pushing. Include it in the initial PR description
+when creating the PR after the push, or update the existing PR after verifying
+the pushed head. For an authorized branch-only push, include it in the task
+handoff instead. An explicitly authorized unfinished handoff must remain
+visibly incomplete; it is not an exception to the merge policy.
+
+Hosted reviewers follow the `Code Review Rules` in
+[`AGENTS.md`](../AGENTS.md). Review the entire change, continue after the first
+few findings, verify and deduplicate findings, and make a final omissions
+sweep before reporting. Preserve the provider's output and severity rules;
+these instructions do not create a setting for unlimited findings or override
+a service limit. Use the
+[shared reporting fallback](../skills/change-review/SKILL.md#report-within-the-hosts-constraints)
+when a fixed schema cannot carry an assessment. The fallback waives only the
+narrative output, not review work. A findings-only response cannot establish
+completion by itself: obtain separate completion evidence before accepting it
+as approval, or obtain a review that can report completion. Missing coverage
+must not be presented as approval.
+
+Local preflight and hosted review are separate checks. A local clean result,
+review receipt, or green diagnostics run is not Codex approval. After changing
+the candidate or comparison base, obtain a review of the resulting change
+rather than relying on an earlier receipt. Never delete earlier reviews to
+manufacture a clean status.
+
+The [maintainer contract](review-policy-design.md) records why the procedure
+uses coverage rather than a finding quota, and how to evaluate its effect
+without treating instruction text as evidence of reviewer behavior.
+
 ## Disable automated enforcement
 
 The [workflow](../.github/workflows/codex-review.yml) runs only on manual

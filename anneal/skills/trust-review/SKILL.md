@@ -63,10 +63,30 @@ Execute trust-boundary review as a dedicated pass:
      none of these paths, skip Pass 2.
 3. **In single-pass PR review environments:** When operating as a single-turn
    automated pull request reviewer that cannot spawn a separate pass, evaluate
-   Pass 1 and (when triggered) Pass 2 first and emit a dedicated
-   `### Trust-Boundary Assessment` section before general review comments
-   whenever a change raises a boundary question or touches `trusted/`, `ci/`,
-   `.github/`, or pinned root manifests.
+   Pass 1 and (when triggered) Pass 2 first. Whenever a change raises a boundary
+   question or touches `trusted/`, `ci/`, `.github/`, or pinned root manifests,
+   report a `### Trust-Boundary Assessment` before general comments when the
+   host permits prose. Otherwise use permitted summary or status fields, or
+   another already authorized reporting channel. If none exists, omit the
+   narrative, not the assessment, and return only schema-supported findings.
+   Follow the [reporting fallback](../change-review/SKILL.md#report-within-the-hosts-constraints)
+   for findings-only output and incomplete reviews; never fabricate a finding
+   to carry the assessment.
+
+## Complete the trust assessment
+
+Use [`change-review`](../change-review/SKILL.md) for candidate identity,
+coverage, finding verification, and the author's review-fix loop. This skill
+retains ownership of the trust requirements below. Account for every changed
+path under each applicable trust goal, including absent companion updates;
+record why a goal is inapplicable rather than silently skipping it.
+
+Continue after finding a bypass or unsoundness issue. Before concluding, sweep
+for other affected boundaries and report every distinct supported violation.
+Keep blocked checks and unresolved trust questions distinct from confirmed
+findings and use the reporting fallback above. An incomplete trust pass is not
+trust acceptance, and a local trust assessment does not grant hosted approval
+or permission to merge.
 
 ## Pass 1: Audit changes outside `trusted/`, `ci/`, and `.github/` for bypasses
 

@@ -57,6 +57,60 @@ Apply these rules to work on the current verifier:
   test checks applicable to the changed files) before finishing a task or
   committing.
 
+## Review before publication
+
+Before pushing authored changes, opening a pull request, marking it ready, or
+publishing a revision, complete the local preflight in
+[`change-review`](skills/change-review/SKILL.md). Prepare its review receipt
+before pushing; attach it when creating or updating the PR after the push,
+or include it in the handoff for an authorized branch-only publication.
+Review the whole intended change locally, resolve findings, run applicable
+checks, and review the final candidate again after fixes. Use fresh-context
+reviewers when the available tools support them; disclose any self-review
+fallback. Do not use the first hosted review as the author's first review.
+
+Incomplete coverage or an unresolved required check is not a clean review.
+Report the blocker; publish unfinished work only when explicitly authorized as
+an incomplete handoff, with its gaps visible. Local review does not replace the
+[Codex approval and merge requirements](docs/codex-review.md).
+
+## Code Review Rules
+
+These rules apply to hosted reviews, including Codex, and local reviews:
+
+- Review the complete change before finishing. Account for every added,
+  modified, renamed, and deleted path, modes, hidden files, and missing
+  companion changes. Read relevant surrounding code, callers, and tests; do
+  not review only the author's summary or the latest fix.
+- Run the dedicated adversarial
+  [`trust-review`](skills/trust-review/SKILL.md) separately from general
+  correctness and maintainability review. In a single-turn environment, do
+  the trust pass first, then the general pass. Cover both applicable trust
+  goals; do not stop after finding one boundary problem.
+- Keep investigating after the first few findings. Before concluding, account
+  for every changed path and applicable review concern as inspected,
+  inapplicable with a reason, or blocked. Make a final sweep for omitted
+  cases, cross-file interactions, and regressions introduced by fixes.
+- Report all distinct, supported, actionable findings permitted by the host's
+  severity and output rules in one review. Do not impose a finding quota or
+  suppress valid findings merely to keep the review short. Verify suspected
+  defects and deduplicate the same root cause; do not invent issues to appear
+  exhaustive. Keep unresolved trust questions distinct from confirmed bugs.
+- Report assessments, coverage gaps, and unavailable checks in permitted
+  summary or status fields, or another already authorized reporting channel.
+  If none exists, omit the narrative, not the assessment, and keep the
+  findings schema valid. A completed clean review may return empty findings;
+  do not invent findings or fields to carry process notes. For incomplete
+  review, use a supported failure or abstention path when available;
+  otherwise retain the limitation for the next authorized handoff. A
+  findings-only response does not attest to completion and must not be
+  accepted as approval without separate completion evidence. Zero findings
+  does not prove that the change is correct.
+
+The shared procedure is [`change-review`](skills/change-review/SKILL.md).
+These instructions do not override host limits or grant authority to modify,
+launch external services, publish, or merge.
+
 ## Required skills
 
 The [`skills/`](skills/README.md) directory contains the skills that govern work
@@ -68,7 +122,7 @@ applies, follow all of them.
 
 | Activity | Required skills |
 | :--- | :--- |
-| Reviewing code, commits, or pull requests, or auditing changes for trust-boundary compliance | [`trust-review`](skills/trust-review/SKILL.md) |
+| Authoring changes for publication, reviewing code, commits, or pull requests, or auditing changes for trust-boundary compliance | [`change-review`](skills/change-review/SKILL.md), [`trust-review`](skills/trust-review/SKILL.md) |
 | Designing, implementing, refactoring, or reviewing code for human comprehension, invariants, or safe evolution | [`robust-code`](skills/robust-code/SKILL.md) |
 | Writing, revising, or reviewing any technical prose (documentation, code comments, commit messages, PR descriptions, or issue bodies) | [`reader-oriented-explanation`](skills/reader-oriented-explanation/SKILL.md), [`williams-style`](skills/williams-style/SKILL.md) |
 | Adding, revising, or reviewing explanatory inline (`//`, `--`) or documentation (`///`, `//!`, `/--`, `/-!`) code comments | [`comment-guidelines`](skills/comment-guidelines/SKILL.md), [`reader-oriented-explanation`](skills/reader-oriented-explanation/SKILL.md), [`williams-style`](skills/williams-style/SKILL.md) |
