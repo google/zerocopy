@@ -474,6 +474,11 @@ jobs:
           key: ${{ steps.miri_olean_cache.outputs.cache-primary-key }}
 
       - name: Check the scalar alpha with the installed toolchain
+        env:
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
+          ACTIONS_RUNTIME_URL: ''
         run: |
           set -euo pipefail
           cargo build --locked -p cargo-anneal

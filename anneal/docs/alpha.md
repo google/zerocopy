@@ -21,12 +21,15 @@ isolated execution environment for the entire verifier.
 
 ## Try a proof
 
-From the `anneal/` workspace, build and install the pinned tools using the
-[local toolchain instructions](README.md#build-and-test-the-current-toolchain).
-Use the same installation cache for verification.
+From the Zerocopy checkout, build and install the pinned tools with Nix.
+Keep the same installation cache for setup and verification.
 
 ```sh
 cd anneal
+mkdir -p target
+nix build .#omnibus-archive --max-jobs 1 --cores 2 --out-link target/omnibus-link
+export XDG_CACHE_HOME="$(mktemp -d)"
+cargo run --locked -p cargo-anneal -- setup --local-archive target/omnibus-link
 cargo run --locked -p cargo-anneal -- verify \
   --request trusted/cargo-anneal/tests/fixtures/scalar/request.json
 ```
