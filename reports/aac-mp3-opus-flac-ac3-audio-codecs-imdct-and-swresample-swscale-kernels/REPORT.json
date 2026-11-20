@@ -1,0 +1,63 @@
+{
+  "topics": [
+    "domains/audio-codecs",
+    "domains/image-scaling",
+    "systems/ffmpeg",
+    "isa/simd",
+    "verification/floating-point",
+    "verification/fixed-point-dsp"
+  ],
+  "subjects": [
+    {
+      "name": "FFmpeg audio codecs, libavutil/tx, libswscale, and libswresample",
+      "identity": {
+        "repository": "FFmpeg/FFmpeg",
+        "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+      }
+    },
+    {
+      "name": "ISO/IEC 14496-3 and ISO/IEC 23003-3 (MPEG-4 AAC, HE-AAC SBR/PS, and USAC)",
+      "identity": {
+        "standard": "ISO/IEC 14496-3:2019",
+        "companion_standard": "ISO/IEC 23003-3:2020"
+      }
+    },
+    {
+      "name": "ISO/IEC 11172-3 and ISO/IEC 11172-4 (MPEG-1 Audio Layers I-III and Conformance Testing)",
+      "identity": {
+        "standard": "ISO/IEC 11172-3:1993",
+        "conformance_standard": "ISO/IEC 11172-4:1995"
+      }
+    },
+    {
+      "name": "IETF RFC 6716 and RFC 8251 (Opus Interactive Audio Codec and Updates)",
+      "identity": {
+        "standard": "RFC 6716",
+        "update_standard": "RFC 8251",
+        "url": "https://www.rfc-editor.org/rfc/rfc6716"
+      }
+    },
+    {
+      "name": "IETF RFC 9639 (Free Lossless Audio Codec - FLAC)",
+      "identity": {
+        "standard": "RFC 9639",
+        "url": "https://www.rfc-editor.org/rfc/rfc9639"
+      }
+    },
+    {
+      "name": "ATSC A/52:2018 (Digital Audio Compression AC-3 and Enhanced AC-3)",
+      "identity": {
+        "standard": "ATSC A/52:2018"
+      }
+    },
+    {
+      "name": "ITU-R BT.709-6, BT.2020-2, and BT.2100-2 (SDR/WCG/HDR Colorimetry and PQ/HLG Transfer Functions)",
+      "identity": {
+        "standard": "ITU-R BT.2100-2",
+        "companion_standards": "ITU-R BT.709-6; ITU-R BT.2020-2",
+        "url": "https://www.itu.int/rec/R-REC-BT.2100"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
