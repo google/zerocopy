@@ -1,0 +1,67 @@
+import ToyBackward
+
+/-!
+# Axiom audit of every card-referenced declaration
+
+Not part of the library target. Run from this directory after `lake build`:
+
+    lake env lean RevalidationAudit.lean
+
+Each `#print axioms` line must list only `propext`, `Classical.choice`, and `Quot.sound` (or no
+axioms at all). Statement and definition-closure hashes are recomputed by `support/revalidate.py`.
+-/
+
+#print axioms Toy.Backward.aliasingDiscipline_iff_nonvacuous
+#print axioms Toy.Backward.aliasingDiscipline_iff_respectsLiveness_lazyPlacement
+#print axioms Toy.Backward.effSem_distinguishes_duplicate_calls_positive_control
+#print axioms Toy.Backward.effSem_eagerPlacement_eq_heapSem_of_aliasingDiscipline
+#print axioms Toy.Backward.effSem_eagerPlacement_eq_heapSem_tight_aliasingDiscipline
+#print axioms Toy.Backward.effSem_eagerPlacement_instance
+#print axioms Toy.Backward.effSem_eagerPlacement_nonvacuous
+#print axioms Toy.Backward.effSem_eq_heapSem_of_endsAfterCreation_of_endsAfterLastUse_of_endsByNextOwnerAccess_of_endsByProgramEnd
+#print axioms Toy.Backward.effSem_eq_heapSem_of_endsAfterCreation_of_endsAfterLastWrite_of_endsByNextOwnerAccess_of_endsByProgramEnd_of_aliasingDiscipline
+#print axioms Toy.Backward.effSem_generalized_instance
+#print axioms Toy.Backward.effSem_generalized_nonvacuous
+#print axioms Toy.Backward.effSem_generalized_tight_aliasingDiscipline
+#print axioms Toy.Backward.effSem_generalized_tight_endsAfterCreation
+#print axioms Toy.Backward.effSem_generalized_tight_endsAfterLastWrite
+#print axioms Toy.Backward.effSem_generalized_tight_endsByNextOwnerAccess
+#print axioms Toy.Backward.effSem_generalized_tight_endsByProgramEnd
+#print axioms Toy.Backward.effSem_lazyPlacement_eq_heapSem_of_aliasingDiscipline
+#print axioms Toy.Backward.effSem_lazyPlacement_eq_heapSem_tight_aliasingDiscipline
+#print axioms Toy.Backward.effSem_lazyPlacement_nonvacuous
+#print axioms Toy.Backward.effSem_reborrowAfterWrite_positive_control
+#print axioms Toy.Backward.effSem_respecting_nonvacuous
+#print axioms Toy.Backward.effSem_respecting_tight_endsAfterCreation
+#print axioms Toy.Backward.effSem_respecting_tight_endsAfterLastUse
+#print axioms Toy.Backward.effSem_respecting_tight_endsByNextOwnerAccess
+#print axioms Toy.Backward.effSem_respecting_tight_endsByProgramEnd
+#print axioms Toy.Backward.heapSem_eq_some_of_lockSem_eq_some
+#print axioms Toy.Backward.heapSem_eq_some_of_lockSem_tight_success
+#print axioms Toy.Backward.lockSem_complete_tight_endsAfterCreation
+#print axioms Toy.Backward.lockSem_complete_tight_endsAfterLastUse
+#print axioms Toy.Backward.lockSem_complete_tight_endsByNextOwnerAccess
+#print axioms Toy.Backward.lockSem_complete_tight_endsByProgramEnd
+#print axioms Toy.Backward.lockSem_eq_heapSem_of_endsAfterCreation_of_endsAfterLastUse_of_endsByNextOwnerAccess_of_endsByProgramEnd
+#print axioms Toy.Backward.lockSem_reborrowAfterWrite_positive_control
+#print axioms Toy.Backward.lockSem_success_nonvacuous
+#print axioms Toy.Backward.outside_window_effSem_wrong_lockSem_stuck
+#print axioms Toy.Backward.prophOutcome_iff_effSem_nonvacuous
+#print axioms Toy.Backward.prophOutcome_iff_effSem_of_endsByNextOwnerAccess_of_endsByProgramEnd
+#print axioms Toy.Backward.prophOutcome_iff_effSem_tight_endsByNextOwnerAccess
+#print axioms Toy.Backward.prophOutcome_iff_effSem_tight_endsByProgramEnd
+#print axioms Toy.Backward.prophOutcome_iff_heapSem_nonvacuous
+#print axioms Toy.Backward.prophOutcome_iff_heapSem_of_aliasingDiscipline_of_endsAfterCreation_of_endsAfterLastWrite_of_endsByProgramEnd
+#print axioms Toy.Backward.prophOutcome_iff_heapSem_tight_aliasingDiscipline
+#print axioms Toy.Backward.prophOutcome_iff_heapSem_tight_endsAfterCreation
+#print axioms Toy.Backward.prophOutcome_iff_heapSem_tight_endsAfterLastWrite
+#print axioms Toy.Backward.prophOutcome_iff_heapSem_tight_endsByProgramEnd
+#print axioms Toy.Backward.prophecy_tolerates_late_end_instance
+#print axioms Toy.Backward.pureBackSem_unsound_on_reborrowAfterWrite
+#print axioms Toy.Backward.pureBackSem_unsound_tight_ne
+#print axioms Toy.Backward.reborrowAfterWrite_ne_nonvacuous
+#print axioms Toy.Backward.respectsLiveness_of_lockSem_eq_some
+#print axioms Toy.Backward.respectsLiveness_of_lockSem_tight_success
+#print axioms Toy.Backward.statelessSem_single_reborrow_positive_control
+#print axioms Toy.Backward.statelessSem_validates_false_duplicate_call_equation
+#print axioms Toy.Backward.statelessSem_validates_false_tight_ne

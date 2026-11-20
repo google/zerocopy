@@ -1,0 +1,1667 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Backward.AliasingDiscipline": [
+      "propext"
+    ],
+    "Toy.Backward.EndsAfterCreation": [
+      "propext"
+    ],
+    "Toy.Backward.EndsAfterLastUse": [
+      "propext"
+    ],
+    "Toy.Backward.EndsAfterLastWrite": [
+      "propext"
+    ],
+    "Toy.Backward.EndsByNextOwnerAccess": [
+      "propext"
+    ],
+    "Toy.Backward.EndsByProgramEnd": [
+      "propext"
+    ],
+    "Toy.Backward.Env": [],
+    "Toy.Backward.Expr": [],
+    "Toy.Backward.Expr.add": [],
+    "Toy.Backward.Expr.add.elim": [],
+    "Toy.Backward.Expr.add.inj": [],
+    "Toy.Backward.Expr.add.injEq": [
+      "propext"
+    ],
+    "Toy.Backward.Expr.add.noConfusion": [],
+    "Toy.Backward.Expr.add.sizeOf_spec": [],
+    "Toy.Backward.Expr.below": [],
+    "Toy.Backward.Expr.brecOn": [],
+    "Toy.Backward.Expr.brecOn.eq": [],
+    "Toy.Backward.Expr.brecOn.go": [],
+    "Toy.Backward.Expr.casesOn": [],
+    "Toy.Backward.Expr.ctorElim": [],
+    "Toy.Backward.Expr.ctorElimType": [],
+    "Toy.Backward.Expr.ctorIdx": [],
+    "Toy.Backward.Expr.eval": [],
+    "Toy.Backward.Expr.lit": [],
+    "Toy.Backward.Expr.lit.elim": [],
+    "Toy.Backward.Expr.lit.inj": [],
+    "Toy.Backward.Expr.lit.injEq": [
+      "propext"
+    ],
+    "Toy.Backward.Expr.lit.noConfusion": [],
+    "Toy.Backward.Expr.lit.sizeOf_spec": [],
+    "Toy.Backward.Expr.noConfusion": [],
+    "Toy.Backward.Expr.noConfusionType": [],
+    "Toy.Backward.Expr.rec": [],
+    "Toy.Backward.Expr.recOn": [],
+    "Toy.Backward.Expr.var": [],
+    "Toy.Backward.Expr.var.elim": [],
+    "Toy.Backward.Expr.var.inj": [],
+    "Toy.Backward.Expr.var.injEq": [
+      "propext"
+    ],
+    "Toy.Backward.Expr.var.noConfusion": [],
+    "Toy.Backward.Expr.var.sizeOf_spec": [],
+    "Toy.Backward.HState": [],
+    "Toy.Backward.HState.casesOn": [],
+    "Toy.Backward.HState.ctorIdx": [],
+    "Toy.Backward.HState.heap": [],
+    "Toy.Backward.HState.init": [],
+    "Toy.Backward.HState.mk": [],
+    "Toy.Backward.HState.mk.inj": [],
+    "Toy.Backward.HState.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Backward.HState.mk.noConfusion": [],
+    "Toy.Backward.HState.mk.sizeOf_spec": [],
+    "Toy.Backward.HState.noConfusion": [],
+    "Toy.Backward.HState.noConfusionType": [],
+    "Toy.Backward.HState.rec": [],
+    "Toy.Backward.HState.recOn": [],
+    "Toy.Backward.HState.refs": [],
+    "Toy.Backward.HState.vars": [],
+    "Toy.Backward.Heap": [],
+    "Toy.Backward.LState": [],
+    "Toy.Backward.LState.casesOn": [],
+    "Toy.Backward.LState.ctorIdx": [],
+    "Toy.Backward.LState.heap": [],
+    "Toy.Backward.LState.init": [],
+    "Toy.Backward.LState.init.eq_1": [],
+    "Toy.Backward.LState.lent": [],
+    "Toy.Backward.LState.mk": [],
+    "Toy.Backward.LState.mk.inj": [],
+    "Toy.Backward.LState.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Backward.LState.mk.noConfusion": [],
+    "Toy.Backward.LState.mk.sizeOf_spec": [],
+    "Toy.Backward.LState.noConfusion": [],
+    "Toy.Backward.LState.noConfusionType": [],
+    "Toy.Backward.LState.openCount": [],
+    "Toy.Backward.LState.rec": [],
+    "Toy.Backward.LState.recOn": [],
+    "Toy.Backward.LState.slots": [],
+    "Toy.Backward.LState.vars": [],
+    "Toy.Backward.Obs": [],
+    "Toy.Backward.Obs.casesOn": [],
+    "Toy.Backward.Obs.ctorIdx": [],
+    "Toy.Backward.Obs.heap": [],
+    "Toy.Backward.Obs.mk": [],
+    "Toy.Backward.Obs.mk.inj": [],
+    "Toy.Backward.Obs.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Backward.Obs.mk.noConfusion": [],
+    "Toy.Backward.Obs.mk.sizeOf_spec": [],
+    "Toy.Backward.Obs.noConfusion": [],
+    "Toy.Backward.Obs.noConfusionType": [],
+    "Toy.Backward.Obs.rec": [],
+    "Toy.Backward.Obs.recOn": [],
+    "Toy.Backward.Obs.vars": [],
+    "Toy.Backward.PState": [],
+    "Toy.Backward.PState.casesOn": [],
+    "Toy.Backward.PState.ctorIdx": [],
+    "Toy.Backward.PState.heap": [],
+    "Toy.Backward.PState.mk": [],
+    "Toy.Backward.PState.mk.inj": [],
+    "Toy.Backward.PState.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Backward.PState.mk.noConfusion": [],
+    "Toy.Backward.PState.mk.sizeOf_spec": [],
+    "Toy.Backward.PState.noConfusion": [],
+    "Toy.Backward.PState.noConfusionType": [],
+    "Toy.Backward.PState.ok": [],
+    "Toy.Backward.PState.rec": [],
+    "Toy.Backward.PState.recOn": [],
+    "Toy.Backward.PState.slots": [],
+    "Toy.Backward.PState.vars": [],
+    "Toy.Backward.Placement": [],
+    "Toy.Backward.Prog": [],
+    "Toy.Backward.ProphOutcome": [
+      "propext"
+    ],
+    "Toy.Backward.Ptr": [],
+    "Toy.Backward.RespectsLiveness": [
+      "propext"
+    ],
+    "Toy.Backward.SState": [],
+    "Toy.Backward.SState.casesOn": [],
+    "Toy.Backward.SState.ctorIdx": [],
+    "Toy.Backward.SState.init": [],
+    "Toy.Backward.SState.init.eq_1": [],
+    "Toy.Backward.SState.mk": [],
+    "Toy.Backward.SState.mk.inj": [],
+    "Toy.Backward.SState.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Backward.SState.mk.noConfusion": [],
+    "Toy.Backward.SState.mk.sizeOf_spec": [],
+    "Toy.Backward.SState.noConfusion": [],
+    "Toy.Backward.SState.noConfusionType": [],
+    "Toy.Backward.SState.rec": [],
+    "Toy.Backward.SState.recOn": [],
+    "Toy.Backward.SState.vals": [],
+    "Toy.Backward.SState.vars": [],
+    "Toy.Backward.Sim.EffRel": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.EffRel.casesOn": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.EffRel.congr": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.EffRel.heap": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.EffRel.mk": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.EffRel.rec": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.EffRel.recOn": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.EffRel.refs": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.EffRel.refs_of_slot": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.EffRel.slot_none": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.EffRel.slot_of_refs": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.EffRel.slots": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.EffRel.vals": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.EffRel.vars": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.GoodFor": [],
+    "Toy.Backward.Sim.GoodFor.eq_1": [],
+    "Toy.Backward.Sim.GoodFor.eq_2": [],
+    "Toy.Backward.Sim.GoodFor.eq_def": [],
+    "Toy.Backward.Sim.GoodFor.match_1": [],
+    "Toy.Backward.Sim.LInv": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.LInv.casesOn": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.LInv.congr": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.LInv.count": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.LInv.fut": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.LInv.lent": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.LInv.mk": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.LInv.ptr": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.LInv.rec": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.LInv.recOn": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.LInv.slots": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.LInv.uniq": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.LockRel": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.LockRel.casesOn": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.LockRel.congr": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.LockRel.count": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.LockRel.heap": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.LockRel.lclosed": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.LockRel.lent": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.LockRel.lopen": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.LockRel.lslot_none": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.LockRel.lslot_some": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.LockRel.mk": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.LockRel.rec": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.LockRel.recOn": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.LockRel.tslots": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.LockRel.uniq": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.LockRel.vars": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.MRel": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.MRel.casesOn": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.MRel.heap": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.MRel.mk": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.MRel.ok": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.MRel.rec": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.MRel.recOn": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.MRel.slots": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.MRel.tslots": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.MRel.vars": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.PRel": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.PRel.casesOn": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.PRel.congr": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.PRel.hclosed": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.PRel.hopen": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.PRel.mk": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.PRel.rec": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.PRel.recOn": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.PRel.slots": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.PRel.tslots": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.PRel.vars": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.backsAt_eq": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.backsList": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.backsList.eq_1": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.backsList_nodup": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.bool_eq_of_iff": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.cnt": [],
+    "Toy.Backward.Sim.cnt.eq_1": [],
+    "Toy.Backward.Sim.cnt.eq_2": [],
+    "Toy.Backward.Sim.cnt.eq_def": [],
+    "Toy.Backward.Sim.cnt.match_1": [],
+    "Toy.Backward.Sim.cnt_congr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.cnt_congr.match_1_1": [],
+    "Toy.Backward.Sim.cnt_eq_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.cnt_eq_zero.match_1_1": [],
+    "Toy.Backward.Sim.cnt_eq_zero_of": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.cnt_eq_zero_of.match_1_1": [],
+    "Toy.Backward.Sim.cnt_none": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.cnt_none.match_1_1": [],
+    "Toy.Backward.Sim.cnt_upd": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.cnt_upd.match_1_1": [],
+    "Toy.Backward.Sim.cnt_upd_some_of_some": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.eac_main": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.eac_main.match_1_1": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.effRel_back": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.effRel_backs": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.effRel_backs.match_1_1": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.effRel_stmt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.effSem_eq_heapSem": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.eff_main": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.eff_main.match_1_1": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.endsAfterCreation_of_trun": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.get_head": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.get_of_regionPtr": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.get_tail": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.goodFor_append": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.goodFor_append.match_1_1": [],
+    "Toy.Backward.Sim.goodFor_backs": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.goodFor_backs.match_1_1": [],
+    "Toy.Backward.Sim.goodFor_cons_nonback": [],
+    "Toy.Backward.Sim.goodFor_exists": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.goodFor_exists.match_1_1": [],
+    "Toy.Backward.Sim.hrun_cons": [],
+    "Toy.Backward.Sim.isRegion_false_of_get": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.isRegion_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.isRegion_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.linv_back": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.linv_backs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.linv_backs.match_1_1": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.linv_noOwner": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.linv_same": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.linv_stmt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.lockRel_back": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.lockRel_back.match_1_8": [],
+    "Toy.Backward.Sim.lockRel_backs": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.lockRel_backs.match_1_1": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.lockRel_noLent": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.lockRel_stmt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.lockSem_eq_effSem": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.lock_main": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.lock_main.match_1_1": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.lock_succ_main": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.lock_succ_main.match_1_1": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.lrun_append": [],
+    "Toy.Backward.Sim.lrun_cons": [],
+    "Toy.Backward.Sim.lt_of_head": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.mem_backsList": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.move_bound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.move_main": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.move_main.match_1_1": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.move_main.match_1_12": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.move_main.match_1_19": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.move_main.match_1_3": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.ownerAccessAfter_inv": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.ownerAccessAfter_of": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.prop_back": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.prop_backs": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.prop_backs.match_1_1": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.prop_main": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.prop_main.match_1_1": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.prop_noOpen": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.prop_stmt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.prophOutcome_iff_effSem": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.prophOutcome_iff_heapSem": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.prophSem_eq_of_move": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.prun_append": [],
+    "Toy.Backward.Sim.prun_backs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.prun_backs.match_1_1": [],
+    "Toy.Backward.Sim.prun_cons": [],
+    "Toy.Backward.Sim.prun_ok_false": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.prun_ok_false.match_1_1": [],
+    "Toy.Backward.Sim.pstep_ok": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.pstep_ok_false": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.pstep_slots_other": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.recordAt": [],
+    "Toy.Backward.Sim.recordAt.eq_1": [],
+    "Toy.Backward.Sim.recordAt.match_1": [],
+    "Toy.Backward.Sim.recordAt_ne": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.recordAt_spec": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.refOf": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.refOf.eq_1": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.refOf_self": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.refOf_some": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.refOf_succ_asMut": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.refOf_succ_of_ne": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.refOf_zero": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.regionPtr": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.regionPtr.match_1": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.regionPtr_lt": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.regionPtr_of_get": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.regionPtr_of_get_ne": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.respectsLiveness_of_lockSem": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.shape_run": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.shape_run.match_1_1": [],
+    "Toy.Backward.Sim.shape_step": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.slot_upd_ptr": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.slots_upd_ptr": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.slots_upd_uniq": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.state_eq_with_ok": [],
+    "Toy.Backward.Sim.trStmt_ne_back": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.translateFrom_cons": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.trun_append": [],
+    "Toy.Backward.Sim.trun_backs_inv": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.trun_backs_inv.match_1_1": [],
+    "Toy.Backward.Sim.trun_cons": [],
+    "Toy.Backward.Sim.tslot_none": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.tslot_of_ref": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.tslot_some": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.tslots_pstep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.tslots_tstep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.Sim.upd_ne": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.upd_same": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.upd_slot_ptr": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.usesAt_of": [
+      "propext"
+    ],
+    "Toy.Backward.Sim.writesAt_of": [
+      "propext"
+    ],
+    "Toy.Backward.Stmt": [],
+    "Toy.Backward.Stmt.asMut": [],
+    "Toy.Backward.Stmt.asMut.elim": [],
+    "Toy.Backward.Stmt.asMut.inj": [],
+    "Toy.Backward.Stmt.asMut.injEq": [
+      "propext"
+    ],
+    "Toy.Backward.Stmt.asMut.noConfusion": [],
+    "Toy.Backward.Stmt.asMut.sizeOf_spec": [],
+    "Toy.Backward.Stmt.casesOn": [],
+    "Toy.Backward.Stmt.ctorElim": [],
+    "Toy.Backward.Stmt.ctorElimType": [],
+    "Toy.Backward.Stmt.ctorIdx": [],
+    "Toy.Backward.Stmt.noConfusion": [],
+    "Toy.Backward.Stmt.noConfusionType": [],
+    "Toy.Backward.Stmt.rawRead": [],
+    "Toy.Backward.Stmt.rawRead.elim": [],
+    "Toy.Backward.Stmt.rawRead.inj": [],
+    "Toy.Backward.Stmt.rawRead.injEq": [
+      "propext"
+    ],
+    "Toy.Backward.Stmt.rawRead.noConfusion": [],
+    "Toy.Backward.Stmt.rawRead.sizeOf_spec": [],
+    "Toy.Backward.Stmt.rawWrite": [],
+    "Toy.Backward.Stmt.rawWrite.elim": [],
+    "Toy.Backward.Stmt.rawWrite.inj": [],
+    "Toy.Backward.Stmt.rawWrite.injEq": [
+      "propext"
+    ],
+    "Toy.Backward.Stmt.rawWrite.noConfusion": [],
+    "Toy.Backward.Stmt.rawWrite.sizeOf_spec": [],
+    "Toy.Backward.Stmt.read": [],
+    "Toy.Backward.Stmt.read.elim": [],
+    "Toy.Backward.Stmt.read.inj": [],
+    "Toy.Backward.Stmt.read.injEq": [
+      "propext"
+    ],
+    "Toy.Backward.Stmt.read.noConfusion": [],
+    "Toy.Backward.Stmt.read.sizeOf_spec": [],
+    "Toy.Backward.Stmt.rec": [],
+    "Toy.Backward.Stmt.recOn": [],
+    "Toy.Backward.Stmt.touchesOwner": [
+      "propext"
+    ],
+    "Toy.Backward.Stmt.touchesOwner.eq_1": [
+      "propext"
+    ],
+    "Toy.Backward.Stmt.touchesOwner.eq_2": [
+      "propext"
+    ],
+    "Toy.Backward.Stmt.touchesOwner.eq_3": [
+      "propext"
+    ],
+    "Toy.Backward.Stmt.touchesOwner.eq_4": [
+      "propext"
+    ],
+    "Toy.Backward.Stmt.touchesOwner.match_1": [
+      "propext"
+    ],
+    "Toy.Backward.Stmt.usesRef": [
+      "propext"
+    ],
+    "Toy.Backward.Stmt.usesRef.eq_1": [
+      "propext"
+    ],
+    "Toy.Backward.Stmt.usesRef.eq_2": [
+      "propext"
+    ],
+    "Toy.Backward.Stmt.usesRef.eq_3": [
+      "propext"
+    ],
+    "Toy.Backward.Stmt.usesRef.match_1": [
+      "propext"
+    ],
+    "Toy.Backward.Stmt.write": [],
+    "Toy.Backward.Stmt.write.elim": [],
+    "Toy.Backward.Stmt.write.inj": [],
+    "Toy.Backward.Stmt.write.injEq": [
+      "propext"
+    ],
+    "Toy.Backward.Stmt.write.noConfusion": [],
+    "Toy.Backward.Stmt.write.sizeOf_spec": [],
+    "Toy.Backward.Stmt.writesRef": [
+      "propext"
+    ],
+    "Toy.Backward.Stmt.writesRef.eq_1": [
+      "propext"
+    ],
+    "Toy.Backward.Stmt.writesRef.eq_2": [
+      "propext"
+    ],
+    "Toy.Backward.Stmt.writesRef.match_1": [
+      "propext"
+    ],
+    "Toy.Backward.TState": [],
+    "Toy.Backward.TState.casesOn": [],
+    "Toy.Backward.TState.ctorIdx": [],
+    "Toy.Backward.TState.heap": [],
+    "Toy.Backward.TState.init": [],
+    "Toy.Backward.TState.mk": [],
+    "Toy.Backward.TState.mk.inj": [],
+    "Toy.Backward.TState.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Backward.TState.mk.noConfusion": [],
+    "Toy.Backward.TState.mk.sizeOf_spec": [],
+    "Toy.Backward.TState.noConfusion": [],
+    "Toy.Backward.TState.noConfusionType": [],
+    "Toy.Backward.TState.obs": [],
+    "Toy.Backward.TState.obs.eq_1": [],
+    "Toy.Backward.TState.rec": [],
+    "Toy.Backward.TState.recOn": [],
+    "Toy.Backward.TState.slots": [],
+    "Toy.Backward.TState.vars": [],
+    "Toy.Backward.TStmt": [],
+    "Toy.Backward.TStmt.back": [],
+    "Toy.Backward.TStmt.back.elim": [],
+    "Toy.Backward.TStmt.back.inj": [],
+    "Toy.Backward.TStmt.back.injEq": [
+      "propext"
+    ],
+    "Toy.Backward.TStmt.back.noConfusion": [],
+    "Toy.Backward.TStmt.back.sizeOf_spec": [],
+    "Toy.Backward.TStmt.casesOn": [],
+    "Toy.Backward.TStmt.ctorElim": [],
+    "Toy.Backward.TStmt.ctorElimType": [],
+    "Toy.Backward.TStmt.ctorIdx": [],
+    "Toy.Backward.TStmt.fwd": [],
+    "Toy.Backward.TStmt.fwd.elim": [],
+    "Toy.Backward.TStmt.fwd.inj": [],
+    "Toy.Backward.TStmt.fwd.injEq": [
+      "propext"
+    ],
+    "Toy.Backward.TStmt.fwd.noConfusion": [],
+    "Toy.Backward.TStmt.fwd.sizeOf_spec": [],
+    "Toy.Backward.TStmt.isBack": [
+      "propext"
+    ],
+    "Toy.Backward.TStmt.isBack.eq_1": [
+      "propext"
+    ],
+    "Toy.Backward.TStmt.isBack.eq_2": [
+      "propext"
+    ],
+    "Toy.Backward.TStmt.isBack.match_1": [
+      "propext"
+    ],
+    "Toy.Backward.TStmt.lread": [],
+    "Toy.Backward.TStmt.lread.elim": [],
+    "Toy.Backward.TStmt.lread.inj": [],
+    "Toy.Backward.TStmt.lread.injEq": [
+      "propext"
+    ],
+    "Toy.Backward.TStmt.lread.noConfusion": [],
+    "Toy.Backward.TStmt.lread.sizeOf_spec": [],
+    "Toy.Backward.TStmt.lwrite": [],
+    "Toy.Backward.TStmt.lwrite.elim": [],
+    "Toy.Backward.TStmt.lwrite.inj": [],
+    "Toy.Backward.TStmt.lwrite.injEq": [
+      "propext"
+    ],
+    "Toy.Backward.TStmt.lwrite.noConfusion": [],
+    "Toy.Backward.TStmt.lwrite.sizeOf_spec": [],
+    "Toy.Backward.TStmt.noConfusion": [],
+    "Toy.Backward.TStmt.noConfusionType": [],
+    "Toy.Backward.TStmt.rawRead": [],
+    "Toy.Backward.TStmt.rawRead.elim": [],
+    "Toy.Backward.TStmt.rawRead.inj": [],
+    "Toy.Backward.TStmt.rawRead.injEq": [
+      "propext"
+    ],
+    "Toy.Backward.TStmt.rawRead.noConfusion": [],
+    "Toy.Backward.TStmt.rawRead.sizeOf_spec": [],
+    "Toy.Backward.TStmt.rawWrite": [],
+    "Toy.Backward.TStmt.rawWrite.elim": [],
+    "Toy.Backward.TStmt.rawWrite.inj": [],
+    "Toy.Backward.TStmt.rawWrite.injEq": [
+      "propext"
+    ],
+    "Toy.Backward.TStmt.rawWrite.noConfusion": [],
+    "Toy.Backward.TStmt.rawWrite.sizeOf_spec": [],
+    "Toy.Backward.TStmt.rec": [],
+    "Toy.Backward.TStmt.recOn": [],
+    "Toy.Backward.XVar": [],
+    "Toy.Backward.aliasingDiscipline_admits_ill_scoped": [
+      "propext"
+    ],
+    "Toy.Backward.aliasingDiscipline_iff_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Backward.aliasingDiscipline_iff_respectsLiveness_lazyPlacement": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.aliasingDiscipline_iff_respectsLiveness_lazyPlacement.match_1_1": [
+      "propext"
+    ],
+    "Toy.Backward.aliasingDiscipline_iff_respectsLiveness_lazyPlacement.match_1_3": [
+      "propext"
+    ],
+    "Toy.Backward.aliasingDiscipline_iff_respectsLiveness_lazyPlacement.match_1_5": [
+      "propext"
+    ],
+    "Toy.Backward.aliasingDiscipline_of_endsAfterLastUse_of_endsByNextOwnerAccess": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.aliasingDiscipline_reborrowAfterWrite": [
+      "propext"
+    ],
+    "Toy.Backward.backsAt": [
+      "propext"
+    ],
+    "Toy.Backward.backsAt.eq_1": [
+      "propext"
+    ],
+    "Toy.Backward.backsAt_filter_not_isBack": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.backsAt_neverEndPlacement": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.danglingUse": [],
+    "Toy.Backward.eagerPlacement": [
+      "propext"
+    ],
+    "Toy.Backward.eagerPlacement.eq_1": [
+      "propext"
+    ],
+    "Toy.Backward.eagerPlacement_endsAfterCreation": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.eagerPlacement_endsAfterLastUse": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.eagerPlacement_endsByNextOwnerAccess_of_aliasingDiscipline": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.eagerPlacement_endsByProgramEnd": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.eagerPlacement_example": [
+      "propext"
+    ],
+    "Toy.Backward.eagerPlacement_example_neg": [
+      "propext"
+    ],
+    "Toy.Backward.eagerPlacement_respectsLiveness_of_aliasingDiscipline": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.effSem": [
+      "propext"
+    ],
+    "Toy.Backward.effSem.eq_1": [
+      "propext"
+    ],
+    "Toy.Backward.effSem_distinguishes_duplicate_calls_positive_control": [
+      "propext"
+    ],
+    "Toy.Backward.effSem_eagerPlacement_eq_heapSem_of_aliasingDiscipline": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.effSem_eagerPlacement_eq_heapSem_tight_aliasingDiscipline": [
+      "propext"
+    ],
+    "Toy.Backward.effSem_eagerPlacement_instance": [
+      "propext"
+    ],
+    "Toy.Backward.effSem_eagerPlacement_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Backward.effSem_eq_effSem_of_respectsLiveness": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.effSem_eq_heapSem_of_endsAfterCreation_of_endsAfterLastUse_of_endsByNextOwnerAccess_of_endsByProgramEnd": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.effSem_eq_heapSem_of_endsAfterCreation_of_endsAfterLastWrite_of_endsByNextOwnerAccess_of_endsByProgramEnd_of_aliasingDiscipline": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.effSem_example_end_before_creation": [
+      "propext"
+    ],
+    "Toy.Backward.effSem_example_writeThenRead": [
+      "propext"
+    ],
+    "Toy.Backward.effSem_example_write_after_back_lost": [
+      "propext"
+    ],
+    "Toy.Backward.effSem_example_write_back_deferred": [
+      "propext"
+    ],
+    "Toy.Backward.effSem_generalized_instance": [
+      "propext"
+    ],
+    "Toy.Backward.effSem_generalized_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Backward.effSem_generalized_tight_aliasingDiscipline": [
+      "propext"
+    ],
+    "Toy.Backward.effSem_generalized_tight_endsAfterCreation": [
+      "propext"
+    ],
+    "Toy.Backward.effSem_generalized_tight_endsAfterLastWrite": [
+      "propext"
+    ],
+    "Toy.Backward.effSem_generalized_tight_endsByNextOwnerAccess": [
+      "propext"
+    ],
+    "Toy.Backward.effSem_generalized_tight_endsByProgramEnd": [
+      "propext"
+    ],
+    "Toy.Backward.effSem_lazyPlacement_eq_heapSem_of_aliasingDiscipline": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.effSem_lazyPlacement_eq_heapSem_tight_aliasingDiscipline": [
+      "propext"
+    ],
+    "Toy.Backward.effSem_lazyPlacement_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Backward.effSem_reborrowAfterWrite_positive_control": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.effSem_respecting_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Backward.effSem_respecting_tight_endsAfterCreation": [
+      "propext"
+    ],
+    "Toy.Backward.effSem_respecting_tight_endsAfterLastUse": [
+      "propext"
+    ],
+    "Toy.Backward.effSem_respecting_tight_endsByNextOwnerAccess": [
+      "propext"
+    ],
+    "Toy.Backward.effSem_respecting_tight_endsByProgramEnd": [
+      "propext"
+    ],
+    "Toy.Backward.endAfterReborrow": [],
+    "Toy.Backward.endAt": [],
+    "Toy.Backward.endBeforeWrite": [],
+    "Toy.Backward.endsAfterCreation_examples": [
+      "propext"
+    ],
+    "Toy.Backward.endsAfterLastUse_example_neg": [
+      "propext"
+    ],
+    "Toy.Backward.endsAfterLastUse_example_unused": [
+      "propext"
+    ],
+    "Toy.Backward.endsAfterLastWrite_example_neg": [
+      "propext"
+    ],
+    "Toy.Backward.endsAfterLastWrite_example_pos": [
+      "propext"
+    ],
+    "Toy.Backward.endsAfterLastWrite_of_endsAfterLastUse": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.endsByNextOwnerAccess_examples": [
+      "propext"
+    ],
+    "Toy.Backward.endsByProgramEnd_examples": [
+      "propext"
+    ],
+    "Toy.Backward.firstBelow": [],
+    "Toy.Backward.firstBelow.eq_1": [],
+    "Toy.Backward.firstBelow.eq_2": [],
+    "Toy.Backward.firstBelow.eq_def": [],
+    "Toy.Backward.firstBelow.match_1": [],
+    "Toy.Backward.firstBelow_examples": [],
+    "Toy.Backward.firstBelow_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.firstBelow_min": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.firstBelow_spec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.heapSem": [],
+    "Toy.Backward.heapSem_eq_some_of_lockSem_eq_some": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.heapSem_eq_some_of_lockSem_tight_success": [
+      "propext"
+    ],
+    "Toy.Backward.heapSem_example_alias_visible": [],
+    "Toy.Backward.heapSem_example_danglingUse": [],
+    "Toy.Backward.heapSem_example_useBeforeCreation": [],
+    "Toy.Backward.heapSem_example_writeThenRead": [],
+    "Toy.Backward.hrun": [],
+    "Toy.Backward.hrun.eq_1": [],
+    "Toy.Backward.hrun.eq_2": [],
+    "Toy.Backward.hrun.eq_def": [],
+    "Toy.Backward.hrun.match_1": [],
+    "Toy.Backward.hrun.match_3": [],
+    "Toy.Backward.hstep": [],
+    "Toy.Backward.hstep.eq_1": [],
+    "Toy.Backward.hstep.eq_2": [],
+    "Toy.Backward.hstep.eq_3": [],
+    "Toy.Backward.hstep.eq_4": [],
+    "Toy.Backward.hstep.eq_5": [],
+    "Toy.Backward.hstep.match_1": [],
+    "Toy.Backward.instDecidableAliasingDiscipline": [
+      "propext"
+    ],
+    "Toy.Backward.instDecidableEndsAfterCreation": [
+      "propext"
+    ],
+    "Toy.Backward.instDecidableEndsAfterLastUse": [
+      "propext"
+    ],
+    "Toy.Backward.instDecidableEndsAfterLastWrite": [
+      "propext"
+    ],
+    "Toy.Backward.instDecidableEndsByNextOwnerAccess": [
+      "propext"
+    ],
+    "Toy.Backward.instDecidableEndsByProgramEnd": [
+      "propext"
+    ],
+    "Toy.Backward.instDecidableEqExpr": [],
+    "Toy.Backward.instDecidableEqExpr.decEq": [],
+    "Toy.Backward.instDecidableEqExpr.decEq.match_1": [],
+    "Toy.Backward.instDecidableEqStmt": [],
+    "Toy.Backward.instDecidableEqStmt.decEq": [],
+    "Toy.Backward.instDecidableEqStmt.decEq.match_1": [],
+    "Toy.Backward.instDecidableEqTStmt": [],
+    "Toy.Backward.instDecidableEqTStmt.decEq": [],
+    "Toy.Backward.instDecidableEqTStmt.decEq.match_1": [],
+    "Toy.Backward.instDecidableRespectsLiveness": [
+      "propext"
+    ],
+    "Toy.Backward.instReprExpr": [
+      "propext"
+    ],
+    "Toy.Backward.instReprExpr.repr": [
+      "propext"
+    ],
+    "Toy.Backward.instReprExpr.repr.match_1": [],
+    "Toy.Backward.instReprStmt": [
+      "propext"
+    ],
+    "Toy.Backward.instReprStmt.repr": [
+      "propext"
+    ],
+    "Toy.Backward.instReprStmt.repr.match_1": [],
+    "Toy.Backward.instReprTStmt": [
+      "propext"
+    ],
+    "Toy.Backward.instReprTStmt.repr": [
+      "propext"
+    ],
+    "Toy.Backward.instReprTStmt.repr.match_1": [],
+    "Toy.Backward.isRegion": [
+      "propext"
+    ],
+    "Toy.Backward.isRegion.match_1": [
+      "propext"
+    ],
+    "Toy.Backward.isRegion_examples": [
+      "propext"
+    ],
+    "Toy.Backward.lastBelow": [],
+    "Toy.Backward.lastBelow.eq_1": [],
+    "Toy.Backward.lastBelow.eq_2": [],
+    "Toy.Backward.lastBelow.eq_def": [],
+    "Toy.Backward.lastBelow_cases": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.lastBelow_examples": [],
+    "Toy.Backward.lazyPlacement": [
+      "propext"
+    ],
+    "Toy.Backward.lazyPlacement.eq_1": [
+      "propext"
+    ],
+    "Toy.Backward.lazyPlacement_endsAfterCreation": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.lazyPlacement_endsAfterLastUse_of_aliasingDiscipline": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.lazyPlacement_endsByNextOwnerAccess": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.lazyPlacement_endsByProgramEnd": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.lazyPlacement_example": [
+      "propext"
+    ],
+    "Toy.Backward.lazyPlacement_respectsLiveness_of_aliasingDiscipline": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.le_lastBelow": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.lockSem": [
+      "propext"
+    ],
+    "Toy.Backward.lockSem_complete_tight_endsAfterCreation": [
+      "propext"
+    ],
+    "Toy.Backward.lockSem_complete_tight_endsAfterLastUse": [
+      "propext"
+    ],
+    "Toy.Backward.lockSem_complete_tight_endsByNextOwnerAccess": [
+      "propext"
+    ],
+    "Toy.Backward.lockSem_complete_tight_endsByProgramEnd": [
+      "propext"
+    ],
+    "Toy.Backward.lockSem_eq_heapSem_of_endsAfterCreation_of_endsAfterLastUse_of_endsByNextOwnerAccess_of_endsByProgramEnd": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.lockSem_example_never_returned": [
+      "propext"
+    ],
+    "Toy.Backward.lockSem_example_owner_access_while_lent": [
+      "propext"
+    ],
+    "Toy.Backward.lockSem_example_reborrowAfterWrite": [
+      "propext"
+    ],
+    "Toy.Backward.lockSem_example_second_loan": [
+      "propext"
+    ],
+    "Toy.Backward.lockSem_example_use_after_back": [
+      "propext"
+    ],
+    "Toy.Backward.lockSem_example_writeThenRead": [
+      "propext"
+    ],
+    "Toy.Backward.lockSem_none_of_ill_scoped_respectsLiveness": [
+      "propext"
+    ],
+    "Toy.Backward.lockSem_reborrowAfterWrite_positive_control": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.lockSem_success_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Backward.lrun": [],
+    "Toy.Backward.lrun.eq_1": [],
+    "Toy.Backward.lrun.eq_2": [],
+    "Toy.Backward.lrun.eq_def": [],
+    "Toy.Backward.lrun.match_1": [],
+    "Toy.Backward.lrun.match_3": [],
+    "Toy.Backward.lstep": [],
+    "Toy.Backward.lstep.eq_1": [],
+    "Toy.Backward.lstep.eq_2": [],
+    "Toy.Backward.lstep.eq_3": [],
+    "Toy.Backward.lstep.eq_4": [],
+    "Toy.Backward.lstep.eq_5": [],
+    "Toy.Backward.lstep.eq_6": [],
+    "Toy.Backward.lt_length_of_usesAt": [
+      "propext"
+    ],
+    "Toy.Backward.ne_of_map_ne": [],
+    "Toy.Backward.neverEndPlacement": [],
+    "Toy.Backward.neverEndPlacement.eq_1": [],
+    "Toy.Backward.neverEndPlacement_example": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.neverEndPlacement_example_neg": [
+      "propext"
+    ],
+    "Toy.Backward.not_aliasingDiscipline_ownerReadThenWriteBack": [
+      "propext"
+    ],
+    "Toy.Backward.not_aliasingDiscipline_rawWriteDuringBorrow": [
+      "propext"
+    ],
+    "Toy.Backward.not_aliasingDiscipline_readAfterRawWrite": [
+      "propext"
+    ],
+    "Toy.Backward.not_forall_iff_of_left": [],
+    "Toy.Backward.outside_window_effSem_wrong_lockSem_stuck": [
+      "propext"
+    ],
+    "Toy.Backward.ownerAccessAfter": [
+      "propext"
+    ],
+    "Toy.Backward.ownerAccessAfter.match_1": [
+      "propext"
+    ],
+    "Toy.Backward.ownerAccessAfter_isRegion": [
+      "propext"
+    ],
+    "Toy.Backward.ownerAccessAfter_lt": [
+      "propext"
+    ],
+    "Toy.Backward.ownerReadThenWriteBack": [],
+    "Toy.Backward.prophOutcome_empty_ownerReadThenWriteBack": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.prophOutcome_example": [
+      "propext"
+    ],
+    "Toy.Backward.prophOutcome_example_neg": [
+      "propext"
+    ],
+    "Toy.Backward.prophOutcome_iff_effSem_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Backward.prophOutcome_iff_effSem_of_endsByNextOwnerAccess_of_endsByProgramEnd": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.prophOutcome_iff_effSem_tight_endsByNextOwnerAccess": [
+      "propext"
+    ],
+    "Toy.Backward.prophOutcome_iff_effSem_tight_endsByProgramEnd": [
+      "propext"
+    ],
+    "Toy.Backward.prophOutcome_iff_heapSem_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Backward.prophOutcome_iff_heapSem_of_aliasingDiscipline_of_endsAfterCreation_of_endsAfterLastWrite_of_endsByProgramEnd": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.prophOutcome_iff_heapSem_tight_aliasingDiscipline": [
+      "propext"
+    ],
+    "Toy.Backward.prophOutcome_iff_heapSem_tight_endsAfterCreation": [
+      "propext"
+    ],
+    "Toy.Backward.prophOutcome_iff_heapSem_tight_endsAfterLastWrite": [
+      "propext"
+    ],
+    "Toy.Backward.prophOutcome_iff_heapSem_tight_endsByProgramEnd": [
+      "propext"
+    ],
+    "Toy.Backward.prophSem": [
+      "propext"
+    ],
+    "Toy.Backward.prophSem_example_correct_prophecy": [
+      "propext"
+    ],
+    "Toy.Backward.prophSem_example_wrong_prophecy": [
+      "propext"
+    ],
+    "Toy.Backward.prophecy_tolerates_late_end_instance": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.prun": [],
+    "Toy.Backward.prun.eq_1": [],
+    "Toy.Backward.prun.eq_2": [],
+    "Toy.Backward.prun.eq_def": [],
+    "Toy.Backward.prun.match_1": [],
+    "Toy.Backward.prun.match_3": [],
+    "Toy.Backward.pstep": [],
+    "Toy.Backward.pstep.eq_1": [],
+    "Toy.Backward.pstep.eq_2": [],
+    "Toy.Backward.pstep.eq_3": [],
+    "Toy.Backward.pstep.eq_4": [],
+    "Toy.Backward.pstep.eq_5": [],
+    "Toy.Backward.pstep.eq_6": [],
+    "Toy.Backward.pureBackSem": [],
+    "Toy.Backward.pureBackSem.eq_1": [],
+    "Toy.Backward.pureBackSem_eq_effSem_neverEndPlacement": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.pureBackSem_example_danglingUse": [],
+    "Toy.Backward.pureBackSem_example_writeThenRead": [],
+    "Toy.Backward.pureBackSem_unsound_on_reborrowAfterWrite": [
+      "propext"
+    ],
+    "Toy.Backward.pureBackSem_unsound_tight_ne": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.rawWriteDuringBorrow": [],
+    "Toy.Backward.readAfterRawWrite": [],
+    "Toy.Backward.reborrowAfterWrite": [],
+    "Toy.Backward.reborrowAfterWrite.eq_1": [],
+    "Toy.Backward.reborrowAfterWrite_ne_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Backward.respectsLiveness_example": [
+      "propext"
+    ],
+    "Toy.Backward.respectsLiveness_example_neg": [
+      "propext"
+    ],
+    "Toy.Backward.respectsLiveness_of_lockSem_eq_some": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.respectsLiveness_of_lockSem_tight_success": [
+      "propext"
+    ],
+    "Toy.Backward.srun": [],
+    "Toy.Backward.srun.eq_1": [],
+    "Toy.Backward.srun.eq_2": [],
+    "Toy.Backward.srun.eq_def": [],
+    "Toy.Backward.srun.match_1": [],
+    "Toy.Backward.srun.match_3": [],
+    "Toy.Backward.srun_filter_not_isBack": [
+      "propext"
+    ],
+    "Toy.Backward.sstep": [],
+    "Toy.Backward.sstep.eq_1": [],
+    "Toy.Backward.sstep.eq_2": [],
+    "Toy.Backward.sstep.eq_3": [],
+    "Toy.Backward.sstep.eq_4": [],
+    "Toy.Backward.sstep.eq_5": [],
+    "Toy.Backward.sstep.eq_6": [],
+    "Toy.Backward.sstep.match_1": [],
+    "Toy.Backward.sstep_back_eq": [],
+    "Toy.Backward.statelessSem": [
+      "propext"
+    ],
+    "Toy.Backward.statelessSem_example_backward_fails": [
+      "propext"
+    ],
+    "Toy.Backward.statelessSem_example_forward": [
+      "propext"
+    ],
+    "Toy.Backward.statelessSem_example_forward_fails": [
+      "propext"
+    ],
+    "Toy.Backward.statelessSem_example_rawWrite_invisible": [
+      "propext"
+    ],
+    "Toy.Backward.statelessSem_reborrowAfterWrite_vars_eq": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.statelessSem_single_reborrow_positive_control": [
+      "propext"
+    ],
+    "Toy.Backward.statelessSem_validates_false_duplicate_call_equation": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.statelessSem_validates_false_tight_ne": [
+      "propext"
+    ],
+    "Toy.Backward.statelessSem_validates_false_tight_ne.match_1_1": [
+      "propext"
+    ],
+    "Toy.Backward.trStmt": [],
+    "Toy.Backward.trStmt.eq_1": [],
+    "Toy.Backward.trStmt.eq_2": [],
+    "Toy.Backward.trStmt.eq_3": [],
+    "Toy.Backward.trStmt.eq_4": [],
+    "Toy.Backward.trStmt.eq_5": [],
+    "Toy.Backward.trStmt.match_1": [],
+    "Toy.Backward.trStmt_isBack": [
+      "propext"
+    ],
+    "Toy.Backward.translate": [
+      "propext"
+    ],
+    "Toy.Backward.translate.eq_1": [
+      "propext"
+    ],
+    "Toy.Backward.translateFrom": [
+      "propext"
+    ],
+    "Toy.Backward.translateFrom.eq_1": [
+      "propext"
+    ],
+    "Toy.Backward.translateFrom.eq_2": [
+      "propext"
+    ],
+    "Toy.Backward.translateFrom.eq_def": [
+      "propext"
+    ],
+    "Toy.Backward.translateFrom.match_1": [],
+    "Toy.Backward.translateFrom_filter_not_isBack": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.translateFrom_neverEndPlacement": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.translatePureBack": [],
+    "Toy.Backward.translatePureBack.eq_1": [],
+    "Toy.Backward.translatePureBack.eq_2": [],
+    "Toy.Backward.translatePureBack.eq_def": [],
+    "Toy.Backward.translatePureBack.match_1": [],
+    "Toy.Backward.translate_example_no_back_for_nonregion": [
+      "propext"
+    ],
+    "Toy.Backward.translate_example_writeThenRead": [
+      "propext"
+    ],
+    "Toy.Backward.translate_filter_not_isBack": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.translate_neverEndPlacement": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.trun": [],
+    "Toy.Backward.trun.eq_1": [],
+    "Toy.Backward.trun.eq_2": [],
+    "Toy.Backward.trun.eq_def": [],
+    "Toy.Backward.trun.match_1": [],
+    "Toy.Backward.trun.match_3": [],
+    "Toy.Backward.tstep": [],
+    "Toy.Backward.tstep.eq_1": [],
+    "Toy.Backward.tstep.eq_2": [],
+    "Toy.Backward.tstep.eq_3": [],
+    "Toy.Backward.tstep.eq_4": [],
+    "Toy.Backward.tstep.eq_5": [],
+    "Toy.Backward.tstep.eq_6": [],
+    "Toy.Backward.tstep.match_1": [],
+    "Toy.Backward.unusedRegion": [],
+    "Toy.Backward.upd": [],
+    "Toy.Backward.upd.eq_1": [],
+    "Toy.Backward.upd_upd_same": [
+      "Quot.sound"
+    ],
+    "Toy.Backward.useBeforeCreation": [],
+    "Toy.Backward.usesAt": [
+      "propext"
+    ],
+    "Toy.Backward.usesAt.match_1": [],
+    "Toy.Backward.usesAt_of_writesAt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Backward.writeOnce": [],
+    "Toy.Backward.writeThenOtherThenRawRead": [],
+    "Toy.Backward.writeThenRead": [],
+    "Toy.Backward.writesAt": [
+      "propext"
+    ],
+    "Toy.Backward.zeroHeap": [],
+    "Toy.Backward.zeroHeap.eq_1": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

@@ -23827,6 +23827,114 @@
         "verification/empirical-evaluation"
       ]
     },
+    "effectful-backward-functions-for-raw-pointer-borrows": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3547647"
+          },
+          "name": "Aeneas: Rust Verification by Functional Translation"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3674640"
+          },
+          "name": "Sound Borrow-Checking for Rust via Symbolic Semantics"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371109"
+          },
+          "name": "Stacked Borrows: An Aliasing Model for Rust"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3735592"
+          },
+          "name": "Tree Borrows"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-44914-8_18"
+          },
+          "name": "RustHorn: CHC-Based Verification for Rust Programs (ESOP 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3462205"
+          },
+          "name": "RustHorn: CHC-Based Verification for Rust Programs (ACM TOPLAS)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-031-17244-1_6"
+          },
+          "name": "Creusot: A Foundry for the Deductive Verification of Rust Programs"
+        },
+        {
+          "identity": {
+            "repository": "creusot-rs/creusot",
+            "revision": "601d97891bb0bc0b569686cc946ef4980560b5d8"
+          },
+          "name": "Creusot (source repository)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3519939.3523704"
+          },
+          "name": "RustHornBelt: A Semantic Foundation for Functional Verification of Rust Programs with Unsafe Code"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371113"
+          },
+          "name": "The Future is Ours: Prophecy Variables in Separation Logic"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3656422"
+          },
+          "name": "RefinedRust: A Type System for High-Assurance Verification of Rust Programs"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3729289"
+          },
+          "name": "A Hybrid Approach to Semi-automated Rust Verification"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-30936-1_1"
+          },
+          "name": "Reflections on Monadic Lenses"
+        },
+        {
+          "identity": {
+            "hal": "tel-05004605"
+          },
+          "name": "Formal Verification of Rust Programs by Functional Translation (PhD thesis, Son Ho)"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/refinement",
+        "verification/functional-translation",
+        "verification/prophecy-encodings",
+        "pl/rust-unsafe",
+        "pl/aliasing-models",
+        "pl/borrows"
+      ]
+    },
     "egraph-congruence-proof-trees-dag-explanations-and-pass1-rewrite-checkers": {
       "observed_at": "2026-11-20",
       "subjects": [

@@ -1,0 +1,523 @@
+[
+  {
+    "id": "sound-lazy",
+    "lean": "Toy.Backward.effSem_lazyPlacement_eq_heapSem_of_aliasingDiscipline",
+    "kind": "theorem",
+    "status": "proved (short derivation from endpoint-window-last-write)",
+    "tier": "T1",
+    "tier_justification": "Folklore made precise: that write-back backward functions make raw-pointer reborrows translatable under an aliasing discipline is asserted informally (Aeneas pull request #1537); no mechanized statement for this translation was found.",
+    "plain_claim": "For every toy program that obeys the aliasing discipline (every use of a reference created from a raw pointer precedes the next access to that cell by any other path) and every initial heap, the unchecked effectful-backward translation that ends each region at the owner's next access (or at the program end) has exactly the heap semantics' outcome: both succeed with the same final heap and local variables, or both are stuck.",
+    "hypotheses": [
+      {
+        "name": "had : AliasingDiscipline P",
+        "purpose": "Rules out accesses to the cell (raw read/write or a new as_mut) while a reference to it is still used; otherwise the borrow's local copy and memory diverge.",
+        "tightness": "tight",
+        "counterexample": "Toy.Backward.effSem_lazyPlacement_eq_heapSem_tight_aliasingDiscipline"
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "A three-line derivation from endpoint-window (the lazy placement respects liveness for programs obeying the aliasing discipline); all substance is in endpoint-window-last-write, a simulation invariant over the run.",
+    "nonvacuity_witness": "reborrowAfterWrite 5 (two as_mut calls on one pointer) obeys the aliasing discipline and its lazy placement ends region 0 before the second as_mut; effSem with the lazy placement equals heapSem on reborrowAfterWrite c for every heap and c (proved independently).",
+    "nonvacuity_witness_lean": [
+      "Toy.Backward.effSem_lazyPlacement_nonvacuous",
+      "Toy.Backward.effSem_reborrowAfterWrite_positive_control"
+    ],
+    "non_claims": [
+      "Toy model only: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency.",
+      "Nothing is proved about Aeneas itself (its symbolic interpreter, region-ending heuristics, joins, or generated code); any connection is a derived modeling bridge stated in the prose, not a kernel-checked fact.",
+      "Refinement is stated as equality of outcomes (both succeed with the same observation, or both are stuck); this relies on both semantics being deterministic and is not a claim about nondeterministic or relational semantics. A stuck translation counts as disagreeing with a succeeding heap semantics; the partial-refinement reading (translation succeeds with o implies heap semantics succeeds with o) is the subject of lock-sound.",
+      "AliasingDiscipline is a simplified condition in the spirit of Stacked Borrows (no other access of any kind to the cell while the reference is used). Aliasing models that permit some foreign accesses, e.g. Tree Borrows, where a mutable reference that has not yet been written allows foreign reads, are not examined; a program violating AliasingDiscipline is not 'undefined' in the toy, it is simply outside the theorem.",
+      "AliasingDiscipline and RespectsLiveness constrain only the ordering between uses of an asMut reference and later owner accesses to the same cell; they do not check reference scoping (that every read or write names an earlier asMut). Ill-scoped programs such as danglingUse (`[read 0 0]`) and useBeforeCreation satisfy both and are stuck (`none`) in heapSem, effSem, and lockSem (aliasingDiscipline_admits_ill_scoped and lockSem_none_of_ill_scoped_respectsLiveness, with placements endAt 0 and lazyPlacement respectively); for them the equation holds only because both sides are stuck.",
+      "Out-of-window placements give wrong `some o` outcomes in effSem specifically because its write-back is unchecked copy-in/copy-out (the cell stays freely accessible in the heap model while the region is open, and the region's local value stays writable and readable after its backward call) and because soundness is stated as equality of outcomes. In the borrow-locking translation lockSem, where the forward call lends the cell until the backward call and the backward call closes the region, the same placements are stuck (`none`) instead (outside_window_effSem_wrong_lockSem_stuck); there every placement is sound under partial refinement (lock-sound) and only completeness depends on the end point (lock-complete, lock-success-in-window). The toy's out-of-window failures of effSem do not refute the claim of Aeneas pull request #1537 that region-end timing affects only completeness, under borrow-locking semantics.",
+      "The heap semantics is a reference semantics chosen for this package, not a formalization of the Rust abstract machine."
+    ],
+    "prior_art": [
+      "Aeneas pull request AeneasVerif/aeneas#1537, 'Add alive hints to support raw-pointer functions eventually.' (opened 2026-11-05; open and unmerged when examined), head commit 5c28fe8def8db99041d22503175591ba1fa47915. In our words: it makes the backward functions of regions created by opaque raw-pointer conversions monadic ('effectful', returning `Result`) instead of pure or inlined. At the head commit the generated test output (tests/lean/StatefulLifetime.lean) declares `axiom Ptr.as_mut {T : Type _} : Ptr T → Result (T × (T → Result Unit))` and `axiom Ptr.from_mut {T : Type _} : T → Result ((Ptr T) × (Result T))`, and the test source (tests/src/stateful-lifetime.rs) uses the attribute `#[verify::stateful_lifetime(...)]`; the pull request description, written earlier, gives `from_mut` the type `T → Result ((Ptr T) × (Unit → Result T))` and calls the attribute `keep_alive`. It offers three heuristics for when such regions end (short: when the borrows held are dead according to a backward liveness analysis, src/interp/InterpLiveness.ml, which counts every dereference `*r`, read or write, as a use of `r`; regular; long: surviving joins), asserts that this timing 'should not matter for soundness, only completeness', and restricts the `simplify_duplicate_calls` pass (src/pure/PureMicroPassesGeneral.ml), whose previous comment said it 'will not be sound anymore once we allow stateful (backward) functions'. These are assertions in the pull request, not proofs.",
+      "Son Ho and Jonathan Protzenko. Aeneas: Rust Verification by Functional Translation. Proc. ACM Program. Lang. 6(ICFP), pp. 711-741, 2022. doi:10.1145/3547647 (arXiv:2206.07185). Each function with mutable borrows is translated to a forward function and backward functions per region; borrows are ended lazily ('we reorganize borrows in a lazy fashion, and don't terminate a borrow until we need to get the borrowed value back', Section 2); programs relying on interior mutability or unsafe code are out of scope (abstract); a proof of soundness of the semantics and translation is named as future work (Section 7). For code interacting with the outside world, the paragraph 'I/O and External Dependencies' lifts generated code into 'a combined-state + error monad' with an opaque `state` type (e.g. `val deserialize_fwd : state -> result (state & hash_map_t u64)`).",
+      "Son Ho, Aymeric Fromherz, and Jonathan Protzenko. Sound Borrow-Checking for Rust via Symbolic Semantics. Proc. ACM Program. Lang. 8(ICFP), pp. 426-454, 2024. doi:10.1145/3674640 (long version arXiv:2404.02680). Theorem 4.1: every run of the symbolic semantics LLBC# (which may end borrows at arbitrary points through reorganizations, rule E-Reorg: 'it is always possible to end a borrow early, but this may lead to an unnecessarily stuck execution') is matched by the concrete LLBC semantics; proved in the paper, with full proofs in the long version's appendices. Correctness of the functional translation is left to future work and unsafe code is not considered.",
+      "Son Ho. Formal Verification of Rust Programs by Functional Translation. PhD thesis, Université PSL (prepared at Inria Paris), defended 2024-12-09. HAL tel-05004605. Its table of contents includes Chapter 11 'Soundness: LLBC# Defines a Borrow-Checker' (with Section 11.2 'A Heap-and-Addresses Interpretation of Valued Borrows' and 11.2.9 'The Pointer Language (PL)') and Chapter 13 'From Symbolic Semantics to Functional Code'. Only the table of contents and the abstract ('as long as they do not rely on interior mutability or unsafe code') were consulted; no claim about the chapters' content is made here.",
+      "Ralf Jung, Hoang-Hai Dang, Jeehoon Kang, and Derek Dreyer. Stacked Borrows: An Aliasing Model for Rust. Proc. ACM Program. Lang. 4(POPL), Article 41, pp. 1-32, 2020. doi:10.1145/3371109. An operational semantics for memory accesses in Rust that 'defines an aliasing discipline and declares programs violating it to have undefined behavior' (abstract).",
+      "Neven Villani, Johannes Hostert, Derek Dreyer, and Ralf Jung. Tree Borrows. Proc. ACM Program. Lang. 9(PLDI), Article 188, pp. 1019-1042, 2025. doi:10.1145/3735592. Mutable references 'start out as Reserved, not as Unique. Reserved allows local and foreign reads', until their first write through the reference (Section 2.2)."
+    ],
+    "design_question": "Is giving `as_mut`'s backward function the effect of writing the final value back to a heap model a sound way to translate raw-pointer reborrows, and what must the source program satisfy?"
+  },
+  {
+    "id": "sound-eager",
+    "lean": "Toy.Backward.effSem_eagerPlacement_eq_heapSem_of_aliasingDiscipline",
+    "kind": "theorem",
+    "status": "proved (short derivation from endpoint-window-last-write)",
+    "tier": "T1",
+    "tier_justification": "As sound-lazy; the eager placement approximates ending a region right after its last use (the 'short' heuristic of pull request #1537 ends a region when its borrows are dead according to a liveness analysis that counts reads and writes through the reference as uses).",
+    "plain_claim": "For every toy program that obeys the aliasing discipline and every initial heap, the unchecked effectful-backward translation that ends each region immediately after the later of its creation and its last use (`max i (last use) + 1`: after the last use that follows the creation, or right after the creation if there is none) has exactly the heap semantics' outcome: both succeed with the same final heap and local variables, or both are stuck.",
+    "hypotheses": [
+      {
+        "name": "had : AliasingDiscipline P",
+        "purpose": "Without it the eager end can still precede an owner access that happens while the reference is used, and the local copy diverges from memory.",
+        "tightness": "tight",
+        "counterexample": "Toy.Backward.effSem_eagerPlacement_eq_heapSem_tight_aliasingDiscipline"
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "A three-line derivation from endpoint-window; substance in endpoint-window-last-write.",
+    "nonvacuity_witness": "writeThenOtherThenRawRead obeys the aliasing discipline, and its eager and lazy placements produce different target programs; on it the eager placement's outcome equals heapSem for every heap (proved independently).",
+    "nonvacuity_witness_lean": [
+      "Toy.Backward.effSem_eagerPlacement_nonvacuous",
+      "Toy.Backward.effSem_eagerPlacement_instance"
+    ],
+    "non_claims": [
+      "Toy model only: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency.",
+      "Nothing is proved about Aeneas itself (its symbolic interpreter, region-ending heuristics, joins, or generated code); any connection is a derived modeling bridge stated in the prose, not a kernel-checked fact.",
+      "AliasingDiscipline and RespectsLiveness constrain only the ordering between uses of an asMut reference and later owner accesses to the same cell; they do not check reference scoping (that every read or write names an earlier asMut). Ill-scoped programs such as danglingUse (`[read 0 0]`) and useBeforeCreation satisfy both and are stuck (`none`) in heapSem, effSem, and lockSem (aliasingDiscipline_admits_ill_scoped and lockSem_none_of_ill_scoped_respectsLiveness, with placements endAt 0 and lazyPlacement respectively); for them the equation holds only because both sides are stuck.",
+      "Out-of-window placements give wrong `some o` outcomes in effSem specifically because its write-back is unchecked copy-in/copy-out (the cell stays freely accessible in the heap model while the region is open, and the region's local value stays writable and readable after its backward call) and because soundness is stated as equality of outcomes. In the borrow-locking translation lockSem, where the forward call lends the cell until the backward call and the backward call closes the region, the same placements are stuck (`none`) instead (outside_window_effSem_wrong_lockSem_stuck); there every placement is sound under partial refinement (lock-sound) and only completeness depends on the end point (lock-complete, lock-success-in-window). The toy's out-of-window failures of effSem do not refute the claim of Aeneas pull request #1537 that region-end timing affects only completeness, under borrow-locking semantics.",
+      "The eager placement is defined syntactically from the straight-line program; it is not a liveness analysis over control flow and says nothing about the correctness of any implementation of one.",
+      "A use that precedes the creation (a scoping error) does not pull the eager end before the creation (eagerPlacement_example_neg); such programs are stuck on both sides."
+    ],
+    "prior_art": [
+      "Aeneas pull request AeneasVerif/aeneas#1537, 'Add alive hints to support raw-pointer functions eventually.' (opened 2026-11-05; open and unmerged when examined), head commit 5c28fe8def8db99041d22503175591ba1fa47915. In our words: it makes the backward functions of regions created by opaque raw-pointer conversions monadic ('effectful', returning `Result`) instead of pure or inlined. At the head commit the generated test output (tests/lean/StatefulLifetime.lean) declares `axiom Ptr.as_mut {T : Type _} : Ptr T → Result (T × (T → Result Unit))` and `axiom Ptr.from_mut {T : Type _} : T → Result ((Ptr T) × (Result T))`, and the test source (tests/src/stateful-lifetime.rs) uses the attribute `#[verify::stateful_lifetime(...)]`; the pull request description, written earlier, gives `from_mut` the type `T → Result ((Ptr T) × (Unit → Result T))` and calls the attribute `keep_alive`. It offers three heuristics for when such regions end (short: when the borrows held are dead according to a backward liveness analysis, src/interp/InterpLiveness.ml, which counts every dereference `*r`, read or write, as a use of `r`; regular; long: surviving joins), asserts that this timing 'should not matter for soundness, only completeness', and restricts the `simplify_duplicate_calls` pass (src/pure/PureMicroPassesGeneral.ml), whose previous comment said it 'will not be sound anymore once we allow stateful (backward) functions'. These are assertions in the pull request, not proofs.",
+      "Son Ho, Aymeric Fromherz, and Jonathan Protzenko. Sound Borrow-Checking for Rust via Symbolic Semantics. Proc. ACM Program. Lang. 8(ICFP), pp. 426-454, 2024. doi:10.1145/3674640 (long version arXiv:2404.02680). Theorem 4.1: every run of the symbolic semantics LLBC# (which may end borrows at arbitrary points through reorganizations, rule E-Reorg: 'it is always possible to end a borrow early, but this may lead to an unnecessarily stuck execution') is matched by the concrete LLBC semantics; proved in the paper, with full proofs in the long version's appendices. Correctness of the functional translation is left to future work and unsafe code is not considered."
+    ],
+    "design_question": "Is ending keep-alive regions as early as possible (at the last use) sound for raw-pointer reborrows?"
+  },
+  {
+    "id": "pure-backward-unsound",
+    "lean": "Toy.Backward.pureBackSem_unsound_on_reborrowAfterWrite",
+    "kind": "impossibility",
+    "status": "proved",
+    "tier": "T1",
+    "tier_justification": "Folklore made precise: an effect-free backward function for `as_mut` cannot return the final value anywhere; noted informally in Aeneas (pull request #1537 description: current `as_mut : Ptr T -> Result (T x (T -> Unit))`).",
+    "plain_claim": "On the program `reborrowAfterWrite c` (`r0 = &mut *p; x0 = *r0; *r0 = c; r3 = &mut *p; x1 = *r3`), which obeys the aliasing discipline, whenever `c` differs from the cell's initial content `h 0`, the translation whose backward functions have no effect succeeds with final heap exactly the initial heap `h` and binds the second reborrow's read `x1` to the stale `h 0`, while the heap semantics succeeds with final heap `h[0 ↦ c]` and `x1 = c`; the two outcomes differ in the final heap and in a local variable.",
+    "hypotheses": [
+      {
+        "name": "hc : c ≠ h 0",
+        "purpose": "Makes the write through the first reference observable; if it writes the value already there, the two translations agree.",
+        "tightness": "tight",
+        "counterexample": "Toy.Backward.pureBackSem_unsound_tight_ne"
+      }
+    ],
+    "depth": "definitional",
+    "depth_note": "Evaluation of a five-statement program plus one inequality.",
+    "nonvacuity_witness": "c = 5, h = zeroHeap.",
+    "nonvacuity_witness_lean": "Toy.Backward.reborrowAfterWrite_ne_nonvacuous",
+    "positive_control_lean": [
+      "Toy.Backward.effSem_reborrowAfterWrite_positive_control",
+      "Toy.Backward.lockSem_reborrowAfterWrite_positive_control"
+    ],
+    "non_claims": [
+      "Toy model only: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency.",
+      "The pure-backward translation here still reads the heap model in forward calls; the result is about this translation. The general statement for translations without any heap state is stateless-unsound.",
+      "It does not say that every program is mistranslated: on programs that never write through an as_mut reference the two translations can agree.",
+      "Pure backward functions coincide with never ending any region (lemma pureBackSem_eq_effSem_neverEndPlacement); this result is therefore also an instance of the EndsByProgramEnd/EndsByNextOwnerAccess failures of endpoint-window."
+    ],
+    "prior_art": [
+      "Aeneas pull request AeneasVerif/aeneas#1537, 'Add alive hints to support raw-pointer functions eventually.' (opened 2026-11-05; open and unmerged when examined), head commit 5c28fe8def8db99041d22503175591ba1fa47915. In our words: it makes the backward functions of regions created by opaque raw-pointer conversions monadic ('effectful', returning `Result`) instead of pure or inlined. At the head commit the generated test output (tests/lean/StatefulLifetime.lean) declares `axiom Ptr.as_mut {T : Type _} : Ptr T → Result (T × (T → Result Unit))` and `axiom Ptr.from_mut {T : Type _} : T → Result ((Ptr T) × (Result T))`, and the test source (tests/src/stateful-lifetime.rs) uses the attribute `#[verify::stateful_lifetime(...)]`; the pull request description, written earlier, gives `from_mut` the type `T → Result ((Ptr T) × (Unit → Result T))` and calls the attribute `keep_alive`. It offers three heuristics for when such regions end (short: when the borrows held are dead according to a backward liveness analysis, src/interp/InterpLiveness.ml, which counts every dereference `*r`, read or write, as a use of `r`; regular; long: surviving joins), asserts that this timing 'should not matter for soundness, only completeness', and restricts the `simplify_duplicate_calls` pass (src/pure/PureMicroPassesGeneral.ml), whose previous comment said it 'will not be sound anymore once we allow stateful (backward) functions'. These are assertions in the pull request, not proofs.",
+      "Son Ho and Jonathan Protzenko. Aeneas: Rust Verification by Functional Translation. Proc. ACM Program. Lang. 6(ICFP), pp. 711-741, 2022. doi:10.1145/3547647 (arXiv:2206.07185). Each function with mutable borrows is translated to a forward function and backward functions per region; borrows are ended lazily ('we reorganize borrows in a lazy fashion, and don't terminate a borrow until we need to get the borrowed value back', Section 2); programs relying on interior mutability or unsafe code are out of scope (abstract); a proof of soundness of the semantics and translation is named as future work (Section 7). For code interacting with the outside world, the paragraph 'I/O and External Dependencies' lifts generated code into 'a combined-state + error monad' with an opaque `state` type (e.g. `val deserialize_fwd : state -> result (state & hash_map_t u64)`)."
+    ],
+    "design_question": "Why can the backward function of a raw-pointer reborrow not be pure?"
+  },
+  {
+    "id": "stateless-unsound",
+    "lean": "Toy.Backward.statelessSem_validates_false_duplicate_call_equation",
+    "kind": "impossibility",
+    "status": "proved",
+    "tier": "T1",
+    "tier_justification": "Folklore made precise and generalized: the unsoundness of merging duplicate calls once backward functions are stateful is noted informally in Aeneas (comment in src/pure/PureMicroPassesGeneral.ml; issue #1525 for Cell and atomics); here it is shown that every stateless model, whatever its forward model, failure behaviour, or backward-call placement, validates the merge equation and disagrees with the heap semantics.",
+    "plain_claim": "For every stateless model of `as_mut` — any forward model `F : Ptr → Option Int`, any backward model that may fail but has no other effect, and any placement of the backward calls — and every `c ≠ h 0`: every successful run of the translated `reborrowAfterWrite c` gives the two `as_mut` calls on the same pointer equal results (`x0 = x1`, the equation that merging duplicate calls relies on), the heap semantics succeeds with `x0 ≠ x1`, and therefore the stateless translation's outcome on local variables is not the heap semantics' outcome (it either fails or computes `x0 = x1`).",
+    "hypotheses": [
+      {
+        "name": "hc : c ≠ h 0",
+        "purpose": "Makes the write between the two as_mut calls change the cell; otherwise the natural stateless model agrees with the heap semantics.",
+        "tightness": "tight",
+        "counterexample": "Toy.Backward.statelessSem_validates_false_tight_ne"
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "One structural lemma (a stateless run is unchanged by deleting backward calls, which can only fail) plus evaluation with a case split on F 0.",
+    "nonvacuity_witness": "c = 5, h = zeroHeap; the natural stateless model (forward some ∘ h, backward always succeeds) does succeed on the program, so the universally quantified second conjunct is not vacuous.",
+    "nonvacuity_witness_lean": "Toy.Backward.reborrowAfterWrite_ne_nonvacuous",
+    "positive_control_lean": [
+      "Toy.Backward.effSem_distinguishes_duplicate_calls_positive_control",
+      "Toy.Backward.statelessSem_single_reborrow_positive_control"
+    ],
+    "non_claims": [
+      "Toy model only: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency.",
+      "'Stateless' means exactly statelessSem: the forward call's result is a function of the pointer alone (or a failure), and backward calls can only succeed or fail. Divergence is modelled like failure (no observation). Models in which an as_mut call's result can depend on earlier calls (a heap, a counter, an oracle consulted per call) are stateful by this definition and not covered.",
+      "statelessSem F B assumes a deterministic forward model that depends only on the pointer, not on the call site or on earlier calls, and freely copied pointer values. Translations with nondeterministic or per-call-site choices (for example a prophecy per region, as in prophSem), or APIs that thread an unaliased pointer token (a `&mut` to a pointer wrapper whose backward function returns an updated token), lie outside statelessSem. On programs with raw reads or writes (none occur in reborrowAfterWrite c), sstep additionally reads raw cells through F and treats raw writes as no-ops.",
+      "A stateless model can avoid validating a false statement on this program only by failing on it; the result does not say how often such models fail on other programs.",
+      "Disabling a duplicate-call merging pass does not escape the result: the equation x0 = x1 holds in every successful run of the stateless semantics itself, so it is provable about the translated program whether or not a pass rewrites it.",
+      "Derived modeling bridge, not kernel-checked. At head commit 5c28fe8def8db99041d22503175591ba1fa47915 of Aeneas pull request #1537, considered in isolation, `Result` (backends/lean/Aeneas/Std/Primitives.lean) is an interaction tree whose only effects are failure and divergence, with no heap state; so that commit alone falls in this result's stateless class for the aliasing pattern of reborrowAfterWrite: every interpretation of the generated `axiom Ptr.as_mut {T : Type _} : Ptr T → Result (T × (T → Result Unit))` fails or diverges on the Rust analogue of the program, or validates `x0 = x1`. However, the signature `MutRawPtr T → Result (T × (T → Result Unit))` is not inherently stateless: the companion open pull requests #1454, #1497, #1548 and #1551 thread heap state inside the effect type (a heap event `guardedModify` in `RustEffect`) while keeping that signature (no state argument is added to `Result` or to function signatures; #1454 defines `RawPtr.as_mut_unchecked` with exactly this shape), so the extracted code is unchanged; under those designs the two `as_mut` calls run against different heaps, and #1537's restriction on merging duplicate calls is soundness-critical. Membership in the stateless class comes from a failure-and-divergence-only effect type, not from the absence of an explicit state parameter, and not from the fact that two occurrences of `Ptr.as_mut ptr` are the same term. The toy's effSem and lockSem are models of such stateful designs; this result says nothing about them."
+    ],
+    "prior_art": [
+      "Aeneas pull request AeneasVerif/aeneas#1537, 'Add alive hints to support raw-pointer functions eventually.' (opened 2026-11-05; open and unmerged when examined), head commit 5c28fe8def8db99041d22503175591ba1fa47915. In our words: it makes the backward functions of regions created by opaque raw-pointer conversions monadic ('effectful', returning `Result`) instead of pure or inlined. At the head commit the generated test output (tests/lean/StatefulLifetime.lean) declares `axiom Ptr.as_mut {T : Type _} : Ptr T → Result (T × (T → Result Unit))` and `axiom Ptr.from_mut {T : Type _} : T → Result ((Ptr T) × (Result T))`, and the test source (tests/src/stateful-lifetime.rs) uses the attribute `#[verify::stateful_lifetime(...)]`; the pull request description, written earlier, gives `from_mut` the type `T → Result ((Ptr T) × (Unit → Result T))` and calls the attribute `keep_alive`. It offers three heuristics for when such regions end (short: when the borrows held are dead according to a backward liveness analysis, src/interp/InterpLiveness.ml, which counts every dereference `*r`, read or write, as a use of `r`; regular; long: surviving joins), asserts that this timing 'should not matter for soundness, only completeness', and restricts the `simplify_duplicate_calls` pass (src/pure/PureMicroPassesGeneral.ml), whose previous comment said it 'will not be sound anymore once we allow stateful (backward) functions'. These are assertions in the pull request, not proofs.",
+      "Open, draft, unmerged (when examined) Aeneas pull requests that give `Result` heap effects: #1454 'NonNull and borrows of values behind raw pointers' (head fc68273b75beebb7fd74f9c3130e857b232960db), #1497 'Fournet/wip memory model' (head d17ca83fc07d712d1785f650840cb2073c259e69), #1548 'Heap model for raw pointers (from fournet/wip-memory-model)' (head 561b806a70789e090e305d1d992f92cad1de7ce0), and #1551 'Separation logic over the byte heap' (head 1d8f9aa0121faca8ff113c1b9b742b333e3e1519). At each head, `RustEffect.Input` (backends/lean/Aeneas/Std/Primitives.lean) has a heap event `guardedModify` besides `fail`, while `Result α` remains `ITree RustEffect α` with no state argument. At #1454's head, backends/lean/Aeneas/Std/Core/Ptr.lean defines `RawPtr.as_mut_unchecked {T : Type} [Pointee T] (p : MutRawPtr T) : Result (T × (T → Result Unit))` as `p.borrow` followed by returning `p.endBorrow` as the backward function, where `borrow` gives the cell away 'so that every access to the cell through a raw pointer fails until the borrow is ended with `endBorrow`'. At #1551's head, tests/lean/SafeUnsafe/Proofs.lean models the extracted `as_mut` by such a borrow and proves `ptr_as_mut_write.incomplete`: the extracted code returns the `as_mut` borrow only after the owner's borrow has ended, so reading the cell fails; the file classifies this case as 'Sound, but the model rejects a valid program'. Proposals under development, not merged code.",
+      "Aeneas issue AeneasVerif/aeneas#1525, 'Bug: Cell::set / Atomic*::fetch_add through &self are modelled as pure, so a second get/fetch_add is merged with the first' (opened 2026-11-03): a stateless model of interior mutability plus duplicate-call merging yields generated code `ok (a = a)` for a function whose Rust result is false. An instance of the same phenomenon outside raw pointers.",
+      "Aeneas pull request AeneasVerif/aeneas#1431, 'Define the state effect and implement the raw-pointer functions' (closed unmerged 2026-10-15), head commit 11f641de522c26266aaf664f6ade85ea1642058d: proposed adding a heap operation (`guardedModify`) to `RustEffect`, the event type of Aeneas's `Result` monad. At the head commit of #1537, `RustEffect.Input` (backends/lean/Aeneas/Std/Primitives.lean) has the single constructor `fail`, whose answer type is empty, so `Result` there is a failure-and-divergence monad.",
+      "Son Ho and Jonathan Protzenko. Aeneas: Rust Verification by Functional Translation. Proc. ACM Program. Lang. 6(ICFP), pp. 711-741, 2022. doi:10.1145/3547647 (arXiv:2206.07185). Each function with mutable borrows is translated to a forward function and backward functions per region; borrows are ended lazily ('we reorganize borrows in a lazy fashion, and don't terminate a borrow until we need to get the borrowed value back', Section 2); programs relying on interior mutability or unsafe code are out of scope (abstract); a proof of soundness of the semantics and translation is named as future work (Section 7). For code interacting with the outside world, the paragraph 'I/O and External Dependencies' lifts generated code into 'a combined-state + error monad' with an opaque `state` type (e.g. `val deserialize_fwd : state -> result (state & hash_map_t u64)`).",
+      "Faris Abou-Saleh, James Cheney, Jeremy Gibbons, James McKinna, and Perdita Stevens. Reflections on Monadic Lenses. In: S. Lindley, C. McBride, P. Trinder, D. Sannella (eds.), A List of Successes That Can Change the World, Lecture Notes in Computer Science, Springer, 2016, pp. 1-31. doi:10.1007/978-3-319-30936-1_1 (arXiv:1601.02484). Reviews formulations of bidirectional transformations 'that use monads to account for effects', attending to 'the obstacles to naively adding monadic effects to existing definitions of pure bx such as lenses' (abstract). Background for forward/backward pairs with effects; consulted only through its abstract."
+    ],
+    "design_question": "Is it enough to make `as_mut`'s backward function return `Result Unit` in a failure-and-divergence-only monad (and to stop merging duplicate calls), or must the effect type carry heap state, whether as heap events inside the monad or as an explicitly threaded state?"
+  },
+  {
+    "id": "endpoint-window",
+    "lean": "Toy.Backward.effSem_eq_heapSem_of_endsAfterCreation_of_endsAfterLastUse_of_endsByNextOwnerAccess_of_endsByProgramEnd",
+    "kind": "theorem",
+    "status": "proved (short derivation from endpoint-window-last-write)",
+    "tier": "T1",
+    "tier_justification": "Asserted informally for Aeneas keep-alive regions (pull request #1537: timing 'should not matter for soundness, only completeness'); the analogous property for safe code's borrow-checking semantics is proved on paper (ICFP 2024, Theorem 4.1 covers every reorganization choice), but not for the synthesis of backward functions or for raw-pointer regions.",
+    "plain_claim": "For every toy program and every placement of region ends that ends each region after its creation and after its last use, no later than the owner's next access to its cell (raw read, raw write, or a new `as_mut` of the same pointer), and no later than the program end, the unchecked effectful-backward translation has exactly the heap semantics' outcome (both succeed with the same final heap and local variables, or both are stuck); the aliasing discipline is implied, not assumed.",
+    "hypotheses": [
+      {
+        "name": "hc : EndsAfterCreation P π",
+        "purpose": "A backward call scheduled at or before its region's creation has no forward value: the translation is stuck while the heap semantics succeeds (matters only for regions without a later use; for regions with a later use it follows from hu).",
+        "tightness": "tight",
+        "counterexample": "Toy.Backward.effSem_respecting_tight_endsAfterCreation"
+      },
+      {
+        "name": "hu : EndsAfterLastUse P π",
+        "purpose": "Writes through the reference after its backward call are lost.",
+        "tightness": "tight",
+        "counterexample": "Toy.Backward.effSem_respecting_tight_endsAfterLastUse"
+      },
+      {
+        "name": "ho : EndsByNextOwnerAccess P π",
+        "purpose": "An owner access before the backward call reads (or is overwritten by) a stale heap model.",
+        "tightness": "tight",
+        "counterexample": "Toy.Backward.effSem_respecting_tight_endsByNextOwnerAccess"
+      },
+      {
+        "name": "he : EndsByProgramEnd P π",
+        "purpose": "A region that never ends never writes back, so the final heap is stale.",
+        "tightness": "tight",
+        "counterexample": "Toy.Backward.effSem_respecting_tight_endsByProgramEnd"
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "A three-line derivation from endpoint-window-last-write via aliasingDiscipline_of_endsAfterLastUse_of_endsByNextOwnerAccess and endsAfterLastWrite_of_endsAfterLastUse; substance in endpoint-window-last-write. The corollary effSem_eq_effSem_of_respectsLiveness (any two liveness-respecting placements give the same outcome) is two rewrites with this result and has no separate card.",
+    "nonvacuity_witness": "writeThenOtherThenRawRead with its lazy and its eager placement (they differ: region 0 ends before index 3 resp. 2).",
+    "nonvacuity_witness_lean": "Toy.Backward.effSem_respecting_nonvacuous",
+    "non_claims": [
+      "Toy model only: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency.",
+      "Nothing is proved about Aeneas itself (its symbolic interpreter, region-ending heuristics, joins, or generated code); any connection is a derived modeling bridge stated in the prose, not a kernel-checked fact.",
+      "Refinement is stated as equality of outcomes (both succeed with the same observation, or both are stuck); this relies on both semantics being deterministic and is not a claim about nondeterministic or relational semantics. A stuck translation counts as disagreeing with a succeeding heap semantics; the partial-refinement reading (translation succeeds with o implies heap semantics succeeds with o) is the subject of lock-sound.",
+      "AliasingDiscipline and RespectsLiveness constrain only the ordering between uses of an asMut reference and later owner accesses to the same cell; they do not check reference scoping (that every read or write names an earlier asMut). Ill-scoped programs such as danglingUse (`[read 0 0]`) and useBeforeCreation satisfy both and are stuck (`none`) in heapSem, effSem, and lockSem (aliasingDiscipline_admits_ill_scoped and lockSem_none_of_ill_scoped_respectsLiveness, with placements endAt 0 and lazyPlacement respectively); for them the equation holds only because both sides are stuck.",
+      "EndsAfterLastUse cannot be dropped but can be weakened: ending after the last write suffices given the aliasing discipline (endpoint-window-last-write).",
+      "'Only completeness varies' is not modelled by this result: for effSem every liveness-respecting placement gives the same outcome (corollary effSem_eq_effSem_of_respectsLiveness), and completeness effects of real tools (stuck symbolic execution at joins, loops, function boundaries) are absent. The completeness side is modelled only by lockSem (lock-complete, lock-success-in-window).",
+      "Out-of-window placements give wrong `some o` outcomes in effSem specifically because its write-back is unchecked copy-in/copy-out (the cell stays freely accessible in the heap model while the region is open, and the region's local value stays writable and readable after its backward call) and because soundness is stated as equality of outcomes. In the borrow-locking translation lockSem, where the forward call lends the cell until the backward call and the backward call closes the region, the same placements are stuck (`none`) instead (outside_window_effSem_wrong_lockSem_stuck); there every placement is sound under partial refinement (lock-sound) and only completeness depends on the end point (lock-complete, lock-success-in-window). The toy's out-of-window failures of effSem do not refute the claim of Aeneas pull request #1537 that region-end timing affects only completeness, under borrow-locking semantics."
+    ],
+    "prior_art": [
+      "Aeneas pull request AeneasVerif/aeneas#1537, 'Add alive hints to support raw-pointer functions eventually.' (opened 2026-11-05; open and unmerged when examined), head commit 5c28fe8def8db99041d22503175591ba1fa47915. In our words: it makes the backward functions of regions created by opaque raw-pointer conversions monadic ('effectful', returning `Result`) instead of pure or inlined. At the head commit the generated test output (tests/lean/StatefulLifetime.lean) declares `axiom Ptr.as_mut {T : Type _} : Ptr T → Result (T × (T → Result Unit))` and `axiom Ptr.from_mut {T : Type _} : T → Result ((Ptr T) × (Result T))`, and the test source (tests/src/stateful-lifetime.rs) uses the attribute `#[verify::stateful_lifetime(...)]`; the pull request description, written earlier, gives `from_mut` the type `T → Result ((Ptr T) × (Unit → Result T))` and calls the attribute `keep_alive`. It offers three heuristics for when such regions end (short: when the borrows held are dead according to a backward liveness analysis, src/interp/InterpLiveness.ml, which counts every dereference `*r`, read or write, as a use of `r`; regular; long: surviving joins), asserts that this timing 'should not matter for soundness, only completeness', and restricts the `simplify_duplicate_calls` pass (src/pure/PureMicroPassesGeneral.ml), whose previous comment said it 'will not be sound anymore once we allow stateful (backward) functions'. These are assertions in the pull request, not proofs.",
+      "Son Ho, Aymeric Fromherz, and Jonathan Protzenko. Sound Borrow-Checking for Rust via Symbolic Semantics. Proc. ACM Program. Lang. 8(ICFP), pp. 426-454, 2024. doi:10.1145/3674640 (long version arXiv:2404.02680). Theorem 4.1: every run of the symbolic semantics LLBC# (which may end borrows at arbitrary points through reorganizations, rule E-Reorg: 'it is always possible to end a borrow early, but this may lead to an unnecessarily stuck execution') is matched by the concrete LLBC semantics; proved in the paper, with full proofs in the long version's appendices. Correctness of the functional translation is left to future work and unsafe code is not considered.",
+      "Son Ho and Jonathan Protzenko. Aeneas: Rust Verification by Functional Translation. Proc. ACM Program. Lang. 6(ICFP), pp. 711-741, 2022. doi:10.1145/3547647 (arXiv:2206.07185). Each function with mutable borrows is translated to a forward function and backward functions per region; borrows are ended lazily ('we reorganize borrows in a lazy fashion, and don't terminate a borrow until we need to get the borrowed value back', Section 2); programs relying on interior mutability or unsafe code are out of scope (abstract); a proof of soundness of the semantics and translation is named as future work (Section 7). For code interacting with the outside world, the paragraph 'I/O and External Dependencies' lifts generated code into 'a combined-state + error monad' with an opaque `state` type (e.g. `val deserialize_fwd : state -> result (state & hash_map_t u64)`).",
+      "Son Ho. Formal Verification of Rust Programs by Functional Translation. PhD thesis, Université PSL (prepared at Inria Paris), defended 2024-12-09. HAL tel-05004605. Its table of contents includes Chapter 11 'Soundness: LLBC# Defines a Borrow-Checker' (with Section 11.2 'A Heap-and-Addresses Interpretation of Valued Borrows' and 11.2.9 'The Pointer Language (PL)') and Chapter 13 'From Symbolic Semantics to Functional Code'. Only the table of contents and the abstract ('as long as they do not rely on interior mutability or unsafe code') were consulted; no claim about the chapters' content is made here."
+    ],
+    "design_question": "Does the point at which a keep-alive region of a raw-pointer reborrow ends affect soundness, or only completeness?"
+  },
+  {
+    "id": "endpoint-window-last-write",
+    "lean": "Toy.Backward.effSem_eq_heapSem_of_endsAfterCreation_of_endsAfterLastWrite_of_endsByNextOwnerAccess_of_endsByProgramEnd_of_aliasingDiscipline",
+    "kind": "theorem",
+    "status": "proved",
+    "tier": "T1",
+    "tier_justification": "A refinement of endpoint-window in the toy; no novelty is claimed (it depends on the target keeping the forward value readable after the backward call).",
+    "plain_claim": "For every toy program obeying the aliasing discipline and every placement that ends each region after its creation and after its last write through its reference (reads may follow), no later than the owner's next access to its cell, and no later than the program end, the unchecked effectful-backward translation has exactly the heap semantics' outcome (both succeed with the same final heap and local variables, or both are stuck).",
+    "hypotheses": [
+      {
+        "name": "hc : EndsAfterCreation P π",
+        "purpose": "A backward call at or before its region's creation is stuck (no forward value); for regions with a later write it follows from hw.",
+        "tightness": "tight",
+        "counterexample": "Toy.Backward.effSem_generalized_tight_endsAfterCreation"
+      },
+      {
+        "name": "hw : EndsAfterLastWrite P π",
+        "purpose": "Writes through the reference after its backward call are lost.",
+        "tightness": "tight",
+        "counterexample": "Toy.Backward.effSem_generalized_tight_endsAfterLastWrite"
+      },
+      {
+        "name": "ho : EndsByNextOwnerAccess P π",
+        "purpose": "An owner access before the backward call reads a stale heap model.",
+        "tightness": "tight",
+        "counterexample": "Toy.Backward.effSem_generalized_tight_endsByNextOwnerAccess"
+      },
+      {
+        "name": "he : EndsByProgramEnd P π",
+        "purpose": "A region that never ends never writes back.",
+        "tightness": "tight",
+        "counterexample": "Toy.Backward.effSem_generalized_tight_endsByProgramEnd"
+      },
+      {
+        "name": "had : AliasingDiscipline P",
+        "purpose": "No longer implied once reads may follow the end: a read through the reference after an owner write sees the stale local copy.",
+        "tightness": "tight",
+        "counterexample": "Toy.Backward.effSem_generalized_tight_aliasingDiscipline"
+      }
+    ],
+    "depth": "substantive",
+    "depth_note": "Simulation invariant over the run (relation EffRel in ToyBackward/Simulation.lean): the target's variables equal the heap semantics' variables; a region's slot is bound exactly when the region has been created, and holds the region's pointer; a slot's local value equals the heap semantics' cell while the region is open or still has a later use through its reference; and a target cell equals the heap semantics' cell whenever no open region points to it. EndsByNextOwnerAccess and the aliasing discipline keep every other path from touching a cell while one of these equalities is needed; EndsAfterLastWrite makes the written-back value the final one; EndsAfterCreation makes every backward call find a forward value; EndsByProgramEnd closes every region before the final observation.",
+    "nonvacuity_witness": "writeThenRead 5 with the region ended between its last write and a later read (outside endpoint-window); the conclusion is proved independently on this instance for every heap.",
+    "nonvacuity_witness_lean": [
+      "Toy.Backward.effSem_generalized_nonvacuous",
+      "Toy.Backward.effSem_generalized_instance"
+    ],
+    "non_claims": [
+      "Toy model only: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency.",
+      "Nothing is proved about Aeneas itself (its symbolic interpreter, region-ending heuristics, joins, or generated code); any connection is a derived modeling bridge stated in the prose, not a kernel-checked fact.",
+      "AliasingDiscipline and RespectsLiveness constrain only the ordering between uses of an asMut reference and later owner accesses to the same cell; they do not check reference scoping (that every read or write names an earlier asMut). Ill-scoped programs such as danglingUse (`[read 0 0]`) and useBeforeCreation satisfy both and are stuck (`none`) in heapSem, effSem, and lockSem (aliasingDiscipline_admits_ill_scoped and lockSem_none_of_ill_scoped_respectsLiveness, with placements endAt 0 and lazyPlacement respectively); for them the equation holds only because both sides are stuck.",
+      "Out-of-window placements give wrong `some o` outcomes in effSem specifically because its write-back is unchecked copy-in/copy-out (the cell stays freely accessible in the heap model while the region is open, and the region's local value stays writable and readable after its backward call) and because soundness is stated as equality of outcomes. In the borrow-locking translation lockSem, where the forward call lends the cell until the backward call and the backward call closes the region, the same placements are stuck (`none`) instead (outside_window_effSem_wrong_lockSem_stuck); there every placement is sound under partial refinement (lock-sound) and only completeness depends on the end point (lock-complete, lock-success-in-window). The toy's out-of-window failures of effSem do not refute the claim of Aeneas pull request #1537 that region-end timing affects only completeness, under borrow-locking semantics.",
+      "Ending a region between its last write and a later read relies on the target treating the borrow's forward value as an ordinary immutable local after the backward call. In a source-level or symbolic semantics where reading `*r` requires the borrow to be still alive (the liveness analysis src/interp/InterpLiveness.ml of Aeneas pull request #1537 counts every dereference of `r`, read or write, as a use), and in the toy's borrow-locking translation lockSem (lockSem_complete_tight_endsAfterLastUse), ending the region before a read gets stuck; this result gives no licence for such semantics.",
+      "Not a characterization of all sound placements: finer conditions (e.g. owner reads that do not conflict with an unwritten reference) are not examined."
+    ],
+    "prior_art": [
+      "Aeneas pull request AeneasVerif/aeneas#1537, 'Add alive hints to support raw-pointer functions eventually.' (opened 2026-11-05; open and unmerged when examined), head commit 5c28fe8def8db99041d22503175591ba1fa47915. In our words: it makes the backward functions of regions created by opaque raw-pointer conversions monadic ('effectful', returning `Result`) instead of pure or inlined. At the head commit the generated test output (tests/lean/StatefulLifetime.lean) declares `axiom Ptr.as_mut {T : Type _} : Ptr T → Result (T × (T → Result Unit))` and `axiom Ptr.from_mut {T : Type _} : T → Result ((Ptr T) × (Result T))`, and the test source (tests/src/stateful-lifetime.rs) uses the attribute `#[verify::stateful_lifetime(...)]`; the pull request description, written earlier, gives `from_mut` the type `T → Result ((Ptr T) × (Unit → Result T))` and calls the attribute `keep_alive`. It offers three heuristics for when such regions end (short: when the borrows held are dead according to a backward liveness analysis, src/interp/InterpLiveness.ml, which counts every dereference `*r`, read or write, as a use of `r`; regular; long: surviving joins), asserts that this timing 'should not matter for soundness, only completeness', and restricts the `simplify_duplicate_calls` pass (src/pure/PureMicroPassesGeneral.ml), whose previous comment said it 'will not be sound anymore once we allow stateful (backward) functions'. These are assertions in the pull request, not proofs.",
+      "Son Ho, Aymeric Fromherz, and Jonathan Protzenko. Sound Borrow-Checking for Rust via Symbolic Semantics. Proc. ACM Program. Lang. 8(ICFP), pp. 426-454, 2024. doi:10.1145/3674640 (long version arXiv:2404.02680). Theorem 4.1: every run of the symbolic semantics LLBC# (which may end borrows at arbitrary points through reorganizations, rule E-Reorg: 'it is always possible to end a borrow early, but this may lead to an unnecessarily stuck execution') is matched by the concrete LLBC semantics; proved in the paper, with full proofs in the long version's appendices. Correctness of the functional translation is left to future work and unsafe code is not considered."
+    ],
+    "design_question": "How early may a keep-alive region end: after the last use, or already after the last write?"
+  },
+  {
+    "id": "lock-complete",
+    "lean": "Toy.Backward.lockSem_eq_heapSem_of_endsAfterCreation_of_endsAfterLastUse_of_endsByNextOwnerAccess_of_endsByProgramEnd",
+    "kind": "theorem",
+    "status": "proved",
+    "tier": "T1",
+    "tier_justification": "Folklore made precise: permission-tracking heap models in which a borrowed cell is inaccessible until the backward function runs are the design of the companion Aeneas pull requests (#1454, #1551); that they are complete on liveness-respecting placements was not found stated or mechanized.",
+    "plain_claim": "For every toy program and every placement that ends each region after its creation and after its last use, no later than the owner's next access to its cell, and no later than the program end, the borrow-locking effectful-backward translation (the forward call lends the cell to the region; other accesses to a lent cell, uses of a closed region, and a run ending with a lent cell are stuck) has exactly the heap semantics' outcome (both succeed with the same final heap and local variables, or both are stuck).",
+    "hypotheses": [
+      {
+        "name": "hc : EndsAfterCreation P π",
+        "purpose": "A backward call before its forward call is stuck.",
+        "tightness": "tight",
+        "counterexample": "Toy.Backward.lockSem_complete_tight_endsAfterCreation"
+      },
+      {
+        "name": "hu : EndsAfterLastUse P π",
+        "purpose": "A use (read or write) after the backward call is stuck, since the region is closed; ending after the last write is not enough here, unlike endpoint-window-last-write.",
+        "tightness": "tight",
+        "counterexample": "Toy.Backward.lockSem_complete_tight_endsAfterLastUse"
+      },
+      {
+        "name": "ho : EndsByNextOwnerAccess P π",
+        "purpose": "An owner access (or a second loan) while the cell is lent is stuck.",
+        "tightness": "tight",
+        "counterexample": "Toy.Backward.lockSem_complete_tight_endsByNextOwnerAccess"
+      },
+      {
+        "name": "he : EndsByProgramEnd P π",
+        "purpose": "A run that ends with a cell still lent is stuck.",
+        "tightness": "tight",
+        "counterexample": "Toy.Backward.lockSem_complete_tight_endsByProgramEnd"
+      }
+    ],
+    "depth": "substantive",
+    "depth_note": "Lockstep simulation of the borrow-locking run against the unchecked run of the same target program (relation LockRel in ToyBackward/SimLock.lean): equal heaps and variables; a region's borrow-locking slot equals its unchecked slot while the region is open and is empty after its backward call; a cell is lent exactly when an open slot points to it, with at most one open slot per cell; the open-region count equals the number of open slots. Every potential stuck step of lockSem is excluded by one placement condition or is a step at which the unchecked run is stuck too, and no region is open at the end; so lockSem equals effSem on such placements (lockSem_eq_effSem), and endpoint-window gives the heap semantics' outcome.",
+    "nonvacuity_witness": "writeThenOtherThenRawRead with its lazy and its eager placement (which differ); on reborrowAfterWrite c with the lazy placement the conclusion is proved independently for every heap and c.",
+    "nonvacuity_witness_lean": [
+      "Toy.Backward.effSem_respecting_nonvacuous",
+      "Toy.Backward.lockSem_reborrowAfterWrite_positive_control"
+    ],
+    "non_claims": [
+      "Toy model only: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency.",
+      "Nothing is proved about Aeneas itself (its symbolic interpreter, region-ending heuristics, joins, or generated code); any connection is a derived modeling bridge stated in the prose, not a kernel-checked fact.",
+      "AliasingDiscipline and RespectsLiveness constrain only the ordering between uses of an asMut reference and later owner accesses to the same cell; they do not check reference scoping (that every read or write names an earlier asMut). Ill-scoped programs such as danglingUse (`[read 0 0]`) and useBeforeCreation satisfy both and are stuck (`none`) in heapSem, effSem, and lockSem (aliasingDiscipline_admits_ill_scoped and lockSem_none_of_ill_scoped_respectsLiveness, with placements endAt 0 and lazyPlacement respectively); for them the equation holds only because both sides are stuck.",
+      "lockSem is a toy borrow-locking model (one lent flag per cell, an open-region count, stuck on any conflicting access); it is not the heap model, separation logic, or weakest-precondition calculus of any Aeneas pull request, and it does not model shared borrows, partial permissions, or byte-level cells.",
+      "Completeness here means producing the heap semantics' outcome on the toy's straight-line programs; it says nothing about whether a verifier can prove properties of the translated program, or about joins, loops, and function boundaries."
+    ],
+    "prior_art": [
+      "Open, draft, unmerged (when examined) Aeneas pull requests that give `Result` heap effects: #1454 'NonNull and borrows of values behind raw pointers' (head fc68273b75beebb7fd74f9c3130e857b232960db), #1497 'Fournet/wip memory model' (head d17ca83fc07d712d1785f650840cb2073c259e69), #1548 'Heap model for raw pointers (from fournet/wip-memory-model)' (head 561b806a70789e090e305d1d992f92cad1de7ce0), and #1551 'Separation logic over the byte heap' (head 1d8f9aa0121faca8ff113c1b9b742b333e3e1519). At each head, `RustEffect.Input` (backends/lean/Aeneas/Std/Primitives.lean) has a heap event `guardedModify` besides `fail`, while `Result α` remains `ITree RustEffect α` with no state argument. At #1454's head, backends/lean/Aeneas/Std/Core/Ptr.lean defines `RawPtr.as_mut_unchecked {T : Type} [Pointee T] (p : MutRawPtr T) : Result (T × (T → Result Unit))` as `p.borrow` followed by returning `p.endBorrow` as the backward function, where `borrow` gives the cell away 'so that every access to the cell through a raw pointer fails until the borrow is ended with `endBorrow`'. At #1551's head, tests/lean/SafeUnsafe/Proofs.lean models the extracted `as_mut` by such a borrow and proves `ptr_as_mut_write.incomplete`: the extracted code returns the `as_mut` borrow only after the owner's borrow has ended, so reading the cell fails; the file classifies this case as 'Sound, but the model rejects a valid program'. Proposals under development, not merged code.",
+      "Aeneas pull request AeneasVerif/aeneas#1537, 'Add alive hints to support raw-pointer functions eventually.' (opened 2026-11-05; open and unmerged when examined), head commit 5c28fe8def8db99041d22503175591ba1fa47915. In our words: it makes the backward functions of regions created by opaque raw-pointer conversions monadic ('effectful', returning `Result`) instead of pure or inlined. At the head commit the generated test output (tests/lean/StatefulLifetime.lean) declares `axiom Ptr.as_mut {T : Type _} : Ptr T → Result (T × (T → Result Unit))` and `axiom Ptr.from_mut {T : Type _} : T → Result ((Ptr T) × (Result T))`, and the test source (tests/src/stateful-lifetime.rs) uses the attribute `#[verify::stateful_lifetime(...)]`; the pull request description, written earlier, gives `from_mut` the type `T → Result ((Ptr T) × (Unit → Result T))` and calls the attribute `keep_alive`. It offers three heuristics for when such regions end (short: when the borrows held are dead according to a backward liveness analysis, src/interp/InterpLiveness.ml, which counts every dereference `*r`, read or write, as a use of `r`; regular; long: surviving joins), asserts that this timing 'should not matter for soundness, only completeness', and restricts the `simplify_duplicate_calls` pass (src/pure/PureMicroPassesGeneral.ml), whose previous comment said it 'will not be sound anymore once we allow stateful (backward) functions'. These are assertions in the pull request, not proofs.",
+      "Son Ho, Aymeric Fromherz, and Jonathan Protzenko. Sound Borrow-Checking for Rust via Symbolic Semantics. Proc. ACM Program. Lang. 8(ICFP), pp. 426-454, 2024. doi:10.1145/3674640 (long version arXiv:2404.02680). Theorem 4.1: every run of the symbolic semantics LLBC# (which may end borrows at arbitrary points through reorganizations, rule E-Reorg: 'it is always possible to end a borrow early, but this may lead to an unnecessarily stuck execution') is matched by the concrete LLBC semantics; proved in the paper, with full proofs in the long version's appendices. Correctness of the functional translation is left to future work and unsafe code is not considered."
+    ],
+    "design_question": "Under a borrow-locking model of effectful backward functions, which region end points lose nothing (give the heap semantics' outcome)?"
+  },
+  {
+    "id": "lock-success-in-window",
+    "lean": "Toy.Backward.respectsLiveness_of_lockSem_eq_some",
+    "kind": "theorem",
+    "status": "proved",
+    "tier": "T1",
+    "tier_justification": "Converse of lock-complete in the toy; follows the same folklore design point (a borrow-locking model rejects out-of-window end points by getting stuck). Not found stated.",
+    "plain_claim": "For every toy program, placement, and initial heap, if the borrow-locking translation succeeds, then the placement is liveness-respecting: every region ends after its creation and after its last use, no later than the owner's next access to its cell, and no later than the program end.",
+    "hypotheses": [
+      {
+        "name": "hl : lockSem P π h = some o",
+        "purpose": "The antecedent; without it the conclusion would claim that every placement respects liveness.",
+        "tightness": "tight",
+        "counterexample": "Toy.Backward.respectsLiveness_of_lockSem_tight_success"
+      }
+    ],
+    "depth": "substantive",
+    "depth_note": "Invariant over a successful borrow-locking run (structure LInv in ToyBackward/SimLock.lean): before statement k, a region's slot is open exactly when the region was created before k and its backward call has not run; the lent flags, the uniqueness of the open region per cell, and the open-region count match the open slots; and no backward call of a region at or after k has run. Each violated placement condition forces a stuck step (a backward call without forward value, a use of a closed or never-opened region, an access to a lent cell, or a region still open at the end). Includes uses that precede a region's creation, which are stuck.",
+    "nonvacuity_witness": "The borrow-locking translation succeeds on reborrowAfterWrite 5 with the lazy placement and on writeThenOtherThenRawRead with the eager placement.",
+    "nonvacuity_witness_lean": "Toy.Backward.lockSem_success_nonvacuous",
+    "non_claims": [
+      "Toy model only: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency.",
+      "Nothing is proved about Aeneas itself (its symbolic interpreter, region-ending heuristics, joins, or generated code); any connection is a derived modeling bridge stated in the prose, not a kernel-checked fact.",
+      "Says nothing about the unchecked translation effSem, which succeeds (with a wrong outcome) on some out-of-window placements (outside_window_effSem_wrong_lockSem_stuck).",
+      "Stuckness is not a diagnosis of the placement: the converse of this result fails. Every out-of-window placement makes lockSem stuck (the contrapositive), but lockSem is also stuck on programs with reference scoping errors under liveness-respecting placements: danglingUse (`[read 0 0]`) with endAt 0 and useBeforeCreation with its lazy placement satisfy RespectsLiveness and have lockSem = none (lockSem_none_of_ill_scoped_respectsLiveness, aliasingDiscipline_admits_ill_scoped). A stuck borrow-locking translation therefore indicates an out-of-window placement or a scoping error.",
+      "lockSem is a toy borrow-locking model (one lent flag per cell, an open-region count, stuck on any conflicting access); it is not the heap model, separation logic, or weakest-precondition calculus of any Aeneas pull request, and it does not model shared borrows, partial permissions, or byte-level cells."
+    ],
+    "prior_art": [
+      "Open, draft, unmerged (when examined) Aeneas pull requests that give `Result` heap effects: #1454 'NonNull and borrows of values behind raw pointers' (head fc68273b75beebb7fd74f9c3130e857b232960db), #1497 'Fournet/wip memory model' (head d17ca83fc07d712d1785f650840cb2073c259e69), #1548 'Heap model for raw pointers (from fournet/wip-memory-model)' (head 561b806a70789e090e305d1d992f92cad1de7ce0), and #1551 'Separation logic over the byte heap' (head 1d8f9aa0121faca8ff113c1b9b742b333e3e1519). At each head, `RustEffect.Input` (backends/lean/Aeneas/Std/Primitives.lean) has a heap event `guardedModify` besides `fail`, while `Result α` remains `ITree RustEffect α` with no state argument. At #1454's head, backends/lean/Aeneas/Std/Core/Ptr.lean defines `RawPtr.as_mut_unchecked {T : Type} [Pointee T] (p : MutRawPtr T) : Result (T × (T → Result Unit))` as `p.borrow` followed by returning `p.endBorrow` as the backward function, where `borrow` gives the cell away 'so that every access to the cell through a raw pointer fails until the borrow is ended with `endBorrow`'. At #1551's head, tests/lean/SafeUnsafe/Proofs.lean models the extracted `as_mut` by such a borrow and proves `ptr_as_mut_write.incomplete`: the extracted code returns the `as_mut` borrow only after the owner's borrow has ended, so reading the cell fails; the file classifies this case as 'Sound, but the model rejects a valid program'. Proposals under development, not merged code.",
+      "Son Ho, Aymeric Fromherz, and Jonathan Protzenko. Sound Borrow-Checking for Rust via Symbolic Semantics. Proc. ACM Program. Lang. 8(ICFP), pp. 426-454, 2024. doi:10.1145/3674640 (long version arXiv:2404.02680). Theorem 4.1: every run of the symbolic semantics LLBC# (which may end borrows at arbitrary points through reorganizations, rule E-Reorg: 'it is always possible to end a borrow early, but this may lead to an unnecessarily stuck execution') is matched by the concrete LLBC semantics; proved in the paper, with full proofs in the long version's appendices. Correctness of the functional translation is left to future work and unsafe code is not considered."
+    ],
+    "design_question": "Under a borrow-locking model, can a translator detect an unsuitable region end point by the translated program getting stuck?"
+  },
+  {
+    "id": "lock-sound",
+    "lean": "Toy.Backward.heapSem_eq_some_of_lockSem_eq_some",
+    "kind": "theorem",
+    "status": "proved (short derivation from lock-complete and lock-success-in-window)",
+    "tier": "T1",
+    "tier_justification": "The toy counterpart of the claim in Aeneas pull request #1537 that region-end timing 'should not matter for soundness, only completeness', made precise for a borrow-locking heap model; the companion pull request #1551 classifies its late-end example as 'Sound, but the model rejects a valid program'; the safe-code analogue for borrow-checking is ICFP 2024, Theorem 4.1. Not found mechanized for backward-function synthesis.",
+    "plain_claim": "For every toy program, every placement of region ends (inside or outside the liveness window), and every initial heap, if the borrow-locking effectful-backward translation succeeds with an observation, the heap semantics succeeds with the same observation: an end point can make the translation stuck, never wrong.",
+    "hypotheses": [
+      {
+        "name": "hl : lockSem P π h = some o",
+        "purpose": "The antecedent of partial refinement; the unchecked translation's outcome at a too-late placement is not the heap semantics' outcome, and lockSem does not produce it.",
+        "tightness": "tight",
+        "counterexample": "Toy.Backward.heapSem_eq_some_of_lockSem_tight_success"
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "Two-line derivation: success implies the placement respects liveness (lock-success-in-window), where lockSem equals heapSem (lock-complete); substance in those two.",
+    "nonvacuity_witness": "The borrow-locking translation succeeds on reborrowAfterWrite 5 (lazy placement), and on reborrowAfterWrite c the conclusion is proved independently; on three out-of-window instances it is stuck where the unchecked translation is wrong.",
+    "nonvacuity_witness_lean": [
+      "Toy.Backward.lockSem_success_nonvacuous",
+      "Toy.Backward.lockSem_reborrowAfterWrite_positive_control",
+      "Toy.Backward.outside_window_effSem_wrong_lockSem_stuck"
+    ],
+    "non_claims": [
+      "Toy model only: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency.",
+      "Nothing is proved about Aeneas itself (its symbolic interpreter, region-ending heuristics, joins, or generated code); any connection is a derived modeling bridge stated in the prose, not a kernel-checked fact.",
+      "Partial refinement only: lockSem may be stuck where the heap semantics succeeds (incompleteness); it is stuck exactly off the window for programs without scoping errors (lock-complete, lock-success-in-window).",
+      "Derived modeling bridge, not kernel-checked: this is the toy's version of the claim that end-point timing matters only for completeness, for a model in which a lent cell is inaccessible until its backward call (as in the borrow/endBorrow models of the companion Aeneas pull requests #1454 and #1551). It is not a proof about those models, about Aeneas's heuristics, or about a translation whose write-back is unchecked (effSem, where out-of-window end points are unsound)."
+    ],
+    "prior_art": [
+      "Aeneas pull request AeneasVerif/aeneas#1537, 'Add alive hints to support raw-pointer functions eventually.' (opened 2026-11-05; open and unmerged when examined), head commit 5c28fe8def8db99041d22503175591ba1fa47915. In our words: it makes the backward functions of regions created by opaque raw-pointer conversions monadic ('effectful', returning `Result`) instead of pure or inlined. At the head commit the generated test output (tests/lean/StatefulLifetime.lean) declares `axiom Ptr.as_mut {T : Type _} : Ptr T → Result (T × (T → Result Unit))` and `axiom Ptr.from_mut {T : Type _} : T → Result ((Ptr T) × (Result T))`, and the test source (tests/src/stateful-lifetime.rs) uses the attribute `#[verify::stateful_lifetime(...)]`; the pull request description, written earlier, gives `from_mut` the type `T → Result ((Ptr T) × (Unit → Result T))` and calls the attribute `keep_alive`. It offers three heuristics for when such regions end (short: when the borrows held are dead according to a backward liveness analysis, src/interp/InterpLiveness.ml, which counts every dereference `*r`, read or write, as a use of `r`; regular; long: surviving joins), asserts that this timing 'should not matter for soundness, only completeness', and restricts the `simplify_duplicate_calls` pass (src/pure/PureMicroPassesGeneral.ml), whose previous comment said it 'will not be sound anymore once we allow stateful (backward) functions'. These are assertions in the pull request, not proofs.",
+      "Open, draft, unmerged (when examined) Aeneas pull requests that give `Result` heap effects: #1454 'NonNull and borrows of values behind raw pointers' (head fc68273b75beebb7fd74f9c3130e857b232960db), #1497 'Fournet/wip memory model' (head d17ca83fc07d712d1785f650840cb2073c259e69), #1548 'Heap model for raw pointers (from fournet/wip-memory-model)' (head 561b806a70789e090e305d1d992f92cad1de7ce0), and #1551 'Separation logic over the byte heap' (head 1d8f9aa0121faca8ff113c1b9b742b333e3e1519). At each head, `RustEffect.Input` (backends/lean/Aeneas/Std/Primitives.lean) has a heap event `guardedModify` besides `fail`, while `Result α` remains `ITree RustEffect α` with no state argument. At #1454's head, backends/lean/Aeneas/Std/Core/Ptr.lean defines `RawPtr.as_mut_unchecked {T : Type} [Pointee T] (p : MutRawPtr T) : Result (T × (T → Result Unit))` as `p.borrow` followed by returning `p.endBorrow` as the backward function, where `borrow` gives the cell away 'so that every access to the cell through a raw pointer fails until the borrow is ended with `endBorrow`'. At #1551's head, tests/lean/SafeUnsafe/Proofs.lean models the extracted `as_mut` by such a borrow and proves `ptr_as_mut_write.incomplete`: the extracted code returns the `as_mut` borrow only after the owner's borrow has ended, so reading the cell fails; the file classifies this case as 'Sound, but the model rejects a valid program'. Proposals under development, not merged code.",
+      "Son Ho, Aymeric Fromherz, and Jonathan Protzenko. Sound Borrow-Checking for Rust via Symbolic Semantics. Proc. ACM Program. Lang. 8(ICFP), pp. 426-454, 2024. doi:10.1145/3674640 (long version arXiv:2404.02680). Theorem 4.1: every run of the symbolic semantics LLBC# (which may end borrows at arbitrary points through reorganizations, rule E-Reorg: 'it is always possible to end a borrow early, but this may lead to an unnecessarily stuck execution') is matched by the concrete LLBC semantics; proved in the paper, with full proofs in the long version's appendices. Correctness of the functional translation is left to future work and unsafe code is not considered."
+    ],
+    "design_question": "Is the claim that region-end timing affects only completeness true, and under what model of effectful backward functions?"
+  },
+  {
+    "id": "prophecy-agreement",
+    "lean": "Toy.Backward.prophOutcome_iff_effSem_of_endsByNextOwnerAccess_of_endsByProgramEnd",
+    "kind": "theorem",
+    "status": "proved",
+    "tier": "T1",
+    "tier_justification": "The prophecy encoding follows RustHorn and Creusot (lender receives the prophecy, region end assumes current = final); the agreement with write-back backward functions under these conditions is folklore-level and was not found stated.",
+    "plain_claim": "For every toy program and every placement that ends each region no later than the owner's next access to its cell and no later than the program end (with no condition relative to the region's creation or uses), the outcomes of the RustHorn-style prophecy encoding — over all prophecy assignments that satisfy every resolution assumption, checked at the end of the run — are exactly the unchecked effectful-backward translation's outcome (a single outcome, or none if it is stuck).",
+    "hypotheses": [
+      {
+        "name": "ho : EndsByNextOwnerAccess P π",
+        "purpose": "Between creation and resolution the owner holds the prophecy in the encoding but the old value in the write-back model; an owner access there distinguishes them.",
+        "tightness": "tight",
+        "counterexample": "Toy.Backward.prophOutcome_iff_effSem_tight_endsByNextOwnerAccess"
+      },
+      {
+        "name": "he : EndsByProgramEnd P π",
+        "purpose": "An unresolved prophecy leaves the owner holding an arbitrary value.",
+        "tightness": "tight",
+        "counterexample": "Toy.Backward.prophOutcome_iff_effSem_tight_endsByProgramEnd"
+      }
+    ],
+    "depth": "substantive",
+    "depth_note": "Lockstep simulation of the prophecy encoding against the unchecked run for a fixed prophecy assignment (relation PRel in ToyBackward/SimProph.lean): equal slots and variables; an open region's cell holds its prophecy and every other cell agrees. A run keeps its flag true exactly when every resolution assumption along the unchecked run holds (predicate GoodFor); a resolving assignment exists, built by recording each region's local value at its backward call along the unchecked run (goodFor_exists). Both semantics get stuck at the same steps (shape_run), and a successful unchecked run forces EndsAfterCreation (endsAfterCreation_of_trun), which is therefore not a hypothesis.",
+    "nonvacuity_witness": "reborrowAfterWrite 5 with the lazy placement, and with a placement that ends region 0 too early for endpoint-window; the effectful translation succeeds on both.",
+    "nonvacuity_witness_lean": "Toy.Backward.prophOutcome_iff_effSem_nonvacuous",
+    "non_claims": [
+      "Toy model only: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency.",
+      "Agreement is equality of end-of-run outcome sets of two toy semantics, not a correspondence between proofs, verification conditions, or CHC encodings.",
+      "The prophecy encoding here (an up-front prophecy assignment and a flag recording resolution assumptions, filtered at the end of the run) is a toy; it is not RustHorn's CHC translation, Creusot's Why3 encoding, or RustHornBelt's Iris model.",
+      "Agreement does not imply soundness: outside the endpoint-window conditions both encodings can be wrong together (e.g. ending before a write).",
+      "Resolution is an assumption, not a proof obligation. Where a resolution can never hold, `ProphOutcome` is empty; in a verifier that encodes resolution by `assume`, that corresponds to `assume False`, which makes everything after it vacuously verified. Outside the aliasing discipline and the window this happens while the heap semantics succeeds (prophOutcome_empty_ownerReadThenWriteBack: `r0 = &mut *p; x0 = *p; *r0 = x0 + 1` with r0 ended at the program end requires `φ 0 = φ 0 + 1`)."
+    ],
+    "prior_art": [
+      "Yusuke Matsushita, Takeshi Tsukada, and Naoki Kobayashi. RustHorn: CHC-Based Verification for Rust Programs. ESOP 2020, LNCS, pp. 484-514, doi:10.1007/978-3-030-44914-8_18; journal version ACM TOPLAS 43(4), 2021, doi:10.1145/3462205. A mutable borrow is represented as the pair of the current target value and the target value at the end of the borrow (full version arXiv:2002.09002, Section 1.2, 'related to prophecy variables'); the borrow rule gives the lender the fresh end-of-borrow variable, and releasing the borrow checks the prophesied value (Section 3.2). The core language COR does not support unsafe code.",
+      "Xavier Denis, Jacques-Henri Jourdan, and C. Marché. Creusot: A Foundry for the Deductive Verification of Rust Programs. ICFEM 2022, LNCS, pp. 90-105, doi:10.1007/978-3-031-17244-1_6. Section 3.2: a mutable borrow is the record { current ; final }; creating it is 'y : borrow t <- { current = x ; final = any t }; x : t <- y.final', which is 'valid because the value of the lender cannot be observed before the lifetime's end'; ending it is 'assume { y.final = y.current }'. In that paper Creusot does not permit verification of unsafe code.",
+      "Yusuke Matsushita, Xavier Denis, Jacques-Henri Jourdan, and Derek Dreyer. RustHornBelt: A Semantic Foundation for Functional Verification of Rust Programs with Unsafe Code. PLDI 2022, pp. 841-856, doi:10.1145/3519939.3523704. Machine-checked (Coq/Iris) soundness of RustHorn-style first-order specifications for safe APIs implemented with unsafe code (e.g. Vec, Cell, Mutex), via parametric prophecies; no treatment of raw-pointer-to-reference conversion as a translation rule was found in it.",
+      "Ralf Jung, Rodolphe Lepigre, Gaurav Parthasarathy, Marianna Rapoport, Amin Timany, Derek Dreyer, and Bart Jacobs. The Future is Ours: Prophecy Variables in Separation Logic. Proc. ACM Program. Lang. 4(POPL), Article 45, pp. 1-32, 2020. doi:10.1145/3371113. Prophecy variables in a Hoare-style program logic, formalized in Iris in Coq (abstract). Background for prophecy encodings; it does not treat Rust borrows."
+    ],
+    "design_question": "How does a write-back (effectful backward function) translation of raw-pointer reborrows relate to prophecy-based encodings?"
+  },
+  {
+    "id": "prophecy-sound-wider-window",
+    "lean": "Toy.Backward.prophOutcome_iff_heapSem_of_aliasingDiscipline_of_endsAfterCreation_of_endsAfterLastWrite_of_endsByProgramEnd",
+    "kind": "theorem",
+    "status": "proved",
+    "tier": "T1",
+    "tier_justification": "Exploratory; reflects the known design point that a lender holding a prophecy is valid 'because the value of the lender cannot be observed before the lifetime's end' (Creusot, Section 3.2), here checked against raw-pointer owner accesses.",
+    "plain_claim": "For every toy program obeying the aliasing discipline and every placement that ends each region after its creation and after its last write and no later than the program end — but possibly after the owner's next access — the prophecy encoding's end-of-run outcomes are exactly the heap semantics' outcome (a single outcome, or none if the heap semantics is stuck).",
+    "hypotheses": [
+      {
+        "name": "had : AliasingDiscipline P",
+        "purpose": "A read through the reference after an owner write sees the stale local value.",
+        "tightness": "tight",
+        "counterexample": "Toy.Backward.prophOutcome_iff_heapSem_tight_aliasingDiscipline"
+      },
+      {
+        "name": "hc : EndsAfterCreation P π",
+        "purpose": "A resolution scheduled before its region's creation is stuck, so there is no outcome while the heap semantics succeeds.",
+        "tightness": "tight",
+        "counterexample": "Toy.Backward.prophOutcome_iff_heapSem_tight_endsAfterCreation"
+      },
+      {
+        "name": "hw : EndsAfterLastWrite P π",
+        "purpose": "A write after resolution is not reflected in the prophecy.",
+        "tightness": "tight",
+        "counterexample": "Toy.Backward.prophOutcome_iff_heapSem_tight_endsAfterLastWrite"
+      },
+      {
+        "name": "he : EndsByProgramEnd P π",
+        "purpose": "An unresolved prophecy leaves the owner holding an arbitrary value.",
+        "tightness": "tight",
+        "counterexample": "Toy.Backward.prophOutcome_iff_heapSem_tight_endsByProgramEnd"
+      }
+    ],
+    "depth": "substantive",
+    "depth_note": "Reduction to the window: clamp the placement to π' i = min (π i) (lazyPlacement P i), the earlier of the given end and the owner's next access. Between π' i and π i no statement writes through region i (EndsAfterLastWrite and the aliasing discipline), and a resolution step changes only the check flag, so the prophecy encoding has the same end-of-run results under π and π' for every prophecy assignment (prophSem_eq_of_move in ToyBackward/SimProph.lean). π' satisfies all four window conditions, so prophecy-agreement and endpoint-window-last-write give the heap semantics' outcome. A region's prophecy can be observed by an owner access before its resolution step; the resolution fixes it to the region's final value, which by the aliasing discipline is already determined at that access.",
+    "nonvacuity_witness": "reborrowAfterWrite 5 with region 0 ended after the second as_mut (outside endpoint-window and prophecy-agreement); on this instance the prophecy outcomes are proved to be exactly the heap semantics' outcome while the unchecked write-back translation effSem is proved wrong (the borrow-locking translation lockSem is stuck there instead; outside_window_effSem_wrong_lockSem_stuck).",
+    "nonvacuity_witness_lean": [
+      "Toy.Backward.prophOutcome_iff_heapSem_nonvacuous",
+      "Toy.Backward.prophecy_tolerates_late_end_instance"
+    ],
+    "non_claims": [
+      "Toy model only: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency.",
+      "AliasingDiscipline and RespectsLiveness constrain only the ordering between uses of an asMut reference and later owner accesses to the same cell; they do not check reference scoping (that every read or write names an earlier asMut). Ill-scoped programs such as danglingUse (`[read 0 0]`) and useBeforeCreation satisfy both and are stuck (`none`) in heapSem, effSem, and lockSem (aliasingDiscipline_admits_ill_scoped and lockSem_none_of_ill_scoped_respectsLiveness, with placements endAt 0 and lazyPlacement respectively). RespectsLiveness implies this result's window hypotheses (EndsAfterLastUse implies EndsAfterLastWrite, endsAfterLastWrite_of_endsAfterLastUse), so the result applies to them; since heapSem is stuck, both sides of the equivalence are false for every o (no prophecy outcome exists), and the equivalence holds only for that reason.",
+      "RustHorn's core calculus COR and Creusot as presented in its 2022 paper exclude unsafe code. Verification frameworks that combine prophecy-style reasoning with raw pointers (RefinedRust, whose borrow names are inspired by prophecy variables; Gillian-Rust, which embeds parametric prophecies; and Creusot's later ghost permissions for raw pointers) enforce aliasing through separation-logic or ghost ownership rather than the toy's unguarded flat heap; this result says nothing about them.",
+      "`ProphOutcome` keeps a run only if every resolution assumption holds, checked at the end of the run, in a language without intermediate assertions or panics. When a region ends after an owner access (outside EndsByNextOwnerAccess), the owner reads the prophecy before the region-end resolution constrains it; in a weakest-precondition encoding (Why3/Creusot style) or a CHC encoding (RustHorn style), a safety check or assertion between that access and the region end sees an unconstrained prophecy and can fail verification even though the final outcome is right. Tolerance of late ends is a property of this end-of-run filter, not of prophecy-based verifiers.",
+      "Resolution is an assumption, not a proof obligation: where a resolution can never hold, `ProphOutcome` is empty, which in an assume-based verifier corresponds to `assume False` and vacuous verification of everything after it. Outside the aliasing discipline and the window this happens while the heap semantics succeeds (prophOutcome_empty_ownerReadThenWriteBack)."
+    ],
+    "prior_art": [
+      "Yusuke Matsushita, Takeshi Tsukada, and Naoki Kobayashi. RustHorn: CHC-Based Verification for Rust Programs. ESOP 2020, LNCS, pp. 484-514, doi:10.1007/978-3-030-44914-8_18; journal version ACM TOPLAS 43(4), 2021, doi:10.1145/3462205. A mutable borrow is represented as the pair of the current target value and the target value at the end of the borrow (full version arXiv:2002.09002, Section 1.2, 'related to prophecy variables'); the borrow rule gives the lender the fresh end-of-borrow variable, and releasing the borrow checks the prophesied value (Section 3.2). The core language COR does not support unsafe code.",
+      "Xavier Denis, Jacques-Henri Jourdan, and C. Marché. Creusot: A Foundry for the Deductive Verification of Rust Programs. ICFEM 2022, LNCS, pp. 90-105, doi:10.1007/978-3-031-17244-1_6. Section 3.2: a mutable borrow is the record { current ; final }; creating it is 'y : borrow t <- { current = x ; final = any t }; x : t <- y.final', which is 'valid because the value of the lender cannot be observed before the lifetime's end'; ending it is 'assume { y.final = y.current }'. In that paper Creusot does not permit verification of unsafe code.",
+      "Lennard Gäher, Michael Sammler, Ralf Jung, Robbert Krebbers, and Derek Dreyer. RefinedRust: A Type System for High-Assurance Verification of Rust Programs. Proc. ACM Program. Lang. 8(PLDI), Article 192, pp. 1115-1139, 2024. doi:10.1145/3656422. Verification of 'both safe and unsafe Rust code' (abstract), including 'APIs that use raw pointers' (Section 3); mutable references carry 'borrow names, which are inspired by RustHorn's prophecy variables' (Section 1).",
+      "Sacha-Élie Ayoun, Xavier Denis, Petar Maksimović, and Philippa Gardner. A Hybrid Approach to Semi-automated Rust Verification. Proc. ACM Program. Lang. 9(PLDI), Article 186, pp. 970-992, 2025. doi:10.1145/3729289 (extended version arXiv:2403.15122). Presents Gillian-Rust, which 'can reason about type safety and functional correctness of unsafe code' and embeds 'the parametric prophecies of RustHornBelt' (abstract).",
+      "Creusot source repository github.com/creusot-rs/creusot at commit 601d97891bb0bc0b569686cc946ef4980560b5d8: the library defines a ghost permission type `Perm<C>` ('Generic permissions for accessing memory pointed to by pointers or within an interior mutable type', creusot-std/src/ghost/perm.rs) with an instance for raw pointers, `Perm<*const T>` (creusot-std/src/std/ptr.rs). Tool source code, not a publication.",
+      "Ralf Jung, Rodolphe Lepigre, Gaurav Parthasarathy, Marianna Rapoport, Amin Timany, Derek Dreyer, and Bart Jacobs. The Future is Ours: Prophecy Variables in Separation Logic. Proc. ACM Program. Lang. 4(POPL), Article 45, pp. 1-32, 2020. doi:10.1145/3371113. Prophecy variables in a Hoare-style program logic, formalized in Iris in Coq (abstract). Background for prophecy encodings; it does not treat Rust borrows."
+    ],
+    "design_question": "Is a prophecy encoding more robust than unchecked write-back (effSem) to imprecise region end placement for raw-pointer reborrows, and in what sense?"
+  },
+  {
+    "id": "aliasing-iff-placement",
+    "lean": "Toy.Backward.aliasingDiscipline_iff_respectsLiveness_lazyPlacement",
+    "kind": "characterization",
+    "status": "proved",
+    "tier": "T1",
+    "tier_justification": "Borrow checking as the existence of a consistent region assignment is a standard idea; here made precise for raw-pointer reborrows in the toy.",
+    "plain_claim": "For every toy program, the aliasing discipline holds if and only if the lazy placement is liveness-respecting, if and only if the eager placement is liveness-respecting, if and only if some placement is liveness-respecting (each region ends after its creation and after its last use, no later than the owner's next access to its cell, and no later than the program end).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_note": "Definition chasing plus first/last-index search lemmas. The right-to-left directions use only EndsAfterLastUse and EndsByNextOwnerAccess (lemma aliasingDiscipline_of_endsAfterLastUse_of_endsByNextOwnerAccess).",
+    "nonvacuity_witness": "reborrowAfterWrite 5 (obeys the discipline; lazy and eager placements respect liveness) and rawWriteDuringBorrow (violates it; neither placement respects liveness).",
+    "nonvacuity_witness_lean": "Toy.Backward.aliasingDiscipline_iff_nonvacuous",
+    "non_claims": [
+      "Toy model only: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency.",
+      "AliasingDiscipline and RespectsLiveness constrain only the ordering between uses of an asMut reference and later owner accesses to the same cell; they do not check reference scoping (that every read or write names an earlier asMut). Ill-scoped programs such as danglingUse (`[read 0 0]`) and useBeforeCreation satisfy both and are stuck (`none`) in heapSem, effSem, and lockSem (aliasingDiscipline_admits_ill_scoped and lockSem_none_of_ill_scoped_respectsLiveness, with placements endAt 0 and lazyPlacement respectively); for them both sides of each equivalence are true even though heapSem, effSem, and lockSem are stuck, so neither side implies that the program runs.",
+      "Not a decision procedure for real Rust code; the toy's discipline is checked on straight-line programs with syntactic uses."
+    ],
+    "prior_art": [
+      "Son Ho and Jonathan Protzenko. Aeneas: Rust Verification by Functional Translation. Proc. ACM Program. Lang. 6(ICFP), pp. 711-741, 2022. doi:10.1145/3547647 (arXiv:2206.07185). Each function with mutable borrows is translated to a forward function and backward functions per region; borrows are ended lazily ('we reorganize borrows in a lazy fashion, and don't terminate a borrow until we need to get the borrowed value back', Section 2); programs relying on interior mutability or unsafe code are out of scope (abstract); a proof of soundness of the semantics and translation is named as future work (Section 7). For code interacting with the outside world, the paragraph 'I/O and External Dependencies' lifts generated code into 'a combined-state + error monad' with an opaque `state` type (e.g. `val deserialize_fwd : state -> result (state & hash_map_t u64)`).",
+      "Son Ho, Aymeric Fromherz, and Jonathan Protzenko. Sound Borrow-Checking for Rust via Symbolic Semantics. Proc. ACM Program. Lang. 8(ICFP), pp. 426-454, 2024. doi:10.1145/3674640 (long version arXiv:2404.02680). Theorem 4.1: every run of the symbolic semantics LLBC# (which may end borrows at arbitrary points through reorganizations, rule E-Reorg: 'it is always possible to end a borrow early, but this may lead to an unnecessarily stuck execution') is matched by the concrete LLBC semantics; proved in the paper, with full proofs in the long version's appendices. Correctness of the functional translation is left to future work and unsafe code is not considered."
+    ],
+    "design_question": "Can a translator decide whether a raw-pointer reborrow pattern is translatable by searching for region end points, and which canonical end points suffice?"
+  }
+]

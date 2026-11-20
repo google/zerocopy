@@ -1,0 +1,6 @@
+name = "toy-backward"
+version = "0.1.0"
+defaultTargets = ["ToyBackward"]
+
+[[lean_lib]]
+name = "ToyBackward"
