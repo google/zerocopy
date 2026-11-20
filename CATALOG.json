@@ -55377,6 +55377,90 @@
         "verification/compiler-verification"
       ]
     },
+    "repr-c-layout-algebra-dst-tails-and-enum-tags": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "path": "src/type-layout.md",
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference (Type layout chapter)"
+        },
+        {
+          "identity": {
+            "path": "text/2195-really-tagged-unions.md",
+            "repository": "rust-lang/rfcs",
+            "revision": "f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4"
+          },
+          "name": "Rust RFC 2195: really_tagged_unions"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly"
+          },
+          "name": "rustc compiler and layout engine (executed cross-check and source)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "4b5350e87e487aed08ab2f9f0160a4b2616438bc"
+          },
+          "name": "rustc compiler layout engine (refactored enum_layout source)"
+        },
+        {
+          "identity": {
+            "path": "cfrontend/Ctypes.v",
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert C struct layout mechanization"
+        },
+        {
+          "identity": {
+            "path": "zerocopy/src/layout.rs",
+            "repository": "google/zerocopy",
+            "revision": "ec133ce4d7993775413d852f91c9e3eb2a2a0897"
+          },
+          "name": "zerocopy DST layout and prefix-cast validator"
+        },
+        {
+          "identity": {
+            "path": "derive/src/traits.rs",
+            "repository": "Lokathor/bytemuck",
+            "revision": "ea3616110b0134e9991fdb66be8892dbc427c5ac"
+          },
+          "name": "bytemuck zero-padding derive assertion"
+        },
+        {
+          "identity": {
+            "path": "spec/lang/types.md",
+            "repository": "minirust/minirust",
+            "revision": "063d784186d3252bee242217f218223205c0b568"
+          },
+          "name": "MiniRust operational semantics type-layout specification"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "pl/memory-layout",
+        "pl/data-representation",
+        "compilers/abi-layout",
+        "verification/type-layout"
+      ]
+    },
     "repr-packed-unaligned-references-slice-dst-alignment-and-cell-projections": {
       "observed_at": "2026-11-20",
       "subjects": [

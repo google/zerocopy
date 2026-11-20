@@ -1,0 +1,59 @@
+Execution Cross-Check Comparison: `rustc` vs `Toy.Layout`
+=========================================================
+Compiler : rustc 1.98.0-nightly (14210df0e27ccd7d9e6a05b8085cbd438e4bbc65, 2026-05-31)
+Targets  : x86_64-unknown-linux-gnu (c_int: size=4 align=4; usize: size=8 align=8)
+           thumbv7m-none-eabi (c_enum_min_bits=8; compile-time const assertions)
+           hexagon-unknown-none-elf (c_enum_min_bits=8; compile-time const assertions)
+Programs : support/crosscheck.rs, support/crosscheck_short_enum.rs
+Outputs  : support/crosscheck_output.txt, support/crosscheck_short_enum_output.txt
+Lean     : Toy/Layout/CrossCheck.lean (theorems xc_01_empty .. xc_20_hexagon_short_enums)
+
+Evidence boundary: The Lean kernel checks only the model's numbers; the rustc numbers
+are transcribed from the recorded program outputs. Primary rustc source citations in the
+package cards point to this exact executed commit (`14210df0e27ccd7d9e6a05b8085cbd438e4bbc65`),
+with post-refactor line references (`4b5350e87e487aed08ab2f9f0160a4b2616438bc`) noted separately.
+
+Part A: `x86_64-unknown-linux-gnu` (`support/crosscheck.rs`, 25 types)
+
+| #   | Rust Type              | rustc Observation                                              | Toy.Layout Theorem                 | Match |
+|-----|------------------------|----------------------------------------------------------------|------------------------------------|-------|
+| 01  | Empty                  | size=0 align=1 offsets=[]                                      | xc_01_empty                        | EXACT |
+| 02  | AscPad                 | size=12 align=4 offsets=[0, 4, 8]                              | xc_02_asc_pad                      | EXACT |
+| 03  | ThreeInts              | size=8 align=4 offsets=[0, 2, 4]                               | xc_03_three_ints                   | EXACT |
+| 04  | TrailPad               | size=4 align=2 offsets=[0, 2]                                  | xc_04_trail_pad                    | EXACT |
+| 05  | U8U16                  | size=4 align=2 offsets=[0, 2]                                  | xc_05_u8_u16                       | EXACT |
+| 06  | ZstMid                 | size=8 align=4 offsets=[0, 4, 4]                               | xc_06_zst_mid                      | EXACT |
+| 07  | Homog                  | size=12 align=4 offsets=[0, 4, 8]                              | xc_07_homog                        | EXACT |
+| 08  | Packed1                | size=7 align=1 offsets=[0, 1, 5]                               | xc_08_packed1                      | EXACT |
+| 09  | Packed2                | size=8 align=2 offsets=[0, 2, 6]                               | xc_09_packed2                      | EXACT |
+| 10  | PackedNoop             | size=12 align=4 offsets=[0, 4, 8]                              | xc_10_packed_noop                  | EXACT |
+| 11  | Aligned8               | size=8 align=8 offsets=[0, 2]                                  | xc_11_aligned8                     | EXACT |
+| 12  | AlignedNoop            | size=12 align=4 offsets=[0, 4, 8]                              | xc_12_aligned_noop                 | EXACT |
+| 13  | SizeRoundedUp          | size=8 align=4 offsets=[0, 0]                                  | xc_13_size_rounded_up_union        | EXACT |
+| 14  | FieldlessC             | size=4 align=4                                                 | xc_14_fieldless_c_enum             | EXACT |
+| 14b | FieldlessCBigDiscr*    | size=8 align=8                                                 | xc_14b_fieldless_c_enum_big_discr  | EXACT |
+| 15  | EnumC                  | size=8 align=4 variant0_offsets=[4]                            | xc_15_enum_c                       | EXACT |
+| 16  | RefEnum                | size=24 align=8 variant_offsets=[[8], [8, 16], [8, 12], []]    | xc_16_ref_enum                     | EXACT |
+| 17a | EnumCU8                | size=6 align=2 variantA_offsets=[2, 4]                         | xc_17a_enum_c_u8                   | EXACT |
+| 17b | EnumU8                 | size=4 align=2 variantA_offsets=[1, 2]                         | xc_17b_enum_u8                     | EXACT |
+| 18a | DstTrailPad            | tail_offset=4 align=4 sizes_0_to_5=[4, 8, 8, 8, 8, 12]         | xc_18a_dst_trail_pad               | EXACT |
+| 18b | DstUnalignedOff        | tail_offset=3 align=2 sizes_0_to_5=[4, 4, 6, 6, 8, 8]          | xc_18b_dst_unaligned_off           | EXACT |
+| 18c | DstPacked1             | tail_offset=4 align=1 sizes_0_to_3=[4, 5, 6, 7]                | xc_18c_dst_packed1                 | EXACT |
+| 18d | DstPacked2             | tail_offset=2 align=2 sizes_0_to_3=[2, 6, 10, 14]              | xc_18d_dst_packed2                 | EXACT |
+| 18e | DstAlign4Elem3         | tail_offset=1 align=4 sizes_0_to_4=[4, 4, 8, 12, 16]           | xc_18e_dst_align4_elem3            | EXACT |
+| 18f | DstUnalignedOffElem2   | tail_offset=3 align=2 sizes_0_to_3=[4, 6, 8, 10]               | xc_18f_dst_unaligned_off_elem2     | EXACT |
+
+Part B: `thumbv7m-none-eabi` & `hexagon-unknown-none-elf` (`support/crosscheck_short_enum.rs`, 3 types x 2 targets)
+
+| #   | Target                   | Rust Type      | rustc Const Assert        | Toy.Layout Theorem         | Match |
+|-----|--------------------------|----------------|---------------------------|----------------------------|-------|
+| 19a | thumbv7m-none-eabi       | FieldlessC     | size=1 align=1            | xc_19_thumb_short_enums    | EXACT |
+| 19b | thumbv7m-none-eabi       | FieldlessC256  | size=2 align=2            | xc_19_thumb_short_enums    | EXACT |
+| 19c | thumbv7m-none-eabi       | EnumC          | size=2 align=1            | xc_19_thumb_short_enums    | EXACT |
+| 20a | hexagon-unknown-none-elf | FieldlessC     | size=1 align=1            | xc_20_hexagon_short_enums  | EXACT |
+| 20b | hexagon-unknown-none-elf | FieldlessC256  | size=2 align=2            | xc_20_hexagon_short_enums  | EXACT |
+| 20c | hexagon-unknown-none-elf | EnumC          | size=2 align=1            | xc_20_hexagon_short_enums  | EXACT |
+
+Total: 31/31 exact matches (25 on x86_64-unknown-linux-gnu + 6 across thumbv7m-none-eabi and hexagon-unknown-none-elf), 0 mismatches.
+Negative control on thumbv7m-none-eabi (`size_of::<EnumC>() == 8`) failed with E0308 ("expected an array with a size of 8, found one with a size of 2").
+*Note on 14b (`FieldlessCBigDiscr`): discriminants outside C `int` / `unsigned int` are non-conforming per `r[layout.repr.c.enum.discriminant]`; `rustc` accepts them only under the future-incompatibility lint `repr_c_enums_larger_than_int` (tracking issue rust-lang/rust#124403), silenced via `#[allow]` in `support/crosscheck.rs`.

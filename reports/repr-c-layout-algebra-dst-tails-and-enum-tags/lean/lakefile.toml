@@ -1,0 +1,6 @@
+name = "repr_c_layout_algebra"
+version = "0.1.0"
+defaultTargets = ["Toy"]
+
+[[lean_lib]]
+name = "Toy"

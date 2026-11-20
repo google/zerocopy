@@ -1,0 +1,1049 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Layout.AlignIsMaxEffective": [],
+    "Toy.Layout.AlignPos": [],
+    "Toy.Layout.AlignPos.eq_1": [],
+    "Toy.Layout.AlignPow2": [],
+    "Toy.Layout.AllBytesOccupied": [],
+    "Toy.Layout.CEnumTarget": [],
+    "Toy.Layout.CEnumTarget.cEnumMinBytes": [],
+    "Toy.Layout.CEnumTarget.casesOn": [],
+    "Toy.Layout.CEnumTarget.ctorIdx": [],
+    "Toy.Layout.CEnumTarget.intLayout": [],
+    "Toy.Layout.CEnumTarget.mk": [],
+    "Toy.Layout.CEnumTarget.mk.inj": [],
+    "Toy.Layout.CEnumTarget.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Layout.CEnumTarget.mk.noConfusion": [],
+    "Toy.Layout.CEnumTarget.mk.sizeOf_spec": [],
+    "Toy.Layout.CEnumTarget.noConfusion": [],
+    "Toy.Layout.CEnumTarget.noConfusionType": [],
+    "Toy.Layout.CEnumTarget.rec": [],
+    "Toy.Layout.CEnumTarget.recOn": [],
+    "Toy.Layout.EndOffsetExact": [],
+    "Toy.Layout.EndOffsetExact.eq_1": [],
+    "Toy.Layout.EndOffsetExact.match_1": [],
+    "Toy.Layout.EnumAlignValid": [],
+    "Toy.Layout.EnumLayout": [],
+    "Toy.Layout.EnumLayout.align": [],
+    "Toy.Layout.EnumLayout.casesOn": [],
+    "Toy.Layout.EnumLayout.ctorIdx": [],
+    "Toy.Layout.EnumLayout.mk": [],
+    "Toy.Layout.EnumLayout.mk.inj": [],
+    "Toy.Layout.EnumLayout.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Layout.EnumLayout.mk.noConfusion": [],
+    "Toy.Layout.EnumLayout.mk.sizeOf_spec": [],
+    "Toy.Layout.EnumLayout.noConfusion": [],
+    "Toy.Layout.EnumLayout.noConfusionType": [],
+    "Toy.Layout.EnumLayout.rec": [],
+    "Toy.Layout.EnumLayout.recOn": [],
+    "Toy.Layout.EnumLayout.size": [],
+    "Toy.Layout.EnumLayout.tagOffset": [],
+    "Toy.Layout.EnumLayout.variantFieldOffsets": [],
+    "Toy.Layout.EnumPerVariantTagged": [],
+    "Toy.Layout.EnumSharedPayload": [],
+    "Toy.Layout.EnumSizeValid": [],
+    "Toy.Layout.EnumTagAtZero": [],
+    "Toy.Layout.EnumTagAtZero.eq_1": [],
+    "Toy.Layout.EnumVariantsValid": [],
+    "Toy.Layout.FieldLayout": [],
+    "Toy.Layout.FieldLayout.align": [],
+    "Toy.Layout.FieldLayout.casesOn": [],
+    "Toy.Layout.FieldLayout.ctorIdx": [],
+    "Toy.Layout.FieldLayout.mk": [],
+    "Toy.Layout.FieldLayout.mk.inj": [],
+    "Toy.Layout.FieldLayout.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Layout.FieldLayout.mk.noConfusion": [],
+    "Toy.Layout.FieldLayout.mk.sizeOf_spec": [],
+    "Toy.Layout.FieldLayout.noConfusion": [],
+    "Toy.Layout.FieldLayout.noConfusionType": [],
+    "Toy.Layout.FieldLayout.rec": [],
+    "Toy.Layout.FieldLayout.recOn": [],
+    "Toy.Layout.FieldLayout.size": [],
+    "Toy.Layout.FieldsDisjoint": [],
+    "Toy.Layout.FieldsInBounds": [],
+    "Toy.Layout.IsLeastMultipleGe": [],
+    "Toy.Layout.IsMaxFittingElems": [],
+    "Toy.Layout.IsPowerOfTwo": [],
+    "Toy.Layout.ModifierPackPos": [],
+    "Toy.Layout.ModifierPow2": [],
+    "Toy.Layout.OffsetsAligned": [],
+    "Toy.Layout.OffsetsGreedyMinimal": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.OffsetsLengthMatch": [],
+    "Toy.Layout.OffsetsLengthMatch.eq_1": [],
+    "Toy.Layout.OffsetsMonotone": [],
+    "Toy.Layout.OrderedNonOverlapping": [],
+    "Toy.Layout.ReprModifier": [],
+    "Toy.Layout.ReprModifier.aligned": [],
+    "Toy.Layout.ReprModifier.aligned.elim": [],
+    "Toy.Layout.ReprModifier.aligned.inj": [],
+    "Toy.Layout.ReprModifier.aligned.injEq": [
+      "propext"
+    ],
+    "Toy.Layout.ReprModifier.aligned.noConfusion": [],
+    "Toy.Layout.ReprModifier.aligned.sizeOf_spec": [],
+    "Toy.Layout.ReprModifier.casesOn": [],
+    "Toy.Layout.ReprModifier.ctorElim": [],
+    "Toy.Layout.ReprModifier.ctorElimType": [],
+    "Toy.Layout.ReprModifier.ctorIdx": [],
+    "Toy.Layout.ReprModifier.noConfusion": [],
+    "Toy.Layout.ReprModifier.noConfusionType": [],
+    "Toy.Layout.ReprModifier.none": [],
+    "Toy.Layout.ReprModifier.none.elim": [],
+    "Toy.Layout.ReprModifier.none.sizeOf_spec": [],
+    "Toy.Layout.ReprModifier.packed": [],
+    "Toy.Layout.ReprModifier.packed.elim": [],
+    "Toy.Layout.ReprModifier.packed.inj": [],
+    "Toy.Layout.ReprModifier.packed.injEq": [
+      "propext"
+    ],
+    "Toy.Layout.ReprModifier.packed.noConfusion": [],
+    "Toy.Layout.ReprModifier.packed.sizeOf_spec": [],
+    "Toy.Layout.ReprModifier.rec": [],
+    "Toy.Layout.ReprModifier.recOn": [],
+    "Toy.Layout.SizeMinimalAligned": [],
+    "Toy.Layout.SizeMultipleOfAlign": [],
+    "Toy.Layout.SliceDstSpec": [],
+    "Toy.Layout.SliceDstSpec.casesOn": [],
+    "Toy.Layout.SliceDstSpec.ctorIdx": [],
+    "Toy.Layout.SliceDstSpec.elem": [],
+    "Toy.Layout.SliceDstSpec.headFields": [],
+    "Toy.Layout.SliceDstSpec.mk": [],
+    "Toy.Layout.SliceDstSpec.mk.inj": [],
+    "Toy.Layout.SliceDstSpec.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Layout.SliceDstSpec.mk.noConfusion": [],
+    "Toy.Layout.SliceDstSpec.mk.sizeOf_spec": [],
+    "Toy.Layout.SliceDstSpec.modifier": [],
+    "Toy.Layout.SliceDstSpec.noConfusion": [],
+    "Toy.Layout.SliceDstSpec.noConfusionType": [],
+    "Toy.Layout.SliceDstSpec.rec": [],
+    "Toy.Layout.SliceDstSpec.recOn": [],
+    "Toy.Layout.StructLayout": [],
+    "Toy.Layout.StructLayout.align": [],
+    "Toy.Layout.StructLayout.casesOn": [],
+    "Toy.Layout.StructLayout.ctorIdx": [],
+    "Toy.Layout.StructLayout.endOffset": [],
+    "Toy.Layout.StructLayout.mk": [],
+    "Toy.Layout.StructLayout.mk.inj": [],
+    "Toy.Layout.StructLayout.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Layout.StructLayout.mk.noConfusion": [],
+    "Toy.Layout.StructLayout.mk.sizeOf_spec": [],
+    "Toy.Layout.StructLayout.noConfusion": [],
+    "Toy.Layout.StructLayout.noConfusionType": [],
+    "Toy.Layout.StructLayout.offsets": [],
+    "Toy.Layout.StructLayout.rec": [],
+    "Toy.Layout.StructLayout.recOn": [],
+    "Toy.Layout.StructLayout.size": [],
+    "Toy.Layout.UnionLayout": [],
+    "Toy.Layout.UnionLayout.align": [],
+    "Toy.Layout.UnionLayout.casesOn": [],
+    "Toy.Layout.UnionLayout.ctorIdx": [],
+    "Toy.Layout.UnionLayout.mk": [],
+    "Toy.Layout.UnionLayout.mk.inj": [],
+    "Toy.Layout.UnionLayout.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Layout.UnionLayout.mk.noConfusion": [],
+    "Toy.Layout.UnionLayout.mk.sizeOf_spec": [],
+    "Toy.Layout.UnionLayout.noConfusion": [],
+    "Toy.Layout.UnionLayout.noConfusionType": [],
+    "Toy.Layout.UnionLayout.rec": [],
+    "Toy.Layout.UnionLayout.recOn": [],
+    "Toy.Layout.UnionLayout.size": [],
+    "Toy.Layout.alignPow2_to_alignPos": [],
+    "Toy.Layout.alignUp": [],
+    "Toy.Layout.alignUp.eq_1": [],
+    "Toy.Layout.alignUp_add_of_dvd_left": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.alignUp_alignUp_of_dvd": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.alignUp_eq_self_of_dvd": [
+      "propext"
+    ],
+    "Toy.Layout.alignUp_isLeastMultipleGe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.alignUp_le_iff_le_roundDown": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.alignUp_le_of_dvd": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.alignUp_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.alignUp_one": [
+      "propext"
+    ],
+    "Toy.Layout.alignUp_packed_one_eff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.alignUp_zero": [
+      "propext"
+    ],
+    "Toy.Layout.cEnumTagBytes": [],
+    "Toy.Layout.cEnumTagBytes.eq_1": [],
+    "Toy.Layout.cEnumTagLayout": [],
+    "Toy.Layout.cEnumTagLayout.eq_1": [],
+    "Toy.Layout.cEnumTagThumbV7m": [],
+    "Toy.Layout.cEnumTagX86_64": [],
+    "Toy.Layout.cEnumTagX86_64.eq_1": [],
+    "Toy.Layout.cIntLayout32Bit": [],
+    "Toy.Layout.ce_aligned_size_drop_fields_pow2": [],
+    "Toy.Layout.ce_aligned_size_drop_n_pow2": [
+      "propext"
+    ],
+    "Toy.Layout.ce_dst_trailing_padding_breaks_naive_prefix_cast": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ce_heterogeneous_u16_u8_has_trailing_padding": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ce_heterogeneous_u16_u8_has_trailing_padding.match_1_1": [],
+    "Toy.Layout.ce_heterogeneous_u8_u16_has_padding": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ce_homogeneous_no_padding_iff_drop_align_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ce_maxSliceElems_none_drop_elem_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ce_naive_agrees_fails_short_buffer": [
+      "propext"
+    ],
+    "Toy.Layout.ce_naive_agrees_fails_zst": [
+      "propext"
+    ],
+    "Toy.Layout.ce_packed_noop_drop_ge": [],
+    "Toy.Layout.ce_reprCEnum_align_drop_tag_pow2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ce_reprCEnum_align_drop_tag_pow2.match_1_1": [],
+    "Toy.Layout.ce_reprCEnum_align_drop_vars_pow2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ce_reprCEnum_align_drop_vars_pow2.match_1_1": [],
+    "Toy.Layout.ce_reprCEnum_geometry_drop_vars_pow2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ce_reprCEnum_geometry_drop_vars_pow2.match_1_1": [],
+    "Toy.Layout.ce_reprCEnum_tag_sizing_divergence": [],
+    "Toy.Layout.ce_reprCEnum_tag_sizing_divergence_aligns": [],
+    "Toy.Layout.ce_reprCStruct_align_dvd_drop_fields_pow2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ce_reprCStruct_align_dvd_drop_fields_pow2.match_1_1": [],
+    "Toy.Layout.ce_reprCStruct_align_dvd_drop_mod_pow2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ce_reprCStruct_align_dvd_drop_mod_pow2.match_1_1": [],
+    "Toy.Layout.ce_reprCStruct_eq_iff_drop_fields_align_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ce_reprCStruct_eq_iff_drop_pack_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ce_reprCStruct_invariants_drop_fields_align_pos": [
+      "propext"
+    ],
+    "Toy.Layout.ce_reprCStruct_invariants_drop_fields_align_pos.match_1_1": [],
+    "Toy.Layout.ce_reprCStruct_invariants_drop_pack_pos": [
+      "propext"
+    ],
+    "Toy.Layout.ce_reprCStruct_invariants_drop_pack_pos.match_1_1": [],
+    "Toy.Layout.ce_reprIntEnum_align_eq_drop_nonempty": [],
+    "Toy.Layout.ce_reprIntEnum_geometry_drop_nonempty": [
+      "propext"
+    ],
+    "Toy.Layout.ce_reprIntEnum_geometry_drop_nonempty.match_1_1": [],
+    "Toy.Layout.ce_reprIntEnum_geometry_drop_nonempty.match_1_3": [],
+    "Toy.Layout.ce_reprIntEnum_geometry_drop_vars_align_pos": [
+      "propext"
+    ],
+    "Toy.Layout.ce_reprIntEnum_geometry_drop_vars_align_pos.match_1_1": [],
+    "Toy.Layout.ce_reprIntEnum_lt_reprCEnum_u8": [],
+    "Toy.Layout.ce_reprInt_le_reprC_drop_tag_pow2": [
+      "propext"
+    ],
+    "Toy.Layout.ce_reprInt_le_reprC_drop_vars_pow2": [],
+    "Toy.Layout.cursor_le_placeFields_end": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.cursor_le_placeFields_getElem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.dstAlign": [],
+    "Toy.Layout.dstInstantiated": [],
+    "Toy.Layout.dstInstantiated_eq_closed_form": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.dstSize": [],
+    "Toy.Layout.dstSize.eq_1": [],
+    "Toy.Layout.dstSize_eq_phase_normal_form": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.dstSize_eq_unphased_normal_form_of_dvd": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.dstTailOffset": [],
+    "Toy.Layout.dstTailOffset.match_1": [],
+    "Toy.Layout.dstTrailingPadding": [],
+    "Toy.Layout.dst_no_trailing_padding_all_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.dvd_alignUp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.dvd_roundDown": [
+      "propext"
+    ],
+    "Toy.Layout.effFieldAlign": [],
+    "Toy.Layout.effFieldAlign.eq_1": [],
+    "Toy.Layout.effFieldAlign.eq_2": [],
+    "Toy.Layout.effFieldAlign.eq_3": [],
+    "Toy.Layout.effFieldAlign.match_1": [],
+    "Toy.Layout.effFieldAlign_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.effFieldAlign_pow2": [
+      "propext"
+    ],
+    "Toy.Layout.ex_alignIsMaxEffective_neg_too_large": [
+      "propext"
+    ],
+    "Toy.Layout.ex_alignIsMaxEffective_neg_too_large.match_1_1": [],
+    "Toy.Layout.ex_alignIsMaxEffective_neg_too_small": [
+      "propext"
+    ],
+    "Toy.Layout.ex_alignIsMaxEffective_neg_too_small.match_1_1": [],
+    "Toy.Layout.ex_alignIsMaxEffective_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ex_alignPos_neg": [
+      "propext"
+    ],
+    "Toy.Layout.ex_alignPos_pos": [
+      "propext"
+    ],
+    "Toy.Layout.ex_alignPow2_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ex_alignPow2_pos": [],
+    "Toy.Layout.ex_alignUp_neg": [],
+    "Toy.Layout.ex_alignUp_pos_aligned": [],
+    "Toy.Layout.ex_alignUp_pos_unaligned": [],
+    "Toy.Layout.ex_allBytesOccupied_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ex_allBytesOccupied_neg.match_1_1": [],
+    "Toy.Layout.ex_allBytesOccupied_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ex_cEnumTagBytes_neg_thumb_not_4": [],
+    "Toy.Layout.ex_cEnumTagBytes_pos_thumb": [],
+    "Toy.Layout.ex_cEnumTagBytes_pos_x86_64": [],
+    "Toy.Layout.ex_cEnumTagLayout_neg_thumb_not_c_int": [],
+    "Toy.Layout.ex_cEnumTagLayout_pos_thumb": [],
+    "Toy.Layout.ex_cEnumTagLayout_pos_x86_64": [],
+    "Toy.Layout.ex_cEnumTagLayout_pos_x86_64_large_discr": [],
+    "Toy.Layout.ex_cEnumTarget_neg_thumb_min_not_4": [],
+    "Toy.Layout.ex_cEnumTarget_pos_x86_64_min": [],
+    "Toy.Layout.ex_dstSize_neg_unaligned": [],
+    "Toy.Layout.ex_dstSize_pos": [],
+    "Toy.Layout.ex_effFieldAlign_neg_packed_unchanged": [],
+    "Toy.Layout.ex_effFieldAlign_pos_aligned": [],
+    "Toy.Layout.ex_effFieldAlign_pos_packed": [],
+    "Toy.Layout.ex_endOffsetExact_neg": [
+      "propext"
+    ],
+    "Toy.Layout.ex_endOffsetExact_pos": [],
+    "Toy.Layout.ex_enumAlignValid_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ex_enumAlignValid_neg.match_1_1": [],
+    "Toy.Layout.ex_enumAlignValid_pos": [
+      "propext"
+    ],
+    "Toy.Layout.ex_enumPerVariantTagged_neg_padded": [],
+    "Toy.Layout.ex_enumPerVariantTagged_neg_padded.match_1_1": [],
+    "Toy.Layout.ex_enumPerVariantTagged_neg_reprC": [],
+    "Toy.Layout.ex_enumPerVariantTagged_neg_reprC.match_1_1": [],
+    "Toy.Layout.ex_enumPerVariantTagged_pos": [],
+    "Toy.Layout.ex_enumSharedPayload_neg_padded": [],
+    "Toy.Layout.ex_enumSharedPayload_neg_padded.match_1_1": [],
+    "Toy.Layout.ex_enumSharedPayload_neg_reprInt": [],
+    "Toy.Layout.ex_enumSharedPayload_neg_reprInt.match_1_1": [],
+    "Toy.Layout.ex_enumSharedPayload_pos": [],
+    "Toy.Layout.ex_enumSizeValid_neg": [
+      "propext"
+    ],
+    "Toy.Layout.ex_enumSizeValid_neg.match_1_1": [],
+    "Toy.Layout.ex_enumSizeValid_pos": [],
+    "Toy.Layout.ex_enumTagAtZero_neg": [
+      "propext"
+    ],
+    "Toy.Layout.ex_enumTagAtZero_pos": [],
+    "Toy.Layout.ex_enumVariantsValid_neg_misaligned": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ex_enumVariantsValid_neg_misaligned.match_1_1": [],
+    "Toy.Layout.ex_enumVariantsValid_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ex_enumVariantsValid_pos.match_1_1": [],
+    "Toy.Layout.ex_enumVariantsValid_pos.match_1_3": [],
+    "Toy.Layout.ex_fieldsDisjoint_neg": [
+      "propext"
+    ],
+    "Toy.Layout.ex_fieldsDisjoint_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ex_fieldsDisjoint_pos.match_1_1": [],
+    "Toy.Layout.ex_fieldsInBounds_neg": [
+      "propext"
+    ],
+    "Toy.Layout.ex_fieldsInBounds_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ex_fieldsInBounds_pos.match_1_1": [],
+    "Toy.Layout.ex_fitsSignedBytes_neg": [],
+    "Toy.Layout.ex_fitsSignedBytes_pos": [],
+    "Toy.Layout.ex_fitsUnsignedBytes_neg": [],
+    "Toy.Layout.ex_fitsUnsignedBytes_pos": [],
+    "Toy.Layout.ex_homogeneous_non_dvd_has_padding": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ex_homogeneous_non_dvd_has_padding.match_1_2": [],
+    "Toy.Layout.ex_isLeastMultipleGe_neg_not_minimal": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ex_isLeastMultipleGe_neg_not_minimal.match_1_1": [],
+    "Toy.Layout.ex_isLeastMultipleGe_neg_not_multiple": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ex_isLeastMultipleGe_neg_not_multiple.match_1_1": [],
+    "Toy.Layout.ex_isLeastMultipleGe_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ex_isMaxFittingElems_neg_not_max": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ex_isMaxFittingElems_neg_not_max.match_1_1": [],
+    "Toy.Layout.ex_isMaxFittingElems_neg_overflows_buf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ex_isMaxFittingElems_neg_overflows_buf.match_1_1": [],
+    "Toy.Layout.ex_isMaxFittingElems_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ex_isPowerOfTwo_neg_0": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ex_isPowerOfTwo_neg_3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ex_isPowerOfTwo_neg_3.match_1_1": [],
+    "Toy.Layout.ex_isPowerOfTwo_neg_6": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ex_isPowerOfTwo_neg_6.match_1_1": [],
+    "Toy.Layout.ex_isPowerOfTwo_pos_1": [],
+    "Toy.Layout.ex_isPowerOfTwo_pos_4": [],
+    "Toy.Layout.ex_isPowerOfTwo_pos_8": [],
+    "Toy.Layout.ex_maxSliceElems_neg_naive": [],
+    "Toy.Layout.ex_maxSliceElems_pos_none": [],
+    "Toy.Layout.ex_maxSliceElems_pos_some": [],
+    "Toy.Layout.ex_minFittingIntBytes_neg_large_not_4": [],
+    "Toy.Layout.ex_minFittingIntBytes_pos_large64": [],
+    "Toy.Layout.ex_minFittingIntBytes_pos_signed_i16": [],
+    "Toy.Layout.ex_minFittingIntBytes_pos_small": [],
+    "Toy.Layout.ex_modifierPackPos_neg_packed0": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ex_modifierPackPos_pos_none": [],
+    "Toy.Layout.ex_modifierPackPos_pos_packed": [],
+    "Toy.Layout.ex_modifierPow2_neg_aligned": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ex_modifierPow2_neg_packed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ex_modifierPow2_pos_aligned": [],
+    "Toy.Layout.ex_offsetsAligned_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ex_offsetsAligned_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ex_offsetsAligned_pos.match_1_1": [],
+    "Toy.Layout.ex_offsetsGreedyMinimal_neg_extra_pad": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ex_offsetsGreedyMinimal_neg_extra_pad.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ex_offsetsGreedyMinimal_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ex_offsetsGreedyMinimal_pos.match_1_5": [],
+    "Toy.Layout.ex_offsetsLengthMatch_neg": [
+      "propext"
+    ],
+    "Toy.Layout.ex_offsetsLengthMatch_pos": [],
+    "Toy.Layout.ex_offsetsMonotone_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ex_offsetsMonotone_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ex_offsetsMonotone_pos.match_1_1": [],
+    "Toy.Layout.ex_orderedNonOverlapping_neg": [
+      "propext"
+    ],
+    "Toy.Layout.ex_orderedNonOverlapping_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ex_orderedNonOverlapping_pos.match_1_1": [],
+    "Toy.Layout.ex_packed_non_pow2_increases_size": [],
+    "Toy.Layout.ex_paddingNeeded_neg": [],
+    "Toy.Layout.ex_paddingNeeded_pos": [],
+    "Toy.Layout.ex_paddingNeeded_zero": [],
+    "Toy.Layout.ex_reprCEnumForTarget_neg_thumb_not_8": [],
+    "Toy.Layout.ex_reprCEnumForTarget_pos_thumb": [],
+    "Toy.Layout.ex_reprCEnum_neg_not_packed_after_tag": [],
+    "Toy.Layout.ex_reprCEnum_pos_reference_enum": [],
+    "Toy.Layout.ex_reprCStruct_neg_no_padding_assumed": [],
+    "Toy.Layout.ex_reprCStruct_pos_three_ints": [],
+    "Toy.Layout.ex_reprCUnion_neg_unrounded": [],
+    "Toy.Layout.ex_reprCUnion_pos_rounded": [],
+    "Toy.Layout.ex_reprIntEnum_neg_not_reprC_u8": [],
+    "Toy.Layout.ex_reprIntEnum_pos_u8_packs_after_tag": [],
+    "Toy.Layout.ex_roundDown_neg": [],
+    "Toy.Layout.ex_roundDown_pos": [],
+    "Toy.Layout.ex_sizeMinimalAligned_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ex_sizeMinimalAligned_neg.match_1_1": [],
+    "Toy.Layout.ex_sizeMinimalAligned_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ex_sizeMultipleOfAlign_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.ex_sizeMultipleOfAlign_pos": [],
+    "Toy.Layout.ex_totalFieldSize_neg": [],
+    "Toy.Layout.ex_totalFieldSize_pos": [],
+    "Toy.Layout.fieldsMaxAlign": [],
+    "Toy.Layout.fieldsMaxAlign.eq_1": [],
+    "Toy.Layout.fitsSignedBytes": [],
+    "Toy.Layout.fitsSignedBytes.eq_1": [],
+    "Toy.Layout.fitsUnsignedBytes": [],
+    "Toy.Layout.fitsUnsignedBytes.eq_1": [],
+    "Toy.Layout.foldl_max_ge_init_gen": [
+      "propext"
+    ],
+    "Toy.Layout.foldl_max_ge_mem_gen": [
+      "propext"
+    ],
+    "Toy.Layout.foldl_max_le_gen": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.foldl_max_pow2_gen": [
+      "propext"
+    ],
+    "Toy.Layout.instBEqEnumLayout": [],
+    "Toy.Layout.instBEqEnumLayout.beq": [],
+    "Toy.Layout.instBEqEnumLayout.beq.match_1": [],
+    "Toy.Layout.instBEqFieldLayout": [],
+    "Toy.Layout.instBEqFieldLayout.beq": [],
+    "Toy.Layout.instBEqFieldLayout.beq.match_1": [],
+    "Toy.Layout.instBEqReprModifier": [
+      "propext"
+    ],
+    "Toy.Layout.instBEqReprModifier.beq": [
+      "propext"
+    ],
+    "Toy.Layout.instBEqReprModifier.beq.match_1": [
+      "propext"
+    ],
+    "Toy.Layout.instBEqSliceDstSpec": [
+      "propext"
+    ],
+    "Toy.Layout.instBEqSliceDstSpec.beq": [
+      "propext"
+    ],
+    "Toy.Layout.instBEqSliceDstSpec.beq.match_1": [],
+    "Toy.Layout.instBEqStructLayout": [],
+    "Toy.Layout.instBEqStructLayout.beq": [],
+    "Toy.Layout.instBEqStructLayout.beq.match_1": [],
+    "Toy.Layout.instBEqUnionLayout": [],
+    "Toy.Layout.instBEqUnionLayout.beq": [],
+    "Toy.Layout.instBEqUnionLayout.beq.match_1": [],
+    "Toy.Layout.instDecidableEqEnumLayout": [],
+    "Toy.Layout.instDecidableEqEnumLayout.decEq": [],
+    "Toy.Layout.instDecidableEqEnumLayout.decEq.match_1": [],
+    "Toy.Layout.instDecidableEqFieldLayout": [],
+    "Toy.Layout.instDecidableEqFieldLayout.decEq": [],
+    "Toy.Layout.instDecidableEqFieldLayout.decEq.match_1": [],
+    "Toy.Layout.instDecidableEqReprModifier": [],
+    "Toy.Layout.instDecidableEqReprModifier.decEq": [],
+    "Toy.Layout.instDecidableEqReprModifier.decEq.match_1": [],
+    "Toy.Layout.instDecidableEqSliceDstSpec": [],
+    "Toy.Layout.instDecidableEqSliceDstSpec.decEq": [],
+    "Toy.Layout.instDecidableEqSliceDstSpec.decEq.match_1": [],
+    "Toy.Layout.instDecidableEqStructLayout": [],
+    "Toy.Layout.instDecidableEqStructLayout.decEq": [],
+    "Toy.Layout.instDecidableEqStructLayout.decEq.match_1": [],
+    "Toy.Layout.instDecidableEqUnionLayout": [],
+    "Toy.Layout.instDecidableEqUnionLayout.decEq": [],
+    "Toy.Layout.instDecidableEqUnionLayout.decEq.match_1": [],
+    "Toy.Layout.instReprEnumLayout": [
+      "propext"
+    ],
+    "Toy.Layout.instReprEnumLayout.repr": [
+      "propext"
+    ],
+    "Toy.Layout.instReprFieldLayout": [],
+    "Toy.Layout.instReprFieldLayout.repr": [],
+    "Toy.Layout.instReprReprModifier": [],
+    "Toy.Layout.instReprReprModifier.repr": [],
+    "Toy.Layout.instReprReprModifier.repr.match_1": [],
+    "Toy.Layout.instReprSliceDstSpec": [
+      "propext"
+    ],
+    "Toy.Layout.instReprSliceDstSpec.repr": [
+      "propext"
+    ],
+    "Toy.Layout.instReprStructLayout": [
+      "propext"
+    ],
+    "Toy.Layout.instReprStructLayout.repr": [
+      "propext"
+    ],
+    "Toy.Layout.instReprUnionLayout": [],
+    "Toy.Layout.instReprUnionLayout.repr": [],
+    "Toy.Layout.isLeastMultipleGe_unique": [],
+    "Toy.Layout.isPowerOfTwo_dvd_of_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.isPowerOfTwo_max": [
+      "propext"
+    ],
+    "Toy.Layout.isPowerOfTwo_min": [
+      "propext"
+    ],
+    "Toy.Layout.isPowerOfTwo_pos": [],
+    "Toy.Layout.le_alignUp": [],
+    "Toy.Layout.le_roundDown_of_dvd": [
+      "propext"
+    ],
+    "Toy.Layout.maxSliceElems": [],
+    "Toy.Layout.maxSliceElems_eq_naive_of_no_trailing_padding": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.maxSliceElems_eq_phase_normal_form_capacity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.maxSliceElems_none_iff_of_elem_size_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.maxSliceElems_some_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.minFittingIntBytes": [],
+    "Toy.Layout.minFittingIntBytes.eq_1": [],
+    "Toy.Layout.modifierPow2_to_packPos": [],
+    "Toy.Layout.nv_dstInstantiated_eq_closed_form": [],
+    "Toy.Layout.nv_dst_no_trailing_padding_all_iff": [],
+    "Toy.Layout.nv_maxSliceElems_none_iff_of_elem_size_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.nv_maxSliceElems_some_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.nv_reprCEnum_align_valid_of_pow2": [
+      "propext"
+    ],
+    "Toy.Layout.nv_reprCEnum_geometry_of_vars_pow2": [
+      "propext"
+    ],
+    "Toy.Layout.nv_reprCStruct_align_pow2_divides": [
+      "propext"
+    ],
+    "Toy.Layout.nv_reprCStruct_aligned_preserves_offsets": [],
+    "Toy.Layout.nv_reprCStruct_aligned_size_eq_alignUp_base_size_of_pow2": [
+      "propext"
+    ],
+    "Toy.Layout.nv_reprCStruct_eq_iff_of_align_pos": [
+      "propext"
+    ],
+    "Toy.Layout.nv_reprCStruct_homogeneous_no_padding_iff_of_align_pos": [
+      "propext"
+    ],
+    "Toy.Layout.nv_reprCStruct_invariants_of_align_pos": [
+      "propext"
+    ],
+    "Toy.Layout.nv_reprCStruct_no_padding_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.nv_reprCStruct_packed_align_le": [],
+    "Toy.Layout.nv_reprCStruct_packed_ge_fields_noop": [
+      "propext"
+    ],
+    "Toy.Layout.nv_reprCStruct_packed_one_no_padding": [],
+    "Toy.Layout.nv_reprIntEnum_align_eq_reprCEnum_align_of_nonempty": [],
+    "Toy.Layout.nv_reprIntEnum_geometry_of_nonempty_align_pos": [
+      "propext"
+    ],
+    "Toy.Layout.nv_reprIntEnum_size_le_reprCEnum_size_of_pow2": [
+      "propext"
+    ],
+    "Toy.Layout.nv_zst_tail_no_max_fitting_elems": [],
+    "Toy.Layout.orderedNonOverlapping_implies_monotone_and_disjoint": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.orderedNonOverlapping_without_length_not_monotone": [
+      "propext"
+    ],
+    "Toy.Layout.overlappingUnionLayout": [],
+    "Toy.Layout.paddingNeeded": [],
+    "Toy.Layout.paddingNeeded.eq_1": [],
+    "Toy.Layout.pc_zst_tail_no_max_fitting_elems": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.placeFields": [],
+    "Toy.Layout.placeFields.eq_1": [],
+    "Toy.Layout.placeFields.eq_2": [],
+    "Toy.Layout.placeFields.eq_def": [],
+    "Toy.Layout.placeFields.match_1": [],
+    "Toy.Layout.placeFields.match_3": [],
+    "Toy.Layout.placeFields_aligned": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.placeFields_cons": [
+      "propext"
+    ],
+    "Toy.Layout.placeFields_endOffsetExact": [
+      "propext"
+    ],
+    "Toy.Layout.placeFields_end_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.placeFields_inBounds": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.placeFields_length": [
+      "propext"
+    ],
+    "Toy.Layout.placeFields_orderedNonOverlapping": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.placeFields_shift_of_dvd": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.placeFields_step": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.reprCEnum": [],
+    "Toy.Layout.reprCEnum.eq_1": [],
+    "Toy.Layout.reprCEnumForTarget": [],
+    "Toy.Layout.reprCEnum_align_valid_of_pow2": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.reprCEnum_geometry_of_vars_pow2": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.reprCEnum_tagOffset_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.reprCStruct": [],
+    "Toy.Layout.reprCStruct.eq_1": [],
+    "Toy.Layout.reprCStruct_alignIsMaxEffective": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.reprCStruct_align_pow2_divides": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.reprCStruct_aligned_preserves_offsets": [
+      "propext"
+    ],
+    "Toy.Layout.reprCStruct_aligned_size_eq_alignUp_base_size_of_pow2": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.reprCStruct_eq_iff_of_align_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.reprCStruct_eq_parts": [],
+    "Toy.Layout.reprCStruct_homogeneous_no_padding_iff_of_align_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.reprCStruct_invariants_of_align_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.reprCStruct_no_padding_iff_size_eq_sum": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.reprCStruct_packed_align_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.reprCStruct_packed_ge_fields_noop": [
+      "propext"
+    ],
+    "Toy.Layout.reprCStruct_packed_one_no_padding": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.reprCStruct_sizeMinimalAligned": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.reprCUnion": [],
+    "Toy.Layout.reprCUnion.eq_1": [],
+    "Toy.Layout.reprIntEnum": [],
+    "Toy.Layout.reprIntEnum.eq_1": [],
+    "Toy.Layout.reprIntEnum.match_1": [],
+    "Toy.Layout.reprIntEnum_align_eq_reprCEnum_align_of_nonempty": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.reprIntEnum_all_variants_tag_at_zero": [
+      "propext"
+    ],
+    "Toy.Layout.reprIntEnum_geometry_of_nonempty_align_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.reprIntEnum_size_le_reprCEnum_size_of_pow2": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.reprIntEnum_tagOffset_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.reversedOrderLayout": [],
+    "Toy.Layout.roundDown": [],
+    "Toy.Layout.roundDown.eq_1": [],
+    "Toy.Layout.roundDown_le": [
+      "propext"
+    ],
+    "Toy.Layout.sampleStructAsc": [],
+    "Toy.Layout.sampleStructAsc.eq_1": [],
+    "Toy.Layout.sampleStructDesc": [],
+    "Toy.Layout.sampleStructDesc.eq_1": [],
+    "Toy.Layout.structAlign": [],
+    "Toy.Layout.structAlign.eq_1": [],
+    "Toy.Layout.structAlign.eq_2": [],
+    "Toy.Layout.structAlign.eq_3": [],
+    "Toy.Layout.structAlign.match_1": [],
+    "Toy.Layout.structAlign_ge_field": [
+      "propext"
+    ],
+    "Toy.Layout.structAlign_ge_one": [
+      "propext"
+    ],
+    "Toy.Layout.struct_invariants_mutually_independent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.targetHexagonNoneElf": [],
+    "Toy.Layout.targetThumbV7mNoneEabi": [],
+    "Toy.Layout.targetX86_64Linux": [],
+    "Toy.Layout.targetX86_64Linux.eq_1": [],
+    "Toy.Layout.totalFieldSize": [],
+    "Toy.Layout.totalFieldSize.eq_1": [],
+    "Toy.Layout.totalFieldSize.eq_2": [],
+    "Toy.Layout.totalFieldSize.eq_def": [],
+    "Toy.Layout.truncatedEndLayout": [],
+    "Toy.Layout.u16Tag": [],
+    "Toy.Layout.u8Tag": [],
+    "Toy.Layout.unalignedPackingLayout": [],
+    "Toy.Layout.unroundedTailLayout": [],
+    "Toy.Layout.usizeTag64": [],
+    "Toy.Layout.variant_overlapping_violates_only_disjoint": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.variant_overlapping_violates_only_disjoint.match_1_1": [],
+    "Toy.Layout.variant_overlapping_violates_only_disjoint.match_1_5": [],
+    "Toy.Layout.variant_reordered_violates_only_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.variant_reordered_violates_only_monotone.match_1_1": [],
+    "Toy.Layout.variant_reordered_violates_only_monotone.match_1_6": [],
+    "Toy.Layout.variant_truncated_end_violates_only_in_bounds": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.variant_truncated_end_violates_only_in_bounds.match_1_1": [],
+    "Toy.Layout.variant_truncated_end_violates_only_in_bounds.match_1_10": [],
+    "Toy.Layout.variant_truncated_end_violates_only_in_bounds.match_1_5": [],
+    "Toy.Layout.variant_unaligned_violates_only_aligned": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.variant_unaligned_violates_only_aligned.match_1_10": [],
+    "Toy.Layout.variant_unaligned_violates_only_aligned.match_1_3": [],
+    "Toy.Layout.variant_unaligned_violates_only_aligned.match_1_8": [],
+    "Toy.Layout.variant_unrounded_tail_violates_only_size_minimal": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.variant_unrounded_tail_violates_only_size_minimal.match_1_1": [],
+    "Toy.Layout.variant_unrounded_tail_violates_only_size_minimal.match_1_10": [],
+    "Toy.Layout.variant_unrounded_tail_violates_only_size_minimal.match_1_12": [],
+    "Toy.Layout.variant_unrounded_tail_violates_only_size_minimal.match_1_5": [],
+    "Toy.Layout.xc_01_empty": [],
+    "Toy.Layout.xc_02_asc_pad": [],
+    "Toy.Layout.xc_03_three_ints": [],
+    "Toy.Layout.xc_04_trail_pad": [],
+    "Toy.Layout.xc_05_u8_u16": [],
+    "Toy.Layout.xc_06_zst_mid": [],
+    "Toy.Layout.xc_07_homog": [],
+    "Toy.Layout.xc_08_packed1": [],
+    "Toy.Layout.xc_09_packed2": [],
+    "Toy.Layout.xc_10_packed_noop": [],
+    "Toy.Layout.xc_11_aligned8": [],
+    "Toy.Layout.xc_12_aligned_noop": [],
+    "Toy.Layout.xc_13_size_rounded_up_union": [],
+    "Toy.Layout.xc_14_fieldless_c_enum": [],
+    "Toy.Layout.xc_14b_fieldless_c_enum_big_discr": [],
+    "Toy.Layout.xc_15_enum_c": [],
+    "Toy.Layout.xc_16_ref_enum": [],
+    "Toy.Layout.xc_17a_enum_c_u8": [],
+    "Toy.Layout.xc_17b_enum_u8": [],
+    "Toy.Layout.xc_18a_dst_trail_pad": [],
+    "Toy.Layout.xc_18b_dst_unaligned_off": [],
+    "Toy.Layout.xc_18c_dst_packed1": [],
+    "Toy.Layout.xc_18d_dst_packed2": [],
+    "Toy.Layout.xc_18e_dst_align4_elem3": [],
+    "Toy.Layout.xc_18f_dst_unaligned_off_elem2": [],
+    "Toy.Layout.xc_19_thumb_short_enums": [],
+    "Toy.Layout.xc_20_hexagon_short_enums": [],
+    "Toy.Layout.zst_tail_bounded_max_exists": [],
+    "Toy.Layout.zst_tail_no_max_fitting_elems": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Layout.zst_tail_no_max_fitting_elems.match_1_1": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

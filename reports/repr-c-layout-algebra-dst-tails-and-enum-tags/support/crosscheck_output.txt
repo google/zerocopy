@@ -1,0 +1,35 @@
+rustc 1.98.0-nightly (14210df0e 2026-05-31)
+binary: rustc
+commit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65
+commit-date: 2026-05-31
+host: x86_64-unknown-linux-gnu
+release: 1.98.0-nightly
+LLVM version: 22.1.6
+---
+c_int: size=4 align=4
+usize: size=8 align=8
+01 Empty: size=0 align=1 offsets=[]
+02 AscPad: size=12 align=4 offsets=[0, 4, 8]
+03 ThreeInts: size=8 align=4 offsets=[0, 2, 4]
+04 TrailPad: size=4 align=2 offsets=[0, 2]
+05 U8U16: size=4 align=2 offsets=[0, 2]
+06 ZstMid: size=8 align=4 offsets=[0, 4, 4]
+07 Homog: size=12 align=4 offsets=[0, 4, 8]
+08 Packed1: size=7 align=1 offsets=[0, 1, 5]
+09 Packed2: size=8 align=2 offsets=[0, 2, 6]
+10 PackedNoop: size=12 align=4 offsets=[0, 4, 8]
+11 Aligned8: size=8 align=8 offsets=[0, 2]
+12 AlignedNoop: size=12 align=4 offsets=[0, 4, 8]
+13 SizeRoundedUp: size=8 align=4 offsets=[0, 0]
+14 FieldlessC: size=4 align=4
+14b FieldlessCBigDiscr: size=8 align=8
+15 EnumC: size=8 align=4 variant0_offsets=[4]
+16 RefEnum: size=24 align=8 variant_offsets=[[8], [8, 16], [8, 12], []]
+17a EnumCU8: size=6 align=2 variantA_offsets=[2, 4]
+17b EnumU8: size=4 align=2 variantA_offsets=[1, 2]
+18a DstTrailPad: tail_offset=4 align=4 sizes_0_to_5=[4, 8, 8, 8, 8, 12]
+18b DstUnalignedOff: tail_offset=3 align=2 sizes_0_to_5=[4, 4, 6, 6, 8, 8]
+18c DstPacked1: tail_offset=4 align=1 sizes_0_to_3=[4, 5, 6, 7]
+18d DstPacked2: tail_offset=2 align=2 sizes_0_to_3=[2, 6, 10, 14]
+18e DstAlign4Elem3: tail_offset=1 align=4 sizes_0_to_4=[4, 4, 8, 12, 16]
+18f DstUnalignedOffElem2: tail_offset=3 align=2 sizes_0_to_3=[4, 6, 8, 10]

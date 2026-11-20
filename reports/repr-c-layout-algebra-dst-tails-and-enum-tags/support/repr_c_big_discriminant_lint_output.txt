@@ -1,0 +1,68 @@
+rustc 1.98.0-nightly (14210df0e 2026-05-31)
+binary: rustc
+commit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65
+commit-date: 2026-05-31
+host: x86_64-unknown-linux-gnu
+release: 1.98.0-nightly
+LLVM version: 22.1.6
+--- rustc --crate-type=lib support/repr_c_big_discriminant_lint.rs -o /tmp/big_discr.rlib ---
+warning: `repr(C)` enum discriminant does not fit into C `int` nor into C `unsigned int`
+  --> support/repr_c_big_discriminant_lint.rs:11:5
+   |
+11 |     A = 0x1_0000_0000,
+   |     ^
+   |
+   = note: `repr(C)` enums with big discriminants are non-portable, and their size in Rust might not match their size in C
+   = help: use `repr($int_ty)` instead to explicitly set the size of this enum
+   = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+   = note: for more information, see issue #124403 <https://github.com/rust-lang/rust/issues/124403>
+   = note: `#[warn(repr_c_enums_larger_than_int)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: `repr(C)` enum discriminant does not fit into C `int` nor into C `unsigned int`
+  --> support/repr_c_big_discriminant_lint.rs:12:5
+   |
+12 |     B,
+   |     ^
+   |
+   = note: `repr(C)` enums with big discriminants are non-portable, and their size in Rust might not match their size in C
+   = help: use `repr($int_ty)` instead to explicitly set the size of this enum
+   = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+   = note: for more information, see issue #124403 <https://github.com/rust-lang/rust/issues/124403>
+
+warning: 2 warnings emitted
+
+--- exit status: 0 ---
+rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)
+binary: rustc
+commit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1
+commit-date: 2026-11-11
+host: x86_64-unknown-linux-gnu
+release: 1.102.0-nightly
+LLVM version: 23.1.5
+--- rustc --crate-type=lib support/repr_c_big_discriminant_lint.rs -o /tmp/big_discr.rlib ---
+warning: `repr(C)` enum discriminant does not fit into C `int` nor into C `unsigned int`
+  --> support/repr_c_big_discriminant_lint.rs:11:5
+   |
+11 |     A = 0x1_0000_0000,
+   |     ^
+   |
+   = note: `repr(C)` enums with big discriminants are non-portable, and their size in Rust might not match their size in C
+   = help: use `repr($int_ty)` instead to explicitly set the size of this enum
+   = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+   = note: for more information, see issue #124403 <https://github.com/rust-lang/rust/issues/124403>
+   = note: `#[warn(repr_c_enums_larger_than_int)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: `repr(C)` enum discriminant does not fit into C `int` nor into C `unsigned int`
+  --> support/repr_c_big_discriminant_lint.rs:12:5
+   |
+12 |     B,
+   |     ^
+   |
+   = note: `repr(C)` enums with big discriminants are non-portable, and their size in Rust might not match their size in C
+   = help: use `repr($int_ty)` instead to explicitly set the size of this enum
+   = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+   = note: for more information, see issue #124403 <https://github.com/rust-lang/rust/issues/124403>
+
+warning: 2 warnings emitted
+
+--- exit status: 0 ---

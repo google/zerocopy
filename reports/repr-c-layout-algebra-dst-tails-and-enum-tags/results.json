@@ -1,0 +1,718 @@
+[
+  {
+    "id": "repr-c-struct-invariants",
+    "lean": "Toy.Layout.reprCStruct_invariants_of_align_pos",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For any modifier with a positive packing bound (if packed) and any field list whose fields all have positive alignment, `reprCStruct m fields` satisfies the five structural layout invariants: `OffsetsLengthMatch`, `OffsetsAligned`, `OrderedNonOverlapping`, `FieldsInBounds`, and `SizeMinimalAligned` (`OffsetsMonotone` and `FieldsDisjoint` follow as corollaries via `Toy.Layout.orderedNonOverlapping_implies_monotone_and_disjoint`).",
+    "hypotheses": [
+      {
+        "name": "h_fields",
+        "purpose": "Requires `0 < f.align` for every field `f` so that modular alignment `alignUp cursor (effFieldAlign m f.align)` produces a multiple of `effFieldAlign m f.align` (since `alignUp` totalizes division by `0` to a no-op). Tight in the toy (`Nat`) domain; satisfied by every valid Rust type (`r[layout.properties.align]`).",
+        "tightness": "tight",
+        "counterexample": "Toy.Layout.ce_reprCStruct_invariants_drop_fields_align_pos"
+      },
+      {
+        "name": "h_pack",
+        "purpose": "Requires `0 < p` whenever `m = .packed p` so that clamping `min f.align p` remains strictly positive and yields divisible offsets. Tight in the toy (`Nat`) domain; satisfied by every valid Rust modifier (`r[layout.repr.alignment.constraint-alignment]`).",
+        "tightness": "tight",
+        "counterexample": "Toy.Layout.ce_reprCStruct_invariants_drop_pack_pos"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "Plain `#[repr(C)]` struct `[u8, u32, u16]` (`[⟨1, 1⟩, ⟨4, 4⟩, ⟨2, 2⟩]`) with `m = .none` satisfies both positivity hypotheses.",
+    "nonvacuity_witness_lean": "Toy.Layout.nv_reprCStruct_invariants_of_align_pos",
+    "non_claims": [
+      "These properties do not characterize `reprCStruct`: layouts with gratuitous inter-field padding, or with a struct alignment smaller than a field's alignment, satisfy all of them. The minimal-padding and alignment rules of `repr(C)` are not among the stated properties.",
+      "The tightness counterexamples use alignments or packing arguments (such as `0`, `3`, or `6`) that no Rust type or modifier has, so they do not exhibit a Rust layout for which the conclusion fails (Basis: normative — `r[layout.properties.align]`, `r[layout.properties.size]`, `r[layout.repr.alignment.constraint-alignment]` — plus derived (modeling bridge): field layouts and modifiers of real Rust types satisfy the alignment hypotheses).",
+      "Does not establish `IsPowerOfTwo L.align` or that field alignments divide `L.align` (that requires power-of-two alignments; see `Toy.Layout.reprCStruct_align_pow2_divides`).",
+      "Does not model finite `usize` or `isize::MAX` / `obj_size_bound` overflow rejection in `rustc_abi`, targets whose `TargetDataLayout::aggregate_align > 1`, or function-call ABI register passing.",
+      "Does not establish equivalence with `rustc` for all Rust types; connection to `rustc` is a separate `derived (modeling bridge)` claim corroborated empirically by the execution cross-check.",
+      "Independence in `Toy.Layout.struct_invariants_mutually_independent` is proved for the five-invariant set obtained by splitting `OrderedNonOverlapping` into `OffsetsMonotone` and `FieldsDisjoint` under `OffsetsLengthMatch` (on Card 1's five-conjunct set, `overlappingUnionLayout` violates only `OrderedNonOverlapping` and `offsets = []` on `[⟨1, 1⟩]` violates only `OffsetsLengthMatch`)."
+    ],
+    "prior_art": [
+      "Rust Reference, `rust-lang/reference` commit `c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c`, `src/type-layout.md`, `r[layout.repr.c.struct]` and `r[layout.repr.alignment]` (lines 240-353, 632-655).",
+      "CompCert, `AbsInt/CompCert` commit `2685140bf72c959446981fb99b5e44a8975021bc`, `cfrontend/Ctypes.v`, `field_offset_in_range_gen`/`field_offset_in_range` (lines 748-770), `field_offset_no_overlap` (lines 774-797, same disjunctive form as `FieldsDisjoint`), and `field_offset_aligned_gen`/`field_offset_aligned` (lines 812-830).",
+      "`rustc_abi`, `rust-lang/rust` executed commit `14210df0e27ccd7d9e6a05b8085cbd438e4bbc65`, `compiler/rustc_abi/src/layout.rs`, `LayoutCalculator::univariant_biased` (lines 1094-1328; refactored in commit `4b5350e87e487aed08ab2f9f0160a4b2616438bc`, `layout_of_univariant_biased` lines 591-823).",
+      "Aeneas PR `AeneasVerif/aeneas#1447` (unmerged WIP fork `JoJoDeveloping/aeneas` commit `2a1dd75567517e078f90b1df746af7373fe24cbc`), `backends/lean/Aeneas/Data/Layout/ReprC.lean` (`tupleCursor`, `tupleFieldOffset`, `tupleFieldOffset_mono` lines 163-168, `tupleFieldOffset_le_end` lines 172-176)."
+    ],
+    "design_question": "Identifies the minimal toy-domain preconditions (`0 < align`, not powers of two or `align ∣ size`) under which `reprCStruct` satisfies its five structural soundness invariants (with `OffsetsMonotone` and `FieldsDisjoint` separated as proved corollaries).",
+    "lean_names": [
+      "Toy.Layout.orderedNonOverlapping_implies_monotone_and_disjoint",
+      "Toy.Layout.orderedNonOverlapping_without_length_not_monotone"
+    ]
+  },
+  {
+    "id": "repr-c-struct-characterization",
+    "lean": "Toy.Layout.reprCStruct_eq_iff_of_align_pos",
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "For any modifier with a positive packing bound (if packed), any field list whose fields all have positive alignment, and any `StructLayout` `L`, `L = reprCStruct m fields` holds if and only if `L` satisfies the five declarative rules `OffsetsLengthMatch`, `OffsetsGreedyMinimal`, `EndOffsetExact`, `AlignIsMaxEffective`, and `SizeMinimalAligned`.",
+    "hypotheses": [
+      {
+        "name": "h_fields",
+        "purpose": "Requires `0 < f.align` for every field `f` so that `alignUp cursor (effFieldAlign m f.align)` satisfies `IsLeastMultipleGe` (at `a = 0`, `IsLeastMultipleGe _ n 0` has no solution for `n > 0`). Tight in the toy (`Nat`) domain; satisfied by every valid Rust type (`r[layout.properties.align]`).",
+        "tightness": "tight",
+        "counterexample": "Toy.Layout.ce_reprCStruct_eq_iff_drop_fields_align_pos"
+      },
+      {
+        "name": "h_pack",
+        "purpose": "Requires `0 < p` whenever `m = .packed p` so that `effFieldAlign (.packed p) f.align > 0` and greedy placement satisfies `IsLeastMultipleGe`. Tight in the toy (`Nat`) domain; satisfied by every valid Rust modifier (`r[layout.repr.alignment.constraint-alignment]`).",
+        "tightness": "tight",
+        "counterexample": "Toy.Layout.ce_reprCStruct_eq_iff_drop_pack_pos"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "Plain `#[repr(C)]` struct `[u8, u32]` (`[⟨1, 1⟩, ⟨4, 4⟩]`) with `m = .none` satisfies both positivity hypotheses.",
+    "nonvacuity_witness_lean": "Toy.Layout.nv_reprCStruct_eq_iff_of_align_pos",
+    "non_claims": [
+      "The tightness counterexamples use alignments or packing arguments (such as `0`, `3`, or `6`) that no Rust type or modifier has, so they do not exhibit a Rust layout for which the conclusion fails (Basis: normative — `r[layout.properties.align]`, `r[layout.properties.size]`, `r[layout.repr.alignment.constraint-alignment]` — plus derived (modeling bridge): field layouts and modifiers of real Rust types satisfy the alignment hypotheses).",
+      "Characterizes the formal model `Toy.Layout.reprCStruct` (which abstracts away `isize::MAX` / `obj_size_bound` overflow and non-unit `TargetDataLayout::aggregate_align`); agreement with `rustc` is a separate `derived (modeling bridge)` claim.",
+      "Does not characterize `#[repr(Rust)]` structs, whose field ordering and alignment rules are not fixed to declaration order."
+    ],
+    "prior_art": [
+      "Rust Reference, `rust-lang/reference` commit `c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c`, `src/type-layout.md`, `r[layout.repr.c.struct.align]` (line 244), `r[layout.repr.c.struct.size-field-offset]` (lines 246-253: padding only 'until it is a multiple'), and `r[layout.repr.alignment.packed-padding]` (line 651: minimum inter-field padding).",
+      "`rustc_abi`, `rust-lang/rust` executed commit `14210df0e27ccd7d9e6a05b8085cbd438e4bbc65`, `compiler/rustc_abi/src/layout.rs`, `LayoutCalculator::univariant_biased` (lines 1263-1324)."
+    ],
+    "design_question": "Directly answers which declarative properties uniquely characterize the `#[repr(C)]` struct layout algorithm: matching offset count, greedy minimal aligned placement (`OffsetsGreedyMinimal`), exact end cursor (`EndOffsetExact`), maximum effective alignment (`AlignIsMaxEffective`), and minimal aligned size (`SizeMinimalAligned`)."
+  },
+  {
+    "id": "repr-c-struct-align-pow2-divides",
+    "lean": "Toy.Layout.reprCStruct_align_pow2_divides",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "If every field alignment and any numeric modifier argument in `m` is a power of two, then `(reprCStruct m fields).align` is a power of two divisible by every field's effective (possibly `packed`-reduced) alignment.",
+    "hypotheses": [
+      {
+        "name": "h_fields",
+        "purpose": "Requires `IsPowerOfTwo f.align` for every field so that `max` coincides with `lcm` over field alignments. Tight in the toy (`Nat`) domain; satisfied by every valid Rust type (`r[layout.properties.align]`).",
+        "tightness": "tight",
+        "counterexample": "Toy.Layout.ce_reprCStruct_align_dvd_drop_fields_pow2"
+      },
+      {
+        "name": "h_mod",
+        "purpose": "Requires `ModifierPow2 m` so that `packed(n)` and `aligned(n)` preserve the power-of-two divisibility chain. Tight in the toy (`Nat`) domain; satisfied by every valid Rust modifier (`r[layout.repr.alignment.constraint-alignment]`).",
+        "tightness": "tight",
+        "counterexample": "Toy.Layout.ce_reprCStruct_align_dvd_drop_mod_pow2"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`#[repr(C, align(8))]` struct `[u8, u32]` (`[⟨1, 1⟩, ⟨4, 4⟩]`) satisfies `AlignPow2` on all fields and `ModifierPow2 (.aligned 8)`.",
+    "nonvacuity_witness_lean": "Toy.Layout.nv_reprCStruct_align_pow2_divides",
+    "non_claims": [
+      "The tightness counterexamples use alignments or packing arguments (such as `0`, `3`, or `6`) that no Rust type or modifier has, so they do not exhibit a Rust layout for which the conclusion fails (Basis: normative — `r[layout.properties.align]`, `r[layout.properties.size]`, `r[layout.repr.alignment.constraint-alignment]` — plus derived (modeling bridge): field layouts and modifiers of real Rust types satisfy the alignment hypotheses).",
+      "Does not show that each field's natural (unpacked) alignment divides `L.align` under `packed(p)` (packing intentionally lowers effective alignment below natural alignment).",
+      "Does not enforce Rust's concrete upper bound `align <= 2^29` (`r[layout.repr.alignment.constraint-alignment]`)."
+    ],
+    "prior_art": [
+      "Rust Reference, `rust-lang/reference` commit `c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c`, `src/type-layout.md`, `r[layout.properties.align]` (line 19) and `r[layout.repr.c.struct.align]` (line 244).",
+      "CompCert, `AbsInt/CompCert` commit `2685140bf72c959446981fb99b5e44a8975021bc`, `cfrontend/Ctypes.v`, `alignof_composite_two_p` (lines 642-649).",
+      "Aeneas PR `AeneasVerif/aeneas#1447` (unmerged WIP fork `JoJoDeveloping/aeneas` commit `2a1dd75567517e078f90b1df746af7373fe24cbc`), `backends/lean/Aeneas/Data/Layout/ReprC.lean` (`effAlign_isPowerOfTwo`, lines 125-131)."
+    ],
+    "design_question": "Pinpoints the exact algebraic role of the power-of-two alignment invariant: `max` over alignments acts as `lcm`, guaranteeing that placing a struct at a `structAlign`-aligned base address aligns every field to its effective (possibly `packed`-reduced) alignment."
+  },
+  {
+    "id": "struct-invariants-mutually-independent",
+    "lean": "Toy.Layout.struct_invariants_mutually_independent",
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "None of the five struct-layout invariants (`OffsetsAligned`, `OffsetsMonotone`, `FieldsDisjoint`, `FieldsInBounds`, `SizeMinimalAligned`) is implied by the conjunction of the other four together with `OffsetsLengthMatch`: on the concrete sample structs `sampleStructAsc = [⟨1, 1⟩, ⟨4, 4⟩]` and `sampleStructDesc = [⟨4, 4⟩, ⟨1, 1⟩]`, five concrete variant layout algorithms each violate one property while satisfying the other four and `OffsetsLengthMatch`.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Explicitly evaluated on `[u8, u32]` (`sampleStructAsc`) for variants 1-4 and `[u32, u8]` (`sampleStructDesc`) for variant 5.",
+    "non_claims": [
+      "Each variant algorithm violates exactly one property on the stated sample input only. On other inputs a variant may violate none.",
+      "Does not show that the five properties uniquely determine `reprCStruct` (see `Toy.Layout.reprCStruct_eq_iff_of_align_pos` for the characterizing properties).",
+      "Does not claim that `OrderedNonOverlapping` is independent of `OffsetsMonotone` or `FieldsDisjoint`: `OrderedNonOverlapping` together with `OffsetsLengthMatch` implies both (`Toy.Layout.orderedNonOverlapping_implies_monotone_and_disjoint`), whereas dropping `OffsetsLengthMatch` breaks that implication (`Toy.Layout.orderedNonOverlapping_without_length_not_monotone`)."
+    ],
+    "prior_art": [
+      "Rust Reference, `rust-lang/reference` commit `c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c`, `src/type-layout.md`, `r[layout.repr.rust.layout]` and `r[layout.repr.rust.struct]` (lines 174-183) contrasting order-independent disjointness against `#[repr(C)]` declaration order."
+    ],
+    "design_question": "Definition-adequacy reference point: confirms that splitting `OrderedNonOverlapping` into `OffsetsMonotone` and `FieldsDisjoint` yields five mutually independent invariants (none implied by the other four plus `OffsetsLengthMatch`).",
+    "lean_names": [
+      "Toy.Layout.orderedNonOverlapping_implies_monotone_and_disjoint",
+      "Toy.Layout.orderedNonOverlapping_without_length_not_monotone"
+    ]
+  },
+  {
+    "id": "repr-c-packed-one-no-padding",
+    "lean": "Toy.Layout.reprCStruct_packed_one_no_padding",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For every field list `fields`, `reprCStruct (.packed 1) fields` has no shallow padding (`AllBytesOccupied`), total size and `endOffset` equal to `totalFieldSize fields`, overall alignment `1`, and every field `i` placed at `totalFieldSize (fields.take i)`.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "`#[repr(C, packed(1))]` on `[u8, u32, u8]` (`[⟨1, 1⟩, ⟨4, 4⟩, ⟨1, 1⟩]`) yields `offsets = [0, 1, 5]`, `endOffset = 6`, `size = 6`, `align = 1`.",
+    "nonvacuity_witness_lean": "Toy.Layout.nv_reprCStruct_packed_one_no_padding",
+    "non_claims": [
+      "Does not eliminate padding inside individual nested fields (`r[layout.repr.alignment.intro]`: `packed` does not alter internal field layouts).",
+      "Does not imply `OffsetsAligned (.packed 1) fields L` when a field has `f.align = 0` (that requires `AlignPos`; see `Toy.Layout.reprCStruct_invariants_of_align_pos`).",
+      "Does not check the Rust language restriction that a `packed` struct cannot transitively contain an `align(N)` type (`r[layout.repr.alignment.constraint-exclusive]`)."
+    ],
+    "prior_art": [
+      "Rust Reference, `rust-lang/reference` commit `c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c`, `src/type-layout.md`, `r[layout.repr.alignment.packed-padding]` (line 651).",
+      "`rustc_abi`, `rust-lang/rust` executed commit `14210df0e27ccd7d9e6a05b8085cbd438e4bbc65`, `compiler/rustc_abi/src/layout.rs`, lines 1278-1282 (commit `4b5350e87e487aed08ab2f9f0160a4b2616438bc`, lines 780-783)."
+    ],
+    "design_question": "Establishes the exact closed-form offsets, size, alignment, and shallow-unpadded guarantee of `#[repr(C, packed(1))]`."
+  },
+  {
+    "id": "repr-c-packed-align-le",
+    "lean": "Toy.Layout.reprCStruct_packed_align_le",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For every field list `fields` and packing bound `n`, `(reprCStruct (.packed n) fields).align` is at most `max 1 n` and at most `(reprCStruct .none fields).align`.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "`#[repr(C, packed(2))]` on `[u8, u64]` yields alignment `2 ≤ max 1 2` and `2 ≤ 8`.",
+    "nonvacuity_witness_lean": "Toy.Layout.nv_reprCStruct_packed_align_le",
+    "non_claims": [
+      "Does not assert `(reprCStruct (.packed n) fields).size ≤ (reprCStruct .none fields).size` for arbitrary `Nat` alignments: without power-of-two alignments, `packed(2)` on `[⟨3, 3⟩, ⟨3, 3⟩]` increases size from `6` to `8` (`Toy.Layout.ex_packed_non_pow2_increases_size`).",
+      "Does not claim exact equality `(reprCStruct (.packed n) fields).align = max 1 n` (when every field has alignment `< n`, the struct alignment remains `fieldsMaxAlign .none fields`).",
+      "Does not model targets where `TargetDataLayout::aggregate_align > 1`, where `packed` also drops the base alignment from `dl.aggregate_align` to `1`."
+    ],
+    "prior_art": [
+      "Rust Reference, `rust-lang/reference` commit `c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c`, `src/type-layout.md`, `r[layout.repr.alignment.packed]` and `r[layout.repr.alignment.packed-fields]` (lines 645-648).",
+      "Aeneas PR `AeneasVerif/aeneas#1447` (unmerged WIP fork `JoJoDeveloping/aeneas` commit `2a1dd75567517e078f90b1df746af7373fe24cbc`), `backends/lean/Aeneas/Data/Layout/ReprC.lean`, `mkTuple_packed_bounds_align` (lines 220-223)."
+    ],
+    "design_question": "Characterizes the general alignment-capping effect of `#[repr(C, packed(N))]` for arbitrary `N` (complementing the `N = 1` and `N ≥ max align` boundary cases).",
+    "lean_names": [
+      "Toy.Layout.ex_packed_non_pow2_increases_size"
+    ]
+  },
+  {
+    "id": "repr-c-packed-ge-fields-noop",
+    "lean": "Toy.Layout.reprCStruct_packed_ge_fields_noop",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "If `n` is at least every field's natural alignment (`∀ f ∈ fields, f.align ≤ n`), then `reprCStruct (.packed n) fields` equals `reprCStruct .none fields`.",
+    "hypotheses": [
+      {
+        "name": "h_ge",
+        "purpose": "Ensures `min f.align n = f.align` for every field in `fields`, leaving effective alignments, offsets, and overall alignment unchanged.",
+        "tightness": "tight",
+        "counterexample": "Toy.Layout.ce_packed_noop_drop_ge"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "On `[u8, u32]` with `n = 4`, every field alignment (`1, 4`) is at most `4`.",
+    "nonvacuity_witness_lean": "Toy.Layout.nv_reprCStruct_packed_ge_fields_noop",
+    "non_claims": [
+      "This is a layout statement only; it says nothing about which references to fields of such a type `rustc` accepts (Basis: source, not probed: `rustc`'s packed-reference check calls `place_unalignment`, `compiler/rustc_mir_transform/src/check_packed_ref.rs` line 42 at `14210df0e`, which classifies a place inside a `packed(N)` struct as not unaligned when its type's ABI alignment is at most `N` and the type is sized or has a slice or `str` tail, `compiler/rustc_const_eval/src/util/alignment.rs` lines 26-44). Separately, the Reference forbids a `packed` type from transitively containing an `align`ed type, whatever `N` is (`r[layout.repr.alignment.constraint-exclusive]`, line 654; Basis: normative).",
+      "Does not cover targets where `TargetDataLayout::aggregate_align > 1` (in `rustc_abi`, `pack.is_some()` resets the initial aggregate alignment from `dl.aggregate_align` to `dl.i8_align` / `Align::ONE`; `compiler/rustc_abi/src/layout.rs` line 1108 at `14210df0e`, line 605 at `4b5350e8`)."
+    ],
+    "prior_art": [
+      "Rust Reference, `rust-lang/reference` commit `c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c`, `src/type-layout.md`, `r[layout.repr.alignment.packed]` (line 645) and `r[layout.repr.alignment.constraint-exclusive]` (line 654).",
+      "`rustc_const_eval`, `rust-lang/rust` executed commit `14210df0e27ccd7d9e6a05b8085cbd438e4bbc65` (and commit `4b5350e87e487aed08ab2f9f0160a4b2616438bc`), `compiler/rustc_const_eval/src/util/alignment.rs`, `place_unalignment` (lines 9-50, especially lines 26-44: `layout.align.abi <= pack` is not unaligned).",
+      "Aeneas PR `AeneasVerif/aeneas#1447` (unmerged WIP fork `JoJoDeveloping/aeneas` commit `2a1dd75567517e078f90b1df746af7373fe24cbc`), `backends/lean/Aeneas/Data/Layout/ReprC.lean`, `mkTuple_large_packed_nop` (lines 214-218)."
+    ],
+    "design_question": "Justifies simplifying `packed(N)` to plain `#[repr(C)]` in layout computations whenever `N` dominates all field alignments."
+  },
+  {
+    "id": "repr-c-aligned-preserves-offsets",
+    "lean": "Toy.Layout.reprCStruct_aligned_preserves_offsets",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For any `fields` and `n`, `reprCStruct (.aligned n) fields` has the exact same field offsets and `endOffset` as `reprCStruct .none fields`, alignment `max base.align n`, and size `alignUp base.endOffset (max base.align n)`.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "`#[repr(C, align(8))]` on `[u16, u8]` keeps offsets `[0, 2]` while raising `align` to `8` and `size` to `8`.",
+    "nonvacuity_witness_lean": "Toy.Layout.nv_reprCStruct_aligned_preserves_offsets",
+    "non_claims": [
+      "Offset invariance under `align(N)` holds by construction of the model; that rustc behaves the same way is a separate modeling-bridge claim.",
+      "Does not claim that `aligned.size = alignUp base.size (max base.align n)` without power-of-two alignments (see `Toy.Layout.reprCStruct_aligned_size_eq_alignUp_base_size_of_pow2`).",
+      "Does not model `#[repr(Rust, align(N))]`, where field order is unspecified."
+    ],
+    "prior_art": [
+      "Rust Reference, `rust-lang/reference` commit `c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c`, `src/type-layout.md`, `r[layout.repr.alignment.align]` (line 642).",
+      "`rustc_abi`, `rust-lang/rust` executed commit `14210df0e27ccd7d9e6a05b8085cbd438e4bbc65`, `compiler/rustc_abi/src/layout.rs`, lines 1312-1320 (commit `4b5350e87e487aed08ab2f9f0160a4b2616438bc`, lines 811-819, applying `repr.align` after the field loop)."
+    ],
+    "design_question": "Records the model's exact `align(N)` offset invariance and size/alignment rule; the separate `derived (modeling bridge)` claim that `rustc` preserves offsets rests on `rustc_abi` applying `repr.align` after the field-placement loop (`layout.rs` lines 1312-1320 at `14210df0e`)."
+  },
+  {
+    "id": "repr-c-aligned-size-composition",
+    "lean": "Toy.Layout.reprCStruct_aligned_size_eq_alignUp_base_size_of_pow2",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "When every field alignment and `n` are powers of two, `(reprCStruct (.aligned n) fields).size` equals `alignUp (reprCStruct .none fields).size (max (reprCStruct .none fields).align n)`.",
+    "hypotheses": [
+      {
+        "name": "h_fields",
+        "purpose": "Requires `AlignPow2 f` for every field so that `base.align` divides `max base.align n`, ensuring intermediate rounding to `base.align` never overshoots `alignUp base.endOffset (max base.align n)`. Tight in the toy (`Nat`) domain; satisfied by every valid Rust type (`r[layout.properties.align]`).",
+        "tightness": "tight",
+        "counterexample": "Toy.Layout.ce_aligned_size_drop_fields_pow2"
+      },
+      {
+        "name": "h_n",
+        "purpose": "Requires `IsPowerOfTwo n` so that `base.align ∣ max base.align n` when `n > base.align`. Tight in the toy (`Nat`) domain; satisfied by every valid Rust `align(N)` modifier (`r[layout.repr.alignment.constraint-alignment]`).",
+        "tightness": "tight",
+        "counterexample": "Toy.Layout.ce_aligned_size_drop_n_pow2"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`[u32, u8]` (`[⟨4, 4⟩, ⟨1, 1⟩]`) with `n = 8` satisfies `AlignPow2` and `IsPowerOfTwo 8`.",
+    "nonvacuity_witness_lean": "Toy.Layout.nv_reprCStruct_aligned_size_eq_alignUp_base_size_of_pow2",
+    "non_claims": [
+      "The tightness counterexamples use alignments or packing arguments (such as `0`, `3`, or `6`) that no Rust type or modifier has, so they do not exhibit a Rust layout for which the conclusion fails (Basis: normative — `r[layout.properties.align]`, `r[layout.properties.size]`, `r[layout.repr.alignment.constraint-alignment]` — plus derived (modeling bridge): field layouts and modifiers of real Rust types satisfy the alignment hypotheses).",
+      "Does not hold for arbitrary positive integer alignments in the toy `Nat` domain (counterexamples show `4 ≠ 8` at field alignment `3` and `6 ≠ 12` at `n = 6`).",
+      "Does not imply `reprCStruct (.aligned n)` is padding-free when `base` is padding-free."
+    ],
+    "prior_art": [
+      "Aeneas PR `AeneasVerif/aeneas#1447` (unmerged WIP fork `JoJoDeveloping/aeneas` commit `2a1dd75567517e078f90b1df746af7373fe24cbc`), `backends/lean/Aeneas/Data/Layout/ReprC.lean`, `alignTupleUp` (lines 9-13, motivating use: rounds an already-rounded tuple size to `max sa.align a`).",
+      "Related: `google/zerocopy` commit `ec133ce4d7993775413d852f91c9e3eb2a2a0897`, `zerocopy/src/layout.rs`, `DstLayout::pad_to_align` (lines 1439-1441 and 1474-1476, which discuss power-of-two rounding composition in the DST normal form)."
+    ],
+    "design_question": "Restates the standard arithmetic composition identity `alignUp (alignUp x a) b = alignUp x b` (for `a ∣ b`) in struct-layout form, justifying post-hoc `align(N)` size rounding of an already-rounded `#[repr(C)]` layout."
+  },
+  {
+    "id": "repr-c-no-padding-iff-size-eq-sum",
+    "lean": "Toy.Layout.reprCStruct_no_padding_iff_size_eq_sum",
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "For any modifier `m` and field list `fields`, every byte in `0 .. (reprCStruct m fields).size` is occupied by some field (`AllBytesOccupied`) if and only if `(reprCStruct m fields).size = totalFieldSize fields`.",
+    "hypotheses": [],
+    "depth": "substantive",
+    "nonvacuity_witness": "Plain `#[repr(C)]` struct `[u16, u16]` satisfies both `AllBytesOccupied` and `size = 4 = totalFieldSize`.",
+    "nonvacuity_witness_lean": "Toy.Layout.nv_reprCStruct_no_padding_iff",
+    "non_claims": [
+      "Characterizes only shallow (leading, inter-field, and trailing) struct padding; does not detect padding internal to individual fields.",
+      "Does not hold for arbitrary non-disjoint layouts (such as unions where overlapping fields can cover all bytes while `size < totalFieldSize`)."
+    ],
+    "prior_art": [
+      "`google/zerocopy` commit `ec133ce4d7993775413d852f91c9e3eb2a2a0897`, `zerocopy/src/util/macro_util.rs`, `struct_padding!` (lines 319-340: computes `size_of::<T>() - Σ size_of::<F_i>()` and documents comparing struct size to the sum of field sizes as a reliable indicator of padding); related flag-propagation mechanism `DstLayout::statically_shallow_unpadded` (`zerocopy/src/layout.rs` lines 37-41, 1372-1374, 1492).",
+      "`Lokathor/bytemuck` commit `ea3616110b0134e9991fdb66be8892dbc427c5ac`, `derive/src/traits.rs`, `generate_assert_no_padding` (lines 1078-1115: emits a const assertion that `size_of::<T>() == Σ size_of::<field>()`).",
+      "Rust Reference, `rust-lang/reference` commit `c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c`, `src/type-layout.md`, `r[layout.repr.c.struct.size-field-offset]` (lines 247-331)."
+    ],
+    "design_question": "Mechanizes the folklore criterion `size == sum(field_sizes)` (used by `zerocopy::struct_padding!` and `bytemuck`'s `generate_assert_no_padding`) as a sound and complete characterization of shallow padding absence in `#[repr(C)]` structs."
+  },
+  {
+    "id": "repr-c-homogeneous-no-padding-iff",
+    "lean": "Toy.Layout.reprCStruct_homogeneous_no_padding_iff_of_align_pos",
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For any field layout `f` with positive alignment (`0 < f.align`), `∀ k, AllBytesOccupied (List.replicate k f) (reprCStruct .none (List.replicate k f))` holds (that is, the homogeneous `#[repr(C)]` structs `List.replicate k f` have no shallow padding for every `k` simultaneously) if and only if `f.align ∣ f.size` (`SizeMultipleOfAlign f`); no per-`k` biconditional is claimed.",
+    "hypotheses": [
+      {
+        "name": "h_pos",
+        "purpose": "Excludes the degenerate `f.align = 0` case, where `f = ⟨1, 0⟩` produces padding-free homogeneous structs for every `k` even though `¬ (0 ∣ 1)`. Tight in the toy (`Nat`) domain; satisfied by every valid Rust type (`r[layout.properties.align]`).",
+        "tightness": "tight",
+        "counterexample": "Toy.Layout.ce_homogeneous_no_padding_iff_drop_align_pos"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`f = ⟨4, 4⟩` (`u32`) satisfies `AlignPos` (`0 < 4`).",
+    "nonvacuity_witness_lean": "Toy.Layout.nv_reprCStruct_homogeneous_no_padding_iff_of_align_pos",
+    "non_claims": [
+      "The tightness counterexamples use alignments or packing arguments (such as `0`, `3`, or `6`) that no Rust type or modifier has, so they do not exhibit a Rust layout for which the conclusion fails (Basis: normative — `r[layout.properties.align]`, `r[layout.properties.size]`, `r[layout.repr.alignment.constraint-alignment]` — plus derived (modeling bridge): field layouts and modifiers of real Rust types satisfy the alignment hypotheses).",
+      "Establishes absence of shallow padding only; if `f` represents a composite type with internal padding (such as `#[repr(C)] struct P { a: u8, b: u16 }`), each field retains its internal padding while the enclosing homogeneous struct adds none.",
+      "Does not extend to `#[repr(C, align(N))]` with `N > f.align` (which can introduce trailing padding) or to heterogeneous structs (see `Toy.Layout.ce_heterogeneous_u8_u16_has_padding`).",
+      "Note on `f.align = 0`: the reverse implication (`SizeMultipleOfAlign f → ∀ k, AllBytesOccupied ...`) does not need `AlignPos` (since `0 ∣ f.size` forces `f.size = 0`), whereas the forward implication requires `AlignPos` because `f = ⟨1, 0⟩` is padding-free despite `¬ (0 ∣ 1)`; for positive alignments `f = ⟨3, 2⟩` exhibits padding already at `k = 1` (`Toy.Layout.ex_homogeneous_non_dvd_has_padding`)."
+    ],
+    "prior_art": [
+      "Rust Reference, `rust-lang/reference` commit `c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c`, `src/type-layout.md`, `r[layout.properties.size]` (line 22) and `r[layout.array]` (line 77)."
+    ],
+    "design_question": "Characterizes exactly when homogeneous `#[repr(C)]` structs of a positively-aligned type introduce zero shallow padding (matching packed array `[T; k]` layout).",
+    "lean_names": [
+      "Toy.Layout.ex_homogeneous_non_dvd_has_padding"
+    ]
+  },
+  {
+    "id": "ce-heterogeneous-u8-u16-has-padding",
+    "lean": "Toy.Layout.ce_heterogeneous_u8_u16_has_padding",
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "The heterogeneous `#[repr(C)]` struct `[u8, u16]` (`[⟨1, 1⟩, ⟨2, 2⟩]`) consists exclusively of well-formed fields (power-of-two alignment, size a multiple of alignment), yet has inter-field padding at byte `1` (`size = 4 ≠ 3 = totalFieldSize`).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Concrete struct `[⟨1, 1⟩, ⟨2, 2⟩]` directly evaluates to `offsets = [0, 2]`, `size = 4`, `totalFieldSize = 3`.",
+    "non_claims": [
+      "Does not show that every heterogeneous `#[repr(C)]` struct has padding (for example, `[u16, u8, u8]` has `size = 4 = totalFieldSize`).",
+      "Does not assert anything about `#[repr(Rust)]` layouts.",
+      "Dual trailing-padding case: `[u16, u8]` (`[⟨2, 2⟩, ⟨1, 1⟩]`) has zero inter-field padding (`offsets = [0, 2]`) yet trailing padding at byte `3` (`size = 4 ≠ 3 = totalFieldSize`; proved in `Toy.Layout.ce_heterogeneous_u16_u8_has_trailing_padding`)."
+    ],
+    "prior_art": [
+      "Rust Reference, `rust-lang/reference` commit `c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c`, `src/type-layout.md`, `r[layout.repr.c.struct.size-field-offset]` (lines 247-353)."
+    ],
+    "design_question": "Demonstrates that homogeneity cannot be dropped from `reprCStruct_homogeneous_no_padding_iff_of_align_pos` even when every field is well-formed (power-of-two alignment, size a multiple of alignment).",
+    "lean_names": [
+      "Toy.Layout.ce_heterogeneous_u16_u8_has_trailing_padding"
+    ]
+  },
+  {
+    "id": "repr-c-enum-geometry",
+    "lean": "Toy.Layout.reprCEnum_geometry_of_vars_pow2",
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For any tag layout `tag` (with no alignment hypothesis on `tag`) and any variant list `variants` whose variant fields all have power-of-two alignments, `reprCEnum tag variants` satisfies `EnumSizeValid`, `EnumVariantsValid`, and the shared-payload-union structural rule `EnumSharedPayload`.",
+    "hypotheses": [
+      {
+        "name": "h_vars",
+        "purpose": "Requires `AlignPow2 f` for all variant fields so that every field alignment divides `payload.align` and therefore divides `payloadOffset = alignUp tag.size payload.align`, keeping shifted variant fields aligned (dropping it genuinely misaligns a field at offset `3`). Tight in the toy (`Nat`) domain; satisfied by every valid Rust type (`r[layout.properties.align]`).",
+        "tightness": "tight",
+        "counterexample": "Toy.Layout.ce_reprCEnum_geometry_drop_vars_pow2"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "`variants = [[⟨4, 4⟩], [⟨4, 4⟩, ⟨8, 8⟩], []]` satisfies `AlignPow2` on every variant field.",
+    "nonvacuity_witness_lean": "Toy.Layout.nv_reprCEnum_geometry_of_vars_pow2",
+    "non_claims": [
+      "These theorems establish internal soundness invariants of the model (aligned, in bounds, disjoint from the tag), not that the computed offsets or sizes agree with rustc or the Reference beyond the construction itself. `EnumTagAtZero` holds by definition (`Toy.Layout.reprCEnum_tagOffset_zero`). Enum `align(N)` and union `packed`/`align` modifiers are not modeled.",
+      "`EnumSharedPayload` and `EnumPerVariantTagged` are defined from the same `reprCStruct` / `reprCUnion` construction as `reprCEnum` and `reprIntEnum`. On `reprCEnum tag variants`, the offset conjunct of `EnumSharedPayload` holds definitionally (`rfl`), reducing the predicate to its one-step `IsLeastMultipleGe` size-rounding conjunct. They serve to distinguish `reprCEnum` and `reprIntEnum` from each other and from over-padded layouts, not as an independent specification.",
+      "The tightness counterexamples use alignments or packing arguments (such as `0`, `3`, or `6`) that no Rust type or modifier has, so they do not exhibit a Rust layout for which the conclusion fails (Basis: normative — `r[layout.properties.align]`, `r[layout.properties.size]`, `r[layout.repr.alignment.constraint-alignment]` — plus derived (modeling bridge): field layouts and modifiers of real Rust types satisfy the alignment hypotheses).",
+      "The soundness conjuncts `EnumSizeValid ∧ EnumVariantsValid` alone do not determine `reprCEnum` (for instance `reprIntEnum u8Tag [[⟨1, 1⟩, ⟨2, 2⟩], []]` satisfies them as well as `EnumAlignValid`); it is the `EnumSharedPayload` conjunct that separates `reprCEnum` from `reprIntEnum` and over-padded layouts.",
+      "Does not establish `EnumAlignValid` (power-of-two overall alignment divisibility requires `AlignPow2 tag` as well; see `Toy.Layout.reprCEnum_align_valid_of_pow2`).",
+      "Does not select which concrete `tag : FieldLayout` a target C ABI uses for a bare `#[repr(C)]` enum (parameterized by `CEnumTarget` and discriminant range via `cEnumTagLayout` / `reprCEnumForTarget`; see `Toy.Layout.ce_reprCEnum_tag_sizing_divergence`), and does not enforce Rust's zero-variant enum rejection (`r[layout.repr.c.constraint]`) or discriminant lints."
+    ],
+    "prior_art": [
+      "Rust Reference, `rust-lang/reference` commit `c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c`, `src/type-layout.md`, `r[layout.repr.c.adt]` (lines 438-499) and `r[layout.repr.primitive-c]` (lines 570-628).",
+      "RFC 2195 (`really_tagged_unions`), `rust-lang/rfcs` commit `f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4`, `text/2195-really-tagged-unions.md` (lines 303-366: `(tag, union)` definition for `repr(C, Int)` and bare `repr(C)`).",
+      "`rustc_abi`, `rust-lang/rust` executed commit `14210df0e27ccd7d9e6a05b8085cbd438e4bbc65`, `compiler/rustc_abi/src/layout.rs`, `layout_of_enum` tagged branch (lines 817-864; refactored in commit `4b5350e87e487aed08ab2f9f0160a4b2616438bc`, `compiler/rustc_abi/src/layout/enum_layout.rs`, `calculate_tagged_layout` lines 339-415).",
+      "Aeneas PR `AeneasVerif/aeneas#1447` (unmerged WIP fork `JoJoDeveloping/aeneas` commit `2a1dd75567517e078f90b1df746af7373fe24cbc`), `backends/lean/Aeneas/Data/Layout/ReprC.lean` (`mkEnumCore`, `mkEnum`, lines 86-106) and `Properties.lean` (`mkEnum_reasonablyAligned`, lines 306-311)."
+    ],
+    "design_question": "Establishes the internal geometric soundness and shared-payload-union structure of the `struct { tag, union { variants } }` model for `#[repr(C)]` and `#[repr(C, Int)]` enums under its minimal variant-field alignment hypothesis.",
+    "lean_names": [
+      "Toy.Layout.reprCEnum_tagOffset_zero"
+    ]
+  },
+  {
+    "id": "repr-int-enum-geometry",
+    "lean": "Toy.Layout.reprIntEnum_geometry_of_nonempty_align_pos",
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For any tag layout `tag` (with no alignment hypothesis on `tag`) and any non-empty variant list `variants` whose variant fields all have positive alignment (`AlignPos`), `reprIntEnum tag variants` satisfies `EnumSizeValid`, `EnumVariantsValid`, and the per-variant tag-prefix structural rule `EnumPerVariantTagged`.",
+    "hypotheses": [
+      {
+        "name": "h_nonempty",
+        "purpose": "Requires `variants ≠ []` so that `tag` appears in at least one variant struct of the union, ensuring `tag.size ≤ E.size`. Tight in the formal `Toy.Layout` model; Rust-universal — satisfied by every valid Rust enum that can carry `#[repr(C)]` (`r[layout.repr.c.constraint]`, `src/type-layout.md` lines 237-238) or a primitive representation `#[repr(Int)]` (`r[layout.repr.primitive.constraint]`, lines 507-508) (Basis: normative); `rustc` rejects zero-variant `#[repr(C)]` and primitive-representation enums with error `E0084` (Basis: execution, `support/e0084_zero_variant_enums_output.txt`).",
+        "tightness": "tight",
+        "counterexample": "Toy.Layout.ce_reprIntEnum_geometry_drop_nonempty"
+      },
+      {
+        "name": "h_vars",
+        "purpose": "Requires `AlignPos f` (`0 < f.align`) for every variant field so that per-variant field offsets are multiples of `f.align` (power-of-two alignment is NOT needed for geometric placement in `reprIntEnum`). Tight in the toy (`Nat`) domain; satisfied by every valid Rust type (`r[layout.properties.align]`).",
+        "tightness": "tight",
+        "counterexample": "Toy.Layout.ce_reprIntEnum_geometry_drop_vars_align_pos"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "`variants = [[⟨1, 1⟩, ⟨2, 2⟩], []]` is non-empty and has positive alignment on every variant field.",
+    "nonvacuity_witness_lean": "Toy.Layout.nv_reprIntEnum_geometry_of_nonempty_align_pos",
+    "non_claims": [
+      "These theorems establish internal soundness invariants of the model (aligned, in bounds, disjoint from the tag), not that the computed offsets or sizes agree with rustc or the Reference beyond the construction itself. `EnumTagAtZero` holds by definition (`Toy.Layout.reprIntEnum_tagOffset_zero`, `Toy.Layout.reprIntEnum_all_variants_tag_at_zero`). Enum `align(N)` and union `packed`/`align` modifiers are not modeled.",
+      "`EnumSharedPayload` and `EnumPerVariantTagged` are defined from the same `reprCStruct` / `reprCUnion` construction as `reprCEnum` and `reprIntEnum`. On `reprIntEnum tag variants`, the offset conjunct of `EnumPerVariantTagged` holds definitionally (`rfl`), reducing the predicate to its one-step `IsLeastMultipleGe` size-rounding conjunct. They serve to distinguish `reprIntEnum` and `reprCEnum` from each other and from over-padded layouts, not as an independent specification.",
+      "Zero-variant enums cannot take `#[repr(C)]` (`r[layout.repr.c.constraint]`) or `#[repr(Int)]` (`r[layout.repr.primitive.constraint]`) (Basis: normative), and `rustc` rejects both with compile error `E0084` (Basis: execution, `support/e0084_zero_variant_enums_output.txt`). The `h_nonempty` hypothesis (`variants ≠ []`) therefore holds for every valid Rust enum to which these representations apply, and its tightness counterexample at `variants = []` exhibits no valid Rust enum.",
+      "The tightness counterexamples use alignments or packing arguments (such as `0`, `3`, or `6`) that no Rust type or modifier has, so they do not exhibit a Rust layout for which the conclusion fails (Basis: normative — `r[layout.properties.align]`, `r[layout.properties.size]`, `r[layout.repr.alignment.constraint-alignment]` — plus derived (modeling bridge): field layouts and modifiers of real Rust types satisfy the alignment hypotheses).",
+      "Does not establish `EnumAlignValid` (power-of-two overall alignment divisibility follows by combining `Toy.Layout.reprCEnum_align_valid_of_pow2` with `Toy.Layout.reprIntEnum_align_eq_reprCEnum_align_of_nonempty`).",
+      "Does not equate `reprIntEnum` and `reprCEnum` for the same `tag` (in general `reprIntEnum` can be strictly smaller and place variant fields at smaller offsets; see `Toy.Layout.ce_reprIntEnum_lt_reprCEnum_u8`)."
+    ],
+    "prior_art": [
+      "Rust Reference, `rust-lang/reference` commit `c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c`, `src/type-layout.md`, `r[layout.repr.primitive.adt]` (lines 518-568).",
+      "RFC 2195 (`really_tagged_unions`), `rust-lang/rfcs` commit `f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4`, `text/2195-really-tagged-unions.md` (lines 195-235: `repr(Int)` as a C-union of C-structs each starting with the tag).",
+      "`rustc_abi`, `rust-lang/rust` executed commit `14210df0e27ccd7d9e6a05b8085cbd438e4bbc65`, `compiler/rustc_abi/src/layout.rs`, `layout_of_enum` `!repr.c()` branch (lines 822-859; commit `4b5350e87e487aed08ab2f9f0160a4b2616438bc`, `enum_layout.rs` lines 383-395).",
+      "Aeneas PR `AeneasVerif/aeneas#1447` (unmerged WIP fork `JoJoDeveloping/aeneas` commit `2a1dd75567517e078f90b1df746af7373fe24cbc`), `backends/lean/Aeneas/Data/Layout/ReprC.lean`, `mkEnumPrimitive` (lines 108-115)."
+    ],
+    "design_question": "Establishes the internal geometric soundness and per-variant tag-prefix structure of the `#[repr(Int)]` enum model under its minimal hypotheses (`variants ≠ []` and positive variant-field alignments).",
+    "lean_names": [
+      "Toy.Layout.reprIntEnum_tagOffset_zero",
+      "Toy.Layout.reprIntEnum_all_variants_tag_at_zero"
+    ]
+  },
+  {
+    "id": "repr-c-enum-align-valid",
+    "lean": "Toy.Layout.reprCEnum_align_valid_of_pow2",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "Whenever `tag` and every field of every variant in `variants` have power-of-two alignments, `(reprCEnum tag variants).align` is a power of two divisible by `tag.align` and every variant field's alignment (`EnumAlignValid`).",
+    "hypotheses": [
+      {
+        "name": "h_tag",
+        "purpose": "Requires `AlignPow2 tag` specifically for `EnumAlignValid` (so `E.align` is a power of two divisible by `tag.align` and variant alignments; not required for geometric placement). Tight in the toy (`Nat`) domain; satisfied by every valid Rust type (`r[layout.properties.align]`).",
+        "tightness": "tight",
+        "counterexample": "Toy.Layout.ce_reprCEnum_align_drop_tag_pow2"
+      },
+      {
+        "name": "h_vars",
+        "purpose": "Requires `AlignPow2 f` for all variant fields so that `E.align` is a power of two divisible by every field's alignment. Tight in the toy (`Nat`) domain; satisfied by every valid Rust type (`r[layout.properties.align]`).",
+        "tightness": "tight",
+        "counterexample": "Toy.Layout.ce_reprCEnum_align_drop_vars_pow2"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`cEnumTagX86_64` (`⟨4, 4⟩`) with `variants = [[⟨4, 4⟩], [⟨4, 4⟩, ⟨8, 8⟩], []]` satisfies `AlignPow2` everywhere.",
+    "nonvacuity_witness_lean": "Toy.Layout.nv_reprCEnum_align_valid_of_pow2",
+    "non_claims": [
+      "These theorems establish internal soundness invariants of the model (aligned, in bounds, disjoint from the tag), not that the computed offsets or sizes agree with rustc or the Reference beyond the construction itself. `EnumTagAtZero` holds by definition (`Toy.Layout.reprCEnum_tagOffset_zero`). Enum `align(N)` and union `packed`/`align` modifiers are not modeled.",
+      "The tightness counterexamples use alignments or packing arguments (such as `0`, `3`, or `6`) that no Rust type or modifier has, so they do not exhibit a Rust layout for which the conclusion fails (Basis: normative — `r[layout.properties.align]`, `r[layout.properties.size]`, `r[layout.repr.alignment.constraint-alignment]` — plus derived (modeling bridge): field layouts and modifiers of real Rust types satisfy the alignment hypotheses).",
+      "Does not by itself cover `reprIntEnum` when `variants = []` (where `reprIntEnum` yields alignment `1`; for non-empty `variants`, `Toy.Layout.reprIntEnum_align_eq_reprCEnum_align_of_nonempty` transfers `EnumAlignValid` directly to `reprIntEnum`, and every Rust enum carrying these representations has `variants ≠ []`: Basis: normative, `r[layout.repr.c.constraint]` and `r[layout.repr.primitive.constraint]`; Basis: execution, error `E0084` in `support/e0084_zero_variant_enums_output.txt`)."
+    ],
+    "prior_art": [
+      "Rust Reference, `rust-lang/reference` commit `c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c`, `src/type-layout.md`, `r[layout.properties.align]` (line 19) and `r[layout.repr.c.adt]` (lines 438-499).",
+      "RFC 2195 (`really_tagged_unions`), `rust-lang/rfcs` commit `f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4`, `text/2195-really-tagged-unions.md` (lines 303-366).",
+      "Aeneas PR `AeneasVerif/aeneas#1447` (unmerged WIP fork `JoJoDeveloping/aeneas` commit `2a1dd75567517e078f90b1df746af7373fe24cbc`), `backends/lean/Aeneas/Data/Layout/Properties.lean` (`mkEnum_reasonablyAligned`, lines 306-311)."
+    ],
+    "design_question": "Separates the power-of-two alignment-divisibility invariant (`EnumAlignValid`, which requires `AlignPow2` on both `tag` and fields) from the weaker geometric placement hypotheses of `reprCEnum` and `reprIntEnum`.",
+    "lean_names": [
+      "Toy.Layout.reprCEnum_tagOffset_zero"
+    ]
+  },
+  {
+    "id": "repr-int-enum-align-eq-repr-c-enum",
+    "lean": "Toy.Layout.reprIntEnum_align_eq_reprCEnum_align_of_nonempty",
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For any tag layout `tag` and any non-empty variant list `variants` (without requiring power-of-two alignments), `(reprIntEnum tag variants).align = (reprCEnum tag variants).align`.",
+    "hypotheses": [
+      {
+        "name": "h_nonempty",
+        "purpose": "Requires `variants ≠ []` so that `tag.align` enters the alignment maximum of `reprIntEnum`; when `variants = []`, `reprIntEnum` gives alignment `1` while `reprCEnum` gives `max 1 tag.align`. Tight in the formal `Toy.Layout` model; Rust-universal — satisfied by every valid Rust enum that can carry `#[repr(C)]` (`r[layout.repr.c.constraint]`, lines 237-238) or `#[repr(Int)]` (`r[layout.repr.primitive.constraint]`, lines 507-508) (Basis: normative); `rustc` rejects zero-variant `#[repr(C)]` and primitive-representation enums with error `E0084` (Basis: execution, `support/e0084_zero_variant_enums_output.txt`).",
+        "tightness": "tight",
+        "counterexample": "Toy.Layout.ce_reprIntEnum_align_eq_drop_nonempty"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`variants = [[⟨1, 1⟩, ⟨2, 2⟩], []]` is non-empty.",
+    "nonvacuity_witness_lean": "Toy.Layout.nv_reprIntEnum_align_eq_reprCEnum_align_of_nonempty",
+    "non_claims": [
+      "Asserts equality of overall alignment only, not equality of total size or variant field offsets (see `Toy.Layout.ce_reprIntEnum_lt_reprCEnum_u8` where `4 < 6` at equal alignment `2`).",
+      "Fails in the model when `variants = []` and `tag.align > 1` (`Toy.Layout.ce_reprIntEnum_align_eq_drop_nonempty`: `1 ≠ 4`), which exhibits no valid Rust enum (zero-variant enums cannot carry these representations: Basis: normative, `r[layout.repr.c.constraint]` and `r[layout.repr.primitive.constraint]`; Basis: execution, error `E0084` in `support/e0084_zero_variant_enums_output.txt`).",
+      "Compares identical `tag` layouts (`#[repr(Int)]` vs. `#[repr(C, Int)]`), not bare `#[repr(C)]` with a different target tag size, and does not model `#[repr(align(N))]` on enums."
+    ],
+    "prior_art": [
+      "Rust Reference, `rust-lang/reference` commit `c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c`, `src/type-layout.md`, `r[layout.repr.primitive.adt]` (lines 518-568) and `r[layout.repr.primitive-c]` (lines 570-628).",
+      "RFC 2195 (`really_tagged_unions`), `rust-lang/rfcs` commit `f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4`, `text/2195-really-tagged-unions.md` (lines 195-366)."
+    ],
+    "design_question": "Establishes that `#[repr(Int)]` and `#[repr(C, Int)]` always share the same overall alignment on non-empty enums (and transfers `EnumAlignValid` from `reprCEnum` to `reprIntEnum`)."
+  },
+  {
+    "id": "repr-int-enum-size-le-repr-c-enum-size",
+    "lean": "Toy.Layout.reprIntEnum_size_le_reprCEnum_size_of_pow2",
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For any tag layout `tag` and variant list `variants` with power-of-two alignments everywhere, `(reprIntEnum tag variants).size ≤ (reprCEnum tag variants).size`.",
+    "hypotheses": [
+      {
+        "name": "h_tag",
+        "purpose": "Requires `AlignPow2 tag` so that per-variant struct alignments divide the union alignment and never overshoot `reprCEnum`'s size due to coprime alignment rounding. Tight in the toy (`Nat`) domain; satisfied by every valid Rust type (`r[layout.properties.align]`).",
+        "tightness": "tight",
+        "counterexample": "Toy.Layout.ce_reprInt_le_reprC_drop_tag_pow2"
+      },
+      {
+        "name": "h_vars",
+        "purpose": "Requires `AlignPow2 f` for all variant fields so that every variant field alignment divides `payloadOffset` in `reprCEnum`, making `reprCEnum`'s shifted layout an upper bound on `reprIntEnum`'s packed-after-tag layout. Tight in the toy (`Nat`) domain; satisfied by every valid Rust type (`r[layout.properties.align]`).",
+        "tightness": "tight",
+        "counterexample": "Toy.Layout.ce_reprInt_le_reprC_drop_vars_pow2"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "`u8Tag` with `variants = [[⟨1, 1⟩, ⟨2, 2⟩], []]` satisfies `AlignPow2` on tag and all variant fields.",
+    "nonvacuity_witness_lean": "Toy.Layout.nv_reprIntEnum_size_le_reprCEnum_size_of_pow2",
+    "non_claims": [
+      "The tightness counterexamples (alignment `3` for the tag or a variant field) show only that the inequality can fail in `Nat` without the power-of-two hypotheses; they do not exhibit a Rust enum for which the `#[repr(Int)]` layout is larger than the `#[repr(C, Int)]` layout, since no Rust type has alignment `3`. The theorem also does not say that the `#[repr(Int)]` layout is strictly smaller in general; equality is common.",
+      "The tightness counterexamples use alignments or packing arguments (such as `0`, `3`, or `6`) that no Rust type or modifier has, so they do not exhibit a Rust layout for which the conclusion fails (Basis: normative — `r[layout.properties.align]`, `r[layout.properties.size]`, `r[layout.repr.alignment.constraint-alignment]` — plus derived (modeling bridge): field layouts and modifiers of real Rust types satisfy the alignment hypotheses).",
+      "Does not compare `#[repr(Int)]` with bare `#[repr(C)]` when their tag layouts differ (both sides use the same `tag`, so this compares `#[repr(Int)]` against `#[repr(C, Int)]`).",
+      "Alignment equality for non-empty variants is established separately (`Toy.Layout.reprIntEnum_align_eq_reprCEnum_align_of_nonempty`), and fails at `variants = []` (`Toy.Layout.ce_reprIntEnum_align_eq_drop_nonempty`)."
+    ],
+    "prior_art": [
+      "RFC 2195 (`really_tagged_unions`), `rust-lang/rfcs` commit `f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4`, `text/2195-really-tagged-unions.md` (line 408: '`repr(Int)` should be preferred by default over `repr(C, Int)` as it has a strictly superior space-usage').",
+      "Rust Reference, `rust-lang/reference` commit `c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c`, `src/type-layout.md`, `r[layout.repr.primitive-c]` note (lines 575-577)."
+    ],
+    "design_question": "Makes RFC 2195's informal space-usage claim precise as a formal size ordering between `#[repr(Int)]` and `#[repr(C, Int)]` for a fixed tag layout, and isolates the power-of-two condition in the toy `Nat` domain."
+  },
+  {
+    "id": "ce-repr-c-enum-tag-sizing-targets",
+    "lean": "Toy.Layout.ce_reprCEnum_tag_sizing_divergence",
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "In the target-parameterized `reprCEnumForTarget` model, neither a pointer-sized tag (`usizeTag64`) nor a fixed 4-byte `c_int` tag (`cIntLayout32Bit`) matches across targets and discriminant ranges: for `[[⟨1, 1⟩], []]` with discriminants `[0, 1]`, `targetX86_64Linux` (`cEnumMinBytes = 4`) gives `size = 8, align = 4` versus `size = 16, align = 8` for `usizeTag64`, while `targetThumbV7mNoneEabi` and `targetHexagonNoneElf` (`cEnumMinBytes = 1`) give `size = 2, align = 1` versus `size = 8, align = 4` for `cIntLayout32Bit`; and for field-less `[[], []]` with discriminants `[0x1_0000_0000, 0x1_0000_0001]` (which do not fit in 32 bits) on `targetX86_64Linux`, `reprCEnumForTarget` gives `size = 8, align = 8` versus `size = 4, align = 4` for `cIntLayout32Bit` (`ce_reprCEnum_tag_sizing_divergence` proves all size equalities, size inequalities, and the `targetX86_64Linux`, `usizeTag64`, and `targetThumbV7mNoneEabi` alignments; `ce_reprCEnum_tag_sizing_divergence_aligns` proves `align = 1` on `targetHexagonNoneElf` and `align = 4` for `cIntLayout32Bit` on both variant lists).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Concrete evaluations of `reprCEnumForTarget` on `targetX86_64Linux`, `targetThumbV7mNoneEabi`, and `targetHexagonNoneElf`, corroborated via separate `derived (modeling bridge)` execution on `rustc 1.98.0-nightly (14210df0e)`.",
+    "non_claims": [
+      "(Basis: normative.) The Rust Reference does not specify a `c_int`-sized tag. It specifies the size and alignment of 'a C enum with the same discriminant values and no fixed underlying type', calls this a 'best guess', and marks the size of `EnumC` as platform dependent. The `c_int` equality appears only in an example for `target_arch = \"x86_64\"`.",
+      "Small-discriminant witness against the `c_int` heuristic (Basis: source + execution): not every target gives a bare `#[repr(C)]` enum whose discriminants fit in C `int` a `c_int`-sized tag. In `rustc` at `14210df0e`, `discr_range_of_repr` (`compiler/rustc_middle/src/ty/layout.rs` lines 77-120) uses the larger of the target's `c_enum_min_size` and the smallest integer fitting the discriminants, `c_enum_min_size` is `c_enum_min_bits.unwrap_or(c_int_width)` (`compiler/rustc_target/src/spec/mod.rs` lines 2190-2191), and `c_enum_min_bits: Some(8)` is set in the `arm_none` target base (line 29) and for `hexagon-unknown-none-elf` (line 31). On `thumbv7m-none-eabi` and `hexagon-unknown-none-elf`, the recorded compilers report `\"c-enum-min-bits\": 8` and accept assertions that `EnumC` has `size = 2, align = 1` (`support/crosscheck_short_enum_output.txt`); on `x86_64-unknown-linux-gnu`, the field-less enum with discriminants `0, 1` has the size and alignment of 4-byte `c_int` (`support/crosscheck_output.txt`, probes `14` and `15`).",
+      "Status of the large-discriminant witness (Basis: normative + source + execution): the Reference requires the discriminants of a field-less `#[repr(C)]` enum to be all representable by C `int` or all by `unsigned int` (`r[layout.repr.c.enum.discriminant]`, line 402) and notes that `rustc` accepts such enums but lints against them and that 'This will become an error in the future.' (line 408). In `rustc` at `14210df0e`, the lint `REPR_C_ENUMS_LARGER_THAN_INT` is declared with level `Warn` and future-incompatibility reason `FutureReleaseError` (`compiler/rustc_lint_defs/src/builtin.rs` lines 5395-5441), documented as 'This will be an error in a future release for all editions' (`compiler/rustc_lint_defs/src/lib.rs` line 361). Both recorded compilers accept such an enum with this warning (`support/repr_c_big_discriminant_lint_output.txt`); with the lint allowed, probe `14b` has `size = 8, align = 8` (`support/crosscheck_output.txt`). These sources state an intent; no claim is made about when or whether the lint becomes an error.",
+      "Statement split: the main theorem `Toy.Layout.ce_reprCEnum_tag_sizing_divergence` establishes all size values, size inequalities, and the alignments for `targetX86_64Linux`, `usizeTag64`, and `targetThumbV7mNoneEabi`; the companion theorem `Toy.Layout.ce_reprCEnum_tag_sizing_divergence_aligns` establishes the remaining three alignments (`align = 1` on `targetHexagonNoneElf` for `enumC_variants`, and `align = 4` for `cIntLayout32Bit` on `enumC_variants` and `fieldless_variants`).",
+      "This does not establish anything about released Aeneas versions. The pointer-sized default is in an open, unmerged pull request at the pinned commit.",
+      "Known not to apply — pointer-sized tag heuristic (`usizeTag64`, as in unmerged Aeneas PR #1447 `reprC_default_tag_ty := .unsigned .Usize`): fails on conforming `EnumC` on `x86_64-unknown-linux-gnu` (`size = 16, align = 8` vs. `size = 8, align = 4`); Basis: execution, probe `15` in `support/crosscheck_output.txt`.",
+      "Known not to apply — fixed `c_int`-sized tag heuristic (`cIntLayout32Bit`): fails on `EnumC` (discriminants `0, 1`) on `thumbv7m-none-eabi` / `hexagon-unknown-none-elf` (`size = 2, align = 1` vs. `size = 8, align = 4` despite `size_of::<c_int>() == 4`), and diverges on discriminants outside C `int` / `unsigned int` on `x86_64-unknown-linux-gnu` (`FieldlessCBigDiscr` under `#[allow(repr_c_enums_larger_than_int)]` has `size = 8, align = 8` vs. `size = 4, align = 4`); Basis: execution, `support/crosscheck_short_enum_output.txt` and probe `14b` in `support/crosscheck_output.txt`.",
+      "The Lean theorems establish arithmetic equalities inside `Toy.Layout` (`execution (Lean kernel check)`); connecting `targetX86_64Linux`, `targetThumbV7mNoneEabi`, and `targetHexagonNoneElf` to the Rust Reference and `rustc` is a separate `derived (modeling bridge)` claim."
+    ],
+    "prior_art": [
+      "Rust Reference, `rust-lang/reference` commit `c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c`, `src/type-layout.md`: `r[layout.repr.c.enum.discriminant]` (line 402 + lint note lines 407-408), `r[layout.repr.c.enum.size-align]` (line 411 + `#[cfg(target_arch = \"x86_64\")]` example lines 422-426 + 'best guess' note lines 429-432), `r[layout.repr.c.adt.*]` (lines 441-447), and `EnumC` example (lines 603-622 including line 621 '// The size of the C representation is platform dependent').",
+      "RFC 2195 (`really_tagged_unions`), `rust-lang/rfcs` commit `f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4`, `text/2195-really-tagged-unions.md` (line 365 'whatever size C enums default to', line 437 'Rust has to basically guess at the type of a `repr(C)` enum anyway').",
+      "`rustc`, `rust-lang/rust` executed commit `14210df0e27ccd7d9e6a05b8085cbd438e4bbc65` (and commit `4b5350e87e487aed08ab2f9f0160a4b2616438bc`): `compiler/rustc_middle/src/ty/layout.rs` `discr_range_of_repr` (lines 77-120 at `14210df0e`, lines 78-130 at `4b5350e8`), `compiler/rustc_target/src/spec/mod.rs` (`c_enum_min_size = c_enum_min_bits.unwrap_or(c_int_width)`, lines 2190-2191 at `14210df0e`, lines 2078-2079 at `4b5350e8`), `compiler/rustc_target/src/spec/base/arm_none.rs` (`c_enum_min_bits: Some(8)`, line 29), and `compiler/rustc_target/src/spec/targets/hexagon_unknown_none_elf.rs` (`c_enum_min_bits: Some(8)`, line 31).",
+      "`rustc` lint definition and tracking issue: `rust-lang/rust` executed commit `14210df0e27ccd7d9e6a05b8085cbd438e4bbc65`, `compiler/rustc_lint_defs/src/builtin.rs` (`REPR_C_ENUMS_LARGER_THAN_INT`: declaration lines 5395-5441, lint-list entry line 94) and `compiler/rustc_lint_defs/src/lib.rs` (`FutureReleaseError`, lines 360-375), tracking issue `rust-lang/rust#124403` ('repr(C) on an enum accepts discriminants that do not fit into the default C enum size (repr_c_enums_larger_than_int lint)').",
+      "Aeneas PR `AeneasVerif/aeneas#1447` (unmerged WIP fork `JoJoDeveloping/aeneas` commit `2a1dd75567517e078f90b1df746af7373fe24cbc`), `backends/lean/Aeneas/Data/Layout/ReprC.lean` line 103 (`mkEnum (tagTy : IUScalarTy := .unsigned .Usize)`) and `Properties.lean` lines 108, 124 (`reprC_default_tag_ty := .unsigned .Usize`)."
+    ],
+    "design_question": "Answers how bare `#[repr(C)]` enum tags must be modeled: parameterized by the target's C-enum tag layout as a function of the discriminant range and `c_enum_min_size` (`rustc`: `max(c_enum_min_size, smallest integer fitting the discriminants)`), which is neither pointer-sized nor `c_int`-sized in general.",
+    "lean_names": [
+      "Toy.Layout.ce_reprCEnum_tag_sizing_divergence_aligns"
+    ]
+  },
+  {
+    "id": "ce-repr-int-strictly-smaller-than-repr-c-u8",
+    "lean": "Toy.Layout.ce_reprIntEnum_lt_reprCEnum_u8",
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "On `variants = [[⟨1, 1⟩, ⟨2, 2⟩], []]` with a 1-byte tag `u8Tag`, `reprIntEnum` gives `size = 4` and offsets `[[1, 2], []]`, strictly smaller than `reprCEnum`'s `size = 6` and offsets `[[2, 4], []]`; moreover `EnumSharedPayload` rejects the `reprIntEnum` layout and `EnumPerVariantTagged` rejects the `reprCEnum` layout.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Concrete evaluation on `u8Tag` and `[[⟨1, 1⟩, ⟨2, 2⟩], []]`, corroborated against `rustc 1.98.0-nightly (14210df0e)` (`EnumU8` vs. `EnumCU8`).",
+    "non_claims": [
+      "Does not show that `reprIntEnum` is always strictly smaller than `reprCEnum` for the same tag; equality is common (for example whenever no variant has a first field small enough to fit into the alignment padding after the tag).",
+      "`EnumSharedPayload` and `EnumPerVariantTagged` are defined from the same `reprCStruct` / `reprCUnion` construction as `reprCEnum` and `reprIntEnum` (their offset conjuncts hold by `rfl` on their own layouts); the genuine cross-layout separation content is witnessed here by each predicate rejecting the opposite representation's concrete layout.",
+      "The Lean theorem checks arithmetic equalities and predicate rejections inside `Toy.Layout` (`execution (Lean kernel check)`); matching `#[repr(u8)]` and `#[repr(C, u8)]` in `rustc` is a separate `derived (modeling bridge)` claim."
+    ],
+    "prior_art": [
+      "RFC 2195 (`really_tagged_unions`), `rust-lang/rfcs` commit `f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4`, `text/2195-really-tagged-unions.md` (lines 257-300: `TwoCases { A(u8, u16), B(u16) }`, 4 bytes under `#[repr(u8)]` vs. 6 bytes under `(tag, union)`).",
+      "Rust Reference, `rust-lang/reference` commit `c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c`, `src/type-layout.md`, `r[layout.repr.primitive-c]` note (lines 575-577)."
+    ],
+    "design_question": "Witnesses strict separation between `#[repr(Int)]` and `#[repr(C, Int)]` in size, payload offsets, and the structural predicates `EnumSharedPayload` vs. `EnumPerVariantTagged`."
+  },
+  {
+    "id": "dst-instantiated-eq-closed-form",
+    "lean": "Toy.Layout.dstInstantiated_eq_closed_form",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For any flat `#[repr(C)]` slice-tailed DST specification `d` and trailing element count `n`, instantiating the trailing slice `[T]` as `[T; n]` yields alignment `dstAlign d`, size `dstSize d n = alignUp (dstTailOffset d + n * d.elem.size) (dstAlign d)`, and offsets equal to the head offsets followed by `dstTailOffset d`.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "`#[repr(C)]` DST with head `[u32, u8]` and tail `[u16]` at `n = 3` gives `offsets = [0, 4, 6]`, `align = 4`, `size = 12`.",
+    "nonvacuity_witness_lean": "Toy.Layout.nv_dstInstantiated_eq_closed_form",
+    "non_claims": [
+      "The Rust Reference does not explicitly state the size of a `repr(C)` struct with an unsized tail. The closed form applies the `repr(C)` algorithm per value, with slice and array layout; this is the reading used by zerocopy and MiniRust, and the cross-check corroborates it.",
+      "Does not model nested DST fields wrapped inside an outer `#[repr(packed(N))]` struct whose inner rounding alignment exceeds the outer struct's alignment (see internal `TrailingSliceLayout` in `google/zerocopy`, `zerocopy/src/layout.rs` lines 196-206).",
+      "Does not model trait-object (`dyn Trait`) DSTs whose alignment depends on runtime vtable metadata, and does not check Rust's drop-glue restriction prohibiting generic `?Sized` tails in `#[repr(packed)]` structs."
+    ],
+    "prior_art": [
+      "MiniRust, `minirust/minirust` commit `063d784186d3252bee242217f218223205c0b568`, `spec/lang/types.md`, `TupleHeadLayout::{tail_offset, full_size_and_align}` (lines 200-225) and `LayoutStrategy::compute_size_and_align` (lines 259-277).",
+      "Rust Reference, `rust-lang/reference` commit `c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c`, `src/type-layout.md`, `r[layout.array]` (line 77), `r[layout.slice]` (line 82), and `r[layout.repr.c.struct.size-field-offset]` (lines 246-253).",
+      "`google/zerocopy` commit `ec133ce4d7993775413d852f91c9e3eb2a2a0897`, `zerocopy/src/layout.rs`, `DstLayout::extend`, `DstLayout::pad_to_align` (lines 1199-1495), and test model `size_for_metadata_model` (lines 2409-2473)."
+    ],
+    "design_question": "Reduces dynamic flat slice-tailed `#[repr(C)]` layout evaluation to three static quantities (`dstTailOffset`, `dstAlign`, `elem.size`) plus a single closed-form `alignUp`."
+  },
+  {
+    "id": "max-slice-elems-some-iff",
+    "lean": "Toy.Layout.maxSliceElems_some_iff",
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "For any flat `SliceDstSpec` `d`, buffer length `bufferLen`, and count `n`, `maxSliceElems d bufferLen = some n` if and only if `n` is the greatest natural number satisfying `dstSize d n ≤ bufferLen` (`IsMaxFittingElems d bufferLen n`).",
+    "hypotheses": [],
+    "depth": "substantive",
+    "nonvacuity_witness": "On `#[repr(C)] struct { hdr: u16, tag: u8, tail: [u8] }` with `bufferLen = 5`, `maxSliceElems` returns `some 1` and `IsMaxFittingElems` holds at `n = 1`.",
+    "nonvacuity_witness_lean": "Toy.Layout.nv_maxSliceElems_some_iff",
+    "non_claims": [
+      "The correspondence with zerocopy (Basis: source + execution + derived (modeling bridge), backed by `Toy.Layout.dstSize_eq_phase_normal_form` and `Toy.Layout.maxSliceElems_eq_phase_normal_form_capacity`) is established only for flat `repr(C)` slice DSTs whose element alignment does not exceed `dstAlign d`, for which zerocopy's normal form is `size_align = dstAlign d`, `size_phase = dstTailOffset d % dstAlign d` (nonzero when `dstAlign d ∤ dstTailOffset d`), and `size_base = dstTailOffset d - size_phase` (`zerocopy/src/layout.rs` at `ec133ce4`, lines 1098-1118, 1342-1365, 1430-1486), with a positive element size, no overflow, and an address-aligned prefix cast. zerocopy's `DstLayout` is a doc-hidden internal type, and `validate_cast_and_convert_metadata` is crate-private. zerocopy's rounding alignment can exceed the type's alignment under `packed(N)` (nested DSTs, or a flat trailing slice whose element alignment exceeds `N`); zerocopy also panics on zero-sized elements, checks address alignment first, and handles suffix casts.",
+      "Does not model finite-precision `usize` or `isize::MAX` overflow checks (re-derives the flat, unbounded-`Nat` special case in a proof assistant, whereas `zerocopy`'s Kani harnesses verify the more general bit-precise normalized form `TrailingSliceLayout`)."
+    ],
+    "prior_art": [
+      "`google/zerocopy` commit `ec133ce4d7993775413d852f91c9e3eb2a2a0897`, `zerocopy/src/layout.rs` (internal APIs `#[doc(hidden)] pub struct DstLayout` lines 19-42, `TrailingSliceLayout` normalized form `(size_base, size_align, size_phase)` lines 150-207, `max_trailing_bytes` lines 236-341, `max_elems_for_bytes` contract lines 827-859, `pub(crate) const fn validate_cast_and_convert_metadata` and Kani contract lines 1672-1852; Kani harnesses `prove_max_trailing_bytes` lines 4495-4508, `prove_max_trailing_bytes_components` lines 4510-4527, `prove_slice_dst_validator_selected_size_fits` lines 4529-4573, and `prove_slice_dst_validator_rejects_larger_trailing_size` lines 4575-4590; note some harnesses are gated behind `cfg(kani_slow)`).",
+      "`google/zerocopy` commit `ec133ce4d7993775413d852f91c9e3eb2a2a0897`, `zerocopy/src/layout.rs`, normal-form construction used by the correspondence: `TrailingSliceLayout` size formula (lines 190-194), `DstLayout::for_slice` (lines 1098-1118), `DstLayout::for_repr_c_struct` (lines 1171-1182), slice-field case of `DstLayout::extend` (lines 1342-1365), slice-DST case of `DstLayout::pad_to_align` (lines 1430-1486), contract of `validate_cast_and_convert_metadata` (lines 1683-1701), and `proofs::max_trailing_bytes` (lines 4064-4066); execution probe `support/zerocopy_flat_normal_form_probe.rs`."
+    ],
+    "design_question": "Provides an unbounded-`Nat`, flat-`#[repr(C)]` proof-assistant re-derivation of the exact maximum fitting trailing slice count for prefix-cast metadata conversion.",
+    "lean_names": [
+      "Toy.Layout.dstSize_eq_phase_normal_form",
+      "Toy.Layout.maxSliceElems_eq_phase_normal_form_capacity",
+      "Toy.Layout.dstSize_eq_unphased_normal_form_of_dvd"
+    ]
+  },
+  {
+    "id": "max-slice-elems-none-iff",
+    "lean": "Toy.Layout.maxSliceElems_none_iff_of_elem_size_pos",
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "Whenever `0 < d.elem.size`, `maxSliceElems d bufferLen = none` if and only if no element count `n` fits in `bufferLen` (`∀ n, bufferLen < dstSize d n`).",
+    "hypotheses": [
+      {
+        "name": "h_elem",
+        "purpose": "Excludes zero-sized trailing elements (`d.elem.size = 0`), for which `maxSliceElems` returns `none` even when `dstSize d 0 ≤ bufferLen` (because every `n` fits and no maximum exists over `Nat`).",
+        "tightness": "tight",
+        "counterexample": "Toy.Layout.ce_maxSliceElems_none_drop_elem_pos"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "On `#[repr(C)] struct { hdr: u16, tag: u8, tail: [u8] }` with `bufferLen = 3`, `0 < 1`, `maxSliceElems` returns `none`, and every `n` has `3 < dstSize d n`.",
+    "nonvacuity_witness_lean": "Toy.Layout.nv_maxSliceElems_none_iff_of_elem_size_pos",
+    "non_claims": [
+      "The correspondence with zerocopy (Basis: source + execution + derived (modeling bridge), backed by `Toy.Layout.dstSize_eq_phase_normal_form` and `Toy.Layout.maxSliceElems_eq_phase_normal_form_capacity`) is established only for flat `repr(C)` slice DSTs whose element alignment does not exceed `dstAlign d`, for which zerocopy's normal form is `size_align = dstAlign d`, `size_phase = dstTailOffset d % dstAlign d` (nonzero when `dstAlign d ∤ dstTailOffset d`), and `size_base = dstTailOffset d - size_phase` (`zerocopy/src/layout.rs` at `ec133ce4`, lines 1098-1118, 1342-1365, 1430-1486), with a positive element size, no overflow, and an address-aligned prefix cast. zerocopy's `DstLayout` is a doc-hidden internal type, and `validate_cast_and_convert_metadata` is crate-private. zerocopy's rounding alignment can exceed the type's alignment under `packed(N)` (nested DSTs, or a flat trailing slice whose element alignment exceeds `N`); zerocopy also panics on zero-sized elements, checks address alignment first, and handles suffix casts.",
+      "Does not claim `maxSliceElems = none` implies `bufferLen < dstTailOffset d` (when `dstTailOffset d` is not a multiple of `dstAlign d`, trailing padding can make `dstSize d 0 > bufferLen ≥ dstTailOffset d`, as at `bufferLen = 3`, `tailOffset = 3`, `dstSize 0 = 4`)."
+    ],
+    "prior_art": [
+      "`google/zerocopy` commit `ec133ce4d7993775413d852f91c9e3eb2a2a0897`, `zerocopy/src/layout.rs`, internal `pub(crate) const fn validate_cast_and_convert_metadata` (lines 1618-1619, 1672-1704, 1743-1746, 1791-1794) and Kani harness `prove_max_trailing_bytes` (lines 4495-4508)."
+    ],
+    "design_question": "Characterizes the exact empty-result condition of flat prefix-cast metadata conversion when `0 < elem.size`, separating under-sized buffers from zero-sized-element rejection."
+  },
+  {
+    "id": "zst-tail-no-max-fitting-elems",
+    "lean": "Toy.Layout.zst_tail_no_max_fitting_elems",
+    "kind": "impossibility",
+    "tier": "T1",
+    "plain_claim": "If the trailing slice element of a `SliceDstSpec` is zero-sized (`d.elem.size = 0`), then for every `bufferLen : Nat`, no `n : Nat` satisfies `IsMaxFittingElems d bufferLen n`.",
+    "hypotheses": [
+      {
+        "name": "h_zst",
+        "purpose": "Fixes `d.elem.size = 0` so that `dstSize d n` is constant in `n`, preventing any greatest fitting natural number from existing.",
+        "tightness": "tight",
+        "counterexample": "Toy.Layout.pc_zst_tail_no_max_fitting_elems"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`#[repr(C)] struct { hdr: u32, tail: [()] }` (`⟨.none, [⟨4, 4⟩], ⟨0, 1⟩⟩`) satisfies `d.elem.size = 0`.",
+    "nonvacuity_witness_lean": "Toy.Layout.nv_zst_tail_no_max_fitting_elems",
+    "positive_control_lean": "Toy.Layout.pc_zst_tail_no_max_fitting_elems",
+    "non_claims": [
+      "The impossibility is an artifact of unbounded `Nat` metadata. Over any bounded metadata domain (for example Rust's actual `n ≤ usize::MAX`), a greatest fitting element count exists whenever `n = 0` fits, namely the bound itself. zerocopy's panic on zero-sized elements is an API choice, not a mathematical necessity.",
+      "Does not say that zero-sized-element slice DSTs cannot fit in a buffer: when `dstSize d 0 ≤ bufferLen`, every `n : Nat` fits, and over any bounded domain `[0, B]` the bound `B` itself fits and is therefore the greatest fitting count in `[0, B]` (proved in `Toy.Layout.zst_tail_bounded_max_exists`, whose substantive content is the first conjunct `dstSize d B ≤ bufferLen`, since its upper-bound conjunct `k ≤ B → dstSize d k ≤ bufferLen → k ≤ B` holds tautologically from `k ≤ B`).",
+      "zerocopy's `DstLayout` is a doc-hidden internal type and `validate_cast_and_convert_metadata` is `pub(crate)`; its zero-sized-element panic is internal documented behavior, not a consequence of this impossibility."
+    ],
+    "prior_art": [
+      "`google/zerocopy` commit `ec133ce4d7993775413d852f91c9e3eb2a2a0897`, `zerocopy/src/layout.rs`, internal `pub(crate) const fn validate_cast_and_convert_metadata` (lines 1659-1662, 1743-1746: panics when `elem_size == 0` as an API design choice)."
+    ],
+    "design_question": "Over unbounded `Nat` there is no greatest fitting element count for zero-sized trailing elements; any finite API must choose a convention (Rust's bounded `usize` metadata domain makes `usize::MAX` the maximum whenever `n = 0` fits; `zerocopy` instead rejects with a panic).",
+    "lean_names": [
+      "Toy.Layout.zst_tail_bounded_max_exists"
+    ]
+  },
+  {
+    "id": "dst-no-trailing-padding-all-iff",
+    "lean": "Toy.Layout.dst_no_trailing_padding_all_iff",
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "For any flat `SliceDstSpec` `d`, the trailing padding after the slice is `0` for every element count `n` if and only if `dstAlign d` divides both `dstTailOffset d` and `d.elem.size`.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "`#[repr(C)] struct { hdr: u32, tail: [u32] }` satisfies `4 ∣ 4` and `4 ∣ 4`.",
+    "nonvacuity_witness_lean": "Toy.Layout.nv_dst_no_trailing_padding_all_iff",
+    "non_claims": [
+      "zerocopy's `DstLayout` is a doc-hidden internal type, and `validate_cast_and_convert_metadata` is crate-private. zerocopy documents `DstLayout::requires_dynamic_padding` as conservative and proves only its safety-critical direction; this package does not model that function, and the exact iff here concerns the model's `dstTrailingPadding` only.",
+      "Measures trailing padding after the slice only; does not rule out inter-field padding inside `headFields` or between `headFields` and `dstTailOffset d`.",
+      "Does not claim that `dstTrailingPadding d n > 0` for every `n` when the right-hand side fails (for instance, `#[repr(C)] struct { hdr: u32, tail: [u8] }` has zero trailing padding whenever `4 ∣ n` and nonzero padding otherwise)."
+    ],
+    "prior_art": [
+      "`google/zerocopy` commit `ec133ce4d7993775413d852f91c9e3eb2a2a0897`, `zerocopy/src/layout.rs`, internal `DstLayout::requires_dynamic_padding` (lines 1518-1558: documented as conservative at lines 1518-1522; Kani contract lines 1525-1530; safety-critical direction only proved at lines 1543-1545) and Kani harness `prove_requires_dynamic_padding` (lines 4742-4780, gated behind `cfg(kani_slow)`). Context only: this package does not model that predicate; the Lean theorem is an exact iff about the model's `dstTrailingPadding`."
+    ],
+    "design_question": "Gives the exact static necessary and sufficient criterion under which dynamic trailing padding vanishes for all element counts in a flat slice-tailed `#[repr(C)]` DST."
+  },
+  {
+    "id": "ce-dst-trailing-padding-breaks-naive-prefix-cast",
+    "lean": "Toy.Layout.ce_dst_trailing_padding_breaks_naive_prefix_cast",
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "When `¬ (dstAlign d ∣ dstTailOffset d ∧ dstAlign d ∣ d.elem.size)`, trailing padding can break naive prefix-cast division `(bufferLen - dstTailOffset d) / d.elem.size` and the naive tail check `dstTailOffset d ≤ bufferLen`, across both failure causes: (1) on `[u32, [u8]]` (`4 ∣ 4` holds, `¬ (4 ∣ 1)`), naive `(5 - 4) / 1 = 1` over-estimates `maxSliceElems = some 0`; (2) on `[u16, u8, [u8]]` (neither divisibility holds), `tailOffset = 3 ≤ 3` yet `maxSliceElems = none`; (3) on `[u16, u8, [[u8; 2]]]` (`2 ∣ 2` holds, `¬ (2 ∣ 3)`), naive `(5 - 3) / 2 = 1` over-estimates `maxSliceElems = some 0` and `tailOffset = 3 ≤ 3` accepts a buffer where `maxSliceElems = none`.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Three concrete flat DSTs `⟨.none, [⟨4, 4⟩], ⟨1, 1⟩⟩`, `⟨.none, [⟨2, 2⟩, ⟨1, 1⟩], ⟨1, 1⟩⟩`, and `⟨.none, [⟨2, 2⟩, ⟨1, 1⟩], ⟨2, 1⟩⟩`, cross-checked against `rustc 1.98.0-nightly (14210df0e)`.",
+    "non_claims": [
+      "Does not say naive division fails when all four sufficient conditions hold: `dstAlign d ∣ dstTailOffset d`, `dstAlign d ∣ d.elem.size`, `0 < d.elem.size`, and `dstTailOffset d ≤ bufferLen` — in that regime `maxSliceElems d bufferLen = some ((bufferLen - dstTailOffset d) / d.elem.size)` (proved in `Toy.Layout.maxSliceElems_eq_naive_of_no_trailing_padding`).",
+      "Both extra conditions `0 < d.elem.size` and `dstTailOffset d ≤ bufferLen` are essential for agreement with naive `Nat` division: even when `dstAlign` divides both `dstTailOffset` and `elem.size`, naive division disagrees at zero-sized elements (`Toy.Layout.ce_naive_agrees_fails_zst`, `(8 - 4) / 0 = 0` vs. `none`) and at short buffers (`Toy.Layout.ce_naive_agrees_fails_short_buffer`, `(2 - 4) / 4 = 0` vs. `none` with `dstSize d 0 = 4 > 2`).",
+      "Does not claim that `dstAlign d ∣ d.elem.size` alone makes naive prefix-cast division safe (instance 3 directly refutes that)."
+    ],
+    "prior_art": [
+      "`google/zerocopy` commit `ec133ce4d7993775413d852f91c9e3eb2a2a0897`, `zerocopy/src/layout.rs`, internal `TrailingSliceLayout` doc example (lines 158-168) and `max_trailing_bytes` (lines 236-341)."
+    ],
+    "design_question": "Witnesses both distinct divisibility failure causes showing why rounding `bufferLen` down to `dstAlign d` before subtracting `dstTailOffset d` (and rejecting `elem.size = 0` or `cap < dstTailOffset`) is required for sound flat prefix-cast metadata computation.",
+    "lean_names": [
+      "Toy.Layout.maxSliceElems_eq_naive_of_no_trailing_padding",
+      "Toy.Layout.ce_naive_agrees_fails_zst",
+      "Toy.Layout.ce_naive_agrees_fails_short_buffer"
+    ]
+  }
+]

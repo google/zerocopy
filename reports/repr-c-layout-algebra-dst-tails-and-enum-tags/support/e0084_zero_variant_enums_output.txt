@@ -1,0 +1,88 @@
+rustc 1.98.0-nightly (14210df0e 2026-05-31)
+binary: rustc
+commit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65
+commit-date: 2026-05-31
+host: x86_64-unknown-linux-gnu
+release: 1.98.0-nightly
+LLVM version: 22.1.6
+--- rustc --crate-type=lib support/e0084_zero_variant_enums.rs -o /tmp/e0084.rlib ---
+error[E0084]: unsupported representation for zero-variant enum
+ --> support/e0084_zero_variant_enums.rs:7:8
+  |
+7 | #[repr(C)]
+  |        ^
+8 | pub enum ZeroVariantC {}
+  | --------------------- zero-variant enum
+
+error[E0084]: unsupported representation for zero-variant enum
+  --> support/e0084_zero_variant_enums.rs:10:8
+   |
+10 | #[repr(u8)]
+   |        ^^
+11 | pub enum ZeroVariantU8 {}
+   | ---------------------- zero-variant enum
+
+error[E0084]: unsupported representation for zero-variant enum
+  --> support/e0084_zero_variant_enums.rs:13:8
+   |
+13 | #[repr(i32)]
+   |        ^^^
+14 | pub enum ZeroVariantI32 {}
+   | ----------------------- zero-variant enum
+
+error[E0084]: unsupported representation for zero-variant enum
+  --> support/e0084_zero_variant_enums.rs:16:8
+   |
+16 | #[repr(usize)]
+   |        ^^^^^
+17 | pub enum ZeroVariantUsize {}
+   | ------------------------- zero-variant enum
+
+error: aborting due to 4 previous errors
+
+For more information about this error, try `rustc --explain E0084`.
+--- exit status: 1 ---
+rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)
+binary: rustc
+commit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1
+commit-date: 2026-11-11
+host: x86_64-unknown-linux-gnu
+release: 1.102.0-nightly
+LLVM version: 23.1.5
+--- rustc --crate-type=lib support/e0084_zero_variant_enums.rs -o /tmp/e0084.rlib ---
+error[E0084]: unsupported representation for zero-variant enum
+ --> support/e0084_zero_variant_enums.rs:7:8
+  |
+7 | #[repr(C)]
+  |        ^
+8 | pub enum ZeroVariantC {}
+  | --------------------- zero-variant enum
+
+error[E0084]: unsupported representation for zero-variant enum
+  --> support/e0084_zero_variant_enums.rs:10:8
+   |
+10 | #[repr(u8)]
+   |        ^^
+11 | pub enum ZeroVariantU8 {}
+   | ---------------------- zero-variant enum
+
+error[E0084]: unsupported representation for zero-variant enum
+  --> support/e0084_zero_variant_enums.rs:13:8
+   |
+13 | #[repr(i32)]
+   |        ^^^
+14 | pub enum ZeroVariantI32 {}
+   | ----------------------- zero-variant enum
+
+error[E0084]: unsupported representation for zero-variant enum
+  --> support/e0084_zero_variant_enums.rs:16:8
+   |
+16 | #[repr(usize)]
+   |        ^^^^^
+17 | pub enum ZeroVariantUsize {}
+   | ------------------------- zero-variant enum
+
+error: aborting due to 4 previous errors
+
+For more information about this error, try `rustc --explain E0084`.
+--- exit status: 1 ---
