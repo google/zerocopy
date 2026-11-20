@@ -1,0 +1,149 @@
+{
+  "topics": [
+    "verification/held-out-evaluation-validity",
+    "agents/benchmark-overfitting",
+    "tooling/small-sample-interval-estimation",
+    "verification/negative-instance-witnesses"
+  ],
+  "subjects": [
+    {
+      "name": "FuzzBench",
+      "identity": {
+        "repository": "google/fuzzbench",
+        "revision": "3234e151d70f6093272a9b4155e68ee57faf986c"
+      }
+    },
+    {
+      "name": "BenchExec",
+      "identity": {
+        "repository": "sosy-lab/benchexec",
+        "revision": "efe409ce80754322fb7a754d5e0861997da8d2c9"
+      }
+    },
+    {
+      "name": "SWE-bench",
+      "identity": {
+        "repository": "SWE-bench/SWE-bench",
+        "revision": "02e7a74ffd0b707aab73d203fe87bdc7c76afc8e"
+      }
+    },
+    {
+      "name": "ImageNetV2",
+      "identity": {
+        "repository": "modestyachts/ImageNetV2",
+        "revision": "0b0c3fe89058e4c7ee2348938b3f4f706a931bf3"
+      }
+    },
+    {
+      "name": "statsmodels",
+      "identity": {
+        "repository": "statsmodels/statsmodels",
+        "revision": "ba594f9389e259cd9e19c26351332e43f33d9aa2"
+      }
+    },
+    {
+      "name": "Magma Ground-Truth Fuzzing Benchmark",
+      "identity": {
+        "repository": "HexHive/magma",
+        "revision": "75d1ae7b180443a778b8830c79176ca5f93642ac"
+      }
+    },
+    {
+      "name": "C. J. Clopper and E. S. Pearson, The Use of Confidence or Fiducial Limits Illustrated in the Case of the Binomial",
+      "identity": {
+        "doi": "10.1093/biomet/26.4.404",
+        "journal": "Biometrika 26(4):404-413",
+        "year": "1934"
+      }
+    },
+    {
+      "name": "James A. Hanley and Abby Lippman-Hand, If Nothing Goes Wrong, Is Everything All Right? Interpreting Zero Numerators",
+      "identity": {
+        "doi": "10.1001/jama.1983.03330370053031",
+        "journal": "JAMA 249(13):1743-1745",
+        "year": "1983"
+      }
+    },
+    {
+      "name": "Lawrence D. Brown, T. Tony Cai, and Anirban DasGupta, Interval Estimation for a Binomial Proportion",
+      "identity": {
+        "doi": "10.1214/ss/1009213286",
+        "journal": "Statistical Science 16(2):101-133",
+        "year": "2001"
+      }
+    },
+    {
+      "name": "Cynthia Dwork, Vitaly Feldman, Moritz Hardt, Toniann Pitassi, Omer Reingold, and Aaron Roth, The Reusable Holdout: Preserving Validity in Adaptive Data Analysis",
+      "identity": {
+        "arxiv": "1506.02629",
+        "doi": "10.1126/science.aaa9375",
+        "year": "2015"
+      }
+    },
+    {
+      "name": "Avrim Blum and Moritz Hardt, The Ladder: A Reliable Leaderboard for Machine Learning Competitions",
+      "identity": {
+        "arxiv": "1502.04585",
+        "venue": "ICML 2015",
+        "year": "2015"
+      }
+    },
+    {
+      "name": "Vitaly Feldman, Roy Frostig, and Moritz Hardt, The Advantages of Multiple Classes for Reducing Overfitting from Test Set Reuse",
+      "identity": {
+        "arxiv": "1905.10360",
+        "venue": "ICML 2019",
+        "year": "2019"
+      }
+    },
+    {
+      "name": "Dirk Beyer, Matthias Dangl, Daniel Dietsch, Matthias Heizmann, and Andreas Stahlbauer, Witness Validation and Stepwise Testification across Software Verifiers",
+      "identity": {
+        "doi": "10.1145/2786805.2786867",
+        "venue": "ESEC/FSE 2015",
+        "year": "2015"
+      }
+    },
+    {
+      "name": "George Klees, Andrew Ruef, Benji Cooper, Shiyi Wei, and Michael Hicks, Evaluating Fuzz Testing",
+      "identity": {
+        "arxiv": "1808.09700",
+        "doi": "10.1145/3243734.3243804",
+        "year": "2018"
+      }
+    },
+    {
+      "name": "Ahmad Hazimeh, Adrian Herrera, and Mathias Payer, Magma: A Ground-Truth Fuzzing Benchmark",
+      "identity": {
+        "arxiv": "2009.01120",
+        "doi": "10.1145/3428334",
+        "year": "2020"
+      }
+    },
+    {
+      "name": "Benjamin Recht, Rebecca Roelofs, Ludwig Schmidt, and Vaishaal Shankar, Do ImageNet Classifiers Generalize to ImageNet?",
+      "identity": {
+        "arxiv": "1902.10811",
+        "venue": "ICML 2019",
+        "year": "2019"
+      }
+    },
+    {
+      "name": "Carlos E. Jimenez et al., SWE-bench: Can Language Models Resolve Real-World GitHub Issues?",
+      "identity": {
+        "arxiv": "2310.06770",
+        "venue": "ICLR 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Yonatan Oren, Nicole Meister, Niladri Chatterji, Faisal Ladhak, and Tatsunori B. Hashimoto, Proving Test Set Contamination in Black-Box Language Models",
+      "identity": {
+        "arxiv": "2310.17623",
+        "venue": "ICLR 2024",
+        "year": "2024"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

@@ -53513,6 +53513,155 @@
         "zerocopy/soundness"
       ]
     },
+    "reusable-holdout-thresholdout-ladder-leaderboards-and-clopper-pearson-zero-numerators": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/fuzzbench",
+            "revision": "3234e151d70f6093272a9b4155e68ee57faf986c"
+          },
+          "name": "FuzzBench"
+        },
+        {
+          "identity": {
+            "repository": "sosy-lab/benchexec",
+            "revision": "efe409ce80754322fb7a754d5e0861997da8d2c9"
+          },
+          "name": "BenchExec"
+        },
+        {
+          "identity": {
+            "repository": "SWE-bench/SWE-bench",
+            "revision": "02e7a74ffd0b707aab73d203fe87bdc7c76afc8e"
+          },
+          "name": "SWE-bench"
+        },
+        {
+          "identity": {
+            "repository": "modestyachts/ImageNetV2",
+            "revision": "0b0c3fe89058e4c7ee2348938b3f4f706a931bf3"
+          },
+          "name": "ImageNetV2"
+        },
+        {
+          "identity": {
+            "repository": "statsmodels/statsmodels",
+            "revision": "ba594f9389e259cd9e19c26351332e43f33d9aa2"
+          },
+          "name": "statsmodels"
+        },
+        {
+          "identity": {
+            "repository": "HexHive/magma",
+            "revision": "75d1ae7b180443a778b8830c79176ca5f93642ac"
+          },
+          "name": "Magma Ground-Truth Fuzzing Benchmark"
+        },
+        {
+          "identity": {
+            "doi": "10.1093/biomet/26.4.404",
+            "journal": "Biometrika 26(4):404-413",
+            "year": "1934"
+          },
+          "name": "C. J. Clopper and E. S. Pearson, The Use of Confidence or Fiducial Limits Illustrated in the Case of the Binomial"
+        },
+        {
+          "identity": {
+            "doi": "10.1001/jama.1983.03330370053031",
+            "journal": "JAMA 249(13):1743-1745",
+            "year": "1983"
+          },
+          "name": "James A. Hanley and Abby Lippman-Hand, If Nothing Goes Wrong, Is Everything All Right? Interpreting Zero Numerators"
+        },
+        {
+          "identity": {
+            "doi": "10.1214/ss/1009213286",
+            "journal": "Statistical Science 16(2):101-133",
+            "year": "2001"
+          },
+          "name": "Lawrence D. Brown, T. Tony Cai, and Anirban DasGupta, Interval Estimation for a Binomial Proportion"
+        },
+        {
+          "identity": {
+            "arxiv": "1506.02629",
+            "doi": "10.1126/science.aaa9375",
+            "year": "2015"
+          },
+          "name": "Cynthia Dwork, Vitaly Feldman, Moritz Hardt, Toniann Pitassi, Omer Reingold, and Aaron Roth, The Reusable Holdout: Preserving Validity in Adaptive Data Analysis"
+        },
+        {
+          "identity": {
+            "arxiv": "1502.04585",
+            "venue": "ICML 2015",
+            "year": "2015"
+          },
+          "name": "Avrim Blum and Moritz Hardt, The Ladder: A Reliable Leaderboard for Machine Learning Competitions"
+        },
+        {
+          "identity": {
+            "arxiv": "1905.10360",
+            "venue": "ICML 2019",
+            "year": "2019"
+          },
+          "name": "Vitaly Feldman, Roy Frostig, and Moritz Hardt, The Advantages of Multiple Classes for Reducing Overfitting from Test Set Reuse"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2786805.2786867",
+            "venue": "ESEC/FSE 2015",
+            "year": "2015"
+          },
+          "name": "Dirk Beyer, Matthias Dangl, Daniel Dietsch, Matthias Heizmann, and Andreas Stahlbauer, Witness Validation and Stepwise Testification across Software Verifiers"
+        },
+        {
+          "identity": {
+            "arxiv": "1808.09700",
+            "doi": "10.1145/3243734.3243804",
+            "year": "2018"
+          },
+          "name": "George Klees, Andrew Ruef, Benji Cooper, Shiyi Wei, and Michael Hicks, Evaluating Fuzz Testing"
+        },
+        {
+          "identity": {
+            "arxiv": "2009.01120",
+            "doi": "10.1145/3428334",
+            "year": "2020"
+          },
+          "name": "Ahmad Hazimeh, Adrian Herrera, and Mathias Payer, Magma: A Ground-Truth Fuzzing Benchmark"
+        },
+        {
+          "identity": {
+            "arxiv": "1902.10811",
+            "venue": "ICML 2019",
+            "year": "2019"
+          },
+          "name": "Benjamin Recht, Rebecca Roelofs, Ludwig Schmidt, and Vaishaal Shankar, Do ImageNet Classifiers Generalize to ImageNet?"
+        },
+        {
+          "identity": {
+            "arxiv": "2310.06770",
+            "venue": "ICLR 2024",
+            "year": "2024"
+          },
+          "name": "Carlos E. Jimenez et al., SWE-bench: Can Language Models Resolve Real-World GitHub Issues?"
+        },
+        {
+          "identity": {
+            "arxiv": "2310.17623",
+            "venue": "ICLR 2024",
+            "year": "2024"
+          },
+          "name": "Yonatan Oren, Nicole Meister, Niladri Chatterji, Faisal Ladhak, and Tatsunori B. Hashimoto, Proving Test Set Contamination in Black-Box Language Models"
+        }
+      ],
+      "topics": [
+        "verification/held-out-evaluation-validity",
+        "agents/benchmark-overfitting",
+        "tooling/small-sample-interval-estimation",
+        "verification/negative-instance-witnesses"
+      ]
+    },
     "reversible-languages-program-inversion-and-optimistic-rollback-codegen": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -63707,6 +63856,112 @@
         "runtimes/ocaml-ffi"
       ]
     },
+    "semenov-runaway-criticality-tmrad-diers-omega-relief-sizing-and-cantera-ignition": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "Cantera/cantera",
+            "revision": "25c1ab1c397e2991c77560b1ad5154919a12c733"
+          },
+          "name": "Cantera (development head, source examined)"
+        },
+        {
+          "identity": {
+            "repository": "Cantera/cantera",
+            "revision": "4a8358eb80cfeb50474386b5f9ec0b3a83519889",
+            "version": "v3.2.0"
+          },
+          "name": "Cantera 3.2.0 release tag commit (source examined; matches executed wheel)"
+        },
+        {
+          "identity": {
+            "artifact": "cantera-3.2.0-cp313-cp313-manylinux_2_28_x86_64.whl",
+            "sha256": "52335f69b9fc6fe88d56ee5a11797c25798714f6ce1373597a3d8a26e1db4365",
+            "url": "https://pypi.org/project/cantera/3.2.0/",
+            "version": "3.2.0"
+          },
+          "name": "Cantera 3.2.0 CPython 3.13 manylinux wheel (executed; bundles SUNDIALS 7.4.0)"
+        },
+        {
+          "identity": {
+            "repository": "LLNL/sundials",
+            "revision": "312fc0f3684f27209ca9dc9249d194436eb41a7a"
+          },
+          "name": "SUNDIALS (development head, CVODES/IDA source examined)"
+        },
+        {
+          "identity": {
+            "repository": "LLNL/sundials",
+            "revision": "8e17876d3b4d682b4098684b07a85b005a122f81",
+            "version": "v7.4.0"
+          },
+          "name": "SUNDIALS 7.4.0 release tag commit (CVODES defaults examined)"
+        },
+        {
+          "identity": {
+            "repository": "CalebBell/fluids",
+            "revision": "7737f7051109d4de62cfccfc38af37a9214c3103"
+          },
+          "name": "fluids (source examined; installed from this revision and executed)"
+        },
+        {
+          "identity": {
+            "repository": "CalebBell/thermo",
+            "revision": "2bb466e98439c2395a004e7095d07f9b97a5a0f0"
+          },
+          "name": "thermo (source examined; installed from this revision and executed)"
+        },
+        {
+          "identity": {
+            "artifact": "chemicals-1.5.2-py3-none-any.whl",
+            "sha256": "f85ef7f36e77fee634686c26562929ee61026cd548d89cebd57b2251ca843d6e",
+            "version": "1.5.2"
+          },
+          "name": "chemicals 1.5.2 wheel (dependency of the thermo install)"
+        },
+        {
+          "identity": {
+            "standard": "CSB Investigation Report No. 2008-3-I-FL",
+            "url": "https://www.csb.gov/assets/1/20/t2_final_copy_9_17_09.pdf",
+            "version": "Board Voting Copy, September 15, 2009"
+          },
+          "name": "U.S. Chemical Safety Board, T2 Laboratories, Inc. Runaway Reaction, Investigation Report"
+        },
+        {
+          "identity": {
+            "url": "https://safeche.engin.umich.edu/wp-content/uploads/2021/07/466ProcessControlModule1PS-T2.pdf"
+          },
+          "name": "University of Michigan Process Control Safety Module 1: T2 Laboratories Explosion (kinetic constants transcribed from Fogler, 5th ed.)"
+        },
+        {
+          "identity": {
+            "url": "https://www.icheme.org/media/12157/x-paper-10.pdf",
+            "version": "IChemE Symposium Series No. 115"
+          },
+          "name": "Duxbury and Wilday, The design of reactor relief systems (worked Leung-method example)"
+        },
+        {
+          "identity": {
+            "url": "https://www.epsc.be/l/en/library/download/urn:uuid:3650fd55-3276-499c-b6ae-3eeb9784ab1a/5_award_2020_presentation.pdf",
+            "version": "Leverkusen, 6 October 2020"
+          },
+          "name": "Stoessel, Thermal Process Safety Criticality Classes as a Tool for Assessment and Design (EPSC Award Lecture)"
+        },
+        {
+          "identity": {
+            "url": "https://www.yeonjin.com/editor/file/dda51971/download/38e12914-c24c-4f02-a1ec-fca66803593c"
+          },
+          "name": "Thermal Hazard Technology Technical Information Sheet No 22, The phi correction in accelerating rate calorimetry"
+        }
+      ],
+      "topics": [
+        "domains/thermal-runaway-criteria",
+        "domains/emergency-relief-sizing",
+        "verification/stiff-kinetics-tolerances",
+        "systems/choked-flashing-flow"
+      ]
+    },
     "sf-in-lean-semantics-comparator-and-literate-verification": {
       "observed_at": "2026-11-20",
       "subjects": [
@@ -64112,6 +64367,125 @@
         "runtimes/shadow-memory",
         "security/memory-safety-detectors",
         "systems/race-detection"
+      ]
+    },
+    "shangrla-alpha-martingale-audits-raire-assertions-and-meek-stv-rounding-ties": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "pbstark/SHANGRLA",
+            "revision": "efd329380937f20e9c4bde8abed00abbd873007d"
+          },
+          "name": "SHANGRLA (assorter-based risk-limiting audit library, shangrla/core and shangrla/raire)"
+        },
+        {
+          "identity": {
+            "repository": "votingworks/arlo",
+            "revision": "a2f618623c13e7d6109ff6fedfdd85f9a388c5db"
+          },
+          "name": "Arlo (risk-limiting audit server, server/audit_math and sampler)"
+        },
+        {
+          "identity": {
+            "repository": "votingworks/consistent_sampler",
+            "revision": "46f6f0a6761adc7172e2c3e844bee359e6bd11bf",
+            "version": "1.0.10"
+          },
+          "name": "consistent_sampler (revision pinned by Arlo pyproject.toml and uv.lock)"
+        },
+        {
+          "identity": {
+            "artifact": "cryptorandom-0.4-py3-none-any.whl",
+            "sha256": "1dd5bb74f7942fcf4265036853c2c2903b9403ecf0b67d916dba251da758526e",
+            "version": "0.4"
+          },
+          "name": "cryptorandom SHA-256 PRNG used by SHANGRLA (PyPI wheel)"
+        },
+        {
+          "identity": {
+            "repository": "BrightSpots/rcv",
+            "revision": "0baae6680d6338f280ef4874421ac6d9b9d189d4"
+          },
+          "name": "RCTab / rcv ranked-choice tabulator"
+        },
+        {
+          "identity": {
+            "repository": "AndrewConway/ConcreteSTV",
+            "revision": "98aa16d63a25832e8e2df0e641c548dd0266b2c5"
+          },
+          "name": "ConcreteSTV (jurisdiction-specific STV counting)"
+        },
+        {
+          "identity": {
+            "repository": "DemocracyDevelopers/raire-rs",
+            "revision": "2349c336ff8f2a9c78bcf781eeaf849f90403bbb"
+          },
+          "name": "raire-rs (RAIRE assertion generation for IRV audits)"
+        },
+        {
+          "identity": {
+            "repository": "MiladKetabGhale/Modular_High_Assurance_Voting_Verifiers",
+            "revision": "40de9bf098df41610bdeac349a68eda874900cdd"
+          },
+          "name": "Modular_High_Assurance_Voting_Verifiers (HOL4 and CakeML verified STV certificate checkers)"
+        },
+        {
+          "identity": {
+            "repository": "mukeshtiwari/Modular-STVCalculi",
+            "revision": "e19b6c8e1d23e25e9f9a06becba20f11c2ed386a"
+          },
+          "name": "Modular-STVCalculi (Coq framework for certificate-producing STV counters)"
+        },
+        {
+          "identity": {
+            "repository": "mukeshtiwari/Checker",
+            "revision": "59403ac3bc654c1884d98b550866ac4ea5bab56e"
+          },
+          "name": "Checker (HOL4 vote-counting certificate checker, 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-03592-1_5"
+          },
+          "name": "Verified Certificate Checking for Counting Votes (VSTTE 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-00419-4_4"
+          },
+          "name": "Modular Formalisation and Verification of STV Algorithms (E-Vote-ID 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1214/22-AOAS1646"
+          },
+          "name": "ALPHA: Audit that learns from previously hand-audited ballots"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-54455-3_23"
+          },
+          "name": "Sets of Half-Average Nulls Generate Risk-Limiting Audits: SHANGRLA"
+        },
+        {
+          "identity": {
+            "url": "https://arxiv.org/abs/1903.08804"
+          },
+          "name": "RAIRE: Risk-Limiting Audits for IRV Elections"
+        },
+        {
+          "identity": {
+            "url": "https://numpy.org/neps/nep-0019-rng-policy.html"
+          },
+          "name": "NumPy NEP 19 random number generator policy"
+        }
+      ],
+      "topics": [
+        "domains/risk-limiting-audits",
+        "domains/ranked-choice-tabulation",
+        "verification/certificate-checked-counting",
+        "security/audit-sampling-reproducibility"
       ]
     },
     "side-channel-freedom-foundations-and-leakage-contracts-1996-2026": {

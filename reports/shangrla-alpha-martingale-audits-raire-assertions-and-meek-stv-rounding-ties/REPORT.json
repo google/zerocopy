@@ -1,0 +1,119 @@
+{
+  "topics": [
+    "domains/risk-limiting-audits",
+    "domains/ranked-choice-tabulation",
+    "verification/certificate-checked-counting",
+    "security/audit-sampling-reproducibility"
+  ],
+  "subjects": [
+    {
+      "name": "SHANGRLA (assorter-based risk-limiting audit library, shangrla/core and shangrla/raire)",
+      "identity": {
+        "repository": "pbstark/SHANGRLA",
+        "revision": "efd329380937f20e9c4bde8abed00abbd873007d"
+      }
+    },
+    {
+      "name": "Arlo (risk-limiting audit server, server/audit_math and sampler)",
+      "identity": {
+        "repository": "votingworks/arlo",
+        "revision": "a2f618623c13e7d6109ff6fedfdd85f9a388c5db"
+      }
+    },
+    {
+      "name": "consistent_sampler (revision pinned by Arlo pyproject.toml and uv.lock)",
+      "identity": {
+        "repository": "votingworks/consistent_sampler",
+        "revision": "46f6f0a6761adc7172e2c3e844bee359e6bd11bf",
+        "version": "1.0.10"
+      }
+    },
+    {
+      "name": "cryptorandom SHA-256 PRNG used by SHANGRLA (PyPI wheel)",
+      "identity": {
+        "artifact": "cryptorandom-0.4-py3-none-any.whl",
+        "version": "0.4",
+        "sha256": "1dd5bb74f7942fcf4265036853c2c2903b9403ecf0b67d916dba251da758526e"
+      }
+    },
+    {
+      "name": "RCTab / rcv ranked-choice tabulator",
+      "identity": {
+        "repository": "BrightSpots/rcv",
+        "revision": "0baae6680d6338f280ef4874421ac6d9b9d189d4"
+      }
+    },
+    {
+      "name": "ConcreteSTV (jurisdiction-specific STV counting)",
+      "identity": {
+        "repository": "AndrewConway/ConcreteSTV",
+        "revision": "98aa16d63a25832e8e2df0e641c548dd0266b2c5"
+      }
+    },
+    {
+      "name": "raire-rs (RAIRE assertion generation for IRV audits)",
+      "identity": {
+        "repository": "DemocracyDevelopers/raire-rs",
+        "revision": "2349c336ff8f2a9c78bcf781eeaf849f90403bbb"
+      }
+    },
+    {
+      "name": "Modular_High_Assurance_Voting_Verifiers (HOL4 and CakeML verified STV certificate checkers)",
+      "identity": {
+        "repository": "MiladKetabGhale/Modular_High_Assurance_Voting_Verifiers",
+        "revision": "40de9bf098df41610bdeac349a68eda874900cdd"
+      }
+    },
+    {
+      "name": "Modular-STVCalculi (Coq framework for certificate-producing STV counters)",
+      "identity": {
+        "repository": "mukeshtiwari/Modular-STVCalculi",
+        "revision": "e19b6c8e1d23e25e9f9a06becba20f11c2ed386a"
+      }
+    },
+    {
+      "name": "Checker (HOL4 vote-counting certificate checker, 2017)",
+      "identity": {
+        "repository": "mukeshtiwari/Checker",
+        "revision": "59403ac3bc654c1884d98b550866ac4ea5bab56e"
+      }
+    },
+    {
+      "name": "Verified Certificate Checking for Counting Votes (VSTTE 2018)",
+      "identity": {
+        "doi": "10.1007/978-3-030-03592-1_5"
+      }
+    },
+    {
+      "name": "Modular Formalisation and Verification of STV Algorithms (E-Vote-ID 2018)",
+      "identity": {
+        "doi": "10.1007/978-3-030-00419-4_4"
+      }
+    },
+    {
+      "name": "ALPHA: Audit that learns from previously hand-audited ballots",
+      "identity": {
+        "doi": "10.1214/22-AOAS1646"
+      }
+    },
+    {
+      "name": "Sets of Half-Average Nulls Generate Risk-Limiting Audits: SHANGRLA",
+      "identity": {
+        "doi": "10.1007/978-3-030-54455-3_23"
+      }
+    },
+    {
+      "name": "RAIRE: Risk-Limiting Audits for IRV Elections",
+      "identity": {
+        "url": "https://arxiv.org/abs/1903.08804"
+      }
+    },
+    {
+      "name": "NumPy NEP 19 random number generator policy",
+      "identity": {
+        "url": "https://numpy.org/neps/nep-0019-rng-policy.html"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

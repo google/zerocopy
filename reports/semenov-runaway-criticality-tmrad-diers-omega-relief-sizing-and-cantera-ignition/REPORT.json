@@ -1,0 +1,106 @@
+{
+  "topics": [
+    "domains/thermal-runaway-criteria",
+    "domains/emergency-relief-sizing",
+    "verification/stiff-kinetics-tolerances",
+    "systems/choked-flashing-flow"
+  ],
+  "subjects": [
+    {
+      "name": "Cantera (development head, source examined)",
+      "identity": {
+        "repository": "Cantera/cantera",
+        "revision": "25c1ab1c397e2991c77560b1ad5154919a12c733"
+      }
+    },
+    {
+      "name": "Cantera 3.2.0 release tag commit (source examined; matches executed wheel)",
+      "identity": {
+        "repository": "Cantera/cantera",
+        "revision": "4a8358eb80cfeb50474386b5f9ec0b3a83519889",
+        "version": "v3.2.0"
+      }
+    },
+    {
+      "name": "Cantera 3.2.0 CPython 3.13 manylinux wheel (executed; bundles SUNDIALS 7.4.0)",
+      "identity": {
+        "artifact": "cantera-3.2.0-cp313-cp313-manylinux_2_28_x86_64.whl",
+        "sha256": "52335f69b9fc6fe88d56ee5a11797c25798714f6ce1373597a3d8a26e1db4365",
+        "version": "3.2.0",
+        "url": "https://pypi.org/project/cantera/3.2.0/"
+      }
+    },
+    {
+      "name": "SUNDIALS (development head, CVODES/IDA source examined)",
+      "identity": {
+        "repository": "LLNL/sundials",
+        "revision": "312fc0f3684f27209ca9dc9249d194436eb41a7a"
+      }
+    },
+    {
+      "name": "SUNDIALS 7.4.0 release tag commit (CVODES defaults examined)",
+      "identity": {
+        "repository": "LLNL/sundials",
+        "revision": "8e17876d3b4d682b4098684b07a85b005a122f81",
+        "version": "v7.4.0"
+      }
+    },
+    {
+      "name": "fluids (source examined; installed from this revision and executed)",
+      "identity": {
+        "repository": "CalebBell/fluids",
+        "revision": "7737f7051109d4de62cfccfc38af37a9214c3103"
+      }
+    },
+    {
+      "name": "thermo (source examined; installed from this revision and executed)",
+      "identity": {
+        "repository": "CalebBell/thermo",
+        "revision": "2bb466e98439c2395a004e7095d07f9b97a5a0f0"
+      }
+    },
+    {
+      "name": "chemicals 1.5.2 wheel (dependency of the thermo install)",
+      "identity": {
+        "artifact": "chemicals-1.5.2-py3-none-any.whl",
+        "sha256": "f85ef7f36e77fee634686c26562929ee61026cd548d89cebd57b2251ca843d6e",
+        "version": "1.5.2"
+      }
+    },
+    {
+      "name": "U.S. Chemical Safety Board, T2 Laboratories, Inc. Runaway Reaction, Investigation Report",
+      "identity": {
+        "standard": "CSB Investigation Report No. 2008-3-I-FL",
+        "version": "Board Voting Copy, September 15, 2009",
+        "url": "https://www.csb.gov/assets/1/20/t2_final_copy_9_17_09.pdf"
+      }
+    },
+    {
+      "name": "University of Michigan Process Control Safety Module 1: T2 Laboratories Explosion (kinetic constants transcribed from Fogler, 5th ed.)",
+      "identity": {
+        "url": "https://safeche.engin.umich.edu/wp-content/uploads/2021/07/466ProcessControlModule1PS-T2.pdf"
+      }
+    },
+    {
+      "name": "Duxbury and Wilday, The design of reactor relief systems (worked Leung-method example)",
+      "identity": {
+        "version": "IChemE Symposium Series No. 115",
+        "url": "https://www.icheme.org/media/12157/x-paper-10.pdf"
+      }
+    },
+    {
+      "name": "Stoessel, Thermal Process Safety Criticality Classes as a Tool for Assessment and Design (EPSC Award Lecture)",
+      "identity": {
+        "version": "Leverkusen, 6 October 2020",
+        "url": "https://www.epsc.be/l/en/library/download/urn:uuid:3650fd55-3276-499c-b6ae-3eeb9784ab1a/5_award_2020_presentation.pdf"
+      }
+    },
+    {
+      "name": "Thermal Hazard Technology Technical Information Sheet No 22, The phi correction in accelerating rate calorimetry",
+      "identity": {
+        "url": "https://www.yeonjin.com/editor/file/dda51971/download/38e12914-c24c-4f02-a1ec-fca66803593c"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
