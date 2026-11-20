@@ -36831,6 +36831,75 @@
         "verification/separation-logic"
       ]
     },
+    "mir-move-deinit-gvn-cse-and-guarded-preheader-licm-soundness": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "20aa204315cd36aaf944778b7d33c0d609ced8e8"
+          },
+          "name": "Anneal MIR verification framework and Pass 1 boundary auditor"
+        },
+        {
+          "identity": {
+            "repository": "proofs-rs/lean-miri",
+            "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+          },
+          "name": "lean-miri mechanized Rust MIR interpreter"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+          },
+          "name": "Rust compiler (rustc_mir_transform, rustc_const_eval, rustc_middle)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/miri",
+            "revision": "7fa591d7d4dd9af8154becbc8332f8096f8323b1"
+          },
+          "name": "Miri reference interpreter"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert verified C compiler (RTL CSE and value-numbering domain)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-22102-1_6",
+            "venue": "ITP 2015, LNCS 9236, pp. 87-102"
+          },
+          "name": "Validating Dominator Trees for a Fast, Verified Dominance Test (Blazy, Demange, Pichardie)"
+        },
+        {
+          "identity": {
+            "arxiv": "2105.01344",
+            "doi": "10.1145/3461648.3463850",
+            "venue": "LCTES 2021, pp. 85-96"
+          },
+          "name": "Simple, Light, yet Formally Verified, Global Common Subexpression Elimination and Loop-Invariant Code Motion (Monniaux, Six)"
+        }
+      ],
+      "topics": [
+        "rustc/mir",
+        "compilers/verified-passes",
+        "anneal/theory",
+        "lean/mechanization"
+      ]
+    },
     "mir-profile-subsumption-overflow-checks-debug-assertions-and-panic-modes": {
       "observed_at": "2026-11-14",
       "subjects": [
@@ -47220,6 +47289,74 @@
         "compilers/jit",
         "ffi",
         "verification"
+      ]
+    },
+    "rupicola-bedrock2-dlet-cps-nlet-eq-and-sepreflection-normalizers": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "mit-plv/rupicola",
+            "revision": "cd89cf519551add249540db9f24aa97d8cc5d20f"
+          },
+          "name": "Rupicola relational Gallina-to-bedrock2 compiler"
+        },
+        {
+          "identity": {
+            "repository": "mit-plv/bedrock2",
+            "revision": "67b682a504041acd2cd678782ff2505983d7cd6f"
+          },
+          "name": "bedrock2 low-level systems language and LiveVerif interactive verifier"
+        },
+        {
+          "identity": {
+            "repository": "mit-plv/coqutil",
+            "revision": "4c399b76628330f77c53c25ebbeceadb115602ee"
+          },
+          "name": "coqutil word, map, dlet, and separation-logic cancellation library"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "20aa204315cd36aaf944778b7d33c0d609ced8e8"
+          },
+          "name": "Anneal MIR verification framework and Pass 1 boundary auditor"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3519939.3523706",
+            "venue": "PLDI 2022, pp. 970-985"
+          },
+          "name": "Relational Compilation for Performance-Critical Applications (Pit-Claudel, Philipoom, Jamner, Erbsen, Chlipala)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454065",
+            "venue": "PLDI 2021, pp. 604-619"
+          },
+          "name": "Integration Verification Across Software and Hardware for a Simple Embedded System (Erbsen, Gruetter, Choi, Wood, Chlipala)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3656439",
+            "venue": "PACMPL 8(PLDI), Article 209, 2024"
+          },
+          "name": "Live Verification in an Interactive Proof Assistant (Gruetter, Fukala, Chlipala)"
+        }
+      ],
+      "topics": [
+        "verification/program-logics",
+        "anneal/theory",
+        "lean/mechanization",
+        "verification/separation-logic"
       ]
     },
     "rust-aggregate-dst-and-target-layout-guarantees": {

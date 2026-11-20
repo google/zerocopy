@@ -1,0 +1,69 @@
+{
+  "topics": [
+    "rustc/mir",
+    "compilers/verified-passes",
+    "anneal/theory",
+    "lean/mechanization"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal MIR verification framework and Pass 1 boundary auditor",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "20aa204315cd36aaf944778b7d33c0d609ced8e8"
+      }
+    },
+    {
+      "name": "lean-miri mechanized Rust MIR interpreter",
+      "identity": {
+        "repository": "proofs-rs/lean-miri",
+        "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+      }
+    },
+    {
+      "name": "Rust compiler (rustc_mir_transform, rustc_const_eval, rustc_middle)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+      }
+    },
+    {
+      "name": "Miri reference interpreter",
+      "identity": {
+        "repository": "rust-lang/miri",
+        "revision": "7fa591d7d4dd9af8154becbc8332f8096f8323b1"
+      }
+    },
+    {
+      "name": "CompCert verified C compiler (RTL CSE and value-numbering domain)",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover and kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Validating Dominator Trees for a Fast, Verified Dominance Test (Blazy, Demange, Pichardie)",
+      "identity": {
+        "doi": "10.1007/978-3-319-22102-1_6",
+        "venue": "ITP 2015, LNCS 9236, pp. 87-102"
+      }
+    },
+    {
+      "name": "Simple, Light, yet Formally Verified, Global Common Subexpression Elimination and Loop-Invariant Code Motion (Monniaux, Six)",
+      "identity": {
+        "doi": "10.1145/3461648.3463850",
+        "arxiv": "2105.01344",
+        "venue": "LCTES 2021, pp. 85-96"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

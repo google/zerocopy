@@ -1,0 +1,68 @@
+{
+  "topics": [
+    "verification/program-logics",
+    "anneal/theory",
+    "lean/mechanization",
+    "verification/separation-logic"
+  ],
+  "subjects": [
+    {
+      "name": "Rupicola relational Gallina-to-bedrock2 compiler",
+      "identity": {
+        "repository": "mit-plv/rupicola",
+        "revision": "cd89cf519551add249540db9f24aa97d8cc5d20f"
+      }
+    },
+    {
+      "name": "bedrock2 low-level systems language and LiveVerif interactive verifier",
+      "identity": {
+        "repository": "mit-plv/bedrock2",
+        "revision": "67b682a504041acd2cd678782ff2505983d7cd6f"
+      }
+    },
+    {
+      "name": "coqutil word, map, dlet, and separation-logic cancellation library",
+      "identity": {
+        "repository": "mit-plv/coqutil",
+        "revision": "4c399b76628330f77c53c25ebbeceadb115602ee"
+      }
+    },
+    {
+      "name": "Anneal MIR verification framework and Pass 1 boundary auditor",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "20aa204315cd36aaf944778b7d33c0d609ced8e8"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover and kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Relational Compilation for Performance-Critical Applications (Pit-Claudel, Philipoom, Jamner, Erbsen, Chlipala)",
+      "identity": {
+        "doi": "10.1145/3519939.3523706",
+        "venue": "PLDI 2022, pp. 970-985"
+      }
+    },
+    {
+      "name": "Integration Verification Across Software and Hardware for a Simple Embedded System (Erbsen, Gruetter, Choi, Wood, Chlipala)",
+      "identity": {
+        "doi": "10.1145/3453483.3454065",
+        "venue": "PLDI 2021, pp. 604-619"
+      }
+    },
+    {
+      "name": "Live Verification in an Interactive Proof Assistant (Gruetter, Fukala, Chlipala)",
+      "identity": {
+        "doi": "10.1145/3656439",
+        "venue": "PACMPL 8(PLDI), Article 209, 2024"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
