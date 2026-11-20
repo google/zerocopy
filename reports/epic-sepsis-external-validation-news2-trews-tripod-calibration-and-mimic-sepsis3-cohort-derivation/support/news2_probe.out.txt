@@ -1,0 +1,28 @@
+Gap probe: values falling between printed bands
+  temp=35.0: score=3
+  temp=35.05: score=None
+  temp=35.1: score=1
+  temp=36.05: score=None
+  temp=38.05: score=None
+  temp=39.05: score=None
+  sbp=90: score=3
+  sbp=90.5: score=None
+  sbp=91: score=2
+  rr=8: score=3
+  rr=8.5: score=None
+  rr=9: score=1
+
+SpO2 Scale 2 non-monotonicity (score vs SpO2):
+  SpO2=86: on air -> 1, on O2 -> 1
+  SpO2=88: on air -> 0, on O2 -> 0
+  SpO2=92: on air -> 0, on O2 -> 0
+  SpO2=93: on air -> 0, on O2 -> 1
+  SpO2=95: on air -> 0, on O2 -> 2
+  SpO2=97: on air -> 0, on O2 -> 3
+  SpO2=99: on air -> 0, on O2 -> 3
+
+Trigger examples:
+  normal adult: ((0, 'low (0-4)'), [0, 0, 0, 0, 0, 0, 0])
+  single red parameter (new confusion): ((3, 'low-medium (single parameter = 3)'), [0, 0, 0, 0, 0, 3, 0])
+  aggregate 5: ((5, 'medium (5-6)'), [2, 1, 0, 1, 1, 0, 0])
+  aggregate 7: ((10, 'high (>=7)'), [3, 2, 2, 2, 1, 0, 0])

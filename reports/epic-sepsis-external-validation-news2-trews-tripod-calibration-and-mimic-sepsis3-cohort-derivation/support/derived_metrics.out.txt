@@ -1,0 +1,14 @@
+prevalence           = 2552/38455 = 0.0664
+sensitivity          = 843/2552 = 0.3303   (paper: 33%)
+specificity          = 29775/35903 = 0.8293   (paper: 83%)
+PPV                  = 843/6971 = 0.1209   (paper: 12%)
+NPV                  = 29775/31484 = 0.9457   (paper: 95%)
+alerted fraction     = 6971/38455 = 0.1813   (paper: 18%)
+number needed to evaluate (1/PPV) = 8.27   (paper: 8)
+missed fraction      = 1709/2552 = 0.6697   (paper: 67%)
+flagged w/o timely abx = 183/2552 = 0.0717   (paper: 7%)
+PPV from rounded sens=0.33, spec=0.83, prevalence=0.0664: 0.1212
+alert fraction from rounded sens/spec: 0.1806
+
+COVID-19 alert study: alert proportion 953/10159 = 0.0938 -> 1363/6634 = 0.2055
+  census change = -0.3470; alert-count change = +0.4302

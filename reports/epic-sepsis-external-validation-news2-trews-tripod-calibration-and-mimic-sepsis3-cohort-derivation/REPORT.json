@@ -1,0 +1,131 @@
+{
+  "topics": [
+    "domains/sepsis-prediction-models",
+    "domains/clinical-deterioration-early-warning",
+    "verification/clinical-model-external-validation",
+    "tooling/ehr-cohort-derivation-code"
+  ],
+  "subjects": [
+    {
+      "name": "MIMIC code repository (Sepsis-3, suspicion-of-infection, SOFA, SIRS and antibiotic concept SQL)",
+      "identity": {
+        "repository": "MIT-LCP/mimic-code",
+        "revision": "303d26c623dcc9c49cc0f204468d4acc2f063797"
+      }
+    },
+    {
+      "name": "Statistical analysis code for the prospective multi-site TREWS outcome study",
+      "identity": {
+        "repository": "royadams/adams_et_al_2022_code",
+        "revision": "96fffd7a14804feb506c8b62391d2c942c541146",
+        "path": "trews_patient_outcome_analysis_public.ipynb"
+      }
+    },
+    {
+      "name": "Third International Consensus Definitions for Sepsis and Septic Shock (Sepsis-3)",
+      "identity": {
+        "doi": "10.1001/jama.2016.0287",
+        "pmcid": "PMC4968574"
+      }
+    },
+    {
+      "name": "Assessment of Clinical Criteria for Sepsis (Seymour et al.)",
+      "identity": {
+        "doi": "10.1001/jama.2016.0288",
+        "pmcid": "PMC5433435"
+      }
+    },
+    {
+      "name": "External validation of a widely implemented proprietary sepsis prediction model (Wong et al.)",
+      "identity": {
+        "doi": "10.1001/jamainternmed.2021.2626",
+        "pmcid": "PMC8218233"
+      }
+    },
+    {
+      "name": "Quantification of sepsis model alerts in 24 US hospitals before and during COVID-19 (Wong et al.)",
+      "identity": {
+        "doi": "10.1001/jamanetworkopen.2021.35286",
+        "pmcid": "PMC8605481"
+      }
+    },
+    {
+      "name": "Evaluation of sepsis prediction models before onset of treatment (Kamran et al.)",
+      "identity": {
+        "doi": "10.1056/AIoa2300032",
+        "url": "https://par.nsf.gov/biblio/10522981-evaluation-sepsis-prediction-models-before-onset-treatment"
+      }
+    },
+    {
+      "name": "Accuracy of the Epic sepsis prediction model in a regional health system (Bennett et al.)",
+      "identity": {
+        "arxiv": "1902.07276"
+      }
+    },
+    {
+      "name": "Prospective multi-site study of patient outcomes after TREWS implementation (Adams et al.)",
+      "identity": {
+        "doi": "10.1038/s41591-022-01894-0"
+      }
+    },
+    {
+      "name": "Provider adoption of TREWS and sepsis treatment timing (Henry et al.)",
+      "identity": {
+        "doi": "10.1038/s41591-022-01895-z"
+      }
+    },
+    {
+      "name": "TRIPOD statement",
+      "identity": {
+        "doi": "10.1136/bmj.g7594"
+      }
+    },
+    {
+      "name": "TRIPOD+AI statement",
+      "identity": {
+        "doi": "10.1136/bmj-2023-078378"
+      }
+    },
+    {
+      "name": "Calibration: the Achilles heel of predictive analytics (Van Calster et al.)",
+      "identity": {
+        "doi": "10.1186/s12916-019-1466-7"
+      }
+    },
+    {
+      "name": "The clinician and dataset shift in artificial intelligence (Finlayson et al.)",
+      "identity": {
+        "doi": "10.1056/NEJMc2104626",
+        "pmcid": "PMC8665481"
+      }
+    },
+    {
+      "name": "National Early Warning Score (NEWS) 2, Chart 1 scoring system and Chart 2 thresholds",
+      "identity": {
+        "standard": "Royal College of Physicians NEWS2 (December 2017)",
+        "url": "https://www.rcp.ac.uk/improving-care/resources/national-early-warning-score-news-2/"
+      }
+    },
+    {
+      "name": "Ability of NEWS to discriminate cardiac arrest, unanticipated ICU admission and death (Smith et al.)",
+      "identity": {
+        "doi": "10.1016/j.resuscitation.2012.12.016",
+        "pmid": "23295778"
+      }
+    },
+    {
+      "name": "MIMIC-IV database description",
+      "identity": {
+        "doi": "10.1038/s41597-022-01899-x"
+      }
+    },
+    {
+      "name": "Comparative analysis of sepsis identification methods in an electronic database (Johnson et al.)",
+      "identity": {
+        "doi": "10.1097/CCM.0000000000002965",
+        "pmcid": "PMC5851804"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

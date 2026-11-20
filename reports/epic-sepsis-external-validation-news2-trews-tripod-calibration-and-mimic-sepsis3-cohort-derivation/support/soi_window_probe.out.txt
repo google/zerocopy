@@ -1,0 +1,22 @@
+culture_minus_abx_h | IV:me->ab IV:ab->me | IV suspected? IV SI_time | III:72 III:24 | III suspected? III SI_time
+   -73.0 | 0 0 | 0 None | 0 0 | 0 None
+   -72.0 | 1 0 | 1 -72.0 | 1 0 | 1 -72.0
+   -71.0 | 1 0 | 1 -71.0 | 1 0 | 1 -71.0
+   -24.5 | 1 0 | 1 -24.5 | 1 0 | 1 -24.5
+   -24.0 | 1 0 | 1 -24.0 | 1 0 | 1 -24.0
+    -1.0 | 1 0 | 1 -1.0 | 1 0 | 1 -1.0
+    -0.5 | 1 0 | 1 -0.5 | 1 0 | 1 -0.5
+     0.0 | 0 0 | 0 None | 1 1 | 1 0.0
+     0.5 | 0 1 | 1 0.0 | 0 1 | 1 0.5
+     1.0 | 0 1 | 1 0.0 | 0 1 | 1 1.0
+    23.5 | 0 1 | 1 0.0 | 0 1 | 1 23.5
+    24.0 | 0 1 | 1 0.0 | 0 1 | 1 24.0
+    24.5 | 0 0 | 0 None | 0 0 | 0 None
+
+sepsis3.sql SOFA window membership for SOFA endtime offsets relative to SI time:
+  endtime - SI =  -48.5 h -> outside
+  endtime - SI =    -48 h -> inside
+  endtime - SI =      0 h -> inside
+  endtime - SI =     24 h -> inside
+  endtime - SI =   24.5 h -> outside
+elapsed_s=0.0005

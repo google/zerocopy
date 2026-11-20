@@ -1,0 +1,12 @@
+well calibrated                    AUROC=0.7871 mean_pred=0.0790 obs=0.0791 cal_intercept(slope=1)=+0.002 cal_slope=1.000
+overconfident (logit x 2)          AUROC=0.7871 mean_pred=0.0235 obs=0.0791 cal_intercept(slope=1)=+1.788 cal_slope=0.500
+shifted (+1.5 on logit scale)      AUROC=0.7871 mean_pred=0.2342 obs=0.0791 cal_intercept(slope=1)=-1.498 cal_slope=1.000
+recalibrated from overconfident    AUROC=0.7871 mean_pred=0.0791 obs=0.0791 cal_intercept(slope=1)=-0.000 cal_slope=1.000
+
+Fixed sensitivity 0.33 / specificity 0.83, varying prevalence:
+  prevalence=0.020: PPV=0.038 alert_fraction=0.173 NNE=26.2
+  prevalence=0.050: PPV=0.093 alert_fraction=0.178 NNE=10.8
+  prevalence=0.066: PPV=0.121 alert_fraction=0.181 NNE=8.3
+  prevalence=0.100: PPV=0.177 alert_fraction=0.186 NNE=5.6
+  prevalence=0.200: PPV=0.327 alert_fraction=0.202 NNE=3.1
+elapsed_s=2.569
