@@ -76,9 +76,9 @@
       }
     },
     {
-      "name": "CertiCoq/certirocq certified Gallina-to-Clight/Wasm compiler",
+      "name": "CertiRocq/certirocq certified Gallina-to-Clight/Wasm compiler",
       "identity": {
-        "repository": "CertiCoq/certirocq",
+        "repository": "CertiRocq/certirocq",
         "revision": "ab66e0164e7ecb63e5af95c90c8e479068bf95c2"
       }
     }

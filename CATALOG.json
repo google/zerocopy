@@ -37015,10 +37015,10 @@
         },
         {
           "identity": {
-            "repository": "CertiCoq/certirocq",
+            "repository": "CertiRocq/certirocq",
             "revision": "ab66e0164e7ecb63e5af95c90c8e479068bf95c2"
           },
-          "name": "CertiCoq/certirocq certified Gallina-to-Clight/Wasm compiler"
+          "name": "CertiRocq/certirocq certified Gallina-to-Clight/Wasm compiler"
         }
       ],
       "topics": [
@@ -56508,12 +56508,18 @@
         },
         {
           "identity": {
-            "barthe_csf2018_doi": "10.1109/CSF.2018.00031",
-            "compcert_ct_popl2020_doi": "10.1145/3371075",
+            "doi": "10.4230/LIPIcs.ITP.2025.31",
             "repository": "knothed/CompCert-ct",
             "revision": "2d1369a4888cff6fd5fd29f28a059e9cf72b1a08"
           },
-          "name": "CompCert-CT and Verified Secret Control-Flow Linearization"
+          "name": "Verified Secret Control-Flow Elimination in CompCert (Knothe and Bringmann, ITP 2025)"
+        },
+        {
+          "identity": {
+            "csf2018_doi": "10.1109/CSF.2018.00031",
+            "popl2020_doi": "10.1145/3371075"
+          },
+          "name": "Constant-Time Preserving Compilation (Barthe et al., CSF 2018; CompCert-CT, POPL 2020)"
         },
         {
           "identity": {

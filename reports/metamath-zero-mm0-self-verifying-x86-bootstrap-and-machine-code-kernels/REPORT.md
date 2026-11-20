@@ -11,7 +11,7 @@ By letting the untrusted compiler control heap allocation (`CMD_PROOF_TERM` / `C
 This report examines the trust boundaries, file formats, execution semantics, cross-logic translations, and six-level resource footprints across eleven pinned subjects:
 
 - **Metamath & MM0 stack**: `digama0/mm0` (`0d414c0bfdaaeb7fea571895127abc1fa5a3d956`), Carneiro's `arXiv:1910.10703v3` (extended version of the paper submitted to CPP 2020 and published in condensed form at CICM 2020, `DOI: 10.1007/978-3-030-53518-6_5`), `david-a-wheeler/metamath-knife` (`76fc9f7f39f46f4c43499a0c2bd1402eb8b1cf9a`), and `oriansj/stage0-posix` (`643598041bf7639883874fe2cdc9d9693c9b03d5`).
-- **Verified LCF & CIC machine-code stacks**: `jrh13/hol-light` (`6dbb775efdff7f75aa20006532bf6336bc645861`), `CakeML/cakeml` (`2874b664e10939a3ee462215b2e068c89c1f70eb`, `DOI: 10.1017/S0956796818000229`), `CakeML/candle` (`a9aeaa1dffd50f7cfeed811db6ee61f98e2234da`, `DOI: 10.4230/LIPIcs.ITP.2022.3`), `MetaRocq/metarocq` (`51b14e4bb5f4580f00f60208ff8dbf31f3ad6f56`, `DOI: 10.1145/3706056`), and `CertiCoq/certirocq` (`ab66e0164e7ecb63e5af95c90c8e479068bf95c2`).
+- **Verified LCF & CIC machine-code stacks**: `jrh13/hol-light` (`6dbb775efdff7f75aa20006532bf6336bc645861`), `CakeML/cakeml` (`2874b664e10939a3ee462215b2e068c89c1f70eb`, `DOI: 10.1017/S0956796818000229`), `CakeML/candle` (`a9aeaa1dffd50f7cfeed811db6ee61f98e2234da`, `DOI: 10.4230/LIPIcs.ITP.2022.3`), `MetaRocq/metarocq` (`51b14e4bb5f4580f00f60208ff8dbf31f3ad6f56`, `DOI: 10.1145/3706056`), and `CertiRocq/certirocq` (`ab66e0164e7ecb63e5af95c90c8e479068bf95c2`).
 
 ABI and completeness boundaries strictly apply:
 1. **`mm0-c` host constraints**: `mm0-c/main.c:15–28` aborts with exit `999` unless the host is **little-endian**, respects `__attribute__((packed))` (`sizeof(cmd32) == 5`), and 4-byte aligns `store_expr`, with POSIX `mmap` (`MAP_PRIVATE`, `PROT_READ`) and virtual memory accommodating a `~658 MiB` `.bss` (`~64.8 MiB` under `-DNO_PARSER -DBARE`).
@@ -96,7 +96,7 @@ Because MM0 fixes no built-in logic, it acts as a cross-system interchange hub (
 
 ### 5. Head-to-Head TCB & Architectural Comparison: `MM0/MMC` vs. `CakeML/Candle` vs. `MetaRocq/CertiCoq`
 
-Basis: source (`CakeML/candle/fusion.ml`, `jrh13/hol-light/fusion.ml`, `MetaRocq/metarocq/README.md`, `CertiCoq/certirocq/README.md`, `digama0/mm0/examples/compiler.mm0`) + normative (`DOI: 10.4230/LIPIcs.ITP.2022.3`, `DOI: 10.1017/S0956796818000229`, `DOI: 10.1145/3706056`).
+Basis: source (`CakeML/candle/fusion.ml`, `jrh13/hol-light/fusion.ml`, `MetaRocq/metarocq/README.md`, `CertiRocq/certirocq/README.md`, `digama0/mm0/examples/compiler.mm0`) + normative (`DOI: 10.4230/LIPIcs.ITP.2022.3`, `DOI: 10.1017/S0956796818000229`, `DOI: 10.1145/3706056`).
 
 | Architecture Axis | `MM0` (`mm0-c` + `mmc` / `x86.mm0`) | `CakeML` + `Candle` (`ITP 2022`) | `MetaRocq` + `CertiCoq` (`JACM 2025`) |
 | :--- | :--- | :--- | :--- |
@@ -150,7 +150,7 @@ Basis: execution (Probe 2 `gcc`/runtime benchmarks) + documentation (`arXiv:1910
 - `oriansj/stage0-posix` (`643598041bf7639883874fe2cdc9d9693c9b03d5`): `README.md` (1–80, 256-byte `hex0` seed bootstrap chain).
 - `CakeML/candle` (`a9aeaa1dffd50f7cfeed811db6ee61f98e2234da`): `README.md` (1–90), `fusion.ml` (`676` LoC / `28,539` B); `CakeML/cakeml` (`2874b664e10939a3ee462215b2e068c89c1f70eb`).
 - `jrh13/hol-light` (`6dbb775efdff7f75aa20006532bf6336bc645861`): `fusion.ml` (`680` LoC / `28,873` B).
-- `MetaRocq/metarocq` (`51b14e4bb5f4580f00f60208ff8dbf31f3ad6f56`): `README.md` (`~300 KLoC` Rocq / `~30 KLoC` OCaml); `CertiCoq/certirocq` (`ab66e0164e7ecb63e5af95c90c8e479068bf95c2`): `README.md`.
+- `MetaRocq/metarocq` (`51b14e4bb5f4580f00f60208ff8dbf31f3ad6f56`): `README.md` (`~300 KLoC` Rocq / `~30 KLoC` OCaml); `CertiRocq/certirocq` (`ab66e0164e7ecb63e5af95c90c8e479068bf95c2`): `README.md`.
 
 ### Peer-Reviewed Literature
 - Mario Carneiro, *Metamath Zero: The Cartesian Theorem Prover*, `arXiv:1910.10703v3` (30 Mar 2020), extended version of *Metamath Zero: Designing a Theorem Prover Prover*, CICM 2020 (LNCS 12236, pp. 71–88), `DOI: 10.1007/978-3-030-53518-6_5`.
