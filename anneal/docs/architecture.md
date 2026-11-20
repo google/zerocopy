@@ -8,10 +8,14 @@ those terms. -->
 
 # Multi-Step MIR and Toolchain Architecture
 
-> **Note:** Anneal is under active development. Parts of the design and
-> architecture described in this document are not yet implemented or may be
-> implemented differently; this document may be aspirational or stale relative
-> to the codebase.
+> **Note:** Anneal is under active development. The three-stage MIR pipeline
+> and correspondence stack described below (`Trusted/MirAst.lean`,
+> `Trusted/MirSemantics.lean`, `trusted/correspondence/`, `vendor/lean-miri/`,
+> `correspondence/`, `theory/Anneal/MirWp.lean`, `cargo anneal verify`, and
+> Pass 2 `anneal-audit --require-correspondence`) are target architecture
+> landing incrementally; entries marked `[planned]` denote later-phase layout
+> subdivisions beyond that stack. Parts of this document may be aspirational or
+> stale relative to the current codebase.
 
 Anneal verifies Rust crates by extracting their Mid-level Intermediate
 Representation (MIR) from `rustc` and reasoning about that MIR inside the
@@ -33,27 +37,192 @@ tension between **auditability** and **proof stability**:
   verification.
 
 Anneal resolves this tension with a **three-stage MIR pipeline** split across
-the repository's `trusted/` and `theory/` boundary:
+the repository's trust boundary (`trusted/`, pinned `vendor/`, `theory/`, and
+`correspondence/`):
 
 1. **Stage 1 — Mechanical Capture (`trusted/rustc-capture/`):** A thin,
    version-specific `rustc_driver` wrapper transcribes `rustc`'s
-   `Runtime(PostCleanup)` MIR and inline Rust specification attributes 1-to-1
-   into Lean data definitions (`Mir.lean`) and a pure proof script
-   (`Proof.lean`), with zero semantic normalization in Rust.
-2. **Stage 2 — Shared Captured MIR & Reference Semantics (`trusted/lean/`):** A
-   single, auditable Lean AST and reference operational semantics represent the
-   captured MIR. Minor semantic variations across compiler versions or targets
-   are controlled by a declarative `CaptureProfile` parameter rather than
-   duplicating the interpreter.
-3. **Stage 3 — Verified Lowering to a Stable IR (`theory/`):** Untrusted passes
-   written in Lean translate the captured MIR into an ergonomic, version-
-   independent stable AST (`Theory/Rust/StableAst/`) and prove a kernel-checked
-   backward simulation (`Abstracts`) connecting the two representations.
+   `Runtime(PostCleanup)` MIR—together with the concrete monomorphic instance,
+   layout, and evaluated-constant query metadata required by the initial
+   concrete correspondence domain (failing closed to `unsupported` for
+   uninstantiated generic bodies or unevaluated generic constants until
+   polymorphic substitution/layout parameterization lands in a later phase, as
+   described in [`docs/design.md`](design.md#library-centric-verification) and
+   [`docs/mir-correspondence-strategy.md`](mir-correspondence-strategy.md))—and
+   inline Rust specification attributes 1-to-1 into Lean data definitions
+   (`Mir.lean`) and a pure proof script (`Proof.lean`), with zero semantic
+   normalization in Rust.
+2. **Stage 2 — Shared Captured MIR, Verification Semantics & Reference Anchor
+   (`trusted/lean/`, `trusted/correspondence/`, pinned `vendor/`):** A single,
+   auditable Lean AST represents the captured MIR (`Trusted/MirAst.lean`,
+   planned `Trusted/Rust/Ast/`), and Anneal's verification operational semantics
+   ($M_{\text{anneal}}$ in `Trusted/MirSemantics.lean`, planned
+   `Trusted/Rust/Semantics/`) states the top-level crate and proof-unit
+   obligations (`Trusted.CrateTheorem` and `Trusted.UnitTheorem`) and
+   weakest-precondition proof-interface checks without pulling the reference
+   interpreter into the Pass 1 repository audit (`anneal-audit` over
+   `trusted/lean/` and `theory/`) or into per-crate `cargo anneal verify` runs.
+   To certify $M_{\text{anneal}}$'s evolving step rules (`initState` and
+   `evalStep`) mechanically rather than trusting them by human semantic audit, a
+   mandatory blocking repository CI correspondence audit (`anneal-audit
+   --require-correspondence`, Pass 2—run in repository CI rather than per-crate
+   on user machines) anchors $M_{\text{anneal}}$ against an audited reference
+   operational semantics ($M_{\text{ref}}$ in `vendor/lean-miri/`, bridged via a
+   minimal, one-to-one structural adapter $\tau_{\text{prog}}$ (`encodeProg`) in
+   `trusted/correspondence/Trusted/Correspondence.lean`). Minor semantic
+   variations across compiler versions or compilation targets are controlled by
+   declarative profile data (`CaptureProfile` / `CaptureManifest`, including
+   `Program.pointerWidthBits`, `Program.mirProfileVersion`, and target layout
+   metadata) rather than by duplicating the interpreter.
+3. **Stage 3 — Correspondence Proof, Verified Lowering & Proof Engine
+   (`theory/`, `correspondence/`):** In `correspondence/` (staged and audited as
+   an untrusted `.theory` root by Pass 2 `anneal-audit
+   --require-correspondence`), Anneal proves the kernel-checked
+   `CorrespondenceClaim` and `FaultEquivalenceClaim`
+   ([`docs/mir-correspondence-strategy.md`](mir-correspondence-strategy.md))
+   certifying universally over all programs and queries that $M_{\text{ref}}$
+   refines $M_{\text{anneal}}$ (i.e., $M_{\text{anneal}}$ soundly abstracts
+   $M_{\text{ref}}$) via $\tau_{\text{prog}}$. Separately, `theory/` (staged and
+   audited as `.theory` by Pass 1 `anneal-audit`) holds untrusted program logics
+   (`theory/Anneal/MirWp.lean`) and planned lowering passes (translating
+   captured MIR into a version-independent `Theory/Rust/StableAst/` via a
+   kernel-checked backward simulation `Abstracts`) that reason directly about
+   $M_{\text{anneal}}$; per-crate `cargo anneal verify` runs use them to
+   discharge `Trusted.CrateTheorem` or `Trusted.UnitTheorem`.
 
-Because Stage 3 runs inside Lean, is verified to be pure and axiom-free in
-Anneal's CI, and proves its own soundness in the Lean kernel, the stable IR,
-the lowering passes, and all downstream proof tactics remain entirely **outside
-the human-audited TCB**.
+Both `theory/` (in the Pass 1 `anneal-audit` repository audit, distinct from
+the syntactic-preflight vs. replay phases within a run) and `correspondence/`
+(in blocking Pass 2 `anneal-audit --require-correspondence`) are staged,
+source-preflighted, and replayed in the standalone Lean kernel as pure,
+axiom-free `.theory` modules. Pass 2 runs in a fresh, isolated staging
+environment—extending Pass 1's from-source compilation, preflight, and kernel
+replay of `trusted/lean/` and `theory/` with from-source compilation,
+preflight, and kernel replay of `trusted/correspondence/` and
+`correspondence/` rather than reusing unverified `.olean` artifacts—while
+excluding `vendor/lean-miri/`, `trusted/correspondence/`, and `correspondence/`
+from both Pass 1 and packaged user toolchain archives. To preserve
+[`THREAT_MODEL.md`](../THREAT_MODEL.md)'s bounded human-review guarantee without
+shipping the vendored `vendor/lean-miri/` tree or `correspondence/` proofs at
+runtime, every packaged user toolchain archive and `cargo-anneal` bundle
+carries a compact, CI-checked, digest-bound **correspondence provenance
+record** (pinned Anneal revision, `trusted/lean/` source and `.olean` digests,
+`vendor/lean-miri/` upstream commit, `UPSTREAM_PIN.json` SHA-256,
+`patched_files` allowlist/digests, `Trusted/Correspondence.lean` digest, and
+Pass 2 attestation metadata). Archive construction and `cargo anneal verify`
+hash the actual packaged `trusted/lean/` artifacts and fail closed unless those
+digests exactly match the attested provenance record (or if the provenance is
+missing or malformed), and `cargo anneal verify` surfaces the verified record
+in every verification result's TCB audit log—so an auditor inspecting only
+stated specifications and the TCB audit log can identify and audit every TCB
+artifact, including $M_{\text{ref}}$ and $\tau_{\text{prog}}$. For
+`vendor/lean-miri/`, Pass 2 verifies every vendored file against
+`vendor/lean-miri/UPSTREAM_PIN.json`—whose own SHA-256 digest and first-party
+patched-file allowlist are pinned inside `trusted/audit/`, rejecting extraneous
+or unpinned files and pre-existing `.olean`/`.ir` artifacts so any upstream pin
+update or first-party patch in `vendor/lean-miri/` requires a human-reviewed
+diff inside `trusted/` covering both semantic changes in the resolved
+old-to-new reference-model diff and compile-time code—and compiles the pinned
+`execution_machine_closure` `.olean` modules directly from those
+`UPSTREAM_PIN.json`-verified sources under the pinned `lean` binary inside an
+OS-level isolated sandbox with no credentials or writable access to the
+worktree, home directory, or auditor state (confining candidate compile-time
+metaprograms strictly to an isolated build output directory before the outer
+auditor checks digests and runs standalone replay in a separate
+`loadExts := false` process), asserting exact byte-for-byte SHA-256 equality
+against the reproducible `.olean` digests pinned in `UPSTREAM_PIN.json`. External `.olean` caching is disabled by
+default and skipped on cold verification runs (`merge_group`, `push` to `main`,
+and `workflow_dispatch`) as well as whenever `UPSTREAM_PIN.json` or
+`trusted/lean/lean-toolchain` changes—so every pin update and landed commit
+verifies reproducible source-to-`.olean` compilation cold from source—while
+opt-in external cache restoration on unchanged pins lives outside the checkout,
+rejects symlinks, and admits a cached `.olean` only when its SHA-256 matches
+that source-verified pin. Although vendored `vendor/lean-miri/` sources are not
+passed through untrusted-`theory/` syntactic preflight (upstream `Miri.Input.*` and proof
+helpers retain compile-time metaprograms and `partial def`s audited under the
+SHA-256 pin in `trusted/audit/`), Pass 2 **replays every non-`isPartial` safe
+constant across the pinned vendored closure from scratch in the standalone Lean
+kernel (`base.toKernelEnv.replay`, omitting compiler-generated `isPartial`
+`*._unsafe_rec` helpers so replay fails if any safe constant references a
+skipped `unsafe` or `partial` constant)** on top of the authenticated
+`Init`/`Std`/`Lean` sysroot base (verified against
+`LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`, loaded with `trustLevel := 0` and
+`loadExts := false`), while rejecting `isUnsafe`, non-allowlisted axioms (with
+`.vendorMiri` declaring zero `axiom` items), `sorryAx`,
+`Lean.ofReduceBool`/`Lean.trustCompiler`, and any `.vendorMiri` `isPartial` or
+`opaque` (`partial def`) constant reachable in the full dependency cone of the
+locked correspondence claims (including `Miri.Interpreter.ExecutionMachine`) on
+every run (cold compile and cache hit alike)—so neither a scoped
+`set_option debug.skipKernelTC true` inside a vendored file nor a poisoned
+`.olean` cache can admit an un-kernel-checked safe constant. Alongside that
+replayed vendor base and the freshly compiled and replayed `trusted/lean/` and
+`theory/` modules (within the same isolated Pass 2 staging run), Pass 2
+source-preflights, axiom-checks, enforces role/namespace separation over, and
+kernel-replays `trusted/correspondence/` and `correspondence/` (so
+`correspondence/` cannot declare or spoof `Trusted.*` constants and
+`trusted/lean/` cannot import `trusted/correspondence/` or
+`vendor/lean-miri/`), verifying that `correspondence/` provides witness
+theorems whose exact types (`ConstantInfo.type`) match
+`Trusted.Correspondence.CorrespondenceClaim` and
+`Trusted.Correspondence.FaultEquivalenceClaim` (Statement-Origin Separation).
+Blocking repository CI (`merge_group` / `all-jobs-succeed`) gates PR merges on
+both Pass 1 and Pass 2 passing on the exact same commit.
+
+Within the Lean operational semantics (Stages 2–3), only three semantic
+surfaces therefore require human semantic audit (alongside Stage 1's
+`trusted/rustc-capture/` transcription of `rustc` MIR, layouts, and
+specifications, and the non-semantic TCB enforcement infrastructure in
+`trusted/audit/`, `trusted/cargo-anneal/`, pinned toolchain locks, and blocking
+CI workflows):
+
+1. **$M_{\text{ref}}$:** the pinned `vendor/lean-miri/` reference semantics
+   together with its `trusted/correspondence/Trusted/Correspondence.lean`
+   wrapper (`initRefState`, `RefProg`-to-`vendor/lean-miri/` operator,
+   statement, terminator, and layout dispatch in `evalRefStep`, reference
+   execution predicates, and staged support gate).
+2. **The correspondence interface (`Trusted/Correspondence.lean`):**
+   $\tau_{\text{prog}}$ (`encodeProg`), any output-equivalence / projection
+   relation ($\sim_{\text{out}}$ / $\pi$) and choice-event coupling relation,
+   and the locked `CorrespondenceClaim` and `FaultEquivalenceClaim` statements.
+3. **The outer theorem-stating boundary of $M_{\text{anneal}}$:** the captured
+   MIR AST (`Trusted/MirAst.lean`) and every definition in
+   `Trusted/MirSemantics.lean` that `Trusted.CrateTheorem`,
+   `Trusted.UnitTheorem`, `CorrespondenceClaim`, and `FaultEquivalenceClaim`
+   depend on, other than the step rules `initState` and `evalStep` and the
+   helpers that only those rules use—namely the shared input and outcome types
+   (`Query`, `Val`, `Out`, `TerminalOut`, and `FaultKind`), execution
+   predicates (`Step`, `Reaches`, `ReachesResult`, `WellFormed`, `Behavior`,
+   `Diverges`, and `SatisfiesPost`), verification judgments
+   (`BodyStaticAdmitted`, `ValidEntryArgs`, `BodyVerified`, `Specs`, `Crate`,
+   `ProgramVerified`, `CrateTheorem`, and `UnitTheorem`), and the helpers these
+   reference (such as `ValidChoice`, `entryProgForBody`, and
+   `bodiesHaveUniqueIdentities`).
+
+(`WpSoundnessClaim` and `WpFaultSoundnessClaim` also live in
+`Trusted/MirSemantics.lean` as Pass 1 CI proof-interface locks—enforced via
+witness-theorem type checks in `anneal-audit` for `Anneal.MirWp`—not as extra
+trust assumptions for per-crate soundness, because per-crate proofs discharge
+`CrateTheorem` or `UnitTheorem` directly in the Lean kernel.) Once Pass 2
+lands and the corresponding review-policy updates are adopted in `AGENTS.md`,
+`.gemini/styleguide.md`, and `skills/trust-review/SKILL.md`, the evolving
+execution rules of $M_{\text{anneal}}$ (`initState` and `evalStep`), the stable
+IR, the lowering passes, and all downstream proof tactics are planned to remain
+**outside the human-audited semantic assumptions** (a planned relaxation of the
+current `trusted/lean/` semantic-review policy, which requires human semantic
+audit and verbatim Rust Reference/`rustc` citations for definitions in
+`trusted/lean/` until those policy updates and Pass 2 enforcement are active);
+moreover, because `initState` and `evalStep` initially share
+`Trusted/MirSemantics.lean` with the outer boundary definitions, diffs touching
+`Trusted/MirSemantics.lean` still receive human review to confirm that no outer
+boundary declaration or shared helper changed. Separating
+`initState`/`evalStep` into their own module gives file-level diff isolation for
+human review. Keeping `initState`/`evalStep` at `candidate` while promoting the
+outer boundary to `vetted` (true `vetted` vs. `candidate` tier separation)
+additionally requires parameterizing the outer boundary over an abstract step
+relation (as in planned `Trusted/Framework/`); alternatively, placing both in
+the same tier once Pass 2-certified would either broaden `vetted` beyond
+human-audited TCB definitions (see [`docs/trust-model.md`](trust-model.md)) or
+introduce a distinct Pass 2-certified audit tier that `vetted` modules may
+depend on.
 
 For the broader context around this architecture, see:
 
@@ -63,6 +232,9 @@ For the broader context around this architecture, see:
   meta-principles, correctness promise, and threat model.
 - [`docs/design.md`](design.md) for Anneal's end-to-end user workflow,
   library-centric verification model, and incremental adoption.
+- [`docs/mir-correspondence-strategy.md`](mir-correspondence-strategy.md) for
+  how $M_{\text{anneal}}$ is developed against $M_{\text{ref}}$ under locked CI
+  correspondence and fault-equivalence theorems.
 - [`docs/trust-model.md`](trust-model.md) for how Anneal's CI enforces the
   boundary between `trusted/` and `theory/`.
 
@@ -75,24 +247,31 @@ flowchart TD
         R2["rustc v1.Y (rustc-capture-v1_Y)"]
     end
 
-    subgraph Stage2 ["Stage 2: Captured MIR & Reference Semantics (trusted/lean/) — TCB"]
-        AST["Shared Captured MIR AST (Trusted/Rust/Ast/) + CaptureManifest"]
-        SEM["Reference Operational Semantics (Trusted/Rust/Semantics/)"]
-        THM["Crate Obligation (Trusted.CrateTheorem Mir.crate)"]
-        AST --> SEM --> THM
+    subgraph Stage2 ["Stage 2: Captured MIR, M_anneal & Reference Anchor — TCB"]
+        AST["Shared Captured MIR AST (Trusted/MirAst.lean)"]
+        MANNEAL["M_anneal (Trusted/MirSemantics.lean), step rules kernel-certified in Pass 2"]
+        THM["Crate / Unit Obligation (Trusted.CrateTheorem / UnitTheorem)"]
+        SEM["Reference Semantics M_ref (vendor/lean-miri/ + Trusted/Correspondence.lean)"]
+        AST --> MANNEAL --> THM
+        AST -->|"1-to-1 τ_prog (encodeProg)"| SEM
     end
 
-    subgraph Stage3 ["Stage 3: Verified Lowering & Proof Engine (theory/) — Untrusted"]
-        PASS["Verified Lowering Passes (Theory/Rust/Passes/)"]
-        STABLE["Stable AST & Semantics (Theory/Rust/StableAst/, StableSemantics/)"]
-        WP["Program Logics & Tactics (Theory/Rust/Wp/, Tactics/)"]
+    subgraph Stage3 ["Stage 3: Correspondence Proof, Lowering & Proof Engine — Kernel-Checked"]
+        CORR["Pass 2 Correspondence Proof (correspondence/)"]
+        PASS["Verified Lowering Passes (Theory/Rust/Passes/) [planned]"]
+        STABLE["Stable AST & Semantics (Theory/Rust/StableAst/) [planned]"]
+        WP["Program Logics & Tactics (theory/Anneal/{MirWp.lean,PureLift/}, planned Theory/Rust/{Wp,Tactics}/)"]
         PASS --> STABLE --> WP
     end
 
-    R1 -->|"1-to-1 serialization (Mir.lean & Proof.lean)"| AST
-    R2 -->|"1-to-1 serialization (Mir.lean & Proof.lean)"| AST
+    R1 -->|"1-to-1 MIR serialization"| AST
+    R2 -->|"1-to-1 MIR serialization"| AST
+    CORR -->|"Proves CorrespondenceClaim & FaultEquivalenceClaim"| MANNEAL
+    CORR -->|"Against M_ref"| SEM
+    MANNEAL --> WP
     AST -->|"Input to lowering"| PASS
-    WP -->|"Backward simulation (Abstracts) discharges"| THM
+    PASS -.->|"Proves Abstracts vs. M_anneal"| MANNEAL
+    WP -->|"Per-crate proof (cargo anneal verify)"| THM
 ```
 
 ### Stage 1: Thin, mechanical `rustc` capture (`trusted/rustc-capture/`)
@@ -110,56 +289,103 @@ To minimize the unverified Rust surface in `trusted/`, Stage 1 obeys a strict
   `StatementKind`, `TerminatorKind`, `Rvalue`, `Operand`, `Place`,
   `ProjectionElem`) is mapped directly to its corresponding constructor in
   Lean.
-- Alongside the MIR bodies, Stage 1 emits a `CaptureManifest` recording the
-  compiler version, target layout environment (pointer width, endianness, type
-  sizes, alignments, and field offsets), and active semantic profile, plus a
-  pure proof script (`Proof.lean`) that states `theorem Proof.verify_crate :
-  Trusted.CrateTheorem Mir.crate` and invokes `theory/` to discharge it.
+- Alongside the MIR bodies, Stage 1 emits a declarative capture manifest
+  (`CaptureManifest`, including its `CaptureProfile` fields) recording the
+  schema version, compiler version and commit, and compilation target
+  configuration (pointer width, endianness, target triple, `--cfg` flags, type
+  sizes, alignments, and field offsets), paired with the emitted Lean MIR
+  definitions (`Mir.lean`) and proof script (`Proof.lean`) stating
+  `Trusted.CrateTheorem` / `Trusted.UnitTheorem`.
 
 Because Stage 1 is a straightforward structural serializer and proof-script
 generator, a human auditor can verify it by comparing each Rust serialization
 arm directly against the cited `rustc` data definition.
 
-### Stage 2: Shared captured MIR and reference semantics (`trusted/lean/`)
+### Stage 2: Captured MIR, $M_{\text{anneal}}$ & reference anchor
 
 The Lean files emitted by Stage 1 instantiate data structures defined in
-`trusted/lean/`:
+`trusted/lean/` (`Trusted/MirAst.lean` and `Trusted/MirSemantics.lean`, planned
+`Trusted/Rust/Ast/` and `Trusted/Rust/Semantics/`), anchored in blocking
+repository CI by `trusted/correspondence/` and pinned `vendor/lean-miri/` under
+`anneal-audit --require-correspondence`:
 
-- **Captured MIR AST (`Trusted/Rust/Ast/`):** Defines the Lean inductive types
-  for captured MIR programs (`Trusted.Crate`), types, places, rvalues,
-  statements, terminators, and layout environments.
-- **Reference operational semantics (`Trusted/Rust/Semantics/`):** Defines the
-  small-step operational semantics and memory model over the captured MIR AST,
-  explicitly distinguishing normal progress from undefined behavior (`UB`).
-- **Top-level theorem statement (`Trusted.CrateTheorem`):** States that for the
-  captured `Mir.crate : Trusted.Crate`, every verified function is sound (free
-  of `UB`) and satisfies any stated specifications.
+- **Captured MIR AST (`Trusted/MirAst.lean`, planned `Trusted/Rust/Ast/`):**
+  Defines the Lean inductive types for captured MIR programs (`Program`, `Body`,
+  `VerificationScope`), types (`MirTy`, `EnumTy`), places, rvalues, statements,
+  terminators, and target profile parameters (including `pointerWidthBits`,
+  `mirProfileVersion`, and target layout metadata).
+- **Verification operational semantics ($M_{\text{anneal}}$ in
+  `Trusted/MirSemantics.lean`, planned `Trusted/Rust/Semantics/`):** Defines the
+  outer theorem-stating boundary described above (including the top-level
+  obligations and the Pass 1 weakest-precondition proof-interface checks) along
+  with the small-step operational evaluator (`initState` and `evalStep`) over
+  the captured MIR AST so per-crate `cargo anneal verify` runs do not need to
+  load the reference interpreter.
+- **Reference operational semantics ($M_{\text{ref}}$ in pinned
+  `vendor/lean-miri/` and `trusted/correspondence/`):** Defines the ground-truth
+  small-step operational semantics and memory model for captured MIR (bridged
+  from the captured MIR AST via a minimal, one-to-one structural adapter
+  $\tau_{\text{prog}}$ (`encodeProg`) in
+  `trusted/correspondence/Trusted/Correspondence.lean`; `vendor/lean-miri/` is
+  verified by `UPSTREAM_PIN.json` SHA-256, patched-file allowlist, `.olean`
+  closure digests, standalone kernel replay of all safe constants in the pinned
+  closure, and dependency-cone/axiom/namespace purity, while
+  `trusted/correspondence/` and `correspondence/` are source-preflighted,
+  axiom-checked, and kernel-replayed in Pass 2), explicitly distinguishing
+  normal progress from undefined behavior (`undefined` / `UB`) and unmodeled
+  constructs (`unsupported`).
+- **Top-level theorem statements (`Trusted.CrateTheorem`, `Trusted.UnitTheorem`,
+  and `Trusted.Correspondence.{CorrespondenceClaim, FaultEquivalenceClaim}`):**
+  `Trusted.CrateTheorem` (whole-crate `.crate` scope) and `Trusted.UnitTheorem`
+  (selected proof-unit `.unit` scope, with out-of-scope crate items surfaced in
+  the TCB audit log per [`THREAT_MODEL.md`](../THREAT_MODEL.md)) state that for
+  a captured `Trusted.Crate` (the captured `Program` paired with its `Specs`),
+  every in-scope function is sound (free of `undefined` and `unsupported`) and
+  satisfies any stated specifications, while `CorrespondenceClaim` and
+  `FaultEquivalenceClaim` (enforced by blocking Pass 2 `anneal-audit
+  --require-correspondence`) certify universally that $M_{\text{ref}}$ refines
+  $M_{\text{anneal}}$ (i.e., $M_{\text{anneal}}$ soundly abstracts
+  $M_{\text{ref}}$) via $\tau_{\text{prog}}$.
 
-Stage 2 is optimized for **clarity and direct correspondence to the Rust
-Reference and `rustc`**, not for proof ergonomics. Where `rustc` MIR has
-verbose or low-level representations, Stage 2 models them faithfully so there
-is no semantic gap between what `rustc` hands to code generation and what
-`Trusted.CrateTheorem` constrains.
+Stage 2's theorem-stating boundary, $\tau_{\text{prog}}$, and $M_{\text{ref}}$
+are optimized for **clarity and direct correspondence to the Rust Reference and
+`rustc`**, not for proof ergonomics. Where `rustc` MIR has verbose or low-level
+representations, Stage 2 models them faithfully so there is no semantic gap
+between what `rustc` hands to code generation and what `Trusted.CrateTheorem` or
+`Trusted.UnitTheorem` constrains.
 
-### Stage 3: Verified lowering to a stable IR (`theory/`)
+### Stage 3: Correspondence proof & lowering (`theory/`, `correspondence/`)
 
-Direct proof automation over Stage 2's raw captured MIR would be brittle and
-repetitive. Stage 3 (`theory/`) introduces an intermediate layer designed
-specifically for verification ergonomics and cross-version stability:
+Direct proof automation over an imported reference interpreter such as
+`lean-miri` or raw captured MIR would be brittle and repetitive. Stage 3
+(`theory/` audited in Pass 1 `anneal-audit` and `correspondence/` audited as an
+untrusted `.theory` root in Pass 2 `anneal-audit --require-correspondence`)
+connects the verification layers to Stage 2 by kernel-checked refinement proofs:
 
+- **Correspondence proof (`correspondence/`):** Proves the locked,
+  kernel-checked `CorrespondenceClaim` and `FaultEquivalenceClaim`
+  ([`docs/mir-correspondence-strategy.md`](mir-correspondence-strategy.md))
+  certifying that $M_{\text{ref}}$ (`vendor/lean-miri/`) refines
+  $M_{\text{anneal}}$ (`Trusted/MirSemantics.lean`) via $\tau_{\text{prog}}$
+  (`trusted/correspondence/Trusted/Correspondence.lean`), so
+  $M_{\text{anneal}}$'s operational step rules (`initState` and `evalStep`) are
+  kernel-certified rather than trusted by human semantic audit.
 - **Stable AST and semantics (`Theory/Rust/StableAst/` and
-  `Theory/Rust/StableSemantics/`):** A clean, normalized intermediate
+  `Theory/Rust/StableSemantics/`, planned):** A clean, normalized intermediate
   representation that coalesces redundant MIR forms and remains stable across
   `rustc` releases.
-- **Verified lowering passes (`Theory/Rust/Passes/`):** Pure Lean functions
-  that transform a Stage 2 captured MIR body into a Stage 3 `StableAst` body
-  (or a chain of progressively higher-level representations), accompanied by a
-  proof that the transformation is sound.
-- **Program logics and tactics (`Theory/Rust/Wp/` and `Theory/Rust/Tactics/`):**
-  Weakest-precondition calculi, separation-logic frame rules, and proof
-  automation built once against `StableAst` and `StableSemantics`.
+- **Verified lowering passes (`Theory/Rust/Passes/`, planned):** Pure Lean
+  functions that transform a Stage 2 captured MIR body into a Stage 3
+  `StableAst` body (or a chain of progressively higher-level representations),
+  accompanied by a kernel-checked backward simulation (`Abstracts`) from
+  `StableAst` to $M_{\text{anneal}}$.
+- **Program logics and tactics (`theory/Anneal/MirWp.lean`,
+  `theory/Anneal/PureLift/`, and planned `Theory/Rust/Wp/`,
+  `Theory/Rust/Tactics/`):** Weakest-precondition calculi, functional borrow
+  lifting, separation-logic frame rules, and proof automation built against
+  $M_{\text{anneal}}$ and `StableAst` / `StableSemantics`.
 
-#### Why lowering in `theory/` does not expand the TCB
+#### Why $M_{\text{anneal}}$'s step rules and `theory/` do not expand the TCB
 
 In a verified compiler (such as CompCert), a lowering pass translates a source
 program $S$ into a target program $T$ that will actually run on hardware; the
@@ -167,37 +393,75 @@ compiler must prove that every behavior of $T$ is allowed by $S$.
 
 In a verification framework, the roles are reversed:
 
-- The captured MIR program $C$ (in `Trusted/Rust/Ast/`) is the ground-truth
-  program whose safety `Trusted.CrateTheorem` requires.
-- The lowered stable program $A$ (in `Theory/Rust/StableAst/`) is a pure proof
-  artifact used to simplify reasoning.
-- To discharge a claim about the concrete captured program $C$ by proving that
-  claim on the abstract stable program $A$, the lowering pass must establish a
-  **backward simulation** (denoted `Abstracts A C` in Anneal's framework): every
-  execution trace of the concrete captured program $C$ must be faithfully
-  matched by the abstract stable program $A$, and freedom from `UB` in $A$ must
-  imply freedom from `UB` in $C$.
+- The captured MIR program $C$ (in `Trusted/MirAst.lean`), evaluated under the
+  reference semantics $M_{\text{ref}}$ via $\tau_{\text{prog}}(C)$, is the
+  ground-truth program whose safety `Trusted.CrateTheorem` and
+  `Trusted.UnitTheorem` ultimately guarantee.
+- Anneal's verification MIR semantics $M_{\text{anneal}}$ (executing the same
+  unnormalized captured MIR program $C$) and the lowered stable program $A$ (in
+  `Theory/Rust/StableAst/`) are verification abstractions used to simplify
+  reasoning.
+- Per-crate verification (`cargo anneal verify`) proves `Trusted.CrateTheorem`
+  or `Trusted.UnitTheorem` over $M_{\text{anneal}}$—either directly via
+  `Anneal.MirWp` or via a **backward simulation** (`Abstracts A C` from
+  `StableAst` to $M_{\text{anneal}}$)—without loading `vendor/lean-miri/`.
+  Repository CI (Pass 2) separately proves the universal **correspondence
+  claims** (`CorrespondenceClaim` and `FaultEquivalenceClaim` linking
+  $M_{\text{anneal}}$ on $C$ to $M_{\text{ref}}$ on $\tau_{\text{prog}}(C)$).
+  Unconditionally across every program $C$ and input query $q$ (without gating
+  on fault-freedom in $M_{\text{anneal}}$), the combined locked contract
+  establishes a choice-coupled execution relation such that every valid
+  execution of $M_{\text{ref}}$ on $\tau_{\text{prog}}(C)$ (faulting or
+  non-faulting) has a choice-coupled valid execution of $M_{\text{anneal}}$ on
+  $C$ matching its fault classification (`undefined` vs. `unsupported`), finite
+  terminal outcome, or divergence, and every faulting execution of
+  $M_{\text{anneal}}$ on $C$ has a choice-coupled faulting execution of
+  $M_{\text{ref}}$ on $\tau_{\text{prog}}(C)$ with the exact same fault
+  classification (reducing to `CorrespondenceClaim` plus bidirectional
+  fault-reachability equivalence when both models are deterministic and
+  productive). Consequently, whenever $M_{\text{anneal}}$ on $C$ is fault-free
+  (all-prefix freedom from `undefined` (`UB`) and `unsupported`, as discharged
+  by `cargo anneal verify`), $M_{\text{ref}}$ on $\tau_{\text{prog}}(C)$ is
+  also all-prefix free from `undefined` and `unsupported`, and every finite
+  terminal outcome and diverging run of $M_{\text{ref}}$ on
+  $\tau_{\text{prog}}(C)$ is matched by $M_{\text{anneal}}$ on $C$ (and, when
+  lowered via `Abstracts A C`, by `StableSemantics` on $A$).
 
-Because the Lean 4 kernel checks both (1) the proof that the specification
-holds for the lowered program $A$ and (2) the proof of `Abstracts A C` linking
-$A$ back to the captured `Mir.crate` $C$, the lowering pass is self-certifying.
-If a contributor introduces a bug in `Theory/Rust/Passes/` or `Theory/Rust/Wp/`,
-the simulation proof or weakest-precondition proof will fail to typecheck in
-Lean; it can never produce a valid kernel proof of `Trusted.CrateTheorem` for
-an unsafe program. See [`docs/trust-model.md`](trust-model.md) for how
-Anneal's CI auditor (`anneal-audit`) ensures that `theory/` is pure and
-axiom-free so it cannot bypass the Lean kernel.
+Because the Lean 4 kernel checks (1) the per-crate proof that the specification
+holds over $M_{\text{anneal}}$ (including `Abstracts A C` when lowered through
+$A$) and (2) the Pass 2 proof of `CorrespondenceClaim` and
+`FaultEquivalenceClaim` linking $M_{\text{anneal}}$ to $M_{\text{ref}}$, both
+$M_{\text{anneal}}$'s execution rules and the lowering passes are
+self-certifying. If a contributor introduces a soundness-breaking bug in
+$M_{\text{anneal}}$'s execution rules (such as missing a reference execution,
+disagreeing on a fault class, or certifying an unsafe program against
+$M_{\text{ref}}$), `Theory/Rust/Passes/`, or `theory/Anneal/MirWp.lean`, the
+correspondence proof, simulation proof, or weakest-precondition proof will fail
+to typecheck in Lean; it can never certify an unsafe program against
+$M_{\text{ref}}$ (while optional reverse totality, when proved, additionally
+rejects spurious non-faulting behaviors in $M_{\text{anneal}}$). See
+[`docs/trust-model.md`](trust-model.md) for how Anneal's CI auditor
+(`anneal-audit`) enforces the `trusted/` vs. `theory/` boundary so untrusted
+`theory/` roots remain pure and axiom-free and cannot bypass the Lean
+kernel—the same staging, source-preflight, and standalone kernel-replay
+mechanism that Pass 2 applies to `correspondence/`.
 
 ## Repository layout
 
 Anneal's directory structure reflects both the **trust boundary** (`trusted/`
-vs. `theory/`) and the separation between **language-agnostic verification
-machinery** (`Framework/`) and **Rust-specific semantics** (`Rust/`).
-[`trusted/`](../trusted) houses the CI boundary auditor (`trusted/audit/`), CLI
-orchestrator (`trusted/cargo-anneal/`), capture entrypoint
-(`trusted/rustc-capture/`), and foundational Lean prelude (`trusted/lean/`);
-the `Framework/`, `Rust/`, per-version capture subcrates, and `theory/`
-subdirectories below show the target layout as the pipeline is populated:
+vs. `theory/`) and the planned separation between **language-agnostic
+verification machinery** (`Framework/`) and **Rust-specific semantics**
+(`Rust/`). The tree below shows the **target repository layout** for the MIR
+pipeline and correspondence stack. Currently [`trusted/`](../trusted) houses
+the CI boundary auditor (`trusted/audit/`), CLI orchestrator
+(`trusted/cargo-anneal/`), capture entrypoint (`trusted/rustc-capture/`), and
+foundational Lean prelude (`trusted/lean/`), while [`theory/`](../theory)
+already includes `theory/Anneal/PureLift/`. The captured MIR AST
+(`Trusted/MirAst.lean`), MIR semantics (`Trusted/MirSemantics.lean`), reference
+correspondence adapter (`trusted/correspondence/`), pinned `vendor/lean-miri/`,
+correspondence proofs (`correspondence/`), and `theory/Anneal/MirWp.lean` land
+incrementally across the MIR correspondence implementation; entries marked
+`[planned]` denote later-phase layout subdivisions beyond that stack:
 
 ```text
 anneal/
@@ -205,37 +469,55 @@ anneal/
 │   ├── root-manifest.sha256        # SHA-256 pins for workspace & Nix manifests
 │   ├── rustc-capture/              # Stage 1: rustc_driver MIR & spec extractor
 │   │   ├── Cargo.toml
-│   │   ├── src/                    # Version-independent CLI & dispatch logic
-│   │   └── crates/
-│   │       ├── rustc-capture-common/   # Shared Lean emission formatting
-│   │       ├── rustc-capture-v1_85/    # Thin backend for rustc 1.85
-│   │       └── rustc-capture-v1_86/    # Thin backend for rustc 1.86
-│   ├── lean/                       # Stage 2: Trusted Lean foundation
+│   │   ├── src/                    # CLI & rustc_driver capture session
+│   │   └── crates/                 # [planned] Per-rustc-version thin backends
+│   │       ├── rustc-capture-common/
+│   │       ├── rustc-capture-v1_85/
+│   │       └── rustc-capture-v1_86/
+│   ├── lean/                       # Stage 2 (Pass 1): Trusted Lean foundation
 │   │   ├── foundation-lock.json    # SHA-256 pins for lean binary & Init.*
 │   │   ├── Trusted.lean            # Root TCB prelude import
 │   │   └── Trusted/
-│   │       ├── Framework/          # Language-agnostic transition systems,
-│   │       │                       # Abstracts/Compiles, & VerificationResult
-│   │       └── Rust/               # Captured MIR AST, CaptureProfile, memory
-│   │           ├── Ast/            # models, reference semantics, & CrateTheorem
-│   │           └── Semantics/
-│   ├── audit/                      # CI-only .olean replay & boundary auditor
-│   │   ├── src/                    # anneal-audit Rust binary & manifest checks
-│   │   └── TrustedBoundary.lean    # Two-phase preflight & kernel DAG inspector
+│   │       ├── MirAst.lean         # Captured MIR AST & target profile fields
+│   │       ├── MirSemantics.lean   # M_anneal & CrateTheorem / UnitTheorem
+│   │       ├── Framework/          # [planned] Language-agnostic refinement
+│   │       └── Rust/               # [planned] Factored Ast/ & Semantics/ dirs
+│   ├── correspondence/             # Stage 2 (Pass 2): Reference adapter TCB
+│   │   └── Trusted/
+│   │       └── Correspondence.lean # RefProg codec, M_ref & CorrespondenceClaim
+│   ├── audit/                      # CI .olean replay & boundary auditor
+│   │   ├── src/                    # anneal-audit binary & UPSTREAM_PIN pin
+│   │   └── TrustedBoundary.lean    # Syntactic preflight & kernel DAG inspector
 │   └── cargo-anneal/               # CLI orchestrator (cargo anneal)
-└── theory/                         # Stage 3: Untrusted, kernel-checked proofs
-    ├── Framework/                  # Generic simulation & composition lemmas
-    └── Rust/
-        ├── StableAst/              # Version-independent normalized Rust IR
-        ├── StableSemantics/        # Operational semantics for StableAst
-        ├── Passes/                 # Verified lowering (Trusted.Rust -> StableAst)
-        ├── Wp/                     # Weakest-precondition & separation logic
-        └── Tactics/                # Proof automation & decision procedures
+├── vendor/
+│   └── lean-miri/                  # [planned] Pinned lean-miri snapshot (M_ref)
+│       └── UPSTREAM_PIN.json       # Upstream & patch digests (pinned in audit)
+├── correspondence/                 # [planned] Stage 3 (Pass 2) proofs
+│   └── Anneal/
+│       ├── MirCorrespondenceBase.lean
+│       └── MirCorrespondenceProof.lean
+└── theory/                         # Stage 3 (Pass 1): Untrusted proofs
+    ├── Anneal.lean
+    ├── Anneal/
+    │   ├── MirWp.lean              # Fuel-bounded MIR WP & Pass 1 canaries
+    │   ├── PureLift.lean           # Functional borrow-lifting calculus
+    │   └── PureLift/
+    ├── Framework/                  # [planned] Generic simulation lemmas
+    └── Rust/                       # [planned] StableAst/, Passes/, Wp/
 ```
+
+Because repository review policy (`AGENTS.md`, `.gemini/styleguide.md`, and
+`skills/trust-review/SKILL.md`) restricts `.lean` files outside `trusted/`,
+`ci/`, and `.github/` to `theory/` by default, the Pass 2 PRs that introduce
+`vendor/lean-miri/` and `correspondence/` explicitly revise those governing
+policy files and `anneal-audit`'s root checks in lockstep to admit those two
+Pass 2-audited roots while keeping Pass 1 restricted to `trusted/lean/` and
+`theory/`.
 
 ### Separating `Framework/` from `Rust/`
 
-Both `trusted/lean/Trusted/` and `theory/` separate `Framework/` from `Rust/`:
+In the planned layout, both `trusted/lean/Trusted/` and `theory/` separate
+`Framework/` from `Rust/`:
 
 - **`Trusted/Framework/`** defines language-independent verification concepts:
   labeled transition systems with explicit fault (`UB`) states, the refinement
@@ -331,14 +613,14 @@ downstream verification (`theory/` and user specifications) stable.
 
 ### Three independent version axes
 
-Every `CaptureManifest` emitted by `rustc-capture` records three distinct
-version identifiers rather than conflating them into a single version number:
+Each emitted `CaptureManifest` records three independent version axes rather
+than conflating them into a single version number:
 
-| Axis | Field in `CaptureManifest` | What it governs | When it changes |
+| Axis | `CaptureManifest` field | What it governs | When it changes |
 | :--- | :--- | :--- | :--- |
-| **1. Artifact schema** | `schema_version` | Syntactic wire/file layout of emitted `.lean` capture files and `CaptureManifest`. | Only when Anneal changes the serialization format between `rustc-capture` and `trusted/lean/`. |
-| **2. Compiler toolchain** | `rustc_version` (and commit hash) | Which `rustc-capture-v1_<minor>` backend produced the capture and which `rustc` release was run. | Every supported `rustc` release. |
-| **3. Semantic profile** | `SemProfile` (`CaptureProfile`) | Feature switches in `Trusted/Rust/Semantics/` (such as pointer aliasing model, target layout rules, or version-specific intrinsic semantics). | Only when Rust's runtime behavior or MIR execution semantics genuinely differ across versions or configurations. |
+| **1. Artifact schema** | `schema_version` | Syntactic wire/file layout of emitted `.lean` files and `CaptureManifest`. | Only when Anneal changes the serialization format between `rustc-capture` and `trusted/lean/`. |
+| **2. Compiler toolchain** | `rustc_version` and commit hash | Which `rustc-capture` backend (planned `rustc-capture-v1_<minor>`) produced the capture and which `rustc` release was run. | Every supported `rustc` release. |
+| **3. Semantic profile** | `SemProfile` / `CaptureProfile` (`Program.pointerWidthBits`, `Program.mirProfileVersion`, endianness, and layout metadata) | Feature and compilation-target switches shared across $M_{\text{anneal}}$ (`Trusted/MirSemantics.lean`), $\tau_{\text{prog}}$ (`trusted/correspondence/`), and $M_{\text{ref}}$ (`vendor/lean-miri/`)—such as pointer width, MIR profile version, pointer aliasing model, or version-specific intrinsic semantics. | Only when Rust's runtime behavior or MIR execution semantics genuinely differ across versions or configurations. |
 
 ### How compiler upgrades are absorbed across the three stages
 
@@ -349,20 +631,27 @@ cheapest possible layer:
    between `rustc 1.X` and `rustc 1.Y` are internal compiler refactorings (such
    as renaming a `TyCtxt` query or restructuring an internal arena) that do not
    change the meaning or shape of emitted MIR. These changes are isolated inside
-   a new `trusted/rustc-capture/crates/rustc-capture-v1_Y/` crate, which still
-   emits the exact same Stage 2 `Trusted/Rust/Ast/` structures. Neither
-   `trusted/lean/` nor `theory/` changes at all.
+   a new `trusted/rustc-capture/crates/rustc-capture-v1_Y/` crate (planned),
+   which still emits the exact same Stage 2 captured-MIR AST structures
+   (`Trusted/MirAst.lean`). Neither `trusted/lean/`, `trusted/correspondence/`,
+   `vendor/lean-miri/`, `correspondence/`, nor `theory/` changes at all.
 2. **New MIR syntactic forms or desugarings (absorbed in Stage 2 $\rightarrow$
    Stage 3 lowering):** Sometimes a new `rustc` version introduces a new
    `Rvalue` or `StatementKind` variant, or changes how a surface Rust construct
    desugars into MIR. When that happens:
-   - `Trusted/Rust/Ast/` and `Trusted/Rust/Semantics/` receive a minimal,
-     additive constructor and step rule for the new MIR construct (preserving
-     all existing constructors for older captures).
-   - `Theory/Rust/Passes/` updates its lowering pass to translate the new
-     `Trusted/Rust/Ast/` constructor into the existing normalized
-     `Theory/Rust/StableAst/` representation, updating the `Abstracts`
-     simulation proof.
+   - `Trusted/MirAst.lean` (planned `Trusted/Rust/Ast/`) receives an additive
+     constructor for the new MIR construct (preserving all existing constructors
+     for older captures), $\tau_{\text{prog}}$ and $M_{\text{ref}}$'s staged
+     support gate (in `trusted/correspondence/Trusted/Correspondence.lean`,
+     delegating inside the gate to `vendor/lean-miri/`) map and admit the
+     construct, and $M_{\text{anneal}}$ (`Trusted/MirSemantics.lean`, planned
+     `Trusted/Rust/Semantics/`) receives the corresponding step rule.
+   - `correspondence/` updates the proofs of the unchanged
+     `CorrespondenceClaim` and `FaultEquivalenceClaim` statements to cover the
+     new construct against $M_{\text{ref}}$, while `Theory/Rust/Passes/` and
+     `theory/Anneal/` translate the new captured MIR constructor into the
+     existing normalized `Theory/Rust/StableAst/` representation and update the
+     `Abstracts` / weakest-precondition proofs.
 3. **Downstream proof stability:** Because `Theory/Rust/StableAst/`,
    `Theory/Rust/Wp/`, `Theory/Rust/Tactics/`, and user Rust annotations sit
    downstream of `Theory/Rust/Passes/`, absorbing MIR churn in the lowering

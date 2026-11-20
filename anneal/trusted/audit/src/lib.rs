@@ -15,8 +15,8 @@
 //! workspace manifests, Lean binary version admission, or the `--setup` flags
 //! and environment variables used to invoke `lean` in the first place.
 //!
-//! Together, `trusted/audit` and `TrustedBoundary.lean` enforce five
-//! repository-level invariants across a four-stage pipeline:
+//! Together, `trusted/audit` and `TrustedBoundary.lean` enforce six
+//! repository-level invariants across a five-stage pipeline:
 //!
 //! 1. **Cargo DAG containment ([`check_cargo_boundary`]):** Because Rust code
 //!    (including `build.rs` scripts and proc-macros) is effectful and not
@@ -57,9 +57,28 @@
 //!    non-foundation constants in `Trusted` and `Anneal` are checked against
 //!    the foundation axiom allowlist in `foundation-lock.json` and replayed
 //!    from scratch through `base.toKernelEnv.replay` with `loadExts := false`.
+//! 6. **Pinned `vendor/lean-miri/` closure verification
+//!    ([`verify_upstream_pin`], [`Checker::verify_and_stage_miri_entries`],
+//!    [`InspectorRequest::CorrespondenceAudit`]):** When `vendor/lean-miri/` is
+//!    present, `UPSTREAM_PIN.json` and every vendored file are verified against
+//!    TCB-locked SHA-256 digests, the sysroot `Init`/`Std`/`Lean` `.olean`
+//!    manifest is authenticated before compilation, the 160-module
+//!    `ExecutionMachine` slice is restored from a digest-gated cache outside
+//!    the checkout or compiled cold inside a per-module OS-level sandbox
+//!    (`bwrap --unshare-all` with an empty `tmpfs` root, read-only toolchain
+//!    and staged inputs, zero network/credentials, and writes confined strictly
+//!    to an isolated output directory) with write-after-verify `.olean` digest
+//!    and unexpected-file checking before staging, and the loaded closure is
+//!    checked for namespace isolation, trust-tier separation, and `.vendorMiri`
+//!    axiom/`unsafe`/`sorryAx`/compiler-primitive absence, kernel-replayed from
+//!    scratch onto the authenticated sysroot base on every run (cold compile
+//!    and cache hit alike), and checked for execution-cone freedom from
+//!    `unsafe`, `partial`, `.vendorMiri` `opaque`, and unapproved axioms
+//!    (without source-preflighting vendor modules).
 
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::{BTreeMap, BTreeSet, VecDeque};
 use std::env;
+use std::ffi::OsString;
 use std::fs;
 use std::io;
 #[cfg(unix)]
@@ -89,6 +108,42 @@ pub const IR_PARTS: [&str; 2] = ["ir.sig", "ir"];
 /// All five compiled Lean artifact companion suffixes tracked by
 /// `foundation-lock.json` and module compilation.
 pub const PARTS: [&str; 5] = ["olean", "olean.server", "olean.private", "ir.sig", "ir"];
+
+/// Pinned upstream `proofs-rs/lean-miri` commit hash required by
+/// `vendor/lean-miri/UPSTREAM_PIN.json`.
+pub const LOCKED_MIRI_COMMIT: &str = "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a";
+
+/// Pinned SHA-256 digest of `vendor/lean-miri/UPSTREAM_PIN.json` so that any
+/// change to `UPSTREAM_PIN.json` requires a corresponding TCB diff inside
+/// `trusted/audit/`.
+pub const LOCKED_UPSTREAM_PIN_SHA256: &str =
+    "b629a9b4c3fd184b20b791d34621a9f6aa1518ed9b164e42561b4eb688157271";
+
+/// Pinned SHA-256 manifest digest of all `<prefix>/lib/lean/{Init,Std,Lean}*`
+/// `.olean`, `.olean.server`, and `.olean.private` artifacts in the pinned Lean
+/// 4.34.1 toolchain, computed over sorted `"{rel_path}:{sha256}\n"` lines.
+///
+/// Verifying this digest before `"correspondence-audit"` ensures that every
+/// `.sysrootFoundation` module loaded by `vendor/lean-miri` is
+/// cryptographically authenticated to the pinned toolchain rather than checked
+/// only by path existence.
+pub const LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256: &str =
+    "2fa0ec692ae74051072ed105a66054843dcb711eb702bb64dc7947b96ea4fcdf";
+
+/// Exact set of `vendor/lean-miri` files that must each carry one
+/// consumer-side patch record in `UPSTREAM_PIN.json`.
+pub const LOCKED_PATCHED_MIRI_FILES: &[&str] = &[
+    "Miri/Interpreter/Call.lean",
+    "Miri/Interpreter/Cast.lean",
+    "Miri/Interpreter/ExecutionCalls.lean",
+    "Miri/Interpreter/ExecutionCast.lean",
+    "Miri/Interpreter/ExecutionMachine.lean",
+    "Miri/Interpreter/LocalAccess.lean",
+    "Miri/Interpreter/MachineHooks.lean",
+    "Miri/Interpreter/OperandMachine.lean",
+    "Miri/Interpreter/Place.lean",
+    "Miri/Interpreter/PlaceMachine.lean",
+];
 
 // ---------------------------------------------------------------------------
 // Domain types
@@ -272,10 +327,11 @@ pub struct ImportEdge {
 
 /// Typed request sent to `TrustedBoundary.lean`.
 ///
-/// Encoding the two inspector phases as a sum type ensures that `"preflight"`
-/// is always invoked with a source list against the foundation graph, and
+/// Encoding the inspector phases as a sum type ensures that `"preflight"`
+/// is always invoked with a source list against the foundation graph,
 /// `"audit"` is always invoked with the full module inventory and validated
-/// [`TrustTier`] map.
+/// [`TrustTier`] map, and `"correspondence-audit"` is always invoked with the
+/// complete correspondence-audit module sets and search path.
 #[derive(Debug, Clone)]
 pub enum InspectorRequest {
     /// Phase 1 (`"preflight"`): parse `(module_name, staged_path)` pairs
@@ -289,14 +345,35 @@ pub enum InspectorRequest {
         theory: Vec<String>,
         module_tiers: BTreeMap<String, TrustTier>,
     },
+    /// Phase 3 (`"correspondence-audit"`): load the pinned `lean-miri` closure
+    /// `.olean`s with `loadExts := false`, verify 5-role module provenance,
+    /// `.vendorMiri` inventory integrity and axiom/`unsafe`/`sorryAx`/
+    /// compiler-primitive absence, kernel-replay every non-`isPartial`
+    /// `.vendorMiri` declaration onto the authenticated sysroot base on every
+    /// run (cold compile and cache hit alike), and verify constant-cone purity
+    /// for `Miri.Interpreter.ExecutionMachine`. `corr_trusted` and
+    /// `corr_theory` are currently passed empty by `run_miri_closure` until
+    /// `trusted/correspondence/` and `correspondence/` are added and wired into
+    /// directory scanning.
+    CorrespondenceAudit {
+        search_path: Vec<PathBuf>,
+        trusted: Vec<String>,
+        corr_trusted: Vec<String>,
+        theory: Vec<String>,
+        corr_theory: Vec<String>,
+        vendor_miri: Vec<String>,
+        module_tiers: BTreeMap<String, TrustTier>,
+    },
 }
 
 impl InspectorRequest {
-    /// Return the wire mode tag (`"preflight"` or `"audit"`).
+    /// Return the wire mode tag (`"preflight"`, `"audit"`, or
+    /// `"correspondence-audit"`).
     pub const fn mode(&self) -> &'static str {
         match self {
             Self::Preflight { .. } => "preflight",
             Self::Audit { .. } => "audit",
+            Self::CorrespondenceAudit { .. } => "correspondence-audit",
         }
     }
 }
@@ -349,6 +426,368 @@ fn stage_regular_file(src: &Path, dst: &Path, phase: &str) -> Result<String, Fai
     fs::write(dst, &bytes)
         .map_err(|e| Failure::new(2, phase, format!("cannot write {}: {e}", dst.display())))?;
     Ok(sha256_bytes(&bytes))
+}
+
+/// Normalize `.` and `..` path components purely lexically without consulting
+/// the filesystem.
+fn lexical_normalize(path: &Path) -> PathBuf {
+    let mut normalized = PathBuf::new();
+    for comp in path.components() {
+        match comp {
+            Component::Prefix(prefix) => normalized.push(prefix.as_os_str()),
+            Component::RootDir => normalized.push(comp.as_os_str()),
+            Component::CurDir => {}
+            Component::ParentDir => {
+                if matches!(
+                    normalized.components().next_back(),
+                    Some(Component::Normal(_))
+                ) {
+                    normalized.pop();
+                } else if !normalized.has_root() {
+                    normalized.push(comp.as_os_str());
+                }
+            }
+            Component::Normal(seg) => normalized.push(seg),
+        }
+    }
+    normalized
+}
+
+/// Resolve an absolute path by following symlinks on every existing prefix
+/// component (including dangling symlinks) while preserving non-existent
+/// trailing components and normalizing `.`/`..`. Rejects any symlink located
+/// inside `forbidden_root`.
+fn resolve_path_for_containment(
+    abs_path: &Path,
+    forbidden_root: &Path,
+    phase: &str,
+) -> Result<PathBuf, Failure> {
+    const MAX_SYMLINK_HOPS: usize = 40;
+    let mut remaining_hops = MAX_SYMLINK_HOPS;
+    let mut resolved = PathBuf::new();
+    let mut queue: VecDeque<OsString> = VecDeque::new();
+    let mut saw_root = false;
+
+    for comp in abs_path.components() {
+        match comp {
+            Component::Prefix(prefix) => resolved.push(prefix.as_os_str()),
+            Component::RootDir => {
+                resolved.push(comp.as_os_str());
+                saw_root = true;
+            }
+            Component::CurDir => {}
+            Component::ParentDir => queue.push_back(OsString::from("..")),
+            Component::Normal(seg) => queue.push_back(seg.to_os_string()),
+        }
+    }
+    if !saw_root {
+        return Err(Failure::operational(
+            phase,
+            format!("expected absolute path, got {}", abs_path.display()),
+        ));
+    }
+
+    while let Some(seg) = queue.pop_front() {
+        if seg == "." {
+            continue;
+        }
+        if seg == ".." {
+            if matches!(
+                resolved.components().next_back(),
+                Some(Component::Normal(_))
+            ) {
+                resolved.pop();
+            }
+            continue;
+        }
+        resolved.push(&seg);
+        match fs::symlink_metadata(&resolved) {
+            Ok(meta) if meta.file_type().is_symlink() => {
+                if resolved.starts_with(forbidden_root) {
+                    return Err(Failure::policy(
+                        phase,
+                        format!(
+                            "Miri .olean cache directory must not traverse a symlink inside the repository checkout {}: {}",
+                            forbidden_root.display(),
+                            abs_path.display()
+                        ),
+                    ));
+                }
+                if remaining_hops == 0 {
+                    return Err(Failure::policy(
+                        phase,
+                        format!(
+                            "symlink loop while resolving Miri .olean cache directory: {}",
+                            abs_path.display()
+                        ),
+                    ));
+                }
+                remaining_hops -= 1;
+                let target = fs::read_link(&resolved).map_err(|e| {
+                    Failure::operational(
+                        phase,
+                        format!("cannot read symlink {}: {e}", resolved.display()),
+                    )
+                })?;
+                if target.is_absolute() {
+                    resolved.clear();
+                } else {
+                    resolved.pop();
+                }
+                let mut target_segs = Vec::new();
+                for comp in target.components() {
+                    match comp {
+                        Component::Prefix(prefix) => resolved.push(prefix.as_os_str()),
+                        Component::RootDir => resolved.push(comp.as_os_str()),
+                        Component::CurDir => {}
+                        Component::ParentDir => target_segs.push(OsString::from("..")),
+                        Component::Normal(s) => target_segs.push(s.to_os_string()),
+                    }
+                }
+                for s in target_segs.into_iter().rev() {
+                    queue.push_front(s);
+                }
+            }
+            Ok(_) => {}
+            Err(e)
+                if matches!(
+                    e.kind(),
+                    io::ErrorKind::NotFound | io::ErrorKind::NotADirectory
+                ) => {}
+            Err(e) => {
+                return Err(Failure::operational(
+                    phase,
+                    format!("cannot inspect {}: {e}", resolved.display()),
+                ));
+            }
+        }
+    }
+    Ok(resolved)
+}
+
+/// Reject any `--miri-cache-dir` / `ANNEAL_MIRI_CACHE_DIR` path that resides
+/// inside (or equals) the repository checkout `checkout`, checking both
+/// lexical containment and symlink-resolved containment (including
+/// non-existent leaf directories and dangling symlinks).
+///
+/// Keeping the Miri `.olean` cache outside the checkout prevents a PR from
+/// committing pre-built `.olean` files inside the repository to satisfy cache
+/// hits without compiling the pinned sources.
+pub fn ensure_miri_cache_outside_checkout(
+    checkout: &Path,
+    cache_dir: &Path,
+) -> Result<(), Failure> {
+    let phase = "miri-pin";
+    let canonical_checkout = fs::canonicalize(checkout).map_err(|e| {
+        Failure::operational(
+            phase,
+            format!("cannot canonicalize checkout {}: {e}", checkout.display()),
+        )
+    })?;
+    let abs_cache = if cache_dir.is_absolute() {
+        cache_dir.to_path_buf()
+    } else {
+        env::current_dir()
+            .map_err(|e| Failure::operational(phase, format!("cannot read cwd: {e}")))?
+            .join(cache_dir)
+    };
+    let lexical_cache = lexical_normalize(&abs_cache);
+    let resolved_cache = resolve_path_for_containment(&abs_cache, &canonical_checkout, phase)?;
+    if lexical_cache.starts_with(&canonical_checkout)
+        || resolved_cache.starts_with(&canonical_checkout)
+    {
+        return Err(Failure::policy(
+            phase,
+            format!(
+                "Miri .olean cache directory must reside outside the repository checkout {}: {}",
+                canonical_checkout.display(),
+                cache_dir.display()
+            ),
+        ));
+    }
+    Ok(())
+}
+
+/// Validate that `cache_dir` and every path component of `rel_path` under
+/// `cache_dir` is free of symlinks, returning the validated destination path
+/// and creating missing intermediate directories without following links.
+fn prepare_nosymlink_cache_path(
+    cache_dir: &Path,
+    rel_path: &str,
+    create_dirs: bool,
+    phase: &str,
+) -> Result<PathBuf, Failure> {
+    if !is_clean_relative_path(rel_path) {
+        return Err(Failure::policy(
+            phase,
+            format!("invalid relative cache path: {rel_path}"),
+        ));
+    }
+    // Strip any trailing slash so `symlink_metadata` inspects a symlinked
+    // `cache_dir` entry itself rather than dereferencing it under POSIX.
+    let cache_dir_buf: PathBuf = cache_dir.components().collect();
+    let cache_dir = cache_dir_buf.as_path();
+    match fs::symlink_metadata(cache_dir) {
+        Ok(meta) => {
+            if !meta.file_type().is_dir() {
+                return Err(Failure::policy(
+                    phase,
+                    format!(
+                        "cache root must be a regular directory (not a symlink or file): {}",
+                        cache_dir.display()
+                    ),
+                ));
+            }
+        }
+        Err(e) if e.kind() == io::ErrorKind::NotFound => {
+            if create_dirs {
+                fs::create_dir_all(cache_dir).map_err(|err| {
+                    Failure::operational(
+                        phase,
+                        format!("cannot create cache root {}: {err}", cache_dir.display()),
+                    )
+                })?;
+                let meta = fs::symlink_metadata(cache_dir).map_err(|err| {
+                    Failure::operational(
+                        phase,
+                        format!("cannot stat cache root {}: {err}", cache_dir.display()),
+                    )
+                })?;
+                if !meta.file_type().is_dir() {
+                    return Err(Failure::policy(
+                        phase,
+                        format!(
+                            "cache root is not a regular directory: {}",
+                            cache_dir.display()
+                        ),
+                    ));
+                }
+            } else {
+                return Ok(cache_dir.join(rel_path));
+            }
+        }
+        Err(e) => {
+            return Err(Failure::operational(
+                phase,
+                format!("cannot stat cache root {}: {e}", cache_dir.display()),
+            ));
+        }
+    }
+    let rel = Path::new(rel_path);
+    let mut cur = cache_dir.to_path_buf();
+    if let Some(parent) = rel.parent() {
+        for comp in parent.components() {
+            cur.push(comp);
+            match fs::symlink_metadata(&cur) {
+                Ok(meta) => {
+                    if !meta.file_type().is_dir() {
+                        return Err(Failure::policy(
+                            phase,
+                            format!(
+                                "symlink or non-directory forbidden in cache path: {}",
+                                cur.display()
+                            ),
+                        ));
+                    }
+                }
+                Err(e) if e.kind() == io::ErrorKind::NotFound => {
+                    if create_dirs {
+                        fs::create_dir(&cur).map_err(|err| {
+                            Failure::operational(
+                                phase,
+                                format!("cannot create cache directory {}: {err}", cur.display()),
+                            )
+                        })?;
+                    } else {
+                        return Ok(cache_dir.join(rel_path));
+                    }
+                }
+                Err(e) => {
+                    return Err(Failure::operational(
+                        phase,
+                        format!("cannot stat cache directory {}: {e}", cur.display()),
+                    ));
+                }
+            }
+        }
+    }
+    let dst = cache_dir.join(rel_path);
+    match fs::symlink_metadata(&dst) {
+        Ok(meta) => {
+            if !meta.file_type().is_file() {
+                return Err(Failure::policy(
+                    phase,
+                    format!(
+                        "symlink or non-regular file forbidden at cache entry: {}",
+                        dst.display()
+                    ),
+                ));
+            }
+        }
+        Err(e) if e.kind() == io::ErrorKind::NotFound => {}
+        Err(e) => {
+            return Err(Failure::operational(
+                phase,
+                format!("cannot stat cache entry {}: {e}", dst.display()),
+            ));
+        }
+    }
+    Ok(dst)
+}
+
+/// Write a compiled artifact `src` into `cache_dir/rel_path` after rejecting
+/// symlinks at every path component and creating a fresh regular file with
+/// `create_new(true)`.
+fn write_cache_file(
+    src: &Path,
+    cache_dir: &Path,
+    rel_path: &str,
+    phase: &str,
+) -> Result<(), Failure> {
+    regular(src, phase)?;
+    let bytes = fs::read(src)
+        .map_err(|e| Failure::operational(phase, format!("cannot read {}: {e}", src.display())))?;
+    let dst = prepare_nosymlink_cache_path(cache_dir, rel_path, true, phase)?;
+    if fs::symlink_metadata(&dst).is_ok() {
+        fs::remove_file(&dst).map_err(|e| {
+            Failure::operational(
+                phase,
+                format!("cannot replace cache entry {}: {e}", dst.display()),
+            )
+        })?;
+    }
+    let mut file = fs::OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .open(&dst)
+        .map_err(|e| {
+            Failure::operational(
+                phase,
+                format!("cannot create cache entry {}: {e}", dst.display()),
+            )
+        })?;
+    io::Write::write_all(&mut file, &bytes).map_err(|e| {
+        Failure::operational(
+            phase,
+            format!("cannot write cache entry {}: {e}", dst.display()),
+        )
+    })?;
+    Ok(())
+}
+
+/// Remove a stale companion artifact at `cache_dir/rel_path` after rejecting
+/// symlinks along the path.
+fn remove_cache_file(cache_dir: &Path, rel_path: &str, phase: &str) -> Result<(), Failure> {
+    let dst = prepare_nosymlink_cache_path(cache_dir, rel_path, false, phase)?;
+    if fs::symlink_metadata(&dst).is_ok() {
+        fs::remove_file(&dst).map_err(|e| {
+            Failure::operational(
+                phase,
+                format!("cannot remove stale cache entry {}: {e}", dst.display()),
+            )
+        })?;
+    }
+    Ok(())
 }
 
 /// Return `true` if `s` is a 64-character ASCII hex digest.
@@ -901,8 +1340,8 @@ pub fn check_cargo_boundary(checkout: &Path) -> Result<(), Failure> {
 }
 
 /// Reject `.cargo*` and `rust-toolchain*` overrides at `checkout`, and run
-/// [`check_cargo_boundary`] whenever any Cargo or root-manifest TCB file is
-/// present.
+/// [`check_cargo_boundary`] and [`verify_upstream_pin`] whenever any Cargo,
+/// root-manifest, or vendored Miri TCB path is present.
 fn check_checkout_cargo_hygiene(checkout: &Path) -> Result<(), Failure> {
     reject_cargo_toolchain_overrides(checkout)?;
     if [
@@ -910,11 +1349,13 @@ fn check_checkout_cargo_hygiene(checkout: &Path) -> Result<(), Failure> {
         "Cargo.lock",
         "trusted/root-manifest.sha256",
         "trusted/rustc-capture",
+        "vendor",
     ]
     .iter()
     .any(|rel| fs::symlink_metadata(checkout.join(rel)).is_ok())
     {
         check_cargo_boundary(checkout)?;
+        verify_upstream_pin(&checkout.join("vendor/lean-miri"))?;
     }
     Ok(())
 }
@@ -1061,7 +1502,7 @@ pub fn default_lean_path() -> PathBuf {
                     (mtime, p)
                 })
                 .collect();
-            dirs.sort_by(|a, b| b.0.cmp(&a.0));
+            dirs.sort_by_key(|a| std::cmp::Reverse(a.0));
             candidate_paths.extend(dirs.into_iter().map(|(_, p)| p));
         }
     }
@@ -1129,6 +1570,10 @@ pub struct AdmittedToolchain {
     /// Staged `Anneal.*` (`theory/`) source files
     /// (`module_name -> staged_path`).
     pub theory_modules: BTreeMap<String, PathBuf>,
+    /// Cached SHA-256-verified `.sysrootFoundation` module names (`Init.*`,
+    /// `Std.*`, and `Lean.*` modules outside `foundation_graph` in
+    /// `<prefix>/lib/lean`).
+    pub sysroot_foundation: Option<Vec<String>>,
 }
 
 impl AdmittedToolchain {
@@ -1136,6 +1581,133 @@ impl AdmittedToolchain {
     pub fn foundation_modules(&self) -> Vec<&str> {
         self.foundation_graph.keys().map(String::as_str).collect()
     }
+
+    /// Verify the SHA-256 digests of all `<prefix>/lib/lean/{Init,Std,Lean}*`
+    /// `.olean`, `.olean.server`, and `.olean.private` files against
+    /// [`LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`] and return the sorted list
+    /// of `.sysrootFoundation` module names (excluding `foundation_graph`).
+    pub fn ensure_sysroot_foundation(&mut self) -> Result<&[String], Failure> {
+        if self.sysroot_foundation.is_none() {
+            let lib_dir = self.prefix.join("lib/lean");
+            let foundation_modules: BTreeSet<String> =
+                self.foundation_graph.keys().cloned().collect();
+            let modules = verify_sysroot_foundation_dir(
+                &lib_dir,
+                &foundation_modules,
+                LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256,
+            )?;
+            self.sysroot_foundation = Some(modules);
+        }
+        Ok(self.sysroot_foundation.as_deref().unwrap())
+    }
+}
+
+/// Authenticate every `Init`, `Std`, and `Lean` `.olean`/`.olean.server`/
+/// `.olean.private` artifact under `lib_dir` against `expected_manifest_sha`
+/// and return the sorted `.sysrootFoundation` module names (excluding
+/// `foundation_modules`).
+pub fn verify_sysroot_foundation_dir(
+    lib_dir: &Path,
+    foundation_modules: &BTreeSet<String>,
+    expected_manifest_sha: &str,
+) -> Result<Vec<String>, Failure> {
+    let phase = "sysroot-foundation";
+    let mut entries: BTreeMap<String, String> = BTreeMap::new();
+    let mut modules: BTreeSet<String> = BTreeSet::new();
+    for pkg in ["Init", "Std", "Lean"] {
+        for ext in OLEAN_PARTS {
+            let rel = format!("{pkg}.{ext}");
+            let path = lib_dir.join(&rel);
+            if fs::symlink_metadata(&path).is_ok() {
+                let sha = sha256_file(&path, phase)?;
+                entries.insert(rel, sha);
+                if ext == "olean" && !foundation_modules.contains(pkg) {
+                    modules.insert(pkg.to_string());
+                }
+            }
+        }
+        let pkg_dir = lib_dir.join(pkg);
+        for item in WalkDir::new(&pkg_dir).follow_links(false) {
+            let item = item.map_err(|e| {
+                Failure::policy(
+                    phase,
+                    format!("cannot walk sysroot {}: {e}", pkg_dir.display()),
+                )
+            })?;
+            let ft = item.file_type();
+            if ft.is_symlink() {
+                return Err(Failure::policy(
+                    phase,
+                    format!("symlink forbidden in sysroot: {}", item.path().display()),
+                ));
+            }
+            if ft.is_dir() {
+                continue;
+            }
+            if !ft.is_file() {
+                return Err(Failure::policy(
+                    phase,
+                    format!("unexpected file type in sysroot: {}", item.path().display()),
+                ));
+            }
+            let rel_path = item.path().strip_prefix(lib_dir).map_err(|e| {
+                Failure::operational(phase, format!("invalid sysroot relative path: {e}"))
+            })?;
+            let mut segs = Vec::new();
+            for comp in rel_path.components() {
+                let Component::Normal(os) = comp else {
+                    return Err(Failure::policy(
+                        phase,
+                        format!("invalid path component in {}", item.path().display()),
+                    ));
+                };
+                let Some(s) = os.to_str() else {
+                    return Err(Failure::policy(
+                        phase,
+                        format!("non-UTF-8 path in sysroot: {}", item.path().display()),
+                    ));
+                };
+                segs.push(s);
+            }
+            let rel_str = segs.join("/");
+            let is_olean_part = OLEAN_PARTS
+                .iter()
+                .any(|ext| rel_str.ends_with(&format!(".{ext}")));
+            if is_olean_part {
+                let sha = sha256_file(item.path(), phase)?;
+                entries.insert(rel_str.clone(), sha);
+                if let Some(stem) = rel_str.strip_suffix(".olean") {
+                    let mod_name = stem.replace('/', ".");
+                    if !mod_name.split('.').all(is_lean_ident) {
+                        return Err(Failure::policy(
+                            phase,
+                            format!("invalid sysroot module identifier: {mod_name}"),
+                        ));
+                    }
+                    if !foundation_modules.contains(&mod_name) {
+                        modules.insert(mod_name);
+                    }
+                }
+            }
+        }
+    }
+    let mut manifest = String::new();
+    for (rel, sha) in &entries {
+        manifest.push_str(rel);
+        manifest.push(':');
+        manifest.push_str(sha);
+        manifest.push('\n');
+    }
+    let actual_manifest_sha = sha256_bytes(manifest.as_bytes());
+    if !actual_manifest_sha.eq_ignore_ascii_case(expected_manifest_sha) {
+        return Err(Failure::policy(
+            phase,
+            format!(
+                "sysroot Init/Std/Lean .olean manifest SHA-256 mismatch: expected {expected_manifest_sha}, got {actual_manifest_sha}"
+            ),
+        ));
+    }
+    Ok(modules.into_iter().collect())
 }
 
 /// Validated repository source headers and module-level trust tiers produced by
@@ -1161,6 +1733,7 @@ pub struct Checker {
     pub environment: BTreeMap<String, String>,
     counter: usize,
     pub admitted: Option<AdmittedToolchain>,
+    pub miri_cache_dir: Option<PathBuf>,
 }
 
 #[derive(Deserialize)]
@@ -1201,6 +1774,12 @@ impl Checker {
     ///
     /// Discard unlisted environment entries before decoding their values. A
     /// retained value that is not valid UTF-8 returns an `InvalidInput` error.
+    ///
+    /// If `ANNEAL_MIRI_CACHE_DIR` is set and non-empty in the process
+    /// environment, it initializes the optional vendored `.olean` cache
+    /// directory (overridable via [`Checker::set_miri_cache_dir`]). Cached
+    /// entries are accepted only when their SHA-256 digests match
+    /// `UPSTREAM_PIN.json` and written back only after digest verification.
     pub fn new(checkout: &Path, lean: Option<&Path>) -> io::Result<Self> {
         // Unforwarded host settings have no bearing on the Lean child, so
         // they impose no UTF-8 requirement. Validate retained values without
@@ -1220,7 +1799,13 @@ impl Checker {
                 Ok((key, value))
             })
             .collect::<io::Result<Vec<_>>>()?;
-        Self::new_with_env(checkout, lean, environment)
+        let mut checker = Self::new_with_env(checkout, lean, environment)?;
+        if let Some(cache_dir) = env::var_os("ANNEAL_MIRI_CACHE_DIR")
+            && !cache_dir.is_empty()
+        {
+            checker.miri_cache_dir = Some(PathBuf::from(cache_dir));
+        }
+        Ok(checker)
     }
 
     /// Create a new [`Checker`] using a closed environment allowlist.
@@ -1270,7 +1855,14 @@ impl Checker {
             environment,
             counter: 0,
             admitted: None,
+            miri_cache_dir: None,
         })
+    }
+
+    /// Configure an optional cache directory for verified `Miri.*` `.olean`
+    /// artifacts (`execution_machine_closure` in `UPSTREAM_PIN.json`).
+    pub fn set_miri_cache_dir(&mut self, cache_dir: Option<PathBuf>) {
+        self.miri_cache_dir = cache_dir;
     }
 
     /// Return a shared reference to the [`AdmittedToolchain`], or an
@@ -1302,20 +1894,45 @@ impl Checker {
     /// I/O errors remain distinct from a completed child's exit status. Each
     /// caller applies its own diagnostic and protocol rules to the raw output.
     fn launch_lean(&self, arguments: &[String]) -> io::Result<Output> {
-        Command::new(&self.lean)
-            .args(arguments)
+        self.launch_lean_with_path(arguments, None)
+    }
+
+    /// Capture a Lean child in the stage with an optional `LEAN_PATH`
+    /// override pointing at staged `.olean` directories (Lean appends the
+    /// authenticated toolchain sysroot library path automatically).
+    fn launch_lean_with_path(
+        &self,
+        arguments: &[String],
+        lean_path: Option<&std::ffi::OsStr>,
+    ) -> io::Result<Output> {
+        let mut cmd = Command::new(&self.lean);
+        cmd.args(arguments)
             .current_dir(&self.stage)
             .env_clear()
-            .envs(&self.environment)
-            .output()
+            .envs(&self.environment);
+        if let Some(lp) = lean_path {
+            cmd.env("LEAN_PATH", lp);
+        }
+        cmd.output()
     }
 
     /// Execute `self.lean` with `arguments` in the sanitized `self.environment`
     /// with `self.stage` as the working directory.
     pub fn process(&mut self, label: &str, arguments: &[String]) -> Result<String, Failure> {
+        self.process_with_path(label, arguments, None)
+    }
+
+    /// Execute `self.lean` with `arguments` and an optional hermetic
+    /// `LEAN_PATH` override.
+    pub fn process_with_path(
+        &mut self,
+        label: &str,
+        arguments: &[String],
+        lean_path: Option<&std::ffi::OsStr>,
+    ) -> Result<String, Failure> {
         self.counter += 1;
         let output = self
-            .launch_lean(arguments)
+            .launch_lean_with_path(arguments, lean_path)
             .map_err(|e| Failure::new(2, label, format!("could not execute Lean: {e}")))?;
         if !output.status.success() {
             let stderr = String::from_utf8_lossy(&output.stderr);
@@ -1367,6 +1984,9 @@ impl Checker {
     /// validate the structured response envelope.
     pub fn inspect(&mut self, request: InspectorRequest) -> Result<Json, Failure> {
         let mode = request.mode();
+        if matches!(request, InspectorRequest::CorrespondenceAudit { .. }) {
+            self.admitted_mut()?.ensure_sysroot_foundation()?;
+        }
         let adm = self.admitted()?;
         let arts_arr: Vec<Json> = adm
             .artifacts
@@ -1411,6 +2031,37 @@ impl Checker {
                     "moduleTiers": tiers,
                 })
             }
+            InspectorRequest::CorrespondenceAudit {
+                search_path,
+                trusted,
+                corr_trusted,
+                theory,
+                corr_theory,
+                vendor_miri,
+                module_tiers,
+            } => {
+                let sysroot_foundation = adm.sysroot_foundation.as_deref().unwrap_or(&[]);
+                let sp: Vec<std::borrow::Cow<'_, str>> =
+                    search_path.iter().map(|p| p.to_string_lossy()).collect();
+                let tiers: Vec<(&str, String)> = module_tiers
+                    .iter()
+                    .map(|(m, t)| (m.as_str(), t.render()))
+                    .collect();
+                json!({
+                    "mode": "correspondence-audit",
+                    "sysroot": adm.prefix.to_string_lossy(),
+                    "searchPath": sp,
+                    "foundation": foundation,
+                    "sysrootFoundation": sysroot_foundation,
+                    "axioms": &adm.axioms,
+                    "trusted": trusted,
+                    "corrTrusted": corr_trusted,
+                    "theory": theory,
+                    "corrTheory": corr_theory,
+                    "vendorMiri": vendor_miri,
+                    "moduleTiers": tiers,
+                })
+            }
         };
         let inspector = adm.inspector.clone();
 
@@ -1425,9 +2076,18 @@ impl Checker {
         fs::write(&request_path, req_bytes)
             .map_err(|e| Failure::new(2, mode, format!("cannot write request: {e}")))?;
 
+        // Keep Phase 1/2 capped at `-M2048` during preflight and core audit.
+        // Raise the cap to `-M8192` for Phase 3 (`CorrespondenceAudit`), which
+        // loads the 160-module `lean-miri` and `Lean.*` closure alongside the
+        // already-audited `Trusted.*` and `theory/` `.olean` files (resource
+        // bound only; soundness does not depend on this limit).
+        let mem_limit = match request {
+            InspectorRequest::CorrespondenceAudit { .. } => "-M8192",
+            InspectorRequest::Preflight { .. } | InspectorRequest::Audit { .. } => "-M2048",
+        };
         let args = vec![
             "-j1".to_string(),
-            "-M2048".to_string(),
+            mem_limit.to_string(),
             "--run".to_string(),
             inspector.to_string_lossy().into_owned(),
             request_path.to_string_lossy().into_owned(),
@@ -1467,6 +2127,9 @@ impl Checker {
                 mode,
                 "unexpected inspector protocol response",
             ));
+        }
+        if let InspectorRequest::CorrespondenceAudit { vendor_miri, .. } = &request {
+            validate_correspondence_report(&resp.result, !vendor_miri.is_empty())?;
         }
         Ok(Json::Object(resp.result))
     }
@@ -1693,6 +2356,7 @@ impl Checker {
             artifacts,
             modules,
             theory_modules,
+            sysroot_foundation: None,
         });
         Ok(self.admitted.as_mut().unwrap())
     }
@@ -1841,6 +2505,9 @@ impl Checker {
     /// Run the complete repository boundary check (`trusted/lean/` plus
     /// `theory/` when present).
     pub fn run(&mut self) -> Result<Json, Failure> {
+        if let Some(cache_dir) = &self.miri_cache_dir {
+            ensure_miri_cache_outside_checkout(&self.checkout, cache_dir)?;
+        }
         check_checkout_cargo_hygiene(&self.checkout)?;
         self.reset_stage()?;
         self.tool_admission()?;
@@ -1877,20 +2544,1210 @@ impl Checker {
             InspectorRequest::Audit {
                 trusted: adm.modules.keys().cloned().collect(),
                 theory: adm.theory_modules.keys().cloned().collect(),
-                module_tiers: preflight.module_tiers,
+                module_tiers: preflight.module_tiers.clone(),
             }
         };
         let mut report = self.inspect(audit_req)?;
         let version = self.admitted()?.version.clone();
-        let rep_obj = report.as_object_mut().unwrap();
-        rep_obj.insert("toolchain".to_string(), json!(version));
-        rep_obj.insert(
-            "guarantee".to_string(),
-            json!("kernel dependency closure, module-origin separation, and Cargo DAG boundary"),
-        );
+        {
+            let rep_obj = report.as_object_mut().unwrap();
+            rep_obj.insert("toolchain".to_string(), json!(version));
+            rep_obj.insert(
+                "guarantee".to_string(),
+                json!(
+                    "kernel dependency closure, module-origin separation, and Cargo DAG boundary"
+                ),
+            );
+        }
+
+        if let Some(corr_report) = self.run_miri_closure(&preflight.module_tiers)?
+            && let (Some(rep_obj), Some(corr_obj)) =
+                (report.as_object_mut(), corr_report.as_object())
+        {
+            for (k, v) in corr_obj {
+                rep_obj.insert(k.clone(), v.clone());
+            }
+        }
 
         Ok(report)
     }
+
+    /// Stage, compile (or restore from verified cache), and audit the
+    /// 160-module `Miri.Interpreter.ExecutionMachine` closure whenever
+    /// `vendor/lean-miri` is present in `self.checkout`.
+    fn run_miri_closure(
+        &mut self,
+        base_tiers: &BTreeMap<String, TrustTier>,
+    ) -> Result<Option<Json>, Failure> {
+        let vendor_dir = self.checkout.join("vendor/lean-miri");
+        if fs::symlink_metadata(&vendor_dir).is_err() {
+            return Ok(None);
+        }
+
+        let pin = verify_upstream_pin(&vendor_dir)?;
+        // Authenticate the toolchain sysroot `.olean` manifest before compiling
+        // any vendored module against `Init`/`Std`/`Lean`.
+        self.admitted_mut()?.ensure_sysroot_foundation()?;
+
+        let expected_sources = pin.expected_source_digests();
+        let miri_lib = self.verify_and_stage_miri_entries(
+            &vendor_dir,
+            &pin.execution_machine_closure,
+            &expected_sources,
+        )?;
+
+        let search_dirs = vec![
+            self.stage.join("lib"),
+            self.stage.join("theory-lib"),
+            miri_lib,
+        ];
+        let corr_req = {
+            let adm = self.admitted()?;
+            InspectorRequest::CorrespondenceAudit {
+                search_path: search_dirs,
+                trusted: adm.modules.keys().cloned().collect(),
+                corr_trusted: Vec::new(),
+                theory: adm.theory_modules.keys().cloned().collect(),
+                corr_theory: Vec::new(),
+                vendor_miri: pin
+                    .execution_machine_closure
+                    .iter()
+                    .map(|e| e.module.clone())
+                    .collect(),
+                module_tiers: base_tiers.clone(),
+            }
+        };
+        let mut corr_report = self.inspect(corr_req)?;
+        if let Some(obj) = corr_report.as_object_mut() {
+            validate_correspondence_report(obj, !pin.execution_machine_closure.is_empty())?;
+            obj.insert("miriCommit".to_string(), json!(pin.commit));
+            obj.insert(
+                "miriClosureModules".to_string(),
+                json!(pin.execution_machine_closure.len()),
+            );
+        } else {
+            return Err(Failure::operational(
+                "correspondence-audit",
+                "expected JSON object from correspondence audit",
+            ));
+        }
+        Ok(Some(corr_report))
+    }
+
+    /// Stage, restore from the digest-gated cache or compile cold inside an
+    /// OS-level sandbox, verify every staged source and output `.olean`
+    /// companion digest (plus absence of symlinks or unexpected sandbox
+    /// outputs), and write newly compiled artifacts to `self.miri_cache_dir`
+    /// only after verification succeeds.
+    pub fn verify_and_stage_miri_entries(
+        &mut self,
+        vendor_dir: &Path,
+        entries: &[MiriClosureEntry],
+        expected_sources: &BTreeMap<String, String>,
+    ) -> Result<PathBuf, Failure> {
+        if let Some(cache_dir) = &self.miri_cache_dir {
+            ensure_miri_cache_outside_checkout(&self.checkout, cache_dir)?;
+        }
+        let miri_src_root = self.stage.join("src/vendor-miri");
+        let miri_lib = self.stage.join("miri-lib");
+        fs::create_dir_all(&miri_lib)
+            .map_err(|e| Failure::operational("miri-compile", e.to_string()))?;
+        for entry in entries {
+            let Some(expected_src_sha) = expected_sources.get(&entry.path) else {
+                return Err(Failure::policy(
+                    "miri-pin",
+                    format!(
+                        "missing pinned source digest for Miri closure module {}",
+                        entry.path
+                    ),
+                ));
+            };
+            let src_file = vendor_dir.join(&entry.path);
+            let staged_src = miri_src_root.join(&entry.path);
+            let actual_src_sha = stage_regular_file(&src_file, &staged_src, "miri-pin")?;
+            if !actual_src_sha.eq_ignore_ascii_case(expected_src_sha) {
+                return Err(Failure::policy(
+                    "miri-pin",
+                    format!(
+                        "staged Miri source SHA-256 mismatch for {}: expected {expected_src_sha}, got {actual_src_sha}",
+                        entry.path
+                    ),
+                ));
+            }
+        }
+
+        for entry in entries {
+            let rel_stem = entry.module.replace('.', "/");
+            let rel_olean = format!("{rel_stem}.olean");
+            let staged_olean = miri_lib.join(&rel_olean);
+            if let Some(parent) = staged_olean.parent() {
+                fs::create_dir_all(parent)
+                    .map_err(|e| Failure::operational("miri-compile", e.to_string()))?;
+            }
+            let mut cache_hit = false;
+            if let Some(cache_dir) = &self.miri_cache_dir {
+                let cached =
+                    prepare_nosymlink_cache_path(cache_dir, &rel_olean, false, "miri-pin")?;
+                let olean_matches = sha256_file(&cached, "miri-pin")
+                    .is_ok_and(|h| h.eq_ignore_ascii_case(&entry.olean_sha256));
+                let mut parts_match = true;
+                for (part, expected_opt) in [
+                    ("olean.server", entry.olean_server_sha256.as_deref()),
+                    ("olean.private", entry.olean_private_sha256.as_deref()),
+                ] {
+                    let rel_part = format!("{rel_stem}.{part}");
+                    let cached_part =
+                        prepare_nosymlink_cache_path(cache_dir, &rel_part, false, "miri-pin")?;
+                    let ok = match expected_opt {
+                        Some(exp_sha) => sha256_file(&cached_part, "miri-pin")
+                            .is_ok_and(|h| h.eq_ignore_ascii_case(exp_sha)),
+                        None => fs::symlink_metadata(&cached_part).is_err(),
+                    };
+                    if !ok {
+                        parts_match = false;
+                    }
+                }
+                if olean_matches && parts_match {
+                    stage_regular_file(&cached, &staged_olean, "miri-pin")?;
+                    for (part, expected_opt) in [
+                        ("olean.server", entry.olean_server_sha256.as_deref()),
+                        ("olean.private", entry.olean_private_sha256.as_deref()),
+                    ] {
+                        if expected_opt.is_some() {
+                            let rel_part = format!("{rel_stem}.{part}");
+                            let cached_part = prepare_nosymlink_cache_path(
+                                cache_dir, &rel_part, false, "miri-pin",
+                            )?;
+                            stage_regular_file(
+                                &cached_part,
+                                &miri_lib.join(&rel_part),
+                                "miri-pin",
+                            )?;
+                        }
+                    }
+                    cache_hit = true;
+                }
+            }
+            if cache_hit {
+                let actual_olean_sha = sha256_file(&staged_olean, "miri-pin")?;
+                if !actual_olean_sha.eq_ignore_ascii_case(&entry.olean_sha256) {
+                    return Err(Failure::policy(
+                        "miri-pin",
+                        format!(
+                            "compiled Miri .olean SHA-256 mismatch for {}: expected {}, got {actual_olean_sha}",
+                            entry.module, entry.olean_sha256
+                        ),
+                    ));
+                }
+                for (part, expected_opt) in [
+                    ("olean.server", entry.olean_server_sha256.as_deref()),
+                    ("olean.private", entry.olean_private_sha256.as_deref()),
+                ] {
+                    let staged_part = miri_lib.join(format!("{rel_stem}.{part}"));
+                    match expected_opt {
+                        Some(exp_sha) => {
+                            if fs::symlink_metadata(&staged_part).is_err() {
+                                return Err(Failure::policy(
+                                    "miri-pin",
+                                    format!(
+                                        "missing compiled Miri .{part} sidecar for {}",
+                                        entry.module
+                                    ),
+                                ));
+                            }
+                            let actual_sha = sha256_file(&staged_part, "miri-pin")?;
+                            if !actual_sha.eq_ignore_ascii_case(exp_sha) {
+                                return Err(Failure::policy(
+                                    "miri-pin",
+                                    format!(
+                                        "compiled Miri .{part} SHA-256 mismatch for {}: expected {exp_sha}, got {actual_sha}",
+                                        entry.module
+                                    ),
+                                ));
+                            }
+                        }
+                        None => {
+                            if fs::symlink_metadata(&staged_part).is_ok() {
+                                return Err(Failure::policy(
+                                    "miri-pin",
+                                    format!("unexpected Miri .{part} sidecar for {}", entry.module),
+                                ));
+                            }
+                        }
+                    }
+                }
+                continue;
+            }
+
+            // Cold vendor elaboration runs inside an isolated per-module OS
+            // sandbox whose sole host-backed writable directory is a fresh
+            // owner-only temporary directory outside `self.stage`, the
+            // checkout, `$HOME`, and `self.miri_cache_dir`.
+            self.execution_began = true;
+            let mut out_builder = tempfile::Builder::new();
+            out_builder.prefix("anneal-miri-out-");
+            #[cfg(unix)]
+            out_builder.permissions(fs::Permissions::from_mode(0o700));
+            let module_out_dir = out_builder
+                .tempdir()
+                .map_err(|e| Failure::operational("miri-compile", e.to_string()))?;
+            let out_olean = module_out_dir.path().join(&rel_olean);
+            if let Some(parent) = out_olean.parent() {
+                fs::create_dir_all(parent)
+                    .map_err(|e| Failure::operational("miri-compile", e.to_string()))?;
+            }
+            self.sandbox_compile_miri_module(
+                &format!("compile-{}", entry.module),
+                &miri_src_root,
+                &miri_lib,
+                module_out_dir.path(),
+                &rel_olean,
+                &entry.path,
+            )?;
+
+            let actual_olean_sha = sha256_file(&out_olean, "miri-pin")?;
+            if !actual_olean_sha.eq_ignore_ascii_case(&entry.olean_sha256) {
+                return Err(Failure::policy(
+                    "miri-pin",
+                    format!(
+                        "compiled Miri .olean SHA-256 mismatch for {}: expected {}, got {actual_olean_sha}",
+                        entry.module, entry.olean_sha256
+                    ),
+                ));
+            }
+            let mut expected_out_files = BTreeSet::from([rel_olean.clone()]);
+            for (part, expected_opt) in [
+                ("olean.server", entry.olean_server_sha256.as_deref()),
+                ("olean.private", entry.olean_private_sha256.as_deref()),
+            ] {
+                let rel_part = format!("{rel_stem}.{part}");
+                let out_part = module_out_dir.path().join(&rel_part);
+                match expected_opt {
+                    Some(exp_sha) => {
+                        if fs::symlink_metadata(&out_part).is_err() {
+                            return Err(Failure::policy(
+                                "miri-pin",
+                                format!(
+                                    "missing compiled Miri .{part} sidecar for {}",
+                                    entry.module
+                                ),
+                            ));
+                        }
+                        let actual_sha = sha256_file(&out_part, "miri-pin")?;
+                        if !actual_sha.eq_ignore_ascii_case(exp_sha) {
+                            return Err(Failure::policy(
+                                "miri-pin",
+                                format!(
+                                    "compiled Miri .{part} SHA-256 mismatch for {}: expected {exp_sha}, got {actual_sha}",
+                                    entry.module
+                                ),
+                            ));
+                        }
+                        expected_out_files.insert(rel_part);
+                    }
+                    None => {
+                        if fs::symlink_metadata(&out_part).is_ok() {
+                            return Err(Failure::policy(
+                                "miri-pin",
+                                format!("unexpected Miri .{part} sidecar for {}", entry.module),
+                            ));
+                        }
+                    }
+                }
+            }
+            // Lean 4 `module`-system files (identified by pinned `.olean.server`
+            // or `.olean.private` sidecars, such as `Miri.Memory.QSortProof`)
+            // also emit ephemeral `.ir` and `.ir.sig` sidecars alongside `-o`.
+            // Permit them as regular files in the per-module sandbox output
+            // directory only for `module`-system entries; they are discarded
+            // when `module_out_dir` drops and are never staged or cached.
+            if entry.olean_server_sha256.is_some() || entry.olean_private_sha256.is_some() {
+                expected_out_files.insert(format!("{rel_stem}.ir"));
+                expected_out_files.insert(format!("{rel_stem}.ir.sig"));
+            }
+            verify_no_unexpected_sandbox_outputs(
+                module_out_dir.path(),
+                &expected_out_files,
+                &rel_olean,
+                &entry.module,
+            )?;
+
+            // Stage verified regular artifacts from the isolated sandbox output
+            // into `self.stage/miri-lib`, re-checking the copied byte digests.
+            let staged_olean_sha = stage_regular_file(&out_olean, &staged_olean, "miri-pin")?;
+            if !staged_olean_sha.eq_ignore_ascii_case(&entry.olean_sha256) {
+                return Err(Failure::policy(
+                    "miri-pin",
+                    format!(
+                        "staged Miri .olean SHA-256 mismatch for {}: expected {}, got {staged_olean_sha}",
+                        entry.module, entry.olean_sha256
+                    ),
+                ));
+            }
+            for (part, expected_opt) in [
+                ("olean.server", entry.olean_server_sha256.as_deref()),
+                ("olean.private", entry.olean_private_sha256.as_deref()),
+            ] {
+                if let Some(exp_sha) = expected_opt {
+                    let rel_part = format!("{rel_stem}.{part}");
+                    let staged_part_sha = stage_regular_file(
+                        &module_out_dir.path().join(&rel_part),
+                        &miri_lib.join(&rel_part),
+                        "miri-pin",
+                    )?;
+                    if !staged_part_sha.eq_ignore_ascii_case(exp_sha) {
+                        return Err(Failure::policy(
+                            "miri-pin",
+                            format!(
+                                "staged Miri .{part} SHA-256 mismatch for {}: expected {exp_sha}, got {staged_part_sha}",
+                                entry.module
+                            ),
+                        ));
+                    }
+                }
+            }
+
+            if let Some(cache_dir) = &self.miri_cache_dir {
+                write_cache_file(&staged_olean, cache_dir, &rel_olean, "miri-pin")?;
+                for part in &OLEAN_PARTS[1..] {
+                    let rel_part = format!("{rel_stem}.{part}");
+                    let staged_part = miri_lib.join(&rel_part);
+                    if fs::symlink_metadata(&staged_part).is_ok() {
+                        write_cache_file(&staged_part, cache_dir, &rel_part, "miri-pin")?;
+                    } else {
+                        remove_cache_file(cache_dir, &rel_part, "miri-pin")?;
+                    }
+                }
+            }
+        }
+        Ok(miri_lib)
+    }
+
+    /// Compile one vendored `Miri.*` module inside an OS-level isolated
+    /// sandbox so unpreflighted compile-time metaprograms (`run_cmd`,
+    /// `initialize`, custom `elab`s) have zero credentials, zero network
+    /// access, and no writable access to the repository checkout, home
+    /// directory, cache, or auditor staging state.
+    ///
+    /// On Linux this invokes `/usr/bin/bwrap` (or `/bin/bwrap`) with
+    /// `--unshare-all --die-with-parent --new-session --clearenv --tmpfs /`,
+    /// mounting the Lean toolchain, staged vendor sources, and already-verified
+    /// `miri-lib` strictly read-only and exposing `module_out_dir` as the sole
+    /// host-backed writable directory (`/work/out`). On platforms without a
+    /// supported OS sandbox, cold compilation fails closed.
+    fn sandbox_compile_miri_module(
+        &mut self,
+        label: &str,
+        miri_src_root: &Path,
+        miri_lib: &Path,
+        module_out_dir: &Path,
+        rel_olean: &str,
+        entry_rel_path: &str,
+    ) -> Result<(), Failure> {
+        #[cfg(not(target_os = "linux"))]
+        {
+            let _ = (
+                miri_src_root,
+                miri_lib,
+                module_out_dir,
+                rel_olean,
+                entry_rel_path,
+            );
+            return Err(Failure::operational(
+                label,
+                "cold vendor Lean compilation requires an OS-level sandbox (currently supported via Linux bubblewrap /usr/bin/bwrap); supply a verified --miri-cache-dir or run on Linux",
+            ));
+        }
+
+        #[cfg(target_os = "linux")]
+        {
+            let bwrap = ["/usr/bin/bwrap", "/bin/bwrap"]
+                .into_iter()
+                .map(Path::new)
+                .find(|p| fs::metadata(p).is_ok_and(|m| m.is_file()))
+                .ok_or_else(|| {
+                    Failure::operational(
+                        label,
+                        "cold vendor Lean compilation requires Linux bubblewrap (/usr/bin/bwrap) to enforce OS-level sandboxing",
+                    )
+                })?;
+
+            let lean_prefix = self.admitted()?.prefix.clone();
+            let lean_canon = fs::canonicalize(&self.lean).map_err(|e| {
+                Failure::operational(label, format!("cannot resolve Lean binary path: {e}"))
+            })?;
+            let lean_rel = lean_canon.strip_prefix(&lean_prefix).map_err(|_| {
+                Failure::operational(
+                    label,
+                    format!(
+                        "Lean binary {} does not reside under admitted toolchain prefix {}",
+                        lean_canon.display(),
+                        lean_prefix.display()
+                    ),
+                )
+            })?;
+            let sandbox_lean = Path::new("/toolchain").join(lean_rel);
+
+            let args = build_bwrap_miri_compile_args(
+                &lean_prefix,
+                &sandbox_lean,
+                miri_src_root,
+                miri_lib,
+                module_out_dir,
+                rel_olean,
+                entry_rel_path,
+            );
+            self.counter += 1;
+            let output = Command::new(bwrap)
+                .args(&args)
+                .current_dir(module_out_dir)
+                .env_clear()
+                .output()
+                .map_err(|e| {
+                    Failure::new(
+                        2,
+                        label,
+                        format!(
+                            "could not execute bubblewrap sandbox {}: {e}",
+                            bwrap.display()
+                        ),
+                    )
+                })?;
+            if !output.status.success() {
+                let stderr = String::from_utf8_lossy(&output.stderr);
+                let stdout = String::from_utf8_lossy(&output.stdout);
+                let detail = if stderr.trim().is_empty() {
+                    stdout.trim()
+                } else {
+                    stderr.trim()
+                };
+                return Err(Failure::new(
+                    2,
+                    label,
+                    format!("sandboxed Lean exited {:?}: {detail}", output.status.code()),
+                ));
+            }
+            Ok(())
+        }
+    }
+}
+
+/// Build the `bwrap` argument vector that confines cold `vendor/lean-miri/`
+/// compilation to an empty `tmpfs` root with isolated user, mount, PID, IPC,
+/// UTS, and network namespaces, read-only runtime libraries/toolchain/inputs,
+/// and a single host-backed writable output directory (`/work/out`).
+fn build_bwrap_miri_compile_args(
+    lean_prefix: &Path,
+    sandbox_lean: &Path,
+    miri_src_root: &Path,
+    miri_lib: &Path,
+    module_out_dir: &Path,
+    rel_olean: &str,
+    entry_rel_path: &str,
+) -> Vec<OsString> {
+    let mut args: Vec<OsString> = Vec::new();
+    for flag in [
+        "--unshare-all",
+        "--die-with-parent",
+        "--new-session",
+        "--clearenv",
+        "--tmpfs",
+        "/",
+        "--dev",
+        "/dev",
+        "--proc",
+        "/proc",
+        "--ro-bind",
+        "/usr/lib",
+        "/usr/lib",
+        "--ro-bind-try",
+        "/usr/lib64",
+        "/usr/lib64",
+        "--ro-bind-try",
+        "/lib",
+        "/lib",
+        "--ro-bind-try",
+        "/lib64",
+        "/lib64",
+        "--ro-bind-try",
+        "/etc/ld.so.cache",
+        "/etc/ld.so.cache",
+        "--ro-bind-try",
+        "/etc/ld.so.conf",
+        "/etc/ld.so.conf",
+        "--ro-bind-try",
+        "/etc/ld.so.conf.d",
+        "/etc/ld.so.conf.d",
+    ] {
+        args.push(OsString::from(flag));
+    }
+    if lean_prefix.starts_with("/nix/store") {
+        args.push(OsString::from("--ro-bind"));
+        args.push(OsString::from("/nix/store"));
+        args.push(OsString::from("/nix/store"));
+    }
+
+    args.push(OsString::from("--ro-bind"));
+    args.push(lean_prefix.as_os_str().to_os_string());
+    args.push(OsString::from("/toolchain"));
+
+    args.push(OsString::from("--ro-bind"));
+    args.push(miri_src_root.as_os_str().to_os_string());
+    args.push(OsString::from("/work/src/vendor-miri"));
+
+    args.push(OsString::from("--ro-bind"));
+    args.push(miri_lib.as_os_str().to_os_string());
+    args.push(OsString::from("/work/miri-lib"));
+
+    args.push(OsString::from("--bind"));
+    args.push(module_out_dir.as_os_str().to_os_string());
+    args.push(OsString::from("/work/out"));
+
+    for flag in [
+        "--tmpfs",
+        "/work/tmp",
+        "--chdir",
+        "/work",
+        "--setenv",
+        "PATH",
+        "/toolchain/bin",
+        "--setenv",
+        "LEAN_PATH",
+        "/work/miri-lib",
+        "--setenv",
+        "HOME",
+        "/work/tmp",
+        "--setenv",
+        "TMPDIR",
+        "/work/tmp",
+        "--setenv",
+        "LANG",
+        "C.UTF-8",
+        "--setenv",
+        "LC_ALL",
+        "C.UTF-8",
+        "--",
+    ] {
+        args.push(OsString::from(flag));
+    }
+
+    args.push(sandbox_lean.as_os_str().to_os_string());
+    for arg in [
+        "-j1",
+        "-M2048",
+        "-t0",
+        "-DElab.async=false",
+        "-Ddebug.skipKernelTC=false",
+        "-R",
+        "src/vendor-miri",
+        "-o",
+    ] {
+        args.push(OsString::from(arg));
+    }
+    args.push(OsString::from(format!("out/{rel_olean}")));
+    args.push(OsString::from(format!("src/vendor-miri/{entry_rel_path}")));
+    args
+}
+
+/// Reject any symlink, non-regular file, unexpected file, or unexpected
+/// subdirectory created inside a per-module sandbox output directory.
+fn verify_no_unexpected_sandbox_outputs(
+    out_root: &Path,
+    expected_files: &BTreeSet<String>,
+    rel_olean: &str,
+    module: &str,
+) -> Result<(), Failure> {
+    let mut allowed_dirs = BTreeSet::new();
+    let mut ancestor = Path::new(rel_olean).parent();
+    while let Some(dir) = ancestor {
+        if dir.as_os_str().is_empty() {
+            break;
+        }
+        let mut segs = Vec::new();
+        for comp in dir.components() {
+            if let Component::Normal(s) = comp
+                && let Some(s) = s.to_str()
+            {
+                segs.push(s);
+            }
+        }
+        if !segs.is_empty() {
+            allowed_dirs.insert(segs.join("/"));
+        }
+        ancestor = dir.parent();
+    }
+
+    for item in WalkDir::new(out_root).follow_links(false) {
+        let item = item.map_err(|e| {
+            Failure::policy(
+                "miri-pin",
+                format!("cannot inspect sandbox output for {module}: {e}"),
+            )
+        })?;
+        if item.path() == out_root {
+            continue;
+        }
+        let ft = item.file_type();
+        if ft.is_symlink() {
+            return Err(Failure::policy(
+                "miri-pin",
+                format!(
+                    "symlink forbidden in sandboxed Miri output for {module}: {}",
+                    item.path().display()
+                ),
+            ));
+        }
+        let rel = item.path().strip_prefix(out_root).map_err(|e| {
+            Failure::operational("miri-pin", format!("invalid sandbox relative path: {e}"))
+        })?;
+        let mut segs = Vec::new();
+        for comp in rel.components() {
+            let Component::Normal(os) = comp else {
+                return Err(Failure::policy(
+                    "miri-pin",
+                    format!(
+                        "invalid path component in sandboxed Miri output for {module}: {}",
+                        item.path().display()
+                    ),
+                ));
+            };
+            let Some(s) = os.to_str() else {
+                return Err(Failure::policy(
+                    "miri-pin",
+                    format!(
+                        "non-UTF-8 path in sandboxed Miri output for {module}: {}",
+                        item.path().display()
+                    ),
+                ));
+            };
+            segs.push(s);
+        }
+        let rel_str = segs.join("/");
+        if ft.is_dir() {
+            if !allowed_dirs.contains(&rel_str) {
+                return Err(Failure::policy(
+                    "miri-pin",
+                    format!(
+                        "unexpected directory in sandboxed Miri output for {module}: {rel_str}"
+                    ),
+                ));
+            }
+        } else if ft.is_file() {
+            if !expected_files.contains(&rel_str) {
+                return Err(Failure::policy(
+                    "miri-pin",
+                    format!("unexpected file in sandboxed Miri output for {module}: {rel_str}"),
+                ));
+            }
+        } else {
+            return Err(Failure::policy(
+                "miri-pin",
+                format!("unexpected file type in sandboxed Miri output for {module}: {rel_str}"),
+            ));
+        }
+    }
+    Ok(())
+}
+
+// ---------------------------------------------------------------------------
+// Stage 5: `vendor/lean-miri/UPSTREAM_PIN.json` verification
+// ---------------------------------------------------------------------------
+
+/// Fail-closed validation of the `"correspondence-audit"` JSON result returned
+/// by `TrustedBoundary.lean`.
+///
+/// Requires `miriReplay == true` and a numeric `miriReplayedDeclarations`
+/// count (which must be positive whenever `has_vendor_miri` is `true`).
+fn validate_correspondence_report(
+    result: &serde_json::Map<String, Json>,
+    has_vendor_miri: bool,
+) -> Result<(), Failure> {
+    let phase = "correspondence-audit";
+    if result.get("miriReplay").and_then(Json::as_bool) != Some(true) {
+        return Err(Failure::policy(
+            phase,
+            "correspondence audit did not confirm vendor Miri kernel replay",
+        ));
+    }
+    let Some(replayed) = result
+        .get("miriReplayedDeclarations")
+        .and_then(Json::as_u64)
+    else {
+        return Err(Failure::operational(
+            phase,
+            "missing miriReplayedDeclarations in correspondence audit result",
+        ));
+    };
+    if has_vendor_miri && replayed == 0 {
+        return Err(Failure::policy(
+            phase,
+            "correspondence audit replayed zero vendor Miri declarations",
+        ));
+    }
+    Ok(())
+}
+
+/// Deserialized representation of `vendor/lean-miri/UPSTREAM_PIN.json`.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct UpstreamPin {
+    pub schema_version: i64,
+    pub repository: String,
+    pub commit: String,
+    pub upstream_lean_toolchain: String,
+    pub build_lean_toolchain: String,
+    pub notes: Vec<String>,
+    pub upstream_git_objects: BTreeMap<String, String>,
+    pub upstream_pins: UpstreamSubPins,
+    pub patched_files: Vec<PatchedMiriFile>,
+    pub execution_machine_closure: Vec<MiriClosureEntry>,
+    pub vendor_aux_files: Vec<VendorFileEntry>,
+    pub vendor_tree: VendorTree,
+}
+
+impl UpstreamPin {
+    /// Return the expected on-disk SHA-256 digest for each vendored `.lean`
+    /// source file (`patched_sha256` when patched, otherwise `sha256`).
+    pub fn expected_source_digests(&self) -> BTreeMap<String, String> {
+        self.vendor_tree
+            .files
+            .iter()
+            .map(|entry| {
+                let sha = entry
+                    .patched_sha256
+                    .as_deref()
+                    .unwrap_or(&entry.sha256)
+                    .to_string();
+                (entry.path.clone(), sha)
+            })
+            .collect()
+    }
+}
+
+/// Pinned upstream commit hashes inside `UPSTREAM_PIN.json`.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct UpstreamSubPins {
+    pub aes_commit: String,
+    pub miri_commit: String,
+    pub rustc_apfloat_commit: String,
+    pub rustc_commit: String,
+    pub source_lock_sha256: String,
+}
+
+/// Record for one consumer-side patched file in `UPSTREAM_PIN.json`.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct PatchedMiriFile {
+    pub path: String,
+    pub upstream_sha256: String,
+    pub patched_sha256: String,
+    pub rationale: String,
+}
+
+/// Record for one compiled `Miri.*` module in `execution_machine_closure`.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct MiriClosureEntry {
+    pub module: String,
+    pub path: String,
+    pub olean_sha256: String,
+    #[serde(default)]
+    pub olean_server_sha256: Option<String>,
+    #[serde(default)]
+    pub olean_private_sha256: Option<String>,
+}
+
+/// File path and SHA-256 entry in `vendor_tree` or `vendor_aux_files`.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct VendorFileEntry {
+    pub path: String,
+    pub sha256: String,
+    #[serde(default)]
+    pub patched_sha256: Option<String>,
+}
+
+/// Full `.lean` file manifest in `UPSTREAM_PIN.json`.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct VendorTree {
+    pub file_count: usize,
+    pub files: Vec<VendorFileEntry>,
+    pub manifest_sha256: String,
+}
+
+/// Verify `vendor/lean-miri/UPSTREAM_PIN.json` and every file on disk under
+/// `vendor_root`.
+pub fn verify_upstream_pin(vendor_root: &Path) -> Result<UpstreamPin, Failure> {
+    let phase = "miri-pin";
+    if let Some(parent) = vendor_root.parent()
+        && parent.file_name().and_then(|s| s.to_str()) == Some("vendor")
+    {
+        let parent_meta = fs::symlink_metadata(parent).map_err(|_| {
+            Failure::policy(
+                phase,
+                format!("expected regular vendor directory: {}", parent.display()),
+            )
+        })?;
+        if parent_meta.file_type().is_symlink() || !parent_meta.file_type().is_dir() {
+            return Err(Failure::policy(
+                phase,
+                format!("expected regular vendor directory: {}", parent.display()),
+            ));
+        }
+    }
+    let root_meta = fs::symlink_metadata(vendor_root).map_err(|_| {
+        Failure::policy(
+            phase,
+            format!(
+                "expected regular vendor/lean-miri directory: {}",
+                vendor_root.display()
+            ),
+        )
+    })?;
+    if root_meta.file_type().is_symlink() || !root_meta.file_type().is_dir() {
+        return Err(Failure::policy(
+            phase,
+            format!(
+                "expected regular vendor/lean-miri directory: {}",
+                vendor_root.display()
+            ),
+        ));
+    }
+    let pin_path = vendor_root.join("UPSTREAM_PIN.json");
+    let pin_meta = fs::symlink_metadata(&pin_path).map_err(|_| {
+        Failure::policy(
+            phase,
+            format!("missing UPSTREAM_PIN.json: {}", pin_path.display()),
+        )
+    })?;
+    if pin_meta.file_type().is_symlink() || !pin_meta.file_type().is_file() {
+        return Err(Failure::policy(
+            phase,
+            format!(
+                "expected regular file for UPSTREAM_PIN.json: {}",
+                pin_path.display()
+            ),
+        ));
+    }
+    let pin_bytes = fs::read(&pin_path)
+        .map_err(|e| Failure::operational(phase, format!("cannot read UPSTREAM_PIN.json: {e}")))?;
+    let pin_sha = sha256_bytes(&pin_bytes);
+    if !pin_sha.eq_ignore_ascii_case(LOCKED_UPSTREAM_PIN_SHA256) {
+        return Err(Failure::policy(
+            phase,
+            format!(
+                "UPSTREAM_PIN.json SHA-256 differs from locked digest: expected {LOCKED_UPSTREAM_PIN_SHA256}, got {pin_sha}"
+            ),
+        ));
+    }
+    verify_upstream_pin_bytes(vendor_root, &pin_bytes)
+}
+
+/// Parse and verify `UPSTREAM_PIN.json` bytes and every file on disk under
+/// `vendor_root` after [`verify_upstream_pin`] has authenticated `pin_bytes`
+/// against [`LOCKED_UPSTREAM_PIN_SHA256`].
+fn verify_upstream_pin_bytes(vendor_root: &Path, pin_bytes: &[u8]) -> Result<UpstreamPin, Failure> {
+    let phase = "miri-pin";
+    let pin: UpstreamPin = serde_json::from_slice(pin_bytes)
+        .map_err(|e| Failure::policy(phase, format!("malformed UPSTREAM_PIN.json: {e}")))?;
+
+    if pin.schema_version != 2 {
+        return Err(Failure::policy(
+            phase,
+            format!(
+                "unsupported UPSTREAM_PIN.json schema_version: {}",
+                pin.schema_version
+            ),
+        ));
+    }
+    if pin.commit != LOCKED_MIRI_COMMIT {
+        return Err(Failure::policy(
+            phase,
+            format!(
+                "UPSTREAM_PIN.json commit mismatch: expected {LOCKED_MIRI_COMMIT}, got {}",
+                pin.commit
+            ),
+        ));
+    }
+    if pin.build_lean_toolchain != TOOLCHAIN {
+        return Err(Failure::policy(
+            phase,
+            format!(
+                "UPSTREAM_PIN.json build_lean_toolchain mismatch: expected {TOOLCHAIN}, got {}",
+                pin.build_lean_toolchain
+            ),
+        ));
+    }
+
+    // Verify `patched_files` against the closed allowlist.
+    let mut patched_map: BTreeMap<&str, &PatchedMiriFile> = BTreeMap::new();
+    for pf in &pin.patched_files {
+        if !LOCKED_PATCHED_MIRI_FILES.contains(&pf.path.as_str()) {
+            return Err(Failure::policy(
+                phase,
+                format!(
+                    "unauthorized patched file in UPSTREAM_PIN.json: {}",
+                    pf.path
+                ),
+            ));
+        }
+        if !is_sha256_hex(&pf.upstream_sha256)
+            || !is_sha256_hex(&pf.patched_sha256)
+            || pf.upstream_sha256.eq_ignore_ascii_case(&pf.patched_sha256)
+            || pf.rationale.trim().is_empty()
+        {
+            return Err(Failure::policy(
+                phase,
+                format!("invalid patched_files record for {}", pf.path),
+            ));
+        }
+        if patched_map.insert(pf.path.as_str(), pf).is_some() {
+            return Err(Failure::policy(
+                phase,
+                format!("duplicate patched_files record for {}", pf.path),
+            ));
+        }
+    }
+    if patched_map.len() != LOCKED_PATCHED_MIRI_FILES.len() {
+        return Err(Failure::policy(
+            phase,
+            "patched_files list in UPSTREAM_PIN.json does not match locked allowlist",
+        ));
+    }
+
+    // Verify `vendor_tree` and `vendor_aux_files` against on-disk files.
+    if pin.vendor_tree.files.is_empty()
+        || pin.vendor_tree.files.len() != pin.vendor_tree.file_count
+        || !is_sha256_hex(&pin.vendor_tree.manifest_sha256)
+    {
+        return Err(Failure::policy(
+            phase,
+            "invalid vendor_tree count or manifest_sha256 in UPSTREAM_PIN.json",
+        ));
+    }
+
+    let mut expected_lean_files: BTreeMap<String, String> = BTreeMap::new();
+    let mut manifest_buf = String::new();
+    for entry in &pin.vendor_tree.files {
+        if !is_clean_relative_path(&entry.path)
+            || !entry.path.ends_with(".lean")
+            || !is_sha256_hex(&entry.sha256)
+        {
+            return Err(Failure::policy(
+                phase,
+                format!("invalid vendor_tree entry: {}", entry.path),
+            ));
+        }
+        let disk_sha = match (
+            patched_map.get(entry.path.as_str()),
+            entry.patched_sha256.as_deref(),
+        ) {
+            (Some(pf), Some(entry_patched)) => {
+                if !pf.upstream_sha256.eq_ignore_ascii_case(&entry.sha256)
+                    || !pf.patched_sha256.eq_ignore_ascii_case(entry_patched)
+                {
+                    return Err(Failure::policy(
+                        phase,
+                        format!(
+                            "patched_sha256 mismatch between patched_files and vendor_tree for {}",
+                            entry.path
+                        ),
+                    ));
+                }
+                entry_patched.to_string()
+            }
+            (None, None) => entry.sha256.clone(),
+            _ => {
+                return Err(Failure::policy(
+                    phase,
+                    format!(
+                        "inconsistent patched_sha256 annotation in vendor_tree for {}",
+                        entry.path
+                    ),
+                ));
+            }
+        };
+        if expected_lean_files
+            .insert(entry.path.clone(), disk_sha)
+            .is_some()
+        {
+            return Err(Failure::policy(
+                phase,
+                format!("duplicate vendor_tree entry: {}", entry.path),
+            ));
+        }
+        manifest_buf.push_str(&format!("{}  {}\n", entry.sha256, entry.path));
+    }
+    let computed_manifest = sha256_bytes(manifest_buf.as_bytes());
+    if !computed_manifest.eq_ignore_ascii_case(&pin.vendor_tree.manifest_sha256) {
+        return Err(Failure::policy(
+            phase,
+            format!(
+                "vendor_tree manifest_sha256 mismatch: expected {}, got {computed_manifest}",
+                pin.vendor_tree.manifest_sha256
+            ),
+        ));
+    }
+
+    let mut expected_aux_files: BTreeMap<String, String> = BTreeMap::new();
+    for entry in &pin.vendor_aux_files {
+        if !is_clean_relative_path(&entry.path)
+            || entry.path.ends_with(".lean")
+            || entry.path == "UPSTREAM_PIN.json"
+            || !is_sha256_hex(&entry.sha256)
+        {
+            return Err(Failure::policy(
+                phase,
+                format!("invalid vendor_aux_files entry: {}", entry.path),
+            ));
+        }
+        if expected_aux_files
+            .insert(entry.path.clone(), entry.sha256.clone())
+            .is_some()
+        {
+            return Err(Failure::policy(
+                phase,
+                format!("duplicate vendor_aux_files entry: {}", entry.path),
+            ));
+        }
+    }
+
+    // Walk `vendor_root` without following symlinks and verify that on-disk
+    // files match `expected_lean_files`, `expected_aux_files`, and
+    // `UPSTREAM_PIN.json` with zero untracked files or compiled artifacts.
+    let mut seen_lean = BTreeSet::new();
+    let mut seen_aux = BTreeSet::new();
+    for entry_res in WalkDir::new(vendor_root).follow_links(false) {
+        let entry = entry_res.map_err(|e| Failure::operational(phase, e.to_string()))?;
+        let path = entry.path();
+        if path == vendor_root {
+            continue;
+        }
+        let ft = entry.file_type();
+        if ft.is_symlink() {
+            return Err(Failure::policy(
+                phase,
+                format!("symlink forbidden in vendor/lean-miri: {}", path.display()),
+            ));
+        }
+        if ft.is_dir() {
+            continue;
+        }
+        if !ft.is_file() {
+            return Err(Failure::policy(
+                phase,
+                format!("non-regular file in vendor/lean-miri: {}", path.display()),
+            ));
+        }
+        let rel = path
+            .strip_prefix(vendor_root)
+            .map_err(|e| Failure::operational(phase, e.to_string()))?;
+        let rel_str = rel
+            .components()
+            .map(|c| c.as_os_str().to_string_lossy())
+            .collect::<Vec<_>>()
+            .join("/");
+        if rel_str == "UPSTREAM_PIN.json" {
+            continue;
+        }
+        let actual_sha = sha256_file(path, phase)?;
+        if rel_str.ends_with(".lean") {
+            let Some(exp_sha) = expected_lean_files.get(&rel_str) else {
+                return Err(Failure::policy(
+                    phase,
+                    format!("unlisted Lean file in vendor/lean-miri: {rel_str}"),
+                ));
+            };
+            if !actual_sha.eq_ignore_ascii_case(exp_sha) {
+                return Err(Failure::policy(
+                    phase,
+                    format!(
+                        "vendor file SHA-256 mismatch for {rel_str}: expected {exp_sha}, got {actual_sha}"
+                    ),
+                ));
+            }
+            seen_lean.insert(rel_str);
+        } else {
+            let Some(exp_sha) = expected_aux_files.get(&rel_str) else {
+                return Err(Failure::policy(
+                    phase,
+                    format!("unlisted file in vendor/lean-miri: {rel_str}"),
+                ));
+            };
+            if !actual_sha.eq_ignore_ascii_case(exp_sha) {
+                return Err(Failure::policy(
+                    phase,
+                    format!(
+                        "vendor aux file SHA-256 mismatch for {rel_str}: expected {exp_sha}, got {actual_sha}"
+                    ),
+                ));
+            }
+            seen_aux.insert(rel_str);
+        }
+    }
+    if seen_lean.len() != expected_lean_files.len() {
+        return Err(Failure::policy(
+            phase,
+            "missing pinned .lean file in vendor/lean-miri",
+        ));
+    }
+    if seen_aux.len() != expected_aux_files.len() {
+        return Err(Failure::policy(
+            phase,
+            "missing pinned auxiliary file in vendor/lean-miri",
+        ));
+    }
+
+    // Verify `execution_machine_closure` (when present) and ensure
+    // `Miri.Input.NativeMathHost` (which contains `@[extern]` host math
+    // bindings) is excluded from the correspondence slice.
+    let mut seen_closure_mods = BTreeSet::new();
+    for entry in &pin.execution_machine_closure {
+        let expected_rel = format!("{}.lean", entry.module.replace('.', "/"));
+        if !entry.module.starts_with("Miri.")
+            || entry.module == "Miri.Input.NativeMathHost"
+            || entry.module == "Miri"
+            || entry.path != expected_rel
+            || !expected_lean_files.contains_key(&entry.path)
+            || !is_sha256_hex(&entry.olean_sha256)
+            || entry
+                .olean_server_sha256
+                .as_deref()
+                .is_some_and(|h| !is_sha256_hex(h))
+            || entry
+                .olean_private_sha256
+                .as_deref()
+                .is_some_and(|h| !is_sha256_hex(h))
+            || !seen_closure_mods.insert(entry.module.as_str())
+        {
+            return Err(Failure::policy(
+                phase,
+                format!(
+                    "invalid execution_machine_closure entry for {}",
+                    entry.module
+                ),
+            ));
+        }
+    }
+    if pin.execution_machine_closure.len() != 160 {
+        return Err(Failure::policy(
+            phase,
+            format!(
+                "expected 160 execution_machine_closure entries in UPSTREAM_PIN.json, got {}",
+                pin.execution_machine_closure.len()
+            ),
+        ));
+    }
+    if !seen_closure_mods.contains("Miri.Interpreter.ExecutionMachine") {
+        return Err(Failure::policy(
+            phase,
+            "execution_machine_closure is missing Miri.Interpreter.ExecutionMachine",
+        ));
+    }
+
+    Ok(pin)
 }
 
 /// Topologically sort the module set `pending` according to `imports_map`,
@@ -2204,5 +4061,469 @@ mod process_tests {
             ])
         );
         assert!(output.stderr.is_empty());
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn rejects_symlinks_in_miri_cache_dir() {
+        use std::os::unix::fs::symlink;
+
+        let tmp = tempfile::tempdir().unwrap();
+        let src = tmp.path().join("staged.olean");
+        fs::write(&src, b"compiled-olean").unwrap();
+        let outside = tmp.path().join("outside");
+        fs::create_dir_all(&outside).unwrap();
+        let victim = outside.join("victim.olean");
+        fs::write(&victim, b"keep-me").unwrap();
+
+        // 1. Symlinked cache root (with/without trailing slash) is rejected.
+        let sym_root = tmp.path().join("sym-cache");
+        symlink(&outside, &sym_root).unwrap();
+        assert_eq!(
+            write_cache_file(&src, &sym_root, "Miri/Hex.olean", "miri-pin")
+                .unwrap_err()
+                .code,
+            1
+        );
+        let sym_root_slash = PathBuf::from(format!("{}/", sym_root.display()));
+        assert_eq!(
+            prepare_nosymlink_cache_path(&sym_root_slash, "Miri/Hex.olean", false, "miri-pin")
+                .unwrap_err()
+                .code,
+            1
+        );
+
+        // 2. Symlinked intermediate subdir inside `cache_dir` is rejected.
+        let cache = tmp.path().join("real-cache");
+        fs::create_dir_all(&cache).unwrap();
+        symlink(&outside, cache.join("Miri")).unwrap();
+        assert_eq!(
+            write_cache_file(&src, &cache, "Miri/Hex.olean", "miri-pin")
+                .unwrap_err()
+                .code,
+            1
+        );
+        assert!(!outside.join("Hex.olean").exists());
+        fs::remove_file(cache.join("Miri")).unwrap();
+
+        // 3. Symlinked (existing or dangling) leaf cache entry is rejected on
+        // both write and stale-companion removal without touching the target.
+        fs::create_dir_all(cache.join("Miri")).unwrap();
+        symlink(&victim, cache.join("Miri/Hex.olean")).unwrap();
+        assert_eq!(
+            write_cache_file(&src, &cache, "Miri/Hex.olean", "miri-pin")
+                .unwrap_err()
+                .code,
+            1
+        );
+        assert_eq!(
+            remove_cache_file(&cache, "Miri/Hex.olean", "miri-pin")
+                .unwrap_err()
+                .code,
+            1
+        );
+        assert_eq!(fs::read(&victim).unwrap(), b"keep-me");
+    }
+
+    #[test]
+    fn validates_correspondence_replay_fields_fail_closed() {
+        let obj = |v: Json| v.as_object().unwrap().clone();
+
+        // Missing or false `miriReplay` fails closed with policy code 1.
+        let err_missing =
+            validate_correspondence_report(&obj(json!({"miriReplayedDeclarations": 10})), true)
+                .unwrap_err();
+        assert_eq!(err_missing.code, 1);
+        let err_false = validate_correspondence_report(
+            &obj(json!({"miriReplay": false, "miriReplayedDeclarations": 10})),
+            true,
+        )
+        .unwrap_err();
+        assert_eq!(err_false.code, 1);
+
+        // Missing `miriReplayedDeclarations` fails closed (operational code 2).
+        let err_no_count =
+            validate_correspondence_report(&obj(json!({"miriReplay": true})), true).unwrap_err();
+        assert_eq!(err_no_count.code, 2);
+
+        // Zero replayed declarations fails closed when vendor modules are
+        // present.
+        let err_zero = validate_correspondence_report(
+            &obj(json!({"miriReplay": true, "miriReplayedDeclarations": 0})),
+            true,
+        )
+        .unwrap_err();
+        assert_eq!(err_zero.code, 1);
+
+        // Zero is permitted only when `vendor_miri` is empty.
+        validate_correspondence_report(
+            &obj(json!({"miriReplay": true, "miriReplayedDeclarations": 0})),
+            false,
+        )
+        .unwrap();
+
+        // Positive replayed count with `miriReplay == true` succeeds.
+        validate_correspondence_report(
+            &obj(json!({"miriReplay": true, "miriReplayedDeclarations": 38728})),
+            true,
+        )
+        .unwrap();
+    }
+
+    #[test]
+    fn rejects_unauthorized_patched_files_and_bad_closure_in_pin_bytes() {
+        let vendor_root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../vendor/lean-miri");
+        let orig_pin_bytes = fs::read(vendor_root.join("UPSTREAM_PIN.json")).unwrap();
+
+        // Unauthorized `patched_files` entry, mismatched `patched_sha256`
+        // between `patched_files` and `vendor_tree`, and missing
+        // `patched_sha256` annotation in `vendor_tree` are rejected even if
+        // the outer pin digest check has already passed.
+        let mut pin_json: Json = serde_json::from_slice(&orig_pin_bytes).unwrap();
+        pin_json["patched_files"]
+            .as_array_mut()
+            .unwrap()
+            .push(json!({
+                "path": "Miri.lean",
+                "upstream_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+                "patched_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+                "rationale": "unauthorized patch"
+            }));
+        let err_unauth_patch =
+            verify_upstream_pin_bytes(&vendor_root, &serde_json::to_vec(&pin_json).unwrap())
+                .unwrap_err();
+        assert_eq!(err_unauth_patch.code, 1);
+        assert!(
+            err_unauth_patch
+                .message
+                .contains("unauthorized patched file in UPSTREAM_PIN.json: Miri.lean"),
+            "unexpected error: {err_unauth_patch}"
+        );
+
+        let mut pin_mismatch_json: Json = serde_json::from_slice(&orig_pin_bytes).unwrap();
+        pin_mismatch_json["patched_files"][0]["patched_sha256"] =
+            json!("2222222222222222222222222222222222222222222222222222222222222222");
+        let err_patch_mismatch = verify_upstream_pin_bytes(
+            &vendor_root,
+            &serde_json::to_vec(&pin_mismatch_json).unwrap(),
+        )
+        .unwrap_err();
+        assert_eq!(err_patch_mismatch.code, 1);
+        assert!(
+            err_patch_mismatch
+                .message
+                .contains("patched_sha256 mismatch between patched_files and vendor_tree"),
+            "unexpected error: {err_patch_mismatch}"
+        );
+
+        let mut pin_missing_annot_json: Json = serde_json::from_slice(&orig_pin_bytes).unwrap();
+        for entry in pin_missing_annot_json["vendor_tree"]["files"]
+            .as_array_mut()
+            .unwrap()
+        {
+            if entry["path"].as_str() == Some("Miri/Interpreter/Call.lean") {
+                entry.as_object_mut().unwrap().remove("patched_sha256");
+            }
+        }
+        let err_missing_annot = verify_upstream_pin_bytes(
+            &vendor_root,
+            &serde_json::to_vec(&pin_missing_annot_json).unwrap(),
+        )
+        .unwrap_err();
+        assert_eq!(err_missing_annot.code, 1);
+        assert!(
+            err_missing_annot.message.contains(
+                "inconsistent patched_sha256 annotation in vendor_tree for Miri/Interpreter/Call.lean"
+            ),
+            "unexpected error: {err_missing_annot}"
+        );
+
+        // Forbidden `Miri.Input.NativeMathHost` closure entry is rejected.
+        let mut pin_closure_json: Json = serde_json::from_slice(&orig_pin_bytes).unwrap();
+        pin_closure_json["execution_machine_closure"] = json!([{
+            "module": "Miri.Input.NativeMathHost",
+            "path": "Miri/Input/NativeMathHost.lean",
+            "olean_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+        }]);
+        let err_bad_closure = verify_upstream_pin_bytes(
+            &vendor_root,
+            &serde_json::to_vec(&pin_closure_json).unwrap(),
+        )
+        .unwrap_err();
+        assert_eq!(err_bad_closure.code, 1);
+        assert!(
+            err_bad_closure
+                .message
+                .contains("invalid execution_machine_closure entry for Miri.Input.NativeMathHost"),
+            "unexpected error: {err_bad_closure}"
+        );
+
+        // Empty `execution_machine_closure` is rejected.
+        pin_closure_json["execution_machine_closure"] = json!([]);
+        let err_empty_closure = verify_upstream_pin_bytes(
+            &vendor_root,
+            &serde_json::to_vec(&pin_closure_json).unwrap(),
+        )
+        .unwrap_err();
+        assert_eq!(err_empty_closure.code, 1);
+        assert!(
+            err_empty_closure.message.contains(
+                "expected 160 execution_machine_closure entries in UPSTREAM_PIN.json, got 0"
+            ),
+            "unexpected error: {err_empty_closure}"
+        );
+    }
+
+    #[test]
+    fn bwrap_miri_compile_args_enforce_isolation_and_readonly_inputs() {
+        let args: Vec<String> = build_bwrap_miri_compile_args(
+            Path::new("/opt/lean-4.34.1"),
+            Path::new("/toolchain/bin/lean"),
+            Path::new("/tmp/stage/src/vendor-miri"),
+            Path::new("/tmp/stage/miri-lib"),
+            Path::new("/tmp/miri-out-123"),
+            "Miri/Memory/Identity.olean",
+            "Miri/Memory/Identity.lean",
+        )
+        .into_iter()
+        .map(|a| a.to_string_lossy().into_owned())
+        .collect();
+
+        for required in [
+            "--unshare-all",
+            "--die-with-parent",
+            "--new-session",
+            "--clearenv",
+            "--tmpfs",
+            "--chdir",
+        ] {
+            assert!(
+                args.iter().any(|a| a == required),
+                "missing required sandbox flag {required}: {args:?}"
+            );
+        }
+
+        // Only `module_out_dir` may be mounted read-write via `--bind`; all
+        // toolchain, source, and verified `.olean` inputs must be `--ro-bind`.
+        let rw_binds: Vec<(&str, &str)> = args
+            .windows(3)
+            .filter(|w| w[0] == "--bind")
+            .map(|w| (w[1].as_str(), w[2].as_str()))
+            .collect();
+        assert_eq!(rw_binds, vec![("/tmp/miri-out-123", "/work/out")]);
+
+        let ro_binds: Vec<(&str, &str)> = args
+            .windows(3)
+            .filter(|w| w[0] == "--ro-bind")
+            .map(|w| (w[1].as_str(), w[2].as_str()))
+            .collect();
+        assert!(ro_binds.contains(&("/opt/lean-4.34.1", "/toolchain")));
+        assert!(ro_binds.contains(&("/tmp/stage/src/vendor-miri", "/work/src/vendor-miri")));
+        assert!(ro_binds.contains(&("/tmp/stage/miri-lib", "/work/miri-lib")));
+        assert!(
+            !args.iter().any(|a| a == "/usr/bin" || a == "/bin"),
+            "host shell/utility directories must not be mounted: {args:?}"
+        );
+    }
+
+    #[test]
+    fn sandbox_output_check_allows_only_expected_regular_files() {
+        let out_dir = tempfile::Builder::new()
+            .prefix("anneal-sandbox-out-unit-")
+            .tempdir()
+            .unwrap();
+        let mod_dir = out_dir.path().join("Miri/Memory");
+        fs::create_dir_all(&mod_dir).unwrap();
+        fs::write(mod_dir.join("QSortProof.olean"), b"olean").unwrap();
+        fs::write(mod_dir.join("QSortProof.olean.server"), b"srv").unwrap();
+        fs::write(mod_dir.join("QSortProof.olean.private"), b"priv").unwrap();
+        fs::write(mod_dir.join("QSortProof.ir"), b"ir").unwrap();
+        fs::write(mod_dir.join("QSortProof.ir.sig"), b"irsig").unwrap();
+
+        let non_module_expected = BTreeSet::from(["Miri/Memory/QSortProof.olean".to_string()]);
+        let err_non_mod = verify_no_unexpected_sandbox_outputs(
+            out_dir.path(),
+            &non_module_expected,
+            "Miri/Memory/QSortProof.olean",
+            "Miri.Memory.QSortProof",
+        )
+        .unwrap_err();
+        assert_eq!(err_non_mod.code, 1);
+        assert!(
+            err_non_mod
+                .message
+                .contains("unexpected file in sandboxed Miri output"),
+            "unexpected error: {err_non_mod}"
+        );
+
+        let module_expected = BTreeSet::from([
+            "Miri/Memory/QSortProof.olean".to_string(),
+            "Miri/Memory/QSortProof.olean.server".to_string(),
+            "Miri/Memory/QSortProof.olean.private".to_string(),
+            "Miri/Memory/QSortProof.ir".to_string(),
+            "Miri/Memory/QSortProof.ir.sig".to_string(),
+        ]);
+        verify_no_unexpected_sandbox_outputs(
+            out_dir.path(),
+            &module_expected,
+            "Miri/Memory/QSortProof.olean",
+            "Miri.Memory.QSortProof",
+        )
+        .unwrap();
+
+        #[cfg(unix)]
+        {
+            fs::remove_file(mod_dir.join("QSortProof.ir")).unwrap();
+            std::os::unix::fs::symlink(
+                mod_dir.join("QSortProof.olean"),
+                mod_dir.join("QSortProof.ir"),
+            )
+            .unwrap();
+            let err_sym = verify_no_unexpected_sandbox_outputs(
+                out_dir.path(),
+                &module_expected,
+                "Miri/Memory/QSortProof.olean",
+                "Miri.Memory.QSortProof",
+            )
+            .unwrap_err();
+            assert_eq!(err_sym.code, 1);
+            assert!(
+                err_sym
+                    .message
+                    .contains("symlink forbidden in sandboxed Miri output"),
+                "unexpected error: {err_sym}"
+            );
+        }
+    }
+
+    #[test]
+    fn rejects_malformed_patched_files_and_vendor_tree_annotations_in_pin_bytes() {
+        let vendor_root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../vendor/lean-miri");
+        let orig_pin_bytes = fs::read(vendor_root.join("UPSTREAM_PIN.json")).unwrap();
+
+        // (a) A `patched_sha256` annotation on a non-allowlisted file in
+        // `vendor_tree` is rejected.
+        let mut pin_extra_annot: Json = serde_json::from_slice(&orig_pin_bytes).unwrap();
+        let mut found_miri = false;
+        for entry in pin_extra_annot["vendor_tree"]["files"]
+            .as_array_mut()
+            .unwrap()
+        {
+            if entry["path"].as_str() == Some("Miri.lean") {
+                entry.as_object_mut().unwrap().insert(
+                    "patched_sha256".to_string(),
+                    json!("3333333333333333333333333333333333333333333333333333333333333333"),
+                );
+                found_miri = true;
+            }
+        }
+        assert!(found_miri, "Miri.lean must appear in vendor_tree.files");
+        let err_extra_annot =
+            verify_upstream_pin_bytes(&vendor_root, &serde_json::to_vec(&pin_extra_annot).unwrap())
+                .unwrap_err();
+        assert_eq!(err_extra_annot.code, 1);
+        assert!(
+            err_extra_annot
+                .message
+                .contains("inconsistent patched_sha256 annotation in vendor_tree for Miri.lean"),
+            "unexpected error: {err_extra_annot}"
+        );
+
+        // (b) A dropped record / count mismatch in `patched_files` is
+        // rejected.
+        let mut pin_dropped: Json = serde_json::from_slice(&orig_pin_bytes).unwrap();
+        pin_dropped["patched_files"].as_array_mut().unwrap().pop();
+        let err_dropped =
+            verify_upstream_pin_bytes(&vendor_root, &serde_json::to_vec(&pin_dropped).unwrap())
+                .unwrap_err();
+        assert_eq!(err_dropped.code, 1);
+        assert!(
+            err_dropped.message.contains(
+                "patched_files list in UPSTREAM_PIN.json does not match locked allowlist"
+            ),
+            "unexpected error: {err_dropped}"
+        );
+
+        // (c) Duplicate records in `patched_files` are rejected.
+        let mut pin_dup: Json = serde_json::from_slice(&orig_pin_bytes).unwrap();
+        let first_record = pin_dup["patched_files"][0].clone();
+        let first_path = first_record["path"].as_str().unwrap().to_string();
+        pin_dup["patched_files"]
+            .as_array_mut()
+            .unwrap()
+            .push(first_record);
+        let err_dup =
+            verify_upstream_pin_bytes(&vendor_root, &serde_json::to_vec(&pin_dup).unwrap())
+                .unwrap_err();
+        assert_eq!(err_dup.code, 1);
+        assert!(
+            err_dup
+                .message
+                .contains(&format!("duplicate patched_files record for {first_path}")),
+            "unexpected error: {err_dup}"
+        );
+
+        // (d1) An invalid `patched_files` record with
+        // `upstream_sha256 == patched_sha256` is rejected.
+        let mut pin_same_sha: Json = serde_json::from_slice(&orig_pin_bytes).unwrap();
+        let same_path = pin_same_sha["patched_files"][0]["path"]
+            .as_str()
+            .unwrap()
+            .to_string();
+        let upstream_sha = pin_same_sha["patched_files"][0]["upstream_sha256"].clone();
+        pin_same_sha["patched_files"][0]["patched_sha256"] = upstream_sha;
+        let err_same_sha =
+            verify_upstream_pin_bytes(&vendor_root, &serde_json::to_vec(&pin_same_sha).unwrap())
+                .unwrap_err();
+        assert_eq!(err_same_sha.code, 1);
+        assert!(
+            err_same_sha
+                .message
+                .contains(&format!("invalid patched_files record for {same_path}")),
+            "unexpected error: {err_same_sha}"
+        );
+
+        // (d2) An invalid `patched_files` record with empty/whitespace
+        // `rationale` is rejected.
+        let mut pin_blank_rationale: Json = serde_json::from_slice(&orig_pin_bytes).unwrap();
+        let blank_path = pin_blank_rationale["patched_files"][0]["path"]
+            .as_str()
+            .unwrap()
+            .to_string();
+        pin_blank_rationale["patched_files"][0]["rationale"] = json!("   \t\n ");
+        let err_blank_rationale = verify_upstream_pin_bytes(
+            &vendor_root,
+            &serde_json::to_vec(&pin_blank_rationale).unwrap(),
+        )
+        .unwrap_err();
+        assert_eq!(err_blank_rationale.code, 1);
+        assert!(
+            err_blank_rationale
+                .message
+                .contains(&format!("invalid patched_files record for {blank_path}")),
+            "unexpected error: {err_blank_rationale}"
+        );
+
+        // (e) A mismatch between `patched_files.upstream_sha256` and
+        // `vendor_tree.files[].sha256` is rejected.
+        let mut pin_upstream_mismatch: Json = serde_json::from_slice(&orig_pin_bytes).unwrap();
+        let mismatch_path = pin_upstream_mismatch["patched_files"][0]["path"]
+            .as_str()
+            .unwrap()
+            .to_string();
+        pin_upstream_mismatch["patched_files"][0]["upstream_sha256"] =
+            json!("4444444444444444444444444444444444444444444444444444444444444444");
+        let err_upstream_mismatch = verify_upstream_pin_bytes(
+            &vendor_root,
+            &serde_json::to_vec(&pin_upstream_mismatch).unwrap(),
+        )
+        .unwrap_err();
+        assert_eq!(err_upstream_mismatch.code, 1);
+        assert!(
+            err_upstream_mismatch.message.contains(&format!(
+                "patched_sha256 mismatch between patched_files and vendor_tree for {mismatch_path}"
+            )),
+            "unexpected error: {err_upstream_mismatch}"
+        );
     }
 }

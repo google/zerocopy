@@ -227,7 +227,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Toolchain setup & workspace tests
     needs: [build-exocrate]
-    timeout-minutes: 30
+    timeout-minutes: 45
     env:
       CARGO_TARGET_DIR: ${{ github.workspace }}/anneal/target
       ANNEAL_TEST_INSPECTOR: ${{ github.workspace }}/anneal/trusted/audit/TrustedBoundary.lean
@@ -279,6 +279,19 @@ jobs:
           revision="$(git rev-parse HEAD)"
           printf 'ANNEAL_TEST_SOURCE_REVISION=%s\n' "$revision" >> "$GITHUB_ENV"
           printf 'source_revision=%s\n' "$revision"
+
+      # Store the Miri `.olean` cache outside `${{ github.workspace }}` and skip
+      # it on `merge_group`, `push`, and `workflow_dispatch` runs so PRs cannot
+      # supply pre-committed `.olean` files in the checkout and merge-queue,
+      # `main`-branch, and manual workflow-dispatch runs always compile cold
+      # from source.
+      - name: Cache lean-miri closure .olean artifacts
+        id: miri_olean_cache
+        if: ${{ github.event_name != 'merge_group' && github.event_name != 'push' && github.event_name != 'workflow_dispatch' }}
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ runner.temp }}/anneal-miri-olean-cache
+          key: anneal-current-miri-olean-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('anneal/trusted/lean/lean-toolchain', 'anneal/vendor/lean-miri/UPSTREAM_PIN.json') }}
 
       - name: Download exocrate toolchain archive
         id: archive
@@ -389,13 +402,49 @@ jobs:
           printf 'ANNEAL_TEST_AUDITOR=%s/bin/anneal-audit\n' \
             "$ANNEAL_TEST_TOOLS_ROOT" >> "$GITHUB_ENV"
 
+      - name: Install bubblewrap sandbox for cold vendor compilation
+        id: sandbox
+        run: |
+          set -euo pipefail
+          exec > >(tee "$ANNEAL_TEST_DIAGNOSTICS/sandbox.log") 2>&1
+          sudo apt-get update
+          sudo apt-get install -y bubblewrap
+          if [ ! -f /etc/apparmor.d/bwrap ] && command -v apparmor_parser >/dev/null 2>&1; then
+            sudo tee /etc/apparmor.d/bwrap <<'PROFILE' >/dev/null
+          abi <abi/4.0>,
+          include <tunables/global>
+
+          profile bwrap /usr/bin/bwrap flags=(unconfined) {
+            userns,
+            include if exists <local/bwrap>
+          }
+          PROFILE
+            sudo apparmor_parser -r /etc/apparmor.d/bwrap
+          fi
+          bwrap --unshare-all --die-with-parent --new-session --clearenv \
+            --tmpfs / --dev /dev --proc /proc \
+            --ro-bind /usr/lib /usr/lib \
+            --ro-bind-try /usr/lib64 /usr/lib64 \
+            --ro-bind-try /lib /lib \
+            --ro-bind-try /lib64 /lib64 \
+            --ro-bind-try /etc/ld.so.cache /etc/ld.so.cache \
+            --ro-bind /usr/bin/true /true \
+            -- /true
+
       - name: Audit repository trusted boundary
         id: audit
+        env:
+          CI_EVENT_NAME: ${{ github.event_name }}
+          MIRI_OLEAN_CACHE_DIR: ${{ runner.temp }}/anneal-miri-olean-cache
         run: |
           set -euo pipefail
           exec > >(tee "$ANNEAL_TEST_DIAGNOSTICS/boundary-audit.log") 2>&1
-          cargo run --locked -p anneal-audit -- \
-            --lean "$ANNEAL_TEST_INSTALL_ROOT/lean/bin/lean"
+          unset ANNEAL_MIRI_CACHE_DIR
+          audit_args=(--lean "$ANNEAL_TEST_INSTALL_ROOT/lean/bin/lean")
+          if [ "$CI_EVENT_NAME" != "merge_group" ] && [ "$CI_EVENT_NAME" != "push" ] && [ "$CI_EVENT_NAME" != "workflow_dispatch" ]; then
+            audit_args+=(--miri-cache-dir "$MIRI_OLEAN_CACHE_DIR")
+          fi
+          cargo run --locked -p anneal-audit -- "${audit_args[@]}"
 
       - name: Test Rust workspace
         id: workspace

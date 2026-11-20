@@ -83,5 +83,6 @@ that as well.)
 
 ## Repository checks
 
-See [the Codex review gate guide](docs/codex-review.md) for enabling the required
-review status, diagnosing blocked PRs, and testing the evaluator locally.
+See [the Codex review policy and diagnostics guide](docs/codex-review.md) for
+the manual merge gates, live ruleset state, read-only diagnostics, and evaluator
+tests.

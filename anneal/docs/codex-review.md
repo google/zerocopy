@@ -8,88 +8,119 @@ those terms. -->
 
 # Codex review policy and diagnostics
 
-Codex approval is checked by the maintainer or acting agent while automated
-Codex enforcement is disabled. [Issue
-#236](https://github.com/joshlf/anneal/issues/236) tracks restoring reliable
-enforcement for the actual PR comparison.
+Anneal uses Codex review alongside local `change-review`, `trust-review`, CI,
+and human review. Until [#236](https://github.com/joshlf/anneal/issues/236) is
+resolved, Codex review is enforced by the manual merge gates below rather than
+by a GitHub ruleset.
 
-Before merging a PR, confirm all of the following:
+## Merge gates
 
-- Codex has genuinely approved the current change, with no outstanding findings.
-- The user has reacted with 👍 to the PR description.
-- Required build and test CI is green for the current head.
-- The PR is at the bottom of its stack, with its prerequisites already merged.
+Do not merge a pull request—and never use admin-bypass merges such as
+`gh pr merge --admin`—until all five gates below pass on the exact final
+`(target_base, head)` with `merge_base == target_base` and full review history
+preserved (for stacked PRs, land bottom-up so each PR meets Gate 4 on `main`
+before merging). Re-confirm every affected gate after any code, history, or
+base edit:
 
-Inspect the actual review, user approval, CI results, and stack position. A
-green run of the diagnostics workflow reports that the evaluator ran; it does
-not approve a merge. Keep prior reviews intact rather than deleting review
-history to force a new summary.
+1. **Gate 1 — Local review and receipt:** Local
+   [`change-review`](../skills/change-review/SKILL.md) and
+   [`trust-review`](../skills/trust-review/SKILL.md) have converged on the
+   final `(target_base, head)`, every open trust question is resolved by
+   evidence or explicit human maintainer disposition, no confirmed in-scope
+   defect remains unresolved, the PR description opens with an accurate `Human
+   review surface` block, and the PR author or acting agent has posted a Review
+   Receipt comment covering the exact final `head` SHA.
+2. **Gate 2 — Genuine Codex approval:** An authentic
+   `chatgpt-codex-connector[bot]` review summary covers the current PR head and
+   comparison base on GitHub with no unresolved Codex findings. Resolving
+   review threads never satisfies Gate 2 without addressing the underlying
+   finding and obtaining fresh Codex approval, and a green `codex-review.yml`
+   diagnostic workflow run is never Codex approval. Because GitHub Codex
+   defaults to flagging P0 and P1 issues (per the
+   [Codex GitHub integration docs][codex-github]; re-verify periodically if
+   provider behavior changes), Gate 1 owns open trust questions and
+   lower-severity defects. If a PR added or modified an unauthorized nested
+   `AGENTS.md` or any `AGENTS.override.md` that tainted Codex's review, remove
+   it and require a fresh Codex review; when a PR edits root policy files
+   (prefer dedicated policy-only PRs so Codex does not review product code
+   under modified rules), policy-stability verification against the base rules
+   comes from Gate 1 (local review against `<target_base>`) and Gate 5, not
+   Gate 2 alone. If a Codex finding is demonstrably refuted by falsifiable
+   evidence (for example requesting a TCB-violating edit), when authorized
+   reply inline with the verification evidence and request a fresh Codex
+   review, escalating to a human maintainer if the hosted reviewer remains
+   stuck; an acting agent never waives Gate 2 or declares Gate 2 passed without
+   genuine Codex approval.
+3. **Gate 3 — Green required CI:** All required GitHub Actions checks pass on
+   GitHub's current pull-request test-merge commit for the exact final
+   `(target_base, head)` (reported on `head` by `pull_request`-triggered
+   workflows), or on the merge queue's `merge_group` commit when merging via
+   GitHub's merge queue.
+4. **Gate 4 — Bottom-of-stack ordering:** For stacked PRs, every lower PR in
+   the stack has merged and this PR is rebased onto `main` so
+   `merge_base == target_base` before merging or entering GitHub's merge queue
+   (`merge_group`).
+5. **Gate 5 — Human approval:** An independent human maintainer account (never
+   a bot or acting agent) has approved the pull request on GitHub, confirming
+   every item listed in the `Human review surface` block (defined in
+   [`AGENTS.md`](../AGENTS.md#code-review-rules), including stated specs and
+   every definition their meaning transitively depends on, plus any editor or
+   agent config or intentional policy relaxation). An approval holds across a
+   pure rebase only if no subsequent push changes this PR's own Human review
+   surface, no rebased-over commit modifies a definition in a stated spec's
+   transitive dependency closure (verified via `git range-diff` and inspecting
+   touched dependencies), and no subsequent edit modifies the PR description's
+   `Human review surface` block or relevant commit bodies. Verify that the
+   approval's timestamp is newer than both the last push affecting those
+   surfaces and the last edit to the `Human review surface` block (via GitHub's
+   PR description edit history); any later change requires fresh human
+   maintainer approval. Because agents may act under credentials matching a
+   human account, agents must never self-approve pull requests or author, edit,
+   or simulate maintainer dispositions.
 
-## Author preflight and hosted review
+## Hosted reviewers and skill boundaries
 
-Authors must complete the local review-fix loop in
-[`change-review`](../skills/change-review/SKILL.md) before publishing a
-candidate or revision. Use fresh-context reviewers when available, keep trust
-review separate, verify findings, and review the final candidate after fixes.
-Prepare a receipt of the reviewed comparison, coverage, checks, and
-capability limits before pushing. Include it in the initial PR description
-when creating the PR after the push, or update the existing PR after verifying
-the pushed head. For an authorized branch-only push, include it in the task
-handoff instead. An explicitly authorized unfinished handoff must remain
-visibly incomplete; it is not an exception to the merge policy.
+Hosted reviewers follow the [Code Review Rules](../AGENTS.md#code-review-rules)
+(mirrored verbatim in [`.gemini/styleguide.md`](../.gemini/styleguide.md)) and
+report within host output and severity limits per
+[`change-review`](../skills/change-review/SKILL.md#report-within-the-hosts-constraints);
+these instructions never create a setting for unlimited findings or override a
+service limit. See
+[`docs/review-policy-design.md`](review-policy-design.md#policy-ownership) for
+file ownership across skills and docs.
 
-Hosted reviewers follow the `Code Review Rules` in
-[`AGENTS.md`](../AGENTS.md). Review the entire change, continue after the first
-few findings, verify and deduplicate findings, and make a final omissions
-sweep before reporting. Preserve the provider's output and severity rules;
-these instructions do not create a setting for unlimited findings or override
-a service limit. Use the
-[shared reporting fallback](../skills/change-review/SKILL.md#report-within-the-hosts-constraints)
-when a fixed schema cannot carry an assessment. The fallback waives only the
-narrative output, not review work. A findings-only response cannot establish
-completion by itself: obtain separate completion evidence before accepting it
-as approval, or obtain a review that can report completion. Missing coverage
-must not be presented as approval.
+## Live GitHub ruleset state and diagnostic workflow
 
-Local preflight and hosted review are separate checks. A local clean result,
-review receipt, or green diagnostics run is not Codex approval. After changing
-the candidate or comparison base, obtain a review of the resulting change
-rather than relying on an earlier receipt. Never delete earlier reviews to
-manufacture a clean status.
+The diagnostic [workflow](../.github/workflows/codex-review.yml) runs only on
+manual dispatch: it checks out the adapter from `main`, uses read-only
+permissions, runs default diagnostic mode, and neither publishes **Codex
+review** statuses nor records summary deletions. PRs, comments, merge groups,
+and pushes do not trigger it automatically.
 
-The [maintainer contract](review-policy-design.md) records why the procedure
-uses coverage rather than a finding quota, and how to evaluate its effect
-without treating instruction text as evidence of reviewer behavior.
+While [#236](https://github.com/joshlf/anneal/issues/236) remains open:
 
-## Disable automated enforcement
+- Keep
+  [`.github/codex-review-ruleset.json`](../.github/codex-review-ruleset.json)
+  at `"enforcement": "disabled"` (retaining its original status context and
+  GitHub Actions App binding for future work).
+- Keep GitHub ruleset **Main — Codex review** (ID `26810364`) set to
+  `disabled`.
+- Leave rulesets `26220506` and `26637514`—and all CI and human-review branch
+  protections—enabled and unchanged.
 
-The [workflow](../.github/workflows/codex-review.yml) runs only on manual
-dispatch. It checks out the adapter from `main`, uses read-only permissions, and
-runs the adapter's default diagnostic mode. It does not publish **Codex review**
-statuses or record summary deletions. PRs, comments, merge groups, and pushes no
-longer trigger it automatically.
-
-The checked-in [ruleset template](../.github/codex-review-ruleset.json) has
-`enforcement` set to `disabled`. Its original status context and GitHub Actions
-App binding remain available for future work.
-
-Changing Git files does not change GitHub's live rulesets. Deployment also
-requires disabling the existing **Main — Codex review** ruleset, ID `26810364`.
-Set only that ruleset's enforcement to `disabled`, then confirm the live result.
-Leave rulesets `26220506` and `26637514` and their CI and human-review
-protections unchanged. Deactivating the Codex rule does not waive the manual
-merge policy above.
+Changing Git files does not change GitHub's live rulesets. Disabling ruleset
+`26810364` never waives the five merge gates above.
 
 ## Run read-only diagnostics
 
-Once the workflow is on `main`, it can be dispatched manually:
+When authorized, the workflow can be dispatched manually on `main`:
 
 ```sh
 gh workflow run codex-review.yml --repo joshlf/anneal --ref main
 gh run list --repo joshlf/anneal --workflow codex-review.yml
 ```
 
-For local diagnosis, run the default mode without either write-effect flag:
+For local read-only diagnosis (without write-effect flags):
 
 ```sh
 GH_TOKEN="$(gh auth token)" python3 -I -B ci/codex_review.py \
@@ -97,34 +128,39 @@ GH_TOKEN="$(gh auth token)" python3 -I -B ci/codex_review.py \
 ```
 
 The evaluator reads live PRs, summaries, historical deletion records, and merge
-queue information, then prints proposed verdicts. Its existing freshness rules
-can reject a completed review when Codex edits an older summary or supplies only
-a prose receipt. Deletion records are no longer updated automatically. Treat the
-output as diagnostic evidence, and inspect Codex's actual approval of the
-current change before making the manual merge decision.
+queue state, then prints proposed verdicts. Its freshness rules can reject a
+completed review when Codex edits an older summary or supplies only a prose
+receipt; deletion records are no longer updated automatically. Treat its output
+strictly as diagnostic evidence and inspect Codex's actual approval before
+making a manual merge decision.
 
-## Preserve the evaluator for follow-up work
+## Preserve the evaluator and re-enablement criteria
 
-The [adapter](../ci/codex_review.py) and its regression tests remain available
-for issue #236. They preserve the former gate's strict summary authentication,
-exact-head checks, base-change freshness policy, shared-head handling, deletion
-records, merge queue handling, and publication logic. That retained behavior is
-research material, rather than a selected design for restoring enforcement.
-
-Run the simulated tests locally with:
+The [adapter](../ci/codex_review.py) and its tests remain available for
+[#236](https://github.com/joshlf/anneal/issues/236) as **research material,
+rather than a selected design for restoring enforcement**. Run the simulated
+tests locally with:
 
 ```sh
 python3 -B -m unittest discover -s ci -p 'test_codex_review.py' -v
 ```
 
-The tests use fake API data and make no GitHub changes. They cover accepted and
-rejected review evidence, concurrent changes, API failures, and simulated status
-publication. The deployment assertion requires the retained ruleset template to
-remain disabled. Passing these tests does not validate the live provider's
-association between a review and its head/base comparison.
+These tests use fake API data, make no GitHub changes, and include a deployment
+assertion requiring `.github/codex-review-ruleset.json` to remain disabled.
+Passing these tests does **not** validate the live provider's association
+between a review and its head/base comparison.
 
-Before re-enabling enforcement, address issue #236, exercise acceptance and
-refusal against the live integration, deploy and validate the evaluator, and
-reconcile the live rules with the checked-in configuration. Provide a recovery
-path that preserves review history. Re-enabling the former required status
-without those checks would restore the unresolved failure modes.
+Before re-enabling ruleset `26810364` and automated status publication:
+
+1. Address [#236](https://github.com/joshlf/anneal/issues/236) and exercise
+   both **acceptance and refusal** against the live GitHub integration before
+   enabling enforcement.
+2. Deploy and validate the evaluator and provide a **recovery path that
+   preserves review history** rather than deleting prior reviews.
+3. Reconcile the live GitHub ruleset with the checked-in ruleset template (and
+   update the disabled-template deployment test deliberately).
+
+Re-enabling enforcement without those checks would restore the unresolved
+failure modes.
+
+[codex-github]: https://developers.openai.com/codex/integrations/github/
