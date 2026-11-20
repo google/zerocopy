@@ -65311,6 +65311,51 @@
         "verification"
       ]
     },
+    "rustc-release-abi-drift-binary-validation-cfg-alignment-and-surviving-bounds-checks": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "https://github.com/rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+          },
+          "name": "rust-lang/rust (rustc 1.99.1, LLVM 23.1.1)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/rust-lang/rust",
+            "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a"
+          },
+          "name": "rust-lang/rust (rustc 1.100.0, LLVM 23.1.5)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1"
+          },
+          "name": "rust-lang/rust (rustc 1.102.0-nightly, LLVM 23.1.5)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "joshlf/anneal (anneal-audit & cargo-anneal real binary workloads)"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/abi",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/backend",
+        "compilers/verified-rustc/optimization",
+        "isa",
+        "isa/x86-64",
+        "llvm",
+        "rust",
+        "rustc"
+      ]
+    },
     "rustc-size-optimized-compilation-parity-and-transformations": {
       "observed_at": "2026-11-13",
       "subjects": [

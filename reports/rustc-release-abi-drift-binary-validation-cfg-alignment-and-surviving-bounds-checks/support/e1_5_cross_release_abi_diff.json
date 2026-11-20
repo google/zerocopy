@@ -1,0 +1,199 @@
+{
+  "benchmark": "E1-5_T07_real_cross_release_abi_diff_256_complete",
+  "counts": {
+    "x64_1.99.1": 256,
+    "x64_1.100.0": 256,
+    "x64_1.102.0_nightly": 256,
+    "i686_1.99.1": 256,
+    "aarch64_1.99.1": 256
+  },
+  "diffs": {
+    "1.99.1_vs_1.100.0": {
+      "pair": "1.99.1 vs 1.100.0",
+      "total_a": 256,
+      "total_b": 256,
+      "identical": 255,
+      "num_diffs": 1,
+      "diffs": [
+        {
+          "fn": "f4_simd_f32x4_rust",
+          "1.99.1": {
+            "kind": "define",
+            "sig": "void (ptr dead_on_unwind noalias nofree noundef writable writeonly sret([16 x i8])"
+          },
+          "1.100.0": {
+            "kind": "alias",
+            "sig": "<4 x float> (<4 x float>)",
+            "target": "f4_simd_f32x4_c"
+          }
+        }
+      ]
+    },
+    "1.99.1_vs_1.102.0_nightly": {
+      "pair": "1.99.1 vs 1.102.0-nightly",
+      "total_a": 256,
+      "total_b": 256,
+      "identical": 251,
+      "num_diffs": 9,
+      "diffs": [
+        {
+          "fn": "\\01f6_x64_vectorcall_big@@48",
+          "1.99.1": null,
+          "1.102.0-nightly": {
+            "kind": "define",
+            "sig": "x86_vectorcallcc void (ptr dead_on_unwind noalias nofree noundef writable writeonly sret([24 x i8])"
+          }
+        },
+        {
+          "fn": "\\01f6_x64_vectorcall_hfa@@40",
+          "1.99.1": null,
+          "1.102.0-nightly": {
+            "kind": "define",
+            "sig": "x86_vectorcallcc void (ptr dead_on_unwind noalias nofree noundef writable writeonly sret([16 x i8])"
+          }
+        },
+        {
+          "fn": "\\01f6_x64_vectorcall_unwind_big@@48",
+          "1.99.1": null,
+          "1.102.0-nightly": {
+            "kind": "alias",
+            "sig": "void (ptr, i32, ptr, ptr)",
+            "target": "\"\\01f6_x64_vectorcall_big@@48\""
+          }
+        },
+        {
+          "fn": "\\01f6_x64_vectorcall_unwind_hfa@@40",
+          "1.99.1": null,
+          "1.102.0-nightly": {
+            "kind": "alias",
+            "sig": "void (ptr, i64, ptr, <4 x float>)",
+            "target": "\"\\01f6_x64_vectorcall_hfa@@40\""
+          }
+        },
+        {
+          "fn": "f4_simd_f32x4_rust",
+          "1.99.1": {
+            "kind": "define",
+            "sig": "void (ptr dead_on_unwind noalias nofree noundef writable writeonly sret([16 x i8])"
+          },
+          "1.102.0-nightly": {
+            "kind": "alias",
+            "sig": "<4 x float> (<4 x float>)",
+            "target": "f4_simd_f32x4_c"
+          }
+        },
+        {
+          "fn": "f6_x64_vectorcall_big",
+          "1.99.1": {
+            "kind": "define",
+            "sig": "x86_vectorcallcc void (ptr dead_on_unwind noalias nofree noundef writable writeonly sret([24 x i8])"
+          },
+          "1.102.0-nightly": null
+        },
+        {
+          "fn": "f6_x64_vectorcall_hfa",
+          "1.99.1": {
+            "kind": "define",
+            "sig": "x86_vectorcallcc void (ptr dead_on_unwind noalias nofree noundef writable writeonly sret([16 x i8])"
+          },
+          "1.102.0-nightly": null
+        },
+        {
+          "fn": "f6_x64_vectorcall_unwind_big",
+          "1.99.1": {
+            "kind": "alias",
+            "sig": "void (ptr, i32, ptr, ptr)",
+            "target": "f6_x64_vectorcall_big"
+          },
+          "1.102.0-nightly": null
+        },
+        {
+          "fn": "f6_x64_vectorcall_unwind_hfa",
+          "1.99.1": {
+            "kind": "alias",
+            "sig": "void (ptr, i64, ptr, <4 x float>)",
+            "target": "f6_x64_vectorcall_hfa"
+          },
+          "1.102.0-nightly": null
+        }
+      ]
+    },
+    "1.100.0_vs_1.102.0_nightly": {
+      "pair": "1.100.0 vs 1.102.0-nightly",
+      "total_a": 256,
+      "total_b": 256,
+      "identical": 252,
+      "num_diffs": 8,
+      "diffs": [
+        {
+          "fn": "\\01f6_x64_vectorcall_big@@48",
+          "1.100.0": null,
+          "1.102.0-nightly": {
+            "kind": "define",
+            "sig": "x86_vectorcallcc void (ptr dead_on_unwind noalias nofree noundef writable writeonly sret([24 x i8])"
+          }
+        },
+        {
+          "fn": "\\01f6_x64_vectorcall_hfa@@40",
+          "1.100.0": null,
+          "1.102.0-nightly": {
+            "kind": "define",
+            "sig": "x86_vectorcallcc void (ptr dead_on_unwind noalias nofree noundef writable writeonly sret([16 x i8])"
+          }
+        },
+        {
+          "fn": "\\01f6_x64_vectorcall_unwind_big@@48",
+          "1.100.0": null,
+          "1.102.0-nightly": {
+            "kind": "alias",
+            "sig": "void (ptr, i32, ptr, ptr)",
+            "target": "\"\\01f6_x64_vectorcall_big@@48\""
+          }
+        },
+        {
+          "fn": "\\01f6_x64_vectorcall_unwind_hfa@@40",
+          "1.100.0": null,
+          "1.102.0-nightly": {
+            "kind": "alias",
+            "sig": "void (ptr, i64, ptr, <4 x float>)",
+            "target": "\"\\01f6_x64_vectorcall_hfa@@40\""
+          }
+        },
+        {
+          "fn": "f6_x64_vectorcall_big",
+          "1.100.0": {
+            "kind": "define",
+            "sig": "x86_vectorcallcc void (ptr dead_on_unwind noalias nofree noundef writable writeonly sret([24 x i8])"
+          },
+          "1.102.0-nightly": null
+        },
+        {
+          "fn": "f6_x64_vectorcall_hfa",
+          "1.100.0": {
+            "kind": "define",
+            "sig": "x86_vectorcallcc void (ptr dead_on_unwind noalias nofree noundef writable writeonly sret([16 x i8])"
+          },
+          "1.102.0-nightly": null
+        },
+        {
+          "fn": "f6_x64_vectorcall_unwind_big",
+          "1.100.0": {
+            "kind": "alias",
+            "sig": "void (ptr, i32, ptr, ptr)",
+            "target": "f6_x64_vectorcall_big"
+          },
+          "1.102.0-nightly": null
+        },
+        {
+          "fn": "f6_x64_vectorcall_unwind_hfa",
+          "1.100.0": {
+            "kind": "alias",
+            "sig": "void (ptr, i64, ptr, <4 x float>)",
+            "target": "f6_x64_vectorcall_hfa"
+          },
+          "1.102.0-nightly": null
+        }
+      ]
+    }
+  }
+}
