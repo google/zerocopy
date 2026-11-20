@@ -1,0 +1,67 @@
+[reading source file:	queue.sml]
+
+Program After Physical Size Inference: 
+   let fun push [r29:2, r23:2] (v218, v260, v261) = (v260, :: (v218, v261) attop r23) sat r29; 
+       fun pop [r55:2, r53:2, r49:inf, r47:inf] (v220, v221) = 
+           case v220 of 
+             :: v112 => let val v113 = #0 v112; val v114 = #1 v112 in (v113, (v114, v221) sat r53) sat r55 end
+           | _ => 
+             case v221 of 
+               nil => raise Empty
+             | _ => 
+               let val v246 = rev[sat r47] v221; val v247 = nil
+               in  pop[sat r55,sat r53,sat r49,sat r47] (v246, v247)
+               end; 
+       fun run [r93:inf, r91:inf] (v223, v224, v262, v263) = 
+           case v223 of 
+             0 => v224
+           | _ => 
+             let val v249 = :: (v223, v263) attop r93; 
+                 region r103:2, r105:2; 
+                 val v137 = pop[atbot r105,atbot r103,sat r93,sat r91] (v262, v249); 
+                 val v138 = #0 v137; 
+                 val v139 = #1 v137; 
+                 val v250 = v223 - 1; 
+                 val v252 = v224 + v138; 
+                 val v266 = #0 v139; 
+                 val v265 = #1 v139
+             in  run[sat r93,sat r91] (v250, v252, v266, v265)
+             end; 
+       val n = 
+         let region r117:inf, r119:inf; val v148 = $sml_commandline_args [atbot r119,atbot r117] ()
+         in  case v148 of 
+               :: v150 => 
+               case #1 v150 of 
+               nil => let val v152 = #0 v150; region r125:2 in valOf fromString[atbot r125] v152 end | _ => 1000000
+             | _ => 1000000
+         end; 
+       fun fill [r149:inf, r145:inf] (v227, v228) = 
+           case v227 of 
+             0 => v228
+           | _ => 
+             let val v253 = v227 - 1; 
+                 val v94 = #0 v228; 
+                 val v95 = #1 v228; 
+                 val v254 = (v94, :: (v227, v95) attop r145) sat r149
+             in  fill[sat r149,sat r145] (v253, v254)
+             end; 
+       val _ = 
+         let region r171:inf
+         in  print 
+             let region r173:inf; 
+                 val v216 = 
+                   toString[atbot r173] 
+                   let region r175:inf, r177:inf, r179:inf; 
+                       val v256 = let val v259 = (nil, nil) atbot r179 in fill[atbot r179,atbot r175] (100, v259) end; 
+                       val v268 = #0 v256; 
+                       val v267 = #1 v256
+                   in  run[atbot r175,atbot r177] (n, 0, v268, v267)
+                   end
+             in  v216 ^[atbot r171] "\n"
+             end
+         end
+   in  {|push: (_,r1), pop: (_,r1), run: (_,r1), n: _, fill: (_,r1)|}
+   end
+[wrote X64 code file:	MLB/RI/queue.sml.s]
+[wrote X64 code file:	MLB/RI/base-link_objects.s]
+[wrote executable file:	queue]

@@ -1,0 +1,45 @@
+[reading source file:	queue.sml]
+
+Program After Physical Size Inference: 
+   let fun push [r29:3, r23:3] (v212, v249, v250) = (v249, :: (v212, v250) attop r23) sat r29; 
+       fun pop [r55:3, r53:3, r49:inf, r47:inf] (v214, v215) = 
+           case v214 of 
+             :: v112 => (#0 v112, (#1 v112, v215) sat r53) sat r55
+           | _ => 
+             case v215 of nil => raise Empty | _ => pop[sat r55,sat r53,sat r49,sat r47] (rev[sat r47] v215, nil); 
+       fun run [r93:inf, r91:inf] (v217, v218, v251, v252) = 
+           case v217 of 
+             0 => v218
+           | _ => 
+             let val v243 = :: (v217, v252) attop r93; 
+                 region r103:3, r105:3; 
+                 val v137 = pop[atbot r105,atbot r103,sat r93,sat r91] (v251, v243); 
+                 val v138 = #0 v137; 
+                 val v139 = #1 v137
+             in  run[sat r93,sat r91] (v217 - 1, v218 + v138, #0 v139, #1 v139)
+             end; 
+       val n = 
+         let val v148 = $sml_commandline_args [attop r4,attop r3] ()
+         in  case v148 of 
+               :: v150 => 
+               case #1 v150 of nil => let region r125:2 in valOf fromString[atbot r125] #0 v150 end | _ => 1000000
+             | _ => 1000000
+         end; 
+       fun fill [r149:inf, r145:inf] (v221, v222) = 
+           case v221 of 
+             0 => v222
+           | _ => fill[sat r149,sat r145] (v221 - 1, (#0 v222, :: (v221, #1 v222) attop r145) sat r149); 
+       val _ = 
+         print 
+         (toString[attop r3] 
+          let val v253 = fill[attop r4,attop r4] (100, (nil, nil) attop r4)
+          in  run[attop r4,attop r4] (n, 0, #0 v253, #1 v253)
+          end 
+          ^[attop r3] 
+          "\n"
+         )
+   in  {|push: (_,r1), pop: (_,r1), run: (_,r1), n: _, fill: (_,r1)|}
+   end
+[wrote X64 code file:	MLB/GC/queue.sml.s]
+[wrote X64 code file:	MLB/GC/base-link_objects.s]
+[wrote executable file:	q]

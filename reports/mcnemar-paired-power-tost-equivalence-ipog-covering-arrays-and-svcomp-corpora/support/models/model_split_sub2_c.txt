@@ -1,0 +1,12 @@
+Construct: loop, recursion, pointer_arith, array_index, bitfield, union_pun, closure
+Rule: bounds, null_deref, int_overflow, uninit_read, alias
+Fault: none, off_by_one, missing_guard, wrong_width, use_after_free
+Context: straight_line, nested_branch, callee, generic
+Split: design, heldout
+{ Construct, Rule, Fault, Context } @ 2
+
+IF [Fault] = "use_after_free" THEN [Rule] IN {"alias", "null_deref"};
+IF [Fault] = "wrong_width" THEN [Rule] IN {"int_overflow", "bounds"};
+IF [Construct] = "bitfield" THEN [Fault] <> "use_after_free" AND [Rule] <> "alias";
+IF [Construct] = "closure" THEN [Context] <> "straight_line";
+IF [Fault] = "off_by_one" THEN [Construct] IN {"loop", "array_index", "pointer_arith", "recursion"};

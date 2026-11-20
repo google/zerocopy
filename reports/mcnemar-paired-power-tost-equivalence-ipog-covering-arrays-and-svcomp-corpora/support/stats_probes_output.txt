@@ -1,0 +1,86 @@
+== A. McNemar: Connor closed form vs exact power by enumeration (alpha=0.05 two-sided)
+A.1 actual size at p10=p01 (psi=0.20): n, exact, midp, asym, asymcc
+   n=  20  0.0048  0.0171  0.0444  0.0048
+   n=  50  0.0221  0.0413  0.0429  0.0218
+   n= 100  0.0294  0.0457  0.0522  0.0266
+   n= 200  0.0346  0.0483  0.0493  0.0332
+A.2 n for target power; delta=p10-p01, psi=p10+p01
+   delta  psi   p10    p01   | Connor80 | first/stable n (80%): exact  midp  asym | Connor90 | first/stable n (90%): exact midp asym
+   0.10  0.12  0.110  0.010 |    91.8 | 95/95  82/82  79/79 |   121.9 | 119/119  104/104  103/103
+   0.10  0.20  0.150  0.050 |   154.6 | 168/168  152/152  145/145 |   206.0 | 215/215  199/199  197/197
+   0.10  0.30  0.200  0.100 |   233.1 | 249/249  230/230  229/229 |   311.0 | 325/325  308/308  305/305
+   0.10  0.40  0.250  0.150 |   311.6 | 329/329  311/311  311/311 |   416.1 | 433/433  415/415  415/415
+   0.05  0.10  0.075  0.025 |   311.6 | 337/337  305/305  291/291 |   416.1 | 431/431  398/398  394/394
+   0.05  0.20  0.125  0.075 |   625.5 | 658/658  622/622  622/622 |   836.4 | 867/867  830/830  830/830
+   0.20  0.30  0.250  0.050 |    56.4 | 61/61  53/53  53/53 |    74.6 | 78/78  70/70  68/68
+A.3 same marginals (pA=0.80, pB=0.70), different psi -> different n (Connor 80%):
+   psi=0.10 p11=0.700 p10=0.100 p01=0.000 p00=0.200 feasible=True  n80=nan
+   psi=0.14 p11=0.680 p10=0.120 p01=0.020 p00=0.180 feasible=True  n80=107.5
+   psi=0.20 p11=0.650 p10=0.150 p01=0.050 p00=0.150 feasible=True  n80=154.6
+   psi=0.30 p11=0.600 p10=0.200 p01=0.100 p00=0.100 feasible=True  n80=233.1
+   psi=0.40 p11=0.550 p10=0.250 p01=0.150 p00=0.050 feasible=True  n80=311.6
+   psi=0.50 p11=0.500 p10=0.300 p01=0.200 p00=0.000 feasible=True  n80=390.1
+== B. Unpaired vs paired, pA=0.80 pB=0.70 (delta=0.10), alpha=0.05, power=0.80
+   unpaired: n per group = 293.2 -> 588 instances, 588 checker runs
+   max feasible phi for these marginals = 0.7638
+   phi    p11     psi    Connor n80 (pairs = instances; runs = 2n)  exact-cond first/stable n80
+   0.0   0.5600  0.3800     295.9 ->  296 instances,  592 runs      313/313
+   0.2   0.5967  0.3067     238.3 ->  239 instances,  478 runs      255/255
+   0.4   0.6333  0.2334     180.8 ->  181 instances,  362 runs      193/193
+   0.6   0.6700  0.1600     123.2 ->  124 instances,  248 runs      132/132
+== C. Precision sizing for a single pass rate, 95% two-sided
+   p=0.3 h=0.05  Wald n=322.7->323  Wilson n=320  Clopper-Pearson n=341
+   p=0.3 h=0.10  Wald n=80.7->81  Wilson n=78  Clopper-Pearson n=88
+   p=0.5 h=0.05  Wald n=384.1->385  Wilson n=381  Clopper-Pearson n=402
+   p=0.5 h=0.10  Wald n=96.0->97  Wilson n=93  Clopper-Pearson n=104
+   p=0.9 h=0.05  Wald n=138.3->139  Wilson n=141  Clopper-Pearson n=155
+   p=0.9 h=0.10  Wald n=34.6->35  Wilson n=34  Clopper-Pearson n=42
+   small-n illustration (CP and Wilson 95%):
+   x/n=  3/ 10  CP=[0.067, 0.652] width=0.586   Wilson=[0.108, 0.603] width=0.495
+   x/n=  6/ 20  CP=[0.119, 0.543] width=0.424   Wilson=[0.145, 0.519] width=0.373
+   x/n= 12/ 40  CP=[0.166, 0.465] width=0.300   Wilson=[0.181, 0.454] width=0.274
+   x/n= 30/100  CP=[0.212, 0.400] width=0.187   Wilson=[0.219, 0.396] width=0.177
+   x/n= 60/200  CP=[0.237, 0.369] width=0.131   Wilson=[0.241, 0.367] width=0.126
+   x/n=  2/  6  CP=[0.043, 0.777] width=0.734   Wilson=[0.097, 0.700] width=0.603
+   x/n=  6/ 12  CP=[0.211, 0.789] width=0.578   Wilson=[0.254, 0.746] width=0.492
+   x/n= 36/120  CP=[0.220, 0.390] width=0.171   Wilson=[0.225, 0.387] width=0.162
+   falsifiability: smallest n such that a predicted band p0+-w can be refuted
+   by a CP interval excluding the band when the truth is p1 (point check at x=round(p1 n)):
+   band=[0.20,0.40] truth=0.55 -> n=47
+   band=[0.25,0.35] truth=0.45 -> n=95
+   band=[0.75,0.85] truth=0.65 -> n=79
+== D. Equivalence (TOST) sizing
+D.1 TOSTER unpaired two-proportion formulas re-implemented (per-group n):
+   p1=0.50 p2=0.50 margin=0.10 alpha=0.050 power=0.9  closed N=541.11 (ceil 542)  uniroot n=541.11  power(n=542)=0.9006
+   p1=0.75 p2=0.80 margin=0.20 alpha=0.050 power=0.8  closed N=132.26 (ceil 133)  uniroot n=132.26  power(n=542)=-
+   p1=0.80 p2=0.80 margin=0.10 alpha=0.025 power=0.9  closed N=415.83 (ceil 416)  uniroot n=415.83  power(n=542)=-
+   p1=0.50 p2=0.50 margin=0.20 alpha=0.010 power=0.8  closed N=162.71 (ceil 163)  uniroot n=162.71  power(n=542)=-
+   p1=0.80 p2=0.80 margin=0.10 alpha=0.050 power=0.8  closed N=274.04 (ceil 275)  uniroot n=274.04  power(n=542)=-
+D.2 paired-difference TOST (alpha=0.05 per one-sided test, power 0.80), closed form vs exact
+    psi  delta1 margin | closed n | exact power at closed n | smallest n (scan step 1) with exact power>=0.80
+    0.10  0.00   0.10   |    85.6  | 0.8140 (n=86) | 86
+    0.20  0.00   0.10   |   171.3  | 0.7966 (n=172) | 170
+    0.10  0.02   0.10   |    96.2  | 0.7797 (n=97) | 104
+    0.20  0.00   0.05   |   685.1  | 0.8010 (n=686) | not scanned (n>700)
+    0.30  0.00   0.10   |   256.9  | 0.7985 (n=257) | 256
+D.3 same design analysed as if unpaired (TOSTER closed form, pA=pB=0.80, margin 0.10):
+    per-group N=274.0 -> 550 instances total; paired psi=0.10 -> n=85.6 instances
+D.4 exact size of paired Wald TOST at the margin (delta=margin), psi=0.20, margin=0.10:
+    n=100  P(conclude equivalence | delta=+margin) = 0.0562
+    n=200  P(conclude equivalence | delta=+margin) = 0.0548
+    n=300  P(conclude equivalence | delta=+margin) = 0.0551
+== E. Stratified allocation for a weighted pass rate (no finite-population correction)
+   W=[0.4, 0.3, 0.2, 0.1] p=[0.95, 0.8, 0.5, 0.2] S=['0.2179', '0.4000', '0.5000', '0.4000']
+   proportional n_h=['160.0', '120.0', '80.0', '40.0']  Var=3.325e-04  SE=0.0182  half-width95=0.0357
+   Neyman       n_h=['100.4', '138.3', '115.2', '46.1']  Var=3.013e-04  SE=0.0174  half-width95=0.0340
+   equal        n_h=['100.0', '100.0', '100.0', '100.0']  Var=3.360e-04  SE=0.0183  half-width95=0.0359
+   unstratified SRS (same n): Var=4.810e-04 SE=0.0219  (overall p=0.740)
+   check: Neyman Var = (sum W_h S_h)^2 / n = 3.013e-04
+   per-stratum floors for half-width h=0.10 (Wilson, at p_h):
+   floors=[24, 60, 93, 60] sum=237 ; Neyman n_h at n=400 = [100, 138, 115, 46]
+== F. Per-stratum planning table (closed forms; k strata, Bonferroni alpha/k for per-stratum tests)
+   k  per-stratum alpha | precision n (Wilson h=0.10 @p=0.5; h=0.05 @p=0.5) | McNemar Connor n80 (d=0.10,psi=0.20; d=0.20,psi=0.30) | paired TOST n80 (psi=0.10, margin 0.10)
+   1  0.0500            |   93 ;  381                                       |  154.6 ;   56.4                                     |   85.6
+   2  0.0250            |  121 ;  498                                       |  187.5 ;   68.6                                     |  105.1
+   4  0.0125            |  150 ;  618                                       |  220.2 ;   80.7                                     |  124.1
+   8  0.0063            |  180 ;  741                                       |  252.7 ;   92.8                                     |  142.8

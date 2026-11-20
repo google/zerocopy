@@ -1,0 +1,43 @@
+zone  64KiB          chunk=65536 n=10000000 s=8 superheap_peak=160117056 bytes_per_obj=16.012 superheap_calls=2442 alloc_ns=8.57 clear_ms=11.533
+glibc bulk           n=10000000 s=8 arena_in_use_delta=320000000 bytes_per_obj=32.000 usable=24 alloc_ns=24.84 free_all_ms=126.764
+zone  64KiB          chunk=65536 n=10000000 s=16 superheap_peak=160117056 bytes_per_obj=16.012 superheap_calls=2442 alloc_ns=2.54 clear_ms=0.398
+glibc bulk           n=10000000 s=16 arena_in_use_delta=319999504 bytes_per_obj=32.000 usable=24 alloc_ns=19.78 free_all_ms=472.872
+zone  64KiB          chunk=65536 n=10000000 s=24 superheap_peak=320168544 bytes_per_obj=32.017 superheap_calls=4883 alloc_ns=4.91 clear_ms=1.221
+glibc bulk           n=10000000 s=24 arena_in_use_delta=319999488 bytes_per_obj=32.000 usable=24 alloc_ns=15.63 free_all_ms=167.409
+zone  64KiB          chunk=65536 n=10000000 s=40 superheap_peak=480416736 bytes_per_obj=48.042 superheap_calls=7327 alloc_ns=11.57 clear_ms=13.859
+glibc bulk           n=10000000 s=40 arena_in_use_delta=479999952 bytes_per_obj=48.000 usable=40 alloc_ns=25.19 free_all_ms=142.842
+zone  8KiB           chunk=8192 n=10000000 s=24 superheap_peak=321254112 bytes_per_obj=32.125 superheap_calls=39063 alloc_ns=5.11 clear_ms=4.692
+zone  1MiB           chunk=1048576 n=10000000 s=24 superheap_peak=320874048 bytes_per_obj=32.087 superheap_calls=306 alloc_ns=4.84 clear_ms=0.181
+zone  fifo chunk=65536 n=10000000 w=1000 s=24 superheap_peak=320168544 live_payload=24000 ratio=13340.4
+glibc fifo n=10000000 w=1000 s=24 sampled_peak_in_use=39504 live_payload=24000 ratio=1.65
+zone  mixed chunk=8192 n=200000 requested=411398133 superheap_peak=494788736 overhead=20.27%
+zone  mixed chunk=65536 n=200000 requested=411398133 superheap_peak=421930080 overhead=2.56%
+zone  mixed chunk=1048576 n=200000 requested=411398133 superheap_peak=414200160 overhead=0.68%
+wall 2.58 s maxrss 549900 KB
+s=8 alloc_ns=7.74 clear_ms=9.510 zone
+s=8 alloc_ns=25.62 free_all_ms=158.097 glibc
+s=16 alloc_ns=3.17 clear_ms=0.413 zone
+s=16 alloc_ns=16.61 free_all_ms=138.277 glibc
+s=24 alloc_ns=4.05 clear_ms=0.856 zone
+s=24 alloc_ns=18.69 free_all_ms=159.107 glibc
+s=40 alloc_ns=11.17 clear_ms=9.691 zone
+s=40 alloc_ns=36.11 free_all_ms=178.978 glibc
+
+s=8 alloc_ns=7.69 clear_ms=8.779 zone
+s=8 alloc_ns=32.65 free_all_ms=126.825 glibc
+s=16 alloc_ns=2.51 clear_ms=0.392 zone
+s=16 alloc_ns=15.25 free_all_ms=297.735 glibc
+s=24 alloc_ns=5.60 clear_ms=1.326 zone
+s=24 alloc_ns=20.35 free_all_ms=133.330 glibc
+s=40 alloc_ns=12.34 clear_ms=11.302 zone
+s=40 alloc_ns=21.26 free_all_ms=147.869 glibc
+
+s=8 alloc_ns=7.80 clear_ms=10.315 zone
+s=8 alloc_ns=23.82 free_all_ms=133.223 glibc
+s=16 alloc_ns=2.63 clear_ms=0.396 zone
+s=16 alloc_ns=16.26 free_all_ms=176.156 glibc
+s=24 alloc_ns=5.54 clear_ms=1.110 zone
+s=24 alloc_ns=18.97 free_all_ms=202.498 glibc
+s=40 alloc_ns=10.92 clear_ms=9.297 zone
+s=40 alloc_ns=24.53 free_all_ms=145.710 glibc
+

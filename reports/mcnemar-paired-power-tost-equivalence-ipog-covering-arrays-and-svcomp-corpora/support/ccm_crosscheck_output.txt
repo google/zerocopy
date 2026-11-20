@@ -1,0 +1,9 @@
+case                 rows  t  own_covered/required  own_fraction  CCMCL_total
+t2_u_full              37  2   163/ 163            1.00000       1.0
+t2_u_evenrows          19  2    98/ 163            0.60123       0.60123
+t3_u_full             180  3   555/ 555            1.00000       1.0
+t3_u_evenrows          90  3   318/ 555            0.57297       0.57297
+t2_c_full              39  2   151/ 151            1.00000       1.0
+t2_c_evenrows          20  2    95/ 151            0.62914       0.62914
+t3_c_full             159  3   441/ 441            1.00000       1.0
+t3_c_evenrows          80  3   267/ 441            0.60544       0.60544

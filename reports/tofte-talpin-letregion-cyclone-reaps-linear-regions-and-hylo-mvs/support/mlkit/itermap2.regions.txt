@@ -1,0 +1,79 @@
+[reading source file:	itermap2.sml]
+
+Program After Physical Size Inference: 
+   let fun inc x = x + 1; 
+       fun iter [r19:inf] (v216, v217) = 
+           case v216 of 
+             0 => v217
+           | _ => 
+             let val v227 = v216 - 1; 
+                 val v228 = 
+                   let region r21:0; 
+                       fun map atbot r21 [r29:inf] var20 = 
+                           case var20 of 
+                             nil => nil
+                           | :: v371 => 
+                             let val v372 = #0 v371; val v373 = #1 v371 in :: (v372 + 1, map[sat r29] v373) attop r29 end
+                   in  map[sat r19] v217
+                   end
+             in  iter[sat r19] (v227, v228)
+             end; 
+       fun main n = 
+           let region r55:0; 
+               fun foldl atbot r55 (var34, var35) = 
+                   case var35 of 
+                     nil => var34
+                   | :: v543 => 
+                     let val v544 = #0 v543; val v545 = #1 v543; val v208 = v544 + var34 in foldl (v208, v545) end; 
+               region r81:inf; 
+               val v211 = 
+                 let val v230 = 
+                       let region r67:0; 
+                           fun h atbot r67 [r71:inf] i = 
+                               case i < 1000 of true => :: (i, h[sat r71] (i + 1)) attop r71 | _ => nil
+                       in  h[atbot r81] 0
+                       end
+                 in  iter[atbot r81] (n, v230)
+                 end
+           in  foldl (0, v211)
+           end; 
+       val n = 
+         let region r93:inf, r95:inf; val v118 = $sml_commandline_args [atbot r95,atbot r93] ()
+         in  case v118 of 
+               :: v120 => 
+               case #1 v120 of 
+               nil => let val v122 = #0 v120; region r101:2 in valOf fromString[atbot r101] v122 end | _ => 1000
+             | _ => 1000
+         end; 
+       val _ = 
+         let region r107:inf
+         in  print 
+             let region r109:inf; 
+                 val v198 = 
+                   toString[atbot r109] 
+                   let region r111:0; 
+                       fun foldl atbot r111 (var34, var35) = 
+                           case var35 of 
+                             nil => var34
+                           | :: v543 => 
+                             let val v544 = #0 v543; val v545 = #1 v543; val v212 = v544 + var34 in foldl (v212, v545) end; 
+                       region r137:inf; 
+                       val v215 = 
+                         let val v232 = 
+                               let region r123:0; 
+                                   fun h atbot r123 [r127:inf] i = 
+                                       case i < 1000 of true => :: (i, h[sat r127] (i + 1)) attop r127 | _ => nil
+                               in  h[atbot r137] 0
+                               end
+                         in  iter[atbot r137] (n, v232)
+                         end
+                   in  foldl (0, v215)
+                   end
+             in  v198 ^[atbot r107] "\n"
+             end
+         end
+   in  {|inc: (_,r1), iter: (_,r1), main: (_,r1), n: _|}
+   end
+[wrote X64 code file:	MLB/RI/itermap2.sml.s]
+[wrote X64 code file:	MLB/RI/base-link_objects.s]
+[wrote executable file:	itermap2]

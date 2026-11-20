@@ -1,0 +1,49 @@
+model: 7 x 5 x 5 x 4; |cartesian|=700 valid=442
+[0] PICT /o:max rows=442  python-valid rows=442  sets equal=True
+[1] t, constrained, threads -> rows, median wall s (5 reps), required t-tuples, covered, invalid rows emitted
+    t=2 cons=False /t:1     rows= 37  wall=0.0026  required= 163 covered= 163 missing=0  invalid_rows=0
+    t=2 cons=False /t:auto  rows= 37  wall=0.0024  required= 163 covered= 163 missing=0  invalid_rows=0
+    t=2 cons=True  /t:1     rows= 39  wall=0.0026  required= 151 covered= 151 missing=0  invalid_rows=0
+    t=2 cons=True  /t:auto  rows= 39  wall=0.0030  required= 151 covered= 151 missing=0  invalid_rows=0
+    t=3 cons=False /t:1     rows=180  wall=0.0035  required= 555 covered= 555 missing=0  invalid_rows=0
+    t=3 cons=False /t:auto  rows=180  wall=0.0041  required= 555 covered= 555 missing=0  invalid_rows=0
+    t=3 cons=True  /t:1     rows=159  wall=0.0041  required= 441 covered= 441 missing=0  invalid_rows=0
+    t=3 cons=True  /t:auto  rows=159  wall=0.0038  required= 441 covered= 441 missing=0  invalid_rows=0
+[2] random 50/50 split of ONE PICT array, 10000 splits (python RNG seed 12345)
+    t=2 cons=False rows= 37  mean lost/side=0.417  min-side coverage: mean=0.567 min=0.509 max=0.620  P(both sides complete)=0/10000
+    t=2 cons=True  rows= 39  mean lost/side=0.382  min-side coverage: mean=0.603 min=0.536 max=0.662  P(both sides complete)=0/10000
+    t=3 cons=False rows=180  mean lost/side=0.430  min-side coverage: mean=0.566 min=0.533 max=0.589  P(both sides complete)=0/10000
+    t=3 cons=True  rows=159  mean lost/side=0.404  min-side coverage: mean=0.589 min=0.549 max=0.619  P(both sides complete)=0/10000
+[3] two independent PICT arrays (/r:N), each checked for full coverage; overlap and novelty
+    t=2 cons=False /r:1,/r:2 rows=40,37  A complete=True B complete=True  identical rows shared=1  (t+1)-tuples in B not in A=107 of 148 in B
+    t=2 cons=False /r:101,/r:202 rows=37,37  A complete=True B complete=True  identical rows shared=1  (t+1)-tuples in B not in A=108 of 143 in B
+    t=2 cons=True  /r:1,/r:2 rows=38,38  A complete=True B complete=True  identical rows shared=5  (t+1)-tuples in B not in A=94 of 145 in B
+    t=2 cons=True  /r:101,/r:202 rows=39,39  A complete=True B complete=True  identical rows shared=4  (t+1)-tuples in B not in A=97 of 150 in B
+    t=3 cons=False /r:1,/r:2 rows=182,183  A complete=True B complete=True  identical rows shared=40  (t+1)-tuples in B not in A=143 of 183 in B
+    t=3 cons=False /r:101,/r:202 rows=180,179  A complete=True B complete=True  identical rows shared=46  (t+1)-tuples in B not in A=133 of 179 in B
+    t=3 cons=True  /r:1,/r:2 rows=158,160  A complete=True B complete=True  identical rows shared=63  (t+1)-tuples in B not in A=97 of 160 in B
+    t=3 cons=True  /r:101,/r:202 rows=156,158  A complete=True B complete=True  identical rows shared=58  (t+1)-tuples in B not in A=100 of 158 in B
+[4] Split parameter {design, heldout} added, generated at /o:t+1
+    t=2 cons=False rows=187 (design 97, heldout 90) wall=0.0050  design covers all 2-tuples=True heldout=True
+    t=2 cons=True  rows=165 (design 87, heldout 78) wall=0.0063  design covers all 2-tuples=True heldout=True
+[4b] Split outside sub-model { Construct, Rule, Fault, Context } @ t, global /o:2
+    t=2 cons=False rows=72 (design 36, heldout 36) wall=0.0035  design complete=True heldout complete=True  identical configs on both sides=36
+    t=2 cons=True  rows=72 (design 36, heldout 36) wall=0.0026  design complete=True heldout complete=True  identical configs on both sides=36
+    t=3 cons=False rows=370 (design 185, heldout 185) wall=0.0162  design complete=True heldout complete=True  identical configs on both sides=185
+    t=3 cons=True  rows=320 (design 160, heldout 160) wall=0.0083  design complete=True heldout complete=True  identical configs on both sides=160
+[5] generate WITHOUT constraints, then delete rows violating constraints
+    t=2 rows=37 kept=24  valid t-tuples=151 covered after filtering=116 lost=35 (23.2%)
+    t=3 rows=180 kept=113  valid t-tuples=441 covered after filtering=375 lost=66 (15.0%)
+[6] reference IPOG (python, unconstrained, params in declared order and in descending domain size)
+    t=2 order=declared    IPOG rows= 38  missing=0  python wall=0.001s   (PICT rows=37)
+    t=2 order=desc-domain IPOG rows= 38  missing=0  python wall=0.001s   (PICT rows=37)
+    t=3 order=declared    IPOG rows=175  missing=0  python wall=0.004s   (PICT rows=180)
+    t=3 order=desc-domain IPOG rows=175  missing=0  python wall=0.006s   (PICT rows=180)
+    trivial lower bounds: t=2 >= 35, t=3 >= 175
+[7] latency on a larger synthetic model (10 params x 5 values, unconstrained)
+    t=2 /t:1     rows=47 median wall=0.016s
+    t=2 /t:auto  rows=47 median wall=0.004s
+    t=3 /t:1     rows=310 median wall=0.042s
+    t=3 /t:auto  rows=310 median wall=0.094s
+    t=4 /t:1     rows=1812 median wall=2.056s
+    t=4 /t:auto  rows=1812 median wall=0.880s

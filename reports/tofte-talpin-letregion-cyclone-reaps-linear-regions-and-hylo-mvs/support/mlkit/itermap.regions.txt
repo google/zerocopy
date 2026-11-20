@@ -1,0 +1,57 @@
+[reading source file:	itermap.sml]
+
+Program After Physical Size Inference: 
+   let fun inc x = x + 1; 
+       fun iter [r19:inf] (v190, v191) = 
+           case v190 of 
+             0 => v191
+           | _ => 
+             let val v198 = v190 - 1; 
+                 val v199 = 
+                   let region r21:0; 
+                       fun map atbot r21 [r29:inf] var20 = 
+                           case var20 of 
+                             nil => nil
+                           | :: v371 => 
+                             let val v372 = #0 v371; val v373 = #1 v371 in :: (v372 + 1, map[sat r29] v373) attop r29 end
+                   in  map[sat r19] v191
+                   end
+             in  iter[sat r19] (v198, v199)
+             end; 
+       val n = 
+         let region r57:inf, r59:inf; val v110 = $sml_commandline_args [atbot r59,atbot r57] ()
+         in  case v110 of 
+               :: v112 => 
+               case #1 v112 of 
+               nil => let val v114 = #0 v112; region r65:2 in valOf fromString[atbot r65] v114 end | _ => 1000
+             | _ => 1000
+         end; 
+       val l0 = 
+         let region r71:0; 
+             fun h atbot r71 [r75:inf] i = 
+                 case i < 1000 of true => :: (i, h[sat r75] (i + 1)) attop r75 | _ => nil
+         in  h[attop r4] 0
+         end; 
+       val r = iter[attop r4] (n, l0); 
+       val _ = 
+         let region r89:inf
+         in  print 
+             let region r91:inf; 
+                 val v180 = 
+                   toString[atbot r91] 
+                   let region r93:0; 
+                       fun foldl atbot r93 (var34, var35) = 
+                           case var35 of 
+                             nil => var34
+                           | :: v543 => 
+                             let val v544 = #0 v543; val v545 = #1 v543; val v186 = v544 + var34 in foldl (v186, v545) end
+                   in  foldl (0, r)
+                   end
+             in  v180 ^[atbot r89] "\n"
+             end
+         end
+   in  {|inc: (_,r1), iter: (_,r1), n: _, l0: _, r: _|}
+   end
+[wrote X64 code file:	MLB/RI/itermap.sml.s]
+[wrote X64 code file:	MLB/RI/base-link_objects.s]
+[wrote executable file:	itermap]

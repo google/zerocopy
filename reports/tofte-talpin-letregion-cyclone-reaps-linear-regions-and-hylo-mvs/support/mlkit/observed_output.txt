@@ -1,0 +1,158 @@
+# Raw output of the MLKit v4.7.26 probes on x86_64 Linux (Xeon 2.6 GHz), 2026-11-20.
+# CAUTION: rows labelled 'rinoatbot' WITHOUT '(fresh)' were built in the same directory
+# right after the 'ri' build and contain the same reset sites as 'ri' (object reuse);
+# they are NOT valid --disable_atbot_analysis measurements. Use the '(fresh)' rows.
+# The queue/gconly n=16000000 point was not run (n=4000000 already took 106 s).
+tailreal  ri         n=1000000   maxrss_kb=2392     wall_s=0.00   result=1000000.0
+tailreal  ri         n=4000000   maxrss_kb=2368     wall_s=0.01   result=4000000.0
+tailreal  ri         n=16000000  maxrss_kb=2368     wall_s=0.05   result=16000000.0
+tailreal  rinoatbot  n=1000000   maxrss_kb=2368     wall_s=0.00   result=1000000.0
+tailreal  rinoatbot  n=4000000   maxrss_kb=1608     wall_s=0.01   result=4000000.0
+tailreal  rinoatbot  n=16000000  maxrss_kb=1608     wall_s=0.05   result=16000000.0
+tailreal  rigc       n=1000000   maxrss_kb=2392     wall_s=0.00   result=1000000.0
+tailreal  rigc       n=4000000   maxrss_kb=2424     wall_s=0.02   result=4000000.0
+tailreal  rigc       n=16000000  maxrss_kb=2412     wall_s=0.07   result=16000000.0
+tailreal  gconly     n=1000000   maxrss_kb=2424     wall_s=0.00   result=1000000.0
+tailreal  gconly     n=4000000   maxrss_kb=1612     wall_s=0.01   result=4000000.0
+tailreal  gconly     n=16000000  maxrss_kb=1628     wall_s=0.07   result=16000000.0
+itermap   ri         n=250       maxrss_kb=5440     wall_s=0.00   result=749500
+itermap   ri         n=1000      maxrss_kb=16960    wall_s=0.02   result=1499500
+itermap   ri         n=4000      maxrss_kb=63804    wall_s=0.07   result=4499500
+itermap   rinoatbot  n=250       maxrss_kb=5480     wall_s=0.00   result=749500
+itermap   rinoatbot  n=1000      maxrss_kb=16980    wall_s=0.01   result=1499500
+itermap   rinoatbot  n=4000      maxrss_kb=64576    wall_s=0.06   result=4499500
+itermap   rigc       n=250       maxrss_kb=2332     wall_s=0.00   result=749500
+itermap   rigc       n=1000      maxrss_kb=2396     wall_s=0.01   result=1499500
+itermap   rigc       n=4000      maxrss_kb=2408     wall_s=0.05   result=4499500
+itermap   gconly     n=250       maxrss_kb=1616     wall_s=0.00   result=749500
+itermap   gconly     n=1000      maxrss_kb=1628     wall_s=0.01   result=1499500
+itermap   gconly     n=4000      maxrss_kb=1564     wall_s=0.05   result=4499500
+itercopy  ri         n=250       maxrss_kb=5404     wall_s=0.00   result=749500
+itercopy  ri         n=1000      maxrss_kb=16896    wall_s=0.02   result=1499500
+itercopy  ri         n=4000      maxrss_kb=64584    wall_s=0.10   result=4499500
+itercopy  rinoatbot  n=250       maxrss_kb=5452     wall_s=0.00   result=749500
+itercopy  rinoatbot  n=1000      maxrss_kb=17000    wall_s=0.02   result=1499500
+itercopy  rinoatbot  n=4000      maxrss_kb=64540    wall_s=0.11   result=4499500
+itercopy  rigc       n=250       maxrss_kb=2384     wall_s=0.00   result=749500
+itercopy  rigc       n=1000      maxrss_kb=2396     wall_s=0.02   result=1499500
+itercopy  rigc       n=4000      maxrss_kb=2368     wall_s=0.09   result=4499500
+itercopy  gconly     n=250       maxrss_kb=1620     wall_s=0.01   result=749500
+itercopy  gconly     n=1000      maxrss_kb=1628     wall_s=0.03   result=1499500
+itercopy  gconly     n=4000      maxrss_kb=1620     wall_s=0.14   result=4499500
+queue     ri         n=1000000   maxrss_kb=95300    wall_s=0.13   result=500000500000
+queue     ri         n=4000000   maxrss_kb=376348   wall_s=0.33   result=8000002000000
+queue     ri         n=16000000  maxrss_kb=1501516  wall_s=1.32   result=128000008000000
+queue     rinoatbot  n=1000000   maxrss_kb=95304    wall_s=0.08   result=500000500000
+queue     rinoatbot  n=4000000   maxrss_kb=377160   wall_s=0.32   result=8000002000000
+queue     rinoatbot  n=16000000  maxrss_kb=1501552  wall_s=1.32   result=128000008000000
+queue     rigc       n=1000000   maxrss_kb=111424   wall_s=0.09   result=500000500000
+queue     rigc       n=4000000   maxrss_kb=439324   wall_s=0.62   result=8000002000000
+queue     rigc       n=16000000  maxrss_kb=1750336  wall_s=1.75   result=128000008000000
+queue     gconly     n=1000000   maxrss_kb=109140   wall_s=6.37   result=500000500000
+queue     gconly     n=4000000   maxrss_kb=421724   wall_s=106.03 result=8000002000000
+queue     gconly     n=16000000  (not run: n=4000000 already took 106 s; quadratic GC scanning of a growing stack)
+closure   ri         n=1000000   maxrss_kb=199008   wall_s=0.13   result=65.0
+closure   ri         n=4000000   maxrss_kb=788864   wall_s=0.66   result=65.0
+closure   ri         n=16000000  maxrss_kb=3148120  wall_s=2.86   result=65.0
+closure   rinoatbot  n=1000000   maxrss_kb=199000   wall_s=0.24   result=65.0
+closure   rinoatbot  n=4000000   maxrss_kb=787292   wall_s=0.81   result=65.0
+closure   rinoatbot  n=16000000  maxrss_kb=3149656  wall_s=2.29   result=65.0
+closure   rigc       n=1000000   maxrss_kb=1600     wall_s=0.17   result=65.0
+closure   rigc       n=4000000   maxrss_kb=1536     wall_s=0.52   result=65.0
+closure   rigc       n=16000000  maxrss_kb=1620     wall_s=2.21   result=65.0
+closure   gconly     n=1000000   maxrss_kb=1600     wall_s=0.13   result=65.0
+closure   gconly     n=4000000   maxrss_kb=1600     wall_s=0.55   result=65.0
+closure   gconly     n=16000000  maxrss_kb=1604     wall_s=2.29   result=65.0
+tailpair  ri         n=1000000   maxrss_kb=1604     wall_s=0.00   result=918091266
+tailpair  ri         n=4000000   maxrss_kb=1608     wall_s=0.03   result=471228193
+tailpair  ri         n=16000000  maxrss_kb=1620     wall_s=0.11   result=586425007
+tailpair  rinoatbot  n=1000000   maxrss_kb=1640     wall_s=0.00   result=918091266
+tailpair  rinoatbot  n=4000000   maxrss_kb=1564     wall_s=0.02   result=471228193
+tailpair  rinoatbot  n=16000000  maxrss_kb=1612     wall_s=0.11   result=586425007
+tailpair  rigc       n=1000000   maxrss_kb=1612     wall_s=0.01   result=918091266
+tailpair  rigc       n=4000000   maxrss_kb=1612     wall_s=0.04   result=471228193
+tailpair  rigc       n=16000000  maxrss_kb=1640     wall_s=0.16   result=586425007
+tailpair  gconly     n=1000000   maxrss_kb=1620     wall_s=0.01   result=918091266
+tailpair  gconly     n=4000000   maxrss_kb=1564     wall_s=0.06   result=471228193
+tailpair  gconly     n=16000000  maxrss_kb=1584     wall_s=0.17   result=586425007
+tailstr   ri         n=1000000   maxrss_kb=1564     wall_s=0.11   result=87654321
+tailstr   ri         n=4000000   maxrss_kb=1600     wall_s=0.52   result=87654321
+tailstr   ri         n=16000000  maxrss_kb=1564     wall_s=1.78   result=87654321
+tailstr   rinoatbot  n=1000000   maxrss_kb=1536     wall_s=0.11   result=87654321
+tailstr   rinoatbot  n=4000000   maxrss_kb=1620     wall_s=0.46   result=87654321
+tailstr   rinoatbot  n=16000000  maxrss_kb=1640     wall_s=1.85   result=87654321
+tailstr   rigc       n=1000000   maxrss_kb=1616     wall_s=0.12   result=87654321
+tailstr   rigc       n=4000000   maxrss_kb=1640     wall_s=0.56   result=87654321
+tailstr   rigc       n=16000000  maxrss_kb=1564     wall_s=2.58   result=87654321
+tailstr   gconly     n=1000000   maxrss_kb=1572     wall_s=0.10   result=87654321
+tailstr   gconly     n=4000000   maxrss_kb=1652     wall_s=0.50   result=87654321
+tailstr   gconly     n=16000000  maxrss_kb=1564     wall_s=2.06   result=87654321
+queue2    ri         n=1000000   maxrss_kb=83792    wall_s=0.04   result=500000499900
+queue2    ri         n=4000000   maxrss_kb=330352   wall_s=0.18   result=8000001999900
+queue2    ri         n=16000000  maxrss_kb=1316428  wall_s=0.77   result=128000007999900
+queue2    rinoatbot  n=1000000   maxrss_kb=83740    wall_s=0.04   result=500000499900
+queue2    rinoatbot  n=4000000   maxrss_kb=330344   wall_s=0.18   result=8000001999900
+queue2    rinoatbot  n=16000000  maxrss_kb=1316380  wall_s=0.73   result=128000007999900
+queue2    rigc       n=1000000   maxrss_kb=135260   wall_s=0.08   result=500000499900
+queue2    rigc       n=4000000   maxrss_kb=535324   wall_s=0.34   result=8000001999900
+queue2    rigc       n=16000000  maxrss_kb=2138160  wall_s=1.79   result=128000007999900
+queue2    gconly     n=1000000   maxrss_kb=1600     wall_s=0.01   result=500000499900
+queue2    gconly     n=4000000   maxrss_kb=1608     wall_s=0.04   result=8000001999900
+queue2    gconly     n=16000000  maxrss_kb=1604     wall_s=0.20   result=128000007999900
+itermap2  ri         n=250       maxrss_kb=1564     wall_s=0.00   result=749500
+itermap2  ri         n=1000      maxrss_kb=1600     wall_s=0.01   result=1499500
+itermap2  ri         n=4000      maxrss_kb=1640     wall_s=0.04   result=4499500
+itermap2  rinoatbot  n=250       maxrss_kb=1600     wall_s=0.00   result=749500
+itermap2  rinoatbot  n=1000      maxrss_kb=1620     wall_s=0.01   result=1499500
+itermap2  rinoatbot  n=4000      maxrss_kb=1608     wall_s=0.04   result=4499500
+itermap2  rigc       n=250       maxrss_kb=1616     wall_s=0.00   result=749500
+itermap2  rigc       n=1000      maxrss_kb=1640     wall_s=0.01   result=1499500
+itermap2  rigc       n=4000      maxrss_kb=1616     wall_s=0.04   result=4499500
+itermap2  gconly     n=250       maxrss_kb=1612     wall_s=0.00   result=749500
+itermap2  gconly     n=1000      maxrss_kb=1628     wall_s=0.01   result=1499500
+itermap2  gconly     n=4000      maxrss_kb=1604     wall_s=0.05   result=4499500
+itercopy2 ri         n=250       maxrss_kb=1608     wall_s=0.00   result=749500
+itercopy2 ri         n=1000      maxrss_kb=1620     wall_s=0.02   result=1499500
+itercopy2 ri         n=4000      maxrss_kb=1620     wall_s=0.08   result=4499500
+itercopy2 rinoatbot  n=250       maxrss_kb=1620     wall_s=0.00   result=749500
+itercopy2 rinoatbot  n=1000      maxrss_kb=1632     wall_s=0.02   result=1499500
+itercopy2 rinoatbot  n=4000      maxrss_kb=1640     wall_s=0.08   result=4499500
+itercopy2 rigc       n=250       maxrss_kb=1600     wall_s=0.00   result=749500
+itercopy2 rigc       n=1000      maxrss_kb=1600     wall_s=0.02   result=1499500
+itercopy2 rigc       n=4000      maxrss_kb=1620     wall_s=0.08   result=4499500
+itercopy2 gconly     n=250       maxrss_kb=1616     wall_s=0.01   result=749500
+itercopy2 gconly     n=1000      maxrss_kb=1620     wall_s=0.03   result=1499500
+itercopy2 gconly     n=4000      maxrss_kb=1640     wall_s=0.11   result=4499500
+itermap2 rinoatbot(fresh) n=250 maxrss_kb=5468 wall_s=0.00
+itermap2 rinoatbot(fresh) n=1000 maxrss_kb=16924 wall_s=0.02
+itermap2 rinoatbot(fresh) n=4000 maxrss_kb=64576 wall_s=0.07
+itercopy2 rinoatbot(fresh) n=250 maxrss_kb=5448 wall_s=0.01
+itercopy2 rinoatbot(fresh) n=1000 maxrss_kb=16924 wall_s=0.03
+itercopy2 rinoatbot(fresh) n=4000 maxrss_kb=64616 wall_s=0.11
+tailpair rinoatbot(fresh) n=1000000 maxrss_kb=16968 wall_s=0.01
+tailpair rinoatbot(fresh) n=4000000 maxrss_kb=64596 wall_s=0.05
+tailpair rinoatbot(fresh) n=16000000 maxrss_kb=252700 wall_s=0.41
+tailstr rinoatbot(fresh) n=1000000 maxrss_kb=25436 wall_s=0.13
+tailstr rinoatbot(fresh) n=4000000 maxrss_kb=96068 wall_s=0.40
+tailstr rinoatbot(fresh) n=16000000 maxrss_kb=378652 wall_s=1.80
+queue2 rinoatbot(fresh) n=1000000 maxrss_kb=83784 wall_s=0.05
+queue2 rinoatbot(fresh) n=4000000 maxrss_kb=330324 wall_s=0.22
+queue2 rinoatbot(fresh) n=16000000 maxrss_kb=1315688 wall_s=1.16
+tailreal rinoatbot(fresh) n=1000000 maxrss_kb=10104 wall_s=0.00
+tailreal rinoatbot(fresh) n=4000000 maxrss_kb=33920 wall_s=0.02
+tailreal rinoatbot(fresh) n=16000000 maxrss_kb=128376 wall_s=0.10
+queue rinoatbot(fresh) n=1000000 maxrss_kb=126788 wall_s=0.09
+queue rinoatbot(fresh) n=4000000 maxrss_kb=502340 wall_s=0.38
+queue rinoatbot(fresh) n=16000000 maxrss_kb=2004528 wall_s=1.89
+closure rinoatbot(fresh) n=1000000 maxrss_kb=198976 wall_s=0.13
+closure rinoatbot(fresh) n=4000000 maxrss_kb=788060 wall_s=0.54
+closure rinoatbot(fresh) n=16000000 maxrss_kb=3148096 wall_s=2.62
+itermap rinoatbot(fresh) n=250 maxrss_kb=5456 wall_s=0.00
+itermap rinoatbot(fresh) n=1000 maxrss_kb=16960 wall_s=0.01
+itermap rinoatbot(fresh) n=4000 maxrss_kb=64576 wall_s=0.10
+itercopy rinoatbot(fresh) n=250 maxrss_kb=5448 wall_s=0.00
+itercopy rinoatbot(fresh) n=1000 maxrss_kb=16980 wall_s=0.03
+itercopy rinoatbot(fresh) n=4000 maxrss_kb=63808 wall_s=0.11
+queue2k(refill=1000) ri n=1000000 maxrss_kb=33860 wall_s=0.02
+queue2k(refill=1000) ri n=4000000 maxrss_kb=130636 wall_s=0.08
+queue2k(refill=1000) ri n=16000000 maxrss_kb=518484 wall_s=0.45

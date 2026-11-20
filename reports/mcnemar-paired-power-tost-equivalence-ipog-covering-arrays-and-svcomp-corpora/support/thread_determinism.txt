@@ -1,0 +1,7 @@
+# PICT thread-count determinism check (pict built from microsoft/pict @ ab76c2548f551fcb46314e58653a1bd1172f3a72)
+# host: x86_64 Linux, Xeon 2.6 GHz, 96 logical CPUs; 2026-11-20
+$ pict model_unconstrained.txt /o:2 /t:1  vs  pict model_unconstrained.txt /o:2   -> byte-identical (37 rows)
+$ pict model_unconstrained.txt /o:3 /t:1  vs  pict model_unconstrained.txt /o:3   -> byte-identical (180 rows)
+$ pict model_constrained.txt /o:2 /t:1  vs  pict model_constrained.txt /o:2   -> byte-identical (39 rows)
+$ pict model_constrained.txt /o:3 /t:1  vs  pict model_constrained.txt /o:3   -> byte-identical (159 rows)
+$ pict model_big.txt /o:4 /t:1  vs  pict model_big.txt /o:4   -> byte-identical (1812 rows)
