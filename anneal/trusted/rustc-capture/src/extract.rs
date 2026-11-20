@@ -665,6 +665,12 @@ pub fn body<'tcx>(tcx: TyCtxt<'tcx>, def: LocalDefId, body: &mir::Body<'tcx>) ->
     if body.phase != MirPhase::Runtime(RuntimePhase::PostCleanup) {
         return Err(format!("unexpected MIR phase: {:?}", body.phase));
     }
+    // The compiler records injected bodies separately from ordinary lowering,
+    // even if both reach the same runtime phase.
+    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_mir_build/src/builder/custom/mod.rs#L45-L73
+    if body.injection_phase.is_some() {
+        return Err("compiler-injected MIR is unsupported".into());
+    }
     // An error-tainted body is not compiler approval. Coroutine state and
     // rust-call tuple spreading need entry/continuation rules absent from this
     // IR. `spread_arg` passes "its individual components at the LLVM level";

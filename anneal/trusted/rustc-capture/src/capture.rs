@@ -634,6 +634,13 @@ fn collect(
         ));
     }
     verify_sysroot_only_crates(tcx, verified_sysroot, &args.target)?;
+    // The compiler's language-item table must resolve to the pinned sysroot.
+    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_hir/src/lang_items.rs#L24-L67
+    if tcx.lang_items().iter().any(|(_, def)| def.is_local()) {
+        return Err(Failure::unsupported(
+            "crate-local language items are unsupported",
+        ));
+    }
 
     // `iter_local_def_id` finishes analysis and visits all definitions,
     // including definitions created during enumeration: "Recompute the number
