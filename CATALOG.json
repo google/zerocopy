@@ -12370,6 +12370,85 @@
         "verification/lease-fencing-and-quorum-scrub"
       ]
     },
+    "certigraph-localizations-slab-buddy-freelists-and-split-points-to-raw-framing": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "CertiGraph/CertiGraph",
+            "revision": "8781550d8a116abb03ac7931f271ce03a5158a74"
+          },
+          "name": "CertiGraph mechanized Coq graph-verification and ramification library"
+        },
+        {
+          "identity": {
+            "path": "verus-mimalloc",
+            "repository": "verus-lang/verified-memory-allocator",
+            "revision": "7d120970f8d63157ae9bf3b2361192d29bc0acaa"
+          },
+          "name": "verus-mimalloc verified slab and segment memory allocator"
+        },
+        {
+          "identity": {
+            "repository": "rcore-os/buddy_system_allocator",
+            "revision": "da68b6d0bd74e539116898f21d44552417966afc"
+          },
+          "name": "buddy_system_allocator no_std Rust order-indexed heap and physical frame buddy allocator"
+        },
+        {
+          "identity": {
+            "path": "lib/Maps.v",
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert canonical positive binary radix-trie finite maps"
+        },
+        {
+          "identity": {
+            "repository": "seL4/seL4",
+            "revision": "08c7e5fddb3111ff377745c8eefb07feb5c4cfb7"
+          },
+          "name": "seL4 microkernel C implementation (CNode mapping database and untyped reset)"
+        },
+        {
+          "identity": {
+            "repository": "seL4/l4v",
+            "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e"
+          },
+          "name": "seL4 Isabelle/HOL formal specifications and invariant proofs (l4v)"
+        },
+        {
+          "identity": {
+            "repository": "proofs-rs/lean-miri",
+            "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+          },
+          "name": "lean-miri mechanized Rust operational memory and initialization mask semantics"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal MIR verification framework and Pass-1 theory boundary"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and prelude foundation"
+        }
+      ],
+      "topics": [
+        "verification/data-structures",
+        "systems/allocators",
+        "systems/os-verification",
+        "verification/separation-logic",
+        "anneal/theory",
+        "lean/mechanization"
+      ]
+    },
     "cfml-characteristic-formulae-and-prelude-dijkstra-monad-vcgen": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -30267,6 +30346,69 @@
         "agents/mcp",
         "agents/lsp-integration",
         "anneal/interactive-lsp"
+      ]
+    },
+    "intrusive-rbtree-parent-color-bitpacking-cursor-lenses-and-iris-flow-algebras": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "Amanieu/intrusive-rs",
+            "revision": "0a895642801c9a75521f93f6605c7cc707e61f73"
+          },
+          "name": "intrusive-collections (intrusive-rs) no_std Rust intrusive data-structure library"
+        },
+        {
+          "identity": {
+            "repository": "nyu-acsys/template-proofs",
+            "revision": "6444326e04577987c66776bed34d9a76ffd0df55"
+          },
+          "name": "Iris Coq formalization of flow interface cameras and search structure templates"
+        },
+        {
+          "identity": {
+            "repository": "nyu-acsys/flows-iris",
+            "revision": "8998141877c96eef2a6b8733418267cada8b196c"
+          },
+          "name": "Coq/SSReflect commutative cancellative monoids and flow graphs (flows-iris)"
+        },
+        {
+          "identity": {
+            "repository": "CertiGraph/CertiGraph",
+            "revision": "8781550d8a116abb03ac7931f271ce03a5158a74"
+          },
+          "name": "CertiGraph mechanized Coq binary-graph and localization library"
+        },
+        {
+          "identity": {
+            "repository": "proofs-rs/lean-miri",
+            "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+          },
+          "name": "lean-miri mechanized Rust pointer-provenance exposure and Tree Borrows semantics"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal MIR verification framework, PureLift lenses, and Pass-1 theory boundary"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and prelude foundation"
+        }
+      ],
+      "topics": [
+        "rust/unsafe",
+        "verification/data-structures",
+        "anneal/theory",
+        "verification/separation-logic",
+        "systems/intrusive-containers",
+        "lean/mechanization"
       ]
     },
     "investigative-journalism-boeing-mcas-toyota-ua-crowdstrike-and-knight-postmortems": {

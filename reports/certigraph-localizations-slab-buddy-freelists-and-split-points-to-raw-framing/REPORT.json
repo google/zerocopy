@@ -1,0 +1,79 @@
+{
+  "topics": [
+    "verification/data-structures",
+    "systems/allocators",
+    "systems/os-verification",
+    "verification/separation-logic",
+    "anneal/theory",
+    "lean/mechanization"
+  ],
+  "subjects": [
+    {
+      "name": "CertiGraph mechanized Coq graph-verification and ramification library",
+      "identity": {
+        "repository": "CertiGraph/CertiGraph",
+        "revision": "8781550d8a116abb03ac7931f271ce03a5158a74"
+      }
+    },
+    {
+      "name": "verus-mimalloc verified slab and segment memory allocator",
+      "identity": {
+        "repository": "verus-lang/verified-memory-allocator",
+        "revision": "7d120970f8d63157ae9bf3b2361192d29bc0acaa",
+        "path": "verus-mimalloc"
+      }
+    },
+    {
+      "name": "buddy_system_allocator no_std Rust order-indexed heap and physical frame buddy allocator",
+      "identity": {
+        "repository": "rcore-os/buddy_system_allocator",
+        "revision": "da68b6d0bd74e539116898f21d44552417966afc"
+      }
+    },
+    {
+      "name": "CompCert canonical positive binary radix-trie finite maps",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc",
+        "path": "lib/Maps.v"
+      }
+    },
+    {
+      "name": "seL4 microkernel C implementation (CNode mapping database and untyped reset)",
+      "identity": {
+        "repository": "seL4/seL4",
+        "revision": "08c7e5fddb3111ff377745c8eefb07feb5c4cfb7"
+      }
+    },
+    {
+      "name": "seL4 Isabelle/HOL formal specifications and invariant proofs (l4v)",
+      "identity": {
+        "repository": "seL4/l4v",
+        "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e"
+      }
+    },
+    {
+      "name": "lean-miri mechanized Rust operational memory and initialization mask semantics",
+      "identity": {
+        "repository": "proofs-rs/lean-miri",
+        "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+      }
+    },
+    {
+      "name": "Anneal MIR verification framework and Pass-1 theory boundary",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover and prelude foundation",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
