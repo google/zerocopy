@@ -70508,6 +70508,86 @@
         "runtimes/effect-handlers"
       ]
     },
+    "unsafecell-cell-refcell-ghostcell-and-oncecell-formal-protocols-in-first-order-separation-logic": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "ec65cd52bba13d491ff65c9d218b39753755c84a"
+          },
+          "name": "Rust core and alloc standard libraries"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3735592",
+            "repository": "rust-lang/miri",
+            "revision": "5a2649e9c3bfbada72665448bddf8b54021bec2e"
+          },
+          "name": "Miri Tree Borrows reference interpreter"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3473597",
+            "repository": "matthieu-m/ghost-cell",
+            "revision": "956df44625bda13793defc4a826431ad9ab7789c"
+          },
+          "name": "GhostCell"
+        },
+        {
+          "identity": {
+            "repository": "uazu/qcell",
+            "revision": "a37533f68fda016ffb4078fd7523be3fe2873249"
+          },
+          "name": "qcell"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3586037",
+            "repository": "verus-lang/verus",
+            "revision": "0dab219272ac2353320bd177ebb3929453b90a9e"
+          },
+          "name": "Verus"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3779031.3779086",
+            "repository": "creusot-rs/creusot",
+            "revision": "601d97891bb0bc0b569686cc946ef4980560b5d8"
+          },
+          "name": "Creusot"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3158154",
+            "publication": "Proceedings of the ACM on Programming Languages, Vol. 2, POPL 2018, Article 66"
+          },
+          "name": "RustBelt"
+        },
+        {
+          "identity": {
+            "repository": "JoJoDeveloping/tiny-iris",
+            "revision": "5b18c311e746d2ae4170b0d253b5d7d36ee5d6d9"
+          },
+          "name": "tiny-iris"
+        }
+      ],
+      "topics": [
+        "rust/memory-model",
+        "verification/separation-logic",
+        "rust/safety",
+        "verification/rust",
+        "rust/tree-borrows",
+        "rust/unsafe"
+      ]
+    },
     "untrusted-llvm-optimization-oracle-and-certificate-replay-architecture": {
       "observed_at": "2026-11-14",
       "subjects": [
