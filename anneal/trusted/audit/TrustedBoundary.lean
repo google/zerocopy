@@ -99,7 +99,7 @@ Pinned to Lean 4.34.1, commit
   `correspondence/`) directly on top of that replayed vendor kernel
   environment, checks that the 21-root `Miri.Interpreter.ExecutionMachine` cone
   and correspondence cone are free of `unsafe`, `partial`, `.vendorMiri`
-  `opaque`, and unapproved axioms, and verifies all 27 Pass 2 correspondence,
+  `opaque`, and unapproved axioms, and verifies all 30 Pass 2 correspondence,
   wiring, and canary claims plus reference-evaluator independence checks.
 
 ## Module origin partitions and authority relations
@@ -1432,7 +1432,7 @@ def verifyAndCollectLocals (env : Environment)
 `.repo (.trusted _)` modules and `Anneal.MirWp` is loaded as a `.repo .theory`
 module (whenever `requireMirWp` is `true` or any MIR/`PureLift` module is
 loaded), and that the core weakest-precondition adequacy and
-fault-characterization theorems and all 15 non-vacuity and parameter-boundary
+fault-characterization theorems and all 19 non-vacuity and parameter-boundary
 canaries in `Anneal.MirWp` prove the exact `*Claim` propositions defined in
 `Trusted.MirSemantics`. -/
 def verifyMirWpCoreTheorems (env : Environment)
@@ -1500,7 +1500,21 @@ def verifyMirWpCoreTheorems (env : Environment)
           `Anneal.MirWp.canary_negative_ub_unreachable_anneal, [negClaim]),
         (`Trusted.MirSemantics.CanaryNegativeUnsupportedUnsignedNegAnnealClaim,
           `Anneal.MirWp.canary_negative_unsupported_unsigned_neg_anneal,
-          [negClaim])] do
+          [negClaim]),
+        (`Trusted.MirSemantics.CanaryPositiveEnumExplicitReprAnnealClaim,
+          `Anneal.MirWp.canary_positive_enum_explicit_repr_anneal,
+          [posClaim]),
+        (`Trusted.MirSemantics.CanaryPositiveZstSingleEnumAnnealClaim,
+          `Anneal.MirWp.canary_positive_zst_single_enum_anneal, [posClaim]),
+        (
+       `Trusted.MirSemantics.CanaryNegativeUbEnumInvalidTagAndUninitAnnealClaim,
+          `Anneal.MirWp.canary_negative_ub_enum_invalid_tag_and_uninit_anneal,
+          [negClaim]),
+        (`Trusted.MirSemantics.CanaryCrateAndBodyVerifiedAnnealClaim,
+          `Anneal.MirWp.canary_crate_and_body_verified_anneal,
+          [`Trusted.MirSemantics.CrateTheorem,
+            `Trusted.MirSemantics.UnitTheorem,
+            `Trusted.MirSemantics.BodyVerified])] do
       requireClaimProof env locals semMod wpMod claimName none proofName
         reqConsts
 
@@ -1804,7 +1818,7 @@ def requireCorrClaimProof (env : Environment)
   requireClaimProof env corrLocals `Trusted.Correspondence
     `Anneal.MirCorrespondenceProof claimName none proofName reqConsts
 
-/-- Verify that all 27 Pass 2 correspondence, wiring, and canary (`D6`–`D10`)
+/-- Verify that all 30 Pass 2 correspondence, wiring, and canary (`D6`–`D13`)
 claims—covering top-level correspondence, fault equivalence, `deinitMovedPlace`
 wiring, codec round-trip, constructor preservation, uniqueness, simulation, and
 canaries—are present in `Trusted.Correspondence`, reference their required
@@ -1977,13 +1991,39 @@ def verifyCorrespondenceClaims (env : Environment)
           `Trusted.Correspondence.RefReachesOutcome,
           `Trusted.MirSemantics.Behavior,
           `Trusted.Correspondence.RefBehavior,
-          `Trusted.Correspondence.encodeProg])] do
+          `Trusted.Correspondence.encodeProg]),
+      (`Trusted.Correspondence.CanaryD11EnumDiscriminantAndConstOkClaim,
+       `Anneal.MirCorrespondenceProof.canary_D11_enum_discriminant_and_const_ok,
+       [`Trusted.MirSemantics.progEnumExplicitReprU8,
+         `Trusted.MirSemantics.progEnumSignedTagIsize,
+         `Trusted.MirSemantics.WellFormed,
+         `Trusted.MirSemantics.Behavior,
+         `Trusted.Correspondence.RefWellFormed,
+         `Trusted.Correspondence.RefBehavior,
+         `Trusted.Correspondence.encodeProg]),
+      (`Trusted.Correspondence.CanaryD12ZstEnumMoveAndDiscrOkClaim,
+       `Anneal.MirCorrespondenceProof.canary_D12_zst_enum_move_and_discr_ok,
+       [`Trusted.MirSemantics.progZstSingleEnumImplicitRet,
+         `Trusted.MirSemantics.progZstSingleEnumMoveAndDiscr,
+         `Trusted.MirSemantics.WellFormed,
+         `Trusted.MirSemantics.Behavior,
+         `Trusted.Correspondence.RefWellFormed,
+         `Trusted.Correspondence.RefBehavior,
+         `Trusted.Correspondence.encodeProg]),
+      (`Trusted.Correspondence.CanaryD13EnumInvalidTagAndUninitUbClaim,
+       `Anneal.MirCorrespondenceProof.canary_D13_enum_invalid_tag_and_uninit_ub,
+       [`Trusted.MirSemantics.progEnumInvalidTagConstUb,
+         `Trusted.MirSemantics.progEnumUninitDiscrUb,
+         `Trusted.MirSemantics.ReachesResult,
+         `Trusted.MirSemantics.WellFormed,
+         `Trusted.Correspondence.RefReachesOutcome,
+         `Trusted.Correspondence.encodeProg])] do
     requireCorrClaimProof env corrLocals claimName proofName reqConsts
 
 /-- Verify that the reference machine `M_ref`
 (`Trusted.Correspondence.evalRefStep` and
-`Trusted.Correspondence.initRefState`) reaches the 19 required
-`vendor/lean-miri` primitives and never references any of the 21 named
+`Trusted.Correspondence.initRefState`) reaches the 21 required
+`vendor/lean-miri` primitives and never references any of the 25 named
 `M_anneal` evaluator entry points below. This is a regression check against
 accidental fallback to `M_anneal`; human review of `trusted/correspondence/`
 remains the semantic boundary. -/
@@ -2006,6 +2046,8 @@ def verifyRefEvaluatorIndependence (env : Environment)
       `Miri.Interpreter.placeWriteLocalImmediate,
       `Miri.Interpreter.evalRvalueIntoPlace,
       `Miri.Interpreter.runRvalue,
+      `Miri.Interpreter.Discriminant.readDiscriminant,
+      `Miri.Interpreter.Discriminant.discriminantForVariant,
       `Miri.Interpreter.Step.evalStatement,
       `Miri.Interpreter.Frame.storageLive,
       `Miri.Interpreter.Frame.storageDead,
@@ -2016,6 +2058,10 @@ def verifyRefEvaluatorIndependence (env : Environment)
       fail (s!"reference evaluator cone is missing required Miri " ++
         s!"primitive {reqMiri}")
   for forbiddenAnneal in [
+      `Trusted.MirSemantics.enumAdmitted,
+      `Trusted.MirSemantics.tagBitsToDiscrBits,
+      `Trusted.MirSemantics.isZstEnumTy,
+      `Trusted.MirSemantics.findDiscrVariant?,
       `Trusted.MirSemantics.isSupportedScalarOrUnitTy,
       `Trusted.MirSemantics.liveUninitSlot,
       `Trusted.MirSemantics.isPrimitiveReadableTy,
@@ -2155,7 +2201,7 @@ def replayCorrAndVendor (sysrootStr : String)
   return (miriReplayed, corrReplayed)
 
 /-- Verify the 21-root `Miri.Interpreter.ExecutionMachine` cone and—when
-Pass 2 correspondence modules are present—all 27 correspondence claims,
+Pass 2 correspondence modules are present—all 30 correspondence claims,
 reference-evaluator independence, and the correspondence dependency cone in a
 dedicated scope. -/
 def verifyCorrConesAndClaims

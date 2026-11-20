@@ -43,7 +43,7 @@ and Day-1 non-vacuity canaries over `Trusted.MirAst` and
    wpFaultProg`).
 2. **Width-Parametric Bitvector and Scalar Adequacy:** Exact modular
    characterization and idempotence of `truncateBits`, totality and
-   well-formedness of `truncateScalar`, and all 15 Pass 1 non-vacuity and
+   well-formedness of `truncateScalar`, and all 19 Pass 1 non-vacuity and
    parameter-boundary canaries.
 -/
 
@@ -979,5 +979,164 @@ theorem canary_negative_unsupported_unsigned_neg_anneal :
     CanaryNegativeUnsupportedUnsignedNegAnnealClaim :=
   negativeCanary_of_execFault (fuel := 1)
     (fun h => FaultKind.noConfusion h) rfl
+
+/-- Explicit-repr fieldless enum positive canary: `#[repr(u8)]` non-index tag
+decoding + `u8` `Rvalue.discriminant` and signed `i8` -> `isize` sign-extended
+tag decoding. -/
+theorem canary_positive_enum_explicit_repr_anneal :
+    CanaryPositiveEnumExplicitReprAnnealClaim :=
+  ⟨positiveCanary_of_exec (fuel := 5) rfl,
+   positiveCanary_of_exec (fuel := 5) rfl⟩
+
+/-- Single-variant inhabited ZST enum positive canary: implicit return without
+writing `_0`, non-deinitializing `Operand.move`, `ConstLit.zeroSized`, and
+`Rvalue.discriminant`. -/
+theorem canary_positive_zst_single_enum_anneal :
+    CanaryPositiveZstSingleEnumAnnealClaim :=
+  ⟨positiveCanary_of_exec (fuel := 1) rfl,
+   positiveCanary_of_exec (fuel := 10) rfl⟩
+
+/-- Fieldless enum negative UB canary: invalid constant scalar tag `1` on
+`ReprU8 { A = 10, B = 20 }` and reading `Rvalue.discriminant` from an
+uninitialized scalar-tagged enum local both reach `.fault .undefined`. -/
+theorem canary_negative_ub_enum_invalid_tag_and_uninit_anneal :
+    CanaryNegativeUbEnumInvalidTagAndUninitAnnealClaim :=
+  ⟨negativeCanary_of_execFault (fuel := 2)
+     (fun h => FaultKind.noConfusion h) rfl,
+   negativeCanary_of_execFault (fuel := 2)
+     (fun h => FaultKind.noConfusion h) rfl⟩
+
+/-- Crate/unit/body verification canary exercising positive `CrateTheorem` and
+`UnitTheorem` acceptance, safe vs. `unsafe` contract gating (`isUnsafe`),
+`MirTy.never` static-admission non-vacuity, `p.bodies[defId]` lookup binding in
+`BodyVerified`, empty-`bodies` / out-of-bounds `entryDefId` / duplicate
+`identity` rejection, non-`BodyVerified` body rejection inside a crate, false
+`specs.property` rejection, and `.crate` vs. `.unit` scope mismatch rejection.
+-/
+theorem canary_crate_and_body_verified_anneal :
+    CanaryCrateAndBodyVerifiedAnnealClaim := by
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, rfl⟩
+    intro defId body hGet
+    cases defId with
+    | zero =>
+      injection hGet with hBody; subst hBody
+      refine ⟨rfl, rfl, fun args hArgs _ => ?_⟩
+      cases args with
+      | nil =>
+        refine (positiveCanary_of_exec (fuel := 1) (expectedRet := .unit) ?_).1
+        rfl
+      | cons _ _ => exact Bool.noConfusion hArgs
+    | succ defId =>
+      cases defId with
+      | zero =>
+        injection hGet with hBody; subst hBody
+        refine ⟨rfl, rfl, fun args _ hSafe => ?_⟩
+        have hEq : args = [.bool true] := hSafe rfl
+        subst hEq
+        refine (positiveCanary_of_exec (fuel := 3)
+          (expectedRet := u32Val 42) ?_).1
+        rfl
+      | succ defId =>
+        cases defId with
+        | zero =>
+          injection hGet with hBody; subst hBody
+          refine ⟨rfl, rfl, fun args hArgs _ => ?_⟩
+          cases args with
+          | nil => exact Bool.noConfusion hArgs
+          | cons v rest =>
+            have hCheck : checkVal v .never = true := by
+              revert hArgs
+              change (checkVal v .never && checkArgsMatch rest []) = true → _
+              cases checkVal v .never <;> intro h <;>
+                first | rfl | exact Bool.noConfusion h
+            cases v with
+            | scalar sv =>
+              revert hCheck
+              dsimp [checkVal, Val.ty?, MirTy.beq]
+              cases sv.wf <;> intro h <;> exact Bool.noConfusion h
+            | ptr _ | bool _ | unit | tuple _ | bytes _ =>
+              exact Bool.noConfusion hCheck
+            | enumVal ety idx =>
+              revert hCheck
+              dsimp [checkVal, Val.ty?, MirTy.beq]
+              cases enumAdmitted ety <;>
+                cases Nat.blt idx ety.discriminants.length <;>
+                intro h <;> exact Bool.noConfusion h
+        | succ _ =>
+          dsimp [canaryValidCrate, Trusted.MirSemantics.getElem?] at hGet
+          cases hGet
+  · refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, rfl⟩
+    intro defId body hGet
+    cases defId with
+    | zero =>
+      injection hGet with hBody; subst hBody
+      refine ⟨rfl, rfl, fun args hArgs _ => ?_⟩
+      cases args with
+      | nil =>
+        refine (positiveCanary_of_exec (fuel := 1) (expectedRet := .unit) ?_).1
+        rfl
+      | cons _ _ => exact Bool.noConfusion hArgs
+    | succ _ =>
+      dsimp [Trusted.MirSemantics.getElem?] at hGet
+      cases hGet
+  · intro hVer
+    have hWf := hVer.2.2 [.bool false] rfl (fun h => Bool.noConfusion h)
+    have hNeg : NegativeCanaryClaim
+        (entryProgForBody {
+          pointerWidthBits := 64
+          mirProfileVersion := 1
+          bodies := [canaryUnsafeGuardedBody false]
+        } 0)
+        { args := [.bool false] } .undefined .unsupported :=
+      negativeCanary_of_execFault (fuel := 2)
+        (fun h => FaultKind.noConfusion h) rfl
+    exact hNeg.2.2 hWf
+  · intro hVer
+    exact Bool.noConfusion hVer.2.1
+  · intro hVer
+    have hEq : canarySafeUnitBody = canaryUnsafeGuardedBody false := by
+      injection hVer.1
+    have hArg : (canarySafeUnitBody).argumentCount =
+        (canaryUnsafeGuardedBody false).argumentCount :=
+      congrArg Body.argumentCount hEq
+    exact Nat.noConfusion hArg
+  · intro hVer
+    have hEq : canaryUnsafeGuardedBody false = canaryNeverParamBody false := by
+      injection hVer.1
+    have hLoc : (canaryUnsafeGuardedBody false).locals =
+        (canaryNeverParamBody false).locals :=
+      congrArg Body.locals hEq
+    injection hLoc with hHead
+    exact MirTy.noConfusion hHead
+  · intro hCrate
+    exact Bool.noConfusion hCrate.2.2.2.1
+  · intro hUnit
+    exact Bool.noConfusion hUnit.2.2.2.2.1
+  · intro hCrate
+    exact Bool.noConfusion hCrate.2.2.2.2.2.1
+  · intro hCrate
+    have hVer :=
+      hCrate.2.2.2.2.2.2.1 1 (canaryUnsafeGuardedBody false) rfl
+    have hWf := hVer.2.2 [.bool false] rfl (fun h => Bool.noConfusion h)
+    have hNeg : NegativeCanaryClaim
+        (entryProgForBody {
+          scope := .crate
+          pointerWidthBits := 64
+          mirProfileVersion := 1
+          bodies := [canarySafeUnitBody, canaryUnsafeGuardedBody false]
+        } 1)
+        { args := [.bool false] } .undefined .unsupported :=
+      negativeCanary_of_execFault (fuel := 2)
+        (fun h => FaultKind.noConfusion h) rfl
+    exact hNeg.2.2 hWf
+  · intro hCrate
+    exact hCrate.2.2.2.2.2.2.2
+  · intro hUnit
+    exact hUnit.2.2.2.2.2.2.2
+  · intro hCrate
+    exact VerificationScope.noConfusion hCrate.1
+  · intro hUnit
+    exact VerificationScope.noConfusion hUnit.1
 
 end Anneal.MirWp
