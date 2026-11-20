@@ -1,0 +1,4 @@
+per_buffer_size (bytes of planner scratch per buffer): 40
+TFLM n=250  plan_ms=0.43  arena=42385057  LOAD=39439554  ratio=1.0747
+TFLM n=1000  plan_ms=6.59  arena=151742078  LOAD=141730354  ratio=1.0706
+TFLM n=4000  plan_ms=112.44  arena=577570958  LOAD=547450433  ratio=1.0550

@@ -1,0 +1,5 @@
+pathogenic_only 420 23 {('LP', 'P'): 19, ('P', 'LP'): 2, ('VUS', 'LP'): 2}
+benign_only 80 8 {('LB', 'B'): 6, ('VUS', 'LB'): 2}
+mixed 33101 28319 {('VUS', 'B'): 16925, ('VUS', 'P'): 7004, ('VUS', 'LP'): 2376, ('VUS', 'LB'): 1788, ('LB', 'VUS'): 56, ('B', 'LB'): 53, ('P', 'LP'): 43, ('LP', 'VUS'): 27, ('LP', 'P'): 21, ('LB', 'B'): 18, ('LB', 'LP'): 3, ('B', 'VUS'): 3, ('P', 'VUS'): 2}
+mixed where both Richards sides fire (contradiction->VUS): 31108
+  of which points also VUS: 3022

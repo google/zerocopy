@@ -1,0 +1,9 @@
+sizeof(struct iovec)=16
+IOV_MAX=1024
+sizeof(absl::Cord)=16
+sizeof(CordRep)=16
+sizeof(CordRepSubstring)=32
+sizeof(CordRepExternal)=32
+CordRepBtree::kMaxCapacity=6
+sizeof(CordRepBtree)=64
+kMaxInline=15 kMaxBytesToCopy=511

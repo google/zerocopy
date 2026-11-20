@@ -1,0 +1,19 @@
+##fileformat=VCFv4.2
+##FILTER=<ID=PASS,Description="All filters passed">
+##contig=<ID=chrP,length=921>
+##INFO=<ID=CASE,Number=1,Type=String,Description="Probe case label">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##INFO=<ID=OLD_VARIANT,Number=.,Type=String,Description="Original chr:pos:ref:alt encoding">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	S
+chrP	62	.	GA	G	50	PASS	CASE=A;OLD_VARIANT=chrP:67:AA/A	GT	0/1
+chrP	152	.	T	TCA	50	PASS	CASE=B;OLD_VARIANT=chrP:160:A/ACA	GT	1/1
+chrP	245	.	G	A	50	PASS	CASE=C	GT	1/1
+chrP	246	.	C	T	50	PASS	CASE=C	GT	1/1
+chrP	331	.	CGT	C	50	PASS	CASE=D	GT	1/1
+chrP	334	.	A	T	50	PASS	CASE=D	GT	1/1
+chrP	422	.	G	C	50	PASS	CASE=E	GT	1/1
+chrP	508	.	CA	C	50	PASS	CASE=F;OLD_VARIANT=chrP:511:AA/A	GT	1/1
+chrP	509	.	A	G	50	PASS	CASE=F	GT	1/1
+chrP	599	.	T	A	50	PASS	CASE=G	GT	0/1
+chrP	772	.	C	G	50	PASS	CASE=I	GT	0/1
+chrP	858	.	C	G	50	PASS	CASE=J	GT	0/1

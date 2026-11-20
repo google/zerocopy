@@ -1,0 +1,195 @@
+{
+  "topics": [
+    "domains/clinical-variant-calling-benchmarks",
+    "domains/clinical-variant-calling-benchmarks/giab-truth-sets",
+    "domains/clinical-variant-calling-benchmarks/stratification",
+    "domains/variant-classification-rule-systems",
+    "domains/variant-classification-rule-systems/acmg-amp-bayesian-points",
+    "verification/variant-representation-normalization",
+    "verification/variant-representation-normalization/hgvs-3-prime-rule",
+    "tooling/haplotype-aware-call-comparison",
+    "tooling/haplotype-aware-call-comparison/vcfeval-path-complexity"
+  ],
+  "subjects": [
+    {
+      "name": "hap.py germline benchmarking tool",
+      "identity": {
+        "repository": "Illumina/hap.py",
+        "revision": "84011695b2ff2406c16a335106db6831fb67fdfe"
+      }
+    },
+    {
+      "name": "RTG Tools (vcfeval) source",
+      "identity": {
+        "repository": "RealTimeGenomics/rtg-tools",
+        "revision": "f72c7991210776631b2ee36b8038a64b45deb6da",
+        "version": "3.13"
+      }
+    },
+    {
+      "name": "RTG Tools 3.13 linux-x64 release archive (executed)",
+      "identity": {
+        "artifact": "rtg-tools-3.13-linux-x64.zip",
+        "url": "https://github.com/RealTimeGenomics/rtg-tools/releases/download/3.13/rtg-tools-3.13-linux-x64.zip",
+        "sha256": "b00b6c80bad520f446b1ee2a5070aced45496fd4771bb31f3c63dfa128215d26"
+      }
+    },
+    {
+      "name": "GA4GH benchmarking standards and reference-implementation documents",
+      "identity": {
+        "repository": "ga4gh/benchmarking-tools",
+        "revision": "e07e6ca9dc372d7b61148ecd0677f7da7cce53a4"
+      }
+    },
+    {
+      "name": "GIAB genome stratifications v3.1 scripts and manifests",
+      "identity": {
+        "repository": "genome-in-a-bottle/genome-stratifications",
+        "revision": "badb7b3cb77acc80a888e056a6bfe5e957e1d3fa"
+      }
+    },
+    {
+      "name": "DeepVariant",
+      "identity": {
+        "repository": "google/deepvariant",
+        "revision": "45f2627504c59785ea2b88d0256a2ec347bce7b4"
+      }
+    },
+    {
+      "name": "vt (normalize), built from source and executed",
+      "identity": {
+        "repository": "atks/vt",
+        "revision": "c6bd1591a23a1d116d52834a627c00bbf7ed4a64"
+      }
+    },
+    {
+      "name": "HTSlib at the vt lib/htslib submodule pin (build dependency)",
+      "identity": {
+        "repository": "samtools/htslib",
+        "revision": "5b684ce625d772dc558c68fd360c8af3ac155f7e"
+      }
+    },
+    {
+      "name": "htscodecs at the HTSlib submodule pin (build dependency)",
+      "identity": {
+        "repository": "jkbonfield/htscodecs",
+        "revision": "d7e357946ead219b81cc1becbe0de8a99d96ca84"
+      }
+    },
+    {
+      "name": "hgvs Python package (normalizer)",
+      "identity": {
+        "repository": "biocommons/hgvs",
+        "revision": "79b9c2982394bd56b6c143940acdfe7ced432bfb"
+      }
+    },
+    {
+      "name": "HGVS Nomenclature recommendations (website source)",
+      "identity": {
+        "repository": "HGVSnomenclature/hgvs-nomenclature",
+        "revision": "3aee3e9c2d248de3984f150dbdc640920e16eca0"
+      }
+    },
+    {
+      "name": "VCF specification sources (v4.3, v4.5)",
+      "identity": {
+        "repository": "samtools/hts-specs",
+        "revision": "510c107ba89aa13113818c9e4fa3071283cb7f7b"
+      }
+    },
+    {
+      "name": "InterVar ACMG/AMP criteria engine",
+      "identity": {
+        "repository": "WGLab/InterVar",
+        "revision": "4801682d37982bb3e99b50392790878a568b42cd",
+        "version": "2.2.2"
+      }
+    },
+    {
+      "name": "ACMG/AMP sequence-variant interpretation guideline (Richards et al. 2015)",
+      "identity": {
+        "doi": "10.1038/gim.2015.30"
+      }
+    },
+    {
+      "name": "Bayesian formulation of ACMG/AMP guidelines (Tavtigian et al. 2018)",
+      "identity": {
+        "doi": "10.1038/gim.2017.210"
+      }
+    },
+    {
+      "name": "Point system for ACMG/AMP guidelines (Tavtigian et al. 2020)",
+      "identity": {
+        "doi": "10.1002/humu.24088"
+      }
+    },
+    {
+      "name": "Interlaboratory ACMG/AMP pilot (Amendola et al. 2016)",
+      "identity": {
+        "doi": "10.1016/j.ajhg.2016.03.024"
+      }
+    },
+    {
+      "name": "GA4GH benchmarking best practices (Krusche et al. 2019)",
+      "identity": {
+        "doi": "10.1038/s41587-019-0054-x"
+      }
+    },
+    {
+      "name": "GIAB v3.3 small-variant benchmarks (Zook et al. 2019)",
+      "identity": {
+        "doi": "10.1038/s41587-019-0074-6"
+      }
+    },
+    {
+      "name": "GIAB v4.2.1 small-variant benchmarks (Wagner et al. 2022)",
+      "identity": {
+        "doi": "10.1016/j.xgen.2022.100128"
+      }
+    },
+    {
+      "name": "GIAB pilot integration (Zook et al. 2014)",
+      "identity": {
+        "doi": "10.1038/nbt.2835"
+      }
+    },
+    {
+      "name": "vcfeval algorithm preprint (Cleary et al. 2015)",
+      "identity": {
+        "doi": "10.1101/023754"
+      }
+    },
+    {
+      "name": "Variant normalization definition (Tan, Abecasis and Kang 2015)",
+      "identity": {
+        "doi": "10.1093/bioinformatics/btv112"
+      }
+    },
+    {
+      "name": "HGVS annotation discordance study (Yen et al. 2017)",
+      "identity": {
+        "doi": "10.1186/s13073-016-0396-7"
+      }
+    },
+    {
+      "name": "hgvs package 2018 update (Wang et al. 2018)",
+      "identity": {
+        "doi": "10.1002/humu.23615"
+      }
+    },
+    {
+      "name": "ClinVar aggregation (Landrum et al. 2018)",
+      "identity": {
+        "doi": "10.1093/nar/gkx1153"
+      }
+    },
+    {
+      "name": "ClinVar review status documentation page",
+      "identity": {
+        "url": "https://www.ncbi.nlm.nih.gov/clinvar/docs/review_status/",
+        "accessed": "2026-11-20"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

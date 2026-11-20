@@ -1,0 +1,1 @@
+fork-join          n=2000 tasks=6  single-schedule TFLM plan invalid under parallel execution: 1628/2000 | OPT_par/OPT_seq mean 1.5304 max 4.1398 | OPT_par==MWC 2000/2000  OPT_par/MWC mean 1.0000 max 1.0000 | parallel conflict graph not a cograph (has induced P4): 210/2000

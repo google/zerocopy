@@ -1,0 +1,4 @@
+random-intervals   n=2000  OPT==LOAD 2000/2000  OPT/LOAD mean 1.0000 max 1.0000 | TFLM==OPT 1663  TFLM/OPT mean 1.0158 max 1.4040 | BFD==OPT 1666  BFD/OPT mean 1.0155 max 1.4040 | BFS==OPT 830  BFS/OPT mean 1.0861 max 1.6159 | TFLM self-overlap 0
+laminar            n=2000  OPT==LOAD 2000/2000  OPT/LOAD mean 1.0000 max 1.0000 | TFLM==OPT 1822  TFLM/OPT mean 1.0052 max 1.2544 | BFD==OPT 1826  BFD/OPT mean 1.0049 max 1.2544 | BFS==OPT 1280  BFS/OPT mean 1.0566 max 1.6387 | TFLM self-overlap 0
+chain+skip         n=2000  OPT==LOAD 2000/2000  OPT/LOAD mean 1.0000 max 1.0000 | TFLM==OPT 1467  TFLM/OPT mean 1.0407 max 1.5217 | BFD==OPT 1479  BFD/OPT mean 1.0398 max 1.5217 | BFS==OPT 395  BFS/OPT mean 1.1570 max 1.7477 | TFLM self-overlap 0
+fork-join          n=2000 tasks=6  single-schedule TFLM plan invalid under parallel execution: 1628/2000 | OPT_par/OPT_seq mean 1.5304 max 4.1398 | OPT_par==MWC 2000/2000  OPT_par/MWC mean 1.0000 max 1.0000

@@ -1,0 +1,8 @@
+size_of::<Bytes>()=32
+size_of::<Chain<Bytes,Bytes>>()=64
+size_of::<Chain<Chain<Bytes,Bytes>,Bytes>>()=96
+size_of::<IoSlice>()=16
+size_of::<&[u8]>()=16
+copy_to_bytes(512KiB) within first segment: 0.085 us/op, result aliases source in 2000/2000 runs
+copy_to_bytes(1MiB) spanning boundary: 67.333 us/op, result aliases source in 0/2000 runs
+chunks_vectored filled 2 IoSlice entries (lens [1048576, 1048576])

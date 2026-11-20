@@ -31456,6 +31456,201 @@
         "verification/aliasing-tokens"
       ]
     },
+    "giab-truth-sets-hap-py-vcfeval-stratified-benchmarking-deepvariant-acmg-amp-criteria-and-vt-variant-normalization": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "Illumina/hap.py",
+            "revision": "84011695b2ff2406c16a335106db6831fb67fdfe"
+          },
+          "name": "hap.py germline benchmarking tool"
+        },
+        {
+          "identity": {
+            "repository": "RealTimeGenomics/rtg-tools",
+            "revision": "f72c7991210776631b2ee36b8038a64b45deb6da",
+            "version": "3.13"
+          },
+          "name": "RTG Tools (vcfeval) source"
+        },
+        {
+          "identity": {
+            "artifact": "rtg-tools-3.13-linux-x64.zip",
+            "sha256": "b00b6c80bad520f446b1ee2a5070aced45496fd4771bb31f3c63dfa128215d26",
+            "url": "https://github.com/RealTimeGenomics/rtg-tools/releases/download/3.13/rtg-tools-3.13-linux-x64.zip"
+          },
+          "name": "RTG Tools 3.13 linux-x64 release archive (executed)"
+        },
+        {
+          "identity": {
+            "repository": "ga4gh/benchmarking-tools",
+            "revision": "e07e6ca9dc372d7b61148ecd0677f7da7cce53a4"
+          },
+          "name": "GA4GH benchmarking standards and reference-implementation documents"
+        },
+        {
+          "identity": {
+            "repository": "genome-in-a-bottle/genome-stratifications",
+            "revision": "badb7b3cb77acc80a888e056a6bfe5e957e1d3fa"
+          },
+          "name": "GIAB genome stratifications v3.1 scripts and manifests"
+        },
+        {
+          "identity": {
+            "repository": "google/deepvariant",
+            "revision": "45f2627504c59785ea2b88d0256a2ec347bce7b4"
+          },
+          "name": "DeepVariant"
+        },
+        {
+          "identity": {
+            "repository": "atks/vt",
+            "revision": "c6bd1591a23a1d116d52834a627c00bbf7ed4a64"
+          },
+          "name": "vt (normalize), built from source and executed"
+        },
+        {
+          "identity": {
+            "repository": "samtools/htslib",
+            "revision": "5b684ce625d772dc558c68fd360c8af3ac155f7e"
+          },
+          "name": "HTSlib at the vt lib/htslib submodule pin (build dependency)"
+        },
+        {
+          "identity": {
+            "repository": "jkbonfield/htscodecs",
+            "revision": "d7e357946ead219b81cc1becbe0de8a99d96ca84"
+          },
+          "name": "htscodecs at the HTSlib submodule pin (build dependency)"
+        },
+        {
+          "identity": {
+            "repository": "biocommons/hgvs",
+            "revision": "79b9c2982394bd56b6c143940acdfe7ced432bfb"
+          },
+          "name": "hgvs Python package (normalizer)"
+        },
+        {
+          "identity": {
+            "repository": "HGVSnomenclature/hgvs-nomenclature",
+            "revision": "3aee3e9c2d248de3984f150dbdc640920e16eca0"
+          },
+          "name": "HGVS Nomenclature recommendations (website source)"
+        },
+        {
+          "identity": {
+            "repository": "samtools/hts-specs",
+            "revision": "510c107ba89aa13113818c9e4fa3071283cb7f7b"
+          },
+          "name": "VCF specification sources (v4.3, v4.5)"
+        },
+        {
+          "identity": {
+            "repository": "WGLab/InterVar",
+            "revision": "4801682d37982bb3e99b50392790878a568b42cd",
+            "version": "2.2.2"
+          },
+          "name": "InterVar ACMG/AMP criteria engine"
+        },
+        {
+          "identity": {
+            "doi": "10.1038/gim.2015.30"
+          },
+          "name": "ACMG/AMP sequence-variant interpretation guideline (Richards et al. 2015)"
+        },
+        {
+          "identity": {
+            "doi": "10.1038/gim.2017.210"
+          },
+          "name": "Bayesian formulation of ACMG/AMP guidelines (Tavtigian et al. 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1002/humu.24088"
+          },
+          "name": "Point system for ACMG/AMP guidelines (Tavtigian et al. 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.ajhg.2016.03.024"
+          },
+          "name": "Interlaboratory ACMG/AMP pilot (Amendola et al. 2016)"
+        },
+        {
+          "identity": {
+            "doi": "10.1038/s41587-019-0054-x"
+          },
+          "name": "GA4GH benchmarking best practices (Krusche et al. 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1038/s41587-019-0074-6"
+          },
+          "name": "GIAB v3.3 small-variant benchmarks (Zook et al. 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.xgen.2022.100128"
+          },
+          "name": "GIAB v4.2.1 small-variant benchmarks (Wagner et al. 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1038/nbt.2835"
+          },
+          "name": "GIAB pilot integration (Zook et al. 2014)"
+        },
+        {
+          "identity": {
+            "doi": "10.1101/023754"
+          },
+          "name": "vcfeval algorithm preprint (Cleary et al. 2015)"
+        },
+        {
+          "identity": {
+            "doi": "10.1093/bioinformatics/btv112"
+          },
+          "name": "Variant normalization definition (Tan, Abecasis and Kang 2015)"
+        },
+        {
+          "identity": {
+            "doi": "10.1186/s13073-016-0396-7"
+          },
+          "name": "HGVS annotation discordance study (Yen et al. 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1002/humu.23615"
+          },
+          "name": "hgvs package 2018 update (Wang et al. 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1093/nar/gkx1153"
+          },
+          "name": "ClinVar aggregation (Landrum et al. 2018)"
+        },
+        {
+          "identity": {
+            "accessed": "2026-11-20",
+            "url": "https://www.ncbi.nlm.nih.gov/clinvar/docs/review_status/"
+          },
+          "name": "ClinVar review status documentation page"
+        }
+      ],
+      "topics": [
+        "domains/clinical-variant-calling-benchmarks",
+        "domains/clinical-variant-calling-benchmarks/giab-truth-sets",
+        "domains/clinical-variant-calling-benchmarks/stratification",
+        "domains/variant-classification-rule-systems",
+        "domains/variant-classification-rule-systems/acmg-amp-bayesian-points",
+        "verification/variant-representation-normalization",
+        "verification/variant-representation-normalization/hgvs-3-prime-rule",
+        "tooling/haplotype-aware-call-comparison",
+        "tooling/haplotype-aware-call-comparison/vcfeval-path-complexity"
+      ]
+    },
     "gkat-bigkat-coalgebraic-automata-and-decidable-cfg-alignment": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -90234,6 +90429,116 @@
         "rustc/codegen",
         "verification",
         "verification/compiler-verification"
+      ]
+    },
+    "xla-heap-simulator-tflite-greedy-arena-opt-versus-load-dynamic-storage-allocation-sdf-buffer-merging-and-scatter-gather-ropes": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "openxla/xla",
+            "revision": "47ba51efa78975214e9f94d59fc8b3c64f096dcb"
+          },
+          "name": "XLA heap simulator, buffer assignment and HLO live ranges"
+        },
+        {
+          "identity": {
+            "repository": "tensorflow/tensorflow",
+            "revision": "05748786aaad511c586be4ddcf67e6597ec08688"
+          },
+          "name": "TensorFlow Lite arena planner, simple memory arena and GPU delegate memory management"
+        },
+        {
+          "identity": {
+            "repository": "tensorflow/tflite-micro",
+            "revision": "38a8f0f87302817ddfa99e6a995c7b71ef7118fe"
+          },
+          "name": "TensorFlow Lite Micro greedy memory planner"
+        },
+        {
+          "identity": {
+            "repository": "iree-org/iree",
+            "revision": "318812edbe0bc0d937c15609e8d789c211343668"
+          },
+          "name": "IREE stream dialect slice packing and allocation scheduling"
+        },
+        {
+          "identity": {
+            "repository": "apache/tvm",
+            "revision": "05ac00e2efb65778ad9c8a8f04c5f8fa7b296cd6"
+          },
+          "name": "Apache TVM Relax static block memory planning"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "b33fc9379feaefa311ce3ad406fe472602659299"
+          },
+          "name": "MLIR One-Shot Bufferize analysis"
+        },
+        {
+          "identity": {
+            "repository": "pytorch/pytorch",
+            "revision": "a6ec1fa444f247690030fe73106156341c95fcc3"
+          },
+          "name": "PyTorch Inductor pooled memory planning"
+        },
+        {
+          "identity": {
+            "repository": "google/minimalloc",
+            "revision": "9f5cf810fec4494df473c23cffd0567989e81b69"
+          },
+          "name": "MiniMalloc static memory allocation solver"
+        },
+        {
+          "identity": {
+            "repository": "INRIA/velus",
+            "revision": "27ba860c2624ba232816591290c6c119b9ead88a"
+          },
+          "name": "Velus verified Lustre compiler (Obc intermediate language)"
+        },
+        {
+          "identity": {
+            "repository": "tokio-rs/bytes",
+            "revision": "67edc2b999d669eb4f471aff576e213dbcb58871",
+            "version": "1.12.2"
+          },
+          "name": "bytes crate (Bytes and Chain)"
+        },
+        {
+          "identity": {
+            "repository": "abseil/abseil-cpp",
+            "revision": "14af6bae5308dd9f690e74ba348786e50f069c47"
+          },
+          "name": "Abseil Cord"
+        },
+        {
+          "identity": {
+            "doi": "10.1137/S0097539703423941",
+            "venue": "SIAM Journal on Computing 33(3):632-646, 2004"
+          },
+          "name": "OPT Versus LOAD in Dynamic Storage Allocation (Buchsbaum, Karloff, Kenyon, Reingold, Thorup)"
+        },
+        {
+          "identity": {
+            "arxiv": "2001.03288",
+            "version": "v3"
+          },
+          "name": "Efficient Memory Management for Deep Neural Net Inference (Pisarchyk, Lee)"
+        },
+        {
+          "identity": {
+            "arxiv": "2210.12924",
+            "version": "v2"
+          },
+          "name": "OLLA: Optimizing the Lifetime and Location of Arrays (Steiner, Elhoushi, Kahn, Hegarty)"
+        }
+      ],
+      "topics": [
+        "compilers/static-buffer-offset-planning",
+        "verification/dynamic-storage-allocation-approximation-bounds",
+        "systems/synchronous-dataflow-buffer-sharing",
+        "runtimes/multi-segment-reference-representations"
       ]
     },
     "zero-knowledge-proof-checking-verifiable-ml-and-conformal-assurance": {

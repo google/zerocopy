@@ -1,0 +1,10 @@
+Host: Linux x86-64, 96 vCPU Intel Xeon @ 2.60GHz; make -j16; /usr/bin/time -v bash build_vt.sh $OUT
+43402e82704b64e6e8ff5fa7b040ba9d06715697334d0fcff0ce758f4338c9f8  vt.tgz
+101c69b360b40f6f910fe2d9a6fffd4639d6bfe9ecb29ffd5762b4b071c29a06  hts.tgz
+80997c8381ffcb104270ef7f441995944987734b2047a241d5a61733cdcc5c66  codecs.tgz
+vt binary size (bytes): 7126008
+	User time (seconds): 287.41
+	System time (seconds): 13.71
+	Percent of CPU this job got: 1035%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:29.07
+	Maximum resident set size (kbytes): 231736

@@ -1,0 +1,155 @@
+{
+ "4": {
+  "rc": 0,
+  "wall_s": 0.89,
+  "max_rss_kb": 208668,
+  "max_path_complexity": 144,
+  "decisions": {
+   "truth:TP": 4,
+   "query:TP": 4
+  },
+  "too_complex_warnings": 0
+ },
+ "6": {
+  "rc": 0,
+  "wall_s": 0.812,
+  "max_rss_kb": 235056,
+  "max_path_complexity": 324,
+  "decisions": {
+   "truth:TP": 6,
+   "query:TP": 6
+  },
+  "too_complex_warnings": 0
+ },
+ "8": {
+  "rc": 0,
+  "wall_s": 0.976,
+  "max_rss_kb": 243700,
+  "max_path_complexity": 576,
+  "decisions": {
+   "truth:TP": 8,
+   "query:TP": 8
+  },
+  "too_complex_warnings": 0
+ },
+ "10": {
+  "rc": 0,
+  "wall_s": 0.942,
+  "max_rss_kb": 253488,
+  "max_path_complexity": 1034,
+  "decisions": {
+   "truth:TP": 10,
+   "query:TP": 10
+  },
+  "too_complex_warnings": 0
+ },
+ "12": {
+  "rc": 0,
+  "wall_s": 0.97,
+  "max_rss_kb": 297600,
+  "max_path_complexity": 2459,
+  "decisions": {
+   "truth:TP": 12,
+   "query:TP": 12
+  },
+  "too_complex_warnings": 0
+ },
+ "14": {
+  "rc": 0,
+  "wall_s": 1.188,
+  "max_rss_kb": 299344,
+  "max_path_complexity": 5027,
+  "decisions": {
+   "truth:TP": 14,
+   "query:TP": 14
+  },
+  "too_complex_warnings": 0
+ },
+ "16": {
+  "rc": 0,
+  "wall_s": 1.193,
+  "max_rss_kb": 364476,
+  "max_path_complexity": 8434,
+  "decisions": {
+   "truth:TP": 16,
+   "query:TP": 16
+  },
+  "too_complex_warnings": 0
+ },
+ "18": {
+  "rc": 0,
+  "wall_s": 1.542,
+  "max_rss_kb": 485208,
+  "max_path_complexity": 14840,
+  "decisions": {
+   "truth:TP": 18,
+   "query:TP": 18
+  },
+  "too_complex_warnings": 0
+ },
+ "20": {
+  "rc": 0,
+  "wall_s": 2.615,
+  "max_rss_kb": 465024,
+  "max_path_complexity": 33059,
+  "decisions": {
+   "truth:TP": 20,
+   "query:TP": 20
+  },
+  "too_complex_warnings": 0
+ },
+ "22": {
+  "rc": 0,
+  "wall_s": 2.811,
+  "max_rss_kb": 901248,
+  "max_path_complexity": 50002,
+  "decisions": {
+   "truth:N:too-hard": 22,
+   "query:N:too-hard": 21,
+   "query:FP": 1
+  },
+  "too_complex_warnings": 2
+ },
+ "24": {
+  "rc": 0,
+  "wall_s": 2.886,
+  "max_rss_kb": 1483800,
+  "max_path_complexity": 50002,
+  "decisions": {
+   "truth:N:too-hard": 22,
+   "query:N:too-hard": 21,
+   "query:TP": 2,
+   "truth:TP": 2,
+   "query:FP": 1
+  },
+  "too_complex_warnings": 2
+ },
+ "28": {
+  "rc": 0,
+  "wall_s": 2.651,
+  "max_rss_kb": 339512,
+  "max_path_complexity": 50003,
+  "decisions": {
+   "truth:N:too-hard": 19,
+   "query:N:too-hard": 18,
+   "query:TP": 9,
+   "truth:TP": 9,
+   "query:FP": 1
+  },
+  "too_complex_warnings": 2
+ },
+ "32": {
+  "rc": 0,
+  "wall_s": 3.059,
+  "max_rss_kb": 1457436,
+  "max_path_complexity": 50003,
+  "decisions": {
+   "truth:N:too-hard": 19,
+   "query:N:too-hard": 18,
+   "query:TP": 13,
+   "truth:TP": 13,
+   "query:FP": 1
+  },
+  "too_complex_warnings": 2
+ }
+}

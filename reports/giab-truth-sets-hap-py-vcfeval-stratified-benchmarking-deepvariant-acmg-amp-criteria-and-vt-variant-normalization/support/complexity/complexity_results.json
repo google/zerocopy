@@ -1,0 +1,72 @@
+{
+ "truth_dels": 10,
+ "query_dels": 10,
+ "runs": {
+  "default(50000)": {
+   "rc": 0,
+   "wall_s": 0.876,
+   "max_rss_kb": 248908,
+   "decisions": {
+    "truth:TP": 10,
+    "query:TP": 10
+   },
+   "warnings": []
+  },
+  "10000": {
+   "rc": 0,
+   "wall_s": 0.965,
+   "max_rss_kb": 249692,
+   "decisions": {
+    "truth:TP": 10,
+    "query:TP": 10
+   },
+   "warnings": []
+  },
+  "1000": {
+   "rc": 0,
+   "wall_s": 0.768,
+   "max_rss_kb": 247460,
+   "decisions": {
+    "truth:N:too-hard": 8,
+    "query:N:too-hard": 7,
+    "query:TP": 2,
+    "truth:TP": 2,
+    "query:FP": 1
+   },
+   "warnings": [
+    "Evaluation too complex (1002 unresolved paths, 11048 iterations) at reference region chrQ:205-256. Variants in this region will not be included in results."
+   ]
+  },
+  "100": {
+   "rc": 0,
+   "wall_s": 0.763,
+   "max_rss_kb": 177836,
+   "decisions": {
+    "truth:N:too-hard": 7,
+    "query:N:too-hard": 7,
+    "truth:TP": 3,
+    "query:TP": 3
+   },
+   "warnings": [
+    "Evaluation too complex (101 unresolved paths, 919 iterations) at reference region chrQ:205-228. Variants in this region will not be included in results.",
+    "Evaluation too complex (102 unresolved paths, 769 iterations) at reference region chrQ:229-252. Variants in this region will not be included in results."
+   ]
+  },
+  "10": {
+   "rc": 0,
+   "wall_s": 0.777,
+   "max_rss_kb": 180948,
+   "decisions": {
+    "truth:N:too-hard": 9,
+    "query:N:too-hard": 9,
+    "truth:TP": 1,
+    "query:TP": 1
+   },
+   "warnings": [
+    "Evaluation too complex (12 unresolved paths, 45 iterations) at reference region chrQ:205-214. Variants in this region will not be included in results.",
+    "Evaluation too complex (12 unresolved paths, 41 iterations) at reference region chrQ:215-224. Variants in this region will not be included in results.",
+    "Evaluation too complex (12 unresolved paths, 45 iterations) at reference region chrQ:226-235. Variants in this region will not be included in results."
+   ]
+  }
+ }
+}

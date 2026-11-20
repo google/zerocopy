@@ -1,0 +1,30 @@
+##fileformat=VCFv4.2
+##fileDate=20261120
+##source=RTG Tools 3.13 / Core c27844a5bb (2025-05-27)
+##CL=vcfeval -b $WORK/truth.vcf.gz -c $WORK/query.vtnorm.vcf.gz -t $WORK/ref.sdf -e $WORK/conf.bed -o $WORK/vcfeval_ga4gh_query_vtnorm --output-mode ga4gh
+##contig=<ID=chrP,length=921>
+##FILTER=<ID=PASS,Description="All filters passed">
+##INFO=<ID=BS,Number=.,Type=Integer,Description="Benchmarking superlocus ID for these variants">
+##INFO=<ID=CALL_WEIGHT,Number=1,Type=Float,Description="Call weight (equivalent number of truth variants). When unspecified, assume 1.0">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=BD,Number=1,Type=String,Description="Decision for call (TP/FP/FN/N)">
+##FORMAT=<ID=BK,Number=1,Type=String,Description="Sub-type for decision (match/mismatch type). (Loose match distance is 30)">
+##FORMAT=<ID=BI,Number=1,Type=String,Description="Additional comparison information">
+##FORMAT=<ID=QQ,Number=1,Type=Float,Description="Variant quality for ROC creation">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	TRUTH	QUERY
+chrP	62	.	GA	G	.	PASS	BS=63	GT:BD:BK	0/1:TP:gm	0/1:TP:gm
+chrP	152	.	T	TCA	.	PASS	BS=153	GT:BD:BK	1/1:TP:gm	1/1:TP:gm
+chrP	245	.	G	A	.	PASS	BS=245	GT:BD:BK	.	1/1:TP:gm
+chrP	245	.	GC	AT	.	.	BS=245	GT:BD:BK	1/1:TP:gm	.
+chrP	246	.	C	T	.	PASS	BS=245	GT:BD:BK	.	1/1:TP:gm
+chrP	331	.	CGT	C	.	PASS	BS=332	GT:BD:BK	.	1/1:TP:gm
+chrP	331	.	CGTA	CT	.	.	BS=332	GT:BD:BK	1/1:TP:gm	.
+chrP	334	.	A	T	.	PASS	BS=332	GT:BD:BK	.	1/1:TP:gm
+chrP	422	.	G	C	.	PASS	BS=422	GT:BD:BK	0/1:FN:am	1/1:FP:am
+chrP	508	.	CA	C	.	PASS	BS=509	GT:BD:BK	.	1/1:FP:am
+chrP	509	.	A	G	.	PASS	BS=509	GT:BD:BK	1/1:TP:gm	1/1:TP:gm
+chrP	510	.	AA	A	.	.	BS=509	GT:BD:BK	1/1:FN:am	.
+chrP	599	.	T	A	.	PASS	BS=599	GT:BD:BK	.	0/1:FP
+chrP	686	.	A	T	.	.	BS=686	GT:BD:BK	0/1:FN	.
+chrP	772	.	C	G	.	PASS	BS=772	GT:BD:BK	0/1:TP:gm	0/1:TP:gm
+chrP	858	.	C	G	.	PASS	.	GT:BD:BI	.	0/1:N:non-confident

@@ -1,0 +1,264 @@
+{
+ "reference_length": 921,
+ "cases": {
+  "A": {
+   "truth": [
+    "62 GA>G 0/1"
+   ],
+   "query": [
+    "67 AA>A 0/1"
+   ]
+  },
+  "B": {
+   "truth": [
+    "152 T>TCA 1/1"
+   ],
+   "query": [
+    "160 A>ACA 1/1"
+   ]
+  },
+  "C": {
+   "truth": [
+    "245 GC>AT 1/1"
+   ],
+   "query": [
+    "245 G>A 1/1",
+    "246 C>T 1/1"
+   ]
+  },
+  "D": {
+   "truth": [
+    "331 CGTA>CT 1/1"
+   ],
+   "query": [
+    "331 CGT>C 1/1",
+    "334 A>T 1/1"
+   ]
+  },
+  "E": {
+   "truth": [
+    "422 G>C 0/1"
+   ],
+   "query": [
+    "422 G>C 1/1"
+   ]
+  },
+  "F": {
+   "truth": [
+    "509 A>G 1/1",
+    "510 AA>A 1/1"
+   ],
+   "query": [
+    "509 A>G 1/1",
+    "511 AA>A 1/1"
+   ]
+  },
+  "H": {
+   "truth": [
+    "686 A>T 0/1"
+   ],
+   "query": []
+  },
+  "I": {
+   "truth": [
+    "772 C>G 0/1"
+   ],
+   "query": [
+    "772 C>G 0/1"
+   ]
+  },
+  "G": {
+   "truth": [],
+   "query": [
+    "599 T>A 0/1"
+   ]
+  },
+  "J": {
+   "truth": [],
+   "query": [
+    "858 C>G 0/1"
+   ]
+  }
+ },
+ "runs": {
+  "vt_normalize_query": {
+   "cmd": "vt normalize -r $WORK/ref.fa -o $WORK/query.vtnorm.vcf $WORK/query.vcf",
+   "rc": 0,
+   "wall_s": 0.01,
+   "max_rss_kb": 4720
+  },
+  "vt_normalize_truth": {
+   "cmd": "vt normalize -r $WORK/ref.fa -o $WORK/truth.vtnorm.vcf $WORK/truth.vcf",
+   "rc": 0,
+   "wall_s": 0.004,
+   "max_rss_kb": 5492
+  },
+  "rtg_format": {
+   "cmd": "java -Dtalkback=false -Dusage=false -Xmx1g -jar RTG.jar format -o $WORK/ref.sdf $WORK/ref.fa",
+   "rc": 0,
+   "wall_s": 0.573,
+   "max_rss_kb": 137376
+  },
+  "rtg_bgzip_truth.vcf": {
+   "cmd": "java -Dtalkback=false -Dusage=false -Xmx1g -jar RTG.jar bgzip -f $WORK/truth.vcf",
+   "rc": 0,
+   "wall_s": 0.555,
+   "max_rss_kb": 63940
+  },
+  "rtg_index_truth.vcf": {
+   "cmd": "java -Dtalkback=false -Dusage=false -Xmx1g -jar RTG.jar index -f vcf $WORK/truth.vcf.gz",
+   "rc": 0,
+   "wall_s": 0.467,
+   "max_rss_kb": 76096
+  },
+  "rtg_bgzip_query.vcf": {
+   "cmd": "java -Dtalkback=false -Dusage=false -Xmx1g -jar RTG.jar bgzip -f $WORK/query.vcf",
+   "rc": 0,
+   "wall_s": 0.707,
+   "max_rss_kb": 77432
+  },
+  "rtg_index_query.vcf": {
+   "cmd": "java -Dtalkback=false -Dusage=false -Xmx1g -jar RTG.jar index -f vcf $WORK/query.vcf.gz",
+   "rc": 0,
+   "wall_s": 0.605,
+   "max_rss_kb": 75320
+  },
+  "rtg_bgzip_query.vtnorm.vcf": {
+   "cmd": "java -Dtalkback=false -Dusage=false -Xmx1g -jar RTG.jar bgzip -f $WORK/query.vtnorm.vcf",
+   "rc": 0,
+   "wall_s": 0.428,
+   "max_rss_kb": 69752
+  },
+  "rtg_index_query.vtnorm.vcf": {
+   "cmd": "java -Dtalkback=false -Dusage=false -Xmx1g -jar RTG.jar index -f vcf $WORK/query.vtnorm.vcf.gz",
+   "rc": 0,
+   "wall_s": 0.551,
+   "max_rss_kb": 78276
+  },
+  "rtg_bgzip_truth.vtnorm.vcf": {
+   "cmd": "java -Dtalkback=false -Dusage=false -Xmx1g -jar RTG.jar bgzip -f $WORK/truth.vtnorm.vcf",
+   "rc": 0,
+   "wall_s": 0.749,
+   "max_rss_kb": 70480
+  },
+  "rtg_index_truth.vtnorm.vcf": {
+   "cmd": "java -Dtalkback=false -Dusage=false -Xmx1g -jar RTG.jar index -f vcf $WORK/truth.vtnorm.vcf.gz",
+   "rc": 0,
+   "wall_s": 0.466,
+   "max_rss_kb": 78608
+  },
+  "vcfeval_default": {
+   "cmd": "java -Dtalkback=false -Dusage=false -Xmx1g -jar RTG.jar vcfeval -b $WORK/truth.vcf.gz -c $WORK/query.vcf.gz -t $WORK/ref.sdf -e $WORK/conf.bed -o $WORK/vcfeval_default",
+   "rc": 0,
+   "wall_s": 1.365,
+   "max_rss_kb": 263464,
+   "summary": "Threshold  True-pos-baseline  True-pos-call  False-pos  False-neg  Precision  Sensitivity  F-measure\n----------------------------------------------------------------------------------------------------\n     None                  7              9          2          2     0.8182       0.7778     0.7975\n"
+  },
+  "vcfeval_squash_ploidy": {
+   "cmd": "java -Dtalkback=false -Dusage=false -Xmx1g -jar RTG.jar vcfeval -b $WORK/truth.vcf.gz -c $WORK/query.vcf.gz -t $WORK/ref.sdf -e $WORK/conf.bed -o $WORK/vcfeval_squash_ploidy --squash-ploidy",
+   "rc": 0,
+   "wall_s": 1.262,
+   "max_rss_kb": 249276,
+   "summary": "Threshold  True-pos-baseline  True-pos-call  False-pos  False-neg  Precision  Sensitivity  F-measure\n----------------------------------------------------------------------------------------------------\n     None                  8             10          1          1     0.9091       0.8889     0.8989\n"
+  },
+  "vcfeval_ga4gh": {
+   "cmd": "java -Dtalkback=false -Dusage=false -Xmx1g -jar RTG.jar vcfeval -b $WORK/truth.vcf.gz -c $WORK/query.vcf.gz -t $WORK/ref.sdf -e $WORK/conf.bed -o $WORK/vcfeval_ga4gh --output-mode ga4gh",
+   "rc": 0,
+   "wall_s": 0.915,
+   "max_rss_kb": 182680,
+   "summary": null
+  },
+  "vcfeval_query_vtnorm": {
+   "cmd": "java -Dtalkback=false -Dusage=false -Xmx1g -jar RTG.jar vcfeval -b $WORK/truth.vcf.gz -c $WORK/query.vtnorm.vcf.gz -t $WORK/ref.sdf -e $WORK/conf.bed -o $WORK/vcfeval_query_vtnorm",
+   "rc": 0,
+   "wall_s": 0.961,
+   "max_rss_kb": 229104,
+   "summary": "Threshold  True-pos-baseline  True-pos-call  False-pos  False-neg  Precision  Sensitivity  F-measure\n----------------------------------------------------------------------------------------------------\n     None                  6              8          3          3     0.7273       0.6667     0.6957\n"
+  },
+  "vcfeval_ga4gh_query_vtnorm": {
+   "cmd": "java -Dtalkback=false -Dusage=false -Xmx1g -jar RTG.jar vcfeval -b $WORK/truth.vcf.gz -c $WORK/query.vtnorm.vcf.gz -t $WORK/ref.sdf -e $WORK/conf.bed -o $WORK/vcfeval_ga4gh_query_vtnorm --output-mode ga4gh",
+   "rc": 0,
+   "wall_s": 0.863,
+   "max_rss_kb": 170992,
+   "summary": null
+  }
+ },
+ "vt_query_records": [
+  "62\t.\tGA\tG\tCASE=A;OLD_VARIANT=chrP:67:AA/A\t0/1",
+  "152\t.\tT\tTCA\tCASE=B;OLD_VARIANT=chrP:160:A/ACA\t1/1",
+  "245\t.\tG\tA\tCASE=C\t1/1",
+  "246\t.\tC\tT\tCASE=C\t1/1",
+  "331\t.\tCGT\tC\tCASE=D\t1/1",
+  "334\t.\tA\tT\tCASE=D\t1/1",
+  "422\t.\tG\tC\tCASE=E\t1/1",
+  "508\t.\tCA\tC\tCASE=F;OLD_VARIANT=chrP:511:AA/A\t1/1",
+  "509\t.\tA\tG\tCASE=F\t1/1",
+  "599\t.\tT\tA\tCASE=G\t0/1",
+  "772\t.\tC\tG\tCASE=I\t0/1",
+  "858\t.\tC\tG\tCASE=J\t0/1"
+ ],
+ "vt_truth_records": [
+  "62\t.\tGA\tG\tCASE=A\t0/1",
+  "152\t.\tT\tTCA\tCASE=B\t1/1",
+  "245\t.\tGC\tAT\tCASE=C\t1/1",
+  "332\t.\tGTA\tT\tCASE=D;OLD_VARIANT=chrP:331:CGTA/CT\t1/1",
+  "422\t.\tG\tC\tCASE=E\t0/1",
+  "508\t.\tCA\tC\tCASE=F;OLD_VARIANT=chrP:510:AA/A\t1/1",
+  "509\t.\tA\tG\tCASE=F\t1/1",
+  "686\t.\tA\tT\tCASE=H\t0/1",
+  "772\t.\tC\tG\tCASE=I\t0/1"
+ ],
+ "naive_raw": {
+  "TP": 2,
+  "FP": 9,
+  "FN": 7,
+  "truth_records": 9,
+  "query_records": 11
+ },
+ "naive_after_vt_both": {
+  "TP": 5,
+  "FP": 6,
+  "FN": 4,
+  "truth_records": 9,
+  "query_records": 11
+ },
+ "vcfeval_ga4gh_records": [
+  "62\tGA\tG\tBS=63\tGT:BD:BK\t0/1:TP:gm\t.",
+  "67\tAA\tA\tBS=63\tGT:BD:BK\t.\t0/1:TP:gm",
+  "152\tT\tTCA\tBS=153\tGT:BD:BK\t1/1:TP:gm\t.",
+  "160\tA\tACA\tBS=153\tGT:BD:BK\t.\t1/1:TP:gm",
+  "245\tG\tA\tBS=245\tGT:BD:BK\t.\t1/1:TP:gm",
+  "245\tGC\tAT\tBS=245\tGT:BD:BK\t1/1:TP:gm\t.",
+  "246\tC\tT\tBS=245\tGT:BD:BK\t.\t1/1:TP:gm",
+  "331\tCGT\tC\tBS=332\tGT:BD:BK\t.\t1/1:TP:gm",
+  "331\tCGTA\tCT\tBS=332\tGT:BD:BK\t1/1:TP:gm\t.",
+  "334\tA\tT\tBS=332\tGT:BD:BK\t.\t1/1:TP:gm",
+  "422\tG\tC\tBS=422\tGT:BD:BK\t0/1:FN:am\t1/1:FP:am",
+  "509\tA\tG\tBS=509\tGT:BD:BK\t1/1:TP:gm\t1/1:TP:gm",
+  "510\tAA\tA\tBS=511\tGT:BD:BK\t1/1:TP:gm\t.",
+  "511\tAA\tA\tBS=511\tGT:BD:BK\t.\t1/1:TP:gm",
+  "599\tT\tA\tBS=599\tGT:BD:BK\t.\t0/1:FP",
+  "686\tA\tT\tBS=686\tGT:BD:BK\t0/1:FN\t.",
+  "772\tC\tG\tBS=772\tGT:BD:BK\t0/1:TP:gm\t0/1:TP:gm",
+  "858\tC\tG\t.\tGT:BD:BI\t.\t0/1:N:non-confident"
+ ],
+ "vcfeval_ga4gh_query_vtnorm_records": [
+  "62\tGA\tG\tBS=63\tGT:BD:BK\t0/1:TP:gm\t0/1:TP:gm",
+  "152\tT\tTCA\tBS=153\tGT:BD:BK\t1/1:TP:gm\t1/1:TP:gm",
+  "245\tG\tA\tBS=245\tGT:BD:BK\t.\t1/1:TP:gm",
+  "245\tGC\tAT\tBS=245\tGT:BD:BK\t1/1:TP:gm\t.",
+  "246\tC\tT\tBS=245\tGT:BD:BK\t.\t1/1:TP:gm",
+  "331\tCGT\tC\tBS=332\tGT:BD:BK\t.\t1/1:TP:gm",
+  "331\tCGTA\tCT\tBS=332\tGT:BD:BK\t1/1:TP:gm\t.",
+  "334\tA\tT\tBS=332\tGT:BD:BK\t.\t1/1:TP:gm",
+  "422\tG\tC\tBS=422\tGT:BD:BK\t0/1:FN:am\t1/1:FP:am",
+  "508\tCA\tC\tBS=509\tGT:BD:BK\t.\t1/1:FP:am",
+  "509\tA\tG\tBS=509\tGT:BD:BK\t1/1:TP:gm\t1/1:TP:gm",
+  "510\tAA\tA\tBS=509\tGT:BD:BK\t1/1:FN:am\t.",
+  "599\tT\tA\tBS=599\tGT:BD:BK\t.\t0/1:FP",
+  "686\tA\tT\tBS=686\tGT:BD:BK\t0/1:FN\t.",
+  "772\tC\tG\tBS=772\tGT:BD:BK\t0/1:TP:gm\t0/1:TP:gm",
+  "858\tC\tG\t.\tGT:BD:BI\t.\t0/1:N:non-confident"
+ ],
+ "fasta_bytes": 943
+}
