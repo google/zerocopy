@@ -1,0 +1,30 @@
+{
+  "topics": [
+    "lean/kernel",
+    "lean/mechanization",
+    "anneal/theory",
+    "rustc/mir",
+    "lean/realize-const",
+    "lean/olean",
+    "lean/elaboration",
+    "anneal/trusted-boundary"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 theorem prover, module importer, object compactor, and C++ kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Anneal formal verification framework",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

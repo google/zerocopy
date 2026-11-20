@@ -1,0 +1,94 @@
+{
+  "topics": [
+    "verification/cryptography",
+    "anneal/theory",
+    "lean/mechanization",
+    "verification/arithmetic",
+    "verification/abstract-interpretation",
+    "verification/certificates",
+    "security/verified-cryptography",
+    "lean/kernel"
+  ],
+  "subjects": [
+    {
+      "name": "Fiat-Crypto cryptographic arithmetic synthesis framework",
+      "identity": {
+        "repository": "mit-plv/fiat-crypto",
+        "revision": "3d2880ef2803faa9385589a81a835d5828eb3d38"
+      }
+    },
+    {
+      "name": "curve25519-dalek pure-Rust elliptic-curve arithmetic library",
+      "identity": {
+        "repository": "dalek-cryptography/curve25519-dalek",
+        "revision": "328771a7148bf72df1468fdef5e453beb60c0b5f"
+      }
+    },
+    {
+      "name": "libcrux formally verified Rust cryptographic library (ML-KEM and ML-DSA)",
+      "identity": {
+        "repository": "cryspen/libcrux",
+        "revision": "24330863b3d1d4179e4bcea8cef6bf6fa313057e"
+      }
+    },
+    {
+      "name": "Anneal formal verification framework",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover and C++ kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Simple High-Level Code For Cryptographic Arithmetic - With Proofs, Without Compromises",
+      "identity": {
+        "doi": "10.1109/SP.2019.00005"
+      }
+    },
+    {
+      "name": "Modular multiplication without trial division",
+      "identity": {
+        "doi": "10.1090/S0025-5718-1985-0777282-X"
+      }
+    },
+    {
+      "name": "Implementing the Rivest Shamir and Adleman Public Key Encryption Algorithm on a Standard Digital Signal Processor",
+      "identity": {
+        "doi": "10.1007/3-540-47721-7_24"
+      }
+    },
+    {
+      "name": "Faster AVX2 optimized NTT multiplication for Ring-LWE lattice cryptography",
+      "identity": {
+        "eprint": "2018/039"
+      }
+    },
+    {
+      "name": "Module-Lattice-Based Key-Encapsulation Mechanism Standard (FIPS 203)",
+      "identity": {
+        "doi": "10.6028/NIST.FIPS.203"
+      }
+    },
+    {
+      "name": "Module-Lattice-Based Digital Signature Standard (FIPS 204)",
+      "identity": {
+        "doi": "10.6028/NIST.FIPS.204"
+      }
+    },
+    {
+      "name": "hax: Verifying Security-Critical Rust Software using Multiple Provers",
+      "identity": {
+        "doi": "10.1007/978-3-031-86695-1_7",
+        "eprint": "2025/142"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
