@@ -1,0 +1,57 @@
+{
+  "topics": [
+    "verification/rust",
+    "anneal/theory",
+    "pl/refinement-types",
+    "rustc/mir",
+    "verification/certificates"
+  ],
+  "subjects": [
+    {
+      "name": "Flux liquid refinement type checker for Rust",
+      "identity": {
+        "repository": "flux-rs/flux",
+        "revision": "7d9886b36347e9e245fa8b354da7fb9662a2087c"
+      }
+    },
+    {
+      "name": "Anneal Lean 4 MIR verification platform",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Liquid Types (PLDI 2008)",
+      "identity": {
+        "doi": "10.1145/1375581.1375602"
+      }
+    },
+    {
+      "name": "Flux: Liquid Types for Rust (PLDI 2023)",
+      "identity": {
+        "arxiv": "2207.04034",
+        "doi": "10.1145/3591283"
+      }
+    },
+    {
+      "name": "Generic Refinement Types (POPL 2025)",
+      "identity": {
+        "doi": "10.1145/3704885"
+      }
+    },
+    {
+      "name": "TickTock: Verified Isolation in a Production Embedded OS (SOSP 2025)",
+      "identity": {
+        "doi": "10.1145/3731569.3764856"
+      }
+    },
+    {
+      "name": "Foundational Constraint Solving for Expressive Refinement Typing (Flex)",
+      "identity": {
+        "arxiv": "2607.12226"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

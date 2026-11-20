@@ -16895,6 +16895,63 @@
         "rustc/mir"
       ]
     },
+    "creusot-std-prophetic-resolve-perm-containers-and-iterator-laws": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "creusot-rs/creusot",
+            "revision": "601d97891bb0bc0b569686cc946ef4980560b5d8"
+          },
+          "name": "Creusot deductive verifier and creusot-std standard library"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal Lean 4 MIR verification platform"
+        },
+        {
+          "identity": {
+            "repository": "verus-lang/verus",
+            "revision": "2518fd9cd8410dfee5115e6b5dbf30c75898cfc5"
+          },
+          "name": "Verus deductive verifier standard library (vstd::proph)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-031-17244-1_6"
+          },
+          "name": "Creusot: A Foundry for the Deductive Verification of Rust Programs (ICFEM 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3519939.3523704"
+          },
+          "name": "RustHornBelt: A Semantic Foundation for Functional Verification of Rust Programs with Unsafe Code (PLDI 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-031-30820-8_9"
+          },
+          "name": "Specifying and Verifying Higher-Order Rust Iterators (TACAS 2023)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-031-91121-7_8"
+          },
+          "name": "Coma: An Intermediate Verification Language with Explicit Abstraction Barriers (ESOP 2025)"
+        }
+      ],
+      "topics": [
+        "verification/rust",
+        "anneal/theory",
+        "verification/program-logics",
+        "rustc/mir",
+        "verification/separation-logic"
+      ]
+    },
     "cross-crate-thinlto-anneal-mir-summary-certificates-and-import-replay": {
       "observed_at": "2026-11-14",
       "subjects": [
@@ -23055,6 +23112,63 @@
         "domains/online-softmax-fp8-rescaling",
         "isa/gpu-wgmma-tma-async-barriers",
         "verification/warp-specialized-tile-invariants"
+      ]
+    },
+    "flux-indexed-refinements-strong-borrows-and-qualifier-templates": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "flux-rs/flux",
+            "revision": "7d9886b36347e9e245fa8b354da7fb9662a2087c"
+          },
+          "name": "Flux liquid refinement type checker for Rust"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal Lean 4 MIR verification platform"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1375581.1375602"
+          },
+          "name": "Liquid Types (PLDI 2008)"
+        },
+        {
+          "identity": {
+            "arxiv": "2207.04034",
+            "doi": "10.1145/3591283"
+          },
+          "name": "Flux: Liquid Types for Rust (PLDI 2023)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3704885"
+          },
+          "name": "Generic Refinement Types (POPL 2025)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3731569.3764856"
+          },
+          "name": "TickTock: Verified Isolation in a Production Embedded OS (SOSP 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2607.12226"
+          },
+          "name": "Foundational Constraint Solving for Expressive Refinement Typing (Flex)"
+        }
+      ],
+      "topics": [
+        "verification/rust",
+        "anneal/theory",
+        "pl/refinement-types",
+        "rustc/mir",
+        "verification/certificates"
       ]
     },
     "formal-isa-models-x86-64-i386-and-aarch64-coverage": {

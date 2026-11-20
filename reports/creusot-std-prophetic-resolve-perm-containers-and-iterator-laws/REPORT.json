@@ -1,0 +1,57 @@
+{
+  "topics": [
+    "verification/rust",
+    "anneal/theory",
+    "verification/program-logics",
+    "rustc/mir",
+    "verification/separation-logic"
+  ],
+  "subjects": [
+    {
+      "name": "Creusot deductive verifier and creusot-std standard library",
+      "identity": {
+        "repository": "creusot-rs/creusot",
+        "revision": "601d97891bb0bc0b569686cc946ef4980560b5d8"
+      }
+    },
+    {
+      "name": "Anneal Lean 4 MIR verification platform",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Verus deductive verifier standard library (vstd::proph)",
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "2518fd9cd8410dfee5115e6b5dbf30c75898cfc5"
+      }
+    },
+    {
+      "name": "Creusot: A Foundry for the Deductive Verification of Rust Programs (ICFEM 2022)",
+      "identity": {
+        "doi": "10.1007/978-3-031-17244-1_6"
+      }
+    },
+    {
+      "name": "RustHornBelt: A Semantic Foundation for Functional Verification of Rust Programs with Unsafe Code (PLDI 2022)",
+      "identity": {
+        "doi": "10.1145/3519939.3523704"
+      }
+    },
+    {
+      "name": "Specifying and Verifying Higher-Order Rust Iterators (TACAS 2023)",
+      "identity": {
+        "doi": "10.1007/978-3-031-30820-8_9"
+      }
+    },
+    {
+      "name": "Coma: An Intermediate Verification Language with Explicit Abstraction Barriers (ESOP 2025)",
+      "identity": {
+        "doi": "10.1007/978-3-031-91121-7_8"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
