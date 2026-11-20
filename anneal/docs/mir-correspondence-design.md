@@ -130,6 +130,8 @@ correspondence/Anneal/          Untrusted correspondence proof (Pass 2)
                                 witnesses once fieldless enums land)
 
 trusted/audit/                  anneal-audit CLI, auditor library, and inspector
+  src/{repo_audit,miri_pin}.rs  Pass 1 (51-module core lock) + Pass 2
+                                (UPSTREAM_PIN.json + correspondence closure)
   TrustedBoundary.lean          Syntactic preflight, namespace and
                                 constant-cone checks, statement-origin
                                 verification, and kernel replay
@@ -178,11 +180,11 @@ role-permitted intra-repository `Trusted.*` / `Anneal.*` modules. By contrast,
 without `prelude`, transitively importing `Init.*`, `Std.*`, and `Lean.*`
 modules from the Lean 4.34.1 toolchain sysroot (whose `.olean`,
 `.olean.server`, and `.olean.private` artifacts are authenticated in memory
-once the vendored snapshot lands—via
-`AdmittedToolchain::ensure_sysroot_foundation` in `src/lib.rs` against
-`LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256` in `trusted/audit/`, later
-refactored to `Checker::ensure_sysroot_foundation` calling
-`verify_sysroot_foundation` after the `src/{miri_pin,repo_audit}.rs` split).
+by `Checker::ensure_sysroot_foundation` in
+`trusted/audit/src/repo_audit.rs` calling `verify_sysroot_foundation`
+against `LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256` (defined in
+`trusted/cargo-anneal/src/toolchain.rs` and re-exported in
+`trusted/audit/src/miri_pin.rs`).
 
 Although `Trusted/MirSemantics.lean` resides in `trusted/lean/` so that
 `Trusted.CrateTheorem` and `Anneal.MirWp` can state per-crate obligations in
@@ -250,9 +252,9 @@ Placing `Trusted.Correspondence`, `Anneal.MirCorrespondenceBase`, and
    to audit the correspondence claim against `vendor/lean-miri/`:
    - **Fail-closed `UPSTREAM_PIN.json` and sysroot authentication from
      `trusted/`:** Before using `vendor/lean-miri/UPSTREAM_PIN.json`,
-     `trusted/audit/` (`verify_upstream_pin` in `src/lib.rs`, later
-     `src/miri_pin.rs`) verifies that the manifest's own SHA-256 digest matches
-     the TCB constant `LOCKED_UPSTREAM_PIN_SHA256`, that its `commit` equals
+     `trusted/audit/src/miri_pin.rs` (`verify_upstream_pin`) verifies that the
+     manifest's own SHA-256 digest matches the TCB constant
+     `LOCKED_UPSTREAM_PIN_SHA256`, that its `commit` equals
      `LOCKED_MIRI_COMMIT`, that its `build_lean_toolchain` matches Anneal's
      locked `leanprover/lean4:v4.34.1`, and that its patched-file map matches
      the closed TCB allowlist `LOCKED_PATCHED_MIRI_FILES` in the same module,
@@ -415,7 +417,8 @@ Placing `Trusted.Correspondence`, `Anneal.MirCorrespondenceBase`, and
      `CanaryD13EnumInvalidTagAndUninitUbClaim`), plus required constant cones
      on the three top-level claims.
    - **Pass 2 negative audit tests:** `trusted/audit/tests/boundary_audit.rs`
-     (and unit tests in `trusted/audit/src/lib.rs`) must exercise fail-closed
+     (and unit tests in `trusted/audit/src/repo_audit.rs` and
+     `trusted/audit/src/miri_pin.rs`) must exercise fail-closed
      rejection (policy exit code `1`) for: `UPSTREAM_PIN.json` tampering,
      missing, unlisted, or symlinked files under `vendor/lean-miri/`,
      unauthorized `patched_files`, and corrupted closure digests

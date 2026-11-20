@@ -8,8 +8,12 @@
 
 //! Exercise compiler work through the private driver boundary.
 
+mod common;
+
 use std::path::PathBuf;
 use std::process::{Command, Output};
+
+use common::sysroot;
 
 const CALLBACK: &str =
     "anneal-rustc-capture: compiler analysis callback reached; verification not performed";
@@ -41,10 +45,8 @@ impl Session {
     }
 
     fn command(&self) -> Command {
-        let sysroot = std::env::var_os("ANNEAL_TEST_RUST_SYSROOT")
-            .expect("set ANNEAL_TEST_RUST_SYSROOT to the pinned Rust distribution");
         let mut command = self.command_for(env!("CARGO_BIN_EXE_anneal-rustc-capture"));
-        command.arg("--sysroot").arg(sysroot);
+        command.arg("--sysroot").arg(sysroot());
         command
     }
 
@@ -364,13 +366,13 @@ fn compiler_information_is_not_callback_evidence() {
 #[test]
 fn rustc_resolves_sysroot_options_in_response_files() {
     let session = Session::new("pub fn valid() {}\n");
-    let sysroot = std::env::var("ANNEAL_TEST_RUST_SYSROOT")
-        .expect("set ANNEAL_TEST_RUST_SYSROOT to the pinned Rust distribution");
+    let sysroot = sysroot();
     std::fs::write(
         session.directory.path().join("options"),
         format!(
-            "--sysroot\n{sysroot}\ninput.rs\n--crate-type=lib\n\
-             --emit=metadata\n-o\nsession.rmeta\n"
+            "--sysroot\n{}\ninput.rs\n--crate-type=lib\n\
+             --emit=metadata\n-o\nsession.rmeta\n",
+            sysroot.display()
         ),
     )
     .expect("write compiler response file");
@@ -434,10 +436,13 @@ fn explicit_separator_routes_information_requests_to_rustc() {
 #[test]
 fn compiler_artifacts_on_stdout_match_rustc_bytes() {
     let session = Session::new("pub fn valid() -> u8 { 42 }\n");
-    // Use the build's pinned compiler command. Nix supplies a loader wrapper
-    // because upstream rustc's host loader is absent from its build sandbox.
+    // Use the build's pinned compiler command when set (Nix supplies a loader
+    // wrapper because upstream rustc's host loader is absent from its build
+    // sandbox), falling back to `<sysroot>/bin/rustc`.
     let rustc = std::env::var_os("RUSTC")
-        .expect("set RUSTC to the pinned Rust compiler or its build wrapper");
+        .filter(|v| !v.is_empty())
+        .map(PathBuf::from)
+        .unwrap_or_else(|| sysroot().join("bin/rustc"));
     let version = Command::new(&rustc)
         .arg("--version")
         .output()

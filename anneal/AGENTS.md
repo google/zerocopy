@@ -393,9 +393,11 @@ orchestration and `trust-review`).
 ## Architecture and trust boundary
 
 Anneal verifies Rust programs (including unsafe code) by extracting typed
-`Runtime(PostCleanup)` MIR and compiler facts via `anneal-rustc-capture` and
-checking the crate's `Trusted.CrateTheorem` (`VerificationResult` over every
-captured function's `Compiler.Verified` obligations) inside the Lean 4 kernel.
+`Runtime(PostCleanup)` MIR and compiler facts via `anneal-rustc-capture` into
+`Captured.lean` (`Captured.program : Trusted.MirAst.Program`) and checking the
+crate's `Trusted.MirSemantics.CrateTheorem` or `UnitTheorem` obligation against
+authored specifications (`Spec.lean`) and proofs (`Proof.lean`) via
+`cargo-anneal verify` and `TrustedBoundary.lean` (`targetAudit`).
 
 See [`README.md`](README.md) (correctness policy and `trusted/` invariant),
 [`THREAT_MODEL.md`](THREAT_MODEL.md) (threat model, human-review surfaces, and
@@ -405,17 +407,21 @@ layout), and [`docs/trust-model.md`](docs/trust-model.md) (boundary
 enforcement). Before placing or modifying code, verify its boundary:
 
 - Only primitive semantic/theorem definitions required to state or gate
-  `Trusted.CrateTheorem` and `VerificationResult` (`trusted/lean/`) and
-  effectful components—the `.olean` kernel-environment inspector
-  (`trusted/audit/`), CLI orchestrator (`trusted/cargo-anneal/`), and `rustc`
-  MIR/attribute serializer and proof-script generator
-  (`trusted/rustc-capture/`)—belong in `trusted/`.
+  `Trusted.MirSemantics.CrateTheorem` and `UnitTheorem` (`trusted/lean/`), the
+  reference-correspondence specification (`trusted/correspondence/`), and
+  effectful components—the repository CI boundary auditor and `.olean`
+  kernel-environment inspector (`trusted/audit/`), the CLI orchestrator,
+  toolchain stage, and target verification runner (`trusted/cargo-anneal/`),
+  and the `rustc` MIR/compiler-fact capture driver (`trusted/rustc-capture/`)—
+  belong in `trusted/`.
 - Code outside `trusted/` (`theory/`, `correspondence/`) must be pure,
   effect-free Lean checked by `anneal-audit` and the Lean kernel.
 - `vendor/lean-miri/` holds the SHA-256-pinned upstream `lean-miri`
   reference model for repository CI correspondence audits only (never
-  packaged or imported by `trusted/lean/` or `theory/`; audited and
-  kernel-replayed per [`docs/trust-model.md`](docs/trust-model.md)).
+  packaged or imported by `trusted/lean/` or `theory/`; audited,
+  OS-sandboxed, and kernel-replayed by `trusted/audit/` (`miri_pin.rs`,
+  `repo_audit.rs`, and `TrustedBoundary.lean`) per
+  [`docs/trust-model.md`](docs/trust-model.md)).
 
 ## Commenting in `trusted/`
 

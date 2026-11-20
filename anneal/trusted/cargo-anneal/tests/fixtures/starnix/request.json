@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "compilation": {
+    "source_root": "source",
+    "crate_root": "lib.rs",
+    "crate_name": "ebpf_core",
+    "edition": "2024",
+    "target": "x86_64-unknown-linux-gnu",
+    "cfg": [],
+    "source_files": [
+      "api.rs",
+      "converter.rs",
+      "error.rs",
+      "executor.rs",
+      "lib.rs",
+      "maps.rs",
+      "program.rs",
+      "scalar_value.rs",
+      "verifier.rs",
+      "visitor.rs"
+    ]
+  },
+  "scope": {
+    "kind": "selected_unit",
+    "roots": [
+      "api::apply_endianness"
+    ]
+  },
+  "proof": {
+    "source_root": "proof",
+    "specification": "Spec.specs",
+    "theorem": "Proof.verify",
+    "sources": [
+      {
+        "module": "Endianness",
+        "path": "Endianness.lean",
+        "role": "specification"
+      },
+      {
+        "module": "InitialCache",
+        "path": "InitialCache.lean",
+        "role": "proof"
+      },
+      {
+        "module": "Inputs",
+        "path": "Inputs.lean",
+        "role": "proof"
+      },
+      {
+        "module": "ProductionEndpoints",
+        "path": "ProductionEndpoints.lean",
+        "role": "proof"
+      },
+      {
+        "module": "ProductionClaims",
+        "path": "ProductionClaims.lean",
+        "role": "proof"
+      },
+      {
+        "module": "ProductionSteps",
+        "path": "ProductionSteps.lean",
+        "role": "proof"
+      },
+      {
+        "module": "Proof",
+        "path": "Proof.lean",
+        "role": "proof"
+      },
+      {
+        "module": "SourceInputs",
+        "path": "SourceInputs.lean",
+        "role": "proof"
+      },
+      {
+        "module": "Spec",
+        "path": "Spec.lean",
+        "role": "specification"
+      }
+    ]
+  }
+}

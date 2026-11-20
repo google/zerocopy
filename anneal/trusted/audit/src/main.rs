@@ -6,9 +6,9 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-//! Standalone CLI entry point (`anneal-audit`) for auditing Anneal's
-//! repository trust boundary (`trusted/` vs. `theory/` and `correspondence/`)
-//! in CI.
+//! Provides the standalone CLI entry point (`anneal-audit`) for auditing
+//! Anneal's repository trust boundary (`trusted/` vs. `theory/` and
+//! `correspondence/`) in CI.
 
 use std::env;
 use std::ffi::OsString;
@@ -65,7 +65,7 @@ fn main() -> ExitCode {
 }
 
 fn failure_message(err: &Failure, checker: Option<&Checker>) -> (u8, String) {
-    let began = checker.is_some_and(|c| c.execution_began);
+    let began = checker.is_some_and(Checker::execution_began);
     (
         err.code as u8,
         format!(
@@ -126,9 +126,6 @@ fn run(raw_args: Vec<OsString>) -> Result<u8, (u8, String)> {
                 .and_then(|v| serde_json::to_string(v).ok())
                 .unwrap_or_else(|| "[]".to_string());
             let tc = report.get("toolchain").and_then(Json::as_str).unwrap_or("");
-            let adm = checker
-                .admitted()
-                .expect("toolchain must be admitted on Ok");
             println!(
                 "PASS: {guarantee}\n\
                  {} Trusted modules; {} Theory modules; \
@@ -136,8 +133,8 @@ fn run(raw_args: Vec<OsString>) -> Result<u8, (u8, String)> {
                  {replayed} total replayed declarations; \
                  axioms={axioms}\n\
                  {tc}",
-                adm.modules.len(),
-                adm.theory_modules.len()
+                checker.modules().len(),
+                checker.theory_modules().len()
             );
             if let Some(miri_mods) = report.get("miriClosureModules").and_then(Json::as_u64) {
                 let miri_commit = report

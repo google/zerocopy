@@ -233,10 +233,12 @@ or audit them is permitted).
   `trusted/lean/foundation-lock.json` policy fields (`axioms`, `distributions`,
   `graph`, `modules`, `schema`, `toolchain`, and digests).
 - **`.olean` hardening, kernel replay, and environment stripping:** Verify
-  `trusted/audit/src/lib.rs` and `TrustedBoundary.lean` preserve `.olean`
+  `trusted/audit/src/` (`cargo_boundary.rs`, `miri_pin.rs`, `repo_audit.rs`),
+  `trusted/cargo-anneal/src/` (`toolchain.rs`, `stage.rs`, `bundle.rs`,
+  `target.rs`, `verify.rs`), and `TrustedBoundary.lean` preserve `.olean`
   audit-mode loading (`trustLevel := 0`, `plugins := #[]`,
-  `extensions := false` / `loadExts := false` in `"audit"` and
-  `"correspondence-audit"`, restricting `extensions := true` with
+  `extensions := false` / `loadExts := false` in `"audit"`,
+  `"correspondence-audit"`, and `"target-audit"`, restricting `extensions := true` with
   `enableInitializersExecution` strictly to locked-foundation `"preflight"`
   and pinned-vendor `"correspondence-preflight"` parsing),
   `checkDeclarationEdges`, fresh kernel replay (`base.toKernelEnv.replay`),
@@ -277,8 +279,11 @@ or audit them is permitted).
 - **Lockstep artifact closure:** Every tracked derived lockfile, manifest,
   negative test, or packaged bundle present in either `base` or `head` (such as
   `trusted/root-manifest.sha256`, `trusted/lean/foundation-lock.json`,
+  `trusted/audit/library-lock.json`,
+  `trusted/cargo-anneal/src/bundled_resources.rs`,
   `vendor/lean-miri/UPSTREAM_PIN.json` and the `LOCKED_*` constants in
-  `trusted/audit/src/lib.rs`—`LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`,
+  `trusted/cargo-anneal/src/toolchain.rs` and `trusted/audit/src/miri_pin.rs`—
+  `LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`,
   `LOCKED_UPSTREAM_PIN_SHA256`, `LOCKED_MIRI_COMMIT`,
   `LOCKED_PATCHED_MIRI_FILES`—or packaged toolchain archives) must stay
   synchronized, use
