@@ -1,0 +1,1114 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Hoare.ACom": [],
+    "Toy.Hoare.ACom.InvsIn": [],
+    "Toy.Hoare.ACom.InvsIn.eq_1": [],
+    "Toy.Hoare.ACom.InvsIn.eq_2": [],
+    "Toy.Hoare.ACom.InvsIn.eq_3": [],
+    "Toy.Hoare.ACom.InvsIn.eq_4": [],
+    "Toy.Hoare.ACom.InvsIn.eq_5": [],
+    "Toy.Hoare.ACom.InvsIn.eq_def": [],
+    "Toy.Hoare.ACom.assign": [],
+    "Toy.Hoare.ACom.assign.elim": [],
+    "Toy.Hoare.ACom.assign.inj": [],
+    "Toy.Hoare.ACom.assign.injEq": [
+      "propext"
+    ],
+    "Toy.Hoare.ACom.assign.noConfusion": [],
+    "Toy.Hoare.ACom.assign.sizeOf_spec": [],
+    "Toy.Hoare.ACom.below": [],
+    "Toy.Hoare.ACom.brecOn": [],
+    "Toy.Hoare.ACom.brecOn.eq": [],
+    "Toy.Hoare.ACom.brecOn.go": [],
+    "Toy.Hoare.ACom.casesOn": [],
+    "Toy.Hoare.ACom.cond": [],
+    "Toy.Hoare.ACom.cond.elim": [],
+    "Toy.Hoare.ACom.cond.inj": [],
+    "Toy.Hoare.ACom.cond.injEq": [
+      "propext"
+    ],
+    "Toy.Hoare.ACom.cond.noConfusion": [],
+    "Toy.Hoare.ACom.cond.sizeOf_spec": [],
+    "Toy.Hoare.ACom.ctorElim": [],
+    "Toy.Hoare.ACom.ctorElimType": [],
+    "Toy.Hoare.ACom.ctorIdx": [],
+    "Toy.Hoare.ACom.erase": [],
+    "Toy.Hoare.ACom.erase.eq_1": [],
+    "Toy.Hoare.ACom.erase.eq_2": [],
+    "Toy.Hoare.ACom.erase.eq_3": [],
+    "Toy.Hoare.ACom.erase.eq_4": [],
+    "Toy.Hoare.ACom.erase.eq_5": [],
+    "Toy.Hoare.ACom.erase.eq_def": [],
+    "Toy.Hoare.ACom.erase.match_1": [],
+    "Toy.Hoare.ACom.noConfusion": [],
+    "Toy.Hoare.ACom.noConfusionType": [],
+    "Toy.Hoare.ACom.rec": [],
+    "Toy.Hoare.ACom.recOn": [],
+    "Toy.Hoare.ACom.seq": [],
+    "Toy.Hoare.ACom.seq.elim": [],
+    "Toy.Hoare.ACom.seq.inj": [],
+    "Toy.Hoare.ACom.seq.injEq": [
+      "propext"
+    ],
+    "Toy.Hoare.ACom.seq.noConfusion": [],
+    "Toy.Hoare.ACom.seq.sizeOf_spec": [],
+    "Toy.Hoare.ACom.skip": [],
+    "Toy.Hoare.ACom.skip.elim": [],
+    "Toy.Hoare.ACom.skip.sizeOf_spec": [],
+    "Toy.Hoare.ACom.whileDo": [],
+    "Toy.Hoare.ACom.whileDo.elim": [],
+    "Toy.Hoare.ACom.whileDo.inj": [],
+    "Toy.Hoare.ACom.whileDo.injEq": [
+      "propext"
+    ],
+    "Toy.Hoare.ACom.whileDo.noConfusion": [],
+    "Toy.Hoare.ACom.whileDo.sizeOf_spec": [],
+    "Toy.Hoare.AExp": [],
+    "Toy.Hoare.AExp.add": [],
+    "Toy.Hoare.AExp.add.elim": [],
+    "Toy.Hoare.AExp.add.inj": [],
+    "Toy.Hoare.AExp.add.injEq": [
+      "propext"
+    ],
+    "Toy.Hoare.AExp.add.noConfusion": [],
+    "Toy.Hoare.AExp.add.sizeOf_spec": [],
+    "Toy.Hoare.AExp.below": [],
+    "Toy.Hoare.AExp.brecOn": [],
+    "Toy.Hoare.AExp.brecOn.eq": [],
+    "Toy.Hoare.AExp.brecOn.go": [],
+    "Toy.Hoare.AExp.casesOn": [],
+    "Toy.Hoare.AExp.ctorElim": [],
+    "Toy.Hoare.AExp.ctorElimType": [],
+    "Toy.Hoare.AExp.ctorIdx": [],
+    "Toy.Hoare.AExp.eval": [],
+    "Toy.Hoare.AExp.eval.eq_1": [],
+    "Toy.Hoare.AExp.eval.eq_2": [],
+    "Toy.Hoare.AExp.eval.eq_3": [],
+    "Toy.Hoare.AExp.eval.eq_4": [],
+    "Toy.Hoare.AExp.eval.eq_5": [],
+    "Toy.Hoare.AExp.eval.eq_def": [],
+    "Toy.Hoare.AExp.eval.match_1": [],
+    "Toy.Hoare.AExp.lit": [],
+    "Toy.Hoare.AExp.lit.elim": [],
+    "Toy.Hoare.AExp.lit.inj": [],
+    "Toy.Hoare.AExp.lit.injEq": [
+      "propext"
+    ],
+    "Toy.Hoare.AExp.lit.noConfusion": [],
+    "Toy.Hoare.AExp.lit.sizeOf_spec": [],
+    "Toy.Hoare.AExp.mul": [],
+    "Toy.Hoare.AExp.mul.elim": [],
+    "Toy.Hoare.AExp.mul.inj": [],
+    "Toy.Hoare.AExp.mul.injEq": [
+      "propext"
+    ],
+    "Toy.Hoare.AExp.mul.noConfusion": [],
+    "Toy.Hoare.AExp.mul.sizeOf_spec": [],
+    "Toy.Hoare.AExp.noConfusion": [],
+    "Toy.Hoare.AExp.noConfusionType": [],
+    "Toy.Hoare.AExp.rec": [],
+    "Toy.Hoare.AExp.recOn": [],
+    "Toy.Hoare.AExp.sub": [],
+    "Toy.Hoare.AExp.sub.elim": [],
+    "Toy.Hoare.AExp.sub.inj": [],
+    "Toy.Hoare.AExp.sub.injEq": [
+      "propext"
+    ],
+    "Toy.Hoare.AExp.sub.noConfusion": [],
+    "Toy.Hoare.AExp.sub.sizeOf_spec": [],
+    "Toy.Hoare.AExp.var": [],
+    "Toy.Hoare.AExp.var.elim": [],
+    "Toy.Hoare.AExp.var.inj": [],
+    "Toy.Hoare.AExp.var.injEq": [
+      "propext"
+    ],
+    "Toy.Hoare.AExp.var.noConfusion": [],
+    "Toy.Hoare.AExp.var.sizeOf_spec": [],
+    "Toy.Hoare.AffineLine": [],
+    "Toy.Hoare.AnyAssn": [],
+    "Toy.Hoare.Assn": [],
+    "Toy.Hoare.BExp": [],
+    "Toy.Hoare.BExp.and": [],
+    "Toy.Hoare.BExp.and.elim": [],
+    "Toy.Hoare.BExp.and.inj": [],
+    "Toy.Hoare.BExp.and.injEq": [
+      "propext"
+    ],
+    "Toy.Hoare.BExp.and.noConfusion": [],
+    "Toy.Hoare.BExp.and.sizeOf_spec": [],
+    "Toy.Hoare.BExp.below": [],
+    "Toy.Hoare.BExp.brecOn": [],
+    "Toy.Hoare.BExp.brecOn.eq": [],
+    "Toy.Hoare.BExp.brecOn.go": [],
+    "Toy.Hoare.BExp.casesOn": [],
+    "Toy.Hoare.BExp.ctorElim": [],
+    "Toy.Hoare.BExp.ctorElimType": [],
+    "Toy.Hoare.BExp.ctorIdx": [],
+    "Toy.Hoare.BExp.eq": [],
+    "Toy.Hoare.BExp.eq.elim": [],
+    "Toy.Hoare.BExp.eq.inj": [],
+    "Toy.Hoare.BExp.eq.injEq": [
+      "propext"
+    ],
+    "Toy.Hoare.BExp.eq.noConfusion": [],
+    "Toy.Hoare.BExp.eq.sizeOf_spec": [],
+    "Toy.Hoare.BExp.eval": [],
+    "Toy.Hoare.BExp.eval.eq_1": [],
+    "Toy.Hoare.BExp.eval.eq_2": [],
+    "Toy.Hoare.BExp.eval.eq_3": [],
+    "Toy.Hoare.BExp.eval.eq_4": [],
+    "Toy.Hoare.BExp.eval.eq_5": [],
+    "Toy.Hoare.BExp.eval.eq_6": [],
+    "Toy.Hoare.BExp.eval.eq_7": [],
+    "Toy.Hoare.BExp.eval.eq_8": [],
+    "Toy.Hoare.BExp.eval.eq_def": [],
+    "Toy.Hoare.BExp.eval.match_1": [],
+    "Toy.Hoare.BExp.ff": [],
+    "Toy.Hoare.BExp.ff.elim": [],
+    "Toy.Hoare.BExp.ff.sizeOf_spec": [],
+    "Toy.Hoare.BExp.le": [],
+    "Toy.Hoare.BExp.le.elim": [],
+    "Toy.Hoare.BExp.le.inj": [],
+    "Toy.Hoare.BExp.le.injEq": [
+      "propext"
+    ],
+    "Toy.Hoare.BExp.le.noConfusion": [],
+    "Toy.Hoare.BExp.le.sizeOf_spec": [],
+    "Toy.Hoare.BExp.lt": [],
+    "Toy.Hoare.BExp.lt.elim": [],
+    "Toy.Hoare.BExp.lt.inj": [],
+    "Toy.Hoare.BExp.lt.injEq": [
+      "propext"
+    ],
+    "Toy.Hoare.BExp.lt.noConfusion": [],
+    "Toy.Hoare.BExp.lt.sizeOf_spec": [],
+    "Toy.Hoare.BExp.noConfusion": [],
+    "Toy.Hoare.BExp.noConfusionType": [],
+    "Toy.Hoare.BExp.not": [],
+    "Toy.Hoare.BExp.not.elim": [],
+    "Toy.Hoare.BExp.not.inj": [],
+    "Toy.Hoare.BExp.not.injEq": [
+      "propext"
+    ],
+    "Toy.Hoare.BExp.not.noConfusion": [],
+    "Toy.Hoare.BExp.not.sizeOf_spec": [],
+    "Toy.Hoare.BExp.or": [],
+    "Toy.Hoare.BExp.or.elim": [],
+    "Toy.Hoare.BExp.or.inj": [],
+    "Toy.Hoare.BExp.or.injEq": [
+      "propext"
+    ],
+    "Toy.Hoare.BExp.or.noConfusion": [],
+    "Toy.Hoare.BExp.or.sizeOf_spec": [],
+    "Toy.Hoare.BExp.rec": [],
+    "Toy.Hoare.BExp.recOn": [],
+    "Toy.Hoare.BExp.tt": [],
+    "Toy.Hoare.BExp.tt.elim": [],
+    "Toy.Hoare.BExp.tt.sizeOf_spec": [],
+    "Toy.Hoare.Com": [],
+    "Toy.Hoare.Com.assign": [],
+    "Toy.Hoare.Com.assign.elim": [],
+    "Toy.Hoare.Com.assign.inj": [],
+    "Toy.Hoare.Com.assign.injEq": [
+      "propext"
+    ],
+    "Toy.Hoare.Com.assign.noConfusion": [],
+    "Toy.Hoare.Com.assign.sizeOf_spec": [],
+    "Toy.Hoare.Com.below": [],
+    "Toy.Hoare.Com.brecOn": [],
+    "Toy.Hoare.Com.brecOn.eq": [],
+    "Toy.Hoare.Com.brecOn.go": [],
+    "Toy.Hoare.Com.casesOn": [],
+    "Toy.Hoare.Com.cond": [],
+    "Toy.Hoare.Com.cond.elim": [],
+    "Toy.Hoare.Com.cond.inj": [],
+    "Toy.Hoare.Com.cond.injEq": [
+      "propext"
+    ],
+    "Toy.Hoare.Com.cond.noConfusion": [],
+    "Toy.Hoare.Com.cond.sizeOf_spec": [],
+    "Toy.Hoare.Com.ctorElim": [],
+    "Toy.Hoare.Com.ctorElimType": [],
+    "Toy.Hoare.Com.ctorIdx": [],
+    "Toy.Hoare.Com.noConfusion": [],
+    "Toy.Hoare.Com.noConfusionType": [],
+    "Toy.Hoare.Com.rec": [],
+    "Toy.Hoare.Com.recOn": [],
+    "Toy.Hoare.Com.seq": [],
+    "Toy.Hoare.Com.seq.elim": [],
+    "Toy.Hoare.Com.seq.inj": [],
+    "Toy.Hoare.Com.seq.injEq": [
+      "propext"
+    ],
+    "Toy.Hoare.Com.seq.noConfusion": [],
+    "Toy.Hoare.Com.seq.sizeOf_spec": [],
+    "Toy.Hoare.Com.skip": [],
+    "Toy.Hoare.Com.skip.elim": [],
+    "Toy.Hoare.Com.skip.sizeOf_spec": [],
+    "Toy.Hoare.Com.whileDo": [],
+    "Toy.Hoare.Com.whileDo.elim": [],
+    "Toy.Hoare.Com.whileDo.inj": [],
+    "Toy.Hoare.Com.whileDo.injEq": [
+      "propext"
+    ],
+    "Toy.Hoare.Com.whileDo.noConfusion": [],
+    "Toy.Hoare.Com.whileDo.sizeOf_spec": [],
+    "Toy.Hoare.Deriv": [],
+    "Toy.Hoare.Deriv.assign": [],
+    "Toy.Hoare.Deriv.below": [],
+    "Toy.Hoare.Deriv.below.assign": [],
+    "Toy.Hoare.Deriv.below.casesOn": [],
+    "Toy.Hoare.Deriv.below.cond": [],
+    "Toy.Hoare.Deriv.below.conseq": [],
+    "Toy.Hoare.Deriv.below.rec": [],
+    "Toy.Hoare.Deriv.below.seq": [],
+    "Toy.Hoare.Deriv.below.skip": [],
+    "Toy.Hoare.Deriv.below.whileDo": [],
+    "Toy.Hoare.Deriv.brecOn": [],
+    "Toy.Hoare.Deriv.casesOn": [],
+    "Toy.Hoare.Deriv.cond": [],
+    "Toy.Hoare.Deriv.conseq": [],
+    "Toy.Hoare.Deriv.mono": [],
+    "Toy.Hoare.Deriv.rec": [],
+    "Toy.Hoare.Deriv.recOn": [],
+    "Toy.Hoare.Deriv.seq": [],
+    "Toy.Hoare.Deriv.seq_inv": [],
+    "Toy.Hoare.Deriv.skip": [],
+    "Toy.Hoare.Deriv.whileDo": [],
+    "Toy.Hoare.Deriv.whileDo_inv": [],
+    "Toy.Hoare.Exec": [],
+    "Toy.Hoare.Exec.assign": [],
+    "Toy.Hoare.Exec.below": [],
+    "Toy.Hoare.Exec.below.assign": [],
+    "Toy.Hoare.Exec.below.casesOn": [],
+    "Toy.Hoare.Exec.below.condFalse": [],
+    "Toy.Hoare.Exec.below.condTrue": [],
+    "Toy.Hoare.Exec.below.rec": [],
+    "Toy.Hoare.Exec.below.seq": [],
+    "Toy.Hoare.Exec.below.skip": [],
+    "Toy.Hoare.Exec.below.whileFalse": [],
+    "Toy.Hoare.Exec.below.whileTrue": [],
+    "Toy.Hoare.Exec.brecOn": [],
+    "Toy.Hoare.Exec.casesOn": [],
+    "Toy.Hoare.Exec.condFalse": [],
+    "Toy.Hoare.Exec.condTrue": [],
+    "Toy.Hoare.Exec.deterministic": [],
+    "Toy.Hoare.Exec.rec": [],
+    "Toy.Hoare.Exec.recOn": [],
+    "Toy.Hoare.Exec.seq": [],
+    "Toy.Hoare.Exec.skip": [],
+    "Toy.Hoare.Exec.whileFalse": [],
+    "Toy.Hoare.Exec.whileTrue": [],
+    "Toy.Hoare.HeadReach": [],
+    "Toy.Hoare.HeadReach.below": [],
+    "Toy.Hoare.HeadReach.below.casesOn": [],
+    "Toy.Hoare.HeadReach.below.init": [],
+    "Toy.Hoare.HeadReach.below.rec": [],
+    "Toy.Hoare.HeadReach.below.step": [],
+    "Toy.Hoare.HeadReach.brecOn": [],
+    "Toy.Hoare.HeadReach.casesOn": [],
+    "Toy.Hoare.HeadReach.init": [],
+    "Toy.Hoare.HeadReach.rec": [],
+    "Toy.Hoare.HeadReach.recOn": [],
+    "Toy.Hoare.HeadReach.step": [],
+    "Toy.Hoare.LAssn": [],
+    "Toy.Hoare.LAssn.and": [],
+    "Toy.Hoare.LAssn.and.elim": [],
+    "Toy.Hoare.LAssn.and.inj": [],
+    "Toy.Hoare.LAssn.and.injEq": [
+      "propext"
+    ],
+    "Toy.Hoare.LAssn.and.noConfusion": [],
+    "Toy.Hoare.LAssn.and.sizeOf_spec": [],
+    "Toy.Hoare.LAssn.below": [],
+    "Toy.Hoare.LAssn.brecOn": [],
+    "Toy.Hoare.LAssn.brecOn.eq": [],
+    "Toy.Hoare.LAssn.brecOn.go": [],
+    "Toy.Hoare.LAssn.casesOn": [],
+    "Toy.Hoare.LAssn.ctorElim": [],
+    "Toy.Hoare.LAssn.ctorElimType": [],
+    "Toy.Hoare.LAssn.ctorIdx": [],
+    "Toy.Hoare.LAssn.eq": [],
+    "Toy.Hoare.LAssn.eq.elim": [],
+    "Toy.Hoare.LAssn.eq.inj": [],
+    "Toy.Hoare.LAssn.eq.injEq": [
+      "propext"
+    ],
+    "Toy.Hoare.LAssn.eq.noConfusion": [],
+    "Toy.Hoare.LAssn.eq.sizeOf_spec": [],
+    "Toy.Hoare.LAssn.eval": [],
+    "Toy.Hoare.LAssn.eval.eq_1": [],
+    "Toy.Hoare.LAssn.eval.eq_2": [],
+    "Toy.Hoare.LAssn.eval.eq_3": [],
+    "Toy.Hoare.LAssn.eval.eq_4": [],
+    "Toy.Hoare.LAssn.eval.eq_5": [],
+    "Toy.Hoare.LAssn.eval.eq_6": [],
+    "Toy.Hoare.LAssn.eval.eq_def": [],
+    "Toy.Hoare.LAssn.eval.match_1": [],
+    "Toy.Hoare.LAssn.eventually_const_on_affineLine": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.LAssn.le": [],
+    "Toy.Hoare.LAssn.le.elim": [],
+    "Toy.Hoare.LAssn.le.inj": [],
+    "Toy.Hoare.LAssn.le.injEq": [
+      "propext"
+    ],
+    "Toy.Hoare.LAssn.le.noConfusion": [],
+    "Toy.Hoare.LAssn.le.sizeOf_spec": [],
+    "Toy.Hoare.LAssn.noConfusion": [],
+    "Toy.Hoare.LAssn.noConfusionType": [],
+    "Toy.Hoare.LAssn.not": [],
+    "Toy.Hoare.LAssn.not.elim": [],
+    "Toy.Hoare.LAssn.not.inj": [],
+    "Toy.Hoare.LAssn.not.injEq": [
+      "propext"
+    ],
+    "Toy.Hoare.LAssn.not.noConfusion": [],
+    "Toy.Hoare.LAssn.not.sizeOf_spec": [],
+    "Toy.Hoare.LAssn.or": [],
+    "Toy.Hoare.LAssn.or.elim": [],
+    "Toy.Hoare.LAssn.or.inj": [],
+    "Toy.Hoare.LAssn.or.injEq": [
+      "propext"
+    ],
+    "Toy.Hoare.LAssn.or.noConfusion": [],
+    "Toy.Hoare.LAssn.or.sizeOf_spec": [],
+    "Toy.Hoare.LAssn.rec": [],
+    "Toy.Hoare.LAssn.recOn": [],
+    "Toy.Hoare.LAssn.tt": [],
+    "Toy.Hoare.LAssn.tt.elim": [],
+    "Toy.Hoare.LAssn.tt.sizeOf_spec": [],
+    "Toy.Hoare.LTerm": [],
+    "Toy.Hoare.LTerm.add": [],
+    "Toy.Hoare.LTerm.add.elim": [],
+    "Toy.Hoare.LTerm.add.inj": [],
+    "Toy.Hoare.LTerm.add.injEq": [
+      "propext"
+    ],
+    "Toy.Hoare.LTerm.add.noConfusion": [],
+    "Toy.Hoare.LTerm.add.sizeOf_spec": [],
+    "Toy.Hoare.LTerm.below": [],
+    "Toy.Hoare.LTerm.brecOn": [],
+    "Toy.Hoare.LTerm.brecOn.eq": [],
+    "Toy.Hoare.LTerm.brecOn.go": [],
+    "Toy.Hoare.LTerm.casesOn": [],
+    "Toy.Hoare.LTerm.ctorElim": [],
+    "Toy.Hoare.LTerm.ctorElimType": [],
+    "Toy.Hoare.LTerm.ctorIdx": [],
+    "Toy.Hoare.LTerm.eval": [],
+    "Toy.Hoare.LTerm.eval.eq_1": [],
+    "Toy.Hoare.LTerm.eval.eq_2": [],
+    "Toy.Hoare.LTerm.eval.eq_3": [],
+    "Toy.Hoare.LTerm.eval.eq_4": [],
+    "Toy.Hoare.LTerm.eval.eq_5": [],
+    "Toy.Hoare.LTerm.eval.eq_def": [],
+    "Toy.Hoare.LTerm.eval.match_1": [],
+    "Toy.Hoare.LTerm.eval_affine": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.LTerm.lit": [],
+    "Toy.Hoare.LTerm.lit.elim": [],
+    "Toy.Hoare.LTerm.lit.inj": [],
+    "Toy.Hoare.LTerm.lit.injEq": [
+      "propext"
+    ],
+    "Toy.Hoare.LTerm.lit.noConfusion": [],
+    "Toy.Hoare.LTerm.lit.sizeOf_spec": [],
+    "Toy.Hoare.LTerm.noConfusion": [],
+    "Toy.Hoare.LTerm.noConfusionType": [],
+    "Toy.Hoare.LTerm.rec": [],
+    "Toy.Hoare.LTerm.recOn": [],
+    "Toy.Hoare.LTerm.smul": [],
+    "Toy.Hoare.LTerm.smul.elim": [],
+    "Toy.Hoare.LTerm.smul.inj": [],
+    "Toy.Hoare.LTerm.smul.injEq": [
+      "propext"
+    ],
+    "Toy.Hoare.LTerm.smul.noConfusion": [],
+    "Toy.Hoare.LTerm.smul.sizeOf_spec": [],
+    "Toy.Hoare.LTerm.sub": [],
+    "Toy.Hoare.LTerm.sub.elim": [],
+    "Toy.Hoare.LTerm.sub.inj": [],
+    "Toy.Hoare.LTerm.sub.injEq": [
+      "propext"
+    ],
+    "Toy.Hoare.LTerm.sub.noConfusion": [],
+    "Toy.Hoare.LTerm.sub.sizeOf_spec": [],
+    "Toy.Hoare.LTerm.var": [],
+    "Toy.Hoare.LTerm.var.elim": [],
+    "Toy.Hoare.LTerm.var.inj": [],
+    "Toy.Hoare.LTerm.var.injEq": [
+      "propext"
+    ],
+    "Toy.Hoare.LTerm.var.noConfusion": [],
+    "Toy.Hoare.LTerm.var.sizeOf_spec": [],
+    "Toy.Hoare.LinDef": [],
+    "Toy.Hoare.Store": [],
+    "Toy.Hoare.TDeriv": [],
+    "Toy.Hoare.TDeriv.assign": [],
+    "Toy.Hoare.TDeriv.below": [],
+    "Toy.Hoare.TDeriv.below.assign": [],
+    "Toy.Hoare.TDeriv.below.casesOn": [],
+    "Toy.Hoare.TDeriv.below.cond": [],
+    "Toy.Hoare.TDeriv.below.conseq": [],
+    "Toy.Hoare.TDeriv.below.rec": [],
+    "Toy.Hoare.TDeriv.below.seq": [],
+    "Toy.Hoare.TDeriv.below.skip": [],
+    "Toy.Hoare.TDeriv.below.whileDo": [],
+    "Toy.Hoare.TDeriv.brecOn": [],
+    "Toy.Hoare.TDeriv.casesOn": [],
+    "Toy.Hoare.TDeriv.cond": [],
+    "Toy.Hoare.TDeriv.conseq": [],
+    "Toy.Hoare.TDeriv.rec": [],
+    "Toy.Hoare.TDeriv.recOn": [],
+    "Toy.Hoare.TDeriv.seq": [],
+    "Toy.Hoare.TDeriv.skip": [],
+    "Toy.Hoare.TDeriv.whileDo": [],
+    "Toy.Hoare.TValid": [],
+    "Toy.Hoare.TValid.valid": [],
+    "Toy.Hoare.VCsValid": [],
+    "Toy.Hoare.VCsValid.append": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.VCsValid.cons": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.VCsValid.eq_1": [],
+    "Toy.Hoare.Valid": [],
+    "Toy.Hoare.WlpAdmissibleFor": [],
+    "Toy.Hoare.WlpInvented": [],
+    "Toy.Hoare.WlpInvented.match_1": [],
+    "Toy.Hoare.aexp_eval_example_neg": [],
+    "Toy.Hoare.aexp_eval_example_pos": [],
+    "Toy.Hoare.affineLine_const": [
+      "propext"
+    ],
+    "Toy.Hoare.affineLine_diag": [
+      "propext"
+    ],
+    "Toy.Hoare.affineLine_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.affineLine_example_pos": [
+      "propext"
+    ],
+    "Toy.Hoare.affine_eq_eventually_const": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.affine_le_eventually_const": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.alternating_hyp_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.alternating_needs_affine": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.annotWlp": [],
+    "Toy.Hoare.annotWlp.eq_1": [],
+    "Toy.Hoare.annotWlp.eq_2": [],
+    "Toy.Hoare.annotWlp.eq_3": [],
+    "Toy.Hoare.annotWlp.eq_4": [],
+    "Toy.Hoare.annotWlp.eq_5": [],
+    "Toy.Hoare.annotWlp.eq_def": [],
+    "Toy.Hoare.annotWlp.match_1": [],
+    "Toy.Hoare.annotWlp_example_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.annotWlp_example_pos": [],
+    "Toy.Hoare.anyAssn_example_pos": [],
+    "Toy.Hoare.assignUpTo": [],
+    "Toy.Hoare.assignUpTo.match_1": [],
+    "Toy.Hoare.bexp_eval_example_neg": [],
+    "Toy.Hoare.bexp_eval_example_pos": [],
+    "Toy.Hoare.countdown": [],
+    "Toy.Hoare.countdown_tderiv": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.deadBranchAnn": [],
+    "Toy.Hoare.deadBranchAnn.eq_1": [],
+    "Toy.Hoare.deriv_anyAssn_iff_valid": [],
+    "Toy.Hoare.deriv_example_neg": [
+      "propext"
+    ],
+    "Toy.Hoare.deriv_example_neg_empty_L": [],
+    "Toy.Hoare.deriv_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.deriv_example_pos_empty_L": [
+      "propext"
+    ],
+    "Toy.Hoare.deriv_wlp_needs_admissible": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.deriv_wlp_of_wlpAdmissibleFor": [],
+    "Toy.Hoare.deriv_wlp_wlpInvented": [],
+    "Toy.Hoare.downBody": [],
+    "Toy.Hoare.downLoop": [],
+    "Toy.Hoare.erase_annotWlp": [
+      "propext"
+    ],
+    "Toy.Hoare.erase_example_neg": [],
+    "Toy.Hoare.erase_example_pos": [],
+    "Toy.Hoare.eventually_const_needs_affine": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.exBody": [],
+    "Toy.Hoare.exGhostAnn": [],
+    "Toy.Hoare.exGhostAnn.eq_1": [],
+    "Toy.Hoare.exGhostInv": [],
+    "Toy.Hoare.exGhostInv.eq_1": [],
+    "Toy.Hoare.exGhostInv_linDef": [
+      "propext"
+    ],
+    "Toy.Hoare.exGuard": [],
+    "Toy.Hoare.exGuard_eval": [],
+    "Toy.Hoare.exLoop": [],
+    "Toy.Hoare.exLoop.eq_1": [],
+    "Toy.Hoare.exLoopGhost": [],
+    "Toy.Hoare.exLoopGhost_linDef_control": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.exLoop_deriv_anyAssn": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.exLoop_deriv_linDef_pre_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.exLoop_deriv_linDef_weak_post": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.exLoop_invariant_parity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.exLoop_linDef_control_pre_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.exLoop_linDef_control_weak_post": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.exLoop_no_linDef_invariant": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.exLoop_valid": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.exParityAnn": [],
+    "Toy.Hoare.exParityAnn.eq_1": [],
+    "Toy.Hoare.exParityAnn_verifies": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.exParityInv": [],
+    "Toy.Hoare.exParityInv.eq_1": [],
+    "Toy.Hoare.exParityInv_ne_wlp_exLoop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.exPost": [],
+    "Toy.Hoare.exPost.eq_1": [],
+    "Toy.Hoare.exPostL": [],
+    "Toy.Hoare.exPostL.eq_1": [],
+    "Toy.Hoare.exPostWeak": [],
+    "Toy.Hoare.exPostWeak.eq_1": [],
+    "Toy.Hoare.exPostWeak_linDef": [
+      "propext"
+    ],
+    "Toy.Hoare.exPost_linDef": [
+      "propext"
+    ],
+    "Toy.Hoare.exPre": [],
+    "Toy.Hoare.exPre.eq_1": [],
+    "Toy.Hoare.exPreL": [],
+    "Toy.Hoare.exPreL.eq_1": [],
+    "Toy.Hoare.exPre_linDef": [
+      "propext"
+    ],
+    "Toy.Hoare.exTrueAnn": [],
+    "Toy.Hoare.exTrueAnn.eq_1": [],
+    "Toy.Hoare.exZeroAnn": [],
+    "Toy.Hoare.exZeroAnn.eq_1": [],
+    "Toy.Hoare.exec_assignUpTo": [],
+    "Toy.Hoare.exec_exBody_st2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.exec_exLoop_even": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.exec_exLoop_odd": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.exec_example_neg": [
+      "propext"
+    ],
+    "Toy.Hoare.exec_example_neg_diverge": [],
+    "Toy.Hoare.exec_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.exec_while_invariant": [],
+    "Toy.Hoare.exec_while_tt_diverges": [],
+    "Toy.Hoare.falseLoopAnn": [],
+    "Toy.Hoare.headReach_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.headReach_example_pos": [],
+    "Toy.Hoare.headReach_nc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.hoare_relatively_complete_of_wlpAdmissibleFor": [],
+    "Toy.Hoare.hoare_sound": [],
+    "Toy.Hoare.hoare_sound_deriv_tight": [
+      "propext"
+    ],
+    "Toy.Hoare.instDecidableEqAExp": [],
+    "Toy.Hoare.instDecidableEqAExp.decEq": [],
+    "Toy.Hoare.instDecidableEqAExp.decEq.match_1": [],
+    "Toy.Hoare.instDecidableEqBExp": [],
+    "Toy.Hoare.instDecidableEqBExp.decEq": [],
+    "Toy.Hoare.instDecidableEqBExp.decEq.match_1": [],
+    "Toy.Hoare.instDecidableEqCom": [],
+    "Toy.Hoare.instDecidableEqCom.decEq": [],
+    "Toy.Hoare.instDecidableEqCom.decEq.match_1": [],
+    "Toy.Hoare.instDecidableEqLAssn": [],
+    "Toy.Hoare.instDecidableEqLAssn.decEq": [],
+    "Toy.Hoare.instDecidableEqLAssn.decEq.match_1": [],
+    "Toy.Hoare.instDecidableEqLTerm": [],
+    "Toy.Hoare.instDecidableEqLTerm.decEq": [],
+    "Toy.Hoare.instDecidableEqLTerm.decEq.match_1": [],
+    "Toy.Hoare.instReprAExp": [
+      "propext"
+    ],
+    "Toy.Hoare.instReprAExp.repr": [
+      "propext"
+    ],
+    "Toy.Hoare.instReprAExp.repr.match_1": [],
+    "Toy.Hoare.instReprBExp": [
+      "propext"
+    ],
+    "Toy.Hoare.instReprBExp.repr": [
+      "propext"
+    ],
+    "Toy.Hoare.instReprBExp.repr.match_1": [],
+    "Toy.Hoare.instReprCom": [
+      "propext"
+    ],
+    "Toy.Hoare.instReprCom.repr": [
+      "propext"
+    ],
+    "Toy.Hoare.instReprCom.repr.match_1": [],
+    "Toy.Hoare.instReprLAssn": [
+      "propext"
+    ],
+    "Toy.Hoare.instReprLAssn.repr": [
+      "propext"
+    ],
+    "Toy.Hoare.instReprLAssn.repr.match_1": [],
+    "Toy.Hoare.instReprLTerm": [
+      "propext"
+    ],
+    "Toy.Hoare.instReprLTerm.repr": [
+      "propext"
+    ],
+    "Toy.Hoare.instReprLTerm.repr.match_1": [],
+    "Toy.Hoare.invalid_assign_triple": [
+      "propext"
+    ],
+    "Toy.Hoare.invsIn_example_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.invsIn_example_pos": [],
+    "Toy.Hoare.lassnEvalParabolaNeighborEq": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.lassnEval_eq_of_eq_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.lassnMaxVar": [],
+    "Toy.Hoare.lassnMaxVar.eq_1": [],
+    "Toy.Hoare.lassnMaxVar.eq_2": [],
+    "Toy.Hoare.lassnMaxVar.eq_3": [],
+    "Toy.Hoare.lassnMaxVar.eq_4": [],
+    "Toy.Hoare.lassnMaxVar.eq_5": [],
+    "Toy.Hoare.lassnMaxVar.eq_6": [],
+    "Toy.Hoare.lassnMaxVar.eq_def": [],
+    "Toy.Hoare.lassnMaxVar.match_1": [],
+    "Toy.Hoare.lassn_eval_example_neg": [],
+    "Toy.Hoare.lassn_eval_example_pos": [],
+    "Toy.Hoare.lassn_eventually_const_one_sided": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.linDef_example_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.linDef_example_pos": [
+      "propext"
+    ],
+    "Toy.Hoare.linDef_forall_wlp_iff_tautology": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.linear_qf_hoare_incomplete": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.linear_qf_not_expressive_wlp_exLoop": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.ltermEvalSt2Linear": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.ltermEval_eq_of_eq_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.ltermMaxVar": [],
+    "Toy.Hoare.ltermMaxVar.eq_1": [],
+    "Toy.Hoare.ltermMaxVar.eq_2": [],
+    "Toy.Hoare.ltermMaxVar.eq_3": [],
+    "Toy.Hoare.ltermMaxVar.eq_4": [],
+    "Toy.Hoare.ltermMaxVar.eq_5": [],
+    "Toy.Hoare.ltermMaxVar.eq_def": [],
+    "Toy.Hoare.ltermMaxVar.match_1": [],
+    "Toy.Hoare.lterm_eval_example_neg": [],
+    "Toy.Hoare.lterm_eval_example_pos": [],
+    "Toy.Hoare.ncAnn": [],
+    "Toy.Hoare.ncAnn.eq_1": [],
+    "Toy.Hoare.ncAnnLin": [],
+    "Toy.Hoare.ncAnnLin.eq_1": [],
+    "Toy.Hoare.ncAnnLin_verifies": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.ncBody": [],
+    "Toy.Hoare.ncGuard": [],
+    "Toy.Hoare.ncGuard.eq_1": [],
+    "Toy.Hoare.ncGuard_eval": [],
+    "Toy.Hoare.ncInv": [],
+    "Toy.Hoare.ncInv.eq_1": [],
+    "Toy.Hoare.ncInv_not_k_inductive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.ncPost": [],
+    "Toy.Hoare.ncPost.eq_1": [],
+    "Toy.Hoare.ncPre": [],
+    "Toy.Hoare.ncPre.eq_1": [],
+    "Toy.Hoare.nonvacuity_eventually_const_and_alternating": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.nonvacuity_hoare_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.nonvacuity_relcomp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.nonvacuity_semantic_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.nonvacuity_total_sound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.nonvacuity_vcgen_linear_qf_incomplete": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.nonvacuity_vcgen_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.nonvacuity_vcs_annotWlp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.nonvacuity_wlp_exLoop_nontrivial": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.not_linDef_of_alternating_on_affineLine": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.overwriteUpTo": [],
+    "Toy.Hoare.overwriteUpTo.eq_1": [],
+    "Toy.Hoare.overwriteUpTo.eq_2": [],
+    "Toy.Hoare.overwriteUpTo.eq_def": [],
+    "Toy.Hoare.overwriteUpTo_apply": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.parityTrap": [],
+    "Toy.Hoare.parity_not_linDef": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.quadSeqAnn": [],
+    "Toy.Hoare.quadSeqAnn.eq_1": [],
+    "Toy.Hoare.quadSeqCom": [],
+    "Toy.Hoare.relcomp_valid_tight": [
+      "propext"
+    ],
+    "Toy.Hoare.relcomp_wlp_admissible_tight": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.semantic_iff_needs_anyAssn": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.st2": [],
+    "Toy.Hoare.st2.eq_1": [],
+    "Toy.Hoare.tderiv_example_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.tderiv_example_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.total_sound_of_bounded_variant": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.tvalid_example_neg": [],
+    "Toy.Hoare.tvalid_example_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.unbounded_variant_unsound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.upd": [],
+    "Toy.Hoare.upd.eq_1": [],
+    "Toy.Hoare.upd_example_neg": [],
+    "Toy.Hoare.upd_example_pos": [],
+    "Toy.Hoare.upd_other": [
+      "propext"
+    ],
+    "Toy.Hoare.upd_same": [
+      "propext"
+    ],
+    "Toy.Hoare.upd_st2_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.valid_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.valid_example_pos_diverge": [],
+    "Toy.Hoare.valid_iff_deriv_wlpInvented": [],
+    "Toy.Hoare.valid_iff_imp_wlp": [],
+    "Toy.Hoare.valid_iff_vcs_annotWlp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.vcgen": [],
+    "Toy.Hoare.vcgen.eq_1": [],
+    "Toy.Hoare.vcgen.eq_2": [],
+    "Toy.Hoare.vcgen.eq_3": [],
+    "Toy.Hoare.vcgen.eq_4": [],
+    "Toy.Hoare.vcgen.eq_5": [],
+    "Toy.Hoare.vcgen.eq_def": [],
+    "Toy.Hoare.vcgen.match_1": [],
+    "Toy.Hoare.vcgen_annotWlp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.vcgen_deriv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.vcgen_erase_hyp_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.vcgen_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.vcgen_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.vcgen_ghost_linDef_control": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.vcgen_invsIn_hyp_tight": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.vcgen_linDef_control_pre_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.vcgen_linDef_control_weak_post": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.vcgen_linDef_verifies_quad_seq_but_not_deriv_linDef": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.vcgen_linear_qf_annotations_incomplete": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.vcgen_linear_qf_annotations_incomplete.match_1_1": [],
+    "Toy.Hoare.vcgen_reachable_noninductive_annotation_fails": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.vcgen_side_conditions_ignore_branch_guards": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.vcgen_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.vcgen_sound_pre_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.vcgen_sound_vcs_tight": [],
+    "Toy.Hoare.vcsValid_example_neg": [
+      "propext"
+    ],
+    "Toy.Hoare.vcsValid_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.wlp": [],
+    "Toy.Hoare.wlpAdmissibleFor_example_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.wlpAdmissibleFor_example_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.wlpAdmissibleFor_not_necessary": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.wlpAdmissibleFor_of_expressive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.wlpAdmissibleFor_of_forall_wlp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.wlpInvented_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.wlpInvented_example_pos": [],
+    "Toy.Hoare.wlp_countdown_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.wlp_exLoop_anyAssn": [],
+    "Toy.Hoare.wlp_exLoop_st2_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.wlp_exLoop_weak_post_linDef": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.wlp_example_neg": [
+      "propext"
+    ],
+    "Toy.Hoare.wlp_example_pos": [
+      "propext"
+    ],
+    "Toy.Hoare.wlp_iff_of_exec": [],
+    "Toy.Hoare.wlp_seq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hoare.wlp_valid": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

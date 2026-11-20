@@ -1,0 +1,572 @@
+[
+  {
+    "id": "hoare-soundness",
+    "lean": [
+      "Toy.Hoare.hoare_sound"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Re-derivation of semantic soundness of the partial-correctness rules (rules: Hoare 1969, after Floyd 1967; semantic soundness: Hoare and Lauer 1974, Cook 1978); mechanized before in Isabelle/HOL (Nipkow 1998; Concrete Semantics, Hoare_Sound_Complete.thy). Software Foundations proves the individual rules valid but leaves hoare_sound for its derivability judgement as an exercise.",
+    "plain_claim": "For every admissibility predicate L on assertions, every triple {P} c {Q} derivable with the skip, assignment, sequencing, conditional, while and consequence rules (consequence premises being true semantic implications, and seq midpoints and loop invariants satisfying L) is valid in partial correctness: every terminating run of c from a state satisfying P ends in a state satisfying Q.",
+    "hypotheses": [
+      {
+        "name": "h : Deriv L P c Q",
+        "purpose": "the triple must be produced by the rules; without it the conclusion is an arbitrary validity claim",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Hoare.hoare_sound_deriv_tight"
+        ]
+      },
+      {
+        "name": "L : Assn -> Prop (arbitrary, no assumption)",
+        "purpose": "soundness does not depend on which assertions a derivation may invent",
+        "tightness": "harmless"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "{true} while 2 <= x do x := x - 2 {x <= 1} is derivable with L = LinDef (invariant true), and {x = y + y} while 2 <= x do x := x - 2 {x != 1} with L = AnyAssn (invariant x even).",
+    "nonvacuity_witness_lean": [
+      "Toy.Hoare.nonvacuity_hoare_sound"
+    ],
+    "non_claims": [
+      "Soundness is relative to the consequence premises being true semantic implications; in Lean they are proofs. Nothing is claimed about a verifier whose implication checker is unsound.",
+      "Partial correctness only: a derivable triple says nothing about termination (see total-soundness-bounded-variant).",
+      "Says nothing about how to find derivations, about decidability, or about proof size.",
+      "Deriv L restricts only sequencing midpoints and while-loop invariants to L; pre- and postconditions, assignment preconditions Q[e/x], branch-guarded preconditions P and b, and the intermediate assertions P', Q' of the consequence rule remain unrestricted semantic predicates.",
+      "Deriv L and verification by vcgen with loop annotations in L (ACom.InvsIn L) do not coincide in general: Deriv.seq requires an L midpoint at every ';', while vcgen propagates preconditions across ';' and assignments semantically (for L = LinDef see vcgen_linDef_verifies_quad_seq_but_not_deriv_linDef).",
+      "Toy model only: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics; nothing is claimed about any production verifier."
+    ],
+    "prior_art": [
+      "C. A. R. Hoare, \"An axiomatic basis for computer programming\", Communications of the ACM 12(10):576-580, 583, October 1969, doi:10.1145/363235.363259. Introduces the triple notation, the assignment axiom and the rules of consequence, composition and iteration for structured programs; it defines no operational semantics and proves no soundness theorem.",
+      "R. W. Floyd, \"Assigning meanings to programs\", in Mathematical Aspects of Computer Science, Proceedings of Symposia in Applied Mathematics 19, American Mathematical Society, 1967, pp. 19-32, doi:10.1090/psapm/019/0235771. Inductive assertions attached to flowcharts, verification conditions along control-flow paths, and termination by decreasing functions into a well-founded set.",
+      "C. A. R. Hoare and P. E. Lauer, \"Consistent and complementary formal theories of the semantics of programming languages\", Acta Informatica 3(2):135-153, 1974, doi:10.1007/BF00264034. Shows an axiomatic definition of a simple language consistent with an interpretive (operational) one, i.e. semantic soundness of Hoare-style rules.",
+      "S. A. Cook, \"Soundness and completeness of an axiom system for program verification\", SIAM Journal on Computing 7(1):70-90, 1978, doi:10.1137/0207005. Soundness and relative completeness of a Hoare system for an ALGOL-like language, relative to an expressive assertion language and an oracle for true assertions.",
+      "K. R. Apt, \"Ten years of Hoare's logic: a survey - part I\", ACM Transactions on Programming Languages and Systems 3(4):431-483, October 1981, doi:10.1145/357146.357150. Survey of soundness, relative completeness and expressiveness for while programs.",
+      "T. Nipkow, \"Winskel is (almost) right: Towards a mechanized semantics textbook\", Formal Aspects of Computing 10(2):171-186, 1998, doi:10.1007/s001650050009. Isabelle/HOL mechanization of semantics material from Winskel's textbook, including Hoare logic for IMP.",
+      "T. Nipkow and G. Klein, Concrete Semantics with Isabelle/HOL, Springer, 2014, doi:10.1007/978-3-319-10542-0; chapter 12 \"Hoare Logic\" (doi:10.1007/978-3-319-10542-0_12). Mechanized in the Isabelle sources src/HOL/IMP/Hoare_Sound_Complete.thy (hoare_sound; hoare_complete via wp over semantic assertions; corollary hoare_sound_complete, derivable iff valid) and src/HOL/IMP/VCG.thy (vc_sound; vc_complete: from a derivation of {P}c{Q} there exists an annotation C with strip C = c, vc C Q and P implying pre C Q; side conditions are checked in every state), repository isabelle-prover/mirror-isabelle at commit 20d6a3f7ffbaaa82e77f341d90db5070b3428fbe.",
+      "B. C. Pierce et al., Software Foundations, volume 2: Programming Language Foundations, version 7.1 (2026-08-24), Rocq, semantic (shallow-embedded) assertions over natural-number variables. Chapter Hoare proves the individual rules valid (hoare_skip, hoare_asgn, hoare_seq, hoare_consequence, ...); chapter HoareAsLogic defines an inductive derivability judgement and wp, and poses both hoare_sound and hoare_complete as exercises whose proofs are left Admitted (it states no derivable-iff-valid theorem).",
+      "A. Baanen, A. Bentkamp, J. Blanchette, X. Généreux, J. Hölzl and J. Limperg, The Hitchhiker's Guide to Logical Verification (2025 edition), Lean 4 sources in repository lean-forward/logical_verification_2025, commit 76421700cb010aeddeb2b2a4a93e538b92b0e585: lean/LoVe/LoVe10_HoareLogic_Demo.lean (PartialHoare as a semantic triple, rule lemmas, and a vcg tactic for loops annotated with invariants via Stmt.invWhileDo) and lean/LoVe/LoVe10_HoareLogic_ExerciseSheet.lean (TotalHoare with Nat-valued variants, posed as exercises)."
+    ],
+    "design_question": "A verifier built on a Hoare-style program logic must be sound: what exactly must hold of the rules (and of the oracle that discharges consequence premises) for every derived triple to be valid, and what does a derivation not guarantee (termination, effectiveness)?"
+  },
+  {
+    "id": "hoare-relative-completeness-wlp-admissible",
+    "lean": [
+      "Toy.Hoare.hoare_relatively_complete_of_wlpAdmissibleFor",
+      "Toy.Hoare.valid_iff_deriv_wlpInvented",
+      "Toy.Hoare.deriv_wlp_of_wlpAdmissibleFor",
+      "Toy.Hoare.deriv_anyAssn_iff_valid"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Cook-style relative completeness (Cook 1978; Winskel 1993, chapter 7) re-derived; mechanized before for semantic assertions in Isabelle/HOL (Nipkow 1998; Concrete Semantics, Hoare_Sound_Complete.thy). The admissibility hypothesis is command-local (only the wlp's met along c), which is implied by Cook's closure of L under wlp together with L Q (wlpAdmissibleFor_of_expressive) and by admissibility of wlp c' Q for all commands c' (wlpAdmissibleFor_of_forall_wlp); the set of invented assertions is exposed as WlpInvented c Q.",
+    "plain_claim": "Relative completeness, relative to the command-local admissibility hypothesis WlpAdmissibleFor L c Q, which is assumed and not established by the theorem: for every admissibility predicate L, command c and postcondition Q, if WlpAdmissibleFor L c Q holds, i.e. every assertion in WlpInvented c Q (the seq midpoints wlp c2 S and the loop invariants wlp (while b do c') S met when computing wlp c Q backwards from Q) satisfies L, then every valid partial-correctness triple {P} c {Q} is derivable with all seq midpoints and loop invariants in L. The invented assertions are exposed: {P} c {Q} is valid if and only if it is derivable with all seq midpoints and loop invariants drawn from WlpInvented c Q. In particular, with every semantic assertion admissible (L = AnyAssn), a triple is derivable if and only if it is valid; this special case carries no admissibility hypothesis.",
+    "hypotheses": [
+      {
+        "name": "hwlp : WlpAdmissibleFor L c Q (every member of WlpInvented c Q satisfies L)",
+        "purpose": "the derivation built by the proof invents exactly these wlp assertions as midpoints and invariants",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Hoare.relcomp_wlp_admissible_tight",
+          "Toy.Hoare.deriv_wlp_needs_admissible"
+        ]
+      },
+      {
+        "name": "hv : Valid P c Q",
+        "purpose": "only valid triples can be derivable (soundness)",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Hoare.relcomp_valid_tight"
+        ]
+      },
+      {
+        "name": "L := AnyAssn (in deriv_anyAssn_iff_valid)",
+        "purpose": "with a restricted L the right-to-left direction fails",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Hoare.semantic_iff_needs_anyAssn"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "L = LinDef, c = while 0 < x do x := x - 1, Q = (x = 0) (not valid), P = (0 <= x): the only invented assertion is wlp c Q, which is 0 <= x and linear, and the triple is valid; also L = AnyAssn with {x = y + y} while 2 <= x do x := x - 2 {x != 1}. For the characterizations: that triple is derivable with WlpInvented and with AnyAssn and is valid, while {true} x := 1 {x = 0} is neither derivable nor valid.",
+    "nonvacuity_witness_lean": [
+      "Toy.Hoare.nonvacuity_relcomp",
+      "Toy.Hoare.nonvacuity_semantic_iff"
+    ],
+    "non_claims": [
+      "Deriv is a proposition: the theorems assert that a derivation exists and expose only the set WlpInvented c Q from which its seq midpoints and loop invariants are drawn (valid_iff_deriv_wlpInvented); they do not say which member is used where, and do not exclude other derivations with other invariants.",
+      "Admissibility of the wlp's along c (WlpAdmissibleFor L c Q) is sufficient but not necessary for deriving a particular valid triple {P} c {Q} in Deriv L: for example, {x = 0} while 2 <= x do x := x - 2 {x != 1} is derivable in Deriv LinDef with the stronger linear invariant x = 0, although the wlp of that loop for x != 1 is not linearly definable (wlpAdmissibleFor_not_necessary). More generally, Cook's wlp-expressiveness is not a necessary condition for completeness of Hoare's logic over a first-order structure (Bergstra and Tucker 1982).",
+      "The hypothesis is command-local on purpose: requiring L (wlp c' Q) for every command c' would hold for L = LinDef only when Q holds in every store (linDef_forall_wlp_iff_tautology). The command-local hypothesis is not claimed to be the weakest possible.",
+      "Relative completeness: consequence premises are semantic facts supplied by an oracle; nothing here gives an effective or decidable proof procedure.",
+      "No syntactic assertion language is shown to be expressive (Cook and Winskel use first-order arithmetic with quantifiers); the only syntactic language studied here (divisibility-free quantifier-free linear arithmetic) is shown not to be expressive for one loop.",
+      "Deriv L is not a fully syntactic Hoare logic over L: a syntactic calculus would also require the assignment preconditions Q[e/x] (programs may multiply variables), the guard conjunctions P and b, I and not b (guards may compare products), and the intermediate assertions P', Q' of consequence steps to belong to L; Deriv L restricts only seq midpoints and loop invariants.",
+      "Toy model only: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics; nothing is claimed about any production verifier."
+    ],
+    "prior_art": [
+      "S. A. Cook, \"Soundness and completeness of an axiom system for program verification\", SIAM Journal on Computing 7(1):70-90, 1978, doi:10.1137/0207005. Soundness and relative completeness of a Hoare system for an ALGOL-like language, relative to an expressive assertion language and an oracle for true assertions.",
+      "G. Winskel, The Formal Semantics of Programming Languages: An Introduction, MIT Press, 1993, chapter 7 \"Completeness of the Hoare rules\" (7.2 Weakest preconditions and expressiveness; 7.4 Verification conditions). Relative completeness for IMP via weakest preconditions expressed in a first-order arithmetic assertion language.",
+      "J. A. Bergstra and J. V. Tucker, \"Expressiveness and the completeness of Hoare's logic\", Journal of Computer and System Sciences 25(3):267-284, 1982, doi:10.1016/0022-0000(82)90013-7. Shows that Cook's expressiveness condition is sufficient but not necessary for completeness of Hoare's logic over a first-order structure: there are non-expressive structures whose Hoare logic is complete.",
+      "K. R. Apt, \"Ten years of Hoare's logic: a survey - part I\", ACM Transactions on Programming Languages and Systems 3(4):431-483, October 1981, doi:10.1145/357146.357150. Survey of soundness, relative completeness and expressiveness for while programs.",
+      "T. Nipkow, \"Winskel is (almost) right: Towards a mechanized semantics textbook\", Formal Aspects of Computing 10(2):171-186, 1998, doi:10.1007/s001650050009. Isabelle/HOL mechanization of semantics material from Winskel's textbook, including Hoare logic for IMP.",
+      "T. Nipkow and G. Klein, Concrete Semantics with Isabelle/HOL, Springer, 2014, doi:10.1007/978-3-319-10542-0; chapter 12 \"Hoare Logic\" (doi:10.1007/978-3-319-10542-0_12). Mechanized in the Isabelle sources src/HOL/IMP/Hoare_Sound_Complete.thy (hoare_sound; hoare_complete via wp over semantic assertions; corollary hoare_sound_complete, derivable iff valid) and src/HOL/IMP/VCG.thy (vc_sound; vc_complete: from a derivation of {P}c{Q} there exists an annotation C with strip C = c, vc C Q and P implying pre C Q; side conditions are checked in every state), repository isabelle-prover/mirror-isabelle at commit 20d6a3f7ffbaaa82e77f341d90db5070b3428fbe.",
+      "B. C. Pierce et al., Software Foundations, volume 2: Programming Language Foundations, version 7.1 (2026-08-24), Rocq, semantic (shallow-embedded) assertions over natural-number variables. Chapter Hoare proves the individual rules valid (hoare_skip, hoare_asgn, hoare_seq, hoare_consequence, ...); chapter HoareAsLogic defines an inductive derivability judgement and wp, and poses both hoare_sound and hoare_complete as exercises whose proofs are left Admitted (it states no derivable-iff-valid theorem)."
+    ],
+    "design_question": "When a program logic restricts the assertions a derivation may invent (loop invariants and intermediate assertions) to a language L, exactly which assertions must L contain for every valid triple about a given command and postcondition to be derivable, and is that condition necessary?"
+  },
+  {
+    "id": "linear-qf-hoare-incomplete",
+    "lean": [
+      "Toy.Hoare.linear_qf_hoare_incomplete",
+      "Toy.Hoare.exLoop_no_linDef_invariant"
+    ],
+    "kind": "impossibility",
+    "tier": "T1",
+    "tier_justification": "That relative completeness can fail when the assertion language is not expressive is classical (Cook 1978's expressiveness hypothesis; Wand 1978 gives an incompleteness instance for a specific structure), while Bergstra and Tucker 1982 show that expressiveness is not necessary for completeness in general, so a concrete instance needs its own proof. This instance (divisibility-free quantifier-free linear integer arithmetic, a one-loop program, inexpressibility by eventual constancy along an affine line) is stated precisely and mechanized here; the mechanizations cited on the other cards (Isabelle IMP, Software Foundations, hoare-tut, the Lean course files) use semantic assertions throughout, so they do not state a restriction of invariants to a syntactic language.",
+    "plain_claim": "The triple {x = y + y} while 2 <= x do x := x - 2 {x != 1}, whose pre- and postcondition are quantifier-free linear formulas, is valid but has no derivation in which every seq midpoint and loop invariant is definable in divisibility-free quantifier-free linear integer arithmetic (LinDef: boolean combinations of <= and = over linear integer terms, without modulo or divisibility predicates), even though consequence premises may be arbitrary true semantic implications.",
+    "hypotheses": [
+      {
+        "name": "parameter (fixed in the statement): invented assertions restricted to LinDef",
+        "purpose": "the only restriction on derivations; with semantic assertions the triple is derivable with invariant 'x even'",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Hoare.exLoop_deriv_anyAssn"
+        ]
+      },
+      {
+        "name": "parameter (fixed in the statement): postcondition x != 1",
+        "purpose": "forces every inductive invariant to exclude all odd x >= 1; with the linear postcondition x <= 1 (precondition kept) the triple is derivable with invariant true",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Hoare.exLoop_linDef_control_weak_post"
+        ]
+      },
+      {
+        "name": "parameter (fixed in the statement): precondition x = y + y (x even, witnessed by y)",
+        "purpose": "forces every invariant to contain infinitely many even x on the diagonal x = y; with the linear precondition x = 0 (postcondition kept) the triple is derivable with invariant x = 0",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Hoare.exLoop_linDef_control_pre_zero"
+        ]
+      },
+      {
+        "name": "parameter (fixed in the statement): the program text while 2 <= x do x := x - 2, with no auxiliary variables",
+        "purpose": "with an auxiliary counter g := y decremented in the body, the same linear specification is derivable with the linear invariant x = g + g",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Hoare.exLoopGhost_linDef_control"
+        ]
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "The triple is valid and its pre- and postcondition are LinDef (all three facts are conjuncts of the statement).",
+    "nonvacuity_witness_lean": [
+      "Toy.Hoare.exLoop_valid",
+      "Toy.Hoare.exPre_linDef",
+      "Toy.Hoare.exPost_linDef"
+    ],
+    "positive_control_lean": [
+      "Toy.Hoare.exLoop_deriv_anyAssn",
+      "Toy.Hoare.exLoop_linDef_control_weak_post",
+      "Toy.Hoare.exLoop_linDef_control_pre_zero",
+      "Toy.Hoare.exLoopGhost_linDef_control"
+    ],
+    "non_claims": [
+      "Concerns this one triple; it does not characterize which triples are derivable with linear invariants.",
+      "Applies only to the fixed, uninstrumented command while 2 <= x do x := x - 2: adding an auxiliary variable g initialized to y and decremented by 1 in each iteration (g := y; while 2 <= x do (x := x - 2; g := g - 1)) makes the same specification derivable in Deriv LinDef with the divisibility-free linear invariant x = g + g and body midpoint x = g + g - 2 (exLoopGhost_linDef_control).",
+      "Depends on both the precondition x = y + y and the postcondition x != 1: with precondition x = 0 (invariant x = 0) or with the weaker postcondition x <= 1 (invariant true) the uninstrumented loop is derivable with linear invariants (exLoop_linDef_control_pre_zero, exLoop_linDef_control_weak_post).",
+      "LinDef covers only boolean combinations of <= and = over linear terms with integer coefficients, without modulo or divisibility predicates. It is strictly weaker than the SMT-LIB logic QF_LIA, whose formulas may use the predicates (_ divisible n) of the Ints theory: there '(_ divisible 2) x' is a quantifier-free invariant that verifies the loop. Adding a divisibility (parity) atom or an existential quantifier to LinDef would likewise define the needed invariant 'x even'.",
+      "The obstruction is expressiveness, not decidability: the consequence rule here accepts every true implication, which is stronger than any decision procedure.",
+      "A fully syntactic Hoare logic over the linear formulas (assignment by syntactic substitution) is not formalized; that it also cannot derive the triple follows because each of its derivations is a Deriv LinDef derivation (an argument, not mechanized).",
+      "Deriv LinDef is strictly more restrictive than VC generation with linear loop annotations (ACom.InvsIn LinDef) on sequential composition: Deriv.seq requires a LinDef midpoint at every ';', whereas vcgen propagates preconditions across ';' and assignments semantically. For example, the loop-free triple {true} x := y * y; x := x - y * y {x = 0} is verified by vcgen but not derivable in Deriv LinDef (vcgen_linDef_verifies_quad_seq_but_not_deriv_linDef). For the one-loop program here both fail.",
+      "The program uses only linear arithmetic; multiplication in programs plays no role in this example.",
+      "Toy model only: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics; nothing is claimed about any production verifier."
+    ],
+    "prior_art": [
+      "S. A. Cook, \"Soundness and completeness of an axiom system for program verification\", SIAM Journal on Computing 7(1):70-90, 1978, doi:10.1137/0207005. Soundness and relative completeness of a Hoare system for an ALGOL-like language, relative to an expressive assertion language and an oracle for true assertions.",
+      "M. Wand, \"A new incompleteness result for Hoare's system\", Journal of the ACM 25(1):168-175, 1978, doi:10.1145/322047.322062. Exhibits a first-order structure for which Hoare's system for while programs is incomplete because the needed invariants are not expressible in the assertion language; the structure and language differ from the ones used here.",
+      "J. A. Bergstra and J. V. Tucker, \"Expressiveness and the completeness of Hoare's logic\", Journal of Computer and System Sciences 25(3):267-284, 1982, doi:10.1016/0022-0000(82)90013-7. Shows that Cook's expressiveness condition is sufficient but not necessary for completeness of Hoare's logic over a first-order structure: there are non-expressive structures whose Hoare logic is complete.",
+      "K. R. Apt, \"Ten years of Hoare's logic: a survey - part I\", ACM Transactions on Programming Languages and Systems 3(4):431-483, October 1981, doi:10.1145/357146.357150. Survey of soundness, relative completeness and expressiveness for while programs.",
+      "G. Winskel, The Formal Semantics of Programming Languages: An Introduction, MIT Press, 1993, chapter 7 \"Completeness of the Hoare rules\" (7.2 Weakest preconditions and expressiveness; 7.4 Verification conditions). Relative completeness for IMP via weakest preconditions expressed in a first-order arithmetic assertion language.",
+      "B. C. Pierce et al., Software Foundations, volume 2: Programming Language Foundations, version 7.1 (2026-08-24), chapter Hoare2, example \"Parity\" (credited there to Daniel Cristofani): the same loop while 2 <= X do X := X - 2, over natural numbers, verified with the semantic invariant parity X = parity m."
+    ],
+    "design_question": "If a verifier's loop invariants and intermediate assertions must be divisibility-free quantifier-free linear formulas, can every valid triple whose specification is itself linear be proved, and if not, which change (richer assertion language, different specification, or auxiliary program variables) restores provability?"
+  },
+  {
+    "id": "linear-qf-not-wlp-expressive",
+    "lean": [
+      "Toy.Hoare.linear_qf_not_expressive_wlp_exLoop",
+      "Toy.Hoare.wlp_exLoop_st2_iff"
+    ],
+    "kind": "impossibility",
+    "tier": "T1",
+    "tier_justification": "Instance of the classical non-definability of parity in quantifier-free linear arithmetic without divisibility predicates (the reason Presburger arithmetic needs congruence predicates; Marker 2002, section 3.1), applied to the wlp of a specific loop and mechanized here.",
+    "plain_claim": "The weakest liberal precondition of while 2 <= x do x := x - 2 for the postcondition x != 1 (on stores with x = a, y = b and all other variables 0 it holds exactly when a <= 0 or a is even) is not definable by any divisibility-free quantifier-free linear integer arithmetic formula (boolean combination of <= and = over linear integer terms, without modulo or divisibility predicates).",
+    "hypotheses": [
+      {
+        "name": "parameter (fixed in the statement): postcondition x != 1",
+        "purpose": "with the weaker postcondition x <= 1 the wlp is 'true', which is definable",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Hoare.wlp_exLoop_weak_post_linDef"
+        ]
+      },
+      {
+        "name": "parameter (fixed in the statement): assertion language LinDef",
+        "purpose": "with semantic assertions every wlp is admissible",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Hoare.wlp_exLoop_anyAssn"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "The wlp is a non-trivial assertion: on stores with x = a, y = b, other variables 0, it holds iff a <= 0 or a is even; it contains every state with x = y + y and no state with odd x >= 1.",
+    "nonvacuity_witness_lean": [
+      "Toy.Hoare.nonvacuity_wlp_exLoop_nontrivial",
+      "Toy.Hoare.wlp_exLoop_st2_iff"
+    ],
+    "positive_control_lean": [
+      "Toy.Hoare.wlp_exLoop_weak_post_linDef",
+      "Toy.Hoare.wlp_exLoop_anyAssn"
+    ],
+    "non_claims": [
+      "Not a claim about first-order (quantified) Presburger arithmetic or about linear arithmetic with divisibility predicates, both of which define this wlp (x <= 0 or 2 divides x).",
+      "LinDef excludes modulo and divisibility predicates; in the SMT-LIB logic QF_LIA, which allows the predicates (_ divisible n), this wlp is definable without quantifiers as (x <= 0) or ((_ divisible 2) x).",
+      "Non-definability of wlp c Q in LinDef does not mean that no valid triple {P} c {Q} is derivable in Deriv LinDef or verifiable by vcgen with a linear loop invariant: for the precondition x = 0 the stronger linear invariant x = 0 suffices (exLoop_linDef_control_pre_zero, vcgen_linDef_control_pre_zero). It rules out only the uniform wlp-based (Cook-style) construction for this loop and postcondition; in general Cook's expressiveness is not necessary for completeness (Bergstra and Tucker 1982).",
+      "Shows non-expressiveness for one command and postcondition; no classification of which wlp's are linear.",
+      "Toy model only: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics; nothing is claimed about any production verifier."
+    ],
+    "prior_art": [
+      "S. A. Cook, \"Soundness and completeness of an axiom system for program verification\", SIAM Journal on Computing 7(1):70-90, 1978, doi:10.1137/0207005. Soundness and relative completeness of a Hoare system for an ALGOL-like language, relative to an expressive assertion language and an oracle for true assertions.",
+      "J. A. Bergstra and J. V. Tucker, \"Expressiveness and the completeness of Hoare's logic\", Journal of Computer and System Sciences 25(3):267-284, 1982, doi:10.1016/0022-0000(82)90013-7. Shows that Cook's expressiveness condition is sufficient but not necessary for completeness of Hoare's logic over a first-order structure: there are non-expressive structures whose Hoare logic is complete.",
+      "G. Winskel, The Formal Semantics of Programming Languages: An Introduction, MIT Press, 1993, chapter 7 \"Completeness of the Hoare rules\" (7.2 Weakest preconditions and expressiveness; 7.4 Verification conditions). Relative completeness for IMP via weakest preconditions expressed in a first-order arithmetic assertion language.",
+      "D. Marker, Model Theory: An Introduction, Graduate Texts in Mathematics 217, Springer, 2002, doi:10.1007/b98860; section 3.1: Presburger arithmetic admits quantifier elimination only after adding divisibility (congruence) predicates, since quantifier-free formulas of ordered additive groups cannot express properties such as \"x is even\".",
+      "K. R. Apt, \"Ten years of Hoare's logic: a survey - part I\", ACM Transactions on Programming Languages and Systems 3(4):431-483, October 1981, doi:10.1145/357146.357150. Survey of soundness, relative completeness and expressiveness for while programs."
+    ],
+    "design_question": "Can a verifier that represents weakest (liberal) preconditions as divisibility-free quantifier-free linear formulas compute them exactly for simple constant-stride loops, or must it approximate or enrich the language?"
+  },
+  {
+    "id": "qf-linear-eventually-constant-on-affine-lines",
+    "lean": [
+      "Toy.Hoare.LAssn.eventually_const_on_affineLine",
+      "Toy.Hoare.not_linDef_of_alternating_on_affineLine",
+      "Toy.Hoare.parity_not_linDef"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Textbook fact: quantifier-free formulas of ordered additive groups without divisibility predicates cannot express properties such as 'x is even', which is why Presburger arithmetic needs congruence predicates for quantifier elimination (Marker 2002, section 3.1; Presburger-definable sets are the semilinear sets, Ginsburg and Spanier 1966). Restated for LAssn along affine lines of stores and mechanized here.",
+    "plain_claim": "Along any affine line of stores n -> sigma n (every variable an affine function of the integer n), every divisibility-free quantifier-free linear integer arithmetic formula (boolean combination of <= and = over linear terms, without modulo or divisibility predicates) has the same truth value for all sufficiently large n (all n >= N for some N); consequently an assertion that is true and false beyond every bound along some affine line, such as 'x is even', is not definable in that language.",
+    "hypotheses": [
+      {
+        "name": "hsigma : AffineLine sigma (in eventually_const_on_affineLine and not_linDef_of_alternating_on_affineLine)",
+        "purpose": "linear terms become affine functions of n only along affine families",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Hoare.eventually_const_needs_affine",
+          "Toy.Hoare.alternating_needs_affine"
+        ]
+      },
+      {
+        "name": "h : the assertion is true and false beyond every bound along sigma (in not_linDef_of_alternating_on_affineLine)",
+        "purpose": "the property contradicting eventual constancy",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Hoare.alternating_hyp_tight"
+        ]
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "The diagonal n -> (x = n, y = n, other variables 0) is an affine line, and along it 'x is even' is true and false beyond every bound, so both hypotheses of not_linDef_of_alternating_on_affineLine hold together.",
+    "nonvacuity_witness_lean": [
+      "Toy.Hoare.nonvacuity_eventually_const_and_alternating"
+    ],
+    "non_claims": [
+      "Covers only the language LAssn (true, <=, =, not, and, or over linear terms with integer coefficients); a divisibility atom such as 2 | x breaks eventual constancy, and formulas of the SMT-LIB logic QF_LIA that use (_ divisible n) are eventually periodic rather than eventually constant along affine lines.",
+      "Eventual constancy is one-sided: it is stated for n -> +infinity (all n >= N). The analogous statement for n -> -infinity (by reversing the line) is not stated here, and the two eventual truth values can differ: along the diagonal, 0 <= x is true for all n >= 0 and false for all n <= -1 (lassn_eventually_const_one_sided). Nothing is said about n < N.",
+      "Says nothing about decidability or quantifier elimination."
+    ],
+    "prior_art": [
+      "D. Marker, Model Theory: An Introduction, Graduate Texts in Mathematics 217, Springer, 2002, doi:10.1007/b98860; section 3.1: Presburger arithmetic admits quantifier elimination only after adding divisibility (congruence) predicates, since quantifier-free formulas of ordered additive groups cannot express properties such as \"x is even\".",
+      "S. Ginsburg and E. H. Spanier, \"Semigroups, Presburger formulas, and languages\", Pacific Journal of Mathematics 16(2):285-296, 1966, doi:10.2140/pjm.1966.16.285. Characterizes the sets definable in Presburger arithmetic as the semilinear sets."
+    ],
+    "design_question": "Which loop invariants can a verifier restricted to divisibility-free quantifier-free linear arithmetic express? The theorem gives a reusable test: an assertion that alternates beyond every bound along an affine family of states (for example parity along a constant-stride loop) is out of reach."
+  },
+  {
+    "id": "vcgen-soundness",
+    "lean": [
+      "Toy.Hoare.vcgen_sound"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Re-derivation of VC-generation soundness (Igarashi, London and Luckham 1975; Winskel 1993, section 7.4; Concrete Semantics vc_sound; hoare-tut).",
+    "plain_claim": "For an annotated program a (every loop carrying an invariant) and postcondition Q, if every side condition produced by vcgen a Q holds in every store and P implies the generated precondition, then {P} erase a {Q} is valid in partial correctness.",
+    "hypotheses": [
+      {
+        "name": "hvc : VCsValid (vcgen a Q).2",
+        "purpose": "the side conditions carry the inductiveness and exit obligations of each loop annotation",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Hoare.vcgen_sound_vcs_tight"
+        ]
+      },
+      {
+        "name": "hpre : forall s, P s -> (vcgen a Q).1 s",
+        "purpose": "connects the caller's precondition to the computed one",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Hoare.vcgen_sound_pre_tight"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "The parity annotation while[x even] 2 <= x do x := x - 2 with P = (x = y + y) and Q = (x != 1).",
+    "nonvacuity_witness_lean": [
+      "Toy.Hoare.nonvacuity_vcgen_sound"
+    ],
+    "non_claims": [
+      "Side conditions are semantic predicates whose validity is assumed checked by an oracle; they are not syntactic formulas and their decidability is not addressed.",
+      "vcgen collects loop preservation and exit obligations into one list checked in every store (VCsValid), without the guards of enclosing conditionals and without facts about variables the loop does not modify. Unlike verifiers that cut loops by havocking only the modified variables, a loop inside a branch that is never taken still yields globally checked side conditions ({x = 0} if x = 1 then (while[true] false do skip) else skip {x = 0} is valid, yet its side conditions are not all valid: vcgen_side_conditions_ignore_branch_guards), and facts about unmodified variables must be repeated in the loop invariant.",
+      "Restricting loop annotations to LinDef (ACom.InvsIn LinDef) with linear pre- and postconditions does not keep the generated precondition or side conditions in linear arithmetic when the program multiplies variables, and vcgen with linear loop annotations is not equivalent to Deriv LinDef (vcgen_linDef_verifies_quad_seq_but_not_deriv_linDef).",
+      "Nothing about VC size or sharing (the concern of Flanagan and Saxe 2001).",
+      "Partial correctness only.",
+      "Toy model only: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics; nothing is claimed about any production verifier."
+    ],
+    "prior_art": [
+      "S. Igarashi, R. L. London and D. C. Luckham, \"Automatic program verification I: A logical basis and its implementation\", Acta Informatica 4(2):145-182, 1975, doi:10.1007/BF00288746. Logical basis of an early verification-condition generator for programs annotated with loop invariants.",
+      "R. W. Floyd, \"Assigning meanings to programs\", in Mathematical Aspects of Computer Science, Proceedings of Symposia in Applied Mathematics 19, American Mathematical Society, 1967, pp. 19-32, doi:10.1090/psapm/019/0235771. Inductive assertions attached to flowcharts, verification conditions along control-flow paths, and termination by decreasing functions into a well-founded set.",
+      "G. Winskel, The Formal Semantics of Programming Languages: An Introduction, MIT Press, 1993, chapter 7 \"Completeness of the Hoare rules\" (7.2 Weakest preconditions and expressiveness; 7.4 Verification conditions). Relative completeness for IMP via weakest preconditions expressed in a first-order arithmetic assertion language.",
+      "T. Nipkow and G. Klein, Concrete Semantics with Isabelle/HOL, Springer, 2014, doi:10.1007/978-3-319-10542-0; chapter 12 \"Hoare Logic\" (doi:10.1007/978-3-319-10542-0_12). Mechanized in the Isabelle sources src/HOL/IMP/Hoare_Sound_Complete.thy (hoare_sound; hoare_complete via wp over semantic assertions; corollary hoare_sound_complete, derivable iff valid) and src/HOL/IMP/VCG.thy (vc_sound; vc_complete: from a derivation of {P}c{Q} there exists an annotation C with strip C = c, vc C Q and P implying pre C Q; side conditions are checked in every state), repository isabelle-prover/mirror-isabelle at commit 20d6a3f7ffbaaa82e77f341d90db5070b3428fbe.",
+      "T. Nipkow, \"Winskel is (almost) right: Towards a mechanized semantics textbook\", Formal Aspects of Computing 10(2):171-186, 1998, doi:10.1007/s001650050009. Isabelle/HOL mechanization of semantics material from Winskel's textbook, including Hoare logic for IMP.",
+      "S. Boulmé, \"hoare-tut\" (tutorial on Hoare logic, Rocq), repository rocq-community/hoare-tut, commit 66dfb255c9e8bb49269d83b3577b285288f39928: partialhoarelogic.v and totalhoarelogic.v prove soundness and completeness (Theorem soundness, Theorem completeness) of a syntactically defined weakest-precondition generator synt_wp with respect to semantic triples; in partial correctness the loop case uses wlp (Iwhile cond p) post, in total correctness a well-founded variant.",
+      "A. Baanen, A. Bentkamp, J. Blanchette, X. Généreux, J. Hölzl and J. Limperg, The Hitchhiker's Guide to Logical Verification (2025 edition), Lean 4 sources in repository lean-forward/logical_verification_2025, commit 76421700cb010aeddeb2b2a4a93e538b92b0e585: lean/LoVe/LoVe10_HoareLogic_Demo.lean (PartialHoare as a semantic triple, rule lemmas, and a vcg tactic for loops annotated with invariants via Stmt.invWhileDo) and lean/LoVe/LoVe10_HoareLogic_ExerciseSheet.lean (TotalHoare with Nat-valued variants, posed as exercises).",
+      "B. C. Pierce et al., Software Foundations, volume 2: Programming Language Foundations, version 7.1 (2026-08-24), Rocq, chapter Hoare2: fully decorated programs (an assertion after every command) whose local verification conditions are proved sound (Theorem verification_correct); there is no completeness theorem, and decorations are not loop-only annotations with backward precondition computation as here.",
+      "C. Flanagan and J. B. Saxe, \"Avoiding exponential explosion: generating compact verification conditions\", POPL 2001, pp. 193-205, doi:10.1145/360204.360220. VC generation for guarded commands with attention to VC size; size is not addressed here.",
+      "M. Barnett and K. R. M. Leino, \"Weakest-precondition of unstructured programs\", PASTE 2005, pp. 82-87, doi:10.1145/1108792.1108813. Weakest-precondition VC generation for unstructured programs; not addressed here."
+    ],
+    "design_question": "A verifier generates side conditions from user-supplied loop invariants and discharges them with an oracle: under what conditions on the side conditions and the caller's precondition is the verified triple valid, and what context (branch conditions, unmodified variables) does this generator not use?"
+  },
+  {
+    "id": "vcgen-reachable-noninductive-annotation-fails",
+    "lean": [
+      "Toy.Hoare.vcgen_reachable_noninductive_annotation_fails"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "Standard textbook observation (annotations must be inductive), made precise.",
+    "plain_claim": "For {x = 0} while x < 2 do x := x + 2 {x = 2} with the loop annotated by x <= 2: the triple is valid; the annotation holds in every state reachable at the loop head; x = 0 implies the generated precondition; the exit side condition (x <= 2 and not x < 2 imply x = 2) is valid; but the preservation side condition fails at the store with x = 1 (other variables 0), which satisfies the annotation and the guard and is not reachable at the loop head; hence not all generated side conditions are valid.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Concrete instance; all parts are proved in the statement.",
+    "nonvacuity_witness_lean": [
+      "Toy.Hoare.vcgen_reachable_noninductive_annotation_fails"
+    ],
+    "positive_control_lean": [
+      "Toy.Hoare.ncAnnLin_verifies"
+    ],
+    "non_claims": [
+      "Does not say reachable-state invariants are useless: the exact set of reachable loop-head states is always inductive; the failure is for a strictly larger annotation.",
+      "The failure is due to the specific weak annotation x <= 2, not to the expressiveness of linear arithmetic: the same triple is verified by vcgen with the stronger divisibility-free linear annotation x = 0 or x = 2 (ncAnnLin_verifies).",
+      "Concerns 1-inductive VC generation. The annotation x <= 2 is not k-inductive for any k either (ncInv_not_k_inductive), so k-induction does not rescue it; bounded unrolling would succeed here only because the loop runs at most once from x = 0, which is not formalized.",
+      "Side conditions are checked in every store, without path conditions (see vcgen-soundness).",
+      "Covers a single top-level loop; HeadReach is defined only for that shape.",
+      "Toy model only: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics; nothing is claimed about any production verifier."
+    ],
+    "prior_art": [
+      "T. Nipkow and G. Klein, Concrete Semantics with Isabelle/HOL, Springer, 2014, doi:10.1007/978-3-319-10542-0; chapter 12 \"Hoare Logic\" (doi:10.1007/978-3-319-10542-0_12). Mechanized in the Isabelle sources src/HOL/IMP/Hoare_Sound_Complete.thy (hoare_sound; hoare_complete via wp over semantic assertions; corollary hoare_sound_complete, derivable iff valid) and src/HOL/IMP/VCG.thy (vc_sound; vc_complete: from a derivation of {P}c{Q} there exists an annotation C with strip C = c, vc C Q and P implying pre C Q; side conditions are checked in every state), repository isabelle-prover/mirror-isabelle at commit 20d6a3f7ffbaaa82e77f341d90db5070b3428fbe.",
+      "G. Winskel, The Formal Semantics of Programming Languages: An Introduction, MIT Press, 1993, chapter 7 \"Completeness of the Hoare rules\" (7.2 Weakest preconditions and expressiveness; 7.4 Verification conditions). Relative completeness for IMP via weakest preconditions expressed in a first-order arithmetic assertion language.",
+      "S. Igarashi, R. L. London and D. C. Luckham, \"Automatic program verification I: A logical basis and its implementation\", Acta Informatica 4(2):145-182, 1975, doi:10.1007/BF00288746. Logical basis of an early verification-condition generator for programs annotated with loop invariants."
+    ],
+    "design_question": "If a user annotates a loop with an assertion that holds in every reachable loop-head state, will VC generation accept it, or must annotations be inductive, and is a failure due to the annotation language?"
+  },
+  {
+    "id": "vcgen-complete-wlp-annotation",
+    "lean": [
+      "Toy.Hoare.valid_iff_vcs_annotWlp",
+      "Toy.Hoare.vcgen_annotWlp",
+      "Toy.Hoare.erase_annotWlp"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "Known: Concrete Semantics vc_complete gives an annotation existentially, starting from a derivation, and hoare-tut proves completeness of a wp generator whose loop case uses the wlp. Here the witness annotation annotWlp c Q is exposed and the starting point is validity.",
+    "plain_claim": "For every command c and assertions P, Q: {P} c {Q} is valid iff, for the annotation annotWlp c Q (which erases to c and annotates each loop with the wlp of that loop for the postcondition holding after it), all generated side conditions are valid and P implies the generated precondition; moreover those side conditions are always valid and the generated precondition is pointwise equivalent to wlp c Q.",
+    "hypotheses": [
+      {
+        "name": "annotations may be arbitrary semantic assertions (annotWlp uses wlp)",
+        "purpose": "the witness annotation is semantic; with linear annotations completeness fails",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Hoare.vcgen_linear_qf_annotations_incomplete"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "For the example loop, annotWlp exLoop exPost yields valid side conditions and x = y + y implies the generated precondition.",
+    "nonvacuity_witness_lean": [
+      "Toy.Hoare.nonvacuity_vcs_annotWlp"
+    ],
+    "non_claims": [
+      "annotWlp is not computable from program text in general: wlp is a semantic object and may be inexpressible in a syntactic language (vcgen-linear-qf-annotations-incomplete).",
+      "Does not show that annotations can be inferred automatically, nor that the resulting side conditions are easy to discharge.",
+      "This does not follow from Hoare-logic relative completeness by itself; it is proved directly from properties of wlp.",
+      "Toy model only: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics; nothing is claimed about any production verifier."
+    ],
+    "prior_art": [
+      "T. Nipkow and G. Klein, Concrete Semantics with Isabelle/HOL, Springer, 2014, doi:10.1007/978-3-319-10542-0; chapter 12 \"Hoare Logic\" (doi:10.1007/978-3-319-10542-0_12). Mechanized in the Isabelle sources src/HOL/IMP/Hoare_Sound_Complete.thy (hoare_sound; hoare_complete via wp over semantic assertions; corollary hoare_sound_complete, derivable iff valid) and src/HOL/IMP/VCG.thy (vc_sound; vc_complete: from a derivation of {P}c{Q} there exists an annotation C with strip C = c, vc C Q and P implying pre C Q; side conditions are checked in every state), repository isabelle-prover/mirror-isabelle at commit 20d6a3f7ffbaaa82e77f341d90db5070b3428fbe.",
+      "S. Boulmé, \"hoare-tut\" (tutorial on Hoare logic, Rocq), repository rocq-community/hoare-tut, commit 66dfb255c9e8bb49269d83b3577b285288f39928: partialhoarelogic.v and totalhoarelogic.v prove soundness and completeness (Theorem soundness, Theorem completeness) of a syntactically defined weakest-precondition generator synt_wp with respect to semantic triples; in partial correctness the loop case uses wlp (Iwhile cond p) post, in total correctness a well-founded variant.",
+      "T. Nipkow, \"Winskel is (almost) right: Towards a mechanized semantics textbook\", Formal Aspects of Computing 10(2):171-186, 1998, doi:10.1007/s001650050009. Isabelle/HOL mechanization of semantics material from Winskel's textbook, including Hoare logic for IMP.",
+      "G. Winskel, The Formal Semantics of Programming Languages: An Introduction, MIT Press, 1993, chapter 7 \"Completeness of the Hoare rules\" (7.2 Weakest preconditions and expressiveness; 7.4 Verification conditions). Relative completeness for IMP via weakest preconditions expressed in a first-order arithmetic assertion language."
+    ],
+    "design_question": "Is VC generation with user-supplied loop invariants complete in principle, i.e. does every valid triple have some annotation whose side conditions are valid, and which annotation is it?"
+  },
+  {
+    "id": "vcgen-linear-qf-annotations-incomplete",
+    "lean": [
+      "Toy.Hoare.vcgen_linear_qf_annotations_incomplete"
+    ],
+    "kind": "impossibility",
+    "tier": "T1",
+    "tier_justification": "VC-generation counterpart of linear-qf-hoare-incomplete; same classical background (Cook 1978; Wand 1978), mechanized here.",
+    "plain_claim": "The triple {x = y + y} while 2 <= x do x := x - 2 {x != 1}, whose pre- and postcondition are quantifier-free linear formulas, is valid but cannot be verified by VC generation with any annotation whose loop invariants are definable in divisibility-free quantifier-free linear integer arithmetic (without modulo or divisibility predicates): for every annotated program a that erases to this loop and has only such invariants, some generated side condition is invalid or x = y + y does not imply the generated precondition.",
+    "hypotheses": [
+      {
+        "name": "ha : a.erase = exLoop",
+        "purpose": "the annotation must be of this loop; the annotated program skip verifies {x = y + y} skip {x != 1}",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Hoare.vcgen_erase_hyp_tight"
+        ]
+      },
+      {
+        "name": "hL : a.InvsIn LinDef (every loop invariant of a is linearly definable)",
+        "purpose": "the semantic invariant 'x even' verifies the loop",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Hoare.vcgen_invsIn_hyp_tight"
+        ]
+      },
+      {
+        "name": "parameter (fixed in the statement): postcondition x != 1",
+        "purpose": "with the linear postcondition x <= 1 (precondition kept) the invariant true verifies the loop",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Hoare.vcgen_linDef_control_weak_post"
+        ]
+      },
+      {
+        "name": "parameter (fixed in the statement): precondition x = y + y",
+        "purpose": "with the linear precondition x = 0 (postcondition kept) the invariant x = 0 verifies the loop",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Hoare.vcgen_linDef_control_pre_zero"
+        ]
+      },
+      {
+        "name": "parameter (fixed in the statement): the program text, with no auxiliary variables",
+        "purpose": "the loop instrumented with an auxiliary counter g is verified with the linear invariant x = g + g",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Hoare.vcgen_ghost_linDef_control"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "The setup holds (linear pre- and postcondition, valid triple) and the loop annotated with true erases to the loop and has a linear invariant, so the hypotheses on a are jointly satisfiable.",
+    "nonvacuity_witness_lean": [
+      "Toy.Hoare.nonvacuity_vcgen_linear_qf_incomplete"
+    ],
+    "positive_control_lean": [
+      "Toy.Hoare.vcgen_invsIn_hyp_tight",
+      "Toy.Hoare.vcgen_linDef_control_weak_post",
+      "Toy.Hoare.vcgen_linDef_control_pre_zero",
+      "Toy.Hoare.vcgen_ghost_linDef_control"
+    ],
+    "non_claims": [
+      "About this single loop; no characterization of loops verifiable with linear annotations.",
+      "Applies only to annotations erasing to the uninstrumented loop while 2 <= x do x := x - 2: instrumenting the program with an auxiliary variable g := y decremented by 1 in the loop body makes the specification verifiable by vcgen with the divisibility-free linear invariant x = g + g (vcgen_ghost_linDef_control).",
+      "Depends on both the precondition x = y + y and the postcondition x != 1: with precondition x = 0 (invariant x = 0) or the weaker postcondition x <= 1 (invariant true), the uninstrumented loop is verifiable by vcgen with linear annotations (vcgen_linDef_control_pre_zero, vcgen_linDef_control_weak_post).",
+      "LinDef covers only boolean combinations of <= and = over linear terms with integer coefficients, without modulo or divisibility predicates. It is strictly weaker than the SMT-LIB logic QF_LIA, whose formulas may use the predicates (_ divisible n) of the Ints theory: there '(_ divisible 2) x' is a quantifier-free invariant that verifies the loop. Adding a divisibility (parity) atom or an existential quantifier to LinDef would likewise define the needed invariant 'x even'.",
+      "VC verifiability with linear loop annotations is not equivalent to derivability in Deriv LinDef for general programs: vcgen composes sequential statements semantically without requiring a LinDef midpoint at ';', whereas Deriv.seq requires one (vcgen_linDef_verifies_quad_seq_but_not_deriv_linDef). For this one-loop program both fail.",
+      "Toy model only: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics; nothing is claimed about any production verifier."
+    ],
+    "prior_art": [
+      "S. A. Cook, \"Soundness and completeness of an axiom system for program verification\", SIAM Journal on Computing 7(1):70-90, 1978, doi:10.1137/0207005. Soundness and relative completeness of a Hoare system for an ALGOL-like language, relative to an expressive assertion language and an oracle for true assertions.",
+      "M. Wand, \"A new incompleteness result for Hoare's system\", Journal of the ACM 25(1):168-175, 1978, doi:10.1145/322047.322062. Exhibits a first-order structure for which Hoare's system for while programs is incomplete because the needed invariants are not expressible in the assertion language; the structure and language differ from the ones used here.",
+      "J. A. Bergstra and J. V. Tucker, \"Expressiveness and the completeness of Hoare's logic\", Journal of Computer and System Sciences 25(3):267-284, 1982, doi:10.1016/0022-0000(82)90013-7. Shows that Cook's expressiveness condition is sufficient but not necessary for completeness of Hoare's logic over a first-order structure: there are non-expressive structures whose Hoare logic is complete.",
+      "T. Nipkow and G. Klein, Concrete Semantics with Isabelle/HOL, Springer, 2014, doi:10.1007/978-3-319-10542-0; chapter 12 \"Hoare Logic\" (doi:10.1007/978-3-319-10542-0_12). Mechanized in the Isabelle sources src/HOL/IMP/Hoare_Sound_Complete.thy (hoare_sound; hoare_complete via wp over semantic assertions; corollary hoare_sound_complete, derivable iff valid) and src/HOL/IMP/VCG.thy (vc_sound; vc_complete: from a derivation of {P}c{Q} there exists an annotation C with strip C = c, vc C Q and P implying pre C Q; side conditions are checked in every state), repository isabelle-prover/mirror-isabelle at commit 20d6a3f7ffbaaa82e77f341d90db5070b3428fbe.",
+      "B. C. Pierce et al., Software Foundations, volume 2: Programming Language Foundations, version 7.1 (2026-08-24), chapter Hoare2, example \"Parity\" (credited there to Daniel Cristofani): the same loop while 2 <= X do X := X - 2, over natural numbers, verified with the semantic invariant parity X = parity m."
+    ],
+    "design_question": "If a verifier's user-supplied loop invariants must be divisibility-free quantifier-free linear formulas, can it verify every valid loop whose specification is linear, and which escape hatches (richer annotation language, auxiliary variables, different specification) restore verifiability?"
+  },
+  {
+    "id": "total-soundness-bounded-variant",
+    "lean": [
+      "Toy.Hoare.total_sound_of_bounded_variant"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Re-derivation of total-correctness soundness with variants (Manna and Pnueli 1974; Apt 1981, section 2.8; Concrete Semantics 12.5, mechanized with nat-valued measures in Hoare_Total.thy).",
+    "plain_claim": "Every triple derivable in the total-correctness system whose while rule requires an integer variant that strictly decreases on each iteration and is nonnegative whenever the invariant and the guard hold is valid in total correctness: from every state satisfying the precondition the program terminates in a state satisfying the postcondition.",
+    "hypotheses": [
+      {
+        "name": "h : TDeriv true P c Q (variant bounded below by 0 under invariant and guard)",
+        "purpose": "a decreasing integer variant without a lower bound does not force termination",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Hoare.unbounded_variant_unsound"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "[0 <= x] while 0 < x do x := x - 1 [x = 0] with invariant 0 <= x and variant x.",
+    "nonvacuity_witness_lean": [
+      "Toy.Hoare.nonvacuity_total_sound"
+    ],
+    "non_claims": [
+      "No total-correctness completeness is claimed.",
+      "Variants are Int-valued with an explicit lower bound 0 under invariant and guard; general well-founded orders are not formalized (Isabelle's Hoare_Total.thy uses nat-valued measures, which build the bound into the type).",
+      "In TDeriv, invariants, intermediate assertions and variants are arbitrary semantic predicates and functions on stores, not syntactic expressions, and there is no admissibility predicate L; no total-correctness VC generator is formalized.",
+      "TValid P c Q (from every state satisfying P some run terminates in a state satisfying Q) expresses guaranteed termination only because Exec is deterministic; for a nondeterministic language this existential definition would express possible termination only. Nondeterminism is not formalized.",
+      "Other forms of the lower-bound premise are not formalized. A fixed bound c0 <= V with c0 independent of the store reduces to this rule with the shifted variant V - c0 (an argument, not mechanized); a store-dependent bound B s <= V s is no restriction in general (take B := V - 1) and gives no termination guarantee, as the derivation in unbounded_variant_unsound illustrates.",
+      "Toy model only: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics; nothing is claimed about any production verifier."
+    ],
+    "prior_art": [
+      "Z. Manna and A. Pnueli, \"Axiomatic approach to total correctness of programs\", Acta Informatica 3(3):243-263, 1974, doi:10.1007/BF00288637. Hoare-style proof rules for total correctness.",
+      "K. R. Apt, \"Ten years of Hoare's logic: a survey - part I\", ACM Transactions on Programming Languages and Systems 3(4):431-483, October 1981, doi:10.1145/357146.357150. Section 2.8 treats total correctness of while programs with a while rule based on an integer-valued termination function that is bounded below by 0 and decreases with each iteration.",
+      "T. Nipkow and G. Klein, Concrete Semantics with Isabelle/HOL, Springer, 2014, doi:10.1007/978-3-319-10542-0; chapter 12, section 12.5 \"Hoare Logic for Total Correctness\". Mechanized in src/HOL/IMP/Hoare_Total.thy (repository isabelle-prover/mirror-isabelle, commit 20d6a3f7ffbaaa82e77f341d90db5070b3428fbe): hoaret_sound, hoaret_complete and corollary hoaret_sound_complete, for a While rule whose termination measure is a natural-number-valued relation T :: state => nat => bool (functional form While_fun with f :: state => nat), so the lower bound is built into the type nat; total validity uses an existential over final states, and the theory notes that this definition only works because execution is deterministic. No counterexample with an unbounded integer variant is formalized there.",
+      "R. W. Floyd, \"Assigning meanings to programs\", in Mathematical Aspects of Computer Science, Proceedings of Symposia in Applied Mathematics 19, American Mathematical Society, 1967, pp. 19-32, doi:10.1090/psapm/019/0235771. Inductive assertions attached to flowcharts, verification conditions along control-flow paths, and termination by decreasing functions into a well-founded set.",
+      "S. Boulmé, \"hoare-tut\" (tutorial on Hoare logic, Rocq), repository rocq-community/hoare-tut, commit 66dfb255c9e8bb49269d83b3577b285288f39928: partialhoarelogic.v and totalhoarelogic.v prove soundness and completeness (Theorem soundness, Theorem completeness) of a syntactically defined weakest-precondition generator synt_wp with respect to semantic triples; in partial correctness the loop case uses wlp (Iwhile cond p) post, in total correctness a well-founded variant.",
+      "A. Baanen, A. Bentkamp, J. Blanchette, X. Généreux, J. Hölzl and J. Limperg, The Hitchhiker's Guide to Logical Verification (2025 edition), Lean 4 sources in repository lean-forward/logical_verification_2025, commit 76421700cb010aeddeb2b2a4a93e538b92b0e585: lean/LoVe/LoVe10_HoareLogic_Demo.lean (PartialHoare as a semantic triple, rule lemmas, and a vcg tactic for loops annotated with invariants via Stmt.invWhileDo) and lean/LoVe/LoVe10_HoareLogic_ExerciseSheet.lean (TotalHoare with Nat-valued variants, posed as exercises).",
+      "N. Schirmer, \"A Sequential Imperative Programming Language Syntax, Semantics, Hoare Logics and Verification Environment\", Archive of Formal Proofs, February 2008, https://www.isa-afp.org/entries/Simpl.html. Isabelle/HOL; Hoare logics for partial and total correctness proved sound and complete for a language with procedures, abrupt termination, heap and unbounded nondeterminism, with an integrated verification environment."
+    ],
+    "design_question": "What exactly must a total-correctness loop rule demand of an integer-valued variant for termination proofs to be sound, and what does a total-correctness derivation in this system guarantee?"
+  },
+  {
+    "id": "unbounded-variant-unsound",
+    "lean": [
+      "Toy.Hoare.unbounded_variant_unsound"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "Standard observation that a decreasing integer measure must be bounded below (built into the nat-valued measures of Hoare_Total.thy and into the termination functions of Apt 1981, section 2.8, which are bounded below by 0); made precise as a derivation in a system that differs only by the missing premise.",
+    "plain_claim": "In the total-correctness system without the lower-bound premise, the while rule applies to while true do x := x - 1 with invariant true and variant x: one iteration from a state with x = n ends with x < n, while x is not bounded below; so [true] while true do x := x - 1 [true] is derivable, yet the loop has no terminating run from any state and the triple is not valid in total correctness.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Concrete instance; all parts are proved in the statement.",
+    "nonvacuity_witness_lean": [
+      "Toy.Hoare.unbounded_variant_unsound"
+    ],
+    "non_claims": [
+      "Shows only that the lower-bound premise cannot simply be dropped; other ways to restore soundness (nat-valued variants, well-founded orders, a fixed constant bound) are not formalized here.",
+      "In TDeriv, invariants, intermediate assertions and variants are arbitrary semantic predicates and functions on stores, not syntactic expressions, and there is no admissibility predicate L; no total-correctness VC generator is formalized.",
+      "TValid P c Q (from every state satisfying P some run terminates in a state satisfying Q) expresses guaranteed termination only because Exec is deterministic; for a nondeterministic language this existential definition would express possible termination only. Nondeterminism is not formalized.",
+      "Toy model only: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics; nothing is claimed about any production verifier."
+    ],
+    "prior_art": [
+      "K. R. Apt, \"Ten years of Hoare's logic: a survey - part I\", ACM Transactions on Programming Languages and Systems 3(4):431-483, October 1981, doi:10.1145/357146.357150. Section 2.8 treats total correctness of while programs with a while rule based on an integer-valued termination function that is bounded below by 0 and decreases with each iteration.",
+      "Z. Manna and A. Pnueli, \"Axiomatic approach to total correctness of programs\", Acta Informatica 3(3):243-263, 1974, doi:10.1007/BF00288637. Hoare-style proof rules for total correctness.",
+      "T. Nipkow and G. Klein, Concrete Semantics with Isabelle/HOL, Springer, 2014, doi:10.1007/978-3-319-10542-0; chapter 12, section 12.5 \"Hoare Logic for Total Correctness\". Mechanized in src/HOL/IMP/Hoare_Total.thy (repository isabelle-prover/mirror-isabelle, commit 20d6a3f7ffbaaa82e77f341d90db5070b3428fbe): hoaret_sound, hoaret_complete and corollary hoaret_sound_complete, for a While rule whose termination measure is a natural-number-valued relation T :: state => nat => bool (functional form While_fun with f :: state => nat), so the lower bound is built into the type nat; total validity uses an existential over final states, and the theory notes that this definition only works because execution is deterministic. No counterexample with an unbounded integer variant is formalized there."
+    ],
+    "design_question": "Can a total-correctness loop rule omit the lower bound on an integer-valued variant without becoming unsound?"
+  }
+]

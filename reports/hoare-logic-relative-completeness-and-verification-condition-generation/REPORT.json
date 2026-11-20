@@ -1,0 +1,117 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "verification/hoare-logic",
+    "verification/relative-completeness",
+    "verification/verification-condition-generation",
+    "verification/loop-invariants",
+    "verification/total-correctness",
+    "pl/axiomatic-semantics",
+    "pl/program-logics"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Soundness and completeness of an axiom system for program verification (Cook, SIAM Journal on Computing, 1978)",
+      "identity": {
+        "doi": "10.1137/0207005"
+      }
+    },
+    {
+      "name": "An axiomatic basis for computer programming (Hoare, Communications of the ACM, 1969)",
+      "identity": {
+        "doi": "10.1145/363235.363259"
+      }
+    },
+    {
+      "name": "Assigning meanings to programs (Floyd, Proceedings of Symposia in Applied Mathematics 19, 1967)",
+      "identity": {
+        "doi": "10.1090/psapm/019/0235771"
+      }
+    },
+    {
+      "name": "Ten years of Hoare's logic: a survey, part I (Apt, ACM TOPLAS, 1981)",
+      "identity": {
+        "doi": "10.1145/357146.357150"
+      }
+    },
+    {
+      "name": "A new incompleteness result for Hoare's system (Wand, Journal of the ACM, 1978)",
+      "identity": {
+        "doi": "10.1145/322047.322062"
+      }
+    },
+    {
+      "name": "Expressiveness and the completeness of Hoare's logic (Bergstra and Tucker, Journal of Computer and System Sciences, 1982)",
+      "identity": {
+        "doi": "10.1016/0022-0000(82)90013-7"
+      }
+    },
+    {
+      "name": "Automatic program verification I: a logical basis and its implementation (Igarashi, London and Luckham, Acta Informatica, 1975)",
+      "identity": {
+        "doi": "10.1007/BF00288746"
+      }
+    },
+    {
+      "name": "Axiomatic approach to total correctness of programs (Manna and Pnueli, Acta Informatica, 1974)",
+      "identity": {
+        "doi": "10.1007/BF00288637"
+      }
+    },
+    {
+      "name": "Concrete Semantics with Isabelle/HOL (Nipkow and Klein, Springer, 2014)",
+      "identity": {
+        "doi": "10.1007/978-3-319-10542-0"
+      }
+    },
+    {
+      "name": "Isabelle/HOL IMP theories (Hoare_Sound_Complete.thy, VCG.thy, Hoare_Total.thy)",
+      "identity": {
+        "repository": "isabelle-prover/mirror-isabelle",
+        "revision": "20d6a3f7ffbaaa82e77f341d90db5070b3428fbe",
+        "path": "src/HOL/IMP"
+      }
+    },
+    {
+      "name": "Model Theory: An Introduction (Marker, Springer, 2002)",
+      "identity": {
+        "doi": "10.1007/b98860"
+      }
+    },
+    {
+      "name": "Consistent and complementary formal theories of the semantics of programming languages (Hoare and Lauer, Acta Informatica, 1974)",
+      "identity": {
+        "doi": "10.1007/BF00264034"
+      }
+    },
+    {
+      "name": "Winskel is (almost) right: Towards a mechanized semantics textbook (Nipkow, Formal Aspects of Computing, 1998)",
+      "identity": {
+        "doi": "10.1007/s001650050009"
+      }
+    },
+    {
+      "name": "Semigroups, Presburger formulas, and languages (Ginsburg and Spanier, Pacific Journal of Mathematics, 1966)",
+      "identity": {
+        "doi": "10.2140/pjm.1966.16.285"
+      }
+    },
+    {
+      "name": "hoare-tut: Rocq tutorial on Hoare logic (Boulmé; partialhoarelogic.v, totalhoarelogic.v)",
+      "identity": {
+        "repository": "rocq-community/hoare-tut",
+        "revision": "66dfb255c9e8bb49269d83b3577b285288f39928"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

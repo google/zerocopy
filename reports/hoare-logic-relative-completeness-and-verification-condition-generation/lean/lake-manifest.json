@@ -1,0 +1,7 @@
+{"version": "1.2.0",
+ "packagesDir": ".lake/packages",
+ "packages": [],
+ "name":
+ "«hoare-logic-relative-completeness-and-verification-condition-generation»",
+ "lakeDir": ".lake",
+ "fixedToolchain": false}

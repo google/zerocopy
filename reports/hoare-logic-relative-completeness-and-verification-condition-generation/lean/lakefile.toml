@@ -1,0 +1,6 @@
+name = "hoare-logic-relative-completeness-and-verification-condition-generation"
+version = "0.1.0"
+defaultTargets = ["ToyHoare"]
+
+[[lean_lib]]
+name = "ToyHoare"
