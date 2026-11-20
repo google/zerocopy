@@ -349,7 +349,10 @@ A loop summary must preserve every storage condition needed by its segment.
 An unread local can still need allocation evidence if the segment writes it:
 assigning to a dead destination faults even when its old value is irrelevant.
 
-The endianness witness generator uses this composition at each path's entry.
+The endianness proof builds its `Executes` witnesses with a proof-side symbolic
+interpreter instead: the kernel evaluates it over the captured body for each
+concrete control choice, and one simulation theorem transfers every symbolic
+step to `evalStep`, so the proof names no local, block or statement index.
 The Rust spin fixture uses safety transport before its loop invariant and
 proves no return separately. These consumers exercise the existing acceptance
 path; no speed or memory improvement is established. Safety transport and the
@@ -469,14 +472,14 @@ With `to_be = false`, a safe normal return exists and equals the masked input.
 Baseline safety also covers all valid function inputs independently of these
 additional properties.
 
-The helper regenerates baseline witnesses and requires their bytes to match
-those just verified. It then changes the implementation to return zero and to
-preserve the masked input. Both mutations must fail with the original witnesses
-and with fresh witnesses for their changed captures. Before crediting each
-fresh rejection, it separately verifies those exact witnesses against a safe
-completion specification. The fixed endpoint claims remain unchanged, so a
-syntax or transition failure cannot satisfy this negative test. Logs, receipts
-and `summary.json` remain in the new evidence directory.
+No proof source depends on a particular capture. The helper changes the
+implementation to return zero and to preserve the masked input, and reuses
+the exact proof bytes that the baseline verified. Before crediting each
+rejection, it verifies that those sources prove an actual safe return on every
+control path of the changed capture, against a completion specification
+without endpoints. The fixed endpoint claims remain unchanged, so a syntax or
+transition failure cannot satisfy this negative test. Logs, receipts and
+`summary.json` remain in the new evidence directory.
 
 For the workspace tests, first install the omnibus archive as above, then build
 the workspace capture driver with its pinned compiler. Explicit tool paths make
