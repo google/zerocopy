@@ -38,6 +38,12 @@ struct Cli {
     /// Emit the full JSON audit report instead of a human-readable summary.
     #[arg(long)]
     json: bool,
+
+    /// Optional directory outside `--anneal-root` for caching verified
+    /// `Miri.*` `.olean` artifacts across runs (overrides
+    /// `ANNEAL_MIRI_CACHE_DIR`).
+    #[arg(long)]
+    miri_cache_dir: Option<PathBuf>,
 }
 
 fn main() -> ExitCode {
@@ -84,6 +90,9 @@ fn run(raw_args: Vec<OsString>) -> Result<u8, (u8, String)> {
             format!("Trusted check could not initialize staging directory: {e}"),
         )
     })?;
+    if let Some(cache_dir) = cli.miri_cache_dir {
+        checker.set_miri_cache_dir(Some(cache_dir));
+    }
 
     match checker.run() {
         Ok(report) => {
@@ -121,6 +130,26 @@ fn run(raw_args: Vec<OsString>) -> Result<u8, (u8, String)> {
                 adm.modules.len(),
                 adm.theory_modules.len()
             );
+            if let Some(miri_mods) = report.get("miriClosureModules").and_then(Json::as_u64) {
+                let miri_commit = report
+                    .get("miriCommit")
+                    .and_then(Json::as_str)
+                    .unwrap_or("unknown");
+                let miri_replayed = report
+                    .get("miriReplayedDeclarations")
+                    .and_then(Json::as_u64)
+                    .unwrap_or(0);
+                let miri_decls = report
+                    .get("miriClosureReachableDeclarations")
+                    .and_then(Json::as_u64)
+                    .unwrap_or(0);
+                println!(
+                    "Vendor Miri: {miri_mods} verified closure modules \
+                     ({miri_replayed} kernel-replayed declarations; \
+                     {miri_decls} reachable cone declarations; \
+                     commit {miri_commit})"
+                );
+            }
             Ok(0)
         }
         Err(err) => Err(failure_message(&err, Some(&checker))),

@@ -97,11 +97,15 @@ flowchart LR
      Trusted.CrateTheorem Mir.crate` and invoking `theory/` tactics to
      discharge it.
 2. **Statement generation (`trusted/lean/`):** `Trusted.CrateTheorem Mir.crate`
-   combines the captured `Mir.crate` definition with Anneal's reference
-   operational semantics for Rust MIR. It asserts that every targeted function
-   is sound (UB-free) and satisfies any stated specifications, and that all
-   trusted definitions and assumptions used in the verification satisfy the
-   crate's trust policy.
+   combines the captured `Mir.crate` definition with Anneal's verification
+   operational semantics for Rust MIR ($M_{\text{anneal}}$, anchored by a
+   kernel-checked correspondence proof against a pinned reference model
+   $M_{\text{ref}}$ in repository CI; see
+   [`docs/architecture.md`](architecture.md) and
+   [`docs/mir-correspondence-strategy.md`](mir-correspondence-strategy.md)). It
+   asserts that every targeted function is sound (UB-free) and satisfies any
+   stated specifications, and that all trusted definitions and assumptions used
+   in the verification satisfy the crate's trust policy.
 3. **Lowering and proof discharge (`theory/`):** Raw `rustc` MIR contains
    compiler-version-specific details and low-level control-flow edges that are
    awkward to reason about directly. When Lean elaborates `Proof.lean`,
@@ -154,7 +158,16 @@ API. Verifying one concrete test harness says nothing about whether a
 downstream caller can trigger UB by instantiating a generic parameter with an
 unusual layout or calling public methods in a different order.
 
-Anneal is library-centric by default:
+Anneal is library-centric by default (phased incrementally alongside the Pass 2
+correspondence domain in
+[`docs/mir-correspondence-strategy.md`](mir-correspondence-strategy.md): the
+initial concrete correspondence phase verifies concrete, monomorphic library
+functions modularly for *all* caller states and inputs without requiring a
+`fn main()`, failing closed to `unsupported` on uninstantiated generic bodies
+or unevaluated generic constants; polymorphic verification across arbitrary
+downstream caller type/layout instantiations lands in a subsequent phase by
+parameterizing the semantics over generic substitutions and layout constraints
+with a kernel-verified instantiation route into $M_{\text{ref}}$):
 
 - **Modular per-function verification:** Each function is verified against its
   contract for *all* caller states and arguments that satisfy its preconditions.
@@ -201,13 +214,15 @@ framework:
 ### 1. Baseline safety (absence of undefined behavior)
 
 Every verified function in Anneal must at minimum be free of undefined behavior
-for all inputs satisfying its preconditions. In Anneal's reference semantics,
-undefined behavior is represented as an explicit fault state (`UB`). Proving a
-function safe requires proving that no execution starting from a valid input
-state can reach `UB`—ruling out out-of-bounds or unaligned memory accesses,
-dangling pointer dereferences, aliasing violations, division by zero, invalid
-scalar bit patterns (such as a `bool` byte other than `0` or `1`), and
-unsynchronized data races.
+for all inputs satisfying its preconditions. In Anneal's operational semantics
+(certified against its reference semantics), undefined behavior is represented
+as an explicit fault state (`undefined` / `UB`), alongside a conservative
+`unsupported` fault state for constructs outside the modeled fragment. Proving
+a function safe requires proving that no execution starting from a valid input
+state can reach `undefined` or `unsupported`—ruling out out-of-bounds or
+unaligned memory accesses, dangling pointer dereferences, aliasing violations,
+division by zero, invalid scalar bit patterns (such as a `bool` byte other than
+`0` or `1`), and unsynchronized data races.
 
 ### 2. Preconditions, postconditions, and invariants
 

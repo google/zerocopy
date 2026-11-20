@@ -15,12 +15,14 @@ use std::fs;
 use std::io;
 use std::os::unix::fs::symlink;
 use std::path::{Path, PathBuf};
+use std::process::Command;
 
 use serde_json::json;
 
 use anneal_audit::{
-    Checker, Failure, ImportEdge, InspectorRequest, Json, ModuleArtifacts, PARTS, TrustTier,
-    check_cargo_boundary, default_lean_path, sha256_file,
+    CandidateFeature, Checker, Failure, ImportEdge, InspectorRequest, Json, MiriClosureEntry,
+    ModuleArtifacts, PARTS, TrustTier, check_cargo_boundary, default_lean_path,
+    ensure_miri_cache_outside_checkout, sha256_bytes, sha256_file, verify_sysroot_foundation_dir,
 };
 
 const HEADER: &str = "-- anneal-trust-tier: vetted\nprelude\nimport Init.NotationExtra\n";
@@ -1047,5 +1049,1451 @@ fn enforces_module_level_trust_tiers_and_namespace_hygiene() {
             "opaque declaration Anneal.badOpaque in Anneal is not allowed outside Trusted"
         ),
         "unexpected error: {err_opaque}"
+    );
+}
+
+/// Verifies that `verify_upstream_pin` and `Checker::run()` enforce
+/// `vendor/lean-miri/UPSTREAM_PIN.json` and reject whole-directory deletion,
+/// missing or tampered manifests (including before JSON parsing),
+/// modified/deleted/unlisted `.lean` and non-`.lean` files, and symlinks with
+/// policy exit code `1`.
+#[test]
+fn verifies_upstream_pin_and_rejects_tampering() {
+    let checkout = repo_root();
+    let pin = anneal_audit::verify_upstream_pin(&checkout.join("vendor/lean-miri")).unwrap();
+    assert_eq!(pin.schema_version, 2);
+    assert_eq!(pin.vendor_tree.file_count, 608);
+    assert!(pin.patched_files.is_empty());
+    assert_eq!(pin.execution_machine_closure.len(), 160);
+
+    // 1. Deleting `vendor/` in a repository checkout fails `Checker::run()`
+    // with policy exit code `1` (`miri-pin`).
+    let mut fix_missing_dir = TempFixture::new(None);
+    fs::copy(
+        checkout.join("Cargo.toml"),
+        fix_missing_dir.root.join("Cargo.toml"),
+    )
+    .unwrap();
+    fs::copy(
+        checkout.join("Cargo.lock"),
+        fix_missing_dir.root.join("Cargo.lock"),
+    )
+    .unwrap();
+    fs::copy(
+        checkout.join("flake.nix"),
+        fix_missing_dir.root.join("flake.nix"),
+    )
+    .unwrap();
+    fs::copy(
+        checkout.join("flake.lock"),
+        fix_missing_dir.root.join("flake.lock"),
+    )
+    .unwrap();
+    fs::copy(
+        checkout.join("trusted/root-manifest.sha256"),
+        fix_missing_dir.root.join("trusted/root-manifest.sha256"),
+    )
+    .unwrap();
+    fs::copy(
+        checkout.join("trusted/audit/Cargo.toml"),
+        fix_missing_dir.root.join("trusted/audit/Cargo.toml"),
+    )
+    .unwrap();
+    copy_dir_all(
+        &checkout.join("trusted/rustc-capture"),
+        &fix_missing_dir.root.join("trusted/rustc-capture"),
+    )
+    .unwrap();
+    copy_dir_all(
+        &checkout.join("trusted/cargo-anneal"),
+        &fix_missing_dir.root.join("trusted/cargo-anneal"),
+    )
+    .unwrap();
+    let err_no_vendor = fix_missing_dir
+        .check_expected(Some(1), Some("miri-pin"), Some(false))
+        .unwrap_err();
+    assert!(
+        err_no_vendor
+            .message
+            .contains("expected regular vendor directory"),
+        "unexpected error: {err_no_vendor}"
+    );
+
+    // Prepare a mutable copy of `vendor/lean-miri` for tampering tests.
+    let tmp = tempfile::tempdir().unwrap();
+    let vendor_copy = tmp.path().join("vendor/lean-miri");
+    copy_dir_all(&checkout.join("vendor/lean-miri"), &vendor_copy).unwrap();
+    anneal_audit::verify_upstream_pin(&vendor_copy).unwrap();
+
+    // 2. Modified `.lean` file digest mismatch is rejected.
+    let target_lean = vendor_copy.join("Miri.lean");
+    let orig_lean = fs::read(&target_lean).unwrap();
+    fs::write(&target_lean, b"-- tampered\n").unwrap();
+    let err_tamper = anneal_audit::verify_upstream_pin(&vendor_copy).unwrap_err();
+    assert_eq!(err_tamper.code, 1);
+    assert!(
+        err_tamper
+            .message
+            .contains("vendor file SHA-256 mismatch for Miri.lean"),
+        "unexpected error: {err_tamper}"
+    );
+    fs::write(&target_lean, &orig_lean).unwrap();
+
+    // 3. Unlisted `.lean` file is rejected.
+    let rogue_lean = vendor_copy.join("Miri/Rogue.lean");
+    fs::write(&rogue_lean, b"def x := 1\n").unwrap();
+    let err_unlisted = anneal_audit::verify_upstream_pin(&vendor_copy).unwrap_err();
+    assert_eq!(err_unlisted.code, 1);
+    assert!(
+        err_unlisted
+            .message
+            .contains("unlisted Lean file in vendor/lean-miri: Miri/Rogue.lean"),
+        "unexpected error: {err_unlisted}"
+    );
+    fs::remove_file(&rogue_lean).unwrap();
+
+    // 3b. Unlisted non-`.lean` file (e.g. a pre-compiled `.olean`) is rejected.
+    let rogue_olean = vendor_copy.join("Miri/Rogue.olean");
+    fs::write(&rogue_olean, b"fake-olean-bytes").unwrap();
+    let err_rogue_olean = anneal_audit::verify_upstream_pin(&vendor_copy).unwrap_err();
+    assert_eq!(err_rogue_olean.code, 1);
+    assert!(
+        err_rogue_olean
+            .message
+            .contains("unlisted file in vendor/lean-miri: Miri/Rogue.olean"),
+        "unexpected error: {err_rogue_olean}"
+    );
+    fs::remove_file(&rogue_olean).unwrap();
+
+    // 3c. Deleted pinned `.lean` file is rejected.
+    fs::remove_file(&target_lean).unwrap();
+    let err_deleted_lean = anneal_audit::verify_upstream_pin(&vendor_copy).unwrap_err();
+    assert_eq!(err_deleted_lean.code, 1);
+    assert!(
+        err_deleted_lean
+            .message
+            .contains("missing pinned .lean file in vendor/lean-miri"),
+        "unexpected error: {err_deleted_lean}"
+    );
+    fs::write(&target_lean, &orig_lean).unwrap();
+
+    // 3d. Deleted pinned auxiliary file is rejected.
+    let target_aux = vendor_copy.join("LICENSE-MIT");
+    let orig_aux = fs::read(&target_aux).unwrap();
+    fs::remove_file(&target_aux).unwrap();
+    let err_deleted_aux = anneal_audit::verify_upstream_pin(&vendor_copy).unwrap_err();
+    assert_eq!(err_deleted_aux.code, 1);
+    assert!(
+        err_deleted_aux
+            .message
+            .contains("missing pinned auxiliary file in vendor/lean-miri"),
+        "unexpected error: {err_deleted_aux}"
+    );
+    fs::write(&target_aux, &orig_aux).unwrap();
+
+    // 4. Symlink inside `vendor/lean-miri` is rejected.
+    #[cfg(unix)]
+    {
+        let link_path = vendor_copy.join("Miri/Symlink.lean");
+        std::os::unix::fs::symlink(&target_lean, &link_path).unwrap();
+        let err_symlink = anneal_audit::verify_upstream_pin(&vendor_copy).unwrap_err();
+        assert_eq!(err_symlink.code, 1);
+        assert!(
+            err_symlink
+                .message
+                .contains("symlink forbidden in vendor/lean-miri"),
+            "unexpected error: {err_symlink}"
+        );
+        fs::remove_file(&link_path).unwrap();
+    }
+
+    // 5. Modifying `UPSTREAM_PIN.json` without updating
+    // `LOCKED_UPSTREAM_PIN_SHA256` is rejected before JSON parsing (both for
+    // structured edits and malformed JSON).
+    let pin_path = vendor_copy.join("UPSTREAM_PIN.json");
+    let orig_pin_bytes = fs::read(&pin_path).unwrap();
+    let mut pin_notes_json: Json = serde_json::from_slice(&orig_pin_bytes).unwrap();
+    pin_notes_json["notes"]
+        .as_array_mut()
+        .unwrap()
+        .push(json!("extra note"));
+    fs::write(&pin_path, serde_json::to_vec(&pin_notes_json).unwrap()).unwrap();
+    let err_pin_sha = anneal_audit::verify_upstream_pin(&vendor_copy).unwrap_err();
+    assert_eq!(err_pin_sha.code, 1);
+    assert!(
+        err_pin_sha
+            .message
+            .contains("UPSTREAM_PIN.json SHA-256 differs from locked digest"),
+        "unexpected error: {err_pin_sha}"
+    );
+
+    fs::write(&pin_path, b"{not valid json").unwrap();
+    let err_bad_json_sha = anneal_audit::verify_upstream_pin(&vendor_copy).unwrap_err();
+    assert_eq!(err_bad_json_sha.code, 1);
+    assert!(
+        err_bad_json_sha
+            .message
+            .contains("UPSTREAM_PIN.json SHA-256 differs from locked digest"),
+        "unexpected error: {err_bad_json_sha}"
+    );
+
+    // 6. Missing `UPSTREAM_PIN.json` is rejected with policy exit code `1`.
+    fs::remove_file(&pin_path).unwrap();
+    let err_missing_pin = anneal_audit::verify_upstream_pin(&vendor_copy).unwrap_err();
+    assert_eq!(err_missing_pin.code, 1);
+    assert!(
+        err_missing_pin
+            .message
+            .contains("missing UPSTREAM_PIN.json"),
+        "unexpected error: {err_missing_pin}"
+    );
+}
+
+/// Verifies that `"correspondence-audit"` rejects a `.vendorMiri` module that
+/// declares a constant in the reserved `Trusted` or `Anneal` root namespace
+/// (including a `private` declaration), declares an `axiom` or `unsafe`
+/// constant, or directly references `sorryAx`, `Lean.ofReduceBool`, or
+/// `Lean.trustCompiler`, while a benign vendor constant passes those checks
+/// and standalone kernel replay and fails only later when the
+/// `Miri.Interpreter.ExecutionMachine` cone is missing.
+#[test]
+fn rejects_vendor_constants_in_reserved_namespaces() {
+    let fix = TempFixture::new(None);
+    let mut checker = Checker::new(&fix.root, None).unwrap();
+    checker.run().unwrap();
+    let trusted_lib = checker.stage.join("lib");
+    let vendor_src = checker.stage.join("src/fake-miri");
+    let vendor_lib = checker.stage.join("fake-miri-lib");
+    let cases: [(&str, &str, Option<&str>); 12] = [
+        (
+            "Miri.SpoofTrusted",
+            "namespace Trusted\ndef Spoof : Nat := 0\nend Trusted\n",
+            Some(
+                "external module Miri.SpoofTrusted cannot declare constant \
+                 Trusted.Spoof in reserved Trusted namespace",
+            ),
+        ),
+        (
+            "Miri.SpoofAnneal",
+            "namespace Anneal\ndef Spoof : Nat := 0\nend Anneal\n",
+            Some(
+                "external module Miri.SpoofAnneal cannot declare constant \
+                 Anneal.Spoof in reserved Anneal namespace",
+            ),
+        ),
+        (
+            "Miri.SpoofPrivate",
+            "namespace Trusted\nprivate def hidden : Nat := 0\nend Trusted\n",
+            Some("in reserved Trusted namespace"),
+        ),
+        (
+            "Miri.SpoofAxiom",
+            "namespace Miri.SpoofAxiom\naxiom spoofAx : False\nend Miri.SpoofAxiom\n",
+            Some("vendor Miri module Miri.SpoofAxiom cannot declare axiom Miri.SpoofAxiom.spoofAx"),
+        ),
+        (
+            "Miri.SpoofUnsafe",
+            "namespace Miri.SpoofUnsafe\nunsafe def evil : Nat := 0\nend Miri.SpoofUnsafe\n",
+            Some(
+                "vendor Miri module Miri.SpoofUnsafe cannot declare unsafe \
+                 constant Miri.SpoofUnsafe.evil",
+            ),
+        ),
+        (
+            "Miri.SpoofSorry",
+            "namespace Miri.SpoofSorry\ntheorem spoofSorry : False := sorry\nend Miri.SpoofSorry\n",
+            Some(
+                "vendor Miri module Miri.SpoofSorry constant Miri.SpoofSorry.spoofSorry \
+                 references sorryAx",
+            ),
+        ),
+        (
+            "Miri.SpoofOfReduceBool",
+            "namespace Miri.SpoofOfReduceBool\n\
+             theorem spoof (h : Lean.reduceBool true = true) : true = true := \
+             Lean.ofReduceBool true true h\n\
+             end Miri.SpoofOfReduceBool\n",
+            Some(
+                "vendor Miri module Miri.SpoofOfReduceBool constant \
+                 Miri.SpoofOfReduceBool.spoof references forbidden compiler primitive",
+            ),
+        ),
+        (
+            "Miri.SpoofTrustCompiler",
+            "namespace Miri.SpoofTrustCompiler\n\
+             theorem spoof : True := Lean.trustCompiler\n\
+             end Miri.SpoofTrustCompiler\n",
+            Some(
+                "vendor Miri module Miri.SpoofTrustCompiler constant \
+                 Miri.SpoofTrustCompiler.spoof references forbidden compiler primitive \
+                 Lean.trustCompiler",
+            ),
+        ),
+        (
+            "Miri.Interpreter.ExecutionMachine",
+            "namespace Miri.Interpreter.ExecutionMachine\nunsafe def step : Nat := 0\nend Miri.Interpreter.ExecutionMachine\n",
+            Some(
+                "vendor Miri module Miri.Interpreter.ExecutionMachine cannot declare \
+                 unsafe constant Miri.Interpreter.ExecutionMachine.step",
+            ),
+        ),
+        (
+            "Miri.Interpreter.ExecutionMachine",
+            "namespace Miri.Interpreter.ExecutionMachine\npartial def step (n : Nat) : Nat := step n\nend Miri.Interpreter.ExecutionMachine\n",
+            Some(
+                "opaque/partial vendor Miri constant Miri.Interpreter.ExecutionMachine.step \
+                 from Miri.Interpreter.ExecutionMachine in correspondence dependency cone",
+            ),
+        ),
+        (
+            "Miri.Interpreter.ExecutionMachine",
+            "namespace Miri.Interpreter.ExecutionMachine\nopaque step : Nat := 0\nend Miri.Interpreter.ExecutionMachine\n",
+            Some(
+                "opaque/partial vendor Miri constant Miri.Interpreter.ExecutionMachine.step \
+                 from Miri.Interpreter.ExecutionMachine in correspondence dependency cone",
+            ),
+        ),
+        (
+            "Miri.Benign",
+            "namespace Miri.Benign\ndef ok : Nat := 0\nend Miri.Benign\n",
+            None,
+        ),
+    ];
+    for (module, body, expected) in cases {
+        let rel = module.replace('.', "/");
+        let src = vendor_src.join(format!("{rel}.lean"));
+        fs::create_dir_all(src.parent().unwrap()).unwrap();
+        fs::write(&src, format!("prelude\nimport Init.Core\n{body}")).unwrap();
+        let out = vendor_lib.join(format!("{rel}.olean"));
+        fs::create_dir_all(out.parent().unwrap()).unwrap();
+        checker
+            .process(
+                &format!("compile-{module}"),
+                &[
+                    "-j1".to_string(),
+                    "-M2048".to_string(),
+                    "-t0".to_string(),
+                    "-R".to_string(),
+                    vendor_src.to_string_lossy().into_owned(),
+                    "-o".to_string(),
+                    out.to_string_lossy().into_owned(),
+                    src.to_string_lossy().into_owned(),
+                ],
+            )
+            .unwrap();
+        let err = checker
+            .inspect(InspectorRequest::CorrespondenceAudit {
+                search_path: vec![trusted_lib.clone(), vendor_lib.clone()],
+                trusted: vec!["Trusted".to_string()],
+                corr_trusted: Vec::new(),
+                theory: Vec::new(),
+                corr_theory: Vec::new(),
+                vendor_miri: vec![module.to_string()],
+                module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+            })
+            .unwrap_err();
+        assert_eq!(err.code, 1, "unexpected error code for {module}: {err}");
+        assert_eq!(err.phase, "correspondence-audit", "unexpected phase: {err}");
+        match expected {
+            Some(message) => assert!(
+                err.message.contains(message),
+                "unexpected error for {module}: {err}"
+            ),
+            None => {
+                assert!(
+                    !err.message.contains("reserved"),
+                    "benign vendor module {module} was rejected: {err}"
+                );
+                assert!(
+                    err.message.contains(
+                        "unknown declaration origin: Miri.Interpreter.ExecutionMachine.step"
+                    ),
+                    "unexpected error for {module}: {err}"
+                );
+            }
+        }
+    }
+}
+
+/// Verifies the vendored `.olean` cache and compilation pipeline in
+/// [`Checker::verify_and_stage_miri_entries`]:
+/// 1. Staged source digest mismatch fails closed before consulting the cache or
+///    invoking Lean.
+/// 2. Compiled `.olean` digest mismatch fails closed and writes zero files to
+///    the cache directory (write-after-verify).
+/// 3. Cold compilation populates the cache with verified digests.
+/// 4. Digest-gated cache restore succeeds without recompiling.
+/// 5. Tampered cached `.olean` bytes are rejected (never blindly accepted),
+///    forcing recompilation and healing the cache when valid source exists.
+/// 6. Missing, mismatched, and unexpected compiled `.olean.server` /
+///    `.olean.private` sidecars all fail closed with policy exit code `1`.
+#[test]
+fn verifies_miri_cache_and_rejects_unverified_oleans() {
+    let fix = TempFixture::new(None);
+    let cache_root = tempfile::Builder::new()
+        .prefix("anneal-miri-cache-test-")
+        .tempdir()
+        .unwrap();
+    let vendor_dir = fix.root.join("fake-vendor");
+    let src_path = vendor_dir.join("Miri/Tiny.lean");
+    fs::create_dir_all(src_path.parent().unwrap()).unwrap();
+    let valid_src =
+        "prelude\nimport Init.Core\nnamespace Miri.Tiny\ndef x : Nat := 1\nend Miri.Tiny\n";
+    let valid_src_sha = sha256_bytes(valid_src.as_bytes());
+    let valid_sources = BTreeMap::from([("Miri/Tiny.lean".to_string(), valid_src_sha.clone())]);
+    fs::write(&src_path, valid_src).unwrap();
+
+    // Compile once in a probe checker to obtain the deterministic `.olean`
+    // companion digests for `Miri.Tiny`.
+    let mut probe = Checker::new(&fix.root, None).unwrap();
+    probe.run().unwrap();
+    let probe_out = probe.stage.join("probe-lib/Miri/Tiny.olean");
+    fs::create_dir_all(probe_out.parent().unwrap()).unwrap();
+    probe
+        .process(
+            "probe-miri-tiny",
+            &[
+                "-j1".to_string(),
+                "-M2048".to_string(),
+                "-t0".to_string(),
+                "-DElab.async=false".to_string(),
+                "-Ddebug.skipKernelTC=false".to_string(),
+                "-R".to_string(),
+                vendor_dir.to_string_lossy().into_owned(),
+                "-o".to_string(),
+                probe_out.to_string_lossy().into_owned(),
+                src_path.to_string_lossy().into_owned(),
+            ],
+        )
+        .unwrap();
+    let expected_olean = sha256_file(&probe_out, "test").unwrap();
+    let probe_server = probe.stage.join("probe-lib/Miri/Tiny.olean.server");
+    let expected_server = probe_server
+        .exists()
+        .then(|| sha256_file(&probe_server, "test").unwrap());
+    let probe_private = probe.stage.join("probe-lib/Miri/Tiny.olean.private");
+    let expected_private = probe_private
+        .exists()
+        .then(|| sha256_file(&probe_private, "test").unwrap());
+
+    let good_entry = MiriClosureEntry {
+        module: "Miri.Tiny".to_string(),
+        path: "Miri/Tiny.lean".to_string(),
+        olean_sha256: expected_olean.clone(),
+        olean_server_sha256: expected_server.clone(),
+        olean_private_sha256: expected_private.clone(),
+    };
+
+    // Case 0: Staged source SHA-256 mismatch fails closed with exit code `1`.
+    let wrong_sources = BTreeMap::from([("Miri/Tiny.lean".to_string(), "1".repeat(64))]);
+    let mut c0 = Checker::new(&fix.root, None).unwrap();
+    c0.run().unwrap();
+    let err_src_sha = c0
+        .verify_and_stage_miri_entries(
+            &vendor_dir,
+            std::slice::from_ref(&good_entry),
+            &wrong_sources,
+        )
+        .unwrap_err();
+    assert_eq!(err_src_sha.code, 1, "expected policy error: {err_src_sha}");
+    assert!(
+        err_src_sha
+            .message
+            .contains("staged Miri source SHA-256 mismatch for Miri/Tiny.lean"),
+        "unexpected source-mismatch error: {err_src_sha}"
+    );
+
+    // Case 1: Compiled `.olean` digest mismatch fails closed AND writes
+    // nothing into the empty cache directory (write-after-verify invariant).
+    let cache_mismatch = cache_root.path().join("cache-mismatch");
+    fs::create_dir_all(&cache_mismatch).unwrap();
+    let mut bad_entry = good_entry.clone();
+    bad_entry.olean_sha256 = "0".repeat(64);
+    let mut c1 = Checker::new(&fix.root, None).unwrap();
+    c1.set_miri_cache_dir(Some(cache_mismatch.clone()));
+    c1.run().unwrap();
+    let err = c1
+        .verify_and_stage_miri_entries(&vendor_dir, &[bad_entry], &valid_sources)
+        .unwrap_err();
+    assert_eq!(err.code, 1, "expected policy error: {err}");
+    assert!(
+        err.message
+            .contains("compiled Miri .olean SHA-256 mismatch for Miri.Tiny"),
+        "unexpected mismatch error: {err}"
+    );
+    assert!(
+        !cache_mismatch.join("Miri/Tiny.olean").exists(),
+        "unverified .olean must never be written to cache"
+    );
+
+    // Case 2: Cold compile verifies digests and populates the cache.
+    let cache_dir = cache_root.path().join("cache-live");
+    fs::create_dir_all(&cache_dir).unwrap();
+    let mut c2 = Checker::new(&fix.root, None).unwrap();
+    c2.set_miri_cache_dir(Some(cache_dir.clone()));
+    c2.run().unwrap();
+    c2.verify_and_stage_miri_entries(
+        &vendor_dir,
+        std::slice::from_ref(&good_entry),
+        &valid_sources,
+    )
+    .unwrap();
+    let cached_olean = cache_dir.join("Miri/Tiny.olean");
+    assert_eq!(
+        sha256_file(&cached_olean, "test").unwrap(),
+        expected_olean,
+        "cached .olean digest must match verified output"
+    );
+
+    // Case 3: Digest-gated cache hit restores `.olean` without compiling
+    // source (proven by temporarily replacing source with invalid Lean while
+    // updating the expected source digest so staging succeeds).
+    let invalid_src = "this is intentionally invalid lean syntax !!!\n";
+    let invalid_sources = BTreeMap::from([(
+        "Miri/Tiny.lean".to_string(),
+        sha256_bytes(invalid_src.as_bytes()),
+    )]);
+    fs::write(&src_path, invalid_src).unwrap();
+    let mut c3 = Checker::new(&fix.root, None).unwrap();
+    c3.set_miri_cache_dir(Some(cache_dir.clone()));
+    c3.run().unwrap();
+    c3.verify_and_stage_miri_entries(
+        &vendor_dir,
+        std::slice::from_ref(&good_entry),
+        &invalid_sources,
+    )
+    .unwrap();
+
+    // Case 4a: Tampered cached `.olean` is rejected (cannot serve cache hit;
+    // with invalid source present, fallback compilation fails closed).
+    let mut bytes = fs::read(&cached_olean).unwrap();
+    bytes[0] ^= 0xFF;
+    fs::write(&cached_olean, &bytes).unwrap();
+    let mut c4a = Checker::new(&fix.root, None).unwrap();
+    c4a.set_miri_cache_dir(Some(cache_dir.clone()));
+    c4a.run().unwrap();
+    let err_tampered = c4a
+        .verify_and_stage_miri_entries(
+            &vendor_dir,
+            std::slice::from_ref(&good_entry),
+            &invalid_sources,
+        )
+        .unwrap_err();
+    assert!(
+        err_tampered.phase.contains("compile-Miri.Tiny"),
+        "tampered cached .olean must trigger recompile, got: {err_tampered}"
+    );
+
+    // Case 4b: With valid source restored, tampered cache entry is bypassed,
+    // recompiled, re-verified, and healed on disk.
+    fs::write(&src_path, valid_src).unwrap();
+    let mut c4b = Checker::new(&fix.root, None).unwrap();
+    c4b.set_miri_cache_dir(Some(cache_dir.clone()));
+    c4b.run().unwrap();
+    c4b.verify_and_stage_miri_entries(
+        &vendor_dir,
+        std::slice::from_ref(&good_entry),
+        &valid_sources,
+    )
+    .unwrap();
+    assert_eq!(
+        sha256_file(&cached_olean, "test").unwrap(),
+        expected_olean,
+        "healed cache entry must match pinned digest"
+    );
+
+    // Case 5: Missing expected `.olean.server` sidecar fails closed without
+    // contaminating a fresh cache directory.
+    let cache_sidecar = cache_root.path().join("cache-sidecar");
+    fs::create_dir_all(&cache_sidecar).unwrap();
+    let mut bad_sidecar = good_entry;
+    bad_sidecar.olean_server_sha256 = Some("f".repeat(64));
+    let mut c5 = Checker::new(&fix.root, None).unwrap();
+    c5.set_miri_cache_dir(Some(cache_sidecar.clone()));
+    c5.run().unwrap();
+    let err_sidecar = c5
+        .verify_and_stage_miri_entries(&vendor_dir, &[bad_sidecar], &valid_sources)
+        .unwrap_err();
+    assert_eq!(err_sidecar.code, 1, "expected policy error: {err_sidecar}");
+    assert!(
+        err_sidecar
+            .message
+            .contains("missing compiled Miri .olean.server sidecar for Miri.Tiny"),
+        "unexpected missing-sidecar error: {err_sidecar}"
+    );
+    assert!(
+        !cache_sidecar.join("Miri/Tiny.olean").exists(),
+        "sidecar mismatch must not write to cache"
+    );
+
+    // Case 6: Unexpected compiled `.olean.server` / `.olean.private` sidecar
+    // (present on disk when `UPSTREAM_PIN.json` expects `None`) and sidecar
+    // SHA-256 mismatch both fail closed with policy exit code `1`.
+    let mod_path = vendor_dir.join("Miri/WithSidecar.lean");
+    let mod_src = "module\nprelude\npublic import Init.Core\n\
+                   namespace Miri.WithSidecar\npublic def x : Nat := 1\n\
+                   end Miri.WithSidecar\n";
+    let mod_sources = BTreeMap::from([(
+        "Miri/WithSidecar.lean".to_string(),
+        sha256_bytes(mod_src.as_bytes()),
+    )]);
+    fs::write(&mod_path, mod_src).unwrap();
+    let probe_mod_out = probe.stage.join("probe-lib/Miri/WithSidecar.olean");
+    probe
+        .process(
+            "probe-miri-sidecar",
+            &[
+                "-j1".to_string(),
+                "-M2048".to_string(),
+                "-t0".to_string(),
+                "-DElab.async=false".to_string(),
+                "-Ddebug.skipKernelTC=false".to_string(),
+                "-R".to_string(),
+                vendor_dir.to_string_lossy().into_owned(),
+                "-o".to_string(),
+                probe_mod_out.to_string_lossy().into_owned(),
+                mod_path.to_string_lossy().into_owned(),
+            ],
+        )
+        .unwrap();
+    let mod_olean = sha256_file(&probe_mod_out, "test").unwrap();
+    let mod_server = probe.stage.join("probe-lib/Miri/WithSidecar.olean.server");
+    let mod_private = probe.stage.join("probe-lib/Miri/WithSidecar.olean.private");
+    assert!(
+        mod_server.exists(),
+        "Lean `module` fixture must emit .olean.server to exercise sidecar checks"
+    );
+    let mod_server_sha = sha256_file(&mod_server, "test").unwrap();
+    let mod_private_sha = mod_private
+        .exists()
+        .then(|| sha256_file(&mod_private, "test").unwrap());
+
+    // 6a. Unexpected `.olean.server` when entry expects `None`.
+    let unexpected_server = MiriClosureEntry {
+        module: "Miri.WithSidecar".to_string(),
+        path: "Miri/WithSidecar.lean".to_string(),
+        olean_sha256: mod_olean.clone(),
+        olean_server_sha256: None,
+        olean_private_sha256: mod_private_sha.clone(),
+    };
+    let mut c6a = Checker::new(&fix.root, None).unwrap();
+    c6a.run().unwrap();
+    let err_unexpected_server = c6a
+        .verify_and_stage_miri_entries(&vendor_dir, &[unexpected_server], &mod_sources)
+        .unwrap_err();
+    assert_eq!(
+        err_unexpected_server.code, 1,
+        "expected policy error: {err_unexpected_server}"
+    );
+    assert!(
+        err_unexpected_server
+            .message
+            .contains("unexpected Miri .olean.server sidecar for Miri.WithSidecar"),
+        "unexpected sidecar error: {err_unexpected_server}"
+    );
+
+    // 6b. Mismatched `.olean.server` SHA-256 when entry expects `Some(...)`.
+    let mismatched_server = MiriClosureEntry {
+        module: "Miri.WithSidecar".to_string(),
+        path: "Miri/WithSidecar.lean".to_string(),
+        olean_sha256: mod_olean.clone(),
+        olean_server_sha256: Some("e".repeat(64)),
+        olean_private_sha256: mod_private_sha.clone(),
+    };
+    let mut c6b = Checker::new(&fix.root, None).unwrap();
+    c6b.run().unwrap();
+    let err_mismatched_server = c6b
+        .verify_and_stage_miri_entries(&vendor_dir, &[mismatched_server], &mod_sources)
+        .unwrap_err();
+    assert_eq!(
+        err_mismatched_server.code, 1,
+        "expected policy error: {err_mismatched_server}"
+    );
+    assert!(
+        err_mismatched_server
+            .message
+            .contains("compiled Miri .olean.server SHA-256 mismatch for Miri.WithSidecar"),
+        "unexpected sidecar-mismatch error: {err_mismatched_server}"
+    );
+
+    // 6c. Unexpected `.olean.private` when emitted and entry expects `None`.
+    if mod_private_sha.is_some() {
+        let unexpected_private = MiriClosureEntry {
+            module: "Miri.WithSidecar".to_string(),
+            path: "Miri/WithSidecar.lean".to_string(),
+            olean_sha256: mod_olean,
+            olean_server_sha256: Some(mod_server_sha),
+            olean_private_sha256: None,
+        };
+        let mut c6c = Checker::new(&fix.root, None).unwrap();
+        c6c.run().unwrap();
+        let err_unexpected_private = c6c
+            .verify_and_stage_miri_entries(&vendor_dir, &[unexpected_private], &mod_sources)
+            .unwrap_err();
+        assert_eq!(
+            err_unexpected_private.code, 1,
+            "expected policy error: {err_unexpected_private}"
+        );
+        assert!(
+            err_unexpected_private
+                .message
+                .contains("unexpected Miri .olean.private sidecar for Miri.WithSidecar"),
+            "unexpected private-sidecar error: {err_unexpected_private}"
+        );
+    }
+}
+
+/// Verifies that `--miri-cache-dir` / `Checker::set_miri_cache_dir` rejects
+/// any cache directory located inside (or resolving inside) the repository
+/// checkout as a policy error (exit code `1`), including non-existent paths,
+/// parent traversals, and symlinks, while allowing sibling directories outside
+/// the checkout.
+#[test]
+fn rejects_miri_cache_dir_inside_checkout() {
+    let fix = TempFixture::new(None);
+    let outside = tempfile::Builder::new()
+        .prefix("anneal-miri-outside-")
+        .tempdir()
+        .unwrap();
+
+    let existing_inside = fix.root.join("existing-cache");
+    fs::create_dir_all(&existing_inside).unwrap();
+    let nonexistent_inside = fix.root.join(".evil-cache/nested");
+    let traversed_inside = fix.root.join("sub/../.evil-cache");
+
+    let link_into_checkout = outside.path().join("link-in");
+    symlink(&existing_inside, &link_into_checkout).unwrap();
+    let link_into_nested = link_into_checkout.join("deep");
+
+    let dangling_into_checkout = outside.path().join("dangling-in");
+    symlink(fix.root.join("does-not-exist"), &dangling_into_checkout).unwrap();
+
+    let real_outside_cache = outside.path().join("real-cache");
+    fs::create_dir_all(&real_outside_cache).unwrap();
+    let link_out_of_checkout = fix.root.join("link-out");
+    symlink(&real_outside_cache, &link_out_of_checkout).unwrap();
+
+    let bad_paths = [
+        fix.root.clone(),
+        existing_inside,
+        nonexistent_inside,
+        traversed_inside,
+        link_into_checkout,
+        link_into_nested,
+        dangling_into_checkout,
+        link_out_of_checkout,
+    ];
+    for bad in &bad_paths {
+        let mut checker = Checker::new(&fix.root, None).unwrap();
+        checker.set_miri_cache_dir(Some(bad.clone()));
+        let err = checker.run().unwrap_err();
+        assert_eq!(
+            err.code,
+            1,
+            "expected policy error for {}: {err}",
+            bad.display()
+        );
+        assert_eq!(
+            err.phase,
+            "miri-pin",
+            "unexpected phase for {}: {err}",
+            bad.display()
+        );
+        assert!(
+            !checker.execution_began,
+            "Lean execution must not begin when cache dir is inside checkout: {}",
+            bad.display()
+        );
+    }
+
+    // Sibling path sharing a string prefix with `checkout` is outside the
+    // checkout and must be accepted by containment validation.
+    let sibling_parent = outside.path().join("parent");
+    let fake_repo = sibling_parent.join("repo");
+    let sibling_cache = sibling_parent.join("repo-cache");
+    fs::create_dir_all(&fake_repo).unwrap();
+    ensure_miri_cache_outside_checkout(&fake_repo, &sibling_cache).unwrap();
+
+    // Verify end-to-end CLI rejection with exit code `1`.
+    let output = Command::new(env!("CARGO_BIN_EXE_anneal-audit"))
+        .env_clear()
+        .arg("--anneal-root")
+        .arg(&fix.root)
+        .arg("--miri-cache-dir")
+        .arg(fix.root.join(".evil-cache"))
+        .output()
+        .unwrap();
+    assert_eq!(
+        output.status.code(),
+        Some(1),
+        "expected exit code 1 from CLI: {output:?}"
+    );
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(
+        stderr.contains("Miri .olean cache directory must reside outside the repository checkout"),
+        "unexpected CLI stderr: {stderr}"
+    );
+}
+
+/// Verifies negative cases for correspondence-audit rules in
+/// `TrustedBoundary.lean` (`classifyCorrModules`, `checkCorrTierReferences`,
+/// and `closureCorr` unapproved-axiom rejection) and for toolchain sysroot
+/// manifest authentication (`verify_sysroot_foundation_dir`).
+#[test]
+fn rejects_correspondence_audit_violations_and_sysroot_mismatch() {
+    let fix = TempFixture::new(None);
+
+    // 1. Sysroot manifest mismatch & symlink rejection.
+    let fake_lib = fix.root.join("fake-sysroot-lib");
+    for pkg in ["Init", "Std", "Lean"] {
+        fs::create_dir_all(fake_lib.join(pkg)).unwrap();
+    }
+    fs::write(fake_lib.join("Init/Dummy.olean"), b"dummy-olean").unwrap();
+    let err_sysroot =
+        verify_sysroot_foundation_dir(&fake_lib, &BTreeSet::new(), &"0".repeat(64)).unwrap_err();
+    assert_eq!(err_sysroot.phase, "sysroot-foundation");
+    assert!(
+        err_sysroot
+            .message
+            .contains("sysroot Init/Std/Lean .olean manifest SHA-256 mismatch"),
+        "unexpected sysroot mismatch error: {err_sysroot}"
+    );
+    symlink(
+        fake_lib.join("Init/Dummy.olean"),
+        fake_lib.join("Std/Link.olean"),
+    )
+    .unwrap();
+    let err_sym =
+        verify_sysroot_foundation_dir(&fake_lib, &BTreeSet::new(), &"0".repeat(64)).unwrap_err();
+    assert!(
+        err_sym.message.contains("symlink forbidden in sysroot"),
+        "unexpected sysroot symlink error: {err_sym}"
+    );
+
+    // Prepare compiled synthetic modules for `TrustedBoundary.lean`
+    // `"correspondence-audit"` negative cases.
+    let mut checker = Checker::new(&fix.root, None).unwrap();
+    checker.run().unwrap();
+    let trusted_lib = checker.stage.join("lib");
+    let aux_src = checker.stage.join("src/corr-neg");
+    let aux_path = env::join_paths([&trusted_lib]).unwrap();
+
+    let compile_aux = |chk: &mut Checker, module: &str, body: &str| {
+        let rel = module.replace('.', "/");
+        let src = aux_src.join(format!("{rel}.lean"));
+        fs::create_dir_all(src.parent().unwrap()).unwrap();
+        fs::write(&src, body).unwrap();
+        let out = trusted_lib.join(format!("{rel}.olean"));
+        fs::create_dir_all(out.parent().unwrap()).unwrap();
+        chk.process_with_path(
+            &format!("compile-{module}"),
+            &[
+                "-j1".to_string(),
+                "-M2048".to_string(),
+                "-t0".to_string(),
+                "-R".to_string(),
+                aux_src.to_string_lossy().into_owned(),
+                "-o".to_string(),
+                out.to_string_lossy().into_owned(),
+                src.to_string_lossy().into_owned(),
+            ],
+            Some(&aux_path),
+        )
+        .unwrap();
+    };
+
+    compile_aux(
+        &mut checker,
+        "Miri.Child",
+        "prelude\nimport Init.Core\nnamespace Miri.Child\ndef c : Nat := 1\nend Miri.Child\n",
+    );
+    compile_aux(
+        &mut checker,
+        "Miri.Parent",
+        "prelude\nimport Init.Core\nimport Miri.Child\n\
+         namespace Miri.Parent\ndef p : Nat := Miri.Child.c\nend Miri.Parent\n",
+    );
+    compile_aux(
+        &mut checker,
+        "Trusted.CandHelper",
+        "prelude\nimport Init.Core\nnamespace Trusted.CandHelper\ndef h : Nat := 1\nend Trusted.CandHelper\n",
+    );
+    compile_aux(
+        &mut checker,
+        "Trusted.VettedRefsCand",
+        "prelude\nimport Init.Core\nimport Trusted.CandHelper\n\
+         namespace Trusted.VettedRefsCand\ndef x : Nat := Trusted.CandHelper.h\nend Trusted.VettedRefsCand\n",
+    );
+    compile_aux(
+        &mut checker,
+        "Trusted.VettedRefsMiri",
+        "prelude\nimport Init.Core\nimport Miri.Child\n\
+         namespace Trusted.VettedRefsMiri\ndef x : Nat := Miri.Child.c\nend Trusted.VettedRefsMiri\n",
+    );
+    compile_aux(
+        &mut checker,
+        "Anneal.Helper",
+        "prelude\nimport Init.Core\nnamespace Anneal.Helper\ndef t : Nat := 2\nend Anneal.Helper\n",
+    );
+    compile_aux(
+        &mut checker,
+        "Trusted.CandRefsTheory",
+        "prelude\nimport Init.Core\nimport Anneal.Helper\n\
+         namespace Trusted.CandRefsTheory\ndef x : Nat := Anneal.Helper.t\nend Trusted.CandRefsTheory\n",
+    );
+    compile_aux(
+        &mut checker,
+        "Miri.Interpreter.ExecutionMachine",
+        "prelude\nimport Init.Core\n\
+         namespace Miri.Interpreter.ExecutionMachine\n\
+         theorem step : (True ↔ True) → True = True := propext\n\
+         end Miri.Interpreter.ExecutionMachine\n",
+    );
+
+    let search = vec![trusted_lib];
+
+    // 2a. `classifyCorrModules`: overlapping module role.
+    let err_overlap = checker
+        .inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: search.clone(),
+            trusted: vec!["Trusted".to_string()],
+            corr_trusted: Vec::new(),
+            theory: Vec::new(),
+            corr_theory: Vec::new(),
+            vendor_miri: vec!["Trusted".to_string()],
+            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+        })
+        .unwrap_err();
+    assert!(
+        err_overlap
+            .message
+            .contains("overlapping module role for Trusted"),
+        "unexpected overlap error: {err_overlap}"
+    );
+
+    // 2b. `classifyCorrModules`: missing trust tier for Trusted module.
+    let err_missing_tier = checker
+        .inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: search.clone(),
+            trusted: vec!["Trusted".to_string()],
+            corr_trusted: Vec::new(),
+            theory: Vec::new(),
+            corr_theory: Vec::new(),
+            vendor_miri: vec!["Miri.Child".to_string()],
+            module_tiers: BTreeMap::new(),
+        })
+        .unwrap_err();
+    assert!(
+        err_missing_tier
+            .message
+            .contains("missing trust tier for Trusted module Trusted"),
+        "unexpected missing-tier error: {err_missing_tier}"
+    );
+
+    // 2c. `classifyCorrModules`: trust tier declared for non-Trusted module.
+    let err_non_trusted_tier = checker
+        .inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: search.clone(),
+            trusted: vec!["Trusted".to_string()],
+            corr_trusted: Vec::new(),
+            theory: Vec::new(),
+            corr_theory: Vec::new(),
+            vendor_miri: vec!["Miri.Child".to_string()],
+            module_tiers: BTreeMap::from([
+                ("Trusted".to_string(), TrustTier::Vetted),
+                ("Miri.Child".to_string(), TrustTier::Vetted),
+            ]),
+        })
+        .unwrap_err();
+    assert!(
+        err_non_trusted_tier
+            .message
+            .contains("trust tier declared for non-Trusted module Miri.Child"),
+        "unexpected non-trusted-tier error: {err_non_trusted_tier}"
+    );
+
+    // 2d. `classifyCorrModules`: foreign module in correspondence environment
+    // (`Miri.Parent` imports unlisted `Miri.Child`).
+    let err_foreign = checker
+        .inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: search.clone(),
+            trusted: vec!["Trusted".to_string()],
+            corr_trusted: Vec::new(),
+            theory: Vec::new(),
+            corr_theory: Vec::new(),
+            vendor_miri: vec!["Miri.Parent".to_string()],
+            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+        })
+        .unwrap_err();
+    assert!(
+        err_foreign
+            .message
+            .contains("foreign module Miri.Child in correspondence environment"),
+        "unexpected foreign-module error: {err_foreign}"
+    );
+
+    // 3a. `checkCorrTierReferences`: vetted -> candidate.
+    let err_vetted_cand = checker
+        .inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: search.clone(),
+            trusted: vec![
+                "Trusted".to_string(),
+                "Trusted.CandHelper".to_string(),
+                "Trusted.VettedRefsCand".to_string(),
+            ],
+            corr_trusted: Vec::new(),
+            theory: Vec::new(),
+            corr_theory: Vec::new(),
+            vendor_miri: vec!["Miri.Child".to_string()],
+            module_tiers: BTreeMap::from([
+                ("Trusted".to_string(), TrustTier::Vetted),
+                (
+                    "Trusted.CandHelper".to_string(),
+                    TrustTier::Candidate(CandidateFeature::MirSemantics),
+                ),
+                ("Trusted.VettedRefsCand".to_string(), TrustTier::Vetted),
+            ]),
+        })
+        .unwrap_err();
+    assert!(
+        err_vetted_cand.message.contains(
+            "vetted constant Trusted.VettedRefsCand.x references candidate:mir_semantics constant"
+        ),
+        "unexpected vetted->cand error: {err_vetted_cand}"
+    );
+
+    // 3b. `checkCorrTierReferences`: vetted -> vendorMiri.
+    let err_vetted_miri = checker
+        .inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: search.clone(),
+            trusted: vec!["Trusted".to_string(), "Trusted.VettedRefsMiri".to_string()],
+            corr_trusted: Vec::new(),
+            theory: Vec::new(),
+            corr_theory: Vec::new(),
+            vendor_miri: vec!["Miri.Child".to_string()],
+            module_tiers: BTreeMap::from([
+                ("Trusted".to_string(), TrustTier::Vetted),
+                ("Trusted.VettedRefsMiri".to_string(), TrustTier::Vetted),
+            ]),
+        })
+        .unwrap_err();
+    assert!(
+        err_vetted_miri.message.contains(
+            "vetted constant Trusted.VettedRefsMiri.x references non-foundation constant Miri.Child.c"
+        ),
+        "unexpected vetted->miri error: {err_vetted_miri}"
+    );
+
+    // 3c. `checkCorrTierReferences`: candidate Trusted -> theory.
+    let err_cand_theory = checker
+        .inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: search.clone(),
+            trusted: vec!["Trusted".to_string(), "Trusted.CandRefsTheory".to_string()],
+            corr_trusted: Vec::new(),
+            theory: vec!["Anneal.Helper".to_string()],
+            corr_theory: Vec::new(),
+            vendor_miri: vec!["Miri.Child".to_string()],
+            module_tiers: BTreeMap::from([
+                ("Trusted".to_string(), TrustTier::Vetted),
+                (
+                    "Trusted.CandRefsTheory".to_string(),
+                    TrustTier::Candidate(CandidateFeature::MirSemantics),
+                ),
+            ]),
+        })
+        .unwrap_err();
+    assert!(
+        err_cand_theory.message.contains(
+            "Trusted constant Trusted.CandRefsTheory.x references Anneal.Helper.t from non-Trusted module Anneal.Helper"
+        ),
+        "unexpected cand->theory error: {err_cand_theory}"
+    );
+
+    // 4. `closureCorr`: reachable unapproved axiom (`propext` from `Init.Core`
+    // when omitted from the axiom allowlist) rejected after passing
+    // `verifyAndCollectCorrLocals` and standalone kernel replay.
+    checker
+        .admitted_mut()
+        .unwrap()
+        .axioms
+        .retain(|(ax, _)| ax != "propext");
+    let err_axiom = checker
+        .inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: search,
+            trusted: vec!["Trusted".to_string()],
+            corr_trusted: Vec::new(),
+            theory: Vec::new(),
+            corr_theory: Vec::new(),
+            vendor_miri: vec!["Miri.Interpreter.ExecutionMachine".to_string()],
+            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+        })
+        .unwrap_err();
+    assert!(
+        err_axiom
+            .message
+            .contains("unapproved axiom propext from Init.Core"),
+        "unexpected unapproved-axiom error: {err_axiom}"
+    );
+}
+
+/// Verifies end-to-end that standalone kernel replay in Phase 3
+/// (`"correspondence-audit"`) rejects an ill-typed `.vendorMiri` `.olean`
+/// compiled with a scoped `set_option debug.skipKernelTC true` override (even
+/// when compiled with CLI `-Ddebug.skipKernelTC=false`), and that a valid
+/// minimal vendor closure passes replay and reports `miriReplay: true` with a
+/// positive `miriReplayedDeclarations` count.
+#[test]
+fn rejects_vendor_miri_skip_kernel_tc_during_replay() {
+    let fix = TempFixture::new(None);
+    let mut checker = Checker::new(&fix.root, None).unwrap();
+    checker.run().unwrap();
+    let trusted_lib = checker.stage.join("lib");
+    let vendor_src = checker.stage.join("src/skip-tc-miri");
+    let vendor_lib = checker.stage.join("skip-tc-miri-lib");
+
+    // 1. Compile a vendor module whose scoped `set_option debug.skipKernelTC
+    // true` overrides CLI `-Ddebug.skipKernelTC=false` to emit an ill-typed
+    // theorem (`Miri.SkipKernelTC.bogus : False := True.intro`) into the
+    // `.olean` without using `axiom`, `sorryAx`, `unsafe`, or compiler
+    // reflection primitives.
+    let bogus_src = vendor_src.join("Miri/SkipKernelTC.lean");
+    let bogus_out = vendor_lib.join("Miri/SkipKernelTC.olean");
+    fs::create_dir_all(bogus_src.parent().unwrap()).unwrap();
+    fs::create_dir_all(bogus_out.parent().unwrap()).unwrap();
+    fs::write(
+        &bogus_src,
+        "import Lean.Elab.Command\n\
+         namespace Miri.SkipKernelTC\n\
+         set_option debug.skipKernelTC true in\n\
+         run_cmd\n\
+           Lean.Elab.Command.liftCoreM <| Lean.addDecl <| .thmDecl {\n\
+             name := `Miri.SkipKernelTC.bogus\n\
+             levelParams := []\n\
+             type := Lean.mkConst `False\n\
+             value := Lean.mkConst `True.intro\n\
+           }\n\
+         end Miri.SkipKernelTC\n",
+    )
+    .unwrap();
+    checker
+        .process(
+            "compile-Miri.SkipKernelTC",
+            &[
+                "-j1".to_string(),
+                "-M2048".to_string(),
+                "-t0".to_string(),
+                "-DElab.async=false".to_string(),
+                "-Ddebug.skipKernelTC=false".to_string(),
+                "-R".to_string(),
+                vendor_src.to_string_lossy().into_owned(),
+                "-o".to_string(),
+                bogus_out.to_string_lossy().into_owned(),
+                bogus_src.to_string_lossy().into_owned(),
+            ],
+        )
+        .expect(
+            "Lean must accept scoped `set_option debug.skipKernelTC true` \
+             at compile time to prove CLI `-Ddebug.skipKernelTC=false` alone \
+             is insufficient",
+        );
+
+    let err_replay = checker
+        .inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: vec![trusted_lib.clone(), vendor_lib.clone()],
+            trusted: vec!["Trusted".to_string()],
+            corr_trusted: Vec::new(),
+            theory: Vec::new(),
+            corr_theory: Vec::new(),
+            vendor_miri: vec!["Miri.SkipKernelTC".to_string()],
+            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+        })
+        .unwrap_err();
+    assert_eq!(
+        err_replay.code, 1,
+        "expected policy exit code 1 on replay rejection: {err_replay}"
+    );
+    assert_eq!(
+        err_replay.phase, "correspondence-audit",
+        "unexpected phase: {err_replay}"
+    );
+    assert!(
+        err_replay
+            .message
+            .contains("vendor Miri kernel replay failed")
+            && err_replay.message.contains("Miri.SkipKernelTC.bogus")
+            && err_replay.message.contains("declaration type mismatch"),
+        "expected kernel replay type-mismatch rejection, got: {err_replay}"
+    );
+
+    // 2. Verify the positive path: a valid minimal `.vendorMiri` module
+    // defining the 21 `ExecutionMachine` cone roots passes standalone kernel
+    // replay and returns `miriReplay: true` with `miriReplayedDeclarations`
+    // positive.
+    let valid_src = vendor_src.join("Miri/Interpreter/ExecutionMachine.lean");
+    let valid_out = vendor_lib.join("Miri/Interpreter/ExecutionMachine.olean");
+    fs::create_dir_all(valid_src.parent().unwrap()).unwrap();
+    fs::create_dir_all(valid_out.parent().unwrap()).unwrap();
+    fs::write(
+        &valid_src,
+        "prelude\n\
+         import Init.Core\n\
+         namespace Miri.Interpreter.ExecutionMachine\n\
+         def step : Nat := 0\n\
+         def withValidation : Nat := 0\n\
+         def operandHooks : Nat := 0\n\
+         end Miri.Interpreter.ExecutionMachine\n\
+         namespace Miri.Interpreter.IntegerOps\n\
+         def binary : Nat := 0\n\
+         def binaryBool : Nat := 0\n\
+         def unary : Nat := 0\n\
+         end Miri.Interpreter.IntegerOps\n\
+         namespace Miri.Memory.ScalarInt\n\
+         def truncateFromUInt : Nat := 0\n\
+         def tryFromUInt : Nat := 0\n\
+         def tryToBool : Nat := 0\n\
+         end Miri.Memory.ScalarInt\n\
+         namespace Miri.Interpreter\n\
+         def evalOperand : Nat := 0\n\
+         def evalPlaceToOp : Nat := 0\n\
+         def localToOp : Nat := 0\n\
+         def placeWriteLocalImmediate : Nat := 0\n\
+         def evalRvalueIntoPlace : Nat := 0\n\
+         def runRvalue : Nat := 0\n\
+         end Miri.Interpreter\n\
+         namespace Miri.Interpreter.Step\n\
+         def evalStatement : Nat := 0\n\
+         end Miri.Interpreter.Step\n\
+         namespace Miri.Interpreter.Frame\n\
+         def storageLive : Nat := 0\n\
+         def storageDead : Nat := 0\n\
+         end Miri.Interpreter.Frame\n\
+         namespace Miri.Interpreter.ControlFlow\n\
+         def goToBlock : Nat := 0\n\
+         def evalTerminator : Nat := 0\n\
+         def returnFromCurrentFrame : Nat := 0\n\
+         end Miri.Interpreter.ControlFlow\n",
+    )
+    .unwrap();
+    checker
+        .process(
+            "compile-Miri.Interpreter.ExecutionMachine",
+            &[
+                "-j1".to_string(),
+                "-M2048".to_string(),
+                "-t0".to_string(),
+                "-DElab.async=false".to_string(),
+                "-Ddebug.skipKernelTC=false".to_string(),
+                "-R".to_string(),
+                vendor_src.to_string_lossy().into_owned(),
+                "-o".to_string(),
+                valid_out.to_string_lossy().into_owned(),
+                valid_src.to_string_lossy().into_owned(),
+            ],
+        )
+        .unwrap();
+
+    let ok_rep = checker
+        .inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: vec![trusted_lib, vendor_lib],
+            trusted: vec!["Trusted".to_string()],
+            corr_trusted: Vec::new(),
+            theory: Vec::new(),
+            corr_theory: Vec::new(),
+            vendor_miri: vec!["Miri.Interpreter.ExecutionMachine".to_string()],
+            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+        })
+        .unwrap();
+    assert_eq!(ok_rep.get("miriReplay"), Some(&json!(true)));
+    assert_eq!(
+        ok_rep
+            .get("miriReplayedDeclarations")
+            .and_then(Json::as_u64),
+        Some(21)
+    );
+    assert!(
+        ok_rep
+            .get("miriClosureReachableDeclarations")
+            .and_then(Json::as_u64)
+            .is_some_and(|n| n >= 21),
+        "unexpected reachable declarations: {ok_rep}"
+    );
+    assert_eq!(ok_rep.get("miriClosureAxioms"), Some(&json!([])));
+}
+
+/// Verifies that cold `vendor/lean-miri/` compilation runs inside an OS-level
+/// sandbox that prevents compile-time metaprograms (`run_cmd`) from writing to
+/// the repository checkout, host directories, or auditor staging state
+/// (including read-only `miri-lib`), and rejects unexpected extra files written
+/// inside the isolated `/work/out` output directory before staging.
+#[cfg(target_os = "linux")]
+#[test]
+fn sandboxes_cold_miri_compilation_against_host_and_stage_writes() {
+    let fix = TempFixture::new(None);
+    let vendor_dir = fix.root.join("fake-vendor");
+    fs::create_dir_all(vendor_dir.join("Miri")).unwrap();
+
+    // Case 1: A malicious `run_cmd` attempting to write to the repository
+    // checkout fails inside the mount-isolated sandbox and leaves the checkout
+    // untouched.
+    let checkout_victim = fix.root.join("sandbox-escape-checkout.txt");
+    let escape_checkout_src = format!(
+        "import Lean\n\
+         namespace Miri.EscapeCheckout\n\
+         run_cmd do\n\
+           IO.FS.writeFile \"{}\" \"pwned\"\n\
+         def x : Nat := 1\n\
+         end Miri.EscapeCheckout\n",
+        checkout_victim.display()
+    );
+    let escape_checkout_path = vendor_dir.join("Miri/EscapeCheckout.lean");
+    fs::write(&escape_checkout_path, &escape_checkout_src).unwrap();
+    let escape_checkout_entry = MiriClosureEntry {
+        module: "Miri.EscapeCheckout".to_string(),
+        path: "Miri/EscapeCheckout.lean".to_string(),
+        olean_sha256: "0".repeat(64),
+        olean_server_sha256: None,
+        olean_private_sha256: None,
+    };
+    let escape_checkout_sources = BTreeMap::from([(
+        "Miri/EscapeCheckout.lean".to_string(),
+        sha256_bytes(escape_checkout_src.as_bytes()),
+    )]);
+    let mut c1 = Checker::new(&fix.root, None).unwrap();
+    c1.run().unwrap();
+    let err1 = c1
+        .verify_and_stage_miri_entries(
+            &vendor_dir,
+            &[escape_checkout_entry],
+            &escape_checkout_sources,
+        )
+        .unwrap_err();
+    assert_eq!(err1.code, 2, "expected sandboxed compile error: {err1}");
+    assert!(
+        !checkout_victim.exists(),
+        "sandboxed run_cmd must not be able to write to checkout"
+    );
+
+    // Case 2: A malicious `run_cmd` attempting to write into the auditor's
+    // read-only `/work/miri-lib` or host `stage` fails and leaves both
+    // untouched.
+    let mut c2 = Checker::new(&fix.root, None).unwrap();
+    c2.run().unwrap();
+    let stage_victim = c2.stage.join("sandbox-escape-stage.txt");
+    let ro_lib_victim = c2.stage.join("miri-lib/sandbox-escape-ro.txt");
+    let escape_stage_src = format!(
+        "import Lean\n\
+         namespace Miri.EscapeStage\n\
+         run_cmd do\n\
+           try\n\
+             IO.FS.writeFile \"{}\" \"pwned\"\n\
+           catch _ =>\n\
+             IO.FS.writeFile \"/work/miri-lib/sandbox-escape-ro.txt\" \"pwned\"\n\
+         def x : Nat := 1\n\
+         end Miri.EscapeStage\n",
+        stage_victim.display()
+    );
+    let escape_stage_path = vendor_dir.join("Miri/EscapeStage.lean");
+    fs::write(&escape_stage_path, &escape_stage_src).unwrap();
+    let escape_stage_entry = MiriClosureEntry {
+        module: "Miri.EscapeStage".to_string(),
+        path: "Miri/EscapeStage.lean".to_string(),
+        olean_sha256: "0".repeat(64),
+        olean_server_sha256: None,
+        olean_private_sha256: None,
+    };
+    let escape_stage_sources = BTreeMap::from([(
+        "Miri/EscapeStage.lean".to_string(),
+        sha256_bytes(escape_stage_src.as_bytes()),
+    )]);
+    let err2 = c2
+        .verify_and_stage_miri_entries(&vendor_dir, &[escape_stage_entry], &escape_stage_sources)
+        .unwrap_err();
+    assert_eq!(err2.code, 2, "expected sandboxed compile error: {err2}");
+    assert!(
+        !stage_victim.exists() && !ro_lib_victim.exists(),
+        "sandboxed run_cmd must not be able to write to stage or read-only miri-lib"
+    );
+
+    // Case 3: Even if a `run_cmd` drops an unexpected extra file inside the
+    // sole writable sandbox output directory (`/work/out`) while producing a
+    // digest-matching `.olean`, the outer auditor rejects the unexpected file
+    // with policy exit code `1` and stages nothing into `miri-lib` or cache.
+    let extra_out_src = "import Lean\n\
+        namespace Miri.ExtraOut\n\
+        run_cmd do\n\
+          IO.FS.writeFile \"out/unexpected-drop.txt\" \"junk\"\n\
+        def x : Nat := 1\n\
+        end Miri.ExtraOut\n";
+    let extra_out_path = vendor_dir.join("Miri/ExtraOut.lean");
+    fs::write(&extra_out_path, extra_out_src).unwrap();
+    let mut probe = Checker::new(&fix.root, None).unwrap();
+    probe.run().unwrap();
+    let probe_out_dir = probe.stage.join("out");
+    fs::create_dir_all(probe_out_dir.join("Miri")).unwrap();
+    probe
+        .process(
+            "probe-extra-out",
+            &[
+                "-j1".to_string(),
+                "-M2048".to_string(),
+                "-t0".to_string(),
+                "-DElab.async=false".to_string(),
+                "-Ddebug.skipKernelTC=false".to_string(),
+                "-R".to_string(),
+                vendor_dir.to_string_lossy().into_owned(),
+                "-o".to_string(),
+                probe_out_dir
+                    .join("Miri/ExtraOut.olean")
+                    .to_string_lossy()
+                    .into_owned(),
+                extra_out_path.to_string_lossy().into_owned(),
+            ],
+        )
+        .unwrap();
+    let extra_olean_sha = sha256_file(&probe_out_dir.join("Miri/ExtraOut.olean"), "test").unwrap();
+    let extra_server_sha = probe_out_dir
+        .join("Miri/ExtraOut.olean.server")
+        .exists()
+        .then(|| sha256_file(&probe_out_dir.join("Miri/ExtraOut.olean.server"), "test").unwrap());
+    let extra_private_sha = probe_out_dir
+        .join("Miri/ExtraOut.olean.private")
+        .exists()
+        .then(|| sha256_file(&probe_out_dir.join("Miri/ExtraOut.olean.private"), "test").unwrap());
+
+    let cache_dir = tempfile::Builder::new()
+        .prefix("anneal-sandbox-extra-cache-")
+        .tempdir()
+        .unwrap();
+    let extra_entry = MiriClosureEntry {
+        module: "Miri.ExtraOut".to_string(),
+        path: "Miri/ExtraOut.lean".to_string(),
+        olean_sha256: extra_olean_sha,
+        olean_server_sha256: extra_server_sha,
+        olean_private_sha256: extra_private_sha,
+    };
+    let extra_sources = BTreeMap::from([(
+        "Miri/ExtraOut.lean".to_string(),
+        sha256_bytes(extra_out_src.as_bytes()),
+    )]);
+    let mut c3 = Checker::new(&fix.root, None).unwrap();
+    c3.set_miri_cache_dir(Some(cache_dir.path().to_path_buf()));
+    c3.run().unwrap();
+    let err3 = c3
+        .verify_and_stage_miri_entries(&vendor_dir, &[extra_entry], &extra_sources)
+        .unwrap_err();
+    assert_eq!(
+        err3.code, 1,
+        "expected policy error for extra sandbox output: {err3}"
+    );
+    assert!(
+        err3.message.contains(
+            "unexpected file in sandboxed Miri output for Miri.ExtraOut: unexpected-drop.txt"
+        ),
+        "unexpected error message: {err3}"
+    );
+    assert!(
+        !c3.stage.join("miri-lib/Miri/ExtraOut.olean").exists()
+            && !cache_dir.path().join("Miri/ExtraOut.olean").exists(),
+        "rejected sandbox output must not be staged or cached"
     );
 }

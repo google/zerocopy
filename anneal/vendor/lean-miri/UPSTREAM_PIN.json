@@ -1,0 +1,3308 @@
+{
+  "build_lean_toolchain": "leanprover/lean4:v4.34.1",
+  "commit": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a",
+  "execution_machine_closure": [
+    {
+      "module": "Miri.ABI.Size",
+      "olean_sha256": "7d8a0ebacb100cf9d4a2bc181044ee4637aab293913c609809577713021bc304",
+      "path": "Miri/ABI/Size.lean"
+    },
+    {
+      "module": "Miri.ABI.Align",
+      "olean_sha256": "a521827fa003d9c7967ac7055eb444036255fd843d42636aabff24dc87fe5671",
+      "path": "Miri/ABI/Align.lean"
+    },
+    {
+      "module": "Miri.ABI.WrappingRange",
+      "olean_sha256": "b6c627adec53d04dd167041feaa764c15a6c33ba2b20656366590d63fdcf229d",
+      "path": "Miri/ABI/WrappingRange.lean"
+    },
+    {
+      "module": "Miri.ABI.RuntimeLayout",
+      "olean_sha256": "b8f1534e5f4e24ddc27c1f7b27a9fb392a7f67bc936f8c8c438c52cbe7fc1c7c",
+      "path": "Miri/ABI/RuntimeLayout.lean"
+    },
+    {
+      "module": "Miri.ABI.Layout",
+      "olean_sha256": "11e8c8eea8345873ecd2db359cfaaa7378537abc3904ed6dd652b4001479ba05",
+      "path": "Miri/ABI/Layout.lean"
+    },
+    {
+      "module": "Miri.ABI.CallConv",
+      "olean_sha256": "326ca066e16872ac2310a31b5eb37b3bab434759897a19cde843c79b91f822e0",
+      "path": "Miri/ABI/CallConv.lean"
+    },
+    {
+      "module": "Miri.ABI.FnAbi",
+      "olean_sha256": "0d5b4a40c0377abc9f1d5771f10c732ae156bb6da374a3856e7d07cd9d5cb6ed",
+      "path": "Miri/ABI/FnAbi.lean"
+    },
+    {
+      "module": "Miri.Interpreter.OperandPath",
+      "olean_sha256": "16e2216a25699b150c200ef76b204b5b6ac31899fe563183a6013b042035a260",
+      "path": "Miri/Interpreter/OperandPath.lean"
+    },
+    {
+      "module": "Miri.Memory.ScalarInt",
+      "olean_sha256": "2a8cf0b20a75072e13573fca2e74eca865f9a4e14293fd6e5315e948767e79c0",
+      "path": "Miri/Memory/ScalarInt.lean"
+    },
+    {
+      "module": "Miri.Memory.Identity",
+      "olean_sha256": "e54724322035ad310e39b68a4583ddc85b244498cdeef01a15c7a8a663fbc631",
+      "path": "Miri/Memory/Identity.lean"
+    },
+    {
+      "module": "Miri.Memory.Pointer",
+      "olean_sha256": "19f2f8d967fd3acdb97b604d47396dd9ef0e0826300420507e49ad45301790a1",
+      "path": "Miri/Memory/Pointer.lean"
+    },
+    {
+      "module": "Miri.Memory.CtfeProvenance",
+      "olean_sha256": "1893a9fe9ad5791968cf9b4f8f6e967031a65449e54920d86c05888725d3cf99",
+      "path": "Miri/Memory/CtfeProvenance.lean"
+    },
+    {
+      "module": "Miri.Memory.Scalar",
+      "olean_sha256": "4ec95a9fd5e71bdd56fc318f2401e0c3008d42d2884f616d960c1d41c5ae81e8",
+      "path": "Miri/Memory/Scalar.lean"
+    },
+    {
+      "module": "Miri.Interpreter.Immediate",
+      "olean_sha256": "8eb012347110499a47641300e1184df09cebb1b7265cfc0992f98e8a7d0ca9cf",
+      "path": "Miri/Interpreter/Immediate.lean"
+    },
+    {
+      "module": "Miri.Memory.NativeBuffer",
+      "olean_sha256": "bf011faf6dc8a96cbc07933293589cb0b7c3ba8e0c086d8d161342fcf2ed152b",
+      "path": "Miri/Memory/NativeBuffer.lean"
+    },
+    {
+      "module": "Miri.Memory.AllocRange",
+      "olean_sha256": "68bfb9890f9898c6d9d471e51f1ef2d805ee7aa66b9733443d96a3fc131d2be9",
+      "path": "Miri/Memory/AllocRange.lean"
+    },
+    {
+      "module": "Miri.Memory.InitMask",
+      "olean_sha256": "7d401b0cbce9d4f5c9f89f5ca5ae57c1c3f8f55a0e2f097ae5c8c307332ca3db",
+      "path": "Miri/Memory/InitMask.lean"
+    },
+    {
+      "module": "Miri.Memory.QSortProof",
+      "olean_private_sha256": "a0a34e960b375417d49d53513148cd3afca0e8b72c3c20b44eea203f796850c6",
+      "olean_server_sha256": "4e9abb56a93edfecaa20dbbab4659261d9585f0b52d9efd29a3e6062d35b96fc",
+      "olean_sha256": "d970a908b18afc56abc092903090a8edb2dedeaf65659c27a62e44a7848cad3f",
+      "path": "Miri/Memory/QSortProof.lean"
+    },
+    {
+      "module": "Miri.Memory.ProvenanceMap",
+      "olean_sha256": "5382f426c4aa7c9d1161ce29b14c40ad76e05eaa27dcf825050b6c7a26aebb5a",
+      "path": "Miri/Memory/ProvenanceMap.lean"
+    },
+    {
+      "module": "Miri.Memory.Allocation",
+      "olean_sha256": "dd1c653af06c23fbe3c8bd44b7f6590b9a16d408e2f2121db00f73b3dc1b0e5c",
+      "path": "Miri/Memory/Allocation.lean"
+    },
+    {
+      "module": "Miri.Memory.Access",
+      "olean_sha256": "b991f536eea9aca7007657b50c2f01a038a62fa67472663198aa604a7180601d",
+      "path": "Miri/Memory/Access.lean"
+    },
+    {
+      "module": "Miri.Interpreter.PointerOffset",
+      "olean_sha256": "dfbd33cbb4bf35a981304adc746e5f582c223e91139d7edb962b365fa9e7b87e",
+      "path": "Miri/Interpreter/PointerOffset.lean"
+    },
+    {
+      "module": "Miri.Interpreter.Operand",
+      "olean_sha256": "09a49cb44bc4f3db67108e218818dacd4dd08d56f95990ec4bc43addcb42635f",
+      "path": "Miri/Interpreter/Operand.lean"
+    },
+    {
+      "module": "Miri.Memory.KeyedArray",
+      "olean_sha256": "878ea4c878ac3ba90f469402cd74777e431d409e18017e230c2f5bbd79f41411",
+      "path": "Miri/Memory/KeyedArray.lean"
+    },
+    {
+      "module": "Miri.Memory.MemoryState",
+      "olean_sha256": "0688e1145b4607a0256fcdc2b7ad46128043d9822a0c124c3951c79951b9b4de",
+      "path": "Miri/Memory/MemoryState.lean"
+    },
+    {
+      "module": "Miri.Memory.AllocationAccess",
+      "olean_sha256": "a88d5042f7d1009b395c12a2558dfea25a11c7babb5bbc87a300e2c4d4afb5f0",
+      "path": "Miri/Memory/AllocationAccess.lean"
+    },
+    {
+      "module": "Miri.Interpreter.MemoryOperand",
+      "olean_sha256": "f7dc130aea8d2291ce906ea1a18d033f4ddce252a15a060c50270d7e3c3c1f34",
+      "path": "Miri/Interpreter/MemoryOperand.lean"
+    },
+    {
+      "module": "Miri.Interpreter.LocalsIdentity",
+      "olean_sha256": "2fe0a73e0d1a824fe520e15b67dcb6766c8173183dae086def34e6d68dbcdedb",
+      "path": "Miri/Interpreter/LocalsIdentity.lean"
+    },
+    {
+      "module": "Miri.MIR.Operators",
+      "olean_sha256": "7fba8ffb6cc7f14372530a1f4de56d87f09b08bacfae1c93daa7d654f6ac7c2e",
+      "path": "Miri/MIR/Operators.lean"
+    },
+    {
+      "module": "Miri.MIR.Syntax",
+      "olean_sha256": "a24e68e1f6835d5e6a858e9d4364703b7637d527efe9849bb46ac7f56d84a9d9",
+      "path": "Miri/MIR/Syntax.lean"
+    },
+    {
+      "module": "Miri.Interpreter.PlaceTypes",
+      "olean_sha256": "20c84557e9a3b671caa745ed9bc6b53abce27604fb903ae8ef45f315cb143002",
+      "path": "Miri/Interpreter/PlaceTypes.lean"
+    },
+    {
+      "module": "Miri.Interpreter.BodyIdentity",
+      "olean_sha256": "d6287a17a37965183c45c0aaa7925c2fb083908bc2083b12095bd5c77b0ea8ee",
+      "path": "Miri/Interpreter/BodyIdentity.lean"
+    },
+    {
+      "module": "Miri.Interpreter.Instance",
+      "olean_sha256": "d0d703b322cc2ec906e6579cc3ef45b27cef41b58cafbe904c97eed25ef75b83",
+      "path": "Miri/Interpreter/Instance.lean"
+    },
+    {
+      "module": "Miri.Interpreter.Stack",
+      "olean_sha256": "32906ce8d80aaa724bf41cbbef56677109f931aa33d506797dc1b7031072a15c",
+      "path": "Miri/Interpreter/Stack.lean"
+    },
+    {
+      "module": "Miri.Concurrency.Termination",
+      "olean_sha256": "9a37974b3fcd9e2578a8adc472b0bb81da1f15525501528291a49860f5ae8cb8",
+      "path": "Miri/Concurrency/Termination.lean"
+    },
+    {
+      "module": "Miri.Interpreter.Step",
+      "olean_sha256": "022f8ba9ee8863392e83a7e71fe8775717a7fd86e79b403c72cbd363dadfd70e",
+      "path": "Miri/Interpreter/Step.lean"
+    },
+    {
+      "module": "Miri.Interpreter.ControlFlow",
+      "olean_sha256": "14ce776fac991659167dd9b158cc24ffff41511eb01bf2aed0a4149ef45ac6a7",
+      "path": "Miri/Interpreter/ControlFlow.lean"
+    },
+    {
+      "module": "Miri.Interpreter.IntegerOps",
+      "olean_sha256": "19361346f3097e3ac2e9ce9af987c6c61c76681550b8a7d1c2e571302624596c",
+      "path": "Miri/Interpreter/IntegerOps.lean"
+    },
+    {
+      "module": "Miri.Interpreter.Projection",
+      "olean_sha256": "e210729f1246808ed1d4a79459a8d25af4f6fe8aa3515ae8b60f3ac2c001ef6f",
+      "path": "Miri/Interpreter/Projection.lean"
+    },
+    {
+      "module": "Miri.TreeBorrows.Permissions",
+      "olean_sha256": "0caa9890e9c39f13007cf3ce15ca40541370e94c566c69c0059828172abc9dae",
+      "path": "Miri/TreeBorrows/Permissions.lean"
+    },
+    {
+      "module": "Miri.TreeBorrows.GlobalState",
+      "olean_sha256": "a01a95376570e79db5c2be49a4b87401d62e0b2abe994b70232255824dfc8112",
+      "path": "Miri/TreeBorrows/GlobalState.lean"
+    },
+    {
+      "module": "Miri.TreeBorrows.UniMap",
+      "olean_sha256": "99b4a4ceda66a420531be0a5db23e264d18e70250027d9d5ffb13220edd41881",
+      "path": "Miri/TreeBorrows/UniMap.lean"
+    },
+    {
+      "module": "Miri.TreeBorrows.LocationState",
+      "olean_sha256": "f51443122d7a8a22a87ce40f93bb56491cb9d66c13823a9674a8ce8dcbac2ed4",
+      "path": "Miri/TreeBorrows/LocationState.lean"
+    },
+    {
+      "module": "Miri.TreeBorrows.Traversal",
+      "olean_sha256": "74679ec019e20679014622bf12b0337ff2d60af06651fe34c85c4dbada7df4fe",
+      "path": "Miri/TreeBorrows/Traversal.lean"
+    },
+    {
+      "module": "Miri.TreeBorrows.NormalTree",
+      "olean_sha256": "94502617f552218bee33efa8a0ae4d9507559d0742160420619dc8bf66291a11",
+      "path": "Miri/TreeBorrows/NormalTree.lean"
+    },
+    {
+      "module": "Miri.DataStructures.DedupRangeMap",
+      "olean_sha256": "d25bfebeb5352a3d97df7d86d317e5cea289e4c0603d03ec63b16c0d117ca666",
+      "path": "Miri/DataStructures/DedupRangeMap.lean"
+    },
+    {
+      "module": "Miri.TreeBorrows.TreeState",
+      "olean_sha256": "32f8e8e5ebf74ac89abf43eeea8d56881861bd0a2a503f136095a0d03d81b0b6",
+      "path": "Miri/TreeBorrows/TreeState.lean"
+    },
+    {
+      "module": "Miri.TreeBorrows.RetagPolicy",
+      "olean_sha256": "742671c04096800bcd5831b50fc730cd295263a4957e84dcbe24ad77b4793cad",
+      "path": "Miri/TreeBorrows/RetagPolicy.lean"
+    },
+    {
+      "module": "Miri.Interpreter.Rvalue",
+      "olean_sha256": "a2ce12b3059a500a0a9ac254f851f5b41fb4ad03e00e4fc58f8a8510db89361b",
+      "path": "Miri/Interpreter/Rvalue.lean"
+    },
+    {
+      "module": "Miri.Interpreter.LocalAccess",
+      "olean_sha256": "747e191800078e4349f38627ee571106ac186f59b183d873ba08fdae19a35680",
+      "path": "Miri/Interpreter/LocalAccess.lean"
+    },
+    {
+      "module": "Miri.Interpreter.Call",
+      "olean_sha256": "be7ab1f7a924692c18ca7ffaed4ae2d84bb2193210cc2bb8ce2580df959c8211",
+      "path": "Miri/Interpreter/Call.lean"
+    },
+    {
+      "module": "Miri.Interpreter.ScalarOps",
+      "olean_sha256": "c3a843f683666382e9c43fd0b46eab9d751cec91ad28317d5f8c1b2b4a158aa8",
+      "path": "Miri/Interpreter/ScalarOps.lean"
+    },
+    {
+      "module": "Miri.Interpreter.VTable",
+      "olean_sha256": "25c5b85547521b8a4ad05825c2e5000a920275e9b6c44029209e1c275afb9d4f",
+      "path": "Miri/Interpreter/VTable.lean"
+    },
+    {
+      "module": "Miri.Concurrency.VectorClock",
+      "olean_sha256": "45fa495fd3ca87aaa20a235db98e5d3e6babd5d25e33c6b7e2017a1692d3ae4b",
+      "path": "Miri/Concurrency/VectorClock.lean"
+    },
+    {
+      "module": "Miri.Concurrency.DataRace",
+      "olean_sha256": "81694a5df6a37198d7c622baf62d059de096de3bb1f3719de9c40f37b91a03d4",
+      "path": "Miri/Concurrency/DataRace.lean"
+    },
+    {
+      "module": "Miri.Concurrency.Thread",
+      "olean_sha256": "c51f002f2e887b3ce6b37ed246a79670d48c6ddf6fe9a9cc8dd24a5619f8aea8",
+      "path": "Miri/Concurrency/Thread.lean"
+    },
+    {
+      "module": "Miri.Concurrency.GlobalState",
+      "olean_sha256": "e78d17e90f644d3f470ca563ed04ac1fc3be4c525c765b6b89a6c23f8826fc85",
+      "path": "Miri/Concurrency/GlobalState.lean"
+    },
+    {
+      "module": "Miri.Concurrency.LocalRace",
+      "olean_sha256": "320f662c41fedc1308637393c1785b1ecd18a3a9fb153728778a63065ae08fc6",
+      "path": "Miri/Concurrency/LocalRace.lean"
+    },
+    {
+      "module": "Miri.TreeBorrows.RetagPipeline",
+      "olean_sha256": "d378c55a755fcbbc4498733f4d2fbaacc52055fa95244665f03d1b9438f04eea",
+      "path": "Miri/TreeBorrows/RetagPipeline.lean"
+    },
+    {
+      "module": "Miri.TreeBorrows.RetagPipelineEffectful",
+      "olean_sha256": "2a89818c2be75c8edf65443455854e0fff9f52a56aab7ab757482c5224a4f2a4",
+      "path": "Miri/TreeBorrows/RetagPipelineEffectful.lean"
+    },
+    {
+      "module": "Miri.Interpreter.MachineHooks",
+      "olean_sha256": "6ff4c8a377c45088d40221a740c13c470e6888cac532dd4937f6616602cb80dc",
+      "path": "Miri/Interpreter/MachineHooks.lean"
+    },
+    {
+      "module": "Miri.Interpreter.ForeignItems",
+      "olean_sha256": "d7ae8ee4fddd5a5ef75f12d06e43395a48f416896bd2d9ae96105e35999b1552",
+      "path": "Miri/Interpreter/ForeignItems.lean"
+    },
+    {
+      "module": "Miri.Interpreter.Backtrace",
+      "olean_sha256": "230952456ae9f5277e0bef874501ccdfaa1b0befa8c2a35d21bbe9a41c61dbb7",
+      "path": "Miri/Interpreter/Backtrace.lean"
+    },
+    {
+      "module": "Miri.Interpreter.FrameRelevance",
+      "olean_sha256": "2a40c86f1d01c67964319f5ef83f5ae0419a57a663e97c1ce707ef8601515b52",
+      "path": "Miri/Interpreter/FrameRelevance.lean"
+    },
+    {
+      "module": "Miri.TreeBorrows.FreezeVisitor",
+      "olean_sha256": "d1cae3e9bf11bd2a861b8cd7316cfd02e5a4efe203f9b089f9155c1c47898b68",
+      "path": "Miri/TreeBorrows/FreezeVisitor.lean"
+    },
+    {
+      "module": "Miri.TreeBorrows.FreezeMap",
+      "olean_sha256": "b7bc98898bee12ef541d4c583d784fc1eea6da59b312ae95695aaa5b33ea8d2d",
+      "path": "Miri/TreeBorrows/FreezeMap.lean"
+    },
+    {
+      "module": "Miri.Interpreter.TypedRetag",
+      "olean_sha256": "ffa2e3d61bea00c5ba89365907859fb3b6dc277d79ade23de6a25075f568e2f6",
+      "path": "Miri/Interpreter/TypedRetag.lean"
+    },
+    {
+      "module": "Miri.Interpreter.Place",
+      "olean_sha256": "afa416bc2e1c9ac84d4055ec956f3139fae98292b980274f82c50873f888e3ca",
+      "path": "Miri/Interpreter/Place.lean"
+    },
+    {
+      "module": "Miri.Interpreter.DynamicLayout",
+      "olean_sha256": "25e11dce43de6638abc554acd87a3cac0076997de470f37c92b7191406455f29",
+      "path": "Miri/Interpreter/DynamicLayout.lean"
+    },
+    {
+      "module": "Miri.Interpreter.PlaceDynamic",
+      "olean_sha256": "8928f8dfb1cfa8b88bea1149d8ebb655e24bcf2e00b67c717dc41e826851d72d",
+      "path": "Miri/Interpreter/PlaceDynamic.lean"
+    },
+    {
+      "module": "Miri.Interpreter.PlaceMachine",
+      "olean_sha256": "b34ce423f32368e03d3f13123cd986970494d7b0b16fe5c275f1d7216cc03bd1",
+      "path": "Miri/Interpreter/PlaceMachine.lean"
+    },
+    {
+      "module": "Miri.Interpreter.Discriminant",
+      "olean_sha256": "6587e5c08ef80ef9f88b7211fa3af63e8c5132aebca844a1761f68915d1b4dc6",
+      "path": "Miri/Interpreter/Discriminant.lean"
+    },
+    {
+      "module": "Miri.Input.Model.Types",
+      "olean_sha256": "eae865bec1bc4db3dfd3e93ebf4ff4a4e6ce13c24d6f819d3cffb4c37518b80e",
+      "path": "Miri/Input/Model/Types.lean"
+    },
+    {
+      "module": "Miri.Input.SharedPayloads",
+      "olean_sha256": "8682cce5093dec4f27d86195f1d3898c11fd1d0f890f9c877d1caeb5f931ddf9",
+      "path": "Miri/Input/SharedPayloads.lean"
+    },
+    {
+      "module": "Miri.Input.JsonTraversalCache",
+      "olean_sha256": "6a84290fd524564103fbf15d518b03c4969ac48feb8a671f9ed648a2f3b62e47",
+      "path": "Miri/Input/JsonTraversalCache.lean"
+    },
+    {
+      "module": "Miri.Input.DecoderValues",
+      "olean_sha256": "9d4571b66f2b794038bff47ef977c908b3bfd6271cdda0e815753c0b409bb628",
+      "path": "Miri/Input/DecoderValues.lean"
+    },
+    {
+      "module": "Miri.Input.Model",
+      "olean_sha256": "5a618240c3d0a1c8cc31cb7c788c39697113477b8ea22a0990dc6df2a9ad43bd",
+      "path": "Miri/Input/Model.lean"
+    },
+    {
+      "module": "Miri.Input.Decoder",
+      "olean_sha256": "0e130d6f33bbab397c5ec7dea8869108d4aa0338b5867390e58001b252b37644",
+      "path": "Miri/Input/Decoder.lean"
+    },
+    {
+      "module": "Miri.Input.LowerMIR",
+      "olean_sha256": "449a3b6a8c447b8193a6cc7d92fd7c47be64c8b8faedcbccc17602dd3e1589f2",
+      "path": "Miri/Input/LowerMIR.lean"
+    },
+    {
+      "module": "Miri.Input.RuntimeMetadata",
+      "olean_sha256": "44a7666953871bf5a90e3de17c605c6b61359ea537e2d61c2e461a4fa738c769",
+      "path": "Miri/Input/RuntimeMetadata.lean"
+    },
+    {
+      "module": "Miri.Input.AllocationImage",
+      "olean_sha256": "1b3c2185458ea16a5cdc49437516be6d1c51ccffae14b240f1b3c6f5896c96d9",
+      "path": "Miri/Input/AllocationImage.lean"
+    },
+    {
+      "module": "Miri.Interpreter.Constant",
+      "olean_sha256": "500389ea64c5a8da49e321998f0c4e2b51b70d05af3d7291a5e687aa9b341dc0",
+      "path": "Miri/Interpreter/Constant.lean"
+    },
+    {
+      "module": "Miri.Interpreter.MemoryErrors",
+      "olean_sha256": "83ec37e831b345e07294ac631a892de8b8ae48169bb8796bab11a196c18b47e0",
+      "path": "Miri/Interpreter/MemoryErrors.lean"
+    },
+    {
+      "module": "Miri.Memory.Validity",
+      "olean_sha256": "9dc4a0bbf451e5285f6eee17d86ccf3b4611f59463bec6d6001cef06a97ec055",
+      "path": "Miri/Memory/Validity.lean"
+    },
+    {
+      "module": "Miri.Interpreter.ValidityVisitor",
+      "olean_sha256": "4fc8da85543879194435baa2b263b81df77549521f782725d3d2fcd98cad2a51",
+      "path": "Miri/Interpreter/ValidityVisitor.lean"
+    },
+    {
+      "module": "Miri.Interpreter.TypedMachineBindings",
+      "olean_sha256": "a89dd3e6de26aaa8694e33ee90642beecc20abbfbbbb548cccc31dd6be8cd959",
+      "path": "Miri/Interpreter/TypedMachineBindings.lean"
+    },
+    {
+      "module": "Miri.Interpreter.Unwind",
+      "olean_sha256": "271e7787ae0c0917140a28f143dad8026f33b21e34e92c22bf771ccf492c61ce",
+      "path": "Miri/Interpreter/Unwind.lean"
+    },
+    {
+      "module": "Miri.Memory.AllocAddresses.AddressGenerator",
+      "olean_sha256": "cb3be113af8f6b142f5ecbfada1e3cacf0b031869d58f052fb55d902cc7101bd",
+      "path": "Miri/Memory/AllocAddresses/AddressGenerator.lean"
+    },
+    {
+      "module": "Miri.Memory.AllocAddresses.ReusePool",
+      "olean_sha256": "58d0cc63c53ada5c555dbb5acb63ebaaa15f5431d0763acbe458229c20c35984",
+      "path": "Miri/Memory/AllocAddresses/ReusePool.lean"
+    },
+    {
+      "module": "Miri.Memory.AllocAddresses.GlobalState",
+      "olean_sha256": "c1bc2375347ff8ef10801849f2070d3f8437965bbe7b9edad7684a3afc5d00bd",
+      "path": "Miri/Memory/AllocAddresses/GlobalState.lean"
+    },
+    {
+      "module": "Miri.Memory.AllocAddresses",
+      "olean_sha256": "b5ae35576013236922c7fc18c956d86941d25dcd42f400b6c72173a860e65ce5",
+      "path": "Miri/Memory/AllocAddresses.lean"
+    },
+    {
+      "module": "Miri.Interpreter.PointerMachine",
+      "olean_sha256": "4745a1d5b3b27017f3f27c965a75f00b8b157fd263e6835fc28455d5cbbcdd8f",
+      "path": "Miri/Interpreter/PointerMachine.lean"
+    },
+    {
+      "module": "Miri.Interpreter.IntegerCast",
+      "olean_sha256": "16209dac06ad679322b5364880789e4b54dc438314c2f1f4312961590842cef2",
+      "path": "Miri/Interpreter/IntegerCast.lean"
+    },
+    {
+      "module": "Miri.Interpreter.Float",
+      "olean_sha256": "d9b0c19e58714c4ad0124b95acd70d715ad98533b02d43c27976d487fa84cffc",
+      "path": "Miri/Interpreter/Float.lean"
+    },
+    {
+      "module": "Miri.Interpreter.FloatOps",
+      "olean_sha256": "20253b2a1a54056a6f378cd79a3f3581413261fa2dae1fda33acf12f1ff0722c",
+      "path": "Miri/Interpreter/FloatOps.lean"
+    },
+    {
+      "module": "Miri.Interpreter.Cast",
+      "olean_sha256": "43ec08ace78c2572ef21e8ffa090d88a2ae84dbdaf50e5a15875f2af986b587f",
+      "path": "Miri/Interpreter/Cast.lean"
+    },
+    {
+      "module": "Miri.Interpreter.FunctionPointers",
+      "olean_sha256": "0f328d14a87036e17f8b087a512135818f58361a2c3fbbc112f345abcaaad342",
+      "path": "Miri/Interpreter/FunctionPointers.lean"
+    },
+    {
+      "module": "Miri.Concurrency.AtomicAccess",
+      "olean_sha256": "c8c107906fc6ed6ba8c7d5cacc8ae4728ac7204b4fda658a96bcaa0a35982def",
+      "path": "Miri/Concurrency/AtomicAccess.lean"
+    },
+    {
+      "module": "Miri.DataStructures.RangeObjectMap",
+      "olean_sha256": "6403dbbe41e5d84a0a73c13b64f7285645cc5b2ae8e5b5678816711bbdb4cd0a",
+      "path": "Miri/DataStructures/RangeObjectMap.lean"
+    },
+    {
+      "module": "Miri.Concurrency.WeakMemory",
+      "olean_sha256": "61a1acb4d02884e79ccc7472f1a705d43cbc70b5396a690e00b15078e23c8d0b",
+      "path": "Miri/Concurrency/WeakMemory.lean"
+    },
+    {
+      "module": "Miri.Concurrency.AtomicDispatch",
+      "olean_sha256": "2b0571a66d0a3daf218f115ecccae02a2defe8bac656b8673bde5cb6c5426723",
+      "path": "Miri/Concurrency/AtomicDispatch.lean"
+    },
+    {
+      "module": "Miri.OperationalSafety",
+      "olean_sha256": "6190b0baafc6b40b91fccbeb46051c4d4fc7449da2f1d2c6520e207e77ae6981",
+      "path": "Miri/OperationalSafety.lean"
+    },
+    {
+      "module": "Miri.Concurrency.AtomicScalarMemory",
+      "olean_sha256": "c29f9c8079eb763ce42a67a3c92f358dc72c96faf1df2f23daf3e9a3caba4c47",
+      "path": "Miri/Concurrency/AtomicScalarMemory.lean"
+    },
+    {
+      "module": "Miri.Interpreter.IntrinsicAtomic",
+      "olean_sha256": "b8718f64b8ecc5ea03a5754a27cff9b55534eaaf17017c89f5427419efe205f6",
+      "path": "Miri/Interpreter/IntrinsicAtomic.lean"
+    },
+    {
+      "module": "Miri.Concurrency.SyncObject",
+      "olean_sha256": "b23ae2a1514ba567dddea3e497ea105a03c51adcd01b707b207eaf9d22477544",
+      "path": "Miri/Concurrency/SyncObject.lean"
+    },
+    {
+      "module": "Miri.Interpreter.MemoryExtras",
+      "olean_sha256": "764e912f4fada23070b79ba2b3d26332f7df2896ae5f769b305f2c260c743e4f",
+      "path": "Miri/Interpreter/MemoryExtras.lean"
+    },
+    {
+      "module": "Miri.Interpreter.ValidityMemory",
+      "olean_sha256": "ff566b80fa05bf3fb985241bfdd9f6d04138f8f80f94e3a0644021e394adce25",
+      "path": "Miri/Interpreter/ValidityMemory.lean"
+    },
+    {
+      "module": "Miri.Interpreter.ValidityMachine",
+      "olean_sha256": "70ba0bae88a15dc6c8288984428d39eb91caa933f85f9a4061bf34b72685808c",
+      "path": "Miri/Interpreter/ValidityMachine.lean"
+    },
+    {
+      "module": "Miri.Interpreter.IntrinsicFloat",
+      "olean_sha256": "d23d72248f9cc85b48fe4385ea993a5c575ad1b29d35cc73548abaf2bc578930",
+      "path": "Miri/Interpreter/IntrinsicFloat.lean"
+    },
+    {
+      "module": "Miri.Interpreter.IntrinsicTypeId",
+      "olean_sha256": "ffbb6231d5710d1e08edf7ffad55e57cf48668e59692588e8afc271c7812112a",
+      "path": "Miri/Interpreter/IntrinsicTypeId.lean"
+    },
+    {
+      "module": "Miri.Interpreter.IntrinsicVarArgs",
+      "olean_sha256": "7d3a70aa47c2409d760253fc6df67bbabdfb2a520194ca1e13dcde2f3584b694",
+      "path": "Miri/Interpreter/IntrinsicVarArgs.lean"
+    },
+    {
+      "module": "Miri.Interpreter.IntrinsicSimd",
+      "olean_sha256": "55d898cd1176d2e80bf4721d6cf05cd81a74846e0a67e3d191aca0b89bd4e5e0",
+      "path": "Miri/Interpreter/IntrinsicSimd.lean"
+    },
+    {
+      "module": "Miri.Interpreter.Math.Float",
+      "olean_sha256": "ff6d5959a74df6b25a9e7726433a52e2cd7701f25cd1134624de868623c3971a",
+      "path": "Miri/Interpreter/Math/Float.lean"
+    },
+    {
+      "module": "Miri.Interpreter.Math.Runtime",
+      "olean_sha256": "3fcc6d743ca48103ada17a4ed4cb305d9bdda354a1f9bbbe358c677da8a0b8f7",
+      "path": "Miri/Interpreter/Math/Runtime.lean"
+    },
+    {
+      "module": "Miri.Interpreter.Math.Fixed",
+      "olean_sha256": "fe20dfd98d37e4660b7374db019cb052424d5d18078b7f2a920480082e7f3215",
+      "path": "Miri/Interpreter/Math/Fixed.lean"
+    },
+    {
+      "module": "Miri.Interpreter.Math.Dispatch",
+      "olean_sha256": "708f516d76eb866b2a1532e70a19b255f6faf22a767dac735572e5aa20e3e769",
+      "path": "Miri/Interpreter/Math/Dispatch.lean"
+    },
+    {
+      "module": "Miri.Interpreter.Intrinsics",
+      "olean_sha256": "ae645ee8d2c8e3538e5ad7e9d9cab9455a98ea5809e95bc4c94d35feae74b6fd",
+      "path": "Miri/Interpreter/Intrinsics.lean"
+    },
+    {
+      "module": "Miri.Interpreter.PointerMachineBindings",
+      "olean_sha256": "3b96f872719aad24684a0b24641811f91a73ae2e19038435ea0bceb9ea300a21",
+      "path": "Miri/Interpreter/PointerMachineBindings.lean"
+    },
+    {
+      "module": "Miri.Interpreter.AtomicMachine",
+      "olean_sha256": "80805652d21b63faa6deb8d26cc92fbebcacf193af959acbb0901d4bb651986b",
+      "path": "Miri/Interpreter/AtomicMachine.lean"
+    },
+    {
+      "module": "Miri.Interpreter.AllocationMachine",
+      "olean_sha256": "3642760dda66b48811e1c04db3944f1becc04334ffb19837a45b68b11365685f",
+      "path": "Miri/Interpreter/AllocationMachine.lean"
+    },
+    {
+      "module": "Miri.Interpreter.MemoryCopyMachine",
+      "olean_sha256": "caba847365c8cb7631a5911fa987fde4526291542d4383c798130fc7bb1cd529",
+      "path": "Miri/Interpreter/MemoryCopyMachine.lean"
+    },
+    {
+      "module": "Miri.Interpreter.GlobalMemoryCopyMachine",
+      "olean_sha256": "171619b0104488d50b0a730a448d136d0b50d6cd6929d7177d5d24c3e1a76ae2",
+      "path": "Miri/Interpreter/GlobalMemoryCopyMachine.lean"
+    },
+    {
+      "module": "Miri.Interpreter.RawMemoryMachine",
+      "olean_sha256": "4249806d132deafa863bc1a505510e5d91286c545aaeee0c403a3ed269383ccc",
+      "path": "Miri/Interpreter/RawMemoryMachine.lean"
+    },
+    {
+      "module": "Miri.Interpreter.IntrinsicMachine",
+      "olean_sha256": "264b2880977b4a084359ca8a24134aa2cedcc7fd26d36d2e11e54eece1873a4e",
+      "path": "Miri/Interpreter/IntrinsicMachine.lean"
+    },
+    {
+      "module": "Miri.Interpreter.PointerPlaceMachine",
+      "olean_sha256": "09fc5bbb34bbdb373bcd63b8155189b4631921aa0f93a0e736983144be0f2445",
+      "path": "Miri/Interpreter/PointerPlaceMachine.lean"
+    },
+    {
+      "module": "Miri.Interpreter.FunctionCalls",
+      "olean_sha256": "ee1332d5ec38cfdf601f5279b0f12c2ea0d2534f287b36d3d4ec0f388c73dce0",
+      "path": "Miri/Interpreter/FunctionCalls.lean"
+    },
+    {
+      "module": "Miri.Interpreter.VirtualCalls",
+      "olean_sha256": "ab3f841dfee4e0070ea152f175565e4302e885912ad1452d376e2aae3bb8f672",
+      "path": "Miri/Interpreter/VirtualCalls.lean"
+    },
+    {
+      "module": "Miri.Interpreter.RaceMode",
+      "olean_sha256": "77cbb6c7f217d3e65c1e2fb32060da493bd6e07d464b2c80c2a9a5a5340b31c6",
+      "path": "Miri/Interpreter/RaceMode.lean"
+    },
+    {
+      "module": "Miri.Interpreter.IntrinsicBackend",
+      "olean_sha256": "f1fad014118e8c15632a6aad4c9f5d10e33ee4ddcb90f14b2034953f4a3a4648",
+      "path": "Miri/Interpreter/IntrinsicBackend.lean"
+    },
+    {
+      "module": "Miri.Interpreter.CallDispatchMachine",
+      "olean_sha256": "35c848b304dda2eb1090be46da527e45ce5409f3fd7da6416f48327f0e0e96e0",
+      "path": "Miri/Interpreter/CallDispatchMachine.lean"
+    },
+    {
+      "module": "Miri.Interpreter.IntrinsicCrypto",
+      "olean_sha256": "fd1bf1f5cd5059030c5cf093bf49ef875a3cfc1aaa7301ea2c8756ee506e0f11",
+      "path": "Miri/Interpreter/IntrinsicCrypto.lean"
+    },
+    {
+      "module": "Miri.Interpreter.IntrinsicArchitecture",
+      "olean_sha256": "93aa453ddef0cd40215d6b8a04b05a99a70c3fcf41cfe27f64e74b3217938811",
+      "path": "Miri/Interpreter/IntrinsicArchitecture.lean"
+    },
+    {
+      "module": "Miri.Interpreter.ExecutionCallLeaves",
+      "olean_sha256": "0297c74a9b8502d8ee0938027c3321ece926ac8c65d8ccb452705c2da5275e80",
+      "path": "Miri/Interpreter/ExecutionCallLeaves.lean"
+    },
+    {
+      "module": "Miri.Interpreter.FrameMetadata",
+      "olean_sha256": "64fabcb60ebd1209d4e652333d70b850c0d6351710f19a25a05e6868c6b66bea",
+      "path": "Miri/Interpreter/FrameMetadata.lean"
+    },
+    {
+      "module": "Miri.Interpreter.RunLoop",
+      "olean_sha256": "55187e5442d02ca89a1cbb534977074b78b77c9276705eccc3e4bba8fffdb1fd",
+      "path": "Miri/Interpreter/RunLoop.lean"
+    },
+    {
+      "module": "Miri.Concurrency.Scheduler",
+      "olean_sha256": "3e08a8cfe2c86267420316b6a79ec0be2e2d378a2e1ee83548cdc6a44936d33e",
+      "path": "Miri/Concurrency/Scheduler.lean"
+    },
+    {
+      "module": "Miri.Interpreter.ThreadStacks",
+      "olean_sha256": "76085a5ba59af697796128c04761158192c5e1d2b289cc66841e18d8511d1c9c",
+      "path": "Miri/Interpreter/ThreadStacks.lean"
+    },
+    {
+      "module": "Miri.Interpreter.CallMachine",
+      "olean_sha256": "01d77d8d0f224a6a8719a4cd841a8adc1b42b34f219ddbd6d27ae15eb05fa30c",
+      "path": "Miri/Interpreter/CallMachine.lean"
+    },
+    {
+      "module": "Miri.Interpreter.OperandMachine",
+      "olean_sha256": "372e9e2e3d058b38f16c54c9ef46ed94b13de0416ab2acd75919b1ffc6fb8eab",
+      "path": "Miri/Interpreter/OperandMachine.lean"
+    },
+    {
+      "module": "Miri.Interpreter.ExecutionCalls",
+      "olean_sha256": "14021d78586a216330b047a2aaf1bd96af56f9f718a8ce1c0c13053df19c8f10",
+      "path": "Miri/Interpreter/ExecutionCalls.lean"
+    },
+    {
+      "module": "Miri.Interpreter.ExecutionControl",
+      "olean_sha256": "43d2efbbce5e693bdc7875141494545cc030aa874b7a3b661251c888bfe7300b",
+      "path": "Miri/Interpreter/ExecutionControl.lean"
+    },
+    {
+      "module": "Miri.Interpreter.FunctionPointerConsumers",
+      "olean_sha256": "cd37b3f8134a65a94500f33cf4752a35430dab03642b56754588623d8d907ab1",
+      "path": "Miri/Interpreter/FunctionPointerConsumers.lean"
+    },
+    {
+      "module": "Miri.Interpreter.ExecutionCast",
+      "olean_sha256": "ce0ef692aede9beb147337108ef88966dbeb0d7cc4fb80aa35c15aa76db89448",
+      "path": "Miri/Interpreter/ExecutionCast.lean"
+    },
+    {
+      "module": "Miri.Interpreter.ExecutionScalar",
+      "olean_sha256": "c8c7d276574f6ecc32d06a299c263e7f8a9d996f7837019067b54a60cf9dddfe",
+      "path": "Miri/Interpreter/ExecutionScalar.lean"
+    },
+    {
+      "module": "Miri.Interpreter.ExecutionLeaves",
+      "olean_sha256": "58620e301263274fad37e18dd021d1920cfe4e0a1c2251d07697dee6f82f2dbb",
+      "path": "Miri/Interpreter/ExecutionLeaves.lean"
+    },
+    {
+      "module": "Miri.Interpreter.Aggregate",
+      "olean_sha256": "dbb31d4af0f99dae5621894f9fa3fbbbbd7b49d2ea5f8918f4938ccefc2480b6",
+      "path": "Miri/Interpreter/Aggregate.lean"
+    },
+    {
+      "module": "Miri.Memory.MiriMemoryKind",
+      "olean_sha256": "97d3e8b8dfca99d80e913683ea18b308ee473c234e271ce04cc1f5f59103929e",
+      "path": "Miri/Memory/MiriMemoryKind.lean"
+    },
+    {
+      "module": "Miri.Interpreter.ThreadLocal",
+      "olean_sha256": "9df042e8817c707afd01ca623e12ce66cb44c581e2e63a64a2863e181b6eccd7",
+      "path": "Miri/Interpreter/ThreadLocal.lean"
+    },
+    {
+      "module": "Miri.Concurrency.Lifecycle",
+      "olean_sha256": "cc45ece4e8e12eab777e0969ed2d6400b3725c18364cdf05ff0683b35d0491c3",
+      "path": "Miri/Concurrency/Lifecycle.lean"
+    },
+    {
+      "module": "Miri.Interpreter.ThreadExit",
+      "olean_sha256": "fc399aeeaa0ed640964a8d0894ef5b50c92919e8a81984b0388d5dbb2c4d8080",
+      "path": "Miri/Interpreter/ThreadExit.lean"
+    },
+    {
+      "module": "Miri.Interpreter.ThreadTls",
+      "olean_sha256": "4e1b3c8c2b19692b708d1f317b69d3f1f4871ccf55437a376580df0be8430976",
+      "path": "Miri/Interpreter/ThreadTls.lean"
+    },
+    {
+      "module": "Miri.Interpreter.TlsDestructors",
+      "olean_sha256": "46438002d2c834d5bf9335c45d4e8769595231f9798297e56786066617258a57",
+      "path": "Miri/Interpreter/TlsDestructors.lean"
+    },
+    {
+      "module": "Miri.Interpreter.ProgramExit",
+      "olean_sha256": "787cbe1c3d1b83d3a7706978ac7882f0ed1f202a637c6f184c448005b285dae5",
+      "path": "Miri/Interpreter/ProgramExit.lean"
+    },
+    {
+      "module": "Miri.Interpreter.GlobalConstructors",
+      "olean_sha256": "9f5e1a39901fa7f9aaf4cce0a741b596b669ed4bfefe29756d1307cc4cf286ff",
+      "path": "Miri/Interpreter/GlobalConstructors.lean"
+    },
+    {
+      "module": "Miri.Interpreter.MainThread",
+      "olean_sha256": "57a8bc4f5c9e4b963efa3b1fbc397c3edca2027333ae9475e09bac34ed7a70fb",
+      "path": "Miri/Interpreter/MainThread.lean"
+    },
+    {
+      "module": "Miri.Interpreter.Panic",
+      "olean_sha256": "ba907bd1a9335f36b2c6ccc2dbcdcb8c711d9da0ae5f9c8d81a702a7792ea91c",
+      "path": "Miri/Interpreter/Panic.lean"
+    },
+    {
+      "module": "Miri.Interpreter.Clock",
+      "olean_sha256": "034be97a3464e2e59a609421b9a14489e39755b2f12c69ad2e42f51743365802",
+      "path": "Miri/Interpreter/Clock.lean"
+    },
+    {
+      "module": "Miri.Interpreter.ProvenanceGC",
+      "olean_sha256": "6882d115033587fea24e1a6495ccb64cde856221aa2d780e09896df1900d6b5d",
+      "path": "Miri/Interpreter/ProvenanceGC.lean"
+    },
+    {
+      "module": "Miri.Interpreter.TerminatorMachine",
+      "olean_sha256": "0a8dd0bee630251223b85fd73212e363481b8cf07fb7d4d968e8926b6fcfc23f",
+      "path": "Miri/Interpreter/TerminatorMachine.lean"
+    },
+    {
+      "module": "Miri.Interpreter.ExecutionMachine",
+      "olean_sha256": "a2bb942365d581b69c65f00c6c805024164f21b32c73b2581c481b0d74f6f407",
+      "path": "Miri/Interpreter/ExecutionMachine.lean"
+    }
+  ],
+  "notes": [
+    "upstream_lean_toolchain is the lean-toolchain file at the pinned commit; build_lean_toolchain is the Lean 4 toolchain Anneal uses to build and audit the vendored sources.",
+    "upstream_git_objects are git object ids at the pinned commit (`git rev-parse <commit>:<path>` in a clone of the repository)."
+  ],
+  "patched_files": [],
+  "repository": "https://github.com/proofs-rs/lean-miri.git",
+  "schema_version": 2,
+  "upstream_git_objects": {
+    "LICENSE-APACHE": "1b5ec8b78e237b5c3b3d812a7c0a6589d0f7161d",
+    "LICENSE-MIT": "31aa79387f27e730e33d871925e152e35e428031",
+    "Miri": "ef473f04eed9bbfed474a7b5f6f91a2f6350c41b",
+    "Miri.lean": "4c2b87b06a1786f369cc6ae26e94b3cc72652d85",
+    "tools/check_implementation_ledger.py": "e1879ecc717b1ec24d8f4d51fa84835693b6d69b",
+    "tools/check_semantic_sources.py": "7a9d8f8628d536ac3eab665c578fa7901c3efb09",
+    "upstream/.pins/aes.commit": "2aadc7ac8eb1930b6dbdf28d4c6443f805038d6a",
+    "upstream/.pins/miri.commit": "3dff1349544fc7ef71be7266ee7437817efa0b18",
+    "upstream/.pins/rustc.commit": "60438fb681c3b95d7163a689a5e2cb0d54cc1ef3",
+    "upstream/.pins/rustc_apfloat.commit": "e3e2ad8b3762b9b9dffa17c6ec9f9ad3544d54f5",
+    "upstream/source-lock.json": "503d1c21ca5096c1cdbec40d235da58c1f12efd0"
+  },
+  "upstream_lean_toolchain": "leanprover/lean4:v4.35.0",
+  "upstream_pins": {
+    "aes_commit": "c1534361e7549e29a16c3505f45a04c92d26b62a",
+    "miri_commit": "7fa591d7d4dd9af8154becbc8332f8096f8323b1",
+    "rustc_apfloat_commit": "eeaacad81247af65d4043cb3e32d023a652d7951",
+    "rustc_commit": "8144389c895da997dbdecaa635e41d6a50be6ffd",
+    "source_lock_sha256": "371f3b91e61ff027121b9706a15aac9b6f272ef1cb5ce0d150707a9cf8883873"
+  },
+  "vendor_aux_files": [
+    {
+      "path": "LICENSE-APACHE",
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+    },
+    {
+      "path": "LICENSE-MIT",
+      "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+    },
+    {
+      "path": "tools/check_semantic_sources.py",
+      "sha256": "95772b5a51b054cde4f6e20f3864671a2b1d992acd8a44ca71b4dcf0b5010778"
+    },
+    {
+      "path": "upstream/.pins/aes.commit",
+      "sha256": "59fdb9c131aeabd04bc58dfb229c0a2210997ea074cfdb064aada94f9c61ad01"
+    },
+    {
+      "path": "upstream/.pins/miri.commit",
+      "sha256": "3aa283e01b1a2ede57c97fed097bd2044dad4c2f051baf108c51e2574e6750d6"
+    },
+    {
+      "path": "upstream/.pins/rustc.commit",
+      "sha256": "264a4b122908bb735f405491139bdf8bff9c470f98e27457645dfc4a1813850d"
+    },
+    {
+      "path": "upstream/.pins/rustc_apfloat.commit",
+      "sha256": "a3e6284caf9b7b398b587d2371c1f3aa8804bc6e9d3e56a25048f38fc1438af6"
+    },
+    {
+      "path": "upstream/source-lock.json",
+      "sha256": "371f3b91e61ff027121b9706a15aac9b6f272ef1cb5ce0d150707a9cf8883873"
+    }
+  ],
+  "vendor_tree": {
+    "file_count": 608,
+    "files": [
+      {
+        "path": "Miri.lean",
+        "sha256": "4164cfc7cd29529c939e00a6b00102f2f7f87dc7419b2ff7aaaf10ec19c9606d"
+      },
+      {
+        "path": "Miri/ABI/Align.lean",
+        "sha256": "738f22d4e9bc913fdfeeaf96559e2f4df9a2e7f4197128a26508c410b870fcf8"
+      },
+      {
+        "path": "Miri/ABI/CallConv.lean",
+        "sha256": "481253a63658af57f104674a9cf751047045c00bd8408b5f8fc6c7d677f58ddf"
+      },
+      {
+        "path": "Miri/ABI/ExternAbi.lean",
+        "sha256": "456e684a402510342e05959222df1275b59bfdb1b8ce756bf31c6efc87558673"
+      },
+      {
+        "path": "Miri/ABI/FnAbi.lean",
+        "sha256": "0b802f532604583f7af23198a38967b095b4d72d4e85fa0c4547518c1b80bb8a"
+      },
+      {
+        "path": "Miri/ABI/Layout.lean",
+        "sha256": "c58f0268942cce8aee16e714ab7a3107d00f6a709dbaa01554267cb7f46d4c02"
+      },
+      {
+        "path": "Miri/ABI/RuntimeLayout.lean",
+        "sha256": "07e61911d7bee6be38ea216165f0eeb24511633fcc8130c26d1019d4075ac4fa"
+      },
+      {
+        "path": "Miri/ABI/Size.lean",
+        "sha256": "e8195a637943142da96ca0013a96da8541e4b35ffb6aab15887188243d196303"
+      },
+      {
+        "path": "Miri/ABI/Verification.lean",
+        "sha256": "fdcb7c2ff85b0cae48dbca96f0e86ca96c932982362cad48752c75bdd1fb4f86"
+      },
+      {
+        "path": "Miri/ABI/WrappingRange.lean",
+        "sha256": "2e7bbf2192e35815d28debff0c81fd645dd7837f41a21041510c44aff3eefbf4"
+      },
+      {
+        "path": "Miri/ABI.lean",
+        "sha256": "446e2bd1e42f05eaed6675c5da5577633a7bebeae0de762e34c35445e82435dd"
+      },
+      {
+        "path": "Miri/Concurrency/AtomicAccess.lean",
+        "sha256": "ccf04c0cb2c6e2cc2601e34d18cb09b3ad900a5212b568488c43f20e12e0b6bc"
+      },
+      {
+        "path": "Miri/Concurrency/AtomicDispatch.lean",
+        "sha256": "07025f58ddbb95595d67381e916de60ed8ad291cd98e13bf383249a18fa17ff7"
+      },
+      {
+        "path": "Miri/Concurrency/AtomicScalarMemory.lean",
+        "sha256": "01d0e4bee373422fb8637f7ec5791b4bb5053b830f527cd314f2f99b72a2d126"
+      },
+      {
+        "path": "Miri/Concurrency/DataRace.lean",
+        "sha256": "fd901de2bf6bbe43a9534746c9b910f24b6785070d944926c1f49955d2574a43"
+      },
+      {
+        "path": "Miri/Concurrency/DataRaceVerification.lean",
+        "sha256": "b0427563cb46124fb6a65b8748d4986ce23fdb84bac0e88dcea74153de722b49"
+      },
+      {
+        "path": "Miri/Concurrency/Deadline.lean",
+        "sha256": "2252fc431f084de522b2075d629c123994d0d20ccfc35df543cc23f1044ef12b"
+      },
+      {
+        "path": "Miri/Concurrency/FutexRuntime.lean",
+        "sha256": "003cd6325e24c4150192d6a78a0202decd96953d9a9913414b0f659fb522b58b"
+      },
+      {
+        "path": "Miri/Concurrency/GlobalState.lean",
+        "sha256": "fa6958b34289a59baecb1bd9098600560eda74e4e2460201689a61df0b4f7205"
+      },
+      {
+        "path": "Miri/Concurrency/GlobalStateVerification.lean",
+        "sha256": "a2a5b3ab147eefaeb4bb4f4e1738899f1ede01692fef22150c0f5b5c6a7c33a2"
+      },
+      {
+        "path": "Miri/Concurrency/InitOnce.lean",
+        "sha256": "ffb899e9ef40f3b7b96b1d260831de8a952c6e57193b8d61d1ad6febbc9217ab"
+      },
+      {
+        "path": "Miri/Concurrency/Join.lean",
+        "sha256": "3cfec083ca791096f2a234f9fac9b92c65c81a2711d1c9885a17ce7712950462"
+      },
+      {
+        "path": "Miri/Concurrency/Lifecycle.lean",
+        "sha256": "c564aabfe38a022b36880e8f0b12443ad1216afd6ddf7c7e6d64cd62f9a6c416"
+      },
+      {
+        "path": "Miri/Concurrency/LocalRace.lean",
+        "sha256": "a001531108c5b8b2b9c6d4e17f7a7692ec881c263e74b4972b3c7de1370df049"
+      },
+      {
+        "path": "Miri/Concurrency/Scheduler.lean",
+        "sha256": "9a9b3ddba16e2fb8501b910647738488211678fa4a58594f8eadba8cc635d96d"
+      },
+      {
+        "path": "Miri/Concurrency/Sync.lean",
+        "sha256": "8c249ebe2907098ab805992c3cab48f9eee632731d1ec5babd1ffa14401913f7"
+      },
+      {
+        "path": "Miri/Concurrency/SyncClock.lean",
+        "sha256": "b7305d1a71ed2937df5108caa6a3043e95b0bffa2143b4063474f135def10fae"
+      },
+      {
+        "path": "Miri/Concurrency/SyncObject.lean",
+        "sha256": "b55ba23095e680a805c0fe75bc9fe2b50ebc6137ae0b5fc745aa541351579eec"
+      },
+      {
+        "path": "Miri/Concurrency/SyncRuntime.lean",
+        "sha256": "8e995d84cc180b61b9a97eef58856ed853733631acf04e0978024b968063ff92"
+      },
+      {
+        "path": "Miri/Concurrency/SyncVerification.lean",
+        "sha256": "4cdb6b7467f8cbe1a8c5dfbf3856aa815312d8aeefc261a5e53ec7bfb28d60e6"
+      },
+      {
+        "path": "Miri/Concurrency/Termination.lean",
+        "sha256": "73689c46faa2d05896689b0416f1fcb1c4a288c06edffbd8f8a903f8388f6628"
+      },
+      {
+        "path": "Miri/Concurrency/Thread.lean",
+        "sha256": "83012691304cb2a43321cf48f59d739ad1b058502ac96e7ec810ace9bdd5d9ec"
+      },
+      {
+        "path": "Miri/Concurrency/TypedSyncRuntime.lean",
+        "sha256": "11a7d4212d2ac5c8bdd0551cf1e0412213aa8ee2ed1946c2576f86ac7c0574e9"
+      },
+      {
+        "path": "Miri/Concurrency/VectorClock.lean",
+        "sha256": "08174e6884b06bffbaa4ff167421bbfe123a48f090cfbbba6da26122f0059dc1"
+      },
+      {
+        "path": "Miri/Concurrency/WeakMemory.lean",
+        "sha256": "dd9cf3750e49a54826fac3861af5f71286331c8de33f757f2f0ba7835ff2dffe"
+      },
+      {
+        "path": "Miri/Concurrency/WeakMemoryVerification.lean",
+        "sha256": "93f1a55c3e3579949a0e99d25ad3cf3034b8e07f7f5edad1a1b4aef7a176a81a"
+      },
+      {
+        "path": "Miri/Concurrency.lean",
+        "sha256": "9ac732c7e7e01056ac59070e86abddf72aa34bacacdd1771e7077b3a676581c4"
+      },
+      {
+        "path": "Miri/DataStructures/DedupRangeMap.lean",
+        "sha256": "87f4bcd2cf4a4eb1bad2c1b3d362814069cd5375bab5d0fc7ea9ede6b47eb08a"
+      },
+      {
+        "path": "Miri/DataStructures/RangeObjectMap.lean",
+        "sha256": "6b32948be7ca55d00e7a3df856c7f325efe147d30996797bb89ac16b161091e1"
+      },
+      {
+        "path": "Miri/DataStructures.lean",
+        "sha256": "55b56ce80984ad163de7be5d8c657cd6e6167b4b599c89817ece5b78f3547fcb"
+      },
+      {
+        "path": "Miri/Frontend/ImportMIR.lean",
+        "sha256": "bf54bc8044975c529e63f7e931a245fe3e99ed7e4382e40f77157c78b90b2818"
+      },
+      {
+        "path": "Miri/Input/AllocationImage.lean",
+        "sha256": "27b516b9601a3f0cc25b795d15b79d6220abf16dab56ca51b166ec0eb09d212b"
+      },
+      {
+        "path": "Miri/Input/CallCompatibility.lean",
+        "sha256": "813e01bc6adefcd95c8ca929e2b3ee7a6f59dc8c14b0f5eb454bacd9e55bbbbd"
+      },
+      {
+        "path": "Miri/Input/CallResolution.lean",
+        "sha256": "fb76334d93d82fea66cfef5f8aa488ebf03ba015b9fea3febd6a45bf5a5eb4b3"
+      },
+      {
+        "path": "Miri/Input/CompilerAllocIdWorld.lean",
+        "sha256": "4888b71230a5d9e2bf33216d22b853990bb1ddc92c54ff880caf54ae38127f6a"
+      },
+      {
+        "path": "Miri/Input/CompilerArchitectureFacts.lean",
+        "sha256": "4da3d76206f5fa6f4c7346ab70d16935c880df0a4e0c79da50dcb48bba2e2f5a"
+      },
+      {
+        "path": "Miri/Input/CompilerBacktraceFacts.lean",
+        "sha256": "aabda6885e36bfc117d9489cb3affdd12a196c072f6d92c8dff08ba749ba1968"
+      },
+      {
+        "path": "Miri/Input/CompilerBacktraceSource.lean",
+        "sha256": "3c6d3715a88306141925846403f995d146a7bd3cdb9f6df136c82bdc9ce8c3d1"
+      },
+      {
+        "path": "Miri/Input/CompilerBodySpan.lean",
+        "sha256": "07a7eb0a4e6896897bc1c86b2a2b93149ce1656ef68c8fbe16712c4fb7b49804"
+      },
+      {
+        "path": "Miri/Input/CompilerCallConstruction.lean",
+        "sha256": "2a3b88cc57180adcbe18b4dbd1b6afc9064e3614e5d94303d9e95accf67d7fb5"
+      },
+      {
+        "path": "Miri/Input/CompilerCallFacts.lean",
+        "sha256": "fd8b9d12caa59149260a9b45cdfbd6512b0b55dc042fb004fda89d776513d2cc"
+      },
+      {
+        "path": "Miri/Input/CompilerCallPipeline.lean",
+        "sha256": "80a4df48f09e4cb20f65113246fb38325c42f65b7e34d49dd7c41e1a6b992902"
+      },
+      {
+        "path": "Miri/Input/CompilerCastLeaves.lean",
+        "sha256": "226e98e096a6319087696b951a507035050594259331716afbba7549499dc864"
+      },
+      {
+        "path": "Miri/Input/CompilerCastQueries.lean",
+        "sha256": "f0536627fc0999858fa44e858966e70257db2e1d29b961b3cb3cdba9709d6e7f"
+      },
+      {
+        "path": "Miri/Input/CompilerConstantMachine.lean",
+        "sha256": "3995e3fb31b1c6d46f990fa96ba8cedbd18a9354eb4fbe7f6a79f69bcc94f6ba"
+      },
+      {
+        "path": "Miri/Input/CompilerConstantQueries.lean",
+        "sha256": "d862b8661cbbcc256db446c0ef7a161bc8b347a644d1945b7e06796d1cf5e77f"
+      },
+      {
+        "path": "Miri/Input/CompilerContextSpan.lean",
+        "sha256": "e2739267c7165d748496f08cc7fdc81d94f902956d799bb60e914f3f8d1f6bbf"
+      },
+      {
+        "path": "Miri/Input/CompilerCopy.lean",
+        "sha256": "b927efacffe5b2c43f7889457b76c58698f0120eb50bb1e79bb0754317c7ec6d"
+      },
+      {
+        "path": "Miri/Input/CompilerCoreIntrinsic.lean",
+        "sha256": "068b8db86c5b261f8eebd52a0e4f8e915594b8998f307c7095ccddb4efcffae0"
+      },
+      {
+        "path": "Miri/Input/CompilerCovariance.lean",
+        "sha256": "aef38902774cef8141a6c7630fd9920d10ccb5fdbeb7c6702ce6defe4748afc1"
+      },
+      {
+        "path": "Miri/Input/CompilerCpuAffinity.lean",
+        "sha256": "dd4004565b0c5610c17d887989871f33f504d423f530ed6780d50279026e9341"
+      },
+      {
+        "path": "Miri/Input/CompilerCtfeValidity.lean",
+        "sha256": "06cb96916757d80537c29ae7749a1e5d9aad55f8a04e34a055748ae9e53ae19e"
+      },
+      {
+        "path": "Miri/Input/CompilerDiscriminantFacts.lean",
+        "sha256": "3180f096832fa7325097fd34c47b5c710d25e9686973795e2ec4e225b27f74e5"
+      },
+      {
+        "path": "Miri/Input/CompilerExecutionBounds.lean",
+        "sha256": "d62ebd591b7e87b82281a40c35ea91815d1a43c444fb3fe2d38a3d81bdbbad11"
+      },
+      {
+        "path": "Miri/Input/CompilerExecutionCallLeaves.lean",
+        "sha256": "201220c6e6e7b91c1a44b02358ef07fbc8468e4e6897ecd71e1a12b15b4be020"
+      },
+      {
+        "path": "Miri/Input/CompilerExecutionFacts.lean",
+        "sha256": "69a4a8a2ffc3b4cae5dc1e9df814a2a5fa79909aa816f1b3b66f0d650fd4dd11"
+      },
+      {
+        "path": "Miri/Input/CompilerExternAbi.lean",
+        "sha256": "8dd0714737eb8585216cad613b180544408e6b891f92887653a81f9ad4bc55ed"
+      },
+      {
+        "path": "Miri/Input/CompilerExternStatic.lean",
+        "sha256": "343a74a78caef43ed5cc4f0be0ce76c2aa4d568bc2800166cfc2cea81032a849"
+      },
+      {
+        "path": "Miri/Input/CompilerFactAdapters.lean",
+        "sha256": "0e203b4b20be8501ecc0ef810c395c41e03aecf47dbf4b7a14dd20fa96343118"
+      },
+      {
+        "path": "Miri/Input/CompilerFacts.lean",
+        "sha256": "a42787496cf6a5e3dc3587cf26bafb844fc6b96ca5e282e1dfb5a3c2849bff62"
+      },
+      {
+        "path": "Miri/Input/CompilerForeignSymbolTables.lean",
+        "sha256": "cf9de1a31765a9c9a409cf9143a844d4aa792731ef2db0c63fe542123dc9273a"
+      },
+      {
+        "path": "Miri/Input/CompilerForeignSymbols.lean",
+        "sha256": "1dbc642d25f11155170e2d0da8cd5bd6d4c0407249d64be4cb3e37cc18cf41ab"
+      },
+      {
+        "path": "Miri/Input/CompilerFrameContext.lean",
+        "sha256": "3856266770605d3e380bd1d16f8cb18725aa098a9fea60c0930be8ef726e3639"
+      },
+      {
+        "path": "Miri/Input/CompilerFrameMetadata.lean",
+        "sha256": "6c0017458bef7b653670133c523f4a9921f127c2aca033b99d488d22143d6b26"
+      },
+      {
+        "path": "Miri/Input/CompilerFunctionFacts.lean",
+        "sha256": "85851ad0171be9562745529aa5e929a4c296c426956f16f5075ca401a9b47249"
+      },
+      {
+        "path": "Miri/Input/CompilerFunctionPointers.lean",
+        "sha256": "6adc919d4408d112fe8c0dbf01b5521237dd90ec9393d84250ea92cb8c508f10"
+      },
+      {
+        "path": "Miri/Input/CompilerGlobalBytes.lean",
+        "sha256": "de639d5b63e2ad71e6d704d1776099b5d30d3a6203e2efcd2b70497e65a2af6f"
+      },
+      {
+        "path": "Miri/Input/CompilerGlobals.lean",
+        "sha256": "5241fc84bc553f519ba628ea6d4c683be70c056d5ff7c012d1c76040c2887832"
+      },
+      {
+        "path": "Miri/Input/CompilerInstance.lean",
+        "sha256": "7f3c8bdd6c9c12e086db09ca407982107b4cdfd621b1280ef45f06e3604701d0"
+      },
+      {
+        "path": "Miri/Input/CompilerInstanceAbi.lean",
+        "sha256": "1d07fb4011d091d5ab8a95e815e442aecc74ede6a4b16e4741d726667ec13d03"
+      },
+      {
+        "path": "Miri/Input/CompilerIntrinsicConstants.lean",
+        "sha256": "6af509079f9d52caf411160b9b3cafbbae21763f943223cf77d48c2a5290cb68"
+      },
+      {
+        "path": "Miri/Input/CompilerIntrinsicFacts.lean",
+        "sha256": "4f188fcb80ac6540b972fb30d2da7a1b8cd133b67ad08910da374769c9fb0182"
+      },
+      {
+        "path": "Miri/Input/CompilerIntrinsicSymbols.lean",
+        "sha256": "70be1cdb3b6f0f66b8d798ef80188e8588094ad4f919e911d31464dfcb5d9ae3"
+      },
+      {
+        "path": "Miri/Input/CompilerLibcConstants.lean",
+        "sha256": "4a3365aefaacc98af730cc6133bc196286b7c1e60b453014f3118e1eb47a52c8"
+      },
+      {
+        "path": "Miri/Input/CompilerLibcTypeLayouts.lean",
+        "sha256": "5e96e431378297f66eaa18fcff2a5c048431f1a18f5c0adfcaf748fbd3df72e3"
+      },
+      {
+        "path": "Miri/Input/CompilerLifecycle.lean",
+        "sha256": "fc2fe8bc830c4c9f9bb6df29651c3219ba237602b0461d829c873c0932305977"
+      },
+      {
+        "path": "Miri/Input/CompilerLifecyclePipeline.lean",
+        "sha256": "485713af886d14e948aaf1d0100159345f24b8c29d941237a6efb9de5ae1cdf9"
+      },
+      {
+        "path": "Miri/Input/CompilerLinkSections.lean",
+        "sha256": "caee3f0ee7273722f951e2f9d4ab61e06f6bd6e51a60650610fa41ec0be8b23a"
+      },
+      {
+        "path": "Miri/Input/CompilerLinuxSyscall.lean",
+        "sha256": "0f412ffb516e68b3ba6fc43d9fd8757faa06966ce077cdc54aeecaef7fa3a841"
+      },
+      {
+        "path": "Miri/Input/CompilerMain.lean",
+        "sha256": "3ae5394ad0e0e3877d75f2e3f4454f46bf1677f868a922d224c1fff91c3e88c0"
+      },
+      {
+        "path": "Miri/Input/CompilerNamedConstants.lean",
+        "sha256": "24bd25bcc419288492e2671b813272674e3f6bf7a94f64d1705e2eee6f6ad241"
+      },
+      {
+        "path": "Miri/Input/CompilerNamedFields.lean",
+        "sha256": "43c98504136cb9b8a70b4b6cbd505ec97a0f1fe4f1ec72c930b520a657d8ec93"
+      },
+      {
+        "path": "Miri/Input/CompilerNamedGlobals.lean",
+        "sha256": "837fd5c50beee93756e7551010e4842004b497ca91b783567bb1f2e22a9527b1"
+      },
+      {
+        "path": "Miri/Input/CompilerNamedShimAbi.lean",
+        "sha256": "6347f24f91fb1a45bf95a73bd7f63076284bed9a2340d49d5cf412d81633fda8"
+      },
+      {
+        "path": "Miri/Input/CompilerNative.lean",
+        "sha256": "e64ee7028aa3bff2cdc376d58180212cabfd29d9d0887e141a957d0d6aa5f720"
+      },
+      {
+        "path": "Miri/Input/CompilerNativeSignatures.lean",
+        "sha256": "ff6d590e4798a0c3e9a8d37ea5d8fa0a77b6561cc8f6933ad0ffaeb285288be6"
+      },
+      {
+        "path": "Miri/Input/CompilerOperandSites.lean",
+        "sha256": "241772ec78f4154d353c9cec92f6d662b7284fbf65993ff0728b33ed7c94f88c"
+      },
+      {
+        "path": "Miri/Input/CompilerPanicFacts.lean",
+        "sha256": "55e07da589c0aa5b9c25b045f88434050c36f2e267311307c21e136bed407607"
+      },
+      {
+        "path": "Miri/Input/CompilerPaths.lean",
+        "sha256": "172f0720e7e06fda770e580af63b581db9726d03c34ee7e377d2ac29a31d9f31"
+      },
+      {
+        "path": "Miri/Input/CompilerPlaceTypes.lean",
+        "sha256": "247e681c858c58835be1dc7ddf326f9610de1bb4f303f1a74e46a8231c1cbb82"
+      },
+      {
+        "path": "Miri/Input/CompilerPrimitiveFacts.lean",
+        "sha256": "dceca74d18961ef5b24faf30af275fe3dac07a87df8f057780457e400afe9e88"
+      },
+      {
+        "path": "Miri/Input/CompilerProviders.lean",
+        "sha256": "c0216d74e88121d75fec7f68205c9ad3235906a0fe1a8a50027b9d08ccb494e6"
+      },
+      {
+        "path": "Miri/Input/CompilerQueryIndices.lean",
+        "sha256": "7513232402ba456dd191ef04235ff81d183e0fd9147a16078adf08b422e892ae"
+      },
+      {
+        "path": "Miri/Input/CompilerRandomDispatch.lean",
+        "sha256": "072cbc48b83aa1054b10947599fb8759cc443fd2bdd952976c36c01178291bc8"
+      },
+      {
+        "path": "Miri/Input/CompilerRetagOptions.lean",
+        "sha256": "42982587dfc3e3dcb76803916aaf443b40dc7d9998cf53548539a0052b85f746"
+      },
+      {
+        "path": "Miri/Input/CompilerRuntimeQueries.lean",
+        "sha256": "097d334f972ecf2de8347d7aa51a0b08938149781d064fb6dc7bb82062b73b73"
+      },
+      {
+        "path": "Miri/Input/CompilerScalarLeaves.lean",
+        "sha256": "788ed061a451f735e4da7ad6d698b9f67286e3b9bc1ef91c4bf26f0e01085299"
+      },
+      {
+        "path": "Miri/Input/CompilerScopes.lean",
+        "sha256": "f99a7090eb436c8448581a3a5f9fd91d6357565b1268122fb413aefee830cf76"
+      },
+      {
+        "path": "Miri/Input/CompilerShimAbi.lean",
+        "sha256": "8cda825021fe0b5a396981a224471384cb70af8878e30fc603d5d679e3510ea3"
+      },
+      {
+        "path": "Miri/Input/CompilerShimSignatures.lean",
+        "sha256": "f5f6f540b99ef08ac4205e35d5be9500481d02cb0f38bae6221eb393566ebaf6"
+      },
+      {
+        "path": "Miri/Input/CompilerSignatureAbi.lean",
+        "sha256": "14032b73ca2139ac0835f010292ed582641271cd7fba54a201e0d860917f47e1"
+      },
+      {
+        "path": "Miri/Input/CompilerStorage.lean",
+        "sha256": "81cb02238f620d49f2d42782819e00d337de8453c289253c5d9d46b3885e5c30"
+      },
+      {
+        "path": "Miri/Input/CompilerTargetFeatures.lean",
+        "sha256": "2471c96dcfc022881330572a709ebc1947876a47bd83f40193a119f85d3e2084"
+      },
+      {
+        "path": "Miri/Input/CompilerThreadLocal.lean",
+        "sha256": "a14a3258ea881dacedee8fce91b59bcf531fa8e843c1b90d1198e65c0427a1d8"
+      },
+      {
+        "path": "Miri/Input/CompilerUnixMemoryQueries.lean",
+        "sha256": "e7fd10a1af98058e7d708f267a4caaf70618da1012198bba6c8e4fc8932bc85d"
+      },
+      {
+        "path": "Miri/Input/CompilerUnixThread.lean",
+        "sha256": "5675f0891303fc278d5783e8492801c0d5a750b20af31ad4388c9ea3f0b26f76"
+      },
+      {
+        "path": "Miri/Input/CompilerUnixThreadDispatch.lean",
+        "sha256": "6d06ca65ca54a00228550f08a6407621f928a782b2955be2159b631e401377b6"
+      },
+      {
+        "path": "Miri/Input/CompilerUnixTls.lean",
+        "sha256": "d352970e678fe5da7ac496fb7118de2de8a982305fec7a29f307ef289d2883a8"
+      },
+      {
+        "path": "Miri/Input/CompilerVTableFacts.lean",
+        "sha256": "d360579e6fd6d5886ee3a38bfab9e316e0d3bbd44aa7124f092d2aae5d288071"
+      },
+      {
+        "path": "Miri/Input/CompilerVTableLeaves.lean",
+        "sha256": "a34632e304329cb945c799d13d823d1dc5bd8a2cb91f8dabeb37122ab03469c4"
+      },
+      {
+        "path": "Miri/Input/CompilerVTableMachine.lean",
+        "sha256": "4d26db359c50a2781515690c39ee0bd2051860f77479d0f7524773b7ebd2f8b4"
+      },
+      {
+        "path": "Miri/Input/CompilerVTableQueries.lean",
+        "sha256": "734c63cfd40b27d85d734a2447fc93e8c3ab1351aedfcdf3fc5d8361f5c42400"
+      },
+      {
+        "path": "Miri/Input/CompilerVTableRuntime.lean",
+        "sha256": "9b4954e21bd542efdfe8ecf9e1213122d2a0c1fc181628f3b2e5cd9b79015821"
+      },
+      {
+        "path": "Miri/Input/CompilerValidityLeaves.lean",
+        "sha256": "9cf88fb0d6376c7f85460601fac0c466576496cb0287bbb95750a7ad499b8202"
+      },
+      {
+        "path": "Miri/Input/CompilerValueConstants.lean",
+        "sha256": "d1c0b62ff8c3ec7a924293625297ad55736c02a1e096cf14a70ad451e1339b11"
+      },
+      {
+        "path": "Miri/Input/CompilerVarArgsLeaves.lean",
+        "sha256": "4d2440b05bbf5f55a6773bd68f32b2b3a23b781506c936cc611a1123f1b89776"
+      },
+      {
+        "path": "Miri/Input/CompilerVirtualFacts.lean",
+        "sha256": "01251762354f0d1323f360702d0f1e958beeadc99d9af83d2f8908ad2f7f483b"
+      },
+      {
+        "path": "Miri/Input/CompilerVirtualLeaves.lean",
+        "sha256": "b8ef35b60ca88d8318355ca15da590e6e983d3d99b702ec2f810c18b63ef3369"
+      },
+      {
+        "path": "Miri/Input/CompilerWindowsConstants.lean",
+        "sha256": "a84fc14ddd4aef5685ed7f5dd0dedd4586cee0a4fdaeea83813cb9971fdcf7aa"
+      },
+      {
+        "path": "Miri/Input/CompilerWindowsTypeLayouts.lean",
+        "sha256": "7ebfd494edadb36776de8ba5ccf578512d0381bd0b72b352e6a19f0dff92d77e"
+      },
+      {
+        "path": "Miri/Input/Decoder.lean",
+        "sha256": "cf25f5dcb3a35118647c21aed48383f9e91da194f14e43a1a4e9584aeab78e99"
+      },
+      {
+        "path": "Miri/Input/DecoderValues.lean",
+        "sha256": "651a5de926e30baf6d95bd19fd5240a3d69b946c36d5761ab417ff53e3591dbe"
+      },
+      {
+        "path": "Miri/Input/EvalAccessMachine.lean",
+        "sha256": "e921ff8fa11deb2dc5f21b7cc873c5ea60d56b57f3f7ef50c420deb3f411ad26"
+      },
+      {
+        "path": "Miri/Input/EvalAllocationMachine.lean",
+        "sha256": "d7d2df910629570f47429145743cadbf815ff053c4bbd50b34f863dc7cda31e4"
+      },
+      {
+        "path": "Miri/Input/EvalArchitectureMachine.lean",
+        "sha256": "ec58fbc3e42c9d40eb7b4d3f4d69d4c5ff4e4944dc057ea7aeea3cb5cfb76f0a"
+      },
+      {
+        "path": "Miri/Input/EvalBackendMachine.lean",
+        "sha256": "78bf3f3e2d2436d8468d9619d2ac5bbe82a0782426a9044e198dcaf0681c8d42"
+      },
+      {
+        "path": "Miri/Input/EvalBootstrap.lean",
+        "sha256": "04f0ee48d3037f39c791dcb058babe26723ff0c5f134069fdf243a145c219e5e"
+      },
+      {
+        "path": "Miri/Input/EvalCallDispatchConstruction.lean",
+        "sha256": "e8b3e9c383b564f15624c2d28d035183ab062d380dde3f4688c73427342bfcab"
+      },
+      {
+        "path": "Miri/Input/EvalCallRuntime.lean",
+        "sha256": "54adc092e39a8e61d073b2bf3e3f4291dce771240da2dfeba21fe1ea320439d7"
+      },
+      {
+        "path": "Miri/Input/EvalCallbackFutexConstruction.lean",
+        "sha256": "1e377a1c2ab12b70df08d9c41175ea42108bcf9db911a05164463ad0e91fbcba"
+      },
+      {
+        "path": "Miri/Input/EvalCallbackMachine.lean",
+        "sha256": "57654ca3077efaaac6ad90c91b2dc4ea25e5e4de53ceddc776689b8a5ef29ed3"
+      },
+      {
+        "path": "Miri/Input/EvalCallbackOperationConstruction.lean",
+        "sha256": "3ae67bfb10ae55fcafb2091cf871640c0be16b30d61f0e19476900129110425e"
+      },
+      {
+        "path": "Miri/Input/EvalCallbackSocketConstruction.lean",
+        "sha256": "6888953d9cd01f050ec2c0f1de94d4e01933f44b2ccb970e3228f1d39085d504"
+      },
+      {
+        "path": "Miri/Input/EvalCallbackSocketRegistry.lean",
+        "sha256": "c5f701a3efc2836e5ae0906cf27267c178656dc440abb160c90dfac6102203f9"
+      },
+      {
+        "path": "Miri/Input/EvalCallbackSocketSeed.lean",
+        "sha256": "532f76fd8fe54698774cc7190f06587ffb05bebb6f02aac4ca23872070daa764"
+      },
+      {
+        "path": "Miri/Input/EvalCallbackSourceConstruction.lean",
+        "sha256": "8ebd263fd5bded59954d7fbc046a0213c7ceebc549519cd177fbb522528a0794"
+      },
+      {
+        "path": "Miri/Input/EvalCallbackSyncConstruction.lean",
+        "sha256": "f29e2f5ef9d154e5e47d928f987c72af84b68af306cc6696cebf3184e6ddd3cf"
+      },
+      {
+        "path": "Miri/Input/EvalCallerLocationConstruction.lean",
+        "sha256": "fbe08f632f552090bccfe6ae90ec85c6bfcf051a244a6f2db931bd81043df303"
+      },
+      {
+        "path": "Miri/Input/EvalChronoTimeSource.lean",
+        "sha256": "7af3e81b341074853e432b317f7f03d9ad5bc2405846b78e4ba0e9d4a4c4e237"
+      },
+      {
+        "path": "Miri/Input/EvalCompilerMachine.lean",
+        "sha256": "84a1502aba532e42881000c668d5ef81acd833c2acc0561f3a11a37c835cd94a"
+      },
+      {
+        "path": "Miri/Input/EvalConfiguration.lean",
+        "sha256": "fa0e2f5f594c270fed6602dcfe3098b1d2c15eb68365d5dfcdc587931a414795"
+      },
+      {
+        "path": "Miri/Input/EvalConfigurationCore.lean",
+        "sha256": "d8ab5c5a98cef9c154a2d481ae88486bf7593f2600c96fcf6659578aa9f2e9c4"
+      },
+      {
+        "path": "Miri/Input/EvalCoreMachine.lean",
+        "sha256": "e43cafaafe78deb571fad0ebe73c1f0d9d5f956b025262bf83c8d09d7942d541"
+      },
+      {
+        "path": "Miri/Input/EvalDynamicMemory.lean",
+        "sha256": "9e3fcda53388c47c78db1183985f3bd05b6b33b179bf814d2c62753ed18a0e5a"
+      },
+      {
+        "path": "Miri/Input/EvalEntryMachine.lean",
+        "sha256": "8e639d502f6bf35734eb438fd72fd817901351051a45692bfa7cb2519b2d8a2c"
+      },
+      {
+        "path": "Miri/Input/EvalEntrySymbols.lean",
+        "sha256": "d6eb28f67e6cb67cd1dc84ff74a60a47026926971ab5eb5ce1ca8d35740e3651"
+      },
+      {
+        "path": "Miri/Input/EvalExecutable.lean",
+        "sha256": "de44124e5d3ab2db1a1c78f7806100d6e8883405775fb02acc8dbceff09e779e"
+      },
+      {
+        "path": "Miri/Input/EvalForeignConstruction.lean",
+        "sha256": "4dd6c714fbd42091df2dfc34d21dd8b8ab673fd007fcf543566add24c68dd01a"
+      },
+      {
+        "path": "Miri/Input/EvalForeignExit.lean",
+        "sha256": "a29447dbd2e0a08dd816530692e34522335a4a9af8ce5cde90e0c41dbce3131c"
+      },
+      {
+        "path": "Miri/Input/EvalForeignIoMachine.lean",
+        "sha256": "f14129bd9de63690607877210862dea9aacccbd9c627413b7bda3e88e40bcd59"
+      },
+      {
+        "path": "Miri/Input/EvalForeignSocketMachine.lean",
+        "sha256": "0d32ccb1de9c7efd962a95e44b23e399a1bf73e8e236255a565cd8334a0fdc0f"
+      },
+      {
+        "path": "Miri/Input/EvalForeignSyncMachine.lean",
+        "sha256": "7ccac62edb8a0f58c4b683e072a086b40fd167ce2f6b64f3c1b823c56b9af8e1"
+      },
+      {
+        "path": "Miri/Input/EvalGlobalAllocationMachine.lean",
+        "sha256": "6140081237df4834efd61ed24cfee11d9bb31693b5de0c1333e97ccb44fa8998"
+      },
+      {
+        "path": "Miri/Input/EvalHostMachine.lean",
+        "sha256": "56a0d6833b4decd9a78fcf095b87bf803ac37340d7f7c26a611c0fb35594ccc5"
+      },
+      {
+        "path": "Miri/Input/EvalHostRuntimeConstruction.lean",
+        "sha256": "96d3cd84070f982d3ab157bc3188b91a1f858bc01e709ed1ddd78d6da1e58990"
+      },
+      {
+        "path": "Miri/Input/EvalMathMachine.lean",
+        "sha256": "413ebf0771412ff6bd27234af88b91d58db1b8dac791bf8bd7e521587b190b0f"
+      },
+      {
+        "path": "Miri/Input/EvalMiriConnectedSourceConstruction.lean",
+        "sha256": "4dd4f9f8a4d1d63cf9ba54b9289ee1962d93a728157d5f44871763a4c7a90729"
+      },
+      {
+        "path": "Miri/Input/EvalMiriHostEffectsConstruction.lean",
+        "sha256": "468d23c165913af29555710d24da0108607c7901bd5cf8ca1398f784b8a24109"
+      },
+      {
+        "path": "Miri/Input/EvalMiriSourceConstruction.lean",
+        "sha256": "028c74369239361b0d4114cc67a89ef8d5024ebe274e308c2807203eb1ca93b3"
+      },
+      {
+        "path": "Miri/Input/EvalMiriSourceRuntime.lean",
+        "sha256": "c6211ec7b01efa50cf5e100ab7d2949fe713570167c49eda3491fbf7bb3babdc"
+      },
+      {
+        "path": "Miri/Input/EvalMiriTreeDiagnostics.lean",
+        "sha256": "fd5e609bd3d0fc28192175df1406ad92809974509ad38edd4d196b9c14edd6b3"
+      },
+      {
+        "path": "Miri/Input/EvalNativeConstruction.lean",
+        "sha256": "254529771d5eaa08c995882e5a5ccc40d79c8e6e09efd2430cd931884b217e7d"
+      },
+      {
+        "path": "Miri/Input/EvalNativeMachine.lean",
+        "sha256": "2bbda5fa6b327f71453aa8af3283411f13f86bfd325b4fbef6767d288ec97c8b"
+      },
+      {
+        "path": "Miri/Input/EvalNativeSourceConstruction.lean",
+        "sha256": "de7ee1e0bed7e7460b0e126f9b3d249015c1d0e02a2b273fa1a618273ae87772"
+      },
+      {
+        "path": "Miri/Input/EvalOwnedIoMachine.lean",
+        "sha256": "eca9d7fdbb2514eecc60ace4fe5bd68c9af3fe971f24a3d652563291b6164d1e"
+      },
+      {
+        "path": "Miri/Input/EvalPanicMachine.lean",
+        "sha256": "1ed94896272bda72bd02c6f5cd3f45ad4d90fe846526f899164fd676f6b97fb3"
+      },
+      {
+        "path": "Miri/Input/EvalPlaceConstruction.lean",
+        "sha256": "2fc884fb20b99f1e3d99383ef3ac67e7e335e8cad90777c34c73f35002861afe"
+      },
+      {
+        "path": "Miri/Input/EvalPointerSource.lean",
+        "sha256": "ecba51c2c49d2425245e8f0ad4630c45d9fbc341d8f33db642a944c269119596"
+      },
+      {
+        "path": "Miri/Input/EvalPortableForeignConstruction.lean",
+        "sha256": "57684eb336584e7736cd17fa74d9ca7a7a0ed5d56d3d6cf95a7aa4aca239dc64"
+      },
+      {
+        "path": "Miri/Input/EvalPortableForeignRuntime.lean",
+        "sha256": "5ca00f48b42166699f26cad753c2f9336bfc48cae75cc92e40c7390987a3a9aa"
+      },
+      {
+        "path": "Miri/Input/EvalPreparation.lean",
+        "sha256": "4ca4f7112f79788e9c7875be0a8687b3ea5f8bea309757e2b9fbb6d72a9060ff"
+      },
+      {
+        "path": "Miri/Input/EvalProjectionMachine.lean",
+        "sha256": "d48db27c292cacb7fbe9ef1b082e1019fb1c7db9461dc8f79cb4162c988a7717"
+      },
+      {
+        "path": "Miri/Input/EvalRetagMachine.lean",
+        "sha256": "9560eb5811f95da9d58bc51feafe5ae093381bc1b1036b27ef77be8a8734775e"
+      },
+      {
+        "path": "Miri/Input/EvalRunConstruction.lean",
+        "sha256": "a1b13c491e4f14f20f3f473f3ad12a9879792e6e10eda807dde9729883e5dd5c"
+      },
+      {
+        "path": "Miri/Input/EvalRuntimeConstruction.lean",
+        "sha256": "eb3a43dad58a647681c120735bad7a477404e68843d0849ed87fd3906f22660c"
+      },
+      {
+        "path": "Miri/Input/EvalSocketAddressConstruction.lean",
+        "sha256": "ef5f44e1ce7a63015155cc6af98d1fd9c499119cbb6dfdfbb139dc5f8ae0ebe3"
+      },
+      {
+        "path": "Miri/Input/EvalSocketStorage.lean",
+        "sha256": "fc099ff71e1c34343dd18dad449e1fa6a9a741617e64fa1c1de7a0c01b8f7a5e"
+      },
+      {
+        "path": "Miri/Input/EvalSourceHostEffects.lean",
+        "sha256": "1717428b107e14c3048213f5644ee2d0811b030f4c7477b487a8d51f6cc11439"
+      },
+      {
+        "path": "Miri/Input/EvalSourceRunConstruction.lean",
+        "sha256": "b12e577daecc0df5d5f66387b04205b82ed2e4166e153ee7c2f8e005efd20d75"
+      },
+      {
+        "path": "Miri/Input/EvalSourceRunFinalization.lean",
+        "sha256": "94d43cf3d3b421390e6a8bc0f5607c1cb20df636d1452be62f207a90c6c4013c"
+      },
+      {
+        "path": "Miri/Input/EvalStartupAssembly.lean",
+        "sha256": "29de88090ab446011466f772be9a50e6ae757c8b6c158f13bc1c6fe2f9308a4f"
+      },
+      {
+        "path": "Miri/Input/EvalStartupMemoryConstruction.lean",
+        "sha256": "0286be100b9f08f40a447389de60813dc4d9681964a0e507240fd23708a86f3d"
+      },
+      {
+        "path": "Miri/Input/EvalStartupRuntimeConstruction.lean",
+        "sha256": "eb37c854cd825476470e2a23110a4ae9f4b86a229531d3ad30ea908390da4494"
+      },
+      {
+        "path": "Miri/Input/EvalStartupWindows.lean",
+        "sha256": "38b5834418eb010ed67e6911de10528c6b01750838cee684d41dc6a7f31f8bb5"
+      },
+      {
+        "path": "Miri/Input/EvalSyncMachine.lean",
+        "sha256": "3fd2ee99957b859359c2d046115f06ff406cdf0c57c803c6a2660f227cf9c596"
+      },
+      {
+        "path": "Miri/Input/EvalSyncObjectAccess.lean",
+        "sha256": "a443d79415e37734cd36e9815ba402836ca3e6163bc41481e1f2b8dd38484e37"
+      },
+      {
+        "path": "Miri/Input/EvalSyncObjectConstruction.lean",
+        "sha256": "c80807ff8f7b521b7c23a92a2b0424d773a2b947c22879d779e30645ca3e12cb"
+      },
+      {
+        "path": "Miri/Input/EvalSyncPayload.lean",
+        "sha256": "f7f896bdb13d0f5da39ee671b2246944a52ad243b241149b2e12ddb583093482"
+      },
+      {
+        "path": "Miri/Input/EvalTerminatorMachine.lean",
+        "sha256": "ab19ef79092315607764c5db000aad099e03fee83d538c875e59c8e21d9a540a"
+      },
+      {
+        "path": "Miri/Input/EvalThreadLocalSource.lean",
+        "sha256": "ac4ba5b7f3d026c1da01b53b6e5ad052fb773912c7cf1ec283ba3eb19bc48bce"
+      },
+      {
+        "path": "Miri/Input/EvalTimeConstruction.lean",
+        "sha256": "3eea2d7e5dd6ea1dbdcb8d29cbd512de84b0dbb8ba3b7d84734405485cfb6f5f"
+      },
+      {
+        "path": "Miri/Input/EvalTypedSyncMachine.lean",
+        "sha256": "6cdb729152f790a101dfb4f8d28d4ab6eac1efefb9519c0b54c83dc17804bade"
+      },
+      {
+        "path": "Miri/Input/EvalUnixAffinityConstruction.lean",
+        "sha256": "258373f9af84cf54b311cd8e5ff94cd3fd5bc8cc63e02114d24f7c7a1c564589"
+      },
+      {
+        "path": "Miri/Input/EvalUnixConstruction.lean",
+        "sha256": "7baff83a8dc79df5fe83458e8f134b7ce20fc5b9aac5efc076f460ca06e8f9ca"
+      },
+      {
+        "path": "Miri/Input/EvalUnixDynamicConstruction.lean",
+        "sha256": "c84baaa1a22181779739cf2523362e63f56da19a662c4476d0c0248843e6bfe7"
+      },
+      {
+        "path": "Miri/Input/EvalUnixFdConstruction.lean",
+        "sha256": "94293fea003cdf9e0a2eddc1b5fa8cc86bc552e16601625f23fdd5471254189f"
+      },
+      {
+        "path": "Miri/Input/EvalUnixFreeBsdConstruction.lean",
+        "sha256": "903d63af9f1196c3dabe811252be58f2eecec4d3620c03650a9b63e919fcb546"
+      },
+      {
+        "path": "Miri/Input/EvalUnixFsConstruction.lean",
+        "sha256": "62e06f60240e09aa7fe46e3997d79f705e64a1a3e390064740e28e950e786505"
+      },
+      {
+        "path": "Miri/Input/EvalUnixIoConstruction.lean",
+        "sha256": "ff997986d48cb0b0403ab371428272d2eb444e36ac0035719cffc84cbe207291"
+      },
+      {
+        "path": "Miri/Input/EvalUnixLinuxConstruction.lean",
+        "sha256": "4414d59452cd33c57e9e32670e78b9cb8a8478d7566b68cd8fd8bda4a0bc40b5"
+      },
+      {
+        "path": "Miri/Input/EvalUnixLinuxMemoryDispatchConstruction.lean",
+        "sha256": "00f7170c90dbb6ca627c25b48f8d943b87ea3f5f01f3647ee5f1479e357351d2"
+      },
+      {
+        "path": "Miri/Input/EvalUnixMacOsConstruction.lean",
+        "sha256": "a431379b31d32cf882a1363e43dffaa5a77c555c2fa0d0d41d927a45d5591fe5"
+      },
+      {
+        "path": "Miri/Input/EvalUnixMemoryConstruction.lean",
+        "sha256": "7a3199ff45d7bdbb1c647c6462fa32fff7fc8d22a5b5fc97a68e152d3c5a2b01"
+      },
+      {
+        "path": "Miri/Input/EvalUnixNativeFdConstruction.lean",
+        "sha256": "129a4d44a12882c0d3a770dc9c7016ca325e4c57ac3832e0914614baab44ac4a"
+      },
+      {
+        "path": "Miri/Input/EvalUnixPthreadConstruction.lean",
+        "sha256": "18457accfc909974797d687302ec9e33aa496f2b400f8da474b32d6944a69f38"
+      },
+      {
+        "path": "Miri/Input/EvalUnixSolarishConstruction.lean",
+        "sha256": "650b2e9091a8ad41f5f1c94d9d5d92ab7499aef1efe7ced958abd87b9ce60605"
+      },
+      {
+        "path": "Miri/Input/EvalUnixSourceConstruction.lean",
+        "sha256": "b2ea41d1044ffcab98e23f15ed24b49a7f38c111bff239bb83aa36e23ee83265"
+      },
+      {
+        "path": "Miri/Input/EvalUnixThreadTlsConstruction.lean",
+        "sha256": "0cd955b3213a6cf1c5b70a9b4444912863cf12450d28c5a4490733b33732053e"
+      },
+      {
+        "path": "Miri/Input/EvalValidityMachine.lean",
+        "sha256": "c7b82a60d498b607943c665593d973b8aee6880e8af07a89a001e65ac8d3043b"
+      },
+      {
+        "path": "Miri/Input/EvalVectoredMachine.lean",
+        "sha256": "f41035966f52a9d177a12a7608ef4f14f6bad4f8115e7144a9f4c9ede7df2155"
+      },
+      {
+        "path": "Miri/Input/EvalWindowsCallDispatchConstruction.lean",
+        "sha256": "766cebad004c87485d1081a93e302e543456ad8a7687a46972212e4e66b98721"
+      },
+      {
+        "path": "Miri/Input/EvalWindowsCallbackAssembly.lean",
+        "sha256": "402781b91dbff08d6caefac3d47a4e027fc8f5612e7f1584dcb2617a635990e7"
+      },
+      {
+        "path": "Miri/Input/EvalWindowsCallbackSourceConstruction.lean",
+        "sha256": "1facfccce0d7fffca3a7a211e15563f936d4b6c9c97b4d86c72fd88e48470bfc"
+      },
+      {
+        "path": "Miri/Input/EvalWindowsConfigurationCore.lean",
+        "sha256": "2765e153386119a253de5a379a193a837553c7c1d050082aebc1e1628313d873"
+      },
+      {
+        "path": "Miri/Input/EvalWindowsConnectedSourceAssembly.lean",
+        "sha256": "60bc959bee629f4b4bd720988f9f6116715392ef71eac388675e9c78c831f2ee"
+      },
+      {
+        "path": "Miri/Input/EvalWindowsEnvironmentConstruction.lean",
+        "sha256": "c956c5f9e81ddfa008f75c0f0d80fa651eda3f44b9538f721c447c2acc1b608f"
+      },
+      {
+        "path": "Miri/Input/EvalWindowsEnvironmentDispatchConstruction.lean",
+        "sha256": "7f8610c95d144b2077fac739794f44e66aabb9fd97d903964d6bd383cd1b5af6"
+      },
+      {
+        "path": "Miri/Input/EvalWindowsFileConstruction.lean",
+        "sha256": "e11d3963a2a966c0271be01e11cdd1531bafc735859baa027543ffd89c92e0bf"
+      },
+      {
+        "path": "Miri/Input/EvalWindowsIoErrorConstruction.lean",
+        "sha256": "e03846a68fc1d696e6e5774bf5c69997af93de96dfc8f64cf29c50fff2c12a8a"
+      },
+      {
+        "path": "Miri/Input/EvalWindowsIoSourceConstruction.lean",
+        "sha256": "a284405805bc03dbf67e3993bf6fd944b499f4c6be12ff65b4b225b28f9878ba"
+      },
+      {
+        "path": "Miri/Input/EvalWindowsPlatformConstruction.lean",
+        "sha256": "e3bb536b18780a771c1a76e74c8f0faa86ead8211fb208b16eb04394b8888a3f"
+      },
+      {
+        "path": "Miri/Input/EvalWindowsRandomConstruction.lean",
+        "sha256": "672ae6ec937ee8e15cdf68cdab311ea7f90a0d30270a9c07364dd38d7eb5b82f"
+      },
+      {
+        "path": "Miri/Input/EvalWindowsRawSourceEntry.lean",
+        "sha256": "3c787742818f0724dd03e44ea447fde6ff331372355ab90df8500a13a9f98422"
+      },
+      {
+        "path": "Miri/Input/EvalWindowsRunConstruction.lean",
+        "sha256": "85b80e0534dc3a1f6b45dec1d5587775c2fee479a7aa1b64584a76dd29aff7f1"
+      },
+      {
+        "path": "Miri/Input/EvalWindowsSourceConstruction.lean",
+        "sha256": "0a4128c321b8158ecdd55e11a4fb6e478af7e4b1de4862b1d1528754d4ea1e17"
+      },
+      {
+        "path": "Miri/Input/EvalWindowsSourceRunConstruction.lean",
+        "sha256": "726d781615cb19bea60185247f1677cde6f84b262ca60634955c9c823592941b"
+      },
+      {
+        "path": "Miri/Input/EvalWindowsSourceRunFinalization.lean",
+        "sha256": "145c3f816e83a4f5b952c300f1d11e6bdd72a44309ec89a8f7d3bd33a1268513"
+      },
+      {
+        "path": "Miri/Input/EvalWindowsStdOnlyConstruction.lean",
+        "sha256": "924afc8fee42f55d4f2e5151b8dfd20b2dcae9c7a1f5e1b2b1e383ed5718e34e"
+      },
+      {
+        "path": "Miri/Input/EvalWindowsSyncTimeConstruction.lean",
+        "sha256": "6d53be6d4edbe44aebbfa805608a4a64e3d1a4cddaeaba07705991f38932c306"
+      },
+      {
+        "path": "Miri/Input/EvalWindowsThreadConstruction.lean",
+        "sha256": "18934cae0b14d596428bdce21c47700194e15db91708899d00b68d01e39b44fd"
+      },
+      {
+        "path": "Miri/Input/EvalWorld.lean",
+        "sha256": "b49f7fa81efe7b0ac0194e77ca628e4c882be98839f207ba762d5ccee0a690d2"
+      },
+      {
+        "path": "Miri/Input/ExecutionChoicePolicy.lean",
+        "sha256": "c69fcaf7042d6540acfa3086d77ffa050a831bc5c975c2e34d297f061435d7ef"
+      },
+      {
+        "path": "Miri/Input/HostRuntime.lean",
+        "sha256": "05a6a5c619e98d9962c3bdcf48ee5c3ee15b4351ca955f8fe0ae496a4fa4ea8e"
+      },
+      {
+        "path": "Miri/Input/InitialMachine.lean",
+        "sha256": "6e0dfe186b502706d27f003380f5e832d9e3d6d9d4ebe7c15ae226f60d31ecdb"
+      },
+      {
+        "path": "Miri/Input/JsonTraversalCache.lean",
+        "sha256": "5e3fc72f8cd5d4212359f367d10b2a9d677ed4f69868ed30b79038fd761bee42"
+      },
+      {
+        "path": "Miri/Input/LowerMIR.lean",
+        "sha256": "f5f1068b806f7344f1997206d67af7a3d3957b7782d042777f4e2306a33cd92a"
+      },
+      {
+        "path": "Miri/Input/MachineConstruction.lean",
+        "sha256": "cd346461cdfbf11500649914f8d6901059262003bf387e459838a5e5bf51fdb4"
+      },
+      {
+        "path": "Miri/Input/Model/Types.lean",
+        "sha256": "a501f2d7f471c58a4ea1b5531eaeef4b0a04b6f153a8858991365160b9c65158"
+      },
+      {
+        "path": "Miri/Input/Model.lean",
+        "sha256": "84f64e74c3cb1ddc3a7ced99823f2a82fedc2d9e86430fc488f5902f522e03f0"
+      },
+      {
+        "path": "Miri/Input/NativeMathHost.lean",
+        "sha256": "69e9702435dfdf8fc4fb3e9719d4a39839dcbddb8319349b80f87b57456ef1e6"
+      },
+      {
+        "path": "Miri/Input/NormalizationBody.lean",
+        "sha256": "4369d9b183b12efc144987611eab1d9022bac6a694eef75af86c469e0068090c"
+      },
+      {
+        "path": "Miri/Input/ProducerEvidence.lean",
+        "sha256": "e9e1b301561cf0ba9776a0b1d9c07461dcf8f1197469cf92e9c9d4bad50a5a9b"
+      },
+      {
+        "path": "Miri/Input/RuntimeArrayFacts.lean",
+        "sha256": "450021da47dd0faefb7b13126060cf83042a27d89d1226efae21a5c995111025"
+      },
+      {
+        "path": "Miri/Input/RuntimeArrayQueries.lean",
+        "sha256": "53f0ca3d3234ccabd22bfd126c696abeaae69825ede0feea50eaa4fa0705aa81"
+      },
+      {
+        "path": "Miri/Input/RuntimeArrayTypes.lean",
+        "sha256": "d4e46338cd8e63aeb9b08de313acbff16d7f04ec18e56f4f760b586862b87e31"
+      },
+      {
+        "path": "Miri/Input/RuntimeMetadata.lean",
+        "sha256": "20f716460001b071d4aeccec6822952c15cf2bace3b9daf42f884dd9ad4d1a26"
+      },
+      {
+        "path": "Miri/Input/SharedPayloads.lean",
+        "sha256": "6e6dfcc334ac9e94dbd14f222407d937e44d27889df55af4ebde06fad0a18868"
+      },
+      {
+        "path": "Miri/Input.lean",
+        "sha256": "9d84e3fe5e9aacfea5002ef279b1b61395dc848252f675c57540ecfe099b2fbc"
+      },
+      {
+        "path": "Miri/Interpreter/Aggregate.lean",
+        "sha256": "11071e31af109b5defe99b39df6676161a73c1eeb6e3eca512e599924c524dc6"
+      },
+      {
+        "path": "Miri/Interpreter/AllocationDriver.lean",
+        "sha256": "ea1e8e59837cb7f76360455c3ddb869484f4de66dbbded95f32445788fde0f37"
+      },
+      {
+        "path": "Miri/Interpreter/AllocationMachine.lean",
+        "sha256": "342e198c8d892008512ef1a7255164f5f3b5775206f511fab50ceecdcf8bdb9e"
+      },
+      {
+        "path": "Miri/Interpreter/AndroidForeign.lean",
+        "sha256": "88205eaf564da2e4f57b0822341bfc2e398444294eae7c371f54cae0db5380c5"
+      },
+      {
+        "path": "Miri/Interpreter/AppleThreadId.lean",
+        "sha256": "f731746096dea3fb0260e6aab7bd5ef846c8725af3f96dccb469860e29780ca9"
+      },
+      {
+        "path": "Miri/Interpreter/ArrayProjection.lean",
+        "sha256": "4c0196e4e1c35f15bfde352cc9377935f4e743b8b079be19473daeb70b138ec3"
+      },
+      {
+        "path": "Miri/Interpreter/AtomicMachine.lean",
+        "sha256": "b6170f5e07c96e5dba92cff5a2bb611d2473e1d9e33951fc8a0a1f086f54c786"
+      },
+      {
+        "path": "Miri/Interpreter/Backtrace.lean",
+        "sha256": "7bbe98c82904a225aa48bed5602da0584bab7ebc5f081def9566af203c6a0cee"
+      },
+      {
+        "path": "Miri/Interpreter/BacktraceMachine.lean",
+        "sha256": "35074e7d37578646f673f2b213baa586dc3da0bb4134d808caef97acb1dd2ac0"
+      },
+      {
+        "path": "Miri/Interpreter/BlockingIo.lean",
+        "sha256": "7177814d75f71d54e40e9f6da7f83119275e4d2f38fb8af3ec1d0faa75e61538"
+      },
+      {
+        "path": "Miri/Interpreter/BodyIdentity.lean",
+        "sha256": "7258085b6de8a1adc5473cc6c2c2726d324c424eebdb6f6a8eb5223a4022a122"
+      },
+      {
+        "path": "Miri/Interpreter/Call.lean",
+        "sha256": "4f84e6562232130ab86a9ea057a63e8f1a57c17daef2f91d2bb9ca6251fb0287"
+      },
+      {
+        "path": "Miri/Interpreter/CallDispatchMachine.lean",
+        "sha256": "98fc6480efc5bfe3b64bc149879a9c6ba0df3867c2ba6f6daa30fb1dbf02284b"
+      },
+      {
+        "path": "Miri/Interpreter/CallMachine.lean",
+        "sha256": "b7970ac7f1acd544ff7cb8e0cba46f8de6d96b969ccb335fbd19036438bd462b"
+      },
+      {
+        "path": "Miri/Interpreter/Cast.lean",
+        "sha256": "34d19a23f5128f4d00301bc3d9655e0b8a1e83c4877ae8adf188ddba57952661"
+      },
+      {
+        "path": "Miri/Interpreter/ChronoTz.lean",
+        "sha256": "8c2d67998745531180d505abf6ea4814dd6dc81959c3c59dcbe6988b55fc3409"
+      },
+      {
+        "path": "Miri/Interpreter/ChronoTzData.lean",
+        "sha256": "760c866490be877f3498a1018731c1ac003ba5e7aee3e0b6331137c47c2d5c0b"
+      },
+      {
+        "path": "Miri/Interpreter/Clock.lean",
+        "sha256": "035a818ef136c82c292f9bd0159cc126297c46de6b60733c08879619a0b78fa5"
+      },
+      {
+        "path": "Miri/Interpreter/CompilerExecutionProviders.lean",
+        "sha256": "ff212532302f7fa358ca7b4db98d350bbd6c1eecd5b21f72210b2356fe917ad3"
+      },
+      {
+        "path": "Miri/Interpreter/ConcurrencyErrors.lean",
+        "sha256": "0ac9e68fdc80ed0de4e7462e0dc239d48fffefac760e4a9ca833a8ead9a06eb3"
+      },
+      {
+        "path": "Miri/Interpreter/Constant.lean",
+        "sha256": "7f44e8ab46a066d37cdb37feac2d6499623d42ecc789d934bdef6d7f4d15ce02"
+      },
+      {
+        "path": "Miri/Interpreter/ConstantMachine.lean",
+        "sha256": "f25be6f4c407afafb528ba3fbc2dee9b29a5ab29acc31489a3298f9c40d40887"
+      },
+      {
+        "path": "Miri/Interpreter/ControlFlow.lean",
+        "sha256": "0a3796c04d0ae37aeb957f8da0c3713b4f2e2e930a4a9191d292dd0ba06471ae"
+      },
+      {
+        "path": "Miri/Interpreter/CpuAffinity.lean",
+        "sha256": "838b66c5a9c83175e49880189080174975b340af0acbaec25b1ce9b21d529bbd"
+      },
+      {
+        "path": "Miri/Interpreter/CpuAffinityDispatch.lean",
+        "sha256": "771ecebddf12514f57b0f73d2931067b41815e52823c476cf36a9bbff406c6e3"
+      },
+      {
+        "path": "Miri/Interpreter/CpuAffinityMachine.lean",
+        "sha256": "46ddf2961fc03161ebcee37aa1a5f3b564eac9bac2b04dd6660328c4ca9215a3"
+      },
+      {
+        "path": "Miri/Interpreter/DeadlineMachine.lean",
+        "sha256": "101621279ae5306a5bcacd50bb83676ef8a3292e9442506b0c8cc8158579c17f"
+      },
+      {
+        "path": "Miri/Interpreter/Discriminant.lean",
+        "sha256": "ed0cb1ebe412a8ee37d2f00048383c8b06d27facd2b870365558920b0c26fc0d"
+      },
+      {
+        "path": "Miri/Interpreter/DynamicLayout.lean",
+        "sha256": "4abfbfb8be899f42e56b54f5a181dd7d394cc16f5befb9ab2eff0b6193707f26"
+      },
+      {
+        "path": "Miri/Interpreter/EntryArguments.lean",
+        "sha256": "42323aedf13051bba10745cc7e62b5864e9d8b2b009e6913a6543454dc1ac84f"
+      },
+      {
+        "path": "Miri/Interpreter/EntryResult.lean",
+        "sha256": "f6e081d569260a80c567d7ef495c5477e8aa5530d7d92307df23374b5fd639ad"
+      },
+      {
+        "path": "Miri/Interpreter/EnvVars.lean",
+        "sha256": "45e1c23208c6e9d3ba35380fa42f1a540e4df4327ee438a1763013f0b56b80ef"
+      },
+      {
+        "path": "Miri/Interpreter/EpollShims.lean",
+        "sha256": "264e5b4ea77caecd82f629dba29ee637408ae323c7aeaa896ebfef6795cbda63"
+      },
+      {
+        "path": "Miri/Interpreter/EventFd.lean",
+        "sha256": "b2b8f21c27ddc9d1247d53f756b3eab5df38ae050fa9f5e6421255a328ab40e7"
+      },
+      {
+        "path": "Miri/Interpreter/EventFdDispatch.lean",
+        "sha256": "1402762ee46421135f065bb285aecab5f6637fa8b9717eb5c3f8fbae1c8becb9"
+      },
+      {
+        "path": "Miri/Interpreter/EventFdMachine.lean",
+        "sha256": "10e5f7af959c64e8c506c1587688e78cfaa876b1af43bc01cb54219f9bf0b42b"
+      },
+      {
+        "path": "Miri/Interpreter/ExecutionAddressBindings.lean",
+        "sha256": "6cba348a65467413f59d375b6018ca6e5b9f6e012eacc06f325c0dfa83ba8ba2"
+      },
+      {
+        "path": "Miri/Interpreter/ExecutionAddressChoices.lean",
+        "sha256": "cb4113cf4c03c3df087d5d80062db78aaae7422995d839a9a4afa16cbba2ac63"
+      },
+      {
+        "path": "Miri/Interpreter/ExecutionCallLeaves.lean",
+        "sha256": "7a0a7c5eac02be53f4877bde50b3c7a7bb3744a1eed0a7a255fffd3b462f40da"
+      },
+      {
+        "path": "Miri/Interpreter/ExecutionCallTransport.lean",
+        "sha256": "886426fb4dad6169f82f61d92ec8a2c838e1b449c8bb1d141bd9b198d5ff4d04"
+      },
+      {
+        "path": "Miri/Interpreter/ExecutionCalls.lean",
+        "sha256": "0e401e0f72d5ac5dcb13ebb794e2e2affe742f25a8557fd68a4440dc15cf33d8"
+      },
+      {
+        "path": "Miri/Interpreter/ExecutionCast.lean",
+        "sha256": "037c6660d02ec418bc48a12f5465c322c8e9ddd666f7e8d2edbd2bdade54298b"
+      },
+      {
+        "path": "Miri/Interpreter/ExecutionChoiceBindings.lean",
+        "sha256": "1b82a7a62cee6b2aa8d56e6d359c44ac4c87a4a9f51179c22a144cae7a7c5f64"
+      },
+      {
+        "path": "Miri/Interpreter/ExecutionChoices.lean",
+        "sha256": "83580ff353bc7f33f55598be59d81ebe38c92e23907390f81e6f8e3d7a4b977e"
+      },
+      {
+        "path": "Miri/Interpreter/ExecutionControl.lean",
+        "sha256": "916b2236e00d1b3170380ec486c006d2edc7ab785607275568035df3065cf834"
+      },
+      {
+        "path": "Miri/Interpreter/ExecutionForeignTransport.lean",
+        "sha256": "19890922b94db25061ae9b5706773f6d95293d239a094dcfae9fb46553e493c4"
+      },
+      {
+        "path": "Miri/Interpreter/ExecutionIntrinsic.lean",
+        "sha256": "2b698a18b589e42dc7e2cef0eab4448adf8944b0886ad84c5fe93bf800f08a72"
+      },
+      {
+        "path": "Miri/Interpreter/ExecutionLeaves.lean",
+        "sha256": "51743c1c743f649051aef0bbb1d364a3a4a20437a573c6787093296023a69fa0"
+      },
+      {
+        "path": "Miri/Interpreter/ExecutionMachine.lean",
+        "sha256": "e601f25d2c9c87014984ec580979cb8d8beb052b4c7c63507b1d98c7098a8796"
+      },
+      {
+        "path": "Miri/Interpreter/ExecutionMath.lean",
+        "sha256": "98b41bcc5366eb872dd5025bd549f3247e69104c8c7b875a65870cf153f5e41a"
+      },
+      {
+        "path": "Miri/Interpreter/ExecutionMemoryTransport.lean",
+        "sha256": "222bfa16ba2a52713e9a4cc8ca88ce6cadc981378d65b3dc1727afaadc9c991d"
+      },
+      {
+        "path": "Miri/Interpreter/ExecutionSafety.lean",
+        "sha256": "7f5a53818fbf5d2fe1e4859d47df25487339be9415dddf13d1357bda4f18c7b8"
+      },
+      {
+        "path": "Miri/Interpreter/ExecutionScalar.lean",
+        "sha256": "8acebd48ebae660d4dd6ff37656f901356839198e3006e2347f2c0a1814a7018"
+      },
+      {
+        "path": "Miri/Interpreter/ExecutionStateTransport.lean",
+        "sha256": "0574670bc02ed7eb1665f1cf276e60c64f6b858b6af476f7a4ac50e0bc6a5b6b"
+      },
+      {
+        "path": "Miri/Interpreter/ExecutionValidity.lean",
+        "sha256": "97775babcf80bd7d5e0068b9db022744cb0de8d0bcd68293279e885fdbfeb19f"
+      },
+      {
+        "path": "Miri/Interpreter/ExternStatic.lean",
+        "sha256": "60c1eb60e8dbb79ced24204e16baad0cebd1162c51cfb7912c0a6499c9a307fd"
+      },
+      {
+        "path": "Miri/Interpreter/FileMachine.lean",
+        "sha256": "90945b4c6dea662ae35f49aff21e4206cd323d930d4801b3e22454844249c06f"
+      },
+      {
+        "path": "Miri/Interpreter/FileOwnership.lean",
+        "sha256": "595b7d8791550b90ec911d342eb5cfba859aacdb384fbe4509cca76451a31318"
+      },
+      {
+        "path": "Miri/Interpreter/Files.lean",
+        "sha256": "3efc7bf50bf6633afd72e92750a45de99ad653152b637a859ca81a93b305c188"
+      },
+      {
+        "path": "Miri/Interpreter/Float.lean",
+        "sha256": "caccf198078b52233e2f0b5143488a9fc6a54d2270451beb985d895d3a80e8e9"
+      },
+      {
+        "path": "Miri/Interpreter/FloatOps.lean",
+        "sha256": "a5e633efd9fd23fc445599d8f0e403b348a5b746aee37df699746d87ccba4e3c"
+      },
+      {
+        "path": "Miri/Interpreter/ForeignItems.lean",
+        "sha256": "b21763601df887a42697544a962a186e27742e3e4a3ace80fef4b7dd52e21ee7"
+      },
+      {
+        "path": "Miri/Interpreter/ForeignSyncMachine.lean",
+        "sha256": "e7144820f1a0b1e96f6d4cc2fb26f00be379205ee0090847ad306e43f338a52a"
+      },
+      {
+        "path": "Miri/Interpreter/FrameMetadata.lean",
+        "sha256": "1c0a825fef9c09968f6a2cfb2b77159810ab81af3c6c064c27e473cb14cd4e74"
+      },
+      {
+        "path": "Miri/Interpreter/FrameMetadataBindings.lean",
+        "sha256": "d603ce9a58a3171223bab5a75c87f689efa0f37f7d2047af9c1c7e0995e85dca"
+      },
+      {
+        "path": "Miri/Interpreter/FrameRelevance.lean",
+        "sha256": "feccdc83d8791796f039429ded3a9bb1fb107607f7e4349ef63b1e8a50aa1023"
+      },
+      {
+        "path": "Miri/Interpreter/FreeBsdForeign.lean",
+        "sha256": "7ce626e9bd9d010ba89755bbc253ea50adcc991a9dab5b6b26484e27a8bd7858"
+      },
+      {
+        "path": "Miri/Interpreter/FreeBsdSync.lean",
+        "sha256": "c97b0bebfe815c14c26696543d2e85926a0c308f6a277e5497c4c4fca452ab7b"
+      },
+      {
+        "path": "Miri/Interpreter/FreeBsdSyncMachine.lean",
+        "sha256": "93213975714ac8ce2b870ffd5273252afec7ef9bcb7e512d3f84f7405c3c5b2a"
+      },
+      {
+        "path": "Miri/Interpreter/FunctionCalls.lean",
+        "sha256": "d67ffaff551beec51ecc6cc6bfc7ba924d5a901262b64abe0f08b1313d665e9a"
+      },
+      {
+        "path": "Miri/Interpreter/FunctionPointerConsumers.lean",
+        "sha256": "34a9d6bee0b41c4ecb8cb6ec2992ee605e3dbb1dfc83c3e61e24badc9d493b3a"
+      },
+      {
+        "path": "Miri/Interpreter/FunctionPointers.lean",
+        "sha256": "c66dfa990ed229c4ceb0590686be44ad3386160548f906060a7032cb3bf4456c"
+      },
+      {
+        "path": "Miri/Interpreter/GCRoots.lean",
+        "sha256": "fb0ecd0cea15840254b80b642557535e343af94910d6f36d82b0988c17791262"
+      },
+      {
+        "path": "Miri/Interpreter/GlobalAllocationMachine.lean",
+        "sha256": "e7bcfe87705b4093a275a72c3926842ea87661986afbfecdf1c473dfedf1ffb0"
+      },
+      {
+        "path": "Miri/Interpreter/GlobalByteMachine.lean",
+        "sha256": "463b7f91f1afdc80592b5d43609383537c4aaed8a1fa9b3fc18bb3e9ef94ba9a"
+      },
+      {
+        "path": "Miri/Interpreter/GlobalConstructors.lean",
+        "sha256": "d7f68db29dfa97743491ca417a14fd41a89fab8993bfab6cee9c75a5303bfdb1"
+      },
+      {
+        "path": "Miri/Interpreter/GlobalMemoryCopyMachine.lean",
+        "sha256": "735ee03b115091dd9b676a60c42a9e0573b0d57681a80ef12bfd3f7f98a60576"
+      },
+      {
+        "path": "Miri/Interpreter/Immediate.lean",
+        "sha256": "c3523effc17e5a5e39ccfc55e418b101324d8fd00b3cc241283cda0ac648b96f"
+      },
+      {
+        "path": "Miri/Interpreter/Instance.lean",
+        "sha256": "62bc5c8b133a6fd1870ec08e3915597d75c8029fe952aff0a9e631d12b07e8ce"
+      },
+      {
+        "path": "Miri/Interpreter/IntegerCast.lean",
+        "sha256": "ffd70e4c48cb13e9f81dfc635f6fb1806f593ed1ff43b2205596d0d642182758"
+      },
+      {
+        "path": "Miri/Interpreter/IntegerOps.lean",
+        "sha256": "94bca5a5e941b308d89c210292caccc0b63c1842aaa1f0c6608be22e9ce0cf66"
+      },
+      {
+        "path": "Miri/Interpreter/IntrinsicArchitecture.lean",
+        "sha256": "1e72e78105ca488782fe0563c0ac51313b211b2a22485b1d71a62cb84cabc261"
+      },
+      {
+        "path": "Miri/Interpreter/IntrinsicAtomic.lean",
+        "sha256": "b6f2f9ae54b93952c452b21abde81a4bc2d1dd4eddd3eef80da9ec499f628184"
+      },
+      {
+        "path": "Miri/Interpreter/IntrinsicBackend.lean",
+        "sha256": "2e9559010efe87abe04b65bd4f95bd001d775bdc4b737861b5ac62a81de0cc9b"
+      },
+      {
+        "path": "Miri/Interpreter/IntrinsicCrypto.lean",
+        "sha256": "c5b347cc23d1a79816b143eb217117c2dd8199f8287ad80be3a8dc56eaf39120"
+      },
+      {
+        "path": "Miri/Interpreter/IntrinsicFloat.lean",
+        "sha256": "f4505df01469f4dd6335c2751dbd5bee279c61cb9425e4fae5781ef49e023d01"
+      },
+      {
+        "path": "Miri/Interpreter/IntrinsicMachine.lean",
+        "sha256": "7483b9ae76ba6e1a4839854fa2cec43ab7c7ab56d3d88baedbc66a17b7d27cf0"
+      },
+      {
+        "path": "Miri/Interpreter/IntrinsicSimd.lean",
+        "sha256": "6b2a0b825aca285822fcfde26b56b43fadbece17972eb6cfcd35b662d6b769b6"
+      },
+      {
+        "path": "Miri/Interpreter/IntrinsicSymbolsMachine.lean",
+        "sha256": "23628fb59f2e79288a1b55e9bbd322e8f5695dc94fe6fbee9a59c0280db2386b"
+      },
+      {
+        "path": "Miri/Interpreter/IntrinsicTypeId.lean",
+        "sha256": "29338020536e49a3fb4669e02a4a70e4e804449fb47933c7460ece49352d1f0a"
+      },
+      {
+        "path": "Miri/Interpreter/IntrinsicVarArgs.lean",
+        "sha256": "709fac77026954ab611daea0d6e8c8c46e62abdc1d02dde4d8744549eee8559a"
+      },
+      {
+        "path": "Miri/Interpreter/IntrinsicVectorMachine.lean",
+        "sha256": "9dd4c87cdfa82474934e3c8fe08efe37d802326310c23168209ace129926fe38"
+      },
+      {
+        "path": "Miri/Interpreter/IntrinsicX86/Aes.lean",
+        "sha256": "28fbc7d46d7c11f331f7224cfaf85f61b900d0e063e62e8be876b8a7ccce7564"
+      },
+      {
+        "path": "Miri/Interpreter/IntrinsicX86/Basic.lean",
+        "sha256": "9862c99406627914cadea0deb8253c973005291fb3aca312b0e24a6ee4e410d8"
+      },
+      {
+        "path": "Miri/Interpreter/IntrinsicX86/Chunks.lean",
+        "sha256": "7a068332e2d9fbad15dd6c19cbbbaadb8f12adf7e3d06629b12e9204b626479a"
+      },
+      {
+        "path": "Miri/Interpreter/IntrinsicX86/Crypto.lean",
+        "sha256": "a484dafdf07b649e0d5bf173a051daa79d4608cf4d438442fcbca5e0d1330231"
+      },
+      {
+        "path": "Miri/Interpreter/IntrinsicX86/DispatchFloat.lean",
+        "sha256": "9a9dff39eca0d72d4989a73695fc587ebedbd4d003391a2fe6ff026277cde451"
+      },
+      {
+        "path": "Miri/Interpreter/IntrinsicX86/DispatchVector.lean",
+        "sha256": "0ac236c201d43b4cd16e2d7e1baff8b01f4d7afaf817982d487b273b718a0708"
+      },
+      {
+        "path": "Miri/Interpreter/IntrinsicX86/Extras.lean",
+        "sha256": "034fa7ddf3e67901e6c2dcf3279b9e7ace0e35153ee060a09b20c41157674857"
+      },
+      {
+        "path": "Miri/Interpreter/IntrinsicX86/Float.lean",
+        "sha256": "d11bb7f3aff4cec2be25e09274b539f1af926f09f6056cdce888fbb3e0358ef2"
+      },
+      {
+        "path": "Miri/Interpreter/IntrinsicX86/Integer.lean",
+        "sha256": "69d20892b571622061136099f89a8f942d32b8921eff18fe0554e198fdf68fd1"
+      },
+      {
+        "path": "Miri/Interpreter/IntrinsicX86/Strings.lean",
+        "sha256": "7faea055ad43becbeab5d5a7229d40f57270298dc1f9697d6a43d259ab6c6a03"
+      },
+      {
+        "path": "Miri/Interpreter/IntrinsicX86.lean",
+        "sha256": "6fc563c2af8339dac64df5e217a8a1e8b7102e1f1e1d7906df2d30831157687b"
+      },
+      {
+        "path": "Miri/Interpreter/Intrinsics.lean",
+        "sha256": "e7f9008f0f6aadaaae2decf4453ee361e92d1f72d82d824ab3725b076b87c21d"
+      },
+      {
+        "path": "Miri/Interpreter/IoCompletion.lean",
+        "sha256": "b07d27d3b8d56932770162c437c80465d5290846fbcb170acb083ce0d3863aaa"
+      },
+      {
+        "path": "Miri/Interpreter/IoCompletionData.lean",
+        "sha256": "7ca7b8cfa4d71471f9a8e06ec5d9a236b065a51c908430b4bcd3dca6ca64e79e"
+      },
+      {
+        "path": "Miri/Interpreter/IoError.lean",
+        "sha256": "1b4bc136da0e5dc8277497ebc2ffb71214f548577e568ab10716f842f6336c64"
+      },
+      {
+        "path": "Miri/Interpreter/LayoutCompat.lean",
+        "sha256": "ab57914034eb505965b1e0968ccc3f911ea3b042bbb6e26cd16e8005bf730b15"
+      },
+      {
+        "path": "Miri/Interpreter/LeakCheck.lean",
+        "sha256": "8f884870de87f8ab6b6bec151e06bf5c7ee8b05fbd29cffa54066ac4d52b07f8"
+      },
+      {
+        "path": "Miri/Interpreter/LinuxForeign.lean",
+        "sha256": "b0bfb1a1d1e1dce98258f8ddcec4cc094417a1557ba08e05f21af66e561308ee"
+      },
+      {
+        "path": "Miri/Interpreter/LinuxForeignMachine.lean",
+        "sha256": "1d7d83ec8def5421db09f0885fe98f0d49117d7084a5a26ad6bcd0193018a086"
+      },
+      {
+        "path": "Miri/Interpreter/LinuxFutex.lean",
+        "sha256": "3482bed167b9d898bbcf280aa0299f157ed1e9ad727b1b65bb5728121fa7117b"
+      },
+      {
+        "path": "Miri/Interpreter/LinuxFutexMachine.lean",
+        "sha256": "044e25fa51f61627ce9fa518e6002bfa9d9a9550c88c982d7c896e05bb35df75"
+      },
+      {
+        "path": "Miri/Interpreter/LinuxMemory.lean",
+        "sha256": "bfc4394d044703db673293787993f472f8337f9f3260fbb83aaff2363d94548a"
+      },
+      {
+        "path": "Miri/Interpreter/LinuxSyscall.lean",
+        "sha256": "cddfe62d848bf3d63644a80089c4d842af1f00e61087f40d3e5059f9a4e9bb0c"
+      },
+      {
+        "path": "Miri/Interpreter/LinuxSyscallDispatch.lean",
+        "sha256": "95ba216f087dd364570b704f864fa02d8f185659b0ca7c29ceea0a84c392b9f3"
+      },
+      {
+        "path": "Miri/Interpreter/LinuxSyscallPartialDispatch.lean",
+        "sha256": "b8324c5eacba1a53076e85373aa5a1908cd22ec681993e8ba3ea7b06bdaf9245"
+      },
+      {
+        "path": "Miri/Interpreter/LocalAccess.lean",
+        "sha256": "051fe91f8ceee3bcb583332585dfdfe19187db5e4d8d9dc4cb9a552430d9d0eb"
+      },
+      {
+        "path": "Miri/Interpreter/LocalsIdentity.lean",
+        "sha256": "0ca164d81228e881aa6227ff0d169cf3ab1dd4b8b8fac4e5c24b68c4ed09934a"
+      },
+      {
+        "path": "Miri/Interpreter/MacOsForeign.lean",
+        "sha256": "5e88d0dac9d8a76c52e0c8dcd2313c6f902de4bfc30325af794c88f20000ec9e"
+      },
+      {
+        "path": "Miri/Interpreter/MacOsForeignMachine.lean",
+        "sha256": "c72268884535e104062a9172bc98a65fa53211306171ae7e50d6b6e803a592ee"
+      },
+      {
+        "path": "Miri/Interpreter/MacOsSync.lean",
+        "sha256": "7d33c353d63046ffa8c19f04d48c711b7986931b4ff99e30f66ebbf4dd17a069"
+      },
+      {
+        "path": "Miri/Interpreter/MachineAddress.lean",
+        "sha256": "d05a06d1549b3dc64978c4b3720ed2a9b5bb132952d4493bd7dada8661be9d51"
+      },
+      {
+        "path": "Miri/Interpreter/MachineGCRoots.lean",
+        "sha256": "7bc5ff2bb8ee689806a0d689351afa670ce532d00a6a45d36d7f825e205a385c"
+      },
+      {
+        "path": "Miri/Interpreter/MachineHooks.lean",
+        "sha256": "1df4df7ce4fbc696360b4a7ba0bf4bc921c6b91ed3793cb6c234eb826b8dad36"
+      },
+      {
+        "path": "Miri/Interpreter/MainMachine.lean",
+        "sha256": "ce857478804272deb5346b729232e76a32270eaca72ace2e9a38589ca48643ce"
+      },
+      {
+        "path": "Miri/Interpreter/MainThread.lean",
+        "sha256": "f2baf84264a3f69f5795dfedf1c2ef05530afd21531751a316cc74cda41c856f"
+      },
+      {
+        "path": "Miri/Interpreter/MainThreadCallback.lean",
+        "sha256": "37934a4f6c8e1fd61dc7155f64ee670a14296d1471a4075f678b560ed275ba67"
+      },
+      {
+        "path": "Miri/Interpreter/Math/Bindings.lean",
+        "sha256": "9e78a06fed1c05c14723c9be20525c9a5915321b56080dc834f6146396798282"
+      },
+      {
+        "path": "Miri/Interpreter/Math/Dispatch.lean",
+        "sha256": "124641f69a91f584e57880b91189873b6ad6674350cb580f888660435462a78c"
+      },
+      {
+        "path": "Miri/Interpreter/Math/Fixed.lean",
+        "sha256": "2400665a184684479a97fc4f8dbb1563204c6a0cb2839f8973d6a87093172790"
+      },
+      {
+        "path": "Miri/Interpreter/Math/Float.lean",
+        "sha256": "4231505bc9f37172754f46aa6bfcbb2efa1cec424cced5ec675c8016a79f3d71"
+      },
+      {
+        "path": "Miri/Interpreter/Math/Runtime.lean",
+        "sha256": "e7f0cbf88d00db75493ef25be55ca34adf1c00685c9061942e5166e1b64eb274"
+      },
+      {
+        "path": "Miri/Interpreter/MemoryCopyMachine.lean",
+        "sha256": "2b914d66f630d7e09deb78887fcf324cce78de3bb348761d0b2f68b5a4efa8d4"
+      },
+      {
+        "path": "Miri/Interpreter/MemoryErrors.lean",
+        "sha256": "b0a9b5f863860a1d3075f82f6ad2461d6a85228eff81c69c9e7677e1c05fb012"
+      },
+      {
+        "path": "Miri/Interpreter/MemoryExtras.lean",
+        "sha256": "46f0c6c18ae6158a02932bddec6f968a28a706d09cae81cf1ed927f2e17e4b0e"
+      },
+      {
+        "path": "Miri/Interpreter/MemoryOperand.lean",
+        "sha256": "3974c1b4695236d6e8d95adcd3a409b1debdc0bad60e9a59976d557c85fedc17"
+      },
+      {
+        "path": "Miri/Interpreter/MemoryShimMachine.lean",
+        "sha256": "ea1f151b95fb3b3d7f1725107cb6f767a1f5cec565a6f1c52c5fcc10e66de689"
+      },
+      {
+        "path": "Miri/Interpreter/MemoryShims.lean",
+        "sha256": "037c5ce37644d0a1dadffbe14c49e7f35f10c690cf48889de728e85e8307b32b"
+      },
+      {
+        "path": "Miri/Interpreter/MiriShimMachine.lean",
+        "sha256": "4208689aeb5df8c9b9cbde0fdd126080a1ae145044b157d8aefff094f7fb5849"
+      },
+      {
+        "path": "Miri/Interpreter/MiriShims.lean",
+        "sha256": "8b6461e34dbe3c03172aa8705992820e81658934f6d2d5eb8a8df6d044779539"
+      },
+      {
+        "path": "Miri/Interpreter/Native/Bindings.lean",
+        "sha256": "66f895f49042a5e7adaf001d8cb8c0e2628e6b4d03101e0ac170af3a8944fc52"
+      },
+      {
+        "path": "Miri/Interpreter/Native/Pipeline.lean",
+        "sha256": "4e6c6b5f520918a6d0e2a70d5b5c51e8f2200b1aab6ed4ad48a7cfcd7d9e19e7"
+      },
+      {
+        "path": "Miri/Interpreter/Native/Runtime.lean",
+        "sha256": "c49d1a3dd208220b20e6d467eb1d17588bd6c07d295647ebcf711d4f79f73cb4"
+      },
+      {
+        "path": "Miri/Interpreter/Native/Supervisor.lean",
+        "sha256": "410edfaa5f6a315ea1d24b4617d326d7bc0757395cb84a3b302dd3e3c965f0af"
+      },
+      {
+        "path": "Miri/Interpreter/Native/Trace.lean",
+        "sha256": "d3a8d9863a3a217e2df8405fe3b68977625efcedcb5a5c12879b859bf4b47a1c"
+      },
+      {
+        "path": "Miri/Interpreter/Native/Types.lean",
+        "sha256": "ec99f1d55fe6475922d83c01ea929088f1297cf544b4de949d9d02061ff59a65"
+      },
+      {
+        "path": "Miri/Interpreter/Native.lean",
+        "sha256": "e3194ce494b4cab185e02dc0ffde288834cf2e1803a82deef3ea641f0415d3b9"
+      },
+      {
+        "path": "Miri/Interpreter/NativeAbi.lean",
+        "sha256": "43f43dd804448b27649648dcc7e7327eb22d9d78da4d5071bd0a15e2fa594e64"
+      },
+      {
+        "path": "Miri/Interpreter/NativeAddressSource.lean",
+        "sha256": "9bb61f22e80bc0a1bdcd2f6c224ad57a4bdce5201214719d678d269279e93a5e"
+      },
+      {
+        "path": "Miri/Interpreter/NativeAllocBytes.lean",
+        "sha256": "41a8cfbb814b4c5c19e4639a423017dff8688bceb0c60a4abd32a7e2024ed396"
+      },
+      {
+        "path": "Miri/Interpreter/NativeAllocationLifecycle.lean",
+        "sha256": "55194dc03f27800259844fea65ef2cbeab57c5a6e98c1bc28a62ff40d426b21f"
+      },
+      {
+        "path": "Miri/Interpreter/NativeExecutor.lean",
+        "sha256": "b057ab79ac809f03d1cabebfa6bbfa5601e623dce8328ecd0e18c5892d8a3bb4"
+      },
+      {
+        "path": "Miri/Interpreter/NativeIsolatedAlloc.lean",
+        "sha256": "a0b7a518616450c87daa2b8d43ef2d0e2fd72969ad4a64b79bd9b5d45643c35d"
+      },
+      {
+        "path": "Miri/Interpreter/NativeMachine.lean",
+        "sha256": "a1e191a1413236a92dcf56d576ccccefa10831a76ddfc5cac293e16dec0a86a5"
+      },
+      {
+        "path": "Miri/Interpreter/NativePreparedGlobals.lean",
+        "sha256": "b3cfe498039ff63f992ba71a22d86fc64e93acec46577a13ceb6738ad26a49ed"
+      },
+      {
+        "path": "Miri/Interpreter/NetBsdForeign.lean",
+        "sha256": "58e14259a1affcbc31c31a2a5ef14b9e9fa3b1187b63f20feca7363deaeba82b"
+      },
+      {
+        "path": "Miri/Interpreter/Operand.lean",
+        "sha256": "649e2ac002e07d45fafa25444caae793760607f91e37fbcc3b1ea7949223084d"
+      },
+      {
+        "path": "Miri/Interpreter/OperandMachine.lean",
+        "sha256": "ee81c3890c4c8ac0e3e8812b7e5754855c80716c8d5d262157dec3866d00d9a5"
+      },
+      {
+        "path": "Miri/Interpreter/OperandPath.lean",
+        "sha256": "6d33174d8a15dffcd20be3406771b67bc0d719c64132322d2c34d6ff3bc0ceb5"
+      },
+      {
+        "path": "Miri/Interpreter/OsStringMachine.lean",
+        "sha256": "4c72fd361e0c73e3eafcee09c59b7887b222a2e927be31ac2ac85cfe90589de7"
+      },
+      {
+        "path": "Miri/Interpreter/OsStrings.lean",
+        "sha256": "b9769b975989307434964397e3a42cf994c9ef29654e72fd84228dcf58e16e2f"
+      },
+      {
+        "path": "Miri/Interpreter/OwnedBlockingIo.lean",
+        "sha256": "ebb291e4dae3d2f21b230b12eb21542ce55ed63b08673d022deda787cec6a16c"
+      },
+      {
+        "path": "Miri/Interpreter/OwnedIoMachine.lean",
+        "sha256": "4ac79d9053abd814ed3dbb18c5541942643f048fe824d9b24730404389e19695"
+      },
+      {
+        "path": "Miri/Interpreter/OwnedIoRuntime.lean",
+        "sha256": "df60128f00bc6ef8bbbf8abb34708bc1a523f68bd8139f2595e6dc565fb17e34"
+      },
+      {
+        "path": "Miri/Interpreter/OwnedIoStore.lean",
+        "sha256": "35e46f233ba2ce3910e99c1ce24eb17d818fb0c0a286ebbacf8afe2b97f50a22"
+      },
+      {
+        "path": "Miri/Interpreter/OwnedIoTransport.lean",
+        "sha256": "939ed8d2a32f6e6eb56cff71badb239dd766637e82bbe7aabb3dee99e7e8a12e"
+      },
+      {
+        "path": "Miri/Interpreter/OwnedSocketCompletion.lean",
+        "sha256": "2abe0085ab6f7547063b8085ac2377d82788bf94b78e15faec4fec180b5be9ee"
+      },
+      {
+        "path": "Miri/Interpreter/OwnedSocketMachine.lean",
+        "sha256": "74d9701118b01188263457c740001b75361bb67b8921e448dc73806ec73cc13a"
+      },
+      {
+        "path": "Miri/Interpreter/OwnedSocketOperations.lean",
+        "sha256": "1dba54faf4f398a98c3a7deab93df92b416fe7687a50069ae334ebec07eb58c4"
+      },
+      {
+        "path": "Miri/Interpreter/OwnedSocketTransport.lean",
+        "sha256": "ae690899c0f0561236fa94ae9883ed5f93c010d8beea5e10f6ef407c211fa11f"
+      },
+      {
+        "path": "Miri/Interpreter/OwnedTcpSocket.lean",
+        "sha256": "46e9bc61340191c5d1c8d1efd3c7f8fe19a8c7548bba1f0bfa32e26456206f89"
+      },
+      {
+        "path": "Miri/Interpreter/OwnedVirtualSocket.lean",
+        "sha256": "3ff2838794cf904d78d2e015037efe106aef65cd39354a5748e246a05c82ed97"
+      },
+      {
+        "path": "Miri/Interpreter/Panic.lean",
+        "sha256": "d0568583f7b05fdf4e70a0edd741f52db0b1c2078fdb49413f8a6f91dbc2fe28"
+      },
+      {
+        "path": "Miri/Interpreter/Place.lean",
+        "sha256": "75ed68eb91c983532dcf3184bf590e32993aef961c2f709051b7d1844bb0b9ab"
+      },
+      {
+        "path": "Miri/Interpreter/PlaceDynamic.lean",
+        "sha256": "6441735530610311027d4e9c3389f838765b991d4085927b293827d4b09720ca"
+      },
+      {
+        "path": "Miri/Interpreter/PlaceMachine.lean",
+        "sha256": "573ff212da394ad9ec43f2f7010b1d6f3050dfcc218785168a66a0ebdc804e96"
+      },
+      {
+        "path": "Miri/Interpreter/PlaceTypes.lean",
+        "sha256": "dca3b5cb046149c0b22b15c7a751fa7e1dd4d310d08da545787a77b4ec04432f"
+      },
+      {
+        "path": "Miri/Interpreter/PointerMachine.lean",
+        "sha256": "814f215a7797a1d4904cf1c2268fa97aacf32c8e6fc24a3171056d0a7f981fb8"
+      },
+      {
+        "path": "Miri/Interpreter/PointerMachineBindings.lean",
+        "sha256": "cdb378dd4d994fab81fe80085b854194079a9c881d8a24b3f3fdd878009bacf0"
+      },
+      {
+        "path": "Miri/Interpreter/PointerOffset.lean",
+        "sha256": "49a5ab30bb58db44eb7ea5e45b907277ded80139521eebab862441d98028bf76"
+      },
+      {
+        "path": "Miri/Interpreter/PointerPlaceMachine.lean",
+        "sha256": "437ab1dc970326988891351856032bc8a9e0fa041ae78305a5d70c4604e6764f"
+      },
+      {
+        "path": "Miri/Interpreter/PointerSource.lean",
+        "sha256": "f316d894c2db97565b0dab564c1c4161bcfabcc286ab171c8d568d79ac4c6e10"
+      },
+      {
+        "path": "Miri/Interpreter/PollDispatch.lean",
+        "sha256": "34fbd879e9d4a63a645364c7266ee67709d762d193bc7bb4bb9adf228f86c87a"
+      },
+      {
+        "path": "Miri/Interpreter/PollMachine.lean",
+        "sha256": "f7f3b3a260ca148ea8f3b835ee051495761ebecfeb95a370238d00ccbeb9ed08"
+      },
+      {
+        "path": "Miri/Interpreter/PollShims.lean",
+        "sha256": "3d38148b01689badcfac15223d89caae4a13eedebae109d0d632803f125b9083"
+      },
+      {
+        "path": "Miri/Interpreter/ProgramExit.lean",
+        "sha256": "ee0c1bfddb92c909623536675b641d1c94e58c82cadf91ac834d84863d082f72"
+      },
+      {
+        "path": "Miri/Interpreter/Projection.lean",
+        "sha256": "585abb07397dd8c21cbf5c25ff93a4d1fe2d49e47c927d378a616f63f98fe708"
+      },
+      {
+        "path": "Miri/Interpreter/ProvenanceGC.lean",
+        "sha256": "0cc6e469108908152f842595f97ff7a7dfb02e0fb8b198e991c400ac3ffc7740"
+      },
+      {
+        "path": "Miri/Interpreter/PthreadDispatch.lean",
+        "sha256": "c38652bfa6fde113b579c0951840bd38e4395a7b4c4b6d9893bebfdb2cb20918"
+      },
+      {
+        "path": "Miri/Interpreter/PthreadObjects.lean",
+        "sha256": "1155a32cada4082b40e27ea8846c287c9544c10c45c2733889867602f31242c2"
+      },
+      {
+        "path": "Miri/Interpreter/PthreadSync.lean",
+        "sha256": "d91fce952d813f4a7ea2d35718adca7016b9bc3abbe3957d0b2f6aa8b2f3a15a"
+      },
+      {
+        "path": "Miri/Interpreter/RaceMode.lean",
+        "sha256": "007acc4b268887a051ceeafd9e08363f6c305df2d1747710a708833a30c85643"
+      },
+      {
+        "path": "Miri/Interpreter/RandomDispatchMachine.lean",
+        "sha256": "c94917f2ff0c29ffbf5a5500c07405f47db374cb561bd75f7faf983a8d22a943"
+      },
+      {
+        "path": "Miri/Interpreter/RandomMemory.lean",
+        "sha256": "2f7d97a86e543a844e8370a465562cdbde4ca6144c9fd548fa137521d5d648f1"
+      },
+      {
+        "path": "Miri/Interpreter/RawMemoryMachine.lean",
+        "sha256": "d25e6ba9998cd0c27dd1d6582e3f3caea7f18045be9b4f9b00759611a3882696"
+      },
+      {
+        "path": "Miri/Interpreter/Readiness.lean",
+        "sha256": "6a6269b3e2ab692193a592b2e9958ca0d7670c94f5a4100c4fe092344ecec58f"
+      },
+      {
+        "path": "Miri/Interpreter/ReadinessMachine.lean",
+        "sha256": "9056c617a2d22750a690ae1e607666603f9ef9ef1e09f81c52c270f446025ef2"
+      },
+      {
+        "path": "Miri/Interpreter/ReallocationDriver.lean",
+        "sha256": "67b7e70ef9000512c217ed7869d3aff2fbf7c1ee66596fd8e72adc70052f4f63"
+      },
+      {
+        "path": "Miri/Interpreter/RunLoop.lean",
+        "sha256": "5336cc460cceb6d60fea98c9914c55c7beaacf8a6972a62e4489ba09725a8ce0"
+      },
+      {
+        "path": "Miri/Interpreter/Rvalue.lean",
+        "sha256": "403466cd80b176b049d9f35ced4dfae3331ce5386f26fa68e046129409afd73e"
+      },
+      {
+        "path": "Miri/Interpreter/ScalarOps.lean",
+        "sha256": "c3c71006dc307a81519e6750f7d88e324e3805fed2d295533f0d2c606741e61e"
+      },
+      {
+        "path": "Miri/Interpreter/Scheduling.lean",
+        "sha256": "0614748dc26b068ee6a070dd21d4c723c538ffe8437fcd6779d4551c41f62a23"
+      },
+      {
+        "path": "Miri/Interpreter/ShimSignatureMachine.lean",
+        "sha256": "71294e2409af82ec1cea095814799be20dd57df5dbce7d1305e19d71b3a2e1c3"
+      },
+      {
+        "path": "Miri/Interpreter/ShimSignatures.lean",
+        "sha256": "47501d8aaa43c7567b7b9557ef85b1bc2277b4db837ee563d3a775f9605e210d"
+      },
+      {
+        "path": "Miri/Interpreter/Socket.lean",
+        "sha256": "18d495dd47c302c17840cf413db5a3e4a8a400ce7bc61d01f0dc005021c90c7f"
+      },
+      {
+        "path": "Miri/Interpreter/SocketAddress.lean",
+        "sha256": "9d2e9dd18479c34dbdcc97fcc34eebc16918acfba0f52a1bace41f1decf1efea"
+      },
+      {
+        "path": "Miri/Interpreter/SocketDispatch.lean",
+        "sha256": "585938a1eb4563bb33eb2b7621ccb6450627f91f2df332e7f7db4af13beacb69"
+      },
+      {
+        "path": "Miri/Interpreter/SocketMachine.lean",
+        "sha256": "80f5b83a8fa07feda09fc156f3b4e9ed85e0047210d15218bddf74ed5f9c436c"
+      },
+      {
+        "path": "Miri/Interpreter/SocketOptions.lean",
+        "sha256": "4c3005f31a2968c89dfbb0260cbacef3d166edb040e719bf04bfa59b97d53f30"
+      },
+      {
+        "path": "Miri/Interpreter/SolarishForeign.lean",
+        "sha256": "0a4fc97ed13da5e6ba496fed7e90d277e5dd8d8e5031b4a7cbaf12e95eb3b4bd"
+      },
+      {
+        "path": "Miri/Interpreter/SourceOther.lean",
+        "sha256": "1cce2cee4b4d4ffdfbc74b73f10cf3c1e954eec6fc782ce8401350adde83f551"
+      },
+      {
+        "path": "Miri/Interpreter/Stack.lean",
+        "sha256": "5f68d112ff29c44597921a8e99d0ef1092f9adedd945cbd4eaa64066d37c2f27"
+      },
+      {
+        "path": "Miri/Interpreter/StdOnlyMachine.lean",
+        "sha256": "e7e6ee74512557112646d4f93298c835fc41874bca81784b7b14994b8f42afcd"
+      },
+      {
+        "path": "Miri/Interpreter/StdOnlyShims.lean",
+        "sha256": "fe4519109958de992cd05655a3cb1ccb36026d87eb586407c795898b51c748ee"
+      },
+      {
+        "path": "Miri/Interpreter/Step.lean",
+        "sha256": "85bc9a44d429217f4e97d78665095bec95cfb720c8d16635f584247cb4067f32"
+      },
+      {
+        "path": "Miri/Interpreter/SyncMachine.lean",
+        "sha256": "0d8641620b0174aff94040ed1f4cb6d3c029d8e1446bc4bd8249524126a196b9"
+      },
+      {
+        "path": "Miri/Interpreter/TcpSocket.lean",
+        "sha256": "d500a520977d1ed1ea50f6ac044ef4dc9029523cd448af305ad48c0f0787ecd0"
+      },
+      {
+        "path": "Miri/Interpreter/TerminatorControl.lean",
+        "sha256": "980c71c484ca7328d8b55f58939ad3520f3c396102817b4256ca4c5c809bffe6"
+      },
+      {
+        "path": "Miri/Interpreter/TerminatorMachine.lean",
+        "sha256": "0cc53e92d8c83fbbcdde261ed949f24aef36672f7d109b6366939bc2791fe469"
+      },
+      {
+        "path": "Miri/Interpreter/ThreadExit.lean",
+        "sha256": "a28fa2fdada05f155cc3f42f18dcbb8bf1c24ed211a5fd1ae2afa504a80e776c"
+      },
+      {
+        "path": "Miri/Interpreter/ThreadLocal.lean",
+        "sha256": "466d780d48ad2c98086ae43d8cbd00361448a53203b89eccc407f1ad595a3ca8"
+      },
+      {
+        "path": "Miri/Interpreter/ThreadLoops.lean",
+        "sha256": "051a197e2fba1647e7ae295261a81b5aa4e04e7f86c133b5d09c679a5b6d8ac4"
+      },
+      {
+        "path": "Miri/Interpreter/ThreadMachine.lean",
+        "sha256": "6dca48f885f192be0fd565dea6c340ce2fe181c01113572d191ad4b340cfb846"
+      },
+      {
+        "path": "Miri/Interpreter/ThreadRuntime.lean",
+        "sha256": "1e55a8f4529f4b72da7a4f6f2387355c564aacb2cca84d6ff46fe273e56221e5"
+      },
+      {
+        "path": "Miri/Interpreter/ThreadShimMachine.lean",
+        "sha256": "459ea2449c098427e99427f34d77bf2b338a5061cea13727edcaf22772cc681a"
+      },
+      {
+        "path": "Miri/Interpreter/ThreadStacks.lean",
+        "sha256": "801105613108ca08fa55d57fb1ff10dca516962290a38546c74e35223719b920"
+      },
+      {
+        "path": "Miri/Interpreter/ThreadTerminationMachine.lean",
+        "sha256": "60d7ca670e0e7d1ea14c40afa0f4601fbcc4b5502e0ade7eeb8a9432a37748d4"
+      },
+      {
+        "path": "Miri/Interpreter/ThreadTls.lean",
+        "sha256": "58988df277310db31c9a8bfc93e3c5128545ef5fd8cdff34fa3684f788e3f8f9"
+      },
+      {
+        "path": "Miri/Interpreter/ThreadTlsMachine.lean",
+        "sha256": "2ba6b09728b196553b8aa15f6b6ba4f1055677674b2dd56125e7d581e478cc14"
+      },
+      {
+        "path": "Miri/Interpreter/TimeShimDispatch.lean",
+        "sha256": "942c350564e5e8792647fae9cf9776a81135cf4d82f876bbe0b617bb5720e641"
+      },
+      {
+        "path": "Miri/Interpreter/TimeShimMachine.lean",
+        "sha256": "8a216845309bf9c29059ac7e623beafd71dc32ebee418768c5e4a8f056f0b231"
+      },
+      {
+        "path": "Miri/Interpreter/TimeShims.lean",
+        "sha256": "836426fc0c863054ba76d566e45aba2b757e179d482331343035002e6f8d2c6d"
+      },
+      {
+        "path": "Miri/Interpreter/TlsCallbacks.lean",
+        "sha256": "a88bd67b0440bfbb69e00b13c14a93e671d26bef4a876f7b119efdea9825716d"
+      },
+      {
+        "path": "Miri/Interpreter/TlsDestructors.lean",
+        "sha256": "962a484b5b6108bb1ec59a95dbfb6517c2eb4a5f83fefc9d4ee368c8cf2577b6"
+      },
+      {
+        "path": "Miri/Interpreter/TypedMachineBindings.lean",
+        "sha256": "4af305aaa18462a181ff391965482336a48de5f41122eaad38853b0bb1ecb9eb"
+      },
+      {
+        "path": "Miri/Interpreter/TypedMemoryProviders.lean",
+        "sha256": "52cd3a663b7551a40df3db08c7e0edc4a101f5c6e9821aa2ae81390a31e04bce"
+      },
+      {
+        "path": "Miri/Interpreter/TypedRetag.lean",
+        "sha256": "8b390fbe505fb08c94e372a196c9c069b4dbeb90447933836a7970739cd74fba"
+      },
+      {
+        "path": "Miri/Interpreter/TypedSyncBytes.lean",
+        "sha256": "1377cb0ebe34a653743a966d8ba9e38fddf2609d3447a272ede21cd37cc6da44"
+      },
+      {
+        "path": "Miri/Interpreter/TypedSyncFactories.lean",
+        "sha256": "b32b2e91acd05459b40e94086d4675aca1edc726824feea9137f105f4fd0bd41"
+      },
+      {
+        "path": "Miri/Interpreter/TypedSyncMachine.lean",
+        "sha256": "06eaf60f40668a7c94fce41901fa0466dc2b96db5a4db1934e6edcdae777f036"
+      },
+      {
+        "path": "Miri/Interpreter/TypedSyncMetadata.lean",
+        "sha256": "e46b05032e51b379a0e82da39645d662dac5e9437170f95143dc0ddc8b68f73b"
+      },
+      {
+        "path": "Miri/Interpreter/TypedSyncNat.lean",
+        "sha256": "6ddd017e26dad6a72a5b183d90f8a657e19372e34878510a3bdeeb6f89d4bbcb"
+      },
+      {
+        "path": "Miri/Interpreter/TypedSyncObjectMachine.lean",
+        "sha256": "b60910af211a815819b3d1a854fbb9d7fc237a8a976ead270a9c9cf635fd0f6c"
+      },
+      {
+        "path": "Miri/Interpreter/TypedSyncTransport.lean",
+        "sha256": "723dd3e693344fc36adc5a576e50b0be88dd5608b93f63ed46ae66124769a5f2"
+      },
+      {
+        "path": "Miri/Interpreter/TypedValidityProviders.lean",
+        "sha256": "cf5efe20e71b06a1aec041073824f104710244a8ccc6e83db823be0feb89396b"
+      },
+      {
+        "path": "Miri/Interpreter/UnixDirectories.lean",
+        "sha256": "179bfe999afbb805772527d837c8b1413f2cb00c875e1f9cddbc353e4d501269"
+      },
+      {
+        "path": "Miri/Interpreter/UnixDynamic.lean",
+        "sha256": "75fd3576febfade65244cfefa234671ddf6c19ff3edf65260c8d22b9f0092a3d"
+      },
+      {
+        "path": "Miri/Interpreter/UnixEnvironment.lean",
+        "sha256": "c701885fc43dab9d8c20191de5ee7b9728a26bcb37cfee1af8578f2b3146e023"
+      },
+      {
+        "path": "Miri/Interpreter/UnixEnvironmentDispatch.lean",
+        "sha256": "5de55f5e636d2ad0b0f014f667d2a47205b65d48301f7dc8e99b96a92cb7fe4f"
+      },
+      {
+        "path": "Miri/Interpreter/UnixEnvironmentMachine.lean",
+        "sha256": "17b32e9c14cfcf582f5b3bc0b8e51999e60313bb4755102521a8aad06a107aae"
+      },
+      {
+        "path": "Miri/Interpreter/UnixFd.lean",
+        "sha256": "df88a9b3ce9373a017666067164351f0214575a8f9e44ddf148a97145c3f20d3"
+      },
+      {
+        "path": "Miri/Interpreter/UnixFdChoices.lean",
+        "sha256": "98b804f5afd18c9126a1a5894bfe34805db09ee43facf0e20bb2f826816bf2af"
+      },
+      {
+        "path": "Miri/Interpreter/UnixFdControl.lean",
+        "sha256": "f87bd9c1cf0e7f0b9461a844212f1cc77050892c40c95f23c32874cc527cca91"
+      },
+      {
+        "path": "Miri/Interpreter/UnixFdControlDispatch.lean",
+        "sha256": "6c2ab6f9b2175fa990f300b59d874bbefe2888d2dfda913b2c473e64ad71a2a9"
+      },
+      {
+        "path": "Miri/Interpreter/UnixFdControlMachine.lean",
+        "sha256": "eb5ddffa07e4d26a48c3535336e581723d9a67bf0d044c329d95991d83930a41"
+      },
+      {
+        "path": "Miri/Interpreter/UnixFdDispatch.lean",
+        "sha256": "d8e30fe6f41f84803418aee9c5707e9e85314dd8983f7af7757117b72eca01c6"
+      },
+      {
+        "path": "Miri/Interpreter/UnixFileOperations.lean",
+        "sha256": "5ed7c4db83579f3379406ad435b5f0e1db221c4de126f867abac0d568d40f294"
+      },
+      {
+        "path": "Miri/Interpreter/UnixForeign.lean",
+        "sha256": "30da14721ed7458028f24c744fc0b16ae0e7befb7da47bf9e31ced2640610cc1"
+      },
+      {
+        "path": "Miri/Interpreter/UnixForeignMachine.lean",
+        "sha256": "beb8ec12b335554790bde150e95b604eed4544f1e34b4328e77bcb40b2c53120"
+      },
+      {
+        "path": "Miri/Interpreter/UnixFsDispatch.lean",
+        "sha256": "b50d753c150e2d4c34f07724e7a13d14877f365edff25f0acbe4bd4dd16fe14a"
+      },
+      {
+        "path": "Miri/Interpreter/UnixFsFd.lean",
+        "sha256": "5718af32621656d6313fe5038de69e1dceb3b276ae7c8b486bd21c822c70e28a"
+      },
+      {
+        "path": "Miri/Interpreter/UnixFsMachine.lean",
+        "sha256": "555f44a7abbe84e0dc4b53f56b5673a4c296648f020bed8224f43c734785d293"
+      },
+      {
+        "path": "Miri/Interpreter/UnixFsMetadata.lean",
+        "sha256": "f10bcef84d58cc8955b1aca74587f0f0f9f8ecaaf57e379c27d346a1ec4c5c77"
+      },
+      {
+        "path": "Miri/Interpreter/UnixFsPaths.lean",
+        "sha256": "97c83d912f9bb98636e6d2902cc8a9280d5b1508199c2067afffd059b4ccef47"
+      },
+      {
+        "path": "Miri/Interpreter/UnixFsTimes.lean",
+        "sha256": "8eb87253328318fa138286a05b49c0ee987484ec8f581e1c1c9a48d52c8053be"
+      },
+      {
+        "path": "Miri/Interpreter/UnixMemory.lean",
+        "sha256": "496ec3ac59a7c54a72d61b49d24f32e0f8949cd43c755af4a434228ff1aa83b6"
+      },
+      {
+        "path": "Miri/Interpreter/UnixMemoryMachine.lean",
+        "sha256": "5b803bde1a7a5079077663e05ff0b43273b106647b6ce01266666e8f50239296"
+      },
+      {
+        "path": "Miri/Interpreter/UnixOpen.lean",
+        "sha256": "5ed349e4b9de9a16fa3acfdaa850cfc23034dee82d4954b834374c4063c5fd04"
+      },
+      {
+        "path": "Miri/Interpreter/UnixRandomDispatch.lean",
+        "sha256": "bed987e42d3fbf103b55ae693a2d81c9fcc85fd97c388175d13ef0b419906a89"
+      },
+      {
+        "path": "Miri/Interpreter/UnixTempFile.lean",
+        "sha256": "1d5d487bdfba759cfb8b5983b31c1bb49509f18447651b505be274f8fbbc1a74"
+      },
+      {
+        "path": "Miri/Interpreter/UnixThread.lean",
+        "sha256": "4f22bf0f67942e5d06f2e83b507d314522022005545fa03c827c1cf57c1be11c"
+      },
+      {
+        "path": "Miri/Interpreter/UnixThreadDispatch.lean",
+        "sha256": "4b458a4085f4a02e42a718fed9ad2d6267ef6dced7dea6f55d043bc1464b45a3"
+      },
+      {
+        "path": "Miri/Interpreter/UnixThreadDispatchMachine.lean",
+        "sha256": "24d3f361d2b8a178cf2cb6109856bf7f8269cb5c46c9f28160b221baedf01346"
+      },
+      {
+        "path": "Miri/Interpreter/UnixThreadMachine.lean",
+        "sha256": "b000e26b7b84f15460fc0bcd841e677a9a5579a67ae0638b225fac8d62169484"
+      },
+      {
+        "path": "Miri/Interpreter/UnixTlsDispatch.lean",
+        "sha256": "1541520482118b127c5e607695cd70ccefd159b05e19bc46a7acaa0336d752d5"
+      },
+      {
+        "path": "Miri/Interpreter/UnixTlsMachine.lean",
+        "sha256": "38ff2fc832d5e5a843bc3a12763f72cbcb58edc5cb2ea01a10eac3e0dba07981"
+      },
+      {
+        "path": "Miri/Interpreter/UnixVectored.lean",
+        "sha256": "feac8f7cd79f26894d7a8bcf33eeb6d4abee3a6999f3d0deb8dc47c6df841a1e"
+      },
+      {
+        "path": "Miri/Interpreter/UnixVectoredDispatch.lean",
+        "sha256": "ae2d54852ad1379c3bbc80c0db14c4f5744455b3ae0a458c616ffea94d21ecca"
+      },
+      {
+        "path": "Miri/Interpreter/UnixVectoredMachine.lean",
+        "sha256": "3476cae360835223681232f0be42388f4cf7faf4fe692c79e4b2c5c1933f62cd"
+      },
+      {
+        "path": "Miri/Interpreter/Unwind.lean",
+        "sha256": "84ac5fd88669dca4b9a6b94dbc63bb95911f2e4a832387481153d8a1d05865c3"
+      },
+      {
+        "path": "Miri/Interpreter/VTable.lean",
+        "sha256": "6e786f2fd764f0c39033fb7c4a5abebd4a9ec704af21311b4bad93644b907b3d"
+      },
+      {
+        "path": "Miri/Interpreter/VTableMachine.lean",
+        "sha256": "6a91ff76fe40d011d016f45aee79fe5e391388af7616c4a231a342b26403a105"
+      },
+      {
+        "path": "Miri/Interpreter/ValidityMachine.lean",
+        "sha256": "2b70e0c58f67048893178a569a354ead9e86cc0ad9493536556d4955ea074723"
+      },
+      {
+        "path": "Miri/Interpreter/ValidityMemory.lean",
+        "sha256": "92dec6ffa91d91dd4cf1cb2d0f96a1bf563fcef8a47d2f07ee85009f9f76af6e"
+      },
+      {
+        "path": "Miri/Interpreter/ValidityVisitor.lean",
+        "sha256": "b64d161494307aa475363422a7be52349baad2474e4060d62bdd719339a44afd"
+      },
+      {
+        "path": "Miri/Interpreter/VirtualCalls.lean",
+        "sha256": "162eb3425bd3f6bd1f1061df1ff5b61f9d0dc72749ae8ab88c24470570f83ec2"
+      },
+      {
+        "path": "Miri/Interpreter/VirtualSocket.lean",
+        "sha256": "0eec4fae2825759089be26d3db4f1179946cb82bafdeb2653e65c366fad91214"
+      },
+      {
+        "path": "Miri/Interpreter/WindowsEnvironment.lean",
+        "sha256": "1d596ed6098c99f9feb51e1dfee834c0b4166627f0454bb3267a3d7bc73fc965"
+      },
+      {
+        "path": "Miri/Interpreter/WindowsEnvironmentDispatch.lean",
+        "sha256": "553545c33c3954c4f52550c82cc8e0c6f73ed8da1b6ac7895dbcd0381da0d28f"
+      },
+      {
+        "path": "Miri/Interpreter/WindowsExitMachine.lean",
+        "sha256": "310d190d28381afeb710345cbcdba851128d5696e7c47021704c0044f0c347a3"
+      },
+      {
+        "path": "Miri/Interpreter/WindowsFileDispatch.lean",
+        "sha256": "cb19fb48016f5a1c76049f3940487da402e0b249e913f88a510ad6a5c6bf27b8"
+      },
+      {
+        "path": "Miri/Interpreter/WindowsFileMachine.lean",
+        "sha256": "bdfdad576189bfa20c486d0ac56ce1ea1bcb2d709c87b4719ffc77d7a5ab34ce"
+      },
+      {
+        "path": "Miri/Interpreter/WindowsFiles.lean",
+        "sha256": "994714fc38ee0f4b7588fa5989db1517fc831cbe5aacf36f7ee36e03e14ea188"
+      },
+      {
+        "path": "Miri/Interpreter/WindowsForeign.lean",
+        "sha256": "a407796f1e9ebe40a14bc5879293295d92b8c0df1e77bc07969ab2ad15fe691a"
+      },
+      {
+        "path": "Miri/Interpreter/WindowsForeignMachine.lean",
+        "sha256": "d6f75e71b0205c12ae54a1fbe62925587de261097077757393abf25dcd0a01b8"
+      },
+      {
+        "path": "Miri/Interpreter/WindowsHandles.lean",
+        "sha256": "895112f921353adb8d136fe9dfec4efcae70f139e95f45fcbaf60a1f5babdb69"
+      },
+      {
+        "path": "Miri/Interpreter/WindowsPaths.lean",
+        "sha256": "9ffba29efa87431f86b5184b9f38fb2a3d815802cd0e302a4fc5d4633341a910"
+      },
+      {
+        "path": "Miri/Interpreter/WindowsPlatform.lean",
+        "sha256": "b41b3e8fcb0448587c2983173dc291e32f1affa97cffaf77bb981c1d8fbb496f"
+      },
+      {
+        "path": "Miri/Interpreter/WindowsPlatformDispatch.lean",
+        "sha256": "f0779b67cd482e8e09f7005599f4eb2aff839fdf9952286c31b5fd1e59304bbf"
+      },
+      {
+        "path": "Miri/Interpreter/WindowsPlatformMachine.lean",
+        "sha256": "ddbeee9dbcfc1a099092a7d7f2f5e1ade37cdc1230fca5d87e39bdabe4773789"
+      },
+      {
+        "path": "Miri/Interpreter/WindowsRandomDispatch.lean",
+        "sha256": "6e67e751e723a6394c75d59e1689587f6d7a2318885a7ca3db7ee3276e07fa43"
+      },
+      {
+        "path": "Miri/Interpreter/WindowsSync.lean",
+        "sha256": "b9831c969c2e25955f3634b8aa965236ed0b7fc49dc38029bc40c2fa722ed63c"
+      },
+      {
+        "path": "Miri/Interpreter/WindowsSyncDispatch.lean",
+        "sha256": "513b2f7f5fcfc895ab601fec60bb25a4896d1cfffa9d10535ccbfceaed649903"
+      },
+      {
+        "path": "Miri/Interpreter/WindowsThread.lean",
+        "sha256": "392a099b06cd2d9806041d1caabbd4b6d783aab60f20fe808bed5d41213036d5"
+      },
+      {
+        "path": "Miri/Interpreter/WindowsThreadDispatch.lean",
+        "sha256": "5382ec3ea09aba6501fbc2f931b4d9af2c5d702afc0b3cc5dc2c4ebf1ade6f14"
+      },
+      {
+        "path": "Miri/Interpreter/WindowsThreadMachine.lean",
+        "sha256": "68542d6f8592bc8346c9169178ef33eefe0dc21c30dfce1f0aa4c9fe0e54df58"
+      },
+      {
+        "path": "Miri/Interpreter.lean",
+        "sha256": "19e1fc57bf7324bea88654e6f11491249089ad41029332703fbcaa2531004f21"
+      },
+      {
+        "path": "Miri/MIR/Operators.lean",
+        "sha256": "cec12f0294f9f88a5645f799ebc9f14090e1692e5f0216c08a958261fab5f9c2"
+      },
+      {
+        "path": "Miri/MIR/Syntax.lean",
+        "sha256": "d95b052d2e5119466bffceee4e36f230ba1a694d9702dc99cc612552d6a5565b"
+      },
+      {
+        "path": "Miri/Memory/Access.lean",
+        "sha256": "c5ca88a42e3a12785d0c55a6a5adb4e4dae2cf53a2893b8e28a33a0d4b75f3ed"
+      },
+      {
+        "path": "Miri/Memory/AllocAddresses/AddressGenerator.lean",
+        "sha256": "d5d7f32dfe1f241ee936b49ffe761305235dec61c5d0f2a2095c42d9890ea162"
+      },
+      {
+        "path": "Miri/Memory/AllocAddresses/GlobalState.lean",
+        "sha256": "ce749498c1c70b2dba84402e1dae468838646c7798e7a5e57fa3b5bb8ee943b5"
+      },
+      {
+        "path": "Miri/Memory/AllocAddresses/ReusePool.lean",
+        "sha256": "c02d2007d454cd7c65416dacea7b7f73f515295958a9f6f16808db4b7f03e746"
+      },
+      {
+        "path": "Miri/Memory/AllocAddresses.lean",
+        "sha256": "4b9d9ff87b788038c527ec4e134f399637b5d0ff2318bfbe46ba30a97a5d73e4"
+      },
+      {
+        "path": "Miri/Memory/AllocRange.lean",
+        "sha256": "2b01be765bc0040f90bc0e23c162a07d9fa5e5029d28b2e7005a69044255a7cb"
+      },
+      {
+        "path": "Miri/Memory/Allocation.lean",
+        "sha256": "94b720890b174bb072772408d633196f244e73ccd807b2a5830249755540f899"
+      },
+      {
+        "path": "Miri/Memory/AllocationAccess.lean",
+        "sha256": "6e030d8ddb6da910950da0f2d57f2db2e4e58f5dbf9850463db6bf21c5cf4fbe"
+      },
+      {
+        "path": "Miri/Memory/AllocationAccessVerification.lean",
+        "sha256": "1cac3d89b8988b77bd258625cddd0ac983570cd893ee9a74d688becd5af9f511"
+      },
+      {
+        "path": "Miri/Memory/CtfeProvenance.lean",
+        "sha256": "f97b27d34ee4bece52b3bbbf91b20dc345e1125c406c436aef34217683fd1f1d"
+      },
+      {
+        "path": "Miri/Memory/Identity.lean",
+        "sha256": "c9c0bd40e80741e0716e434956587aa9e28f40c77f9bcb54c2654c153b7c438a"
+      },
+      {
+        "path": "Miri/Memory/InitMask.lean",
+        "sha256": "7e4fcce815a8ee7482191a27f2af7ad966a28ac00ad98b940ea78c1a533a72d1"
+      },
+      {
+        "path": "Miri/Memory/KeyedArray.lean",
+        "sha256": "128dc6ddf60b3684bab0a00ff576c38b2d7c1224a66fc9c8b663b7b4ae6d03da"
+      },
+      {
+        "path": "Miri/Memory/MemoryState.lean",
+        "sha256": "845b1eb743d21aa79e9de42c4f198c3bd4292bfd6abc5d0f006d2a9d4feef187"
+      },
+      {
+        "path": "Miri/Memory/MiriMemoryKind.lean",
+        "sha256": "ce504f479b39846850d33e976c7c11430d051e867597233b77f61eb474bca784"
+      },
+      {
+        "path": "Miri/Memory/NativeBuffer.lean",
+        "sha256": "d543fbef925e25f46c355e67b38b39c6aef4df78b6dab45d1c875748966468df"
+      },
+      {
+        "path": "Miri/Memory/Pointer.lean",
+        "sha256": "30787d370f5f1ca6fc643730224166940da9a892f892e9a3d002273598c72f04"
+      },
+      {
+        "path": "Miri/Memory/ProvenanceMap.lean",
+        "sha256": "d618bb1f04be82ce35674d43050eebe646882ecfc8ceba50db6ca52687e2a8ef"
+      },
+      {
+        "path": "Miri/Memory/QSortProof.lean",
+        "sha256": "295ecf4fda5086dda0f2abe1ca9089150d026cb9f3a15fe8b19e22339d83b714"
+      },
+      {
+        "path": "Miri/Memory/Scalar.lean",
+        "sha256": "69b465f87e833bdf6802e7a9dd98ee666da678681f25da66c7c9ff10137da7b0"
+      },
+      {
+        "path": "Miri/Memory/ScalarInt.lean",
+        "sha256": "212fb98e3944904c735a911c6844932a853cffe37cb29b859109a204d48ad060"
+      },
+      {
+        "path": "Miri/Memory/Validity.lean",
+        "sha256": "f230984f6bcde106a5ba959f4736b040179627f6d332016b62237f50f81b6b91"
+      },
+      {
+        "path": "Miri/Memory.lean",
+        "sha256": "7e5e6324591871cb74f216f816f32f07c6f3228307492d5a12d0177032708d27"
+      },
+      {
+        "path": "Miri/OperationalSafety.lean",
+        "sha256": "0d978d357dee647b800cb5351a6d2ff09f054a0e85117773c56c6e6392259f0e"
+      },
+      {
+        "path": "Miri/TreeBorrows/DiagnosticsRender.lean",
+        "sha256": "87a9e57c3c8308d6bdea1097f1f17af66f2d16668447c709a76d8229b6a9126c"
+      },
+      {
+        "path": "Miri/TreeBorrows/FreezeMap.lean",
+        "sha256": "54f04bbb8abc0a9c608c8f435ad0627036679d754cf6cb27bf65420d50c6d4b8"
+      },
+      {
+        "path": "Miri/TreeBorrows/FreezeVisitor.lean",
+        "sha256": "c24e2068e9f41fa747c35ece4996ae4853d7cb54bc6de63ba9d72e2f27005225"
+      },
+      {
+        "path": "Miri/TreeBorrows/GlobalState.lean",
+        "sha256": "00cba05fa3721e7f79dc8f01c34a69d7d1f7f5595956f5e1fa9d6ed5bcba356b"
+      },
+      {
+        "path": "Miri/TreeBorrows/LocationState.lean",
+        "sha256": "389173e6de10b773757c9dd5a485e78c6d4b8cb79f5b4b5b2e4df68cd63b324e"
+      },
+      {
+        "path": "Miri/TreeBorrows/MachineMemoryHooks.lean",
+        "sha256": "7492b2bf5c3ca811c96a1d5309fdfa742c7dab1b37779d5c0bd41bf618a17b88"
+      },
+      {
+        "path": "Miri/TreeBorrows/NormalTree.lean",
+        "sha256": "ac801dafc3457f6fdc2a8552c4121b8c9e8594f4efba624500dd07bf2341bd65"
+      },
+      {
+        "path": "Miri/TreeBorrows/Permissions.lean",
+        "sha256": "c42e143e03c38d9e4c36673a54ad31b0b687181705024cf42a4bc125ca4de128"
+      },
+      {
+        "path": "Miri/TreeBorrows/RangedNormalTree.lean",
+        "sha256": "1bf9191c8f72ea7ee58250c45cd1a2e2459f2587ac55aeb422fad35518b51ab4"
+      },
+      {
+        "path": "Miri/TreeBorrows/RetagPipeline.lean",
+        "sha256": "5da3c1090e4a080bbf074f55ef7700e51f46d5ffcf1ec8308e30b69cdee441b4"
+      },
+      {
+        "path": "Miri/TreeBorrows/RetagPipelineEffectful.lean",
+        "sha256": "ec2d5c0712ff9bb4580d26248d6d648b7c853d8bd9330a555d7c62c06a9c3a84"
+      },
+      {
+        "path": "Miri/TreeBorrows/RetagPolicy.lean",
+        "sha256": "135d682bb2b30280e8de6bdf4a80abb023906ab5a7f20a1f56bf05a58d063514"
+      },
+      {
+        "path": "Miri/TreeBorrows/Traversal.lean",
+        "sha256": "382f679c9de1fa8fd0f859018abe1dda872cc3b1b6ed15daa33954464df1264d"
+      },
+      {
+        "path": "Miri/TreeBorrows/TreeState.lean",
+        "sha256": "b06731ee970b963991b248a8b3344b448242a10ced331faa05caf0d4e4998f9f"
+      },
+      {
+        "path": "Miri/TreeBorrows/UniMap.lean",
+        "sha256": "f6748f5331525fb65ba54c452b95ce9c52eb7643a34ed4b3ed96c363d335708b"
+      },
+      {
+        "path": "Miri/TreeBorrows.lean",
+        "sha256": "e1aeb74ebecd73ac5dd4d48bf2796584343fb60ded7080edbe8cbb4d999391e6"
+      }
+    ],
+    "manifest_sha256": "081747a37a96c7443997ba12b02565f45c9642dd0dec9e3dcb3a30e7053c8d16"
+  }
+}

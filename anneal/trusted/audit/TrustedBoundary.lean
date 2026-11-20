@@ -15,7 +15,7 @@ import Lean.Replay
 
 Pinned to Lean 4.34.1, commit
 `leanprover/lean4@5045d0056413266e57c625dcd7c365b10e377c52`. `trusted/audit`
-invokes this file in two phases over JSON IPC (`run` and `main`):
+invokes this file in three phases over JSON IPC (`run` and `main`):
 
 - **`"preflight"` (purely syntactic admission before elaboration):**
   Lean elaboration is Turing-complete and effectful: commands such as `#eval`
@@ -39,6 +39,25 @@ invokes this file in two phases over JSON IPC (`run` and `main`):
   module-level trust-tier separation, `Trusted` namespace hygiene, the
   foundation axiom allowlist, and a full kernel replay of every non-foundation
   constant against the foundation environment (`base.toKernelEnv.replay`).
+- **`"correspondence-audit"` (`lean-miri` closure audit):**
+  Loads the 160-module `Miri.Interpreter.ExecutionMachine` closure at
+  `trustLevel := 0` with `plugins := #[]` and `loadExts := false` (optional
+  `corrTrusted`/`corrTheory` module lists are currently passed empty by
+  `anneal-audit`, as `trusted/correspondence/` and `correspondence/` are not
+  yet scanned at this commit). It classifies every loaded module into a closed
+  5-role partition (`CorrModuleRole`), validates inventory integrity across
+  `.vendorMiri`, `.trusted`, and `.theory` declarations, rejects any
+  `.vendorMiri` or `.sysrootFoundation` declaration in the reserved `Trusted`
+  or `Anneal` namespaces, rejects any `axiom`, `unsafe`, quotient primitive,
+  `sorryAx`, or compiler-reflection primitive (`Lean.ofReduceBool`,
+  `Lean.ofReduceNat`, `Lean.trustCompiler`, `Lean.reduceBool`,
+  `Lean.reduceNat`) in any `.vendorMiri` module, replays every non-`isPartial`
+  `.vendorMiri` declaration from scratch through the standalone Lean kernel
+  onto the authenticated `.foundation`/`.sysrootFoundation` base on every run
+  (cold build and cache hit alike), and checks that every constant transitively
+  reachable from the 21 `Miri.Interpreter.ExecutionMachine` cone roots is free
+  of `unsafe`, `partial`, `.vendorMiri` `opaque` declarations, and unapproved
+  axioms.
 
 ## Module roles and trust tiers
 
@@ -779,23 +798,443 @@ def audit (j : Json) (env : Environment) (foundation : Array Name)
     ("reachableDeclarations", toJson allVisited.size),
     ("axioms", toJson allAxioms), ("replay", toJson true)]
 
-/-- Dispatch `"preflight"` or `"audit"` from the JSON request `j`. -/
+/-! ## Phase 3: `lean-miri` closure and Pass 2 correspondence audit -/
+
+/-- Closed 5-role partition of every module loaded in the
+`"correspondence-audit"` environment. -/
+inductive CorrModuleRole where
+  | foundation
+  | sysrootFoundation
+  | vendorMiri
+  | trusted (tier : TrustTier)
+  | theory
+  deriving BEq, DecidableEq
+
+/-- Import `roots` at `trustLevel := 0` with `plugins := #[]`,
+`loadExts := false`, and `level := .private` using the configured search
+path. -/
+def importCorrEnv (roots : Array Name) : IO Environment := do
+  let env ← importModules (roots.map fun n => { module := n }) {}
+    (trustLevel := 0) (plugins := #[]) (loadExts := false) (level := .private)
+  unless env.header.modules.size == env.header.moduleData.size do
+    throw <| IO.userError "module/data array alignment failure"
+  return env.setExporting false
+
+/-- Classify every loaded module in `env.header.modules` into one of the five
+mutually exclusive `CorrModuleRole`s, verifying that `foundation`,
+`sysrootFoundation`, `trusted`, `theory`, and `vendorMiri` are pairwise
+disjoint, that all required modules (`foundation`, `trusted`, `theory`, and
+`vendorMiri`) are loaded, and that any additional sysroot `Init.*`, `Std.*`, or
+`Lean.*` module imported by `vendorMiri` belongs to the `sysrootFoundation`
+allowlist whose `.olean*` artifacts `anneal-audit` verified against
+`LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`.
+
+The `Lean.*` root must be admitted as a whole: several modules in the
+`Miri.Interpreter.ExecutionMachine` closure (for example
+`Miri.Memory.InitMask` and `Miri.TreeBorrows.TreeState`) `import Lean`, which
+loads the entire `Lean` package from the pinned toolchain. Admission only
+classifies these modules; `closureCorr` still rejects any `unsafe` or
+`partial` constant that the interpreter or correspondence cone reaches, and
+`verifyAndCollectCorrLocals` rejects any of their constants in the reserved
+`Trusted` or `Anneal` namespaces. -/
+def classifyCorrModules (j : Json) (env : Environment)
+    (foundation trusted theory vendorMiri : Array Name) :
+    IO (Std.HashMap Name CorrModuleRole) := do
+  let sysrootFoundation ← names j "sysrootFoundation"
+  let tierEntries ← field (α := Array (String × String)) j "moduleTiers"
+  let tierMap ← tierEntries.foldlM (init := ({} : Std.HashMap Name TrustTier))
+    fun acc (mStr, rawTier) => do
+      let m := mStr.toName
+      if acc.contains m then fail s!"duplicate module tier for {m}"
+      unless trusted.contains m do
+        fail s!"trust tier declared for non-Trusted module {m}"
+      let some tier := TrustTier.parse? rawTier
+        | fail s!"invalid trust tier {rawTier} for {m}"
+      return acc.insert m tier
+  let roles0 :=
+    foundation.foldl (init := ({} : Std.HashMap Name CorrModuleRole))
+      fun acc m => acc.insert m .foundation
+  let roles1 ← trusted.foldlM (init := roles0) fun acc m => do
+    if acc.contains m then fail s!"overlapping module role for {m}"
+    let some tier := tierMap.get? m
+      | fail s!"missing trust tier for Trusted module {m}"
+    return acc.insert m (.trusted tier)
+  let roles2 ← theory.foldlM (init := roles1) fun acc m => do
+    if acc.contains m then fail s!"overlapping module role for {m}"
+    return acc.insert m .theory
+  let roles3 ← vendorMiri.foldlM (init := roles2) fun acc m => do
+    if acc.contains m then fail s!"overlapping module role for {m}"
+    return acc.insert m .vendorMiri
+  let loadedMods : NameSet :=
+    .ofList (env.header.modules.toList.map (·.module))
+  for (reqMod, _) in roles3 do
+    unless loadedMods.contains reqMod do
+      fail s!"missing required module {reqMod} in correspondence environment"
+  let roles4 ← sysrootFoundation.foldlM (init := roles3) fun acc m => do
+    if acc.contains m then fail s!"overlapping module role for {m}"
+    return acc.insert m .sysrootFoundation
+  for m in env.header.modules do
+    unless roles4.contains m.module do
+      fail s!"foreign module {m.module} in correspondence environment"
+  return roles4
+
+/-- Return the defining module name and `CorrModuleRole` for constant `n` in
+`env`. -/
+def corrConstProvenance (env : Environment)
+    (roles : Std.HashMap Name CorrModuleRole) (n : Name) :
+    IO (Name × CorrModuleRole) := do
+  let orig ← origin env n
+  let some role := roles.get? orig
+    | fail s!"foreign module {orig} for {n}"
+  return (orig, role)
+
+/-- Return `true` if `ci`'s type, value (including `opaque` definitions), or
+recursor rules directly reference `sorryAx`. -/
+def constantHasSorry (ci : ConstantInfo) : Bool :=
+  ci.type.hasSorry ||
+    (ci.value? (allowOpaque := true)).any Expr.hasSorry ||
+    match ci with
+    | .recInfo v => v.rules.any (·.rhs.hasSorry)
+    | _ => false
+
+/-- Compiler-reflection primitives in `Init.Core` whose use trusts the Lean
+compiler and runtime interpreter instead of the standalone kernel. -/
+def forbiddenVendorCompilerRefs : List Name :=
+  [`Lean.ofReduceBool, `Lean.ofReduceNat, `Lean.trustCompiler,
+   `Lean.reduceBool, `Lean.reduceNat]
+
+/-- Return the first constant name in `targets` directly referenced in `ci`'s
+type, value (including `opaque` definitions), or recursor rules, if any. -/
+def constantFindRef? (ci : ConstantInfo) (targets : List Name) : Option Name :=
+  let findInExpr (e : Expr) : Option Name :=
+    match e.find? fun
+      | .const n _ => targets.contains n
+      | _ => false with
+    | some (.const n _) => some n
+    | _ => none
+  match findInExpr ci.type with
+  | some n => some n
+  | none =>
+    match (ci.value? (allowOpaque := true)).bind findInExpr with
+    | some n => some n
+    | none =>
+      match ci with
+      | .recInfo v => v.rules.findSome? fun r => findInExpr r.rhs
+      | _ => none
+
+/-- Validate all `.trusted`, `.theory`, `.vendorMiri`, and `.sysrootFoundation`
+declarations in the environment and return `(repoLocals, corrLocals,
+vendorLocals)`.
+
+`.vendorMiri` and `.sysrootFoundation` modules are outside the repository's
+source-role checks, so this rejects any constant they declare in the reserved
+`Trusted` or `Anneal` root namespaces (after stripping private prefixes). For
+every `.vendorMiri` constant, it also checks inventory and origin integrity,
+rejects `axiom` (including any declaration whose body was stripped into an
+axiom), `unsafe`, quotient primitives, direct `sorryAx` references, and direct
+compiler-reflection references (`Lean.ofReduceBool`, `Lean.ofReduceNat`,
+`Lean.trustCompiler`, `Lean.reduceBool`, `Lean.reduceNat`), and collects the
+unique vendored declarations for standalone kernel replay. Identical
+sibling-module `.thmInfo` duplicates (lazily synthesized equation or
+`congr_simp` lemmas) are permitted; any other duplicate is rejected. Other
+unapproved axioms are rejected anywhere transitively reachable from the 21
+`Miri.Interpreter.ExecutionMachine` cone roots by `closureCorr`. -/
+def verifyAndCollectCorrLocals (env : Environment)
+    (roles : Std.HashMap Name CorrModuleRole) (corrModules : NameSet) :
+    IO (Std.HashMap Name ConstantInfo × Std.HashMap Name ConstantInfo ×
+      Std.HashMap Name ConstantInfo) := do
+  let mut repoLocals : Std.HashMap Name ConstantInfo := {}
+  let mut corrLocals : Std.HashMap Name ConstantInfo := {}
+  let mut vendorLocals : Std.HashMap Name ConstantInfo := {}
+  let mut vendorOrigSeen : NameSet := {}
+  for m in env.header.modules, data in env.header.moduleData do
+    unless data.constNames == data.constants.map ConstantInfo.name do
+      fail s!"invalid inventory {m.module}"
+    let some role := roles.get? m.module
+      | fail s!"foreign module {m.module}"
+    match role with
+    | .foundation => pure ()
+    | .sysrootFoundation =>
+      for ci in data.constants do
+        let root := (privateToUserName ci.name).getRoot
+        if root == `Trusted || root == `Anneal then
+          fail (s!"external module {m.module} cannot declare constant " ++
+            s!"{ci.name} in reserved {root} namespace")
+    | .vendorMiri =>
+      let mut modSeen : NameSet := {}
+      for ci in data.constants do
+        if modSeen.contains ci.name then
+          fail s!"duplicate declaration {ci.name}"
+        modSeen := modSeen.insert ci.name
+        let root := (privateToUserName ci.name).getRoot
+        if root == `Trusted || root == `Anneal then
+          fail (s!"external module {m.module} cannot declare constant " ++
+            s!"{ci.name} in reserved {root} namespace")
+        let (orig, origRole) ← corrConstProvenance env roles ci.name
+        unless origRole == .vendorMiri do
+          fail s!"inventory origin mismatch {ci.name}"
+        let some stored := env.checked.get.find? ci.name
+          | fail s!"missing stored declaration {ci.name}"
+        unless kind stored == kind ci && stored.isUnsafe == ci.isUnsafe &&
+            stored.isPartial == ci.isPartial && stored.type == ci.type &&
+            stored.value? true == ci.value? true &&
+            stored.levelParams == ci.levelParams do
+          fail s!"stored declaration differs from inventory {ci.name}"
+        if ci.isAxiom then
+          fail (s!"vendor Miri module {m.module} cannot declare axiom " ++
+            s!"{ci.name}")
+        if ci.isUnsafe then
+          fail (s!"vendor Miri module {m.module} cannot declare unsafe " ++
+            s!"constant {ci.name}")
+        if ci matches .quotInfo _ then
+          fail s!"unexpected quotient primitive {ci.name} in {m.module}"
+        -- Defensive invariant check: on Lean 4.34.1 `hasValue true` holds iff
+        -- `(value? true).isSome`, and stripped bodies become axioms rejected
+        -- by `ci.isAxiom` above.
+        if ci.hasValue true && (ci.value? true).isNone then
+          fail s!"missing stored body {ci.name}"
+        if constantHasSorry ci then
+          fail (s!"vendor Miri module {m.module} constant {ci.name} " ++
+            "references sorryAx")
+        if let some badRef :=
+            constantFindRef? ci forbiddenVendorCompilerRefs then
+          fail (s!"vendor Miri module {m.module} constant {ci.name} " ++
+            s!"references forbidden compiler primitive {badRef}")
+        if orig == m.module then
+          vendorOrigSeen := vendorOrigSeen.insert ci.name
+        match vendorLocals.get? ci.name with
+        | some prev =>
+          -- Sibling vendor modules can independently synthesize identical
+          -- equation (`*.eq_1`) or `congr_simp` theorems on demand; reject any
+          -- non-theorem or non-identical duplicate.
+          unless (ci matches .thmInfo _) && (prev matches .thmInfo _) &&
+              prev.type == ci.type && prev.value? true == ci.value? true &&
+              prev.levelParams == ci.levelParams do
+            fail s!"duplicate declaration {ci.name}"
+        | none =>
+          vendorLocals := vendorLocals.insert ci.name ci
+    | .trusted tier =>
+      for ci in data.constants do
+        if repoLocals.contains ci.name then
+          fail s!"duplicate declaration {ci.name}"
+        let orig ← origin env ci.name
+        unless orig == m.module do
+          fail s!"inventory origin mismatch {ci.name}"
+        let some stored := env.checked.get.find? ci.name
+          | fail s!"missing stored declaration {ci.name}"
+        unless stored.type == ci.type && stored.value? true == ci.value? true do
+          fail s!"stored declaration differs from inventory {ci.name}"
+        validateLocalConstant m.module (.trusted tier) ci
+        repoLocals := repoLocals.insert ci.name ci
+        if corrModules.contains m.module then
+          corrLocals := corrLocals.insert ci.name ci
+    | .theory =>
+      for ci in data.constants do
+        if repoLocals.contains ci.name then
+          fail s!"duplicate declaration {ci.name}"
+        let orig ← origin env ci.name
+        unless orig == m.module do
+          fail s!"inventory origin mismatch {ci.name}"
+        let some stored := env.checked.get.find? ci.name
+          | fail s!"missing stored declaration {ci.name}"
+        unless stored.type == ci.type && stored.value? true == ci.value? true do
+          fail s!"stored declaration differs from inventory {ci.name}"
+        validateLocalConstant m.module .theory ci
+        repoLocals := repoLocals.insert ci.name ci
+        if corrModules.contains m.module then
+          corrLocals := corrLocals.insert ci.name ci
+  for (n, _) in vendorLocals do
+    unless vendorOrigSeen.contains n do
+      fail s!"inventory origin mismatch {n}"
+  for (n, _) in env.checked.get.constants do
+    let (_, origRole) ← corrConstProvenance env roles n
+    match origRole with
+    | .foundation | .sysrootFoundation => pure ()
+    | .vendorMiri =>
+      unless vendorLocals.contains n do
+        fail s!"uninventoried vendor Miri constant {n}"
+    | .trusted _ | .theory =>
+      unless repoLocals.contains n do
+        fail s!"uninventoried constant {n}"
+  return (repoLocals, corrLocals, vendorLocals)
+
+/-- Enforce trust-tier separation across all `.trusted` constants:
+- A `.trusted .vetted` constant may only reference `.foundation` or
+  `.trusted .vetted` constants (never `.sysrootFoundation`, `.vendorMiri`, or
+  `.trusted (.candidate _)`).
+- A `.trusted (.candidate _)` constant may reference `.foundation`,
+  `.sysrootFoundation`, `.vendorMiri`, or `.trusted _` constants (never
+  `.theory`). -/
+def checkCorrTierReferences (env : Environment)
+    (roles : Std.HashMap Name CorrModuleRole)
+    (repoLocals : Std.HashMap Name ConstantInfo) : IO Unit := do
+  for (cName, ci) in repoLocals do
+    let (_, cRole) ← corrConstProvenance env roles cName
+    if let .trusted tier := cRole then
+      for dep in ← declarationEdges ci do
+        let (depOrigin, depRole) ← corrConstProvenance env roles dep
+        match depRole with
+        | .foundation => pure ()
+        | .sysrootFoundation | .vendorMiri =>
+          if tier == .vetted then
+            fail (s!"vetted constant {cName} references non-foundation " ++
+              s!"constant {dep} from {depOrigin}")
+        | .trusted depTier =>
+          if tier == .vetted && depTier != .vetted then
+            fail (s!"vetted constant {cName} references " ++
+              s!"{depTier.render} constant {dep}")
+        | .theory =>
+          fail (s!"Trusted constant {cName} references {dep} from " ++
+            s!"non-Trusted module {depOrigin}")
+
+/-- Traverse the transitive constant-level dependency cone starting from
+`pending`, verifying that:
+- No reachable constant is `unsafe` or `isPartial`.
+- No reachable `.vendorMiri` constant is `.opaqueInfo` (guaranteeing that none
+  of the 24 `partial def` JSON parser helpers in `Miri.Input.*` is reachable).
+- Every reachable axiom belongs to `axioms`. -/
+partial def closureCorr (env : Environment)
+    (roles : Std.HashMap Name CorrModuleRole)
+    (axioms : Array (String × String))
+    (pending : List Name) (visited : NameSet := {})
+    (reachedAxioms : NameSet := {}) : IO (Array Name × NameSet) := do
+  match pending with
+  | [] => return (reachedAxioms.toArray.qsort Name.lt, visited)
+  | n :: rest =>
+    if visited.contains n then
+      closureCorr env roles axioms rest visited reachedAxioms
+    else
+      let visited := visited.insert n
+      let (m, role) ← corrConstProvenance env roles n
+      let some ci := env.checked.get.find? n
+        | fail s!"missing dependency declaration {n}"
+      if ci.isUnsafe || ci.isPartial then
+        fail (s!"unsafe/partial constant {n} from {m} in correspondence " ++
+          "dependency cone")
+      if role == .vendorMiri && (ci matches .opaqueInfo _) then
+        fail (s!"opaque/partial vendor Miri constant {n} from {m} in " ++
+          "correspondence dependency cone")
+      let reachedAxioms ← if ci.isAxiom then do
+        unless axioms.contains (n.toString, m.toString) do
+          fail s!"unapproved axiom {n} from {m}"
+        pure (reachedAxioms.insert n)
+      else
+        pure reachedAxioms
+      let deps ← declarationEdges ci
+      closureCorr env roles axioms (deps.toList ++ rest) visited reachedAxioms
+
+/-- Verify that the `Miri.Interpreter.ExecutionMachine` interpreter cone is
+free of `unsafe`, `partial`, `.vendorMiri` `opaque` declarations, and
+unapproved axioms. -/
+def verifyMiriExecutionMachineCone (env : Environment)
+    (roles : Std.HashMap Name CorrModuleRole)
+    (axiomPolicy : Array (String × String)) : IO (Array Name × NameSet) :=
+  closureCorr env roles axiomPolicy [
+    `Miri.Interpreter.ExecutionMachine.step,
+    `Miri.Interpreter.ExecutionMachine.withValidation,
+    `Miri.Interpreter.ExecutionMachine.operandHooks,
+    `Miri.Interpreter.IntegerOps.binary,
+    `Miri.Interpreter.IntegerOps.binaryBool,
+    `Miri.Interpreter.IntegerOps.unary,
+    `Miri.Memory.ScalarInt.truncateFromUInt,
+    `Miri.Memory.ScalarInt.tryFromUInt,
+    `Miri.Memory.ScalarInt.tryToBool,
+    `Miri.Interpreter.evalOperand,
+    `Miri.Interpreter.evalPlaceToOp,
+    `Miri.Interpreter.localToOp,
+    `Miri.Interpreter.placeWriteLocalImmediate,
+    `Miri.Interpreter.evalRvalueIntoPlace,
+    `Miri.Interpreter.runRvalue,
+    `Miri.Interpreter.Step.evalStatement,
+    `Miri.Interpreter.Frame.storageLive,
+    `Miri.Interpreter.Frame.storageDead,
+    `Miri.Interpreter.ControlFlow.goToBlock,
+    `Miri.Interpreter.ControlFlow.evalTerminator,
+    `Miri.Interpreter.ControlFlow.returnFromCurrentFrame]
+
+/-- Execute Phase 3 (`"correspondence-audit"`) on the `lean-miri` closure
+environment, including standalone kernel replay of every non-`isPartial`
+`.vendorMiri` declaration onto the authenticated `.foundation` and
+`.sysrootFoundation` base on every run (cold build and cache hit alike). -/
+def auditCorrespondence (j : Json) (sysrootStr : String)
+    (foundation : Array Name) : IO Json := do
+  let baseTrusted ← names j "trusted"
+  let corrTrusted ← names j "corrTrusted"
+  let baseTheory ← names j "theory"
+  let corrTheory ← names j "corrTheory"
+  let vendorMiri ← names j "vendorMiri"
+  let axiomPolicy ← field (α := Array (String × String)) j "axioms"
+  let allTrusted := baseTrusted ++ corrTrusted
+  let allTheory := baseTheory ++ corrTheory
+  let corrModSet : NameSet := .ofList (corrTrusted.toList ++ corrTheory.toList)
+  let env ← importCorrEnv (foundation ++ allTrusted ++ allTheory ++ vendorMiri)
+  let roles ← classifyCorrModules j env foundation allTrusted
+    allTheory vendorMiri
+  let (repoLocals, _, vendorLocals) ←
+    verifyAndCollectCorrLocals env roles corrModSet
+  checkCorrTierReferences env roles repoLocals
+  -- Build a clean replay base containing strictly the authenticated
+  -- `.foundation` and `.sysrootFoundation` modules from the pinned sysroot
+  -- (dropping repository and vendor directories from the search path), then
+  -- replay every non-`isPartial` `.vendorMiri` declaration from scratch
+  -- through the standalone Lean kernel. Compiler-generated `isPartial`
+  -- (`*._unsafe_rec`) codegen helpers are omitted from the replay map
+  -- (matching `Kernel.Environment.replay`), so any reference to them from a
+  -- replayed declaration fails kernel replay with `unknown constant`.
+  let sysrootBaseMods := env.header.modules.filterMap fun m =>
+    match roles.get? m.module with
+    | some .foundation | some .sysrootFoundation => some m.module
+    | _ => none
+  let vendorReplayLocals :=
+    vendorLocals.fold (init := ({} : Std.HashMap Name ConstantInfo))
+      fun acc n ci =>
+        if ci.isPartial then acc else acc.insert n ci
+  initSearchPath sysrootStr
+  let baseEnv ← importCorrEnv sysrootBaseMods
+  for m in baseEnv.header.modules do
+    match roles.get? m.module with
+    | some .foundation | some .sysrootFoundation => pure ()
+    | _ =>
+      fail s!"unexpected non-sysroot module {m.module} in vendor replay base"
+  for (n, _) in vendorReplayLocals do
+    if (baseEnv.checked.get.find? n).isSome then
+      fail s!"vendor Miri constant {n} shadows sysroot declaration"
+  try
+    discard <| baseEnv.toKernelEnv.replay vendorReplayLocals
+  catch err =>
+    fail s!"vendor Miri kernel replay failed: {err}"
+  let (miriAxioms, miriVisited) ←
+    verifyMiriExecutionMachineCone env roles axiomPolicy
+  return Json.mkObj [
+    ("miriReplay", toJson true),
+    ("miriReplayedDeclarations", toJson vendorReplayLocals.size),
+    ("miriClosureReachableDeclarations", toJson miriVisited.size),
+    ("miriClosureAxioms", toJson miriAxioms)]
+
+/-- Dispatch `"preflight"`, `"audit"`, or `"correspondence-audit"` from the
+JSON request `j`. -/
 def run (j : Json) : IO Json := do
   let mode ← field (α := String) j "mode"
-  initSearchPath (← field (α := String) j "sysroot")
+  let sysrootStr ← field (α := String) j "sysroot"
   let foundation ← names j "foundation"
   match mode with
   | "preflight" =>
+    initSearchPath sysrootStr
     let env ← importEnv j foundation true
     validateGraph j env
     let sources ← field (α := Array (String × String)) j "sources"
     let headers ← sources.mapM fun (n, p) => inspectSource env n.toName p
     return Json.mkObj [("headers", .arr headers), ("graph", graph env)]
   | "audit" =>
+    initSearchPath sysrootStr
     let trusted ← names j "trusted"
     let theory ← names j "theory"
     let env ← importEnv j (foundation ++ trusted ++ theory)
     audit j env foundation trusted theory
+  | "correspondence-audit" =>
+    let spRaw ← field (α := Array String) j "searchPath"
+    initSearchPath sysrootStr (spRaw.toList.map System.FilePath.mk)
+    auditCorrespondence j sysrootStr foundation
   | _ => throw <| IO.userError s!"unknown inspector mode {mode}"
 
 end TrustedBoundary
