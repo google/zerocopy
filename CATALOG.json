@@ -54484,6 +54484,104 @@
         "anneal/architecture"
       ]
     },
+    "open-world-vtable-guarded-icp-and-canonical-mir-pgo-verification": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly (2026-05-31)"
+          },
+          "name": "rustc and Rust standard library"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "fc4aad7b5db3fff421df9a9637605b9ca5667881",
+            "tag": "llvmorg-22.1.6"
+          },
+          "name": "LLVM compiler infrastructure (IndirectCallPromotion, CallPromotionUtils, InstrProf, llvm-profdata)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel checker"
+        },
+        {
+          "identity": {
+            "repository": "proofs-rs/lean-miri",
+            "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+          },
+          "name": "lean-miri mechanized Rust MIR and Tree Borrows reference model"
+        },
+        {
+          "identity": {
+            "authors": "Neven Villani, Johannes Hostert, Derek Dreyer, Ralf Jung",
+            "doi": "10.1145/3735592",
+            "title": "Tree Borrows",
+            "venue": "PLDI 2025"
+          },
+          "name": "Tree Borrows operational aliasing model"
+        },
+        {
+          "identity": {
+            "authors": "Brad Calder, Dirk Grunwald",
+            "doi": "10.1145/174675.177973",
+            "title": "Reducing Indirect Function Call Overhead in C++ Programs",
+            "venue": "POPL 1994"
+          },
+          "name": "Value-guarded indirect function call promotion"
+        },
+        {
+          "identity": {
+            "authors": "Kazuaki Ishizaki, Motohiro Kawahito, Toshiaki Yasue, Hideaki Komatsu, Toshio Nakatani",
+            "doi": "10.1145/353171.353191",
+            "title": "A Study of Devirtualization Techniques for a Java Just-In-Time Compiler",
+            "venue": "OOPSLA 2000"
+          },
+          "name": "Open-world dynamic-loading devirtualization analysis"
+        },
+        {
+          "identity": {
+            "authors": "Dehao Chen, David Xinliang Li, Tipp Moseley",
+            "doi": "10.1145/2854038.2854044",
+            "title": "AutoFDO: Automatic Feedback-Directed Optimization for Warehouse-Scale Applications",
+            "venue": "CGO 2016"
+          },
+          "name": "AutoFDO hardware sample profile-guided optimization"
+        },
+        {
+          "identity": {
+            "authors": "Jeehoon Kang, Yoonseung Kim, Chung-Kil Hur, Derek Dreyer, Viktor Vafeiadis",
+            "doi": "10.1145/2837614.2837642",
+            "title": "Lightweight Verification of Separate Compilation",
+            "venue": "POPL 2016"
+          },
+          "name": "SepCompCert separate compilation verification"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/pgo",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/optimizations",
+        "lean",
+        "lean/mechanization",
+        "llvm",
+        "llvm/pgo",
+        "rust",
+        "rust/tree-borrows",
+        "rustc",
+        "rustc/codegen",
+        "rustc/mir",
+        "verification",
+        "verification/translation-validation"
+      ]
+    },
     "opencompl-riscv-lean-lean-mlir-and-ship-your-interpreter-2026": {
       "observed_at": "2026-11-20",
       "subjects": [

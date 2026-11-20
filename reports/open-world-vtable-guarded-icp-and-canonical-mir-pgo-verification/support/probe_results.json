@@ -1,0 +1,544 @@
+{
+  "environment": {
+    "arch": "x86_64",
+    "llvm_profdata_version": "LLVM (http://llvm.org/):\n  LLVM version 22.1.6-rust-1.98.0-nightly\n  Optimized build.",
+    "os": "Linux x86_64",
+    "rustc_version_verbose": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6"
+  },
+  "experiment_1_vtable_deduplication_matrix": [
+    {
+      "alpha_fn_a": "0x5644ad64e2c0",
+      "alpha_fn_b": "0x5644ad64e2c0",
+      "alpha_fn_eq": true,
+      "alpha_vt_a": "0x5644ad68c648",
+      "alpha_vt_b": "0x5644ad68c648",
+      "alpha_vt_eq": true,
+      "cgu_ll_file_count": 1,
+      "compile_ms": 498.92,
+      "config": "single_cgu1_o2",
+      "flags": [
+        "-C",
+        "opt-level=2",
+        "-C",
+        "codegen-units=1",
+        "-C",
+        "lto=off",
+        "-C",
+        "debuginfo=0"
+      ],
+      "gen_fn_a": "0x5644ad64e2f0",
+      "gen_fn_b": "0x5644ad64e2f0",
+      "gen_fn_eq": true,
+      "gen_vt_a": "0x5644ad68c668",
+      "gen_vt_b": "0x5644ad68c668",
+      "gen_vt_eq": true,
+      "llvm_type_test_occurrences": 0,
+      "vcall_visibility_md_occurrences": 0,
+      "vtable_defs_no_unnamed_addr": 0,
+      "vtable_defs_unnamed_addr": 3
+    },
+    {
+      "alpha_fn_a": "0x55a6126c91d0",
+      "alpha_fn_b": "0x55a6126c91d0",
+      "alpha_fn_eq": true,
+      "alpha_vt_a": "0x55a6127077e8",
+      "alpha_vt_b": "0x55a6127077e8",
+      "alpha_vt_eq": true,
+      "cgu_ll_file_count": 2,
+      "compile_ms": 518.57,
+      "config": "single_cgu2_o2",
+      "flags": [
+        "-C",
+        "opt-level=2",
+        "-C",
+        "codegen-units=2",
+        "-C",
+        "lto=off",
+        "-C",
+        "debuginfo=0"
+      ],
+      "gen_fn_a": "0x55a6126c91e0",
+      "gen_fn_b": "0x55a6126c91e0",
+      "gen_fn_eq": true,
+      "gen_vt_a": "0x55a612707808",
+      "gen_vt_b": "0x55a612707808",
+      "gen_vt_eq": true,
+      "llvm_type_test_occurrences": 0,
+      "vcall_visibility_md_occurrences": 0,
+      "vtable_defs_no_unnamed_addr": 0,
+      "vtable_defs_unnamed_addr": 3
+    },
+    {
+      "alpha_fn_a": "0x5627599b61d0",
+      "alpha_fn_b": "0x5627599b61d0",
+      "alpha_fn_eq": true,
+      "alpha_vt_a": "0x5627599f47e8",
+      "alpha_vt_b": "0x5627599f47e8",
+      "alpha_vt_eq": true,
+      "cgu_ll_file_count": 2,
+      "compile_ms": 512.52,
+      "config": "single_cgu2_lld_icf_safe",
+      "flags": [
+        "-C",
+        "opt-level=2",
+        "-C",
+        "codegen-units=2",
+        "-C",
+        "lto=off",
+        "-C",
+        "debuginfo=0",
+        "-Z",
+        "unstable-options",
+        "-C",
+        "linker-flavor=gnu-lld-cc",
+        "-C",
+        "link-arg=-Wl,--icf=safe"
+      ],
+      "gen_fn_a": "0x5627599b61e0",
+      "gen_fn_b": "0x5627599b61e0",
+      "gen_fn_eq": true,
+      "gen_vt_a": "0x5627599f4808",
+      "gen_vt_b": "0x5627599f4808",
+      "gen_vt_eq": true,
+      "llvm_type_test_occurrences": 0,
+      "vcall_visibility_md_occurrences": 0,
+      "vtable_defs_no_unnamed_addr": 0,
+      "vtable_defs_unnamed_addr": 3
+    },
+    {
+      "alpha_fn_a": "0x558756355f20",
+      "alpha_fn_b": "0x558756355f20",
+      "alpha_fn_eq": true,
+      "alpha_vt_a": "0x558756394198",
+      "alpha_vt_b": "0x558756394198",
+      "alpha_vt_eq": true,
+      "cgu_ll_file_count": 2,
+      "compile_ms": 800.35,
+      "config": "single_cgu2_lld_icf_all",
+      "flags": [
+        "-C",
+        "opt-level=2",
+        "-C",
+        "codegen-units=2",
+        "-C",
+        "lto=off",
+        "-C",
+        "debuginfo=0",
+        "-Z",
+        "unstable-options",
+        "-C",
+        "linker-flavor=gnu-lld-cc",
+        "-C",
+        "link-arg=-Wl,--icf=all"
+      ],
+      "gen_fn_a": "0x558756355f30",
+      "gen_fn_b": "0x558756355f30",
+      "gen_fn_eq": true,
+      "gen_vt_a": "0x5587563941b8",
+      "gen_vt_b": "0x5587563941b8",
+      "gen_vt_eq": true,
+      "llvm_type_test_occurrences": 0,
+      "vcall_visibility_md_occurrences": 0,
+      "vtable_defs_no_unnamed_addr": 0,
+      "vtable_defs_unnamed_addr": 3
+    },
+    {
+      "alpha_fn_a": "0x556595fca6d0",
+      "alpha_fn_b": "0x556595fca6d0",
+      "alpha_fn_eq": true,
+      "alpha_vt_a": "0x556596008b58",
+      "alpha_vt_b": "0x556596008b18",
+      "alpha_vt_eq": false,
+      "compile_ms": 1155.15,
+      "config": "two_rlibs_o2_default",
+      "flags": [
+        "-C",
+        "opt-level=2",
+        "-C",
+        "codegen-units=1",
+        "-C",
+        "debuginfo=0"
+      ],
+      "gen_fn_a": "0x556595fca700",
+      "gen_fn_b": "0x556595fca700",
+      "gen_fn_eq": true,
+      "gen_vt_a": "0x556596008b38",
+      "gen_vt_b": "0x556596008af8",
+      "gen_vt_eq": false,
+      "llvm_type_test_occurrences": 0,
+      "vcall_visibility_md_occurrences": 0,
+      "vtable_defs_no_unnamed_addr": 0,
+      "vtable_defs_unnamed_addr": 5
+    },
+    {
+      "alpha_fn_a": "0x5644983a16c0",
+      "alpha_fn_b": "0x5644983a16c0",
+      "alpha_fn_eq": true,
+      "alpha_vt_a": "0x5644983dfb58",
+      "alpha_vt_b": "0x5644983dfb18",
+      "alpha_vt_eq": false,
+      "compile_ms": 733.43,
+      "config": "two_rlibs_o2_share_generics",
+      "flags": [
+        "-C",
+        "opt-level=2",
+        "-C",
+        "codegen-units=1",
+        "-C",
+        "debuginfo=0",
+        "-Z",
+        "share-generics=yes"
+      ],
+      "gen_fn_a": "0x5644983a16f0",
+      "gen_fn_b": "0x5644983a16f0",
+      "gen_fn_eq": true,
+      "gen_vt_a": "0x5644983dfb38",
+      "gen_vt_b": "0x5644983dfaf8",
+      "gen_vt_eq": false,
+      "llvm_type_test_occurrences": 0,
+      "vcall_visibility_md_occurrences": 0,
+      "vtable_defs_no_unnamed_addr": 0,
+      "vtable_defs_unnamed_addr": 5
+    },
+    {
+      "alpha_fn_a": "0x55f11fe34fe0",
+      "alpha_fn_b": "0x55f11fe34fe0",
+      "alpha_fn_eq": true,
+      "alpha_vt_a": "0x55f11fe6f300",
+      "alpha_vt_b": "0x55f11fe6f300",
+      "alpha_vt_eq": true,
+      "compile_ms": 12413.19,
+      "config": "two_rlibs_fat_lto_debug0",
+      "flags": [
+        "-C",
+        "opt-level=2",
+        "-C",
+        "codegen-units=1",
+        "-C",
+        "lto=fat",
+        "-C",
+        "debuginfo=0"
+      ],
+      "gen_fn_a": "0x55f11fe35010",
+      "gen_fn_b": "0x55f11fe35010",
+      "gen_fn_eq": true,
+      "gen_vt_a": "0x55f11fe6f2e0",
+      "gen_vt_b": "0x55f11fe6f2e0",
+      "gen_vt_eq": true,
+      "llvm_type_test_occurrences": 0,
+      "vcall_visibility_md_occurrences": 0,
+      "vtable_defs_no_unnamed_addr": 0,
+      "vtable_defs_unnamed_addr": 13
+    },
+    {
+      "alpha_fn_a": "0x55a7a2807030",
+      "alpha_fn_b": "0x55a7a2807030",
+      "alpha_fn_eq": true,
+      "alpha_vt_a": "0x55a7a2841350",
+      "alpha_vt_b": "0x55a7a2841390",
+      "alpha_vt_eq": false,
+      "compile_ms": 13046.63,
+      "config": "two_rlibs_fat_lto_debug2",
+      "flags": [
+        "-C",
+        "opt-level=2",
+        "-C",
+        "codegen-units=1",
+        "-C",
+        "lto=fat",
+        "-C",
+        "debuginfo=2"
+      ],
+      "gen_fn_a": "0x55a7a2807060",
+      "gen_fn_b": "0x55a7a2807060",
+      "gen_fn_eq": true,
+      "gen_vt_a": "0x55a7a2841330",
+      "gen_vt_b": "0x55a7a2841370",
+      "gen_vt_eq": false,
+      "llvm_type_test_occurrences": 0,
+      "vcall_visibility_md_occurrences": 0,
+      "vtable_defs_no_unnamed_addr": 8,
+      "vtable_defs_unnamed_addr": 7
+    },
+    {
+      "alpha_fn_a": "0x563c2bec6960",
+      "alpha_fn_b": "0x7f0e28545b90",
+      "alpha_fn_eq": false,
+      "alpha_vt_a": "0x563c2bf05548",
+      "alpha_vt_b": "0x7f0e2857ee18",
+      "alpha_vt_eq": false,
+      "compile_ms": 1559.36,
+      "config": "dlopen_cdylib_rtld_local_o2",
+      "expected_val": 37,
+      "flags": [
+        "-C",
+        "opt-level=2",
+        "--crate-type=cdylib",
+        "RTLD_LOCAL"
+      ],
+      "gen_fn_a": "0x563c2bec6990",
+      "gen_fn_b": "0x7f0e28545bc0",
+      "gen_fn_eq": false,
+      "gen_vt_a": "0x563c2bf05588",
+      "gen_vt_b": "0x7f0e2857ee38",
+      "gen_vt_eq": false,
+      "guarded_host_val": 37,
+      "guarded_plugin_val": 37,
+      "plugin_unwind_exit_code": -6,
+      "plugin_unwind_foreign_abort": true,
+      "unsound_peeled_plugin_val": 62678480394911815,
+      "unwind_host_caught": true
+    },
+    {
+      "alpha_fn_a": "0x7fa82dfd1900",
+      "alpha_fn_b": "0x7fa82dfd1900",
+      "alpha_fn_eq": true,
+      "alpha_vt_a": "0x55bf9e197d40",
+      "alpha_vt_b": "0x7fa82dea8890",
+      "alpha_vt_eq": false,
+      "compile_ms": 2638.13,
+      "config": "dlopen_dylib_prefer_dynamic_o2",
+      "expected_val": 37,
+      "flags": [
+        "-C",
+        "opt-level=2",
+        "-C",
+        "prefer-dynamic",
+        "--crate-type=dylib",
+        "RTLD_LOCAL"
+      ],
+      "gen_fn_a": "0x7fa82dfd1930",
+      "gen_fn_b": "0x7fa82dfd1930",
+      "gen_fn_eq": true,
+      "gen_vt_a": "0x55bf9e197d80",
+      "gen_vt_b": "0x7fa82dea88b0",
+      "gen_vt_eq": false,
+      "guarded_host_val": 37,
+      "guarded_plugin_val": 37,
+      "plugin_unwind_caught_cleanly": true,
+      "plugin_unwind_exit_code": 0,
+      "unsound_peeled_plugin_val": 62678480394911815,
+      "unwind_host_caught": true
+    }
+  ],
+  "experiment_2_pgo_cgu_lto_vs_canonical_mir": {
+    "canonical_mir_keys_snapshot": {
+      "bulk_padding_cold": [
+        "rotate_right::<u64>"
+      ],
+      "bulk_padding_worker": [
+        "rotate_left::<u64>"
+      ],
+      "main": [
+        "std::intrinsics::black_box::<&dyn StepOp>",
+        "run_internal_fn_icall",
+        "bulk_padding_worker",
+        "bulk_padding_cold",
+        "std::intrinsics::black_box::<u64>",
+        "std::intrinsics::black_box::<&dyn StepOp>",
+        "run_dyn_dispatch"
+      ],
+      "private_mix": [
+        "private_mix"
+      ],
+      "run_dyn_dispatch": [
+        "<dyn StepOp as StepOp>::step"
+      ],
+      "run_internal_fn_icall": [
+        "std::intrinsics::black_box::<fn",
+        "copy _LOCAL"
+      ]
+    },
+    "profdata_cgu_prefixed_examples": [
+      "pgo_app.e47e6214e983d8e4-cgu.2;_RNSNvYNCINvNtCsfFlbQN6m3JZ_3std2rt10lang_startuE0INtNtNtCs8b4M6GsfcPr_4core3ops8function6FnOnceuE9call_once6vtableCsjCgwuUOu0Om_7pgo_app",
+      "pgo_app.e47e6214e983d8e4-cgu.0;_RNvNtCsjCgwuUOu0Om_7pgo_app12worker_local11private_mix",
+      "pgo_app.e47e6214e983d8e4-cgu.2;_RNCINvNtCsfFlbQN6m3JZ_3std2rt10lang_startuE0CsjCgwuUOu0Om_7pgo_app"
+    ],
+    "profdata_cgu_prefixed_symbol_count": 3,
+    "profdata_icp_target_records": [
+      "[  0, _RNvXNtCsjCgwuUOu0Om_7pgo_app12worker_localNtB2_12HotLocalImplNtB4_6StepOp4step,      38000 ] (95.00%)",
+      "[  0, _RNvXNtCsjCgwuUOu0Om_7pgo_app13cold_exportedNtB2_14ColdExportImplNtB4_6StepOp4step,       2000 ] (5.00%)",
+      "[  0, pgo_app.e47e6214e983d8e4-cgu.0;_RNvNtCsjCgwuUOu0Om_7pgo_app12worker_local11private_mix,      40000 ] (100.00%)",
+      "[  0, _RNvCsjCgwuUOu0Om_7pgo_app4main,          1 ] (100.00%)"
+    ],
+    "profdata_unprefixed_examples": [
+      "_RNvNtCsjCgwuUOu0Om_7pgo_app10dispatcher16run_dyn_dispatch",
+      "Indirect Target Results",
+      "_RNvXNtCsjCgwuUOu0Om_7pgo_app13cold_exportedNtB2_14ColdExportImplNtB4_6StepOp4step",
+      "Indirect Target Results",
+      "_RNvCsjCgwuUOu0Om_7pgo_app4main",
+      "Indirect Target Results"
+    ],
+    "profdata_unprefixed_symbol_count": 24,
+    "replay_modes": [
+      {
+        "canonical_mir_item_count": 6,
+        "canonical_mir_keys_match_baseline": true,
+        "compile_ms": 811.33,
+        "flags": [
+          "-C",
+          "opt-level=2",
+          "-C",
+          "codegen-units=4",
+          "-C",
+          "lto=off"
+        ],
+        "llvm_ir_func_ptr_guards": 1,
+        "llvm_ir_icp_direct_blocks": 1,
+        "llvm_ir_vtable_ptr_guards": 0,
+        "missed_count": 0,
+        "missed_remarks": [],
+        "mode": "cgu4_lto_off_match",
+        "pgo_warnings": [],
+        "promoted_count": 0,
+        "promoted_remarks": []
+      },
+      {
+        "canonical_mir_item_count": 6,
+        "canonical_mir_keys_match_baseline": true,
+        "compile_ms": 610.17,
+        "flags": [
+          "-C",
+          "opt-level=2",
+          "-C",
+          "codegen-units=1",
+          "-C",
+          "lto=off"
+        ],
+        "llvm_ir_func_ptr_guards": 0,
+        "llvm_ir_icp_direct_blocks": 0,
+        "llvm_ir_vtable_ptr_guards": 0,
+        "missed_count": 0,
+        "missed_remarks": [],
+        "mode": "cgu1_lto_off_switch",
+        "pgo_warnings": [],
+        "promoted_count": 0,
+        "promoted_remarks": []
+      },
+      {
+        "canonical_mir_item_count": 6,
+        "canonical_mir_keys_match_baseline": true,
+        "compile_ms": 11227.11,
+        "flags": [
+          "-C",
+          "opt-level=2",
+          "-C",
+          "codegen-units=4",
+          "-C",
+          "lto=thin"
+        ],
+        "llvm_ir_func_ptr_guards": 1,
+        "llvm_ir_icp_direct_blocks": 1,
+        "llvm_ir_vtable_ptr_guards": 0,
+        "missed_count": 1,
+        "missed_remarks": [
+          "remark: <unknown>:0:0: Cannot promote indirect call: target with md5sum 9639049316734959256 not found (count=38000)"
+        ],
+        "mode": "cgu4_thin_lto_switch",
+        "pgo_warnings": [],
+        "promoted_count": 0,
+        "promoted_remarks": []
+      },
+      {
+        "canonical_mir_item_count": 6,
+        "canonical_mir_keys_match_baseline": true,
+        "compile_ms": 12598.15,
+        "flags": [
+          "-C",
+          "opt-level=2",
+          "-C",
+          "codegen-units=4",
+          "-C",
+          "lto=fat"
+        ],
+        "llvm_ir_func_ptr_guards": 3,
+        "llvm_ir_icp_direct_blocks": 2,
+        "llvm_ir_vtable_ptr_guards": 0,
+        "missed_count": 0,
+        "missed_remarks": [],
+        "mode": "cgu4_fat_lto_switch",
+        "pgo_warnings": [],
+        "promoted_count": 2,
+        "promoted_remarks": [
+          "remark: <unknown>:0:0: Promote indirect call to _RNvXNtCsjCgwuUOu0Om_7pgo_app12worker_localNtB2_12HotLocalImplNtB4_6StepOp4step with count 38000 out of 40000",
+          "remark: <unknown>:0:0: Promote indirect call to _RNvXNtCsjCgwuUOu0Om_7pgo_app13cold_exportedNtB2_14ColdExportImplNtB4_6StepOp4step with count 2000 out of 2000"
+        ]
+      },
+      {
+        "canonical_mir_item_count": 6,
+        "canonical_mir_keys_match_baseline": true,
+        "compile_ms": 354.53,
+        "flags": [
+          "-C",
+          "opt-level=2",
+          "-C",
+          "codegen-units=3",
+          "-C",
+          "lto=off"
+        ],
+        "llvm_ir_func_ptr_guards": 0,
+        "llvm_ir_icp_direct_blocks": 0,
+        "llvm_ir_vtable_ptr_guards": 0,
+        "missed_count": 0,
+        "missed_remarks": [],
+        "mode": "cgu3_perturbed_switch",
+        "pgo_warnings": [],
+        "promoted_count": 0,
+        "promoted_remarks": []
+      }
+    ]
+  },
+  "experiment_3_miri_tree_borrows_litmus": [
+    {
+      "case": "tb_01_guarded_icp_shared_fast_and_fallback_sound",
+      "elapsed_ms": 67.74,
+      "exit_code": 0,
+      "expected_sound": true,
+      "miri_ub_diagnostic": ""
+    },
+    {
+      "case": "tb_02_guarded_icp_mut_protector_sound",
+      "elapsed_ms": 67.04,
+      "exit_code": 0,
+      "expected_sound": true,
+      "miri_ub_diagnostic": ""
+    },
+    {
+      "case": "tb_03_unguarded_stale_pgo_frozen_write_ub",
+      "elapsed_ms": 59.14,
+      "exit_code": 1,
+      "expected_sound": false,
+      "miri_ub_diagnostic": "error: Undefined Behavior: write access through <36> at alloc19[0x0] is forbidden"
+    },
+    {
+      "case": "tb_04_closed_world_peeled_else_dup_vtable_ub",
+      "elapsed_ms": 71.23,
+      "exit_code": 1,
+      "expected_sound": false,
+      "miri_ub_diagnostic": "error: Undefined Behavior: write access through <44> at alloc19[0x0] is forbidden"
+    },
+    {
+      "case": "tb_05_raw_vtable_deref_abstract_machine_ub",
+      "elapsed_ms": 94.98,
+      "exit_code": 1,
+      "expected_sound": false,
+      "miri_ub_diagnostic": "error: Undefined Behavior: memory access failed: attempting to access 32 bytes, but got alloc20 which is at or beyond the end of the allocation of size 0 bytes"
+    }
+  ],
+  "experiment_4_guard_microbenchmark": {
+    "calls_per_trial": 4000000,
+    "note": "Synthetic Rust source-level dispatch microbenchmark comparing indirect dispatch vs explicitly written function-pointer and 1-/2-slot vtable-pointer guards compiled with identical flags (`rustc -C opt-level=3 -C codegen-units=1`).",
+    "single_dso_ns_per_call": {
+      "fn_ptr_guard_inlined": 2.7179,
+      "indirect": 4.2196,
+      "vptr_1slot_guard_inlined": 1.8166
+    },
+    "split_dso_dup_vtable_ns_per_call": {
+      "fn_ptr_guard_shared_fn": 2.543,
+      "indirect": 5.0284,
+      "vptr_1slot_guard_50pct_miss": 4.0225,
+      "vptr_2slot_guard_inlined": 4.1093
+    },
+    "trials": 7
+  }
+}
