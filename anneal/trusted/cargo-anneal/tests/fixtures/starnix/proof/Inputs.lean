@@ -8,12 +8,9 @@
 
 prelude
 import Init.Data.BitVec.Lemmas
-import Anneal.MirWp
 import Endianness
 
 namespace Endianness
-
-open Anneal.MirWp
 
 /-- Four concrete proofs cover every logical width index. -/
 theorem fin4_cases {p : Fin 4 → Prop}
@@ -21,118 +18,14 @@ theorem fin4_cases {p : Fin 4 → Prop}
   Fin.cases h0
     (Fin.cases h1 (Fin.cases h2 (Fin.cases h3 (fun i => Fin.elim0 i))))
 
-/-- A valid enum index can be recovered without changing its stored word. -/
-theorem fin_encode_decode (x : BitVec 64) {n : Nat} (h : x.toNat < n) :
-    BitVec.ofNat 64 (⟨x.toNat, h⟩ : Fin n).val = x := by
-  simp
-
--- These formulas preserve the masks and shifts in the production Rust function.
--- Their correspondence to captured MIR is a separate proof obligation.
-def swap8 (x : BitVec 64) : BitVec 64 := x &&& 0xff
-
-def swap16 (x : BitVec 64) : BitVec 64 :=
-  let v := x &&& 0xffff
-  ((v &&& 0x00ff) <<< (8 : Nat)) ||| ((v &&& 0xff00) >>> (8 : Nat))
-
-def swap32 (x : BitVec 64) : BitVec 64 :=
-  let v := x &&& 0xffff_ffff
-  ((v &&& 0x0000_00ff) <<< (24 : Nat)) |||
-  ((v &&& 0x0000_ff00) <<< (8 : Nat)) |||
-  ((v &&& 0x00ff_0000) >>> (8 : Nat)) |||
-  ((v &&& 0xff00_0000) >>> (24 : Nat))
-
-def swap64 (x : BitVec 64) : BitVec 64 :=
-  ((x &&& 0x0000_0000_0000_00ff) <<< (56 : Nat)) |||
-  ((x &&& 0x0000_0000_0000_ff00) <<< (40 : Nat)) |||
-  ((x &&& 0x0000_0000_00ff_0000) <<< (24 : Nat)) |||
-  ((x &&& 0x0000_0000_ff00_0000) <<< (8 : Nat)) |||
-  ((x &&& 0x0000_00ff_0000_0000) >>> (8 : Nat)) |||
-  ((x &&& 0x0000_ff00_0000_0000) >>> (24 : Nat)) |||
-  ((x &&& 0x00ff_0000_0000_0000) >>> (40 : Nat)) |||
-  ((x &&& 0xff00_0000_0000_0000) >>> (56 : Nat))
-
-theorem swap8_exact (x : BitVec 64) : ByteReversal 8 x (swap8 x) := by
-  unfold ByteReversal
-  apply checkRange_sound 64
-  simp [checkRange_zero, checkRange_succ, swap8, reverseByteIndex]
-
-theorem swap16_exact (x : BitVec 64) : ByteReversal 16 x (swap16 x) := by
-  unfold ByteReversal
-  apply checkRange_sound 64
-  simp [checkRange_zero, checkRange_succ, swap16, reverseByteIndex]
-
-theorem swap32_exact (x : BitVec 64) : ByteReversal 32 x (swap32 x) := by
-  unfold ByteReversal
-  apply checkRange_sound 64
-  simp [checkRange_zero, checkRange_succ, swap32, reverseByteIndex]
-
-theorem swap64_exact (x : BitVec 64) : ByteReversal 64 x (swap64 x) := by
-  unfold ByteReversal
-  apply checkRange_sound 64
-  simp [checkRange_zero, checkRange_succ, swap64, reverseByteIndex]
-
-theorem swap8_bits (x : BitVec 64) (i : Nat) :
-    (swap8 x).getLsbD i =
-      if i < 8 then x.getLsbD (reverseByteIndex 8 i) else false :=
-  if hi : i < 64 then swap8_exact x i hi else
-    have hb : ¬ i < 8 := fun h => hi (Nat.lt_of_lt_of_le h (by decide))
-    by simp [BitVec.getLsbD_of_ge _ _ (Nat.le_of_not_gt hi), hb]
-
-theorem swap16_bits (x : BitVec 64) (i : Nat) :
-    (swap16 x).getLsbD i =
-      if i < 16 then x.getLsbD (reverseByteIndex 16 i) else false :=
-  if hi : i < 64 then swap16_exact x i hi else
-    have hb : ¬ i < 16 := fun h => hi (Nat.lt_of_lt_of_le h (by decide))
-    by simp [BitVec.getLsbD_of_ge _ _ (Nat.le_of_not_gt hi), hb]
-
-theorem swap32_bits (x : BitVec 64) (i : Nat) :
-    (swap32 x).getLsbD i =
-      if i < 32 then x.getLsbD (reverseByteIndex 32 i) else false :=
-  if hi : i < 64 then swap32_exact x i hi else
-    have hb : ¬ i < 32 := fun h => hi (Nat.lt_of_lt_of_le h (by decide))
-    by simp [BitVec.getLsbD_of_ge _ _ (Nat.le_of_not_gt hi), hb]
-
-theorem swap64_bits (x : BitVec 64) (i : Nat) :
-    (swap64 x).getLsbD i =
-      if i < 64 then x.getLsbD (reverseByteIndex 64 i) else false :=
-  if hi : i < 64 then swap64_exact x i hi else
-    have hb : ¬ i < 64 := fun h => hi (Nat.lt_of_lt_of_le h (by decide))
-    by simp [BitVec.getLsbD_of_ge _ _ (Nat.le_of_not_gt hi), hb]
-
-theorem swap8_involutive (x : BitVec 64) :
-    swap8 (swap8 x) = x &&& 0xff := by
-  apply BitVec.eq_of_getLsbD_eq
-  apply checkRange_sound 64
-  simp only [checkRange_zero, checkRange_succ, swap8_bits]
-  simp [reverseByteIndex]
-
-theorem swap16_involutive (x : BitVec 64) :
-    swap16 (swap16 x) = x &&& 0xffff := by
-  apply BitVec.eq_of_getLsbD_eq
-  apply checkRange_sound 64
-  simp only [checkRange_zero, checkRange_succ, swap16_bits]
-  simp [reverseByteIndex]
-
-theorem swap32_involutive (x : BitVec 64) :
-    swap32 (swap32 x) = x &&& 0xffff_ffff := by
-  apply BitVec.eq_of_getLsbD_eq
-  apply checkRange_sound 64
-  simp only [checkRange_zero, checkRange_succ, swap32_bits]
-  simp [reverseByteIndex]
-
-theorem swap64_involutive (x : BitVec 64) :
-    swap64 (swap64 x) = x := by
-  apply BitVec.eq_of_getLsbD_eq
-  apply checkRange_sound 64
-  simp only [checkRange_zero, checkRange_succ, swap64_bits]
-  simp [reverseByteIndex]
-
+/-- The fixed specification rejects the masked-identity mutation used by CI. -/
 theorem maskedIdentity16_rejected :
     ¬ ByteReversal 16 (1#64) ((1#64) &&& 0xffff) := by
   intro h
   have bit := h 0 (by decide)
   simp [reverseByteIndex] at bit
 
+/-- The fixed specification rejects the constant-zero mutation used by CI. -/
 theorem constantZero16_rejected :
     ¬ ByteReversal 16 (1#64) (0#64) := by
   intro h

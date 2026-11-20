@@ -8,37 +8,33 @@
 
 prelude
 import Expected
-import ProductionSteps
+import ProductionPaths
 
 namespace ExecutionProof
 
 open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp Endianness
-  ProductionReduction ProductionSteps
+  ProductionReduction SymExec ProductionPaths
 
 /-!
-All generated paths must prove real source executions before a negative test
-can credit rejection of the fixed byte-reversal property. This proof uses the
-same generated witness module as that later check, with no expected endpoints.
+Every control path must prove a real source execution before a negative test
+can credit rejection of the fixed byte-reversal property. This proof runs the
+same symbolic paths as that check, with no expected endpoints, so it applies
+unchanged to any implementation the symbolic evaluator supports.
 -/
+
+/-- Every control path returns some supported word. -/
+theorem paths_some : ∀ flag : Bool, ∀ width : Fin 4,
+    (pathWord flag width.val).isSome = true := by
+  intro flag
+  cases flag <;> refine fin4_cases ?_ ?_ ?_ ?_ <;> decide +kernel
 
 theorem completed :
     ∀ flag : Bool, ∀ width : Fin 4, ∀ value : Word,
       Safe sourceBody (endianArgs flag width.val value) ∧
       ∃ output, Returns sourceBody (endianArgs flag width.val value) output := by
-  intro flag
-  cases flag with
-  | false =>
-    exact fin4_cases
-      (fun v => ⟨(le8_actual v).1, _, (le8_actual v).2⟩)
-      (fun v => ⟨(le16_actual v).1, _, (le16_actual v).2⟩)
-      (fun v => ⟨(le32_actual v).1, _, (le32_actual v).2⟩)
-      (fun v => ⟨(le64_actual v).1, _, (le64_actual v).2⟩)
-  | true =>
-    exact fin4_cases
-      (fun v => ⟨(be8_actual v).1, _, (be8_actual v).2⟩)
-      (fun v => ⟨(be16_actual v).1, _, (be16_actual v).2⟩)
-      (fun v => ⟨(be32_actual v).1, _, (be32_actual v).2⟩)
-      (fun v => ⟨(be64_actual v).1, _, (be64_actual v).2⟩)
+  intro flag width value
+  let ⟨_, hp⟩ := Option.isSome_iff_exists.mp (paths_some flag width)
+  exact ⟨(path_sound hp value).1, _, (path_sound hp value).2⟩
 
 theorem verify : Expected.claim := by
   refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, ?_⟩

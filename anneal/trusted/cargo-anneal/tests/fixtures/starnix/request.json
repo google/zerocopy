@@ -47,18 +47,18 @@
         "role": "proof"
       },
       {
-        "module": "ProductionEndpoints",
-        "path": "ProductionEndpoints.lean",
-        "role": "proof"
-      },
-      {
         "module": "ProductionClaims",
         "path": "ProductionClaims.lean",
         "role": "proof"
       },
       {
-        "module": "ProductionSteps",
-        "path": "ProductionSteps.lean",
+        "module": "ProductionEndpoints",
+        "path": "ProductionEndpoints.lean",
+        "role": "proof"
+      },
+      {
+        "module": "ProductionPaths",
+        "path": "ProductionPaths.lean",
         "role": "proof"
       },
       {
@@ -75,6 +75,11 @@
         "module": "Spec",
         "path": "Spec.lean",
         "role": "specification"
+      },
+      {
+        "module": "SymExec",
+        "path": "SymExec.lean",
+        "role": "proof"
       }
     ]
   }
