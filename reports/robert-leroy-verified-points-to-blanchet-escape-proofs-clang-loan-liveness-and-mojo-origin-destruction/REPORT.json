@@ -1,0 +1,84 @@
+{
+  "topics": [
+    "verification/verified-alias-and-neededness-analysis",
+    "compilers/escape-analysis-correctness",
+    "pl/origin-and-loan-liveness",
+    "compilers/storage-deadness-under-aliasing"
+  ],
+  "subjects": [
+    {
+      "name": "CompCert verified C compiler (value analysis, neededness, dead-code elimination)",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc",
+        "version": "3.18"
+      }
+    },
+    {
+      "name": "Clang intraprocedural lifetime-safety analysis (LLVM monorepo)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "087db4daf2e284f23f41d70fde3339597ccc9e7d"
+      }
+    },
+    {
+      "name": "Go compiler escape analysis and liveness (source)",
+      "identity": {
+        "repository": "golang/go",
+        "revision": "34c413ad2a85db3857ecfd73d9d6d682e40e30d5"
+      }
+    },
+    {
+      "name": "Go toolchain release used for execution probes",
+      "identity": {
+        "repository": "golang/go",
+        "revision": "2aae1000ea1d4b28923b96db28acf4e3b99d6aff",
+        "version": "go1.27.3"
+      }
+    },
+    {
+      "name": "Mojo manual (value destruction, origins) and origin design note",
+      "identity": {
+        "repository": "modular/modular",
+        "revision": "2b2fdf54810989d009a3aa1f186fba49504a91ea"
+      }
+    },
+    {
+      "name": "Robert and Leroy, A Formally-Verified Alias Analysis (CPP 2012)",
+      "identity": {
+        "doi": "10.1007/978-3-642-35308-6_5"
+      }
+    },
+    {
+      "name": "Blanchet, Escape analysis for Java: Theory and practice (TOPLAS 2003)",
+      "identity": {
+        "doi": "10.1145/945885.945886"
+      }
+    },
+    {
+      "name": "Choi et al., Escape analysis for Java (OOPSLA 1999)",
+      "identity": {
+        "doi": "10.1145/320384.320386"
+      }
+    },
+    {
+      "name": "Choi et al., Stack allocation and synchronization optimizations for Java using escape analysis (TOPLAS 2003)",
+      "identity": {
+        "doi": "10.1145/945885.945892"
+      }
+    },
+    {
+      "name": "Stadler, Wuerthinger, Moessenboeck, Partial Escape Analysis and Scalar Replacement for Java (CGO 2014)",
+      "identity": {
+        "doi": "10.1145/2544137.2544157"
+      }
+    },
+    {
+      "name": "Pearce, A Lightweight Formalism for Reference Lifetimes and Borrowing in Rust (TOPLAS 2021)",
+      "identity": {
+        "doi": "10.1145/3443420"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

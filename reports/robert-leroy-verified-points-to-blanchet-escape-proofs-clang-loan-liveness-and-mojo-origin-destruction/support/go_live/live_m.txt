@@ -1,0 +1,4 @@
+# liveprobe
+./live.go:6:31: new(int) escapes to heap
+./live.go:9:10: p does not escape
+./live.go:39:11: b does not escape

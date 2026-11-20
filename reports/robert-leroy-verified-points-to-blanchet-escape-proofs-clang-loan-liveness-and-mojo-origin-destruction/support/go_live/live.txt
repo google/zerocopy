@@ -1,0 +1,9 @@
+# liveprobe
+./live.go:9:6: live at entry to use: p
+./live.go:24:11: live at call to safepoint: p
+./live.go:31:5: live at call to use: p
+./live.go:32:11: live at call to safepoint: p
+./live.go:39:6: live at entry to fill: b
+./live.go:39:32: live at call to alloc: b
+./live.go:43:6: stack object b box
+./live.go:44:6: live at call to fill: b
