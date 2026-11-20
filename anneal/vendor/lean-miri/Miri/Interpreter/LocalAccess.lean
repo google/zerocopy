@@ -45,6 +45,11 @@ structure LocalAccessHooks (Prov Extra State : Type) where
     LocalAccessResult Prov Extra State (TypedOperand Prov)
   constant : Frame Prov LocalLayout Extra → State → MIR.ConstOperand →
     Option LocalLayout → LocalAccessResult Prov Extra State (TypedOperand Prov)
+  deinitMovedPlace : Bool := false
+  forceLocalAllocation : Frame Prov LocalLayout Extra → State → MIR.LocalId →
+    LocalAccessResult Prov Extra State Unit :=
+    fun frame state _ =>
+      ⟨frame, state, .error (.resolver "forceLocalAllocation requires machine allocation hook")⟩
 
 /-- Use the executable canonical projector rather than a second projection IR. -/
 def localProjectionHook [PointerProvenance Prov] (cx : ProjectionCx Prov)
@@ -115,14 +120,38 @@ def evalPlaceToOp (hooks : LocalAccessHooks Prov Extra State)
   let checked := hooks.checkPlaceType frame state place op
   return ⟨checked.frame, checked.state, checked.outcome.map fun _ => op⟩
 
-/-- Copy and Move deliberately share the source branch. Pinned rustc's FIXME
-leaves move invalidation unimplemented; this port does not invent it. -/
+/-- Copy and Move share source behavior when `deinitMovedPlace = false`; when
+`deinitMovedPlace = true`, moving an unprojected immediate local replaces the
+source slot with `.uninit` (unless its layout is a 0-byte ZST). -/
 def evalOperand (hooks : LocalAccessHooks Prov Extra State)
     (frame : Frame Prov LocalLayout Extra) (state : State)
     (operand : MIR.Operand) (known : Option LocalLayout) :
     LocalAccessResult Prov Extra State (TypedOperand Prov) :=
   match operand with
-  | .Copy place | .Move place => evalPlaceToOp hooks frame state place known
+  | .Copy place => evalPlaceToOp hooks frame state place known
+  | .Move place =>
+    let res := evalPlaceToOp hooks frame state place known
+    if !hooks.deinitMovedPlace then res
+    else match res.outcome with
+      | .error _ => res
+      | .ok op =>
+        match op.op with
+        | .immediate _ =>
+          if place.projection.isEmpty then
+            let deinitVal : Operand Prov :=
+              if op.layout.layout.isZst then op.op else .immediate .uninit
+            match res.frame.replaceLocalValue place.localId (.live deinitVal) with
+            | .ok frame' => ⟨frame', res.state, .ok op⟩
+            | .error e => ⟨res.frame, res.state, .error (.stack e)⟩
+          else
+            let forced := hooks.forceLocalAllocation res.frame res.state place.localId
+            match forced.outcome with
+            | .error e => ⟨forced.frame, forced.state, .error e⟩
+            | .ok () =>
+              match forced.frame.getLocalOperand place.localId with
+              | .ok (.indirect _) => evalPlaceToOp hooks forced.frame forced.state place known
+              | _ => ⟨forced.frame, forced.state, .ok op⟩
+        | .indirect _ => res
   | .RuntimeChecks check => hooks.runtimeChecks frame state check
   | .Constant constant => hooks.constant frame state constant known
 
@@ -168,8 +197,21 @@ def evalOperandImmediate [DecidableEq Kind] [DecidableEq Prov]
   | .error e => ⟨evaluated.frame, evaluated.state, .error e⟩
   | .ok op =>
     let read := readTypedImmediate context evaluated.state.memory evaluated.state.hooks op
-    ⟨evaluated.frame, ⟨read.memory, read.hooks, read.touched⟩,
-      read.outcome.mapError LocalAccessError.memory⟩
+    match read.outcome with
+    | .error e =>
+      ⟨evaluated.frame, ⟨read.memory, read.hooks, read.touched⟩, .error (.memory e)⟩
+    | .ok val =>
+      match operand, op.op, hooks.deinitMovedPlace with
+      | .Move _, .indirect mplace, true =>
+        let deinit := writeImmediateToMplaceNoValidate read.memory read.hooks .uninit
+          ⟨mplace, localMemoryLayout op.layout⟩ context.runtime context.ghostMode
+          context.globalKind context.globalHooks context.accessHooks
+          context.dynamicLayout (fun _ => false)
+        match deinit.outcome with
+        | .error e => ⟨evaluated.frame, ⟨deinit.memory, deinit.hooks, deinit.touched⟩, .error (.memory e)⟩
+        | .ok () => ⟨evaluated.frame, ⟨deinit.memory, deinit.hooks, deinit.touched⟩, .ok val⟩
+      | _, _, _ =>
+        ⟨evaluated.frame, ⟨read.memory, read.hooks, read.touched⟩, .ok val⟩
 
 def readLocalImmediate [DecidableEq Kind] [DecidableEq Prov]
     [PointerProvenance Prov]
@@ -332,8 +374,10 @@ def copyOperand (hooks : LocalCopyHooks Prov Extra State Dest)
 
 theorem copy_move_same (hooks : LocalAccessHooks Prov Extra State)
     (frame : Frame Prov LocalLayout Extra) (state : State)
-    (place : MIR.Place) (known : Option LocalLayout) :
+    (place : MIR.Place) (known : Option LocalLayout)
+    (h_no_deinit : hooks.deinitMovedPlace = false := by rfl) :
     evalOperand hooks frame state (.Copy place) known =
-      evalOperand hooks frame state (.Move place) known := rfl
+      evalOperand hooks frame state (.Move place) known := by
+  simp [evalOperand, h_no_deinit]
 
 end Miri.Interpreter

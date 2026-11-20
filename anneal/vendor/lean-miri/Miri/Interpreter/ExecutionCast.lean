@@ -67,7 +67,8 @@ def hooks [DecidableEq K] (queries : Leaves (State K U) C)
     (dereference : C → OpTy Provenance → M K U (MPlaceTy Provenance))
     (projectRead : C → OpTy Provenance → Nat → M K U (OpTy Provenance))
     (validationRecursive : C → LocalLayout → M K U Bool)
-    (retagBudget validationBudget : Nat) :
+    (retagBudget validationBudget : Nat)
+    (deallocateStack : Option (Pointer (Option Provenance) → M K U Unit) := none) :
     CastHooks Provenance (State K U) C (RuntimePlace Provenance) :=
   let place := projection.place
   {
@@ -112,5 +113,26 @@ def hooks [DecidableEq K] (queries : Leaves (State K U) C)
     copyAllowTransmute := fun c source dest => copyRuntimePlace place copy c source dest true
     copyNoValidate := copyRuntimePlaceNoValidate place copy
     projectRead := projectRead
-    projectWrite := PlaceDynamic.field projection }
+    projectWrite := PlaceDynamic.field projection
+    takePendingMoveDeinit := place.takePendingMoveDeinit
+    restorePendingMoveDeinit := fun flag => do
+      if flag then
+        let s ← get
+        set { s with machine := { s.machine with pendingMoveDeinit := true } }
+    deinitSource := fun c source =>
+      match source.op with
+      | .immediate _ => pure ()
+      | .indirect mplace => place.writeMemoryNoValidate c .uninit ⟨mplace, source.layout⟩
+    allocateTemp := fun _ layout => do
+      match deallocateStack with
+      | none => pure none
+      | some _ =>
+        if !layout.layout.isSized then
+          throw (.unsupported "unsized unsize cast destination with move deinitialization")
+        let allocated ← PlaceMachine.allocateStack allocation layout
+        return some (⟨.memory allocated.mplace, allocated.layout⟩, ⟨.indirect allocated.mplace, allocated.layout⟩)
+    deallocateTemp := fun _ temp => do
+      match deallocateStack, temp.ref with
+      | some dealloc, .memory mplace => dealloc mplace.ptr
+      | _, _ => pure () }
 end Miri.Interpreter.ExecutionCast

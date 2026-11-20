@@ -36,6 +36,28 @@ structure MachineState (K User : Type) where
   raceAllocations : Array (AllocId × Miri.Concurrency.VClockAlloc)
   allocationSpans : Array (AllocId × SpanRef × Option SpanRef)
   user : User
+  /-- Transient flag armed when `OperandMachine.evalOperand` evaluates
+  `Operand.Move` on an indirect (`MemPlace`) place in `deinitMovedPlace` mode,
+  and atomically consumed by the immediately following
+  `PlaceMachine.readImmediate` or `PlaceHooks.takePendingMoveDeinit` for
+  single-operand and streaming consumers (`Use`, `UnaryOp`, `BinaryOp`, `Cast`,
+  `Aggregate`, `Repeat`, `SwitchInt`, `Assert`, `Assume`). Multi-operand
+  pre-evaluated consumers (`Call`, `TailCall`, and `CopyNonOverlapping`)
+  snapshot indirect operands into temporary stack allocations and mark moved
+  source places `.uninit` during operand evaluation. -/
+  pendingMoveDeinit : Bool := false
+
+/-- Arm `pendingMoveDeinit` with `isMove`. `OperandMachine.evalOperand` arms
+it (`isMove = true`) only after evaluating `Operand.Move` to an indirect place
+in `deinitMovedPlace` mode; every other operand evaluation leaves it cleared. -/
+def recordPendingMoveDeinit (m : MachineState K User) (isMove : Bool) :
+    MachineState K User :=
+  { m with pendingMoveDeinit := isMove }
+
+/-- Atomically consume and clear `pendingMoveDeinit`. -/
+def takeLastPendingMoveDeinit (m : MachineState K User) :
+    MachineState K User × Bool :=
+  ({ m with pendingMoveDeinit := false }, m.pendingMoveDeinit)
 
 abbrev State (K User : Type) := StepState Provenance LocalLayout FrameExtra (MachineState K User)
 abbrev M (K User A : Type) := EStateM StepError (State K User) A

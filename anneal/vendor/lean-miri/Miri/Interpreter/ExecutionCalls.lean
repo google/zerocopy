@@ -34,10 +34,13 @@ def projectArgument (operands : OperandMachine.Hooks K U C) (choice : C)
     (argument : FnArg Provenance) (index : Nat) : M K U (FnArg Provenance) := do
   match argument with
   | .Copy operand => return .Copy (← OperandMachine.field operands choice operand index)
-  | .InPlace memory =>
+  | .InPlace memory snap? =>
     let result ← OperandMachine.field operands choice ⟨.indirect memory.mplace,memory.layout⟩ index
+    let snapField? ← match snap? with
+      | none => pure none
+      | some snap => some <$> OperandMachine.field operands choice snap index
     match result.op with
-    | .indirect memory => return .InPlace ⟨memory,result.layout⟩
+    | .indirect memory => return .InPlace ⟨memory,result.layout⟩ snapField?
     | .immediate _ => throw (.invalidProgram "in-place argument projection became immediate")
 
 private def memoryPlace (place : RuntimePlace Provenance) : M K U (MPlaceTy Provenance) :=
@@ -69,8 +72,16 @@ def make [DecidableEq K] (leaves : ExecutionCallLeaves.Hooks (State K U) C Other
    setFrame := MachineHooks.setCurrentFrame
    frameIndex := do match (← get).stack.frameIndex with
       | .ok index => pure index | .error error => throw (.stack error)
-   evalOperand := fun c operand => OperandMachine.evalOperand operands c operand none
-   evalOperandAt := fun c path operand => OperandMachine.evalOperandAt operands c path operand none
+   evalOperand := fun c operand => do
+      let op ← OperandMachine.evalOperand operands c operand none
+      if operands.deinitMovedPlace then
+        modify fun s => { s with machine := { s.machine with pendingMoveDeinit := false } }
+      return op
+   evalOperandAt := fun c path operand => do
+      let op ← OperandMachine.evalOperandAt operands c path operand none
+      if operands.deinitMovedPlace then
+        modify fun s => { s with machine := { s.machine with pendingMoveDeinit := false } }
+      return op
    evalPlace := fun c dest skip => return (← PlaceDynamic.evalPlace projection c dest skip).stackView
    placeToOp := fun c dest => placeToOp place c dest.toRuntimePlace
    forceAllocation := fun c dest => forceAllocation place c dest.toRuntimePlace
@@ -138,7 +149,20 @@ def make [DecidableEq K] (leaves : ExecutionCallLeaves.Hooks (State K U) C Other
       let layout ← virtual.compiler.unitLayout
       match FunctionCalls.fakeAllocZst layout with
       | .ok memory => pure (.memory memory)
-      | .error error => throw error}
+      | .error error => throw error
+   deinitMovedPlace := operands.deinitMovedPlace
+   deinitInPlaceArgument := fun c memory =>
+      place.writeMemoryNoValidate c .uninit ⟨memory.mplace, memory.layout⟩
+   markInPlaceMovedUninit := fun _ memory =>
+      PlaceMachine.writeMemoryRawUninit access memory
+   restoreInPlaceMovedBytes := fun _ snap memory =>
+      match snap.op with
+      | .indirect snapMplace => PlaceMachine.copyRawMPlace access ⟨snapMplace, snap.layout⟩ memory
+      | .immediate _ => pure ()
+   copyRawMPlace := fun _ src dst =>
+      PlaceMachine.copyRawMPlace access src dst
+   isForeignItem := leaves.dispatch.isForeignItem
+   deallocateStack := fun _ => lifecycle.storage.deallocateStack}
 /-- Actual helpers.rs call/thread-root helper dictionary. Origin mutations
 keep all other thread/stack fields, including saved full frame identities. -/
 def helpers (leaves : ExecutionCallLeaves.Helpers (State K U) C Extern)

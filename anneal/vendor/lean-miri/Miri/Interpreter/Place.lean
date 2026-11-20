@@ -29,6 +29,7 @@ structure PlaceHooks (P S C E : Type) where
   writeLocalImmediate : C → MIR.LocalId → LocalLayout → Immediate P → PlaceM S Unit
   enforceValidity : C → LocalLayout → PlaceM S Bool
   validate : C → RuntimePlace P → PlaceM S Unit
+  takePendingMoveDeinit : PlaceM S Bool := pure false
 
 private def placeLift (value : Except StepError A) : PlaceM S A :=
   match value with | .ok value => pure value | .error error => throw error
@@ -349,6 +350,7 @@ def copyRuntimePlaceNoValidate (h : PlaceHooks P S C E) (copy : PlaceCopyHooks P
   let compatible ← placeLift (copy.compatible source.layout dest.layout)
   if !compatible && !allowTransmute then throw (.invalidProgram "copy type mismatch")
   let padding ← placeLift (copy.hasPadding source.layout)
+  let shouldDeinit ← h.takePendingMoveDeinit
   let value ← if padding then pure (match source.op with
       | .immediate value => ImmediateOrPlace.immediate ⟨value, localMemoryLayout source.layout⟩
       | .indirect mplace => .place ⟨mplace, localMemoryLayout source.layout⟩)
@@ -359,13 +361,24 @@ def copyRuntimePlaceNoValidate (h : PlaceHooks P S C E) (copy : PlaceCopyHooks P
       throw (.invalidProgram "copy immediate is unsized")
     if source.layout.layout.size != dest.layout.layout.size then
       throw (.invalidProgram "copy immediate size mismatch")
+    if shouldDeinit then
+      if let .indirect mplace := source.op then
+        h.writeMemoryNoValidate choice .uninit ⟨mplace, source.layout⟩
     if compatible then writePlaceImmediateNoValidate h choice value.value dest
     else
       let memory ← forceAllocation h choice dest
       h.writeMemoryNoValidate choice value.value ⟨memory.mplace, source.layout⟩
   | .place memory =>
     let target ← forceAllocation h choice dest
+    -- `copy.memoryCopy` enforces `nonoverlapping = true` (per `PlaceCopyHooks`
+    -- and `Allocation.copyRepeatedly`), so any overlapping copy with
+    -- initialized bytes fails with `.copyRangesOverlap` UB before reaching
+    -- deinitialization; staging through a fresh temporary would unsoundly mask
+    -- that UB. For disjoint, all-uninit, or zero-sized sources, deinitializing
+    -- `source` after `copy.memoryCopy` cannot erase initialized `target` bytes.
     copy.memoryCopy choice ⟨memory.mplace, source.layout⟩ target
+    if shouldDeinit then
+      h.writeMemoryNoValidate choice .uninit ⟨memory.mplace, source.layout⟩
 
 def copyRuntimePlace (h : PlaceHooks P S C E) (copy : PlaceCopyHooks P S C)
     (choice : C) (source : OpTy P) (dest : RuntimePlace P) (allowTransmute : Bool) : PlaceM S Unit := do

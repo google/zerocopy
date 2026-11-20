@@ -1063,7 +1063,7 @@ fn verifies_upstream_pin_and_rejects_tampering() {
     let pin = anneal_audit::verify_upstream_pin(&checkout.join("vendor/lean-miri")).unwrap();
     assert_eq!(pin.schema_version, 2);
     assert_eq!(pin.vendor_tree.file_count, 608);
-    assert!(pin.patched_files.is_empty());
+    assert_eq!(pin.patched_files.len(), 10);
     assert_eq!(pin.execution_machine_closure.len(), 160);
 
     // 1. Deleting `vendor/` in a repository checkout fails `Checker::run()`
@@ -1138,6 +1138,28 @@ fn verifies_upstream_pin_and_rejects_tampering() {
         "unexpected error: {err_tamper}"
     );
     fs::write(&target_lean, &orig_lean).unwrap();
+
+    // 2b. A patched `.lean` file is verified against `patched_sha256`, never
+    // exempted from on-disk digest checking.
+    let patched_rel = "Miri/Interpreter/Call.lean";
+    let patched_lean = vendor_copy.join(patched_rel);
+    let orig_patched = fs::read(&patched_lean).unwrap();
+    let expected_patched_sha = &pin
+        .patched_files
+        .iter()
+        .find(|p| p.path == patched_rel)
+        .expect("Call.lean must be listed in patched_files")
+        .patched_sha256;
+    fs::write(&patched_lean, b"-- tampered patched file\n").unwrap();
+    let err_patched_tamper = anneal_audit::verify_upstream_pin(&vendor_copy).unwrap_err();
+    assert_eq!(err_patched_tamper.code, 1);
+    assert!(
+        err_patched_tamper.message.contains(&format!(
+            "vendor file SHA-256 mismatch for {patched_rel}: expected {expected_patched_sha}"
+        )),
+        "unexpected error: {err_patched_tamper}"
+    );
+    fs::write(&patched_lean, &orig_patched).unwrap();
 
     // 3. Unlisted `.lean` file is rejected.
     let rogue_lean = vendor_copy.join("Miri/Rogue.lean");
@@ -2496,4 +2518,148 @@ fn sandboxes_cold_miri_compilation_against_host_and_stage_writes() {
             && !cache_dir.path().join("Miri/ExtraOut.olean").exists(),
         "rejected sandbox output must not be staged or cached"
     );
+
+    // Case 4: A real Lean 4 `module`-system vendored file
+    // (`Miri.Memory.QSortProof`, which emits `.olean.{server,private}` plus
+    // ephemeral `.ir`/`.ir.sig` sidecars) compiles cold inside the sandbox,
+    // stages and caches only the digest-verified `.olean*` artifacts, and
+    // discards `.ir`/`.ir.sig`.
+    let checkout = repo_root();
+    let real_vendor = checkout.join("vendor/lean-miri");
+    let real_pin = anneal_audit::verify_upstream_pin(&real_vendor).unwrap();
+    let qsort_entry = real_pin
+        .execution_machine_closure
+        .iter()
+        .find(|e| e.module == "Miri.Memory.QSortProof")
+        .expect("Miri.Memory.QSortProof must exist in closure")
+        .clone();
+    let qsort_src_sha = real_pin
+        .vendor_tree
+        .files
+        .iter()
+        .find(|f| f.path == qsort_entry.path)
+        .expect("QSortProof.lean must exist in vendor_tree")
+        .sha256
+        .clone();
+    let qsort_sources = BTreeMap::from([(qsort_entry.path.clone(), qsort_src_sha)]);
+    let qsort_cache = tempfile::Builder::new()
+        .prefix("anneal-sandbox-qsort-cache-")
+        .tempdir()
+        .unwrap();
+    let mut c4 = Checker::new(&fix.root, None).unwrap();
+    c4.set_miri_cache_dir(Some(qsort_cache.path().to_path_buf()));
+    c4.run().unwrap();
+    let miri_lib = c4
+        .verify_and_stage_miri_entries(&real_vendor, &[qsort_entry], &qsort_sources)
+        .unwrap();
+    for ext in ["olean", "olean.server", "olean.private"] {
+        let rel = format!("Miri/Memory/QSortProof.{ext}");
+        assert!(
+            miri_lib.join(&rel).is_file(),
+            "expected staged {rel} in miri-lib"
+        );
+        assert!(
+            qsort_cache.path().join(&rel).is_file(),
+            "expected cached {rel} in miri cache"
+        );
+    }
+    for ext in ["ir", "ir.sig"] {
+        let rel = format!("Miri/Memory/QSortProof.{ext}");
+        assert!(
+            !miri_lib.join(&rel).exists(),
+            "ephemeral {rel} must not be staged into miri-lib"
+        );
+        assert!(
+            !qsort_cache.path().join(&rel).exists(),
+            "ephemeral {rel} must not be written to miri cache"
+        );
+    }
+
+    // Case 5: A non-module cold compile (`olean_server_sha256` and
+    // `olean_private_sha256` both `None`) that emits `.ir` or `.ir.sig`
+    // alongside a digest-matching `.olean` must still be rejected with policy
+    // exit code `1`, staging and caching nothing.
+    for (module, stem, ext) in [
+        ("Miri.ExtraIr", "Miri/ExtraIr", "ir"),
+        ("Miri.ExtraIrSig", "Miri/ExtraIrSig", "ir.sig"),
+    ] {
+        let sidecar_rel = format!("{stem}.{ext}");
+        let src = format!(
+            "import Lean\n\
+             namespace {module}\n\
+             run_cmd do\n\
+               IO.FS.writeFile \"out/{sidecar_rel}\" \"fake-ir\"\n\
+             def x : Nat := 1\n\
+             end {module}\n"
+        );
+        let src_rel = format!("{stem}.lean");
+        let src_path = vendor_dir.join(&src_rel);
+        fs::write(&src_path, &src).unwrap();
+
+        let mut ir_probe = Checker::new(&fix.root, None).unwrap();
+        ir_probe.run().unwrap();
+        let ir_probe_out = ir_probe.stage.join("out");
+        fs::create_dir_all(ir_probe_out.join("Miri")).unwrap();
+        let olean_rel = format!("{stem}.olean");
+        ir_probe
+            .process(
+                "probe-nonmodule-ir",
+                &[
+                    "-j1".to_string(),
+                    "-M2048".to_string(),
+                    "-t0".to_string(),
+                    "-DElab.async=false".to_string(),
+                    "-Ddebug.skipKernelTC=false".to_string(),
+                    "-R".to_string(),
+                    vendor_dir.to_string_lossy().into_owned(),
+                    "-o".to_string(),
+                    ir_probe_out.join(&olean_rel).to_string_lossy().into_owned(),
+                    src_path.to_string_lossy().into_owned(),
+                ],
+            )
+            .unwrap();
+        assert!(
+            !ir_probe_out.join(format!("{stem}.olean.server")).exists()
+                && !ir_probe_out.join(format!("{stem}.olean.private")).exists(),
+            "{module} must compile as a non-module entry"
+        );
+        let olean_sha = sha256_file(&ir_probe_out.join(&olean_rel), "test").unwrap();
+
+        let ir_cache = tempfile::Builder::new()
+            .prefix("anneal-sandbox-nonmodule-ir-cache-")
+            .tempdir()
+            .unwrap();
+        let ir_entry = MiriClosureEntry {
+            module: module.to_string(),
+            path: src_rel.clone(),
+            olean_sha256: olean_sha,
+            olean_server_sha256: None,
+            olean_private_sha256: None,
+        };
+        let ir_sources = BTreeMap::from([(src_rel, sha256_bytes(src.as_bytes()))]);
+        let mut c5 = Checker::new(&fix.root, None).unwrap();
+        c5.set_miri_cache_dir(Some(ir_cache.path().to_path_buf()));
+        c5.run().unwrap();
+        let err5 = c5
+            .verify_and_stage_miri_entries(&vendor_dir, &[ir_entry], &ir_sources)
+            .unwrap_err();
+        assert_eq!(
+            err5.code, 1,
+            "expected policy error for non-module {ext} sidecar: {err5}"
+        );
+        assert_eq!(err5.phase, "miri-pin");
+        let expected_diag =
+            format!("unexpected file in sandboxed Miri output for {module}: {sidecar_rel}");
+        assert!(
+            err5.message.contains(&expected_diag),
+            "expected `{expected_diag}`, got: {err5}"
+        );
+        assert!(
+            !c5.stage.join("miri-lib").join(&olean_rel).exists()
+                && !c5.stage.join("miri-lib").join(&sidecar_rel).exists()
+                && !ir_cache.path().join(&olean_rel).exists()
+                && !ir_cache.path().join(&sidecar_rel).exists(),
+            "rejected non-module {ext} output must not be staged or cached"
+        );
+    }
 }

@@ -13,17 +13,18 @@ open Miri.TreeBorrows.RetagPolicy
 
 inductive FnArg (P : Type) where
   | Copy (op : OpTy P)
-  | InPlace (place : MPlaceTy P)
+  | InPlace (place : MPlaceTy P) (snapshot : Option (OpTy P) := none)
   deriving Repr
 namespace FnArg
 
 def layout : FnArg P → LocalLayout
   | .Copy op => op.layout
-  | .InPlace place => place.layout
+  | .InPlace place _ => place.layout
 
 def copyFnArg : FnArg P → OpTy P
   | .Copy op => op
-  | .InPlace place => ⟨.indirect place.mplace, place.layout⟩
+  | .InPlace place none => ⟨.indirect place.mplace, place.layout⟩
+  | .InPlace _ (some snap) => snap
 end FnArg
 
 inductive FnVal (Other : Type) where
@@ -47,6 +48,7 @@ structure CallRequest (P Other Extern FnABI : Type) where
   destination : RuntimeStackPlace P
   target : Option BasicBlockId
   unwind : UnwindAction
+  tempAllocs : Array (Pointer (Option P)) := #[]
 
 structure EvaluatedCall (P Other Extern FnABI : Type) where
   callee : FnVal Other
@@ -54,6 +56,7 @@ structure EvaluatedCall (P Other Extern FnABI : Type) where
   callerAbi : Extern
   fnAbi : Option FnABI
   withCallerLocation : Bool
+  tempAllocs : Array (Pointer (Option P)) := #[]
 
 abbrev CallM (S A : Type) := EStateM StepError S A
 
@@ -132,6 +135,13 @@ structure CallHooks (P S C E Other Extern FnABI ArgABI : Type) where
   resolveDropGlue : C → TyId → CallM S CallInstance
   mplaceToMutRef : C → MPlaceTy P → CallM S (OpTy P)
   fakeUnitReturn : C → CallM S (RuntimeStackPlace P)
+  deinitMovedPlace : Bool := false
+  deinitInPlaceArgument : C → MPlaceTy P → CallM S Unit := fun _ _ => pure ()
+  markInPlaceMovedUninit : C → MPlaceTy P → CallM S Unit := fun _ _ => pure ()
+  restoreInPlaceMovedBytes : C → OpTy P → MPlaceTy P → CallM S Unit := fun _ _ _ => pure ()
+  copyRawMPlace : C → MPlaceTy P → MPlaceTy P → CallM S Unit := fun _ _ _ => pure ()
+  isForeignItem : CallInstance → CallM S Bool := fun _ => pure false
+  deallocateStack : C → Pointer (Option P) → CallM S Unit := fun _ _ => pure ()
 
 namespace Call
 variable {P S C E Other Extern FnABI ArgABI : Type}
@@ -150,6 +160,38 @@ private def setSpan (h : Hooks) (span : SpanRef) : M Unit := do
   let frame ← h.getFrame
   h.setFrame { frame with location := .unwinding span }
 
+def deallocateTempArgs (h : Hooks) (choice : C)
+    (tempAllocs : Array (Pointer (Option P))) : M Unit := do
+  for ptr in tempAllocs do
+    h.deallocateStack choice ptr
+
+private def cleanupTempArgsOnError (h : Hooks) (choice : C)
+    (tempAllocs : Array (Pointer (Option P))) (action : M A) : M A := fun s =>
+  match action s with
+  | .ok val s' => .ok val s'
+  | .error err s' =>
+    match deallocateTempArgs h choice tempAllocs s' with
+    | .ok () s'' => .error err s''
+    | .error _ s'' => .error err s''
+
+def deinitInPlaceArg (h : Hooks) (choice : C) (place : MPlaceTy P)
+    (snap? : Option (OpTy P)) : M Unit := do
+  if let some snap := snap? then
+    h.restoreInPlaceMovedBytes choice snap place
+  h.deinitInPlaceArgument choice place
+
+def snapshotInPlaceArg (h : Hooks) (choice : C)
+    (place : MPlaceTy P) : M (FnArg P) := do
+  if !h.deinitMovedPlace then
+    return .InPlace place none
+  if !place.layout.layout.isSized then
+    throw (.unsupported "unsized in-place move argument deinitialization unsupported")
+  let tmpPlace ← h.allocateStack choice place.layout
+  cleanupTempArgsOnError h choice #[tmpPlace.mplace.ptr] do
+    h.copyRawMPlace choice place tmpPlace
+    h.markInPlaceMovedUninit choice place
+  return .InPlace place (some ⟨.indirect tmpPlace.mplace, tmpPlace.layout⟩)
+
 def moveDefinitelyDisjoint (args : Array SpannedOperand) (dest : Place) : Bool := Id.run do
   let mut seen : Array LocalId := #[]
   let mut places : Array Place := #[]
@@ -166,13 +208,27 @@ def evalFnCallArgumentAt (h : Hooks) (choice : C) (operand : MIR.Operand)
   match operand with
   | .Copy _ | .Constant _ | .RuntimeChecks _ => return .Copy (← h.evalOperandAt choice path operand)
   | .Move place =>
-    let place ← h.evalPlace choice place true
+    let rplace ← h.evalPlace choice place true
     if disjoint then
-      let op ← h.placeToOp choice place
+      if h.deinitMovedPlace && !place.projection.isEmpty then
+        let inPlace ← h.forceAllocation choice rplace
+        return (← snapshotInPlaceArg h choice inPlace)
+      let op ← h.placeToOp choice rplace
       match op.op with
-      | .indirect mplace => return .InPlace ⟨mplace, op.layout⟩
-      | .immediate _ => return .Copy op
-    else return .InPlace (← h.forceAllocation choice place)
+      | .indirect mplace =>
+        return (← snapshotInPlaceArg h choice ⟨mplace, op.layout⟩)
+      | .immediate _ =>
+        if h.deinitMovedPlace then
+          let deinitVal : Operand P :=
+            if op.layout.layout.isZst then op.op else .immediate .uninit
+          let frame ← h.getFrame
+          match frame.replaceLocalValue place.localId (.live deinitVal) with
+          | .ok frame' => h.setFrame frame'
+          | .error e => throw (.stack e)
+        return .Copy op
+    else
+      let inPlace ← h.forceAllocation choice rplace
+      return (← snapshotInPlaceArg h choice inPlace)
 
 def evalFnCallArgument (h : Hooks) (choice : C) (operand : MIR.Operand)
     (disjoint : Bool) : M (FnArg P) :=
@@ -180,30 +236,72 @@ def evalFnCallArgument (h : Hooks) (choice : C) (operand : MIR.Operand)
 
 def evalCalleeAndArgs (h : Hooks) (choice : C) (func : MIR.Operand)
     (args : Array SpannedOperand) (dest : Place) : M (EvaluatedCall P Other Extern FnABI) := do
-  let func ← h.evalOperandAt choice (OperandPath.instruction "function") func
+  let isMoveFunc := match func with | .Move _ => h.deinitMovedPlace | _ => false
+  let hasMove := h.deinitMovedPlace &&
+    (isMoveFunc || args.any (fun a => a.operand matches .Move _))
+  let mut tempAllocs : Array (Pointer (Option P)) := #[]
+  let mut func ← h.evalOperandAt choice (OperandPath.instruction "function") func
+  if hasMove then
+    if let .indirect mplace := func.op then
+      if !func.layout.layout.isSized then
+        throw (.unsupported "unsized indirect callee deinitialization unsupported")
+      let tmpFunc ← h.allocateStack choice func.layout
+      tempAllocs := tempAllocs.push tmpFunc.mplace.ptr
+      cleanupTempArgsOnError h choice tempAllocs do
+        h.copyToMemory choice func tmpFunc
+        if isMoveFunc then
+          h.deinitInPlaceArgument choice ⟨mplace, func.layout⟩
+      func := ⟨.indirect tmpFunc.mplace, tmpFunc.layout⟩
   let disjoint := moveDefinitelyDisjoint args dest
   let mut evaluated := #[]
   for index in [:args.size] do
-    let some arg := args[index]? | throw (.invalidProgram "missing source call argument")
-    evaluated := evaluated.push (← evalFnCallArgumentAt h choice arg.operand disjoint (OperandPath.argument index))
-  let (inputCount, externAbi) ← h.functionSignature choice func.layout
-  require (inputCount ≤ evaluated.size) "call has fewer args than normalized signature"
-  let extra := (evaluated.extract inputCount evaluated.size).map fun arg => arg.layout.ty
-  match ← h.functionKind func.layout.ty with
-  | .FnPtr =>
-    let fnPtr ← h.readPointer choice func
-    let fnVal ← h.getPtrFn choice fnPtr
-    let abi ← h.fnAbiOfFnPtr choice func.layout extra
-    return ⟨fnVal, evaluated, externAbi, some abi, false⟩
-  | .FnDef definition args =>
-    let fnInstance ← h.resolve choice definition args
-    let abi ← match fnInstance.kind with
-      | .LlvmIntrinsic _ => pure none
-      | .Intrinsic definition =>
-        pure (some (← h.fnAbiOfInstance choice ⟨.Item definition, fnInstance.args⟩ extra))
-      | _ => pure (some (← h.fnAbiOfInstance choice fnInstance extra))
-    return ⟨.Instance fnInstance, evaluated, externAbi, abi, ← h.requiresCallerLocation fnInstance⟩
-  | .invalid => throw (.invalidProgram "invalid callee type")
+    let some arg := args[index]? |
+      cleanupTempArgsOnError h choice tempAllocs
+        (throw (.invalidProgram "missing source call argument"))
+    let fnArg ← cleanupTempArgsOnError h choice tempAllocs
+      (evalFnCallArgumentAt h choice arg.operand disjoint (OperandPath.argument index))
+    match fnArg with
+    | .InPlace _ (some ⟨.indirect tmpMplace, _⟩) =>
+      tempAllocs := tempAllocs.push tmpMplace.ptr
+      evaluated := evaluated.push fnArg
+    | .InPlace _ _ =>
+      evaluated := evaluated.push fnArg
+    | .Copy op =>
+      if hasMove then
+        match op.op with
+        | .immediate _ => evaluated := evaluated.push fnArg
+        | .indirect _ =>
+          if !op.layout.layout.isSized then
+            cleanupTempArgsOnError h choice tempAllocs
+              (throw (.unsupported "unsized indirect copy argument materialization unsupported"))
+          let tmpCopy ← cleanupTempArgsOnError h choice tempAllocs
+            (h.allocateStack choice op.layout)
+          tempAllocs := tempAllocs.push tmpCopy.mplace.ptr
+          cleanupTempArgsOnError h choice tempAllocs
+            (h.copyToMemory choice op tmpCopy)
+          evaluated := evaluated.push (.Copy ⟨.indirect tmpCopy.mplace, tmpCopy.layout⟩)
+      else
+        evaluated := evaluated.push fnArg
+  cleanupTempArgsOnError h choice tempAllocs do
+    let (inputCount, externAbi) ← h.functionSignature choice func.layout
+    require (inputCount ≤ evaluated.size) "call has fewer args than normalized signature"
+    let extra := (evaluated.extract inputCount evaluated.size).map fun arg => arg.layout.ty
+    match ← h.functionKind func.layout.ty with
+    | .FnPtr =>
+      let fnPtr ← h.readPointer choice func
+      let fnVal ← h.getPtrFn choice fnPtr
+      let abi ← h.fnAbiOfFnPtr choice func.layout extra
+      return ⟨fnVal, evaluated, externAbi, some abi, false, tempAllocs⟩
+    | .FnDef definition args =>
+      let fnInstance ← h.resolve choice definition args
+      let abi ← match fnInstance.kind with
+        | .LlvmIntrinsic _ => pure none
+        | .Intrinsic definition =>
+          pure (some (← h.fnAbiOfInstance choice ⟨.Item definition, fnInstance.args⟩ extra))
+        | _ => pure (some (← h.fnAbiOfInstance choice fnInstance extra))
+      return ⟨.Instance fnInstance, evaluated, externAbi, abi,
+        ← h.requiresCallerLocation fnInstance, tempAllocs⟩
+    | .invalid => throw (.invalidProgram "invalid callee type")
 
 /-- Argument copy precedes protection; StorageLive precedes evaluating callee place. -/
 def passArgument (h : Hooks) (choice : C) (caller : FnArg P) (callerAbi calleeAbi : ArgABI)
@@ -212,14 +310,21 @@ def passArgument (h : Hooks) (choice : C) (caller : FnArg P) (callerAbi calleeAb
   require (caller.layout.layout == (h.argLayout callerAbi).layout) "caller layout does not match ABI"
   unless ← h.checkArgumentCompat choice callerAbi calleeAbi do
     throw (.undefinedBehavior s!"AbiMismatchArgument {calleeIndex}")
-  let copied := caller.copyFnArg
+  if let .InPlace place (some snap) := caller then
+    h.restoreInPlaceMovedBytes choice snap place
+  let copied : OpTy P := match caller with
+    | .Copy op => op
+    | .InPlace place _ => ⟨.indirect place.mplace, place.layout⟩
   if !alreadyLive then
     require dest.projection.isEmpty "nonlocal destination in storage_live_dyn"
     require (!copied.metadata.hasMeta || copied.layout.ty == calleeTy) "argument metadata type mismatch"
     h.storageLiveDyn choice dest.localId copied.metadata
   let dest ← h.evalPlace choice dest false
   h.copyAllowTransmute choice copied dest
-  if let .InPlace place := caller then h.protectArgument choice place
+  if let .InPlace place _ := caller then
+    if h.deinitMovedPlace then
+      h.deinitInPlaceArgument choice place
+    h.protectArgument choice place
 
 /-- Source stack.rs `allocate_varargs`: static callee ABI checks precede
 allocation and copy; no in-place protection is performed for varargs. -/
@@ -230,9 +335,15 @@ def allocateVarargs (h : Hooks) (choice : C) (args : Array (FnArg P × ArgABI))
     let (arg, callerAbi) ← at? args idx "missing variadic caller argument"
     let calleeAbi ← at? calleeAbis idx "missing variadic callee ABI"
     require (← h.checkArgumentCompat choice callerAbi calleeAbi) "variadic ABI compatibility assertion"
-    let op := arg.copyFnArg
+    if let .InPlace srcPlace (some snap) := arg then
+      h.restoreInPlaceMovedBytes choice snap srcPlace
+    let op : OpTy P := match arg with
+      | .Copy op => op
+      | .InPlace srcPlace _ => ⟨.indirect srcPlace.mplace, srcPlace.layout⟩
     let place ← h.allocateStack choice op.layout
     h.copyToMemory choice op place
+    if let .InPlace srcPlace _ := arg then
+      if h.deinitMovedPlace then h.deinitInPlaceArgument choice srcPlace
     varargs := varargs.push place
   require (args.size == calleeAbis.size) "excess variadic callee ABI"
   return varargs
@@ -356,6 +467,49 @@ def initStackFrame (h : Hooks) (choice : C) (fnInstance : CallInstance) (loadedB
   h.afterFrameInit choice
   h.pushDone choice
 
+/-- Copy any in-place moved arguments (and any indirect `.Copy` arguments when
+an `.InPlace` move is present) into fresh temporary stack allocations and
+deinitialize moved caller source places in argument order before a direct call
+handler or tail-call frame pop runs, returning the materialized argument list
+and the temporary stack pointers to deallocate on call completion. -/
+def materializeAndDeinitArgs (h : Hooks) (choice : C)
+    (args : Array (FnArg P)) : M (Array (FnArg P) × Array (Pointer (Option P))) := do
+  if !h.deinitMovedPlace || !args.any (fun a => a matches .InPlace ..) then
+    return (args, #[])
+  let mut out := #[]
+  let mut tempAllocs : Array (Pointer (Option P)) := #[]
+  for arg in args do
+    match arg with
+    | .Copy op =>
+      match op.op with
+      | .immediate _ => out := out.push arg
+      | .indirect _ =>
+        if !op.layout.layout.isSized then
+          cleanupTempArgsOnError h choice tempAllocs
+            (throw (.unsupported "unsized indirect copy argument materialization unsupported"))
+        let tmpPlace ← cleanupTempArgsOnError h choice tempAllocs
+          (h.allocateStack choice op.layout)
+        tempAllocs := tempAllocs.push tmpPlace.mplace.ptr
+        cleanupTempArgsOnError h choice tempAllocs
+          (h.copyToMemory choice op tmpPlace)
+        out := out.push (.Copy ⟨.indirect tmpPlace.mplace, tmpPlace.layout⟩)
+    | .InPlace srcPlace snap? =>
+      if let some snap := snap? then
+        cleanupTempArgsOnError h choice tempAllocs
+          (h.restoreInPlaceMovedBytes choice snap srcPlace)
+      if !srcPlace.layout.layout.isSized then
+        cleanupTempArgsOnError h choice tempAllocs
+          (throw (.unsupported "unsized in-place move argument deinitialization unsupported"))
+      let op : OpTy P := ⟨.indirect srcPlace.mplace, srcPlace.layout⟩
+      let tmpPlace ← cleanupTempArgsOnError h choice tempAllocs
+        (h.allocateStack choice op.layout)
+      tempAllocs := tempAllocs.push tmpPlace.mplace.ptr
+      cleanupTempArgsOnError h choice tempAllocs do
+        h.copyToMemory choice op tmpPlace
+        h.deinitInPlaceArgument choice srcPlace
+      out := out.push (.Copy ⟨.indirect tmpPlace.mplace, tmpPlace.layout⟩)
+  return (out, tempAllocs)
+
 /-- One source dispatch, returning a recursive request for intrinsic fallback
 or virtual dispatch. This avoids hiding recursion in opaque machine callbacks. -/
 def initFnCallStep (h : Hooks) (choice : C) (request : CallRequest P Other Extern FnABI) :
@@ -364,28 +518,50 @@ def initFnCallStep (h : Hooks) (choice : C) (request : CallRequest P Other Exter
     if (request.callerFnAbi.any (fun abi => !h.abiCanUnwind abi)) then .Unreachable else request.unwind }
   let needAbi : M FnABI := match request.callerFnAbi with
     | some abi => pure abi
-    | none => throw (.invalidProgram "FnAbi should have been computed for this call")
+    | none => cleanupTempArgsOnError h choice request.tempAllocs
+        (throw (.invalidProgram "FnAbi should have been computed for this call"))
   match request.callee with
   | .Other extra =>
-    h.callExtra choice extra (← needAbi) request.args request.destination request.target request.unwind
+    let abi ← needAbi
+    let (args, newTemps) ← cleanupTempArgsOnError h choice request.tempAllocs
+      (materializeAndDeinitArgs h choice request.args)
+    let allTemps := request.tempAllocs ++ newTemps
+    cleanupTempArgsOnError h choice allTemps
+      (h.callExtra choice extra abi args request.destination request.target request.unwind)
+    deallocateTempArgs h choice allTemps
     pure none
   | .Instance fnInstance =>
     match fnInstance.kind with
     | .Intrinsic _ =>
-      require (!request.withCallerLocation) "intrinsic received caller location"
-      let fallback ← h.callIntrinsic choice fnInstance (request.args.map FnArg.copyFnArg)
-        request.destination request.target request.unwind
+      cleanupTempArgsOnError h choice request.tempAllocs
+        (require (!request.withCallerLocation) "intrinsic received caller location")
+      let (args, newTemps) ← cleanupTempArgsOnError h choice request.tempAllocs
+        (materializeAndDeinitArgs h choice request.args)
+      let allTemps := request.tempAllocs ++ newTemps
+      let fallback ← cleanupTempArgsOnError h choice allTemps
+        (h.callIntrinsic choice fnInstance (args.map FnArg.copyFnArg)
+          request.destination request.target request.unwind)
       match fallback with
-      | none => pure none
+      | none =>
+        deallocateTempArgs h choice allTemps
+        pure none
       | some fallback =>
-        match fallback.kind with
-        | .Item _ => pure ()
-        | _ => throw (.invalidProgram "intrinsic fallback must be Item")
-        return some { request with
-          callee := .Instance fallback
-          withCallerLocation := ← h.requiresCallerLocation fallback }
+        cleanupTempArgsOnError h choice allTemps do
+          match fallback.kind with
+          | .Item _ => pure ()
+          | _ => throw (.invalidProgram "intrinsic fallback must be Item")
+          return some { request with
+            callee := .Instance fallback
+            args := args
+            withCallerLocation := ← h.requiresCallerLocation fallback
+            tempAllocs := allTemps }
     | .LlvmIntrinsic _ =>
-      h.callLlvmIntrinsic choice fnInstance (request.args.map FnArg.copyFnArg) request.destination request.target
+      let (args, newTemps) ← cleanupTempArgsOnError h choice request.tempAllocs
+        (materializeAndDeinitArgs h choice request.args)
+      let allTemps := request.tempAllocs ++ newTemps
+      cleanupTempArgsOnError h choice allTemps
+        (h.callLlvmIntrinsic choice fnInstance (args.map FnArg.copyFnArg) request.destination request.target)
+      deallocateTempArgs h choice allTemps
       pure none
     | .Item _ | .Shim (.VTable _) | .Shim (.Reify ..) | .Shim (.ClosureOnce ..)
     | .Shim (.ConstructCoroutineInClosure ..) | .Shim (.FnPtr ..) | .Shim (.DropGlue ..)
@@ -393,24 +569,56 @@ def initFnCallStep (h : Hooks) (choice : C) (request : CallRequest P Other Exter
     | .Shim (.ThreadLocal _) | .Shim (.AsyncDropGlueCtor ..) | .Shim (.AsyncDropGlue ..)
     | .Shim (.FutureDropPoll ..) =>
       let abi ← needAbi
-      let found ← h.findMirOrEvalFn choice fnInstance abi request.args request.destination request.target request.unwind
-      match found with
-      | none => pure none
-      | some (body, fnInstance) =>
-        let mut args := request.args
-        if h.isRustCall request.callerAbi && !args.isEmpty then
-          let last ← at? args (args.size - 1) "missing RustCall tuple"
-          args := args.pop
-          let fields ← h.tupleFields last.layout.ty
-          for idx in [:fields.size] do args := args.push (← h.projectFnArg choice last idx)
-        initStackFrame h choice fnInstance body abi args request.withCallerLocation request.destination
-          (.goto request.target request.unwind)
-        pure none
+      let (args, newTemps) ← cleanupTempArgsOnError h choice request.tempAllocs do
+        if h.deinitMovedPlace then
+          if ← h.isForeignItem fnInstance then
+            materializeAndDeinitArgs h choice request.args
+          else
+            pure (request.args, #[])
+        else
+          pure (request.args, #[])
+      let allTemps := request.tempAllocs ++ newTemps
+      cleanupTempArgsOnError h choice allTemps do
+        let found ← h.findMirOrEvalFn choice fnInstance abi args request.destination request.target request.unwind
+        match found with
+        | none =>
+          if h.deinitMovedPlace then
+            for arg in args do
+              if let .InPlace place snap? := arg then deinitInPlaceArg h choice place snap?
+        | some (body, fnInstance) =>
+          let mut args := args
+          if h.isRustCall request.callerAbi && !args.isEmpty then
+            let last ← at? args (args.size - 1) "missing RustCall tuple"
+            args := args.pop
+            let fields ← h.tupleFields last.layout.ty
+            if fields.isEmpty then
+              if h.deinitMovedPlace then
+                if let .InPlace place snap? := last then deinitInPlaceArg h choice place snap?
+            for idx in [:fields.size] do args := args.push (← h.projectFnArg choice last idx)
+          initStackFrame h choice fnInstance body abi args request.withCallerLocation request.destination
+            (.goto request.target request.unwind)
+      deallocateTempArgs h choice allTemps
+      pure none
     | .Virtual definition idx =>
       let abi ← needAbi
-      require (!request.args.isEmpty) "virtual call missing receiver"
-      let (fnInstance, abi, args) ← h.resolveVirtual choice fnInstance definition idx abi request.args
-      return some { request with callee := .Instance fnInstance, callerFnAbi := some abi, args }
+      cleanupTempArgsOnError h choice request.tempAllocs do
+        require (!request.args.isEmpty) "virtual call missing receiver"
+        let (argsForResolve, deinitSizedReceiver?) ← match request.args[0]? with
+          | some (FnArg.InPlace receiverPlace (some snap)) =>
+            h.restoreInPlaceMovedBytes choice snap receiverPlace
+            let restoredArgs :=
+              if bound : 0 < request.args.size then
+                request.args.set 0 (.InPlace receiverPlace none) bound
+              else
+                request.args
+            pure (restoredArgs, some receiverPlace)
+          | _ => pure (request.args, none)
+        let (fnInstance, abi, args) ←
+          h.resolveVirtual choice fnInstance definition idx abi argsForResolve
+        if h.deinitMovedPlace then
+          if let some receiverPlace := deinitSizedReceiver? then
+            h.deinitInPlaceArgument choice receiverPlace
+        return some { request with callee := .Instance fnInstance, callerFnAbi := some abi, args }
 
 /-- Unbounded finite dispatch prefixes. This relation has no runner budget;
 resource exhaustion of `initFnCall` says nothing about later UB freedom. -/
@@ -427,7 +635,9 @@ Exhaustion is reported, never successful execution or an omitted arm. -/
 def initFnCall (h : Hooks) (choice : C) (budget : Nat)
     (request : CallRequest P Other Extern FnABI) : M Unit := do
   match budget with
-  | 0 => throw (.resourceExhaustion "call dispatch budget exhausted")
+  | 0 =>
+    deallocateTempArgs h choice request.tempAllocs
+    throw (.resourceExhaustion "call dispatch budget exhausted")
   | n + 1 =>
     match ← initFnCallStep h choice request with
     | none => pure ()
@@ -435,13 +645,20 @@ def initFnCall (h : Hooks) (choice : C) (budget : Nat)
 
 def initFnTailCall (h : Hooks) (choice : C) (budget : Nat)
     (evaluated : EvaluatedCall P Other Extern FnABI) : M Unit := do
-  let args := evaluated.args.map fun arg => FnArg.Copy arg.copyFnArg
-  let frame ← h.popRaw choice
-  let (ret, unwind) ← match frame.returnContinuation with
-    | .goto ret unwind => pure (ret, unwind)
-    | .stop _ => throw (.invalidProgram "cannot tailcall as root of stack")
+  let (args, newTemps) ← cleanupTempArgsOnError h choice evaluated.tempAllocs do
+    if h.deinitMovedPlace then
+      materializeAndDeinitArgs h choice evaluated.args
+    else
+      pure (evaluated.args.map fun arg => FnArg.Copy arg.copyFnArg, #[])
+  let allTemps := evaluated.tempAllocs ++ newTemps
+  let (frame, ret, unwind) ← cleanupTempArgsOnError h choice allTemps do
+    let frame ← h.popRaw choice
+    let (ret, unwind) ← match frame.returnContinuation with
+      | .goto ret unwind => pure (ret, unwind)
+      | .stop _ => throw (.invalidProgram "cannot tailcall as root of stack")
+    pure (frame, ret, unwind)
   initFnCall h choice budget ⟨evaluated.callee, evaluated.callerAbi, evaluated.fnAbi, args,
-    evaluated.withCallerLocation, frame.returnPlace, ret, unwind⟩
+    evaluated.withCallerLocation, frame.returnPlace, ret, unwind, allTemps⟩
   let action ← h.cleanup choice false frame
   require (action == .normal) "tailcall cleanup must return Normal"
 
@@ -454,7 +671,7 @@ def evalCallTerminator (h : Hooks) (choice : C) (budget : Nat) (terminator : Ter
     let evaluated ← evalCalleeAndArgs h choice func args dest
     initFnCall h choice budget ⟨evaluated.callee, evaluated.callerAbi, evaluated.fnAbi, evaluated.args,
       evaluated.withCallerLocation, destPlace, target,
-      if evaluated.fnAbi.any h.abiCanUnwind then unwind else .Unreachable⟩
+      if evaluated.fnAbi.any h.abiCanUnwind then unwind else .Unreachable, evaluated.tempAllocs⟩
     if target.isSome then
       if (← h.frameIndex) == oldIndex then
         if (← h.getFrame).location == oldLoc then
@@ -482,7 +699,7 @@ def initDropInPlaceCall (h : Hooks) (choice : C) (budget : Nat)
   let arg ← h.mplaceToMutRef choice place
   let ret ← h.fakeUnitReturn choice
   initFnCall h choice budget ⟨.Instance fnInstance, h.rustAbi, some abi, #[.Copy arg], false,
-    ret, some target, unwind⟩
+    ret, some target, unwind, #[]⟩
 
 /-- Canonical Stack adapters: callbacks receive the full machine state, and
 all stack/machine mutations are installed before returning an error. -/

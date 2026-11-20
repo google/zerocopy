@@ -34,6 +34,7 @@ structure AccessConfig (K User : Type) where
   syncAccess : Bool → AllocId → AllocRange → MachineM K User Unit
   retainTouched : Machine K User → Option (AllocationAccessRef Provenance BorrowTree) → Machine K User
   memoryError : MemoryOperandError → StepError
+  deinitMovedPlace : Bool := false
 
 private def treeError (status : BorrowTree.BorrowTreeAccessStatus) : StepError :=
   match status with
@@ -96,14 +97,38 @@ private def finish (config : AccessConfig K User) (hooks : AccessState K User)
   | .ok value => return value
   | .error error => throw (hooks.pendingError.getD (config.memoryError error))
 
+def takePendingMoveDeinit (deinitEnabled : Bool) : M K User Bool := do
+  let state ← get
+  let (machine', pendingFlag) := MachineHooks.takeLastPendingMoveDeinit state.machine
+  set { state with machine := machine' }
+  return deinitEnabled && pendingFlag
+
+def writeMemory [DecidableEq K] (config : AccessConfig K User)
+    (willValidate : MemoryOperandLayout → Bool) (value : Immediate Provenance)
+    (place : MPlaceTy Provenance) : M K User Unit := do
+  let state ← get
+  let result := writeImmediateToMplaceNoValidate state.machine.memory ⟨state.machine, none⟩ value
+    ⟨place.mplace, localMemoryLayout place.layout⟩ config.runtime config.ghostMode config.globalKind
+    config.globalHooks (accessHooks config) config.dynamicLayout willValidate
+  commit config result.memory result.hooks result.touched
+  finish config result.hooks result.outcome
+
 def readImmediate [DecidableEq K] (config : AccessConfig K User) (operand : OpTy Provenance) :
     M K User (RvalueImmTy Provenance) := do
+  let shouldDeinit ← match operand.op with
+    | .indirect _ => takePendingMoveDeinit config.deinitMovedPlace
+    | .immediate _ =>
+      modify fun s => { s with machine := { s.machine with pendingMoveDeinit := false } }
+      pure false
   let state ← get
   let result := Miri.Interpreter.readImmediate state.machine.memory ⟨state.machine, none⟩ operand.op
     (localMemoryLayout operand.layout) config.runtime config.ghostMode config.globalKind
     config.globalHooks (accessHooks config) config.dynamicLayout
   commit config result.memory result.hooks result.touched
   let value ← finish config result.hooks result.outcome
+  if shouldDeinit then
+    if let .indirect mplace := operand.op then
+      writeMemory config (fun _ => false) .uninit ⟨mplace, operand.layout⟩
   return ⟨value.value, operand.layout⟩
 
 def readRaw [DecidableEq K] (config : AccessConfig K User) (operand : OpTy Provenance) :
@@ -115,15 +140,51 @@ def readRaw [DecidableEq K] (config : AccessConfig K User) (operand : OpTy Prove
   commit config result.memory result.hooks result.touched
   finish config result.hooks result.outcome
 
-def writeMemory [DecidableEq K] (config : AccessConfig K User)
-    (willValidate : MemoryOperandLayout → Bool) (value : Immediate Provenance)
+def rawAccessHooks (config : AccessConfig K User) :
+    AllocationAccessHooks Provenance BorrowTree K (AccessState K User) ProvenanceExtra := {
+  resolvePointer := fun memory state ptr size => bridge state (config.resolvePointer memory ptr size)
+  beforeAllocationAccess := fun state _ => ⟨state, .ok ()⟩
+  beforeMemoryRead := fun state tree _ _ _ _ => ⟨state, tree, .ok ()⟩
+  beforeMemoryWrite := fun state tree _ _ _ _ => ⟨state, tree, .ok ()⟩ }
+
+def writeMemoryRawUninit [DecidableEq K] (config : AccessConfig K User)
     (place : MPlaceTy Provenance) : M K User Unit := do
   let state ← get
-  let result := writeImmediateToMplaceNoValidate state.machine.memory ⟨state.machine, none⟩ value
+  let result := writeImmediateToMplaceNoValidate state.machine.memory ⟨state.machine, none⟩ .uninit
     ⟨place.mplace, localMemoryLayout place.layout⟩ config.runtime config.ghostMode config.globalKind
-    config.globalHooks (accessHooks config) config.dynamicLayout willValidate
-  commit config result.memory result.hooks result.touched
+    config.globalHooks (rawAccessHooks config) config.dynamicLayout (fun _ => false)
+  modify fun s => { s with machine := { result.hooks.machine with memory := result.memory } }
   finish config result.hooks result.outcome
+
+def copyRawMPlace [DecidableEq K] (config : AccessConfig K User)
+    (src dst : MPlaceTy Provenance) : M K User Unit := do
+  let state ← get
+  let srcAccess := getPlaceAlloc state.machine.memory ⟨state.machine, none⟩
+    ⟨src.mplace, localMemoryLayout src.layout⟩ config.runtime config.ghostMode config.globalKind
+    config.globalHooks (rawAccessHooks config) config.dynamicLayout
+  modify fun s => { s with machine := { srcAccess.hooks.machine with memory := srcAccess.memory } }
+  let srcRef? ← finish config srcAccess.hooks srcAccess.outcome
+  let some srcRef := srcRef? | return ()
+  let state ← get
+  let dstAccess := getPlaceAllocMut state.machine.memory ⟨state.machine, none⟩
+    ⟨dst.mplace, localMemoryLayout dst.layout⟩ config.runtime config.ghostMode config.globalKind
+    config.globalHooks (rawAccessHooks config) config.dynamicLayout
+  modify fun s => { s with machine := { dstAccess.hooks.machine with memory := dstAccess.memory } }
+  let dstRef? ← finish config dstAccess.hooks dstAccess.outcome
+  let some dstRef := dstRef? | return ()
+  let pointerSize ← match config.runtime.pointerSizeIn config.runtime.defaultAddressSpace with
+    | .ok sz => pure sz
+    | .error err => throw (config.memoryError (.runtimeLayout err))
+  let copied := Allocation.copyRepeatedly srcRef.allocation srcRef.range dstRef.range.start 1
+    pointerSize (srcRef.allocId == dstRef.allocId) true dstRef.allocation
+  let updatedDst ← match copied with
+    | .ok () alloc => pure alloc
+    | .error err _ => throw (config.memoryError (.allocation err))
+  let state ← get
+  let memory ← match state.machine.memory.setLiveAllocation dstRef.allocId updatedDst with
+    | .ok mem => pure mem
+    | .error err => throw (config.memoryError (.memoryUpdate err))
+  set { state with machine := { state.machine with memory } }
 
 /-- The canonical zero-sized unit write preserves the entire machine and stack.
 No allocation lookup, pointer resolution or permission transition is assumed.
@@ -239,6 +300,77 @@ def allocateStack [DecidableEq K] (config : AllocationConfig K User) (layout : L
   let pointer ← allocateStackRaw config layout.layout.size layout.layout.align.abi
   return ⟨⟨pointer,.none,none⟩,layout⟩
 
+/-- Non-failing evaluation-time snapshot for `CopyNonOverlapping` in
+`deinitMovedPlace` mode: when `origOp` is a sized indirect place backed by a
+live in-bounds allocation, copies its raw evaluation-time bytes into a fresh
+stack buffer and, when `isMove = true` and the place is aligned and mutable,
+marks the moved source bytes raw `.uninit` immediately so later operands observe
+move invalidation; otherwise returns `none` without mutating state so `copyWith`
+reports the canonical error in `(count, src, dst)` read order. -/
+def trySnapshotMPlace [DecidableEq K] (config : AccessConfig K User)
+    (allocCfg : AllocationConfig K User) (origOp : OpTy Provenance)
+    (isMove : Bool) :
+    M K User (Option (MPlaceTy Provenance)) := do
+  let .indirect mplace := origOp.op | return none
+  if !origOp.layout.layout.isSized then return none
+  let saved ← get
+  let probePlace : MemoryOperandPlace Provenance :=
+    ⟨{ mplace with misaligned := none }, localMemoryLayout origOp.layout⟩
+  let checkRead :=
+    getPlaceAlloc saved.machine.memory ⟨saved.machine, none⟩ probePlace
+      config.runtime config.ghostMode config.globalKind config.globalHooks
+      (rawAccessHooks config) config.dynamicLayout
+  match checkRead.outcome with
+  | .error _ => return none
+  | .ok _ =>
+    let snap ← allocateStack allocCfg origOp.layout
+    copyRawMPlace config ⟨{ mplace with misaligned := none }, origOp.layout⟩ snap
+    if isMove && mplace.misaligned.isNone then
+      let state ← get
+      let checkWrite :=
+        getPlaceAllocMut state.machine.memory ⟨state.machine, none⟩ probePlace
+          config.runtime config.ghostMode config.globalKind config.globalHooks
+          (rawAccessHooks config) config.dynamicLayout
+      match checkWrite.outcome with
+      | .ok _ => writeMemoryRawUninit config ⟨mplace, origOp.layout⟩
+      | .error _ => pure ()
+    return some snap
+
+/-- Read an indirect operand whose evaluation-time bytes were snapshotted into
+`snapPlace`: executes pointer/bounds/alignment/race/Tree-Borrows read checks on
+`origOp` without requiring mutability when `deinitOrig = false`, reads the
+scalar value from `snapPlace`, and writes `.uninit` to `origOp` when
+`deinitOrig = true`. -/
+def readImmediateFromSnapshot [DecidableEq K] (config : AccessConfig K User)
+    (origOp : OpTy Provenance) (snapPlace : MPlaceTy Provenance)
+    (deinitOrig : Bool) : M K User (RvalueImmTy Provenance) := do
+  let memLayout := localMemoryLayout origOp.layout
+  match origOp.op with
+  | .immediate _ => readImmediate config origOp
+  | .indirect origMplace =>
+    match memLayout.backendRepr with
+    | .Scalar (.Initialized ..)
+    | .ScalarPair (a := .Initialized ..) (b := .Initialized ..) => pure ()
+    | _ => finish config ⟨(← get).machine, none⟩ (.error .invalidPrimitiveRead)
+    let state ← get
+    let access := getPlaceAlloc state.machine.memory ⟨state.machine, none⟩
+      ⟨origMplace, memLayout⟩ config.runtime config.ghostMode
+      config.globalKind config.globalHooks (accessHooks config)
+      config.dynamicLayout
+    commit config access.memory access.hooks access.touched
+    let _ ← finish config access.hooks access.outcome
+    let state ← get
+    let snapRead := Miri.Interpreter.readImmediate state.machine.memory
+      ⟨state.machine, none⟩ (.indirect snapPlace.mplace) memLayout
+      config.runtime config.ghostMode config.globalKind config.globalHooks
+      (rawAccessHooks config) config.dynamicLayout
+    modify fun s =>
+      { s with machine := { snapRead.hooks.machine with memory := snapRead.memory } }
+    let value ← finish config snapRead.hooks snapRead.outcome
+    if deinitOrig then
+      writeMemory config (fun _ => false) .uninit ⟨origMplace, origOp.layout⟩
+    return ⟨value.value, origOp.layout⟩
+
 structure CompilerHooks (K User C : Type) where
   debugAssertions : Bool
   layout : C → MIR.LocalId → M K User LocalLayout
@@ -291,7 +423,8 @@ def placeHooks [DecidableEq K] (access : AccessConfig K User) (allocation : Allo
   memoryOffset := compiler.memoryOffset
   writeLocalImmediate := fun _ => placeWriteLocalImmediate MachineHooks.currentFrame MachineHooks.setCurrentFrame
     compiler.validationInProgress MachineHooks.afterLocalWrite compiler.debugAbiCheck
-  enforceValidity := compiler.enforceValidity, validate := compiler.validate }
+  enforceValidity := compiler.enforceValidity, validate := compiler.validate
+  takePendingMoveDeinit := takePendingMoveDeinit access.deinitMovedPlace }
 
 /-- Compiler/type/layout preparation remains fallible; the write-uninit stage
 is supplied by the actual typed memory writer below, including races and TB. -/
