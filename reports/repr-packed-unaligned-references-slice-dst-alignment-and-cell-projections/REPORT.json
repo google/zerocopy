@@ -1,0 +1,82 @@
+{
+  "topics": [
+    "anneal/theory",
+    "lean/mechanization",
+    "rust/layout",
+    "rust/memory-model",
+    "rust/unsafe",
+    "rustc/mir",
+    "zerocopy/layout",
+    "zerocopy/soundness"
+  ],
+  "subjects": [
+    {
+      "name": "google/zerocopy",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "ec133ce4d7993775413d852f91c9e3eb2a2a0897"
+      }
+    },
+    {
+      "name": "Rust compiler and standard library",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "4b5350e87e487aed08ab2f9f0160a4b2616438bc"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "a286e1ecb8ce193d50056e4bb042eea9b23876ef"
+      }
+    },
+    {
+      "name": "Rust RFCs (RFC 2349 Pin, RFC 2582 raw reference operator)",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07",
+        "rfcs": "2349,2582"
+      }
+    },
+    {
+      "name": "Mechanized Miri and Tree Borrows operational semantics in Lean 4",
+      "identity": {
+        "repository": "proofs-rs/lean-miri",
+        "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+      }
+    },
+    {
+      "name": "Anneal MIR verification framework",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Villani, Hostert, Dreyer & Jung (2025): Tree Borrows",
+      "identity": {
+        "doi": "10.1145/3735592",
+        "venue": "PACMPL 9(PLDI), Article 188",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Jung, Dang, Kang & Dreyer (2020): Stacked Borrows",
+      "identity": {
+        "doi": "10.1145/3371109",
+        "venue": "PACMPL 4(POPL), Article 41",
+        "year": "2020"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

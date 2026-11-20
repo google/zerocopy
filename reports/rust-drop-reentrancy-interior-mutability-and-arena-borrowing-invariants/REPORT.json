@@ -1,0 +1,134 @@
+{
+  "topics": [
+    "anneal/theory",
+    "lean/mechanization",
+    "rust/memory-model",
+    "rust/safety",
+    "rust/unsafe",
+    "verification/iris",
+    "verification/rust",
+    "verification/verus"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler and standard library",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "4b5350e87e487aed08ab2f9f0160a4b2616438bc"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "a286e1ecb8ce193d50056e4bb042eea9b23876ef"
+      }
+    },
+    {
+      "name": "Rust RFCs (RFC 1066 safe mem::forget, RFC 2349 Pin)",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07",
+        "rfcs": "1066,2349"
+      }
+    },
+    {
+      "name": "tokio-rs/slab pre-allocated storage",
+      "identity": {
+        "repository": "tokio-rs/slab",
+        "revision": "7d1d8ab00a7b8b1978b4bf21d9ae9633ac8c0b05"
+      }
+    },
+    {
+      "name": "orlp/slotmap generational arena",
+      "identity": {
+        "repository": "orlp/slotmap",
+        "revision": "eccedefc5e09746944678ddcb854d1d709abb444"
+      }
+    },
+    {
+      "name": "Tock embedded OS kernel Grant table",
+      "identity": {
+        "repository": "tock/tock",
+        "revision": "ba6aa7edc014505d2e6f0123b2b6059ba6ee7dec"
+      }
+    },
+    {
+      "name": "Creusot deductive Rust verifier and creusot-std",
+      "identity": {
+        "repository": "creusot-rs/creusot",
+        "revision": "601d97891bb0bc0b569686cc946ef4980560b5d8"
+      }
+    },
+    {
+      "name": "Verus linear-ghost Rust verifier and vstd",
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "0dab219272ac2353320bd177ebb3929453b90a9e"
+      }
+    },
+    {
+      "name": "Mechanized Miri and Tree Borrows operational semantics in Lean 4",
+      "identity": {
+        "repository": "proofs-rs/lean-miri",
+        "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+      }
+    },
+    {
+      "name": "Anneal MIR verification framework and PureLift",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Jung, Jourdan, Krebbers & Dreyer (2018): RustBelt",
+      "identity": {
+        "doi": "10.1145/3158154",
+        "venue": "PACMPL 2(POPL), Article 66",
+        "year": "2018"
+      }
+    },
+    {
+      "name": "Gaher, Sammler, Jung, Krebbers & Dreyer (2024): RefinedRust",
+      "identity": {
+        "doi": "10.1145/3656422",
+        "venue": "PACMPL 8(PLDI), Article 195",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Denis, Jourdan & Marche (2022): Creusot",
+      "identity": {
+        "doi": "10.1007/978-3-031-17244-1_6",
+        "venue": "ICFEM 2022, LNCS 13478, pp. 90-105",
+        "year": "2022"
+      }
+    },
+    {
+      "name": "Lattuada et al. (2023): Verus: Verifying Rust Programs using Linear Ghost Types",
+      "identity": {
+        "doi": "10.1145/3586037",
+        "venue": "PACMPL 7(OOPSLA1), Article 85",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "Bae et al. (2021): Rudra: Finding Memory Safety Bugs in Rust at the Ecosystem Scale",
+      "identity": {
+        "doi": "10.1145/3477132.3483570",
+        "venue": "SOSP 2021, pp. 84-99",
+        "year": "2021"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
