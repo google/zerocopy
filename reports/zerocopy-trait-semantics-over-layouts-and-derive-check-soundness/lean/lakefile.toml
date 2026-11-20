@@ -1,0 +1,6 @@
+name = "toy-zc"
+version = "0.1.0"
+defaultTargets = ["ToyZc"]
+
+[[lean_lib]]
+name = "ToyZc"

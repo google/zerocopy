@@ -1,0 +1,959 @@
+[
+  {
+    "id": "R1-semantic-predicates-list-characterizations",
+    "lean": [
+      "Toy.Zc.semFromBytes_iff_validInit_total",
+      "Toy.Zc.semFromZeros_iff_validInit_zeros",
+      "Toy.Zc.semIntoBytes_iff_encodeL_init"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "In the model, for every type description d: SemFromBytes d (every fully initialized byte vector decodes under the modeled representation Desc.rep d) holds iff the modeled validity check validInit accepts every byte list of length d.size; SemFromZeros d holds iff validInit accepts the all-zero byte list of length d.size; and SemIntoBytes d holds iff every byte below d.size of the modeled encoding of every well-typed value is initialized.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "u8 satisfies SemFromBytes, SemFromZeros and SemIntoBytes (each proved through the corresponding equivalence).",
+    "nonvacuity_witness_lean": [
+      "Toy.Zc.semFromBytes_int",
+      "Toy.Zc.semFromZeros_int",
+      "Toy.Zc.semIntoBytes_int"
+    ],
+    "non_claims": [
+      "These are equivalences inside the model only; that SemFromBytes/SemFromZeros/SemIntoBytes match zerocopy's documented safety contracts (zerocopy/src/lib.rs:4266-4269, 3681-3683, 5913-5916) is a modeling bridge.",
+      "validInit is the exact validity of the model's decoder, not zerocopy's runtime check; the two are related only by R2f (derive_isSafe_eq_validInit_of_wf_of_length) for well-formed descriptions and bytes of the right length.",
+      "Bytes carry no provenance; nothing here says anything about pointer-carrying types.",
+      "On unions, validity (Desc.decodeL) is by definition zerocopy's conservative rule 'some field is valid', returning the first such field (zerocopy/zerocopy-derive/src/derive/try_from_bytes.rs:292-296: 'The bit validity of a union is not yet well defined in Rust, but it is guaranteed to be no more strict than this definition'). Consequently Desc.rep on unions is not canonical: decoding then encoding can forget bytes (union_decode_encode_forgets_bytes) and decoding is not monotone in definedness (union_decode_not_monotone).",
+      "The model has no field invariants (#[zerocopy(invariant)]) and its union validity coincides with the derived union validator, so it does not exhibit the TryFromBytes/IntoBytes asymmetry documented at zerocopy/src/lib.rs:1865-1873 ('for some T: TryFromBytes + IntoBytes, there exist values of t: T such that TryFromBytes::try_ref_from_bytes(t.as_bytes()) == None').",
+      "The semantic predicates speak about by-value byte validity (what owned conversions such as transmute! or read_from_bytes need). zerocopy's reference conversions need more: FromBytes::ref_from_bytes and IntoBytes::as_bytes also require Self: Immutable (zerocopy/src/lib.rs:4390-4392, 5995-5997), which the byte model cannot express (R7a); FromBytes::mut_from_bytes also requires Self: IntoBytes (zerocopy/src/lib.rs:4680-4682); transmute_ref! requires Src: IntoBytes + Immutable, Dst: FromBytes + Immutable, align_of::<Src>() >= align_of::<Dst>() and size compatibility (zerocopy/src/macros.rs:202-208); transmute_mut! requires FromBytes + IntoBytes on both Src and Dst plus the same alignment and size conditions (zerocopy/src/macros.rs:415-421). None of these is modeled.",
+      "Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact."
+    ],
+    "prior_art": [
+      "zerocopy v0.8.63 (google/zerocopy, commit c55af491426ef53f35fb8c6e83f220fa07712e66): FromBytes safety contract, zerocopy/src/lib.rs:4266-4269 ('it is sound to produce a T whose bytes are initialized to any sequence of valid u8s'); FromZeros, zerocopy/src/lib.rs:3681-3683; IntoBytes, zerocopy/src/lib.rs:5913-5916; TryFromBytes::is_safe, zerocopy/src/lib.rs:1907-1912; Unaligned, zerocopy/src/lib.rs:6507.",
+      "MiniRust, spec/lang/representation.md, minirust/minirust commit 063d784186d3252bee242217f218223205c0b568: representations as encode/decode over abstract bytes (the vocabulary these definitions follow).",
+      "Xavier Leroy and Sandrine Blazy, 'Formal verification of a C-like memory model and its uses for verifying program transformations', Journal of Automated Reasoning 41(1), 2008, DOI 10.1007/s10817-008-9099-0: a Coq memory model whose stored bytes are either undefined or concrete, with encode/decode of values to bytes (an earlier mechanized byte-representation vocabulary).",
+      "Harvey Tuch, Gerwin Klein, Michael Norrish, 'Types, Bytes, and Separation Logic', POPL 2007, DOI 10.1145/1190216.1190234: Isabelle/HOL model of typed values over a byte-addressed heap.",
+      "Kayvan Memarian, Victor B. F. Gomes, Brooks Davis, Stephen Kell, Alexander Richardson, Robert N. M. Watson, Peter Sewell, 'Exploring C semantics and pointer provenance', PACMPL 3(POPL), 2019, DOI 10.1145/3290380: byte-level representation with pointer provenance in C (the present model's bytes carry no provenance)."
+    ],
+    "design_question": "Which precise byte-level predicates should stand for zerocopy's trait contracts when reasoning about derive checks?",
+    "tier_justification": "T0: definitional unfolding of the representation predicates to list-level statements; no new mathematics."
+  },
+  {
+    "id": "R2a-struct-fromBytes-fromZeros-iff-fields",
+    "lean": [
+      "Toy.Zc.struct_fromBytes_iff_fields_fromBytes",
+      "Toy.Zc.struct_fromZeros_iff_fields_fromZeros"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "In the model, for every modeled struct representation (repr(C) with or without packed(N) or align(N), or repr(transparent)) and every list of field descriptions, the struct description is SemFromBytes iff every field is SemFromBytes, and SemFromZeros iff every field is SemFromZeros, whether or not its modeled layout has padding.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "#[repr(C)] struct { a: u8, b: u16 } (one padding byte) with FromBytes and FromZeros fields.",
+    "nonvacuity_witness_lean": "Toy.Zc.nv_struct_fromBytes_fromZeros_padded",
+    "non_claims": [
+      "Does not cover repr(Rust) structs, which zerocopy's FromBytes/FromZeros derives also accept without a repr (zerocopy/src/lib.rs:4143-4168); the model has no repr(Rust) layout.",
+      "Padding bytes are unconstrained by the model's decoder; that Rust imposes no validity on padding is taken from zerocopy's documentation (citing UCG issue 174), not proved.",
+      "Says nothing about generic structs, whose derive output differs.",
+      "That a padded struct is FromBytes does not make reference casts available: FromBytes::mut_from_bytes additionally requires Self: IntoBytes (zerocopy/src/lib.rs:4680-4682), which a padded struct is not (R2c), and FromBytes::ref_from_bytes requires Self: Immutable (zerocopy/src/lib.rs:4390-4392).",
+      "Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact."
+    ],
+    "prior_art": [
+      "zerocopy v0.8.63 (google/zerocopy, commit c55af491426ef53f35fb8c6e83f220fa07712e66): FromBytes derive analysis 'If the type is a struct, all of its fields must be FromBytes' and 'Whether a struct is soundly FromBytes therefore solely depends on whether its fields are FromBytes' (zerocopy/src/lib.rs:4131, 4167-4168); FromZeros analogues (zerocopy/src/lib.rs:1493, 1532-1533); derive code zerocopy/zerocopy-derive/src/derive/from_bytes.rs:122-124, 181-183.",
+      "Rust Unsafe Code Guidelines issue 174, 'Padding Bytes Guarantees?', https://github.com/rust-lang/unsafe-code-guidelines/issues/174 (cited by zerocopy for 'padding bytes do not have any validity constraints')."
+    ],
+    "design_question": "Do the struct FromBytes/FromZeros derives need a repr or a padding check? (They need neither.)",
+    "tier_justification": "T1: stated informally in zerocopy's derive documentation (zerocopy/src/lib.rs:4167-4168, 1532-1533); made precise over an explicit decoder and layout. No mechanized version found (searched the cited sources, the Aeneas layout prototype, and web search for zerocopy formal verification)."
+  },
+  {
+    "id": "R2c-struct-intoBytes-iff-fields-and-no-padding",
+    "lean": "Toy.Zc.struct_intoBytes_iff_fields_intoBytes_no_padding_of_inhabited",
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "In the model, for a struct description (any modeled representation) whose field descriptions are all inhabited, the struct is SemIntoBytes iff every field is SemIntoBytes and the struct's modeled size equals the sum of its field sizes.",
+    "hypotheses": [
+      {
+        "name": "hInh",
+        "purpose": "Each field type has a value; needed for the left-to-right direction (an uninhabited field makes IntoBytes vacuous). Counterexample in canonical form: inhabitedness fails and the equivalence fails.",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_struct_intoBytes_iff_drop_inhabited"
+      },
+      {
+        "name": "(right side) every field IntoBytes",
+        "purpose": "Conjunct of the characterization; a padded field type leaks uninit bytes even without top-level padding. Counterexample: inhabited fields, size = sum, not every field IntoBytes, struct not IntoBytes.",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_struct_drop_fields_intoBytes"
+      },
+      {
+        "name": "(right side) size = sum of field sizes",
+        "purpose": "Conjunct of the characterization (no padding). Counterexample: inhabited IntoBytes fields, size 4 differs from sum 3, struct not IntoBytes.",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_padded_struct_of_intoBytes_fields_not_intoBytes"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "#[repr(C)] struct { a: u16, b: u8, c: u8 }: inhabited IntoBytes fields, size 4 = 2+1+1.",
+    "nonvacuity_witness_lean": "Toy.Zc.nv_struct_intoBytes",
+    "non_claims": [
+      "Uses the model's repr(C) placement (reprCStruct); the argument that the padding check is sound for repr(Rust) (fields never overlap) is not formalized.",
+      "Does not cover structs with a trailing slice (zerocopy's PaddingCheck::ReprCStruct / DynamicPaddingFree path).",
+      "Does not say that zerocopy's check is exactly this condition; see R2d for the check's shortcuts.",
+      "SemIntoBytes is by-value byte initialization; IntoBytes::as_bytes(&self) additionally requires Self: Immutable (zerocopy/src/lib.rs:5995-5997), which is not a byte-level property (R7a).",
+      "Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact."
+    ],
+    "prior_art": [
+      "zerocopy v0.8.63 (google/zerocopy, commit c55af491426ef53f35fb8c6e83f220fa07712e66): IntoBytes derive analysis 'if the type has no generic parameters, it is IntoBytes if the type is sized and has no padding bytes' (zerocopy/src/lib.rs:5848-5849); struct_padding! (zerocopy/src/util/macro_util.rs:333-340).",
+      "Rust Reference 1.81.0, Type layout, https://doc.rust-lang.org/1.81.0/reference/type-layout.html (repr(C) struct layout).",
+      "Harvey Tuch, Gerwin Klein, Michael Norrish, 'Types, Bytes, and Separation Logic', POPL 2007, DOI 10.1145/1190216.1190234; and AutoCorres2 (M. Brecknell et al.), Archive of Formal Proofs, April 2024, https://isa-afp.org/entries/AutoCorres2.html: Isabelle/HOL formalizations of C struct layout with padding over byte heaps (C, not Rust; no derive checks).",
+      "Robbert Krebbers, 'The C Standard Formalized in Coq', PhD thesis, Radboud University Nijmegen, 2015, https://hdl.handle.net/2066/147182: Coq semantics of C11 including indeterminate padding bytes and unions.",
+      "Tahina Ramananandro, Gabriel Dos Reis, Xavier Leroy, 'Formal verification of object layout for C++ multiple inheritance', POPL 2011, DOI 10.1145/1926385.1926395: Coq-verified object layout algorithms including padding (C++ ABI, not Rust repr(C))."
+    ],
+    "design_question": "Is 'all fields IntoBytes and size = sum of field sizes' the right semantic target for the struct IntoBytes derive?",
+    "tier_justification": "T1: zerocopy states the no-padding criterion informally (zerocopy/src/lib.rs:5848-5849); this makes the equivalence precise, including the inhabitedness condition it silently needs."
+  },
+  {
+    "id": "R2d-struct-padding-analysis-sound",
+    "lean": "Toy.Zc.structPaddingOK_sound",
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "In the model, for a well-formed struct description (Desc.wf), if the modeled IntoBytes padding analysis structPaddingOK passes (repr(transparent); or repr(C, packed(1)); or repr(C) without align(N>1) and with at most one field; or the modeled size minus the sum of the field sizes is 0), then the struct's modeled size equals the sum of its field sizes.",
+    "hypotheses": [
+      {
+        "name": "hwf",
+        "purpose": "Compiler rules used: at most one non-1-ZST field in repr(transparent); power-of-two packed/align arguments, both on the struct itself and (via Desc.wfAll) inside its fields (so a one-field repr(C, packed(N)) struct has no trailing padding).",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Zc.ce_structPaddingOK_drop_wf",
+          "Toy.Zc.ce_structPaddingOK_drop_wf_packed3",
+          "Toy.Zc.ce_structPaddingOK_drop_inner_wf"
+        ]
+      },
+      {
+        "name": "hP",
+        "purpose": "The modeled padding analysis of into_bytes.rs:99-144.",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_one_field_align_gt_1_has_trailing_padding"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Each shortcut on a well-formed struct: transparent with a ZST and a u32, repr(C, packed) {u8,u16}, repr(C, packed(2)) {u32}, repr(C) {u16,u8,u8}.",
+    "nonvacuity_witness_lean": "Toy.Zc.nv_structPaddingOK",
+    "non_claims": [
+      "Does not model generic structs: zerocopy's generic paths (homogeneous_field_bounds, the Unaligned-fields fallback; zerocopy/zerocopy-derive/src/derive/into_bytes.rs:145-181) are out of scope.",
+      "Does not model repr(packed) without C or repr(Rust), which zerocopy's derive also accepts (is_packed_1 holds for repr(packed) on any base repr).",
+      "The one-field shortcut excludes align(N>1) precisely because a one-field repr(C, align(2)) struct gains trailing padding (ce_one_field_align_gt_1_has_trailing_padding); nothing is claimed about other excluded cases.",
+      "Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact."
+    ],
+    "prior_art": [
+      "zerocopy v0.8.63 (google/zerocopy, commit c55af491426ef53f35fb8c6e83f220fa07712e66): zerocopy/zerocopy-derive/src/derive/into_bytes.rs:99-123 (shortcuts and their justification comments), 124-144 (padding check for non-generic structs); zerocopy/zerocopy-derive/src/repr.rs:148-150 (is_align_gt_1), 169-171 (is_packed_1); struct_padding! zerocopy/src/util/macro_util.rs:333-340.",
+      "Rust Reference 1.81.0, Type layout, 'a type with #[repr(packed(1))] (or #[repr(packed)]) will have no inter-field padding'."
+    ],
+    "design_question": "Is each shortcut of the struct IntoBytes padding analysis a sound replacement for the size check, and why is align(N>1) excluded?",
+    "tier_justification": "T1: the shortcuts are justified by comments in zerocopy/zerocopy-derive/src/derive/into_bytes.rs:99-123; made precise, with the compiler rules they rely on isolated."
+  },
+  {
+    "id": "R2e-derives-sound-on-well-formed-descriptions",
+    "lean": [
+      "Toy.Zc.derive_fromZeros_sound_of_wf",
+      "Toy.Zc.derive_fromBytes_sound_of_wf",
+      "Toy.Zc.derive_intoBytes_sound_of_wf",
+      "Toy.Zc.derive_unaligned_sound"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "In the model, every well-formed description (Desc.wf) accepted by the modeled FromZeros, FromBytes or IntoBytes derive check (implFromZeros, implFromBytes, implIntoBytes, which include models of zerocopy's primitive impls; implIntoBytes in either setting of the union cfg) is SemFromZeros, SemFromBytes or SemIntoBytes respectively; and every description accepted by the modeled Unaligned derive check implUnaligned has modeled alignment 1 (no well-formedness needed).",
+    "hypotheses": [
+      {
+        "name": "hwf (derive_fromZeros_sound_of_wf, derive_fromBytes_sound_of_wf, derive_intoBytes_sound_of_wf; derive_unaligned_sound has no such hypothesis)",
+        "purpose": "Compiler rules the checks rely on: distinct, representable discriminants; nonempty unions; the repr(transparent) 1-ZST rule; power-of-two modifiers.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Zc.ce_derive_fromZeros_drop_wf",
+          "Toy.Zc.ce_derive_fromBytes_drop_wf",
+          "Toy.Zc.ce_derive_intoBytes_drop_wf"
+        ]
+      },
+      {
+        "name": "h (the check; all four theorems)",
+        "purpose": "The modeled derive accepts the description. Counterexample: well-formed descriptions rejected by each check that lack the property.",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_derive_drop_check"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "{u8,u16} (well-formed) passes FromZeros and FromBytes; {u16,u8,u8} passes IntoBytes; repr(C, packed) {u8,u16} passes Unaligned.",
+    "nonvacuity_witness_lean": "Toy.Zc.nv_derive_sound",
+    "non_claims": [
+      "Soundness only: the checks are not complete (findZeroVariant_incomplete_with_unknown, findZeroVariant_incomplete_nonliteral_before_implicit, union_fromBytes_derive_not_necessary).",
+      "The IntoBytes statement holds in every DeriveConfig; it says nothing about whether the union cfg gate is needed for soundness in Rust (see R4d).",
+      "Every nominal type is assumed to request the derive; impls written by hand, or derives not requested, are not modeled.",
+      "Generic types, field invariants, slice DSTs, repr(Rust), and pointer types are not covered.",
+      "Does not model #[derive(KnownLayout)] (zerocopy/zerocopy-derive/src/derive/known_layout.rs:252-351) or zerocopy's construction of a type's DstLayout (DstLayout::for_type, DstLayout::for_repr_c_struct).",
+      "The real #[derive(FromZeros)] first expands the TryFromBytes derive (zerocopy/zerocopy-derive/src/derive/from_bytes.rs:98), which bounds the fields of every variant by TryFromBytes (zerocopy/zerocopy-derive/src/derive/try_from_bytes.rs:343), not only the zero variant's fields. Every description in the model implements TryFromBytes, so the model omits these bounds; outside the model (generic or invariant-carrying field types) they can make the derive reject an enum whose zero variant's fields are FromZeros.",
+      "The semantic predicates speak about by-value byte validity (what owned conversions such as transmute! or read_from_bytes need). zerocopy's reference conversions need more: FromBytes::ref_from_bytes and IntoBytes::as_bytes also require Self: Immutable (zerocopy/src/lib.rs:4390-4392, 5995-5997), which the byte model cannot express (R7a); FromBytes::mut_from_bytes also requires Self: IntoBytes (zerocopy/src/lib.rs:4680-4682); transmute_ref! requires Src: IntoBytes + Immutable, Dst: FromBytes + Immutable, align_of::<Src>() >= align_of::<Dst>() and size compatibility (zerocopy/src/macros.rs:202-208); transmute_mut! requires FromBytes + IntoBytes on both Src and Dst plus the same alignment and size conditions (zerocopy/src/macros.rs:415-421). None of these is modeled.",
+      "Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact."
+    ],
+    "prior_art": [
+      "zerocopy v0.8.63 (google/zerocopy, commit c55af491426ef53f35fb8c6e83f220fa07712e66): derive entry points zerocopy/zerocopy-derive/src/lib.rs:130-137; checks in zerocopy/zerocopy-derive/src/derive/from_bytes.rs, derive/into_bytes.rs, derive/unaligned.rs; primitive impls zerocopy/src/impls.rs:68-76 (integers), 101 (bool), 839-850 (UnsafeCell), 893-908 (arrays)."
+    ],
+    "design_question": "Are zerocopy's derive checks sound with respect to precise byte-level semantics on closed types, and which compiler rules do they silently depend on?",
+    "tier_justification": "T1: zerocopy asserts soundness of its derives in prose and comments (its Kani proofs cover layout arithmetic, not derive checks); this is a precise soundness statement for a model of the checks, isolating the compiler rules used."
+  },
+  {
+    "id": "R2f-derived-isSafe-equals-validity",
+    "lean": "Toy.Zc.derive_isSafe_eq_validInit_of_wf_of_length",
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "In the model, for every well-formed description and every byte list whose length is the description's modeled size, the modeled TryFromBytes::is_safe (isSafe: the model of the derived validator for structs, enums and unions together with zerocopy's primitive validators) returns exactly the model's validity check validInit.",
+    "hypotheses": [
+      {
+        "name": "hwf",
+        "purpose": "Distinct representable discriminants (the enum could_be_from_bytes shortcut relies on them) and the other compiler rules of Desc.wf.",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_derive_isSafe_drop_wf"
+      },
+      {
+        "name": "hlen",
+        "purpose": "The bytes have the description's size; the validators never check the length (zerocopy only calls them on correctly sized candidates).",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_derive_isSafe_drop_hlen"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "The well-formed enum #[repr(u8)] enum { A(u8), B(bool) = 5 } and the 2-byte list [5, 1].",
+    "nonvacuity_witness_lean": "Toy.Zc.nv_derive_isSafe",
+    "non_claims": [
+      "On unions the equality is with Desc.decodeL, which is defined as zerocopy's own rule 'some field is valid' (zerocopy/zerocopy-derive/src/derive/try_from_bytes.rs:292-296); for unions the theorem therefore records agreement with that modeled rule, not that the derived union validator is exact for Rust, whose union validity is unsettled (it is only guaranteed to be no stricter).",
+      "The model has no field invariants (#[zerocopy(invariant)]) and its union validity coincides with the derived union validator, so it does not exhibit the TryFromBytes/IntoBytes asymmetry documented at zerocopy/src/lib.rs:1865-1873 ('for some T: TryFromBytes + IntoBytes, there exist values of t: T such that TryFromBytes::try_ref_from_bytes(t.as_bytes()) == None').",
+      "Models the validator for a derive whose top-level trait is TryFromBytes; the FromBytes-top-level shortcut try_gen_trivial_is_safe (zerocopy/zerocopy-derive/src/derive/try_from_bytes.rs:347-393) is not modeled.",
+      "Says nothing about uninitialized input bytes (is_safe is only called on initialized bytes) or about field invariants.",
+      "Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact."
+    ],
+    "prior_art": [
+      "zerocopy v0.8.63 (google/zerocopy, commit c55af491426ef53f35fb8c6e83f220fa07712e66): struct validator derive_try_from_bytes_struct zerocopy/zerocopy-derive/src/derive/try_from_bytes.rs:235-269 (SAFETY comment 250-253) and the per-field conjunction derive_variant_is_safe 33-71 (without field invariants, true && each field check at 69-71); enum validator derive_is_safe and its SAFETY comment 207-226; union validator 282-307; could_be_from_bytes 322-341; TryFromBytes::is_safe contract zerocopy/src/lib.rs:1907-1912; primitive validators zerocopy/src/impls.rs:112-117 (bool), 853-868 (UnsafeCell), 894-904 (arrays)."
+    ],
+    "design_question": "Does the derived TryFromBytes validator compute exactly the validity of the model on closed well-formed types, and what does it rely on?",
+    "tier_justification": "T1: the SAFETY comments of the derived validators state this informally; made precise, with the length precondition and the discriminant rules isolated."
+  },
+  {
+    "id": "R3a-fieldless-enum-fromBytes-iff-all-tags",
+    "lean": "Toy.Zc.fieldless_enum_fromBytes_iff_every_tag_is_discriminant",
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "In the model, a fieldless enum description with a primitive representation repr(t) is SemFromBytes iff every tag value n < 2^(8*width t) is the tag code (Desc.codes) of some variant's resolved discriminant.",
+    "hypotheses": [
+      {
+        "name": "hfl",
+        "purpose": "All variants are fieldless; with fields, every tag being a discriminant is not enough (canonical counterexample: not fieldless and the equivalence fails).",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_fieldless_enum_fromBytes_iff_drop_fieldless"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "repr(u8) enum with 256 fieldless variants 0..255.",
+    "nonvacuity_witness_lean": "Toy.Zc.nv_fieldless_full_u8",
+    "non_claims": [
+      "Does not say the derive checks this condition directly; the derive counts variants (R3b).",
+      "Does not cover repr(C) enums or enums with align(N). (Source observation, not a theorem: zerocopy-derive's FromBytes derive rejects repr(C) enums, enum_size_from_repr at zerocopy/zerocopy-derive/src/util.rs:982-1001; the modeled check enumVariantCountOK is false for EnumRepr.c by definition.)",
+      "Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact."
+    ],
+    "prior_art": [
+      "zerocopy v0.8.63 (google/zerocopy, commit c55af491426ef53f35fb8c6e83f220fa07712e66): FromBytes derive analysis 'The maximum number of discriminants must be used (so that every possible bit pattern is a valid one)' (zerocopy/src/lib.rs:4135-4136)."
+    ],
+    "design_question": "What exactly must hold for a fieldless enum to be FromBytes?",
+    "tier_justification": "T1: documented informally (zerocopy/src/lib.rs:4135-4136)."
+  },
+  {
+    "id": "R3b-enum-variant-count-check-sound",
+    "lean": "Toy.Zc.enum_variant_count_check_sound",
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "In the model, if an enum description's resolved discriminants are pairwise distinct and representable in its tag type (discrsWF), then the modeled FromBytes variant-count check enumVariantCountOK (representation u8, i8, u16 or i16 and exactly 2^bits variants) implies that every tag value n < 2^(8*width) is the tag code of some resolved discriminant.",
+    "hypotheses": [
+      {
+        "name": "hwf",
+        "purpose": "Distinct (compiler error E0081 otherwise) and representable discriminants; the count check is a pigeonhole argument that needs both (one counterexample drops each half).",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Zc.ce_count_check_drop_wf",
+          "Toy.Zc.ce_count_check_drop_representable"
+        ]
+      },
+      {
+        "name": "hc",
+        "purpose": "The count check itself (from_bytes.rs:187-197).",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_count_check_drop_count"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "repr(u8) enum with 256 implicit discriminants.",
+    "nonvacuity_witness_lean": "Toy.Zc.nv_fieldless_full_u8",
+    "non_claims": [
+      "The check's soundness depends on the compiler rejecting duplicate or out-of-range discriminants; the derive itself does not check this.",
+      "Does not claim that the count check (enumVariantCountOK) is necessary for FromBytes: it rejects repr(C) and 32/64-bit primitive representations outright (matching zerocopy-derive's u8/i8/u16/i16 cap), although R3a characterizes FromBytes for every primitive width; and for data-carrying enums, or without distinct representable discriminants, the variant count does not determine FromBytes.",
+      "Does not cover enums with #[repr(..., align(N))] (not in the model's AST), repr(C) enums whose discriminants need a tag other than the 4-byte i32-range tag, or repr(Rust) enums (niches).",
+      "Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact."
+    ],
+    "prior_art": [
+      "zerocopy v0.8.63 (google/zerocopy, commit c55af491426ef53f35fb8c6e83f220fa07712e66): zerocopy/zerocopy-derive/src/derive/from_bytes.rs:184-200; zerocopy/zerocopy-derive/src/util.rs:982-1001 (enum_size_from_repr)."
+    ],
+    "design_question": "Why is counting variants a sound substitute for checking that every bit pattern is a discriminant?",
+    "tier_justification": "T1: the pigeonhole reasoning behind the count check is implicit in zerocopy; made precise with its dependence on E0081 and range checks."
+  },
+  {
+    "id": "R3c-enum-fromBytes-derive-sound",
+    "lean": "Toy.Zc.enum_fromBytes_of_count_check",
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "In the model, for an enum description (fieldless or data-carrying) whose resolved discriminants are distinct and representable (discrsWF), if the modeled variant-count check enumVariantCountOK passes and every field of every variant is SemFromBytes, then the enum is SemFromBytes.",
+    "hypotheses": [
+      {
+        "name": "hwf",
+        "purpose": "Distinct and representable discriminants (one counterexample drops each half).",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Zc.ce_enum_fromBytes_drop_wf",
+          "Toy.Zc.ce_enum_fromBytes_drop_representable"
+        ]
+      },
+      {
+        "name": "hc",
+        "purpose": "The count check.",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_enum_fromBytes_drop_count"
+      },
+      {
+        "name": "hF",
+        "purpose": "Every field of every variant is FromBytes.",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_enum_fromBytes_drop_fields"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "repr(u8) enum with 256 variants, variant 0 carrying a u8.",
+    "nonvacuity_witness_lean": "Toy.Zc.nv_enum_fromBytes_data",
+    "non_claims": [
+      "The derive additionally runs the FromZeros check (find_zero_variant); that conjunct is not needed for FromBytes and makes the check incomplete for enums whose zero discriminant is written as a non-literal expression. Proved in the model (Toy.Zc.fromBytes_enum_rejected_by_findZeroVariant): the well-formed repr(u8) enum nonLiteralZeroFullU8 (first variant = ZERO, a non-literal expression the compiler evaluates to 0, then 255 implicit variants 1..255) passes enumVariantCountOK and is SemFromBytes and SemFromZeros, but find_zero_variant returns Err(true) and implFromBytes rejects it. That zerocopy-derive rejects the corresponding Rust enum is a modeling bridge (zerocopy/zerocopy-derive/src/derive/from_bytes.rs:113, 143-162).",
+      "Does not cover enums with #[repr(..., align(N))] (not in the model's AST), repr(C) enums whose discriminants need a tag other than the 4-byte i32-range tag, or repr(Rust) enums (niches).",
+      "Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact."
+    ],
+    "prior_art": [
+      "zerocopy v0.8.63 (google/zerocopy, commit c55af491426ef53f35fb8c6e83f220fa07712e66): zerocopy/zerocopy-derive/src/derive/from_bytes.rs:106-121, 184-200; zerocopy/src/lib.rs:4132-4137.",
+      "Rust RFC 2195, 'Really Tagged Unions' (start date 2017-10-30), https://rust-lang.github.io/rfcs/2195-really-tagged-unions.html: specifies the repr(C) and repr(Int) layouts of data-carrying enums (tag followed by a union of variant structs) that the model's enum layout follows."
+    ],
+    "design_question": "Is the enum FromBytes derive sound for data-carrying enums?",
+    "tier_justification": "T1: informal in zerocopy/src/lib.rs:4132-4137; precise for data-carrying enums."
+  },
+  {
+    "id": "R3d-enum-fromZeros-iff-zero-variant",
+    "lean": "Toy.Zc.enum_fromZeros_iff_zero_variant_fields_fromZeros_of_discrsWF",
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "In the model, for an enum description whose resolved discriminants are distinct and representable (discrsWF), the enum is SemFromZeros iff some variant has resolved discriminant 0 and every field of that variant is SemFromZeros.",
+    "hypotheses": [
+      {
+        "name": "hwf",
+        "purpose": "Distinct representable discriminants: decoding selects the first variant with tag 0, which must be the zero variant (one counterexample drops each half).",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Zc.ce_enum_fromZeros_iff_drop_wf",
+          "Toy.Zc.ce_enum_fromZeros_iff_drop_representable"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "repr(i8) enum { A(bool) = 3, B = -1, C(u16) } (C has discriminant 0).",
+    "nonvacuity_witness_lean": "Toy.Zc.nv_enum_fromZeros",
+    "non_claims": [
+      "Does not say how the zero variant is found; the derive's syntactic search is R3e and is incomplete.",
+      "Does not cover enums with #[repr(..., align(N))] (not in the model's AST), repr(C) enums whose discriminants need a tag other than the 4-byte i32-range tag, or repr(Rust) enums (niches).",
+      "The real #[derive(FromZeros)] first expands the TryFromBytes derive (zerocopy/zerocopy-derive/src/derive/from_bytes.rs:98), which bounds the fields of every variant by TryFromBytes (zerocopy/zerocopy-derive/src/derive/try_from_bytes.rs:343), not only the zero variant's fields. Every description in the model implements TryFromBytes, so the model omits these bounds; outside the model (generic or invariant-carrying field types) they can make the derive reject an enum whose zero variant's fields are FromZeros.",
+      "Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact."
+    ],
+    "prior_art": [
+      "zerocopy v0.8.63 (google/zerocopy, commit c55af491426ef53f35fb8c6e83f220fa07712e66): FromZeros derive analysis 'It must have a variant with a discriminant/tag of 0, and its fields must be FromZeros' (zerocopy/src/lib.rs:1497-1500).",
+      "Rust RFC 2195, 'Really Tagged Unions', https://rust-lang.github.io/rfcs/2195-really-tagged-unions.html (enum layouts with fields)."
+    ],
+    "design_question": "What does an enum need in order to be FromZeros?",
+    "tier_justification": "T1: documented informally (zerocopy/src/lib.rs:1497-1500)."
+  },
+  {
+    "id": "R3e-find-zero-variant-and-enum-fromZeros-derive",
+    "lean": [
+      "Toy.Zc.findZeroVariant_sound",
+      "Toy.Zc.findZeroVariant_complete_of_no_unknown",
+      "Toy.Zc.enum_fromZeros_of_findZeroVariant"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "In the model, findZeroVariant (the model of zerocopy-derive's syntactic find_zero_variant) is sound with respect to the model's discriminant resolver resolveDiscrs (if it returns Ok(i), resolveDiscrs assigns variant i the discriminant 0) and complete when it returns Err(false), that is, when it saw no non-literal discriminant (then no resolved discriminant is 0); and for distinct representable discriminants (discrsWF), Ok(i) together with SemFromZeros fields of variant i implies that the enum description is SemFromZeros.",
+    "hypotheses": [
+      {
+        "name": "h (findZeroVariant ds = ok i)",
+        "purpose": "Premise of soundness (canonical counterexample: the search does not return variant 0 and variant 0 is not zero).",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_findZeroVariant_sound_drop_h"
+      },
+      {
+        "name": "h (findZeroVariant ds = error false)",
+        "purpose": "Premise of completeness; with Err(true) (a non-literal discriminant was seen) a zero discriminant may exist.",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.findZeroVariant_incomplete_with_unknown"
+      },
+      {
+        "name": "hwf (enum_fromZeros_of_findZeroVariant)",
+        "purpose": "Distinct representable discriminants (one counterexample drops each half).",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Zc.ce_enum_fromZeros_of_findZeroVariant_drop_wf",
+          "Toy.Zc.ce_enum_fromZeros_of_findZeroVariant_drop_representable"
+        ]
+      },
+      {
+        "name": "hz (enum_fromZeros_of_findZeroVariant)",
+        "purpose": "The search succeeds.",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_enum_fromZeros_drop_findZero"
+      },
+      {
+        "name": "hF (enum_fromZeros_of_findZeroVariant)",
+        "purpose": "Fields of the found variant are FromZeros.",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_enum_fromZeros_drop_fields"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "[= -2, implicit, implicit] (third variant is zero) and [= 1, implicit] (no zero) for the search; the i8 enum { A(bool) = 3, B = -1, C(u16) } with i = 2 for enum_fromZeros_of_findZeroVariant.",
+    "nonvacuity_witness_lean": [
+      "Toy.Zc.nv_findZeroVariant",
+      "Toy.Zc.nv_enum_fromZeros_of_findZeroVariant"
+    ],
+    "non_claims": [
+      "find_zero_variant is incomplete: a non-literal discriminant expression that either evaluates to 0 (findZeroVariant_incomplete_with_unknown) or precedes an implicit discriminant that resolves to 0 (findZeroVariant_incomplete_nonliteral_before_implicit; the source's diagnostic says such a discriminant may 'define or imply which variant has a discriminant of zero', zerocopy/zerocopy-derive/src/derive/from_bytes.rs:150-152) makes the search return Err(true), so the derive rejects some FromZeros enums.",
+      "Without the compiler's E0081 rule the FromZeros derive would be unsound (ce_enum_fromZeros_of_findZeroVariant_drop_wf, where the modeled check accepts and the enum is not FromZeros).",
+      "Literal discriminants above u128::MAX (where the source's parse can fail) are not modeled.",
+      "The real #[derive(FromZeros)] first expands the TryFromBytes derive (zerocopy/zerocopy-derive/src/derive/from_bytes.rs:98), which bounds the fields of every variant by TryFromBytes (zerocopy/zerocopy-derive/src/derive/try_from_bytes.rs:343), not only the zero variant's fields. Every description in the model implements TryFromBytes, so the model omits these bounds; outside the model (generic or invariant-carrying field types) they can make the derive reject an enum whose zero variant's fields are FromZeros.",
+      "Does not cover enums with #[repr(..., align(N))] (not in the model's AST), repr(C) enums whose discriminants need a tag other than the 4-byte i32-range tag, or repr(Rust) enums (niches).",
+      "Modeling bridge, not proved: reading R3e as a statement about rustc and zerocopy-derive needs bridge B9 (resolveDiscrs computes the compiler's discriminant values: implicit = previous + 1, first = 0) and bridge B8 (findZeroVariant transcribes find_zero_variant, zerocopy/zerocopy-derive/src/derive/from_bytes.rs:19-90). Under these bridges, find_zero_variant returning Ok(i) means that the compiler resolves variant i's discriminant to 0.",
+      "Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact."
+    ],
+    "prior_art": [
+      "zerocopy v0.8.63 (google/zerocopy, commit c55af491426ef53f35fb8c6e83f220fa07712e66): zerocopy/zerocopy-derive/src/derive/from_bytes.rs:14-90 (find_zero_variant and its comments), 125-176."
+    ],
+    "design_question": "Is the derive's syntactic zero-discriminant search sound, and what does it miss?",
+    "tier_justification": "T1: correctness of the scan is argued in its comments (zerocopy/zerocopy-derive/src/derive/from_bytes.rs:14-90); made precise (soundness, conditional completeness)."
+  },
+  {
+    "id": "R3f-enum-tryFromBytes-validity-and-is-safe",
+    "lean": [
+      "Toy.Zc.enum_validInit_iff_first_matching_variant_valid",
+      "Toy.Zc.isSafe_enm_eq_validInit"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "In the model, on byte lists of the enum description's modeled size, the modeled validity validInit of an enum holds exactly when the tag read from the bytes equals the tag code of some variant's discriminant and the fields of the first such variant are valid (validInit) at their modeled offsets; and if the modeled is_safe (isSafe) agrees with validInit on every field description at that field's size and the discriminants are distinct and representable (discrsWF), the modeled enum isSafe (including its model of the could_be_from_bytes shortcut) equals validInit.",
+    "hypotheses": [
+      {
+        "name": "hlen (both theorems)",
+        "purpose": "The bytes have the enum's size (zerocopy only validates correctly sized candidates).",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Zc.ce_enum_validInit_drop_hlen",
+          "Toy.Zc.ce_isSafe_enm_drop_hlen"
+        ]
+      },
+      {
+        "name": "hwf (isSafe_enm_eq_validInit)",
+        "purpose": "Needed for the could_be_from_bytes shortcut.",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_isSafe_enm_drop_wf"
+      },
+      {
+        "name": "hfields (isSafe_enm_eq_validInit)",
+        "purpose": "Inductive hypothesis on field types.",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_isSafe_enm_drop_fields"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "repr(u8) enum { A(u8), B(bool) = 5 } on [5, 1]: distinct representable discriminants, field validators agree with validity, correct length; evaluated also on [5, 2] and [4, 0].",
+    "nonvacuity_witness_lean": "Toy.Zc.nv_enum_validInit",
+    "non_claims": [
+      "Does not model the FromBytes-top-level shortcut try_gen_trivial_is_safe (zerocopy/zerocopy-derive/src/derive/try_from_bytes.rs:347-393).",
+      "Does not model field invariants (#[zerocopy(invariant)]), which can make is_safe stricter than validity.",
+      "Says nothing about uninitialized input bytes (is_safe is only called on initialized bytes).",
+      "The right-hand side uses the first matching variant (findIdx?); with duplicate discriminants an existential 'some variant matches and its fields are valid' would differ, which is why the characterization is stated with the first match.",
+      "Does not cover enums with #[repr(..., align(N))] (not in the model's AST), repr(C) enums whose discriminants need a tag other than the 4-byte i32-range tag, or repr(Rust) enums (niches).",
+      "Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact."
+    ],
+    "prior_art": [
+      "zerocopy v0.8.63 (google/zerocopy, commit c55af491426ef53f35fb8c6e83f220fa07712e66): zerocopy/zerocopy-derive/src/derive/try_from_bytes.rs:121-227 (derive_is_safe; SAFETY comment 208-211), 315-346 (derive_try_from_bytes_enum, could_be_from_bytes at 322-329)."
+    ],
+    "design_question": "Does the derived enum validator compute exactly enum validity, including its FromBytes-like shortcut?",
+    "tier_justification": "T1: the SAFETY comment of derive_is_safe (zerocopy/zerocopy-derive/src/derive/try_from_bytes.rs:208-211) states this informally."
+  },
+  {
+    "id": "R3g-enum-intoBytes-padding-check-sound",
+    "lean": "Toy.Zc.enum_intoBytes_of_fields_of_padding_check",
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "In the model, for an enum description with repr(C) or a primitive representation, if every field of every variant is SemIntoBytes and the modeled enum_padding! check enumPaddingOK passes (for every variant, the modeled enum size minus (tag size + sum of the variant's field sizes) is 0), then the enum is SemIntoBytes.",
+    "hypotheses": [
+      {
+        "name": "hF",
+        "purpose": "Every field of every variant is IntoBytes (canonical counterexample: padding check passes, a field is not IntoBytes, the enum is not).",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_enum_intoBytes_drop_fields"
+      },
+      {
+        "name": "hP",
+        "purpose": "The per-variant padding check.",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_enum_intoBytes_drop_padding"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "repr(u8) enum { A(u8), B(i8) }.",
+    "nonvacuity_witness_lean": "Toy.Zc.nv_enum_intoBytes",
+    "non_claims": [
+      "Does not cover repr(Rust) enums (niche layouts). (Source observation, not a theorem: the IntoBytes derive rejects enums that are neither repr(C) nor primitive-repr, zerocopy/zerocopy-derive/src/derive/into_bytes.rs:198.)",
+      "Does not cover enums with #[repr(..., align(N))] (not in the model's AST), repr(C) enums whose discriminants need a tag other than the 4-byte i32-range tag, or repr(Rust) enums (niches).",
+      "Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact."
+    ],
+    "prior_art": [
+      "zerocopy v0.8.63 (google/zerocopy, commit c55af491426ef53f35fb8c6e83f220fa07712e66): zerocopy/zerocopy-derive/src/derive/into_bytes.rs:196-209; enum_padding! zerocopy/src/util/macro_util.rs:402-442; IntoBytes derive analysis for enums (zerocopy/src/lib.rs:5855-5859).",
+      "Rust Reference 1.81.0, Type layout (repr(C) and primitive representations of enums with fields).",
+      "Rust RFC 2195, 'Really Tagged Unions', https://rust-lang.github.io/rfcs/2195-really-tagged-unions.html (the tag-plus-variant-struct layouts the padding check reasons about)."
+    ],
+    "design_question": "Is the per-variant size check a sound padding check for tagged enums?",
+    "tier_justification": "T1: informal in zerocopy/src/util/macro_util.rs:402-415."
+  },
+  {
+    "id": "R4a-union-intoBytes-iff-full-size-fields",
+    "lean": "Toy.Zc.union_intoBytes_iff_fields_intoBytes_full_size_of_inhabited",
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "In the model, where a union value is a value written through one field, a union description whose field descriptions are inhabited is SemIntoBytes iff every field is SemIntoBytes and every field's modeled size equals the union's modeled size.",
+    "hypotheses": [
+      {
+        "name": "hInh",
+        "purpose": "Needed left to right: an uninhabited field can never be written (canonical counterexample: inhabitedness fails and the equivalence fails).",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_union_iff_drop_inhabited"
+      },
+      {
+        "name": "(right side) every field IntoBytes",
+        "purpose": "Conjunct.",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_union_drop_fields_intoBytes"
+      },
+      {
+        "name": "(right side) every field has the union's size",
+        "purpose": "Conjunct.",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_union_drop_full_size"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "#[repr(C)] union { a: u16, b: i16 }.",
+    "nonvacuity_witness_lean": "Toy.Zc.nv_union_intoBytes",
+    "non_claims": [
+      "The union value model is 'written through one field'. Values produced by successive writes through different fields (e.g. write b: u16, then overwrite a: u8) are not distinct values of the model (union_decode_encode_forgets_bytes). The claim is relative to this value model; it is sound for Rust only under guarantees Rust has not made: either union bit validity forbids uninit at bytes initialized in every valid value of every field, or (zerocopy issue 1792, rust-lang/unsafe-code-guidelines issue 533) it is never safe to construct a union value other than from its fields, typed copies of a union preserve every byte written at a position that is not padding in all fields, and IntoBytes carries a library safety invariant that values are only constructed from fields.",
+      "Holds only for the written-through-one-field value model; under a permissive union validity that admits uninitialized bytes no union of nonzero size is IntoBytes (R4d). Rust has not settled union validity.",
+      "Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact."
+    ],
+    "prior_art": [
+      "zerocopy issue 1792, 'Restrict support for #[derive(IntoBytes)] on unions, work to guarantee forwards-compatible soundness', repository google/zerocopy, issue number 1792 (support 'is sound on the assumption that if every field of a union is IntoBytes and there is no extra padding before or after any field, then no bit-valid instance of that union can have uninitialized bytes').",
+      "zerocopy v0.8.63 (google/zerocopy, commit c55af491426ef53f35fb8c6e83f220fa07712e66): union_padding! zerocopy/src/util/macro_util.rs:372-400.",
+      "Rust Unsafe Code Guidelines issue 533, 'Minimum guarantees for union construction and typed copies?', https://github.com/rust-lang/unsafe-code-guidelines/issues/533 (asks for typed copies of a union to preserve every byte position initialized in any valid value of any field)."
+    ],
+    "design_question": "Under which union-value model is the union IntoBytes derive's size check sound and necessary?",
+    "tier_justification": "T1: the assumption is stated in zerocopy issue 1792; made precise for an explicit union-value model, with the converse."
+  },
+  {
+    "id": "R4b-union-intoBytes-derive-sound",
+    "lean": "Toy.Zc.union_intoBytes_of_fields_of_padding_check",
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "In the model, where a union value is a value written through one field, if every field of a union description is SemIntoBytes and the modeled union_padding! check unionPaddingOK passes (for every field, the union's modeled size minus the field's size is 0), then the union is SemIntoBytes.",
+    "hypotheses": [
+      {
+        "name": "hF",
+        "purpose": "Every field IntoBytes (canonical counterexample: padding check passes, a field is not IntoBytes, the union is not).",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_union_drop_fields_intoBytes"
+      },
+      {
+        "name": "hP",
+        "purpose": "The padding check union_padding! == 0 (canonical counterexample: IntoBytes fields, check fails, union not IntoBytes).",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_union_drop_full_size"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "#[repr(C)] union { a: u16, b: i16 } (accepted by the derive with the cfg set).",
+    "nonvacuity_witness_lean": "Toy.Zc.nv_union_intoBytes",
+    "non_claims": [
+      "The cfg gate (into_bytes.rs:220-233) is not a semantic condition in the model: the check with the cfg unset rejects a union that is IntoBytes here (union_gate_rejects_intoBytes_union).",
+      "The union value model is 'written through one field'. Values produced by successive writes through different fields (e.g. write b: u16, then overwrite a: u8) are not distinct values of the model (union_decode_encode_forgets_bytes). The claim is relative to this value model; it is sound for Rust only under guarantees Rust has not made: either union bit validity forbids uninit at bytes initialized in every valid value of every field, or (zerocopy issue 1792, rust-lang/unsafe-code-guidelines issue 533) it is never safe to construct a union value other than from its fields, typed copies of a union preserve every byte written at a position that is not padding in all fields, and IntoBytes carries a library safety invariant that values are only constructed from fields.",
+      "Does not show the derive is sound for Rust unions; that depends on the unsettled union validity (R4d).",
+      "Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact."
+    ],
+    "prior_art": [
+      "zerocopy v0.8.63 (google/zerocopy, commit c55af491426ef53f35fb8c6e83f220fa07712e66): zerocopy/zerocopy-derive/src/derive/into_bytes.rs:211-259 (including the cfg gate at 220-233 and the comment 'Because we don't support generics, we don't need to worry about special-casing different reprs', 243-246)."
+    ],
+    "design_question": "Is the union IntoBytes derive sound once union values are restricted to field writes?",
+    "tier_justification": "T1: as R4a."
+  },
+  {
+    "id": "R4c-union-u8-u16-counterexample",
+    "lean": "Toy.Zc.union_u8_u16_written_through_u8_leaves_uninit",
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "In the model, the description union { a: u8, b: u16 } (repr(C)) holding the value 7 written through a encodes as [init 7, uninit]; both field descriptions are SemIntoBytes, but the union is not.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "(counterexample; no non-vacuity witness needed)",
+    "nonvacuity_witness_lean": "Toy.Zc.union_u8_u16_written_through_u8_leaves_uninit",
+    "non_claims": [
+      "Shows only that the size conjunct of the union check is needed; it is not evidence about Rust's union validity.",
+      "Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact."
+    ],
+    "prior_art": [
+      "zerocopy issue 1792 (as in R4a)."
+    ],
+    "design_question": "Reference point (the standard example of union padding, recorded concretely; it is also the tightness counterexample ce_union_drop_full_size of R4a/R4b): why does the union IntoBytes derive compare every field's size with the union's size?",
+    "tier_justification": "T1: the standard example of union padding; recorded concretely."
+  },
+  {
+    "id": "R4d-permissive-union-validity-of-size-pos-not-intoBytes",
+    "lean": "Toy.Zc.permissive_union_validity_of_size_pos_not_intoBytes",
+    "kind": "impossibility",
+    "tier": "T1",
+    "plain_claim": "In the model's abstract-byte vocabulary, if a union's values were taken to be all abstract byte vectors of its size (the representation permissiveUnionRep, a validity that admits uninitialized bytes), then no union description of nonzero modeled size would satisfy IntoBytes, whatever its fields and whatever the modeled derive check says.",
+    "hypotheses": [
+      {
+        "name": "hn",
+        "purpose": "Nonzero size; a zero-size union is vacuously IntoBytes.",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_permissive_drop_size_pos"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "Any union of nonzero size, e.g. union { a: u16, b: i16 }.",
+    "nonvacuity_witness_lean": "Toy.Zc.pc_written_union_intoBytes",
+    "positive_control_lean": "Toy.Zc.pc_written_union_intoBytes",
+    "non_claims": [
+      "Does not claim Rust adopts permissive union validity; it records that, if union values may contain uninitialized bytes, IntoBytes for unions of nonzero size cannot be a property of the bit-valid values alone, which is the concern behind the cfg gate.",
+      "Does not explain the choice of a --cfg over a Cargo feature (a policy decision recorded in zerocopy issue 1792: a --cfg must be enabled by the top-level crate).",
+      "Escape hatches (each defeats the impossibility only together with the conditions listed): (a) Rust restricts union bit validity so that a byte initialized in every valid value of every field is initialized in the union (the 'union validity' option of zerocopy issue 1792); or (b) under permissive bit validity, IntoBytes becomes a library safety invariant (union values only constructed from fields, documented on IntoBytes) AND Rust guarantees that safe code cannot construct a union value other than from its fields AND that typed copies preserve every byte written at a position that is not padding in all fields (the 'union safety' option of issue 1792; rust-lang/unsafe-code-guidelines issue 533). Restricting safe construction alone is not enough: unsafe code could still produce an uninitialized but bit-valid union value (e.g. MaybeUninit::uninit().assume_init()) and pass it to safe code. The positive control pc_written_union_intoBytes models only the field-write value set, i.e. the outcome of (a) or (b).",
+      "Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact."
+    ],
+    "prior_art": [
+      "MiniRust, spec/lang/representation.md, minirust/minirust commit 063d784186d3252bee242217f218223205c0b568, L313-343: a union 'simply stores the bytes directly'; its decode accepts every byte list of the right size (bytes outside chunks are dropped), with TODOs on padding (UCG 156) and validity (UCG 73) at L317-319.",
+      "Rust Unsafe Code Guidelines issue 438, 'What are the values of a union type? (in particular, what is the validity invariant of a union)', https://github.com/rust-lang/unsafe-code-guidelines/issues/438 (linked from zerocopy's derive docs).",
+      "Rust Unsafe Code Guidelines issue 533, 'Minimum guarantees for union construction and typed copies?', https://github.com/rust-lang/unsafe-code-guidelines/issues/533.",
+      "zerocopy v0.8.63 (google/zerocopy, commit c55af491426ef53f35fb8c6e83f220fa07712e66): IntoBytes derive docs 'union bit validity is up in the air' (zerocopy/src/lib.rs:5805-5830).",
+      "Robbert Krebbers, 'The C Standard Formalized in Coq', PhD thesis, Radboud University Nijmegen, 2015, https://hdl.handle.net/2066/147182 (union values and indeterminate bytes in a mechanized C semantics).",
+      "zerocopy issue 1792 (google/zerocopy): short-term --cfg gate; long-term options 'Union validity' and 'Union safety'; the latter requires that 'It will never be safe to construct a union value other than from its fields or by overwriting one of its sub-fields' and that 'In a typed copy of a union value, any bytes previously written are preserved so long as those bytes are not written to a byte offset at which there is padding in all fields of the union'."
+    ],
+    "design_question": "What does the byte model explain about why union IntoBytes is gated behind --cfg zerocopy_derive_union_into_bytes?",
+    "tier_justification": "T1: the concern behind the cfg gate (zerocopy issue 1792; UCG issue 438) made precise; mathematically trivial."
+  },
+  {
+    "id": "R5a-transmute-total-of-intoBytes-of-fromBytes",
+    "lean": "Toy.Zc.transmuteTotal_of_intoBytes_of_fromBytes",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "In the model's abstract-byte vocabulary, for representations ra and rb over the same carrier of n abstract bytes, if no encoding of A contains uninit (ra.IntoBytes) and every fully initialized byte vector decodes as some B (rb.FromBytes), then decoding with rb after encoding with ra never fails (TransmuteTotal ra rb).",
+    "hypotheses": [
+      {
+        "name": "hA",
+        "purpose": "IntoBytes of the source.",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_transmuteTotal_drop_intoBytes"
+      },
+      {
+        "name": "hB",
+        "purpose": "FromBytes of the destination.",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_transmuteTotal_drop_fromBytes"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "u16 to i16 in the Desc.rep representations.",
+    "nonvacuity_witness_lean": "Toy.Zc.nv_transmuteTotal_rep",
+    "non_claims": [
+      "Equal sizes are built into the carrier type; see R5b for differing sizes.",
+      "By-value transmute! forgets Src without running its destructor (zerocopy/src/macros.rs:35-38); reference transmutes need more than IntoBytes/FromBytes (transmute_ref!: Immutable on both sides, alignment, size compatibility, zerocopy/src/macros.rs:202-208; transmute_mut!: FromBytes + IntoBytes on both sides, alignment, size compatibility, zerocopy/src/macros.rs:415-421). Not modeled.",
+      "Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact."
+    ],
+    "prior_art": [
+      "zerocopy v0.8.63 (google/zerocopy, commit c55af491426ef53f35fb8c6e83f220fa07712e66): transmute! bounds Src: IntoBytes, Dst: FromBytes, size_of::<Src>() == size_of::<Dst>() (zerocopy/src/macros.rs:15-28).",
+      "Rust RFC 2835, 'Project Safe Transmute' (project-group RFC, start date 2019-12-06), https://rust-lang.github.io/rfcs/2835-project-safe-transmute.html."
+    ],
+    "design_question": "What is the semantic content of transmute!'s trait bounds?",
+    "tier_justification": "T0: a one-step consequence of the definitions of IntoBytes, FromBytes and transmute (the proof is the term fun a => hB (ra.encode a) (hA a))."
+  },
+  {
+    "id": "R5b-desc-transmute-total-size-ge",
+    "lean": "Toy.Zc.desc_transmute_total_of_size_ge",
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "In the model, for descriptions Src and Dst, if Src is SemIntoBytes, Dst is SemFromBytes and Dst's modeled size is at most Src's, then the modeled union-transmute transmuteVal, which decodes Dst from the first size(Dst) bytes of the encoding of a well-typed Src value, succeeds for every such value; the corollary desc_transmute_total_of_size_eq is the equal-size case.",
+    "hypotheses": [
+      {
+        "name": "hsz",
+        "purpose": "size Dst <= size Src; without it the uniform statement over all FromBytes destinations fails (u8 -> u16 reads an uninit byte). It is not necessary for every fixed pair: a destination whose extra bytes are trailing padding can be larger (transmute_extend_into_trailing_padding_example).",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_transmute_drop_size"
+      },
+      {
+        "name": "hI",
+        "purpose": "IntoBytes Src.",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_transmute_drop_intoBytes"
+      },
+      {
+        "name": "hF",
+        "purpose": "FromBytes Dst.",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_transmute_drop_fromBytes"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "u16 to i16 (equal sizes) and u32 to u16 (shrinking).",
+    "nonvacuity_witness_lean": "Toy.Zc.nv_desc_transmute",
+    "non_claims": [
+      "Size equality is not necessary (transmute_shrink_example: u32 -> u16), and size Dst <= size Src is necessary only for the statement quantified over all FromBytes destinations (ce_transmute_drop_size: u8 -> u16); for a fixed padded destination it is not: u8 to #[repr(C, align(2))] struct { a: u8 } (size 2) succeeds for every value (transmute_extend_into_trailing_padding_example), as core::mem::TransmuteFrom's union-transmute also permits.",
+      "The transmute model is a union-transmute (Src written through one field of a repr(C) union, Dst read through another, bytes beyond Src uninit). zerocopy's transmute!(#![allow(shrink)] ...) implements exactly this with a #[repr(C, packed)] union and core::mem::transmute, which forces size Dst <= size Src (zerocopy/src/macros.rs:106-110, 142-146); agreement with Rust's semantics of that construction is a modeling bridge.",
+      "desc_transmute_total_of_size_eq (equal sizes; the bounds of plain transmute!, zerocopy/src/macros.rs:15-28) is a one-line corollary kept as a reference point; it is not a separate result.",
+      "By-value transmute! forgets Src without running its destructor (zerocopy/src/macros.rs:35-38); reference transmutes (transmute_ref!, transmute_mut!) need Immutable or bidirectional FromBytes + IntoBytes plus alignment and size conditions (zerocopy/src/macros.rs:202-208, 415-421). Not modeled.",
+      "Modeling bridge, not proved (B10): transmuteVal is the model of zerocopy's transmute!(#![allow(shrink)] ...), which is implemented by a #[repr(C, packed)] union-transmute (zerocopy/src/macros.rs:106-157); the equal-size form transmute!(...) is a plain core::mem::transmute (zerocopy/src/macros.rs:161-192, call at 188), which coincides with the union-transmute at equal sizes, so desc_transmute_total_of_size_eq is the model of plain transmute!.",
+      "Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact."
+    ],
+    "prior_art": [
+      "zerocopy v0.8.63 (google/zerocopy, commit c55af491426ef53f35fb8c6e83f220fa07712e66): transmute! bounds Src: IntoBytes, Dst: FromBytes, size_of::<Src>() == size_of::<Dst>() (zerocopy/src/macros.rs:15-28); with #![allow(shrink)], size_of::<Src>() >= size_of::<Dst>() is accepted (zerocopy/src/macros.rs:40-49), implemented by transmuting Src into a #[repr(C, packed)] union { src, dst } and reading dst (zerocopy/src/macros.rs:106-110, 124-129); the comment at 142-146 explains that this forces size_of::<Src>() >= size_of::<Dst>().",
+      "core::mem::TransmuteFrom (unstable, tracking issue rust-lang/rust#99571), library/core/src/mem/transmutability.rs at rust-lang/rust commit 6905905bb7727fd0f9223f5fdc9ad4e62236d5a2: soundness is defined by a union-transmute (L14-38), and 'union-transmutes permit conversions that extend the bits of Src with trailing padding to fill trailing uninitialized bytes of Self' (L41-44), with the example u8 to #[repr(C, align(2))] struct Dst(u8) (L46-58). TransmuteFrom therefore also allows size_of::<Src>() < size_of::<Dst>() when the extra destination bytes are padding; the compiler's check is in compiler/rustc_transmute (maybe_transmutable/mod.rs at the same commit, 'extension: size_of(Src) <= size_of(Dst)', L187).",
+      "Rust RFC 2835, 'Project Safe Transmute' (project-group RFC, start date 2019-12-06), https://rust-lang.github.io/rfcs/2835-project-safe-transmute.html."
+    ],
+    "design_question": "Which size relation does a safe by-value transmute between IntoBytes and FromBytes types need?",
+    "tier_justification": "T1: the size relation of zerocopy's union-based transmute!(#![allow(shrink)] ...) made precise over descriptions as the uniform sufficient condition (with its necessity for the uniform statement); TransmuteFrom's more permissive per-pair rule (extension into trailing padding) is recorded as a boundary, not mechanized here.",
+    "lean_names": [
+      "Toy.Zc.desc_transmute_total_of_size_eq"
+    ]
+  },
+  {
+    "id": "R6a-validate-cast-returns-max-fitting-elems",
+    "lean": "Toy.Zc.vccm_sliceDst_returns_max_fitting_elems",
+    "kind": "theorem",
+    "tier": "T2",
+    "plain_claim": "In the model, for a trailing-slice layout (TrailingSliceLayout) with positive size-rounding alignment, phase at most that alignment, and positive element size, when the alignment check passes, vccm (the model of validate_cast_and_convert_metadata) returns Ok((elems, split_at)) with elems the largest element count whose object size fits in bytes_len and split_at the prefix/suffix split for that size, and returns Err(Size) exactly when no element count fits.",
+    "hypotheses": [
+      {
+        "name": "hA",
+        "purpose": "0 < size_align (NonZeroUsize in the source). Canonical counterexample: alignment 0 with phase 0 (so hP holds) returns a count that is not the largest.",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_vccm_drop_align_pos"
+      },
+      {
+        "name": "hP",
+        "purpose": "phase <= size_align (zerocopy's RoundingAlignAndPhase::new asserts the stronger phase < align, zerocopy/src/layout.rs:72-96; the statement also holds at phase = align). Independent of hA.",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_vccm_drop_phase_lt"
+      },
+      {
+        "name": "hE",
+        "purpose": "Nonzero element size (the source panics otherwise).",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_vccm_drop_elem_pos"
+      },
+      {
+        "name": "hAl",
+        "purpose": "The alignment check passes.",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_vccm_drop_aligned"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "size_base 4, size_align 4, phase 3, element size 1, bytes_len 14 (prefix): Ok((5, 12)).",
+    "nonvacuity_witness_lean": "Toy.Zc.nv_vccm_sliceDst",
+    "non_claims": [
+      "Unbounded naturals: usize overflow and the debug assertion addr + bytes_len <= usize::MAX are not modeled.",
+      "Bit-mask arithmetic is replaced by its arithmetic meaning for power-of-two alignments (a modeling bridge; the theorem itself holds for any positive alignment).",
+      "The layout alignment align is a free parameter, not related to the trailing-slice layout (even align = 0 is admitted, where the check reads addr + offset = 0). R6a therefore says nothing about the alignment of the object's start for a suffix cast; that guarantee (zerocopy/src/layout.rs:1584-1591) needs the divisibility hypotheses of R6d. R6a also does not use the containment condition on the trailing slice's offset (the offset field is not read by the validation).",
+      "Does not establish that zerocopy's for_repr_c_struct produces such layouts for real types (see R6b for flat repr(C) DSTs).",
+      "Does not model #[derive(KnownLayout)] (zerocopy/zerocopy-derive/src/derive/known_layout.rs:252-351) or zerocopy's construction of a type's DstLayout (DstLayout::for_type, DstLayout::for_repr_c_struct).",
+      "Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact."
+    ],
+    "prior_art": [
+      "zerocopy v0.8.63 (google/zerocopy, commit c55af491426ef53f35fb8c6e83f220fa07712e66): zerocopy/src/layout.rs:1546-1797 (documentation, guarantees 1572-1591, Kani contract harness, implementation); max_trailing_bytes zerocopy/src/layout.rs:236-341.",
+      "zerocopy v0.8.63 (google/zerocopy, commit c55af491426ef53f35fb8c6e83f220fa07712e66): standalone Kani proof harnesses zerocopy/src/layout.rs:4258-4630, several pinned to the kissat SAT solver: prove_max_trailing_bytes (4436-4449), prove_max_trailing_bytes_components (4451-4468), prove_slice_dst_validator_selected_size_fits (4470-4514), prove_slice_dst_validator_rejects_larger_trailing_size (4516-4531), prove_slice_formula_contains_trailing_slice (4533-4551). They quantify over all target-width usize values subject to stated assumptions, with trailing-layout components at most DstLayout::MAX_SIZE = isize::MAX and power-of-two rounding alignments (any_bounded_trailing_layout, 4224-4254; any_layout_align, 4149-4160). This is the closest prior verification of this function."
+    ],
+    "design_question": "Does the slice-DST metadata computation return the largest fitting element count and fail exactly when none fits?",
+    "tier_justification": "T2: zerocopy's Kani harnesses establish the components of this property bit-precisely for the target's usize, power-of-two alignments, and components bounded by isize::MAX, phrased against max_trailing_bytes; this states the end-to-end characterization ('largest fitting count, error iff none fits') directly against an explicit maximality predicate, over unbounded naturals (all pointer widths) and for any positive rounding alignment, with independent minimal hypotheses."
+  },
+  {
+    "id": "R6d-validate-cast-start-aligned-of-align-dvd",
+    "lean": "Toy.Zc.vccm_sliceDst_start_aligned_of_align_dvd",
+    "kind": "theorem",
+    "tier": "T2",
+    "plain_claim": "In the model, if the layout alignment divides the size base and the size-rounding alignment of a trailing-slice layout (so every object size is a multiple of it), then whenever vccm (the model of validate_cast_and_convert_metadata) returns Ok((elems, split_at)), the object starts at an aligned address: addr for a prefix cast, addr + split_at for a suffix cast.",
+    "hypotheses": [
+      {
+        "name": "hdB",
+        "purpose": "align divides size_base (part of the completed-layout premise of zerocopy/src/layout.rs:1574-1591).",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_vccm_start_drop_dvd_base"
+      },
+      {
+        "name": "hdA",
+        "purpose": "align divides size_align (the other part; with size_base, it makes every object size a multiple of align).",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_vccm_start_drop_dvd_align"
+      },
+      {
+        "name": "hok",
+        "purpose": "The validation succeeded with exactly these elems and split_at (the conclusion is about the returned split).",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_vccm_start_drop_ok"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "The flat DST #[repr(C)] struct { a: u16, b: u8, t: [u8] } normalized (base 2, rounding alignment 2, phase 1) with layout alignment 2, suffix cast of 9 bytes at address 1: Ok((5, 1)), object start 2.",
+    "nonvacuity_witness_lean": [
+      "Toy.Zc.nv_vccm_start_aligned",
+      "Toy.Zc.normalizeDst_align_dvd"
+    ],
+    "non_claims": [
+      "No positivity, phase, or element-size hypothesis is needed; the validation's own endpoint check supplies alignment of addr (prefix) or addr + bytes_len (suffix). The theorem does not say the returned count is maximal (that is R6a).",
+      "normalizeDst_align_dvd shows that the normalized layout of a flat repr(C) slice DST with layout alignment dstAlign d satisfies both hypotheses; whether zerocopy's own DstLayout for real types does is not modeled.",
+      "Does not model #[derive(KnownLayout)] (zerocopy/zerocopy-derive/src/derive/known_layout.rs:252-351) or zerocopy's construction of a type's DstLayout (DstLayout::for_type, DstLayout::for_repr_c_struct).",
+      "Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact."
+    ],
+    "prior_art": [
+      "zerocopy v0.8.63 (google/zerocopy, commit c55af491426ef53f35fb8c6e83f220fa07712e66): guarantee 'If this is a suffix cast: ... addr + split_at satisfies self's alignment' and 'suffix alignment relies on every object size being a multiple of the type's alignment' (zerocopy/src/layout.rs:1584-1591); Kani harnesses prove_finalized_slice_formula_is_aligned (4553-4568: size_base aligned and rounding alignment at least the outer alignment imply aligned object sizes) and prove_aligned_suffix_end_and_size_imply_aligned_start (4610-4630), for power-of-two alignments over usize."
+    ],
+    "design_question": "What layout invariant makes a successful suffix cast start at an aligned address, and is it independent of the element-count characterization?",
+    "tier_justification": "T2: zerocopy's Kani harnesses check the two steps separately for power-of-two alignments over usize; this states the composed guarantee for the modeled validation over unbounded naturals with divisibility hypotheses instead of power-of-two alignments, and isolates exactly which layout invariants it needs."
+  },
+  {
+    "id": "R6b-normalized-layout-size-equals-closed-form",
+    "lean": "Toy.Zc.normalizeDst_sizeForElems_eq_dstSize",
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "In the model, for a flat repr(C) slice DST description d (SliceDstSpec), the normalized trailing-slice layout normalizeDst d (base T - T mod A, size-rounding alignment A, phase T mod A, where T = dstTailOffset d is the trailing offset and A = dstAlign d the alignment) has object size dstSize d n, the closed-form repr(C) size, for every element count n.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "#[repr(C)] struct { a: u16, b: u8, t: [u8] } with 3 elements.",
+    "nonvacuity_witness_lean": "Toy.Zc.nv_normalizeDst",
+    "non_claims": [
+      "Does not claim zerocopy's for_repr_c_struct produces exactly normalizeDst d (under packed(N) it can keep a larger rounding alignment with the same sizes).",
+      "Does not model #[derive(KnownLayout)] (zerocopy/zerocopy-derive/src/derive/known_layout.rs:252-351) or zerocopy's construction of a type's DstLayout (DstLayout::for_type, DstLayout::for_repr_c_struct).",
+      "Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact."
+    ],
+    "prior_art": [
+      "zerocopy v0.8.63 (google/zerocopy, commit c55af491426ef53f35fb8c6e83f220fa07712e66): TrailingSliceLayout size formula zerocopy/src/layout.rs:190-194; pad_to_align zerocopy/src/layout.rs:1350-1440.",
+      "zerocopy v0.8.63 (google/zerocopy, commit c55af491426ef53f35fb8c6e83f220fa07712e66): Kani harness prove_trailing_slice_layout_normal_form (zerocopy/src/layout.rs:4316-4349, enabled under cfg(kani_slow)): checks that a layout with base (offset - phase) | prefix and phase offset mod align has the padded size offset + trailing + padding, the same normal-form identity, for power-of-two alignments over usize."
+    ],
+    "design_question": "Does zerocopy's normalized size formula agree with the closed-form repr(C) DST size?",
+    "tier_justification": "T1: the normalization identity is argued in comments (zerocopy/src/layout.rs:1376-1431) and checked by a Kani harness for power-of-two alignments over usize (4316-4349); made precise for flat repr(C) DSTs over unbounded naturals."
+  },
+  {
+    "id": "R6c-validate-cast-agrees-with-closed-form-max",
+    "lean": "Toy.Zc.vccm_normalizeDst_elems_eq_maxSliceElems_of_aligned",
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "In the model, for a flat repr(C) slice DST description d, any layout alignment, and either cast type, when the alignment check passes, the element count returned by vccm (the modeled validation) on normalizeDst d equals maxSliceElems d bytes_len (the largest fitting count, or none).",
+    "hypotheses": [
+      {
+        "name": "hAl",
+        "purpose": "The alignment check passes (canonical counterexample: misaligned address, counts differ).",
+        "tightness": "tight",
+        "counterexample": "Toy.Zc.ce_vccm_normalizeDst_drop_aligned"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "#[repr(C)] struct { a: u16, b: u8, t: [u8] } with bytes_len 9: both give 5.",
+    "nonvacuity_witness_lean": "Toy.Zc.nv_vccm_normalizeDst",
+    "non_claims": [
+      "For zero-sized elements both sides are none for different reasons (panic vs. none); no largest count exists (vccm_normalizeDst_zst_both_none).",
+      "Only element counts are compared (split_at is dropped), and the layout alignment is arbitrary rather than dstAlign d; start alignment is R6d (with normalizeDst_align_dvd for align = dstAlign d).",
+      "Does not model #[derive(KnownLayout)] (zerocopy/zerocopy-derive/src/derive/known_layout.rs:252-351) or zerocopy's construction of a type's DstLayout (DstLayout::for_type, DstLayout::for_repr_c_struct).",
+      "Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact."
+    ],
+    "prior_art": [
+      "zerocopy v0.8.63 (google/zerocopy, commit c55af491426ef53f35fb8c6e83f220fa07712e66): zerocopy/src/layout.rs:1650-1797."
+    ],
+    "design_question": "Do the two models of prefix- and suffix-cast element counts agree?",
+    "tier_justification": "T1: agreement of two models of the same computation."
+  },
+  {
+    "id": "R7a-immutable-not-byte-determined",
+    "lean": "Toy.Zc.immutable_not_byte_determined",
+    "kind": "impossibility",
+    "tier": "T1",
+    "plain_claim": "In the model, no property of descriptions that is ByteDetermined (depends only on the modeled layout, typing, encoder and decoder) coincides with implImmutable, the model of zerocopy's Immutable derive and impls: the descriptions UnsafeCell<u8> and u8 have the same modeled byte semantics but differ in implImmutable.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "UnsafeCell<u8> and u8.",
+    "nonvacuity_witness_lean": "Toy.Zc.nv_immutable_witness",
+    "positive_control_lean": "Toy.Zc.pc_fromBytes_byte_determined",
+    "non_claims": [
+      "Says nothing about what Immutable guarantees; it only shows that the byte model cannot express it.",
+      "Escape hatch: a model with interior-mutability information (not modeled) could express it.",
+      "The contrast is with the semantic byte predicates: SemFromBytes is byte-determined (pc_fromBytes_byte_determined). The syntactic derive checks implFromBytes/implFromZeros are not byte-determined either (they reject semantically qualifying types, R7b), so the result is about the absence of a byte-level semantic counterpart for Immutable (interior mutability), not about syntactic checks in general.",
+      "Since FromBytes::ref_from_bytes, IntoBytes::as_bytes and transmute_ref! require Immutable (zerocopy/src/lib.rs:4390-4392, 5995-5997; zerocopy/src/macros.rs:202-208), the byte model alone cannot justify those reference conversions.",
+      "Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact."
+    ],
+    "prior_art": [
+      "zerocopy v0.8.63 (google/zerocopy, commit c55af491426ef53f35fb8c6e83f220fa07712e66): Immutable internal safety 'given t: &T, t does not permit interior mutation of its referent' (zerocopy/src/lib.rs:1640-1646); UnsafeCell<T> has the same in-memory representation as T (zerocopy/src/impls.rs:842-848) and implements FromZeros, FromBytes, IntoBytes, Unaligned (zerocopy/src/impls.rs:839-850) and TryFromBytes (853-868), but not Immutable.",
+      "Ralf Jung, Jacques-Henri Jourdan, Robbert Krebbers, Derek Dreyer, 'RustBelt: Securing the Foundations of the Rust Programming Language', PACMPL 2(POPL), 2018, DOI 10.1145/3158154; Lennard Gäher, Michael Sammler, Ralf Jung, Robbert Krebbers, Derek Dreyer, 'RefinedRust: A Type System for High-Assurance Verification of Rust Programs', PACMPL 8(PLDI), 2024, DOI 10.1145/3656422: Coq/Iris semantic models in which shared references to UnsafeCell-containing types are interpreted differently from plain data (interior mutability is not a property of the bytes)."
+    ],
+    "design_question": "Which zerocopy traits are outside the reach of a byte-representation model?",
+    "tier_justification": "T1: folklore that interior mutability is not a byte property; made precise as non-definability."
+  },
+  {
+    "id": "R7b-union-derives-require-more-than-needed",
+    "lean": [
+      "Toy.Zc.union_fromBytes_derive_not_necessary",
+      "Toy.Zc.union_fromZeros_derive_not_necessary"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "In the model, the union description union { a: u8, b: bool } is SemFromBytes and union { a: u8, b: E } (E = Desc.noZero, a fieldless repr(u8) enum without a zero discriminant) is SemFromZeros, yet the modeled derive checks implFromBytes and implFromZeros reject them, because they require every field to have the trait.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "(counterexample)",
+    "nonvacuity_witness_lean": "Toy.Zc.union_fromBytes_derive_not_necessary",
+    "non_claims": [
+      "Relative to the model's union validity ('some field is valid', zerocopy's documented sufficient condition); it does not say zerocopy should relax the derive, which may serve purposes outside the model (e.g. code that reads every field).",
+      "Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact."
+    ],
+    "prior_art": [
+      "zerocopy v0.8.63 (google/zerocopy, commit c55af491426ef53f35fb8c6e83f220fa07712e66): zerocopy/zerocopy-derive/src/derive/from_bytes.rs:177-180, 201-204; union validity comment zerocopy/zerocopy-derive/src/derive/try_from_bytes.rs:292-296.",
+      "google/zerocopy Discussion 696, 'Whether/how to support TryFromBytes on unions?' (repository google/zerocopy; linked from zerocopy/zerocopy-derive/src/derive/try_from_bytes.rs:296): 'A union is FromZeros if all of its variants are FromZeros. Consequently, a union is TryFromBytes if all of its variants are TryFromBytes.'"
+    ],
+    "design_question": "Are the union FromBytes/FromZeros derives' all-fields bounds necessary?",
+    "tier_justification": "T1: model-relative observation. zerocopy Discussion 696 discusses the all-fields bounds for union FromZeros/TryFromBytes (motivated by TryFromBytes being a supertrait of FromZeros); it does not state that one FromBytes field suffices under the 'some field is valid' validity."
+  },
+  {
+    "id": "R7c-unaligned-check-conjuncts-necessary",
+    "lean": "Toy.Zc.unaligned_check_conjuncts_necessary",
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "In the model, each conjunct of the modeled Unaligned derive check implUnaligned is necessary: for repr(C) structs (no align(N>1); repr(packed) or all fields Unaligned), repr(transparent) structs (all fields Unaligned), enums (repr(u8)/repr(i8), shown for repr(u16) and repr(C); all fields Unaligned), and repr(C) unions (no align(N>1); repr(packed) or all fields Unaligned), a description satisfying every other conjunct of its check and failing that one is rejected and has modeled alignment greater than 1.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "(counterexample)",
+    "nonvacuity_witness_lean": "Toy.Zc.unaligned_check_conjuncts_necessary",
+    "non_claims": [
+      "Necessity is shown per conjunct on specific descriptions, not as a characterization of Unaligned.",
+      "Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact."
+    ],
+    "prior_art": [
+      "zerocopy v0.8.63 (google/zerocopy, commit c55af491426ef53f35fb8c6e83f220fa07712e66): zerocopy/zerocopy-derive/src/derive/unaligned.rs:19-40 (structs: unaligned_validate_no_align_gt_1 at 26, is_packed_1 or repr(C)/repr(transparent) with all fields at 28-37), 42-57 (enums: 47, 49), 59-80 (unions: 66, 68-77); zerocopy/zerocopy-derive/src/repr.rs:148-150 (is_align_gt_1), 152-165 (unaligned_validate_no_align_gt_1), 169-171 (is_packed_1); Unaligned contract zerocopy/src/lib.rs:6507."
+    ],
+    "design_question": "Is every conjunct of the Unaligned derive needed?",
+    "tier_justification": "T1: concrete necessity witnesses for the documented conditions (zerocopy/zerocopy-derive/src/derive/unaligned.rs:19-23, 42-44, 59-63)."
+  }
+]

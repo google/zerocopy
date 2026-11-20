@@ -85944,6 +85944,125 @@
         "lean/mechanization"
       ]
     },
+    "zerocopy-trait-semantics-over-layouts-and-derive-check-soundness": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "c55af491426ef53f35fb8c6e83f220fa07712e66",
+            "version": "v0.8.63"
+          },
+          "name": "zerocopy"
+        },
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "063d784186d3252bee242217f218223205c0b568"
+          },
+          "name": "MiniRust specification"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "6905905bb7727fd0f9223f5fdc9ad4e62236d5a2"
+          },
+          "name": "Rust core library and compiler (core::mem::TransmuteFrom, rustc_transmute)"
+        },
+        {
+          "identity": {
+            "url": "https://doc.rust-lang.org/1.81.0/reference/type-layout.html",
+            "version": "1.81.0"
+          },
+          "name": "The Rust Reference, Type layout"
+        },
+        {
+          "identity": {
+            "path": "text/2195-really-tagged-unions.md",
+            "repository": "rust-lang/rfcs",
+            "revision": "f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4",
+            "url": "https://rust-lang.github.io/rfcs/2195-really-tagged-unions.html"
+          },
+          "name": "RFC 2195: Really Tagged Unions"
+        },
+        {
+          "identity": {
+            "path": "text/2835-project-safe-transmute.md",
+            "repository": "rust-lang/rfcs",
+            "revision": "f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4",
+            "url": "https://rust-lang.github.io/rfcs/2835-project-safe-transmute.html"
+          },
+          "name": "RFC 2835: Project Safe Transmute"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-008-9099-0"
+          },
+          "name": "Formal Verification of a C-like Memory Model and Its Uses for Verifying Program Transformations"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1190216.1190234"
+          },
+          "name": "Types, Bytes, and Separation Logic"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3290380"
+          },
+          "name": "Exploring C Semantics and Pointer Provenance"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1926385.1926395"
+          },
+          "name": "Formal Verification of Object Layout for C++ Multiple Inheritance"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3158154"
+          },
+          "name": "RustBelt: Securing the Foundations of the Rust Programming Language"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3656422"
+          },
+          "name": "RefinedRust: A Type System for High-Assurance Verification of Rust Programs"
+        },
+        {
+          "identity": {
+            "url": "https://hdl.handle.net/2066/147182"
+          },
+          "name": "The C Standard Formalized in Coq"
+        },
+        {
+          "identity": {
+            "release": "afp-AutoCorres2-2024-05-26",
+            "url": "https://isa-afp.org/entries/AutoCorres2.html"
+          },
+          "name": "AutoCorres2"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/zerocopy-derive",
+        "verification/refinement",
+        "pl/type-layout",
+        "pl/byte-representations",
+        "pl/rust-unions",
+        "security/unsafe-code"
+      ]
+    },
     "zerocopy-validity-predicates-projection-layout-and-ffi-intrinsics": {
       "observed_at": "2026-10-14",
       "subjects": [
