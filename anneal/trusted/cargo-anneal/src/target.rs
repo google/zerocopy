@@ -14,7 +14,7 @@
 //! specification matches human intent. It authenticates those choices and
 //! checks their separation from the unreviewed proof implementation.
 
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::{BTreeMap, BTreeSet, VecDeque};
 use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
@@ -143,6 +143,51 @@ pub struct TargetAuditRequest {
 // general naming rules or apply it to helper declarations inside source files.
 fn target_name_valid(name: &str) -> bool {
     !name.is_empty() && name.split('.').all(is_lean_ident)
+}
+
+/// Return whether `module` belongs to the bundled `Anneal` theory namespace
+/// (`Anneal` or `Anneal.*`), which authored proof modules are forbidden from
+/// naming via `reserved_proof_module`.
+fn is_bundled_theory_module(module: &str) -> bool {
+    module == "Anneal" || module.starts_with("Anneal.")
+}
+
+/// Compute the deterministic BFS set of target modules to retain for
+/// compilation and auditing.
+///
+/// Every non-bundled-theory module (`Model`, `Capture`, `Specification`,
+/// `Expected`, and authored `Proof` modules, plus `request.theorem_module`)
+/// seeds the traversal. Bundled `Anneal.*` `Proof` modules are retained only
+/// when reachable via parsed `imports` edges from those seeds, preserving
+/// role-violation checks such as `Specification -> Anneal.*` while skipping
+/// compilation and provenance of unused bundled theory libraries.
+fn reachable_target_modules(
+    request: &TargetAuditRequest,
+    imports: &BTreeMap<String, Vec<ImportEdge>>,
+) -> BTreeSet<String> {
+    let staged_names: BTreeSet<&str> = request.modules.iter().map(|m| m.module.as_str()).collect();
+    let mut retained = BTreeSet::new();
+    let mut queue = VecDeque::new();
+    for module in &request.modules {
+        let is_seed = module.role != TargetRole::Proof
+            || !is_bundled_theory_module(&module.module)
+            || module.module == request.theorem_module;
+        if is_seed && retained.insert(module.module.clone()) {
+            queue.push_back(module.module.clone());
+        }
+    }
+    while let Some(current) = queue.pop_front() {
+        if let Some(edges) = imports.get(&current) {
+            for edge in edges {
+                if staged_names.contains(edge.module.as_str())
+                    && retained.insert(edge.module.clone())
+                {
+                    queue.push_back(edge.module.clone());
+                }
+            }
+        }
+    }
+    retained
 }
 
 /// Inspector data excludes original host paths: Lean uses compiled artifacts
@@ -514,6 +559,28 @@ impl Checker {
                 "incomplete target source header inventory",
             ));
         }
+        // Retain every non-bundled target module plus only those bundled
+        // `Anneal.*` theory modules reachable from them via parsed imports.
+        let retained = reachable_target_modules(request, &imports);
+        imports.retain(|module, _| retained.contains(module));
+        roles.retain(|module, _| retained.contains(module));
+        staged.retain(|module, _| retained.contains(module));
+        let filtered_request = TargetAuditRequest {
+            modules: request
+                .modules
+                .iter()
+                .filter(|m| retained.contains(&m.module))
+                .cloned()
+                .collect(),
+            theorem_module: request.theorem_module.clone(),
+            theorem_name: request.theorem_name.clone(),
+            expected_module: request.expected_module.clone(),
+            expected_declaration: request.expected_declaration.clone(),
+            canonical_root: request.canonical_root.clone(),
+            subject_declaration: request.subject_declaration.clone(),
+            specification_declaration: request.specification_declaration.clone(),
+            bindings: request.bindings.clone(),
+        };
         if self.admitted()?.unpinned {
             let external_imports: Vec<String> = imports
                 .values()
@@ -566,7 +633,7 @@ impl Checker {
         }
         // Authenticate the staged bytes again after elaboration. This catches
         // accidental source changes; hostile host mutation remains excluded.
-        for module in &request.modules {
+        for module in &filtered_request.modules {
             if !sha256_file(&staged[&module.module], "target-input")?
                 .eq_ignore_ascii_case(&module.expected_sha256)
             {
@@ -579,9 +646,9 @@ impl Checker {
         // Compilation success alone does not establish the exact theorem
         // type, permitted assumptions, or compiled source roles. Acceptance
         // is a separate inspection of the produced kernel declarations.
-        let mut report = self.inspect_target(request)?;
+        let mut report = self.inspect_target(&filtered_request)?;
         let mut provenance = Vec::new();
-        for module in &request.modules {
+        for module in &filtered_request.modules {
             let artifacts = &self.admitted()?.artifacts[&module.module];
             let paths = artifacts.to_wire();
             let hashes: Result<Vec<_>, Failure> = paths
@@ -598,7 +665,7 @@ impl Checker {
         // Report modules determining the subject, model, or specification,
         // including installed libraries used only by captured program data.
         // The logical closures exclude proof-only helpers; the source inventory
-        // above separately identifies every request source, even unused ones.
+        // above separately identifies every retained target source.
         let mut identities = serde_json::Map::new();
         for key in ["subjectClosure", "modelClosure", "specificationClosure"] {
             if let Some(rows) = obj.get(key).and_then(Json::as_array) {
@@ -614,7 +681,7 @@ impl Checker {
                     }
                     let adm = self.admitted()?;
                     let (source_sha, hashes) = if let Some(source) =
-                        request.modules.iter().find(|m| m.module == module)
+                        filtered_request.modules.iter().find(|m| m.module == module)
                     {
                         (
                             Json::String(source.expected_sha256.clone()),
@@ -1718,5 +1785,397 @@ mod unpinned_admission_tests {
         let pinned_report = pinned.run_target(&eq_def_req).unwrap();
         assert_eq!(pinned_report["replay"], Json::Bool(true));
         assert_eq!(pinned_report["exactType"], Json::Bool(true));
+    }
+
+    #[test]
+    fn demand_driven_theory_bfs_prunes_unused_and_preserves_role_edges() {
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        let mut req = minimal_request(&base.join("bfs"), None);
+        for extra in ["Anneal.BitVec", "Anneal.MirWp", "Anneal.Helper"] {
+            let path = base.join("bfs").join(format!("{extra}.lean"));
+            fs::write(&path, "prelude\n").unwrap();
+            req.modules.push(TargetModule {
+                module: extra.to_owned(),
+                expected_sha256: sha256_file(&path, "fixture").unwrap(),
+                source: path,
+                role: TargetRole::Proof,
+            });
+        }
+        let mk_edge = |m: &str| ImportEdge {
+            module: m.to_owned(),
+            import_all: false,
+            is_exported: true,
+            is_meta: false,
+        };
+        let mut imports: BTreeMap<String, Vec<ImportEdge>> = BTreeMap::from([
+            ("Model".to_owned(), vec![]),
+            ("Captured".to_owned(), vec![mk_edge("Model")]),
+            ("Spec".to_owned(), vec![mk_edge("Model")]),
+            (
+                "Expected".to_owned(),
+                vec![mk_edge("Captured"), mk_edge("Spec")],
+            ),
+            ("Proof".to_owned(), vec![mk_edge("Expected")]),
+            ("Anneal.BitVec".to_owned(), vec![]),
+            ("Anneal.MirWp".to_owned(), vec![mk_edge("Model")]),
+            ("Anneal.Helper".to_owned(), vec![mk_edge("Anneal.BitVec")]),
+        ]);
+
+        // 1. None of the bundled `Anneal.*` modules are imported.
+        let retained_none = reachable_target_modules(&req, &imports);
+        assert!(!retained_none.contains("Anneal.BitVec"));
+        assert!(!retained_none.contains("Anneal.MirWp"));
+        assert!(!retained_none.contains("Anneal.Helper"));
+        for seed in ["Model", "Captured", "Spec", "Expected", "Proof"] {
+            assert!(retained_none.contains(seed), "missing seed {seed}");
+        }
+
+        // 2. Transitive `Proof -> Anneal.Helper -> Anneal.BitVec` retains both
+        //    reachable theory modules while still pruning `Anneal.MirWp`.
+        imports
+            .get_mut("Proof")
+            .unwrap()
+            .push(mk_edge("Anneal.Helper"));
+        let retained_trans = reachable_target_modules(&req, &imports);
+        assert!(retained_trans.contains("Anneal.Helper"));
+        assert!(retained_trans.contains("Anneal.BitVec"));
+        assert!(!retained_trans.contains("Anneal.MirWp"));
+
+        // 3. A forbidden `Spec -> Anneal.MirWp` edge retains `Anneal.MirWp` so
+        //    the downstream `TargetRole::allows` check still rejects it.
+        imports
+            .get_mut("Spec")
+            .unwrap()
+            .push(mk_edge("Anneal.MirWp"));
+        let retained_spec = reachable_target_modules(&req, &imports);
+        assert!(retained_spec.contains("Anneal.MirWp"));
+    }
+
+    #[test]
+    fn live_demand_driven_anneal_bitvec_pruning_and_three_axiom_proof() {
+        let lean = installed_lean();
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        let nat_bitwise_path = repo_root().join("theory/Anneal/NatBitwise.lean");
+        let nat_bitwise_sha = sha256_file(&nat_bitwise_path, "fixture").unwrap();
+        let bitvec_path = repo_root().join("theory/Anneal/BitVec.lean");
+        let bitvec_sha = sha256_file(&bitvec_path, "fixture").unwrap();
+
+        // Unused bundled theory module with a deliberate elaboration error in
+        // its body (valid header only): proving it is pruned means it is never
+        // compiled.
+        let unused_path = base.join("Anneal_Unused.lean");
+        fs::write(
+            &unused_path,
+            "prelude\nimport Init.Prelude\ndef Anneal.Unused.broken : Nat := \"not_a_nat\"\n",
+        )
+        .unwrap();
+        let unused_sha = sha256_file(&unused_path, "fixture").unwrap();
+
+        let attach_bundled_theory = |req: &mut TargetAuditRequest| {
+            req.modules.push(TargetModule {
+                module: "Anneal.NatBitwise".to_owned(),
+                source: nat_bitwise_path.clone(),
+                expected_sha256: nat_bitwise_sha.clone(),
+                role: TargetRole::Proof,
+            });
+            req.modules.push(TargetModule {
+                module: "Anneal.BitVec".to_owned(),
+                source: bitvec_path.clone(),
+                expected_sha256: bitvec_sha.clone(),
+                role: TargetRole::Proof,
+            });
+            req.modules.push(TargetModule {
+                module: "Anneal.Unused".to_owned(),
+                source: unused_path.clone(),
+                expected_sha256: unused_sha.clone(),
+                role: TargetRole::Proof,
+            });
+        };
+
+        // 1. When `Proof` does NOT import `Anneal.BitVec` (or `Anneal.Unused`),
+        //    neither is compiled nor listed in provenance (`sources`).
+        let mut req_no_bv = minimal_request(&base.join("no-bv"), None);
+        attach_bundled_theory(&mut req_no_bv);
+        let mut checker = Checker::new(&repo_root(), Some(&lean)).unwrap();
+        let report_no_bv = checker.run_target(&req_no_bv).unwrap();
+        assert_eq!(report_no_bv["replay"], Json::Bool(true));
+        assert_eq!(report_no_bv["exactType"], Json::Bool(true));
+        let sources_no_bv: BTreeSet<&str> = report_no_bv["sources"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|s| s["module"].as_str().unwrap())
+            .collect();
+        assert!(
+            !sources_no_bv.contains("Anneal.NatBitwise"),
+            "{sources_no_bv:?}"
+        );
+        assert!(
+            !sources_no_bv.contains("Anneal.BitVec"),
+            "{sources_no_bv:?}"
+        );
+        assert!(
+            !sources_no_bv.contains("Anneal.Unused"),
+            "{sources_no_bv:?}"
+        );
+        let export_no_bv = base.join("export-no-bv");
+        assert!(checker.export_target_oleans(&export_no_bv).unwrap());
+        assert!(!export_no_bv.join("Anneal/NatBitwise.olean").exists());
+        assert!(!export_no_bv.join("Anneal/BitVec.olean").exists());
+        assert!(!export_no_bv.join("Anneal/Unused.olean").exists());
+
+        // 2. When `Proof` imports `Anneal.BitVec`, it IS compiled and verified
+        //    using `disjoint_or_injective`, `tnum_and_sound`, and
+        //    `common_prefix_of_bounds` within the 3-axiom ceiling, while
+        //    unimported `Anneal.Unused` remains uncompiled and omitted.
+        let mut req_with_bv = write_target_request(
+            &base.join("with-bv"),
+            vec![
+                (
+                    "Model",
+                    TargetRole::Model,
+                    "prelude\nimport Init.Data.BitVec.Basic\n\
+                     namespace Trusted.MirSemantics\n\
+                     structure Crate where\n  program : Nat\n  specs : Nat → Prop\n\
+                     def UnitTheorem (c : Crate) : Prop := c.specs c.program\n",
+                ),
+                (
+                    "Captured",
+                    TargetRole::Capture,
+                    "prelude\nimport Model\ndef Captured.program : Nat := 64\n",
+                ),
+                (
+                    "Spec",
+                    TargetRole::Specification,
+                    "prelude\nimport Model\n\
+                     def Spec.specs (w : Nat) : Prop :=\n  \
+                     (∀ (mask a1 b1 a2 b2 : BitVec w),\n    \
+                       a1 &&& mask = 0#w → a2 &&& mask = 0#w →\n    \
+                       b1 &&& ~~~mask = 0#w → b2 &&& ~~~mask = 0#w →\n    \
+                       a1 ||| b1 = a2 ||| b2 → a1 = a2 ∧ b1 = b2) ∧\n  \
+                     (∀ (m1 m2 x y v1 v2 : BitVec w),\n    \
+                       x &&& ~~~m1 = v1 &&& ~~~m1 → y &&& ~~~m2 = v2 &&& ~~~m2 →\n    \
+                       (x &&& y) &&& ~~~(((m1 &&& m2) ||| (m1 &&& v2) ||| (v1 &&& m2))) =\n    \
+                       (v1 &&& v2) &&& ~~~(((m1 &&& m2) ||| (m1 &&& v2) ||| (v1 &&& m2)))) ∧\n  \
+                     (∀ (k : Nat) (umin x umax : BitVec w),\n    \
+                       umin ≤ x → x ≤ umax →\n    \
+                       (umin ^^^ umax) &&& ~~~(BitVec.ofNat w (2 ^ k - 1)) = 0#w →\n    \
+                       (x ^^^ umin) &&& ~~~(BitVec.ofNat w (2 ^ k - 1)) = 0#w)\n",
+                ),
+                (
+                    "Expected",
+                    TargetRole::Expected,
+                    "prelude\nimport Captured\nimport Spec\n\
+                     def Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem \
+                     (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+                ),
+                (
+                    "Proof",
+                    TargetRole::Proof,
+                    "prelude\nimport Expected\nimport Anneal.BitVec\n\
+                     theorem Proof.verify : Expected.claim :=\n  \
+                     ⟨fun _ _ _ _ _ ha1 ha2 hb1 hb2 hor =>\n    \
+                       Anneal.BitVec.disjoint_or_injective ha1 ha2 hb1 hb2 hor,\n   \
+                      fun _ _ _ _ _ _ h1 h2 =>\n    \
+                       Anneal.BitVec.tnum_and_sound h1 h2,\n   \
+                      fun _ _ _ _ hlo hhi hpref =>\n    \
+                       Anneal.BitVec.common_prefix_of_bounds hlo hhi hpref⟩\n",
+                ),
+            ],
+        );
+        attach_bundled_theory(&mut req_with_bv);
+        let report_with_bv = checker.run_target(&req_with_bv).unwrap();
+        assert_eq!(report_with_bv["replay"], Json::Bool(true));
+        assert_eq!(report_with_bv["exactType"], Json::Bool(true));
+        let sources_with_bv: BTreeSet<&str> = report_with_bv["sources"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|s| s["module"].as_str().unwrap())
+            .collect();
+        assert!(
+            sources_with_bv.contains("Anneal.NatBitwise"),
+            "{sources_with_bv:?}"
+        );
+        assert!(
+            sources_with_bv.contains("Anneal.BitVec"),
+            "{sources_with_bv:?}"
+        );
+        assert!(
+            !sources_with_bv.contains("Anneal.Unused"),
+            "{sources_with_bv:?}"
+        );
+        let allowed_axioms: BTreeSet<&str> =
+            BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
+        let used_axioms: BTreeSet<&str> = report_with_bv["axioms"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|a| a.as_str().unwrap())
+            .collect();
+        assert!(
+            used_axioms.is_subset(&allowed_axioms),
+            "unexpected axioms: {used_axioms:?}"
+        );
+        let export_with_bv = base.join("export-with-bv");
+        assert!(checker.export_target_oleans(&export_with_bv).unwrap());
+        assert!(export_with_bv.join("Anneal/NatBitwise.olean").is_file());
+        assert!(export_with_bv.join("Anneal/BitVec.olean").is_file());
+        assert!(!export_with_bv.join("Anneal/Unused.olean").exists());
+
+        // 3. Role isolation remains intact: `Specification -> Anneal.BitVec`
+        //    is retained by BFS and rejected by `TargetRole::allows`.
+        let mut req_bad_spec = write_target_request(
+            &base.join("bad-spec"),
+            vec![
+                (
+                    "Model",
+                    TargetRole::Model,
+                    "prelude\nimport Init.Prelude\nimport Init.Core\n\
+                     namespace Trusted.MirSemantics\n\
+                     structure Crate where\n  program : Nat\n  specs : Nat → Prop\n\
+                     def UnitTheorem (c : Crate) : Prop := c.specs c.program\n",
+                ),
+                (
+                    "Captured",
+                    TargetRole::Capture,
+                    "prelude\nimport Model\ndef Captured.program : Nat := 0\n",
+                ),
+                (
+                    "Spec",
+                    TargetRole::Specification,
+                    "prelude\nimport Model\nimport Anneal.BitVec\n\
+                     def Spec.specs (_ : Nat) : Prop := True\n",
+                ),
+                (
+                    "Expected",
+                    TargetRole::Expected,
+                    "prelude\nimport Captured\nimport Spec\n\
+                     def Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem \
+                     (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+                ),
+                (
+                    "Proof",
+                    TargetRole::Proof,
+                    "prelude\nimport Expected\ntheorem Proof.verify : Expected.claim := trivial\n",
+                ),
+            ],
+        );
+        attach_bundled_theory(&mut req_bad_spec);
+        let err = checker.run_target(&req_bad_spec).unwrap_err();
+        assert_eq!(err.code, 1, "{err}");
+        assert_eq!(err.phase, "target-role", "{err}");
+        assert!(
+            err.message.contains("Spec cannot import Anneal.BitVec"),
+            "{err}"
+        );
+
+        // 4. Importing both `Anneal.MirWp` and `Anneal.BitVec` together in one
+        //    `Proof` replays cleanly via shared `Anneal.NatBitwise` with no
+        //    duplicate `Nat.bitwise.eq_def` declaration.
+        let trusted_path = repo_root().join("trusted/lean/Trusted.lean");
+        let trusted_sha = sha256_file(&trusted_path, "fixture").unwrap();
+        let mir_ast_path = repo_root().join("trusted/lean/Trusted/MirAst.lean");
+        let mir_ast_sha = sha256_file(&mir_ast_path, "fixture").unwrap();
+        let mir_sem_path = repo_root().join("trusted/lean/Trusted/MirSemantics.lean");
+        let mir_sem_sha = sha256_file(&mir_sem_path, "fixture").unwrap();
+        let mir_wp_path = repo_root().join("theory/Anneal/MirWp.lean");
+        let mir_wp_sha = sha256_file(&mir_wp_path, "fixture").unwrap();
+        let mut req_both = write_target_request(
+            &base.join("both-mirwp-bitvec"),
+            vec![
+                (
+                    "Captured",
+                    TargetRole::Capture,
+                    "prelude\nimport Trusted.MirSemantics\n\
+                     def Captured.body0 : Trusted.MirAst.Body :=\n  \
+                     { argumentCount := 0, isUnsafe := false, locals := [.unit],\n    \
+                       basicBlocks := [{ statements := [], terminator := .return_ }],\n    \
+                       identity := _root_.String.ofList [(_root_.Char.ofNat 97)] }\n\
+                     def Captured.program : Trusted.MirAst.Program :=\n  \
+                     { pointerWidthBits := 64, mirProfileVersion := 1, bodies := [Captured.body0], scope := .unit }\n",
+                ),
+                (
+                    "Spec",
+                    TargetRole::Specification,
+                    "prelude\nimport Init.Data.BitVec.Basic\nimport Trusted.MirSemantics\n\
+                     def Spec.specs : Trusted.MirSemantics.Specs where\n  \
+                     safety := fun _ _ => True\n  \
+                     property := fun _ =>\n    \
+                     (∀ (mask a1 b1 a2 b2 : BitVec 8),\n      \
+                       a1 &&& mask = 0#8 → a2 &&& mask = 0#8 →\n      \
+                       b1 &&& ~~~mask = 0#8 → b2 &&& ~~~mask = 0#8 →\n      \
+                       a1 ||| b1 = a2 ||| b2 → a1 = a2 ∧ b1 = b2)\n",
+                ),
+                (
+                    "Expected",
+                    TargetRole::Expected,
+                    "prelude\nimport Captured\nimport Spec\n\
+                     def Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem \
+                     (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+                ),
+                (
+                    "Proof",
+                    TargetRole::Proof,
+                    "prelude\nimport Expected\nimport Anneal.MirWp\nimport Anneal.BitVec\n\
+                     theorem Proof.verify : Expected.claim := by\n  \
+                     refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, ?_⟩\n  \
+                     · intro id selected h\n    \
+                       cases id with\n    \
+                       | zero =>\n      \
+                         cases h\n      \
+                         refine Anneal.MirWp.bodyVerified_of_safe rfl rfl (fun args hv _ => ?_)\n      \
+                         cases args with\n      \
+                         | nil => exact (Anneal.MirWp.run_initial_success (body := Captured.body0) (fuel := 4) (args := []) (value := .unit) rfl).1\n      \
+                         | cons _ _ => cases hv\n    \
+                       | succ n => cases n <;> cases h\n  \
+                     · exact fun _ _ _ _ _ ha1 ha2 hb1 hb2 hor =>\n      \
+                       Anneal.BitVec.disjoint_or_injective ha1 ha2 hb1 hb2 hor\n",
+                ),
+            ],
+        );
+        req_both.modules.push(TargetModule {
+            module: "Trusted".to_owned(),
+            source: trusted_path,
+            expected_sha256: trusted_sha,
+            role: TargetRole::Model,
+        });
+        req_both.modules.push(TargetModule {
+            module: "Trusted.MirAst".to_owned(),
+            source: mir_ast_path,
+            expected_sha256: mir_ast_sha,
+            role: TargetRole::Model,
+        });
+        req_both.modules.push(TargetModule {
+            module: "Trusted.MirSemantics".to_owned(),
+            source: mir_sem_path,
+            expected_sha256: mir_sem_sha,
+            role: TargetRole::Model,
+        });
+        req_both.modules.push(TargetModule {
+            module: "Anneal.MirWp".to_owned(),
+            source: mir_wp_path,
+            expected_sha256: mir_wp_sha,
+            role: TargetRole::Proof,
+        });
+        attach_bundled_theory(&mut req_both);
+        let report_both = checker.run_target(&req_both).unwrap();
+        assert_eq!(report_both["replay"], Json::Bool(true));
+        assert_eq!(report_both["exactType"], Json::Bool(true));
+        let sources_both: BTreeSet<&str> = report_both["sources"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|s| s["module"].as_str().unwrap())
+            .collect();
+        assert!(
+            sources_both.contains("Anneal.NatBitwise"),
+            "{sources_both:?}"
+        );
+        assert!(sources_both.contains("Anneal.MirWp"), "{sources_both:?}");
+        assert!(sources_both.contains("Anneal.BitVec"), "{sources_both:?}");
+        assert!(!sources_both.contains("Anneal.Unused"), "{sources_both:?}");
     }
 }

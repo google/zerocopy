@@ -4167,6 +4167,8 @@ fn rejects_trusted_correspondence_import_of_theory_in_pass2_preflight() {
         "trusted/lean/Trusted.lean",
         "trusted/lean/Trusted/MirAst.lean",
         "trusted/lean/Trusted/MirSemantics.lean",
+        "theory/Anneal/NatBitwise.lean",
+        "theory/Anneal/BitVec.lean",
         "theory/Anneal/MirWp.lean",
     ] {
         let dst = fix.root.join(rel);
