@@ -1,0 +1,119 @@
+{
+  "topics": [
+    "verification/diagnostics",
+    "anneal/theory",
+    "lean/mechanization",
+    "verification/rust"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal Core Verification Architecture (joshlf/anneal)",
+      "identity": {
+        "repo": "https://github.com/joshlf/anneal",
+        "commit": "20aa204315cd36aaf944778b7d33c0d609ced8e8"
+      }
+    },
+    {
+      "name": "Lean 4 Toolchain Foundation (leanprover/lean4)",
+      "identity": {
+        "repo": "https://github.com/leanprover/lean4",
+        "tag": "v4.34.1",
+        "commit": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Beyond Benchmarks: LLM-Generated Verus Specifications on Asterinas Vostd (ASE 2026)",
+      "identity": {
+        "doi": "10.1145/3832783.3834504",
+        "venue": "ASE 2026"
+      }
+    },
+    {
+      "name": "Asterinas OSTD Source & Specifications (asterinas/vostd)",
+      "identity": {
+        "repo": "https://github.com/asterinas/vostd",
+        "commit": "eb1a9d044617c2abff58f959ccc50f9571d561e9"
+      }
+    },
+    {
+      "name": "Asterinas Operating System Kernel (asterinas/asterinas)",
+      "identity": {
+        "repo": "https://github.com/asterinas/asterinas",
+        "commit": "7fecb4ffabc72d0767277a9ffb66168bc512034c"
+      }
+    },
+    {
+      "name": "VerusEval: Semantic Equivalence & Vacuity Evaluation of LLM Proofs",
+      "identity": {
+        "arxiv": "2610.26464",
+        "url": "https://arxiv.org/abs/2610.26464"
+      }
+    },
+    {
+      "name": "KVerus: Cross-File Kernel Verification with Verus (ASE 2026)",
+      "identity": {
+        "doi": "10.1145/3832783.3834503",
+        "arxiv": "2605.03822"
+      }
+    },
+    {
+      "name": "Plonky3 Hax/Lean 4 FRI Verification Pipeline (runtimeverification/p3-hax-lean-fri-pipeline)",
+      "identity": {
+        "repo": "https://github.com/runtimeverification/p3-hax-lean-fri-pipeline",
+        "commit": "90bd76d4aef936f6807d982b7e929fd0df1056be"
+      }
+    },
+    {
+      "name": "Aeneas, Hax, and AI Provers on zkEVM Primitives (AIMACS@CAV 2026)",
+      "identity": {
+        "doi": "10.48550/arXiv.2605.30106",
+        "arxiv": "2605.30106v2"
+      }
+    },
+    {
+      "name": "Verified zkEVM Rust-to-Lean Benchmark Corpus (Verified-zkEVM/rust-lean)",
+      "identity": {
+        "repo": "https://github.com/Verified-zkEVM/rust-lean",
+        "commit": "49a83d2a231c24f8a26a694ca2badaa36fb3914d"
+      }
+    },
+    {
+      "name": "QuickChick Foundational Property-Based Testing (QuickChick/QuickChick)",
+      "identity": {
+        "repo": "https://github.com/QuickChick/QuickChick",
+        "commit": "6b98c9beca3ff5cfb645f6aa4e35a8146081f128",
+        "doi": "10.1007/978-3-319-22102-1_22"
+      }
+    },
+    {
+      "name": "Coverage Guided, Property Based Testing (OOPSLA 2019)",
+      "identity": {
+        "doi": "10.1145/3360607",
+        "venue": "OOPSLA 2019"
+      }
+    },
+    {
+      "name": "Plausible Lean 4 Property-Based Tester & Shrinker (leanprover-community/plausible)",
+      "identity": {
+        "repo": "https://github.com/leanprover-community/plausible",
+        "commit": "0d8633efc105d6b15b59a8103614ae0291ee8827"
+      }
+    },
+    {
+      "name": "Foundational VeriFast: Hinted Mirroring (arXiv:2601.13727 & verifast/verifast)",
+      "identity": {
+        "repo": "https://github.com/verifast/verifast",
+        "commit": "0a83dba42db7ce0b445034ece5298afe980e57dc",
+        "arxiv": "2601.13727"
+      }
+    },
+    {
+      "name": "Verus Deductive Rust Verifier Error Tagging (verus-lang/verus)",
+      "identity": {
+        "repo": "https://github.com/verus-lang/verus",
+        "commit": "0dab219272ac2353320bd177ebb3929453b90a9e"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

@@ -1,0 +1,106 @@
+{
+  "topics": [
+    "systems/os-verification",
+    "verification/semantics",
+    "anneal/theory",
+    "verification/hardware"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal Core Verification Architecture (joshlf/anneal)",
+      "identity": {
+        "repo": "https://github.com/joshlf/anneal",
+        "commit": "20aa204315cd36aaf944778b7d33c0d609ced8e8"
+      }
+    },
+    {
+      "name": "Lean 4 Toolchain Foundation (leanprover/lean4)",
+      "identity": {
+        "repo": "https://github.com/leanprover/lean4",
+        "tag": "v4.34.1",
+        "commit": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "VeriSMo: Verified Security Module for Confidential VMs (OSDI 2024 & microsoft/verismo)",
+      "identity": {
+        "repo": "https://github.com/microsoft/verismo",
+        "commit": "5e1c159aec20491653550e39b00bd0855f543a7e",
+        "isbn": "978-1-939133-40-3"
+      }
+    },
+    {
+      "name": "CortenMM: Verified RCU Page-Table Tree & Spec Artifact (SOSP 2025 & TELOS-syslab/CortenMM-Artifact)",
+      "identity": {
+        "repo": "https://github.com/TELOS-syslab/CortenMM-Artifact",
+        "commit": "604592d815cb1cb7d4619f202b5d7ff471a3a7af",
+        "doi": "10.1145/3731569.3764836"
+      }
+    },
+    {
+      "name": "Islaris: Verification of Machine Code Against Authoritative Sail ISA Semantics (PLDI 2022 & rems-project/islaris)",
+      "identity": {
+        "repo": "https://github.com/rems-project/islaris",
+        "commit": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+        "doi": "10.1145/3519939.3523434"
+      }
+    },
+    {
+      "name": "Sail RISC-V Lean 4 Formal ISA Model (opencompl/sail-riscv-lean)",
+      "identity": {
+        "repo": "https://github.com/opencompl/sail-riscv-lean",
+        "commit": "51c635c460125ac87955d061fcd902ce03b8011f"
+      }
+    },
+    {
+      "name": "RISC-V Privileged Instruction Set Manual (riscv/riscv-isa-manual)",
+      "identity": {
+        "repo": "https://github.com/riscv/riscv-isa-manual",
+        "commit": "c05f1725f25526dd8463bac6ca75cfcfbee17d05"
+      }
+    },
+    {
+      "name": "Formal Reasoning Under Cached Address Translation (JAR 2020)",
+      "identity": {
+        "doi": "10.1007/s10817-019-09539-7",
+        "venue": "Journal of Automated Reasoning"
+      }
+    },
+    {
+      "name": "seL4 Formal Specification & Abstract VSpace Proofs (seL4/l4v)",
+      "identity": {
+        "repo": "https://github.com/seL4/l4v",
+        "commit": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e"
+      }
+    },
+    {
+      "name": "seL4 Microkernel RISC-V Trap Entry & Architecture Code (seL4/seL4)",
+      "identity": {
+        "repo": "https://github.com/seL4/seL4",
+        "commit": "08c7e5fddb3111ff377745c8eefb07feb5c4cfb7"
+      }
+    },
+    {
+      "name": "Asterinas OSTD MM/TLB Implementation & Specs (asterinas/vostd)",
+      "identity": {
+        "repo": "https://github.com/asterinas/vostd",
+        "commit": "eb1a9d044617c2abff58f959ccc50f9571d561e9"
+      }
+    },
+    {
+      "name": "Asterinas Operating System Kernel (asterinas/asterinas)",
+      "identity": {
+        "repo": "https://github.com/asterinas/asterinas",
+        "commit": "7fecb4ffabc72d0767277a9ffb66168bc512034c"
+      }
+    },
+    {
+      "name": "Double-Fetch Vulnerability Characterization in System Kernels (USENIX Security 2017)",
+      "identity": {
+        "isbn": "978-1-931971-40-9",
+        "venue": "USENIX Security 2017"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

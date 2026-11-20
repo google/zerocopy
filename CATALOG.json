@@ -17264,6 +17264,125 @@
         "verification/compiler-verification"
       ]
     },
+    "counterexample-trace-shrinking-span-blame-assignment-and-agent-proof-repair": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "commit": "20aa204315cd36aaf944778b7d33c0d609ced8e8",
+            "repo": "https://github.com/joshlf/anneal"
+          },
+          "name": "Anneal Core Verification Architecture (joshlf/anneal)"
+        },
+        {
+          "identity": {
+            "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "repo": "https://github.com/leanprover/lean4",
+            "tag": "v4.34.1"
+          },
+          "name": "Lean 4 Toolchain Foundation (leanprover/lean4)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3832783.3834504",
+            "venue": "ASE 2026"
+          },
+          "name": "Beyond Benchmarks: LLM-Generated Verus Specifications on Asterinas Vostd (ASE 2026)"
+        },
+        {
+          "identity": {
+            "commit": "eb1a9d044617c2abff58f959ccc50f9571d561e9",
+            "repo": "https://github.com/asterinas/vostd"
+          },
+          "name": "Asterinas OSTD Source & Specifications (asterinas/vostd)"
+        },
+        {
+          "identity": {
+            "commit": "7fecb4ffabc72d0767277a9ffb66168bc512034c",
+            "repo": "https://github.com/asterinas/asterinas"
+          },
+          "name": "Asterinas Operating System Kernel (asterinas/asterinas)"
+        },
+        {
+          "identity": {
+            "arxiv": "2610.26464",
+            "url": "https://arxiv.org/abs/2610.26464"
+          },
+          "name": "VerusEval: Semantic Equivalence & Vacuity Evaluation of LLM Proofs"
+        },
+        {
+          "identity": {
+            "arxiv": "2605.03822",
+            "doi": "10.1145/3832783.3834503"
+          },
+          "name": "KVerus: Cross-File Kernel Verification with Verus (ASE 2026)"
+        },
+        {
+          "identity": {
+            "commit": "90bd76d4aef936f6807d982b7e929fd0df1056be",
+            "repo": "https://github.com/runtimeverification/p3-hax-lean-fri-pipeline"
+          },
+          "name": "Plonky3 Hax/Lean 4 FRI Verification Pipeline (runtimeverification/p3-hax-lean-fri-pipeline)"
+        },
+        {
+          "identity": {
+            "arxiv": "2605.30106v2",
+            "doi": "10.48550/arXiv.2605.30106"
+          },
+          "name": "Aeneas, Hax, and AI Provers on zkEVM Primitives (AIMACS@CAV 2026)"
+        },
+        {
+          "identity": {
+            "commit": "49a83d2a231c24f8a26a694ca2badaa36fb3914d",
+            "repo": "https://github.com/Verified-zkEVM/rust-lean"
+          },
+          "name": "Verified zkEVM Rust-to-Lean Benchmark Corpus (Verified-zkEVM/rust-lean)"
+        },
+        {
+          "identity": {
+            "commit": "6b98c9beca3ff5cfb645f6aa4e35a8146081f128",
+            "doi": "10.1007/978-3-319-22102-1_22",
+            "repo": "https://github.com/QuickChick/QuickChick"
+          },
+          "name": "QuickChick Foundational Property-Based Testing (QuickChick/QuickChick)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3360607",
+            "venue": "OOPSLA 2019"
+          },
+          "name": "Coverage Guided, Property Based Testing (OOPSLA 2019)"
+        },
+        {
+          "identity": {
+            "commit": "0d8633efc105d6b15b59a8103614ae0291ee8827",
+            "repo": "https://github.com/leanprover-community/plausible"
+          },
+          "name": "Plausible Lean 4 Property-Based Tester & Shrinker (leanprover-community/plausible)"
+        },
+        {
+          "identity": {
+            "arxiv": "2601.13727",
+            "commit": "0a83dba42db7ce0b445034ece5298afe980e57dc",
+            "repo": "https://github.com/verifast/verifast"
+          },
+          "name": "Foundational VeriFast: Hinted Mirroring (arXiv:2601.13727 & verifast/verifast)"
+        },
+        {
+          "identity": {
+            "commit": "0dab219272ac2353320bd177ebb3929453b90a9e",
+            "repo": "https://github.com/verus-lang/verus"
+          },
+          "name": "Verus Deductive Rust Verifier Error Tagging (verus-lang/verus)"
+        }
+      ],
+      "topics": [
+        "verification/diagnostics",
+        "anneal/theory",
+        "lean/mechanization",
+        "verification/rust"
+      ]
+    },
     "cpu-silicon-errata-microcode-patches-and-assembler-linker-binary-mutation": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -29617,6 +29736,112 @@
         "llvm/codegen",
         "verification",
         "verification/isa-coverage"
+      ]
+    },
+    "isa-page-table-tlb-coherence-sail-trap-contracts-and-toctou-dma-fetch-oracles": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "commit": "20aa204315cd36aaf944778b7d33c0d609ced8e8",
+            "repo": "https://github.com/joshlf/anneal"
+          },
+          "name": "Anneal Core Verification Architecture (joshlf/anneal)"
+        },
+        {
+          "identity": {
+            "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "repo": "https://github.com/leanprover/lean4",
+            "tag": "v4.34.1"
+          },
+          "name": "Lean 4 Toolchain Foundation (leanprover/lean4)"
+        },
+        {
+          "identity": {
+            "commit": "5e1c159aec20491653550e39b00bd0855f543a7e",
+            "isbn": "978-1-939133-40-3",
+            "repo": "https://github.com/microsoft/verismo"
+          },
+          "name": "VeriSMo: Verified Security Module for Confidential VMs (OSDI 2024 & microsoft/verismo)"
+        },
+        {
+          "identity": {
+            "commit": "604592d815cb1cb7d4619f202b5d7ff471a3a7af",
+            "doi": "10.1145/3731569.3764836",
+            "repo": "https://github.com/TELOS-syslab/CortenMM-Artifact"
+          },
+          "name": "CortenMM: Verified RCU Page-Table Tree & Spec Artifact (SOSP 2025 & TELOS-syslab/CortenMM-Artifact)"
+        },
+        {
+          "identity": {
+            "commit": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+            "doi": "10.1145/3519939.3523434",
+            "repo": "https://github.com/rems-project/islaris"
+          },
+          "name": "Islaris: Verification of Machine Code Against Authoritative Sail ISA Semantics (PLDI 2022 & rems-project/islaris)"
+        },
+        {
+          "identity": {
+            "commit": "51c635c460125ac87955d061fcd902ce03b8011f",
+            "repo": "https://github.com/opencompl/sail-riscv-lean"
+          },
+          "name": "Sail RISC-V Lean 4 Formal ISA Model (opencompl/sail-riscv-lean)"
+        },
+        {
+          "identity": {
+            "commit": "c05f1725f25526dd8463bac6ca75cfcfbee17d05",
+            "repo": "https://github.com/riscv/riscv-isa-manual"
+          },
+          "name": "RISC-V Privileged Instruction Set Manual (riscv/riscv-isa-manual)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-019-09539-7",
+            "venue": "Journal of Automated Reasoning"
+          },
+          "name": "Formal Reasoning Under Cached Address Translation (JAR 2020)"
+        },
+        {
+          "identity": {
+            "commit": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e",
+            "repo": "https://github.com/seL4/l4v"
+          },
+          "name": "seL4 Formal Specification & Abstract VSpace Proofs (seL4/l4v)"
+        },
+        {
+          "identity": {
+            "commit": "08c7e5fddb3111ff377745c8eefb07feb5c4cfb7",
+            "repo": "https://github.com/seL4/seL4"
+          },
+          "name": "seL4 Microkernel RISC-V Trap Entry & Architecture Code (seL4/seL4)"
+        },
+        {
+          "identity": {
+            "commit": "eb1a9d044617c2abff58f959ccc50f9571d561e9",
+            "repo": "https://github.com/asterinas/vostd"
+          },
+          "name": "Asterinas OSTD MM/TLB Implementation & Specs (asterinas/vostd)"
+        },
+        {
+          "identity": {
+            "commit": "7fecb4ffabc72d0767277a9ffb66168bc512034c",
+            "repo": "https://github.com/asterinas/asterinas"
+          },
+          "name": "Asterinas Operating System Kernel (asterinas/asterinas)"
+        },
+        {
+          "identity": {
+            "isbn": "978-1-931971-40-9",
+            "venue": "USENIX Security 2017"
+          },
+          "name": "Double-Fetch Vulnerability Characterization in System Kernels (USENIX Security 2017)"
+        }
+      ],
+      "topics": [
+        "systems/os-verification",
+        "verification/semantics",
+        "anneal/theory",
+        "verification/hardware"
       ]
     },
     "islaris-source-identity-dependency-solving-and-coq-adequacy-replay": {
