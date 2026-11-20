@@ -91526,6 +91526,178 @@
         "verification/compiler-verification"
       ]
     },
+    "vertical-seam-composition-and-elf-runpath-tcb-closure-for-verified-rustc": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "paths": "trusted/audit/src/lib.rs, trusted/lean/foundation-lock.json, trusted/lean/Trusted/MirAst.lean, trusted/lean/Trusted/MirSemantics.lean, trusted/rustc-capture/src/driver.rs",
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal verification audit binary, foundation lock, Trusted.MirAst/MirSemantics, and rustc-capture driver"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 theorem prover, synchronous kernel, and x86_64-unknown-linux-gnu ELF toolchain"
+        },
+        {
+          "identity": {
+            "artifact": "elan toolchain leanprover/lean4:v4.34.1 x86_64-unknown-linux-gnu ELF binary and shared-library closure",
+            "bin_lake_sha256": "6f53827dab18010d6c690d14c8401cacabc1db958edb3552a877ed4cf1dd995d",
+            "bin_lean_sha256": "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550",
+            "libinit_shared_sha256": "07f8c1156271ab6ec36c14c3031b5572329325d5f73dde3e89a1615d88f4e5cb",
+            "liblake_shared_sha256": "ef0eb8942cd68ffb61ae573850a7181f70860580959e296c6e1a0e31ec50a38a",
+            "libleanshared_1_sha256": "69e900c025f40bf05c14f5b9ec48071b3130e34c96a7c45ee2eb5b6f307e19e6",
+            "libleanshared_2_sha256": "38d0a03750b2e8d51161885ad597a8b4f6d3b85215c5a52aecd2b3753273cf3f",
+            "libleanshared_sha256": "6b30cc963d065fc9d2f87f7e9cbe0682b23000ae5425bccd769c5d477fa74f13"
+          },
+          "name": "Lean v4.34.1 x86_64-unknown-linux-gnu release ELF binaries and DT_NEEDED shared libraries"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+            "version": "v4.35.0"
+          },
+          "name": "Lean 4 v4.35.0 release used for external dual-kernel checker throughput measurements"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4export",
+            "revision": "5a9a355dc6c5fd82b69058d433e2ae2e8dfbf8fe",
+            "version": "3.1.0"
+          },
+          "name": "lean4export declaration exporter (format 3.1.0)"
+        },
+        {
+          "identity": {
+            "repository": "ammkrn/nanoda_lib",
+            "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929",
+            "version": "0.4.19"
+          },
+          "name": "nanoda_bin external Lean 4 proof checker in Rust"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "4a4ef493e3a1488c6e321570238084b38948f6db",
+            "version": "1.94.0"
+          },
+          "name": "Rust compiler 1.94.0 baseline prior to Atomic<T> stdlib refactor"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96",
+            "version": "1.96.0"
+          },
+          "name": "Rust compiler 1.96.0 baseline prior to StatementKind::Retag removal and WithRetag introduction"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "version": "1.98.0-nightly (2026-05-30)"
+          },
+          "name": "Rust compiler 1.98.0-nightly pinned by anneal-rustc-capture driver"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "version": "1.99.0"
+          },
+          "name": "Rust compiler 1.99.0 introducing Rvalue::Use(_, WithRetag) no_retag copy MIR"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler 1.99.1 (LLVM 23.1.1) baseline for FnAbi, AVX-512, incremental, and atomic fence lowering"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd",
+            "version": "2026-10-20 nightly"
+          },
+          "name": "Rust compiler nightly commit cited by Anneal Trusted.MirAst and Trusted.MirSemantics"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "version": "1.100.0"
+          },
+          "name": "Rust compiler 1.100.0 (LLVM 23.1.5) x86-vs-AArch64 staggered SIMD FnAbi divergence release"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly"
+          },
+          "name": "Rust compiler 1.102.0-nightly (LLVM 23.1.5) Win64 ZST and vectorcall ABI comparison point"
+        },
+        {
+          "identity": {
+            "paths": "src/borrow_tracker/tree_borrows/perms.rs",
+            "repository": "rust-lang/miri",
+            "revision": "7e679961edcfe2c526f19153bb8b03de346efa5c"
+          },
+          "name": "Miri Tree Borrows permission model"
+        },
+        {
+          "identity": {
+            "repository": "Frommi/miniz_oxide",
+            "revision": "4e582392df3a739d2b0dfd2c537dc33e8942be38",
+            "version": "0.9.1"
+          },
+          "name": "miniz_oxide 0.9.1 incremental Const::Unevaluated blast-radius benchmark crate"
+        },
+        {
+          "identity": {
+            "repository": "serde-rs/json",
+            "revision": "20572a6d066958542d79cdd6cf1a7cd9f0c8e1f8",
+            "version": "1.0.154"
+          },
+          "name": "serde_json 1.0.154 incremental MIR and ThinLTO invalidation benchmark crate"
+        },
+        {
+          "identity": {
+            "repository": "BurntSushi/memchr",
+            "revision": "5fdb40c054e1fff359a2f7bdf7f87a13b34b465d",
+            "version": "2.8.3"
+          },
+          "name": "memchr 2.8.3 cross-release MIR no_retag copy drift benchmark crate"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/tcb-audit",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/architecture",
+        "compilers/verified-rustc/tcb",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "security",
+        "security/tcb-hazards",
+        "systems",
+        "systems/elf",
+        "systems/object-formats",
+        "verification"
+      ]
+    },
     "verus-vstd-views-permissions-prophecies-and-os-verification": {
       "observed_at": "2026-11-19",
       "subjects": [
