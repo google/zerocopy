@@ -1,0 +1,113 @@
+{
+  "topics": [
+    "rust/unsafe",
+    "rust/traits",
+    "verification/rust",
+    "pl/type-theory",
+    "anneal/theory",
+    "zerocopy/soundness-policy",
+    "lean/mechanization"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler and standard library",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "4b5350e87e487aed08ab2f9f0160a4b2616438bc"
+      }
+    },
+    {
+      "name": "The Rustonomicon (Safe and Unsafe interaction rules)",
+      "identity": {
+        "repository": "rust-lang/nomicon",
+        "revision": "b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6"
+      }
+    },
+    {
+      "name": "The Rust Reference (Traits, implementations, and unsafety)",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+      }
+    },
+    {
+      "name": "Rust RFCs (RFC 1023 and RFC 2451 trait coherence)",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07",
+        "rfcs": "1023,2451"
+      }
+    },
+    {
+      "name": "zerocopy unsafe layout and byte-validity traits",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "ec133ce4d7993775413d852f91c9e3eb2a2a0897"
+      }
+    },
+    {
+      "name": "Anneal MIR verification framework and threat model",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Mechanized Miri operational semantics in Lean 4",
+      "identity": {
+        "repository": "proofs-rs/lean-miri",
+        "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+      }
+    },
+    {
+      "name": "Jung, Jourdan, Krebbers & Dreyer (2018): RustBelt: Securing the Foundations of the Rust Programming Language",
+      "identity": {
+        "doi": "10.1145/3158154",
+        "venue": "PACMPL 2(POPL), Article 66",
+        "year": "2018"
+      }
+    },
+    {
+      "name": "Gaher, Sammler, Jung, Krebbers & Dreyer (2024): RefinedRust: A Type System for High-Assurance Verification of Rust Programs",
+      "identity": {
+        "doi": "10.1145/3656422",
+        "venue": "PACMPL 8(PLDI), Article 195",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Ho & Protzenko (2022): Aeneas: Rust Verification by Functional Translation",
+      "identity": {
+        "doi": "10.1145/3547647",
+        "venue": "PACMPL 6(ICFP), Article 116",
+        "year": "2022"
+      }
+    },
+    {
+      "name": "Denis, Jourdan & Marche (2022): Creusot: A Foundry for the Deductive Verification of Rust Programs",
+      "identity": {
+        "doi": "10.1007/978-3-031-10872-6_6",
+        "venue": "ICFEM 2022, LNCS 13478",
+        "pages": "90-105",
+        "year": "2022"
+      }
+    },
+    {
+      "name": "Lattuada et al. (2023): Verus: Verifying Rust Programs using Linear Ghost Types",
+      "identity": {
+        "doi": "10.1145/3586037",
+        "venue": "PACMPL 7(OOPSLA1), Article 85",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "Bottu, Xie, Marntirosian & Schrijvers (2019): Coherence of Type Class Resolution",
+      "identity": {
+        "doi": "10.1145/3341695",
+        "venue": "PACMPL 3(ICFP), Article 91",
+        "year": "2019"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
