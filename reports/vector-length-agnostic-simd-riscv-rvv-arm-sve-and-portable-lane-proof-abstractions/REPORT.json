@@ -1,0 +1,79 @@
+{
+  "topics": [
+    "isa/simd",
+    "isa/riscv",
+    "isa/aarch64",
+    "verification/algebra",
+    "llvm/lowering",
+    "rust/simd",
+    "compilers/vectorization"
+  ],
+  "subjects": [
+    {
+      "name": "RISC-V Vector Extension Specification v1.0",
+      "identity": {
+        "repository": "riscvarchive/riscv-v-spec",
+        "revision": "2f68ef7256d6ec53e4d2bd7cb12862f406d64e34",
+        "version": "1.0"
+      }
+    },
+    {
+      "name": "Official Sail RISC-V formal ISA specification (extensions/V)",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "76f1ce3c184797178864b9869963e8b44465889e"
+      }
+    },
+    {
+      "name": "RISC-V Unprivileged ISA Manual",
+      "identity": {
+        "repository": "riscv/riscv-isa-manual",
+        "revision": "c05f1725f25526dd8463bac6ca75cfcfbee17d05"
+      }
+    },
+    {
+      "name": "Arm C Language Extensions (ACLE SVE/SVE2 sizeless types, predicates, and FFR)",
+      "identity": {
+        "repository": "ARM-software/acle",
+        "revision": "74fa229b09d1c5af533a88e387e470c26494953f"
+      }
+    },
+    {
+      "name": "LLVM compiler infrastructure (TypeSize/ElementCount vscale algebra, VP intrinsics, and RISCVInsertVSETVLI)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "7583443aeb22dfe52bd581ce7e5294313dd33449"
+      }
+    },
+    {
+      "name": "Rust core::simd and rustc_scalable_vector compiler intrinsics",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "ec65cd52bba13d491ff65c9d218b39753755c84a"
+      }
+    },
+    {
+      "name": "Alive2 LLVM IR translation validation engine (ScalableVectorTyID instantiation)",
+      "identity": {
+        "repository": "AliveToolkit/alive2",
+        "revision": "3bdd4f5e1cefa47057e93110e707acd11cfe08e4"
+      }
+    },
+    {
+      "name": "The ARM Scalable Vector Extension (Stephens, Reid, et al.)",
+      "identity": {
+        "doi": "10.1109/MM.2017.35",
+        "arxiv": "1803.06185",
+        "venue": "IEEE Micro 37(2), 26-39 (2017)"
+      }
+    },
+    {
+      "name": "Ara: A 1-GHz+ Scalable and Energy-Efficient RISC-V Vector Processor (Cavalcante et al.)",
+      "identity": {
+        "doi": "10.1109/TVLSI.2019.2950087",
+        "venue": "IEEE Trans. Very Large Scale Integr. (VLSI) Syst. 28(2), 530-543 (2020)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

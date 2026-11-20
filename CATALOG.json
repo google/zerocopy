@@ -20637,6 +20637,62 @@
         "verification/refinement"
       ]
     },
+    "custom-unsized-types-coerce-unsized-vtable-metadata-and-gat-lifetime-variance": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "ec65cd52bba13d491ff65c9d218b39753755c84a"
+          },
+          "name": "Rust compiler and core library (Pointee metadata, CoerceUnsized, DispatchFromDyn, vtable layout, and GAT variance)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference (dynamically sized types, type coercions, and subtyping variance)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "Rust RFCs (RFC 0982 DST coercion, RFC 1598 GATs, RFC 2580 ptr_metadata, and RFC 3324 trait upcasting)"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "1962a9c0e3eda8a3a58387f61c70ddd2c396b118"
+          },
+          "name": "zerocopy KnownLayout, DstLayout, TrailingSliceLayout, and cast metadata validation"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3158154",
+            "venue": "Proc. ACM Program. Lang. 2, POPL, Article 66 (2018)"
+          },
+          "name": "RustBelt: Securing the Foundations of the Rust Programming Language (Jung, Jourdan, Krebbers, and Dreyer)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1040305.1040306",
+            "venue": "Proc. 32nd ACM SIGPLAN-SIGACT Symp. Principles of Programming Languages (POPL 2005), pp. 1-13"
+          },
+          "name": "Associated Types with Class (Chakravarty, Keller, Peyton Jones, and Marlow)"
+        }
+      ],
+      "topics": [
+        "rust/types",
+        "rust/layout",
+        "rust/safety",
+        "rust/traits",
+        "rustc/mir",
+        "zerocopy/layout",
+        "verification/type-theory"
+      ]
+    },
     "cyclic-verifier-rings-relativized-self-verification-and-lob-boundaries": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -75502,6 +75558,85 @@
         "rustc",
         "rustc/codegen",
         "verification"
+      ]
+    },
+    "vector-length-agnostic-simd-riscv-rvv-arm-sve-and-portable-lane-proof-abstractions": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "riscvarchive/riscv-v-spec",
+            "revision": "2f68ef7256d6ec53e4d2bd7cb12862f406d64e34",
+            "version": "1.0"
+          },
+          "name": "RISC-V Vector Extension Specification v1.0"
+        },
+        {
+          "identity": {
+            "repository": "riscv/sail-riscv",
+            "revision": "76f1ce3c184797178864b9869963e8b44465889e"
+          },
+          "name": "Official Sail RISC-V formal ISA specification (extensions/V)"
+        },
+        {
+          "identity": {
+            "repository": "riscv/riscv-isa-manual",
+            "revision": "c05f1725f25526dd8463bac6ca75cfcfbee17d05"
+          },
+          "name": "RISC-V Unprivileged ISA Manual"
+        },
+        {
+          "identity": {
+            "repository": "ARM-software/acle",
+            "revision": "74fa229b09d1c5af533a88e387e470c26494953f"
+          },
+          "name": "Arm C Language Extensions (ACLE SVE/SVE2 sizeless types, predicates, and FFR)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "7583443aeb22dfe52bd581ce7e5294313dd33449"
+          },
+          "name": "LLVM compiler infrastructure (TypeSize/ElementCount vscale algebra, VP intrinsics, and RISCVInsertVSETVLI)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "ec65cd52bba13d491ff65c9d218b39753755c84a"
+          },
+          "name": "Rust core::simd and rustc_scalable_vector compiler intrinsics"
+        },
+        {
+          "identity": {
+            "repository": "AliveToolkit/alive2",
+            "revision": "3bdd4f5e1cefa47057e93110e707acd11cfe08e4"
+          },
+          "name": "Alive2 LLVM IR translation validation engine (ScalableVectorTyID instantiation)"
+        },
+        {
+          "identity": {
+            "arxiv": "1803.06185",
+            "doi": "10.1109/MM.2017.35",
+            "venue": "IEEE Micro 37(2), 26-39 (2017)"
+          },
+          "name": "The ARM Scalable Vector Extension (Stephens, Reid, et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TVLSI.2019.2950087",
+            "venue": "IEEE Trans. Very Large Scale Integr. (VLSI) Syst. 28(2), 530-543 (2020)"
+          },
+          "name": "Ara: A 1-GHz+ Scalable and Energy-Efficient RISC-V Vector Processor (Cavalcante et al.)"
+        }
+      ],
+      "topics": [
+        "isa/simd",
+        "isa/riscv",
+        "isa/aarch64",
+        "verification/algebra",
+        "llvm/lowering",
+        "rust/simd",
+        "compilers/vectorization"
       ]
     },
     "vendor-intrinsic-specifications-stdarch-verification-and-lean-generation": {
