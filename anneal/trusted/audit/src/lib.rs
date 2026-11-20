@@ -96,6 +96,7 @@ use std::io;
 use std::os::unix::fs::{DirBuilderExt, PermissionsExt};
 use std::path::{Component, Path, PathBuf};
 use std::process::{Command, Output};
+use std::sync::{Arc, Mutex, OnceLock};
 
 use serde::{Deserialize, Serialize};
 use serde_json::json;
@@ -1577,6 +1578,37 @@ struct FoundationLock {
     axioms: Vec<(String, String)>,
 }
 
+/// Cache key for precompiled `TrustedBoundary.olean` artifacts held in process
+/// memory: `(lean_binary_sha256, canonical_sysroot_prefix, inspector_sha256)`.
+type InspectorCacheKey = (String, PathBuf, String);
+
+/// In-memory bytes of the compiled `TrustedBoundary` `.olean*` parts.
+#[derive(Debug)]
+struct CompiledInspectorArtifacts {
+    files: Vec<(String, Vec<u8>)>,
+}
+
+/// Process-wide cache of compiled `TrustedBoundary` `.olean*` parts keyed by
+/// admitted toolchain + inspector source digest. Each [`Checker`] materializes
+/// the bytes into its own private `0o700` stage directory so no `/tmp`
+/// directories outlive a run and concurrent callers never share writable paths.
+fn compiled_inspector_cache()
+-> &'static Mutex<BTreeMap<InspectorCacheKey, Arc<Mutex<Option<Arc<CompiledInspectorArtifacts>>>>>>
+{
+    static CACHE: OnceLock<
+        Mutex<BTreeMap<InspectorCacheKey, Arc<Mutex<Option<Arc<CompiledInspectorArtifacts>>>>>>,
+    > = OnceLock::new();
+    CACHE.get_or_init(|| Mutex::new(BTreeMap::new()))
+}
+
+/// Stage-local paths to the precompiled `TrustedBoundary` `.olean` directory
+/// and thin `import TrustedBoundary` runner script.
+#[derive(Debug, Clone)]
+struct CompiledInspectorPaths {
+    lib_dir: PathBuf,
+    runner: PathBuf,
+}
+
 /// Verified toolchain, `foundation-lock.json` metadata, and staged source state
 /// produced by [`Checker::tool_admission`].
 ///
@@ -1587,6 +1619,13 @@ struct FoundationLock {
 pub struct AdmittedToolchain {
     /// Staged path of `TrustedBoundary.lean`.
     pub inspector: PathBuf,
+    /// SHA-256 digest of the staged `TrustedBoundary.lean` source.
+    inspector_sha256: String,
+    /// Verified SHA-256 digest of the admitted `lean` binary.
+    lean_sha256: String,
+    /// Stage-local precompiled `TrustedBoundary.olean` library and runner,
+    /// lazily populated on first inspector invocation.
+    compiled_inspector: Option<CompiledInspectorPaths>,
     /// Verified `lean --version` string matching `foundation-lock.json`.
     pub version: String,
     /// Canonical `lean --print-prefix` sysroot directory.
@@ -1956,6 +1995,7 @@ impl Checker {
     ///
     /// I/O errors remain distinct from a completed child's exit status. Each
     /// caller applies its own diagnostic and protocol rules to the raw output.
+    #[cfg(test)]
     fn launch_lean(&self, arguments: &[String]) -> io::Result<Output> {
         self.launch_lean_with_path(arguments, None)
     }
@@ -2149,7 +2189,7 @@ impl Checker {
                 })
             }
         };
-        let inspector = adm.inspector.clone();
+        let compiled = self.ensure_compiled_inspector()?;
 
         self.counter += 1;
         let stem = self
@@ -2174,12 +2214,19 @@ impl Checker {
             "-j1".to_string(),
             mem_limit.to_string(),
             "--run".to_string(),
-            inspector.to_string_lossy().into_owned(),
+            compiled.runner.to_string_lossy().into_owned(),
             request_path.to_string_lossy().into_owned(),
             result_path.to_string_lossy().into_owned(),
         ];
+        // `LEAN_PATH` uses the delimiter-free relative path `"inspector-lib"`
+        // (resolved against `current_dir(&self.stage)`) so host `TMPDIR`
+        // characters such as `:` cannot split `LEAN_PATH` or leak external
+        // directories. `TrustedBoundary.run` immediately calls
+        // `initHermeticSearchPath`, which resets `Lean.searchPathRef` from
+        // `sysroot` (and explicit staged `searchPath` entries) without reading
+        // `LEAN_PATH` before loading any foundation, repo, or vendor module.
         let output = self
-            .launch_lean(&args)
+            .launch_lean_with_path(&args, Some(std::ffi::OsStr::new("inspector-lib")))
             .map_err(|e| Failure::new(2, mode, format!("could not execute Lean: {e}")))?;
 
         let result_map = parse_inspector_output(mode, &output, &result_path)?;
@@ -2216,12 +2263,12 @@ impl Checker {
         let mode = "correspondence-preflight";
         let (bwrap, lean_prefix, sandbox_lean) = self.resolve_bwrap_and_sandbox_lean(mode)?;
 
-        let (foundation, sysroot_foundation, inspector) = {
+        let compiled = self.ensure_compiled_inspector()?;
+        let (foundation, sysroot_foundation) = {
             let adm = self.admitted()?;
             (
                 adm.foundation_modules(),
                 adm.sysroot_foundation.clone().unwrap_or_default(),
-                adm.inspector.clone(),
             )
         };
 
@@ -2298,7 +2345,7 @@ impl Checker {
         let args = build_bwrap_correspondence_preflight_args(
             &lean_prefix,
             &sandbox_lean,
-            &inspector,
+            &compiled.lib_dir,
             &request_path,
             &sp_binds,
             &src_binds,
@@ -2333,6 +2380,139 @@ impl Checker {
         let result_path = out_dir.path().join("result.json");
         let result_map = parse_inspector_output(mode, &output, &result_path)?;
         Ok(Json::Object(result_map))
+    }
+
+    /// Compile `TrustedBoundary.lean` once per
+    /// `(lean_sha256, sysroot_prefix, inspector_sha256)` using the admitted
+    /// pinned `lean` binary and materialize the `.olean` plus a 1-line
+    /// `import TrustedBoundary` runner in `<stage>/inspector-lib`.
+    fn ensure_compiled_inspector(&mut self) -> Result<CompiledInspectorPaths, Failure> {
+        let (key, inspector) = {
+            let adm = self.admitted()?;
+            if let Some(paths) = &adm.compiled_inspector {
+                return Ok(paths.clone());
+            }
+            (
+                (
+                    adm.lean_sha256.clone(),
+                    adm.prefix.clone(),
+                    adm.inspector_sha256.clone(),
+                ),
+                adm.inspector.clone(),
+            )
+        };
+
+        let slot = {
+            let mut map = compiled_inspector_cache()
+                .lock()
+                .unwrap_or_else(|e| e.into_inner());
+            map.entry(key)
+                .or_insert_with(|| Arc::new(Mutex::new(None)))
+                .clone()
+        };
+
+        let lib_dir = self.stage.join("inspector-lib");
+        let mut dir_builder = fs::DirBuilder::new();
+        #[cfg(unix)]
+        dir_builder.mode(0o700);
+        dir_builder
+            .create(&lib_dir)
+            .map_err(|e| Failure::operational("compile-inspector", e.to_string()))?;
+
+        let mut populate = || -> Result<PathBuf, Failure> {
+            let cached = {
+                let mut guard = slot.lock().unwrap_or_else(|e| e.into_inner());
+                if let Some(arts) = guard.as_ref() {
+                    Some(Arc::clone(arts))
+                } else {
+                    let root_dir = inspector.parent().ok_or_else(|| {
+                        Failure::operational(
+                            "compile-inspector",
+                            "staged inspector missing parent dir",
+                        )
+                    })?;
+                    let olean_out = lib_dir.join("TrustedBoundary.olean");
+                    self.process(
+                        "compile-inspector",
+                        &[
+                            "-j1".to_string(),
+                            "-M2048".to_string(),
+                            "-t0".to_string(),
+                            "-DElab.async=false".to_string(),
+                            "-Ddebug.skipKernelTC=false".to_string(),
+                            "-R".to_string(),
+                            root_dir.to_string_lossy().into_owned(),
+                            "-o".to_string(),
+                            olean_out.to_string_lossy().into_owned(),
+                            inspector.to_string_lossy().into_owned(),
+                        ],
+                    )?;
+                    let expected_names: BTreeSet<String> = OLEAN_PARTS
+                        .iter()
+                        .map(|part| format!("TrustedBoundary.{part}"))
+                        .collect();
+                    for entry in fs::read_dir(&lib_dir)
+                        .map_err(|e| Failure::operational("compile-inspector", e.to_string()))?
+                    {
+                        let entry = entry.map_err(|e| {
+                            Failure::operational("compile-inspector", e.to_string())
+                        })?;
+                        let name = entry.file_name().to_string_lossy().into_owned();
+                        if !expected_names.contains(&name) {
+                            return Err(Failure::policy(
+                                "compile-inspector",
+                                format!(
+                                    "unexpected file emitted while compiling inspector: {name}"
+                                ),
+                            ));
+                        }
+                    }
+                    let mut files = Vec::new();
+                    for part in OLEAN_PARTS {
+                        let name = format!("TrustedBoundary.{part}");
+                        let path = lib_dir.join(&name);
+                        if fs::symlink_metadata(&path).is_ok() {
+                            regular(&path, "compile-inspector")?;
+                            let bytes = fs::read(&path).map_err(|e| {
+                                Failure::operational("compile-inspector", e.to_string())
+                            })?;
+                            files.push((name, bytes));
+                        }
+                    }
+                    if !files.iter().any(|(n, _)| n == "TrustedBoundary.olean") {
+                        return Err(Failure::operational(
+                            "compile-inspector",
+                            "compiler omitted TrustedBoundary.olean",
+                        ));
+                    }
+                    *guard = Some(Arc::new(CompiledInspectorArtifacts { files }));
+                    None
+                }
+            };
+            if let Some(arts) = cached {
+                for (name, bytes) in &arts.files {
+                    fs::write(lib_dir.join(name), bytes)
+                        .map_err(|e| Failure::operational("compile-inspector", e.to_string()))?;
+                }
+            }
+
+            let runner = lib_dir.join("Runner.lean");
+            fs::write(&runner, "import TrustedBoundary\n")
+                .map_err(|e| Failure::operational("compile-inspector", e.to_string()))?;
+            Ok(runner)
+        };
+
+        let runner = match populate() {
+            Ok(runner) => runner,
+            Err(err) => {
+                let _ = fs::remove_dir_all(&lib_dir);
+                return Err(err);
+            }
+        };
+
+        let paths = CompiledInspectorPaths { lib_dir, runner };
+        self.admitted_mut()?.compiled_inspector = Some(paths.clone());
+        Ok(paths)
     }
 
     /// Scan `root` via [`scan_lean_tree`] and copy every discovered `.lean`
@@ -2410,7 +2590,7 @@ impl Checker {
 
         let inspector_src = self.checkout.join("trusted/audit/TrustedBoundary.lean");
         let inspector = self.stage.join("src/TrustedBoundary.lean");
-        stage_regular_file(&inspector_src, &inspector, "tool-snapshot")?;
+        let inspector_sha256 = stage_regular_file(&inspector_src, &inspector, "tool-snapshot")?;
 
         let lock_path = self.source.join("foundation-lock.json");
         let toolchain_path = self.source.join("lean-toolchain");
@@ -2561,6 +2741,9 @@ impl Checker {
 
         self.admitted = Some(AdmittedToolchain {
             inspector,
+            inspector_sha256,
+            lean_sha256: lean_sha,
+            compiled_inspector: None,
             version: actual_version,
             prefix,
             axioms: parsed_lock.axioms,
@@ -3730,12 +3913,13 @@ fn build_bwrap_miri_compile_args(
 }
 
 /// Build the `bwrap` argument vector that confines `"correspondence-preflight"`
-/// to read-only toolchain, inspector, request JSON, compiled libraries, and
-/// staged source files, with writes restricted to `/work/out`.
+/// to read-only toolchain, precompiled inspector library, request JSON,
+/// compiled libraries, and staged source files, with writes restricted to
+/// `/work/out`.
 fn build_bwrap_correspondence_preflight_args(
     lean_prefix: &Path,
     sandbox_lean: &Path,
-    inspector: &Path,
+    inspector_lib: &Path,
     request_path: &Path,
     sp_binds: &[(PathBuf, String)],
     src_binds: &[(PathBuf, String)],
@@ -3744,8 +3928,8 @@ fn build_bwrap_correspondence_preflight_args(
     let mut args = bwrap_base_args(lean_prefix);
 
     args.push(OsString::from("--ro-bind"));
-    args.push(inspector.as_os_str().to_os_string());
-    args.push(OsString::from("/work/TrustedBoundary.lean"));
+    args.push(inspector_lib.as_os_str().to_os_string());
+    args.push(OsString::from("/work/inspector-lib"));
 
     args.push(OsString::from("--ro-bind"));
     args.push(request_path.as_os_str().to_os_string());
@@ -3766,14 +3950,14 @@ fn build_bwrap_correspondence_preflight_args(
     args.push(out_dir.as_os_str().to_os_string());
     args.push(OsString::from("/work/out"));
 
-    push_bwrap_env_args(&mut args, None);
+    push_bwrap_env_args(&mut args, Some("/work/inspector-lib"));
 
     args.push(sandbox_lean.as_os_str().to_os_string());
     for arg in [
         "-j1",
         "-M8192",
         "--run",
-        "/work/TrustedBoundary.lean",
+        "/work/inspector-lib/Runner.lean",
         "/work/request.json",
         "/work/out/result.json",
     ] {
@@ -4832,6 +5016,27 @@ mod process_tests {
             ])
         );
         assert!(output.stderr.is_empty());
+
+        // Passing an explicit hermetic `LEAN_PATH` exposes only that path while
+        // keeping ambient `LEAN_PATH`, `ELAN_TOOLCHAIN`, and `LD_PRELOAD`
+        // stripped.
+        let with_path = checker
+            .launch_lean_with_path(&[], Some(std::ffi::OsStr::new("/staged/inspector-lib")))
+            .unwrap();
+        assert!(with_path.status.success());
+        let env_with_path = String::from_utf8(with_path.stdout).unwrap();
+        assert_eq!(
+            env_with_path.lines().collect::<BTreeSet<_>>(),
+            BTreeSet::from([
+                "HOME=/selected/home",
+                "LANG=C",
+                "LC_ALL=C",
+                "LEAN_PATH=/staged/inspector-lib",
+                "PATH=/usr/bin:/bin",
+                "TMPDIR=/selected/tmp",
+            ])
+        );
+        assert!(with_path.stderr.is_empty());
     }
 
     #[cfg(unix)]
@@ -5243,7 +5448,7 @@ mod process_tests {
         let pf_args: Vec<String> = build_bwrap_correspondence_preflight_args(
             Path::new("/opt/lean-4.34.1"),
             Path::new("/toolchain/bin/lean"),
-            Path::new("/tmp/stage/TrustedBoundary.lean"),
+            Path::new("/tmp/stage/inspector-lib"),
             Path::new("/tmp/stage/request-001-correspondence-preflight.json"),
             &[
                 (PathBuf::from("/tmp/stage/lib"), "/work/sp-0".to_string()),
@@ -5273,6 +5478,7 @@ mod process_tests {
             "--clearenv",
             "-M8192",
             "--run",
+            "/work/inspector-lib/Runner.lean",
         ] {
             assert!(
                 pf_args.iter().any(|a| a == required),
@@ -5291,10 +5497,13 @@ mod process_tests {
             .map(|w| (w[1].as_str(), w[2].as_str()))
             .collect();
         assert!(pf_ro_binds.contains(&("/opt/lean-4.34.1", "/toolchain")));
-        assert!(pf_ro_binds.contains(&(
-            "/tmp/stage/TrustedBoundary.lean",
-            "/work/TrustedBoundary.lean"
-        )));
+        assert!(pf_ro_binds.contains(&("/tmp/stage/inspector-lib", "/work/inspector-lib")));
+        assert!(
+            pf_args
+                .windows(3)
+                .any(|w| w == ["--setenv", "LEAN_PATH", "/work/inspector-lib"]),
+            "missing isolated LEAN_PATH for precompiled inspector: {pf_args:?}"
+        );
         assert!(pf_ro_binds.contains(&(
             "/tmp/stage/request-001-correspondence-preflight.json",
             "/work/request.json"

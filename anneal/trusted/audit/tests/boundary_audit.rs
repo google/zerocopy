@@ -6564,3 +6564,160 @@ fn sandboxes_pass2_preflight_and_compilation_against_host_and_stage_writes() {
         "rejected Pass 2 output must not be staged into lib/"
     );
 }
+
+#[test]
+fn precompiled_inspector_cache_keys_on_inspector_source_digest() {
+    let mut fix = TempFixture::new(Some(&format!("{HEADER}def ok : Nat := 1\n")));
+
+    // 1. First run compiles `TrustedBoundary.lean` into `.olean` and populates
+    // the in-process cache.
+    fix.check_expected(None, None, None).unwrap();
+
+    let orig_inspector = fs::read_to_string(fix.root.join("trusted/audit/TrustedBoundary.lean"))
+        .expect("read staged TrustedBoundary.lean");
+
+    // 2. A syntactically or type-invalid edit to `TrustedBoundary.lean` must
+    // miss the cache and fail closed in `compile-inspector` rather than
+    // reusing the cached `.olean`.
+    fs::write(
+        fix.root.join("trusted/audit/TrustedBoundary.lean"),
+        format!("{orig_inspector}\ndef brokenInspectorType : Nat := \"not a nat\"\n"),
+    )
+    .unwrap();
+    let err_compile = fix
+        .check_expected(Some(2), Some("compile-inspector"), Some(false))
+        .unwrap_err();
+    assert!(
+        err_compile.message.contains("Lean exited"),
+        "expected compile-inspector failure, got: {err_compile}"
+    );
+
+    // 3. A valid edit to `TrustedBoundary.lean` that changes policy behavior
+    // must recompile and execute the modified inspector rather than serving
+    // stale cached `.olean` bytes.
+    let needle = "  | \"preflight\" =>";
+    let replacement =
+        "  | \"preflight\" =>\n    throw <| IO.userError \"policy: mutated inspector sentinel\"";
+    assert!(
+        orig_inspector.contains(needle),
+        "expected preflight dispatch arm in TrustedBoundary.lean"
+    );
+    fs::write(
+        fix.root.join("trusted/audit/TrustedBoundary.lean"),
+        orig_inspector.replacen(needle, replacement, 1),
+    )
+    .unwrap();
+    let err_policy = fix
+        .check_expected(Some(1), Some("preflight"), Some(false))
+        .unwrap_err();
+    assert!(
+        err_policy.message.contains("mutated inspector sentinel"),
+        "expected modified inspector policy error, got: {err_policy}"
+    );
+}
+
+#[cfg(unix)]
+#[test]
+fn precompiled_inspector_handles_colon_in_tmpdir_and_drops_lean_path() {
+    let fix = TempFixture::new(Some(&format!("{HEADER}def ok : Nat := 1\n")));
+
+    // Construct a `TMPDIR` containing the Unix `LEAN_PATH` delimiter (`:`) and
+    // place a corrupt decoy `TrustedBoundary.olean` at the split prefix so any
+    // non-relative `LEAN_PATH` serialization fails immediately.
+    let outer = tempfile::Builder::new()
+        .prefix("anneal-colon-tmp-")
+        .tempdir()
+        .unwrap();
+    let split_prefix = outer.path().join("evil");
+    fs::create_dir_all(&split_prefix).unwrap();
+    fs::write(split_prefix.join("TrustedBoundary.olean"), b"corrupt-decoy").unwrap();
+    let colon_tmpdir = outer.path().join("evil:sub");
+    fs::create_dir_all(&colon_tmpdir).unwrap();
+
+    // Run `anneal-audit` in a child process with `TMPDIR=<outer>/evil:sub`
+    // (avoiding mutating the test binary's global `TMPDIR`) and verify the
+    // relative `LEAN_PATH="inspector-lib"` succeeds without touching the decoy.
+    // Note: `TempFixture` omits `Trusted.MirAst`/`Anneal.MirWp`, so the binary
+    // executes `"preflight"`, compiles `Trusted.lean`, and reaches `"audit"`
+    // cleanly before `require_mir_wp` checks MIR modules; reaching the
+    // `"audit"` phase proves both preflight and audit inspector runs succeeded
+    // under the colon-containing `TMPDIR`.
+    let lean = default_lean_path();
+    let output = Command::new(env!("CARGO_BIN_EXE_anneal-audit"))
+        .arg("--anneal-root")
+        .arg(&fix.root)
+        .arg("--lean")
+        .arg(&lean)
+        .env("TMPDIR", &colon_tmpdir)
+        .output()
+        .expect("run anneal-audit with colon TMPDIR");
+    let combined = format!(
+        "{}\n{}",
+        String::from_utf8_lossy(&output.stdout),
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert!(
+        combined.contains("Trusted check failed (audit):") || output.status.success(),
+        "expected inspector preflight+audit to run under colon TMPDIR, got {:?}: {combined}",
+        output.status.code()
+    );
+    assert!(
+        !combined.contains("unknown module prefix 'TrustedBoundary'")
+            && !combined.contains("corrupt-decoy"),
+        "colon TMPDIR must not split LEAN_PATH or read decoy prefix: {combined}"
+    );
+
+    // Part 2: verify `TrustedBoundary.initHermeticSearchPath` drops the
+    // bootstrap `LEAN_PATH="inspector-lib"` from `Lean.searchPathRef` before
+    // `importCorrEnv` loads modules, so `inspector-lib/TrustedBoundary.olean`
+    // is never visible as an importable module.
+    let mut checker = Checker::new(&fix.root, Some(&lean)).unwrap();
+    checker.set_require_mir_wp(false);
+    checker.run().unwrap();
+    let sysroot = checker.admitted.as_ref().unwrap().prefix.clone();
+    let req_path = checker.stage.join("drop-lean-path-req.json");
+    let res_path = checker.stage.join("drop-lean-path-res.json");
+    let req = json!({
+        "mode": "correspondence-preflight",
+        "sysroot": sysroot.to_string_lossy(),
+        "searchPath": [],
+        "foundation": ["TrustedBoundary"],
+        "sysrootFoundation": [],
+        "trusted": [],
+        "theory": [],
+        "vendorMiri": [],
+        "moduleTiers": [],
+        "sources": [],
+    });
+    fs::write(&req_path, serde_json::to_vec(&req).unwrap()).unwrap();
+    let drop_out = Command::new(&lean)
+        .current_dir(&checker.stage)
+        .env_clear()
+        .env("LEAN_PATH", "inspector-lib")
+        .args([
+            "-j1",
+            "-M2048",
+            "--run",
+            checker
+                .stage
+                .join("inspector-lib/Runner.lean")
+                .to_str()
+                .unwrap(),
+            req_path.to_str().unwrap(),
+            res_path.to_str().unwrap(),
+        ])
+        .output()
+        .expect("run precompiled inspector for initHermeticSearchPath check");
+    assert_eq!(
+        drop_out.status.code(),
+        Some(2),
+        "expected exit code 2 when initHermeticSearchPath drops LEAN_PATH: stdout={} stderr={}",
+        String::from_utf8_lossy(&drop_out.stdout),
+        String::from_utf8_lossy(&drop_out.stderr),
+    );
+    let drop_res = fs::read_to_string(&res_path).expect("read inspector result json");
+    assert!(
+        drop_res.contains("unknown module prefix 'TrustedBoundary'"),
+        "initHermeticSearchPath must drop LEAN_PATH before importCorrEnv, got: {drop_res}"
+    );
+}
