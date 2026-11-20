@@ -1,0 +1,23 @@
+{
+  "observed_at": "2026-11-20",
+  "subjects": [
+    {
+      "identity": {
+        "repository": "https://github.com/rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+      },
+      "name": "rust-lang/rust (rustc 1.99.1, LLVM 23.1.1, llvm-profdata)"
+    }
+  ],
+  "topics": [
+    "compilers",
+    "compilers/lto",
+    "compilers/pgo",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/performance",
+    "llvm",
+    "rust",
+    "rustc",
+    "rustc/codegen"
+  ]
+}
