@@ -1,0 +1,72 @@
+{
+  "topics": [
+    "anneal/theory",
+    "isa/x86-64",
+    "lean/mechanization",
+    "llvm/ir-semantics",
+    "rust/simd",
+    "rustc/intrinsics",
+    "rustc/mir",
+    "verification/rust"
+  ],
+  "subjects": [
+    {
+      "name": "rust",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+      }
+    },
+    {
+      "name": "lean-miri",
+      "identity": {
+        "repository": "proofs-rs/lean-miri",
+        "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+      }
+    },
+    {
+      "name": "miri",
+      "identity": {
+        "repository": "rust-lang/miri",
+        "revision": "7fa591d7d4dd9af8154becbc8332f8096f8323b1"
+      }
+    },
+    {
+      "name": "anneal",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "20aa204315cd36aaf944778b7d33c0d609ced8e8"
+      }
+    },
+    {
+      "name": "lean4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "SymCrypt",
+      "identity": {
+        "repository": "microsoft/SymCrypt",
+        "revision": "286762b7730e2b780678f5ab11fef2b1bad639e0"
+      }
+    },
+    {
+      "name": "jasmin",
+      "identity": {
+        "repository": "jasmin-lang/jasmin",
+        "revision": "8c3279973a89afd969e50301f71563bb40d55724"
+      }
+    },
+    {
+      "name": "libjade",
+      "identity": {
+        "repository": "formosa-crypto/libjade",
+        "revision": "89c38602783d9c90dda11a9b8053295a8a088597"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

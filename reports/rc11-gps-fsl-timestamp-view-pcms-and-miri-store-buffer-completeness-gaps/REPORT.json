@@ -1,0 +1,95 @@
+{
+  "topics": [
+    "anneal/theory",
+    "lean/mechanization",
+    "rust/atomics",
+    "rust/concurrency",
+    "rust/miri",
+    "rust/unsafe",
+    "systems/concurrency-weak-memory",
+    "verification/concurrency",
+    "verification/semantics",
+    "verification/separation-logic"
+  ],
+  "subjects": [
+    {
+      "name": "miri",
+      "identity": {
+        "repository": "rust-lang/miri",
+        "revision": "7fa591d7d4dd9af8154becbc8332f8096f8323b1"
+      }
+    },
+    {
+      "name": "lean-miri",
+      "identity": {
+        "repository": "proofs-rs/lean-miri",
+        "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+      }
+    },
+    {
+      "name": "rust",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+      }
+    },
+    {
+      "name": "crossbeam",
+      "identity": {
+        "repository": "crossbeam-rs/crossbeam",
+        "revision": "a28f40fdddb70bea8e5faf0efad9af0be4b9dbea"
+      }
+    },
+    {
+      "name": "anneal",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "20aa204315cd36aaf944778b7d33c0d609ced8e8"
+      }
+    },
+    {
+      "name": "lean4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Repairing Sequential Consistency in C/C++11 (RC11)",
+      "identity": {
+        "doi": "10.1145/3062341.3062352",
+        "venue": "PLDI 2017"
+      }
+    },
+    {
+      "name": "Taming Release-Acquire Consistency (SRA)",
+      "identity": {
+        "doi": "10.1145/2837614.2837643",
+        "venue": "POPL 2016"
+      }
+    },
+    {
+      "name": "GPS: Navigating Weak Memory with Ghosts, Protocols, and Separation",
+      "identity": {
+        "doi": "10.1145/2660193.2660243",
+        "venue": "OOPSLA 2014"
+      }
+    },
+    {
+      "name": "A Program Logic for C11 Memory Fences (FSL)",
+      "identity": {
+        "doi": "10.1007/978-3-662-49122-5_20",
+        "venue": "VMCAI 2016"
+      }
+    },
+    {
+      "name": "Pointer Life Cycle Types for Lock-Free Data Structures with Memory Reclamation",
+      "identity": {
+        "doi": "10.1145/3371136",
+        "venue": "POPL 2020"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

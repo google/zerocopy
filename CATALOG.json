@@ -17005,6 +17005,78 @@
         "ffi/async-interop"
       ]
     },
+    "core-simd-mask-all-ones-ub-masked-tail-loads-and-lanewise-chunk-algebras": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+          },
+          "name": "rust"
+        },
+        {
+          "identity": {
+            "repository": "proofs-rs/lean-miri",
+            "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+          },
+          "name": "lean-miri"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/miri",
+            "revision": "7fa591d7d4dd9af8154becbc8332f8096f8323b1"
+          },
+          "name": "miri"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "20aa204315cd36aaf944778b7d33c0d609ced8e8"
+          },
+          "name": "anneal"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "lean4"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/SymCrypt",
+            "revision": "286762b7730e2b780678f5ab11fef2b1bad639e0"
+          },
+          "name": "SymCrypt"
+        },
+        {
+          "identity": {
+            "repository": "jasmin-lang/jasmin",
+            "revision": "8c3279973a89afd969e50301f71563bb40d55724"
+          },
+          "name": "jasmin"
+        },
+        {
+          "identity": {
+            "repository": "formosa-crypto/libjade",
+            "revision": "89c38602783d9c90dda11a9b8053295a8a088597"
+          },
+          "name": "libjade"
+        }
+      ],
+      "topics": [
+        "anneal/theory",
+        "isa/x86-64",
+        "lean/mechanization",
+        "llvm/ir-semantics",
+        "rust/simd",
+        "rustc/intrinsics",
+        "rustc/mir",
+        "verification/rust"
+      ]
+    },
     "coroutine-state-machine-optimization-and-hybridtrace-scaling": {
       "observed_at": "2026-11-14",
       "subjects": [
@@ -46420,6 +46492,101 @@
         "ffi/array-descriptors",
         "verification",
         "verification/representation-relations"
+      ]
+    },
+    "rc11-gps-fsl-timestamp-view-pcms-and-miri-store-buffer-completeness-gaps": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/miri",
+            "revision": "7fa591d7d4dd9af8154becbc8332f8096f8323b1"
+          },
+          "name": "miri"
+        },
+        {
+          "identity": {
+            "repository": "proofs-rs/lean-miri",
+            "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+          },
+          "name": "lean-miri"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+          },
+          "name": "rust"
+        },
+        {
+          "identity": {
+            "repository": "crossbeam-rs/crossbeam",
+            "revision": "a28f40fdddb70bea8e5faf0efad9af0be4b9dbea"
+          },
+          "name": "crossbeam"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "20aa204315cd36aaf944778b7d33c0d609ced8e8"
+          },
+          "name": "anneal"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "lean4"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3062341.3062352",
+            "venue": "PLDI 2017"
+          },
+          "name": "Repairing Sequential Consistency in C/C++11 (RC11)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2837614.2837643",
+            "venue": "POPL 2016"
+          },
+          "name": "Taming Release-Acquire Consistency (SRA)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2660193.2660243",
+            "venue": "OOPSLA 2014"
+          },
+          "name": "GPS: Navigating Weak Memory with Ghosts, Protocols, and Separation"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-662-49122-5_20",
+            "venue": "VMCAI 2016"
+          },
+          "name": "A Program Logic for C11 Memory Fences (FSL)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371136",
+            "venue": "POPL 2020"
+          },
+          "name": "Pointer Life Cycle Types for Lock-Free Data Structures with Memory Reclamation"
+        }
+      ],
+      "topics": [
+        "anneal/theory",
+        "lean/mechanization",
+        "rust/atomics",
+        "rust/concurrency",
+        "rust/miri",
+        "rust/unsafe",
+        "systems/concurrency-weak-memory",
+        "verification/concurrency",
+        "verification/semantics",
+        "verification/separation-logic"
       ]
     },
     "rcu-qsbr-hazard-pointers-seqlocks-and-safe-memory-reclamation-verification": {
