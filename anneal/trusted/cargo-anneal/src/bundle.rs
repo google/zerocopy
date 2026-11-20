@@ -26,8 +26,9 @@ use crate::toolchain::{LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256, is_sha256_hex,
 /// Resource ownership remains explicit so runtime target verification never
 /// discovers model, lock, or inspector files from an untrusted checkout. Within
 /// `theory/`, `BUNDLE_SOURCES` includes `theory/Anneal/NatBitwise.lean`,
-/// `theory/Anneal/BitVec.lean`, `theory/Anneal/LeBytes.lean`,
-/// `theory/Anneal/ListChunks.lean`, and `theory/Anneal/MirWp.lean`, which
+/// `theory/Anneal/BitVec.lean`, `theory/Anneal/BitVecArith.lean`,
+/// `theory/Anneal/LeBytes.lean`, `theory/Anneal/ListChunks.lean`, and
+/// `theory/Anneal/MirWp.lean`, which
 /// target verification stages and compiles demand-driven via BFS from
 /// non-bundled target modules so unused bundled theory modules incur no
 /// compilation or provenance overhead.
@@ -41,6 +42,7 @@ pub const BUNDLE_SOURCES: &[&str] = &[
     "trusted/lean/Trusted/MirSemantics.lean",
     "theory/Anneal/NatBitwise.lean",
     "theory/Anneal/BitVec.lean",
+    "theory/Anneal/BitVecArith.lean",
     "theory/Anneal/LeBytes.lean",
     "theory/Anneal/ListChunks.lean",
     "theory/Anneal/MirWp.lean",
