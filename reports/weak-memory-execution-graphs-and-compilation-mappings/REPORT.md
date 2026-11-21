@@ -8,6 +8,11 @@
 > axiomatic model written in the style of Alglave, Maranget and Tautschnig. The Lean kernel checks
 > the theorems about that model. Any statement about x86 hardware, x86-TSO, C11/C++ or Rust is a
 > separate modeling-bridge claim (`derived`), argued from the cited papers, never a theorem here.
+> Model–system relation: none proved. The fence-mapping theorems relate the package's own TSO and
+> SC predicates to each other (for example, TSO-consistent executions of `fenceAfterStores P` to
+> SC-consistent executions of `P`); no theorem relates the model to the x86-TSO abstract machine,
+> x86 hardware, C11/RC11 or Rust. These are statements about the toy model; they neither establish
+> nor refute the corresponding claims about x86 hardware, x86-TSO, C11/C++ or Rust.
 
 *An agent relying on a result from this package must quote its plain-language claim and the relevant hypotheses and non-claims, not just its name or a paraphrase.*
 
