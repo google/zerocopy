@@ -174,53 +174,66 @@ Every core definition has proved intended positive and negative examples in `lea
 Proof lemmas of `lean/ToyLink/Basic.lean` that the results below name by short name in depth justifications, unfolded-statement notes and non-claims (statements only; no card references them, and their proofs are in that file):
 
 ```lean
+-- lean/ToyLink/Basic.lean:69-70
 -- lean/ToyLink/Basic.lean (namespace Toy.Link)
-theorem Toy.Link.lookup_link_comm {M₁ M₂ : Module} (h : Linkable M₁ M₂) (fn : Fname) :
+theorem lookup_link_comm {M₁ M₂ : Module} (h : Linkable M₁ M₂) (fn : Fname) :
     (link M₁ M₂).lookup fn = (link M₂ M₁).lookup fn
 
-theorem Toy.Link.lookup_link_assoc (M₁ M₂ M₃ : Module) (fn : Fname) :
+-- lean/ToyLink/Basic.lean:75-76
+theorem lookup_link_assoc (M₁ M₂ M₃ : Module) (fn : Fname) :
     (link (link M₁ M₂) M₃).lookup fn = (link M₁ (link M₂ M₃)).lookup fn
 
-theorem Toy.Link.eval_one_undefinedCall_iff (P : Module) (fn : Fname) (arg : Int) :
+-- lean/ToyLink/Basic.lean:397-398
+theorem eval_one_undefinedCall_iff (P : Module) (fn : Fname) (arg : Int) :
     .undefinedCall ∈ eval 1 P fn arg ↔ ¬ P.Defines fn
 
-theorem Toy.Link.eval_link_right_of_no_undefinedCall {M N : Module} (hLink : Linkable M N) :
+-- lean/ToyLink/Basic.lean:613-615
+theorem eval_link_right_of_no_undefinedCall {M N : Module} (hLink : Linkable M N) :
     ∀ fuel fn arg, .undefinedCall ∉ eval fuel N fn arg →
       eval fuel (link M N) fn arg = eval fuel N fn arg
 
-theorem Toy.Link.eval_stabilizes_of_no_outOfFuel {P : Module} :
+-- lean/ToyLink/Basic.lean:777-780
+theorem eval_stabilizes_of_no_outOfFuel {P : Module} :
     ∀ fuel₁ fuel₂, fuel₁ ≤ fuel₂ → ∀ fn arg,
       .outOfFuel ∉ eval fuel₁ P fn arg →
       eval fuel₂ P fn arg = eval fuel₁ P fn arg
 
-theorem Toy.Link.wpPartial_sound_evalExprWith {A : SpecEnv} {callFn : Fname → Int → List Outcome}
+-- lean/ToyLink/Basic.lean:874-879
+theorem wpPartial_sound_evalExprWith {A : SpecEnv} {callFn : Fname → Int → List Outcome}
     (hCalls : ∀ g vArg o, (A g).pre vArg → o ∈ callFn g vArg →
       o = .outOfFuel ∨ ∃ vRes, o = .val vRes ∧ (A g).post vArg vRes)
     {x : Int} {e : Expr} {Q : Int → Prop}
     (hwp : wpPartial A x e Q) :
     ∀ out ∈ evalExprWith callFn x e, out = .outOfFuel ∨ ∃ v, out = .val v ∧ Q v
 
-theorem Toy.Link.moduleVerifiedPartial_link {M₁ M₂ : Module} {A G : SpecEnv}
+-- lean/ToyLink/Basic.lean:961-963
+theorem moduleVerifiedPartial_link {M₁ M₂ : Module} {A G : SpecEnv}
     (h₁ : ModuleVerifiedPartial M₁ A G) (h₂ : ModuleVerifiedPartial M₂ A G) :
     ModuleVerifiedPartial (link M₁ M₂) A G
 
-theorem Toy.Link.eval_link_superset_non_undefinedCall {C M : Module} (hC : Linkable C M) :
+-- lean/ToyLink/Basic.lean:1112-1114
+theorem eval_link_superset_non_undefinedCall {C M : Module} (hC : Linkable C M) :
     ∀ fuel fn arg out, out ∈ eval fuel M fn arg → out ≠ .undefinedCall →
       out ∈ eval fuel (link C M) fn arg
 
-theorem Toy.Link.eval_link_closed {C M : Module} (hC : Linkable C M) (hM : ClosedModule M) :
+-- lean/ToyLink/Basic.lean:1157-1158
+theorem eval_link_closed {C M : Module} (hC : Linkable C M) (hM : ClosedModule M) :
     ∀ n g v, M.Defines g → eval n (link C M) g v = eval n M g v
 
-theorem Toy.Link.closedModule_no_undefinedCall {M : Module} (hM : ClosedModule M) :
+-- lean/ToyLink/Basic.lean:1258-1259
+theorem closedModule_no_undefinedCall {M : Module} (hM : ClosedModule M) :
     ∀ fuel fn arg, M.Defines fn → .undefinedCall ∉ eval fuel M fn arg
 
-theorem Toy.Link.sameDom_of_standaloneRefines {M M' : Module} (h : StandaloneRefines M M') :
+-- lean/ToyLink/Basic.lean:1275-1276
+theorem sameDom_of_standaloneRefines {M M' : Module} (h : StandaloneRefines M M') :
     SameDom M M'
 
-theorem Toy.Link.standaloneRefines_of_ctxRefines {M M' : Module} (h : CtxRefines M M') :
+-- lean/ToyLink/Basic.lean:1301-1302
+theorem standaloneRefines_of_ctxRefines {M M' : Module} (h : CtxRefines M M') :
     StandaloneRefines M M'
 
-theorem Toy.Link.entryRefines_preserves_fnPartialCorrect {P P' : Module} {fn : Fname}
+-- lean/ToyLink/Basic.lean:1306-1308
+theorem entryRefines_preserves_fnPartialCorrect {P P' : Module} {fn : Fname}
     {spec : FnSpec} (hRef : EntryRefines fn P P') (hP : FnPartialCorrect P fn spec) :
     FnPartialCorrect P' fn spec
 ```
@@ -436,10 +449,14 @@ The card-referenced theorems whose statements mention these `private` definition
 In addition, four definition examples in `lean/ToyLink/Examples.lean` that no card references mention `nonNegSpec`, `allAddTenSpec` and `geTenSpec`:
 
 ```lean
-theorem Toy.Link.Examples.weakensPre_pos : WeakensPre nonNegSpec allAddTenSpec
-theorem Toy.Link.Examples.weakensPre_neg : ¬ WeakensPre nonNegSpec geTenSpec
-theorem Toy.Link.Examples.strengthensPostUnderPre_pos : StrengthensPostUnderPre nonNegSpec allAddTenSpec
-theorem Toy.Link.Examples.strengthensPostUnderPre_neg : ¬ StrengthensPostUnderPre allAddTenSpec nonNegSpec
+-- lean/ToyLink/Examples.lean:372
+theorem weakensPre_pos : WeakensPre nonNegSpec allAddTenSpec
+-- lean/ToyLink/Examples.lean:373
+theorem weakensPre_neg : ¬ WeakensPre nonNegSpec geTenSpec
+-- lean/ToyLink/Examples.lean:378
+theorem strengthensPostUnderPre_pos : StrengthensPostUnderPre nonNegSpec allAddTenSpec
+-- lean/ToyLink/Examples.lean:383
+theorem strengthensPostUnderPre_neg : ¬ StrengthensPostUnderPre allAddTenSpec nonNegSpec
 ```
 
 
@@ -452,7 +469,8 @@ theorem Toy.Link.Examples.strengthensPostUnderPre_neg : ¬ StrengthensPostUnderP
 - **Lean:** `Toy.Link.ctxRefines_refl`; supporting declarations: `Toy.Link.Examples.cex_ctxRefines_not_symm`
 
 ```lean
-theorem Toy.Link.ctxRefines_refl (M : Module) : CtxRefines M M
+-- lean/ToyLink/Statements.lean:16
+theorem ctxRefines_refl (M : Module) : CtxRefines M M
 ```
 
 Unfolded: `∀ C, (∀ fn, ¬ (C.Defines fn ∧ M.Defines fn)) → (∀ fn, ¬ (C.Defines fn ∧ M.Defines fn)) → ∀ entry fuel arg out, out ∈ eval fuel (link C M) entry arg → out ∈ eval fuel (link C M) entry arg` (`Toy.Link.Unfolded.ctxRefines_refl_unfolded_iff`).
@@ -468,9 +486,11 @@ Unfolded: `∀ C, (∀ fn, ¬ (C.Defines fn ∧ M.Defines fn)) → (∀ fn, ¬ (
 Statements of the witnesses, controls, counterexamples and supporting declarations named above:
 
 ```lean
-theorem Toy.Link.Examples.nonvacuous_ctxRefines_refl : CtxRefines openCallerMod openCallerMod
+-- lean/ToyLink/Examples.lean:448
+theorem nonvacuous_ctxRefines_refl : CtxRefines openCallerMod openCallerMod
 
-theorem Toy.Link.Examples.cex_ctxRefines_not_symm :
+-- lean/ToyLink/Examples.lean:183-184
+theorem cex_ctxRefines_not_symm :
     CtxRefines choose01Mod const0Mod ∧ ¬ CtxRefines const0Mod choose01Mod
 ```
 
@@ -483,7 +503,8 @@ Basis: execution (Lean kernel check) — `Toy.Link.ctxRefines_refl`, `Toy.Link.E
 - **Lean:** `Toy.Link.ctxRefines_trans`
 
 ```lean
-theorem Toy.Link.ctxRefines_trans {M₁ M₂ M₃ : Module}
+-- lean/ToyLink/Statements.lean:24-25
+theorem ctxRefines_trans {M₁ M₂ M₃ : Module}
     (h₁₂ : CtxRefines M₁ M₂) (h₂₃ : CtxRefines M₂ M₃) : CtxRefines M₁ M₃
 ```
 
@@ -507,14 +528,17 @@ Unfolded form with every `CtxRefines` expanded as in **Definitions**: `Toy.Link.
 Statements of the witnesses, controls, counterexamples and supporting declarations named above:
 
 ```lean
-theorem Toy.Link.Examples.nonvacuous_ctxRefines_trans :
+-- lean/ToyLink/Examples.lean:468-469
+theorem nonvacuous_ctxRefines_trans :
     CtxRefines choose012Mod choose01Mod ∧ CtxRefines choose01Mod const0Mod
 
-theorem Toy.Link.Cex.cex_ctxRefines_trans_without_first :
+-- lean/ToyLink/Counterexamples.lean:644-646
+theorem cex_ctxRefines_trans_without_first :
     ¬ CtxRefines const0Mod const1Mod ∧
     CtxRefines const1Mod const1Mod
 
-theorem Toy.Link.Cex.cex_ctxRefines_trans_without_second :
+-- lean/ToyLink/Counterexamples.lean:649-652
+theorem cex_ctxRefines_trans_without_second :
     CtxRefines choose01Mod const0Mod ∧
     ¬ CtxRefines const0Mod const2Mod ∧
     ¬ CtxRefines choose01Mod const2Mod
@@ -529,15 +553,18 @@ Basis: execution (Lean kernel check) — `Toy.Link.ctxRefines_trans`, `Toy.Link.
 - **Lean:** `Toy.Link.ctxRefines_link_congr`, `Toy.Link.ctxRefines_link_left`, `Toy.Link.ctxRefines_link_right`
 
 ```lean
-theorem Toy.Link.ctxRefines_link_congr {M₁ M₁' M₂ M₂' : Module}
+-- lean/ToyLink/Statements.lean:33-35
+theorem ctxRefines_link_congr {M₁ M₁' M₂ M₂' : Module}
     (h₁ : CtxRefines M₁ M₁') (h₂ : CtxRefines M₂ M₂') (hLink : Linkable M₁ M₂) :
     CtxRefines (link M₁ M₂) (link M₁' M₂')
 
-theorem Toy.Link.ctxRefines_link_left {M₁ M₁' M₂ : Module}
+-- lean/ToyLink/Statements.lean:82-84
+theorem ctxRefines_link_left {M₁ M₁' M₂ : Module}
     (h₁ : CtxRefines M₁ M₁') (hLink : Linkable M₁ M₂) :
     CtxRefines (link M₁ M₂) (link M₁' M₂)
 
-theorem Toy.Link.ctxRefines_link_right {M₁ M₂ M₂' : Module}
+-- lean/ToyLink/Statements.lean:88-90
+theorem ctxRefines_link_right {M₁ M₂ M₂' : Module}
     (h₂ : CtxRefines M₂ M₂') (hLink : Linkable M₁ M₂) :
     CtxRefines (link M₁ M₂) (link M₁ M₂')
 ```
@@ -563,22 +590,26 @@ Unfolded: `Toy.Link.Unfolded.ctxRefines_link_congr_unfolded_iff`. The left and r
 Statements of the witnesses, controls, counterexamples and supporting declarations named above:
 
 ```lean
-theorem Toy.Link.Examples.nonvacuous_ctxRefines_link_congr :
+-- lean/ToyLink/Examples.lean:490-491
+theorem nonvacuous_ctxRefines_link_congr :
     CtxRefines modA modA ∧ CtxRefines modB modB' ∧ Linkable modA modB
 
-theorem Toy.Link.Cex.cex_link_congr_without_first_refines :
+-- lean/ToyLink/Counterexamples.lean:665-669
+theorem cex_link_congr_without_first_refines :
     ¬ CtxRefines const0Mod const1Mod ∧
     CtxRefines oneZeroMod oneZeroMod ∧
     Linkable const0Mod oneZeroMod ∧
     ¬ CtxRefines (link const0Mod oneZeroMod) (link const1Mod oneZeroMod)
 
-theorem Toy.Link.Cex.cex_link_congr_without_second_refines :
+-- lean/ToyLink/Counterexamples.lean:675-679
+theorem cex_link_congr_without_second_refines :
     CtxRefines oneZeroMod oneZeroMod ∧
     ¬ CtxRefines const0Mod const1Mod ∧
     Linkable oneZeroMod const0Mod ∧
     ¬ CtxRefines (link oneZeroMod const0Mod) (link oneZeroMod const1Mod)
 
-theorem Toy.Link.Cex.cex_link_congr_without_linkable :
+-- lean/ToyLink/Counterexamples.lean:766-770
+theorem cex_link_congr_without_linkable :
     CtxRefines ipMod1 ipMod1 ∧
     CtxRefines ipMod2 ipMod2' ∧
     ¬ Linkable ipMod1 ipMod2 ∧
@@ -596,7 +627,8 @@ Basis: derived (modeling bridge) — In a language whose modules interact only t
 - **Lean:** `Toy.Link.ctxRefines_sameDom`
 
 ```lean
-theorem Toy.Link.ctxRefines_sameDom {M M' : Module} (h : CtxRefines M M') : SameDom M M'
+-- lean/ToyLink/Basic.lean:410
+theorem ctxRefines_sameDom {M M' : Module} (h : CtxRefines M M') : SameDom M M'
 ```
 
 Unfolded (`Toy.Link.Unfolded.ctxRefines_sameDom_unfolded_iff`): `(∀ C, (∀ fn, ¬ (C.Defines fn ∧ M.Defines fn)) → (∀ fn, ¬ (C.Defines fn ∧ M'.Defines fn)) → ∀ entry fuel arg out, out ∈ eval fuel (link C M') entry arg → out ∈ eval fuel (link C M) entry arg) → ∀ fn, M.Defines fn ↔ M'.Defines fn`. The proof probes each name with the empty context at fuel `1`, where a defined name never yields `undefinedCall` and an undefined name always does (`eval_one_undefinedCall_iff`).
@@ -616,9 +648,11 @@ Unfolded (`Toy.Link.Unfolded.ctxRefines_sameDom_unfolded_iff`): `(∀ C, (∀ fn
 Statements of the witnesses, controls, counterexamples and supporting declarations named above:
 
 ```lean
-theorem Toy.Link.Examples.nonvacuous_ctxRefines_sameDom : CtxRefines choose01Mod const0Mod
+-- lean/ToyLink/Examples.lean:1086
+theorem nonvacuous_ctxRefines_sameDom : CtxRefines choose01Mod const0Mod
 
-theorem Toy.Link.Cex.cex_delete_unused_export_not_ctxRefines :
+-- lean/ToyLink/Counterexamples.lean:200-207
+theorem cex_delete_unused_export_not_ctxRefines :
     ClosedModule deadSrc ∧
     ClosedModule deadTgt ∧
     EntryRefines 0 deadSrc deadTgt ∧
@@ -639,7 +673,8 @@ Basis: derived (modeling bridge) — For toolchains in which every function is e
 - **Lean:** `Toy.Link.Cex.cex_delete_unused_export_not_ctxRefines`, `Toy.Link.Cex.cex_add_fresh_helper_not_ctxRefines`
 
 ```lean
-theorem Toy.Link.Cex.cex_delete_unused_export_not_ctxRefines :
+-- lean/ToyLink/Counterexamples.lean:200-207
+theorem cex_delete_unused_export_not_ctxRefines :
     ClosedModule deadSrc ∧
     ClosedModule deadTgt ∧
     EntryRefines 0 deadSrc deadTgt ∧
@@ -648,7 +683,8 @@ theorem Toy.Link.Cex.cex_delete_unused_export_not_ctxRefines :
     ¬ EntryRefines 1 deadSrc deadTgt ∧
     ¬ CtxRefines deadSrc deadTgt
 
-theorem Toy.Link.Cex.cex_add_fresh_helper_not_ctxRefines :
+-- lean/ToyLink/Counterexamples.lean:218-222
+theorem cex_add_fresh_helper_not_ctxRefines :
     EntryRefines 0 [(0, .lit 0)] [(0, .lit 0), (7, .lit 0)] ∧
     EntryRefines 0 [(0, .lit 0), (7, .lit 0)] [(0, .lit 0)] ∧
     ¬ SameDom [(0, .lit 0)] [(0, .lit 0), (7, .lit 0)] ∧
@@ -669,7 +705,8 @@ Modules: `deadSrc = [(0, lit 42), (1, lit 7)]`, `deadTgt = [(0, lit 42)]`; the s
 Statements of the witnesses, controls, counterexamples and supporting declarations named above:
 
 ```lean
-theorem Toy.Link.Examples.positive_control_in_place_export_optimization :
+-- lean/ToyLink/Examples.lean:886-887
+theorem positive_control_in_place_export_optimization :
     CtxRefines expSrc expTgt ∧ SameDom expSrc expTgt ∧ EntryRefines 0 expSrc expTgt
 ```
 
@@ -682,7 +719,8 @@ Basis: execution (Lean kernel check) — `Toy.Link.Cex.cex_delete_unused_export_
 - **Lean:** `Toy.Link.ctxRefines_iff_standaloneRefines_of_closed_source_or_target`
 
 ```lean
-theorem Toy.Link.ctxRefines_iff_standaloneRefines_of_closed_source_or_target {M M' : Module}
+-- lean/ToyLink/Statements.lean:99-101
+theorem ctxRefines_iff_standaloneRefines_of_closed_source_or_target {M M' : Module}
     (hClosed : ClosedModule M ∨ ClosedModule M') :
     CtxRefines M M' ↔ StandaloneRefines M M'
 ```
@@ -705,17 +743,20 @@ Unfolded (`Toy.Link.Unfolded.ctxRefines_iff_standaloneRefines_of_closed_source_o
 Statements of the witnesses, controls, counterexamples and supporting declarations named above:
 
 ```lean
-theorem Toy.Link.Examples.nonvacuous_collapse_closed_target :
+-- lean/ToyLink/Examples.lean:1095-1098
+theorem nonvacuous_collapse_closed_target :
     ¬ ClosedModule openChooseMod ∧ ClosedModule const1Mod ∧
     (ClosedModule openChooseMod ∨ ClosedModule const1Mod) ∧
     StandaloneRefines openChooseMod const1Mod
 
-theorem Toy.Link.Examples.closed_source_open_target_collapse_witness :
+-- lean/ToyLink/Supplement.lean:55-58
+theorem closed_source_open_target_collapse_witness :
     ClosedModule const1Mod ∧ ¬ ClosedModule deadImportTgt ∧
     StandaloneRefines const1Mod deadImportTgt ∧
     CtxRefines const1Mod deadImportTgt
 
-theorem Toy.Link.Cex.cex_collapse_without_closed_side :
+-- lean/ToyLink/Counterexamples.lean:172-174
+theorem cex_collapse_without_closed_side :
     ¬ (ClosedModule openSpecSrc ∨ ClosedModule openSpecTgt) ∧
     ¬ (CtxRefines openSpecSrc openSpecTgt ↔ StandaloneRefines openSpecSrc openSpecTgt)
 ```
@@ -731,7 +772,8 @@ Basis: derived (modeling bridge) — For whole programs whose modules have no sh
 - **Lean:** `Toy.Link.Cex.cex_closed_main_entry_refines_not_ctxRefines`
 
 ```lean
-theorem Toy.Link.Cex.cex_closed_main_entry_refines_not_ctxRefines :
+-- lean/ToyLink/Counterexamples.lean:59-66
+theorem cex_closed_main_entry_refines_not_ctxRefines :
     ClosedModule specSrc ∧
     ClosedModule specTgt ∧
     SameDom specSrc specTgt ∧
@@ -757,7 +799,8 @@ Modules: `specSrc = [(0, call 1 (lit 5)), (1, var)]`, `specTgt = [(0, call 1 (li
 Statements of the witnesses, controls, counterexamples and supporting declarations named above:
 
 ```lean
-theorem Toy.Link.Examples.positive_control_in_place_export_optimization :
+-- lean/ToyLink/Examples.lean:886-887
+theorem positive_control_in_place_export_optimization :
     CtxRefines expSrc expTgt ∧ SameDom expSrc expTgt ∧ EntryRefines 0 expSrc expTgt
 ```
 
@@ -770,7 +813,8 @@ Basis: execution (Lean kernel check) — `Toy.Link.Cex.cex_closed_main_entry_ref
 - **Lean:** `Toy.Link.Cex.cex_open_specialization_standalone_refines_not_ctxRefines`
 
 ```lean
-theorem Toy.Link.Cex.cex_open_specialization_standalone_refines_not_ctxRefines :
+-- lean/ToyLink/Counterexamples.lean:133-144
+theorem cex_open_specialization_standalone_refines_not_ctxRefines :
     ¬ ClosedModule openSpecSrc ∧ ¬ ClosedModule openSpecTgt ∧
     SameDom openSpecSrc openSpecTgt ∧
     StandaloneRefines openSpecSrc openSpecTgt ∧
@@ -799,7 +843,8 @@ Modules: `openSpecSrc = [(0, call 1 (lit 3)), (1, call 5 var)]`, `openSpecTgt = 
 Statements of the witnesses, controls, counterexamples and supporting declarations named above:
 
 ```lean
-theorem Toy.Link.Examples.collapse_closed_target_ctxRefines : CtxRefines openChooseMod const1Mod
+-- lean/ToyLink/Examples.lean:1117
+theorem collapse_closed_target_ctxRefines : CtxRefines openChooseMod const1Mod
 ```
 
 Basis: execution (Lean kernel check) — `Toy.Link.Cex.cex_open_specialization_standalone_refines_not_ctxRefines`, `Toy.Link.Examples.collapse_closed_target_ctxRefines`.
@@ -811,7 +856,8 @@ Basis: execution (Lean kernel check) — `Toy.Link.Cex.cex_open_specialization_s
 - **Lean:** `Toy.Link.ctxRefines_reflects_mayDiverge`
 
 ```lean
-theorem Toy.Link.ctxRefines_reflects_mayDiverge {M M' C : Module} {entry : Fname} {arg : Int}
+-- lean/ToyLink/Statements.lean:143-145
+theorem ctxRefines_reflects_mayDiverge {M M' C : Module} {entry : Fname} {arg : Int}
     (h : CtxRefines M M') (hC : Linkable C M) :
     MayDiverge (link C M') entry arg → MayDiverge (link C M) entry arg
 ```
@@ -834,18 +880,21 @@ Unfolded (`Toy.Link.Unfolded.ctxRefines_reflects_mayDiverge_unfolded_iff`; the `
 Statements of the witnesses, controls, counterexamples and supporting declarations named above:
 
 ```lean
-theorem Toy.Link.Examples.nonvacuous_ctxRefines_reflects_mayDiverge :
+-- lean/ToyLink/Examples.lean:1140-1142
+theorem nonvacuous_ctxRefines_reflects_mayDiverge :
     CtxRefines chooseLoopMod selfLoopMod ∧ Linkable [] chooseLoopMod ∧
     MayDiverge (link [] selfLoopMod) 0 0
 
-theorem Toy.Link.Cex.cex_ctxRefines_rejects_new_divergence :
+-- lean/ToyLink/Counterexamples.lean:249-254
+theorem cex_ctxRefines_rejects_new_divergence :
     SameDom termSrc divTgt ∧
     Linkable [] termSrc ∧
     MayDiverge (link [] divTgt) 0 0 ∧
     ¬ MayDiverge (link [] termSrc) 0 0 ∧
     ¬ CtxRefines termSrc divTgt
 
-theorem Toy.Link.Cex.cex_reflects_mayDiverge_without_linkable :
+-- lean/ToyLink/Counterexamples.lean:791-795
+theorem cex_reflects_mayDiverge_without_linkable :
     CtxRefines ipMod2' ipMod2 ∧
     ¬ Linkable ipLoopCtx ipMod2' ∧
     MayDiverge (link ipLoopCtx ipMod2) 1 0 ∧
@@ -863,7 +912,8 @@ Basis: derived (modeling bridge) — A compiler correctness notion modelled on `
 - **Lean:** `Toy.Link.Cex.cex_ctxRefines_fixes_call_depth`
 
 ```lean
-theorem Toy.Link.Cex.cex_ctxRefines_fixes_call_depth :
+-- lean/ToyLink/Counterexamples.lean:280-284
+theorem cex_ctxRefines_fixes_call_depth :
     SameDom directMod viaCallMod ∧
     (∀ fuel e a, 2 ≤ fuel → eval fuel directMod e a = eval fuel viaCallMod e a) ∧
     ¬ CtxRefines directMod viaCallMod ∧
@@ -884,7 +934,8 @@ Modules: `directMod = [(0, lit 0), (1, lit 0)]`, `viaCallMod = [(0, call 1 var),
 Statements of the witnesses, controls, counterexamples and supporting declarations named above:
 
 ```lean
-theorem Toy.Link.Examples.passCtxRefines_pos : PassCtxRefines constFoldPass
+-- lean/ToyLink/Examples.lean:833
+theorem passCtxRefines_pos : PassCtxRefines constFoldPass
 ```
 
 Basis: execution (Lean kernel check) — `Toy.Link.Cex.cex_ctxRefines_fixes_call_depth`, `Toy.Link.Examples.passCtxRefines_pos`.
@@ -896,7 +947,8 @@ Basis: execution (Lean kernel check) — `Toy.Link.Cex.cex_ctxRefines_fixes_call
 - **Lean:** `Toy.Link.ag_partial_correctness`; supporting declarations: `Toy.Link.link_ag_partial_correctness`
 
 ```lean
-theorem Toy.Link.ag_partial_correctness {P : Module} {S : SpecEnv}
+-- lean/ToyLink/Statements.lean:155-158
+theorem ag_partial_correctness {P : Module} {S : SpecEnv}
     (hImpl : SpecsImplemented P S)
     (hVer : ModuleVerifiedPartial P S S) :
     ProgramPartialCorrect P S
@@ -923,23 +975,28 @@ Unfolded (`Toy.Link.Unfolded.ag_partial_correctness_unfolded_iff`): `(∀ fn x, 
 Statements of the witnesses, controls, counterexamples and supporting declarations named above:
 
 ```lean
-theorem Toy.Link.Examples.nonvacuous_ag_partial_correctness :
+-- lean/ToyLink/Examples.lean:569-571
+theorem nonvacuous_ag_partial_correctness :
     SpecsImplemented evenOddProg evenOddSpec ∧
     ModuleVerifiedPartial evenOddProg evenOddSpec evenOddSpec
 
-theorem Toy.Link.Examples.evenOddProg_partial_correct : ProgramPartialCorrect evenOddProg evenOddSpec
+-- lean/ToyLink/Supplement.lean:26
+theorem evenOddProg_partial_correct : ProgramPartialCorrect evenOddProg evenOddSpec
 
-theorem Toy.Link.Cex.cex_ag_partial_without_specsImplemented :
+-- lean/ToyLink/Counterexamples.lean:829-832
+theorem cex_ag_partial_without_specsImplemented :
     ¬ SpecsImplemented openCallerMod twoZeroSpec ∧
     ModuleVerifiedPartial openCallerMod twoZeroSpec twoZeroSpec ∧
     ¬ ProgramPartialCorrect openCallerMod twoZeroSpec
 
-theorem Toy.Link.Cex.cex_ag_partial_without_moduleVerified :
+-- lean/ToyLink/Counterexamples.lean:850-853
+theorem cex_ag_partial_without_moduleVerified :
     SpecsImplemented const1Mod zeroOutSpec ∧
     ¬ ModuleVerifiedPartial const1Mod zeroOutSpec zeroOutSpec ∧
     ¬ ProgramPartialCorrect const1Mod zeroOutSpec
 
-theorem Toy.Link.link_ag_partial_correctness {M₁ M₂ : Module} {S : SpecEnv}
+-- lean/ToyLink/Statements.lean:176-180
+theorem link_ag_partial_correctness {M₁ M₂ : Module} {S : SpecEnv}
     (hImpl : SpecsImplemented (link M₁ M₂) S)
     (hVer₁ : ModuleVerifiedPartial M₁ S S)
     (hVer₂ : ModuleVerifiedPartial M₂ S S) :
@@ -957,7 +1014,8 @@ Basis: derived (modeling bridge) — Contract-based verifiers that check each fu
 - **Lean:** `Toy.Link.Cex.cex_ag_total_unsound_without_measure`
 
 ```lean
-theorem Toy.Link.Cex.cex_ag_total_unsound_without_measure :
+-- lean/ToyLink/Counterexamples.lean:321-327
+theorem cex_ag_total_unsound_without_measure :
     ClosedModule selfLoopMod ∧
     SpecsImplemented selfLoopMod zeroOutSpec ∧
     ModuleVerifiedPartial selfLoopMod zeroOutSpec zeroOutSpec ∧
@@ -980,7 +1038,8 @@ Module and contract: `selfLoopMod = [(0, call 0 var)]`; `zeroOutSpec 0 = {pre :=
 Statements of the witnesses, controls, counterexamples and supporting declarations named above:
 
 ```lean
-theorem Toy.Link.Examples.positive_control_ag_total_with_wf_measure :
+-- lean/ToyLink/Examples.lean:935-939
+theorem positive_control_ag_total_with_wf_measure :
     WellFounded Nat.lt ∧
     SpecsImplemented countdownMod zeroOutSpec ∧
     ModuleVerifiedTotal Nat.lt (fun _ x => x.toNat) countdownMod zeroOutSpec zeroOutSpec ∧
@@ -996,7 +1055,8 @@ Basis: execution (Lean kernel check) — `Toy.Link.Cex.cex_ag_total_unsound_with
 - **Lean:** `Toy.Link.ag_total_correctness_of_wf_call_measure`; supporting declarations: `Toy.Link.link_ag_total_correctness_of_wf_call_measure`, `Toy.Link.Cex.independent_measures_do_not_compose`, `Toy.Link.Examples.empty_module_ag_total`
 
 ```lean
-theorem Toy.Link.ag_total_correctness_of_wf_call_measure {α : Type} {rel : α → α → Prop}
+-- lean/ToyLink/Statements.lean:441-446
+theorem ag_total_correctness_of_wf_call_measure {α : Type} {rel : α → α → Prop}
     {μ : Fname → Int → α} {P : Module} {S : SpecEnv}
     (hwf : WellFounded rel)
     (hImpl : SpecsImplemented P S)
@@ -1025,33 +1085,39 @@ Unfolded (`Toy.Link.Unfolded.ag_total_correctness_of_wf_call_measure_unfolded_if
 Statements of the witnesses, controls, counterexamples and supporting declarations named above:
 
 ```lean
-theorem Toy.Link.Examples.nonvacuous_ag_total_correctness :
+-- lean/ToyLink/Examples.lean:576-579
+theorem nonvacuous_ag_total_correctness :
     WellFounded Nat.lt ∧
     SpecsImplemented evenOddProg evenOddSpec ∧
     ModuleVerifiedTotal Nat.lt (fun _ x => x.toNat) evenOddProg evenOddSpec evenOddSpec
 
-theorem Toy.Link.Examples.evenOddProg_total_correct : ProgramTotalCorrect evenOddProg evenOddSpec
+-- lean/ToyLink/Supplement.lean:32
+theorem evenOddProg_total_correct : ProgramTotalCorrect evenOddProg evenOddSpec
 
-theorem Toy.Link.Cex.cex_ag_total_without_wf :
+-- lean/ToyLink/Counterexamples.lean:865-869
+theorem cex_ag_total_without_wf :
     ¬ WellFounded (fun _ _ : Unit => True) ∧
     SpecsImplemented selfLoopMod zeroOutSpec ∧
     ModuleVerifiedTotal (fun _ _ : Unit => True) (fun _ _ => ()) selfLoopMod zeroOutSpec zeroOutSpec ∧
     ¬ ProgramTotalCorrect selfLoopMod zeroOutSpec
 
-theorem Toy.Link.Cex.cex_ag_total_without_specsImplemented :
+-- lean/ToyLink/Counterexamples.lean:890-895
+theorem cex_ag_total_without_specsImplemented :
     WellFounded Nat.lt ∧
     ¬ SpecsImplemented openCallerMod twoZeroSpec ∧
     ModuleVerifiedTotal Nat.lt (fun fn _ => if fn = 0 then 1 else 0)
       openCallerMod twoZeroSpec twoZeroSpec ∧
     ¬ ProgramTotalCorrect openCallerMod twoZeroSpec
 
-theorem Toy.Link.Cex.cex_ag_total_without_moduleVerifiedTotal :
+-- lean/ToyLink/Counterexamples.lean:924-928
+theorem cex_ag_total_without_moduleVerifiedTotal :
     WellFounded Nat.lt ∧
     SpecsImplemented selfLoopMod zeroOutSpec ∧
     ¬ ModuleVerifiedTotal Nat.lt (fun _ _ => 0) selfLoopMod zeroOutSpec zeroOutSpec ∧
     ¬ ProgramTotalCorrect selfLoopMod zeroOutSpec
 
-theorem Toy.Link.link_ag_total_correctness_of_wf_call_measure {α : Type} {rel : α → α → Prop}
+-- lean/ToyLink/Statements.lean:469-475
+theorem link_ag_total_correctness_of_wf_call_measure {α : Type} {rel : α → α → Prop}
     {μ : Fname → Int → α} {M₁ M₂ : Module} {S : SpecEnv}
     (hwf : WellFounded rel)
     (hImpl : SpecsImplemented (link M₁ M₂) S)
@@ -1059,7 +1125,8 @@ theorem Toy.Link.link_ag_total_correctness_of_wf_call_measure {α : Type} {rel :
     (hVer₂ : ModuleVerifiedTotal rel μ M₂ S S) :
     ProgramTotalCorrect (link M₁ M₂) S
 
-theorem Toy.Link.Cex.independent_measures_do_not_compose :
+-- lean/ToyLink/Supplement.lean:179-187
+theorem independent_measures_do_not_compose :
     Linkable pingMod pongMod ∧
     SpecsImplemented (link pingMod pongMod) pingPongSpec ∧
     WellFounded Nat.lt ∧
@@ -1069,7 +1136,8 @@ theorem Toy.Link.Cex.independent_measures_do_not_compose :
       pongMod pingPongSpec pingPongSpec ∧
     ¬ ProgramTotalCorrect (link pingMod pongMod) pingPongSpec
 
-theorem Toy.Link.Examples.empty_module_ag_total :
+-- lean/ToyLink/Supplement.lean:40-41
+theorem empty_module_ag_total :
     ProgramTotalCorrect ([] : Module) falseSpec
 ```
 
@@ -1084,7 +1152,8 @@ Basis: derived (modeling bridge) — For termination, modular verifiers need one
 - **Lean:** `Toy.Link.verified_recursive_caller_links_with_refined_callee`; supporting declarations: `Toy.Link.verified_flat_caller_links_with_refined_callee`, `Toy.Link.caller_spec_unsat_on_own_symbols`, `Toy.Link.Cex.flat_spec_refinement_inapplicable_to_recursive_caller`
 
 ```lean
-theorem Toy.Link.verified_recursive_caller_links_with_refined_callee
+-- lean/ToyLink/Statements.lean:498-505
+theorem verified_recursive_caller_links_with_refined_callee
     {M N : Module} {S S' G : SpecEnv}
     (hLink : Linkable M N)
     (hVerM : ModuleVerifiedPartial M (mixEnv M G S) G)
@@ -1118,7 +1187,8 @@ Unfolded (`Toy.Link.Unfolded.verified_recursive_caller_links_with_refined_callee
 Statements of the witnesses, controls, counterexamples and supporting declarations named above:
 
 ```lean
-theorem Toy.Link.Examples.nonvacuous_recursive_spec_refinement :
+-- lean/ToyLink/Examples.lean:689-696
+theorem nonvacuous_recursive_spec_refinement :
     Linkable recCaller tenLib ∧
     ModuleVerifiedPartial recCaller (mixEnv recCaller recGuar recAssumed) recGuar ∧
     ProgramPartialCorrect tenLib tenActual ∧
@@ -1127,10 +1197,12 @@ theorem Toy.Link.Examples.nonvacuous_recursive_spec_refinement :
     ¬ WeakensPre (tenActual 1) (recAssumed 1) ∧
     ¬ StrengthensPostUnderPre (tenActual 1) (recAssumed 1)
 
-theorem Toy.Link.Examples.positive_control_spec_refinement_link :
+-- lean/ToyLink/Examples.lean:966-967
+theorem positive_control_spec_refinement_link :
     ∀ f, recCaller.Defines f → FnPartialCorrect (link recCaller tenLib) f (recGuar f)
 
-theorem Toy.Link.Cex.cex_spec_refinement_without_linkable :
+-- lean/ToyLink/Counterexamples.lean:988-994
+theorem cex_spec_refinement_without_linkable :
     ¬ Linkable lkCaller lkCallee ∧
     ModuleVerifiedPartial lkCaller (mixEnv lkCaller lkGuar tenOneSpec) lkGuar ∧
     ProgramPartialCorrect lkCallee tenOneSpec ∧
@@ -1138,7 +1210,8 @@ theorem Toy.Link.Cex.cex_spec_refinement_without_linkable :
     (∀ g, ¬ lkCaller.Defines g → StrengthensPostUnderPre (tenOneSpec g) (tenOneSpec g)) ∧
     ¬ (∀ f, lkCaller.Defines f → FnPartialCorrect (link lkCaller lkCallee) f (lkGuar f))
 
-theorem Toy.Link.Cex.cex_spec_refinement_without_caller_verified :
+-- lean/ToyLink/Counterexamples.lean:1029-1035
+theorem cex_spec_refinement_without_caller_verified :
     Linkable badCaller goodCallee ∧
     ¬ ModuleVerifiedPartial badCaller (mixEnv badCaller tenZeroSpec tenOneSpec) tenZeroSpec ∧
     ProgramPartialCorrect goodCallee tenOneSpec ∧
@@ -1146,7 +1219,8 @@ theorem Toy.Link.Cex.cex_spec_refinement_without_caller_verified :
     (∀ g, ¬ badCaller.Defines g → StrengthensPostUnderPre (tenOneSpec g) (tenOneSpec g)) ∧
     ¬ (∀ f, badCaller.Defines f → FnPartialCorrect (link badCaller goodCallee) f (tenZeroSpec f))
 
-theorem Toy.Link.Cex.cex_spec_refinement_without_callee_correct :
+-- lean/ToyLink/Counterexamples.lean:1047-1055
+theorem cex_spec_refinement_without_callee_correct :
     Linkable openCallerMod badCallee ∧
     ModuleVerifiedPartial openCallerMod (mixEnv openCallerMod tenZeroSpec tenOneSpec)
       tenZeroSpec ∧
@@ -1156,7 +1230,8 @@ theorem Toy.Link.Cex.cex_spec_refinement_without_callee_correct :
     ¬ (∀ f, openCallerMod.Defines f →
         FnPartialCorrect (link openCallerMod badCallee) f (tenZeroSpec f))
 
-theorem Toy.Link.Cex.cex_spec_refinement_without_weakensPre :
+-- lean/ToyLink/Counterexamples.lean:1080-1088
+theorem cex_spec_refinement_without_weakensPre :
     Linkable incCaller preZeroCallee ∧
     ModuleVerifiedPartial incCaller (mixEnv incCaller tenZeroSpec weakPreAssumed) tenZeroSpec ∧
     ProgramPartialCorrect preZeroCallee weakPreActual ∧
@@ -1166,7 +1241,8 @@ theorem Toy.Link.Cex.cex_spec_refinement_without_weakensPre :
     ¬ (∀ f, incCaller.Defines f →
         FnPartialCorrect (link incCaller preZeroCallee) f (tenZeroSpec f))
 
-theorem Toy.Link.Cex.cex_spec_refinement_without_strengthensPost :
+-- lean/ToyLink/Counterexamples.lean:1134-1143
+theorem cex_spec_refinement_without_strengthensPost :
     Linkable openCallerMod badCallee ∧
     ModuleVerifiedPartial openCallerMod (mixEnv openCallerMod tenZeroSpec tenOneSpec)
       tenZeroSpec ∧
@@ -1177,7 +1253,8 @@ theorem Toy.Link.Cex.cex_spec_refinement_without_strengthensPost :
     ¬ (∀ f, openCallerMod.Defines f →
         FnPartialCorrect (link openCallerMod badCallee) f (tenZeroSpec f))
 
-theorem Toy.Link.verified_flat_caller_links_with_refined_callee {M N : Module} {S S' G : SpecEnv}
+-- lean/ToyLink/Statements.lean:546-552
+theorem verified_flat_caller_links_with_refined_callee {M N : Module} {S S' G : SpecEnv}
     (hLink : Linkable M N)
     (hVerM : ModuleVerifiedPartial M S G)
     (hSatN : ProgramPartialCorrect N S')
@@ -1185,12 +1262,14 @@ theorem Toy.Link.verified_flat_caller_links_with_refined_callee {M N : Module} {
     (hStrong : ∀ g, StrengthensPostUnderPre (S g) (S' g)) :
     ∀ f, M.Defines f → FnPartialCorrect (link M N) f (G f)
 
-theorem Toy.Link.caller_spec_unsat_on_own_symbols {M N : Module} {S S' : SpecEnv}
+-- lean/ToyLink/Basic.lean:1314-1317
+theorem caller_spec_unsat_on_own_symbols {M N : Module} {S S' : SpecEnv}
     (hLink : Linkable M N) (hSatN : ProgramPartialCorrect N S')
     (hWeak : ∀ g, WeakensPre (S g) (S' g)) :
     ∀ f, M.Defines f → ∀ x, ¬ (S f).pre x
 
-theorem Toy.Link.Cex.flat_spec_refinement_inapplicable_to_recursive_caller :
+-- lean/ToyLink/Counterexamples.lean:1175-1178
+theorem flat_spec_refinement_inapplicable_to_recursive_caller :
     ∀ (N : Module) (S S' : SpecEnv),
       ¬ (Linkable recCaller N ∧ ModuleVerifiedPartial recCaller S recGuar ∧
          ProgramPartialCorrect N S' ∧ (∀ g, WeakensPre (S g) (S' g)))
@@ -1207,7 +1286,8 @@ Basis: derived (modeling bridge) — A caller verified against an interface for 
 - **Lean:** `Toy.Link.Cex.cex_link_fails_for_incomparable_callee_spec`
 
 ```lean
-theorem Toy.Link.Cex.cex_link_fails_for_incomparable_callee_spec :
+-- lean/ToyLink/Counterexamples.lean:398-405
+theorem cex_link_fails_for_incomparable_callee_spec :
     Linkable incCaller incCallee ∧
     ModuleVerifiedPartial incCaller (mixEnv incCaller incGuar incAssumed) incGuar ∧
     ProgramPartialCorrect incCallee incActual ∧
@@ -1232,7 +1312,8 @@ Modules and specs: `incCaller = [(0, call 1 (lit 0))]`, `incCallee = [(1, lit 11
 Statements of the witnesses, controls, counterexamples and supporting declarations named above:
 
 ```lean
-theorem Toy.Link.Examples.positive_control_spec_refinement_link :
+-- lean/ToyLink/Examples.lean:966-967
+theorem positive_control_spec_refinement_link :
     ∀ f, recCaller.Defines f → FnPartialCorrect (link recCaller tenLib) f (recGuar f)
 ```
 
@@ -1245,7 +1326,8 @@ Basis: execution (Lean kernel check) — `Toy.Link.Cex.cex_link_fails_for_incomp
 - **Lean:** `Toy.Link.separate_compilation_partial_correct_of_preserves_verified`; supporting declarations: `Toy.Link.Cex.inlPass_not_preservesVerified`
 
 ```lean
-theorem Toy.Link.separate_compilation_partial_correct_of_preserves_verified
+-- lean/ToyLink/Statements.lean:576-583
+theorem separate_compilation_partial_correct_of_preserves_verified
     {M₁ M₂ : Module} {S : SpecEnv} {compile : Module → Module}
     (hVer₁ : ModuleVerifiedPartial M₁ S S)
     (hVer₂ : ModuleVerifiedPartial M₂ S S)
@@ -1278,7 +1360,8 @@ Unfolded (`Toy.Link.Unfolded.separate_compilation_partial_correct_of_preserves_v
 Statements of the witnesses, controls, counterexamples and supporting declarations named above:
 
 ```lean
-theorem Toy.Link.Examples.nonvacuous_separate_compilation :
+-- lean/ToyLink/Examples.lean:848-854
+theorem nonvacuous_separate_compilation :
     constFoldPass sepMod1 ≠ sepMod1 ∧
     ModuleVerifiedPartial sepMod1 sepSpec sepSpec ∧
     ModuleVerifiedPartial sepMod2 sepSpec sepSpec ∧
@@ -1286,7 +1369,8 @@ theorem Toy.Link.Examples.nonvacuous_separate_compilation :
     PreservesVerifiedPartial constFoldPass sepSpec ∧
     PreservesDefines constFoldPass
 
-theorem Toy.Link.Cex.cex_sep_comp_without_first_verified :
+-- lean/ToyLink/Counterexamples.lean:1211-1217
+theorem cex_sep_comp_without_first_verified :
     ¬ ModuleVerifiedPartial scZeroBad twoZeroSpec twoZeroSpec ∧
     ModuleVerifiedPartial scOne twoZeroSpec twoZeroSpec ∧
     SpecsImplemented (link scZeroBad scOne) twoZeroSpec ∧
@@ -1294,7 +1378,8 @@ theorem Toy.Link.Cex.cex_sep_comp_without_first_verified :
     PreservesDefines id ∧
     ¬ ProgramPartialCorrect (link (id scZeroBad) (id scOne)) twoZeroSpec
 
-theorem Toy.Link.Cex.cex_sep_comp_without_second_verified :
+-- lean/ToyLink/Counterexamples.lean:1234-1240
+theorem cex_sep_comp_without_second_verified :
     ModuleVerifiedPartial scZero twoZeroSpec twoZeroSpec ∧
     ¬ ModuleVerifiedPartial scOneBad twoZeroSpec twoZeroSpec ∧
     SpecsImplemented (link scZero scOneBad) twoZeroSpec ∧
@@ -1302,7 +1387,8 @@ theorem Toy.Link.Cex.cex_sep_comp_without_second_verified :
     PreservesDefines id ∧
     ¬ ProgramPartialCorrect (link (id scZero) (id scOneBad)) twoZeroSpec
 
-theorem Toy.Link.Cex.cex_sep_comp_without_specsImplemented :
+-- lean/ToyLink/Counterexamples.lean:1263-1269
+theorem cex_sep_comp_without_specsImplemented :
     ModuleVerifiedPartial scZeroCalls2 threeZeroSpec threeZeroSpec ∧
     ModuleVerifiedPartial scOne threeZeroSpec threeZeroSpec ∧
     ¬ SpecsImplemented (link scZeroCalls2 scOne) threeZeroSpec ∧
@@ -1310,7 +1396,8 @@ theorem Toy.Link.Cex.cex_sep_comp_without_specsImplemented :
     PreservesDefines id ∧
     ¬ ProgramPartialCorrect (link (id scZeroCalls2) (id scOne)) threeZeroSpec
 
-theorem Toy.Link.Cex.cex_sep_comp_without_preservesVerified :
+-- lean/ToyLink/Counterexamples.lean:1310-1316
+theorem cex_sep_comp_without_preservesVerified :
     ModuleVerifiedPartial scZero twoZeroSpec twoZeroSpec ∧
     ModuleVerifiedPartial scOne twoZeroSpec twoZeroSpec ∧
     SpecsImplemented (link scZero scOne) twoZeroSpec ∧
@@ -1318,7 +1405,8 @@ theorem Toy.Link.Cex.cex_sep_comp_without_preservesVerified :
     PreservesDefines badBodyCompile ∧
     ¬ ProgramPartialCorrect (link (badBodyCompile scZero) (badBodyCompile scOne)) twoZeroSpec
 
-theorem Toy.Link.Cex.cex_sep_comp_without_preservesDefines :
+-- lean/ToyLink/Counterexamples.lean:1336-1342
+theorem cex_sep_comp_without_preservesDefines :
     ModuleVerifiedPartial scZero twoZeroSpec twoZeroSpec ∧
     ModuleVerifiedPartial scOne twoZeroSpec twoZeroSpec ∧
     SpecsImplemented (link scZero scOne) twoZeroSpec ∧
@@ -1326,7 +1414,8 @@ theorem Toy.Link.Cex.cex_sep_comp_without_preservesDefines :
     ¬ PreservesDefines dropCompile ∧
     ¬ ProgramPartialCorrect (link (dropCompile scZero) (dropCompile scOne)) twoZeroSpec
 
-theorem Toy.Link.Cex.inlPass_not_preservesVerified :
+-- lean/ToyLink/Counterexamples.lean:588-589
+theorem inlPass_not_preservesVerified :
     ¬ PreservesVerifiedPartial inlPass inlSpec ∧ ¬ PassCtxRefines inlPass
 ```
 
@@ -1341,12 +1430,14 @@ Basis: derived (modeling bridge) — A compiler pass that only guarantees "verif
 - **Lean:** `Toy.Link.separate_compilation_ctxRefines_of_pass_ctxRefines`, `Toy.Link.separate_compilation_preserves_partial_correctness_of_pass_ctxRefines`
 
 ```lean
-theorem Toy.Link.separate_compilation_ctxRefines_of_pass_ctxRefines
+-- lean/ToyLink/Statements.lean:590-593
+theorem separate_compilation_ctxRefines_of_pass_ctxRefines
     {M₁ M₂ : Module} {compile : Module → Module}
     (hPass : PassCtxRefines compile) (hLink : Linkable M₁ M₂) :
     CtxRefines (link M₁ M₂) (link (compile M₁) (compile M₂))
 
-theorem Toy.Link.separate_compilation_preserves_partial_correctness_of_pass_ctxRefines
+-- lean/ToyLink/Statements.lean:598-602
+theorem separate_compilation_preserves_partial_correctness_of_pass_ctxRefines
     {M₁ M₂ : Module} {S : SpecEnv} {compile : Module → Module}
     (hPass : PassCtxRefines compile) (hLink : Linkable M₁ M₂)
     (hSrc : ProgramPartialCorrect (link M₁ M₂) S) :
@@ -1374,17 +1465,20 @@ Unfolded (`Toy.Link.Unfolded.separate_compilation_ctxRefines_of_pass_ctxRefines_
 Statements of the witnesses, controls, counterexamples and supporting declarations named above:
 
 ```lean
-theorem Toy.Link.Examples.nonvacuous_separate_compilation_ctxRefines :
+-- lean/ToyLink/Examples.lean:1147-1148
+theorem nonvacuous_separate_compilation_ctxRefines :
     PassCtxRefines constFoldPass ∧ Linkable sepMod1 sepMod2 ∧ constFoldPass sepMod1 ≠ sepMod1
 
-theorem Toy.Link.Examples.nonvacuous_sep_comp_behavioural_corollary :
+-- lean/ToyLink/Supplement.lean:93-98
+theorem nonvacuous_sep_comp_behavioural_corollary :
     PassCtxRefines constFoldPass ∧
     Linkable scMod1 scMod2 ∧
     constFoldPass scMod1 ≠ scMod1 ∧
     ProgramPartialCorrect (link scMod1 scMod2) scSpec ∧
     ProgramPartialCorrect (link (constFoldPass scMod1) (constFoldPass scMod2)) scSpec
 
-theorem Toy.Link.Cex.cex_verifiability_preservation_not_behavioural :
+-- lean/ToyLink/Counterexamples.lean:1385-1394
+theorem cex_verifiability_preservation_not_behavioural :
     PreservesVerifiedPartial zeroBodies zSpec ∧
     PreservesDefines zeroBodies ∧
     ModuleVerifiedPartial const1Mod zSpec zSpec ∧
@@ -1395,12 +1489,14 @@ theorem Toy.Link.Cex.cex_verifiability_preservation_not_behavioural :
     ¬ EntryRefines 0 (link const1Mod []) (link (zeroBodies const1Mod) (zeroBodies [])) ∧
     ¬ CtxRefines (link const1Mod []) (link (zeroBodies const1Mod) (zeroBodies []))
 
-theorem Toy.Link.Cex.cex_sep_comp_ctx_without_linkable :
+-- lean/ToyLink/Counterexamples.lean:810-813
+theorem cex_sep_comp_ctx_without_linkable :
     PassCtxRefines ipPass ∧
     ¬ Linkable ipMod1 ipMod2 ∧
     ¬ CtxRefines (link ipMod1 ipMod2) (link (ipPass ipMod1) (ipPass ipMod2))
 
-theorem Toy.Link.Cex.cex_sep_comp_behavioural_corollary_without_hSrc :
+-- lean/ToyLink/Supplement.lean:140-144
+theorem cex_sep_comp_behavioural_corollary_without_hSrc :
     PassCtxRefines id ∧
     Linkable const1Mod ([] : Module) ∧
     ¬ ProgramPartialCorrect (link const1Mod []) zeroOutSpec ∧
@@ -1418,7 +1514,8 @@ Basis: derived (modeling bridge) — If each per-module pass is a contextual ref
 - **Lean:** `Toy.Link.Cex.cex_verifiability_preservation_not_behavioural`
 
 ```lean
-theorem Toy.Link.Cex.cex_verifiability_preservation_not_behavioural :
+-- lean/ToyLink/Counterexamples.lean:1385-1394
+theorem cex_verifiability_preservation_not_behavioural :
     PreservesVerifiedPartial zeroBodies zSpec ∧
     PreservesDefines zeroBodies ∧
     ModuleVerifiedPartial const1Mod zSpec zSpec ∧
@@ -1444,7 +1541,8 @@ Pass and spec: `zeroBodies M = M.map fun p => (p.1, lit 0)`; `zSpec 0 = {pre := 
 Statements of the witnesses, controls, counterexamples and supporting declarations named above:
 
 ```lean
-theorem Toy.Link.Examples.positive_control_constFold_verifiable_and_behavioural (S : SpecEnv) :
+-- lean/ToyLink/Examples.lean:1154-1156
+theorem positive_control_constFold_verifiable_and_behavioural (S : SpecEnv) :
     PreservesVerifiedPartial constFoldPass S ∧ PreservesDefines constFoldPass ∧
     PassCtxRefines constFoldPass
 ```
@@ -1458,7 +1556,8 @@ Basis: execution (Lean kernel check) — `Toy.Link.Cex.cex_verifiability_preserv
 - **Lean:** `Toy.Link.Cex.cex_callee_dependent_rewrite_breaks_under_spec_callee_replacement`; supporting declarations: `Toy.Link.Cex.inlPass_not_preservesVerified`
 
 ```lean
-theorem Toy.Link.Cex.cex_callee_dependent_rewrite_breaks_under_spec_callee_replacement :
+-- lean/ToyLink/Counterexamples.lean:607-620
+theorem cex_callee_dependent_rewrite_breaks_under_spec_callee_replacement :
     Linkable inlCaller inlCallee1 ∧
     Linkable inlCaller inlCallee2 ∧
     ModuleVerifiedPartial inlCaller inlSpec inlSpec ∧
@@ -1489,7 +1588,8 @@ Modules and spec: `inlCaller = [(0, call 1 var)]`, `inlCallerOpt = [(0, sub (add
 Statements of the witnesses, controls, counterexamples and supporting declarations named above:
 
 ```lean
-theorem Toy.Link.Examples.positive_control_interface_only_optimization_survives_replacement :
+-- lean/ToyLink/Examples.lean:1017-1023
+theorem positive_control_interface_only_optimization_survives_replacement :
     ModuleVerifiedPartial ctrlCaller ctrlSpec ctrlSpec ∧
     ModuleVerifiedPartial ctrlCallee1 ctrlSpec ctrlSpec ∧
     ModuleVerifiedPartial ctrlCallee2 ctrlSpec ctrlSpec ∧
@@ -1497,7 +1597,8 @@ theorem Toy.Link.Examples.positive_control_interface_only_optimization_survives_
     ProgramPartialCorrect (link (constFoldPass ctrlCaller) ctrlCallee1) ctrlSpec ∧
     ProgramPartialCorrect (link (constFoldPass ctrlCaller) ctrlCallee2) ctrlSpec
 
-theorem Toy.Link.Cex.inlPass_not_preservesVerified :
+-- lean/ToyLink/Counterexamples.lean:588-589
+theorem inlPass_not_preservesVerified :
     ¬ PreservesVerifiedPartial inlPass inlSpec ∧ ¬ PassCtxRefines inlPass
 ```
 
