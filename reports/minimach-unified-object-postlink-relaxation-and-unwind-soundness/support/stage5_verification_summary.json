@@ -1,0 +1,127 @@
+{
+  "formal_module": "VrustcFormal.F1_4",
+  "frozen_statement_sha256": "34005ada17594000626966089727c2f58c0cda9273ed9aa9c34092e34620708e",
+  "frozen_statement_bytes": 67357,
+  "frozen_statement_lines": 1398,
+  "proof_sha256": "c3547f2d62315598a5b07d626e3c7d141fd6b2b7ebc73c8e5c0e6b109f8ef782",
+  "proof_bytes": 211405,
+  "proof_lines": 3919,
+  "byte_exact_frozen_reconstruction": true,
+  "private_stage4_helpers": {
+    "private_def": 2,
+    "private_theorem": 136,
+    "non_private_in_section": 0
+  },
+  "kernel_constants": {
+    "total": 895,
+    "public": 643,
+    "private": 252,
+    "bad_unsafe_or_partial_or_opaque": 0
+  },
+  "ast_free_validator_isolation": {
+    "entrypoint": "VrustcFormal.F1_4.validateLinkedBytes",
+    "visited_constants_map1": 524,
+    "visited_constants_checked": 524,
+    "f1_4_constants_in_closure": 65,
+    "references_to_ast_encoder_linker_decoder_exec": 0
+  },
+  "public_theorems_axioms": {
+    "codecs_and_multifn_relaxation_preserve_byte_span": [
+      "propext"
+    ],
+    "postlink_validator_sound_complete_and_tamper_rejecting": [
+      "propext",
+      "Quot.sound"
+    ],
+    "r11_two_phase_probe_and_eh_frame_bsearch_sound": [
+      "propext"
+    ],
+    "naive_disp_only_rejects_all_relaxations_and_int3_padding": [
+      "propext",
+      "Quot.sound"
+    ],
+    "witness_e31_tlsgd_shifted_boundary_and_naive_rejection": [
+      "propext"
+    ],
+    "witness_e31_tlsld_mov_and_gottpoff_exact_bytes": [
+      "propext"
+    ],
+    "witness_e31_neg_pcrel_tamper_rejection_and_writemode": [
+      "propext"
+    ],
+    "witness_crucible3_exact_r11_probe_and_bsearch": []
+  },
+  "multi_kernel_gates": {
+    "lean_v4_34_1_sync": {
+      "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+      "flags": [
+        "-DElab.async=false",
+        "-Ddebug.skipKernelTC=false",
+        "-DwarningAsError=true"
+      ],
+      "rc": 0,
+      "wall_sec": 24.115,
+      "rss_mb": 2117.93
+    },
+    "anneal_trusted_boundary_preflight": {
+      "anneal_revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+      "positive_rc": 0,
+      "positive_ok": true,
+      "negative_frozen_sorry_rc": 1,
+      "negative_message": "policy:unsupported syntax kind Lean.Parser.Tactic.tacticSorry"
+    },
+    "anneal_trusted_boundary_pass1_audit": {
+      "anneal_revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+      "full_repo_audit": {
+        "rc": 0,
+        "ok": true,
+        "replay": true,
+        "wall_sec": 17.188,
+        "rss_mb": 2609.92,
+        "kernelDeclarations": 1324,
+        "replayedDeclarations": 2476,
+        "reachableDeclarations": 3360,
+        "axioms": [
+          "propext",
+          "Quot.sound"
+        ]
+      },
+      "standalone_f1_4_audit": {
+        "rc": 0,
+        "ok": true,
+        "replay": true,
+        "wall_sec": 16.067,
+        "rss_mb": 2601.26,
+        "replayedDeclarations": 895,
+        "reachableDeclarations": 1604,
+        "axioms": [
+          "propext",
+          "Quot.sound"
+        ]
+      }
+    },
+    "lean_v4_35_0_sync": {
+      "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+      "rc": 0,
+      "wall_sec": 22.118,
+      "rss_mb": 2097.4
+    },
+    "lean4export_v3_1_0": {
+      "revision": "5a9a355dc6c5fd82b69058d433e2ae2e8dfbf8fe",
+      "rc": 0,
+      "wall_sec": 0.812,
+      "ndjson_bytes": 8944361,
+      "ndjson_lines": 179821
+    },
+    "nanoda_bin_v0_4_19": {
+      "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929",
+      "positive_propext_quotsound_rc": 0,
+      "positive_wall_sec": 0.776,
+      "positive_rss_mb": 48.8,
+      "checked_declarations": 1164,
+      "negative_propext_only_rc": 1,
+      "negative_zero_axioms_rc": 1
+    }
+  },
+  "stage5_blind_verdict": "PASS"
+}

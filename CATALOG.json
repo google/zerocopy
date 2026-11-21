@@ -51259,6 +51259,98 @@
         "llvm/memcpyopt-call-slot"
       ]
     },
+    "minimach-unified-object-postlink-relaxation-and-unwind-soundness": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly"
+          },
+          "name": "rustc compiler and x86_64-unknown-linux-gnu sysroot (1.102.0-nightly post-link relocation census)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly"
+          },
+          "name": "rustc compiler and x86_64-unknown-linux-gnu sysroot (1.98.0-nightly differential post-link probe)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "392dfff97d29b59d77e5cac6d4b6ef2585fe7117",
+            "version": "llvmorg-23.1.5"
+          },
+          "name": "LLVM and LLD ELF64 x86-64 relocation/relaxation engine (X86_64.cpp, 23.1.5)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "08c84e69a84d95936296dfcab0e38b34100725d5",
+            "version": "LLD 22.1.6"
+          },
+          "name": "Rust bundled rust-lld ELF64 linker (LLD 22.1.6)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal TrustedBoundary.lean & foundation-lock.json Pass 1 kernel audit"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 primary kernel and TrustedBoundary replay toolchain"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+            "version": "v4.35.0"
+          },
+          "name": "Lean 4 cross-version kernel verification toolchain"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4export",
+            "revision": "5a9a355dc6c5fd82b69058d433e2ae2e8dfbf8fe",
+            "version": "3.1.0"
+          },
+          "name": "lean4export NDJSON kernel declaration exporter"
+        },
+        {
+          "identity": {
+            "repository": "ammkrn/nanoda_lib",
+            "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929",
+            "version": "0.4.19"
+          },
+          "name": "nanoda_lib independent Rust external Lean 4 kernel typechecker"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/codegen",
+        "compilers/verified-rustc/linking",
+        "isa",
+        "isa/x86-64",
+        "lean",
+        "lean/mechanization",
+        "llvm",
+        "rust",
+        "rustc",
+        "systems",
+        "systems/elf",
+        "verification"
+      ]
+    },
     "minimal-tcb-verification-spines-and-statement-adequacy-architectures": {
       "observed_at": "2026-11-19",
       "subjects": [

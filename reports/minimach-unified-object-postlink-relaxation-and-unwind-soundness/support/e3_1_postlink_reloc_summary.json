@@ -1,0 +1,2028 @@
+{
+  "probe": "E3-1_real_postlink_reloc_relaxation_and_ehframe",
+  "timestamp_utc": "2026-11-20T21:48:06Z",
+  "rustc_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5",
+  "gnu_ld_version": "GNU ld (GNU Binutils for Debian) 2.47",
+  "lld_path": null,
+  "lld_version": "",
+  "configs": {
+    "pie_pic_relax_gnu_ld": {
+      "rc_obj": 0,
+      "rc_link": 0,
+      "live_exec_rc": 0,
+      "obj_reloc_totals": {
+        "R_X86_64_PC32": 24,
+        "R_X86_64_PLT32": 10,
+        "R_X86_64_GOTPCREL": 8,
+        "R_X86_64_64": 5,
+        "R_X86_64_TPOFF32": 2
+      },
+      "linked_reloc_totals": {
+        "R_X86_64_RELATIVE": 586,
+        "R_X86_64_GLOB_DAT": 66,
+        "R_X86_64_JUMP_SLOT": 2
+      },
+      "eh_frame_obj": {
+        "sections": {
+          ".eh_frame": {
+            "type": "X86_64_UNWIND",
+            "addr": "0x0000000000000000",
+            "off": "0x000348",
+            "size": 360
+          },
+          ".rela.eh_frame": {
+            "type": "RELA",
+            "addr": "0x0000000000000000",
+            "off": "0x000c10",
+            "size": 336
+          }
+        },
+        "cie_count": 2,
+        "fde_count": 11
+      },
+      "eh_frame_linked": {
+        "sections": {
+          ".rela.dyn": {
+            "type": "RELA",
+            "addr": "0x0000000000000fb0",
+            "off": "0x000fb0",
+            "size": 15648
+          },
+          ".rela.plt": {
+            "type": "RELA",
+            "addr": "0x0000000000004cd0",
+            "off": "0x004cd0",
+            "size": 48
+          },
+          ".gcc_except_table": {
+            "type": "PROGBITS",
+            "addr": "0x0000000000004d00",
+            "off": "0x004d00",
+            "size": 13480
+          },
+          ".eh_frame_hdr": {
+            "type": "PROGBITS",
+            "addr": "0x000000000000d5f4",
+            "off": "0x00d5f4",
+            "size": 4268
+          },
+          ".eh_frame": {
+            "type": "PROGBITS",
+            "addr": "0x000000000000e6a0",
+            "off": "0x00e6a0",
+            "size": 20548
+          },
+          ".plt": {
+            "type": "PROGBITS",
+            "addr": "0x000000000004ecb0",
+            "off": "0x04dcb0",
+            "size": 48
+          },
+          ".got": {
+            "type": "PROGBITS",
+            "addr": "0x0000000000051948",
+            "off": "0x04f948",
+            "size": 2296
+          },
+          ".got.plt": {
+            "type": "PROGBITS",
+            "addr": "0x0000000000052240",
+            "off": "0x050240",
+            "size": 40
+          }
+        },
+        "cie_count": 3,
+        "fde_count": 532
+      },
+      "function_comparisons": {
+        "indirect_fn_ptr": {
+          "obj_insns": 3,
+          "linked_insns": 3,
+          "obj_bytes": 8,
+          "linked_bytes": 8,
+          "pure_disp_patches_count": 0,
+          "opcode_relaxations": [],
+          "boundary_shifts": [],
+          "extra_linked_insns": []
+        },
+        "leaf_callee": {
+          "obj_insns": 5,
+          "linked_insns": 8,
+          "obj_bytes": 29,
+          "linked_bytes": 32,
+          "pure_disp_patches_count": 0,
+          "opcode_relaxations": [
+            {
+              "rel_off": "0x3",
+              "obj_bytes": "48 03 05 00 00 00 00",
+              "obj_asm": "add    0x0(%rip),%rax        # a <leaf_callee+0xa>\t6: R_X86_64_PC32\tGLOBAL_DATA-0x4",
+              "linked_bytes": "48 03 05 06 ea 03 00",
+              "linked_asm": "add    0x3ea06(%rip),%rax        # 53270 <GLOBAL_DATA>",
+              "relocs": [],
+              "diff_byte_indices": [
+                3,
+                4,
+                5
+              ]
+            },
+            {
+              "rel_off": "0xa",
+              "obj_bytes": "64 48 03 04 25 00 00 00 00",
+              "obj_asm": "add    %fs:0x0,%rax\tf: R_X86_64_TPOFF32\t_RNvNCNKNvCsg7eGCkvqu8M_5probe11TLS_COUNTER0s_023___RUST_STD_INTERNAL_VAL",
+              "linked_bytes": "64 48 03 04 25 a8 ff ff ff",
+              "linked_asm": "add    %fs:0xffffffffffffffa8,%rax",
+              "relocs": [],
+              "diff_byte_indices": [
+                5,
+                6,
+                7,
+                8
+              ]
+            },
+            {
+              "rel_off": "0x13",
+              "obj_bytes": "64 48 89 04 25 00 00 00 00",
+              "obj_asm": "mov    %rax,%fs:0x0\t18: R_X86_64_TPOFF32\t_RNvNCNKNvCsg7eGCkvqu8M_5probe11TLS_COUNTER0s_023___RUST_STD_INTERNAL_VAL",
+              "linked_bytes": "64 48 89 04 25 a8 ff ff ff",
+              "linked_asm": "mov    %rax,%fs:0xffffffffffffffa8",
+              "relocs": [],
+              "diff_byte_indices": [
+                5,
+                6,
+                7,
+                8
+              ]
+            }
+          ],
+          "boundary_shifts": [],
+          "extra_linked_insns": [
+            {
+              "rel_off": "0x1d",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x1e",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x1f",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            }
+          ]
+        },
+        "probe_entry": {
+          "obj_insns": 43,
+          "linked_insns": 50,
+          "obj_bytes": 137,
+          "linked_bytes": 144,
+          "pure_disp_patches_count": 0,
+          "opcode_relaxations": [
+            {
+              "rel_off": "0xf",
+              "obj_bytes": "e8 00 00 00 00",
+              "obj_asm": "call   14 <probe_entry+0x14>\t10: R_X86_64_PLT32\tunwinding_caller-0x4",
+              "linked_bytes": "e8 7c 00 00 00",
+              "linked_asm": "call   14910 <unwinding_caller>",
+              "relocs": [],
+              "diff_byte_indices": [
+                1
+              ]
+            },
+            {
+              "rel_off": "0x1d",
+              "obj_bytes": "ff 15 00 00 00 00",
+              "obj_asm": "call   *0x0(%rip)        # 23 <probe_entry+0x23>\t1f: R_X86_64_GOTPCREL\t_RNvNvNtCsh1oe6ztIXx1_3std9panicking12catch_unwind7cleanup-0x4",
+              "linked_bytes": "ff 15 0d d1 03 00",
+              "linked_asm": "call   *0x3d10d(%rip)        # 519b0 <_DYNAMIC+0x238>",
+              "relocs": [],
+              "diff_byte_indices": [
+                2,
+                3,
+                4
+              ]
+            },
+            {
+              "rel_off": "0x2e",
+              "obj_bytes": "4c 8b 3d 00 00 00 00",
+              "obj_asm": "mov    0x0(%rip),%r15        # 35 <probe_entry+0x35>\t31: R_X86_64_PC32\tGLOBAL_DATA-0x4",
+              "linked_bytes": "4c 8b 3d bb e9 03 00",
+              "linked_asm": "mov    0x3e9bb(%rip),%r15        # 53270 <GLOBAL_DATA>",
+              "relocs": [],
+              "diff_byte_indices": [
+                3,
+                4,
+                5
+              ]
+            },
+            {
+              "rel_off": "0x52",
+              "obj_bytes": "ff 15 00 00 00 00",
+              "obj_asm": "call   *0x0(%rip)        # 58 <probe_entry+0x58>\t54: R_X86_64_GOTPCREL\t_RNvCsfsA1pHDjJVE_7___rustc14___rust_dealloc-0x4",
+              "linked_bytes": "ff 15 e0 d0 03 00",
+              "linked_asm": "call   *0x3d0e0(%rip)        # 519b8 <_DYNAMIC+0x240>",
+              "relocs": [],
+              "diff_byte_indices": [
+                2,
+                3,
+                4
+              ]
+            },
+            {
+              "rel_off": "0x75",
+              "obj_bytes": "ff 15 00 00 00 00",
+              "obj_asm": "call   *0x0(%rip)        # 7b <probe_entry+0x7b>\t77: R_X86_64_GOTPCREL\t_RNvCsfsA1pHDjJVE_7___rustc14___rust_dealloc-0x4",
+              "linked_bytes": "ff 15 bd d0 03 00",
+              "linked_asm": "call   *0x3d0bd(%rip)        # 519b8 <_DYNAMIC+0x240>",
+              "relocs": [],
+              "diff_byte_indices": [
+                2,
+                3,
+                4
+              ]
+            },
+            {
+              "rel_off": "0x7e",
+              "obj_bytes": "e8 00 00 00 00",
+              "obj_asm": "call   83 <probe_entry+0x83>\t7f: R_X86_64_PLT32\t_Unwind_Resume-0x4",
+              "linked_bytes": "e8 cd a3 03 00",
+              "linked_asm": "call   4ecd0 <_Unwind_Resume@plt>",
+              "relocs": [],
+              "diff_byte_indices": [
+                1,
+                2,
+                3
+              ]
+            },
+            {
+              "rel_off": "0x83",
+              "obj_bytes": "ff 15 00 00 00 00",
+              "obj_asm": "call   *0x0(%rip)        # 89 <probe_entry+0x89>\t85: R_X86_64_GOTPCREL\t_RNvNtCs2F9dQBLtWXO_4core9panicking19panic_cannot_unwind-0x4",
+              "linked_bytes": "ff 15 b7 d0 03 00",
+              "linked_asm": "call   *0x3d0b7(%rip)        # 519c0 <_DYNAMIC+0x248>",
+              "relocs": [],
+              "diff_byte_indices": [
+                2,
+                3,
+                4
+              ]
+            }
+          ],
+          "boundary_shifts": [],
+          "extra_linked_insns": [
+            {
+              "rel_off": "0x89",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8a",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8b",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8c",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8d",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8e",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8f",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            }
+          ]
+        },
+        "unwinding_caller": {
+          "obj_insns": 34,
+          "linked_insns": 41,
+          "obj_bytes": 137,
+          "linked_bytes": 144,
+          "pure_disp_patches_count": 0,
+          "opcode_relaxations": [
+            {
+              "rel_off": "0x22",
+              "obj_bytes": "48 8d 3d 00 00 00 00",
+              "obj_asm": "lea    0x0(%rip),%rdi        # 29 <unwinding_caller+0x29>\t25: R_X86_64_PC32\tleaf_callee-0x4",
+              "linked_bytes": "48 8d 3d 27 ff ff ff",
+              "linked_asm": "lea    -0xd9(%rip),%rdi        # 14860 <leaf_callee>",
+              "relocs": [],
+              "diff_byte_indices": [
+                3,
+                4,
+                5,
+                6
+              ]
+            },
+            {
+              "rel_off": "0x2c",
+              "obj_bytes": "e8 00 00 00 00",
+              "obj_asm": "call   31 <unwinding_caller+0x31>\t2d: R_X86_64_PLT32\tindirect_fn_ptr-0x4",
+              "linked_bytes": "e8 17 ff ff ff",
+              "linked_asm": "call   14858 <indirect_fn_ptr>",
+              "relocs": [],
+              "diff_byte_indices": [
+                1,
+                2,
+                3,
+                4
+              ]
+            },
+            {
+              "rel_off": "0x37",
+              "obj_bytes": "e8 00 00 00 00",
+              "obj_asm": "call   3c <unwinding_caller+0x3c>\t38: R_X86_64_PLT32\t.text._RNvXNvCsg7eGCkvqu8M_5probe16unwinding_callerNtB2_5GuardNtNtNtCs2F9dQBLtWXO_4core3ops4drop4Drop4drop-0x4",
+              "linked_bytes": "e8 f4 fe ff ff",
+              "linked_asm": "call   14840 <_RNvXNvCsg7eGCkvqu8M_5probe16unwinding_callerNtB2_5GuardNtNtNtCs2F9dQBLtWXO_4core3ops4drop4Drop4drop>",
+              "relocs": [],
+              "diff_byte_indices": [
+                1,
+                2,
+                3,
+                4
+              ]
+            },
+            {
+              "rel_off": "0x4f",
+              "obj_bytes": "48 8b 05 00 00 00 00",
+              "obj_asm": "mov    0x0(%rip),%rax        # 56 <unwinding_caller+0x56>\t52: R_X86_64_GOTPCREL\t_RNvXsd_NtNtNtCs2F9dQBLtWXO_4core3fmt3num3impyNtB9_7Display3fmt-0x4",
+              "linked_bytes": "48 8b 05 62 d0 03 00",
+              "linked_asm": "mov    0x3d062(%rip),%rax        # 519c8 <_DYNAMIC+0x250>",
+              "relocs": [],
+              "diff_byte_indices": [
+                3,
+                4,
+                5
+              ]
+            },
+            {
+              "rel_off": "0x5b",
+              "obj_bytes": "48 8d 3d 00 00 00 00",
+              "obj_asm": "lea    0x0(%rip),%rdi        # 62 <unwinding_caller+0x62>\t5e: R_X86_64_PC32\t.Lanon.9a88417d1fb4f2682fc76613c42e87ae.1-0x4",
+              "linked_bytes": "48 8d 3d 9c 40 ff ff",
+              "linked_asm": "lea    -0xbf64(%rip),%rdi        # 8a0e <GCC_except_table142+0x876>",
+              "relocs": [],
+              "diff_byte_indices": [
+                3,
+                4,
+                5,
+                6
+              ]
+            },
+            {
+              "rel_off": "0x62",
+              "obj_bytes": "48 8d 15 00 00 00 00",
+              "obj_asm": "lea    0x0(%rip),%rdx        # 69 <unwinding_caller+0x69>\t65: R_X86_64_PC32\t.data.rel.ro..Lanon.9a88417d1fb4f2682fc76613c42e87ae.3-0x4",
+              "linked_bytes": "48 8d 15 e7 b3 03 00",
+              "linked_asm": "lea    0x3b3e7(%rip),%rdx        # 4fd60 <__frame_dummy_init_array_entry+0x38>",
+              "relocs": [],
+              "diff_byte_indices": [
+                3,
+                4,
+                5
+              ]
+            },
+            {
+              "rel_off": "0x6e",
+              "obj_bytes": "ff 15 00 00 00 00",
+              "obj_asm": "call   *0x0(%rip)        # 74 <unwinding_caller+0x74>\t70: R_X86_64_GOTPCREL\t_RNvNtCs2F9dQBLtWXO_4core9panicking9panic_fmt-0x4",
+              "linked_bytes": "ff 15 4c d0 03 00",
+              "linked_asm": "call   *0x3d04c(%rip)        # 519d0 <_DYNAMIC+0x258>",
+              "relocs": [],
+              "diff_byte_indices": [
+                2,
+                3,
+                4
+              ]
+            },
+            {
+              "rel_off": "0x7c",
+              "obj_bytes": "e8 00 00 00 00",
+              "obj_asm": "call   81 <unwinding_caller+0x81>\t7d: R_X86_64_PLT32\t.text._RNvXNvCsg7eGCkvqu8M_5probe16unwinding_callerNtB2_5GuardNtNtNtCs2F9dQBLtWXO_4core3ops4drop4Drop4drop-0x4",
+              "linked_bytes": "e8 af fe ff ff",
+              "linked_asm": "call   14840 <_RNvXNvCsg7eGCkvqu8M_5probe16unwinding_callerNtB2_5GuardNtNtNtCs2F9dQBLtWXO_4core3ops4drop4Drop4drop>",
+              "relocs": [],
+              "diff_byte_indices": [
+                1,
+                2,
+                3,
+                4
+              ]
+            },
+            {
+              "rel_off": "0x84",
+              "obj_bytes": "e8 00 00 00 00",
+              "obj_asm": "call   89 <unwinding_caller+0x89>\t85: R_X86_64_PLT32\t_Unwind_Resume-0x4",
+              "linked_bytes": "e8 37 a3 03 00",
+              "linked_asm": "call   4ecd0 <_Unwind_Resume@plt>",
+              "relocs": [],
+              "diff_byte_indices": [
+                1,
+                2,
+                3
+              ]
+            }
+          ],
+          "boundary_shifts": [],
+          "extra_linked_insns": [
+            {
+              "rel_off": "0x89",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8a",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8b",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8c",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8d",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8e",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8f",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            }
+          ]
+        }
+      }
+    },
+    "pie_pic_got_relax_gnu_ld": {
+      "rc_obj": 0,
+      "rc_link": 0,
+      "live_exec_rc": 0,
+      "obj_reloc_totals": {
+        "R_X86_64_PC32": 24,
+        "R_X86_64_PLT32": 10,
+        "R_X86_64_GOTPCREL": 8,
+        "R_X86_64_64": 5,
+        "R_X86_64_TPOFF32": 2
+      },
+      "linked_reloc_totals": {
+        "R_X86_64_RELATIVE": 586,
+        "R_X86_64_GLOB_DAT": 66,
+        "R_X86_64_JUMP_SLOT": 2
+      },
+      "eh_frame_obj": {
+        "sections": {
+          ".eh_frame": {
+            "type": "X86_64_UNWIND",
+            "addr": "0x0000000000000000",
+            "off": "0x000348",
+            "size": 360
+          },
+          ".rela.eh_frame": {
+            "type": "RELA",
+            "addr": "0x0000000000000000",
+            "off": "0x000c10",
+            "size": 336
+          }
+        },
+        "cie_count": 2,
+        "fde_count": 11
+      },
+      "eh_frame_linked": {
+        "sections": {
+          ".rela.dyn": {
+            "type": "RELA",
+            "addr": "0x0000000000000fb0",
+            "off": "0x000fb0",
+            "size": 15648
+          },
+          ".rela.plt": {
+            "type": "RELA",
+            "addr": "0x0000000000004cd0",
+            "off": "0x004cd0",
+            "size": 48
+          },
+          ".gcc_except_table": {
+            "type": "PROGBITS",
+            "addr": "0x0000000000004d00",
+            "off": "0x004d00",
+            "size": 13480
+          },
+          ".eh_frame_hdr": {
+            "type": "PROGBITS",
+            "addr": "0x000000000000d5f4",
+            "off": "0x00d5f4",
+            "size": 4268
+          },
+          ".eh_frame": {
+            "type": "PROGBITS",
+            "addr": "0x000000000000e6a0",
+            "off": "0x00e6a0",
+            "size": 20548
+          },
+          ".plt": {
+            "type": "PROGBITS",
+            "addr": "0x000000000004ecb0",
+            "off": "0x04dcb0",
+            "size": 48
+          },
+          ".got": {
+            "type": "PROGBITS",
+            "addr": "0x0000000000051948",
+            "off": "0x04f948",
+            "size": 2296
+          },
+          ".got.plt": {
+            "type": "PROGBITS",
+            "addr": "0x0000000000052240",
+            "off": "0x050240",
+            "size": 40
+          }
+        },
+        "cie_count": 3,
+        "fde_count": 532
+      },
+      "function_comparisons": {
+        "indirect_fn_ptr": {
+          "obj_insns": 3,
+          "linked_insns": 3,
+          "obj_bytes": 8,
+          "linked_bytes": 8,
+          "pure_disp_patches_count": 0,
+          "opcode_relaxations": [],
+          "boundary_shifts": [],
+          "extra_linked_insns": []
+        },
+        "leaf_callee": {
+          "obj_insns": 5,
+          "linked_insns": 8,
+          "obj_bytes": 29,
+          "linked_bytes": 32,
+          "pure_disp_patches_count": 0,
+          "opcode_relaxations": [
+            {
+              "rel_off": "0x3",
+              "obj_bytes": "48 03 05 00 00 00 00",
+              "obj_asm": "add    0x0(%rip),%rax        # a <leaf_callee+0xa>\t6: R_X86_64_PC32\tGLOBAL_DATA-0x4",
+              "linked_bytes": "48 03 05 06 ea 03 00",
+              "linked_asm": "add    0x3ea06(%rip),%rax        # 53270 <GLOBAL_DATA>",
+              "relocs": [],
+              "diff_byte_indices": [
+                3,
+                4,
+                5
+              ]
+            },
+            {
+              "rel_off": "0xa",
+              "obj_bytes": "64 48 03 04 25 00 00 00 00",
+              "obj_asm": "add    %fs:0x0,%rax\tf: R_X86_64_TPOFF32\t_RNvNCNKNvCsg7eGCkvqu8M_5probe11TLS_COUNTER0s_023___RUST_STD_INTERNAL_VAL",
+              "linked_bytes": "64 48 03 04 25 a8 ff ff ff",
+              "linked_asm": "add    %fs:0xffffffffffffffa8,%rax",
+              "relocs": [],
+              "diff_byte_indices": [
+                5,
+                6,
+                7,
+                8
+              ]
+            },
+            {
+              "rel_off": "0x13",
+              "obj_bytes": "64 48 89 04 25 00 00 00 00",
+              "obj_asm": "mov    %rax,%fs:0x0\t18: R_X86_64_TPOFF32\t_RNvNCNKNvCsg7eGCkvqu8M_5probe11TLS_COUNTER0s_023___RUST_STD_INTERNAL_VAL",
+              "linked_bytes": "64 48 89 04 25 a8 ff ff ff",
+              "linked_asm": "mov    %rax,%fs:0xffffffffffffffa8",
+              "relocs": [],
+              "diff_byte_indices": [
+                5,
+                6,
+                7,
+                8
+              ]
+            }
+          ],
+          "boundary_shifts": [],
+          "extra_linked_insns": [
+            {
+              "rel_off": "0x1d",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x1e",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x1f",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            }
+          ]
+        },
+        "probe_entry": {
+          "obj_insns": 43,
+          "linked_insns": 50,
+          "obj_bytes": 137,
+          "linked_bytes": 144,
+          "pure_disp_patches_count": 0,
+          "opcode_relaxations": [
+            {
+              "rel_off": "0xf",
+              "obj_bytes": "e8 00 00 00 00",
+              "obj_asm": "call   14 <probe_entry+0x14>\t10: R_X86_64_PLT32\tunwinding_caller-0x4",
+              "linked_bytes": "e8 7c 00 00 00",
+              "linked_asm": "call   14910 <unwinding_caller>",
+              "relocs": [],
+              "diff_byte_indices": [
+                1
+              ]
+            },
+            {
+              "rel_off": "0x1d",
+              "obj_bytes": "ff 15 00 00 00 00",
+              "obj_asm": "call   *0x0(%rip)        # 23 <probe_entry+0x23>\t1f: R_X86_64_GOTPCREL\t_RNvNvNtCsh1oe6ztIXx1_3std9panicking12catch_unwind7cleanup-0x4",
+              "linked_bytes": "ff 15 0d d1 03 00",
+              "linked_asm": "call   *0x3d10d(%rip)        # 519b0 <_DYNAMIC+0x238>",
+              "relocs": [],
+              "diff_byte_indices": [
+                2,
+                3,
+                4
+              ]
+            },
+            {
+              "rel_off": "0x2e",
+              "obj_bytes": "4c 8b 3d 00 00 00 00",
+              "obj_asm": "mov    0x0(%rip),%r15        # 35 <probe_entry+0x35>\t31: R_X86_64_PC32\tGLOBAL_DATA-0x4",
+              "linked_bytes": "4c 8b 3d bb e9 03 00",
+              "linked_asm": "mov    0x3e9bb(%rip),%r15        # 53270 <GLOBAL_DATA>",
+              "relocs": [],
+              "diff_byte_indices": [
+                3,
+                4,
+                5
+              ]
+            },
+            {
+              "rel_off": "0x52",
+              "obj_bytes": "ff 15 00 00 00 00",
+              "obj_asm": "call   *0x0(%rip)        # 58 <probe_entry+0x58>\t54: R_X86_64_GOTPCREL\t_RNvCsfsA1pHDjJVE_7___rustc14___rust_dealloc-0x4",
+              "linked_bytes": "ff 15 e0 d0 03 00",
+              "linked_asm": "call   *0x3d0e0(%rip)        # 519b8 <_DYNAMIC+0x240>",
+              "relocs": [],
+              "diff_byte_indices": [
+                2,
+                3,
+                4
+              ]
+            },
+            {
+              "rel_off": "0x75",
+              "obj_bytes": "ff 15 00 00 00 00",
+              "obj_asm": "call   *0x0(%rip)        # 7b <probe_entry+0x7b>\t77: R_X86_64_GOTPCREL\t_RNvCsfsA1pHDjJVE_7___rustc14___rust_dealloc-0x4",
+              "linked_bytes": "ff 15 bd d0 03 00",
+              "linked_asm": "call   *0x3d0bd(%rip)        # 519b8 <_DYNAMIC+0x240>",
+              "relocs": [],
+              "diff_byte_indices": [
+                2,
+                3,
+                4
+              ]
+            },
+            {
+              "rel_off": "0x7e",
+              "obj_bytes": "e8 00 00 00 00",
+              "obj_asm": "call   83 <probe_entry+0x83>\t7f: R_X86_64_PLT32\t_Unwind_Resume-0x4",
+              "linked_bytes": "e8 cd a3 03 00",
+              "linked_asm": "call   4ecd0 <_Unwind_Resume@plt>",
+              "relocs": [],
+              "diff_byte_indices": [
+                1,
+                2,
+                3
+              ]
+            },
+            {
+              "rel_off": "0x83",
+              "obj_bytes": "ff 15 00 00 00 00",
+              "obj_asm": "call   *0x0(%rip)        # 89 <probe_entry+0x89>\t85: R_X86_64_GOTPCREL\t_RNvNtCs2F9dQBLtWXO_4core9panicking19panic_cannot_unwind-0x4",
+              "linked_bytes": "ff 15 b7 d0 03 00",
+              "linked_asm": "call   *0x3d0b7(%rip)        # 519c0 <_DYNAMIC+0x248>",
+              "relocs": [],
+              "diff_byte_indices": [
+                2,
+                3,
+                4
+              ]
+            }
+          ],
+          "boundary_shifts": [],
+          "extra_linked_insns": [
+            {
+              "rel_off": "0x89",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8a",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8b",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8c",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8d",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8e",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8f",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            }
+          ]
+        },
+        "unwinding_caller": {
+          "obj_insns": 34,
+          "linked_insns": 41,
+          "obj_bytes": 137,
+          "linked_bytes": 144,
+          "pure_disp_patches_count": 0,
+          "opcode_relaxations": [
+            {
+              "rel_off": "0x22",
+              "obj_bytes": "48 8d 3d 00 00 00 00",
+              "obj_asm": "lea    0x0(%rip),%rdi        # 29 <unwinding_caller+0x29>\t25: R_X86_64_PC32\tleaf_callee-0x4",
+              "linked_bytes": "48 8d 3d 27 ff ff ff",
+              "linked_asm": "lea    -0xd9(%rip),%rdi        # 14860 <leaf_callee>",
+              "relocs": [],
+              "diff_byte_indices": [
+                3,
+                4,
+                5,
+                6
+              ]
+            },
+            {
+              "rel_off": "0x2c",
+              "obj_bytes": "e8 00 00 00 00",
+              "obj_asm": "call   31 <unwinding_caller+0x31>\t2d: R_X86_64_PLT32\tindirect_fn_ptr-0x4",
+              "linked_bytes": "e8 17 ff ff ff",
+              "linked_asm": "call   14858 <indirect_fn_ptr>",
+              "relocs": [],
+              "diff_byte_indices": [
+                1,
+                2,
+                3,
+                4
+              ]
+            },
+            {
+              "rel_off": "0x37",
+              "obj_bytes": "e8 00 00 00 00",
+              "obj_asm": "call   3c <unwinding_caller+0x3c>\t38: R_X86_64_PLT32\t.text._RNvXNvCsg7eGCkvqu8M_5probe16unwinding_callerNtB2_5GuardNtNtNtCs2F9dQBLtWXO_4core3ops4drop4Drop4drop-0x4",
+              "linked_bytes": "e8 f4 fe ff ff",
+              "linked_asm": "call   14840 <_RNvXNvCsg7eGCkvqu8M_5probe16unwinding_callerNtB2_5GuardNtNtNtCs2F9dQBLtWXO_4core3ops4drop4Drop4drop>",
+              "relocs": [],
+              "diff_byte_indices": [
+                1,
+                2,
+                3,
+                4
+              ]
+            },
+            {
+              "rel_off": "0x4f",
+              "obj_bytes": "48 8b 05 00 00 00 00",
+              "obj_asm": "mov    0x0(%rip),%rax        # 56 <unwinding_caller+0x56>\t52: R_X86_64_GOTPCREL\t_RNvXsd_NtNtNtCs2F9dQBLtWXO_4core3fmt3num3impyNtB9_7Display3fmt-0x4",
+              "linked_bytes": "48 8b 05 62 d0 03 00",
+              "linked_asm": "mov    0x3d062(%rip),%rax        # 519c8 <_DYNAMIC+0x250>",
+              "relocs": [],
+              "diff_byte_indices": [
+                3,
+                4,
+                5
+              ]
+            },
+            {
+              "rel_off": "0x5b",
+              "obj_bytes": "48 8d 3d 00 00 00 00",
+              "obj_asm": "lea    0x0(%rip),%rdi        # 62 <unwinding_caller+0x62>\t5e: R_X86_64_PC32\t.Lanon.9a88417d1fb4f2682fc76613c42e87ae.1-0x4",
+              "linked_bytes": "48 8d 3d 9c 40 ff ff",
+              "linked_asm": "lea    -0xbf64(%rip),%rdi        # 8a0e <GCC_except_table142+0x876>",
+              "relocs": [],
+              "diff_byte_indices": [
+                3,
+                4,
+                5,
+                6
+              ]
+            },
+            {
+              "rel_off": "0x62",
+              "obj_bytes": "48 8d 15 00 00 00 00",
+              "obj_asm": "lea    0x0(%rip),%rdx        # 69 <unwinding_caller+0x69>\t65: R_X86_64_PC32\t.data.rel.ro..Lanon.9a88417d1fb4f2682fc76613c42e87ae.3-0x4",
+              "linked_bytes": "48 8d 15 e7 b3 03 00",
+              "linked_asm": "lea    0x3b3e7(%rip),%rdx        # 4fd60 <__frame_dummy_init_array_entry+0x38>",
+              "relocs": [],
+              "diff_byte_indices": [
+                3,
+                4,
+                5
+              ]
+            },
+            {
+              "rel_off": "0x6e",
+              "obj_bytes": "ff 15 00 00 00 00",
+              "obj_asm": "call   *0x0(%rip)        # 74 <unwinding_caller+0x74>\t70: R_X86_64_GOTPCREL\t_RNvNtCs2F9dQBLtWXO_4core9panicking9panic_fmt-0x4",
+              "linked_bytes": "ff 15 4c d0 03 00",
+              "linked_asm": "call   *0x3d04c(%rip)        # 519d0 <_DYNAMIC+0x258>",
+              "relocs": [],
+              "diff_byte_indices": [
+                2,
+                3,
+                4
+              ]
+            },
+            {
+              "rel_off": "0x7c",
+              "obj_bytes": "e8 00 00 00 00",
+              "obj_asm": "call   81 <unwinding_caller+0x81>\t7d: R_X86_64_PLT32\t.text._RNvXNvCsg7eGCkvqu8M_5probe16unwinding_callerNtB2_5GuardNtNtNtCs2F9dQBLtWXO_4core3ops4drop4Drop4drop-0x4",
+              "linked_bytes": "e8 af fe ff ff",
+              "linked_asm": "call   14840 <_RNvXNvCsg7eGCkvqu8M_5probe16unwinding_callerNtB2_5GuardNtNtNtCs2F9dQBLtWXO_4core3ops4drop4Drop4drop>",
+              "relocs": [],
+              "diff_byte_indices": [
+                1,
+                2,
+                3,
+                4
+              ]
+            },
+            {
+              "rel_off": "0x84",
+              "obj_bytes": "e8 00 00 00 00",
+              "obj_asm": "call   89 <unwinding_caller+0x89>\t85: R_X86_64_PLT32\t_Unwind_Resume-0x4",
+              "linked_bytes": "e8 37 a3 03 00",
+              "linked_asm": "call   4ecd0 <_Unwind_Resume@plt>",
+              "relocs": [],
+              "diff_byte_indices": [
+                1,
+                2,
+                3
+              ]
+            }
+          ],
+          "boundary_shifts": [],
+          "extra_linked_insns": [
+            {
+              "rel_off": "0x89",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8a",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8b",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8c",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8d",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8e",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8f",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            }
+          ]
+        }
+      }
+    },
+    "pie_pic_got_norelax_gnu_ld": {
+      "rc_obj": 0,
+      "rc_link": 0,
+      "live_exec_rc": 0,
+      "obj_reloc_totals": {
+        "R_X86_64_PC32": 24,
+        "R_X86_64_PLT32": 10,
+        "R_X86_64_GOTPCREL": 8,
+        "R_X86_64_64": 5,
+        "R_X86_64_TPOFF32": 2
+      },
+      "linked_reloc_totals": {
+        "R_X86_64_RELATIVE": 587,
+        "R_X86_64_GLOB_DAT": 66,
+        "R_X86_64_JUMP_SLOT": 2
+      },
+      "eh_frame_obj": {
+        "sections": {
+          ".eh_frame": {
+            "type": "X86_64_UNWIND",
+            "addr": "0x0000000000000000",
+            "off": "0x000348",
+            "size": 360
+          },
+          ".rela.eh_frame": {
+            "type": "RELA",
+            "addr": "0x0000000000000000",
+            "off": "0x000c10",
+            "size": 336
+          }
+        },
+        "cie_count": 2,
+        "fde_count": 11
+      },
+      "eh_frame_linked": {
+        "sections": {
+          ".rela.dyn": {
+            "type": "RELA",
+            "addr": "0x0000000000000fb0",
+            "off": "0x000fb0",
+            "size": 15672
+          },
+          ".rela.plt": {
+            "type": "RELA",
+            "addr": "0x0000000000004ce8",
+            "off": "0x004ce8",
+            "size": 48
+          },
+          ".gcc_except_table": {
+            "type": "PROGBITS",
+            "addr": "0x0000000000004d18",
+            "off": "0x004d18",
+            "size": 13480
+          },
+          ".eh_frame_hdr": {
+            "type": "PROGBITS",
+            "addr": "0x000000000000d604",
+            "off": "0x00d604",
+            "size": 4268
+          },
+          ".eh_frame": {
+            "type": "PROGBITS",
+            "addr": "0x000000000000e6b0",
+            "off": "0x00e6b0",
+            "size": 20548
+          },
+          ".plt": {
+            "type": "PROGBITS",
+            "addr": "0x000000000004ecc0",
+            "off": "0x04dcc0",
+            "size": 48
+          },
+          ".got": {
+            "type": "PROGBITS",
+            "addr": "0x0000000000051958",
+            "off": "0x04f958",
+            "size": 2304
+          },
+          ".got.plt": {
+            "type": "PROGBITS",
+            "addr": "0x0000000000052258",
+            "off": "0x050258",
+            "size": 40
+          }
+        },
+        "cie_count": 3,
+        "fde_count": 532
+      },
+      "function_comparisons": {
+        "indirect_fn_ptr": {
+          "obj_insns": 3,
+          "linked_insns": 3,
+          "obj_bytes": 8,
+          "linked_bytes": 8,
+          "pure_disp_patches_count": 0,
+          "opcode_relaxations": [],
+          "boundary_shifts": [],
+          "extra_linked_insns": []
+        },
+        "leaf_callee": {
+          "obj_insns": 5,
+          "linked_insns": 8,
+          "obj_bytes": 29,
+          "linked_bytes": 32,
+          "pure_disp_patches_count": 0,
+          "opcode_relaxations": [
+            {
+              "rel_off": "0x3",
+              "obj_bytes": "48 03 05 00 00 00 00",
+              "obj_asm": "add    0x0(%rip),%rax        # a <leaf_callee+0xa>\t6: R_X86_64_PC32\tGLOBAL_DATA-0x4",
+              "linked_bytes": "48 03 05 0e ea 03 00",
+              "linked_asm": "add    0x3ea0e(%rip),%rax        # 53288 <GLOBAL_DATA>",
+              "relocs": [],
+              "diff_byte_indices": [
+                3,
+                4,
+                5
+              ]
+            },
+            {
+              "rel_off": "0xa",
+              "obj_bytes": "64 48 03 04 25 00 00 00 00",
+              "obj_asm": "add    %fs:0x0,%rax\tf: R_X86_64_TPOFF32\t_RNvNCNKNvCsg7eGCkvqu8M_5probe11TLS_COUNTER0s_023___RUST_STD_INTERNAL_VAL",
+              "linked_bytes": "64 48 03 04 25 a8 ff ff ff",
+              "linked_asm": "add    %fs:0xffffffffffffffa8,%rax",
+              "relocs": [],
+              "diff_byte_indices": [
+                5,
+                6,
+                7,
+                8
+              ]
+            },
+            {
+              "rel_off": "0x13",
+              "obj_bytes": "64 48 89 04 25 00 00 00 00",
+              "obj_asm": "mov    %rax,%fs:0x0\t18: R_X86_64_TPOFF32\t_RNvNCNKNvCsg7eGCkvqu8M_5probe11TLS_COUNTER0s_023___RUST_STD_INTERNAL_VAL",
+              "linked_bytes": "64 48 89 04 25 a8 ff ff ff",
+              "linked_asm": "mov    %rax,%fs:0xffffffffffffffa8",
+              "relocs": [],
+              "diff_byte_indices": [
+                5,
+                6,
+                7,
+                8
+              ]
+            }
+          ],
+          "boundary_shifts": [],
+          "extra_linked_insns": [
+            {
+              "rel_off": "0x1d",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x1e",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x1f",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            }
+          ]
+        },
+        "probe_entry": {
+          "obj_insns": 43,
+          "linked_insns": 50,
+          "obj_bytes": 137,
+          "linked_bytes": 144,
+          "pure_disp_patches_count": 0,
+          "opcode_relaxations": [
+            {
+              "rel_off": "0xf",
+              "obj_bytes": "e8 00 00 00 00",
+              "obj_asm": "call   14 <probe_entry+0x14>\t10: R_X86_64_PLT32\tunwinding_caller-0x4",
+              "linked_bytes": "e8 7c 00 00 00",
+              "linked_asm": "call   14920 <unwinding_caller>",
+              "relocs": [],
+              "diff_byte_indices": [
+                1
+              ]
+            },
+            {
+              "rel_off": "0x1d",
+              "obj_bytes": "ff 15 00 00 00 00",
+              "obj_asm": "call   *0x0(%rip)        # 23 <probe_entry+0x23>\t1f: R_X86_64_GOTPCREL\t_RNvNvNtCsh1oe6ztIXx1_3std9panicking12catch_unwind7cleanup-0x4",
+              "linked_bytes": "ff 15 15 d1 03 00",
+              "linked_asm": "call   *0x3d115(%rip)        # 519c8 <_DYNAMIC+0x240>",
+              "relocs": [],
+              "diff_byte_indices": [
+                2,
+                3,
+                4
+              ]
+            },
+            {
+              "rel_off": "0x2e",
+              "obj_bytes": "4c 8b 3d 00 00 00 00",
+              "obj_asm": "mov    0x0(%rip),%r15        # 35 <probe_entry+0x35>\t31: R_X86_64_PC32\tGLOBAL_DATA-0x4",
+              "linked_bytes": "4c 8b 3d c3 e9 03 00",
+              "linked_asm": "mov    0x3e9c3(%rip),%r15        # 53288 <GLOBAL_DATA>",
+              "relocs": [],
+              "diff_byte_indices": [
+                3,
+                4,
+                5
+              ]
+            },
+            {
+              "rel_off": "0x52",
+              "obj_bytes": "ff 15 00 00 00 00",
+              "obj_asm": "call   *0x0(%rip)        # 58 <probe_entry+0x58>\t54: R_X86_64_GOTPCREL\t_RNvCsfsA1pHDjJVE_7___rustc14___rust_dealloc-0x4",
+              "linked_bytes": "ff 15 e8 d0 03 00",
+              "linked_asm": "call   *0x3d0e8(%rip)        # 519d0 <_DYNAMIC+0x248>",
+              "relocs": [],
+              "diff_byte_indices": [
+                2,
+                3,
+                4
+              ]
+            },
+            {
+              "rel_off": "0x75",
+              "obj_bytes": "ff 15 00 00 00 00",
+              "obj_asm": "call   *0x0(%rip)        # 7b <probe_entry+0x7b>\t77: R_X86_64_GOTPCREL\t_RNvCsfsA1pHDjJVE_7___rustc14___rust_dealloc-0x4",
+              "linked_bytes": "ff 15 c5 d0 03 00",
+              "linked_asm": "call   *0x3d0c5(%rip)        # 519d0 <_DYNAMIC+0x248>",
+              "relocs": [],
+              "diff_byte_indices": [
+                2,
+                3,
+                4
+              ]
+            },
+            {
+              "rel_off": "0x7e",
+              "obj_bytes": "e8 00 00 00 00",
+              "obj_asm": "call   83 <probe_entry+0x83>\t7f: R_X86_64_PLT32\t_Unwind_Resume-0x4",
+              "linked_bytes": "e8 cd a3 03 00",
+              "linked_asm": "call   4ece0 <_Unwind_Resume@plt>",
+              "relocs": [],
+              "diff_byte_indices": [
+                1,
+                2,
+                3
+              ]
+            },
+            {
+              "rel_off": "0x83",
+              "obj_bytes": "ff 15 00 00 00 00",
+              "obj_asm": "call   *0x0(%rip)        # 89 <probe_entry+0x89>\t85: R_X86_64_GOTPCREL\t_RNvNtCs2F9dQBLtWXO_4core9panicking19panic_cannot_unwind-0x4",
+              "linked_bytes": "ff 15 bf d0 03 00",
+              "linked_asm": "call   *0x3d0bf(%rip)        # 519d8 <_DYNAMIC+0x250>",
+              "relocs": [],
+              "diff_byte_indices": [
+                2,
+                3,
+                4
+              ]
+            }
+          ],
+          "boundary_shifts": [],
+          "extra_linked_insns": [
+            {
+              "rel_off": "0x89",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8a",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8b",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8c",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8d",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8e",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8f",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            }
+          ]
+        },
+        "unwinding_caller": {
+          "obj_insns": 34,
+          "linked_insns": 41,
+          "obj_bytes": 137,
+          "linked_bytes": 144,
+          "pure_disp_patches_count": 0,
+          "opcode_relaxations": [
+            {
+              "rel_off": "0x22",
+              "obj_bytes": "48 8d 3d 00 00 00 00",
+              "obj_asm": "lea    0x0(%rip),%rdi        # 29 <unwinding_caller+0x29>\t25: R_X86_64_PC32\tleaf_callee-0x4",
+              "linked_bytes": "48 8d 3d 27 ff ff ff",
+              "linked_asm": "lea    -0xd9(%rip),%rdi        # 14870 <leaf_callee>",
+              "relocs": [],
+              "diff_byte_indices": [
+                3,
+                4,
+                5,
+                6
+              ]
+            },
+            {
+              "rel_off": "0x2c",
+              "obj_bytes": "e8 00 00 00 00",
+              "obj_asm": "call   31 <unwinding_caller+0x31>\t2d: R_X86_64_PLT32\tindirect_fn_ptr-0x4",
+              "linked_bytes": "e8 17 ff ff ff",
+              "linked_asm": "call   14868 <indirect_fn_ptr>",
+              "relocs": [],
+              "diff_byte_indices": [
+                1,
+                2,
+                3,
+                4
+              ]
+            },
+            {
+              "rel_off": "0x37",
+              "obj_bytes": "e8 00 00 00 00",
+              "obj_asm": "call   3c <unwinding_caller+0x3c>\t38: R_X86_64_PLT32\t.text._RNvXNvCsg7eGCkvqu8M_5probe16unwinding_callerNtB2_5GuardNtNtNtCs2F9dQBLtWXO_4core3ops4drop4Drop4drop-0x4",
+              "linked_bytes": "e8 f4 fe ff ff",
+              "linked_asm": "call   14850 <_RNvXNvCsg7eGCkvqu8M_5probe16unwinding_callerNtB2_5GuardNtNtNtCs2F9dQBLtWXO_4core3ops4drop4Drop4drop>",
+              "relocs": [],
+              "diff_byte_indices": [
+                1,
+                2,
+                3,
+                4
+              ]
+            },
+            {
+              "rel_off": "0x4f",
+              "obj_bytes": "48 8b 05 00 00 00 00",
+              "obj_asm": "mov    0x0(%rip),%rax        # 56 <unwinding_caller+0x56>\t52: R_X86_64_GOTPCREL\t_RNvXsd_NtNtNtCs2F9dQBLtWXO_4core3fmt3num3impyNtB9_7Display3fmt-0x4",
+              "linked_bytes": "48 8b 05 6a d0 03 00",
+              "linked_asm": "mov    0x3d06a(%rip),%rax        # 519e0 <_DYNAMIC+0x258>",
+              "relocs": [],
+              "diff_byte_indices": [
+                3,
+                4,
+                5
+              ]
+            },
+            {
+              "rel_off": "0x5b",
+              "obj_bytes": "48 8d 3d 00 00 00 00",
+              "obj_asm": "lea    0x0(%rip),%rdi        # 62 <unwinding_caller+0x62>\t5e: R_X86_64_PC32\t.Lanon.9a88417d1fb4f2682fc76613c42e87ae.1-0x4",
+              "linked_bytes": "48 8d 3d 9c 40 ff ff",
+              "linked_asm": "lea    -0xbf64(%rip),%rdi        # 8a1e <GCC_except_table142+0x86e>",
+              "relocs": [],
+              "diff_byte_indices": [
+                3,
+                4,
+                5,
+                6
+              ]
+            },
+            {
+              "rel_off": "0x62",
+              "obj_bytes": "48 8d 15 00 00 00 00",
+              "obj_asm": "lea    0x0(%rip),%rdx        # 69 <unwinding_caller+0x69>\t65: R_X86_64_PC32\t.data.rel.ro..Lanon.9a88417d1fb4f2682fc76613c42e87ae.3-0x4",
+              "linked_bytes": "48 8d 15 e7 b3 03 00",
+              "linked_asm": "lea    0x3b3e7(%rip),%rdx        # 4fd70 <__frame_dummy_init_array_entry+0x38>",
+              "relocs": [],
+              "diff_byte_indices": [
+                3,
+                4,
+                5
+              ]
+            },
+            {
+              "rel_off": "0x6e",
+              "obj_bytes": "ff 15 00 00 00 00",
+              "obj_asm": "call   *0x0(%rip)        # 74 <unwinding_caller+0x74>\t70: R_X86_64_GOTPCREL\t_RNvNtCs2F9dQBLtWXO_4core9panicking9panic_fmt-0x4",
+              "linked_bytes": "ff 15 54 d0 03 00",
+              "linked_asm": "call   *0x3d054(%rip)        # 519e8 <_DYNAMIC+0x260>",
+              "relocs": [],
+              "diff_byte_indices": [
+                2,
+                3,
+                4
+              ]
+            },
+            {
+              "rel_off": "0x7c",
+              "obj_bytes": "e8 00 00 00 00",
+              "obj_asm": "call   81 <unwinding_caller+0x81>\t7d: R_X86_64_PLT32\t.text._RNvXNvCsg7eGCkvqu8M_5probe16unwinding_callerNtB2_5GuardNtNtNtCs2F9dQBLtWXO_4core3ops4drop4Drop4drop-0x4",
+              "linked_bytes": "e8 af fe ff ff",
+              "linked_asm": "call   14850 <_RNvXNvCsg7eGCkvqu8M_5probe16unwinding_callerNtB2_5GuardNtNtNtCs2F9dQBLtWXO_4core3ops4drop4Drop4drop>",
+              "relocs": [],
+              "diff_byte_indices": [
+                1,
+                2,
+                3,
+                4
+              ]
+            },
+            {
+              "rel_off": "0x84",
+              "obj_bytes": "e8 00 00 00 00",
+              "obj_asm": "call   89 <unwinding_caller+0x89>\t85: R_X86_64_PLT32\t_Unwind_Resume-0x4",
+              "linked_bytes": "e8 37 a3 03 00",
+              "linked_asm": "call   4ece0 <_Unwind_Resume@plt>",
+              "relocs": [],
+              "diff_byte_indices": [
+                1,
+                2,
+                3
+              ]
+            }
+          ],
+          "boundary_shifts": [],
+          "extra_linked_insns": [
+            {
+              "rel_off": "0x89",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8a",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8b",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8c",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8d",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8e",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8f",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            }
+          ]
+        }
+      }
+    },
+    "cdylib_pic_gnu_ld": {
+      "rc_obj": 0,
+      "rc_link": 0,
+      "live_exec_rc": null,
+      "obj_reloc_totals": {
+        "R_X86_64_GOTPCREL": 12,
+        "R_X86_64_PC32": 10,
+        "R_X86_64_PLT32": 5,
+        "R_X86_64_64": 2,
+        "R_X86_64_DTPOFF32": 2,
+        "R_X86_64_TLSLD": 1
+      },
+      "linked_reloc_totals": {
+        "R_X86_64_RELATIVE": 499,
+        "R_X86_64_GLOB_DAT": 54,
+        "R_X86_64_DTPMOD64": 3,
+        "R_X86_64_JUMP_SLOT": 3
+      },
+      "eh_frame_obj": {
+        "sections": {
+          ".eh_frame": {
+            "type": "X86_64_UNWIND",
+            "addr": "0x0000000000000000",
+            "off": "0x000298",
+            "size": 224
+          },
+          ".rela.eh_frame": {
+            "type": "RELA",
+            "addr": "0x0000000000000000",
+            "off": "0x000898",
+            "size": 192
+          }
+        },
+        "cie_count": 2,
+        "fde_count": 5
+      },
+      "eh_frame_linked": {
+        "sections": {
+          ".rela.dyn": {
+            "type": "RELA",
+            "addr": "0x0000000000000d80",
+            "off": "0x000d80",
+            "size": 13344
+          },
+          ".rela.plt": {
+            "type": "RELA",
+            "addr": "0x00000000000041a0",
+            "off": "0x0041a0",
+            "size": 72
+          },
+          ".gcc_except_table": {
+            "type": "PROGBITS",
+            "addr": "0x00000000000041e8",
+            "off": "0x0041e8",
+            "size": 13480
+          },
+          ".eh_frame_hdr": {
+            "type": "PROGBITS",
+            "addr": "0x000000000000c14c",
+            "off": "0x00c14c",
+            "size": 4020
+          },
+          ".eh_frame": {
+            "type": "PROGBITS",
+            "addr": "0x000000000000d100",
+            "off": "0x00d100",
+            "size": 19472
+          },
+          ".plt": {
+            "type": "PROGBITS",
+            "addr": "0x000000000004a7c0",
+            "off": "0x0497c0",
+            "size": 64
+          },
+          ".got": {
+            "type": "PROGBITS",
+            "addr": "0x000000000004cfe8",
+            "off": "0x04afe8",
+            "size": 2176
+          },
+          ".got.plt": {
+            "type": "PROGBITS",
+            "addr": "0x000000000004d868",
+            "off": "0x04b868",
+            "size": 48
+          }
+        },
+        "cie_count": 2,
+        "fde_count": 501
+      },
+      "function_comparisons": {
+        "indirect_fn_ptr": {
+          "obj_insns": 3,
+          "linked_insns": 3,
+          "obj_bytes": 8,
+          "linked_bytes": 8,
+          "pure_disp_patches_count": 0,
+          "opcode_relaxations": [],
+          "boundary_shifts": [],
+          "extra_linked_insns": []
+        },
+        "leaf_callee": {
+          "obj_insns": 15,
+          "linked_insns": 25,
+          "obj_bytes": 54,
+          "linked_bytes": 64,
+          "pure_disp_patches_count": 0,
+          "opcode_relaxations": [
+            {
+              "rel_off": "0x7",
+              "obj_bytes": "4c 8b 35 00 00 00 00",
+              "obj_asm": "mov    0x0(%rip),%r14        # e <leaf_callee+0xe>\ta: R_X86_64_GOTPCREL\tGLOBAL_DATA-0x4",
+              "linked_bytes": "4c 8b 35 f2 a1 03 00",
+              "linked_asm": "mov    0x3a1f2(%rip),%r14        # 4d020 <GLOBAL_DATA@@Base-0x1880>",
+              "relocs": [],
+              "diff_byte_indices": [
+                3,
+                4,
+                5
+              ]
+            },
+            {
+              "rel_off": "0xe",
+              "obj_bytes": "48 8d 3d 00 00 00 00",
+              "obj_asm": "lea    0x0(%rip),%rdi        # 15 <leaf_callee+0x15>\t11: R_X86_64_TLSLD\t_RNvNCNKNvCshexWY1UAG9a_5probe11TLS_COUNTER0s_023___RUST_STD_INTERNAL_VAL-0x4",
+              "linked_bytes": "48 8d 3d b3 a1 03 00",
+              "linked_asm": "lea    0x3a1b3(%rip),%rdi        # 4cfe8 <_DYNAMIC+0x1c0>",
+              "relocs": [],
+              "diff_byte_indices": [
+                3,
+                4,
+                5
+              ]
+            },
+            {
+              "rel_off": "0x15",
+              "obj_bytes": "e8 00 00 00 00",
+              "obj_asm": "call   1a <leaf_callee+0x1a>\t16: R_X86_64_PLT32\t__tls_get_addr-0x4",
+              "linked_bytes": "e8 a6 79 03 00",
+              "linked_asm": "call   4a7e0 <__tls_get_addr@plt>",
+              "relocs": [],
+              "diff_byte_indices": [
+                1,
+                2,
+                3
+              ]
+            }
+          ],
+          "boundary_shifts": [],
+          "extra_linked_insns": [
+            {
+              "rel_off": "0x36",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x37",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x38",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x39",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x3a",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x3b",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x3c",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x3d",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x3e",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x3f",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            }
+          ]
+        },
+        "probe_entry": {
+          "obj_insns": 44,
+          "linked_insns": 47,
+          "obj_bytes": 141,
+          "linked_bytes": 144,
+          "pure_disp_patches_count": 0,
+          "opcode_relaxations": [
+            {
+              "rel_off": "0xf",
+              "obj_bytes": "ff 15 00 00 00 00",
+              "obj_asm": "call   *0x0(%rip)        # 15 <probe_entry+0x15>\t11: R_X86_64_GOTPCREL\tunwinding_caller-0x4",
+              "linked_bytes": "ff 15 c3 a1 03 00",
+              "linked_asm": "call   *0x3a1c3(%rip)        # 4d038 <unwinding_caller@@Base+0x3a148>",
+              "relocs": [],
+              "diff_byte_indices": [
+                2,
+                3,
+                4
+              ]
+            },
+            {
+              "rel_off": "0x1e",
+              "obj_bytes": "ff 15 00 00 00 00",
+              "obj_asm": "call   *0x0(%rip)        # 24 <probe_entry+0x24>\t20: R_X86_64_GOTPCREL\t_RNvNvNtCsh1oe6ztIXx1_3std9panicking12catch_unwind7cleanup-0x4",
+              "linked_bytes": "ff 15 f4 a1 03 00",
+              "linked_asm": "call   *0x3a1f4(%rip)        # 4d078 <_DYNAMIC+0x250>",
+              "relocs": [],
+              "diff_byte_indices": [
+                2,
+                3,
+                4
+              ]
+            },
+            {
+              "rel_off": "0x2f",
+              "obj_bytes": "48 8b 05 00 00 00 00",
+              "obj_asm": "mov    0x0(%rip),%rax        # 36 <probe_entry+0x36>\t32: R_X86_64_GOTPCREL\tGLOBAL_DATA-0x4",
+              "linked_bytes": "48 8b 05 8a a1 03 00",
+              "linked_asm": "mov    0x3a18a(%rip),%rax        # 4d020 <GLOBAL_DATA@@Base-0x1880>",
+              "relocs": [],
+              "diff_byte_indices": [
+                3,
+                4,
+                5
+              ]
+            },
+            {
+              "rel_off": "0x56",
+              "obj_bytes": "ff 15 00 00 00 00",
+              "obj_asm": "call   *0x0(%rip)        # 5c <probe_entry+0x5c>\t58: R_X86_64_GOTPCREL\t_RNvCsfsA1pHDjJVE_7___rustc14___rust_dealloc-0x4",
+              "linked_bytes": "ff 15 c4 a1 03 00",
+              "linked_asm": "call   *0x3a1c4(%rip)        # 4d080 <_DYNAMIC+0x258>",
+              "relocs": [],
+              "diff_byte_indices": [
+                2,
+                3,
+                4
+              ]
+            },
+            {
+              "rel_off": "0x79",
+              "obj_bytes": "ff 15 00 00 00 00",
+              "obj_asm": "call   *0x0(%rip)        # 7f <probe_entry+0x7f>\t7b: R_X86_64_GOTPCREL\t_RNvCsfsA1pHDjJVE_7___rustc14___rust_dealloc-0x4",
+              "linked_bytes": "ff 15 a1 a1 03 00",
+              "linked_asm": "call   *0x3a1a1(%rip)        # 4d080 <_DYNAMIC+0x258>",
+              "relocs": [],
+              "diff_byte_indices": [
+                2,
+                3,
+                4
+              ]
+            },
+            {
+              "rel_off": "0x82",
+              "obj_bytes": "e8 00 00 00 00",
+              "obj_asm": "call   87 <probe_entry+0x87>\t83: R_X86_64_PLT32\t_Unwind_Resume-0x4",
+              "linked_bytes": "e8 09 79 03 00",
+              "linked_asm": "call   4a7f0 <_Unwind_Resume@plt>",
+              "relocs": [],
+              "diff_byte_indices": [
+                1,
+                2,
+                3
+              ]
+            },
+            {
+              "rel_off": "0x87",
+              "obj_bytes": "ff 15 00 00 00 00",
+              "obj_asm": "call   *0x0(%rip)        # 8d <probe_entry+0x8d>\t89: R_X86_64_GOTPCREL\t_RNvNtCs2F9dQBLtWXO_4core9panicking19panic_cannot_unwind-0x4",
+              "linked_bytes": "ff 15 9b a1 03 00",
+              "linked_asm": "call   *0x3a19b(%rip)        # 4d088 <_DYNAMIC+0x260>",
+              "relocs": [],
+              "diff_byte_indices": [
+                2,
+                3,
+                4
+              ]
+            }
+          ],
+          "boundary_shifts": [],
+          "extra_linked_insns": [
+            {
+              "rel_off": "0x8d",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8e",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8f",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            }
+          ]
+        },
+        "unwinding_caller": {
+          "obj_insns": 34,
+          "linked_insns": 40,
+          "obj_bytes": 138,
+          "linked_bytes": 144,
+          "pure_disp_patches_count": 0,
+          "opcode_relaxations": [
+            {
+              "rel_off": "0x22",
+              "obj_bytes": "48 8b 3d 00 00 00 00",
+              "obj_asm": "mov    0x0(%rip),%rdi        # 29 <unwinding_caller+0x29>\t25: R_X86_64_GOTPCREL\tleaf_callee-0x4",
+              "linked_bytes": "48 8b 3d 17 a1 03 00",
+              "linked_asm": "mov    0x3a117(%rip),%rdi        # 4d030 <leaf_callee@@Base+0x3a210>",
+              "relocs": [],
+              "diff_byte_indices": [
+                3,
+                4,
+                5
+              ]
+            },
+            {
+              "rel_off": "0x2c",
+              "obj_bytes": "ff 15 00 00 00 00",
+              "obj_asm": "call   *0x0(%rip)        # 32 <unwinding_caller+0x32>\t2e: R_X86_64_GOTPCREL\tindirect_fn_ptr-0x4",
+              "linked_bytes": "ff 15 06 a1 03 00",
+              "linked_asm": "call   *0x3a106(%rip)        # 4d028 <indirect_fn_ptr@@Base+0x3a210>",
+              "relocs": [],
+              "diff_byte_indices": [
+                2,
+                3,
+                4
+              ]
+            },
+            {
+              "rel_off": "0x38",
+              "obj_bytes": "e8 00 00 00 00",
+              "obj_asm": "call   3d <unwinding_caller+0x3d>\t39: R_X86_64_PLT32\t.text._RNvXNvCshexWY1UAG9a_5probe16unwinding_callerNtB2_5GuardNtNtNtCs2F9dQBLtWXO_4core3ops4drop4Drop4drop-0x4",
+              "linked_bytes": "e8 d3 fe ff ff",
+              "linked_asm": "call   12e00 <_RNvXNvCshexWY1UAG9a_5probe16unwinding_callerNtB2_5GuardNtNtNtCs2F9dQBLtWXO_4core3ops4drop4Drop4drop>",
+              "relocs": [],
+              "diff_byte_indices": [
+                1,
+                2,
+                3,
+                4
+              ]
+            },
+            {
+              "rel_off": "0x50",
+              "obj_bytes": "48 8b 05 00 00 00 00",
+              "obj_asm": "mov    0x0(%rip),%rax        # 57 <unwinding_caller+0x57>\t53: R_X86_64_GOTPCREL\t_RNvXsd_NtNtNtCs2F9dQBLtWXO_4core3fmt3num3impyNtB9_7Display3fmt-0x4",
+              "linked_bytes": "48 8b 05 49 a1 03 00",
+              "linked_asm": "mov    0x3a149(%rip),%rax        # 4d090 <_DYNAMIC+0x268>",
+              "relocs": [],
+              "diff_byte_indices": [
+                3,
+                4,
+                5
+              ]
+            },
+            {
+              "rel_off": "0x5c",
+              "obj_bytes": "48 8d 3d 00 00 00 00",
+              "obj_asm": "lea    0x0(%rip),%rdi        # 63 <unwinding_caller+0x63>\t5f: R_X86_64_PC32\t.Lanon.f16b9c94b8f2765efb769d7b5d8d063d.0-0x4",
+              "linked_bytes": "48 8d 3d 60 4e ff ff",
+              "linked_asm": "lea    -0xb1a0(%rip),%rdi        # 7db3 <GCC_except_table142+0x733>",
+              "relocs": [],
+              "diff_byte_indices": [
+                3,
+                4,
+                5,
+                6
+              ]
+            },
+            {
+              "rel_off": "0x63",
+              "obj_bytes": "48 8d 15 00 00 00 00",
+              "obj_asm": "lea    0x0(%rip),%rdx        # 6a <unwinding_caller+0x6a>\t66: R_X86_64_PC32\t.data.rel.ro..Lanon.f16b9c94b8f2765efb769d7b5d8d063d.2-0x4",
+              "linked_bytes": "48 8d 15 f6 88 03 00",
+              "linked_asm": "lea    0x388f6(%rip),%rdx        # 4b850 <__frame_dummy_init_array_entry+0x8>",
+              "relocs": [],
+              "diff_byte_indices": [
+                3,
+                4,
+                5
+              ]
+            },
+            {
+              "rel_off": "0x6f",
+              "obj_bytes": "ff 15 00 00 00 00",
+              "obj_asm": "call   *0x0(%rip)        # 75 <unwinding_caller+0x75>\t71: R_X86_64_GOTPCREL\t_RNvNtCs2F9dQBLtWXO_4core9panicking9panic_fmt-0x4",
+              "linked_bytes": "ff 15 33 a1 03 00",
+              "linked_asm": "call   *0x3a133(%rip)        # 4d098 <_DYNAMIC+0x270>",
+              "relocs": [],
+              "diff_byte_indices": [
+                2,
+                3,
+                4
+              ]
+            },
+            {
+              "rel_off": "0x7d",
+              "obj_bytes": "e8 00 00 00 00",
+              "obj_asm": "call   82 <unwinding_caller+0x82>\t7e: R_X86_64_PLT32\t.text._RNvXNvCshexWY1UAG9a_5probe16unwinding_callerNtB2_5GuardNtNtNtCs2F9dQBLtWXO_4core3ops4drop4Drop4drop-0x4",
+              "linked_bytes": "e8 8e fe ff ff",
+              "linked_asm": "call   12e00 <_RNvXNvCshexWY1UAG9a_5probe16unwinding_callerNtB2_5GuardNtNtNtCs2F9dQBLtWXO_4core3ops4drop4Drop4drop>",
+              "relocs": [],
+              "diff_byte_indices": [
+                1,
+                2,
+                3,
+                4
+              ]
+            },
+            {
+              "rel_off": "0x85",
+              "obj_bytes": "e8 00 00 00 00",
+              "obj_asm": "call   8a <unwinding_caller+0x8a>\t86: R_X86_64_PLT32\t_Unwind_Resume-0x4",
+              "linked_bytes": "e8 76 78 03 00",
+              "linked_asm": "call   4a7f0 <_Unwind_Resume@plt>",
+              "relocs": [],
+              "diff_byte_indices": [
+                1,
+                2,
+                3
+              ]
+            }
+          ],
+          "boundary_shifts": [],
+          "extra_linked_insns": [
+            {
+              "rel_off": "0x8a",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8b",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8c",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8d",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8e",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            },
+            {
+              "rel_off": "0x8f",
+              "linked_bytes": "cc",
+              "linked_asm": "int3"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "elapsed_sec": 1.27,
+  "sysroot_rlib_census": {
+    "rlib_count": 30,
+    "total_relocations": 350943,
+    "by_type": {
+      "R_X86_64_64": 182041,
+      "R_X86_64_32": 113289,
+      "R_X86_64_PC32": 28992,
+      "R_X86_64_GOTPCREL": 17227,
+      "R_X86_64_PLT32": 8894,
+      "R_X86_64_GOTTPOFF": 198,
+      "R_X86_64_TLSGD": 178,
+      "R_X86_64_REX_GOTPCRELX": 84,
+      "R_X86_64_DTPOFF32": 25,
+      "R_X86_64_TLSLD": 15
+    },
+    "opcode_relaxable_total": 475,
+    "relaxable_by_rlib": {
+      "libproc_macro-9332a2b89f93c7f2.rlib": {
+        "R_X86_64_TLSGD": 131
+      },
+      "libprofiler_builtins-8506aac288abd4f9.rlib": {
+        "R_X86_64_REX_GOTPCRELX": 84
+      },
+      "librustc_public-61ba650616926bf0.rlib": {
+        "R_X86_64_GOTTPOFF": 196
+      },
+      "librustc_public_bridge-bcfff2c4db279c83.rlib": {
+        "R_X86_64_GOTTPOFF": 2
+      },
+      "libstd-62cf18f9587165ab.rlib": {
+        "R_X86_64_TLSLD": 15,
+        "R_X86_64_TLSGD": 36
+      },
+      "libtest-ddab46a7479ab0f7.rlib": {
+        "R_X86_64_TLSGD": 11
+      }
+    }
+  },
+  "tls_relaxation_witnesses": {
+    "global-dynamic": {
+      "pre_link_obj": [
+        "0:\t50                   \tpush   %rax",
+        "1:\t66 48 8d 3d 00 00 00 00 \tdata16 lea 0x0(%rip),%rdi        # 9 <get_tls+0x9>\t5: R_X86_64_TLSGD\tMY_TLS-0x4",
+        "9:\t66 66 48 e8 00 00 00 00 \tdata16 data16 rex.W call 11 <get_tls+0x11>\td: R_X86_64_PLT32\t__tls_get_addr-0x4",
+        "11:\t48 8b 00             \tmov    (%rax),%rax",
+        "14:\t59                   \tpop    %rcx",
+        "15:\tc3                   \tret"
+      ],
+      "post_link_pie": [
+        "14700:\t50                   \tpush   %rax",
+        "14701:\t64 48 8b 04 25 00 00 00 00 \tmov    %fs:0x0,%rax",
+        "1470a:\t48 8d 80 a8 ff ff ff \tlea    -0x58(%rax),%rax",
+        "14711:\t48 8b 00             \tmov    (%rax),%rax",
+        "14714:\t59                   \tpop    %rcx",
+        "14715:\tc3                   \tret",
+        "14716:\tcc                   \tint3",
+        "14717:\tcc                   \tint3",
+        "14718:\tcc                   \tint3",
+        "14719:\tcc                   \tint3",
+        "1471a:\tcc                   \tint3",
+        "1471b:\tcc                   \tint3",
+        "1471c:\tcc                   \tint3",
+        "1471d:\tcc                   \tint3",
+        "1471e:\tcc                   \tint3",
+        "1471f:\tcc                   \tint3"
+      ]
+    },
+    "local-dynamic": {
+      "pre_link_obj": [
+        "0:\t50                   \tpush   %rax",
+        "1:\t48 8d 3d 00 00 00 00 \tlea    0x0(%rip),%rdi        # 8 <get_tls+0x8>\t4: R_X86_64_TLSLD\tMY_TLS-0x4",
+        "8:\te8 00 00 00 00       \tcall   d <get_tls+0xd>\t9: R_X86_64_PLT32\t__tls_get_addr-0x4",
+        "d:\t48 8b 80 00 00 00 00 \tmov    0x0(%rax),%rax\t10: R_X86_64_DTPOFF32\tMY_TLS",
+        "14:\t59                   \tpop    %rcx",
+        "15:\tc3                   \tret"
+      ],
+      "post_link_pie": [
+        "14700:\t50                   \tpush   %rax",
+        "14701:\t66 66 66 64 48 8b 04 25 00 00 00 00 \tdata16 data16 data16 mov %fs:0x0,%rax",
+        "1470d:\t48 8b 80 a8 ff ff ff \tmov    -0x58(%rax),%rax",
+        "14714:\t59                   \tpop    %rcx",
+        "14715:\tc3                   \tret",
+        "14716:\tcc                   \tint3",
+        "14717:\tcc                   \tint3",
+        "14718:\tcc                   \tint3",
+        "14719:\tcc                   \tint3",
+        "1471a:\tcc                   \tint3",
+        "1471b:\tcc                   \tint3",
+        "1471c:\tcc                   \tint3",
+        "1471d:\tcc                   \tint3",
+        "1471e:\tcc                   \tint3",
+        "1471f:\tcc                   \tint3"
+      ]
+    },
+    "initial-exec": {
+      "pre_link_obj": [
+        "0:\t48 8b 05 00 00 00 00 \tmov    0x0(%rip),%rax        # 7 <get_tls+0x7>\t3: R_X86_64_GOTTPOFF\tMY_TLS-0x4",
+        "7:\t64 48 8b 00          \tmov    %fs:(%rax),%rax",
+        "b:\tc3                   \tret"
+      ],
+      "post_link_pie": [
+        "14700:\t48 c7 c0 a8 ff ff ff \tmov    $0xffffffffffffffa8,%rax",
+        "14707:\t64 48 8b 00          \tmov    %fs:(%rax),%rax",
+        "1470b:\tc3                   \tret",
+        "1470c:\tcc                   \tint3",
+        "1470d:\tcc                   \tint3",
+        "1470e:\tcc                   \tint3",
+        "1470f:\tcc                   \tint3"
+      ]
+    }
+  }
+}
