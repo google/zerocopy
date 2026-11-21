@@ -1,0 +1,14 @@
+Probe host and Python environment (venv)
+geopandas==1.2.0
+gerrychain==1.0.0 (pip-installed from an extracted tarball of mggg/GerryChain at the pinned revision)
+matplotlib==3.11.2
+mpmath==1.4.1
+networkx==3.7
+numpy==2.5.4
+pandas==3.1.1
+randomgen==2.5.1
+rustworkx==0.18.1
+scipy==1.18.1
+Linux x86_64 workstation
+Model name:                              Intel(R) Xeon(R) CPU @ 2.60GHz
+Python 3.13.15

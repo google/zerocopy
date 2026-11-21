@@ -1,0 +1,82 @@
+<DAS_TREE>/source/programs/engine/curve.py:183: RuntimeWarning: divide by zero encountered in log
+  return (2 * alpha - 1) * rho - eps + np.log(1 - 1.0 / alpha)
+<DAS_TREE>/source/programs/engine/curve.py:180: RuntimeWarning: divide by zero encountered in log
+  return (alpha - 1.0) * (alpha * rho - eps) + alpha * np.log(1 - 1.0 / alpha) - np.log(alpha - 1)
+<DAS_TREE>/source/programs/engine/curve.py:180: RuntimeWarning: invalid value encountered in scalar subtract
+  return (alpha - 1.0) * (alpha * rho - eps) + alpha * np.log(1 - 1.0 / alpha) - np.log(alpha - 1)
+global rho = 1/global_scale^2 = 293764/114921 = 2.556226
+US           geolevel prop 104/4099 (0.02537); rho_level = 0.06486; within-level props sum = 1 (1.000000000000)
+State        geolevel prop 1440/4099 (0.35131); rho_level = 0.89802; within-level props sum = 1 (1.000000000000)
+County       geolevel prop 447/4099 (0.10905); rho_level = 0.27876; within-level props sum = 1 (1.000000000000)
+Tract        geolevel prop 687/4099 (0.16760); rho_level = 0.42843; within-level props sum = 1 (1.000000000000)
+Block_Group  geolevel prop 1256/4099 (0.30642); rho_level = 0.78327; within-level props sum = 1 (1.000000000000)
+Block        geolevel prop 165/4099 (0.04025); rho_level = 0.10290; within-level props sum = 1 (1.000000000000)
+sum of per-query rho = 293764/114921 (equals global rho: True)
+
+level        query                                  q-prop      rho_q      sigma^2     sigma
+US           cenrace                               0.01269   0.000823     1214.809    34.854
+US           hispanic                              0.00635   0.000412     2429.618    49.291
+US           votingage                             0.00635   0.000412     2429.618    49.291
+US           hhinstlevels                          0.00635   0.000412     2429.618    49.291
+US           hhgq                                  0.00635   0.000412     2429.618    49.291
+US           hispanic * cenrace                    0.03173   0.002058      485.924    22.044
+US           votingage * cenrace                   0.03173   0.002058      485.924    22.044
+US           votingage * hispanic                  0.00635   0.000412     2429.618    49.291
+US           votingage * hispanic * cenrace        0.10788   0.006997      142.919    11.955
+US           detailed                              0.78423   0.050863       19.661     4.434
+State        total                                 0.92092   0.826998        1.209     1.100
+State        cenrace                               0.00146   0.001315      760.380    27.575
+State        hispanic                              0.00146   0.001315      760.380    27.575
+State        votingage                             0.00146   0.001315      760.380    27.575
+State        hhinstlevels                          0.00146   0.001315      760.380    27.575
+State        hhgq                                  0.00146   0.001315      760.380    27.575
+State        hispanic * cenrace                    0.00293   0.002630      380.190    19.498
+State        votingage * cenrace                   0.00293   0.002630      380.190    19.498
+State        votingage * hispanic                  0.00146   0.001315      760.380    27.575
+State        votingage * hispanic * cenrace        0.00830   0.007452      134.185    11.584
+State        detailed                              0.05614   0.050413       19.836     4.454
+County       total                                 0.76300   0.212692        4.702     2.168
+County       cenrace                               0.00244   0.000680     1469.729    38.337
+County       hispanic                              0.00244   0.000680     1469.729    38.337
+County       votingage                             0.00244   0.000680     1469.729    38.337
+County       hhinstlevels                          0.00244   0.000680     1469.729    38.337
+County       hhgq                                  0.00244   0.000680     1469.729    38.337
+County       hispanic * cenrace                    0.00683   0.001905      524.903    22.911
+County       votingage * cenrace                   0.00683   0.001905      524.903    22.911
+County       votingage * hispanic                  0.00244   0.000680     1469.729    38.337
+County       votingage * hispanic * cenrace        0.02465   0.006872      145.518    12.063
+County       detailed                              0.18404   0.051302       19.492     4.415
+Tract        total                                 0.38201   0.163663        6.110     2.472
+Tract        cenrace                               0.00195   0.000836     1196.817    34.595
+Tract        hispanic                              0.00122   0.000522     1914.907    43.760
+Tract        votingage                             0.00122   0.000522     1914.907    43.760
+Tract        hhinstlevels                          0.00122   0.000522     1914.907    43.760
+Tract        hhgq                                  0.00122   0.000522     1914.907    43.760
+Tract        hispanic * cenrace                    0.47123   0.201890        4.953     2.226
+Tract        votingage * cenrace                   0.00488   0.002089      478.727    21.880
+Tract        votingage * hispanic                  0.00122   0.000522     1914.907    43.760
+Tract        votingage * hispanic * cenrace        0.01633   0.006998      142.903    11.954
+Tract        detailed                              0.11750   0.050342       19.864     4.457
+Block_Group  total                                 0.41596   0.325805        3.069     1.752
+Block_Group  cenrace                               0.00073   0.000573     1744.399    41.766
+Block_Group  hispanic                              0.00073   0.000573     1744.399    41.766
+Block_Group  votingage                             0.00073   0.000573     1744.399    41.766
+Block_Group  hhinstlevels                          0.00073   0.000573     1744.399    41.766
+Block_Group  hhgq                                  0.00073   0.000573     1744.399    41.766
+Block_Group  hispanic * cenrace                    0.25738   0.201598        4.960     2.227
+Block_Group  votingage * cenrace                   0.00220   0.001720      581.466    24.114
+Block_Group  votingage * hispanic                  0.00073   0.000573     1744.399    41.766
+Block_Group  votingage * hispanic * cenrace        0.00586   0.004586      218.050    14.767
+Block_Group  detailed                              0.31422   0.246121        4.063     2.016
+Block        total                                 0.00122   0.000126     7963.257    89.237
+Block        cenrace                               0.00220   0.000226     4424.032    66.513
+Block        hispanic                              0.00122   0.000126     7963.257    89.237
+Block        votingage                             0.00122   0.000126     7963.257    89.237
+Block        hhinstlevels                          0.00122   0.000126     7963.257    89.237
+Block        hhgq                                  0.00122   0.000126     7963.257    89.237
+Block        hispanic * cenrace                    0.00513   0.000527     1896.014    43.543
+Block        votingage * cenrace                   0.00513   0.000527     1896.014    43.543
+Block        votingage * hispanic                  0.00122   0.000126     7963.257    89.237
+Block        votingage * hispanic * cenrace        0.01733   0.001783      560.793    23.681
+Block        detailed                              0.96290   0.099080       10.093     3.177
+curve.zCDPEpsDeltaCurve: rho=2.556226, delta=1e-10 -> epsilon=17.1436

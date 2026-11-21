@@ -1,0 +1,8 @@
+python 3.13.15; module <DAS_TREE>/source/programs/engine/discrete_gaussian_utility.py
+[seed 20251121] State total (q=3773/4097, g=1440/4099): sigma_sq=214437516707/177339451520 (~1.2092); N=200000; mean=-0.0009 (z=-0.38); var_hat=1.2125; exact DG var=1.2092; rel.dev=+0.2736% (z=+0.87); min=-5 max=5; wall=2.38s; throughput=84,209 samples/s
+  chi-square GOF vs exact DG pmf: bins=|x|<=3 plus pooled tail; chi2=6.68, dof=7, p=0.463
+[seed 20251122] Block detailed (q=3945/4097, g=165/4099): sigma_sq=214437516707/21246481300 (~10.0928); N=200000; mean=-0.0050 (z=-0.71); var_hat=10.0414; exact DG var=10.0928; rel.dev=-0.5096% (z=-1.61); min=-16 max=13; wall=2.02s; throughput=99,036 samples/s
+  chi-square GOF vs exact DG pmf: bins=|x|<=9 plus pooled tail; chi2=28.85, dof=19, p=0.068
+[seed 20251123] Block total (q=5/4097, g=165/4099): sigma_sq=643312550121/80785100 (~7963.2575); N=50000; mean=+0.4793 (z=+1.20); var_hat=7888.3489; exact DG var=7963.2575; rel.dev=-0.9407% (z=-1.49); min=-349 max=374; wall=0.51s; throughput=98,210 samples/s
+  chi-square GOF vs exact DG pmf: bins=|x|<=267 plus pooled tail; chi2=538.05, dof=535, p=0.455
+[upstream rngs.RDRandLbitInts, unseeded] Block detailed (q=3945/4097, g=165/4099): sigma_sq=214437516707/21246481300 (~10.0928); N=20000; mean=+0.0109 (z=+0.49); var_hat=10.1394; exact DG var=10.0928; rel.dev=+0.4611% (z=+0.46); min=-12 max=13; wall=0.47s; throughput=42,919 samples/s

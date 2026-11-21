@@ -1,0 +1,101 @@
+{
+  "topics": [
+    "domains/census-disclosure-avoidance",
+    "domains/redistricting-data-accuracy",
+    "security/database-reconstruction-risk",
+    "verification/post-processing-bias-in-noisy-statistics"
+  ],
+  "subjects": [
+    {
+      "name": "U.S. Census Bureau 2020 Disclosure Avoidance System, redistricting (P.L. 94-171) production code release",
+      "identity": {
+        "repository": "uscensusbureau/DAS_2020_Redistricting_Production_Code",
+        "revision": "289ee463936a6f0efcf2e378abe410ec01d0e140"
+      }
+    },
+    {
+      "name": "U.S. Census Bureau 2018 end-to-end test disclosure avoidance system release",
+      "identity": {
+        "repository": "uscensusbureau/census2020-das-e2e",
+        "revision": "d9faabf3de987b890a5079b914f5aba597215b14"
+      }
+    },
+    {
+      "name": "GerryChain (ReCom Markov chain sampler for district plans)",
+      "identity": {
+        "repository": "mggg/GerryChain",
+        "revision": "0edc2789b82e239c407e2da6d1bfe3c2ad111276",
+        "version": "1.0.0"
+      }
+    },
+    {
+      "name": "redist (sequential Monte Carlo and MCMC redistricting samplers, R package)",
+      "identity": {
+        "repository": "alarm-redist/redist",
+        "revision": "2cc8b137cebbe15b8fc96295b7e2f1dd390c5577",
+        "version": "4.3.2"
+      }
+    },
+    {
+      "name": "Abowd et al., The 2020 Census Disclosure Avoidance System TopDown Algorithm (Harvard Data Science Review, 2022)",
+      "identity": {
+        "doi": "10.1162/99608f92.529e3cb9",
+        "url": "https://arxiv.org/abs/2204.08986v1"
+      }
+    },
+    {
+      "name": "Kenny, Kuriwaki, McCartan, Rosenman, Simko, Imai, The use of differential privacy for census data and its impact on redistricting (Science Advances 7(41), 2021)",
+      "identity": {
+        "doi": "10.1126/sciadv.abk3283",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8494446/"
+      }
+    },
+    {
+      "name": "Ruggles and Van Riper, The Role of Chance in the Census Bureau Database Reconstruction Experiment (Population Research and Policy Review 41(3), 2022)",
+      "identity": {
+        "doi": "10.1007/s11113-021-09674-3"
+      }
+    },
+    {
+      "name": "Mueller and Santos-Lozada, The 2020 US Census Differential Privacy Method Introduces Disproportionate Discrepancies for Rural and Non-White Populations (Population Research and Policy Review 41(4), 2022)",
+      "identity": {
+        "doi": "10.1007/s11113-022-09698-3"
+      }
+    },
+    {
+      "name": "Hotz et al., Balancing data privacy and usability in the federal statistical system (PNAS 119(31), 2022)",
+      "identity": {
+        "doi": "10.1073/pnas.2104906119"
+      }
+    },
+    {
+      "name": "Cohen, Duchin, Matthews, Suwal, Census TopDown: The Impacts of Differential Privacy on Redistricting (FORC 2021)",
+      "identity": {
+        "doi": "10.4230/LIPIcs.FORC.2021.5",
+        "url": "https://arxiv.org/abs/2203.05085v1"
+      }
+    },
+    {
+      "name": "DeFord, Duchin, Solomon, Recombination: A Family of Markov Chains for Redistricting (Harvard Data Science Review, 2021)",
+      "identity": {
+        "doi": "10.1162/99608f92.eb30390f",
+        "url": "https://arxiv.org/abs/1911.05725v1"
+      }
+    },
+    {
+      "name": "McCartan and Imai, Sequential Monte Carlo for sampling balanced and compact redistricting plans (Annals of Applied Statistics 17(4), 2023)",
+      "identity": {
+        "doi": "10.1214/23-AOAS1763",
+        "url": "https://arxiv.org/abs/2008.06131v5"
+      }
+    },
+    {
+      "name": "Canonne, Kamath, Steinke, The Discrete Gaussian for Differential Privacy",
+      "identity": {
+        "doi": "10.29012/jpc.784",
+        "url": "https://arxiv.org/abs/2004.00010v6"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}
