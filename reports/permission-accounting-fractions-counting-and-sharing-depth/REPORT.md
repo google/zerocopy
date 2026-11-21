@@ -207,7 +207,7 @@ Meaning: Boyland-style fractional permissions with `0` adjoined as the empty per
 (coprime numerator, positive denominator), so `=` on `FracPerm` is equality of rational values and
 laws such as cancellation are stated with plain `=`; core supplies ordered-field reasoning. The
 fractions used in the splitting, disjointness and holder-counting results are dyadic, so those
-results apply to the dyadic sub-algebra too; the bounded-counting map (§1.5) uses multiples of
+results apply to the dyadic sub-algebra too; the bounded-counting map (D5, R4a) uses multiples of
 `1/(3N+1)`.
 
 Supporting lemmas (proved): `fracOp_eq_some_iff : fracOp p q = some r ↔ p.val + q.val = r.val`;
@@ -219,7 +219,7 @@ Definition examples (proved): `ofRat_half_val` / `not_fracPerm_amounts` (3/2 and
 clamped to 0), `half_compl_halfPow_examples`, `fracAlg_half_half` (1/2·1/2 = 1) /
 `fracAlg_full_half` (1·1/2 undefined), `halvingSplit_full_three` ([1/2, 1/4, 1/4]).
 
-Signatures of the declarations named in this subsection that are not printed elsewhere in this report (exact output of Lean's `PrettyPrinter.ppSignature`, with the namespaces opened as under **Results**):
+Signatures of the declarations named in this subsection that are not printed elsewhere in this report (exact output of Lean's `PrettyPrinter.ppSignature`, with the namespaces opened as under **Results**; `Toy.Perm.FracPerm.not_fracPerm_amounts` is printed with `set_option pp.numericTypes true`, so that the type `Rat` of its numerals is shown):
 
 ```lean
 Toy.Perm.fracOp_eq_some_iff {p q r : FracPerm} : fracOp p q = some r ↔ p.val + q.val = r.val
@@ -236,7 +236,8 @@ Toy.Perm.fracAlg_exclusive_iff (p : FracPerm) : fracAlg.Exclusive p ↔ p = full
 Toy.Perm.FracPerm.ofRat_half_val : (ofRat (1 / 2)).val = 1 / 2
 
 Toy.Perm.FracPerm.not_fracPerm_amounts :
-  ¬(0 ≤ 3 / 2 ∧ 3 / 2 ≤ 1) ∧ ¬(0 ≤ -1 / 2 ∧ -1 / 2 ≤ 1) ∧ ofRat (3 / 2) = zero
+  ¬((0 : Rat) ≤ (3 / 2 : Rat) ∧ (3 / 2 : Rat) ≤ (1 : Rat)) ∧
+    ¬((0 : Rat) ≤ (-1 / 2 : Rat) ∧ (-1 / 2 : Rat) ≤ (1 : Rat)) ∧ ofRat (3 / 2 : Rat) = zero
 
 Toy.Perm.FracPerm.half_compl_halfPow_examples :
   full.half.val = 1 / 2 ∧ full.half.compl.val = 1 / 2 ∧ (halfPow 2).val = 1 / 4 ∧ full.compl = zero
@@ -403,10 +404,6 @@ Toy.Perm.tokenReturnAlg : PartialAlg Wit
 
 Toy.Perm.nonAssocDepthAlg : PartialAlg Wit5
 
-Toy.Perm.Cell.compat_examples {V : Type} [DecidableEq V] (v : V) :
-  (shared 1 v).compat (shared 2 v) = true ∧
-    (shared 0 v).compat borrowed = true ∧ borrowed.compat borrowed = true
-
 Toy.Perm.Cell.compat_negative_examples {V : Type} [DecidableEq V] (v w : V) (hvw : v ≠ w) :
   (shared 0 v).compat (shared 1 v) = false ∧
     (shared 0 v).compat (shared 0 v) = false ∧ (shared 1 v).compat (shared 1 w) = false
@@ -416,11 +413,6 @@ Toy.Perm.CellStep.apply_examples {V : Type} (v w : V) :
     CellStep.share.apply (shared 0 v) = some (shared 1 v) ∧
       (CellStep.write w).apply (shared 0 v) = some (shared 0 w) ∧
         (CellStep.endBorrow w).apply borrowed = some (shared 0 w)
-
-Toy.Perm.CellStep.apply_negative_examples {V : Type} (v w : V) :
-  (CellStep.write w).apply (shared 1 v) = none ∧
-    CellStep.borrow.apply (shared 1 v) = none ∧
-      CellStep.endShare.apply (shared 0 v) = none ∧ CellStep.share.apply borrowed = none
 
 Toy.Perm.CellStep.restoresExclusive_examples {V : Type} (v w : V) :
   CellStep.endShare.RestoresExclusive (shared 1 v) ∧
@@ -445,6 +437,21 @@ Toy.Perm.cellSumAlg_examples :
     (cellSumAlg Nat).op (shared 0 7) borrowed = some (shared 0 7) ∧
       (cellSumAlg Nat).op (shared 0 7) (shared 1 7) = none ∧
         (cellSumAlg Nat).op (shared 1 7) (shared 1 8) = none
+```
+
+The statements of `Toy.Perm.Cell.compat_examples` and `Toy.Perm.CellStep.apply_negative_examples` are quoted from the source (in `namespace Toy.Perm.Cell` with `variable {V : Type} [DecidableEq V]`, and in `namespace Toy.Perm.CellStep` with `variable {V : Type}`, respectively), because their printed signatures leave the payload type of `borrowed` undetermined:
+
+```lean
+-- lean/ToyPerm/Depth.lean:75-77
+theorem compat_examples (v : V) :
+    compat (.shared 1 v) (.shared 2 v) = true ∧ compat (.shared 0 v) .borrowed = true ∧
+      compat .borrowed (.borrowed : Cell V) = true
+
+-- lean/ToyPerm/Depth.lean:126-129
+theorem apply_negative_examples (v w : V) :
+    (CellStep.write w).apply (.shared 1 v) = none ∧ (CellStep.borrow).apply (.shared 1 v) = none ∧
+      (CellStep.endShare).apply (.shared 0 v) = none ∧
+      (CellStep.share).apply (.borrowed : Cell V) = none
 ```
 
 #### D5. Bounded counting and maps between designs (`ToyPerm/Translate.lean`)
@@ -1385,7 +1392,7 @@ Toy.Perm.opPreserving_maps_countB_to_frac_keep_either_pair_incompatible (N : Nat
 
 **Supporting lemmas.** `Toy.Perm.CountB.bundleN_val`, `Toy.Perm.countBAlg_srcN_bundleN`, `Toy.Perm.countBAlg_not_compat_srcN_srcN`, `Toy.Perm.countBAlg_not_compat_bundleN_bundleN`, `Toy.Perm.countLin_preservesUnit_op_values`.
 
-Statements of the counterexamples, witnesses, positive controls and supporting lemmas named above:
+Statements of the counterexamples, witnesses, positive controls and supporting lemmas named above (printed with `set_option pp.funBinderTypes true`, so that the types of bound variables are shown):
 
 ```lean
 Toy.Perm.countB0Embed_preservesOp_reflects_compat :
@@ -1405,7 +1412,7 @@ Toy.Perm.countB0Embed_sources_or_bundles_compat_fails :
 
 Toy.Perm.countB0_keep_either_pair_incompatible_fails :
   ¬1 ≤ 0 ∧
-    ¬((∃ f,
+    ¬((∃ (f : CountB 0 → FracPerm),
           (countBAlg 0).PreservesUnit fracAlg f ∧
             (countBAlg 0).PreservesOp fracAlg f ∧
               f (CountB.totalN 0) = full ∧
@@ -1413,7 +1420,7 @@ Toy.Perm.countB0_keep_either_pair_incompatible_fails :
                   (f (CountB.srcN 0)).val = 1 / 3 ∧
                     fracAlg.Compat (f (CountB.srcN 0)) (f (CountB.srcN 0)) ∧
                       ¬fracAlg.Compat (f (CountB.bundleN 0)) (f (CountB.bundleN 0))) ∧
-        ∃ f,
+        ∃ (f : CountB 0 → FracPerm),
           (countBAlg 0).PreservesUnit fracAlg f ∧
             (countBAlg 0).PreservesOp fracAlg f ∧
               f (CountB.totalN 0) = full ∧
@@ -1423,7 +1430,9 @@ Toy.Perm.countB0_keep_either_pair_incompatible_fails :
                       fracAlg.Compat (f (CountB.bundleN 0)) (f (CountB.bundleN 0)))
 
 Toy.Perm.countB1AllFull_reflects_compat :
-  1 ≤ 1 ∧ ∃ f, ∀ (a b : CountB 1), fracAlg.Compat (f a) (f b) → (countBAlg 1).Compat a b
+  1 ≤ 1 ∧
+    ∃ (f : CountB 1 → FracPerm),
+      ∀ (a b : CountB 1), fracAlg.Compat (f a) (f b) → (countBAlg 1).Compat a b
 
 Toy.Perm.countB1AllFull_sources_or_bundles_compat_fails :
   1 ≤ 1 ∧
@@ -1434,7 +1443,8 @@ Toy.Perm.countB1AllFull_sources_or_bundles_compat_fails :
               fracAlg.Compat (countB1AllFull (CountB.bundleN 1))
                 (countB1AllFull (CountB.bundleN 1))))
 
-Toy.Perm.countB1Embed_preservesOp : 1 ≤ 1 ∧ ∃ f, (countBAlg 1).PreservesOp fracAlg f
+Toy.Perm.countB1Embed_preservesOp :
+  1 ≤ 1 ∧ ∃ (f : CountB 1 → FracPerm), (countBAlg 1).PreservesOp fracAlg f
 
 Toy.Perm.countB1Embed_compat_not_reflected :
   ¬(countBAlg 1).Compat CountB.tok1 CountB.tok1 ∧
@@ -1500,12 +1510,12 @@ Toy.Perm.no_opPreserving_map_count_to_frac_with_nonzero_readToken :
 
 **Positive control.** `Toy.Perm.countB1Embed_preservesOp_nonzero_token` (a nearby setting in which the conclusion fails; its statement is printed below).
 
-Statements of the counterexamples, witnesses, positive controls and supporting lemmas named above:
+Statements of the counterexamples, witnesses, positive controls and supporting lemmas named above (printed with `set_option pp.funBinderTypes true`, so that the type of the bound map `f` is shown):
 
 ```lean
-Toy.Perm.const_full_nonzero_token : ∃ f, f readToken ≠ zero
+Toy.Perm.const_full_nonzero_token : ∃ (f : Count → FracPerm), f readToken ≠ zero
 
-Toy.Perm.const_zero_preservesOp : ∃ f, countAlg.PreservesOp fracAlg f
+Toy.Perm.const_zero_preservesOp : ∃ (f : Count → FracPerm), countAlg.PreservesOp fracAlg f
 
 Toy.Perm.countToFracSourcesOnly_preserves_unit_op_total :
   countAlg.PreservesUnit fracAlg countToFracSourcesOnly ∧
@@ -1555,17 +1565,19 @@ Toy.Perm.no_opPreserving_map_halfGrid_to_count_sending_full_to_total :
 
 **Positive control.** `Toy.Perm.asymGridToCount_preservesOp_full_to_total`, `Toy.Perm.exclToCount_preservesOp_full_to_total` (a nearby setting in which the conclusion fails; its statement is printed below).
 
-Statements of the counterexamples, witnesses, positive controls and supporting lemmas named above:
+Statements of the counterexamples, witnesses, positive controls and supporting lemmas named above (printed with `set_option pp.funBinderTypes true`, so that the types of bound variables are shown):
 
 ```lean
 Toy.Perm.exclToCount_preservesOp_full_to_total :
   exclAlg.op true true ≠ some true ∧
     exclAlg.PreservesOp countAlg exclToCount ∧ exclToCount true = total
 
-Toy.Perm.indicator_full_to_total : fracAlg.op full.half full.half = some full ∧ ∃ g, g full = total
+Toy.Perm.indicator_full_to_total :
+  fracAlg.op full.half full.half = some full ∧ ∃ (g : FracPerm → Count), g full = total
 
 Toy.Perm.const_none_preservesOp_frac_half :
-  fracAlg.op full.half full.half = some full ∧ ∃ g, fracAlg.PreservesOp countAlg g
+  fracAlg.op full.half full.half = some full ∧
+    ∃ (g : FracPerm → Count), fracAlg.PreservesOp countAlg g
 
 Toy.Perm.halfGridToCount_preservesOp_nonempty :
   halfGridAlg.PreservesOp countAlg halfGridToCount ∧ ∀ (i : Fin 3), i ≠ 0 → halfGridToCount i ≠ none
@@ -1616,16 +1628,17 @@ Toy.Perm.no_opPreserving_map_frac_to_count_with_nonempty_value :
 
 **Positive control.** `Toy.Perm.halfGridToCount_preservesOp_nonempty` (a nearby setting in which the conclusion fails; its statement is printed below).
 
-Statements of the counterexamples, witnesses, positive controls and supporting lemmas named above:
+Statements of the counterexamples, witnesses, positive controls and supporting lemmas named above (printed with `set_option pp.funBinderTypes true`, so that the types of bound variables are shown):
 
 ```lean
-Toy.Perm.const_readToken_not_none : ¬∀ (q : FracPerm), (fun x => readToken) q = none
+Toy.Perm.const_readToken_not_none : ¬∀ (q : FracPerm), (fun (x : FracPerm) => readToken) q = none
 
-Toy.Perm.const_readToken_nonempty : ∃ g q, g q ≠ none
+Toy.Perm.const_readToken_nonempty : ∃ (g : FracPerm → Count), ∃ (q : FracPerm), g q ≠ none
 
-Toy.Perm.opPreserving_map_frac_to_count_exists : ∃ g, fracAlg.PreservesOp countAlg g
+Toy.Perm.opPreserving_map_frac_to_count_exists :
+  ∃ (g : FracPerm → Count), fracAlg.PreservesOp countAlg g
 
-Toy.Perm.const_none_preservesOp_frac : fracAlg.PreservesOp countAlg fun x => none
+Toy.Perm.const_none_preservesOp_frac : fracAlg.PreservesOp countAlg fun (x : FracPerm) => none
 
 Toy.Perm.halfGridToCount_preservesOp_nonempty :
   halfGridAlg.PreservesOp countAlg halfGridToCount ∧ ∀ (i : Fin 3), i ≠ 0 → halfGridToCount i ≠ none
@@ -1674,26 +1687,12 @@ Toy.Perm.countAlg_source_one_complete_exactly_one_piece (ts : List Count)
 Statements of the counterexamples, witnesses, positive controls and supporting lemmas named above:
 
 ```lean
-Toy.Perm.countAlg_source_bound_needs_nonempty_pieces :
-  countAlg.opList [source 0, none] ≠ none ∧
-    countAlg.opList [source 0, none] = some total ∧ ¬[none].length ≤ 0
-
 Toy.Perm.countAlg_source_one_exactly_one_needs_nonempty :
   countAlg.opList [source 1, readToken, none] = some total ∧ ¬[readToken, none].length = 1
 
 Toy.Perm.countAlg_source_bound_needs_defined :
   (∀ (t : Count), t ∈ [readToken] → t ≠ none) ∧
     countAlg.opList [source 0, readToken] = none ∧ ¬[readToken].length ≤ 0
-
-Toy.Perm.countAlg_complete_lower_bound_needs_complete :
-  countAlg.opList [source 1] = some (source 1) ∧
-    countAlg.opList [source 1] ≠ some total ∧ 0 < 1 ∧ ¬1 ≤ [].length
-
-Toy.Perm.countAlg_source_one_exactly_one_needs_complete :
-  (∀ (t : Count), t ∈ [] → t ≠ none) ∧ countAlg.opList [source 1] ≠ some total ∧ ¬[].length = 1
-
-Toy.Perm.countAlg_complete_lower_bound_needs_pos :
-  countAlg.opList [source 0] = some total ∧ ¬1 ≤ [].length
 
 Toy.Perm.countAlg_source_count_bounds_outstanding_pieces_nonvacuous :
   (∀ (t : Count), t ∈ [readToken, readToken] → t ≠ none) ∧
@@ -1704,6 +1703,29 @@ Toy.Perm.countAlg_source_count_bounds_outstanding_pieces_nonvacuous :
 Toy.Perm.countAlg_source_one_complete_nonvacuous :
   (∀ (t : Count), t ∈ [readToken] → t ≠ none) ∧
     countAlg.opList [source 1, readToken] = some total ∧ 0 < 1
+```
+
+The statements of `Toy.Perm.countAlg_source_bound_needs_nonempty_pieces`, `Toy.Perm.countAlg_complete_lower_bound_needs_complete`, `Toy.Perm.countAlg_source_one_exactly_one_needs_complete` and `Toy.Perm.countAlg_complete_lower_bound_needs_pos` are quoted from the source (in `namespace Toy.Perm` with `open FracPerm Count PartialAlg`), because their printed signatures leave the element type of `[none]` or `[]` undetermined:
+
+```lean
+-- lean/ToyPerm/LastReader.lean:60-62
+theorem countAlg_source_bound_needs_nonempty_pieces :
+    countAlg.opList (source 0 :: [none]) ≠ none ∧ countAlg.opList (source 0 :: [none]) = some total ∧
+      ¬ ([none] : List Count).length ≤ 0
+
+-- lean/ToyPerm/LastReader.lean:99-101
+theorem countAlg_complete_lower_bound_needs_complete :
+    countAlg.opList (source 1 :: []) = some (source 1) ∧
+      countAlg.opList (source 1 :: []) ≠ some total ∧ 0 < 1 ∧ ¬ 1 ≤ ([] : List Count).length
+
+-- lean/ToyPerm/LastReader.lean:132-134
+theorem countAlg_source_one_exactly_one_needs_complete :
+    (∀ t ∈ ([] : List Count), t ≠ none) ∧ countAlg.opList (source 1 :: []) ≠ some total ∧
+      ¬ ([] : List Count).length = 1
+
+-- lean/ToyPerm/LastReader.lean:107-108
+theorem countAlg_complete_lower_bound_needs_pos :
+    countAlg.opList (source 0 :: []) = some total ∧ ¬ 1 ≤ ([] : List Count).length
 ```
 
 **Prior art.** [P2] Bornat, Calcagno, O'Hearn & Parkinson, POPL 2005; [P1] Dockins, Hobor & Appel, APLAS 2009.
