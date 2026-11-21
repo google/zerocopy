@@ -1,0 +1,199 @@
+{
+  "topics": [
+    "agents/scaffolding",
+    "agents/agent-computer-interface",
+    "agents/prompt-optimization",
+    "agents/workflow-search",
+    "agents/mode-collapse",
+    "agents/divergent-exploration",
+    "systems/design-space-exploration",
+    "systems/bayesian-experimental-design",
+    "tooling/agent-harnesses"
+  ],
+  "subjects": [
+    {
+      "name": "John Yang et al., SWE-agent (NeurIPS 2024, SWE-agent/SWE-agent)",
+      "identity": {
+        "arxiv": "2405.15793v3",
+        "repository": "SWE-agent/SWE-agent",
+        "revision": "3ea751c087f32b16e039a2233dd6eefecef325d5",
+        "venue": "NeurIPS 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "SWE-agent mini-swe-agent (SWE-agent/mini-swe-agent)",
+      "identity": {
+        "repository": "SWE-agent/mini-swe-agent",
+        "revision": "04d809ceab9df28f9adaed044884180159172930",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Xingyao Wang et al., OpenHands (ICLR 2025, OpenHands/OpenHands)",
+      "identity": {
+        "arxiv": "2407.16741v3",
+        "repository": "OpenHands/OpenHands",
+        "revision": "0f4cb6af95915fee776913c4aa8694e7c4b76033",
+        "venue": "ICLR 2025",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "OpenHands Software Agent SDK (OpenHands/software-agent-sdk)",
+      "identity": {
+        "repository": "OpenHands/software-agent-sdk",
+        "revision": "3a893a1b26de7ec02cc0dd2427906eea6aea3fc7",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Chunqiu Steven Xia et al., Agentless (OpenAutoCoder/Agentless)",
+      "identity": {
+        "arxiv": "2407.01489v2",
+        "repository": "OpenAutoCoder/Agentless",
+        "revision": "5ce5888b9f149beaace393957a55ea8ee46c9f71",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Paul Gauthier, Aider Edit Formats and Unified Diffs (Aider-AI/aider)",
+      "identity": {
+        "repository": "Aider-AI/aider",
+        "revision": "5dc9490bb35f9729ef2c95d00a19ccd30c26339c",
+        "url": "https://aider.chat/docs/unified-diffs.html",
+        "year": "2024-2026"
+      }
+    },
+    {
+      "name": "Xingyao Wang et al., CodeAct (ICML 2024, xingyaoww/code-act)",
+      "identity": {
+        "arxiv": "2402.01030v4",
+        "repository": "xingyaoww/code-act",
+        "revision": "d607f56c9cfe9e8632ebaf65dcaf2b4b7fe1c6f8",
+        "venue": "ICML 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Anthropic Agent Engineering Research Reports (Building Effective Agents; SWE-bench Verified with Claude 3.5 Sonnet; Writing Effective Tools; Effective Harnesses for Long-Running Agents)",
+      "identity": {
+        "url": "https://www.anthropic.com/research/building-effective-agents",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "Omar Khattab et al., DSPy (ICLR 2024) and Krista Opsahl-Ong et al., MIPROv2 (EMNLP 2024, stanfordnlp/dspy)",
+      "identity": {
+        "arxiv": "2310.03714v1; 2406.11695v2",
+        "repository": "stanfordnlp/dspy",
+        "revision": "226d534da38ab8a39e4d6383e01e121dab50da51",
+        "venue": "ICLR 2024; EMNLP 2024",
+        "year": "2024-2026"
+      }
+    },
+    {
+      "name": "Mert Yuksekgonul et al., TextGrad (Nature 2025 Open SI & Peer Review, arXiv:2406.07496v1, zou-group/textgrad)",
+      "identity": {
+        "arxiv": "2406.07496v1",
+        "doi": "10.1038/s41586-025-08661-4",
+        "repository": "zou-group/textgrad",
+        "revision": "75e912e210864b61999781778cdf756d4468120f",
+        "venue": "Nature 639(8055):609-616",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "Lakshya A. Agrawal et al., GEPA: Reflective Prompt Evolution Can Outperform Reinforcement Learning (ICLR 2026 Oral, gepa-ai/gepa)",
+      "identity": {
+        "arxiv": "2507.19457v2",
+        "repository": "gepa-ai/gepa",
+        "revision": "ce5b0d6e3d6af6c6dbec6de2c54536bbb961d309",
+        "venue": "ICLR 2026 Oral",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "Shengran Hu, Cong Lu, and Jeff Clune, Automated Design of Agentic Systems (ICLR 2025, ShengranHu/ADAS)",
+      "identity": {
+        "arxiv": "2408.08435v2",
+        "repository": "ShengranHu/ADAS",
+        "revision": "2702bee8fefda42255efc5be9f60e3bd3db96ae4",
+        "venue": "ICLR 2025",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Jiayi Zhang et al., AFlow: Automating Agentic Workflow Generation (ICLR 2025 Oral, FoundationAgents/AFlow)",
+      "identity": {
+        "arxiv": "2410.10762v4",
+        "repository": "FoundationAgents/AFlow",
+        "revision": "3f457218fc716093fe53f6df8a5d5e6379d66346",
+        "venue": "ICLR 2025 Oral",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Vishakh Padmakumar and He He, Does Writing with Language Models Reduce Content Diversity? (ICLR 2024), and Anil R. Doshi and Oliver P. Hauser, Generative AI Enhances Individual Creativity but Reduces Collective Diversity (Science Advances 2024)",
+      "identity": {
+        "arxiv": "2309.05196v3",
+        "doi": "10.1126/sciadv.adn5290",
+        "venue": "ICLR 2024; Science Advances 10(28):eadn5290",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Robert Kirk et al., Understanding the Effects of RLHF on LLM Generalisation and Diversity (ICLR 2024, facebookresearch/rlfh-gen-div)",
+      "identity": {
+        "arxiv": "2310.06452v3",
+        "repository": "facebookresearch/rlfh-gen-div",
+        "revision": "7291e6deb5127ca07497da21b4bd72e4f4afab4e",
+        "venue": "ICLR 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Liwei Jiang et al., Artificial Hivemind: The Open-Ended Homogeneity of Language Models (NeurIPS 2025 D&B Oral, liweijiang/artificial-hivemind)",
+      "identity": {
+        "arxiv": "2510.22954v2",
+        "repository": "liweijiang/artificial-hivemind",
+        "revision": "ff3b875669db2c6d8bb9f3970fb383013d936d60",
+        "venue": "NeurIPS 2025 D&B Oral",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "Jiayi Zhang et al., Verbalized Sampling: How to Mitigate Mode Collapse and Unlock LLM Diversity (CHATS-lab/verbalize-sampling)",
+      "identity": {
+        "arxiv": "2510.01171v4",
+        "repository": "CHATS-lab/verbalize-sampling",
+        "revision": "8ffec17a813825ee9be9fd4066ba983ff93541eb",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "Fritz Zwicky (1969) and Tom Ritchey (2006 JORS; 2011 Springer; Swedish Morphological Society 2002/2013), General Morphological Analysis and Cross-Consistency Assessment",
+      "identity": {
+        "doi": "10.1057/palgrave.jors.2602177; 10.1007/978-3-642-19653-9",
+        "year": "1969-2013"
+      }
+    },
+    {
+      "name": "D. V. Lindley (1956) and Tom Rainforth et al., Modern Bayesian Experimental Design (Statistical Science 2024)",
+      "identity": {
+        "arxiv": "2302.14545v2",
+        "doi": "10.1214/aoms/1177728069; 10.1214/23-STS915",
+        "venue": "Annals of Mathematical Statistics 1956; Statistical Science 39(1):100-114",
+        "year": "1956; 2024"
+      }
+    },
+    {
+      "name": "Mary Lou Maher and Josiah Poon (1996), Bashar Nuseibeh (Twin Peaks, 2001), and Adam M. Ross et al. (MATE and Epoch-Era Analysis, 2004-2008)",
+      "identity": {
+        "doi": "10.1111/j.1467-8667.1996.tb00323.x; 10.1109/2.910904; 10.2514/1.9204; 10.1002/sys.20098; 10.1002/j.2334-5837.2008.tb00871.x",
+        "year": "1996-2008"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

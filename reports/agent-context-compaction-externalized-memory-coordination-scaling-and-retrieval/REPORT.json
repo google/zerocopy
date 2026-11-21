@@ -1,0 +1,167 @@
+{
+  "topics": [
+    "agents/context-compaction",
+    "agents/externalized-memory",
+    "agents/kv-cache",
+    "agents/multi-agent-coordination",
+    "agents/tool-reliability",
+    "agents/retrieval",
+    "agents/autonomous-research",
+    "agents/benchmark-methodology",
+    "tooling/agent-harnesses"
+  ],
+  "subjects": [
+    {
+      "name": "Tobias Lindenbauer et al., The Complexity Trap: Simple Observation Masking Is as Efficient as LLM Summarization for Agent Context Management (NeurIPS 2025 DL4C Workshop)",
+      "identity": {
+        "arxiv": "2508.21433v3",
+        "repository": "JetBrains-Research/the-complexity-trap",
+        "venue": "NeurIPS 2025 DL4C Workshop",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "SWE-agent History Processors (SWE-agent/SWE-agent)",
+      "identity": {
+        "repository": "SWE-agent/SWE-agent",
+        "revision": "3ea751c087f32b16e039a2233dd6eefecef325d5"
+      }
+    },
+    {
+      "name": "OpenHands Software Agent SDK Condenser (OpenHands/software-agent-sdk)",
+      "identity": {
+        "repository": "OpenHands/software-agent-sdk",
+        "revision": "3a893a1b26de7ec02cc0dd2427906eea6aea3fc7"
+      }
+    },
+    {
+      "name": "OpenHands Application Repository (OpenHands/OpenHands)",
+      "identity": {
+        "repository": "OpenHands/OpenHands",
+        "revision": "0f4cb6af95915fee776913c4aa8694e7c4b76033"
+      }
+    },
+    {
+      "name": "Production Context-Engineering Technical Reports (Manus, Anthropic, Factory.ai)",
+      "identity": {
+        "published_dates": "2025-07-18; 2025-09-29; 2025-12-16",
+        "urls": "https://manus.im/blog/Context-Engineering-for-AI-Agents-Lessons-from-Building-Manus; https://www.anthropic.com/research/effective-context-engineering-for-ai-agents; https://factory.ai/news/evaluating-compression"
+      }
+    },
+    {
+      "name": "Letta Code Git-Backed Memory Filesystem (letta-ai/letta-code)",
+      "identity": {
+        "repository": "letta-ai/letta-code",
+        "revision": "76428c1b0ee7efc9b4865c2b318db806070efb63"
+      }
+    },
+    {
+      "name": "Legacy Letta V1 Sliding-Window Summarizer (letta-ai/letta archive branch)",
+      "identity": {
+        "branch": "archive",
+        "repository": "letta-ai/letta",
+        "revision": "56ba9c25552605eec89de8ed3dc6394b625c1993"
+      }
+    },
+    {
+      "name": "Graphiti Bi-Temporal Knowledge Graph (getzep/graphiti)",
+      "identity": {
+        "repository": "getzep/graphiti",
+        "revision": "9b8a4630092084734b080f2e6f409c2c23bdcc3a"
+      }
+    },
+    {
+      "name": "Zep LoCoMo Evaluation Harness — Initial Blog Baseline (getzep/zep-papers)",
+      "identity": {
+        "repository": "getzep/zep-papers",
+        "revision": "3f846211d7ed7dad0d2c65565d477d865aafd7e4"
+      }
+    },
+    {
+      "name": "Zep LoCoMo Evaluation Harness — Category-5 Filter Fix (getzep/zep-papers locomo-fix)",
+      "identity": {
+        "repository": "getzep/zep-papers",
+        "revision": "d7401e89325dd5e4bd1d52cf1bb47782caf84aef"
+      }
+    },
+    {
+      "name": "Zep LoCoMo Evaluation Harness — Category Label Fix (getzep/zep-papers main)",
+      "identity": {
+        "repository": "getzep/zep-papers",
+        "revision": "4b7f26cc76cca20743314ba9acb8c2cb6adc42f6"
+      }
+    },
+    {
+      "name": "Mem0 LoCoMo Evaluation Harness (mem0ai/mem0)",
+      "identity": {
+        "committed_at": "2025-05-07",
+        "repository": "mem0ai/mem0",
+        "revision": "2b58775c17eb1c1b7532242b7154af6744102280"
+      }
+    },
+    {
+      "name": "Charles Packer et al., MemGPT; Adyasha Maharana et al., LoCoMo (ACL 2024); Di Wu et al., LongMemEval (ICLR 2025)",
+      "identity": {
+        "arxiv": "2310.08560v2; 2402.17753v1; 2410.10813v2",
+        "venue": "arXiv 2023-2024; ACL 2024; ICLR 2025",
+        "year": "2023-2025"
+      }
+    },
+    {
+      "name": "Preston Rasmussen et al., Zep/Graphiti; Wujiang Xu et al., A-MEM (NeurIPS 2025); Prateek Chhikara et al., Mem0; Daniel Chalef and Preston Rasmussen, Zep Rebuttal Blog",
+      "identity": {
+        "arxiv": "2501.13956v1; 2502.12110v11; 2504.19413v1",
+        "url": "https://www.getzep.com/blog/lies-damn-lies-statistics-is-mem0-really-sota-in-agent-memory/",
+        "venue": "arXiv 2025; NeurIPS 2025; arXiv 2025",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Shunyu Yao et al., tau-bench (ICLR 2025); Victor Barres et al., tau2-bench (ICML 2026); Jiarui Lu et al., ToolSandbox (NAACL 2025 Findings); Tianbao Xie et al., OSWorld (NeurIPS 2024)",
+      "identity": {
+        "arxiv": "2406.12045v1; 2506.07982v1; 2408.04682v2; 2404.07972v2",
+        "venue": "ICLR 2025; ICML 2026; NAACL 2025 Findings; NeurIPS 2024",
+        "year": "2024-2026"
+      }
+    },
+    {
+      "name": "Yubin Kim et al., Towards a Science of Scaling Agent Systems",
+      "identity": {
+        "arxiv": "2512.08296v3",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "Orion Weller et al., NevIR (EACL 2024); Wenhao Zhang et al., ExcluIR (AAAI 2025); Hongjin Su et al., BRIGHT (ICLR 2025 Spotlight)",
+      "identity": {
+        "arxiv": "2305.07614v2; 2404.17288v1; 2407.12883v4",
+        "venue": "EACL 2024; AAAI 2025; ICLR 2025 Spotlight",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "Carlos E. Jimenez et al., SWE-bench (ICLR 2024); Tianyang Liu et al., RepoBench (ICLR 2024); Zhaoling Chen et al., LocAgent (ACL 2025)",
+      "identity": {
+        "arxiv": "2310.06770v3; 2306.03091v2; 2503.09089v2",
+        "venue": "ICLR 2024; ICLR 2024; ACL 2025",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "Tianyu Gao et al., ALCE (EMNLP 2023); Chris Lu et al., The AI Scientist; Yutaro Yamada et al., The AI Scientist-v2; Giulio Starace et al., PaperBench (ICML 2025)",
+      "identity": {
+        "arxiv": "2305.14627v2; 2408.06292v3; 2504.08066v1; 2504.01848v3",
+        "venue": "EMNLP 2023; arXiv 2024; arXiv 2025; ICML 2025",
+        "year": "2023-2025"
+      }
+    },
+    {
+      "name": "Reem Aleithan et al., SWE-Bench+; Boxi Yu et al., UTBoost; Yuxuan Zhu et al., Agentic Benchmark Checklist (ABC); Hao Li et al., AIDev; Liu et al., AI-Authored Code Quality and Survival",
+      "identity": {
+        "arxiv": "2410.06992v2; 2506.09289v1; 2507.02825v5; 2602.09185v1; 2603.28592v3",
+        "year": "2024-2026"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

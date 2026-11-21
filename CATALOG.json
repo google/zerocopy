@@ -1924,6 +1924,725 @@
         "vcs/proof-library-version-pinning"
       ]
     },
+    "agent-behavioral-evaluation-judge-biases-code-review-and-prose-faithfulness": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv": "2503.01747v3",
+            "repository": "sambowyer/bayes_evals",
+            "revision": "b9711844e00e9664258de321966ecd258a7273d6",
+            "venue": "ICML 2025 Spotlight",
+            "year": "2025"
+          },
+          "name": "Sam Bowyer, Laurence Aitchison, and Desi R. Ivanova, Bayesian LLM Evaluation Library (sambowyer/bayes_evals) and ICML 2025 Position Paper (arXiv:2503.01747v3)"
+        },
+        {
+          "identity": {
+            "repository": "sambowyer/no_clt_paper",
+            "revision": "ab812f29f6508f53352a57b397669b2227f06164"
+          },
+          "name": "Sam Bowyer et al., Don't Use the CLT in LLM Evals Replication Repository (sambowyer/no_clt_paper)"
+        },
+        {
+          "identity": {
+            "arxiv": "2411.00640v1",
+            "year": "2024"
+          },
+          "name": "Evan Miller, Adding Error Bars to Evals: A Statistical Approach to Language Model Evaluations"
+        },
+        {
+          "identity": {
+            "arxiv": "2010.06595v1; 2310.11324v2; 2602.12670v4",
+            "venue": "EMNLP 2020; ICLR 2024; arXiv 2026",
+            "year": "2020-2026"
+          },
+          "name": "Dallas Card et al., With Little Power Comes Great Responsibility (EMNLP 2020); Melanie Sclar et al., FormatSpread (ICLR 2024); Xiangyi Li et al., SkillsBench"
+        },
+        {
+          "identity": {
+            "arxiv": "2305.01210v3; 2410.06992v2; 2506.09289v1; 2507.02825v5",
+            "venue": "NeurIPS 2023; arXiv 2024-2025",
+            "year": "2023-2025"
+          },
+          "name": "Jiawei Liu et al., EvalPlus (NeurIPS 2023); Reem Aleithan et al., SWE-Bench+; Boxi Yu et al., UTBoost; Yuxuan Zhu et al., Agentic Benchmark Checklist (ABC)"
+        },
+        {
+          "identity": {
+            "arxiv": "2305.17926v2",
+            "repository": "i-Eval/FairEval",
+            "revision": "453c117a69159fd7b7de2f4e0519bac57bee21f4",
+            "venue": "ACL 2024",
+            "year": "2024"
+          },
+          "name": "Peiyi Wang et al., FairEval: Large Language Models are not Fair Evaluators (ACL 2024, i-Eval/FairEval)"
+        },
+        {
+          "identity": {
+            "arxiv": "2411.15594v6",
+            "repository": "IDEA-FinAI/LLM-as-Evaluator",
+            "revision": "5254d8aa3f75a29ac61f72ae238222c47223bce5",
+            "year": "2024-2025"
+          },
+          "name": "Jiawei Gu et al., A Survey on LLM-as-a-Judge (IDEA-FinAI/LLM-as-Evaluator)"
+        },
+        {
+          "identity": {
+            "arxiv": "2306.05685v4; 2403.04132v1; 2410.02736v2",
+            "venue": "NeurIPS 2023; ICML 2024; ICLR 2025",
+            "year": "2023-2025"
+          },
+          "name": "Lianmin Zheng et al., MT-Bench and Chatbot Arena (NeurIPS 2023); Wei-Lin Chiang et al., Chatbot Arena (ICML 2024); Jiayi Ye et al., CALM (ICLR 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2404.04475v2",
+            "published_date": "2024-08-29",
+            "url": "https://lmsys.org/blog/2024-08-28-style-control/",
+            "venue": "COLM 2024; LMSYS Technical Report",
+            "year": "2024"
+          },
+          "name": "Yann Dubois et al., Length-Controlled AlpacaEval (COLM 2024), and Tianle Li, Anastasios Angelopoulos, and Wei-Lin Chiang, Chatbot Arena Style Control"
+        },
+        {
+          "identity": {
+            "arxiv": "2410.12784v2; 2403.13787v2; 2506.01937v2",
+            "venue": "ICLR 2025; arXiv 2024; ICLR 2026",
+            "year": "2024-2026"
+          },
+          "name": "Sijun Tan et al., JudgeBench (ICLR 2025); Nathan Lambert et al., RewardBench; Saumya Malik et al., RewardBench 2 (ICLR 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2405.13565v1; 2203.09095v2",
+            "doi": "10.1145/3664646.3665664; 10.1145/3639477.3639746; 10.1145/3540250.3549081",
+            "venue": "ACM AIware 2024; ICSE-SEIP 2024; ESEC/FSE 2022",
+            "year": "2022-2024"
+          },
+          "name": "Manushree Vijayvergiya et al., Google AutoCommenter (ACM AIware 2024); Alexander Frommgen et al., DIDACT (ICSE-SEIP 2024); Zhiyu Li et al., CodeReviewer (ESEC/FSE 2022)"
+        },
+        {
+          "identity": {
+            "arxiv": "2406.12952v3; 2503.07832v1; 2504.02605v1; 2509.16941v2; 2602.10975v1",
+            "venue": "NeurIPS 2024; ICLR 2025; arXiv 2025; ICLR 2026",
+            "year": "2024-2026"
+          },
+          "name": "Niels Mundler et al., SWT-Bench (NeurIPS 2024); Dhruv Gautam et al., RefactorBench (ICLR 2025); Daoguang Zan et al., Multi-SWE-bench; Xiang Deng et al., SWE-Bench Pro; Qixing Zhou et al., FeatureBench (ICLR 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2605.06464v2",
+            "repository": "ShouSawa/AI-Code-Maintainability",
+            "revision": "834794b63c2cf64206e1233e872265d2a3d551ec",
+            "venue": "EASE 2026",
+            "year": "2026"
+          },
+          "name": "Shota Sawada et al., AI-Generated Code Maintainability (EASE 2026, ShouSawa/AI-Code-Maintainability)"
+        },
+        {
+          "identity": {
+            "arxiv": "2603.28592v3; 2602.09185v1; 2606.13468v1",
+            "doi": "10.1145/3793302.3797249; 10.1145/3793302.3793592",
+            "venue": "arXiv 2026; MSR 2026",
+            "year": "2026"
+          },
+          "name": "Yue Liu et al., Debt Behind the AI Boom; Hao Li et al., AIDev (MSR 2026); Mahmoud Abujadallah et al., Rejection of Agentic Pull Requests (MSR 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2504.00025v1",
+            "doi": "10.1098/rsos.241776",
+            "venue": "Royal Society Open Science 12(4)",
+            "year": "2025"
+          },
+          "name": "Uwe Peters and Benjamin Chin-Yee, Generalization Bias in Large Language Model Summarization of Scientific Research (Royal Society Open Science 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2402.13249v2",
+            "repository": "amazon-science/tofueval",
+            "revision": "17555c5bfc27f95371fd82b2de7014d8e14e1024",
+            "venue": "NAACL 2024",
+            "year": "2024"
+          },
+          "name": "Liyan Tang et al., TofuEval: Evaluating Hallucinations of LLMs on Topic-Focused Dialogue Summarization (NAACL 2024, amazon-science/tofueval)"
+        },
+        {
+          "identity": {
+            "arxiv": "2305.14251v2; 2205.12854v2; 2404.10774v2; 2305.11747v3; 2211.08412v2; 2502.10855v2",
+            "venue": "EMNLP 2023; ACL 2023; EMNLP 2024; ACL 2025",
+            "year": "2023-2025"
+          },
+          "name": "Sewon Min et al., FActScore (EMNLP 2023); Liyan Tang et al., AggreFact (ACL 2023) and MiniCheck (EMNLP 2024); Junyi Li et al., HaluEval (EMNLP 2023); Derek Tam et al., FIB (ACL 2023); Dasha Metropolitansky and Jonathan Larson, Claimify (ACL 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2406.07016v5",
+            "doi": "10.1126/sciadv.adt3813",
+            "venue": "Science Advances 11(27)",
+            "year": "2025"
+          },
+          "name": "Dmitry Kobak et al., Delving into LLM-Assisted Writing in Biomedical Publications Through Excess Vocabulary (Science Advances 2025)"
+        },
+        {
+          "identity": {
+            "doi": "10.1207/s1532690xci1401_1",
+            "url": "https://www.nngroup.com/articles/concise-scannable-and-objective-how-to-write-for-the-web/",
+            "venue": "Nielsen Norman Group / CHI 1998; Cognition and Instruction 14(1)",
+            "year": "1996-1998"
+          },
+          "name": "John Morkes and Jakob Nielsen, Concise, SCANNABLE, and Objective (1997 / CHI 1998), and Danielle S. McNamara et al., Reverse Cohesion Effect (Cognition and Instruction 1996)"
+        }
+      ],
+      "topics": [
+        "agents/behavioral-evaluation",
+        "agents/eval-statistics",
+        "agents/llm-as-a-judge",
+        "agents/code-review",
+        "agents/coding-benchmarks",
+        "agents/prose-faithfulness",
+        "verification/test-generation",
+        "tooling/static-analysis"
+      ]
+    },
+    "agent-context-compaction-externalized-memory-coordination-scaling-and-retrieval": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv": "2508.21433v3",
+            "repository": "JetBrains-Research/the-complexity-trap",
+            "venue": "NeurIPS 2025 DL4C Workshop",
+            "year": "2025"
+          },
+          "name": "Tobias Lindenbauer et al., The Complexity Trap: Simple Observation Masking Is as Efficient as LLM Summarization for Agent Context Management (NeurIPS 2025 DL4C Workshop)"
+        },
+        {
+          "identity": {
+            "repository": "SWE-agent/SWE-agent",
+            "revision": "3ea751c087f32b16e039a2233dd6eefecef325d5"
+          },
+          "name": "SWE-agent History Processors (SWE-agent/SWE-agent)"
+        },
+        {
+          "identity": {
+            "repository": "OpenHands/software-agent-sdk",
+            "revision": "3a893a1b26de7ec02cc0dd2427906eea6aea3fc7"
+          },
+          "name": "OpenHands Software Agent SDK Condenser (OpenHands/software-agent-sdk)"
+        },
+        {
+          "identity": {
+            "repository": "OpenHands/OpenHands",
+            "revision": "0f4cb6af95915fee776913c4aa8694e7c4b76033"
+          },
+          "name": "OpenHands Application Repository (OpenHands/OpenHands)"
+        },
+        {
+          "identity": {
+            "published_dates": "2025-07-18; 2025-09-29; 2025-12-16",
+            "urls": "https://manus.im/blog/Context-Engineering-for-AI-Agents-Lessons-from-Building-Manus; https://www.anthropic.com/research/effective-context-engineering-for-ai-agents; https://factory.ai/news/evaluating-compression"
+          },
+          "name": "Production Context-Engineering Technical Reports (Manus, Anthropic, Factory.ai)"
+        },
+        {
+          "identity": {
+            "repository": "letta-ai/letta-code",
+            "revision": "76428c1b0ee7efc9b4865c2b318db806070efb63"
+          },
+          "name": "Letta Code Git-Backed Memory Filesystem (letta-ai/letta-code)"
+        },
+        {
+          "identity": {
+            "branch": "archive",
+            "repository": "letta-ai/letta",
+            "revision": "56ba9c25552605eec89de8ed3dc6394b625c1993"
+          },
+          "name": "Legacy Letta V1 Sliding-Window Summarizer (letta-ai/letta archive branch)"
+        },
+        {
+          "identity": {
+            "repository": "getzep/graphiti",
+            "revision": "9b8a4630092084734b080f2e6f409c2c23bdcc3a"
+          },
+          "name": "Graphiti Bi-Temporal Knowledge Graph (getzep/graphiti)"
+        },
+        {
+          "identity": {
+            "repository": "getzep/zep-papers",
+            "revision": "3f846211d7ed7dad0d2c65565d477d865aafd7e4"
+          },
+          "name": "Zep LoCoMo Evaluation Harness \u2014 Initial Blog Baseline (getzep/zep-papers)"
+        },
+        {
+          "identity": {
+            "repository": "getzep/zep-papers",
+            "revision": "d7401e89325dd5e4bd1d52cf1bb47782caf84aef"
+          },
+          "name": "Zep LoCoMo Evaluation Harness \u2014 Category-5 Filter Fix (getzep/zep-papers locomo-fix)"
+        },
+        {
+          "identity": {
+            "repository": "getzep/zep-papers",
+            "revision": "4b7f26cc76cca20743314ba9acb8c2cb6adc42f6"
+          },
+          "name": "Zep LoCoMo Evaluation Harness \u2014 Category Label Fix (getzep/zep-papers main)"
+        },
+        {
+          "identity": {
+            "committed_at": "2025-05-07",
+            "repository": "mem0ai/mem0",
+            "revision": "2b58775c17eb1c1b7532242b7154af6744102280"
+          },
+          "name": "Mem0 LoCoMo Evaluation Harness (mem0ai/mem0)"
+        },
+        {
+          "identity": {
+            "arxiv": "2310.08560v2; 2402.17753v1; 2410.10813v2",
+            "venue": "arXiv 2023-2024; ACL 2024; ICLR 2025",
+            "year": "2023-2025"
+          },
+          "name": "Charles Packer et al., MemGPT; Adyasha Maharana et al., LoCoMo (ACL 2024); Di Wu et al., LongMemEval (ICLR 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2501.13956v1; 2502.12110v11; 2504.19413v1",
+            "url": "https://www.getzep.com/blog/lies-damn-lies-statistics-is-mem0-really-sota-in-agent-memory/",
+            "venue": "arXiv 2025; NeurIPS 2025; arXiv 2025",
+            "year": "2025"
+          },
+          "name": "Preston Rasmussen et al., Zep/Graphiti; Wujiang Xu et al., A-MEM (NeurIPS 2025); Prateek Chhikara et al., Mem0; Daniel Chalef and Preston Rasmussen, Zep Rebuttal Blog"
+        },
+        {
+          "identity": {
+            "arxiv": "2406.12045v1; 2506.07982v1; 2408.04682v2; 2404.07972v2",
+            "venue": "ICLR 2025; ICML 2026; NAACL 2025 Findings; NeurIPS 2024",
+            "year": "2024-2026"
+          },
+          "name": "Shunyu Yao et al., tau-bench (ICLR 2025); Victor Barres et al., tau2-bench (ICML 2026); Jiarui Lu et al., ToolSandbox (NAACL 2025 Findings); Tianbao Xie et al., OSWorld (NeurIPS 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2512.08296v3",
+            "year": "2025-2026"
+          },
+          "name": "Yubin Kim et al., Towards a Science of Scaling Agent Systems"
+        },
+        {
+          "identity": {
+            "arxiv": "2305.07614v2; 2404.17288v1; 2407.12883v4",
+            "venue": "EACL 2024; AAAI 2025; ICLR 2025 Spotlight",
+            "year": "2024-2025"
+          },
+          "name": "Orion Weller et al., NevIR (EACL 2024); Wenhao Zhang et al., ExcluIR (AAAI 2025); Hongjin Su et al., BRIGHT (ICLR 2025 Spotlight)"
+        },
+        {
+          "identity": {
+            "arxiv": "2310.06770v3; 2306.03091v2; 2503.09089v2",
+            "venue": "ICLR 2024; ICLR 2024; ACL 2025",
+            "year": "2024-2025"
+          },
+          "name": "Carlos E. Jimenez et al., SWE-bench (ICLR 2024); Tianyang Liu et al., RepoBench (ICLR 2024); Zhaoling Chen et al., LocAgent (ACL 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2305.14627v2; 2408.06292v3; 2504.08066v1; 2504.01848v3",
+            "venue": "EMNLP 2023; arXiv 2024; arXiv 2025; ICML 2025",
+            "year": "2023-2025"
+          },
+          "name": "Tianyu Gao et al., ALCE (EMNLP 2023); Chris Lu et al., The AI Scientist; Yutaro Yamada et al., The AI Scientist-v2; Giulio Starace et al., PaperBench (ICML 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2410.06992v2; 2506.09289v1; 2507.02825v5; 2602.09185v1; 2603.28592v3",
+            "year": "2024-2026"
+          },
+          "name": "Reem Aleithan et al., SWE-Bench+; Boxi Yu et al., UTBoost; Yuxuan Zhu et al., Agentic Benchmark Checklist (ABC); Hao Li et al., AIDev; Liu et al., AI-Authored Code Quality and Survival"
+        }
+      ],
+      "topics": [
+        "agents/context-compaction",
+        "agents/externalized-memory",
+        "agents/kv-cache",
+        "agents/multi-agent-coordination",
+        "agents/tool-reliability",
+        "agents/retrieval",
+        "agents/autonomous-research",
+        "agents/benchmark-methodology",
+        "tooling/agent-harnesses"
+      ]
+    },
+    "agent-instruction-compliance-context-rot-reasoning-models-and-skill-routing": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "agentskills/agentskills",
+            "revision": "83021e2be457a9b6679148719c1f6074f0ad975e"
+          },
+          "name": "Agent Skills Specification and Client Implementation Guidance (agentskills/agentskills)"
+        },
+        {
+          "identity": {
+            "repository": "anthropics/skills",
+            "revision": "e4bb5d960d87126ff3b3a8af1a104b7db67560ba"
+          },
+          "name": "Anthropic Skills Reference Repository (anthropics/skills)"
+        },
+        {
+          "identity": {
+            "repository": "openai/skills",
+            "revision": "49f948faa9258a0c61caceaf225e179651397431"
+          },
+          "name": "OpenAI Skills Reference Repository (openai/skills)"
+        },
+        {
+          "identity": {
+            "arxiv": "2602.12670v4",
+            "repository": "benchflow-ai/skillsbench",
+            "revision": "f860ecf02ef53412a030f8661c83d644b739ff01",
+            "year": "2026"
+          },
+          "name": "Xiangyi Li et al., SkillsBench (benchflow-ai/skillsbench and arXiv:2602.12670v4)"
+        },
+        {
+          "identity": {
+            "arxiv": "2605.31408v1",
+            "year": "2026"
+          },
+          "name": "Xiaonan Xu and Wenjing Wu, Skill Availability and Presentation Granularity in Large-Language-Model Agents: A Controlled SkillsBench Study"
+        },
+        {
+          "identity": {
+            "arxiv": "2602.11988v3; 2601.20404v2",
+            "year": "2026"
+          },
+          "name": "Thibaud Gloaguen et al., Evaluating AGENTS.md (ETH Zurich), and Jai Lal Lulla et al., On the Impact of AGENTS.md Files on the Efficiency of AI Coding Agents"
+        },
+        {
+          "identity": {
+            "arxiv": "2607.01456v2; 2608.08453v1",
+            "year": "2026"
+          },
+          "name": "David Boram Hong, Aaron Imani, and Iftekhar Ahmed, From Anatomy to Smells (SKILL.md), and Chi Zhang et al., Evidence from 138K SKILL.md Files"
+        },
+        {
+          "identity": {
+            "arxiv": "2311.07911v1; 2310.20410v3; 2407.03978v3; 2507.02833v3",
+            "venue": "arXiv 2023; ACL 2024; NeurIPS 2024; arXiv 2025",
+            "year": "2023-2025"
+          },
+          "name": "Jeffrey Zhou et al., IFEval; Yuxin Jiang et al., FollowBench (ACL 2024); Bosi Wen et al., ComplexBench (NeurIPS 2024); Valentina Pyatkin et al., IFBench"
+        },
+        {
+          "identity": {
+            "arxiv": "2507.11538v1; 2509.21051v1",
+            "year": "2025"
+          },
+          "name": "Daniel Jaroslawicz et al., IFScale, and Keno Harada et al., ManyIFEval"
+        },
+        {
+          "identity": {
+            "arxiv": "2408.10943v2; 2410.15553v2; 2609.14992v1",
+            "year": "2024-2026"
+          },
+          "name": "Yanzhao Qin et al., SysBench; Yun He et al., Multi-IF; Bosi Wen et al., MTAC-IFBench"
+        },
+        {
+          "identity": {
+            "arxiv": "2307.03172v3; 2404.06654v3; 2502.05167v3",
+            "venue": "TACL 2024; COLM 2024; ICML 2025",
+            "year": "2024-2025"
+          },
+          "name": "Nelson F. Liu et al., Lost in the Middle (TACL 2024); Cheng-Ping Hsieh et al., RULER (COLM 2024); Ali Modarressi et al., NoLiMa (ICML 2025)"
+        },
+        {
+          "identity": {
+            "published_date": "2025-07-14",
+            "repository": "chroma-core/context-rot",
+            "revision": "af80a08018f2b7257c0336d04bcd02f936088106",
+            "url": "https://research.trychroma.com/context-rot"
+          },
+          "name": "Kelly Hong, Anton Troynikov, and Jeff Huber, Context Rot (Chroma Technical Report and chroma-core/context-rot)"
+        },
+        {
+          "identity": {
+            "arxiv": "2505.06120v1",
+            "year": "2025"
+          },
+          "name": "Philippe Laban et al., LLMs Get Lost In Multi-Turn Conversation"
+        },
+        {
+          "identity": {
+            "arxiv": "2404.13208v1; 2604.09443v4",
+            "year": "2024; 2026"
+          },
+          "name": "Eric Wallace et al., The Instruction Hierarchy, and Jingyu Zhang et al., Many-Tier Instruction Hierarchy in LLM Agents"
+        },
+        {
+          "identity": {
+            "arxiv": "2310.11324v2; 2410.12405v1; 2411.10541v1",
+            "venue": "ICLR 2024; EMNLP 2024 Findings; arXiv 2024",
+            "year": "2024"
+          },
+          "name": "Melanie Sclar et al., FormatSpread (ICLR 2024); Jingming Zhuo et al., ProSA (EMNLP 2024 Findings); Jia He et al., Prompt Formatting Impact"
+        },
+        {
+          "identity": {
+            "arxiv": "2209.12711v1; 2306.08189v1; 2406.05494v1; 2605.10065v2",
+            "year": "2022-2026"
+          },
+          "name": "Joel Jang et al. (2022), Thinh Hung Truong et al. (*SEM 2023), Neeraj Varshney et al. (TrustNLP 2025), and Hyundong Jin and Yo-Sub Han, NCO (2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2410.03608v1; 2507.18624v2",
+            "year": "2024; 2025"
+          },
+          "name": "Jonathan Cook et al., TICK, and Vijay Viswanathan et al., RLCF (Checklists Are Better Than Reward Models)"
+        },
+        {
+          "identity": {
+            "arxiv": "2501.12948v2; 2412.21187v2; 2502.08235v1; 2504.07128v3; 2506.07142v1",
+            "year": "2024-2026"
+          },
+          "name": "DeepSeek-AI, DeepSeek-R1; Xingyu Chen et al., Overthinking; Alejandro Cuadron et al., Danger of Overthinking; Sara Vera Marjanovic et al., Thoughtology (TMLR); Lennart Meincke et al., Decreasing Value of CoT"
+        },
+        {
+          "identity": {
+            "arxiv": "2506.06941v3; 2506.09250v2; 2506.18957v1",
+            "year": "2025"
+          },
+          "name": "Parshin Shojaee et al., The Illusion of Thinking, and critiques by A. Lawsen and Sheraz Khan et al."
+        },
+        {
+          "identity": {
+            "pmlr": "v267:patil25a",
+            "repository": "ShishirPatil/gorilla",
+            "revision": "6ea57973c7a6097fd7c5915698c54c17c5b1b6c8",
+            "venue": "ICML 2025",
+            "year": "2025"
+          },
+          "name": "Shishir G. Patil et al., Berkeley Function Calling Leaderboard (ICML 2025, ShishirPatil/gorilla)"
+        },
+        {
+          "identity": {
+            "arxiv": "2307.16789v2; 2411.15399v1; 2505.03275v1; 2506.01056v4; 2508.07575v1; 2601.20412v1; 2603.20313v1",
+            "year": "2023-2026"
+          },
+          "name": "Yujia Qin et al., ToolLLM (ICLR 2024); Varatheepan Paramanayakam et al., Less is More; Tiantian Gan and Qiyao Sun, RAG-MCP; Xiang Fei et al., MCP-Zero; Shiqing Fan et al., MCPToolBench++; Qihao Wang et al., ToolLoad-Bench; Sarat Mudunuri et al., Vector-MCP"
+        }
+      ],
+      "topics": [
+        "agents/instruction-following",
+        "agents/context-rot",
+        "agents/reasoning-models",
+        "agents/skill-routing",
+        "agents/progressive-disclosure",
+        "agents/mcp",
+        "agents/token-efficiency",
+        "tooling/agent-harnesses"
+      ]
+    },
+    "agent-scaffolding-automated-prompt-optimization-and-divergent-design-exploration": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv": "2405.15793v3",
+            "repository": "SWE-agent/SWE-agent",
+            "revision": "3ea751c087f32b16e039a2233dd6eefecef325d5",
+            "venue": "NeurIPS 2024",
+            "year": "2024"
+          },
+          "name": "John Yang et al., SWE-agent (NeurIPS 2024, SWE-agent/SWE-agent)"
+        },
+        {
+          "identity": {
+            "repository": "SWE-agent/mini-swe-agent",
+            "revision": "04d809ceab9df28f9adaed044884180159172930",
+            "year": "2026"
+          },
+          "name": "SWE-agent mini-swe-agent (SWE-agent/mini-swe-agent)"
+        },
+        {
+          "identity": {
+            "arxiv": "2407.16741v3",
+            "repository": "OpenHands/OpenHands",
+            "revision": "0f4cb6af95915fee776913c4aa8694e7c4b76033",
+            "venue": "ICLR 2025",
+            "year": "2025"
+          },
+          "name": "Xingyao Wang et al., OpenHands (ICLR 2025, OpenHands/OpenHands)"
+        },
+        {
+          "identity": {
+            "repository": "OpenHands/software-agent-sdk",
+            "revision": "3a893a1b26de7ec02cc0dd2427906eea6aea3fc7",
+            "year": "2026"
+          },
+          "name": "OpenHands Software Agent SDK (OpenHands/software-agent-sdk)"
+        },
+        {
+          "identity": {
+            "arxiv": "2407.01489v2",
+            "repository": "OpenAutoCoder/Agentless",
+            "revision": "5ce5888b9f149beaace393957a55ea8ee46c9f71",
+            "year": "2024"
+          },
+          "name": "Chunqiu Steven Xia et al., Agentless (OpenAutoCoder/Agentless)"
+        },
+        {
+          "identity": {
+            "repository": "Aider-AI/aider",
+            "revision": "5dc9490bb35f9729ef2c95d00a19ccd30c26339c",
+            "url": "https://aider.chat/docs/unified-diffs.html",
+            "year": "2024-2026"
+          },
+          "name": "Paul Gauthier, Aider Edit Formats and Unified Diffs (Aider-AI/aider)"
+        },
+        {
+          "identity": {
+            "arxiv": "2402.01030v4",
+            "repository": "xingyaoww/code-act",
+            "revision": "d607f56c9cfe9e8632ebaf65dcaf2b4b7fe1c6f8",
+            "venue": "ICML 2024",
+            "year": "2024"
+          },
+          "name": "Xingyao Wang et al., CodeAct (ICML 2024, xingyaoww/code-act)"
+        },
+        {
+          "identity": {
+            "url": "https://www.anthropic.com/research/building-effective-agents",
+            "year": "2024-2025"
+          },
+          "name": "Anthropic Agent Engineering Research Reports (Building Effective Agents; SWE-bench Verified with Claude 3.5 Sonnet; Writing Effective Tools; Effective Harnesses for Long-Running Agents)"
+        },
+        {
+          "identity": {
+            "arxiv": "2310.03714v1; 2406.11695v2",
+            "repository": "stanfordnlp/dspy",
+            "revision": "226d534da38ab8a39e4d6383e01e121dab50da51",
+            "venue": "ICLR 2024; EMNLP 2024",
+            "year": "2024-2026"
+          },
+          "name": "Omar Khattab et al., DSPy (ICLR 2024) and Krista Opsahl-Ong et al., MIPROv2 (EMNLP 2024, stanfordnlp/dspy)"
+        },
+        {
+          "identity": {
+            "arxiv": "2406.07496v1",
+            "doi": "10.1038/s41586-025-08661-4",
+            "repository": "zou-group/textgrad",
+            "revision": "75e912e210864b61999781778cdf756d4468120f",
+            "venue": "Nature 639(8055):609-616",
+            "year": "2024-2025"
+          },
+          "name": "Mert Yuksekgonul et al., TextGrad (Nature 2025 Open SI & Peer Review, arXiv:2406.07496v1, zou-group/textgrad)"
+        },
+        {
+          "identity": {
+            "arxiv": "2507.19457v2",
+            "repository": "gepa-ai/gepa",
+            "revision": "ce5b0d6e3d6af6c6dbec6de2c54536bbb961d309",
+            "venue": "ICLR 2026 Oral",
+            "year": "2025-2026"
+          },
+          "name": "Lakshya A. Agrawal et al., GEPA: Reflective Prompt Evolution Can Outperform Reinforcement Learning (ICLR 2026 Oral, gepa-ai/gepa)"
+        },
+        {
+          "identity": {
+            "arxiv": "2408.08435v2",
+            "repository": "ShengranHu/ADAS",
+            "revision": "2702bee8fefda42255efc5be9f60e3bd3db96ae4",
+            "venue": "ICLR 2025",
+            "year": "2025"
+          },
+          "name": "Shengran Hu, Cong Lu, and Jeff Clune, Automated Design of Agentic Systems (ICLR 2025, ShengranHu/ADAS)"
+        },
+        {
+          "identity": {
+            "arxiv": "2410.10762v4",
+            "repository": "FoundationAgents/AFlow",
+            "revision": "3f457218fc716093fe53f6df8a5d5e6379d66346",
+            "venue": "ICLR 2025 Oral",
+            "year": "2025"
+          },
+          "name": "Jiayi Zhang et al., AFlow: Automating Agentic Workflow Generation (ICLR 2025 Oral, FoundationAgents/AFlow)"
+        },
+        {
+          "identity": {
+            "arxiv": "2309.05196v3",
+            "doi": "10.1126/sciadv.adn5290",
+            "venue": "ICLR 2024; Science Advances 10(28):eadn5290",
+            "year": "2024"
+          },
+          "name": "Vishakh Padmakumar and He He, Does Writing with Language Models Reduce Content Diversity? (ICLR 2024), and Anil R. Doshi and Oliver P. Hauser, Generative AI Enhances Individual Creativity but Reduces Collective Diversity (Science Advances 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2310.06452v3",
+            "repository": "facebookresearch/rlfh-gen-div",
+            "revision": "7291e6deb5127ca07497da21b4bd72e4f4afab4e",
+            "venue": "ICLR 2024",
+            "year": "2024"
+          },
+          "name": "Robert Kirk et al., Understanding the Effects of RLHF on LLM Generalisation and Diversity (ICLR 2024, facebookresearch/rlfh-gen-div)"
+        },
+        {
+          "identity": {
+            "arxiv": "2510.22954v2",
+            "repository": "liweijiang/artificial-hivemind",
+            "revision": "ff3b875669db2c6d8bb9f3970fb383013d936d60",
+            "venue": "NeurIPS 2025 D&B Oral",
+            "year": "2025-2026"
+          },
+          "name": "Liwei Jiang et al., Artificial Hivemind: The Open-Ended Homogeneity of Language Models (NeurIPS 2025 D&B Oral, liweijiang/artificial-hivemind)"
+        },
+        {
+          "identity": {
+            "arxiv": "2510.01171v4",
+            "repository": "CHATS-lab/verbalize-sampling",
+            "revision": "8ffec17a813825ee9be9fd4066ba983ff93541eb",
+            "year": "2025-2026"
+          },
+          "name": "Jiayi Zhang et al., Verbalized Sampling: How to Mitigate Mode Collapse and Unlock LLM Diversity (CHATS-lab/verbalize-sampling)"
+        },
+        {
+          "identity": {
+            "doi": "10.1057/palgrave.jors.2602177; 10.1007/978-3-642-19653-9",
+            "year": "1969-2013"
+          },
+          "name": "Fritz Zwicky (1969) and Tom Ritchey (2006 JORS; 2011 Springer; Swedish Morphological Society 2002/2013), General Morphological Analysis and Cross-Consistency Assessment"
+        },
+        {
+          "identity": {
+            "arxiv": "2302.14545v2",
+            "doi": "10.1214/aoms/1177728069; 10.1214/23-STS915",
+            "venue": "Annals of Mathematical Statistics 1956; Statistical Science 39(1):100-114",
+            "year": "1956; 2024"
+          },
+          "name": "D. V. Lindley (1956) and Tom Rainforth et al., Modern Bayesian Experimental Design (Statistical Science 2024)"
+        },
+        {
+          "identity": {
+            "doi": "10.1111/j.1467-8667.1996.tb00323.x; 10.1109/2.910904; 10.2514/1.9204; 10.1002/sys.20098; 10.1002/j.2334-5837.2008.tb00871.x",
+            "year": "1996-2008"
+          },
+          "name": "Mary Lou Maher and Josiah Poon (1996), Bashar Nuseibeh (Twin Peaks, 2001), and Adam M. Ross et al. (MATE and Epoch-Era Analysis, 2004-2008)"
+        }
+      ],
+      "topics": [
+        "agents/scaffolding",
+        "agents/agent-computer-interface",
+        "agents/prompt-optimization",
+        "agents/workflow-search",
+        "agents/mode-collapse",
+        "agents/divergent-exploration",
+        "systems/design-space-exploration",
+        "systems/bayesian-experimental-design",
+        "tooling/agent-harnesses"
+      ]
+    },
     "airbus-do-333-unit-proof-observable-mcdc-fault-finding-kind2-cocospec-agree-contracts-and-copilot-monitors": {
       "observed_at": "2026-11-20",
       "subjects": [

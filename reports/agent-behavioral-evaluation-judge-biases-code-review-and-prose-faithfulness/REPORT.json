@@ -1,0 +1,181 @@
+{
+  "topics": [
+    "agents/behavioral-evaluation",
+    "agents/eval-statistics",
+    "agents/llm-as-a-judge",
+    "agents/code-review",
+    "agents/coding-benchmarks",
+    "agents/prose-faithfulness",
+    "verification/test-generation",
+    "tooling/static-analysis"
+  ],
+  "subjects": [
+    {
+      "name": "Sam Bowyer, Laurence Aitchison, and Desi R. Ivanova, Bayesian LLM Evaluation Library (sambowyer/bayes_evals) and ICML 2025 Position Paper (arXiv:2503.01747v3)",
+      "identity": {
+        "arxiv": "2503.01747v3",
+        "repository": "sambowyer/bayes_evals",
+        "revision": "b9711844e00e9664258de321966ecd258a7273d6",
+        "venue": "ICML 2025 Spotlight",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Sam Bowyer et al., Don't Use the CLT in LLM Evals Replication Repository (sambowyer/no_clt_paper)",
+      "identity": {
+        "repository": "sambowyer/no_clt_paper",
+        "revision": "ab812f29f6508f53352a57b397669b2227f06164"
+      }
+    },
+    {
+      "name": "Evan Miller, Adding Error Bars to Evals: A Statistical Approach to Language Model Evaluations",
+      "identity": {
+        "arxiv": "2411.00640v1",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Dallas Card et al., With Little Power Comes Great Responsibility (EMNLP 2020); Melanie Sclar et al., FormatSpread (ICLR 2024); Xiangyi Li et al., SkillsBench",
+      "identity": {
+        "arxiv": "2010.06595v1; 2310.11324v2; 2602.12670v4",
+        "venue": "EMNLP 2020; ICLR 2024; arXiv 2026",
+        "year": "2020-2026"
+      }
+    },
+    {
+      "name": "Jiawei Liu et al., EvalPlus (NeurIPS 2023); Reem Aleithan et al., SWE-Bench+; Boxi Yu et al., UTBoost; Yuxuan Zhu et al., Agentic Benchmark Checklist (ABC)",
+      "identity": {
+        "arxiv": "2305.01210v3; 2410.06992v2; 2506.09289v1; 2507.02825v5",
+        "venue": "NeurIPS 2023; arXiv 2024-2025",
+        "year": "2023-2025"
+      }
+    },
+    {
+      "name": "Peiyi Wang et al., FairEval: Large Language Models are not Fair Evaluators (ACL 2024, i-Eval/FairEval)",
+      "identity": {
+        "arxiv": "2305.17926v2",
+        "repository": "i-Eval/FairEval",
+        "revision": "453c117a69159fd7b7de2f4e0519bac57bee21f4",
+        "venue": "ACL 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Jiawei Gu et al., A Survey on LLM-as-a-Judge (IDEA-FinAI/LLM-as-Evaluator)",
+      "identity": {
+        "arxiv": "2411.15594v6",
+        "repository": "IDEA-FinAI/LLM-as-Evaluator",
+        "revision": "5254d8aa3f75a29ac61f72ae238222c47223bce5",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "Lianmin Zheng et al., MT-Bench and Chatbot Arena (NeurIPS 2023); Wei-Lin Chiang et al., Chatbot Arena (ICML 2024); Jiayi Ye et al., CALM (ICLR 2025)",
+      "identity": {
+        "arxiv": "2306.05685v4; 2403.04132v1; 2410.02736v2",
+        "venue": "NeurIPS 2023; ICML 2024; ICLR 2025",
+        "year": "2023-2025"
+      }
+    },
+    {
+      "name": "Yann Dubois et al., Length-Controlled AlpacaEval (COLM 2024), and Tianle Li, Anastasios Angelopoulos, and Wei-Lin Chiang, Chatbot Arena Style Control",
+      "identity": {
+        "arxiv": "2404.04475v2",
+        "published_date": "2024-08-29",
+        "url": "https://lmsys.org/blog/2024-08-28-style-control/",
+        "venue": "COLM 2024; LMSYS Technical Report",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Sijun Tan et al., JudgeBench (ICLR 2025); Nathan Lambert et al., RewardBench; Saumya Malik et al., RewardBench 2 (ICLR 2026)",
+      "identity": {
+        "arxiv": "2410.12784v2; 2403.13787v2; 2506.01937v2",
+        "venue": "ICLR 2025; arXiv 2024; ICLR 2026",
+        "year": "2024-2026"
+      }
+    },
+    {
+      "name": "Manushree Vijayvergiya et al., Google AutoCommenter (ACM AIware 2024); Alexander Frommgen et al., DIDACT (ICSE-SEIP 2024); Zhiyu Li et al., CodeReviewer (ESEC/FSE 2022)",
+      "identity": {
+        "arxiv": "2405.13565v1; 2203.09095v2",
+        "doi": "10.1145/3664646.3665664; 10.1145/3639477.3639746; 10.1145/3540250.3549081",
+        "venue": "ACM AIware 2024; ICSE-SEIP 2024; ESEC/FSE 2022",
+        "year": "2022-2024"
+      }
+    },
+    {
+      "name": "Niels Mundler et al., SWT-Bench (NeurIPS 2024); Dhruv Gautam et al., RefactorBench (ICLR 2025); Daoguang Zan et al., Multi-SWE-bench; Xiang Deng et al., SWE-Bench Pro; Qixing Zhou et al., FeatureBench (ICLR 2026)",
+      "identity": {
+        "arxiv": "2406.12952v3; 2503.07832v1; 2504.02605v1; 2509.16941v2; 2602.10975v1",
+        "venue": "NeurIPS 2024; ICLR 2025; arXiv 2025; ICLR 2026",
+        "year": "2024-2026"
+      }
+    },
+    {
+      "name": "Shota Sawada et al., AI-Generated Code Maintainability (EASE 2026, ShouSawa/AI-Code-Maintainability)",
+      "identity": {
+        "arxiv": "2605.06464v2",
+        "repository": "ShouSawa/AI-Code-Maintainability",
+        "revision": "834794b63c2cf64206e1233e872265d2a3d551ec",
+        "venue": "EASE 2026",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Yue Liu et al., Debt Behind the AI Boom; Hao Li et al., AIDev (MSR 2026); Mahmoud Abujadallah et al., Rejection of Agentic Pull Requests (MSR 2026)",
+      "identity": {
+        "arxiv": "2603.28592v3; 2602.09185v1; 2606.13468v1",
+        "doi": "10.1145/3793302.3797249; 10.1145/3793302.3793592",
+        "venue": "arXiv 2026; MSR 2026",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Uwe Peters and Benjamin Chin-Yee, Generalization Bias in Large Language Model Summarization of Scientific Research (Royal Society Open Science 2025)",
+      "identity": {
+        "arxiv": "2504.00025v1",
+        "doi": "10.1098/rsos.241776",
+        "venue": "Royal Society Open Science 12(4)",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Liyan Tang et al., TofuEval: Evaluating Hallucinations of LLMs on Topic-Focused Dialogue Summarization (NAACL 2024, amazon-science/tofueval)",
+      "identity": {
+        "arxiv": "2402.13249v2",
+        "repository": "amazon-science/tofueval",
+        "revision": "17555c5bfc27f95371fd82b2de7014d8e14e1024",
+        "venue": "NAACL 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Sewon Min et al., FActScore (EMNLP 2023); Liyan Tang et al., AggreFact (ACL 2023) and MiniCheck (EMNLP 2024); Junyi Li et al., HaluEval (EMNLP 2023); Derek Tam et al., FIB (ACL 2023); Dasha Metropolitansky and Jonathan Larson, Claimify (ACL 2025)",
+      "identity": {
+        "arxiv": "2305.14251v2; 2205.12854v2; 2404.10774v2; 2305.11747v3; 2211.08412v2; 2502.10855v2",
+        "venue": "EMNLP 2023; ACL 2023; EMNLP 2024; ACL 2025",
+        "year": "2023-2025"
+      }
+    },
+    {
+      "name": "Dmitry Kobak et al., Delving into LLM-Assisted Writing in Biomedical Publications Through Excess Vocabulary (Science Advances 2025)",
+      "identity": {
+        "arxiv": "2406.07016v5",
+        "doi": "10.1126/sciadv.adt3813",
+        "venue": "Science Advances 11(27)",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "John Morkes and Jakob Nielsen, Concise, SCANNABLE, and Objective (1997 / CHI 1998), and Danielle S. McNamara et al., Reverse Cohesion Effect (Cognition and Instruction 1996)",
+      "identity": {
+        "doi": "10.1207/s1532690xci1401_1",
+        "url": "https://www.nngroup.com/articles/concise-scannable-and-objective-how-to-write-for-the-web/",
+        "venue": "Nielsen Norman Group / CHI 1998; Cognition and Instruction 14(1)",
+        "year": "1996-1998"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

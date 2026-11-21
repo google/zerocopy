@@ -1,0 +1,172 @@
+{
+  "topics": [
+    "agents/instruction-following",
+    "agents/context-rot",
+    "agents/reasoning-models",
+    "agents/skill-routing",
+    "agents/progressive-disclosure",
+    "agents/mcp",
+    "agents/token-efficiency",
+    "tooling/agent-harnesses"
+  ],
+  "subjects": [
+    {
+      "name": "Agent Skills Specification and Client Implementation Guidance (agentskills/agentskills)",
+      "identity": {
+        "repository": "agentskills/agentskills",
+        "revision": "83021e2be457a9b6679148719c1f6074f0ad975e"
+      }
+    },
+    {
+      "name": "Anthropic Skills Reference Repository (anthropics/skills)",
+      "identity": {
+        "repository": "anthropics/skills",
+        "revision": "e4bb5d960d87126ff3b3a8af1a104b7db67560ba"
+      }
+    },
+    {
+      "name": "OpenAI Skills Reference Repository (openai/skills)",
+      "identity": {
+        "repository": "openai/skills",
+        "revision": "49f948faa9258a0c61caceaf225e179651397431"
+      }
+    },
+    {
+      "name": "Xiangyi Li et al., SkillsBench (benchflow-ai/skillsbench and arXiv:2602.12670v4)",
+      "identity": {
+        "arxiv": "2602.12670v4",
+        "repository": "benchflow-ai/skillsbench",
+        "revision": "f860ecf02ef53412a030f8661c83d644b739ff01",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Xiaonan Xu and Wenjing Wu, Skill Availability and Presentation Granularity in Large-Language-Model Agents: A Controlled SkillsBench Study",
+      "identity": {
+        "arxiv": "2605.31408v1",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Thibaud Gloaguen et al., Evaluating AGENTS.md (ETH Zurich), and Jai Lal Lulla et al., On the Impact of AGENTS.md Files on the Efficiency of AI Coding Agents",
+      "identity": {
+        "arxiv": "2602.11988v3; 2601.20404v2",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "David Boram Hong, Aaron Imani, and Iftekhar Ahmed, From Anatomy to Smells (SKILL.md), and Chi Zhang et al., Evidence from 138K SKILL.md Files",
+      "identity": {
+        "arxiv": "2607.01456v2; 2608.08453v1",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Jeffrey Zhou et al., IFEval; Yuxin Jiang et al., FollowBench (ACL 2024); Bosi Wen et al., ComplexBench (NeurIPS 2024); Valentina Pyatkin et al., IFBench",
+      "identity": {
+        "arxiv": "2311.07911v1; 2310.20410v3; 2407.03978v3; 2507.02833v3",
+        "venue": "arXiv 2023; ACL 2024; NeurIPS 2024; arXiv 2025",
+        "year": "2023-2025"
+      }
+    },
+    {
+      "name": "Daniel Jaroslawicz et al., IFScale, and Keno Harada et al., ManyIFEval",
+      "identity": {
+        "arxiv": "2507.11538v1; 2509.21051v1",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Yanzhao Qin et al., SysBench; Yun He et al., Multi-IF; Bosi Wen et al., MTAC-IFBench",
+      "identity": {
+        "arxiv": "2408.10943v2; 2410.15553v2; 2609.14992v1",
+        "year": "2024-2026"
+      }
+    },
+    {
+      "name": "Nelson F. Liu et al., Lost in the Middle (TACL 2024); Cheng-Ping Hsieh et al., RULER (COLM 2024); Ali Modarressi et al., NoLiMa (ICML 2025)",
+      "identity": {
+        "arxiv": "2307.03172v3; 2404.06654v3; 2502.05167v3",
+        "venue": "TACL 2024; COLM 2024; ICML 2025",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "Kelly Hong, Anton Troynikov, and Jeff Huber, Context Rot (Chroma Technical Report and chroma-core/context-rot)",
+      "identity": {
+        "published_date": "2025-07-14",
+        "repository": "chroma-core/context-rot",
+        "revision": "af80a08018f2b7257c0336d04bcd02f936088106",
+        "url": "https://research.trychroma.com/context-rot"
+      }
+    },
+    {
+      "name": "Philippe Laban et al., LLMs Get Lost In Multi-Turn Conversation",
+      "identity": {
+        "arxiv": "2505.06120v1",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Eric Wallace et al., The Instruction Hierarchy, and Jingyu Zhang et al., Many-Tier Instruction Hierarchy in LLM Agents",
+      "identity": {
+        "arxiv": "2404.13208v1; 2604.09443v4",
+        "year": "2024; 2026"
+      }
+    },
+    {
+      "name": "Melanie Sclar et al., FormatSpread (ICLR 2024); Jingming Zhuo et al., ProSA (EMNLP 2024 Findings); Jia He et al., Prompt Formatting Impact",
+      "identity": {
+        "arxiv": "2310.11324v2; 2410.12405v1; 2411.10541v1",
+        "venue": "ICLR 2024; EMNLP 2024 Findings; arXiv 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Joel Jang et al. (2022), Thinh Hung Truong et al. (*SEM 2023), Neeraj Varshney et al. (TrustNLP 2025), and Hyundong Jin and Yo-Sub Han, NCO (2026)",
+      "identity": {
+        "arxiv": "2209.12711v1; 2306.08189v1; 2406.05494v1; 2605.10065v2",
+        "year": "2022-2026"
+      }
+    },
+    {
+      "name": "Jonathan Cook et al., TICK, and Vijay Viswanathan et al., RLCF (Checklists Are Better Than Reward Models)",
+      "identity": {
+        "arxiv": "2410.03608v1; 2507.18624v2",
+        "year": "2024; 2025"
+      }
+    },
+    {
+      "name": "DeepSeek-AI, DeepSeek-R1; Xingyu Chen et al., Overthinking; Alejandro Cuadron et al., Danger of Overthinking; Sara Vera Marjanovic et al., Thoughtology (TMLR); Lennart Meincke et al., Decreasing Value of CoT",
+      "identity": {
+        "arxiv": "2501.12948v2; 2412.21187v2; 2502.08235v1; 2504.07128v3; 2506.07142v1",
+        "year": "2024-2026"
+      }
+    },
+    {
+      "name": "Parshin Shojaee et al., The Illusion of Thinking, and critiques by A. Lawsen and Sheraz Khan et al.",
+      "identity": {
+        "arxiv": "2506.06941v3; 2506.09250v2; 2506.18957v1",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Shishir G. Patil et al., Berkeley Function Calling Leaderboard (ICML 2025, ShishirPatil/gorilla)",
+      "identity": {
+        "pmlr": "v267:patil25a",
+        "repository": "ShishirPatil/gorilla",
+        "revision": "6ea57973c7a6097fd7c5915698c54c17c5b1b6c8",
+        "venue": "ICML 2025",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Yujia Qin et al., ToolLLM (ICLR 2024); Varatheepan Paramanayakam et al., Less is More; Tiantian Gan and Qiyao Sun, RAG-MCP; Xiang Fei et al., MCP-Zero; Shiqing Fan et al., MCPToolBench++; Qihao Wang et al., ToolLoad-Bench; Sarat Mudunuri et al., Vector-MCP",
+      "identity": {
+        "arxiv": "2307.16789v2; 2411.15399v1; 2505.03275v1; 2506.01056v4; 2508.07575v1; 2601.20412v1; 2603.20313v1",
+        "year": "2023-2026"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}
