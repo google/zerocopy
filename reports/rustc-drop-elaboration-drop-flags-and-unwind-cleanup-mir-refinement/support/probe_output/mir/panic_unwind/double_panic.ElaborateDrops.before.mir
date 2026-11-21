@@ -1,0 +1,66 @@
+// MIR for `double_panic` before ElaborateDrops
+
+fn double_panic(_1: bool) -> () {
+    debug c => _1;
+    let mut _0: ();
+    let _2: Loud;
+    let _4: ();
+    scope 1 {
+        debug b => _2;
+        let _3: Loud;
+        scope 2 {
+            debug a => _3;
+        }
+    }
+
+    bb0: {
+        StorageLive(_2);
+        _2 = Loud::new(const "b") -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageLive(_3);
+        _3 = Loud::bomb(const "a") -> [return: bb2, unwind: bb7];
+    }
+
+    bb2: {
+        StorageLive(_4);
+        _4 = may_panic(const true) -> [return: bb3, unwind: bb6];
+    }
+
+    bb3: {
+        StorageDead(_4);
+        _0 = const ();
+        drop(_3) -> [return: bb4, unwind: bb7];
+    }
+
+    bb4: {
+        StorageDead(_3);
+        drop(_2) -> [return: bb5, unwind continue];
+    }
+
+    bb5: {
+        StorageDead(_2);
+        return;
+    }
+
+    bb6 (cleanup): {
+        drop(_3) -> [return: bb7, unwind terminate(cleanup)];
+    }
+
+    bb7 (cleanup): {
+        drop(_2) -> [return: bb8, unwind terminate(cleanup)];
+    }
+
+    bb8 (cleanup): {
+        resume;
+    }
+}
+
+alloc13 (size: 1, align: 1) {
+    62                                              │ b
+}
+
+alloc12 (size: 1, align: 1) {
+    61                                              │ a
+}

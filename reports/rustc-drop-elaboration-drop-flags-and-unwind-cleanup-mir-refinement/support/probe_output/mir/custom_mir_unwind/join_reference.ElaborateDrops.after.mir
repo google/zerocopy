@@ -1,0 +1,43 @@
+// MIR for `join_reference` after ElaborateDrops
+
+fn join_reference(_1: bool) -> () {
+    let mut _0: ();
+    let mut _2: Loud;
+    let mut _3: ();
+    let mut _4: bool;
+
+    bb0: {
+        _4 = const false;
+        _4 = const true;
+        _2 = make() -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        switchInt(copy _1) -> [1: bb2, otherwise: bb3];
+    }
+
+    bb2: {
+        _4 = const false;
+        _3 = consume(move _2) -> [return: bb3, unwind continue];
+    }
+
+    bb3: {
+        goto -> bb7;
+    }
+
+    bb4: {
+        return;
+    }
+
+    bb5 (cleanup): {
+        resume;
+    }
+
+    bb6: {
+        drop(_2) -> [return: bb4, unwind: bb5];
+    }
+
+    bb7: {
+        switchInt(copy _4) -> [0: bb4, otherwise: bb6];
+    }
+}

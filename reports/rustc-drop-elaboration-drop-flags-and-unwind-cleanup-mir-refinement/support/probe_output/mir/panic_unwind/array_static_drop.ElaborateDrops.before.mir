@@ -1,0 +1,75 @@
+// MIR for `array_static_drop` before ElaborateDrops
+
+fn array_static_drop(_1: bool) -> () {
+    debug c => _1;
+    let mut _0: ();
+    let _2: [Loud; 2];
+    let mut _3: Loud;
+    let mut _4: Loud;
+    let _5: ();
+    scope 1 {
+        debug arr => _2;
+    }
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        _3 = Loud::new(const "arr0") -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageLive(_4);
+        _4 = Loud::new(const "arr1") -> [return: bb2, unwind: bb8];
+    }
+
+    bb2: {
+        _2 = [move _3, move _4];
+        drop(_4) -> [return: bb3, unwind: bb8];
+    }
+
+    bb3: {
+        StorageDead(_4);
+        drop(_3) -> [return: bb4, unwind continue];
+    }
+
+    bb4: {
+        StorageDead(_3);
+        StorageLive(_5);
+        _5 = effect(const "body") -> [return: bb5, unwind: bb7];
+    }
+
+    bb5: {
+        StorageDead(_5);
+        _0 = const ();
+        drop(_2) -> [return: bb6, unwind continue];
+    }
+
+    bb6: {
+        StorageDead(_2);
+        return;
+    }
+
+    bb7 (cleanup): {
+        drop(_2) -> [return: bb9, unwind terminate(cleanup)];
+    }
+
+    bb8 (cleanup): {
+        drop(_3) -> [return: bb9, unwind terminate(cleanup)];
+    }
+
+    bb9 (cleanup): {
+        resume;
+    }
+}
+
+alloc27 (size: 4, align: 1) {
+    61 72 72 31                                     │ arr1
+}
+
+alloc26 (size: 4, align: 1) {
+    61 72 72 30                                     │ arr0
+}
+
+alloc8 (size: 4, align: 1) {
+    62 6f 64 79                                     │ body
+}

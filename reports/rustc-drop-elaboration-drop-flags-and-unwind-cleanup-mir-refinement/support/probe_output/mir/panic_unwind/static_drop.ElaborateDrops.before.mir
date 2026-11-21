@@ -1,0 +1,48 @@
+// MIR for `static_drop` before ElaborateDrops
+
+fn static_drop(_1: bool) -> () {
+    debug c => _1;
+    let mut _0: ();
+    let _2: Loud;
+    let _3: ();
+    scope 1 {
+        debug x => _2;
+    }
+
+    bb0: {
+        StorageLive(_2);
+        _2 = Loud::new(const "x") -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageLive(_3);
+        _3 = effect(const "body") -> [return: bb2, unwind: bb4];
+    }
+
+    bb2: {
+        StorageDead(_3);
+        _0 = const ();
+        drop(_2) -> [return: bb3, unwind continue];
+    }
+
+    bb3: {
+        StorageDead(_2);
+        return;
+    }
+
+    bb4 (cleanup): {
+        drop(_2) -> [return: bb5, unwind terminate(cleanup)];
+    }
+
+    bb5 (cleanup): {
+        resume;
+    }
+}
+
+alloc8 (size: 4, align: 1) {
+    62 6f 64 79                                     │ body
+}
+
+alloc7 (size: 1, align: 1) {
+    78                                              │ x
+}

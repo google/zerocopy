@@ -1,0 +1,161 @@
+// MIR for `box_cond_move` after ElaborateDrops
+
+fn box_cond_move(_1: bool) -> () {
+    debug c => _1;
+    let mut _0: ();
+    let _2: std::boxed::Box<Loud>;
+    let mut _3: Loud;
+    let _4: ();
+    let mut _5: bool;
+    let _6: ();
+    let mut _7: Loud;
+    let _8: ();
+    let mut _9: bool;
+    let mut _10: &mut std::boxed::Box<Loud>;
+    let mut _11: ();
+    let mut _12: &mut std::boxed::Box<Loud>;
+    let mut _13: ();
+    let mut _14: *const Loud;
+    let mut _15: &mut std::boxed::Box<Loud>;
+    let mut _16: ();
+    let mut _17: *const Loud;
+    scope 1 {
+        debug b => _2;
+    }
+
+    bb0: {
+        _9 = const false;
+        StorageLive(_2);
+        StorageLive(_3);
+        _3 = Loud::new(const "boxed") -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        _2 = Box::<Loud>::new(move _3) -> [return: bb2, unwind: bb11];
+    }
+
+    bb2: {
+        _9 = const true;
+        StorageDead(_3);
+        StorageLive(_4);
+        StorageLive(_5);
+        _5 = copy _1;
+        switchInt(move _5) -> [0: bb5, otherwise: bb3];
+    }
+
+    bb3: {
+        StorageLive(_6);
+        StorageLive(_7);
+        _9 = const false;
+        _7 = move (*_2);
+        _6 = consume(move _7) -> [return: bb4, unwind: bb9];
+    }
+
+    bb4: {
+        StorageDead(_7);
+        StorageDead(_6);
+        _4 = const ();
+        goto -> bb6;
+    }
+
+    bb5: {
+        _4 = const ();
+        goto -> bb6;
+    }
+
+    bb6: {
+        StorageDead(_5);
+        StorageDead(_4);
+        StorageLive(_8);
+        _8 = effect(const "join") -> [return: bb7, unwind: bb10];
+    }
+
+    bb7: {
+        StorageDead(_8);
+        _0 = const ();
+        goto -> bb19;
+    }
+
+    bb8: {
+        _9 = const false;
+        StorageDead(_2);
+        return;
+    }
+
+    bb9 (cleanup): {
+        goto -> bb10;
+    }
+
+    bb10 (cleanup): {
+        goto -> bb24;
+    }
+
+    bb11 (cleanup): {
+        goto -> bb12;
+    }
+
+    bb12 (cleanup): {
+        resume;
+    }
+
+    bb13: {
+        goto -> bb8;
+    }
+
+    bb14: {
+        _10 = &mut _2;
+        _11 = <Box<Loud> as Drop>::drop(move _10) -> [return: bb13, unwind: bb12];
+    }
+
+    bb15 (cleanup): {
+        _12 = &mut _2;
+        _13 = <Box<Loud> as Drop>::drop(move _12) -> [return: bb12, unwind terminate(cleanup)];
+    }
+
+    bb16: {
+        goto -> bb18;
+    }
+
+    bb17: {
+        drop((*_14)) -> [return: bb14, unwind: bb15];
+    }
+
+    bb18: {
+        switchInt(copy _9) -> [0: bb14, otherwise: bb17];
+    }
+
+    bb19: {
+        _14 = copy ((_2.0: std::ptr::Unique<Loud>).0: std::ptr::NonNull<Loud>) as *const Loud (Transmute);
+        goto -> bb16;
+    }
+
+    bb20 (cleanup): {
+        _15 = &mut _2;
+        _16 = <Box<Loud> as Drop>::drop(move _15) -> [return: bb12, unwind terminate(cleanup)];
+    }
+
+    bb21 (cleanup): {
+        goto -> bb23;
+    }
+
+    bb22 (cleanup): {
+        drop((*_17)) -> [return: bb20, unwind terminate(cleanup)];
+    }
+
+    bb23 (cleanup): {
+        switchInt(copy _9) -> [0: bb20, otherwise: bb22];
+    }
+
+    bb24 (cleanup): {
+        _17 = copy ((_2.0: std::ptr::Unique<Loud>).0: std::ptr::NonNull<Loud>) as *const Loud (Transmute);
+        goto -> bb21;
+    }
+}
+
+alloc25 (size: 5, align: 1) {
+    62 6f 78 65 64                                  │ boxed
+}
+
+alloc10 (size: 4, align: 1) {
+    6a 6f 69 6e                                     │ join
+}

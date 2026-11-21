@@ -1,0 +1,44 @@
+// MIR for `cleanup_terminate` after runtime-post-cleanup
+
+fn cleanup_terminate(_1: bool) -> () {
+    let mut _0: ();
+    let mut _2: Loud;
+    let mut _3: Loud;
+    let mut _4: ();
+
+    bb0: {
+        _3 = make_rest() -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        _2 = make_bomb() -> [return: bb2, unwind: bb6];
+    }
+
+    bb2: {
+        _4 = boom() -> [return: bb3, unwind: bb5];
+    }
+
+    bb3: {
+        drop(_2) -> [return: bb4, unwind: bb6];
+    }
+
+    bb4: {
+        drop(_3) -> [return: bb8, unwind continue];
+    }
+
+    bb5 (cleanup): {
+        drop(_2) -> [return: bb6, unwind terminate(cleanup)];
+    }
+
+    bb6 (cleanup): {
+        drop(_3) -> [return: bb7, unwind terminate(cleanup)];
+    }
+
+    bb7 (cleanup): {
+        resume;
+    }
+
+    bb8: {
+        return;
+    }
+}

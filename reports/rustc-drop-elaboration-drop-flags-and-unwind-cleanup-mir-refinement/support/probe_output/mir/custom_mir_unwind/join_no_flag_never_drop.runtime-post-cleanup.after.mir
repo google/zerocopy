@@ -1,0 +1,27 @@
+// MIR for `join_no_flag_never_drop` after runtime-post-cleanup
+
+fn join_no_flag_never_drop(_1: bool) -> () {
+    let mut _0: ();
+    let mut _2: Loud;
+    let mut _3: ();
+
+    bb0: {
+        _2 = make() -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        switchInt(copy _1) -> [1: bb2, otherwise: bb3];
+    }
+
+    bb2: {
+        _3 = consume(move _2) -> [return: bb3, unwind continue];
+    }
+
+    bb3: {
+        goto -> bb4;
+    }
+
+    bb4: {
+        return;
+    }
+}

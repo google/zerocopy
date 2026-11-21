@@ -1,0 +1,99 @@
+// MIR for `early_return` after ElaborateDrops
+
+fn early_return(_1: bool) -> () {
+    debug c => _1;
+    let mut _0: ();
+    let _2: Loud;
+    let _3: ();
+    let mut _4: bool;
+    let mut _5: !;
+    let _7: ();
+    scope 1 {
+        debug a => _2;
+        let _6: Loud;
+        scope 2 {
+            debug b => _6;
+        }
+    }
+
+    bb0: {
+        StorageLive(_2);
+        _2 = Loud::new(const "a") -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = copy _1;
+        switchInt(move _4) -> [0: bb3, otherwise: bb2];
+    }
+
+    bb2: {
+        _0 = const ();
+        StorageDead(_4);
+        StorageDead(_3);
+        drop(_2) -> [return: bb8, unwind: bb12];
+    }
+
+    bb3: {
+        _3 = const ();
+        StorageDead(_4);
+        StorageDead(_3);
+        StorageLive(_6);
+        _6 = Loud::new(const "b") -> [return: bb4, unwind: bb11];
+    }
+
+    bb4: {
+        StorageLive(_7);
+        _7 = effect(const "tail") -> [return: bb5, unwind: bb10];
+    }
+
+    bb5: {
+        StorageDead(_7);
+        _0 = const ();
+        drop(_6) -> [return: bb6, unwind: bb11];
+    }
+
+    bb6: {
+        StorageDead(_6);
+        drop(_2) -> [return: bb7, unwind: bb12];
+    }
+
+    bb7: {
+        StorageDead(_2);
+        goto -> bb9;
+    }
+
+    bb8: {
+        StorageDead(_2);
+        goto -> bb9;
+    }
+
+    bb9: {
+        return;
+    }
+
+    bb10 (cleanup): {
+        drop(_6) -> [return: bb11, unwind terminate(cleanup)];
+    }
+
+    bb11 (cleanup): {
+        drop(_2) -> [return: bb12, unwind terminate(cleanup)];
+    }
+
+    bb12 (cleanup): {
+        resume;
+    }
+}
+
+alloc14 (size: 4, align: 1) {
+    74 61 69 6c                                     │ tail
+}
+
+alloc13 (size: 1, align: 1) {
+    62                                              │ b
+}
+
+alloc12 (size: 1, align: 1) {
+    61                                              │ a
+}

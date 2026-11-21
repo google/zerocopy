@@ -1,0 +1,41 @@
+// MIR for `generic_cond_move_loud` after ElaborateDrops
+
+fn generic_cond_move_loud(_1: bool) -> () {
+    debug c => _1;
+    let mut _0: ();
+    let _2: ();
+    let mut _3: Loud;
+    let mut _4: bool;
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        _3 = Loud::new(const "g") -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageLive(_4);
+        _4 = copy _1;
+        _2 = generic_cond_move::<Loud>(move _3, move _4) -> [return: bb2, unwind: bb3];
+    }
+
+    bb2: {
+        StorageDead(_4);
+        StorageDead(_3);
+        StorageDead(_2);
+        _0 = const ();
+        return;
+    }
+
+    bb3 (cleanup): {
+        goto -> bb4;
+    }
+
+    bb4 (cleanup): {
+        resume;
+    }
+}
+
+alloc28 (size: 1, align: 1) {
+    67                                              │ g
+}

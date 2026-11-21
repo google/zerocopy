@@ -1,0 +1,199 @@
+// MIR for `cond_partial_move_struct` after ElaborateDrops
+
+fn cond_partial_move_struct(_1: bool) -> () {
+    debug c => _1;
+    let mut _0: ();
+    let _2: Triple;
+    let mut _3: Loud;
+    let mut _4: Loud;
+    let mut _5: Loud;
+    let _6: ();
+    let mut _7: bool;
+    let _8: ();
+    let mut _9: Loud;
+    let _10: ();
+    let mut _11: bool;
+    scope 1 {
+        debug s => _2;
+    }
+
+    bb0: {
+        _11 = const false;
+        StorageLive(_2);
+        StorageLive(_3);
+        _3 = Loud::new(const "s.a") -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageLive(_4);
+        _4 = Loud::new(const "s.b") -> [return: bb2, unwind: bb16];
+    }
+
+    bb2: {
+        StorageLive(_5);
+        _5 = Loud::new(const "s.c") -> [return: bb3, unwind: bb15];
+    }
+
+    bb3: {
+        _11 = const true;
+        _2 = Triple { a: move _3, b: move _4, c: move _5 };
+        goto -> bb4;
+    }
+
+    bb4: {
+        StorageDead(_5);
+        goto -> bb5;
+    }
+
+    bb5: {
+        StorageDead(_4);
+        goto -> bb6;
+    }
+
+    bb6: {
+        StorageDead(_3);
+        StorageLive(_6);
+        StorageLive(_7);
+        _7 = copy _1;
+        switchInt(move _7) -> [0: bb9, otherwise: bb7];
+    }
+
+    bb7: {
+        StorageLive(_8);
+        StorageLive(_9);
+        _11 = const false;
+        _9 = move (_2.1: Loud);
+        _8 = consume(move _9) -> [return: bb8, unwind: bb13];
+    }
+
+    bb8: {
+        StorageDead(_9);
+        StorageDead(_8);
+        _6 = const ();
+        goto -> bb10;
+    }
+
+    bb9: {
+        _6 = const ();
+        goto -> bb10;
+    }
+
+    bb10: {
+        StorageDead(_7);
+        StorageDead(_6);
+        StorageLive(_10);
+        _10 = effect(const "join") -> [return: bb11, unwind: bb14];
+    }
+
+    bb11: {
+        StorageDead(_10);
+        _0 = const ();
+        goto -> bb28;
+    }
+
+    bb12: {
+        _11 = const false;
+        StorageDead(_2);
+        return;
+    }
+
+    bb13 (cleanup): {
+        goto -> bb14;
+    }
+
+    bb14 (cleanup): {
+        goto -> bb33;
+    }
+
+    bb15 (cleanup): {
+        drop(_4) -> [return: bb16, unwind terminate(cleanup)];
+    }
+
+    bb16 (cleanup): {
+        drop(_3) -> [return: bb17, unwind terminate(cleanup)];
+    }
+
+    bb17 (cleanup): {
+        resume;
+    }
+
+    bb18: {
+        goto -> bb12;
+    }
+
+    bb19 (cleanup): {
+        drop((_2.2: Loud)) -> [return: bb17, unwind terminate(cleanup)];
+    }
+
+    bb20 (cleanup): {
+        goto -> bb22;
+    }
+
+    bb21 (cleanup): {
+        drop((_2.1: Loud)) -> [return: bb19, unwind terminate(cleanup)];
+    }
+
+    bb22 (cleanup): {
+        switchInt(copy _11) -> [0: bb19, otherwise: bb21];
+    }
+
+    bb23 (cleanup): {
+        drop((_2.0: Loud)) -> [return: bb20, unwind terminate(cleanup)];
+    }
+
+    bb24: {
+        drop((_2.2: Loud)) -> [return: bb18, unwind: bb17];
+    }
+
+    bb25: {
+        goto -> bb27;
+    }
+
+    bb26: {
+        drop((_2.1: Loud)) -> [return: bb24, unwind: bb19];
+    }
+
+    bb27: {
+        switchInt(copy _11) -> [0: bb24, otherwise: bb26];
+    }
+
+    bb28: {
+        drop((_2.0: Loud)) -> [return: bb25, unwind: bb20];
+    }
+
+    bb29 (cleanup): {
+        drop((_2.2: Loud)) -> [return: bb17, unwind terminate(cleanup)];
+    }
+
+    bb30 (cleanup): {
+        goto -> bb32;
+    }
+
+    bb31 (cleanup): {
+        drop((_2.1: Loud)) -> [return: bb29, unwind terminate(cleanup)];
+    }
+
+    bb32 (cleanup): {
+        switchInt(copy _11) -> [0: bb29, otherwise: bb31];
+    }
+
+    bb33 (cleanup): {
+        drop((_2.0: Loud)) -> [return: bb30, unwind terminate(cleanup)];
+    }
+}
+
+alloc20 (size: 3, align: 1) {
+    73 2e 63                                        │ s.c
+}
+
+alloc19 (size: 3, align: 1) {
+    73 2e 62                                        │ s.b
+}
+
+alloc18 (size: 3, align: 1) {
+    73 2e 61                                        │ s.a
+}
+
+alloc10 (size: 4, align: 1) {
+    6a 6f 69 6e                                     │ join
+}

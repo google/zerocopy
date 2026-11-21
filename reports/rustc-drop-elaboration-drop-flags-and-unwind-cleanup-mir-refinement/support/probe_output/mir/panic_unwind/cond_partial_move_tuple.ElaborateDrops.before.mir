@@ -1,0 +1,111 @@
+// MIR for `cond_partial_move_tuple` before ElaborateDrops
+
+fn cond_partial_move_tuple(_1: bool) -> () {
+    debug c => _1;
+    let mut _0: ();
+    let _2: (Loud, Loud);
+    let mut _3: Loud;
+    let mut _4: Loud;
+    let _5: ();
+    let mut _6: bool;
+    let _7: ();
+    let mut _8: Loud;
+    let _9: ();
+    scope 1 {
+        debug p => _2;
+    }
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        _3 = Loud::new(const "p0") -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageLive(_4);
+        _4 = Loud::new(const "p1") -> [return: bb2, unwind: bb13];
+    }
+
+    bb2: {
+        _2 = (move _3, move _4);
+        drop(_4) -> [return: bb3, unwind: bb13];
+    }
+
+    bb3: {
+        StorageDead(_4);
+        drop(_3) -> [return: bb4, unwind continue];
+    }
+
+    bb4: {
+        StorageDead(_3);
+        StorageLive(_5);
+        StorageLive(_6);
+        _6 = copy _1;
+        switchInt(move _6) -> [0: bb7, otherwise: bb5];
+    }
+
+    bb5: {
+        StorageLive(_7);
+        StorageLive(_8);
+        _8 = move (_2.0: Loud);
+        _7 = consume(move _8) -> [return: bb6, unwind: bb11];
+    }
+
+    bb6: {
+        StorageDead(_8);
+        StorageDead(_7);
+        _5 = const ();
+        goto -> bb8;
+    }
+
+    bb7: {
+        _5 = const ();
+        goto -> bb8;
+    }
+
+    bb8: {
+        StorageDead(_6);
+        StorageDead(_5);
+        StorageLive(_9);
+        _9 = effect(const "join") -> [return: bb9, unwind: bb12];
+    }
+
+    bb9: {
+        StorageDead(_9);
+        _0 = const ();
+        drop(_2) -> [return: bb10, unwind continue];
+    }
+
+    bb10: {
+        StorageDead(_2);
+        return;
+    }
+
+    bb11 (cleanup): {
+        drop(_8) -> [return: bb12, unwind terminate(cleanup)];
+    }
+
+    bb12 (cleanup): {
+        drop(_2) -> [return: bb14, unwind terminate(cleanup)];
+    }
+
+    bb13 (cleanup): {
+        drop(_3) -> [return: bb14, unwind terminate(cleanup)];
+    }
+
+    bb14 (cleanup): {
+        resume;
+    }
+}
+
+alloc17 (size: 2, align: 1) {
+    70 31                                           │ p1
+}
+
+alloc16 (size: 2, align: 1) {
+    70 30                                           │ p0
+}
+
+alloc10 (size: 4, align: 1) {
+    6a 6f 69 6e                                     │ join
+}

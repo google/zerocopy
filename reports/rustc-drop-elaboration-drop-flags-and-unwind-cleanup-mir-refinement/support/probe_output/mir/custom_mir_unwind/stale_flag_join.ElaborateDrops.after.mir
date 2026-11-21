@@ -1,0 +1,41 @@
+// MIR for `stale_flag_join` after ElaborateDrops
+
+fn stale_flag_join(_1: bool) -> () {
+    let mut _0: ();
+    let mut _2: Loud;
+    let mut _3: bool;
+
+    bb0: {
+        _3 = const false;
+        _3 = const true;
+        _2 = make() -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        switchInt(copy _1) -> [1: bb2, otherwise: bb3];
+    }
+
+    bb2: {
+        drop(_2) -> [return: bb3, unwind: bb5];
+    }
+
+    bb3: {
+        goto -> bb7;
+    }
+
+    bb4: {
+        return;
+    }
+
+    bb5 (cleanup): {
+        resume;
+    }
+
+    bb6: {
+        drop(_2) -> [return: bb4, unwind: bb5];
+    }
+
+    bb7: {
+        switchInt(copy _3) -> [0: bb4, otherwise: bb6];
+    }
+}

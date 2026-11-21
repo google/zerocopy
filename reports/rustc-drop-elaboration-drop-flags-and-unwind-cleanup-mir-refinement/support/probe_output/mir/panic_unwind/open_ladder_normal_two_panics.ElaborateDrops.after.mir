@@ -1,0 +1,199 @@
+// MIR for `open_ladder_normal_two_panics` after ElaborateDrops
+
+fn open_ladder_normal_two_panics(_1: bool) -> () {
+    debug c => _1;
+    let mut _0: ();
+    let _2: (Loud, Loud, Loud);
+    let mut _3: Loud;
+    let mut _4: Loud;
+    let mut _5: Loud;
+    let _6: ();
+    let mut _7: bool;
+    let _8: ();
+    let mut _9: Loud;
+    let _10: ();
+    let mut _11: bool;
+    scope 1 {
+        debug t => _2;
+    }
+
+    bb0: {
+        _11 = const false;
+        StorageLive(_2);
+        StorageLive(_3);
+        _3 = Loud::bomb(const "t0") -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageLive(_4);
+        _4 = Loud::bomb(const "t1") -> [return: bb2, unwind: bb16];
+    }
+
+    bb2: {
+        StorageLive(_5);
+        _5 = Loud::new(const "t2") -> [return: bb3, unwind: bb15];
+    }
+
+    bb3: {
+        _11 = const true;
+        _2 = (move _3, move _4, move _5);
+        goto -> bb4;
+    }
+
+    bb4: {
+        StorageDead(_5);
+        goto -> bb5;
+    }
+
+    bb5: {
+        StorageDead(_4);
+        goto -> bb6;
+    }
+
+    bb6: {
+        StorageDead(_3);
+        StorageLive(_6);
+        StorageLive(_7);
+        _7 = copy _1;
+        switchInt(move _7) -> [0: bb9, otherwise: bb7];
+    }
+
+    bb7: {
+        StorageLive(_8);
+        StorageLive(_9);
+        _11 = const false;
+        _9 = move (_2.2: Loud);
+        _8 = consume(move _9) -> [return: bb8, unwind: bb13];
+    }
+
+    bb8: {
+        StorageDead(_9);
+        StorageDead(_8);
+        _6 = const ();
+        goto -> bb10;
+    }
+
+    bb9: {
+        _6 = const ();
+        goto -> bb10;
+    }
+
+    bb10: {
+        StorageDead(_7);
+        StorageDead(_6);
+        StorageLive(_10);
+        _10 = effect(const "body") -> [return: bb11, unwind: bb14];
+    }
+
+    bb11: {
+        StorageDead(_10);
+        _0 = const ();
+        goto -> bb28;
+    }
+
+    bb12: {
+        _11 = const false;
+        StorageDead(_2);
+        return;
+    }
+
+    bb13 (cleanup): {
+        goto -> bb14;
+    }
+
+    bb14 (cleanup): {
+        goto -> bb33;
+    }
+
+    bb15 (cleanup): {
+        drop(_4) -> [return: bb16, unwind terminate(cleanup)];
+    }
+
+    bb16 (cleanup): {
+        drop(_3) -> [return: bb17, unwind terminate(cleanup)];
+    }
+
+    bb17 (cleanup): {
+        resume;
+    }
+
+    bb18: {
+        goto -> bb12;
+    }
+
+    bb19 (cleanup): {
+        goto -> bb21;
+    }
+
+    bb20 (cleanup): {
+        drop((_2.2: Loud)) -> [return: bb17, unwind terminate(cleanup)];
+    }
+
+    bb21 (cleanup): {
+        switchInt(copy _11) -> [0: bb17, otherwise: bb20];
+    }
+
+    bb22 (cleanup): {
+        drop((_2.1: Loud)) -> [return: bb19, unwind terminate(cleanup)];
+    }
+
+    bb23 (cleanup): {
+        drop((_2.0: Loud)) -> [return: bb22, unwind terminate(cleanup)];
+    }
+
+    bb24: {
+        goto -> bb26;
+    }
+
+    bb25: {
+        drop((_2.2: Loud)) -> [return: bb18, unwind: bb17];
+    }
+
+    bb26: {
+        switchInt(copy _11) -> [0: bb18, otherwise: bb25];
+    }
+
+    bb27: {
+        drop((_2.1: Loud)) -> [return: bb24, unwind: bb19];
+    }
+
+    bb28: {
+        drop((_2.0: Loud)) -> [return: bb27, unwind: bb22];
+    }
+
+    bb29 (cleanup): {
+        goto -> bb31;
+    }
+
+    bb30 (cleanup): {
+        drop((_2.2: Loud)) -> [return: bb17, unwind terminate(cleanup)];
+    }
+
+    bb31 (cleanup): {
+        switchInt(copy _11) -> [0: bb17, otherwise: bb30];
+    }
+
+    bb32 (cleanup): {
+        drop((_2.1: Loud)) -> [return: bb29, unwind terminate(cleanup)];
+    }
+
+    bb33 (cleanup): {
+        drop((_2.0: Loud)) -> [return: bb32, unwind terminate(cleanup)];
+    }
+}
+
+alloc34 (size: 2, align: 1) {
+    74 32                                           │ t2
+}
+
+alloc33 (size: 2, align: 1) {
+    74 31                                           │ t1
+}
+
+alloc32 (size: 2, align: 1) {
+    74 30                                           │ t0
+}
+
+alloc8 (size: 4, align: 1) {
+    62 6f 64 79                                     │ body
+}

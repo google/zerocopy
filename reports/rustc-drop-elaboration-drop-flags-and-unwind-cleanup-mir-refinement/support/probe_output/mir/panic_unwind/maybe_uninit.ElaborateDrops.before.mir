@@ -1,0 +1,51 @@
+// MIR for `maybe_uninit` before ElaborateDrops
+
+fn maybe_uninit(_1: bool) -> () {
+    debug c => _1;
+    let mut _0: ();
+    let _2: std::mem::MaybeUninit<Loud>;
+    let mut _3: Loud;
+    let _4: ();
+    scope 1 {
+        debug u => _2;
+    }
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        _3 = Loud::new(const "u") -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        _2 = MaybeUninit::<Loud>::new(move _3) -> [return: bb2, unwind: bb4];
+    }
+
+    bb2: {
+        StorageDead(_3);
+        StorageLive(_4);
+        _4 = effect(const "body") -> [return: bb3, unwind continue];
+    }
+
+    bb3: {
+        StorageDead(_4);
+        _0 = const ();
+        StorageDead(_2);
+        return;
+    }
+
+    bb4 (cleanup): {
+        drop(_3) -> [return: bb5, unwind terminate(cleanup)];
+    }
+
+    bb5 (cleanup): {
+        resume;
+    }
+}
+
+alloc36 (size: 1, align: 1) {
+    75                                              │ u
+}
+
+alloc8 (size: 4, align: 1) {
+    62 6f 64 79                                     │ body
+}

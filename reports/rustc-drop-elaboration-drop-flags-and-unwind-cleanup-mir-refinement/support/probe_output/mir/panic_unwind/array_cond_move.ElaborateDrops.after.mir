@@ -1,0 +1,184 @@
+// MIR for `array_cond_move` after ElaborateDrops
+
+fn array_cond_move(_1: bool) -> () {
+    debug c => _1;
+    let mut _0: ();
+    let _2: [Loud; 2];
+    let mut _3: Loud;
+    let mut _4: Loud;
+    let _5: ();
+    let mut _6: bool;
+    let _8: ();
+    let mut _9: Loud;
+    let _10: ();
+    let mut _11: bool;
+    scope 1 {
+        debug arr => _2;
+        let _7: Loud;
+        scope 2 {
+            debug first => _7;
+        }
+    }
+
+    bb0: {
+        _11 = const false;
+        StorageLive(_2);
+        StorageLive(_3);
+        _3 = Loud::new(const "arr0") -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageLive(_4);
+        _4 = Loud::new(const "arr1") -> [return: bb2, unwind: bb15];
+    }
+
+    bb2: {
+        _11 = const true;
+        _2 = [move _3, move _4];
+        goto -> bb3;
+    }
+
+    bb3: {
+        StorageDead(_4);
+        goto -> bb4;
+    }
+
+    bb4: {
+        StorageDead(_3);
+        StorageLive(_5);
+        StorageLive(_6);
+        _6 = copy _1;
+        switchInt(move _6) -> [0: bb8, otherwise: bb5];
+    }
+
+    bb5: {
+        PlaceMention(_2);
+        StorageLive(_7);
+        _11 = const false;
+        _7 = move _2[0 of 2];
+        StorageLive(_8);
+        StorageLive(_9);
+        _9 = move _7;
+        _8 = consume(move _9) -> [return: bb6, unwind: bb12];
+    }
+
+    bb6: {
+        StorageDead(_9);
+        StorageDead(_8);
+        _5 = const ();
+        goto -> bb7;
+    }
+
+    bb7: {
+        StorageDead(_7);
+        goto -> bb9;
+    }
+
+    bb8: {
+        _5 = const ();
+        goto -> bb9;
+    }
+
+    bb9: {
+        StorageDead(_6);
+        StorageDead(_5);
+        StorageLive(_10);
+        _10 = effect(const "join") -> [return: bb10, unwind: bb14];
+    }
+
+    bb10: {
+        StorageDead(_10);
+        _0 = const ();
+        goto -> bb25;
+    }
+
+    bb11: {
+        _11 = const false;
+        StorageDead(_2);
+        return;
+    }
+
+    bb12 (cleanup): {
+        goto -> bb13;
+    }
+
+    bb13 (cleanup): {
+        goto -> bb14;
+    }
+
+    bb14 (cleanup): {
+        goto -> bb29;
+    }
+
+    bb15 (cleanup): {
+        drop(_3) -> [return: bb16, unwind terminate(cleanup)];
+    }
+
+    bb16 (cleanup): {
+        resume;
+    }
+
+    bb17: {
+        goto -> bb11;
+    }
+
+    bb18 (cleanup): {
+        goto -> bb20;
+    }
+
+    bb19 (cleanup): {
+        drop(_2[0 of 2]) -> [return: bb16, unwind terminate(cleanup)];
+    }
+
+    bb20 (cleanup): {
+        switchInt(copy _11) -> [0: bb16, otherwise: bb19];
+    }
+
+    bb21 (cleanup): {
+        drop(_2[1..2]) -> [return: bb18, unwind terminate(cleanup)];
+    }
+
+    bb22: {
+        goto -> bb24;
+    }
+
+    bb23: {
+        drop(_2[0 of 2]) -> [return: bb17, unwind: bb16];
+    }
+
+    bb24: {
+        switchInt(copy _11) -> [0: bb17, otherwise: bb23];
+    }
+
+    bb25: {
+        drop(_2[1..2]) -> [return: bb22, unwind: bb18];
+    }
+
+    bb26 (cleanup): {
+        goto -> bb28;
+    }
+
+    bb27 (cleanup): {
+        drop(_2[0 of 2]) -> [return: bb16, unwind terminate(cleanup)];
+    }
+
+    bb28 (cleanup): {
+        switchInt(copy _11) -> [0: bb16, otherwise: bb27];
+    }
+
+    bb29 (cleanup): {
+        drop(_2[1..2]) -> [return: bb26, unwind terminate(cleanup)];
+    }
+}
+
+alloc27 (size: 4, align: 1) {
+    61 72 72 31                                     │ arr1
+}
+
+alloc26 (size: 4, align: 1) {
+    61 72 72 30                                     │ arr0
+}
+
+alloc10 (size: 4, align: 1) {
+    6a 6f 69 6e                                     │ join
+}

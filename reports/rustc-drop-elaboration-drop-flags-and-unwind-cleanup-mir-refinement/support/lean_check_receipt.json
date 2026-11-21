@@ -1,0 +1,111 @@
+{
+ "audit": {
+  "exit_code": 0,
+  "peak_rss_kb": 1637444,
+  "print_axioms": {
+   "DropElab.Example.ce1_no_flag_always_drop_double_drop": [
+    "propext",
+    "Quot.sound"
+   ],
+   "DropElab.Example.ce1_no_flag_never_drop_leak": [
+    "propext",
+    "Quot.sound"
+   ],
+   "DropElab.Example.ce2_continue_is_not_a_refinement": [
+    "propext",
+    "Quot.sound"
+   ],
+   "DropElab.Example.ce2_continue_lowering_unwinds": [
+    "propext",
+    "Quot.sound"
+   ],
+   "DropElab.Example.staleFlagJoin_double_drop": [
+    "propext",
+    "Quot.sound"
+   ],
+   "DropElab.Example.trace_before_abort_depends_on_certificate": [
+    "propext",
+    "Quot.sound"
+   ],
+   "DropElab.double_panic_aborts": [
+    "propext",
+    "Quot.sound"
+   ],
+   "DropElab.elaborate_no_double_drop": [
+    "propext",
+    "Quot.sound"
+   ],
+   "DropElab.elaborate_no_leak": [
+    "propext",
+    "Quot.sound"
+   ],
+   "DropElab.elaborate_refines": [
+    "propext",
+    "Quot.sound"
+   ],
+   "DropElab.elaborate_refines_blind": [
+    "propext",
+    "Quot.sound"
+   ],
+   "DropElab.no_flagFree_ladder_is_conditional": [
+    "propext",
+    "Quot.sound"
+   ]
+  },
+  "summary": {
+   "axioms_used": [
+    "propext",
+    "Quot.sound"
+   ],
+   "constants": 1282,
+   "constructors": 71,
+   "definitions": 563,
+   "inductive_types": 26,
+   "recursors": 26,
+   "theorems": 596,
+   "theorems_without_axioms": 329,
+   "violations": 0
+  },
+  "violation_lines": [],
+  "wall_seconds": 5.346
+ },
+ "compile": {
+  "errors": 0,
+  "exit_code": 0,
+  "olean_bytes": 4294408,
+  "peak_rss_kb": 638820,
+  "wall_seconds": 13.198,
+  "warnings": 0
+ },
+ "compile_flags": [
+  "-DElab.async=false",
+  "-Ddebug.skipKernelTC=false"
+ ],
+ "forbidden_token_counts": {
+  "Classical": 0,
+  "_unsafe_rec": 0,
+  "admit": 0,
+  "axiom": 0,
+  "bv_decide": 0,
+  "extern": 0,
+  "implemented_by": 0,
+  "native_decide": 0,
+  "omega": 0,
+  "opaque": 0,
+  "partial": 0,
+  "sorry": 0,
+  "unsafe": 0
+ },
+ "generated_on": "2026-11-21",
+ "imports": [],
+ "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+ "module": "support/DropElaborationRefinement.lean",
+ "passed": true,
+ "schema": "lean-check-receipt/1",
+ "source_bytes": 133513,
+ "source_def_keywords": 88,
+ "source_inductive_keywords": 26,
+ "source_lines": 2984,
+ "source_sha256": "d98b59dd88e00ab9cfd4852d1e41c436e4828b277af3c35397aba9b4944e1a1a",
+ "source_theorem_keywords": 142
+}

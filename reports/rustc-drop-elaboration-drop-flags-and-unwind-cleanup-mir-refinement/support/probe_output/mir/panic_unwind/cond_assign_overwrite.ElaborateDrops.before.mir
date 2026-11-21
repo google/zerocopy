@@ -1,0 +1,109 @@
+// MIR for `cond_assign_overwrite` before ElaborateDrops
+
+fn cond_assign_overwrite(_1: bool) -> () {
+    debug c => _1;
+    let mut _0: ();
+    let mut _2: Loud;
+    let _3: ();
+    let mut _4: bool;
+    let _5: ();
+    let mut _6: Loud;
+    let mut _7: Loud;
+    let _8: ();
+    scope 1 {
+        debug x => _2;
+    }
+
+    bb0: {
+        StorageLive(_2);
+        _2 = Loud::new(const "old") -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = copy _1;
+        switchInt(move _4) -> [0: bb4, otherwise: bb2];
+    }
+
+    bb2: {
+        StorageLive(_5);
+        StorageLive(_6);
+        _6 = move _2;
+        _5 = consume(move _6) -> [return: bb3, unwind: bb12];
+    }
+
+    bb3: {
+        StorageDead(_6);
+        StorageDead(_5);
+        _3 = const ();
+        goto -> bb5;
+    }
+
+    bb4: {
+        _3 = const ();
+        goto -> bb5;
+    }
+
+    bb5: {
+        StorageDead(_4);
+        StorageDead(_3);
+        StorageLive(_7);
+        _7 = Loud::new(const "new") -> [return: bb6, unwind: bb13];
+    }
+
+    bb6: {
+        drop(_2) -> [return: bb7, unwind: bb8];
+    }
+
+    bb7: {
+        _2 = move _7;
+        drop(_7) -> [return: bb9, unwind: bb13];
+    }
+
+    bb8 (cleanup): {
+        _2 = move _7;
+        drop(_7) -> [return: bb13, unwind terminate(cleanup)];
+    }
+
+    bb9: {
+        StorageDead(_7);
+        StorageLive(_8);
+        _8 = effect(const "after-assign") -> [return: bb10, unwind: bb13];
+    }
+
+    bb10: {
+        StorageDead(_8);
+        _0 = const ();
+        drop(_2) -> [return: bb11, unwind continue];
+    }
+
+    bb11: {
+        StorageDead(_2);
+        return;
+    }
+
+    bb12 (cleanup): {
+        drop(_6) -> [return: bb13, unwind terminate(cleanup)];
+    }
+
+    bb13 (cleanup): {
+        drop(_2) -> [return: bb14, unwind terminate(cleanup)];
+    }
+
+    bb14 (cleanup): {
+        resume;
+    }
+}
+
+alloc31 (size: 12, align: 1) {
+    61 66 74 65 72 2d 61 73 73 69 67 6e             │ after-assign
+}
+
+alloc30 (size: 3, align: 1) {
+    6e 65 77                                        │ new
+}
+
+alloc29 (size: 3, align: 1) {
+    6f 6c 64                                        │ old
+}

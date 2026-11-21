@@ -1,0 +1,210 @@
+// MIR for `option_cond_move` after ElaborateDrops
+
+fn option_cond_move(_1: bool) -> () {
+    debug c => _1;
+    let mut _0: ();
+    let _2: std::option::Option<Loud>;
+    let mut _3: Loud;
+    let _4: ();
+    let mut _5: bool;
+    let mut _6: isize;
+    let _8: ();
+    let mut _9: Loud;
+    let _10: ();
+    let mut _11: bool;
+    let mut _12: bool;
+    let mut _13: isize;
+    let mut _14: isize;
+    let mut _15: isize;
+    scope 1 {
+        debug o => _2;
+        scope 2 {
+            debug v => _7;
+            let _7: Loud;
+        }
+    }
+
+    bb0: {
+        _11 = const false;
+        _12 = const false;
+        StorageLive(_2);
+        StorageLive(_3);
+        _3 = Loud::new(const "o") -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        _11 = const true;
+        _12 = const true;
+        _2 = Option::<Loud>::Some(move _3);
+        goto -> bb2;
+    }
+
+    bb2: {
+        StorageDead(_3);
+        StorageLive(_4);
+        StorageLive(_5);
+        _5 = copy _1;
+        switchInt(move _5) -> [0: bb8, otherwise: bb3];
+    }
+
+    bb3: {
+        PlaceMention(_2);
+        _6 = discriminant(_2);
+        switchInt(move _6) -> [1: bb4, otherwise: bb6];
+    }
+
+    bb4: {
+        StorageLive(_7);
+        _12 = const false;
+        _7 = move ((_2 as Some).0: Loud);
+        StorageLive(_8);
+        StorageLive(_9);
+        _9 = move _7;
+        _8 = consume(move _9) -> [return: bb5, unwind: bb12];
+    }
+
+    bb5: {
+        StorageDead(_9);
+        StorageDead(_8);
+        _4 = const ();
+        goto -> bb7;
+    }
+
+    bb6: {
+        _4 = const ();
+        goto -> bb9;
+    }
+
+    bb7: {
+        StorageDead(_7);
+        goto -> bb9;
+    }
+
+    bb8: {
+        _4 = const ();
+        goto -> bb9;
+    }
+
+    bb9: {
+        StorageDead(_5);
+        StorageDead(_4);
+        StorageLive(_10);
+        _10 = effect(const "join") -> [return: bb10, unwind: bb14];
+    }
+
+    bb10: {
+        StorageDead(_10);
+        _0 = const ();
+        goto -> bb28;
+    }
+
+    bb11: {
+        _11 = const false;
+        _12 = const false;
+        StorageDead(_2);
+        return;
+    }
+
+    bb12 (cleanup): {
+        goto -> bb13;
+    }
+
+    bb13 (cleanup): {
+        goto -> bb14;
+    }
+
+    bb14 (cleanup): {
+        goto -> bb34;
+    }
+
+    bb15 (cleanup): {
+        resume;
+    }
+
+    bb16: {
+        goto -> bb11;
+    }
+
+    bb17 (cleanup): {
+        goto -> bb19;
+    }
+
+    bb18 (cleanup): {
+        drop(((_2 as Some).0: Loud)) -> [return: bb15, unwind terminate(cleanup)];
+    }
+
+    bb19 (cleanup): {
+        switchInt(copy _12) -> [0: bb15, otherwise: bb18];
+    }
+
+    bb20 (cleanup): {
+        goto -> bb22;
+    }
+
+    bb21 (cleanup): {
+        drop(((_2 as Some).0: Loud)) -> [return: bb15, unwind terminate(cleanup)];
+    }
+
+    bb22 (cleanup): {
+        switchInt(copy _12) -> [0: bb15, otherwise: bb21];
+    }
+
+    bb23: {
+        goto -> bb25;
+    }
+
+    bb24: {
+        drop(((_2 as Some).0: Loud)) -> [return: bb16, unwind: bb15];
+    }
+
+    bb25: {
+        switchInt(copy _12) -> [0: bb16, otherwise: bb24];
+    }
+
+    bb26: {
+        goto -> bb16;
+    }
+
+    bb27 (cleanup): {
+        goto -> bb15;
+    }
+
+    bb28: {
+        _13 = discriminant(_2);
+        switchInt(move _13) -> [1: bb23, otherwise: bb26];
+    }
+
+    bb29 (cleanup): {
+        _14 = discriminant(_2);
+        switchInt(move _14) -> [1: bb17, otherwise: bb27];
+    }
+
+    bb30 (cleanup): {
+        goto -> bb32;
+    }
+
+    bb31 (cleanup): {
+        drop(((_2 as Some).0: Loud)) -> [return: bb15, unwind terminate(cleanup)];
+    }
+
+    bb32 (cleanup): {
+        switchInt(copy _12) -> [0: bb15, otherwise: bb31];
+    }
+
+    bb33 (cleanup): {
+        goto -> bb15;
+    }
+
+    bb34 (cleanup): {
+        _15 = discriminant(_2);
+        switchInt(move _15) -> [1: bb30, otherwise: bb33];
+    }
+}
+
+alloc24 (size: 1, align: 1) {
+    6f                                              │ o
+}
+
+alloc10 (size: 4, align: 1) {
+    6a 6f 69 6e                                     │ join
+}

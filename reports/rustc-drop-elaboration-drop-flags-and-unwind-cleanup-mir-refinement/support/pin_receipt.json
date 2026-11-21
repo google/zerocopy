@@ -1,0 +1,156 @@
+{
+ "commits": [
+  {
+   "api_sha": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "committer_date": "2026-05-31T20:13:59Z",
+   "is_40_hex": true,
+   "pinned_revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "repository": "rust-lang/rust",
+   "subject_line": "Auto merge of #157219 - jhpratt:rollup-70ooTMg, r=jhpratt",
+   "verified": true
+  },
+  {
+   "api_sha": "ad35aca481751a06afeb23820a672b0f3b11a476",
+   "committer_date": "2026-05-14T17:00:42Z",
+   "is_40_hex": true,
+   "pinned_revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+   "repository": "rust-lang/reference",
+   "subject_line": "Merge pull request #2271 from arpitjain099/chore/ci-permissions",
+   "verified": true
+  },
+  {
+   "api_sha": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07",
+   "committer_date": "2026-11-14T17:21:49Z",
+   "is_40_hex": true,
+   "pinned_revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07",
+   "repository": "rust-lang/rfcs",
+   "subject_line": "Rename RFC to correct number",
+   "verified": true
+  },
+  {
+   "api_sha": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+   "committer_date": "2026-11-19T21:39:21Z",
+   "is_40_hex": true,
+   "pinned_revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+   "repository": "joshlf/anneal",
+   "subject_line": "[theory] Bridge PureLift onto Trusted MIR semantics (#266)",
+   "verified": true
+  },
+  {
+   "api_sha": "5045d0056413266e57c625dcd7c365b10e377c52",
+   "committer_date": "2026-09-24T17:27:27Z",
+   "is_40_hex": true,
+   "pinned_revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+   "repository": "leanprover/lean4",
+   "subject_line": "chore: prepare release",
+   "verified": true
+  }
+ ],
+ "files": [
+  {
+   "expected_status": 200,
+   "path": "compiler/rustc_mir_transform/src/elaborate_drops.rs",
+   "repository": "rust-lang/rust",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "path": "compiler/rustc_mir_transform/src/elaborate_drop.rs",
+   "repository": "rust-lang/rust",
+   "status": 200
+  },
+  {
+   "expected_status": 404,
+   "path": "compiler/rustc_mir_dataflow/src/elaborate_drops.rs",
+   "repository": "rust-lang/rust",
+   "status": 404
+  },
+  {
+   "expected_status": 200,
+   "path": "compiler/rustc_mir_dataflow/src/drop_flag_effects.rs",
+   "repository": "rust-lang/rust",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "path": "compiler/rustc_mir_dataflow/src/move_paths/builder.rs",
+   "repository": "rust-lang/rust",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "path": "compiler/rustc_mir_transform/src/abort_unwinding_calls.rs",
+   "repository": "rust-lang/rust",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "path": "compiler/rustc_mir_transform/src/validate.rs",
+   "repository": "rust-lang/rust",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "path": "compiler/rustc_mir_transform/src/lib.rs",
+   "repository": "rust-lang/rust",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "path": "compiler/rustc_middle/src/mir/syntax.rs",
+   "repository": "rust-lang/rust",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "path": "library/core/src/ops/drop.rs",
+   "repository": "rust-lang/rust",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "path": "library/core/src/panicking.rs",
+   "repository": "rust-lang/rust",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "path": "src/doc/rustc-dev-guide/src/mir/drop-elaboration.md",
+   "repository": "rust-lang/rust",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "path": "src/destructors.md",
+   "repository": "rust-lang/reference",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "path": "src/panic.md",
+   "repository": "rust-lang/reference",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "path": "text/0320-nonzeroing-dynamic-drop.md",
+   "repository": "rust-lang/rfcs",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "path": "trusted/lean/Trusted/MirAst.lean",
+   "repository": "joshlf/anneal",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "path": "trusted/lean/Trusted/MirSemantics.lean",
+   "repository": "joshlf/anneal",
+   "status": 200
+  }
+ ],
+ "generated_on": "2026-11-21",
+ "passed": true,
+ "schema": "pin-receipt/1"
+}

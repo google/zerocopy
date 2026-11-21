@@ -1,0 +1,112 @@
+// MIR for `static_glue_in_cleanup` before ElaborateDrops
+
+fn static_glue_in_cleanup(_1: bool) -> () {
+    debug c => _1;
+    let mut _0: ();
+    let _2: Loud;
+    let mut _4: Loud;
+    let mut _5: Loud;
+    let mut _6: Loud;
+    let _7: ();
+    scope 1 {
+        debug after => _2;
+        let _3: (Loud, Loud, Loud);
+        scope 2 {
+            debug t => _3;
+        }
+    }
+
+    bb0: {
+        StorageLive(_2);
+        _2 = Loud::new(const "after") -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = Loud::bomb(const "t0") -> [return: bb2, unwind: bb14];
+    }
+
+    bb2: {
+        StorageLive(_5);
+        _5 = Loud::new(const "t1") -> [return: bb3, unwind: bb13];
+    }
+
+    bb3: {
+        StorageLive(_6);
+        _6 = Loud::new(const "t2") -> [return: bb4, unwind: bb12];
+    }
+
+    bb4: {
+        _3 = (move _4, move _5, move _6);
+        drop(_6) -> [return: bb5, unwind: bb12];
+    }
+
+    bb5: {
+        StorageDead(_6);
+        drop(_5) -> [return: bb6, unwind: bb13];
+    }
+
+    bb6: {
+        StorageDead(_5);
+        drop(_4) -> [return: bb7, unwind: bb14];
+    }
+
+    bb7: {
+        StorageDead(_4);
+        StorageLive(_7);
+        _7 = may_panic(const true) -> [return: bb8, unwind: bb11];
+    }
+
+    bb8: {
+        StorageDead(_7);
+        _0 = const ();
+        drop(_3) -> [return: bb9, unwind: bb14];
+    }
+
+    bb9: {
+        StorageDead(_3);
+        drop(_2) -> [return: bb10, unwind continue];
+    }
+
+    bb10: {
+        StorageDead(_2);
+        return;
+    }
+
+    bb11 (cleanup): {
+        drop(_3) -> [return: bb14, unwind terminate(cleanup)];
+    }
+
+    bb12 (cleanup): {
+        drop(_5) -> [return: bb13, unwind terminate(cleanup)];
+    }
+
+    bb13 (cleanup): {
+        drop(_4) -> [return: bb14, unwind terminate(cleanup)];
+    }
+
+    bb14 (cleanup): {
+        drop(_2) -> [return: bb15, unwind terminate(cleanup)];
+    }
+
+    bb15 (cleanup): {
+        resume;
+    }
+}
+
+alloc34 (size: 2, align: 1) {
+    74 32                                           │ t2
+}
+
+alloc33 (size: 2, align: 1) {
+    74 31                                           │ t1
+}
+
+alloc32 (size: 2, align: 1) {
+    74 30                                           │ t0
+}
+
+alloc9 (size: 5, align: 1) {
+    61 66 74 65 72                                  │ after
+}

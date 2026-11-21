@@ -1,0 +1,142 @@
+// MIR for `cond_partial_move_nested` before ElaborateDrops
+
+fn cond_partial_move_nested(_1: bool) -> () {
+    debug c => _1;
+    let mut _0: ();
+    let _2: ((Loud, Loud), Loud);
+    let mut _3: (Loud, Loud);
+    let mut _4: Loud;
+    let mut _5: Loud;
+    let mut _6: Loud;
+    let _7: ();
+    let mut _8: bool;
+    let _9: ();
+    let mut _10: Loud;
+    let _11: ();
+    scope 1 {
+        debug n => _2;
+    }
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = Loud::new(const "n00") -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageLive(_5);
+        _5 = Loud::new(const "n01") -> [return: bb2, unwind: bb18];
+    }
+
+    bb2: {
+        _3 = (move _4, move _5);
+        drop(_5) -> [return: bb3, unwind: bb16];
+    }
+
+    bb3: {
+        StorageDead(_5);
+        drop(_4) -> [return: bb4, unwind: bb17];
+    }
+
+    bb4: {
+        StorageDead(_4);
+        StorageLive(_6);
+        _6 = Loud::new(const "n1") -> [return: bb5, unwind: bb17];
+    }
+
+    bb5: {
+        _2 = (move _3, move _6);
+        drop(_6) -> [return: bb6, unwind: bb17];
+    }
+
+    bb6: {
+        StorageDead(_6);
+        drop(_3) -> [return: bb7, unwind continue];
+    }
+
+    bb7: {
+        StorageDead(_3);
+        StorageLive(_7);
+        StorageLive(_8);
+        _8 = copy _1;
+        switchInt(move _8) -> [0: bb10, otherwise: bb8];
+    }
+
+    bb8: {
+        StorageLive(_9);
+        StorageLive(_10);
+        _10 = move ((_2.0: (Loud, Loud)).1: Loud);
+        _9 = consume(move _10) -> [return: bb9, unwind: bb14];
+    }
+
+    bb9: {
+        StorageDead(_10);
+        StorageDead(_9);
+        _7 = const ();
+        goto -> bb11;
+    }
+
+    bb10: {
+        _7 = const ();
+        goto -> bb11;
+    }
+
+    bb11: {
+        StorageDead(_8);
+        StorageDead(_7);
+        StorageLive(_11);
+        _11 = effect(const "join") -> [return: bb12, unwind: bb15];
+    }
+
+    bb12: {
+        StorageDead(_11);
+        _0 = const ();
+        drop(_2) -> [return: bb13, unwind continue];
+    }
+
+    bb13: {
+        StorageDead(_2);
+        return;
+    }
+
+    bb14 (cleanup): {
+        drop(_10) -> [return: bb15, unwind terminate(cleanup)];
+    }
+
+    bb15 (cleanup): {
+        drop(_2) -> [return: bb19, unwind terminate(cleanup)];
+    }
+
+    bb16 (cleanup): {
+        drop(_4) -> [return: bb17, unwind terminate(cleanup)];
+    }
+
+    bb17 (cleanup): {
+        drop(_3) -> [return: bb19, unwind terminate(cleanup)];
+    }
+
+    bb18 (cleanup): {
+        drop(_4) -> [return: bb19, unwind terminate(cleanup)];
+    }
+
+    bb19 (cleanup): {
+        resume;
+    }
+}
+
+alloc23 (size: 2, align: 1) {
+    6e 31                                           │ n1
+}
+
+alloc22 (size: 3, align: 1) {
+    6e 30 31                                        │ n01
+}
+
+alloc21 (size: 3, align: 1) {
+    6e 30 30                                        │ n00
+}
+
+alloc10 (size: 4, align: 1) {
+    6a 6f 69 6e                                     │ join
+}

@@ -1,0 +1,48 @@
+// MIR for `stale_flag_join_storage_dead` after ElaborateDrops
+
+fn stale_flag_join_storage_dead(_1: bool) -> () {
+    let mut _0: ();
+    let mut _2: Loud;
+    let mut _3: bool;
+
+    bb0: {
+        _3 = const false;
+        StorageLive(_2);
+        _3 = const true;
+        _2 = make() -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        switchInt(copy _1) -> [1: bb2, otherwise: bb4];
+    }
+
+    bb2: {
+        drop(_2) -> [return: bb3, unwind: bb6];
+    }
+
+    bb3: {
+        _3 = const false;
+        StorageDead(_2);
+        goto -> bb4;
+    }
+
+    bb4: {
+        goto -> bb8;
+    }
+
+    bb5: {
+        return;
+    }
+
+    bb6 (cleanup): {
+        resume;
+    }
+
+    bb7: {
+        drop(_2) -> [return: bb5, unwind: bb6];
+    }
+
+    bb8: {
+        switchInt(copy _3) -> [0: bb5, otherwise: bb7];
+    }
+}

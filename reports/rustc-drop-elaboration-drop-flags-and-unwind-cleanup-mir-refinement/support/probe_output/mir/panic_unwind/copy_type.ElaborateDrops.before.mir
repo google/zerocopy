@@ -1,0 +1,36 @@
+// MIR for `copy_type` before ElaborateDrops
+
+fn copy_type(_1: bool) -> () {
+    debug c => _1;
+    let mut _0: ();
+    let _2: Plain;
+    let _4: ();
+    scope 1 {
+        debug p => _2;
+        let _3: Plain;
+        scope 2 {
+            debug q => _3;
+        }
+    }
+
+    bb0: {
+        StorageLive(_2);
+        _2 = Plain(const 3_u32);
+        StorageLive(_3);
+        _3 = copy _2;
+        StorageLive(_4);
+        _4 = effect(const "body") -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageDead(_4);
+        _0 = const ();
+        StorageDead(_3);
+        StorageDead(_2);
+        return;
+    }
+}
+
+alloc8 (size: 4, align: 1) {
+    62 6f 64 79                                     │ body
+}

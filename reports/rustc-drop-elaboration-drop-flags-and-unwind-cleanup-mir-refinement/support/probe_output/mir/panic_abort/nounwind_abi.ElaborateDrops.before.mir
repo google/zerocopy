@@ -1,0 +1,59 @@
+// MIR for `nounwind_abi` before ElaborateDrops
+
+fn nounwind_abi(_1: bool) -> () {
+    debug c => _1;
+    let mut _0: ();
+    let _2: Loud;
+    let _3: ();
+    let mut _4: bool;
+    let _5: ();
+    scope 1 {
+        debug g => _2;
+    }
+
+    bb0: {
+        StorageLive(_2);
+        _2 = Loud::new(const "g") -> [return: bb1, unwind: bb6];
+    }
+
+    bb1: {
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = copy _1;
+        _3 = may_panic(move _4) -> [return: bb2, unwind: bb5];
+    }
+
+    bb2: {
+        StorageDead(_4);
+        StorageDead(_3);
+        StorageLive(_5);
+        _5 = effect(const "body") -> [return: bb3, unwind: bb5];
+    }
+
+    bb3: {
+        StorageDead(_5);
+        _0 = const ();
+        drop(_2) -> [return: bb4, unwind: bb6];
+    }
+
+    bb4: {
+        StorageDead(_2);
+        return;
+    }
+
+    bb5 (cleanup): {
+        drop(_2) -> [return: bb6, unwind terminate(cleanup)];
+    }
+
+    bb6 (cleanup): {
+        resume;
+    }
+}
+
+alloc28 (size: 1, align: 1) {
+    67                                              │ g
+}
+
+alloc8 (size: 4, align: 1) {
+    62 6f 64 79                                     │ body
+}

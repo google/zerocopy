@@ -1,0 +1,127 @@
+// MIR for `array_cond_move` before ElaborateDrops
+
+fn array_cond_move(_1: bool) -> () {
+    debug c => _1;
+    let mut _0: ();
+    let _2: [Loud; 2];
+    let mut _3: Loud;
+    let mut _4: Loud;
+    let _5: ();
+    let mut _6: bool;
+    let _8: ();
+    let mut _9: Loud;
+    let _10: ();
+    scope 1 {
+        debug arr => _2;
+        let _7: Loud;
+        scope 2 {
+            debug first => _7;
+        }
+    }
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        _3 = Loud::new(const "arr0") -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageLive(_4);
+        _4 = Loud::new(const "arr1") -> [return: bb2, unwind: bb15];
+    }
+
+    bb2: {
+        _2 = [move _3, move _4];
+        drop(_4) -> [return: bb3, unwind: bb15];
+    }
+
+    bb3: {
+        StorageDead(_4);
+        drop(_3) -> [return: bb4, unwind continue];
+    }
+
+    bb4: {
+        StorageDead(_3);
+        StorageLive(_5);
+        StorageLive(_6);
+        _6 = copy _1;
+        switchInt(move _6) -> [0: bb8, otherwise: bb5];
+    }
+
+    bb5: {
+        PlaceMention(_2);
+        StorageLive(_7);
+        _7 = move _2[0 of 2];
+        StorageLive(_8);
+        StorageLive(_9);
+        _9 = move _7;
+        _8 = consume(move _9) -> [return: bb6, unwind: bb12];
+    }
+
+    bb6: {
+        StorageDead(_9);
+        StorageDead(_8);
+        _5 = const ();
+        drop(_7) -> [return: bb7, unwind: bb14];
+    }
+
+    bb7: {
+        StorageDead(_7);
+        goto -> bb9;
+    }
+
+    bb8: {
+        _5 = const ();
+        goto -> bb9;
+    }
+
+    bb9: {
+        StorageDead(_6);
+        StorageDead(_5);
+        StorageLive(_10);
+        _10 = effect(const "join") -> [return: bb10, unwind: bb14];
+    }
+
+    bb10: {
+        StorageDead(_10);
+        _0 = const ();
+        drop(_2) -> [return: bb11, unwind continue];
+    }
+
+    bb11: {
+        StorageDead(_2);
+        return;
+    }
+
+    bb12 (cleanup): {
+        drop(_9) -> [return: bb13, unwind terminate(cleanup)];
+    }
+
+    bb13 (cleanup): {
+        drop(_7) -> [return: bb14, unwind terminate(cleanup)];
+    }
+
+    bb14 (cleanup): {
+        drop(_2) -> [return: bb16, unwind terminate(cleanup)];
+    }
+
+    bb15 (cleanup): {
+        drop(_3) -> [return: bb16, unwind terminate(cleanup)];
+    }
+
+    bb16 (cleanup): {
+        resume;
+    }
+}
+
+alloc27 (size: 4, align: 1) {
+    61 72 72 31                                     │ arr1
+}
+
+alloc26 (size: 4, align: 1) {
+    61 72 72 30                                     │ arr0
+}
+
+alloc10 (size: 4, align: 1) {
+    6a 6f 69 6e                                     │ join
+}

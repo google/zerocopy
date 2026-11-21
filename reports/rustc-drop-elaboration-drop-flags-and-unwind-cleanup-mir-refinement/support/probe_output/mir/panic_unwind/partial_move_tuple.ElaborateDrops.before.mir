@@ -1,0 +1,90 @@
+// MIR for `partial_move_tuple` before ElaborateDrops
+
+fn partial_move_tuple(_1: bool) -> () {
+    debug c => _1;
+    let mut _0: ();
+    let _2: (Loud, Loud);
+    let mut _3: Loud;
+    let mut _4: Loud;
+    let _5: ();
+    let mut _6: Loud;
+    let _7: ();
+    scope 1 {
+        debug p => _2;
+    }
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        _3 = Loud::new(const "p0") -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageLive(_4);
+        _4 = Loud::new(const "p1") -> [return: bb2, unwind: bb10];
+    }
+
+    bb2: {
+        _2 = (move _3, move _4);
+        drop(_4) -> [return: bb3, unwind: bb10];
+    }
+
+    bb3: {
+        StorageDead(_4);
+        drop(_3) -> [return: bb4, unwind continue];
+    }
+
+    bb4: {
+        StorageDead(_3);
+        StorageLive(_5);
+        StorageLive(_6);
+        _6 = move (_2.0: Loud);
+        _5 = consume(move _6) -> [return: bb5, unwind: bb8];
+    }
+
+    bb5: {
+        StorageDead(_6);
+        StorageDead(_5);
+        StorageLive(_7);
+        _7 = effect(const "after") -> [return: bb6, unwind: bb9];
+    }
+
+    bb6: {
+        StorageDead(_7);
+        _0 = const ();
+        drop(_2) -> [return: bb7, unwind continue];
+    }
+
+    bb7: {
+        StorageDead(_2);
+        return;
+    }
+
+    bb8 (cleanup): {
+        drop(_6) -> [return: bb9, unwind terminate(cleanup)];
+    }
+
+    bb9 (cleanup): {
+        drop(_2) -> [return: bb11, unwind terminate(cleanup)];
+    }
+
+    bb10 (cleanup): {
+        drop(_3) -> [return: bb11, unwind terminate(cleanup)];
+    }
+
+    bb11 (cleanup): {
+        resume;
+    }
+}
+
+alloc17 (size: 2, align: 1) {
+    70 31                                           │ p1
+}
+
+alloc16 (size: 2, align: 1) {
+    70 30                                           │ p0
+}
+
+alloc9 (size: 5, align: 1) {
+    61 66 74 65 72                                  │ after
+}

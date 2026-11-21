@@ -1,0 +1,130 @@
+// MIR for `open_ladder_normal_two_panics` before ElaborateDrops
+
+fn open_ladder_normal_two_panics(_1: bool) -> () {
+    debug c => _1;
+    let mut _0: ();
+    let _2: (Loud, Loud, Loud);
+    let mut _3: Loud;
+    let mut _4: Loud;
+    let mut _5: Loud;
+    let _6: ();
+    let mut _7: bool;
+    let _8: ();
+    let mut _9: Loud;
+    let _10: ();
+    scope 1 {
+        debug t => _2;
+    }
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        _3 = Loud::bomb(const "t0") -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageLive(_4);
+        _4 = Loud::bomb(const "t1") -> [return: bb2, unwind: bb16];
+    }
+
+    bb2: {
+        StorageLive(_5);
+        _5 = Loud::new(const "t2") -> [return: bb3, unwind: bb15];
+    }
+
+    bb3: {
+        _2 = (move _3, move _4, move _5);
+        drop(_5) -> [return: bb4, unwind: bb15];
+    }
+
+    bb4: {
+        StorageDead(_5);
+        drop(_4) -> [return: bb5, unwind: bb16];
+    }
+
+    bb5: {
+        StorageDead(_4);
+        drop(_3) -> [return: bb6, unwind continue];
+    }
+
+    bb6: {
+        StorageDead(_3);
+        StorageLive(_6);
+        StorageLive(_7);
+        _7 = copy _1;
+        switchInt(move _7) -> [0: bb9, otherwise: bb7];
+    }
+
+    bb7: {
+        StorageLive(_8);
+        StorageLive(_9);
+        _9 = move (_2.2: Loud);
+        _8 = consume(move _9) -> [return: bb8, unwind: bb13];
+    }
+
+    bb8: {
+        StorageDead(_9);
+        StorageDead(_8);
+        _6 = const ();
+        goto -> bb10;
+    }
+
+    bb9: {
+        _6 = const ();
+        goto -> bb10;
+    }
+
+    bb10: {
+        StorageDead(_7);
+        StorageDead(_6);
+        StorageLive(_10);
+        _10 = effect(const "body") -> [return: bb11, unwind: bb14];
+    }
+
+    bb11: {
+        StorageDead(_10);
+        _0 = const ();
+        drop(_2) -> [return: bb12, unwind continue];
+    }
+
+    bb12: {
+        StorageDead(_2);
+        return;
+    }
+
+    bb13 (cleanup): {
+        drop(_9) -> [return: bb14, unwind terminate(cleanup)];
+    }
+
+    bb14 (cleanup): {
+        drop(_2) -> [return: bb17, unwind terminate(cleanup)];
+    }
+
+    bb15 (cleanup): {
+        drop(_4) -> [return: bb16, unwind terminate(cleanup)];
+    }
+
+    bb16 (cleanup): {
+        drop(_3) -> [return: bb17, unwind terminate(cleanup)];
+    }
+
+    bb17 (cleanup): {
+        resume;
+    }
+}
+
+alloc34 (size: 2, align: 1) {
+    74 32                                           │ t2
+}
+
+alloc33 (size: 2, align: 1) {
+    74 31                                           │ t1
+}
+
+alloc32 (size: 2, align: 1) {
+    74 30                                           │ t0
+}
+
+alloc8 (size: 4, align: 1) {
+    62 6f 64 79                                     │ body
+}
