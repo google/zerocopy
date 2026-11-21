@@ -13773,6 +13773,55 @@
         "verification/compiler-verification"
       ]
     },
+    "call-by-name-cps-midpoint-forcing-and-stack-bounded-kernel-reduction-in-proof-assistants": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "badf11f93b505238d48439a6538dc2b395009453"
+          },
+          "name": "Lean 4 C++ kernel and Meta WHNF reducer"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 release toolchain"
+        },
+        {
+          "identity": {
+            "repository": "digama0/lean4lean",
+            "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+          },
+          "name": "Lean4Lean verified kernel typechecker in Lean 4"
+        },
+        {
+          "identity": {
+            "repository": "rocq-prover/rocq",
+            "revision": "ddb69e5c5cff459fc2b0dfe3ec4ed0c968720c76"
+          },
+          "name": "Rocq Prover kernel reduction machines"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert radix-2 positive binary trie library"
+        }
+      ],
+      "topics": [
+        "verification/lean4",
+        "verification/proof-engineering",
+        "pl/evaluation-strategies",
+        "lean/kernel-reduction",
+        "lean/kernel",
+        "pl/continuations"
+      ]
+    },
     "camera-isp-hdr-companding-rolling-shutter-imu-sync-and-lidar-blooming": {
       "observed_at": "2026-11-19",
       "subjects": [
