@@ -1,0 +1,137 @@
+{
+  "topics": [
+    "anneal/trust-boundary",
+    "ffi",
+    "ffi/abi",
+    "ffi/callbacks",
+    "ffi/linker-binding",
+    "rust/aliasing-model",
+    "rust/ffi",
+    "rust/inline-asm",
+    "rust/target-feature",
+    "security/adversarial-verification",
+    "security/threat-model",
+    "systems/cryptography",
+    "systems/fuchsia",
+    "systems/linux-kernel",
+    "verification/tcb-audit"
+  ],
+  "subjects": [
+    {
+      "name": "Fuchsia OS (Zircon vDSO, Starnix, Driver Runtime)",
+      "identity": {
+        "repository": "https://fuchsia.googlesource.com/fuchsia",
+        "revision": "fd31be1516bd2906c5b46be6c3ca3aa1adb162c0"
+      }
+    },
+    {
+      "name": "ring",
+      "identity": {
+        "repository": "briansmith/ring",
+        "revision": "b287c58f1dc2764e98c7c48583c2726ded52e6c7"
+      }
+    },
+    {
+      "name": "aws-lc-rs",
+      "identity": {
+        "repository": "aws/aws-lc-rs",
+        "revision": "104142736550c9860d0dfdb389e0d6c4c51e0005"
+      }
+    },
+    {
+      "name": "AWS-LC",
+      "identity": {
+        "repository": "aws/aws-lc",
+        "revision": "cd481c207e38f06aeb5766f4a1cdfce10a4c0af8"
+      }
+    },
+    {
+      "name": "subtle",
+      "identity": {
+        "repository": "dalek-cryptography/subtle",
+        "revision": "369e7463e85921377a5f2df80aabcbbc6d57a930"
+      }
+    },
+    {
+      "name": "RustCrypto utils (zeroize)",
+      "identity": {
+        "repository": "RustCrypto/utils",
+        "revision": "0feca06cf87e61567033a333feb79ecf3c427fea"
+      }
+    },
+    {
+      "name": "Linux kernel (Rust-for-Linux)",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "5f22fb20497f4983094131f00a734362300d22d2"
+      }
+    },
+    {
+      "name": "rusqlite and libsqlite3-sys",
+      "identity": {
+        "repository": "rusqlite/rusqlite",
+        "revision": "388f5d40aab82b2cd40d3a2f94c06dc9e164382d"
+      }
+    },
+    {
+      "name": "flate2-rs",
+      "identity": {
+        "repository": "rust-lang/flate2-rs",
+        "revision": "bda759ec690f52cb954a029dcf35749f6fcc8a59"
+      }
+    },
+    {
+      "name": "zlib-rs and libz-rs-sys",
+      "identity": {
+        "repository": "trifectatechfoundation/zlib-rs",
+        "revision": "f6a2b3f097d02428ad4c7e5ddf4b54c3c271bf6d"
+      }
+    },
+    {
+      "name": "rust-openssl and openssl-sys",
+      "identity": {
+        "repository": "rust-openssl/rust-openssl",
+        "revision": "dbc5ecad7dbfec35cdfee73c5337e3ee9b8d0f3f"
+      }
+    },
+    {
+      "name": "Rust compiler (source inspection)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973"
+      }
+    },
+    {
+      "name": "Rust compiler (x86_64 execution toolchain)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+        "llvm": "23.1.5"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+      }
+    },
+    {
+      "name": "Anneal Threat Model",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "GNU C Compiler and Binutils (x86_64 execution host)",
+      "identity": {
+        "gcc": "gcc (Debian 15.2.0-14) 15.2.0",
+        "ld": "GNU ld (GNU Binutils for Debian) 2.47",
+        "target": "x86_64-unknown-linux-gnu"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

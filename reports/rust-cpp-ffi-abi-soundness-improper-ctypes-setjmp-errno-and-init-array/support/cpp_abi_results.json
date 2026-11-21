@@ -1,0 +1,137 @@
+{
+  "gpp_version": "g++ (Debian 15.2.0-14) 15.2.0",
+  "rustc_version": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "nontrivial_calls": {
+    "gpp_warnings": "/tmp/tmppyamzz30/p1/nontriv.cpp:27:31: warning: \u2018clang::trivial_abi\u2019 scoped attribute directive ignored [-Wattributes]\n   27 | struct [[clang::trivial_abi]] ClangTrivAbi {\n      |                               ^~~~~~~~~~~~",
+    "asm_id_triv": [
+      "0000000000000020 <id_triv>:",
+      "20:\t48 89 f8             \tmov    %rdi,%rax",
+      "23:\tc3                   \tret",
+      "24:\t90                   \tnop",
+      "25:\t66 66 2e 0f 1f 84 00 \tdata16 cs nopw 0x0(%rax,%rax,1)",
+      "2c:\t00 00 00 00"
+    ],
+    "asm_id_nontriv_dtor": [
+      "0000000000000030 <id_nontriv_dtor>:",
+      "30:\t48 8b 16             \tmov    (%rsi),%rdx",
+      "33:\t48 89 f8             \tmov    %rdi,%rax",
+      "36:\t48 89 17             \tmov    %rdx,(%rdi)",
+      "39:\tc3                   \tret",
+      "3a:\t66 0f 1f 44 00 00    \tnopw   0x0(%rax,%rax,1)"
+    ],
+    "asm_id_copynontriv": [
+      "0000000000000040 <id_copynontriv>:",
+      "40:\t48 8b 16             \tmov    (%rsi),%rdx",
+      "43:\t48 89 f8             \tmov    %rdi,%rax",
+      "46:\t48 89 17             \tmov    %rdx,(%rdi)",
+      "49:\tc3                   \tret",
+      "4a:\t66 0f 1f 44 00 00    \tnopw   0x0(%rax,%rax,1)"
+    ],
+    "asm_id_clang_triv_abi": [
+      "0000000000000050 <id_clang_triv_abi>:",
+      "50:\t48 8b 16             \tmov    (%rsi),%rdx",
+      "53:\t48 89 f8             \tmov    %rdi,%rax",
+      "56:\t48 89 17             \tmov    %rdx,(%rdi)",
+      "59:\tc3                   \tret",
+      "5a:\t66 0f 1f 44 00 00    \tnopw   0x0(%rax,%rax,1)"
+    ],
+    "rust_call_observe": {
+      "returncode": 0,
+      "signal": null,
+      "stdout": "observed_cpp_param_addr=0xdeadbeefcafebabe",
+      "stderr": ""
+    },
+    "rust_call_deref_crash": {
+      "returncode": -11,
+      "signal": "SIGSEGV",
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  "sso_self_referential": {
+    "sizeof_std_string": "32",
+    "old_slot_addr": "0x7ffde5e2b810",
+    "data_ptr_before_move": "0x7ffde5e2b820",
+    "sso_interior_offset": "16",
+    "new_slot_addr": "0x5624d70b6230",
+    "data_ptr_after_move": "0x7ffde5e2b820",
+    "dangling_points_into_old_slot": "true",
+    "corrupted_bytes_read": "XXXXX"
+  },
+  "memptrs_vtables_mi": {
+    "sizeof_mfp": "16",
+    "sizeof_dmp": "8",
+    "null_data_member_ptr_bits": "-1",
+    "field_a_member_ptr_bits": "8",
+    "mi_D_to_B_this_shift": "16",
+    "mfp_nonvirt_a": "ptr:0x55c68920c2d0,adj:0,is_virt_bit:0",
+    "mfp_nonvirt_b": "ptr:0x55c68920c2e0,adj:16,is_virt_bit:0",
+    "mfp_virt_va": "ptr:0x11,adj:0,vtable_byte_off:16",
+    "mfp_virt_vb": "ptr:0x19,adj:0,vtable_byte_off:24",
+    "vptr_primary_offset_to_top": "0",
+    "vptr_secondary_offset_to_top": "-16",
+    "vptr_rtti_match": "1",
+    "vder_vbase_offset_at_neg3": "16"
+  },
+  "init_array_siof_guards": {
+    "tu_a_has_init_array_reloc": true,
+    "tu_a_has_cxa_guard_acquire": true,
+    "tu_a_has_cxa_guard_release": true,
+    "tu_a_has_cxa_atexit": true,
+    "tu_a_has_dso_handle": true,
+    "link_order_A_then_B": [
+      "[init_array:GlobalA] RUST_SHARED_GLOBAL=42",
+      "[init_array:GlobalB] observed_g_a_val=100",
+      "[rust_main] RUST_SHARED_GLOBAL_at_entry=42",
+      "[rust_main] siof_observed=100",
+      "[rust_main] local_static=777",
+      "[cxa_atexit:~GlobalA] running_after_rust_main"
+    ],
+    "link_order_B_then_A": [
+      "[init_array:GlobalB] observed_g_a_val=0",
+      "[init_array:GlobalA] RUST_SHARED_GLOBAL=42",
+      "[rust_main] RUST_SHARED_GLOBAL_at_entry=42",
+      "[rust_main] siof_observed=0",
+      "[rust_main] local_static=777",
+      "[cxa_atexit:~GlobalA] running_after_rust_main"
+    ]
+  },
+  "cpp_exceptions_c_unwind": {
+    "1_cpp_throw_through_rust_c_unwind": {
+      "returncode": 0,
+      "signal": null,
+      "stdout": "cpp_caught_msg=cpp_boom\ncaught=1 rust_drops=1",
+      "stderr": ""
+    },
+    "2_cpp_throw_into_catch_unwind": {
+      "returncode": -6,
+      "signal": "SIGABRT",
+      "stdout": "",
+      "stderr": "fatal runtime error: Rust cannot catch foreign exceptions, aborting"
+    },
+    "3_rust_panic_cpp_rethrow": {
+      "returncode": 0,
+      "signal": null,
+      "stdout": "rust_caught_err=true cpp_drops=1",
+      "stderr": "thread 'main' (1953589) panicked at /tmp/tmppyamzz30/p5/eh_main.rs:39:5:\nrust_boom\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+    },
+    "4_rust_panic_cpp_swallow": {
+      "returncode": -6,
+      "signal": "SIGABRT",
+      "stdout": "",
+      "stderr": "thread 'main' (1953592) panicked at /tmp/tmppyamzz30/p5/eh_main.rs:39:5:\nrust_boom\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nfatal runtime error: Rust panics must be rethrown, aborting"
+    },
+    "5_rust_panic_cpp_noexcept": {
+      "returncode": -6,
+      "signal": "SIGABRT",
+      "stdout": "",
+      "stderr": "thread 'main' (1953663) panicked at /tmp/tmppyamzz30/p5/eh_main.rs:39:5:\nrust_boom\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nterminate called without an active exception"
+    },
+    "6_cpp_throw_wrong_extern_c_ub": {
+      "returncode": 0,
+      "signal": null,
+      "stdout": "cpp_caught_msg=cpp_boom\ncaught=1 rust_drops=0",
+      "stderr": ""
+    }
+  }
+}

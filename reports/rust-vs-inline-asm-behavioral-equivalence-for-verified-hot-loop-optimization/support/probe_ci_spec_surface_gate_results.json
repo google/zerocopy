@@ -1,0 +1,37 @@
+{
+  "rustc_version": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "base": {
+    "spec_cone": [
+      "checksum_ref",
+      "mix_byte"
+    ],
+    "spec_cone_hash": "de53ec6a842598d8729beeae2895e715de87c90fdf4f23dd0f268ef1c2e7e452",
+    "cache_key": "c86f6f730a37437ef78f87f80e81e4e70c5ace758e4214ea53f14d06dd6b2056"
+  },
+  "scenarios": {
+    "1_edit_unrelated_fn": {
+      "spec_cone_changed": false,
+      "cache_key_changed": false,
+      "requires_human_spec_review": false,
+      "triggers_reverify": false
+    },
+    "2_optimize_asm_only": {
+      "spec_cone_changed": false,
+      "cache_key_changed": true,
+      "requires_human_spec_review": false,
+      "triggers_reverify": true
+    },
+    "3_tamper_transitive_helper_mix_byte": {
+      "spec_cone_changed": true,
+      "cache_key_changed": true,
+      "requires_human_spec_review": true,
+      "triggers_reverify": true
+    },
+    "4_target_feature_flag_change": {
+      "spec_cone_changed": false,
+      "cache_key_changed": true,
+      "requires_human_spec_review": false,
+      "triggers_reverify": true
+    }
+  }
+}

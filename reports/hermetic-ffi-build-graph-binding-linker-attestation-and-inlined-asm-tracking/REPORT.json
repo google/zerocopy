@@ -1,0 +1,125 @@
+{
+  "topics": [
+    "build/bazel",
+    "build/cargo",
+    "build/fuchsia-gn",
+    "build/hermeticity",
+    "cargo/build-scripts",
+    "compilers/linker-driver",
+    "ffi/c-abi",
+    "ffi/static-linking",
+    "llvm/bitcode",
+    "llvm/lld",
+    "rust/inline-asm",
+    "rustc/codegen",
+    "security/toctou",
+    "verification/trusted-computing-base"
+  ],
+  "subjects": [
+    {
+      "name": "rustc 1.99.1",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "rustc nightly-2026-06-01",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "1.98.0-nightly (2026-05-31)"
+      }
+    },
+    {
+      "name": "Cargo 1.99.1",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "5f94df4789f005f9a352888e8355ffc645b7ed0e",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "Cargo nightly-2026-06-01",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef",
+        "version": "1.98.0-nightly (2026-05-26)"
+      }
+    },
+    {
+      "name": "LLVM and rust-lld 23.1.1",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+        "version": "23.1.1"
+      }
+    },
+    {
+      "name": "LLVM and rust-lld 22.1.6",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "08c84e69a84d95936296dfcab0e38b34100725d5",
+        "version": "22.1.6"
+      }
+    },
+    {
+      "name": "rules_rust",
+      "identity": {
+        "repository": "bazelbuild/rules_rust",
+        "revision": "7e60a45f9f95c0f04fbe1eb144ce4823aa76a766"
+      }
+    },
+    {
+      "name": "Fuchsia GN Rust build templates",
+      "identity": {
+        "repository": "https://fuchsia.googlesource.com/fuchsia",
+        "revision": "4799c98e7566bf11f1bb3f07dfea86173f00e336"
+      }
+    },
+    {
+      "name": "cc-rs",
+      "identity": {
+        "repository": "rust-lang/cc-rs",
+        "revision": "c548c664cb6d71692959c1bd98959adc52ef7da7"
+      }
+    },
+    {
+      "name": "cmake-rs",
+      "identity": {
+        "repository": "rust-lang/cmake-rs",
+        "revision": "c7e1801f740e80324d39a358f507cfd034a0efb2"
+      }
+    },
+    {
+      "name": "nasm-rs",
+      "identity": {
+        "repository": "kornelski/nasm-rs",
+        "revision": "78580a964d38d07e9fb81228f002a1f419557d04"
+      }
+    },
+    {
+      "name": "GNU Binutils (ld.bfd, as, ar, readelf)",
+      "identity": {
+        "package": "GNU Binutils for Debian",
+        "version": "2.47"
+      }
+    },
+    {
+      "name": "GCC",
+      "identity": {
+        "package": "gcc (Debian 15.2.0-14)",
+        "version": "15.2.0"
+      }
+    },
+    {
+      "name": "Clang 19 and LLVM 21 binutils",
+      "identity": {
+        "package": "Debian clang 19.1.7 (10.1+build1) / llvm-mc, llvm-objdump 21.1.8",
+        "version": "clang 19.1.7 / llvm-tools 21.1.8"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

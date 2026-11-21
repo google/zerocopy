@@ -1,0 +1,134 @@
+{
+  "topics": [
+    "anneal/correspondence",
+    "anneal/mir-semantics",
+    "ffi/callbacks",
+    "ffi/reentrancy",
+    "ffi/unwinding",
+    "isa/abi-bridge",
+    "lean/lean-miri",
+    "minirust/provenance",
+    "minirust/tree-borrows",
+    "pl/multi-language-interop",
+    "pl/open-simulations",
+    "rust/allocators",
+    "rust/inline-asm",
+    "rust/tree-borrows",
+    "verification/oracle-composition"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "lean-miri",
+      "identity": {
+        "repository": "proofs-rs/lean-miri",
+        "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+      }
+    },
+    {
+      "name": "Miri (pinned upstream source)",
+      "identity": {
+        "repository": "rust-lang/miri",
+        "revision": "7fa591d7d4dd9af8154becbc8332f8096f8323b1"
+      }
+    },
+    {
+      "name": "Miri and rustc nightly (executed toolchain)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11); miri 0.1.0 (3ef0c22cdb 2026-11-11)"
+      }
+    },
+    {
+      "name": "rustc const-eval interpreter (pinned upstream source)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+      }
+    },
+    {
+      "name": "MiniRust",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "063d784186d3252bee242217f218223205c0b568"
+      }
+    },
+    {
+      "name": "CompCertO",
+      "identity": {
+        "repository": "CertiKOS/compcert",
+        "branch": "compcerto",
+        "revision": "87a62d95cd24a44e3ecd5fefddc70a969a881bcb",
+        "doi": "10.1145/3453483.3454097"
+      }
+    },
+    {
+      "name": "CompCertM",
+      "identity": {
+        "repository": "snu-sf/CompCertM",
+        "revision": "1bf2113b2381df604a3abcce7711af1f154d1620",
+        "doi": "10.1145/3371091"
+      }
+    },
+    {
+      "name": "Cerise",
+      "identity": {
+        "repository": "logsem/cerise",
+        "revision": "9eb72e675216d7c5473499f392b18049364db03a",
+        "doi": "10.1145/3623510"
+      }
+    },
+    {
+      "name": "Melocoton",
+      "identity": {
+        "repository": "logsem/melocoton",
+        "revision": "039dae32893a33bc70d668a7abcd25d54587dc3c",
+        "doi": "10.1145/3622823"
+      }
+    },
+    {
+      "name": "DimSum",
+      "identity": {
+        "doi": "10.1145/3571220",
+        "artifact_doi": "10.5281/zenodo.7306312"
+      }
+    },
+    {
+      "name": "Simuliris and Tree Borrows",
+      "identity": {
+        "simuliris_doi": "10.1145/3498689",
+        "tree_borrows_doi": "10.1145/3735592"
+      }
+    },
+    {
+      "name": "PNVI-ae-udi Pointer Provenance Model",
+      "identity": {
+        "doi": "10.1145/3290380",
+        "standard": "WG14 N2676 / N3005 / ISO/IEC TS 6010"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

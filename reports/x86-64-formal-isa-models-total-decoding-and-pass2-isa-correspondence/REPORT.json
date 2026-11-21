@@ -1,0 +1,189 @@
+{
+  "topics": [
+    "isa/x86-64",
+    "isa/aarch64",
+    "isa/riscv64",
+    "isa/decoding",
+    "isa/semantics",
+    "anneal/correspondence",
+    "anneal/tcb-audit",
+    "lean/mechanization",
+    "kraken",
+    "verification/isa-refinement"
+  ],
+  "subjects": [
+    {
+      "name": "AeneasVerif Kraken",
+      "identity": {
+        "repository": "AeneasVerif/kraken",
+        "revision": "019a72cb0f494d26cdceefb2fd40aad19f704ed9"
+      }
+    },
+    {
+      "name": "ACL2 x86isa",
+      "identity": {
+        "repository": "acl2/acl2",
+        "revision": "f040a8db474f68e11b5fa980c99b7c1f7be28e54"
+      }
+    },
+    {
+      "name": "K-Framework X86-64 Semantics",
+      "identity": {
+        "repository": "kframework/X86-64-semantics",
+        "revision": "592380aea04820ea11cfa5475b343f0257f2474e"
+      }
+    },
+    {
+      "name": "AWS s2n-bignum",
+      "identity": {
+        "repository": "awslabs/s2n-bignum",
+        "revision": "280a220986a0bc6249248187717a771153d073db"
+      }
+    },
+    {
+      "name": "CSLib bignum",
+      "identity": {
+        "repository": "cslib-community/bignum",
+        "revision": "1b3952cba6438a6a03da02ff207deb6c93e7d4eb"
+      }
+    },
+    {
+      "name": "REMS sail-x86-from-acl2",
+      "identity": {
+        "repository": "rems-project/sail-x86-from-acl2",
+        "revision": "0c6c023dccc7c20d8d9dbfc481f01d9bb49d62bf"
+      }
+    },
+    {
+      "name": "REMS sail-tiny-x86",
+      "identity": {
+        "repository": "rems-project/sail-tiny-x86",
+        "revision": "229bd8448937042baa51b0a2d14bc437929b0dce"
+      }
+    },
+    {
+      "name": "L3 Architecture Specification Models",
+      "identity": {
+        "repository": "coruus/L3",
+        "revision": "d6558e679a25ffaaf16a47a3189f8f8111e45e0c"
+      }
+    },
+    {
+      "name": "HOL4 L3 x64 Machine-Code Model",
+      "identity": {
+        "repository": "HOL-Theorem-Prover/HOL",
+        "revision": "aee6a90d9856a842f4cbd2bfc44efb7067a141e4"
+      }
+    },
+    {
+      "name": "Binary Analysis Platform (BAP)",
+      "identity": {
+        "repository": "BinaryAnalysisPlatform/bap",
+        "revision": "034bbd09646a589d5eb1f10b740177d628da80fd"
+      }
+    },
+    {
+      "name": "Ghidra SLEIGH x86-64 Specification",
+      "identity": {
+        "repository": "NationalSecurityAgency/ghidra",
+        "revision": "3fb3eec6a05442c901e9ead8620ca21eae830b18"
+      }
+    },
+    {
+      "name": "Intel XED",
+      "identity": {
+        "repository": "intelxed/xed",
+        "revision": "0bcb6237345c5066726dcc08b3d87928df3b5b26"
+      }
+    },
+    {
+      "name": "Metamath Zero (MM0) x86-64 Specification",
+      "identity": {
+        "repository": "digama0/mm0",
+        "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956"
+      }
+    },
+    {
+      "name": "AWS LNSym",
+      "identity": {
+        "repository": "leanprover/LNSym",
+        "revision": "49f8a1d9e46f8dcfc345f4bc15d35b0ba845ff5c"
+      }
+    },
+    {
+      "name": "REMS Sail Armv9.4-A",
+      "identity": {
+        "repository": "rems-project/sail-arm",
+        "revision": "5416ef6b43e9527c38dc71fb752259c1d01a47e1"
+      }
+    },
+    {
+      "name": "UQ-PAC ASLp",
+      "identity": {
+        "repository": "UQ-PAC/aslp",
+        "revision": "92e4fd949402056e16e3747e66922060be57ecc8"
+      }
+    },
+    {
+      "name": "Sail RISC-V",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "71dc9c251a82eb3ecf6f271b02b0161ea8345dfd"
+      }
+    },
+    {
+      "name": "opencompl sail-riscv-lean",
+      "identity": {
+        "repository": "opencompl/sail-riscv-lean",
+        "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+      }
+    },
+    {
+      "name": "Verified-zkEVM riscv-zkvm",
+      "identity": {
+        "repository": "Verified-zkEVM/riscv-zkvm",
+        "revision": "b878729f3e58629819283635240d021b5f6c21ac"
+      }
+    },
+    {
+      "name": "Anneal Pass-2 Correspondence Audit",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 Compiler and Kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "GCC x86-64 C Compiler",
+      "identity": {
+        "tool": "gcc",
+        "version": "15.2.0",
+        "package": "Debian 15.2.0-14"
+      }
+    },
+    {
+      "name": "LLVM Machine Code Disassembler",
+      "identity": {
+        "tool": "llvm-mc",
+        "version": "21.1.8",
+        "package": "Debian LLVM 21.1.8"
+      }
+    },
+    {
+      "name": "GNU Binutils objdump",
+      "identity": {
+        "tool": "objdump",
+        "version": "2.47",
+        "package": "GNU Binutils for Debian 2.47"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

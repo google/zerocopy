@@ -1,0 +1,113 @@
+{
+  "topics": [
+    "ffi",
+    "ffi/c-cpp-abi",
+    "ffi/improper-ctypes",
+    "ffi/cxx-and-bindgen",
+    "ffi/setjmp-longjmp",
+    "ffi/errno-and-tls",
+    "ffi/c-variadics",
+    "rustc/lints",
+    "compilers/tbaa-strict-aliasing",
+    "systems/init-array-and-constructors",
+    "runtimes/exceptions-and-unwinding",
+    "verification/machine-code-ffi"
+  ],
+  "subjects": [
+    {
+      "name": "rust-lang/rust (1.98.0-nightly)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "1.98.0-nightly",
+        "llvm_version": "22.1.6"
+      }
+    },
+    {
+      "name": "rust-lang/rust (1.99.1)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1",
+        "llvm_version": "23.1.1",
+        "rust_lld_revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145"
+      }
+    },
+    {
+      "name": "rust-lang/rust (1.102.0-nightly)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly",
+        "llvm_version": "23.1.5"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+      }
+    },
+    {
+      "name": "Rust RFCs",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+      }
+    },
+    {
+      "name": "Itanium C++ ABI Specification",
+      "identity": {
+        "repository": "itanium-cxx-abi/cxx-abi",
+        "revision": "fae5e46c86147a457a057c6372fa95ec38209fe8"
+      }
+    },
+    {
+      "name": "Clang Itanium and Microsoft C++ ABI Lowering (LLVM Project)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "4b8678a9ce498601faf0998992871833838e25c2"
+      }
+    },
+    {
+      "name": "CXX (Safe Rust/C++ Bridge)",
+      "identity": {
+        "repository": "dtolnay/cxx",
+        "revision": "4d19ca4eec78b2964035a3ea3cef5196515b13e7"
+      }
+    },
+    {
+      "name": "rust-bindgen",
+      "identity": {
+        "repository": "rust-lang/rust-bindgen",
+        "revision": "0d213bc3dbad03e27fe729b7fb1bb5c77cffda1d"
+      }
+    },
+    {
+      "name": "GNU C Library (glibc)",
+      "identity": {
+        "repository": "bminor/glibc",
+        "revision": "04e750e75b73957cf1c791535a3f4319534a52fc",
+        "executed_package": "Debian GLIBC 2.43-7+gl1"
+      }
+    },
+    {
+      "name": "GCC and G++ (x86_64-linux-gnu)",
+      "identity": {
+        "compiler": "gcc / g++",
+        "version": "15.2.0",
+        "distribution_package": "Debian 15.2.0-14",
+        "target": "x86_64-linux-gnu"
+      }
+    },
+    {
+      "name": "ISO C23 Working Draft N3220",
+      "identity": {
+        "standard": "ISO/IEC 9899:2024 (working draft N3220)",
+        "document": "WG14 N3220"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

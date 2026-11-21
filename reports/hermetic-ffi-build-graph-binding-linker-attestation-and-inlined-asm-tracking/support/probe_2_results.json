@@ -1,0 +1,246 @@
+{
+  "1.99.1": {
+    "probe_2a_archive_order_shadowing": {
+      "rust_lld__good_then_evil": {
+        "exit_code": 0,
+        "warnings_emitted": false,
+        "runtime_output": "105"
+      },
+      "rust_lld__evil_then_good": {
+        "exit_code": 0,
+        "warnings_emitted": false,
+        "runtime_output": "-1"
+      },
+      "ld_bfd__good_then_evil": {
+        "exit_code": 0,
+        "warnings_emitted": false,
+        "runtime_output": "105"
+      },
+      "ld_bfd__evil_then_good": {
+        "exit_code": 0,
+        "warnings_emitted": false,
+        "runtime_output": "-1"
+      }
+    },
+    "probe_2b_weak_override": {
+      "rust_lld__weak_only": {
+        "runtime_output": "1",
+        "strong_overrode_weak": false
+      },
+      "rust_lld__weak_then_strong_obj": {
+        "runtime_output": "0",
+        "strong_overrode_weak": true
+      },
+      "rust_lld__weak_then_strong_archive": {
+        "runtime_output": "1",
+        "strong_overrode_weak": false
+      },
+      "rust_lld__weak_then_strong_archive_pulled_by_sibling": {
+        "runtime_output": "0",
+        "strong_overrode_weak": true
+      },
+      "rust_lld__strong_archive_then_weak": {
+        "runtime_output": "0",
+        "strong_overrode_weak": true
+      },
+      "rust_lld__weak_then_strong_whole_archive": {
+        "runtime_output": "0",
+        "strong_overrode_weak": true
+      },
+      "ld_bfd__weak_only": {
+        "runtime_output": "1",
+        "strong_overrode_weak": false
+      },
+      "ld_bfd__weak_then_strong_obj": {
+        "runtime_output": "0",
+        "strong_overrode_weak": true
+      },
+      "ld_bfd__weak_then_strong_archive": {
+        "runtime_output": "1",
+        "strong_overrode_weak": false
+      },
+      "ld_bfd__weak_then_strong_archive_pulled_by_sibling": {
+        "runtime_output": "0",
+        "strong_overrode_weak": true
+      },
+      "ld_bfd__strong_archive_then_weak": {
+        "runtime_output": "0",
+        "strong_overrode_weak": true
+      },
+      "ld_bfd__weak_then_strong_whole_archive": {
+        "runtime_output": "0",
+        "strong_overrode_weak": true
+      }
+    },
+    "probe_2c_link_name_binding": {
+      "obj_has_verified_mac_reloc": false,
+      "obj_has_unverified_trap_reloc": true,
+      "obj_has_getpid_reloc": true,
+      "runtime_output": "MAC=-999 PID_POSITIVE=true"
+    },
+    "probe_2d_dynamic_interposition": {
+      "without_ld_preload": "rust_inner=10 rust_ext=20 c_def=10 c_bsym=10 c_hid=10",
+      "with_ld_preload": "rust_inner=10 rust_ext=888 c_def=999 c_bsym=10 c_hid=10",
+      "librcdy_has_shared_inner_dyn_reloc": false,
+      "librcdy_has_ext_provider_dyn_reloc": true,
+      "libc_def_has_c_inner_def_dyn_reloc": true,
+      "libc_bsym_has_SYMBOLIC_flag": true
+    },
+    "probe_2e_whole_archive_init_array_and_cet": {
+      "init_array_cases": {
+        "split_default_no_whole_archive": {
+          "runtime_output": "SUM=5",
+          "init_array_entry_count": 2
+        },
+        "split_with_whole_archive": {
+          "runtime_output": "SUM=1005",
+          "init_array_entry_count": 3
+        },
+        "same_object_piggyback_no_whole_archive": {
+          "runtime_output": "SUM=2005",
+          "init_array_entry_count": 3
+        }
+      },
+      "cet_gnu_property_cases": {
+        "c_with_cet": {
+          "nostd_has_ibt": true,
+          "nostd_has_shstk": true,
+          "nostd_note_lines": [
+            "Properties: x86 feature: IBT, SHSTK"
+          ],
+          "std_without_build_std_has_ibt": false,
+          "std_without_build_std_has_shstk": false
+        },
+        "c_without_cet": {
+          "nostd_has_ibt": false,
+          "nostd_has_shstk": false,
+          "nostd_note_lines": [],
+          "std_without_build_std_has_ibt": false,
+          "std_without_build_std_has_shstk": false
+        }
+      }
+    }
+  },
+  "nightly-2026-06-01": {
+    "probe_2a_archive_order_shadowing": {
+      "rust_lld__good_then_evil": {
+        "exit_code": 0,
+        "warnings_emitted": false,
+        "runtime_output": "105"
+      },
+      "rust_lld__evil_then_good": {
+        "exit_code": 0,
+        "warnings_emitted": false,
+        "runtime_output": "-1"
+      },
+      "ld_bfd__good_then_evil": {
+        "exit_code": 0,
+        "warnings_emitted": false,
+        "runtime_output": "105"
+      },
+      "ld_bfd__evil_then_good": {
+        "exit_code": 0,
+        "warnings_emitted": false,
+        "runtime_output": "-1"
+      }
+    },
+    "probe_2b_weak_override": {
+      "rust_lld__weak_only": {
+        "runtime_output": "1",
+        "strong_overrode_weak": false
+      },
+      "rust_lld__weak_then_strong_obj": {
+        "runtime_output": "0",
+        "strong_overrode_weak": true
+      },
+      "rust_lld__weak_then_strong_archive": {
+        "runtime_output": "1",
+        "strong_overrode_weak": false
+      },
+      "rust_lld__weak_then_strong_archive_pulled_by_sibling": {
+        "runtime_output": "0",
+        "strong_overrode_weak": true
+      },
+      "rust_lld__strong_archive_then_weak": {
+        "runtime_output": "0",
+        "strong_overrode_weak": true
+      },
+      "rust_lld__weak_then_strong_whole_archive": {
+        "runtime_output": "0",
+        "strong_overrode_weak": true
+      },
+      "ld_bfd__weak_only": {
+        "runtime_output": "1",
+        "strong_overrode_weak": false
+      },
+      "ld_bfd__weak_then_strong_obj": {
+        "runtime_output": "0",
+        "strong_overrode_weak": true
+      },
+      "ld_bfd__weak_then_strong_archive": {
+        "runtime_output": "1",
+        "strong_overrode_weak": false
+      },
+      "ld_bfd__weak_then_strong_archive_pulled_by_sibling": {
+        "runtime_output": "0",
+        "strong_overrode_weak": true
+      },
+      "ld_bfd__strong_archive_then_weak": {
+        "runtime_output": "0",
+        "strong_overrode_weak": true
+      },
+      "ld_bfd__weak_then_strong_whole_archive": {
+        "runtime_output": "0",
+        "strong_overrode_weak": true
+      }
+    },
+    "probe_2c_link_name_binding": {
+      "obj_has_verified_mac_reloc": false,
+      "obj_has_unverified_trap_reloc": true,
+      "obj_has_getpid_reloc": true,
+      "runtime_output": "MAC=-999 PID_POSITIVE=true"
+    },
+    "probe_2d_dynamic_interposition": {
+      "without_ld_preload": "rust_inner=10 rust_ext=20 c_def=10 c_bsym=10 c_hid=10",
+      "with_ld_preload": "rust_inner=10 rust_ext=888 c_def=999 c_bsym=10 c_hid=10",
+      "librcdy_has_shared_inner_dyn_reloc": false,
+      "librcdy_has_ext_provider_dyn_reloc": true,
+      "libc_def_has_c_inner_def_dyn_reloc": true,
+      "libc_bsym_has_SYMBOLIC_flag": true
+    },
+    "probe_2e_whole_archive_init_array_and_cet": {
+      "init_array_cases": {
+        "split_default_no_whole_archive": {
+          "runtime_output": "SUM=5",
+          "init_array_entry_count": 2
+        },
+        "split_with_whole_archive": {
+          "runtime_output": "SUM=1005",
+          "init_array_entry_count": 3
+        },
+        "same_object_piggyback_no_whole_archive": {
+          "runtime_output": "SUM=2005",
+          "init_array_entry_count": 3
+        }
+      },
+      "cet_gnu_property_cases": {
+        "c_with_cet": {
+          "nostd_has_ibt": true,
+          "nostd_has_shstk": true,
+          "nostd_note_lines": [
+            "Properties: x86 feature: IBT, SHSTK"
+          ],
+          "std_without_build_std_has_ibt": false,
+          "std_without_build_std_has_shstk": false
+        },
+        "c_without_cet": {
+          "nostd_has_ibt": false,
+          "nostd_has_shstk": false,
+          "nostd_note_lines": [],
+          "std_without_build_std_has_ibt": false,
+          "std_without_build_std_has_shstk": false
+        }
+      }
+    }
+  }
+}

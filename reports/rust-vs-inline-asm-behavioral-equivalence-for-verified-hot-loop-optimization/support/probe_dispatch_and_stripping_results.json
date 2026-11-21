@@ -1,0 +1,493 @@
+{
+  "toolchains": {
+    "+nightly-2026-06-01": {
+      "toolchain": "+nightly-2026-06-01",
+      "returncode": "0",
+      "version_line": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+      "binary": "rustc",
+      "commit-hash": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "commit-date": "2026-05-31",
+      "host": "x86_64-unknown-linux-gnu",
+      "release": "1.98.0-nightly",
+      "LLVM version": "22.1.6"
+    },
+    "+1.99.1": {
+      "toolchain": "+1.99.1",
+      "returncode": "0",
+      "version_line": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+      "binary": "rustc",
+      "commit-hash": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+      "commit-date": "2026-10-13",
+      "host": "x86_64-unknown-linux-gnu",
+      "release": "1.99.1",
+      "LLVM version": "23.1.1"
+    },
+    "+nightly": {
+      "toolchain": "+nightly",
+      "returncode": "0",
+      "version_line": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+      "binary": "rustc",
+      "commit-hash": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+      "commit-date": "2026-11-11",
+      "host": "x86_64-unknown-linux-gnu",
+      "release": "1.102.0-nightly",
+      "LLVM version": "23.1.5"
+    }
+  },
+  "probes": {
+    "pattern1_dispatch": {
+      "+nightly-2026-06-01": {
+        "base_rc": 0,
+        "base_stderr": "warning: `extern` fn uses type `Avx2Token`, which is not FFI-safe\n   --> /tmp/anneal_asm_probe_7tdip_8v/pattern1.rs:103:45\n    |\n103 | pub extern \"C\" fn dispatch_with_token(_tok: Avx2Token, ptr: *const u8, ...\n    |                                             ^^^^^^^^^ not FFI-safe\n    |\n    = help:",
+        "avx2_rc": 0,
+        "base_dispatch_uses_atomic_cache_or_detect": true,
+        "base_dispatch_inlines_avx2_asm": false,
+        "base_dispatch_calls_outlined_avx2_fn": true,
+        "base_dispatch_calls_ref_fn": true,
+        "avx2_dispatch_eliminates_detect": true,
+        "avx2_dispatch_inlines_avx2_asm": true,
+        "avx2_dispatch_eliminates_ref_call": true,
+        "ifunc_base_asm": "dispatch_atomic_ifunc:\n.Lfunc_begin0:\n\t.cfi_startproc\n\t.cfi_personality 155, DW.ref.rust_eh_personality\n\t.cfi_lsda 27, .Lexception0\n\tpushq\t%rax\n\t.cfi_def_cfa_offset 16\n\tmovq\t_RNvCskhY94kxJpF6_7p1_base11DISPATCH_FN(%rip), %rax\n.Ltmp1:\n\tcallq\t*%rax\n.Ltmp2:\n\tpopq\t%rcx\n\t.cfi_def_cfa_offset 8\n\tretq\n.LBB4_2:\n\t.cfi_def_cfa_offset 16\n.Ltmp3:\n\tcallq\t*_RNvNtCs8b4M6GsfcPr_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)\n.Lfunc_end4:",
+        "token_base_calls_outlined_avx2": true,
+        "token_base_zero_branch": true,
+        "token_base_asm": "dispatch_with_token:\n\t.cfi_startproc\n\tjmp\t_RNvCskhY94kxJpF6_7p1_base15sum_u8_avx2_asm\n.Lfunc_end6:",
+        "token_avx2_inlines_avx2_asm": false,
+        "base_dispatch_asm": "dispatch_runtime_cpuid:\n.Lfunc_begin1:\n\t.cfi_startproc\n\t.cfi_personality 155, DW.ref.rust_eh_personality\n\t.cfi_lsda 27, .Lexception1\n\tpushq\t%r14\n\t.cfi_def_cfa_offset 16\n\tpushq\t%rbx\n\t.cfi_def_cfa_offset 24\n\tpushq\t%rax\n\t.cfi_def_cfa_offset 32\n\t.cfi_offset %rbx, -24\n\t.cfi_offset %r14, -16\n\tmovq\t%rsi, %rbx\n\tmovq\t%rdi, %r14\n\tmovq\t_RNvNtNtCseeka07IAQW_10std_detect6detect5cache5CACHE@GOTPCREL(%rip), %rax\n\tmovq\t(%rax), %rax\n\ttestq\t%rax, %rax\n\tje\t.LBB5_1\n.LBB5_2:\n\tmovq\t%r14, %rdi\n\tmovq\t%rbx, %rsi\n\taddq\t$8, %rsp\n\ttestw\t%ax, %ax\n\tjs\t.LBB5_3\n\t.cfi_def_cfa_offset 24\n\tpopq\t%rbx\n\t.cfi_def_cfa_offset 16\n\tpopq\t%r14\n\t.cfi_def_cfa_offset 8\n\tjmpq\t*_RNvCskhY94kxJpF6_7p1_base16sum_u8_reference@GOTPCREL(%rip)\n.LBB5_3:\n\t.cfi_def_cfa_offset 32\n\t.cfi_def_cfa_offset 24\n\tpopq\t%rbx\n\t.cfi_def_cfa_offset 16\n\tpopq\t%r14\n\t.cfi_def_cfa_offset 8\n\tjmp\t_RNvCskhY94kxJpF6_7p1_base15sum_u8_avx2_asm\n.LBB5_1:\n\t.cfi_def_cfa_offset 32\n.Ltmp4:\n\tcallq\t*_RNvNtNtCseeka07IAQW_10std_detect6detect5cache21detect_and_initialize@GOTPCREL(%rip)\n.Ltmp5:\n\tjmp\t.LBB5_2\n.LBB5_4:\n.Ltmp6:\n\tcallq\t*_RNvNtCs8b4M6GsfcPr_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)\n.Lfunc_end5:",
+        "avx2_dispatch_asm": "dispatch_runtime_cpuid:\n\t.cfi_startproc\n\tcmpq\t$31, %rsi\n\tjbe\t.LBB4_1\n\tmovq\t%rsi, %rdx\n\tandq\t$-32, %rdx\n\txorl\t%ecx, %ecx\n\t#APP\n\n\tvpxor\t%ymm0, %ymm0, %ymm0\n\tvpxor\t%ymm1, %ymm1, %ymm1\n.Ltmp5:\n\tvmovdqu\t(%rdi,%rcx), %ymm2\n\tvpsadbw\t%ymm1, %ymm2, %ymm2\n\tvpaddq\t%ymm2, %ymm0, %ymm0\n\taddq\t$32, %rcx\n\tcmpq\t%rdx, %rcx\n\tjb\t.Ltmp5\n\tvextracti128\t$1, %ymm0, %xmm1\n\tvpaddq\t%xmm1, %xmm0, %xmm0\n\tvpsrldq\t$8, %xmm0, %xmm1\n\tvpaddq\t%xmm1, %xmm0, %xmm0\n\tvmovq\t%xmm0, %rax\n\tvzeroupper\n\n\t#NO_APP\n\tmovq\t%rsi, %rdx\n\tsubq\t%rcx, %rdx\n\tja\t.LBB4_3\n\tjmp\t.LBB4_15\n.LBB4_1:\n\txorl\t%ecx, %ecx\n\txorl\t%eax, %eax\n\tmovq\t%rsi, %rdx\n\tsubq\t%rcx, %rdx\n\tjbe\t.LBB4_15\n.LBB4_3:\n\tcmpq\t$4, %rdx\n\tjb\t.LBB4_14\n\tcmpq\t$16, %rdx\n\tjae\t.LBB4_9\n\txorl\t%r8d, %r8d\n\tjmp\t.LBB4_6\n.LBB4_9:\n\tmovq\t%rdx, %r8\n\tandq\t$-16, %r8\n\tvmovq\t%rax, %xmm0\n\tleaq\t(%rcx,%rdi), %rax\n\taddq\t$12, %rax\n\tvpxor\t%xmm1, %xmm1, %xmm1\n\txorl\t%r9d, %r9d\n\tvpxor\t%xmm2, %xmm2, %xmm2\n\tvpxor\t%xmm3, %xmm3, %xmm3\n\t.p2align\t4\n.LBB4_10:\n\tvpmovzxbq\t-12(%rax,%r9), %ymm4\n\tvpaddq\t%ymm4, %ymm0, %ymm0\n\tvpmovzxbq\t-8(%rax,%r9), %ymm4\n\tvpaddq\t%ymm4, %ymm1, %ymm1\n\tvpmovzxbq\t-4(%rax,%r9), %ymm4\n\tvpmovzxbq\t(%rax,%r9), %ymm5\n\tvpaddq\t%ymm4, %ymm2, %ymm2\n\tvpaddq\t%ymm5, %ymm3, %ymm3\n\taddq\t$16, %r9\n\tcmpq\t%r9, %r8\n\tjne\t.LBB4_10\n\tvpaddq\t%ymm0, %ymm1, %ymm0\n\tvpaddq\t%ymm0, %ymm2, %ymm0\n\tvpaddq\t%ymm0, %ymm3, %ymm0\n\tvextracti128\t$1, %ymm0, %xmm1\n\tvpaddq\t%xmm1, %xmm0, %xmm0\n\tvpshufd\t$238, %xmm0, %xmm1\n\tvpaddq\t%xmm1, %xmm0, %xmm0\n\tvmovq\t%xmm0, %rax\n\tcmpq\t%r8, %rdx\n\tje\t.LBB4_15\n\ttestb\t$12, %dl\n\tje\t.LBB4_13\n.LBB4_6:\n\tmovq\t%rdx, %r9\n\tandq\t$-4, %r9\n\tvmovq\t%rax, %xmm0\n\tleaq\t(%rdi,%rcx), %rax\n\taddq\t%r9, %rcx\n\t.p2align\t4\n.LBB4_7:\n\tvpmovzxbq\t(%rax,%r8), %ymm1\n\tvpaddq\t%ymm1, %ymm0, %ymm0\n\taddq\t$4, %r8\n\tcmpq\t%r8, %r9\n\tjne\t.LBB4_7\n\tvextracti128\t$1, %ymm0, %xmm1\n\tvpaddq\t%xmm1, %xmm0, %xmm0\n\tvpshufd\t$238, %xmm0, %xmm1\n\tvpaddq\t%xmm1, %xmm0, %xmm0\n\tvmovq\t%xmm0, %rax\n\tcmpq\t%r9, %rdx\n\tje\t.LBB4_15\n\t.p2align\t4\n.LBB4_14:\n\tmovzbl\t(%rdi,%rcx), %edx\n\taddq\t%rdx, %rax\n\tincq\t%rcx\n\tcmpq\t%rcx, %rsi\n\tjne\t.LBB4_14\n.LBB4_15:\n\tvzeroupper\n\tretq\n.LBB4_13:\n\taddq\t%r8, %rcx\n\tjmp\t.LBB4_14\n.Lfunc_end4:"
+      },
+      "+1.99.1": {
+        "base_rc": 0,
+        "base_stderr": "warning: `extern` fn uses type `Avx2Token`, which is not FFI-safe\n   --> /tmp/anneal_asm_probe_7tdip_8v/pattern1.rs:103:45\n    |\n103 | pub extern \"C\" fn dispatch_with_token(_tok: Avx2Token, ptr: *const u8, ...\n    |                                             ^^^^^^^^^ not FFI-safe\n    |\n    = help:",
+        "avx2_rc": 0,
+        "base_dispatch_uses_atomic_cache_or_detect": true,
+        "base_dispatch_inlines_avx2_asm": false,
+        "base_dispatch_calls_outlined_avx2_fn": true,
+        "base_dispatch_calls_ref_fn": true,
+        "avx2_dispatch_eliminates_detect": true,
+        "avx2_dispatch_inlines_avx2_asm": true,
+        "avx2_dispatch_eliminates_ref_call": true,
+        "ifunc_base_asm": "dispatch_atomic_ifunc:\n.Lfunc_begin0:\n\t.cfi_startproc\n\t.cfi_personality 155, DW.ref.rust_eh_personality\n\t.cfi_lsda 27, .Lexception0\n\tpushq\t%rax\n\t.cfi_def_cfa_offset 16\n\tmovq\t_RNvCsa7caOfbPNPt_7p1_base11DISPATCH_FN(%rip), %rax\n.Ltmp1:\n\tcallq\t*%rax\n.Ltmp2:\n\tpopq\t%rcx\n\t.cfi_def_cfa_offset 8\n\tretq\n.LBB4_2:\n\t.cfi_def_cfa_offset 16\n.Ltmp3:\n\tcallq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)\n.Lfunc_end4:",
+        "token_base_calls_outlined_avx2": true,
+        "token_base_zero_branch": true,
+        "token_base_asm": "dispatch_with_token:\n\t.cfi_startproc\n\tjmp\t_RNvCsa7caOfbPNPt_7p1_base15sum_u8_avx2_asm\n.Lfunc_end6:",
+        "token_avx2_inlines_avx2_asm": false,
+        "base_dispatch_asm": "dispatch_runtime_cpuid:\n.Lfunc_begin1:\n\t.cfi_startproc\n\t.cfi_personality 155, DW.ref.rust_eh_personality\n\t.cfi_lsda 27, .Lexception1\n\tpushq\t%r14\n\t.cfi_def_cfa_offset 16\n\tpushq\t%rbx\n\t.cfi_def_cfa_offset 24\n\tpushq\t%rax\n\t.cfi_def_cfa_offset 32\n\t.cfi_offset %rbx, -24\n\t.cfi_offset %r14, -16\n\tmovq\t%rsi, %rbx\n\tmovq\t%rdi, %r14\n\tmovq\t_RNvNtNtCs3Qv3aMegdv7_10std_detect6detect5cache5CACHE@GOTPCREL(%rip), %rax\n\tmovq\t(%rax), %rax\n\ttestq\t%rax, %rax\n\tje\t.LBB5_1\n.LBB5_2:\n\tmovq\t%r14, %rdi\n\tmovq\t%rbx, %rsi\n\taddq\t$8, %rsp\n\ttestw\t%ax, %ax\n\tjs\t.LBB5_3\n\t.cfi_def_cfa_offset 24\n\tpopq\t%rbx\n\t.cfi_def_cfa_offset 16\n\tpopq\t%r14\n\t.cfi_def_cfa_offset 8\n\tjmpq\t*_RNvCsa7caOfbPNPt_7p1_base16sum_u8_reference@GOTPCREL(%rip)\n.LBB5_3:\n\t.cfi_def_cfa_offset 32\n\t.cfi_def_cfa_offset 24\n\tpopq\t%rbx\n\t.cfi_def_cfa_offset 16\n\tpopq\t%r14\n\t.cfi_def_cfa_offset 8\n\tjmp\t_RNvCsa7caOfbPNPt_7p1_base15sum_u8_avx2_asm\n.LBB5_1:\n\t.cfi_def_cfa_offset 32\n.Ltmp4:\n\tcallq\t*_RNvNtNtCs3Qv3aMegdv7_10std_detect6detect5cache21detect_and_initialize@GOTPCREL(%rip)\n.Ltmp5:\n\tjmp\t.LBB5_2\n.LBB5_4:\n.Ltmp6:\n\tcallq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)\n.Lfunc_end5:",
+        "avx2_dispatch_asm": "dispatch_runtime_cpuid:\n\t.cfi_startproc\n\tcmpq\t$31, %rsi\n\tjbe\t.LBB4_1\n\tmovq\t%rsi, %rdx\n\tandq\t$-32, %rdx\n\txorl\t%ecx, %ecx\n\t#APP\n\n\tvpxor\t%ymm0, %ymm0, %ymm0\n\tvpxor\t%ymm1, %ymm1, %ymm1\n.Ltmp5:\n\tvmovdqu\t(%rdi,%rcx), %ymm2\n\tvpsadbw\t%ymm1, %ymm2, %ymm2\n\tvpaddq\t%ymm2, %ymm0, %ymm0\n\taddq\t$32, %rcx\n\tcmpq\t%rdx, %rcx\n\tjb\t.Ltmp5\n\tvextracti128\t$1, %ymm0, %xmm1\n\tvpaddq\t%xmm1, %xmm0, %xmm0\n\tvpsrldq\t$8, %xmm0, %xmm1\n\tvpaddq\t%xmm1, %xmm0, %xmm0\n\tvmovq\t%xmm0, %rax\n\tvzeroupper\n\n\t#NO_APP\n\tmovq\t%rsi, %rdx\n\tsubq\t%rcx, %rdx\n\tja\t.LBB4_3\n\tjmp\t.LBB4_15\n.LBB4_1:\n\txorl\t%ecx, %ecx\n\txorl\t%eax, %eax\n\tmovq\t%rsi, %rdx\n\tsubq\t%rcx, %rdx\n\tjbe\t.LBB4_15\n.LBB4_3:\n\tcmpq\t$4, %rdx\n\tjae\t.LBB4_5\n\tmovq\t%rcx, %r9\n\tjmp\t.LBB4_14\n.LBB4_5:\n\tcmpq\t$16, %rdx\n\tjae\t.LBB4_7\n\txorl\t%r8d, %r8d\n\tjmp\t.LBB4_11\n.LBB4_7:\n\tmovq\t%rdx, %r8\n\tandq\t$-16, %r8\n\tleaq\t(%rcx,%r8), %r9\n\tvmovq\t%rax, %xmm0\n\tleaq\t(%rcx,%rdi), %rax\n\taddq\t$12, %rax\n\tvpxor\t%xmm1, %xmm1, %xmm1\n\txorl\t%r10d, %r10d\n\tvpxor\t%xmm2, %xmm2, %xmm2\n\tvpxor\t%xmm3, %xmm3, %xmm3\n\t.p2align\t4\n.LBB4_8:\n\tvpmovzxbq\t-12(%rax,%r10), %ymm4\n\tvpaddq\t%ymm4, %ymm0, %ymm0\n\tvpmovzxbq\t-8(%rax,%r10), %ymm4\n\tvpaddq\t%ymm4, %ymm1, %ymm1\n\tvpmovzxbq\t-4(%rax,%r10), %ymm4\n\tvpmovzxbq\t(%rax,%r10), %ymm5\n\tvpaddq\t%ymm4, %ymm2, %ymm2\n\tvpaddq\t%ymm5, %ymm3, %ymm3\n\taddq\t$16, %r10\n\tcmpq\t%r10, %r8\n\tjne\t.LBB4_8\n\tvpaddq\t%ymm0, %ymm1, %ymm0\n\tvpaddq\t%ymm0, %ymm2, %ymm0\n\tvpaddq\t%ymm0, %ymm3, %ymm0\n\tvextracti128\t$1, %ymm0, %xmm1\n\tvpaddq\t%xmm1, %xmm0, %xmm0\n\tvpshufd\t$238, %xmm0, %xmm1\n\tvpaddq\t%xmm1, %xmm0, %xmm0\n\tvmovq\t%xmm0, %rax\n\tcmpq\t%r8, %rdx\n\tje\t.LBB4_15\n\ttestb\t$12, %dl\n\tje\t.LBB4_14\n.LBB4_11:\n\tmovq\t%rdx, %r10\n\tandq\t$-4, %r10\n\tvmovq\t%rax, %xmm0\n\tleaq\t(%rdi,%rcx), %rax\n\taddq\t%r10, %rcx\n\t.p2align\t4\n.LBB4_12:\n\tvpmovzxbq\t(%rax,%r8), %ymm1\n\tvpaddq\t%ymm1, %ymm0, %ymm0\n\taddq\t$4, %r8\n\tcmpq\t%r8, %r10\n\tjne\t.LBB4_12\n\tvextracti128\t$1, %ymm0, %xmm1\n\tvpaddq\t%xmm1, %xmm0, %xmm0\n\tvpshufd\t$238, %xmm0, %xmm1\n\tvpaddq\t%xmm1, %xmm0, %xmm0\n\tvmovq\t%xmm0, %rax\n\tmovq\t%rcx, %r9\n\tcmpq\t%r10, %rdx\n\tje\t.LBB4_15\n\t.p2align\t4\n.LBB4_14:\n\tmovzbl\t(%rdi,%r9), %ecx\n\taddq\t%rcx, %rax\n\tincq\t%r9\n\tcmpq\t%r9, %rsi\n\tjne\t.LBB4_14\n.LBB4_15:\n\tvzeroupper\n\tretq\n.Lfunc_end4:"
+      },
+      "+nightly": {
+        "base_rc": 0,
+        "base_stderr": "warning: `extern` fn uses type `Avx2Token`, which is not FFI-safe\n   --> /tmp/anneal_asm_probe_7tdip_8v/pattern1.rs:103:45\n    |\n103 | pub extern \"C\" fn dispatch_with_token(_tok: Avx2Token, ptr: *const u8, ...\n    |                                             ^^^^^^^^^ not FFI-safe\n    |\n    = help:",
+        "avx2_rc": 0,
+        "base_dispatch_uses_atomic_cache_or_detect": true,
+        "base_dispatch_inlines_avx2_asm": false,
+        "base_dispatch_calls_outlined_avx2_fn": true,
+        "base_dispatch_calls_ref_fn": true,
+        "avx2_dispatch_eliminates_detect": true,
+        "avx2_dispatch_inlines_avx2_asm": true,
+        "avx2_dispatch_eliminates_ref_call": true,
+        "ifunc_base_asm": "dispatch_atomic_ifunc:\n.Lfunc_begin0:\n\t.cfi_startproc\n\t.cfi_personality 155, DW.ref.rust_eh_personality\n\t.cfi_lsda 27, .Lexception0\n\tpushq\t%rax\n\t.cfi_def_cfa_offset 16\n\tmovq\t_RNvCshzi9ve8qqgP_7p1_base11DISPATCH_FN(%rip), %rax\n.Ltmp1:\n\tcallq\t*%rax\n.Ltmp2:\n\tpopq\t%rcx\n\t.cfi_def_cfa_offset 8\n\tretq\n.LBB4_2:\n\t.cfi_def_cfa_offset 16\n.Ltmp3:\n\tcallq\t*_RNvNtCs2F9dQBLtWXO_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)\n.Lfunc_end4:",
+        "token_base_calls_outlined_avx2": true,
+        "token_base_zero_branch": true,
+        "token_base_asm": "dispatch_with_token:\n\t.cfi_startproc\n\tjmp\t_RNvCshzi9ve8qqgP_7p1_base15sum_u8_avx2_asm\n.Lfunc_end6:",
+        "token_avx2_inlines_avx2_asm": false,
+        "base_dispatch_asm": "dispatch_runtime_cpuid:\n.Lfunc_begin1:\n\t.cfi_startproc\n\t.cfi_personality 155, DW.ref.rust_eh_personality\n\t.cfi_lsda 27, .Lexception1\n\tpushq\t%r14\n\t.cfi_def_cfa_offset 16\n\tpushq\t%rbx\n\t.cfi_def_cfa_offset 24\n\tpushq\t%rax\n\t.cfi_def_cfa_offset 32\n\t.cfi_offset %rbx, -24\n\t.cfi_offset %r14, -16\n\tmovq\t%rsi, %rbx\n\tmovq\t%rdi, %r14\n\tmovq\t_RNvNtNtCs4FDzeyntL1q_10std_detect6detect5cache5CACHE@GOTPCREL(%rip), %rax\n\tmovq\t(%rax), %rax\n\ttestq\t%rax, %rax\n\tje\t.LBB5_1\n.LBB5_2:\n\tmovq\t%r14, %rdi\n\tmovq\t%rbx, %rsi\n\taddq\t$8, %rsp\n\ttestw\t%ax, %ax\n\tjs\t.LBB5_3\n\t.cfi_def_cfa_offset 24\n\tpopq\t%rbx\n\t.cfi_def_cfa_offset 16\n\tpopq\t%r14\n\t.cfi_def_cfa_offset 8\n\tjmpq\t*_RNvCshzi9ve8qqgP_7p1_base16sum_u8_reference@GOTPCREL(%rip)\n.LBB5_3:\n\t.cfi_def_cfa_offset 32\n\t.cfi_def_cfa_offset 24\n\tpopq\t%rbx\n\t.cfi_def_cfa_offset 16\n\tpopq\t%r14\n\t.cfi_def_cfa_offset 8\n\tjmp\t_RNvCshzi9ve8qqgP_7p1_base15sum_u8_avx2_asm\n.LBB5_1:\n\t.cfi_def_cfa_offset 32\n.Ltmp4:\n\tcallq\t*_RNvNtNtCs4FDzeyntL1q_10std_detect6detect5cache21detect_and_initialize@GOTPCREL(%rip)\n.Ltmp5:\n\tjmp\t.LBB5_2\n.LBB5_4:\n.Ltmp6:\n\tcallq\t*_RNvNtCs2F9dQBLtWXO_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)\n.Lfunc_end5:",
+        "avx2_dispatch_asm": "dispatch_runtime_cpuid:\n\t.cfi_startproc\n\tcmpq\t$31, %rsi\n\tjbe\t.LBB4_1\n\tmovq\t%rsi, %rdx\n\tandq\t$-32, %rdx\n\txorl\t%ecx, %ecx\n\t#APP\n\n\tvpxor\t%ymm0, %ymm0, %ymm0\n\tvpxor\t%ymm1, %ymm1, %ymm1\n.Ltmp5:\n\tvmovdqu\t(%rdi,%rcx), %ymm2\n\tvpsadbw\t%ymm1, %ymm2, %ymm2\n\tvpaddq\t%ymm2, %ymm0, %ymm0\n\taddq\t$32, %rcx\n\tcmpq\t%rdx, %rcx\n\tjb\t.Ltmp5\n\tvextracti128\t$1, %ymm0, %xmm1\n\tvpaddq\t%xmm1, %xmm0, %xmm0\n\tvpsrldq\t$8, %xmm0, %xmm1\n\tvpaddq\t%xmm1, %xmm0, %xmm0\n\tvmovq\t%xmm0, %rax\n\tvzeroupper\n\n\t#NO_APP\n\tmovq\t%rsi, %rdx\n\tsubq\t%rcx, %rdx\n\tja\t.LBB4_3\n\tjmp\t.LBB4_15\n.LBB4_1:\n\txorl\t%ecx, %ecx\n\txorl\t%eax, %eax\n\tmovq\t%rsi, %rdx\n\tsubq\t%rcx, %rdx\n\tjbe\t.LBB4_15\n.LBB4_3:\n\tcmpq\t$4, %rdx\n\tjae\t.LBB4_5\n\tmovq\t%rcx, %r9\n\tjmp\t.LBB4_14\n.LBB4_5:\n\tcmpq\t$16, %rdx\n\tjae\t.LBB4_7\n\txorl\t%r8d, %r8d\n\tjmp\t.LBB4_11\n.LBB4_7:\n\tmovq\t%rdx, %r8\n\tandq\t$-16, %r8\n\tleaq\t(%rcx,%r8), %r9\n\tvmovq\t%rax, %xmm0\n\tleaq\t(%rcx,%rdi), %rax\n\taddq\t$12, %rax\n\tvpxor\t%xmm1, %xmm1, %xmm1\n\txorl\t%r10d, %r10d\n\tvpxor\t%xmm2, %xmm2, %xmm2\n\tvpxor\t%xmm3, %xmm3, %xmm3\n\t.p2align\t4\n.LBB4_8:\n\tvpmovzxbq\t-12(%rax,%r10), %ymm4\n\tvpaddq\t%ymm4, %ymm0, %ymm0\n\tvpmovzxbq\t-8(%rax,%r10), %ymm4\n\tvpaddq\t%ymm4, %ymm1, %ymm1\n\tvpmovzxbq\t-4(%rax,%r10), %ymm4\n\tvpmovzxbq\t(%rax,%r10), %ymm5\n\tvpaddq\t%ymm4, %ymm2, %ymm2\n\tvpaddq\t%ymm5, %ymm3, %ymm3\n\taddq\t$16, %r10\n\tcmpq\t%r10, %r8\n\tjne\t.LBB4_8\n\tvpaddq\t%ymm0, %ymm1, %ymm0\n\tvpaddq\t%ymm0, %ymm2, %ymm0\n\tvpaddq\t%ymm0, %ymm3, %ymm0\n\tvextracti128\t$1, %ymm0, %xmm1\n\tvpaddq\t%xmm1, %xmm0, %xmm0\n\tvpshufd\t$238, %xmm0, %xmm1\n\tvpaddq\t%xmm1, %xmm0, %xmm0\n\tvmovq\t%xmm0, %rax\n\tcmpq\t%r8, %rdx\n\tje\t.LBB4_15\n\ttestb\t$12, %dl\n\tje\t.LBB4_14\n.LBB4_11:\n\tmovq\t%rdx, %r10\n\tandq\t$-4, %r10\n\tvmovq\t%rax, %xmm0\n\tleaq\t(%rdi,%rcx), %rax\n\taddq\t%r10, %rcx\n\t.p2align\t4\n.LBB4_12:\n\tvpmovzxbq\t(%rax,%r8), %ymm1\n\tvpaddq\t%ymm1, %ymm0, %ymm0\n\taddq\t$4, %r8\n\tcmpq\t%r8, %r10\n\tjne\t.LBB4_12\n\tvextracti128\t$1, %ymm0, %xmm1\n\tvpaddq\t%xmm1, %xmm0, %xmm0\n\tvpshufd\t$238, %xmm0, %xmm1\n\tvpaddq\t%xmm1, %xmm0, %xmm0\n\tvmovq\t%xmm0, %rax\n\tmovq\t%rcx, %r9\n\tcmpq\t%r10, %rdx\n\tje\t.LBB4_15\n\t.p2align\t4\n.LBB4_14:\n\tmovzbl\t(%rdi,%r9), %ecx\n\taddq\t%rcx, %rax\n\tincq\t%r9\n\tcmpq\t%r9, %rsi\n\tjne\t.LBB4_14\n.LBB4_15:\n\tvzeroupper\n\tretq\n.Lfunc_end4:"
+      }
+    },
+    "unprotected_asm_without_target_feature": {
+      "+nightly-2026-06-01": {
+        "a_discarded_explicit_ymm0": {
+          "rc": 0,
+          "stderr": "",
+          "emits_avx_ymm": true,
+          "asm_excerpt": "\t.file\t\"a_discarded_explicit_ymm0.4afe81d967e102e4-cgu.0\"\n\t.section\t.text.f,\"ax\",@progbits\n\t.globl\tf\n\t.p2align\t4\n\t.type\tf,@function\nf:\n\t.cfi_startproc\n\t#APP\n\n\tvpxor\t%ymm0, %ymm0, %ymm0\n\tvmovq\t%xmm0, %rax\n\n\t#NO_APP\n\txorq\t%rdi, %rax\n\tretq\n.Lfunc_end0:\n\t.size\tf, .Lfunc_end0-f\n\t.cfi_endproc\n\n\t.ident\t\"rustc version 1.98.0-nightly (14210df0e 2026-05-31)\"\n\t.section\t\".note.GNU-stack\",\"\",@progbits\n",
+          "ll_excerpt": "; ModuleID = 'a_discarded_explicit_ymm0.4afe81d967e102e4-cgu.0'\nsource_filename = \"a_discarded_explicit_ymm0.4afe81d967e102e4-cgu.0\"\ntarget datalayout = \"e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128\"\ntarget triple = \"x86_64-unknown-linux-gnu\"\n\n; Function Attrs: mustprogress nofree nosync nounwind nonlazybind willreturn memory(none) uwtable\ndefine noundef i64 @f(i64 noundef %x) unnamed_addr #0 {\nstart:\n  %0 = tail call i64 asm inteldialect \"vpxor ymm0, ymm0, ymm0\\0Avmovq ${0:q}, xmm0\", \"=&r,~{xmm0},~{dirflag},~{fpsr},~{flags}\"() #1, !srcloc !4\n  %_0 = xor i64 %0, %x\n  ret i64 %_0\n}\n\nattributes #0 = { mustprogress nofree nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }\nattributes #1 = { nounwind willreturn memory(none) }\n\n!llvm.module.flags = !{!0, !1, !2}\n!llvm.ident = !{!3}\n\n!0 = !{i32 8, !\"PIC Level\", i32 2}\n!1 = !{i32 2, !\"RtLibUseGOT\", i32 1}\n!2 = !{i32 7, !\"uwtable\", i32 2}\n!3 = !{!\"rustc version 1.98.0-nightly (14210df0e 2026-05-31)\"}\n!4 = !{i64 0, i64 661424963716, i64 751619276958}\n"
+        },
+        "b_discarded_ymm_reg_class": {
+          "rc": 1,
+          "stderr": "error: register class `ymm_reg` requires the `avx` target feature\n --> /tmp/anneal_asm_probe_7tdip_8v/unprot_nightly-2026-06-01/b_discarded_ymm_reg_class.rs:8:53\n  |\n8 |              x = in(reg) x, out = lateout(reg) out, v = out(ymm_reg) _,\n  |                                                     ^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error",
+          "emits_avx_ymm": false,
+          "asm_excerpt": "",
+          "ll_excerpt": ""
+        },
+        "c_typed_m256i_ymm0": {
+          "rc": 1,
+          "stderr": "error: register class `ymm_reg` requires the `avx` target feature\n --> /tmp/anneal_asm_probe_7tdip_8v/unprot_nightly-2026-06-01/c_typed_m256i_ymm0.rs:8:40\n  |\n8 | ...   asm!(\"vpxor ymm0, ymm0, ymm0\", out(\"ymm0\") _y, options(nomem, nosta...\n  |                                      ^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error",
+          "emits_avx_ymm": false,
+          "asm_excerpt": "",
+          "ll_excerpt": ""
+        },
+        "d_raw_avx2_string_with_gpr_only_and_hoist": {
+          "rc": 0,
+          "stderr": "",
+          "emits_avx_ymm": true,
+          "asm_excerpt": "",
+          "ll_excerpt": "",
+          "raw_avx2_asm": "raw_avx2_in_sse2_fn:\n\t.cfi_startproc\n\tmovq\t%rsi, %rax\n\ttestl\t%edi, %edi\n\tje\t.LBB2_1\n\t#APP\n\n\tvmovq\t%rax, %xmm0\n\tvpaddq\t%ymm0, %ymm0, %ymm0\n\tvmovq\t%xmm0, %rax\n\tvzeroupper\n\n\t#NO_APP\n\tretq\n.LBB2_1:\n\tincq\t%rax\n\tretq\n.Lfunc_end2:",
+          "loop_licm_hoist_asm": "loop_licm_hoist_test:\n\t.cfi_startproc\n\ttestq\t%rsi, %rsi\n\tje\t.LBB1_1\n\ttestb\t%dil, %dil\n\tje\t.LBB1_3\n\t#APP\n\n\tvmovq\t%rdx, %xmm0\n\tvpaddq\t%ymm0, %ymm0, %ymm0\n\tvmovq\t%xmm0, %rcx\n\tvzeroupper\n\n\t#NO_APP\n\tleaq\t-1(%rsi), %rax\n\tleaq\t1(%rcx), %rdi\n\tjmp\t.LBB1_5\n.LBB1_1:\n\txorl\t%edx, %edx\n\tmovq\t%rdx, %rax\n\tretq\n.LBB1_3:\n\tleaq\t(%rdx,%rdx,2), %rcx\n\tleaq\t-1(%rsi), %rax\n\tleaq\t(%rdx,%rdx,2), %rdi\n\tincq\t%rdi\n.LBB1_5:\n\timulq\t%rax, %rdi\n\taddq\t%rcx, %rdi\n\taddq\t$-2, %rsi\n\tmulq\t%rsi\n\tshldq\t$63, %rax, %rdx\n\taddq\t%rdi, %rdx\n\tmovq\t%rdx, %rax\n\tretq\n.Lfunc_end1:",
+          "loop_licm_hoist_ll": "define noundef i64 @loop_licm_hoist_test(i1 noundef zeroext %has_avx2, i64 noundef %n, i64 noundef %x) unnamed_addr #0 {\nstart:\n  %_93.not = icmp eq i64 %n, 0\n  br i1 %_93.not, label %bb7, label %bb6.lr.ph\n\nbb6.lr.ph:                                        ; preds = %start\n  br i1 %has_avx2, label %bb6.lr.ph.split.us, label %bb6.preheader\n\nbb6.preheader:                                    ; preds = %bb6.lr.ph\n  %0 = mul i64 %x, 3\n  %1 = add i64 %n, -1\n  %2 = add i64 %0, 1\n  %3 = mul i64 %1, %2\n  %4 = add i64 %3, %0\n  %5 = zext i64 %1 to i65\n  %6 = add i64 %n, -2\n  %7 = zext i64 %6 to i65\n  %8 = mul i65 %5, %7\n  %9 = lshr i65 %8, 1\n  %10 = trunc nuw i65 %9 to i64\n  %11 = add i64 %4, %10\n  br label %bb7\n\nbb6.lr.ph.split.us:                               ; preds = %bb6.lr.ph\n  %12 = tail call { i64, float } asm inteldialect \"vmovq xmm0, ${2:q}\\0Avpaddq ymm0, ymm0, ymm0\\0Avmovq ${0:q}, xmm0\\0Avzeroupper\", \"=r,=&{xmm0},r\"(i64 %x) #1, !srcloc !5\n  %13 = extractvalue { i64, float } %12, 0\n  %14 = add i64 %n, -1\n  %15 = add i64 %13, 1\n  %16 = mul i64 %14, %15\n  %17 = add i64 %13, %16\n  %18 = zext i64 %14 to i65\n  %19 = add i64 %n, -2\n  %20 = zext i64 %19 to i65\n  %21 = mul i65 %18, %20\n  %22 = lshr i65 %21, 1\n  %23 = trunc nuw i65 %22 to i64\n  %24 = add i64 %17, %23\n  br label %bb7\n\nbb7:                                              ; preds = %bb6.preheader, %bb6.lr.ph.split.us, %start\n  %acc.sroa.0.0.lcssa = phi i64 [ 0, %start ], [ %24, %bb6.lr.ph.split.us ], [ %11, %bb6.preheader ]\n  ret i64 %acc.sroa.0.0.lcssa\n}",
+          "diamond_speculate_asm": "diamond_speculate_test:\n\t.cfi_startproc\n\tmovq\t%rsi, %rax\n\ttestl\t%edi, %edi\n\tje\t.LBB0_1\n\t#APP\n\n\tvmovq\t%rax, %xmm0\n\tvpaddq\t%ymm0, %ymm0, %ymm0\n\tvmovq\t%xmm0, %rax\n\tvzeroupper\n\n\t#NO_APP\n\tretq\n.LBB0_1:\n\taddq\t$5, %rax\n\tretq\n.Lfunc_end0:",
+          "diamond_speculate_ll": "define noundef i64 @diamond_speculate_test(i1 noundef zeroext %cond, i64 noundef %x) unnamed_addr #0 {\nstart:\n  br i1 %cond, label %bb1, label %bb3\n\nbb3:                                              ; preds = %start\n  %0 = add i64 %x, 5\n  br label %bb4\n\nbb1:                                              ; preds = %start\n  %1 = tail call { i64, float } asm inteldialect \"vmovq xmm0, ${2:q}\\0Avpaddq ymm0, ymm0, ymm0\\0Avmovq ${0:q}, xmm0\\0Avzeroupper\", \"=r,=&{xmm0},r\"(i64 %x) #1, !srcloc !4\n  %2 = extractvalue { i64, float } %1, 0\n  br label %bb4\n\nbb4:                                              ; preds = %bb1, %bb3\n  %fast.sroa.0.0 = phi i64 [ %2, %bb1 ], [ %0, %bb3 ]\n  ret i64 %fast.sroa.0.0\n}"
+        },
+        "e_inline_always_plus_target_feature": {
+          "rc": 1,
+          "stderr": "error: cannot use `#[inline(always)]` with `#[target_feature]`\n --> /tmp/anneal_asm_probe_7tdip_8v/unprot_nightly-2026-06-01/e_inline_always_plus_target_feature.rs:2:1\n  |\n2 | #[inline(always)]\n  | ^^^^^^^^^^^^^^^^^\n  |\n  = note: See this issue for full discussion: https://github.com/rust-lang/rust/issues/145574\n\nerror: aborting due to 1 previous error",
+          "emits_avx_ymm": false,
+          "asm_excerpt": "",
+          "ll_excerpt": ""
+        }
+      },
+      "+1.99.1": {
+        "a_discarded_explicit_ymm0": {
+          "rc": 0,
+          "stderr": "",
+          "emits_avx_ymm": true,
+          "asm_excerpt": "\t.att_syntax\n\t.file\t\"a_discarded_explicit_ymm0.f39f333ae22f6b1e-cgu.0\"\n\t.section\t.text.f,\"ax\",@progbits\n\t.globl\tf\n\t.prefalign\t4, .Lfunc_end0, nop\n\t.type\tf,@function\nf:\n\t.cfi_startproc\n\t#APP\n\n\tvpxor\t%ymm0, %ymm0, %ymm0\n\tvmovq\t%xmm0, %rax\n\n\t#NO_APP\n\txorq\t%rdi, %rax\n\tretq\n.Lfunc_end0:\n\t.size\tf, .Lfunc_end0-f\n\t.cfi_endproc\n\n\t.ident\t\"rustc version 1.99.1 (58cf8f9c3 2026-10-13)\"\n\t.section\t\".note.GNU-stack\",\"\",@progbits\n",
+          "ll_excerpt": "; ModuleID = 'a_discarded_explicit_ymm0.f39f333ae22f6b1e-cgu.0'\nsource_filename = \"a_discarded_explicit_ymm0.f39f333ae22f6b1e-cgu.0\"\ntarget datalayout = \"e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128\"\ntarget triple = \"x86_64-unknown-linux-gnu\"\n\n; Function Attrs: mustprogress nofree nosync nounwind nonlazybind willreturn memory(none) uwtable\ndefine noundef i64 @f(i64 noundef %x) unnamed_addr #0 !guid !4 {\nstart:\n  %0 = tail call i64 asm inteldialect \"vpxor ymm0, ymm0, ymm0\\0Avmovq ${0:q}, xmm0\", \"=&r,~{xmm0},~{dirflag},~{fpsr},~{flags}\"() #1, !srcloc !5\n  %_0 = xor i64 %0, %x\n  ret i64 %_0\n}\n\nattributes #0 = { mustprogress nofree nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }\nattributes #1 = { nounwind willreturn memory(none) }\n\n!llvm.module.flags = !{!0, !1, !2}\n!llvm.ident = !{!3}\n\n!0 = !{i32 8, !\"PIC Level\", i32 2}\n!1 = !{i32 2, !\"RtLibUseGOT\", i32 1}\n!2 = !{i32 7, !\"uwtable\", i32 2}\n!3 = !{!\"rustc version 1.99.1 (58cf8f9c3 2026-10-13)\"}\n!4 = !{i64 -3706093650706652785}\n!5 = !{i64 0, i64 661424963716, i64 751619276958}\n"
+        },
+        "b_discarded_ymm_reg_class": {
+          "rc": 1,
+          "stderr": "error: register class `ymm_reg` requires the `avx` target feature\n --> /tmp/anneal_asm_probe_7tdip_8v/unprot_1.99.1/b_discarded_ymm_reg_class.rs:8:53\n  |\n8 |              x = in(reg) x, out = lateout(reg) out, v = out(ymm_reg) _,\n  |                                                     ^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error",
+          "emits_avx_ymm": false,
+          "asm_excerpt": "",
+          "ll_excerpt": ""
+        },
+        "c_typed_m256i_ymm0": {
+          "rc": 1,
+          "stderr": "error: register class `ymm_reg` requires the `avx` target feature\n --> /tmp/anneal_asm_probe_7tdip_8v/unprot_1.99.1/c_typed_m256i_ymm0.rs:8:40\n  |\n8 | ...   asm!(\"vpxor ymm0, ymm0, ymm0\", out(\"ymm0\") _y, options(nomem, nosta...\n  |                                      ^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error",
+          "emits_avx_ymm": false,
+          "asm_excerpt": "",
+          "ll_excerpt": ""
+        },
+        "d_raw_avx2_string_with_gpr_only_and_hoist": {
+          "rc": 0,
+          "stderr": "",
+          "emits_avx_ymm": true,
+          "asm_excerpt": "",
+          "ll_excerpt": "",
+          "raw_avx2_asm": "raw_avx2_in_sse2_fn:\n\t.cfi_startproc\n\tmovq\t%rsi, %rax\n\ttestl\t%edi, %edi\n\tje\t.LBB2_1\n\t#APP\n\n\tvmovq\t%rax, %xmm0\n\tvpaddq\t%ymm0, %ymm0, %ymm0\n\tvmovq\t%xmm0, %rax\n\tvzeroupper\n\n\t#NO_APP\n\tretq\n.LBB2_1:\n\tincq\t%rax\n\tretq\n.Lfunc_end2:",
+          "loop_licm_hoist_asm": "loop_licm_hoist_test:\n\t.cfi_startproc\n\ttestq\t%rsi, %rsi\n\tje\t.LBB1_1\n\ttestb\t%dil, %dil\n\tje\t.LBB1_3\n\t#APP\n\n\tvmovq\t%rdx, %xmm0\n\tvpaddq\t%ymm0, %ymm0, %ymm0\n\tvmovq\t%xmm0, %rcx\n\tvzeroupper\n\n\t#NO_APP\n\tleaq\t-1(%rsi), %rax\n\tleaq\t1(%rcx), %rdi\n\tjmp\t.LBB1_5\n.LBB1_1:\n\txorl\t%edx, %edx\n\tmovq\t%rdx, %rax\n\tretq\n.LBB1_3:\n\tleaq\t(%rdx,%rdx,2), %rcx\n\tleaq\t-1(%rsi), %rax\n\tleaq\t(%rdx,%rdx,2), %rdi\n\tincq\t%rdi\n.LBB1_5:\n\timulq\t%rax, %rdi\n\taddq\t%rcx, %rdi\n\taddq\t$-2, %rsi\n\tmulq\t%rsi\n\tshldq\t$63, %rax, %rdx\n\taddq\t%rdi, %rdx\n\tmovq\t%rdx, %rax\n\tretq\n.Lfunc_end1:",
+          "loop_licm_hoist_ll": "define noundef i64 @loop_licm_hoist_test(i1 noundef zeroext %has_avx2, i64 noundef %n, i64 noundef %x) unnamed_addr #0 !guid !6 {\nstart:\n  %_93.not = icmp eq i64 %n, 0\n  br i1 %_93.not, label %bb7, label %bb6.lr.ph\n\nbb6.lr.ph:                                        ; preds = %start\n  br i1 %has_avx2, label %bb6.lr.ph.split.us, label %bb6.preheader\n\nbb6.preheader:                                    ; preds = %bb6.lr.ph\n  %0 = mul i64 %x, 3\n  %1 = add i64 %n, -1\n  %2 = add i64 %0, 1\n  %3 = mul i64 %1, %2\n  %4 = add i64 %3, %0\n  %5 = zext i64 %1 to i65\n  %6 = add i64 %n, -2\n  %7 = zext i64 %6 to i65\n  %8 = mul i65 %5, %7\n  %9 = lshr i65 %8, 1\n  %10 = trunc nuw i65 %9 to i64\n  %11 = add i64 %4, %10\n  br label %bb7\n\nbb6.lr.ph.split.us:                               ; preds = %bb6.lr.ph\n  %12 = tail call { i64, float } asm inteldialect \"vmovq xmm0, ${2:q}\\0Avpaddq ymm0, ymm0, ymm0\\0Avmovq ${0:q}, xmm0\\0Avzeroupper\", \"=r,=&{xmm0},r\"(i64 %x) #1, !srcloc !7\n  %13 = extractvalue { i64, float } %12, 0\n  %14 = add i64 %n, -1\n  %15 = add i64 %13, 1\n  %16 = mul i64 %14, %15\n  %17 = add i64 %13, %16\n  %18 = zext i64 %14 to i65\n  %19 = add i64 %n, -2\n  %20 = zext i64 %19 to i65\n  %21 = mul i65 %18, %20\n  %22 = lshr i65 %21, 1\n  %23 = trunc nuw i65 %22 to i64\n  %24 = add i64 %17, %23\n  br label %bb7\n\nbb7:                                              ; preds = %bb6.preheader, %bb6.lr.ph.split.us, %start\n  %acc.sroa.0.0.lcssa = phi i64 [ 0, %start ], [ %24, %bb6.lr.ph.split.us ], [ %11, %bb6.preheader ]\n  ret i64 %acc.sroa.0.0.lcssa\n}",
+          "diamond_speculate_asm": "diamond_speculate_test:\n\t.cfi_startproc\n\tmovq\t%rsi, %rax\n\ttestl\t%edi, %edi\n\tje\t.LBB0_1\n\t#APP\n\n\tvmovq\t%rax, %xmm0\n\tvpaddq\t%ymm0, %ymm0, %ymm0\n\tvmovq\t%xmm0, %rax\n\tvzeroupper\n\n\t#NO_APP\n\tretq\n.LBB0_1:\n\taddq\t$5, %rax\n\tretq\n.Lfunc_end0:",
+          "diamond_speculate_ll": "define noundef i64 @diamond_speculate_test(i1 noundef zeroext %cond, i64 noundef %x) unnamed_addr #0 !guid !4 {\nstart:\n  br i1 %cond, label %bb1, label %bb3\n\nbb3:                                              ; preds = %start\n  %0 = add i64 %x, 5\n  br label %bb4\n\nbb1:                                              ; preds = %start\n  %1 = tail call { i64, float } asm inteldialect \"vmovq xmm0, ${2:q}\\0Avpaddq ymm0, ymm0, ymm0\\0Avmovq ${0:q}, xmm0\\0Avzeroupper\", \"=r,=&{xmm0},r\"(i64 %x) #1, !srcloc !5\n  %2 = extractvalue { i64, float } %1, 0\n  br label %bb4\n\nbb4:                                              ; preds = %bb1, %bb3\n  %fast.sroa.0.0 = phi i64 [ %2, %bb1 ], [ %0, %bb3 ]\n  ret i64 %fast.sroa.0.0\n}"
+        },
+        "e_inline_always_plus_target_feature": {
+          "rc": 1,
+          "stderr": "error: cannot use `#[inline(always)]` with `#[target_feature]`\n --> /tmp/anneal_asm_probe_7tdip_8v/unprot_1.99.1/e_inline_always_plus_target_feature.rs:2:1\n  |\n2 | #[inline(always)]\n  | ^^^^^^^^^^^^^^^^^\n  |\n  = note: See this issue for full discussion: https://github.com/rust-lang/rust/issues/145574\n\nerror: aborting due to 1 previous error",
+          "emits_avx_ymm": false,
+          "asm_excerpt": "",
+          "ll_excerpt": ""
+        }
+      },
+      "+nightly": {
+        "a_discarded_explicit_ymm0": {
+          "rc": 0,
+          "stderr": "",
+          "emits_avx_ymm": true,
+          "asm_excerpt": "\t.att_syntax\n\t.file\t\"a_discarded_explicit_ymm0.60af70767f2ebf4b-cgu.0\"\n\t.section\t.text.f,\"ax\",@progbits\n\t.globl\tf\n\t.prefalign\t4, .Lfunc_end0, nop\n\t.type\tf,@function\nf:\n\t.cfi_startproc\n\t#APP\n\n\tvpxor\t%ymm0, %ymm0, %ymm0\n\tvmovq\t%xmm0, %rax\n\n\t#NO_APP\n\txorq\t%rdi, %rax\n\tretq\n.Lfunc_end0:\n\t.size\tf, .Lfunc_end0-f\n\t.cfi_endproc\n\n\t.ident\t\"rustc version 1.102.0-nightly (3ef0c22cd 2026-11-11)\"\n\t.section\t\".note.GNU-stack\",\"\",@progbits\n",
+          "ll_excerpt": "; ModuleID = 'a_discarded_explicit_ymm0.60af70767f2ebf4b-cgu.0'\nsource_filename = \"a_discarded_explicit_ymm0.60af70767f2ebf4b-cgu.0\"\ntarget datalayout = \"e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128\"\ntarget triple = \"x86_64-unknown-linux-gnu\"\n\n; Function Attrs: mustprogress nofree nosync nounwind nonlazybind willreturn memory(none) uwtable\ndefine noundef i64 @f(i64 noundef %x) unnamed_addr #0 !guid !4 {\nstart:\n  %0 = tail call i64 asm inteldialect \"vpxor ymm0, ymm0, ymm0\\0Avmovq ${0:q}, xmm0\", \"=&r,~{xmm0},~{dirflag},~{fpsr},~{flags}\"() #1, !srcloc !5\n  %_0 = xor i64 %0, %x\n  ret i64 %_0\n}\n\nattributes #0 = { mustprogress nofree nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }\nattributes #1 = { nounwind willreturn memory(none) }\n\n!llvm.module.flags = !{!0, !1, !2}\n!llvm.ident = !{!3}\n\n!0 = !{i32 8, !\"PIC Level\", i32 2}\n!1 = !{i32 2, !\"RtLibUseGOT\", i32 1}\n!2 = !{i32 7, !\"uwtable\", i32 2}\n!3 = !{!\"rustc version 1.102.0-nightly (3ef0c22cd 2026-11-11)\"}\n!4 = !{i64 -3706093650706652785}\n!5 = !{i64 0, i64 661424963716, i64 751619276958}\n"
+        },
+        "b_discarded_ymm_reg_class": {
+          "rc": 1,
+          "stderr": "error: register class `ymm_reg` requires the `avx` target feature\n --> /tmp/anneal_asm_probe_7tdip_8v/unprot_nightly/b_discarded_ymm_reg_class.rs:8:53\n  |\n8 |              x = in(reg) x, out = lateout(reg) out, v = out(ymm_reg) _,\n  |                                                     ^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error",
+          "emits_avx_ymm": false,
+          "asm_excerpt": "",
+          "ll_excerpt": ""
+        },
+        "c_typed_m256i_ymm0": {
+          "rc": 1,
+          "stderr": "error: register class `ymm_reg` requires the `avx` target feature\n --> /tmp/anneal_asm_probe_7tdip_8v/unprot_nightly/c_typed_m256i_ymm0.rs:8:40\n  |\n8 | ...   asm!(\"vpxor ymm0, ymm0, ymm0\", out(\"ymm0\") _y, options(nomem, nosta...\n  |                                      ^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error",
+          "emits_avx_ymm": false,
+          "asm_excerpt": "",
+          "ll_excerpt": ""
+        },
+        "d_raw_avx2_string_with_gpr_only_and_hoist": {
+          "rc": 0,
+          "stderr": "",
+          "emits_avx_ymm": true,
+          "asm_excerpt": "",
+          "ll_excerpt": "",
+          "raw_avx2_asm": "raw_avx2_in_sse2_fn:\n\t.cfi_startproc\n\tmovq\t%rsi, %rax\n\ttestl\t%edi, %edi\n\tje\t.LBB2_1\n\t#APP\n\n\tvmovq\t%rax, %xmm0\n\tvpaddq\t%ymm0, %ymm0, %ymm0\n\tvmovq\t%xmm0, %rax\n\tvzeroupper\n\n\t#NO_APP\n\tretq\n.LBB2_1:\n\tincq\t%rax\n\tretq\n.Lfunc_end2:",
+          "loop_licm_hoist_asm": "loop_licm_hoist_test:\n\t.cfi_startproc\n\ttestq\t%rsi, %rsi\n\tje\t.LBB1_1\n\ttestb\t%dil, %dil\n\tje\t.LBB1_3\n\t#APP\n\n\tvmovq\t%rdx, %xmm0\n\tvpaddq\t%ymm0, %ymm0, %ymm0\n\tvmovq\t%xmm0, %rcx\n\tvzeroupper\n\n\t#NO_APP\n\tleaq\t-1(%rsi), %rax\n\tleaq\t1(%rcx), %rdi\n\tjmp\t.LBB1_5\n.LBB1_1:\n\txorl\t%edx, %edx\n\tmovq\t%rdx, %rax\n\tretq\n.LBB1_3:\n\tleaq\t(%rdx,%rdx,2), %rcx\n\tleaq\t-1(%rsi), %rax\n\tleaq\t(%rdx,%rdx,2), %rdi\n\tincq\t%rdi\n.LBB1_5:\n\timulq\t%rax, %rdi\n\taddq\t%rcx, %rdi\n\taddq\t$-2, %rsi\n\tmulq\t%rsi\n\tshldq\t$63, %rax, %rdx\n\taddq\t%rdi, %rdx\n\tmovq\t%rdx, %rax\n\tretq\n.Lfunc_end1:",
+          "loop_licm_hoist_ll": "define noundef i64 @loop_licm_hoist_test(i1 noundef zeroext %has_avx2, i64 noundef %n, i64 noundef %x) unnamed_addr #0 !guid !6 {\nstart:\n  %_93.not = icmp eq i64 %n, 0\n  br i1 %_93.not, label %bb7, label %bb6.lr.ph\n\nbb6.lr.ph:                                        ; preds = %start\n  br i1 %has_avx2, label %bb6.lr.ph.split.us, label %bb6.preheader\n\nbb6.preheader:                                    ; preds = %bb6.lr.ph\n  %0 = mul i64 %x, 3\n  %1 = add i64 %n, -1\n  %2 = add i64 %0, 1\n  %3 = mul i64 %1, %2\n  %4 = add i64 %3, %0\n  %5 = zext i64 %1 to i65\n  %6 = add i64 %n, -2\n  %7 = zext i64 %6 to i65\n  %8 = mul i65 %5, %7\n  %9 = lshr i65 %8, 1\n  %10 = trunc nuw i65 %9 to i64\n  %11 = add i64 %4, %10\n  br label %bb7\n\nbb6.lr.ph.split.us:                               ; preds = %bb6.lr.ph\n  %12 = tail call { i64, float } asm inteldialect \"vmovq xmm0, ${2:q}\\0Avpaddq ymm0, ymm0, ymm0\\0Avmovq ${0:q}, xmm0\\0Avzeroupper\", \"=r,=&{xmm0},r\"(i64 %x) #1, !srcloc !7\n  %13 = extractvalue { i64, float } %12, 0\n  %14 = add i64 %n, -1\n  %15 = add i64 %13, 1\n  %16 = mul i64 %14, %15\n  %17 = add i64 %13, %16\n  %18 = zext i64 %14 to i65\n  %19 = add i64 %n, -2\n  %20 = zext i64 %19 to i65\n  %21 = mul i65 %18, %20\n  %22 = lshr i65 %21, 1\n  %23 = trunc nuw i65 %22 to i64\n  %24 = add i64 %17, %23\n  br label %bb7\n\nbb7:                                              ; preds = %bb6.preheader, %bb6.lr.ph.split.us, %start\n  %acc.sroa.0.0.lcssa = phi i64 [ 0, %start ], [ %24, %bb6.lr.ph.split.us ], [ %11, %bb6.preheader ]\n  ret i64 %acc.sroa.0.0.lcssa\n}",
+          "diamond_speculate_asm": "diamond_speculate_test:\n\t.cfi_startproc\n\tmovq\t%rsi, %rax\n\ttestl\t%edi, %edi\n\tje\t.LBB0_1\n\t#APP\n\n\tvmovq\t%rax, %xmm0\n\tvpaddq\t%ymm0, %ymm0, %ymm0\n\tvmovq\t%xmm0, %rax\n\tvzeroupper\n\n\t#NO_APP\n\tretq\n.LBB0_1:\n\taddq\t$5, %rax\n\tretq\n.Lfunc_end0:",
+          "diamond_speculate_ll": "define noundef i64 @diamond_speculate_test(i1 noundef zeroext %cond, i64 noundef %x) unnamed_addr #0 !guid !4 {\nstart:\n  br i1 %cond, label %bb1, label %bb3\n\nbb3:                                              ; preds = %start\n  %0 = add i64 %x, 5\n  br label %bb4\n\nbb1:                                              ; preds = %start\n  %1 = tail call { i64, float } asm inteldialect \"vmovq xmm0, ${2:q}\\0Avpaddq ymm0, ymm0, ymm0\\0Avmovq ${0:q}, xmm0\\0Avzeroupper\", \"=r,=&{xmm0},r\"(i64 %x) #1, !srcloc !5\n  %2 = extractvalue { i64, float } %1, 0\n  br label %bb4\n\nbb4:                                              ; preds = %bb1, %bb3\n  %fast.sroa.0.0 = phi i64 [ %2, %bb1 ], [ %0, %bb3 ]\n  ret i64 %fast.sroa.0.0\n}"
+        },
+        "e_inline_always_plus_target_feature": {
+          "rc": 0,
+          "stderr": "",
+          "emits_avx_ymm": false,
+          "asm_excerpt": "",
+          "ll_excerpt": ""
+        }
+      }
+    },
+    "pattern2_stripping_and_mir": {
+      "+nightly-2026-06-01": {
+        "rlib_rc": 0,
+        "cdylib_rc": 0,
+        "bin_rc": 0,
+        "rlib_mir": {
+          "truly_unreferenced_private_twin": [
+            "pattern2.truly_unreferenced_private_twin.3-2-000.runtime-post-cleanup.after.mir"
+          ],
+          "dead_branch_private_twin": [
+            "pattern2.dead_branch_private_twin.3-2-000.runtime-post-cleanup.after.mir",
+            "pattern2.dead_branch_private_twin.3-3-000.runtime-optimized.after.mir"
+          ],
+          "public_reference_twin": [
+            "pattern2.public_reference_twin.3-2-000.runtime-post-cleanup.after.mir",
+            "pattern2.public_reference_twin.3-3-000.runtime-optimized.after.mir"
+          ],
+          "generic_private_reference_twin": [
+            "pattern2.generic_private_reference_twin.3-2-000.runtime-post-cleanup.after.mir"
+          ],
+          "fast_entry": [
+            "pattern2.fast_entry.3-2-000.runtime-post-cleanup.after.mir",
+            "pattern2.fast_entry.3-3-000.runtime-optimized.after.mir"
+          ]
+        },
+        "bin_mir": {
+          "truly_unreferenced_private_twin": [
+            "pattern2.truly_unreferenced_private_twin.3-2-000.runtime-post-cleanup.after.mir"
+          ],
+          "dead_branch_private_twin": [
+            "pattern2.dead_branch_private_twin.3-2-000.runtime-post-cleanup.after.mir",
+            "pattern2.dead_branch_private_twin.3-3-000.runtime-optimized.after.mir"
+          ],
+          "public_reference_twin": [
+            "pattern2.public_reference_twin.3-2-000.runtime-post-cleanup.after.mir",
+            "pattern2.public_reference_twin.3-3-000.runtime-optimized.after.mir"
+          ],
+          "generic_private_reference_twin": [
+            "pattern2.generic_private_reference_twin.3-2-000.runtime-post-cleanup.after.mir"
+          ],
+          "fast_entry": [
+            "pattern2.fast_entry.3-2-000.runtime-post-cleanup.after.mir",
+            "pattern2.fast_entry.3-3-000.runtime-optimized.after.mir"
+          ]
+        },
+        "symbols": {
+          "so_defined": [
+            "000000000004a9e0 d __do_global_dtors_aux_fini_array_entry",
+            "0000000000011870 T fast_entry",
+            "000000000004a9f0 d __frame_dummy_init_array_entry",
+            "000000000003b26b t <alloc::collections::btree::node::Handle<alloc::collections::btree::node::NodeRef<alloc::collections::btree::node::marker::Mut, u64, gimli::read::abbrev::Abbreviation, alloc::collections::btree::node::marker::Leaf>, alloc::collections::btree::node::marker::Edge>>::insert_recursing::<alloc::alloc::Global, <alloc::collections::btree::map::entry::VacantEntry<u64, gimli::read::abbrev::Abbreviation>>::insert_entry::{closure#0}>",
+            "000000000001aef0 t addr2line::function::name_entry::<gimli::read::endian_slice::EndianSlice<gimli::endianity::LittleEndian>>",
+            "0000000000045370 t <core::fmt::builders::DebugSet>::entry",
+            "000000000003baeb t <alloc::collections::btree::map::entry::VacantEntry<u64, gimli::read::abbrev::Abbreviation>>::insert_entry",
+            "0000000000045370 t <core::fmt::builders::DebugList>::entry",
+            "00000000000336c0 t <gimli::read::unit::EntriesCursor<gimli::read::endian_slice::EndianSlice<gimli::endianity::LittleEndian>>>::next_entry",
+            "000000000003c145 t <alloc::collections::btree::map::BTreeMap<u64, gimli::read::abbrev::Abbreviation>>::entry",
+            "0000000000011870 T wrapped_entry"
+          ],
+          "o_defined": [
+            "0000000000000000 T fast_entry",
+            "0000000000000000 T wrapped_entry"
+          ],
+          "bin_defined": [
+            "0000000000052d90 d __do_global_dtors_aux_fini_array_entry",
+            "0000000000052da0 d __frame_dummy_init_array_entry",
+            "000000000004321b T <alloc::collections::btree::node::Handle<alloc::collections::btree::node::NodeRef<alloc::collections::btree::node::marker::Mut, u64, gimli::read::abbrev::Abbreviation, alloc::collections::btree::node::marker::Leaf>, alloc::collections::btree::node::marker::Edge>>::insert_recursing::<alloc::alloc::Global, <alloc::collections::btree::map::entry::VacantEntry<u64, gimli::read::abbrev::Abbreviation>>::insert_entry::{closure#0}>",
+            "000000000001c1d0 t <alloc::collections::btree::node::Handle<alloc::collections::btree::node::NodeRef<alloc::collections::btree::node::marker::Mut, usize, std::sys::pal::unix::stack_overflow::thread_info::ThreadInfo, alloc::collections::btree::node::marker::Leaf>, alloc::collections::btree::node::marker::KV>>::remove_leaf_kv::<<alloc::collections::btree::map::entry::OccupiedEntry<usize, std::sys::pal::unix::stack_overflow::thread_info::ThreadInfo>>::remove_kv::{closure#0}, alloc::alloc::Global>",
+            "000000000001ed00 t addr2line::function::name_entry::<gimli::read::endian_slice::EndianSlice<gimli::endianity::LittleEndian>>",
+            "00000000000141c0 t pattern2::main",
+            "000000000004d3b0 T <core::fmt::builders::DebugSet>::entry",
+            "0000000000043a9b T <alloc::collections::btree::map::entry::VacantEntry<u64, gimli::read::abbrev::Abbreviation>>::insert_entry",
+            "000000000004d3b0 T <core::fmt::builders::DebugList>::entry",
+            "0000000000038530 t <gimli::read::unit::EntriesCursor<gimli::read::endian_slice::EndianSlice<gimli::endianity::LittleEndian>>>::next_entry",
+            "00000000000440f5 T <alloc::collections::btree::map::BTreeMap<u64, gimli::read::abbrev::Abbreviation>>::entry"
+          ]
+        },
+        "wrapped_entry_asm": ""
+      },
+      "+1.99.1": {
+        "rlib_rc": 0,
+        "cdylib_rc": 0,
+        "bin_rc": 0,
+        "rlib_mir": {
+          "truly_unreferenced_private_twin": [
+            "pattern2.truly_unreferenced_private_twin.3-2-000.runtime-post-cleanup.after.mir"
+          ],
+          "dead_branch_private_twin": [
+            "pattern2.dead_branch_private_twin.3-2-000.runtime-post-cleanup.after.mir",
+            "pattern2.dead_branch_private_twin.3-3-000.runtime-optimized.after.mir"
+          ],
+          "public_reference_twin": [
+            "pattern2.public_reference_twin.3-2-000.runtime-post-cleanup.after.mir",
+            "pattern2.public_reference_twin.3-3-000.runtime-optimized.after.mir"
+          ],
+          "generic_private_reference_twin": [
+            "pattern2.generic_private_reference_twin.3-2-000.runtime-post-cleanup.after.mir"
+          ],
+          "fast_entry": [
+            "pattern2.fast_entry.3-2-000.runtime-post-cleanup.after.mir",
+            "pattern2.fast_entry.3-3-000.runtime-optimized.after.mir"
+          ]
+        },
+        "bin_mir": {
+          "truly_unreferenced_private_twin": [
+            "pattern2.truly_unreferenced_private_twin.3-2-000.runtime-post-cleanup.after.mir"
+          ],
+          "dead_branch_private_twin": [
+            "pattern2.dead_branch_private_twin.3-2-000.runtime-post-cleanup.after.mir",
+            "pattern2.dead_branch_private_twin.3-3-000.runtime-optimized.after.mir"
+          ],
+          "public_reference_twin": [
+            "pattern2.public_reference_twin.3-2-000.runtime-post-cleanup.after.mir",
+            "pattern2.public_reference_twin.3-3-000.runtime-optimized.after.mir"
+          ],
+          "generic_private_reference_twin": [
+            "pattern2.generic_private_reference_twin.3-2-000.runtime-post-cleanup.after.mir"
+          ],
+          "fast_entry": [
+            "pattern2.fast_entry.3-2-000.runtime-post-cleanup.after.mir",
+            "pattern2.fast_entry.3-3-000.runtime-optimized.after.mir"
+          ]
+        },
+        "symbols": {
+          "so_defined": [
+            "000000000004afc0 d __do_global_dtors_aux_fini_array_entry",
+            "00000000000127f0 T fast_entry",
+            "000000000004afd0 d __frame_dummy_init_array_entry",
+            "000000000003b1bf t <alloc::collections::btree::node::Handle<alloc::collections::btree::node::NodeRef<alloc::collections::btree::node::marker::Mut, u64, gimli::read::abbrev::Abbreviation, alloc::collections::btree::node::marker::Leaf>, alloc::collections::btree::node::marker::Edge>>::insert_recursing::<alloc::alloc::Global, <alloc::collections::btree::map::entry::VacantEntry<u64, gimli::read::abbrev::Abbreviation>>::insert_entry::{closure#0}>",
+            "000000000001a5a0 t addr2line::function::name_entry::<gimli::read::endian_slice::EndianSlice<gimli::endianity::LittleEndian>>",
+            "000000000003b80b t <alloc::collections::btree::map::entry::VacantEntry<u64, gimli::read::abbrev::Abbreviation>>::insert_entry",
+            "0000000000045910 t <core::fmt::builders::DebugSet>::entry",
+            "0000000000045910 t <core::fmt::builders::DebugList>::entry",
+            "0000000000031d90 t <gimli::read::unit::EntriesCursor<gimli::read::endian_slice::EndianSlice<gimli::endianity::LittleEndian>>>::next_entry",
+            "000000000003c08b t <alloc::collections::btree::map::BTreeMap<u64, gimli::read::abbrev::Abbreviation>>::entry",
+            "00000000000127f0 T wrapped_entry"
+          ],
+          "o_defined": [
+            "0000000000000000 T fast_entry",
+            "0000000000000000 T wrapped_entry"
+          ],
+          "bin_defined": [
+            "0000000000051660 d __do_global_dtors_aux_fini_array_entry",
+            "0000000000051670 d __frame_dummy_init_array_entry",
+            "000000000004136f T <alloc::collections::btree::node::Handle<alloc::collections::btree::node::NodeRef<alloc::collections::btree::node::marker::Mut, u64, gimli::read::abbrev::Abbreviation, alloc::collections::btree::node::marker::Leaf>, alloc::collections::btree::node::marker::Edge>>::insert_recursing::<alloc::alloc::Global, <alloc::collections::btree::map::entry::VacantEntry<u64, gimli::read::abbrev::Abbreviation>>::insert_entry::{closure#0}>",
+            "000000000001d220 t addr2line::function::name_entry::<gimli::read::endian_slice::EndianSlice<gimli::endianity::LittleEndian>>",
+            "0000000000014e50 t pattern2::main",
+            "00000000000419bb T <alloc::collections::btree::map::entry::VacantEntry<u64, gimli::read::abbrev::Abbreviation>>::insert_entry",
+            "000000000004bb60 T <core::fmt::builders::DebugSet>::entry",
+            "000000000004bb60 T <core::fmt::builders::DebugList>::entry",
+            "00000000000354b0 t <gimli::read::unit::EntriesCursor<gimli::read::endian_slice::EndianSlice<gimli::endianity::LittleEndian>>>::next_entry",
+            "000000000004223b T <alloc::collections::btree::map::BTreeMap<u64, gimli::read::abbrev::Abbreviation>>::entry"
+          ]
+        },
+        "wrapped_entry_asm": ""
+      },
+      "+nightly": {
+        "rlib_rc": 0,
+        "cdylib_rc": 0,
+        "bin_rc": 0,
+        "rlib_mir": {
+          "truly_unreferenced_private_twin": [
+            "pattern2.truly_unreferenced_private_twin.3-2-000.runtime-post-cleanup.after.mir"
+          ],
+          "dead_branch_private_twin": [
+            "pattern2.dead_branch_private_twin.3-2-000.runtime-post-cleanup.after.mir",
+            "pattern2.dead_branch_private_twin.3-3-000.runtime-optimized.after.mir"
+          ],
+          "public_reference_twin": [
+            "pattern2.public_reference_twin.3-2-000.runtime-post-cleanup.after.mir",
+            "pattern2.public_reference_twin.3-3-000.runtime-optimized.after.mir"
+          ],
+          "generic_private_reference_twin": [
+            "pattern2.generic_private_reference_twin.3-2-000.runtime-post-cleanup.after.mir"
+          ],
+          "fast_entry": [
+            "pattern2.fast_entry.3-2-000.runtime-post-cleanup.after.mir",
+            "pattern2.fast_entry.3-3-000.runtime-optimized.after.mir"
+          ]
+        },
+        "bin_mir": {
+          "truly_unreferenced_private_twin": [
+            "pattern2.truly_unreferenced_private_twin.3-2-000.runtime-post-cleanup.after.mir"
+          ],
+          "dead_branch_private_twin": [
+            "pattern2.dead_branch_private_twin.3-2-000.runtime-post-cleanup.after.mir",
+            "pattern2.dead_branch_private_twin.3-3-000.runtime-optimized.after.mir"
+          ],
+          "public_reference_twin": [
+            "pattern2.public_reference_twin.3-2-000.runtime-post-cleanup.after.mir",
+            "pattern2.public_reference_twin.3-3-000.runtime-optimized.after.mir"
+          ],
+          "generic_private_reference_twin": [
+            "pattern2.generic_private_reference_twin.3-2-000.runtime-post-cleanup.after.mir"
+          ],
+          "fast_entry": [
+            "pattern2.fast_entry.3-2-000.runtime-post-cleanup.after.mir",
+            "pattern2.fast_entry.3-3-000.runtime-optimized.after.mir"
+          ]
+        },
+        "symbols": {
+          "so_defined": [
+            "000000000004b410 d __do_global_dtors_aux_fini_array_entry",
+            "0000000000012b90 T fast_entry",
+            "000000000004b420 d __frame_dummy_init_array_entry",
+            "000000000003b03f t <alloc::collections::btree::node::Handle<alloc::collections::btree::node::NodeRef<alloc::collections::btree::node::marker::Mut, u64, gimli::read::abbrev::Abbreviation, alloc::collections::btree::node::marker::Leaf>, alloc::collections::btree::node::marker::Edge>>::insert_recursing::<alloc::alloc::Global, <alloc::collections::btree::map::entry::VacantEntry<u64, gimli::read::abbrev::Abbreviation>>::insert_entry::{closure#0}>",
+            "000000000001c1b0 t addr2line::function::name_entry::<gimli::read::endian_slice::EndianSlice<gimli::endianity::LittleEndian>>",
+            "000000000003b5e3 t <alloc::collections::btree::map::entry::VacantEntry<u64, gimli::read::abbrev::Abbreviation>>::insert_entry",
+            "00000000000457c0 t <core::fmt::builders::DebugSet>::entry",
+            "00000000000457c0 t <core::fmt::builders::DebugList>::entry",
+            "00000000000322a0 t <gimli::read::unit::EntriesCursor<gimli::read::endian_slice::EndianSlice<gimli::endianity::LittleEndian>>>::next_entry",
+            "000000000003bf0b t <alloc::collections::btree::map::BTreeMap<u64, gimli::read::abbrev::Abbreviation>>::entry",
+            "0000000000012b90 T wrapped_entry"
+          ],
+          "o_defined": [
+            "0000000000000000 T fast_entry",
+            "0000000000000000 T wrapped_entry"
+          ],
+          "bin_defined": [
+            "0000000000051940 d __do_global_dtors_aux_fini_array_entry",
+            "0000000000051950 d __frame_dummy_init_array_entry",
+            "000000000004106f T <alloc::collections::btree::node::Handle<alloc::collections::btree::node::NodeRef<alloc::collections::btree::node::marker::Mut, u64, gimli::read::abbrev::Abbreviation, alloc::collections::btree::node::marker::Leaf>, alloc::collections::btree::node::marker::Edge>>::insert_recursing::<alloc::alloc::Global, <alloc::collections::btree::map::entry::VacantEntry<u64, gimli::read::abbrev::Abbreviation>>::insert_entry::{closure#0}>",
+            "000000000001ef30 t addr2line::function::name_entry::<gimli::read::endian_slice::EndianSlice<gimli::endianity::LittleEndian>>",
+            "00000000000150d0 t pattern2::main",
+            "0000000000041613 T <alloc::collections::btree::map::entry::VacantEntry<u64, gimli::read::abbrev::Abbreviation>>::insert_entry",
+            "000000000004b8a0 T <core::fmt::builders::DebugSet>::entry",
+            "000000000004b8a0 T <core::fmt::builders::DebugList>::entry",
+            "0000000000035860 t <gimli::read::unit::EntriesCursor<gimli::read::endian_slice::EndianSlice<gimli::endianity::LittleEndian>>>::next_entry",
+            "0000000000041f3b T <alloc::collections::btree::map::BTreeMap<u64, gimli::read::abbrev::Abbreviation>>::entry"
+          ]
+        },
+        "wrapped_entry_asm": ""
+      }
+    },
+    "pattern2_size_comparison": {
+      "no_ref": {
+        "cdylib_text_bytes": 298122,
+        "cdylib_total_dec_bytes": 309184,
+        "rlib_has_private_ref_sym": false
+      },
+      "with_private_ref": {
+        "cdylib_text_bytes": 298122,
+        "cdylib_total_dec_bytes": 309184,
+        "rlib_has_private_ref_sym": false
+      },
+      "exact_zero_byte_overhead": true
+    },
+    "nightly_inline_always_target_feature": {
+      "rc": 0,
+      "sse2_caller_inlines_avx2": false,
+      "sse2_caller_jumps_to_leaf": true,
+      "avx2_caller_inlines_avx2": true
+    },
+    "pattern3_multi_isa_and_aarch64_detect": {
+      "x86_avx2_rc": 0,
+      "x86_avx2_stderr": "warning: unused variable: `slice`\n  --> /tmp/anneal_asm_probe_7tdip_8v/pattern3.rs:95:9\n   |\n95 |     let slice = unsafe { core::slice::from_raw_parts(ptr, len) };\n   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_slice`\n   |\n   = note: `#[warn(unused_variables)]` (par",
+      "x86_avx2_has_vpxor_ymm": true,
+      "x86_avx2_has_vzeroupper": true,
+      "x86_dispatch_asm": "xor_checksum_dispatch:\n\t.cfi_startproc\n\tcmpq\t$31, %rsi\n\tjbe\t.LBB0_1\n\tmovq\t%rsi, %rdx\n\tandq\t$-32, %rdx\n\txorl\t%ecx, %ecx\n\t#APP\n\n\tvpxor\t%ymm0, %ymm0, %ymm0\n.Ltmp0:\n\tvpxor\t(%rdi,%rcx), %ymm0, %ymm0\n\taddq\t$32, %rcx\n\tcmpq\t%rdx, %rcx\n\tjb\t.Ltmp0\n\tvextracti128\t$1, %ymm0, %xmm1\n\tvpxor\t%xmm1, %xmm0, %xmm0\n\tvpsrldq\t$8, %xmm0, %xmm1\n\tvpxor\t%xmm1, %xmm0, %xmm0\n\tvmovq\t%xmm0, %rax\n\tvzeroupper\n\n\t#NO_APP\n\tjmp\t.LBB0_2\n.LBB0_1:\n\txorl\t%ecx, %ecx\n\txorl\t%eax, %eax\n.LBB0_2:\n\tpushq\t%r14\n\t.cfi_def_cfa_offset 16\n\tpushq\t%rbx\n\t.cfi_def_cfa_offset 24\n\t.cfi_offset %rbx, -24\n\t.cfi_offset %r14, -16\n\tmovq\t%rax, %rdx\n\tshrq\t$8, %rdx\n\tmovq\t%rax, %r8\n\tshrq\t$16, %r8\n\tmovq\t%rax, %r9\n\tshrq\t$24, %r9\n\tmovq\t%rax, %r10\n\tshrq\t$32, %r10\n\tmovq\t%rax, %r11\n\tshrq\t$40, %r11\n\tmovq\t%rax, %rbx\n\tshrq\t$48, %rbx\n\tmovq\t%rax, %r14\n\tshrq\t$56, %r14\n\txorl\t%r8d, %edx\n\txorl\t%r9d, %r10d\n\txorl\t%edx, %r10d\n\txorl\t%r11d, %ebx\n\txorl\t%ebx, %r14d\n\txorl\t%r10d, %r14d\n\txorl\t%r14d, %eax\n\tmovq\t%rsi, %rdx\n\tsubq\t%rcx, %rdx\n\tpopq\t%rbx\n\t.cfi_def_cfa_offset 16\n\tpopq\t%r14\n\t.cfi_def_cfa_offset 8\n\t.cfi_restore %rbx\n\t.cfi_restore %r14\n\tjbe\t.LBB0_15\n\tcmpq\t$16, %rdx\n\tjae\t.LBB0_5\n\tmovq\t%rcx, %r9\n\tjmp\t.LBB0_14\n.LBB0_5:\n\tcmpq\t$128, %rdx\n\tjae\t.LBB0_7\n\txorl\t%r8d, %r8d\n\tjmp\t.LBB0_11\n.LBB0_7:\n\tmovq\t%rdx, %r8\n\tandq\t$-128, %r8\n\tleaq\t(%rcx,%r8), %r9\n\tmovzbl\t%al, %eax\n\tvmovd\t%eax, %xmm0\n\tleaq\t(%rcx,%rdi), %rax\n\taddq\t$96, %rax\n\tvpxor\t%xmm1, %xmm1, %xmm1\n\txorl\t%r10d, %r10d\n\tvpxor\t%xmm2, %xmm2, %xmm2\n\tvpxor\t%xmm3, %xmm3, %xmm3\n\t.p2align\t4\n.LBB0_8:\n\tvpxor\t-96(%rax,%r10), %ymm0, %ymm0\n\tvpxor\t-64(%rax,%r10), %ymm1, %ymm1\n\tvpxor\t-32(%rax,%r10), %ymm2, %ymm2\n\tvpxor\t(%rax,%r10), %ymm3, %ymm3\n\tsubq\t$-128, %r10\n\tcmpq\t%r10, %r8\n\tjne\t.LBB0_8\n\tvpxor\t%ymm0, %ymm1, %ymm0\n\tvpxor\t%ymm2, %ymm3, %ymm1\n\tvpxor\t%ymm0, %ymm1, %ymm0\n\tvextracti128\t$1, %ymm0, %xmm1\n\tvpxor\t%xmm1, %xmm0, %xmm0\n\tvpshufd\t$238, %xmm0, %xmm1\n\tvpxor\t%xmm1, %xmm0, %xmm0\n\tvpshufd\t$85, %xmm0, %xmm1\n\tvpxor\t%xmm1, %xmm0, %xmm0\n\tvpsrld\t$16, %xmm0, %xmm1\n\tvpxor\t%xmm1, %xmm0, %xmm0\n\tvpsrlw\t$8, %xmm0, %xmm1\n\tvpxor\t%xmm1, %xmm0, %xmm0\n\tvmovd\t%xmm0, %eax\n\tcmpq\t%r8, %rdx\n\tje\t.LBB0_15\n\ttestb\t$112, %dl\n\tje\t.LBB0_14\n.LBB0_11:\n\tmovq\t%rdx, %r10\n\tandq\t$-16, %r10\n\tmovzbl\t%al, %eax\n\tvmovd\t%eax, %xmm0\n\tleaq\t(%rdi,%rcx), %rax\n\taddq\t%r10, %rcx\n\t.p2align\t4\n.LBB0_12:\n\tvpxor\t(%rax,%r8), %xmm0, %xmm0\n\taddq\t$16, %r8\n\tcmpq\t%r8, %r10\n\tjne\t.LBB0_12\n\tvpshufd\t$238, %xmm0, %xmm1\n\tvpxor\t%xmm1, %xmm0, %xmm0\n\tvpshufd\t$85, %xmm0, %xmm1\n\tvpxor\t%xmm1, %xmm0, %xmm0\n\tvpsrld\t$16, %xmm0, %xmm1\n\tvpxor\t%xmm1, %xmm0, %xmm0\n\tvpsrlw\t$8, %xmm0, %xmm1\n\tvpxor\t%xmm1, %xmm0, %xmm0\n\tvmovd\t%xmm0, %eax\n\tmovq\t%rcx, %r9\n\tcmpq\t%r10, %rdx\n\tje\t.LBB0_15\n\t.p2align\t4\n.LBB0_14:\n\txorb\t(%rdi,%r9), %al\n\tincq\t%r9\n\tcmpq\t%r9, %rsi\n\tjne\t.LBB0_14\n.LBB0_15:\n\tvzeroupper\n\tretq\n.Lfunc_end0:",
+      "aarch64_neon_rc": 0,
+      "aarch64_neon_stderr": "warning: unused variable: `slice`\n  --> /tmp/anneal_asm_probe_7tdip_8v/pattern3.rs:95:9\n   |\n95 |     let slice = unsafe { core::slice::from_raw_parts(ptr, len) };\n   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_slice`\n   |\n   = note: `#[warn(unused_variables)]` (par",
+      "aarch64_neon_has_eor_16b": true,
+      "aarch64_dispatch_asm": "xor_checksum_dispatch:\n\t.cfi_startproc\n\tcmp\tx1, #15\n\tb.ls\t.LBB0_2\n\tmov\tx9, xzr\n\tand\tx10, x1, #0xfffffffffffffff0\n\t//APP\n\teor\tv0.16b, v0.16b, v0.16b\n.Ltmp0:\n\tldr\tq1, [x0, x9]\n\teor\tv0.16b, v0.16b, v1.16b\n\tadd\tx9, x9, #16\n\tcmp\tx9, x10\n\tb.lo\t.Ltmp0\n\text\tv1.16b, v0.16b, v0.16b, #8\n\teor\tv0.8b, v0.8b, v1.8b\n\tfmov\tx8, d0\n\t//NO_APP\n\tb\t.LBB0_3\n.LBB0_2:\n\tmov\tx9, xzr\n\tmov\tx8, xzr\n.LBB0_3:\n\tlsr\tx10, x8, #8\n\tlsr\tx11, x8, #16\n\tlsr\tx12, x8, #24\n\tlsr\tx13, x8, #32\n\tlsr\tx14, x8, #40\n\tlsr\tx15, x8, #48\n\tlsr\tx16, x8, #56\n\teor\tw10, w10, w11\n\teor\tw11, w12, w13\n\teor\tw12, w14, w15\n\teor\tw10, w10, w11\n\teor\tw11, w12, w16\n\teor\tw11, w10, w11\n\tsubs\tx10, x1, x9\n\teor\tw8, w11, w8\n\tb.ls\t.LBB0_17\n\tcmp\tx10, #8\n\tb.hs\t.LBB0_6\n\tmov\tx11, x9\n\tb\t.LBB0_15\n.LBB0_6:\n\tcmp\tx10, #32\n\tb.hs\t.LBB0_8\n\tmov\tx12, xzr\n\tb\t.LBB0_12\n.LBB0_8:\n\tmovi\tv0.2d, #0000000000000000\n\tmovi\tv1.2d, #0000000000000000\n\tand\tx12, x10, #0xffffffffffffffe0\n\tand\tx13, x10, #0x18\n\tadd\tx11, x9, x12\n\tand\tx14, x10, #0xffffffffffffffe0\n\tmov\tv0.b[0], w8\n\tadd\tx8, x9, x0\n\tadd\tx8, x8, #16\n.LBB0_9:\n\tldp\tq2, q3, [x8, #-16]\n\tsubs\tx14, x14, #32\n\tadd\tx8, x8, #32\n\teor\tv0.16b, v2.16b, v0.16b\n\teor\tv1.16b, v3.16b, v1.16b\n\tb.ne\t.LBB0_9\n\teor\tv0.16b, v1.16b, v0.16b\n\tcmp\tx10, x12\n\tmov\td1, v0.d[1]\n\teor\tv0.8b, v0.8b, v1.8b\n\tfmov\tx8, d0\n\teor\tx8, x8, x8, lsr #32\n\teor\tx8, x8, x8, lsr #16\n\tlsr\tx14, x8, #8\n\teor\tw8, w8, w14\n\tb.eq\t.LBB0_17\n\tcbz\tx13, .LBB0_15\n.LBB0_12:\n\tmovi\tv0.2d, #0000000000000000\n\tadd\tx13, x9, x12\n\tmov\tv0.b[0], w8\n\tand\tx8, x10, #0xfffffffffffffff8\n\tadd\tx11, x9, x8\n\tadd\tx9, x0, x13\n\tsub\tx12, x12, x8\n.LBB0_13:\n\tldr\td1, [x9], #8\n\tadds\tx12, x12, #8\n\teor\tv0.8b, v1.8b, v0.8b\n\tb.ne\t.LBB0_13\n\tfmov\tx9, d0\n\tcmp\tx10, x8\n\teor\tx9, x9, x9, lsr #32\n\teor\tx9, x9, x9, lsr #16\n\tlsr\tx12, x9, #8\n\teor\tw8, w9, w12\n\tb.eq\t.LBB0_17\n.LBB0_15:\n\tsub\tx9, x1, x11\n\tadd\tx10, x0, x11\n.LBB0_16:\n\tldrb\tw11, [x10], #1\n\tsubs\tx9, x9, #1\n\teor\tw8, w11, w8\n\tb.ne\t.LBB0_16\n.LBB0_17:\n\tmov\tw0, w8\n\tret\n.Lfunc_end0:",
+      "aarch64_detect_rc": 0,
+      "aarch64_detect_asm": "detect_aarch64_sve2_and_dotprod:\n.Lfunc_begin0:\n\t.cfi_startproc\n\t.cfi_personality 156, DW.ref.rust_eh_personality\n\t.cfi_lsda 28, .Lexception0\n\tstp\tx29, x30, [sp, #-32]!\n\t.cfi_def_cfa_offset 32\n\tstp\tx20, x19, [sp, #16]\n\tmov\tx29, sp\n\t.cfi_def_cfa w29, 32\n\t.cfi_offset w19, -8\n\t.cfi_offset w20, -16\n\t.cfi_offset w30, -24\n\t.cfi_offset w29, -32\n\t.cfi_remember_state\n\tadrp\tx20, :got:_RNvNtNtCs6wqb2hOlZJJ_10std_detect6detect5cache5CACHE\n\tldr\tx20, [x20, :got_lo12:_RNvNtNtCs6wqb2hOlZJJ_10std_detect6detect5cache5CACHE]\n\tldr\tx19, [x20]\n\tcbz\tx19, .LBB0_4\n\tldr\tx0, [x20, #8]\n\tcbz\tx0, .LBB0_6\n.LBB0_2:\n\tmov\tx1, xzr\n\tmov\tw8, #1\n.LBB0_3:\n\tlsl\tx9, x1, #1\n\tmov\tw10, w8\n\tmvn\tw8, w8\n\tlsr\tx11, x0, x10\n\ttst\tx10, #0x40\n\tlsl\tx8, x9, x8\n\tlsr\tx9, x1, x10\n\tmov\tw10, #2\n\tbfxil\tw10, w19, #11, #1\n\torr\tx8, x8, x11\n\tubfx\tw11, w19, #11, #1\n\tcsel\tx8, x9, x8, ne\n\ttst\tw8, #0x1\n\tcsel\tw0, w10, w11, ne\n\t.cfi_def_cfa wsp, 32\n\tldp\tx20, x19, [sp, #16]\n\tldp\tx29, x30, [sp], #32\n\t.cfi_def_cfa_offset 0\n\t.cfi_restore w19\n\t.cfi_restore w20\n\t.cfi_restore w30\n\t.cfi_restore w29\n\tret\n.LBB0_4:\n\t.cfi_restore_state\n.Ltmp0:\n\tbl\t_RNvNtNtCs6wqb2hOlZJJ_10std_detect6detect5cache21detect_and_initialize\n.Ltmp1:\n\tmov\tx19, x0\n\tldr\tx0, [x20, #8]\n\tcbnz\tx0, .LBB0_2\n.LBB0_6:\n.Ltmp2:\n\tbl\t_RNvNtNtCs6wqb2hOlZJJ_10std_detect6detect5cache21detect_and_initialize\n.Ltmp3:\n\tmov\tw8, #64\n\tb\t.LBB0_3\n.LBB0_8:\n.Ltmp4:\n\tbl\t_RNvNtCsaWcbhsS8OaW_4core9panicking19panic_cannot_unwind\n.Lfunc_end0:",
+      "aarch64_detect_ll": "define noundef range(i32 0, 4) i32 @detect_aarch64_sve2_and_dotprod() unnamed_addr #0 personality ptr @rust_eh_personality !guid !4 {\nstart:\n  %0 = load atomic i64, ptr @_RNvNtNtCs6wqb2hOlZJJ_10std_detect6detect5cache5CACHE monotonic, align 8\n  %1 = icmp eq i64 %0, 0\n  br i1 %1, label %bb8.i, label %bb9.i, !prof !5\n\nbb8.i:                                            ; preds = %start\n; invoke std_detect::detect::cache::detect_and_initialize\n  %self2.i4 = invoke noundef i128 @_RNvNtNtCs6wqb2hOlZJJ_10std_detect6detect5cache21detect_and_initialize()\n          to label %bb5 unwind label %terminate\n\nbb9.i:                                            ; preds = %start\n  %x3.i = zext i64 %0 to i128\n  br label %bb5\n\nterminate:                                        ; preds = %bb8.i8, %bb8.i\n  %2 = landingpad { ptr, i32 }\n          filter [0 x ptr] zeroinitializer\n; call core::panicking::panic_cannot_unwind\n  tail call void @_RNvNtCsaWcbhsS8OaW_4core9panicking19panic_cannot_unwind() #3\n  unreachable\n\nbb5:                                              ; preds = %bb9.i, %bb8.i\n  %x3.sink.i = phi i128 [ %x3.i, %bb9.i ], [ %self2.i4, %bb8.i ]\n  %3 = load atomic i64, ptr getelementptr inbounds nuw (i8, ptr @_RNvNtNtCs6wqb2hOlZJJ_10std_detect6detect5cache5CACHE, i64 8) monotonic, align 8\n  %4 = icmp eq i64 %3, 0\n  br i1 %4, label %bb8.i8, label %bb9.i5, !prof !5\n\nbb8.i8:                                           ; preds = %bb5\n; invoke std_detect::detect::cache::detect_and_initialize\n  %self2.i10 = invoke noundef i128 @_RNvNtNtCs6wqb2hOlZJJ_10std_detect6detect5cache21detect_and_initialize()\n          to label %bb6 unwind label %terminate\n\nbb9.i5:                                           ; preds = %bb5\n  %x3.i6 = zext i64 %3 to i128\n  br label %bb6\n\nbb6:                                              ; preds = %bb9.i5, %bb8.i8\n  %relative_bit.sroa.0.0.sink.i = phi i32 [ 1, %bb9.i5 ], [ 64, %bb8.i8 ]\n  %x3.sink.i7 = phi i128 [ %x3.i6, %bb9.i5 ], [ %self2.i10, %bb8.i8 ]\n  %5 = trunc i128 %x3.sink.i to i32\n  %6 = lshr i32 %5, 11\n  %spec.select = and i32 %6, 1\n  %7 = zext nneg i32 %relative_bit.sroa.0.0.sink.i to i128\n  %8 = lshr i128 %x3.sink.i7, %7\n  %9 = trunc i128 %8 to i1\n  %10 = or disjoint i32 %spec.select, 2\n  %spec.select3 = select i1 %9, i32 %10, i32 %spec.select\n  ret i32 %spec.select3\n}"
+    }
+  }
+}

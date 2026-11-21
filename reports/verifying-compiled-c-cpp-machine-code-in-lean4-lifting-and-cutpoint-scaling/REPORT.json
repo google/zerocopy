@@ -1,0 +1,147 @@
+{
+  "topics": [
+    "verification/machine-code",
+    "verification/trusted-computing-base",
+    "isa/binary-lifting",
+    "isa/x86-64",
+    "ffi/c-cpp-abi",
+    "compilers/codegen-hardening",
+    "compilers/translation-validation",
+    "lean/kernel-replay",
+    "lean/proof-scaling",
+    "anneal/trust-boundary"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal repository (trusted boundary, audit, and cargo-anneal)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover and kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "GCC and G++ C/C++ compiler toolchain (Debian x86_64-linux-gnu)",
+      "identity": {
+        "package": "gcc / g++ (Debian 15.2.0-14)",
+        "version": "15.2.0",
+        "target": "x86_64-linux-gnu",
+        "binutils": "GNU Binutils for Debian 2.47",
+        "llvm_dwarfdump": "Debian LLVM 21.1.8"
+      }
+    },
+    {
+      "name": "s2n-bignum verified x86-64 and Arm64 assembly library",
+      "identity": {
+        "repository": "awslabs/s2n-bignum",
+        "revision": "280a220986a0bc6249248187717a771153d073db"
+      }
+    },
+    {
+      "name": "LNSym Arm64 symbolic simulator and proof library in Lean 4",
+      "identity": {
+        "repository": "leanprover/LNSym",
+        "revision": "49f8a1d9e46f8dcfc345f4bc15d35b0ba845ff5c"
+      }
+    },
+    {
+      "name": "HOL4 machine-code decompiler",
+      "identity": {
+        "repository": "HOL-Theorem-Prover/HOL",
+        "revision": "1c803b0f5467e8cf6a50059620c49b2e4810ab6f"
+      }
+    },
+    {
+      "name": "seL4 graph-refine binary translation validation framework",
+      "identity": {
+        "repository": "seL4/graph-refine",
+        "revision": "33d94bbdd6448ada368d4d925935e8cfdf7d93b4"
+      }
+    },
+    {
+      "name": "FoxDec formally verified x86-64 binary lifter",
+      "identity": {
+        "repository": "ssrg-vt/FoxDec",
+        "revision": "d9206efe59a94138924d45c3d69d7c7afa1eb4ac"
+      }
+    },
+    {
+      "name": "Islaris machine-code verification against authoritative ISA semantics",
+      "identity": {
+        "repository": "rems-project/islaris",
+        "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9"
+      }
+    },
+    {
+      "name": "CN2Islaris DWARF-guided C-to-binary proof bridge",
+      "identity": {
+        "repository": "rems-project/CN2Islaris",
+        "revision": "f34f9a2f0a9b75a6b342aa966d0d14daca58c466"
+      }
+    },
+    {
+      "name": "CN refinement-type verifier for C",
+      "identity": {
+        "repository": "rems-project/cn",
+        "revision": "f2e8eeb47103a2c9fdf2b73a996969f3da114613"
+      }
+    },
+    {
+      "name": "Cerberus C semantics framework",
+      "identity": {
+        "repository": "rems-project/cerberus",
+        "revision": "e29a8ec9f247ef7e0fbc3a19141dfc8f0f9b902e"
+      }
+    },
+    {
+      "name": "CompCert formally verified C compiler",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+      }
+    },
+    {
+      "name": "Crellvm verified credible compilation for LLVM",
+      "identity": {
+        "repository": "snu-sf/crellvm",
+        "revision": "668249b88756233f96b3ef21f12993501a348afc"
+      }
+    },
+    {
+      "name": "Vellvm mechanized LLVM IR semantics in Rocq",
+      "identity": {
+        "repository": "vellvm/vellvm",
+        "revision": "7f0610c38d829b79bf6e867edf410c9e6f928f98"
+      }
+    },
+    {
+      "name": "Alive2 LLVM IR translation validator",
+      "identity": {
+        "repository": "AliveToolkit/alive2",
+        "revision": "3bdd4f5e1cefa47057e93110e707acd11cfe08e4"
+      }
+    },
+    {
+      "name": "hol2dk HOL Light to Dedukti/Lambdapi/Rocq proof exporter",
+      "identity": {
+        "repository": "Deducteam/hol2dk",
+        "revision": "7f0da9630ea948628f9c5f49829d18df6a7073ee"
+      }
+    },
+    {
+      "name": "Kraken weakest-precondition engine in Lean 4",
+      "identity": {
+        "repository": "AeneasVerif/kraken",
+        "revision": "c9aa45ee1b273892d7efa7bbf8a8a9391e17b2c0"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

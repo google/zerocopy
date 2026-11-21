@@ -1,0 +1,807 @@
+{
+  "toolchains": {
+    "nightly-2026-06-01": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+    "1.99.1": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "nightly": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)"
+  },
+  "lint_matrix": {
+    "repr_c_empty_struct_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `Empty`, which is not FFI-safe | = note: this struct has no fields | = note: requested on the command line with `-D improper-ctypes`"
+      },
+      "1.99.1": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `Empty`, which is not FFI-safe | = note: this struct has no fields | = note: requested on the command line with `-D improper-ctypes`"
+      },
+      "nightly": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `Empty`, which is not FFI-safe | = note: this struct has no fields | = note: requested on the command line with `-D improper-ctypes`"
+      }
+    },
+    "repr_c_only_unit_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "repr_c_with_unit_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "repr_c_only_zero_array_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "repr_c_with_zero_array_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "repr_transparent_only_unit_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `TUnit`, which is not FFI-safe | = note: this struct contains only zero-sized fields | = note: requested on the command line with `-D improper-ctypes`"
+      },
+      "1.99.1": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `TUnit`, which is not FFI-safe | = note: this struct contains only zero-sized fields | = note: requested on the command line with `-D improper-ctypes`"
+      },
+      "nightly": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `TUnit`, which is not FFI-safe | = note: this struct contains only zero-sized fields | = note: requested on the command line with `-D improper-ctypes`"
+      }
+    },
+    "repr_transparent_only_phantom_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `TPh`, which is not FFI-safe | = note: composed only of `PhantomData` | = note: requested on the command line with `-D improper-ctypes`"
+      },
+      "1.99.1": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `TPh`, which is not FFI-safe | = note: composed only of `PhantomData` | = note: requested on the command line with `-D improper-ctypes`"
+      },
+      "nightly": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `TPh`, which is not FFI-safe | = note: composed only of `PhantomData` | = note: requested on the command line with `-D improper-ctypes`"
+      }
+    },
+    "repr_transparent_overaligned_zst_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "repr_transparent_with_non_ffi_1zst_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "repr_transparent_wrapping_string_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `String`, which is not FFI-safe | = note: this struct has unspecified layout | = note: requested on the command line with `-D improper-ctypes`"
+      },
+      "1.99.1": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `String`, which is not FFI-safe | = note: this struct has unspecified layout | = note: requested on the command line with `-D improper-ctypes`"
+      },
+      "nightly": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `String`, which is not FFI-safe | = note: this struct has unspecified layout | = note: requested on the command line with `-D improper-ctypes`"
+      }
+    },
+    "never_return_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "never_arg_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "HARD_ERROR_E0658_UNSTABLE",
+        "summary": "error[E0658]: the `!` type is experimental | = note: see issue #35121 <https://github.com/rust-lang/rust/issues/35121> for more information | = note: this compiler was built on 2026-05-31; consider upgrading it if it is out of date"
+      },
+      "1.99.1": {
+        "verdict": "HARD_ERROR_E0658_UNSTABLE",
+        "summary": "error[E0658]: the `!` type is experimental | = note: see issue #35121 <https://github.com/rust-lang/rust/issues/35121> for more information | error: aborting due to 1 previous error"
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "never_static_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "HARD_ERROR_E0658_UNSTABLE",
+        "summary": "error[E0658]: the `!` type is experimental | = note: see issue #35121 <https://github.com/rust-lang/rust/issues/35121> for more information | = note: this compiler was built on 2026-05-31; consider upgrading it if it is out of date"
+      },
+      "1.99.1": {
+        "verdict": "HARD_ERROR_E0658_UNSTABLE",
+        "summary": "error[E0658]: the `!` type is experimental | = note: see issue #35121 <https://github.com/rust-lang/rust/issues/35121> for more information | error: static of uninhabited type"
+      },
+      "nightly": {
+        "verdict": "HARD_ERROR",
+        "summary": "error: static of uninhabited type | = note: uninhabited statics cannot be initialized, and any access would be an immediate error | = note: for more information, see issue #74840 <https://github.com/rust-lang/rust/issues/74840>"
+      }
+    },
+    "infallible_arg_and_ret_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "repr_c_struct_with_never_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "HARD_ERROR_E0658_UNSTABLE",
+        "summary": "error[E0658]: the `!` type is experimental | = note: see issue #35121 <https://github.com/rust-lang/rust/issues/35121> for more information | = note: this compiler was built on 2026-05-31; consider upgrading it if it is out of date"
+      },
+      "1.99.1": {
+        "verdict": "HARD_ERROR_E0658_UNSTABLE",
+        "summary": "error[E0658]: the `!` type is experimental | = note: see issue #35121 <https://github.com/rust-lang/rust/issues/35121> for more information | error: aborting due to 1 previous error"
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "option_nonnull_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "option_extern_c_fn_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "option_ref_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "option_nonzero_u32_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "result_nonnull_unit_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "custom_option_like_enum_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "option_bool_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `Option<bool>`, which is not FFI-safe | = note: enum has no representation hint | = note: requested on the command line with `-D improper-ctypes`"
+      },
+      "1.99.1": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `Option<bool>`, which is not FFI-safe | = note: enum has no representation hint | = note: requested on the command line with `-D improper-ctypes`"
+      },
+      "nightly": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `Option<bool>`, which is not FFI-safe | = note: enum has no representation hint | = note: requested on the command line with `-D improper-ctypes`"
+      }
+    },
+    "option_cell_ref_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `Option<Cell<&u8>>`, which is not FFI-safe | = note: enum has no representation hint | = note: requested on the command line with `-D improper-ctypes`"
+      },
+      "1.99.1": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `Option<Cell<&u8>>`, which is not FFI-safe | = note: enum has no representation hint | = note: requested on the command line with `-D improper-ctypes`"
+      },
+      "nightly": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `Option<Cell<&u8>>`, which is not FFI-safe | = note: enum has no representation hint | = note: requested on the command line with `-D improper-ctypes`"
+      }
+    },
+    "option_box_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "option_box_def": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "bool_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "char_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `char`, which is not FFI-safe | = note: the `char` type has no C equivalent | = note: requested on the command line with `-D improper-ctypes`"
+      },
+      "1.99.1": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `char`, which is not FFI-safe | = note: the `char` type has no C equivalent | = note: requested on the command line with `-D improper-ctypes`"
+      },
+      "nightly": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `char`, which is not FFI-safe | = note: the `char` type has no C equivalent | = note: requested on the command line with `-D improper-ctypes`"
+      }
+    },
+    "repr_c_enum_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "repr_c_non_exhaustive_unit_enum_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "repr_c_non_exhaustive_data_enum_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "repr_c_packed_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "repr_c_align16_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "repr_rust_packed_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `P`, which is not FFI-safe | = note: this struct has unspecified layout | = note: requested on the command line with `-D improper-ctypes`"
+      },
+      "1.99.1": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `P`, which is not FFI-safe | = note: this struct has unspecified layout | = note: requested on the command line with `-D improper-ctypes`"
+      },
+      "nightly": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `P`, which is not FFI-safe | = note: this struct has unspecified layout | = note: requested on the command line with `-D improper-ctypes`"
+      }
+    },
+    "ref_mut_u32_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "raw_ptr_string_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `String`, which is not FFI-safe | = note: this struct has unspecified layout | = note: requested on the command line with `-D improper-ctypes`"
+      },
+      "1.99.1": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `String`, which is not FFI-safe | = note: this struct has unspecified layout | = note: requested on the command line with `-D improper-ctypes`"
+      },
+      "nightly": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `String`, which is not FFI-safe | = note: this struct has unspecified layout | = note: requested on the command line with `-D improper-ctypes`"
+      }
+    },
+    "raw_ptr_string_def": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "ref_string_def": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "box_u32_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `Box<u32>`, which is not FFI-safe | = note: this struct has unspecified layout | = note: requested on the command line with `-D improper-ctypes`"
+      },
+      "1.99.1": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `Box<u32>`, which is not FFI-safe | = note: this struct has unspecified layout | = note: requested on the command line with `-D improper-ctypes`"
+      },
+      "nightly": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `Box<u32>`, which is not FFI-safe | = note: this struct has unspecified layout | = note: requested on the command line with `-D improper-ctypes`"
+      }
+    },
+    "box_string_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `Box<String>`, which is not FFI-safe | = note: this struct has unspecified layout | = note: requested on the command line with `-D improper-ctypes`"
+      },
+      "1.99.1": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `Box<String>`, which is not FFI-safe | = note: this struct has unspecified layout | = note: requested on the command line with `-D improper-ctypes`"
+      },
+      "nightly": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `Box<String>`, which is not FFI-safe | = note: this struct has unspecified layout | = note: requested on the command line with `-D improper-ctypes`"
+      }
+    },
+    "box_string_def": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "fnptr_raw_ptr_string_in_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "generic_extern_c_def_with_string": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "unsafe_cell_u32_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "maybe_uninit_u32_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "manually_drop_u32_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "atomic_u64_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "i128_u128_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "fam_dst_slice_ptr_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `[u8]`, which is not FFI-safe | = note: slices have no C equivalent | = note: requested on the command line with `-D improper-ctypes`"
+      },
+      "1.99.1": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `[u8]`, which is not FFI-safe | = note: slices have no C equivalent | = note: requested on the command line with `-D improper-ctypes`"
+      },
+      "nightly": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `[u8]`, which is not FFI-safe | = note: slices have no C equivalent | = note: requested on the command line with `-D improper-ctypes`"
+      }
+    },
+    "fam_zero_len_array_ptr_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "nomicon_opaque_struct_ptr_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "recursion_limit_fail_open_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `String`, which is not FFI-safe | = note: this struct has unspecified layout | = note: requested on the command line with `-D improper-ctypes`"
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "variadic_call_non_ffi_types": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "1.99.1": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "variadic_call_f32_error": {
+      "nightly-2026-06-01": {
+        "verdict": "HARD_ERROR_E0617",
+        "summary": "error[E0617]: can't pass `f32` to variadic function | error: aborting due to 1 previous error"
+      },
+      "1.99.1": {
+        "verdict": "HARD_ERROR_E0617",
+        "summary": "error[E0617]: can't pass `f32` to variadic function | error: aborting due to 1 previous error"
+      },
+      "nightly": {
+        "verdict": "HARD_ERROR_E0617",
+        "summary": "error[E0617]: can't pass `f32` to variadic function | error: aborting due to 1 previous error"
+      }
+    },
+    "extern_type_ptr_and_ref_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "f16_f128_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    },
+    "repr_simd_with_simd_ffi_decl": {
+      "nightly-2026-06-01": {
+        "verdict": "IMPROPER_CTYPES_LINT",
+        "summary": "error: `extern` block uses type `F32x4`, which is not FFI-safe | = note: this struct has unspecified layout | = note: requested on the command line with `-D improper-ctypes`"
+      },
+      "nightly": {
+        "verdict": "ACCEPTED_SILENTLY",
+        "summary": ""
+      }
+    }
+  },
+  "live_empty_struct": {
+    "gcc_c23_pedantic_stderr": "/tmp/tmpeb250gx7/live/empty_c.c:4:8: warning: struct has no members [-Wpedantic]\n    4 | struct Empty {};\n      |        ^~~~~",
+    "rust_sizeof_empty": "0",
+    "rust_sizeof_with": "8",
+    "rust_offsetof_b": "4",
+    "c_sizeof_empty": "0",
+    "c_sizeof_with": "8",
+    "c_offsetof_b": "4",
+    "cpp_sizeof_empty": "1",
+    "cpp_sizeof_with": "12",
+    "cpp_offsetof_b": "8",
+    "cpp_sizeof_no_unique": "8",
+    "cpp_offsetof_no_unique_b": "4",
+    "c_read_ab": "0x1122334455667788",
+    "cpp_read_ab_corrupted": "0x1122334445b90190"
+  },
+  "live_invalid_bool_enum": {
+    "llvm_ir_sigs": [
+      "define noundef range(i8 0, 2) i8 @classify_bool(i1 noundef zeroext %b) unnamed_addr #0 !guid !4 {",
+      "define noundef range(i32 10, 21) i32 @classify_color(i32 noundef range(i32 0, 2) %c) unnamed_addr #0 !guid !5 {"
+    ],
+    "classified_bool": "2",
+    "bool_as_u8": "2",
+    "not_bool_as_u8": "3",
+    "classified_color": "20"
+  }
+}

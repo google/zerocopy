@@ -1,0 +1,103 @@
+{
+  "topics": [
+    "rust/inline-asm",
+    "rustc/mir",
+    "rustc/codegen",
+    "rustc/monomorphization",
+    "llvm/callbr",
+    "llvm/mc-layer",
+    "verification/inline-asm-soundness",
+    "security/assembler-directives"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler (1.98.0-nightly)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "1.98.0-nightly",
+        "commit_date": "2026-05-31",
+        "target": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "Rust compiler (1.99.1)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1",
+        "commit_date": "2026-10-13",
+        "target": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "Rust compiler (1.100.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+        "version": "1.100.0",
+        "commit_date": "2026-11-09",
+        "target": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "Rust compiler (1.102.0-nightly)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly",
+        "commit_date": "2026-11-11",
+        "target": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c",
+        "commit_date": "2026-11-17"
+      }
+    },
+    {
+      "name": "LLVM (rust-lang/llvm-project 22.1.6)",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "08c84e69a84d95936296dfcab0e38b34100725d5",
+        "version": "22.1.6"
+      }
+    },
+    {
+      "name": "LLVM (rust-lang/llvm-project 23.1.1)",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+        "version": "23.1.1"
+      }
+    },
+    {
+      "name": "LLVM (rust-lang/llvm-project 23.1.5)",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "0a5579eb649d3634a9c30ac873300cc2944fa070",
+        "version": "23.1.5"
+      }
+    },
+    {
+      "name": "LLVM MC standalone assembler",
+      "identity": {
+        "tool": "llvm-mc",
+        "version": "21.1.8",
+        "distribution": "Debian"
+      }
+    },
+    {
+      "name": "GNU Binutils (objdump and readelf)",
+      "identity": {
+        "tool": "GNU Binutils",
+        "version": "2.47",
+        "distribution": "Debian"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

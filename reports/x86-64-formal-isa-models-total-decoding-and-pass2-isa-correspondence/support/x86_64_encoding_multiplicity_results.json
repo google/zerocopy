@@ -1,0 +1,967 @@
+{
+  "tool_versions": {
+    "gcc": "gcc (Debian 15.2.0-14) 15.2.0",
+    "llvm-mc": "Debian LLVM version 21.1.8",
+    "objdump": "GNU objdump (GNU Binutils for Debian) 2.47"
+  },
+  "gcc_o2_notable": {
+    "endbr64": [
+      {
+        "fn": "add_forms",
+        "offset": "0",
+        "bytes": "f3 0f 1e fa",
+        "asm": "endbr64"
+      },
+      {
+        "fn": "addr_modes",
+        "offset": "10",
+        "bytes": "f3 0f 1e fa",
+        "asm": "endbr64"
+      },
+      {
+        "fn": "atomic_cas_and_fetch_add",
+        "offset": "30",
+        "bytes": "f3 0f 1e fa",
+        "asm": "endbr64"
+      },
+      {
+        "fn": "loop_with_align_nops",
+        "offset": "50",
+        "bytes": "f3 0f 1e fa",
+        "asm": "endbr64"
+      },
+      {
+        "fn": "vex2_vs_vex3",
+        "offset": "c0",
+        "bytes": "f3 0f 1e fa",
+        "asm": "endbr64"
+      }
+    ],
+    "multi_byte_nops": [
+      {
+        "fn": "add_forms",
+        "offset": "d",
+        "bytes": "0f 1f 00",
+        "asm": "nop DWORD PTR [rax]"
+      },
+      {
+        "fn": "atomic_cas_and_fetch_add",
+        "offset": "48",
+        "bytes": "0f 1f 84 00 00 00 00 00",
+        "asm": "nop DWORD PTR [rax+rax*1+0x0]"
+      },
+      {
+        "fn": "loop_with_align_nops",
+        "offset": "63",
+        "bytes": "0f 1f 80 00 00 00 00",
+        "asm": "nop DWORD PTR [rax+0x0]"
+      },
+      {
+        "fn": "loop_with_align_nops",
+        "offset": "6a",
+        "bytes": "66 66 2e 0f 1f 84 00 00 00 00 00",
+        "asm": "data16 cs nop WORD PTR [rax+rax*1+0x0]"
+      },
+      {
+        "fn": "loop_with_align_nops",
+        "offset": "75",
+        "bytes": "66 66 2e 0f 1f 84 00 00 00 00 00",
+        "asm": "data16 cs nop WORD PTR [rax+rax*1+0x0]"
+      },
+      {
+        "fn": "loop_with_align_nops",
+        "offset": "ad",
+        "bytes": "0f 1f 00",
+        "asm": "nop DWORD PTR [rax]"
+      },
+      {
+        "fn": "loop_with_align_nops",
+        "offset": "b5",
+        "bytes": "66 66 2e 0f 1f 84 00 00 00 00 00",
+        "asm": "data16 cs nop WORD PTR [rax+rax*1+0x0]"
+      }
+    ],
+    "lock_atomics": [
+      {
+        "fn": "atomic_cas_and_fetch_add",
+        "offset": "37",
+        "bytes": "f0 48 83 01 01",
+        "asm": "lock add QWORD PTR [rcx],0x1"
+      },
+      {
+        "fn": "atomic_cas_and_fetch_add",
+        "offset": "3c",
+        "bytes": "f0 48 0f b1 17",
+        "asm": "lock cmpxchg QWORD PTR [rdi],rdx"
+      }
+    ],
+    "vex2_c5_vs_vex3_c4": [
+      {
+        "fn": "vex2_vs_vex3",
+        "offset": "c4",
+        "bytes": "c5 fd ef c1",
+        "asm": "vpxor ymm0,ymm0,ymm1"
+      },
+      {
+        "fn": "vex2_vs_vex3",
+        "offset": "c8",
+        "bytes": "c4 e2 7d 00 c2",
+        "asm": "vpshufb ymm0,ymm0,ymm2"
+      }
+    ],
+    "imm_forms_add": [
+      {
+        "fn": "loop_with_align_nops",
+        "offset": "a3",
+        "bytes": "48 83 c6 01",
+        "asm": "add rsi,0x1"
+      }
+    ],
+    "sib_or_disp_forms": [
+      {
+        "fn": "addr_modes",
+        "offset": "14",
+        "bytes": "48 89 74 24 f8",
+        "asm": "mov QWORD PTR [rsp-0x8],rsi"
+      },
+      {
+        "fn": "addr_modes",
+        "offset": "19",
+        "bytes": "48 8b 54 24 f8",
+        "asm": "mov rdx,QWORD PTR [rsp-0x8]"
+      },
+      {
+        "fn": "addr_modes",
+        "offset": "1e",
+        "bytes": "48 8b 47 08",
+        "asm": "mov rax,QWORD PTR [rdi+0x8]"
+      },
+      {
+        "fn": "addr_modes",
+        "offset": "28",
+        "bytes": "48 03 87 00 01 00 00",
+        "asm": "add rax,QWORD PTR [rdi+0x100]"
+      }
+    ],
+    "undef_flag_ops": [
+      {
+        "fn": "loop_with_align_nops",
+        "offset": "87",
+        "bytes": "48 d3 e0",
+        "asm": "shl rax,cl"
+      },
+      {
+        "fn": "loop_with_align_nops",
+        "offset": "8e",
+        "bytes": "f3 48 0f bc d1",
+        "asm": "tzcnt rdx,rcx"
+      }
+    ]
+  },
+  "gcc_o2_function_counts": {
+    "add_forms": 4,
+    "addr_modes": 8,
+    "atomic_cas_and_fetch_add": 8,
+    "loop_with_align_nops": 30,
+    "vex2_vs_vex3": 4
+  },
+  "multiplicity_matrix": [
+    {
+      "case": "dir_bit_01_add_rax_rsi",
+      "bytes": "48 01 f0",
+      "len": 3,
+      "note": "add rax, rsi via opcode 0x01 (MR)",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "addq\t%rsi, %rax"
+        ],
+        "stderr": ""
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "48 01 f0",
+            "asm": "add rax,rsi"
+          }
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "case": "dir_bit_03_add_rax_rsi",
+      "bytes": "48 03 c6",
+      "len": 3,
+      "note": "add rax, rsi via opcode 0x03 (RM)",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "addq\t%rsi, %rax"
+        ],
+        "stderr": ""
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "48 03 c6",
+            "asm": "add rax,rsi"
+          }
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "case": "imm_05_rax_short_add1",
+      "bytes": "48 05 01 00 00 00",
+      "len": 6,
+      "note": "add rax, 1 via opcode 0x05 (RAX imm32 short form, 6B)",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "addq\t$1, %rax"
+        ],
+        "stderr": ""
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "48 05 01 00 00 00",
+            "asm": "add rax,0x1"
+          }
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "case": "imm_81_modrm_imm32_add1",
+      "bytes": "48 81 c0 01 00 00 00",
+      "len": 7,
+      "note": "add rax, 1 via opcode 0x81 /0 (imm32, 7B)",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "addq\t$1, %rax"
+        ],
+        "stderr": ""
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "48 81 c0 01 00 00 00",
+            "asm": "add rax,0x1"
+          }
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "case": "imm_83_modrm_imm8_add1",
+      "bytes": "48 83 c0 01",
+      "len": 4,
+      "note": "add rax, 1 via opcode 0x83 /0 (sign-extended imm8, 4B)",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "addq\t$1, %rax"
+        ],
+        "stderr": ""
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "48 83 c0 01",
+            "asm": "add rax,0x1"
+          }
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "case": "ea_mod00_base_rdi",
+      "bytes": "48 8b 07",
+      "len": 3,
+      "note": "mov rax, [rdi] via Mod=00 RM=7 (3B)",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "movq\t(%rdi), %rax"
+        ],
+        "stderr": ""
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "48 8b 07",
+            "asm": "mov rax,QWORD PTR [rdi]"
+          }
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "case": "ea_mod01_disp8_zero",
+      "bytes": "48 8b 47 00",
+      "len": 4,
+      "note": "mov rax, [rdi+0] via Mod=01 disp8=0 (4B)",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "movq\t(%rdi), %rax"
+        ],
+        "stderr": ""
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "48 8b 47 00",
+            "asm": "mov rax,QWORD PTR [rdi+0x0]"
+          }
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "case": "ea_mod10_disp32_zero",
+      "bytes": "48 8b 87 00 00 00 00",
+      "len": 7,
+      "note": "mov rax, [rdi+0] via Mod=10 disp32=0 (7B)",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "movq\t(%rdi), %rax"
+        ],
+        "stderr": ""
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "48 8b 87 00 00 00 00",
+            "asm": "mov rax,QWORD PTR [rdi+0x0]"
+          }
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "case": "ea_mod00_sib_no_index",
+      "bytes": "48 8b 04 27",
+      "len": 4,
+      "note": "mov rax, [rdi] via SIB scale=1 idx=none(4) base=rdi (4B)",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "movq\t(%rdi,%riz), %rax"
+        ],
+        "stderr": ""
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "48 8b 04 27",
+            "asm": "mov rax,QWORD PTR [rdi+riz*1]"
+          }
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "case": "nop_90",
+      "bytes": "90",
+      "len": 1,
+      "note": "1B canonical nop",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "nop"
+        ],
+        "stderr": ""
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "90",
+            "asm": "nop"
+          }
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "case": "nop_66_90",
+      "bytes": "66 90",
+      "len": 2,
+      "note": "2B operand-size-prefixed nop",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "nop"
+        ],
+        "stderr": ""
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "66 90",
+            "asm": "xchg ax,ax"
+          }
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "case": "nop_48_90_rexw",
+      "bytes": "48 90",
+      "len": 2,
+      "note": "2B REX.W + 0x90 (still nop, REX.B=0)",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "nop"
+        ],
+        "stderr": ""
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "48 90",
+            "asm": "rex.W nop"
+          }
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "case": "nop_40_90_rex0",
+      "bytes": "40 90",
+      "len": 2,
+      "note": "2B bare REX=0x40 + 0x90 (still nop)",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "nop"
+        ],
+        "stderr": ""
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "40 90",
+            "asm": "rex nop"
+          }
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "case": "trap_41_90_rexb_xchg32",
+      "bytes": "41 90",
+      "len": 2,
+      "note": "SOUNDNESS TRAP: REX.B=1 turns 0x90 into xchg r8d, eax (zeroes upper 32 bits!)",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "xchgl\t%r8d, %eax"
+        ],
+        "stderr": ""
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "41 90",
+            "asm": "xchg r8d,eax"
+          }
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "case": "trap_49_90_rexwb_xchg64",
+      "bytes": "49 90",
+      "len": 2,
+      "note": "SOUNDNESS TRAP: REX.W+REX.B turns 0x90 into xchg r8, rax",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "xchgq\t%r8, %rax"
+        ],
+        "stderr": ""
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "49 90",
+            "asm": "xchg r8,rax"
+          }
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "case": "nop_0f1f_6b",
+      "bytes": "66 0f 1f 44 00 00",
+      "len": 6,
+      "note": "6B Intel recommended multi-byte nop",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "nopw\t(%rax,%rax)"
+        ],
+        "stderr": ""
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "66 0f 1f 44 00 00",
+            "asm": "nop WORD PTR [rax+rax*1+0x0]"
+          }
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "case": "rex_nullified_before_67",
+      "bytes": "48 67 01 00",
+      "len": 4,
+      "note": "REX 0x48 before legacy 0x67 is IGNORED -> 32-bit add dword ptr [eax], eax",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "addl\t%eax, (%eax)"
+        ],
+        "stderr": ""
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "48",
+            "asm": "rex.W"
+          },
+          {
+            "bytes": "67 01 00",
+            "asm": "add DWORD PTR [eax],eax"
+          }
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "case": "rex_effective_after_67",
+      "bytes": "67 48 01 00",
+      "len": 4,
+      "note": "REX 0x48 after legacy 0x67 is ACTIVE -> 64-bit add qword ptr [eax], rax",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "addq\t%rax, (%eax)"
+        ],
+        "stderr": ""
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "67 48 01 00",
+            "asm": "add QWORD PTR [eax],rax"
+          }
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "case": "pfx_66_f3_addss",
+      "bytes": "66 f3 0f 58 c1",
+      "len": 5,
+      "note": "F3 overrides 66 -> addss xmm0, xmm1",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "addss\t%xmm1, %xmm0"
+        ],
+        "stderr": ""
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "66 f3 0f 58 c1",
+            "asm": "data16 addss xmm0,xmm1"
+          }
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "case": "pfx_f3_66_addss",
+      "bytes": "f3 66 0f 58 c1",
+      "len": 5,
+      "note": "F3 overrides 66 regardless of order -> addss xmm0, xmm1",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "addss\t%xmm1, %xmm0"
+        ],
+        "stderr": ""
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "f3 66 0f 58 c1",
+            "asm": "data16 addss xmm0,xmm1"
+          }
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "case": "pfx_f2_f3_last_wins_addss",
+      "bytes": "f2 f3 0f 58 c1",
+      "len": 5,
+      "note": "Within Group 1 {F2,F3}, last wins -> addss",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "addss\t%xmm1, %xmm0"
+        ],
+        "stderr": ""
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "f2 f3 0f 58 c1",
+            "asm": "repnz addss xmm0,xmm1"
+          }
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "case": "pfx_f3_f2_last_wins_addsd",
+      "bytes": "f3 f2 0f 58 c1",
+      "len": 5,
+      "note": "Within Group 1 {F2,F3}, last wins -> addsd",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "addsd\t%xmm1, %xmm0"
+        ],
+        "stderr": ""
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "f3 f2 0f 58 c1",
+            "asm": "repz addsd xmm0,xmm1"
+          }
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "case": "pfx_endbr64_f3",
+      "bytes": "f3 0f 1e fa",
+      "len": 4,
+      "note": "F3 0F 1E FA -> endbr64 (CET-IBT landing pad)",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "endbr64"
+        ],
+        "stderr": ""
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "f3 0f 1e fa",
+            "asm": "endbr64"
+          }
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "case": "pfx_nop_0f1e_no_f3",
+      "bytes": "0f 1e fa",
+      "len": 3,
+      "note": "0F 1E FA without F3 -> hintable NOP (llvm-mc fails and resyncs on 0xFA=cli!)",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "cli"
+        ],
+        "stderr": "<stdin>:1:1: warning: invalid instruction encoding\n0x0f 0x1e 0xfa\n^"
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "0f 1e fa",
+            "asm": "nop edx"
+          }
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "case": "pfx_f3_tzcnt_vs_bsf",
+      "bytes": "f3 48 0f bc d1",
+      "len": 5,
+      "note": "F3 48 0F BC D1 -> tzcnt rdx, rcx (BMI1) vs bsf rdx, rcx (pre-BMI1 CPUID!)",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "tzcntq\t%rcx, %rdx"
+        ],
+        "stderr": ""
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "f3 48 0f bc d1",
+            "asm": "tzcnt rdx,rcx"
+          }
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "case": "pfx_bsf_no_f3",
+      "bytes": "48 0f bc d1",
+      "len": 4,
+      "note": "48 0F BC D1 -> bsf rdx, rcx (dest/CF/OF/SF/PF/AF undefined on 0)",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "bsfq\t%rcx, %rdx"
+        ],
+        "stderr": ""
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "48 0f bc d1",
+            "asm": "bsf rdx,rcx"
+          }
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "case": "pfx_66_rexw_add64",
+      "bytes": "66 48 01 f0",
+      "len": 4,
+      "note": "REX.W overrides 0x66 -> 64-bit add rax, rsi",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "addq\t%rsi, %rax"
+        ],
+        "stderr": ""
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "66 48 01 f0",
+            "asm": "data16 add rax,rsi"
+          }
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "case": "lock_legal_mem_add",
+      "bytes": "f0 48 01 07",
+      "len": 4,
+      "note": "Legal: lock add qword ptr [rdi], rax",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "lock",
+          "addq\t%rax, (%rdi)"
+        ],
+        "stderr": ""
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "f0 48 01 07",
+            "asm": "lock add QWORD PTR [rdi],rax"
+          }
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "case": "lock_ud_reg_dst_add",
+      "bytes": "f0 48 01 f0",
+      "len": 4,
+      "note": "Architectural #UD: LOCK on register destination (add rax, rsi)",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "lock",
+          "addq\t%rsi, %rax"
+        ],
+        "stderr": ""
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "f0 48 01 f0",
+            "asm": "lock add rax,rsi"
+          }
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "case": "lock_ud_nonlockable_mov",
+      "bytes": "f0 48 8b 07",
+      "len": 4,
+      "note": "Architectural #UD: LOCK on non-lockable MOV",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "lock",
+          "movq\t(%rdi), %rax"
+        ],
+        "stderr": ""
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "f0 48 8b 07",
+            "asm": "lock mov rax,QWORD PTR [rdi]"
+          }
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "case": "len_15_legal_nop",
+      "bytes": "66 66 66 66 66 66 66 66 66 66 66 66 66 66 90",
+      "len": 15,
+      "note": "Legal 15-byte instruction (14x 0x66 + 0x90)",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "nop"
+        ],
+        "stderr": ""
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "66 66 66 66 66 66 66 66 66 66 66 66 66 66",
+            "asm": "data16 data16 data16 data16 data16 data16 data16 data16 data16 data16 data16 data16 data16 data16"
+          },
+          {
+            "bytes": "90",
+            "asm": "nop"
+          }
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "case": "len_16_gp_fault",
+      "bytes": "66 66 66 66 66 66 66 66 66 66 66 66 66 66 66 90",
+      "len": 16,
+      "note": "Architectural #GP(0): 16-byte instruction exceeds 15B limit",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "nop"
+        ],
+        "stderr": ""
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "66 66 66 66 66 66 66 66 66 66 66 66 66 66",
+            "asm": "data16 data16 data16 data16 data16 data16 data16 data16 data16 data16 data16 data16 data16 data16"
+          },
+          {
+            "bytes": "66 90",
+            "asm": "xchg ax,ax"
+          }
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "case": "vex2_vpxor_ymm0",
+      "bytes": "c5 f5 ef c0",
+      "len": 4,
+      "note": "4B VEX2 encoding of vpxor ymm0, ymm1, ymm0",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "vpxor\t%ymm0, %ymm1, %ymm0"
+        ],
+        "stderr": ""
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "c5 f5 ef c0",
+            "asm": "vpxor ymm0,ymm1,ymm0"
+          }
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "case": "vex3_vpxor_ymm0",
+      "bytes": "c4 e1 75 ef c0",
+      "len": 5,
+      "note": "5B VEX3 encoding of vpxor ymm0, ymm1, ymm0",
+      "llvm_mc": {
+        "rc": 0,
+        "insts": [
+          "vpxor\t%ymm0, %ymm1, %ymm0"
+        ],
+        "stderr": ""
+      },
+      "objdump": {
+        "rc": 0,
+        "insts": [
+          {
+            "bytes": "c4 e1 75 ef c0",
+            "asm": "vpxor ymm0,ymm1,ymm0"
+          }
+        ],
+        "stderr": ""
+      }
+    }
+  ]
+}

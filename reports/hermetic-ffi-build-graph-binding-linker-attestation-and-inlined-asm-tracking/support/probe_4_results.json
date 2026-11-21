@@ -1,0 +1,702 @@
+{
+  "1.99.1": {
+    "probe_4abc": {
+      "4a_inlined_multi_caller": {
+        "caller_simple_disasm": [
+          "0000000000000000 <caller_simple>:",
+          "0: 48 89 f8                     \tmovq\t%rdi, %rax",
+          "3: 48 0f af c6                  \timulq\t%rsi, %rax",
+          "7: 48 35 5a 5a 00 00            \txorq\t$0x5a5a, %rax           # imm = 0x5A5A",
+          "d: c3                           \tretq"
+        ],
+        "caller_simple_imul_xor": [
+          "3: 48 0f af c6                  \timulq\t%rsi, %rax",
+          "7: 48 35 5a 5a 00 00            \txorq\t$0x5a5a, %rax           # imm = 0x5A5A"
+        ],
+        "caller_high_pressure_imul_xor": [
+          "38: 49 0f af c4                  \timulq\t%r12, %rax",
+          "46: 48 0f af d9                  \timulq\t%rcx, %rbx",
+          "3c: 48 35 5a 5a 00 00            \txorq\t$0x5a5a, %rax           # imm = 0x5A5A",
+          "4a: 48 81 f3 5a 5a 00 00         \txorq\t$0x5a5a, %rbx           # imm = 0x5A5A"
+        ],
+        "caller_high_pressure_spills_and_pushes": [
+          "0: 55                           \tpushq\t%rbp",
+          "1: 41 57                        \tpushq\t%r15",
+          "3: 41 56                        \tpushq\t%r14",
+          "5: 41 55                        \tpushq\t%r13",
+          "7: 41 54                        \tpushq\t%r12",
+          "9: 53                           \tpushq\t%rbx",
+          "a: 50                           \tpushq\t%rax",
+          "57: 48 8b 4c 24 40               \tmovq\t0x40(%rsp), %rcx"
+        ],
+        "distinct_encodings_or_regs": true
+      },
+      "4b_cfg_cloning": {
+        "mir_post_cleanup_asm_count": 1,
+        "emitted_machine_ror_copies": 2,
+        "emitted_ror_instructions": [
+          "c: 48 c1 c8 0d                  \trorq\t$0xd, %rax",
+          "1c: 48 c1 c8 0d                  \trorq\t$0xd, %rax"
+        ],
+        "full_disasm": [
+          "0000000000000000 <cfg_cloned_asm>:",
+          "0: 85 ff                        \ttestl\t%edi, %edi",
+          "2: 74 10                        \tje\t0x14 <cfg_cloned_asm+0x14>",
+          "4: 48 8d 04 76                  \tleaq\t(%rsi,%rsi,2), %rax",
+          "8: 48 83 c2 0b                  \taddq\t$0xb, %rdx",
+          "c: 48 c1 c8 0d                  \trorq\t$0xd, %rax",
+          "10: 48 31 d0                     \txorq\t%rdx, %rax",
+          "13: c3                           \tretq",
+          "14: 48 8d 04 92                  \tleaq\t(%rdx,%rdx,4), %rax",
+          "18: 48 83 c1 1d                  \taddq\t$0x1d, %rcx",
+          "1c: 48 c1 c8 0d                  \trorq\t$0xd, %rax",
+          "20: 48 31 c8                     \txorq\t%rcx, %rax",
+          "23: c3                           \tretq"
+        ]
+      },
+      "4c_loop_unrolling": {
+        "mir_post_cleanup_asm_count": 1,
+        "emitted_machine_ror_copies": 4,
+        "emitted_ror_instructions": [
+          "a: 48 c1 c8 07                  \trorq\t$0x7, %rax",
+          "11: 48 c1 c8 07                  \trorq\t$0x7, %rax",
+          "1c: 48 c1 c8 07                  \trorq\t$0x7, %rax",
+          "27: 48 c1 c8 07                  \trorq\t$0x7, %rax"
+        ],
+        "emitted_xor_instructions": [
+          "e: 48 31 c8                     \txorq\t%rcx, %rax",
+          "15: 48 31 d0                     \txorq\t%rdx, %rax",
+          "20: 48 31 c8                     \txorq\t%rcx, %rax",
+          "2b: 48 31 c8                     \txorq\t%rcx, %rax"
+        ],
+        "full_disasm": [
+          "0000000000000000 <unrolled_loop_asm>:",
+          "0: 48 89 f0                     \tmovq\t%rsi, %rax",
+          "3: 48 8b 0f                     \tmovq\t(%rdi), %rcx",
+          "6: 48 8b 57 08                  \tmovq\t0x8(%rdi), %rdx",
+          "a: 48 c1 c8 07                  \trorq\t$0x7, %rax",
+          "e: 48 31 c8                     \txorq\t%rcx, %rax",
+          "11: 48 c1 c8 07                  \trorq\t$0x7, %rax",
+          "15: 48 31 d0                     \txorq\t%rdx, %rax",
+          "18: 48 8b 4f 10                  \tmovq\t0x10(%rdi), %rcx",
+          "1c: 48 c1 c8 07                  \trorq\t$0x7, %rax",
+          "20: 48 31 c8                     \txorq\t%rcx, %rax",
+          "23: 48 8b 4f 18                  \tmovq\t0x18(%rdi), %rcx",
+          "27: 48 c1 c8 07                  \trorq\t$0x7, %rax",
+          "2b: 48 31 c8                     \txorq\t%rcx, %rax",
+          "2e: c3                           \tretq"
+        ]
+      }
+    },
+    "probe_4d_avx2_vzeroupper": {
+      "avx_inlined_plain_asm": {
+        "vzeroupper_count": 1,
+        "vzeroupper_lines": [
+          "14: c5 f8 77                     \tvzeroupper"
+        ],
+        "disasm": [
+          "0000000000000000 <avx_inlined_plain_asm>:",
+          "0: c5 fe 6f 47 20               \tvmovdqu\t0x20(%rdi), %ymm0",
+          "5: c5 fd d4 07                  \tvpaddq\t(%rdi), %ymm0, %ymm0",
+          "9: 48 89 f0                     \tmovq\t%rsi, %rax",
+          "c: c5 fe 7f 07                  \tvmovdqu\t%ymm0, (%rdi)",
+          "10: 48 83 c0 01                  \taddq\t$0x1, %rax",
+          "14: c5 f8 77                     \tvzeroupper",
+          "17: c3                           \tretq"
+        ]
+      },
+      "avx_inlined_clobber_abi_asm": {
+        "vzeroupper_count": 1,
+        "vzeroupper_lines": [
+          "25: c5 f8 77                     \tvzeroupper"
+        ],
+        "disasm": [
+          "0000000000000000 <avx_inlined_clobber_abi_asm>:",
+          "0: 53                           \tpushq\t%rbx",
+          "1: 48 89 f0                     \tmovq\t%rsi, %rax",
+          "4: 48 89 fb                     \tmovq\t%rdi, %rbx",
+          "7: c5 fe 6f 47 20               \tvmovdqu\t0x20(%rdi), %ymm0",
+          "c: c5 fd d4 07                  \tvpaddq\t(%rdi), %ymm0, %ymm0",
+          "10: c5 fe 7f 44 24 e0            \tvmovdqu\t%ymm0, -0x20(%rsp)",
+          "16: 48 83 c0 01                  \taddq\t$0x1, %rax",
+          "1a: c5 fc 10 44 24 e0            \tvmovups\t-0x20(%rsp), %ymm0",
+          "20: c5 fc 11 03                  \tvmovups\t%ymm0, (%rbx)",
+          "24: 5b                           \tpopq\t%rbx",
+          "25: c5 f8 77                     \tvzeroupper",
+          "28: c3                           \tretq"
+        ]
+      },
+      "avx_calling_outline_asm": {
+        "vzeroupper_count": 2,
+        "vzeroupper_lines": [
+          "19: c5 f8 77                     \tvzeroupper",
+          "30: c5 f8 77                     \tvzeroupper"
+        ],
+        "disasm": [
+          "0000000000000000 <avx_calling_outline_asm>:",
+          "0: 53                           \tpushq\t%rbx",
+          "1: 48 83 ec 20                  \tsubq\t$0x20, %rsp",
+          "5: 48 89 fb                     \tmovq\t%rdi, %rbx",
+          "8: c5 fe 6f 47 20               \tvmovdqu\t0x20(%rdi), %ymm0",
+          "d: c5 fd d4 07                  \tvpaddq\t(%rdi), %ymm0, %ymm0",
+          "11: c5 fe 7f 04 24               \tvmovdqu\t%ymm0, (%rsp)",
+          "16: 48 89 f7                     \tmovq\t%rsi, %rdi",
+          "19: c5 f8 77                     \tvzeroupper",
+          "1c: ff 15 00 00 00 00            \tcallq\t*(%rip)                 # 0x22 <avx_calling_outline_asm+0x22>",
+          "22: c5 fc 10 04 24               \tvmovups\t(%rsp), %ymm0",
+          "27: c5 fc 11 03                  \tvmovups\t%ymm0, (%rbx)",
+          "2b: 48 83 c4 20                  \taddq\t$0x20, %rsp",
+          "2f: 5b                           \tpopq\t%rbx",
+          "30: c5 f8 77                     \tvzeroupper",
+          "33: c3                           \tretq"
+        ]
+      }
+    },
+    "probe_4e_inline_never_limitations": {
+      "exported_without_inline_never_was_inlined_into_caller": true,
+      "caller_of_exported_disasm": [
+        "0000000000000000 <caller_of_exported>:",
+        "0: 48 81 f7 68 24 00 00         \txorq\t$0x2468, %rdi           # imm = 0x2468",
+        "7: 48 8d 47 01                  \tleaq\t0x1(%rdi), %rax",
+        "b: c3                           \tretq"
+      ],
+      "internal_never_inline_symbol": "_RNvCs4m3lLZgcsFC_19inline_never_limits21internal_never_inline",
+      "internal_never_inline_const_specialized_0x1337": true,
+      "internal_never_inline_disasm": [
+        "0000000000000000 <_RNvCs4m3lLZgcsFC_19inline_never_limits21internal_never_inline>:",
+        "0: 48 89 f8                     \tmovq\t%rdi, %rax",
+        "3: b9 37 13 00 00               \tmovl\t$0x1337, %ecx           # imm = 0x1337",
+        "8: 48 01 c8                     \taddq\t%rcx, %rax",
+        "b: c3                           \tretq"
+      ],
+      "obj_merge_functions_symtab_lines": [
+        "    17: 0000000000000000     0 SECTION LOCAL  DEFAULT   19 .text.icf_target_alpha",
+        "    23: 0000000000000000    10 FUNC    GLOBAL DEFAULT   19 icf_target_alpha",
+        "    31: 0000000000000000    10 FUNC    GLOBAL DEFAULT   19 icf_target_beta"
+      ],
+      "linker_icf_folding": {
+        "none": {
+          "addresses": {
+            "icf_target_alpha": "0000000000014ab0",
+            "icf_target_beta": "0000000000014ab0"
+          },
+          "folded_to_identical_vma": true
+        },
+        "safe": {
+          "addresses": {
+            "icf_target_alpha": "0000000000014ab0",
+            "icf_target_beta": "0000000000014ab0"
+          },
+          "folded_to_identical_vma": true
+        },
+        "all": {
+          "addresses": {
+            "icf_target_alpha": "00000000000147f0",
+            "icf_target_beta": "00000000000147f0"
+          },
+          "folded_to_identical_vma": true
+        }
+      }
+    },
+    "probe_4f_attestation_mechanisms": {
+      "pushsection_site_table": {
+        "section_flags_hex": "0x80000000",
+        "has_SHF_EXCLUDE": true,
+        "total_emitted_records": 7,
+        "expected_records_1_plus_2_plus_4_and_0_for_dead": true,
+        "dead_pure_asm_emitted_zero_records": true,
+        "records": [
+          {
+            "record_index": 0,
+            "site_id": "0xa11ea101",
+            "enclosing_section": ".text.inlined_caller_1",
+            "start_offset": 3,
+            "end_offset": 13,
+            "byte_len": 10,
+            "raw_bytes_hex": "480fafc648355a5a0000",
+            "decoded_insns": [
+              "imulq\t%rsi, %rax",
+              "xorq\t$23130, %rax                    # imm = 0x5A5A"
+            ]
+          },
+          {
+            "record_index": 1,
+            "site_id": "0xa11ea101",
+            "enclosing_section": ".text.inlined_caller_2",
+            "start_offset": 3,
+            "end_offset": 14,
+            "byte_len": 11,
+            "raw_bytes_hex": "480fafd74881f25a5a0000",
+            "decoded_insns": [
+              "imulq\t%rdi, %rdx",
+              "xorq\t$23130, %rdx                    # imm = 0x5A5A"
+            ]
+          },
+          {
+            "record_index": 2,
+            "site_id": "0xa11ea101",
+            "enclosing_section": ".text.inlined_caller_2",
+            "start_offset": 14,
+            "end_offset": 24,
+            "byte_len": 10,
+            "raw_bytes_hex": "480fafc248355a5a0000",
+            "decoded_insns": [
+              "imulq\t%rdx, %rax",
+              "xorq\t$23130, %rax                    # imm = 0x5A5A"
+            ]
+          },
+          {
+            "record_index": 3,
+            "site_id": "0xa11ea102",
+            "enclosing_section": ".text.unrolled_attested",
+            "start_offset": 10,
+            "end_offset": 17,
+            "byte_len": 7,
+            "raw_bytes_hex": "48c1c8074831c8",
+            "decoded_insns": [
+              "rorq\t$7, %rax",
+              "xorq\t%rcx, %rax"
+            ]
+          },
+          {
+            "record_index": 4,
+            "site_id": "0xa11ea102",
+            "enclosing_section": ".text.unrolled_attested",
+            "start_offset": 17,
+            "end_offset": 24,
+            "byte_len": 7,
+            "raw_bytes_hex": "48c1c8074831d0",
+            "decoded_insns": [
+              "rorq\t$7, %rax",
+              "xorq\t%rdx, %rax"
+            ]
+          },
+          {
+            "record_index": 5,
+            "site_id": "0xa11ea102",
+            "enclosing_section": ".text.unrolled_attested",
+            "start_offset": 28,
+            "end_offset": 35,
+            "byte_len": 7,
+            "raw_bytes_hex": "48c1c8074831c8",
+            "decoded_insns": [
+              "rorq\t$7, %rax",
+              "xorq\t%rcx, %rax"
+            ]
+          },
+          {
+            "record_index": 6,
+            "site_id": "0xa11ea102",
+            "enclosing_section": ".text.unrolled_attested",
+            "start_offset": 39,
+            "end_offset": 46,
+            "byte_len": 7,
+            "raw_bytes_hex": "48c1c8074831c8",
+            "decoded_insns": [
+              "rorq\t$7, %rax",
+              "xorq\t%rcx, %rax"
+            ]
+          }
+        ],
+        "gc_sections_link_checks": {
+          "rust_lld": {
+            "rc": 0,
+            "shf_exclude_stripped_from_final_exe": true,
+            "unreferenced_inlined_caller_2_gc_collected": true,
+            "final_exe_output": "23126 434606503731658756 23126"
+          },
+          "ld_bfd": {
+            "rc": 0,
+            "shf_exclude_stripped_from_final_exe": true,
+            "unreferenced_inlined_caller_2_gc_collected": true,
+            "final_exe_output": "23126 434606503731658756 23126"
+          }
+        }
+      },
+      "dwarf_debug_line_unrolled": [
+        "0000000000000000 <unrolled_attested>:",
+        "; unrolled_attested():",
+        "; /tmp/probe4f_1iosg_iq/attest.rs:38",
+        "0: 48 89 f0                     \tmovq\t%rsi, %rax",
+        "; /tmp/probe4f_1iosg_iq/attest.rs:41",
+        "3: 48 8b 0f                     \tmovq\t(%rdi), %rcx",
+        "6: 48 8b 57 08                  \tmovq\t0x8(%rdi), %rdx",
+        "; /tmp/probe4f_1iosg_iq/attest.rs:43",
+        "a: 48 c1 c8 07                  \trorq\t$0x7, %rax",
+        "e: 48 31 c8                     \txorq\t%rcx, %rax",
+        "11: 48 c1 c8 07                  \trorq\t$0x7, %rax",
+        "15: 48 31 d0                     \txorq\t%rdx, %rax",
+        "; /tmp/probe4f_1iosg_iq/attest.rs:41",
+        "18: 48 8b 4f 10                  \tmovq\t0x10(%rdi), %rcx",
+        "; /tmp/probe4f_1iosg_iq/attest.rs:43",
+        "1c: 48 c1 c8 07                  \trorq\t$0x7, %rax",
+        "20: 48 31 c8                     \txorq\t%rcx, %rax",
+        "; /tmp/probe4f_1iosg_iq/attest.rs:41",
+        "23: 48 8b 4f 18                  \tmovq\t0x18(%rdi), %rcx",
+        "; /tmp/probe4f_1iosg_iq/attest.rs:43",
+        "27: 48 c1 c8 07                  \trorq\t$0x7, %rax",
+        "2b: 48 31 c8                     \txorq\t%rcx, %rax",
+        "; /tmp/probe4f_1iosg_iq/attest.rs:61",
+        "2e: c3                           \tretq"
+      ],
+      "naked_asm_fixed_bytes_hex": "480faffe4881f75a5a00004889f8c3",
+      "naked_asm_disasm": [
+        "0000000000000000 <naked_mix_fixed>:",
+        "0: 48 0f af fe                  \timulq\t%rsi, %rdi",
+        "4: 48 81 f7 5a 5a 00 00         \txorq\t$0x5a5a, %rdi           # imm = 0x5A5A",
+        "b: 48 89 f8                     \tmovq\t%rdi, %rax",
+        "e: c3                           \tretq"
+      ]
+    }
+  },
+  "nightly-2026-06-01": {
+    "probe_4abc": {
+      "4a_inlined_multi_caller": {
+        "caller_simple_disasm": [
+          "0000000000000000 <caller_simple>:",
+          "0: 48 89 f8                     \tmovq\t%rdi, %rax",
+          "3: 48 0f af c6                  \timulq\t%rsi, %rax",
+          "7: 48 35 5a 5a 00 00            \txorq\t$0x5a5a, %rax           # imm = 0x5A5A",
+          "d: c3                           \tretq"
+        ],
+        "caller_simple_imul_xor": [
+          "3: 48 0f af c6                  \timulq\t%rsi, %rax",
+          "7: 48 35 5a 5a 00 00            \txorq\t$0x5a5a, %rax           # imm = 0x5A5A"
+        ],
+        "caller_high_pressure_imul_xor": [
+          "38: 49 0f af c4                  \timulq\t%r12, %rax",
+          "46: 48 0f af d9                  \timulq\t%rcx, %rbx",
+          "3c: 48 35 5a 5a 00 00            \txorq\t$0x5a5a, %rax           # imm = 0x5A5A",
+          "4a: 48 81 f3 5a 5a 00 00         \txorq\t$0x5a5a, %rbx           # imm = 0x5A5A"
+        ],
+        "caller_high_pressure_spills_and_pushes": [
+          "0: 55                           \tpushq\t%rbp",
+          "1: 41 57                        \tpushq\t%r15",
+          "3: 41 56                        \tpushq\t%r14",
+          "5: 41 55                        \tpushq\t%r13",
+          "7: 41 54                        \tpushq\t%r12",
+          "9: 53                           \tpushq\t%rbx",
+          "a: 50                           \tpushq\t%rax",
+          "57: 48 8b 4c 24 40               \tmovq\t0x40(%rsp), %rcx"
+        ],
+        "distinct_encodings_or_regs": true
+      },
+      "4b_cfg_cloning": {
+        "mir_post_cleanup_asm_count": 1,
+        "emitted_machine_ror_copies": 2,
+        "emitted_ror_instructions": [
+          "c: 48 c1 c8 0d                  \trorq\t$0xd, %rax",
+          "1c: 48 c1 c8 0d                  \trorq\t$0xd, %rax"
+        ],
+        "full_disasm": [
+          "0000000000000000 <cfg_cloned_asm>:",
+          "0: 85 ff                        \ttestl\t%edi, %edi",
+          "2: 74 10                        \tje\t0x14 <cfg_cloned_asm+0x14>",
+          "4: 48 8d 04 76                  \tleaq\t(%rsi,%rsi,2), %rax",
+          "8: 48 83 c2 0b                  \taddq\t$0xb, %rdx",
+          "c: 48 c1 c8 0d                  \trorq\t$0xd, %rax",
+          "10: 48 31 d0                     \txorq\t%rdx, %rax",
+          "13: c3                           \tretq",
+          "14: 48 8d 04 92                  \tleaq\t(%rdx,%rdx,4), %rax",
+          "18: 48 83 c1 1d                  \taddq\t$0x1d, %rcx",
+          "1c: 48 c1 c8 0d                  \trorq\t$0xd, %rax",
+          "20: 48 31 c8                     \txorq\t%rcx, %rax",
+          "23: c3                           \tretq"
+        ]
+      },
+      "4c_loop_unrolling": {
+        "mir_post_cleanup_asm_count": 1,
+        "emitted_machine_ror_copies": 4,
+        "emitted_ror_instructions": [
+          "a: 48 c1 c8 07                  \trorq\t$0x7, %rax",
+          "11: 48 c1 c8 07                  \trorq\t$0x7, %rax",
+          "1c: 48 c1 c8 07                  \trorq\t$0x7, %rax",
+          "27: 48 c1 c8 07                  \trorq\t$0x7, %rax"
+        ],
+        "emitted_xor_instructions": [
+          "e: 48 31 c8                     \txorq\t%rcx, %rax",
+          "15: 48 31 d0                     \txorq\t%rdx, %rax",
+          "20: 48 31 c8                     \txorq\t%rcx, %rax",
+          "2b: 48 31 c8                     \txorq\t%rcx, %rax"
+        ],
+        "full_disasm": [
+          "0000000000000000 <unrolled_loop_asm>:",
+          "0: 48 89 f0                     \tmovq\t%rsi, %rax",
+          "3: 48 8b 0f                     \tmovq\t(%rdi), %rcx",
+          "6: 48 8b 57 08                  \tmovq\t0x8(%rdi), %rdx",
+          "a: 48 c1 c8 07                  \trorq\t$0x7, %rax",
+          "e: 48 31 c8                     \txorq\t%rcx, %rax",
+          "11: 48 c1 c8 07                  \trorq\t$0x7, %rax",
+          "15: 48 31 d0                     \txorq\t%rdx, %rax",
+          "18: 48 8b 4f 10                  \tmovq\t0x10(%rdi), %rcx",
+          "1c: 48 c1 c8 07                  \trorq\t$0x7, %rax",
+          "20: 48 31 c8                     \txorq\t%rcx, %rax",
+          "23: 48 8b 4f 18                  \tmovq\t0x18(%rdi), %rcx",
+          "27: 48 c1 c8 07                  \trorq\t$0x7, %rax",
+          "2b: 48 31 c8                     \txorq\t%rcx, %rax",
+          "2e: c3                           \tretq"
+        ]
+      }
+    },
+    "probe_4d_avx2_vzeroupper": {
+      "avx_inlined_plain_asm": {
+        "vzeroupper_count": 1,
+        "vzeroupper_lines": [
+          "14: c5 f8 77                     \tvzeroupper"
+        ],
+        "disasm": [
+          "0000000000000000 <avx_inlined_plain_asm>:",
+          "0: c5 fe 6f 47 20               \tvmovdqu\t0x20(%rdi), %ymm0",
+          "5: c5 fd d4 07                  \tvpaddq\t(%rdi), %ymm0, %ymm0",
+          "9: 48 89 f0                     \tmovq\t%rsi, %rax",
+          "c: c5 fe 7f 07                  \tvmovdqu\t%ymm0, (%rdi)",
+          "10: 48 83 c0 01                  \taddq\t$0x1, %rax",
+          "14: c5 f8 77                     \tvzeroupper",
+          "17: c3                           \tretq"
+        ]
+      },
+      "avx_inlined_clobber_abi_asm": {
+        "vzeroupper_count": 1,
+        "vzeroupper_lines": [
+          "25: c5 f8 77                     \tvzeroupper"
+        ],
+        "disasm": [
+          "0000000000000000 <avx_inlined_clobber_abi_asm>:",
+          "0: 53                           \tpushq\t%rbx",
+          "1: 48 89 f0                     \tmovq\t%rsi, %rax",
+          "4: 48 89 fb                     \tmovq\t%rdi, %rbx",
+          "7: c5 fe 6f 47 20               \tvmovdqu\t0x20(%rdi), %ymm0",
+          "c: c5 fd d4 07                  \tvpaddq\t(%rdi), %ymm0, %ymm0",
+          "10: c5 fe 7f 44 24 e0            \tvmovdqu\t%ymm0, -0x20(%rsp)",
+          "16: 48 83 c0 01                  \taddq\t$0x1, %rax",
+          "1a: c5 fc 10 44 24 e0            \tvmovups\t-0x20(%rsp), %ymm0",
+          "20: c5 fc 11 03                  \tvmovups\t%ymm0, (%rbx)",
+          "24: 5b                           \tpopq\t%rbx",
+          "25: c5 f8 77                     \tvzeroupper",
+          "28: c3                           \tretq"
+        ]
+      },
+      "avx_calling_outline_asm": {
+        "vzeroupper_count": 2,
+        "vzeroupper_lines": [
+          "19: c5 f8 77                     \tvzeroupper",
+          "30: c5 f8 77                     \tvzeroupper"
+        ],
+        "disasm": [
+          "0000000000000000 <avx_calling_outline_asm>:",
+          "0: 53                           \tpushq\t%rbx",
+          "1: 48 83 ec 20                  \tsubq\t$0x20, %rsp",
+          "5: 48 89 fb                     \tmovq\t%rdi, %rbx",
+          "8: c5 fe 6f 47 20               \tvmovdqu\t0x20(%rdi), %ymm0",
+          "d: c5 fd d4 07                  \tvpaddq\t(%rdi), %ymm0, %ymm0",
+          "11: c5 fe 7f 04 24               \tvmovdqu\t%ymm0, (%rsp)",
+          "16: 48 89 f7                     \tmovq\t%rsi, %rdi",
+          "19: c5 f8 77                     \tvzeroupper",
+          "1c: ff 15 00 00 00 00            \tcallq\t*(%rip)                 # 0x22 <avx_calling_outline_asm+0x22>",
+          "22: c5 fc 10 04 24               \tvmovups\t(%rsp), %ymm0",
+          "27: c5 fc 11 03                  \tvmovups\t%ymm0, (%rbx)",
+          "2b: 48 83 c4 20                  \taddq\t$0x20, %rsp",
+          "2f: 5b                           \tpopq\t%rbx",
+          "30: c5 f8 77                     \tvzeroupper",
+          "33: c3                           \tretq"
+        ]
+      }
+    },
+    "probe_4e_inline_never_limitations": {
+      "exported_without_inline_never_was_inlined_into_caller": true,
+      "caller_of_exported_disasm": [
+        "0000000000000000 <caller_of_exported>:",
+        "0: 48 81 f7 68 24 00 00         \txorq\t$0x2468, %rdi           # imm = 0x2468",
+        "7: 48 8d 47 01                  \tleaq\t0x1(%rdi), %rax",
+        "b: c3                           \tretq"
+      ],
+      "internal_never_inline_symbol": "_RNvCs2byNbJzG4ar_19inline_never_limits21internal_never_inline",
+      "internal_never_inline_const_specialized_0x1337": true,
+      "internal_never_inline_disasm": [
+        "0000000000000000 <_RNvCs2byNbJzG4ar_19inline_never_limits21internal_never_inline>:",
+        "0: 48 89 f8                     \tmovq\t%rdi, %rax",
+        "3: b9 37 13 00 00               \tmovl\t$0x1337, %ecx           # imm = 0x1337",
+        "8: 48 01 c8                     \taddq\t%rcx, %rax",
+        "b: c3                           \tretq"
+      ],
+      "obj_merge_functions_symtab_lines": [
+        "    17: 0000000000000000     0 SECTION LOCAL  DEFAULT   19 .text.icf_target_alpha",
+        "    23: 0000000000000000    10 FUNC    GLOBAL DEFAULT   19 icf_target_alpha",
+        "    31: 0000000000000000    10 FUNC    GLOBAL DEFAULT   19 icf_target_beta"
+      ],
+      "linker_icf_folding": {
+        "none": {
+          "addresses": {
+            "icf_target_alpha": "0000000000013e00",
+            "icf_target_beta": "0000000000013e00"
+          },
+          "folded_to_identical_vma": true
+        },
+        "safe": {
+          "addresses": {
+            "icf_target_alpha": "0000000000013e00",
+            "icf_target_beta": "0000000000013e00"
+          },
+          "folded_to_identical_vma": true
+        },
+        "all": {
+          "addresses": {
+            "icf_target_alpha": "0000000000013b50",
+            "icf_target_beta": "0000000000013b50"
+          },
+          "folded_to_identical_vma": true
+        }
+      }
+    },
+    "probe_4f_attestation_mechanisms": {
+      "pushsection_site_table": {
+        "section_flags_hex": "0x80000000",
+        "has_SHF_EXCLUDE": true,
+        "total_emitted_records": 7,
+        "expected_records_1_plus_2_plus_4_and_0_for_dead": true,
+        "dead_pure_asm_emitted_zero_records": true,
+        "records": [
+          {
+            "record_index": 0,
+            "site_id": "0xa11ea101",
+            "enclosing_section": ".text.inlined_caller_1",
+            "start_offset": 3,
+            "end_offset": 13,
+            "byte_len": 10,
+            "raw_bytes_hex": "480fafc648355a5a0000",
+            "decoded_insns": [
+              "imulq\t%rsi, %rax",
+              "xorq\t$23130, %rax                    # imm = 0x5A5A"
+            ]
+          },
+          {
+            "record_index": 1,
+            "site_id": "0xa11ea101",
+            "enclosing_section": ".text.inlined_caller_2",
+            "start_offset": 3,
+            "end_offset": 14,
+            "byte_len": 11,
+            "raw_bytes_hex": "480fafd74881f25a5a0000",
+            "decoded_insns": [
+              "imulq\t%rdi, %rdx",
+              "xorq\t$23130, %rdx                    # imm = 0x5A5A"
+            ]
+          },
+          {
+            "record_index": 2,
+            "site_id": "0xa11ea101",
+            "enclosing_section": ".text.inlined_caller_2",
+            "start_offset": 14,
+            "end_offset": 24,
+            "byte_len": 10,
+            "raw_bytes_hex": "480fafc248355a5a0000",
+            "decoded_insns": [
+              "imulq\t%rdx, %rax",
+              "xorq\t$23130, %rax                    # imm = 0x5A5A"
+            ]
+          },
+          {
+            "record_index": 3,
+            "site_id": "0xa11ea102",
+            "enclosing_section": ".text.unrolled_attested",
+            "start_offset": 10,
+            "end_offset": 17,
+            "byte_len": 7,
+            "raw_bytes_hex": "48c1c8074831c8",
+            "decoded_insns": [
+              "rorq\t$7, %rax",
+              "xorq\t%rcx, %rax"
+            ]
+          },
+          {
+            "record_index": 4,
+            "site_id": "0xa11ea102",
+            "enclosing_section": ".text.unrolled_attested",
+            "start_offset": 17,
+            "end_offset": 24,
+            "byte_len": 7,
+            "raw_bytes_hex": "48c1c8074831d0",
+            "decoded_insns": [
+              "rorq\t$7, %rax",
+              "xorq\t%rdx, %rax"
+            ]
+          },
+          {
+            "record_index": 5,
+            "site_id": "0xa11ea102",
+            "enclosing_section": ".text.unrolled_attested",
+            "start_offset": 28,
+            "end_offset": 35,
+            "byte_len": 7,
+            "raw_bytes_hex": "48c1c8074831c8",
+            "decoded_insns": [
+              "rorq\t$7, %rax",
+              "xorq\t%rcx, %rax"
+            ]
+          },
+          {
+            "record_index": 6,
+            "site_id": "0xa11ea102",
+            "enclosing_section": ".text.unrolled_attested",
+            "start_offset": 39,
+            "end_offset": 46,
+            "byte_len": 7,
+            "raw_bytes_hex": "48c1c8074831c8",
+            "decoded_insns": [
+              "rorq\t$7, %rax",
+              "xorq\t%rcx, %rax"
+            ]
+          }
+        ],
+        "gc_sections_link_checks": {
+          "rust_lld": {
+            "rc": 0,
+            "shf_exclude_stripped_from_final_exe": true,
+            "unreferenced_inlined_caller_2_gc_collected": true,
+            "final_exe_output": "23126 434606503731658756 23126"
+          },
+          "ld_bfd": {
+            "rc": 0,
+            "shf_exclude_stripped_from_final_exe": true,
+            "unreferenced_inlined_caller_2_gc_collected": true,
+            "final_exe_output": "23126 434606503731658756 23126"
+          }
+        }
+      },
+      "dwarf_debug_line_unrolled": [
+        "0000000000000000 <unrolled_attested>:",
+        "; unrolled_attested():",
+        "; /tmp/probe4f_cnxh6qyc/attest.rs:38",
+        "0: 48 89 f0                     \tmovq\t%rsi, %rax",
+        "; /tmp/probe4f_cnxh6qyc/attest.rs:41",
+        "3: 48 8b 0f                     \tmovq\t(%rdi), %rcx",
+        "6: 48 8b 57 08                  \tmovq\t0x8(%rdi), %rdx",
+        "; /tmp/probe4f_cnxh6qyc/attest.rs:43",
+        "a: 48 c1 c8 07                  \trorq\t$0x7, %rax",
+        "e: 48 31 c8                     \txorq\t%rcx, %rax",
+        "11: 48 c1 c8 07                  \trorq\t$0x7, %rax",
+        "15: 48 31 d0                     \txorq\t%rdx, %rax",
+        "; /tmp/probe4f_cnxh6qyc/attest.rs:41",
+        "18: 48 8b 4f 10                  \tmovq\t0x10(%rdi), %rcx",
+        "; /tmp/probe4f_cnxh6qyc/attest.rs:43",
+        "1c: 48 c1 c8 07                  \trorq\t$0x7, %rax",
+        "20: 48 31 c8                     \txorq\t%rcx, %rax",
+        "; /tmp/probe4f_cnxh6qyc/attest.rs:41",
+        "23: 48 8b 4f 18                  \tmovq\t0x18(%rdi), %rcx",
+        "; /tmp/probe4f_cnxh6qyc/attest.rs:43",
+        "27: 48 c1 c8 07                  \trorq\t$0x7, %rax",
+        "2b: 48 31 c8                     \txorq\t%rcx, %rax",
+        "; /tmp/probe4f_cnxh6qyc/attest.rs:61",
+        "2e: c3                           \tretq"
+      ],
+      "naked_asm_fixed_bytes_hex": "480faffe4881f75a5a00004889f8c3",
+      "naked_asm_disasm": [
+        "0000000000000000 <naked_mix_fixed>:",
+        "0: 48 0f af fe                  \timulq\t%rsi, %rdi",
+        "4: 48 81 f7 5a 5a 00 00         \txorq\t$0x5a5a, %rdi           # imm = 0x5A5A",
+        "b: 48 89 f8                     \tmovq\t%rdi, %rax",
+        "e: c3                           \tretq"
+      ]
+    }
+  }
+}

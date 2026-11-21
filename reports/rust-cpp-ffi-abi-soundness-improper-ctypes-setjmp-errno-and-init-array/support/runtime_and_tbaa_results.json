@@ -1,0 +1,139 @@
+{
+  "gcc_version": "gcc (Debian 15.2.0-14) 15.2.0",
+  "rustc_version": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "setjmp_longjmp": {
+    "sizeof_jmp_buf": "200",
+    "setjmp_returned": "77",
+    "rust_drops_executed": "0",
+    "saved_rsp_mangled_differs_from_stack": "true",
+    "mangled_rsp_hex": "0x6afe708506d552ed",
+    "mangled_pc_hex": "0x3973c9b0015f52ed",
+    "ffi_returns_twice_status": 1,
+    "ffi_returns_twice_stderr": "error[E0557]: feature has been removed | error: cannot find attribute `ffi_returns_twice` in this scope | error: aborting due to 2 previous errors"
+  },
+  "errno_and_tls": {
+    "c_get_errno_asm": [
+      "0000000000000070 <c_get_errno>:",
+      "70:\t48 83 ec 08          \tsub    $0x8,%rsp",
+      "74:\te8 00 00 00 00       \tcall   79 <c_get_errno+0x9>",
+      "79:\t8b 00                \tmov    (%rax),%eax",
+      "7b:\t48 83 c4 08          \tadd    $0x8,%rsp",
+      "7f:\tc3                   \tret"
+    ],
+    "c_tls_var_readelf": "13: 0000000000000000     8 TLS     GLOBAL DEFAULT    6 c_tls_var",
+    "signal_before_errno": "11",
+    "signal_after_bad_handler_errno": "2",
+    "signal_after_good_handler_errno": "11",
+    "async_migrated_observed_errno": "22",
+    "async_migrated_observed_tls": "0xbbbb2002",
+    "stt_tls_mismatch_bfd_returncode": 1,
+    "stt_tls_mismatch_bfd_stderr": "= note: /usr/bin/x86_64-linux-gnu-ld.bfd: c_tls_var: TLS definition in /tmp/tmpmm9t9cdd/s2/errno_tls.o section .tdata mismatches non-TLS reference in /tmp/tmpmm9t9cdd/s2/bad_tls_bfd.bad_tls_link.26f658575e6af20e-cgu.0.rcgu.o | /usr/bin/x86_64-linux-gnu-ld.bfd: /tmp/tmpmm9t9cdd/s2/errno_tls.o: error adding symbols: bad value",
+    "stt_tls_mismatch_lld_returncode": 0,
+    "stt_tls_mismatch_lld_runtime_val": "0x0038004000000000",
+    "stt_tls_mismatch_lld_elf_hdr_0x30": "0x0038004000000000",
+    "stt_tls_mismatch_lld_read_elf_header": true,
+    "nightly_tls_initial": "0x1122334455667788",
+    "nightly_tls_seen_by_c": "0xcafebabe12345678"
+  },
+  "c_variadics": {
+    "stable_rust_variadic_promoted_sum": "1.5",
+    "va_right_double": "42.5",
+    "va_wrong_i32_read_as_double_bits": "0x4045400000000000",
+    "va_wrong_equals_42_5": "true",
+    "va_arg_f32_returncode": 1,
+    "va_arg_f32_stderr": "error[E0277]: the trait bound `f32: VaArgSafe` is not satisfied | |                         --------   ^^^ the nightly-only, unstable trait `VaArgSafe` is not implemented for `f32` | = help: the following other types implement trait `VaArgSafe`: | 479 |     pub const unsafe fn next_arg<T: VaArgSafe>"
+  },
+  "tbaa_and_restrict": {
+    "O0": {
+      "gcc_flags": [
+        "-O0"
+      ],
+      "asm_tbaa": [
+        "0000000000000000 <c_tbaa_write_read>:",
+        "0:\t55                   \tpush   %rbp",
+        "1:\t48 89 e5             \tmov    %rsp,%rbp",
+        "4:\t48 89 7d f8          \tmov    %rdi,-0x8(%rbp)",
+        "8:\t48 89 75 f0          \tmov    %rsi,-0x10(%rbp)",
+        "c:\t48 8b 45 f8          \tmov    -0x8(%rbp),%rax",
+        "10:\tc7 00 01 00 00 00    \tmovl   $0x1,(%rax)",
+        "16:\t48 8b 45 f0          \tmov    -0x10(%rbp),%rax",
+        "1a:\tf3 0f 10 05 00 00 00 \tmovss  0x0(%rip),%xmm0        # 22 <c_tbaa_write_read+0x22>",
+        "21:\t00",
+        "22:\tf3 0f 11 00          \tmovss  %xmm0,(%rax)",
+        "26:\t48 8b 45 f8          \tmov    -0x8(%rbp),%rax",
+        "2a:\t8b 00                \tmov    (%rax),%eax",
+        "2c:\t5d                   \tpop    %rbp"
+      ],
+      "asm_restrict": [
+        "000000000000002e <c_restrict_write_read>:",
+        "2e:\t55                   \tpush   %rbp",
+        "2f:\t48 89 e5             \tmov    %rsp,%rbp",
+        "32:\t48 89 7d f8          \tmov    %rdi,-0x8(%rbp)",
+        "36:\t48 89 75 f0          \tmov    %rsi,-0x10(%rbp)",
+        "3a:\t48 8b 45 f8          \tmov    -0x8(%rbp),%rax",
+        "3e:\tc7 00 0a 00 00 00    \tmovl   $0xa,(%rax)",
+        "44:\t48 8b 45 f0          \tmov    -0x10(%rbp),%rax",
+        "48:\tc7 00 14 00 00 00    \tmovl   $0x14,(%rax)",
+        "4e:\t48 8b 45 f8          \tmov    -0x8(%rbp),%rax",
+        "52:\t8b 00                \tmov    (%rax),%eax",
+        "54:\t5d                   \tpop    %rbp",
+        "55:\tc3                   \tret"
+      ],
+      "tbaa_ret": "0x40000000",
+      "mem_after_tbaa": "0x40000000",
+      "restrict_ret": "20",
+      "mem_after_restrict": "20"
+    },
+    "O2_fno_strict_aliasing": {
+      "gcc_flags": [
+        "-O2",
+        "-fno-strict-aliasing"
+      ],
+      "asm_tbaa": [
+        "0000000000000000 <c_tbaa_write_read>:",
+        "0:\tc7 07 01 00 00 00    \tmovl   $0x1,(%rdi)",
+        "6:\tc7 06 00 00 00 40    \tmovl   $0x40000000,(%rsi)",
+        "c:\t8b 07                \tmov    (%rdi),%eax",
+        "e:\tc3                   \tret",
+        "f:\t90                   \tnop"
+      ],
+      "asm_restrict": [
+        "0000000000000010 <c_restrict_write_read>:",
+        "10:\tc7 07 0a 00 00 00    \tmovl   $0xa,(%rdi)",
+        "16:\tb8 0a 00 00 00       \tmov    $0xa,%eax",
+        "1b:\tc7 06 14 00 00 00    \tmovl   $0x14,(%rsi)",
+        "21:\tc3                   \tret"
+      ],
+      "tbaa_ret": "0x40000000",
+      "mem_after_tbaa": "0x40000000",
+      "restrict_ret": "10",
+      "mem_after_restrict": "20"
+    },
+    "O2_default": {
+      "gcc_flags": [
+        "-O2"
+      ],
+      "asm_tbaa": [
+        "0000000000000000 <c_tbaa_write_read>:",
+        "0:\tc7 07 01 00 00 00    \tmovl   $0x1,(%rdi)",
+        "6:\tb8 01 00 00 00       \tmov    $0x1,%eax",
+        "b:\tc7 06 00 00 00 40    \tmovl   $0x40000000,(%rsi)",
+        "11:\tc3                   \tret",
+        "12:\t0f 1f 00             \tnopl   (%rax)",
+        "15:\t66 66 2e 0f 1f 84 00 \tdata16 cs nopw 0x0(%rax,%rax,1)",
+        "1c:\t00 00 00 00"
+      ],
+      "asm_restrict": [
+        "0000000000000020 <c_restrict_write_read>:",
+        "20:\tc7 07 0a 00 00 00    \tmovl   $0xa,(%rdi)",
+        "26:\tb8 0a 00 00 00       \tmov    $0xa,%eax",
+        "2b:\tc7 06 14 00 00 00    \tmovl   $0x14,(%rsi)",
+        "31:\tc3                   \tret"
+      ],
+      "tbaa_ret": "0x00000001",
+      "mem_after_tbaa": "0x40000000",
+      "restrict_ret": "10",
+      "mem_after_restrict": "20"
+    }
+  }
+}

@@ -1,0 +1,913 @@
+{
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "flags": [
+    "-DElab.async=false",
+    "-Ddebug.skipKernelTC=false",
+    "-j1",
+    "-M2048"
+  ],
+  "base_module": {
+    "wall_s": 2.5396,
+    "cpu_s": 2.5,
+    "rss_mb": 320.76,
+    "olean_bytes": 1945760
+  },
+  "exp1_spill_scaling": [
+    {
+      "module": "Spill_DirectSym_8",
+      "loc": 87,
+      "rc": 0,
+      "timed_out": false,
+      "wall_s": 0.2975,
+      "cpu_s": 0.29,
+      "rss_mb": 279.4,
+      "olean_bytes": 97184,
+      "regime": "DirectSym",
+      "n_insns": 8,
+      "replay_rc": 0,
+      "import_ms": 187,
+      "replay_ms": 178,
+      "replayed_consts": 461,
+      "type_hints": 0,
+      "val_hints": 0,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "module": "Spill_DirectSym_16",
+      "loc": 133,
+      "rc": 0,
+      "timed_out": false,
+      "wall_s": 1.8228,
+      "cpu_s": 1.81,
+      "rss_mb": 279.87,
+      "olean_bytes": 153296,
+      "regime": "DirectSym",
+      "n_insns": 16,
+      "replay_rc": 0,
+      "import_ms": 192,
+      "replay_ms": 132,
+      "replayed_consts": 461,
+      "type_hints": 0,
+      "val_hints": 0,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "module": "Spill_DirectSym_24",
+      "loc": 180,
+      "rc": 0,
+      "timed_out": false,
+      "wall_s": 4.9327,
+      "cpu_s": 4.93,
+      "rss_mb": 286.48,
+      "olean_bytes": 202936,
+      "regime": "DirectSym",
+      "n_insns": 24,
+      "replay_rc": 0,
+      "import_ms": 194,
+      "replay_ms": 142,
+      "replayed_consts": 461,
+      "type_hints": 0,
+      "val_hints": 0,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "module": "Spill_DirectSym_32",
+      "loc": 226,
+      "rc": 0,
+      "timed_out": false,
+      "wall_s": 10.3287,
+      "cpu_s": 10.32,
+      "rss_mb": 291.95,
+      "olean_bytes": 252536,
+      "regime": "DirectSym",
+      "n_insns": 32,
+      "replay_rc": 0,
+      "import_ms": 222,
+      "replay_ms": 203,
+      "replayed_consts": 461,
+      "type_hints": 0,
+      "val_hints": 0,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "module": "Spill_DirectSym_40",
+      "loc": 272,
+      "rc": 1,
+      "timed_out": false,
+      "wall_s": 17.4806,
+      "cpu_s": 17.44,
+      "rss_mb": 283.96,
+      "olean_bytes": 0,
+      "error_excerpt": "/tmp/lean4_mc_bench_av6ch_qv/Spill_DirectSym_40.lean:194:49: error: (deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached\n\nNote: Use `set_option maxHeartbeats <num>` to set the limit.\n\nHint: Additional diagnostic information may be available using the `set_option diagnostics true` command.\n/tmp/lean4_mc_bench_av6ch_qv/Spill_DirectSym_40.lean:62:90: error: (deter",
+      "regime": "DirectSym",
+      "n_insns": 40
+    },
+    {
+      "module": "Spill_Cutpoint20_40",
+      "loc": 163,
+      "rc": 0,
+      "timed_out": false,
+      "wall_s": 0.4559,
+      "cpu_s": 0.45,
+      "rss_mb": 279.41,
+      "olean_bytes": 216392,
+      "regime": "Cutpoint20",
+      "n_insns": 40,
+      "replay_rc": 0,
+      "import_ms": 247,
+      "replay_ms": 211,
+      "replayed_consts": 468,
+      "type_hints": 0,
+      "val_hints": 0,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "module": "Spill_FlatCertLift_40",
+      "loc": 73,
+      "rc": 0,
+      "timed_out": false,
+      "wall_s": 0.2973,
+      "cpu_s": 0.29,
+      "rss_mb": 277.15,
+      "olean_bytes": 134104,
+      "regime": "FlatCertLift",
+      "n_insns": 40,
+      "replay_rc": 0,
+      "import_ms": 206,
+      "replay_ms": 142,
+      "replayed_consts": 463,
+      "type_hints": 0,
+      "val_hints": 0,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "module": "Spill_ShardedTreeLift_40",
+      "loc": 55,
+      "rc": 0,
+      "timed_out": false,
+      "wall_s": 0.4543,
+      "cpu_s": 0.44,
+      "rss_mb": 277.34,
+      "olean_bytes": 161896,
+      "regime": "ShardedTreeLift",
+      "n_insns": 40,
+      "replay_rc": 0,
+      "import_ms": 215,
+      "replay_ms": 157,
+      "replayed_consts": 466,
+      "type_hints": 0,
+      "val_hints": 0,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "module": "Spill_Cutpoint20_100",
+      "loc": 310,
+      "rc": 0,
+      "timed_out": false,
+      "wall_s": 1.7764,
+      "cpu_s": 1.75,
+      "rss_mb": 287.36,
+      "olean_bytes": 367792,
+      "regime": "Cutpoint20",
+      "n_insns": 100,
+      "replay_rc": 0,
+      "import_ms": 252,
+      "replay_ms": 324,
+      "replayed_consts": 471,
+      "type_hints": 0,
+      "val_hints": 0,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "module": "Spill_FlatCertLift_100",
+      "loc": 133,
+      "rc": 0,
+      "timed_out": false,
+      "wall_s": 0.3976,
+      "cpu_s": 0.39,
+      "rss_mb": 277.18,
+      "olean_bytes": 233560,
+      "regime": "FlatCertLift",
+      "n_insns": 100,
+      "replay_rc": 0,
+      "import_ms": 211,
+      "replay_ms": 191,
+      "replayed_consts": 463,
+      "type_hints": 0,
+      "val_hints": 0,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "module": "Spill_ShardedTreeLift_100",
+      "loc": 61,
+      "rc": 0,
+      "timed_out": false,
+      "wall_s": 0.8494,
+      "cpu_s": 0.83,
+      "rss_mb": 281.54,
+      "olean_bytes": 267464,
+      "regime": "ShardedTreeLift",
+      "n_insns": 100,
+      "replay_rc": 0,
+      "import_ms": 240,
+      "replay_ms": 179,
+      "replayed_consts": 469,
+      "type_hints": 0,
+      "val_hints": 0,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "module": "Spill_Cutpoint20_200",
+      "loc": 555,
+      "rc": 0,
+      "timed_out": false,
+      "wall_s": 5.2696,
+      "cpu_s": 5.22,
+      "rss_mb": 297.87,
+      "olean_bytes": 588608,
+      "regime": "Cutpoint20",
+      "n_insns": 200,
+      "replay_rc": 0,
+      "import_ms": 229,
+      "replay_ms": 768,
+      "replayed_consts": 476,
+      "type_hints": 0,
+      "val_hints": 0,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "module": "Spill_FlatCertLift_200",
+      "loc": 233,
+      "rc": 1,
+      "timed_out": false,
+      "wall_s": 0.3739,
+      "cpu_s": 0.36,
+      "rss_mb": 269.16,
+      "olean_bytes": 0,
+      "error_excerpt": "/tmp/lean4_mc_bench_av6ch_qv/Spill_FlatCertLift_200.lean:216:70: error: maximum recursion depth has been reached\nuse `set_option maxRecDepth <num>` to increase limit\nuse `set_option diagnostics true` to get diagnostic information\n/tmp/lean4_mc_bench_av6ch_qv/Spill_FlatCertLift_200.lean:217:8: error: maximum recursion depth has been reached\nuse `set_option maxRecDepth <num>` to increase limit\nuse `",
+      "regime": "FlatCertLift",
+      "n_insns": 200
+    },
+    {
+      "module": "Spill_ShardedTreeLift_200",
+      "loc": 73,
+      "rc": 0,
+      "timed_out": false,
+      "wall_s": 1.2409,
+      "cpu_s": 1.23,
+      "rss_mb": 283.35,
+      "olean_bytes": 362248,
+      "regime": "ShardedTreeLift",
+      "n_insns": 200,
+      "replay_rc": 0,
+      "import_ms": 187,
+      "replay_ms": 189,
+      "replayed_consts": 475,
+      "type_hints": 0,
+      "val_hints": 0,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "module": "Spill_Cutpoint20_400",
+      "loc": 1045,
+      "rc": 0,
+      "timed_out": false,
+      "wall_s": 15.5645,
+      "cpu_s": 15.52,
+      "rss_mb": 322.67,
+      "olean_bytes": 1031256,
+      "regime": "Cutpoint20",
+      "n_insns": 400,
+      "replay_rc": 0,
+      "import_ms": 214,
+      "replay_ms": 2496,
+      "replayed_consts": 486,
+      "type_hints": 0,
+      "val_hints": 0,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "module": "Spill_ShardedTreeLift_400",
+      "loc": 91,
+      "rc": 0,
+      "timed_out": false,
+      "wall_s": 1.8084,
+      "cpu_s": 1.78,
+      "rss_mb": 286.71,
+      "olean_bytes": 556800,
+      "regime": "ShardedTreeLift",
+      "n_insns": 400,
+      "replay_rc": 0,
+      "import_ms": 201,
+      "replay_ms": 349,
+      "replayed_consts": 484,
+      "type_hints": 0,
+      "val_hints": 0,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "module": "Spill_Cutpoint20_800",
+      "loc": 2025,
+      "rc": 1,
+      "timed_out": false,
+      "wall_s": 22.1781,
+      "cpu_s": 22.08,
+      "rss_mb": 331.28,
+      "olean_bytes": 0,
+      "error_excerpt": "/tmp/lean4_mc_bench_av6ch_qv/Spill_Cutpoint20_800.lean:1492:41: error: maximum recursion depth has been reached\nuse `set_option maxRecDepth <num>` to increase limit\nuse `set_option diagnostics true` to get diagnostic information\n/tmp/lean4_mc_bench_av6ch_qv/Spill_Cutpoint20_800.lean:1510:41: error: maximum recursion depth has been reached\nuse `set_option maxRecDepth <num>` to increase limit\nuse `s",
+      "regime": "Cutpoint20",
+      "n_insns": 800
+    },
+    {
+      "module": "Spill_ShardedTreeLift_800",
+      "loc": 127,
+      "rc": 0,
+      "timed_out": false,
+      "wall_s": 3.4004,
+      "cpu_s": 3.37,
+      "rss_mb": 300.89,
+      "olean_bytes": 961320,
+      "regime": "ShardedTreeLift",
+      "n_insns": 800,
+      "replay_rc": 0,
+      "import_ms": 190,
+      "replay_ms": 427,
+      "replayed_consts": 502,
+      "type_hints": 0,
+      "val_hints": 0,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "module": "Spill_ShardedTreeLift_1600",
+      "loc": 199,
+      "rc": 0,
+      "timed_out": false,
+      "wall_s": 6.5274,
+      "cpu_s": 6.47,
+      "rss_mb": 322.61,
+      "olean_bytes": 1356944,
+      "regime": "ShardedTreeLift",
+      "n_insns": 1600,
+      "replay_rc": 0,
+      "import_ms": 216,
+      "replay_ms": 875,
+      "replayed_consts": 538,
+      "type_hints": 0,
+      "val_hints": 0,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "module": "Spill_ShardedTreeLift_3200",
+      "loc": 349,
+      "rc": 0,
+      "timed_out": false,
+      "wall_s": 13.6147,
+      "cpu_s": 13.57,
+      "rss_mb": 362.46,
+      "olean_bytes": 1559040,
+      "regime": "ShardedTreeLift",
+      "n_insns": 3200,
+      "replay_rc": 0,
+      "import_ms": 187,
+      "replay_ms": 1198,
+      "replayed_consts": 613,
+      "type_hints": 0,
+      "val_hints": 0,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "module": "Spill_ShardedTreeLift_5000",
+      "loc": 523,
+      "rc": 0,
+      "timed_out": false,
+      "wall_s": 17.4897,
+      "cpu_s": 17.41,
+      "rss_mb": 406.66,
+      "olean_bytes": 1816216,
+      "regime": "ShardedTreeLift",
+      "n_insns": 5000,
+      "replay_rc": 0,
+      "import_ms": 186,
+      "replay_ms": 1842,
+      "replayed_consts": 700,
+      "type_hints": 0,
+      "val_hints": 0,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ]
+    }
+  ],
+  "exp2_branch_diamonds": [
+    {
+      "module": "Dia_Uncut_4",
+      "loc": 466,
+      "rc": 0,
+      "timed_out": false,
+      "wall_s": 1.0496,
+      "cpu_s": 1.04,
+      "rss_mb": 297.08,
+      "olean_bytes": 150208,
+      "regime": "Uncut",
+      "diamonds": 4,
+      "paths": 16,
+      "replay_rc": 0,
+      "import_ms": 238,
+      "replay_ms": 254,
+      "replayed_consts": 461,
+      "type_hints": 0,
+      "val_hints": 0,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "module": "Dia_Uncut_6",
+      "loc": 1820,
+      "rc": 0,
+      "timed_out": false,
+      "wall_s": 5.4011,
+      "cpu_s": 5.38,
+      "rss_mb": 425.29,
+      "olean_bytes": 257552,
+      "regime": "Uncut",
+      "diamonds": 6,
+      "paths": 64,
+      "replay_rc": 0,
+      "import_ms": 191,
+      "replay_ms": 426,
+      "replayed_consts": 461,
+      "type_hints": 0,
+      "val_hints": 0,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "module": "Dia_Uncut_8",
+      "loc": 7206,
+      "rc": 0,
+      "timed_out": false,
+      "wall_s": 23.2841,
+      "cpu_s": 23.25,
+      "rss_mb": 841.75,
+      "olean_bytes": 557088,
+      "regime": "Uncut",
+      "diamonds": 8,
+      "paths": 256,
+      "replay_rc": 0,
+      "import_ms": 195,
+      "replay_ms": 1859,
+      "replayed_consts": 461,
+      "type_hints": 0,
+      "val_hints": 0,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "module": "Dia_Cut_4",
+      "loc": 162,
+      "rc": 0,
+      "timed_out": false,
+      "wall_s": 0.385,
+      "cpu_s": 0.37,
+      "rss_mb": 281.77,
+      "olean_bytes": 136848,
+      "regime": "Cutpoint",
+      "diamonds": 4,
+      "paths": 16,
+      "replay_rc": 0,
+      "import_ms": 193,
+      "replay_ms": 136,
+      "replayed_consts": 466,
+      "type_hints": 0,
+      "val_hints": 0,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "module": "Dia_Cut_6",
+      "loc": 230,
+      "rc": 0,
+      "timed_out": false,
+      "wall_s": 0.481,
+      "cpu_s": 0.47,
+      "rss_mb": 281.39,
+      "olean_bytes": 181184,
+      "regime": "Cutpoint",
+      "diamonds": 6,
+      "paths": 64,
+      "replay_rc": 0,
+      "import_ms": 181,
+      "replay_ms": 161,
+      "replayed_consts": 468,
+      "type_hints": 0,
+      "val_hints": 0,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "module": "Dia_Cut_8",
+      "loc": 298,
+      "rc": 0,
+      "timed_out": false,
+      "wall_s": 0.7415,
+      "cpu_s": 0.73,
+      "rss_mb": 289.34,
+      "olean_bytes": 226576,
+      "regime": "Cutpoint",
+      "diamonds": 8,
+      "paths": 256,
+      "replay_rc": 0,
+      "import_ms": 219,
+      "replay_ms": 163,
+      "replayed_consts": 470,
+      "type_hints": 0,
+      "val_hints": 0,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "module": "Dia_Cut_16",
+      "loc": 570,
+      "rc": 0,
+      "timed_out": false,
+      "wall_s": 1.3324,
+      "cpu_s": 1.32,
+      "rss_mb": 299.11,
+      "olean_bytes": 404928,
+      "regime": "Cutpoint",
+      "diamonds": 16,
+      "paths": 65536,
+      "replay_rc": 0,
+      "import_ms": 238,
+      "replay_ms": 315,
+      "replayed_consts": 478,
+      "type_hints": 0,
+      "val_hints": 0,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "module": "Dia_Cut_32",
+      "loc": 1114,
+      "rc": 0,
+      "timed_out": false,
+      "wall_s": 3.4383,
+      "cpu_s": 3.43,
+      "rss_mb": 323.35,
+      "olean_bytes": 761632,
+      "regime": "Cutpoint",
+      "diamonds": 32,
+      "paths": 4294967296,
+      "replay_rc": 0,
+      "import_ms": 198,
+      "replay_ms": 625,
+      "replayed_consts": 494,
+      "type_hints": 0,
+      "val_hints": 0,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ]
+    }
+  ],
+  "exp3_target_vs_theory_budget": [
+    {
+      "module": "Budget_Pass1_Explicit",
+      "loc": 41,
+      "rc": 0,
+      "timed_out": false,
+      "wall_s": 0.2007,
+      "cpu_s": 0.19,
+      "rss_mb": 265.46,
+      "olean_bytes": 31344,
+      "replay_base": "Init",
+      "print_axioms": [
+        "propext"
+      ],
+      "per_vc_axioms": {
+        "Budget_Pass1_Explicit.vc2_jumptable_bound": [
+          "propext"
+        ],
+        "Budget_Pass1_Explicit.vc3_avx2_alias_lane": [
+          "propext"
+        ],
+        "Budget_Pass1_Explicit.vc4_cfa_rsp_roundtrip": [
+          "propext"
+        ],
+        "Budget_Pass1_Explicit.all_vcs": [
+          "propext"
+        ],
+        "Budget_Pass1_Explicit.vc1_stack_heap_disjoint": []
+      },
+      "within_3_axiom_ceiling": true,
+      "replay_rc": 0,
+      "import_ms": 190,
+      "replay_ms": 2,
+      "replayed_consts": 5,
+      "type_hints": 0,
+      "val_hints": 0,
+      "axioms": [
+        "propext"
+      ]
+    },
+    {
+      "module": "Budget_Target_Omega",
+      "loc": 37,
+      "rc": 0,
+      "timed_out": false,
+      "wall_s": 0.5139,
+      "cpu_s": 0.5,
+      "rss_mb": 488.0,
+      "olean_bytes": 212384,
+      "replay_base": "Init",
+      "print_axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "per_vc_axioms": {
+        "Budget_Target_Omega.vc1_stack_heap_disjoint": [
+          "propext",
+          "Quot.sound"
+        ],
+        "Budget_Target_Omega.vc2_jumptable_bound": [
+          "propext",
+          "Quot.sound"
+        ],
+        "Budget_Target_Omega.vc3_avx2_alias_lane": [
+          "propext",
+          "Quot.sound"
+        ],
+        "Budget_Target_Omega.vc4_cfa_rsp_roundtrip": [
+          "propext",
+          "Quot.sound"
+        ],
+        "Budget_Target_Omega.all_vcs": [
+          "propext",
+          "Quot.sound"
+        ]
+      },
+      "within_3_axiom_ceiling": true,
+      "replay_rc": 0,
+      "import_ms": 479,
+      "replay_ms": 60,
+      "replayed_consts": 10,
+      "type_hints": 0,
+      "val_hints": 0,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "module": "Budget_Target_BvOmega",
+      "loc": 29,
+      "rc": 0,
+      "timed_out": false,
+      "wall_s": 0.5103,
+      "cpu_s": 0.5,
+      "rss_mb": 487.43,
+      "olean_bytes": 188344,
+      "replay_base": "Init",
+      "print_axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "per_vc_axioms": {
+        "Budget_Target_BvOmega.vc1_stack_heap_disjoint": [
+          "propext",
+          "Quot.sound"
+        ],
+        "Budget_Target_BvOmega.vc2_jumptable_bound": [
+          "propext",
+          "Quot.sound"
+        ],
+        "Budget_Target_BvOmega.vc3_avx2_alias_lane": [
+          "propext",
+          "Quot.sound"
+        ],
+        "Budget_Target_BvOmega.vc4_cfa_rsp_roundtrip": [
+          "propext",
+          "Quot.sound"
+        ],
+        "Budget_Target_BvOmega.all_vcs": [
+          "propext",
+          "Quot.sound"
+        ]
+      },
+      "within_3_axiom_ceiling": true,
+      "replay_rc": 0,
+      "import_ms": 464,
+      "replay_ms": 56,
+      "replayed_consts": 9,
+      "type_hints": 0,
+      "val_hints": 0,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "module": "Budget_Target_Grind",
+      "loc": 31,
+      "rc": 0,
+      "timed_out": false,
+      "wall_s": 0.5171,
+      "cpu_s": 0.51,
+      "rss_mb": 490.62,
+      "olean_bytes": 111920,
+      "replay_base": "Init",
+      "print_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "per_vc_axioms": {
+        "Budget_Target_Grind.vc1_stack_heap_disjoint": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "Budget_Target_Grind.vc2_jumptable_bound": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "Budget_Target_Grind.vc3_avx2_alias_lane": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "Budget_Target_Grind.vc4_cfa_rsp_roundtrip": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "Budget_Target_Grind.all_vcs": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      "within_3_axiom_ceiling": true,
+      "replay_rc": 0,
+      "import_ms": 461,
+      "replay_ms": 40,
+      "replayed_consts": 9,
+      "type_hints": 0,
+      "val_hints": 0,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "module": "Budget_Target_BvDecide",
+      "loc": 29,
+      "rc": 0,
+      "timed_out": false,
+      "wall_s": 0.7288,
+      "cpu_s": 0.63,
+      "rss_mb": 683.45,
+      "olean_bytes": 842408,
+      "replay_base": "Std.Tactic.BVDecide",
+      "print_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound",
+        "Budget_Target_BvDecide.vc1_stack_heap_disjoint._native.bv_decide.ax_1",
+        "Budget_Target_BvDecide.vc2_jumptable_bound._native.bv_decide.ax_1",
+        "Budget_Target_BvDecide.vc3_avx2_alias_lane._native.bv_decide.ax_1"
+      ],
+      "per_vc_axioms": {
+        "Budget_Target_BvDecide.vc1_stack_heap_disjoint": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound",
+          "Budget_Target_BvDecide.vc1_stack_heap_disjoint._native.bv_decide.ax_1"
+        ],
+        "Budget_Target_BvDecide.vc2_jumptable_bound": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound",
+          "Budget_Target_BvDecide.vc2_jumptable_bound._native.bv_decide.ax_1"
+        ],
+        "Budget_Target_BvDecide.vc3_avx2_alias_lane": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound",
+          "Budget_Target_BvDecide.vc3_avx2_alias_lane._native.bv_decide.ax_1"
+        ],
+        "Budget_Target_BvDecide.vc4_cfa_rsp_roundtrip": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "Budget_Target_BvDecide.all_vcs": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound",
+          "Budget_Target_BvDecide.vc1_stack_heap_disjoint._native.bv_decide.ax_1",
+          "Budget_Target_BvDecide.vc2_jumptable_bound._native.bv_decide.ax_1",
+          "Budget_Target_BvDecide.vc3_avx2_alias_lane._native.bv_decide.ax_1"
+        ]
+      },
+      "within_3_axiom_ceiling": false,
+      "replay_rc": 0,
+      "import_ms": 704,
+      "replay_ms": 17043,
+      "replayed_consts": 11363,
+      "type_hints": 0,
+      "val_hints": 0,
+      "axioms": [
+        "Budget_Target_BvDecide.vc1_stack_heap_disjoint._native.bv_decide.ax_1",
+        "Budget_Target_BvDecide.vc2_jumptable_bound._native.bv_decide.ax_1",
+        "Budget_Target_BvDecide.vc3_avx2_alias_lane._native.bv_decide.ax_1",
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    }
+  ],
+  "exp4_hint_separation": {
+    "wall_s": 0.833,
+    "cpu_s": 0.83,
+    "rss_mb": 298.89,
+    "olean_bytes": 555864,
+    "replay_rc": 0,
+    "import_ms": 179,
+    "replay_ms": 194,
+    "replayed_consts": 500,
+    "type_hints": 0,
+    "val_hints": 6,
+    "axioms": [
+      "Quot.sound",
+      "propext"
+    ]
+  }
+}

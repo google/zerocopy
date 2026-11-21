@@ -1,0 +1,276 @@
+{
+  "1.99.1": {
+    "probe_1a_cargo_divergence": {
+      "toolchain": "1.99.1",
+      "cargo_check_with_missing_native_lib_rc": 0,
+      "cargo_build_with_missing_native_lib_rc": 101,
+      "cargo_build_missing_stderr_excerpt": [
+        "          ",
+        "",
+        "error: could not compile `diverge_demo` (bin \"diverge_demo\") due to 1 previous error"
+      ],
+      "wrapper_build_output": "VAL=42",
+      "wrapper_build_exe_sha256": "7720d217cc6da019635182eb8aad7bde7a0a2c72d09d93ae174cfa30df804854",
+      "plain_debug_build_output": "VAL=666",
+      "plain_debug_exe_sha256": "8dcb4a2db1b941f7a7988c6a8f0c6aa913b36ea413c6b6df0c94d7035666adb2",
+      "release_build_output": "VAL=999",
+      "diverged_under_identical_rust_source": true
+    },
+    "probe_1b_rlib_bundling_and_toctou": {
+      "toolchain": "1.99.1",
+      "native_a_sha256_v1": "1f6a111e1c7a6138338ae296f51e8b3cd05dc228777d1c5c2a79f2cc37bcb230",
+      "native_a_sha256_v2": "d804e648bc158910396e6dc8126775cd5d3e849e14c2e425a0e527d8c5ab2167",
+      "rlib_layouts": {
+        "default_bundle": {
+          "rlib_members": [
+            "lib.rmeta",
+            "lib.rmeta-link",
+            "libup.up.e460f62017781035-cgu.0.rcgu.o",
+            "myffi_impl.o"
+          ],
+          "contains_unpacked_native_o": true,
+          "contains_packed_archive_wrapper": false
+        },
+        "bundle_whole_archive": {
+          "rlib_members": [
+            "lib.rmeta",
+            "lib.rmeta-link",
+            "libup.up.e460f62017781035-cgu.0.rcgu.o",
+            "libmyffi.a"
+          ],
+          "contains_unpacked_native_o": false,
+          "contains_packed_archive_wrapper": true
+        },
+        "no_bundle": {
+          "rlib_members": [
+            "lib.rmeta",
+            "lib.rmeta-link",
+            "libup.up.e460f62017781035-cgu.0.rcgu.o"
+          ],
+          "contains_unpacked_native_o": false,
+          "contains_packed_archive_wrapper": false
+        }
+      },
+      "downstream_after_on_disk_mutation": {
+        "default_bundle": "K=11",
+        "bundle_whole_archive": "K=11",
+        "no_bundle": "K=77"
+      }
+    },
+    "probe_1c_linker_wrapper_and_deplibs": {
+      "toolchain": "1.99.1",
+      "rust_lld_default": {
+        "run_output": "OUT=42",
+        "response_files_expanded": [
+          "<TMPDIR>/extra.rsp"
+        ],
+        "depfile_entries_count": 84,
+        "depfile_contains_libhelper_a": true,
+        "depfile_contains_crt_startup": true,
+        "trace_lines_count": 29,
+        "trace_sample_archive_members": [
+          "<TMPDIR>/native/libhelper.a(helper.o)",
+          "<RUSTC_SYSROOT>/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd-7e719de9c4abc98f.rlib(std-7e719de9c4abc98f.std.68c81ae915296b05-cgu.0.rcgu.o)",
+          "<RUSTC_SYSROOT>/lib/rustlib/x86_64-unknown-linux-gnu/lib/libpanic_unwind-4c962e8757b7fd52.rlib(panic_unwind-4c962e8757b7fd52.panic_unwind.144a1fb01c894036-cgu.0.rcgu.o)",
+          "<RUSTC_SYSROOT>/lib/rustlib/x86_64-unknown-linux-gnu/lib/libobject-9ab214bf508f4fb2.rlib(object-9ab214bf508f4fb2.object.720033ce913473d3-cgu.0.rcgu.o)",
+          "<RUSTC_SYSROOT>/lib/rustlib/x86_64-unknown-linux-gnu/lib/libmemchr-e57d23b4cf2c7093.rlib(memchr-e57d23b4cf2c7093.memchr.63b9bb9413056f57-cgu.0.rcgu.o)",
+          "<RUSTC_SYSROOT>/lib/rustlib/x86_64-unknown-linux-gnu/lib/libaddr2line-b2546485fb156a81.rlib(addr2line-b2546485fb156a81.addr2line.cbf6c01f32cb458f-cgu.0.rcgu.o)"
+        ],
+        "trace_sample_first": [
+          "/usr/lib/gcc/x86_64-linux-gnu/15/../../../x86_64-linux-gnu/Scrt1.o",
+          "/usr/lib/gcc/x86_64-linux-gnu/15/../../../x86_64-linux-gnu/crti.o",
+          "/usr/lib/gcc/x86_64-linux-gnu/15/crtbeginS.o",
+          "<TMPDIR>/rust_lld_default/rustcGaekAh/symbols.o",
+          "<TMPDIR>/rust_lld_default/app.app.868052ca5b4b1069-cgu.0.rcgu.o",
+          "<TMPDIR>/rust_lld_default/app.eruw0a705wojogrmmmy8a8cje.rcgu.o"
+        ],
+        "map_file_bytes": 785893,
+        "toctou_mismatches": []
+      },
+      "gnu_ld_bfd": {
+        "run_output": "OUT=42",
+        "response_files_expanded": [
+          "<TMPDIR>/extra.rsp"
+        ],
+        "depfile_entries_count": 96,
+        "depfile_contains_libhelper_a": true,
+        "depfile_contains_crt_startup": true,
+        "trace_lines_count": 44,
+        "trace_sample_archive_members": [],
+        "trace_sample_first": [
+          "/usr/lib/gcc/x86_64-linux-gnu/15/../../../x86_64-linux-gnu/Scrt1.o",
+          "/usr/lib/gcc/x86_64-linux-gnu/15/../../../x86_64-linux-gnu/crti.o",
+          "/usr/lib/gcc/x86_64-linux-gnu/15/crtbeginS.o",
+          "<TMPDIR>/gnu_ld_bfd/rustcss88rb/symbols.o",
+          "<TMPDIR>/gnu_ld_bfd/app.app.868052ca5b4b1069-cgu.0.rcgu.o",
+          "<TMPDIR>/gnu_ld_bfd/app.eruw0a705wojogrmmmy8a8cje.rcgu.o"
+        ],
+        "map_file_bytes": 2163519,
+        "toctou_mismatches": []
+      },
+      "sht_llvm_dependent_libraries_smuggling": {
+        "lld_default_allows_deplibs": {
+          "rustc_rc": 0,
+          "run_output": "SMUG=777",
+          "smuggled_archive_absent_from_argv": true,
+          "smuggled_archive_caught_by_depfile": true,
+          "smuggled_archive_caught_by_trace": true,
+          "trace_matching_smuggled": [
+            "<TMPDIR>/smuggled/libsecret_dep.a(secret_dep.o)"
+          ],
+          "stderr_excerpt": []
+        },
+        "lld_no_dependent_libraries": {
+          "rustc_rc": 1,
+          "run_output": null,
+          "smuggled_archive_absent_from_argv": true,
+          "smuggled_archive_caught_by_depfile": false,
+          "smuggled_archive_caught_by_trace": false,
+          "trace_matching_smuggled": [],
+          "stderr_excerpt": [
+            "          ",
+            "",
+            "error: aborting due to 1 previous error"
+          ]
+        }
+      }
+    }
+  },
+  "nightly-2026-06-01": {
+    "probe_1a_cargo_divergence": {
+      "toolchain": "nightly-2026-06-01",
+      "cargo_check_with_missing_native_lib_rc": 0,
+      "cargo_build_with_missing_native_lib_rc": 101,
+      "cargo_build_missing_stderr_excerpt": [
+        "          ",
+        "",
+        "error: could not compile `diverge_demo` (bin \"diverge_demo\") due to 1 previous error"
+      ],
+      "wrapper_build_output": "VAL=42",
+      "wrapper_build_exe_sha256": "499e70125efb8789b99c97829749fe70ef18f222afcad2d0beac60a040432659",
+      "plain_debug_build_output": "VAL=666",
+      "plain_debug_exe_sha256": "3c492800224a2a76daaa483fec42d1ebd0de6ab7dd45ffd8b521c90648bd53d1",
+      "release_build_output": "VAL=999",
+      "diverged_under_identical_rust_source": true
+    },
+    "probe_1b_rlib_bundling_and_toctou": {
+      "toolchain": "nightly-2026-06-01",
+      "native_a_sha256_v1": "1f6a111e1c7a6138338ae296f51e8b3cd05dc228777d1c5c2a79f2cc37bcb230",
+      "native_a_sha256_v2": "d804e648bc158910396e6dc8126775cd5d3e849e14c2e425a0e527d8c5ab2167",
+      "rlib_layouts": {
+        "default_bundle": {
+          "rlib_members": [
+            "lib.rmeta",
+            "lib.rmeta-link",
+            "libup.up.67d25db4e48f60c1-cgu.0.rcgu.o",
+            "myffi_impl.o"
+          ],
+          "contains_unpacked_native_o": true,
+          "contains_packed_archive_wrapper": false
+        },
+        "bundle_whole_archive": {
+          "rlib_members": [
+            "lib.rmeta",
+            "lib.rmeta-link",
+            "libup.up.67d25db4e48f60c1-cgu.0.rcgu.o",
+            "libmyffi.a"
+          ],
+          "contains_unpacked_native_o": false,
+          "contains_packed_archive_wrapper": true
+        },
+        "no_bundle": {
+          "rlib_members": [
+            "lib.rmeta",
+            "lib.rmeta-link",
+            "libup.up.67d25db4e48f60c1-cgu.0.rcgu.o"
+          ],
+          "contains_unpacked_native_o": false,
+          "contains_packed_archive_wrapper": false
+        }
+      },
+      "downstream_after_on_disk_mutation": {
+        "default_bundle": "K=11",
+        "bundle_whole_archive": "K=11",
+        "no_bundle": "K=77"
+      }
+    },
+    "probe_1c_linker_wrapper_and_deplibs": {
+      "toolchain": "nightly-2026-06-01",
+      "rust_lld_default": {
+        "run_output": "OUT=42",
+        "response_files_expanded": [
+          "<TMPDIR>/extra.rsp"
+        ],
+        "depfile_entries_count": 84,
+        "depfile_contains_libhelper_a": true,
+        "depfile_contains_crt_startup": true,
+        "trace_lines_count": 29,
+        "trace_sample_archive_members": [
+          "<TMPDIR>/native/libhelper.a(helper.o)",
+          "<RUSTC_SYSROOT>/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd-ebc3593764c44f83.rlib(std-ebc3593764c44f83.std.b67b1f443dfd2e41-cgu.0.rcgu.o)",
+          "<RUSTC_SYSROOT>/lib/rustlib/x86_64-unknown-linux-gnu/lib/libpanic_unwind-9d4f3ec686d9142f.rlib(panic_unwind-9d4f3ec686d9142f.panic_unwind.b72b7a6d973c1d06-cgu.0.rcgu.o)",
+          "<RUSTC_SYSROOT>/lib/rustlib/x86_64-unknown-linux-gnu/lib/libobject-8de40983a2c457e0.rlib(object-8de40983a2c457e0.object.82119a443884521-cgu.0.rcgu.o)",
+          "<RUSTC_SYSROOT>/lib/rustlib/x86_64-unknown-linux-gnu/lib/libmemchr-922d6e4fee61ca5e.rlib(memchr-922d6e4fee61ca5e.memchr.f04052098ad5b36f-cgu.0.rcgu.o)",
+          "<RUSTC_SYSROOT>/lib/rustlib/x86_64-unknown-linux-gnu/lib/libaddr2line-f257922d29381443.rlib(addr2line-f257922d29381443.addr2line.dbe9d6a54b513a9b-cgu.0.rcgu.o)"
+        ],
+        "trace_sample_first": [
+          "/usr/lib/gcc/x86_64-linux-gnu/15/../../../x86_64-linux-gnu/Scrt1.o",
+          "/usr/lib/gcc/x86_64-linux-gnu/15/../../../x86_64-linux-gnu/crti.o",
+          "/usr/lib/gcc/x86_64-linux-gnu/15/crtbeginS.o",
+          "<TMPDIR>/rust_lld_default/rustc77xTxq/symbols.o",
+          "<TMPDIR>/rust_lld_default/app.app.a3a663ba56724a6c-cgu.0.rcgu.o",
+          "<TMPDIR>/rust_lld_default/app.3apcngn2mf9jmqrffn3dq7jpt.rcgu.o"
+        ],
+        "map_file_bytes": 775512,
+        "toctou_mismatches": []
+      },
+      "gnu_ld_bfd": {
+        "run_output": "OUT=42",
+        "response_files_expanded": [
+          "<TMPDIR>/extra.rsp"
+        ],
+        "depfile_entries_count": 96,
+        "depfile_contains_libhelper_a": true,
+        "depfile_contains_crt_startup": true,
+        "trace_lines_count": 44,
+        "trace_sample_archive_members": [],
+        "trace_sample_first": [
+          "/usr/lib/gcc/x86_64-linux-gnu/15/../../../x86_64-linux-gnu/Scrt1.o",
+          "/usr/lib/gcc/x86_64-linux-gnu/15/../../../x86_64-linux-gnu/crti.o",
+          "/usr/lib/gcc/x86_64-linux-gnu/15/crtbeginS.o",
+          "<TMPDIR>/gnu_ld_bfd/rustc1YYJHz/symbols.o",
+          "<TMPDIR>/gnu_ld_bfd/app.app.a3a663ba56724a6c-cgu.0.rcgu.o",
+          "<TMPDIR>/gnu_ld_bfd/app.3apcngn2mf9jmqrffn3dq7jpt.rcgu.o"
+        ],
+        "map_file_bytes": 2213937,
+        "toctou_mismatches": []
+      },
+      "sht_llvm_dependent_libraries_smuggling": {
+        "lld_default_allows_deplibs": {
+          "rustc_rc": 0,
+          "run_output": "SMUG=777",
+          "smuggled_archive_absent_from_argv": true,
+          "smuggled_archive_caught_by_depfile": true,
+          "smuggled_archive_caught_by_trace": true,
+          "trace_matching_smuggled": [
+            "<TMPDIR>/smuggled/libsecret_dep.a(secret_dep.o)"
+          ],
+          "stderr_excerpt": []
+        },
+        "lld_no_dependent_libraries": {
+          "rustc_rc": 1,
+          "run_output": null,
+          "smuggled_archive_absent_from_argv": true,
+          "smuggled_archive_caught_by_depfile": false,
+          "smuggled_archive_caught_by_trace": false,
+          "trace_matching_smuggled": [],
+          "stderr_excerpt": [
+            "          ",
+            "",
+            "error: aborting due to 1 previous error"
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+'X86DecodingAndPass2Probe.canonical_encoder_misses_alternate_encodings' depends on axioms: [propext, Quot.sound]
+'X86DecodingAndPass2Probe.encodeWithHint_covers_multiplicity' depends on axioms: [propext, Quot.sound]
+'X86DecodingAndPass2Probe.encodeWithHint_sound_wrt_decodeDirect' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'X86DecodingAndPass2Probe.encodeWithHint_unambiguous' depends on axioms: [propext, Classical.choice, Quot.sound]
+'X86DecodingAndPass2Probe.buggy_witness_checker_ambiguous_on_41_90' depends on axioms: [propext, Quot.sound]
+'X86DecodingAndPass2Probe.pass2_isa_correspondence_and_post_transfer' depends on axioms: [propext, Quot.sound]
+'X86DecodingAndPass2Probe.symmetric_vta_iff_false' depends on axioms: [propext, Quot.sound]
+'X86DecodingAndPass2Probe.narrow_anneal_proves_false_hardware_property' depends on axioms: [propext, Quot.sound]
+'X86DecodingAndPass2Probe.poison_breaks_reverse_fault_equiv' depends on axioms: [propext]

@@ -34749,6 +34749,131 @@
         "verification/floating-point"
       ]
     },
+    "hermetic-ffi-build-graph-binding-linker-attestation-and-inlined-asm-tracking": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "rustc 1.99.1"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly (2026-05-31)"
+          },
+          "name": "rustc nightly-2026-06-01"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "5f94df4789f005f9a352888e8355ffc645b7ed0e",
+            "version": "1.99.1"
+          },
+          "name": "Cargo 1.99.1"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef",
+            "version": "1.98.0-nightly (2026-05-26)"
+          },
+          "name": "Cargo nightly-2026-06-01"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "LLVM and rust-lld 23.1.1"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "08c84e69a84d95936296dfcab0e38b34100725d5",
+            "version": "22.1.6"
+          },
+          "name": "LLVM and rust-lld 22.1.6"
+        },
+        {
+          "identity": {
+            "repository": "bazelbuild/rules_rust",
+            "revision": "7e60a45f9f95c0f04fbe1eb144ce4823aa76a766"
+          },
+          "name": "rules_rust"
+        },
+        {
+          "identity": {
+            "repository": "https://fuchsia.googlesource.com/fuchsia",
+            "revision": "4799c98e7566bf11f1bb3f07dfea86173f00e336"
+          },
+          "name": "Fuchsia GN Rust build templates"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cc-rs",
+            "revision": "c548c664cb6d71692959c1bd98959adc52ef7da7"
+          },
+          "name": "cc-rs"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cmake-rs",
+            "revision": "c7e1801f740e80324d39a358f507cfd034a0efb2"
+          },
+          "name": "cmake-rs"
+        },
+        {
+          "identity": {
+            "repository": "kornelski/nasm-rs",
+            "revision": "78580a964d38d07e9fb81228f002a1f419557d04"
+          },
+          "name": "nasm-rs"
+        },
+        {
+          "identity": {
+            "package": "GNU Binutils for Debian",
+            "version": "2.47"
+          },
+          "name": "GNU Binutils (ld.bfd, as, ar, readelf)"
+        },
+        {
+          "identity": {
+            "package": "gcc (Debian 15.2.0-14)",
+            "version": "15.2.0"
+          },
+          "name": "GCC"
+        },
+        {
+          "identity": {
+            "package": "Debian clang 19.1.7 (10.1+build1) / llvm-mc, llvm-objdump 21.1.8",
+            "version": "clang 19.1.7 / llvm-tools 21.1.8"
+          },
+          "name": "Clang 19 and LLVM 21 binutils"
+        }
+      ],
+      "topics": [
+        "build/bazel",
+        "build/cargo",
+        "build/fuchsia-gn",
+        "build/hermeticity",
+        "cargo/build-scripts",
+        "compilers/linker-driver",
+        "ffi/c-abi",
+        "ffi/static-linking",
+        "llvm/bitcode",
+        "llvm/lld",
+        "rust/inline-asm",
+        "rustc/codegen",
+        "security/toctou",
+        "verification/trusted-computing-base"
+      ]
+    },
     "higher-order-masking-compilers-register-transition-leaks-and-maskverif": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -59827,6 +59952,143 @@
         "systems/accelerator-memory-fences"
       ]
     },
+    "production-rust-ffi-inline-asm-workloads-and-adversarial-bypass-taxonomy": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "https://fuchsia.googlesource.com/fuchsia",
+            "revision": "fd31be1516bd2906c5b46be6c3ca3aa1adb162c0"
+          },
+          "name": "Fuchsia OS (Zircon vDSO, Starnix, Driver Runtime)"
+        },
+        {
+          "identity": {
+            "repository": "briansmith/ring",
+            "revision": "b287c58f1dc2764e98c7c48583c2726ded52e6c7"
+          },
+          "name": "ring"
+        },
+        {
+          "identity": {
+            "repository": "aws/aws-lc-rs",
+            "revision": "104142736550c9860d0dfdb389e0d6c4c51e0005"
+          },
+          "name": "aws-lc-rs"
+        },
+        {
+          "identity": {
+            "repository": "aws/aws-lc",
+            "revision": "cd481c207e38f06aeb5766f4a1cdfce10a4c0af8"
+          },
+          "name": "AWS-LC"
+        },
+        {
+          "identity": {
+            "repository": "dalek-cryptography/subtle",
+            "revision": "369e7463e85921377a5f2df80aabcbbc6d57a930"
+          },
+          "name": "subtle"
+        },
+        {
+          "identity": {
+            "repository": "RustCrypto/utils",
+            "revision": "0feca06cf87e61567033a333feb79ecf3c427fea"
+          },
+          "name": "RustCrypto utils (zeroize)"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "5f22fb20497f4983094131f00a734362300d22d2"
+          },
+          "name": "Linux kernel (Rust-for-Linux)"
+        },
+        {
+          "identity": {
+            "repository": "rusqlite/rusqlite",
+            "revision": "388f5d40aab82b2cd40d3a2f94c06dc9e164382d"
+          },
+          "name": "rusqlite and libsqlite3-sys"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/flate2-rs",
+            "revision": "bda759ec690f52cb954a029dcf35749f6fcc8a59"
+          },
+          "name": "flate2-rs"
+        },
+        {
+          "identity": {
+            "repository": "trifectatechfoundation/zlib-rs",
+            "revision": "f6a2b3f097d02428ad4c7e5ddf4b54c3c271bf6d"
+          },
+          "name": "zlib-rs and libz-rs-sys"
+        },
+        {
+          "identity": {
+            "repository": "rust-openssl/rust-openssl",
+            "revision": "dbc5ecad7dbfec35cdfee73c5337e3ee9b8d0f3f"
+          },
+          "name": "rust-openssl and openssl-sys"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973"
+          },
+          "name": "Rust compiler (source inspection)"
+        },
+        {
+          "identity": {
+            "llvm": "23.1.5",
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)"
+          },
+          "name": "Rust compiler (x86_64 execution toolchain)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal Threat Model"
+        },
+        {
+          "identity": {
+            "gcc": "gcc (Debian 15.2.0-14) 15.2.0",
+            "ld": "GNU ld (GNU Binutils for Debian) 2.47",
+            "target": "x86_64-unknown-linux-gnu"
+          },
+          "name": "GNU C Compiler and Binutils (x86_64 execution host)"
+        }
+      ],
+      "topics": [
+        "anneal/trust-boundary",
+        "ffi",
+        "ffi/abi",
+        "ffi/callbacks",
+        "ffi/linker-binding",
+        "rust/aliasing-model",
+        "rust/ffi",
+        "rust/inline-asm",
+        "rust/target-feature",
+        "security/adversarial-verification",
+        "security/threat-model",
+        "systems/cryptography",
+        "systems/fuchsia",
+        "systems/linux-kernel",
+        "verification/tcb-audit"
+      ]
+    },
     "profunctor-optics-prisms-affine-traversals-and-enum-slice-reborrows": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -63055,6 +63317,140 @@
         "domains/audio-dsp",
         "ffi/audio-abi",
         "systems/realtime"
+      ]
+    },
+    "reentrant-ffi-mixed-mir-isa-call-stacks-tree-borrows-and-oracle-composition": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal"
+        },
+        {
+          "identity": {
+            "repository": "proofs-rs/lean-miri",
+            "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+          },
+          "name": "lean-miri"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/miri",
+            "revision": "7fa591d7d4dd9af8154becbc8332f8096f8323b1"
+          },
+          "name": "Miri (pinned upstream source)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11); miri 0.1.0 (3ef0c22cdb 2026-11-11)"
+          },
+          "name": "Miri and rustc nightly (executed toolchain)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+          },
+          "name": "rustc const-eval interpreter (pinned upstream source)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "063d784186d3252bee242217f218223205c0b568"
+          },
+          "name": "MiniRust"
+        },
+        {
+          "identity": {
+            "branch": "compcerto",
+            "doi": "10.1145/3453483.3454097",
+            "repository": "CertiKOS/compcert",
+            "revision": "87a62d95cd24a44e3ecd5fefddc70a969a881bcb"
+          },
+          "name": "CompCertO"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371091",
+            "repository": "snu-sf/CompCertM",
+            "revision": "1bf2113b2381df604a3abcce7711af1f154d1620"
+          },
+          "name": "CompCertM"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3623510",
+            "repository": "logsem/cerise",
+            "revision": "9eb72e675216d7c5473499f392b18049364db03a"
+          },
+          "name": "Cerise"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3622823",
+            "repository": "logsem/melocoton",
+            "revision": "039dae32893a33bc70d668a7abcd25d54587dc3c"
+          },
+          "name": "Melocoton"
+        },
+        {
+          "identity": {
+            "artifact_doi": "10.5281/zenodo.7306312",
+            "doi": "10.1145/3571220"
+          },
+          "name": "DimSum"
+        },
+        {
+          "identity": {
+            "simuliris_doi": "10.1145/3498689",
+            "tree_borrows_doi": "10.1145/3735592"
+          },
+          "name": "Simuliris and Tree Borrows"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3290380",
+            "standard": "WG14 N2676 / N3005 / ISO/IEC TS 6010"
+          },
+          "name": "PNVI-ae-udi Pointer Provenance Model"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "anneal/correspondence",
+        "anneal/mir-semantics",
+        "ffi/callbacks",
+        "ffi/reentrancy",
+        "ffi/unwinding",
+        "isa/abi-bridge",
+        "lean/lean-miri",
+        "minirust/provenance",
+        "minirust/tree-borrows",
+        "pl/multi-language-interop",
+        "pl/open-simulations",
+        "rust/allocators",
+        "rust/inline-asm",
+        "rust/tree-borrows",
+        "verification/oracle-composition"
       ]
     },
     "refcell-non-poisoning-borrow-guards-panic-recovery-and-mutex-poisoning-contrast": {
@@ -67922,6 +68318,109 @@
         "systems/concurrency-weak-memory"
       ]
     },
+    "rust-asm-goto-labels-sym-const-and-assembler-directive-hazards": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "commit_date": "2026-05-31",
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "1.98.0-nightly"
+          },
+          "name": "Rust compiler (1.98.0-nightly)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-10-13",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler (1.99.1)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-09",
+            "repository": "rust-lang/rust",
+            "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "1.100.0"
+          },
+          "name": "Rust compiler (1.100.0)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-11",
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "1.102.0-nightly"
+          },
+          "name": "Rust compiler (1.102.0-nightly)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-17",
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "08c84e69a84d95936296dfcab0e38b34100725d5",
+            "version": "22.1.6"
+          },
+          "name": "LLVM (rust-lang/llvm-project 22.1.6)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "LLVM (rust-lang/llvm-project 23.1.1)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "0a5579eb649d3634a9c30ac873300cc2944fa070",
+            "version": "23.1.5"
+          },
+          "name": "LLVM (rust-lang/llvm-project 23.1.5)"
+        },
+        {
+          "identity": {
+            "distribution": "Debian",
+            "tool": "llvm-mc",
+            "version": "21.1.8"
+          },
+          "name": "LLVM MC standalone assembler"
+        },
+        {
+          "identity": {
+            "distribution": "Debian",
+            "tool": "GNU Binutils",
+            "version": "2.47"
+          },
+          "name": "GNU Binutils (objdump and readelf)"
+        }
+      ],
+      "topics": [
+        "rust/inline-asm",
+        "rustc/mir",
+        "rustc/codegen",
+        "rustc/monomorphization",
+        "llvm/callbr",
+        "llvm/mc-layer",
+        "verification/inline-asm-soundness",
+        "security/assembler-directives"
+      ]
+    },
     "rust-async-executors-raw-waker-vtables-select-cancellation-and-liveness-fairness": {
       "observed_at": "2026-11-20",
       "subjects": [
@@ -68401,6 +68900,119 @@
         "rust/pinning",
         "rust/tree-borrows",
         "rustc/mir"
+      ]
+    },
+    "rust-cpp-ffi-abi-soundness-improper-ctypes-setjmp-errno-and-init-array": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "llvm_version": "22.1.6",
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly"
+          },
+          "name": "rust-lang/rust (1.98.0-nightly)"
+        },
+        {
+          "identity": {
+            "llvm_version": "23.1.1",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "rust_lld_revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "1.99.1"
+          },
+          "name": "rust-lang/rust (1.99.1)"
+        },
+        {
+          "identity": {
+            "llvm_version": "23.1.5",
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly"
+          },
+          "name": "rust-lang/rust (1.102.0-nightly)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "Rust RFCs"
+        },
+        {
+          "identity": {
+            "repository": "itanium-cxx-abi/cxx-abi",
+            "revision": "fae5e46c86147a457a057c6372fa95ec38209fe8"
+          },
+          "name": "Itanium C++ ABI Specification"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "4b8678a9ce498601faf0998992871833838e25c2"
+          },
+          "name": "Clang Itanium and Microsoft C++ ABI Lowering (LLVM Project)"
+        },
+        {
+          "identity": {
+            "repository": "dtolnay/cxx",
+            "revision": "4d19ca4eec78b2964035a3ea3cef5196515b13e7"
+          },
+          "name": "CXX (Safe Rust/C++ Bridge)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust-bindgen",
+            "revision": "0d213bc3dbad03e27fe729b7fb1bb5c77cffda1d"
+          },
+          "name": "rust-bindgen"
+        },
+        {
+          "identity": {
+            "executed_package": "Debian GLIBC 2.43-7+gl1",
+            "repository": "bminor/glibc",
+            "revision": "04e750e75b73957cf1c791535a3f4319534a52fc"
+          },
+          "name": "GNU C Library (glibc)"
+        },
+        {
+          "identity": {
+            "compiler": "gcc / g++",
+            "distribution_package": "Debian 15.2.0-14",
+            "target": "x86_64-linux-gnu",
+            "version": "15.2.0"
+          },
+          "name": "GCC and G++ (x86_64-linux-gnu)"
+        },
+        {
+          "identity": {
+            "document": "WG14 N3220",
+            "standard": "ISO/IEC 9899:2024 (working draft N3220)"
+          },
+          "name": "ISO C23 Working Draft N3220"
+        }
+      ],
+      "topics": [
+        "ffi",
+        "ffi/c-cpp-abi",
+        "ffi/improper-ctypes",
+        "ffi/cxx-and-bindgen",
+        "ffi/setjmp-longjmp",
+        "ffi/errno-and-tls",
+        "ffi/c-variadics",
+        "rustc/lints",
+        "compilers/tbaa-strict-aliasing",
+        "systems/init-array-and-constructors",
+        "runtimes/exceptions-and-unwinding",
+        "verification/machine-code-ffi"
       ]
     },
     "rust-ctfe-pointer-provenance-read-pointer-as-int-and-const-eval-vs-runtime-gaps": {
@@ -71292,6 +71904,113 @@
         "verification/separation-logic",
         "verification/survey",
         "rustc/mir"
+      ]
+    },
+    "rust-vs-inline-asm-behavioral-equivalence-for-verified-hot-loop-optimization": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly"
+          },
+          "name": "Rust compiler (1.98.0-nightly)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler (1.99.1)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly"
+          },
+          "name": "Rust compiler (1.102.0-nightly)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal verifier"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover"
+        },
+        {
+          "identity": {
+            "repository": "BurntSushi/memchr",
+            "revision": "bd6068c30e9074a90c285e47912fa0b047d07597"
+          },
+          "name": "memchr crate"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3314221.3314596",
+            "repository": "bchurchill/pldi19-equivalence-checker",
+            "revision": "2e7707be99c10828970f1d96c2bcbb058936cbdc"
+          },
+          "name": "Semantic Program Alignment Equivalence Checker (PLDI 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2642937.2642987",
+            "repository": "mattulbrich/llreve",
+            "revision": "68cb958c1c02177fa0db1965a8afd879a97c2fc4"
+          },
+          "name": "llreve / Reve regression verifier (ASE 2014)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-31424-7_54",
+            "repository": "boogie-org/symdiff",
+            "revision": "54835f0f85c0562b653a219b7a43c794504b3e29"
+          },
+          "name": "SymDiff semantic diff tool (CAV 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1706299.1706311"
+          },
+          "name": "Verified Validator for Software Pipelining (Tristan & Leroy, POPL 2010)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/178243.178249"
+          },
+          "name": "Division by Invariant Integers using Multiplication (Granlund & Montgomery, PLDI 1994)"
+        }
+      ],
+      "topics": [
+        "anneal/trust-model",
+        "isa/aarch64",
+        "isa/x86-64",
+        "lean/mechanization",
+        "rust/hot-loop-optimization",
+        "rust/inline-asm",
+        "rustc/mir",
+        "rustc/target-features",
+        "verification/anti-reward-hacking",
+        "verification/loop-alignment",
+        "verification/relational-equivalence"
       ]
     },
     "rust-weak-memory-atomics-mir-llvm-to-x86-aarch64-lowering-and-fence-soundness": {
@@ -91526,6 +92245,153 @@
         "verification/compiler-verification"
       ]
     },
+    "verifying-compiled-c-cpp-machine-code-in-lean4-lifting-and-cutpoint-scaling": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal repository (trusted boundary, audit, and cargo-anneal)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel"
+        },
+        {
+          "identity": {
+            "binutils": "GNU Binutils for Debian 2.47",
+            "llvm_dwarfdump": "Debian LLVM 21.1.8",
+            "package": "gcc / g++ (Debian 15.2.0-14)",
+            "target": "x86_64-linux-gnu",
+            "version": "15.2.0"
+          },
+          "name": "GCC and G++ C/C++ compiler toolchain (Debian x86_64-linux-gnu)"
+        },
+        {
+          "identity": {
+            "repository": "awslabs/s2n-bignum",
+            "revision": "280a220986a0bc6249248187717a771153d073db"
+          },
+          "name": "s2n-bignum verified x86-64 and Arm64 assembly library"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/LNSym",
+            "revision": "49f8a1d9e46f8dcfc345f4bc15d35b0ba845ff5c"
+          },
+          "name": "LNSym Arm64 symbolic simulator and proof library in Lean 4"
+        },
+        {
+          "identity": {
+            "repository": "HOL-Theorem-Prover/HOL",
+            "revision": "1c803b0f5467e8cf6a50059620c49b2e4810ab6f"
+          },
+          "name": "HOL4 machine-code decompiler"
+        },
+        {
+          "identity": {
+            "repository": "seL4/graph-refine",
+            "revision": "33d94bbdd6448ada368d4d925935e8cfdf7d93b4"
+          },
+          "name": "seL4 graph-refine binary translation validation framework"
+        },
+        {
+          "identity": {
+            "repository": "ssrg-vt/FoxDec",
+            "revision": "d9206efe59a94138924d45c3d69d7c7afa1eb4ac"
+          },
+          "name": "FoxDec formally verified x86-64 binary lifter"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/islaris",
+            "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9"
+          },
+          "name": "Islaris machine-code verification against authoritative ISA semantics"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/CN2Islaris",
+            "revision": "f34f9a2f0a9b75a6b342aa966d0d14daca58c466"
+          },
+          "name": "CN2Islaris DWARF-guided C-to-binary proof bridge"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/cn",
+            "revision": "f2e8eeb47103a2c9fdf2b73a996969f3da114613"
+          },
+          "name": "CN refinement-type verifier for C"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/cerberus",
+            "revision": "e29a8ec9f247ef7e0fbc3a19141dfc8f0f9b902e"
+          },
+          "name": "Cerberus C semantics framework"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert formally verified C compiler"
+        },
+        {
+          "identity": {
+            "repository": "snu-sf/crellvm",
+            "revision": "668249b88756233f96b3ef21f12993501a348afc"
+          },
+          "name": "Crellvm verified credible compilation for LLVM"
+        },
+        {
+          "identity": {
+            "repository": "vellvm/vellvm",
+            "revision": "7f0610c38d829b79bf6e867edf410c9e6f928f98"
+          },
+          "name": "Vellvm mechanized LLVM IR semantics in Rocq"
+        },
+        {
+          "identity": {
+            "repository": "AliveToolkit/alive2",
+            "revision": "3bdd4f5e1cefa47057e93110e707acd11cfe08e4"
+          },
+          "name": "Alive2 LLVM IR translation validator"
+        },
+        {
+          "identity": {
+            "repository": "Deducteam/hol2dk",
+            "revision": "7f0da9630ea948628f9c5f49829d18df6a7073ee"
+          },
+          "name": "hol2dk HOL Light to Dedukti/Lambdapi/Rocq proof exporter"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/kraken",
+            "revision": "c9aa45ee1b273892d7efa7bbf8a8a9391e17b2c0"
+          },
+          "name": "Kraken weakest-precondition engine in Lean 4"
+        }
+      ],
+      "topics": [
+        "verification/machine-code",
+        "verification/trusted-computing-base",
+        "isa/binary-lifting",
+        "isa/x86-64",
+        "ffi/c-cpp-abi",
+        "compilers/codegen-hardening",
+        "compilers/translation-validation",
+        "lean/kernel-replay",
+        "lean/proof-scaling",
+        "anneal/trust-boundary"
+      ]
+    },
     "vertical-seam-composition-and-elf-runpath-tcb-closure-for-verified-rustc": {
       "observed_at": "2026-11-20",
       "subjects": [
@@ -93200,6 +94066,195 @@
         "isa/armv7",
         "verification/isa-semantics",
         "lean/mechanization"
+      ]
+    },
+    "x86-64-formal-isa-models-total-decoding-and-pass2-isa-correspondence": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/kraken",
+            "revision": "019a72cb0f494d26cdceefb2fd40aad19f704ed9"
+          },
+          "name": "AeneasVerif Kraken"
+        },
+        {
+          "identity": {
+            "repository": "acl2/acl2",
+            "revision": "f040a8db474f68e11b5fa980c99b7c1f7be28e54"
+          },
+          "name": "ACL2 x86isa"
+        },
+        {
+          "identity": {
+            "repository": "kframework/X86-64-semantics",
+            "revision": "592380aea04820ea11cfa5475b343f0257f2474e"
+          },
+          "name": "K-Framework X86-64 Semantics"
+        },
+        {
+          "identity": {
+            "repository": "awslabs/s2n-bignum",
+            "revision": "280a220986a0bc6249248187717a771153d073db"
+          },
+          "name": "AWS s2n-bignum"
+        },
+        {
+          "identity": {
+            "repository": "cslib-community/bignum",
+            "revision": "1b3952cba6438a6a03da02ff207deb6c93e7d4eb"
+          },
+          "name": "CSLib bignum"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail-x86-from-acl2",
+            "revision": "0c6c023dccc7c20d8d9dbfc481f01d9bb49d62bf"
+          },
+          "name": "REMS sail-x86-from-acl2"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail-tiny-x86",
+            "revision": "229bd8448937042baa51b0a2d14bc437929b0dce"
+          },
+          "name": "REMS sail-tiny-x86"
+        },
+        {
+          "identity": {
+            "repository": "coruus/L3",
+            "revision": "d6558e679a25ffaaf16a47a3189f8f8111e45e0c"
+          },
+          "name": "L3 Architecture Specification Models"
+        },
+        {
+          "identity": {
+            "repository": "HOL-Theorem-Prover/HOL",
+            "revision": "aee6a90d9856a842f4cbd2bfc44efb7067a141e4"
+          },
+          "name": "HOL4 L3 x64 Machine-Code Model"
+        },
+        {
+          "identity": {
+            "repository": "BinaryAnalysisPlatform/bap",
+            "revision": "034bbd09646a589d5eb1f10b740177d628da80fd"
+          },
+          "name": "Binary Analysis Platform (BAP)"
+        },
+        {
+          "identity": {
+            "repository": "NationalSecurityAgency/ghidra",
+            "revision": "3fb3eec6a05442c901e9ead8620ca21eae830b18"
+          },
+          "name": "Ghidra SLEIGH x86-64 Specification"
+        },
+        {
+          "identity": {
+            "repository": "intelxed/xed",
+            "revision": "0bcb6237345c5066726dcc08b3d87928df3b5b26"
+          },
+          "name": "Intel XED"
+        },
+        {
+          "identity": {
+            "repository": "digama0/mm0",
+            "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956"
+          },
+          "name": "Metamath Zero (MM0) x86-64 Specification"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/LNSym",
+            "revision": "49f8a1d9e46f8dcfc345f4bc15d35b0ba845ff5c"
+          },
+          "name": "AWS LNSym"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail-arm",
+            "revision": "5416ef6b43e9527c38dc71fb752259c1d01a47e1"
+          },
+          "name": "REMS Sail Armv9.4-A"
+        },
+        {
+          "identity": {
+            "repository": "UQ-PAC/aslp",
+            "revision": "92e4fd949402056e16e3747e66922060be57ecc8"
+          },
+          "name": "UQ-PAC ASLp"
+        },
+        {
+          "identity": {
+            "repository": "riscv/sail-riscv",
+            "revision": "71dc9c251a82eb3ecf6f271b02b0161ea8345dfd"
+          },
+          "name": "Sail RISC-V"
+        },
+        {
+          "identity": {
+            "repository": "opencompl/sail-riscv-lean",
+            "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+          },
+          "name": "opencompl sail-riscv-lean"
+        },
+        {
+          "identity": {
+            "repository": "Verified-zkEVM/riscv-zkvm",
+            "revision": "b878729f3e58629819283635240d021b5f6c21ac"
+          },
+          "name": "Verified-zkEVM riscv-zkvm"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal Pass-2 Correspondence Audit"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 Compiler and Kernel"
+        },
+        {
+          "identity": {
+            "package": "Debian 15.2.0-14",
+            "tool": "gcc",
+            "version": "15.2.0"
+          },
+          "name": "GCC x86-64 C Compiler"
+        },
+        {
+          "identity": {
+            "package": "Debian LLVM 21.1.8",
+            "tool": "llvm-mc",
+            "version": "21.1.8"
+          },
+          "name": "LLVM Machine Code Disassembler"
+        },
+        {
+          "identity": {
+            "package": "GNU Binutils for Debian 2.47",
+            "tool": "objdump",
+            "version": "2.47"
+          },
+          "name": "GNU Binutils objdump"
+        }
+      ],
+      "topics": [
+        "isa/x86-64",
+        "isa/aarch64",
+        "isa/riscv64",
+        "isa/decoding",
+        "isa/semantics",
+        "anneal/correspondence",
+        "anneal/tcb-audit",
+        "lean/mechanization",
+        "kraken",
+        "verification/isa-refinement"
       ]
     },
     "x86-avx512-short-loop-regression-and-vector-width-profitability": {

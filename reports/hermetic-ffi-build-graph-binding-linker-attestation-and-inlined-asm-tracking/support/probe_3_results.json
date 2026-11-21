@@ -1,0 +1,386 @@
+{
+  "1.99.1": {
+    "toolchain": "1.99.1",
+    "scan_matrix": [
+      {
+        "artifact": "c_native.o",
+        "magic_hex": "7f454c4602010100",
+        "verdict_strict_no_llvmbc": "ACCEPT",
+        "verdict_allowing_inactive_llvmbc": "ACCEPT",
+        "strict_reasons": [],
+        "findings_detail": []
+      },
+      {
+        "artifact": "libr_no_embed_bc.rlib",
+        "magic_hex": "213c617263683e0a",
+        "verdict_strict_no_llvmbc": "ACCEPT",
+        "verdict_allowing_inactive_llvmbc": "ACCEPT",
+        "strict_reasons": [],
+        "findings_detail": []
+      },
+      {
+        "artifact": "libr_default.rlib",
+        "magic_hex": "213c617263683e0a",
+        "verdict_strict_no_llvmbc": "REJECT",
+        "verdict_allowing_inactive_llvmbc": "ACCEPT",
+        "strict_reasons": [
+          "embedded_llvmbc_section"
+        ],
+        "findings_detail": [
+          {
+            "reason": "embedded_llvmbc_section",
+            "section": ".llvmbc",
+            "member": "libr_default.rlib(libr_default.rlib_demo.749e246855f7e1ab-cgu.0.rcgu.o)"
+          }
+        ]
+      },
+      {
+        "artifact": "libr_xlto.rlib",
+        "magic_hex": "213c617263683e0a",
+        "verdict_strict_no_llvmbc": "REJECT",
+        "verdict_allowing_inactive_llvmbc": "REJECT",
+        "strict_reasons": [
+          "raw_llvm_bitcode"
+        ],
+        "findings_detail": [
+          {
+            "reason": "raw_llvm_bitcode",
+            "magic": "4243c0de35140000",
+            "member": "libr_xlto.rlib(libr_xlto.rlib_demo.749e246855f7e1ab-cgu.0.rcgu.o)"
+          }
+        ]
+      },
+      {
+        "artifact": "c_clang_thin.o",
+        "magic_hex": "4243c0de35140000",
+        "verdict_strict_no_llvmbc": "REJECT",
+        "verdict_allowing_inactive_llvmbc": "REJECT",
+        "strict_reasons": [
+          "raw_llvm_bitcode"
+        ],
+        "findings_detail": [
+          {
+            "reason": "raw_llvm_bitcode",
+            "magic": "4243c0de35140000",
+            "member": "c_clang_thin.o"
+          }
+        ]
+      },
+      {
+        "artifact": "libthin_bitcode.a",
+        "magic_hex": "213c7468696e3e0a",
+        "verdict_strict_no_llvmbc": "REJECT",
+        "verdict_allowing_inactive_llvmbc": "REJECT",
+        "strict_reasons": [
+          "raw_llvm_bitcode"
+        ],
+        "findings_detail": [
+          {
+            "reason": "raw_llvm_bitcode",
+            "magic": "4243c0de35140000",
+            "member": "libthin_bitcode.a(/tmp/probe3_eq1jg33b/c_clang_thin.o)"
+          }
+        ]
+      },
+      {
+        "artifact": "c_wrapped_bc.o",
+        "magic_hex": "dec0170b00000000",
+        "verdict_strict_no_llvmbc": "REJECT",
+        "verdict_allowing_inactive_llvmbc": "REJECT",
+        "strict_reasons": [
+          "llvm_bitcode_wrapper"
+        ],
+        "findings_detail": [
+          {
+            "reason": "llvm_bitcode_wrapper",
+            "magic": "dec0170b00000000",
+            "member": "c_wrapped_bc.o"
+          }
+        ]
+      },
+      {
+        "artifact": "c_clang_fat.o",
+        "magic_hex": "7f454c4602010100",
+        "verdict_strict_no_llvmbc": "REJECT",
+        "verdict_allowing_inactive_llvmbc": "REJECT",
+        "strict_reasons": [
+          "fat_llvm_lto_section"
+        ],
+        "findings_detail": [
+          {
+            "reason": "fat_llvm_lto_section",
+            "section": ".llvm.lto",
+            "member": "c_clang_fat.o"
+          }
+        ]
+      },
+      {
+        "artifact": "c_gcc_slim.o",
+        "magic_hex": "7f454c4602010100",
+        "verdict_strict_no_llvmbc": "REJECT",
+        "verdict_allowing_inactive_llvmbc": "REJECT",
+        "strict_reasons": [
+          "gcc_gimple_lto"
+        ],
+        "findings_detail": [
+          {
+            "reason": "gcc_gimple_lto",
+            "sections_count": 15,
+            "symbols": [
+              "__gnu_lto_slim"
+            ],
+            "member": "c_gcc_slim.o"
+          }
+        ]
+      },
+      {
+        "artifact": "c_gcc_fat.o",
+        "magic_hex": "7f454c4602010100",
+        "verdict_strict_no_llvmbc": "REJECT",
+        "verdict_allowing_inactive_llvmbc": "REJECT",
+        "strict_reasons": [
+          "gcc_gimple_lto"
+        ],
+        "findings_detail": [
+          {
+            "reason": "gcc_gimple_lto",
+            "sections_count": 15,
+            "symbols": [],
+            "member": "c_gcc_fat.o"
+          }
+        ]
+      }
+    ],
+    "fat_lto_flag_divergence": {
+      "without_fat_lto_flag_disasm": [
+        "00000000000012f0 <rust_entry>:",
+        "12f0: be 05 00 00 00               \tmovl\t$0x5, %esi",
+        "12f5: ff 25 a5 10 00 00            \tjmpq\t*0x10a5(%rip)           # 0x23a0"
+      ],
+      "without_fat_lto_calls_or_jumps_c_double_add": true,
+      "with_fat_lto_flag_disasm": [
+        "00000000000012c0 <rust_entry>:",
+        "12c0: 8d 04 7d 05 00 00 00         \tleal\t0x5(,%rdi,2), %eax",
+        "12c7: c3                           \tretq"
+      ],
+      "with_fat_lto_inlined_completely": true
+    },
+    "bitcode_wrapper_0x0b17c0de_accepted_by_rust_lld": {
+      "returncode": 0,
+      "inlined_disasm": [
+        "00000000000012c0 <rust_entry>:",
+        "12c0: 8d 04 7d 05 00 00 00         \tleal\t0x5(,%rdi,2), %eax",
+        "12c7: c3                           \tretq"
+      ]
+    },
+    "gcc_slim_lto_in_rust_lld": {
+      "returncode": 1,
+      "stderr_excerpt": [
+        "rust-lld: error: undefined symbol: c_double_add",
+        ">>> referenced by rlib_demo.749e246855f7e1ab-cgu.0",
+        ">>>               libr_no_embed_bc.rlib_demo.749e246855f7e1ab-cgu.0.rcgu.o:(rust_entry) in archive /tmp/probe3_eq1jg33b/libr_no_embed_bc.rlib"
+      ]
+    },
+    "gcc_slim_lto_in_gcc_flto_driver_rc": 0
+  },
+  "nightly-2026-06-01": {
+    "toolchain": "nightly-2026-06-01",
+    "scan_matrix": [
+      {
+        "artifact": "c_native.o",
+        "magic_hex": "7f454c4602010100",
+        "verdict_strict_no_llvmbc": "ACCEPT",
+        "verdict_allowing_inactive_llvmbc": "ACCEPT",
+        "strict_reasons": [],
+        "findings_detail": []
+      },
+      {
+        "artifact": "libr_no_embed_bc.rlib",
+        "magic_hex": "213c617263683e0a",
+        "verdict_strict_no_llvmbc": "ACCEPT",
+        "verdict_allowing_inactive_llvmbc": "ACCEPT",
+        "strict_reasons": [],
+        "findings_detail": []
+      },
+      {
+        "artifact": "libr_default.rlib",
+        "magic_hex": "213c617263683e0a",
+        "verdict_strict_no_llvmbc": "REJECT",
+        "verdict_allowing_inactive_llvmbc": "ACCEPT",
+        "strict_reasons": [
+          "embedded_llvmbc_section"
+        ],
+        "findings_detail": [
+          {
+            "reason": "embedded_llvmbc_section",
+            "section": ".llvmbc",
+            "member": "libr_default.rlib(libr_default.rlib_demo.7d1bbfa52b31bd15-cgu.0.rcgu.o)"
+          }
+        ]
+      },
+      {
+        "artifact": "libr_xlto.rlib",
+        "magic_hex": "213c617263683e0a",
+        "verdict_strict_no_llvmbc": "REJECT",
+        "verdict_allowing_inactive_llvmbc": "REJECT",
+        "strict_reasons": [
+          "raw_llvm_bitcode"
+        ],
+        "findings_detail": [
+          {
+            "reason": "raw_llvm_bitcode",
+            "magic": "4243c0de35140000",
+            "member": "libr_xlto.rlib(libr_xlto.rlib_demo.7d1bbfa52b31bd15-cgu.0.rcgu.o)"
+          }
+        ]
+      },
+      {
+        "artifact": "c_clang_thin.o",
+        "magic_hex": "4243c0de35140000",
+        "verdict_strict_no_llvmbc": "REJECT",
+        "verdict_allowing_inactive_llvmbc": "REJECT",
+        "strict_reasons": [
+          "raw_llvm_bitcode"
+        ],
+        "findings_detail": [
+          {
+            "reason": "raw_llvm_bitcode",
+            "magic": "4243c0de35140000",
+            "member": "c_clang_thin.o"
+          }
+        ]
+      },
+      {
+        "artifact": "libthin_bitcode.a",
+        "magic_hex": "213c7468696e3e0a",
+        "verdict_strict_no_llvmbc": "REJECT",
+        "verdict_allowing_inactive_llvmbc": "REJECT",
+        "strict_reasons": [
+          "raw_llvm_bitcode"
+        ],
+        "findings_detail": [
+          {
+            "reason": "raw_llvm_bitcode",
+            "magic": "4243c0de35140000",
+            "member": "libthin_bitcode.a(/tmp/probe3_nzh9890s/c_clang_thin.o)"
+          }
+        ]
+      },
+      {
+        "artifact": "c_wrapped_bc.o",
+        "magic_hex": "dec0170b00000000",
+        "verdict_strict_no_llvmbc": "REJECT",
+        "verdict_allowing_inactive_llvmbc": "REJECT",
+        "strict_reasons": [
+          "llvm_bitcode_wrapper"
+        ],
+        "findings_detail": [
+          {
+            "reason": "llvm_bitcode_wrapper",
+            "magic": "dec0170b00000000",
+            "member": "c_wrapped_bc.o"
+          }
+        ]
+      },
+      {
+        "artifact": "c_clang_fat.o",
+        "magic_hex": "7f454c4602010100",
+        "verdict_strict_no_llvmbc": "REJECT",
+        "verdict_allowing_inactive_llvmbc": "REJECT",
+        "strict_reasons": [
+          "fat_llvm_lto_section"
+        ],
+        "findings_detail": [
+          {
+            "reason": "fat_llvm_lto_section",
+            "section": ".llvm.lto",
+            "member": "c_clang_fat.o"
+          }
+        ]
+      },
+      {
+        "artifact": "c_gcc_slim.o",
+        "magic_hex": "7f454c4602010100",
+        "verdict_strict_no_llvmbc": "REJECT",
+        "verdict_allowing_inactive_llvmbc": "REJECT",
+        "strict_reasons": [
+          "gcc_gimple_lto"
+        ],
+        "findings_detail": [
+          {
+            "reason": "gcc_gimple_lto",
+            "sections_count": 15,
+            "symbols": [
+              "__gnu_lto_slim"
+            ],
+            "member": "c_gcc_slim.o"
+          }
+        ]
+      },
+      {
+        "artifact": "c_gcc_fat.o",
+        "magic_hex": "7f454c4602010100",
+        "verdict_strict_no_llvmbc": "REJECT",
+        "verdict_allowing_inactive_llvmbc": "REJECT",
+        "strict_reasons": [
+          "gcc_gimple_lto"
+        ],
+        "findings_detail": [
+          {
+            "reason": "gcc_gimple_lto",
+            "sections_count": 15,
+            "symbols": [],
+            "member": "c_gcc_fat.o"
+          }
+        ]
+      }
+    ],
+    "fat_lto_flag_divergence": {
+      "without_fat_lto_flag_disasm": [
+        "00000000000012f0 <rust_entry>:",
+        "12f0: be 05 00 00 00               \tmovl\t$0x5, %esi",
+        "12f5: ff 25 a5 10 00 00            \tjmpq\t*0x10a5(%rip)           # 0x23a0"
+      ],
+      "without_fat_lto_calls_or_jumps_c_double_add": true,
+      "with_fat_lto_flag_disasm": [
+        "00000000000012c0 <rust_entry>:",
+        "12c0: 8d 04 7d 05 00 00 00         \tleal\t0x5(,%rdi,2), %eax",
+        "12c7: c3                           \tretq",
+        "12c8: cc                           \tint3",
+        "12c9: cc                           \tint3",
+        "12ca: cc                           \tint3",
+        "12cb: cc                           \tint3",
+        "12cc: cc                           \tint3",
+        "12cd: cc                           \tint3",
+        "12ce: cc                           \tint3",
+        "12cf: cc                           \tint3"
+      ],
+      "with_fat_lto_inlined_completely": true
+    },
+    "bitcode_wrapper_0x0b17c0de_accepted_by_rust_lld": {
+      "returncode": 0,
+      "inlined_disasm": [
+        "00000000000012c0 <rust_entry>:",
+        "12c0: 8d 04 7d 05 00 00 00         \tleal\t0x5(,%rdi,2), %eax",
+        "12c7: c3                           \tretq",
+        "12c8: cc                           \tint3",
+        "12c9: cc                           \tint3",
+        "12ca: cc                           \tint3",
+        "12cb: cc                           \tint3",
+        "12cc: cc                           \tint3",
+        "12cd: cc                           \tint3",
+        "12ce: cc                           \tint3",
+        "12cf: cc                           \tint3"
+      ]
+    },
+    "gcc_slim_lto_in_rust_lld": {
+      "returncode": 1,
+      "stderr_excerpt": [
+        "rust-lld: error: undefined symbol: c_double_add",
+        ">>> referenced by rlib_demo.7d1bbfa52b31bd15-cgu.0",
+        ">>>               libr_no_embed_bc.rlib_demo.7d1bbfa52b31bd15-cgu.0.rcgu.o:(rust_entry) in archive /tmp/probe3_nzh9890s/libr_no_embed_bc.rlib"
+      ]
+    },
+    "gcc_slim_lto_in_gcc_flto_driver_rc": 0
+  }
+}

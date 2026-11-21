@@ -1,0 +1,91 @@
+{
+  "environment": {
+    "rustc": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+    "gcc": "gcc (Debian 15.2.0-14) 15.2.0",
+    "ld": "GNU ld (GNU Binutils for Debian) 2.47",
+    "machine": "x86_64",
+    "os": "Linux-7.1.6-1rodete1-amd64-x86_64-with-glibc2.43"
+  },
+  "pocs": [
+    {
+      "vector": "template_directive_smuggling_init_array",
+      "compiled_ok": true,
+      "runtime_output": "pwned_before_main=0xdeadbeef acc=0",
+      "executed_before_main_without_calling_fn": true,
+      "init_array_sections": [
+        "[22] .init_array       INIT_ARRAY      00000000000510c8 04f0c8 000018 00 WAo  0   0  8"
+      ]
+    },
+    {
+      "vector": "macro_byte_spoofing_and_set_symbol_aliasing",
+      "compiled_ok": true,
+      "runtime_output": "spoofed_nop=0x1337 raw_byte=0x7777 verified_alias=0x4242",
+      "nop_assembled_to_mov_1337": true,
+      "raw_byte_assembled_to_mov_7777": true,
+      "set_aliased_to_evil": true,
+      "disassembly_spoofed_nop": [
+        "14c3c:\t31 c0                \txor    %eax,%eax",
+        "14c3e:\tb8 37 13 00 00       \tmov    $0x1337,%eax",
+        "14c43:\tc3                   \tret"
+      ],
+      "disassembly_raw_byte": [
+        "14c44:\tb8 77 77 00 00       \tmov    $0x7777,%eax",
+        "14c49:\tc3                   \tret"
+      ]
+    },
+    {
+      "vector": "option_contract_lies_and_unguarded_target_feature",
+      "nomem_o0_output": "seen=999 actual=999",
+      "nomem_o3_output": "seen=111 actual=999",
+      "nomem_optimizer_divergence": true,
+      "avx512_compiled_without_cpuid_guard": true,
+      "emitted_zmm_instructions": [
+        "5:\t62 f2 7d 48 7c c6    \tvpbroadcastd zmm0,esi",
+        "b:\t62 f1 fe 48 7f 07    \tvmovdqu64 ZMMWORD PTR [rdi],zmm0"
+      ]
+    },
+    {
+      "vector": "untyped_object_and_linker_hijacking",
+      "static_clean_output": "weak_auth=0 strong_auth=0 mismatched_sig_ret=140723591109626",
+      "static_shadowed_output": "weak_auth=1 strong_auth=1 mismatched_sig_ret=140730683827322",
+      "weak_override_succeeded": true,
+      "strong_archive_order_shadowing_succeeded": true,
+      "link_name_arity_mismatch_accepted_by_linker": true,
+      "ld_preload_clean_output": "policy_check(0)=0",
+      "ld_preload_hijacked_output": "policy_check(0)=1",
+      "ld_preload_interposed": true
+    },
+    {
+      "vector": "build_rs_verify_vs_release_divergence",
+      "verify_mode_output": "check_sig(0)=0",
+      "release_mode_output": "check_sig(0)=1",
+      "diverged_from_identical_rust_src": true
+    },
+    {
+      "vector": "hidden_hardware_abi_clobbers_df_redzone_cfi_vzeroupper",
+      "compiled_ok": true,
+      "runtime_output": "df_exited_set=1 redzone_expected=0xbb8888ff99aaaa55 redzone_after=0xfeedfacecafebabe leaf=7 xinuse_supported=1 ymm_dirty_before_vzeroupper=1 ymm_dirty_after_vzeroupper=0",
+      "df_flag_leaked_set": true,
+      "redzone_silently_corrupted": true,
+      "naked_no_cfi_leaf_addr": "0x14c8c",
+      "naked_no_cfi_leaf_has_eh_frame_fde": false,
+      "ymm_dirty_observed_before_vzeroupper": true
+    },
+    {
+      "vector": "validity_aliasing_and_longjmp_laundering",
+      "runtime_output": "bool_raw=2 not_bool_raw=3 protector_rust_saw=10 actual_mem=777 longjmp_rc=42 drop_ran=false",
+      "invalid_bool_and_negation_corrupted": true,
+      "noalias_protector_stale_read": true,
+      "longjmp_skipped_rust_drop": true,
+      "victim_llvm_ir_signature": [
+        "define internal fastcc noundef i32 @_RNvCs6c87cP16lVl_4poc724noalias_protector_victim(ptr noalias nofree noundef nonnull writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %exclusive) unnamed_addr #5 !guid !20 {"
+      ]
+    },
+    {
+      "vector": "spec_surface_hiding_via_c_header_or_bindgen",
+      "intended_output": "spec_accepts_1_mib=false",
+      "tampered_output": "spec_accepts_1_mib=true",
+      "spec_meaning_altered_with_zero_rust_diff": true
+    }
+  ]
+}

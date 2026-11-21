@@ -1,0 +1,76 @@
+{
+  "swar_exhaustive": {
+    "domain_size_2byte": 65536,
+    "mycroft_find_mismatches": 0,
+    "mycroft_rfind_mismatches": 1,
+    "mycroft_count_mismatches": 1,
+    "mycroft_exact_counterexamples": [
+      [
+        0,
+        1,
+        1,
+        2
+      ]
+    ],
+    "borrow_free_find_mismatches": 0,
+    "borrow_free_rfind_mismatches": 0,
+    "borrow_free_count_mismatches": 0,
+    "memchr_regression_chunk_true_count": 4,
+    "memchr_regression_chunk_mycroft_count": 7,
+    "memchr_regression_chunk_borrow_free_count": 4,
+    "elapsed_ms": 171.61
+  },
+  "div_by_const_exhaustive": {
+    "domain_size_u16": 65536,
+    "d3_mulhi_mismatches": 0,
+    "d10_mulhi_mismatches": 0,
+    "d100_naive_mulhi_mismatches": 219,
+    "d100_naive_first_cex": [
+      43699,
+      436,
+      437
+    ],
+    "d100_preshift_fixed_mismatches": 0,
+    "d7_gm_addshift_mismatches": 0,
+    "d7_naive_floor_0x9249_mismatches": 9362,
+    "d7_naive_floor_first_cex": [
+      7,
+      1,
+      0
+    ],
+    "d7_naive_ceil_0x924A_mismatches": 3121,
+    "d7_naive_ceil_first_cex": [
+      43693,
+      6241,
+      6242
+    ],
+    "elapsed_ms": 38.47
+  },
+  "bmi2_and_pshufb": {
+    "bzhi64_vs_ref_at_idx_64": [
+      3735928559,
+      3735928559
+    ],
+    "bzhi64_vs_ref_at_idx_256": [
+      0,
+      18446744073709551615
+    ],
+    "pshufb_unmasked_index_mismatches_out_of_256": 128,
+    "pshufb_first_cex": [
+      128,
+      1,
+      0
+    ]
+  },
+  "native_guard_page_harness": {
+    "compile_rc": 0,
+    "compile_ms": 186.02,
+    "heap_buggy_rc": 0,
+    "heap_buggy_stdout": "HEAP_BUGGY_PASSED=22",
+    "guard_buggy_rc": -11,
+    "guard_buggy_killed_by_sigsegv": true,
+    "fixed_rc": 0,
+    "fixed_stdout": "FIXED_GUARD_CHECKS_PASSED=748",
+    "fixed_run_ms": 1.32
+  }
+}

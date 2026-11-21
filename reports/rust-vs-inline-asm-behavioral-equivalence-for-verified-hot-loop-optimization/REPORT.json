@@ -1,0 +1,107 @@
+{
+  "topics": [
+    "anneal/trust-model",
+    "isa/aarch64",
+    "isa/x86-64",
+    "lean/mechanization",
+    "rust/hot-loop-optimization",
+    "rust/inline-asm",
+    "rustc/mir",
+    "rustc/target-features",
+    "verification/anti-reward-hacking",
+    "verification/loop-alignment",
+    "verification/relational-equivalence"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler (1.98.0-nightly)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "1.98.0-nightly"
+      }
+    },
+    {
+      "name": "Rust compiler (1.99.1)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "Rust compiler (1.102.0-nightly)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+      }
+    },
+    {
+      "name": "Anneal verifier",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "memchr crate",
+      "identity": {
+        "repository": "BurntSushi/memchr",
+        "revision": "bd6068c30e9074a90c285e47912fa0b047d07597"
+      }
+    },
+    {
+      "name": "Semantic Program Alignment Equivalence Checker (PLDI 2019)",
+      "identity": {
+        "doi": "10.1145/3314221.3314596",
+        "repository": "bchurchill/pldi19-equivalence-checker",
+        "revision": "2e7707be99c10828970f1d96c2bcbb058936cbdc"
+      }
+    },
+    {
+      "name": "llreve / Reve regression verifier (ASE 2014)",
+      "identity": {
+        "doi": "10.1145/2642937.2642987",
+        "repository": "mattulbrich/llreve",
+        "revision": "68cb958c1c02177fa0db1965a8afd879a97c2fc4"
+      }
+    },
+    {
+      "name": "SymDiff semantic diff tool (CAV 2012)",
+      "identity": {
+        "doi": "10.1007/978-3-642-31424-7_54",
+        "repository": "boogie-org/symdiff",
+        "revision": "54835f0f85c0562b653a219b7a43c794504b3e29"
+      }
+    },
+    {
+      "name": "Verified Validator for Software Pipelining (Tristan & Leroy, POPL 2010)",
+      "identity": {
+        "doi": "10.1145/1706299.1706311"
+      }
+    },
+    {
+      "name": "Division by Invariant Integers using Multiplication (Granlund & Montgomery, PLDI 1994)",
+      "identity": {
+        "doi": "10.1145/178243.178249"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
