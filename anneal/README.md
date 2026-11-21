@@ -1,24 +1,19 @@
 # Anneal
 
-> **Historical V1 documentation:** This document describes the prototype in
-> [`anneal/v1/`][archived-v1]. It remains authoritative for using and
-> maintaining V1, but it is not current Anneal design authority. See
-> [`PRINCIPLES.md`][principles] for current project principles. Known
-> differences are historical and need not be reconciled here.
-
 <img src="https://raw.githubusercontent.com/google/zerocopy/main/anneal/docs/images/logo.svg" alt="Anneal logo" width="100%">
 
 <p align="center"><em>logo by <a href="https://www.instagram.com/tinyneonspark">tinyneonspark</a></em></p>
 
-> **Note:** Anneal is currently in pre-alpha. You're welcome to use it, but many things
+> **Note:** Anneal is in alpha. You're welcome to use it, but many things
 > are broken or unsound, and we will change APIs frequently.
 
 > [!NOTE]
-> The current MIR-based implementation can install a locally built toolchain
-> archive and includes kernel-checked proofs for selected MIR programs.
-> End-to-end Rust crate verification is under development. See the
-> [current alpha guide][alpha-guide] for installation and a runnable
-> example.
+> The MIR-based alpha installs a toolchain from a published or locally built
+> archive and uses Lean's kernel to check proofs for selected Rust functions.
+> End-to-end crate verification is under development. The design discussion
+> and examples below describe Anneal's goals. Verification guarantees depend
+> on trusted code being correct and the assumptions in the verification
+> receipt being valid.
 
 For safe code, Rust promises that "if it compiles, then it is memory-safe." Anneal promises the same for unsafe code.
 
@@ -108,7 +103,12 @@ We believe that all of these can be addressed by thinking of specifications as m
 
 ### Human and Agentic Development
 
-Anneal is designed for use by both human engineers and AI coding agents. By providing machine-checked guarantees for safe and `unsafe` code, Anneal eliminates the cognitive burden of manual review and enables the safe acceleration of systems software development. We have [demonstrated](https://drive.google.com/file/d/1areyf438L0izETTHj7PRMnoSHSX4kM29/view?usp=sharing) that Antigravity can author `unsafe` Rust code and prove its soundness using Anneal.
+Anneal is designed for use by both human engineers and AI coding agents.
+Machine-checked proofs reduce the amount of code reviewers check by hand.
+Human reviewers assess specifications and trusted assumptions. We have
+[demonstrated](https://drive.google.com/file/d/1areyf438L0izETTHj7PRMnoSHSX4kM29/view?usp=sharing)
+that Antigravity can author `unsafe` Rust code and prove its soundness using
+Anneal.
 
 Without Anneal:
 
@@ -194,43 +194,9 @@ impl std::ops::Div<PositiveUsize> for usize {
 }
 ```
 
-## Installation
+## Try the alpha
 
-Install Anneal and its required toolchains (Charon and Aeneas):
+The alpha verifies one selected Rust function on x86-64 Linux with glibc.
+Follow the [alpha guide][alpha-guide] to install it and check a runnable proof.
 
-```bash
-cargo install cargo-anneal@0.1.0-alpha.24
-cargo anneal setup
-```
-
-## Quick Start
-
-Write a specification for your function using Anneal annotations in a doc comment:
-
-```rust
-/// ```anneal
-/// requires: x.val < Usize.max
-/// ensures: ret.val = x.val + 1
-/// proof:
-///   scalar_tac
-/// ```
-pub fn add_one(x: usize) -> usize {
-    x + 1
-}
-```
-
-Verify your crate:
-
-```bash
-cargo anneal verify
-```
-
-## Usage & Commands
-
-- **`cargo anneal verify`**: Verifies the target crate.
-- **`cargo anneal expand`**: Outputs the generated Lean code without running full verification (useful for debugging).
-- **`cargo anneal generate`**: Generates the `.lean` files on disk, allowing you to iterate on proofs using standard Lean tooling before copying them back to Rust source.
-
-[archived-v1]: https://github.com/google/zerocopy/tree/anneal-archive-v1-v2/anneal/v1
-[principles]: https://github.com/google/zerocopy/blob/main/anneal/PRINCIPLES.md
 [alpha-guide]: https://github.com/google/zerocopy/blob/main/anneal/docs/alpha.md
