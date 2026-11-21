@@ -28,7 +28,7 @@ Results (card id in brackets; `std` = `Recipe.std`, the standard model):
 * **R17** [`syntactic-value-interpretation-rejects-encapsulated-library`]: `checkedRead` is in the standard semantic interpretation of `int ⇒ int` at every world, but at no type and no world is it in the store-typed syntactic-typability interpretation `SynVal` (values typable by `HasTypeStore W []`), nor in the expression closure `safeAndIn (SynVal τ)`; so a model built from syntactic typability cannot certify this encapsulated library.
 * **R18** [`kripke-monotonicity`]: In the standard model, a value in the interpretation of `τ` at world `W` remains in it at every world `W' ≥ W`.
 
-What these results do **not** show is listed first under **Boundaries** (per-result non-claims), followed by escape hatches and open questions. In particular, nothing here is a theorem about Rust or about any real verifier; connections to real systems are separate `derived (modeling bridge)` claims.
+What these results do **not** show is listed first under **Boundaries** (per-result non-claims), followed by escape hatches and open questions. In particular, nothing here is a theorem about Rust or about any real verifier; connections to real systems are separate `derived (modeling bridge)` claims. Model–system relation: none proved (adequacy and the fundamental theorem relate the package's semantic model to its own operational semantics and syntactic typing). These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust, RustBelt-style verification of Rust libraries, or any other real verifier.
 
 ## Applicability
 
