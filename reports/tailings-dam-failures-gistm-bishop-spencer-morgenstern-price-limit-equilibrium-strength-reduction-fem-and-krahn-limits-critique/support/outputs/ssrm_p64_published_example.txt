@@ -1,0 +1,16 @@
+# Program 6.4 (patched driver build), published example input p64.dat, gfortran 15.2.0 -O2
+# Reproduction of the repository's stored p64.res:
+ There are   2120 equations and the skyline storage is 151000
+
+    srf    max disp  iters
+   1.00  0.1711E-01   10
+   1.20  0.1889E-01   17
+   1.40  0.2115E-01   33
+   1.50  0.2283E-01   67
+   1.55  0.2446E-01  244
+   1.60  0.3761E-01  500
+
+# /usr/bin/time -v excerpt (coarse mesh 20/10/10/5, tol 1e-4, limit 500):
+Elapsed (wall clock) time: 0:01.03   Maximum resident set size (kbytes): 3892
+# /usr/bin/time -v excerpt (fine mesh 40/20/20/10, same SRF list):
+Elapsed (wall clock) time: 0:09.51   Maximum resident set size (kbytes): 11840   (8440 equations, skyline storage 1175290)

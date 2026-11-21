@@ -1,0 +1,4 @@
+slices=50 circles_evaluated=43495 search_wall_s=5.92
+critical(Bishop) centre=(15.00,21.00) R=21.50 entry_x=-3.473 exit_x=19.878 lowest_y=-0.50
+OMS=1.5136 Bishop=1.5945 (iters=9, min m_alpha=0.723) Spencer=1.5914 (lambda=-0.3349) MP_halfsine=1.5911 (lambda=-0.4106)
+gle_wall_s=8.25

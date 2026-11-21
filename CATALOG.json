@@ -84192,6 +84192,149 @@
         "tooling"
       ]
     },
+    "tailings-dam-failures-gistm-bishop-spencer-morgenstern-price-limit-equilibrium-strength-reduction-fem-and-krahn-limits-critique": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "JesseBonanno/PySlope",
+            "revision": "d6167796769743e069ec540588193216753b678f"
+          },
+          "name": "PySlope (Bishop simplified method with entry-exit circular search)"
+        },
+        {
+          "identity": {
+            "repository": "njones61/xslope",
+            "revision": "28f16877a9c204ed421d3e2d6e353609ec8d0c8b",
+            "version": "1.0.9"
+          },
+          "name": "xslope (limit-equilibrium methods, critical-surface search, strength-reduction FEM, reliability)"
+        },
+        {
+          "identity": {
+            "repository": "eamontoyaa/pyBIMstab",
+            "revision": "ca13d23379c60453e1df53c6d3849902e3c600e0",
+            "version": "0.1.4"
+          },
+          "name": "pyBIMstab (GLE / Morgenstern-Price for block-in-matrix slopes)"
+        },
+        {
+          "identity": {
+            "archive_sha256": "923a2c82bdd66c7a1004283221739aa581694b8085c5ee6ae0524d4fe3d4a901",
+            "repository": "cunyizju/Programming-FEM-5th-Fortran",
+            "revision": "bf19e8a773c2a9f0a9a10f304540efdf586955f1"
+          },
+          "name": "Programming the Finite Element Method, 5th ed., community Fortran port (program 6.4, viscoplastic strength reduction)"
+        },
+        {
+          "identity": {
+            "doi": "10.1680/geot.1955.5.1.7"
+          },
+          "name": "Bishop, The use of the slip circle in the stability analysis of slopes (Geotechnique 5(1), 1955)"
+        },
+        {
+          "identity": {
+            "doi": "10.1680/geot.1965.15.1.79"
+          },
+          "name": "Morgenstern and Price, The analysis of the stability of general slip surfaces (Geotechnique 15(1), 1965)"
+        },
+        {
+          "identity": {
+            "doi": "10.1680/geot.1967.17.1.11"
+          },
+          "name": "Spencer, A method of analysis of the stability of embankments assuming parallel inter-slice forces (Geotechnique 17(1), 1967)"
+        },
+        {
+          "identity": {
+            "doi": "10.1139/t77-045"
+          },
+          "name": "Fredlund and Krahn, Comparison of slope stability methods of analysis (Canadian Geotechnical Journal 14(3), 1977)"
+        },
+        {
+          "identity": {
+            "doi": "10.1680/geot.2003.53.4.377"
+          },
+          "name": "Zhu, Lee and Jiang, Generalised framework of limit equilibrium methods for slope stability analysis (Geotechnique 53(4), 2003)"
+        },
+        {
+          "identity": {
+            "doi": "10.1139/t03-024"
+          },
+          "name": "Krahn, The 2001 R.M. Hardy Lecture: The limits of limit equilibrium analyses (Canadian Geotechnical Journal 40(3), 2003)"
+        },
+        {
+          "identity": {
+            "doi": "10.1680/geot.1999.49.3.387"
+          },
+          "name": "Griffiths and Lane, Slope stability analysis by finite elements (Geotechnique 49(3), 1999)"
+        },
+        {
+          "identity": {
+            "doi": "10.1680/geot.1999.49.6.835"
+          },
+          "name": "Dawson, Roth and Drescher, Slope stability analysis by strength reduction (Geotechnique 49(6), 1999)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.compgeo.2006.10.011"
+          },
+          "name": "Cheng, Lansivaara and Wei, Two-dimensional slope stability analysis by limit equilibrium and strength reduction methods (Computers and Geotechnics 34(3), 2007)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.compgeo.2007.04.005"
+          },
+          "name": "Bojorque, De Roeck and Maertens, discussion of Cheng et al. 2007 (Computers and Geotechnics 35(2), 2008)"
+        },
+        {
+          "identity": {
+            "doi": "10.1061/(ASCE)0733-9410(1994)120:12(2180)"
+          },
+          "name": "Christian, Ladd and Baecher, Reliability applied to slope stability analysis (Journal of Geotechnical Engineering 120(12), 1994)"
+        },
+        {
+          "identity": {
+            "doi": "10.1126/science.aax1927"
+          },
+          "name": "Santamarina, Torres-Cruz and Bachus, Why coal ash and tailings dam disasters occur (Science 364(6440), 2019)"
+        },
+        {
+          "identity": {
+            "date": "2015-01-30",
+            "url": "https://www.mountpolleyreviewpanel.ca/sites/default/files/report/ReportonMountPolleyTailingsStorageFacilityBreach.pdf"
+          },
+          "name": "Independent Expert Engineering Investigation and Review Panel, Report on Mount Polley Tailings Storage Facility Breach"
+        },
+        {
+          "identity": {
+            "date": "2016-08-25",
+            "url": "https://blogdopedlowski.com/wp-content/uploads/2016/08/fundao-finalreport.pdf"
+          },
+          "name": "Fundao Tailings Dam Review Panel, Report on the Immediate Causes of the Failure of the Fundao Dam"
+        },
+        {
+          "identity": {
+            "date": "2019-12-12",
+            "url": "https://bdrb1investigationstacc.z15.web.core.windows.net/assets/Feijao-Dam-I-Expert-Panel-Report-ENG.pdf"
+          },
+          "name": "Report of the Expert Panel on the Technical Causes of the Failure of Feijao Dam I"
+        },
+        {
+          "identity": {
+            "standard": "Global Industry Standard on Tailings Management (GISTM)",
+            "url": "https://globaltailingsreview.org/wp-content/uploads/2020/08/global-industry-standard_EN.pdf",
+            "version": "August 2020"
+          },
+          "name": "Global Industry Standard on Tailings Management"
+        }
+      ],
+      "topics": [
+        "domains/tailings-dam-stability",
+        "domains/slope-stability-factor-of-safety",
+        "verification/strength-reduction-versus-limit-equilibrium",
+        "tooling/open-slope-stability-codes"
+      ]
+    },
     "target-features-implications-detection-and-abi-effects": {
       "observed_at": "2026-11-13",
       "subjects": [

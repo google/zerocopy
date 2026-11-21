@@ -1,0 +1,12 @@
+case | E[F] | V_total(reduced) | beta_normal(recomputed) | beta_published | p_f normal | beta_ln (TSPM formula) | p_f lognormal
+single stage H=6 m | 1.500 | 0.0740 | 1.84 | 1.84 | 3.30e-02 | 2.16 | 1.52e-02
+single stage H=12 m | 1.453 | 0.0289 | 2.66 | 2.66 | 3.85e-03 | 3.15 | 8.28e-04
+multistage H=23 m | 1.427 | 0.0134 | 3.69 | 3.69 | 1.13e-04 | 4.35 | 6.81e-06
+
+H=12 m without spatial averaging (V_spatial unreduced = 0.0459):
+V_total=0.0658 beta_normal=1.77 p_f=3.87e-02 beta_ln=2.05 p_f_ln=2.04e-02
+
+With model error (Table 7 second rows): E[F] x 1.05, V[e] = (0.07 E[F])^2 as tabulated
+single stage H=6 m: E[F]=1.575 V[e]=0.0122 V_total=0.0862 beta=1.96 (published 1.96; differences of 0.03 or less reflect rounding of tabulated variances)
+single stage H=12 m: E[F]=1.526 V[e]=0.0114 V_total=0.0403 beta=2.62 (published 2.6; differences of 0.03 or less reflect rounding of tabulated variances)
+multistage H=23 m: E[F]=1.498 V[e]=0.0110 V_total=0.0244 beta=3.19 (published 3.19; differences of 0.03 or less reflect rounding of tabulated variances)

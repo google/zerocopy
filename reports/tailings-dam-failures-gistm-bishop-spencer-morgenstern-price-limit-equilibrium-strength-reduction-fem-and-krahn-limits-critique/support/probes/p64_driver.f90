@@ -1,0 +1,7 @@
+PROGRAM run_p64
+  IMPLICIT NONE
+  CHARACTER(len=60) :: inf, outf
+  CALL GET_COMMAND_ARGUMENT(1, inf)
+  CALL GET_COMMAND_ARGUMENT(2, outf)
+  CALL p64(inf, outf)
+END PROGRAM run_p64

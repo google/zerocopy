@@ -1,0 +1,8 @@
+fs[-3:]  ->  all((d1, d2))  ->  all(...) <= tol
+converged to 1e-9 (diffs 1e-9, 2e-9)     all=True   flag=False
+diverging (diffs 0.5, 0.4)               all=True   flag=False
+one exact repeat (diffs 0.0, 0.3)        all=False  flag=True
+oscillating (diffs -0.2, +0.2)           all=True   flag=False
+
+tolM and tolF -> [False, True, True, True] (Python 'and' on two non-empty lists returns the second list)
+element-wise AND would be -> [False, False, False, True]
