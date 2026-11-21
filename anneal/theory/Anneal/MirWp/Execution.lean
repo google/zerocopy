@@ -1009,4 +1009,308 @@ theorem diverges_of_productiveInvariant {p : Program} {defId : DefId}
     isSingleFrame0_of_reach (isSingleFrame0_mkState 0 0 _) hStepN.2.1
   rw [evalStep_retagDefId h_body hF0, hStepN.2.2]
 
+/-! ## Part IV: 64-Bit Scalar / Bitwise Assignment Steps and Range Indexing -/
+
+/-- Zero-extended 64-bit scalars satisfy `checkVal` at `(.int .i64 false)`. -/
+theorem checkVal_u64_bvZeroExtend (w : BitVec 64) :
+    checkVal (.scalar ⟨.i64, false, bvZeroExtend 128 w⟩) (.int .i64 false) =
+      true := by
+  rw [← truncateBits_i64_bvZeroExtend w]
+  exact checkVal_u64_truncateBits (bvZeroExtend 128 w)
+
+/-- Relational predicate asserting that the active frame's `.assign` RHS
+evaluates to `out`. -/
+def EvalAssignVal (body : Body) (s : State) (out : Val) : Prop :=
+  match s.frames with
+  | [frame] =>
+    match Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx with
+    | some bb =>
+      match Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx with
+      | some (.assign dst rvalue) =>
+        match Trusted.MirSemantics.getElem? body.locals dst.localId with
+        | some dstTy =>
+          match evalRvalue body.locals frame.locals s.mem dstTy rvalue with
+          | .ok (val, _, _) => val = out
+          | .error _ => False
+        | none => False
+      | _ => False
+    | none => False
+  | _ => False
+
+/-- Relational predicate asserting that stepping an `.assign` statement to a
+`u64` local while overriding the written value with `overrideVal` reaches
+`next`. -/
+def EvalAssignWith (body : Body) (s : State)
+    (overrideVal : Val) (next : State) : Prop :=
+  match s.frames with
+  | [frame] =>
+    match Nat.beq frame.defId 0 with
+    | false => False
+    | true =>
+      match Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx with
+      | none => False
+      | some bb =>
+        match Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx with
+        | some (.assign dst rvalue) =>
+          match dst.projection.isEmpty with
+          | false => False
+          | true =>
+            match Trusted.MirSemantics.getElem? body.locals dst.localId with
+            | none => False
+            | some dstTy =>
+              match MirTy.beq dstTy (.int .i64 false) with
+              | false => False
+              | true =>
+                match evalRvalue body.locals frame.locals s.mem dstTy rvalue with
+                | .error _ => False
+                | .ok (_, localsAfterRval, memAfterRval) =>
+                  match Trusted.MirSemantics.getElem?
+                      localsAfterRval dst.localId with
+                  | none => False
+                  | some .dead => False
+                  | some (.immediate _) =>
+                    match setElem? localsAfterRval dst.localId
+                        (.immediate (some overrideVal)) with
+                    | some localsAfterWrite =>
+                      (.step {
+                        frames := [{
+                          frame with
+                          stmtIdx := frame.stmtIdx + 1
+                          locals := localsAfterWrite
+                        }]
+                        callerMem := s.callerMem
+                        mem := memAfterRval
+                      } : StepResult State TerminalOut) = .step next
+                    | none => False
+                  | some (.indirect mplace) =>
+                    match storeIndirect memAfterRval (.int .i64 false) mplace
+                        overrideVal with
+                    | .ok memAfterWrite =>
+                      (.step {
+                        frames := [{
+                          frame with
+                          stmtIdx := frame.stmtIdx + 1
+                          locals := localsAfterRval
+                        }]
+                        callerMem := s.callerMem
+                        mem := memAfterWrite
+                      } : StepResult State TerminalOut) = .step next
+                    | .error _ => False
+        | _ => False
+  | _ => False
+
+private theorem step_eq_evalAssignWith_of_truncate {body : Body}
+    {s next : State} {val : Val} {bits : BitVec 128}
+    (h_trunc : truncateBits .i64 bits = bits)
+    (h_val : EvalAssignVal body s val)
+    (h_eq : val = .scalar ⟨.i64, false, bits⟩)
+    (h_next : EvalAssignWith body s (.scalar ⟨.i64, false, bits⟩) next) :
+    evalStep (bodyProg body) 0 s = .step next := by
+  unfold EvalAssignVal at h_val
+  unfold EvalAssignWith at h_next
+  unfold bodyProg evalStep
+  cases h_fr : s.frames with
+  | nil => rw [h_fr] at h_next; cases h_next
+  | cons frame rest =>
+    cases rest with
+    | cons _ _ => rw [h_fr] at h_next; cases h_next
+    | nil =>
+      rw [h_fr] at h_val h_next
+      dsimp only at h_val h_next
+      dsimp only
+      cases h_def : Nat.beq frame.defId 0 with
+      | false => rw [h_def] at h_next; cases h_next
+      | true =>
+        rw [h_def] at h_next
+        dsimp only at h_next
+        have h_def0 : frame.defId = 0 := Nat.eq_of_beq_eq_true h_def
+        rw [h_def0]
+        rw [show Trusted.MirSemantics.getElem? [body] 0 = some body from rfl]
+        dsimp only
+        cases h_bb :
+            Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx with
+        | none => rw [h_bb] at h_next; cases h_next
+        | some bb =>
+          rw [h_bb] at h_val h_next
+          dsimp only at h_val h_next
+          dsimp only
+          cases h_st :
+              Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx with
+          | none => rw [h_st] at h_next; cases h_next
+          | some stmt =>
+            rw [h_st] at h_val h_next
+            dsimp only
+            cases stmt with
+            | nop | storageLive _ | storageDead _ | unsupported =>
+              cases h_next
+            | assign dst rvalue =>
+              dsimp only at h_val h_next
+              unfold evalStatement
+              dsimp only
+              cases h_proj : dst.projection.isEmpty with
+              | false => rw [h_proj] at h_next; cases h_next
+              | true =>
+                rw [h_proj] at h_next
+                rw [ite_bool_false (rfl : (!true) = false)]
+                dsimp only at h_next
+                cases h_dst :
+                    Trusted.MirSemantics.getElem? body.locals dst.localId with
+                | none => rw [h_dst] at h_next; cases h_next
+                | some dstTy =>
+                  rw [h_dst] at h_val h_next
+                  dsimp only at h_val h_next
+                  dsimp only
+                  cases h_ty : MirTy.beq dstTy (.int .i64 false) with
+                  | false => rw [h_ty] at h_next; cases h_next
+                  | true =>
+                    rw [h_ty] at h_next
+                    dsimp only at h_next
+                    have h_ty_eq := MirTy.beq_iff.mp h_ty
+                    subst h_ty_eq
+                    cases h_rv : evalRvalue body.locals frame.locals s.mem
+                        (.int .i64 false) rvalue with
+                    | error k => rw [h_rv] at h_val; cases h_val
+                    | ok triple =>
+                      cases triple with
+                      | mk v_rv rest =>
+                        cases rest with
+                        | mk localsAfterRval memAfterRval =>
+                          rw [h_rv] at h_val h_next
+                          dsimp only at h_val h_next
+                          dsimp only
+                          have h_vw : v_rv = .scalar ⟨.i64, false, bits⟩ :=
+                            h_val.trans h_eq
+                          rw [h_vw]
+                          unfold writePlace
+                          rw [ite_bool_false (by
+                            rw [checkVal_int_iff.mpr ⟨bits, rfl, h_trunc⟩]
+                            rfl)]
+                          cases h_slot : Trusted.MirSemantics.getElem?
+                              localsAfterRval dst.localId with
+                          | none => rw [h_slot] at h_next; cases h_next
+                          | some slot =>
+                            rw [h_slot] at h_next
+                            cases slot with
+                            | dead => cases h_next
+                            | immediate _ =>
+                              dsimp only at h_next
+                              dsimp only
+                              cases h_set : setElem? localsAfterRval dst.localId
+                                  (.immediate (some (.scalar ⟨.i64, false, bits⟩))) with
+                              | none => rw [h_set] at h_next; cases h_next
+                              | some localsAfterWrite =>
+                                rw [h_set] at h_next
+                                exact h_next
+                            | indirect mplace =>
+                              dsimp only at h_next
+                              dsimp only
+                              cases h_store : storeIndirect memAfterRval
+                                  (.int .i64 false) mplace
+                                  (.scalar ⟨.i64, false, bits⟩) with
+                              | error k => rw [h_store] at h_next; cases h_next
+                              | ok memAfterWrite =>
+                                rw [h_store] at h_next
+                                exact h_next
+
+/-- Rewrite a symbolic `evalStep` for a `u64` assignment using an equivalent
+normalized `BitVec 64` result. -/
+theorem step_eq_evalAssignWith {body : Body} {s next : State} {val : Val}
+    {w : BitVec 64}
+    (h_val : EvalAssignVal body s val)
+    (h_eq : val = .scalar ⟨.i64, false, bvZeroExtend 128 w⟩)
+    (h_next : EvalAssignWith body s
+      (.scalar ⟨.i64, false, bvZeroExtend 128 w⟩) next) :
+    evalStep (bodyProg body) 0 s = .step next :=
+  step_eq_evalAssignWith_of_truncate (truncateBits_i64_bvZeroExtend w)
+    h_val h_eq h_next
+
+/-- Step an assignment whose RHS evaluates to `BitVec 64` value `x`. -/
+theorem step_u64Use {body : Body} {s next : State} (x : BitVec 64)
+    (h_val : EvalAssignVal body s
+      (.scalar ⟨.i64, false, bvZeroExtend 128 x⟩))
+    (h_next : EvalAssignWith body s
+      (.scalar ⟨.i64, false, bvZeroExtend 128 x⟩) next) :
+    evalStep (bodyProg body) 0 s = .step next :=
+  step_eq_evalAssignWith h_val rfl h_next
+
+/-- Step an assignment whose RHS evaluates to 64-bit bitwise AND of `x` and
+`y`. -/
+theorem step_u64And {body : Body} {s next : State} (x y : BitVec 64)
+    (h_val : EvalAssignVal body s
+      (.scalar ⟨.i64, false,
+        truncateBits .i64 (bvAnd (truncateBits .i64 (bvZeroExtend 128 x))
+          (truncateBits .i64 (bvZeroExtend 128 y)))⟩))
+    (h_next : EvalAssignWith body s (u64BitAndVal x y) next) :
+    evalStep (bodyProg body) 0 s = .step next :=
+  step_eq_evalAssignWith_of_truncate
+    (truncateBits_i64_ofNat_lt
+      (nat_bitwise_lt_two_pow and 64 x.toNat y.toNat x.isLt y.isLt))
+    h_val (u64BitAnd_sem_eq x y) h_next
+
+/-- Step an assignment whose RHS evaluates to 64-bit bitwise OR of `x` and
+`y`. -/
+theorem step_u64Or {body : Body} {s next : State} (x y : BitVec 64)
+    (h_val : EvalAssignVal body s
+      (.scalar ⟨.i64, false,
+        truncateBits .i64 (bvOr (truncateBits .i64 (bvZeroExtend 128 x))
+          (truncateBits .i64 (bvZeroExtend 128 y)))⟩))
+    (h_next : EvalAssignWith body s (u64BitOrVal x y) next) :
+    evalStep (bodyProg body) 0 s = .step next :=
+  step_eq_evalAssignWith_of_truncate
+    (truncateBits_i64_ofNat_lt
+      (nat_bitwise_lt_two_pow or 64 x.toNat y.toNat x.isLt y.isLt))
+    h_val (u64BitOr_sem_eq x y) h_next
+
+/-- Step an assignment whose RHS evaluates to 64-bit left shift of `x` by
+`k`. -/
+theorem step_u64Shl {body : Body} {s next : State} (x : BitVec 64) (k : Nat)
+    (h_val : EvalAssignVal body s
+      (.scalar ⟨.i64, false,
+        truncateBits .i64 (bvOfInt 128
+          (.ofNat (Nat.shiftLeft
+            (truncateBits .i64 (bvZeroExtend 128 x)).toNat k)))⟩))
+    (h_next : EvalAssignWith body s (u64ShlVal x k) next) :
+    evalStep (bodyProg body) 0 s = .step next :=
+  step_eq_evalAssignWith h_val
+    ((u64Shl_sem_eq x k).trans (u64ShlVal_eq x k)) h_next
+
+/-- Step an assignment whose RHS evaluates to 64-bit logical right shift of
+`x` by `k`. -/
+theorem step_u64Shr {body : Body} {s next : State} (x : BitVec 64) (k : Nat)
+    (h_val : EvalAssignVal body s
+      (.scalar ⟨.i64, false,
+        truncateBits .i64 (bvOfInt 128
+          (.ofNat (Nat.shiftRight
+            (truncateBits .i64 (bvZeroExtend 128 x)).toNat k)))⟩))
+    (h_next : EvalAssignWith body s (u64ShrVal x k) next) :
+    evalStep (bodyProg body) 0 s = .step next :=
+  step_eq_evalAssignWith_of_truncate
+    (truncateBits_i64_ofNat_lt
+      (Nat.lt_of_le_of_lt (Nat.shiftRight_le _ _) x.isLt))
+    h_val (u64Shr_sem_eq x k) h_next
+
+/-- A finite conjunction supplies one checked proposition for each index. -/
+def CheckRange (n : Nat) : (Nat → Prop) → Prop :=
+  Nat.rec (fun _ => True) (fun _ ih p => p 0 ∧ ih (fun i => p (i + 1))) n
+
+/-- Unfold `CheckRange` at `0`. -/
+theorem checkRange_zero (p : Nat → Prop) : CheckRange 0 p = True := rfl
+
+/-- Unfold `CheckRange` at `n + 1`. -/
+theorem checkRange_succ (n : Nat) (p : Nat → Prop) :
+    CheckRange (n + 1) p = (p 0 ∧ CheckRange n (fun i => p (i + 1))) := rfl
+
+/-- Every index `i < n` satisfies `p i` when `CheckRange n p` holds. -/
+theorem checkRange_sound (n : Nat) (p : Nat → Prop)
+    (checked : CheckRange n p) : ∀ i, i < n → p i := by
+  induction n generalizing p with
+  | zero =>
+    intro i hi
+    exact False.elim (Nat.not_lt_zero i hi)
+  | succ n ih =>
+    intro i hi
+    cases i with
+    | zero => exact checked.1
+    | succ i => exact ih _ checked.2 i (Nat.lt_of_succ_lt_succ hi)
+
 end Anneal.MirWp

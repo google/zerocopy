@@ -14,16 +14,24 @@
 //! specification matches human intent. It authenticates those choices and
 //! checks their separation from the unreviewed proof implementation.
 
-use std::collections::{BTreeMap, BTreeSet};
-use std::path::{Path, PathBuf};
+use std::{
+    collections::{BTreeMap, BTreeSet},
+    fs, io,
+    path::{Path, PathBuf},
+};
 
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
-use crate::stage::Checker;
-use crate::toolchain::{
-    Failure, Json, PreflightResult, default_compile_workers, is_lean_ident, is_sha256_hex,
-    sha256_file, stage_regular_file, topo_sort_modules, verify_installed_module_record,
+use crate::{
+    stage::Checker,
+    toolchain::{
+        AdmittedToolchain, Failure, ImportEdge, Json, PreflightResult, TOOLCHAIN,
+        compute_unpinned_foundation_closure, default_compile_workers,
+        hash_unpinned_sysroot_module, is_allowed_unpinned_sysroot_module, is_lean_ident,
+        is_sha256_hex, sha256_bytes, sha256_file, sha256_file_deref, stage_regular_file,
+        topo_sort_modules, verify_installed_module_record,
+    },
 };
 
 /// The authority of a source module in a target verification request.
@@ -213,11 +221,8 @@ impl Checker {
     pub fn inspect_target(&mut self, request: &TargetAuditRequest) -> Result<Json, Failure> {
         let req = {
             let adm = self.admitted()?;
-            let arts_arr: Vec<Json> = adm
-                .artifacts
-                .iter()
-                .map(|(k, parts)| json!([k, parts.to_wire()]))
-                .collect();
+            let arts_arr: Vec<Json> =
+                adm.artifacts.iter().map(|(k, parts)| json!([k, parts.to_wire()])).collect();
             let libraries: Vec<&str> = adm.library_modules.iter().map(String::as_str).collect();
             json!({
                 "mode": "target-audit",
@@ -265,18 +270,112 @@ impl Checker {
                 continue;
             }
             if !target_name_valid(&module) {
-                return Err(Failure::operational(
-                    "library-lock",
-                    "invalid module record",
-                ));
+                return Err(Failure::operational("library-lock", "invalid module record"));
             }
             let record = &lock.modules[&module];
             let artifacts = verify_installed_module_record(&prefix, &module, record, "library")?;
             let adm = self.admitted_mut()?;
             adm.artifacts.insert(module.clone(), artifacts);
-            adm.graph
-                .insert(module.clone(), lock.graph[&module].clone());
+            adm.graph.insert(module.clone(), lock.graph[&module].clone());
             adm.library_modules.insert(module);
+        }
+        Ok(())
+    }
+
+    /// Invoke `"resolve-imports"` mode on `TrustedBoundary.lean` with the
+    /// admitted Lean sysroot and requested module roots.
+    #[doc(hidden)]
+    pub fn resolve_sysroot_imports(
+        &mut self,
+        modules: &[String],
+    ) -> Result<BTreeMap<String, Vec<ImportEdge>>, Failure> {
+        let req = {
+            let adm = self.admitted()?;
+            json!({
+                "mode": "resolve-imports",
+                "sysroot": adm.prefix.to_string_lossy(),
+                "modules": modules,
+            })
+        };
+        let mut resp = self.invoke_inspector("resolve-imports", &req)?;
+        let graph_val = resp.as_object_mut().and_then(|o| o.remove("graph")).ok_or_else(|| {
+            Failure::operational("resolve-imports", "missing graph in resolve-imports response")
+        })?;
+        serde_json::from_value(graph_val)
+            .map_err(|e| Failure::operational("resolve-imports", format!("invalid graph: {e}")))
+    }
+
+    /// Discover, guard, and hash the unpinned `Init`/`Std` sysroot import
+    /// closure via `"resolve-imports"`, partitioning the `{Init.Prelude,
+    /// Init.Core}` closure into `foundation_graph` and all remaining sysroot
+    /// modules into `library_modules`.
+    pub(crate) fn admit_unpinned_sysroot(
+        &mut self,
+        requested_imports: impl IntoIterator<Item = String>,
+    ) -> Result<(), Failure> {
+        let prefix = self.admitted()?.prefix.clone();
+        let mut resolve_roots =
+            BTreeSet::from(["Init.Prelude".to_string(), "Init.Core".to_string()]);
+        for module in requested_imports {
+            if !is_allowed_unpinned_sysroot_module(&module) {
+                return Err(Failure::policy(
+                    "target-import",
+                    format!(
+                        "unsupported import {module}; unpinned mode permits only Init and Std sysroot imports"
+                    ),
+                ));
+            }
+            let olean_path =
+                prefix.join("lib/lean").join(format!("{}.olean", module.replace('.', "/")));
+            match fs::metadata(&olean_path) {
+                Ok(meta) if meta.is_file() => {}
+                Ok(_) => {
+                    return Err(Failure::policy(
+                        "target-import",
+                        format!("unsupported import {module}; expected compiled .olean file"),
+                    ));
+                }
+                Err(e) if e.kind() == io::ErrorKind::NotFound => {
+                    return Err(Failure::policy(
+                        "target-import",
+                        format!("unsupported import {module}; missing sysroot module"),
+                    ));
+                }
+                Err(e) => {
+                    return Err(Failure::operational(
+                        "sysroot",
+                        format!("cannot inspect {}: {e}", olean_path.display()),
+                    ));
+                }
+            }
+            resolve_roots.insert(module);
+        }
+        let roots: Vec<String> = resolve_roots.into_iter().collect();
+        let resolved_graph = self.resolve_sysroot_imports(&roots)?;
+        let foundation_set = compute_unpinned_foundation_closure(&resolved_graph)?;
+
+        // Replace any prior unpinned sysroot admission wholesale so repeated
+        // calls on the same `Checker` keep foundation and library sets disjoint
+        // with no stale modules from earlier targets.
+        {
+            let adm = self.admitted_mut()?;
+            adm.foundation_graph.clear();
+            adm.library_modules.clear();
+            adm.graph.clear();
+            adm.artifacts.clear();
+            adm.unpinned_records.clear();
+        }
+        for (module, edges) in resolved_graph {
+            let unpinned = hash_unpinned_sysroot_module(&prefix, &module, "sysroot")?;
+            let adm = self.admitted_mut()?;
+            adm.artifacts.insert(module.clone(), unpinned.artifacts.clone());
+            adm.unpinned_records.insert(module.clone(), unpinned);
+            adm.graph.insert(module.clone(), edges.clone());
+            if foundation_set.contains(&module) {
+                adm.foundation_graph.insert(module, edges);
+            } else {
+                adm.library_modules.insert(module);
+            }
         }
         Ok(())
     }
@@ -300,10 +399,7 @@ impl Checker {
             &request.bindings.specification_manifest_sha256,
         ] {
             if !is_sha256_hex(digest) {
-                return Err(Failure::policy(
-                    "target-input",
-                    "invalid subject binding digest",
-                ));
+                return Err(Failure::policy("target-input", "invalid subject binding digest"));
             }
         }
         for name in [
@@ -332,13 +428,19 @@ impl Checker {
         let mut roles = BTreeMap::new();
         for module in &request.modules {
             let adm = self.admitted()?;
+            let collides_with_sysroot = if adm.unpinned {
+                let root_pkg = module.module.split('.').next().unwrap_or("");
+                adm.sysroot_package_roots.contains(root_pkg)
+            } else {
+                adm.foundation_graph.contains_key(&module.module)
+                    || adm
+                        .library_lock
+                        .as_ref()
+                        .is_some_and(|l| l.modules.contains_key(&module.module))
+            };
             if !target_name_valid(&module.module)
                 || roles.contains_key(&module.module)
-                || adm.foundation_graph.contains_key(&module.module)
-                || adm
-                    .library_lock
-                    .as_ref()
-                    .is_some_and(|l| l.modules.contains_key(&module.module))
+                || collides_with_sysroot
             {
                 return Err(Failure::policy(
                     "target-input",
@@ -385,20 +487,24 @@ impl Checker {
         let mut imports = BTreeMap::new();
         for header in headers.headers {
             if !staged.contains_key(&header.module) || imports.contains_key(&header.module) {
-                return Err(Failure::policy(
-                    "headers",
-                    "duplicate or foreign source header",
-                ));
+                return Err(Failure::policy("headers", "duplicate or foreign source header"));
             }
             imports.insert(header.module, header.imports);
         }
         if imports.len() != staged.len() {
-            return Err(Failure::policy(
-                "headers",
-                "incomplete target source header inventory",
-            ));
+            return Err(Failure::policy("headers", "incomplete target source header inventory"));
         }
-        self.admit_libraries(imports.values().flatten().map(|e| e.module.clone()))?;
+        if self.admitted()?.unpinned {
+            let external_imports: Vec<String> = imports
+                .values()
+                .flatten()
+                .filter(|e| !roles.contains_key(&e.module))
+                .map(|e| e.module.clone())
+                .collect();
+            self.admit_unpinned_sysroot(external_imports)?;
+        } else {
+            self.admit_libraries(imports.values().flatten().map(|e| e.module.clone()))?;
+        }
         for (module, edges) in &imports {
             for edge in edges {
                 if let Some(dep) = roles.get(&edge.module) {
@@ -419,11 +525,8 @@ impl Checker {
                 }
             }
         }
-        let order = topo_sort_modules(
-            staged.keys().cloned().collect(),
-            &imports,
-            "target import cycle",
-        )?;
+        let order =
+            topo_sort_modules(staged.keys().cloned().collect(), &imports, "target import cycle")?;
         // Compilation consumes authenticated private copies and explicit
         // imported artifacts across the verified module DAG. Target
         // elaboration remains under the intact-host assumption; this path does
@@ -486,34 +589,48 @@ impl Checker {
                         continue;
                     }
                     let adm = self.admitted()?;
-                    let source_sha =
-                        if let Some(source) = request.modules.iter().find(|m| m.module == module) {
-                            source.expected_sha256.clone()
-                        } else {
-                            sha256_file(
-                                &adm.prefix
-                                    .join("src/lean")
-                                    .join(format!("{}.lean", module.replace('.', "/"))),
+                    let (source_sha, hashes) = if let Some(source) =
+                        request.modules.iter().find(|m| m.module == module)
+                    {
+                        (
+                            Json::String(source.expected_sha256.clone()),
+                            hash_admitted_module_artifacts(adm, module)?,
+                        )
+                    } else if adm.unpinned {
+                        let admitted = adm.unpinned_records.get(module).ok_or_else(|| {
+                            Failure::operational(
                                 "target-provenance",
-                            )?
-                        };
-                    let artifacts = adm.artifacts.get(module).ok_or_else(|| {
-                        Failure::operational("target-provenance", "missing closure artifact")
-                    })?;
-                    let paths = artifacts.to_wire();
-                    let hashes: Result<Vec<_>, Failure> = paths
-                        .iter()
-                        .flat_map(|p| p.iter())
-                        .map(|p| {
-                            Ok(json!({
-                                "part": Path::new(p).file_name().and_then(|s| s.to_str()),
-                                "sha256": sha256_file(Path::new(p), "target-provenance")?
-                            }))
-                        })
-                        .collect();
+                                format!("missing admitted unpinned record for {module}"),
+                            )
+                        })?;
+                        let current =
+                            hash_unpinned_sysroot_module(&adm.prefix, module, "target-provenance")?;
+                        if current.source_sha256 != admitted.source_sha256
+                            || current.part_hashes != admitted.part_hashes
+                        {
+                            return Err(Failure::policy(
+                                "target-provenance",
+                                format!("unpinned sysroot module {module} changed during run"),
+                            ));
+                        }
+                        let hashes = admitted
+                            .part_hashes
+                            .iter()
+                            .map(|(part, sha)| json!({ "part": part, "sha256": sha }))
+                            .collect();
+                        (Json::from(admitted.source_sha256.clone()), hashes)
+                    } else {
+                        let source_sha = sha256_file(
+                            &adm.prefix
+                                .join("src/lean")
+                                .join(format!("{}.lean", module.replace('.', "/"))),
+                            "target-provenance",
+                        )?;
+                        (Json::String(source_sha), hash_admitted_module_artifacts(adm, module)?)
+                    };
                     identities.insert(
                         module.into(),
-                        json!({"sourceSha256": source_sha, "artifacts": hashes?}),
+                        json!({"sourceSha256": source_sha, "artifacts": hashes}),
                     );
                 }
             }
@@ -525,9 +642,86 @@ impl Checker {
                 .map_err(|e| Failure::operational("target-audit", e.to_string()))?,
         );
         obj.insert("sources".into(), json!(provenance));
-        obj.insert("toolchain".into(), json!(self.admitted()?.version));
+        let adm = self.admitted()?;
+        obj.insert("toolchain".into(), json!(adm.version));
+        if adm.unpinned {
+            let current_lean_sha = sha256_file_deref(self.lean_path(), "target-provenance")
+                .map_err(|e| Failure::operational("target-provenance", e.message))?;
+            let Some(admitted_lean_sha) = adm.lean_binary_sha256.as_deref() else {
+                return Err(Failure::operational(
+                    "target-provenance",
+                    "missing admitted unpinned Lean binary digest",
+                ));
+            };
+            if !current_lean_sha.eq_ignore_ascii_case(admitted_lean_sha) {
+                return Err(Failure::operational(
+                    "target-provenance",
+                    "unpinned Lean executable changed during run",
+                ));
+            }
+            let sysroot_modules_sha256 = unpinned_sysroot_modules_sha256(adm)?;
+            obj.insert(
+                "unpinnedLean".into(),
+                json!({
+                    "expectedToolchain": TOOLCHAIN,
+                    "observedVersion": adm.version,
+                    "leanBinarySha256": admitted_lean_sha,
+                    "foundationModules": adm.foundation_modules(),
+                    "sysrootModulesSha256": sysroot_modules_sha256,
+                    "admittedSysrootModuleCount": adm.unpinned_records.len(),
+                }),
+            );
+        }
         Ok(report)
     }
+}
+
+fn unpinned_sysroot_modules_sha256(adm: &AdmittedToolchain) -> Result<String, Failure> {
+    #[derive(Serialize)]
+    #[serde(rename_all = "camelCase")]
+    struct ModuleRecord<'a> {
+        module: &'a str,
+        parts: BTreeMap<&'a str, &'a str>,
+        source_sha256: Option<&'a str>,
+    }
+
+    let entries: Vec<ModuleRecord<'_>> = adm
+        .unpinned_records
+        .iter()
+        .map(|(module, rec)| {
+            let parts =
+                rec.part_hashes.iter().map(|(part, sha)| (part.as_str(), sha.as_str())).collect();
+            ModuleRecord {
+                module: module.as_str(),
+                parts,
+                source_sha256: rec.source_sha256.as_deref(),
+            }
+        })
+        .collect();
+    let bytes = serde_json::to_vec(&entries)
+        .map_err(|e| Failure::operational("target-provenance", e.to_string()))?;
+    Ok(sha256_bytes(&bytes))
+}
+
+fn hash_admitted_module_artifacts(
+    adm: &AdmittedToolchain,
+    module: &str,
+) -> Result<Vec<Json>, Failure> {
+    let artifacts = adm
+        .artifacts
+        .get(module)
+        .ok_or_else(|| Failure::operational("target-provenance", "missing closure artifact"))?;
+    artifacts
+        .to_wire()
+        .iter()
+        .flat_map(|p| p.iter())
+        .map(|p| {
+            Ok(json!({
+                "part": Path::new(p).file_name().and_then(|s| s.to_str()),
+                "sha256": sha256_file(Path::new(p), "target-provenance")?
+            }))
+        })
+        .collect()
 }
 
 // Exercise locked-module admission without a Lean installation. The synthetic
@@ -639,28 +833,15 @@ exit 3
                 "axioms": [],
             });
             for (relative, contents) in [
-                (
-                    "trusted/audit/TrustedBoundary.lean",
-                    "-- Never run.\n".to_owned(),
-                ),
+                ("trusted/audit/TrustedBoundary.lean", "-- Never run.\n".to_owned()),
                 ("trusted/lean/lean-toolchain", format!("{TOOLCHAIN}\n")),
-                (
-                    "trusted/lean/foundation-lock.json",
-                    foundation_lock.to_string(),
-                ),
+                ("trusted/lean/foundation-lock.json", foundation_lock.to_string()),
             ] {
                 let path = root.join(relative);
                 fs::create_dir_all(path.parent().unwrap()).unwrap();
                 fs::write(path, contents).unwrap();
             }
-            Self {
-                _dir: dir,
-                base,
-                root,
-                prefix,
-                lean,
-                records,
-            }
+            Self { _dir: dir, base, root, prefix, lean, records }
         }
 
         /// Return a valid catalog in which `LIBRARY_USER` imports `LIBRARY`.
@@ -741,25 +922,12 @@ exit 3
         let toolchain = Toolchain::new();
         // Controls: an absent catalog and the valid catalog both pass, so
         // each refusal below follows from its single change.
-        assert!(
-            toolchain
-                .checker()
-                .tool_admission()
-                .unwrap()
-                .library_lock
-                .is_none()
-        );
+        assert!(toolchain.checker().tool_admission().unwrap().library_lock.is_none());
         let valid = toolchain.library_lock();
         toolchain.write_library_lock(&valid);
         let mut checker = toolchain.checker();
         let admitted = checker.tool_admission().unwrap();
-        assert_eq!(
-            admitted
-                .library_lock
-                .as_ref()
-                .map(|lock| lock.modules.len()),
-            Some(2)
-        );
+        assert_eq!(admitted.library_lock.as_ref().map(|lock| lock.modules.len()), Some(2));
         assert!(admitted.library_modules.is_empty());
 
         for (case, lock) in [
@@ -823,15 +991,8 @@ exit 3
 
         toolchain.write_library_lock(&changed(&valid, |lock| lock["unexpected"] = json!(true)));
         let failure = toolchain.checker().tool_admission().unwrap_err();
-        assert_eq!(
-            (failure.code, failure.phase.as_str()),
-            (2, "library-lock"),
-            "{failure}"
-        );
-        assert!(
-            failure.message.contains("unknown field `unexpected`"),
-            "{failure}"
-        );
+        assert_eq!((failure.code, failure.phase.as_str()), (2, "library-lock"), "{failure}");
+        assert!(failure.message.contains("unknown field `unexpected`"), "{failure}");
 
         // The catalog must be the bundle's own regular file.
         let linked = toolchain.base.join("linked-library-lock.json");
@@ -840,15 +1001,8 @@ exit 3
         fs::remove_file(&path).unwrap();
         std::os::unix::fs::symlink(&linked, &path).unwrap();
         let failure = toolchain.checker().tool_admission().unwrap_err();
-        assert_eq!(
-            (failure.code, failure.phase.as_str()),
-            (1, "library-lock"),
-            "{failure}"
-        );
-        assert!(
-            failure.message.starts_with("expected a regular file: "),
-            "{failure}"
-        );
+        assert_eq!((failure.code, failure.phase.as_str()), (1, "library-lock"), "{failure}");
+        assert!(failure.message.starts_with("expected a regular file: "), "{failure}");
     }
 
     /// A target source cannot take the name of a locked foundation or library
@@ -861,15 +1015,8 @@ exit 3
         // Control: without a locked name, the request passes every input
         // check and reaches the inspector, which the script refuses.
         let failure = toolchain.checker().run_target(&request).unwrap_err();
-        assert_eq!(
-            (failure.code, failure.phase.as_str()),
-            (2, "headers"),
-            "{failure}"
-        );
-        assert!(
-            failure.message.starts_with("Lean exited Some(3)"),
-            "{failure}"
-        );
+        assert_eq!((failure.code, failure.phase.as_str()), (2, "headers"), "{failure}");
+        assert!(failure.message.starts_with("Lean exited Some(3)"), "{failure}");
         for module in [FOUNDATION, LIBRARY] {
             let mut shadowing = request.clone();
             shadowing.modules.push(TargetModule {
@@ -906,18 +1053,14 @@ exit 3
         );
         assert!(admitted.artifacts.contains_key(LIBRARY));
 
-        let olean = toolchain
-            .prefix
-            .join("lib/lean/Init/Data/BitVec/Basic.olean");
+        let olean = toolchain.prefix.join("lib/lean/Init/Data/BitVec/Basic.olean");
         fs::write(&olean, b"changed library artifact").unwrap();
         let expected = Failure::operational(
             "library",
             format!(
                 "library artifact SHA-256 mismatch for Init/Data/BitVec/Basic.olean: \
                  expected {}, got {}",
-                toolchain.records[LIBRARY]["parts"]["olean"]
-                    .as_str()
-                    .unwrap(),
+                toolchain.records[LIBRARY]["parts"]["olean"].as_str().unwrap(),
                 sha256_file(&olean, "fixture").unwrap()
             ),
         );
@@ -934,9 +1077,7 @@ exit 3
     fn admit_libraries_rejects_changed_sources_extra_parts_and_invalid_names() {
         let toolchain = Toolchain::new();
         toolchain.write_library_lock(&toolchain.library_lock());
-        let source = toolchain
-            .prefix
-            .join("src/lean/Init/Data/BitVec/Basic.lean");
+        let source = toolchain.prefix.join("src/lean/Init/Data/BitVec/Basic.lean");
         fs::write(&source, b"changed library source").unwrap();
         assert_eq!(
             admit(&toolchain, LIBRARY_USER),
@@ -973,10 +1114,496 @@ exit 3
         }));
         assert_eq!(
             admit(&toolchain, LIBRARY_USER),
-            Err(Failure::operational(
-                "library-lock",
-                "invalid module record"
-            ))
+            Err(Failure::operational("library-lock", "invalid module record"))
         );
+    }
+}
+
+#[cfg(all(test, unix))]
+mod unpinned_admission_tests {
+    use std::{
+        fs,
+        os::unix::fs::{PermissionsExt, symlink},
+    };
+
+    use serde_json::json;
+
+    use super::*;
+    use crate::toolchain::{UNPINNED_FOUNDATION_MODULES, default_lean_path};
+
+    fn repo_root() -> PathBuf {
+        Path::new(env!("CARGO_MANIFEST_DIR")).join("../..")
+    }
+
+    fn installed_lean() -> PathBuf {
+        std::env::var_os("ANNEAL_LEAN")
+            .filter(|v| !v.is_empty())
+            .map(PathBuf::from)
+            .unwrap_or_else(default_lean_path)
+    }
+
+    fn write_target_request(
+        dir: &Path,
+        modules: Vec<(&str, TargetRole, &str)>,
+    ) -> TargetAuditRequest {
+        let mut req_modules = Vec::new();
+        for (name, role, src) in modules {
+            let path = dir.join(format!("{name}.lean"));
+            fs::create_dir_all(path.parent().unwrap()).unwrap();
+            fs::write(&path, src).unwrap();
+            req_modules.push(TargetModule {
+                module: name.to_owned(),
+                source: path,
+                expected_sha256: sha256_file(&dir.join(format!("{name}.lean")), "fixture").unwrap(),
+                role,
+            });
+        }
+        let digest = req_modules[0].expected_sha256.clone();
+        TargetAuditRequest {
+            modules: req_modules,
+            theorem_module: "Proof".to_owned(),
+            theorem_name: "Proof.verify".to_owned(),
+            expected_module: "Expected".to_owned(),
+            expected_declaration: "Expected.claim".to_owned(),
+            canonical_root: "Trusted.MirSemantics.UnitTheorem".to_owned(),
+            subject_declaration: "Captured.program".to_owned(),
+            specification_declaration: "Spec.specs".to_owned(),
+            bindings: TargetBindings {
+                request_sha256: digest.clone(),
+                capture_sha256: digest.clone(),
+                model_manifest_sha256: digest.clone(),
+                specification_manifest_sha256: digest,
+            },
+        }
+    }
+
+    fn minimal_request(dir: &Path, proof_extra_import: Option<&str>) -> TargetAuditRequest {
+        let extra = proof_extra_import.map(|m| format!("import {m}\n")).unwrap_or_default();
+        write_target_request(
+            dir,
+            vec![
+                (
+                    "Model",
+                    TargetRole::Model,
+                    "prelude\nimport Init.Data.BitVec.Basic\nnamespace Trusted.MirSemantics\n\
+                     structure Crate where\n  program : BitVec 8\n  specs : BitVec 8 → Prop\n\
+                     def UnitTheorem (c : Crate) : Prop := c.program.toNat = 7 ∧ c.specs c.program\n",
+                ),
+                (
+                    "Captured",
+                    TargetRole::Capture,
+                    "prelude\nimport Model\nimport Init.Data.Nat.Gcd\n\
+                     def Captured.program : BitVec 8 := BitVec.ofNat 8 (Nat.gcd 0 7)\n",
+                ),
+                (
+                    "Spec",
+                    TargetRole::Specification,
+                    "prelude\nimport Model\ndef Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+                ),
+                (
+                    "Expected",
+                    TargetRole::Expected,
+                    "prelude\nimport Captured\nimport Spec\n\
+                     def Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem \
+                     (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+                ),
+                (
+                    "Proof",
+                    TargetRole::Proof,
+                    &format!(
+                        "prelude\nimport Expected\nimport Init.Data.BitVec.Lemmas\n{extra}\
+                         theorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self\n"
+                    ),
+                ),
+            ],
+        )
+    }
+
+    #[test]
+    fn unpinned_reserves_sysroot_roots_before_staging_and_allows_anneal_mir_wp() {
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        let root = base.join("bundle");
+        let prefix = base.join("sysroot");
+        let ext = base.join("ext");
+        fs::create_dir_all(prefix.join("lib/lean/Init")).unwrap();
+        fs::create_dir_all(ext.join("LeanDir")).unwrap();
+        fs::write(ext.join("Lake.olean"), b"lake").unwrap();
+        symlink(ext.join("LeanDir"), prefix.join("lib/lean/Lean")).unwrap();
+        symlink(ext.join("Lake.olean"), prefix.join("lib/lean/Lake.olean")).unwrap();
+        fs::write(prefix.join("lib/lean/Std.olean"), b"std").unwrap();
+
+        let lean = base.join("lean");
+        fs::write(
+            &lean,
+            format!(
+                r#"#!/bin/sh
+case "$1" in
+    --version) printf 'Lean 4.35\n'; exit ;;
+    --print-prefix) printf '%s\n' '{}'; exit ;;
+esac
+while [ "$#" -gt 1 ]; do
+    case "$1:$2" in
+        -o:*/inspector-lib/TrustedBoundary.olean) : > "$2"; exit ;;
+    esac
+    shift
+done
+exit 3
+"#,
+                prefix.display()
+            ),
+        )
+        .unwrap();
+        fs::set_permissions(&lean, fs::Permissions::from_mode(0o755)).unwrap();
+
+        let inspector = root.join("trusted/audit/TrustedBoundary.lean");
+        fs::create_dir_all(inspector.parent().unwrap()).unwrap();
+        fs::write(&inspector, "-- stub\n").unwrap();
+
+        let mut req = minimal_request(&base.join("inputs"), None);
+        // Bundled Anneal.MirWp (TargetRole::Proof) must NOT be rejected by
+        // run_target's sysroot reservation check.
+        let wp_src = base.join("inputs/Anneal/MirWp.lean");
+        fs::create_dir_all(wp_src.parent().unwrap()).unwrap();
+        fs::write(&wp_src, "prelude\n").unwrap();
+        req.modules.push(TargetModule {
+            module: "Anneal.MirWp".to_owned(),
+            expected_sha256: sha256_file(&wp_src, "fixture").unwrap(),
+            source: wp_src,
+            role: TargetRole::Proof,
+        });
+
+        let mut checker = Checker::new_with_env(&root, Some(&lean), []).unwrap();
+        checker.set_allow_unpinned_lean(true);
+        // Control: passes staging and reaches inspector (`Lean exited
+        // Some(3)`).
+        let control = checker.run_target(&req).unwrap_err();
+        assert_eq!((control.code, control.phase.as_str()), (2, "headers"), "{control}");
+
+        for colliding in ["Init.Shadow", "Std.Shadow", "Lean.Shadow", "Lake", "Lake.Shadow"] {
+            let mut bad = req.clone();
+            bad.modules.push(TargetModule {
+                module: colliding.to_owned(),
+                // Refused before staging touches this path.
+                source: base.join("does-not-exist.lean"),
+                expected_sha256: req.bindings.request_sha256.clone(),
+                role: TargetRole::Proof,
+            });
+            let err = checker.run_target(&bad).unwrap_err();
+            assert_eq!(
+                err,
+                Failure::policy(
+                    "target-input",
+                    format!("duplicate, reserved or invalid module {colliding}")
+                )
+            );
+        }
+    }
+
+    #[test]
+    fn live_resolve_imports_round_trip_and_init_std_guard() {
+        let lean = installed_lean();
+        let mut checker = Checker::new(&repo_root(), Some(&lean)).unwrap();
+        checker.set_allow_unpinned_lean(true);
+        checker.tool_admission().unwrap();
+
+        let roots_a = vec!["Init.Data.BitVec.Basic".to_string(), "Std.Data.HashMap".to_string()];
+        let roots_b = vec!["Std.Data.HashMap".to_string(), "Init.Data.BitVec.Basic".to_string()];
+        let graph_a = checker.resolve_sysroot_imports(&roots_a).unwrap();
+        let graph_b = checker.resolve_sysroot_imports(&roots_b).unwrap();
+        assert_eq!(graph_a, graph_b);
+        assert!(graph_a.contains_key("Std.Data.HashMap"));
+        assert!(graph_a.contains_key("Init.Data.BitVec.Basic"));
+
+        let foundation = compute_unpinned_foundation_closure(&graph_a).unwrap();
+        let expected_foundation: BTreeSet<String> =
+            UNPINNED_FOUNDATION_MODULES.iter().map(|s| (*s).to_string()).collect();
+        assert_eq!(foundation, expected_foundation);
+    }
+
+    #[test]
+    fn live_unpinned_run_target_rejects_lean_lake_and_records_null_source_sha() {
+        let real_lean = fs::canonicalize(installed_lean()).unwrap();
+        let real_prefix_out =
+            std::process::Command::new(&real_lean).arg("--print-prefix").output().unwrap();
+        assert!(real_prefix_out.status.success());
+        let real_prefix = PathBuf::from(String::from_utf8(real_prefix_out.stdout).unwrap().trim());
+
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        // Synthetic sysroot with symlinked lib/lean and NO src/lean directory.
+        let syn_prefix = base.join("sysroot");
+        fs::create_dir_all(syn_prefix.join("lib")).unwrap();
+        symlink(real_prefix.join("lib/lean"), syn_prefix.join("lib/lean")).unwrap();
+
+        let wrapper_lean = base.join("lean");
+        fs::write(
+            &wrapper_lean,
+            format!(
+                "#!/bin/sh\nif [ \"$1\" = \"--print-prefix\" ]; then\n  \
+                 /bin/echo '{}'\n  exit 0\nfi\nexec '{}' \"$@\"\n",
+                syn_prefix.display(),
+                real_lean.display()
+            ),
+        )
+        .unwrap();
+        fs::set_permissions(&wrapper_lean, fs::Permissions::from_mode(0o755)).unwrap();
+
+        let mut checker = Checker::new(&repo_root(), Some(&wrapper_lean)).unwrap();
+        checker.set_allow_unpinned_lean(true);
+
+        // Reject Lean.* and Lake.* imports before compilation.
+        for forbidden in ["Lean.Elab", "Lake.Build"] {
+            let bad_req = minimal_request(&base.join(format!("bad-{forbidden}")), Some(forbidden));
+            let err = checker.run_target(&bad_req).unwrap_err();
+            assert_eq!(err.code, 1, "{forbidden}: {err}");
+            assert_eq!(err.phase, "target-import", "{forbidden}: {err}");
+            assert!(err.message.contains("only Init and Std"), "{forbidden}: {err}");
+        }
+
+        // Valid unpinned run with absent src/lean produces null sourceSha256 on
+        // sysroot library modules while hashing all binary parts and keeping
+        // non-null sourceSha256 on authored/model/capture/expected/proof.
+        let good_req = minimal_request(&base.join("good"), None);
+        let report = checker.run_target(&good_req).unwrap();
+        assert_eq!(report["replay"], json!(true));
+        assert_eq!(report["exactType"], json!(true));
+
+        let identities = report["moduleIdentities"].as_object().unwrap();
+        let nat_gcd = &identities["Init.Data.Nat.Gcd"];
+        assert_eq!(nat_gcd["sourceSha256"], Json::Null);
+        assert!(
+            nat_gcd["artifacts"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|a| a["part"] == "Gcd.olean" && a["sha256"].as_str().unwrap().len() == 64),
+            "{nat_gcd}"
+        );
+        for target_mod in ["Model", "Captured", "Spec"] {
+            assert!(
+                identities[target_mod]["sourceSha256"].as_str().is_some_and(is_sha256_hex),
+                "{target_mod}: {}",
+                identities[target_mod]
+            );
+        }
+    }
+
+    fn nat_shadow_false_proof_request(
+        dir: &Path,
+        prim: &str,
+        lhs_a: u64,
+        lhs_b: u64,
+        kernel_result: u64,
+    ) -> TargetAuditRequest {
+        write_target_request(
+            dir,
+            vec![
+                (
+                    "Model",
+                    TargetRole::Model,
+                    "prelude\nimport Init.Prelude\nimport Init.Core\n\
+                     namespace Trusted.MirSemantics\n\
+                     structure Crate where\n  program : Nat\n  specs : Nat → Prop\n\
+                     def UnitTheorem (c : Crate) : Prop := c.specs c.program\n",
+                ),
+                (
+                    "Captured",
+                    TargetRole::Capture,
+                    "prelude\nimport Model\ndef Captured.program : Nat := 0\n",
+                ),
+                (
+                    "Spec",
+                    TargetRole::Specification,
+                    "prelude\nimport Model\ndef Spec.specs (_ : Nat) : Prop := False\n",
+                ),
+                (
+                    "Expected",
+                    TargetRole::Expected,
+                    "prelude\nimport Captured\nimport Spec\n\
+                     def Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem \
+                     (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+                ),
+                (
+                    "Proof",
+                    TargetRole::Proof,
+                    &format!(
+                        "prelude\nimport Expected\n\
+                         def Nat.{prim} (_ _ : Nat) : Nat := 0\n\
+                         theorem h_kernel : Nat.{prim} {lhs_a} {lhs_b} = {kernel_result} := rfl\n\
+                         theorem h_delta (x y : Nat) : Nat.{prim} x y = 0 := rfl\n\
+                         theorem Proof.verify : Expected.claim :=\n  \
+                         Nat.noConfusion ((h_delta {lhs_a} {lhs_b}).symm.trans h_kernel)\n"
+                    ),
+                ),
+            ],
+        )
+    }
+
+    #[test]
+    fn live_pinned_target_audit_rejects_nat_gcd_shadowing() {
+        let lean = installed_lean();
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+
+        // Pinned mode: `Init.Data.Nat.Gcd` is outside `foundation-lock.json`;
+        // without the reserved-kernel-namespace guard, `def Nat.gcd` would
+        // compile a zero-axiom proof of `False`.
+        let mut pinned = Checker::new(&repo_root(), Some(&lean)).unwrap();
+        let gcd_req = nat_shadow_false_proof_request(&base.join("pinned-gcd"), "gcd", 6, 4, 2);
+        let pinned_err = pinned.run_target(&gcd_req).unwrap_err();
+        assert_eq!(pinned_err.code, 1, "{pinned_err}");
+        assert!(pinned_err.message.contains("reserved kernel namespace Nat"), "{pinned_err}");
+    }
+
+    #[test]
+    fn live_unpinned_target_audit_rejects_nat_shadowing_and_allows_eq_def() {
+        let lean = installed_lean();
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+
+        // Unpinned mode: `Init.Data.Nat.Bitwise.Basic` is outside the 6-module
+        // foundation closure; `def Nat.land` must be rejected.
+        let mut unpinned = Checker::new(&repo_root(), Some(&lean)).unwrap();
+        unpinned.set_allow_unpinned_lean(true);
+        let land_req = nat_shadow_false_proof_request(&base.join("unpinned-land"), "land", 1, 1, 1);
+        let unpinned_err = unpinned.run_target(&land_req).unwrap_err();
+        assert_eq!(unpinned_err.code, 1, "{unpinned_err}");
+        assert!(unpinned_err.message.contains("reserved kernel namespace Nat"), "{unpinned_err}");
+
+        // Even a `theorem Nat.land`, fabricated `theorem Nat.fake.eq_def`,
+        // newly reserved `Int8.*`, or non-model `Trusted.*` (public or
+        // private) declaration must be rejected.
+        for (label, extra_decl, expected_substr) in [
+            (
+                "thm-land",
+                "theorem Nat.land (_ _ : Nat) : True := trivial",
+                "reserved kernel namespace Nat",
+            ),
+            (
+                "fake-eq-def",
+                "theorem Nat.fake.eq_def : True := trivial",
+                "reserved kernel namespace Nat",
+            ),
+            ("int8-reserved", "def Int8.fake : Nat := 0", "reserved kernel namespace Int8"),
+            ("trusted-pub", "def Trusted.fake : Nat := 0", "in Trusted namespace"),
+            ("trusted-priv", "private def Trusted.privFake : Nat := 0", "in Trusted namespace"),
+            ("trusted-thm-fake", "theorem Trusted.fake : True := trivial", "in Trusted namespace"),
+            (
+                "trusted-eq-spoof",
+                "theorem Trusted.MirSemantics.UnitTheorem.spoof : True := trivial",
+                "in Trusted namespace",
+            ),
+            (
+                "trusted-priv-thm",
+                "private theorem Trusted.privThm : True := trivial",
+                "in Trusted namespace",
+            ),
+            (
+                "trusted-def-sub",
+                "def Trusted.MirSemantics.UnitTheorem.spoof : Nat := 0",
+                "in Trusted namespace",
+            ),
+        ] {
+            let req = write_target_request(
+                &base.join(label),
+                vec![
+                    (
+                        "Model",
+                        TargetRole::Model,
+                        "prelude\nimport Init.Prelude\nimport Init.Core\n\
+                         namespace Trusted.MirSemantics\n\
+                         structure Crate where\n  program : Nat\n  specs : Nat → Prop\n\
+                         def UnitTheorem (c : Crate) : Prop := c.specs c.program\n",
+                    ),
+                    (
+                        "Captured",
+                        TargetRole::Capture,
+                        "prelude\nimport Model\ndef Captured.program : Nat := 0\n",
+                    ),
+                    (
+                        "Spec",
+                        TargetRole::Specification,
+                        "prelude\nimport Model\ndef Spec.specs (_ : Nat) : Prop := True\n",
+                    ),
+                    (
+                        "Expected",
+                        TargetRole::Expected,
+                        "prelude\nimport Captured\nimport Spec\n\
+                         def Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem \
+                         (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+                    ),
+                    (
+                        "Proof",
+                        TargetRole::Proof,
+                        &format!(
+                            "prelude\nimport Expected\n{extra_decl}\n\
+                             theorem Proof.verify : Expected.claim := trivial\n"
+                        ),
+                    ),
+                ],
+            );
+            let err = unpinned.run_target(&req).unwrap_err();
+            assert_eq!(err.code, 1, "{label}: {err}");
+            assert!(
+                err.message.contains(expected_substr),
+                "{label}: expected {expected_substr:?} in {err}"
+            );
+        }
+
+        // Legitimate Lean-synthesized equational theorems attached to an
+        // existing sysroot definition (`Nat.bitwise.eq_def` from
+        // `unfold Nat.bitwise`) or an imported `.model` definition
+        // (`Trusted.MirSemantics.isZero.eq_1` from `simp`) must succeed and
+        // replay cleanly in both unpinned and pinned modes.
+        let eq_def_req = write_target_request(
+            &base.join("unfold-bitwise-and-model"),
+            vec![
+                (
+                    "Model",
+                    TargetRole::Model,
+                    "prelude\nimport Init.Prelude\nimport Init.Core\n\
+                     namespace Trusted.MirSemantics\n\
+                     structure Crate where\n  program : Nat\n  specs : Nat → Prop\n\
+                     def UnitTheorem (c : Crate) : Prop := c.specs c.program\n\
+                     def isZero : Nat → Bool\n  | 0 => true\n  | _ => false\n",
+                ),
+                (
+                    "Captured",
+                    TargetRole::Capture,
+                    "prelude\nimport Model\ndef Captured.program : Nat := 0\n",
+                ),
+                (
+                    "Spec",
+                    TargetRole::Specification,
+                    "prelude\nimport Model\ndef Spec.specs (_ : Nat) : Prop := True\n",
+                ),
+                (
+                    "Expected",
+                    TargetRole::Expected,
+                    "prelude\nimport Captured\nimport Spec\n\
+                     def Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem \
+                     (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+                ),
+                (
+                    "Proof",
+                    TargetRole::Proof,
+                    "prelude\nimport Expected\nimport Init.Data.Nat.Bitwise.Basic\n\
+                     private theorem bw_zero : Nat.bitwise and 0 0 = 0 := by\n  \
+                     unfold Nat.bitwise\n  rfl\n\
+                     private theorem is_zero_zero : Trusted.MirSemantics.isZero 0 = true := by\n  \
+                     simp [Trusted.MirSemantics.isZero]\n\
+                     theorem Proof.verify : Expected.claim := by\n  \
+                     have _ := bw_zero\n  have _ := is_zero_zero\n  exact trivial\n",
+                ),
+            ],
+        );
+        let report = unpinned.run_target(&eq_def_req).unwrap();
+        assert_eq!(report["replay"], Json::Bool(true));
+        assert_eq!(report["exactType"], Json::Bool(true));
+        let mut pinned = Checker::new(&repo_root(), Some(&lean)).unwrap();
+        let pinned_report = pinned.run_target(&eq_def_req).unwrap();
+        assert_eq!(pinned_report["replay"], Json::Bool(true));
+        assert_eq!(pinned_report["exactType"], Json::Bool(true));
     }
 }

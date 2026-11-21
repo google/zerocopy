@@ -8,12 +8,12 @@ those terms. -->
 
 # MIR verifier alpha
 
-The developer alpha checks one selected Rust function on x86-64 Linux with
-glibc, such as Ubuntu 24.04. It compiles a dependency-free library with the
-pinned compiler and checks the
-authored Lean proof against the captured MIR, the stated specification, and
-Anneal's safety obligations. A successful receipt identifies the selected
-function, compilation configuration, input digests, and assumptions.
+The developer alpha checks selected Rust functions or scalar library crates on
+x86-64 Linux with glibc, such as Ubuntu 24.04. It compiles a dependency-free
+library with the pinned compiler and checks the authored Lean proof against the
+captured MIR, the stated specification, and Anneal's safety obligations. A
+successful receipt (`"schema_version": 2`) identifies the verified scope,
+compilation configuration, input digests, and assumptions.
 
 Use Rust inputs, specifications, and proofs you trust to compile and
 elaborate on your machine. Lean elaboration runs as your user. To use the
@@ -40,16 +40,61 @@ the fixture directory and change its Rust function to return one. The same
 proof then fails. `--artifacts <new-directory>` retains the captured Lean
 program, bound claim, and diagnostic evidence for proof development.
 
-Request roots are relative to the physical directory containing the request
-file. Each root must stay inside that directory, and inputs must be declared
-regular files under their roots. The request chooses one function and
-supplies the paths and roles of its Lean sources.
+In `request.json`, each `source_root` resolves relative to the directory
+containing the request file or to an existing out-of-tree directory, and
+declared inputs must be clean relative regular-file paths inside their
+canonicalized `source_root`. Set `scope` to
+`{"kind": "selected_unit", "roots": ["module::function"]}` (`UnitTheorem`,
+returning `selected_unit_verified`) or `{"kind": "crate"}` (`CrateTheorem`,
+returning `crate_verified`), and list the `specification` and `proof` Lean
+modules under `proof.sources`. For a dependency-free, feature-free Cargo
+library, `--manifest-path <Cargo.toml> --proof-dir <dir>` (with optional
+`--select <path>`) constructs the same request automatically.
 
-The alpha uses the x86-64 Linux scalar MIR profile. Calls, pointer accesses,
-external dependencies, and whole-crate requests are outside the alpha's
-scope. An unsupported input returns an explicit refusal. Verify the stated
-configuration when comparing a result with a deployed binary. See the
-[threat model](../THREAT_MODEL.md) for the verification assumptions.
+The alpha uses the x86-64 Linux scalar MIR profile: booleans, integers up to
+64 bits, unit, never, and inhabited local fieldless enums (for example,
+`ci/verify_starnix_e2e.py` checks Starnix's `ebpf_core` endianness conversion
+with symbolic MIR helpers in `Anneal.MirWp`). Calls, pointer accesses, and
+external dependencies are outside the alpha's scope. An unsupported input
+returns an explicit refusal. Verify the stated configuration when comparing a
+result with a deployed binary. See the [threat model](../THREAT_MODEL.md) for
+the verification assumptions.
+
+## Build-system and toolchain options
+
+Build systems such as Bazel or GN that already resolve crate inputs and Lean
+module mappings can invoke `verify rustc` directly instead of writing a
+`request.json` file:
+
+```sh
+cargo anneal verify rustc /path/to/src/lib.rs \
+  --crate-name scalar --edition 2024 \
+  --source-file /path/to/src/helper.rs \
+  --spec-file Spec=/path/to/spec/Spec.lean \
+  --proof-file Proof=/path/to/proof/Proof.lean \
+  --spec-decl Spec:Spec.specs --theorem Proof:Proof.verify \
+  --select module::function --artifacts /path/to/evidence
+```
+
+`verify rustc` dereferences symlinks when staging regular source files so
+symlinked runfiles trees work directly, while still rejecting special files and
+concurrent source edits. Additional flags support build-system and custom
+toolchain integration:
+
+- `--export-lean-lib` (requires `--artifacts <directory>`): copies compiled
+  target `.olean*` files to `<artifacts>/lean-lib/`.
+- `--lean-memory-mb <MB>`: sets Lean's `-M<MB>` memory limit (`resolve-imports`
+  enforces a `4096` MiB floor).
+- `--allow-unpinned-lean` (requires explicit `--lean <path>`): admits an
+  unpinned host Lean binary by dynamically discovering and hashing its minimal
+  `Init.*` and `Std.*` sysroot import closure (recorded in `unpinned_lean` and
+  `audit.unpinnedLean`), prints a `TAINTED` warning banner on stderr, sets
+  `taint_reasons` to `["unpinned_lean"]` with status `tainted_crate_verified`
+  or `tainted_selected_unit_verified`, and marks
+  `correspondence_provenance.applicable` as `false`.
+- `--no-default-features`: building `cargo-anneal` without its default `setup`
+  feature omits remote archive download support (`exocrate`); pass explicit
+  `--capture`, `--sysroot`, and `--lean` paths when running `verify`.
 
 ## Install a published alpha
 

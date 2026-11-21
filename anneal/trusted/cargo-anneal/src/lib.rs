@@ -29,13 +29,14 @@ mod toolchain;
 
 pub use stage::Checker;
 pub use target::{TargetAuditRequest, TargetBindings, TargetModule, TargetRole};
-pub use toolchain::{Failure, Json, default_lean_path};
-
 #[doc(hidden)]
 pub use toolchain::{
-    AdmittedToolchain, IR_PARTS, ImportEdge, LOCKED_LEAN_SHA256,
+    AdmittedToolchain, FOUNDATION_AXIOMS, IR_PARTS, ImportEdge, LOCKED_LEAN_SHA256,
     LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256, ModuleArtifacts, OLEAN_PARTS, PARTS,
-    ParallelDagPlan, PreflightHeader, PreflightResult, TOOLCHAIN, default_compile_workers,
-    is_clean_relative_path, is_lean_ident, is_sha256_hex, regular, run_parallel_dag, sha256_bytes,
-    sha256_file, stage_regular_file, topo_sort_modules,
+    ParallelDagPlan, PreflightHeader, PreflightResult, TOOLCHAIN, UNPINNED_FOUNDATION_MODULES,
+    default_compile_workers, default_lean_search_bases_from_env, is_clean_relative_path,
+    is_lean_ident, is_sha256_hex, read_regular_file_deref, read_regular_file_strict, regular,
+    run_parallel_dag, sha256_bytes, sha256_file, sha256_file_deref, stage_regular_file,
+    topo_sort_modules,
 };
+pub use toolchain::{Failure, Json, default_lean_path};

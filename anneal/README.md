@@ -9,11 +9,11 @@
 
 > [!NOTE]
 > The MIR-based alpha installs a toolchain from a published or locally built
-> archive and uses Lean's kernel to check proofs for selected Rust functions.
-> End-to-end crate verification is under development. The design discussion
-> and examples below describe Anneal's goals. Verification guarantees depend
-> on trusted code being correct and the assumptions in the verification
-> receipt being valid.
+> archive and uses Lean's kernel to check proofs for selected Rust functions or
+> scalar library crates. General crate verification is under development. The
+> design discussion and examples below describe Anneal's goals. Verification
+> guarantees depend on trusted code being correct and the assumptions in the
+> verification receipt being valid.
 
 For safe code, Rust promises that "if it compiles, then it is memory-safe." Anneal promises the same for unsafe code.
 
@@ -196,8 +196,9 @@ impl std::ops::Div<PositiveUsize> for usize {
 
 ## Try the alpha
 
-The alpha verifies one selected Rust function on x86-64 Linux with glibc.
-Follow the [alpha guide][alpha-guide] to install it and check a runnable proof.
+The alpha verifies selected Rust functions or dependency-free scalar library
+crates on x86-64 Linux with glibc. Follow the [alpha guide][alpha-guide] to
+install it and check a runnable proof.
 
 [alpha-guide]: https://github.com/google/zerocopy/blob/main/anneal/docs/alpha.md
 
@@ -272,6 +273,9 @@ significant influences are listed here, but this list is far from exhaustive.
   [Android delivery data][android-rust], and Hongliang Tian's
   [account of the Asterinas kernel][asterinas] gave the early design concrete
   examples of Rust development and the work involved in writing unsafe code.
+- The [Fuchsia] and [Starnix eBPF][starnix-ebpf] contributors' production Rust
+  crates and build integration shaped Anneal's out-of-tree verification
+  interface and end-to-end verification tests.
 
 [Aeneas]: https://arxiv.org/abs/2206.07185
 [Charon]: https://link.springer.com/chapter/10.1007/978-3-031-98685-7_18
@@ -297,3 +301,5 @@ significant influences are listed here, but this list is far from exhaustive.
 [rust-nation]: https://www.youtube.com/watch?v=QrrH2lcl9ew
 [android-rust]: https://blog.google/security/rust-in-android-move-fast-fix-things/
 [asterinas]: https://asterinas.github.io/2025/06/04/kernel-memory-safety-mission-accomplished.html
+[Fuchsia]: https://fuchsia.dev/
+[starnix-ebpf]: https://fuchsia.googlesource.com/fuchsia/+/823a15538f191b9dbd9ebafaa6ba23220b87d2e1/src/starnix/lib/ebpf/core/src

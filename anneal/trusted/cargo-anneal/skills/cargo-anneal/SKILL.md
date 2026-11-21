@@ -1,14 +1,15 @@
 ---
 name: cargo-anneal
 description: >-
-  Use when checking whether cargo-anneal can verify a Rust function, preparing
-  a request or Lean proof, or interpreting a verification receipt.
+  Use when checking whether cargo-anneal can verify a Rust function or scalar
+  crate, preparing a request or Lean proof, or interpreting a verification
+  receipt.
 ---
 
-# Verify a Rust function with Anneal
+# Verify Rust code with Anneal
 
 Anneal verifies a subset of Rust. Support depends on the installed version and
-the selected function and compilation. Use `cargo anneal --version` and the
+the requested scope and compilation. Use `cargo anneal --version` and the
 matching release's documentation for orientation. Run the intended request to
 learn whether that build can verify the user's code.
 
@@ -17,19 +18,26 @@ an isolated execution environment when working with untrusted inputs.
 
 ## Run the project's verification
 
-Identify the Rust function, the intended property, and any caller
-preconditions. If the project has a request and proof for that claim, use
-them with its toolchain. If setup is needed, run `cargo anneal setup` for a
+Identify the Rust function or crate scope, the intended property, and any
+caller preconditions. If the project has a request and proof for that claim,
+use them with its toolchain. If setup is needed, run `cargo anneal setup` for a
 published build, or select a matching local archive with
 `cargo anneal setup --local-archive <path>`. Use the same user and cache for
 setup and verification. Setup can reuse an existing installation. To select a
-specific archive on Linux, point `XDG_CACHE_HOME` at a fresh directory.
+specific archive on Linux, point `XDG_CACHE_HOME` at a fresh directory. Builds
+compiled with `--no-default-features` omit `setup` and require explicit
+`--capture`, `--sysroot`, and `--lean` paths.
 
 Run the request, save stdout to a new receipt file, and record the exit status.
 
 ```sh
 cargo anneal verify --request path/to/request.json > path/to/new-receipt.json
 ```
+
+Build systems that already resolve source files and module mappings (including
+symlinked runfiles) can invoke `cargo anneal verify rustc <crate_root>
+--crate-name <name> --spec-file <Mod>=<path> --proof-file <Mod>=<path> ...`
+directly instead of writing `request.json`.
 
 ## Create a request and proof when needed
 
@@ -38,14 +46,15 @@ installed CLI. Save the four files together in a scratch directory to try it.
 The example proves that a safe function with no arguments terminates and always
 returns zero in the captured MIR model.
 
-1. For request schema `1`, set `scope.kind` to `selected_unit` and put one
-   exact Rust definition path in `scope.roots`, relative to the crate root
-   (for example, `module::function`). Set the Rust edition, target, and `cfg`
-   for the intended compilation. Include the crate root in `source_files`.
-   The `proof` section lists Lean modules with `specification` or `proof`
-   roles. Resolve both source roots relative to the directory containing the
-   request and keep them within it. List regular files by paths relative to
-   their source roots.
+1. For request schema `1`, set `scope` either to `{"kind": "selected_unit",
+   "roots": ["module::function"]}` with non-empty crate-relative Rust
+   definition paths (`UnitTheorem`), or to `{"kind": "crate"}` with no `roots`
+   field (`CrateTheorem` across the whole crate). Set the Rust edition, target,
+   and `cfg` for the intended compilation, and include `crate_root` in
+   `source_files`. The `proof` section lists Lean modules with `specification`
+   or `proof` roles. Each `source_root` resolves relative to the request file's
+   directory or to an existing out-of-tree directory; list regular files by
+   clean relative paths inside their canonicalized `source_root`.
 2. Write the property and proof in their declared Lean modules. The default
    declarations are `Spec.specs` and `Proof.verify`. Express actual caller
    preconditions for an `unsafe` function in `Specs.safety`. A predicate of
@@ -53,7 +62,7 @@ returns zero in the captured MIR model.
    predicate admits before claiming that callers may rely on the proof.
 3. Import `Expected` in the proof and prove `Expected.claim`. Anneal generates
    `Captured.lean` from the Rust compilation and `Expected.lean` from that
-   capture and the specification. Keep the selected function, configuration,
+   capture and the specification. Keep the requested scope, configuration,
    property, and caller preconditions fixed while diagnosing the proof. Discuss
    any proposed change to the verification claim with the user.
 
@@ -74,7 +83,7 @@ inspect stderr for a command-line or execution error.
 - For `unsupported`, read the detail before drawing a conclusion about Rust
   support. Correct request, selector, file, or module errors. When the detail
   names an unsupported target or Rust construct, report what this version
-  refused for the selected function and compilation.
+  refused for the requested scope and compilation.
 - For `compiler_failed`, inspect the Rust diagnostics. For `tool_failed`,
   diagnose the named phase, such as setup or artifact retention.
 - For `proof_failed`, inspect the Lean or audit diagnostic and the generated
@@ -82,16 +91,24 @@ inspect stderr for a command-line or execution error.
   between the implementation and specification.
 
 For diagnostics, rerun with `--artifacts` and a fresh UTF-8 directory path
-under an existing parent. Retained `capture/Captured.lean` shows that the
+under an existing parent (adding `--export-lean-lib` when compiled `.olean*`
+files should be copied to `<artifacts>/lean-lib/`, or `--lean-memory-mb <MB>`
+to adjust Lean's `-M` limit). Retained `capture/Captured.lean` shows that the
 compiler adapter produced a Lean representation of the MIR.
-`generated/Expected.lean` shows that Anneal generated the obligation. Use the
-receipt to determine the outcome.
+`generated/Expected.lean` shows that Anneal generated the obligation. Passing
+`--allow-unpinned-lean` with `--lean <path>` admits an unpinned host Lean
+toolchain over its discovered `Init.*`/`Std.*` sysroot closure, prints a
+`TAINTED` stderr warning, and sets `taint_reasons` to `["unpinned_lean"]`. Use
+the receipt to determine the outcome.
 
-With exit `0` and `selected_unit_verified`, compare the checked specification
-and applicable caller preconditions with the user's intent. The receipt's
+With exit `0` and `selected_unit_verified` or `crate_verified` (or
+`tainted_selected_unit_verified` / `tainted_crate_verified` when
+`taint_reasons` is non-empty), compare the checked specification and applicable
+caller preconditions with the user's intent. The receipt's
 `audit.specificationClosure` identifies definitions to inspect. Report the
-property actually checked and any gap with the request, along with the selected
-function, compilation configuration, material assumptions, and deferred checks.
-Keep the input identities with the receipt. A successful receipt can be large.
-Read `status`, `scope`, and `configuration` first, then inspect the relevant
-audit entries and the specification itself.
+property actually checked and any gap with the request, along with the verified
+scope, compilation configuration, `taint_reasons`, material assumptions, and
+deferred checks. Keep the input identities with the receipt. A successful
+receipt can be large. Read `status`, `taint_reasons`, `scope`, and
+`configuration` first, then inspect the relevant audit entries and the
+specification itself.

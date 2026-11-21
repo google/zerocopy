@@ -84,6 +84,10 @@ jobs:
       # permitting stable releases.
       - name: Check non-stable cargo-anneal version
         run: ./ci/check_non_stable_version.sh
+      - name: Check offline cargo-anneal (--no-default-features) with Clippy
+        run: >-
+          cargo clippy --locked --no-deps -p cargo-anneal --no-default-features
+          --lib --bins --test cli -- -A clippy::type_complexity -D warnings
 
   build-exocrate:
     runs-on: ubuntu-latest
@@ -596,12 +600,15 @@ jobs:
           if len(roots) != 1 or roots[0].is_symlink():
               raise SystemExit("setup must produce exactly one fresh installation")
           root = roots[0].resolve()
-          for relative in ("rust/bin/rustc", "rust/bin/rustdoc", "lean/bin/lean", "bin/anneal-rustc-capture"):
+          for relative in ("rust/bin/rustc", "rust/bin/rustdoc", "lean/bin/lean", "bin/anneal-rustc-capture", "share/anneal/correspondence-provenance.json"):
               if not (root / relative).is_file():
                   raise SystemExit(f"installed tool is missing: {root / relative}")
           print(f"XDG_CACHE_HOME={os.environ['XDG_CACHE_HOME']}")
           print(f"ANNEAL_TEST_INSTALL_ROOT={root}")
           print(f"ANNEAL_TEST_RUST_SYSROOT={root / 'rust'}")
+          print(f"ANNEAL_LEAN={root / 'lean/bin/lean'}")
+          print(f"ANNEAL_CAPTURE={root / 'bin/anneal-rustc-capture'}")
+          print(f"ANNEAL_SYSROOT={root / 'rust'}")
           print(f"RUSTC={root / 'rust/bin/rustc'}")
           print(f"RUSTDOC={root / 'rust/bin/rustdoc'}")
           print(f"LD_LIBRARY_PATH={root / 'rust/lib'}")
@@ -726,6 +733,47 @@ jobs:
             -- /usr/bin/python3 -B /anneal/ci/probe_alpha.py --cli /cargo-anneal \
             > "$ANNEAL_TEST_DIAGNOSTICS/alpha-probe.log" 2>&1
           echo "Sandboxed scalar alpha probe passed."
+
+      - name: Verify production Starnix fixture and mutations
+        id: starnix
+        env:
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
+          ACTIONS_RUNTIME_URL: ''
+        run: |
+          set -euo pipefail
+          starnix_src="$RUNNER_TEMP/starnix-ebpf-src"
+          rm -rf "$starnix_src"
+          /usr/bin/python3 -I -B ci/verify_starnix_e2e.py \
+            --fetch-only "$starnix_src" \
+            > "$ANNEAL_TEST_DIAGNOSTICS/starnix-fetch.log" 2>&1
+          starnix_out="$ANNEAL_TEST_DIAGNOSTICS/starnix-run"
+          mkdir -p "$starnix_out"
+          /usr/bin/bwrap --unshare-all --die-with-parent --new-session \
+            --clearenv --cap-drop ALL --tmpfs / --dev /dev --proc /proc \
+            --tmpfs /tmp --dir /tmp/home --chdir "$PWD" \
+            --setenv HOME /tmp/home --setenv TMPDIR /tmp \
+            --setenv PATH /usr/bin:/bin \
+            --setenv LD_LIBRARY_PATH "$ANNEAL_SYSROOT/lib" \
+            --ro-bind /usr /usr \
+            --ro-bind-try /bin /bin --ro-bind-try /lib /lib \
+            --ro-bind-try /lib64 /lib64 --ro-bind-try /etc /etc \
+            --ro-bind-try /nix/store /nix/store \
+            --ro-bind "$GITHUB_WORKSPACE" "$GITHUB_WORKSPACE" \
+            --ro-bind "$ANNEAL_TEST_INSTALL_ROOT" "$ANNEAL_TEST_INSTALL_ROOT" \
+            --ro-bind "$ANNEAL_TEST_TOOLS_ROOT" "$ANNEAL_TEST_TOOLS_ROOT" \
+            --ro-bind "$starnix_src" "$starnix_src" \
+            --bind "$starnix_out" "$starnix_out" \
+            -- /usr/bin/python3 -I -B ci/verify_starnix_e2e.py \
+            --source-dir "$starnix_src" \
+            --cli "$ANNEAL_TEST_CARGO_ANNEAL" \
+            --capture "$ANNEAL_CAPTURE" \
+            --sysroot "$ANNEAL_SYSROOT" \
+            --lean "$ANNEAL_LEAN" \
+            --artifacts-dir "$starnix_out/starnix-evidence" \
+            > "$ANNEAL_TEST_DIAGNOSTICS/starnix-e2e.log" 2>&1
+          echo "Sandboxed Starnix E2E verification passed."
 
       - name: Check crate packaging
         id: package
@@ -967,12 +1015,15 @@ jobs:
           if len(roots) != 1 or roots[0].is_symlink():
               raise SystemExit("setup must produce exactly one fresh installation")
           root = roots[0].resolve()
-          for relative in ("rust/bin/rustc", "rust/bin/rustdoc", "lean/bin/lean", "bin/anneal-rustc-capture"):
+          for relative in ("rust/bin/rustc", "rust/bin/rustdoc", "lean/bin/lean", "bin/anneal-rustc-capture", "share/anneal/correspondence-provenance.json"):
               if not (root / relative).is_file():
                   raise SystemExit(f"installed tool is missing: {root / relative}")
           print(f"XDG_CACHE_HOME={os.environ['XDG_CACHE_HOME']}")
           print(f"ANNEAL_TEST_INSTALL_ROOT={root}")
           print(f"ANNEAL_TEST_RUST_SYSROOT={root / 'rust'}")
+          print(f"ANNEAL_LEAN={root / 'lean/bin/lean'}")
+          print(f"ANNEAL_CAPTURE={root / 'bin/anneal-rustc-capture'}")
+          print(f"ANNEAL_SYSROOT={root / 'rust'}")
           print(f"RUSTC={root / 'rust/bin/rustc'}")
           print(f"RUSTDOC={root / 'rust/bin/rustdoc'}")
           print(f"LD_LIBRARY_PATH={root / 'rust/lib'}")
@@ -1030,6 +1081,12 @@ jobs:
             --config 'profile.dev.package.sha2.opt-level=3' \
             --config 'profile.dev.package.zstd-sys.opt-level=3' \
             -- --root . --check
+          cargo test --locked -p cargo-anneal --no-default-features \
+            --config 'profile.dev.package.cpufeatures.opt-level=3' \
+            --config 'profile.dev.package.digest.opt-level=3' \
+            --config 'profile.dev.package.sha2.opt-level=3' \
+            --config 'profile.dev.package.zstd-sys.opt-level=3' \
+            --lib --bin cargo-anneal --test cli
           cargo test --workspace --locked \
             --config 'profile.dev.package.cpufeatures.opt-level=3' \
             --config 'profile.dev.package.digest.opt-level=3' \
