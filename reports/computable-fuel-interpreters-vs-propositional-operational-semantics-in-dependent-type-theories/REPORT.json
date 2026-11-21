@@ -1,0 +1,106 @@
+{
+  "topics": [
+    "verification/isa-semantics",
+    "pl/operational-semantics",
+    "verification/lean4",
+    "verification/functional-big-step",
+    "verification/compcert",
+    "verification/cakeml",
+    "lean/kernel"
+  ],
+  "subjects": [
+    {
+      "name": "CakeML clocked functional big-step evaluator and relational big/small-step equivalence proofs",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+      }
+    },
+    {
+      "name": "CompCert relational Smallstep framework, ClightBigstep coinductive semantics, and Cexec computable interpreter",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+      }
+    },
+    {
+      "name": "Lean 4 kernel large-elimination checker, Classical.choice noncomputable library, and WellFounded.fix (v4.34.1)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "LNSym computable ARMv8 state-transformer and fuel-indexed symbolic simulator in Lean 4",
+      "identity": {
+        "repository": "leanprover/LNSym",
+        "revision": "49f8a1d9e46f8dcfc345f4bc15d35b0ba845ff5c"
+      }
+    },
+    {
+      "name": "Isabelle/HOL IMP relational semantics and classical While_Combinator library",
+      "identity": {
+        "repository": "isabelle-prover/mirror-isabelle",
+        "revision": "9b69a01e9bcac478db4e6f01ae2b032ee684d9e0"
+      }
+    },
+    {
+      "name": "MIT-PLV riscv-coq parameterized monadic RISC-V operational specification",
+      "identity": {
+        "repository": "mit-plv/riscv-coq",
+        "revision": "03881b21aa36115d436e06b9e1a40836e9b927c7"
+      }
+    },
+    {
+      "name": "Sail single-source ISA specification language and prover backends",
+      "identity": {
+        "repository": "rems-project/sail",
+        "revision": "97aa617dcd4d01575f773cb58ea1e8686858c8c2"
+      }
+    },
+    {
+      "name": "Owens, Myreen, Kumar, and Tan (2016), Functional Big-Step Semantics",
+      "identity": {
+        "doi": "10.1007/978-3-662-49498-1_23",
+        "venue": "ESOP 2016, LNCS 9632, pp. 589-615"
+      }
+    },
+    {
+      "name": "Leroy and Grall (2009), Coinductive Big-Step Operational Semantics",
+      "identity": {
+        "doi": "10.1016/j.ic.2007.12.004",
+        "venue": "Information and Computation 207(2):284-304"
+      }
+    },
+    {
+      "name": "Blazy and Leroy (2009), Mechanized Semantics for the Clight Subset of the C Language",
+      "identity": {
+        "doi": "10.1007/s10817-009-9148-3",
+        "venue": "Journal of Automated Reasoning 43(3):263-288"
+      }
+    },
+    {
+      "name": "Chargueraud, Chlipala, Erbsen, and Gruetter (2023), Omnisemantics: Smoother Handling of Nondeterminism",
+      "identity": {
+        "doi": "10.1145/3579834",
+        "venue": "ACM TOPLAS 45(1):43"
+      }
+    },
+    {
+      "name": "Armstrong et al. (2019), ISA Semantics for ARMv8-A, RISC-V, and CHERI-MIPS",
+      "identity": {
+        "doi": "10.1145/3290384",
+        "venue": "PACMPL 3 (POPL 2019)"
+      }
+    },
+    {
+      "name": "Xia et al. (2020), Interaction Trees: Representing Recursive and Impure Programs in Coq",
+      "identity": {
+        "doi": "10.1145/3371119",
+        "venue": "PACMPL 4 (POPL 2020)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}
