@@ -616,12 +616,13 @@ Each result: tier, the Lean statement (verbatim, with an informal unfolding of t
 **Lean:** `Toy.Backward.effSem_lazyPlacement_eq_heapSem_of_aliasingDiscipline` (`ToyBackward/Results.lean`). **Status:** proved (short derivation from endpoint-window-last-write).
 
 ```lean
+-- lean/ToyBackward/Results.lean:86-88
 theorem effSem_lazyPlacement_eq_heapSem_of_aliasingDiscipline (P : Prog) (h : Heap)
     (had : AliasingDiscipline P) :
     effSem P (lazyPlacement P) h = heapSem P h := …
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```
 ∀ (P : Prog) (h : Heap),
@@ -662,12 +663,13 @@ Basis: execution (Lean kernel check)
 **Lean:** `Toy.Backward.effSem_eagerPlacement_eq_heapSem_of_aliasingDiscipline` (`ToyBackward/Results.lean`). **Status:** proved (short derivation from endpoint-window-last-write).
 
 ```lean
+-- lean/ToyBackward/Results.lean:95-97
 theorem effSem_eagerPlacement_eq_heapSem_of_aliasingDiscipline (P : Prog) (h : Heap)
     (had : AliasingDiscipline P) :
     effSem P (eagerPlacement P) h = heapSem P h := …
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```
 ∀ (P : Prog) (h : Heap),
@@ -706,6 +708,7 @@ Basis: derived (modeling bridge) — the reading of the pull request's region-en
 **Lean:** `Toy.Backward.pureBackSem_unsound_on_reborrowAfterWrite` (`ToyBackward/Results.lean`). **Status:** proved.
 
 ```lean
+-- lean/ToyBackward/Results.lean:146-153
 theorem pureBackSem_unsound_on_reborrowAfterWrite (h : Heap) (c : Int) (hc : c ≠ h 0) :
     AliasingDiscipline (reborrowAfterWrite c) ∧
     ∃ o₁ o₂, pureBackSem (reborrowAfterWrite c) h = some o₁ ∧
@@ -716,7 +719,7 @@ theorem pureBackSem_unsound_on_reborrowAfterWrite (h : Heap) (c : Int) (hc : c �
       pureBackSem (reborrowAfterWrite c) h ≠ heapSem (reborrowAfterWrite c) h := …
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```
 ∀ (h : Heap) (c : Int), c ≠ h 0 →
@@ -758,6 +761,7 @@ Basis: execution (Lean kernel check)
 **Lean:** `Toy.Backward.statelessSem_validates_false_duplicate_call_equation` (`ToyBackward/Results.lean`). **Status:** proved.
 
 ```lean
+-- lean/ToyBackward/Results.lean:207-212
 theorem statelessSem_validates_false_duplicate_call_equation (F : Ptr → Option Int)
     (B : Ptr → Int → Bool) (π : Placement) (h : Heap) (c : Int) (hc : c ≠ h 0) :
     AliasingDiscipline (reborrowAfterWrite c) ∧
@@ -766,7 +770,7 @@ theorem statelessSem_validates_false_duplicate_call_equation (F : Ptr → Option
     statelessSem F B (reborrowAfterWrite c) π ≠ (heapSem (reborrowAfterWrite c) h).map Obs.vars := …
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```
 ∀ (F : Ptr → Option Int) (B : Ptr → Int → Bool) (π : Placement) (h : Heap) (c : Int), c ≠ h 0 →
@@ -814,6 +818,7 @@ Basis: derived (modeling bridge) — the application to Aeneas pull request #153
 **Lean:** `Toy.Backward.effSem_eq_heapSem_of_endsAfterCreation_of_endsAfterLastUse_of_endsByNextOwnerAccess_of_endsByProgramEnd` (`ToyBackward/Results.lean`). **Status:** proved (short derivation from endpoint-window-last-write).
 
 ```lean
+-- lean/ToyBackward/Results.lean:60-64
 theorem effSem_eq_heapSem_of_endsAfterCreation_of_endsAfterLastUse_of_endsByNextOwnerAccess_of_endsByProgramEnd
     (P : Prog) (π : Placement) (h : Heap)
     (hc : EndsAfterCreation P π) (hu : EndsAfterLastUse P π) (ho : EndsByNextOwnerAccess P π)
@@ -821,7 +826,7 @@ theorem effSem_eq_heapSem_of_endsAfterCreation_of_endsAfterLastUse_of_endsByNext
     effSem P π h = heapSem P h := …
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```
 ∀ (P : Prog) (π : Placement) (h : Heap),
@@ -867,6 +872,7 @@ Basis: derived (modeling bridge) — the reading of the pull request's region-en
 **Lean:** `Toy.Backward.effSem_eq_heapSem_of_endsAfterCreation_of_endsAfterLastWrite_of_endsByNextOwnerAccess_of_endsByProgramEnd_of_aliasingDiscipline` (`ToyBackward/Results.lean`). **Status:** proved.
 
 ```lean
+-- lean/ToyBackward/Results.lean:45-49
 theorem effSem_eq_heapSem_of_endsAfterCreation_of_endsAfterLastWrite_of_endsByNextOwnerAccess_of_endsByProgramEnd_of_aliasingDiscipline
     (P : Prog) (π : Placement) (h : Heap)
     (hc : EndsAfterCreation P π) (hw : EndsAfterLastWrite P π) (ho : EndsByNextOwnerAccess P π)
@@ -874,7 +880,7 @@ theorem effSem_eq_heapSem_of_endsAfterCreation_of_endsAfterLastWrite_of_endsByNe
     effSem P π h = heapSem P h := …
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```
 ∀ (P : Prog) (π : Placement) (h : Heap),
@@ -918,6 +924,7 @@ Basis: execution (Lean kernel check)
 **Lean:** `Toy.Backward.lockSem_eq_heapSem_of_endsAfterCreation_of_endsAfterLastUse_of_endsByNextOwnerAccess_of_endsByProgramEnd` (`ToyBackward/Results.lean`). **Status:** proved.
 
 ```lean
+-- lean/ToyBackward/Results.lean:109-113
 theorem lockSem_eq_heapSem_of_endsAfterCreation_of_endsAfterLastUse_of_endsByNextOwnerAccess_of_endsByProgramEnd
     (P : Prog) (π : Placement) (h : Heap)
     (hc : EndsAfterCreation P π) (hu : EndsAfterLastUse P π) (ho : EndsByNextOwnerAccess P π)
@@ -925,7 +932,7 @@ theorem lockSem_eq_heapSem_of_endsAfterCreation_of_endsAfterLastUse_of_endsByNex
     lockSem P π h = heapSem P h := …
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```
 ∀ (P : Prog) (π : Placement) (h : Heap),
@@ -970,12 +977,13 @@ Basis: derived (modeling bridge) — the reading of the pull request's region-en
 **Lean:** `Toy.Backward.respectsLiveness_of_lockSem_eq_some` (`ToyBackward/Results.lean`). **Status:** proved.
 
 ```lean
+-- lean/ToyBackward/Results.lean:122-124
 theorem respectsLiveness_of_lockSem_eq_some (P : Prog) (π : Placement) (h : Heap) (o : Obs)
     (hl : lockSem P π h = some o) :
     RespectsLiveness P π := …
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```
 ∀ (P : Prog) (π : Placement) (h : Heap) (o : Obs),
@@ -1012,6 +1020,7 @@ Basis: derived (modeling bridge) — the reading of the pull request's region-en
 **Lean:** `Toy.Backward.heapSem_eq_some_of_lockSem_eq_some` (`ToyBackward/Results.lean`). **Status:** proved (short derivation from lock-complete and lock-success-in-window).
 
 ```lean
+-- lean/ToyBackward/Results.lean:131-133
 theorem heapSem_eq_some_of_lockSem_eq_some (P : Prog) (π : Placement) (h : Heap) (o : Obs)
     (hl : lockSem P π h = some o) :
     heapSem P h = some o := …
@@ -1019,7 +1028,7 @@ theorem heapSem_eq_some_of_lockSem_eq_some (P : Prog) (π : Placement) (h : Heap
 
 Unfolded:
 
-```
+```lean
 ∀ (P : Prog) (π : Placement) (h : Heap) (o : Obs),
   lockSem P π h = some o → heapSem P h = some o      -- no condition on π
 ```
@@ -1055,13 +1064,14 @@ Basis: derived (modeling bridge) — the reading of the pull request's region-en
 **Lean:** `Toy.Backward.prophOutcome_iff_effSem_of_endsByNextOwnerAccess_of_endsByProgramEnd` (`ToyBackward/Results.lean`). **Status:** proved.
 
 ```lean
+-- lean/ToyBackward/Results.lean:233-236
 theorem prophOutcome_iff_effSem_of_endsByNextOwnerAccess_of_endsByProgramEnd
     (P : Prog) (π : Placement) (h : Heap)
     (ho : EndsByNextOwnerAccess P π) (he : EndsByProgramEnd P π) :
     ∀ o, ProphOutcome P π h o ↔ effSem P π h = some o := …
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```
 ∀ (P : Prog) (π : Placement) (h : Heap),
@@ -1105,6 +1115,7 @@ Basis: derived (modeling bridge) — the relation to weakest-precondition and CH
 **Lean:** `Toy.Backward.prophOutcome_iff_heapSem_of_aliasingDiscipline_of_endsAfterCreation_of_endsAfterLastWrite_of_endsByProgramEnd` (`ToyBackward/Results.lean`). **Status:** proved.
 
 ```lean
+-- lean/ToyBackward/Results.lean:244-248
 theorem prophOutcome_iff_heapSem_of_aliasingDiscipline_of_endsAfterCreation_of_endsAfterLastWrite_of_endsByProgramEnd
     (P : Prog) (π : Placement) (h : Heap)
     (had : AliasingDiscipline P) (hc : EndsAfterCreation P π) (hw : EndsAfterLastWrite P π)
@@ -1112,7 +1123,7 @@ theorem prophOutcome_iff_heapSem_of_aliasingDiscipline_of_endsAfterCreation_of_e
     ∀ o, ProphOutcome P π h o ↔ heapSem P h = some o := …
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```
 ∀ (P : Prog) (π : Placement) (h : Heap),
@@ -1160,13 +1171,14 @@ Basis: derived (modeling bridge) — the relation to weakest-precondition and CH
 **Lean:** `Toy.Backward.aliasingDiscipline_iff_respectsLiveness_lazyPlacement` (`ToyBackward/Liveness.lean`). **Status:** proved.
 
 ```lean
+-- lean/ToyBackward/Liveness.lean:344-347
 theorem aliasingDiscipline_iff_respectsLiveness_lazyPlacement (P : Prog) :
     (AliasingDiscipline P ↔ RespectsLiveness P (lazyPlacement P)) ∧
     (AliasingDiscipline P ↔ RespectsLiveness P (eagerPlacement P)) ∧
     (AliasingDiscipline P ↔ ∃ π, RespectsLiveness P π) := …
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```
 ∀ (P : Prog),
@@ -1311,7 +1323,7 @@ Basis: derived (a reading of the kernel-checked theorems named above)
 
 **`sound-lazy`**
 
-* Toy model only: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency.
+* Toy model: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency. These theorems neither establish nor refute the corresponding claims about Aeneas (including pull request #1537 and its companions), Creusot, or any other verifier or translation tool for unsafe-Rust raw-pointer reborrows; the modeling bridges under Findings argue the connection separately.
 * Nothing is proved about Aeneas itself (its symbolic interpreter, region-ending heuristics, joins, or generated code); any connection is a derived modeling bridge stated in the prose, not a kernel-checked fact.
 * Refinement is stated as equality of outcomes (both succeed with the same observation, or both are stuck); this relies on both semantics being deterministic and is not a claim about nondeterministic or relational semantics. A stuck translation counts as disagreeing with a succeeding heap semantics; the partial-refinement reading (translation succeeds with o implies heap semantics succeeds with o) is the subject of lock-sound.
 * AliasingDiscipline is a simplified condition in the spirit of Stacked Borrows (no other access of any kind to the cell while the reference is used). Aliasing models that permit some foreign accesses, e.g. Tree Borrows, where a mutable reference that has not yet been written allows foreign reads, are not examined; a program violating AliasingDiscipline is not 'undefined' in the toy, it is simply outside the theorem.
@@ -1321,7 +1333,7 @@ Basis: derived (a reading of the kernel-checked theorems named above)
 
 **`sound-eager`**
 
-* Toy model only: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency.
+* Toy model: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency. These theorems neither establish nor refute the corresponding claims about Aeneas (including pull request #1537 and its companions), Creusot, or any other verifier or translation tool for unsafe-Rust raw-pointer reborrows; the modeling bridges under Findings argue the connection separately.
 * Nothing is proved about Aeneas itself (its symbolic interpreter, region-ending heuristics, joins, or generated code); any connection is a derived modeling bridge stated in the prose, not a kernel-checked fact.
 * AliasingDiscipline and RespectsLiveness constrain only the ordering between uses of an asMut reference and later owner accesses to the same cell; they do not check reference scoping (that every read or write names an earlier asMut). Ill-scoped programs such as danglingUse (`[read 0 0]`) and useBeforeCreation satisfy both and are stuck (`none`) in heapSem, effSem, and lockSem (aliasingDiscipline_admits_ill_scoped and lockSem_none_of_ill_scoped_respectsLiveness, with placements endAt 0 and lazyPlacement respectively); for them the equation holds only because both sides are stuck.
 * Out-of-window placements give wrong `some o` outcomes in effSem specifically because its write-back is unchecked copy-in/copy-out (the cell stays freely accessible in the heap model while the region is open, and the region's local value stays writable and readable after its backward call) and because soundness is stated as equality of outcomes. In the borrow-locking translation lockSem, where the forward call lends the cell until the backward call and the backward call closes the region, the same placements are stuck (`none`) instead (outside_window_effSem_wrong_lockSem_stuck); there every placement is sound under partial refinement (lock-sound) and only completeness depends on the end point (lock-complete, lock-success-in-window). The toy's out-of-window failures of effSem do not refute the claim of Aeneas pull request #1537 that region-end timing affects only completeness, under borrow-locking semantics.
@@ -1330,14 +1342,14 @@ Basis: derived (a reading of the kernel-checked theorems named above)
 
 **`pure-backward-unsound`**
 
-* Toy model only: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency.
+* Toy model: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency. These theorems neither establish nor refute the corresponding claims about Aeneas (including pull request #1537 and its companions), Creusot, or any other verifier or translation tool for unsafe-Rust raw-pointer reborrows; the modeling bridges under Findings argue the connection separately.
 * The pure-backward translation here still reads the heap model in forward calls; the result is about this translation. The general statement for translations without any heap state is stateless-unsound.
 * It does not say that every program is mistranslated: on programs that never write through an as_mut reference the two translations can agree.
 * Pure backward functions coincide with never ending any region (lemma pureBackSem_eq_effSem_neverEndPlacement); this result is therefore also an instance of the EndsByProgramEnd/EndsByNextOwnerAccess failures of endpoint-window.
 
 **`stateless-unsound`**
 
-* Toy model only: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency.
+* Toy model: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency. These theorems neither establish nor refute the corresponding claims about Aeneas (including pull request #1537 and its companions), Creusot, or any other verifier or translation tool for unsafe-Rust raw-pointer reborrows; the modeling bridges under Findings argue the connection separately.
 * 'Stateless' means exactly statelessSem: the forward call's result is a function of the pointer alone (or a failure), and backward calls can only succeed or fail. Divergence is modelled like failure (no observation). Models in which an as_mut call's result can depend on earlier calls (a heap, a counter, an oracle consulted per call) are stateful by this definition and not covered.
 * statelessSem F B assumes a deterministic forward model that depends only on the pointer, not on the call site or on earlier calls, and freely copied pointer values. Translations with nondeterministic or per-call-site choices (for example a prophecy per region, as in prophSem), or APIs that thread an unaliased pointer token (a `&mut` to a pointer wrapper whose backward function returns an updated token), lie outside statelessSem. On programs with raw reads or writes (none occur in reborrowAfterWrite c), sstep additionally reads raw cells through F and treats raw writes as no-ops.
 * A stateless model can avoid validating a false statement on this program only by failing on it; the result does not say how often such models fail on other programs.
@@ -1346,7 +1358,7 @@ Basis: derived (a reading of the kernel-checked theorems named above)
 
 **`endpoint-window`**
 
-* Toy model only: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency.
+* Toy model: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency. These theorems neither establish nor refute the corresponding claims about Aeneas (including pull request #1537 and its companions), Creusot, or any other verifier or translation tool for unsafe-Rust raw-pointer reborrows; the modeling bridges under Findings argue the connection separately.
 * Nothing is proved about Aeneas itself (its symbolic interpreter, region-ending heuristics, joins, or generated code); any connection is a derived modeling bridge stated in the prose, not a kernel-checked fact.
 * Refinement is stated as equality of outcomes (both succeed with the same observation, or both are stuck); this relies on both semantics being deterministic and is not a claim about nondeterministic or relational semantics. A stuck translation counts as disagreeing with a succeeding heap semantics; the partial-refinement reading (translation succeeds with o implies heap semantics succeeds with o) is the subject of lock-sound.
 * AliasingDiscipline and RespectsLiveness constrain only the ordering between uses of an asMut reference and later owner accesses to the same cell; they do not check reference scoping (that every read or write names an earlier asMut). Ill-scoped programs such as danglingUse (`[read 0 0]`) and useBeforeCreation satisfy both and are stuck (`none`) in heapSem, effSem, and lockSem (aliasingDiscipline_admits_ill_scoped and lockSem_none_of_ill_scoped_respectsLiveness, with placements endAt 0 and lazyPlacement respectively); for them the equation holds only because both sides are stuck.
@@ -1356,7 +1368,7 @@ Basis: derived (a reading of the kernel-checked theorems named above)
 
 **`endpoint-window-last-write`**
 
-* Toy model only: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency.
+* Toy model: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency. These theorems neither establish nor refute the corresponding claims about Aeneas (including pull request #1537 and its companions), Creusot, or any other verifier or translation tool for unsafe-Rust raw-pointer reborrows; the modeling bridges under Findings argue the connection separately.
 * Nothing is proved about Aeneas itself (its symbolic interpreter, region-ending heuristics, joins, or generated code); any connection is a derived modeling bridge stated in the prose, not a kernel-checked fact.
 * AliasingDiscipline and RespectsLiveness constrain only the ordering between uses of an asMut reference and later owner accesses to the same cell; they do not check reference scoping (that every read or write names an earlier asMut). Ill-scoped programs such as danglingUse (`[read 0 0]`) and useBeforeCreation satisfy both and are stuck (`none`) in heapSem, effSem, and lockSem (aliasingDiscipline_admits_ill_scoped and lockSem_none_of_ill_scoped_respectsLiveness, with placements endAt 0 and lazyPlacement respectively); for them the equation holds only because both sides are stuck.
 * Out-of-window placements give wrong `some o` outcomes in effSem specifically because its write-back is unchecked copy-in/copy-out (the cell stays freely accessible in the heap model while the region is open, and the region's local value stays writable and readable after its backward call) and because soundness is stated as equality of outcomes. In the borrow-locking translation lockSem, where the forward call lends the cell until the backward call and the backward call closes the region, the same placements are stuck (`none`) instead (outside_window_effSem_wrong_lockSem_stuck); there every placement is sound under partial refinement (lock-sound) and only completeness depends on the end point (lock-complete, lock-success-in-window). The toy's out-of-window failures of effSem do not refute the claim of Aeneas pull request #1537 that region-end timing affects only completeness, under borrow-locking semantics.
@@ -1365,7 +1377,7 @@ Basis: derived (a reading of the kernel-checked theorems named above)
 
 **`lock-complete`**
 
-* Toy model only: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency.
+* Toy model: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency. These theorems neither establish nor refute the corresponding claims about Aeneas (including pull request #1537 and its companions), Creusot, or any other verifier or translation tool for unsafe-Rust raw-pointer reborrows; the modeling bridges under Findings argue the connection separately.
 * Nothing is proved about Aeneas itself (its symbolic interpreter, region-ending heuristics, joins, or generated code); any connection is a derived modeling bridge stated in the prose, not a kernel-checked fact.
 * AliasingDiscipline and RespectsLiveness constrain only the ordering between uses of an asMut reference and later owner accesses to the same cell; they do not check reference scoping (that every read or write names an earlier asMut). Ill-scoped programs such as danglingUse (`[read 0 0]`) and useBeforeCreation satisfy both and are stuck (`none`) in heapSem, effSem, and lockSem (aliasingDiscipline_admits_ill_scoped and lockSem_none_of_ill_scoped_respectsLiveness, with placements endAt 0 and lazyPlacement respectively); for them the equation holds only because both sides are stuck.
 * lockSem is a toy borrow-locking model (one lent flag per cell, an open-region count, stuck on any conflicting access); it is not the heap model, separation logic, or weakest-precondition calculus of any Aeneas pull request, and it does not model shared borrows, partial permissions, or byte-level cells.
@@ -1373,7 +1385,7 @@ Basis: derived (a reading of the kernel-checked theorems named above)
 
 **`lock-success-in-window`**
 
-* Toy model only: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency.
+* Toy model: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency. These theorems neither establish nor refute the corresponding claims about Aeneas (including pull request #1537 and its companions), Creusot, or any other verifier or translation tool for unsafe-Rust raw-pointer reborrows; the modeling bridges under Findings argue the connection separately.
 * Nothing is proved about Aeneas itself (its symbolic interpreter, region-ending heuristics, joins, or generated code); any connection is a derived modeling bridge stated in the prose, not a kernel-checked fact.
 * Says nothing about the unchecked translation effSem, which succeeds (with a wrong outcome) on some out-of-window placements (outside_window_effSem_wrong_lockSem_stuck).
 * Stuckness is not a diagnosis of the placement: the converse of this result fails. Every out-of-window placement makes lockSem stuck (the contrapositive), but lockSem is also stuck on programs with reference scoping errors under liveness-respecting placements: danglingUse (`[read 0 0]`) with endAt 0 and useBeforeCreation with its lazy placement satisfy RespectsLiveness and have lockSem = none (lockSem_none_of_ill_scoped_respectsLiveness, aliasingDiscipline_admits_ill_scoped). A stuck borrow-locking translation therefore indicates an out-of-window placement or a scoping error.
@@ -1381,14 +1393,14 @@ Basis: derived (a reading of the kernel-checked theorems named above)
 
 **`lock-sound`**
 
-* Toy model only: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency.
+* Toy model: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency. These theorems neither establish nor refute the corresponding claims about Aeneas (including pull request #1537 and its companions), Creusot, or any other verifier or translation tool for unsafe-Rust raw-pointer reborrows; the modeling bridges under Findings argue the connection separately.
 * Nothing is proved about Aeneas itself (its symbolic interpreter, region-ending heuristics, joins, or generated code); any connection is a derived modeling bridge stated in the prose, not a kernel-checked fact.
 * Partial refinement only: lockSem may be stuck where the heap semantics succeeds (incompleteness); it is stuck exactly off the window for programs without scoping errors (lock-complete, lock-success-in-window).
 * Derived modeling bridge, not kernel-checked: this is the toy's version of the claim that end-point timing matters only for completeness, for a model in which a lent cell is inaccessible until its backward call (as in the borrow/endBorrow models of the companion Aeneas pull requests #1454 and #1551). It is not a proof about those models, about Aeneas's heuristics, or about a translation whose write-back is unchecked (effSem, where out-of-window end points are unsound).
 
 **`prophecy-agreement`**
 
-* Toy model only: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency.
+* Toy model: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency. These theorems neither establish nor refute the corresponding claims about Aeneas (including pull request #1537 and its companions), Creusot, or any other verifier or translation tool for unsafe-Rust raw-pointer reborrows; the modeling bridges under Findings argue the connection separately.
 * Agreement is equality of end-of-run outcome sets of two toy semantics, not a correspondence between proofs, verification conditions, or CHC encodings.
 * The prophecy encoding here (an up-front prophecy assignment and a flag recording resolution assumptions, filtered at the end of the run) is a toy; it is not RustHorn's CHC translation, Creusot's Why3 encoding, or RustHornBelt's Iris model.
 * Agreement does not imply soundness: outside the endpoint-window conditions both encodings can be wrong together (e.g. ending before a write).
@@ -1396,7 +1408,7 @@ Basis: derived (a reading of the kernel-checked theorems named above)
 
 **`prophecy-sound-wider-window`**
 
-* Toy model only: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency.
+* Toy model: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency. These theorems neither establish nor refute the corresponding claims about Aeneas (including pull request #1537 and its companions), Creusot, or any other verifier or translation tool for unsafe-Rust raw-pointer reborrows; the modeling bridges under Findings argue the connection separately.
 * AliasingDiscipline and RespectsLiveness constrain only the ordering between uses of an asMut reference and later owner accesses to the same cell; they do not check reference scoping (that every read or write names an earlier asMut). Ill-scoped programs such as danglingUse (`[read 0 0]`) and useBeforeCreation satisfy both and are stuck (`none`) in heapSem, effSem, and lockSem (aliasingDiscipline_admits_ill_scoped and lockSem_none_of_ill_scoped_respectsLiveness, with placements endAt 0 and lazyPlacement respectively). RespectsLiveness implies this result's window hypotheses (EndsAfterLastUse implies EndsAfterLastWrite, endsAfterLastWrite_of_endsAfterLastUse), so the result applies to them; since heapSem is stuck, both sides of the equivalence are false for every o (no prophecy outcome exists), and the equivalence holds only for that reason.
 * RustHorn's core calculus COR and Creusot as presented in its 2022 paper exclude unsafe code. Verification frameworks that combine prophecy-style reasoning with raw pointers (RefinedRust, whose borrow names are inspired by prophecy variables; Gillian-Rust, which embeds parametric prophecies; and Creusot's later ghost permissions for raw pointers) enforce aliasing through separation-logic or ghost ownership rather than the toy's unguarded flat heap; this result says nothing about them.
 * `ProphOutcome` keeps a run only if every resolution assumption holds, checked at the end of the run, in a language without intermediate assertions or panics. When a region ends after an owner access (outside EndsByNextOwnerAccess), the owner reads the prophecy before the region-end resolution constrains it; in a weakest-precondition encoding (Why3/Creusot style) or a CHC encoding (RustHorn style), a safety check or assertion between that access and the region end sees an unconstrained prophecy and can fail verification even though the final outcome is right. Tolerance of late ends is a property of this end-of-run filter, not of prophecy-based verifiers.
@@ -1404,7 +1416,7 @@ Basis: derived (a reading of the kernel-checked theorems named above)
 
 **`aliasing-iff-placement`**
 
-* Toy model only: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency.
+* Toy model: straight-line programs over integer cells, raw pointers as bare addresses; no allocation, deallocation, pointer arithmetic, casts, typed memory, provenance, branches, loops, joins, function calls, shared references, `from_mut`-style (reference to raw pointer) regions, interior mutability, or concurrency. These theorems neither establish nor refute the corresponding claims about Aeneas (including pull request #1537 and its companions), Creusot, or any other verifier or translation tool for unsafe-Rust raw-pointer reborrows; the modeling bridges under Findings argue the connection separately.
 * AliasingDiscipline and RespectsLiveness constrain only the ordering between uses of an asMut reference and later owner accesses to the same cell; they do not check reference scoping (that every read or write names an earlier asMut). Ill-scoped programs such as danglingUse (`[read 0 0]`) and useBeforeCreation satisfy both and are stuck (`none`) in heapSem, effSem, and lockSem (aliasingDiscipline_admits_ill_scoped and lockSem_none_of_ill_scoped_respectsLiveness, with placements endAt 0 and lazyPlacement respectively); for them both sides of each equivalence are true even though heapSem, effSem, and lockSem are stuck, so neither side implies that the program runs.
 * Not a decision procedure for real Rust code; the toy's discipline is checked on straight-line programs with syntactic uses.
 
