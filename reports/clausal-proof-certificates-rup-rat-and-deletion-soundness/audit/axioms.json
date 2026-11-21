@@ -1,0 +1,1117 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Drat.Assignment": [],
+    "Toy.Drat.Clause": [],
+    "Toy.Drat.Clause.eval": [],
+    "Toy.Drat.Clause.eval.eq_1": [],
+    "Toy.Drat.Clause.eval_eq_false_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.Clause.eval_eq_true_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.Clause.eval_example_pos": [],
+    "Toy.Drat.Clause.eval_nil": [],
+    "Toy.Drat.DeletionPolicy": [],
+    "Toy.Drat.DupFreeClauses": [],
+    "Toy.Drat.DupFreeClauses_example_neg": [],
+    "Toy.Drat.DupFreeClauses_example_pos": [
+      "propext"
+    ],
+    "Toy.Drat.Entails": [],
+    "Toy.Drat.Entails_example_neg": [],
+    "Toy.Drat.Entails_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.Equisatisfiable": [],
+    "Toy.Drat.Equisatisfiable_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.Equisatisfiable_example_pos": [],
+    "Toy.Drat.Equivalent": [],
+    "Toy.Drat.Equivalent_example_neg": [],
+    "Toy.Drat.Equivalent_example_pos": [
+      "propext"
+    ],
+    "Toy.Drat.Formula": [],
+    "Toy.Drat.Formula.eval": [],
+    "Toy.Drat.Formula.eval.eq_1": [],
+    "Toy.Drat.FormulaSub": [],
+    "Toy.Drat.FormulaSub_example_neg": [
+      "propext"
+    ],
+    "Toy.Drat.FormulaSub_example_pos": [
+      "propext"
+    ],
+    "Toy.Drat.Lit": [],
+    "Toy.Drat.Lit.casesOn": [],
+    "Toy.Drat.Lit.ctorIdx": [],
+    "Toy.Drat.Lit.eq_or_eq_neg_of_var_eq": [
+      "propext"
+    ],
+    "Toy.Drat.Lit.eval": [],
+    "Toy.Drat.Lit.eval.eq_1": [],
+    "Toy.Drat.Lit.eval_example_neg": [],
+    "Toy.Drat.Lit.eval_example_pos": [],
+    "Toy.Drat.Lit.eval_neg": [],
+    "Toy.Drat.Lit.mk": [],
+    "Toy.Drat.Lit.mk.inj": [],
+    "Toy.Drat.Lit.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Drat.Lit.mk.noConfusion": [],
+    "Toy.Drat.Lit.mk.sizeOf_spec": [],
+    "Toy.Drat.Lit.n": [],
+    "Toy.Drat.Lit.n.eq_1": [],
+    "Toy.Drat.Lit.neg": [],
+    "Toy.Drat.Lit.neg.eq_1": [],
+    "Toy.Drat.Lit.neg_example": [],
+    "Toy.Drat.Lit.neg_ne_self": [
+      "propext"
+    ],
+    "Toy.Drat.Lit.neg_neg": [],
+    "Toy.Drat.Lit.neg_var": [],
+    "Toy.Drat.Lit.noConfusion": [],
+    "Toy.Drat.Lit.noConfusionType": [],
+    "Toy.Drat.Lit.p": [],
+    "Toy.Drat.Lit.p.eq_1": [],
+    "Toy.Drat.Lit.pos": [],
+    "Toy.Drat.Lit.rec": [],
+    "Toy.Drat.Lit.recOn": [],
+    "Toy.Drat.Lit.var": [],
+    "Toy.Drat.NeverConflict": [
+      "propext"
+    ],
+    "Toy.Drat.NeverConflict_example_neg": [
+      "propext"
+    ],
+    "Toy.Drat.NoDeletions": [],
+    "Toy.Drat.NoDeletions_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.NoDeletions_example_pos": [
+      "propext"
+    ],
+    "Toy.Drat.NonTautological": [],
+    "Toy.Drat.NonTautological_example_neg": [
+      "propext"
+    ],
+    "Toy.Drat.NonTautological_example_pos": [
+      "propext"
+    ],
+    "Toy.Drat.RAT": [
+      "propext"
+    ],
+    "Toy.Drat.RAT.match_1": [],
+    "Toy.Drat.RATOn": [
+      "propext"
+    ],
+    "Toy.Drat.RATOn_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.RATOn_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.RAT_example_neg": [
+      "propext"
+    ],
+    "Toy.Drat.RAT_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.RAT_example_pos_not_entailed": [],
+    "Toy.Drat.RUP": [
+      "propext"
+    ],
+    "Toy.Drat.RUP_example_neg": [
+      "propext"
+    ],
+    "Toy.Drat.RUP_example_pos": [
+      "propext"
+    ],
+    "Toy.Drat.Satisfiable": [],
+    "Toy.Drat.Satisfiable_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.Satisfiable_example_pos": [],
+    "Toy.Drat.Satisfies": [],
+    "Toy.Drat.Satisfies.eq_1": [],
+    "Toy.Drat.Satisfies_cons": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.Satisfies_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.Satisfies_of_subset": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.Step": [],
+    "Toy.Drat.Step.add": [],
+    "Toy.Drat.Step.add.elim": [],
+    "Toy.Drat.Step.add.inj": [],
+    "Toy.Drat.Step.add.injEq": [
+      "propext"
+    ],
+    "Toy.Drat.Step.add.noConfusion": [],
+    "Toy.Drat.Step.add.sizeOf_spec": [],
+    "Toy.Drat.Step.casesOn": [],
+    "Toy.Drat.Step.ctorElim": [],
+    "Toy.Drat.Step.ctorElimType": [],
+    "Toy.Drat.Step.ctorIdx": [],
+    "Toy.Drat.Step.del": [],
+    "Toy.Drat.Step.del.elim": [],
+    "Toy.Drat.Step.del.inj": [],
+    "Toy.Drat.Step.del.injEq": [
+      "propext"
+    ],
+    "Toy.Drat.Step.del.noConfusion": [],
+    "Toy.Drat.Step.del.sizeOf_spec": [],
+    "Toy.Drat.Step.noConfusion": [],
+    "Toy.Drat.Step.noConfusionType": [],
+    "Toy.Drat.Step.rec": [],
+    "Toy.Drat.Step.recOn": [],
+    "Toy.Drat.Trail": [],
+    "Toy.Drat.TrailHolds": [],
+    "Toy.Drat.TrailHolds.eq_1": [],
+    "Toy.Drat.TrailHolds_negClause_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.TrailHolds_upRound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.TrailSub": [],
+    "Toy.Drat.TrailSub_upRound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.UPResult": [],
+    "Toy.Drat.UPResult.casesOn": [],
+    "Toy.Drat.UPResult.conflict": [],
+    "Toy.Drat.UPResult.conflict.elim": [],
+    "Toy.Drat.UPResult.conflict.sizeOf_spec": [],
+    "Toy.Drat.UPResult.ctorElim": [],
+    "Toy.Drat.UPResult.ctorElimType": [],
+    "Toy.Drat.UPResult.ctorIdx": [],
+    "Toy.Drat.UPResult.noConfusion": [],
+    "Toy.Drat.UPResult.noConfusionType": [],
+    "Toy.Drat.UPResult.rec": [],
+    "Toy.Drat.UPResult.recOn": [],
+    "Toy.Drat.UPResult.trail": [],
+    "Toy.Drat.UPResult.trail.elim": [],
+    "Toy.Drat.UPResult.trail.inj": [],
+    "Toy.Drat.UPResult.trail.injEq": [
+      "propext"
+    ],
+    "Toy.Drat.UPResult.trail.noConfusion": [],
+    "Toy.Drat.UPResult.trail.sizeOf_spec": [],
+    "Toy.Drat.addOK": [
+      "propext"
+    ],
+    "Toy.Drat.addOK.eq_1": [
+      "propext"
+    ],
+    "Toy.Drat.addOK_example_neg": [
+      "propext"
+    ],
+    "Toy.Drat.addOK_example_pos": [
+      "propext"
+    ],
+    "Toy.Drat.addOK_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Drat.addOK_preserves_satisfiability": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.addOK_tight_check": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.addOK_tight_sat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.applyDel": [],
+    "Toy.Drat.applyDel.eq_1": [],
+    "Toy.Drat.applyDel_nonvacuous": [],
+    "Toy.Drat.applyDel_preserves_satisfiability": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.applyDel_preserves_satisfiability.match_1_1": [],
+    "Toy.Drat.applyDel_sub": [
+      "propext"
+    ],
+    "Toy.Drat.applyDel_tight_sat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.applyDel_tight_sat.match_1_3": [],
+    "Toy.Drat.chain3": [],
+    "Toy.Drat.chain3.eq_1": [],
+    "Toy.Drat.checkDRAT": [
+      "propext"
+    ],
+    "Toy.Drat.checkDRAT.eq_1": [
+      "propext"
+    ],
+    "Toy.Drat.checkDRAT_sound_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Drat.checkDRAT_sound_unsat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.checkDRUP": [
+      "propext"
+    ],
+    "Toy.Drat.checkDRUP.eq_1": [
+      "propext"
+    ],
+    "Toy.Drat.checkDRUPOneCopy": [
+      "propext"
+    ],
+    "Toy.Drat.checkDRUPOneCopy.eq_1": [
+      "propext"
+    ],
+    "Toy.Drat.checkDRUPOneCopy.eq_2": [
+      "propext"
+    ],
+    "Toy.Drat.checkDRUPOneCopy.eq_3": [
+      "propext"
+    ],
+    "Toy.Drat.checkDRUPOneCopy.eq_def": [
+      "propext"
+    ],
+    "Toy.Drat.checkDRUP_honorAll_implies_any_policy": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.checkDRUP_policy_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Drat.checkDRUP_policy_tight_accept": [
+      "propext"
+    ],
+    "Toy.Drat.checkDRUP_policy_tight_sub": [
+      "propext"
+    ],
+    "Toy.Drat.checkDRUP_specified_implies_operational": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.checkGen": [],
+    "Toy.Drat.checkGen.eq_1": [],
+    "Toy.Drat.checkGen.eq_2": [],
+    "Toy.Drat.checkGen.eq_3": [],
+    "Toy.Drat.checkGen.eq_def": [],
+    "Toy.Drat.checkGen.match_1": [],
+    "Toy.Drat.checkGen_empty_certificate": [],
+    "Toy.Drat.checkGen_sound_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.checkGen_sound_unsat_of_addCheck_preserves_sat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.checkGen_unchecked_additions_unsound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.checkOperational": [
+      "propext"
+    ],
+    "Toy.Drat.checkOperational.eq_1": [
+      "propext"
+    ],
+    "Toy.Drat.checkOperational_sound_unsat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.checkSpecified": [
+      "propext"
+    ],
+    "Toy.Drat.checkSpecified.eq_1": [
+      "propext"
+    ],
+    "Toy.Drat.checkSpecified_example_neg": [
+      "propext"
+    ],
+    "Toy.Drat.checkSpecified_fullSquare": [
+      "propext"
+    ],
+    "Toy.Drat.checker_acceptance_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.dedupLits": [
+      "propext"
+    ],
+    "Toy.Drat.dedupLits.eq_1": [
+      "propext"
+    ],
+    "Toy.Drat.dedupLits.eq_2": [
+      "propext"
+    ],
+    "Toy.Drat.dedupLits.eq_def": [
+      "propext"
+    ],
+    "Toy.Drat.dedupLits_eq_nil_iff": [
+      "propext"
+    ],
+    "Toy.Drat.dedupLits_of_nodup": [
+      "propext"
+    ],
+    "Toy.Drat.dedupLits_of_nodup.match_1_1": [],
+    "Toy.Drat.dedupLits_singleton_of_unique": [
+      "propext"
+    ],
+    "Toy.Drat.deleteClause": [],
+    "Toy.Drat.deleteClause.eq_1": [],
+    "Toy.Drat.deleteClause_example_neg": [],
+    "Toy.Drat.deleteClause_example_pos": [],
+    "Toy.Drat.deleteClause_sub": [
+      "propext"
+    ],
+    "Toy.Drat.deleteOneCopy": [],
+    "Toy.Drat.deleteOneCopy.match_1": [],
+    "Toy.Drat.deletion_can_turn_unsat_into_sat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.drat_certificate_not_monotone_in_formula": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.entails_not_implies_rup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.entails_not_implies_rup_satisfiable_nonempty": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.equivalent_cons_iff_entails": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.falsified": [
+      "propext"
+    ],
+    "Toy.Drat.falsified.eq_1": [
+      "propext"
+    ],
+    "Toy.Drat.falsified_eval": [
+      "propext"
+    ],
+    "Toy.Drat.falsified_mono": [
+      "propext"
+    ],
+    "Toy.Drat.forces": [
+      "propext"
+    ],
+    "Toy.Drat.forces.eq_1": [
+      "propext"
+    ],
+    "Toy.Drat.fullSquare": [],
+    "Toy.Drat.fullSquare.eq_1": [],
+    "Toy.Drat.fullSquare_unsat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.hasConflict": [
+      "propext"
+    ],
+    "Toy.Drat.hasConflict.eq_1": [
+      "propext"
+    ],
+    "Toy.Drat.hasConflict_false_of_model": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.hasConflict_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.hintReplay": [
+      "propext"
+    ],
+    "Toy.Drat.hintReplay.eq_1": [
+      "propext"
+    ],
+    "Toy.Drat.hintReplay.eq_2": [
+      "propext"
+    ],
+    "Toy.Drat.hintReplay.eq_def": [
+      "propext"
+    ],
+    "Toy.Drat.hintReplay.match_1": [
+      "propext"
+    ],
+    "Toy.Drat.hintReplay.match_4": [],
+    "Toy.Drat.hintReplay.match_6": [],
+    "Toy.Drat.hintReplayDedup": [
+      "propext"
+    ],
+    "Toy.Drat.hintReplayDedup.eq_1": [
+      "propext"
+    ],
+    "Toy.Drat.hintReplayDedup_of_hasConflict": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.hintReplay_blocked_resolvent_false": [
+      "propext"
+    ],
+    "Toy.Drat.hintReplay_blocked_resolvent_false.match_1_1": [],
+    "Toy.Drat.hintReplay_unitProp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.hintStepDedup": [
+      "propext"
+    ],
+    "Toy.Drat.hintStepDedup.eq_1": [
+      "propext"
+    ],
+    "Toy.Drat.hintStepDedup.eq_2": [
+      "propext"
+    ],
+    "Toy.Drat.hintStepDedup.eq_def": [
+      "propext"
+    ],
+    "Toy.Drat.hintStepDedup_eq_hintReplay": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.hintStepDedup_trail_equiv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.hintStepDedup_unitProp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.honorAll": [],
+    "Toy.Drat.honorAll.eq_1": [],
+    "Toy.Drat.ignoreUnitDeletions": [],
+    "Toy.Drat.ignoreUnitDeletions_example_dup": [],
+    "Toy.Drat.ignoreUnitDeletions_example_neg": [],
+    "Toy.Drat.ignoreUnitDeletions_example_pos": [],
+    "Toy.Drat.instDecidableEqLit": [],
+    "Toy.Drat.instDecidableEqLit.decEq": [],
+    "Toy.Drat.instDecidableEqLit.decEq.match_1": [],
+    "Toy.Drat.instDecidableEqStep": [],
+    "Toy.Drat.instDecidableEqStep.decEq": [],
+    "Toy.Drat.instDecidableEqStep.decEq.match_1": [],
+    "Toy.Drat.instDecidableEqUPResult": [],
+    "Toy.Drat.instDecidableEqUPResult.decEq": [],
+    "Toy.Drat.instDecidableEqUPResult.decEq.match_1": [],
+    "Toy.Drat.instDecidableSatisfies": [],
+    "Toy.Drat.instReprLit": [],
+    "Toy.Drat.instReprLit.repr": [],
+    "Toy.Drat.instReprStep": [
+      "propext"
+    ],
+    "Toy.Drat.instReprStep.repr": [
+      "propext"
+    ],
+    "Toy.Drat.instReprStep.repr.match_1": [],
+    "Toy.Drat.instReprUPResult": [
+      "propext"
+    ],
+    "Toy.Drat.instReprUPResult.repr": [
+      "propext"
+    ],
+    "Toy.Drat.instReprUPResult.repr.match_1": [],
+    "Toy.Drat.lratRupCheck": [
+      "propext"
+    ],
+    "Toy.Drat.lratRupCheck.eq_1": [
+      "propext"
+    ],
+    "Toy.Drat.lratRupCheckDedup": [
+      "propext"
+    ],
+    "Toy.Drat.lratRupCheckDedup.eq_1": [
+      "propext"
+    ],
+    "Toy.Drat.lratRupCheckDedup_accepts_rejected_instances": [
+      "propext"
+    ],
+    "Toy.Drat.lratRupCheckDedup_eq_of_wellformed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.lratRupCheckDedup_exists_iff_rup": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.lratRupCheck_chain3": [
+      "propext"
+    ],
+    "Toy.Drat.lratRupCheck_complete_of_wellformed": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.lratRupCheck_example_neg": [
+      "propext"
+    ],
+    "Toy.Drat.lratRupCheck_example_pos": [
+      "propext"
+    ],
+    "Toy.Drat.lratRupCheck_example_satisfied_hint": [
+      "propext"
+    ],
+    "Toy.Drat.lratRupCheck_example_trailing_hints": [
+      "propext"
+    ],
+    "Toy.Drat.lratRupCheck_incomplete_dup_lits": [
+      "propext"
+    ],
+    "Toy.Drat.lratRupCheck_incomplete_tautology": [
+      "propext"
+    ],
+    "Toy.Drat.lratRupCheck_nil": [
+      "propext"
+    ],
+    "Toy.Drat.lratRupCheck_rejects_blocked_resolvent": [
+      "propext"
+    ],
+    "Toy.Drat.lratRupCheck_side_conditions_not_necessary": [
+      "propext"
+    ],
+    "Toy.Drat.lrat_complete_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Drat.lrat_complete_tight_rup": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.lrat_hint_order_matters": [
+      "propext"
+    ],
+    "Toy.Drat.lrat_hint_replay_implies_entails": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.lrat_hint_replay_implies_rup": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.lrat_tight_accept": [
+      "propext"
+    ],
+    "Toy.Drat.mem_dedupLits_iff": [
+      "propext"
+    ],
+    "Toy.Drat.mem_unitLits": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.mem_upRound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.naiveSatCheck": [
+      "propext"
+    ],
+    "Toy.Drat.naiveSatCheck.match_1": [],
+    "Toy.Drat.naiveSatCheck_example_neg": [
+      "propext"
+    ],
+    "Toy.Drat.naiveSatCheck_example_pos": [
+      "propext"
+    ],
+    "Toy.Drat.naiveSatCheck_noDel_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Drat.naiveSatCheck_noDel_tight_accept": [
+      "propext"
+    ],
+    "Toy.Drat.naiveSatCheck_noDel_tight_noDel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.naiveSatCheck_sound_of_noDeletions": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.naiveSatCheck_unsound_with_deletions": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.negClause": [],
+    "Toy.Drat.negClause.eq_1": [],
+    "Toy.Drat.negClause_no_pair": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.neverConflict_of_closed": [
+      "propext"
+    ],
+    "Toy.Drat.neverConflict_of_step": [
+      "propext"
+    ],
+    "Toy.Drat.not_rup_of_neverConflict": [
+      "propext"
+    ],
+    "Toy.Drat.not_rup_of_neverConflict.match_1_1": [
+      "propext"
+    ],
+    "Toy.Drat.not_satisfiable_of_nil_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.one_copy_deletion_breaks_drup_monotonicity": [
+      "propext"
+    ],
+    "Toy.Drat.operational_accepts_specified_rejects": [
+      "propext"
+    ],
+    "Toy.Drat.permuted_deletion_is_ignored": [
+      "propext"
+    ],
+    "Toy.Drat.ratCheck": [
+      "propext"
+    ],
+    "Toy.Drat.ratCheck.eq_1": [
+      "propext"
+    ],
+    "Toy.Drat.ratCheck.eq_2": [
+      "propext"
+    ],
+    "Toy.Drat.ratCheck_eq_false_of": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.ratCheck_example_neg": [
+      "propext"
+    ],
+    "Toy.Drat.ratCheck_example_neg_nonempty": [
+      "propext"
+    ],
+    "Toy.Drat.ratCheck_example_pos": [
+      "propext"
+    ],
+    "Toy.Drat.ratCheck_example_pos_resolvent": [
+      "propext"
+    ],
+    "Toy.Drat.ratCheck_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.ratOn_preserves_satisfiability": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.ratOn_preserves_satisfiability.match_1_1": [],
+    "Toy.Drat.ratOn_sat_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.ratOn_sat_tight_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.ratOn_sat_tight_rat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.ratOn_sat_tight_sat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.ratOn_without_mem_unsound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.ratOn_witness_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.ratOn_witness_satisfies": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.ratOn_witness_tight_mem": [
+      "propext"
+    ],
+    "Toy.Drat.ratOn_witness_tight_model": [
+      "propext"
+    ],
+    "Toy.Drat.ratOn_witness_tight_rat": [
+      "propext"
+    ],
+    "Toy.Drat.ratWitness": [],
+    "Toy.Drat.ratWitness_example": [],
+    "Toy.Drat.rat_addition_equisatisfiable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.rat_addition_equisatisfiable.match_1_1": [],
+    "Toy.Drat.rat_addition_loses_projected_model": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.rat_addition_not_equivalence": [
+      "propext"
+    ],
+    "Toy.Drat.rat_addition_preserves_satisfiability": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.rat_after_deletion_not_rat_wrt_original": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.rat_check_depends_on_pivot_order": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.rat_equisat_tight_rat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.rat_not_monotone_in_formula": [
+      "propext"
+    ],
+    "Toy.Drat.rat_not_rup_addition_preserves_equivalence": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.rat_sat_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.rat_sat_tight_rat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.rat_sat_tight_sat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.rat_sat_tight_sat.match_1_1": [],
+    "Toy.Drat.replay": [],
+    "Toy.Drat.replay.eq_1": [],
+    "Toy.Drat.replay.eq_2": [],
+    "Toy.Drat.replay.eq_3": [],
+    "Toy.Drat.replay.eq_def": [],
+    "Toy.Drat.replayRatDel": [
+      "propext"
+    ],
+    "Toy.Drat.replayRatDel.eq_1": [
+      "propext"
+    ],
+    "Toy.Drat.replayRatDel.eq_2": [
+      "propext"
+    ],
+    "Toy.Drat.replayRatDel.eq_3": [
+      "propext"
+    ],
+    "Toy.Drat.replayRatDel.eq_def": [
+      "propext"
+    ],
+    "Toy.Drat.replayRatDel_final_model_not_original": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.replayRatDel_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.replayRatDel_sat_backward": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.replayRatDel_tight_replay": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.replayRatDel_tight_sat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.replayRupDel": [
+      "propext"
+    ],
+    "Toy.Drat.replayRupDel.eq_1": [
+      "propext"
+    ],
+    "Toy.Drat.replayRupDel.eq_2": [
+      "propext"
+    ],
+    "Toy.Drat.replayRupDel.eq_3": [
+      "propext"
+    ],
+    "Toy.Drat.replayRupDel.eq_def": [
+      "propext"
+    ],
+    "Toy.Drat.replayRupDel_model_backward": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.replay_example_neg": [
+      "propext"
+    ],
+    "Toy.Drat.replay_example_pos": [
+      "propext"
+    ],
+    "Toy.Drat.replay_model_sound_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Drat.replay_model_sound_of_noDeletions": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.replay_model_sound_tight_noDel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.replay_model_sound_tight_replay": [
+      "propext"
+    ],
+    "Toy.Drat.replay_model_sound_tight_sat": [
+      "propext"
+    ],
+    "Toy.Drat.replay_sub_of_noDeletions": [
+      "propext"
+    ],
+    "Toy.Drat.resolventOn": [],
+    "Toy.Drat.resolventOn.eq_1": [],
+    "Toy.Drat.rupCheck": [
+      "propext"
+    ],
+    "Toy.Drat.rupCheck.eq_1": [
+      "propext"
+    ],
+    "Toy.Drat.rupCheck_eq_false_of_neverConflict": [
+      "propext"
+    ],
+    "Toy.Drat.rupCheck_example_neg": [
+      "propext"
+    ],
+    "Toy.Drat.rupCheck_example_pos": [
+      "propext"
+    ],
+    "Toy.Drat.rupCheck_mono_formula": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.rupCheck_of_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.rupCheck_of_nil_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.rupCheck_sound": [
+      "propext"
+    ],
+    "Toy.Drat.rup_addition_preserves_equivalence": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.rup_equivalence_tight_rup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.rup_implies_entails": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.rup_implies_entails_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Drat.rup_implies_entails_tight_rup": [
+      "propext"
+    ],
+    "Toy.Drat.rup_implies_ratOn": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.rup_implies_rat_of_ne_nil": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.rup_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.rup_nil_not_rat": [
+      "propext"
+    ],
+    "Toy.Drat.rup_rat_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Drat.rup_rat_tight_rup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.satCheckRupDel": [
+      "propext"
+    ],
+    "Toy.Drat.satCheckRupDel_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Drat.satCheckRupDel_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.satCheckRupDel_tight_accept": [
+      "propext"
+    ],
+    "Toy.Drat.setTrue": [],
+    "Toy.Drat.setTrue.eq_1": [],
+    "Toy.Drat.setTrue_eval_of_var_ne": [
+      "propext"
+    ],
+    "Toy.Drat.setTrue_eval_self": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.sloppyHintReplay": [
+      "propext"
+    ],
+    "Toy.Drat.sloppyHintReplay.match_1": [],
+    "Toy.Drat.sloppyHintReplay_example_neg": [
+      "propext"
+    ],
+    "Toy.Drat.sloppyHintReplay_example_neg_dangling": [
+      "propext"
+    ],
+    "Toy.Drat.sloppyHintReplay_example_pos": [
+      "propext"
+    ],
+    "Toy.Drat.sloppy_hint_replay_unsound": [
+      "propext"
+    ],
+    "Toy.Drat.specified_accepts_operational_rejects": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.step_forced_list": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.sub_cons_deleteClause": [
+      "propext"
+    ],
+    "Toy.Drat.trail_equiv_falsified": [
+      "propext"
+    ],
+    "Toy.Drat.unitDeletionThenRAT": [],
+    "Toy.Drat.unitDeletionThenRAT.eq_1": [],
+    "Toy.Drat.unitLits": [
+      "propext"
+    ],
+    "Toy.Drat.unitLits.eq_1": [
+      "propext"
+    ],
+    "Toy.Drat.unitLits_example_neg": [
+      "propext"
+    ],
+    "Toy.Drat.unitLits_example_pos": [
+      "propext"
+    ],
+    "Toy.Drat.unitPlusSquare": [],
+    "Toy.Drat.unitPlusSquare.eq_1": [],
+    "Toy.Drat.unitProp": [
+      "propext"
+    ],
+    "Toy.Drat.unitProp.eq_1": [
+      "propext"
+    ],
+    "Toy.Drat.unitProp.eq_2": [
+      "propext"
+    ],
+    "Toy.Drat.unitProp.eq_def": [
+      "propext"
+    ],
+    "Toy.Drat.unitProp.match_1": [],
+    "Toy.Drat.unitProp_conflict_implies_hintReplayDedup": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.unitProp_conflict_le_fuel": [
+      "propext"
+    ],
+    "Toy.Drat.unitProp_conflict_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.unitProp_conflict_mono_fuel": [
+      "propext"
+    ],
+    "Toy.Drat.unitProp_conflict_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.unitProp_example_dup_lits": [
+      "propext"
+    ],
+    "Toy.Drat.unitProp_example_neg": [
+      "propext"
+    ],
+    "Toy.Drat.unitProp_example_pos": [
+      "propext"
+    ],
+    "Toy.Drat.unitProp_example_trail": [
+      "propext"
+    ],
+    "Toy.Drat.unitProp_example_trail_pair": [
+      "propext"
+    ],
+    "Toy.Drat.upRound": [
+      "propext"
+    ],
+    "Toy.Drat.upRound.eq_1": [
+      "propext"
+    ],
+    "Toy.Drat.upRound_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.x0OrFullSquare": [],
+    "Toy.Drat.x0OrFullSquare.eq_1": [],
+    "Toy.Drat.x0OrFullSquare_entails_x0": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Drat.x0OrFullSquare_not_rup_x0": [
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

@@ -1,0 +1,6 @@
+name = "toy_drat"
+version = "0.1.0"
+defaultTargets = ["ToyDrat"]
+
+[[lean_lib]]
+name = "ToyDrat"

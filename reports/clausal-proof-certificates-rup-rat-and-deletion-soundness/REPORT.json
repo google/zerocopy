@@ -1,0 +1,90 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "verification/proof-certificates",
+    "verification/sat-proof-checking",
+    "verification/drat",
+    "verification/lrat",
+    "verification/trusted-computing-base"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "drat-trim proof checker",
+      "identity": {
+        "repository": "marijnheule/drat-trim",
+        "revision": "2e3b2dc0ecf938addbd779d42877b6ed69d9a985",
+        "path": "drat-trim.c"
+      }
+    },
+    {
+      "name": "Verification of Proofs of Unsatisfiability for CNF Formulas",
+      "identity": {"doi": "10.1109/DATE.2003.1253718"}
+    },
+    {
+      "name": "Producing and verifying extremely large propositional refutations",
+      "identity": {"doi": "10.1007/s10472-012-9322-x"}
+    },
+    {
+      "name": "Clause Elimination Procedures for CNF Formulas",
+      "identity": {"doi": "10.1007/978-3-642-16242-8_26"}
+    },
+    {
+      "name": "Inprocessing Rules",
+      "identity": {"doi": "10.1007/978-3-642-31365-3_28"}
+    },
+    {
+      "name": "Mechanical Verification of SAT Refutations with Extended Resolution",
+      "identity": {"doi": "10.1007/978-3-642-39634-2_18"}
+    },
+    {
+      "name": "Trimming while Checking Clausal Proofs",
+      "identity": {"doi": "10.1109/FMCAD.2013.6679408"}
+    },
+    {
+      "name": "DRAT-trim: Efficient Checking and Trimming Using Expressive Clausal Proofs",
+      "identity": {"doi": "10.1007/978-3-319-09284-3_31"}
+    },
+    {
+      "name": "The DRAT format and DRAT-trim checker",
+      "identity": {"arxiv": "1610.06229"}
+    },
+    {
+      "name": "Efficient Certified RAT Verification",
+      "identity": {"doi": "10.1007/978-3-319-63046-5_14", "arxiv": "1612.02353"}
+    },
+    {
+      "name": "Efficient Verified (UN)SAT Certificate Checking",
+      "identity": {"doi": "10.1007/978-3-319-63046-5_15"}
+    },
+    {
+      "name": "Efficient Verified (UN)SAT Certificate Checking (journal version)",
+      "identity": {"doi": "10.1007/s10817-019-09525-z"}
+    },
+    {
+      "name": "Efficient Certified Resolution Proof Checking",
+      "identity": {"doi": "10.1007/978-3-662-54577-5_7"}
+    },
+    {
+      "name": "Two Flavors of DRAT",
+      "identity": {"doi": "10.29007/lt8r"}
+    },
+    {
+      "name": "Frying the Egg, Roasting the Chicken: Unit Deletions in DRAT Proofs",
+      "identity": {"doi": "10.1145/3372885.3373821"}
+    },
+    {
+      "name": "cake_lpr: Verified Propagation Redundancy Checking in CakeML",
+      "identity": {"doi": "10.1007/978-3-030-72013-1_12"}
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

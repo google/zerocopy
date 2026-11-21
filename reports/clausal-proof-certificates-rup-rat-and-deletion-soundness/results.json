@@ -1,0 +1,1110 @@
+[
+ {
+  "id": "rup-implies-entails",
+  "lean": "Toy.Drat.rup_implies_entails",
+  "corollaries_lean": [
+   "Toy.Drat.rup_addition_preserves_equivalence",
+   "Toy.Drat.equivalent_cons_iff_entails"
+  ],
+  "corollaries": [
+   {
+    "lean": "Toy.Drat.rup_addition_preserves_equivalence",
+    "statement": "theorem rup_addition_preserves_equivalence {F : Formula} {C : Clause} (h : RUP F C) :\n    Equivalent (C :: F) F",
+    "statement_source": "ToyDrat/RupRat.lean:136-137",
+    "plain": "If RUP F C, then C :: F and F have the same models.",
+    "hypotheses": [
+     {
+      "name": "h : RUP F C",
+      "purpose": "As for the main theorem.",
+      "tightness": "tight",
+      "counterexample": "Toy.Drat.rup_equivalence_tight_rup",
+      "witness_class": "F = x1, C = x0 (a one-clause formula)"
+     }
+    ],
+    "nonvacuity_witness_lean": "Toy.Drat.rup_implies_entails_nonvacuous"
+   },
+   {
+    "lean": "Toy.Drat.equivalent_cons_iff_entails",
+    "statement": "theorem equivalent_cons_iff_entails (F : Formula) (C : Clause) :\n    Equivalent (C :: F) F ↔ Entails F C",
+    "statement_source": "ToyDrat/Basic.lean:118-119",
+    "plain": "For every F and C (universally quantified, no hypotheses): C :: F and F have the same models if and only if F entails C. The equivalence corollary above is therefore a restatement of the main theorem.",
+    "hypotheses": []
+   }
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "If unit propagation over F, started from the trail that assumes every literal of the clause C false, reaches a conflict within some finite budget (RUP F C), then every total assignment that satisfies F satisfies C (Entails F C). Secondary theorems: under the same hypothesis, C :: F and F have the same models (rup_addition_preserves_equivalence); and, for every F and C with no hypothesis, C :: F and F have the same models if and only if F entails C (equivalent_cons_iff_entails).",
+  "hypotheses": [
+   {
+    "name": "h : RUP F C",
+    "purpose": "The propagation conflict being certified; a conflict is a complementary pair on the trail or a clause of F with all literals falsified.",
+    "tightness": "tight",
+    "counterexample": "Toy.Drat.rup_implies_entails_tight_rup",
+    "witness_class": "F = x0 or x1 (one binary clause), C = x0"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "F = x0 and (not x0 or x1), C = x1: C is RUP with respect to F.",
+  "nonvacuity_witness_lean": "Toy.Drat.rup_implies_entails_nonvacuous",
+  "non_claims": [
+   "Does not claim the converse: entailment does not imply RUP, because unit propagation is incomplete (entails_not_implies_rup), and this is not limited to unsatisfiable formulas or the empty clause (entails_not_implies_rup_satisfiable_nonempty).",
+   "Adding C preserves logical equivalence if and only if F entails C (equivalent_cons_iff_entails), for every F and C. RUP is sufficient but not necessary: the clause x0 is RAT but not RUP with respect to the satisfiable formula x0OrFullSquare, and adding it preserves equivalence because it is entailed (rat_not_rup_addition_preserves_equivalence). RAT additions in general need not preserve equivalence (rat_addition_not_equivalence).",
+   "Equivalence is over total assignments of all variables.",
+   "The theorem is about the unbudgeted predicate RUP. A passing rupCheck at any budget implies RUP (rupCheck_sound); a failing rupCheck at one budget does not by itself refute RUP, since RUP quantifies over all budgets (no separate theorem; not proved here).",
+   "Toy model only: literals are (variable, polarity) pairs, clauses and formulas are lists, unit propagation is a round-based propagator with a budget; any correspondence with production solvers and checkers (drat-trim, cake_lpr, Lean's bv_decide LRAT checker, SMT solvers that emit clausal proofs) is a derived (modeling bridge) claim, not a theorem."
+  ],
+  "prior_art": [
+   "E. Goldberg, Y. Novikov, \"Verification of Proofs of Unsatisfiability for CNF Formulas\", Design, Automation and Test in Europe (DATE 2003), pp. 886-891, doi:10.1109/DATE.2003.1253718 (bibliographic record verified via Crossref; full text not consulted, so no specific statement of the paper is attributed here).",
+   "A. Van Gelder, \"Producing and verifying extremely large propositional refutations\", Annals of Mathematics and Artificial Intelligence 65(4), 2012, pp. 329-372, doi:10.1007/s10472-012-9322-x (bibliographic record verified via Crossref; full text not consulted, so no specific statement of the paper is attributed here).",
+   "M. Heule, M. Järvisalo, A. Biere, \"Clause Elimination Procedures for CNF Formulas\", LPAR-17 (2010), LNCS 6397, pp. 357-371, doi:10.1007/978-3-642-16242-8_26 (author copy read): the abstract presents the asymmetric variants of clause elimination as new; Section 4.2 defines a clause C to be an asymmetric tautology w.r.t. F if asymmetric literal addition makes it a tautology, and Lemma 7 states that this holds iff unit propagation on (F without C) together with the negations of the literals of C derives a conflict.",
+   "L. Cruz-Filipe, M. J. H. Heule, W. A. Hunt Jr., M. Kaufmann, P. Schneider-Kamp, \"Efficient Certified RAT Verification\", CADE-26 (2017), LNCS 10395, pp. 220-236, doi:10.1007/978-3-319-63046-5_14; preprint arXiv:1612.02353 (read). Section 1 (p. 2): clauses are sorted so that duplicate or complementary literals can be detected, and \"Hints are also sorted in such a way that they become unit from left to right\". Section 2 (pp. 2-3): AT is unit propagation on F and the negation of C reaching a conflict; C is RAT if there is a literal l in C such that for all D in F containing the complement of l, C or (D minus that complement) is AT; the first literal is the DRAT pivot; the empty clause must be AT; deletion steps need not be checked because they trivially preserve satisfiability. Section 3 introduces LRAT hints. Section 4 (p. 9) states the Coq notion ICNF_reduces (every model of one formula yields a model of the other).",
+   "Lean 4 core v4.34.1 (commit 5045d0056413266e57c625dcd7c365b10e377c52), src/Std/Tactic/BVDecide/LRAT/Internal/Formula/RupAddSound.lean: rupAdd_sound (line 764) concludes Liff (logical equivalence) between the formula before and after a successful RUP addition. Source read."
+  ],
+  "design_question": "What exactly does each certificate step preserve (logical equivalence versus only satisfiability)?",
+  "lean_names": [
+   "Toy.Drat.rup_addition_preserves_equivalence",
+   "Toy.Drat.equivalent_cons_iff_entails"
+  ]
+ },
+ {
+  "id": "entails-not-implies-rup",
+  "lean": "Toy.Drat.entails_not_implies_rup",
+  "corollaries_lean": [
+   "Toy.Drat.entails_not_implies_rup_satisfiable_nonempty"
+  ],
+  "corollaries": [
+   {
+    "lean": "Toy.Drat.entails_not_implies_rup_satisfiable_nonempty",
+    "statement": "theorem entails_not_implies_rup_satisfiable_nonempty :\n    Satisfiable x0OrFullSquare ∧ Entails x0OrFullSquare [Lit.p 0] ∧\n      ¬ RUP x0OrFullSquare [Lit.p 0]",
+    "statement_source": "ToyDrat/RupRat.lean:179-181",
+    "plain": "The satisfiable formula x0OrFullSquare (the four clauses x0 or ±x1 or ±x2) entails the nonempty clause x0, which is not RUP with respect to it at any budget.",
+    "hypotheses": []
+   }
+  ],
+  "kind": "counterexample",
+  "tier": "T0",
+  "plain_claim": "The unsatisfiable formula fullSquare (all four binary clauses over x1, x2) entails the empty clause, but the empty clause is not RUP with respect to it at any budget. Secondary theorem: the satisfiable formula x0OrFullSquare (the four clauses x0 or ±x1 or ±x2) entails the nonempty clause x0, which is not RUP with respect to it at any budget (entails_not_implies_rup_satisfiable_nonempty).",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "The instances themselves (fullSquare; x0OrFullSquare).",
+  "nonvacuity_witness_lean": "Toy.Drat.entails_not_implies_rup",
+  "non_claims": [
+   "Two instances: no bound is claimed on how far an entailed clause can be from RUP.",
+   "Does not say fullSquare has no short certificate: the two-step certificate 'add x1, add the empty clause' is accepted by checkSpecified at budget 3 (checkSpecified_fullSquare).",
+   "Toy model only: literals are (variable, polarity) pairs, clauses and formulas are lists, unit propagation is a round-based propagator with a budget; any correspondence with production solvers and checkers (drat-trim, cake_lpr, Lean's bv_decide LRAT checker, SMT solvers that emit clausal proofs) is a derived (modeling bridge) claim, not a theorem."
+  ],
+  "prior_art": [
+   "E. Goldberg, Y. Novikov, \"Verification of Proofs of Unsatisfiability for CNF Formulas\", Design, Automation and Test in Europe (DATE 2003), pp. 886-891, doi:10.1109/DATE.2003.1253718 (bibliographic record verified via Crossref; full text not consulted, so no specific statement of the paper is attributed here).",
+   "L. Cruz-Filipe, M. J. H. Heule, W. A. Hunt Jr., M. Kaufmann, P. Schneider-Kamp, \"Efficient Certified RAT Verification\", CADE-26 (2017), LNCS 10395, pp. 220-236, doi:10.1007/978-3-319-63046-5_14; preprint arXiv:1612.02353 (read). Section 1 (p. 2): clauses are sorted so that duplicate or complementary literals can be detected, and \"Hints are also sorted in such a way that they become unit from left to right\". Section 2 (pp. 2-3): AT is unit propagation on F and the negation of C reaching a conflict; C is RAT if there is a literal l in C such that for all D in F containing the complement of l, C or (D minus that complement) is AT; the first literal is the DRAT pivot; the empty clause must be AT; deletion steps need not be checked because they trivially preserve satisfiability. Section 3 introduces LRAT hints. Section 4 (p. 9) states the Coq notion ICNF_reduces (every model of one formula yields a model of the other)."
+  ],
+  "design_question": "What does a checker have to verify for an UNSAT verdict to be sound?",
+  "lean_names": [
+   "Toy.Drat.entails_not_implies_rup_satisfiable_nonempty"
+  ],
+  "positive_control_lean": [
+   "Toy.Drat.rup_implies_entails_nonvacuous"
+  ],
+  "positive_control": "Nearby setting where the conclusion fails: x1 is RUP with respect to x0 and (not x0 or x1) (rup_implies_entails_nonvacuous), and hence entailed by it (rup_implies_entails)."
+ },
+ {
+  "id": "rat-witness",
+  "lean": "Toy.Drat.ratOn_witness_satisfies",
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "If p is a literal of C, C is RAT on p with respect to F (for every clause D of F containing the complement of p, the clause C followed by the literals of D other than that complement is RUP with respect to F), and a satisfies F, then ratWitness a C p -- a itself if a satisfies C, otherwise a with p made true -- satisfies C and F together.",
+  "hypotheses": [
+   {
+    "name": "hp : p ∈ C",
+    "purpose": "If p is not a literal of C, flipping p need not satisfy C. RATOn itself does not include p ∈ C.",
+    "tightness": "tight",
+    "counterexample": "Toy.Drat.ratOn_witness_tight_mem",
+    "witness_class": "F empty, C = x1, p = x0"
+   },
+   {
+    "name": "hrat : RATOn F C p",
+    "purpose": "Keeps the clauses containing the complement of p satisfied after the flip.",
+    "tightness": "tight",
+    "counterexample": "Toy.Drat.ratOn_witness_tight_rat",
+    "witness_class": "F = not x0, C = x0, p = x0"
+   },
+   {
+    "name": "ha : Satisfies a F",
+    "purpose": "The witness is built from a model of F.",
+    "tightness": "tight",
+    "counterexample": "Toy.Drat.ratOn_witness_tight_model",
+    "witness_class": "F = x1, C = x0, p = x0, a = all-false"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "F = (not x0 or x1), C = (x0 or not x1), p = x0, a = (x0 false, x1 true); a falsifies C, so the flip branch is exercised.",
+  "nonvacuity_witness_lean": "Toy.Drat.ratOn_witness_nonvacuous",
+  "non_claims": [
+   "Does not say a itself satisfies C and F; the witness can differ from a in the variable of p (as in ratOn_witness_nonvacuous, where a falsifies C).",
+   "The pivot here is any literal of C; the DRAT check fixes the first literal (rat-check-depends-on-pivot-order).",
+   "RAT additions need not preserve the models of F restricted to the variables of F: in rat_addition_loses_projected_model the pivot variable x0 occurs in F = (not x0 or x1), and no model of the extended formula agrees with the model x0 = false, x1 = true of F on x0 and x1.",
+   "RAT is not monotone in the formula: x0 is RAT with respect to x1 but not with respect to (not x0) and x1 (rat_not_monotone_in_formula), so a RAT step valid for F need not stay valid when further clauses (for example assumption clauses) are conjoined.",
+   "ratWitness maps a model forward across one clause addition (from F to C and F). Reconstructing a model of F from a model of a formula from which RAT-checked clauses were deleted is covered here only as satisfiability (replayRatDel_sat_backward) and for one step (replayRatDel_final_model_not_original); iterated reconstruction is not proved here.",
+   "Toy model only: literals are (variable, polarity) pairs, clauses and formulas are lists, unit propagation is a round-based propagator with a budget; any correspondence with production solvers and checkers (drat-trim, cake_lpr, Lean's bv_decide LRAT checker, SMT solvers that emit clausal proofs) is a derived (modeling bridge) claim, not a theorem."
+  ],
+  "prior_art": [
+   "M. Järvisalo, M. J. H. Heule, A. Biere, \"Inprocessing Rules\", IJCAR 2012, LNCS 7364, pp. 355-370, doi:10.1007/978-3-642-31365-3_28 (introduces resolution asymmetric tautologies, RAT; asymmetric tautologies predate it, see Heule, Järvisalo, Biere 2010; bibliographic record verified via Crossref; full text not consulted).",
+   "L. Cruz-Filipe, M. J. H. Heule, W. A. Hunt Jr., M. Kaufmann, P. Schneider-Kamp, \"Efficient Certified RAT Verification\", CADE-26 (2017), LNCS 10395, pp. 220-236, doi:10.1007/978-3-319-63046-5_14; preprint arXiv:1612.02353 (read). Section 1 (p. 2): clauses are sorted so that duplicate or complementary literals can be detected, and \"Hints are also sorted in such a way that they become unit from left to right\". Section 2 (pp. 2-3): AT is unit propagation on F and the negation of C reaching a conflict; C is RAT if there is a literal l in C such that for all D in F containing the complement of l, C or (D minus that complement) is AT; the first literal is the DRAT pivot; the empty clause must be AT; deletion steps need not be checked because they trivially preserve satisfiability. Section 3 introduces LRAT hints. Section 4 (p. 9) states the Coq notion ICNF_reduces (every model of one formula yields a model of the other).",
+   "Lean 4 core v4.34.1 (commit 5045d0056413266e57c625dcd7c365b10e377c52), src/Std/Tactic/BVDecide/LRAT/Internal/Formula/RatAddSound.lean: ratAdd_sound (lines 578-582) assumes pivot_in_c (the pivot is a literal of the clause) and concludes Equisat; its proof builds the assignment that sets the pivot true (line 508). Source read.",
+   "N. Wetzler, M. J. H. Heule, W. A. Hunt Jr., \"Mechanical Verification of SAT Refutations with Extended Resolution\", Interactive Theorem Proving (ITP 2013), LNCS 7998, pp. 229-244, doi:10.1007/978-3-642-39634-2_18 (bibliographic record verified via Crossref; full text not consulted, so no specific statement of the paper is attributed here)."
+  ],
+  "design_question": "What exactly does each certificate step preserve (logical equivalence versus only satisfiability)?"
+ },
+ {
+  "id": "rat-addition-preserves-satisfiability",
+  "lean": "Toy.Drat.rat_addition_preserves_satisfiability",
+  "corollaries_lean": [
+   "Toy.Drat.ratOn_preserves_satisfiability",
+   "Toy.Drat.rat_addition_equisatisfiable"
+  ],
+  "corollaries": [
+   {
+    "lean": "Toy.Drat.ratOn_preserves_satisfiability",
+    "statement": "theorem ratOn_preserves_satisfiability {F : Formula} {C : Clause} {p : Lit}\n    (hp : p ∈ C) (hrat : RATOn F C p) (hF : Satisfiable F) : Satisfiable (C :: F)",
+    "statement_source": "ToyDrat/RupRat.lean:239-240",
+    "plain": "If p is a literal of C, RATOn F C p holds, and F is satisfiable, then C :: F is satisfiable: RAT on any literal of C (not only the first) preserves satisfiability when that literal belongs to C.",
+    "hypotheses": [
+     {
+      "name": "hp : p ∈ C",
+      "purpose": "RATOn does not include p ∈ C; without it satisfiability can be lost.",
+      "tightness": "tight",
+      "counterexample": "Toy.Drat.ratOn_sat_tight_mem",
+      "witness_class": "F = not x1, C = x1, p = x0"
+     },
+     {
+      "name": "hrat : RATOn F C p",
+      "purpose": "As in the main theorem.",
+      "tightness": "tight",
+      "counterexample": "Toy.Drat.ratOn_sat_tight_rat",
+      "witness_class": "F = not x0, C = x0, p = x0"
+     },
+     {
+      "name": "hF : Satisfiable F",
+      "purpose": "As in the main theorem.",
+      "tightness": "tight",
+      "counterexample": "Toy.Drat.ratOn_sat_tight_sat",
+      "witness_class": "F = x0 and not x0, C = x1, p = x1"
+     }
+    ],
+    "nonvacuity_witness_lean": "Toy.Drat.ratOn_sat_nonvacuous",
+    "nonvacuity_note": "Uses the second literal x1 of x0 or x1 as pivot with respect to not x0, where first-literal RAT fails."
+   },
+   {
+    "lean": "Toy.Drat.rat_addition_equisatisfiable",
+    "statement": "theorem rat_addition_equisatisfiable {F : Formula} {C : Clause} (hrat : RAT F C) :\n    Equisatisfiable (C :: F) F",
+    "statement_source": "ToyDrat/RupRat.lean:252-253",
+    "plain": "If RAT F C, then C :: F and F are equisatisfiable. It has no satisfiability hypothesis.",
+    "hypotheses": [
+     {
+      "name": "hrat : RAT F C",
+      "purpose": "Without it the formulas need not be equisatisfiable.",
+      "tightness": "tight",
+      "counterexample": "Toy.Drat.rat_equisat_tight_rat",
+      "witness_class": "F = not x0, C = x0"
+     }
+    ],
+    "nonvacuity_witness_lean": "Toy.Drat.rat_sat_nonvacuous"
+   }
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "If C is RAT on its first literal with respect to F (RAT F C; in particular C is nonempty) and F is satisfiable, then C :: F is satisfiable. Secondary theorems: if p is a literal of C, C is RAT on p with respect to F (RATOn F C p), and F is satisfiable, then C :: F is satisfiable (ratOn_preserves_satisfiability); and if RAT F C, then C :: F and F are equisatisfiable, with no satisfiability hypothesis (rat_addition_equisatisfiable).",
+  "hypotheses": [
+   {
+    "name": "hrat : RAT F C",
+    "purpose": "Without it an added clause can make a satisfiable formula unsatisfiable.",
+    "tightness": "tight",
+    "counterexample": "Toy.Drat.rat_sat_tight_rat",
+    "witness_class": "F = not x0, C = x0"
+   },
+   {
+    "name": "hF : Satisfiable F",
+    "purpose": "The conclusion is about satisfiability being carried forward.",
+    "tightness": "tight",
+    "counterexample": "Toy.Drat.rat_sat_tight_sat",
+    "witness_class": "F = x0 and not x0, C = x1"
+   }
+  ],
+  "depth": "definitional",
+  "depth_note": "Definitional given rat-witness: the proof packs and unpacks the existential around ratOn_witness_satisfies, where the substance lies.",
+  "nonvacuity_witness": "F = (not x0 or x1), C = (x0 or not x1): C is RAT on x0 and F is satisfiable. C is not entailed by F (RAT_example_pos_not_entailed), hence not RUP (rup_implies_entails).",
+  "nonvacuity_witness_lean": "Toy.Drat.rat_sat_nonvacuous",
+  "non_claims": [
+   "Satisfiability only, not equivalence: models of F can be lost (rat_addition_not_equivalence), even restricted to the variables of F (rat_addition_loses_projected_model).",
+   "Does not say F entails C.",
+   "The empty clause is never RAT (RAT F [] is False by definition: there is no pivot); in addOK, adding the empty clause must pass rupCheck, because ratCheck rejects it at every budget (ratCheck_example_neg).",
+   "RAT is not monotone in the formula (rat_not_monotone_in_formula): validity of a RAT step for F says nothing about F with further clauses.",
+   "RATOn F C p without p ∈ C need not preserve satisfiability (ratOn_without_mem_unsound, ratOn_sat_tight_mem).",
+   "Toy model only: literals are (variable, polarity) pairs, clauses and formulas are lists, unit propagation is a round-based propagator with a budget; any correspondence with production solvers and checkers (drat-trim, cake_lpr, Lean's bv_decide LRAT checker, SMT solvers that emit clausal proofs) is a derived (modeling bridge) claim, not a theorem."
+  ],
+  "prior_art": [
+   "M. Järvisalo, M. J. H. Heule, A. Biere, \"Inprocessing Rules\", IJCAR 2012, LNCS 7364, pp. 355-370, doi:10.1007/978-3-642-31365-3_28 (introduces resolution asymmetric tautologies, RAT; asymmetric tautologies predate it, see Heule, Järvisalo, Biere 2010; bibliographic record verified via Crossref; full text not consulted).",
+   "L. Cruz-Filipe, M. J. H. Heule, W. A. Hunt Jr., M. Kaufmann, P. Schneider-Kamp, \"Efficient Certified RAT Verification\", CADE-26 (2017), LNCS 10395, pp. 220-236, doi:10.1007/978-3-319-63046-5_14; preprint arXiv:1612.02353 (read). Section 1 (p. 2): clauses are sorted so that duplicate or complementary literals can be detected, and \"Hints are also sorted in such a way that they become unit from left to right\". Section 2 (pp. 2-3): AT is unit propagation on F and the negation of C reaching a conflict; C is RAT if there is a literal l in C such that for all D in F containing the complement of l, C or (D minus that complement) is AT; the first literal is the DRAT pivot; the empty clause must be AT; deletion steps need not be checked because they trivially preserve satisfiability. Section 3 introduces LRAT hints. Section 4 (p. 9) states the Coq notion ICNF_reduces (every model of one formula yields a model of the other).",
+   "Lean 4 core v4.34.1 (commit 5045d0056413266e57c625dcd7c365b10e377c52), src/Std/Tactic/BVDecide/LRAT/Internal/Formula/RatAddSound.lean: ratAdd_sound (lines 578-582) assumes pivot_in_c (the pivot is a literal of the clause) and concludes Equisat; its proof builds the assignment that sets the pivot true (line 508). Source read.",
+   "N. Wetzler, M. J. H. Heule, W. A. Hunt Jr., \"Mechanical Verification of SAT Refutations with Extended Resolution\", Interactive Theorem Proving (ITP 2013), LNCS 7998, pp. 229-244, doi:10.1007/978-3-642-39634-2_18 (bibliographic record verified via Crossref; full text not consulted, so no specific statement of the paper is attributed here)."
+  ],
+  "design_question": "What exactly does each certificate step preserve (logical equivalence versus only satisfiability)?",
+  "lean_names": [
+   "Toy.Drat.ratOn_preserves_satisfiability",
+   "Toy.Drat.rat_addition_equisatisfiable"
+  ]
+ },
+ {
+  "id": "rat-addition-not-equivalence",
+  "lean": "Toy.Drat.rat_addition_not_equivalence",
+  "corollaries_lean": [
+   "Toy.Drat.rat_addition_loses_projected_model"
+  ],
+  "corollaries": [
+   {
+    "lean": "Toy.Drat.rat_addition_loses_projected_model",
+    "statement": "theorem rat_addition_loses_projected_model :\n    RAT [[Lit.n 0, Lit.p 1]] [Lit.p 0, Lit.n 1] ∧\n      Satisfies (fun v => v == 1) [[Lit.n 0, Lit.p 1]] ∧\n      ∀ b : Assignment, b 0 = false → b 1 = true →\n        ¬ Satisfies b [[Lit.p 0, Lit.n 1], [Lit.n 0, Lit.p 1]]",
+    "statement_source": "ToyDrat/RupRat.lean:279-283",
+    "plain": "The blocked clause x0 or not x1 is RAT on x0 with respect to F = (not x0 or x1), F has the model x0 = false, x1 = true, and no model of (x0 or not x1) and F agrees with it on x0 and x1.",
+    "hypotheses": []
+   }
+  ],
+  "kind": "counterexample",
+  "tier": "T0",
+  "plain_claim": "The clause x0 is RAT with respect to the formula x1 (no clause contains not x0), yet the model x1 = true, x0 = false of x1 is not a model of x0 and x1; so RAT addition does not in general preserve equivalence, and a RAT clause need not be entailed. Secondary theorem: the clause x0 or not x1 is RAT on x0 with respect to F = (not x0 or x1), F has the model x0 = false, x1 = true, and no model of (x0 or not x1) and F agrees with it on x0 and x1 (rat_addition_loses_projected_model).",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "The instance itself.",
+  "nonvacuity_witness_lean": "Toy.Drat.rat_addition_not_equivalence",
+  "non_claims": [
+   "Does not show any satisfiability loss: the formula stays satisfiable (rat-addition-preserves-satisfiability).",
+   "Here the added variable x0 does not occur in F. That does not mean RAT additions preserve models restricted to the variables of F: when the pivot variable occurs in F they can remove such models (rat_addition_loses_projected_model).",
+   "Toy model only: literals are (variable, polarity) pairs, clauses and formulas are lists, unit propagation is a round-based propagator with a budget; any correspondence with production solvers and checkers (drat-trim, cake_lpr, Lean's bv_decide LRAT checker, SMT solvers that emit clausal proofs) is a derived (modeling bridge) claim, not a theorem."
+  ],
+  "prior_art": [
+   "M. Järvisalo, M. J. H. Heule, A. Biere, \"Inprocessing Rules\", IJCAR 2012, LNCS 7364, pp. 355-370, doi:10.1007/978-3-642-31365-3_28 (introduces resolution asymmetric tautologies, RAT; asymmetric tautologies predate it, see Heule, Järvisalo, Biere 2010; bibliographic record verified via Crossref; full text not consulted).",
+   "Lean 4 core v4.34.1 (commit 5045d0056413266e57c625dcd7c365b10e377c52), src/Std/Tactic/BVDecide/LRAT/Internal/Formula/RupAddSound.lean: rupAdd_sound (line 764) concludes Liff (logical equivalence) between the formula before and after a successful RUP addition. Source read.",
+   "Lean 4 core v4.34.1 (commit 5045d0056413266e57c625dcd7c365b10e377c52), src/Std/Tactic/BVDecide/LRAT/Internal/Formula/RatAddSound.lean: ratAdd_sound (lines 578-582) assumes pivot_in_c (the pivot is a literal of the clause) and concludes Equisat; its proof builds the assignment that sets the pivot true (line 508). Source read."
+  ],
+  "design_question": "What exactly does each certificate step preserve (logical equivalence versus only satisfiability)?",
+  "lean_names": [
+   "Toy.Drat.rat_addition_loses_projected_model"
+  ],
+  "positive_control_lean": [
+   "Toy.Drat.rup_addition_preserves_equivalence"
+  ],
+  "positive_control": "Nearby setting where the conclusion fails: adding a RUP clause preserves the set of models (rup_addition_preserves_equivalence)."
+ },
+ {
+  "id": "rup-implies-rat",
+  "lean": "Toy.Drat.rup_implies_rat_of_ne_nil",
+  "corollaries_lean": [
+   "Toy.Drat.rup_implies_ratOn"
+  ],
+  "corollaries": [
+   {
+    "lean": "Toy.Drat.rup_implies_ratOn",
+    "statement": "theorem rup_implies_ratOn {F : Formula} {C : Clause} (p : Lit) (h : RUP F C) : RATOn F C p",
+    "statement_source": "ToyDrat/RupRat.lean:309-309",
+    "plain": "For every literal p: if RUP F C, then RATOn F C p. It has no nonemptiness hypothesis and holds for p not in C and for C = [], because RATOn omits the literature requirement that p be a literal of C.",
+    "hypotheses": [
+     {
+      "name": "h : RUP F C",
+      "purpose": "As in the main theorem.",
+      "tightness": "tight",
+      "counterexample": "Toy.Drat.rup_rat_tight_rup",
+      "witness_class": "F = not x0, C = x0, p = x0"
+     }
+    ],
+    "nonvacuity_witness_lean": "Toy.Drat.rup_rat_nonvacuous"
+   }
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "If C is nonempty and RUP with respect to F, then C is RAT on its first literal with respect to F.",
+  "hypotheses": [
+   {
+    "name": "hne : C ≠ []",
+    "purpose": "RAT requires a pivot: RAT F [] is False by definition, while the empty clause can be RUP. Tight (on F = x0 and not x0, C = []). The corollary rup_implies_ratOn has no such hypothesis.",
+    "tightness": "tight",
+    "counterexample": "Toy.Drat.rup_nil_not_rat",
+    "witness_class": "F = x0 and not x0, C = []"
+   },
+   {
+    "name": "h : RUP F C",
+    "purpose": "Tight (on F = not x0, C = x0): a nonempty clause need not be RAT.",
+    "tightness": "tight",
+    "counterexample": "Toy.Drat.rup_rat_tight_rup",
+    "witness_class": "F = not x0, C = x0"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "F = x0 and (not x0 or x1), C = x1.",
+  "nonvacuity_witness_lean": "Toy.Drat.rup_rat_nonvacuous",
+  "non_claims": [
+   "RAT does not imply RUP: x0 is RAT but not RUP with respect to x0OrFullSquare (rat_not_rup_addition_preserves_equivalence); x0 is RAT with respect to x1 without being entailed by it (rat_addition_not_equivalence); and x0 or not x1 is RAT with respect to not x0 or x1 (RAT_example_pos) without being entailed by it (RAT_example_pos_not_entailed).",
+   "The auxiliary predicate RATOn F C p omits the literature requirement p ∈ C, so RATOn [] [] x0 holds vacuously. Unlike RAT F C, RATOn F C p alone need not preserve satisfiability (ratOn_without_mem_unsound, ratOn_sat_tight_mem); together with p ∈ C it does (ratOn_preserves_satisfiability). The corollary rup_implies_ratOn should be read with that in mind: it says nothing about satisfiability for p ∉ C.",
+   "Stated for the unbudgeted predicates RUP and RAT; the analogous statement for the budgeted checkers rupCheck and ratCheck at a fixed budget is not stated (not proved here).",
+   "Toy model only: literals are (variable, polarity) pairs, clauses and formulas are lists, unit propagation is a round-based propagator with a budget; any correspondence with production solvers and checkers (drat-trim, cake_lpr, Lean's bv_decide LRAT checker, SMT solvers that emit clausal proofs) is a derived (modeling bridge) claim, not a theorem."
+  ],
+  "prior_art": [
+   "M. Järvisalo, M. J. H. Heule, A. Biere, \"Inprocessing Rules\", IJCAR 2012, LNCS 7364, pp. 355-370, doi:10.1007/978-3-642-31365-3_28 (introduces resolution asymmetric tautologies, RAT; asymmetric tautologies predate it, see Heule, Järvisalo, Biere 2010; bibliographic record verified via Crossref; full text not consulted).",
+   "L. Cruz-Filipe, M. J. H. Heule, W. A. Hunt Jr., M. Kaufmann, P. Schneider-Kamp, \"Efficient Certified RAT Verification\", CADE-26 (2017), LNCS 10395, pp. 220-236, doi:10.1007/978-3-319-63046-5_14; preprint arXiv:1612.02353 (read). Section 1 (p. 2): clauses are sorted so that duplicate or complementary literals can be detected, and \"Hints are also sorted in such a way that they become unit from left to right\". Section 2 (pp. 2-3): AT is unit propagation on F and the negation of C reaching a conflict; C is RAT if there is a literal l in C such that for all D in F containing the complement of l, C or (D minus that complement) is AT; the first literal is the DRAT pivot; the empty clause must be AT; deletion steps need not be checked because they trivially preserve satisfiability. Section 3 introduces LRAT hints. Section 4 (p. 9) states the Coq notion ICNF_reduces (every model of one formula yields a model of the other).",
+   "Lean 4 core v4.34.1 (commit 5045d0056413266e57c625dcd7c365b10e377c52), src/Std/Tactic/BVDecide/LRAT/Internal/Formula/RatAddSound.lean: ratAdd_sound (lines 578-582) assumes pivot_in_c (the pivot is a literal of the clause) and concludes Equisat; its proof builds the assignment that sets the pivot true (line 508). Source read."
+  ],
+  "design_question": "What does a checker have to verify for an UNSAT verdict to be sound?",
+  "lean_names": [
+   "Toy.Drat.rup_implies_ratOn"
+  ]
+ },
+ {
+  "id": "rat-check-depends-on-pivot-order",
+  "lean": "Toy.Drat.rat_check_depends_on_pivot_order",
+  "kind": "counterexample",
+  "tier": "T0",
+  "plain_claim": "With respect to the formula not x0, the clause x0 or x1 is RAT on its second literal x1 but neither RUP nor RAT on its first literal, while the reordered clause x1 or x0 is RAT; the budgeted first-literal checker ratCheck rejects x0 or x1 at every budget and accepts x1 or x0 at budget 0, so its verdict depends on literal order.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "The instance itself.",
+  "nonvacuity_witness_lean": "Toy.Drat.rat_check_depends_on_pivot_order",
+  "non_claims": [
+   "Does not say a non-first pivot is unsound: RAT on any literal of C preserves satisfiability (ratOn_preserves_satisfiability).",
+   "Does not describe how particular checkers choose pivots beyond the DRAT first-literal convention cited.",
+   "Toy model only: literals are (variable, polarity) pairs, clauses and formulas are lists, unit propagation is a round-based propagator with a budget; any correspondence with production solvers and checkers (drat-trim, cake_lpr, Lean's bv_decide LRAT checker, SMT solvers that emit clausal proofs) is a derived (modeling bridge) claim, not a theorem."
+  ],
+  "prior_art": [
+   "M. J. H. Heule, \"The DRAT format and DRAT-trim checker\", arXiv:1610.06229 (2016), read. Pages 2-3: clauses may contain neither complementary nor duplicate literals; formulas are multisets of clauses; lines after the empty clause are ignored; the first literal is the RAT pivot and the empty clause must be AT; \"A clause deletion step removes a single clause (if the clause is present)\", so k deletion steps are needed to remove k copies; DRAT-trim ignores deletion steps of unit clauses, and \"ignoring deletion steps of unit clauses can turn a valid DRAT proof into an invalid one — and the other way around.\"",
+   "L. Cruz-Filipe, M. J. H. Heule, W. A. Hunt Jr., M. Kaufmann, P. Schneider-Kamp, \"Efficient Certified RAT Verification\", CADE-26 (2017), LNCS 10395, pp. 220-236, doi:10.1007/978-3-319-63046-5_14; preprint arXiv:1612.02353 (read). Section 1 (p. 2): clauses are sorted so that duplicate or complementary literals can be detected, and \"Hints are also sorted in such a way that they become unit from left to right\". Section 2 (pp. 2-3): AT is unit propagation on F and the negation of C reaching a conflict; C is RAT if there is a literal l in C such that for all D in F containing the complement of l, C or (D minus that complement) is AT; the first literal is the DRAT pivot; the empty clause must be AT; deletion steps need not be checked because they trivially preserve satisfiability. Section 3 introduces LRAT hints. Section 4 (p. 9) states the Coq notion ICNF_reduces (every model of one formula yields a model of the other).",
+   "N. Wetzler, M. J. H. Heule, W. A. Hunt Jr., \"DRAT-trim: Efficient Checking and Trimming Using Expressive Clausal Proofs\", SAT 2014, LNCS 8561, pp. 422-429, doi:10.1007/978-3-319-09284-3_31 (bibliographic record verified at the publisher; full text not consulted)."
+  ],
+  "design_question": "What does a checker have to verify for an UNSAT verdict to be sound?"
+ },
+ {
+  "id": "refutation-checker-sound-generic",
+  "lean": "Toy.Drat.checkGen_sound_unsat_of_addCheck_preserves_sat",
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "For every addition check addCheck and every deletion policy ignore: if addCheck maps satisfiable formulas to satisfiable formulas (for all F and C, addCheck F C = true and F satisfiable imply C :: F satisfiable), then for every certificate π and formula F, acceptance by the generic checker checkGen addCheck ignore F π (every addition up to and including the first accepted empty clause passes addCheck; deletions are applied as the policy says; later steps are not examined) implies that F is unsatisfiable.",
+  "hypotheses": [
+   {
+    "name": "hpres : ∀ F C, addCheck F C = true → Satisfiable F → Satisfiable (C :: F)",
+    "purpose": "Each accepted addition carries satisfiability forward; the induction over the certificate uses this step property.",
+    "tightness": "tight",
+    "counterexample": "Toy.Drat.checkGen_unchecked_additions_unsound",
+    "witness_class": "addCheck accepting everything, F empty, certificate: add the empty clause"
+   },
+   {
+    "name": "h : checkGen addCheck ignore F π = true",
+    "purpose": "The certificate is accepted (contains an added empty clause that passed the check).",
+    "tightness": "tight",
+    "counterexample": "Toy.Drat.checker_acceptance_tight",
+    "witness_class": "addCheck = addOK 3, F = (x0 or x1) and not x0, certificate: add the empty clause"
+   },
+   {
+    "name": "addCheck, ignore (arbitrary)",
+    "purpose": "Universally quantified: any addition check satisfying hpres and any function from the current formula and the deleted clause to keep/delete.",
+    "tightness": "harmless"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "addCheck = addOK 3 (DRAT check), F = fullSquare, certificate: add x1, add empty clause.",
+  "nonvacuity_witness_lean": "Toy.Drat.checkGen_sound_nonvacuous",
+  "non_claims": [
+   "Says nothing about SAT verdicts or about models of the final formula (naive-sat-check-unsound-with-deletions).",
+   "DeletionPolicy is a stateless function of the current formula and the deleted clause. History-dependent rules, such as drat-trim's skipping of deletions of clauses that are the reason of a top-level assignment ('pseudo-units'), are not policies in this sense; covering them needs a separate argument (for UNSAT soundness: they only keep clauses), which is not given here (not proved here).",
+   "checkGen stops at the first accepted addition of the empty clause and does not examine later steps; any later addition would pass the RUP check anyway, since the formula then contains the empty clause (rupCheck_of_nil_mem). The DRAT format likewise ignores lines after the empty clause (Heule 2016). The empty certificate is rejected even when F already contains the empty clause (checkGen_empty_certificate).",
+   "Says nothing about completeness (accepting all valid certificates).",
+   "Toy model only: literals are (variable, polarity) pairs, clauses and formulas are lists, unit propagation is a round-based propagator with a budget; any correspondence with production solvers and checkers (drat-trim, cake_lpr, Lean's bv_decide LRAT checker, SMT solvers that emit clausal proofs) is a derived (modeling bridge) claim, not a theorem."
+  ],
+  "prior_art": [
+   "L. Cruz-Filipe, M. J. H. Heule, W. A. Hunt Jr., M. Kaufmann, P. Schneider-Kamp, \"Efficient Certified RAT Verification\", CADE-26 (2017), LNCS 10395, pp. 220-236, doi:10.1007/978-3-319-63046-5_14; preprint arXiv:1612.02353 (read). Section 1 (p. 2): clauses are sorted so that duplicate or complementary literals can be detected, and \"Hints are also sorted in such a way that they become unit from left to right\". Section 2 (pp. 2-3): AT is unit propagation on F and the negation of C reaching a conflict; C is RAT if there is a literal l in C such that for all D in F containing the complement of l, C or (D minus that complement) is AT; the first literal is the DRAT pivot; the empty clause must be AT; deletion steps need not be checked because they trivially preserve satisfiability. Section 3 introduces LRAT hints. Section 4 (p. 9) states the Coq notion ICNF_reduces (every model of one formula yields a model of the other).",
+   "N. Wetzler, M. J. H. Heule, W. A. Hunt Jr., \"DRAT-trim: Efficient Checking and Trimming Using Expressive Clausal Proofs\", SAT 2014, LNCS 8561, pp. 422-429, doi:10.1007/978-3-319-09284-3_31 (bibliographic record verified at the publisher; full text not consulted).",
+   "Lean 4 core at tag v4.34.1 (commit 5045d0056413266e57c625dcd7c365b10e377c52), source read at that commit. src/Std/Tactic/BVDecide/LRAT/Checker.lean: Std.Tactic.BVDecide.LRAT.check runs Std.Tactic.BVDecide.LRAT.Internal.compactLratChecker, and check_sound (a successful check implies the CNF is unsatisfiable) applies compactLratChecker_sound (src/Std/Tactic/BVDecide/LRAT/Internal/CompactLRATCheckerSound.lean). That proof is a functional induction over the checker loop using addEmptyCaseSound (from LRATCheckerSound.lean) for the empty-clause step, Formula.limplies_delete (Internal/CNF.lean) for deletions, and the rupAdd_sound and ratAdd_sound fields of the Formula class (Internal/Formula/Class.lean), proved for DefaultFormula in Internal/Formula/RupAddSound.lean (a successful RUP addition yields a logically equivalent formula) and Internal/Formula/RatAddSound.lean (a successful RAT addition with the pivot in the clause yields an equisatisfiable formula). LRATCheckerSound.lean also proves lratCheckerSound, with addRupCaseSound, addRatCaseSound and delCaseSound, for the list-based lratChecker, which check does not call.",
+   "Y. K. Tan, M. J. H. Heule, M. O. Myreen, \"cake_lpr: Verified Propagation Redundancy Checking in CakeML\", TACAS 2021, pp. 223-241, doi:10.1007/978-3-030-72013-1_12 (bibliographic record verified at the publisher; full text not consulted).",
+   "P. Lammich, \"Efficient Verified (UN)SAT Certificate Checking\", CADE-26 (2017), LNCS 10395, pp. 237-254, doi:10.1007/978-3-319-63046-5_15; journal version J. Automated Reasoning 64 (2020), pp. 513-532, doi:10.1007/s10817-019-09525-z (verified checking of satisfiability and unsatisfiability certificates in Isabelle/HOL; bibliographic records verified via Crossref; full text not consulted, so no specific statement of the paper is attributed here).",
+   "L. Cruz-Filipe, J. Marques-Silva, P. Schneider-Kamp, \"Efficient Certified Resolution Proof Checking\", TACAS 2017, LNCS 10205, pp. 118-135, doi:10.1007/978-3-662-54577-5_7 (bibliographic record verified via Crossref; full text not consulted, so no specific statement of the paper is attributed here).",
+   "M. J. H. Heule, \"The DRAT format and DRAT-trim checker\", arXiv:1610.06229 (2016), read. Pages 2-3: clauses may contain neither complementary nor duplicate literals; formulas are multisets of clauses; lines after the empty clause are ignored; the first literal is the RAT pivot and the empty clause must be AT; \"A clause deletion step removes a single clause (if the clause is present)\", so k deletion steps are needed to remove k copies; DRAT-trim ignores deletion steps of unit clauses, and \"ignoring deletion steps of unit clauses can turn a valid DRAT proof into an invalid one — and the other way around.\""
+  ],
+  "modeling_bridge": "derived (modeling bridge): in Lean 4 core v4.34.1 (commit 5045d0056413266e57c625dcd7c365b10e377c52, src/Std/Tactic/BVDecide/LRAT/Checker.lean), check_sound has the same shape of argument (induction over the certificate, an empty-clause case, a deletion case, and RUP/RAT addition cases with satisfiability-preserving soundness lemmas), as described in the cited source; its checker uses clause identifiers and hints and is not the toy checkGen.",
+  "design_question": "What does a checker have to verify for an UNSAT verdict to be sound?"
+ },
+ {
+  "id": "drat-checker-sound-unsat",
+  "lean": "Toy.Drat.checkDRAT_sound_unsat",
+  "corollaries_lean": [
+   "Toy.Drat.checkOperational_sound_unsat"
+  ],
+  "corollaries": [
+   {
+    "lean": "Toy.Drat.checkOperational_sound_unsat",
+    "statement": "theorem checkOperational_sound_unsat (fuel : Nat) (F : Formula) (π : List Step)\n    (h : checkOperational fuel F π = true) : ¬ Satisfiable F",
+    "statement_source": "ToyDrat/Certificate.lean:383-384",
+    "plain": "If checkOperational fuel F π = true, then F is unsatisfiable (the instance ignore = ignoreUnitDeletions; it has no policy parameter).",
+    "hypotheses": [
+     {
+      "name": "h : checkOperational fuel F π = true",
+      "purpose": "As in the main theorem.",
+      "tightness": "tight",
+      "counterexample": "Toy.Drat.checker_acceptance_tight",
+      "witness_class": "F = (x0 or x1) and not x0, certificate: add the empty clause"
+     }
+    ],
+    "nonvacuity_witness_lean": "Toy.Drat.checkDRAT_sound_nonvacuous"
+   }
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "For every propagation budget fuel and every deletion policy ignore (in particular honorAll, which applies every deletion, and ignoreUnitDeletions, which ignores deletions of clauses of list length one): if checkDRAT fuel ignore accepts a certificate for F -- every addition up to and including the first accepted empty clause passes rupCheck, or else ratCheck on its first literal, at budget fuel with respect to the current formula -- then F is unsatisfiable.",
+  "hypotheses": [
+   {
+    "name": "h : checkDRAT fuel ignore F π = true",
+    "purpose": "The certificate is accepted.",
+    "tightness": "tight",
+    "counterexample": "Toy.Drat.checker_acceptance_tight",
+    "witness_class": "F = (x0 or x1) and not x0, certificate: add the empty clause"
+   },
+   {
+    "name": "fuel, ignore (arbitrary)",
+    "purpose": "Universally quantified budget and deletion policy.",
+    "tightness": "harmless"
+   }
+  ],
+  "depth": "shallow",
+  "depth_note": "The instantiation of refutation-checker-sound-generic with addCheck = addOK fuel, using drat-steps-preserve-satisfiability-forward for hpres.",
+  "nonvacuity_witness": "x0 and fullSquare with certificate: add x3 (RAT, not RUP), delete x0 (a unit deletion on which the two policies differ), add x1, add the empty clause; accepted by both the specified and the operational checker at budget 3.",
+  "nonvacuity_witness_lean": "Toy.Drat.checkDRAT_sound_nonvacuous",
+  "non_claims": [
+   "Soundness only: the specified and operational checkers accept different certificates (operational-accepts-specified-rejects, specified-accepts-operational-rejects).",
+   "The toy deletion removes every syntactically equal copy of the clause; the DRAT format removes one copy, matched up to literal order (Heule 2016). UNSAT soundness for that deletion semantics is expected by the same argument (a deletion only removes clauses) but is not proved here.",
+   "DeletionPolicy is a stateless function of the current formula and the deleted clause. History-dependent rules, such as drat-trim's skipping of deletions of clauses that are the reason of a top-level assignment ('pseudo-units'), are not policies in this sense; covering them needs a separate argument (for UNSAT soundness: they only keep clauses), which is not given here (not proved here).",
+   "ignoreUnitDeletions tests the raw list length C.length = 1: the deletion of x0 or x0 is applied, not ignored (ignoreUnitDeletions_example_dup), whereas drat-trim removes duplicate literals on input and treats that clause as a unit.",
+   "drat-trim's default BACKWARD_UNSAT mode also skips RAT candidate clauses that are not marked active (drat-trim.c at commit 2e3b2dc0ecf938addbd779d42877b6ed69d9a985, lines 565-567), so it may accept RAT additions that both checkSpecified and checkOperational reject; this is read from the source and no instance is constructed here (not proved here).",
+   "An accepted DRAT certificate need not remain accepted for a formula with more clauses: drat_certificate_not_monotone_in_formula gives a certificate accepted for fullSquare and rejected at every budget for not x0 and fullSquare.",
+   "Steps after the first accepted empty clause are not examined (see refutation-checker-sound-generic).",
+   "No claim about the correctness of any production checker or of its parsing, clause identification, or memory management.",
+   "Toy model only: literals are (variable, polarity) pairs, clauses and formulas are lists, unit propagation is a round-based propagator with a budget; any correspondence with production solvers and checkers (drat-trim, cake_lpr, Lean's bv_decide LRAT checker, SMT solvers that emit clausal proofs) is a derived (modeling bridge) claim, not a theorem."
+  ],
+  "prior_art": [
+   "L. Cruz-Filipe, M. J. H. Heule, W. A. Hunt Jr., M. Kaufmann, P. Schneider-Kamp, \"Efficient Certified RAT Verification\", CADE-26 (2017), LNCS 10395, pp. 220-236, doi:10.1007/978-3-319-63046-5_14; preprint arXiv:1612.02353 (read). Section 1 (p. 2): clauses are sorted so that duplicate or complementary literals can be detected, and \"Hints are also sorted in such a way that they become unit from left to right\". Section 2 (pp. 2-3): AT is unit propagation on F and the negation of C reaching a conflict; C is RAT if there is a literal l in C such that for all D in F containing the complement of l, C or (D minus that complement) is AT; the first literal is the DRAT pivot; the empty clause must be AT; deletion steps need not be checked because they trivially preserve satisfiability. Section 3 introduces LRAT hints. Section 4 (p. 9) states the Coq notion ICNF_reduces (every model of one formula yields a model of the other).",
+   "N. Wetzler, M. J. H. Heule, W. A. Hunt Jr., \"DRAT-trim: Efficient Checking and Trimming Using Expressive Clausal Proofs\", SAT 2014, LNCS 8561, pp. 422-429, doi:10.1007/978-3-319-09284-3_31 (bibliographic record verified at the publisher; full text not consulted).",
+   "M. J. H. Heule, \"The DRAT format and DRAT-trim checker\", arXiv:1610.06229 (2016), read. Pages 2-3: clauses may contain neither complementary nor duplicate literals; formulas are multisets of clauses; lines after the empty clause are ignored; the first literal is the RAT pivot and the empty clause must be AT; \"A clause deletion step removes a single clause (if the clause is present)\", so k deletion steps are needed to remove k copies; DRAT-trim ignores deletion steps of unit clauses, and \"ignoring deletion steps of unit clauses can turn a valid DRAT proof into an invalid one — and the other way around.\"",
+   "drat-trim source code, repository marijnheule/drat-trim on GitHub, file drat-trim.c at commit 2e3b2dc0ecf938addbd779d42877b6ed69d9a985 (read): the default mode is BACKWARD_UNSAT (line 1388; -f selects FORWARD_UNSAT and -S selects FORWARD_SAT, lines 1419-1420); the literals of each parsed clause are sorted and duplicate literals removed (lines 1157-1165); in BACKWARD_UNSAT mode deletions of clauses of size at most one after that step are skipped with the warning \"backward mode ignores deletion of (pseudo) unit clause\" (lines 1168-1173); a deletion removes one matching stored copy (lines 1176-1188); outside FORWARD_SAT mode, deletions of unit clauses (lines 790-799) and of clauses that are the reason of a top-level assignment (lines 806-815) are skipped; in BACKWARD_UNSAT mode the RAT check skips candidate clauses not marked active (lines 565-567); in FORWARD_SAT mode each deletion is passed to redundancyCheck, the routine that also checks additions (lines 825-830), which returns success early for clauses not marked active outside FORWARD_UNSAT mode (lines 621-622).",
+   "Lean 4 core at tag v4.34.1 (commit 5045d0056413266e57c625dcd7c365b10e377c52), source read at that commit. src/Std/Tactic/BVDecide/LRAT/Checker.lean: Std.Tactic.BVDecide.LRAT.check runs Std.Tactic.BVDecide.LRAT.Internal.compactLratChecker, and check_sound (a successful check implies the CNF is unsatisfiable) applies compactLratChecker_sound (src/Std/Tactic/BVDecide/LRAT/Internal/CompactLRATCheckerSound.lean). That proof is a functional induction over the checker loop using addEmptyCaseSound (from LRATCheckerSound.lean) for the empty-clause step, Formula.limplies_delete (Internal/CNF.lean) for deletions, and the rupAdd_sound and ratAdd_sound fields of the Formula class (Internal/Formula/Class.lean), proved for DefaultFormula in Internal/Formula/RupAddSound.lean (a successful RUP addition yields a logically equivalent formula) and Internal/Formula/RatAddSound.lean (a successful RAT addition with the pivot in the clause yields an equisatisfiable formula). LRATCheckerSound.lean also proves lratCheckerSound, with addRupCaseSound, addRatCaseSound and delCaseSound, for the list-based lratChecker, which check does not call.",
+   "Y. K. Tan, M. J. H. Heule, M. O. Myreen, \"cake_lpr: Verified Propagation Redundancy Checking in CakeML\", TACAS 2021, pp. 223-241, doi:10.1007/978-3-030-72013-1_12 (bibliographic record verified at the publisher; full text not consulted).",
+   "P. Lammich, \"Efficient Verified (UN)SAT Certificate Checking\", CADE-26 (2017), LNCS 10395, pp. 237-254, doi:10.1007/978-3-319-63046-5_15; journal version J. Automated Reasoning 64 (2020), pp. 513-532, doi:10.1007/s10817-019-09525-z (verified checking of satisfiability and unsatisfiability certificates in Isabelle/HOL; bibliographic records verified via Crossref; full text not consulted, so no specific statement of the paper is attributed here)."
+  ],
+  "modeling_bridge": "derived (modeling bridge): drat-trim's specified-versus-operational behavior differs from the toy policies in the ways listed among this card's non-claims (literal deduplication, reason-clause retention, active-clause filtering in backward RAT checks), all read from the cited source (drat-trim.c at commit 2e3b2dc0ecf938addbd779d42877b6ed69d9a985).",
+  "design_question": "What does a checker have to verify for an UNSAT verdict to be sound?",
+  "lean_names": [
+   "Toy.Drat.checkOperational_sound_unsat"
+  ]
+ },
+ {
+  "id": "drat-steps-preserve-satisfiability-forward",
+  "lean": "Toy.Drat.addOK_preserves_satisfiability",
+  "corollaries_lean": [
+   "Toy.Drat.applyDel_preserves_satisfiability"
+  ],
+  "corollaries": [
+   {
+    "lean": "Toy.Drat.applyDel_preserves_satisfiability",
+    "statement": "theorem applyDel_preserves_satisfiability {ignore : DeletionPolicy} {F : Formula} {C : Clause}\n    (h : Satisfiable F) : Satisfiable (applyDel ignore F C)",
+    "statement_source": "ToyDrat/Certificate.lean:115-116",
+    "plain": "If F is satisfiable, then applyDel ignore F C is satisfiable: a deletion under any policy maps a satisfiable formula to a satisfiable one.",
+    "hypotheses": [
+     {
+      "name": "h : Satisfiable F",
+      "purpose": "Satisfiability is what is carried forward.",
+      "tightness": "tight",
+      "counterexample": "Toy.Drat.applyDel_tight_sat",
+      "witness_class": "F = x0 and not x0 and x1, C = x1, both policies"
+     },
+     {
+      "name": "ignore, C (arbitrary)",
+      "purpose": "Any policy, any deleted clause.",
+      "tightness": "harmless"
+     }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness_lean": "Toy.Drat.applyDel_nonvacuous"
+   }
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "If an addition passes the budgeted DRAT check addOK at some budget (rupCheck succeeds, or ratCheck succeeds on the first literal, with respect to F) and F is satisfiable, then C :: F is satisfiable; contrapositively, if the check passes and C :: F is unsatisfiable, then F is unsatisfiable. Secondary theorem: if F is satisfiable, then so is the result of a deletion under any policy (applyDel_preserves_satisfiability).",
+  "hypotheses": [
+   {
+    "name": "h : addOK fuel F C = true",
+    "purpose": "The addition passes the budgeted RUP-or-RAT check addOK.",
+    "tightness": "tight",
+    "counterexample": "Toy.Drat.addOK_tight_check",
+    "witness_class": "F = not x0, C = x0"
+   },
+   {
+    "name": "hF : Satisfiable F",
+    "purpose": "Satisfiability is what is carried forward.",
+    "tightness": "tight",
+    "counterexample": "Toy.Drat.addOK_tight_sat",
+    "witness_class": "F = x0 and not x0, C = x1"
+   },
+   {
+    "name": "fuel (arbitrary)",
+    "purpose": "Universally quantified budget.",
+    "tightness": "harmless"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "F = (not x0 or x1), C = (x0 or not x1) passes the check by RAT.",
+  "nonvacuity_witness_lean": "Toy.Drat.addOK_nonvacuous",
+  "non_claims": [
+   "Deletions do not carry unsatisfiability forward (deletion_can_turn_unsat_into_sat).",
+   "RAT additions need not carry individual models forward (rat_addition_not_equivalence); RUP additions do (rup_addition_preserves_equivalence).",
+   "Neither the check nor its verdict is monotone in the formula (rat_not_monotone_in_formula, drat_certificate_not_monotone_in_formula).",
+   "Toy model only: literals are (variable, polarity) pairs, clauses and formulas are lists, unit propagation is a round-based propagator with a budget; any correspondence with production solvers and checkers (drat-trim, cake_lpr, Lean's bv_decide LRAT checker, SMT solvers that emit clausal proofs) is a derived (modeling bridge) claim, not a theorem."
+  ],
+  "prior_art": [
+   "L. Cruz-Filipe, M. J. H. Heule, W. A. Hunt Jr., M. Kaufmann, P. Schneider-Kamp, \"Efficient Certified RAT Verification\", CADE-26 (2017), LNCS 10395, pp. 220-236, doi:10.1007/978-3-319-63046-5_14; preprint arXiv:1612.02353 (read). Section 1 (p. 2): clauses are sorted so that duplicate or complementary literals can be detected, and \"Hints are also sorted in such a way that they become unit from left to right\". Section 2 (pp. 2-3): AT is unit propagation on F and the negation of C reaching a conflict; C is RAT if there is a literal l in C such that for all D in F containing the complement of l, C or (D minus that complement) is AT; the first literal is the DRAT pivot; the empty clause must be AT; deletion steps need not be checked because they trivially preserve satisfiability. Section 3 introduces LRAT hints. Section 4 (p. 9) states the Coq notion ICNF_reduces (every model of one formula yields a model of the other).",
+   "M. Järvisalo, M. J. H. Heule, A. Biere, \"Inprocessing Rules\", IJCAR 2012, LNCS 7364, pp. 355-370, doi:10.1007/978-3-642-31365-3_28 (introduces resolution asymmetric tautologies, RAT; asymmetric tautologies predate it, see Heule, Järvisalo, Biere 2010; bibliographic record verified via Crossref; full text not consulted).",
+   "Lean 4 core v4.34.1 (commit 5045d0056413266e57c625dcd7c365b10e377c52), src/Std/Tactic/BVDecide/LRAT/Internal/Formula/RupAddSound.lean: rupAdd_sound (line 764) concludes Liff (logical equivalence) between the formula before and after a successful RUP addition. Source read.",
+   "Lean 4 core v4.34.1 (commit 5045d0056413266e57c625dcd7c365b10e377c52), src/Std/Tactic/BVDecide/LRAT/Internal/Formula/RatAddSound.lean: ratAdd_sound (lines 578-582) assumes pivot_in_c (the pivot is a literal of the clause) and concludes Equisat; its proof builds the assignment that sets the pivot true (line 508). Source read."
+  ],
+  "design_question": "Why are deletions harmless for UNSAT verdicts but not for SAT verdicts, and what must a checker re-check?",
+  "lean_names": [
+   "Toy.Drat.applyDel_preserves_satisfiability"
+  ]
+ },
+ {
+  "id": "naive-sat-check-unsound-with-deletions",
+  "lean": "Toy.Drat.naiveSatCheck_unsound_with_deletions",
+  "corollaries_lean": [
+   "Toy.Drat.deletion_can_turn_unsat_into_sat"
+  ],
+  "kind": "counterexample",
+  "tier": "T0",
+  "plain_claim": "The checker naiveSatCheck replays a certificate with the DRAT addition check, applies every deletion without checking it, and then tests the claimed assignment only against the final formula. It is unsound: the certificate 'delete x0' contains a deletion, and for the unsatisfiable formula x0 and not x0 naiveSatCheck accepts the all-false assignment at every budget. Secondary theorem: deleting x0 turns the unsatisfiable formula x0 and not x0 into a satisfiable one (deletion_can_turn_unsat_into_sat).",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "The instance itself.",
+  "nonvacuity_witness_lean": "Toy.Drat.naiveSatCheck_unsound_with_deletions",
+  "positive_control_lean": [
+   "Toy.Drat.naiveSatCheck_sound_of_noDeletions",
+   "Toy.Drat.satCheckRupDel_sound",
+   "Toy.Drat.replayRatDel_sat_backward"
+  ],
+  "non_claims": [
+   "Concerns one checker whose deletions are unchecked; it is not a statement about every SAT checker that accepts certificates with deletions.",
+   "Escape hatches: (1) testing the assignment against the original formula (sound by the definition of Satisfies; no separate theorem is stated); and, each proved: (2) deletion-free certificates (naiveSatCheck_sound_of_noDeletions; for any addition check and policy: replay_model_sound_of_noDeletions); (3) checking each deletion to be RUP with respect to the formula without the deleted clause, after which testing against the final formula alone is sound (satCheckRupDel_sound); (4) checking each deletion with the DRAT addition check with respect to the formula without the deleted clause, which carries satisfiability (not models) backwards (replayRatDel_sat_backward, replayRatDel_final_model_not_original).",
+   "Does not affect UNSAT verdicts, which stay sound under every deletion policy (drat-checker-sound-unsat).",
+   "Toy model only: literals are (variable, polarity) pairs, clauses and formulas are lists, unit propagation is a round-based propagator with a budget; any correspondence with production solvers and checkers (drat-trim, cake_lpr, Lean's bv_decide LRAT checker, SMT solvers that emit clausal proofs) is a derived (modeling bridge) claim, not a theorem."
+  ],
+  "prior_art": [
+   "L. Cruz-Filipe, M. J. H. Heule, W. A. Hunt Jr., M. Kaufmann, P. Schneider-Kamp, \"Efficient Certified RAT Verification\", CADE-26 (2017), LNCS 10395, pp. 220-236, doi:10.1007/978-3-319-63046-5_14; preprint arXiv:1612.02353 (read). Section 1 (p. 2): clauses are sorted so that duplicate or complementary literals can be detected, and \"Hints are also sorted in such a way that they become unit from left to right\". Section 2 (pp. 2-3): AT is unit propagation on F and the negation of C reaching a conflict; C is RAT if there is a literal l in C such that for all D in F containing the complement of l, C or (D minus that complement) is AT; the first literal is the DRAT pivot; the empty clause must be AT; deletion steps need not be checked because they trivially preserve satisfiability. Section 3 introduces LRAT hints. Section 4 (p. 9) states the Coq notion ICNF_reduces (every model of one formula yields a model of the other).",
+   "M. J. H. Heule, \"The DRAT format and DRAT-trim checker\", arXiv:1610.06229 (2016), read. Pages 2-3: clauses may contain neither complementary nor duplicate literals; formulas are multisets of clauses; lines after the empty clause are ignored; the first literal is the RAT pivot and the empty clause must be AT; \"A clause deletion step removes a single clause (if the clause is present)\", so k deletion steps are needed to remove k copies; DRAT-trim ignores deletion steps of unit clauses, and \"ignoring deletion steps of unit clauses can turn a valid DRAT proof into an invalid one — and the other way around.\"",
+   "drat-trim source code, repository marijnheule/drat-trim on GitHub, file drat-trim.c at commit 2e3b2dc0ecf938addbd779d42877b6ed69d9a985 (read): the default mode is BACKWARD_UNSAT (line 1388; -f selects FORWARD_UNSAT and -S selects FORWARD_SAT, lines 1419-1420); the literals of each parsed clause are sorted and duplicate literals removed (lines 1157-1165); in BACKWARD_UNSAT mode deletions of clauses of size at most one after that step are skipped with the warning \"backward mode ignores deletion of (pseudo) unit clause\" (lines 1168-1173); a deletion removes one matching stored copy (lines 1176-1188); outside FORWARD_SAT mode, deletions of unit clauses (lines 790-799) and of clauses that are the reason of a top-level assignment (lines 806-815) are skipped; in BACKWARD_UNSAT mode the RAT check skips candidate clauses not marked active (lines 565-567); in FORWARD_SAT mode each deletion is passed to redundancyCheck, the routine that also checks additions (lines 825-830), which returns success early for clauses not marked active outside FORWARD_UNSAT mode (lines 621-622).",
+   "P. Lammich, \"Efficient Verified (UN)SAT Certificate Checking\", CADE-26 (2017), LNCS 10395, pp. 237-254, doi:10.1007/978-3-319-63046-5_15; journal version J. Automated Reasoning 64 (2020), pp. 513-532, doi:10.1007/s10817-019-09525-z (verified checking of satisfiability and unsatisfiability certificates in Isabelle/HOL; bibliographic records verified via Crossref; full text not consulted, so no specific statement of the paper is attributed here)."
+  ],
+  "modeling_bridge": "derived (modeling bridge): drat-trim's FORWARD_SAT mode (-S) passes each deletion to the same redundancy routine as additions (drat-trim.c at commit 2e3b2dc0ecf938addbd779d42877b6ed69d9a985, lines 825-830), the operational counterpart of escape hatch (4); whether that routine performs exactly the toy check is not analyzed here.",
+  "design_question": "Why are deletions harmless for UNSAT verdicts but not for SAT verdicts, and what must a checker re-check?",
+  "lean_names": [
+   "Toy.Drat.deletion_can_turn_unsat_into_sat"
+  ],
+  "corollaries": [
+   {
+    "lean": "Toy.Drat.deletion_can_turn_unsat_into_sat",
+    "statement": "theorem deletion_can_turn_unsat_into_sat :\n    ¬ Satisfiable [[Lit.p 0], [Lit.n 0]] ∧ Satisfiable (deleteClause [[Lit.p 0], [Lit.n 0]] [Lit.p 0])",
+    "statement_source": "ToyDrat/Certificate.lean:196-197",
+    "plain": "The formula x0 and not x0 is unsatisfiable, and the formula obtained by deleting x0 from it is satisfiable.",
+    "hypotheses": []
+   }
+  ]
+ },
+ {
+  "id": "naive-sat-check-sound-without-deletions",
+  "lean": "Toy.Drat.naiveSatCheck_sound_of_noDeletions",
+  "corollaries_lean": [
+   "Toy.Drat.replay_model_sound_of_noDeletions"
+  ],
+  "corollaries": [
+   {
+    "lean": "Toy.Drat.replay_model_sound_of_noDeletions",
+    "statement": "theorem replay_model_sound_of_noDeletions {addCheck : Formula → Clause → Bool}\n    {ignore : DeletionPolicy} {π : List Step} {F G : Formula} {a : Assignment}\n    (hnd : NoDeletions π) (hrep : replay addCheck ignore F π = some G) (ha : Satisfies a G) :\n    Satisfies a F",
+    "statement_source": "ToyDrat/Certificate.lean:241-244",
+    "plain": "For any addition check addCheck and any deletion policy ignore: if the certificate π contains no deletion step, the replay of π from F ends in G, and a satisfies G, then a satisfies F.",
+    "hypotheses": [
+     {
+      "name": "hnd : NoDeletions π",
+      "purpose": "With a deletion the final formula can lose clauses of F.",
+      "tightness": "tight",
+      "counterexample": "Toy.Drat.replay_model_sound_tight_noDel",
+      "witness_class": "addCheck = addOK 0, policy honorAll, F = x0 and not x0, certificate: delete x0, G = not x0, a = all-false"
+     },
+     {
+      "name": "hrep : replay addCheck ignore F π = some G",
+      "purpose": "G is the result of replaying π from F.",
+      "tightness": "tight",
+      "counterexample": "Toy.Drat.replay_model_sound_tight_replay",
+      "witness_class": "addCheck = addOK 0, policy honorAll, F = x0, empty certificate, G = empty formula (not the replay result), a = all-false"
+     },
+     {
+      "name": "ha : Satisfies a G",
+      "purpose": "The assignment satisfies the final formula.",
+      "tightness": "tight",
+      "counterexample": "Toy.Drat.replay_model_sound_tight_sat",
+      "witness_class": "addCheck = addOK 0, policy honorAll, F = G = x0, empty certificate, a = all-false"
+     },
+     {
+      "name": "addCheck, ignore (arbitrary)",
+      "purpose": "Universally quantified: any addition check and any deletion policy.",
+      "tightness": "harmless"
+     }
+    ],
+    "nonvacuity_witness_lean": "Toy.Drat.replay_model_sound_nonvacuous",
+    "nonvacuity_note": "Uses the unchecked addition check fun _ _ => true and the policy ignoreUnitDeletions: F = x0, certificate: add x1, G = x1 and x0, a = all-true."
+   }
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "If the certificate contains no deletion step and naiveSatCheck accepts the assignment a, then a satisfies the original formula F (the final formula contains every original clause).",
+  "hypotheses": [
+   {
+    "name": "hnd : NoDeletions π",
+    "purpose": "With a deletion the final formula can lose clauses of F.",
+    "tightness": "tight",
+    "counterexample": "Toy.Drat.naiveSatCheck_noDel_tight_noDel",
+    "witness_class": "F = x0 and not x0, certificate: delete x0, a = all-false"
+   },
+   {
+    "name": "h : naiveSatCheck fuel F π a = true",
+    "purpose": "The check accepts.",
+    "tightness": "tight",
+    "counterexample": "Toy.Drat.naiveSatCheck_noDel_tight_accept",
+    "witness_class": "F = x0, empty certificate, a = all-false"
+   },
+   {
+    "name": "fuel (arbitrary)",
+    "purpose": "Universally quantified budget.",
+    "tightness": "harmless"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "F = x0 and (not x0 or x1), certificate: add x1, a = all-true.",
+  "nonvacuity_witness_lean": "Toy.Drat.naiveSatCheck_noDel_nonvacuous",
+  "non_claims": [
+   "The addition checks play no role: deletion-free replay carries models backwards for any addition check and any policy (replay_model_sound_of_noDeletions).",
+   "Does not say solver-produced certificates are deletion-free, nor that deletion-free certificates are needed (satCheckRupDel_sound allows checked deletions).",
+   "Toy model only: literals are (variable, polarity) pairs, clauses and formulas are lists, unit propagation is a round-based propagator with a budget; any correspondence with production solvers and checkers (drat-trim, cake_lpr, Lean's bv_decide LRAT checker, SMT solvers that emit clausal proofs) is a derived (modeling bridge) claim, not a theorem."
+  ],
+  "prior_art": [
+   "L. Cruz-Filipe, M. J. H. Heule, W. A. Hunt Jr., M. Kaufmann, P. Schneider-Kamp, \"Efficient Certified RAT Verification\", CADE-26 (2017), LNCS 10395, pp. 220-236, doi:10.1007/978-3-319-63046-5_14; preprint arXiv:1612.02353 (read). Section 1 (p. 2): clauses are sorted so that duplicate or complementary literals can be detected, and \"Hints are also sorted in such a way that they become unit from left to right\". Section 2 (pp. 2-3): AT is unit propagation on F and the negation of C reaching a conflict; C is RAT if there is a literal l in C such that for all D in F containing the complement of l, C or (D minus that complement) is AT; the first literal is the DRAT pivot; the empty clause must be AT; deletion steps need not be checked because they trivially preserve satisfiability. Section 3 introduces LRAT hints. Section 4 (p. 9) states the Coq notion ICNF_reduces (every model of one formula yields a model of the other).",
+   "P. Lammich, \"Efficient Verified (UN)SAT Certificate Checking\", CADE-26 (2017), LNCS 10395, pp. 237-254, doi:10.1007/978-3-319-63046-5_15; journal version J. Automated Reasoning 64 (2020), pp. 513-532, doi:10.1007/s10817-019-09525-z (verified checking of satisfiability and unsatisfiability certificates in Isabelle/HOL; bibliographic records verified via Crossref; full text not consulted, so no specific statement of the paper is attributed here)."
+  ],
+  "design_question": "Why are deletions harmless for UNSAT verdicts but not for SAT verdicts, and what must a checker re-check?",
+  "lean_names": [
+   "Toy.Drat.replay_model_sound_of_noDeletions"
+  ]
+ },
+ {
+  "id": "rup-checked-deletions-sat-sound",
+  "lean": "Toy.Drat.satCheckRupDel_sound",
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_note": "Folklore (a RUP clause is entailed, so deleting it preserves the models); no source was located that states it for SAT-certificate checking. Not claimed novel.",
+  "plain_claim": "If satCheckRupDel accepts the assignment a for the formula F and the certificate π at some budget -- that is, the replay succeeds, with every deletion of a clause C from the current formula passing rupCheck with respect to that formula with all copies of C removed, every addition passing the DRAT check addOK with respect to the current formula, and a satisfying the final formula -- then a satisfies F.",
+  "hypotheses": [
+   {
+    "name": "h : satCheckRupDel fuel F π a = true",
+    "purpose": "The replay succeeds and the assignment satisfies the final formula.",
+    "tightness": "tight",
+    "counterexample": "Toy.Drat.satCheckRupDel_tight_accept",
+    "witness_class": "F = x0, empty certificate, a = all-false"
+   },
+   {
+    "name": "fuel (arbitrary)",
+    "purpose": "Universally quantified budget.",
+    "tightness": "harmless"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "F = x0 and (not x0 or x1), certificate: add x1, delete (not x0 or x1); the deletion is RUP with respect to x1 and x0; a = all-true.",
+  "nonvacuity_witness_lean": "Toy.Drat.satCheckRupDel_nonvacuous",
+  "non_claims": [
+   "Without the deletion check this is naiveSatCheck, which is unsound (naiveSatCheck_unsound_with_deletions).",
+   "A RAT check on deletions does not suffice for this conclusion: replayRatDel_final_model_not_original gives a model of the final formula that is not a model of the original one.",
+   "The deletion check is RUP with respect to the formula after the deletion (all copies of C removed). Checking the deleted clause against the formula that still contains it would accept every deletion, because a clause that occurs in the formula passes rupCheck at every budget (rupCheck_of_mem).",
+   "Toy model only: literals are (variable, polarity) pairs, clauses and formulas are lists, unit propagation is a round-based propagator with a budget; any correspondence with production solvers and checkers (drat-trim, cake_lpr, Lean's bv_decide LRAT checker, SMT solvers that emit clausal proofs) is a derived (modeling bridge) claim, not a theorem."
+  ],
+  "prior_art": [
+   "L. Cruz-Filipe, M. J. H. Heule, W. A. Hunt Jr., M. Kaufmann, P. Schneider-Kamp, \"Efficient Certified RAT Verification\", CADE-26 (2017), LNCS 10395, pp. 220-236, doi:10.1007/978-3-319-63046-5_14; preprint arXiv:1612.02353 (read). Section 1 (p. 2): clauses are sorted so that duplicate or complementary literals can be detected, and \"Hints are also sorted in such a way that they become unit from left to right\". Section 2 (pp. 2-3): AT is unit propagation on F and the negation of C reaching a conflict; C is RAT if there is a literal l in C such that for all D in F containing the complement of l, C or (D minus that complement) is AT; the first literal is the DRAT pivot; the empty clause must be AT; deletion steps need not be checked because they trivially preserve satisfiability. Section 3 introduces LRAT hints. Section 4 (p. 9) states the Coq notion ICNF_reduces (every model of one formula yields a model of the other).",
+   "P. Lammich, \"Efficient Verified (UN)SAT Certificate Checking\", CADE-26 (2017), LNCS 10395, pp. 237-254, doi:10.1007/978-3-319-63046-5_15; journal version J. Automated Reasoning 64 (2020), pp. 513-532, doi:10.1007/s10817-019-09525-z (verified checking of satisfiability and unsatisfiability certificates in Isabelle/HOL; bibliographic records verified via Crossref; full text not consulted, so no specific statement of the paper is attributed here)."
+  ],
+  "design_question": "Why are deletions harmless for UNSAT verdicts but not for SAT verdicts, and what must a checker re-check?"
+ },
+ {
+  "id": "rat-checked-deletions-sat-backward",
+  "lean": "Toy.Drat.replayRatDel_sat_backward",
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_note": "Folklore (a RAT clause can be re-added without losing satisfiability); drat-trim's FORWARD_SAT mode checks deletions operationally. Not claimed novel.",
+  "plain_claim": "If replayRatDel replays the certificate π from F at some budget and ends in G -- every deletion of a clause C from the current formula passing the DRAT addition check addOK with respect to that formula with all copies of C removed, and every addition passing addOK with respect to the current formula -- and G is satisfiable, then F is satisfiable.",
+  "hypotheses": [
+   {
+    "name": "hrep : replayRatDel fuel F π = some G",
+    "purpose": "The checked replay succeeds and ends in G.",
+    "tightness": "tight",
+    "counterexample": "Toy.Drat.replayRatDel_tight_replay",
+    "witness_class": "F = x0 and not x0, certificate: delete x0, G = empty formula"
+   },
+   {
+    "name": "hG : Satisfiable G",
+    "purpose": "Satisfiability is what is carried backwards.",
+    "tightness": "tight",
+    "counterexample": "Toy.Drat.replayRatDel_tight_sat",
+    "witness_class": "F = G = x0 and not x0, empty certificate"
+   },
+   {
+    "name": "fuel (arbitrary)",
+    "purpose": "Universally quantified budget.",
+    "tightness": "harmless"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "Deleting the blocked clause x0 or not x1 from (x0 or not x1) and (not x0 or x1): the replay succeeds at budget 0 and the final formula is satisfiable (replayRatDel_nonvacuous); the same deletion fails the RUP deletion check at every budget (replayRatDel_final_model_not_original).",
+  "nonvacuity_witness_lean": "Toy.Drat.replayRatDel_nonvacuous",
+  "non_claims": [
+   "Satisfiability only: a model of the final formula need not be a model of the original one (replayRatDel_final_model_not_original), so testing the claimed assignment against the final formula alone is not a sound SAT check for this replay; in that one-step instance, ratWitness turns the model of the final formula into a model of the original formula. Iterated model reconstruction is not proved here.",
+   "Correspondence with drat-trim's FORWARD_SAT mode is a derived (modeling bridge) claim; drat-trim's redundancyCheck returns success early for clauses not marked active (drat-trim.c at commit 2e3b2dc0ecf938addbd779d42877b6ed69d9a985, lines 621-622), which is not modeled.",
+   "Toy model only: literals are (variable, polarity) pairs, clauses and formulas are lists, unit propagation is a round-based propagator with a budget; any correspondence with production solvers and checkers (drat-trim, cake_lpr, Lean's bv_decide LRAT checker, SMT solvers that emit clausal proofs) is a derived (modeling bridge) claim, not a theorem."
+  ],
+  "prior_art": [
+   "M. Järvisalo, M. J. H. Heule, A. Biere, \"Inprocessing Rules\", IJCAR 2012, LNCS 7364, pp. 355-370, doi:10.1007/978-3-642-31365-3_28 (introduces resolution asymmetric tautologies, RAT; asymmetric tautologies predate it, see Heule, Järvisalo, Biere 2010; bibliographic record verified via Crossref; full text not consulted).",
+   "drat-trim source code, repository marijnheule/drat-trim on GitHub, file drat-trim.c at commit 2e3b2dc0ecf938addbd779d42877b6ed69d9a985 (read): the default mode is BACKWARD_UNSAT (line 1388; -f selects FORWARD_UNSAT and -S selects FORWARD_SAT, lines 1419-1420); the literals of each parsed clause are sorted and duplicate literals removed (lines 1157-1165); in BACKWARD_UNSAT mode deletions of clauses of size at most one after that step are skipped with the warning \"backward mode ignores deletion of (pseudo) unit clause\" (lines 1168-1173); a deletion removes one matching stored copy (lines 1176-1188); outside FORWARD_SAT mode, deletions of unit clauses (lines 790-799) and of clauses that are the reason of a top-level assignment (lines 806-815) are skipped; in BACKWARD_UNSAT mode the RAT check skips candidate clauses not marked active (lines 565-567); in FORWARD_SAT mode each deletion is passed to redundancyCheck, the routine that also checks additions (lines 825-830), which returns success early for clauses not marked active outside FORWARD_UNSAT mode (lines 621-622).",
+   "L. Cruz-Filipe, M. J. H. Heule, W. A. Hunt Jr., M. Kaufmann, P. Schneider-Kamp, \"Efficient Certified RAT Verification\", CADE-26 (2017), LNCS 10395, pp. 220-236, doi:10.1007/978-3-319-63046-5_14; preprint arXiv:1612.02353 (read). Section 1 (p. 2): clauses are sorted so that duplicate or complementary literals can be detected, and \"Hints are also sorted in such a way that they become unit from left to right\". Section 2 (pp. 2-3): AT is unit propagation on F and the negation of C reaching a conflict; C is RAT if there is a literal l in C such that for all D in F containing the complement of l, C or (D minus that complement) is AT; the first literal is the DRAT pivot; the empty clause must be AT; deletion steps need not be checked because they trivially preserve satisfiability. Section 3 introduces LRAT hints. Section 4 (p. 9) states the Coq notion ICNF_reduces (every model of one formula yields a model of the other)."
+  ],
+  "design_question": "Why are deletions harmless for UNSAT verdicts but not for SAT verdicts, and what must a checker re-check?"
+ },
+ {
+  "id": "rat-after-deletion-not-rat-wrt-original",
+  "lean": "Toy.Drat.rat_after_deletion_not_rat_wrt_original",
+  "kind": "counterexample",
+  "tier": "T0",
+  "plain_claim": "Starting from the satisfiable formula not x0, the certificate 'delete not x0, add x0' replays successfully (x0 is RAT with respect to the empty formula), yet x0 is neither RUP nor RAT with respect to the original formula and the original formula together with x0 is unsatisfiable.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "The instance itself.",
+  "nonvacuity_witness_lean": "Toy.Drat.rat_after_deletion_not_rat_wrt_original",
+  "non_claims": [
+   "Does not contradict UNSAT soundness: refutations remain sound under every deletion policy (checkDRAT_sound_unsat).",
+   "Shows, by one instance, that a clause accepted after an unchecked deletion need not be a consequence of the original formula, nor a satisfiability-preserving extension of it; it does not say that this happens for every such clause.",
+   "Toy model only: literals are (variable, polarity) pairs, clauses and formulas are lists, unit propagation is a round-based propagator with a budget; any correspondence with production solvers and checkers (drat-trim, cake_lpr, Lean's bv_decide LRAT checker, SMT solvers that emit clausal proofs) is a derived (modeling bridge) claim, not a theorem."
+  ],
+  "prior_art": [
+   "L. Cruz-Filipe, M. J. H. Heule, W. A. Hunt Jr., M. Kaufmann, P. Schneider-Kamp, \"Efficient Certified RAT Verification\", CADE-26 (2017), LNCS 10395, pp. 220-236, doi:10.1007/978-3-319-63046-5_14; preprint arXiv:1612.02353 (read). Section 1 (p. 2): clauses are sorted so that duplicate or complementary literals can be detected, and \"Hints are also sorted in such a way that they become unit from left to right\". Section 2 (pp. 2-3): AT is unit propagation on F and the negation of C reaching a conflict; C is RAT if there is a literal l in C such that for all D in F containing the complement of l, C or (D minus that complement) is AT; the first literal is the DRAT pivot; the empty clause must be AT; deletion steps need not be checked because they trivially preserve satisfiability. Section 3 introduces LRAT hints. Section 4 (p. 9) states the Coq notion ICNF_reduces (every model of one formula yields a model of the other).",
+   "A. Rebola-Pardo, A. Biere, \"Two Flavors of DRAT\", Proceedings of Pragmatics of SAT 2015 and 2018, EPiC Series in Computing 59 (2019), pp. 94-110, doi:10.29007/lt8r. The abstract (verified) states that the proofs accepted by state-of-the-art DRAT checkers differ from those accepted by the original definition and formalizes the operational definition; the full text was not consulted, so no specific theorem of that paper is attributed here."
+  ],
+  "design_question": "Why are deletions harmless for UNSAT verdicts but not for SAT verdicts, and what must a checker re-check?",
+  "positive_control_lean": [
+   "Toy.Drat.addOK_preserves_satisfiability"
+  ],
+  "positive_control": "Nearby setting where the conclusion fails: without the deletion, an addition that passes addOK with respect to the original formula preserves satisfiability (addOK_preserves_satisfiability)."
+ },
+ {
+  "id": "operational-accepts-specified-rejects",
+  "lean": "Toy.Drat.operational_accepts_specified_rejects",
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "For x0 and not x0 with the certificate 'delete x0, add the empty clause', the operational checkers (DRAT and DRUP, which ignore the deletion of the unit clause x0) accept at budget 1, while the specified checkers (which apply every deletion) reject at every budget; so, for both DRAT and DRUP, operational acceptance does not in general imply specified acceptance.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "The instance itself.",
+  "nonvacuity_witness_lean": "Toy.Drat.operational_accepts_specified_rejects",
+  "non_claims": [
+   "Does not show the operational checker is unsound; the formula is unsatisfiable and operational acceptance is sound (drat-checker-sound-unsat).",
+   "ignoreUnitDeletions tests the raw list length C.length = 1: the deletion of x0 or x0 is applied, not ignored (ignoreUnitDeletions_example_dup), whereas drat-trim removes duplicate literals on input and treats that clause as a unit.",
+   "DeletionPolicy is a stateless function of the current formula and the deleted clause. History-dependent rules, such as drat-trim's skipping of deletions of clauses that are the reason of a top-level assignment ('pseudo-units'), are not policies in this sense; covering them needs a separate argument (for UNSAT soundness: they only keep clauses), which is not given here (not proved here).",
+   "drat-trim's default BACKWARD_UNSAT mode also skips RAT candidate clauses that are not marked active (drat-trim.c at commit 2e3b2dc0ecf938addbd779d42877b6ed69d9a985, lines 565-567), so it may accept RAT additions that both checkSpecified and checkOperational reject; this is read from the source and no instance is constructed here (not proved here).",
+   "The toy specified checker matches deleted clauses as lists and removes every copy; a deletion whose literals are permuted is ignored (permuted_deletion_is_ignored).",
+   "Toy model only: literals are (variable, polarity) pairs, clauses and formulas are lists, unit propagation is a round-based propagator with a budget; any correspondence with production solvers and checkers (drat-trim, cake_lpr, Lean's bv_decide LRAT checker, SMT solvers that emit clausal proofs) is a derived (modeling bridge) claim, not a theorem."
+  ],
+  "prior_art": [
+   "M. J. H. Heule, \"The DRAT format and DRAT-trim checker\", arXiv:1610.06229 (2016), read. Pages 2-3: clauses may contain neither complementary nor duplicate literals; formulas are multisets of clauses; lines after the empty clause are ignored; the first literal is the RAT pivot and the empty clause must be AT; \"A clause deletion step removes a single clause (if the clause is present)\", so k deletion steps are needed to remove k copies; DRAT-trim ignores deletion steps of unit clauses, and \"ignoring deletion steps of unit clauses can turn a valid DRAT proof into an invalid one — and the other way around.\"",
+   "J. Altmanninger, A. Rebola Pardo, \"Frying the Egg, Roasting the Chicken: Unit Deletions in DRAT Proofs\", CPP 2020, pp. 61-70, doi:10.1145/3372885.3373821. The abstract (read) states that state-of-the-art checkers ignore deletions of unit clauses, differing from the standard, that many SAT solvers introduce spurious unit deletions, and that a large fraction of the proofs generated during the preceding SAT competition do not respect the DRAT standard; full text not consulted.",
+   "A. Rebola-Pardo, A. Biere, \"Two Flavors of DRAT\", Proceedings of Pragmatics of SAT 2015 and 2018, EPiC Series in Computing 59 (2019), pp. 94-110, doi:10.29007/lt8r. The abstract (verified) states that the proofs accepted by state-of-the-art DRAT checkers differ from those accepted by the original definition and formalizes the operational definition; the full text was not consulted, so no specific theorem of that paper is attributed here.",
+   "drat-trim source code, repository marijnheule/drat-trim on GitHub, file drat-trim.c at commit 2e3b2dc0ecf938addbd779d42877b6ed69d9a985 (read): the default mode is BACKWARD_UNSAT (line 1388; -f selects FORWARD_UNSAT and -S selects FORWARD_SAT, lines 1419-1420); the literals of each parsed clause are sorted and duplicate literals removed (lines 1157-1165); in BACKWARD_UNSAT mode deletions of clauses of size at most one after that step are skipped with the warning \"backward mode ignores deletion of (pseudo) unit clause\" (lines 1168-1173); a deletion removes one matching stored copy (lines 1176-1188); outside FORWARD_SAT mode, deletions of unit clauses (lines 790-799) and of clauses that are the reason of a top-level assignment (lines 806-815) are skipped; in BACKWARD_UNSAT mode the RAT check skips candidate clauses not marked active (lines 565-567); in FORWARD_SAT mode each deletion is passed to redundancyCheck, the routine that also checks additions (lines 825-830), which returns success early for clauses not marked active outside FORWARD_UNSAT mode (lines 621-622)."
+  ],
+  "modeling_bridge": "derived (modeling bridge): Heule 2016 states informally that ignoring unit deletions can turn a valid DRAT proof into an invalid one and conversely; this card and specified-accepts-operational-rejects give one toy instance of each direction.",
+  "design_question": "Does ignoring unit-clause deletions (operational DRAT) change soundness or the set of accepted certificates?",
+  "positive_control": "None stated: this is a separation instance (a counterexample to one inclusion), not an impossibility result."
+ },
+ {
+  "id": "specified-accepts-operational-rejects",
+  "lean": "Toy.Drat.specified_accepts_operational_rejects",
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "For not x0 together with fullSquare and the certificate 'delete not x0, add x0, add x1, add the empty clause', the specified DRAT checker accepts at budget 3 (after the deletion, x0 is RAT because no clause contains not x0), while the operational DRAT checker, which keeps not x0, rejects at every budget; so for DRAT, ignoring unit deletions can reject certificates the specified semantics accepts.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "The instance itself (unitPlusSquare, unitDeletionThenRAT).",
+  "nonvacuity_witness_lean": "Toy.Drat.specified_accepts_operational_rejects",
+  "non_claims": [
+   "Relies on a RAT step: for the DRUP checker (RUP-only additions), every certificate accepted by the specified checker is accepted by the operational one (checkDRUP_specified_implies_operational).",
+   "Does not claim this pattern occurs in solver-generated proofs. The documented solver-side problem is the other direction: spurious unit deletions that only operational checkers tolerate (Altmanninger and Rebola Pardo 2020, abstract), as in operational-accepts-specified-rejects.",
+   "ignoreUnitDeletions tests the raw list length C.length = 1: the deletion of x0 or x0 is applied, not ignored (ignoreUnitDeletions_example_dup), whereas drat-trim removes duplicate literals on input and treats that clause as a unit.",
+   "DeletionPolicy is a stateless function of the current formula and the deleted clause. History-dependent rules, such as drat-trim's skipping of deletions of clauses that are the reason of a top-level assignment ('pseudo-units'), are not policies in this sense; covering them needs a separate argument (for UNSAT soundness: they only keep clauses), which is not given here (not proved here).",
+   "Toy model only: literals are (variable, polarity) pairs, clauses and formulas are lists, unit propagation is a round-based propagator with a budget; any correspondence with production solvers and checkers (drat-trim, cake_lpr, Lean's bv_decide LRAT checker, SMT solvers that emit clausal proofs) is a derived (modeling bridge) claim, not a theorem."
+  ],
+  "prior_art": [
+   "M. J. H. Heule, \"The DRAT format and DRAT-trim checker\", arXiv:1610.06229 (2016), read. Pages 2-3: clauses may contain neither complementary nor duplicate literals; formulas are multisets of clauses; lines after the empty clause are ignored; the first literal is the RAT pivot and the empty clause must be AT; \"A clause deletion step removes a single clause (if the clause is present)\", so k deletion steps are needed to remove k copies; DRAT-trim ignores deletion steps of unit clauses, and \"ignoring deletion steps of unit clauses can turn a valid DRAT proof into an invalid one — and the other way around.\"",
+   "J. Altmanninger, A. Rebola Pardo, \"Frying the Egg, Roasting the Chicken: Unit Deletions in DRAT Proofs\", CPP 2020, pp. 61-70, doi:10.1145/3372885.3373821. The abstract (read) states that state-of-the-art checkers ignore deletions of unit clauses, differing from the standard, that many SAT solvers introduce spurious unit deletions, and that a large fraction of the proofs generated during the preceding SAT competition do not respect the DRAT standard; full text not consulted.",
+   "A. Rebola-Pardo, A. Biere, \"Two Flavors of DRAT\", Proceedings of Pragmatics of SAT 2015 and 2018, EPiC Series in Computing 59 (2019), pp. 94-110, doi:10.29007/lt8r. The abstract (verified) states that the proofs accepted by state-of-the-art DRAT checkers differ from those accepted by the original definition and formalizes the operational definition; the full text was not consulted, so no specific theorem of that paper is attributed here.",
+   "drat-trim source code, repository marijnheule/drat-trim on GitHub, file drat-trim.c at commit 2e3b2dc0ecf938addbd779d42877b6ed69d9a985 (read): the default mode is BACKWARD_UNSAT (line 1388; -f selects FORWARD_UNSAT and -S selects FORWARD_SAT, lines 1419-1420); the literals of each parsed clause are sorted and duplicate literals removed (lines 1157-1165); in BACKWARD_UNSAT mode deletions of clauses of size at most one after that step are skipped with the warning \"backward mode ignores deletion of (pseudo) unit clause\" (lines 1168-1173); a deletion removes one matching stored copy (lines 1176-1188); outside FORWARD_SAT mode, deletions of unit clauses (lines 790-799) and of clauses that are the reason of a top-level assignment (lines 806-815) are skipped; in BACKWARD_UNSAT mode the RAT check skips candidate clauses not marked active (lines 565-567); in FORWARD_SAT mode each deletion is passed to redundancyCheck, the routine that also checks additions (lines 825-830), which returns success early for clauses not marked active outside FORWARD_UNSAT mode (lines 621-622)."
+  ],
+  "design_question": "Does ignoring unit-clause deletions (operational DRAT) change soundness or the set of accepted certificates?",
+  "positive_control_lean": [
+   "Toy.Drat.checkDRUP_specified_implies_operational"
+  ],
+  "positive_control": "Nearby setting where the conclusion fails: for the DRUP checker, specified acceptance implies operational acceptance (checkDRUP_specified_implies_operational)."
+ },
+ {
+  "id": "drup-honor-all-strictest",
+  "lean": "Toy.Drat.checkDRUP_honorAll_implies_any_policy",
+  "corollaries_lean": [
+   "Toy.Drat.checkDRUP_specified_implies_operational"
+  ],
+  "corollaries": [
+   {
+    "lean": "Toy.Drat.checkDRUP_specified_implies_operational",
+    "statement": "theorem checkDRUP_specified_implies_operational (fuel : Nat) (F : Formula) (π : List Step)\n    (h : checkDRUP fuel honorAll F π = true) : checkDRUP fuel ignoreUnitDeletions F π = true",
+    "statement_source": "ToyDrat/Certificate.lean:487-488",
+    "plain": "If checkDRUP fuel honorAll F π = true, then checkDRUP fuel ignoreUnitDeletions F π = true (the main theorem with G = F and ignore = ignoreUnitDeletions).",
+    "hypotheses": [
+     {
+      "name": "h : checkDRUP fuel honorAll F π = true",
+      "purpose": "As in the main theorem.",
+      "tightness": "tight",
+      "counterexample": "Toy.Drat.checkDRUP_policy_tight_accept",
+      "witness_class": "F = x0 or x1, certificate: add the empty clause"
+     }
+    ],
+    "nonvacuity_witness_lean": "Toy.Drat.checkDRUP_policy_nonvacuous"
+   }
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "For the DRUP checker (every addition must pass rupCheck at the given budget) with all-copies syntactic deletion, for every budget, every (stateless) deletion policy, every certificate, and all formulas F and G: if G contains every clause of F (FormulaSub F G) and the checker that applies every deletion accepts the certificate for F, then the checker with that policy accepts it for G. In particular (G = F, policy ignoreUnitDeletions; checkDRUP_specified_implies_operational), operational DRUP acceptance includes specified DRUP acceptance.",
+  "hypotheses": [
+   {
+    "name": "hFG : FormulaSub F G",
+    "purpose": "Lets the formula grow, which the induction over the certificate uses; the corollary takes G = F.",
+    "tightness": "tight",
+    "counterexample": "Toy.Drat.checkDRUP_policy_tight_sub",
+    "witness_class": "F = x0 and not x0, G empty, certificate: add the empty clause"
+   },
+   {
+    "name": "h : checkDRUP fuel honorAll F π = true",
+    "purpose": "The specified DRUP checker accepts.",
+    "tightness": "tight",
+    "counterexample": "Toy.Drat.checkDRUP_policy_tight_accept",
+    "witness_class": "F = G = x0 or x1, certificate: add the empty clause"
+   },
+   {
+    "name": "fuel, ignore (arbitrary)",
+    "purpose": "Universally quantified budget and policy.",
+    "tightness": "harmless"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "F = x0 and fullSquare, G = x3 and F (a strict superset), certificate: add x1, delete x0 (a unit deletion on which the two policies differ), add the empty clause.",
+  "nonvacuity_witness_lean": "Toy.Drat.checkDRUP_policy_nonvacuous",
+  "non_claims": [
+   "RUP-only additions are part of the statement (checkDRUP), not a hypothesis. It does not hold for DRAT: specified_accepts_operational_rejects (policy change) and drat_certificate_not_monotone_in_formula (larger formula).",
+   "The inclusion is strict (operational-accepts-specified-rejects uses only RUP steps).",
+   "Depends on all-copies deletion: with one-copy deletion the FormulaSub form is false (one_copy_deletion_breaks_drup_monotonicity: F = x0, x0, not x0 and G = x0, not x0 with 'delete x0, add the empty clause'). A version with multiset inclusion (each clause occurring in G at least as often as in F) is plausible but not proved here.",
+   "Deleted clauses are matched as lists, so a deletion whose literals are permuted relative to the stored clause is ignored and the specified checker can accept certificates that a checker matching up to literal order rejects (permuted_deletion_is_ignored).",
+   "DeletionPolicy is a stateless function of the current formula and the deleted clause. History-dependent rules, such as drat-trim's skipping of deletions of clauses that are the reason of a top-level assignment ('pseudo-units'), are not policies in this sense; covering them needs a separate argument (for UNSAT soundness: they only keep clauses), which is not given here (not proved here).",
+   "Toy model only: literals are (variable, polarity) pairs, clauses and formulas are lists, unit propagation is a round-based propagator with a budget; any correspondence with production solvers and checkers (drat-trim, cake_lpr, Lean's bv_decide LRAT checker, SMT solvers that emit clausal proofs) is a derived (modeling bridge) claim, not a theorem."
+  ],
+  "prior_art": [
+   "M. J. H. Heule, W. A. Hunt Jr., N. Wetzler, \"Trimming while Checking Clausal Proofs\", FMCAD 2013, pp. 181-188, doi:10.1109/FMCAD.2013.6679408 (bibliographic record verified via Crossref; full text not consulted, so no specific statement of the paper is attributed here).",
+   "M. J. H. Heule, \"The DRAT format and DRAT-trim checker\", arXiv:1610.06229 (2016), read. Pages 2-3: clauses may contain neither complementary nor duplicate literals; formulas are multisets of clauses; lines after the empty clause are ignored; the first literal is the RAT pivot and the empty clause must be AT; \"A clause deletion step removes a single clause (if the clause is present)\", so k deletion steps are needed to remove k copies; DRAT-trim ignores deletion steps of unit clauses, and \"ignoring deletion steps of unit clauses can turn a valid DRAT proof into an invalid one — and the other way around.\"",
+   "J. Altmanninger, A. Rebola Pardo, \"Frying the Egg, Roasting the Chicken: Unit Deletions in DRAT Proofs\", CPP 2020, pp. 61-70, doi:10.1145/3372885.3373821. The abstract (read) states that state-of-the-art checkers ignore deletions of unit clauses, differing from the standard, that many SAT solvers introduce spurious unit deletions, and that a large fraction of the proofs generated during the preceding SAT competition do not respect the DRAT standard; full text not consulted.",
+   "A. Rebola-Pardo, A. Biere, \"Two Flavors of DRAT\", Proceedings of Pragmatics of SAT 2015 and 2018, EPiC Series in Computing 59 (2019), pp. 94-110, doi:10.29007/lt8r. The abstract (verified) states that the proofs accepted by state-of-the-art DRAT checkers differ from those accepted by the original definition and formalizes the operational definition; the full text was not consulted, so no specific theorem of that paper is attributed here.",
+   "drat-trim source code, repository marijnheule/drat-trim on GitHub, file drat-trim.c at commit 2e3b2dc0ecf938addbd779d42877b6ed69d9a985 (read): the default mode is BACKWARD_UNSAT (line 1388; -f selects FORWARD_UNSAT and -S selects FORWARD_SAT, lines 1419-1420); the literals of each parsed clause are sorted and duplicate literals removed (lines 1157-1165); in BACKWARD_UNSAT mode deletions of clauses of size at most one after that step are skipped with the warning \"backward mode ignores deletion of (pseudo) unit clause\" (lines 1168-1173); a deletion removes one matching stored copy (lines 1176-1188); outside FORWARD_SAT mode, deletions of unit clauses (lines 790-799) and of clauses that are the reason of a top-level assignment (lines 806-815) are skipped; in BACKWARD_UNSAT mode the RAT check skips candidate clauses not marked active (lines 565-567); in FORWARD_SAT mode each deletion is passed to redundancyCheck, the routine that also checks additions (lines 825-830), which returns success early for clauses not marked active outside FORWARD_UNSAT mode (lines 621-622)."
+  ],
+  "design_question": "Does ignoring unit-clause deletions (operational DRAT) change soundness or the set of accepted certificates?",
+  "lean_names": [
+   "Toy.Drat.checkDRUP_specified_implies_operational"
+  ]
+ },
+ {
+  "id": "lrat-hint-replay-implies-rup",
+  "lean": "Toy.Drat.lrat_hint_replay_implies_rup",
+  "corollaries_lean": [
+   "Toy.Drat.lrat_hint_replay_implies_entails"
+  ],
+  "corollaries": [
+   {
+    "lean": "Toy.Drat.lrat_hint_replay_implies_entails",
+    "statement": "theorem lrat_hint_replay_implies_entails {F : Formula} {C : Clause} {hints : List Nat}\n    (h : lratRupCheck F C hints = true) : Entails F C",
+    "statement_source": "ToyDrat/Lrat.lean:118-119",
+    "plain": "If lratRupCheck F C hints = true, then F entails C.",
+    "hypotheses": [
+     {
+      "name": "h : lratRupCheck F C hints = true",
+      "purpose": "As in the main theorem.",
+      "tightness": "tight",
+      "counterexample": "Toy.Drat.lrat_tight_accept",
+      "witness_class": "F = x0 or x1, C = x0, hints = [0]"
+     }
+    ],
+    "nonvacuity_witness_lean": "Toy.Drat.lratRupCheck_chain3"
+   }
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "If replaying the hinted clauses of F in order from the negation of C succeeds -- each hinted clause has exactly one non-falsified literal occurrence, which is pushed on the trail (it may already be there), until a hinted clause has no non-falsified literal occurrence, after which remaining hints are not examined -- then budgeted propagation from the negation of C reaches a conflict within (number of hints) rounds, so C is RUP with respect to F and F entails C.",
+  "hypotheses": [
+   {
+    "name": "h : lratRupCheck F C hints = true",
+    "purpose": "The hint replay succeeds.",
+    "tightness": "tight",
+    "counterexample": "Toy.Drat.lrat_tight_accept",
+    "witness_class": "F = x0 or x1, C = x0, hints = [0]"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "chain3 = x0, (not x0 or x1), not x1 with hints [0, 1, 2] for the empty clause.",
+  "nonvacuity_witness_lean": "Toy.Drat.lratRupCheck_chain3",
+  "non_claims": [
+   "Covers RUP hints only; LRAT RAT steps (negative hints) and clause identifiers that survive deletions are not modeled.",
+   "Hint replay is order-sensitive: permuting an accepted hint list can make it rejected (lrat-hint-order-matters). This is not the same as incompleteness, which is treated in lrat-hint-replay-complete-wellformed.",
+   "The per-hint test counts non-falsified literal occurrences: it rejects a clause with a repeated unassigned literal such as x0 or x0 (as in lratRupCheck_incomplete_dup_lits), accepts an already satisfied clause whose only non-falsified literal is true (lratRupCheck_example_satisfied_hint), and stops at the first fully falsified clause without examining or bounds-checking later hints (lratRupCheck_example_trailing_hints).",
+   "Skipping the check that each hinted clause has at most one non-falsified literal occurrence is unsound: sloppy-hint-replay-unsound gives an accepted refutation of a satisfiable formula.",
+   "Toy model only: literals are (variable, polarity) pairs, clauses and formulas are lists, unit propagation is a round-based propagator with a budget; any correspondence with production solvers and checkers (drat-trim, cake_lpr, Lean's bv_decide LRAT checker, SMT solvers that emit clausal proofs) is a derived (modeling bridge) claim, not a theorem."
+  ],
+  "prior_art": [
+   "L. Cruz-Filipe, M. J. H. Heule, W. A. Hunt Jr., M. Kaufmann, P. Schneider-Kamp, \"Efficient Certified RAT Verification\", CADE-26 (2017), LNCS 10395, pp. 220-236, doi:10.1007/978-3-319-63046-5_14; preprint arXiv:1612.02353 (read). Section 1 (p. 2): clauses are sorted so that duplicate or complementary literals can be detected, and \"Hints are also sorted in such a way that they become unit from left to right\". Section 2 (pp. 2-3): AT is unit propagation on F and the negation of C reaching a conflict; C is RAT if there is a literal l in C such that for all D in F containing the complement of l, C or (D minus that complement) is AT; the first literal is the DRAT pivot; the empty clause must be AT; deletion steps need not be checked because they trivially preserve satisfiability. Section 3 introduces LRAT hints. Section 4 (p. 9) states the Coq notion ICNF_reduces (every model of one formula yields a model of the other).",
+   "L. Cruz-Filipe, J. Marques-Silva, P. Schneider-Kamp, \"Efficient Certified Resolution Proof Checking\", TACAS 2017, LNCS 10205, pp. 118-135, doi:10.1007/978-3-662-54577-5_7 (bibliographic record verified via Crossref; full text not consulted, so no specific statement of the paper is attributed here).",
+   "Lean 4 core at tag v4.34.1 (commit 5045d0056413266e57c625dcd7c365b10e377c52), source read at that commit. src/Std/Tactic/BVDecide/LRAT/Checker.lean: Std.Tactic.BVDecide.LRAT.check runs Std.Tactic.BVDecide.LRAT.Internal.compactLratChecker, and check_sound (a successful check implies the CNF is unsatisfiable) applies compactLratChecker_sound (src/Std/Tactic/BVDecide/LRAT/Internal/CompactLRATCheckerSound.lean). That proof is a functional induction over the checker loop using addEmptyCaseSound (from LRATCheckerSound.lean) for the empty-clause step, Formula.limplies_delete (Internal/CNF.lean) for deletions, and the rupAdd_sound and ratAdd_sound fields of the Formula class (Internal/Formula/Class.lean), proved for DefaultFormula in Internal/Formula/RupAddSound.lean (a successful RUP addition yields a logically equivalent formula) and Internal/Formula/RatAddSound.lean (a successful RAT addition with the pivot in the clause yields an equisatisfiable formula). LRATCheckerSound.lean also proves lratCheckerSound, with addRupCaseSound, addRatCaseSound and delCaseSound, for the list-based lratChecker, which check does not call.",
+   "Y. K. Tan, M. J. H. Heule, M. O. Myreen, \"cake_lpr: Verified Propagation Redundancy Checking in CakeML\", TACAS 2021, pp. 223-241, doi:10.1007/978-3-030-72013-1_12 (bibliographic record verified at the publisher; full text not consulted).",
+   "P. Lammich, \"Efficient Verified (UN)SAT Certificate Checking\", CADE-26 (2017), LNCS 10395, pp. 237-254, doi:10.1007/978-3-319-63046-5_15; journal version J. Automated Reasoning 64 (2020), pp. 513-532, doi:10.1007/s10817-019-09525-z (verified checking of satisfiability and unsatisfiability certificates in Isabelle/HOL; bibliographic records verified via Crossref; full text not consulted, so no specific statement of the paper is attributed here)."
+  ],
+  "modeling_bridge": "derived (modeling bridge), from the Lean 4 core v4.34.1 source (commit 5045d0056413266e57c625dcd7c365b10e377c52): DefaultClause carries the invariants nodupkey (no variable occurs with both polarities) and nodup (no repeated literal) (Internal/Clause.lean lines 95-98), so its clauses satisfy both side conditions of lratRupCheck_complete_of_wellformed by construction; performRupAdd first inserts the negated clause as units and succeeds if that yields a contradiction (Internal/Formula/Implementation.lean lines 219-225); confirmRupHint stops examining hints once the empty clause is derived and continues without error when a hinted clause reduces to a literal that is already assigned (lines 176-195), as the toy hintReplay does. compactLratChecker skips (does not add) a RAT step whose pivot is not in the clause (Internal/CompactLRATChecker.lean lines 48-56). Whether its verdicts coincide with lratRupCheck on well-formed inputs is not proved here.",
+  "design_question": "Is a hint-driven (LRAT-style) checker, which does no unit-clause search, still sound, and what must it check per hint?",
+  "lean_names": [
+   "Toy.Drat.lrat_hint_replay_implies_entails"
+  ]
+ },
+ {
+  "id": "lrat-hint-order-matters",
+  "lean": "Toy.Drat.lrat_hint_order_matters",
+  "kind": "counterexample",
+  "tier": "T0",
+  "plain_claim": "The empty clause is RUP with respect to chain3 and the hint list [0, 1, 2] is accepted, but the same clauses in the order [1, 0, 2] are rejected because clause 1 is not unit under the empty trail.",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "The instance itself.",
+  "nonvacuity_witness_lean": "Toy.Drat.lrat_hint_order_matters",
+  "non_claims": [
+   "Shows order-sensitivity of a fixed hint list, not incompleteness: if C has no complementary pair of literals, no clause of F repeats a literal, and C is RUP with respect to F, then some hint list for C is accepted (lratRupCheck_complete_of_wellformed).",
+   "lratRupCheck is not complete in general: it rejects every hint list for the tautological clause x0 or not x0, which is RUP with respect to the empty formula (lratRupCheck_incomplete_tautology), and for the empty clause with respect to (x0 or x0) and (not x0 or not x0), where it is RUP (lratRupCheck_incomplete_dup_lits).",
+   "Toy model only: literals are (variable, polarity) pairs, clauses and formulas are lists, unit propagation is a round-based propagator with a budget; any correspondence with production solvers and checkers (drat-trim, cake_lpr, Lean's bv_decide LRAT checker, SMT solvers that emit clausal proofs) is a derived (modeling bridge) claim, not a theorem."
+  ],
+  "prior_art": [
+   "L. Cruz-Filipe, M. J. H. Heule, W. A. Hunt Jr., M. Kaufmann, P. Schneider-Kamp, \"Efficient Certified RAT Verification\", CADE-26 (2017), LNCS 10395, pp. 220-236, doi:10.1007/978-3-319-63046-5_14; preprint arXiv:1612.02353 (read). Section 1 (p. 2): clauses are sorted so that duplicate or complementary literals can be detected, and \"Hints are also sorted in such a way that they become unit from left to right\". Section 2 (pp. 2-3): AT is unit propagation on F and the negation of C reaching a conflict; C is RAT if there is a literal l in C such that for all D in F containing the complement of l, C or (D minus that complement) is AT; the first literal is the DRAT pivot; the empty clause must be AT; deletion steps need not be checked because they trivially preserve satisfiability. Section 3 introduces LRAT hints. Section 4 (p. 9) states the Coq notion ICNF_reduces (every model of one formula yields a model of the other)."
+  ],
+  "design_question": "Is a hint-driven (LRAT-style) checker, which does no unit-clause search, still sound, and what must it check per hint?"
+ },
+ {
+  "id": "sloppy-hint-replay-unsound",
+  "lean": "Toy.Drat.sloppy_hint_replay_unsound",
+  "kind": "counterexample",
+  "tier": "T0",
+  "plain_claim": "A hint replay that assigns the first non-falsified literal of each hinted clause without checking that it is the only one accepts the hints [0, 1] as a refutation of the satisfiable formula (x0 or x1) and not x0, while the unit-checking replay rejects them.",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "The instance itself.",
+  "nonvacuity_witness_lean": "Toy.Drat.sloppy_hint_replay_unsound",
+  "positive_control_lean": [
+   "Toy.Drat.lrat_hint_replay_implies_rup"
+  ],
+  "non_claims": [
+   "Does not describe any existing checker; sloppyHintReplay is a strawman isolating the per-hint test of lrat-hint-replay-implies-rup.",
+   "Toy model only: literals are (variable, polarity) pairs, clauses and formulas are lists, unit propagation is a round-based propagator with a budget; any correspondence with production solvers and checkers (drat-trim, cake_lpr, Lean's bv_decide LRAT checker, SMT solvers that emit clausal proofs) is a derived (modeling bridge) claim, not a theorem."
+  ],
+  "prior_art": [
+   "L. Cruz-Filipe, M. J. H. Heule, W. A. Hunt Jr., M. Kaufmann, P. Schneider-Kamp, \"Efficient Certified RAT Verification\", CADE-26 (2017), LNCS 10395, pp. 220-236, doi:10.1007/978-3-319-63046-5_14; preprint arXiv:1612.02353 (read). Section 1 (p. 2): clauses are sorted so that duplicate or complementary literals can be detected, and \"Hints are also sorted in such a way that they become unit from left to right\". Section 2 (pp. 2-3): AT is unit propagation on F and the negation of C reaching a conflict; C is RAT if there is a literal l in C such that for all D in F containing the complement of l, C or (D minus that complement) is AT; the first literal is the DRAT pivot; the empty clause must be AT; deletion steps need not be checked because they trivially preserve satisfiability. Section 3 introduces LRAT hints. Section 4 (p. 9) states the Coq notion ICNF_reduces (every model of one formula yields a model of the other)."
+  ],
+  "design_question": "Reference point for: Is a hint-driven (LRAT-style) checker, which does no unit-clause search, still sound, and what must it check per hint? It isolates the per-hint test of lrat-hint-replay-implies-rup."
+ },
+ {
+  "id": "lrat-hint-replay-complete-wellformed",
+  "lean": "Toy.Drat.lratRupCheck_complete_of_wellformed",
+  "corollaries_lean": [
+   "Toy.Drat.lratRupCheckDedup_exists_iff_rup",
+   "Toy.Drat.lratRupCheck_rejects_blocked_resolvent"
+  ],
+  "corollaries": [
+   {
+    "lean": "Toy.Drat.lratRupCheckDedup_exists_iff_rup",
+    "statement": "theorem lratRupCheckDedup_exists_iff_rup (F : Formula) (C : Clause) :\n    (∃ hints, lratRupCheckDedup F C hints = true) ↔ RUP F C",
+    "statement_source": "ToyDrat/Lrat.lean:439-440",
+    "plain": "For every F and C: some hint list is accepted by lratRupCheckDedup F C if and only if RUP F C, where lratRupCheckDedup first tests the negated clause for a complementary pair and replays hints on deduplicated literals. No hypotheses; the main theorem follows because lratRupCheckDedup and lratRupCheck agree on well-formed inputs (lratRupCheckDedup_eq_of_wellformed).",
+    "hypotheses": []
+   },
+   {
+    "lean": "Toy.Drat.lratRupCheck_rejects_blocked_resolvent",
+    "statement": "theorem lratRupCheck_rejects_blocked_resolvent :\n    RUP [[Lit.n 0, Lit.p 1]] (resolventOn [Lit.p 0, Lit.n 1] [Lit.n 0, Lit.p 1] (Lit.p 0)) ∧\n      ∀ hints, lratRupCheck [[Lit.n 0, Lit.p 1]]\n        (resolventOn [Lit.p 0, Lit.n 1] [Lit.n 0, Lit.p 1] (Lit.p 0)) hints = false",
+    "statement_source": "ToyDrat/Lrat.lean:553-556",
+    "plain": "The tautological resolvent x0 or not x1 or x1 of the blocked clause x0 or not x1 (pivot x0) with not x0 or x1 is RUP with respect to not x0 or x1, and lratRupCheck rejects every hint list for it.",
+    "hypotheses": []
+   }
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_note": "LRAT is designed so that hints can be produced for RUP steps of well-formed clauses; the precise toy statement, with both side conditions shown tight (each on the witness class recorded in its ledger entry; they are not logically necessary, see lratRupCheck_side_conditions_not_necessary), is not known to be mechanized elsewhere. Not claimed novel.",
+  "plain_claim": "If C contains no complementary pair of literals (NonTautological C), no clause of F repeats a literal (DupFreeClauses F), and C is RUP with respect to F, then some hint list is accepted by lratRupCheck F C. Each side condition is tight: dropping either one admits an instance in which C is RUP and every hint list is rejected (lratRupCheck_incomplete_tautology, lratRupCheck_incomplete_dup_lits). Secondary theorems: for every F and C, the deduplicating variant lratRupCheckDedup, which also tests the negated clause for a complementary pair, accepts some hint list if and only if C is RUP with respect to F (lratRupCheckDedup_exists_iff_rup); and the tautological resolvent of the blocked clause x0 or not x1 on x0 with not x0 or x1 is RUP with respect to not x0 or x1 while lratRupCheck rejects every hint list for it (lratRupCheck_rejects_blocked_resolvent).",
+  "hypotheses": [
+   {
+    "name": "hC : NonTautological C",
+    "purpose": "lratRupCheck does not test the negated clause for a complementary pair. Tight (on F empty, C = x0 or not x0).",
+    "tightness": "tight",
+    "counterexample": "Toy.Drat.lratRupCheck_incomplete_tautology",
+    "witness_class": "F empty, C = x0 or not x0"
+   },
+   {
+    "name": "hF : DupFreeClauses F",
+    "purpose": "lratRupCheck counts literal occurrences, so x0 or x0 is never unit for it. Tight (on F = (x0 or x0) and (not x0 or not x0), C = []).",
+    "tightness": "tight",
+    "counterexample": "Toy.Drat.lratRupCheck_incomplete_dup_lits",
+    "witness_class": "F = (x0 or x0) and (not x0 or not x0), C = []"
+   },
+   {
+    "name": "h : RUP F C",
+    "purpose": "Accepted hint lists certify RUP (lrat_hint_replay_implies_rup).",
+    "tightness": "tight",
+    "counterexample": "Toy.Drat.lrat_complete_tight_rup",
+    "witness_class": "F = x0 or x1, C = x0"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "chain3 (no clause repeats a literal), C = [] (no complementary pair), C RUP with respect to chain3.",
+  "nonvacuity_witness_lean": "Toy.Drat.lrat_complete_nonvacuous",
+  "non_claims": [
+   "Existence only: no bound on the length of the hint list is stated, and the hint list is not claimed to be computable by any particular procedure (the proof extracts it from a propagation run).",
+   "The side conditions are tight but not logically necessary: each can fail while C is RUP and some hint list is still accepted (lratRupCheck_side_conditions_not_necessary).",
+   "Clause identifiers are positions in the current formula; LRAT identifiers, RAT hints, and deletions of hinted clauses are not modeled.",
+   "The DRAT and LRAT formats exclude tautological clauses and repeated literals (Heule 2016, pp. 2-3; Cruz-Filipe et al. 2017, Section 1), so the side conditions correspond to well-formed input; that correspondence is a derived (modeling bridge) claim.",
+   "Toy model only: literals are (variable, polarity) pairs, clauses and formulas are lists, unit propagation is a round-based propagator with a budget; any correspondence with production solvers and checkers (drat-trim, cake_lpr, Lean's bv_decide LRAT checker, SMT solvers that emit clausal proofs) is a derived (modeling bridge) claim, not a theorem."
+  ],
+  "prior_art": [
+   "L. Cruz-Filipe, M. J. H. Heule, W. A. Hunt Jr., M. Kaufmann, P. Schneider-Kamp, \"Efficient Certified RAT Verification\", CADE-26 (2017), LNCS 10395, pp. 220-236, doi:10.1007/978-3-319-63046-5_14; preprint arXiv:1612.02353 (read). Section 1 (p. 2): clauses are sorted so that duplicate or complementary literals can be detected, and \"Hints are also sorted in such a way that they become unit from left to right\". Section 2 (pp. 2-3): AT is unit propagation on F and the negation of C reaching a conflict; C is RAT if there is a literal l in C such that for all D in F containing the complement of l, C or (D minus that complement) is AT; the first literal is the DRAT pivot; the empty clause must be AT; deletion steps need not be checked because they trivially preserve satisfiability. Section 3 introduces LRAT hints. Section 4 (p. 9) states the Coq notion ICNF_reduces (every model of one formula yields a model of the other).",
+   "M. J. H. Heule, \"The DRAT format and DRAT-trim checker\", arXiv:1610.06229 (2016), read. Pages 2-3: clauses may contain neither complementary nor duplicate literals; formulas are multisets of clauses; lines after the empty clause are ignored; the first literal is the RAT pivot and the empty clause must be AT; \"A clause deletion step removes a single clause (if the clause is present)\", so k deletion steps are needed to remove k copies; DRAT-trim ignores deletion steps of unit clauses, and \"ignoring deletion steps of unit clauses can turn a valid DRAT proof into an invalid one — and the other way around.\"",
+   "Lean 4 core at tag v4.34.1 (commit 5045d0056413266e57c625dcd7c365b10e377c52), source read at that commit. src/Std/Tactic/BVDecide/LRAT/Checker.lean: Std.Tactic.BVDecide.LRAT.check runs Std.Tactic.BVDecide.LRAT.Internal.compactLratChecker, and check_sound (a successful check implies the CNF is unsatisfiable) applies compactLratChecker_sound (src/Std/Tactic/BVDecide/LRAT/Internal/CompactLRATCheckerSound.lean). That proof is a functional induction over the checker loop using addEmptyCaseSound (from LRATCheckerSound.lean) for the empty-clause step, Formula.limplies_delete (Internal/CNF.lean) for deletions, and the rupAdd_sound and ratAdd_sound fields of the Formula class (Internal/Formula/Class.lean), proved for DefaultFormula in Internal/Formula/RupAddSound.lean (a successful RUP addition yields a logically equivalent formula) and Internal/Formula/RatAddSound.lean (a successful RAT addition with the pivot in the clause yields an equisatisfiable formula). LRATCheckerSound.lean also proves lratCheckerSound, with addRupCaseSound, addRatCaseSound and delCaseSound, for the list-based lratChecker, which check does not call."
+  ],
+  "modeling_bridge": "derived (modeling bridge), from the Lean 4 core v4.34.1 source (commit 5045d0056413266e57c625dcd7c365b10e377c52): DefaultClause carries the invariants nodupkey (no variable occurs with both polarities) and nodup (no repeated literal) (Internal/Clause.lean lines 95-98), so its clauses satisfy both side conditions of lratRupCheck_complete_of_wellformed by construction; performRupAdd first inserts the negated clause as units and succeeds if that yields a contradiction (Internal/Formula/Implementation.lean lines 219-225); confirmRupHint stops examining hints once the empty clause is derived and continues without error when a hinted clause reduces to a literal that is already assigned (lines 176-195), as the toy hintReplay does. compactLratChecker skips (does not add) a RAT step whose pivot is not in the clause (Internal/CompactLRATChecker.lean lines 48-56). Whether its verdicts coincide with lratRupCheck on well-formed inputs is not proved here.",
+  "design_question": "Is a hint-driven (LRAT-style) checker, which does no unit-clause search, still sound, and what must it check per hint?",
+  "lean_names": [
+   "Toy.Drat.lratRupCheckDedup_exists_iff_rup",
+   "Toy.Drat.lratRupCheck_rejects_blocked_resolvent"
+  ]
+ }
+]
