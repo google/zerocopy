@@ -1,7 +1,7 @@
 import Toy
 
 /-!
-Axiom audit for every theorem referenced by `results.json` and by the report text (71 theorems,
+Axiom audit for every theorem referenced by `results.json` and by the report text (75 theorems,
 including `Toy.ByteSL.Layout2.fits₁_zero`, which the report names only inside the quoted
 definition of `structDecode`). Not part of the library target. Run from this directory after
 `lake build`:
@@ -12,6 +12,10 @@ Every line printed must list only `propext`, `Classical.choice`, `Quot.sound` (o
 declaration does not depend on any axioms).
 -/
 
+#print axioms Toy.ByteSL.Heap.emp_val
+#print axioms Toy.ByteSL.Heap.ext
+#print axioms Toy.ByteSL.Heap.join_val
+#print axioms Toy.ByteSL.Heap.set_val
 #print axioms Toy.ByteSL.Layout2.fits₁_zero
 #print axioms Toy.ByteSL.bcopyLoose_safetyMono_and_not_frameProp
 #print axioms Toy.ByteSL.bstoreShared_safetyMono_and_not_frameProp
