@@ -12011,6 +12011,129 @@
         "verification/compiler-verification"
       ]
     },
+    "bisimulation-up-to-techniques-compatibility-and-the-weak-up-to-pitfall": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "isbn": "0-13-115007-3"
+          },
+          "name": "Communication and Concurrency (Milner 1989)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/BFb0084781"
+          },
+          "name": "The problem of \"weak bisimulation up to\" (Sangiorgi, Milner, CONCUR 1992)"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0960129598002527"
+          },
+          "name": "On the bisimulation proof method (Sangiorgi, MSCS 1998)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/11523468_59"
+          },
+          "name": "Up-to techniques for weak bisimulation (Pous, ICALP 2005)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.tcs.2007.02.060"
+          },
+          "name": "New up-to techniques for weak bisimulation (Pous, TCS 2007)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-540-76637-7_24"
+          },
+          "name": "Complete lattices and up-to techniques (Pous, APLAS 2007)"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/CBO9780511792588.007"
+          },
+          "name": "Enhancements of the bisimulation proof method (Pous, Sangiorgi 2011)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2933575.2934564"
+          },
+          "name": "Coinduction all the way up (Pous, LICS 2016)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3158131"
+          },
+          "name": "Up-to techniques using sized types (Danielsson, POPL 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/BF01191894"
+          },
+          "name": "An efficiency preorder for processes (Arun-Kumar, Hennessy 1992)"
+        },
+        {
+          "identity": {
+            "doi": "10.23638/LMCS-15(3:12)2019"
+          },
+          "name": "Divergence and unique solution of equations (Durier, Hirschkoff, Sangiorgi 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.46298/LMCS-21(3:25)2025"
+          },
+          "name": "Extensional and non-extensional functions as processes (Sakayori, Sangiorgi 2025)"
+        },
+        {
+          "identity": {
+            "repository": "nad/up-to",
+            "revision": "cf302a9ed4b794c2e3ce59660e4d0847a02e6075"
+          },
+          "name": "Agda development of up-to techniques using sized types"
+        },
+        {
+          "identity": {
+            "repository": "damien-pous/coinduction",
+            "revision": "07d2a09f9cb971209683298e9f5b3f5031d98b3f"
+          },
+          "name": "Coq/Rocq companion and tower induction library"
+        },
+        {
+          "identity": {
+            "repository": "damien-pous/coinduction-examples",
+            "revision": "467300e04f56fd465817179589383e37db7e9cbc"
+          },
+          "name": "Coq/Rocq coinduction examples (CCS)"
+        },
+        {
+          "identity": {
+            "repository": "rocq-archive/weak-up-to",
+            "revision": "6780e1d43bc9583d5e6fe47418980d4dbc8f6527"
+          },
+          "name": "Coq/Rocq development of weak up-to techniques"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/bisimulation",
+        "verification/up-to-techniques",
+        "verification/coinduction",
+        "verification/refinement",
+        "pl/process-calculi",
+        "compilers/simulation-proofs"
+      ]
+    },
     "bit-level-sub-eightbyte-packing-hfa-and-c-variadic-fnabi-refinement": {
       "observed_at": "2026-11-14",
       "subjects": [

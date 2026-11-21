@@ -1,0 +1,6 @@
+name = "toy_upto"
+version = "0.1.0"
+defaultTargets = ["ToyUpTo"]
+
+[[lean_lib]]
+name = "ToyUpTo"
