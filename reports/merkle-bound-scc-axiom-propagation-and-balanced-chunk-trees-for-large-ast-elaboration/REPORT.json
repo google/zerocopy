@@ -1,0 +1,106 @@
+{
+  "topics": [
+    "verification/lean4",
+    "verification/proof-auditing",
+    "verification/proof-engineering",
+    "lean/kernel",
+    "lean/elaboration"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 declaration model, CollectAxioms extension, Kernel.Environment.replay, CoreM recursion limits, and Lake module traces",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "ab8894fb4de9405d7be3627bdcfbfe74be0383d0"
+      }
+    },
+    {
+      "name": "lean4checker parallel import replay and fresh kernel replay CLI",
+      "identity": {
+        "repository": "leanprover/lean4checker",
+        "revision": "91a7f0e8e9dffe927089f5a6edcfeeb8a0e07709"
+      }
+    },
+    {
+      "name": "SafeVerify target-vs-submission olean replay and axiom auditor",
+      "identity": {
+        "repository": "GasStationManager/SafeVerify",
+        "revision": "b291b588a53999a7e837dda61c7dbfe8c550c814"
+      }
+    },
+    {
+      "name": "Comparator landrun-sandboxed lean4export challenge/solution verifier",
+      "identity": {
+        "repository": "leanprover/comparator",
+        "revision": "865edc14486c3388e9225daa971da8e157488c3e"
+      }
+    },
+    {
+      "name": "Lean4Lean mechanized Lean 4 typechecker and constant-dependency replay",
+      "identity": {
+        "repository": "digama0/lean4lean",
+        "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3",
+        "arxiv": "2403.14064",
+        "doi": "10.48550/arXiv.2403.14064"
+      }
+    },
+    {
+      "name": "nanoda_lib safe-Rust external Lean 4 export verifier",
+      "identity": {
+        "repository": "ammkrn/nanoda_lib",
+        "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929",
+        "version": "0.4.32"
+      }
+    },
+    {
+      "name": "Rocq prover Print Assumptions traversal and delayed opaque proof handling",
+      "identity": {
+        "repository": "rocq-prover/rocq",
+        "revision": "25f5b18a320e4796f181f938d3b74bebe7db4dc4"
+      }
+    },
+    {
+      "name": "CompCert verified C compiler positive binary radix trees (Maps.PTree)",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+      }
+    },
+    {
+      "name": "Mokhov, Mitchell, and Peyton Jones (2018/2020), Build Systems a la Carte: Theory and Practice",
+      "identity": {
+        "icfp_doi": "10.1145/3236774",
+        "jfp_doi": "10.1017/S0956796820000088"
+      }
+    },
+    {
+      "name": "Pollack (1998), How to Believe a Machine-Checked Proof",
+      "identity": {
+        "doi": "10.1093/oso/9780198501275.003.0013",
+        "report_doi": "10.7146/brics.v4i18.18945"
+      }
+    },
+    {
+      "name": "Appel and Leroy (2023), Efficient Extensional Binary Tries",
+      "identity": {
+        "doi": "10.1007/s10817-022-09655-x",
+        "arxiv": "2110.05063"
+      }
+    },
+    {
+      "name": "Okasaki (1997), Three Algorithms on Braun Trees, and Braun and Rem (1983), Flexible Arrays",
+      "identity": {
+        "doi": "10.1017/S0956796897003073",
+        "report": "Eindhoven Memorandum MR83/4 (1983)"
+      }
+    },
+    {
+      "name": "Tarjan (1972), Depth-First Search and Linear Graph Algorithms",
+      "identity": {
+        "doi": "10.1137/0201010",
+        "venue": "SIAM Journal on Computing 1(2):146-160"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

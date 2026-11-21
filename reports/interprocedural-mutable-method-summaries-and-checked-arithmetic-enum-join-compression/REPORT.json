@@ -1,0 +1,131 @@
+{
+  "topics": [
+    "rust/verification",
+    "verification/symbolic-execution",
+    "pl/program-logics",
+    "rustc/mir",
+    "aeneas/borrows-regions"
+  ],
+  "subjects": [
+    {
+      "name": "Aeneas functional Rust-to-Lean/Rocq translator and LLBC symbolic-to-pure join lowering",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "2e3d4488280bb8a95411db81019a7854a784861f"
+      }
+    },
+    {
+      "name": "Creusot prophetic mutable-borrow fMIR translator and Why3 deductive verifier",
+      "identity": {
+        "repository": "creusot-rs/creusot",
+        "revision": "faeb61f5b5a8ffda94fde1f100ef96a1d798088b"
+      }
+    },
+    {
+      "name": "Verus linear-ghost Rust verifier and SST-to-AIR call encoder",
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "2c79db6e49ab16f3f124b797e5374b2f1c013d83"
+      }
+    },
+    {
+      "name": "Gillian compositional symbolic execution engine",
+      "identity": {
+        "repository": "GillianPlatform/Gillian",
+        "revision": "469aa5c134ba7790c40669bd4bc50483aff36d7b"
+      }
+    },
+    {
+      "name": "Gillian-Rust hybrid separation-logic and prophetic borrow verifier",
+      "identity": {
+        "repository": "GillianPlatform/gillian-rust",
+        "revision": "83d739e83034d71162fb66b569041cf301123df7"
+      }
+    },
+    {
+      "name": "Crux-MIR symbolic simulator for Rust MIR",
+      "identity": {
+        "repository": "GaloisInc/mir-verifier",
+        "revision": "ff71bd2b4bb58c71c4a93e1726c60b4aef96bcc0"
+      }
+    },
+    {
+      "name": "Crucible CFG postdominator state-merging symbolic simulator",
+      "identity": {
+        "repository": "GaloisInc/crucible",
+        "revision": "ee9878c9ad4fad51aa74664808f2aa1f7ca663e3"
+      }
+    },
+    {
+      "name": "Rust compiler MIR syntax and Try::branch lowering",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973"
+      }
+    },
+    {
+      "name": "Miri Tree Borrows reference-protector operational semantics",
+      "identity": {
+        "repository": "rust-lang/miri",
+        "revision": "7e679961edcfe2c526f19153bb8b03de346efa5c"
+      }
+    },
+    {
+      "name": "Ho and Protzenko (2022) and Ho, Fromherz, and Protzenko (2024), Aeneas functional translation and symbolic borrow semantics",
+      "identity": {
+        "icfp2022_doi": "10.1145/3547647",
+        "icfp2024_doi": "10.1145/3674640",
+        "venue": "PACMPL (ICFP 2022 and ICFP 2024)"
+      }
+    },
+    {
+      "name": "Denis, Jourdan, and Marche (2022) and Matsushita, Denis, Jourdan, and Dreyer (2022), Creusot and RustHornBelt prophetic mutable borrows",
+      "identity": {
+        "creusot_doi": "10.1007/978-3-031-17244-1_6",
+        "rusthornbelt_doi": "10.1145/3519939.3523704"
+      }
+    },
+    {
+      "name": "Sammler et al. (2021) and Gaher et al. (2024), RefinedC/Lithium and RefinedRust ownership verification",
+      "identity": {
+        "refinedc_doi": "10.1145/3453483.3454036",
+        "refinedrust_doi": "10.1145/3656422",
+        "artifact_doi": "10.5281/zenodo.10912439"
+      }
+    },
+    {
+      "name": "Ayoun et al. (2025), A Hybrid Approach to Semi-automated Rust Verification (Gillian-Rust)",
+      "identity": {
+        "doi": "10.1145/3729289",
+        "arxiv": "2403.15122",
+        "venue": "PACMPL 9 (PLDI 2025)"
+      }
+    },
+    {
+      "name": "Lattuada et al. (2023), Verus: Verifying Rust Programs using Linear Ghost Types",
+      "identity": {
+        "doi": "10.1145/3586037",
+        "venue": "PACMPL 7 (OOPSLA 2023)"
+      }
+    },
+    {
+      "name": "Villani et al. (2025), Tree Borrows",
+      "identity": {
+        "doi": "10.1145/3735592",
+        "venue": "PACMPL 9 (PLDI 2025)"
+      }
+    },
+    {
+      "name": "Flanagan and Saxe (2001), Kuznetsov et al. (2012), Torlak and Bodik (2014), Sen et al. (2015), Chargueraud (2011/2020), and Owens et al. (2016), compact VC generation, state merging, and functional big-step semantics",
+      "identity": {
+        "flanagan_saxe_doi": "10.1145/360204.360220",
+        "kuznetsov_doi": "10.1145/2254064.2254088",
+        "rosette_doi": "10.1145/2594291.2594340",
+        "multise_doi": "10.1145/2786805.2786830",
+        "cfml_doi": "10.1145/2034773.2034828",
+        "owens_esop2016_doi": "10.1007/978-3-662-49498-1_23"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

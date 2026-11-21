@@ -42556,6 +42556,137 @@
         "anneal/interactive-lsp"
       ]
     },
+    "interprocedural-mutable-method-summaries-and-checked-arithmetic-enum-join-compression": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "2e3d4488280bb8a95411db81019a7854a784861f"
+          },
+          "name": "Aeneas functional Rust-to-Lean/Rocq translator and LLBC symbolic-to-pure join lowering"
+        },
+        {
+          "identity": {
+            "repository": "creusot-rs/creusot",
+            "revision": "faeb61f5b5a8ffda94fde1f100ef96a1d798088b"
+          },
+          "name": "Creusot prophetic mutable-borrow fMIR translator and Why3 deductive verifier"
+        },
+        {
+          "identity": {
+            "repository": "verus-lang/verus",
+            "revision": "2c79db6e49ab16f3f124b797e5374b2f1c013d83"
+          },
+          "name": "Verus linear-ghost Rust verifier and SST-to-AIR call encoder"
+        },
+        {
+          "identity": {
+            "repository": "GillianPlatform/Gillian",
+            "revision": "469aa5c134ba7790c40669bd4bc50483aff36d7b"
+          },
+          "name": "Gillian compositional symbolic execution engine"
+        },
+        {
+          "identity": {
+            "repository": "GillianPlatform/gillian-rust",
+            "revision": "83d739e83034d71162fb66b569041cf301123df7"
+          },
+          "name": "Gillian-Rust hybrid separation-logic and prophetic borrow verifier"
+        },
+        {
+          "identity": {
+            "repository": "GaloisInc/mir-verifier",
+            "revision": "ff71bd2b4bb58c71c4a93e1726c60b4aef96bcc0"
+          },
+          "name": "Crux-MIR symbolic simulator for Rust MIR"
+        },
+        {
+          "identity": {
+            "repository": "GaloisInc/crucible",
+            "revision": "ee9878c9ad4fad51aa74664808f2aa1f7ca663e3"
+          },
+          "name": "Crucible CFG postdominator state-merging symbolic simulator"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973"
+          },
+          "name": "Rust compiler MIR syntax and Try::branch lowering"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/miri",
+            "revision": "7e679961edcfe2c526f19153bb8b03de346efa5c"
+          },
+          "name": "Miri Tree Borrows reference-protector operational semantics"
+        },
+        {
+          "identity": {
+            "icfp2022_doi": "10.1145/3547647",
+            "icfp2024_doi": "10.1145/3674640",
+            "venue": "PACMPL (ICFP 2022 and ICFP 2024)"
+          },
+          "name": "Ho and Protzenko (2022) and Ho, Fromherz, and Protzenko (2024), Aeneas functional translation and symbolic borrow semantics"
+        },
+        {
+          "identity": {
+            "creusot_doi": "10.1007/978-3-031-17244-1_6",
+            "rusthornbelt_doi": "10.1145/3519939.3523704"
+          },
+          "name": "Denis, Jourdan, and Marche (2022) and Matsushita, Denis, Jourdan, and Dreyer (2022), Creusot and RustHornBelt prophetic mutable borrows"
+        },
+        {
+          "identity": {
+            "artifact_doi": "10.5281/zenodo.10912439",
+            "refinedc_doi": "10.1145/3453483.3454036",
+            "refinedrust_doi": "10.1145/3656422"
+          },
+          "name": "Sammler et al. (2021) and Gaher et al. (2024), RefinedC/Lithium and RefinedRust ownership verification"
+        },
+        {
+          "identity": {
+            "arxiv": "2403.15122",
+            "doi": "10.1145/3729289",
+            "venue": "PACMPL 9 (PLDI 2025)"
+          },
+          "name": "Ayoun et al. (2025), A Hybrid Approach to Semi-automated Rust Verification (Gillian-Rust)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3586037",
+            "venue": "PACMPL 7 (OOPSLA 2023)"
+          },
+          "name": "Lattuada et al. (2023), Verus: Verifying Rust Programs using Linear Ghost Types"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3735592",
+            "venue": "PACMPL 9 (PLDI 2025)"
+          },
+          "name": "Villani et al. (2025), Tree Borrows"
+        },
+        {
+          "identity": {
+            "cfml_doi": "10.1145/2034773.2034828",
+            "flanagan_saxe_doi": "10.1145/360204.360220",
+            "kuznetsov_doi": "10.1145/2254064.2254088",
+            "multise_doi": "10.1145/2786805.2786830",
+            "owens_esop2016_doi": "10.1007/978-3-662-49498-1_23",
+            "rosette_doi": "10.1145/2594291.2594340"
+          },
+          "name": "Flanagan and Saxe (2001), Kuznetsov et al. (2012), Torlak and Bodik (2014), Sen et al. (2015), Chargueraud (2011/2020), and Owens et al. (2016), compact VC generation, state merging, and functional big-step semantics"
+        }
+      ],
+      "topics": [
+        "rust/verification",
+        "verification/symbolic-execution",
+        "pl/program-logics",
+        "rustc/mir",
+        "aeneas/borrows-regions"
+      ]
+    },
     "intrusive-rbtree-parent-color-bitpacking-cursor-lenses-and-iris-flow-algebras": {
       "observed_at": "2026-11-20",
       "subjects": [
@@ -52713,6 +52844,112 @@
         "security/heap-hardening",
         "systems/virtual-memory",
         "verification/separation-logic"
+      ]
+    },
+    "merkle-bound-scc-axiom-propagation-and-balanced-chunk-trees-for-large-ast-elaboration": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "ab8894fb4de9405d7be3627bdcfbfe74be0383d0"
+          },
+          "name": "Lean 4 declaration model, CollectAxioms extension, Kernel.Environment.replay, CoreM recursion limits, and Lake module traces"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4checker",
+            "revision": "91a7f0e8e9dffe927089f5a6edcfeeb8a0e07709"
+          },
+          "name": "lean4checker parallel import replay and fresh kernel replay CLI"
+        },
+        {
+          "identity": {
+            "repository": "GasStationManager/SafeVerify",
+            "revision": "b291b588a53999a7e837dda61c7dbfe8c550c814"
+          },
+          "name": "SafeVerify target-vs-submission olean replay and axiom auditor"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/comparator",
+            "revision": "865edc14486c3388e9225daa971da8e157488c3e"
+          },
+          "name": "Comparator landrun-sandboxed lean4export challenge/solution verifier"
+        },
+        {
+          "identity": {
+            "arxiv": "2403.14064",
+            "doi": "10.48550/arXiv.2403.14064",
+            "repository": "digama0/lean4lean",
+            "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+          },
+          "name": "Lean4Lean mechanized Lean 4 typechecker and constant-dependency replay"
+        },
+        {
+          "identity": {
+            "repository": "ammkrn/nanoda_lib",
+            "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929",
+            "version": "0.4.32"
+          },
+          "name": "nanoda_lib safe-Rust external Lean 4 export verifier"
+        },
+        {
+          "identity": {
+            "repository": "rocq-prover/rocq",
+            "revision": "25f5b18a320e4796f181f938d3b74bebe7db4dc4"
+          },
+          "name": "Rocq prover Print Assumptions traversal and delayed opaque proof handling"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert verified C compiler positive binary radix trees (Maps.PTree)"
+        },
+        {
+          "identity": {
+            "icfp_doi": "10.1145/3236774",
+            "jfp_doi": "10.1017/S0956796820000088"
+          },
+          "name": "Mokhov, Mitchell, and Peyton Jones (2018/2020), Build Systems a la Carte: Theory and Practice"
+        },
+        {
+          "identity": {
+            "doi": "10.1093/oso/9780198501275.003.0013",
+            "report_doi": "10.7146/brics.v4i18.18945"
+          },
+          "name": "Pollack (1998), How to Believe a Machine-Checked Proof"
+        },
+        {
+          "identity": {
+            "arxiv": "2110.05063",
+            "doi": "10.1007/s10817-022-09655-x"
+          },
+          "name": "Appel and Leroy (2023), Efficient Extensional Binary Tries"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796897003073",
+            "report": "Eindhoven Memorandum MR83/4 (1983)"
+          },
+          "name": "Okasaki (1997), Three Algorithms on Braun Trees, and Braun and Rem (1983), Flexible Arrays"
+        },
+        {
+          "identity": {
+            "doi": "10.1137/0201010",
+            "venue": "SIAM Journal on Computing 1(2):146-160"
+          },
+          "name": "Tarjan (1972), Depth-First Search and Linear Graph Algorithms"
+        }
+      ],
+      "topics": [
+        "verification/lean4",
+        "verification/proof-auditing",
+        "verification/proof-engineering",
+        "lean/kernel",
+        "lean/elaboration"
       ]
     },
     "merkle-transparency-logs-trillian-sigstore-witnesses-and-split-view-gossip": {
