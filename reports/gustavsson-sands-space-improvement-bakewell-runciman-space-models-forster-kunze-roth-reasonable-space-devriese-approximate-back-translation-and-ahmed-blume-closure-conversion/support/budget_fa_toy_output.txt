@@ -1,0 +1,20 @@
+== python3 budget_fa_toy.py 4 3 3
+programs=18 source_contexts=43 target_contexts=20 budgets=0..4
+[arena] source classes=7 target classes=7 source-equivalent pairs separated by target contexts=16 target-equivalent pairs separated in source=12
+  witness: p=('skip',) q=('val', ('val', ('skip',))) (equivalent in source under 'arena')
+    target context=('cell', ('cell', ('cell', ('hole',)))) budget=4: t(p)->((), 'done')  t(q)->((), 'oom')
+[combined] source classes=7 target classes=7 source-equivalent pairs separated by target contexts=0 target-equivalent pairs separated in source=0
+
+== python3 budget_fa_toy.py 5 4 4
+programs=58 source_contexts=179 target_contexts=69 budgets=0..5
+[arena] source classes=12 target classes=12 source-equivalent pairs separated by target contexts=142 target-equivalent pairs separated in source=112
+  witness: p=('skip',) q=('val', ('val', ('skip',))) (equivalent in source under 'arena')
+    target context=('cell', ('cell', ('cell', ('cell', ('hole',))))) budget=5: t(p)->((), 'done')  t(q)->((), 'oom')
+[combined] source classes=12 target classes=12 source-equivalent pairs separated by target contexts=0 target-equivalent pairs separated in source=0
+
+== python3 budget_fa_toy.py 6 5 4
+programs=202 source_contexts=179 target_contexts=69 budgets=0..6
+[arena] source classes=20 target classes=20 source-equivalent pairs separated by target contexts=1472 target-equivalent pairs separated in source=1045
+  witness: p=('skip',) q=('val', ('val', ('val', ('skip',)))) (equivalent in source under 'arena')
+    target context=('cell', ('cell', ('cell', ('cell', ('hole',))))) budget=6: t(p)->((), 'done')  t(q)->((), 'oom')
+[combined] source classes=20 target classes=20 source-equivalent pairs separated by target contexts=0 target-equivalent pairs separated in source=0

@@ -36579,6 +36579,186 @@
         "minirust/semantics"
       ]
     },
+    "gustavsson-sands-space-improvement-bakewell-runciman-space-models-forster-kunze-roth-reasonable-space-devriese-approximate-back-translation-and-ahmed-blume-closure-conversion": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "uds-psl/cbv-lambda-calculus-reasonable",
+            "revision": "4f12b7c8ce2816cdd771d22d04943e0fa81c63fd"
+          },
+          "name": "Forster-Kunze-Roth Coq formalisation (abstract machines)"
+        },
+        {
+          "identity": {
+            "path": "semantics/proofs/semanticsPropsScript.sml",
+            "repository": "CakeML/cakeml",
+            "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+          },
+          "name": "CakeML resource-limit escape definition"
+        },
+        {
+          "identity": {
+            "path": "pdf/lmcs-TR.pdf; pdf/main-full.pdf",
+            "repository": "squera/squera.github.io",
+            "revision": "ec5c7909a6b5245aabf9c1caabb79b0b7b07d543"
+          },
+          "name": "Author-hosted technical appendix (Devriese et al. LMCS) and full survey version (Patrignani et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/292540.292547"
+          },
+          "name": "Moran and Sands, Improvement in a Lazy Context"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/S1571-0661(05)80284-1"
+          },
+          "name": "Gustavsson and Sands, A Foundation for Space-Safe Transformations of Call-by-Need Programs"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3-540-36377-7_4"
+          },
+          "name": "Sands, Gustavsson and Moran, Lambda Calculi and Linear Speedups"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3341718"
+          },
+          "name": "Hackett and Hutton, Call-by-Need Is Clairvoyant Call-by-Value"
+        },
+        {
+          "identity": {
+            "arxiv": "1902.07515",
+            "doi": "10.1145/3371095"
+          },
+          "name": "Forster, Kunze and Roth, The Weak Call-by-Value lambda-Calculus Is Reasonable for Both Time and Space"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3531130.3533362"
+          },
+          "name": "Accattoli, Dal Lago and Vanoni, Reasonable Space for the lambda-Calculus, Logarithmically (LICS)"
+        },
+        {
+          "identity": {
+            "arxiv": "2203.00362",
+            "doi": "10.46298/lmcs-20(4:15)2024"
+          },
+          "name": "Accattoli, Dal Lago and Vanoni, Reasonable Space for the lambda-Calculus, Logarithmically (LMCS)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/BFb0055109",
+            "version": "read as SRC Research Report 154, 1998-04-17"
+          },
+          "name": "Abadi, Protection in Programming-Language Translations"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1411204.1411227"
+          },
+          "name": "Ahmed and Blume, Typed Closure Conversion Preserves Observational Equivalence"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2837614.2837618"
+          },
+          "name": "Devriese, Patrignani and Piessens, Fully-Abstract Compilation by Approximate Back-Translation"
+        },
+        {
+          "identity": {
+            "arxiv": "1703.09988",
+            "doi": "10.23638/lmcs-13(4:2)2017"
+          },
+          "name": "Devriese, Patrignani, Piessens and Keuchel, Modular, Fully-abstract Compilation by Approximate Back-translation"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3280984"
+          },
+          "name": "Patrignani, Ahmed and Clarke, Formal Approaches to Secure Compilation"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3341687"
+          },
+          "name": "Paraskevopoulou and Appel, Closure Conversion Is Safe for Space"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2699503"
+          },
+          "name": "Patrignani et al., Secure Compilation to Protected Module Architectures"
+        },
+        {
+          "identity": {
+            "arxiv": "1602.04503",
+            "doi": "10.1109/CSF.2016.11"
+          },
+          "name": "Juglaret et al., Beyond Good and Evil"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2429069.2429114"
+          },
+          "name": "Fournet et al., Fully Abstract Compilation to JavaScript"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3290332"
+          },
+          "name": "Skorstengaard, Devriese and Birkedal, StkTokens"
+        },
+        {
+          "identity": {
+            "arxiv": "1802.00588",
+            "doi": "10.1145/3243734.3243745"
+          },
+          "name": "Abate et al., When Good Components Go Bad"
+        },
+        {
+          "identity": {
+            "arxiv": "2401.16277",
+            "doi": "10.1145/3658644.3670288"
+          },
+          "name": "Thibault et al., SECOMP"
+        },
+        {
+          "identity": {
+            "arxiv": "1807.04603",
+            "doi": "10.1109/CSF.2019.00025"
+          },
+          "name": "Abate et al., Journey Beyond Full Abstraction"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2594291.2594301"
+          },
+          "name": "Carbonneaux et al., End-to-End Verification of Stack-Space Bounds for C Programs"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796818000229"
+          },
+          "name": "Tan et al., The Verified CakeML Compiler Backend"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-018-9496-y"
+          },
+          "name": "Besson, Blazy and Wilke, CompCertS"
+        }
+      ],
+      "topics": [
+        "pl/space-improvement-theory",
+        "verification/resource-bounded-full-abstraction",
+        "pl/space-cost-model-invariance",
+        "compilers/back-translation-under-resource-bounds"
+      ]
+    },
     "gz-righting-hydrostatics-tank-sloshing-moments-and-lng-rollover-boiloff": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -43318,6 +43498,199 @@
         "isa/x86-64",
         "verification/cryptography",
         "build/nix"
+      ]
+    },
+    "jinja-outofmemory-kang-quasi-concrete-finite-memory-lee-twin-allocation-n3664-allocation-elision-wasm-memory-grow-failure-and-linux-overcommit": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "path": "thys/Jinja",
+            "repository": "isabelle-prover/mirror-afp-devel",
+            "revision": "523cdc72b5ae4a91c9ab8e1025d4a30b40472720"
+          },
+          "name": "Jinja (Archive of Formal Proofs, read-only mirror)"
+        },
+        {
+          "identity": {
+            "path": "common/Memory.v",
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert memory model"
+        },
+        {
+          "identity": {
+            "path": "spec/mem/basic.md",
+            "repository": "minirust/minirust",
+            "revision": "063d784186d3252bee242217f218223205c0b568"
+          },
+          "name": "MiniRust basic memory model"
+        },
+        {
+          "identity": {
+            "repository": "CakeML/cakeml",
+            "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+          },
+          "name": "CakeML compiler correctness theorem"
+        },
+        {
+          "identity": {
+            "path": "library/core/src/alloc/global.rs",
+            "repository": "rust-lang/rust",
+            "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973"
+          },
+          "name": "Rust standard library allocator contract"
+        },
+        {
+          "identity": {
+            "path": "text/2116-alloc-me-maybe.md",
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "Rust RFC 2116 fallible collection allocation"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "04e0e9cc603537fbc16685f872fba17f937f90ff"
+          },
+          "name": "LLVM LangRef and InstCombine allocation removal"
+        },
+        {
+          "identity": {
+            "repository": "WebAssembly/spec",
+            "revision": "6fca707686ed4f36a1e30ec2ae7d3dd32b276704"
+          },
+          "name": "WebAssembly specification"
+        },
+        {
+          "identity": {
+            "repository": "WasmCert/WasmCert-Isabelle",
+            "revision": "d9b4659c8b38879a5fc7e0213950751a61091908"
+          },
+          "name": "WasmCert-Isabelle"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "84afebd853437e44cb71f718be11d90e4c1a59dd"
+          },
+          "name": "Linux kernel overcommit and cgroup memory documentation and source"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-11), LLVM 23.1.5"
+          },
+          "name": "rustc toolchain used for probes"
+        },
+        {
+          "identity": {
+            "toolchain": "gcc",
+            "version": "15.2.0 (Debian 15.2.0-14)"
+          },
+          "name": "GCC toolchain used for probes"
+        },
+        {
+          "identity": {
+            "kernel": "Linux",
+            "version": "7.1.6 (Debian-derived distribution build)"
+          },
+          "name": "Linux kernel build used for probes"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1146809.1146811"
+          },
+          "name": "Klein and Nipkow, A Machine-Checked Model for a Java-Like Language, Virtual Machine, and Compiler"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-008-9099-0"
+          },
+          "name": "Leroy and Blazy, Formal Verification of a C-like Memory Model"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2737924.2738005"
+          },
+          "name": "Kang et al., A Formal C Memory Model Supporting Integer-Pointer Casts"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3276495"
+          },
+          "name": "Lee et al., Reconciling High-Level Optimizations and Low-Level Code in LLVM"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-018-9496-y"
+          },
+          "name": "Besson, Blazy and Wilke, CompCertS"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2594291.2594301"
+          },
+          "name": "Carbonneaux et al., End-to-End Verification of Stack-Space Bounds for C Programs"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796818000229"
+          },
+          "name": "Tan et al., The Verified CakeML Compiler Backend"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3167082"
+          },
+          "name": "Watt, Mechanising and Verifying the WebAssembly Specification"
+        },
+        {
+          "identity": {
+            "standard": "ISO/IEC JTC1/SC22/WG21 N3664",
+            "url": "https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3664.html",
+            "version": "2013-04-19"
+          },
+          "name": "WG21 N3664 Clarifying Memory Allocation"
+        },
+        {
+          "identity": {
+            "observed": "2026-11-21",
+            "standard": "C++ working draft, 7.6.2.8 [expr.new]",
+            "url": "https://eel.is/c++draft/expr.new"
+          },
+          "name": "C++ working draft [expr.new]"
+        },
+        {
+          "identity": {
+            "standard": "ISO/IEC 9899:201x (WG14 N1570)",
+            "version": "2011-04-12"
+          },
+          "name": "ISO C committee draft N1570"
+        },
+        {
+          "identity": {
+            "standard": "JLS Java SE 27",
+            "url": "https://docs.oracle.com/javase/specs/jls/se27/html/jls-11.html"
+          },
+          "name": "The Java Language Specification, Java SE 27 Edition, Chapter 11"
+        },
+        {
+          "identity": {
+            "standard": "JVMS Java SE 27",
+            "url": "https://docs.oracle.com/javase/specs/jvms/se27/html/jvms-6.html"
+          },
+          "name": "The Java Virtual Machine Specification, Java SE 27 Edition, Chapter 6"
+        }
+      ],
+      "topics": [
+        "verification/out-of-memory-as-observable-behaviour",
+        "compilers/allocation-elision-licensing",
+        "runtimes/memory-exhaustion-semantics",
+        "pl/finite-memory-refinement"
       ]
     },
     "jit-compilation-speculative-optimization-and-deoptimization-soundness": {

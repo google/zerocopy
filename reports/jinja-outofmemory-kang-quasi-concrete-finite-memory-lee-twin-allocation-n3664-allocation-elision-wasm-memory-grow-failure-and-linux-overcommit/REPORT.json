@@ -1,0 +1,193 @@
+{
+  "topics": [
+    "verification/out-of-memory-as-observable-behaviour",
+    "compilers/allocation-elision-licensing",
+    "runtimes/memory-exhaustion-semantics",
+    "pl/finite-memory-refinement"
+  ],
+  "subjects": [
+    {
+      "name": "Jinja (Archive of Formal Proofs, read-only mirror)",
+      "identity": {
+        "repository": "isabelle-prover/mirror-afp-devel",
+        "revision": "523cdc72b5ae4a91c9ab8e1025d4a30b40472720",
+        "path": "thys/Jinja"
+      }
+    },
+    {
+      "name": "CompCert memory model",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc",
+        "path": "common/Memory.v"
+      }
+    },
+    {
+      "name": "MiniRust basic memory model",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "063d784186d3252bee242217f218223205c0b568",
+        "path": "spec/mem/basic.md"
+      }
+    },
+    {
+      "name": "CakeML compiler correctness theorem",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+      }
+    },
+    {
+      "name": "Rust standard library allocator contract",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973",
+        "path": "library/core/src/alloc/global.rs"
+      }
+    },
+    {
+      "name": "Rust RFC 2116 fallible collection allocation",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07",
+        "path": "text/2116-alloc-me-maybe.md"
+      }
+    },
+    {
+      "name": "LLVM LangRef and InstCombine allocation removal",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "04e0e9cc603537fbc16685f872fba17f937f90ff"
+      }
+    },
+    {
+      "name": "WebAssembly specification",
+      "identity": {
+        "repository": "WebAssembly/spec",
+        "revision": "6fca707686ed4f36a1e30ec2ae7d3dd32b276704"
+      }
+    },
+    {
+      "name": "WasmCert-Isabelle",
+      "identity": {
+        "repository": "WasmCert/WasmCert-Isabelle",
+        "revision": "d9b4659c8b38879a5fc7e0213950751a61091908"
+      }
+    },
+    {
+      "name": "Linux kernel overcommit and cgroup memory documentation and source",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "84afebd853437e44cb71f718be11d90e4c1a59dd"
+      }
+    },
+    {
+      "name": "rustc toolchain used for probes",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly (2026-11-11), LLVM 23.1.5"
+      }
+    },
+    {
+      "name": "GCC toolchain used for probes",
+      "identity": {
+        "toolchain": "gcc",
+        "version": "15.2.0 (Debian 15.2.0-14)"
+      }
+    },
+    {
+      "name": "Linux kernel build used for probes",
+      "identity": {
+        "kernel": "Linux",
+        "version": "7.1.6 (Debian-derived distribution build)"
+      }
+    },
+    {
+      "name": "Klein and Nipkow, A Machine-Checked Model for a Java-Like Language, Virtual Machine, and Compiler",
+      "identity": {
+        "doi": "10.1145/1146809.1146811"
+      }
+    },
+    {
+      "name": "Leroy and Blazy, Formal Verification of a C-like Memory Model",
+      "identity": {
+        "doi": "10.1007/s10817-008-9099-0"
+      }
+    },
+    {
+      "name": "Kang et al., A Formal C Memory Model Supporting Integer-Pointer Casts",
+      "identity": {
+        "doi": "10.1145/2737924.2738005"
+      }
+    },
+    {
+      "name": "Lee et al., Reconciling High-Level Optimizations and Low-Level Code in LLVM",
+      "identity": {
+        "doi": "10.1145/3276495"
+      }
+    },
+    {
+      "name": "Besson, Blazy and Wilke, CompCertS",
+      "identity": {
+        "doi": "10.1007/s10817-018-9496-y"
+      }
+    },
+    {
+      "name": "Carbonneaux et al., End-to-End Verification of Stack-Space Bounds for C Programs",
+      "identity": {
+        "doi": "10.1145/2594291.2594301"
+      }
+    },
+    {
+      "name": "Tan et al., The Verified CakeML Compiler Backend",
+      "identity": {
+        "doi": "10.1017/S0956796818000229"
+      }
+    },
+    {
+      "name": "Watt, Mechanising and Verifying the WebAssembly Specification",
+      "identity": {
+        "doi": "10.1145/3167082"
+      }
+    },
+    {
+      "name": "WG21 N3664 Clarifying Memory Allocation",
+      "identity": {
+        "standard": "ISO/IEC JTC1/SC22/WG21 N3664",
+        "version": "2013-04-19",
+        "url": "https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3664.html"
+      }
+    },
+    {
+      "name": "C++ working draft [expr.new]",
+      "identity": {
+        "standard": "C++ working draft, 7.6.2.8 [expr.new]",
+        "url": "https://eel.is/c++draft/expr.new",
+        "observed": "2026-11-21"
+      }
+    },
+    {
+      "name": "ISO C committee draft N1570",
+      "identity": {
+        "standard": "ISO/IEC 9899:201x (WG14 N1570)",
+        "version": "2011-04-12"
+      }
+    },
+    {
+      "name": "The Java Language Specification, Java SE 27 Edition, Chapter 11",
+      "identity": {
+        "standard": "JLS Java SE 27",
+        "url": "https://docs.oracle.com/javase/specs/jls/se27/html/jls-11.html"
+      }
+    },
+    {
+      "name": "The Java Virtual Machine Specification, Java SE 27 Edition, Chapter 6",
+      "identity": {
+        "standard": "JVMS Java SE 27",
+        "url": "https://docs.oracle.com/javase/specs/jvms/se27/html/jvms-6.html"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

@@ -1,0 +1,180 @@
+{
+  "topics": [
+    "pl/space-improvement-theory",
+    "verification/resource-bounded-full-abstraction",
+    "pl/space-cost-model-invariance",
+    "compilers/back-translation-under-resource-bounds"
+  ],
+  "subjects": [
+    {
+      "name": "Forster-Kunze-Roth Coq formalisation (abstract machines)",
+      "identity": {
+        "repository": "uds-psl/cbv-lambda-calculus-reasonable",
+        "revision": "4f12b7c8ce2816cdd771d22d04943e0fa81c63fd"
+      }
+    },
+    {
+      "name": "CakeML resource-limit escape definition",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb",
+        "path": "semantics/proofs/semanticsPropsScript.sml"
+      }
+    },
+    {
+      "name": "Author-hosted technical appendix (Devriese et al. LMCS) and full survey version (Patrignani et al.)",
+      "identity": {
+        "repository": "squera/squera.github.io",
+        "revision": "ec5c7909a6b5245aabf9c1caabb79b0b7b07d543",
+        "path": "pdf/lmcs-TR.pdf; pdf/main-full.pdf"
+      }
+    },
+    {
+      "name": "Moran and Sands, Improvement in a Lazy Context",
+      "identity": {
+        "doi": "10.1145/292540.292547"
+      }
+    },
+    {
+      "name": "Gustavsson and Sands, A Foundation for Space-Safe Transformations of Call-by-Need Programs",
+      "identity": {
+        "doi": "10.1016/S1571-0661(05)80284-1"
+      }
+    },
+    {
+      "name": "Sands, Gustavsson and Moran, Lambda Calculi and Linear Speedups",
+      "identity": {
+        "doi": "10.1007/3-540-36377-7_4"
+      }
+    },
+    {
+      "name": "Hackett and Hutton, Call-by-Need Is Clairvoyant Call-by-Value",
+      "identity": {
+        "doi": "10.1145/3341718"
+      }
+    },
+    {
+      "name": "Forster, Kunze and Roth, The Weak Call-by-Value lambda-Calculus Is Reasonable for Both Time and Space",
+      "identity": {
+        "doi": "10.1145/3371095",
+        "arxiv": "1902.07515"
+      }
+    },
+    {
+      "name": "Accattoli, Dal Lago and Vanoni, Reasonable Space for the lambda-Calculus, Logarithmically (LICS)",
+      "identity": {
+        "doi": "10.1145/3531130.3533362"
+      }
+    },
+    {
+      "name": "Accattoli, Dal Lago and Vanoni, Reasonable Space for the lambda-Calculus, Logarithmically (LMCS)",
+      "identity": {
+        "doi": "10.46298/lmcs-20(4:15)2024",
+        "arxiv": "2203.00362"
+      }
+    },
+    {
+      "name": "Abadi, Protection in Programming-Language Translations",
+      "identity": {
+        "doi": "10.1007/BFb0055109",
+        "version": "read as SRC Research Report 154, 1998-04-17"
+      }
+    },
+    {
+      "name": "Ahmed and Blume, Typed Closure Conversion Preserves Observational Equivalence",
+      "identity": {
+        "doi": "10.1145/1411204.1411227"
+      }
+    },
+    {
+      "name": "Devriese, Patrignani and Piessens, Fully-Abstract Compilation by Approximate Back-Translation",
+      "identity": {
+        "doi": "10.1145/2837614.2837618"
+      }
+    },
+    {
+      "name": "Devriese, Patrignani, Piessens and Keuchel, Modular, Fully-abstract Compilation by Approximate Back-translation",
+      "identity": {
+        "doi": "10.23638/lmcs-13(4:2)2017",
+        "arxiv": "1703.09988"
+      }
+    },
+    {
+      "name": "Patrignani, Ahmed and Clarke, Formal Approaches to Secure Compilation",
+      "identity": {
+        "doi": "10.1145/3280984"
+      }
+    },
+    {
+      "name": "Paraskevopoulou and Appel, Closure Conversion Is Safe for Space",
+      "identity": {
+        "doi": "10.1145/3341687"
+      }
+    },
+    {
+      "name": "Patrignani et al., Secure Compilation to Protected Module Architectures",
+      "identity": {
+        "doi": "10.1145/2699503"
+      }
+    },
+    {
+      "name": "Juglaret et al., Beyond Good and Evil",
+      "identity": {
+        "doi": "10.1109/CSF.2016.11",
+        "arxiv": "1602.04503"
+      }
+    },
+    {
+      "name": "Fournet et al., Fully Abstract Compilation to JavaScript",
+      "identity": {
+        "doi": "10.1145/2429069.2429114"
+      }
+    },
+    {
+      "name": "Skorstengaard, Devriese and Birkedal, StkTokens",
+      "identity": {
+        "doi": "10.1145/3290332"
+      }
+    },
+    {
+      "name": "Abate et al., When Good Components Go Bad",
+      "identity": {
+        "doi": "10.1145/3243734.3243745",
+        "arxiv": "1802.00588"
+      }
+    },
+    {
+      "name": "Thibault et al., SECOMP",
+      "identity": {
+        "doi": "10.1145/3658644.3670288",
+        "arxiv": "2401.16277"
+      }
+    },
+    {
+      "name": "Abate et al., Journey Beyond Full Abstraction",
+      "identity": {
+        "doi": "10.1109/CSF.2019.00025",
+        "arxiv": "1807.04603"
+      }
+    },
+    {
+      "name": "Carbonneaux et al., End-to-End Verification of Stack-Space Bounds for C Programs",
+      "identity": {
+        "doi": "10.1145/2594291.2594301"
+      }
+    },
+    {
+      "name": "Tan et al., The Verified CakeML Compiler Backend",
+      "identity": {
+        "doi": "10.1017/S0956796818000229"
+      }
+    },
+    {
+      "name": "Besson, Blazy and Wilke, CompCertS",
+      "identity": {
+        "doi": "10.1007/s10817-018-9496-y"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

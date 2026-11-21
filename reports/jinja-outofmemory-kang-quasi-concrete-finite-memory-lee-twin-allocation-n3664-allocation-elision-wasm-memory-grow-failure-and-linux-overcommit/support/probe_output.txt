@@ -1,0 +1,67 @@
+## environment
+Linux 7.1.6-1 [distribution suffix redacted]-amd64 x86_64
+gcc (Debian 15.2.0-14) 15.2.0
+rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)
+commit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1
+LLVM version: 23.1.5
+overcommit_memory=0 overcommit_ratio=50
+MemTotal:       247581128 kB
+SwapTotal:      69062648 kB
+CommitLimit:    192853212 kB
+RLIMIT_AS (ulimit -v) = unlimited
+## E1: C malloc/free elision (gcc)
+malloc(2^50): NULL
+  gcc -O0 exit=1
+  malloc calls in gcc -O0 assembly: 1
+malloc(2^50): non-NULL
+  gcc -O2 exit=0
+  malloc calls in gcc -O2 assembly: 0
+malloc(2^50): NULL
+  gcc -O2 -fno-builtin-malloc exit=1
+## E2: C++ new-expression elision (g++)
+new char[2^50]: std::bad_alloc
+  g++ -O0 exit=1
+  operator new[] calls in g++ -O0 assembly: 1
+new char[2^50]: returned
+  g++ -O2 exit=0
+  operator new[] calls in g++ -O2 assembly: 0
+new char[2^50]: std::bad_alloc
+  g++ -O2 -fno-allocation-dce exit=1
+## E3: Rust global-allocator elision (rustc)
+  opt-level=0 mode=unused exit=134 :: memory allocation of 1125899906842624 bytes failed
+  opt-level=0 mode=observed exit=134 :: memory allocation of 1125899906842624 bytes failed
+  opt-level=0 mode=try_reserve exit=0 :: try_reserve(2^50): Err(memory allocation failed because the memory allocator returned an error)
+  opt-level=0 mode=box exit=0 :: Box::new([0u8; 64]) unused: returned
+  opt-level=3 mode=unused exit=0 :: with_capacity(2^50) unused: returned
+  opt-level=3 mode=observed exit=134 :: memory allocation of 1125899906842624 bytes failed
+  opt-level=3 mode=try_reserve exit=0 :: try_reserve(2^50): Err(memory allocation failed because the memory allocator returned an error)
+  opt-level=3 mode=box exit=0 :: Box::new([0u8; 64]) unused: returned
+## E4: where exhaustion surfaces (Linux)
+-- baseline, no limit: touch 256 MiB
+touched all 256 MiB
+  exit=0
+-- RLIMIT_AS = 128 MiB (ulimit -v 131072): touch 256 MiB
+malloc(256 MiB): NULL (errno=12 Cannot allocate memory)
+  exit=2
+-- cgroup v2 memory.max = 64 MiB, memory.swap.max = 0: touch 256 MiB
+run_probes.sh: line 54: <pid> Killed   systemd-run --user --scope ... touch 256   [shell job-control message; temporary path redacted]
+malloc(256 MiB): non-NULL
+touched 48 MiB
+  exit=137 (137 = SIGKILL)
+-- overcommit_memory=0 heuristic boundary (no pages touched)
+  MemTotal+SwapTotal = 316643776 kB = 309222.4375 MiB = 79160944 pages of 4 KiB
+malloc(309221 MiB): non-NULL
+  exit=0
+malloc(309222 MiB): non-NULL
+  exit=0
+malloc(309223 MiB): NULL (errno=12 Cannot allocate memory)
+  exit=2
+malloc(309422 MiB): NULL (errno=12 Cannot allocate memory)
+  exit=2
+-- per-request vs cumulative: three untouched 200000 MiB mallocs, then three over the boundary
+malloc #1 (200000 MiB): non-NULL in 8631 ns
+malloc #2 (200000 MiB): non-NULL in 5463 ns
+malloc #3 (200000 MiB): non-NULL in 3900 ns
+malloc #1 (309223 MiB): NULL in 29862494 ns
+malloc #2 (309223 MiB): NULL in 32312421 ns
+malloc #3 (309223 MiB): NULL in 4380 ns
