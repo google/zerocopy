@@ -241,6 +241,11 @@ significant influences are listed here, but this list is far from exhaustive.
   Greenwald, Jonathan T. Moore, Benjamin C. Pierce, and Alan Schmitt developed
   these foundations in [Combinators for Bidirectional Tree
   Transformations][tree-lenses].
+- Anneal's tristate-number (`tnum`) bitwise and carry-propagation transfer
+  functions adapt the `tnum` abstract domain formalized by Harishankar
+  Vishwanathan, Matan Shachnai, Srinivas Narayana, and Santosh Nagarakatte in
+  [Sound, Precise, and Fast Abstract Interpretation with Tristate
+  Numbers][tnum-paper] and used in the Linux kernel's eBPF verifier.
 - Anneal's proof-lifting experiments drew on Magnus O. Myreen, Michael J. C.
   Gordon, and Konrad Slind's [decompilation into logic][decompilation] to
   reason about one basic block at a time. [Tree Borrows][tree-borrows] by
@@ -281,6 +286,7 @@ significant influences are listed here, but this list is far from exhaustive.
 [Charon]: https://link.springer.com/chapter/10.1007/978-3-031-98685-7_18
 [symbolic-borrows]: https://arxiv.org/abs/2404.02680
 [tree-lenses]: https://doi.org/10.1145/1232420.1232424
+[tnum-paper]: https://arxiv.org/abs/2105.05398
 [decompilation]: https://www.cl.cam.ac.uk/~mom22/decompilation/fmcad12.pdf
 [tree-borrows]: https://iris-project.org/pdfs/2025-pldi-treeborrows.pdf
 [lean-miri]: https://github.com/proofs-rs/lean-miri
