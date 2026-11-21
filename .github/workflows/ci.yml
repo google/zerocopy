@@ -830,16 +830,15 @@ jobs:
         # Work around https://github.com/rust-lang/miri/issues/3125.
         [ "$TARGET" == "aarch64-unknown-linux-gnu" ] && cargo clean
 
-        THREADS=$(echo "$(nproc) * 2" | bc)
-        echo "Running Miri tests with $THREADS threads" | tee -a "$GITHUB_STEP_SUMMARY"
-
-        MIRIFLAGS="$MIRIFLAGS $MIRI_MODEL_FLAGS" ./cargo.sh +$TOOLCHAIN \
-          miri nextest run --locked \
-          --ignore-default-filter \
-          --test-threads "$THREADS" \
-          --package $CRATE \
-          --target $TARGET \
-          $FEATURES
+        # Batch Miri tests across `nproc` concurrent `cargo-miri runner`
+        # processes instead of spawning one Miri interpreter per test via
+        # `nextest run`, avoiding per-test interpreter startup overhead while
+        # executing the exact same test set.
+        MIRIFLAGS="${MIRIFLAGS:-} ${MIRI_MODEL_FLAGS:-}" ../.github/scripts/run_miri_batched.sh \
+          --toolchain "$TOOLCHAIN" \
+          --package "$CRATE" \
+          --target "$TARGET" \
+          -- ${FEATURES:-}
 
   codegen:
     runs-on: ubuntu-latest
