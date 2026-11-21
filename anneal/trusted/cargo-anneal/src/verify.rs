@@ -1111,9 +1111,9 @@ mod tests {
             cargo_anneal::LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256
         );
         assert_eq!(provenance["upstream_pin_sha256"].as_str().unwrap().len(), 64);
-        assert_eq!(provenance["correspondence_adapter_sha256"].as_str().unwrap().len(), 64);
+        assert_eq!(provenance["correspondence_adapters"].as_object().unwrap().len(), 6);
         assert_eq!(provenance["patched_files"].as_array().unwrap().len(), 10);
-        assert_eq!(provenance["correspondence_proofs"].as_object().unwrap().len(), 2);
-        assert_eq!(provenance["trusted_lean"].as_object().unwrap().len(), 5);
+        assert_eq!(provenance["correspondence_proofs"].as_object().unwrap().len(), 9);
+        assert_eq!(provenance["trusted_lean"].as_object().unwrap().len(), 18);
     }
 }

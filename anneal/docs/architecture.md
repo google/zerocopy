@@ -473,13 +473,14 @@ anneal/
 │   │   ├── foundation-lock.json    # SHA-256 pins for lean binary & Init.*
 │   │   ├── Trusted.lean            # Root TCB prelude import
 │   │   └── Trusted/
-│   │       ├── MirAst.lean         # Captured MIR AST & target profile fields
-│   │       ├── MirSemantics.lean   # M_anneal & CrateTheorem / UnitTheorem
+│   │       ├── MirAst.lean         # Captured MIR AST umbrella (+ MirAst/)
+│   │       ├── MirModel.lean       # Shared pure boundary value/query types
+│   │       ├── MirSemantics.lean   # M_anneal & CrateTheorem (+ MirSemantics/)
 │   │       ├── Framework/          # [planned] Language-agnostic refinement
 │   │       └── Rust/               # [planned] Factored Ast/ & Semantics/ dirs
 │   ├── correspondence/             # Stage 2 (Pass 2): Reference adapter TCB
 │   │   └── Trusted/
-│   │       └── Correspondence.lean # RefProg codec, M_ref & CorrespondenceClaim
+│   │       └── Correspondence.lean # RefProg codec, M_ref & claims (+ Correspondence/)
 │   ├── audit/                      # CI .olean replay & boundary auditor
 │   │   ├── src/                    # anneal-audit binary & UPSTREAM_PIN pin
 │   │   └── TrustedBoundary.lean    # Syntactic preflight & kernel DAG inspector
@@ -489,12 +490,12 @@ anneal/
 │       └── UPSTREAM_PIN.json       # Upstream & patch digests (pinned in audit)
 ├── correspondence/                 # Stage 3 (Pass 2) proofs
 │   └── Anneal/
-│       ├── MirCorrespondenceBase.lean
+│       ├── MirCorrespondence/      # Modular codec, step, simulation & canary proofs
 │       └── MirCorrespondenceProof.lean
 └── theory/                         # Stage 3 (Pass 1): Untrusted proofs
     ├── Anneal.lean
     ├── Anneal/
-    │   ├── MirWp.lean              # Fuel-bounded MIR WP & Pass 1 canaries
+    │   ├── MirWp.lean              # Fuel-bounded MIR WP & canaries (+ MirWp/)
     │   ├── PureLift.lean           # Functional borrow-lifting calculus
     │   └── PureLift/
     ├── Framework/                  # [planned] Generic simulation lemmas

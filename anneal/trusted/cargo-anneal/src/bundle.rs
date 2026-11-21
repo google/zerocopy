@@ -25,10 +25,10 @@ use crate::toolchain::{LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256, is_sha256_hex,
 ///
 /// Resource ownership remains explicit so runtime target verification never
 /// discovers model, lock, or inspector files from an untrusted checkout. Within
-/// `theory/`, `BUNDLE_SOURCES` includes only `theory/Anneal/MirWp.lean`, the
-/// target verification library for the supported pointer-free MIR profile,
-/// because target verification compiles every bundled `theory/` source module
-/// on each run.
+/// `theory/`, `BUNDLE_SOURCES` includes only `theory/Anneal/MirWp.lean` and its
+/// `Anneal.MirWp.*` submodules, the target verification library for the
+/// supported pointer-free MIR profile, because target verification compiles
+/// every bundled `theory/` source module on each run.
 pub const BUNDLE_SOURCES: &[&str] = &[
     "trusted/audit/TrustedBoundary.lean",
     "trusted/audit/library-lock.json",
@@ -36,19 +36,49 @@ pub const BUNDLE_SOURCES: &[&str] = &[
     "trusted/lean/lean-toolchain",
     "trusted/lean/Trusted.lean",
     "trusted/lean/Trusted/MirAst.lean",
+    "trusted/lean/Trusted/MirAst/Body.lean",
+    "trusted/lean/Trusted/MirAst/Places.lean",
+    "trusted/lean/Trusted/MirAst/Rvalues.lean",
+    "trusted/lean/Trusted/MirAst/Statements.lean",
+    "trusted/lean/Trusted/MirAst/Terminators.lean",
+    "trusted/lean/Trusted/MirAst/Types.lean",
+    "trusted/lean/Trusted/MirModel.lean",
     "trusted/lean/Trusted/MirSemantics.lean",
+    "trusted/lean/Trusted/MirSemantics/Boundary.lean",
+    "trusted/lean/Trusted/MirSemantics/CanaryFixtures.lean",
+    "trusted/lean/Trusted/MirSemantics/Enum.lean",
+    "trusted/lean/Trusted/MirSemantics/Ops.lean",
+    "trusted/lean/Trusted/MirSemantics/State.lean",
+    "trusted/lean/Trusted/MirSemantics/Step.lean",
     "theory/Anneal/MirWp.lean",
+    "theory/Anneal/MirWp/Canaries.lean",
+    "theory/Anneal/MirWp/Core.lean",
+    "theory/Anneal/MirWp/Execution.lean",
+    "theory/Anneal/MirWp/Reflection.lean",
+    "theory/Anneal/MirWp/Scalars.lean",
 ];
 
 const UPSTREAM_PIN_PATH: &str = "vendor/lean-miri/UPSTREAM_PIN.json";
 const CORRESPONDENCE_ADAPTER_DIR: &str = "trusted/correspondence";
-const CORRESPONDENCE_ADAPTER_PATH: &str = "trusted/correspondence/Trusted/Correspondence.lean";
+const CORRESPONDENCE_ADAPTER_PATHS: &[&str] = &[
+    "trusted/correspondence/Trusted/Correspondence.lean",
+    "trusted/correspondence/Trusted/Correspondence/CanaryFixtures.lean",
+    "trusted/correspondence/Trusted/Correspondence/Codec.lean",
+    "trusted/correspondence/Trusted/Correspondence/Eval.lean",
+    "trusted/correspondence/Trusted/Correspondence/Simulation.lean",
+    "trusted/correspondence/Trusted/Correspondence/State.lean",
+];
 const CORRESPONDENCE_PROOF_DIR: &str = "correspondence";
-const CORRESPONDENCE_PROOF_BASE_PATH: &str = "correspondence/Anneal/MirCorrespondenceBase.lean";
-const CORRESPONDENCE_PROOF_MAIN_PATH: &str = "correspondence/Anneal/MirCorrespondenceProof.lean";
 const CORRESPONDENCE_PROOF_PATHS: &[&str] = &[
-    CORRESPONDENCE_PROOF_BASE_PATH,
-    CORRESPONDENCE_PROOF_MAIN_PATH,
+    "correspondence/Anneal/MirCorrespondence/Canaries.lean",
+    "correspondence/Anneal/MirCorrespondence/Codec.lean",
+    "correspondence/Anneal/MirCorrespondence/EnumEquiv.lean",
+    "correspondence/Anneal/MirCorrespondence/InitAndSim.lean",
+    "correspondence/Anneal/MirCorrespondence/RvalueStep.lean",
+    "correspondence/Anneal/MirCorrespondence/ScalarEquiv.lean",
+    "correspondence/Anneal/MirCorrespondence/SimHelpers.lean",
+    "correspondence/Anneal/MirCorrespondence/StmtTermStep.lean",
+    "correspondence/Anneal/MirCorrespondenceProof.lean",
 ];
 const TRUSTED_LEAN_PREFIX: &str = "trusted/lean/";
 
@@ -63,22 +93,36 @@ const TRUSTED_LEAN_PREFIX: &str = "trusted/lean/";
 /// `trusted/correspondence/` and `correspondence/` during rendering.
 pub const PROVENANCE_SOURCES: &[&str] = &[
     UPSTREAM_PIN_PATH,
-    CORRESPONDENCE_ADAPTER_PATH,
-    CORRESPONDENCE_PROOF_BASE_PATH,
-    CORRESPONDENCE_PROOF_MAIN_PATH,
+    "trusted/correspondence/Trusted/Correspondence.lean",
+    "trusted/correspondence/Trusted/Correspondence/CanaryFixtures.lean",
+    "trusted/correspondence/Trusted/Correspondence/Codec.lean",
+    "trusted/correspondence/Trusted/Correspondence/Eval.lean",
+    "trusted/correspondence/Trusted/Correspondence/Simulation.lean",
+    "trusted/correspondence/Trusted/Correspondence/State.lean",
+    "correspondence/Anneal/MirCorrespondence/Canaries.lean",
+    "correspondence/Anneal/MirCorrespondence/Codec.lean",
+    "correspondence/Anneal/MirCorrespondence/EnumEquiv.lean",
+    "correspondence/Anneal/MirCorrespondence/InitAndSim.lean",
+    "correspondence/Anneal/MirCorrespondence/RvalueStep.lean",
+    "correspondence/Anneal/MirCorrespondence/ScalarEquiv.lean",
+    "correspondence/Anneal/MirCorrespondence/SimHelpers.lean",
+    "correspondence/Anneal/MirCorrespondence/StmtTermStep.lean",
+    "correspondence/Anneal/MirCorrespondenceProof.lean",
 ];
 /// Describes what the Pass 2 provenance does and does not certify, matching
 /// `docs/mir-correspondence-design.md`: the kernel checks only the operational
-/// execution rules of `Trusted/MirSemantics.lean`, while its theorem-stating
-/// surface and the correspondence adapter remain human-audited.
+/// execution rules of `Trusted/MirSemantics*`, while its theorem-stating
+/// surface, shared model types, and correspondence adapter remain
+/// human-audited.
 const CORRESPONDENCE_PROVENANCE_NOTE: &str = "Pass 2 (anneal-audit --require-correspondence) \
     kernel-certifies the initState/evalStep execution rules of \
-    Trusted/MirSemantics.lean against pinned vendor/lean-miri/ via \
-    Trusted/Correspondence.lean (CorrespondenceClaim, FaultEquivalenceClaim) \
+    Trusted/MirSemantics* against pinned vendor/lean-miri/ via \
+    Trusted/Correspondence* (CorrespondenceClaim, FaultEquivalenceClaim) \
     in blocking repository CI. The theorem-stating surface of \
-    Trusted/MirSemantics.lean (Behavior, BodyVerified, ProgramVerified, \
+    Trusted/MirSemantics* (Behavior, BodyVerified, ProgramVerified, \
     CrateTheorem, UnitTheorem, and the helpers they reference), \
-    vendor/lean-miri/, and Trusted/Correspondence.lean remain human-audited.";
+    Trusted/MirModel.lean, vendor/lean-miri/, and Trusted/Correspondence* \
+    remain human-audited.";
 
 #[derive(Deserialize)]
 struct UpstreamPinProvenance {
@@ -106,7 +150,7 @@ struct CorrespondenceProvenance {
     upstream_pin_sha256: String,
     sysroot_foundation_manifest_sha256: &'static str,
     patched_files: Vec<PatchedFileProvenance>,
-    correspondence_adapter_sha256: String,
+    correspondence_adapters: BTreeMap<&'static str, String>,
     correspondence_proofs: BTreeMap<&'static str, String>,
     trusted_lean: BTreeMap<&'static str, String>,
     note: &'static str,
@@ -322,6 +366,19 @@ fn verify_correspondence_lean_inventory(
     Ok(())
 }
 
+fn hash_bundle_sources(
+    root: &Path,
+    paths: &[&'static str],
+) -> Result<BTreeMap<&'static str, String>, BundleError> {
+    let mut hashes = BTreeMap::new();
+    for rel in paths {
+        let path = validate_bundle_source(root, rel)?;
+        let bytes = fs::read(path).map_err(BundleError::Io)?;
+        hashes.insert(*rel, sha256_bytes(&bytes));
+    }
+    Ok(hashes)
+}
+
 fn render_correspondence_provenance(
     root: &Path,
     trusted_lean: BTreeMap<&'static str, String>,
@@ -358,21 +415,13 @@ fn render_correspondence_provenance(
         }
     }
 
-    let adapter_path = validate_bundle_source(root, CORRESPONDENCE_ADAPTER_PATH)?;
-    let adapter_bytes = fs::read(adapter_path).map_err(BundleError::Io)?;
-    let correspondence_adapter_sha256 = sha256_bytes(&adapter_bytes);
-
-    let mut correspondence_proofs = BTreeMap::new();
-    for rel in CORRESPONDENCE_PROOF_PATHS {
-        let proof_path = validate_bundle_source(root, rel)?;
-        let proof_bytes = fs::read(proof_path).map_err(BundleError::Io)?;
-        correspondence_proofs.insert(*rel, sha256_bytes(&proof_bytes));
-    }
+    let correspondence_adapters = hash_bundle_sources(root, CORRESPONDENCE_ADAPTER_PATHS)?;
+    let correspondence_proofs = hash_bundle_sources(root, CORRESPONDENCE_PROOF_PATHS)?;
 
     verify_correspondence_lean_inventory(
         root,
         CORRESPONDENCE_ADAPTER_DIR,
-        &[CORRESPONDENCE_ADAPTER_PATH],
+        CORRESPONDENCE_ADAPTER_PATHS,
     )?;
     verify_correspondence_lean_inventory(
         root,
@@ -389,7 +438,7 @@ fn render_correspondence_provenance(
         upstream_pin_sha256,
         sysroot_foundation_manifest_sha256: LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256,
         patched_files: pin.patched_files,
-        correspondence_adapter_sha256,
+        correspondence_adapters,
         correspondence_proofs,
         trusted_lean,
         note: CORRESPONDENCE_PROVENANCE_NOTE,
@@ -428,4 +477,18 @@ pub fn render_bundled_resources(root: &Path) -> Result<String, BundleError> {
     )
     .expect("writing to String cannot fail");
     Ok(generated)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn provenance_sources_match_component_lists() {
+        let expected: Vec<&str> = std::iter::once(UPSTREAM_PIN_PATH)
+            .chain(CORRESPONDENCE_ADAPTER_PATHS.iter().copied())
+            .chain(CORRESPONDENCE_PROOF_PATHS.iter().copied())
+            .collect();
+        assert_eq!(PROVENANCE_SOURCES, expected.as_slice());
+    }
 }

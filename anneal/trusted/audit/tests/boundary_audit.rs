@@ -2515,7 +2515,44 @@ fn enforces_correspondence_non_backsliding() {
          def isZstEnumTy : Nat := 0\n\
          def findDiscrVariant? : Nat := 0\n\
          def evalStep : Nat := 0\n\
+         def unlistedAnnealHelper : Nat := 0\n\
          end Trusted.MirSemantics\n",
+    );
+
+    compile_forged_module(
+        &mut checker_pass2,
+        &corr_src,
+        &trusted_lib,
+        &[],
+        "Trusted.MirSemantics.SubHelper",
+        "prelude\nimport Init.Core\n\
+         namespace Trusted.MirSemantics\n\
+         def subEvalHelper : Nat := 0\n\
+         end Trusted.MirSemantics\n",
+    );
+
+    compile_forged_module(
+        &mut checker_pass2,
+        &corr_src,
+        &trusted_lib,
+        &[],
+        "Trusted.MirModel",
+        "prelude\nimport Init.Core\n\
+         namespace Trusted.MirSemantics\n\
+         def sharedModelData : Nat := 0\n\
+         end Trusted.MirSemantics\n",
+    );
+
+    compile_forged_module(
+        &mut checker_pass2,
+        &corr_src,
+        &trusted_lib,
+        &[],
+        "Trusted.MirHelper",
+        "prelude\nimport Init.Core\n\
+         namespace Trusted.MirHelper\n\
+         def siblingHelper : Nat := 0\n\
+         end Trusted.MirHelper\n",
     );
 
     // 2a. Weakened `CorrespondenceClaim` (missing
@@ -2546,7 +2583,13 @@ fn enforces_correspondence_non_backsliding() {
     let run_corr_audit = |checker: &mut Checker| {
         checker.inspect(InspectorRequest::CorrespondenceAudit {
             search_path: search_paths.clone(),
-            trusted: vec!["Trusted".to_string(), "Trusted.MirSemantics".to_string()],
+            trusted: vec![
+                "Trusted".to_string(),
+                "Trusted.MirModel".to_string(),
+                "Trusted.MirHelper".to_string(),
+                "Trusted.MirSemantics".to_string(),
+                "Trusted.MirSemantics.SubHelper".to_string(),
+            ],
             corr_trusted: vec!["Trusted.Correspondence".to_string()],
             theory: Vec::new(),
             corr_theory: vec!["Anneal.MirCorrespondenceProof".to_string()],
@@ -2554,7 +2597,19 @@ fn enforces_correspondence_non_backsliding() {
             module_tiers: BTreeMap::from([
                 ("Trusted".to_string(), TrustTier::Vetted),
                 (
+                    "Trusted.MirModel".to_string(),
+                    TrustTier::parse("candidate:mir_semantics").unwrap(),
+                ),
+                (
+                    "Trusted.MirHelper".to_string(),
+                    TrustTier::parse("candidate:mir_semantics").unwrap(),
+                ),
+                (
                     "Trusted.MirSemantics".to_string(),
+                    TrustTier::parse("candidate:mir_semantics").unwrap(),
+                ),
+                (
+                    "Trusted.MirSemantics.SubHelper".to_string(),
                     TrustTier::parse("candidate:mir_semantics").unwrap(),
                 ),
                 (
@@ -2576,18 +2631,21 @@ fn enforces_correspondence_non_backsliding() {
 
     // 2b. When all 30 required claims and proofs are present,
     // `verifyCorrespondenceClaims` succeeds and
-    // `verifyRefEvaluatorIndependence` rejects an `evalRefStep` that omits
-    // required Miri primitives or illegally references a named
-    // `Trusted.MirSemantics` evaluator entry point (`evalStep`, `evalArithOp`,
-    // `evalShiftOp`, `jumpToBlock`, `enumAdmitted`, `tagBitsToDiscrBits`,
-    // `isZstEnumTy`, `findDiscrVariant?`).
-    let all_claims_src = |eval_ref_step_body: &str, d6_override: Option<&str>| {
+    // `verifyRefEvaluatorIndependence` rejects an `evalRefStep` or
+    // `initRefState` that omits required Miri primitives or illegally
+    // references (directly or transitively) any constant defined in a
+    // non-allowlisted `Trusted` module (`Trusted.MirSemantics`,
+    // `Trusted.MirSemantics.*`, or a sibling `Trusted.MirHelper`), while
+    // permitting shared boundary data defined in `Trusted.MirModel`.
+    let all_claims_src = |init_ref_state_body: &str,
+                          eval_ref_step_body: &str,
+                          d6_override: Option<&str>| {
         let d6_def = d6_override.unwrap_or(
             "progUseAfterMoveD6 = encodeProg ∧ Trusted.MirSemantics.ReachesResult ∧\n\
              Trusted.MirSemantics.WellFormed ∧ RefReachesOutcome",
         );
         format!(
-            "prelude\nimport Init.Core\nimport Miri.FakeStubs\nimport Trusted.MirSemantics\n\
+            "prelude\nimport Init.Core\nimport Miri.FakeStubs\nimport Trusted.MirModel\nimport Trusted.MirHelper\nimport Trusted.MirSemantics\nimport Trusted.MirSemantics.SubHelper\n\
              namespace Trusted.Correspondence\n\
              def RefWellFormed : Prop := True\n\
              def RefBehavior : Prop := True\n\
@@ -2612,7 +2670,8 @@ fn enforces_correspondence_non_backsliding() {
              def progBinOpMoveThenMoveD7c : Nat := 0\n\
              def progSelfMoveD8 : Nat := 0\n\
              def progMoveUnitZstD9 : Nat := 0\n\
-             def initRefState : Nat := 0\n\
+             def transitiveSubHelper : Nat := Trusted.MirSemantics.subEvalHelper\n\
+             def initRefState : Nat := {init_ref_state_body}\n\
              def evalRefStep : Nat := {eval_ref_step_body}\n\
              def CorrespondenceClaim : Prop :=\n\
                Trusted.MirSemantics.WellFormed ∧ RefWellFormed ∧\n\
@@ -2744,7 +2803,13 @@ fn enforces_correspondence_non_backsliding() {
     };
     let d6_valid_proof = "⟨Eq.refl _, True.intro, True.intro, True.intro⟩";
 
-    let corr_deps = ["Miri.FakeStubs", "Trusted.MirSemantics"];
+    let corr_deps = [
+        "Miri.FakeStubs",
+        "Trusted.MirModel",
+        "Trusted.MirHelper",
+        "Trusted.MirSemantics",
+        "Trusted.MirSemantics.SubHelper",
+    ];
     let proof_deps = ["Trusted.Correspondence"];
 
     // 2a-ii. Weakening a canary claim (`CanaryD6UseAfterMoveUbClaim := True`)
@@ -2755,7 +2820,7 @@ fn enforces_correspondence_non_backsliding() {
         &trusted_lib,
         &corr_deps,
         "Trusted.Correspondence",
-        &all_claims_src("0", Some("True")),
+        &all_claims_src("0", "0", Some("True")),
     );
     compile_forged_module(
         &mut checker_pass2,
@@ -2781,7 +2846,7 @@ fn enforces_correspondence_non_backsliding() {
         &trusted_lib,
         &corr_deps,
         "Trusted.Correspondence",
-        &all_claims_src("0", None),
+        &all_claims_src("0", "0", None),
     );
     compile_forged_module(
         &mut checker_pass2,
@@ -2841,7 +2906,7 @@ fn enforces_correspondence_non_backsliding() {
             &trusted_lib,
             &corr_deps,
             "Trusted.Correspondence",
-            &all_claims_src(&body, None),
+            &all_claims_src("0", &body, None),
         );
         compile_forged_module(
             &mut checker_pass2,
@@ -2862,27 +2927,95 @@ fn enforces_correspondence_non_backsliding() {
         );
     }
 
-    for forbidden in [
-        "evalStep",
-        "evalArithOp",
-        "evalShiftOp",
-        "jumpToBlock",
-        "enumAdmitted",
-        "tagBitsToDiscrBits",
-        "isZstEnumTy",
-        "findDiscrVariant?",
+    let all_miri_tuple = required_miri_primitives.join(", ");
+    for (init_expr, step_expr, expected_const, expected_mod) in [
+        (
+            "0",
+            "Trusted.MirSemantics.evalStep",
+            "Trusted.MirSemantics.evalStep",
+            "Trusted.MirSemantics",
+        ),
+        (
+            "0",
+            "Trusted.MirSemantics.evalArithOp",
+            "Trusted.MirSemantics.evalArithOp",
+            "Trusted.MirSemantics",
+        ),
+        (
+            "0",
+            "Trusted.MirSemantics.evalShiftOp",
+            "Trusted.MirSemantics.evalShiftOp",
+            "Trusted.MirSemantics",
+        ),
+        (
+            "0",
+            "Trusted.MirSemantics.jumpToBlock",
+            "Trusted.MirSemantics.jumpToBlock",
+            "Trusted.MirSemantics",
+        ),
+        (
+            "0",
+            "Trusted.MirSemantics.enumAdmitted",
+            "Trusted.MirSemantics.enumAdmitted",
+            "Trusted.MirSemantics",
+        ),
+        (
+            "0",
+            "Trusted.MirSemantics.tagBitsToDiscrBits",
+            "Trusted.MirSemantics.tagBitsToDiscrBits",
+            "Trusted.MirSemantics",
+        ),
+        (
+            "0",
+            "Trusted.MirSemantics.isZstEnumTy",
+            "Trusted.MirSemantics.isZstEnumTy",
+            "Trusted.MirSemantics",
+        ),
+        (
+            "0",
+            "Trusted.MirSemantics.findDiscrVariant?",
+            "Trusted.MirSemantics.findDiscrVariant?",
+            "Trusted.MirSemantics",
+        ),
+        (
+            "0",
+            "Trusted.MirSemantics.unlistedAnnealHelper",
+            "Trusted.MirSemantics.unlistedAnnealHelper",
+            "Trusted.MirSemantics",
+        ),
+        (
+            "0",
+            "Trusted.MirSemantics.subEvalHelper",
+            "Trusted.MirSemantics.subEvalHelper",
+            "Trusted.MirSemantics.SubHelper",
+        ),
+        (
+            "0",
+            "Trusted.MirHelper.siblingHelper",
+            "Trusted.MirHelper.siblingHelper",
+            "Trusted.MirHelper",
+        ),
+        (
+            "Trusted.MirSemantics.initState",
+            "0",
+            "Trusted.MirSemantics.initState",
+            "Trusted.MirSemantics",
+        ),
+        (
+            "0",
+            "transitiveSubHelper",
+            "Trusted.MirSemantics.subEvalHelper",
+            "Trusted.MirSemantics.SubHelper",
+        ),
     ] {
-        let all_miri_plus_anneal_fn = format!(
-            "let _ := ({}); Trusted.MirSemantics.{forbidden}",
-            required_miri_primitives.join(", ")
-        );
+        let all_miri_plus_expr = format!("let _ := ({all_miri_tuple}); {step_expr}");
         compile_forged_module(
             &mut checker_pass2,
             &corr_src,
             &trusted_lib,
             &corr_deps,
             "Trusted.Correspondence",
-            &all_claims_src(&all_miri_plus_anneal_fn, None),
+            &all_claims_src(init_expr, &all_miri_plus_expr, None),
         );
         compile_forged_module(
             &mut checker_pass2,
@@ -2897,11 +3030,36 @@ fn enforces_correspondence_non_backsliding() {
         assert_eq!(err_forbidden_anneal.phase, "correspondence-audit");
         assert!(
             err_forbidden_anneal.message.contains(&format!(
-                "reference evaluator cone illegally references M_anneal evaluator Trusted.MirSemantics.{forbidden}"
+                "reference evaluator cone illegally references disallowed Trusted declaration {expected_const} (defined in {expected_mod})"
             )),
-            "unexpected error for {forbidden}: {err_forbidden_anneal}"
+            "unexpected error for {expected_const}: {err_forbidden_anneal}"
         );
     }
+
+    // Referencing shared boundary data defined in `Trusted.MirModel` (even
+    // inside `namespace Trusted.MirSemantics`) is permitted when all required
+    // Miri primitives are present and every `Trusted` declaration in the
+    // reference evaluator cone comes from an allowlisted module.
+    let all_miri_plus_model_data =
+        format!("let _ := ({all_miri_tuple}); Trusted.MirSemantics.sharedModelData");
+    compile_forged_module(
+        &mut checker_pass2,
+        &corr_src,
+        &trusted_lib,
+        &corr_deps,
+        "Trusted.Correspondence",
+        &all_claims_src("0", &all_miri_plus_model_data, None),
+    );
+    compile_forged_module(
+        &mut checker_pass2,
+        &corr_src,
+        &corr_lib,
+        &proof_deps,
+        "Anneal.MirCorrespondenceProof",
+        &all_proofs_src(d6_valid_proof),
+    );
+    run_corr_audit(&mut checker_pass2)
+        .expect("Trusted.MirModel boundary data should be admitted in reference evaluator cone");
 }
 
 /// Verifies the vendored `.olean` cache and compilation pipeline in
@@ -3760,37 +3918,43 @@ fn rejects_trusted_correspondence_import_of_theory_in_pass2_preflight() {
     for rel in [
         "trusted/audit/library-lock.json",
         "trusted/lean/Trusted.lean",
-        "trusted/lean/Trusted/MirAst.lean",
-        "trusted/lean/Trusted/MirSemantics.lean",
         "theory/Anneal/MirWp.lean",
     ] {
         let dst = fix.root.join(rel);
         fs::create_dir_all(dst.parent().unwrap()).unwrap();
         fs::copy(checkout.join(rel), dst).unwrap();
     }
+    copy_dir_all(
+        &checkout.join("trusted/lean/Trusted"),
+        &fix.root.join("trusted/lean/Trusted"),
+    )
+    .unwrap();
+    copy_dir_all(
+        &checkout.join("theory/Anneal/MirWp"),
+        &fix.root.join("theory/Anneal/MirWp"),
+    )
+    .unwrap();
     fs::write(
         fix.root.join("theory/Anneal.lean"),
         b"prelude\nimport Init.NotationExtra\nimport Trusted\nimport Anneal.MirWp\n",
     )
     .unwrap();
-    fs::create_dir_all(fix.root.join("trusted/correspondence/Trusted")).unwrap();
-    fs::write(
-        fix.root
-            .join("trusted/correspondence/Trusted/Correspondence.lean"),
-        b"-- anneal-trust-tier: candidate:mir_semantics\nprelude\nimport Init.NotationExtra\nimport Anneal.MirWp\n",
-    )
-    .unwrap();
-    fs::create_dir_all(fix.root.join("correspondence/Anneal")).unwrap();
-    fs::write(
-        fix.root.join("correspondence/Anneal/MirCorrespondenceBase.lean"),
-        b"prelude\nimport Trusted.Correspondence\n",
-    )
-    .unwrap();
-    fs::write(
-        fix.root.join("correspondence/Anneal/MirCorrespondenceProof.lean"),
-        b"prelude\nimport Trusted.Correspondence\n",
-    )
-    .unwrap();
+    for rel in anneal_audit::bundle::PROVENANCE_SOURCES {
+        if rel.ends_with(".lean") {
+            let dst = fix.root.join(rel);
+            fs::create_dir_all(dst.parent().unwrap()).unwrap();
+            let contents = if *rel == "trusted/correspondence/Trusted/Correspondence.lean" {
+                "-- anneal-trust-tier: candidate:mir_semantics\n\
+                 prelude\nimport Init.NotationExtra\nimport Anneal.MirWp\n"
+            } else if rel.starts_with("trusted/correspondence/") {
+                "-- anneal-trust-tier: candidate:mir_semantics\n\
+                 prelude\nimport Init.NotationExtra\n"
+            } else {
+                "prelude\nimport Trusted.Correspondence\n"
+            };
+            fs::write(dst, contents.as_bytes()).unwrap();
+        }
+    }
     let canonical_bundle = anneal_audit::bundle::render_bundled_resources(&fix.root).unwrap();
     fs::write(fix.root.join(anneal_audit::bundle::BUNDLE_DESTINATION), canonical_bundle.as_bytes())
         .unwrap();

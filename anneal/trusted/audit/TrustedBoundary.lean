@@ -2128,13 +2128,27 @@ def verifyCorrespondenceClaims (env : Environment)
          `Trusted.Correspondence.encodeProg])] do
     requireCorrClaimProof env corrLocals claimName proofName reqConsts
 
+/-- Return `true` when `modName` is an allowlisted `Trusted` module permitted in
+the `M_ref` reference evaluator dependency cone (`Trusted.MirAst`,
+`Trusted.MirAst.*`, `Trusted.MirModel`, `Trusted.Correspondence`, and
+`Trusted.Correspondence.*`). Every other `Trusted` module—including
+`Trusted.MirSemantics`, `Trusted.MirSemantics.*`, and any other sibling
+`Trusted.*` module—is excluded fail-closed. -/
+def isAllowedRefTrustedModule (modName : Name) : Bool :=
+  (`Trusted.MirAst).isPrefixOf modName ||
+  modName == `Trusted.MirModel ||
+  (`Trusted.Correspondence).isPrefixOf modName
+
 /-- Verify that the reference machine `M_ref`
 (`Trusted.Correspondence.evalRefStep` and
 `Trusted.Correspondence.initRefState`) reaches the 21 required
-`vendor/lean-miri` primitives and never references any of the 25 named
-`M_anneal` evaluator entry points below. This is a regression check against
-accidental fallback to `M_anneal`; human review of `trusted/correspondence/`
-remains the semantic boundary. -/
+`vendor/lean-miri` primitives and references only allowlisted `Trusted` modules
+(`Trusted.MirAst*`, `Trusted.MirModel`, and `Trusted.Correspondence*`)—never
+`Trusted.MirSemantics`, `Trusted.MirSemantics.*`, or any other `Trusted`
+module. This enforces closed module-origin isolation across the full `M_anneal`
+operational-rule cone rather than a manually curated symbol denylist; human
+review of `trusted/correspondence/` and `Trusted.MirModel` remains the semantic
+boundary. -/
 def verifyRefEvaluatorIndependence (env : Environment)
     (roles : Std.HashMap Name CorrOrigin)
     (axiomPolicy : Array (String × String)) : IO Unit := do
@@ -2165,35 +2179,15 @@ def verifyRefEvaluatorIndependence (env : Environment)
     unless refCone.contains reqMiri do
       fail (s!"reference evaluator cone is missing required Miri " ++
         s!"primitive {reqMiri}")
-  for forbiddenAnneal in [
-      `Trusted.MirSemantics.enumAdmitted,
-      `Trusted.MirSemantics.tagBitsToDiscrBits,
-      `Trusted.MirSemantics.isZstEnumTy,
-      `Trusted.MirSemantics.findDiscrVariant?,
-      `Trusted.MirSemantics.isSupportedScalarOrUnitTy,
-      `Trusted.MirSemantics.liveUninitSlot,
-      `Trusted.MirSemantics.isPrimitiveReadableTy,
-      `Trusted.MirSemantics.evalConstLit,
-      `Trusted.MirSemantics.evalShiftOp,
-      `Trusted.MirSemantics.evalArithOp,
-      `Trusted.MirSemantics.evalBinOp,
-      `Trusted.MirSemantics.evalUnOp,
-      `Trusted.MirSemantics.checkVal,
-      `Trusted.MirSemantics.checkArgsMatch,
-      `Trusted.MirSemantics.evalSwitchBranches,
-      `Trusted.MirSemantics.evalBoolSwitchBranches,
-      `Trusted.MirSemantics.jumpToBlock,
-      `Trusted.MirSemantics.evalOperandToSlot,
-      `Trusted.MirSemantics.evalPrimitiveOperand,
-      `Trusted.MirSemantics.evalRvalue,
-      `Trusted.MirSemantics.writePlace,
-      `Trusted.MirSemantics.evalStatement,
-      `Trusted.MirSemantics.evalTerminator,
-      `Trusted.MirSemantics.evalStep,
-      `Trusted.MirSemantics.initState] do
-    if refCone.contains forbiddenAnneal then
-      fail (s!"reference evaluator cone illegally references M_anneal " ++
-        s!"evaluator {forbiddenAnneal}")
+  let sortedRefCone := refCone.toArray.qsort Name.lt
+  for cName in sortedRefCone do
+    let (orig, role) ← constProvenance env roles cName
+    match role with
+    | .repo (.trusted _) =>
+      unless isAllowedRefTrustedModule orig do
+        fail (s!"reference evaluator cone illegally references disallowed " ++
+          s!"Trusted declaration {cName} (defined in {orig})")
+    | _ => pure ()
 
 /-- Execute Pass 2 compile-environment syntactic preflight
 (`"correspondence-preflight"`).

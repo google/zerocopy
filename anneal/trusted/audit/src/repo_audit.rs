@@ -156,7 +156,11 @@ pub enum InspectorRequest {
     /// alike), kernel-replays all correspondence declarations onto that
     /// replayed vendor kernel environment, and verifies constant-cone purity,
     /// all 30 correspondence/wiring/canary claims, and reference-evaluator
-    /// independence.
+    /// independence (reaching the 21 required `Miri.*` primitives while
+    /// restricting `Trusted` dependencies in the reference-evaluator cone to
+    /// `Trusted.MirAst*`, `Trusted.MirModel`, and `Trusted.Correspondence*`,
+    /// with human review of `trusted/correspondence/` and `Trusted.MirModel`
+    /// remaining the semantic boundary).
     CorrespondenceAudit {
         search_path: Vec<PathBuf>,
         trusted: Vec<String>,
@@ -902,8 +906,8 @@ impl Checker {
         let miri_lib =
             self.verify_and_stage_miri_entries(vendor_dir, closure_entries, expected_sources)?;
 
-        // Compile `Trusted.Correspondence.*` into `lib/` and
-        // `Anneal.MirCorrespondenceProof.*` into `theory-lib/` inside
+        // Compile `Trusted.Correspondence*` into `lib/` and
+        // `Anneal.MirCorrespondence*` into `theory-lib/` inside
         // per-module OS-level `bwrap` sandboxes. For `Trusted` modules,
         // `corr_theory_lib` is neither mounted nor in `LEAN_PATH`, so they
         // cannot resolve compiled `theory/` or `correspondence/` modules even
