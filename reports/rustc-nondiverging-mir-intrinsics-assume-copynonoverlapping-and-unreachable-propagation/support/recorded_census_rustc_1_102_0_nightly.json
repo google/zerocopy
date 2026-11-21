@@ -1,0 +1,188 @@
+{
+  "description": "Recorded per-pass census of `assume` / `copy_nonoverlapping` statements and `unreachable` terminators in google/zerocopy MIR dumps, produced by an earlier run of the same kind of `-Zdump-mir` text census on a newer nightly toolchain. It is preserved as a comparison data point only: it was not re-executed while preparing this report, and the recording does not embed the crate revision, feature set or rustc flags that were used.",
+  "rustc_verbose_version": [
+    "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+    "binary: rustc",
+    "commit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+    "commit-date: 2026-11-11",
+    "host: x86_64-unknown-linux-gnu",
+    "release: 1.102.0-nightly",
+    "LLVM version: 23.1.5"
+  ],
+  "per_pass_census": {
+    "LowerIntrinsics": {
+      "before": {
+        "bodies": 4663,
+        "bodies_with_assume": 0,
+        "bodies_with_copy_nonoverlapping": 0,
+        "bodies_with_unreachable_term": 168,
+        "assume_stmts": 0,
+        "copy_nonoverlapping_stmts": 0,
+        "unreachable_terms": 530
+      },
+      "after": {
+        "bodies": 4663,
+        "bodies_with_assume": 0,
+        "bodies_with_copy_nonoverlapping": 0,
+        "bodies_with_unreachable_term": 169,
+        "assume_stmts": 0,
+        "copy_nonoverlapping_stmts": 0,
+        "unreachable_terms": 531
+      },
+      "delta": {
+        "bodies": 0,
+        "bodies_with_assume": 0,
+        "bodies_with_copy_nonoverlapping": 0,
+        "bodies_with_unreachable_term": 1,
+        "assume_stmts": 0,
+        "copy_nonoverlapping_stmts": 0,
+        "unreachable_terms": 1
+      }
+    },
+    "SimplifyCfg-pre-optimizations": {
+      "before": {
+        "bodies": 4663,
+        "bodies_with_assume": 0,
+        "bodies_with_copy_nonoverlapping": 0,
+        "bodies_with_unreachable_term": 169,
+        "assume_stmts": 0,
+        "copy_nonoverlapping_stmts": 0,
+        "unreachable_terms": 531
+      },
+      "after": {
+        "bodies": 4663,
+        "bodies_with_assume": 0,
+        "bodies_with_copy_nonoverlapping": 0,
+        "bodies_with_unreachable_term": 169,
+        "assume_stmts": 0,
+        "copy_nonoverlapping_stmts": 0,
+        "unreachable_terms": 531
+      },
+      "delta": {
+        "bodies": 0,
+        "bodies_with_assume": 0,
+        "bodies_with_copy_nonoverlapping": 0,
+        "bodies_with_unreachable_term": 0,
+        "assume_stmts": 0,
+        "copy_nonoverlapping_stmts": 0,
+        "unreachable_terms": 0
+      }
+    },
+    "UnreachableEnumBranching": {
+      "before": {
+        "bodies": 4302,
+        "bodies_with_assume": 38,
+        "bodies_with_copy_nonoverlapping": 4,
+        "bodies_with_unreachable_term": 803,
+        "assume_stmts": 65,
+        "copy_nonoverlapping_stmts": 4,
+        "unreachable_terms": 1167
+      },
+      "after": {
+        "bodies": 4302,
+        "bodies_with_assume": 38,
+        "bodies_with_copy_nonoverlapping": 4,
+        "bodies_with_unreachable_term": 807,
+        "assume_stmts": 65,
+        "copy_nonoverlapping_stmts": 4,
+        "unreachable_terms": 1172
+      },
+      "delta": {
+        "bodies": 0,
+        "bodies_with_assume": 0,
+        "bodies_with_copy_nonoverlapping": 0,
+        "bodies_with_unreachable_term": 4,
+        "assume_stmts": 0,
+        "copy_nonoverlapping_stmts": 0,
+        "unreachable_terms": 5
+      }
+    },
+    "UnreachablePropagation": {
+      "before": {
+        "bodies": 4302,
+        "bodies_with_assume": 38,
+        "bodies_with_copy_nonoverlapping": 4,
+        "bodies_with_unreachable_term": 807,
+        "assume_stmts": 65,
+        "copy_nonoverlapping_stmts": 4,
+        "unreachable_terms": 1172
+      },
+      "after": {
+        "bodies": 4302,
+        "bodies_with_assume": 66,
+        "bodies_with_copy_nonoverlapping": 4,
+        "bodies_with_unreachable_term": 807,
+        "assume_stmts": 420,
+        "copy_nonoverlapping_stmts": 4,
+        "unreachable_terms": 1172
+      },
+      "delta": {
+        "bodies": 0,
+        "bodies_with_assume": 28,
+        "bodies_with_copy_nonoverlapping": 0,
+        "bodies_with_unreachable_term": 0,
+        "assume_stmts": 355,
+        "copy_nonoverlapping_stmts": 0,
+        "unreachable_terms": 0
+      }
+    },
+    "InstSimplify-after-simplifycfg": {
+      "before": {
+        "bodies": 4302,
+        "bodies_with_assume": 66,
+        "bodies_with_copy_nonoverlapping": 4,
+        "bodies_with_unreachable_term": 780,
+        "assume_stmts": 420,
+        "copy_nonoverlapping_stmts": 4,
+        "unreachable_terms": 780
+      },
+      "after": {
+        "bodies": 4302,
+        "bodies_with_assume": 66,
+        "bodies_with_copy_nonoverlapping": 4,
+        "bodies_with_unreachable_term": 780,
+        "assume_stmts": 420,
+        "copy_nonoverlapping_stmts": 4,
+        "unreachable_terms": 780
+      },
+      "delta": {
+        "bodies": 0,
+        "bodies_with_assume": 0,
+        "bodies_with_copy_nonoverlapping": 0,
+        "bodies_with_unreachable_term": 0,
+        "assume_stmts": 0,
+        "copy_nonoverlapping_stmts": 0,
+        "unreachable_terms": 0
+      }
+    },
+    "SimplifyLocals-final": {
+      "before": {
+        "bodies": 4302,
+        "bodies_with_assume": 58,
+        "bodies_with_copy_nonoverlapping": 4,
+        "bodies_with_unreachable_term": 768,
+        "assume_stmts": 385,
+        "copy_nonoverlapping_stmts": 4,
+        "unreachable_terms": 768
+      },
+      "after": {
+        "bodies": 4302,
+        "bodies_with_assume": 58,
+        "bodies_with_copy_nonoverlapping": 4,
+        "bodies_with_unreachable_term": 768,
+        "assume_stmts": 385,
+        "copy_nonoverlapping_stmts": 4,
+        "unreachable_terms": 768
+      },
+      "delta": {
+        "bodies": 0,
+        "bodies_with_assume": 0,
+        "bodies_with_copy_nonoverlapping": 0,
+        "bodies_with_unreachable_term": 0,
+        "assume_stmts": 0,
+        "copy_nonoverlapping_stmts": 0,
+        "unreachable_terms": 0
+      }
+    }
+  }
+}

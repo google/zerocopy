@@ -1,0 +1,3203 @@
+{
+  "schema": "probe_nondiverging_intrinsics/1",
+  "toolchain": {
+    "rustc_verbose_version": [
+      "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+      "binary: rustc",
+      "commit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "commit-date: 2026-05-31",
+      "host: x86_64-unknown-linux-gnu",
+      "release: 1.98.0-nightly",
+      "LLVM version: 22.1.6"
+    ],
+    "miri_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)"
+  },
+  "pass_specimens": {
+    "rustc_flags": [
+      "-C",
+      "opt-level=2",
+      "-Zdump-mir=LowerIntrinsics|UnreachableEnumBranching|UnreachablePropagation|runtime-post-cleanup|runtime-optimized",
+      "-Zdump-mir-dir=<DIR>"
+    ],
+    "lower_intrinsics": {
+      "direct_assume": {
+        "lower_intrinsics_before": {
+          "counts": {
+            "assume_stmts": 0,
+            "copy_nonoverlapping_stmts": 0,
+            "unreachable_terms": 0,
+            "switch_int_terms": 0,
+            "call_terms": 1
+          },
+          "bb0": [
+            "StorageLive(_2);",
+            "_2 = copy _1;",
+            "_0 = assume(move _2) -> [return: bb1, unwind unreachable];"
+          ]
+        },
+        "lower_intrinsics_after": {
+          "counts": {
+            "assume_stmts": 1,
+            "copy_nonoverlapping_stmts": 0,
+            "unreachable_terms": 0,
+            "switch_int_terms": 0,
+            "call_terms": 0
+          },
+          "bb0": [
+            "StorageLive(_2);",
+            "_2 = copy _1;",
+            "assume(move _2);",
+            "goto -> bb1;"
+          ]
+        },
+        "lowered_to_statement_or_terminator_by_lower_intrinsics": true,
+        "runtime_post_cleanup_counts": {
+          "assume_stmts": 1,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": 0,
+          "call_terms": 0
+        },
+        "runtime_optimized_counts": {
+          "assume_stmts": 1,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": 0,
+          "call_terms": 0
+        }
+      },
+      "direct_copy_nonoverlapping": {
+        "lower_intrinsics_before": {
+          "counts": {
+            "assume_stmts": 0,
+            "copy_nonoverlapping_stmts": 0,
+            "unreachable_terms": 0,
+            "switch_int_terms": 0,
+            "call_terms": 1
+          },
+          "bb0": [
+            "StorageLive(_4);",
+            "_4 = copy _1;",
+            "StorageLive(_5);",
+            "_5 = copy _2;",
+            "StorageLive(_6);",
+            "_6 = copy _3;",
+            "_0 = std::intrinsics::copy_nonoverlapping::<u64>(move _4, move _5, move _6) -> [return: bb1, unwind unreachable];"
+          ]
+        },
+        "lower_intrinsics_after": {
+          "counts": {
+            "assume_stmts": 0,
+            "copy_nonoverlapping_stmts": 1,
+            "unreachable_terms": 0,
+            "switch_int_terms": 0,
+            "call_terms": 0
+          },
+          "bb0": [
+            "StorageLive(_4);",
+            "_4 = copy _1;",
+            "StorageLive(_5);",
+            "_5 = copy _2;",
+            "StorageLive(_6);",
+            "_6 = copy _3;",
+            "copy_nonoverlapping(dst = move _5, src = move _4, count = move _6);",
+            "goto -> bb1;"
+          ]
+        },
+        "lowered_to_statement_or_terminator_by_lower_intrinsics": true,
+        "runtime_post_cleanup_counts": {
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 1,
+          "unreachable_terms": 0,
+          "switch_int_terms": 0,
+          "call_terms": 0
+        },
+        "runtime_optimized_counts": {
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 1,
+          "unreachable_terms": 0,
+          "switch_int_terms": 0,
+          "call_terms": 0
+        }
+      },
+      "direct_unreachable": {
+        "lower_intrinsics_before": {
+          "counts": {
+            "assume_stmts": 0,
+            "copy_nonoverlapping_stmts": 0,
+            "unreachable_terms": 0,
+            "switch_int_terms": 0,
+            "call_terms": 1
+          },
+          "bb0": [
+            "_0 = unreachable() -> unwind unreachable;"
+          ]
+        },
+        "lower_intrinsics_after": {
+          "counts": {
+            "assume_stmts": 0,
+            "copy_nonoverlapping_stmts": 0,
+            "unreachable_terms": 1,
+            "switch_int_terms": 0,
+            "call_terms": 0
+          },
+          "bb0": [
+            "unreachable;"
+          ]
+        },
+        "lowered_to_statement_or_terminator_by_lower_intrinsics": true,
+        "runtime_post_cleanup_counts": {
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 1,
+          "switch_int_terms": 0,
+          "call_terms": 0
+        },
+        "runtime_optimized_counts": null
+      },
+      "wrapper_assert_unchecked": {
+        "lower_intrinsics_before": {
+          "counts": {
+            "assume_stmts": 0,
+            "copy_nonoverlapping_stmts": 0,
+            "unreachable_terms": 0,
+            "switch_int_terms": 0,
+            "call_terms": 1
+          },
+          "bb0": [
+            "StorageLive(_2);",
+            "_2 = copy _1;",
+            "_0 = assert_unchecked(move _2) -> [return: bb1, unwind continue];"
+          ]
+        },
+        "lower_intrinsics_after": {
+          "counts": {
+            "assume_stmts": 0,
+            "copy_nonoverlapping_stmts": 0,
+            "unreachable_terms": 0,
+            "switch_int_terms": 0,
+            "call_terms": 1
+          },
+          "bb0": [
+            "StorageLive(_2);",
+            "_2 = copy _1;",
+            "_0 = assert_unchecked(move _2) -> [return: bb1, unwind continue];"
+          ]
+        },
+        "lowered_to_statement_or_terminator_by_lower_intrinsics": false,
+        "runtime_post_cleanup_counts": {
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": 0,
+          "call_terms": 1
+        },
+        "runtime_optimized_counts": {
+          "assume_stmts": 1,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": 0,
+          "call_terms": 0
+        }
+      },
+      "wrapper_ptr_copy_nonoverlapping": {
+        "lower_intrinsics_before": {
+          "counts": {
+            "assume_stmts": 0,
+            "copy_nonoverlapping_stmts": 0,
+            "unreachable_terms": 0,
+            "switch_int_terms": 0,
+            "call_terms": 1
+          },
+          "bb0": [
+            "StorageLive(_4);",
+            "_4 = copy _1;",
+            "StorageLive(_5);",
+            "_5 = copy _2;",
+            "StorageLive(_6);",
+            "_6 = copy _3;",
+            "_0 = std::ptr::copy_nonoverlapping::<u64>(move _4, move _5, move _6) -> [return: bb1, unwind continue];"
+          ]
+        },
+        "lower_intrinsics_after": {
+          "counts": {
+            "assume_stmts": 0,
+            "copy_nonoverlapping_stmts": 0,
+            "unreachable_terms": 0,
+            "switch_int_terms": 0,
+            "call_terms": 1
+          },
+          "bb0": [
+            "StorageLive(_4);",
+            "_4 = copy _1;",
+            "StorageLive(_5);",
+            "_5 = copy _2;",
+            "StorageLive(_6);",
+            "_6 = copy _3;",
+            "_0 = std::ptr::copy_nonoverlapping::<u64>(move _4, move _5, move _6) -> [return: bb1, unwind continue];"
+          ]
+        },
+        "lowered_to_statement_or_terminator_by_lower_intrinsics": false,
+        "runtime_post_cleanup_counts": {
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": 0,
+          "call_terms": 1
+        },
+        "runtime_optimized_counts": {
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 1,
+          "unreachable_terms": 0,
+          "switch_int_terms": 0,
+          "call_terms": 0
+        }
+      },
+      "wrapper_unreachable_unchecked": {
+        "lower_intrinsics_before": {
+          "counts": {
+            "assume_stmts": 0,
+            "copy_nonoverlapping_stmts": 0,
+            "unreachable_terms": 0,
+            "switch_int_terms": 0,
+            "call_terms": 1
+          },
+          "bb0": [
+            "_0 = unreachable_unchecked() -> unwind continue;"
+          ]
+        },
+        "lower_intrinsics_after": {
+          "counts": {
+            "assume_stmts": 0,
+            "copy_nonoverlapping_stmts": 0,
+            "unreachable_terms": 0,
+            "switch_int_terms": 0,
+            "call_terms": 1
+          },
+          "bb0": [
+            "_0 = unreachable_unchecked() -> unwind continue;"
+          ]
+        },
+        "lowered_to_statement_or_terminator_by_lower_intrinsics": false,
+        "runtime_post_cleanup_counts": {
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": 0,
+          "call_terms": 1
+        },
+        "runtime_optimized_counts": {
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 1,
+          "switch_int_terms": 0,
+          "call_terms": 0
+        }
+      }
+    },
+    "switch_pruning": {
+      "up_two_arms_otherwise_unreachable": {
+        "unreachable_enum_branching_before_bb0": [
+          "switchInt(copy _1) -> [0: bb3, 1: bb2, otherwise: bb1];"
+        ],
+        "unreachable_enum_branching_after_bb0": [
+          "switchInt(copy _1) -> [0: bb3, 1: bb2, otherwise: bb1];"
+        ],
+        "unreachable_propagation_before": {
+          "bb0": [
+            "switchInt(copy _1) -> [0: bb3, 1: bb2, otherwise: bb1];"
+          ],
+          "bb1": [
+            "nop;",
+            "unreachable;"
+          ],
+          "bb2": [
+            "_0 = const 11_u8;",
+            "goto -> bb4;"
+          ],
+          "bb3": [
+            "_0 = const 10_u8;",
+            "goto -> bb4;"
+          ],
+          "bb4": [
+            "return;"
+          ]
+        },
+        "unreachable_propagation_after": {
+          "bb0": [
+            "switchInt(copy _1) -> [0: bb3, 1: bb2, otherwise: bb1];"
+          ],
+          "bb1": [
+            "unreachable;"
+          ],
+          "bb2": [
+            "_0 = const 11_u8;",
+            "goto -> bb4;"
+          ],
+          "bb3": [
+            "_0 = const 10_u8;",
+            "goto -> bb4;"
+          ],
+          "bb4": [
+            "return;"
+          ]
+        },
+        "runtime_optimized": {
+          "bb0": [
+            "switchInt(copy _1) -> [0: bb3, 1: bb2, otherwise: bb1];"
+          ],
+          "bb1": [
+            "unreachable;"
+          ],
+          "bb2": [
+            "_0 = const 11_u8;",
+            "goto -> bb4;"
+          ],
+          "bb3": [
+            "_0 = const 10_u8;",
+            "goto -> bb4;"
+          ],
+          "bb4": [
+            "return;"
+          ]
+        },
+        "assume_stmts_added_by_unreachable_propagation": 0,
+        "reference_model_vs_pass": {
+          "switch_int_terminators": 1,
+          "agree": 1
+        }
+      },
+      "up_one_arm_otherwise_unreachable": {
+        "unreachable_enum_branching_before_bb0": [
+          "switchInt(copy _1) -> [5: bb2, otherwise: bb1];"
+        ],
+        "unreachable_enum_branching_after_bb0": [
+          "switchInt(copy _1) -> [5: bb2, otherwise: bb1];"
+        ],
+        "unreachable_propagation_before": {
+          "bb0": [
+            "switchInt(copy _1) -> [5: bb2, otherwise: bb1];"
+          ],
+          "bb1": [
+            "nop;",
+            "unreachable;"
+          ],
+          "bb2": [
+            "_0 = const 50_u8;",
+            "return;"
+          ]
+        },
+        "unreachable_propagation_after": {
+          "bb0": [
+            "_3 = Eq(copy _1, const 5_u8);",
+            "assume(move _3);",
+            "goto -> bb2;"
+          ],
+          "bb1": [
+            "unreachable;"
+          ],
+          "bb2": [
+            "_0 = const 50_u8;",
+            "return;"
+          ]
+        },
+        "runtime_optimized": {
+          "bb0": [
+            "_2 = Eq(copy _1, const 5_u8);",
+            "assume(move _2);",
+            "_0 = const 50_u8;",
+            "return;"
+          ]
+        },
+        "assume_stmts_added_by_unreachable_propagation": 1,
+        "reference_model_vs_pass": {
+          "switch_int_terminators": 1,
+          "model_predicts_rewrite": 1,
+          "model_predicted_assumes": 1,
+          "model_case_goto": 1,
+          "agree": 1
+        }
+      },
+      "up_removed_arm_otherwise_reachable": {
+        "unreachable_enum_branching_before_bb0": [
+          "switchInt(copy _1) -> [0: bb3, 1: bb2, otherwise: bb1];"
+        ],
+        "unreachable_enum_branching_after_bb0": [
+          "switchInt(copy _1) -> [0: bb3, 1: bb2, otherwise: bb1];"
+        ],
+        "unreachable_propagation_before": {
+          "bb0": [
+            "switchInt(copy _1) -> [0: bb3, 1: bb2, otherwise: bb1];"
+          ],
+          "bb1": [
+            "_0 = const 99_u8;",
+            "goto -> bb4;"
+          ],
+          "bb2": [
+            "_0 = const 11_u8;",
+            "goto -> bb4;"
+          ],
+          "bb3": [
+            "nop;",
+            "unreachable;"
+          ],
+          "bb4": [
+            "return;"
+          ]
+        },
+        "unreachable_propagation_after": {
+          "bb0": [
+            "_3 = Ne(copy _1, const 0_u8);",
+            "assume(move _3);",
+            "switchInt(copy _1) -> [1: bb2, otherwise: bb1];"
+          ],
+          "bb1": [
+            "_0 = const 99_u8;",
+            "goto -> bb4;"
+          ],
+          "bb2": [
+            "_0 = const 11_u8;",
+            "goto -> bb4;"
+          ],
+          "bb3": [
+            "unreachable;"
+          ],
+          "bb4": [
+            "return;"
+          ]
+        },
+        "runtime_optimized": {
+          "bb0": [
+            "_2 = Ne(copy _1, const 0_u8);",
+            "assume(move _2);",
+            "switchInt(copy _1) -> [1: bb2, otherwise: bb1];"
+          ],
+          "bb1": [
+            "_0 = const 99_u8;",
+            "goto -> bb3;"
+          ],
+          "bb2": [
+            "_0 = const 11_u8;",
+            "goto -> bb3;"
+          ],
+          "bb3": [
+            "return;"
+          ]
+        },
+        "assume_stmts_added_by_unreachable_propagation": 1,
+        "reference_model_vs_pass": {
+          "switch_int_terminators": 1,
+          "model_predicts_rewrite": 1,
+          "model_predicted_assumes": 1,
+          "model_case_switchInt": 1,
+          "agree": 1
+        }
+      },
+      "up_all_arms_unreachable_otherwise_reachable": {
+        "unreachable_enum_branching_before_bb0": [
+          "switchInt(copy _1) -> [0: bb3, 1: bb2, otherwise: bb1];"
+        ],
+        "unreachable_enum_branching_after_bb0": [
+          "switchInt(copy _1) -> [0: bb3, 1: bb2, otherwise: bb1];"
+        ],
+        "unreachable_propagation_before": {
+          "bb0": [
+            "switchInt(copy _1) -> [0: bb3, 1: bb2, otherwise: bb1];"
+          ],
+          "bb1": [
+            "_0 = const 99_u8;",
+            "return;"
+          ],
+          "bb2": [
+            "nop;",
+            "unreachable;"
+          ],
+          "bb3": [
+            "nop;",
+            "unreachable;"
+          ]
+        },
+        "unreachable_propagation_after": {
+          "bb0": [
+            "_4 = Ne(copy _1, const 0_u8);",
+            "assume(move _4);",
+            "_5 = Ne(copy _1, const 1_u8);",
+            "assume(move _5);",
+            "goto -> bb1;"
+          ],
+          "bb1": [
+            "_0 = const 99_u8;",
+            "return;"
+          ],
+          "bb2": [
+            "unreachable;"
+          ],
+          "bb3": [
+            "unreachable;"
+          ]
+        },
+        "runtime_optimized": {
+          "bb0": [
+            "_2 = Ne(copy _1, const 0_u8);",
+            "assume(move _2);",
+            "_3 = Ne(copy _1, const 1_u8);",
+            "assume(move _3);",
+            "_0 = const 99_u8;",
+            "return;"
+          ]
+        },
+        "assume_stmts_added_by_unreachable_propagation": 2,
+        "reference_model_vs_pass": {
+          "switch_int_terminators": 1,
+          "model_predicts_rewrite": 1,
+          "model_predicted_assumes": 2,
+          "model_case_goto": 1,
+          "agree": 1
+        }
+      },
+      "up_everything_unreachable": {
+        "unreachable_enum_branching_before_bb0": [
+          "switchInt(copy _1) -> [0: bb2, otherwise: bb1];"
+        ],
+        "unreachable_enum_branching_after_bb0": [
+          "switchInt(copy _1) -> [0: bb2, otherwise: bb1];"
+        ],
+        "unreachable_propagation_before": {
+          "bb0": [
+            "switchInt(copy _1) -> [0: bb2, otherwise: bb1];"
+          ],
+          "bb1": [
+            "nop;",
+            "unreachable;"
+          ],
+          "bb2": [
+            "nop;",
+            "unreachable;"
+          ]
+        },
+        "unreachable_propagation_after": {
+          "bb0": [
+            "unreachable;"
+          ],
+          "bb1": [
+            "unreachable;"
+          ],
+          "bb2": [
+            "unreachable;"
+          ]
+        },
+        "runtime_optimized": {
+          "bb0": [
+            "unreachable;"
+          ]
+        },
+        "assume_stmts_added_by_unreachable_propagation": 0,
+        "reference_model_vs_pass": {
+          "switch_int_terminators": 1,
+          "model_predicts_rewrite": 1,
+          "model_predicted_assumes": 0,
+          "model_case_unreachable": 1,
+          "agree": 1
+        }
+      },
+      "up_bool_discriminant": {
+        "unreachable_enum_branching_before_bb0": [
+          "StorageLive(_2);",
+          "_2 = copy _1;",
+          "switchInt(move _2) -> [0: bb2, otherwise: bb1];"
+        ],
+        "unreachable_enum_branching_after_bb0": [
+          "StorageLive(_2);",
+          "_2 = copy _1;",
+          "switchInt(move _2) -> [0: bb2, otherwise: bb1];"
+        ],
+        "unreachable_propagation_before": {
+          "bb0": [
+            "StorageLive(_2);",
+            "_2 = copy _1;",
+            "switchInt(move _2) -> [0: bb2, otherwise: bb1];"
+          ],
+          "bb1": [
+            "_0 = const 1_u8;",
+            "StorageDead(_2);",
+            "return;"
+          ],
+          "bb2": [
+            "nop;",
+            "unreachable;"
+          ]
+        },
+        "unreachable_propagation_after": {
+          "bb0": [
+            "StorageLive(_2);",
+            "_2 = copy _1;",
+            "_4 = Ne(copy _2, const false);",
+            "assume(move _4);",
+            "goto -> bb1;"
+          ],
+          "bb1": [
+            "_0 = const 1_u8;",
+            "StorageDead(_2);",
+            "return;"
+          ],
+          "bb2": [
+            "unreachable;"
+          ]
+        },
+        "runtime_optimized": {
+          "bb0": [
+            "assume(copy _1);",
+            "_0 = const 1_u8;",
+            "return;"
+          ]
+        },
+        "assume_stmts_added_by_unreachable_propagation": 1,
+        "reference_model_vs_pass": {
+          "switch_int_terminators": 1,
+          "model_predicts_rewrite": 1,
+          "model_predicted_assumes": 1,
+          "model_case_goto": 1,
+          "agree": 1
+        }
+      },
+      "up_degenerate_zero_arm_switch": {
+        "unreachable_enum_branching_before_bb0": [
+          "switchInt(copy _1) -> bb1;"
+        ],
+        "unreachable_enum_branching_after_bb0": [
+          "switchInt(copy _1) -> bb1;"
+        ],
+        "unreachable_propagation_before": {
+          "bb0": [
+            "switchInt(copy _1) -> bb1;"
+          ],
+          "bb1": [
+            "_0 = const 7_u8;",
+            "return;"
+          ]
+        },
+        "unreachable_propagation_after": {
+          "bb0": [
+            "goto -> bb1;"
+          ],
+          "bb1": [
+            "_0 = const 7_u8;",
+            "return;"
+          ]
+        },
+        "runtime_optimized": {
+          "bb0": [
+            "_0 = const 7_u8;",
+            "return;"
+          ]
+        },
+        "assume_stmts_added_by_unreachable_propagation": 0,
+        "reference_model_vs_pass": {
+          "switch_int_terminators": 1,
+          "model_predicts_rewrite": 1,
+          "model_predicted_assumes": 0,
+          "model_case_goto": 1,
+          "agree": 1
+        }
+      },
+      "ueb_uninhabited_middle_variant": {
+        "unreachable_enum_branching_before_bb0": [
+          "_2 = discriminant(_1);",
+          "switchInt(move _2) -> [0: bb4, 1: bb3, 2: bb2, otherwise: bb1];"
+        ],
+        "unreachable_enum_branching_after_bb0": [
+          "_2 = discriminant(_1);",
+          "switchInt(move _2) -> [0: bb4, 1: bb1, 2: bb2, otherwise: bb1];"
+        ],
+        "unreachable_propagation_before": {
+          "bb0": [
+            "_2 = discriminant(_1);",
+            "switchInt(move _2) -> [0: bb4, 1: bb1, 2: bb2, otherwise: bb1];"
+          ],
+          "bb1": [
+            "unreachable;"
+          ],
+          "bb2": [
+            "_0 = const 3_u8;",
+            "goto -> bb5;"
+          ],
+          "bb3": [
+            "_0 = const 2_u8;",
+            "goto -> bb5;"
+          ],
+          "bb4": [
+            "_0 = const 1_u8;",
+            "goto -> bb5;"
+          ],
+          "bb5": [
+            "return;"
+          ]
+        },
+        "unreachable_propagation_after": {
+          "bb0": [
+            "_2 = discriminant(_1);",
+            "switchInt(move _2) -> [0: bb4, 2: bb2, otherwise: bb1];"
+          ],
+          "bb1": [
+            "unreachable;"
+          ],
+          "bb2": [
+            "_0 = const 3_u8;",
+            "goto -> bb5;"
+          ],
+          "bb3": [
+            "_0 = const 2_u8;",
+            "goto -> bb5;"
+          ],
+          "bb4": [
+            "_0 = const 1_u8;",
+            "goto -> bb5;"
+          ],
+          "bb5": [
+            "return;"
+          ]
+        },
+        "runtime_optimized": {
+          "bb0": [
+            "_2 = discriminant(_1);",
+            "switchInt(move _2) -> [0: bb3, 2: bb2, otherwise: bb1];"
+          ],
+          "bb1": [
+            "unreachable;"
+          ],
+          "bb2": [
+            "_0 = const 3_u8;",
+            "goto -> bb4;"
+          ],
+          "bb3": [
+            "_0 = const 1_u8;",
+            "goto -> bb4;"
+          ],
+          "bb4": [
+            "return;"
+          ]
+        },
+        "assume_stmts_added_by_unreachable_propagation": 0,
+        "reference_model_vs_pass": {
+          "switch_int_terminators": 1,
+          "model_predicts_rewrite": 1,
+          "model_predicted_assumes": 0,
+          "model_case_switchInt": 1,
+          "agree": 1
+        }
+      },
+      "ueb_result_infallible": {
+        "unreachable_enum_branching_before_bb0": [
+          "_2 = discriminant(_1);",
+          "switchInt(move _2) -> [0: bb3, 1: bb2, otherwise: bb1];"
+        ],
+        "unreachable_enum_branching_after_bb0": [
+          "_2 = discriminant(_1);",
+          "switchInt(move _2) -> [0: bb3, 1: bb1, otherwise: bb1];"
+        ],
+        "unreachable_propagation_before": {
+          "bb0": [
+            "_2 = discriminant(_1);",
+            "switchInt(move _2) -> [0: bb3, 1: bb1, otherwise: bb1];"
+          ],
+          "bb1": [
+            "unreachable;"
+          ],
+          "bb2": [
+            "_0 = const 7_u32;",
+            "goto -> bb4;"
+          ],
+          "bb3": [
+            "StorageLive(_3);",
+            "_3 = copy ((_1 as Ok).0: u32);",
+            "_0 = copy _3;",
+            "StorageDead(_3);",
+            "goto -> bb4;"
+          ],
+          "bb4": [
+            "return;"
+          ]
+        },
+        "unreachable_propagation_after": {
+          "bb0": [
+            "_2 = discriminant(_1);",
+            "_4 = Eq(copy _2, const 0_isize);",
+            "assume(move _4);",
+            "goto -> bb3;"
+          ],
+          "bb1": [
+            "unreachable;"
+          ],
+          "bb2": [
+            "_0 = const 7_u32;",
+            "goto -> bb4;"
+          ],
+          "bb3": [
+            "StorageLive(_3);",
+            "_3 = copy ((_1 as Ok).0: u32);",
+            "_0 = copy _3;",
+            "StorageDead(_3);",
+            "goto -> bb4;"
+          ],
+          "bb4": [
+            "return;"
+          ]
+        },
+        "runtime_optimized": {
+          "bb0": [
+            "_2 = discriminant(_1);",
+            "_3 = Eq(copy _2, const 0_isize);",
+            "assume(move _3);",
+            "_0 = copy ((_1 as Ok).0: u32);",
+            "return;"
+          ]
+        },
+        "assume_stmts_added_by_unreachable_propagation": 1,
+        "reference_model_vs_pass": {
+          "switch_int_terminators": 1,
+          "model_predicts_rewrite": 1,
+          "model_predicted_assumes": 1,
+          "model_case_goto": 1,
+          "agree": 1
+        }
+      },
+      "ueb_otherwise_is_last_variant": {
+        "unreachable_enum_branching_before_bb0": [
+          "_2 = discriminant(_1);",
+          "switchInt(move _2) -> [0: bb3, 1: bb2, otherwise: bb1];"
+        ],
+        "unreachable_enum_branching_after_bb0": [
+          "_2 = discriminant(_1);",
+          "switchInt(move _2) -> [0: bb3, 1: bb2, 2: bb1, otherwise: bb5];"
+        ],
+        "unreachable_propagation_before": {
+          "bb0": [
+            "_2 = discriminant(_1);",
+            "switchInt(move _2) -> [0: bb3, 1: bb2, 2: bb1, otherwise: bb5];"
+          ],
+          "bb1": [
+            "_0 = const 3_u8;",
+            "goto -> bb4;"
+          ],
+          "bb2": [
+            "_0 = const 2_u8;",
+            "goto -> bb4;"
+          ],
+          "bb3": [
+            "_0 = const 1_u8;",
+            "goto -> bb4;"
+          ],
+          "bb4": [
+            "return;"
+          ],
+          "bb5": [
+            "unreachable;"
+          ]
+        },
+        "unreachable_propagation_after": {
+          "bb0": [
+            "_2 = discriminant(_1);",
+            "switchInt(move _2) -> [0: bb3, 1: bb2, 2: bb1, otherwise: bb5];"
+          ],
+          "bb1": [
+            "_0 = const 3_u8;",
+            "goto -> bb4;"
+          ],
+          "bb2": [
+            "_0 = const 2_u8;",
+            "goto -> bb4;"
+          ],
+          "bb3": [
+            "_0 = const 1_u8;",
+            "goto -> bb4;"
+          ],
+          "bb4": [
+            "return;"
+          ],
+          "bb5": [
+            "unreachable;"
+          ]
+        },
+        "runtime_optimized": {
+          "bb0": [
+            "_2 = discriminant(_1);",
+            "switchInt(move _2) -> [0: bb3, 1: bb2, 2: bb1, otherwise: bb5];"
+          ],
+          "bb1": [
+            "_0 = const 3_u8;",
+            "goto -> bb4;"
+          ],
+          "bb2": [
+            "_0 = const 2_u8;",
+            "goto -> bb4;"
+          ],
+          "bb3": [
+            "_0 = const 1_u8;",
+            "goto -> bb4;"
+          ],
+          "bb4": [
+            "return;"
+          ],
+          "bb5": [
+            "unreachable;"
+          ]
+        },
+        "assume_stmts_added_by_unreachable_propagation": 0,
+        "reference_model_vs_pass": {
+          "switch_int_terminators": 1,
+          "agree": 1
+        }
+      }
+    }
+  },
+  "pointer_checks": {
+    "mir_instrumentation": {
+      "direct_copy_nonoverlapping": {
+        "assert_terminators_before_check_alignment": 0,
+        "assert_terminators_after_check_alignment": 0,
+        "assert_terminators_after_check_null": 0,
+        "assert_messages_after_check_null": [],
+        "copy_nonoverlapping_stmts_after_check_null": 1
+      },
+      "deref_read": {
+        "assert_terminators_before_check_alignment": 0,
+        "assert_terminators_after_check_alignment": 1,
+        "assert_terminators_after_check_null": 2,
+        "assert_messages_after_check_null": [
+          "misaligned pointer dereference: address must be a multiple of {} but is {}",
+          "null pointer dereference occurred"
+        ],
+        "copy_nonoverlapping_stmts_after_check_null": 0
+      },
+      "deref_write": {
+        "assert_terminators_before_check_alignment": 0,
+        "assert_terminators_after_check_alignment": 1,
+        "assert_terminators_after_check_null": 2,
+        "assert_messages_after_check_null": [
+          "misaligned pointer dereference: address must be a multiple of {} but is {}",
+          "null pointer dereference occurred"
+        ],
+        "copy_nonoverlapping_stmts_after_check_null": 0
+      }
+    },
+    "native_library_precondition": {
+      "debug_assertions_on_opt_0": {
+        "rustc_flags": [
+          "-C",
+          "opt-level=0",
+          "-C",
+          "debug-assertions=on"
+        ],
+        "cases": {
+          "wrapper_zero_count_misaligned": {
+            "returncode": -6,
+            "stdout": "",
+            "stderr_precondition_line": "unsafe precondition(s) violated: ptr::copy_nonoverlapping requires that both pointer arguments are aligned and non-null and the specified memory ranges do not overlap"
+          },
+          "wrapper_zero_count_null": {
+            "returncode": 0,
+            "stdout": "completed wrapper_zero_count_null first_dst_byte=0",
+            "stderr_precondition_line": null
+          },
+          "wrapper_count1_null": {
+            "returncode": -6,
+            "stdout": "",
+            "stderr_precondition_line": "unsafe precondition(s) violated: ptr::copy_nonoverlapping requires that both pointer arguments are aligned and non-null and the specified memory ranges do not overlap"
+          },
+          "wrapper_count1_overlap": {
+            "returncode": -6,
+            "stdout": "",
+            "stderr_precondition_line": "unsafe precondition(s) violated: ptr::copy_nonoverlapping requires that both pointer arguments are aligned and non-null and the specified memory ranges do not overlap"
+          },
+          "wrapper_count1_disjoint": {
+            "returncode": 0,
+            "stdout": "completed wrapper_count1_disjoint first_dst_byte=7",
+            "stderr_precondition_line": null
+          },
+          "intrinsic_zero_count_misaligned": {
+            "returncode": 0,
+            "stdout": "completed intrinsic_zero_count_misaligned first_dst_byte=0",
+            "stderr_precondition_line": null
+          },
+          "intrinsic_zero_count_null": {
+            "returncode": 0,
+            "stdout": "completed intrinsic_zero_count_null first_dst_byte=0",
+            "stderr_precondition_line": null
+          }
+        }
+      },
+      "debug_assertions_off_opt_2": {
+        "rustc_flags": [
+          "-C",
+          "opt-level=2",
+          "-C",
+          "debug-assertions=off"
+        ],
+        "cases": {
+          "wrapper_zero_count_misaligned": {
+            "returncode": 0,
+            "stdout": "completed wrapper_zero_count_misaligned first_dst_byte=0",
+            "stderr_precondition_line": null
+          },
+          "wrapper_zero_count_null": {
+            "returncode": 0,
+            "stdout": "completed wrapper_zero_count_null first_dst_byte=0",
+            "stderr_precondition_line": null
+          },
+          "wrapper_count1_disjoint": {
+            "returncode": 0,
+            "stdout": "completed wrapper_count1_disjoint first_dst_byte=7",
+            "stderr_precondition_line": null
+          },
+          "intrinsic_zero_count_misaligned": {
+            "returncode": 0,
+            "stdout": "completed intrinsic_zero_count_misaligned first_dst_byte=0",
+            "stderr_precondition_line": null
+          },
+          "intrinsic_zero_count_null": {
+            "returncode": 0,
+            "stdout": "completed intrinsic_zero_count_null first_dst_byte=0",
+            "stderr_precondition_line": null
+          }
+        }
+      }
+    }
+  },
+  "miri_matrix": {
+    "modes": {
+      "stacked_borrows_mir_opt_0": [],
+      "tree_borrows_mir_opt_0": [
+        "-Zmiri-tree-borrows"
+      ],
+      "stacked_borrows_mir_opt_2_inlined": [
+        "-Zmir-opt-level=2",
+        "-Copt-level=2"
+      ]
+    },
+    "specimens": {
+      "assume_false": {
+        "expected_class": "ub",
+        "source": "#![allow(invalid_null_arguments)]\nuse core::hint::black_box;\nfn main() { let c = black_box(false); unsafe { core::hint::assert_unchecked(c) } }\n",
+        "modes": {
+          "stacked_borrows_mir_opt_0": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: `assume` called with `false`"
+          },
+          "tree_borrows_mir_opt_0": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: `assume` called with `false`"
+          },
+          "stacked_borrows_mir_opt_2_inlined": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: `assume` called with `false`"
+          }
+        },
+        "verdict_identical_across_modes": true
+      },
+      "assume_true": {
+        "expected_class": "ok",
+        "source": "#![allow(invalid_null_arguments)]\nuse core::hint::black_box;\nfn main() { let c = black_box(true); unsafe { core::hint::assert_unchecked(c) } }\n",
+        "modes": {
+          "stacked_borrows_mir_opt_0": {
+            "returncode": 0,
+            "stdout": "",
+            "first_error": null
+          },
+          "tree_borrows_mir_opt_0": {
+            "returncode": 0,
+            "stdout": "",
+            "first_error": null
+          },
+          "stacked_borrows_mir_opt_2_inlined": {
+            "returncode": 0,
+            "stdout": "",
+            "first_error": null
+          }
+        },
+        "verdict_identical_across_modes": true
+      },
+      "unreachable_reached": {
+        "expected_class": "ub",
+        "source": "#![allow(invalid_null_arguments)]\nuse core::hint::black_box;\nfn main() { if black_box(true) { unsafe { core::hint::unreachable_unchecked() } } }\n",
+        "modes": {
+          "stacked_borrows_mir_opt_0": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: entering unreachable code"
+          },
+          "tree_borrows_mir_opt_0": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: entering unreachable code"
+          },
+          "stacked_borrows_mir_opt_2_inlined": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: entering unreachable code"
+          }
+        },
+        "verdict_identical_across_modes": true
+      },
+      "copy_zero_count_null_src": {
+        "expected_class": "ok",
+        "source": "#![allow(invalid_null_arguments)]\nuse core::hint::black_box;\nfn main() {\n    let mut d: u64 = 0;\n    let s: *const u64 = core::ptr::null();\n    unsafe { core::ptr::copy_nonoverlapping(s, &raw mut d, 0) }\n}\n",
+        "modes": {
+          "stacked_borrows_mir_opt_0": {
+            "returncode": 0,
+            "stdout": "",
+            "first_error": null
+          },
+          "tree_borrows_mir_opt_0": {
+            "returncode": 0,
+            "stdout": "",
+            "first_error": null
+          },
+          "stacked_borrows_mir_opt_2_inlined": {
+            "returncode": 0,
+            "stdout": "",
+            "first_error": null
+          }
+        },
+        "verdict_identical_across_modes": true
+      },
+      "copy_zero_count_null_dst": {
+        "expected_class": "ok",
+        "source": "#![allow(invalid_null_arguments)]\nuse core::hint::black_box;\nfn main() {\n    let s: u64 = 1;\n    let d: *mut u64 = core::ptr::null_mut();\n    unsafe { core::ptr::copy_nonoverlapping(&raw const s, d, 0) }\n}\n",
+        "modes": {
+          "stacked_borrows_mir_opt_0": {
+            "returncode": 0,
+            "stdout": "",
+            "first_error": null
+          },
+          "tree_borrows_mir_opt_0": {
+            "returncode": 0,
+            "stdout": "",
+            "first_error": null
+          },
+          "stacked_borrows_mir_opt_2_inlined": {
+            "returncode": 0,
+            "stdout": "",
+            "first_error": null
+          }
+        },
+        "verdict_identical_across_modes": true
+      },
+      "copy_zero_count_null_src_opaque": {
+        "expected_class": "ok",
+        "source": "#![allow(invalid_null_arguments)]\nuse core::hint::black_box;\n#[inline(never)]\nfn opaque_null() -> *const u64 { black_box(core::ptr::null()) }\nfn main() {\n    let mut d: u64 = 0;\n    unsafe { core::ptr::copy_nonoverlapping(opaque_null(), &raw mut d, 0) }\n}\n",
+        "modes": {
+          "stacked_borrows_mir_opt_0": {
+            "returncode": 0,
+            "stdout": "",
+            "first_error": null
+          },
+          "tree_borrows_mir_opt_0": {
+            "returncode": 0,
+            "stdout": "",
+            "first_error": null
+          },
+          "stacked_borrows_mir_opt_2_inlined": {
+            "returncode": 0,
+            "stdout": "",
+            "first_error": null
+          }
+        },
+        "verdict_identical_across_modes": true
+      },
+      "copy_zero_count_misaligned_src": {
+        "expected_class": "ub",
+        "source": "#![allow(invalid_null_arguments)]\nuse core::hint::black_box;\n#[repr(align(8))]\nstruct Aligned([u8; 32]);\nfn main() {\n    let b = Aligned([0; 32]);\n    let mut d: u64 = 0;\n    let s = b.0.as_ptr().wrapping_add(1) as *const u64;\n    unsafe { core::ptr::copy_nonoverlapping(s, &raw mut d, 0) }\n}\n",
+        "modes": {
+          "stacked_borrows_mir_opt_0": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: accessing memory with alignment 1, but alignment 8 is required"
+          },
+          "tree_borrows_mir_opt_0": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: accessing memory with alignment 1, but alignment 8 is required"
+          },
+          "stacked_borrows_mir_opt_2_inlined": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: accessing memory with alignment 1, but alignment 8 is required"
+          }
+        },
+        "verdict_identical_across_modes": true
+      },
+      "copy_zero_count_misaligned_dst": {
+        "expected_class": "ub",
+        "source": "#![allow(invalid_null_arguments)]\nuse core::hint::black_box;\n#[repr(align(8))]\nstruct Aligned([u8; 32]);\nfn main() {\n    let mut b = Aligned([0; 32]);\n    let s: u64 = 0;\n    let d = b.0.as_mut_ptr().wrapping_add(1) as *mut u64;\n    unsafe { core::ptr::copy_nonoverlapping(&raw const s, d, 0) }\n}\n",
+        "modes": {
+          "stacked_borrows_mir_opt_0": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: accessing memory with alignment 1, but alignment 8 is required"
+          },
+          "tree_borrows_mir_opt_0": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: accessing memory with alignment 1, but alignment 8 is required"
+          },
+          "stacked_borrows_mir_opt_2_inlined": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: accessing memory with alignment 1, but alignment 8 is required"
+          }
+        },
+        "verdict_identical_across_modes": true
+      },
+      "copy_zero_count_dangling_aligned": {
+        "expected_class": "ok",
+        "source": "#![allow(invalid_null_arguments)]\nuse core::hint::black_box;\nfn main() {\n    let s = core::ptr::NonNull::<u64>::dangling().as_ptr() as *const u64;\n    let d = core::ptr::NonNull::<u64>::dangling().as_ptr();\n    unsafe { core::ptr::copy_nonoverlapping(s, d, 0) }\n}\n",
+        "modes": {
+          "stacked_borrows_mir_opt_0": {
+            "returncode": 0,
+            "stdout": "",
+            "first_error": null
+          },
+          "tree_borrows_mir_opt_0": {
+            "returncode": 0,
+            "stdout": "",
+            "first_error": null
+          },
+          "stacked_borrows_mir_opt_2_inlined": {
+            "returncode": 0,
+            "stdout": "",
+            "first_error": null
+          }
+        },
+        "verdict_identical_across_modes": true
+      },
+      "copy_zst_null_count5": {
+        "expected_class": "ok",
+        "source": "#![allow(invalid_null_arguments)]\nuse core::hint::black_box;\nfn main() {\n    let s: *const () = black_box(core::ptr::null());\n    let d: *mut () = black_box(core::ptr::null_mut());\n    unsafe { core::ptr::copy_nonoverlapping(s, d, 5) }\n}\n",
+        "modes": {
+          "stacked_borrows_mir_opt_0": {
+            "returncode": 0,
+            "stdout": "",
+            "first_error": null
+          },
+          "tree_borrows_mir_opt_0": {
+            "returncode": 0,
+            "stdout": "",
+            "first_error": null
+          },
+          "stacked_borrows_mir_opt_2_inlined": {
+            "returncode": 0,
+            "stdout": "",
+            "first_error": null
+          }
+        },
+        "verdict_identical_across_modes": true
+      },
+      "copy_count1_null_src": {
+        "expected_class": "ub",
+        "source": "#![allow(invalid_null_arguments)]\nuse core::hint::black_box;\nfn main() {\n    let mut d: u64 = 0;\n    let s: *const u64 = black_box(core::ptr::null());\n    unsafe { core::ptr::copy_nonoverlapping(s, &raw mut d, 1) }\n}\n",
+        "modes": {
+          "stacked_borrows_mir_opt_0": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: memory access failed: attempting to access 8 bytes, but got null pointer"
+          },
+          "tree_borrows_mir_opt_0": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: memory access failed: attempting to access 8 bytes, but got null pointer"
+          },
+          "stacked_borrows_mir_opt_2_inlined": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: memory access failed: attempting to access 8 bytes, but got null pointer"
+          }
+        },
+        "verdict_identical_across_modes": true
+      },
+      "copy_count1_dangling_src": {
+        "expected_class": "ub",
+        "source": "#![allow(invalid_null_arguments)]\nuse core::hint::black_box;\nfn main() {\n    let mut d: u64 = 0;\n    let s = core::ptr::NonNull::<u64>::dangling().as_ptr() as *const u64;\n    unsafe { core::ptr::copy_nonoverlapping(s, &raw mut d, 1) }\n}\n",
+        "modes": {
+          "stacked_borrows_mir_opt_0": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: memory access failed: attempting to access 8 bytes, but got 0x8[noalloc] which is a dangling pointer (it has no provenance)"
+          },
+          "tree_borrows_mir_opt_0": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: memory access failed: attempting to access 8 bytes, but got 0x8[noalloc] which is a dangling pointer (it has no provenance)"
+          },
+          "stacked_borrows_mir_opt_2_inlined": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: memory access failed: attempting to access 8 bytes, but got 0x8[noalloc] which is a dangling pointer (it has no provenance)"
+          }
+        },
+        "verdict_identical_across_modes": true
+      },
+      "copy_count1_overlap_initialized": {
+        "expected_class": "ub",
+        "source": "#![allow(invalid_null_arguments)]\nuse core::hint::black_box;\nfn main() {\n    let mut x: u64 = 7;\n    let p = &raw mut x;\n    unsafe { core::ptr::copy_nonoverlapping(p, p, 1) }\n}\n",
+        "modes": {
+          "stacked_borrows_mir_opt_0": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: `copy_nonoverlapping` called on overlapping ranges"
+          },
+          "tree_borrows_mir_opt_0": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: `copy_nonoverlapping` called on overlapping ranges"
+          },
+          "stacked_borrows_mir_opt_2_inlined": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: `copy_nonoverlapping` called on overlapping ranges"
+          }
+        },
+        "verdict_identical_across_modes": true
+      },
+      "copy_count2_partial_overlap_initialized": {
+        "expected_class": "ub",
+        "source": "#![allow(invalid_null_arguments)]\nuse core::hint::black_box;\nfn main() {\n    let mut a = [1u64, 2, 3];\n    let p = a.as_mut_ptr();\n    unsafe { core::ptr::copy_nonoverlapping(p, p.add(1), 2) }\n}\n",
+        "modes": {
+          "stacked_borrows_mir_opt_0": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: `copy_nonoverlapping` called on overlapping ranges"
+          },
+          "tree_borrows_mir_opt_0": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: `copy_nonoverlapping` called on overlapping ranges"
+          },
+          "stacked_borrows_mir_opt_2_inlined": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: `copy_nonoverlapping` called on overlapping ranges"
+          }
+        },
+        "verdict_identical_across_modes": true
+      },
+      "copy_count1_overlap_uninitialized": {
+        "expected_class": "ok_interpreter_gap",
+        "source": "#![allow(invalid_null_arguments)]\nuse core::hint::black_box;\nfn main() {\n    let mut x = core::mem::MaybeUninit::<u64>::uninit();\n    let p = x.as_mut_ptr();\n    unsafe { core::ptr::copy_nonoverlapping(p, p, 1) }\n}\n",
+        "modes": {
+          "stacked_borrows_mir_opt_0": {
+            "returncode": 0,
+            "stdout": "",
+            "first_error": null
+          },
+          "tree_borrows_mir_opt_0": {
+            "returncode": 0,
+            "stdout": "",
+            "first_error": null
+          },
+          "stacked_borrows_mir_opt_2_inlined": {
+            "returncode": 0,
+            "stdout": "",
+            "first_error": null
+          }
+        },
+        "verdict_identical_across_modes": true
+      },
+      "copy_count2_disjoint": {
+        "expected_class": "ok",
+        "source": "#![allow(invalid_null_arguments)]\nuse core::hint::black_box;\nfn main() {\n    let a = [11u64, 22];\n    let mut b = [0u64; 2];\n    unsafe { core::ptr::copy_nonoverlapping(a.as_ptr(), b.as_mut_ptr(), 2) }\n    assert_eq!(b, [11, 22]);\n}\n",
+        "modes": {
+          "stacked_borrows_mir_opt_0": {
+            "returncode": 0,
+            "stdout": "",
+            "first_error": null
+          },
+          "tree_borrows_mir_opt_0": {
+            "returncode": 0,
+            "stdout": "",
+            "first_error": null
+          },
+          "stacked_borrows_mir_opt_2_inlined": {
+            "returncode": 0,
+            "stdout": "",
+            "first_error": null
+          }
+        },
+        "verdict_identical_across_modes": true
+      },
+      "copy_size_overflow": {
+        "expected_class": "ub",
+        "source": "#![allow(invalid_null_arguments)]\nuse core::hint::black_box;\nfn main() {\n    let s = core::ptr::NonNull::<u64>::dangling().as_ptr() as *const u64;\n    let d = core::ptr::NonNull::<u64>::dangling().as_ptr();\n    unsafe { core::ptr::copy_nonoverlapping(s, d, black_box(usize::MAX)) }\n}\n",
+        "modes": {
+          "stacked_borrows_mir_opt_0": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: overflow computing total size of `copy_nonoverlapping`"
+          },
+          "tree_borrows_mir_opt_0": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: overflow computing total size of `copy_nonoverlapping`"
+          },
+          "stacked_borrows_mir_opt_2_inlined": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: overflow computing total size of `copy_nonoverlapping`"
+          }
+        },
+        "verdict_identical_across_modes": true
+      }
+    },
+    "compile_time_lint_row": {
+      "description": "Same program as `copy_zero_count_null_src` without `#![allow(invalid_null_arguments)]`. `rustc --emit=metadata` rejects it at compile time; the `miri` driver rejects it with the same lint before any interpretation starts.",
+      "source": "fn main() {\n    let mut d: u64 = 0;\n    let s: *const u64 = core::ptr::null();\n    unsafe { core::ptr::copy_nonoverlapping(s, &raw mut d, 0) }\n}\n",
+      "rustc_returncode": 1,
+      "first_error": "error: calling this function with a null pointer is undefined behavior, even if the result of the function is unused",
+      "lint_note": "= note: `#[deny(invalid_null_arguments)]` on by default",
+      "miri_returncode": 1,
+      "miri_first_error": "error: calling this function with a null pointer is undefined behavior, even if the result of the function is unused"
+    }
+  },
+  "miri_switch_pruning_differential": {
+    "modes": {
+      "mir_opt_0": [
+        "-Zmir-opt-level=0"
+      ],
+      "mir_opt_0_plus_unreachable_propagation": [
+        "-Zmir-opt-level=0",
+        "-Zmir-enable-passes=+UnreachablePropagation"
+      ],
+      "mir_opt_2": [
+        "-Zmir-opt-level=2"
+      ]
+    },
+    "source_template": "#![feature(core_intrinsics, custom_mir)]\n#![allow(internal_features)]\nuse core::intrinsics::mir::*;\n\n#[inline(never)]\npub fn up_one_arm_otherwise_unreachable(x: u8) -> u8 {\n    match x { 5 => 50, _ => unsafe { core::intrinsics::unreachable() } }\n}\n#[inline(never)]\npub fn up_removed_arm_otherwise_reachable(x: u8) -> u8 {\n    match x { 0 => unsafe { core::intrinsics::unreachable() }, 1 => 11, _ => 99 }\n}\n#[inline(never)]\npub fn up_all_arms_unreachable_otherwise_reachable(x: u8) -> u8 {\n    match x {\n        0 => unsafe { core::intrinsics::unreachable() },\n        1 => unsafe { core::intrinsics::unreachable() },\n        _ => 99,\n    }\n}\n#[inline(never)]\npub fn up_two_arms_otherwise_unreachable(x: u8) -> u8 {\n    match x { 0 => 10, 1 => 11, _ => unsafe { core::intrinsics::unreachable() } }\n}\n#[custom_mir(dialect = \"runtime\", phase = \"post-cleanup\")]\n#[inline(never)]\npub fn up_degenerate_zero_arm_switch_uninit(_unused: u8) -> u8 {\n    mir! {\n        let x: u8;\n        {\n            StorageLive(x);\n            match x {\n                _ => bb1,\n            }\n        }\n        bb1 = {\n            RET = 7_u8;\n            Return()\n        }\n    }\n}\nfn main() {\n    let x: u8 = core::hint::black_box(__INPUT__);\n    let r = __FUNCTION__(x);\n    println!(\"result={r}\");\n}\n",
+    "cases": [
+      {
+        "function": "up_one_arm_otherwise_unreachable",
+        "input": 5,
+        "modes": {
+          "mir_opt_0": {
+            "returncode": 0,
+            "stdout": "result=50",
+            "first_error": null
+          },
+          "mir_opt_0_plus_unreachable_propagation": {
+            "returncode": 0,
+            "stdout": "result=50",
+            "first_error": null
+          },
+          "mir_opt_2": {
+            "returncode": 0,
+            "stdout": "result=50",
+            "first_error": null
+          }
+        },
+        "ub_verdict_identical_across_modes": true
+      },
+      {
+        "function": "up_one_arm_otherwise_unreachable",
+        "input": 6,
+        "modes": {
+          "mir_opt_0": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: entering unreachable code"
+          },
+          "mir_opt_0_plus_unreachable_propagation": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: `assume` called with `false`"
+          },
+          "mir_opt_2": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: `assume` called with `false`"
+          }
+        },
+        "ub_verdict_identical_across_modes": true
+      },
+      {
+        "function": "up_removed_arm_otherwise_reachable",
+        "input": 0,
+        "modes": {
+          "mir_opt_0": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: entering unreachable code"
+          },
+          "mir_opt_0_plus_unreachable_propagation": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: `assume` called with `false`"
+          },
+          "mir_opt_2": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: `assume` called with `false`"
+          }
+        },
+        "ub_verdict_identical_across_modes": true
+      },
+      {
+        "function": "up_removed_arm_otherwise_reachable",
+        "input": 1,
+        "modes": {
+          "mir_opt_0": {
+            "returncode": 0,
+            "stdout": "result=11",
+            "first_error": null
+          },
+          "mir_opt_0_plus_unreachable_propagation": {
+            "returncode": 0,
+            "stdout": "result=11",
+            "first_error": null
+          },
+          "mir_opt_2": {
+            "returncode": 0,
+            "stdout": "result=11",
+            "first_error": null
+          }
+        },
+        "ub_verdict_identical_across_modes": true
+      },
+      {
+        "function": "up_removed_arm_otherwise_reachable",
+        "input": 2,
+        "modes": {
+          "mir_opt_0": {
+            "returncode": 0,
+            "stdout": "result=99",
+            "first_error": null
+          },
+          "mir_opt_0_plus_unreachable_propagation": {
+            "returncode": 0,
+            "stdout": "result=99",
+            "first_error": null
+          },
+          "mir_opt_2": {
+            "returncode": 0,
+            "stdout": "result=99",
+            "first_error": null
+          }
+        },
+        "ub_verdict_identical_across_modes": true
+      },
+      {
+        "function": "up_all_arms_unreachable_otherwise_reachable",
+        "input": 0,
+        "modes": {
+          "mir_opt_0": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: entering unreachable code"
+          },
+          "mir_opt_0_plus_unreachable_propagation": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: `assume` called with `false`"
+          },
+          "mir_opt_2": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: `assume` called with `false`"
+          }
+        },
+        "ub_verdict_identical_across_modes": true
+      },
+      {
+        "function": "up_all_arms_unreachable_otherwise_reachable",
+        "input": 1,
+        "modes": {
+          "mir_opt_0": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: entering unreachable code"
+          },
+          "mir_opt_0_plus_unreachable_propagation": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: `assume` called with `false`"
+          },
+          "mir_opt_2": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: `assume` called with `false`"
+          }
+        },
+        "ub_verdict_identical_across_modes": true
+      },
+      {
+        "function": "up_all_arms_unreachable_otherwise_reachable",
+        "input": 2,
+        "modes": {
+          "mir_opt_0": {
+            "returncode": 0,
+            "stdout": "result=99",
+            "first_error": null
+          },
+          "mir_opt_0_plus_unreachable_propagation": {
+            "returncode": 0,
+            "stdout": "result=99",
+            "first_error": null
+          },
+          "mir_opt_2": {
+            "returncode": 0,
+            "stdout": "result=99",
+            "first_error": null
+          }
+        },
+        "ub_verdict_identical_across_modes": true
+      },
+      {
+        "function": "up_two_arms_otherwise_unreachable",
+        "input": 1,
+        "modes": {
+          "mir_opt_0": {
+            "returncode": 0,
+            "stdout": "result=11",
+            "first_error": null
+          },
+          "mir_opt_0_plus_unreachable_propagation": {
+            "returncode": 0,
+            "stdout": "result=11",
+            "first_error": null
+          },
+          "mir_opt_2": {
+            "returncode": 0,
+            "stdout": "result=11",
+            "first_error": null
+          }
+        },
+        "ub_verdict_identical_across_modes": true
+      },
+      {
+        "function": "up_two_arms_otherwise_unreachable",
+        "input": 2,
+        "modes": {
+          "mir_opt_0": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: entering unreachable code"
+          },
+          "mir_opt_0_plus_unreachable_propagation": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: entering unreachable code"
+          },
+          "mir_opt_2": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: entering unreachable code"
+          }
+        },
+        "ub_verdict_identical_across_modes": true
+      },
+      {
+        "function": "up_degenerate_zero_arm_switch_uninit",
+        "input": 0,
+        "modes": {
+          "mir_opt_0": {
+            "returncode": 1,
+            "stdout": "",
+            "first_error": "error: Undefined Behavior: using uninitialized data, but this operation requires initialized memory"
+          },
+          "mir_opt_0_plus_unreachable_propagation": {
+            "returncode": 0,
+            "stdout": "result=7",
+            "first_error": null
+          },
+          "mir_opt_2": {
+            "returncode": 0,
+            "stdout": "result=7",
+            "first_error": null
+          }
+        },
+        "ub_verdict_identical_across_modes": false
+      }
+    ]
+  },
+  "zerocopy_census": {
+    "subject": {
+      "repository": "google/zerocopy",
+      "revision": "907b9175fee081872ec883ca4709e6ad922f8ed0",
+      "version": "0.8.64",
+      "features": [
+        "alloc",
+        "simd"
+      ],
+      "build_rs_cfgs": [
+        "no_zerocopy_allocator_api_1_100_0"
+      ],
+      "source": "caller-supplied checkout (--zerocopy-dir)"
+    },
+    "rustc_flags": [
+      "--edition=2021",
+      "--crate-name",
+      "zerocopy",
+      "--crate-type",
+      "rlib",
+      "--cfg=feature=\"alloc\"",
+      "--cfg=feature=\"simd\"",
+      "--cfg=no_zerocopy_allocator_api_1_100_0",
+      "-C",
+      "opt-level=2",
+      "-Zdump-mir=<PASS|...>",
+      "-Zdump-mir-dir=<DIR>"
+    ],
+    "counting_rules": {
+      "assume_stmts": "^\\s*assume\\((.*)\\);",
+      "copy_nonoverlapping_stmts": "^\\s*copy_nonoverlapping\\(dst = ",
+      "unreachable_terms": "^\\s*unreachable;",
+      "switch_int_terms": "^\\s*switchInt\\((.*?)\\) -> (.*);\\s*$",
+      "body": "one `-Zdump-mir` file whose crate component is `zerocopy`"
+    },
+    "runtime_post_cleanup": {
+      "bodies": 4838,
+      "assume_stmts": 0,
+      "copy_nonoverlapping_stmts": 0,
+      "unreachable_terms": 541,
+      "switch_int_terms": 1145,
+      "bodies_with_assume": 0,
+      "bodies_with_copy_nonoverlapping": 0,
+      "bodies_with_unreachable_term": 179
+    },
+    "optimization_pipeline_entry": {
+      "bodies": 4586,
+      "assume_stmts": 0,
+      "copy_nonoverlapping_stmts": 0,
+      "unreachable_terms": 512,
+      "switch_int_terms": 1040,
+      "bodies_with_assume": 0,
+      "bodies_with_copy_nonoverlapping": 0,
+      "bodies_with_unreachable_term": 150
+    },
+    "runtime_optimized": {
+      "bodies": 4586,
+      "assume_stmts": 406,
+      "copy_nonoverlapping_stmts": 6,
+      "unreachable_terms": 780,
+      "switch_int_terms": 1772,
+      "bodies_with_assume": 54,
+      "bodies_with_copy_nonoverlapping": 6,
+      "bodies_with_unreachable_term": 780
+    },
+    "peak_assume_stmts_in_pipeline": 411,
+    "pass_ledger": [
+      {
+        "index": "3-1-000",
+        "pass": "runtime",
+        "after": {
+          "bodies": 4838,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 540,
+          "switch_int_terms": 1186,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 178
+        },
+        "snapshot_only": true
+      },
+      {
+        "index": "3-1-001",
+        "pass": "LowerIntrinsics",
+        "after": {
+          "bodies": 4838,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 541,
+          "switch_int_terms": 1186,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 179
+        },
+        "before": {
+          "bodies": 4838,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 540,
+          "switch_int_terms": 1186,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 178
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 1,
+          "switch_int_terms": 0,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 1
+        }
+      },
+      {
+        "index": "3-1-002",
+        "pass": "RemovePlaceMention",
+        "after": {
+          "bodies": 4838,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 541,
+          "switch_int_terms": 1186,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 179
+        },
+        "before": {
+          "bodies": 4838,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 541,
+          "switch_int_terms": 1186,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 179
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": 0,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 0
+        }
+      },
+      {
+        "index": "3-1-003",
+        "pass": "SimplifyCfg-pre-optimizations",
+        "after": {
+          "bodies": 4838,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 541,
+          "switch_int_terms": 1145,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 179
+        },
+        "before": {
+          "bodies": 4838,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 541,
+          "switch_int_terms": 1186,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 179
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": -41,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 0
+        }
+      },
+      {
+        "index": "3-2-000",
+        "pass": "runtime-post-cleanup",
+        "after": {
+          "bodies": 4838,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 541,
+          "switch_int_terms": 1145,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 179
+        },
+        "snapshot_only": true
+      },
+      {
+        "index": "3-2-001",
+        "pass": "LowerSliceLenCalls",
+        "after": {
+          "bodies": 4586,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 512,
+          "switch_int_terms": 1040,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 150
+        },
+        "before": {
+          "bodies": 4586,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 512,
+          "switch_int_terms": 1040,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 150
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": 0,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 0
+        }
+      },
+      {
+        "index": "3-2-002",
+        "pass": "InstSimplify-before-inline",
+        "after": {
+          "bodies": 4586,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 512,
+          "switch_int_terms": 1040,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 150
+        },
+        "before": {
+          "bodies": 4586,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 512,
+          "switch_int_terms": 1040,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 150
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": 0,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 0
+        }
+      },
+      {
+        "index": "3-2-003",
+        "pass": "ForceInline",
+        "after": {
+          "bodies": 4586,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 512,
+          "switch_int_terms": 1040,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 150
+        },
+        "before": {
+          "bodies": 4586,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 512,
+          "switch_int_terms": 1040,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 150
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": 0,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 0
+        }
+      },
+      {
+        "index": "3-2-004",
+        "pass": "Inline",
+        "after": {
+          "bodies": 4586,
+          "assume_stmts": 56,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 1178,
+          "switch_int_terms": 2431,
+          "bodies_with_assume": 27,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 814
+        },
+        "before": {
+          "bodies": 4586,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 512,
+          "switch_int_terms": 1040,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 150
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": 56,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 666,
+          "switch_int_terms": 1391,
+          "bodies_with_assume": 27,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 664
+        }
+      },
+      {
+        "index": "3-2-005",
+        "pass": "RemoveZsts",
+        "after": {
+          "bodies": 4586,
+          "assume_stmts": 56,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 1178,
+          "switch_int_terms": 2431,
+          "bodies_with_assume": 27,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 814
+        },
+        "before": {
+          "bodies": 4586,
+          "assume_stmts": 56,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 1178,
+          "switch_int_terms": 2431,
+          "bodies_with_assume": 27,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 814
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": 0,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 0
+        }
+      },
+      {
+        "index": "3-2-006",
+        "pass": "RemoveUnneededDrops",
+        "after": {
+          "bodies": 4586,
+          "assume_stmts": 56,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 1178,
+          "switch_int_terms": 2431,
+          "bodies_with_assume": 27,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 814
+        },
+        "before": {
+          "bodies": 4586,
+          "assume_stmts": 56,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 1178,
+          "switch_int_terms": 2431,
+          "bodies_with_assume": 27,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 814
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": 0,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 0
+        }
+      },
+      {
+        "index": "3-2-007",
+        "pass": "UnreachableEnumBranching",
+        "after": {
+          "bodies": 4586,
+          "assume_stmts": 56,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 1186,
+          "switch_int_terms": 2431,
+          "bodies_with_assume": 27,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 821
+        },
+        "before": {
+          "bodies": 4586,
+          "assume_stmts": 56,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 1178,
+          "switch_int_terms": 2431,
+          "bodies_with_assume": 27,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 814
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 8,
+          "switch_int_terms": 0,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 7
+        }
+      },
+      {
+        "index": "3-2-008",
+        "pass": "UnreachablePropagation",
+        "after": {
+          "bodies": 4586,
+          "assume_stmts": 411,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 1186,
+          "switch_int_terms": 2076,
+          "bodies_with_assume": 55,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 821
+        },
+        "before": {
+          "bodies": 4586,
+          "assume_stmts": 56,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 1186,
+          "switch_int_terms": 2431,
+          "bodies_with_assume": 27,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 821
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": 355,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": -355,
+          "bodies_with_assume": 28,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 0
+        }
+      },
+      {
+        "index": "3-2-009",
+        "pass": "SimplifyCfg-after-unreachable-enum-branching",
+        "after": {
+          "bodies": 4586,
+          "assume_stmts": 411,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 794,
+          "switch_int_terms": 2076,
+          "bodies_with_assume": 55,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 794
+        },
+        "before": {
+          "bodies": 4586,
+          "assume_stmts": 411,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 1186,
+          "switch_int_terms": 2076,
+          "bodies_with_assume": 55,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 821
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": -392,
+          "switch_int_terms": 0,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": -27
+        }
+      },
+      {
+        "index": "3-2-010",
+        "pass": "InstSimplify-after-simplifycfg",
+        "after": {
+          "bodies": 4586,
+          "assume_stmts": 411,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 794,
+          "switch_int_terms": 2076,
+          "bodies_with_assume": 55,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 794
+        },
+        "before": {
+          "bodies": 4586,
+          "assume_stmts": 411,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 794,
+          "switch_int_terms": 2076,
+          "bodies_with_assume": 55,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 794
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": 0,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 0
+        }
+      },
+      {
+        "index": "3-2-011",
+        "pass": "SimplifyConstCondition-after-inst-simplify",
+        "after": {
+          "bodies": 4586,
+          "assume_stmts": 402,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 803,
+          "switch_int_terms": 1963,
+          "bodies_with_assume": 46,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 794
+        },
+        "before": {
+          "bodies": 4586,
+          "assume_stmts": 411,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 794,
+          "switch_int_terms": 2076,
+          "bodies_with_assume": 55,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 794
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": -9,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 9,
+          "switch_int_terms": -113,
+          "bodies_with_assume": -9,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 0
+        }
+      },
+      {
+        "index": "3-2-012",
+        "pass": "ReferencePropagation",
+        "after": {
+          "bodies": 4586,
+          "assume_stmts": 402,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 803,
+          "switch_int_terms": 1963,
+          "bodies_with_assume": 46,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 794
+        },
+        "before": {
+          "bodies": 4586,
+          "assume_stmts": 402,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 803,
+          "switch_int_terms": 1963,
+          "bodies_with_assume": 46,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 794
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": 0,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 0
+        }
+      },
+      {
+        "index": "3-2-013",
+        "pass": "ScalarReplacementOfAggregates",
+        "after": {
+          "bodies": 4586,
+          "assume_stmts": 402,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 803,
+          "switch_int_terms": 1963,
+          "bodies_with_assume": 46,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 794
+        },
+        "before": {
+          "bodies": 4586,
+          "assume_stmts": 402,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 803,
+          "switch_int_terms": 1963,
+          "bodies_with_assume": 46,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 794
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": 0,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 0
+        }
+      },
+      {
+        "index": "3-2-014",
+        "pass": "SimplifyLocals-before-const-prop",
+        "after": {
+          "bodies": 4586,
+          "assume_stmts": 402,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 803,
+          "switch_int_terms": 1963,
+          "bodies_with_assume": 46,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 794
+        },
+        "before": {
+          "bodies": 4586,
+          "assume_stmts": 402,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 803,
+          "switch_int_terms": 1963,
+          "bodies_with_assume": 46,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 794
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": 0,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 0
+        }
+      },
+      {
+        "index": "3-2-015",
+        "pass": "DeadStoreElimination-initial",
+        "after": {
+          "bodies": 4586,
+          "assume_stmts": 402,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 803,
+          "switch_int_terms": 1963,
+          "bodies_with_assume": 46,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 794
+        },
+        "before": {
+          "bodies": 4586,
+          "assume_stmts": 402,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 803,
+          "switch_int_terms": 1963,
+          "bodies_with_assume": 46,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 794
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": 0,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 0
+        }
+      },
+      {
+        "index": "3-2-016",
+        "pass": "GVN",
+        "after": {
+          "bodies": 4586,
+          "assume_stmts": 402,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 803,
+          "switch_int_terms": 1963,
+          "bodies_with_assume": 46,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 794
+        },
+        "before": {
+          "bodies": 4586,
+          "assume_stmts": 402,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 803,
+          "switch_int_terms": 1963,
+          "bodies_with_assume": 46,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 794
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": 0,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 0
+        }
+      },
+      {
+        "index": "3-2-017",
+        "pass": "SimplifyLocals-after-value-numbering",
+        "after": {
+          "bodies": 4586,
+          "assume_stmts": 402,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 803,
+          "switch_int_terms": 1963,
+          "bodies_with_assume": 46,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 794
+        },
+        "before": {
+          "bodies": 4586,
+          "assume_stmts": 402,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 803,
+          "switch_int_terms": 1963,
+          "bodies_with_assume": 46,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 794
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": 0,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 0
+        }
+      },
+      {
+        "index": "3-2-018",
+        "pass": "SsaRangePropagation",
+        "after": {
+          "bodies": 4586,
+          "assume_stmts": 402,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 803,
+          "switch_int_terms": 1963,
+          "bodies_with_assume": 46,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 794
+        },
+        "before": {
+          "bodies": 4586,
+          "assume_stmts": 402,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 803,
+          "switch_int_terms": 1963,
+          "bodies_with_assume": 46,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 794
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": 0,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 0
+        }
+      },
+      {
+        "index": "3-2-019",
+        "pass": "MatchBranchSimplification",
+        "after": {
+          "bodies": 4586,
+          "assume_stmts": 410,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 790,
+          "switch_int_terms": 1943,
+          "bodies_with_assume": 54,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 789
+        },
+        "before": {
+          "bodies": 4586,
+          "assume_stmts": 402,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 803,
+          "switch_int_terms": 1963,
+          "bodies_with_assume": 46,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 794
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": 8,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": -13,
+          "switch_int_terms": -20,
+          "bodies_with_assume": 8,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": -5
+        }
+      },
+      {
+        "index": "3-2-020",
+        "pass": "SingleUseConsts",
+        "after": {
+          "bodies": 4586,
+          "assume_stmts": 410,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 790,
+          "switch_int_terms": 1943,
+          "bodies_with_assume": 54,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 789
+        },
+        "before": {
+          "bodies": 4586,
+          "assume_stmts": 410,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 790,
+          "switch_int_terms": 1943,
+          "bodies_with_assume": 54,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 789
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": 0,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 0
+        }
+      },
+      {
+        "index": "3-2-021",
+        "pass": "SimplifyConstCondition-after-const-prop",
+        "after": {
+          "bodies": 4586,
+          "assume_stmts": 410,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 790,
+          "switch_int_terms": 1929,
+          "bodies_with_assume": 54,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 789
+        },
+        "before": {
+          "bodies": 4586,
+          "assume_stmts": 410,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 790,
+          "switch_int_terms": 1943,
+          "bodies_with_assume": 54,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 789
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": -14,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 0
+        }
+      },
+      {
+        "index": "3-2-022",
+        "pass": "JumpThreading",
+        "after": {
+          "bodies": 4586,
+          "assume_stmts": 410,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 790,
+          "switch_int_terms": 1935,
+          "bodies_with_assume": 54,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 789
+        },
+        "before": {
+          "bodies": 4586,
+          "assume_stmts": 410,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 790,
+          "switch_int_terms": 1929,
+          "bodies_with_assume": 54,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 789
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": 6,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 0
+        }
+      },
+      {
+        "index": "3-2-023",
+        "pass": "EarlyOtherwiseBranch",
+        "after": {
+          "bodies": 4586,
+          "assume_stmts": 410,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 790,
+          "switch_int_terms": 1935,
+          "bodies_with_assume": 54,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 789
+        },
+        "before": {
+          "bodies": 4586,
+          "assume_stmts": 410,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 790,
+          "switch_int_terms": 1935,
+          "bodies_with_assume": 54,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 789
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": 0,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 0
+        }
+      },
+      {
+        "index": "3-2-024",
+        "pass": "SimplifyComparisonIntegral",
+        "after": {
+          "bodies": 4586,
+          "assume_stmts": 410,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 790,
+          "switch_int_terms": 1935,
+          "bodies_with_assume": 54,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 789
+        },
+        "before": {
+          "bodies": 4586,
+          "assume_stmts": 410,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 790,
+          "switch_int_terms": 1935,
+          "bodies_with_assume": 54,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 789
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": 0,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 0
+        }
+      },
+      {
+        "index": "3-2-025",
+        "pass": "SimplifyConstCondition-final",
+        "after": {
+          "bodies": 4586,
+          "assume_stmts": 410,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 790,
+          "switch_int_terms": 1935,
+          "bodies_with_assume": 54,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 789
+        },
+        "before": {
+          "bodies": 4586,
+          "assume_stmts": 410,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 790,
+          "switch_int_terms": 1935,
+          "bodies_with_assume": 54,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 789
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": 0,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 0
+        }
+      },
+      {
+        "index": "3-2-026",
+        "pass": "RemoveNoopLandingPads",
+        "after": {
+          "bodies": 4586,
+          "assume_stmts": 410,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 790,
+          "switch_int_terms": 1935,
+          "bodies_with_assume": 54,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 789
+        },
+        "before": {
+          "bodies": 4586,
+          "assume_stmts": 410,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 790,
+          "switch_int_terms": 1935,
+          "bodies_with_assume": 54,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 789
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": 0,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 0
+        }
+      },
+      {
+        "index": "3-2-027",
+        "pass": "SimplifyCfg-final",
+        "after": {
+          "bodies": 4586,
+          "assume_stmts": 406,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 780,
+          "switch_int_terms": 1772,
+          "bodies_with_assume": 54,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 780
+        },
+        "before": {
+          "bodies": 4586,
+          "assume_stmts": 410,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 790,
+          "switch_int_terms": 1935,
+          "bodies_with_assume": 54,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 789
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": -4,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": -10,
+          "switch_int_terms": -163,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": -9
+        }
+      },
+      {
+        "index": "3-2-028",
+        "pass": "CopyProp",
+        "after": {
+          "bodies": 4586,
+          "assume_stmts": 406,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 780,
+          "switch_int_terms": 1772,
+          "bodies_with_assume": 54,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 780
+        },
+        "before": {
+          "bodies": 4586,
+          "assume_stmts": 406,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 780,
+          "switch_int_terms": 1772,
+          "bodies_with_assume": 54,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 780
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": 0,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 0
+        }
+      },
+      {
+        "index": "3-2-029",
+        "pass": "DeadStoreElimination-final",
+        "after": {
+          "bodies": 4586,
+          "assume_stmts": 406,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 780,
+          "switch_int_terms": 1772,
+          "bodies_with_assume": 54,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 780
+        },
+        "before": {
+          "bodies": 4586,
+          "assume_stmts": 406,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 780,
+          "switch_int_terms": 1772,
+          "bodies_with_assume": 54,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 780
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": 0,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 0
+        }
+      },
+      {
+        "index": "3-2-030",
+        "pass": "DestinationPropagation",
+        "after": {
+          "bodies": 4586,
+          "assume_stmts": 406,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 780,
+          "switch_int_terms": 1772,
+          "bodies_with_assume": 54,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 780
+        },
+        "before": {
+          "bodies": 4586,
+          "assume_stmts": 406,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 780,
+          "switch_int_terms": 1772,
+          "bodies_with_assume": 54,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 780
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": 0,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 0
+        }
+      },
+      {
+        "index": "3-2-031",
+        "pass": "SimplifyLocals-final",
+        "after": {
+          "bodies": 4586,
+          "assume_stmts": 406,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 780,
+          "switch_int_terms": 1772,
+          "bodies_with_assume": 54,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 780
+        },
+        "before": {
+          "bodies": 4586,
+          "assume_stmts": 406,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 780,
+          "switch_int_terms": 1772,
+          "bodies_with_assume": 54,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 780
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": 0,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 0
+        }
+      },
+      {
+        "index": "3-2-032",
+        "pass": "AddCallGuards",
+        "after": {
+          "bodies": 4586,
+          "assume_stmts": 406,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 780,
+          "switch_int_terms": 1772,
+          "bodies_with_assume": 54,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 780
+        },
+        "before": {
+          "bodies": 4586,
+          "assume_stmts": 406,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 780,
+          "switch_int_terms": 1772,
+          "bodies_with_assume": 54,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 780
+        },
+        "delta": {
+          "bodies": 0,
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "switch_int_terms": 0,
+          "bodies_with_assume": 0,
+          "bodies_with_copy_nonoverlapping": 0,
+          "bodies_with_unreachable_term": 0
+        }
+      },
+      {
+        "index": "3-3-000",
+        "pass": "runtime-optimized",
+        "after": {
+          "bodies": 4586,
+          "assume_stmts": 406,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 780,
+          "switch_int_terms": 1772,
+          "bodies_with_assume": 54,
+          "bodies_with_copy_nonoverlapping": 6,
+          "bodies_with_unreachable_term": 780
+        },
+        "snapshot_only": true
+      }
+    ],
+    "passes_changing_assume_or_copy_or_unreachable": [
+      {
+        "index": "3-1-001",
+        "pass": "LowerIntrinsics",
+        "delta": {
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 1,
+          "bodies": 0
+        }
+      },
+      {
+        "index": "3-2-004",
+        "pass": "Inline",
+        "delta": {
+          "assume_stmts": 56,
+          "copy_nonoverlapping_stmts": 6,
+          "unreachable_terms": 666,
+          "bodies": 0
+        }
+      },
+      {
+        "index": "3-2-007",
+        "pass": "UnreachableEnumBranching",
+        "delta": {
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 8,
+          "bodies": 0
+        }
+      },
+      {
+        "index": "3-2-008",
+        "pass": "UnreachablePropagation",
+        "delta": {
+          "assume_stmts": 355,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 0,
+          "bodies": 0
+        }
+      },
+      {
+        "index": "3-2-009",
+        "pass": "SimplifyCfg-after-unreachable-enum-branching",
+        "delta": {
+          "assume_stmts": 0,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": -392,
+          "bodies": 0
+        }
+      },
+      {
+        "index": "3-2-011",
+        "pass": "SimplifyConstCondition-after-inst-simplify",
+        "delta": {
+          "assume_stmts": -9,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": 9,
+          "bodies": 0
+        }
+      },
+      {
+        "index": "3-2-019",
+        "pass": "MatchBranchSimplification",
+        "delta": {
+          "assume_stmts": 8,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": -13,
+          "bodies": 0
+        }
+      },
+      {
+        "index": "3-2-027",
+        "pass": "SimplifyCfg-final",
+        "delta": {
+          "assume_stmts": -4,
+          "copy_nonoverlapping_stmts": 0,
+          "unreachable_terms": -10,
+          "bodies": 0
+        }
+      }
+    ],
+    "ledger_chain_consistent": true,
+    "assume_condition_shapes": {
+      "runtime_optimized": {
+        "Eq": 402,
+        "Le": 4
+      },
+      "added_by_unreachable_propagation": {
+        "Eq": 355
+      }
+    },
+    "bodies_with_most_assume_stmts_at_runtime_optimized": [
+      {
+        "body": "impls-tuples-_-{impl#1427}-is_safe",
+        "assume_stmts": 26,
+        "copy_nonoverlapping_stmts": 0
+      },
+      {
+        "body": "impls-tuples-_-{impl#1322}-is_safe",
+        "assume_stmts": 25,
+        "copy_nonoverlapping_stmts": 0
+      },
+      {
+        "body": "impls-tuples-_-{impl#1221}-is_safe",
+        "assume_stmts": 24,
+        "copy_nonoverlapping_stmts": 0
+      },
+      {
+        "body": "impls-tuples-_-{impl#1124}-is_safe",
+        "assume_stmts": 23,
+        "copy_nonoverlapping_stmts": 0
+      },
+      {
+        "body": "impls-tuples-_-{impl#1031}-is_safe",
+        "assume_stmts": 22,
+        "copy_nonoverlapping_stmts": 0
+      },
+      {
+        "body": "impls-tuples-_-{impl#942}-is_safe",
+        "assume_stmts": 21,
+        "copy_nonoverlapping_stmts": 0
+      },
+      {
+        "body": "impls-tuples-_-{impl#857}-is_safe",
+        "assume_stmts": 20,
+        "copy_nonoverlapping_stmts": 0
+      },
+      {
+        "body": "impls-tuples-_-{impl#776}-is_safe",
+        "assume_stmts": 19,
+        "copy_nonoverlapping_stmts": 0
+      },
+      {
+        "body": "impls-tuples-_-{impl#699}-is_safe",
+        "assume_stmts": 18,
+        "copy_nonoverlapping_stmts": 0
+      },
+      {
+        "body": "impls-tuples-_-{impl#626}-is_safe",
+        "assume_stmts": 17,
+        "copy_nonoverlapping_stmts": 0
+      },
+      {
+        "body": "impls-tuples-_-{impl#557}-is_safe",
+        "assume_stmts": 16,
+        "copy_nonoverlapping_stmts": 0
+      },
+      {
+        "body": "impls-tuples-_-{impl#492}-is_safe",
+        "assume_stmts": 15,
+        "copy_nonoverlapping_stmts": 0
+      },
+      {
+        "body": "impls-tuples-_-{impl#431}-is_safe",
+        "assume_stmts": 14,
+        "copy_nonoverlapping_stmts": 0
+      },
+      {
+        "body": "impls-tuples-_-{impl#374}-is_safe",
+        "assume_stmts": 13,
+        "copy_nonoverlapping_stmts": 0
+      },
+      {
+        "body": "error-{impl#13}-display_verbose_extras",
+        "assume_stmts": 12,
+        "copy_nonoverlapping_stmts": 0
+      }
+    ],
+    "reference_model_vs_unreachable_propagation": {
+      "agree": 2431,
+      "model_case_goto": 355,
+      "model_case_switchInt": 11,
+      "model_predicted_assumes": 355,
+      "model_predicts_rewrite": 366,
+      "switch_int_terminators": 2431
+    }
+  }
+}

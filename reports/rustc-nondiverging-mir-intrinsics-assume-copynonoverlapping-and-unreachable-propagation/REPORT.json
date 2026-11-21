@@ -1,0 +1,57 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/trusted-boundary",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/mir",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "rustc/mir",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rustc and Miri nightly toolchain and its source (audited and executed)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "1.98.0-nightly (14210df0e 2026-05-31)"
+      }
+    },
+    {
+      "name": "rustc source (comparison revision, source audit only)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly (3ef0c22cd 2026-11-11)"
+      }
+    },
+    {
+      "name": "google/zerocopy crate (whole-crate MIR census workload)",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "907b9175fee081872ec883ca4709e6ad922f8ed0",
+        "version": "0.8.64"
+      }
+    },
+    {
+      "name": "joshlf/anneal (Trusted.MirAst, Trusted.MirSemantics, Trusted.Correspondence)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "leanprover/lean4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}
