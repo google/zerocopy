@@ -13,9 +13,11 @@ access through a freshly reborrowed reference across one call to unknown code, a
 commutation theorem for reads in the tree model, and two concrete programs on which the two toy
 models disagree. Every hypothesis of every theorem has a proved counterexample showing that it
 cannot be dropped, and every theorem has a proved instance in which all its hypotheses hold.
-These are theorems about the toy models; these theorems neither establish nor refute the
-corresponding claims about Stacked Borrows, Tree Borrows, or Miri, and every connection to those
-systems is a separately labelled modeling bridge under **Findings**.
+Model–system relation: none proved (the refinement theorems relate source and target programs
+inside the toy stack model, and R4a and R4d compare the package's two toy models with each
+other). These are theorems about the toy models; these theorems neither establish nor refute the
+corresponding claims about Stacked Borrows, Tree Borrows, Miri, or the Rust compiler, and every
+connection to those systems is a separately labelled modeling bridge under **Findings**.
 
 *An agent relying on a result from this package must quote its plain-language claim and the relevant hypotheses and non-claims, not just its name or a paraphrase.*
 
