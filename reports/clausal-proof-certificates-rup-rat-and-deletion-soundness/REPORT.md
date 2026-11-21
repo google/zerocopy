@@ -9,8 +9,11 @@ step preserves. It contains 22 kernel-checked results (13 theorems and 9 concret
 tight, and a non-vacuity witness for every result. The summary sentences below are each result's
 plain-language claim with secondary conclusions dropped; hypotheses are kept as stated. Every
 result also has **non-claims**, listed first under **Boundaries**; read them before relying on a
-result. Claims about real checkers (drat-trim, the Lean 4 core LRAT checker) are separate
-`derived (modeling bridge)` statements, never theorems.
+result. Model–system relation: none proved. These are statements about the toy model; they
+neither establish nor refute the corresponding claims about real certificate checkers
+(drat-trim, the Lean 4 core LRAT checker used by `bv_decide`, cake_lpr). Claims about real
+checkers (drat-trim, the Lean 4 core LRAT checker) are separate `derived (modeling bridge)`
+statements, never theorems.
 
 *An agent relying on a result from this package must quote its plain-language claim and the relevant hypotheses and non-claims, not just its name or a paraphrase.*
 
@@ -1957,7 +1960,7 @@ Reasoning: from the Lean 4 core v4.34.1 source (commit 5045d0056413266e57c625dcd
 
 What each result does **not** show. These are part of each result's meaning.
 
-**Every result** (this non-claim is recorded on every card in `results.json`): Toy model only: literals are (variable, polarity) pairs, clauses and formulas are lists, unit propagation is a round-based propagator with a budget; any correspondence with production solvers and checkers (drat-trim, cake_lpr, Lean's bv_decide LRAT checker, SMT solvers that emit clausal proofs) is a derived (modeling bridge) claim, not a theorem.
+**Every result** (this non-claim is recorded on every card in `results.json`): Toy model: literals are (variable, polarity) pairs, clauses and formulas are lists, unit propagation is a round-based propagator with a budget. The result is a statement about this toy model; it neither establishes nor refutes the corresponding claims about production solvers and checkers (drat-trim, cake_lpr, Lean's bv_decide LRAT checker, SMT solvers that emit clausal proofs); any correspondence with them is a derived (modeling bridge) claim, not a theorem.
 
 **`rup-implies-entails`** (`rup_implies_entails`):
 
