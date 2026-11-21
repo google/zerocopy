@@ -8,12 +8,15 @@
 
 //! Exact target-root, source binding and authority separation regressions.
 
+use std::{
+    fs,
+    path::{Path, PathBuf},
+};
+
 use anneal_audit::{
     Checker, Failure, Json, TargetAuditRequest, TargetBindings, TargetModule, TargetRole,
     sha256_bytes,
 };
-use std::fs;
-use std::path::{Path, PathBuf};
 
 struct Fixture {
     _dir: tempfile::TempDir,
@@ -238,8 +241,7 @@ fn reports_subject_only_library_identities_without_proof_dependencies() {
 #[cfg(unix)]
 #[test]
 fn accepts_native_source_paths_without_json_path_encoding() {
-    use std::ffi::OsString;
-    use std::os::unix::ffi::OsStringExt;
+    use std::{ffi::OsString, os::unix::ffi::OsStringExt};
 
     let mut fixture = Fixture::new(PROOF);
     let module = fixture
@@ -444,7 +446,12 @@ fn rejects_crate_constructor_outside_model() {
         TargetRole::Expected,
         "prelude\nimport Captured\nimport Spec\ndef Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem 7\n",
     );
-    f.reject_audit("incorrect canonical input origin Trusted.MirSemantics.Crate.mk");
+    // Non-model modules cannot declare constants in the `Trusted` namespace at
+    // all, so defining `Trusted.MirSemantics.Crate` in `Spec` is refused by
+    // the namespace-isolation guard before canonical-input origin validation.
+    f.reject_audit(
+        "non-model target module Spec cannot declare constant Trusted.MirSemantics.Crate",
+    );
 }
 
 /// The inspector pins the original foundation's axiom list itself. A request
@@ -818,9 +825,10 @@ fn classifies_native_failures_and_resource_limits_as_operational() {
 /// run; it establishes inventory policy, not a public-input false-claim
 /// exploit.
 fn target_library_inventory_case(module: &str, mode: &str, rejection: Option<&str>) {
+    use std::collections::BTreeMap;
+
     use anneal_audit::{ImportEdge, InspectorRequest, ModuleArtifacts, PARTS};
     use serde_json::json;
-    use std::collections::BTreeMap;
 
     let f = Fixture::new(PROOF);
     let mut checker = Checker::new(&f.root, None).unwrap();

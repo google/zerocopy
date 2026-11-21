@@ -24,15 +24,18 @@
 //! `python3 reproduce.py` in a retained command directory to repeat its argv,
 //! environment, and working directory with the recorded toolchain artifacts.
 
+#![cfg(feature = "setup")]
+
 #[allow(dead_code)]
 #[path = "../src/setup.rs"]
 mod setup;
 mod support;
 
-use std::env;
-use std::fs;
-use std::path::{Path, PathBuf};
-use std::time::Duration;
+use std::{
+    env, fs,
+    path::{Path, PathBuf},
+    time::Duration,
+};
 
 use serde_json::{Value, json};
 use support::{

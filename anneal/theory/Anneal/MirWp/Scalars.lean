@@ -274,4 +274,215 @@ theorem truncateScalar_ok (w : IntWidth) (s : Bool) (value : Int) :
     exact ⟨⟨w, true, trunc⟩, signExtendBits w trunc != wrapped,
       rfl, rfl, rfl, scalarWf_truncateBits w true raw⟩
 
+/-! ### 64-Bit Bitvector and Bitwise Arithmetic Normalization -/
+
+private theorem nat_mod_mod_mul_left (n a b : Nat) :
+    Nat.mod (Nat.mod n (a * b)) a = Nat.mod n a := by
+  have hDiv : Nat.mod n (a * b) + a * (b * Nat.div n (a * b)) = n := by
+    rw [← Nat.mul_assoc]
+    exact Nat.mod_add_div n (a * b)
+  exact (Nat.add_mul_mod_self_left (Nat.mod n (a * b)) a
+    (b * Nat.div n (a * b))).symm.trans (congrArg (fun k => Nat.mod k a) hDiv)
+
+/-- Bitwise combination of two `n`-bit naturals stays below `2 ^ n`. -/
+theorem nat_bitwise_lt_two_pow (f : Bool → Bool → Bool) :
+    ∀ (n a b : Nat), a < Nat.pow 2 n → b < Nat.pow 2 n →
+      Nat.bitwise f a b < Nat.pow 2 n
+  | 0, a, b, ha, hb => by
+    have ha0 : a = 0 := Nat.eq_zero_of_le_zero (Nat.le_of_lt_succ ha)
+    have hb0 : b = 0 := Nat.eq_zero_of_le_zero (Nat.le_of_lt_succ hb)
+    subst ha0 hb0
+    unfold Nat.bitwise
+    cases f false true <;> exact Nat.zero_lt_one
+  | n + 1, a, b, ha, hb => by
+    have hPow : Nat.pow 2 (n + 1) = Nat.pow 2 n + Nat.pow 2 n := by
+      change Nat.pow 2 n * 2 = Nat.pow 2 n + Nat.pow 2 n
+      exact Nat.mul_two (Nat.pow 2 n)
+    cases ha0 : Nat.beq a 0 with
+    | true =>
+      have haEq : a = 0 := Nat.eq_of_beq_eq_true ha0
+      subst haEq
+      unfold Nat.bitwise
+      dsimp only
+      cases f false true
+      · exact Nat.two_pow_pos (n + 1)
+      · exact hb
+    | false =>
+      have haNe : a ≠ 0 := fun h => by subst h; cases ha0
+      cases hb0 : Nat.beq b 0 with
+      | true =>
+        have hbEq : b = 0 := Nat.eq_of_beq_eq_true hb0
+        subst hbEq
+        unfold Nat.bitwise
+        rw [ite_prop_false haNe]
+        dsimp only
+        cases f true false
+        · exact Nat.two_pow_pos (n + 1)
+        · exact ha
+      | false =>
+        have hbNe : b ≠ 0 := fun h => by subst h; cases hb0
+        have haHalf : Nat.div a 2 < Nat.pow 2 n :=
+          (Nat.div_lt_iff_lt_mul (by decide : 0 < 2)).mpr ha
+        have hbHalf : Nat.div b 2 < Nat.pow 2 n :=
+          (Nat.div_lt_iff_lt_mul (by decide : 0 < 2)).mpr hb
+        have hRec := nat_bitwise_lt_two_pow f n (Nat.div a 2) (Nat.div b 2)
+          haHalf hbHalf
+        unfold Nat.bitwise
+        rw [ite_prop_false haNe, ite_prop_false hbNe]
+        dsimp only
+        rw [hPow]
+        cases f (decide (Nat.mod a 2 = 1)) (decide (Nat.mod b 2 = 1))
+        · exact Nat.add_lt_add hRec hRec
+        · rw [Nat.add_assoc]
+          exact Nat.lt_of_lt_of_le (Nat.add_lt_add_right hRec _)
+            (Nat.add_le_add_left hRec _)
+
+/-- Zero-extending a 64-bit bitvector to 128 bits preserves `.toNat`. -/
+theorem bvZeroExtend_128_toNat (w : BitVec 64) :
+    (bvZeroExtend 128 w).toNat = w.toNat :=
+  Nat.mod_eq_of_lt (Nat.lt_trans w.isLt (by decide))
+
+/-- Truncating `BitVec.ofNat 128 n` to `.i64` agrees with zero-extending
+`BitVec.ofNat 64 n`. -/
+theorem truncateBits_i64_ofNat (n : Nat) :
+    truncateBits .i64 (BitVec.ofNat 128 n) =
+      bvZeroExtend 128 (BitVec.ofNat 64 n) := by
+  apply bitVec_eq_of_toNat_eq
+  rw [toNat_truncateBits, bvZeroExtend_128_toNat]
+  have hPow : Nat.pow 2 128 = Nat.pow 2 64 * Nat.pow 2 64 := by decide
+  change Nat.mod (Nat.mod n (Nat.pow 2 128)) (Nat.pow 2 64) =
+    Nat.mod n (Nat.pow 2 64)
+  rw [hPow]
+  exact nat_mod_mod_mul_left n (Nat.pow 2 64) (Nat.pow 2 64)
+
+/-- Zero-extending a 64-bit bitvector to 128 bits is fixed by `truncateBits
+.i64`. -/
+theorem truncateBits_i64_bvZeroExtend (w : BitVec 64) :
+    truncateBits .i64 (bvZeroExtend 128 w) = bvZeroExtend 128 w :=
+  truncateBits_of_toNat_lt (by
+    rw [bvZeroExtend_128_toNat]
+    exact w.isLt)
+
+/-- Truncating `BitVec.ofNat 128 n` to `.i64` is the identity when
+`n < 2 ^ 64`. -/
+theorem truncateBits_i64_ofNat_lt {n : Nat} (h : n < Nat.pow 2 64) :
+    truncateBits .i64 (BitVec.ofNat 128 n) = BitVec.ofNat 128 n := by
+  apply truncateBits_of_toNat_lt
+  change Nat.mod n (Nat.pow 2 128) < Nat.pow 2 IntWidth.i64.bitWidth
+  exact Nat.lt_of_le_of_lt (Nat.mod_le _ _) h
+
+/-- Computable closed-form result value of 64-bit unsigned bitwise AND. -/
+def u64BitAndVal (x y : BitVec 64) : Val :=
+  .scalar ⟨.i64, false, BitVec.ofNat 128 (Nat.land x.toNat y.toNat)⟩
+
+/-- Computable closed-form result value of 64-bit unsigned bitwise OR. -/
+def u64BitOrVal (x y : BitVec 64) : Val :=
+  .scalar ⟨.i64, false, BitVec.ofNat 128 (Nat.lor x.toNat y.toNat)⟩
+
+/-- Computable closed-form result value of 64-bit unsigned left shift by `k`. -/
+def u64ShlVal (x : BitVec 64) (k : Nat) : Val :=
+  .scalar ⟨.i64, false,
+    BitVec.ofNat 128 (BitVec.ofNat 64 (Nat.shiftLeft x.toNat k)).toNat⟩
+
+/-- Computable closed-form result value of 64-bit unsigned logical right shift
+by `k`. -/
+def u64ShrVal (x : BitVec 64) (k : Nat) : Val :=
+  .scalar ⟨.i64, false, BitVec.ofNat 128 (Nat.shiftRight x.toNat k)⟩
+
+/-- Definitional unfolding of `u64BitAndVal x y`. -/
+theorem u64BitAndVal_eq (x y : BitVec 64) :
+    u64BitAndVal x y =
+      .scalar ⟨.i64, false, BitVec.ofNat 128 (Nat.land x.toNat y.toNat)⟩ :=
+  rfl
+
+/-- Definitional unfolding of `u64BitOrVal x y`. -/
+theorem u64BitOrVal_eq (x y : BitVec 64) :
+    u64BitOrVal x y =
+      .scalar ⟨.i64, false, BitVec.ofNat 128 (Nat.lor x.toNat y.toNat)⟩ :=
+  rfl
+
+/-- Equivalence of `u64ShlVal x k` with `bvZeroExtend 128`. -/
+theorem u64ShlVal_eq (x : BitVec 64) (k : Nat) :
+    u64ShlVal x k =
+      .scalar ⟨.i64, false,
+        bvZeroExtend 128 (BitVec.ofNat 64 (Nat.shiftLeft x.toNat k))⟩ :=
+  rfl
+
+/-- Definitional unfolding of `u64ShrVal x k`. -/
+theorem u64ShrVal_eq (x : BitVec 64) (k : Nat) :
+    u64ShrVal x k =
+      .scalar ⟨.i64, false, BitVec.ofNat 128 (Nat.shiftRight x.toNat k)⟩ :=
+  rfl
+
+/-- `Trusted.MirSemantics` 64-bit bitwise AND reduces to `u64BitAndVal`. -/
+theorem u64BitAnd_sem_eq (x y : BitVec 64) :
+    (.scalar ⟨.i64, false,
+      truncateBits .i64 (bvAnd (truncateBits .i64 (bvZeroExtend 128 x))
+        (truncateBits .i64 (bvZeroExtend 128 y)))⟩ : Val) =
+      u64BitAndVal x y := by
+  unfold u64BitAndVal bvAnd
+  rw [truncateBits_i64_bvZeroExtend x, truncateBits_i64_bvZeroExtend y,
+      bvZeroExtend_128_toNat x, bvZeroExtend_128_toNat y]
+  exact congrArg (fun b => Val.scalar ⟨.i64, false, b⟩)
+    (truncateBits_i64_ofNat_lt
+      (nat_bitwise_lt_two_pow and 64 x.toNat y.toNat x.isLt y.isLt))
+
+/-- `Trusted.MirSemantics` 64-bit bitwise OR reduces to `u64BitOrVal`. -/
+theorem u64BitOr_sem_eq (x y : BitVec 64) :
+    (.scalar ⟨.i64, false,
+      truncateBits .i64 (bvOr (truncateBits .i64 (bvZeroExtend 128 x))
+        (truncateBits .i64 (bvZeroExtend 128 y)))⟩ : Val) =
+      u64BitOrVal x y := by
+  unfold u64BitOrVal bvOr
+  rw [truncateBits_i64_bvZeroExtend x, truncateBits_i64_bvZeroExtend y,
+      bvZeroExtend_128_toNat x, bvZeroExtend_128_toNat y]
+  exact congrArg (fun b => Val.scalar ⟨.i64, false, b⟩)
+    (truncateBits_i64_ofNat_lt
+      (nat_bitwise_lt_two_pow or 64 x.toNat y.toNat x.isLt y.isLt))
+
+/-- `Trusted.MirSemantics` 64-bit left shift reduces to `u64ShlVal`. -/
+theorem u64Shl_sem_eq (x : BitVec 64) (k : Nat) :
+    (.scalar ⟨.i64, false,
+      truncateBits .i64 (bvOfInt 128
+        (.ofNat (Nat.shiftLeft
+          (truncateBits .i64 (bvZeroExtend 128 x)).toNat k)))⟩ : Val) =
+      u64ShlVal x k := by
+  rw [u64ShlVal_eq]
+  unfold bvOfInt intEmod
+  rw [truncateBits_i64_bvZeroExtend x, bvZeroExtend_128_toNat x]
+  dsimp only [Int.natAbs, Int.toNat]
+  rw [truncateBits_i64_ofNat]
+  have hMod :
+      BitVec.ofNat 64
+        (Nat.mod (Nat.shiftLeft x.toNat k) (Nat.pow 2 128)) =
+      BitVec.ofNat 64 (Nat.shiftLeft x.toNat k) := by
+    apply bitVec_eq_of_toNat_eq
+    have hPow : Nat.pow 2 128 = Nat.pow 2 64 * Nat.pow 2 64 := by decide
+    change Nat.mod (Nat.mod (Nat.shiftLeft x.toNat k) (Nat.pow 2 128))
+        (Nat.pow 2 64) =
+      Nat.mod (Nat.shiftLeft x.toNat k) (Nat.pow 2 64)
+    rw [hPow]
+    exact nat_mod_mod_mul_left _ (Nat.pow 2 64) (Nat.pow 2 64)
+  rw [hMod]
+
+/-- `Trusted.MirSemantics` 64-bit logical right shift reduces to `u64ShrVal`. -/
+theorem u64Shr_sem_eq (x : BitVec 64) (k : Nat) :
+    (.scalar ⟨.i64, false,
+      truncateBits .i64 (bvOfInt 128
+        (.ofNat (Nat.shiftRight
+          (truncateBits .i64 (bvZeroExtend 128 x)).toNat k)))⟩ : Val) =
+      u64ShrVal x k := by
+  unfold u64ShrVal bvOfInt intEmod
+  rw [truncateBits_i64_bvZeroExtend x, bvZeroExtend_128_toNat x]
+  dsimp only [Int.natAbs, Int.toNat]
+  have hLt : Nat.shiftRight x.toNat k < Nat.pow 2 64 :=
+    Nat.lt_of_le_of_lt (Nat.shiftRight_le _ _) x.isLt
+  have hMod :
+      Nat.mod (Nat.shiftRight x.toNat k) (Nat.pow 2 128) =
+      Nat.shiftRight x.toNat k :=
+    Nat.mod_eq_of_lt (Nat.lt_trans hLt (by decide))
+  rw [hMod]
+  exact congrArg (fun b => Val.scalar ⟨.i64, false, b⟩)
+    (truncateBits_i64_ofNat_lt hLt)
+
 end Anneal.MirWp
