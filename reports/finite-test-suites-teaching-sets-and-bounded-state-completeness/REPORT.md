@@ -50,7 +50,7 @@ Every theorem card states `Basis: execution (Lean kernel check)` for the formal 
 
 ### How to read this section
 
-- Every Lean definition and theorem statement block is printed directly from Lean 4's pretty-printer (`#print` / `#check` with `set_option pp.fieldNotation.generalized false`) on the compiled library. Universe parameters print as `u_1`, `u_2` in `#check` output.
+- Every Lean definition and theorem statement block is printed directly from Lean 4's pretty-printer (`#print` / `#check` with `set_option pp.fieldNotation.generalized false`) on the compiled library. Two entries, `moore_bound_sharp` (R9) and `monotone_conj_m2_r1_exact` (1.6), are printed with `pp.funBinderTypes true` and `pp.numericTypes true` in addition, so that the printed text elaborates to the theorem's statement; the line before each of their blocks says so. Universe parameters print as `u_1`, `u_2` in `#check` output.
 - "Unfolded" blocks expand package predicates to elementary quantifiers and equations for direct reading.
 - Hypothesis ledgers classify each hypothesis as either `tight` (with a proved counterexample theorem where all other hypotheses hold and the conclusion fails) or `harmless` (with an explanation). No hypothesis has tightness `unknown`.
 - Every result carries `Basis: execution (Lean kernel check)` for the mechanized theorem and a separate `Basis: derived (modeling bridge)` claim connecting it to conformance testing.
@@ -773,6 +773,8 @@ fun {X} {Y} h outside S x => if x ∈ List.map Prod.fst S then h x else outside 
 
 #### 1.6 Supporting structural lemmas and concrete checks (proved)
 
+`monotone_conj_m2_r1_exact` is printed with `pp.funBinderTypes true` and `pp.numericTypes true` in addition, which show that `i` ranges over `Fin 2` and that `↑i = 0` compares natural numbers.
+
 ```lean
 @Toy.Witness.isUnrestricted_implies_closedUnderPointPatches : ∀ {X : Type u_1} {Y : Type u_2}
   {H : Toy.Witness.HypothesisClass X Y}, Toy.Witness.IsUnrestricted H → Toy.Witness.ClosedUnderPointPatches H
@@ -792,12 +794,12 @@ Toy.Witness.Teaches (Toy.Witness.MonotoneConjunctions 2) (Toy.Witness.evalMonoto
   List.length (Toy.Witness.monotoneConjTeachingSet V) = min (Toy.Witness.relevantCount V + 1) 2 ∧
     Toy.Witness.HasMinTeachingSize (Toy.Witness.MonotoneConjunctions 2) (Toy.Witness.evalMonotoneConj V)
       (min (Toy.Witness.relevantCount V + 1) 2)
-Toy.Witness.monotone_conj_m2_r1_exact : have V := fun i => decide (↑i = 0);
-Toy.Witness.Teaches (Toy.Witness.MonotoneConjunctions 2) (Toy.Witness.evalMonotoneConj V)
+Toy.Witness.monotone_conj_m2_r1_exact : have V := fun (i : Fin (2 : Nat)) => decide (↑i = (0 : Nat));
+Toy.Witness.Teaches (Toy.Witness.MonotoneConjunctions (2 : Nat)) (Toy.Witness.evalMonotoneConj V)
     (Toy.Witness.monotoneConjTeachingSet V) ∧
-  List.length (Toy.Witness.monotoneConjTeachingSet V) = min (Toy.Witness.relevantCount V + 1) 2 ∧
-    Toy.Witness.HasMinTeachingSize (Toy.Witness.MonotoneConjunctions 2) (Toy.Witness.evalMonotoneConj V)
-      (min (Toy.Witness.relevantCount V + 1) 2)
+  List.length (Toy.Witness.monotoneConjTeachingSet V) = min (Toy.Witness.relevantCount V + (1 : Nat)) (2 : Nat) ∧
+    Toy.Witness.HasMinTeachingSize (Toy.Witness.MonotoneConjunctions (2 : Nat)) (Toy.Witness.evalMonotoneConj V)
+      (min (Toy.Witness.relevantCount V + (1 : Nat)) (2 : Nat))
 Toy.Witness.monotone_conj_m2_r2_exact : have V := fun x => true;
 Toy.Witness.Teaches (Toy.Witness.MonotoneConjunctions 2) (Toy.Witness.evalMonotoneConj V)
     (Toy.Witness.monotoneConjTeachingSet V) ∧
@@ -1283,19 +1285,22 @@ Basis: derived (modeling bridge) — Comparing an `n₁`-state deterministic Moo
 
 **Plain claim.** For every n >= 2, states 0 and 1 of the explicit n-state delay chain delayChain n over Unit -> Bool agree on every input word of length < n - 2 yet disagree on the word of length n - 2, showing Moore's n - 2 input-word bound cannot be tightened.
 
+Printed with `pp.funBinderTypes true` and `pp.numericTypes true` in addition, which show that `s₀` and `s₁` range over `Fin n` and that `↑s₀ = 0` and `↑s₁ = 1` compare natural numbers:
+
 ```lean
 Toy.Witness.moore_bound_sharp : ∀ (n : Nat),
-  2 ≤ n →
-    ∃ s₀ s₁,
-      ↑s₀ = 0 ∧
-        ↑s₁ = 1 ∧
-          (∀ (w : List Unit),
-              List.length w < n - 2 →
-                Toy.Witness.MooreMachine.behavior (Toy.Witness.delayChain n) s₀ w =
-                  Toy.Witness.MooreMachine.behavior (Toy.Witness.delayChain n) s₁ w) ∧
-            Toy.Witness.MooreMachine.behavior (Toy.Witness.delayChain n) s₀ (List.replicate (n - 2) ()) ≠
-                Toy.Witness.MooreMachine.behavior (Toy.Witness.delayChain n) s₁ (List.replicate (n - 2) ()) ∧
-              ¬Toy.Witness.StateEquiv (Toy.Witness.delayChain n) s₀ s₁
+  (2 : Nat) ≤ n →
+    ∃ (s₀ : Fin n),
+      ∃ (s₁ : Fin n),
+        ↑s₀ = (0 : Nat) ∧
+          ↑s₁ = (1 : Nat) ∧
+            (∀ (w : List Unit),
+                List.length w < n - (2 : Nat) →
+                  Toy.Witness.MooreMachine.behavior (Toy.Witness.delayChain n) s₀ w =
+                    Toy.Witness.MooreMachine.behavior (Toy.Witness.delayChain n) s₁ w) ∧
+              Toy.Witness.MooreMachine.behavior (Toy.Witness.delayChain n) s₀ (List.replicate (n - (2 : Nat)) ()) ≠
+                  Toy.Witness.MooreMachine.behavior (Toy.Witness.delayChain n) s₁ (List.replicate (n - (2 : Nat)) ()) ∧
+                ¬Toy.Witness.StateEquiv (Toy.Witness.delayChain n) s₀ s₁
 ```
 
 Unfolded:
