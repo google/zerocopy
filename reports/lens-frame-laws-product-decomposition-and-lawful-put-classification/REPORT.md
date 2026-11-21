@@ -1208,7 +1208,7 @@ where `constFalseView : Lens Bool Bool := { get := fun _ => false, put := fun s 
     PutGet l₁ ∧ PutGet l₂ ∧ PutIndep l₁ l₂ ∧ PutIndep l₂ l₁ ∧ Lens.JointExt l₁ l₂ ∧ (Nonempty (A × B) → Nonempty S)
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```
 for all types S A B and lenses l₁ : Lens S A, l₂ : Lens S B:
@@ -1281,7 +1281,7 @@ Basis: derived (modeling bridge) — For a value-algebra interface whose fields 
               Function.RightInverse (pairPut l₁ l₂ s₀) (pairGet l₁ l₂)
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```
 for all lenses l₁ : Lens S A, l₂ : Lens S B and every s₀ : S:
@@ -1339,7 +1339,7 @@ Basis: derived (modeling bridge) — A "construct from field values" operation i
   PutGet l₁ → PutGet l₂ → PutIndep l₁ l₂ → PutIndep l₂ l₁ → Lens.JointExt l₁ l₂ → PutComm l₁ l₂
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```
 under PutGet l₁, PutGet l₂, PutIndep l₁ l₂, PutIndep l₂ l₁, JointExt l₁ l₂ (no nonemptiness):
@@ -1401,7 +1401,7 @@ Basis: derived (modeling bridge) — An interface that already requires PutGet, 
       (∀ (i : ι), PutGet (l i)) ∧ PairwiseIndep l ∧ FamJointExt l ∧ (Nonempty ((i : ι) → A i) → Nonempty S))
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```
 for a finite index type ι (∀ i, i ∈ elems) and lenses l i : Lens S (A i):
@@ -1470,7 +1470,7 @@ Basis: derived (modeling bridge) — For a value type with a fixed finite list o
           (∀ (k : ι), j ≠ k → PutIndep (l j) (l k)) → FamJointExt l → PutComm (l i) (l j)
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```
 for an index i:   PutGet (l i) → (∀ j, i ≠ j → PutIndep (l i) (l j)) → FamJointExt l → GetPut (l i) ∧ PutPut (l i)
@@ -1516,7 +1516,7 @@ Basis: derived (modeling bridge) — Per-field GetPut, PutPut and pairwise commu
   VeryWellBehaved l ↔ HasConstantComplement l
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```
 for every lens l : Lens S A:
@@ -1573,7 +1573,7 @@ Basis: derived (modeling bridge) — A setter that satisfies the three single-le
   (f : S → A × C), Function.Injective f → Intertwines f l fst → VeryWellBehaved l
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```
 for f : S → A × C (C in any universe):
@@ -1623,7 +1623,7 @@ Printed with `pp.funBinderTypes true` in addition, which shows the type of the `
           (∀ (s : S), (e.toFun s).snd.val = l.put s a₀) ∧ ∀ (a : A) (c : Fiber l a₀), e.invFun (a, c) = l.put c.val a
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```
 VeryWellBehaved l → ∀ a₀ : A, ∃ e : Equiv S (A × {s // l.get s = a₀}),
@@ -1668,7 +1668,7 @@ Basis: derived (modeling bridge) — Given a default value of the field, "the re
   (l₂ : Lens S B), VeryWellBehaved l₁ ∧ VeryWellBehaved l₂ ∧ PutComm l₁ l₂ ↔ HasGhostComplement l₁ l₂
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```
   (VeryWellBehaved l₁ ∧ VeryWellBehaved l₂ ∧ ∀ s a b, l₂.put (l₁.put s a) b = l₁.put (l₂.put s b) a)
@@ -1877,7 +1877,7 @@ Basis: derived (modeling bridge) — The n-field decomposition cannot be stated 
           PutGetOn V l₂ ∧ PutIndepOn V l₁ l₂ ∧ PutIndepOn V l₂ l₁ ∧ JointExtOn V l₁ l₂ ∧ (Nonempty (A × B) → ∃ s, V s)
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```
   TotalOn V l₁ → TotalOn V l₂ → PutGetOn V l₁ → PutGetOn V l₂ → PutIndepOn V l₁ l₂ → PutIndepOn V l₂ l₁
@@ -2032,7 +2032,7 @@ Basis: derived (modeling bridge) — A separate law is needed to stop a field se
       ∀ (a a' a'' : A) (x : GetFiber get a), ofPut get put h a' a'' (ofPut get put h a a' x) = ofPut get put h a a'' x)
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```
 for get : S → A, writing Fib a = {s // get s = a}, φ : (a a' : A) → Fib a → Fib a',
@@ -2097,7 +2097,7 @@ Basis: derived (modeling bridge) — For a given field getter, the freedom in ch
         Nonempty (Equiv { put // VeryWellBehaved { get := get, put := put } } (Fin (factorial m ^ (k - 1))))
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```
 base-fibre form, for a₀ : A:
@@ -2155,7 +2155,7 @@ Basis: derived (modeling bridge) — For finite value spaces with uniform fibres
               PutIndep { get := get, put := put } m → VeryWellBehaved { get := get, put := put }
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```
 for get : S → A and m : Lens S C with
@@ -2217,7 +2217,7 @@ These proved instances satisfy laws that are often taken to mean "the setter cha
 - Attractive but inadequate weakening of the conclusion: 'some bijection S ≃ A × B exists'. A record with a ghost component admits such a bijection (Toy.Lens.ghost_admits_unrelated_bijection); the specific map must appear in the statement. Any map whose components are the two getters is `pairGet` (Toy.Lens.eq_pairGet_of_get_eq; each of its two hypotheses is needed: Toy.Lens.eq_pairGet_tight_left, Toy.Lens.eq_pairGet_tight_right).
 - Attractive but false variant of the hypotheses: both lenses very well-behaved, jointly extensional, and independent in one direction only (Toy.Lens.xorView_tight_putIndep_left).
 - Says nothing about partial lenses or sum types (see F5), about more than two fields (see F2), or about type-changing lenses.
-- Proved only over pure total functions and Lean propositional equality `=`; it does not by itself establish properties of a real programming-language value algebra with observational equality, padding bytes, provenance, aliasing, panics, or side effects (any such transfer requires a separate modeling bridge).
+- Proved over pure total functions and Lean propositional equality `=`; on its own it neither establishes nor refutes properties of a real programming-language value algebra with observational equality, padding bytes, provenance, aliasing, panics, or side effects (any such transfer requires a separate modeling bridge).
 
 **F1-inverse.**
 
@@ -2225,14 +2225,14 @@ These proved instances satisfy laws that are often taken to mean "the setter cha
 - Does not imply that `l₁` satisfies `GetPut` or `PutPut`, or commutes with `l₂`: the pair `(resetSibling, snd)` satisfies all hypotheses (and `pairPut` is a two-sided inverse of `pairGet` there), yet `resetSibling` violates `GetPut` and does not commute with `snd`; the pair `(dirtyFlag, snd)` satisfies all hypotheses and `dirtyFlag` violates `PutPut` (Toy.Lens.f1_inverse_hypotheses_do_not_imply_laws).
 - The tightness witnesses for `PutGet l₁`, `PutGet l₂` and `PutIndep l₂ l₁` show only that the specific formula `pairPut` fails to be an inverse of `pairGet`, not that `pairGet` ceases to be a bijection: in ignorePut/snd, fst/ignorePutSnd and snd/twist, `pairGet` remains a bijection (Toy.Lens.pairGet_bijective_in_inverse_witnesses).
 - The order of the two writes matters when only one direction of independence is assumed: pairPut writes through l₁ first and then through l₂, the reverse of the order used by the AFP Optics sum lens `X +_L Y` (which writes Y first).
-- Proved only over pure total functions and Lean propositional equality `=`; it does not by itself establish properties of a real programming-language value algebra with observational equality, padding bytes, provenance, aliasing, panics, or side effects (any such transfer requires a separate modeling bridge).
+- Proved over pure total functions and Lean propositional equality `=`; on its own it neither establishes nor refutes properties of a real programming-language value algebra with observational equality, padding bytes, provenance, aliasing, panics, or side effects (any such transfer requires a separate modeling bridge).
 
 **F1-laws.**
 
 - Under the weaker three-hypothesis component lemmas (`PutGet l₁`, `PutIndep l₁ l₂`, `JointExt l₁ l₂`), nothing is concluded about `l₂`'s laws or about `PutComm l₁ l₂`.
 - Does not allow dropping `GetPut`, `PutPut`, or `PutComm` from a multi-field value-algebra interface unless `FamJointExt` holds over all fields together; for any two fields of a ≥ 3-field struct, the remaining fields act as a ghost component (Toy.Lens.derived_putComm_tight, third instance).
 - Joint extensionality is essential: without it, two very well-behaved lenses that are cross-independent in both directions need not commute (Toy.Lens.derived_putComm_tight, third instance).
-- Proved only over pure total functions and Lean propositional equality `=`; it does not by itself establish properties of a real programming-language value algebra with observational equality, padding bytes, provenance, aliasing, panics, or side effects (any such transfer requires a separate modeling bridge).
+- Proved over pure total functions and Lean propositional equality `=`; on its own it neither establishes nor refutes properties of a real programming-language value algebra with observational equality, padding bytes, provenance, aliasing, panics, or side effects (any such transfer requires a separate modeling bridge).
 
 **F2.**
 
@@ -2241,7 +2241,7 @@ These proved instances satisfy laws that are often taken to mean "the setter cha
 - Does not constructively produce an `Equiv S ((i : ι) → A i)` in `Type`: the nonemptiness hypothesis and the conclusion are propositions.
 - Does not claim that `Nonempty S` is necessary: when `ι` is nonempty and some `A i` is empty, the product is empty and the conclusion can hold on an empty `S`; the theorem therefore uses the conditional hypothesis `hS`.
 - False for infinite index types: the coordinate lenses on eventually-false Boolean sequences satisfy every other hypothesis but the tuple-of-views map is not surjective (Toy.Lens.evCoord_tight_finite_index). For infinite ι only injectivity and the coordinate-update equations survive.
-- Proved only over pure total functions and Lean propositional equality `=`; it does not by itself establish properties of a real programming-language value algebra with observational equality, padding bytes, provenance, aliasing, panics, or side effects (any such transfer requires a separate modeling bridge).
+- Proved over pure total functions and Lean propositional equality `=`; on its own it neither establishes nor refutes properties of a real programming-language value algebra with observational equality, padding bytes, provenance, aliasing, panics, or side effects (any such transfer requires a separate modeling bridge).
 
 **F2-laws.**
 
@@ -2306,7 +2306,7 @@ These proved instances satisfy laws that are often taken to mean "the setter cha
 - Unscoped joint extensionality must not replace JointExtOn (F5-unscoped).
 - The variant-scoped GetPut, PutPut and commuting puts follow from these hypotheses without the nonemptiness condition (Toy.Lens.PLens.getPutOn_of_totalOn_putGetOn_putIndepOn_jointExtOn, putPutOn_of_..., putCommOn_of_...); they are proved supporting lemmas, not part of this statement.
 - With V the whole state type and lenses that never fail, F5 specialises to F1 (Toy.Lens.PLens.isProductDecompositionOn_toPLens_iff and companions).
-- Proved only over pure total functions and Lean propositional equality `=`; it does not by itself establish properties of a real programming-language value algebra with observational equality, padding bytes, provenance, aliasing, panics, or side effects (any such transfer requires a separate modeling bridge).
+- Proved over pure total functions and Lean propositional equality `=`; on its own it neither establishes nor refutes properties of a real programming-language value algebra with observational equality, padding bytes, provenance, aliasing, panics, or side effects (any such transfer requires a separate modeling bridge).
 
 **F5-unscoped.**
 
