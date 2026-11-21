@@ -41,7 +41,7 @@ Corrections to commonly stated forms, all kernel-checked:
 3. Value-transmute and shared-cast soundness coincide in this model (R5-hier), so the hierarchy is mutable ⇒ shared ⇔ value, strict only at the first step.
 4. The equality requirement for mutable casts concerns unchecked casts. A mutable cast checked once at cast time needs only `(T ⊓ U satisfiable) → U ⊆ T` (R8-mut); a checked shared cast with interior mutability needs `T ⊆ U` for source-side writes and `U ⊆ T` for destination-side writes (R8-im), so source-side writes matter again once the cast is checked.
 
-**Non-claims.** Every result is about the toy model only. Nothing is said about alignment, size-changing (prefix, sub-slice or unsized) casts, provenance, uninitialised or padding bytes, pointer metadata or the memory a pointer refers to, aliasing models, concurrency, destructors or auto traits, or library-level safety invariants. Statements about Rust, rustc and zerocopy are separate `derived (modeling bridge)` claims, not kernel-checked. The full non-claims of every result are listed first under Boundaries.
+**Non-claims.** Every result is about the toy model; the kernel-checked theorems neither establish nor refute the corresponding claims about Rust's `core::mem::transmute`, reference casts, rustc's transmutability checker or zerocopy's transmute macros. Nothing is said about alignment, size-changing (prefix, sub-slice or unsized) casts, provenance, uninitialised or padding bytes, pointer metadata or the memory a pointer refers to, aliasing models, concurrency, destructors or auto traits, or library-level safety invariants. Statements about Rust, rustc and zerocopy are separate `derived (modeling bridge)` claims, not kernel-checked. The full non-claims of every result are listed first under Boundaries.
 
 ## Applicability
 
@@ -1326,7 +1326,7 @@ Unfolded:
 
 ### Supporting statements
 
-Every counterexample, non-vacuity witness, positive control and related witness named by a card, as Lean prints it, with the cards that use it. All are fully proved in `lean/ToyTransmute/Counterexamples.lean` or `lean/ToyTransmute/Examples.lean`; none depends on a main result.
+Every counterexample, non-vacuity witness, positive control and related witness named by a card, as Lean prints it (one, marked below, is quoted from the source instead), with the cards that use it. All are fully proved in `lean/ToyTransmute/Counterexamples.lean` or `lean/ToyTransmute/Examples.lean`; none depends on a main result.
 
 #### `valueSound_iff_includes_nonvacuous`
 
@@ -1338,13 +1338,14 @@ valueSound_iff_includes_nonvacuous : (ValueSound boolV byteV ∧ Includes boolV 
 
 #### `noInvalidRead_unchecked_until_read`
 
-Used by: R1: related witness.
+Used by: R1: related witness. Quoted from the source, because Lean's printed form `valueProtocol []` omits the byte alphabet and size (`Protocol (Fin 256) 1`) of its first conjunct:
 ```lean
-noInvalidRead_unchecked_until_read : valueProtocol [] ∧
-  ¬boolV (byteSeq 2) ∧
-    NoInvalidRead byteV boolV (byteSeq 2) [] ∧
-      NoInvalidRead byteV boolV (byteSeq 2) [Op.write Side.dst (byteSeq 0), Op.read Side.dst] ∧
-        ¬NoInvalidRead byteV boolV (byteSeq 2) readDst
+-- lean/ToyTransmute/Examples.lean:332-336
+theorem noInvalidRead_unchecked_until_read :
+    (valueProtocol : Protocol (Fin 256) 1) [] ∧ ¬ boolV (byteSeq 2) ∧
+      NoInvalidRead byteV boolV (byteSeq 2) [] ∧
+      NoInvalidRead byteV boolV (byteSeq 2) [.write .dst (byteSeq 0), .read .dst] ∧
+      ¬ NoInvalidRead byteV boolV (byteSeq 2) readDst
 ```
 
 #### `byteV_to_boolV_unsound_even_by_value`
@@ -2292,7 +2293,7 @@ Per result, in addition to the global non-claim:
 ### Attractive stronger conclusions that are not established
 
 - That a cast satisfying the condition of R1-R4 or R8 is sound in Rust: alignment, size relations, provenance, uninitialised and padding bytes, aliasing rules, destructors, auto traits and safety invariants all add conditions not stated here.
-- That value and shared casts have the same requirements in Rust (they coincide only in the model, R5-hier).
+- That value and shared casts have the same requirements in Rust (they coincide in the model, R5-hier; this neither establishes nor refutes that they coincide in Rust).
 - That `MutSound T U ↔ MutSound U T` under `Satisfiable T` alone (false: `mutSound_not_iff_symm_of_satisfiable_left`).
 - That source-side interior mutability is harmless in Rust (R4-src is about bit validity only), or harmless for checked casts (false: R8-im).
 - That checked casts compose (not stated); that three simultaneously live views behave like a chain of two-view casts (not modelled).
