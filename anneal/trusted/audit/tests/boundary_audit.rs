@@ -1015,6 +1015,82 @@ fn enforces_module_level_trust_tiers_and_namespace_hygiene() {
     );
 }
 
+#[test]
+fn rejects_reserved_kernel_roots_and_user_splitter_children_in_theory() {
+    let mut fix = TempFixture::new(Some(
+        "-- anneal-trust-tier: vetted\nprelude\nimport Init.Prelude\nimport Trusted.MirAst\n",
+    ));
+    fs::create_dir_all(fix.root.join("trusted/lean/Trusted")).unwrap();
+    fs::write(
+        fix.root.join("trusted/lean/Trusted/MirAst.lean"),
+        b"-- anneal-trust-tier: candidate:mir_ast\n\
+          prelude\nimport Init.Prelude\n\
+          namespace Trusted.MirAst\n\
+          structure Place where\n  localId : Nat\n\
+          end Trusted.MirAst\n",
+    )
+    .unwrap();
+    fs::create_dir_all(fix.root.join("theory")).unwrap();
+
+    // (a) `def Nat.gcd`, `theorem Nat.gcd` (kernel-accelerated),
+    // `theorem Nat.fakeThm` (non-accelerated `.thmInfo` in `Nat`),
+    // `private def Nat.privFake`, and `def Int8.fake` in `theory/` must all be
+    // rejected by `validateRepoConstant` with exit code 1.
+    for (theory_src, expected_msg) in [
+        (
+            "prelude\nimport Trusted\nnamespace Nat\ndef gcd : Nat := 0\nend Nat\n",
+            "repository module Anneal cannot declare constant Nat.gcd in reserved kernel namespace Nat",
+        ),
+        (
+            "prelude\nimport Trusted\nnamespace Nat\ntheorem gcd : True := True.intro\nend Nat\n",
+            "repository module Anneal cannot declare constant Nat.gcd in reserved kernel namespace Nat",
+        ),
+        (
+            "prelude\nimport Trusted\nnamespace Nat\ntheorem fakeThm : True := True.intro\nend Nat\n",
+            "repository module Anneal cannot declare constant Nat.fakeThm in reserved kernel namespace Nat",
+        ),
+        (
+            "prelude\nimport Trusted\nnamespace Nat\nprivate def privFake : Nat := 0\nend Nat\n",
+            "in reserved kernel namespace Nat",
+        ),
+        (
+            "prelude\nimport Trusted\nnamespace Int8\ndef fake : Nat := 0\nend Int8\n",
+            "repository module Anneal cannot declare constant Int8.fake in reserved kernel namespace Int8",
+        ),
+        // (b) User-authored declaration beneath `<CompoundConst>.splitter`
+        // (`Trusted.MirAst.Place` is an already-imported compound `Trusted`
+        // constant) must be rejected by `isGeneratedSplitterSubtree`.
+        (
+            "prelude\nimport Trusted\n\
+             namespace Trusted.MirAst.Place.splitter\n\
+             private def evil : Nat := 0\n\
+             end Trusted.MirAst.Place.splitter\n",
+            "non-Trusted module Anneal cannot declare constant",
+        ),
+    ] {
+        fs::write(fix.root.join("theory/Anneal.lean"), theory_src).unwrap();
+        let err = fix.check_expected(Some(1), Some("audit"), Some(true)).unwrap_err();
+        assert!(
+            err.message.starts_with("policy:") && err.message.contains(expected_msg),
+            "expected `{expected_msg}`, got: {err}"
+        );
+    }
+
+    // `theorem Nat.land` collides with `foundation-lock.json`'s
+    // `Init.Data.Nat.Bitwise.Basic` and is rejected even earlier by
+    // `importModules`.
+    fs::write(
+        fix.root.join("theory/Anneal.lean"),
+        "prelude\nimport Trusted\nnamespace Nat\ntheorem land : True := True.intro\nend Nat\n",
+    )
+    .unwrap();
+    let err_land = fix.check_expected(Some(2), Some("audit"), Some(true)).unwrap_err();
+    assert!(
+        err_land.message.contains("already contains 'Nat.land'"),
+        "expected Nat.land collision rejection, got: {err_land}"
+    );
+}
+
 /// Verifies that `verify_upstream_pin` and `Checker::run()` enforce
 /// `vendor/lean-miri/UPSTREAM_PIN.json` and reject whole-directory deletion,
 /// missing manifests, modified or unlisted `.lean` files, symlinks,

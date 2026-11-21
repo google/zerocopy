@@ -16,6 +16,7 @@ description = "Formally verify Rust programs in Lean 4."
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
 repository = "https://github.com/google/zerocopy/tree/main/anneal"
 readme = "../../README.md"
+exclude = ["tests/"]
 
 # Release preparation pins the published x86-64 Linux archive before
 # crates.io publication. An all-zero digest keeps remote setup disabled.
@@ -27,7 +28,6 @@ url = "https://github.com/google/zerocopy/releases/download/anneal-toolchain-v0.
 
 [[bin]]
 name = "cargo-anneal"
-required-features = ["setup"]
 
 [[example]]
 name = "regenerate_bundle"
@@ -38,8 +38,7 @@ default = ["setup"]
 setup = ["dep:exocrate"]
 
 [dependencies]
-clap = { version = "4.5", features = ["derive"] }
-dirs = "6.0"
+clap = { version = "4.5", default-features = false, features = ["std", "help", "usage", "error-context", "suggestions", "derive"] }
 exocrate = { version = "0.3.0", optional = true }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
@@ -47,6 +46,9 @@ sha2 = "0.10"
 tempfile = "3.27"
 thiserror = "2.0"
 walkdir = "2.5"
+
+[target.'cfg(unix)'.dependencies]
+libc = "0.2"
 
 [dev-dependencies]
 tar = "0.4"
