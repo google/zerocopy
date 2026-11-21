@@ -36,7 +36,10 @@ enum Command {
         #[arg(long, value_name = "path")]
         local_archive: Option<PathBuf>,
     },
+    /// Print the bundled agent skill.
+    Skill,
     /// Capture a configured compilation and check its authored source proof.
+    #[command(after_help = "Run `cargo anneal skill` to print the bundled agent skill.")]
     Verify(verify::VerifyArgs),
 }
 
@@ -69,6 +72,9 @@ fn dispatch(
         Some(Command::Setup { local_archive }) => {
             let root = install(local_archive)?;
             Ok(Action::Print(format!("Installed Anneal toolchain at {}\n", root.display())))
+        }
+        Some(Command::Skill) => {
+            Ok(Action::Print(include_str!("../skills/cargo-anneal/SKILL.md").to_owned()))
         }
         Some(Command::Verify(args)) => Ok(Action::Verify(args)),
     }
