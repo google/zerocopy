@@ -101,6 +101,32 @@ fn help_and_version_work_through_direct_and_cargo_invocation() {
 }
 
 #[test]
+fn bundled_skill_is_discoverable_and_matches_the_source_file() {
+    let project = tempfile::tempdir().expect("create external working directory");
+    for route in [Route::Direct, Route::Cargo] {
+        for (args, hint) in [
+            (&["--help"][..], "Print the bundled agent skill"),
+            (&["verify", "--help"][..], "cargo anneal skill"),
+        ] {
+            let output = command(route, project.path())
+                .args(args)
+                .output()
+                .unwrap_or_else(|error| panic!("launch {route:?}: {error}"));
+            assert_result(&output, 0, hint, "");
+            assert!(output.stderr.is_empty(), "{output:?}");
+        }
+
+        let output = command(route, project.path())
+            .arg("skill")
+            .output()
+            .unwrap_or_else(|error| panic!("launch {route:?}: {error}"));
+        assert_result(&output, 0, "", "");
+        assert!(output.stderr.is_empty(), "{output:?}");
+        assert_eq!(output.stdout, include_bytes!("../skills/cargo-anneal/SKILL.md"));
+    }
+}
+
+#[test]
 fn malformed_arguments_fail_through_direct_and_cargo_invocation() {
     let project = tempfile::tempdir().expect("create external working directory");
     for route in [Route::Direct, Route::Cargo] {
