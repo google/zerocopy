@@ -58,7 +58,7 @@ Basis: derived (modeling bridge). Applying a result to a real system requires ch
 
 ## Findings
 
-All theorem statements below are the output of Lean's pretty-printer on the compiled declarations, with the options `pp.analyze true` and `pp.fieldNotation.generalized false`, and with the namespace `Toy.Scc` omitted. `pp.analyze` adds named arguments such as `(n := 1) (m := 1)` exactly where the default output would hide an implicit argument that the printed term does not determine (for example the dimensions of `topT`, `botT`, `bot` or `oneComp` in a counterexample); without it, several counterexamples would read as if they quantified over all dimensions. `↑f` is the coercion of `f : Fin n` to `Nat`. Definitions, fixtures and anonymous examples are quoted as Lean source excerpts and labelled as such. Every `Toy.Scc` declaration named anywhere in this report is defined or quoted in it (key definitions and fixtures in this section, definition examples under **Definition examples**, card theorems on the cards, and everything else under **Other declarations named in this report** at the end of this section). *Unfolded* blocks are hand-written elementary readings of the quoted statements, in which `≤` on summary vectors is bitwise inclusion (`Le`).
+All theorem statements below are the output of Lean's pretty-printer on the compiled declarations, with the options `pp.analyze true` and `pp.fieldNotation.generalized false`, and with the namespace `Toy.Scc` omitted. `pp.analyze` adds named arguments such as `(n := 1) (m := 1)` where the default output would hide an implicit argument that the printed term does not determine (for example the dimensions of `topT`, `botT`, `bot` or `oneComp` in a counterexample); without it, several counterexamples would read as if they quantified over all dimensions. It does not catch every such case: where its output would still not elaborate back to the theorem's statement, the statement is printed with `pp.numericTypes true` in addition (every numeral shows its type, as in `Covers idComp [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))]`, which `pp.analyze` alone prints as `Covers idComp [1, 0]`, leaving the size of `Fin` undetermined), or with `pp.coercions.types true` in addition (every coercion shows its target type, as in `(↑f : Nat)`). `↑f` is the coercion of `f : Fin n` to `Nat`. Definitions, fixtures and anonymous examples are quoted as Lean source excerpts and labelled as such. Every `Toy.Scc` declaration named anywhere in this report is defined or quoted in it (key definitions and fixtures in this section, definition examples under **Definition examples**, card theorems on the cards, and everything else under **Other declarations named in this report** at the end of this section). *Unfolded* blocks are hand-written elementary readings of the quoted statements, in which `≤` on summary vectors is bitwise inclusion (`Le`).
 
 The card fields **Plain claim**, hypothesis names and purposes, **Depth**, **Non-vacuity witness**, **Tier justification**, **Prior art** and **Design question** are reproduced verbatim from `results.json`; there, ASCII spellings such as `sigma`, `mu`, `nu`, `<=` and `->` stand for `σ`, `μ`, `ν`, `≤` and `→`.
 
@@ -833,8 +833,11 @@ CondensationAcyclic E comp  ↔  ∃ order : List (Fin k),
 
 ```lean
 theorem topoOrder_nonvacuous :
-  (CondensationAcyclic gPath idComp ∧ List.Nodup [1, 0] ∧ Covers idComp [1, 0] ∧ CalleesFirst gPath idComp [1, 0]) ∧
-    ¬CondensationAcyclic gCycle idComp ∧ ∀ (order : List (Fin 2)), ¬CalleesFirst gCycle idComp order
+  (CondensationAcyclic gPath idComp ∧
+      List.Nodup [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))] ∧
+        Covers idComp [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))] ∧
+          CalleesFirst gPath idComp [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))]) ∧
+    ¬CondensationAcyclic gCycle idComp ∧ ∀ (order : List (Fin (2 : Nat))), ¬CalleesFirst gCycle idComp order
 ```
 
 - **Supporting lemmas** (proved; recorded in `supporting_lean`; their statements are not separately hashed):
@@ -981,9 +984,11 @@ theorem bottomUpLfp_tight_monotone :
 
 theorem bottomUpLfp_tight_respectsCalls :
   Monotone chainLfpT ∧
-    Covers idComp [0, 1] ∧
-      CalleesFirst gEmpty idComp [0, 1] ∧
-        2 * 1 ≤ 2 ∧ ¬RespectsCalls gEmpty chainLfpT ∧ ¬IsLeastFixpoint chainLfpT (bottomUpLfp chainLfpT idComp [0, 1] 2)
+    Covers idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] ∧
+      CalleesFirst gEmpty idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] ∧
+        (2 : Nat) * (1 : Nat) ≤ (2 : Nat) ∧
+          ¬RespectsCalls gEmpty chainLfpT ∧
+            ¬IsLeastFixpoint chainLfpT (bottomUpLfp chainLfpT idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] (2 : Nat))
 
 theorem bottomUpLfp_tight_covers :
   Monotone (n := 1) (m := 1) topT ∧
@@ -994,8 +999,10 @@ theorem bottomUpLfp_tight_covers :
 theorem bottomUpLfp_tight_calleesFirst :
   Monotone chainLfpT ∧
     RespectsCalls gPath chainLfpT ∧
-      Covers idComp [0, 1] ∧
-        2 * 1 ≤ 2 ∧ ¬CalleesFirst gPath idComp [0, 1] ∧ ¬IsLeastFixpoint chainLfpT (bottomUpLfp chainLfpT idComp [0, 1] 2)
+      Covers idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] ∧
+        (2 : Nat) * (1 : Nat) ≤ (2 : Nat) ∧
+          ¬CalleesFirst gPath idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] ∧
+            ¬IsLeastFixpoint chainLfpT (bottomUpLfp chainLfpT idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] (2 : Nat))
 
 theorem bottomUpLfp_tight_fuel :
   IsSccDecomp gCycle oneComp ∧
@@ -1013,8 +1020,11 @@ theorem bottomUpLfp_nonvacuous :
   IsSccDecomp gMix idComp ∧
     Monotone mixLfpT ∧
       RespectsCalls gMix mixLfpT ∧
-        Covers idComp [1, 0] ∧
-          CalleesFirst gMix idComp [1, 0] ∧ 2 * 1 ≤ 2 ∧ CondEdge gMix idComp 0 1 ∧ gMix 0 0 = true ∧ gMix 1 1 = true
+        Covers idComp [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))] ∧
+          CalleesFirst gMix idComp [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))] ∧
+            (2 : Nat) * (1 : Nat) ≤ (2 : Nat) ∧
+              CondEdge gMix idComp (0 : Fin (2 : Nat)) (1 : Fin (2 : Nat)) ∧
+                gMix (0 : Fin (2 : Nat)) (0 : Fin (2 : Nat)) = true ∧ gMix (1 : Fin (2 : Nat)) (1 : Fin (2 : Nat)) = true
 ```
 
 - **Supporting lemmas** (proved; recorded in `supporting_lean`; their statements are not separately hashed):
@@ -1099,10 +1109,12 @@ theorem bottomUpGfp_tight_monotone :
 
 theorem bottomUpGfp_tight_respectsCalls :
   Monotone chainGfpT ∧
-    Covers idComp [0, 1] ∧
-      CalleesFirst gEmpty idComp [0, 1] ∧
-        2 * 1 ≤ 2 ∧
-          ¬RespectsCalls gEmpty chainGfpT ∧ ¬IsGreatestFixpoint chainGfpT (bottomUpGfp chainGfpT idComp [0, 1] 2)
+    Covers idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] ∧
+      CalleesFirst gEmpty idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] ∧
+        (2 : Nat) * (1 : Nat) ≤ (2 : Nat) ∧
+          ¬RespectsCalls gEmpty chainGfpT ∧
+            ¬IsGreatestFixpoint chainGfpT
+                (bottomUpGfp chainGfpT idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] (2 : Nat))
 
 theorem bottomUpGfp_tight_covers :
   Monotone (n := 1) (m := 1) botT ∧
@@ -1114,9 +1126,11 @@ theorem bottomUpGfp_tight_covers :
 theorem bottomUpGfp_tight_calleesFirst :
   Monotone chainGfpT ∧
     RespectsCalls gPath chainGfpT ∧
-      Covers idComp [0, 1] ∧
-        2 * 1 ≤ 2 ∧
-          ¬CalleesFirst gPath idComp [0, 1] ∧ ¬IsGreatestFixpoint chainGfpT (bottomUpGfp chainGfpT idComp [0, 1] 2)
+      Covers idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] ∧
+        (2 : Nat) * (1 : Nat) ≤ (2 : Nat) ∧
+          ¬CalleesFirst gPath idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] ∧
+            ¬IsGreatestFixpoint chainGfpT
+                (bottomUpGfp chainGfpT idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] (2 : Nat))
 
 theorem bottomUpGfp_tight_fuel :
   IsSccDecomp gCycle oneComp ∧
@@ -1135,8 +1149,11 @@ theorem bottomUpGfp_nonvacuous :
   IsSccDecomp gMix idComp ∧
     Monotone mixGfpT ∧
       RespectsCalls gMix mixGfpT ∧
-        Covers idComp [1, 0] ∧
-          CalleesFirst gMix idComp [1, 0] ∧ 2 * 1 ≤ 2 ∧ CondEdge gMix idComp 0 1 ∧ gMix 0 0 = true ∧ gMix 1 1 = true
+        Covers idComp [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))] ∧
+          CalleesFirst gMix idComp [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))] ∧
+            (2 : Nat) * (1 : Nat) ≤ (2 : Nat) ∧
+              CondEdge gMix idComp (0 : Fin (2 : Nat)) (1 : Fin (2 : Nat)) ∧
+                gMix (0 : Fin (2 : Nat)) (0 : Fin (2 : Nat)) = true ∧ gMix (1 : Fin (2 : Nat)) (1 : Fin (2 : Nat)) = true
 ```
 
 - **Supporting lemmas** (proved; recorded in `supporting_lean`; their statements are not separately hashed):
@@ -1320,14 +1337,16 @@ theorem bottomUpHier_tight_monotone :
 
 theorem bottomUpHier_tight_respectsCalls :
   Monotone chainLfpT ∧
-    Covers idComp [0, 1] ∧
-      CalleesFirst gEmpty idComp [0, 1] ∧
-        2 * 1 ≤ 2 ∧
+    Covers idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] ∧
+      CalleesFirst gEmpty idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] ∧
+        (2 : Nat) * (1 : Nat) ≤ (2 : Nat) ∧
           ¬RespectsCalls gEmpty chainLfpT ∧
-            ¬(HierSolution chainLfpT idComp (fun x => true) (bottomUp chainLfpT idComp (fun x => true) [0, 1] 2 bot) ∧
-                ∀ (σ : Summ 2 1),
+            ¬(HierSolution chainLfpT idComp (fun x => true)
+                  (bottomUp chainLfpT idComp (fun x => true) [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] (2 : Nat) bot) ∧
+                ∀ (σ : Summ (2 : Nat) (1 : Nat)),
                   HierSolution chainLfpT idComp (fun x => true) σ →
-                    σ = bottomUp chainLfpT idComp (fun x => true) [0, 1] 2 bot)
+                    σ =
+                      bottomUp chainLfpT idComp (fun x => true) [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] (2 : Nat) bot)
 
 theorem bottomUpHier_tight_covers :
   Monotone (n := 1) (m := 1) topT ∧
@@ -1343,11 +1362,14 @@ theorem bottomUpHier_tight_covers :
 theorem bottomUpHier_tight_calleesFirst :
   Monotone swapT ∧
     RespectsCalls gCycle swapT ∧
-      Covers idComp [0, 1] ∧
-        2 * 1 ≤ 2 ∧
-          ¬CalleesFirst gCycle idComp [0, 1] ∧
-            ¬(HierSolution swapT idComp mixSign (bottomUp swapT idComp mixSign [0, 1] 2 bot) ∧
-                ∀ (σ : Summ 2 1), HierSolution swapT idComp mixSign σ → σ = bottomUp swapT idComp mixSign [0, 1] 2 bot)
+      Covers idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] ∧
+        (2 : Nat) * (1 : Nat) ≤ (2 : Nat) ∧
+          ¬CalleesFirst gCycle idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] ∧
+            ¬(HierSolution swapT idComp mixSign
+                  (bottomUp swapT idComp mixSign [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] (2 : Nat) bot) ∧
+                ∀ (σ : Summ (2 : Nat) (1 : Nat)),
+                  HierSolution swapT idComp mixSign σ →
+                    σ = bottomUp swapT idComp mixSign [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] (2 : Nat) bot)
 
 theorem bottomUpHier_tight_fuel :
   IsSccDecomp gCycle oneComp ∧
@@ -1384,7 +1406,9 @@ theorem hierBetween_tight_greatest :
 theorem bottomUpHier_nonvacuous :
   Monotone mixT ∧
     RespectsCalls gMix mixT ∧
-      Covers idComp [1, 0] ∧ CalleesFirst gMix idComp [1, 0] ∧ 2 * 1 ≤ 2 ∧ mixSign 1 = true ∧ mixSign 0 = false
+      Covers idComp [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))] ∧
+        CalleesFirst gMix idComp [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))] ∧
+          (2 : Nat) * (1 : Nat) ≤ (2 : Nat) ∧ mixSign (1 : Fin (2 : Nat)) = true ∧ mixSign (0 : Fin (2 : Nat)) = false
 
 theorem hierBetween_nonvacuous :
   IsLeastFixpoint mixT bot ∧
@@ -1436,10 +1460,10 @@ theorem mixed_lfp_callee_gfp_caller_neither_lfp_nor_gfp :
   IsSccDecomp gMix idComp ∧
     Monotone mixT ∧
       RespectsCalls gMix mixT ∧
-        Covers idComp [1, 0] ∧
-          CalleesFirst gMix idComp [1, 0] ∧
-            2 * 1 ≤ 2 ∧
-              bottomUp mixT idComp mixSign [1, 0] 2 bot = mixResult ∧
+        Covers idComp [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))] ∧
+          CalleesFirst gMix idComp [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))] ∧
+            (2 : Nat) * (1 : Nat) ≤ (2 : Nat) ∧
+              bottomUp mixT idComp mixSign [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))] (2 : Nat) bot = mixResult ∧
                 HierSolution mixT idComp mixSign mixResult ∧
                   mixT mixResult = mixResult ∧
                     IsLeastFixpoint mixT bot ∧
@@ -1449,10 +1473,10 @@ theorem mixed_gfp_callee_lfp_caller_neither_lfp_nor_gfp :
   IsSccDecomp gMix idComp ∧
     Monotone mixRevT ∧
       RespectsCalls gMix mixRevT ∧
-        Covers idComp [1, 0] ∧
-          CalleesFirst gMix idComp [1, 0] ∧
-            2 * 1 ≤ 2 ∧
-              bottomUp mixRevT idComp revSign [1, 0] 2 bot = revResult ∧
+        Covers idComp [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))] ∧
+          CalleesFirst gMix idComp [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))] ∧
+            (2 : Nat) * (1 : Nat) ≤ (2 : Nat) ∧
+              bottomUp mixRevT idComp revSign [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))] (2 : Nat) bot = revResult ∧
                 HierSolution mixRevT idComp revSign revResult ∧
                   mixRevT revResult = revResult ∧
                     IsLeastFixpoint mixRevT bot ∧
@@ -1658,13 +1682,17 @@ theorem valid_scc_caller_first_order_wrong_lfp_and_gfp :
       RespectsCalls gPath chainLfpT ∧
         Monotone chainGfpT ∧
           RespectsCalls gPath chainGfpT ∧
-            2 * 1 ≤ 2 ∧
-              Covers idComp [0, 1] ∧
-                ¬CalleesFirst gPath idComp [0, 1] ∧
-                  ¬IsLeastFixpoint chainLfpT (bottomUpLfp chainLfpT idComp [0, 1] 2) ∧
-                    ¬IsGreatestFixpoint chainGfpT (bottomUpGfp chainGfpT idComp [0, 1] 2) ∧
-                      IsLeastFixpoint chainLfpT (bottomUpLfp chainLfpT idComp [1, 0] 2) ∧
-                        IsGreatestFixpoint chainGfpT (bottomUpGfp chainGfpT idComp [1, 0] 2)
+            (2 : Nat) * (1 : Nat) ≤ (2 : Nat) ∧
+              Covers idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] ∧
+                ¬CalleesFirst gPath idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] ∧
+                  ¬IsLeastFixpoint chainLfpT
+                        (bottomUpLfp chainLfpT idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] (2 : Nat)) ∧
+                    ¬IsGreatestFixpoint chainGfpT
+                          (bottomUpGfp chainGfpT idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] (2 : Nat)) ∧
+                      IsLeastFixpoint chainLfpT
+                          (bottomUpLfp chainLfpT idComp [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))] (2 : Nat)) ∧
+                        IsGreatestFixpoint chainGfpT
+                          (bottomUpGfp chainGfpT idComp [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))] (2 : Nat))
 ```
 
 *Unfolded*
@@ -1752,10 +1780,11 @@ theorem lexTerminates_tight_lexDecreasing :
 
 ```lean
 theorem lexIff_nonvacuous :
-  (∀ (f g : Fin 2), 1 - ↑(idComp f) = 1 - ↑(idComp g) → idComp f = idComp g) ∧
-    LexDecreasing (fun c => 1 - ↑c) idComp (fun x x_1 => x_1) cUnbounded ∧
+  (∀ (f g : Fin 2), 1 - (↑(idComp f) : Nat) = 1 - (↑(idComp g) : Nat) → idComp f = idComp g) ∧
+    LexDecreasing (fun c => 1 - (↑c : Nat)) idComp (fun x x_1 => x_1) cUnbounded ∧
       IntraDecrease idComp (fun x x_1 => x_1) cUnbounded ∧
-        InterRankDecrease (fun c => 1 - ↑c) idComp cUnbounded ∧ cUnbounded (1, 1) (1, 0) ∧ cUnbounded (0, 0) (1, 7)
+        InterRankDecrease (fun c => 1 - (↑c : Nat)) idComp cUnbounded ∧
+          cUnbounded (1, 1) (1, 0) ∧ cUnbounded (0, 0) (1, 7)
 
 theorem lexTerminates_nonvacuous :
   LexDecreasing (fun c => 1 - ↑c) idComp (fun x x_1 => x_1) cUnbounded
@@ -2074,7 +2103,7 @@ theorem rankedCert_tight_ranking :
 
 ```lean
 theorem rankedCert_nonvacuous :
-  Monotone chainLfpT ∧ Le (chainLfpT top) top ∧ RankedJustified chainLfpT top fun f x => if ↑f = 1 then 0 else 1
+  Monotone chainLfpT ∧ Le (chainLfpT top) top ∧ RankedJustified chainLfpT top fun f x => if (↑f : Nat) = 1 then 0 else 1
 ```
 
 - **Tier justification.** Known: well-founded derivations (stages) certify membership in least fixpoints (Aczel 1977), and certifying model checkers use rank-based certificates for least-fixpoint properties (Namjoshi 2001). Restated as a local certificate for summary vectors.
