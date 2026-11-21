@@ -250,7 +250,9 @@ significant influences are listed here, but this list is far from exhaustive.
   analysis. Charon is by Son Ho, Guillaume Boisseau, Lucas Franceschino, Yoann
   Prak, Aymeric Fromherz, and Jonathan Protzenko. Son Ho, Aymeric Fromherz, and
   Jonathan Protzenko's [work on symbolic borrow checking][symbolic-borrows]
-  informed Anneal's study of the semantics behind this translation.
+  informed Anneal's study of the semantics behind this translation. Johannes
+  Hostert's [Aeneas layout model][aeneas-layouts] informed `SpatialMem`'s
+  byte-level aggregate codecs.
 - PureLift uses lawful bidirectional lenses. J. Nathan Foster, Michael B.
   Greenwald, Jonathan T. Moore, Benjamin C. Pierce, and Alan Schmitt developed
   these foundations in [Combinators for Bidirectional Tree
@@ -269,7 +271,13 @@ significant influences are listed here, but this list is far from exhaustive.
   Gordon, and Konrad Slind's [decompilation into logic][decompilation] to
   reason about one basic block at a time. [Tree Borrows][tree-borrows] by
   Neven Villani, Johannes Hostert, Derek Dreyer, and Ralf Jung guided
-  experiments on how to account for mutable borrow permissions.
+  experiments on how to account for mutable borrow permissions. [Gillian-Rust]
+  by Sacha-Élie Ayoun, Xavier Denis, Petar Maksimović, and Philippa Gardner,
+  [CN] by Christopher Pulte, Dhruv C. Makwana, Thomas Sewell, Kayvan Memarian,
+  Peter Sewell, and Neel Krishnaswami, and [Fulminate] by Rini Banerjee, Kayvan
+  Memarian, Dhruv Makwana, Christopher Pulte, Neel Krishnaswami, and Peter
+  Sewell informed `SpatialMem`'s hybrid pure-and-byte pinning and padding
+  representation.
 - Anneal's MIR correspondence proofs use a pinned, patched copy of
   [lean-miri]. Yuichi Nishiwaki's port builds on the Rust compiler's MIR
   interpreter and the work of the [Miri developers and contributors][Miri].
@@ -313,12 +321,16 @@ significant influences are listed here, but this list is far from exhaustive.
 [Aeneas]: https://arxiv.org/abs/2206.07185
 [Charon]: https://link.springer.com/chapter/10.1007/978-3-031-98685-7_18
 [symbolic-borrows]: https://arxiv.org/abs/2404.02680
+[aeneas-layouts]: https://github.com/AeneasVerif/aeneas/pull/1447
 [tree-lenses]: https://doi.org/10.1145/1232420.1232424
 [tnum-paper]: https://arxiv.org/abs/2105.05398
 [clmul-gcm]: https://doi.org/10.1016/j.ipl.2010.04.011
 [mula-simd]: https://doi.org/10.1093/comjnl/bxx046
 [decompilation]: https://www.cl.cam.ac.uk/~mom22/decompilation/fmcad12.pdf
 [tree-borrows]: https://iris-project.org/pdfs/2025-pldi-treeborrows.pdf
+[Gillian-Rust]: https://doi.org/10.1145/3729289
+[CN]: https://doi.org/10.1145/3571194
+[Fulminate]: https://doi.org/10.1145/3704879
 [lean-miri]: https://github.com/proofs-rs/lean-miri
 [Miri]: https://github.com/rust-lang/miri
 [MiniRust]: https://github.com/minirust/minirust

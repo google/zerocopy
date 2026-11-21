@@ -40,6 +40,14 @@ reasoning for `unsafe` pointer/slice operations (`MaybeUninit` initialization,
   `st.spatial`.
 - `SpatialTriple` and `spatial_frame_law` provide constructive separation-logic
   framing over the spatial heaplet `List (SpatialBlock Val)`.
+- `Anneal.PureLift.SpatialMem` connects this discipline to
+  `Trusted.MirSemantics.MemoryState`, `SpatialTargetSpec`-checked
+  `LocalSlot.indirect` promotion, uninitialized aggregate padding masks
+  (`TypedSpatialMemCodec`), per-byte `AllocByte` pointer provenance, and
+  post-reabsorption byte and immediate-slot synchronization
+  (`freezePaddedToMem`, `mutatePaddedInMem`, `reabsorbPaddedFromMem`,
+  `writePaddedSymPlace`, `endPaddedLoan`, `evalPaddedMirOperand`,
+  `deallocatePromotedLocal`).
 -/
 
 /-- Canonical single-cell value codec mapping `v` to `[.init v]` and rejecting
