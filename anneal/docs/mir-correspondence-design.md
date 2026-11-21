@@ -261,9 +261,9 @@ Placing `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and
      extra file (`.lean` or auxiliary), missing pinned file, symlink,
      non-regular file, or pre-existing `.olean`/`.ilean`/`.ir` artifact,
      verifying that all 608 `.lean` files (`Miri.lean` plus 607 files under
-     `Miri/`) and 8 auxiliary files match their pinned SHA-256 digests: 598
+     `Miri/`) and 8 auxiliary files match their pinned SHA-256 digests: 595
      `.lean` files match unmodified upstream `proofs-rs/lean-miri` at
-     `c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a`, and the 10 patched files match
+     `c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a`, and the 13 patched files match
      their pinned `patched_sha256` digests in `UPSTREAM_PIN.json`. Any future
      upstream pin update must expose and receive human semantic review of the
      resolved old-to-new reference-model diff (in addition to compile-time
@@ -314,8 +314,8 @@ Placing `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and
      clean `baseEnv` containing strictly the authenticated `.foundation` and
      `.sysrootFoundation` modules from the pinned sysroot, and **replays all
      non-`isPartial` safe `.vendorMiri` constants across all 160 vendored
-     closure modules (38,603 in the unpatched closure; 38,728 once the 10-file
-     `deinitMovedPlace` patch lands) from scratch in the standalone Lean kernel
+     closure modules (38,603 in the unpatched closure; 39,088 with the 13-file
+     consumer patch) from scratch in the standalone Lean kernel
      (`baseEnv.toKernelEnv.replay`)**—omitting the 75 compiler-generated
      `isPartial` (`*._unsafe_rec`) codegen helpers so replay fails with
      `unknown constant` if any safe constant references a skipped `unsafe` or
@@ -388,8 +388,8 @@ Placing `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and
      `.repo` and non-`isPartial` `.vendorMiri` inventories. Next,
      `replayCorrAndVendor` resets the search path strictly to the authenticated
      sysroot, replays all non-`isPartial` `.vendorMiri` constants (38,603 in
-     the unpatched closure; 38,728 once the 10-file `deinitMovedPlace` patch
-     lands) onto `baseEnv.toKernelEnv`, and—within the same isolated Pass 2
+     the unpatched closure; 39,088 with the 13-file consumer patch) onto
+     `baseEnv.toKernelEnv`, and—within the same isolated Pass 2
      staging run—replays every freshly compiled `.repo` declaration
      (`trusted/lean/`, `theory/`, `Trusted.Correspondence*`,
      `Anneal.MirCorrespondence.*`, and `Anneal.MirCorrespondenceProof`)
@@ -581,7 +581,9 @@ together with every later change to those definitions:
 | | wiring, `AllowedStep` soundness, codec, |
 | | byte codec, simulation, and `CanaryD6–D16`) |
 | `vendor/lean-miri/` | Pinned 160-module `ExecutionMachine` slice and |
-| | 10-file `deinitMovedPlace` patch (`UPSTREAM_PIN.json`) |
+| | 13-file consumer patch (`UPSTREAM_PIN.json`: |
+| | 10-file `deinitMovedPlace` + 3-file memory |
+| | theorem specs, [#4009](https://github.com/google/zerocopy/issues/4009)) |
 
 - **`Trusted.MirAst` and `Trusted.MirSemantics` (`trusted/lean/`):** These
   modules define the programs, inputs, state/outcome types (`State`,

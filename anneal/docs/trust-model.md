@@ -63,7 +63,7 @@ The current workspace divides verification and audit code into three zones.
 | :--- | :--- | :--- | :--- |
 | **Trusted foundation** | [`trusted/`](../trusted) | Extracts MIR and emits pure proof scripts (`trusted/rustc-capture/`), defines captured MIR syntax and verification operational semantics (`trusted/lean/`), states MIR correspondence claims and reference-adapter specifications (`trusted/correspondence/`), orchestrates CLI invocation (`trusted/cargo-anneal/`), and audits the Anneal repository in CI (`trusted/audit/`). | **In the TCB.** Audited by humans (alongside external files pinned by hash manifests inside `trusted/`). |
 | **Proof theory & correspondence** | `theory/`, `correspondence/` | Defines the normalized `StableAst`, proves lowering passes (`Abstracts`), provides WP calculi (`theory/Anneal/MirWp.lean`), separation logic, and proof tactics (`theory/`), and proves the MIR correspondence theorems and canaries (`correspondence/`). | **Outside the TCB.** Treated as potentially adversarial; audited mechanically in Anneal's CI and checked by the Lean 4 kernel (`correspondence/` is checked in CI only and is not shipped in the user toolchain archive). |
-| **Vendored reference model** | `vendor/lean-miri/` | Pinned snapshot of `proofs-rs/lean-miri` with a human-audited 10-file opt-in `deinitMovedPlace` delta ([`docs/mir-correspondence-design.md`](mir-correspondence-design.md)). Never shipped in the user toolchain archive. | **In the correspondence TCB.** Pinned byte-for-byte in `vendor/lean-miri/UPSTREAM_PIN.json` (locked by `LOCKED_UPSTREAM_PIN_SHA256` and `LOCKED_PATCHED_MIRI_FILES` in `trusted/audit/`). Only the 160-module `Miri.Interpreter.ExecutionMachine` slice (excluding `Miri.Input.NativeMathHost`) is compiled inside an OS-level `bwrap` sandbox (or restored from a digest-gated cache outside the checkout) and verified by `.olean` SHA-256; every non-`isPartial` vendored declaration (38,728 declarations) is replayed from scratch through the standalone Lean 4 kernel (`toKernelEnv.replay`) onto the authenticated sysroot base on every run, followed directly by replaying `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and `Anneal.MirCorrespondenceProof` on top of that replayed base and checking cone purity. |
+| **Vendored reference model** | `vendor/lean-miri/` | Pinned snapshot of `proofs-rs/lean-miri` with a human-audited 10-file opt-in `deinitMovedPlace` delta and 3-file theorem-only memory specification patch ([#4009](https://github.com/google/zerocopy/issues/4009); [`docs/mir-correspondence-design.md`](mir-correspondence-design.md)). Never shipped in the user toolchain archive. | **In the correspondence TCB.** Pinned byte-for-byte in `vendor/lean-miri/UPSTREAM_PIN.json` (locked by `LOCKED_UPSTREAM_PIN_SHA256` and `LOCKED_PATCHED_MIRI_FILES` in `trusted/audit/`). Only the 160-module `Miri.Interpreter.ExecutionMachine` slice (excluding `Miri.Input.NativeMathHost`) is compiled inside an OS-level `bwrap` sandbox (or restored from a digest-gated cache outside the checkout) and verified by `.olean` SHA-256; every non-`isPartial` vendored declaration (39,088 declarations) is replayed from scratch through the standalone Lean 4 kernel (`toKernelEnv.replay`) onto the authenticated sysroot base on every run, followed directly by replaying `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and `Anneal.MirCorrespondenceProof` on top of that replayed base and checking cone purity. |
 
 ### How CI auditing and user-machine verification fit together
 
@@ -457,7 +457,7 @@ or `vendor/lean-miri/` are present), `anneal-audit` executes Pass 2
    then resets the Lean search path strictly to the authenticated sysroot,
    builds a clean `baseEnv` containing only the authenticated `.foundation` and
    `.sysrootFoundation` modules, and replays **every** non-`isPartial`
-   `.vendorMiri` declaration (38,728 declarations across the 160 closure
+   `.vendorMiri` declaration (39,088 declarations across the 160 closure
    modules, including all 27 `.opaqueInfo` declarations and omitting
    compiler-generated `isPartial` `*._unsafe_rec` helpers so any reference to
    them fails replay with `unknown constant`) from scratch through the
@@ -592,8 +592,11 @@ To include these files in `trusted/`'s effective TCB without relocating them,
 - **[`UPSTREAM_PIN.json`](../vendor/lean-miri/UPSTREAM_PIN.json)**
   (`vendor/lean-miri/UPSTREAM_PIN.json`):
   Pins the upstream commit and SHA-256 digest of every file in
-  `vendor/lean-miri/`, the human-audited 10-file `deinitMovedPlace` patch
-  records (`upstream_sha256`/`patched_sha256` in `patched_files`, closed by
+  `vendor/lean-miri/`, the human-audited 13-file consumer patch records
+  (10-file `deinitMovedPlace` delta plus 3-file theorem-only memory
+  specifications tracked in
+  [#4009](https://github.com/google/zerocopy/issues/4009);
+  `upstream_sha256`/`patched_sha256` in `patched_files`, closed by
   `LOCKED_PATCHED_MIRI_FILES` in `trusted/audit/src/miri_pin.rs`), and the
   160-module `Miri.Interpreter.ExecutionMachine` `.olean` digests, verified
   against `LOCKED_UPSTREAM_PIN_SHA256` inside `trusted/audit/src/miri_pin.rs`.
