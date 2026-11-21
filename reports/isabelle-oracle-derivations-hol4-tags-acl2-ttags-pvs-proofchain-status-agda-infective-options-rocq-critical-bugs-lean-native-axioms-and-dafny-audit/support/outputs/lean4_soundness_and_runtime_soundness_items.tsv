@@ -1,0 +1,8 @@
+14843	closed	2026-08-19T15:41:02Z	2026-08-19T16:48:15Z	fix: apply #14807 fix to `inductive.h`
+14807	closed	2026-08-18T00:34:01Z	2026-08-18T01:37:02Z	fix: make the kernel `is_prop` check require a sort
+14806	closed	2026-08-17T22:24:12Z	2026-08-18T00:42:28Z	fix: make kernel `is_def_eq` caching order-independent
+15289	closed	2026-09-23T14:34:22Z	2026-09-24T13:22:42Z	fix: panic instead of wrapping counts in `sharecommon_quick_fn`
+15241	closed	2026-09-20T18:29:06Z	2026-09-23T13:19:05Z	fix: preserve sticky counts in deletion cascades
+14849	closed	2026-08-19T23:29:21Z	2026-08-20T01:29:33Z	fix: bound the size of `Nat` numerals computed by the kernel
+14838	closed	2026-08-19T09:58:23Z	2026-08-20T16:12:48Z	fix: freeze objects when their reference count overflows
+14833	closed	2026-08-18T22:44:07Z	2026-08-20T17:05:46Z	fix: require GMP 6.3.0

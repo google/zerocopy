@@ -1,0 +1,50 @@
+# note: 'real' wall-clock time includes waiting for a host-wide build-slot lock held by unrelated jobs, and 'user'/'sys' do not include the sandboxed child processes; neither is a measurement of this check.
+Resolving dependencies
+⚠ [2/4] Replayed Probe.Base
+warning: Probe/Base.lean:14:8: declaration uses `sorry`
+info: Probe/Base.lean:42:0: 'A' depends on axioms: [A._native.native_decide.ax_1_1]
+info: Probe/Base.lean:43:0: 'B' does not depend on any axioms
+info: Probe/Base.lean:44:0: 'C' depends on axioms: [sorryAx]
+info: Probe/Base.lean:45:0: 'D' depends on axioms: [myAx]
+info: Probe/Base.lean:46:0: 'E1' does not depend on any axioms
+info: Probe/Base.lean:47:0: 'E2' depends on axioms: [E2._native.native_decide.ax_1_1]
+info: Probe/Base.lean:48:0: 'E3' depends on axioms: [E2._native.native_decide.ax_1_1]
+info: Probe/Base.lean:49:0: 'F' depends on axioms: [A._native.native_decide.ax_1_1]
+info: Probe/Base.lean:50:0: 'G' depends on axioms: [propext, Classical.choice, Quot.sound]
+Building and exporting
+Running Lean paranoid kernel on solution
+Lean paranoid kernel accepts the solution
+Running lean4lean kernel on solution
+checked 57932 declarations
+lean4lean kernel accepts the solution
+Running nanoda kernel on solution
+
+thread 'thread_0' (3) panicked at src/tc.rs:230:13:
+declaration not found in infer_const, sorryAx
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'main' (2) panicked at src/tc.rs:173:26:
+A thread in `check_all_declars` panicked while being joined: Any { .. }
+
+thread 'thread_1' (4) panicked at src/tc.rs:230:13:
+declaration not found in infer_const, A._native.native_decide.ax_1_1
+
+thread 'thread_2' (5) panicked at src/tc.rs:230:13:
+declaration not found in infer_const, E2._native.native_decide.ax_1_1
+
+thread 'thread_3' (6) panicked at src/tc.rs:230:13:
+declaration not found in infer_const, myAx
+nanoda kernel rejected the solution
+Running con-leche kernel on solution
+con-leche: not implemented yet: non-standard axiom (myAx) [at axiom myAx, fold position 34101] (--verified) t=5.9s
+con-leche kernel rejected the solution
+Running con-ron kernel on solution
+con-ron: declined: non-standard axiom [at axiom myAx, fold position 34101] (--verified) t=4.334s
+con-ron kernel rejected the solution
+Running Lean default kernel on solution
+error: nanoda exited with 101
+Lean default kernel accepts the solution
+
+real	6m58.367s
+user	0m0.779s
+sys	0m0.994s

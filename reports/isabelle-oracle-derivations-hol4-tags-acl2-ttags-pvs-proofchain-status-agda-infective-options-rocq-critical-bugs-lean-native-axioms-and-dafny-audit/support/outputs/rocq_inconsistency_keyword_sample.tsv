@@ -1,0 +1,31 @@
+66
+16646	open	2022-10-12	Print Assumptions does not report Unset Universe Checking used during functor application
+12155	open	2020-04-22	Print Assumptions + Parameter Inline fails to report some inconsistent flags
+22827	open	2026-11-16	Inconsistency with consistent rewrite rules
+22716	closed	2026-11-04	[primitive arrays] An array literal longer than `max_length` gives a proof of False
+22364	closed	2026-08-19	`string_of_kn` is non-injective over module paths (`A.B.x` ≡ `A_B.x`) → kernel-accepted, axiom-free proof of `False` in the native_compute lane
+22352	closed	2026-08-18	coqchk -bytecode-compiler yes accepts a proof of False from a .vo with mismatched VM bytecode
+22024	open	2026-05-13	Guard is inconsistent with univalence: fixpoints can alter rtrees and aren't rechecked
+22759	closed	2026-11-09	Kernel soundness: structural argument type resolved in the wrong environment
+22772	closed	2026-11-10	Closed* proof of False using primitive arrays due to dropped lift
+22675	closed	2026-10-30	Incorrect variance analysis with a constructor in a constructor let-in (variant of #22383)
+22618	closed	2026-10-21	roqchk --output-context doesn't see axioms used through inductives sealed in a module
+22760	closed	2026-11-09	Kernel soundness: VM symbolic branches collide with inner binders for extended constructor tags
+22761	closed	2026-11-09	Kernel soundness: primitive projection section discharge shifts de Bruijn indices
+22462	closed	2026-09-10	Sint63 `asr_spec` axiom disagrees with the `asr` primitive for shift amounts >= 63
+22287	closed	2026-07-16	Universe checking state gets confused when locally changed in module
+22386	closed	2026-08-20	Cofixpoint recursive tree computed in wrong environment
+22409	closed	2026-08-27	Name confusion in δ-resolver inclusion leading to an inconsistency
+22382	closed	2026-08-20	Guard checker uniform arguments finder doesn't count the right arguments
+22389	closed	2026-08-20	Nested mutual cofixpoint all checked with the same rectree
+22387	closed	2026-08-20	Incorrect module subtyping with letins in constructor types
+22383	closed	2026-08-20	Incorrect variance analysis with letin in constructor type
+22510	closed	2026-09-19	Inconsistency with uniform parameter subtyping and propext
+22378	closed	2026-08-20	Incorrect conversion with letins in constructor type
+22391	closed	2026-08-20	Stuck-case conversion reconstructs lets with an uncomposed universe instance
+22376	closed	2026-08-20	Variance analysis incorrectly ignores stack data of FCaseInvert leading to inconsistency with definitional UIP
+20550	closed	2025-04-23	Side effects lose track of typing flags leading to inconsistency
+22380	closed	2026-08-20	Incorrect reification (to_constr) of FCase in cclosure (missing univ substitution)
+21685	closed	2026-02-28	Module Alias := M through multi-step alias chain corrupts delta-resolver, allowing proof of False
+21683	closed	2026-02-28	Guard checker soundness bug: higher-order recursive call through fixpoint
+7609	closed	2018-05-26	Kernel happily accepts nonsense kerpairs

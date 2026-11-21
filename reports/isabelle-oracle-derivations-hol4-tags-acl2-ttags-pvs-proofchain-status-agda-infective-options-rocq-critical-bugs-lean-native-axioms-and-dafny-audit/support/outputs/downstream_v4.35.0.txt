@@ -1,0 +1,8 @@
+'A' depends on axioms: [A._native.native_decide.ax_1_1]
+'B' does not depend on any axioms
+'C' depends on axioms: [sorryAx]
+'D' depends on axioms: [myAx]
+'E2' depends on axioms: [E2._native.native_decide.ax_1_1]
+'E3' depends on axioms: [E2._native.native_decide.ax_1_1]
+'F' depends on axioms: [A._native.native_decide.ax_1_1]
+'H' depends on axioms: [A._native.native_decide.ax_1_1]

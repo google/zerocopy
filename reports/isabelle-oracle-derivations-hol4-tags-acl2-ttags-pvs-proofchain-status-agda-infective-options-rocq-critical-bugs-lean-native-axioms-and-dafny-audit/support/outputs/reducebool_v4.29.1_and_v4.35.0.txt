@@ -1,0 +1,16 @@
+=== v4.29.1
+Lean (version 4.29.1, x86_64-unknown-linux-gnu, commit f72c35b3f637c8c6571d353742168ab66cc22c00, Release)
+'R' depends on axioms: [Lean.ofReduceBool, Lean.trustCompiler]
+'RE3' depends on axioms: [Lean.ofReduceBool, Lean.trustCompiler]
+'N' depends on axioms: [N._native.native_decide.ax_1_1]
+'Lean.ofReduceBool' depends on axioms: [Lean.ofReduceBool, Lean.trustCompiler]
+exit 0
+=== v4.35.0
+Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)
+ReduceBool.lean:8:24: error(lean.unknownIdentifier): Unknown identifier `Lean.ofReduceBool`
+ReduceBool.lean:16:30: error(lean.unknownIdentifier): Unknown identifier `Lean.ofReduceBool`
+'R' depends on axioms: [sorryAx]
+'RE3' depends on axioms: [sorryAx]
+'N' depends on axioms: [N._native.native_decide.ax_1_1]
+ReduceBool.lean:29:14: error(lean.unknownIdentifier): Unknown constant `Lean.ofReduceBool`
+exit 1

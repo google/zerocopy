@@ -1,0 +1,6 @@
+observed_utc 2026-11-21T02:52:55Z
+labelled issues fetched 93
+referenced by number in catalogue 70
+  open: 5 labelled, 3 referenced
+  closed: 88 labelled, 67 referenced
+by creation year (labelled, referenced): {'2014': [2, 2], '2015': [2, 2], '2016': [2, 2], '2018': [11, 5], '2019': [12, 5], '2020': [6, 4], '2021': [2, 1], '2022': [8, 8], '2023': [1, 1], '2024': [5, 4], '2025': [6, 5], '2026': [36, 31]}

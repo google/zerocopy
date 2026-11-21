@@ -1,0 +1,20 @@
+2026-11-21T02:52:12Z	131	repo:agda/agda label:"false"
+2026-11-21T02:52:12Z	103	repo:agda/agda label:"false" is:issue
+2026-11-21T02:52:13Z	11	repo:agda/agda label:"false" is:issue is:open
+2026-11-21T02:52:13Z	92	repo:agda/agda label:"false" is:issue is:closed
+2026-11-21T02:52:14Z	28	repo:agda/agda label:"false" is:pr
+2026-11-21T02:52:14Z	3	repo:leanprover/lean4 label:"soundness"
+2026-11-21T02:52:14Z	0	repo:leanprover/lean4 label:"soundness" is:issue
+2026-11-21T02:52:15Z	0	repo:leanprover/lean4 label:"soundness" is:issue is:open
+2026-11-21T02:52:15Z	0	repo:leanprover/lean4 label:"soundness" is:issue is:closed
+2026-11-21T02:52:16Z	3	repo:leanprover/lean4 label:"soundness" is:pr
+2026-11-21T02:52:16Z	5	repo:leanprover/lean4 label:"runtime-soundness"
+2026-11-21T02:52:17Z	0	repo:leanprover/lean4 label:"runtime-soundness" is:issue
+2026-11-21T02:52:17Z	0	repo:leanprover/lean4 label:"runtime-soundness" is:issue is:open
+2026-11-21T02:52:18Z	0	repo:leanprover/lean4 label:"runtime-soundness" is:issue is:closed
+2026-11-21T02:52:18Z	5	repo:leanprover/lean4 label:"runtime-soundness" is:pr
+2026-11-21T02:52:19Z	157	repo:rocq-prover/rocq label:"kind: inconsistency"
+2026-11-21T02:52:19Z	93	repo:rocq-prover/rocq label:"kind: inconsistency" is:issue
+2026-11-21T02:52:20Z	5	repo:rocq-prover/rocq label:"kind: inconsistency" is:issue is:open
+2026-11-21T02:52:20Z	88	repo:rocq-prover/rocq label:"kind: inconsistency" is:issue is:closed
+2026-11-21T02:52:21Z	64	repo:rocq-prover/rocq label:"kind: inconsistency" is:pr

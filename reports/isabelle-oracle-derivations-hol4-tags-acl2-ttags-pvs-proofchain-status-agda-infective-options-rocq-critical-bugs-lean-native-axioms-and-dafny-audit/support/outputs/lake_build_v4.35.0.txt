@@ -1,0 +1,18 @@
+✔ [0/4] Ran job computation
+✔ [1/4] Ran probe:extraDep
+⚠ [2/4] Built Probe.Base (282ms)
+trace: .> LEAN_PATH=<probe-root>/.lake/build/lib/lean ~/.elan/toolchains/leanprover--lean4---v4.35.0/bin/lean <probe-root>/Probe/Base.lean -o <probe-root>/.lake/build/lib/lean/Probe/Base.olean -i <probe-root>/.lake/build/lib/lean/Probe/Base.ilean -c <probe-root>/.lake/build/ir/Probe/Base.c --setup <probe-root>/.lake/build/ir/Probe/Base.setup.json --json
+warning: Probe/Base.lean:14:8: declaration uses `sorry`
+info: Probe/Base.lean:42:0: 'A' depends on axioms: [A._native.native_decide.ax_1_1]
+info: Probe/Base.lean:43:0: 'B' does not depend on any axioms
+info: Probe/Base.lean:44:0: 'C' depends on axioms: [sorryAx]
+info: Probe/Base.lean:45:0: 'D' depends on axioms: [myAx]
+info: Probe/Base.lean:46:0: 'E1' does not depend on any axioms
+info: Probe/Base.lean:47:0: 'E2' depends on axioms: [E2._native.native_decide.ax_1_1]
+info: Probe/Base.lean:48:0: 'E3' depends on axioms: [E2._native.native_decide.ax_1_1]
+info: Probe/Base.lean:49:0: 'F' depends on axioms: [A._native.native_decide.ax_1_1]
+info: Probe/Base.lean:50:0: 'G' depends on axioms: [propext, Classical.choice, Quot.sound]
+ℹ [3/4] Built Probe (240ms)
+trace: .> LEAN_PATH=<probe-root>/.lake/build/lib/lean ~/.elan/toolchains/leanprover--lean4---v4.35.0/bin/lean <probe-root>/Probe.lean -o <probe-root>/.lake/build/lib/lean/Probe.olean -i <probe-root>/.lake/build/lib/lean/Probe.ilean -c <probe-root>/.lake/build/ir/Probe.c --setup <probe-root>/.lake/build/ir/Probe.setup.json --json
+✔ [4/4] Ran probe/Probe:default
+Build completed successfully (4 jobs).

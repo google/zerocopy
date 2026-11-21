@@ -1,0 +1,27 @@
+TOTAL ENTRIES 103
+  5  Non fixed bugs / None
+ 10  Fixed bugs / Typing constructions
+ 21  Fixed bugs / Guard condition
+  1  Fixed bugs / Section system
+ 13  Fixed bugs / Module system
+ 14  Fixed bugs / Universes
+  1  Fixed bugs / Primitive projections
+ 25  Fixed bugs / Conversion machines
+  2  Fixed bugs / Side-effects
+  2  Fixed bugs / Forgetting axioms or unsafe flags
+  6  Fixed bugs / Conflicts with axioms in library
+  2  Fixed bugs / Deserialization
+  1  Probably non exploitable fixed bugs / None
+MIS-LEVELED (### used for an entry): [(693, 'Incorrect subtyping of inductives with letins in constructor types'), (703, 'Including functor application generates garbage delta-resolvers')]
+ENTRIES WHOSE TITLE MENTIONS AN AUDIT/CHECKER/UNSAFE-FLAG KEYWORD:
+  L141: memory corruption by evaluating on ill-typed terms (obtained from unsafe tactics)  || impacted coqchk versions: none (no VM or native in coqchk)
+  L154: coqchk checks too little about primitive declarations  || impacted coqchk versions: V8.10-NOW
+  L166: Print Assumptions + Parameter Inline fails to report some inconsistent flags  || impacted coqchk versions: none
+  L177: Print Assumptions does not report Unset Universe Checking used during functor application  || impacted coqchk versions: none
+  L902: Universe checking state gets confused when locally changed in module  || impacted coqchk versions: (field absent)
+  L1270: unsafe typing flags used inside a section would not be reported by Print Assumptions after closing the section  || impacted coqchk versions: none (coqchk rejects affected files)
+  L1280: roqchk --output-context did not report axioms used through inductives sealed in a module  || impacted coqchk versions: (field absent)
+  L1377: rocqchk trusts the serialized VM bytecode segment  || impacted coqchk versions: (field absent)
+ENTRIES WHOSE component FIELD MENTIONS VM or native: 13
+ENTRIES WITH "impacted coqchk versions" STARTING "none": 32
+ENTRIES WITHOUT an "impacted coqchk versions" FIELD: 18

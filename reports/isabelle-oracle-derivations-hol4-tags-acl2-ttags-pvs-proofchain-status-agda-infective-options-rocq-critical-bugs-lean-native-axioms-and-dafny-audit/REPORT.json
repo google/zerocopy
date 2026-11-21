@@ -1,0 +1,147 @@
+{
+  "topics": [
+    "verification/oracle-taint-propagation",
+    "tooling/assumption-audit-commands",
+    "lean/native-evaluation-axioms",
+    "security/proof-assistant-soundness-incident-records"
+  ],
+  "subjects": [
+    {
+      "name": "Isabelle (read-only source mirror): Pure kernel oracles, proof terms, skip_proof, thm_oracles",
+      "identity": {
+        "repository": "isabelle-prover/mirror-isabelle",
+        "revision": "20d6a3f7ffbaaa82e77f341d90db5070b3428fbe",
+        "paths": "src/Pure/thm.ML, src/Pure/proofterm.ML, src/Pure/skip_proof.ML, src/Pure/thm_deps.ML, src/Pure/Pure.thy, src/Pure/goal.ML, src/Pure/Isar/method.ML, etc/options"
+      }
+    },
+    {
+      "name": "HOL4: theorem tags, oracle theorems, cheat tactic, disk theorems, kernel compute rule",
+      "identity": {
+        "repository": "HOL-Theorem-Prover/HOL",
+        "revision": "aee6a90d9856a842f4cbd2bfc44efb7067a141e4",
+        "paths": "src/prekernel/Tag.sml, src/prekernel/FinalTag-sig.sml, src/thm/std-thm.ML, src/1/Tactical.sml, src/postkernel/Theory.sml, help/Docfiles/Thm.mk_oracle_thm.smd, help/Docfiles/Tag.read.smd"
+      }
+    },
+    {
+      "name": "HOL Light: kernel axiom list",
+      "identity": {
+        "repository": "jrh13/hol-light",
+        "revision": "1a0c0e6b182cd9e271946ba8d78f7942619f4acb",
+        "paths": "fusion.ml, compute.ml"
+      }
+    },
+    {
+      "name": "ACL2: trust tags, skip-proofs, certificate annotations",
+      "identity": {
+        "repository": "acl2/acl2",
+        "revision": "c6d1f453373ded7e6ce01b01b92a1a27fe9b1e1d",
+        "paths": "doc.lisp, other-events.lisp"
+      }
+    },
+    {
+      "name": "PVS: proof-chain status",
+      "identity": {
+        "repository": "SRI-CSL/PVS",
+        "revision": "d9ff4311fa1933c86aad6a5edf9686423a2e7f4c",
+        "paths": "src/status-cmds.lisp, src/pvs.lisp, src/context.lisp, src/PVSio/defattach.lisp"
+      }
+    },
+    {
+      "name": "Agda: infective and coinfective options, safe mode",
+      "identity": {
+        "repository": "agda/agda",
+        "revision": "51947637a0395d3d5fbf3a743872e3c1eea948f8",
+        "paths": "doc/user-manual/tools/command-line-options.rst, src/full/Agda/Interaction/Options/Base.hs, src/full/Agda/Interaction/Imports.hs, src/full/Agda/Interaction/Options/Warnings.hs"
+      }
+    },
+    {
+      "name": "Dafny: audit command",
+      "identity": {
+        "repository": "dafny-lang/dafny",
+        "revision": "8e67e29912aa81b06a8b8e288c7e3046072ea482",
+        "paths": "Source/DafnyCore/Auditor/, Source/DafnyCore/AST/TypeDeclarations/Declaration.cs, Source/DafnyCore/AST/Members/Function.cs, Source/DafnyCore/AST/Members/MethodOrConstructor.cs, Source/IntegrationTests/TestFiles/LitTests/LitTest/auditor/"
+      }
+    },
+    {
+      "name": "Rocq: Print Assumptions, typing flags, checker flags, critical-bugs catalogue",
+      "identity": {
+        "repository": "rocq-prover/rocq",
+        "revision": "ddb69e5c5cff459fc2b0dfe3ec4ed0c968720c76",
+        "paths": "vernac/assumptions.ml, kernel/declarations.mli, checker/checkFlags.ml, checker/mod_checking.ml, dev/doc/critical-bugs.md, doc/sphinx/proof-engine/vernacular-commands.rst, doc/sphinx/proofs/writing-proofs/equality.rst"
+      }
+    },
+    {
+      "name": "Lean 4 development head: native evaluation, axiom collection, Lake axiom checks",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3100ef55b25b50b44d2010ee44d266e75b28cddd",
+        "paths": "src/Lean/Meta/Native.lean, src/Lean/Util/CollectAxioms.lean, src/lake/Lake/Check/Axioms.lean, src/lake/Lake/CLI/Check.lean, src/lake/Lake/CLI/Help.lean, tests/elab/decideNative.lean, tests/pkg/collectAxioms/"
+      }
+    },
+    {
+      "name": "Lean 4 release toolchain (executed)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+        "version": "v4.35.0"
+      }
+    },
+    {
+      "name": "Lean 4 release toolchain (executed, older contrast)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "f72c35b3f637c8c6571d353742168ab66cc22c00",
+        "version": "v4.29.1"
+      }
+    },
+    {
+      "name": "Berghofer and Nipkow, Proof Terms for Simply Typed Higher Order Logic (TPHOLs 2000)",
+      "identity": {
+        "doi": "10.1007/3-540-44659-1_3"
+      }
+    },
+    {
+      "name": "Kaufmann and Moore, Structured Theory Development for a Mechanized Logic (JAR 26(2), 2001)",
+      "identity": {
+        "doi": "10.1023/A:1026517200045"
+      }
+    },
+    {
+      "name": "Gregoire and Leroy, A Compiled Implementation of Strong Reduction (ICFP 2002)",
+      "identity": {
+        "doi": "10.1145/581478.581501"
+      }
+    },
+    {
+      "name": "Slind and Norrish, A Brief Overview of HOL4 (TPHOLs 2008)",
+      "identity": {
+        "doi": "10.1007/978-3-540-71067-7_6"
+      }
+    },
+    {
+      "name": "Harrison, HOL Light: An Overview (TPHOLs 2009)",
+      "identity": {
+        "doi": "10.1007/978-3-642-03359-9_4"
+      }
+    },
+    {
+      "name": "Boehme and Weber, Fast LCF-Style Proof Reconstruction for Z3 (ITP 2010)",
+      "identity": {
+        "doi": "10.1007/978-3-642-14052-5_14"
+      }
+    },
+    {
+      "name": "Boespflug, Denes and Gregoire, Full Reduction at Full Throttle (CPP 2011)",
+      "identity": {
+        "doi": "10.1007/978-3-642-25379-9_26"
+      }
+    },
+    {
+      "name": "de Moura and Ullrich, The Lean 4 Theorem Prover and Programming Language (CADE-28, 2021)",
+      "identity": {
+        "doi": "10.1007/978-3-030-79876-5_37"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

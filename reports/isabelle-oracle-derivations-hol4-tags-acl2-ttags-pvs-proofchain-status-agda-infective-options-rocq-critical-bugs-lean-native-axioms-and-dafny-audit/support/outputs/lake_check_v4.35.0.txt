@@ -1,0 +1,25 @@
+# note: 'real' wall-clock time includes waiting for a host-wide build-slot lock held by unrelated jobs; the CPU figures may not include sandboxed child processes; neither is used as a measurement.
+Resolving dependencies
+⚠ [2/4] Replayed Probe.Base
+warning: Probe/Base.lean:14:8: declaration uses `sorry`
+info: Probe/Base.lean:42:0: 'A' depends on axioms: [A._native.native_decide.ax_1_1]
+info: Probe/Base.lean:43:0: 'B' does not depend on any axioms
+info: Probe/Base.lean:44:0: 'C' depends on axioms: [sorryAx]
+info: Probe/Base.lean:45:0: 'D' depends on axioms: [myAx]
+info: Probe/Base.lean:46:0: 'E1' does not depend on any axioms
+info: Probe/Base.lean:47:0: 'E2' depends on axioms: [E2._native.native_decide.ax_1_1]
+info: Probe/Base.lean:48:0: 'E3' depends on axioms: [E2._native.native_decide.ax_1_1]
+info: Probe/Base.lean:49:0: 'F' depends on axioms: [A._native.native_decide.ax_1_1]
+info: Probe/Base.lean:50:0: 'G' depends on axioms: [propext, Classical.choice, Quot.sound]
+Building and exporting
+Running Lean default kernel on solution
+error: Axiom 'sorryAx' is not permitted; it is used by 'C'
+Axiom 'A._native.native_decide.ax_1_1' is not permitted; it is used by 'A'
+Axiom 'E2._native.native_decide.ax_1_1' is not permitted; it is used by 'E2'
+Axiom 'myAx' is not permitted; it is used by 'D'
+Lean default kernel accepts the solution
+Uses axioms: Classical.choice, propext, Quot.sound, sorryAx, A._native.native_decide.ax_1_1, E2._native.native_decide.ax_1_1, myAx
+
+real	2m3.864s
+user	0m16.458s
+sys	0m1.085s
