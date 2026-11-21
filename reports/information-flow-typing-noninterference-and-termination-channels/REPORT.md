@@ -2,7 +2,7 @@
 
 ## Summary
 
-This package is a Lean 4 mechanization (core library only, no Mathlib) of syntax-directed program-counter (`pc`-label) information-flow security typing, termination-insensitive noninterference (`TINI`), termination-sensitive noninterference (`TSNI`), four formalized ablations of the control-dependence (`pc`) and `while`-termination restrictions within this rule family, the deterministic decomposition `TSNI ↔ TINI ∧ CoTerminates`, and complete-observation hyperproperty classifications (`IsTwoSafety`, `SubsetClosed`, `tiniHyperprop`, `tsniHyperprop`, `tsniOutHyperprop`). All 13 results (51 distinct card-referenced declarations: 17 main result theorems and 34 additional tightness counterexamples, non-vacuity witnesses, and positive controls) are kernel-checked; their axiom footprints are at most `propext`, `Classical.choice`, and `Quot.sound` and are recorded per theorem under Evidence.
+This package is a Lean 4 mechanization (core library only, no Mathlib) of syntax-directed program-counter (`pc`-label) information-flow security typing, termination-insensitive noninterference (`TINI`), termination-sensitive noninterference (`TSNI`), four formalized ablations of the control-dependence (`pc`) and `while`-termination restrictions within this rule family, the deterministic decomposition `TSNI ↔ TINI ∧ CoTerminates`, and complete-observation hyperproperty classifications (`IsTwoSafety`, `SubsetClosed`, `tiniHyperprop`, `tsniHyperprop`, `tsniOutHyperprop`). All 13 results (51 distinct card-hashed declarations: 17 main result theorems and 34 additional tightness counterexamples, non-vacuity witnesses, and positive controls; plus 22 unhashed scope witnesses listed in `scope_witnesses_lean`) are kernel-checked; their axiom footprints are at most `propext`, `Classical.choice`, and `Quot.sound` and are recorded per theorem under Evidence.
 
 *An agent relying on a result from this package must quote its plain-language claim and the relevant hypotheses and non-claims, not just its name or a paraphrase.*
 
@@ -927,7 +927,7 @@ Each list states what the result does **not** show. Package theorems cited in pa
 **Result 8 — `ts-typed-implies-tsni`.**
 
 1. Does not guarantee termination itself: `while 1 do skip` is accepted by `TsTyped Γ .low` (though rejected by `TsTyped Γ .high`, see `Toy.IFC.whileOne_tsTyped_low_not_high`) and diverges identically on all inputs.
-2. Removing `pc = low` from the `while` rule (Result 9), removing the low-guard condition (a pc-only rule accepts `while h do skip`), or removing both (Result 3) each yields a system that accepts a TSNI-violating program. This is necessity within this rule format only. Loops with high guards, or loops under a high `pc`, can be TSNI-safe when they terminate on every input (e.g. `while h do h := 0`). Disciplines that admit such loops on the strength of a termination argument are not ruled out.
+2. Removing `pc = low` from the `while` rule (Result 9), removing the low-guard condition (a pc-only rule accepts `while h do skip`), or removing both (Result 3) each yields a system that accepts a TSNI-violating program. Each condition is thus shown necessary within this rule format (Results 9 and 11). Whether every type discipline that enforces `TSNI` must impose these conditions is not examined here (neither proved nor refuted). The terminating high-guarded loop `while h do h := 0` (with `h` high under `twoVarEnv`) satisfies `TSNI` yet is rejected by `TsTyped` at every `pc` (`Toy.IFC.whileHZero_tsni_not_tsTyped`), so `TsTyped` is sufficient for `TSNI` (this result) but not complete: it does not accept every command that satisfies `TSNI`.
 3. All witnesses in the preceding non-claim are kernel-checked: `Toy.IFC.lowGuardWhileTyped_allows_termination_channel`, `Toy.IFC.pcLowWhileTyped_allows_termination_channel`, `Toy.IFC.cmdTyped_allows_termination_channel` (and `Toy.IFC.cmdTyped_violates_tsni_witness`), and `Toy.IFC.whileHZero_tsni_not_tsTyped`.
 4. Timing is outside the model: `Eval` has no notion of execution steps or elapsed time, so the package neither proves nor formally refutes timing-channel freedom for `TsTyped` (or for any other system here). A stricter discipline that also forbids high guards on conditionals gives timing agreement in a step-counting semantics (Volpano & Smith 1997, §5, Theorem 5.3); the package neither states nor proves this.
 5. Does not establish freedom from timing or step-count side channels. Illustration only (informal and unmodeled): `if h then (h := h + 1; h := h + 1) else skip` is accepted by `TsTyped twoVarEnv .low` (only this typing fact is kernel-checked, in `Toy.IFC.timingExample_tsTyped`), and under an informal step-counting reading its two branches execute different numbers of steps depending on `h`. Because `Eval` does not model step counts, this example is not a formal counterexample to any theorem here and does not formally refute timing-channel freedom; it only illustrates that the package's results say nothing about timing.
@@ -951,7 +951,7 @@ Each list states what the result does **not** show. Package theorems cited in pa
 1. Does not refute `TINI` for `PcLowWhileTyped`: because `PcLowWhileTyped Γ pc c → CmdTyped Γ pc c` (`Toy.IFC.pcLowWhileTyped_implies_cmdTyped`), every `PcLowWhileTyped` program still satisfies `TINI` (`Toy.IFC.cmdTyped_implies_tini`).
 2. Does not claim `PcLowWhileTyped` allows loops nested inside high conditionals; `PcLowWhileTyped` rejects `if h then (while 1 do skip) else skip` at every `pc` (`Toy.IFC.pcLowWhileTyped_neg_high_if_low_while`).
 3. Does not show that requiring `exprLevel Γ e = low` alone suffices (the converse ablation `Toy.IFC.lowGuardWhileTyped_allows_termination_channel` refutes that).
-4. Necessity of `exprLevel Γ e = low` holds within this rule format only; terminating high-guarded loops such as `while h do h := 0` satisfy `TSNI` (`Toy.IFC.whileHZero_tsni_not_tsTyped`).
+4. `exprLevel Γ e = low` is shown necessary within this rule format (this result); whether every type discipline that enforces `TSNI` must impose it is not examined here (neither proved nor refuted). The terminating high-guarded loop `while h do h := 0` (with `h` high under `twoVarEnv`) satisfies `TSNI` yet is rejected by `TsTyped` at every `pc` (`Toy.IFC.whileHZero_tsni_not_tsTyped`).
 
 **Result 12 — `while-no-pc-typed-implicit-flow-counterexample`.**
 
@@ -1075,7 +1075,7 @@ None. Every statement on the result cards is proved in Lean exactly as printed, 
 | `whileNoPcTyped_accepts_leak_violating_tini` | 12 main | `propext` | 53 | `ce82d932cae4a9c70214cf4998bcb685bbceeba169b072bd810488270662c916` | `d3bd1684f203e0169c644058519f2d7dfc2e10227af0003e71bdce274bd6fc96` |
 | `whileNoPcTyped_violates_tini_witness` | 1 tightness | `propext` | 70 | `cfaae516a47b64771738bf4cbb827181c1a514340cabde4421b3e3768bad42fa` | `4d4169d2cb3a4c36a4268d5b70936028446e9cede30afdd894712dfb5858856d` |
 
-### Statements of all card-referenced declarations, as printed by Lean
+### Statements of all card-hashed declarations, as printed by Lean
 
 Output of `#check @name` (with `open Toy.IFC`) on the built library, unedited, for all 51 declarations hashed in `audit/statements.json`.
 
@@ -1817,7 +1817,7 @@ REVALIDATED
 
 ### Manual alternative (also compares `audit/axioms.json`)
 
-The following procedure uses only `lake`, `lean`, and `python3` with an inline audit program. It recomputes the same 51 statement hashes and additionally compares every declaration's axiom list with `audit/axioms.json`, which `support/revalidate.py` does not do. Work on a scratch copy so no build artifacts enter the package tree. From the package directory:
+The following procedure uses only `lake`, `lean`, and `python3` with an inline audit program. It recomputes the same 51 statement hashes and additionally compares every declaration's axiom list with `audit/axioms.json`, which `support/revalidate.py` does not do. It does not check that the 22 unhashed `scope_witnesses_lean` names exist and does not scan the sources for banned tokens; `support/revalidate.py` performs both checks. Work on a scratch copy so no build artifacts enter the package tree. From the package directory:
 
 ```bash
 WORK="$(mktemp -d)"
@@ -1828,7 +1828,7 @@ cd "$WORK/lean"
 # 1. Build under the pinned toolchain (expect success, zero warnings).
 lake build
 
-# 2. Names referenced by the cards (expect 51 lines).
+# 2. Card-hashed names (expect 51 lines; unhashed scope witnesses are not collected).
 python3 - <<'EOF'
 import json
 R = json.load(open('../results.json'))
