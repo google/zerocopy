@@ -510,6 +510,7 @@ same real part. The proved lemma `refinesUpTo_abortBot_iff` unfolds the weakest 
 deterministic language:
 
 ```lean
+-- lean/ToyGhost/Specs.lean:86-88
 theorem refinesUpTo_abortBot_iff {A C : Stmt} {σ τ : Store} :
     RefinesUpTo abortBot A σ C τ ↔
       ∀ σ', Behaves A σ (.term σ') → ∃ τ', Behaves C τ (.term τ') ∧ realPart τ' = realPart σ'
@@ -595,6 +596,7 @@ cumulative depth in parentheses. Identifiers are not contiguous (there is no 3.C
 - **Lean statement:**
 
 ```lean
+-- lean/ToyGhost/Erasure.lean:351-354
 -- ToyGhost/Erasure.lean, namespace Toy.Ghost
 theorem erase_refinesUpTo_abortBot_of_ghostWritesGhost_of_realReadsReal
     {P : Stmt} (hW : GhostWritesGhost P) (hR : RealReadsReal P)
@@ -636,6 +638,7 @@ Basis: execution (Lean kernel check). `lake build` checks `Toy.Ghost.erase_refin
 - **Lean statement:**
 
 ```lean
+-- lean/ToyGhost/Erasure.lean:363-366
 -- ToyGhost/Erasure.lean, namespace Toy.Ghost
 theorem erase_refinesUpTo_failBot_of_ghostWritesGhost_of_realReadsReal_of_ghostNoDivergeFrom
     {P : Stmt} (hW : GhostWritesGhost P) (hR : RealReadsReal P)
@@ -678,6 +681,7 @@ Basis: execution (Lean kernel check). `lake build` checks `Toy.Ghost.erase_refin
 - **Lean statement:**
 
 ```lean
+-- lean/ToyGhost/Erasure.lean:395-398
 -- ToyGhost/Erasure.lean, namespace Toy.Ghost
 theorem erase_refinesUpTo_divBot_of_ghostWritesGhost_of_realReadsReal_of_ghostNoFailFrom
     {P : Stmt} (hW : GhostWritesGhost P) (hR : RealReadsReal P)
@@ -720,6 +724,7 @@ Basis: execution (Lean kernel check). `lake build` checks `Toy.Ghost.erase_refin
 - **Lean statements:**
 
 ```lean
+-- lean/ToyGhost/Erasure.lean:421-425
 -- ToyGhost/Erasure.lean, namespace Toy.Ghost
 -- primary form
 theorem erase_rbehaves_iff_of_ghostWritesGhost_of_realReadsReal_of_ghostNoDivergeFrom_of_ghostNoFailFrom
@@ -730,6 +735,7 @@ theorem erase_rbehaves_iff_of_ghostWritesGhost_of_realReadsReal_of_ghostNoDiverg
 ```
 
 ```lean
+-- lean/ToyGhost/Erasure.lean:432-435
 -- ToyGhost/Erasure.lean, namespace Toy.Ghost
 -- second form
 theorem erasureExact_of_ghostWritesGhost_of_realReadsReal_of_ghostNoDivergeFrom_of_ghostNoFailFrom
@@ -783,6 +789,7 @@ correspondence is read from those documents and is not checked.
 - **Lean statement:**
 
 ```lean
+-- lean/ToyGhost/Erasure.lean:721-727
 -- ToyGhost/Erasure.lean, namespace Toy.Ghost
 theorem ghostWriteToReal_breaks_erasure :
     RealReadsReal ceGhostWritesReal ∧ (∀ σ, GhostNoDivergeFrom ceGhostWritesReal σ) ∧
@@ -814,6 +821,7 @@ Basis: execution (Lean kernel check). `lake build` checks `Toy.Ghost.ghostWriteT
 - **Lean statements:**
 
 ```lean
+-- lean/ToyGhost/Erasure.lean:736-743
 -- ToyGhost/Erasure.lean, namespace Toy.Ghost
 -- primary form
 theorem implicitFlow_breaks_erasure :
@@ -827,6 +835,7 @@ theorem implicitFlow_breaks_erasure :
 ```
 
 ```lean
+-- lean/ToyGhost/Erasure.lean:805-809
 -- ToyGhost/Erasure.lean, namespace Toy.Ghost
 -- second form
 theorem dataFlow_breaks_erasure :
@@ -863,6 +872,7 @@ Basis: execution (Lean kernel check). `lake build` checks `Toy.Ghost.implicitFlo
 - **Lean statement:**
 
 ```lean
+-- lean/ToyGhost/Erasure.lean:761-768
 -- ToyGhost/Erasure.lean, namespace Toy.Ghost
 theorem ghostDivergence_breaks_erasure (σ : Store) :
     GhostWritesGhost ceGhostDiverges ∧ RealReadsReal ceGhostDiverges ∧
@@ -896,6 +906,7 @@ Basis: execution (Lean kernel check). `lake build` checks `Toy.Ghost.ghostDiverg
 - **Lean statement:**
 
 ```lean
+-- lean/ToyGhost/Erasure.lean:780-786
 -- ToyGhost/Erasure.lean, namespace Toy.Ghost
 theorem ghostFailure_breaks_erasure (σ : Store) :
     GhostWritesGhost ceGhostFails ∧ RealReadsReal ceGhostFails ∧
@@ -935,6 +946,7 @@ programs of these shapes, but no verifier was run.
 - **Lean statements:**
 
 ```lean
+-- lean/ToyGhost/Hoare.lean:163-166
 -- ToyGhost/Hoare.lean, namespace Toy.Ghost
 -- primary form
 theorem safePartialTriple_erase_of_ghostWritesGhost_of_realReadsReal_of_exists_ghostNoDivergeFrom
@@ -944,6 +956,7 @@ theorem safePartialTriple_erase_of_ghostWritesGhost_of_realReadsReal_of_exists_g
 ```
 
 ```lean
+-- lean/ToyGhost/Hoare.lean:183-186
 -- ToyGhost/Hoare.lean, namespace Toy.Ghost
 -- second form
 theorem safePartialTriple_erase_of_ghostWritesGhost_of_realReadsReal_of_ghostNoDivergeFrom
@@ -952,13 +965,13 @@ theorem safePartialTriple_erase_of_ghostWritesGhost_of_realReadsReal_of_ghostNoD
     (h : SafePartialTriple Pre P Post) : SafePartialTriple Pre (erase P) Post
 ```
 
-`SafePartialTriple Pre s Post` unfolds to
+The conclusion `SafePartialTriple Pre (erase P) Post` unfolds to
 
 ```lean
-∀ σ, Pre (realPart σ) → ¬ Fails s σ ∧ ∀ σ', Behaves s σ (.term σ') → Post (realPart σ')
+∀ σ, Pre (realPart σ) → ¬ Fails (erase P) σ ∧ ∀ σ', Behaves (erase P) σ (.term σ') → Post (realPart σ')
 ```
 
-Both forms conclude this for `s := erase P` from the same for `s := P`. The primary form requires
+Both forms derive it from the same triple with `P` in place of `erase P` (hypothesis `h`). The primary form requires
 R3a for **one** initial store per real precondition state (`hT : ∀ r, Pre r → ∃ σ, realPart σ = r ∧
 GhostNoDivergeFrom P σ`); the corollary requires it for **every** initial store whose real part
 satisfies `Pre` (`hT : ∀ σ, Pre (realPart σ) → GhostNoDivergeFrom P σ`).
@@ -988,19 +1001,20 @@ Basis: execution (Lean kernel check). `lake build` checks `Toy.Ghost.safePartial
 - **Lean statement:**
 
 ```lean
+-- lean/ToyGhost/Hoare.lean:191-193
 -- ToyGhost/Hoare.lean, namespace Toy.Ghost
 theorem totalTriple_erase_of_ghostWritesGhost_of_realReadsReal
     {Pre Post : RStore → Prop} {P : Stmt} (hW : GhostWritesGhost P) (hR : RealReadsReal P)
     (h : TotalTriple Pre P Post) : TotalTriple Pre (erase P) Post
 ```
 
-`TotalTriple Pre s Post` unfolds to
+The conclusion `TotalTriple Pre (erase P) Post` unfolds to
 
 ```lean
-∀ σ, Pre (realPart σ) → ∃ σ', Behaves s σ (.term σ') ∧ Post (realPart σ')
+∀ σ, Pre (realPart σ) → ∃ σ', Behaves (erase P) σ (.term σ') ∧ Post (realPart σ')
 ```
 
-and the theorem derives it for `erase P` from the same for `P` under R1 and R2 only.
+and the theorem derives it from the same triple with `P` in place of `erase P` (hypothesis `h`) under R1 and R2 only.
 
 - **Hypothesis ledger:**
 
@@ -1026,6 +1040,7 @@ Basis: execution (Lean kernel check). `lake build` checks `Toy.Ghost.totalTriple
 - **Lean statement:**
 
 ```lean
+-- lean/ToyGhost/Hoare.lean:203-206
 -- ToyGhost/Hoare.lean, namespace Toy.Ghost
 theorem weakPartialTriple_erase_of_ghostWritesGhost_of_realReadsReal_of_exists_ghostNoDivergeFrom_ghostNoFailFrom
     {Pre Post : RStore → Prop} {P : Stmt} (hW : GhostWritesGhost P) (hR : RealReadsReal P)
@@ -1033,10 +1048,10 @@ theorem weakPartialTriple_erase_of_ghostWritesGhost_of_realReadsReal_of_exists_g
     (h : WeakPartialTriple Pre P Post) : WeakPartialTriple Pre (erase P) Post
 ```
 
-`WeakPartialTriple Pre s Post` unfolds to
+The conclusion `WeakPartialTriple Pre (erase P) Post` unfolds to
 
 ```lean
-∀ σ, Pre (realPart σ) → ∀ σ', Behaves s σ (.term σ') → Post (realPart σ')
+∀ σ, Pre (realPart σ) → ∀ σ', Behaves (erase P) σ (.term σ') → Post (realPart σ')
 ```
 
 (failure and divergence both satisfy it). The ghost hypothesis `hG` demands, for each real
@@ -1074,6 +1089,7 @@ generation are not modelled.
 - **Lean statement:**
 
 ```lean
+-- lean/ToyGhost/Noninterference.lean:25-26
 -- ToyGhost/Noninterference.lean, namespace Toy.Ghost
 theorem erasureExact_iff_ghostToRealNI_and_erasureAgrees (P : Stmt) :
     ErasureExact P ↔ GhostToRealNI P ∧ ErasureAgrees P
@@ -1113,6 +1129,7 @@ Basis: execution (Lean kernel check). `lake build` checks `Toy.Ghost.erasureExac
 - **Lean statements:**
 
 ```lean
+-- lean/ToyGhost/Noninterference.lean:68-69
 -- ToyGhost/Noninterference.lean, namespace Toy.Ghost
 -- primary form
 theorem ghostToRealNI_not_sufficient_for_erasureExact :
@@ -1120,6 +1137,7 @@ theorem ghostToRealNI_not_sufficient_for_erasureExact :
 ```
 
 ```lean
+-- lean/ToyGhost/Noninterference.lean:284-286
 -- ToyGhost/Noninterference.lean, namespace Toy.Ghost
 -- second form
 theorem ghostSpinOnX_ghostToRealNI_not_erasureExact :
@@ -1149,6 +1167,7 @@ Basis: execution (Lean kernel check). `lake build` checks `Toy.Ghost.ghostToReal
 - **Lean statement:**
 
 ```lean
+-- lean/ToyGhost/Noninterference.lean:74-75
 -- ToyGhost/Noninterference.lean, namespace Toy.Ghost
 theorem erasureAgrees_not_sufficient_for_erasureExact :
     ErasureAgrees realReadsGhost ∧ ¬ ErasureExact realReadsGhost
@@ -1175,6 +1194,7 @@ Basis: execution (Lean kernel check). `lake build` checks `Toy.Ghost.erasureAgre
 - **Lean statement:**
 
 ```lean
+-- lean/ToyGhost/Noninterference.lean:81-83
 -- ToyGhost/Noninterference.lean, namespace Toy.Ghost
 theorem ghostToRealNI_of_ghostWritesGhost_of_realReadsReal_of_ghostNoDivergeFrom_of_ghostNoFailFrom
     {P : Stmt} (hW : GhostWritesGhost P) (hR : RealReadsReal P)
@@ -1215,6 +1235,7 @@ Basis: execution (Lean kernel check). `lake build` checks `Toy.Ghost.ghostToReal
 - **Lean statement:**
 
 ```lean
+-- lean/ToyGhost/Noninterference.lean:92-93
 -- ToyGhost/Noninterference.lean, namespace Toy.Ghost
 theorem ghostToRealNI_abortInsensitive_of_ghostWritesGhost_of_realReadsReal
     {P : Stmt} (hW : GhostWritesGhost P) (hR : RealReadsReal P) : GhostToRealNI_AbortInsensitive P
@@ -1252,6 +1273,7 @@ Basis: execution (Lean kernel check). `lake build` checks `Toy.Ghost.ghostToReal
 - **Lean statement:**
 
 ```lean
+-- lean/ToyGhost/Noninterference.lean:122-126
 -- ToyGhost/Noninterference.lean, namespace Toy.Ghost
 theorem ghostWritesGhost_realReadsReal_not_sufficient_for_ghostToRealNI :
     GhostWritesGhost ghostSpinOnG ∧ RealReadsReal ghostSpinOnG ∧
@@ -1281,6 +1303,7 @@ Basis: execution (Lean kernel check). `lake build` checks `Toy.Ghost.ghostWrites
 - **Lean statement:**
 
 ```lean
+-- lean/ToyGhost/Noninterference.lean:244-245
 -- ToyGhost/Noninterference.lean, namespace Toy.Ghost
 theorem erasureExact_iff_erasureAgrees_of_realReadsReal {P : Stmt} (hR : RealReadsReal P) :
     ErasureExact P ↔ ErasureAgrees P
