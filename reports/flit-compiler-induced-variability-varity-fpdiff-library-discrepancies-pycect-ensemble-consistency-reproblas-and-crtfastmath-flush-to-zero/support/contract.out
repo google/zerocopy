@@ -1,0 +1,13 @@
+gcc (Debian 15.2.0-14) 15.2.0
+A | flags: -O2 | vfmadd in f=0 g=0 | warnings=0 | expr=0x0p+0 stmt=0x0p+0 libm_fma=-0x1p-54
+B | flags: -O2 -march=haswell | vfmadd in f=1 g=1 | warnings=0 | expr=-0x1p-54 stmt=-0x1p-54 libm_fma=-0x1p-54
+C | flags: -O2 -march=haswell -std=c17 | vfmadd in f=0 g=0 | warnings=0 | expr=0x0p+0 stmt=0x0p+0 libm_fma=-0x1p-54
+D | flags: -O2 -march=haswell -std=gnu17 | vfmadd in f=1 g=1 | warnings=0 | expr=-0x1p-54 stmt=-0x1p-54 libm_fma=-0x1p-54
+E | flags: -O2 -march=haswell -ffp-contract=on | vfmadd in f=1 g=0 | warnings=0 | expr=-0x1p-54 stmt=0x0p+0 libm_fma=-0x1p-54
+F | flags: -O2 -march=haswell -ffp-contract=off | vfmadd in f=0 g=0 | warnings=0 | expr=0x0p+0 stmt=0x0p+0 libm_fma=-0x1p-54
+G | flags: -O2 -march=haswell -DUSE_PRAGMA_OFF -Wall | vfmadd in f=1 g=1 | warnings=1 | expr=-0x1p-54 stmt=-0x1p-54 libm_fma=-0x1p-54
+    contract.c:7: warning: ignoring ‘#pragma STDC FP_CONTRACT’ [-Wunknown-pragmas]
+H | flags: -O2 -march=haswell -std=c17 -ffp-contract=fast | vfmadd in f=1 g=1 | warnings=0 | expr=-0x1p-54 stmt=-0x1p-54 libm_fma=-0x1p-54
+I | flags: -O0 -march=haswell | vfmadd in f=0 g=0 | warnings=0 | expr=0x0p+0 stmt=0x0p+0 libm_fma=-0x1p-54
+J | flags: -O2 -march=haswell -ffast-math | vfmadd in f=1 g=1 | warnings=0 | expr=-0x1p-54 stmt=-0x1p-54 libm_fma=-0x1p-54
+K | flags: -O2 -march=haswell -std=c17 -ffast-math | vfmadd in f=1 g=1 | warnings=0 | expr=-0x1p-54 stmt=-0x1p-54 libm_fma=-0x1p-54

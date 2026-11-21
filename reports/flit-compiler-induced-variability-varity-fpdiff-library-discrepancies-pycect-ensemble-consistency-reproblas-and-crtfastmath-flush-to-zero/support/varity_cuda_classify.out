@@ -1,0 +1,23 @@
+cases: 500; configuration labels: {'O3_nostrict': 500, 'O0_nofma': 500, 'O3': 500, 'O0': 500, 'O2': 500, 'O1': 500, 'O3_strict': 500}
+   196  fast-math differs: subnormal -> 0 (flush-to-zero pattern)
+    60  fast-math differs: normal -> nan
+    58  fast-math differs: normal -> normal
+    56  fast-math differs: inf -> nan
+    26  fast-math differs: normal -> zero
+    20  fast-math differs: zero -> nan
+    14  fast-math differs: normal -> inf
+    13  fast-math differs: subnormal32 -> nan
+    10  fast-math differs: nan -> zero
+     8  fast-math differs: nan -> normal
+     7  fast-math differs: subnormal32 -> normal
+     6  fast-math differs: zero -> normal
+     5  fast-math differs: zero -> zero
+     5  fast-math differs: nan -> inf
+     4  fast-math differs: inf -> inf
+     4  fast-math differs: inf -> zero
+     3  fast-math differs: inf -> normal
+     2  fast-math differs: subnormal32 -> inf
+     2  fast-math differs: zero -> inf
+     1  --fmad=false differs from O0..O3 (zero vs zero)
+O3_strict equals O3_nostrict in 500 cases and equals O3 in 0 cases
+summary: fast-math-only differences 499; of which subnormal->0 196; FMA-contraction-only differences 1

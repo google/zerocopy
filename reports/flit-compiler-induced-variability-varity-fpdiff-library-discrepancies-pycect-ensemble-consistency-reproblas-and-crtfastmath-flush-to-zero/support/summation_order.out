@@ -1,0 +1,32 @@
+python 3.13.15 numpy 2.3.5 N=1048576
+reference math.fsum = 1983671.5576614675
+  sequential                   1983671.557661945          err=  2051.0 ulp
+  numpy.sum (pairwise)         1983671.557661429          err=   165.0 ulp
+  2 chunks, then combine       1983671.5576675832         err= 26267.0 ulp
+  4 chunks, then combine       1983671.5576635413         err=  8907.0 ulp
+  8 chunks, then combine       1983671.5576604307         err=  4453.0 ulp
+  16 chunks, then combine      1983671.5576611795         err=  1237.0 ulp
+  64 chunks, then combine      1983671.5576614514         err=    69.0 ulp
+  256 chunks, then combine     1983671.5576615557         err=   379.0 ulp
+  1024 chunks, then combine    1983671.5576614086         err=   253.0 ulp
+  random permutation 0         1983671.557661531          err=   273.0 ulp
+  random permutation 1         1983671.5576611452         err=  1384.0 ulp
+  random permutation 2         1983671.5576618584         err=  1679.0 ulp
+  random permutation 3         1983671.5576635385         err=  8895.0 ulp
+  random permutation 4         1983671.5576642256         err= 11846.0 ulp
+  random permutation 5         1983671.5576629015         err=  6159.0 ulp
+  random permutation 6         1983671.5576593103         err=  9265.0 ulp
+  random permutation 7         1983671.5576611534         err=  1349.0 ulp
+distinct results among 17 orderings: 17
+max error 26267.0 ulp; max/min spread 8.273e-06
+toy pre-rounding, 1 level(s): distinct results over 6 orderings = 1; err = 1.95e+09 ulp
+toy pre-rounding, 2 level(s): distinct results over 6 orderings = 1; err = 0 ulp
+toy pre-rounding, 3 level(s): distinct results over 6 orderings = 1; err = 0 ulp
+2-level, global grid: 1983671.5576614675; 8 chunks each with its OWN local grid, then summed: 1983671.557661462; equal=False
+timings (best of 5 per variant; ratio against one best-of-20 numpy.sum baseline; single thread):
+  numpy.sum                    0.295 ms  (   1.0x numpy.sum)
+  sequential accumulate        2.830 ms  (   9.6x numpy.sum)
+  math.fsum                   53.797 ms  ( 182.6x numpy.sum)
+  toy pre-rounding K=1        12.043 ms  (  40.9x numpy.sum)
+  toy pre-rounding K=2        17.987 ms  (  61.1x numpy.sum)
+  toy pre-rounding K=3        25.154 ms  (  85.4x numpy.sum)

@@ -1,0 +1,44 @@
+gcc (Debian 15.2.0-14) 15.2.0
+== crtfastmath.o in the driver's link line (gcc -###):
+  link flags []: crtfastmath.o mentioned 0 time(s)
+  link flags [-ffast-math]: crtfastmath.o mentioned 1 time(s)
+  link flags [-Ofast]: crtfastmath.o mentioned 1 time(s)
+  link flags [-funsafe-math-optimizations]: crtfastmath.o mentioned 1 time(s)
+  link flags [-ffast-math -shared]: crtfastmath.o mentioned 0 time(s)
+  link flags [-ffast-math -mno-daz-ftz]: crtfastmath.o mentioned 0 time(s)
+  link flags [-mdaz-ftz -shared]: crtfastmath.o mentioned 1 time(s)
+== 1. executable linked without fast-math
+main thread at entry         MXCSR=0x1f80 FTZ=0 DAZ=0 half(2^-1022)=0x0.8p-1022 scale_up(2^-1060)=0x1p-960
+new thread (inherited)       MXCSR=0x1f82 FTZ=0 DAZ=0 half(2^-1022)=0x0.8p-1022 scale_up(2^-1060)=0x1p-960
+new thread after clearing    MXCSR=0x1f82 FTZ=0 DAZ=0 half(2^-1022)=0x0.8p-1022 scale_up(2^-1060)=0x1p-960
+main thread after join       MXCSR=0x1f82 FTZ=0 DAZ=0 half(2^-1022)=0x0.8p-1022 scale_up(2^-1060)=0x1p-960
+== 2. same objects, executable LINKED with -ffast-math (no object compiled with it)
+main thread at entry         MXCSR=0x9fc0 FTZ=1 DAZ=1 half(2^-1022)=0x0p+0 scale_up(2^-1060)=0x0p+0
+new thread (inherited)       MXCSR=0x9ff0 FTZ=1 DAZ=1 half(2^-1022)=0x0p+0 scale_up(2^-1060)=0x0p+0
+new thread after clearing    MXCSR=0x1fb0 FTZ=0 DAZ=0 half(2^-1022)=0x0.8p-1022 scale_up(2^-1060)=0x1p-960
+main thread after join       MXCSR=0x9ff0 FTZ=1 DAZ=1 half(2^-1022)=0x0p+0 scale_up(2^-1060)=0x0p+0
+== 3. linked with -ffast-math -mno-daz-ftz
+main thread at entry         MXCSR=0x1f80 FTZ=0 DAZ=0 half(2^-1022)=0x0.8p-1022 scale_up(2^-1060)=0x1p-960
+new thread (inherited)       MXCSR=0x1f82 FTZ=0 DAZ=0 half(2^-1022)=0x0.8p-1022 scale_up(2^-1060)=0x1p-960
+new thread after clearing    MXCSR=0x1f82 FTZ=0 DAZ=0 half(2^-1022)=0x0.8p-1022 scale_up(2^-1060)=0x1p-960
+main thread after join       MXCSR=0x1f82 FTZ=0 DAZ=0 half(2^-1022)=0x0.8p-1022 scale_up(2^-1060)=0x1p-960
+== 4. plain executable dlopens a shared library built with -ffast-math -shared
+main thread at entry         MXCSR=0x1f80 FTZ=0 DAZ=0 half(2^-1022)=0x0.8p-1022 scale_up(2^-1060)=0x1p-960
+dlopen(/tmp/fp_probe_work/libfm.so) -> ok
+main thread after dlopen     MXCSR=0x1f82 FTZ=0 DAZ=0 half(2^-1022)=0x0.8p-1022 scale_up(2^-1060)=0x1p-960
+new thread (inherited)       MXCSR=0x1f82 FTZ=0 DAZ=0 half(2^-1022)=0x0.8p-1022 scale_up(2^-1060)=0x1p-960
+new thread after clearing    MXCSR=0x1f82 FTZ=0 DAZ=0 half(2^-1022)=0x0.8p-1022 scale_up(2^-1060)=0x1p-960
+main thread after join       MXCSR=0x1f82 FTZ=0 DAZ=0 half(2^-1022)=0x0.8p-1022 scale_up(2^-1060)=0x1p-960
+== 5. plain executable dlopens a shared library built with -mdaz-ftz -shared
+main thread at entry         MXCSR=0x1f80 FTZ=0 DAZ=0 half(2^-1022)=0x0.8p-1022 scale_up(2^-1060)=0x1p-960
+dlopen(/tmp/fp_probe_work/libdaz.so) -> ok
+main thread after dlopen     MXCSR=0x9fc2 FTZ=1 DAZ=1 half(2^-1022)=0x0p+0 scale_up(2^-1060)=0x0p+0
+new thread (inherited)       MXCSR=0x9ff2 FTZ=1 DAZ=1 half(2^-1022)=0x0p+0 scale_up(2^-1060)=0x0p+0
+new thread after clearing    MXCSR=0x1fb2 FTZ=0 DAZ=0 half(2^-1022)=0x0.8p-1022 scale_up(2^-1060)=0x1p-960
+main thread after join       MXCSR=0x9ff2 FTZ=1 DAZ=1 half(2^-1022)=0x0p+0 scale_up(2^-1060)=0x0p+0
+== 6. plain executable linked against the -mdaz-ftz library with default link options
+  DT_NEEDED entries: libc.so.6 
+main thread at entry         MXCSR=0x1f80 FTZ=0 DAZ=0 half(2^-1022)=0x0.8p-1022 scale_up(2^-1060)=0x1p-960
+== 7. same, forcing the library to stay in DT_NEEDED (-Wl,--no-as-needed)
+  DT_NEEDED entries: libdaz.so libc.so.6 
+main thread at entry         MXCSR=0x9fc0 FTZ=1 DAZ=1 half(2^-1022)=0x0p+0 scale_up(2^-1060)=0x0p+0

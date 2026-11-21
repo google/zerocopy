@@ -31462,6 +31462,195 @@
         "verification/warp-specialized-tile-invariants"
       ]
     },
+    "flit-compiler-induced-variability-varity-fpdiff-library-discrepancies-pycect-ensemble-consistency-reproblas-and-crtfastmath-flush-to-zero": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "gcc-mirror/gcc",
+            "revision": "1c6bee45b4c3d9f2500430371ef61d9487a5b8e7"
+          },
+          "name": "GCC (driver specs, crtfastmath startup object, option documentation)"
+        },
+        {
+          "identity": {
+            "repository": "gcc-mirror/gcc",
+            "revision": "5115c7e447fc07457443df874bf57840e8316d5f",
+            "version": "releases/gcc-15.2.0"
+          },
+          "name": "GCC 15.2.0 release (source of the compiler executed in the probes)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "83a19504f5c56c3410a3cdfee036c1e687dce224"
+          },
+          "name": "Clang (user manual floating-point options and driver crtfastmath logic)"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert verified C compiler (floating-point operations)"
+        },
+        {
+          "identity": {
+            "repository": "pytorch/pytorch",
+            "revision": "f37e6ed227cb8010651c6ee2fda26ec900cc88c9"
+          },
+          "name": "PyTorch reproducibility and numerical-accuracy notes"
+        },
+        {
+          "identity": {
+            "repository": "PRUNERS/FLiT",
+            "revision": "27b6061b9d2302fa8c3252fe770287bb4d07905b"
+          },
+          "name": "FLiT floating-point result-consistency tester"
+        },
+        {
+          "identity": {
+            "repository": "LLNL/Varity",
+            "revision": "f5e04921d7d48ea6ba9f2d4d71ab8f1edbbadef9"
+          },
+          "name": "Varity randomized floating-point differential tester"
+        },
+        {
+          "identity": {
+            "repository": "ucd-plse/FPDiff",
+            "revision": "2c35e44e6732f7275887b6042febc3b928607c1d"
+          },
+          "name": "FPDiff numerical-library differential tester"
+        },
+        {
+          "identity": {
+            "repository": "NCAR/PyCECT",
+            "revision": "0c3d19dfa9a07fd2a67a38a1a2a898f7f2e9f4b9"
+          },
+          "name": "pyCECT ensemble consistency test"
+        },
+        {
+          "identity": {
+            "repository": "numpy/numpy",
+            "revision": "c3d60fc8393f3ca3306b8ce8b6453d43737e3d90",
+            "version": "v2.3.5"
+          },
+          "name": "NumPy 2.3.5 (executed in the summation probe)"
+        },
+        {
+          "identity": {
+            "repository": "python/cpython",
+            "revision": "4061bc4c35f7c26f25264666d4ba083b93d2f6f9",
+            "version": "v3.13.15"
+          },
+          "name": "CPython 3.13.15 (math.fsum, executed in the summation probe)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/IEEESTD.2019.8766229",
+            "standard": "IEEE Std 754-2019"
+          },
+          "name": "IEEE Standard for Floating-Point Arithmetic"
+        },
+        {
+          "identity": {
+            "standard": "ISO/IEC 9899:201x committee draft N1570",
+            "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf"
+          },
+          "name": "ISO C committee draft (FP_CONTRACT pragma)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1353445.1353446"
+          },
+          "name": "Monniaux, The pitfalls of verifying floating-point computations"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-014-9317-x"
+          },
+          "name": "Boldo, Jourdan, Leroy, Melquiond, Verified compilation of floating-point computations"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-25543-5_10"
+          },
+          "name": "Becker, Darulova, Myreen, Tatlock, Icing"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/IISWC.2017.8167780"
+          },
+          "name": "Sawaya et al., FLiT (IISWC 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3307681.3325960"
+          },
+          "name": "Bentley et al., Multi-level analysis of compiler-induced variability (HPDC 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/IPDPS47924.2020.00070"
+          },
+          "name": "Laguna, Varity (IPDPS 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3395363.3397380"
+          },
+          "name": "Vanover, Deng, Rubio-Gonzalez, Discovering discrepancies in numerical libraries (ISSTA 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.5194/gmd-8-2829-2015"
+          },
+          "name": "Baker et al., pyCECT v1.0 (GMD 2015)"
+        },
+        {
+          "identity": {
+            "doi": "10.5194/gmd-11-697-2018"
+          },
+          "name": "Milroy et al., Nine time steps (GMD 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3382037"
+          },
+          "name": "Ahn et al., Keeping science on keel when software moves (CACM 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3324884.3416545"
+          },
+          "name": "Pham et al., An analysis of variance in training deep learning software (ASE 2020)"
+        },
+        {
+          "identity": {
+            "arxiv": "2106.11872"
+          },
+          "name": "Zhuang, Zhang, Song, Hooker, Randomness in neural network training (MLSys 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TC.2014.2345391"
+          },
+          "name": "Demmel, Nguyen, Parallel reproducible summation"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3389360"
+          },
+          "name": "Ahrens, Demmel, Nguyen, Algorithms for efficient reproducible floating point summation"
+        }
+      ],
+      "topics": [
+        "compilers/floating-point-evaluation-policy-defaults",
+        "verification/compiler-induced-numerical-variability",
+        "runtimes/reproducible-floating-point-reductions",
+        "domains/climate-model-ensemble-consistency-testing"
+      ]
+    },
     "flux-indexed-refinements-strong-borrows-and-qualifier-templates": {
       "observed_at": "2026-11-19",
       "subjects": [

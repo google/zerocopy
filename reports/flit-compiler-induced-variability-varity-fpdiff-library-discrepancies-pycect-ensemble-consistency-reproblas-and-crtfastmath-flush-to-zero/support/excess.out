@@ -1,0 +1,5 @@
+[-m32 -O2] FLT_EVAL_METHOD=2 expr=1e+307 assigned=1e+307
+[-m32 -O2 -std=c17] FLT_EVAL_METHOD=2 expr=1e+307 assigned=inf
+[-m32 -O2 -fexcess-precision=standard] FLT_EVAL_METHOD=2 expr=1e+307 assigned=inf
+[-m32 -O2 -msse2 -mfpmath=sse] FLT_EVAL_METHOD=0 expr=inf assigned=inf
+[-O2] FLT_EVAL_METHOD=0 expr=inf assigned=inf
