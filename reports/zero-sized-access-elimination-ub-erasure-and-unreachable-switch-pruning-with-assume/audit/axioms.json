@@ -1,0 +1,2221 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.ZstAssume.AppFwd": [],
+    "Toy.ZstAssume.AppRev": [
+      "propext"
+    ],
+    "Toy.ZstAssume.AppSetting": [
+      "propext"
+    ],
+    "Toy.ZstAssume.AppSetting.at_inv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.AppSetting.casesOn": [
+      "propext"
+    ],
+    "Toy.ZstAssume.AppSetting.equivPP": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.AppSetting.hA": [
+      "propext"
+    ],
+    "Toy.ZstAssume.AppSetting.ha": [
+      "propext"
+    ],
+    "Toy.ZstAssume.AppSetting.hblk": [
+      "propext"
+    ],
+    "Toy.ZstAssume.AppSetting.hblk_fwd": [
+      "propext"
+    ],
+    "Toy.ZstAssume.AppSetting.hent_fwd": [
+      "propext"
+    ],
+    "Toy.ZstAssume.AppSetting.hent_rev": [
+      "propext"
+    ],
+    "Toy.ZstAssume.AppSetting.hgood": [
+      "propext"
+    ],
+    "Toy.ZstAssume.AppSetting.mk": [
+      "propext"
+    ],
+    "Toy.ZstAssume.AppSetting.rec": [
+      "propext"
+    ],
+    "Toy.ZstAssume.AppSetting.recOn": [
+      "propext"
+    ],
+    "Toy.ZstAssume.AppSetting.sim_fwd": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.AppSetting.sim_rev": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.AppSetting.wp_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.Beh": [],
+    "Toy.ZstAssume.Beh.HasPrefix": [],
+    "Toy.ZstAssume.Beh.HasPrefix.eq_1": [],
+    "Toy.ZstAssume.Beh.HasPrefix.eq_2": [],
+    "Toy.ZstAssume.Beh.HasPrefix.eq_3": [],
+    "Toy.ZstAssume.Beh.HasPrefix.eq_4": [],
+    "Toy.ZstAssume.Beh.HasPrefix.match_1": [],
+    "Toy.ZstAssume.Beh.HasPrefix.of_prefix": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.Beh.casesOn": [],
+    "Toy.ZstAssume.Beh.ctorElim": [],
+    "Toy.ZstAssume.Beh.ctorElimType": [],
+    "Toy.ZstAssume.Beh.ctorIdx": [],
+    "Toy.ZstAssume.Beh.div": [],
+    "Toy.ZstAssume.Beh.div.elim": [],
+    "Toy.ZstAssume.Beh.div.inj": [],
+    "Toy.ZstAssume.Beh.div.injEq": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Beh.div.noConfusion": [],
+    "Toy.ZstAssume.Beh.div.sizeOf_spec": [],
+    "Toy.ZstAssume.Beh.noConfusion": [],
+    "Toy.ZstAssume.Beh.noConfusionType": [],
+    "Toy.ZstAssume.Beh.react": [],
+    "Toy.ZstAssume.Beh.react.elim": [],
+    "Toy.ZstAssume.Beh.react.inj": [],
+    "Toy.ZstAssume.Beh.react.injEq": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Beh.react.noConfusion": [],
+    "Toy.ZstAssume.Beh.react.sizeOf_spec": [],
+    "Toy.ZstAssume.Beh.rec": [],
+    "Toy.ZstAssume.Beh.recOn": [],
+    "Toy.ZstAssume.Beh.term": [],
+    "Toy.ZstAssume.Beh.term.elim": [],
+    "Toy.ZstAssume.Beh.term.inj": [],
+    "Toy.ZstAssume.Beh.term.injEq": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Beh.term.noConfusion": [],
+    "Toy.ZstAssume.Beh.term.sizeOf_spec": [],
+    "Toy.ZstAssume.Beh.wrong": [],
+    "Toy.ZstAssume.Beh.wrong.elim": [],
+    "Toy.ZstAssume.Beh.wrong.inj": [],
+    "Toy.ZstAssume.Beh.wrong.injEq": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Beh.wrong.noConfusion": [],
+    "Toy.ZstAssume.Beh.wrong.sizeOf_spec": [],
+    "Toy.ZstAssume.Block": [],
+    "Toy.ZstAssume.Block.casesOn": [],
+    "Toy.ZstAssume.Block.ctorIdx": [],
+    "Toy.ZstAssume.Block.mk": [],
+    "Toy.ZstAssume.Block.mk.inj": [],
+    "Toy.ZstAssume.Block.mk.injEq": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Block.mk.noConfusion": [],
+    "Toy.ZstAssume.Block.mk.sizeOf_spec": [],
+    "Toy.ZstAssume.Block.noConfusion": [],
+    "Toy.ZstAssume.Block.noConfusionType": [],
+    "Toy.ZstAssume.Block.rec": [],
+    "Toy.ZstAssume.Block.recOn": [],
+    "Toy.ZstAssume.Block.stmts": [],
+    "Toy.ZstAssume.Block.term": [],
+    "Toy.ZstAssume.Block.unreach": [],
+    "Toy.ZstAssume.Block.unreach.eq_1": [],
+    "Toy.ZstAssume.BlockRel": [],
+    "Toy.ZstAssume.Cfg": [],
+    "Toy.ZstAssume.Cfg.casesOn": [],
+    "Toy.ZstAssume.Cfg.ctorIdx": [],
+    "Toy.ZstAssume.Cfg.lbl": [],
+    "Toy.ZstAssume.Cfg.mk": [],
+    "Toy.ZstAssume.Cfg.mk.inj": [],
+    "Toy.ZstAssume.Cfg.mk.injEq": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Cfg.mk.noConfusion": [],
+    "Toy.ZstAssume.Cfg.mk.sizeOf_spec": [],
+    "Toy.ZstAssume.Cfg.noConfusion": [],
+    "Toy.ZstAssume.Cfg.noConfusionType": [],
+    "Toy.ZstAssume.Cfg.rec": [],
+    "Toy.ZstAssume.Cfg.recOn": [],
+    "Toy.ZstAssume.Cfg.rest": [],
+    "Toy.ZstAssume.Cfg.st": [],
+    "Toy.ZstAssume.Cond": [],
+    "Toy.ZstAssume.Cond.casesOn": [],
+    "Toy.ZstAssume.Cond.ctorElim": [],
+    "Toy.ZstAssume.Cond.ctorElimType": [],
+    "Toy.ZstAssume.Cond.ctorIdx": [],
+    "Toy.ZstAssume.Cond.eq": [],
+    "Toy.ZstAssume.Cond.eq.elim": [],
+    "Toy.ZstAssume.Cond.eq.inj": [],
+    "Toy.ZstAssume.Cond.eq.injEq": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Cond.eq.noConfusion": [],
+    "Toy.ZstAssume.Cond.eq.sizeOf_spec": [],
+    "Toy.ZstAssume.Cond.eval": [],
+    "Toy.ZstAssume.Cond.eval.eq_1": [],
+    "Toy.ZstAssume.Cond.eval.eq_2": [],
+    "Toy.ZstAssume.Cond.ne": [],
+    "Toy.ZstAssume.Cond.ne.elim": [],
+    "Toy.ZstAssume.Cond.ne.inj": [],
+    "Toy.ZstAssume.Cond.ne.injEq": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Cond.ne.noConfusion": [],
+    "Toy.ZstAssume.Cond.ne.sizeOf_spec": [],
+    "Toy.ZstAssume.Cond.noConfusion": [],
+    "Toy.ZstAssume.Cond.noConfusionType": [],
+    "Toy.ZstAssume.Cond.rec": [],
+    "Toy.ZstAssume.Cond.recOn": [],
+    "Toy.ZstAssume.EqRest": [],
+    "Toy.ZstAssume.EquivPP": [
+      "propext"
+    ],
+    "Toy.ZstAssume.EquivWT": [
+      "propext"
+    ],
+    "Toy.ZstAssume.ExactUBChecker": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Expr": [],
+    "Toy.ZstAssume.Expr.add": [],
+    "Toy.ZstAssume.Expr.add.elim": [],
+    "Toy.ZstAssume.Expr.add.inj": [],
+    "Toy.ZstAssume.Expr.add.injEq": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Expr.add.noConfusion": [],
+    "Toy.ZstAssume.Expr.add.sizeOf_spec": [],
+    "Toy.ZstAssume.Expr.below": [],
+    "Toy.ZstAssume.Expr.brecOn": [],
+    "Toy.ZstAssume.Expr.brecOn.eq": [],
+    "Toy.ZstAssume.Expr.brecOn.go": [],
+    "Toy.ZstAssume.Expr.casesOn": [],
+    "Toy.ZstAssume.Expr.const": [],
+    "Toy.ZstAssume.Expr.const.elim": [],
+    "Toy.ZstAssume.Expr.const.inj": [],
+    "Toy.ZstAssume.Expr.const.injEq": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Expr.const.noConfusion": [],
+    "Toy.ZstAssume.Expr.const.sizeOf_spec": [],
+    "Toy.ZstAssume.Expr.ctorElim": [],
+    "Toy.ZstAssume.Expr.ctorElimType": [],
+    "Toy.ZstAssume.Expr.ctorIdx": [],
+    "Toy.ZstAssume.Expr.eval": [],
+    "Toy.ZstAssume.Expr.eval.eq_1": [],
+    "Toy.ZstAssume.Expr.eval.eq_2": [],
+    "Toy.ZstAssume.Expr.eval.eq_3": [],
+    "Toy.ZstAssume.Expr.eval.eq_def": [],
+    "Toy.ZstAssume.Expr.noConfusion": [],
+    "Toy.ZstAssume.Expr.noConfusionType": [],
+    "Toy.ZstAssume.Expr.rec": [],
+    "Toy.ZstAssume.Expr.recOn": [],
+    "Toy.ZstAssume.Expr.var": [],
+    "Toy.ZstAssume.Expr.var.elim": [],
+    "Toy.ZstAssume.Expr.var.inj": [],
+    "Toy.ZstAssume.Expr.var.injEq": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Expr.var.noConfusion": [],
+    "Toy.ZstAssume.Expr.var.sizeOf_spec": [],
+    "Toy.ZstAssume.FactOnDefinedRuns": [
+      "propext"
+    ],
+    "Toy.ZstAssume.GoesWrongFrom": [
+      "propext"
+    ],
+    "Toy.ZstAssume.HasBeh": [
+      "propext"
+    ],
+    "Toy.ZstAssume.HasBehFrom": [
+      "propext"
+    ],
+    "Toy.ZstAssume.HasBehFrom.match_1": [],
+    "Toy.ZstAssume.ImprovesPP": [],
+    "Toy.ZstAssume.ImprovesWT": [],
+    "Toy.ZstAssume.InsFwd": [],
+    "Toy.ZstAssume.InsRev": [],
+    "Toy.ZstAssume.InsSetting": [
+      "propext"
+    ],
+    "Toy.ZstAssume.InsSetting.casesOn": [
+      "propext"
+    ],
+    "Toy.ZstAssume.InsSetting.hB": [
+      "propext"
+    ],
+    "Toy.ZstAssume.InsSetting.hI": [
+      "propext"
+    ],
+    "Toy.ZstAssume.InsSetting.hblk": [
+      "propext"
+    ],
+    "Toy.ZstAssume.InsSetting.hblk_fwd": [
+      "propext"
+    ],
+    "Toy.ZstAssume.InsSetting.hent_fwd": [
+      "propext"
+    ],
+    "Toy.ZstAssume.InsSetting.hent_rev": [
+      "propext"
+    ],
+    "Toy.ZstAssume.InsSetting.hs": [
+      "propext"
+    ],
+    "Toy.ZstAssume.InsSetting.h\u03c4": [
+      "propext"
+    ],
+    "Toy.ZstAssume.InsSetting.mk": [
+      "propext"
+    ],
+    "Toy.ZstAssume.InsSetting.rec": [
+      "propext"
+    ],
+    "Toy.ZstAssume.InsSetting.recOn": [
+      "propext"
+    ],
+    "Toy.ZstAssume.InsSetting.sim_fwd": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.InsSetting.sim_rev": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.IsSim": [
+      "propext"
+    ],
+    "Toy.ZstAssume.IsSim.bound": [
+      "propext"
+    ],
+    "Toy.ZstAssume.IsSim.casesOn": [
+      "propext"
+    ],
+    "Toy.ZstAssume.IsSim.mk": [
+      "propext"
+    ],
+    "Toy.ZstAssume.IsSim.rec": [
+      "propext"
+    ],
+    "Toy.ZstAssume.IsSim.recOn": [
+      "propext"
+    ],
+    "Toy.ZstAssume.IsSim.step": [
+      "propext"
+    ],
+    "Toy.ZstAssume.IsUnreachableBlock": [
+      "propext"
+    ],
+    "Toy.ZstAssume.IsZeroSizeAccess": [
+      "propext"
+    ],
+    "Toy.ZstAssume.IsZeroSizeAccess.eq_1": [
+      "propext"
+    ],
+    "Toy.ZstAssume.IsZeroSizeAccess.eq_2": [
+      "propext"
+    ],
+    "Toy.ZstAssume.IsZeroSizeAccess.eq_3": [
+      "propext"
+    ],
+    "Toy.ZstAssume.IsZeroSizeAccess.eq_4": [
+      "propext"
+    ],
+    "Toy.ZstAssume.IsZeroSizeAccess.match_1": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Label": [],
+    "Toy.ZstAssume.Outcome": [],
+    "Toy.ZstAssume.Outcome.casesOn": [],
+    "Toy.ZstAssume.Outcome.cons": [],
+    "Toy.ZstAssume.Outcome.cons.eq_1": [],
+    "Toy.ZstAssume.Outcome.cons.eq_2": [],
+    "Toy.ZstAssume.Outcome.cons.eq_3": [],
+    "Toy.ZstAssume.Outcome.cons.match_1": [],
+    "Toy.ZstAssume.Outcome.cons_eq_prepend": [],
+    "Toy.ZstAssume.Outcome.ctorElim": [],
+    "Toy.ZstAssume.Outcome.ctorElimType": [],
+    "Toy.ZstAssume.Outcome.ctorIdx": [],
+    "Toy.ZstAssume.Outcome.done": [],
+    "Toy.ZstAssume.Outcome.done.elim": [],
+    "Toy.ZstAssume.Outcome.done.inj": [],
+    "Toy.ZstAssume.Outcome.done.injEq": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Outcome.done.noConfusion": [],
+    "Toy.ZstAssume.Outcome.done.sizeOf_spec": [],
+    "Toy.ZstAssume.Outcome.isRunning": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Outcome.isRunning.eq_1": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Outcome.isRunning.eq_2": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Outcome.isRunning.match_1": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Outcome.isRunning_prepend": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Outcome.noConfusion": [],
+    "Toy.ZstAssume.Outcome.noConfusionType": [],
+    "Toy.ZstAssume.Outcome.prepend": [],
+    "Toy.ZstAssume.Outcome.prepend.eq_1": [],
+    "Toy.ZstAssume.Outcome.prepend.eq_2": [],
+    "Toy.ZstAssume.Outcome.prepend.eq_3": [],
+    "Toy.ZstAssume.Outcome.prepend.match_1": [],
+    "Toy.ZstAssume.Outcome.prepend_eq_done": [],
+    "Toy.ZstAssume.Outcome.prepend_eq_running": [],
+    "Toy.ZstAssume.Outcome.prepend_eq_ub": [],
+    "Toy.ZstAssume.Outcome.prepend_nil": [],
+    "Toy.ZstAssume.Outcome.prepend_prepend": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Outcome.rec": [],
+    "Toy.ZstAssume.Outcome.recOn": [],
+    "Toy.ZstAssume.Outcome.running": [],
+    "Toy.ZstAssume.Outcome.running.elim": [],
+    "Toy.ZstAssume.Outcome.running.inj": [],
+    "Toy.ZstAssume.Outcome.running.injEq": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Outcome.running.noConfusion": [],
+    "Toy.ZstAssume.Outcome.running.sizeOf_spec": [],
+    "Toy.ZstAssume.Outcome.trace": [],
+    "Toy.ZstAssume.Outcome.trace.eq_1": [],
+    "Toy.ZstAssume.Outcome.trace.eq_2": [],
+    "Toy.ZstAssume.Outcome.trace.eq_3": [],
+    "Toy.ZstAssume.Outcome.trace_prepend": [],
+    "Toy.ZstAssume.Outcome.ub": [],
+    "Toy.ZstAssume.Outcome.ub.elim": [],
+    "Toy.ZstAssume.Outcome.ub.inj": [],
+    "Toy.ZstAssume.Outcome.ub.injEq": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Outcome.ub.noConfusion": [],
+    "Toy.ZstAssume.Outcome.ub.sizeOf_spec": [],
+    "Toy.ZstAssume.Prog": [],
+    "Toy.ZstAssume.Prog.at": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Prog.at.eq_1": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Prog.blk": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Prog.blk.eq_1": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Prog.entry": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Prog.entry.eq_1": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Prog.init": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Prog.init.eq_1": [
+      "propext"
+    ],
+    "Toy.ZstAssume.RURel": [],
+    "Toy.ZstAssume.Reach": [
+      "propext"
+    ],
+    "Toy.ZstAssume.ReachableAt": [
+      "propext"
+    ],
+    "Toy.ZstAssume.RefinesPP": [
+      "propext"
+    ],
+    "Toy.ZstAssume.RefinesPP.improves": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.RefinesWT": [
+      "propext"
+    ],
+    "Toy.ZstAssume.RefinesWT.improves": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.RelR": [
+      "propext"
+    ],
+    "Toy.ZstAssume.RevChainWT": [
+      "propext"
+    ],
+    "Toy.ZstAssume.RevChainWT.match_1": [],
+    "Toy.ZstAssume.SimOut": [
+      "propext"
+    ],
+    "Toy.ZstAssume.SimStep": [
+      "propext"
+    ],
+    "Toy.ZstAssume.State": [],
+    "Toy.ZstAssume.State.casesOn": [],
+    "Toy.ZstAssume.State.ctorIdx": [],
+    "Toy.ZstAssume.State.deref": [],
+    "Toy.ZstAssume.State.locals": [],
+    "Toy.ZstAssume.State.mk": [],
+    "Toy.ZstAssume.State.mk.inj": [],
+    "Toy.ZstAssume.State.mk.injEq": [
+      "propext"
+    ],
+    "Toy.ZstAssume.State.mk.noConfusion": [],
+    "Toy.ZstAssume.State.mk.sizeOf_spec": [],
+    "Toy.ZstAssume.State.noConfusion": [],
+    "Toy.ZstAssume.State.noConfusionType": [],
+    "Toy.ZstAssume.State.rec": [],
+    "Toy.ZstAssume.State.recOn": [],
+    "Toy.ZstAssume.State.set": [],
+    "Toy.ZstAssume.State.set.eq_1": [],
+    "Toy.ZstAssume.StepResult": [],
+    "Toy.ZstAssume.StepResult.casesOn": [],
+    "Toy.ZstAssume.StepResult.ctorElim": [],
+    "Toy.ZstAssume.StepResult.ctorElimType": [],
+    "Toy.ZstAssume.StepResult.ctorIdx": [],
+    "Toy.ZstAssume.StepResult.halt": [],
+    "Toy.ZstAssume.StepResult.halt.elim": [],
+    "Toy.ZstAssume.StepResult.halt.inj": [],
+    "Toy.ZstAssume.StepResult.halt.injEq": [
+      "propext"
+    ],
+    "Toy.ZstAssume.StepResult.halt.noConfusion": [],
+    "Toy.ZstAssume.StepResult.halt.sizeOf_spec": [],
+    "Toy.ZstAssume.StepResult.next": [],
+    "Toy.ZstAssume.StepResult.next.elim": [],
+    "Toy.ZstAssume.StepResult.next.inj": [],
+    "Toy.ZstAssume.StepResult.next.injEq": [
+      "propext"
+    ],
+    "Toy.ZstAssume.StepResult.next.noConfusion": [],
+    "Toy.ZstAssume.StepResult.next.sizeOf_spec": [],
+    "Toy.ZstAssume.StepResult.noConfusion": [],
+    "Toy.ZstAssume.StepResult.noConfusionType": [],
+    "Toy.ZstAssume.StepResult.rec": [],
+    "Toy.ZstAssume.StepResult.recOn": [],
+    "Toy.ZstAssume.StepResult.ub": [],
+    "Toy.ZstAssume.StepResult.ub.elim": [],
+    "Toy.ZstAssume.StepResult.ub.sizeOf_spec": [],
+    "Toy.ZstAssume.Stmt": [],
+    "Toy.ZstAssume.Stmt.accessTy?": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Stmt.accessTy?.eq_1": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Stmt.accessTy?.eq_2": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Stmt.accessTy?.eq_3": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Stmt.accessTy?.eq_4": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Stmt.assign": [],
+    "Toy.ZstAssume.Stmt.assign.elim": [],
+    "Toy.ZstAssume.Stmt.assign.inj": [],
+    "Toy.ZstAssume.Stmt.assign.injEq": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Stmt.assign.noConfusion": [],
+    "Toy.ZstAssume.Stmt.assign.sizeOf_spec": [],
+    "Toy.ZstAssume.Stmt.assume": [],
+    "Toy.ZstAssume.Stmt.assume.elim": [],
+    "Toy.ZstAssume.Stmt.assume.inj": [],
+    "Toy.ZstAssume.Stmt.assume.injEq": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Stmt.assume.noConfusion": [],
+    "Toy.ZstAssume.Stmt.assume.sizeOf_spec": [],
+    "Toy.ZstAssume.Stmt.casesOn": [],
+    "Toy.ZstAssume.Stmt.copy": [],
+    "Toy.ZstAssume.Stmt.copy.elim": [],
+    "Toy.ZstAssume.Stmt.copy.inj": [],
+    "Toy.ZstAssume.Stmt.copy.injEq": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Stmt.copy.noConfusion": [],
+    "Toy.ZstAssume.Stmt.copy.sizeOf_spec": [],
+    "Toy.ZstAssume.Stmt.ctorElim": [],
+    "Toy.ZstAssume.Stmt.ctorElimType": [],
+    "Toy.ZstAssume.Stmt.ctorIdx": [],
+    "Toy.ZstAssume.Stmt.emit": [],
+    "Toy.ZstAssume.Stmt.emit.elim": [],
+    "Toy.ZstAssume.Stmt.emit.inj": [],
+    "Toy.ZstAssume.Stmt.emit.injEq": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Stmt.emit.noConfusion": [],
+    "Toy.ZstAssume.Stmt.emit.sizeOf_spec": [],
+    "Toy.ZstAssume.Stmt.noConfusion": [],
+    "Toy.ZstAssume.Stmt.noConfusionType": [],
+    "Toy.ZstAssume.Stmt.pre": [],
+    "Toy.ZstAssume.Stmt.pre.eq_1": [],
+    "Toy.ZstAssume.Stmt.pre.eq_2": [],
+    "Toy.ZstAssume.Stmt.pre.eq_3": [],
+    "Toy.ZstAssume.Stmt.pre.eq_4": [],
+    "Toy.ZstAssume.Stmt.pre.eq_5": [],
+    "Toy.ZstAssume.Stmt.pre.eq_6": [],
+    "Toy.ZstAssume.Stmt.pre.match_1": [],
+    "Toy.ZstAssume.Stmt.read": [],
+    "Toy.ZstAssume.Stmt.read.elim": [],
+    "Toy.ZstAssume.Stmt.read.inj": [],
+    "Toy.ZstAssume.Stmt.read.injEq": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Stmt.read.noConfusion": [],
+    "Toy.ZstAssume.Stmt.read.sizeOf_spec": [],
+    "Toy.ZstAssume.Stmt.rec": [],
+    "Toy.ZstAssume.Stmt.recOn": [],
+    "Toy.ZstAssume.Stmt.write": [],
+    "Toy.ZstAssume.Stmt.write.elim": [],
+    "Toy.ZstAssume.Stmt.write.inj": [],
+    "Toy.ZstAssume.Stmt.write.injEq": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Stmt.write.noConfusion": [],
+    "Toy.ZstAssume.Stmt.write.sizeOf_spec": [],
+    "Toy.ZstAssume.Stmt.zeroPre": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Stmt.zeroPre.eq_1": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Stmt.zeroPre.eq_2": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Stmt.zeroPre.eq_3": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Stmt.zeroPre.eq_4": [
+      "propext"
+    ],
+    "Toy.ZstAssume.StopBy": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Term": [],
+    "Toy.ZstAssume.Term.casesOn": [],
+    "Toy.ZstAssume.Term.ctorElim": [],
+    "Toy.ZstAssume.Term.ctorElimType": [],
+    "Toy.ZstAssume.Term.ctorIdx": [],
+    "Toy.ZstAssume.Term.goto": [],
+    "Toy.ZstAssume.Term.goto.elim": [],
+    "Toy.ZstAssume.Term.goto.inj": [],
+    "Toy.ZstAssume.Term.goto.injEq": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Term.goto.noConfusion": [],
+    "Toy.ZstAssume.Term.goto.sizeOf_spec": [],
+    "Toy.ZstAssume.Term.halt": [],
+    "Toy.ZstAssume.Term.halt.elim": [],
+    "Toy.ZstAssume.Term.halt.sizeOf_spec": [],
+    "Toy.ZstAssume.Term.noConfusion": [],
+    "Toy.ZstAssume.Term.noConfusionType": [],
+    "Toy.ZstAssume.Term.rec": [],
+    "Toy.ZstAssume.Term.recOn": [],
+    "Toy.ZstAssume.Term.switch": [],
+    "Toy.ZstAssume.Term.switch.elim": [],
+    "Toy.ZstAssume.Term.switch.inj": [],
+    "Toy.ZstAssume.Term.switch.injEq": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Term.switch.noConfusion": [],
+    "Toy.ZstAssume.Term.switch.sizeOf_spec": [],
+    "Toy.ZstAssume.Term.unreachable": [],
+    "Toy.ZstAssume.Term.unreachable.elim": [],
+    "Toy.ZstAssume.Term.unreachable.sizeOf_spec": [],
+    "Toy.ZstAssume.Ty": [],
+    "Toy.ZstAssume.Ty.align": [],
+    "Toy.ZstAssume.Ty.casesOn": [],
+    "Toy.ZstAssume.Ty.ctorIdx": [],
+    "Toy.ZstAssume.Ty.mk": [],
+    "Toy.ZstAssume.Ty.mk.inj": [],
+    "Toy.ZstAssume.Ty.mk.injEq": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Ty.mk.noConfusion": [],
+    "Toy.ZstAssume.Ty.mk.sizeOf_spec": [],
+    "Toy.ZstAssume.Ty.noConfusion": [],
+    "Toy.ZstAssume.Ty.noConfusionType": [],
+    "Toy.ZstAssume.Ty.rec": [],
+    "Toy.ZstAssume.Ty.recOn": [],
+    "Toy.ZstAssume.Ty.size": [],
+    "Toy.ZstAssume.UBFree": [
+      "propext"
+    ],
+    "Toy.ZstAssume.Var": [],
+    "Toy.ZstAssume.ZContract": [],
+    "Toy.ZstAssume.ZContract.aligned": [],
+    "Toy.ZstAssume.ZContract.aligned.elim": [],
+    "Toy.ZstAssume.ZContract.aligned.sizeOf_spec": [],
+    "Toy.ZstAssume.ZContract.anyPtr": [],
+    "Toy.ZstAssume.ZContract.anyPtr.elim": [],
+    "Toy.ZstAssume.ZContract.anyPtr.sizeOf_spec": [],
+    "Toy.ZstAssume.ZContract.casesOn": [],
+    "Toy.ZstAssume.ZContract.ctorElim": [],
+    "Toy.ZstAssume.ZContract.ctorElimType": [],
+    "Toy.ZstAssume.ZContract.ctorIdx": [],
+    "Toy.ZstAssume.ZContract.holds": [],
+    "Toy.ZstAssume.ZContract.holds.eq_1": [],
+    "Toy.ZstAssume.ZContract.holds.eq_2": [],
+    "Toy.ZstAssume.ZContract.holds.eq_3": [],
+    "Toy.ZstAssume.ZContract.holds.match_1": [],
+    "Toy.ZstAssume.ZContract.noConfusion": [],
+    "Toy.ZstAssume.ZContract.noConfusionType": [],
+    "Toy.ZstAssume.ZContract.nonnullAligned": [],
+    "Toy.ZstAssume.ZContract.nonnullAligned.elim": [],
+    "Toy.ZstAssume.ZContract.nonnullAligned.sizeOf_spec": [],
+    "Toy.ZstAssume.ZContract.ofNat": [],
+    "Toy.ZstAssume.ZContract.ofNat_ctorIdx": [],
+    "Toy.ZstAssume.ZContract.rec": [],
+    "Toy.ZstAssume.ZContract.recOn": [],
+    "Toy.ZstAssume.accessOK": [],
+    "Toy.ZstAssume.accessOK.eq_1": [],
+    "Toy.ZstAssume.accessOK_nonzero_needs_deref": [],
+    "Toy.ZstAssume.accessOK_nonzero_null": [],
+    "Toy.ZstAssume.accessOK_zero_ignores_deref": [],
+    "Toy.ZstAssume.accessTy_emit": [
+      "propext"
+    ],
+    "Toy.ZstAssume.accessTy_read": [
+      "propext"
+    ],
+    "Toy.ZstAssume.aligned": [],
+    "Toy.ZstAssume.aligned.eq_1": [],
+    "Toy.ZstAssume.aligned_neg": [],
+    "Toy.ZstAssume.aligned_one": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.aligned_pos": [],
+    "Toy.ZstAssume.aligned_zero_align_nonzero_addr": [],
+    "Toy.ZstAssume.aligned_zero_align_zero_addr": [],
+    "Toy.ZstAssume.aligned_zero_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.assume_eq_none": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.assume_eq_ok": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.assume_ne_none": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.assume_ne_ok": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.at_entry": [
+      "propext"
+    ],
+    "Toy.ZstAssume.at_terminator": [
+      "propext"
+    ],
+    "Toy.ZstAssume.blk_of_length_le": [
+      "propext"
+    ],
+    "Toy.ZstAssume.blk_set_ne": [
+      "propext"
+    ],
+    "Toy.ZstAssume.blk_set_self": [
+      "propext"
+    ],
+    "Toy.ZstAssume.blockRel_entry": [
+      "propext"
+    ],
+    "Toy.ZstAssume.blockRel_in": [],
+    "Toy.ZstAssume.blockRel_inv": [],
+    "Toy.ZstAssume.blockRel_inv_ne": [],
+    "Toy.ZstAssume.blockRel_same": [],
+    "Toy.ZstAssume.blockSim": [
+      "propext"
+    ],
+    "Toy.ZstAssume.blockSim.match_1_1": [
+      "propext"
+    ],
+    "Toy.ZstAssume.blockSim_init": [
+      "propext"
+    ],
+    "Toy.ZstAssume.bytesDeref": [],
+    "Toy.ZstAssume.bytesDeref.match_1": [],
+    "Toy.ZstAssume.bytesDeref_neg": [],
+    "Toy.ZstAssume.bytesDeref_pos": [],
+    "Toy.ZstAssume.cond_eval_neg": [
+      "propext"
+    ],
+    "Toy.ZstAssume.cond_eval_pos": [
+      "propext"
+    ],
+    "Toy.ZstAssume.cons_none": [
+      "propext"
+    ],
+    "Toy.ZstAssume.copyLoopLowering_zeroCount_clobbers_counter": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.copyLoopLowering_zeroCount_erases_ub": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.copyLoopProg": [],
+    "Toy.ZstAssume.copyLoopProg.eq_1": [],
+    "Toy.ZstAssume.copyLoopProg_one_misaligned_wrong": [
+      "propext"
+    ],
+    "Toy.ZstAssume.copyLoopProg_zeroCount_preserves_src_dst": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.copyLoopProg_zeroCount_run": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.copyLoopProg_zero_term": [
+      "propext"
+    ],
+    "Toy.ZstAssume.copyProg": [],
+    "Toy.ZstAssume.copyProg.eq_1": [],
+    "Toy.ZstAssume.copyProg_aligned_term": [
+      "propext"
+    ],
+    "Toy.ZstAssume.copyProg_misaligned_wrong": [
+      "propext"
+    ],
+    "Toy.ZstAssume.del_equivPP_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.del_equivPP_of_zeroPre": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.del_equivWT_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.del_reach": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.del_refinesPP": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.del_step_ub": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.deleteSetting": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.deleteStmt": [
+      "propext"
+    ],
+    "Toy.ZstAssume.deleteStmt_example": [
+      "propext"
+    ],
+    "Toy.ZstAssume.deleteStmt_hs_counterexample": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.deleteStmt_hz_counterexample": [
+      "propext"
+    ],
+    "Toy.ZstAssume.deleteStmt_out_of_range": [
+      "propext"
+    ],
+    "Toy.ZstAssume.deleteStmt_pCopy0": [
+      "propext"
+    ],
+    "Toy.ZstAssume.deleteStmt_pReadZst1": [
+      "propext"
+    ],
+    "Toy.ZstAssume.deleteStmt_pReadZst4": [
+      "propext"
+    ],
+    "Toy.ZstAssume.deleteZeroSizeAccess_equivPP_despite_reachable_zeroPre_failure": [
+      "propext"
+    ],
+    "Toy.ZstAssume.deleteZeroSizeAccess_equivPP_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.deleteZeroSizeAccess_equivPP_of_align_one_of_null_permitted": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.deleteZeroSizeAccess_equivPP_of_anyPtr": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.deleteZeroSizeAccess_equivPP_of_zeroPre_reachable": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.deleteZeroSizeAccess_equivWT_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.deleteZeroSizeAccess_iff_nonvacuous": [
+      "propext"
+    ],
+    "Toy.ZstAssume.deleteZeroSizeAccess_pReadZst1_nonnull_counterexample": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.deleteZeroSizeAccess_pReadZst4_counterexample": [
+      "propext"
+    ],
+    "Toy.ZstAssume.deleteZeroSizeAccess_refinesPP": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.deleteZeroSizeAccess_refinesPP_nonvacuous": [
+      "propext"
+    ],
+    "Toy.ZstAssume.deleteZeroSizeAccess_sufficient_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.div_react_absurd": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.dropArms": [],
+    "Toy.ZstAssume.dropArms.eq_1": [],
+    "Toy.ZstAssume.dropArms_example": [],
+    "Toy.ZstAssume.dropArms_keeps": [],
+    "Toy.ZstAssume.emitFact_fold_after_pruneArm_not_refinesWT_input": [
+      "propext"
+    ],
+    "Toy.ZstAssume.eqRest_at_inv": [
+      "propext"
+    ],
+    "Toy.ZstAssume.equivPP_of_sameBeh": [
+      "propext"
+    ],
+    "Toy.ZstAssume.equivWT_emitUnreach_unreach": [
+      "propext"
+    ],
+    "Toy.ZstAssume.equivWT_of_equivPP": [
+      "propext"
+    ],
+    "Toy.ZstAssume.exactUBChecker_exists": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.execStmt": [
+      "propext"
+    ],
+    "Toy.ZstAssume.execStmt.eq_1": [
+      "propext"
+    ],
+    "Toy.ZstAssume.execStmt.eq_2": [
+      "propext"
+    ],
+    "Toy.ZstAssume.execStmt.eq_3": [
+      "propext"
+    ],
+    "Toy.ZstAssume.execStmt.match_1": [
+      "propext"
+    ],
+    "Toy.ZstAssume.execStmt_assume": [
+      "propext"
+    ],
+    "Toy.ZstAssume.execStmt_assume_cases": [
+      "propext"
+    ],
+    "Toy.ZstAssume.execStmt_assume_fail": [
+      "propext"
+    ],
+    "Toy.ZstAssume.execStmt_assume_pass": [
+      "propext"
+    ],
+    "Toy.ZstAssume.execStmt_zeroSize": [
+      "propext"
+    ],
+    "Toy.ZstAssume.execStmt_zeroSize_cases": [
+      "propext"
+    ],
+    "Toy.ZstAssume.execStmt_zeroSize_none_iff": [
+      "propext"
+    ],
+    "Toy.ZstAssume.exists_max_of_bdd": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.exists_max_of_bdd.match_1_1": [],
+    "Toy.ZstAssume.exists_trace_length_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.exists_trace_length_eq.match_1_1": [
+      "propext"
+    ],
+    "Toy.ZstAssume.expr_eval_add": [
+      "propext"
+    ],
+    "Toy.ZstAssume.expr_eval_no_wrap": [
+      "propext"
+    ],
+    "Toy.ZstAssume.factOnDefinedRuns_fold_refinesWT_not_refinesPP": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.factOnDefinedRuns_fold_refinesWT_not_refinesPP.match_1_1": [
+      "propext"
+    ],
+    "Toy.ZstAssume.factOnDefinedRuns_fold_refinesWT_not_refinesPP.match_1_4": [
+      "propext"
+    ],
+    "Toy.ZstAssume.factOnDefinedRuns_fold_refinesWT_not_refinesPP.match_1_6": [
+      "propext"
+    ],
+    "Toy.ZstAssume.factOnDefinedRuns_unreach": [
+      "propext"
+    ],
+    "Toy.ZstAssume.foldToGoto": [
+      "propext"
+    ],
+    "Toy.ZstAssume.foldToGoto_example": [
+      "propext"
+    ],
+    "Toy.ZstAssume.goesWrongFrom_unreach": [
+      "propext"
+    ],
+    "Toy.ZstAssume.goesWrong_at_of_length_le": [
+      "propext"
+    ],
+    "Toy.ZstAssume.goesWrong_nil_of_prefix": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.goesWrong_nil_of_refinesPP": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.goesWrong_nil_of_sim_necessity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.goesWrong_of_next_silent": [
+      "propext"
+    ],
+    "Toy.ZstAssume.goesWrong_of_next_silent_rev": [
+      "propext"
+    ],
+    "Toy.ZstAssume.goesWrong_of_refinesWT": [
+      "propext"
+    ],
+    "Toy.ZstAssume.goesWrong_of_sim_necessity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.goesWrong_of_step_ub": [
+      "propext"
+    ],
+    "Toy.ZstAssume.goesWrong_prepend": [
+      "propext"
+    ],
+    "Toy.ZstAssume.goesWrong_suffix": [
+      "propext"
+    ],
+    "Toy.ZstAssume.goesWrong_unreachBlock": [
+      "propext"
+    ],
+    "Toy.ZstAssume.hasBehFrom_exists": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.hasBehFrom_iff_of_run_done": [
+      "propext"
+    ],
+    "Toy.ZstAssume.hasBehFrom_iff_of_run_ub": [
+      "propext"
+    ],
+    "Toy.ZstAssume.hasBehFrom_iff_of_silent": [
+      "propext"
+    ],
+    "Toy.ZstAssume.hasBehFrom_of_tracking": [
+      "propext"
+    ],
+    "Toy.ZstAssume.hasBehFrom_unique": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.hasBeh_emit7": [
+      "propext"
+    ],
+    "Toy.ZstAssume.hasBeh_iff_of_runs_done": [
+      "propext"
+    ],
+    "Toy.ZstAssume.hasBeh_iff_of_runs_ub": [
+      "propext"
+    ],
+    "Toy.ZstAssume.hasBeh_react": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.hasBeh_spin": [
+      "propext"
+    ],
+    "Toy.ZstAssume.hasBeh_unreach": [
+      "propext"
+    ],
+    "Toy.ZstAssume.hasPrefix_nil": [
+      "propext"
+    ],
+    "Toy.ZstAssume.hasPrefix_of_running": [
+      "propext"
+    ],
+    "Toy.ZstAssume.hasPrefix_react_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.hasPrefix_trace": [
+      "propext"
+    ],
+    "Toy.ZstAssume.hoistZstRead_anyPtr_equivPP": [
+      "propext"
+    ],
+    "Toy.ZstAssume.hoistZstRead_out_of_branch_not_refinesWT": [
+      "propext"
+    ],
+    "Toy.ZstAssume.holds_aligned_admits_null": [],
+    "Toy.ZstAssume.holds_aligned_rejects_misaligned": [],
+    "Toy.ZstAssume.holds_anyPtr_null_misaligned": [],
+    "Toy.ZstAssume.holds_nonnullAligned_admits": [],
+    "Toy.ZstAssume.holds_nonnullAligned_rejects_null": [],
+    "Toy.ZstAssume.improvesPP_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.improvesPP_pos": [],
+    "Toy.ZstAssume.improvesPP_refl": [],
+    "Toy.ZstAssume.improvesWT_neg": [
+      "propext"
+    ],
+    "Toy.ZstAssume.improvesWT_of_improvesPP": [],
+    "Toy.ZstAssume.improvesWT_pos": [],
+    "Toy.ZstAssume.insFwd_inv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.insRev_inv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.insSpecial": [
+      "propext"
+    ],
+    "Toy.ZstAssume.ins_equivPP_of_zeroPre": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.ins_refinesPP_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.ins_refinesWT_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.ins_sim_special": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.ins_special_wrong": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.insertEmit_counterexample": [
+      "propext"
+    ],
+    "Toy.ZstAssume.insertSetting": [
+      "propext"
+    ],
+    "Toy.ZstAssume.insertStmt": [
+      "propext"
+    ],
+    "Toy.ZstAssume.insertStmt_example": [
+      "propext"
+    ],
+    "Toy.ZstAssume.insertStmt_of_length_le": [
+      "propext"
+    ],
+    "Toy.ZstAssume.insertStmt_past_end": [
+      "propext"
+    ],
+    "Toy.ZstAssume.insertZeroSizeAccess_anyPtr_nonvacuous": [
+      "propext"
+    ],
+    "Toy.ZstAssume.insertZeroSizeAccess_equivPP_of_zeroPre_reachable": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.insertZeroSizeAccess_hpre_counterexample": [
+      "propext"
+    ],
+    "Toy.ZstAssume.insertZeroSizeAccess_refinesPP_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.insertZeroSizeAccess_refinesWT_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.insertZstRead_before_failing_read_refinesPP": [
+      "propext"
+    ],
+    "Toy.ZstAssume.insertZstRead_misaligned_not_refinesWT": [
+      "propext"
+    ],
+    "Toy.ZstAssume.instDecidableEqBlock": [],
+    "Toy.ZstAssume.instDecidableEqBlock.decEq": [],
+    "Toy.ZstAssume.instDecidableEqBlock.decEq.match_1": [],
+    "Toy.ZstAssume.instDecidableEqCond": [],
+    "Toy.ZstAssume.instDecidableEqCond.decEq": [],
+    "Toy.ZstAssume.instDecidableEqCond.decEq.match_1": [],
+    "Toy.ZstAssume.instDecidableEqExpr": [],
+    "Toy.ZstAssume.instDecidableEqExpr.decEq": [],
+    "Toy.ZstAssume.instDecidableEqExpr.decEq.match_1": [],
+    "Toy.ZstAssume.instDecidableEqStmt": [],
+    "Toy.ZstAssume.instDecidableEqStmt.decEq": [],
+    "Toy.ZstAssume.instDecidableEqStmt.decEq.match_1": [],
+    "Toy.ZstAssume.instDecidableEqTerm": [],
+    "Toy.ZstAssume.instDecidableEqTerm.decEq": [],
+    "Toy.ZstAssume.instDecidableEqTerm.decEq.match_1": [],
+    "Toy.ZstAssume.instDecidableEqTy": [],
+    "Toy.ZstAssume.instDecidableEqTy.decEq": [],
+    "Toy.ZstAssume.instDecidableEqTy.decEq.match_1": [],
+    "Toy.ZstAssume.instDecidableEqZContract": [],
+    "Toy.ZstAssume.instDecidableIsUnreachableBlock": [
+      "propext"
+    ],
+    "Toy.ZstAssume.instDecidablePredStmtIsZeroSizeAccess": [
+      "propext"
+    ],
+    "Toy.ZstAssume.instReprBlock": [
+      "propext"
+    ],
+    "Toy.ZstAssume.instReprBlock.repr": [
+      "propext"
+    ],
+    "Toy.ZstAssume.instReprCond": [
+      "propext"
+    ],
+    "Toy.ZstAssume.instReprCond.repr": [
+      "propext"
+    ],
+    "Toy.ZstAssume.instReprCond.repr.match_1": [],
+    "Toy.ZstAssume.instReprExpr": [
+      "propext"
+    ],
+    "Toy.ZstAssume.instReprExpr.repr": [
+      "propext"
+    ],
+    "Toy.ZstAssume.instReprExpr.repr.match_1": [],
+    "Toy.ZstAssume.instReprStmt": [
+      "propext"
+    ],
+    "Toy.ZstAssume.instReprStmt.repr": [
+      "propext"
+    ],
+    "Toy.ZstAssume.instReprStmt.repr.match_1": [],
+    "Toy.ZstAssume.instReprTerm": [
+      "propext"
+    ],
+    "Toy.ZstAssume.instReprTerm.repr": [
+      "propext"
+    ],
+    "Toy.ZstAssume.instReprTerm.repr.match_1": [],
+    "Toy.ZstAssume.instReprTy": [],
+    "Toy.ZstAssume.instReprTy.repr": [],
+    "Toy.ZstAssume.instReprZContract": [],
+    "Toy.ZstAssume.instReprZContract.repr": [],
+    "Toy.ZstAssume.instReprZContract.repr.match_1": [],
+    "Toy.ZstAssume.isRunning_of_le": [
+      "propext"
+    ],
+    "Toy.ZstAssume.isUnreachableBlock_out_of_range": [
+      "propext"
+    ],
+    "Toy.ZstAssume.isUnreachableBlock_unreach": [
+      "propext"
+    ],
+    "Toy.ZstAssume.isZeroSize_copy_zero_count": [
+      "propext"
+    ],
+    "Toy.ZstAssume.isZeroSize_copy_zst": [
+      "propext"
+    ],
+    "Toy.ZstAssume.isZeroSize_read_zst": [
+      "propext"
+    ],
+    "Toy.ZstAssume.iso_of_step_ub": [
+      "propext"
+    ],
+    "Toy.ZstAssume.length_of_blk_ne_unreach": [
+      "propext"
+    ],
+    "Toy.ZstAssume.mkState": [
+      "propext"
+    ],
+    "Toy.ZstAssume.mkState.eq_1": [
+      "propext"
+    ],
+    "Toy.ZstAssume.mkStateNoMem": [
+      "propext"
+    ],
+    "Toy.ZstAssume.not_equivPP_emitUnreach_unreach": [
+      "propext"
+    ],
+    "Toy.ZstAssume.not_equivWT_halt_unreach": [
+      "propext"
+    ],
+    "Toy.ZstAssume.not_exactUBChecker_const_true": [
+      "propext"
+    ],
+    "Toy.ZstAssume.not_goesWrongFrom_halt": [
+      "propext"
+    ],
+    "Toy.ZstAssume.not_goesWrong_of_done": [
+      "propext"
+    ],
+    "Toy.ZstAssume.not_hasBeh_emit7_wrong": [
+      "propext"
+    ],
+    "Toy.ZstAssume.not_isUnreachableBlock_emit_unreach": [
+      "propext"
+    ],
+    "Toy.ZstAssume.not_isUnreachableBlock_halt": [
+      "propext"
+    ],
+    "Toy.ZstAssume.not_isZeroSize_assume": [
+      "propext"
+    ],
+    "Toy.ZstAssume.not_isZeroSize_copy_one": [
+      "propext"
+    ],
+    "Toy.ZstAssume.not_isZeroSize_emit": [
+      "propext"
+    ],
+    "Toy.ZstAssume.not_isZeroSize_read_byte": [
+      "propext"
+    ],
+    "Toy.ZstAssume.not_reachableAt_dead_block": [
+      "propext"
+    ],
+    "Toy.ZstAssume.not_refinesPP_emitUnreach_unreach": [
+      "propext"
+    ],
+    "Toy.ZstAssume.not_refinesPP_halt_unreach": [
+      "propext"
+    ],
+    "Toy.ZstAssume.not_refinesWT_halt_unreach": [
+      "propext"
+    ],
+    "Toy.ZstAssume.not_refinesWT_of_term_term": [
+      "propext"
+    ],
+    "Toy.ZstAssume.not_refinesWT_of_term_wrong": [
+      "propext"
+    ],
+    "Toy.ZstAssume.not_revChainWT_unreach_halt": [
+      "propext"
+    ],
+    "Toy.ZstAssume.not_ubFree_src_of_not_ubFree_tgt_of_refinesWT": [
+      "propext"
+    ],
+    "Toy.ZstAssume.not_ubFree_unreach": [
+      "propext"
+    ],
+    "Toy.ZstAssume.not_wp_unreach": [
+      "propext"
+    ],
+    "Toy.ZstAssume.outcome_cons_some": [],
+    "Toy.ZstAssume.outcome_isRunning_running": [
+      "propext"
+    ],
+    "Toy.ZstAssume.outcome_isRunning_ub": [
+      "propext"
+    ],
+    "Toy.ZstAssume.outcome_trace_done": [
+      "propext"
+    ],
+    "Toy.ZstAssume.outcome_trace_ub_ne": [],
+    "Toy.ZstAssume.pBranchRead": [],
+    "Toy.ZstAssume.pBranchRead.eq_1": [],
+    "Toy.ZstAssume.pBranchReadHoisted": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pBranchReadHoisted_eq": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pCopy0": [],
+    "Toy.ZstAssume.pCopy0.eq_1": [],
+    "Toy.ZstAssume.pEmit7": [],
+    "Toy.ZstAssume.pEmitBeforeUnreach": [],
+    "Toy.ZstAssume.pEmitFact": [],
+    "Toy.ZstAssume.pEmitFact.eq_1": [],
+    "Toy.ZstAssume.pEmitUnreach": [],
+    "Toy.ZstAssume.pFact": [],
+    "Toy.ZstAssume.pFact.eq_1": [],
+    "Toy.ZstAssume.pFact_fact": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pFact_fact.match_1_1": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pFact_fact.match_1_4": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pFact_fact.match_1_6": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pHalt": [],
+    "Toy.ZstAssume.pLoopBeforeUnreach": [],
+    "Toy.ZstAssume.pLoopBeforeUnreach.eq_1": [],
+    "Toy.ZstAssume.pReact": [],
+    "Toy.ZstAssume.pReadZst1": [],
+    "Toy.ZstAssume.pReadZst1.eq_1": [],
+    "Toy.ZstAssume.pReadZst4": [],
+    "Toy.ZstAssume.pReadZst4.eq_1": [],
+    "Toy.ZstAssume.pSilentToUnreach": [],
+    "Toy.ZstAssume.pSpin": [],
+    "Toy.ZstAssume.pStale": [],
+    "Toy.ZstAssume.pStale.eq_1": [],
+    "Toy.ZstAssume.pSw": [],
+    "Toy.ZstAssume.pSw.eq_1": [],
+    "Toy.ZstAssume.pSwAssumeOw": [],
+    "Toy.ZstAssume.pSwAssumeOw.eq_1": [],
+    "Toy.ZstAssume.pSwAssumeOw_hyps": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pSwDead": [],
+    "Toy.ZstAssume.pSwDiffVar": [],
+    "Toy.ZstAssume.pSwDiffVar.eq_1": [],
+    "Toy.ZstAssume.pSwEmitUnreach": [],
+    "Toy.ZstAssume.pSwEmitUnreach.eq_1": [],
+    "Toy.ZstAssume.pSwInv": [],
+    "Toy.ZstAssume.pSwInv.eq_1": [],
+    "Toy.ZstAssume.pSwInv_invariant": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.pSwInv_invariant.match_1_1": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pSwLive": [],
+    "Toy.ZstAssume.pSwLiveInv": [],
+    "Toy.ZstAssume.pSwLiveInv.eq_1": [],
+    "Toy.ZstAssume.pSwLiveUnreachOw": [],
+    "Toy.ZstAssume.pSwOne": [],
+    "Toy.ZstAssume.pSwOne.eq_1": [],
+    "Toy.ZstAssume.pSwOne_hyps": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pSw_fact_not_invariant": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pSw_fact_not_invariant.match_1_1": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pSw_fact_not_invariant.match_1_4": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pSw_hyps": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pTwoHalts": [],
+    "Toy.ZstAssume.pTwoZstReads": [],
+    "Toy.ZstAssume.pTwoZstReads.eq_1": [],
+    "Toy.ZstAssume.pUnreach": [],
+    "Toy.ZstAssume.pa_equivPP_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.pa_equivPP_of_invariant": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.pa_equivWT_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.pa_ow_wrong": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pa_reach": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.pa_refinesPP": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.pa_wp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.paa_equivPP": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.paa_fact": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.paa_wp_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.poa_bad": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.poa_equivPP": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.poa_wp_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.pre_eq_zeroPre_of_isZeroSize": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pre_read_aligned": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pre_read_misaligned": [
+      "propext"
+    ],
+    "Toy.ZstAssume.prefixOf": [],
+    "Toy.ZstAssume.prefixOf.eq_1": [],
+    "Toy.ZstAssume.prefixOf_example": [],
+    "Toy.ZstAssume.prefixOf_neg": [],
+    "Toy.ZstAssume.prefix_antisymm": [],
+    "Toy.ZstAssume.prefix_eq_of_chain": [],
+    "Toy.ZstAssume.prefix_nil": [],
+    "Toy.ZstAssume.pruneArm": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm.eq_1": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm.match_1": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArmAssume": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArmAssume.eq_1": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArmAssume_emit_before_unreachable_not_refinesPP": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArmAssume_eq_self": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArmAssume_equivPP": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArmAssume_equivWT": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArmAssume_example": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArmAssume_fact_hypothesis_counterexample": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArmAssume_non_switch": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArmAssume_pSw": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArmAssume_pSw_equivPP_and_wp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArmAssume_preserves_factOnDefinedRuns": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArmAssume_preserves_factOnDefinedRuns_nonvacuous": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArmAssume_setting": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArmAssume_wp_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_at_len": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_blk": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_breaks_ubDerivedFact": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_equivPP_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_equivPP_of_invariant_ne": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_equivPP_of_invariant_ne_live_arm_witness": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_equivPP_of_invariant_ne_live_arm_witness.match_1_1": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_equivPP_of_invariant_ne_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_equivPP_of_otherwise_unreachable": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_equivPP_of_otherwise_unreachable_nonvacuous": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_equivWT_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_example": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_hU_counterexample": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_hterm_counterexample": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_iff_counterexample": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_invariant_ne_hterm_counterexample": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_invariant_ne_hterm_counterexample.match_1_1": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_live_arm_not_refinesWT": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_live_arm_wp_not_transferred": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_non_switch": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_pFact": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_pSw": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_pSwAssumeOw_equivPP": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_pSw_hyps_counterexample": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_pSw_refinesPP_not_equivWT": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_pSw_wp_transfers_one_way": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_refinesPP": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_sim_PQ": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_sim_QP": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_src_wrong": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_step_P": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_step_Q": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_target_ne": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneArm_wp_of_wp_src": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneOtherwiseAssume": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneOtherwiseAssume.eq_1": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneOtherwiseAssume.match_1": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneOtherwiseAssume_equivPP": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneOtherwiseAssume_example": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneOtherwiseAssume_live_otherwise_not_refinesWT": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneOtherwiseAssume_pSwOne_equivPP": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneOtherwiseAssume_setting": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneOtherwiseAssume_two_arms": [
+      "propext"
+    ],
+    "Toy.ZstAssume.pruneOtherwiseAssume_wp_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.reach_init": [
+      "propext"
+    ],
+    "Toy.ZstAssume.reach_run": [
+      "propext"
+    ],
+    "Toy.ZstAssume.reach_step": [
+      "propext"
+    ],
+    "Toy.ZstAssume.reachableAt_entry": [
+      "propext"
+    ],
+    "Toy.ZstAssume.reachableAt_iff": [
+      "propext"
+    ],
+    "Toy.ZstAssume.refinesPPAt_of_tgt_done": [
+      "propext"
+    ],
+    "Toy.ZstAssume.refinesPPAt_of_tgt_ub": [
+      "propext"
+    ],
+    "Toy.ZstAssume.refinesPP_of_improves": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.refinesPP_of_sim": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.refinesPP_of_src_unreach": [
+      "propext"
+    ],
+    "Toy.ZstAssume.refinesPP_of_tgt_done": [
+      "propext"
+    ],
+    "Toy.ZstAssume.refinesPP_refl": [
+      "propext"
+    ],
+    "Toy.ZstAssume.refinesWT_emitUnreach_unreach": [
+      "propext"
+    ],
+    "Toy.ZstAssume.refinesWT_of_improves": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.refinesWT_of_refinesPP": [
+      "propext"
+    ],
+    "Toy.ZstAssume.refinesWT_of_sim": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.refinesWT_refl": [
+      "propext"
+    ],
+    "Toy.ZstAssume.replaceUnreachable": [],
+    "Toy.ZstAssume.replaceUnreachable_diverging_loop_not_refinesWT": [
+      "propext"
+    ],
+    "Toy.ZstAssume.replaceUnreachable_emit_before_unreachable": [
+      "propext"
+    ],
+    "Toy.ZstAssume.replaceUnreachable_example": [],
+    "Toy.ZstAssume.replaceUnreachable_out_of_range": [],
+    "Toy.ZstAssume.replaceUnreachable_pEmitBeforeUnreach": [],
+    "Toy.ZstAssume.replaceUnreachable_pSilentToUnreach": [
+      "propext"
+    ],
+    "Toy.ZstAssume.replaceUnreachable_refinesPP_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.replaceUnreachable_refinesWT_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.revChainWT_examples": [
+      "propext"
+    ],
+    "Toy.ZstAssume.revChainWT_nil": [
+      "propext"
+    ],
+    "Toy.ZstAssume.revRefinement_admits_ub_introduction": [
+      "propext"
+    ],
+    "Toy.ZstAssume.ru_blk": [
+      "propext"
+    ],
+    "Toy.ZstAssume.ru_init": [
+      "propext"
+    ],
+    "Toy.ZstAssume.ru_refinesPP_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.ru_refinesWT_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.ru_sim": [
+      "propext"
+    ],
+    "Toy.ZstAssume.ru_special": [
+      "propext"
+    ],
+    "Toy.ZstAssume.run": [
+      "propext"
+    ],
+    "Toy.ZstAssume.run.eq_1": [
+      "propext"
+    ],
+    "Toy.ZstAssume.run.eq_2": [
+      "propext"
+    ],
+    "Toy.ZstAssume.run.eq_def": [
+      "propext"
+    ],
+    "Toy.ZstAssume.run.match_1": [],
+    "Toy.ZstAssume.run.match_3": [],
+    "Toy.ZstAssume.run_add_running": [
+      "propext"
+    ],
+    "Toy.ZstAssume.run_add_running.match_1_1": [
+      "propext"
+    ],
+    "Toy.ZstAssume.run_done_add": [
+      "propext"
+    ],
+    "Toy.ZstAssume.run_done_add.match_1_1": [
+      "propext"
+    ],
+    "Toy.ZstAssume.run_done_mono": [
+      "propext"
+    ],
+    "Toy.ZstAssume.run_done_prepend": [
+      "propext"
+    ],
+    "Toy.ZstAssume.run_le_running": [
+      "propext"
+    ],
+    "Toy.ZstAssume.run_pHalt": [
+      "propext"
+    ],
+    "Toy.ZstAssume.run_pLoopBeforeUnreach_zero": [
+      "propext"
+    ],
+    "Toy.ZstAssume.run_pLoopBeforeUnreach_zero.match_1_1": [],
+    "Toy.ZstAssume.run_react": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.run_react_running": [
+      "propext"
+    ],
+    "Toy.ZstAssume.run_react_running_aux": [
+      "propext"
+    ],
+    "Toy.ZstAssume.run_react_running_aux.match_1_1": [],
+    "Toy.ZstAssume.run_spin": [
+      "propext"
+    ],
+    "Toy.ZstAssume.run_succ_halt": [
+      "propext"
+    ],
+    "Toy.ZstAssume.run_succ_next": [
+      "propext"
+    ],
+    "Toy.ZstAssume.run_succ_trace_length": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.run_succ_trace_length.match_1_1": [],
+    "Toy.ZstAssume.run_succ_ub": [
+      "propext"
+    ],
+    "Toy.ZstAssume.run_succ_ub_of_running": [
+      "propext"
+    ],
+    "Toy.ZstAssume.run_trace_chain": [
+      "propext"
+    ],
+    "Toy.ZstAssume.run_trace_mono": [
+      "propext"
+    ],
+    "Toy.ZstAssume.run_ub_add": [
+      "propext"
+    ],
+    "Toy.ZstAssume.run_ub_add.match_1_1": [
+      "propext"
+    ],
+    "Toy.ZstAssume.run_ub_mono": [
+      "propext"
+    ],
+    "Toy.ZstAssume.run_zero": [
+      "propext"
+    ],
+    "Toy.ZstAssume.selectTarget": [],
+    "Toy.ZstAssume.selectTarget.eq_1": [],
+    "Toy.ZstAssume.selectTarget.eq_2": [],
+    "Toy.ZstAssume.selectTarget.eq_def": [],
+    "Toy.ZstAssume.selectTarget.match_1": [],
+    "Toy.ZstAssume.selectTarget_dropArms_ne": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.selectTarget_dropArms_self": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.selectTarget_first_match": [],
+    "Toy.ZstAssume.selectTarget_otherwise": [],
+    "Toy.ZstAssume.setTerm": [
+      "propext"
+    ],
+    "Toy.ZstAssume.setTerm_out_of_range": [
+      "propext"
+    ],
+    "Toy.ZstAssume.simStep_head": [
+      "propext"
+    ],
+    "Toy.ZstAssume.simStep_pre_silent": [
+      "propext"
+    ],
+    "Toy.ZstAssume.simStep_reach": [
+      "propext"
+    ],
+    "Toy.ZstAssume.simStep_same": [
+      "propext"
+    ],
+    "Toy.ZstAssume.simStep_stutter": [
+      "propext"
+    ],
+    "Toy.ZstAssume.simStep_target": [
+      "propext"
+    ],
+    "Toy.ZstAssume.simStep_term": [
+      "propext"
+    ],
+    "Toy.ZstAssume.sim_beh_of_not_wrong": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.sim_done": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.sim_improvesPP": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.sim_necessity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.sim_reach": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.sim_run": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.sim_run.match_1_1": [],
+    "Toy.ZstAssume.sim_transfer": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.staleFact_fold_after_pruneArm": [
+      "propext"
+    ],
+    "Toy.ZstAssume.staleFact_fold_after_pruneArm.match_1_1": [
+      "propext"
+    ],
+    "Toy.ZstAssume.staleFact_fold_after_pruneArm.match_1_4": [
+      "propext"
+    ],
+    "Toy.ZstAssume.staleFact_fold_after_pruneArmAssume_refinesPP": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.state_locals_example": [
+      "propext"
+    ],
+    "Toy.ZstAssume.state_noMem_example": [
+      "propext"
+    ],
+    "Toy.ZstAssume.state_set_frames": [
+      "propext"
+    ],
+    "Toy.ZstAssume.state_set_updates": [
+      "propext"
+    ],
+    "Toy.ZstAssume.step": [
+      "propext"
+    ],
+    "Toy.ZstAssume.step.eq_1": [
+      "propext"
+    ],
+    "Toy.ZstAssume.step.match_1": [],
+    "Toy.ZstAssume.step.match_3": [],
+    "Toy.ZstAssume.step.match_5": [],
+    "Toy.ZstAssume.step_cons_none": [
+      "propext"
+    ],
+    "Toy.ZstAssume.step_cons_some": [
+      "propext"
+    ],
+    "Toy.ZstAssume.step_emit7": [
+      "propext"
+    ],
+    "Toy.ZstAssume.step_unreach": [
+      "propext"
+    ],
+    "Toy.ZstAssume.stopBy_goesWrong": [
+      "propext"
+    ],
+    "Toy.ZstAssume.stutter\u03bc": [],
+    "Toy.ZstAssume.stutter\u03bc.eq_1": [],
+    "Toy.ZstAssume.stutter\u03bc_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.termSim": [
+      "propext"
+    ],
+    "Toy.ZstAssume.ty_align_distinguishes": [],
+    "Toy.ZstAssume.ty_fields": [],
+    "Toy.ZstAssume.ubCheck_of_output_misses_source_ub": [
+      "propext"
+    ],
+    "Toy.ZstAssume.ubCheck_pReadZst4_hypotheses_counterexample": [
+      "propext"
+    ],
+    "Toy.ZstAssume.ubFree_halt": [
+      "propext"
+    ],
+    "Toy.ZstAssume.ubFree_output_hypothesis_counterexample": [
+      "propext"
+    ],
+    "Toy.ZstAssume.ubFree_positive_control_instance": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.ubFree_src_of_ubFree_output_of_revChainWT": [
+      "propext"
+    ],
+    "Toy.ZstAssume.ubFree_src_of_ubFree_tgt_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.ubFree_src_of_ubFree_tgt_of_equivPP": [
+      "propext"
+    ],
+    "Toy.ZstAssume.ubFree_src_of_ubFree_tgt_of_refinesWT_rev": [
+      "propext"
+    ],
+    "Toy.ZstAssume.unreach_ne_of_switch": [
+      "propext"
+    ],
+    "Toy.ZstAssume.wp": [
+      "propext"
+    ],
+    "Toy.ZstAssume.wpFrom": [
+      "propext"
+    ],
+    "Toy.ZstAssume.wpFrom_assume": [
+      "propext"
+    ],
+    "Toy.ZstAssume.wpFrom_unreachable": [
+      "propext"
+    ],
+    "Toy.ZstAssume.wp_halt_true": [
+      "propext"
+    ],
+    "Toy.ZstAssume.wp_of_sim": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.zeroCountCopy_misalignedSrc_deletion_erases_ub": [
+      "propext"
+    ],
+    "Toy.ZstAssume.zeroPre_anyPtr": [
+      "propext"
+    ],
+    "Toy.ZstAssume.zeroPre_copy_checks_src": [
+      "propext"
+    ],
+    "Toy.ZstAssume.zeroPre_of_align_one": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.zeroPre_read_aligned": [
+      "propext"
+    ],
+    "Toy.ZstAssume.zeroPre_read_misaligned": [
+      "propext"
+    ],
+    "Toy.ZstAssume.zstRead_align_one_alignedContract_deletion_equivPP": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.zstRead_misaligned_deletion_erases_ub": [
+      "propext"
+    ],
+    "Toy.ZstAssume.zstRead_null_nonnullContract_deletion_erases_ub": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ZstAssume.\u00abtacticSimp_run[_]At_\u00bb": [],
+    "Toy.ZstAssume.\u00abtacticSimp_run[_]\u00bb": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

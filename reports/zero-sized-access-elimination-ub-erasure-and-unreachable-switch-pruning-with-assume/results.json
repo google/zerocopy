@@ -1,0 +1,1392 @@
+[
+ {
+  "id": "delete-zero-size-access-refines",
+  "lean": "Toy.ZstAssume.deleteZeroSizeAccess_refinesPP",
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "For every zero-size contract `K`, every program `P` and point `(l, i)`: if the `i`-th statement `s` of block `l` is a zero-size access (a `read` or `write` of a type of size 0, or a `copy` of `τ.size * n = 0` bytes, the product taken in unbounded natural numbers), then deleting it gives a prefix-preserving refinement of the source (and hence, by `refinesWT_of_refinesPP`, a whole-trace refinement).",
+  "hypotheses": [
+   {
+    "name": "hs : (P.blk l).stmts[i]? = some s",
+    "theorems": [
+     "Toy.ZstAssume.deleteZeroSizeAccess_refinesPP"
+    ],
+    "purpose": "identifies `s` as the statement deleted at point `(l, i)`",
+    "tightness": "tight",
+    "counterexample": "Toy.ZstAssume.deleteStmt_hs_counterexample",
+    "witness_class": "one-block program `pEmit7` (position `(0, 0)` holds `emit 7`) with `s := read (var 0) ⟨0, 1⟩`, for each contract `K ≠ .nonnullAligned` (so `K = .anyPtr` and `K = .aligned`); `hz` holds"
+   },
+   {
+    "name": "hz : IsZeroSizeAccess s",
+    "theorems": [
+     "Toy.ZstAssume.deleteZeroSizeAccess_refinesPP"
+    ],
+    "purpose": "restricts the deleted statement to a zero-size `read`/`write` or a `copy` of `τ.size * n = 0` bytes",
+    "tightness": "tight",
+    "counterexample": "Toy.ZstAssume.deleteStmt_hz_counterexample",
+    "witness_class": "one-block program `pEmit7` with `s := emit 7`, for every contract `K`; `hs` holds"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "`pReadZst4` (a zero-size read at alignment 4) satisfies `hs` and `hz` at `(0, 0)`; its deletion under `aligned` is proved to be a prefix-preserving refinement independently in `zstRead_misaligned_deletion_erases_ub`.",
+  "nonvacuity_witness_lean": "Toy.ZstAssume.deleteZeroSizeAccess_refinesPP_nonvacuous",
+  "lean_names_note": "This card's lean_names also record the core definitions and their proved examples (the definitions section of REPORT.md) and auxiliary declarations cited outside the cards, which all cards share.",
+  "lean_names": [
+   "Toy.ZstAssume.refinesWT_of_refinesPP",
+   "Toy.ZstAssume.pEmit7",
+   "Toy.ZstAssume.pReadZst4",
+   "Toy.ZstAssume.aligned",
+   "Toy.ZstAssume.zstRead_misaligned_deletion_erases_ub",
+   "Toy.ZstAssume.RefinesPP",
+   "Toy.ZstAssume.RefinesWT",
+   "Toy.ZstAssume.EquivPP",
+   "Toy.ZstAssume.EquivWT",
+   "Toy.ZstAssume.wp",
+   "Toy.ZstAssume.copyLoopLowering_zeroCount_clobbers_counter",
+   "Toy.ZstAssume.Block.unreach",
+   "Toy.ZstAssume.deleteStmt",
+   "Toy.ZstAssume.insertStmt",
+   "Toy.ZstAssume.setTerm",
+   "Toy.ZstAssume.ImprovesPP",
+   "Toy.ZstAssume.hasBehFrom_exists",
+   "Toy.ZstAssume.hasBehFrom_unique",
+   "Toy.ZstAssume.wpFrom_unreachable",
+   "Toy.ZstAssume.wpFrom_assume",
+   "Toy.ZstAssume.pre_eq_zeroPre_of_isZeroSize",
+   "Toy.ZstAssume.aligned_zero_iff",
+   "Toy.ZstAssume.Ty",
+   "Toy.ZstAssume.ty_fields",
+   "Toy.ZstAssume.ty_align_distinguishes",
+   "Toy.ZstAssume.aligned_pos",
+   "Toy.ZstAssume.aligned_zero_align_zero_addr",
+   "Toy.ZstAssume.aligned_neg",
+   "Toy.ZstAssume.aligned_zero_align_nonzero_addr",
+   "Toy.ZstAssume.ZContract",
+   "Toy.ZstAssume.holds_anyPtr_null_misaligned",
+   "Toy.ZstAssume.holds_nonnullAligned_rejects_null",
+   "Toy.ZstAssume.ZContract.holds",
+   "Toy.ZstAssume.holds_aligned_admits_null",
+   "Toy.ZstAssume.holds_aligned_rejects_misaligned",
+   "Toy.ZstAssume.State",
+   "Toy.ZstAssume.state_locals_example",
+   "Toy.ZstAssume.state_noMem_example",
+   "Toy.ZstAssume.State.set",
+   "Toy.ZstAssume.state_set_updates",
+   "Toy.ZstAssume.state_set_frames",
+   "Toy.ZstAssume.Expr",
+   "Toy.ZstAssume.expr_eval_add",
+   "Toy.ZstAssume.expr_eval_no_wrap",
+   "Toy.ZstAssume.Expr.eval",
+   "Toy.ZstAssume.Cond",
+   "Toy.ZstAssume.cond_eval_pos",
+   "Toy.ZstAssume.cond_eval_neg",
+   "Toy.ZstAssume.Cond.eval",
+   "Toy.ZstAssume.Stmt",
+   "Toy.ZstAssume.isZeroSize_read_zst",
+   "Toy.ZstAssume.not_isZeroSize_emit",
+   "Toy.ZstAssume.Term",
+   "Toy.ZstAssume.selectTarget_first_match",
+   "Toy.ZstAssume.selectTarget_otherwise",
+   "Toy.ZstAssume.Block",
+   "Toy.ZstAssume.isUnreachableBlock_unreach",
+   "Toy.ZstAssume.not_isUnreachableBlock_halt",
+   "Toy.ZstAssume.not_isUnreachableBlock_emit_unreach",
+   "Toy.ZstAssume.Prog",
+   "Toy.ZstAssume.hasBeh_emit7",
+   "Toy.ZstAssume.not_hasBeh_emit7_wrong",
+   "Toy.ZstAssume.Prog.blk",
+   "Toy.ZstAssume.isUnreachableBlock_out_of_range",
+   "Toy.ZstAssume.bytesDeref",
+   "Toy.ZstAssume.bytesDeref_pos",
+   "Toy.ZstAssume.bytesDeref_neg",
+   "Toy.ZstAssume.accessOK",
+   "Toy.ZstAssume.accessOK_zero_ignores_deref",
+   "Toy.ZstAssume.accessOK_nonzero_null",
+   "Toy.ZstAssume.Stmt.pre",
+   "Toy.ZstAssume.pre_read_aligned",
+   "Toy.ZstAssume.pre_read_misaligned",
+   "Toy.ZstAssume.IsZeroSizeAccess",
+   "Toy.ZstAssume.isZeroSize_copy_zero_count",
+   "Toy.ZstAssume.isZeroSize_copy_zst",
+   "Toy.ZstAssume.not_isZeroSize_copy_one",
+   "Toy.ZstAssume.not_isZeroSize_read_byte",
+   "Toy.ZstAssume.Stmt.zeroPre",
+   "Toy.ZstAssume.zeroPre_read_aligned",
+   "Toy.ZstAssume.zeroPre_read_misaligned",
+   "Toy.ZstAssume.zeroPre_copy_checks_src",
+   "Toy.ZstAssume.Stmt.accessTy?",
+   "Toy.ZstAssume.accessTy_read",
+   "Toy.ZstAssume.accessTy_emit",
+   "Toy.ZstAssume.Cfg",
+   "Toy.ZstAssume.at_entry",
+   "Toy.ZstAssume.at_terminator",
+   "Toy.ZstAssume.Prog.entry",
+   "Toy.ZstAssume.reachableAt_entry",
+   "Toy.ZstAssume.not_reachableAt_dead_block",
+   "Toy.ZstAssume.Prog.init",
+   "Toy.ZstAssume.Prog.at",
+   "Toy.ZstAssume.selectTarget",
+   "Toy.ZstAssume.StepResult",
+   "Toy.ZstAssume.step_emit7",
+   "Toy.ZstAssume.step_unreach",
+   "Toy.ZstAssume.execStmt",
+   "Toy.ZstAssume.execStmt_assume_pass",
+   "Toy.ZstAssume.execStmt_assume_fail",
+   "Toy.ZstAssume.step",
+   "Toy.ZstAssume.Outcome",
+   "Toy.ZstAssume.outcome_isRunning_running",
+   "Toy.ZstAssume.outcome_isRunning_ub",
+   "Toy.ZstAssume.Outcome.cons",
+   "Toy.ZstAssume.outcome_cons_some",
+   "Toy.ZstAssume.cons_none",
+   "Toy.ZstAssume.Outcome.trace",
+   "Toy.ZstAssume.outcome_trace_done",
+   "Toy.ZstAssume.outcome_trace_ub_ne",
+   "Toy.ZstAssume.Outcome.isRunning",
+   "Toy.ZstAssume.run",
+   "Toy.ZstAssume.run_spin",
+   "Toy.ZstAssume.run_pHalt",
+   "Toy.ZstAssume.Beh",
+   "Toy.ZstAssume.hasBeh_react",
+   "Toy.ZstAssume.hasBeh_spin",
+   "Toy.ZstAssume.prefixOf",
+   "Toy.ZstAssume.prefixOf_example",
+   "Toy.ZstAssume.prefixOf_neg",
+   "Toy.ZstAssume.HasBehFrom",
+   "Toy.ZstAssume.HasBeh",
+   "Toy.ZstAssume.GoesWrongFrom",
+   "Toy.ZstAssume.goesWrongFrom_unreach",
+   "Toy.ZstAssume.not_goesWrongFrom_halt",
+   "Toy.ZstAssume.Beh.HasPrefix",
+   "Toy.ZstAssume.improvesPP_pos",
+   "Toy.ZstAssume.improvesPP_neg",
+   "Toy.ZstAssume.ImprovesWT",
+   "Toy.ZstAssume.improvesWT_pos",
+   "Toy.ZstAssume.improvesWT_neg",
+   "Toy.ZstAssume.refinesPP_of_src_unreach",
+   "Toy.ZstAssume.not_refinesPP_emitUnreach_unreach",
+   "Toy.ZstAssume.refinesWT_emitUnreach_unreach",
+   "Toy.ZstAssume.not_refinesWT_halt_unreach",
+   "Toy.ZstAssume.zstRead_align_one_alignedContract_deletion_equivPP",
+   "Toy.ZstAssume.not_equivPP_emitUnreach_unreach",
+   "Toy.ZstAssume.equivWT_emitUnreach_unreach",
+   "Toy.ZstAssume.not_equivWT_halt_unreach",
+   "Toy.ZstAssume.ReachableAt",
+   "Toy.ZstAssume.UBFree",
+   "Toy.ZstAssume.ubFree_halt",
+   "Toy.ZstAssume.not_ubFree_unreach",
+   "Toy.ZstAssume.wpFrom",
+   "Toy.ZstAssume.wp_halt_true",
+   "Toy.ZstAssume.not_wp_unreach",
+   "Toy.ZstAssume.FactOnDefinedRuns",
+   "Toy.ZstAssume.pFact_fact",
+   "Toy.ZstAssume.pruneArmAssume_fact_hypothesis_counterexample",
+   "Toy.ZstAssume.deleteStmt_example",
+   "Toy.ZstAssume.deleteStmt_out_of_range",
+   "Toy.ZstAssume.insertStmt_example",
+   "Toy.ZstAssume.insertStmt_past_end",
+   "Toy.ZstAssume.replaceUnreachable",
+   "Toy.ZstAssume.replaceUnreachable_example",
+   "Toy.ZstAssume.replaceUnreachable_out_of_range",
+   "Toy.ZstAssume.foldToGoto_example",
+   "Toy.ZstAssume.setTerm_out_of_range",
+   "Toy.ZstAssume.IsUnreachableBlock",
+   "Toy.ZstAssume.dropArms",
+   "Toy.ZstAssume.dropArms_example",
+   "Toy.ZstAssume.dropArms_keeps",
+   "Toy.ZstAssume.pruneArm",
+   "Toy.ZstAssume.pruneArm_example",
+   "Toy.ZstAssume.pruneArm_non_switch",
+   "Toy.ZstAssume.pruneArmAssume",
+   "Toy.ZstAssume.pruneArmAssume_example",
+   "Toy.ZstAssume.pruneArmAssume_non_switch",
+   "Toy.ZstAssume.pruneOtherwiseAssume",
+   "Toy.ZstAssume.pruneOtherwiseAssume_example",
+   "Toy.ZstAssume.pruneOtherwiseAssume_two_arms",
+   "Toy.ZstAssume.foldToGoto",
+   "Toy.ZstAssume.staleFact_fold_after_pruneArm",
+   "Toy.ZstAssume.copyProg",
+   "Toy.ZstAssume.copyProg_aligned_term",
+   "Toy.ZstAssume.copyProg_misaligned_wrong",
+   "Toy.ZstAssume.copyLoopProg",
+   "Toy.ZstAssume.copyLoopProg_zero_term",
+   "Toy.ZstAssume.copyLoopProg_one_misaligned_wrong",
+   "Toy.ZstAssume.ExactUBChecker",
+   "Toy.ZstAssume.exactUBChecker_exists",
+   "Toy.ZstAssume.not_exactUBChecker_const_true",
+   "Toy.ZstAssume.RevChainWT",
+   "Toy.ZstAssume.revChainWT_nil",
+   "Toy.ZstAssume.not_revChainWT_unreach_halt",
+   "Toy.ZstAssume.equivWT_of_equivPP",
+   "Toy.ZstAssume.zeroPre_of_align_one",
+   "Toy.ZstAssume.deleteZeroSizeAccess_iff_nonvacuous",
+   "Toy.ZstAssume.deleteZeroSizeAccess_sufficient_nonvacuous",
+   "Toy.ZstAssume.deleteZeroSizeAccess_pReadZst4_counterexample",
+   "Toy.ZstAssume.deleteZeroSizeAccess_pReadZst1_nonnull_counterexample",
+   "Toy.ZstAssume.insertEmit_counterexample",
+   "Toy.ZstAssume.insertZstRead_before_failing_read_refinesPP",
+   "Toy.ZstAssume.insertZeroSizeAccess_anyPtr_nonvacuous",
+   "Toy.ZstAssume.insertZeroSizeAccess_hpre_counterexample",
+   "Toy.ZstAssume.hoistZstRead_anyPtr_equivPP",
+   "Toy.ZstAssume.not_ubFree_src_of_not_ubFree_tgt_of_refinesWT",
+   "Toy.ZstAssume.revRefinement_admits_ub_introduction",
+   "Toy.ZstAssume.ubFree_output_hypothesis_counterexample",
+   "Toy.ZstAssume.ubCheck_pReadZst4_hypotheses_counterexample",
+   "Toy.ZstAssume.ubFree_positive_control_instance",
+   "Toy.ZstAssume.ubFree_src_of_ubFree_tgt_nonvacuous",
+   "Toy.ZstAssume.pSw_hyps",
+   "Toy.ZstAssume.pruneArmAssume_pSw_equivPP_and_wp",
+   "Toy.ZstAssume.pruneArmAssume_emit_before_unreachable_not_refinesPP",
+   "Toy.ZstAssume.pruneArm_hU_counterexample",
+   "Toy.ZstAssume.pruneArm_hterm_counterexample",
+   "Toy.ZstAssume.pruneArm_iff_counterexample",
+   "Toy.ZstAssume.pSwOne_hyps",
+   "Toy.ZstAssume.pruneOtherwiseAssume_pSwOne_equivPP",
+   "Toy.ZstAssume.pruneOtherwiseAssume_live_otherwise_not_refinesWT",
+   "Toy.ZstAssume.pruneArm_pSw_hyps_counterexample",
+   "Toy.ZstAssume.pSw_fact_not_invariant",
+   "Toy.ZstAssume.pSwAssumeOw_hyps",
+   "Toy.ZstAssume.pruneArm_pSwAssumeOw_equivPP",
+   "Toy.ZstAssume.pruneArm_equivPP_of_invariant_ne_nonvacuous",
+   "Toy.ZstAssume.pruneArm_invariant_ne_hterm_counterexample",
+   "Toy.ZstAssume.pruneArm_equivPP_of_otherwise_unreachable_nonvacuous",
+   "Toy.ZstAssume.factOnDefinedRuns_unreach",
+   "Toy.ZstAssume.pruneArmAssume_preserves_factOnDefinedRuns_nonvacuous",
+   "Toy.ZstAssume.replaceUnreachable_pSilentToUnreach",
+   "Toy.ZstAssume.Var",
+   "Toy.ZstAssume.Label",
+   "Toy.ZstAssume.mkState",
+   "Toy.ZstAssume.mkStateNoMem",
+   "Toy.ZstAssume.pSpin",
+   "Toy.ZstAssume.pReact",
+   "Toy.ZstAssume.pEmitUnreach",
+   "Toy.ZstAssume.pTwoHalts"
+  ],
+  "non_claims": [
+   "Does not say the deletion is an equivalence; `zstRead_misaligned_deletion_erases_ub` shows it can erase UB.",
+   "Does not cover deleting other statements whose sole effect is a possible UB event (nonzero accesses, `assume`); that they are also refinements in the toy is plausible but not proved here. Because the toy models no stored or loaded values, deleting a nonzero-size access would not change data in the toy either, so the zero-size restriction is about the theorem's scope, not about a data effect the toy represents.",
+   "Behaviours record emitted values and no final state: `Beh.term` discards the final locals and memory, so `RefinesPP`, `RefinesWT`, `EquivPP` and `EquivWT` neither establish nor refute preservation of final states or of `wp` (`copyLoopLowering_zeroCount_clobbers_counter` is a prefix-preserving refinement that changes a final local and does not preserve `wp`).",
+   "Value validity is not modelled: a toy `read` produces no value, so a zero-size type of alignment 1 whose values cannot exist (such as Rust's `!`) has no counterpart, and reading it, which is UB in Rust for a reason the toy does not represent (prior art: the Rust Reference's invalid-value rule), lies outside these statements; they neither establish nor refute anything about it.",
+   "`copy src dst τ n` takes a literal natural-number count `n` (byte count `τ.size * n`, an unbounded natural-number product, so the zero-size edges are size 0 or count 0), not a run-time value, and does not check overlap of the two regions; counts computed at run time, overlapping copies and volatile accesses are not modelled.",
+   "Degenerate edges: if `l` is outside the block list, `P.blk l` is `Block.unreach` (no statements, so a statement hypothesis `hs` fails); `deleteStmt`, `insertStmt`, `setTerm` and `List.set` leave a program unchanged at an out-of-range label.",
+   "`ZContract` has the three constructors `anyPtr`, `aligned`, `nonnullAligned` (definition quoted above). A zero-size contract that forbids null without requiring alignment (the shape of the documented requirements of `read_unaligned`/`write_unaligned` quoted under the prior art of `delete-zero-size-access-equivalence-sufficient-conditions`) is not among them; it agrees with `nonnullAligned` at alignment 1 and with no constructor at larger alignments. Within the toy, `K ≠ .nonnullAligned` means \"the contract permits null\".",
+   "The toy language is deterministic, with integer locals and a byte-granular dereferenceability map: no stored values, no provenance, no allocation or deallocation, no concurrency and no calls. It has a single UB class (failed access precondition, failed `assume`, reaching `unreachable`).",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, Miri, LLVM or the Rust standard library."
+  ],
+  "prior_art": [
+   "X. Leroy, 'Formal verification of a realistic compiler', Commun. ACM 52(7):107–115, 2009, doi:10.1145/1538788.1538814 (observable behaviours with traces: termination, divergence, going wrong). Quoted from the author's version (§2.1; printed page not checked): \"compiler optimizations can optimize away “going wrong” behaviors\" and property (2) \"S safe =⇒ (∀B, C ⇓ B =⇒ S ⇓ B)\", a whole-trace inclusion for sources that cannot go wrong; property (4) \"S |= Spec =⇒ C |= Spec\" is forward preservation of specifications. The prefix-preserving relation used here (`ImprovesPP`) is CompCert's `behavior_improves`, not a definition of that paper.",
+   "CompCert, AbsInt/CompCert commit 5e4ef44c57b22cdc2e1893770843fd693a5f82e1, common/Behaviors.v L81–82: `Definition behavior_improves (beh1 beh2: program_behavior) : Prop := beh1 = beh2 \\/ exists t, beh1 = Goes_wrong t /\\ behavior_prefix t beh2.` (`beh1` is the source behaviour). `ImprovesPP bt bs` is this relation with `bs` as `beh1`.",
+   "N. P. Lopes, J. Lee, C.-K. Hur, Z. Liu, J. Regehr, 'Alive2: Bounded Translation Validation for LLVM', PLDI 2021, pp. 65–79, doi:10.1145/3453483.3454030 (refinement in which source UB permits any target behaviour).",
+   "rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, library/core/src/ptr/mod.rs: L18 \"* A [null] pointer is *never* valid for reads/writes.\"; L19 \"* For memory accesses of [size zero][zst], *every* non-null pointer is valid for reads/writes.\"; L61–62 \"When a function requires proper alignment, it does so even if the access has size 0, i.e., even if memory is not actually touched.\"; `copy_nonoverlapping` L479 \"* `src` must be [valid] for reads of `count * size_of::<T>()` bytes or that number must be 0.\", L483 \"* Both `src` and `dst` must be properly aligned.\"; `read` L1613 \"* `src` must be [valid] for reads or `T` must be a ZST.\", L1620 \"Note that even if `T` has size `0`, the pointer must be properly aligned.\"; `drop_in_place` L776 \"* `to_drop` must be properly aligned, even if `T` has size 0.\", L778 \"* `to_drop` must be nonnull, even if `T` has size 0.\"",
+   "Contract history (documentation): rust-lang/rust tag 1.80.0, library/core/src/ptr/mod.rs L18 \"* For operations of [size zero][zst], *every* pointer is valid, including the [null] pointer.\" and `read` L1191 \"Note that even if `T` has size `0`, the pointer must be non-null and properly aligned.\"; library/core/src/intrinsics.rs (1.80.0) `copy_nonoverlapping` L2875–2876 \"Note that even if the effectively copied size (`count * size_of::<T>()`) is `0`, the pointers must be non-null and properly aligned.\" Tag 1.88.0: ptr/mod.rs L18–19 \"* For memory accesses of [size zero][zst], *every* pointer is valid, including the [null] pointer.\", `read` L1320 \"Note that even if `T` has size `0`, the pointer must be properly aligned.\"; intrinsics/mod.rs `copy_nonoverlapping` L3668–3669 \"... is `0`, the pointers must be properly aligned.\" The definition of validity was changed by rust-lang/rust#152615 ('refactor 'valid for read/write' definition: exclude null', merged 2026-02-28, https://github.com/rust-lang/rust/pull/152615), which states it is an attempt to resolve rust-lang/rust#138351 ('core::ptr::replace implementation is unsound since Rust 1.80', closed 2026-02-28, https://github.com/rust-lang/rust/issues/138351). The parameter `K : ZContract` covers all of these versions; no version is selected.",
+   "MiniRust (an executable specification of Rust semantics; not the official Rust semantics), minirust/minirust 98043a70de612f6af4eaf1e35cf0b8a6ebea22ce, spec/mem/basic.md L198–203: \"// For zero-sized accesses, there is nothing to check.\" / \"// (Provenance monotonicity says that if we allow zero-sized accesses\" / \"// for `None` provenance we have to allow it for all provenance.)\" / \"if len.is_zero() {\" / \"return ret(None);\" / \"}\"; `store` L234–236: \"if !align.is_aligned(ptr.addr) {\" / \"throw_ub!(\\\"store to a misaligned pointer\\\");\" / \"}\"; `load` L260–262: \"if !align.is_aligned(ptr.addr) {\" / \"throw_ub!(\\\"load from a misaligned pointer\\\");\" / \"}\". In that model a zero-sized load or store is UB through a misaligned pointer and is not rejected by `check_ptr` for any address, which matches the toy shape `aligned` (derived reading of the quoted lines).",
+   "N. Popov, A. Ballman, 'Allow zero length operations on null pointers', ISO/IEC JTC1/SC22/WG14 N3322, 2024-08-28, https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3322.pdf, abstract: \"Proposes allowing null + 0, null - null and passing null to certain C standard library functions if the length argument is also zero. This removes a class of undefined behavior and brings the specification more in line with C++.\" (a proposal for C2y; its adoption status is not recorded here)."
+  ],
+  "design_question": "Deleting a zero-size access or a zero-count copy removes code whose sole effect is a possible UB event (the precondition `pre₀` of the access). A verified compiler must know when the deletion is an equivalence (UB-preserving) and when it is merely a forward refinement (UB-erasing), for each documented zero-size contract."
+ },
+ {
+  "id": "delete-zero-size-access-equivalence-exact-condition",
+  "lean": [
+   "Toy.ZstAssume.deleteZeroSizeAccess_equivPP_iff",
+   "Toy.ZstAssume.deleteZeroSizeAccess_equivWT_iff"
+  ],
+  "kind": "characterization",
+  "tier": "T1",
+  "plain_claim": "For every zero-size contract `K`, every program `P` and point `(l, i)`: if the `i`-th statement `s` of block `l` is a zero-size access, then deleting it is a prefix-preserving equivalence iff, for every reachable state at `(l, i)` in which `pre₀` of `s` fails, the target run from the point after the deleted statement reaches UB with empty trace; and it is a whole-trace equivalence iff, for every such state, that target run reaches UB after some trace.",
+  "hypotheses": [
+   {
+    "name": "hs : (P.blk l).stmts[i]? = some s",
+    "theorems": [
+     "Toy.ZstAssume.deleteZeroSizeAccess_equivPP_iff",
+     "Toy.ZstAssume.deleteZeroSizeAccess_equivWT_iff"
+    ],
+    "purpose": "identifies `s` as the statement deleted at point `(l, i)`",
+    "tightness": "tight",
+    "counterexample": "Toy.ZstAssume.deleteStmt_hs_counterexample",
+    "witness_class": "one-block program `pEmit7` (position `(0, 0)` holds `emit 7`) with `s := read (var 0) ⟨0, 1⟩`, for each contract `K ≠ .nonnullAligned` (so `K = .anyPtr` and `K = .aligned`); `hz` holds; the left-hand sides of both characterizations are false and the right-hand sides hold vacuously (`zeroPre` of `s` is `true` in every state)"
+   },
+   {
+    "name": "hz : IsZeroSizeAccess s",
+    "theorems": [
+     "Toy.ZstAssume.deleteZeroSizeAccess_equivPP_iff",
+     "Toy.ZstAssume.deleteZeroSizeAccess_equivWT_iff"
+    ],
+    "purpose": "restricts the deleted statement to a zero-size `read`/`write` or a `copy` of `τ.size * n = 0` bytes",
+    "tightness": "tight",
+    "counterexample": "Toy.ZstAssume.deleteStmt_hz_counterexample",
+    "witness_class": "one-block program `pEmit7` with `s := emit 7`, for every contract `K`; `hs` holds; the left-hand sides of both characterizations are false and the right-hand sides hold vacuously (`zeroPre` of `s` is `true` in every state)"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "`pTwoZstReads` satisfies `hs` and `hz` at `(0, 0)`. Under `aligned` it is also an instance in which the right-hand sides hold although a reachable state violates `pre₀` (`deleteZeroSizeAccess_equivPP_despite_reachable_zeroPre_failure`); `zstRead_misaligned_deletion_erases_ub` is an instance in which both sides are false.",
+  "nonvacuity_witness_lean": "Toy.ZstAssume.deleteZeroSizeAccess_iff_nonvacuous",
+  "lean_names": [
+   "Toy.ZstAssume.pEmit7",
+   "Toy.ZstAssume.pTwoZstReads",
+   "Toy.ZstAssume.aligned",
+   "Toy.ZstAssume.deleteZeroSizeAccess_equivPP_despite_reachable_zeroPre_failure",
+   "Toy.ZstAssume.zstRead_misaligned_deletion_erases_ub",
+   "Toy.ZstAssume.deleteZeroSizeAccess_equivPP_of_zeroPre_reachable",
+   "Toy.ZstAssume.GoesWrongFrom",
+   "Toy.ZstAssume.ReachableAt",
+   "Toy.ZstAssume.RefinesPP",
+   "Toy.ZstAssume.RefinesWT",
+   "Toy.ZstAssume.EquivPP",
+   "Toy.ZstAssume.EquivWT",
+   "Toy.ZstAssume.wp",
+   "Toy.ZstAssume.copyLoopLowering_zeroCount_clobbers_counter",
+   "Toy.ZstAssume.ZContract",
+   "Toy.ZstAssume.ImprovesPP"
+  ],
+  "non_claims": [
+   "The condition is not \"`pre₀` holds on every reachable state\": that is sufficient (`deleteZeroSizeAccess_equivPP_of_zeroPre_reachable`) but not necessary (`deleteZeroSizeAccess_equivPP_despite_reachable_zeroPre_failure`).",
+   "The continuation is run in the target program (loops re-entering block `l` see the deleted version).",
+   "`GoesWrongFrom` requires reaching UB in finitely many steps: a continuation that diverges does not satisfy the right-hand sides.",
+   "Reachability (`ReachableAt`) ranges over all initial toy states, including runs that reach UB later; no calling context, type invariant or precondition on inputs (such as a caller-guaranteed aligned pointer) is modelled.",
+   "Behaviours record emitted values and no final state: `Beh.term` discards the final locals and memory, so `RefinesPP`, `RefinesWT`, `EquivPP` and `EquivWT` neither establish nor refute preservation of final states or of `wp` (`copyLoopLowering_zeroCount_clobbers_counter` is a prefix-preserving refinement that changes a final local and does not preserve `wp`).",
+   "Value validity is not modelled: a toy `read` produces no value, so a zero-size type of alignment 1 whose values cannot exist (such as Rust's `!`) has no counterpart, and reading it, which is UB in Rust for a reason the toy does not represent (prior art: the Rust Reference's invalid-value rule), lies outside these statements; they neither establish nor refute anything about it.",
+   "`ZContract` has the three constructors `anyPtr`, `aligned`, `nonnullAligned` (definition quoted above). A zero-size contract that forbids null without requiring alignment (the shape of the documented requirements of `read_unaligned`/`write_unaligned` quoted under the prior art of `delete-zero-size-access-equivalence-sufficient-conditions`) is not among them; it agrees with `nonnullAligned` at alignment 1 and with no constructor at larger alignments. Within the toy, `K ≠ .nonnullAligned` means \"the contract permits null\".",
+   "`copy src dst τ n` takes a literal natural-number count `n` (byte count `τ.size * n`, an unbounded natural-number product, so the zero-size edges are size 0 or count 0), not a run-time value, and does not check overlap of the two regions; counts computed at run time, overlapping copies and volatile accesses are not modelled.",
+   "The toy language is deterministic, with integer locals and a byte-granular dereferenceability map: no stored values, no provenance, no allocation or deallocation, no concurrency and no calls. It has a single UB class (failed access precondition, failed `assume`, reaching `unreachable`).",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, Miri, LLVM or the Rust standard library."
+  ],
+  "prior_art": [
+   "X. Leroy, 'Formal verification of a realistic compiler', Commun. ACM 52(7):107–115, 2009, doi:10.1145/1538788.1538814 (observable behaviours with traces: termination, divergence, going wrong). Quoted from the author's version (§2.1; printed page not checked): \"compiler optimizations can optimize away “going wrong” behaviors\" and property (2) \"S safe =⇒ (∀B, C ⇓ B =⇒ S ⇓ B)\", a whole-trace inclusion for sources that cannot go wrong; property (4) \"S |= Spec =⇒ C |= Spec\" is forward preservation of specifications. The prefix-preserving relation used here (`ImprovesPP`) is CompCert's `behavior_improves`, not a definition of that paper.",
+   "CompCert, AbsInt/CompCert commit 5e4ef44c57b22cdc2e1893770843fd693a5f82e1, common/Behaviors.v L81–82: `Definition behavior_improves (beh1 beh2: program_behavior) : Prop := beh1 = beh2 \\/ exists t, beh1 = Goes_wrong t /\\ behavior_prefix t beh2.` (`beh1` is the source behaviour). `ImprovesPP bt bs` is this relation with `bs` as `beh1`.",
+   "N. P. Lopes, J. Lee, C.-K. Hur, Z. Liu, J. Regehr, 'Alive2: Bounded Translation Validation for LLVM', PLDI 2021, pp. 65–79, doi:10.1145/3453483.3454030 (refinement in which source UB permits any target behaviour).",
+   "rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, library/core/src/ptr/mod.rs: L18 \"* A [null] pointer is *never* valid for reads/writes.\"; L19 \"* For memory accesses of [size zero][zst], *every* non-null pointer is valid for reads/writes.\"; L61–62 \"When a function requires proper alignment, it does so even if the access has size 0, i.e., even if memory is not actually touched.\"; `copy_nonoverlapping` L479 \"* `src` must be [valid] for reads of `count * size_of::<T>()` bytes or that number must be 0.\", L483 \"* Both `src` and `dst` must be properly aligned.\"; `read` L1613 \"* `src` must be [valid] for reads or `T` must be a ZST.\", L1620 \"Note that even if `T` has size `0`, the pointer must be properly aligned.\"; `drop_in_place` L776 \"* `to_drop` must be properly aligned, even if `T` has size 0.\", L778 \"* `to_drop` must be nonnull, even if `T` has size 0.\"",
+   "MiniRust (an executable specification of Rust semantics; not the official Rust semantics), minirust/minirust 98043a70de612f6af4eaf1e35cf0b8a6ebea22ce, spec/mem/basic.md L198–203: \"// For zero-sized accesses, there is nothing to check.\" / \"// (Provenance monotonicity says that if we allow zero-sized accesses\" / \"// for `None` provenance we have to allow it for all provenance.)\" / \"if len.is_zero() {\" / \"return ret(None);\" / \"}\"; `store` L234–236: \"if !align.is_aligned(ptr.addr) {\" / \"throw_ub!(\\\"store to a misaligned pointer\\\");\" / \"}\"; `load` L260–262: \"if !align.is_aligned(ptr.addr) {\" / \"throw_ub!(\\\"load from a misaligned pointer\\\");\" / \"}\". In that model a zero-sized load or store is UB through a misaligned pointer and is not rejected by `check_ptr` for any address, which matches the toy shape `aligned` (derived reading of the quoted lines)."
+  ],
+  "design_question": "Deleting a zero-size access or a zero-count copy removes code whose sole effect is a possible UB event (the precondition `pre₀` of the access). A verified compiler must know when the deletion is an equivalence (UB-preserving) and when it is merely a forward refinement (UB-erasing), for each documented zero-size contract."
+ },
+ {
+  "id": "delete-zero-size-access-equivalence-sufficient-conditions",
+  "lean": [
+   "Toy.ZstAssume.deleteZeroSizeAccess_equivPP_of_zeroPre_reachable",
+   "Toy.ZstAssume.deleteZeroSizeAccess_equivPP_of_anyPtr",
+   "Toy.ZstAssume.deleteZeroSizeAccess_equivPP_of_align_one_of_null_permitted"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "For every program `P` and point `(l, i)` whose `i`-th statement `s` of block `l` is a zero-size access: for every zero-size contract `K`, if `pre₀` of `s` holds on every reachable state at `(l, i)`, deleting `s` is a prefix-preserving equivalence; under the contract `pre₀ = True` (`anyPtr`) deleting `s` is a prefix-preserving equivalence; and for every contract `K` other than `nonnullAligned` (that is, permitting null, within the three toy shapes), if every accessed type of `s` has alignment 1, deleting `s` is a prefix-preserving equivalence.",
+  "hypotheses": [
+   {
+    "name": "hs : (P.blk l).stmts[i]? = some s",
+    "theorems": [
+     "Toy.ZstAssume.deleteZeroSizeAccess_equivPP_of_zeroPre_reachable",
+     "Toy.ZstAssume.deleteZeroSizeAccess_equivPP_of_anyPtr",
+     "Toy.ZstAssume.deleteZeroSizeAccess_equivPP_of_align_one_of_null_permitted"
+    ],
+    "purpose": "identifies `s` as the statement deleted at point `(l, i)`",
+    "tightness": "tight",
+    "counterexample": "Toy.ZstAssume.deleteStmt_hs_counterexample",
+    "witness_class": "one-block program `pEmit7` (position `(0, 0)` holds `emit 7`) with `s := read (var 0) ⟨0, 1⟩`, for each contract `K ≠ .nonnullAligned` (so `K = .anyPtr` and `K = .aligned`); `hz` holds; `ha` holds and `zeroPre` of `s` is `true` in every state, so `hpre` holds"
+   },
+   {
+    "name": "hz : IsZeroSizeAccess s",
+    "theorems": [
+     "Toy.ZstAssume.deleteZeroSizeAccess_equivPP_of_zeroPre_reachable",
+     "Toy.ZstAssume.deleteZeroSizeAccess_equivPP_of_anyPtr",
+     "Toy.ZstAssume.deleteZeroSizeAccess_equivPP_of_align_one_of_null_permitted"
+    ],
+    "purpose": "restricts the deleted statement to a zero-size `read`/`write` or a `copy` of `τ.size * n = 0` bytes",
+    "tightness": "tight",
+    "counterexample": "Toy.ZstAssume.deleteStmt_hz_counterexample",
+    "witness_class": "one-block program `pEmit7` with `s := emit 7`, for every contract `K`; `hs` holds; `emit 7` has no accessed type, so `ha` holds vacuously, and its `zeroPre` is `true`, so `hpre` holds; `K = .anyPtr` and `K = .aligned` (which satisfies `hK`) are included"
+   },
+   {
+    "name": "hpre : ∀ st, ReachableAt K P l i st → s.zeroPre K st = true",
+    "theorems": [
+     "Toy.ZstAssume.deleteZeroSizeAccess_equivPP_of_zeroPre_reachable"
+    ],
+    "purpose": "the zero-size precondition never fails where the access executes",
+    "tightness": "tight",
+    "counterexample": "Toy.ZstAssume.deleteZeroSizeAccess_pReadZst4_counterexample",
+    "witness_class": "one-block program `pReadZst4`, contract `aligned`, alignment 4, reachable local `0 = 1`; `hs` and `hz` hold"
+   },
+   {
+    "name": "K = .anyPtr",
+    "theorems": [
+     "Toy.ZstAssume.deleteZeroSizeAccess_equivPP_of_anyPtr"
+    ],
+    "purpose": "makes `pre₀` true for every pointer",
+    "tightness": "tight",
+    "counterexample": "Toy.ZstAssume.deleteZeroSizeAccess_pReadZst4_counterexample",
+    "witness_class": "the same instance with contract `aligned` (not `anyPtr`)"
+   },
+   {
+    "name": "hK : K ≠ .nonnullAligned",
+    "theorems": [
+     "Toy.ZstAssume.deleteZeroSizeAccess_equivPP_of_align_one_of_null_permitted"
+    ],
+    "purpose": "the contract permits null",
+    "tightness": "tight",
+    "counterexample": "Toy.ZstAssume.deleteZeroSizeAccess_pReadZst1_nonnull_counterexample",
+    "witness_class": "one-block program `pReadZst1` (alignment 1), contract `nonnullAligned`, null pointer; `hs`, `hz`, `ha` hold"
+   },
+   {
+    "name": "ha : ∀ τ, s.accessTy? = some τ → τ.align = 1",
+    "theorems": [
+     "Toy.ZstAssume.deleteZeroSizeAccess_equivPP_of_align_one_of_null_permitted"
+    ],
+    "purpose": "every address is aligned",
+    "tightness": "tight",
+    "counterexample": "Toy.ZstAssume.deleteZeroSizeAccess_pReadZst4_counterexample",
+    "witness_class": "`pReadZst4`, alignment 4, contract `aligned` (which satisfies `hK`); `hs`, `hz` hold"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`pReadZst1` under `aligned`: all hypotheses of the three theorems hold (for `deleteZeroSizeAccess_equivPP_of_anyPtr`, `hs` and `hz`); the equivalence for that instance is proved independently in `zstRead_align_one_alignedContract_deletion_equivPP`. At alignment 1 under a contract permitting null, `zeroPre` holds in every state (`zeroPre_of_align_one`).",
+  "nonvacuity_witness_lean": "Toy.ZstAssume.deleteZeroSizeAccess_sufficient_nonvacuous",
+  "lean_names": [
+   "Toy.ZstAssume.pEmit7",
+   "Toy.ZstAssume.pReadZst4",
+   "Toy.ZstAssume.aligned",
+   "Toy.ZstAssume.pReadZst1",
+   "Toy.ZstAssume.zstRead_align_one_alignedContract_deletion_equivPP",
+   "Toy.ZstAssume.zeroPre_of_align_one",
+   "Toy.ZstAssume.deleteZeroSizeAccess_equivPP_iff",
+   "Toy.ZstAssume.ZContract",
+   "Toy.ZstAssume.aligned_zero_iff",
+   "Toy.ZstAssume.ReachableAt"
+  ],
+  "non_claims": [
+   "These are sufficient conditions; the exact condition is `deleteZeroSizeAccess_equivPP_iff`.",
+   "`ZContract` has the three constructors `anyPtr`, `aligned`, `nonnullAligned` (definition quoted above). A zero-size contract that forbids null without requiring alignment (the shape of the documented requirements of `read_unaligned`/`write_unaligned` quoted under prior art) is not among them; it agrees with `nonnullAligned` at alignment 1 and with no constructor at larger alignments. Within the toy, `K ≠ .nonnullAligned` means \"the contract permits null\".",
+   "Value validity is not modelled: a toy `read` produces no value, so a zero-size type of alignment 1 whose values cannot exist (such as Rust's `!`) has no counterpart, and reading it, which is UB in Rust for a reason the toy does not represent (prior art: the Rust Reference's invalid-value rule), lies outside these statements; they neither establish nor refute anything about it.",
+   "Alignment 0 is a degenerate edge of the toy (`aligned 0 p` holds iff `p = 0`, `aligned_zero_iff`, by the Euclidean `Int` remainder `p % 0 = p`); the statements quantify over it but no intended contract uses it.",
+   "Reachability (`ReachableAt`) ranges over all initial toy states, including runs that reach UB later; no calling context, type invariant or precondition on inputs (such as a caller-guaranteed aligned pointer) is modelled.",
+   "`copy src dst τ n` takes a literal natural-number count `n` (byte count `τ.size * n`, an unbounded natural-number product, so the zero-size edges are size 0 or count 0), not a run-time value, and does not check overlap of the two regions; counts computed at run time, overlapping copies and volatile accesses are not modelled.",
+   "The toy language is deterministic, with integer locals and a byte-granular dereferenceability map: no stored values, no provenance, no allocation or deallocation, no concurrency and no calls. It has a single UB class (failed access precondition, failed `assume`, reaching `unreachable`).",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, Miri, LLVM or the Rust standard library."
+  ],
+  "prior_art": [
+   "rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, library/core/src/ptr/mod.rs: L18 \"* A [null] pointer is *never* valid for reads/writes.\"; L19 \"* For memory accesses of [size zero][zst], *every* non-null pointer is valid for reads/writes.\"; L61–62 \"When a function requires proper alignment, it does so even if the access has size 0, i.e., even if memory is not actually touched.\"; `copy_nonoverlapping` L479 \"* `src` must be [valid] for reads of `count * size_of::<T>()` bytes or that number must be 0.\", L483 \"* Both `src` and `dst` must be properly aligned.\"; `read` L1613 \"* `src` must be [valid] for reads or `T` must be a ZST.\", L1620 \"Note that even if `T` has size `0`, the pointer must be properly aligned.\"; `drop_in_place` L776 \"* `to_drop` must be properly aligned, even if `T` has size 0.\", L778 \"* `to_drop` must be nonnull, even if `T` has size 0.\"",
+   "Contract history (documentation): rust-lang/rust tag 1.80.0, library/core/src/ptr/mod.rs L18 \"* For operations of [size zero][zst], *every* pointer is valid, including the [null] pointer.\" and `read` L1191 \"Note that even if `T` has size `0`, the pointer must be non-null and properly aligned.\"; library/core/src/intrinsics.rs (1.80.0) `copy_nonoverlapping` L2875–2876 \"Note that even if the effectively copied size (`count * size_of::<T>()`) is `0`, the pointers must be non-null and properly aligned.\" Tag 1.88.0: ptr/mod.rs L18–19 \"* For memory accesses of [size zero][zst], *every* pointer is valid, including the [null] pointer.\", `read` L1320 \"Note that even if `T` has size `0`, the pointer must be properly aligned.\"; intrinsics/mod.rs `copy_nonoverlapping` L3668–3669 \"... is `0`, the pointers must be properly aligned.\" The definition of validity was changed by rust-lang/rust#152615 ('refactor 'valid for read/write' definition: exclude null', merged 2026-02-28, https://github.com/rust-lang/rust/pull/152615), which states it is an attempt to resolve rust-lang/rust#138351 ('core::ptr::replace implementation is unsound since Rust 1.80', closed 2026-02-28, https://github.com/rust-lang/rust/issues/138351). The parameter `K : ZContract` covers all of these versions; no version is selected.",
+   "Documentation, rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, library/core/src/ptr/mod.rs: `read_unaligned` Safety L1768 \"* `src` must be [valid] for reads.\" and `write_unaligned` Safety L1986 \"* `dst` must be [valid] for writes.\", with no ZST disjunct and no alignment requirement, unlike `read` L1613 (quoted above) and `write` L1873 \"* `dst` must be [valid] for writes or `T` must be a ZST.\". Read together with module L18–19 (quoted above), a zero-size `read_unaligned` requires a non-null pointer and no alignment (derived reading of the quoted lines).",
+   "The Rust Reference, rust-lang/reference c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, src/behavior-considered-undefined.md L59 \"* Producing an [invalid value][invalid-values]. \\\"Producing\\\" a value happens any time a value is assigned to or read from a place, passed to a function/primitive operation or returned from a function/primitive operation.\" and L117 \"The Rust compiler assumes that all values produced during program execution are \\\"valid\\\", and producing an invalid value is hence immediate UB.\"; rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, library/core/src/ptr/mod.rs `read` L1618 \"* `src` must point to a properly initialized value of type `T`.\"",
+   "MiniRust (an executable specification of Rust semantics; not the official Rust semantics), minirust/minirust 98043a70de612f6af4eaf1e35cf0b8a6ebea22ce, spec/mem/basic.md L198–203: \"// For zero-sized accesses, there is nothing to check.\" / \"// (Provenance monotonicity says that if we allow zero-sized accesses\" / \"// for `None` provenance we have to allow it for all provenance.)\" / \"if len.is_zero() {\" / \"return ret(None);\" / \"}\"; `store` L234–236: \"if !align.is_aligned(ptr.addr) {\" / \"throw_ub!(\\\"store to a misaligned pointer\\\");\" / \"}\"; `load` L260–262: \"if !align.is_aligned(ptr.addr) {\" / \"throw_ub!(\\\"load from a misaligned pointer\\\");\" / \"}\". In that model a zero-sized load or store is UB through a misaligned pointer and is not rejected by `check_ptr` for any address, which matches the toy shape `aligned` (derived reading of the quoted lines).",
+   "N. Popov, A. Ballman, 'Allow zero length operations on null pointers', ISO/IEC JTC1/SC22/WG14 N3322, 2024-08-28, https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3322.pdf, abstract: \"Proposes allowing null + 0, null - null and passing null to certain C standard library functions if the length argument is also zero. This removes a class of undefined behavior and brings the specification more in line with C++.\" (a proposal for C2y; its adoption status is not recorded here)."
+  ],
+  "design_question": "Deleting a zero-size access or a zero-count copy removes code whose sole effect is a possible UB event (the precondition `pre₀` of the access). A verified compiler must know when the deletion is an equivalence (UB-preserving) and when it is merely a forward refinement (UB-erasing), for each documented zero-size contract."
+ },
+ {
+  "id": "delete-zero-size-access-equivalence-despite-pre-failure",
+  "lean": "Toy.ZstAssume.deleteZeroSizeAccess_equivPP_despite_reachable_zeroPre_failure",
+  "kind": "counterexample",
+  "tier": "T0",
+  "plain_claim": "In the program `pTwoZstReads` (two identical zero-size reads through local 0 at alignment 4, then `halt`) under the `aligned` contract, `pre₀` of the first read fails at a reachable state (local 0 = 1), the target continuation from that state reaches UB with empty trace, and deleting the first read is nevertheless a prefix-preserving equivalence.",
+  "hypotheses": [],
+  "hypotheses_note": "No hypotheses: a concrete instance.",
+  "depth": "shallow",
+  "nonvacuity_witness": "Concrete instance (no hypotheses).",
+  "positive_control_lean": "Toy.ZstAssume.zstRead_misaligned_deletion_erases_ub",
+  "positive_control": "Without the second read (`pReadZst4`), deleting the read is not an equivalence.",
+  "lean_names": [
+   "Toy.ZstAssume.pTwoZstReads",
+   "Toy.ZstAssume.aligned",
+   "Toy.ZstAssume.pReadZst4",
+   "Toy.ZstAssume.ImprovesPP"
+  ],
+  "non_claims": [
+   "Shows that \"`pre₀` holds on every reachable state\" is not necessary for an equivalent deletion; it is one instance, not a description of all such programs.",
+   "The toy language is deterministic, with integer locals and a byte-granular dereferenceability map: no stored values, no provenance, no allocation or deallocation, no concurrency and no calls. It has a single UB class (failed access precondition, failed `assume`, reaching `unreachable`).",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, Miri, LLVM or the Rust standard library."
+  ],
+  "prior_art": [
+   "X. Leroy, 'Formal verification of a realistic compiler', Commun. ACM 52(7):107–115, 2009, doi:10.1145/1538788.1538814 (observable behaviours with traces: termination, divergence, going wrong). Quoted from the author's version (§2.1; printed page not checked): \"compiler optimizations can optimize away “going wrong” behaviors\" and property (2) \"S safe =⇒ (∀B, C ⇓ B =⇒ S ⇓ B)\", a whole-trace inclusion for sources that cannot go wrong; property (4) \"S |= Spec =⇒ C |= Spec\" is forward preservation of specifications. The prefix-preserving relation used here (`ImprovesPP`) is CompCert's `behavior_improves`, not a definition of that paper.",
+   "CompCert, AbsInt/CompCert commit 5e4ef44c57b22cdc2e1893770843fd693a5f82e1, common/Behaviors.v L81–82: `Definition behavior_improves (beh1 beh2: program_behavior) : Prop := beh1 = beh2 \\/ exists t, beh1 = Goes_wrong t /\\ behavior_prefix t beh2.` (`beh1` is the source behaviour). `ImprovesPP bt bs` is this relation with `bs` as `beh1`."
+  ],
+  "design_question": "Deleting a zero-size access or a zero-count copy removes code whose sole effect is a possible UB event (the precondition `pre₀` of the access). A verified compiler must know when the deletion is an equivalence (UB-preserving) and when it is merely a forward refinement (UB-erasing), for each documented zero-size contract."
+ },
+ {
+  "id": "zero-size-deletion-erases-ub-instances",
+  "lean": [
+   "Toy.ZstAssume.zstRead_misaligned_deletion_erases_ub",
+   "Toy.ZstAssume.zeroCountCopy_misalignedSrc_deletion_erases_ub",
+   "Toy.ZstAssume.zstRead_null_nonnullContract_deletion_erases_ub",
+   "Toy.ZstAssume.copyLoopLowering_zeroCount_erases_ub",
+   "Toy.ZstAssume.copyLoopLowering_zeroCount_clobbers_counter"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "Each of four concrete pairs has UB in the source on a stated input, terminates in the target on that input, is a prefix-preserving refinement and is not a whole-trace equivalence: deleting a zero-size read at alignment 4 through address 1 (contract `aligned`); deleting `copy src dst ⟨4, 4⟩ 0` with `src = 1`, `dst = 8` (contract `aligned`); deleting a zero-size read at alignment 1 through address 0 (contract `nonnullAligned`); and lowering that zero-count copy to the element loop `copyLoopProg 0 1 2 ⟨4, 4⟩ 0`. The loop lowering also overwrites its counter local 2, so on the aligned input with locals `8, 8, 42` the source satisfies `wp` for \"local 2 is 42\" and the loop does not.",
+  "hypotheses": [],
+  "hypotheses_note": "No hypotheses: concrete instances.",
+  "depth": "shallow",
+  "nonvacuity_witness": "Concrete instances (no hypotheses).",
+  "positive_control_lean": "Toy.ZstAssume.zstRead_align_one_alignedContract_deletion_equivPP",
+  "positive_control": "The same deletion at alignment 1 under `aligned` is an equivalence.",
+  "lean_names": [
+   "Toy.ZstAssume.aligned",
+   "Toy.ZstAssume.wp",
+   "Toy.ZstAssume.equivWT_of_equivPP",
+   "Toy.ZstAssume.RefinesPP",
+   "Toy.ZstAssume.copyLoopProg",
+   "Toy.ZstAssume.ImprovesPP",
+   "Toy.ZstAssume.copyLoopProg_zeroCount_preserves_src_dst",
+   "Toy.ZstAssume.copyLoopProg_zeroCount_run",
+   "Toy.ZstAssume.pCopy0"
+  ],
+  "non_claims": [
+   "Not a whole-trace equivalence also implies not a prefix-preserving equivalence (`equivWT_of_equivPP`).",
+   "The loop lowering is checked for count 0; for counts of at least 1 nothing is proved here.",
+   "`RefinesPP` for the loop lowering holds because behaviours ignore final states: at the count 0 of this card, under every contract and from every input state, `copyLoopProg 0 1 2 ⟨4, 4⟩ 0` sets its counter local `2` to 0 and leaves locals `0` and `1` unchanged (`copyLoopProg_zeroCount_run`; the loop body, which advances locals `0` and `1`, does not run at count 0; `copyLoopProg_zeroCount_preserves_src_dst` is the concrete instance with locals `8, 12, 42` under `aligned`), and `copyLoopLowering_zeroCount_clobbers_counter` shows that `wp` for a postcondition reading local 2 does not transfer from the source to the lowering.",
+   "`copy src dst τ n` takes a literal natural-number count `n` (byte count `τ.size * n`, an unbounded natural-number product, so the zero-size edges are size 0 or count 0), not a run-time value, and does not check overlap of the two regions; counts computed at run time, overlapping copies and volatile accesses are not modelled.",
+   "The toy language is deterministic, with integer locals and a byte-granular dereferenceability map: no stored values, no provenance, no allocation or deallocation, no concurrency and no calls. It has a single UB class (failed access precondition, failed `assume`, reaching `unreachable`).",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, Miri, LLVM or the Rust standard library."
+  ],
+  "prior_art": [
+   "rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, library/core/src/ptr/mod.rs: L18 \"* A [null] pointer is *never* valid for reads/writes.\"; L19 \"* For memory accesses of [size zero][zst], *every* non-null pointer is valid for reads/writes.\"; L61–62 \"When a function requires proper alignment, it does so even if the access has size 0, i.e., even if memory is not actually touched.\"; `copy_nonoverlapping` L479 \"* `src` must be [valid] for reads of `count * size_of::<T>()` bytes or that number must be 0.\", L483 \"* Both `src` and `dst` must be properly aligned.\"; `read` L1613 \"* `src` must be [valid] for reads or `T` must be a ZST.\", L1620 \"Note that even if `T` has size `0`, the pointer must be properly aligned.\"; `drop_in_place` L776 \"* `to_drop` must be properly aligned, even if `T` has size 0.\", L778 \"* `to_drop` must be nonnull, even if `T` has size 0.\"",
+   "Contract history (documentation): rust-lang/rust tag 1.80.0, library/core/src/ptr/mod.rs L18 \"* For operations of [size zero][zst], *every* pointer is valid, including the [null] pointer.\" and `read` L1191 \"Note that even if `T` has size `0`, the pointer must be non-null and properly aligned.\"; library/core/src/intrinsics.rs (1.80.0) `copy_nonoverlapping` L2875–2876 \"Note that even if the effectively copied size (`count * size_of::<T>()`) is `0`, the pointers must be non-null and properly aligned.\" Tag 1.88.0: ptr/mod.rs L18–19 \"* For memory accesses of [size zero][zst], *every* pointer is valid, including the [null] pointer.\", `read` L1320 \"Note that even if `T` has size `0`, the pointer must be properly aligned.\"; intrinsics/mod.rs `copy_nonoverlapping` L3668–3669 \"... is `0`, the pointers must be properly aligned.\" The definition of validity was changed by rust-lang/rust#152615 ('refactor 'valid for read/write' definition: exclude null', merged 2026-02-28, https://github.com/rust-lang/rust/pull/152615), which states it is an attempt to resolve rust-lang/rust#138351 ('core::ptr::replace implementation is unsound since Rust 1.80', closed 2026-02-28, https://github.com/rust-lang/rust/issues/138351). The parameter `K : ZContract` covers all of these versions; no version is selected.",
+   "The Rust Reference, rust-lang/reference c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, src/behavior-considered-undefined.md L19 \"* Accessing (loading from or storing to) a place that is [dangling] or [based on a misaligned pointer].\" and L110 \"> This also implies that if the [size is 0][zero-sized], then the pointer is trivially never \\\"dangling\\\" (even if it is a null pointer).\"",
+   "X. Leroy, 'Formal verification of a realistic compiler', Commun. ACM 52(7):107–115, 2009, doi:10.1145/1538788.1538814 (observable behaviours with traces: termination, divergence, going wrong). Quoted from the author's version (§2.1; printed page not checked): \"compiler optimizations can optimize away “going wrong” behaviors\" and property (2) \"S safe =⇒ (∀B, C ⇓ B =⇒ S ⇓ B)\", a whole-trace inclusion for sources that cannot go wrong; property (4) \"S |= Spec =⇒ C |= Spec\" is forward preservation of specifications. The prefix-preserving relation used here (`ImprovesPP`) is CompCert's `behavior_improves`, not a definition of that paper."
+  ],
+  "design_question": "Deleting a zero-size access or a zero-count copy removes code whose sole effect is a possible UB event (the precondition `pre₀` of the access). A verified compiler must know when the deletion is an equivalence (UB-preserving) and when it is merely a forward refinement (UB-erasing), for each documented zero-size contract."
+ },
+ {
+  "id": "insert-zero-size-access-exact-condition",
+  "lean": [
+   "Toy.ZstAssume.insertZeroSizeAccess_refinesPP_iff",
+   "Toy.ZstAssume.insertZeroSizeAccess_refinesWT_iff"
+  ],
+  "kind": "characterization",
+  "tier": "T1",
+  "plain_claim": "For every zero-size contract `K`, program `P`, point `(l, i)` and zero-size access `s`: inserting `s` before the `i`-th statement of block `l` is a prefix-preserving refinement iff, for every reachable state at `(l, i)` in which `pre₀` of `s` fails, the source run from `(l, i)` reaches UB with empty trace; and it is a whole-trace refinement iff, for every such state, that source run reaches UB after some trace.",
+  "hypotheses": [
+   {
+    "name": "hz : IsZeroSizeAccess s",
+    "theorems": [
+     "Toy.ZstAssume.insertZeroSizeAccess_refinesPP_iff",
+     "Toy.ZstAssume.insertZeroSizeAccess_refinesWT_iff"
+    ],
+    "purpose": "restricts the inserted statement to a zero-size access",
+    "tightness": "tight",
+    "counterexample": "Toy.ZstAssume.insertEmit_counterexample",
+    "witness_class": "inserting `emit 1` into the one-block program `pHalt`, for every contract `K` (left-hand sides false, right-hand sides vacuously true)"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "Inserting a zero-size read at alignment 4 in front of the identical read of `pReadZst4` under `aligned`: `hz` holds, `pre₀` fails at a reachable state, the source run from the insertion point reaches UB with empty trace, and the insertion is proved to be a prefix-preserving refinement; `insertZstRead_misaligned_not_refinesWT` is an instance in which both sides are false.",
+  "nonvacuity_witness_lean": "Toy.ZstAssume.insertZstRead_before_failing_read_refinesPP",
+  "lean_names": [
+   "Toy.ZstAssume.pHalt",
+   "Toy.ZstAssume.pReadZst4",
+   "Toy.ZstAssume.aligned",
+   "Toy.ZstAssume.insertZstRead_misaligned_not_refinesWT",
+   "Toy.ZstAssume.Block.unreach",
+   "Toy.ZstAssume.hoistZstRead_out_of_branch_not_refinesWT",
+   "Toy.ZstAssume.hoistZstRead_anyPtr_equivPP",
+   "Toy.ZstAssume.ReachableAt",
+   "Toy.ZstAssume.ImprovesPP"
+  ],
+  "non_claims": [
+   "If `i` is at least the number of statements, the access is inserted before the terminator, and `(l, i)` denotes that point. If `l` is outside the block list, `insertStmt P l i s` is `P` and `P.blk l` is `Block.unreach`; both sides of each equivalence then hold.",
+   "Hoisting (insert at one point, delete at another) is not characterized as a whole; `hoistZstRead_out_of_branch_not_refinesWT` is a counterexample and `hoistZstRead_anyPtr_equivPP` an instance in which hoisting is an equivalence.",
+   "Reachability (`ReachableAt`) ranges over all initial toy states, including runs that reach UB later; no calling context, type invariant or precondition on inputs (such as a caller-guaranteed aligned pointer) is modelled.",
+   "Value validity is not modelled: a toy `read` produces no value, so a zero-size type of alignment 1 whose values cannot exist (such as Rust's `!`) has no counterpart, and reading it, which is UB in Rust for a reason the toy does not represent (prior art: the Rust Reference's invalid-value rule), lies outside these statements; they neither establish nor refute anything about it.",
+   "`copy src dst τ n` takes a literal natural-number count `n` (byte count `τ.size * n`, an unbounded natural-number product, so the zero-size edges are size 0 or count 0), not a run-time value, and does not check overlap of the two regions; counts computed at run time, overlapping copies and volatile accesses are not modelled.",
+   "`ZContract` has the three constructors `anyPtr`, `aligned`, `nonnullAligned` (definition quoted above). A zero-size contract that forbids null without requiring alignment (the shape of the documented requirements of `read_unaligned`/`write_unaligned` quoted under the prior art of `delete-zero-size-access-equivalence-sufficient-conditions`) is not among them; it agrees with `nonnullAligned` at alignment 1 and with no constructor at larger alignments. Within the toy, `K ≠ .nonnullAligned` means \"the contract permits null\".",
+   "The toy language is deterministic, with integer locals and a byte-granular dereferenceability map: no stored values, no provenance, no allocation or deallocation, no concurrency and no calls. It has a single UB class (failed access precondition, failed `assume`, reaching `unreachable`).",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, Miri, LLVM or the Rust standard library."
+  ],
+  "prior_art": [
+   "X. Leroy, 'Formal verification of a realistic compiler', Commun. ACM 52(7):107–115, 2009, doi:10.1145/1538788.1538814 (observable behaviours with traces: termination, divergence, going wrong). Quoted from the author's version (§2.1; printed page not checked): \"compiler optimizations can optimize away “going wrong” behaviors\" and property (2) \"S safe =⇒ (∀B, C ⇓ B =⇒ S ⇓ B)\", a whole-trace inclusion for sources that cannot go wrong; property (4) \"S |= Spec =⇒ C |= Spec\" is forward preservation of specifications. The prefix-preserving relation used here (`ImprovesPP`) is CompCert's `behavior_improves`, not a definition of that paper.",
+   "CompCert, AbsInt/CompCert commit 5e4ef44c57b22cdc2e1893770843fd693a5f82e1, common/Behaviors.v L81–82: `Definition behavior_improves (beh1 beh2: program_behavior) : Prop := beh1 = beh2 \\/ exists t, beh1 = Goes_wrong t /\\ behavior_prefix t beh2.` (`beh1` is the source behaviour). `ImprovesPP bt bs` is this relation with `bs` as `beh1`.",
+   "N. P. Lopes, J. Lee, C.-K. Hur, Z. Liu, J. Regehr, 'Alive2: Bounded Translation Validation for LLVM', PLDI 2021, pp. 65–79, doi:10.1145/3453483.3454030 (refinement in which source UB permits any target behaviour).",
+   "J. Lee, Y. Kim, Y. Song, C.-K. Hur, S. Das, D. Majnemer, J. Regehr, N. P. Lopes, 'Taming undefined behavior in LLVM', PLDI 2017, pp. 633–647, doi:10.1145/3062341.3062343, §2.2: \"If integer overflow triggered immediate undefined behavior, this transformation would be illegal because it makes the domain of definedness smaller: the code would execute UB when x was INT_MAX, even if n was zero.\" (hoisting an operation with immediate UB can introduce UB; the paper's remedy, deferred UB, is not modelled in the toy)."
+  ],
+  "design_question": "Materializing or hoisting a zero-size access adds a possible UB event; when is that a refinement of the source?"
+ },
+ {
+  "id": "insert-zero-size-access-sufficient-condition",
+  "lean": "Toy.ZstAssume.insertZeroSizeAccess_equivPP_of_zeroPre_reachable",
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "For every zero-size contract `K`, program `P`, point `(l, i)` and zero-size access `s`: if `pre₀` of `s` holds on every reachable state at `(l, i)`, then inserting `s` there is a prefix-preserving equivalence (in particular a refinement).",
+  "hypotheses": [
+   {
+    "name": "hz : IsZeroSizeAccess s",
+    "theorems": [
+     "Toy.ZstAssume.insertZeroSizeAccess_equivPP_of_zeroPre_reachable"
+    ],
+    "purpose": "restricts the inserted statement to a zero-size access",
+    "tightness": "tight",
+    "counterexample": "Toy.ZstAssume.insertEmit_counterexample",
+    "witness_class": "inserting `emit 1` into `pHalt`, every contract; `hpre` holds (its `zeroPre` is `true`)"
+   },
+   {
+    "name": "hpre : ∀ st, ReachableAt K P l i st → s.zeroPre K st = true",
+    "theorems": [
+     "Toy.ZstAssume.insertZeroSizeAccess_equivPP_of_zeroPre_reachable"
+    ],
+    "purpose": "the inserted access never fails where it executes",
+    "tightness": "tight",
+    "counterexample": "Toy.ZstAssume.insertZeroSizeAccess_hpre_counterexample",
+    "witness_class": "inserting a zero-size read at alignment 4 into `pHalt`, contract `aligned`, reachable local `0 = 1`; `hz` holds"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "Inserting a zero-size read into `pHalt` under `anyPtr`: `hz` holds and `zeroPre` is `true` in every state.",
+  "nonvacuity_witness_lean": "Toy.ZstAssume.insertZeroSizeAccess_anyPtr_nonvacuous",
+  "lean_names": [
+   "Toy.ZstAssume.pHalt",
+   "Toy.ZstAssume.aligned",
+   "Toy.ZstAssume.insertZstRead_before_failing_read_refinesPP",
+   "Toy.ZstAssume.insertZeroSizeAccess_refinesPP_iff",
+   "Toy.ZstAssume.insertStmt",
+   "Toy.ZstAssume.ImprovesPP"
+  ],
+  "non_claims": [
+   "This is a sufficient condition, not a necessary one: inserting a failing zero-size access immediately before an identical one is still a prefix-preserving refinement (`insertZstRead_before_failing_read_refinesPP`); the exact condition is `insertZeroSizeAccess_refinesPP_iff`.",
+   "If `i` is at least the number of statements, `s` is inserted before the terminator; if `l` is outside the block list, `insertStmt` is the identity.",
+   "Value validity is not modelled: a toy `read` produces no value, so a zero-size type of alignment 1 whose values cannot exist (such as Rust's `!`) has no counterpart, and reading it, which is UB in Rust for a reason the toy does not represent (prior art: the Rust Reference's invalid-value rule), lies outside these statements; they neither establish nor refute anything about it.",
+   "`ZContract` has the three constructors `anyPtr`, `aligned`, `nonnullAligned` (definition quoted above). A zero-size contract that forbids null without requiring alignment (the shape of the documented requirements of `read_unaligned`/`write_unaligned` quoted under the prior art of `delete-zero-size-access-equivalence-sufficient-conditions`) is not among them; it agrees with `nonnullAligned` at alignment 1 and with no constructor at larger alignments. Within the toy, `K ≠ .nonnullAligned` means \"the contract permits null\".",
+   "`copy src dst τ n` takes a literal natural-number count `n` (byte count `τ.size * n`, an unbounded natural-number product, so the zero-size edges are size 0 or count 0), not a run-time value, and does not check overlap of the two regions; counts computed at run time, overlapping copies and volatile accesses are not modelled.",
+   "The toy language is deterministic, with integer locals and a byte-granular dereferenceability map: no stored values, no provenance, no allocation or deallocation, no concurrency and no calls. It has a single UB class (failed access precondition, failed `assume`, reaching `unreachable`).",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, Miri, LLVM or the Rust standard library."
+  ],
+  "prior_art": [
+   "X. Leroy, 'Formal verification of a realistic compiler', Commun. ACM 52(7):107–115, 2009, doi:10.1145/1538788.1538814 (observable behaviours with traces: termination, divergence, going wrong). Quoted from the author's version (§2.1; printed page not checked): \"compiler optimizations can optimize away “going wrong” behaviors\" and property (2) \"S safe =⇒ (∀B, C ⇓ B =⇒ S ⇓ B)\", a whole-trace inclusion for sources that cannot go wrong; property (4) \"S |= Spec =⇒ C |= Spec\" is forward preservation of specifications. The prefix-preserving relation used here (`ImprovesPP`) is CompCert's `behavior_improves`, not a definition of that paper.",
+   "J. Lee, Y. Kim, Y. Song, C.-K. Hur, S. Das, D. Majnemer, J. Regehr, N. P. Lopes, 'Taming undefined behavior in LLVM', PLDI 2017, pp. 633–647, doi:10.1145/3062341.3062343, §2.2: \"If integer overflow triggered immediate undefined behavior, this transformation would be illegal because it makes the domain of definedness smaller: the code would execute UB when x was INT_MAX, even if n was zero.\" (hoisting an operation with immediate UB can introduce UB; the paper's remedy, deferred UB, is not modelled in the toy)."
+  ],
+  "design_question": "Materializing or hoisting a zero-size access adds a possible UB event; when is that a refinement of the source?"
+ },
+ {
+  "id": "introducing-zero-size-access-introduces-ub",
+  "lean": [
+   "Toy.ZstAssume.insertZstRead_misaligned_not_refinesWT",
+   "Toy.ZstAssume.hoistZstRead_out_of_branch_not_refinesWT"
+  ],
+  "kind": "counterexample",
+  "tier": "T0",
+  "plain_claim": "Under the `aligned` contract, inserting a zero-size read at alignment 4 through local 0 into `halt` is not a whole-trace refinement (on local 0 = 1 the source halts and the target reaches UB), and hoisting the zero-size read of `pBranchRead` above its branch is not a whole-trace refinement (on locals 0 ↦ 5, 1 ↦ 1).",
+  "hypotheses": [],
+  "hypotheses_note": "No hypotheses: concrete instances.",
+  "depth": "shallow",
+  "nonvacuity_witness": "Concrete instances (no hypotheses).",
+  "positive_control_lean": [
+   "Toy.ZstAssume.hoistZstRead_anyPtr_equivPP",
+   "Toy.ZstAssume.insertZeroSizeAccess_equivPP_of_zeroPre_reachable"
+  ],
+  "positive_control": "Hoisting the same read under `anyPtr` is a prefix-preserving equivalence; insertion where `pre₀` holds on every reachable state is an equivalence.",
+  "lean_names": [
+   "Toy.ZstAssume.aligned",
+   "Toy.ZstAssume.pBranchRead",
+   "Toy.ZstAssume.refinesWT_of_refinesPP",
+   "Toy.ZstAssume.insertZeroSizeAccess_refinesPP_iff",
+   "Toy.ZstAssume.ImprovesPP",
+   "Toy.ZstAssume.pBranchReadHoisted"
+  ],
+  "non_claims": [
+   "Not a refinement under whole-trace UB implies not a refinement under prefix-preserving UB (`refinesWT_of_refinesPP`).",
+   "Does not show that hoisting a zero-size access is always unsound: under `anyPtr` the same hoist is an equivalence (`hoistZstRead_anyPtr_equivPP`); hoisting as a combined pass is not characterized here, and the insertion half is characterized by `insertZeroSizeAccess_refinesPP_iff`.",
+   "The toy language is deterministic, with integer locals and a byte-granular dereferenceability map: no stored values, no provenance, no allocation or deallocation, no concurrency and no calls. It has a single UB class (failed access precondition, failed `assume`, reaching `unreachable`).",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, Miri, LLVM or the Rust standard library."
+  ],
+  "prior_art": [
+   "J. Lee, Y. Kim, Y. Song, C.-K. Hur, S. Das, D. Majnemer, J. Regehr, N. P. Lopes, 'Taming undefined behavior in LLVM', PLDI 2017, pp. 633–647, doi:10.1145/3062341.3062343, §2.2: \"If integer overflow triggered immediate undefined behavior, this transformation would be illegal because it makes the domain of definedness smaller: the code would execute UB when x was INT_MAX, even if n was zero.\" (hoisting an operation with immediate UB can introduce UB; the paper's remedy, deferred UB, is not modelled in the toy).",
+   "X. Leroy, 'Formal verification of a realistic compiler', Commun. ACM 52(7):107–115, 2009, doi:10.1145/1538788.1538814 (observable behaviours with traces: termination, divergence, going wrong). Quoted from the author's version (§2.1; printed page not checked): \"compiler optimizations can optimize away “going wrong” behaviors\" and property (2) \"S safe =⇒ (∀B, C ⇓ B =⇒ S ⇓ B)\", a whole-trace inclusion for sources that cannot go wrong; property (4) \"S |= Spec =⇒ C |= Spec\" is forward preservation of specifications. The prefix-preserving relation used here (`ImprovesPP`) is CompCert's `behavior_improves`, not a definition of that paper."
+  ],
+  "design_question": "Materializing or hoisting a zero-size access adds a possible UB event; when is that a refinement of the source?"
+ },
+ {
+  "id": "ub-check-of-output-incomplete",
+  "lean": "Toy.ZstAssume.ubCheck_of_output_misses_source_ub",
+  "kind": "counterexample",
+  "tier": "T0",
+  "plain_claim": "There is a source program (`pReadZst4`, contract `aligned`) and a pass (deleting its zero-size read) such that the pass is a prefix-preserving refinement and every exact UB checker accepts the output as `UBFree`, yet the source is not `UBFree`; exact checkers exist (noncomputably, `exactUBChecker_exists`).",
+  "hypotheses": [],
+  "hypotheses_note": "No hypotheses: a concrete instance, universally quantified over exact checkers.",
+  "depth": "shallow",
+  "nonvacuity_witness": "`exactUBChecker_exists` shows the universally quantified checker is not vacuous.",
+  "nonvacuity_witness_lean": "Toy.ZstAssume.exactUBChecker_exists",
+  "positive_control_lean": [
+   "Toy.ZstAssume.ubFree_positive_control_instance",
+   "Toy.ZstAssume.ubFree_src_of_ubFree_output_of_revChainWT"
+  ],
+  "positive_control": "When the source whole-trace-refines the output (for example an equivalence), checking the output is complete.",
+  "lean_names": [
+   "Toy.ZstAssume.pReadZst4",
+   "Toy.ZstAssume.aligned",
+   "Toy.ZstAssume.UBFree",
+   "Toy.ZstAssume.not_ubFree_src_of_not_ubFree_tgt_of_refinesWT",
+   "Toy.ZstAssume.ImprovesPP"
+  ],
+  "non_claims": [
+   "Establishes incompleteness (a `UBFree` output does not certify a `UBFree` source), not that UB reported in the output is spurious: if the output whole-trace-refines the source, UB of the output is UB of the source (`not_ubFree_src_of_not_ubFree_tgt_of_refinesWT`).",
+   "Checking the output is complete when every pass's input whole-trace-refines its output, including the empty pipeline (`ubFree_src_of_ubFree_output_of_revChainWT`).",
+   "Concerns semantic UB-freedom and perfect checkers; it does not model any real checker's coverage.",
+   "The toy has one UB class; per-class checking is not modelled.",
+   "The toy language is deterministic, with integer locals and a byte-granular dereferenceability map: no stored values, no provenance, no allocation or deallocation, no concurrency and no calls. It has a single UB class (failed access precondition, failed `assume`, reaching `unreachable`).",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, Miri, LLVM or the Rust standard library."
+  ],
+  "prior_art": [
+   "rustc option description, rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_session/src/options.rs L2654–2656: `mir_preserve_ub` \"keep place mention statements and reads in trivial SwitchInt terminators, which are interpreted e.g., by miri; implies -Zmir-opt-level=0 (default: no)\". rust-lang/miri 7e679961edcfe2c526f19153bb8b03de346efa5c, src/lib.rs L200–205: `MIRI_DEFAULT_ARGS` contains \"-Zmir-preserve-ub\" and \"-Zmir-opt-level=0\". rust-lang/miri#5565 ('Miri vs `#[optimize]`', closed 2026-11-17, labels include `I-misses-UB`, https://github.com/rust-lang/miri/issues/5565) reports that `#[optimize(speed)]` leads to a function being optimized even when run in Miri and proposes `-Zmir-opt-level=0` as the signal that no optimizations at all should be applied.",
+   "X. Leroy, 'Formal verification of a realistic compiler', Commun. ACM 52(7):107–115, 2009, doi:10.1145/1538788.1538814 (observable behaviours with traces: termination, divergence, going wrong). Quoted from the author's version (§2.1; printed page not checked): \"compiler optimizations can optimize away “going wrong” behaviors\" and property (2) \"S safe =⇒ (∀B, C ⇓ B =⇒ S ⇓ B)\", a whole-trace inclusion for sources that cannot go wrong; property (4) \"S |= Spec =⇒ C |= Spec\" is forward preservation of specifications. The prefix-preserving relation used here (`ImprovesPP`) is CompCert's `behavior_improves`, not a definition of that paper.",
+   "V. D'Silva, M. Payer, D. Song, 'The correctness-security gap in compiler optimization', 2015 IEEE Security and Privacy Workshops, pp. 73–87, doi:10.1109/SPW.2015.33 (bibliographic data verified; the text was not consulted here, and no claim of this card relies on it)."
+  ],
+  "design_question": "Can a UB checker be run on optimized code and still certify the source? Checking the output of a UB-erasing pipeline is incomplete for source UB."
+ },
+ {
+  "id": "ub-check-of-output-complete-under-reverse-refinement",
+  "lean": [
+   "Toy.ZstAssume.ubFree_src_of_ubFree_tgt_of_refinesWT_rev",
+   "Toy.ZstAssume.ubFree_src_of_ubFree_output_of_revChainWT",
+   "Toy.ZstAssume.ubFree_src_of_ubFree_tgt_of_equivPP"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "For every zero-size contract `K`: for all programs `src`, `tgt`, if `src` whole-trace-refines `tgt` (`RefinesWT K tgt src`) and `tgt` is `UBFree`, then `src` is `UBFree`; for every program `P` and list `Qs` forming a pipeline in which each pass's input whole-trace-refines its output (`RevChainWT K P Qs`, including the empty pipeline), if the last program is `UBFree` then `P` is `UBFree`; and if `EquivPP K src tgt` and `tgt` is `UBFree`, then `src` is `UBFree`.",
+  "hypotheses": [
+   {
+    "name": "hrev : RefinesWT K tgt src",
+    "theorems": [
+     "Toy.ZstAssume.ubFree_src_of_ubFree_tgt_of_refinesWT_rev"
+    ],
+    "purpose": "the source whole-trace-refines the output",
+    "tightness": "tight",
+    "counterexample": "Toy.ZstAssume.ubCheck_pReadZst4_hypotheses_counterexample",
+    "witness_class": "`pReadZst4` and its UB-erasing deletion, contract `aligned`; the output is `UBFree`"
+   },
+   {
+    "name": "htgt : UBFree K tgt",
+    "theorems": [
+     "Toy.ZstAssume.ubFree_src_of_ubFree_tgt_of_refinesWT_rev",
+     "Toy.ZstAssume.ubFree_src_of_ubFree_tgt_of_equivPP"
+    ],
+    "purpose": "the checked output has no UB",
+    "tightness": "tight",
+    "counterexample": "Toy.ZstAssume.ubFree_output_hypothesis_counterexample",
+    "witness_class": "source and output both `pUnreach`, every contract (reverse refinement and equivalence by reflexivity)"
+   },
+   {
+    "name": "RevChainWT K P Qs",
+    "theorems": [
+     "Toy.ZstAssume.ubFree_src_of_ubFree_output_of_revChainWT"
+    ],
+    "purpose": "every pass's input whole-trace-refines its output",
+    "tightness": "tight",
+    "counterexample": "Toy.ZstAssume.ubCheck_pReadZst4_hypotheses_counterexample",
+    "witness_class": "one-pass pipeline `pReadZst4 → deleteStmt pReadZst4 0 0`, contract `aligned`; the last program is `UBFree`"
+   },
+   {
+    "name": "UBFree K ((P :: Qs).getLast _)",
+    "theorems": [
+     "Toy.ZstAssume.ubFree_src_of_ubFree_output_of_revChainWT"
+    ],
+    "purpose": "the last program of the pipeline has no UB",
+    "tightness": "tight",
+    "counterexample": "Toy.ZstAssume.ubFree_output_hypothesis_counterexample",
+    "witness_class": "empty pipeline from `pUnreach`, every contract"
+   },
+   {
+    "name": "h : EquivPP K src tgt",
+    "theorems": [
+     "Toy.ZstAssume.ubFree_src_of_ubFree_tgt_of_equivPP"
+    ],
+    "purpose": "the pass is a prefix-preserving equivalence",
+    "tightness": "tight",
+    "counterexample": "Toy.ZstAssume.ubCheck_pReadZst4_hypotheses_counterexample",
+    "witness_class": "`pReadZst4` and its UB-erasing deletion, contract `aligned`; the output is `UBFree`"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "The `aligned`-contract deletion of the alignment-1 read of `pReadZst1`: all hypotheses of the three theorems hold.",
+  "nonvacuity_witness_lean": "Toy.ZstAssume.ubFree_src_of_ubFree_tgt_nonvacuous",
+  "lean_names": [
+   "Toy.ZstAssume.RevChainWT",
+   "Toy.ZstAssume.UBFree",
+   "Toy.ZstAssume.pReadZst4",
+   "Toy.ZstAssume.aligned",
+   "Toy.ZstAssume.pUnreach",
+   "Toy.ZstAssume.pReadZst1",
+   "Toy.ZstAssume.pHalt",
+   "Toy.ZstAssume.revRefinement_admits_ub_introduction",
+   "Toy.ZstAssume.EquivWT",
+   "Toy.ZstAssume.ImprovesPP"
+  ],
+  "non_claims": [
+   "Reverse refinement (`RefinesWT K tgt src`, `RevChainWT`) does not make a pass a refinement: the UB-introducing pass from `pHalt` to `pUnreach` satisfies it (`revRefinement_admits_ub_introduction`). A whole-trace equivalence (`EquivWT`) satisfies both this reverse direction and the refinement direction, by definition.",
+   "`UBFree` quantifies over all input states; passing a finite set of test inputs does not establish it.",
+   "The toy has one UB class; the statement is about all UB, not a sub-class.",
+   "The toy language is deterministic, with integer locals and a byte-granular dereferenceability map: no stored values, no provenance, no allocation or deallocation, no concurrency and no calls. It has a single UB class (failed access precondition, failed `assume`, reaching `unreachable`).",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, Miri, LLVM or the Rust standard library."
+  ],
+  "prior_art": [
+   "rustc option description, rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_session/src/options.rs L2654–2656: `mir_preserve_ub` \"keep place mention statements and reads in trivial SwitchInt terminators, which are interpreted e.g., by miri; implies -Zmir-opt-level=0 (default: no)\". rust-lang/miri 7e679961edcfe2c526f19153bb8b03de346efa5c, src/lib.rs L200–205: `MIRI_DEFAULT_ARGS` contains \"-Zmir-preserve-ub\" and \"-Zmir-opt-level=0\". rust-lang/miri#5565 ('Miri vs `#[optimize]`', closed 2026-11-17, labels include `I-misses-UB`, https://github.com/rust-lang/miri/issues/5565) reports that `#[optimize(speed)]` leads to a function being optimized even when run in Miri and proposes `-Zmir-opt-level=0` as the signal that no optimizations at all should be applied.",
+   "X. Leroy, 'Formal verification of a realistic compiler', Commun. ACM 52(7):107–115, 2009, doi:10.1145/1538788.1538814 (observable behaviours with traces: termination, divergence, going wrong). Quoted from the author's version (§2.1; printed page not checked): \"compiler optimizations can optimize away “going wrong” behaviors\" and property (2) \"S safe =⇒ (∀B, C ⇓ B =⇒ S ⇓ B)\", a whole-trace inclusion for sources that cannot go wrong; property (4) \"S |= Spec =⇒ C |= Spec\" is forward preservation of specifications. The prefix-preserving relation used here (`ImprovesPP`) is CompCert's `behavior_improves`, not a definition of that paper."
+  ],
+  "design_question": "Positive control for `ub-check-of-output-incomplete`: which passes may run before a UB checker without losing completeness."
+ },
+ {
+  "id": "prune-arm-with-assume-equivalence",
+  "lean": [
+   "Toy.ZstAssume.pruneArmAssume_equivPP",
+   "Toy.ZstAssume.pruneArmAssume_equivWT",
+   "Toy.ZstAssume.pruneArmAssume_wp_iff"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "For every zero-size contract `K`, program `P`, block `l`, switch `x arms ow` and value `v`: if block `l` ends in `switch x arms ow` and the label selected for `v` is an unreachable block (no statements, `unreachable` terminator), then removing every arm with value `v` and appending the UB-on-false `assume (x ≠ v)` to block `l` is a prefix-preserving equivalence, hence (by `equivWT_of_equivPP`) a whole-trace equivalence, and for every postcondition `Q` on trace and final state and every input, the target's demonic total-correctness `wp` holds iff the source's does.",
+  "hypotheses": [
+   {
+    "name": "hterm : (P.blk l).term = .switch x arms ow",
+    "theorems": [
+     "Toy.ZstAssume.pruneArmAssume_equivPP",
+     "Toy.ZstAssume.pruneArmAssume_equivWT",
+     "Toy.ZstAssume.pruneArmAssume_wp_iff"
+    ],
+    "purpose": "names the switch whose arms are pruned",
+    "tightness": "tight",
+    "counterexample": "Toy.ZstAssume.pruneArm_hterm_counterexample",
+    "witness_class": "three-block program `pSwLive`, stated arms `[(5, 3)]` (out-of-range label, so `hU` holds), actual arm for 5 live; every contract"
+   },
+   {
+    "name": "hU : IsUnreachableBlock P (selectTarget arms ow v)",
+    "theorems": [
+     "Toy.ZstAssume.pruneArmAssume_equivPP",
+     "Toy.ZstAssume.pruneArmAssume_equivWT",
+     "Toy.ZstAssume.pruneArmAssume_wp_iff"
+    ],
+    "purpose": "the pruned arm's target is UB with no event",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ZstAssume.pruneArm_hU_counterexample",
+     "Toy.ZstAssume.pruneArmAssume_emit_before_unreachable_not_refinesPP"
+    ],
+    "witness_class": "`pSwLive` (live arm; `hterm` holds; all three conclusions fail), every contract; for the prefix-preserving refinement also `pSwEmitUnreach`, whose arm emits before `unreachable` (whole-trace refinement still holds)"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "`pSw` (arm 5 → unreachable block 1, otherwise halt) satisfies both hypotheses; equivalence and `wp` equality for it are proved independently in `pruneArmAssume_pSw_equivPP_and_wp`.",
+  "nonvacuity_witness_lean": "Toy.ZstAssume.pSw_hyps",
+  "lean_names": [
+   "Toy.ZstAssume.equivWT_of_equivPP",
+   "Toy.ZstAssume.wp",
+   "Toy.ZstAssume.pSwLive",
+   "Toy.ZstAssume.pSwEmitUnreach",
+   "Toy.ZstAssume.pSw",
+   "Toy.ZstAssume.pruneArmAssume_pSw_equivPP_and_wp",
+   "Toy.ZstAssume.dropArms",
+   "Toy.ZstAssume.IsUnreachableBlock",
+   "Toy.ZstAssume.wpFrom_assume",
+   "Toy.ZstAssume.wpFrom_unreachable",
+   "Toy.ZstAssume.ImprovesPP"
+  ],
+  "non_claims": [
+   "`dropArms` removes every arm with value `v` (a filter); for a switch with distinct arm values (as in a well-formed switch) that is a single arm. If `v` occurs in no arm and `ow` is an unreachable block, `dropArms` changes nothing and the `assume` is still appended.",
+   "`IsUnreachableBlock` requires an empty statement list: a target block that emits before `unreachable` does not qualify (`pruneArmAssume_emit_before_unreachable_not_refinesPP`); target blocks with silent statements before `unreachable` are excluded by the hypothesis although pruning them may still preserve behaviours (not proved here).",
+   "Here `assume c` is the UB-on-false compiler assumption: its total-correctness rule is `wp (assume c) Q = c ∧ wp Q` (`wpFrom_assume`), and `wp` at an `unreachable` terminator is false (`wpFrom_unreachable`); in Dijkstra-style calculi these are the rules of `assert c` and `abort`. It is not the miraculous verification-condition `assume c` (rule `c → wp Q`, with `wp (assume false) Q` true); these statements neither establish nor refute anything about that reading. `wp` is demonic total correctness: UB and divergence both make it false; partial correctness (`wlp`) is not modelled.",
+   "The toy language is deterministic, with integer locals and a byte-granular dereferenceability map: no stored values, no provenance, no allocation or deallocation, no concurrency and no calls. It has a single UB class (failed access precondition, failed `assume`, reaching `unreachable`).",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, Miri, LLVM or the Rust standard library."
+  ],
+  "prior_art": [
+   "Documented design (source comments), rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/unreachable_prop.rs L1–3: \"A pass that propagates the unreachable terminator of a block to its predecessors when all of their successors are unreachable. This is achieved through a post-order traversal of the blocks.\"; L89–90: \"In order to preserve this information, we record reachable and unreachable targets as `Assume` statements in MIR.\"; L120: \"We remove this target from the switch, so record the inequality using `Assume`.\"",
+   "rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, library/core/src/hint.rs: `unreachable_unchecked` L16 \"Reaching this function is *Undefined Behavior*.\"; `assert_unchecked` L146 \"`cond` must be `true`. It is immediate UB to call this with `false`.\"",
+   "LLVM Language Reference Manual, https://llvm.org/docs/LangRef.html (rendered page retrieved 2026-11-21), section on assume operand bundles: \"Just like for the argument of llvm.assume, if any of the provided guarantees are violated at runtime the behavior is undefined.\" The `unreachable` instruction's semantics paragraph was not retrieved verbatim and is not quoted. The page is unpinned: no llvm/llvm-project revision is recorded for this quote.",
+   "M. Barnett, K. R. M. Leino, 'Weakest-precondition of unstructured programs', PASTE 2005, pp. 82–87, doi:10.1145/1108792.1108813, §2: \"wp(assert P, Q) = P ∧ Q\" and \"wp(assume P, Q) = P ⇒ Q\", and §1: a trace \"ends in error if an assert statement evaluates to false, and ends in infeasibility if an assume statement evaluates to false\". The toy's UB-on-false `assume` follows the first rule (`wpFrom_assume`); the second, miraculous rule is not modelled.",
+   "X. Leroy, 'Formal verification of a realistic compiler', Commun. ACM 52(7):107–115, 2009, doi:10.1145/1538788.1538814 (observable behaviours with traces: termination, divergence, going wrong). Quoted from the author's version (§2.1; printed page not checked): \"compiler optimizations can optimize away “going wrong” behaviors\" and property (2) \"S safe =⇒ (∀B, C ⇓ B =⇒ S ⇓ B)\", a whole-trace inclusion for sources that cannot go wrong; property (4) \"S |= Spec =⇒ C |= Spec\" is forward preservation of specifications. The prefix-preserving relation used here (`ImprovesPP`) is CompCert's `behavior_improves`, not a definition of that paper."
+  ],
+  "design_question": "Pruning a switch arm whose target is `Unreachable`, and propagating unreachability backwards, again deletes code whose sole effect is UB. When is pruning an equivalence for traces and for `wp`, when is it a forward refinement, and what does an inserted `assume` guard buy?"
+ },
+ {
+  "id": "prune-otherwise-with-assume-equivalence",
+  "lean": [
+   "Toy.ZstAssume.pruneOtherwiseAssume_equivPP",
+   "Toy.ZstAssume.pruneOtherwiseAssume_wp_iff"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "For every zero-size contract `K`, program `P`, block `l`, variable `x`, value `v` and labels `b`, `ow`: if block `l` ends in the single-arm switch `switch x [(v, b)] ow` and `ow` is an unreachable block, then replacing the switch by the UB-on-false `assume (x = v)` followed by `goto b` is a prefix-preserving equivalence, and for every postcondition and input the target's demonic total-correctness `wp` holds iff the source's does.",
+  "hypotheses": [
+   {
+    "name": "hterm : (P.blk l).term = .switch x [(v, b)] ow",
+    "theorems": [
+     "Toy.ZstAssume.pruneOtherwiseAssume_equivPP",
+     "Toy.ZstAssume.pruneOtherwiseAssume_wp_iff"
+    ],
+    "purpose": "names the single-arm switch",
+    "tightness": "tight",
+    "counterexample": "Toy.ZstAssume.pruneOtherwiseAssume_live_otherwise_not_refinesWT",
+    "witness_class": "`pSw` with stated `otherwise` label 3 (out of range, so `hU` holds) while the actual one, 2, halts; every contract"
+   },
+   {
+    "name": "hU : IsUnreachableBlock P ow",
+    "theorems": [
+     "Toy.ZstAssume.pruneOtherwiseAssume_equivPP",
+     "Toy.ZstAssume.pruneOtherwiseAssume_wp_iff"
+    ],
+    "purpose": "the `otherwise` target is UB with no event",
+    "tightness": "tight",
+    "counterexample": "Toy.ZstAssume.pruneOtherwiseAssume_live_otherwise_not_refinesWT",
+    "witness_class": "`pSw` (`hterm` holds), whose `otherwise` block halts; UB introduced on local 0 = 0; every contract"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "`pSwOne` satisfies both hypotheses; the equivalence for it is proved independently in `pruneOtherwiseAssume_pSwOne_equivPP`.",
+  "nonvacuity_witness_lean": "Toy.ZstAssume.pSwOne_hyps",
+  "lean_names": [
+   "Toy.ZstAssume.wp",
+   "Toy.ZstAssume.pSw",
+   "Toy.ZstAssume.pSwOne",
+   "Toy.ZstAssume.pruneOtherwiseAssume_pSwOne_equivPP",
+   "Toy.ZstAssume.pruneOtherwiseAssume",
+   "Toy.ZstAssume.pruneOtherwiseAssume_two_arms",
+   "Toy.ZstAssume.wpFrom_assume",
+   "Toy.ZstAssume.wpFrom_unreachable"
+  ],
+  "non_claims": [
+   "`pruneOtherwiseAssume` acts on single-arm switches; on a switch with any other number of arms it is the identity (`pruneOtherwiseAssume_two_arms`), and shapes with two or more arms are not covered by this statement.",
+   "Here `assume c` is the UB-on-false compiler assumption: its total-correctness rule is `wp (assume c) Q = c ∧ wp Q` (`wpFrom_assume`), and `wp` at an `unreachable` terminator is false (`wpFrom_unreachable`); in Dijkstra-style calculi these are the rules of `assert c` and `abort`. It is not the miraculous verification-condition `assume c` (rule `c → wp Q`, with `wp (assume false) Q` true); these statements neither establish nor refute anything about that reading. `wp` is demonic total correctness: UB and divergence both make it false; partial correctness (`wlp`) is not modelled.",
+   "The toy language is deterministic, with integer locals and a byte-granular dereferenceability map: no stored values, no provenance, no allocation or deallocation, no concurrency and no calls. It has a single UB class (failed access precondition, failed `assume`, reaching `unreachable`).",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, Miri, LLVM or the Rust standard library."
+  ],
+  "prior_art": [
+   "Documented design (source comments), rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/unreachable_prop.rs L1–3: \"A pass that propagates the unreachable terminator of a block to its predecessors when all of their successors are unreachable. This is achieved through a post-order traversal of the blocks.\"; L89–90: \"In order to preserve this information, we record reachable and unreachable targets as `Assume` statements in MIR.\"; L120: \"We remove this target from the switch, so record the inequality using `Assume`.\"",
+   "Documented design (source), rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/unreachable_prop.rs L120–122: \"// We remove this target from the switch, so record the inequality using `Assume`.\" / \"if is_unreachable && !otherwise_unreachable {\" / \"add_assumption(BinOp::Ne, value);\" (no inequality is recorded when the `otherwise` target is itself unreachable); L136–140: \"(2, true) => {\" / \"// All targets are unreachable except one. Record the equality, and make it a goto.\" / \"let (value, target) = new_targets.iter().next().unwrap();\" / \"add_assumption(BinOp::Eq, value);\" / \"TerminatorKind::Goto { target }\"; L19–20: \"// Enable only under -Zmir-opt-level=2 as this can make programs less debuggable.\" / \"PassPolicy::optimization(sess.mir_opt_level() >= 2)\".",
+   "rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, library/core/src/hint.rs: `unreachable_unchecked` L16 \"Reaching this function is *Undefined Behavior*.\"; `assert_unchecked` L146 \"`cond` must be `true`. It is immediate UB to call this with `false`.\"",
+   "M. Barnett, K. R. M. Leino, 'Weakest-precondition of unstructured programs', PASTE 2005, pp. 82–87, doi:10.1145/1108792.1108813, §2: \"wp(assert P, Q) = P ∧ Q\" and \"wp(assume P, Q) = P ⇒ Q\", and §1: a trace \"ends in error if an assert statement evaluates to false, and ends in infeasibility if an assume statement evaluates to false\". The toy's UB-on-false `assume` follows the first rule (`wpFrom_assume`); the second, miraculous rule is not modelled."
+  ],
+  "design_question": "Pruning a switch arm whose target is `Unreachable`, and propagating unreachability backwards, again deletes code whose sole effect is UB. When is pruning an equivalence for traces and for `wp`, when is it a forward refinement, and what does an inserted `assume` guard buy?"
+ },
+ {
+  "id": "prune-arm-without-assume-refines",
+  "lean": [
+   "Toy.ZstAssume.pruneArm_refinesPP",
+   "Toy.ZstAssume.pruneArm_wp_of_wp_src"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "For every zero-size contract `K`, program `P`, block `l`, switch `x arms ow` and value `v`: if block `l` ends in `switch x arms ow` and the label selected for `v` is an unreachable block, then removing every arm with value `v` without an `assume` (so that `x = v` goes to `ow`) is a prefix-preserving refinement, and for every postcondition `Q` and input, the source's demonic total-correctness `wp` implies the target's.",
+  "hypotheses": [
+   {
+    "name": "hterm : (P.blk l).term = .switch x arms ow",
+    "theorems": [
+     "Toy.ZstAssume.pruneArm_refinesPP",
+     "Toy.ZstAssume.pruneArm_wp_of_wp_src"
+    ],
+    "purpose": "names the switch whose arms are pruned",
+    "tightness": "tight",
+    "counterexample": "Toy.ZstAssume.pruneArm_hterm_counterexample",
+    "witness_class": "`pSwLive`, stated arms `[(5, 3)]` (so `hU` holds), actual arm for 5 live; every contract"
+   },
+   {
+    "name": "hU : IsUnreachableBlock P (selectTarget arms ow v)",
+    "theorems": [
+     "Toy.ZstAssume.pruneArm_refinesPP",
+     "Toy.ZstAssume.pruneArm_wp_of_wp_src"
+    ],
+    "purpose": "the pruned arm's target is UB with no event",
+    "tightness": "tight",
+    "counterexample": "Toy.ZstAssume.pruneArm_hU_counterexample",
+    "witness_class": "`pSwLive` (`hterm` holds, arm for 5 live), every contract; the trace postcondition `t = [1]` refutes the `wp` transfer"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "`pSw` satisfies both hypotheses; the refinement for it is proved independently in `pruneArm_pSw_refinesPP_not_equivWT`.",
+  "nonvacuity_witness_lean": "Toy.ZstAssume.pSw_hyps",
+  "lean_names": [
+   "Toy.ZstAssume.wp",
+   "Toy.ZstAssume.pSwLive",
+   "Toy.ZstAssume.pSw",
+   "Toy.ZstAssume.pruneArm_pSw_refinesPP_not_equivWT",
+   "Toy.ZstAssume.pruneArm_pSw_wp_transfers_one_way",
+   "Toy.ZstAssume.wpFrom_assume",
+   "Toy.ZstAssume.wpFrom_unreachable",
+   "Toy.ZstAssume.ImprovesPP"
+  ],
+  "non_claims": [
+   "Not an equivalence in general (`pruneArm_pSw_refinesPP_not_equivWT`); `wp` does not transfer from target to source (`pruneArm_pSw_wp_transfers_one_way`).",
+   "Here `assume c` is the UB-on-false compiler assumption: its total-correctness rule is `wp (assume c) Q = c ∧ wp Q` (`wpFrom_assume`), and `wp` at an `unreachable` terminator is false (`wpFrom_unreachable`); in Dijkstra-style calculi these are the rules of `assert c` and `abort`. It is not the miraculous verification-condition `assume c` (rule `c → wp Q`, with `wp (assume false) Q` true); these statements neither establish nor refute anything about that reading. `wp` is demonic total correctness: UB and divergence both make it false; partial correctness (`wlp`) is not modelled.",
+   "The toy language is deterministic, with integer locals and a byte-granular dereferenceability map: no stored values, no provenance, no allocation or deallocation, no concurrency and no calls. It has a single UB class (failed access precondition, failed `assume`, reaching `unreachable`).",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, Miri, LLVM or the Rust standard library."
+  ],
+  "prior_art": [
+   "Documented design (source comments), rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/unreachable_prop.rs L1–3: \"A pass that propagates the unreachable terminator of a block to its predecessors when all of their successors are unreachable. This is achieved through a post-order traversal of the blocks.\"; L89–90: \"In order to preserve this information, we record reachable and unreachable targets as `Assume` statements in MIR.\"; L120: \"We remove this target from the switch, so record the inequality using `Assume`.\"",
+   "M. Barnett, K. R. M. Leino, 'Weakest-precondition of unstructured programs', PASTE 2005, pp. 82–87, doi:10.1145/1108792.1108813, §2: \"wp(assert P, Q) = P ∧ Q\" and \"wp(assume P, Q) = P ⇒ Q\", and §1: a trace \"ends in error if an assert statement evaluates to false, and ends in infeasibility if an assume statement evaluates to false\". The toy's UB-on-false `assume` follows the first rule (`wpFrom_assume`); the second, miraculous rule is not modelled.",
+   "X. Leroy, 'Formal verification of a realistic compiler', Commun. ACM 52(7):107–115, 2009, doi:10.1145/1538788.1538814 (observable behaviours with traces: termination, divergence, going wrong). Quoted from the author's version (§2.1; printed page not checked): \"compiler optimizations can optimize away “going wrong” behaviors\" and property (2) \"S safe =⇒ (∀B, C ⇓ B =⇒ S ⇓ B)\", a whole-trace inclusion for sources that cannot go wrong; property (4) \"S |= Spec =⇒ C |= Spec\" is forward preservation of specifications. The prefix-preserving relation used here (`ImprovesPP`) is CompCert's `behavior_improves`, not a definition of that paper."
+  ],
+  "design_question": "Pruning a switch arm whose target is `Unreachable`, and propagating unreachability backwards, again deletes code whose sole effect is UB. When is pruning an equivalence for traces and for `wp`, when is it a forward refinement, and what does an inserted `assume` guard buy?"
+ },
+ {
+  "id": "prune-arm-without-assume-exact-condition",
+  "lean": [
+   "Toy.ZstAssume.pruneArm_equivPP_iff",
+   "Toy.ZstAssume.pruneArm_equivWT_iff"
+  ],
+  "kind": "characterization",
+  "tier": "T1",
+  "plain_claim": "For every zero-size contract `K`, program `P`, block `l`, switch `x arms ow` and value `v`: if block `l` ends in `switch x arms ow` and the label selected for `v` is an unreachable block, then pruning the arms with value `v` without `assume` is a prefix-preserving equivalence iff, for every reachable state at the switch with `x = v`, the target run from the entry of `ow` reaches UB with empty trace; and it is a whole-trace equivalence iff, for every such state, that run reaches UB after some trace.",
+  "hypotheses": [
+   {
+    "name": "hterm : (P.blk l).term = .switch x arms ow",
+    "theorems": [
+     "Toy.ZstAssume.pruneArm_equivPP_iff",
+     "Toy.ZstAssume.pruneArm_equivWT_iff"
+    ],
+    "purpose": "names the switch whose arms are pruned",
+    "tightness": "tight",
+    "counterexample": "Toy.ZstAssume.pruneArm_iff_counterexample",
+    "witness_class": "`pSwLiveUnreachOw` with stated arms `[(5, 3)]` (so `hU` holds): right-hand sides hold, equivalences fail; every contract"
+   },
+   {
+    "name": "hU : IsUnreachableBlock P (selectTarget arms ow v)",
+    "theorems": [
+     "Toy.ZstAssume.pruneArm_equivPP_iff",
+     "Toy.ZstAssume.pruneArm_equivWT_iff"
+    ],
+    "purpose": "the pruned arm's target is UB with no event",
+    "tightness": "tight",
+    "counterexample": "Toy.ZstAssume.pruneArm_iff_counterexample",
+    "witness_class": "`pSwLiveUnreachOw` (`hterm` holds; arm for 5 live, `otherwise` unreachable): right-hand sides hold, equivalences fail; every contract"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "`pSwAssumeOw` satisfies both hypotheses; there the value 5 is reachable at the switch, `otherwise` is not an unreachable block, the redirected run reaches UB with empty trace, and the equivalence is proved independently (`pruneArm_pSwAssumeOw_equivPP`); `pSw` is an instance in which both sides are false.",
+  "nonvacuity_witness_lean": "Toy.ZstAssume.pSwAssumeOw_hyps",
+  "lean_names": [
+   "Toy.ZstAssume.pSwLiveUnreachOw",
+   "Toy.ZstAssume.pSwAssumeOw",
+   "Toy.ZstAssume.pruneArm_pSwAssumeOw_equivPP",
+   "Toy.ZstAssume.pSw",
+   "Toy.ZstAssume.GoesWrongFrom",
+   "Toy.ZstAssume.EquivPP",
+   "Toy.ZstAssume.EquivWT",
+   "Toy.ZstAssume.wp",
+   "Toy.ZstAssume.ReachableAt",
+   "Toy.ZstAssume.ImprovesPP"
+  ],
+  "non_claims": [
+   "The condition is evaluated in the target program; if `ow` loops back to block `l`, the pruned switch is used.",
+   "`GoesWrongFrom` requires reaching UB in finitely many steps; a redirected target that diverges does not satisfy the condition.",
+   "`EquivPP` and `EquivWT` compare behaviours, which ignore final states; `wp` equivalence is not stated in this card.",
+   "Reachability (`ReachableAt`) ranges over all initial toy states, including runs that reach UB later; no calling context, type invariant or precondition on inputs (such as a caller-guaranteed aligned pointer) is modelled.",
+   "The toy language is deterministic, with integer locals and a byte-granular dereferenceability map: no stored values, no provenance, no allocation or deallocation, no concurrency and no calls. It has a single UB class (failed access precondition, failed `assume`, reaching `unreachable`).",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, Miri, LLVM or the Rust standard library."
+  ],
+  "prior_art": [
+   "Documented design (source comments), rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/unreachable_prop.rs L1–3: \"A pass that propagates the unreachable terminator of a block to its predecessors when all of their successors are unreachable. This is achieved through a post-order traversal of the blocks.\"; L89–90: \"In order to preserve this information, we record reachable and unreachable targets as `Assume` statements in MIR.\"; L120: \"We remove this target from the switch, so record the inequality using `Assume`.\"",
+   "X. Leroy, 'Formal verification of a realistic compiler', Commun. ACM 52(7):107–115, 2009, doi:10.1145/1538788.1538814 (observable behaviours with traces: termination, divergence, going wrong). Quoted from the author's version (§2.1; printed page not checked): \"compiler optimizations can optimize away “going wrong” behaviors\" and property (2) \"S safe =⇒ (∀B, C ⇓ B =⇒ S ⇓ B)\", a whole-trace inclusion for sources that cannot go wrong; property (4) \"S |= Spec =⇒ C |= Spec\" is forward preservation of specifications. The prefix-preserving relation used here (`ImprovesPP`) is CompCert's `behavior_improves`, not a definition of that paper.",
+   "CompCert, AbsInt/CompCert commit 5e4ef44c57b22cdc2e1893770843fd693a5f82e1, common/Behaviors.v L81–82: `Definition behavior_improves (beh1 beh2: program_behavior) : Prop := beh1 = beh2 \\/ exists t, beh1 = Goes_wrong t /\\ behavior_prefix t beh2.` (`beh1` is the source behaviour). `ImprovesPP bt bs` is this relation with `bs` as `beh1`."
+  ],
+  "design_question": "Pruning a switch arm whose target is `Unreachable`, and propagating unreachability backwards, again deletes code whose sole effect is UB. When is pruning an equivalence for traces and for `wp`, when is it a forward refinement, and what does an inserted `assume` guard buy?"
+ },
+ {
+  "id": "prune-arm-without-assume-unreachable-otherwise",
+  "lean": "Toy.ZstAssume.pruneArm_equivPP_of_otherwise_unreachable",
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "For every zero-size contract `K`, program `P`, block `l`, switch `x arms ow` and value `v`: if block `l` ends in `switch x arms ow`, the label selected for `v` is an unreachable block and `ow` is an unreachable block, then pruning the arms with value `v` without `assume` is a prefix-preserving equivalence.",
+  "hypotheses": [
+   {
+    "name": "hterm : (P.blk l).term = .switch x arms ow",
+    "theorems": [
+     "Toy.ZstAssume.pruneArm_equivPP_of_otherwise_unreachable"
+    ],
+    "purpose": "names the switch whose arms are pruned",
+    "tightness": "tight",
+    "counterexample": "Toy.ZstAssume.pruneArm_iff_counterexample",
+    "witness_class": "`pSwLiveUnreachOw` with stated arms `[(5, 3)]` (`hU` and `hOw` hold); every contract"
+   },
+   {
+    "name": "hU : IsUnreachableBlock P (selectTarget arms ow v)",
+    "theorems": [
+     "Toy.ZstAssume.pruneArm_equivPP_of_otherwise_unreachable"
+    ],
+    "purpose": "the pruned arm's target is UB with no event",
+    "tightness": "tight",
+    "counterexample": "Toy.ZstAssume.pruneArm_iff_counterexample",
+    "witness_class": "`pSwLiveUnreachOw` (`hterm`, `hOw` hold; arm for 5 live); every contract"
+   },
+   {
+    "name": "hOw : IsUnreachableBlock P ow",
+    "theorems": [
+     "Toy.ZstAssume.pruneArm_equivPP_of_otherwise_unreachable"
+    ],
+    "purpose": "redirected values reach UB with no event",
+    "tightness": "tight",
+    "counterexample": "Toy.ZstAssume.pruneArm_pSw_hyps_counterexample",
+    "witness_class": "`pSw` (`hterm`, `hU` hold), whose `otherwise` block halts; every contract"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`pSwDead` satisfies `hterm`, `hU` and `hOw`.",
+  "nonvacuity_witness_lean": "Toy.ZstAssume.pruneArm_equivPP_of_otherwise_unreachable_nonvacuous",
+  "lean_names": [
+   "Toy.ZstAssume.pSwLiveUnreachOw",
+   "Toy.ZstAssume.pSw",
+   "Toy.ZstAssume.pSwDead",
+   "Toy.ZstAssume.pruneArm_equivPP_iff",
+   "Toy.ZstAssume.wp"
+  ],
+  "non_claims": [
+   "A sufficient condition; the exact condition is `pruneArm_equivPP_iff`.",
+   "The toy language is deterministic, with integer locals and a byte-granular dereferenceability map: no stored values, no provenance, no allocation or deallocation, no concurrency and no calls. It has a single UB class (failed access precondition, failed `assume`, reaching `unreachable`).",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, Miri, LLVM or the Rust standard library."
+  ],
+  "prior_art": [
+   "Documented design (source comments), rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/unreachable_prop.rs L1–3: \"A pass that propagates the unreachable terminator of a block to its predecessors when all of their successors are unreachable. This is achieved through a post-order traversal of the blocks.\"; L89–90: \"In order to preserve this information, we record reachable and unreachable targets as `Assume` statements in MIR.\"; L120: \"We remove this target from the switch, so record the inequality using `Assume`.\"",
+   "Documented design (source), rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/unreachable_prop.rs L120–122: \"// We remove this target from the switch, so record the inequality using `Assume`.\" / \"if is_unreachable && !otherwise_unreachable {\" / \"add_assumption(BinOp::Ne, value);\" (no inequality is recorded when the `otherwise` target is itself unreachable); L136–140: \"(2, true) => {\" / \"// All targets are unreachable except one. Record the equality, and make it a goto.\" / \"let (value, target) = new_targets.iter().next().unwrap();\" / \"add_assumption(BinOp::Eq, value);\" / \"TerminatorKind::Goto { target }\"; L19–20: \"// Enable only under -Zmir-opt-level=2 as this can make programs less debuggable.\" / \"PassPolicy::optimization(sess.mir_opt_level() >= 2)\"."
+  ],
+  "design_question": "Pruning a switch arm whose target is `Unreachable`, and propagating unreachability backwards, again deletes code whose sole effect is UB. When is pruning an equivalence for traces and for `wp`, when is it a forward refinement, and what does an inserted `assume` guard buy?"
+ },
+ {
+  "id": "prune-arm-without-assume-invariant",
+  "lean": "Toy.ZstAssume.pruneArm_equivPP_of_invariant_ne",
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "For every zero-size contract `K`, program `P`, block `l`, switch `x arms ow` and value `v`: if block `l` ends in `switch x arms ow` and `x ≠ v` holds on every reachable state at the switch (`ReachableAt`, including runs that reach UB later), then pruning the arms with value `v` without `assume` is a prefix-preserving equivalence, with no condition on the pruned label.",
+  "hypotheses": [
+   {
+    "name": "hterm : (P.blk l).term = .switch x arms ow",
+    "theorems": [
+     "Toy.ZstAssume.pruneArm_equivPP_of_invariant_ne"
+    ],
+    "purpose": "names the switch whose arms are pruned and its variable",
+    "tightness": "tight",
+    "counterexample": "Toy.ZstAssume.pruneArm_invariant_ne_hterm_counterexample",
+    "witness_class": "`pSwDiffVar`: block 0 sets local 0 := 1 and switches on local 1; with stated variable `x = 0`, `hinv` holds; every contract"
+   },
+   {
+    "name": "hinv : ∀ st, ReachableAt K P l (P.blk l).stmts.length st → st.locals x ≠ v",
+    "theorems": [
+     "Toy.ZstAssume.pruneArm_equivPP_of_invariant_ne"
+    ],
+    "purpose": "the pruned value never reaches the switch",
+    "tightness": "tight",
+    "counterexample": "Toy.ZstAssume.pruneArm_pSw_hyps_counterexample",
+    "witness_class": "`pSw` (`hterm` holds) on local 0 = 5; every contract"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "`pSwInv` (local 0 := 1 before the switch) satisfies `hterm` and `hinv`. In `pSwInv` the pruned arm targets `Block.unreach`, so the hypothesis `hU` of `pruneArm_equivPP_iff` also holds there; the theorem has no hypothesis on the pruned label, and `pruneArm_equivPP_of_invariant_ne_live_arm_witness` proves, for every contract, an instance (`pSwLiveInv`) whose pruned arm targets a block that emits 9 and halts (not an unreachable block), with all hypotheses holding and the equivalence holding.",
+  "nonvacuity_witness_lean": [
+   "Toy.ZstAssume.pruneArm_equivPP_of_invariant_ne_nonvacuous",
+   "Toy.ZstAssume.pruneArm_equivPP_of_invariant_ne_live_arm_witness"
+  ],
+  "lean_names": [
+   "Toy.ZstAssume.ReachableAt",
+   "Toy.ZstAssume.pSwDiffVar",
+   "Toy.ZstAssume.pSw",
+   "Toy.ZstAssume.pSwInv",
+   "Toy.ZstAssume.FactOnDefinedRuns",
+   "Toy.ZstAssume.pSw_fact_not_invariant",
+   "Toy.ZstAssume.pruneArm_equivPP_iff",
+   "Toy.ZstAssume.wp",
+   "Toy.ZstAssume.pSwLiveInv"
+  ],
+  "non_claims": [
+   "`hinv` quantifies over all reachable states (`ReachableAt`), not over the runs that never reach UB (`FactOnDefinedRuns`): an unreachable arm for `v` makes `x ≠ v` a fact on the non-UB runs but not a reachable-state invariant, and pruning it without `assume` is then not an equivalence (`pSw_fact_not_invariant`).",
+   "Not a special case of `pruneArm_equivPP_iff`, which assumes that the pruned label is an unreachable block (that is why this card is labelled substantive).",
+   "Reachability (`ReachableAt`) ranges over all initial toy states, including runs that reach UB later; no calling context, type invariant or precondition on inputs (such as a caller-guaranteed aligned pointer) is modelled.",
+   "The toy language is deterministic, with integer locals and a byte-granular dereferenceability map: no stored values, no provenance, no allocation or deallocation, no concurrency and no calls. It has a single UB class (failed access precondition, failed `assume`, reaching `unreachable`).",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, Miri, LLVM or the Rust standard library."
+  ],
+  "prior_art": [
+   "Documented design (source comments), rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/unreachable_prop.rs L1–3: \"A pass that propagates the unreachable terminator of a block to its predecessors when all of their successors are unreachable. This is achieved through a post-order traversal of the blocks.\"; L89–90: \"In order to preserve this information, we record reachable and unreachable targets as `Assume` statements in MIR.\"; L120: \"We remove this target from the switch, so record the inequality using `Assume`.\"",
+   "X. Wang, N. Zeldovich, M. F. Kaashoek, A. Solar-Lezama, 'Towards Optimization-Safe Systems: Analyzing the Impact of Undefined Behavior', SOSP 2013, pp. 260–275, doi:10.1145/2517349.2522728 (optimizations that use the assumption that UB does not occur)."
+  ],
+  "design_question": "Pruning a switch arm whose target is `Unreachable`, and propagating unreachability backwards, again deletes code whose sole effect is UB. When is pruning an equivalence for traces and for `wp`, when is it a forward refinement, and what does an inserted `assume` guard buy?"
+ },
+ {
+  "id": "prune-arm-without-assume-not-equivalence-and-vc-one-way",
+  "lean": [
+   "Toy.ZstAssume.pruneArm_pSw_wp_transfers_one_way",
+   "Toy.ZstAssume.pruneArm_pSw_refinesPP_not_equivWT"
+  ],
+  "kind": "counterexample",
+  "tier": "T0",
+  "plain_claim": "For `pSw` (arm 5 → unreachable block, otherwise halt) and every contract, pruning the arm without `assume`: the target's demonic total-correctness `wp` for the postcondition `True` holds on every input, the source's `wp` for `True` holds exactly when local 0 ≠ 5, so at local 0 = 5 it holds for the target and fails for the source; the pruning is a prefix-preserving refinement but not a whole-trace equivalence.",
+  "hypotheses": [],
+  "hypotheses_note": "No hypotheses: a concrete instance (universally quantified over the contract).",
+  "depth": "shallow",
+  "nonvacuity_witness": "Concrete instance (no hypotheses).",
+  "positive_control_lean": "Toy.ZstAssume.pruneArmAssume_pSw_equivPP_and_wp",
+  "positive_control": "With the `assume` kept, the same pruning is an equivalence with equal `wp`.",
+  "lean_names": [
+   "Toy.ZstAssume.pSw",
+   "Toy.ZstAssume.wp",
+   "Toy.ZstAssume.pruneArm_equivPP_of_otherwise_unreachable",
+   "Toy.ZstAssume.pruneArm_equivPP_of_invariant_ne",
+   "Toy.ZstAssume.wpFrom_assume",
+   "Toy.ZstAssume.wpFrom_unreachable"
+  ],
+  "non_claims": [
+   "Verification results about the pruned program do not transfer back to the source in this instance; the positive control shows they do when the `assume` is kept.",
+   "Does not show that pruning without `assume` always breaks equivalence or `wp` transfer back to the source: when `ow` is also unreachable, or `x ≠ v` holds on every reachable state at the switch, pruning without `assume` is a prefix-preserving equivalence (`pruneArm_equivPP_of_otherwise_unreachable`, `pruneArm_equivPP_of_invariant_ne`).",
+   "Here `assume c` is the UB-on-false compiler assumption: its total-correctness rule is `wp (assume c) Q = c ∧ wp Q` (`wpFrom_assume`), and `wp` at an `unreachable` terminator is false (`wpFrom_unreachable`); in Dijkstra-style calculi these are the rules of `assert c` and `abort`. It is not the miraculous verification-condition `assume c` (rule `c → wp Q`, with `wp (assume false) Q` true); these statements neither establish nor refute anything about that reading. `wp` is demonic total correctness: UB and divergence both make it false; partial correctness (`wlp`) is not modelled.",
+   "The toy language is deterministic, with integer locals and a byte-granular dereferenceability map: no stored values, no provenance, no allocation or deallocation, no concurrency and no calls. It has a single UB class (failed access precondition, failed `assume`, reaching `unreachable`).",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, Miri, LLVM or the Rust standard library."
+  ],
+  "prior_art": [
+   "Documented design (source comments), rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/unreachable_prop.rs L1–3: \"A pass that propagates the unreachable terminator of a block to its predecessors when all of their successors are unreachable. This is achieved through a post-order traversal of the blocks.\"; L89–90: \"In order to preserve this information, we record reachable and unreachable targets as `Assume` statements in MIR.\"; L120: \"We remove this target from the switch, so record the inequality using `Assume`.\"",
+   "rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, library/core/src/hint.rs: `unreachable_unchecked` L16 \"Reaching this function is *Undefined Behavior*.\"; `assert_unchecked` L146 \"`cond` must be `true`. It is immediate UB to call this with `false`.\"",
+   "M. Barnett, K. R. M. Leino, 'Weakest-precondition of unstructured programs', PASTE 2005, pp. 82–87, doi:10.1145/1108792.1108813, §2: \"wp(assert P, Q) = P ∧ Q\" and \"wp(assume P, Q) = P ⇒ Q\", and §1: a trace \"ends in error if an assert statement evaluates to false, and ends in infeasibility if an assume statement evaluates to false\". The toy's UB-on-false `assume` follows the first rule (`wpFrom_assume`); the second, miraculous rule is not modelled."
+  ],
+  "design_question": "Pruning a switch arm whose target is `Unreachable`, and propagating unreachability backwards, again deletes code whose sole effect is UB. When is pruning an equivalence for traces and for `wp`, when is it a forward refinement, and what does an inserted `assume` guard buy?"
+ },
+ {
+  "id": "replace-block-by-unreachable-exact-condition",
+  "lean": [
+   "Toy.ZstAssume.replaceUnreachable_refinesPP_iff",
+   "Toy.ZstAssume.replaceUnreachable_refinesWT_iff"
+  ],
+  "kind": "characterization",
+  "tier": "T1",
+  "plain_claim": "For every zero-size contract `K`, program `P` and label `b`: replacing block `b` by `Block.unreach` is a prefix-preserving refinement iff, from every reachable state at the entry of `b`, the source run reaches UB with empty trace; and it is a whole-trace refinement iff, from every such state, the source run reaches UB after some trace (events before the UB are permitted; divergence is not).",
+  "hypotheses": [],
+  "hypotheses_note": "No side hypotheses: both characterizations are universally quantified over every contract `K`, program `P` and label `b`, so there is no hypothesis whose tightness could be recorded.",
+  "depth": "substantive",
+  "nonvacuity_witness": "`pSilentToUnreach` (block 1 assigns and jumps to an unreachable block): both sides are proved true independently; `replaceUnreachable_emit_before_unreachable` and `replaceUnreachable_diverging_loop_not_refinesWT` are instances in which sides are false.",
+  "nonvacuity_witness_lean": "Toy.ZstAssume.replaceUnreachable_pSilentToUnreach",
+  "lean_names": [
+   "Toy.ZstAssume.Block.unreach",
+   "Toy.ZstAssume.pSilentToUnreach",
+   "Toy.ZstAssume.replaceUnreachable_emit_before_unreachable",
+   "Toy.ZstAssume.replaceUnreachable_diverging_loop_not_refinesWT",
+   "Toy.ZstAssume.wp",
+   "Toy.ZstAssume.ReachableAt",
+   "Toy.ZstAssume.ImprovesPP"
+  ],
+  "non_claims": [
+   "Models replacing a single block `b`, not a pass that iterates to a fixed point over several blocks.",
+   "A label outside the program already denotes `Block.unreach`; replacing it changes nothing.",
+   "Whether divergence may itself be UB (a forward-progress assumption) is not modelled; in this toy a silently diverging run is a defined behaviour. Total-correctness `wp` maps both divergence and UB to false and does not distinguish them.",
+   "Reachability (`ReachableAt`) ranges over all initial toy states, including runs that reach UB later; no calling context, type invariant or precondition on inputs (such as a caller-guaranteed aligned pointer) is modelled.",
+   "The toy language is deterministic, with integer locals and a byte-granular dereferenceability map: no stored values, no provenance, no allocation or deallocation, no concurrency and no calls. It has a single UB class (failed access precondition, failed `assume`, reaching `unreachable`).",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, Miri, LLVM or the Rust standard library."
+  ],
+  "prior_art": [
+   "Documented design (source comments), rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/unreachable_prop.rs L1–3: \"A pass that propagates the unreachable terminator of a block to its predecessors when all of their successors are unreachable. This is achieved through a post-order traversal of the blocks.\"; L89–90: \"In order to preserve this information, we record reachable and unreachable targets as `Assume` statements in MIR.\"; L120: \"We remove this target from the switch, so record the inequality using `Assume`.\"",
+   "X. Leroy, 'Formal verification of a realistic compiler', Commun. ACM 52(7):107–115, 2009, doi:10.1145/1538788.1538814 (observable behaviours with traces: termination, divergence, going wrong). Quoted from the author's version (§2.1; printed page not checked): \"compiler optimizations can optimize away “going wrong” behaviors\" and property (2) \"S safe =⇒ (∀B, C ⇓ B =⇒ S ⇓ B)\", a whole-trace inclusion for sources that cannot go wrong; property (4) \"S |= Spec =⇒ C |= Spec\" is forward preservation of specifications. The prefix-preserving relation used here (`ImprovesPP`) is CompCert's `behavior_improves`, not a definition of that paper.",
+   "CompCert, AbsInt/CompCert commit 5e4ef44c57b22cdc2e1893770843fd693a5f82e1, common/Behaviors.v L81–82: `Definition behavior_improves (beh1 beh2: program_behavior) : Prop := beh1 = beh2 \\/ exists t, beh1 = Goes_wrong t /\\ behavior_prefix t beh2.` (`beh1` is the source behaviour). `ImprovesPP bt bs` is this relation with `bs` as `beh1`.",
+   "S. D. Herring, 'Partial program correctness', ISO/IEC JTC1/SC22/WG21 P1494R5, 2025-02-14, https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2025/p1494r5.html: \"The “time travel” aspect of such optimizations (explicitly authorized by [intro.abstract]/5) is surprising to many programmers in that it can sometimes eliminate tests meant to detect the invalid operation in question.\" and \"A call to std::observable prevents the propagation of assumptions based on the potential for undefined behavior after it into code before it.\" (in C++, UB may affect behaviour before it, as in the toy's whole-trace discipline; the proposed checkpoint restores a prefix guarantee, as in the prefix-preserving discipline).",
+   "N. P. Lopes et al., Alive2 (PLDI 2021, doi:10.1145/3453483.3454030), §5 (author's version): \"In LLVM, loops tagged with the mustprogress attribute must either terminate or perform externally observable actions infinitely often. The function triggers UB otherwise.\" (a forward-progress assumption under which silent divergence is UB; not modelled in the toy)."
+  ],
+  "design_question": "Pruning a switch arm whose target is `Unreachable`, and propagating unreachability backwards, again deletes code whose sole effect is UB. When is pruning an equivalence for traces and for `wp`, when is it a forward refinement, and what does an inserted `assume` guard buy?"
+ },
+ {
+  "id": "replace-block-by-unreachable-counterexamples",
+  "lean": [
+   "Toy.ZstAssume.replaceUnreachable_emit_before_unreachable",
+   "Toy.ZstAssume.replaceUnreachable_diverging_loop_not_refinesWT"
+  ],
+  "kind": "counterexample",
+  "tier": "T0",
+  "plain_claim": "For every contract, replacing the block `emit 7; unreachable` of `pEmitBeforeUnreach` by `Block.unreach` is not a prefix-preserving refinement but is a whole-trace refinement; and replacing the loop block of `pLoopBeforeUnreach` (which diverges silently on local 0 = 0) by `Block.unreach` is not a whole-trace refinement.",
+  "hypotheses": [],
+  "hypotheses_note": "No hypotheses: concrete instances (universally quantified over the contract).",
+  "depth": "shallow",
+  "nonvacuity_witness": "Concrete instances (no hypotheses).",
+  "positive_control_lean": "Toy.ZstAssume.replaceUnreachable_pSilentToUnreach",
+  "positive_control": "A block from which every run reaches UB silently can be replaced.",
+  "lean_names": [
+   "Toy.ZstAssume.pEmitBeforeUnreach",
+   "Toy.ZstAssume.Block.unreach",
+   "Toy.ZstAssume.pLoopBeforeUnreach",
+   "Toy.ZstAssume.ImprovesPP",
+   "Toy.ZstAssume.wp"
+  ],
+  "non_claims": [
+   "The whole-trace half of the first statement is itself a positive control: under whole-trace UB, backward propagation over an event is a refinement in this instance.",
+   "`replaceUnreachable_diverging_loop_not_refinesWT` relies on silent divergence being a defined behaviour (`Beh.div []`). Under a semantics with a forward-progress assumption that makes side-effect-free infinite loops UB, the replacement would be a refinement (not modelled here).",
+   "The toy language is deterministic, with integer locals and a byte-granular dereferenceability map: no stored values, no provenance, no allocation or deallocation, no concurrency and no calls. It has a single UB class (failed access precondition, failed `assume`, reaching `unreachable`).",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, Miri, LLVM or the Rust standard library."
+  ],
+  "prior_art": [
+   "X. Leroy, 'Formal verification of a realistic compiler', Commun. ACM 52(7):107–115, 2009, doi:10.1145/1538788.1538814 (observable behaviours with traces: termination, divergence, going wrong). Quoted from the author's version (§2.1; printed page not checked): \"compiler optimizations can optimize away “going wrong” behaviors\" and property (2) \"S safe =⇒ (∀B, C ⇓ B =⇒ S ⇓ B)\", a whole-trace inclusion for sources that cannot go wrong; property (4) \"S |= Spec =⇒ C |= Spec\" is forward preservation of specifications. The prefix-preserving relation used here (`ImprovesPP`) is CompCert's `behavior_improves`, not a definition of that paper.",
+   "CompCert, AbsInt/CompCert commit 5e4ef44c57b22cdc2e1893770843fd693a5f82e1, common/Behaviors.v L81–82: `Definition behavior_improves (beh1 beh2: program_behavior) : Prop := beh1 = beh2 \\/ exists t, beh1 = Goes_wrong t /\\ behavior_prefix t beh2.` (`beh1` is the source behaviour). `ImprovesPP bt bs` is this relation with `bs` as `beh1`.",
+   "S. D. Herring, 'Partial program correctness', ISO/IEC JTC1/SC22/WG21 P1494R5, 2025-02-14, https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2025/p1494r5.html: \"The “time travel” aspect of such optimizations (explicitly authorized by [intro.abstract]/5) is surprising to many programmers in that it can sometimes eliminate tests meant to detect the invalid operation in question.\" and \"A call to std::observable prevents the propagation of assumptions based on the potential for undefined behavior after it into code before it.\" (in C++, UB may affect behaviour before it, as in the toy's whole-trace discipline; the proposed checkpoint restores a prefix guarantee, as in the prefix-preserving discipline).",
+   "N. P. Lopes et al., Alive2 (PLDI 2021, doi:10.1145/3453483.3454030), §5 (author's version): \"In LLVM, loops tagged with the mustprogress attribute must either terminate or perform externally observable actions infinitely often. The function triggers UB otherwise.\" (a forward-progress assumption under which silent divergence is UB; not modelled in the toy)."
+  ],
+  "design_question": "Pruning a switch arm whose target is `Unreachable`, and propagating unreachability backwards, again deletes code whose sole effect is UB. When is pruning an equivalence for traces and for `wp`, when is it a forward refinement, and what does an inserted `assume` guard buy?"
+ },
+ {
+  "id": "prune-with-assume-preserves-ub-derived-facts",
+  "lean": "Toy.ZstAssume.pruneArmAssume_preserves_factOnDefinedRuns",
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "For every zero-size contract `K`, program `P`, block `l`, value `v`, program point `(l', i')` and state predicate `F`: if `F` holds at `(l', i')` on every run of `P` that never reaches UB, then `F` holds at `(l', i')` on every run of `pruneArmAssume P l v` that never reaches UB.",
+  "hypotheses": [
+   {
+    "name": "hF : FactOnDefinedRuns K P l' i' F",
+    "theorems": [
+     "Toy.ZstAssume.pruneArmAssume_preserves_factOnDefinedRuns"
+    ],
+    "purpose": "the fact holds in the source",
+    "tightness": "tight",
+    "counterexample": "Toy.ZstAssume.pruneArmAssume_fact_hypothesis_counterexample",
+    "witness_class": "`pFact` with `F = False` at `(0, 0)`, `l = 0`, `v = 5`; every contract"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "`pFact` with the UB-derived fact `local 0 ≠ 5` at its switch satisfies `hF`.",
+  "nonvacuity_witness_lean": "Toy.ZstAssume.pruneArmAssume_preserves_factOnDefinedRuns_nonvacuous",
+  "lean_names": [
+   "Toy.ZstAssume.pFact",
+   "Toy.ZstAssume.pruneArmAssume_equivPP",
+   "Toy.ZstAssume.FactOnDefinedRuns",
+   "Toy.ZstAssume.factOnDefinedRuns_fold_refinesWT_not_refinesPP",
+   "Toy.ZstAssume.factOnDefinedRuns_unreach",
+   "Toy.ZstAssume.not_refinesWT_halt_unreach",
+   "Toy.ZstAssume.wp"
+  ],
+  "non_claims": [
+   "The theorem has no hypothesis on the pruned arm; whether the pruned program refines or equals the source is a separate result (`pruneArmAssume_equivPP`).",
+   "`FactOnDefinedRuns` is a whole-run condition, not a prefix invariant: a fact may rely on UB that occurs after observable events, and folding a branch with it need not be a prefix-preserving refinement even on the unmodified source (`factOnDefinedRuns_fold_refinesWT_not_refinesPP`, where the fold is a whole-trace refinement).",
+   "`FactOnDefinedRuns` is antitone in UB: every fact holds on the non-UB runs of an always-UB program (`factOnDefinedRuns_unreach`), although replacing a program by it is not a refinement in general (`not_refinesWT_halt_unreach`). Preserving such facts therefore neither establishes nor implies that a transformation is a refinement.",
+   "At block `l` itself, index `i' = (P.blk l).stmts.length` denotes the switch in `P` and the point before the inserted `assume` in `pruneArmAssume P l v`; `F` holds there in the target because runs failing the `assume` are excluded as UB runs.",
+   "Facts are state predicates at program points of the toy; analyses that summarise over paths are not modelled.",
+   "The toy language is deterministic, with integer locals and a byte-granular dereferenceability map: no stored values, no provenance, no allocation or deallocation, no concurrency and no calls. It has a single UB class (failed access precondition, failed `assume`, reaching `unreachable`).",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, Miri, LLVM or the Rust standard library."
+  ],
+  "prior_art": [
+   "X. Wang, N. Zeldovich, M. F. Kaashoek, A. Solar-Lezama, 'Towards Optimization-Safe Systems: Analyzing the Impact of Undefined Behavior', SOSP 2013, pp. 260–275, doi:10.1145/2517349.2522728 (optimizations that use the assumption that UB does not occur).",
+   "Documented design (source comments), rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/unreachable_prop.rs L1–3: \"A pass that propagates the unreachable terminator of a block to its predecessors when all of their successors are unreachable. This is achieved through a post-order traversal of the blocks.\"; L89–90: \"In order to preserve this information, we record reachable and unreachable targets as `Assume` statements in MIR.\"; L120: \"We remove this target from the switch, so record the inequality using `Assume`.\"",
+   "S. D. Herring, 'Partial program correctness', ISO/IEC JTC1/SC22/WG21 P1494R5, 2025-02-14, https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2025/p1494r5.html: \"The “time travel” aspect of such optimizations (explicitly authorized by [intro.abstract]/5) is surprising to many programmers in that it can sometimes eliminate tests meant to detect the invalid operation in question.\" and \"A call to std::observable prevents the propagation of assumptions based on the potential for undefined behavior after it into code before it.\" (in C++, UB may affect behaviour before it, as in the toy's whole-trace discipline; the proposed checkpoint restores a prefix guarantee, as in the prefix-preserving discipline)."
+  ],
+  "design_question": "Pruning a switch arm whose target is `Unreachable`, and propagating unreachability backwards, again deletes code whose sole effect is UB. When is pruning an equivalence for traces and for `wp`, when is it a forward refinement, and what does an inserted `assume` guard buy?"
+ },
+ {
+  "id": "prune-without-assume-loses-ub-derived-facts",
+  "lean": [
+   "Toy.ZstAssume.pruneArm_breaks_ubDerivedFact",
+   "Toy.ZstAssume.staleFact_fold_after_pruneArm",
+   "Toy.ZstAssume.staleFact_fold_after_pruneArmAssume_refinesPP",
+   "Toy.ZstAssume.factOnDefinedRuns_fold_refinesWT_not_refinesPP",
+   "Toy.ZstAssume.emitFact_fold_after_pruneArm_not_refinesWT_input"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "For every contract: in `pFact` the fact `local 0 ≠ 5` holds at the switch on every non-UB run but fails on a non-UB run of the program pruned without `assume`; in `pStale`, a fold of block 1 to `goto 4` justified by the fact `local 0 ≠ 5` computed on the source is not a whole-trace refinement of its actual input (the program pruned without `assume`), although both that input and the composite are prefix-preserving refinements of the source; with the `assume` kept, the same fold is a prefix-preserving refinement of its input `pruneArmAssume pStale 0 5`. In `pEmitFact`, the fact `local 0 ≠ 5` holds at block 0's switch on every non-UB run, and folding block 0 to `goto 4` with it gives a whole-trace refinement of the source `pEmitFact` that is not a prefix-preserving refinement of `pEmitFact`; the composite that first prunes block 1's arm for 5 without `assume` (a prefix-preserving refinement of `pEmitFact`) and then applies the same fold is likewise a whole-trace refinement of the source `pEmitFact` and not a prefix-preserving refinement of `pEmitFact`, and it is not a whole-trace refinement of its actual input `pruneArm pEmitFact 1 5`.",
+  "hypotheses": [],
+  "hypotheses_note": "No hypotheses: concrete instances (universally quantified over the contract).",
+  "depth": "shallow",
+  "nonvacuity_witness": "Concrete instances (no hypotheses).",
+  "positive_control_lean": "Toy.ZstAssume.staleFact_fold_after_pruneArmAssume_refinesPP",
+  "positive_control": "With the `assume` kept, the fact-based fold is a prefix-preserving refinement of its input `pruneArmAssume pStale 0 5` (also one of this card's results, quoted in its statement block).",
+  "lean_names": [
+   "Toy.ZstAssume.pFact",
+   "Toy.ZstAssume.pStale",
+   "Toy.ZstAssume.pEmitFact",
+   "Toy.ZstAssume.pruneArm",
+   "Toy.ZstAssume.pruneArm_equivPP_of_otherwise_unreachable",
+   "Toy.ZstAssume.pruneArm_equivPP_of_invariant_ne",
+   "Toy.ZstAssume.wp"
+  ],
+  "non_claims": [
+   "In `pStale` the end-to-end result still refines the source; the failure there is that the fact-using pass is not a refinement of its own input, which breaks per-pass validation.",
+   "In `pEmitFact` the composite (prune block 1 without `assume`, then fold block 0 with the fact computed on the source) is not a prefix-preserving refinement of the source, but the same fold applied to the source already fails, so that failure comes from the fact being a whole-run fact, not from its staleness. The whole-trace refinement proved for that composite is relative to the source `pEmitFact`; relative to its actual input `pruneArm pEmitFact 1 5` the composite is not a whole-trace refinement (`emitFact_fold_after_pruneArm_not_refinesWT_input`). No instance is given here in which such a composite fails to be a whole-trace refinement of the source.",
+   "Losing a fact requires pruning to erase UB: when `pruneArm` is an equivalence (for example `pruneArm_equivPP_of_otherwise_unreachable`, `pruneArm_equivPP_of_invariant_ne`), the non-UB runs are unchanged and such facts are preserved (not proved here).",
+   "The toy language is deterministic, with integer locals and a byte-granular dereferenceability map: no stored values, no provenance, no allocation or deallocation, no concurrency and no calls. It has a single UB class (failed access precondition, failed `assume`, reaching `unreachable`).",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, Miri, LLVM or the Rust standard library."
+  ],
+  "prior_art": [
+   "X. Wang, N. Zeldovich, M. F. Kaashoek, A. Solar-Lezama, 'Towards Optimization-Safe Systems: Analyzing the Impact of Undefined Behavior', SOSP 2013, pp. 260–275, doi:10.1145/2517349.2522728 (optimizations that use the assumption that UB does not occur).",
+   "Documented design (source comments), rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/unreachable_prop.rs L1–3: \"A pass that propagates the unreachable terminator of a block to its predecessors when all of their successors are unreachable. This is achieved through a post-order traversal of the blocks.\"; L89–90: \"In order to preserve this information, we record reachable and unreachable targets as `Assume` statements in MIR.\"; L120: \"We remove this target from the switch, so record the inequality using `Assume`.\"",
+   "S. D. Herring, 'Partial program correctness', ISO/IEC JTC1/SC22/WG21 P1494R5, 2025-02-14, https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2025/p1494r5.html: \"The “time travel” aspect of such optimizations (explicitly authorized by [intro.abstract]/5) is surprising to many programmers in that it can sometimes eliminate tests meant to detect the invalid operation in question.\" and \"A call to std::observable prevents the propagation of assumptions based on the potential for undefined behavior after it into code before it.\" (in C++, UB may affect behaviour before it, as in the toy's whole-trace discipline; the proposed checkpoint restores a prefix guarantee, as in the prefix-preserving discipline)."
+  ],
+  "design_question": "Pruning a switch arm whose target is `Unreachable`, and propagating unreachability backwards, again deletes code whose sole effect is UB. When is pruning an equivalence for traces and for `wp`, when is it a forward refinement, and what does an inserted `assume` guard buy?"
+ }
+]

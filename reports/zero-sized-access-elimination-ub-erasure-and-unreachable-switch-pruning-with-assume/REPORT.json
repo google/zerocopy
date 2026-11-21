@@ -1,0 +1,123 @@
+{
+  "topics": [
+    "lean",
+    "lean/mechanization",
+    "verification",
+    "verification/formalized-results",
+    "verification/refinement",
+    "verification/weakest-preconditions",
+    "compilers",
+    "compilers/undefined-behavior",
+    "compilers/optimization-correctness",
+    "compilers/zero-sized-types",
+    "pl/operational-semantics"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Rust standard library and compiler source",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "26bfbf28f5f79dff333ce5a232f131b496ec9cfe"
+      }
+    },
+    {
+      "name": "Rust 1.80.0 standard library documentation",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "version": "1.80.0",
+        "revision": "051478957371ee0084a7c0913941d2a8c4757bb9"
+      }
+    },
+    {
+      "name": "Rust 1.88.0 standard library documentation",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "version": "1.88.0",
+        "revision": "6b00bc3880198600130e1cf62b8f8a93494488cc"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+      }
+    },
+    {
+      "name": "Miri",
+      "identity": {
+        "repository": "rust-lang/miri",
+        "revision": "7e679961edcfe2c526f19153bb8b03de346efa5c"
+      }
+    },
+    {
+      "name": "MiniRust",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "98043a70de612f6af4eaf1e35cf0b8a6ebea22ce"
+      }
+    },
+    {
+      "name": "CompCert",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "5e4ef44c57b22cdc2e1893770843fd693a5f82e1"
+      }
+    },
+    {
+      "name": "Formal verification of a realistic compiler",
+      "identity": {
+        "doi": "10.1145/1538788.1538814"
+      }
+    },
+    {
+      "name": "Weakest-precondition of unstructured programs",
+      "identity": {
+        "doi": "10.1145/1108792.1108813"
+      }
+    },
+    {
+      "name": "Taming undefined behavior in LLVM",
+      "identity": {
+        "doi": "10.1145/3062341.3062343"
+      }
+    },
+    {
+      "name": "Alive2: Bounded Translation Validation for LLVM",
+      "identity": {
+        "doi": "10.1145/3453483.3454030"
+      }
+    },
+    {
+      "name": "Towards Optimization-Safe Systems: Analyzing the Impact of Undefined Behavior",
+      "identity": {
+        "doi": "10.1145/2517349.2522728"
+      }
+    },
+    {
+      "name": "Partial program correctness (WG21 P1494R5)",
+      "identity": {
+        "document": "ISO/IEC JTC1/SC22/WG21 P1494R5",
+        "url": "https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2025/p1494r5.html",
+        "date": "2025-02-14"
+      }
+    },
+    {
+      "name": "Allow zero length operations on null pointers (WG14 N3322)",
+      "identity": {
+        "document": "ISO/IEC JTC1/SC22/WG14 N3322",
+        "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3322.pdf",
+        "date": "2024-08-28"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}
