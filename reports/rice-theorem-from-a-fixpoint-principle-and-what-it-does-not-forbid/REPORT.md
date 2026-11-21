@@ -131,6 +131,7 @@ def PrecompClosed (S : System.{u, v}) (d : S.Code → S.Code) : Prop :=
 **Definition adequacy** (`Toy.Rice.decidedInside_iff_ite_admissible`, a lemma, not a result card). `DecidedInside S P` says exactly that every transformer `c ↦ if P c then a else b` is admissible, where the `if` uses the classical-logic instance `Classical.propDecidable` (not a computability notion), so that no effectiveness enters through the Boolean checker:
 
 ```lean
+-- lean/ToyRice/Basic.lean:144-147
 theorem decidedInside_iff_ite_admissible (P : S.Code → Prop) :
     DecidedInside S P ↔
       ∀ a b : S.Code,
@@ -395,6 +396,7 @@ Basis: execution (Lean kernel check)
 - **Note:** No global closure law on Adm is assumed as a separate hypothesis; the only admissibility the proof uses is that of one switch on the checker, which is part of DecidedInside (see R2). The class form, for any class K of checkers all of whose switches are admissible (K ⊆ SwitchAdmissible S), is the corollary Toy.Rice.not_decidedBy_of_fixpointPrinciple_switchClosed_extensional_nontrivial.
 
 ```lean
+-- lean/ToyRice/Abstract.lean:40-42
 theorem not_decidedInside_of_fixpointPrinciple_extensional_nontrivial
     (hfix : FixpointPrinciple S) {P : S.Code → Prop} (hext : Extensional S P)
     (hnt : NontrivialPred P) : ¬ DecidedInside S P
@@ -438,6 +440,7 @@ Basis: execution (Lean kernel check)
 - **Plain claim:** In a system with the fixpoint principle, if chk decides an extensional predicate P, a satisfies P and b violates P, then the swapped switch c ↦ if chk c then b else a is not admissible.
 
 ```lean
+-- lean/ToyRice/Abstract.lean:20-23
 theorem swappedSwitch_not_admissible_of_fixpointPrinciple_extensional_decides
     (hfix : FixpointPrinciple S) {P : S.Code → Prop} (hext : Extensional S P)
     {chk : S.Code → Bool} (hdec : Decides chk P) {a b : S.Code} (ha : P a) (hb : ¬ P b) :
@@ -473,6 +476,7 @@ Basis: execution (Lean kernel check)
 - **Plain claim:** In a system with the fixpoint principle whose admissible class contains every constant transformer, an extensional predicate is decided inside the system if and only if it holds of every code or of no code.
 
 ```lean
+-- lean/ToyRice/Abstract.lean:64-67
 theorem decidedInside_iff_trivial_of_fixpointPrinciple_constClosed_extensional
     (hfix : FixpointPrinciple S) (hconst : ConstClosed S) {P : S.Code → Prop}
     (hext : Extensional S P) :
@@ -505,6 +509,7 @@ Basis: execution (Lean kernel check)
 - **Plain claim:** Let S have the fixpoint principle, let its admissible transformers be closed under literal code-equality tests (for admissible f and codes k, a, b, the transformer c ↦ if f c = k then a else b is admissible), and let F be a fragment of codes closed under same behaviour. Then no predicate that is extensional and nontrivial on F is decided inside the restricted system S.restrict F, whose admissible transformers are the fragment maps that agree literally on F with some admissible transformer of S.
 
 ```lean
+-- lean/ToyRice/Abstract.lean:306-311
 theorem not_decidedInside_restrict_of_fixpointPrinciple_eqTestClosed_extensionalFragment_extensional_nontrivial
     (hfix : FixpointPrinciple S) (heq : EqTestClosed S) {F : S.Code → Prop}
     (hF : Extensional S F) {P : S.Code → Prop}
@@ -544,6 +549,7 @@ Basis: execution (Lean kernel check)
 - **Plain claim:** Let φ : A → A → Y represent every map in a class G (each g in G equals φ a pointwise for some a), and let t : Y → Y be such that the diagonal map x ↦ t (φ x x) is in G. Then some a represents that diagonal map, and for every such a, φ a a is a fixed point of t.
 
 ```lean
+-- lean/ToyRice/Recursion.lean:35-38
 theorem lawvere_fixedPoint_of_represents_diagonal {A : Type u} {Y : Type v} (φ : A → A → Y)
     (G : (A → Y) → Prop) (hrep : ∀ g, G g → ∃ a, ∀ x, φ a x = g x) (t : Y → Y)
     (hdiag : G (fun x => t (φ x x))) :
@@ -576,6 +582,7 @@ Basis: execution (Lean kernel check)
 - **Plain claim:** For types and arbitrary functions, if φ : A → A → Y represents every map A → Y, then Y has exactly one element.
 
 ```lean
+-- lean/ToyRice/Recursion.lean:69-70
 theorem nonempty_subsingleton_of_weaklyPointSurjective {A : Type u} {Y : Type v} (φ : A → A → Y)
     (hsurj : ∀ g : A → Y, ∃ a, ∀ x, φ a x = g x) : Nonempty Y ∧ ∀ y y' : Y, y = y'
 ```
@@ -607,6 +614,7 @@ Basis: execution (Lean kernel check)
 - **Plain claim:** If every admissible transformer is computed by some code under a partial application app (Represents), d is a diagonal transformer (whenever app x x halts with output z, the code d x behaves like z), and precomposition with d preserves admissibility, then for every admissible f some code e computes f ∘ d, and for every such e the code d e is a semantic fixed point of f (sem (f (d e)) = sem (d e)). In particular the system has the fixpoint principle.
 
 ```lean
+-- lean/ToyRice/Recursion.lean:117-122
 theorem diagonalFixedPoint_of_represents_diagonal_precompClosed
     (app : S.Code → S.Code → Option S.Code) (d : S.Code → S.Code)
     (hrep : Represents S app) (hdiag : IsDiagonal S app d) (hpre : PrecompClosed S d) :
@@ -649,12 +657,14 @@ Basis: execution (Lean kernel check)
 - **Plain claim:** If a system has the fixpoint principle and every switch on every Boolean checker is admissible, then all codes have the same behaviour; consequently, when every transformer is admissible and the code type is nonempty, the fixpoint principle holds exactly when the semantics is constant.
 
 ```lean
+-- lean/ToyRice/Abstract.lean:86-88
 theorem sem_constant_of_fixpointPrinciple_allSwitchesAdmissible
     (hfix : FixpointPrinciple S) (hall : ∀ chk : S.Code → Bool, SwitchAdmissible S chk) :
     ∀ c d, S.sem c = S.sem d
 ```
 
 ```lean
+-- lean/ToyRice/Abstract.lean:110-112
 theorem fixpointPrinciple_allAdm_iff_sem_constant_of_nonempty {C : Type u} {B : Type v}
     (sem : C → B) (hne : Nonempty C) :
     FixpointPrinciple (allAdm sem) ↔ ∀ c d : C, sem c = sem d
@@ -687,6 +697,7 @@ Basis: execution (Lean kernel check)
 - **Note:** Existence statement about one concrete system: Tables.sys witnesses that a system can lack the fixpoint principle and decide a nontrivial extensional predicate inside. Nothing follows for other total languages (see the non-claims).
 
 ```lean
+-- lean/ToyRice/Tables.lean:304-306
 theorem tables_no_fixpointPrinciple_and_isZeroFn_decidedInside :
     ¬ FixpointPrinciple sys ∧ Extensional sys IsZeroFn ∧ NontrivialPred IsZeroFn ∧
       Decides zeroCheck IsZeroFn ∧ SwitchAdmissible sys zeroCheck
@@ -717,6 +728,7 @@ Basis: execution (Lean kernel check)
 - **Note:** Existence statement about one concrete system: Flat.sys witnesses that the fixpoint principle, a nontrivial extensional predicate, and the failure to decide it inside occur together. It is not a statement about other systems.
 
 ```lean
+-- lean/ToyRice/Flat.lean:126-128
 theorem flat_fixpointPrinciple_and_halts_not_decidedInside :
     FixpointPrinciple sys ∧ Extensional sys Halts ∧ NontrivialPred Halts ∧
       ¬ DecidedInside sys Halts
@@ -745,6 +757,7 @@ Basis: execution (Lean kernel check)
 - **Note:** Existence statement about one concrete system: natShiftSys witnesses that ConstClosed, CompClosed and the failure of the fixpoint principle are consistent with deciding nothing nontrivial inside. It does not characterize such systems.
 
 ```lean
+-- lean/ToyRice/Controls.lean:740-743
 theorem converse_fails_constClosed_compClosed_noFixpoint_nothingNontrivialDecided :
     ConstClosed natShiftSys ∧ CompClosed natShiftSys ∧ ¬ FixpointPrinciple natShiftSys ∧
       (∀ P : Nat → Prop, Extensional natShiftSys P) ∧
@@ -771,6 +784,7 @@ Basis: execution (Lean kernel check)
 - **Plain claim:** If every constant transformer is admissible, the checker that rejects every code is sound for every predicate and is switch-admissible.
 
 ```lean
+-- lean/ToyRice/Abstract.lean:125-127
 theorem rejectAll_sound_switchAdmissible_of_constClosed (hconst : ConstClosed S)
     (P : S.Code → Prop) :
     SoundFor (fun _ : S.Code => false) P ∧ SwitchAdmissible S (fun _ : S.Code => false)
@@ -799,6 +813,7 @@ Basis: execution (Lean kernel check)
 - **Note:** Existence statement about one concrete system: Padded.sys witnesses that the fixpoint principle is consistent with a sound, switch-admissible checker that accepts infinitely many codes but is incomplete for a predicate that is not decided inside. It is not a statement about other systems.
 
 ```lean
+-- lean/ToyRice/Padded.lean:285-290
 theorem padded_litTrueCheck_sound_infinite_incomplete :
     FixpointPrinciple sys ∧ Extensional sys BehTrue ∧ NontrivialPred BehTrue ∧
       ¬ DecidedInside sys BehTrue ∧
@@ -828,6 +843,7 @@ Basis: execution (Lean kernel check)
 - **Note:** Existence statement about one concrete system: Padded.sys witnesses that a nontrivial non-extensional predicate can be decided inside a system with the fixpoint principle. It is not a statement about other systems.
 
 ```lean
+-- lean/ToyRice/Padded.lean:274-276
 theorem padded_fixpointPrinciple_and_evenPad_decidedInside :
     FixpointPrinciple sys ∧ ¬ Extensional sys EvenPad ∧ NontrivialPred EvenPad ∧
       Decides evenPadCheck EvenPad ∧ SwitchAdmissible sys evenPadCheck
@@ -855,6 +871,7 @@ Basis: execution (Lean kernel check)
 - **Note:** Existence statement about one concrete system: Lifted.sys and its halting fragment Lifted.totalSys witness that there is a system with the fixpoint principle, not closed under code-equality tests, whose behaviour-closed halting fragment decides inside a property that is extensional and nontrivial on the fragment and is not decided inside the full system. It does not say that every such system, or every behaviour-closed fragment, behaves this way.
 
 ```lean
+-- lean/ToyRice/Lifted.lean:272-280
 theorem lifted_haltsZero_decidedInside_haltingFragment_not_full :
     FixpointPrinciple sys ∧ ¬ FixpointPrinciple totalSys ∧
       ¬ (∀ g : totalSys.Code → totalSys.Code, totalSys.Adm g) ∧
@@ -888,6 +905,7 @@ Basis: execution (Lean kernel check)
 - **Plain claim:** In a system with the fixpoint principle, let chk be switch-admissible and sound for an extensional predicate P that some code violates. Then every realizable behaviour (the behaviour of some code) has a code that chk rejects: for every code a there is a code c with sem c = sem a and chk c = false. In particular every code satisfying P, and every accepted code, has a rejected code with the same behaviour.
 
 ```lean
+-- lean/ToyRice/Abstract.lean:229-233
 theorem forall_exists_sameSem_rejected_of_fixpointPrinciple_extensional_violated_sound_switchAdmissible
     (hfix : FixpointPrinciple S) {P : S.Code → Prop} (hext : Extensional S P)
     (hviol : ∃ b, ¬ P b) {chk : S.Code → Bool} (hsound : SoundFor chk P)
@@ -925,6 +943,7 @@ Basis: execution (Lean kernel check)
 - **Plain claim:** In a system with the fixpoint principle, every switch-admissible checker chk has the following property: for any codes a and b, chk rejects some code with the behaviour of a or accepts some code with the behaviour of b. Consequently (and, classically, equivalently) no realizable behaviour (the behaviour of some code) has all its codes accepted while a realizable behaviour has all its codes rejected.
 
 ```lean
+-- lean/ToyRice/Abstract.lean:166-168
 theorem exists_sameSem_rejected_or_exists_sameSem_accepted_of_fixpointPrinciple_switchAdmissible
     (hfix : FixpointPrinciple S) {chk : S.Code → Bool} (hsw : SwitchAdmissible S chk) :
     ∀ a b, (∃ c, S.sem c = S.sem a ∧ chk c = false) ∨ (∃ c, S.sem c = S.sem b ∧ chk c = true)
@@ -956,6 +975,7 @@ Basis: execution (Lean kernel check)
 - **Plain claim:** In a system with the fixpoint principle, a switch-admissible checker that is sound for an extensional predicate P, accepts some code and rejects some code gives different verdicts on two codes with the same behaviour, both satisfying P.
 
 ```lean
+-- lean/ToyRice/Abstract.lean:290-294
 theorem exists_sameSem_satisfying_accepted_rejected_of_fixpointPrinciple_extensional_sound_switchAdmissible
     (hfix : FixpointPrinciple S) {P : S.Code → Prop} (hext : Extensional S P)
     {chk : S.Code → Bool} (hsound : SoundFor chk P) (hsw : SwitchAdmissible S chk)
@@ -993,6 +1013,7 @@ Basis: execution (Lean kernel check)
 - **Note:** Existence statement about one concrete system: Flat.sys witnesses that a one-sided switch can be admissible in a system with the fixpoint principle while the predicate is not decided inside. It is not a statement about other systems.
 
 ```lean
+-- lean/ToyRice/Flat.lean:136-137
 theorem halts_unswappedSwitch_admissible_not_decidedInside :
     FixpointPrinciple sys ∧ sys.Adm (switch haltCheck .tt .bot) ∧ ¬ DecidedInside sys Halts
 ```
@@ -1019,30 +1040,35 @@ Each section lists the tightness counterexamples, then the non-vacuity witness. 
 #### For R1
 
 ```lean
+-- lean/ToyRice/Controls.lean:18-20
 theorem rice_tight_fixpointPrinciple :
     Extensional Tables.sys Tables.IsZeroFn ∧ NontrivialPred Tables.IsZeroFn ∧
       DecidedInside Tables.sys Tables.IsZeroFn
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:25-27
 theorem rice_tight_extensional :
     FixpointPrinciple Padded.sys ∧ NontrivialPred Padded.EvenPad ∧
       DecidedInside Padded.sys Padded.EvenPad
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:31-33
 theorem rice_tight_nontrivial_hasMember :
     FixpointPrinciple Padded.sys ∧ Extensional Padded.sys (fun _ => False) ∧
       (∃ _ : Padded.Code, ¬ False) ∧ DecidedInside Padded.sys (fun _ => False)
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:39-41
 theorem rice_tight_nontrivial_hasNonMember :
     FixpointPrinciple Padded.sys ∧ Extensional Padded.sys (fun _ => True) ∧
       (∃ _ : Padded.Code, True) ∧ DecidedInside Padded.sys (fun _ => True)
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:47-50
 theorem rice_nonvacuous :
     (FixpointPrinciple Padded.sys ∧ Extensional Padded.sys Padded.BehTrue ∧
       NontrivialPred Padded.BehTrue) ∧
@@ -1052,6 +1078,7 @@ theorem rice_nonvacuous :
 #### For R2
 
 ```lean
+-- lean/ToyRice/Controls.lean:58-61
 theorem riceSharp_tight_fixpointPrinciple :
     Extensional Tables.sys Tables.IsZeroFn ∧ Decides Tables.zeroCheck Tables.IsZeroFn ∧
       Tables.IsZeroFn [] ∧ ¬ Tables.IsZeroFn [(0, 1)] ∧
@@ -1059,6 +1086,7 @@ theorem riceSharp_tight_fixpointPrinciple :
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:66-69
 theorem riceSharp_tight_extensional :
     FixpointPrinciple Padded.sys ∧ Decides Padded.evenPadCheck Padded.EvenPad ∧
       Padded.EvenPad (.hid true 0) ∧ ¬ Padded.EvenPad (.hid true 1) ∧
@@ -1066,6 +1094,7 @@ theorem riceSharp_tight_extensional :
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:75-78
 theorem riceSharp_tight_decides :
     FixpointPrinciple Flat.sys ∧ Extensional Flat.sys Flat.Halts ∧
       Flat.Halts Flat.Flat.tt ∧ ¬ Flat.Halts Flat.Flat.bot ∧
@@ -1073,6 +1102,7 @@ theorem riceSharp_tight_decides :
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:86-89
 theorem riceSharp_tight_member :
     FixpointPrinciple Flat.sys ∧ Extensional Flat.sys Flat.Halts ∧
       Decides Flat.haltCheck Flat.Halts ∧ ¬ Flat.Halts Flat.Flat.bot ∧
@@ -1080,6 +1110,7 @@ theorem riceSharp_tight_member :
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:99-102
 theorem riceSharp_tight_nonmember :
     FixpointPrinciple Flat.sys ∧ Extensional Flat.sys Flat.Halts ∧
       Decides Flat.haltCheck Flat.Halts ∧ Flat.Halts Flat.Flat.tt ∧
@@ -1087,6 +1118,7 @@ theorem riceSharp_tight_nonmember :
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:111-114
 theorem riceSharp_nonvacuous :
     FixpointPrinciple Flat.sys ∧ Extensional Flat.sys Flat.Halts ∧
       Decides Flat.haltCheck Flat.Halts ∧ Flat.Halts Flat.Flat.tt ∧
@@ -1096,6 +1128,7 @@ theorem riceSharp_nonvacuous :
 #### For R4
 
 ```lean
+-- lean/ToyRice/Controls.lean:167-170
 theorem riceChar_tight_fixpointPrinciple :
     ConstClosed Tables.sys ∧ Extensional Tables.sys Tables.IsZeroFn ∧
       ¬ (DecidedInside Tables.sys Tables.IsZeroFn ↔
@@ -1103,6 +1136,7 @@ theorem riceChar_tight_fixpointPrinciple :
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:178-181
 theorem riceChar_tight_constClosed :
     FixpointPrinciple emptyAdmSys ∧ Extensional emptyAdmSys (fun _ => True) ∧
       ¬ (DecidedInside emptyAdmSys (fun _ => True) ↔
@@ -1110,6 +1144,7 @@ theorem riceChar_tight_constClosed :
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:186-189
 theorem riceChar_tight_extensional :
     FixpointPrinciple Padded.sys ∧ ConstClosed Padded.sys ∧
       ¬ (DecidedInside Padded.sys Padded.EvenPad ↔
@@ -1117,6 +1152,7 @@ theorem riceChar_tight_extensional :
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:198-203
 theorem riceChar_nonvacuous :
     FixpointPrinciple Padded.sys ∧ ConstClosed Padded.sys ∧
       (Extensional Padded.sys (fun _ => True) ∧ DecidedInside Padded.sys (fun _ => True) ∧
@@ -1128,6 +1164,7 @@ theorem riceChar_nonvacuous :
 #### For R6
 
 ```lean
+-- lean/ToyRice/Controls.lean:637-642
 theorem restrict_tight_fixpointPrinciple :
     EqTestClosed (allAdm (id : Bool → Bool)) ∧
       Extensional (allAdm (id : Bool → Bool)) (fun _ => True) ∧
@@ -1137,6 +1174,7 @@ theorem restrict_tight_fixpointPrinciple :
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:655-659
 theorem restrict_tight_eqTestClosed :
     FixpointPrinciple Lifted.sys ∧ Extensional Lifted.sys Lifted.Halts ∧
       Extensional Lifted.totalSys (fun x => Lifted.HaltsZero x.val) ∧
@@ -1145,6 +1183,7 @@ theorem restrict_tight_eqTestClosed :
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:667-671
 theorem restrict_tight_extensionalFragment :
     FixpointPrinciple Padded.sys ∧ EqTestClosed Padded.sys ∧
       Extensional (Padded.sys.restrict Padded.IsLit) (fun x => Padded.BehTrue x.val) ∧
@@ -1153,6 +1192,7 @@ theorem restrict_tight_extensionalFragment :
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:683-687
 theorem restrict_tight_extensional :
     FixpointPrinciple Padded.sys ∧ EqTestClosed Padded.sys ∧
       Extensional Padded.sys (fun _ => True) ∧
@@ -1161,6 +1201,7 @@ theorem restrict_tight_extensional :
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:694-699
 theorem restrict_tight_hasMember :
     FixpointPrinciple Padded.sys ∧ EqTestClosed Padded.sys ∧
       Extensional Padded.sys (fun _ => True) ∧
@@ -1170,6 +1211,7 @@ theorem restrict_tight_hasMember :
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:706-711
 theorem restrict_tight_hasNonMember :
     FixpointPrinciple Padded.sys ∧ EqTestClosed Padded.sys ∧
       Extensional Padded.sys (fun _ => True) ∧
@@ -1179,6 +1221,7 @@ theorem restrict_tight_hasNonMember :
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:720-724
 theorem restrict_nonvacuous :
     FixpointPrinciple PaddedDiv.sys ∧ EqTestClosed PaddedDiv.sys ∧
       Extensional PaddedDiv.sys PaddedDiv.Halts ∧ NontrivialPred PaddedDiv.Halts ∧
@@ -1189,6 +1232,7 @@ theorem restrict_nonvacuous :
 #### For F1
 
 ```lean
+-- lean/ToyRice/Models.lean:259-262
 theorem lawvere_tight_represents :
     (fun _ : Unit → Bool => True) (fun x => !(phiTrue x x)) ∧
       ¬ (∀ g : Unit → Bool, (fun _ => True) g → ∃ a, ∀ x, phiTrue a x = g x) ∧
@@ -1196,12 +1240,14 @@ theorem lawvere_tight_represents :
 ```
 
 ```lean
+-- lean/ToyRice/Models.lean:270-272
 theorem lawvere_tight_diagonal :
     (∀ g, IsConst g → ∃ a, ∀ x, phiConst a x = g x) ∧
       ¬ IsConst (fun x => !(phiConst x x)) ∧ ¬ LawvereConclusion phiConst not
 ```
 
 ```lean
+-- lean/ToyRice/Models.lean:252-254
 theorem lawvere_nonvacuous :
     (∀ g, IsConst g → ∃ a, ∀ x, phiConst a x = g x) ∧
       IsConst (fun x => (fun _ : Bool => true) (phiConst x x))
@@ -1210,36 +1256,42 @@ theorem lawvere_nonvacuous :
 #### For F2
 
 ```lean
+-- lean/ToyRice/Controls.lean:475-477
 theorem cantor_tight_surjective :
     ¬ (∀ g : Bool → Bool, ∃ a, ∀ x, Models.phiConst a x = g x) ∧
       ¬ (Nonempty Bool ∧ ∀ y y' : Bool, y = y')
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:488
 theorem cantor_nonvacuous : ∀ g : Unit → Unit, ∃ a : Unit, ∀ x, (fun _ _ => ()) a x = g x
 ```
 
 #### For F3
 
 ```lean
+-- lean/ToyRice/Models.lean:177-179
 theorem kleene_tight_represents :
     IsDiagonal (boolSys adm2) app2 id ∧ PrecompClosed (boolSys adm2) id ∧
       ¬ DiagConclusion (boolSys adm2) app2 id
 ```
 
 ```lean
+-- lean/ToyRice/Models.lean:200-202
 theorem kleene_tight_diagonal :
     Represents (boolSys adm3) app3 ∧ PrecompClosed (boolSys adm3) id ∧
       ¬ DiagConclusion (boolSys adm3) app3 id
 ```
 
 ```lean
+-- lean/ToyRice/Models.lean:146-148
 theorem kleene_tight_precompClosed :
     Represents (boolSys adm1) app1 ∧ IsDiagonal (boolSys adm1) app1 (fun _ => false) ∧
       ¬ DiagConclusion (boolSys adm1) app1 (fun _ => false)
 ```
 
 ```lean
+-- lean/ToyRice/Models.lean:76-82
 theorem kleene_nonvacuous :
     Represents tagSys tagApp ∧ IsDiagonal tagSys tagApp tagDiag ∧
       PrecompClosed tagSys tagDiag ∧ ¬ tagSys.Adm tagDiag ∧ (∀ x, tagDiag x ≠ x) ∧
@@ -1252,28 +1304,33 @@ theorem kleene_nonvacuous :
 #### For F4
 
 ```lean
+-- lean/ToyRice/Controls.lean:217-219
 theorem semConst_tight_fixpointPrinciple :
     (∀ chk : Bool → Bool, SwitchAdmissible (allAdm (id : Bool → Bool)) chk) ∧
       ¬ ∀ c d : Bool, (allAdm (id : Bool → Bool)).sem c = (allAdm (id : Bool → Bool)).sem d
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:224-225
 theorem semConst_tight_allSwitches :
     FixpointPrinciple Flat.sys ∧ ¬ ∀ c d : Flat.Flat, Flat.sys.sem c = Flat.sys.sem d
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:238-239
 theorem allAdm_tight_nonempty :
     ¬ (FixpointPrinciple (allAdm emptySem) ↔ ∀ c d : Empty, emptySem c = emptySem d)
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:228-230
 theorem semConst_nonvacuous :
     FixpointPrinciple (allAdm (fun _ : Bool => ())) ∧
       ∀ chk : Bool → Bool, SwitchAdmissible (allAdm (fun _ : Bool => ())) chk
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:246-248
 theorem allAdm_nonvacuous :
     Nonempty Bool ∧ FixpointPrinciple (allAdm (fun _ : Bool => ())) ∧
       ¬ FixpointPrinciple (allAdm (id : Bool → Bool))
@@ -1282,6 +1339,7 @@ theorem allAdm_nonvacuous :
 #### For N2
 
 ```lean
+-- lean/ToyRice/Tables.lean:304-306
 theorem tables_no_fixpointPrinciple_and_isZeroFn_decidedInside :
     ¬ FixpointPrinciple sys ∧ Extensional sys IsZeroFn ∧ NontrivialPred IsZeroFn ∧
       Decides zeroCheck IsZeroFn ∧ SwitchAdmissible sys zeroCheck
@@ -1290,18 +1348,21 @@ theorem tables_no_fixpointPrinciple_and_isZeroFn_decidedInside :
 #### For W1
 
 ```lean
+-- lean/ToyRice/Controls.lean:255-257
 theorem rejectAll_tight_constClosed :
     ¬ (SoundFor (fun _ : Bool => false) (fun _ : Bool => True) ∧
         SwitchAdmissible emptyAdmSys (fun _ => false))
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:260
 theorem rejectAll_nonvacuous : ConstClosed Padded.sys ∧ FixpointPrinciple Padded.sys
 ```
 
 #### For W5
 
 ```lean
+-- lean/ToyRice/Controls.lean:523-526
 theorem incompleteAll_tight_fixpointPrinciple :
     Extensional Tables.sys Tables.IsZeroFn ∧ (∃ b, ¬ Tables.IsZeroFn b) ∧
       SoundFor Tables.zeroCheck Tables.IsZeroFn ∧ SwitchAdmissible Tables.sys Tables.zeroCheck ∧
@@ -1309,6 +1370,7 @@ theorem incompleteAll_tight_fixpointPrinciple :
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:537-540
 theorem incompleteAll_tight_extensional :
     FixpointPrinciple twinSys ∧ (∃ b, ¬ tagOr b = true) ∧
       SoundFor tagOr (fun c => tagOr c = true) ∧ SwitchAdmissible twinSys tagOr ∧
@@ -1316,6 +1378,7 @@ theorem incompleteAll_tight_extensional :
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:550-555
 theorem incompleteAll_tight_violated :
     FixpointPrinciple Padded.sys ∧ Extensional Padded.sys (fun _ => True) ∧
       SoundFor (fun _ : Padded.Code => true) (fun _ => True) ∧
@@ -1325,6 +1388,7 @@ theorem incompleteAll_tight_violated :
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:562-566
 theorem incompleteAll_tight_sound :
     FixpointPrinciple Padded.sys ∧ Extensional Padded.sys Padded.BehTrue ∧
       (∃ b, ¬ Padded.BehTrue b) ∧ SwitchAdmissible Padded.sys (fun _ => true) ∧
@@ -1333,6 +1397,7 @@ theorem incompleteAll_tight_sound :
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:574-577
 theorem incompleteAll_tight_switchAdmissible :
     FixpointPrinciple Padded.sys ∧ Extensional Padded.sys Padded.BehTrue ∧
       (∃ b, ¬ Padded.BehTrue b) ∧ SoundFor Padded.Code.beh Padded.BehTrue ∧
@@ -1340,6 +1405,7 @@ theorem incompleteAll_tight_switchAdmissible :
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:586-589
 theorem incompleteAll_nonvacuous :
     FixpointPrinciple Padded.sys ∧ Extensional Padded.sys Padded.BehTrue ∧
       (∃ b, ¬ Padded.BehTrue b) ∧ SoundFor Padded.litTrueCheck Padded.BehTrue ∧
@@ -1349,6 +1415,7 @@ theorem incompleteAll_nonvacuous :
 #### For W6
 
 ```lean
+-- lean/ToyRice/Controls.lean:598-601
 theorem splitAll_tight_fixpointPrinciple :
     SwitchAdmissible Tables.sys Tables.zeroCheck ∧
       ¬ ∀ a b, (∃ c, Tables.sys.sem c = Tables.sys.sem a ∧ Tables.zeroCheck c = false) ∨
@@ -1356,6 +1423,7 @@ theorem splitAll_tight_fixpointPrinciple :
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:612-615
 theorem splitAll_tight_switchAdmissible :
     FixpointPrinciple Padded.sys ∧
       ¬ ∀ a b, (∃ c, Padded.sys.sem c = Padded.sys.sem a ∧ Padded.Code.beh c = false) ∨
@@ -1363,6 +1431,7 @@ theorem splitAll_tight_switchAdmissible :
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:627-629
 theorem splitAll_nonvacuous :
     FixpointPrinciple Padded.sys ∧ SwitchAdmissible Padded.sys Padded.litTrueCheck ∧
       Padded.litTrueCheck (.lit true 0) = true ∧ Padded.litTrueCheck (.hid true 0) = false
@@ -1371,6 +1440,7 @@ theorem splitAll_nonvacuous :
 #### For W7
 
 ```lean
+-- lean/ToyRice/Controls.lean:387-392
 theorem soundSplit_tight_fixpointPrinciple :
     Extensional Tables.sys Tables.IsZeroFn ∧ SoundFor Tables.zeroCheck Tables.IsZeroFn ∧
       SwitchAdmissible Tables.sys Tables.zeroCheck ∧ (∃ c, Tables.zeroCheck c = true) ∧
@@ -1380,6 +1450,7 @@ theorem soundSplit_tight_fixpointPrinciple :
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:401-408
 theorem soundSplit_tight_extensional :
     FixpointPrinciple Padded.sys ∧
       SoundFor Padded.litTrueCheck (fun c => Padded.litTrueCheck c = true) ∧
@@ -1391,6 +1462,7 @@ theorem soundSplit_tight_extensional :
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:417-422
 theorem soundSplit_tight_sound :
     FixpointPrinciple Padded.sys ∧ Extensional Padded.sys (fun _ => False) ∧
       SwitchAdmissible Padded.sys Padded.litTrueCheck ∧
@@ -1400,6 +1472,7 @@ theorem soundSplit_tight_sound :
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:428-433
 theorem soundSplit_tight_switchAdmissible :
     FixpointPrinciple Padded.sys ∧ Extensional Padded.sys Padded.BehTrue ∧
       SoundFor Padded.Code.beh Padded.BehTrue ∧
@@ -1409,6 +1482,7 @@ theorem soundSplit_tight_switchAdmissible :
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:439-446
 theorem soundSplit_tight_accepts :
     FixpointPrinciple Padded.sys ∧ Extensional Padded.sys Padded.BehTrue ∧
       SoundFor (fun _ : Padded.Code => false) Padded.BehTrue ∧
@@ -1420,6 +1494,7 @@ theorem soundSplit_tight_accepts :
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:452-458
 theorem soundSplit_tight_rejects :
     FixpointPrinciple Padded.sys ∧ Extensional Padded.sys (fun _ => True) ∧
       SoundFor (fun _ : Padded.Code => true) (fun _ => True) ∧
@@ -1430,6 +1505,7 @@ theorem soundSplit_tight_rejects :
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:463-467
 theorem soundSplit_nonvacuous :
     FixpointPrinciple Padded.sys ∧ Extensional Padded.sys Padded.BehTrue ∧
       SoundFor Padded.litTrueCheck Padded.BehTrue ∧
@@ -1440,16 +1516,19 @@ theorem soundSplit_nonvacuous :
 #### Boundary facts cited by the non-claims of W4, W5, W6
 
 ```lean
+-- lean/ToyRice/Lifted.lean:214-215
 theorem switchAdmissible_const (chk : Option Table → Bool) (hsw : SwitchAdmissible sys chk) :
     (∀ c, chk c = true) ∨ (∀ c, chk c = false)
 ```
 
 ```lean
+-- lean/ToyRice/Lifted.lean:248-249
 theorem not_decidedInside_of_nontrivial {P : Option Table → Prop} (hnt : NontrivialPred P) :
     ¬ DecidedInside sys P
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:801-805
 theorem verdictSplit_unrealizableBehaviour :
     FixpointPrinciple nonSurjSys ∧ SwitchAdmissible nonSurjSys (fun _ => true) ∧
       ∃ b₁ b₂ : nonSurjSys.Beh, b₁ ≠ b₂ ∧
@@ -1458,6 +1537,7 @@ theorem verdictSplit_unrealizableBehaviour :
 ```
 
 ```lean
+-- lean/ToyRice/Controls.lean:816-820
 theorem incompleteAll_unrealizableBehaviour :
     FixpointPrinciple paddedOptSys ∧ Extensional paddedOptSys Padded.BehTrue ∧
       (∃ b, ¬ Padded.BehTrue b) ∧ SoundFor Padded.litTrueCheck Padded.BehTrue ∧
@@ -1466,6 +1546,7 @@ theorem incompleteAll_unrealizableBehaviour :
 ```
 
 ```lean
+-- lean/ToyRice/Abstract.lean:182-185
 theorem not_forall_sameSem_accepted_and_forall_sameSem_rejected_of_fixpointPrinciple_switchAdmissible
     (hfix : FixpointPrinciple S) {chk : S.Code → Bool} (hsw : SwitchAdmissible S chk)
     (a b : S.Code) :
@@ -1473,6 +1554,7 @@ theorem not_forall_sameSem_accepted_and_forall_sameSem_rejected_of_fixpointPrinc
 ```
 
 ```lean
+-- lean/ToyRice/Abstract.lean:198-201
 theorem sameSem_split_iff_not_forall_sameSem_accepted_and_forall_sameSem_rejected
     (chk : S.Code → Bool) (a b : S.Code) :
     ((∃ c, S.sem c = S.sem a ∧ chk c = false) ∨ (∃ c, S.sem c = S.sem b ∧ chk c = true)) ↔
