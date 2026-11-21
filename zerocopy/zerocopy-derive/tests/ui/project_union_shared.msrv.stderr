@@ -1,0 +1,67 @@
+error[E0599]: the method `project` exists for struct `Ptr<'_, Overlapping, (Shared, Aligned, zerocopy_renamed::invariant::Uninit)>`, but its trait bounds were not satisfied
+  --> $DIR/project_union_shared.rs:32:17
+   |
+24 | union Overlapping {
+   | -----------------
+   | |
+   | doesn't satisfy `<_ as ProjectField<_, _, (Shared, Aligned, zerocopy_renamed::invariant::Uninit), {_: i128}, {_: i128}>>::Error = _`
+   | doesn't satisfy `<_ as ProjectField<_, _, (Shared, Aligned, zerocopy_renamed::invariant::Uninit), {_: i128}, {_: i128}>>::Invariants = _`
+...
+32 |     let _ = ptr.project::<ProjectDerive, _, { REPR_C_UNION_VARIANT_ID }, { BYTE }>();
+   |                 ^^^^^^^ method cannot be called on `Ptr<'_, Overlapping, (Shared, Aligned, zerocopy_renamed::invariant::Uninit)>` due to unsatisfied trait bounds
+   |
+   = note: the following trait bounds were not satisfied:
+           `<Overlapping as ProjectField<_, _, (Shared, Aligned, zerocopy_renamed::invariant::Uninit), {_: i128}, {_: i128}>>::Invariants = _`
+           `<Overlapping as ProjectField<_, _, (Shared, Aligned, zerocopy_renamed::invariant::Uninit), {_: i128}, {_: i128}>>::Error = _`
+
+error[E0599]: the method `project` exists for struct `Ptr<'_, Overlapping, (Shared, Aligned, zerocopy_renamed::invariant::Uninit)>`, but its trait bounds were not satisfied
+  --> $DIR/project_union_shared.rs:34:17
+   |
+24 | union Overlapping {
+   | -----------------
+   | |
+   | doesn't satisfy `<_ as ProjectField<_, _, (Shared, Aligned, zerocopy_renamed::invariant::Uninit), {_: i128}, {_: i128}>>::Error = _`
+   | doesn't satisfy `<_ as ProjectField<_, _, (Shared, Aligned, zerocopy_renamed::invariant::Uninit), {_: i128}, {_: i128}>>::Invariants = _`
+...
+34 |     let _ = ptr.project::<TryFromBytesDerive, _, { REPR_C_UNION_VARIANT_ID }, { BYTE }>();
+   |                 ^^^^^^^ method cannot be called on `Ptr<'_, Overlapping, (Shared, Aligned, zerocopy_renamed::invariant::Uninit)>` due to unsatisfied trait bounds
+   |
+   = note: the following trait bounds were not satisfied:
+           `<Overlapping as ProjectField<_, _, (Shared, Aligned, zerocopy_renamed::invariant::Uninit), {_: i128}, {_: i128}>>::Invariants = _`
+           `<Overlapping as ProjectField<_, _, (Shared, Aligned, zerocopy_renamed::invariant::Uninit), {_: i128}, {_: i128}>>::Error = _`
+
+error[E0599]: the method `project` exists for struct `Ptr<'_, Overlapping, (Shared, Aligned, zerocopy_renamed::invariant::Initialized)>`, but its trait bounds were not satisfied
+  --> $DIR/project_union_shared.rs:39:17
+   |
+24 | union Overlapping {
+   | -----------------
+   | |
+   | doesn't satisfy `<_ as ProjectField<_, _, (Shared, Aligned, zerocopy_renamed::invariant::Initialized), {_: i128}, {_: i128}>>::Error = _`
+   | doesn't satisfy `<_ as ProjectField<_, _, (Shared, Aligned, zerocopy_renamed::invariant::Initialized), {_: i128}, {_: i128}>>::Invariants = _`
+...
+39 |     let _ = ptr.project::<ProjectDerive, _, { REPR_C_UNION_VARIANT_ID }, { BYTE }>();
+   |                 ^^^^^^^ method cannot be called on `Ptr<'_, Overlapping, (Shared, Aligned, zerocopy_renamed::invariant::Initialized)>` due to unsatisfied trait bounds
+   |
+   = note: the following trait bounds were not satisfied:
+           `<Overlapping as ProjectField<_, _, (Shared, Aligned, zerocopy_renamed::invariant::Initialized), {_: i128}, {_: i128}>>::Invariants = _`
+           `<Overlapping as ProjectField<_, _, (Shared, Aligned, zerocopy_renamed::invariant::Initialized), {_: i128}, {_: i128}>>::Error = _`
+
+error[E0599]: the method `project` exists for struct `Ptr<'_, Overlapping, (Shared, Aligned, zerocopy_renamed::invariant::Initialized)>`, but its trait bounds were not satisfied
+  --> $DIR/project_union_shared.rs:41:17
+   |
+24 | union Overlapping {
+   | -----------------
+   | |
+   | doesn't satisfy `<_ as ProjectField<_, _, (Shared, Aligned, zerocopy_renamed::invariant::Initialized), {_: i128}, {_: i128}>>::Error = _`
+   | doesn't satisfy `<_ as ProjectField<_, _, (Shared, Aligned, zerocopy_renamed::invariant::Initialized), {_: i128}, {_: i128}>>::Invariants = _`
+...
+41 |     let _ = ptr.project::<TryFromBytesDerive, _, { REPR_C_UNION_VARIANT_ID }, { BYTE }>();
+   |                 ^^^^^^^ method cannot be called on `Ptr<'_, Overlapping, (Shared, Aligned, zerocopy_renamed::invariant::Initialized)>` due to unsatisfied trait bounds
+   |
+   = note: the following trait bounds were not satisfied:
+           `<Overlapping as ProjectField<_, _, (Shared, Aligned, zerocopy_renamed::invariant::Initialized), {_: i128}, {_: i128}>>::Invariants = _`
+           `<Overlapping as ProjectField<_, _, (Shared, Aligned, zerocopy_renamed::invariant::Initialized), {_: i128}, {_: i128}>>::Error = _`
+
+error: aborting due to 4 previous errors
+
+For more information about this error, try `rustc --explain E0599`.

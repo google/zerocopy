@@ -130,12 +130,12 @@ union Union {
 
 #[test]
 fn union_uninit_and_initialized() {
-    let value = Union { unsigned: 0x0102_0304 };
+    let value = imp::ReadOnly::new(Union { unsigned: 0x0102_0304 });
 
     // SAFETY: `Uninit` permits every bit pattern.
     let uninit = unsafe { imp::Ptr::from_ref(&value).assume_validity::<imp::invariant::Uninit>() };
     let projected: imp::core::result::Result<
-        imp::Ptr<'_, i32, SharedAligned<imp::invariant::Uninit>>,
+        imp::Ptr<'_, imp::ReadOnly<i32>, SharedAligned<imp::invariant::Uninit>>,
         imp::core::convert::Infallible,
     > = uninit
         .project::<imp::project_clients::ProjectDerive, _, { imp::REPR_C_UNION_VARIANT_ID }, { imp::ident_id!(signed) }>();
@@ -145,7 +145,7 @@ fn union_uninit_and_initialized() {
     // every byte of this union.
     let initialized = unsafe { imp::Ptr::from_ref(&value).assume_initialized() };
     let projected: imp::core::result::Result<
-        imp::Ptr<'_, i32, SharedAligned<imp::invariant::Initialized>>,
+        imp::Ptr<'_, imp::ReadOnly<i32>, SharedAligned<imp::invariant::Initialized>>,
         imp::core::convert::Infallible,
     > = initialized
         .project::<imp::project_clients::ProjectDerive, _, { imp::REPR_C_UNION_VARIANT_ID }, { imp::ident_id!(signed) }>();
@@ -211,11 +211,12 @@ fn repr_u8_enum_validity_and_tag_checks() {
         .project::<imp::project_clients::ProjectDerive, _, { imp::ident_id!(B) }, { imp::ident_id!(0) }>();
     imp::assert!(wrong_variant.is_err());
 
+    let value = imp::ReadOnly::new(value);
     // SAFETY: `Uninit` permits every bit pattern. Unlike a `Safe` projection,
     // this projection must not inspect the tag.
     let uninit = unsafe { imp::Ptr::from_ref(&value).assume_validity::<imp::invariant::Uninit>() };
     let wrong_variant: imp::core::result::Result<
-        imp::Ptr<'_, u8, SharedAligned<imp::invariant::Uninit>>,
+        imp::Ptr<'_, imp::ReadOnly<u8>, SharedAligned<imp::invariant::Uninit>>,
         imp::core::convert::Infallible,
     > = uninit.project::<imp::project_clients::ProjectDerive, _, { imp::ident_id!(B) }, { imp::ident_id!(0) }>();
     imp::assert!(wrong_variant.is_ok());
@@ -225,7 +226,7 @@ fn repr_u8_enum_validity_and_tag_checks() {
     // bytes of `value`, with no padding.
     let initialized = unsafe { imp::Ptr::from_ref(&value).assume_initialized() };
     let wrong_variant: imp::core::result::Result<
-        imp::Ptr<'_, u8, SharedAligned<imp::invariant::Initialized>>,
+        imp::Ptr<'_, imp::ReadOnly<u8>, SharedAligned<imp::invariant::Initialized>>,
         imp::core::convert::Infallible,
     > = initialized
         .project::<imp::project_clients::ProjectDerive, _, { imp::ident_id!(B) }, { imp::ident_id!(0) }>();
@@ -332,11 +333,11 @@ fn project_and_try_from_bytes_impls_coexist() {
         .project::<imp::project_clients::ProjectDerive, _, { imp::STRUCT_VARIANT_ID }, { imp::ident_id!(field) }>();
     imp::assert_eq!(*projected.unwrap().as_ref(), 42);
 
-    let value = TryFromBytesThenProject { field: 43 };
+    let value = imp::ReadOnly::new(TryFromBytesThenProject { field: 43 });
     // SAFETY: `Uninit` permits every bit pattern.
     let value = unsafe { imp::Ptr::from_ref(&value).assume_validity::<imp::invariant::Uninit>() };
     let projected: imp::core::result::Result<
-        imp::Ptr<'_, u8, SharedAligned<imp::invariant::Uninit>>,
+        imp::Ptr<'_, imp::ReadOnly<u8>, SharedAligned<imp::invariant::Uninit>>,
         imp::core::convert::Infallible,
     > = value
         .project::<imp::project_clients::ProjectDerive, _, { imp::REPR_C_UNION_VARIANT_ID }, { imp::ident_id!(field) }>();
