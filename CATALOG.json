@@ -29005,6 +29005,96 @@
         "verification/parallel-disjointness-proofs"
       ]
     },
+    "drop-flag-elaboration-partial-moves-and-unwind-cleanup-exactly-once-destruction": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973"
+          },
+          "name": "rustc (MIR drop elaboration and unwinding)"
+        },
+        {
+          "identity": {
+            "path": "text/0320-nonzeroing-dynamic-drop.md",
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "RFC 320: Non-zeroing dynamic drop"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "cplusplus/draft",
+            "revision": "4e4de1df8ee941255b653b61d0a62050b34cf8c9",
+            "tag": "n4950"
+          },
+          "name": "C++ working draft N4950 (C++23)"
+        },
+        {
+          "identity": {
+            "arxiv": "2602.07455v1",
+            "doi": "10.48550/arXiv.2602.07455"
+          },
+          "name": "RustCompCert: A Verified and Verifying Compiler for a Sequential Subset of Rust"
+        },
+        {
+          "identity": {
+            "repository": "SJTU-PLV/CompCert",
+            "revision": "e3d03ed822a7aaf452b7022c347187ed1efc1c12"
+          },
+          "name": "RustCompCert Rocq development"
+        },
+        {
+          "identity": {
+            "author": "Viktor Fukala",
+            "date": "2024-08-05",
+            "institution": "ETH Zurich, Programming Language Foundations Lab",
+            "url": "https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/BachelorTheses/2024-Viktor-Thesis.pdf"
+          },
+          "name": "Formalization of Rust Drop Elaboration (Bachelor thesis, ETH Zurich, 2024)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2103656.2103718"
+          },
+          "name": "A Mechanized Semantics for C++ Object Construction and Destruction, with Applications to Resource Management"
+        },
+        {
+          "identity": {
+            "arxiv": "1903.00982v4",
+            "doi": "10.48550/arXiv.1903.00982"
+          },
+          "name": "Oxide: The Essence of Rust"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/simulation",
+        "compilers/drop-elaboration",
+        "compilers/unwinding",
+        "pl/ownership",
+        "pl/destructors",
+        "rust/drop",
+        "rustc/mir"
+      ]
+    },
     "drop-in-libav-cdylib-symbol-versioning-avpriv-elimination-and-h264-mbaff-interop": {
       "observed_at": "2026-11-20",
       "subjects": [

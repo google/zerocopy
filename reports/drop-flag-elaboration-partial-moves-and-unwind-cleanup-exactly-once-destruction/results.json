@@ -1,0 +1,886 @@
+[
+  {
+    "id": "R1",
+    "lean": "Toy.DropFlags.stdElab_correct_of_forward_moveChecked_noNormalPathToResume",
+    "lean_names": [
+      "Toy.DropFlags.Ty.isMovePath",
+      "Toy.DropFlags.unitsUnder",
+      "Toy.DropFlags.atomsOf",
+      "Toy.DropFlags.isMovePlace",
+      "Toy.DropFlags.pairwiseDisjoint",
+      "Toy.DropFlags.NormalReachable",
+      "Toy.DropFlags.TNode",
+      "Toy.DropFlags.TProg",
+      "Toy.DropFlags.run",
+      "Toy.DropFlags.explore",
+      "Toy.DropFlags.elaborate",
+      "Toy.DropFlags.stdElab",
+      "Toy.DropFlags.stdDecision_compatible",
+      "Toy.DropFlags.x",
+      "Toy.DropFlags.x0",
+      "Toy.DropFlags.x1",
+      "Toy.DropFlags.y",
+      "Toy.DropFlags.pairT",
+      "Toy.DropFlags.dropT",
+      "Toy.DropFlags.progJoin",
+      "Toy.DropFlags.progCleanup",
+      "Toy.DropFlags.progPartial",
+      "Toy.DropFlags.progReinit",
+      "Toy.DropFlags.progUnwind",
+      "Toy.DropFlags.progLoop",
+      "Toy.DropFlags.progDropStruct",
+      "Toy.DropFlags.progUseAfterMove",
+      "Toy.DropFlags.progOverwrite",
+      "Toy.DropFlags.progResumeNormal",
+      "Toy.DropFlags.progShare",
+      "Toy.DropFlags.progMultiStepCleanup",
+      "Toy.DropFlags.progUnwindToRet",
+      "Toy.DropFlags.progOOB",
+      "Toy.DropFlags.progDuplicateCallArg",
+      "Toy.DropFlags.isMovePath_pos",
+      "Toy.DropFlags.isMovePath_neg",
+      "Toy.DropFlags.noDoubleDrop_pos",
+      "Toy.DropFlags.noDoubleDrop_neg_afterConsume",
+      "Toy.DropFlags.noDoubleDrop_neg_garbage",
+      "Toy.DropFlags.noDoubleDrop_neg_uncreated",
+      "Toy.DropFlags.noLeak_pos",
+      "Toy.DropFlags.noLeak_neg",
+      "Toy.DropFlags.exactlyOnce_pos",
+      "Toy.DropFlags.exactlyOnce_pos_aborted",
+      "Toy.DropFlags.exactlyOnce_neg_leak",
+      "Toy.DropFlags.exactlyOnce_neg_double",
+      "Toy.DropFlags.forward_pos",
+      "Toy.DropFlags.forward_neg",
+      "Toy.DropFlags.placesAreMovePaths_pos",
+      "Toy.DropFlags.placesAreMovePaths_neg",
+      "Toy.DropFlags.movesFromInit_pos",
+      "Toy.DropFlags.movesFromInit_neg",
+      "Toy.DropFlags.initsIntoUninit_pos",
+      "Toy.DropFlags.initsIntoUninit_neg",
+      "Toy.DropFlags.movesFromInit_neg_duplicateCallArg",
+      "Toy.DropFlags.noNormalPathToResume_pos",
+      "Toy.DropFlags.noNormalPathToResume_neg",
+      "Toy.DropFlags.moveChecked_pos",
+      "Toy.DropFlags.moveChecked_neg",
+      "Toy.DropFlags.forwardReachable_pos",
+      "Toy.DropFlags.forwardReachable_neg",
+      "Toy.DropFlags.forwardReachable_ignores_backward_index_edges",
+      "Toy.DropFlags.flagSet_progJoin",
+      "Toy.DropFlags.flagSet_progPartial",
+      "Toy.DropFlags.flagSet_progShare",
+      "Toy.DropFlags.flagSet_ignores_unreachable_test",
+      "Toy.DropFlags.progOOB_stuck",
+      "Toy.DropFlags.badPlace",
+      "Toy.DropFlags.analysis_step",
+      "Toy.DropFlags.Path",
+      "Toy.DropFlags.Ty",
+      "Toy.DropFlags.Ty.units",
+      "Toy.DropFlags.Ty.atoms",
+      "Toy.DropFlags.Place",
+      "Toy.DropFlags.Event",
+      "Toy.DropFlags.destroyCount",
+      "Toy.DropFlags.destroyedIds",
+      "Toy.DropFlags.createdIds",
+      "Toy.DropFlags.NoLeak",
+      "Toy.DropFlags.SNode",
+      "Toy.DropFlags.SProg",
+      "Toy.DropFlags.Forward",
+      "Toy.DropFlags.Granularity",
+      "Toy.DropFlags.killSet",
+      "Toy.DropFlags.reachableAux",
+      "Toy.DropFlags.reachList",
+      "Toy.DropFlags.ForwardReachable",
+      "Toy.DropFlags.PlacesAreMovePaths",
+      "Toy.DropFlags.MovesFromInit",
+      "Toy.DropFlags.InitsIntoUninit",
+      "Toy.DropFlags.NoNormalPathToResume",
+      "Toy.DropFlags.MoveChecked",
+      "Toy.DropFlags.PanicRule",
+      "Toy.DropFlags.Outcome",
+      "Toy.DropFlags.Result",
+      "Toy.DropFlags.Outcome.complete",
+      "Toy.DropFlags.Outcome.terminated",
+      "Toy.DropFlags.ExactlyOnce",
+      "Toy.DropFlags.run_eq_follow",
+      "Toy.DropFlags.Decision",
+      "Toy.DropFlags.stdDecision",
+      "Toy.DropFlags.overrideAt",
+      "Toy.DropFlags.FlagConfig",
+      "Toy.DropFlags.FlagConfig.std",
+      "Toy.DropFlags.ElabCorrect",
+      "Toy.DropFlags.Compatible",
+      "Toy.DropFlags.Mach",
+      "Toy.DropFlags.initMach"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "proof_status": "proved (from R2s)",
+    "plain_claim": "Assume that a destructor panic during unwinding aborts the process, and let s be a forward (acyclic, topologically numbered) toy program that only mentions valid move paths, moves only definitely-initialized places (call arguments pairwise disjoint), initializes only definitely-uninitialized places, and has no resume node reachable from the entry along normal edges only. Then the standard drop elaboration (flags set at init, cleared at move and, for call arguments, before the call, set for a call's destination on its normal edge; unconditional drop where must-init, nothing where not may-init, flag test otherwise; cleanup drops without landing pads) of s is elaboration-correct: on every input its run terminates (returns, completes an unwind, or aborts) and is exactly-once, i.e. destroys no value twice, destroys no uncreated value, runs no destructor on unwritten memory, and, if it returns or completes an unwind, destroys every created value.",
+    "hypotheses": [
+      {
+        "name": "hfwd : Forward s",
+        "purpose": "the one-pass initialization analyses follow index-increasing edges only, which are all edges exactly when the program is forward (acyclic, topologically numbered)",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.stdElab_fails_without_forward",
+        "witness_class": "a 1-local (leaf), 3-node program with one back edge (progLoop)"
+      },
+      {
+        "name": "hplaces : PlacesAreMovePaths s",
+        "purpose": "every mentioned place follows its local's type and never enters a struct with its own destructor, so the analysis's atoms match the units written and destroyed",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.stdElab_fails_without_placesAreMovePaths",
+        "witness_class": "a 1-local, 3-node forward program whose local is a struct with its own destructor and two leaf fields (progDropStruct)"
+      },
+      {
+        "name": "hmoves : MovesFromInit s",
+        "purpose": "no use after move: every moved place (and call argument) is must-init, and call arguments are pairwise disjoint",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.stdElab_fails_without_movesFromInit",
+        "witness_class": "a 1-local (leaf), 4-node forward program (progUseAfterMove)"
+      },
+      {
+        "name": "hinits : InitsIntoUninit s",
+        "purpose": "no overwrite of an owned value: every initialized place (and call destination not overlapped by an argument) is not may-init",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.stdElab_fails_without_initsIntoUninit",
+        "witness_class": "a 1-local (leaf), 3-node forward program (progOverwrite)"
+      },
+      {
+        "name": "hclean : NoNormalPathToResume s",
+        "purpose": "no resume node is reachable from the entry along normal edges only, so a resume ladder (whose drops have no landing pad) runs only while unwinding, where a destructor panic aborts",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.stdElab_fails_without_noNormalPathToResume",
+        "witness_class": "a 2-local (two leaves), 3-node forward program (progResumeNormal)"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "progCleanup (two calls sharing one cleanup node, the second consuming x) satisfies all five hypotheses and its standard elaboration tests one flag on the cleanup path; progMultiStepCleanup (cleanup code of two nodes) also satisfies them. The conclusion is kernel-checked on all runs of eight example programs (progJoin, progCleanup, progPartial, progReinit, progUnwind, progShare, progMultiStepCleanup, progUnwindToRet).",
+    "nonvacuity_witness_lean": [
+      "Toy.DropFlags.exactlyOnce_hypotheses_hold_progCleanup",
+      "Toy.DropFlags.exactlyOnce_hypotheses_hold_progMultiStepCleanup"
+    ],
+    "non_claims": [
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, a C++ implementation or any real program (model–system relation: none proved). Connections to real systems are separate derived (modeling bridge) claims.",
+      "The results concern acyclic (forward) programs; they neither establish nor refute the corresponding claims for programs with loops, whose fixpoint analyses are not modelled (stdElab_fails_without_forward shows that the one-pass analysis is wrong on a loop).",
+      "Not modelled: enums/sums and moves out of variant fields; arrays/slices; moves between locals; assignment with implicit drop of the old value (drop-and-replace); borrows; nested scopes with their own exits (drop points are only ret/resume); catch_unwind; async drops.",
+      "In this model drop points occur only at frame-exit terminators (`ret` and `resume`), so `FlagConfig.std` never clears an atom's drop flag after dropping it. In an IR where drops also occur at mid-function scope exits, loop exits, or overwrites (such as Rust MIR `TerminatorKind::Drop`), normal drop paths must also reset the dropped place's flag to `false` or outer scope exits will double-drop (not proved here).",
+      "`NoNormalPathToResume` constrains only how `resume` nodes are reached: unwind edges may lead to cleanup code of several nodes (branches, moves, calls, merges with normal code). Unwind edges may also lead back into code that returns, which MIR forbids for cleanup blocks. A call inside cleanup code that panics is treated like any other panicking call (control goes to its unwind successor, still unwinding); in MIR a call or drop in a cleanup block has unwind action Terminate (or Unreachable), so a panic escaping it terminates. That restriction is not modelled; only a destructor panic during unwinding is subject to the panic rule.",
+      "Every `Ty` in the model contains at least one destructor unit (`leaf` always logs destruction); non-droppable (`Copy`/scalar) fields, `Drop` structs whose fields are purely scalar, and suppression of drop flags for types without destructors (`ty.needs_drop`) are not modeled.",
+      "Each `drop a` executes the entire drop glue of atom `a` (including a `Drop` struct's own destructor and all of its fields' destructors) in one step with a single panic bit; a panic in `Drop::drop` followed by a second panic in a field destructor inside the same atom's drop shim is not modeled.",
+      "Aborted runs are exempt from NoLeak: process abort is treated as reclaiming everything, so under the abort rule a double panic satisfies ExactlyOnce's leak clause by definition.",
+      "Branches, call panics and destructor panics are independent free input bits; the theorem quantifies over all of them, not over the feasible paths of a real program. With correlated conditions a flag the analysis requires can be semantically unnecessary (not proved here).",
+      "NoDoubleDrop and NoLeak count events per id and do not check their order; drop order among atoms is a modelling device and is not checked against the language's drop-order rules.",
+      "It is about one flag maintenance (`FlagConfig.std`); R4b and R4d show that two single deviations from it break exactly-once on one program each, not that it is the only correct maintenance.",
+      "Other correct decision maps exist (R2 characterizes them); elaborations outside the same-CFG one-flag-per-atom class are not covered."
+    ],
+    "prior_art": [
+      "RFC 320 'Non-zeroing dynamic drop', rust-lang/rfcs f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07, text/0320-nonzeroing-dynamic-drop.md lines 6-15 (stack-local boolean flags for 'dynamic drop obligations'), lines 99-114 (drop obligations: a Drop type is one obligation, otherwise the union of its fields'; removed when moved, consumed by a call, or at scope end), lines 116-142 (dynamic obligations at a merge point = union minus intersection of the predecessors' sets), lines 144-155 (subsection 'Stack-local drop flags'; lines 153-155: 'we do not specify the precise set of boolean flags that are injected') [design document, historical; informal]",
+      "rust-lang/rust c7d5ba59d8e11ee2e2204b173458eec4cb41c973, compiler/rustc_mir_transform/src/elaborate_drops.rs lines 165-188 (drop_style: (maybe_init, maybe_uninit) = (false, _) => Dead, (true, false) => Static, (true, true) => Conditional/Open) and lines 290-334 (collect_drop_flags; lines 310-312 create a flag iff maybe_init && maybe_uninit at a drop) [source; prose only]",
+      "rust-lang/rust c7d5ba59d8e11ee2e2204b173458eec4cb41c973, compiler/rustc_mir_transform/src/elaborate_drops.rs lines 424-431 (all flags set false at function start), 433-451 (call destination flags set at the start of the return target), 464-520 (per-location flag effects inserted at the location, i.e. before the statement/terminator); compiler/rustc_mir_dataflow/src/drop_flag_effects.rs lines 108-137 (drop_flag_effects_for_location: moves out => Absent) and 139-150 (for_location_inits: InitKind::Unconditional => Present, InitKind::OnReturn => no effect at the call) [source; prose only]",
+      "rust-lang/rust c7d5ba59d8e11ee2e2204b173458eec4cb41c973, compiler/rustc_mir_transform/src/elaborate_drop.rs lines 49-56 and 66-71 (Unwind::InCleanup: 'Already in an unwind path, any panic will cause an abort.'; into_action => UnwindAction::Terminate(UnwindTerminateReason::InCleanup)); elaborate_drops.rs lines 359-375 (drops in cleanup blocks get Unwind::InCleanup); compiler/rustc_middle/src/mir/syntax.rs lines 657-683 (cleanup blocks: every unwind field must be Terminate or Unreachable; Return is not allowed; blocks reachable from cleanup blocks are cleanup) and 1010-1038 (UnwindAction::Terminate 'Terminates the execution if unwind happens'); compiler/rustc_mir_transform/src/validate.rs lines 246-275 (the validator rejects Cleanup or Continue unwind actions in cleanup blocks); library/core/src/panicking.rs lines 356-370 (lang item panic_in_cleanup: non-unwinding panic 'panic in a destructor during cleanup') [source; prose only]",
+      "J. Wu, Y. Wang, L. Yu, L. Meng, 'RustCompCert: A Verified and Verifying Compiler for a Sequential Subset of Rust', arXiv:2602.07455v1 (7 Feb 2026; companion: 'End-to-end Compositional Verification of Program Safety through Verified and Verifying Compilation', arXiv:2510.10015v1); Rocq development github.com/SJTU-PLV/CompCert commit e3d03ed822a7aaf452b7022c347187ed1efc1c12 (branch rust-verified-compiler): rustfrontend/InitAnalysis.v lines 83-84 (maybe-init and maybe-uninit as Kildall fixpoints over a possibly cyclic CFG); rustfrontend/ElaborateDrop.v lines 33-52 (a drop flag for a place that is may-init and not must-init at a drop), 147-181 (flag-guarded drop, flag reset before the drop; once a place has a flag, the guarded form is used at all its drops), 253-276 (flag updates at assignments, moves and calls); rustfrontend/ElaborateDropProof.v lines 4492-4513 (transl_program_correct: forward simulation from the ownership-tracking semantics to the explicit-drop semantics; no Admitted/admit in the file; not compiled here). No unwind, panic or cleanup construct occurs in rustfrontend/ (a call node has one successor). No necessity or minimality statement [mechanized prior art]",
+      "V. Fukala, 'Formalization of Rust Drop Elaboration', Bachelor thesis, Programming Language Foundations Lab, ETH Zurich, August 5, 2024 (supervisors I. van Bakel, R. Jung), PDF https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/BachelorTheses/2024-Viktor-Thesis.pdf: a structured language (if, while, calls, tuples; no control-flow graphs, section 3) with flag-based drop elaboration in Coq; a complete correctness proof for a scalar-only version, and a proof relying on unproved lemmas for tuples (sections 5.4, 6, Appendix A); unwinding left to future work (section 6.1). The Coq repository named in Appendix A requires sign-in and was not inspected [mechanized prior art, partly]",
+      "T. Ramananandro, G. Dos Reis, X. Leroy, 'A Mechanized Semantics for C++ Object Construction and Destruction, with Applications to Resource Management', POPL 2012, pp. 521-532, DOI 10.1145/2103656.2103718 (also ACM SIGPLAN Notices 47(1), DOI 10.1145/2103621.2103718): Coq-mechanized construction/destruction semantics ('every object ... is constructed exactly once', reverse-order destruction); no moves, no conditional initialization, exceptions not modelled [mechanized; related]",
+      "A. Weiss, O. Gierczak, D. Patterson, A. Ahmed, 'Oxide: The Essence of Rust', arXiv:1903.00982v4 (2021), DOI 10.48550/arXiv.1903.00982: T-Drop is a weakening-style typing rule; destructors, panics and unwinding are not modelled [related formal work; no drop elaboration]"
+    ],
+    "tier_rationale": "T1. The panic-free part is mechanized elsewhere for other languages: RustCompCert (Rocq, complete) proves its drop elaboration correct by forward simulation, and Fukala's thesis (Coq; complete without tuples) proves a flag-based elaboration correct; neither models panics, unwinding or cleanup code. The combination stated here — cleanup ladders on unwind edges, landing-pad-free cleanup drops, the abort rule for destructor panics during unwinding, and atomic structs with their own destructor — is informal folklore (RFC 320, rustc's drop elaboration); no mechanized statement of it was found.",
+    "design_question": "What must drop elaboration maintain for exactly-once destruction on normal and cleanup edges?"
+  },
+  {
+    "id": "R2s",
+    "lean": "Toy.DropFlags.elabCorrect_of_allCompatible_of_forward_moveChecked_noNormalPathToResume",
+    "lean_names": [
+      "Toy.DropFlags.AllCompatible"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "proof_status": "proved",
+    "plain_claim": "Assume that a destructor panic during unwinding aborts the process, let s be a forward (acyclic, topologically numbered) toy program that only mentions valid move paths, moves only definitely-initialized places (call arguments pairwise disjoint), initializes only definitely-uninitialized places, and has no resume node reachable from the entry along normal edges only, and let d be a decision map that is compatible with the fine analyses at every forward-reachable drop point (an unconditional drop only for must-init atoms, nothing only for atoms that are not may-init, a flag test anywhere). Then the elaboration of s with the standard flag maintenance and decision map d is elaboration-correct: on every input its run terminates (returns, completes an unwind, or aborts) and is exactly-once, i.e. destroys no value twice, destroys no uncreated value, runs no destructor on unwritten memory, and, if it returns or completes an unwind, destroys every created value.",
+    "hypotheses": [
+      {
+        "name": "hfwd : Forward s",
+        "purpose": "the one-pass initialization analyses follow index-increasing edges only, which are all edges exactly when the program is forward (acyclic, topologically numbered)",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.sufficiency_fails_without_forward",
+        "witness_class": "a 1-local (leaf), 3-node program with one back edge (progLoop)"
+      },
+      {
+        "name": "hplaces : PlacesAreMovePaths s",
+        "purpose": "every mentioned place follows its local's type and never enters a struct with its own destructor, so the analysis's atoms match the units written and destroyed",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.sufficiency_fails_without_placesAreMovePaths",
+        "witness_class": "a 1-local, 3-node forward program whose local is a struct with its own destructor and two leaf fields (progDropStruct)"
+      },
+      {
+        "name": "hmoves : MovesFromInit s",
+        "purpose": "no use after move: every moved place (and call argument) is must-init, and call arguments are pairwise disjoint",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.sufficiency_fails_without_movesFromInit",
+        "witness_class": "a 1-local (leaf), 4-node forward program (progUseAfterMove)"
+      },
+      {
+        "name": "hinits : InitsIntoUninit s",
+        "purpose": "no overwrite of an owned value: every initialized place (and call destination not overlapped by an argument) is not may-init",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.sufficiency_fails_without_initsIntoUninit",
+        "witness_class": "a 1-local (leaf), 3-node forward program (progOverwrite)"
+      },
+      {
+        "name": "hclean : NoNormalPathToResume s",
+        "purpose": "no resume node is reachable from the entry along normal edges only, so a resume ladder (whose drops have no landing pad) runs only while unwinding, where a destructor panic aborts",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.sufficiency_fails_without_noNormalPathToResume",
+        "witness_class": "a 2-local (two leaves), 3-node forward program (progResumeNormal)"
+      },
+      {
+        "name": "hcompat : AllCompatible s d",
+        "purpose": "the decisions agree with what the analyses guarantee at every forward-reachable drop point",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.sufficiency_fails_without_allCompatible",
+        "witness_class": "a 1-local (leaf), 4-node forward program (progJoin) with the decision map that drops x unconditionally at the join"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "progJoin with the decision map that tests x at every drop point satisfies all six hypotheses.",
+    "nonvacuity_witness_lean": "Toy.DropFlags.sufficiency_hypotheses_hold_progJoin_testEverywhere",
+    "non_claims": [
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, a C++ implementation or any real program (model–system relation: none proved). Connections to real systems are separate derived (modeling bridge) claims.",
+      "The results concern acyclic (forward) programs; they neither establish nor refute the corresponding claims for programs with loops, whose fixpoint analyses are not modelled (stdElab_fails_without_forward shows that the one-pass analysis is wrong on a loop).",
+      "Not modelled: enums/sums and moves out of variant fields; arrays/slices; moves between locals; assignment with implicit drop of the old value (drop-and-replace); borrows; nested scopes with their own exits (drop points are only ret/resume); catch_unwind; async drops.",
+      "In this model drop points occur only at frame-exit terminators (`ret` and `resume`), so `FlagConfig.std` never clears an atom's drop flag after dropping it. In an IR where drops also occur at mid-function scope exits, loop exits, or overwrites (such as Rust MIR `TerminatorKind::Drop`), normal drop paths must also reset the dropped place's flag to `false` or outer scope exits will double-drop (not proved here).",
+      "`NoNormalPathToResume` constrains only how `resume` nodes are reached: unwind edges may lead to cleanup code of several nodes (branches, moves, calls, merges with normal code). Unwind edges may also lead back into code that returns, which MIR forbids for cleanup blocks. A call inside cleanup code that panics is treated like any other panicking call (control goes to its unwind successor, still unwinding); in MIR a call or drop in a cleanup block has unwind action Terminate (or Unreachable), so a panic escaping it terminates. That restriction is not modelled; only a destructor panic during unwinding is subject to the panic rule.",
+      "Every `Ty` in the model contains at least one destructor unit (`leaf` always logs destruction); non-droppable (`Copy`/scalar) fields, `Drop` structs whose fields are purely scalar, and suppression of drop flags for types without destructors (`ty.needs_drop`) are not modeled.",
+      "Each `drop a` executes the entire drop glue of atom `a` (including a `Drop` struct's own destructor and all of its fields' destructors) in one step with a single panic bit; a panic in `Drop::drop` followed by a second panic in a field destructor inside the same atom's drop shim is not modeled.",
+      "Aborted runs are exempt from NoLeak: process abort is treated as reclaiming everything, so under the abort rule a double panic satisfies ExactlyOnce's leak clause by definition.",
+      "Branches, call panics and destructor panics are independent free input bits; the theorem quantifies over all of them, not over the feasible paths of a real program. With correlated conditions a flag the analysis requires can be semantically unnecessary (not proved here).",
+      "NoDoubleDrop and NoLeak count events per id and do not check their order; drop order among atoms is a modelling device and is not checked against the language's drop-order rules.",
+      "Drop points that are not forward-reachable are unconstrained (AllCompatible and flagSet ignore them). On a forward program every edge is index-increasing, so these are exactly the unreachable drop points; on other programs forward reachability is the index-increasing approximation of reachability (forwardReachable_ignores_backward_index_edges)."
+    ],
+    "prior_art": [
+      "RFC 320 'Non-zeroing dynamic drop', rust-lang/rfcs f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07, text/0320-nonzeroing-dynamic-drop.md lines 6-15 (stack-local boolean flags for 'dynamic drop obligations'), lines 99-114 (drop obligations: a Drop type is one obligation, otherwise the union of its fields'; removed when moved, consumed by a call, or at scope end), lines 116-142 (dynamic obligations at a merge point = union minus intersection of the predecessors' sets), lines 144-155 (subsection 'Stack-local drop flags'; lines 153-155: 'we do not specify the precise set of boolean flags that are injected') [design document, historical; informal]",
+      "rust-lang/rust c7d5ba59d8e11ee2e2204b173458eec4cb41c973, compiler/rustc_mir_transform/src/elaborate_drops.rs lines 165-188 (drop_style: (maybe_init, maybe_uninit) = (false, _) => Dead, (true, false) => Static, (true, true) => Conditional/Open) and lines 290-334 (collect_drop_flags; lines 310-312 create a flag iff maybe_init && maybe_uninit at a drop) [source; prose only]",
+      "rust-lang/rust c7d5ba59d8e11ee2e2204b173458eec4cb41c973, compiler/rustc_mir_dataflow/src/impls/initialized.rs lines 103-139 and 344-380 (MaybeInitializedPlaces / MaybeUninitializedPlaces docs: the intersection of the two at a drop 'yields the set of places that would require a dynamic drop-flag'), lines 206-227 (domain MaybeReachable, bottom Unreachable) [source; prose only]",
+      "J. Wu, Y. Wang, L. Yu, L. Meng, 'RustCompCert: A Verified and Verifying Compiler for a Sequential Subset of Rust', arXiv:2602.07455v1 (7 Feb 2026; companion: 'End-to-end Compositional Verification of Program Safety through Verified and Verifying Compilation', arXiv:2510.10015v1); Rocq development github.com/SJTU-PLV/CompCert commit e3d03ed822a7aaf452b7022c347187ed1efc1c12 (branch rust-verified-compiler): rustfrontend/InitAnalysis.v lines 83-84 (maybe-init and maybe-uninit as Kildall fixpoints over a possibly cyclic CFG); rustfrontend/ElaborateDrop.v lines 33-52 (a drop flag for a place that is may-init and not must-init at a drop), 147-181 (flag-guarded drop, flag reset before the drop; once a place has a flag, the guarded form is used at all its drops), 253-276 (flag updates at assignments, moves and calls); rustfrontend/ElaborateDropProof.v lines 4492-4513 (transl_program_correct: forward simulation from the ownership-tracking semantics to the explicit-drop semantics; no Admitted/admit in the file; not compiled here). No unwind, panic or cleanup construct occurs in rustfrontend/ (a call node has one successor). No necessity or minimality statement [mechanized prior art]",
+      "V. Fukala, 'Formalization of Rust Drop Elaboration', Bachelor thesis, Programming Language Foundations Lab, ETH Zurich, August 5, 2024 (supervisors I. van Bakel, R. Jung), PDF https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/BachelorTheses/2024-Viktor-Thesis.pdf: a structured language (if, while, calls, tuples; no control-flow graphs, section 3) with flag-based drop elaboration in Coq; a complete correctness proof for a scalar-only version, and a proof relying on unproved lemmas for tuples (sections 5.4, 6, Appendix A); unwinding left to future work (section 6.1). The Coq repository named in Appendix A requires sign-in and was not inspected [mechanized prior art, partly]"
+    ],
+    "tier_rationale": "T1, as for R1. RustCompCert's verified elaboration tests a flag at some drops where the place is must-init once a flag exists for it, i.e. a compatible non-standard decision map in this vocabulary; the general statement for every compatible map with unwinding was not found mechanized.",
+    "design_question": "Which per-drop-point choices among static drop, no drop and flag test are safe?"
+  },
+  {
+    "id": "R2",
+    "lean": "Toy.DropFlags.elabCorrect_iff_allCompatible_of_forward_moveChecked_noNormalPathToResume",
+    "lean_names": [
+      "Toy.DropFlags.staticChoice_compatible_iff",
+      "Toy.DropFlags.allCompatible_pos",
+      "Toy.DropFlags.allCompatible_neg",
+      "Toy.DropFlags.elabCorrect_pos",
+      "Toy.DropFlags.elabCorrect_neg"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "proof_status": "proved (from R2s and R2n)",
+    "plain_claim": "Assume that a destructor panic during unwinding aborts the process and let s be a forward (acyclic, topologically numbered) toy program that only mentions valid move paths, moves only definitely-initialized places (call arguments pairwise disjoint), initializes only definitely-uninitialized places, and has no resume node reachable from the entry along normal edges only. Then, with the standard flag maintenance, a decision map d is elaboration-correct (every run terminates and is exactly-once) if and only if d is compatible with the fine analyses at every forward-reachable drop point (an unconditional drop only for must-init atoms, nothing only for atoms that are not may-init, a flag test anywhere). Consequently (staticChoice_compatible_iff), at a forward-reachable drop point a flag test is required for an atom exactly when it is may-init and not must-init there; at other forward-reachable drop points some static choice is compatible.",
+    "hypotheses": [
+      {
+        "name": "hfwd : Forward s",
+        "purpose": "the one-pass initialization analyses follow index-increasing edges only, which are all edges exactly when the program is forward (acyclic, topologically numbered)",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.characterization_fails_without_forward",
+        "witness_class": "a 1-local (leaf), 3-node program with one back edge (progLoop)"
+      },
+      {
+        "name": "hplaces : PlacesAreMovePaths s",
+        "purpose": "every mentioned place follows its local's type and never enters a struct with its own destructor, so the analysis's atoms match the units written and destroyed",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.characterization_fails_without_placesAreMovePaths",
+        "witness_class": "a 1-local, 3-node forward program whose local is a struct with its own destructor and two leaf fields (progDropStruct)"
+      },
+      {
+        "name": "hmoves : MovesFromInit s",
+        "purpose": "no use after move: every moved place (and call argument) is must-init, and call arguments are pairwise disjoint",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.characterization_fails_without_movesFromInit",
+        "witness_class": "a 1-local (leaf), 4-node forward program (progUseAfterMove)"
+      },
+      {
+        "name": "hinits : InitsIntoUninit s",
+        "purpose": "no overwrite of an owned value: every initialized place (and call destination not overlapped by an argument) is not may-init",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.characterization_fails_without_initsIntoUninit",
+        "witness_class": "a 1-local (leaf), 3-node forward program (progOverwrite)"
+      },
+      {
+        "name": "hclean : NoNormalPathToResume s",
+        "purpose": "no resume node is reachable from the entry along normal edges only, so a resume ladder (whose drops have no landing pad) runs only while unwinding, where a destructor panic aborts",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.characterization_fails_without_noNormalPathToResume",
+        "witness_class": "a 2-local (two leaves), 3-node forward program (progResumeNormal)"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "progCleanup satisfies all five hypotheses (with any decision map). Informative instances: on progJoin the standard map is compatible and elaboration-correct (allCompatible_pos, elabCorrect_pos); an unconditional drop at the join is neither (allCompatible_neg, elabCorrect_neg).",
+    "nonvacuity_witness_lean": "Toy.DropFlags.exactlyOnce_hypotheses_hold_progCleanup",
+    "non_claims": [
+      "Proof structure: the direction elaboration-correct → compatible is R2n, which needs only PlacesAreMovePaths and only the exactly-once part of elaboration-correctness; the direction compatible → elaboration-correct is R2s.",
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, a C++ implementation or any real program (model–system relation: none proved). Connections to real systems are separate derived (modeling bridge) claims.",
+      "The results concern acyclic (forward) programs; they neither establish nor refute the corresponding claims for programs with loops, whose fixpoint analyses are not modelled (stdElab_fails_without_forward shows that the one-pass analysis is wrong on a loop).",
+      "`NoNormalPathToResume` constrains only how `resume` nodes are reached: unwind edges may lead to cleanup code of several nodes (branches, moves, calls, merges with normal code). Unwind edges may also lead back into code that returns, which MIR forbids for cleanup blocks. A call inside cleanup code that panics is treated like any other panicking call (control goes to its unwind successor, still unwinding); in MIR a call or drop in a cleanup block has unwind action Terminate (or Unreachable), so a panic escaping it terminates. That restriction is not modelled; only a destructor panic during unwinding is subject to the panic rule.",
+      "In this model drop points occur only at frame-exit terminators (`ret` and `resume`), so `FlagConfig.std` never clears an atom's drop flag after dropping it. In an IR where drops also occur at mid-function scope exits, loop exits, or overwrites (such as Rust MIR `TerminatorKind::Drop`), normal drop paths must also reset the dropped place's flag to `false` or outer scope exits will double-drop (not proved here).",
+      "Every `Ty` in the model contains at least one destructor unit (`leaf` always logs destruction); non-droppable (`Copy`/scalar) fields, `Drop` structs whose fields are purely scalar, and suppression of drop flags for types without destructors (`ty.needs_drop`) are not modeled.",
+      "Branches, call panics and destructor panics are independent free input bits; the theorem quantifies over all of them, not over the feasible paths of a real program. With correlated conditions a flag the analysis requires can be semantically unnecessary (not proved here).",
+      "Drop points that are not forward-reachable are unconstrained (AllCompatible and flagSet ignore them). On a forward program every edge is index-increasing, so these are exactly the unreachable drop points; on other programs forward reachability is the index-increasing approximation of reachability (forwardReachable_ignores_backward_index_edges).",
+      "The characterization is about decision maps over the source CFG with one flag per atom and the standard flag maintenance; it does not say that dynamic flags are needed by every correct compilation (see R8's positive controls)."
+    ],
+    "prior_art": [
+      "rust-lang/rust c7d5ba59d8e11ee2e2204b173458eec4cb41c973, compiler/rustc_mir_dataflow/src/impls/initialized.rs lines 103-139 and 344-380 (MaybeInitializedPlaces / MaybeUninitializedPlaces docs: the intersection of the two at a drop 'yields the set of places that would require a dynamic drop-flag'), lines 206-227 (domain MaybeReachable, bottom Unreachable) [source; prose only]",
+      "rust-lang/rust c7d5ba59d8e11ee2e2204b173458eec4cb41c973, compiler/rustc_mir_transform/src/elaborate_drops.rs lines 165-188 (drop_style: (maybe_init, maybe_uninit) = (false, _) => Dead, (true, false) => Static, (true, true) => Conditional/Open) and lines 290-334 (collect_drop_flags; lines 310-312 create a flag iff maybe_init && maybe_uninit at a drop) [source; prose only]",
+      "RFC 320 'Non-zeroing dynamic drop', rust-lang/rfcs f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07, text/0320-nonzeroing-dynamic-drop.md lines 6-15 (stack-local boolean flags for 'dynamic drop obligations'), lines 99-114 (drop obligations: a Drop type is one obligation, otherwise the union of its fields'; removed when moved, consumed by a call, or at scope end), lines 116-142 (dynamic obligations at a merge point = union minus intersection of the predecessors' sets), lines 144-155 (subsection 'Stack-local drop flags'; lines 153-155: 'we do not specify the precise set of boolean flags that are injected') [design document, historical; informal]",
+      "J. Wu, Y. Wang, L. Yu, L. Meng, 'RustCompCert: A Verified and Verifying Compiler for a Sequential Subset of Rust', arXiv:2602.07455v1 (7 Feb 2026; companion: 'End-to-end Compositional Verification of Program Safety through Verified and Verifying Compilation', arXiv:2510.10015v1); Rocq development github.com/SJTU-PLV/CompCert commit e3d03ed822a7aaf452b7022c347187ed1efc1c12 (branch rust-verified-compiler): rustfrontend/InitAnalysis.v lines 83-84 (maybe-init and maybe-uninit as Kildall fixpoints over a possibly cyclic CFG); rustfrontend/ElaborateDrop.v lines 33-52 (a drop flag for a place that is may-init and not must-init at a drop), 147-181 (flag-guarded drop, flag reset before the drop; once a place has a flag, the guarded form is used at all its drops), 253-276 (flag updates at assignments, moves and calls); rustfrontend/ElaborateDropProof.v lines 4492-4513 (transl_program_correct: forward simulation from the ownership-tracking semantics to the explicit-drop semantics; no Admitted/admit in the file; not compiled here). No unwind, panic or cleanup construct occurs in rustfrontend/ (a call node has one successor). No necessity or minimality statement [mechanized prior art]",
+      "V. Fukala, 'Formalization of Rust Drop Elaboration', Bachelor thesis, Programming Language Foundations Lab, ETH Zurich, August 5, 2024 (supervisors I. van Bakel, R. Jung), PDF https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/BachelorTheses/2024-Viktor-Thesis.pdf: a structured language (if, while, calls, tuples; no control-flow graphs, section 3) with flag-based drop elaboration in Coq; a complete correctness proof for a scalar-only version, and a proof relying on unproved lemmas for tuples (sections 5.4, 6, Appendix A); unwinding left to future work (section 6.1). The Coq repository named in Appendix A requires sign-in and was not inspected [mechanized prior art, partly]"
+    ],
+    "tier_rationale": "T1. rustc's MaybeInitializedPlaces documentation states informally that may-init ∩ may-uninit at a drop is the set of places needing a dynamic flag; RustCompCert and Fukala mechanize the sufficiency of one particular flag placement without unwinding; neither proves the converse (necessity) nor the characterization of all decision maps.",
+    "design_question": "Where are dynamic flags necessary?"
+  },
+  {
+    "id": "R2n",
+    "lean": "Toy.DropFlags.allCompatible_of_exactlyOnce_of_placesAreMovePaths",
+    "lean_names": [
+      "Toy.DropFlags.allAtoms",
+      "Toy.DropFlags.mayInit",
+      "Toy.DropFlags.mustInit",
+      "Toy.DropFlags.progIllTyped",
+      "Toy.DropFlags.fuelFor",
+      "Toy.DropFlags.runElab"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "proof_status": "proved",
+    "plain_claim": "Assume only that every place mentioned by the program s is a valid move path. If every run of the elaboration of s with decision map d (standard flag maintenance, abort rule; a run is the result of `runElab`, the target semantics `run` with step bound `fuelFor s`, on one input bit stream) is exactly-once, then d is compatible with the fine analyses at every forward-reachable drop point: d drops an atom unconditionally only where it is must-init and does nothing for an atom only where it is not may-init. Forwardness, MovesFromInit, InitsIntoUninit and NoNormalPathToResume are not assumed, and termination is not assumed.",
+    "hypotheses": [
+      {
+        "name": "hplaces : PlacesAreMovePaths s",
+        "purpose": "an ill-typed init creates nothing although the analysis marks its atom initialized, so may-init no longer implies that a value exists",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.allCompatible_necessity_fails_without_placesAreMovePaths",
+        "witness_class": "a 1-local (leaf), 3-node forward program with one ill-typed place (progIllTyped)"
+      },
+      {
+        "name": "hd : ∀ inp, ExactlyOnce (runElab .abort .std d s inp)",
+        "purpose": "the conclusion is about decision maps whose runs are all exactly-once",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.allCompatible_necessity_fails_without_exactlyOnce",
+        "witness_class": "a 1-local (leaf), 4-node forward program (progJoin) with the decision map that drops x unconditionally at the join"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "progJoin with the decision map that tests x at every drop point: places are move paths and every run is exactly-once.",
+    "nonvacuity_witness_lean": "Toy.DropFlags.allCompatible_necessity_hypotheses_hold_progJoin",
+    "non_claims": [
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, a C++ implementation or any real program (model–system relation: none proved). Connections to real systems are separate derived (modeling bridge) claims.",
+      "Drop points that are not forward-reachable are unconstrained (AllCompatible and flagSet ignore them). On a forward program every edge is index-increasing, so these are exactly the unreachable drop points; on other programs forward reachability is the index-increasing approximation of reachability (forwardReachable_ignores_backward_index_edges).",
+      "Branches, call panics and destructor panics are independent free input bits; the theorem quantifies over all of them, not over the feasible paths of a real program. With correlated conditions a flag the analysis requires can be semantically unnecessary (not proved here).",
+      "Every `Ty` in the model contains at least one destructor unit (`leaf` always logs destruction); non-droppable (`Copy`/scalar) fields, `Drop` structs whose fields are purely scalar, and suppression of drop flags for types without destructors (`ty.needs_drop`) are not modeled.",
+      "It concerns decision maps over the source CFG with one flag per atom and the standard flag maintenance. Elaborations outside this class are not decision maps and are not covered; the positive controls shareProg_matches_stdElab_progShare, dupProg_matches_stdElab_progJoin and earlyDropProg_matches_stdElab_progJoin exhibit exactly-once elaborations outside the class that test fewer flags than the standard map (one program each).",
+      "`ExactlyOnce` exempts runs whose outcome is `aborted`, `stuck` or `outOfFuel` from NoLeak: its leak clause is guarded by `Outcome.complete`, which is true for `returned` and `unwound` and false for the other outcomes. Termination is not assumed, and runs are results of `runElab`, cut off at the step bound `fuelFor s` (outcome `outOfFuel`).",
+      "The hypothesis `hd` (every run is exactly-once) is weaker than `ElabCorrect`: since `ExactlyOnce` exempts `aborted`, `stuck` and `outOfFuel` runs from NoLeak, `hd` constrains leaks on runs that return or complete an unwind and says nothing about leaks on runs that abort, reach a `stuck` node or exhaust the step bound `fuelFor s`."
+    ],
+    "prior_art": [
+      "rust-lang/rust c7d5ba59d8e11ee2e2204b173458eec4cb41c973, compiler/rustc_mir_dataflow/src/impls/initialized.rs lines 103-139 and 344-380 (MaybeInitializedPlaces / MaybeUninitializedPlaces docs: the intersection of the two at a drop 'yields the set of places that would require a dynamic drop-flag'), lines 206-227 (domain MaybeReachable, bottom Unreachable) [source; prose only]",
+      "RFC 320 'Non-zeroing dynamic drop', rust-lang/rfcs f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07, text/0320-nonzeroing-dynamic-drop.md lines 6-15 (stack-local boolean flags for 'dynamic drop obligations'), lines 99-114 (drop obligations: a Drop type is one obligation, otherwise the union of its fields'; removed when moved, consumed by a call, or at scope end), lines 116-142 (dynamic obligations at a merge point = union minus intersection of the predecessors' sets), lines 144-155 (subsection 'Stack-local drop flags'; lines 153-155: 'we do not specify the precise set of boolean flags that are injected') [design document, historical; informal]",
+      "J. Wu, Y. Wang, L. Yu, L. Meng, 'RustCompCert: A Verified and Verifying Compiler for a Sequential Subset of Rust', arXiv:2602.07455v1 (7 Feb 2026; companion: 'End-to-end Compositional Verification of Program Safety through Verified and Verifying Compilation', arXiv:2510.10015v1); Rocq development github.com/SJTU-PLV/CompCert commit e3d03ed822a7aaf452b7022c347187ed1efc1c12 (branch rust-verified-compiler): rustfrontend/InitAnalysis.v lines 83-84 (maybe-init and maybe-uninit as Kildall fixpoints over a possibly cyclic CFG); rustfrontend/ElaborateDrop.v lines 33-52 (a drop flag for a place that is may-init and not must-init at a drop), 147-181 (flag-guarded drop, flag reset before the drop; once a place has a flag, the guarded form is used at all its drops), 253-276 (flag updates at assignments, moves and calls); rustfrontend/ElaborateDropProof.v lines 4492-4513 (transl_program_correct: forward simulation from the ownership-tracking semantics to the explicit-drop semantics; no Admitted/admit in the file; not compiled here). No unwind, panic or cleanup construct occurs in rustfrontend/ (a call node has one successor). No necessity or minimality statement [mechanized prior art]",
+      "V. Fukala, 'Formalization of Rust Drop Elaboration', Bachelor thesis, Programming Language Foundations Lab, ETH Zurich, August 5, 2024 (supervisors I. van Bakel, R. Jung), PDF https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/BachelorTheses/2024-Viktor-Thesis.pdf: a structured language (if, while, calls, tuples; no control-flow graphs, section 3) with flag-based drop elaboration in Coq; a complete correctness proof for a scalar-only version, and a proof relying on unproved lemmas for tuples (sections 5.4, 6, Appendix A); unwinding left to future work (section 6.1). The Coq repository named in Appendix A requires sign-in and was not inspected [mechanized prior art, partly]"
+    ],
+    "tier_rationale": "T1. Stated informally in rustc's MaybeInitializedPlaces documentation; the mechanized developments found (RustCompCert, Fukala) prove sufficiency of their own flag placement only.",
+    "design_question": "Where are dynamic flags necessary?"
+  },
+  {
+    "id": "R3",
+    "lean": "Toy.DropFlags.staticChoice_at_disagreement_fails_of_placesAreMovePaths",
+    "lean_names": [
+      "Toy.DropFlags.lt_of_isDropPoint",
+      "Toy.DropFlags.forwardReachable_and_mem_allAtoms_of_mayInit",
+      "Toy.DropFlags.progJoinOff",
+      "Toy.DropFlags.progMoved",
+      "Toy.DropFlags.progKept",
+      "Toy.DropFlags.NoDoubleDrop",
+      "Toy.DropFlags.isDropPoint"
+    ],
+    "kind": "impossibility",
+    "tier": "T1",
+    "proof_status": "proved",
+    "plain_claim": "Assume only that every place mentioned by the program s is a valid move path, let i be a drop point (a ret or resume node) and let atom a be may-init but not must-init at i. Then, with the standard flag maintenance and the abort rule (runs are results of `runElab`, the target semantics `run` with step bound `fuelFor s`), (1) replacing the standard decision for a at i by an unconditional drop gives an input whose run violates NoDoubleDrop (a value destroyed twice, an uncreated value destroyed, or a destructor on unwritten memory), and (2) replacing it by nothing gives an input whose run returns or completes an unwind and violates NoLeak. Forwardness, MovesFromInit, InitsIntoUninit and NoNormalPathToResume are not assumed.",
+    "hypotheses": [
+      {
+        "name": "hplaces : PlacesAreMovePaths s",
+        "purpose": "an ill-typed init creates nothing although the analysis marks its atom initialized",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.staticChoice_necessity_fails_without_placesAreMovePaths",
+        "witness_class": "a 1-local (leaf), 3-node forward program with one ill-typed place (progIllTyped)"
+      },
+      {
+        "name": "hdrop : isDropPoint s i = true",
+        "purpose": "only drop points have drop decisions; elsewhere the override changes nothing",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.staticChoice_necessity_fails_at_non_drop_point",
+        "witness_class": "a 1-local (leaf), 5-node forward program (progJoinOff), node 3 a branch"
+      },
+      {
+        "name": "hmay : mayInit s .fine i a = true",
+        "purpose": "if a is not may-init, doing nothing is correct, so the leak half fails",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.staticChoice_necessity_fails_without_mayInit",
+        "witness_class": "a 1-local (leaf), 3-node forward program (progMoved)"
+      },
+      {
+        "name": "hmust : mustInit s .fine i a = false",
+        "purpose": "if a is must-init, an unconditional drop is correct, so the double-drop half fails",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.staticChoice_necessity_fails_without_notMustInit",
+        "witness_class": "a 1-local (leaf), 2-node forward program (progKept)"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "Node 3 (the join) of progJoin for x; both halves are exhibited concretely by R4a and R4a-skip.",
+    "nonvacuity_witness_lean": "Toy.DropFlags.staticChoice_hypotheses_hold_progJoin",
+    "positive_control_lean": [
+      "Toy.DropFlags.progKept_drop_correct",
+      "Toy.DropFlags.progMoved_skip_correct"
+    ],
+    "non_claims": [
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, a C++ implementation or any real program (model–system relation: none proved). Connections to real systems are separate derived (modeling bridge) claims.",
+      "Branches, call panics and destructor panics are independent free input bits; the theorem quantifies over all of them, not over the feasible paths of a real program. With correlated conditions a flag the analysis requires can be semantically unnecessary (not proved here).",
+      "Every `Ty` in the model contains at least one destructor unit (`leaf` always logs destruction); non-droppable (`Copy`/scalar) fields, `Drop` structs whose fields are purely scalar, and suppression of drop flags for types without destructors (`ty.needs_drop`) are not modeled.",
+      "Premises dropped as derivable: i < s.nodes.length (lt_of_isDropPoint) and forward reachability of i and a ∈ allAtoms s.locals (forwardReachable_and_mem_allAtoms_of_mayInit), both proved.",
+      "It shows that some run fails for each of the two static overrides of the standard map at one point; it does not say how many runs fail or rank the two failures.",
+      "It concerns elaborations over the source CFG with one flag per atom and the standard flag maintenance."
+    ],
+    "prior_art": [
+      "rust-lang/rust c7d5ba59d8e11ee2e2204b173458eec4cb41c973, compiler/rustc_mir_dataflow/src/impls/initialized.rs lines 103-139 and 344-380 (MaybeInitializedPlaces / MaybeUninitializedPlaces docs: the intersection of the two at a drop 'yields the set of places that would require a dynamic drop-flag'), lines 206-227 (domain MaybeReachable, bottom Unreachable) [source; prose only]",
+      "RFC 320 'Non-zeroing dynamic drop', rust-lang/rfcs f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07, text/0320-nonzeroing-dynamic-drop.md lines 6-15 (stack-local boolean flags for 'dynamic drop obligations'), lines 99-114 (drop obligations: a Drop type is one obligation, otherwise the union of its fields'; removed when moved, consumed by a call, or at scope end), lines 116-142 (dynamic obligations at a merge point = union minus intersection of the predecessors' sets), lines 144-155 (subsection 'Stack-local drop flags'; lines 153-155: 'we do not specify the precise set of boolean flags that are injected') [design document, historical; informal]"
+    ],
+    "tier_rationale": "T1 (the necessity direction of the folklore flag rule; not found mechanized).",
+    "design_question": "Where are dynamic flags necessary?"
+  },
+  {
+    "id": "R4a",
+    "lean": "Toy.DropFlags.staticDrop_at_join_double_drops",
+    "kind": "counterexample",
+    "tier": "T0",
+    "proof_status": "proved",
+    "plain_claim": "On progJoin (init x; branch; move x on one branch; ret), which satisfies all hypotheses of R1 and whose standard elaboration is elaboration-correct, replacing only the decision for x at the join (node 3, where x is may-init and not must-init) by an unconditional drop gives, on input [true], the log [create 0, consume 0, drop 0], which violates NoDoubleDrop.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "progJoin; the theorem itself states the hypotheses of R1 for progJoin.",
+    "nonvacuity_witness_lean": "Toy.DropFlags.staticDrop_at_join_double_drops",
+    "non_claims": [
+      "Each row shows one program and one input: it does not show that the failure mode is the only possible one for that defect, that every program in the class fails, or rank the defects.",
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, a C++ implementation or any real program (model–system relation: none proved). Connections to real systems are separate derived (modeling bridge) claims.",
+      "The program satisfies all hypotheses of R1, and its unchanged standard elaboration is elaboration-correct on all inputs (kernel-checked), so the failure is caused by the one changed ingredient."
+    ],
+    "prior_art": [
+      "RFC 320 'Non-zeroing dynamic drop', rust-lang/rfcs f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07, text/0320-nonzeroing-dynamic-drop.md lines 6-15 (stack-local boolean flags for 'dynamic drop obligations'), lines 99-114 (drop obligations: a Drop type is one obligation, otherwise the union of its fields'; removed when moved, consumed by a call, or at scope end), lines 116-142 (dynamic obligations at a merge point = union minus intersection of the predecessors' sets), lines 144-155 (subsection 'Stack-local drop flags'; lines 153-155: 'we do not specify the precise set of boolean flags that are injected') [design document, historical; informal]",
+      "rust-lang/rust c7d5ba59d8e11ee2e2204b173458eec4cb41c973, compiler/rustc_mir_transform/src/elaborate_drops.rs lines 424-431 (all flags set false at function start), 433-451 (call destination flags set at the start of the return target), 464-520 (per-location flag effects inserted at the location, i.e. before the statement/terminator); compiler/rustc_mir_dataflow/src/drop_flag_effects.rs lines 108-137 (drop_flag_effects_for_location: moves out => Absent) and 139-150 (for_location_inits: InitKind::Unconditional => Present, InitKind::OnReturn => no effect at the call) [source; prose only]",
+      "J. Wu, Y. Wang, L. Yu, L. Meng, 'RustCompCert: A Verified and Verifying Compiler for a Sequential Subset of Rust', arXiv:2602.07455v1 (7 Feb 2026; companion: 'End-to-end Compositional Verification of Program Safety through Verified and Verifying Compilation', arXiv:2510.10015v1); Rocq development github.com/SJTU-PLV/CompCert commit e3d03ed822a7aaf452b7022c347187ed1efc1c12 (branch rust-verified-compiler): rustfrontend/InitAnalysis.v lines 83-84 (maybe-init and maybe-uninit as Kildall fixpoints over a possibly cyclic CFG); rustfrontend/ElaborateDrop.v lines 33-52 (a drop flag for a place that is may-init and not must-init at a drop), 147-181 (flag-guarded drop, flag reset before the drop; once a place has a flag, the guarded form is used at all its drops), 253-276 (flag updates at assignments, moves and calls); rustfrontend/ElaborateDropProof.v lines 4492-4513 (transl_program_correct: forward simulation from the ownership-tracking semantics to the explicit-drop semantics; no Admitted/admit in the file; not compiled here). No unwind, panic or cleanup construct occurs in rustfrontend/ (a call node has one successor). No necessity or minimality statement [mechanized prior art]",
+      "V. Fukala, 'Formalization of Rust Drop Elaboration', Bachelor thesis, Programming Language Foundations Lab, ETH Zurich, August 5, 2024 (supervisors I. van Bakel, R. Jung), PDF https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/BachelorTheses/2024-Viktor-Thesis.pdf: a structured language (if, while, calls, tuples; no control-flow graphs, section 3) with flag-based drop elaboration in Coq; a complete correctness proof for a scalar-only version, and a proof relying on unproved lemmas for tuples (sections 5.4, 6, Appendix A); unwinding left to future work (section 6.1). The Coq repository named in Appendix A requires sign-in and was not inspected [mechanized prior art, partly]"
+    ],
+    "tier_rationale": "T0: the conditional-move join is the standard motivating example of dynamic drop flags (RFC 320) and is covered by the mechanized elaborations of RustCompCert and Fukala; this is a concrete kernel-evaluated trace of it.",
+    "design_question": "What exactly must elaboration maintain on normal and cleanup edges?"
+  },
+  {
+    "id": "R4a-skip",
+    "lean": "Toy.DropFlags.staticSkip_at_join_leaks",
+    "kind": "counterexample",
+    "tier": "T0",
+    "proof_status": "proved",
+    "plain_claim": "On progJoin, replacing only the decision for x at the join by nothing gives, on input [false, false], a run that returns with log [create 0], which violates NoLeak.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "progJoin.",
+    "nonvacuity_witness_lean": "Toy.DropFlags.staticSkip_at_join_leaks",
+    "non_claims": [
+      "Each row shows one program and one input: it does not show that the failure mode is the only possible one for that defect, that every program in the class fails, or rank the defects.",
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, a C++ implementation or any real program (model–system relation: none proved). Connections to real systems are separate derived (modeling bridge) claims.",
+      "The program satisfies all hypotheses of R1, and its unchanged standard elaboration is elaboration-correct on all inputs (kernel-checked), so the failure is caused by the one changed ingredient."
+    ],
+    "prior_art": [
+      "RFC 320 'Non-zeroing dynamic drop', rust-lang/rfcs f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07, text/0320-nonzeroing-dynamic-drop.md lines 6-15 (stack-local boolean flags for 'dynamic drop obligations'), lines 99-114 (drop obligations: a Drop type is one obligation, otherwise the union of its fields'; removed when moved, consumed by a call, or at scope end), lines 116-142 (dynamic obligations at a merge point = union minus intersection of the predecessors' sets), lines 144-155 (subsection 'Stack-local drop flags'; lines 153-155: 'we do not specify the precise set of boolean flags that are injected') [design document, historical; informal]",
+      "rust-lang/rust c7d5ba59d8e11ee2e2204b173458eec4cb41c973, compiler/rustc_mir_transform/src/elaborate_drops.rs lines 424-431 (all flags set false at function start), 433-451 (call destination flags set at the start of the return target), 464-520 (per-location flag effects inserted at the location, i.e. before the statement/terminator); compiler/rustc_mir_dataflow/src/drop_flag_effects.rs lines 108-137 (drop_flag_effects_for_location: moves out => Absent) and 139-150 (for_location_inits: InitKind::Unconditional => Present, InitKind::OnReturn => no effect at the call) [source; prose only]",
+      "J. Wu, Y. Wang, L. Yu, L. Meng, 'RustCompCert: A Verified and Verifying Compiler for a Sequential Subset of Rust', arXiv:2602.07455v1 (7 Feb 2026; companion: 'End-to-end Compositional Verification of Program Safety through Verified and Verifying Compilation', arXiv:2510.10015v1); Rocq development github.com/SJTU-PLV/CompCert commit e3d03ed822a7aaf452b7022c347187ed1efc1c12 (branch rust-verified-compiler): rustfrontend/InitAnalysis.v lines 83-84 (maybe-init and maybe-uninit as Kildall fixpoints over a possibly cyclic CFG); rustfrontend/ElaborateDrop.v lines 33-52 (a drop flag for a place that is may-init and not must-init at a drop), 147-181 (flag-guarded drop, flag reset before the drop; once a place has a flag, the guarded form is used at all its drops), 253-276 (flag updates at assignments, moves and calls); rustfrontend/ElaborateDropProof.v lines 4492-4513 (transl_program_correct: forward simulation from the ownership-tracking semantics to the explicit-drop semantics; no Admitted/admit in the file; not compiled here). No unwind, panic or cleanup construct occurs in rustfrontend/ (a call node has one successor). No necessity or minimality statement [mechanized prior art]",
+      "V. Fukala, 'Formalization of Rust Drop Elaboration', Bachelor thesis, Programming Language Foundations Lab, ETH Zurich, August 5, 2024 (supervisors I. van Bakel, R. Jung), PDF https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/BachelorTheses/2024-Viktor-Thesis.pdf: a structured language (if, while, calls, tuples; no control-flow graphs, section 3) with flag-based drop elaboration in Coq; a complete correctness proof for a scalar-only version, and a proof relying on unproved lemmas for tuples (sections 5.4, 6, Appendix A); unwinding left to future work (section 6.1). The Coq repository named in Appendix A requires sign-in and was not inspected [mechanized prior art, partly]"
+    ],
+    "tier_rationale": "T0, as R4a.",
+    "design_question": "What exactly must elaboration maintain on normal and cleanup edges?"
+  },
+  {
+    "id": "R4b",
+    "lean": "Toy.DropFlags.argFlagNotClearedOnUnwind_double_drops",
+    "kind": "counterexample",
+    "tier": "T1",
+    "proof_status": "proved",
+    "plain_claim": "On progCleanup (two calls sharing one cleanup node; the second call consumes x), which satisfies all hypotheses of R1 and whose standard elaboration is elaboration-correct, clearing call-argument flags only on the call's normal edge (clearArgsBeforeCall := false, everything else standard) gives, on input [false, true, false], a run that completes an unwind with log [create 0, consume 0, drop 0]: the second call consumes x and panics, and the shared cleanup still sees x's flag set. NoDoubleDrop is violated.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "progCleanup.",
+    "nonvacuity_witness_lean": "Toy.DropFlags.argFlagNotClearedOnUnwind_double_drops",
+    "non_claims": [
+      "Each row shows one program and one input: it does not show that the failure mode is the only possible one for that defect, that every program in the class fails, or rank the defects.",
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, a C++ implementation or any real program (model–system relation: none proved). Connections to real systems are separate derived (modeling bridge) claims.",
+      "The program satisfies all hypotheses of R1, and its unchanged standard elaboration is elaboration-correct on all inputs (kernel-checked), so the failure is caused by the one changed ingredient."
+    ],
+    "prior_art": [
+      "RFC 320 'Non-zeroing dynamic drop', rust-lang/rfcs f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07, text/0320-nonzeroing-dynamic-drop.md lines 6-15 (stack-local boolean flags for 'dynamic drop obligations'), lines 99-114 (drop obligations: a Drop type is one obligation, otherwise the union of its fields'; removed when moved, consumed by a call, or at scope end), lines 116-142 (dynamic obligations at a merge point = union minus intersection of the predecessors' sets), lines 144-155 (subsection 'Stack-local drop flags'; lines 153-155: 'we do not specify the precise set of boolean flags that are injected') [design document, historical; informal]",
+      "rust-lang/rust c7d5ba59d8e11ee2e2204b173458eec4cb41c973, compiler/rustc_mir_transform/src/elaborate_drops.rs lines 424-431 (all flags set false at function start), 433-451 (call destination flags set at the start of the return target), 464-520 (per-location flag effects inserted at the location, i.e. before the statement/terminator); compiler/rustc_mir_dataflow/src/drop_flag_effects.rs lines 108-137 (drop_flag_effects_for_location: moves out => Absent) and 139-150 (for_location_inits: InitKind::Unconditional => Present, InitKind::OnReturn => no effect at the call) [source; prose only]",
+      "rust-lang/rust c7d5ba59d8e11ee2e2204b173458eec4cb41c973, compiler/rustc_mir_transform/src/elaborate_drop.rs lines 49-56 and 66-71 (Unwind::InCleanup: 'Already in an unwind path, any panic will cause an abort.'; into_action => UnwindAction::Terminate(UnwindTerminateReason::InCleanup)); elaborate_drops.rs lines 359-375 (drops in cleanup blocks get Unwind::InCleanup); compiler/rustc_middle/src/mir/syntax.rs lines 657-683 (cleanup blocks: every unwind field must be Terminate or Unreachable; Return is not allowed; blocks reachable from cleanup blocks are cleanup) and 1010-1038 (UnwindAction::Terminate 'Terminates the execution if unwind happens'); compiler/rustc_mir_transform/src/validate.rs lines 246-275 (the validator rejects Cleanup or Continue unwind actions in cleanup blocks); library/core/src/panicking.rs lines 356-370 (lang item panic_in_cleanup: non-unwinding panic 'panic in a destructor during cleanup') [source; prose only]",
+      "J. Wu, Y. Wang, L. Yu, L. Meng, 'RustCompCert: A Verified and Verifying Compiler for a Sequential Subset of Rust', arXiv:2602.07455v1 (7 Feb 2026; companion: 'End-to-end Compositional Verification of Program Safety through Verified and Verifying Compilation', arXiv:2510.10015v1); Rocq development github.com/SJTU-PLV/CompCert commit e3d03ed822a7aaf452b7022c347187ed1efc1c12 (branch rust-verified-compiler): rustfrontend/InitAnalysis.v lines 83-84 (maybe-init and maybe-uninit as Kildall fixpoints over a possibly cyclic CFG); rustfrontend/ElaborateDrop.v lines 33-52 (a drop flag for a place that is may-init and not must-init at a drop), 147-181 (flag-guarded drop, flag reset before the drop; once a place has a flag, the guarded form is used at all its drops), 253-276 (flag updates at assignments, moves and calls); rustfrontend/ElaborateDropProof.v lines 4492-4513 (transl_program_correct: forward simulation from the ownership-tracking semantics to the explicit-drop semantics; no Admitted/admit in the file; not compiled here). No unwind, panic or cleanup construct occurs in rustfrontend/ (a call node has one successor). No necessity or minimality statement [mechanized prior art]",
+      "V. Fukala, 'Formalization of Rust Drop Elaboration', Bachelor thesis, Programming Language Foundations Lab, ETH Zurich, August 5, 2024 (supervisors I. van Bakel, R. Jung), PDF https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/BachelorTheses/2024-Viktor-Thesis.pdf: a structured language (if, while, calls, tuples; no control-flow graphs, section 3) with flag-based drop elaboration in Coq; a complete correctness proof for a scalar-only version, and a proof relying on unproved lemmas for tuples (sections 5.4, 6, Appendix A); unwinding left to future work (section 6.1). The Coq repository named in Appendix A requires sign-in and was not inspected [mechanized prior art, partly]"
+    ],
+    "tier_rationale": "T1: the interaction of argument flags with shared cleanup code is implemented by rustc (per-location flag effects before the call) but is not covered by the mechanized developments found, which have no unwinding.",
+    "design_question": "What exactly must elaboration maintain on normal and cleanup edges?"
+  },
+  {
+    "id": "R4c-kill",
+    "lean": [
+      "Toy.DropFlags.wholeKillAnalysis_leaks_remaining_field",
+      "Toy.DropFlags.wholeKillFlags_leaks_remaining_field"
+    ],
+    "lean_names": [
+      "Toy.DropFlags.progPartial_stdElab_correct",
+      "Toy.DropFlags.flagConfig_gran_inert_on_progPartial",
+      "Toy.DropFlags.progPartialFlag",
+      "Toy.DropFlags.progPartialFlag_stdElab_correct",
+      "Toy.DropFlags.stdMap"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "proof_status": "proved",
+    "plain_claim": "Treating a partial move as a move of the whole local breaks exactly-once, in each of two ingredients separately: (analysis) on progPartial (init x : pair of two leaves; move x.0; ret), static decisions computed by the whole-local analysis (stdMap at granularity wholeKill, flag maintenance standard; on this straight-line program no flag is tested, flagConfig_gran_inert_on_progPartial) drop nothing at the ret, and the run on [] returns with log [create 0, create 1, consume 0], violating NoLeak; (flags) on progPartialFlag (conditional init, conditional move of x.0), with the standard fine decisions and flag updates at granularity wholeKill, the run on [true, true] returns with log [create 0, create 1, consume 0], violating NoLeak.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "progPartial and progPartialFlag (both satisfy all hypotheses of R1; progPartial_stdElab_correct, progPartialFlag_stdElab_correct).",
+    "nonvacuity_witness_lean": [
+      "Toy.DropFlags.wholeKillAnalysis_leaks_remaining_field",
+      "Toy.DropFlags.wholeKillFlags_leaks_remaining_field"
+    ],
+    "non_claims": [
+      "Each row shows one program and one input: it does not show that the failure mode is the only possible one for that defect, that every program in the class fails, or rank the defects.",
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, a C++ implementation or any real program (model–system relation: none proved). Connections to real systems are separate derived (modeling bridge) claims.",
+      "The programs progPartial and progPartialFlag satisfy all hypotheses of R1, and their unchanged standard elaborations are elaboration-correct on all inputs (kernel-checked: progPartial_stdElab_correct, progPartialFlag_stdElab_correct), so each failure is caused by the one changed ingredient."
+    ],
+    "prior_art": [
+      "RFC 320 'Non-zeroing dynamic drop', rust-lang/rfcs f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07, text/0320-nonzeroing-dynamic-drop.md lines 6-15 (stack-local boolean flags for 'dynamic drop obligations'), lines 99-114 (drop obligations: a Drop type is one obligation, otherwise the union of its fields'; removed when moved, consumed by a call, or at scope end), lines 116-142 (dynamic obligations at a merge point = union minus intersection of the predecessors' sets), lines 144-155 (subsection 'Stack-local drop flags'; lines 153-155: 'we do not specify the precise set of boolean flags that are injected') [design document, historical; informal]",
+      "rust-lang/rust c7d5ba59d8e11ee2e2204b173458eec4cb41c973, compiler/rustc_mir_transform/src/elaborate_drops.rs lines 424-431 (all flags set false at function start), 433-451 (call destination flags set at the start of the return target), 464-520 (per-location flag effects inserted at the location, i.e. before the statement/terminator); compiler/rustc_mir_dataflow/src/drop_flag_effects.rs lines 108-137 (drop_flag_effects_for_location: moves out => Absent) and 139-150 (for_location_inits: InitKind::Unconditional => Present, InitKind::OnReturn => no effect at the call) [source; prose only]",
+      "J. Wu, Y. Wang, L. Yu, L. Meng, 'RustCompCert: A Verified and Verifying Compiler for a Sequential Subset of Rust', arXiv:2602.07455v1 (7 Feb 2026; companion: 'End-to-end Compositional Verification of Program Safety through Verified and Verifying Compilation', arXiv:2510.10015v1); Rocq development github.com/SJTU-PLV/CompCert commit e3d03ed822a7aaf452b7022c347187ed1efc1c12 (branch rust-verified-compiler): rustfrontend/InitAnalysis.v lines 83-84 (maybe-init and maybe-uninit as Kildall fixpoints over a possibly cyclic CFG); rustfrontend/ElaborateDrop.v lines 33-52 (a drop flag for a place that is may-init and not must-init at a drop), 147-181 (flag-guarded drop, flag reset before the drop; once a place has a flag, the guarded form is used at all its drops), 253-276 (flag updates at assignments, moves and calls); rustfrontend/ElaborateDropProof.v lines 4492-4513 (transl_program_correct: forward simulation from the ownership-tracking semantics to the explicit-drop semantics; no Admitted/admit in the file; not compiled here). No unwind, panic or cleanup construct occurs in rustfrontend/ (a call node has one successor). No necessity or minimality statement [mechanized prior art]",
+      "V. Fukala, 'Formalization of Rust Drop Elaboration', Bachelor thesis, Programming Language Foundations Lab, ETH Zurich, August 5, 2024 (supervisors I. van Bakel, R. Jung), PDF https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/BachelorTheses/2024-Viktor-Thesis.pdf: a structured language (if, while, calls, tuples; no control-flow graphs, section 3) with flag-based drop elaboration in Coq; a complete correctness proof for a scalar-only version, and a proof relying on unproved lemmas for tuples (sections 5.4, 6, Appendix A); unwinding left to future work (section 6.1). The Coq repository named in Appendix A requires sign-in and was not inspected [mechanized prior art, partly]"
+    ],
+    "tier_rationale": "T0: per-field tracking of partial moves is part of RFC 320's drop obligations and of the mechanized elaborations (RustCompCert; Fukala's tuple support, proof incomplete); this is a concrete trace.",
+    "design_question": "What exactly must elaboration maintain on normal and cleanup edges?"
+  },
+  {
+    "id": "R4c-keep",
+    "lean": [
+      "Toy.DropFlags.wholeKeepAnalysis_drops_moved_field",
+      "Toy.DropFlags.wholeKeepFlags_drops_moved_field"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "proof_status": "proved",
+    "plain_claim": "Ignoring partial moves breaks exactly-once, in each of two ingredients separately: (analysis) on progPartial, static decisions computed by an analysis that tracks only whole-local moves (stdMap at granularity wholeKeep, flag maintenance standard) drop the moved field: the run on [] has log [create 0, create 1, consume 0, drop 1, drop 0], violating NoDoubleDrop; (flags) on progPartialFlag, with the standard fine decisions and flag updates at granularity wholeKeep, the run on [true, true, false] has log [create 0, create 1, consume 0, drop 1, drop 0], violating NoDoubleDrop.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "progPartial and progPartialFlag.",
+    "nonvacuity_witness_lean": [
+      "Toy.DropFlags.wholeKeepAnalysis_drops_moved_field",
+      "Toy.DropFlags.wholeKeepFlags_drops_moved_field"
+    ],
+    "non_claims": [
+      "Each row shows one program and one input: it does not show that the failure mode is the only possible one for that defect, that every program in the class fails, or rank the defects.",
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, a C++ implementation or any real program (model–system relation: none proved). Connections to real systems are separate derived (modeling bridge) claims.",
+      "The programs progPartial and progPartialFlag satisfy all hypotheses of R1, and their unchanged standard elaborations are elaboration-correct on all inputs (kernel-checked: progPartial_stdElab_correct, progPartialFlag_stdElab_correct), so each failure is caused by the one changed ingredient."
+    ],
+    "prior_art": [
+      "RFC 320 'Non-zeroing dynamic drop', rust-lang/rfcs f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07, text/0320-nonzeroing-dynamic-drop.md lines 6-15 (stack-local boolean flags for 'dynamic drop obligations'), lines 99-114 (drop obligations: a Drop type is one obligation, otherwise the union of its fields'; removed when moved, consumed by a call, or at scope end), lines 116-142 (dynamic obligations at a merge point = union minus intersection of the predecessors' sets), lines 144-155 (subsection 'Stack-local drop flags'; lines 153-155: 'we do not specify the precise set of boolean flags that are injected') [design document, historical; informal]",
+      "rust-lang/rust c7d5ba59d8e11ee2e2204b173458eec4cb41c973, compiler/rustc_mir_transform/src/elaborate_drops.rs lines 424-431 (all flags set false at function start), 433-451 (call destination flags set at the start of the return target), 464-520 (per-location flag effects inserted at the location, i.e. before the statement/terminator); compiler/rustc_mir_dataflow/src/drop_flag_effects.rs lines 108-137 (drop_flag_effects_for_location: moves out => Absent) and 139-150 (for_location_inits: InitKind::Unconditional => Present, InitKind::OnReturn => no effect at the call) [source; prose only]",
+      "J. Wu, Y. Wang, L. Yu, L. Meng, 'RustCompCert: A Verified and Verifying Compiler for a Sequential Subset of Rust', arXiv:2602.07455v1 (7 Feb 2026; companion: 'End-to-end Compositional Verification of Program Safety through Verified and Verifying Compilation', arXiv:2510.10015v1); Rocq development github.com/SJTU-PLV/CompCert commit e3d03ed822a7aaf452b7022c347187ed1efc1c12 (branch rust-verified-compiler): rustfrontend/InitAnalysis.v lines 83-84 (maybe-init and maybe-uninit as Kildall fixpoints over a possibly cyclic CFG); rustfrontend/ElaborateDrop.v lines 33-52 (a drop flag for a place that is may-init and not must-init at a drop), 147-181 (flag-guarded drop, flag reset before the drop; once a place has a flag, the guarded form is used at all its drops), 253-276 (flag updates at assignments, moves and calls); rustfrontend/ElaborateDropProof.v lines 4492-4513 (transl_program_correct: forward simulation from the ownership-tracking semantics to the explicit-drop semantics; no Admitted/admit in the file; not compiled here). No unwind, panic or cleanup construct occurs in rustfrontend/ (a call node has one successor). No necessity or minimality statement [mechanized prior art]",
+      "V. Fukala, 'Formalization of Rust Drop Elaboration', Bachelor thesis, Programming Language Foundations Lab, ETH Zurich, August 5, 2024 (supervisors I. van Bakel, R. Jung), PDF https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/BachelorTheses/2024-Viktor-Thesis.pdf: a structured language (if, while, calls, tuples; no control-flow graphs, section 3) with flag-based drop elaboration in Coq; a complete correctness proof for a scalar-only version, and a proof relying on unproved lemmas for tuples (sections 5.4, 6, Appendix A); unwinding left to future work (section 6.1). The Coq repository named in Appendix A requires sign-in and was not inspected [mechanized prior art, partly]"
+    ],
+    "tier_rationale": "T0, as R4c-kill.",
+    "design_question": "What exactly must elaboration maintain on normal and cleanup edges?"
+  },
+  {
+    "id": "R4d",
+    "lean": "Toy.DropFlags.reinitWithoutFlagSet_leaks",
+    "kind": "counterexample",
+    "tier": "T0",
+    "proof_status": "proved",
+    "plain_claim": "On progReinit (init x; move x; branch; re-init x on one branch; ret), which satisfies all hypotheses of R1 and whose standard elaboration is elaboration-correct, omitting only the flag update of the re-initialization at node 3 gives, on input [true], a run that returns with log [create 0, consume 0, create 1], violating NoLeak.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "progReinit.",
+    "nonvacuity_witness_lean": "Toy.DropFlags.reinitWithoutFlagSet_leaks",
+    "non_claims": [
+      "Each row shows one program and one input: it does not show that the failure mode is the only possible one for that defect, that every program in the class fails, or rank the defects.",
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, a C++ implementation or any real program (model–system relation: none proved). Connections to real systems are separate derived (modeling bridge) claims.",
+      "The program satisfies all hypotheses of R1, and its unchanged standard elaboration is elaboration-correct on all inputs (kernel-checked), so the failure is caused by the one changed ingredient."
+    ],
+    "prior_art": [
+      "RFC 320 'Non-zeroing dynamic drop', rust-lang/rfcs f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07, text/0320-nonzeroing-dynamic-drop.md lines 6-15 (stack-local boolean flags for 'dynamic drop obligations'), lines 99-114 (drop obligations: a Drop type is one obligation, otherwise the union of its fields'; removed when moved, consumed by a call, or at scope end), lines 116-142 (dynamic obligations at a merge point = union minus intersection of the predecessors' sets), lines 144-155 (subsection 'Stack-local drop flags'; lines 153-155: 'we do not specify the precise set of boolean flags that are injected') [design document, historical; informal]",
+      "rust-lang/rust c7d5ba59d8e11ee2e2204b173458eec4cb41c973, compiler/rustc_mir_transform/src/elaborate_drops.rs lines 424-431 (all flags set false at function start), 433-451 (call destination flags set at the start of the return target), 464-520 (per-location flag effects inserted at the location, i.e. before the statement/terminator); compiler/rustc_mir_dataflow/src/drop_flag_effects.rs lines 108-137 (drop_flag_effects_for_location: moves out => Absent) and 139-150 (for_location_inits: InitKind::Unconditional => Present, InitKind::OnReturn => no effect at the call) [source; prose only]",
+      "J. Wu, Y. Wang, L. Yu, L. Meng, 'RustCompCert: A Verified and Verifying Compiler for a Sequential Subset of Rust', arXiv:2602.07455v1 (7 Feb 2026; companion: 'End-to-end Compositional Verification of Program Safety through Verified and Verifying Compilation', arXiv:2510.10015v1); Rocq development github.com/SJTU-PLV/CompCert commit e3d03ed822a7aaf452b7022c347187ed1efc1c12 (branch rust-verified-compiler): rustfrontend/InitAnalysis.v lines 83-84 (maybe-init and maybe-uninit as Kildall fixpoints over a possibly cyclic CFG); rustfrontend/ElaborateDrop.v lines 33-52 (a drop flag for a place that is may-init and not must-init at a drop), 147-181 (flag-guarded drop, flag reset before the drop; once a place has a flag, the guarded form is used at all its drops), 253-276 (flag updates at assignments, moves and calls); rustfrontend/ElaborateDropProof.v lines 4492-4513 (transl_program_correct: forward simulation from the ownership-tracking semantics to the explicit-drop semantics; no Admitted/admit in the file; not compiled here). No unwind, panic or cleanup construct occurs in rustfrontend/ (a call node has one successor). No necessity or minimality statement [mechanized prior art]",
+      "V. Fukala, 'Formalization of Rust Drop Elaboration', Bachelor thesis, Programming Language Foundations Lab, ETH Zurich, August 5, 2024 (supervisors I. van Bakel, R. Jung), PDF https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/BachelorTheses/2024-Viktor-Thesis.pdf: a structured language (if, while, calls, tuples; no control-flow graphs, section 3) with flag-based drop elaboration in Coq; a complete correctness proof for a scalar-only version, and a proof relying on unproved lemmas for tuples (sections 5.4, 6, Appendix A); unwinding left to future work (section 6.1). The Coq repository named in Appendix A requires sign-in and was not inspected [mechanized prior art, partly]"
+    ],
+    "tier_rationale": "T0: setting the flag at (re-)initialization is part of every flag-based elaboration (RFC 320, rustc, RustCompCert); this is a concrete trace.",
+    "design_question": "What exactly must elaboration maintain on normal and cleanup edges?"
+  },
+  {
+    "id": "R5",
+    "lean": "Toy.DropFlags.stdElab_noDoubleDrop_continueUnwind_of_forward_placesAreMovePaths_movesFromInit",
+    "lean_names": [
+      "Toy.DropFlags.progLoopMove",
+      "Toy.DropFlags.progInitInsideDrop",
+      "Toy.DropFlags.runElab_good"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "proof_status": "proved",
+    "plain_claim": "Assume that a destructor panic during unwinding continues unwinding (here: leaves the frame, since cleanup drops have no landing pad), and let s be a forward program that only mentions valid move paths and moves only definitely-initialized places (call arguments pairwise disjoint). Then for every input the run of the standard elaboration of s terminates and satisfies NoDoubleDrop (no value destroyed twice, no uncreated value destroyed, no destructor on unwritten memory). InitsIntoUninit and NoNormalPathToResume are not assumed.",
+    "hypotheses": [
+      {
+        "name": "hfwd : Forward s",
+        "purpose": "the one-pass analyses miss back edges; a loop can re-run a move",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.noDoubleDrop_continueUnwind_fails_without_forward",
+        "witness_class": "a 1-local (leaf), 4-node program with one back edge (progLoopMove)"
+      },
+      {
+        "name": "hplaces : PlacesAreMovePaths s",
+        "purpose": "an init inside a struct with its own destructor leaves the struct's own unit unwritten, so its drop runs on unwritten memory",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.noDoubleDrop_continueUnwind_fails_without_placesAreMovePaths",
+        "witness_class": "a 1-local, 2-node forward program whose local is a struct with its own destructor (progInitInsideDrop)"
+      },
+      {
+        "name": "hmoves : MovesFromInit s",
+        "purpose": "a use after move hands the same value to two consumers",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.noDoubleDrop_continueUnwind_fails_without_movesFromInit",
+        "witness_class": "a 1-local (leaf), 4-node forward program (progUseAfterMove)"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "progUnwind (a two-field struct live across a call) satisfies the three hypotheses and the conclusion is kernel-checked on all its runs.",
+    "nonvacuity_witness_lean": "Toy.DropFlags.continueUnwind_noDoubleDrop_holds_progUnwind",
+    "non_claims": [
+      "InitsIntoUninit and NoNormalPathToResume are not assumed, and R5 states nothing about leaks: under the continue-unwinding rule a completed unwind can leak even on a program satisfying every hypothesis of R1 (R6), and on programs violating InitsIntoUninit or NoNormalPathToResume the standard elaboration is not elaboration-correct under the abort rule either (stdElab_fails_without_initsIntoUninit, stdElab_fails_without_noNormalPathToResume).",
+      "Continue-unwinding is modelled as 'a panicking cleanup drop leaves the frame'. Other alternatives (a landing pad that re-enters a cleanup ladder, or swallowing the second panic and continuing the ladder) are not examined; under some of them a double drop or no failure at all may occur (not proved here).",
+      "Each `drop a` executes the entire drop glue of atom `a` (including a `Drop` struct's own destructor and all of its fields' destructors) in one step with a single panic bit; a panic in `Drop::drop` followed by a second panic in a field destructor inside the same atom's drop shim is not modeled.",
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, a C++ implementation or any real program (model–system relation: none proved). Connections to real systems are separate derived (modeling bridge) claims.",
+      "The results concern acyclic (forward) programs; they neither establish nor refute the corresponding claims for programs with loops, whose fixpoint analyses are not modelled (stdElab_fails_without_forward shows that the one-pass analysis is wrong on a loop).",
+      "Every `Ty` in the model contains at least one destructor unit (`leaf` always logs destruction); non-droppable (`Copy`/scalar) fields, `Drop` structs whose fields are purely scalar, and suppression of drop flags for types without destructors (`ty.needs_drop`) are not modeled.",
+      "In this model drop points occur only at frame-exit terminators (`ret` and `resume`), so `FlagConfig.std` never clears an atom's drop flag after dropping it. In an IR where drops also occur at mid-function scope exits, loop exits, or overwrites (such as Rust MIR `TerminatorKind::Drop`), normal drop paths must also reset the dropped place's flag to `false` or outer scope exits will double-drop (not proved here).",
+      "NoDoubleDrop and NoLeak count events per id and do not check their order; drop order among atoms is a modelling device and is not checked against the language's drop-order rules."
+    ],
+    "prior_art": [
+      "rust-lang/rust c7d5ba59d8e11ee2e2204b173458eec4cb41c973, compiler/rustc_mir_transform/src/elaborate_drop.rs lines 49-56 and 66-71 (Unwind::InCleanup: 'Already in an unwind path, any panic will cause an abort.'; into_action => UnwindAction::Terminate(UnwindTerminateReason::InCleanup)); elaborate_drops.rs lines 359-375 (drops in cleanup blocks get Unwind::InCleanup); compiler/rustc_middle/src/mir/syntax.rs lines 657-683 (cleanup blocks: every unwind field must be Terminate or Unreachable; Return is not allowed; blocks reachable from cleanup blocks are cleanup) and 1010-1038 (UnwindAction::Terminate 'Terminates the execution if unwind happens'); compiler/rustc_mir_transform/src/validate.rs lines 246-275 (the validator rejects Cleanup or Continue unwind actions in cleanup blocks); library/core/src/panicking.rs lines 356-370 (lang item panic_in_cleanup: non-unwinding panic 'panic in a destructor during cleanup') [source; prose only]",
+      "rust-lang/rust c7d5ba59d8e11ee2e2204b173458eec4cb41c973, library/core/src/ops/drop.rs lines 221-235 (Drop::drop: a panic in drop during unwinding (a 'double panic') 'will likely abort the program'; 'even if this panics, the value is considered to be dropped') [documentation]",
+      "C++ working draft N4950 (C++23; cplusplus/draft tag n4950 = commit 4e4de1df8ee941255b653b61d0a62050b34cf8c9, source/exceptions.tex): [except.throw]/7 (normative: 'If the exception handling mechanism handling an uncaught exception directly invokes a function that exits via an exception, the function std::terminate is invoked', with Note 5: a destructor directly invoked by stack unwinding that exits via an exception invokes std::terminate); [except.terminate]/1 Note 1 item (1.4) (informative note listing that case); [except.terminate]/2 (normative: in that case the stack shall not be unwound before std::terminate is invoked); [except.ctor]/3 (normative: if a destructor is terminated by an exception, the remaining subobject destructors are still invoked); [except.spec]/3 and /8 (a destructor without a noexcept-specifier is potentially-throwing iff a destructor of a potentially constructed subobject (or, for a virtual destructor, of a virtual base) is potentially-throwing; otherwise it is non-throwing) and /5 (an exception reaching the outermost block of a non-throwing function invokes std::terminate) [normative unless marked as a note; prose only]"
+    ],
+    "tier_rationale": "T1 (folklore about why panics in cleanup terminate; not found mechanized).",
+    "design_question": "What happens when a destructor panics during unwinding?"
+  },
+  {
+    "id": "R6",
+    "lean": [
+      "Toy.DropFlags.continueUnwind_completedUnwind_leaks_of_forward_moveChecked",
+      "Toy.DropFlags.continueUnwind_not_elabCorrect_for_all_forward_moveChecked"
+    ],
+    "kind": "impossibility",
+    "tier": "T1",
+    "proof_status": "proved",
+    "plain_claim": "Assume that a destructor panic during unwinding continues unwinding (leaves the frame) instead of aborting. Then there is a program satisfying every hypothesis of R1 — progUnwind: a struct without its own destructor whose two leaf fields are live across a call whose unwind edge goes directly to a resume node — and an input, [true, true] (the call panics, then the destructor of the first field dropped by the cleanup ladder panics), on which the run of the standard elaboration completes an unwind, satisfies NoDoubleDrop, and violates NoLeak (the other field is never destroyed). Hence, under this rule, the standard elaboration is not elaboration-correct for every program satisfying R1's hypotheses.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "The witness program and input are part of the statement (continueUnwind_leaks_partially_dropped: log [create 0, create 1, drop 1], outcome unwound).",
+    "nonvacuity_witness_lean": "Toy.DropFlags.continueUnwind_leaks_partially_dropped",
+    "positive_control_lean": [
+      "Toy.DropFlags.progUnwind_stdElab_correct_abort",
+      "Toy.DropFlags.abort_on_same_input"
+    ],
+    "non_claims": [
+      "The statement exhibits one run; that no run of the standard elaboration under continue-unwinding destroys a value twice (for forward programs with valid move paths and MovesFromInit) is the separate statement R5.",
+      "Escape hatches from this impossibility: (i) the abort rule — on the witness program every run is then elaboration-correct (progUnwind_stdElab_correct_abort), and in general this is R1; (ii) destructors that never panic during cleanup (as with non-throwing destructors), under which continue-unwinding and abort coincide (not proved here); (iii) programs in which at most one droppable atom can be live on any unwind path (not proved here); (iv) an alternative double-panic semantics that records or suppresses the second panic while continuing the remaining cleanup ladder, which is not modelled here (not proved here).",
+      "Continue-unwinding is modelled as 'a panicking cleanup drop leaves the frame'; it is a hypothetical design, not the current behaviour of rustc (which aborts) or of C++ (which calls std::terminate).",
+      "Each `drop a` executes the entire drop glue of atom `a` (including a `Drop` struct's own destructor and all of its fields' destructors) in one step with a single panic bit; a panic in `Drop::drop` followed by a second panic in a field destructor inside the same atom's drop shim is not modeled.",
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, a C++ implementation or any real program (model–system relation: none proved). Connections to real systems are separate derived (modeling bridge) claims."
+    ],
+    "prior_art": [
+      "rust-lang/rust c7d5ba59d8e11ee2e2204b173458eec4cb41c973, compiler/rustc_mir_transform/src/elaborate_drop.rs lines 49-56 and 66-71 (Unwind::InCleanup: 'Already in an unwind path, any panic will cause an abort.'; into_action => UnwindAction::Terminate(UnwindTerminateReason::InCleanup)); elaborate_drops.rs lines 359-375 (drops in cleanup blocks get Unwind::InCleanup); compiler/rustc_middle/src/mir/syntax.rs lines 657-683 (cleanup blocks: every unwind field must be Terminate or Unreachable; Return is not allowed; blocks reachable from cleanup blocks are cleanup) and 1010-1038 (UnwindAction::Terminate 'Terminates the execution if unwind happens'); compiler/rustc_mir_transform/src/validate.rs lines 246-275 (the validator rejects Cleanup or Continue unwind actions in cleanup blocks); library/core/src/panicking.rs lines 356-370 (lang item panic_in_cleanup: non-unwinding panic 'panic in a destructor during cleanup') [source; prose only]",
+      "rust-lang/rust c7d5ba59d8e11ee2e2204b173458eec4cb41c973, library/core/src/ops/drop.rs lines 221-235 (Drop::drop: a panic in drop during unwinding (a 'double panic') 'will likely abort the program'; 'even if this panics, the value is considered to be dropped') [documentation]",
+      "C++ working draft N4950 (C++23; cplusplus/draft tag n4950 = commit 4e4de1df8ee941255b653b61d0a62050b34cf8c9, source/exceptions.tex): [except.throw]/7 (normative: 'If the exception handling mechanism handling an uncaught exception directly invokes a function that exits via an exception, the function std::terminate is invoked', with Note 5: a destructor directly invoked by stack unwinding that exits via an exception invokes std::terminate); [except.terminate]/1 Note 1 item (1.4) (informative note listing that case); [except.terminate]/2 (normative: in that case the stack shall not be unwound before std::terminate is invoked); [except.ctor]/3 (normative: if a destructor is terminated by an exception, the remaining subobject destructors are still invoked); [except.spec]/3 and /8 (a destructor without a noexcept-specifier is potentially-throwing iff a destructor of a potentially constructed subobject (or, for a virtual destructor, of a virtual base) is potentially-throwing; otherwise it is non-throwing) and /5 (an exception reaching the outermost block of a non-throwing function invokes std::terminate) [normative unless marked as a note; prose only]",
+      "The Rust Reference, rust-lang/reference c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c: src/destructors.md r[destructors.intro] (a partially initialized variable drops only its initialized fields), r[destructors.operation] (Drop::drop, then fields in declaration order); src/panic.md r[panic.unwind.destruction]. No statement of a panic-during-unwinding abort rule was found in src/destructors.md, src/panic.md, src/items/functions.md or src/runtime.md at this commit [normative; negative finding]"
+    ],
+    "tier_rationale": "T1 (the rationale for terminating on a panic during cleanup is folklore; not found mechanized).",
+    "design_question": "What happens when a destructor panics during unwinding?"
+  },
+  {
+    "id": "R7",
+    "lean": "Toy.DropFlags.stdFlagSet_subset_of_exactlyOnce_of_placesAreMovePaths",
+    "lean_names": [
+      "Toy.DropFlags.flagSet"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "proof_status": "proved (from R2n)",
+    "plain_claim": "Assume only that every place mentioned by the program s is a valid move path. If every run of the elaboration of s with decision map d (same CFG, one flag per atom, standard flag maintenance, abort rule; a run is the result of `runElab`, the target semantics `run` with step bound `fuelFor s`, on one input bit stream) is exactly-once, then every atom that the standard map tests at some forward-reachable drop point is also tested by d at some forward-reachable drop point: the standard flag set is a lower bound (subset) of d's flag set. This does not assert that the standard map is itself elaboration-correct.",
+    "hypotheses": [
+      {
+        "name": "hplaces : PlacesAreMovePaths s",
+        "purpose": "an ill-typed init makes the analysis demand a flag that no run needs",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.flagSubset_fails_without_placesAreMovePaths",
+        "witness_class": "a 1-local (leaf), 3-node forward program with one ill-typed place (progIllTyped)"
+      },
+      {
+        "name": "hd : ∀ inp, ExactlyOnce (runElab .abort .std d s inp)",
+        "purpose": "an incorrect map can test fewer atoms",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.flagSubset_fails_without_exactlyOnce",
+        "witness_class": "a 1-local (leaf), 4-node forward program (progJoin) with the decision map that drops x unconditionally at the join"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "progJoin with the map that tests x at every drop point (every run exactly-once; flag sets [x] and [x]).",
+    "nonvacuity_witness_lean": "Toy.DropFlags.stdFlagSet_subset_witness_progJoin",
+    "non_claims": [
+      "It states a lower bound, not correctness: the standard map is the least flag set among elaboration-correct maps under the hypotheses of R1 (R7L), not under PlacesAreMovePaths alone.",
+      "Only PlacesAreMovePaths is assumed. Outside the hypotheses of R1 two degeneracies occur: on programs where no decision map has all runs exactly-once (for example a loop whose re-initialization leaks the first value; not proved here) the lower bound holds vacuously; and on programs that are not forward, flagSet counts only forward-reachable drop points, which may miss drop points reachable through an edge to a smaller index, and the standard map need not be elaboration-correct (stdElab_fails_without_forward).",
+      "The class of elaborations compared is fixed: the source CFG is kept, there is one flag per atom (maintained at every init, move and call), and only the per-(drop point, atom) decision varies. Elaborations outside this class can use fewer flags: duplicating the join (dupProg_matches_stdElab_progJoin), sharing one flag across atoms whose states are correlated (shareProg_matches_stdElab_progShare), and dropping early on one branch before a shared exit (earlyDropProg_matches_stdElab_progJoin), all proved for one program each; encoding initialization in memory by zeroing or value niches is not modelled; correlated branch predicates can make one side of a may-init-but-not-must-init split infeasible (not proved here).",
+      "`Ty.atoms` splits every struct without its own destructor eagerly into its fields, like RFC 320's structural drop obligations. rustc creates child move paths only for projections that occur in the body and drops the remaining fields under the parent's flag, so for a struct moved only as a whole it uses one flag where flagSet of the standard map counts two (derived (modeling bridge); not proved here).",
+      "Branches, call panics and destructor panics are independent free input bits; the theorem quantifies over all of them, not over the feasible paths of a real program. With correlated conditions a flag the analysis requires can be semantically unnecessary (not proved here).",
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, a C++ implementation or any real program (model–system relation: none proved). Connections to real systems are separate derived (modeling bridge) claims.",
+      "`ExactlyOnce` exempts runs whose outcome is `aborted`, `stuck` or `outOfFuel` from NoLeak: its leak clause is guarded by `Outcome.complete`, which is true for `returned` and `unwound` and false for the other outcomes. Termination is not assumed, and runs are results of `runElab`, cut off at the step bound `fuelFor s` (outcome `outOfFuel`).",
+      "The hypothesis `hd` (every run is exactly-once) is weaker than `ElabCorrect`: since `ExactlyOnce` exempts `aborted`, `stuck` and `outOfFuel` runs from NoLeak, `hd` constrains leaks on runs that return or complete an unwind and says nothing about leaks on runs that abort, reach a `stuck` node or exhaust the step bound `fuelFor s`."
+    ],
+    "prior_art": [
+      "rust-lang/rust c7d5ba59d8e11ee2e2204b173458eec4cb41c973, compiler/rustc_mir_transform/src/elaborate_drops.rs lines 165-188 (drop_style: (maybe_init, maybe_uninit) = (false, _) => Dead, (true, false) => Static, (true, true) => Conditional/Open) and lines 290-334 (collect_drop_flags; lines 310-312 create a flag iff maybe_init && maybe_uninit at a drop) [source; prose only]",
+      "RFC 320 'Non-zeroing dynamic drop', rust-lang/rfcs f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07, text/0320-nonzeroing-dynamic-drop.md lines 6-15 (stack-local boolean flags for 'dynamic drop obligations'), lines 99-114 (drop obligations: a Drop type is one obligation, otherwise the union of its fields'; removed when moved, consumed by a call, or at scope end), lines 116-142 (dynamic obligations at a merge point = union minus intersection of the predecessors' sets), lines 144-155 (subsection 'Stack-local drop flags'; lines 153-155: 'we do not specify the precise set of boolean flags that are injected') [design document, historical; informal]",
+      "rust-lang/rust c7d5ba59d8e11ee2e2204b173458eec4cb41c973, compiler/rustc_mir_dataflow/src/move_paths/builder.rs lines 24-70 (root move paths per local), 107-305 (move_path_for: a child move path is created, lines 283-294, only for a projection visited while gathering the body's moves and inits, lines 346-412), 180-184 (no descent into an ADT with a destructor); compiler/rustc_mir_transform/src/elaborate_drop.rs lines 725-728 ('when dropping an ADT, multiple fields may be joined together under the rest subpath. They are all controlled by the primary drop flag') and 1533-1558 (drop_flag_reset_block: flags reset after drops on normal paths, not on unwind paths) [source; prose only]",
+      "J. Wu, Y. Wang, L. Yu, L. Meng, 'RustCompCert: A Verified and Verifying Compiler for a Sequential Subset of Rust', arXiv:2602.07455v1 (7 Feb 2026; companion: 'End-to-end Compositional Verification of Program Safety through Verified and Verifying Compilation', arXiv:2510.10015v1); Rocq development github.com/SJTU-PLV/CompCert commit e3d03ed822a7aaf452b7022c347187ed1efc1c12 (branch rust-verified-compiler): rustfrontend/InitAnalysis.v lines 83-84 (maybe-init and maybe-uninit as Kildall fixpoints over a possibly cyclic CFG); rustfrontend/ElaborateDrop.v lines 33-52 (a drop flag for a place that is may-init and not must-init at a drop), 147-181 (flag-guarded drop, flag reset before the drop; once a place has a flag, the guarded form is used at all its drops), 253-276 (flag updates at assignments, moves and calls); rustfrontend/ElaborateDropProof.v lines 4492-4513 (transl_program_correct: forward simulation from the ownership-tracking semantics to the explicit-drop semantics; no Admitted/admit in the file; not compiled here). No unwind, panic or cleanup construct occurs in rustfrontend/ (a call node has one successor). No necessity or minimality statement [mechanized prior art]",
+      "V. Fukala, 'Formalization of Rust Drop Elaboration', Bachelor thesis, Programming Language Foundations Lab, ETH Zurich, August 5, 2024 (supervisors I. van Bakel, R. Jung), PDF https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/BachelorTheses/2024-Viktor-Thesis.pdf: a structured language (if, while, calls, tuples; no control-flow graphs, section 3) with flag-based drop elaboration in Coq; a complete correctness proof for a scalar-only version, and a proof relying on unproved lemmas for tuples (sections 5.4, 6, Appendix A); unwinding left to future work (section 6.1). The Coq repository named in Appendix A requires sign-in and was not inspected [mechanized prior art, partly]"
+    ],
+    "tier_rationale": "T1. RFC 320 leaves the flag set unspecified and rustc allocates flags exactly for may-init ∧ may-uninit places; a minimality statement was not found, informal or mechanized, beyond these.",
+    "design_question": "Is the analysis-driven flag placement minimal?"
+  },
+  {
+    "id": "R7L",
+    "lean": "Toy.DropFlags.stdMap_correct_and_flagSet_least_of_forward_moveChecked_noNormalPathToResume",
+    "kind": "theorem",
+    "tier": "T1",
+    "proof_status": "proved (from R1 and R7)",
+    "plain_claim": "Assume that a destructor panic during unwinding aborts the process and let s be a forward (acyclic, topologically numbered) toy program that only mentions valid move paths, moves only definitely-initialized places (call arguments pairwise disjoint), initializes only definitely-uninitialized places, and has no resume node reachable from the entry along normal edges only. Then the standard decision map is elaboration-correct, and every elaboration-correct decision map (same CFG, one flag per atom, standard flag maintenance) tests every atom that the standard map tests at some forward-reachable drop point; so the standard flag set is the least flag set among elaboration-correct decision maps of this class.",
+    "hypotheses": [
+      {
+        "name": "hfwd : Forward s",
+        "purpose": "the one-pass initialization analyses follow index-increasing edges only, which are all edges exactly when the program is forward (acyclic, topologically numbered)",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.stdFlagLeast_fails_without_forward",
+        "witness_class": "a 1-local (leaf), 3-node program with one back edge (progLoop)"
+      },
+      {
+        "name": "hplaces : PlacesAreMovePaths s",
+        "purpose": "every mentioned place follows its local's type and never enters a struct with its own destructor, so the analysis's atoms match the units written and destroyed",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.stdFlagLeast_fails_without_placesAreMovePaths",
+        "witness_class": "a 1-local, 3-node forward program whose local is a struct with its own destructor and two leaf fields (progDropStruct)"
+      },
+      {
+        "name": "hmoves : MovesFromInit s",
+        "purpose": "no use after move: every moved place (and call argument) is must-init, and call arguments are pairwise disjoint",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.stdFlagLeast_fails_without_movesFromInit",
+        "witness_class": "a 1-local (leaf), 4-node forward program (progUseAfterMove)"
+      },
+      {
+        "name": "hinits : InitsIntoUninit s",
+        "purpose": "no overwrite of an owned value: every initialized place (and call destination not overlapped by an argument) is not may-init",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.stdFlagLeast_fails_without_initsIntoUninit",
+        "witness_class": "a 1-local (leaf), 3-node forward program (progOverwrite)"
+      },
+      {
+        "name": "hclean : NoNormalPathToResume s",
+        "purpose": "no resume node is reachable from the entry along normal edges only, so a resume ladder (whose drops have no landing pad) runs only while unwinding, where a destructor panic aborts",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.stdFlagLeast_fails_without_noNormalPathToResume",
+        "witness_class": "a 2-local (two leaves), 3-node forward program (progResumeNormal)"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "progCleanup satisfies all five hypotheses.",
+    "nonvacuity_witness_lean": "Toy.DropFlags.exactlyOnce_hypotheses_hold_progCleanup",
+    "non_claims": [
+      "The class of elaborations compared is fixed: the source CFG is kept, there is one flag per atom (maintained at every init, move and call), and only the per-(drop point, atom) decision varies. Elaborations outside this class can use fewer flags: duplicating the join (dupProg_matches_stdElab_progJoin), sharing one flag across atoms whose states are correlated (shareProg_matches_stdElab_progShare), and dropping early on one branch before a shared exit (earlyDropProg_matches_stdElab_progJoin), all proved for one program each; encoding initialization in memory by zeroing or value niches is not modelled; correlated branch predicates can make one side of a may-init-but-not-must-init split infeasible (not proved here).",
+      "`Ty.atoms` splits every struct without its own destructor eagerly into its fields, like RFC 320's structural drop obligations. rustc creates child move paths only for projections that occur in the body and drops the remaining fields under the parent's flag, so for a struct moved only as a whole it uses one flag where flagSet of the standard map counts two (derived (modeling bridge); not proved here).",
+      "Branches, call panics and destructor panics are independent free input bits; the theorem quantifies over all of them, not over the feasible paths of a real program. With correlated conditions a flag the analysis requires can be semantically unnecessary (not proved here).",
+      "The results concern acyclic (forward) programs; they neither establish nor refute the corresponding claims for programs with loops, whose fixpoint analyses are not modelled (stdElab_fails_without_forward shows that the one-pass analysis is wrong on a loop).",
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, a C++ implementation or any real program (model–system relation: none proved). Connections to real systems are separate derived (modeling bridge) claims."
+    ],
+    "prior_art": [
+      "rust-lang/rust c7d5ba59d8e11ee2e2204b173458eec4cb41c973, compiler/rustc_mir_transform/src/elaborate_drops.rs lines 165-188 (drop_style: (maybe_init, maybe_uninit) = (false, _) => Dead, (true, false) => Static, (true, true) => Conditional/Open) and lines 290-334 (collect_drop_flags; lines 310-312 create a flag iff maybe_init && maybe_uninit at a drop) [source; prose only]",
+      "RFC 320 'Non-zeroing dynamic drop', rust-lang/rfcs f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07, text/0320-nonzeroing-dynamic-drop.md lines 6-15 (stack-local boolean flags for 'dynamic drop obligations'), lines 99-114 (drop obligations: a Drop type is one obligation, otherwise the union of its fields'; removed when moved, consumed by a call, or at scope end), lines 116-142 (dynamic obligations at a merge point = union minus intersection of the predecessors' sets), lines 144-155 (subsection 'Stack-local drop flags'; lines 153-155: 'we do not specify the precise set of boolean flags that are injected') [design document, historical; informal]",
+      "rust-lang/rust c7d5ba59d8e11ee2e2204b173458eec4cb41c973, compiler/rustc_mir_dataflow/src/move_paths/builder.rs lines 24-70 (root move paths per local), 107-305 (move_path_for: a child move path is created, lines 283-294, only for a projection visited while gathering the body's moves and inits, lines 346-412), 180-184 (no descent into an ADT with a destructor); compiler/rustc_mir_transform/src/elaborate_drop.rs lines 725-728 ('when dropping an ADT, multiple fields may be joined together under the rest subpath. They are all controlled by the primary drop flag') and 1533-1558 (drop_flag_reset_block: flags reset after drops on normal paths, not on unwind paths) [source; prose only]",
+      "J. Wu, Y. Wang, L. Yu, L. Meng, 'RustCompCert: A Verified and Verifying Compiler for a Sequential Subset of Rust', arXiv:2602.07455v1 (7 Feb 2026; companion: 'End-to-end Compositional Verification of Program Safety through Verified and Verifying Compilation', arXiv:2510.10015v1); Rocq development github.com/SJTU-PLV/CompCert commit e3d03ed822a7aaf452b7022c347187ed1efc1c12 (branch rust-verified-compiler): rustfrontend/InitAnalysis.v lines 83-84 (maybe-init and maybe-uninit as Kildall fixpoints over a possibly cyclic CFG); rustfrontend/ElaborateDrop.v lines 33-52 (a drop flag for a place that is may-init and not must-init at a drop), 147-181 (flag-guarded drop, flag reset before the drop; once a place has a flag, the guarded form is used at all its drops), 253-276 (flag updates at assignments, moves and calls); rustfrontend/ElaborateDropProof.v lines 4492-4513 (transl_program_correct: forward simulation from the ownership-tracking semantics to the explicit-drop semantics; no Admitted/admit in the file; not compiled here). No unwind, panic or cleanup construct occurs in rustfrontend/ (a call node has one successor). No necessity or minimality statement [mechanized prior art]",
+      "V. Fukala, 'Formalization of Rust Drop Elaboration', Bachelor thesis, Programming Language Foundations Lab, ETH Zurich, August 5, 2024 (supervisors I. van Bakel, R. Jung), PDF https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/BachelorTheses/2024-Viktor-Thesis.pdf: a structured language (if, while, calls, tuples; no control-flow graphs, section 3) with flag-based drop elaboration in Coq; a complete correctness proof for a scalar-only version, and a proof relying on unproved lemmas for tuples (sections 5.4, 6, Appendix A); unwinding left to future work (section 6.1). The Coq repository named in Appendix A requires sign-in and was not inspected [mechanized prior art, partly]"
+    ],
+    "tier_rationale": "T1, as R7.",
+    "design_question": "Is the analysis-driven flag placement minimal?"
+  },
+  {
+    "id": "R8",
+    "lean": "Toy.DropFlags.fewerFlags_than_std_not_exactlyOnce_of_placesAreMovePaths",
+    "kind": "impossibility",
+    "tier": "T1",
+    "proof_status": "proved (from R7)",
+    "plain_claim": "Assume only that every place mentioned by the program s is a valid move path. If a decision map d (same CFG, one flag per atom, standard flag maintenance, abort rule) has a strictly shorter flag set than the standard map (atoms tested at forward-reachable drop points), then some input gives a run of d's elaboration (the result of `runElab`, the target semantics `run` with step bound `fuelFor s`) that is not exactly-once.",
+    "hypotheses": [
+      {
+        "name": "hplaces : PlacesAreMovePaths s",
+        "purpose": "an ill-typed init makes the analysis demand a flag that no run needs",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.fewerFlags_fails_without_placesAreMovePaths",
+        "witness_class": "a 1-local (leaf), 3-node forward program with one ill-typed place (progIllTyped)"
+      },
+      {
+        "name": "hlt : (flagSet s d).length < (flagSet s (stdMap s .fine)).length",
+        "purpose": "with as many flags, the standard map itself is correct",
+        "tightness": "tight",
+        "counterexample": "Toy.DropFlags.fewerFlags_fails_without_lt",
+        "witness_class": "a 1-local (leaf), 4-node forward program (progJoin) with the standard map compared to itself"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "progJoin with the map that drops x unconditionally at the join: flag sets [] and [x]; input [true] double-drops.",
+    "nonvacuity_witness_lean": "Toy.DropFlags.fewerFlags_hypotheses_hold_progJoin",
+    "positive_control_lean": [
+      "Toy.DropFlags.dupProg_matches_stdElab_progJoin",
+      "Toy.DropFlags.shareProg_matches_stdElab_progShare",
+      "Toy.DropFlags.earlyDropProg_matches_stdElab_progJoin"
+    ],
+    "non_claims": [
+      "The class of elaborations compared is fixed: the source CFG is kept, there is one flag per atom (maintained at every init, move and call), and only the per-(drop point, atom) decision varies. Elaborations outside this class can use fewer flags: duplicating the join (dupProg_matches_stdElab_progJoin), sharing one flag across atoms whose states are correlated (shareProg_matches_stdElab_progShare), and dropping early on one branch before a shared exit (earlyDropProg_matches_stdElab_progJoin), all proved for one program each; encoding initialization in memory by zeroing or value niches is not modelled; correlated branch predicates can make one side of a may-init-but-not-must-init split infeasible (not proved here).",
+      "`Ty.atoms` splits every struct without its own destructor eagerly into its fields, like RFC 320's structural drop obligations. rustc creates child move paths only for projections that occur in the body and drops the remaining fields under the parent's flag, so for a struct moved only as a whole it uses one flag where flagSet of the standard map counts two (derived (modeling bridge); not proved here).",
+      "Only PlacesAreMovePaths is assumed: on programs where no decision map has all runs exactly-once, the conclusion also holds for maps with more flags (not proved here); the statement compares the lengths of the two flag sets, not the sets themselves.",
+      "Branches, call panics and destructor panics are independent free input bits; the theorem quantifies over all of them, not over the feasible paths of a real program. With correlated conditions a flag the analysis requires can be semantically unnecessary (not proved here).",
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, a C++ implementation or any real program (model–system relation: none proved). Connections to real systems are separate derived (modeling bridge) claims.",
+      "`ExactlyOnce` exempts runs whose outcome is `aborted`, `stuck` or `outOfFuel` from NoLeak: its leak clause is guarded by `Outcome.complete`, which is true for `returned` and `unwound` and false for the other outcomes. Termination is not assumed, and runs are results of `runElab`, cut off at the step bound `fuelFor s` (outcome `outOfFuel`).",
+      "By the definition of `ExactlyOnce`, the run given by the conclusion violates NoDoubleDrop, or returns or completes an unwind and violates NoLeak; a leak on a run that aborts, reaches a `stuck` node or exhausts the step bound does not make a run fail to be exactly-once."
+    ],
+    "prior_art": [
+      "rust-lang/rust c7d5ba59d8e11ee2e2204b173458eec4cb41c973, compiler/rustc_mir_transform/src/elaborate_drops.rs lines 165-188 (drop_style: (maybe_init, maybe_uninit) = (false, _) => Dead, (true, false) => Static, (true, true) => Conditional/Open) and lines 290-334 (collect_drop_flags; lines 310-312 create a flag iff maybe_init && maybe_uninit at a drop) [source; prose only]",
+      "RFC 320 'Non-zeroing dynamic drop', rust-lang/rfcs f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07, text/0320-nonzeroing-dynamic-drop.md lines 6-15 (stack-local boolean flags for 'dynamic drop obligations'), lines 99-114 (drop obligations: a Drop type is one obligation, otherwise the union of its fields'; removed when moved, consumed by a call, or at scope end), lines 116-142 (dynamic obligations at a merge point = union minus intersection of the predecessors' sets), lines 144-155 (subsection 'Stack-local drop flags'; lines 153-155: 'we do not specify the precise set of boolean flags that are injected') [design document, historical; informal]",
+      "RFC 320, rust-lang/rfcs f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07, text/0320-nonzeroing-dynamic-drop.md lines 50-55, 59-64, 68-75 (the withdrawn 'static drop semantics' proposal, RFC PR #210: drop certain values earlier so that the drop obligations agree at every merge point; rejected as non-intuitive) [design document, historical]",
+      "rust-lang/rust c7d5ba59d8e11ee2e2204b173458eec4cb41c973, compiler/rustc_mir_dataflow/src/move_paths/builder.rs lines 24-70 (root move paths per local), 107-305 (move_path_for: a child move path is created, lines 283-294, only for a projection visited while gathering the body's moves and inits, lines 346-412), 180-184 (no descent into an ADT with a destructor); compiler/rustc_mir_transform/src/elaborate_drop.rs lines 725-728 ('when dropping an ADT, multiple fields may be joined together under the rest subpath. They are all controlled by the primary drop flag') and 1533-1558 (drop_flag_reset_block: flags reset after drops on normal paths, not on unwind paths) [source; prose only]"
+    ],
+    "tier_rationale": "T1, as R7 (a counting corollary of R7).",
+    "design_question": "Is the analysis-driven flag placement minimal?"
+  }
+]

@@ -1,0 +1,2450 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.DropFlags.Acct": [
+      "propext"
+    ],
+    "Toy.DropFlags.Acct.congr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.Acct.destroy": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.Acct.destroyAll": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.Acct.initial": [
+      "propext"
+    ],
+    "Toy.DropFlags.Acct.noLeak": [
+      "propext"
+    ],
+    "Toy.DropFlags.Acct.write": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.AllCompatible": [
+      "propext"
+    ],
+    "Toy.DropFlags.Compatible": [],
+    "Toy.DropFlags.Compatible.eq_1": [],
+    "Toy.DropFlags.Compatible.eq_2": [],
+    "Toy.DropFlags.Compatible.eq_3": [],
+    "Toy.DropFlags.Compatible.match_1": [],
+    "Toy.DropFlags.Decision": [],
+    "Toy.DropFlags.Decision.casesOn": [],
+    "Toy.DropFlags.Decision.ctorElim": [],
+    "Toy.DropFlags.Decision.ctorElimType": [],
+    "Toy.DropFlags.Decision.ctorIdx": [],
+    "Toy.DropFlags.Decision.drop": [],
+    "Toy.DropFlags.Decision.drop.elim": [],
+    "Toy.DropFlags.Decision.drop.sizeOf_spec": [],
+    "Toy.DropFlags.Decision.noConfusion": [],
+    "Toy.DropFlags.Decision.noConfusionType": [],
+    "Toy.DropFlags.Decision.ofNat": [],
+    "Toy.DropFlags.Decision.ofNat_ctorIdx": [],
+    "Toy.DropFlags.Decision.rec": [],
+    "Toy.DropFlags.Decision.recOn": [],
+    "Toy.DropFlags.Decision.skip": [],
+    "Toy.DropFlags.Decision.skip.elim": [],
+    "Toy.DropFlags.Decision.skip.sizeOf_spec": [],
+    "Toy.DropFlags.Decision.test": [],
+    "Toy.DropFlags.Decision.test.elim": [],
+    "Toy.DropFlags.Decision.test.sizeOf_spec": [],
+    "Toy.DropFlags.Edge": [
+      "propext"
+    ],
+    "Toy.DropFlags.Edge.br1": [
+      "propext"
+    ],
+    "Toy.DropFlags.Edge.br2": [
+      "propext"
+    ],
+    "Toy.DropFlags.Edge.callN": [
+      "propext"
+    ],
+    "Toy.DropFlags.Edge.callU": [
+      "propext"
+    ],
+    "Toy.DropFlags.Edge.casesOn": [
+      "propext"
+    ],
+    "Toy.DropFlags.Edge.init": [
+      "propext"
+    ],
+    "Toy.DropFlags.Edge.lt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.Edge.move": [
+      "propext"
+    ],
+    "Toy.DropFlags.Edge.rec": [
+      "propext"
+    ],
+    "Toy.DropFlags.Edge.recOn": [
+      "propext"
+    ],
+    "Toy.DropFlags.ElabCorrect": [
+      "propext"
+    ],
+    "Toy.DropFlags.Event": [],
+    "Toy.DropFlags.Event.casesOn": [],
+    "Toy.DropFlags.Event.consume": [],
+    "Toy.DropFlags.Event.consume.elim": [],
+    "Toy.DropFlags.Event.consume.inj": [],
+    "Toy.DropFlags.Event.consume.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.Event.consume.noConfusion": [],
+    "Toy.DropFlags.Event.consume.sizeOf_spec": [],
+    "Toy.DropFlags.Event.create": [],
+    "Toy.DropFlags.Event.create.elim": [],
+    "Toy.DropFlags.Event.create.inj": [],
+    "Toy.DropFlags.Event.create.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.Event.create.noConfusion": [],
+    "Toy.DropFlags.Event.create.sizeOf_spec": [],
+    "Toy.DropFlags.Event.ctorElim": [],
+    "Toy.DropFlags.Event.ctorElimType": [],
+    "Toy.DropFlags.Event.ctorIdx": [],
+    "Toy.DropFlags.Event.drop": [],
+    "Toy.DropFlags.Event.drop.elim": [],
+    "Toy.DropFlags.Event.drop.inj": [],
+    "Toy.DropFlags.Event.drop.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.Event.drop.noConfusion": [],
+    "Toy.DropFlags.Event.drop.sizeOf_spec": [],
+    "Toy.DropFlags.Event.garbage": [],
+    "Toy.DropFlags.Event.garbage.elim": [],
+    "Toy.DropFlags.Event.garbage.sizeOf_spec": [],
+    "Toy.DropFlags.Event.noConfusion": [],
+    "Toy.DropFlags.Event.noConfusionType": [],
+    "Toy.DropFlags.Event.rec": [],
+    "Toy.DropFlags.Event.recOn": [],
+    "Toy.DropFlags.ExactlyOnce": [
+      "propext"
+    ],
+    "Toy.DropFlags.FlagConfig": [],
+    "Toy.DropFlags.FlagConfig.casesOn": [],
+    "Toy.DropFlags.FlagConfig.clearArgsBeforeCall": [],
+    "Toy.DropFlags.FlagConfig.ctorIdx": [],
+    "Toy.DropFlags.FlagConfig.gran": [],
+    "Toy.DropFlags.FlagConfig.initSetsFlags": [],
+    "Toy.DropFlags.FlagConfig.mk": [],
+    "Toy.DropFlags.FlagConfig.mk.inj": [],
+    "Toy.DropFlags.FlagConfig.mk.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.FlagConfig.mk.noConfusion": [],
+    "Toy.DropFlags.FlagConfig.mk.sizeOf_spec": [],
+    "Toy.DropFlags.FlagConfig.noConfusion": [],
+    "Toy.DropFlags.FlagConfig.noConfusionType": [],
+    "Toy.DropFlags.FlagConfig.rec": [],
+    "Toy.DropFlags.FlagConfig.recOn": [],
+    "Toy.DropFlags.FlagConfig.std": [],
+    "Toy.DropFlags.Forward": [
+      "propext"
+    ],
+    "Toy.DropFlags.ForwardReachable": [
+      "propext"
+    ],
+    "Toy.DropFlags.Good": [
+      "propext"
+    ],
+    "Toy.DropFlags.Granularity": [],
+    "Toy.DropFlags.Granularity.casesOn": [],
+    "Toy.DropFlags.Granularity.ctorElim": [],
+    "Toy.DropFlags.Granularity.ctorElimType": [],
+    "Toy.DropFlags.Granularity.ctorIdx": [],
+    "Toy.DropFlags.Granularity.fine": [],
+    "Toy.DropFlags.Granularity.fine.elim": [],
+    "Toy.DropFlags.Granularity.fine.sizeOf_spec": [],
+    "Toy.DropFlags.Granularity.noConfusion": [],
+    "Toy.DropFlags.Granularity.noConfusionType": [],
+    "Toy.DropFlags.Granularity.ofNat": [],
+    "Toy.DropFlags.Granularity.ofNat_ctorIdx": [],
+    "Toy.DropFlags.Granularity.rec": [],
+    "Toy.DropFlags.Granularity.recOn": [],
+    "Toy.DropFlags.Granularity.wholeKeep": [],
+    "Toy.DropFlags.Granularity.wholeKeep.elim": [],
+    "Toy.DropFlags.Granularity.wholeKeep.sizeOf_spec": [],
+    "Toy.DropFlags.Granularity.wholeKill": [],
+    "Toy.DropFlags.Granularity.wholeKill.elim": [],
+    "Toy.DropFlags.Granularity.wholeKill.sizeOf_spec": [],
+    "Toy.DropFlags.InitsIntoUninit": [
+      "propext"
+    ],
+    "Toy.DropFlags.InitsIntoUninit.match_1": [
+      "propext"
+    ],
+    "Toy.DropFlags.Inv": [
+      "propext"
+    ],
+    "Toy.DropFlags.Inv.casesOn": [
+      "propext"
+    ],
+    "Toy.DropFlags.Inv.congr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.Inv.consume": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.Inv.consumeAll": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.Inv.deadU": [
+      "propext"
+    ],
+    "Toy.DropFlags.Inv.destroy": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.Inv.hi": [
+      "propext"
+    ],
+    "Toy.DropFlags.Inv.initial": [
+      "propext"
+    ],
+    "Toy.DropFlags.Inv.inj": [
+      "propext"
+    ],
+    "Toy.DropFlags.Inv.liveU": [
+      "propext"
+    ],
+    "Toy.DropFlags.Inv.lt": [
+      "propext"
+    ],
+    "Toy.DropFlags.Inv.mk": [
+      "propext"
+    ],
+    "Toy.DropFlags.Inv.rec": [
+      "propext"
+    ],
+    "Toy.DropFlags.Inv.recOn": [
+      "propext"
+    ],
+    "Toy.DropFlags.Inv.writeInit": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.LInv": [
+      "propext"
+    ],
+    "Toy.DropFlags.LInv.acct": [
+      "propext"
+    ],
+    "Toy.DropFlags.LInv.atoms": [
+      "propext"
+    ],
+    "Toy.DropFlags.LInv.casesOn": [
+      "propext"
+    ],
+    "Toy.DropFlags.LInv.cl": [
+      "propext"
+    ],
+    "Toy.DropFlags.LInv.dec": [
+      "propext"
+    ],
+    "Toy.DropFlags.LInv.dp": [
+      "propext"
+    ],
+    "Toy.DropFlags.LInv.drop": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.LInv.flags": [
+      "propext"
+    ],
+    "Toy.DropFlags.LInv.inv": [
+      "propext"
+    ],
+    "Toy.DropFlags.LInv.mk": [
+      "propext"
+    ],
+    "Toy.DropFlags.LInv.ndd": [
+      "propext"
+    ],
+    "Toy.DropFlags.LInv.rec": [
+      "propext"
+    ],
+    "Toy.DropFlags.LInv.recOn": [
+      "propext"
+    ],
+    "Toy.DropFlags.LInv.setPc": [
+      "propext"
+    ],
+    "Toy.DropFlags.LInv.skip": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.LInv.unw": [
+      "propext"
+    ],
+    "Toy.DropFlags.Lbl": [],
+    "Toy.DropFlags.Lbl.casesOn": [],
+    "Toy.DropFlags.Lbl.ctorElim": [],
+    "Toy.DropFlags.Lbl.ctorElimType": [],
+    "Toy.DropFlags.Lbl.ctorIdx": [],
+    "Toy.DropFlags.Lbl.dropAt": [],
+    "Toy.DropFlags.Lbl.dropAt.elim": [],
+    "Toy.DropFlags.Lbl.dropAt.inj": [],
+    "Toy.DropFlags.Lbl.dropAt.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.Lbl.dropAt.noConfusion": [],
+    "Toy.DropFlags.Lbl.dropAt.sizeOf_spec": [],
+    "Toy.DropFlags.Lbl.lad": [],
+    "Toy.DropFlags.Lbl.lad.elim": [],
+    "Toy.DropFlags.Lbl.lad.inj": [],
+    "Toy.DropFlags.Lbl.lad.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.Lbl.lad.noConfusion": [],
+    "Toy.DropFlags.Lbl.lad.sizeOf_spec": [],
+    "Toy.DropFlags.Lbl.noConfusion": [],
+    "Toy.DropFlags.Lbl.noConfusionType": [],
+    "Toy.DropFlags.Lbl.post": [],
+    "Toy.DropFlags.Lbl.post.elim": [],
+    "Toy.DropFlags.Lbl.post.inj": [],
+    "Toy.DropFlags.Lbl.post.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.Lbl.post.noConfusion": [],
+    "Toy.DropFlags.Lbl.post.sizeOf_spec": [],
+    "Toy.DropFlags.Lbl.pre": [],
+    "Toy.DropFlags.Lbl.pre.elim": [],
+    "Toy.DropFlags.Lbl.pre.inj": [],
+    "Toy.DropFlags.Lbl.pre.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.Lbl.pre.noConfusion": [],
+    "Toy.DropFlags.Lbl.pre.sizeOf_spec": [],
+    "Toy.DropFlags.Lbl.rec": [],
+    "Toy.DropFlags.Lbl.recOn": [],
+    "Toy.DropFlags.Lbl.src": [],
+    "Toy.DropFlags.Lbl.src.elim": [],
+    "Toy.DropFlags.Lbl.src.inj": [],
+    "Toy.DropFlags.Lbl.src.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.Lbl.src.noConfusion": [],
+    "Toy.DropFlags.Lbl.src.sizeOf_spec": [],
+    "Toy.DropFlags.Lbl.udropAt": [],
+    "Toy.DropFlags.Lbl.udropAt.elim": [],
+    "Toy.DropFlags.Lbl.udropAt.inj": [],
+    "Toy.DropFlags.Lbl.udropAt.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.Lbl.udropAt.noConfusion": [],
+    "Toy.DropFlags.Lbl.udropAt.sizeOf_spec": [],
+    "Toy.DropFlags.Lbl.ulad": [],
+    "Toy.DropFlags.Lbl.ulad.elim": [],
+    "Toy.DropFlags.Lbl.ulad.inj": [],
+    "Toy.DropFlags.Lbl.ulad.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.Lbl.ulad.noConfusion": [],
+    "Toy.DropFlags.Lbl.ulad.sizeOf_spec": [],
+    "Toy.DropFlags.Lbl.unw": [],
+    "Toy.DropFlags.Lbl.unw.elim": [],
+    "Toy.DropFlags.Lbl.unw.inj": [],
+    "Toy.DropFlags.Lbl.unw.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.Lbl.unw.noConfusion": [],
+    "Toy.DropFlags.Lbl.unw.sizeOf_spec": [],
+    "Toy.DropFlags.Mach": [],
+    "Toy.DropFlags.Mach.casesOn": [],
+    "Toy.DropFlags.Mach.ctorIdx": [],
+    "Toy.DropFlags.Mach.flags": [],
+    "Toy.DropFlags.Mach.fresh": [],
+    "Toy.DropFlags.Mach.log": [],
+    "Toy.DropFlags.Mach.mem": [],
+    "Toy.DropFlags.Mach.mk": [],
+    "Toy.DropFlags.Mach.mk.inj": [],
+    "Toy.DropFlags.Mach.mk.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.Mach.mk.noConfusion": [],
+    "Toy.DropFlags.Mach.mk.sizeOf_spec": [],
+    "Toy.DropFlags.Mach.noConfusion": [],
+    "Toy.DropFlags.Mach.noConfusionType": [],
+    "Toy.DropFlags.Mach.pc": [],
+    "Toy.DropFlags.Mach.rec": [],
+    "Toy.DropFlags.Mach.recOn": [],
+    "Toy.DropFlags.Mach.unwinding": [],
+    "Toy.DropFlags.MoveChecked": [
+      "propext"
+    ],
+    "Toy.DropFlags.MovesFromInit": [
+      "propext"
+    ],
+    "Toy.DropFlags.MovesFromInit.match_1": [
+      "propext"
+    ],
+    "Toy.DropFlags.NoDoubleDrop": [
+      "propext"
+    ],
+    "Toy.DropFlags.NoLeak": [
+      "propext"
+    ],
+    "Toy.DropFlags.NoNormalPathToResume": [
+      "propext"
+    ],
+    "Toy.DropFlags.NormalReachable": [
+      "propext"
+    ],
+    "Toy.DropFlags.Outcome": [],
+    "Toy.DropFlags.Outcome.aborted": [],
+    "Toy.DropFlags.Outcome.aborted.elim": [],
+    "Toy.DropFlags.Outcome.aborted.sizeOf_spec": [],
+    "Toy.DropFlags.Outcome.casesOn": [],
+    "Toy.DropFlags.Outcome.complete": [
+      "propext"
+    ],
+    "Toy.DropFlags.Outcome.complete.match_1": [
+      "propext"
+    ],
+    "Toy.DropFlags.Outcome.ctorElim": [],
+    "Toy.DropFlags.Outcome.ctorElimType": [],
+    "Toy.DropFlags.Outcome.ctorIdx": [],
+    "Toy.DropFlags.Outcome.noConfusion": [],
+    "Toy.DropFlags.Outcome.noConfusionType": [],
+    "Toy.DropFlags.Outcome.ofNat": [],
+    "Toy.DropFlags.Outcome.ofNat_ctorIdx": [],
+    "Toy.DropFlags.Outcome.outOfFuel": [],
+    "Toy.DropFlags.Outcome.outOfFuel.elim": [],
+    "Toy.DropFlags.Outcome.outOfFuel.sizeOf_spec": [],
+    "Toy.DropFlags.Outcome.rec": [],
+    "Toy.DropFlags.Outcome.recOn": [],
+    "Toy.DropFlags.Outcome.returned": [],
+    "Toy.DropFlags.Outcome.returned.elim": [],
+    "Toy.DropFlags.Outcome.returned.sizeOf_spec": [],
+    "Toy.DropFlags.Outcome.stuck": [],
+    "Toy.DropFlags.Outcome.stuck.elim": [],
+    "Toy.DropFlags.Outcome.stuck.sizeOf_spec": [],
+    "Toy.DropFlags.Outcome.terminated": [
+      "propext"
+    ],
+    "Toy.DropFlags.Outcome.terminated.match_1": [
+      "propext"
+    ],
+    "Toy.DropFlags.Outcome.unwound": [],
+    "Toy.DropFlags.Outcome.unwound.elim": [],
+    "Toy.DropFlags.Outcome.unwound.sizeOf_spec": [],
+    "Toy.DropFlags.PanicRule": [],
+    "Toy.DropFlags.PanicRule.abort": [],
+    "Toy.DropFlags.PanicRule.abort.elim": [],
+    "Toy.DropFlags.PanicRule.abort.sizeOf_spec": [],
+    "Toy.DropFlags.PanicRule.casesOn": [],
+    "Toy.DropFlags.PanicRule.continueUnwind": [],
+    "Toy.DropFlags.PanicRule.continueUnwind.elim": [],
+    "Toy.DropFlags.PanicRule.continueUnwind.sizeOf_spec": [],
+    "Toy.DropFlags.PanicRule.ctorElim": [],
+    "Toy.DropFlags.PanicRule.ctorElimType": [],
+    "Toy.DropFlags.PanicRule.ctorIdx": [],
+    "Toy.DropFlags.PanicRule.noConfusion": [],
+    "Toy.DropFlags.PanicRule.noConfusionType": [],
+    "Toy.DropFlags.PanicRule.ofNat": [],
+    "Toy.DropFlags.PanicRule.ofNat_ctorIdx": [],
+    "Toy.DropFlags.PanicRule.rec": [],
+    "Toy.DropFlags.PanicRule.recOn": [],
+    "Toy.DropFlags.Path": [],
+    "Toy.DropFlags.Place": [],
+    "Toy.DropFlags.Place.casesOn": [],
+    "Toy.DropFlags.Place.covers": [],
+    "Toy.DropFlags.Place.covers.eq_1": [],
+    "Toy.DropFlags.Place.ctorIdx": [],
+    "Toy.DropFlags.Place.loc": [],
+    "Toy.DropFlags.Place.mk": [],
+    "Toy.DropFlags.Place.mk.inj": [],
+    "Toy.DropFlags.Place.mk.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.Place.mk.noConfusion": [],
+    "Toy.DropFlags.Place.mk.sizeOf_spec": [],
+    "Toy.DropFlags.Place.noConfusion": [],
+    "Toy.DropFlags.Place.noConfusionType": [],
+    "Toy.DropFlags.Place.overlaps": [],
+    "Toy.DropFlags.Place.overlaps.eq_1": [],
+    "Toy.DropFlags.Place.path": [],
+    "Toy.DropFlags.Place.rec": [],
+    "Toy.DropFlags.Place.recOn": [],
+    "Toy.DropFlags.PlacesAreMovePaths": [
+      "propext"
+    ],
+    "Toy.DropFlags.Reach": [
+      "propext"
+    ],
+    "Toy.DropFlags.Reach.ch": [
+      "propext"
+    ],
+    "Toy.DropFlags.Reach.chNil": [
+      "propext"
+    ],
+    "Toy.DropFlags.Reach.nc": [
+      "propext"
+    ],
+    "Toy.DropFlags.Reach.refl": [
+      "propext"
+    ],
+    "Toy.DropFlags.Reach.trans": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.Result": [],
+    "Toy.DropFlags.Result.casesOn": [],
+    "Toy.DropFlags.Result.ctorIdx": [],
+    "Toy.DropFlags.Result.log": [],
+    "Toy.DropFlags.Result.mk": [],
+    "Toy.DropFlags.Result.mk.inj": [],
+    "Toy.DropFlags.Result.mk.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.Result.mk.noConfusion": [],
+    "Toy.DropFlags.Result.mk.sizeOf_spec": [],
+    "Toy.DropFlags.Result.noConfusion": [],
+    "Toy.DropFlags.Result.noConfusionType": [],
+    "Toy.DropFlags.Result.outcome": [],
+    "Toy.DropFlags.Result.rec": [],
+    "Toy.DropFlags.Result.recOn": [],
+    "Toy.DropFlags.RunTree": [],
+    "Toy.DropFlags.RunTree.all": [],
+    "Toy.DropFlags.RunTree.all.eq_1": [],
+    "Toy.DropFlags.RunTree.all.eq_2": [],
+    "Toy.DropFlags.RunTree.all.eq_def": [],
+    "Toy.DropFlags.RunTree.any": [],
+    "Toy.DropFlags.RunTree.below": [],
+    "Toy.DropFlags.RunTree.brecOn": [],
+    "Toy.DropFlags.RunTree.brecOn.eq": [],
+    "Toy.DropFlags.RunTree.brecOn.go": [],
+    "Toy.DropFlags.RunTree.casesOn": [],
+    "Toy.DropFlags.RunTree.ctorElim": [],
+    "Toy.DropFlags.RunTree.ctorElimType": [],
+    "Toy.DropFlags.RunTree.ctorIdx": [],
+    "Toy.DropFlags.RunTree.follow": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.RunTree.follow.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.RunTree.follow.eq_2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.RunTree.follow.eq_3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.RunTree.follow.eq_def": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.RunTree.follow.match_1": [],
+    "Toy.DropFlags.RunTree.follow_of_all": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.RunTree.leaf": [],
+    "Toy.DropFlags.RunTree.leaf.elim": [],
+    "Toy.DropFlags.RunTree.leaf.inj": [],
+    "Toy.DropFlags.RunTree.leaf.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.RunTree.leaf.noConfusion": [],
+    "Toy.DropFlags.RunTree.leaf.sizeOf_spec": [],
+    "Toy.DropFlags.RunTree.noConfusion": [],
+    "Toy.DropFlags.RunTree.noConfusionType": [],
+    "Toy.DropFlags.RunTree.node": [],
+    "Toy.DropFlags.RunTree.node.elim": [],
+    "Toy.DropFlags.RunTree.node.inj": [],
+    "Toy.DropFlags.RunTree.node.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.RunTree.node.noConfusion": [],
+    "Toy.DropFlags.RunTree.node.sizeOf_spec": [],
+    "Toy.DropFlags.RunTree.rec": [],
+    "Toy.DropFlags.RunTree.recOn": [],
+    "Toy.DropFlags.SInv": [
+      "propext"
+    ],
+    "Toy.DropFlags.SInv.acct": [
+      "propext"
+    ],
+    "Toy.DropFlags.SInv.atoms": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.SInv.casesOn": [
+      "propext"
+    ],
+    "Toy.DropFlags.SInv.flags": [
+      "propext"
+    ],
+    "Toy.DropFlags.SInv.initial": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.SInv.inv": [
+      "propext"
+    ],
+    "Toy.DropFlags.SInv.lt": [
+      "propext"
+    ],
+    "Toy.DropFlags.SInv.may": [
+      "propext"
+    ],
+    "Toy.DropFlags.SInv.mk": [
+      "propext"
+    ],
+    "Toy.DropFlags.SInv.must": [
+      "propext"
+    ],
+    "Toy.DropFlags.SInv.ndd": [
+      "propext"
+    ],
+    "Toy.DropFlags.SInv.next": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.SInv.notMem_of_mayInit_false": [
+      "propext"
+    ],
+    "Toy.DropFlags.SInv.reach": [
+      "propext"
+    ],
+    "Toy.DropFlags.SInv.rec": [
+      "propext"
+    ],
+    "Toy.DropFlags.SInv.recOn": [
+      "propext"
+    ],
+    "Toy.DropFlags.SInv.unw": [
+      "propext"
+    ],
+    "Toy.DropFlags.SNode": [],
+    "Toy.DropFlags.SNode.abort": [],
+    "Toy.DropFlags.SNode.abort.elim": [],
+    "Toy.DropFlags.SNode.abort.sizeOf_spec": [],
+    "Toy.DropFlags.SNode.branch": [],
+    "Toy.DropFlags.SNode.branch.elim": [],
+    "Toy.DropFlags.SNode.branch.inj": [],
+    "Toy.DropFlags.SNode.branch.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.SNode.branch.noConfusion": [],
+    "Toy.DropFlags.SNode.branch.sizeOf_spec": [],
+    "Toy.DropFlags.SNode.call": [],
+    "Toy.DropFlags.SNode.call.elim": [],
+    "Toy.DropFlags.SNode.call.inj": [],
+    "Toy.DropFlags.SNode.call.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.SNode.call.noConfusion": [],
+    "Toy.DropFlags.SNode.call.sizeOf_spec": [],
+    "Toy.DropFlags.SNode.casesOn": [],
+    "Toy.DropFlags.SNode.ctorElim": [],
+    "Toy.DropFlags.SNode.ctorElimType": [],
+    "Toy.DropFlags.SNode.ctorIdx": [],
+    "Toy.DropFlags.SNode.init": [],
+    "Toy.DropFlags.SNode.init.elim": [],
+    "Toy.DropFlags.SNode.init.inj": [],
+    "Toy.DropFlags.SNode.init.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.SNode.init.noConfusion": [],
+    "Toy.DropFlags.SNode.init.sizeOf_spec": [],
+    "Toy.DropFlags.SNode.move": [],
+    "Toy.DropFlags.SNode.move.elim": [],
+    "Toy.DropFlags.SNode.move.inj": [],
+    "Toy.DropFlags.SNode.move.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.SNode.move.noConfusion": [],
+    "Toy.DropFlags.SNode.move.sizeOf_spec": [],
+    "Toy.DropFlags.SNode.noConfusion": [],
+    "Toy.DropFlags.SNode.noConfusionType": [],
+    "Toy.DropFlags.SNode.normalSuccs": [
+      "propext"
+    ],
+    "Toy.DropFlags.SNode.normalSuccs.eq_1": [
+      "propext"
+    ],
+    "Toy.DropFlags.SNode.normalSuccs.eq_2": [
+      "propext"
+    ],
+    "Toy.DropFlags.SNode.normalSuccs.eq_3": [
+      "propext"
+    ],
+    "Toy.DropFlags.SNode.normalSuccs.eq_4": [
+      "propext"
+    ],
+    "Toy.DropFlags.SNode.normalSuccs.eq_5": [
+      "propext"
+    ],
+    "Toy.DropFlags.SNode.places": [
+      "propext"
+    ],
+    "Toy.DropFlags.SNode.places.eq_1": [
+      "propext"
+    ],
+    "Toy.DropFlags.SNode.places.eq_2": [
+      "propext"
+    ],
+    "Toy.DropFlags.SNode.places.eq_3": [
+      "propext"
+    ],
+    "Toy.DropFlags.SNode.places.eq_4": [
+      "propext"
+    ],
+    "Toy.DropFlags.SNode.places.match_1": [
+      "propext"
+    ],
+    "Toy.DropFlags.SNode.rec": [],
+    "Toy.DropFlags.SNode.recOn": [],
+    "Toy.DropFlags.SNode.resume": [],
+    "Toy.DropFlags.SNode.resume.elim": [],
+    "Toy.DropFlags.SNode.resume.sizeOf_spec": [],
+    "Toy.DropFlags.SNode.ret": [],
+    "Toy.DropFlags.SNode.ret.elim": [],
+    "Toy.DropFlags.SNode.ret.sizeOf_spec": [],
+    "Toy.DropFlags.SNode.succs": [
+      "propext"
+    ],
+    "Toy.DropFlags.SNode.succs.eq_1": [
+      "propext"
+    ],
+    "Toy.DropFlags.SNode.succs.eq_2": [
+      "propext"
+    ],
+    "Toy.DropFlags.SNode.succs.eq_3": [
+      "propext"
+    ],
+    "Toy.DropFlags.SNode.succs.eq_4": [
+      "propext"
+    ],
+    "Toy.DropFlags.SNode.succs.eq_5": [
+      "propext"
+    ],
+    "Toy.DropFlags.SNode.succs.match_1": [
+      "propext"
+    ],
+    "Toy.DropFlags.SPath": [
+      "propext"
+    ],
+    "Toy.DropFlags.SPath.below": [
+      "propext"
+    ],
+    "Toy.DropFlags.SPath.below.casesOn": [
+      "propext"
+    ],
+    "Toy.DropFlags.SPath.below.entry": [
+      "propext"
+    ],
+    "Toy.DropFlags.SPath.below.rec": [
+      "propext"
+    ],
+    "Toy.DropFlags.SPath.below.step": [
+      "propext"
+    ],
+    "Toy.DropFlags.SPath.brecOn": [
+      "propext"
+    ],
+    "Toy.DropFlags.SPath.casesOn": [
+      "propext"
+    ],
+    "Toy.DropFlags.SPath.entry": [],
+    "Toy.DropFlags.SPath.rec": [
+      "propext"
+    ],
+    "Toy.DropFlags.SPath.recOn": [
+      "propext"
+    ],
+    "Toy.DropFlags.SPath.step": [
+      "propext"
+    ],
+    "Toy.DropFlags.SProg": [],
+    "Toy.DropFlags.SProg.casesOn": [],
+    "Toy.DropFlags.SProg.ctorIdx": [],
+    "Toy.DropFlags.SProg.locals": [],
+    "Toy.DropFlags.SProg.mk": [],
+    "Toy.DropFlags.SProg.mk.inj": [],
+    "Toy.DropFlags.SProg.mk.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.SProg.mk.noConfusion": [],
+    "Toy.DropFlags.SProg.mk.sizeOf_spec": [],
+    "Toy.DropFlags.SProg.noConfusion": [],
+    "Toy.DropFlags.SProg.noConfusionType": [],
+    "Toy.DropFlags.SProg.node": [
+      "propext"
+    ],
+    "Toy.DropFlags.SProg.node.eq_1": [
+      "propext"
+    ],
+    "Toy.DropFlags.SProg.nodes": [],
+    "Toy.DropFlags.SProg.rec": [],
+    "Toy.DropFlags.SProg.recOn": [],
+    "Toy.DropFlags.Step": [],
+    "Toy.DropFlags.Step.casesOn": [],
+    "Toy.DropFlags.Step.ctorElim": [],
+    "Toy.DropFlags.Step.ctorElimType": [],
+    "Toy.DropFlags.Step.ctorIdx": [],
+    "Toy.DropFlags.Step.done": [],
+    "Toy.DropFlags.Step.done.elim": [],
+    "Toy.DropFlags.Step.done.inj": [],
+    "Toy.DropFlags.Step.done.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.Step.done.noConfusion": [],
+    "Toy.DropFlags.Step.done.sizeOf_spec": [],
+    "Toy.DropFlags.Step.next": [],
+    "Toy.DropFlags.Step.next.elim": [],
+    "Toy.DropFlags.Step.next.inj": [],
+    "Toy.DropFlags.Step.next.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.Step.next.noConfusion": [],
+    "Toy.DropFlags.Step.next.sizeOf_spec": [],
+    "Toy.DropFlags.Step.noConfusion": [],
+    "Toy.DropFlags.Step.noConfusionType": [],
+    "Toy.DropFlags.Step.rec": [],
+    "Toy.DropFlags.Step.recOn": [],
+    "Toy.DropFlags.TNode": [],
+    "Toy.DropFlags.TNode.abort": [],
+    "Toy.DropFlags.TNode.abort.elim": [],
+    "Toy.DropFlags.TNode.abort.sizeOf_spec": [],
+    "Toy.DropFlags.TNode.branch": [],
+    "Toy.DropFlags.TNode.branch.elim": [],
+    "Toy.DropFlags.TNode.branch.inj": [],
+    "Toy.DropFlags.TNode.branch.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.TNode.branch.noConfusion": [],
+    "Toy.DropFlags.TNode.branch.sizeOf_spec": [],
+    "Toy.DropFlags.TNode.call": [],
+    "Toy.DropFlags.TNode.call.elim": [],
+    "Toy.DropFlags.TNode.call.inj": [],
+    "Toy.DropFlags.TNode.call.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.TNode.call.noConfusion": [],
+    "Toy.DropFlags.TNode.call.sizeOf_spec": [],
+    "Toy.DropFlags.TNode.casesOn": [],
+    "Toy.DropFlags.TNode.ctorElim": [],
+    "Toy.DropFlags.TNode.ctorElimType": [],
+    "Toy.DropFlags.TNode.ctorIdx": [],
+    "Toy.DropFlags.TNode.drop": [],
+    "Toy.DropFlags.TNode.drop.elim": [],
+    "Toy.DropFlags.TNode.drop.inj": [],
+    "Toy.DropFlags.TNode.drop.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.TNode.drop.noConfusion": [],
+    "Toy.DropFlags.TNode.drop.sizeOf_spec": [],
+    "Toy.DropFlags.TNode.goto": [],
+    "Toy.DropFlags.TNode.goto.elim": [],
+    "Toy.DropFlags.TNode.goto.inj": [],
+    "Toy.DropFlags.TNode.goto.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.TNode.goto.noConfusion": [],
+    "Toy.DropFlags.TNode.goto.sizeOf_spec": [],
+    "Toy.DropFlags.TNode.init": [],
+    "Toy.DropFlags.TNode.init.elim": [],
+    "Toy.DropFlags.TNode.init.inj": [],
+    "Toy.DropFlags.TNode.init.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.TNode.init.noConfusion": [],
+    "Toy.DropFlags.TNode.init.sizeOf_spec": [],
+    "Toy.DropFlags.TNode.isChoice": [
+      "propext"
+    ],
+    "Toy.DropFlags.TNode.isChoice.match_1": [
+      "propext"
+    ],
+    "Toy.DropFlags.TNode.move": [],
+    "Toy.DropFlags.TNode.move.elim": [],
+    "Toy.DropFlags.TNode.move.inj": [],
+    "Toy.DropFlags.TNode.move.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.TNode.move.noConfusion": [],
+    "Toy.DropFlags.TNode.move.sizeOf_spec": [],
+    "Toy.DropFlags.TNode.noConfusion": [],
+    "Toy.DropFlags.TNode.noConfusionType": [],
+    "Toy.DropFlags.TNode.rec": [],
+    "Toy.DropFlags.TNode.recOn": [],
+    "Toy.DropFlags.TNode.resume": [],
+    "Toy.DropFlags.TNode.resume.elim": [],
+    "Toy.DropFlags.TNode.resume.sizeOf_spec": [],
+    "Toy.DropFlags.TNode.ret": [],
+    "Toy.DropFlags.TNode.ret.elim": [],
+    "Toy.DropFlags.TNode.ret.sizeOf_spec": [],
+    "Toy.DropFlags.TNode.setFlags": [],
+    "Toy.DropFlags.TNode.setFlags.elim": [],
+    "Toy.DropFlags.TNode.setFlags.inj": [],
+    "Toy.DropFlags.TNode.setFlags.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.TNode.setFlags.noConfusion": [],
+    "Toy.DropFlags.TNode.setFlags.sizeOf_spec": [],
+    "Toy.DropFlags.TNode.stuck": [],
+    "Toy.DropFlags.TNode.stuck.elim": [],
+    "Toy.DropFlags.TNode.stuck.sizeOf_spec": [],
+    "Toy.DropFlags.TNode.test": [],
+    "Toy.DropFlags.TNode.test.elim": [],
+    "Toy.DropFlags.TNode.test.inj": [],
+    "Toy.DropFlags.TNode.test.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.TNode.test.noConfusion": [],
+    "Toy.DropFlags.TNode.test.sizeOf_spec": [],
+    "Toy.DropFlags.TProg": [],
+    "Toy.DropFlags.TProg.casesOn": [],
+    "Toy.DropFlags.TProg.ctorIdx": [],
+    "Toy.DropFlags.TProg.entry": [],
+    "Toy.DropFlags.TProg.locals": [],
+    "Toy.DropFlags.TProg.mk": [],
+    "Toy.DropFlags.TProg.mk.inj": [],
+    "Toy.DropFlags.TProg.mk.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.TProg.mk.noConfusion": [],
+    "Toy.DropFlags.TProg.mk.sizeOf_spec": [],
+    "Toy.DropFlags.TProg.noConfusion": [],
+    "Toy.DropFlags.TProg.noConfusionType": [],
+    "Toy.DropFlags.TProg.node": [],
+    "Toy.DropFlags.TProg.rec": [],
+    "Toy.DropFlags.TProg.recOn": [],
+    "Toy.DropFlags.Ty": [],
+    "Toy.DropFlags.Ty.atom_has_unit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.Ty.atom_prefix_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.Ty.atoms": [],
+    "Toy.DropFlags.Ty.atoms.eq_1": [],
+    "Toy.DropFlags.Ty.atoms.eq_2": [],
+    "Toy.DropFlags.Ty.atoms.eq_3": [],
+    "Toy.DropFlags.Ty.atoms.eq_def": [],
+    "Toy.DropFlags.Ty.atoms.match_1": [],
+    "Toy.DropFlags.Ty.atoms_isMovePath": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.Ty.atoms_nodup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.Ty.below": [],
+    "Toy.DropFlags.Ty.brecOn": [],
+    "Toy.DropFlags.Ty.brecOn.eq": [],
+    "Toy.DropFlags.Ty.brecOn.go": [],
+    "Toy.DropFlags.Ty.casesOn": [],
+    "Toy.DropFlags.Ty.ctorElim": [],
+    "Toy.DropFlags.Ty.ctorElimType": [],
+    "Toy.DropFlags.Ty.ctorIdx": [],
+    "Toy.DropFlags.Ty.isMovePath": [],
+    "Toy.DropFlags.Ty.isMovePath.eq_1": [],
+    "Toy.DropFlags.Ty.isMovePath.eq_2": [],
+    "Toy.DropFlags.Ty.isMovePath.eq_3": [],
+    "Toy.DropFlags.Ty.isMovePath.eq_4": [],
+    "Toy.DropFlags.Ty.isMovePath.eq_5": [],
+    "Toy.DropFlags.Ty.isMovePath.eq_def": [],
+    "Toy.DropFlags.Ty.isMovePath.match_1": [],
+    "Toy.DropFlags.Ty.leaf": [],
+    "Toy.DropFlags.Ty.leaf.elim": [],
+    "Toy.DropFlags.Ty.leaf.sizeOf_spec": [],
+    "Toy.DropFlags.Ty.noConfusion": [],
+    "Toy.DropFlags.Ty.noConfusionType": [],
+    "Toy.DropFlags.Ty.pair": [],
+    "Toy.DropFlags.Ty.pair.elim": [],
+    "Toy.DropFlags.Ty.pair.inj": [],
+    "Toy.DropFlags.Ty.pair.injEq": [
+      "propext"
+    ],
+    "Toy.DropFlags.Ty.pair.noConfusion": [],
+    "Toy.DropFlags.Ty.pair.sizeOf_spec": [],
+    "Toy.DropFlags.Ty.rec": [],
+    "Toy.DropFlags.Ty.recOn": [],
+    "Toy.DropFlags.Ty.unit_has_atom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.Ty.units": [],
+    "Toy.DropFlags.Ty.units.eq_1": [],
+    "Toy.DropFlags.Ty.units.eq_2": [],
+    "Toy.DropFlags.Ty.units.eq_def": [],
+    "Toy.DropFlags.Ty.units_nodup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.abort_on_same_input": [
+      "propext"
+    ],
+    "Toy.DropFlags.allAtoms": [],
+    "Toy.DropFlags.allAtoms_nodup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.allCompatible_necessity_fails_without_exactlyOnce": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.allCompatible_necessity_fails_without_placesAreMovePaths": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.allCompatible_necessity_hypotheses_hold_progJoin": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.allCompatible_neg": [
+      "propext"
+    ],
+    "Toy.DropFlags.allCompatible_of_exactlyOnce_of_placesAreMovePaths": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.allCompatible_pos": [
+      "propext"
+    ],
+    "Toy.DropFlags.allUnits": [],
+    "Toy.DropFlags.allUnits_nodup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.analysis": [
+      "propext"
+    ],
+    "Toy.DropFlags.analysisAux": [
+      "propext"
+    ],
+    "Toy.DropFlags.analysisAux.eq_1": [
+      "propext"
+    ],
+    "Toy.DropFlags.analysisAux.eq_2": [
+      "propext"
+    ],
+    "Toy.DropFlags.analysisAux.eq_def": [
+      "propext"
+    ],
+    "Toy.DropFlags.analysisAux.match_1": [],
+    "Toy.DropFlags.analysisAux.match_3": [],
+    "Toy.DropFlags.analysisAux_length": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.analysisAux_may_inv": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.analysisAux_prefix": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.analysisAux_succ": [
+      "propext"
+    ],
+    "Toy.DropFlags.analysis_length": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.analysis_spec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.analysis_step": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.any_eq_of_forall_mem": [],
+    "Toy.DropFlags.applyFlags": [],
+    "Toy.DropFlags.applyFlags.eq_1": [],
+    "Toy.DropFlags.applyFlags.eq_2": [],
+    "Toy.DropFlags.applyFlags.eq_def": [],
+    "Toy.DropFlags.applyFlags.match_1": [],
+    "Toy.DropFlags.applyFlags_append": [],
+    "Toy.DropFlags.applyFlags_flagsFor": [
+      "propext"
+    ],
+    "Toy.DropFlags.argFlagNotClearedOnUnwind_double_drops": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.argKill": [],
+    "Toy.DropFlags.atom_eq_of_common_unit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.atom_isMovePlace": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.atom_of_unit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.atomsOf": [],
+    "Toy.DropFlags.atomsOf.eq_1": [],
+    "Toy.DropFlags.atomsOf_inside_dropStruct": [],
+    "Toy.DropFlags.badPlace": [],
+    "Toy.DropFlags.characterization_fails_without_forward": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.characterization_fails_without_initsIntoUninit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.characterization_fails_without_movesFromInit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.characterization_fails_without_noNormalPathToResume": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.characterization_fails_without_placesAreMovePaths": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.continueUnwind_completedUnwind_leaks_of_forward_moveChecked": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.continueUnwind_leaks_partially_dropped": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.continueUnwind_noDoubleDrop_holds_progUnwind": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.continueUnwind_not_elabCorrect_for_all_forward_moveChecked": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.countP_le_one": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.covers_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.covers_of_mem_atomsOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.covers_trans": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.createdIds": [
+      "propext"
+    ],
+    "Toy.DropFlags.createdIds.eq_1": [
+      "propext"
+    ],
+    "Toy.DropFlags.createdIds.match_1": [
+      "propext"
+    ],
+    "Toy.DropFlags.createdIds_append": [
+      "propext"
+    ],
+    "Toy.DropFlags.createdIds_destroyEvents": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.destAtoms": [],
+    "Toy.DropFlags.destAtoms.eq_1": [],
+    "Toy.DropFlags.destAtoms.eq_2": [],
+    "Toy.DropFlags.destAtoms.match_1": [],
+    "Toy.DropFlags.destroyCount": [],
+    "Toy.DropFlags.destroyCount.eq_1": [],
+    "Toy.DropFlags.destroyCount_append": [
+      "propext"
+    ],
+    "Toy.DropFlags.destroyCount_consumeEvents_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.destroyCount_destroyEvents": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.destroyCount_destroyEvents_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.destroyCount_destroyEvents_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.destroyCount_dropEvents_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.destroyCount_eq_zero_of": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.destroyCount_pos_of_mem_consume": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.destroyCount_pos_of_mem_drop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.destroyEvents": [],
+    "Toy.DropFlags.destroyEvents.match_1": [],
+    "Toy.DropFlags.destroyedIds": [
+      "propext"
+    ],
+    "Toy.DropFlags.destroyedIds.eq_1": [
+      "propext"
+    ],
+    "Toy.DropFlags.destroyedIds.match_1": [
+      "propext"
+    ],
+    "Toy.DropFlags.destroyedIds_append": [
+      "propext"
+    ],
+    "Toy.DropFlags.dropOrder": [],
+    "Toy.DropFlags.dropOrder.eq_1": [],
+    "Toy.DropFlags.dropOrder_nodup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.dropT": [],
+    "Toy.DropFlags.drop_fails": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.drop_fails_of_not_mustInit": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.dupNode": [],
+    "Toy.DropFlags.dupNode.match_1": [],
+    "Toy.DropFlags.dupProg": [],
+    "Toy.DropFlags.dupProg.eq_1": [],
+    "Toy.DropFlags.dupProg_matches_stdElab_progJoin": [
+      "propext"
+    ],
+    "Toy.DropFlags.dupProg_no_flag_test": [],
+    "Toy.DropFlags.dupProg_run_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.earlyDropNode": [],
+    "Toy.DropFlags.earlyDropNode.match_1": [],
+    "Toy.DropFlags.earlyDropProg": [],
+    "Toy.DropFlags.earlyDropProg.eq_1": [],
+    "Toy.DropFlags.earlyDropProg_matches_stdElab_progJoin": [
+      "propext"
+    ],
+    "Toy.DropFlags.earlyDropProg_no_flag_test": [],
+    "Toy.DropFlags.edgeOut": [
+      "propext"
+    ],
+    "Toy.DropFlags.edgeOut.eq_1": [
+      "propext"
+    ],
+    "Toy.DropFlags.edgeOut.eq_2": [
+      "propext"
+    ],
+    "Toy.DropFlags.edgeOut.eq_3": [
+      "propext"
+    ],
+    "Toy.DropFlags.edgeOut.eq_4": [
+      "propext"
+    ],
+    "Toy.DropFlags.edgeOut.eq_5": [
+      "propext"
+    ],
+    "Toy.DropFlags.edgeOut.eq_6": [
+      "propext"
+    ],
+    "Toy.DropFlags.edgeOut.match_1": [],
+    "Toy.DropFlags.edgeOut_edge": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.edgeOut_fst_mem_succs": [
+      "propext"
+    ],
+    "Toy.DropFlags.edgeOut_mem_allAtoms": [
+      "propext"
+    ],
+    "Toy.DropFlags.edge_sim": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.elabCorrect_iff_allCompatible_of_forward_moveChecked_noNormalPathToResume": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.elabCorrect_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.elabCorrect_of_allCompatible_of_forward_moveChecked_noNormalPathToResume": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.elabCorrect_of_explore": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.elabCorrect_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.elabNode": [
+      "propext"
+    ],
+    "Toy.DropFlags.elabNode.eq_1": [
+      "propext"
+    ],
+    "Toy.DropFlags.elabNode.eq_2": [
+      "propext"
+    ],
+    "Toy.DropFlags.elabNode.eq_3": [
+      "propext"
+    ],
+    "Toy.DropFlags.elabNode.eq_4": [
+      "propext"
+    ],
+    "Toy.DropFlags.elabNode.eq_5": [
+      "propext"
+    ],
+    "Toy.DropFlags.elabNode.eq_6": [
+      "propext"
+    ],
+    "Toy.DropFlags.elabNode.eq_7": [
+      "propext"
+    ],
+    "Toy.DropFlags.elabNode.eq_8": [
+      "propext"
+    ],
+    "Toy.DropFlags.elabNode.match_1": [],
+    "Toy.DropFlags.elabNode.match_3": [
+      "propext"
+    ],
+    "Toy.DropFlags.elabNode.match_6": [
+      "propext"
+    ],
+    "Toy.DropFlags.elaborate": [
+      "propext"
+    ],
+    "Toy.DropFlags.elaborate.eq_1": [
+      "propext"
+    ],
+    "Toy.DropFlags.eq_of_mem_atomsOf_atom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.exactlyOnce_hypotheses_hold_progCleanup": [
+      "propext"
+    ],
+    "Toy.DropFlags.exactlyOnce_hypotheses_hold_progJoin": [
+      "propext"
+    ],
+    "Toy.DropFlags.exactlyOnce_hypotheses_hold_progMultiStepCleanup": [
+      "propext"
+    ],
+    "Toy.DropFlags.exactlyOnce_neg_double": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.exactlyOnce_neg_leak": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.exactlyOnce_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.exactlyOnce_pos_aborted": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.exists_atom_of_mem_unitsUnder": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.exists_unit_of_atom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.explore": [
+      "propext"
+    ],
+    "Toy.DropFlags.exploreAux": [
+      "propext"
+    ],
+    "Toy.DropFlags.exploreAux.eq_1": [
+      "propext"
+    ],
+    "Toy.DropFlags.exploreAux.eq_2": [
+      "propext"
+    ],
+    "Toy.DropFlags.exploreAux.eq_def": [
+      "propext"
+    ],
+    "Toy.DropFlags.exploreAux.match_1": [],
+    "Toy.DropFlags.fewerFlags_fails_without_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.fewerFlags_fails_without_lt.match_1_1": [
+      "propext"
+    ],
+    "Toy.DropFlags.fewerFlags_fails_without_placesAreMovePaths": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.fewerFlags_fails_without_placesAreMovePaths.match_1_1": [
+      "propext"
+    ],
+    "Toy.DropFlags.fewerFlags_hypotheses_hold_progJoin": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.fewerFlags_than_std_not_exactlyOnce_of_placesAreMovePaths": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.filter_length_le_of_subset": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.flagConfig_gran_inert_on_progPartial": [
+      "propext"
+    ],
+    "Toy.DropFlags.flagSet": [
+      "propext"
+    ],
+    "Toy.DropFlags.flagSet_ignores_unreachable_test": [
+      "propext"
+    ],
+    "Toy.DropFlags.flagSet_progJoin": [
+      "propext"
+    ],
+    "Toy.DropFlags.flagSet_progPartial": [
+      "propext"
+    ],
+    "Toy.DropFlags.flagSet_progShare": [
+      "propext"
+    ],
+    "Toy.DropFlags.flagSubset_fails_without_exactlyOnce": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.flagSubset_fails_without_placesAreMovePaths": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.flagsFor": [],
+    "Toy.DropFlags.flagsFor.eq_1": [],
+    "Toy.DropFlags.flatMap_congr_mem": [
+      "propext"
+    ],
+    "Toy.DropFlags.flowIn": [
+      "propext"
+    ],
+    "Toy.DropFlags.flowIn_congr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.foldl_append_mem": [
+      "propext"
+    ],
+    "Toy.DropFlags.foldl_append_mem_of": [
+      "propext"
+    ],
+    "Toy.DropFlags.foldl_filter_mem": [
+      "propext"
+    ],
+    "Toy.DropFlags.foldl_filter_mem_all": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.forall_run_of_explore_all": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.forwardReachable_and_mem_allAtoms_of_mayInit": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.forwardReachable_fails_without_mayInit": [
+      "propext"
+    ],
+    "Toy.DropFlags.forwardReachable_ignores_backward_index_edges": [
+      "propext"
+    ],
+    "Toy.DropFlags.forwardReachable_neg": [
+      "propext"
+    ],
+    "Toy.DropFlags.forwardReachable_pos": [
+      "propext"
+    ],
+    "Toy.DropFlags.forward_neg": [
+      "propext"
+    ],
+    "Toy.DropFlags.forward_pos": [
+      "propext"
+    ],
+    "Toy.DropFlags.fuelFor": [],
+    "Toy.DropFlags.fuelFor.eq_1": [],
+    "Toy.DropFlags.garbage_mem_destroyEvents": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.goodRun": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.goodRun.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.goodRun_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.initMach": [],
+    "Toy.DropFlags.initMach.eq_1": [],
+    "Toy.DropFlags.initsIntoUninit_neg": [
+      "propext"
+    ],
+    "Toy.DropFlags.initsIntoUninit_pos": [
+      "propext"
+    ],
+    "Toy.DropFlags.instDecidableAllCompatible": [
+      "propext"
+    ],
+    "Toy.DropFlags.instDecidableEqDecision": [],
+    "Toy.DropFlags.instDecidableEqEvent": [],
+    "Toy.DropFlags.instDecidableEqEvent.decEq": [],
+    "Toy.DropFlags.instDecidableEqEvent.decEq.match_1": [],
+    "Toy.DropFlags.instDecidableEqGranularity": [],
+    "Toy.DropFlags.instDecidableEqLbl": [],
+    "Toy.DropFlags.instDecidableEqLbl.decEq": [],
+    "Toy.DropFlags.instDecidableEqLbl.decEq.match_1": [],
+    "Toy.DropFlags.instDecidableEqOutcome": [],
+    "Toy.DropFlags.instDecidableEqPanicRule": [],
+    "Toy.DropFlags.instDecidableEqPlace": [],
+    "Toy.DropFlags.instDecidableEqPlace.decEq": [],
+    "Toy.DropFlags.instDecidableEqPlace.decEq.match_1": [],
+    "Toy.DropFlags.instDecidableEqResult": [],
+    "Toy.DropFlags.instDecidableEqResult.decEq": [],
+    "Toy.DropFlags.instDecidableEqResult.decEq.match_1": [],
+    "Toy.DropFlags.instDecidableEqRunTree": [],
+    "Toy.DropFlags.instDecidableEqRunTree.decEq": [],
+    "Toy.DropFlags.instDecidableEqRunTree.decEq.match_1": [],
+    "Toy.DropFlags.instDecidableEqSNode": [],
+    "Toy.DropFlags.instDecidableEqSNode.decEq": [],
+    "Toy.DropFlags.instDecidableEqSNode.decEq.match_1": [],
+    "Toy.DropFlags.instDecidableEqSProg": [],
+    "Toy.DropFlags.instDecidableEqSProg.decEq": [],
+    "Toy.DropFlags.instDecidableEqSProg.decEq.match_1": [],
+    "Toy.DropFlags.instDecidableEqTy": [],
+    "Toy.DropFlags.instDecidableEqTy.decEq": [],
+    "Toy.DropFlags.instDecidableEqTy.decEq.match_1": [],
+    "Toy.DropFlags.instDecidableExactlyOnce": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.instDecidableForward": [
+      "propext"
+    ],
+    "Toy.DropFlags.instDecidableInitsIntoUninit": [
+      "propext"
+    ],
+    "Toy.DropFlags.instDecidableMoveChecked": [
+      "propext"
+    ],
+    "Toy.DropFlags.instDecidableMovesFromInit": [
+      "propext"
+    ],
+    "Toy.DropFlags.instDecidableNoDoubleDrop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.instDecidableNoLeak": [
+      "propext"
+    ],
+    "Toy.DropFlags.instDecidableNoNormalPathToResume": [
+      "propext"
+    ],
+    "Toy.DropFlags.instDecidablePlacesAreMovePaths": [
+      "propext"
+    ],
+    "Toy.DropFlags.instReprDecision": [],
+    "Toy.DropFlags.instReprDecision.repr": [],
+    "Toy.DropFlags.instReprDecision.repr.match_1": [],
+    "Toy.DropFlags.instReprEvent": [],
+    "Toy.DropFlags.instReprEvent.repr": [],
+    "Toy.DropFlags.instReprEvent.repr.match_1": [],
+    "Toy.DropFlags.instReprGranularity": [],
+    "Toy.DropFlags.instReprGranularity.repr": [],
+    "Toy.DropFlags.instReprGranularity.repr.match_1": [],
+    "Toy.DropFlags.instReprLbl": [],
+    "Toy.DropFlags.instReprLbl.repr": [],
+    "Toy.DropFlags.instReprLbl.repr.match_1": [],
+    "Toy.DropFlags.instReprOutcome": [],
+    "Toy.DropFlags.instReprOutcome.repr": [],
+    "Toy.DropFlags.instReprOutcome.repr.match_1": [],
+    "Toy.DropFlags.instReprPanicRule": [],
+    "Toy.DropFlags.instReprPanicRule.repr": [],
+    "Toy.DropFlags.instReprPanicRule.repr.match_1": [],
+    "Toy.DropFlags.instReprPlace": [
+      "propext"
+    ],
+    "Toy.DropFlags.instReprPlace.repr": [
+      "propext"
+    ],
+    "Toy.DropFlags.instReprResult": [
+      "propext"
+    ],
+    "Toy.DropFlags.instReprResult.repr": [
+      "propext"
+    ],
+    "Toy.DropFlags.instReprRunTree": [
+      "propext"
+    ],
+    "Toy.DropFlags.instReprRunTree.repr": [
+      "propext"
+    ],
+    "Toy.DropFlags.instReprRunTree.repr.match_1": [],
+    "Toy.DropFlags.instReprSNode": [
+      "propext"
+    ],
+    "Toy.DropFlags.instReprSNode.repr": [
+      "propext"
+    ],
+    "Toy.DropFlags.instReprSNode.repr.match_1": [],
+    "Toy.DropFlags.instReprSProg": [
+      "propext"
+    ],
+    "Toy.DropFlags.instReprSProg.repr": [
+      "propext"
+    ],
+    "Toy.DropFlags.instReprTNode": [
+      "propext"
+    ],
+    "Toy.DropFlags.instReprTNode.repr": [
+      "propext"
+    ],
+    "Toy.DropFlags.instReprTNode.repr.match_1": [],
+    "Toy.DropFlags.instReprTy": [],
+    "Toy.DropFlags.instReprTy.repr": [],
+    "Toy.DropFlags.instReprTy.repr.match_1": [],
+    "Toy.DropFlags.isDropPoint": [
+      "propext"
+    ],
+    "Toy.DropFlags.isDropPoint.eq_1": [
+      "propext"
+    ],
+    "Toy.DropFlags.isMovePath_neg": [],
+    "Toy.DropFlags.isMovePath_pos": [],
+    "Toy.DropFlags.isMovePlace": [
+      "propext"
+    ],
+    "Toy.DropFlags.isMovePlace.match_1": [],
+    "Toy.DropFlags.joinIns": [],
+    "Toy.DropFlags.joinIns.eq_1": [],
+    "Toy.DropFlags.joinIns.eq_2": [],
+    "Toy.DropFlags.joinIns.match_1": [],
+    "Toy.DropFlags.joinIns_may_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.joinIns_must_not_mem": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.joinIns_zero": [
+      "propext"
+    ],
+    "Toy.DropFlags.killSet": [],
+    "Toy.DropFlags.killSet.eq_1": [],
+    "Toy.DropFlags.killSet.eq_2": [],
+    "Toy.DropFlags.killSet.eq_3": [],
+    "Toy.DropFlags.killSet_fine": [],
+    "Toy.DropFlags.ladderDrop": [
+      "propext"
+    ],
+    "Toy.DropFlags.ladderDrop.eq_1": [
+      "propext"
+    ],
+    "Toy.DropFlags.ladderGuarded": [
+      "propext"
+    ],
+    "Toy.DropFlags.ladderGuarded.eq_1": [
+      "propext"
+    ],
+    "Toy.DropFlags.ladderGuarded_node": [
+      "propext"
+    ],
+    "Toy.DropFlags.ladderStep": [
+      "propext"
+    ],
+    "Toy.DropFlags.ladderStep.eq_1": [
+      "propext"
+    ],
+    "Toy.DropFlags.ladderStep.match_1": [],
+    "Toy.DropFlags.ladderStep_node": [
+      "propext"
+    ],
+    "Toy.DropFlags.ladder_good": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.ladder_run": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.ladder_run.match_1_17": [
+      "propext"
+    ],
+    "Toy.DropFlags.lt_of_isDropPoint": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.mayInit": [
+      "propext"
+    ],
+    "Toy.DropFlags.mayInit_iff": [
+      "propext"
+    ],
+    "Toy.DropFlags.mayInit_witness_progJoin": [
+      "propext"
+    ],
+    "Toy.DropFlags.may_path": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.mem_allAtoms_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.mem_allUnits_of": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.mem_atomsOf": [
+      "propext"
+    ],
+    "Toy.DropFlags.mem_atomsOf_mem_allAtoms": [
+      "propext"
+    ],
+    "Toy.DropFlags.mem_createdIds_append_left": [
+      "propext"
+    ],
+    "Toy.DropFlags.mem_destroyEvents": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.mem_destroyedIds_of_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.mem_flowIn": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.mem_joinIns_may": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.mem_minus": [
+      "propext"
+    ],
+    "Toy.DropFlags.mem_minus_append": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.mem_minus_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.mem_of_mem_joinIns_must": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.mem_placesFrom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.mem_unitsUnder": [
+      "propext"
+    ],
+    "Toy.DropFlags.mem_unitsUnder_of_mem_atomsOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.minus": [],
+    "Toy.DropFlags.minus.eq_1": [],
+    "Toy.DropFlags.mk_mem_destroyEvents": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.moveChecked_neg": [
+      "propext"
+    ],
+    "Toy.DropFlags.moveChecked_pos": [
+      "propext"
+    ],
+    "Toy.DropFlags.movesFromInit_neg": [
+      "propext"
+    ],
+    "Toy.DropFlags.movesFromInit_neg_duplicateCallArg": [
+      "propext"
+    ],
+    "Toy.DropFlags.movesFromInit_pos": [
+      "propext"
+    ],
+    "Toy.DropFlags.mustInit": [
+      "propext"
+    ],
+    "Toy.DropFlags.mustInit_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.must_path": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.ndd_creates": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.ndd_destroy": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.ndd_destroyAll": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.noDoubleDrop_continueUnwind_fails_without_forward": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.noDoubleDrop_continueUnwind_fails_without_movesFromInit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.noDoubleDrop_continueUnwind_fails_without_placesAreMovePaths": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.noDoubleDrop_neg_afterConsume": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.noDoubleDrop_neg_garbage": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.noDoubleDrop_neg_uncreated": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.noDoubleDrop_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.noLeak_neg": [
+      "propext"
+    ],
+    "Toy.DropFlags.noLeak_pos": [
+      "propext"
+    ],
+    "Toy.DropFlags.noNormalPathToResume_neg": [
+      "propext"
+    ],
+    "Toy.DropFlags.noNormalPathToResume_pos": [
+      "propext"
+    ],
+    "Toy.DropFlags.node_eq_abort_of_ge": [
+      "propext"
+    ],
+    "Toy.DropFlags.nodup_map_of_injective": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.normalReachAux": [
+      "propext"
+    ],
+    "Toy.DropFlags.normalReachAux.eq_def": [
+      "propext"
+    ],
+    "Toy.DropFlags.normalReachAux_prefix": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.normalReach_spec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.normalReach_step": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.normalReach_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.normalReachable_examples": [
+      "propext"
+    ],
+    "Toy.DropFlags.not_iff_of_compatible_not_correct": [],
+    "Toy.DropFlags.not_mem_atomsOf_of_disjoint": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.not_mem_take_of_getElem?": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.not_mem_unitsUnder_of_not_mem_atomsOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.overlaps_of_covers_common": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.overrideAt": [],
+    "Toy.DropFlags.overrideAt.eq_1": [],
+    "Toy.DropFlags.pairT": [],
+    "Toy.DropFlags.pairwiseDisjoint": [],
+    "Toy.DropFlags.pairwiseDisjoint.eq_1": [],
+    "Toy.DropFlags.pairwiseDisjoint.eq_2": [],
+    "Toy.DropFlags.pairwiseDisjoint.eq_def": [],
+    "Toy.DropFlags.pairwiseDisjoint.match_1": [],
+    "Toy.DropFlags.path_sim": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.placesAreMovePaths_neg": [
+      "propext"
+    ],
+    "Toy.DropFlags.placesAreMovePaths_pos": [
+      "propext"
+    ],
+    "Toy.DropFlags.placesFrom": [],
+    "Toy.DropFlags.placesFrom.eq_1": [],
+    "Toy.DropFlags.placesFrom.eq_2": [],
+    "Toy.DropFlags.placesFrom.eq_def": [],
+    "Toy.DropFlags.placesFrom.match_1": [],
+    "Toy.DropFlags.placesFrom_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.placesFrom_nodup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.pos_of_mem_destroyedIds": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.progCleanup": [],
+    "Toy.DropFlags.progCleanup_stdElab_correct": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.progDropStruct": [],
+    "Toy.DropFlags.progDuplicateCallArg": [],
+    "Toy.DropFlags.progIllTyped": [],
+    "Toy.DropFlags.progInitInsideDrop": [],
+    "Toy.DropFlags.progJoin": [],
+    "Toy.DropFlags.progJoinOff": [],
+    "Toy.DropFlags.progJoinOff_override_correct": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.progJoin_join_disagrees": [
+      "propext"
+    ],
+    "Toy.DropFlags.progJoin_stdElab_correct": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.progKept": [],
+    "Toy.DropFlags.progKept_drop_correct": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.progLoop": [],
+    "Toy.DropFlags.progLoopMove": [],
+    "Toy.DropFlags.progMoved": [],
+    "Toy.DropFlags.progMoved_skip_correct": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.progMultiStepCleanup": [],
+    "Toy.DropFlags.progMultiStepCleanup_stdElab_correct": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.progOOB": [],
+    "Toy.DropFlags.progOOB_stuck": [
+      "propext"
+    ],
+    "Toy.DropFlags.progOverwrite": [],
+    "Toy.DropFlags.progPartial": [],
+    "Toy.DropFlags.progPartialFlag": [],
+    "Toy.DropFlags.progPartialFlag_stdElab_correct": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.progPartial_ret_static": [
+      "propext"
+    ],
+    "Toy.DropFlags.progPartial_stdElab_correct": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.progReinit": [],
+    "Toy.DropFlags.progReinit_stdElab_correct": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.progResumeNormal": [],
+    "Toy.DropFlags.progShare": [],
+    "Toy.DropFlags.progShare_stdElab_correct": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.progUnwind": [],
+    "Toy.DropFlags.progUnwindToRet": [],
+    "Toy.DropFlags.progUnwindToRet_stdElab_correct": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.progUnwind_stdElab_correct_abort": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.progUseAfterMove": [],
+    "Toy.DropFlags.reachAux_length": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.reachAux_prefix": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.reachList": [
+      "propext"
+    ],
+    "Toy.DropFlags.reachList_length": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.reachList_spec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.reach_path": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.reachableAux": [
+      "propext"
+    ],
+    "Toy.DropFlags.reachableAux.eq_1": [
+      "propext"
+    ],
+    "Toy.DropFlags.reachableAux.eq_2": [
+      "propext"
+    ],
+    "Toy.DropFlags.reachableAux.eq_def": [
+      "propext"
+    ],
+    "Toy.DropFlags.reachableAux.match_1": [],
+    "Toy.DropFlags.reinitWithoutFlagSet_leaks": [
+      "propext"
+    ],
+    "Toy.DropFlags.run": [
+      "propext"
+    ],
+    "Toy.DropFlags.runAux": [
+      "propext"
+    ],
+    "Toy.DropFlags.runAux.eq_1": [
+      "propext"
+    ],
+    "Toy.DropFlags.runAux.eq_2": [
+      "propext"
+    ],
+    "Toy.DropFlags.runAux.eq_def": [
+      "propext"
+    ],
+    "Toy.DropFlags.runAux.match_1": [],
+    "Toy.DropFlags.runAux.match_3": [],
+    "Toy.DropFlags.runAux_eq_follow": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.runAux_succ_ch": [
+      "propext"
+    ],
+    "Toy.DropFlags.runAux_succ_ch_nil": [
+      "propext"
+    ],
+    "Toy.DropFlags.runAux_succ_nc": [
+      "propext"
+    ],
+    "Toy.DropFlags.runAux_succ_nc_done": [
+      "propext"
+    ],
+    "Toy.DropFlags.runElab": [
+      "propext"
+    ],
+    "Toy.DropFlags.runElab_good": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.run_eq_follow": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.run_eq_of_explore_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.run_to_ladder": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.shareNode": [],
+    "Toy.DropFlags.shareNode.match_1": [],
+    "Toy.DropFlags.shareProg": [],
+    "Toy.DropFlags.shareProg.eq_1": [],
+    "Toy.DropFlags.shareProg_matches_stdElab_progShare": [
+      "propext"
+    ],
+    "Toy.DropFlags.shareProg_tests_only_x0": [],
+    "Toy.DropFlags.skip_fails": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.skip_fails_of_mayInit": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.src_dropPoint_node": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.src_good": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.src_good.match_1_36": [],
+    "Toy.DropFlags.src_good.match_1_4": [],
+    "Toy.DropFlags.staticChoice_at_disagreement_fails_of_placesAreMovePaths": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.staticChoice_compatible_iff": [],
+    "Toy.DropFlags.staticChoice_hypotheses_hold_progJoin": [
+      "propext"
+    ],
+    "Toy.DropFlags.staticChoice_necessity_fails_at_non_drop_point": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.staticChoice_necessity_fails_without_mayInit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.staticChoice_necessity_fails_without_notMustInit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.staticChoice_necessity_fails_without_placesAreMovePaths": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.staticDrop_at_join_double_drops": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.staticSkip_at_join_leaks": [
+      "propext"
+    ],
+    "Toy.DropFlags.staticSkip_correct_without_placesAreMovePaths": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.stdDecision": [],
+    "Toy.DropFlags.stdDecision_compatible": [],
+    "Toy.DropFlags.stdDecision_examples": [],
+    "Toy.DropFlags.stdElab": [
+      "propext"
+    ],
+    "Toy.DropFlags.stdElab_correct_of_forward_moveChecked_noNormalPathToResume": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.stdElab_fails_without_forward": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.stdElab_fails_without_initsIntoUninit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.stdElab_fails_without_movesFromInit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.stdElab_fails_without_noNormalPathToResume": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.stdElab_fails_without_placesAreMovePaths": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.stdElab_noDoubleDrop_continueUnwind_of_forward_placesAreMovePaths_movesFromInit": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.stdElab_progJoin_ladder": [
+      "propext"
+    ],
+    "Toy.DropFlags.stdElab_progJoin_ladder.match_1": [
+      "propext"
+    ],
+    "Toy.DropFlags.stdFlagLeast_fails_without_forward": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.stdFlagLeast_fails_without_initsIntoUninit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.stdFlagLeast_fails_without_movesFromInit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.stdFlagLeast_fails_without_noNormalPathToResume": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.stdFlagLeast_fails_without_placesAreMovePaths": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.stdFlagSet_subset_of_exactlyOnce_of_placesAreMovePaths": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.stdFlagSet_subset_witness_progJoin": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.stdMap": [
+      "propext"
+    ],
+    "Toy.DropFlags.stdMap_allCompatible": [
+      "propext"
+    ],
+    "Toy.DropFlags.stdMap_correct_and_flagSet_least_of_forward_moveChecked_noNormalPathToResume": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.step": [],
+    "Toy.DropFlags.step.match_1": [],
+    "Toy.DropFlags.step.match_3": [],
+    "Toy.DropFlags.step_abort": [],
+    "Toy.DropFlags.step_branch": [],
+    "Toy.DropFlags.step_call_false_none": [],
+    "Toy.DropFlags.step_call_false_some": [],
+    "Toy.DropFlags.step_call_true": [],
+    "Toy.DropFlags.step_drop_false": [],
+    "Toy.DropFlags.step_drop_true_abort": [
+      "propext"
+    ],
+    "Toy.DropFlags.step_drop_true_none": [
+      "propext"
+    ],
+    "Toy.DropFlags.step_drop_true_some": [
+      "propext"
+    ],
+    "Toy.DropFlags.step_goto": [],
+    "Toy.DropFlags.step_init": [],
+    "Toy.DropFlags.step_move": [],
+    "Toy.DropFlags.step_resume": [],
+    "Toy.DropFlags.step_ret": [],
+    "Toy.DropFlags.step_setFlags": [],
+    "Toy.DropFlags.step_test": [],
+    "Toy.DropFlags.succ_edge": [
+      "propext"
+    ],
+    "Toy.DropFlags.sufficiency_fails_without_allCompatible": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.sufficiency_fails_without_forward": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.sufficiency_fails_without_initsIntoUninit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.sufficiency_fails_without_movesFromInit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.sufficiency_fails_without_noNormalPathToResume": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.sufficiency_fails_without_placesAreMovePaths": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.sufficiency_hypotheses_hold_progJoin_testEverywhere": [
+      "propext"
+    ],
+    "Toy.DropFlags.take_succ_of_getElem?": [
+      "propext"
+    ],
+    "Toy.DropFlags.testEverywhere_correct_progJoin": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.unitsUnder": [],
+    "Toy.DropFlags.unitsUnder.eq_1": [],
+    "Toy.DropFlags.unitsUnder_nodup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.unreachable_does_not_propagate": [
+      "propext"
+    ],
+    "Toy.DropFlags.unreachable_must_top_may_bot": [
+      "propext"
+    ],
+    "Toy.DropFlags.wholeKeepAnalysis_drops_moved_field": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.wholeKeepFlags_drops_moved_field": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.wholeKillAnalysis_leaks_remaining_field": [
+      "propext"
+    ],
+    "Toy.DropFlags.wholeKillFlags_leaks_remaining_field": [
+      "propext"
+    ],
+    "Toy.DropFlags.writeFresh": [],
+    "Toy.DropFlags.writeFresh.eq_1": [],
+    "Toy.DropFlags.writeFresh.eq_2": [],
+    "Toy.DropFlags.writeFresh.eq_def": [],
+    "Toy.DropFlags.writeFresh.match_1": [],
+    "Toy.DropFlags.writeFresh_created": [
+      "propext"
+    ],
+    "Toy.DropFlags.writeFresh_frame": [
+      "propext"
+    ],
+    "Toy.DropFlags.writeFresh_log": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.writeFresh_spec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropFlags.x": [],
+    "Toy.DropFlags.x0": [],
+    "Toy.DropFlags.x1": [],
+    "Toy.DropFlags.y": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
