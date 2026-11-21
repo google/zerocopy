@@ -728,7 +728,7 @@
   "kind": "impossibility",
   "tier": "T0",
   "tier_justification": "Folklore (bounded exploration finds bugs but does not prove their absence; O'Hearn 2020 Sections 4 and 5.2 discuss bounded unrolling); mechanized with a bounded-unrolling analysis shown sound under-approximate for every bound and exact on loop-free programs.",
-  "plain_claim": "A sound under-approximate analysis that is exact on every loop-free program can still be silent on an unsafe program: unrolling every loop at most k times is a sound under-approximate analysis for every k and is exact on loop-free programs, and with k = 2 it is silent on (x := x+1)⋆; assume (x = 3); error() from x = 0, which errs.",
+  "plain_claim": "A sound under-approximate analysis that is exact on every loop-free program can still be silent on an unsafe program: unrolling every loop at most k times is a sound under-approximate analysis for every k and is exact on loop-free programs (for every k: unrollAnalysis_exactOnLoopFree, ToyIL/Analyses.lean:589), and with k = 2 it is silent on (x := x+1)⋆; assume (x = 3); error() from x = 0, which errs.",
   "unfolded": "soundUnder_exactOnLoopFree_no_alarm_not_imply_safe: ¬ ∀ U : Analysis Nat, (∀ P c e t, U c e P t → ∃ s, P s ∧ Exec c s e t) → (∀ P c e t, c.loopFree = true → (U c e P t ↔ ∃ s, P s ∧ Exec c s e t)) → ∀ P c, ¬ (∃ t, U c .er P t) → ∀ s t, P s → ¬ Exec c s .er t\nunrollAnalysis_two_false_negative: SoundUnder (unrollAnalysis 2) ∧ ExactOnLoopFree (unrollAnalysis 2) ∧ ¬ Alarm (unrollAnalysis 2) (fun n => n = 0) countProg ∧ ¬ Safe (fun n => n = 0) countProg\nunrollAnalysis_soundUnder k: ∀ P c e t, post (c.unroll k) e P t → post c e P t",
   "hypotheses": [],
   "depth": "shallow",
