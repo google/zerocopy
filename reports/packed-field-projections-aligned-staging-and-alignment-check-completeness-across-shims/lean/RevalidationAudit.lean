@@ -1,0 +1,22 @@
+import ToyPacked
+
+/-! Prints the axioms of the main theorem(s) of every card (not part of the library target). -/
+
+#print axioms Toy.Packed.inPlaceDrop_packedField_ub_though_source_has_no_ref
+#print axioms Toy.Packed.staged_noUB_and_obs_eq_ideal_of_frameAligned_safeSrc_covers_sized_addrBlind_alignedTemps
+#print axioms Toy.Packed.misalignable_iff_not_dvd_gcd
+#print axioms Toy.Packed.not_misalignable_of_powTwo_respectsPacking_dvd_typeGA
+#print axioms Toy.Packed.critCovers_critType_of_powTwo_respectsPacking
+#print axioms Toy.Packed.exists_respectsPacking_layout_misalignable_iff_not_dvd_typeGA_of_noRepeatStep_powTwo
+#print axioms Toy.Packed.leafOnlyCrit_misses_nested_field
+#print axioms Toy.Packed.leafOnlyCrit_misses_one_step_underaligned_parent
+#print axioms Toy.Packed.typeCrit_overstages_fixed_layout
+#print axioms Toy.Packed.overstaging_aligned_addrObs_changes_trace
+#print axioms Toy.Packed.boxMoveOut_dropsOnlyStaging_ub_boxFieldStaging_ok
+#print axioms Toy.Packed.progBox_moveOut_irrelevant
+#print axioms Toy.Packed.noUB_forall_progs_iff_alignRelevantCovered
+#print axioms Toy.Packed.run_eq_uninstrumented_map_toTrap
+#print axioms Toy.Packed.srcInstrumented_rawDropInPlace_misaligned_escapes
+#print axioms Toy.Packed.noUB_of_frameAligned_covers_alignedTemps_clientPtrsAligned_srcRefsInstrumented
+#print axioms Toy.Packed.noShimUB_of_frameAligned_covers_alignedTemps_clientPtrsAligned
+#print axioms Toy.Packed.noStuck_of_stagedSized

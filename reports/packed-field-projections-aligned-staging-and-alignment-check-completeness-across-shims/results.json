@@ -1,0 +1,959 @@
+[
+  {
+    "id": "in-place",
+    "lean": "Toy.Packed.inPlaceDrop_packedField_ub_though_source_has_no_ref",
+    "kind": "counterexample",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "For the program `progInPlace` (one local `x : packed { u8, R4 }` at address 0, whose source body is the single compiler drop of `x` and contains no raw-pointer operation, i.e. `SafeSrc progInPlace`), with no staging and no checks (`cfgNone`), the ideal-semantics run destroys the field `x.1`, while the reference-semantics run creates a misaligned `&mut` at op 0 of the drop glue of `R4` (address 1, alignment 4): a UB event.",
+    "hypotheses": [],
+    "nonvacuity_witness": "The theorem is itself the concrete instance (progInPlace).",
+    "lean_names": [
+      "Toy.Packed.SafeSrc",
+      "Toy.Packed.cfgNone",
+      "Toy.Packed.positions",
+      "Toy.Packed.progInPlace",
+      "Toy.Packed.run"
+    ],
+    "non_claims": [
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust, rustc or Miri. Model–system relation: none proved.",
+      "It shows that the unstaged in-place drop is UB in the toy's reference semantics; it neither establishes nor refutes that any compiler emits such a program (the toy has no elaboration or static rejection).",
+      "The reference is created inside the drop-glue shim (op 0), not in the source body; checks at source positions do not see it (cf. `escape`).",
+      "\"No `&` in the source\" is `SafeSrc progInPlace` (no `rawRef`, no `rawCall`); compiler drops are not counted as source references.",
+      "One drop is exhibited. That frees of a box field and clones also create references is a modelling choice of `runShim` (see `box-free` for a free); it is not derived here."
+    ],
+    "prior_art": [
+      "rustc `add_moves_for_packed_drops.rs` module documentation (documented design); `core::ptr::drop_in_place` documentation; RFC 1240 (the original analysis that a destructor is passed a reference); Reference \"Behavior considered undefined\" (see Evidence, Primary sources).",
+      "documentation (documented design; no claim about the implementation): rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/add_moves_for_packed_drops.rs L9-11 ('This pass moves values being dropped that are within a packed struct to a separate local before dropping them, to ensure that they are dropped from an aligned address.') and L25; https://github.com/rust-lang/rust/blob/26bfbf28f5f79dff333ce5a232f131b496ec9cfe/compiler/rustc_mir_transform/src/add_moves_for_packed_drops.rs#L9-L38",
+      "documentation: rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, library/core/src/ptr/mod.rs L761-763 ('Unaligned values cannot be dropped in place, they must be copied to an aligned location first using [`ptr::read_unaligned`]. For packed structs, this move is done automatically by the compiler.') and L776 ('`to_drop` must be properly aligned, even if `T` has size 0.'); https://github.com/rust-lang/rust/blob/26bfbf28f5f79dff333ce5a232f131b496ec9cfe/library/core/src/ptr/mod.rs#L761-L776",
+      "normative design record: rust-lang/rfcs f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07, text/1240-repr-packed-unsafe-ref.md L8-10 and L154-160 (a destructor of a field of a repr(packed) type 'is passed a reference to that `T`'); https://github.com/rust-lang/rfcs/blob/f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07/text/1240-repr-packed-unsafe-ref.md#L8-L10",
+      "normative: rust-lang/reference c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, src/behavior-considered-undefined.md L18-19, L90-94 (r[undefined.misaligned.raw], r[undefined.misaligned.reference]), L151-152 (r[undefined.validity.reference-box]); https://github.com/rust-lang/reference/blob/c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c/src/behavior-considered-undefined.md#L78-L97"
+    ],
+    "design_question": "Can a compiler-generated operation create a misaligned reference that no source-level reference reveals? Answer in the toy: yes — for `progInPlace`, with no staging and no checks, the compiler drop of `x` creates a misaligned `&mut` at op 0 of the drop glue of `R4`.",
+    "nonvacuity_witness_lean": "Toy.Packed.inPlaceDrop_packedField_ub_though_source_has_no_ref"
+  },
+  {
+    "id": "staging",
+    "lean": "Toy.Packed.staged_noUB_and_obs_eq_ideal_of_frameAligned_safeSrc_covers_sized_addrBlind_alignedTemps",
+    "kind": "theorem",
+    "tier": "T1",
+    "depth": "substantive",
+    "plain_claim": "For every toy program `P` whose locals are at aligned addresses (`FrameAligned`) and whose source body has no raw-pointer operation (`SafeSrc`), and every configuration `cfg` (with any instrumentation policy) such that every compiler-operation position of the source body and of the shims the program may enter (`positions`) whose place is misalignable is staged (`CritCovers`), every staged value is sized (H1, `StagedSized`), no staged drop reaches an address-observing destructor through inline sub-values (H2, `StagedAddrBlind`), and every staging temporary is aligned for the staged type (H3, `TempsAligned`), each of these four conditions being required at every position in `positions`, executed by a run or not: the staged program's reference-semantics run (the run produced by `run`) has no UB event, and its observable trace (staging copies removed) equals the ideal-semantics trace of the unstaged program.",
+    "hypotheses": [
+      {
+        "name": "hframe : FrameAligned P",
+        "purpose": "an unstaged place's address is its local's base address plus its offset",
+        "tightness": "tight",
+        "counterexample": "Toy.Packed.staging_fails_without_frameAligned",
+        "witness_class": "a one-type environment [tR4]; one local of alignment 4 at address 2",
+        "other_hypotheses_vacuity": "CritCovers and H1-H3 hold vacuously (the single position is not misalignable and none is staged): critCovers_and_frameAligned_counterexamples_stage_nothing."
+      },
+      {
+        "name": "hsafe : SafeSrc P",
+        "purpose": "raw client calls and user references are not compiler operations and are not staged",
+        "tightness": "tight",
+        "counterexample": "Toy.Packed.staging_fails_without_safeSrc",
+        "witness_class": "three-type environment envA; progEscape: a staged misalignable drop, then one client call with a misaligned address",
+        "other_hypotheses_vacuity": "CritCovers and H1-H3 hold at a staged position: the fourth conjunct of srcInstrumented_rawDropInPlace_misaligned_escapes exhibits a misalignable position of progEscape staged by cfgType envA."
+      },
+      {
+        "name": "hcov : CritCovers P cfg",
+        "purpose": "every may-be-disaligned compiler operation is staged",
+        "tightness": "tight",
+        "counterexample": "Toy.Packed.staging_fails_without_critCovers",
+        "witness_class": "three-type environment envA; no staging, one packed field",
+        "other_hypotheses_vacuity": "H1-H3 hold vacuously (no position is staged): critCovers_and_frameAligned_counterexamples_stage_nothing."
+      },
+      {
+        "name": "h1 : StagedSized P cfg",
+        "purpose": "an unsized value cannot be moved to a temporary (used for the trace conjunct)",
+        "tightness": "tight",
+        "counterexample": "Toy.Packed.staging_fails_without_stagedSized",
+        "witness_class": "three-type environment envU with an unsized packed tail; the staged run is stuck",
+        "other_hypotheses_vacuity": "The negated hypothesis fails at a staged position, so CritCovers and the other staged-position hypotheses hold at a staged position."
+      },
+      {
+        "name": "h2 : StagedAddrBlind P cfg",
+        "purpose": "a staged destructor runs at the temporary's address (used for the trace conjunct)",
+        "tightness": "tight",
+        "counterexample": "Toy.Packed.staging_fails_without_stagedAddrBlind",
+        "witness_class": "three-type environment envObs; an address-printing destructor prints 16 instead of 1",
+        "other_hypotheses_vacuity": "The negated hypothesis fails at a staged position, so CritCovers and the other staged-position hypotheses hold at a staged position."
+      },
+      {
+        "name": "h3 : TempsAligned P cfg",
+        "purpose": "the reference created at the temporary is aligned for the staged type",
+        "tightness": "tight",
+        "counterexample": "Toy.Packed.staging_fails_without_tempsAligned",
+        "witness_class": "three-type environment envA; temporary at address 2 for alignment 4",
+        "other_hypotheses_vacuity": "The negated hypothesis fails at a staged position, so CritCovers and the other staged-position hypotheses hold at a staged position."
+      }
+    ],
+    "nonvacuity_witness": "progInPlace with cfgType envA satisfies all six hypotheses and stages a position; the conclusion holds on it (staging_conclusion_progInPlace).",
+    "nonvacuity_witness_lean": "Toy.Packed.staging_hyps_hold_progInPlace",
+    "lean_names": [
+      "Toy.Packed.AddrBlind",
+      "Toy.Packed.AllEv",
+      "Toy.Packed.Cfg",
+      "Toy.Packed.Cfg.unstaged",
+      "Toy.Packed.CritCovers",
+      "Toy.Packed.Ev",
+      "Toy.Packed.Ev.isShimUB",
+      "Toy.Packed.Ev.isStuck",
+      "Toy.Packed.Ev.isUB",
+      "Toy.Packed.FrameAligned",
+      "Toy.Packed.LA",
+      "Toy.Packed.LB",
+      "Toy.Packed.LQ",
+      "Toy.Packed.NoUB",
+      "Toy.Packed.Op",
+      "Toy.Packed.Op.isRawRef",
+      "Toy.Packed.Op.isSafe",
+      "Toy.Packed.Op.ptrAligned",
+      "Toy.Packed.Op.shimRoot",
+      "Toy.Packed.Origin",
+      "Toy.Packed.Out",
+      "Toy.Packed.Out.andThen",
+      "Toy.Packed.Place",
+      "Toy.Packed.Pos",
+      "Toy.Packed.Pos.staged",
+      "Toy.Packed.PrRel",
+      "Toy.Packed.Prog",
+      "Toy.Packed.Prog.fuel",
+      "Toy.Packed.Prog.place",
+      "Toy.Packed.Reached",
+      "Toy.Packed.SafeSrc",
+      "Toy.Packed.StRel",
+      "Toy.Packed.StagedAddrBlind",
+      "Toy.Packed.StagedSized",
+      "Toy.Packed.TempsAligned",
+      "Toy.Packed.VName",
+      "Toy.Packed.VName.child",
+      "Toy.Packed.addrBlind_box_pos",
+      "Toy.Packed.addrBlind_neg",
+      "Toy.Packed.addrBlind_pos",
+      "Toy.Packed.alignRelevantCovered_existing_shims",
+      "Toy.Packed.alignRelevantCovered_neg",
+      "Toy.Packed.alignRelevantCovered_pos",
+      "Toy.Packed.alignRelevantCovered_trivial_align_one",
+      "Toy.Packed.bodyPositions",
+      "Toy.Packed.callsShim",
+      "Toy.Packed.callsShim_neg",
+      "Toy.Packed.callsShim_pos",
+      "Toy.Packed.cfgTmp2",
+      "Toy.Packed.clientPtrsAligned_and_srcRefsInstrumented_of_safeSrc",
+      "Toy.Packed.clientPtrsAligned_neg",
+      "Toy.Packed.clientPtrsAligned_pos",
+      "Toy.Packed.compStep",
+      "Toy.Packed.critCovers_and_frameAligned_counterexamples_stage_nothing",
+      "Toy.Packed.critCovers_neg",
+      "Toy.Packed.critCovers_pos",
+      "Toy.Packed.critExact_neg",
+      "Toy.Packed.critExact_pos",
+      "Toy.Packed.critLeaf_neg",
+      "Toy.Packed.critLeaf_pos",
+      "Toy.Packed.critNone",
+      "Toy.Packed.critType_eq_critExact_packed2_align8",
+      "Toy.Packed.critType_neg",
+      "Toy.Packed.critType_pos",
+      "Toy.Packed.dropsOnly",
+      "Toy.Packed.dropsOnly_neg",
+      "Toy.Packed.dropsOnly_pos",
+      "Toy.Packed.envBoxObs",
+      "Toy.Packed.envObs",
+      "Toy.Packed.envU",
+      "Toy.Packed.frameAligned_neg",
+      "Toy.Packed.frameAligned_pos",
+      "Toy.Packed.heapAddr",
+      "Toy.Packed.needsDrop",
+      "Toy.Packed.needsDrop_neg",
+      "Toy.Packed.needsDrop_pos",
+      "Toy.Packed.noShimUB_neg",
+      "Toy.Packed.noShimUB_pos",
+      "Toy.Packed.noStuck_neg",
+      "Toy.Packed.noStuck_pos",
+      "Toy.Packed.noUB_neg",
+      "Toy.Packed.noUB_pos",
+      "Toy.Packed.obs",
+      "Toy.Packed.positions",
+      "Toy.Packed.positions_empty",
+      "Toy.Packed.positions_progInPlace",
+      "Toy.Packed.progBoxObs",
+      "Toy.Packed.progEmptyU",
+      "Toy.Packed.progEscape",
+      "Toy.Packed.progMisFrame",
+      "Toy.Packed.progMixed",
+      "Toy.Packed.progObs",
+      "Toy.Packed.progU",
+      "Toy.Packed.progUserRef",
+      "Toy.Packed.progWholeQ",
+      "Toy.Packed.rawCall_missing_shim_admitted",
+      "Toy.Packed.rawCall_missing_shim_noop",
+      "Toy.Packed.reach",
+      "Toy.Packed.reach_pos",
+      "Toy.Packed.reachableShims",
+      "Toy.Packed.refStep",
+      "Toy.Packed.refStep_align_one",
+      "Toy.Packed.refStep_ideal",
+      "Toy.Packed.refStep_neg",
+      "Toy.Packed.refStep_pos",
+      "Toy.Packed.refStep_trap",
+      "Toy.Packed.run",
+      "Toy.Packed.runShim",
+      "Toy.Packed.runShim_staging",
+      "Toy.Packed.safeSrc_neg",
+      "Toy.Packed.safeSrc_pos",
+      "Toy.Packed.seqFields",
+      "Toy.Packed.shimExists",
+      "Toy.Packed.shimExists_neg",
+      "Toy.Packed.shimExists_pos",
+      "Toy.Packed.shimPositions",
+      "Toy.Packed.srcPositions",
+      "Toy.Packed.srcRefsInstrumented_neg",
+      "Toy.Packed.srcRefsInstrumented_pos",
+      "Toy.Packed.srcStep",
+      "Toy.Packed.stagedAddrBlind_neg",
+      "Toy.Packed.stagedAddrBlind_pos",
+      "Toy.Packed.stagedSized_neg",
+      "Toy.Packed.stagedSized_pos",
+      "Toy.Packed.staging_box_of_addrObs_pointee",
+      "Toy.Packed.staging_conclusion_progInPlace",
+      "Toy.Packed.staging_hyps_hold_dropsOnly_progInPlace",
+      "Toy.Packed.staging_hyps_hold_progEmptyU",
+      "Toy.Packed.sufficiency_hyps_hold_progU_stuck",
+      "Toy.Packed.tR2",
+      "Toy.Packed.tR4",
+      "Toy.Packed.tR4obs",
+      "Toy.Packed.tU8",
+      "Toy.Packed.tempsAligned_neg",
+      "Toy.Packed.tempsAligned_pos"
+    ],
+    "non_claims": [
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust, rustc or Miri. Model–system relation: none proved.",
+      "`CritCovers` and H1–H3 range over `positions P`: the source body and the shims in `reachableShims P`. That list over-approximates the shims a run enters (it ignores early termination), so a hypothesis can fail on a position no run executes; it contains no shim of a type the program never reaches.",
+      "No write-back to the original place is modelled. Staging without write-back preserves behaviour in the toy because a staged drop or free consumes the value and a staged clone reads it without writing; staging an operation that mutates a live place is outside the model.",
+      "Clone shims take a raw pointer and never observe addresses, and H2 constrains staged drops alone; an address-observing or interior-mutable `Clone` cannot be expressed. In Rust, `Clone::clone` takes `&self`; this card neither establishes nor refutes anything about staging such clones.",
+      "Aliasing raw pointers into the packed field during a staged operation, and unwinding or panics during staging or destruction, are not modelled.",
+      "A box's pointee is dropped at its heap address whatever the box's address, so staging a `Box<T>` field moves the pointer, not the pointee; H2 does not constrain pointees behind a box (`addrBlind_box_pos`, `staging_box_of_addrObs_pointee`).",
+      "The theorem does not assume acyclicity: it also covers runs that end with `outOfFuel`, and equality of observable traces does not imply that the runs complete.",
+      "`CritCovers` is a hypothesis; that `critType` meets it is `criterion-type-covers`.",
+      "`SafeSrc` is a sufficient syntactic restriction; programs with raw-pointer operations are covered by `sufficiency` for the `NoUB` part, and trace preservation for them is not stated.",
+      "Traces compare value names, not memory contents: the toy has no byte memory, so \"the staged copy equals the original value\" holds by construction, not by proof."
+    ],
+    "prior_art": [
+      "rustc `add_moves_for_packed_drops.rs` module documentation (the rewrite `drop_temp = foo.data; drop(drop_temp)` between storage markers); `core::ptr::drop_in_place` documentation (\"For packed structs, this move is done automatically by the compiler.\"); `core::pin` documentation (fields of a `#[repr(packed)]` type are moved to be dropped, so pinning is unusable with it — the real-system counterpart of H2); Reference `destructors.md` (drop glue).",
+      "documentation (documented design; no claim about the implementation): rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/add_moves_for_packed_drops.rs L9-11 ('This pass moves values being dropped that are within a packed struct to a separate local before dropping them, to ensure that they are dropped from an aligned address.') and L25; https://github.com/rust-lang/rust/blob/26bfbf28f5f79dff333ce5a232f131b496ec9cfe/compiler/rustc_mir_transform/src/add_moves_for_packed_drops.rs#L9-L38",
+      "documentation: rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, library/core/src/ptr/mod.rs L761-763 ('Unaligned values cannot be dropped in place, they must be copied to an aligned location first using [`ptr::read_unaligned`]. For packed structs, this move is done automatically by the compiler.') and L776 ('`to_drop` must be properly aligned, even if `T` has size 0.'); https://github.com/rust-lang/rust/blob/26bfbf28f5f79dff333ce5a232f131b496ec9cfe/library/core/src/ptr/mod.rs#L761-L776",
+      "documentation: rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, library/core/src/pin.rs L630-633 ('Moreover, if your type is [`#[repr(packed)]`][packed], the compiler will automatically move fields around to be able to drop them. It might even do that for fields that happen to be sufficiently aligned. As a consequence, you cannot use pinning with a [`#[repr(packed)]`][packed] type.') and L802-807; https://github.com/rust-lang/rust/blob/26bfbf28f5f79dff333ce5a232f131b496ec9cfe/library/core/src/pin.rs#L630-L633",
+      "normative: rust-lang/reference c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, src/destructors.md L8-11 (r[destructors.operation]); https://github.com/rust-lang/reference/blob/c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c/src/destructors.md#L8-L11"
+    ],
+    "design_question": "When is \"move to an aligned temporary, then run the reference-taking operation\" a sound and behaviour-preserving lowering? Answer in the toy: for a program whose locals are aligned and whose source body has no raw-pointer operation, when every misalignable compiler-operation position (`positions`: the source body and the shims the program may enter) is staged, every staged value is sized, no staged drop reaches an address-observing destructor through inline sub-values, and every temporary is aligned for the staged type, each of these four conditions holding at every position in `positions`, executed by a run or not, the staged reference run (produced by `run`) has no UB event and the ideal observable trace of the unstaged program."
+  },
+  {
+    "id": "criterion-exact",
+    "lean": "Toy.Packed.misalignable_iff_not_dvd_gcd",
+    "kind": "characterization",
+    "tier": "T0",
+    "depth": "shallow",
+    "plain_claim": "For all naturals `A`, `n`, `o` (including 0), some multiple `a` of `A` has `a + o` not divisible by `n` iff `n` does not divide `gcd A o`. So, for a fixed layout, a place at total offset `o` (summed along the whole path) from a base aligned to `A` may be disaligned for alignment `n` exactly when `n ∤ gcd A o`.",
+    "hypotheses": [],
+    "nonvacuity_witness": "misalignable_pos, misalignable_neg and misalignable_align_zero instantiate both sides.",
+    "nonvacuity_witness_lean": "Toy.Packed.misalignable_pos",
+    "lean_names": [
+      "Toy.Packed.Misalignable"
+    ],
+    "non_claims": [
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust, rustc or Miri. Model–system relation: none proved.",
+      "It is about addresses, not about what a compiler can know: a compiler deciding per type, before layout, cannot use `o` (see `criterion-type-exact-over-layouts`).",
+      "A path-wise gcd (`gcd` of `A` with each step's offset separately) is a different quantity: offsets 1 and 1 from base alignment 4 give path-wise gcd 1 but `gcd 4 2 = 2` (arithmetic; not stated as a theorem; not proved here)."
+    ],
+    "prior_art": [
+      "Miri's `-Zmiri-symbolic-alignment-check` documentation (it checks the requested alignment of the allocation and the offset into it, the quantity `Misalignable` quantifies over).",
+      "documentation: rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, src/tools/miri/README.md L15 ('Not sufficiently aligned memory accesses and references'), L399-408 (-Zmiri-symbolic-alignment-check), L442-444 (-Zmiri-disable-alignment-check); https://github.com/rust-lang/rust/blob/26bfbf28f5f79dff333ce5a232f131b496ec9cfe/src/tools/miri/README.md#L399-L408"
+    ],
+    "design_question": "What is the exact staging condition when the layout is known? Answer in the toy: for all naturals `A`, `n`, `o`, the place may be disaligned iff `n ∤ gcd A o`."
+  },
+  {
+    "id": "criterion-type-sound",
+    "lean": "Toy.Packed.not_misalignable_of_powTwo_respectsPacking_dvd_typeGA",
+    "kind": "theorem",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "If every alignment and every `packed(n)` parameter of the environment is a power of two (`PowTwoAligns`), the layout respects packing (`RespectsPacking`), and the path from `t0` resolves to a place of type `u` at offset `o`, then a place whose type alignment divides its type-based guaranteed alignment `typeGA` (computed along the whole path from the base type's alignment) cannot be misaligned from any base address aligned for the base type.",
+    "hypotheses": [
+      {
+        "name": "hpow : PowTwoAligns env",
+        "purpose": "a minimum of alignments divides each of them",
+        "tightness": "tight",
+        "counterexample": "Toy.Packed.typeGA_sound_fails_without_powTwo",
+        "witness_class": "two-type environment envW: base alignment 3, field alignment 2 at offset 2"
+      },
+      {
+        "name": "hpack : RespectsPacking env L",
+        "purpose": "offsets are multiples of effective field alignments",
+        "tightness": "tight",
+        "counterexample": "Toy.Packed.typeGA_sound_fails_without_respectsPacking",
+        "witness_class": "two-type environment envRP: an alignment-4 field at offset 1 of a non-packed struct"
+      },
+      {
+        "name": "hres : resolve env L t0 path = some (u, o)",
+        "purpose": "ties u and o to the path; typeGA falls back to the base alignment on a path that leaves the types",
+        "tightness": "tight",
+        "counterexample": "Toy.Packed.typeGA_sound_fails_without_resolve",
+        "witness_class": "three-type environment envA; the path [0] from R4"
+      },
+      {
+        "name": "hdvd : env.align u ∣ typeGA env t0 path (env.align t0)",
+        "purpose": "the criterion's no-staging verdict",
+        "tightness": "tight",
+        "counterexample": "Toy.Packed.typeGA_sound_fails_without_dvd",
+        "witness_class": "three-type environment envA; field 1 of packed { u8, R4 } at offset 1"
+      }
+    ],
+    "nonvacuity_witness": "Field 0 of S = { R4 } in envQ.",
+    "nonvacuity_witness_lean": "Toy.Packed.typeGA_sound_hyps_hold",
+    "lean_names": [
+      "Toy.Packed.Env",
+      "Toy.Packed.Env.align",
+      "Toy.Packed.Env.field?",
+      "Toy.Packed.Env.fields",
+      "Toy.Packed.Env.isBox",
+      "Toy.Packed.Env.ty",
+      "Toy.Packed.FieldIdsDecreasing",
+      "Toy.Packed.IsPow2",
+      "Toy.Packed.Kind",
+      "Toy.Packed.LP2",
+      "Toy.Packed.LRP",
+      "Toy.Packed.LW",
+      "Toy.Packed.Layout",
+      "Toy.Packed.Misalignable",
+      "Toy.Packed.PowTwoAligns",
+      "Toy.Packed.RespectsPacking",
+      "Toy.Packed.ShimKind",
+      "Toy.Packed.TyInfo",
+      "Toy.Packed.effAlign",
+      "Toy.Packed.effAlign_neg",
+      "Toy.Packed.effAlign_out_of_range",
+      "Toy.Packed.effAlign_pos",
+      "Toy.Packed.envCyc",
+      "Toy.Packed.envP2",
+      "Toy.Packed.envRP",
+      "Toy.Packed.envRev",
+      "Toy.Packed.envW",
+      "Toy.Packed.fieldIdsDecreasing_neg",
+      "Toy.Packed.fieldIdsDecreasing_pos",
+      "Toy.Packed.fieldIdsDecreasing_rejects_envRev",
+      "Toy.Packed.isPow2_neg_three",
+      "Toy.Packed.isPow2_neg_zero",
+      "Toy.Packed.isPow2_pos",
+      "Toy.Packed.misalignable_align_zero",
+      "Toy.Packed.misalignable_neg",
+      "Toy.Packed.noRepeatStep_cyc_short",
+      "Toy.Packed.noRepeatStep_neg",
+      "Toy.Packed.noRepeatStep_of_fieldIdsDecreasing",
+      "Toy.Packed.noRepeatStep_pos",
+      "Toy.Packed.pathSteps",
+      "Toy.Packed.pathSteps_pos",
+      "Toy.Packed.pathSteps_stop",
+      "Toy.Packed.powTwoAligns_neg",
+      "Toy.Packed.powTwoAligns_pos",
+      "Toy.Packed.resolve",
+      "Toy.Packed.resolve_dvd",
+      "Toy.Packed.resolve_neg",
+      "Toy.Packed.resolve_pos",
+      "Toy.Packed.respectsPacking_neg",
+      "Toy.Packed.respectsPacking_pos",
+      "Toy.Packed.typeAt_neg",
+      "Toy.Packed.typeAt_pos",
+      "Toy.Packed.typeGA",
+      "Toy.Packed.typeGA_neg",
+      "Toy.Packed.typeGA_pos",
+      "Toy.Packed.typeGA_props"
+    ],
+    "non_claims": [
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust, rustc or Miri. Model–system relation: none proved.",
+      "Sound, not exact for a fixed layout: `typeCrit_overstages_fixed_layout` (`criterion-type-overstages-fixed-layout`).",
+      "The toy permits `packed(n)` types containing over-aligned types, which Rust rejects (E0588); soundness covers them (`critType_eq_critExact_packed2_align8` is one instance), and nothing is claimed about how rustc treats them.",
+      "`PowTwoAligns` excludes alignment 0 and `packed(0)`; with them `typeGA` can be 0, and the theorem is not stated for that case."
+    ],
+    "prior_art": [
+      "Reference \"The alignment modifiers\" (`r[layout.repr.alignment.packed-fields]`; `r[layout.repr.alignment.constraint-alignment]`: alignments are powers of two); MiniRust `capped_tail_align` (`tail_align.min(packed_align)`, the same capping rule in an executable specification).",
+      "normative: rust-lang/reference c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, src/type-layout.md L638-639 (alignments are powers of two), L647-648 (r[layout.repr.alignment.packed-fields]: 'The alignments of each field, for the purpose of positioning fields, is the smaller of the specified alignment and the alignment of the field's type.'), L653-654; https://github.com/rust-lang/reference/blob/c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c/src/type-layout.md#L638-L654",
+      "specification: minirust/minirust 063d784186d3252bee242217f218223205c0b568, spec/lang/types.md L201-207 (capped_tail_align = tail_align.min(packed_align) when packed); https://github.com/minirust/minirust/blob/063d784186d3252bee242217f218223205c0b568/spec/lang/types.md#L201-L207",
+      "documentation: rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_error_codes/src/error_codes/E0588.md L14-16 (a packed type cannot contain an align type); https://github.com/rust-lang/rust/blob/26bfbf28f5f79dff333ce5a232f131b496ec9cfe/compiler/rustc_error_codes/src/error_codes/E0588.md#L14-L16"
+    ],
+    "design_question": "Is a type-only \"may be disaligned\" check safe to use for staging decisions? Answer in the toy: yes, when every alignment and `packed(n)` parameter is a power of two and the layout respects packing: for a path that resolves to `u` at offset `o`, if `align u` divides `typeGA` then the place cannot be misaligned."
+  },
+  {
+    "id": "criterion-type-covers",
+    "lean": "Toy.Packed.critCovers_critType_of_powTwo_respectsPacking",
+    "kind": "theorem",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "For every toy program whose environment has power-of-two alignments and `packed(n)` parameters and whose layout respects packing, the type-based criterion `critType` (with any temporaries and policy) stages every compiler-operation position of the program (`positions`) whose place is misalignable.",
+    "hypotheses": [
+      {
+        "name": "hpow : PowTwoAligns P.env",
+        "purpose": "as in criterion-type-sound",
+        "tightness": "tight",
+        "counterexample": "Toy.Packed.critCovers_critType_fails_without_powTwo",
+        "witness_class": "two-type environment envW; a clone of a field of an alignment-3 struct"
+      },
+      {
+        "name": "hpack : RespectsPacking P.env P.layout",
+        "purpose": "as in criterion-type-sound",
+        "tightness": "tight",
+        "counterexample": "Toy.Packed.critCovers_critType_fails_without_respectsPacking",
+        "witness_class": "two-type environment envRP; an alignment-4 field at offset 1"
+      }
+    ],
+    "nonvacuity_witness": "progNested over envQ.",
+    "nonvacuity_witness_lean": "Toy.Packed.critCovers_critType_hyps_hold",
+    "lean_names": [
+      "Toy.Packed.BodyId",
+      "Toy.Packed.CritCovers",
+      "Toy.Packed.PowTwoAligns",
+      "Toy.Packed.Prog",
+      "Toy.Packed.RespectsPacking",
+      "Toy.Packed.critType",
+      "Toy.Packed.pos_resolve",
+      "Toy.Packed.positions",
+      "Toy.Packed.progRP",
+      "Toy.Packed.progW"
+    ],
+    "non_claims": [
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust, rustc or Miri. Model–system relation: none proved.",
+      "It does not say `critType` stages exactly the misalignable positions (it over-stages: `typeCrit_overstages_fixed_layout`)."
+    ],
+    "prior_art": [
+      "As `criterion-type-sound`.",
+      "normative: rust-lang/reference c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, src/type-layout.md L638-639 (alignments are powers of two), L647-648 (r[layout.repr.alignment.packed-fields]: 'The alignments of each field, for the purpose of positioning fields, is the smaller of the specified alignment and the alignment of the field's type.'), L653-654; https://github.com/rust-lang/reference/blob/c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c/src/type-layout.md#L638-L654"
+    ],
+    "design_question": "Can the coverage premise of `staging` and `sufficiency` be discharged by a type-only check? Answer in the toy: yes, for environments with power-of-two alignments and `packed(n)` parameters and layouts that respect packing."
+  },
+  {
+    "id": "criterion-type-exact-over-layouts",
+    "lean": "Toy.Packed.exists_respectsPacking_layout_misalignable_iff_not_dvd_typeGA_of_noRepeatStep_powTwo",
+    "kind": "characterization",
+    "tier": "T1",
+    "depth": "substantive",
+    "plain_claim": "If every alignment and every `packed(n)` parameter of the environment is a power of two (`PowTwoAligns`), the path from `t0` follows the types to a place of type `u` (`typeAt`), and the path takes no projection step `(t, j)` twice (`NoRepeatStep`), then some layout that respects packing makes the place misalignable (from a base aligned for the base type) iff `u`'s alignment does not divide the type-based guaranteed alignment `typeGA` computed over the whole projection path.",
+    "hypotheses": [
+      {
+        "name": "hpow : PowTwoAligns env",
+        "purpose": "soundness direction; typeGA divides the base alignment",
+        "tightness": "tight",
+        "counterexample": "Toy.Packed.typeGA_exact_fails_without_powTwo",
+        "witness_class": "two-type environment envW, alignments 3 and 2"
+      },
+      {
+        "name": "hty : typeAt env t0 path = some u",
+        "purpose": "the path follows the types to u; typeGA falls back to the base alignment otherwise",
+        "tightness": "tight",
+        "counterexample": "Toy.Packed.typeGA_exact_fails_without_typeAt",
+        "witness_class": "three-type environment envA; the path [99]"
+      },
+      {
+        "name": "hsteps : NoRepeatStep env t0 path",
+        "purpose": "each step's offset can be chosen independently",
+        "tightness": "tight",
+        "counterexample": "Toy.Packed.typeGA_exact_fails_without_noRepeatStep",
+        "witness_class": "one-type cyclic environment envCyc (C = packed { C }, alignment 2), path [0, 0]"
+      }
+    ],
+    "nonvacuity_witness": "The nested place x.1.0 of Q = packed { u8, S } in envQ.",
+    "nonvacuity_witness_lean": "Toy.Packed.typeGA_exact_hyps_hold",
+    "lean_names": [
+      "Toy.Packed.Env",
+      "Toy.Packed.Layout",
+      "Toy.Packed.Misalignable",
+      "Toy.Packed.NoRepeatStep",
+      "Toy.Packed.PowTwoAligns",
+      "Toy.Packed.RespectsPacking",
+      "Toy.Packed.resolve",
+      "Toy.Packed.resolve_indicator",
+      "Toy.Packed.typeAt",
+      "Toy.Packed.typeGA",
+      "Toy.Packed.typeGA_cases"
+    ],
+    "non_claims": [
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust, rustc or Miri. Model–system relation: none proved.",
+      "Exactness is over *all* packing-respecting layouts; for one fixed layout the criterion over-stages (`typeCrit_overstages_fixed_layout`), and the exact fixed-layout criterion is `criterion-exact`.",
+      "Layouts here are arbitrary offset functions subject to `RespectsPacking`. No size, overlap or field-order constraint is imposed (for example `repr(C)` puts field 0 at offset 0, and sibling sizes constrain offsets), so the witnessing layout may not be one any real `repr` produces. Whether exactness survives such constraints is not addressed (not proved either way).",
+      "`typeGA` sees the type environment and the path, not field order or sibling sizes."
+    ],
+    "prior_art": [
+      "Reference \"The alignment modifiers\"; MiniRust `capped_tail_align`.",
+      "normative: rust-lang/reference c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, src/type-layout.md L638-639 (alignments are powers of two), L647-648 (r[layout.repr.alignment.packed-fields]: 'The alignments of each field, for the purpose of positioning fields, is the smaller of the specified alignment and the alignment of the field's type.'), L653-654; https://github.com/rust-lang/reference/blob/c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c/src/type-layout.md#L638-L654",
+      "specification: minirust/minirust 063d784186d3252bee242217f218223205c0b568, spec/lang/types.md L201-207 (capped_tail_align = tail_align.min(packed_align) when packed); https://github.com/minirust/minirust/blob/063d784186d3252bee242217f218223205c0b568/spec/lang/types.md#L201-L207"
+    ],
+    "design_question": "Which places need staging, for a criterion that sees the type environment and the path but not concrete offsets? Answer in the toy: when every alignment and `packed(n)` parameter is a power of two, for a path that follows the types to `u` and repeats no projection step, some packing-respecting layout makes the place misalignable iff `align u` does not divide `typeGA`."
+  },
+  {
+    "id": "criterion-leaf-misses",
+    "lean": [
+      "Toy.Packed.leafOnlyCrit_misses_nested_field",
+      "Toy.Packed.leafOnlyCrit_misses_one_step_underaligned_parent"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "(i) For the compiler drop of the nested place `x.1.0` (the `R4` field of a non-packed `S` stored in `Q = packed { u8, S }`), the leaf-only criterion `critLeaf` (stage iff the immediate parent is `packed(n)` and the field's alignment does not divide `n`) does not stage, the place is misalignable, and the unstaged drop is UB; the type-based criterion stages it and the run has no UB. (ii) In the two-type environment `envUnder`, where the struct `S = { R4 }` declares alignment 1, below its field's alignment 4 (the toy permits this), with power-of-two alignments and the zero layout (which respects packing), for a local `s : S` at the aligned address 1, the compiler drop of the one-step place `s.0` is not staged by `critLeaf` and is UB; `critType` stages it and the run has no UB.",
+    "hypotheses": [],
+    "nonvacuity_witness": "Each theorem is a concrete instance.",
+    "positive_control_lean": "Toy.Packed.leafOnlyCrit_stages_field_in_whole_drop",
+    "lean_names": [
+      "Toy.Packed.FrameAligned",
+      "Toy.Packed.Misalignable",
+      "Toy.Packed.NoUB",
+      "Toy.Packed.PowTwoAligns",
+      "Toy.Packed.RespectsPacking",
+      "Toy.Packed.cfgType",
+      "Toy.Packed.critLeaf",
+      "Toy.Packed.critType",
+      "Toy.Packed.envQ",
+      "Toy.Packed.envUnder",
+      "Toy.Packed.instrNone",
+      "Toy.Packed.progNested",
+      "Toy.Packed.progUnder",
+      "Toy.Packed.run"
+    ],
+    "non_claims": [
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust, rustc or Miri. Model–system relation: none proved.",
+      "Two instances. For the whole-value drop of `x` in `envQ` (through the drop glue of `Q` and then of `S`, one projection per shim), `critLeaf` stages `S` itself and the run has no UB (`leafOnlyCrit_stages_field_in_whole_drop`).",
+      "Whether `critLeaf` covers every one-step shim position when every struct's declared alignment is at least its fields' effective alignments is not addressed (not proved here)."
+    ],
+    "prior_art": [
+      "None specific."
+    ],
+    "design_question": "Does a criterion that looks at the immediate parent alone stage every misalignable place? Answer in the toy: no — `critLeaf` fails to stage a misalignable place in each of the two instances above (a nested field of a non-packed struct inside a packed field, and a field of a parent whose declared alignment is below the field's).",
+    "nonvacuity_witness_lean": [
+      "Toy.Packed.leafOnlyCrit_misses_nested_field",
+      "Toy.Packed.leafOnlyCrit_misses_one_step_underaligned_parent"
+    ]
+  },
+  {
+    "id": "criterion-type-overstages-fixed-layout",
+    "lean": "Toy.Packed.typeCrit_overstages_fixed_layout",
+    "kind": "counterexample",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "In the four-type environment `envOuter` (with power-of-two alignments) and the packing-respecting layout `LOuter`, the type-based criterion stages the place `Outer.1.2` although that place (total offset 4 from a base aligned to 2, type alignment 2) can never be misaligned, while the offset-aware criterion `critExact` does not stage it.",
+    "hypotheses": [],
+    "nonvacuity_witness": "The theorem is itself the concrete instance (envOuter, LOuter).",
+    "lean_names": [
+      "Toy.Packed.LOuter",
+      "Toy.Packed.Misalignable",
+      "Toy.Packed.PowTwoAligns",
+      "Toy.Packed.RespectsPacking",
+      "Toy.Packed.critExact",
+      "Toy.Packed.critType",
+      "Toy.Packed.envOuter",
+      "Toy.Packed.resolve"
+    ],
+    "non_claims": [
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust, rustc or Miri. Model–system relation: none proved.",
+      "One instance. Exactness of `critType` over all packing-respecting layouts is `criterion-type-exact-over-layouts`; what over-staging costs is `overstaging-aligned`."
+    ],
+    "prior_art": [
+      "`core::pin` documentation: the compiler \"might even\" move fields of a `#[repr(packed)]` type \"that happen to be sufficiently aligned\".",
+      "documentation: rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, library/core/src/pin.rs L630-633 ('Moreover, if your type is [`#[repr(packed)]`][packed], the compiler will automatically move fields around to be able to drop them. It might even do that for fields that happen to be sufficiently aligned. As a consequence, you cannot use pinning with a [`#[repr(packed)]`][packed] type.') and L802-807; https://github.com/rust-lang/rust/blob/26bfbf28f5f79dff333ce5a232f131b496ec9cfe/library/core/src/pin.rs#L630-L633"
+    ],
+    "design_question": "Is the type-based criterion exact for a known layout? Answer in the toy: no — in `envOuter` with `LOuter` it stages a place that can never be misaligned.",
+    "nonvacuity_witness_lean": "Toy.Packed.typeCrit_overstages_fixed_layout"
+  },
+  {
+    "id": "overstaging-aligned",
+    "lean": "Toy.Packed.overstaging_aligned_addrObs_changes_trace",
+    "kind": "counterexample",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "(i) For the local `y : R4obs` at the aligned address 8 (`progAlignedObs`, whose destructor prints its address), staging its drop with `critAll` into a temporary at address 16 gives a reference run with no UB event whose observable trace prints 16, while the ideal run of the unstaged program prints 8. (ii) Positive control: for the local `y : R4` at the aligned address 8 (`progAligned`), the same over-staging gives a run with no UB event whose observable trace equals the ideal trace, with exactly one staging copy where the ideal run has none.",
+    "hypotheses": [],
+    "nonvacuity_witness": "The theorem is itself the concrete instance (progAlignedObs).",
+    "positive_control_lean": "Toy.Packed.overstaging_aligned_place_sound_costs_copy",
+    "lean_names": [
+      "Toy.Packed.NoUB",
+      "Toy.Packed.cfgNone",
+      "Toy.Packed.copies",
+      "Toy.Packed.critAll",
+      "Toy.Packed.instrNone",
+      "Toy.Packed.obs",
+      "Toy.Packed.overstaging_aligned_place_sound_costs_copy",
+      "Toy.Packed.progAligned",
+      "Toy.Packed.progAlignedObs",
+      "Toy.Packed.run"
+    ],
+    "non_claims": [
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust, rustc or Miri. Model–system relation: none proved.",
+      "Two instances; they state no general copy-count law. The general statement for a covering criterion that over-stages is `staging`, whose H1–H3 still apply: (i) is an instance where H2 fails at an aligned place."
+    ],
+    "prior_art": [
+      "`core::pin` documentation (fields of a `#[repr(packed)]` type may be moved to be dropped even when sufficiently aligned, so pinning is unusable with it).",
+      "documentation: rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, library/core/src/pin.rs L630-633 ('Moreover, if your type is [`#[repr(packed)]`][packed], the compiler will automatically move fields around to be able to drop them. It might even do that for fields that happen to be sufficiently aligned. As a consequence, you cannot use pinning with a [`#[repr(packed)]`][packed] type.') and L802-807; https://github.com/rust-lang/rust/blob/26bfbf28f5f79dff333ce5a232f131b496ec9cfe/library/core/src/pin.rs#L630-L633"
+    ],
+    "design_question": "What does over-staging an aligned place cost? Answer in the toy: in `progAligned`, one staging copy and no observable change; in `progAlignedObs`, whose destructor observes its address, a changed observable trace.",
+    "nonvacuity_witness_lean": "Toy.Packed.overstaging_aligned_addrObs_changes_trace"
+  },
+  {
+    "id": "box-free",
+    "lean": [
+      "Toy.Packed.boxMoveOut_dropsOnlyStaging_ub_boxFieldStaging_ok",
+      "Toy.Packed.progBox_moveOut_irrelevant"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "In the toy, where freeing a box is a shim that creates `&mut` to the box field at its op 0 and `moveOut` is a no-op marker, consider `progBox` over `envB` (the drop of a local `z : packed { u8, Box<R4> }`, then a marker for a deref-move out of the owning pointer stored at offset 1 of a local `x : packed { u8, Box<R4> }`, then the free of that pointer through the field `x.1`, then the drop of the local `y : R4`). The configuration `cfgDropsOnly` (type-based staging restricted to drops, temporaries at address 16) stages every misalignable drop position of `progBox`; such a position exists (the drop of `z.1` inside the drop glue of `packed { u8, Box<R4> }`); and a misalignable free position exists that `cfgDropsOnly` does not stage (the free of `x.1`; `positions_progBox` lists exactly four positions of `progBox`). The reference run under `cfgDropsOnly` copies `z.1` to the temporary, drops it there (the pointee's destructor, then the free of `z.1`), and then creates a misaligned `&mut` to the box field `x.1` at op 0 of the box-free shim: a UB event. Staging the box field itself into an aligned temporary before freeing (`cfgType envB`) gives a run without UB whose observable trace equals the ideal trace of the unstaged program (`cfgNone`). Removing the `moveOut` marker changes neither run.",
+    "hypotheses": [],
+    "nonvacuity_witness": "The theorems are concrete instances (progBox; no hypotheses). The second conjunct of boxMoveOut_dropsOnlyStaging_ub_boxFieldStaging_ok exhibits a misalignable drop position of progBox that cfgDropsOnly stages, so its first conjunct does not hold vacuously.",
+    "positive_control_lean": "Toy.Packed.boxMoveOut_dropsOnlyStaging_ub_boxFieldStaging_ok",
+    "lean_names": [
+      "Toy.Packed.Misalignable",
+      "Toy.Packed.NoUB",
+      "Toy.Packed.Pos.staged",
+      "Toy.Packed.cfgDropsOnly",
+      "Toy.Packed.cfgNone",
+      "Toy.Packed.cfgType",
+      "Toy.Packed.critNone",
+      "Toy.Packed.envB",
+      "Toy.Packed.obs",
+      "Toy.Packed.positions",
+      "Toy.Packed.positions_progBox",
+      "Toy.Packed.progBox",
+      "Toy.Packed.progBoxNoMove",
+      "Toy.Packed.run"
+    ],
+    "non_claims": [
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust, rustc or Miri. Model–system relation: none proved.",
+      "A toy instance. It does not describe how any compiler lowers `*p.1` for a packed `p`.",
+      "The UB arises because the free is modelled as a reference-taking shim. A lowering that frees the box without creating `&mut Box` (for example, reading the pointer with an unaligned read and deallocating through the raw pointer) is outside the toy's `boxFree` shim; this card neither establishes nor refutes that such a lowering avoids the UB.",
+      "The toy does not track ownership: the program states which operations happen. After the deref-move marker, the program frees the box of `x` (without dropping its pointee) and then drops `y`; `z` is a separate local whose whole value is dropped.",
+      "Context (documented upstream, cited as such): https://github.com/rust-lang/rust/issues/164561 (open) reports that for `#[repr(C, packed)] pub struct P(u8, Box<String>);` and `fn f(p: P) -> String { *p.1 }`, Miri reports \"Undefined Behavior: constructing invalid value of type &mut std::boxed::Box<std::string::String>: encountered an unaligned reference (required 8 byte alignment but found 2)\". The toy result neither establishes nor refutes anything about that report."
+    ],
+    "prior_art": [
+      "https://github.com/rust-lang/rust/issues/164561 (context; an open issue, not relied on as normative); Reference `r[undefined.validity.reference-box]`.",
+      "context (open issue, not relied on as normative): https://github.com/rust-lang/rust/issues/164561 ('moving a `Box` out of a packed struct creates a misaligned `&mut Box` to drop it', open, created 2026-10-19)",
+      "normative: rust-lang/reference c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, src/behavior-considered-undefined.md L18-19, L90-94 (r[undefined.misaligned.raw], r[undefined.misaligned.reference]), L151-152 (r[undefined.validity.reference-box]); https://github.com/rust-lang/reference/blob/c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c/src/behavior-considered-undefined.md#L78-L97"
+    ],
+    "design_question": "Is staging the moved-out value enough when moving out of an owning pointer stored in a packed field? Answer in the toy: in `progBox`, with frees modelled as reference-taking shims, staging every misalignable drop (at least one such drop is staged) and no free leaves a UB event in the box-free shim, while also staging the box field does not; other lowerings of the free are not examined.",
+    "nonvacuity_witness_lean": [
+      "Toy.Packed.boxMoveOut_dropsOnlyStaging_ub_boxFieldStaging_ok",
+      "Toy.Packed.progBox_moveOut_irrelevant"
+    ]
+  },
+  {
+    "id": "completeness",
+    "lean": "Toy.Packed.noUB_forall_progs_iff_alignRelevantCovered",
+    "kind": "characterization",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "Fix an environment, a layout, a staging criterion, temporaries and an instrumentation policy `I : BodyId → Nat → Bool`, chosen before the program. Over the class of all programs over that environment and layout — which contains programs whose unsafe client code passes arbitrary raw addresses to any shim, programs with user-written reference creations at any source position, and programs whose locals sit at any address — every run produced by `run` in the reference semantics has no UB event iff `I` checks op 0 of every existing shim (drop glue and clone of every type, box free of every box type) of every in-range type whose alignment is not 1, and, if some in-range type's alignment is not 1, every source position.",
+    "hypotheses": [],
+    "nonvacuity_witness": "Checks everywhere cover envA and the run of progClient traps (completeness_witness); instrSrc fails both sides (alignRelevantCovered_neg, srcInstrumented_rawDropInPlace_misaligned_escapes).",
+    "nonvacuity_witness_lean": "Toy.Packed.completeness_witness",
+    "lean_names": [
+      "Toy.Packed.AlignRelevantCovered",
+      "Toy.Packed.BodyId",
+      "Toy.Packed.Crit",
+      "Toy.Packed.Env",
+      "Toy.Packed.Layout",
+      "Toy.Packed.NoUB",
+      "Toy.Packed.Prog",
+      "Toy.Packed.positions",
+      "Toy.Packed.run",
+      "Toy.Packed.runShim_noUB_of_covered"
+    ],
+    "non_claims": [
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust, rustc or Miri. Model–system relation: none proved.",
+      "`NoUB` holds for runs with no misaligned reference creation and for runs ending with `trap`, `stuck` or `outOfFuel` before any UB event; it does not say that a run traps. That the instrumented run emits `trap` exactly where the uninstrumented run emits a UB event at a checked position is `precision`; combining the two, under a covering policy every UB event of the uninstrumented run becomes a trap.",
+      "The policy is fixed before the program and every program shares the body name `.src`, so the \"only if\" direction forces checks at every source position (including positions holding `readUnaligned` or `moveOut`) and in every existing shim kind of every type with alignment not 1 (including clone shims of types that need not be cloneable in Rust), because a client may call any existing shim and a `rawRef` may sit at any position. `FrameAligned` is not assumed. For a restricted class (no unsafe clients, or some shims never called) coverage of fewer operations can suffice (`sufficiency`).",
+      "Escape hatch — redundant checks: in richer shims with several reference creations, omitting a check whose misalignment always implies an earlier checked one can preserve completeness; the toy's shims have one reference creation (op 0), and every existing shim is directly callable, so this does not arise here (not proved for richer shims).",
+      "Escape hatch — caller-side checks: `srcStep` consults no check at `rawCall` sites, so checking a raw address at the call site before entering a shim is outside the policy space; this card neither establishes nor refutes the completeness of caller-side checking.",
+      "In the toy, reference creation (at `rawRef` and op 0 of existing shims) is the alignment-relevant operation; misaligned loads and stores through raw pointers and misaligned `Box<T>` values (Reference `r[undefined.pointer-access]`, `r[undefined.validity.reference-box]`) are not modelled.",
+      "Operations requiring alignment 1 need not be checked (`refStep_align_one`, `alignRelevantCovered_trivial_align_one`); alignment 0 does need checking (address 1 is misaligned for it).",
+      "Not about any real compiler's check-insertion pass; the toy does not say which real bodies or shims receive checks."
+    ],
+    "prior_art": [
+      "Miri documentation (it detects \"Not sufficiently aligned memory accesses and references\"; `-Zmiri-symbolic-alignment-check`; `-Zmiri-disable-alignment-check`); rustc `-Zub-checks` documentation (runtime UB checks \"generated on a best-effort basis\"; cited for its documented behaviour, with no claim about which bodies are checked); Clang UndefinedBehaviorSanitizer `-fsanitize=alignment` (\"Use of a misaligned pointer or creation of a misaligned reference\") with `-fsanitize-trap`; Song et al., \"SoK: Sanitizing for Security\" (systematizes sanitizer coverage). No mechanized completeness statement covering synthesized shims was found.",
+      "documentation: rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, src/tools/miri/README.md L15 ('Not sufficiently aligned memory accesses and references'), L399-408 (-Zmiri-symbolic-alignment-check), L442-444 (-Zmiri-disable-alignment-check); https://github.com/rust-lang/rust/blob/26bfbf28f5f79dff333ce5a232f131b496ec9cfe/src/tools/miri/README.md#L399-L408",
+      "documentation (documented behaviour; no claim about which bodies are checked): rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, src/doc/unstable-book/src/compiler-flags/ub-checks.md L10 ('All checks are generated on a best-effort basis; even if we have a check implemented for some cause of Undefined Behavior, it may be possible for the check to not fire.'); https://github.com/rust-lang/rust/blob/26bfbf28f5f79dff333ce5a232f131b496ec9cfe/src/doc/unstable-book/src/compiler-flags/ub-checks.md#L10",
+      "documentation (live page, observed 2026-11-21): Clang UndefinedBehaviorSanitizer, '-fsanitize=alignment: Use of a misaligned pointer or creation of a misaligned reference', and -fsanitize-trap=; https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html",
+      "D. Song, J. Lettner, P. Rajasekaran, Y. Na, S. Volckaert, P. Larsen, M. Franz, 'SoK: Sanitizing for Security', IEEE S&P 2019, doi:10.1109/SP.2019.00010",
+      "Related mechanizations without packed-drop staging or shim-check completeness: RustBelt (Jung, Jourdan, Krebbers, Dreyer, POPL 2018, doi:10.1145/3158154); RefinedRust (Gaeher, Sammler, Jung, Krebbers, Dreyer, PLDI 2024, doi:10.1145/3656422)"
+    ],
+    "design_question": "When does dynamic alignment-check instrumentation, given as a fixed set of (body, op) pairs, prevent every UB event over all programs over an environment and layout? Answer in the toy: iff it checks op 0 of every existing shim of every in-range type whose alignment is not 1 and, if such a type exists, every source position."
+  },
+  {
+    "id": "precision",
+    "lean": "Toy.Packed.run_eq_uninstrumented_map_toTrap",
+    "kind": "theorem",
+    "tier": "T0",
+    "depth": "shallow",
+    "plain_claim": "For every toy program and configuration, the instrumented reference-semantics run produced by `run` equals the uninstrumented run with each UB event at a checked position relabelled as a trap; so a check traps only at a checked position where the uninstrumented run has a UB event (a misaligned reference creation), never at an aligned reference creation.",
+    "hypotheses": [],
+    "nonvacuity_witness": "progClient: [trap ...] with checks vs [ub ...] without (completeness_witness).",
+    "nonvacuity_witness_lean": "Toy.Packed.completeness_witness",
+    "lean_names": [
+      "Toy.Packed.Cfg",
+      "Toy.Packed.Prog",
+      "Toy.Packed.run",
+      "Toy.Packed.runShim_precision",
+      "Toy.Packed.toTrap"
+    ],
+    "non_claims": [
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust, rustc or Miri. Model–system relation: none proved.",
+      "Precision holds by construction of `refStep` (a check traps iff the address is misaligned); the theorem lifts it to whole runs. Checks with false positives (for example a check that uses a stricter notion of alignment, as Miri's symbolic alignment check documents for manual integer arithmetic) are outside the model."
+    ],
+    "prior_art": [
+      "Miri `-Zmiri-symbolic-alignment-check` documentation (documents false positives of a stricter check); Clang UBSan `-fsanitize-trap=alignment`.",
+      "documentation: rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, src/tools/miri/README.md L15 ('Not sufficiently aligned memory accesses and references'), L399-408 (-Zmiri-symbolic-alignment-check), L442-444 (-Zmiri-disable-alignment-check); https://github.com/rust-lang/rust/blob/26bfbf28f5f79dff333ce5a232f131b496ec9cfe/src/tools/miri/README.md#L399-L408",
+      "documentation (live page, observed 2026-11-21): Clang UndefinedBehaviorSanitizer, '-fsanitize=alignment: Use of a misaligned pointer or creation of a misaligned reference', and -fsanitize-trap=; https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html"
+    ],
+    "design_question": "Can an alignment check of this kind reject a run that the uninstrumented semantics accepts? Answer in the toy: no — the instrumented run differs from the uninstrumented run exactly by relabelling UB events at checked positions as traps."
+  },
+  {
+    "id": "escape",
+    "lean": "Toy.Packed.srcInstrumented_rawDropInPlace_misaligned_escapes",
+    "kind": "counterexample",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "Consider `progEscape` over `envA` (locals `w, x : packed { u8, R4 }` at addresses 0 and 8; the compiler drop of `w`, then an unsafe client call that passes the raw address 9 — the address of `x.1`, as `&raw mut x.1` would produce; the toy passes the literal address — to the drop glue of `R4`). Take checks at every source position and no check at op 0 of the drop glue of `R4` (`instrSrc`), and type-based staging (`critType envA`, temporaries at address 16), which stages every misalignable compiler-operation position of `progEscape`; such a position exists (the drop of `w.1` inside the drop glue of `packed { u8, R4 }`; `positions_progEscape` lists exactly two positions of `progEscape`). The reference run copies `w.1` to the temporary and runs its destructor there, and then the client call makes the drop glue of `R4` create a misaligned `&mut` at its op 0: a UB event with no trap. With checks everywhere (`instrAll`) the same run ends with a trap at that operation instead.",
+    "hypotheses": [],
+    "nonvacuity_witness": "The theorem is a concrete instance (progEscape; no hypotheses). Its fourth conjunct exhibits a misalignable compiler-operation position of progEscape that critType envA stages, so its third conjunct (CritCovers) does not hold vacuously.",
+    "positive_control_lean": "Toy.Packed.completeness_witness",
+    "lean_names": [
+      "Toy.Packed.CritCovers",
+      "Toy.Packed.Misalignable",
+      "Toy.Packed.Pos.staged",
+      "Toy.Packed.cfgType",
+      "Toy.Packed.completeness_witness",
+      "Toy.Packed.critNone",
+      "Toy.Packed.critType",
+      "Toy.Packed.envA",
+      "Toy.Packed.instrAll",
+      "Toy.Packed.instrSrc",
+      "Toy.Packed.positions",
+      "Toy.Packed.positions_progEscape",
+      "Toy.Packed.progClient",
+      "Toy.Packed.progEscape",
+      "Toy.Packed.run"
+    ],
+    "non_claims": [
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust, rustc or Miri. Model–system relation: none proved.",
+      "It refutes, in the toy, the claim \"checks at source positions catch every alignment violation\" for policies that check source positions and not shims. It says nothing about which bodies any real compiler or tool instruments.",
+      "The client's own raw-pointer creation is not UB (the Reference allows `&raw mut` on such a place); the violation is the shim's reference creation.",
+      "The toy does not track ownership: the program states which operations happen, and in `progEscape` the compiler does not drop `x`.",
+      "Escape hatch — caller-side checks: `srcStep` has no check at `rawCall` sites, so the counterexample does not refute checking the raw address at the call site.",
+      "Misaligned loads and stores through raw pointers are not modelled."
+    ],
+    "prior_art": [
+      "RFC 2582 (`&raw` exists so that a raw pointer to a packed field can be created without an intermediate unaligned reference); Reference `r[undefined.misaligned.raw]`; `core::ptr::drop_in_place` safety section (\"`to_drop` must be properly aligned\").",
+      "normative design record: rust-lang/rfcs f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07, text/2582-raw-reference-mir-operator.md L23-24 ('`&packed.field as *const _` creates an intermediate unaligned reference, triggering undefined behavior because it is not aligned.'); https://github.com/rust-lang/rfcs/blob/f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07/text/2582-raw-reference-mir-operator.md#L23-L24",
+      "normative: rust-lang/reference c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, src/behavior-considered-undefined.md L18-19, L90-94 (r[undefined.misaligned.raw], r[undefined.misaligned.reference]), L151-152 (r[undefined.validity.reference-box]); https://github.com/rust-lang/reference/blob/c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c/src/behavior-considered-undefined.md#L78-L97",
+      "documentation: rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, library/core/src/ptr/mod.rs L761-763 ('Unaligned values cannot be dropped in place, they must be copied to an aligned location first using [`ptr::read_unaligned`]. For packed structs, this move is done automatically by the compiler.') and L776 ('`to_drop` must be properly aligned, even if `T` has size 0.'); https://github.com/rust-lang/rust/blob/26bfbf28f5f79dff333ce5a232f131b496ec9cfe/library/core/src/ptr/mod.rs#L761-L776",
+      "documentation: rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_error_codes/src/error_codes/E0793.md L28-29 ('Creating a reference to an insufficiently aligned packed field is [undefined behavior] and therefore disallowed.'); https://github.com/rust-lang/rust/blob/26bfbf28f5f79dff333ce5a232f131b496ec9cfe/compiler/rustc_error_codes/src/error_codes/E0793.md#L28-L29"
+    ],
+    "design_question": "Are checks at source positions enough? Answer in the toy: no — in `progEscape`, with checks at every source position, none in the drop glue of `R4`, and covering type-based staging (which stages a misalignable drop), the run has a UB event in the shim; `sufficiency` gives conditions under which the run has no UB event whatever the shims check.",
+    "nonvacuity_witness_lean": "Toy.Packed.srcInstrumented_rawDropInPlace_misaligned_escapes"
+  },
+  {
+    "id": "sufficiency",
+    "lean": "Toy.Packed.noUB_of_frameAligned_covers_alignedTemps_clientPtrsAligned_srcRefsInstrumented",
+    "kind": "theorem",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "For every toy program whose locals are at aligned addresses (`FrameAligned`), if (a) every compiler-operation position of the program (`positions`: the source body and the shims the program may enter, executed by a run or not) whose place is misalignable is staged (`CritCovers`) into a temporary aligned for the staged type (`TempsAligned`), (b) every raw address that unsafe client code passes to an existing shim is aligned for the shim's type (`ClientPtrsAligned`), and (c) every user-written reference creation in the source body is checked (`SrcRefsInstrumented`), then the reference-semantics run produced by `run` has no UB event, whatever checks the shims have (the policy may check no shim). The run may still end with `trap`, `stuck` or `outOfFuel`.",
+    "hypotheses": [
+      {
+        "name": "hframe : FrameAligned P",
+        "purpose": "an unstaged place's address is its local's base address plus its offset",
+        "tightness": "tight",
+        "counterexample": "Toy.Packed.sufficiency_fails_without_frameAligned",
+        "witness_class": "one-type environment [tR4]; one local at address 2",
+        "other_hypotheses_vacuity": "CritCovers and TempsAligned hold vacuously (the single position is not misalignable and none is staged): critCovers_and_frameAligned_counterexamples_stage_nothing."
+      },
+      {
+        "name": "ha : CritCovers P cfg",
+        "purpose": "(a) compiler operations hand shims aligned addresses",
+        "tightness": "tight",
+        "counterexample": "Toy.Packed.sufficiency_fails_without_critCovers",
+        "witness_class": "four-type environment envB; the box-free program progBox: a staged misalignable drop, then an unstaged free",
+        "other_hypotheses_vacuity": "TempsAligned holds at a staged position (second conjunct of boxMoveOut_dropsOnlyStaging_ub_boxFieldStaging_ok)."
+      },
+      {
+        "name": "ht : TempsAligned P cfg",
+        "purpose": "(a) staged operations hand shims aligned addresses",
+        "tightness": "tight",
+        "counterexample": "Toy.Packed.sufficiency_fails_without_tempsAligned",
+        "witness_class": "three-type environment envA; temporary at address 2",
+        "other_hypotheses_vacuity": "The negated hypothesis fails at a staged position, so CritCovers holds at a staged position."
+      },
+      {
+        "name": "hb : ClientPtrsAligned P",
+        "purpose": "(b) client calls hand shims aligned addresses",
+        "tightness": "tight",
+        "counterexample": "Toy.Packed.sufficiency_fails_without_clientPtrsAligned",
+        "witness_class": "three-type environment envA; the escape program progEscape: a staged misalignable drop, then a client call with a misaligned address",
+        "other_hypotheses_vacuity": "CritCovers and TempsAligned hold at a staged position (fourth conjunct of srcInstrumented_rawDropInPlace_misaligned_escapes; cfgSrc has the criterion critType envA)."
+      },
+      {
+        "name": "hc : SrcRefsInstrumented P cfg",
+        "purpose": "(c) user references are caught in the source body",
+        "tightness": "tight",
+        "counterexample": "Toy.Packed.sufficiency_fails_without_srcRefsInstrumented",
+        "witness_class": "three-type environment envA; progUserRef: a staged misalignable drop, then one unchecked &*ptr at address 9",
+        "other_hypotheses_vacuity": "CritCovers and TempsAligned hold at a staged position (progUserRef_stages_misalignable_position)."
+      }
+    ],
+    "nonvacuity_witness": "progMixed with cfgSrc: all premises hold and all three operations execute.",
+    "nonvacuity_witness_lean": "Toy.Packed.sufficiency_hyps_hold_progMixed",
+    "lean_names": [
+      "Toy.Packed.Cfg",
+      "Toy.Packed.ClientPtrsAligned",
+      "Toy.Packed.CritCovers",
+      "Toy.Packed.FrameAligned",
+      "Toy.Packed.NoUB",
+      "Toy.Packed.Op.ptrAligned",
+      "Toy.Packed.Prog",
+      "Toy.Packed.SrcRefsInstrumented",
+      "Toy.Packed.TempsAligned",
+      "Toy.Packed.cfgSrc",
+      "Toy.Packed.critCovers_and_frameAligned_counterexamples_stage_nothing",
+      "Toy.Packed.positions",
+      "Toy.Packed.progEscape",
+      "Toy.Packed.progUserRef",
+      "Toy.Packed.progUserRef_stages_misalignable_position",
+      "Toy.Packed.rawCall_missing_shim_admitted",
+      "Toy.Packed.run",
+      "Toy.Packed.runShim_noUB_of_aligned",
+      "Toy.Packed.shimExists"
+    ],
+    "non_claims": [
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust, rustc or Miri. Model–system relation: none proved.",
+      "`NoUB` excludes `Ev.ub` events and nothing else: a run may end with `stuck` (an unsized staged value: `sufficiency_hyps_hold_progU_stuck`), `trap` (a misaligned checked user reference) or `outOfFuel`. Under H1 no run is `stuck` (`no-stuck`).",
+      "H2 (address-blind) is not needed: addresses printed by destructors do not affect UB.",
+      "Premise (c) is not needed for the shim part of the conclusion (`sufficiency-shim`).",
+      "Premise (b) is a precondition on client code; nothing checks it. It constrains raw calls of existing shims; a raw call of a shim that does not exist is a no-op and is admitted whatever its address (`rawCall_missing_shim_admitted`).",
+      "Not about any real compiler; the toy does not say which real bodies receive checks."
+    ],
+    "prior_art": [
+      "As `staging` (staging) and `completeness` (checking).",
+      "documentation (documented design; no claim about the implementation): rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/add_moves_for_packed_drops.rs L9-11 ('This pass moves values being dropped that are within a packed struct to a separate local before dropping them, to ensure that they are dropped from an aligned address.') and L25; https://github.com/rust-lang/rust/blob/26bfbf28f5f79dff333ce5a232f131b496ec9cfe/compiler/rustc_mir_transform/src/add_moves_for_packed_drops.rs#L9-L38",
+      "documentation: rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, src/tools/miri/README.md L15 ('Not sufficiently aligned memory accesses and references'), L399-408 (-Zmiri-symbolic-alignment-check), L442-444 (-Zmiri-disable-alignment-check); https://github.com/rust-lang/rust/blob/26bfbf28f5f79dff333ce5a232f131b496ec9cfe/src/tools/miri/README.md#L399-L408"
+    ],
+    "design_question": "When can shim checks be omitted? Answer in the toy: for a program whose locals are aligned, when every misalignable compiler-operation position (`positions`: the source body and the shims the program may enter, executed by a run or not) is staged into a temporary aligned for the staged type, every raw address passed to an existing shim is aligned for the shim's type, and every user reference creation in the source body is checked, the reference-semantics run produced by `run` has no UB event whatever the shims check."
+  },
+  {
+    "id": "sufficiency-shim",
+    "lean": "Toy.Packed.noShimUB_of_frameAligned_covers_alignedTemps_clientPtrsAligned",
+    "kind": "theorem",
+    "tier": "T1",
+    "depth": "substantive",
+    "plain_claim": "For every toy program whose locals are at aligned addresses (`FrameAligned`), if every compiler-operation position of the program (`positions`: the source body and the shims the program may enter, executed by a run or not) whose place is misalignable is staged (`CritCovers`) into a temporary aligned for the staged type (`TempsAligned`), and every raw address that client code passes to an existing shim is aligned for the shim's type (`ClientPtrsAligned`), then the reference-semantics run produced by `run` has no UB event inside a shim. The run may still have a UB event in the source body and may end with `trap`, `stuck` or `outOfFuel`.",
+    "hypotheses": [
+      {
+        "name": "hframe : FrameAligned P",
+        "purpose": "as in sufficiency",
+        "tightness": "tight",
+        "counterexample": "Toy.Packed.sufficiency_fails_without_frameAligned",
+        "witness_class": "one-type environment [tR4]; the last conjunct refutes NoShimUB",
+        "other_hypotheses_vacuity": "CritCovers and TempsAligned hold vacuously (the single position is not misalignable and none is staged): critCovers_and_frameAligned_counterexamples_stage_nothing."
+      },
+      {
+        "name": "ha : CritCovers P cfg",
+        "purpose": "as in sufficiency",
+        "tightness": "tight",
+        "counterexample": "Toy.Packed.sufficiency_fails_without_critCovers",
+        "witness_class": "four-type environment envB; progBox; the last conjunct refutes NoShimUB",
+        "other_hypotheses_vacuity": "TempsAligned holds at a staged position (second conjunct of boxMoveOut_dropsOnlyStaging_ub_boxFieldStaging_ok)."
+      },
+      {
+        "name": "ht : TempsAligned P cfg",
+        "purpose": "as in sufficiency",
+        "tightness": "tight",
+        "counterexample": "Toy.Packed.sufficiency_fails_without_tempsAligned",
+        "witness_class": "three-type environment envA; the last conjunct refutes NoShimUB",
+        "other_hypotheses_vacuity": "The negated hypothesis fails at a staged position, so CritCovers holds at a staged position."
+      },
+      {
+        "name": "hb : ClientPtrsAligned P",
+        "purpose": "as in sufficiency",
+        "tightness": "tight",
+        "counterexample": "Toy.Packed.sufficiency_fails_without_clientPtrsAligned",
+        "witness_class": "three-type environment envA; progEscape; the last conjunct refutes NoShimUB",
+        "other_hypotheses_vacuity": "CritCovers and TempsAligned hold at a staged position (fourth conjunct of srcInstrumented_rawDropInPlace_misaligned_escapes; cfgSrc has the criterion critType envA)."
+      }
+    ],
+    "nonvacuity_witness": "progMixed with cfgSrc.",
+    "nonvacuity_witness_lean": "Toy.Packed.sufficiency_hyps_hold_progMixed",
+    "lean_names": [
+      "Toy.Packed.Cfg",
+      "Toy.Packed.ClientPtrsAligned",
+      "Toy.Packed.CritCovers",
+      "Toy.Packed.FrameAligned",
+      "Toy.Packed.NoShimUB",
+      "Toy.Packed.Op.ptrAligned",
+      "Toy.Packed.Prog",
+      "Toy.Packed.TempsAligned",
+      "Toy.Packed.cfgSrc",
+      "Toy.Packed.progEscape",
+      "Toy.Packed.run",
+      "Toy.Packed.runShim_noUB_of_aligned",
+      "Toy.Packed.shimExists"
+    ],
+    "non_claims": [
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust, rustc or Miri. Model–system relation: none proved.",
+      "UB in the source body (an unchecked user reference) is not excluded: `sufficiency_fails_without_srcRefsInstrumented` has `NoShimUB` but not `NoUB`. `stuck`, `trap` and `outOfFuel` are not excluded."
+    ],
+    "prior_art": [
+      "As `sufficiency`.",
+      "documentation (documented design; no claim about the implementation): rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/add_moves_for_packed_drops.rs L9-11 ('This pass moves values being dropped that are within a packed struct to a separate local before dropping them, to ensure that they are dropped from an aligned address.') and L25; https://github.com/rust-lang/rust/blob/26bfbf28f5f79dff333ce5a232f131b496ec9cfe/compiler/rustc_mir_transform/src/add_moves_for_packed_drops.rs#L9-L38",
+      "documentation: rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, src/tools/miri/README.md L15 ('Not sufficiently aligned memory accesses and references'), L399-408 (-Zmiri-symbolic-alignment-check), L442-444 (-Zmiri-disable-alignment-check); https://github.com/rust-lang/rust/blob/26bfbf28f5f79dff333ce5a232f131b496ec9cfe/src/tools/miri/README.md#L399-L408"
+    ],
+    "design_question": "Which premises protect shims specifically? Answer in the toy: for a program whose locals are aligned, when every misalignable compiler-operation position (`positions`: the source body and the shims the program may enter, executed by a run or not) is staged into a temporary aligned for the staged type and every raw address passed to an existing shim is aligned for the shim's type, the reference-semantics run produced by `run` has no UB event inside a shim."
+  },
+  {
+    "id": "no-stuck",
+    "lean": "Toy.Packed.noStuck_of_stagedSized",
+    "kind": "theorem",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "For every toy program and configuration, if every staged position of the program (of its source body and of the shims it may enter, `positions`, executed by a run or not) has a sized type (H1, `StagedSized`), then the run produced by `run`, in either semantics, has no `stuck` event.",
+    "hypotheses": [
+      {
+        "name": "h1 : StagedSized P cfg",
+        "purpose": "compStep emits stuck when it stages a value of an unsized type",
+        "tightness": "tight",
+        "counterexample": "Toy.Packed.noStuck_fails_without_stagedSized",
+        "witness_class": "three-type environment envU; the unsized packed tail is staged"
+      }
+    ],
+    "nonvacuity_witness": "progInPlace with cfgType envA: a position is staged and every staged position is sized.",
+    "nonvacuity_witness_lean": "Toy.Packed.noStuck_hyps_hold_progInPlace",
+    "lean_names": [
+      "Toy.Packed.Cfg",
+      "Toy.Packed.Mode",
+      "Toy.Packed.NoStuck",
+      "Toy.Packed.Prog",
+      "Toy.Packed.Reached",
+      "Toy.Packed.StagedSized",
+      "Toy.Packed.noStuck_pos",
+      "Toy.Packed.positions",
+      "Toy.Packed.reachableShims",
+      "Toy.Packed.run",
+      "Toy.Packed.runShim_noStuck"
+    ],
+    "non_claims": [
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust, rustc or Miri. Model–system relation: none proved.",
+      "`NoStuck` excludes `Ev.stuck` events and nothing else: a run satisfying it may still have a `ub`, `trap` or `outOfFuel` event (`noStuck_pos` is `NoStuck ⟨[.ub .src 0], false⟩`). To exclude UB events, combine it with `sufficiency` or `staging`.",
+      "`StagedSized` ranges over the static `positions P` (the source body and the shims in `reachableShims P`), which over-approximate the operations a run executes, so the hypothesis can fail on a position no run executes.",
+      "`stuck` stands for a compile-time rejection of staging an unsized value; this card neither establishes nor refutes anything about how Rust treats unsized fields of packed structs."
+    ],
+    "prior_art": [
+      "None specific."
+    ],
+    "design_question": "Under which condition does staging never get stuck? Answer in the toy: when every staged position of the program (`positions`: its source body and the shims it may enter, executed by a run or not) has a sized type, the run produced by `run`, in either semantics, has no `stuck` event.",
+    "depth_note": "An instance of the generic shim invariant that the other shim results also instantiate, relating run-time operations to positions through Reached (runShim_noStuck); no alignment arithmetic."
+  }
+]

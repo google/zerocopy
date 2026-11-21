@@ -1,0 +1,1829 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Packed.AddrBlind": [
+      "propext"
+    ],
+    "Toy.Packed.AddrBlind.eq_1": [
+      "propext"
+    ],
+    "Toy.Packed.AddrBlind.eq_2": [
+      "propext"
+    ],
+    "Toy.Packed.AddrBlind.eq_def": [
+      "propext"
+    ],
+    "Toy.Packed.AlignRelevantCovered": [
+      "propext"
+    ],
+    "Toy.Packed.AllEv": [],
+    "Toy.Packed.BodyId": [],
+    "Toy.Packed.BodyId.casesOn": [],
+    "Toy.Packed.BodyId.ctorElim": [],
+    "Toy.Packed.BodyId.ctorElimType": [],
+    "Toy.Packed.BodyId.ctorIdx": [],
+    "Toy.Packed.BodyId.noConfusion": [],
+    "Toy.Packed.BodyId.noConfusionType": [],
+    "Toy.Packed.BodyId.rec": [],
+    "Toy.Packed.BodyId.recOn": [],
+    "Toy.Packed.BodyId.shim": [],
+    "Toy.Packed.BodyId.shim.elim": [],
+    "Toy.Packed.BodyId.shim.inj": [],
+    "Toy.Packed.BodyId.shim.injEq": [
+      "propext"
+    ],
+    "Toy.Packed.BodyId.shim.noConfusion": [],
+    "Toy.Packed.BodyId.shim.sizeOf_spec": [],
+    "Toy.Packed.BodyId.src": [],
+    "Toy.Packed.BodyId.src.elim": [],
+    "Toy.Packed.BodyId.src.sizeOf_spec": [],
+    "Toy.Packed.Cfg": [],
+    "Toy.Packed.Cfg.casesOn": [],
+    "Toy.Packed.Cfg.crit": [],
+    "Toy.Packed.Cfg.ctorIdx": [],
+    "Toy.Packed.Cfg.instr": [],
+    "Toy.Packed.Cfg.mk": [],
+    "Toy.Packed.Cfg.mk.inj": [],
+    "Toy.Packed.Cfg.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Packed.Cfg.mk.noConfusion": [],
+    "Toy.Packed.Cfg.mk.sizeOf_spec": [],
+    "Toy.Packed.Cfg.noConfusion": [],
+    "Toy.Packed.Cfg.noConfusionType": [],
+    "Toy.Packed.Cfg.rec": [],
+    "Toy.Packed.Cfg.recOn": [],
+    "Toy.Packed.Cfg.tmp": [],
+    "Toy.Packed.Cfg.unstaged": [],
+    "Toy.Packed.Cfg.unstaged.eq_1": [],
+    "Toy.Packed.ClientPtrsAligned": [
+      "propext"
+    ],
+    "Toy.Packed.Crit": [],
+    "Toy.Packed.CritCovers": [
+      "propext"
+    ],
+    "Toy.Packed.Env": [],
+    "Toy.Packed.Env.align": [
+      "propext"
+    ],
+    "Toy.Packed.Env.align.eq_1": [
+      "propext"
+    ],
+    "Toy.Packed.Env.field?": [
+      "propext"
+    ],
+    "Toy.Packed.Env.field?.eq_1": [
+      "propext"
+    ],
+    "Toy.Packed.Env.fields": [
+      "propext"
+    ],
+    "Toy.Packed.Env.fields.eq_1": [
+      "propext"
+    ],
+    "Toy.Packed.Env.fields.match_1": [
+      "propext"
+    ],
+    "Toy.Packed.Env.isBox": [
+      "propext"
+    ],
+    "Toy.Packed.Env.isBox.match_1": [
+      "propext"
+    ],
+    "Toy.Packed.Env.ty": [
+      "propext"
+    ],
+    "Toy.Packed.Env.ty.eq_1": [
+      "propext"
+    ],
+    "Toy.Packed.Ev": [],
+    "Toy.Packed.Ev.addrObs": [],
+    "Toy.Packed.Ev.addrObs.elim": [],
+    "Toy.Packed.Ev.addrObs.inj": [],
+    "Toy.Packed.Ev.addrObs.injEq": [
+      "propext"
+    ],
+    "Toy.Packed.Ev.addrObs.noConfusion": [],
+    "Toy.Packed.Ev.addrObs.sizeOf_spec": [],
+    "Toy.Packed.Ev.casesOn": [],
+    "Toy.Packed.Ev.cloned": [],
+    "Toy.Packed.Ev.cloned.elim": [],
+    "Toy.Packed.Ev.cloned.inj": [],
+    "Toy.Packed.Ev.cloned.injEq": [
+      "propext"
+    ],
+    "Toy.Packed.Ev.cloned.noConfusion": [],
+    "Toy.Packed.Ev.cloned.sizeOf_spec": [],
+    "Toy.Packed.Ev.copy": [],
+    "Toy.Packed.Ev.copy.elim": [],
+    "Toy.Packed.Ev.copy.inj": [],
+    "Toy.Packed.Ev.copy.injEq": [
+      "propext"
+    ],
+    "Toy.Packed.Ev.copy.noConfusion": [],
+    "Toy.Packed.Ev.copy.sizeOf_spec": [],
+    "Toy.Packed.Ev.ctorElim": [],
+    "Toy.Packed.Ev.ctorElimType": [],
+    "Toy.Packed.Ev.ctorIdx": [],
+    "Toy.Packed.Ev.dtor": [],
+    "Toy.Packed.Ev.dtor.elim": [],
+    "Toy.Packed.Ev.dtor.inj": [],
+    "Toy.Packed.Ev.dtor.injEq": [
+      "propext"
+    ],
+    "Toy.Packed.Ev.dtor.noConfusion": [],
+    "Toy.Packed.Ev.dtor.sizeOf_spec": [],
+    "Toy.Packed.Ev.free": [],
+    "Toy.Packed.Ev.free.elim": [],
+    "Toy.Packed.Ev.free.inj": [],
+    "Toy.Packed.Ev.free.injEq": [
+      "propext"
+    ],
+    "Toy.Packed.Ev.free.noConfusion": [],
+    "Toy.Packed.Ev.free.sizeOf_spec": [],
+    "Toy.Packed.Ev.isShimUB": [
+      "propext"
+    ],
+    "Toy.Packed.Ev.isShimUB.eq_1": [
+      "propext"
+    ],
+    "Toy.Packed.Ev.isShimUB.eq_2": [
+      "propext"
+    ],
+    "Toy.Packed.Ev.isShimUB.match_1": [
+      "propext"
+    ],
+    "Toy.Packed.Ev.isStuck": [
+      "propext"
+    ],
+    "Toy.Packed.Ev.isStuck.match_1": [
+      "propext"
+    ],
+    "Toy.Packed.Ev.isUB": [
+      "propext"
+    ],
+    "Toy.Packed.Ev.isUB.eq_1": [
+      "propext"
+    ],
+    "Toy.Packed.Ev.isUB.eq_2": [
+      "propext"
+    ],
+    "Toy.Packed.Ev.isUB.match_1": [
+      "propext"
+    ],
+    "Toy.Packed.Ev.noConfusion": [],
+    "Toy.Packed.Ev.noConfusionType": [],
+    "Toy.Packed.Ev.outOfFuel": [],
+    "Toy.Packed.Ev.outOfFuel.elim": [],
+    "Toy.Packed.Ev.outOfFuel.sizeOf_spec": [],
+    "Toy.Packed.Ev.rec": [],
+    "Toy.Packed.Ev.recOn": [],
+    "Toy.Packed.Ev.stuck": [],
+    "Toy.Packed.Ev.stuck.elim": [],
+    "Toy.Packed.Ev.stuck.inj": [],
+    "Toy.Packed.Ev.stuck.injEq": [
+      "propext"
+    ],
+    "Toy.Packed.Ev.stuck.noConfusion": [],
+    "Toy.Packed.Ev.stuck.sizeOf_spec": [],
+    "Toy.Packed.Ev.trap": [],
+    "Toy.Packed.Ev.trap.elim": [],
+    "Toy.Packed.Ev.trap.inj": [],
+    "Toy.Packed.Ev.trap.injEq": [
+      "propext"
+    ],
+    "Toy.Packed.Ev.trap.noConfusion": [],
+    "Toy.Packed.Ev.trap.sizeOf_spec": [],
+    "Toy.Packed.Ev.ub": [],
+    "Toy.Packed.Ev.ub.elim": [],
+    "Toy.Packed.Ev.ub.inj": [],
+    "Toy.Packed.Ev.ub.injEq": [
+      "propext"
+    ],
+    "Toy.Packed.Ev.ub.noConfusion": [],
+    "Toy.Packed.Ev.ub.sizeOf_spec": [],
+    "Toy.Packed.FieldIdsDecreasing": [
+      "propext"
+    ],
+    "Toy.Packed.FrameAligned": [
+      "propext"
+    ],
+    "Toy.Packed.IsPow2": [],
+    "Toy.Packed.Kind": [],
+    "Toy.Packed.Kind.agg": [],
+    "Toy.Packed.Kind.agg.elim": [],
+    "Toy.Packed.Kind.agg.inj": [],
+    "Toy.Packed.Kind.agg.injEq": [
+      "propext"
+    ],
+    "Toy.Packed.Kind.agg.noConfusion": [],
+    "Toy.Packed.Kind.agg.sizeOf_spec": [],
+    "Toy.Packed.Kind.box": [],
+    "Toy.Packed.Kind.box.elim": [],
+    "Toy.Packed.Kind.box.inj": [],
+    "Toy.Packed.Kind.box.injEq": [
+      "propext"
+    ],
+    "Toy.Packed.Kind.box.noConfusion": [],
+    "Toy.Packed.Kind.box.sizeOf_spec": [],
+    "Toy.Packed.Kind.casesOn": [],
+    "Toy.Packed.Kind.ctorElim": [],
+    "Toy.Packed.Kind.ctorElimType": [],
+    "Toy.Packed.Kind.ctorIdx": [],
+    "Toy.Packed.Kind.noConfusion": [],
+    "Toy.Packed.Kind.noConfusionType": [],
+    "Toy.Packed.Kind.rec": [],
+    "Toy.Packed.Kind.recOn": [],
+    "Toy.Packed.Kind.res": [],
+    "Toy.Packed.Kind.res.elim": [],
+    "Toy.Packed.Kind.res.inj": [],
+    "Toy.Packed.Kind.res.injEq": [
+      "propext"
+    ],
+    "Toy.Packed.Kind.res.noConfusion": [],
+    "Toy.Packed.Kind.res.sizeOf_spec": [],
+    "Toy.Packed.Kind.scalar": [],
+    "Toy.Packed.Kind.scalar.elim": [],
+    "Toy.Packed.Kind.scalar.sizeOf_spec": [],
+    "Toy.Packed.LA": [],
+    "Toy.Packed.LB": [],
+    "Toy.Packed.LOuter": [],
+    "Toy.Packed.LP2": [],
+    "Toy.Packed.LQ": [],
+    "Toy.Packed.LRP": [],
+    "Toy.Packed.LW": [],
+    "Toy.Packed.Layout": [],
+    "Toy.Packed.Misalignable": [],
+    "Toy.Packed.Mode": [],
+    "Toy.Packed.Mode.casesOn": [],
+    "Toy.Packed.Mode.ctorElim": [],
+    "Toy.Packed.Mode.ctorElimType": [],
+    "Toy.Packed.Mode.ctorIdx": [],
+    "Toy.Packed.Mode.ideal": [],
+    "Toy.Packed.Mode.ideal.elim": [],
+    "Toy.Packed.Mode.ideal.sizeOf_spec": [],
+    "Toy.Packed.Mode.noConfusion": [],
+    "Toy.Packed.Mode.noConfusionType": [],
+    "Toy.Packed.Mode.ofNat": [],
+    "Toy.Packed.Mode.ofNat_ctorIdx": [],
+    "Toy.Packed.Mode.rec": [],
+    "Toy.Packed.Mode.recOn": [],
+    "Toy.Packed.Mode.ref": [],
+    "Toy.Packed.Mode.ref.elim": [],
+    "Toy.Packed.Mode.ref.sizeOf_spec": [],
+    "Toy.Packed.NoRepeatStep": [
+      "propext"
+    ],
+    "Toy.Packed.NoRepeatStep.eq_1": [
+      "propext"
+    ],
+    "Toy.Packed.NoShimUB": [
+      "propext"
+    ],
+    "Toy.Packed.NoStuck": [
+      "propext"
+    ],
+    "Toy.Packed.NoUB": [
+      "propext"
+    ],
+    "Toy.Packed.Op": [],
+    "Toy.Packed.Op.casesOn": [],
+    "Toy.Packed.Op.comp": [],
+    "Toy.Packed.Op.comp.elim": [],
+    "Toy.Packed.Op.comp.inj": [],
+    "Toy.Packed.Op.comp.injEq": [
+      "propext"
+    ],
+    "Toy.Packed.Op.comp.noConfusion": [],
+    "Toy.Packed.Op.comp.sizeOf_spec": [],
+    "Toy.Packed.Op.ctorElim": [],
+    "Toy.Packed.Op.ctorElimType": [],
+    "Toy.Packed.Op.ctorIdx": [],
+    "Toy.Packed.Op.isRawRef": [
+      "propext"
+    ],
+    "Toy.Packed.Op.isRawRef.eq_1": [
+      "propext"
+    ],
+    "Toy.Packed.Op.isRawRef.eq_2": [
+      "propext"
+    ],
+    "Toy.Packed.Op.isRawRef.match_1": [
+      "propext"
+    ],
+    "Toy.Packed.Op.isSafe": [],
+    "Toy.Packed.Op.isSafe.eq_1": [],
+    "Toy.Packed.Op.isSafe.eq_2": [],
+    "Toy.Packed.Op.isSafe.eq_3": [],
+    "Toy.Packed.Op.isSafe.eq_4": [],
+    "Toy.Packed.Op.isSafe.eq_5": [],
+    "Toy.Packed.Op.isSafe.match_1": [],
+    "Toy.Packed.Op.moveOut": [],
+    "Toy.Packed.Op.moveOut.elim": [],
+    "Toy.Packed.Op.moveOut.inj": [],
+    "Toy.Packed.Op.moveOut.injEq": [
+      "propext"
+    ],
+    "Toy.Packed.Op.moveOut.noConfusion": [],
+    "Toy.Packed.Op.moveOut.sizeOf_spec": [],
+    "Toy.Packed.Op.noConfusion": [],
+    "Toy.Packed.Op.noConfusionType": [],
+    "Toy.Packed.Op.ptrAligned": [
+      "propext"
+    ],
+    "Toy.Packed.Op.ptrAligned.eq_1": [
+      "propext"
+    ],
+    "Toy.Packed.Op.ptrAligned.eq_2": [
+      "propext"
+    ],
+    "Toy.Packed.Op.ptrAligned.match_1": [
+      "propext"
+    ],
+    "Toy.Packed.Op.rawCall": [],
+    "Toy.Packed.Op.rawCall.elim": [],
+    "Toy.Packed.Op.rawCall.inj": [],
+    "Toy.Packed.Op.rawCall.injEq": [
+      "propext"
+    ],
+    "Toy.Packed.Op.rawCall.noConfusion": [],
+    "Toy.Packed.Op.rawCall.sizeOf_spec": [],
+    "Toy.Packed.Op.rawRef": [],
+    "Toy.Packed.Op.rawRef.elim": [],
+    "Toy.Packed.Op.rawRef.inj": [],
+    "Toy.Packed.Op.rawRef.injEq": [
+      "propext"
+    ],
+    "Toy.Packed.Op.rawRef.noConfusion": [],
+    "Toy.Packed.Op.rawRef.sizeOf_spec": [],
+    "Toy.Packed.Op.readUnaligned": [],
+    "Toy.Packed.Op.readUnaligned.elim": [],
+    "Toy.Packed.Op.readUnaligned.inj": [],
+    "Toy.Packed.Op.readUnaligned.injEq": [
+      "propext"
+    ],
+    "Toy.Packed.Op.readUnaligned.noConfusion": [],
+    "Toy.Packed.Op.readUnaligned.sizeOf_spec": [],
+    "Toy.Packed.Op.rec": [],
+    "Toy.Packed.Op.recOn": [],
+    "Toy.Packed.Op.shimRoot": [
+      "propext"
+    ],
+    "Toy.Packed.Op.shimRoot.eq_1": [
+      "propext"
+    ],
+    "Toy.Packed.Op.shimRoot.eq_2": [
+      "propext"
+    ],
+    "Toy.Packed.Op.shimRoot.eq_3": [
+      "propext"
+    ],
+    "Toy.Packed.Op.shimRoot.match_1": [],
+    "Toy.Packed.Op.shimRoot.match_3": [
+      "propext"
+    ],
+    "Toy.Packed.Origin": [],
+    "Toy.Packed.Origin.casesOn": [],
+    "Toy.Packed.Origin.ctorElim": [],
+    "Toy.Packed.Origin.ctorElimType": [],
+    "Toy.Packed.Origin.ctorIdx": [],
+    "Toy.Packed.Origin.loc": [],
+    "Toy.Packed.Origin.loc.elim": [],
+    "Toy.Packed.Origin.loc.inj": [],
+    "Toy.Packed.Origin.loc.injEq": [
+      "propext"
+    ],
+    "Toy.Packed.Origin.loc.noConfusion": [],
+    "Toy.Packed.Origin.loc.sizeOf_spec": [],
+    "Toy.Packed.Origin.noConfusion": [],
+    "Toy.Packed.Origin.noConfusionType": [],
+    "Toy.Packed.Origin.raw": [],
+    "Toy.Packed.Origin.raw.elim": [],
+    "Toy.Packed.Origin.raw.inj": [],
+    "Toy.Packed.Origin.raw.injEq": [
+      "propext"
+    ],
+    "Toy.Packed.Origin.raw.noConfusion": [],
+    "Toy.Packed.Origin.raw.sizeOf_spec": [],
+    "Toy.Packed.Origin.rec": [],
+    "Toy.Packed.Origin.recOn": [],
+    "Toy.Packed.Out": [],
+    "Toy.Packed.Out.andThen": [],
+    "Toy.Packed.Out.andThen.eq_1": [],
+    "Toy.Packed.Out.casesOn": [],
+    "Toy.Packed.Out.ctorIdx": [],
+    "Toy.Packed.Out.evs": [],
+    "Toy.Packed.Out.mk": [],
+    "Toy.Packed.Out.mk.inj": [],
+    "Toy.Packed.Out.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Packed.Out.mk.noConfusion": [],
+    "Toy.Packed.Out.mk.sizeOf_spec": [],
+    "Toy.Packed.Out.noConfusion": [],
+    "Toy.Packed.Out.noConfusionType": [],
+    "Toy.Packed.Out.ok": [],
+    "Toy.Packed.Out.rec": [],
+    "Toy.Packed.Out.recOn": [],
+    "Toy.Packed.Place": [],
+    "Toy.Packed.Place.casesOn": [],
+    "Toy.Packed.Place.ctorIdx": [],
+    "Toy.Packed.Place.mk": [],
+    "Toy.Packed.Place.mk.inj": [],
+    "Toy.Packed.Place.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Packed.Place.mk.noConfusion": [],
+    "Toy.Packed.Place.mk.sizeOf_spec": [],
+    "Toy.Packed.Place.noConfusion": [],
+    "Toy.Packed.Place.noConfusionType": [],
+    "Toy.Packed.Place.path": [],
+    "Toy.Packed.Place.rec": [],
+    "Toy.Packed.Place.recOn": [],
+    "Toy.Packed.Place.root": [],
+    "Toy.Packed.Pos": [],
+    "Toy.Packed.Pos.A": [],
+    "Toy.Packed.Pos.b": [],
+    "Toy.Packed.Pos.casesOn": [],
+    "Toy.Packed.Pos.ctorIdx": [],
+    "Toy.Packed.Pos.i": [],
+    "Toy.Packed.Pos.k": [],
+    "Toy.Packed.Pos.mk": [],
+    "Toy.Packed.Pos.mk.inj": [],
+    "Toy.Packed.Pos.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Packed.Pos.mk.noConfusion": [],
+    "Toy.Packed.Pos.mk.sizeOf_spec": [],
+    "Toy.Packed.Pos.noConfusion": [],
+    "Toy.Packed.Pos.noConfusionType": [],
+    "Toy.Packed.Pos.o": [],
+    "Toy.Packed.Pos.path": [],
+    "Toy.Packed.Pos.rec": [],
+    "Toy.Packed.Pos.recOn": [],
+    "Toy.Packed.Pos.staged": [],
+    "Toy.Packed.Pos.staged.eq_1": [],
+    "Toy.Packed.Pos.t0": [],
+    "Toy.Packed.Pos.u": [],
+    "Toy.Packed.PowTwoAligns": [
+      "propext"
+    ],
+    "Toy.Packed.PrRel": [
+      "propext"
+    ],
+    "Toy.Packed.PrRel.eq_1": [
+      "propext"
+    ],
+    "Toy.Packed.Prog": [],
+    "Toy.Packed.Prog.casesOn": [],
+    "Toy.Packed.Prog.ctorIdx": [],
+    "Toy.Packed.Prog.env": [],
+    "Toy.Packed.Prog.frame": [],
+    "Toy.Packed.Prog.fuel": [],
+    "Toy.Packed.Prog.fuel.eq_1": [],
+    "Toy.Packed.Prog.layout": [],
+    "Toy.Packed.Prog.locals": [],
+    "Toy.Packed.Prog.mk": [],
+    "Toy.Packed.Prog.mk.inj": [],
+    "Toy.Packed.Prog.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Packed.Prog.mk.noConfusion": [],
+    "Toy.Packed.Prog.mk.sizeOf_spec": [],
+    "Toy.Packed.Prog.noConfusion": [],
+    "Toy.Packed.Prog.noConfusionType": [],
+    "Toy.Packed.Prog.place": [
+      "propext"
+    ],
+    "Toy.Packed.Prog.place.match_1": [],
+    "Toy.Packed.Prog.rec": [],
+    "Toy.Packed.Prog.recOn": [],
+    "Toy.Packed.Prog.src": [],
+    "Toy.Packed.Reached": [
+      "propext"
+    ],
+    "Toy.Packed.RespectsPacking": [
+      "propext"
+    ],
+    "Toy.Packed.SafeSrc": [],
+    "Toy.Packed.ShimKind": [],
+    "Toy.Packed.ShimKind.boxFree": [],
+    "Toy.Packed.ShimKind.boxFree.elim": [],
+    "Toy.Packed.ShimKind.boxFree.sizeOf_spec": [],
+    "Toy.Packed.ShimKind.casesOn": [],
+    "Toy.Packed.ShimKind.clone": [],
+    "Toy.Packed.ShimKind.clone.elim": [],
+    "Toy.Packed.ShimKind.clone.sizeOf_spec": [],
+    "Toy.Packed.ShimKind.ctorElim": [],
+    "Toy.Packed.ShimKind.ctorElimType": [],
+    "Toy.Packed.ShimKind.ctorIdx": [],
+    "Toy.Packed.ShimKind.dropGlue": [],
+    "Toy.Packed.ShimKind.dropGlue.elim": [],
+    "Toy.Packed.ShimKind.dropGlue.sizeOf_spec": [],
+    "Toy.Packed.ShimKind.noConfusion": [],
+    "Toy.Packed.ShimKind.noConfusionType": [],
+    "Toy.Packed.ShimKind.ofNat": [],
+    "Toy.Packed.ShimKind.ofNat_ctorIdx": [],
+    "Toy.Packed.ShimKind.rec": [],
+    "Toy.Packed.ShimKind.recOn": [],
+    "Toy.Packed.SrcRefsInstrumented": [
+      "propext"
+    ],
+    "Toy.Packed.StRel": [
+      "propext"
+    ],
+    "Toy.Packed.StRel.eq_1": [
+      "propext"
+    ],
+    "Toy.Packed.StagedAddrBlind": [
+      "propext"
+    ],
+    "Toy.Packed.StagedSized": [
+      "propext"
+    ],
+    "Toy.Packed.TempsAligned": [
+      "propext"
+    ],
+    "Toy.Packed.TyInfo": [],
+    "Toy.Packed.TyInfo.align": [],
+    "Toy.Packed.TyInfo.casesOn": [],
+    "Toy.Packed.TyInfo.ctorIdx": [],
+    "Toy.Packed.TyInfo.kind": [],
+    "Toy.Packed.TyInfo.mk": [],
+    "Toy.Packed.TyInfo.mk.inj": [],
+    "Toy.Packed.TyInfo.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Packed.TyInfo.mk.noConfusion": [],
+    "Toy.Packed.TyInfo.mk.sizeOf_spec": [],
+    "Toy.Packed.TyInfo.noConfusion": [],
+    "Toy.Packed.TyInfo.noConfusionType": [],
+    "Toy.Packed.TyInfo.rec": [],
+    "Toy.Packed.TyInfo.recOn": [],
+    "Toy.Packed.TyInfo.sized": [],
+    "Toy.Packed.VName": [],
+    "Toy.Packed.VName.casesOn": [],
+    "Toy.Packed.VName.child": [],
+    "Toy.Packed.VName.ctorIdx": [],
+    "Toy.Packed.VName.mk": [],
+    "Toy.Packed.VName.mk.inj": [],
+    "Toy.Packed.VName.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Packed.VName.mk.noConfusion": [],
+    "Toy.Packed.VName.mk.sizeOf_spec": [],
+    "Toy.Packed.VName.noConfusion": [],
+    "Toy.Packed.VName.noConfusionType": [],
+    "Toy.Packed.VName.origin": [],
+    "Toy.Packed.VName.path": [],
+    "Toy.Packed.VName.rec": [],
+    "Toy.Packed.VName.recOn": [],
+    "Toy.Packed.addrBlind_anti": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.addrBlind_anti.match_1_1": [
+      "propext"
+    ],
+    "Toy.Packed.addrBlind_box_pos": [
+      "propext"
+    ],
+    "Toy.Packed.addrBlind_neg": [
+      "propext"
+    ],
+    "Toy.Packed.addrBlind_pos": [
+      "propext"
+    ],
+    "Toy.Packed.agg_lt_length": [
+      "propext"
+    ],
+    "Toy.Packed.alignRelevantCovered_existing_shims": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.alignRelevantCovered_existing_shims.match_1": [
+      "propext"
+    ],
+    "Toy.Packed.alignRelevantCovered_neg": [
+      "propext"
+    ],
+    "Toy.Packed.alignRelevantCovered_pos": [
+      "propext"
+    ],
+    "Toy.Packed.alignRelevantCovered_trivial_align_one": [
+      "propext"
+    ],
+    "Toy.Packed.alignRelevantCovered_trivial_align_one.match_1_1": [
+      "propext"
+    ],
+    "Toy.Packed.align_of_ge": [
+      "propext"
+    ],
+    "Toy.Packed.aligned_of_not_misalignable": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.allEv_andThen": [
+      "propext"
+    ],
+    "Toy.Packed.allEv_mono": [],
+    "Toy.Packed.allEv_nil": [],
+    "Toy.Packed.allEv_single": [
+      "propext"
+    ],
+    "Toy.Packed.bodyPositions": [
+      "propext"
+    ],
+    "Toy.Packed.bodyPositions.eq_1": [
+      "propext"
+    ],
+    "Toy.Packed.bodyPositions.eq_2": [
+      "propext"
+    ],
+    "Toy.Packed.bodyPositions.match_1": [
+      "propext"
+    ],
+    "Toy.Packed.boxMoveOut_dropsOnlyStaging_ub_boxFieldStaging_ok": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.callsShim": [
+      "propext"
+    ],
+    "Toy.Packed.callsShim.eq_1": [
+      "propext"
+    ],
+    "Toy.Packed.callsShim.eq_2": [
+      "propext"
+    ],
+    "Toy.Packed.callsShim.match_1": [
+      "propext"
+    ],
+    "Toy.Packed.callsShim_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.callsShim_neg": [
+      "propext"
+    ],
+    "Toy.Packed.callsShim_pos": [
+      "propext"
+    ],
+    "Toy.Packed.cfgDropsOnly": [
+      "propext"
+    ],
+    "Toy.Packed.cfgNone": [],
+    "Toy.Packed.cfgSrc": [
+      "propext"
+    ],
+    "Toy.Packed.cfgTmp2": [
+      "propext"
+    ],
+    "Toy.Packed.cfgType": [
+      "propext"
+    ],
+    "Toy.Packed.clientPtrsAligned_and_srcRefsInstrumented_of_safeSrc": [
+      "propext"
+    ],
+    "Toy.Packed.clientPtrsAligned_neg": [
+      "propext"
+    ],
+    "Toy.Packed.clientPtrsAligned_pos": [
+      "propext"
+    ],
+    "Toy.Packed.compStep": [
+      "propext"
+    ],
+    "Toy.Packed.compStep_allEv": [
+      "propext"
+    ],
+    "Toy.Packed.compStep_precision": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.compStep_staging": [
+      "propext"
+    ],
+    "Toy.Packed.completeness_witness": [
+      "propext"
+    ],
+    "Toy.Packed.copies": [
+      "propext"
+    ],
+    "Toy.Packed.copies_pos": [
+      "propext"
+    ],
+    "Toy.Packed.critAll": [],
+    "Toy.Packed.critCovers_and_frameAligned_counterexamples_stage_nothing": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.critCovers_critType_fails_without_powTwo": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.critCovers_critType_fails_without_respectsPacking": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.critCovers_critType_hyps_hold": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.critCovers_critType_of_powTwo_respectsPacking": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.critCovers_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.critCovers_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.critExact": [
+      "propext"
+    ],
+    "Toy.Packed.critExact.match_1": [],
+    "Toy.Packed.critExact_neg": [
+      "propext"
+    ],
+    "Toy.Packed.critExact_pos": [
+      "propext"
+    ],
+    "Toy.Packed.critLeaf": [
+      "propext"
+    ],
+    "Toy.Packed.critLeaf.match_1": [
+      "propext"
+    ],
+    "Toy.Packed.critLeaf.match_5": [
+      "propext"
+    ],
+    "Toy.Packed.critLeaf_neg": [
+      "propext"
+    ],
+    "Toy.Packed.critLeaf_pos": [
+      "propext"
+    ],
+    "Toy.Packed.critNone": [],
+    "Toy.Packed.critNone.eq_1": [],
+    "Toy.Packed.critType": [
+      "propext"
+    ],
+    "Toy.Packed.critType.eq_1": [
+      "propext"
+    ],
+    "Toy.Packed.critType.match_1": [],
+    "Toy.Packed.critType_eq_critExact_packed2_align8": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.critType_neg": [
+      "propext"
+    ],
+    "Toy.Packed.critType_pos": [
+      "propext"
+    ],
+    "Toy.Packed.dropsOnly": [],
+    "Toy.Packed.dropsOnly_neg": [
+      "propext"
+    ],
+    "Toy.Packed.dropsOnly_pos": [
+      "propext"
+    ],
+    "Toy.Packed.effAlign": [
+      "propext"
+    ],
+    "Toy.Packed.effAlign.match_1": [
+      "propext"
+    ],
+    "Toy.Packed.effAlign_neg": [
+      "propext"
+    ],
+    "Toy.Packed.effAlign_out_of_range": [
+      "propext"
+    ],
+    "Toy.Packed.effAlign_pos": [
+      "propext"
+    ],
+    "Toy.Packed.envA": [],
+    "Toy.Packed.envA.eq_1": [],
+    "Toy.Packed.envB": [],
+    "Toy.Packed.envBoxObs": [],
+    "Toy.Packed.envCyc": [],
+    "Toy.Packed.envCyc.eq_1": [],
+    "Toy.Packed.envObs": [],
+    "Toy.Packed.envOuter": [],
+    "Toy.Packed.envP2": [],
+    "Toy.Packed.envQ": [],
+    "Toy.Packed.envRP": [],
+    "Toy.Packed.envRev": [],
+    "Toy.Packed.envU": [],
+    "Toy.Packed.envUnder": [],
+    "Toy.Packed.envW": [],
+    "Toy.Packed.exists_respectsPacking_layout_misalignable_iff_not_dvd_typeGA_of_noRepeatStep_powTwo": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.field?_some": [
+      "propext"
+    ],
+    "Toy.Packed.fieldIdsDecreasing_neg": [
+      "propext"
+    ],
+    "Toy.Packed.fieldIdsDecreasing_pos": [
+      "propext"
+    ],
+    "Toy.Packed.fieldIdsDecreasing_rejects_envRev": [
+      "propext"
+    ],
+    "Toy.Packed.foldl_andThen_allEv": [
+      "propext"
+    ],
+    "Toy.Packed.foldl_andThen_rel": [],
+    "Toy.Packed.foldl_andThen_rel.match_1_1": [],
+    "Toy.Packed.frameAligned_neg": [
+      "propext"
+    ],
+    "Toy.Packed.frameAligned_pos": [
+      "propext"
+    ],
+    "Toy.Packed.heapAddr": [
+      "propext"
+    ],
+    "Toy.Packed.inPlaceDrop_packedField_ub_though_source_has_no_ref": [
+      "propext"
+    ],
+    "Toy.Packed.instDecidableClientPtrsAligned": [
+      "propext"
+    ],
+    "Toy.Packed.instDecidableCritCovers": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.instDecidableEqBodyId": [],
+    "Toy.Packed.instDecidableEqBodyId.decEq": [],
+    "Toy.Packed.instDecidableEqBodyId.decEq.match_1": [],
+    "Toy.Packed.instDecidableEqEv": [],
+    "Toy.Packed.instDecidableEqEv.decEq": [],
+    "Toy.Packed.instDecidableEqEv.decEq.match_1": [],
+    "Toy.Packed.instDecidableEqKind": [],
+    "Toy.Packed.instDecidableEqKind.decEq": [],
+    "Toy.Packed.instDecidableEqKind.decEq.match_1": [],
+    "Toy.Packed.instDecidableEqMode": [],
+    "Toy.Packed.instDecidableEqOp": [],
+    "Toy.Packed.instDecidableEqOp.decEq": [],
+    "Toy.Packed.instDecidableEqOp.decEq.match_1": [],
+    "Toy.Packed.instDecidableEqOrigin": [],
+    "Toy.Packed.instDecidableEqOrigin.decEq": [],
+    "Toy.Packed.instDecidableEqOrigin.decEq.match_1": [],
+    "Toy.Packed.instDecidableEqOut": [],
+    "Toy.Packed.instDecidableEqOut.decEq": [],
+    "Toy.Packed.instDecidableEqOut.decEq.match_1": [],
+    "Toy.Packed.instDecidableEqPlace": [],
+    "Toy.Packed.instDecidableEqPlace.decEq": [],
+    "Toy.Packed.instDecidableEqPlace.decEq.match_1": [],
+    "Toy.Packed.instDecidableEqPos": [],
+    "Toy.Packed.instDecidableEqPos.decEq": [],
+    "Toy.Packed.instDecidableEqPos.decEq.match_1": [],
+    "Toy.Packed.instDecidableEqShimKind": [],
+    "Toy.Packed.instDecidableEqTyInfo": [],
+    "Toy.Packed.instDecidableEqTyInfo.decEq": [],
+    "Toy.Packed.instDecidableEqTyInfo.decEq.match_1": [],
+    "Toy.Packed.instDecidableEqVName": [],
+    "Toy.Packed.instDecidableEqVName.decEq": [],
+    "Toy.Packed.instDecidableEqVName.decEq.match_1": [],
+    "Toy.Packed.instDecidableFieldIdsDecreasing": [
+      "propext"
+    ],
+    "Toy.Packed.instDecidableFrameAligned": [
+      "propext"
+    ],
+    "Toy.Packed.instDecidableIsPow2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.instDecidableMisalignable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.instDecidableNoRepeatStep": [
+      "propext"
+    ],
+    "Toy.Packed.instDecidableNoShimUB": [
+      "propext"
+    ],
+    "Toy.Packed.instDecidableNoStuck": [
+      "propext"
+    ],
+    "Toy.Packed.instDecidableNoUB": [
+      "propext"
+    ],
+    "Toy.Packed.instDecidablePowTwoAligns": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.instDecidableRespectsPacking": [
+      "propext"
+    ],
+    "Toy.Packed.instDecidableSafeSrc": [],
+    "Toy.Packed.instDecidableSrcRefsInstrumented": [
+      "propext"
+    ],
+    "Toy.Packed.instDecidableStagedAddrBlind": [
+      "propext"
+    ],
+    "Toy.Packed.instDecidableStagedSized": [
+      "propext"
+    ],
+    "Toy.Packed.instDecidableTempsAligned": [
+      "propext"
+    ],
+    "Toy.Packed.instInhabitedTyInfo": [],
+    "Toy.Packed.instReprBodyId": [],
+    "Toy.Packed.instReprBodyId.repr": [],
+    "Toy.Packed.instReprBodyId.repr.match_1": [],
+    "Toy.Packed.instReprEv": [
+      "propext"
+    ],
+    "Toy.Packed.instReprEv.repr": [
+      "propext"
+    ],
+    "Toy.Packed.instReprEv.repr.match_1": [],
+    "Toy.Packed.instReprKind": [
+      "propext"
+    ],
+    "Toy.Packed.instReprKind.repr": [
+      "propext"
+    ],
+    "Toy.Packed.instReprKind.repr.match_1": [],
+    "Toy.Packed.instReprMode": [],
+    "Toy.Packed.instReprMode.repr": [],
+    "Toy.Packed.instReprMode.repr.match_1": [],
+    "Toy.Packed.instReprOp": [
+      "propext"
+    ],
+    "Toy.Packed.instReprOp.repr": [
+      "propext"
+    ],
+    "Toy.Packed.instReprOp.repr.match_1": [],
+    "Toy.Packed.instReprOrigin": [],
+    "Toy.Packed.instReprOrigin.repr": [],
+    "Toy.Packed.instReprOrigin.repr.match_1": [],
+    "Toy.Packed.instReprOut": [
+      "propext"
+    ],
+    "Toy.Packed.instReprOut.repr": [
+      "propext"
+    ],
+    "Toy.Packed.instReprPlace": [
+      "propext"
+    ],
+    "Toy.Packed.instReprPlace.repr": [
+      "propext"
+    ],
+    "Toy.Packed.instReprPos": [
+      "propext"
+    ],
+    "Toy.Packed.instReprPos.repr": [
+      "propext"
+    ],
+    "Toy.Packed.instReprShimKind": [],
+    "Toy.Packed.instReprShimKind.repr": [],
+    "Toy.Packed.instReprShimKind.repr.match_1": [],
+    "Toy.Packed.instReprTyInfo": [
+      "propext"
+    ],
+    "Toy.Packed.instReprTyInfo.repr": [
+      "propext"
+    ],
+    "Toy.Packed.instReprVName": [
+      "propext"
+    ],
+    "Toy.Packed.instReprVName.repr": [
+      "propext"
+    ],
+    "Toy.Packed.instrAll": [],
+    "Toy.Packed.instrNone": [],
+    "Toy.Packed.instrSrc": [],
+    "Toy.Packed.isPow2_align": [
+      "propext"
+    ],
+    "Toy.Packed.isPow2_effAlign": [
+      "propext"
+    ],
+    "Toy.Packed.isPow2_min": [
+      "propext"
+    ],
+    "Toy.Packed.isPow2_neg_three": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.isPow2_neg_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.isPow2_one": [],
+    "Toy.Packed.isPow2_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.leafOnlyCrit_misses_nested_field": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.leafOnlyCrit_misses_one_step_underaligned_parent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.leafOnlyCrit_stages_field_in_whole_drop": [
+      "propext"
+    ],
+    "Toy.Packed.lt_length_of_align_ne_one": [
+      "propext"
+    ],
+    "Toy.Packed.lt_length_of_ne_default": [
+      "propext"
+    ],
+    "Toy.Packed.map_toTrap_of_noUB": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.map_toTrap_of_noUB.match_1_1": [
+      "propext"
+    ],
+    "Toy.Packed.mem_positions_body": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.mem_reach_self": [
+      "propext"
+    ],
+    "Toy.Packed.mem_reachableShims_of_root": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.mem_srcPositions": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.mem_zipIdx_fst": [
+      "propext"
+    ],
+    "Toy.Packed.mem_zipIdx_fst.match_1_1": [],
+    "Toy.Packed.min_dvd_left_pow2": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.min_dvd_right_pow2": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.misalignable_align_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.misalignable_iff_not_dvd_gcd": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.misalignable_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.misalignable_pos": [
+      "propext"
+    ],
+    "Toy.Packed.needsDrop": [
+      "propext"
+    ],
+    "Toy.Packed.needsDrop.eq_1": [
+      "propext"
+    ],
+    "Toy.Packed.needsDrop.eq_2": [
+      "propext"
+    ],
+    "Toy.Packed.needsDrop.eq_def": [
+      "propext"
+    ],
+    "Toy.Packed.needsDrop.match_1": [],
+    "Toy.Packed.needsDrop.match_3": [],
+    "Toy.Packed.needsDrop_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.needsDrop_mono.match_1_1": [
+      "propext"
+    ],
+    "Toy.Packed.needsDrop_neg": [
+      "propext"
+    ],
+    "Toy.Packed.needsDrop_pos": [
+      "propext"
+    ],
+    "Toy.Packed.noRepeatStep_cyc_short": [
+      "propext"
+    ],
+    "Toy.Packed.noRepeatStep_neg": [
+      "propext"
+    ],
+    "Toy.Packed.noRepeatStep_of_fieldIdsDecreasing": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.noRepeatStep_of_fieldIdsDecreasing.match_1_1": [],
+    "Toy.Packed.noRepeatStep_pos": [
+      "propext"
+    ],
+    "Toy.Packed.noShimUB_neg": [
+      "propext"
+    ],
+    "Toy.Packed.noShimUB_of_frameAligned_covers_alignedTemps_clientPtrsAligned": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.noShimUB_pos": [
+      "propext"
+    ],
+    "Toy.Packed.noStuck_fails_without_stagedSized": [
+      "propext"
+    ],
+    "Toy.Packed.noStuck_hyps_hold_progInPlace": [
+      "propext"
+    ],
+    "Toy.Packed.noStuck_neg": [
+      "propext"
+    ],
+    "Toy.Packed.noStuck_of_stagedSized": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.noStuck_pos": [
+      "propext"
+    ],
+    "Toy.Packed.noUB_forall_progs_iff_alignRelevantCovered": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.noUB_forall_progs_iff_alignRelevantCovered.match_1_1": [
+      "propext"
+    ],
+    "Toy.Packed.noUB_neg": [
+      "propext"
+    ],
+    "Toy.Packed.noUB_of_frameAligned_covers_alignedTemps_clientPtrsAligned_srcRefsInstrumented": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.noUB_pos": [
+      "propext"
+    ],
+    "Toy.Packed.not_misalignable_of_powTwo_respectsPacking_dvd_typeGA": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.obs": [
+      "propext"
+    ],
+    "Toy.Packed.obs.eq_1": [
+      "propext"
+    ],
+    "Toy.Packed.obs.match_1": [
+      "propext"
+    ],
+    "Toy.Packed.obs_append": [
+      "propext"
+    ],
+    "Toy.Packed.obs_neg": [
+      "propext"
+    ],
+    "Toy.Packed.obs_pos": [
+      "propext"
+    ],
+    "Toy.Packed.overstaging_aligned_addrObs_changes_trace": [
+      "propext"
+    ],
+    "Toy.Packed.overstaging_aligned_place_sound_costs_copy": [
+      "propext"
+    ],
+    "Toy.Packed.pathSteps": [
+      "propext"
+    ],
+    "Toy.Packed.pathSteps.eq_1": [
+      "propext"
+    ],
+    "Toy.Packed.pathSteps.eq_2": [
+      "propext"
+    ],
+    "Toy.Packed.pathSteps.eq_def": [
+      "propext"
+    ],
+    "Toy.Packed.pathSteps_fst_le": [
+      "propext"
+    ],
+    "Toy.Packed.pathSteps_fst_le.match_1_1": [
+      "propext"
+    ],
+    "Toy.Packed.pathSteps_pos": [
+      "propext"
+    ],
+    "Toy.Packed.pathSteps_stop": [
+      "propext"
+    ],
+    "Toy.Packed.pathSteps_valid": [
+      "propext"
+    ],
+    "Toy.Packed.pathSteps_valid.match_1_1": [
+      "propext"
+    ],
+    "Toy.Packed.place_some": [
+      "propext"
+    ],
+    "Toy.Packed.pos_resolve": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.positions": [
+      "propext"
+    ],
+    "Toy.Packed.positions.eq_1": [
+      "propext"
+    ],
+    "Toy.Packed.positions_empty": [
+      "propext"
+    ],
+    "Toy.Packed.positions_progBox": [
+      "propext"
+    ],
+    "Toy.Packed.positions_progEscape": [
+      "propext"
+    ],
+    "Toy.Packed.positions_progInPlace": [
+      "propext"
+    ],
+    "Toy.Packed.pow2_dvd_of_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.powTwoAligns_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.powTwoAligns_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.prRel_andThen": [
+      "propext"
+    ],
+    "Toy.Packed.prRel_same": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.progAligned": [],
+    "Toy.Packed.progAlignedObs": [],
+    "Toy.Packed.progBox": [],
+    "Toy.Packed.progBoxNoMove": [],
+    "Toy.Packed.progBoxObs": [],
+    "Toy.Packed.progBox_moveOut_irrelevant": [
+      "propext"
+    ],
+    "Toy.Packed.progClient": [],
+    "Toy.Packed.progEmptyU": [],
+    "Toy.Packed.progEscape": [],
+    "Toy.Packed.progInPlace": [],
+    "Toy.Packed.progMisFrame": [],
+    "Toy.Packed.progMixed": [],
+    "Toy.Packed.progNested": [],
+    "Toy.Packed.progObs": [],
+    "Toy.Packed.progRP": [],
+    "Toy.Packed.progU": [],
+    "Toy.Packed.progUnder": [],
+    "Toy.Packed.progUserRef": [],
+    "Toy.Packed.progUserRef_stages_misalignable_position": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.progW": [],
+    "Toy.Packed.progWholeQ": [],
+    "Toy.Packed.ptrAligned_rawCall": [
+      "propext"
+    ],
+    "Toy.Packed.rawCall_missing_shim_admitted": [
+      "propext"
+    ],
+    "Toy.Packed.rawCall_missing_shim_noop": [
+      "propext"
+    ],
+    "Toy.Packed.reach": [
+      "propext"
+    ],
+    "Toy.Packed.reach.eq_1": [
+      "propext"
+    ],
+    "Toy.Packed.reach.eq_2": [
+      "propext"
+    ],
+    "Toy.Packed.reach.eq_3": [
+      "propext"
+    ],
+    "Toy.Packed.reach.eq_4": [
+      "propext"
+    ],
+    "Toy.Packed.reach.eq_5": [
+      "propext"
+    ],
+    "Toy.Packed.reach.eq_def": [
+      "propext"
+    ],
+    "Toy.Packed.reach.match_1": [
+      "propext"
+    ],
+    "Toy.Packed.reach.match_5": [],
+    "Toy.Packed.reach_box_sub": [
+      "propext"
+    ],
+    "Toy.Packed.reach_field_sub": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.reach_pos": [
+      "propext"
+    ],
+    "Toy.Packed.reachableShims": [
+      "propext"
+    ],
+    "Toy.Packed.reachableShims.eq_1": [
+      "propext"
+    ],
+    "Toy.Packed.reached_box": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.reached_field": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.reached_root": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.readUnaligned_no_ub": [
+      "propext"
+    ],
+    "Toy.Packed.refStep": [
+      "propext"
+    ],
+    "Toy.Packed.refStep.eq_1": [
+      "propext"
+    ],
+    "Toy.Packed.refStep.eq_2": [
+      "propext"
+    ],
+    "Toy.Packed.refStep_align_one": [
+      "propext"
+    ],
+    "Toy.Packed.refStep_ideal": [
+      "propext"
+    ],
+    "Toy.Packed.refStep_neg": [
+      "propext"
+    ],
+    "Toy.Packed.refStep_pos": [
+      "propext"
+    ],
+    "Toy.Packed.refStep_precision": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.refStep_trap": [
+      "propext"
+    ],
+    "Toy.Packed.resolve": [
+      "propext"
+    ],
+    "Toy.Packed.resolve.eq_1": [
+      "propext"
+    ],
+    "Toy.Packed.resolve.eq_2": [
+      "propext"
+    ],
+    "Toy.Packed.resolve.eq_def": [
+      "propext"
+    ],
+    "Toy.Packed.resolve.match_1": [],
+    "Toy.Packed.resolve.match_3": [],
+    "Toy.Packed.resolve_dvd": [
+      "propext"
+    ],
+    "Toy.Packed.resolve_dvd.match_1_1": [
+      "propext"
+    ],
+    "Toy.Packed.resolve_indicator": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.resolve_indicator.match_1_1": [
+      "propext"
+    ],
+    "Toy.Packed.resolve_neg": [
+      "propext"
+    ],
+    "Toy.Packed.resolve_pos": [
+      "propext"
+    ],
+    "Toy.Packed.resolve_typeAt": [
+      "propext"
+    ],
+    "Toy.Packed.resolve_typeAt.match_1_1": [
+      "propext"
+    ],
+    "Toy.Packed.respectsPacking_neg": [
+      "propext"
+    ],
+    "Toy.Packed.respectsPacking_pos": [
+      "propext"
+    ],
+    "Toy.Packed.run": [
+      "propext"
+    ],
+    "Toy.Packed.run.eq_1": [
+      "propext"
+    ],
+    "Toy.Packed.runShim": [
+      "propext"
+    ],
+    "Toy.Packed.runShim.eq_1": [
+      "propext"
+    ],
+    "Toy.Packed.runShim.eq_2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.runShim.eq_3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.runShim.eq_4": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.runShim.eq_5": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.runShim.eq_6": [
+      "propext"
+    ],
+    "Toy.Packed.runShim.eq_7": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.runShim.eq_8": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.runShim.eq_def": [
+      "propext"
+    ],
+    "Toy.Packed.runShim.match_1": [
+      "propext"
+    ],
+    "Toy.Packed.runShim.match_4": [],
+    "Toy.Packed.runShim_allEv": [
+      "propext"
+    ],
+    "Toy.Packed.runShim_allEv.match_1_1": [],
+    "Toy.Packed.runShim_noStuck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.runShim_noUB_of_aligned": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.runShim_noUB_of_covered": [
+      "propext"
+    ],
+    "Toy.Packed.runShim_precision": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.runShim_precision.match_1_1": [],
+    "Toy.Packed.runShim_staging": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.runShim_staging.match_1_1": [
+      "propext"
+    ],
+    "Toy.Packed.runShim_succ_missing": [
+      "propext"
+    ],
+    "Toy.Packed.run_allEv": [
+      "propext"
+    ],
+    "Toy.Packed.run_eq_uninstrumented_map_toTrap": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.safeSrc_neg": [],
+    "Toy.Packed.safeSrc_pos": [],
+    "Toy.Packed.seqFields": [],
+    "Toy.Packed.shimExists": [
+      "propext"
+    ],
+    "Toy.Packed.shimExists.match_1": [
+      "propext"
+    ],
+    "Toy.Packed.shimExists_neg": [
+      "propext"
+    ],
+    "Toy.Packed.shimExists_pos": [
+      "propext"
+    ],
+    "Toy.Packed.shimPositions": [
+      "propext"
+    ],
+    "Toy.Packed.shimPositions.eq_1": [
+      "propext"
+    ],
+    "Toy.Packed.shimRoot_comp": [
+      "propext"
+    ],
+    "Toy.Packed.shimRoot_rawCall": [
+      "propext"
+    ],
+    "Toy.Packed.srcInstrumented_rawDropInPlace_misaligned_escapes": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.srcPositions": [
+      "propext"
+    ],
+    "Toy.Packed.srcPositions.eq_1": [
+      "propext"
+    ],
+    "Toy.Packed.srcPositions.match_1": [
+      "propext"
+    ],
+    "Toy.Packed.srcRefsInstrumented_neg": [
+      "propext"
+    ],
+    "Toy.Packed.srcRefsInstrumented_pos": [
+      "propext"
+    ],
+    "Toy.Packed.srcStep": [
+      "propext"
+    ],
+    "Toy.Packed.srcStep.eq_1": [
+      "propext"
+    ],
+    "Toy.Packed.srcStep.eq_2": [
+      "propext"
+    ],
+    "Toy.Packed.srcStep.eq_3": [
+      "propext"
+    ],
+    "Toy.Packed.srcStep.eq_4": [
+      "propext"
+    ],
+    "Toy.Packed.srcStep.eq_5": [
+      "propext"
+    ],
+    "Toy.Packed.srcStep.match_1": [],
+    "Toy.Packed.srcStep_comp_noUB": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.srcStep_rawCall_noUB": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.stRel_andThen": [
+      "propext"
+    ],
+    "Toy.Packed.stRel_same": [
+      "propext"
+    ],
+    "Toy.Packed.stagedAddrBlind_neg": [
+      "propext"
+    ],
+    "Toy.Packed.stagedAddrBlind_pos": [
+      "propext"
+    ],
+    "Toy.Packed.stagedSized_neg": [
+      "propext"
+    ],
+    "Toy.Packed.stagedSized_pos": [
+      "propext"
+    ],
+    "Toy.Packed.staged_noUB_and_obs_eq_ideal_of_frameAligned_safeSrc_covers_sized_addrBlind_alignedTemps": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.staging_box_of_addrObs_pointee": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.staging_conclusion_progInPlace": [
+      "propext"
+    ],
+    "Toy.Packed.staging_fails_without_critCovers": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.staging_fails_without_frameAligned": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.staging_fails_without_safeSrc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.staging_fails_without_stagedAddrBlind": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.staging_fails_without_stagedSized": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.staging_fails_without_tempsAligned": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.staging_hyps_hold_dropsOnly_progInPlace": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.staging_hyps_hold_progEmptyU": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.staging_hyps_hold_progInPlace": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.sufficiency_fails_without_clientPtrsAligned": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.sufficiency_fails_without_critCovers": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.sufficiency_fails_without_frameAligned": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.sufficiency_fails_without_srcRefsInstrumented": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.sufficiency_fails_without_tempsAligned": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.sufficiency_hyps_hold_progMixed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.sufficiency_hyps_hold_progU_stuck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.tR2": [],
+    "Toy.Packed.tR4": [],
+    "Toy.Packed.tR4obs": [],
+    "Toy.Packed.tU8": [],
+    "Toy.Packed.tempsAligned_neg": [
+      "propext"
+    ],
+    "Toy.Packed.tempsAligned_pos": [
+      "propext"
+    ],
+    "Toy.Packed.toTrap": [
+      "propext"
+    ],
+    "Toy.Packed.toTrap.eq_1": [
+      "propext"
+    ],
+    "Toy.Packed.toTrap.eq_2": [
+      "propext"
+    ],
+    "Toy.Packed.toTrap.match_1": [
+      "propext"
+    ],
+    "Toy.Packed.typeAt": [
+      "propext"
+    ],
+    "Toy.Packed.typeAt.eq_1": [
+      "propext"
+    ],
+    "Toy.Packed.typeAt.eq_2": [
+      "propext"
+    ],
+    "Toy.Packed.typeAt.eq_def": [
+      "propext"
+    ],
+    "Toy.Packed.typeAt_neg": [
+      "propext"
+    ],
+    "Toy.Packed.typeAt_pos": [
+      "propext"
+    ],
+    "Toy.Packed.typeCrit_overstages_fixed_layout": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.typeGA": [
+      "propext"
+    ],
+    "Toy.Packed.typeGA.eq_1": [
+      "propext"
+    ],
+    "Toy.Packed.typeGA.eq_2": [
+      "propext"
+    ],
+    "Toy.Packed.typeGA.eq_def": [
+      "propext"
+    ],
+    "Toy.Packed.typeGA.match_1": [],
+    "Toy.Packed.typeGA_cases": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.typeGA_cases.match_1_1": [],
+    "Toy.Packed.typeGA_exact_fails_without_noRepeatStep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.typeGA_exact_fails_without_powTwo": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.typeGA_exact_fails_without_typeAt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.typeGA_exact_hyps_hold": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.typeGA_neg": [
+      "propext"
+    ],
+    "Toy.Packed.typeGA_pos": [
+      "propext"
+    ],
+    "Toy.Packed.typeGA_props": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.typeGA_props.match_1_1": [],
+    "Toy.Packed.typeGA_sound_fails_without_dvd": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.typeGA_sound_fails_without_powTwo": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.typeGA_sound_fails_without_resolve": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.typeGA_sound_fails_without_respectsPacking": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Packed.typeGA_sound_hyps_hold": [
+      "Quot.sound",
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

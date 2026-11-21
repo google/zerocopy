@@ -66215,6 +66215,76 @@
         "rust/semver"
       ]
     },
+    "packed-field-projections-aligned-staging-and-alignment-check-completeness-across-shims": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "26bfbf28f5f79dff333ce5a232f131b496ec9cfe"
+          },
+          "name": "rustc packed-drop staging pass documentation, core::ptr::drop_in_place and core::pin documentation, error codes E0793 and E0588, Miri README, -Zub-checks documentation"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "RFC 1240 (repr(packed) unsafe references) and RFC 2582 (raw reference MIR operator)"
+        },
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "063d784186d3252bee242217f218223205c0b568"
+          },
+          "name": "MiniRust specification (capped_tail_align)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP.2019.00010"
+          },
+          "name": "SoK: Sanitizing for Security"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3158154"
+          },
+          "name": "RustBelt: Securing the Foundations of the Rust Programming Language"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3656422"
+          },
+          "name": "RefinedRust: A Type System for High-Assurance Verification of Rust Programs"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/runtime-monitoring",
+        "pl/alignment",
+        "pl/repr-packed",
+        "compilers/packed-drop-staging",
+        "compilers/drop-glue",
+        "compilers/instrumentation",
+        "security/sanitizers"
+      ]
+    },
     "page-aligned-simd-overreads-demonic-granules-and-early-exit-search-equivalence": {
       "observed_at": "2026-11-21",
       "subjects": [
