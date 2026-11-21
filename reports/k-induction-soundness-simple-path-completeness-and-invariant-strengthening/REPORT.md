@@ -350,7 +350,7 @@ end TwoCycle
       Invariant I T P
   ```
 
-  With the key definitions unfolded:
+  With the key definitions unfolded (prose):
 
   ```text
   (∀ j < k, ∀ π, I (π 0) → (∀ i < j, T (π i) (π (i+1))) → ∀ i ≤ j, P (π i)) → (∀ π, (∀ i < k, T (π i) (π (i+1))) → (∀ i < k, P (π i)) → P (π k)) → ∀ s, (∃ m π, I (π 0) ∧ (∀ i < m, T (π i) (π (i+1))) ∧ π m = s) → P s
@@ -390,7 +390,7 @@ end TwoCycle
 
   With the key definitions unfolded:
 
-  ```text
+  ```lean
   Base I T P k → (∀ π, IsPath T k π → (∀ i j, i ≤ k → j ≤ k → π i = π j → i = j) → (∀ i < k, P (π i)) → P (π k)) → ∀ s, Reachable I T s → P s
   ```
 
@@ -423,7 +423,7 @@ end TwoCycle
 
   With the key definitions unfolded:
 
-  ```text
+  ```lean
   ReachIn I T m s → ∃ m' ≤ m, ∃ π, I (π 0) ∧ IsPath T m' π ∧ IsSimple m' π ∧ π m' = s
   ```
 
@@ -459,7 +459,7 @@ end TwoCycle
       SimpleStep T P k'
   ```
 
-  With the key definitions unfolded:
+  With the key definitions unfolded (prose):
 
   ```text
   Base I T P k → Step T P k → k ≤ k' → Base I T P k' ∧ Step T P k';   Step T P k → k ≤ k' → Step T P k';   SimpleStep T P k → k ≤ k' → SimpleStep T P k'
@@ -499,7 +499,7 @@ end TwoCycle
 
   With the key definitions unfolded:
 
-  ```text
+  ```lean
   ¬ Step TwoInd.T TwoInd.P 1 ∧ Base TwoInd.I TwoInd.T TwoInd.P 2 ∧ Step TwoInd.T TwoInd.P 2 ∧ Invariant TwoInd.I TwoInd.T TwoInd.P
   ```
 
@@ -529,7 +529,7 @@ end TwoCycle
         ∀ j, j ≤ k → ¬ SimpleStep (Ladder.T k) (Ladder.P k) j
   ```
 
-  With the key definitions unfolded:
+  With the key definitions unfolded (prose):
 
   ```text
   ∀ k, Invariant (Ladder.I k) (Ladder.T k) (Ladder.P k) ∧ Base … (k+1) ∧ Step … (k+1) ∧ ∀ j ≤ k, ¬ SimpleStep (Ladder.T k) (Ladder.P k) j
@@ -562,7 +562,7 @@ end TwoCycle
 
   With the key definitions unfolded:
 
-  ```text
+  ```lean
   Invariant SelfLoop.I SelfLoop.T SelfLoop.P ∧ ∀ k, ¬ Step SelfLoop.T SelfLoop.P k
   ```
 
@@ -593,7 +593,7 @@ end TwoCycle
 
   With the key definitions unfolded:
 
-  ```text
+  ```lean
   n ≤ k → ∀ π : Nat → Fin n, IsPath T k π → IsSimple k π → (∀ i < k, P (π i)) → P (π k)
   ```
 
@@ -622,7 +622,7 @@ end TwoCycle
       {P : Fin n → Prop} (h : Invariant I T P) : Base I T P n ∧ SimpleStep T P n
   ```
 
-  With the key definitions unfolded:
+  With the key definitions unfolded (prose):
 
   ```text
   Invariant I T P → Base I T P n ∧ SimpleStep T P n   (I T P over Fin n)
@@ -656,7 +656,7 @@ end TwoCycle
       (h : Invariant I T P) : Base I T P m ∧ SimpleStep T P m
   ```
 
-  With the key definitions unfolded:
+  With the key definitions unfolded (prose):
 
   ```text
   (∃ s, I s) → Invariant I T P → Base I T P m ∧ SimpleStep T P m   (I T P over Fin (m+1))
@@ -695,7 +695,7 @@ end TwoCycle
           ¬ SimpleStep NatDescent.T NatDescent.P k
   ```
 
-  With the key definitions unfolded:
+  With the key definitions unfolded (prose):
 
   ```text
   (∃ s, NatDescent.I s) ∧ (∀ s, Reachable NatDescent.I NatDescent.T s ↔ s = 0) ∧ ReachDiameterBound … 0 ∧ ReachRecurrenceBound … 0 ∧ Invariant NatDescent.I NatDescent.T NatDescent.P ∧ ∀ k, Base NatDescent.I NatDescent.T NatDescent.P k ∧ ¬ SimpleStep NatDescent.T NatDescent.P k
@@ -726,7 +726,7 @@ end TwoCycle
       (hk : d ≤ k) (hb : BMC I T P k) : Invariant I T P
   ```
 
-  With the key definitions unfolded:
+  With the key definitions unfolded (prose):
 
   ```text
   (∀ s, Reachable I T s → ∃ j ≤ d, ReachIn I T j s) → d ≤ k → (∀ j ≤ k, ∀ s, ReachIn I T j s → P s) → Invariant I T P
@@ -765,7 +765,7 @@ end TwoCycle
       ReachDiameterBound I T r
   ```
 
-  With the key definitions unfolded:
+  With the key definitions unfolded (prose):
 
   ```text
   (∀ j π, I (π 0) → IsPath T j π → IsSimple j π → j ≤ r) → r ≤ k → BMC I T P k → Invariant I T P;   ReachRecurrenceBound I T r → ReachDiameterBound I T r
@@ -800,7 +800,7 @@ end TwoCycle
 
   With the key definitions unfolded:
 
-  ```text
+  ```lean
   (ReachDiameterBound I T d ∧ ∀ d', ReachDiameterBound I T d' → d ≤ d') → (∀ j π, I (π 0) → IsPath T j π → IsSimple j π → j ≤ r) → d ≤ r
   ```
 
@@ -829,7 +829,7 @@ end TwoCycle
       {P : Fin n → Prop} (hb : BMC I T P (n - 1)) : Invariant I T P
   ```
 
-  With the key definitions unfolded:
+  With the key definitions unfolded (prose):
 
   ```text
   BMC I T P (n - 1) → Invariant I T P   (I T P over Fin n; n - 1 is truncated subtraction, so n = 0 gives depth 0, where the claim holds vacuously)
@@ -864,7 +864,7 @@ end TwoCycle
       BMC I T (ReachWithin I T k) k ∧ ¬ Invariant I T (ReachWithin I T k)
   ```
 
-  With the key definitions unfolded:
+  With the key definitions unfolded (prose):
 
   ```text
   (∀ P, BMC I T P k → Invariant I T P) ↔ ReachDiameterBound I T k;   ¬ ReachDiameterBound I T k → BMC I T (ReachWithin I T k) k ∧ ¬ Invariant I T (ReachWithin I T k)
@@ -898,7 +898,7 @@ end TwoCycle
         ¬ Invariant OneEdge.I OneEdge.T OneEdge.P ∧ ¬ BMC OneEdge.I OneEdge.T OneEdge.P 1
   ```
 
-  With the key definitions unfolded:
+  With the key definitions unfolded (prose):
 
   ```text
   IsReachRecurrenceDiameter OneEdge.I OneEdge.T 1 ∧ Base OneEdge.I OneEdge.T OneEdge.P 1 ∧ ¬ Invariant … ∧ ¬ BMC OneEdge.I OneEdge.T OneEdge.P 1
@@ -929,7 +929,7 @@ end TwoCycle
 
   With the key definitions unfolded:
 
-  ```text
+  ```lean
   ∀ m, IsReachDiameter (TriangleN.I m) (TriangleN.T m) 1 ∧ IsReachRecurrenceDiameter (TriangleN.I m) (TriangleN.T m) (m + 1)
   ```
 
@@ -959,7 +959,7 @@ end TwoCycle
 
   With the key definitions unfolded:
 
-  ```text
+  ```lean
   (∀ s, I s → P s) → (∀ s, I s → Q s) → (∀ s t, P s ∧ Q s → T s t → P t ∧ Q t) → Invariant I T P
   ```
 
@@ -1008,7 +1008,7 @@ end TwoCycle
         (Initiation I (fun s => ∀ m, FutureSafe T P m s) ↔ Invariant I T P)
   ```
 
-  With the key definitions unfolded:
+  With the key definitions unfolded (prose):
 
   ```text
   Initiation I R ∧ Consecution T R ∧ ∀ Q, Initiation I Q → Consecution T Q → ∀ s, R s → Q s  (R = Reachable I T);   Invariant I T P ↔ Initiation I (P ∧ R) ∧ Consecution T (P ∧ R);   Invariant I T P ↔ ∃ Q, Initiation I Q ∧ Consecution T Q ∧ ∀ s, Q s → P s;   with W s := ∀ m, FutureSafe T P m s: Consecution T W ∧ (∀ s, W s → P s) ∧ (∀ Q, Consecution T Q → (∀ s, Q s → P s) → ∀ s, Q s → W s) ∧ (Initiation I W ↔ Invariant I T P)
@@ -1040,7 +1040,7 @@ end TwoCycle
         ∀ s, FutureSafe T P k s → P s
   ```
 
-  With the key definitions unfolded:
+  With the key definitions unfolded (prose):
 
   ```text
   Base I T P (k+1) → SimpleStep T P (k+1) → Initiation I F ∧ Consecution T F ∧ ∀ s, F s → P s, where F s := ∀ j ≤ k, ∀ π, π 0 = s → IsPath T j π → P (π j)
@@ -1077,7 +1077,7 @@ end TwoCycle
 
   With the key definitions unfolded:
 
-  ```text
+  ```lean
   (∀ s, ∃ t, T s t) → (Base I T P (k+1) ↔ ∀ π, I (π 0) → IsPath T k π → ∀ i ≤ k, P (π i))
   ```
 
@@ -1098,7 +1098,7 @@ end TwoCycle
 
 ### Non-claims
 
-**Applies to every result:** Toy model only: an abstract transition system (a state type in any universe, an initial-state predicate, and a transition relation that need not be total) and a state property; paths are explicit finite state sequences. No symbolic encoding, SAT/SMT solving, incremental algorithms, input variables, fairness, or liveness. Transfer to a real model checker is a separate modelling argument this package does not provide.
+**Applies to every result:** Toy model: an abstract transition system (a state type in any universe, an initial-state predicate, and a transition relation that need not be total) and a state property; paths are explicit finite state sequences. No symbolic encoding, SAT/SMT solving, incremental algorithms, input variables, fairness, or liveness. These theorems neither establish nor refute the corresponding claims about SAT/SMT-based k-induction engines, bounded model checkers, or IC3/PDR implementations. Transfer to a real model checker is a separate modelling argument this package does not provide.
 
 **1. `kind-sound`**
 
