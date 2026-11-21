@@ -41,6 +41,8 @@ runs:
           echo "Expected artifact file must be a filename, not a path: $EXPECTED_FILE" >&2
           exit 1
         fi
+        # Clear any partial file left by an earlier timed-out caller step.
+        rm -f -- "$ARTIFACT_PATH/$EXPECTED_FILE"
 
     # download-artifact retries some blob transfers internally, but failures
     # while looking up an artifact or obtaining a signed URL happen outside
@@ -50,7 +52,7 @@ runs:
     - name: Download artifact (attempt 1)
       id: download_1
       continue-on-error: true
-      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
       with:
         artifact-ids: ${{ inputs.artifact-id }}
         path: ${{ inputs.path }}
@@ -72,7 +74,7 @@ runs:
       id: download_2
       if: ${{ !cancelled() && steps.download_1.outcome == 'failure' }}
       continue-on-error: true
-      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
       with:
         artifact-ids: ${{ inputs.artifact-id }}
         path: ${{ inputs.path }}
@@ -92,7 +94,7 @@ runs:
 
     - name: Download artifact (attempt 3)
       if: ${{ !cancelled() && steps.download_2.outcome == 'failure' }}
-      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
       with:
         artifact-ids: ${{ inputs.artifact-id }}
         path: ${{ inputs.path }}

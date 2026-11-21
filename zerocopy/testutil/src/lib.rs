@@ -9,7 +9,11 @@
 #![allow(unknown_lints)]
 #![deny(unexpected_cfgs)]
 
-use std::{env, path::PathBuf, process::Command};
+use std::{
+    env, fs,
+    path::{Path, PathBuf},
+    process::Command,
+};
 
 const UI_TEST_FEATURE_ARG_COUNT_ENV: &str = "ZEROCOPY_UI_TEST_FEATURE_ARG_COUNT";
 const UI_TEST_FEATURE_ARG_ENV_PREFIX: &str = "ZEROCOPY_UI_TEST_FEATURE_ARG_";
@@ -39,6 +43,67 @@ fn outer_feature_selection_args() -> Vec<String> {
         env::var(format!("{}{}", UI_TEST_FEATURE_ARG_ENV_PREFIX, index)).ok()
     })
     .unwrap_or_else(|error| panic!("invalid UI feature-argument protocol: {}", error))
+}
+
+fn parse_pinned_stable(cargo_toml: &str) -> Option<&str> {
+    let mut in_ci_section = false;
+    for raw_line in cargo_toml.lines() {
+        let line = raw_line.trim();
+        if line.is_empty() || line.starts_with('#') {
+            continue;
+        }
+        if line.starts_with('[') {
+            let header = line.split('#').next().unwrap_or(line).trim();
+            in_ci_section = header == "[package.metadata.ci]";
+            continue;
+        }
+        if !in_ci_section {
+            continue;
+        }
+        if let Some((key, value)) = line.split_once('=') {
+            if key.trim() == "pinned-stable" {
+                let value = value.trim();
+                if let Some(rest) = value.strip_prefix('"') {
+                    if let Some((version, trailing)) = rest.split_once('"') {
+                        let trailing = trailing.trim();
+                        if !version.is_empty() && (trailing.is_empty() || trailing.starts_with('#'))
+                        {
+                            return Some(version);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    None
+}
+
+// Prefer `stable` when installed and fall back to `pinned-stable` from
+// `zerocopy/Cargo.toml` so slim CI images do not have to ship both an unpinned
+// and a pinned stable toolchain.
+fn resolve_ui_runner_toolchain(toolchain_list: &str, cargo_toml: &str) -> String {
+    let has_stable = toolchain_list.lines().any(|line| {
+        matches!(
+            line.split_whitespace().next(),
+            Some(name) if name == "stable" || name.starts_with("stable-")
+        )
+    });
+    if has_stable {
+        return "stable".to_string();
+    }
+    parse_pinned_stable(cargo_toml).unwrap_or("stable").to_string()
+}
+
+fn select_ui_runner_toolchain(workspace_root: &Path) -> String {
+    let toolchain_list = Command::new("rustup")
+        .args(["toolchain", "list"])
+        .output()
+        .ok()
+        .filter(|output| output.status.success())
+        .and_then(|output| String::from_utf8(output.stdout).ok())
+        .unwrap_or_default();
+    let cargo_toml = fs::read_to_string(workspace_root.join("Cargo.toml")).unwrap_or_default();
+    resolve_ui_runner_toolchain(&toolchain_list, &cargo_toml)
 }
 
 #[derive(Debug)]
@@ -330,6 +395,7 @@ impl UiTestRunner {
             "UI artifact build did not enable its required derive feature"
         );
 
+        let ui_runner_toolchain = select_ui_runner_toolchain(&workspace_root);
         let mut build_command = Command::new("rustup");
 
         // Prevent `RUSTFLAGS` (e.g. `-Zrandomize-layout` from Nightly CI) from
@@ -342,7 +408,7 @@ impl UiTestRunner {
         build_command.current_dir(repo_root);
         build_command.args([
             "run",
-            "stable",
+            &ui_runner_toolchain,
             "cargo",
             "build",
             "--locked",
@@ -428,7 +494,7 @@ impl UiTestRunner {
 
 #[cfg(test)]
 mod tests {
-    use super::decode_feature_selection_args;
+    use super::{decode_feature_selection_args, resolve_ui_runner_toolchain};
 
     #[test]
     fn decodes_indexed_feature_arguments() {
@@ -449,5 +515,45 @@ mod tests {
     fn rejects_invalid_feature_argument_protocol() {
         assert!(decode_feature_selection_args(Some("invalid"), |_| None).is_err());
         assert!(decode_feature_selection_args(Some("1"), |_| None).is_err());
+    }
+
+    #[test]
+    fn selects_ui_runner_toolchain_with_pinned_stable_fallback() {
+        let cargo_toml = "\
+[package]
+name = \"zerocopy\"
+
+[package.metadata.other]
+pinned-stable = \"0.0.0\"
+
+[package.metadata.ci] # inline comment
+pinned-stable = \"1.100.0\" # trailing comment
+pinned-nightly = \"nightly-2026-09-30\"
+";
+        assert_eq!(
+            resolve_ui_runner_toolchain(
+                "1.100.0-x86_64-unknown-linux-gnu (default)\nnightly-2026-09-30-x86_64-unknown-linux-gnu\n",
+                cargo_toml,
+            ),
+            "1.100.0"
+        );
+        assert_eq!(
+            resolve_ui_runner_toolchain(
+                "stable-x86_64-unknown-linux-gnu (default)\n1.100.0-x86_64-unknown-linux-gnu\n",
+                cargo_toml,
+            ),
+            "stable"
+        );
+        assert_eq!(
+            resolve_ui_runner_toolchain(
+                "1.100.0-x86_64-unknown-linux-gnu (default)\nstable-x86_64-unknown-linux-gnu\n",
+                cargo_toml,
+            ),
+            "stable"
+        );
+        assert_eq!(
+            resolve_ui_runner_toolchain("1.100.0-x86_64-unknown-linux-gnu\n", "[package]\n"),
+            "stable"
+        );
     }
 }
