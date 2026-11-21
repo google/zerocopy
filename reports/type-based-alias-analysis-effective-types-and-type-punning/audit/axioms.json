@@ -1,0 +1,1385 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Option.all.eq_1": [],
+    "Option.all.eq_2": [],
+    "Toy.Tbaa.AllocatedOn": [],
+    "Toy.Tbaa.Allows": [],
+    "Toy.Tbaa.Allows.eq_1": [],
+    "Toy.Tbaa.Allows.eq_2": [],
+    "Toy.Tbaa.Allows.match_1": [],
+    "Toy.Tbaa.Allows.refl": [
+      "propext"
+    ],
+    "Toy.Tbaa.Allows.trace_prefix": [
+      "propext"
+    ],
+    "Toy.Tbaa.Allows.trans": [
+      "propext"
+    ],
+    "Toy.Tbaa.Beh": [],
+    "Toy.Tbaa.Byte": [],
+    "Toy.Tbaa.Cell": [],
+    "Toy.Tbaa.Cell.casesOn": [],
+    "Toy.Tbaa.Cell.ctorIdx": [],
+    "Toy.Tbaa.Cell.eff": [],
+    "Toy.Tbaa.Cell.mk": [],
+    "Toy.Tbaa.Cell.mk.inj": [],
+    "Toy.Tbaa.Cell.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Tbaa.Cell.mk.noConfusion": [],
+    "Toy.Tbaa.Cell.mk.sizeOf_spec": [],
+    "Toy.Tbaa.Cell.noConfusion": [],
+    "Toy.Tbaa.Cell.noConfusionType": [],
+    "Toy.Tbaa.Cell.rec": [],
+    "Toy.Tbaa.Cell.recOn": [],
+    "Toy.Tbaa.Cell.val": [],
+    "Toy.Tbaa.Companions.sink_load_below_store_witness_runs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Companions.store_store_swap_witness_runs": [
+      "propext"
+    ],
+    "Toy.Tbaa.Companions.store_swap_scheme_fails_at_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Companions.valsAt_unallocated_example": [
+      "propext"
+    ],
+    "Toy.Tbaa.Compat": [],
+    "Toy.Tbaa.CopyBytesOk": [],
+    "Toy.Tbaa.CopyBytesOk.eq_1": [],
+    "Toy.Tbaa.DeclOk": [],
+    "Toy.Tbaa.DeclOk.eq_1": [],
+    "Toy.Tbaa.DeclOk.match_1": [],
+    "Toy.Tbaa.DeclaredOn": [],
+    "Toy.Tbaa.ECfg": [],
+    "Toy.Tbaa.ECfg.casesOn": [],
+    "Toy.Tbaa.ECfg.compat": [],
+    "Toy.Tbaa.ECfg.ctorIdx": [],
+    "Toy.Tbaa.ECfg.memcpyChecksBytes": [],
+    "Toy.Tbaa.ECfg.mk": [],
+    "Toy.Tbaa.ECfg.mk.inj": [],
+    "Toy.Tbaa.ECfg.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Tbaa.ECfg.mk.noConfusion": [],
+    "Toy.Tbaa.ECfg.mk.sizeOf_spec": [],
+    "Toy.Tbaa.ECfg.noConfusion": [],
+    "Toy.Tbaa.ECfg.noConfusionType": [],
+    "Toy.Tbaa.ECfg.rec": [],
+    "Toy.Tbaa.ECfg.recOn": [],
+    "Toy.Tbaa.Eff": [],
+    "Toy.Tbaa.Eff.alloc": [],
+    "Toy.Tbaa.Eff.alloc.elim": [],
+    "Toy.Tbaa.Eff.alloc.inj": [],
+    "Toy.Tbaa.Eff.alloc.injEq": [
+      "propext"
+    ],
+    "Toy.Tbaa.Eff.alloc.noConfusion": [],
+    "Toy.Tbaa.Eff.alloc.sizeOf_spec": [],
+    "Toy.Tbaa.Eff.casesOn": [],
+    "Toy.Tbaa.Eff.ctorElim": [],
+    "Toy.Tbaa.Eff.ctorElimType": [],
+    "Toy.Tbaa.Eff.ctorIdx": [],
+    "Toy.Tbaa.Eff.decl": [],
+    "Toy.Tbaa.Eff.decl.elim": [],
+    "Toy.Tbaa.Eff.decl.inj": [],
+    "Toy.Tbaa.Eff.decl.injEq": [
+      "propext"
+    ],
+    "Toy.Tbaa.Eff.decl.noConfusion": [],
+    "Toy.Tbaa.Eff.decl.sizeOf_spec": [],
+    "Toy.Tbaa.Eff.isDecl": [],
+    "Toy.Tbaa.Eff.noConfusion": [],
+    "Toy.Tbaa.Eff.noConfusionType": [],
+    "Toy.Tbaa.Eff.rec": [],
+    "Toy.Tbaa.Eff.recOn": [],
+    "Toy.Tbaa.Eff.tag": [],
+    "Toy.Tbaa.Eff.tag.eq_1": [],
+    "Toy.Tbaa.Eff.tag.eq_2": [],
+    "Toy.Tbaa.Examples.allocatedOn_admits": [],
+    "Toy.Tbaa.Examples.allocatedOn_rejects": [],
+    "Toy.Tbaa.Examples.byte_loop_copy_does_not_transfer_effective_type": [
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.declaredOn_admits": [],
+    "Toy.Tbaa.Examples.declaredOn_rejects": [],
+    "Toy.Tbaa.Examples.erase_example": [],
+    "Toy.Tbaa.Examples.f32_valid_any_pattern": [],
+    "Toy.Tbaa.Examples.memcpyLoadOk_admits": [
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.memcpyLoadOk_rejects": [
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.noCommonLeaf_admits": [
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.noCommonLeaf_non_u8_struct_instances": [
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.noCommonLeaf_rejects": [
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.noCommonLeaf_table": [
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.ones4": [],
+    "Toy.Tbaa.Examples.pair_byte4_not_u32": [
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.pair_layout": [
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.punIntoDeclSt": [],
+    "Toy.Tbaa.Examples.rangesDisjoint_admits": [],
+    "Toy.Tbaa.Examples.rangesDisjoint_rejects": [],
+    "Toy.Tbaa.Examples.readableAt_admits": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.readableAt_rejects": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.receivesAt_admits": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.receivesAt_rejects": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.refines_admits": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.refines_rejects": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.reorderSound_admits": [
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.reorderSound_rejects": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.stdCompat_admits": [
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.stdCompat_rejects": [
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.stepE_allocated_retype_defined": [
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.stepE_byte_read_defined": [
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.stepE_declared_store_mismatch_ub": [
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.stepE_memcpy_copies_type_defined": [
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.stepE_memcpy_copy_punning_ub": [
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.stepE_memcpy_into_declared_defined": [
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.stepE_pair_load_from_member_stores_defined": [
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.stepE_pair_member_access": [
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.stepE_punning_ub": [
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.stepE_same_type_defined": [
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.stepE_unallocated_ub": [
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.stepU_punning_defined": [
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.stepU_unallocated_ub": [
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.strictCompat_admits": [],
+    "Toy.Tbaa.Examples.strictCompat_rejects_byte": [],
+    "Toy.Tbaa.Examples.typeFaults_admits": [
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.typeFaults_rejects": [
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.typeFaults_same_type_nonstandard_cfg": [
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.u32_invalid_short": [],
+    "Toy.Tbaa.Examples.uDefined_admits": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.uDefined_rejects": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Examples.valsAt_example": [
+      "propext"
+    ],
+    "Toy.Tbaa.Fault": [],
+    "Toy.Tbaa.Fault.base": [],
+    "Toy.Tbaa.Fault.base.elim": [],
+    "Toy.Tbaa.Fault.base.sizeOf_spec": [],
+    "Toy.Tbaa.Fault.casesOn": [],
+    "Toy.Tbaa.Fault.ctorElim": [],
+    "Toy.Tbaa.Fault.ctorElimType": [],
+    "Toy.Tbaa.Fault.ctorIdx": [],
+    "Toy.Tbaa.Fault.noConfusion": [],
+    "Toy.Tbaa.Fault.noConfusionType": [],
+    "Toy.Tbaa.Fault.ofNat": [],
+    "Toy.Tbaa.Fault.ofNat_ctorIdx": [],
+    "Toy.Tbaa.Fault.rec": [],
+    "Toy.Tbaa.Fault.recOn": [],
+    "Toy.Tbaa.Fault.type": [],
+    "Toy.Tbaa.Fault.type.elim": [],
+    "Toy.Tbaa.Fault.type.sizeOf_spec": [],
+    "Toy.Tbaa.Final": [],
+    "Toy.Tbaa.Final.casesOn": [],
+    "Toy.Tbaa.Final.ctorElim": [],
+    "Toy.Tbaa.Final.ctorElimType": [],
+    "Toy.Tbaa.Final.ctorIdx": [],
+    "Toy.Tbaa.Final.fault": [],
+    "Toy.Tbaa.Final.fault.elim": [],
+    "Toy.Tbaa.Final.fault.inj": [],
+    "Toy.Tbaa.Final.fault.injEq": [
+      "propext"
+    ],
+    "Toy.Tbaa.Final.fault.noConfusion": [],
+    "Toy.Tbaa.Final.fault.sizeOf_spec": [],
+    "Toy.Tbaa.Final.noConfusion": [],
+    "Toy.Tbaa.Final.noConfusionType": [],
+    "Toy.Tbaa.Final.ok": [],
+    "Toy.Tbaa.Final.ok.elim": [],
+    "Toy.Tbaa.Final.ok.inj": [],
+    "Toy.Tbaa.Final.ok.injEq": [
+      "propext"
+    ],
+    "Toy.Tbaa.Final.ok.noConfusion": [],
+    "Toy.Tbaa.Final.ok.sizeOf_spec": [],
+    "Toy.Tbaa.Final.outcome": [],
+    "Toy.Tbaa.Final.outcome.eq_1": [],
+    "Toy.Tbaa.Final.outcome.eq_2": [],
+    "Toy.Tbaa.Final.outcome.match_1": [],
+    "Toy.Tbaa.Final.rec": [],
+    "Toy.Tbaa.Final.recOn": [],
+    "Toy.Tbaa.Instr": [],
+    "Toy.Tbaa.Instr.casesOn": [],
+    "Toy.Tbaa.Instr.ctorElim": [],
+    "Toy.Tbaa.Instr.ctorElimType": [],
+    "Toy.Tbaa.Instr.ctorIdx": [],
+    "Toy.Tbaa.Instr.isLoad": [
+      "propext"
+    ],
+    "Toy.Tbaa.Instr.isLoad.match_1": [
+      "propext"
+    ],
+    "Toy.Tbaa.Instr.load": [],
+    "Toy.Tbaa.Instr.load.elim": [],
+    "Toy.Tbaa.Instr.load.inj": [],
+    "Toy.Tbaa.Instr.load.injEq": [
+      "propext"
+    ],
+    "Toy.Tbaa.Instr.load.noConfusion": [],
+    "Toy.Tbaa.Instr.load.sizeOf_spec": [],
+    "Toy.Tbaa.Instr.memcpy": [],
+    "Toy.Tbaa.Instr.memcpy.elim": [],
+    "Toy.Tbaa.Instr.memcpy.inj": [],
+    "Toy.Tbaa.Instr.memcpy.injEq": [
+      "propext"
+    ],
+    "Toy.Tbaa.Instr.memcpy.noConfusion": [],
+    "Toy.Tbaa.Instr.memcpy.sizeOf_spec": [],
+    "Toy.Tbaa.Instr.noConfusion": [],
+    "Toy.Tbaa.Instr.noConfusionType": [],
+    "Toy.Tbaa.Instr.out": [],
+    "Toy.Tbaa.Instr.out.elim": [],
+    "Toy.Tbaa.Instr.out.inj": [],
+    "Toy.Tbaa.Instr.out.injEq": [
+      "propext"
+    ],
+    "Toy.Tbaa.Instr.out.noConfusion": [],
+    "Toy.Tbaa.Instr.out.sizeOf_spec": [],
+    "Toy.Tbaa.Instr.rec": [],
+    "Toy.Tbaa.Instr.recOn": [],
+    "Toy.Tbaa.Instr.set": [],
+    "Toy.Tbaa.Instr.set.elim": [],
+    "Toy.Tbaa.Instr.set.inj": [],
+    "Toy.Tbaa.Instr.set.injEq": [
+      "propext"
+    ],
+    "Toy.Tbaa.Instr.set.noConfusion": [],
+    "Toy.Tbaa.Instr.set.sizeOf_spec": [],
+    "Toy.Tbaa.Instr.store": [],
+    "Toy.Tbaa.Instr.store.elim": [],
+    "Toy.Tbaa.Instr.store.inj": [],
+    "Toy.Tbaa.Instr.store.injEq": [
+      "propext"
+    ],
+    "Toy.Tbaa.Instr.store.noConfusion": [],
+    "Toy.Tbaa.Instr.store.sizeOf_spec": [],
+    "Toy.Tbaa.Lemmas.all_zip_get": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.allocatedOn_step": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.block2_cases": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.block2_ok": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.copyBytesOk_stdCompat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.declOk_get": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.declOk_get.match_1": [],
+    "Toy.Tbaa.Lemmas.decl_two_checks": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.declaredOn_step": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.erase_mem_copy": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.erase_mem_store": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.exists_overlap": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.isDecl_of_declaredOn": [],
+    "Toy.Tbaa.Lemmas.leafAt_eq": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.leaf_ne_u8_of_ne_u8": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.noCommonLeaf_get": [],
+    "Toy.Tbaa.Lemmas.readRange_congr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.readRange_congr.match_1_1": [],
+    "Toy.Tbaa.Lemmas.readRange_const": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.readRange_const.match_1_1": [],
+    "Toy.Tbaa.Lemmas.readRange_get": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.readRange_get.match_1_1": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.readRange_isSome": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.readRange_isSome.match_1_1": [],
+    "Toy.Tbaa.Lemmas.readRange_length": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.readRange_length.match_1_1": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.readRange_map": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.readRange_map.match_1_1": [],
+    "Toy.Tbaa.Lemmas.readRange_updRange_copyFrom": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.readRange_updRange_copyFrom.match_1_1": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.readRange_updRange_disjoint": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.reorderSoundFrom_of_block": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.reorderSoundFrom_of_eq": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.runFrom_append": [],
+    "Toy.Tbaa.Lemmas.runFrom_append.match_1": [],
+    "Toy.Tbaa.Lemmas.runFrom_append.match_1_1": [],
+    "Toy.Tbaa.Lemmas.runFrom_cons_emit": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.runFrom_cons_fault": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.runFrom_cons_next": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.runFrom_inv": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.runFrom_inv.match_1_1": [],
+    "Toy.Tbaa.Lemmas.runFrom_sim_allows": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.runFrom_sim_allows.match_1_1": [],
+    "Toy.Tbaa.Lemmas.runFrom_sim_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.runFrom_sim_eq.match_1_1": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.runFrom_trace_prefix": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.runFrom_trace_prefix.match_1_1": [],
+    "Toy.Tbaa.Lemmas.runFrom_typeFaults_ub": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.runFrom_typeFaults_ub.match_1_1": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.size_le_eight": [],
+    "Toy.Tbaa.Lemmas.size_pos": [],
+    "Toy.Tbaa.Lemmas.stdCompat_some_of_ne_u8": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.stepE_emit": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.stepE_isDecl_preserved": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.stepE_load_next": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.stepE_load_noEmit": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.stepE_load_of": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.stepE_store_next": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.stepE_store_noEmit": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.stepE_store_of": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.stepU_emit": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.stepU_load_next": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.stepU_load_noEmit": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.stepU_load_of": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.stepU_store_invalid": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.stepU_store_next": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.stepU_store_noEmit": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.stepU_store_of": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.step_sim": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.stored_tag_rejects": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.tagsOk_get": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.tagsOk_zipWith_copyCell": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.tagsOk_zipWith_copyCell.match_1_1": [],
+    "Toy.Tbaa.Lemmas.updRange_comm": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.updRange_isSome": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.updRange_of_lt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.updRange_of_mem": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.zipWith_copyCell_val": [
+      "propext"
+    ],
+    "Toy.Tbaa.Lemmas.zipWith_copyCell_val.match_1_1": [],
+    "Toy.Tbaa.Mem": [],
+    "Toy.Tbaa.MemcpyLoadOk": [
+      "propext"
+    ],
+    "Toy.Tbaa.NoCommonLeaf": [],
+    "Toy.Tbaa.Outcome": [],
+    "Toy.Tbaa.Outcome.casesOn": [],
+    "Toy.Tbaa.Outcome.ctorElim": [],
+    "Toy.Tbaa.Outcome.ctorElimType": [],
+    "Toy.Tbaa.Outcome.ctorIdx": [],
+    "Toy.Tbaa.Outcome.done": [],
+    "Toy.Tbaa.Outcome.done.elim": [],
+    "Toy.Tbaa.Outcome.done.inj": [],
+    "Toy.Tbaa.Outcome.done.injEq": [
+      "propext"
+    ],
+    "Toy.Tbaa.Outcome.done.noConfusion": [],
+    "Toy.Tbaa.Outcome.done.sizeOf_spec": [],
+    "Toy.Tbaa.Outcome.isDone": [],
+    "Toy.Tbaa.Outcome.isDone.eq_1": [],
+    "Toy.Tbaa.Outcome.isDone.eq_2": [],
+    "Toy.Tbaa.Outcome.noConfusion": [],
+    "Toy.Tbaa.Outcome.noConfusionType": [],
+    "Toy.Tbaa.Outcome.rec": [],
+    "Toy.Tbaa.Outcome.recOn": [],
+    "Toy.Tbaa.Outcome.trace": [],
+    "Toy.Tbaa.Outcome.trace.eq_1": [],
+    "Toy.Tbaa.Outcome.trace.eq_2": [],
+    "Toy.Tbaa.Outcome.ub": [],
+    "Toy.Tbaa.Outcome.ub.elim": [],
+    "Toy.Tbaa.Outcome.ub.inj": [],
+    "Toy.Tbaa.Outcome.ub.injEq": [
+      "propext"
+    ],
+    "Toy.Tbaa.Outcome.ub.noConfusion": [],
+    "Toy.Tbaa.Outcome.ub.sizeOf_spec": [],
+    "Toy.Tbaa.RangesDisjoint": [],
+    "Toy.Tbaa.ReadableAt": [
+      "propext"
+    ],
+    "Toy.Tbaa.ReceivesAt": [
+      "propext"
+    ],
+    "Toy.Tbaa.Refines": [],
+    "Toy.Tbaa.Reg": [],
+    "Toy.Tbaa.ReorderSound": [],
+    "Toy.Tbaa.ReorderSound.from": [],
+    "Toy.Tbaa.ReorderSoundFrom": [],
+    "Toy.Tbaa.Results.agreement_needs_no_type_fault": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.allocHoistSrc": [],
+    "Toy.Tbaa.Results.allocHoistSrc.eq_1": [],
+    "Toy.Tbaa.Results.allocHoistTgt": [],
+    "Toy.Tbaa.Results.allocHoistTgt.eq_1": [],
+    "Toy.Tbaa.Results.allocHoist_runs_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.behE_eq_behU_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.behE_eq_behU_iff_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.behE_eq_behU_iff_not_typeFaults_of_uDefined": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.behE_eq_behU_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Tbaa.Results.behE_eq_behU_of_not_typeFaults": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.behE_not_refines_behU_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.behE_not_refines_behU_iff_typeFaults_of_uDefined": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.behE_not_refines_behU_of_uDefined_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.behE_not_refines_behU_without_uDefined": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.behE_refines_behU_masked_instance": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.behU_erase_refines_behE": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.behU_refines_behE_strict_instance": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.byte_copy_defined_forces_byte_hoist_unsound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.byte_copy_defined_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Tbaa.Results.byte_copy_u8_case_is_same_type": [
+      "propext"
+    ],
+    "Toy.Tbaa.Results.byte_copy_u8_case_is_same_type.match_1": [
+      "propext"
+    ],
+    "Toy.Tbaa.Results.byte_dichotomy_not_exclusive_for_pair": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.byte_hoist_refines_with_unchecked_memcpy": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.copyIntoDeclF32": [],
+    "Toy.Tbaa.Results.declPairThenFresh": [],
+    "Toy.Tbaa.Results.declared_and_allocated_preconditions_incomparable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.declared_store_mismatch_diverges_without_loads": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.hoist_E_needs_distinct_registers": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.hoist_E_needs_load_ne_u8": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.hoist_E_needs_noCommonLeaf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.hoist_E_needs_store_ne_u8": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.hoist_E_needs_store_ne_u8_on_declared": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.hoist_E_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Tbaa.Results.hoist_E_nonvacuous_struct": [
+      "propext"
+    ],
+    "Toy.Tbaa.Results.hoist_U_disjoint_instance": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.hoist_U_needs_disjoint_ranges": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.hoist_U_needs_distinct_registers": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.hoist_U_witness_refines_under_E_or_disjoint": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.hoist_load_above_store_same_addr_unsound_U": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.hoist_load_above_store_sound_E_of_noCommonLeaf_of_ne_u8": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.hoist_load_above_store_sound_U_of_disjoint_ranges": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.hoist_unsound_U_instance": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.memcpy_corollary_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.memcpy_overlap_defined_examples": [
+      "propext"
+    ],
+    "Toy.Tbaa.Results.memcpy_then_load_needs_readable_source": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.memcpy_then_load_needs_receiving_destination": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.memcpy_then_load_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Tbaa.Results.memcpy_then_typed_load_defined_E_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.memcpy_then_typed_load_defined_E_iff.match_1_7": [
+      "propext"
+    ],
+    "Toy.Tbaa.Results.memcpy_then_typed_load_defined_E_of_readable_of_receives": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.mixedCompat": [
+      "propext"
+    ],
+    "Toy.Tbaa.Results.mixedCompat.match_1": [
+      "propext"
+    ],
+    "Toy.Tbaa.Results.no_type_criterion_at_one_site_needs_premise": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.no_type_criterion_at_one_site_needs_premise.match_1_1": [
+      "propext"
+    ],
+    "Toy.Tbaa.Results.no_type_criterion_licenses_same_addr_hoist_U": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.no_type_criterion_licenses_same_addr_hoist_U_at_one_site": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.no_type_criterion_licenses_same_addr_hoist_U_at_one_site.match_1_1": [
+      "propext"
+    ],
+    "Toy.Tbaa.Results.no_type_criterion_needs_premise": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.no_type_criterion_premises_satisfiable": [
+      "propext"
+    ],
+    "Toy.Tbaa.Results.ones4": [],
+    "Toy.Tbaa.Results.ones4.eq_1": [],
+    "Toy.Tbaa.Results.partialOverlapPunSt": [],
+    "Toy.Tbaa.Results.readable_source_not_necessary": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.same_register_premise_refutes_disjoint_hoist_U": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.sink_companions_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Tbaa.Results.sink_declared_needs_distinct_registers": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.sink_declared_needs_load_ne_u8": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.sink_declared_needs_noCommonLeaf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.sink_declared_needs_store_ne_u8": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.sink_declared_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Tbaa.Results.sink_declared_nonvacuous_struct": [
+      "propext"
+    ],
+    "Toy.Tbaa.Results.sink_load_below_store_not_sound_E": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.sink_load_below_store_sound_E_of_declared_of_noCommonLeaf_of_ne_u8": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.sink_load_below_store_sound_E_of_declared_of_noCommonLeaf_of_ne_u8.match_1_4": [],
+    "Toy.Tbaa.Results.sink_load_below_store_sound_E_of_disjoint_ranges": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.sink_load_below_store_sound_E_of_store_range_declared": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.sink_load_below_store_sound_E_of_store_range_declared.match_1_4": [],
+    "Toy.Tbaa.Results.sink_needs_declared_storage": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.store_store_companions_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Tbaa.Results.store_store_declared_needs_first_ne_u8": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.store_store_declared_needs_noCommonLeaf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.store_store_declared_needs_second_ne_u8": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.store_store_declared_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Tbaa.Results.store_store_declared_nonvacuous_struct": [
+      "propext"
+    ],
+    "Toy.Tbaa.Results.store_store_needs_declared_storage": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.store_store_reorder_not_sound_E": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.store_store_reorder_sound_E_of_declared_of_noCommonLeaf_of_ne_u8": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.store_store_reorder_sound_E_of_declared_of_noCommonLeaf_of_ne_u8.match_1_5": [],
+    "Toy.Tbaa.Results.store_store_reorder_sound_E_of_disjoint_ranges": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.store_store_reorder_sound_E_of_second_declared": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.store_store_reorder_sound_E_of_second_declared.match_1_5": [],
+    "Toy.Tbaa.Results.store_swap_scheme_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Tbaa.Results.store_swap_scheme_sound_on_declared_not_on_allocated": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.strict_copy_ub_and_byte_hoist_refines": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.strict_typed_load_above_byte_store_not_refines": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.twos4": [],
+    "Toy.Tbaa.Results.typeFault_masked_by_later_base_fault": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.typeFault_unmasked_despite_later_base_fault": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.uWit": [],
+    "Toy.Tbaa.Results.uWit.eq_1": [],
+    "Toy.Tbaa.Results.uWit_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.uWit_read": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Results.uWit_read_after_store": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.Scalar": [],
+    "Toy.Tbaa.Scalar.casesOn": [],
+    "Toy.Tbaa.Scalar.ctorElim": [],
+    "Toy.Tbaa.Scalar.ctorElimType": [],
+    "Toy.Tbaa.Scalar.ctorIdx": [],
+    "Toy.Tbaa.Scalar.f32": [],
+    "Toy.Tbaa.Scalar.f32.elim": [],
+    "Toy.Tbaa.Scalar.f32.sizeOf_spec": [],
+    "Toy.Tbaa.Scalar.noConfusion": [],
+    "Toy.Tbaa.Scalar.noConfusionType": [],
+    "Toy.Tbaa.Scalar.ofNat": [],
+    "Toy.Tbaa.Scalar.ofNat_ctorIdx": [],
+    "Toy.Tbaa.Scalar.rec": [],
+    "Toy.Tbaa.Scalar.recOn": [],
+    "Toy.Tbaa.Scalar.u16": [],
+    "Toy.Tbaa.Scalar.u16.elim": [],
+    "Toy.Tbaa.Scalar.u16.sizeOf_spec": [],
+    "Toy.Tbaa.Scalar.u32": [],
+    "Toy.Tbaa.Scalar.u32.elim": [],
+    "Toy.Tbaa.Scalar.u32.sizeOf_spec": [],
+    "Toy.Tbaa.Scalar.u8": [],
+    "Toy.Tbaa.Scalar.u8.elim": [],
+    "Toy.Tbaa.Scalar.u8.sizeOf_spec": [],
+    "Toy.Tbaa.St": [],
+    "Toy.Tbaa.St.casesOn": [],
+    "Toy.Tbaa.St.ctorIdx": [],
+    "Toy.Tbaa.St.mem": [],
+    "Toy.Tbaa.St.mk": [],
+    "Toy.Tbaa.St.mk.inj": [],
+    "Toy.Tbaa.St.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Tbaa.St.mk.noConfusion": [],
+    "Toy.Tbaa.St.mk.sizeOf_spec": [],
+    "Toy.Tbaa.St.noConfusion": [],
+    "Toy.Tbaa.St.noConfusionType": [],
+    "Toy.Tbaa.St.rec": [],
+    "Toy.Tbaa.St.recOn": [],
+    "Toy.Tbaa.St.regs": [],
+    "Toy.Tbaa.St.withRegs": [],
+    "Toy.Tbaa.Step": [],
+    "Toy.Tbaa.Step.casesOn": [],
+    "Toy.Tbaa.Step.ctorElim": [],
+    "Toy.Tbaa.Step.ctorElimType": [],
+    "Toy.Tbaa.Step.ctorIdx": [],
+    "Toy.Tbaa.Step.emit": [],
+    "Toy.Tbaa.Step.emit.elim": [],
+    "Toy.Tbaa.Step.emit.inj": [],
+    "Toy.Tbaa.Step.emit.injEq": [
+      "propext"
+    ],
+    "Toy.Tbaa.Step.emit.noConfusion": [],
+    "Toy.Tbaa.Step.emit.sizeOf_spec": [],
+    "Toy.Tbaa.Step.fault": [],
+    "Toy.Tbaa.Step.fault.elim": [],
+    "Toy.Tbaa.Step.fault.inj": [],
+    "Toy.Tbaa.Step.fault.injEq": [
+      "propext"
+    ],
+    "Toy.Tbaa.Step.fault.noConfusion": [],
+    "Toy.Tbaa.Step.fault.sizeOf_spec": [],
+    "Toy.Tbaa.Step.next": [],
+    "Toy.Tbaa.Step.next.elim": [],
+    "Toy.Tbaa.Step.next.inj": [],
+    "Toy.Tbaa.Step.next.injEq": [
+      "propext"
+    ],
+    "Toy.Tbaa.Step.next.noConfusion": [],
+    "Toy.Tbaa.Step.next.sizeOf_spec": [],
+    "Toy.Tbaa.Step.noConfusion": [],
+    "Toy.Tbaa.Step.noConfusionType": [],
+    "Toy.Tbaa.Step.rec": [],
+    "Toy.Tbaa.Step.recOn": [],
+    "Toy.Tbaa.TagsOk": [],
+    "Toy.Tbaa.TagsOk.eq_1": [],
+    "Toy.Tbaa.Ty": [],
+    "Toy.Tbaa.Ty.Valid": [],
+    "Toy.Tbaa.Ty.Valid.eq_1": [],
+    "Toy.Tbaa.Ty.casesOn": [],
+    "Toy.Tbaa.Ty.ctorElim": [],
+    "Toy.Tbaa.Ty.ctorElimType": [],
+    "Toy.Tbaa.Ty.ctorIdx": [],
+    "Toy.Tbaa.Ty.f32": [],
+    "Toy.Tbaa.Ty.f32.elim": [],
+    "Toy.Tbaa.Ty.f32.sizeOf_spec": [],
+    "Toy.Tbaa.Ty.instDecidableValid": [],
+    "Toy.Tbaa.Ty.leafAt": [
+      "propext"
+    ],
+    "Toy.Tbaa.Ty.leafAt.eq_1": [
+      "propext"
+    ],
+    "Toy.Tbaa.Ty.leaves": [],
+    "Toy.Tbaa.Ty.leaves.eq_1": [],
+    "Toy.Tbaa.Ty.leaves.eq_2": [],
+    "Toy.Tbaa.Ty.leaves.eq_3": [],
+    "Toy.Tbaa.Ty.leaves.eq_4": [],
+    "Toy.Tbaa.Ty.leaves.eq_5": [],
+    "Toy.Tbaa.Ty.noConfusion": [],
+    "Toy.Tbaa.Ty.noConfusionType": [],
+    "Toy.Tbaa.Ty.ofNat": [],
+    "Toy.Tbaa.Ty.ofNat_ctorIdx": [],
+    "Toy.Tbaa.Ty.pair": [],
+    "Toy.Tbaa.Ty.pair.elim": [],
+    "Toy.Tbaa.Ty.pair.sizeOf_spec": [],
+    "Toy.Tbaa.Ty.rec": [],
+    "Toy.Tbaa.Ty.recOn": [],
+    "Toy.Tbaa.Ty.size": [],
+    "Toy.Tbaa.Ty.size.eq_1": [],
+    "Toy.Tbaa.Ty.u16": [],
+    "Toy.Tbaa.Ty.u16.elim": [],
+    "Toy.Tbaa.Ty.u16.sizeOf_spec": [],
+    "Toy.Tbaa.Ty.u32": [],
+    "Toy.Tbaa.Ty.u32.elim": [],
+    "Toy.Tbaa.Ty.u32.sizeOf_spec": [],
+    "Toy.Tbaa.Ty.u8": [],
+    "Toy.Tbaa.Ty.u8.elim": [],
+    "Toy.Tbaa.Ty.u8.sizeOf_spec": [],
+    "Toy.Tbaa.TypeFaults": [
+      "propext"
+    ],
+    "Toy.Tbaa.TypeFaults.eq_1": [
+      "propext"
+    ],
+    "Toy.Tbaa.UDefined": [
+      "propext"
+    ],
+    "Toy.Tbaa.UMem": [],
+    "Toy.Tbaa.USt": [],
+    "Toy.Tbaa.USt.casesOn": [],
+    "Toy.Tbaa.USt.ctorIdx": [],
+    "Toy.Tbaa.USt.mem": [],
+    "Toy.Tbaa.USt.mk": [],
+    "Toy.Tbaa.USt.mk.inj": [],
+    "Toy.Tbaa.USt.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Tbaa.USt.mk.noConfusion": [],
+    "Toy.Tbaa.USt.mk.sizeOf_spec": [],
+    "Toy.Tbaa.USt.noConfusion": [],
+    "Toy.Tbaa.USt.noConfusionType": [],
+    "Toy.Tbaa.USt.rec": [],
+    "Toy.Tbaa.USt.recOn": [],
+    "Toy.Tbaa.USt.regs": [],
+    "Toy.Tbaa.Val": [],
+    "Toy.Tbaa.beh_eq_of_exec_eq": [],
+    "Toy.Tbaa.copyCell": [],
+    "Toy.Tbaa.copyCell.eq_1": [],
+    "Toy.Tbaa.copyFrom": [
+      "propext"
+    ],
+    "Toy.Tbaa.copyFrom.eq_1": [
+      "propext"
+    ],
+    "Toy.Tbaa.copyFrom.match_1": [],
+    "Toy.Tbaa.decExistsRange": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.declPairSt": [],
+    "Toy.Tbaa.declSt": [],
+    "Toy.Tbaa.erase": [],
+    "Toy.Tbaa.erase.eq_1": [],
+    "Toy.Tbaa.exec": [],
+    "Toy.Tbaa.exec.eq_1": [],
+    "Toy.Tbaa.freshAt": [],
+    "Toy.Tbaa.freshAt.eq_1": [],
+    "Toy.Tbaa.instDecidableAllocatedOn": [],
+    "Toy.Tbaa.instDecidableAllows": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.instDecidableBeh": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.instDecidableDeclaredOn": [],
+    "Toy.Tbaa.instDecidableEqCell": [],
+    "Toy.Tbaa.instDecidableEqCell.decEq": [],
+    "Toy.Tbaa.instDecidableEqCell.decEq.match_1": [],
+    "Toy.Tbaa.instDecidableEqEff": [],
+    "Toy.Tbaa.instDecidableEqEff.decEq": [],
+    "Toy.Tbaa.instDecidableEqEff.decEq.match_1": [],
+    "Toy.Tbaa.instDecidableEqFault": [],
+    "Toy.Tbaa.instDecidableEqInstr": [],
+    "Toy.Tbaa.instDecidableEqInstr.decEq": [],
+    "Toy.Tbaa.instDecidableEqInstr.decEq.match_1": [],
+    "Toy.Tbaa.instDecidableEqOutcome": [],
+    "Toy.Tbaa.instDecidableEqOutcome.decEq": [],
+    "Toy.Tbaa.instDecidableEqOutcome.decEq.match_1": [],
+    "Toy.Tbaa.instDecidableEqScalar": [],
+    "Toy.Tbaa.instDecidableEqTy": [],
+    "Toy.Tbaa.instDecidableMemcpyLoadOk": [
+      "propext"
+    ],
+    "Toy.Tbaa.instDecidableMemcpyLoadOk.match_1": [
+      "propext"
+    ],
+    "Toy.Tbaa.instDecidableMemcpyLoadOk.match_3": [
+      "propext"
+    ],
+    "Toy.Tbaa.instDecidableMemcpyLoadOk.match_5": [
+      "propext"
+    ],
+    "Toy.Tbaa.instDecidableNoCommonLeaf": [
+      "propext"
+    ],
+    "Toy.Tbaa.instDecidableRangesDisjoint": [],
+    "Toy.Tbaa.instDecidableReadableAt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.instDecidableReceivesAt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.instDecidableTypeFaults": [
+      "propext"
+    ],
+    "Toy.Tbaa.instDecidableUDefined": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tbaa.instReprCell": [],
+    "Toy.Tbaa.instReprCell.repr": [],
+    "Toy.Tbaa.instReprEff": [],
+    "Toy.Tbaa.instReprEff.repr": [],
+    "Toy.Tbaa.instReprEff.repr.match_1": [],
+    "Toy.Tbaa.instReprFault": [],
+    "Toy.Tbaa.instReprFault.repr": [],
+    "Toy.Tbaa.instReprFault.repr.match_1": [],
+    "Toy.Tbaa.instReprInstr": [
+      "propext"
+    ],
+    "Toy.Tbaa.instReprInstr.repr": [
+      "propext"
+    ],
+    "Toy.Tbaa.instReprInstr.repr.match_1": [],
+    "Toy.Tbaa.instReprOutcome": [
+      "propext"
+    ],
+    "Toy.Tbaa.instReprOutcome.repr": [
+      "propext"
+    ],
+    "Toy.Tbaa.instReprOutcome.repr.match_1": [],
+    "Toy.Tbaa.instReprScalar": [],
+    "Toy.Tbaa.instReprScalar.repr": [],
+    "Toy.Tbaa.instReprScalar.repr.match_1": [],
+    "Toy.Tbaa.instReprTy": [],
+    "Toy.Tbaa.instReprTy.repr": [],
+    "Toy.Tbaa.instReprTy.repr.match_1": [],
+    "Toy.Tbaa.memcpyLoadCheck": [
+      "propext"
+    ],
+    "Toy.Tbaa.memcpyLoadCheck.eq_1": [
+      "propext"
+    ],
+    "Toy.Tbaa.not_reorderSoundFrom_of": [
+      "propext"
+    ],
+    "Toy.Tbaa.objSt": [
+      "propext"
+    ],
+    "Toy.Tbaa.objSt.eq_1": [
+      "propext"
+    ],
+    "Toy.Tbaa.readRange": [
+      "propext"
+    ],
+    "Toy.Tbaa.readRange.eq_1": [
+      "propext"
+    ],
+    "Toy.Tbaa.readRange.eq_2": [
+      "propext"
+    ],
+    "Toy.Tbaa.readRange.eq_def": [
+      "propext"
+    ],
+    "Toy.Tbaa.readRange.match_1": [
+      "propext"
+    ],
+    "Toy.Tbaa.readRange.match_4": [],
+    "Toy.Tbaa.refines_allows_iff": [
+      "propext"
+    ],
+    "Toy.Tbaa.refines_beh_iff": [
+      "propext"
+    ],
+    "Toy.Tbaa.regs2": [],
+    "Toy.Tbaa.reorderSound_refl": [],
+    "Toy.Tbaa.runFrom": [],
+    "Toy.Tbaa.runFrom.eq_1": [],
+    "Toy.Tbaa.runFrom.eq_2": [],
+    "Toy.Tbaa.runFrom.eq_def": [],
+    "Toy.Tbaa.runFrom.match_1": [],
+    "Toy.Tbaa.runFrom.match_3": [],
+    "Toy.Tbaa.stdCfg": [
+      "propext"
+    ],
+    "Toy.Tbaa.stdCfg.eq_1": [
+      "propext"
+    ],
+    "Toy.Tbaa.stdCompat": [
+      "propext"
+    ],
+    "Toy.Tbaa.stdCompat.eq_1": [
+      "propext"
+    ],
+    "Toy.Tbaa.stdCompat.eq_2": [
+      "propext"
+    ],
+    "Toy.Tbaa.stdCompat.eq_3": [
+      "propext"
+    ],
+    "Toy.Tbaa.stdCompat.match_1": [
+      "propext"
+    ],
+    "Toy.Tbaa.stepE": [
+      "propext"
+    ],
+    "Toy.Tbaa.stepE.eq_1": [
+      "propext"
+    ],
+    "Toy.Tbaa.stepE.eq_2": [
+      "propext"
+    ],
+    "Toy.Tbaa.stepE.eq_3": [
+      "propext"
+    ],
+    "Toy.Tbaa.stepE.eq_4": [
+      "propext"
+    ],
+    "Toy.Tbaa.stepE.eq_5": [
+      "propext"
+    ],
+    "Toy.Tbaa.stepE.match_1": [],
+    "Toy.Tbaa.stepE.match_3": [
+      "propext"
+    ],
+    "Toy.Tbaa.stepE.match_5": [],
+    "Toy.Tbaa.stepU": [
+      "propext"
+    ],
+    "Toy.Tbaa.stepU.eq_1": [
+      "propext"
+    ],
+    "Toy.Tbaa.stepU.eq_2": [
+      "propext"
+    ],
+    "Toy.Tbaa.stepU.eq_3": [
+      "propext"
+    ],
+    "Toy.Tbaa.stepU.eq_4": [
+      "propext"
+    ],
+    "Toy.Tbaa.stepU.eq_5": [
+      "propext"
+    ],
+    "Toy.Tbaa.stepU.match_1": [],
+    "Toy.Tbaa.stepU.match_3": [
+      "propext"
+    ],
+    "Toy.Tbaa.stepU.match_5": [],
+    "Toy.Tbaa.storeCell": [
+      "propext"
+    ],
+    "Toy.Tbaa.storeCell.eq_1": [
+      "propext"
+    ],
+    "Toy.Tbaa.storeCell.match_1": [
+      "propext"
+    ],
+    "Toy.Tbaa.strictCompat": [],
+    "Toy.Tbaa.strictCompat.match_1": [],
+    "Toy.Tbaa.typeFaultsB": [
+      "propext"
+    ],
+    "Toy.Tbaa.typeFaultsB.eq_1": [
+      "propext"
+    ],
+    "Toy.Tbaa.typeFaultsB.eq_2": [
+      "propext"
+    ],
+    "Toy.Tbaa.typeFaultsB.eq_def": [
+      "propext"
+    ],
+    "Toy.Tbaa.typeFaultsB.match_1": [],
+    "Toy.Tbaa.typeFaultsB.match_3": [],
+    "Toy.Tbaa.updRange": [],
+    "Toy.Tbaa.updRange.eq_1": [],
+    "Toy.Tbaa.updReg": [],
+    "Toy.Tbaa.updReg.eq_1": [],
+    "Toy.Tbaa.valsAt": [
+      "propext"
+    ],
+    "Toy.Tbaa.valsAt.eq_1": [
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

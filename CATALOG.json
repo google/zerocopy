@@ -97959,6 +97959,138 @@
         "verification/compiler-verification"
       ]
     },
+    "type-based-alias-analysis-effective-types-and-type-punning": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "document": "N1570",
+            "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf"
+          },
+          "name": "ISO/IEC 9899:201x Committee Draft N1570 (C11)"
+        },
+        {
+          "identity": {
+            "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/dr_236.htm",
+            "version": "1.6"
+          },
+          "name": "WG14 Defect Report #236"
+        },
+        {
+          "identity": {
+            "document": "N4950",
+            "url": "https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2023/n4950.pdf"
+          },
+          "name": "C++ working draft N4950"
+        },
+        {
+          "identity": {
+            "path": "llvm/docs/LangRef.md",
+            "repository": "llvm/llvm-project",
+            "revision": "a2f1d1aeb6f5c700ac9a15592b6f81c3ec41e6c6"
+          },
+          "name": "LLVM Language Reference Manual"
+        },
+        {
+          "identity": {
+            "path": "src/behavior-considered-undefined.md",
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference"
+        },
+        {
+          "identity": {
+            "path": "reference/src/glossary.md",
+            "repository": "rust-lang/unsafe-code-guidelines",
+            "revision": "d809f91e62968913d808e53397fbcf7cea762cce"
+          },
+          "name": "Rust Unsafe Code Guidelines"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-03545-1_4"
+          },
+          "name": "Aliasing Restrictions of C11 Formalized in Coq"
+        },
+        {
+          "identity": {
+            "repository": "robbertkrebbers/ch2o",
+            "revision": "1afb3f615db053b741341e9bfd1d5c65bddea641"
+          },
+          "name": "CH2O Coq development"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/277650.277670"
+          },
+          "name": "Type-Based Alias Analysis"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2737924.2737979"
+          },
+          "name": "Defining the Undefinedness of C"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2908080.2908081"
+          },
+          "name": "Into the Depths of C: Elaborating the De Facto Standards"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1190216.1190234"
+          },
+          "name": "Types, Bytes, and Separation Logic"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371109"
+          },
+          "name": "Stacked Borrows: An Aliasing Model for Rust"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3735592"
+          },
+          "name": "Tree Borrows"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-008-9099-0"
+          },
+          "name": "Formal Verification of a C-like Memory Model and Its Uses for Verifying Program Transformations"
+        },
+        {
+          "identity": {
+            "path": "common/Memory.v",
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/refinement",
+        "pl/memory-models",
+        "pl/type-based-alias-analysis",
+        "pl/effective-types",
+        "pl/type-punning",
+        "compilers/alias-analysis",
+        "compilers/optimization-soundness"
+      ]
+    },
     "type-error-localization-compiler-diagnostics-and-verification-ux": {
       "observed_at": "2026-11-19",
       "subjects": [
