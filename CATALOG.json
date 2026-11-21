@@ -13475,6 +13475,106 @@
         "verification/separation-logic"
       ]
     },
+    "cantor-normal-form-ordinals-dynamic-task-spawning-liveness-and-constructive-termination-measures": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "coq-community/hydra-battles",
+            "revision": "ed8e6048018a61b4fe6d7d6f96daf0d63da2eba8"
+          },
+          "name": "hydra-battles constructive Set-level Cantor normal form ordinals up to epsilon_0 (T1.v, Hessenberg.v, Hydra_Definitions.v)"
+        },
+        {
+          "identity": {
+            "repository": "acl2/acl2",
+            "revision": "f040a8db474f68e11b5fa980c99b7c1f7be28e54"
+          },
+          "name": "ACL2 executable Cantor normal form ordinal arithmetic (books/ordinals)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover-community/mathlib4",
+            "revision": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+            "version": "v4.34.1"
+          },
+          "name": "Mathlib4 set-theoretic Ordinal (Type (u + 1)) and noncomputable Ordinal.CNF"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 core prelude and well-founded recursion library (Init/WF.lean)"
+        },
+        {
+          "identity": {
+            "repository": "tokio-rs/tokio",
+            "revision": "717c508f9e9ac4317665ff1eb30f29c139ea6363"
+          },
+          "name": "Tokio multi-threaded work-stealing async scheduler, LIFO slot, and cooperative poll budget"
+        },
+        {
+          "identity": {
+            "repository": "iris/trillium",
+            "revision": "d8bc4d31f929b9f5b9ef20a5943c9c923e8844c7",
+            "url": "https://gitlab.mpi-sws.org/iris/trillium"
+          },
+          "name": "Trillium fair-termination and trace-refinement framework in Iris"
+        },
+        {
+          "identity": {
+            "repository": "iris/transfinite",
+            "revision": "dde9f199bc09dc5242e3547be7c5049030f4c451",
+            "url": "https://gitlab.mpi-sws.org/iris/transfinite"
+          },
+          "name": "Transfinite Iris ordinal-indexed step-indexing and classical witness boundary"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/359138.359142",
+            "venue": "Communications of the ACM 22(8):465-476"
+          },
+          "name": "Dershowitz and Manna (CACM 1979) \u2014 Proving Termination with Multiset Orderings"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-005-9023-9",
+            "venue": "Journal of Automated Reasoning 34(4):387-423"
+          },
+          "name": "Manolios and Vroon (JAR 2005) \u2014 Ordinal Arithmetic: Algorithms and Mechanization"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3477082",
+            "venue": "ACM TOPLAS 43(4), Article 16"
+          },
+          "name": "D'Osualdo, Sutherland, Farzan, and Gardner (TOPLAS 2021) \u2014 TaDA Live: Compositional Reasoning for Termination of Fine-Grained Concurrent Programs"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3591253",
+            "venue": "PACMPL 7 (PLDI 2023), Article 139"
+          },
+          "name": "Lee, Cho, Kim, Moon, Song, and Hur (PLDI 2023) \u2014 Fair Operational Semantics"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/177492.177726",
+            "venue": "ACM TOPLAS 16(3):872-923"
+          },
+          "name": "Lamport (TOPLAS 1994) \u2014 The Temporal Logic of Actions"
+        }
+      ],
+      "topics": [
+        "verification/liveness",
+        "pl/type-theory",
+        "runtimes/async",
+        "lean/termination",
+        "verification/program-logics"
+      ]
+    },
     "capability-hardware-tagged-architectures-and-cheri-abi-co-design": {
       "observed_at": "2026-11-19",
       "subjects": [
