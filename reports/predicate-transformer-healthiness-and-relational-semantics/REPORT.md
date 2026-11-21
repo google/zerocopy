@@ -421,7 +421,7 @@ Here `eventually : Transformer Nat` is `fun Q _ => ∃ N, ∀ n, N ≤ n → Q n
 but finitely many numbers"; the start state is ignored). The laws are unfolded in the
 definitions table above.
 
-**Plain claim.** On the state type Nat, the transformer 'the postcondition holds of all but finitely many numbers' is monotone, binary conjunctive (hence conjunctive over every finite list), top preserving and strict, yet it is not omega-continuous, not positively conjunctive, not wlp R for any relation R and not wp R term for any R and term.
+**Plain claim.** On the state type Nat, the transformer 'the postcondition holds of all but finitely many numbers' is monotone, binary conjunctive and top preserving (hence conjunctive over every finite list), and strict, yet it is not omega-continuous, not positively conjunctive, not wlp R for any relation R and not wp R term for any R and term.
 
 **Hypothesis ledger.**
 
